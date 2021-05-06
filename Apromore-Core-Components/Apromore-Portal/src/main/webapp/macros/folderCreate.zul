@@ -28,7 +28,7 @@ and CreateProcessController.java for creating process purpose.
 
 <window width="400px" closable="false" position="center" id="winFolderCreate" title="Create folder" sclass="ap-add-folder" mode="modal">
 	<caption>
-        <toolbarbutton iconSclass="ap-icon ap-icon-help" href="https://documentation.apromore.org/theapromoreportal/createnewfolder.html" target="_blank" />
+        <toolbarbutton iconSclass="ap-icon ap-icon-help" href="${labels.help.createFolder}" target="_blank" />
     </caption>
     <vbox vflex="1">
         <grid sclass="ap-grid">

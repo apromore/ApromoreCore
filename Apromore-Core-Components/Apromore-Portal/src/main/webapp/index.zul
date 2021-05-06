@@ -182,7 +182,7 @@
                         <h:div class="ap-header-title">${labels.portal_title_text}</h:div>
 
                         <h:div class="ap-header-actions">
-                            <h:a href="https://documentation.apromore.org/theapromoreportal/navigatingtheapromoreportal.html" target="_blank">
+                            <h:a href="${labels.help.portal}" target="_blank">
                                 <h:button class="ap-icon ap-icon-help"/>
                             </h:a>
                         </h:div>

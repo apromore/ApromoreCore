@@ -23,7 +23,7 @@
 
 <window width="600px" closable="false" position="center, top" style="margin-top: 20% !important;" title="Process merging" xmlns:h="http://www.w3.org/1999/xhtml">
     <caption>
-        <toolbarbutton iconSclass="ap-icon ap-icon-help" href="https://documentation.apromore.org/redesign/mergemodels.html" target="_blank" />
+        <toolbarbutton iconSclass="ap-icon ap-icon-help" href="${labels.help.mergeModels}" target="_blank" />
     </caption>
     <vbox>
         <grid sclass="ap-grid ap-form">

@@ -24,7 +24,7 @@
     closable="false"
     title="${labels.accessCtrl_share_text}" apply="org.apromore.plugin.portal.accesscontrol.controllers.ShareController">
     <caption>
-        <toolbarbutton iconSclass="ap-icon ap-icon-help" href="https://documentation.apromore.org/theapromoreportal/sharingandaccessrights.html" target="_blank" />
+        <toolbarbutton iconSclass="ap-icon ap-icon-help" href="${labels.help.accessControl}" target="_blank" />
     </caption>
     <AccessControl vflex="1" hflex="1" id="accessControl"
                    currentUser="${arg.currentUser}"

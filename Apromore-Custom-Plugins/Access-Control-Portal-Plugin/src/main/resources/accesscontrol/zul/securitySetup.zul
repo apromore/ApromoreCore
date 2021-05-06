@@ -27,7 +27,7 @@
 <window width="1200px" height="90%" closable="true" title="${labels.accessCtrl_title_text}" position="center" id="winSecuritySetup">
 
     <caption>
-        <toolbarbutton iconSclass="ap-icon ap-icon-help" href="https://documentation.apromore.org/theapromoreportal/sharingandaccessrights.html" target="_blank" />
+        <toolbarbutton iconSclass="ap-icon ap-icon-help" href="${labels.help.accessControl}" target="_blank" />
     </caption>
     <style>
         .z-tree-icon {
