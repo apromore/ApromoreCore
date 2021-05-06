@@ -202,12 +202,12 @@ public class StringUtil {
                     fileID = fileUrl.substring(fileIDStart + 3, fileIDEnd);
                 }
                 fileUrl = "https://drive.google.com/uc?export=download&id=" + fileID;
-            }
+            } else return "";
         }
         if (fileUrl.startsWith(oneDrivePrefix)) {
             if (isValidOneDriveURL(fileUrl)) {
                 fileUrl = fileUrl.replace("embed?", "download?");
-            }
+            } else return "";
         }
 
         return fileUrl;
