@@ -168,7 +168,7 @@ public class ToolbarController extends AbstractController {
         layoutHierarchy.setDisabled(disabled);
         layoutDagreTopBottom.setDisabled(disabled);
         filter.setDisabled(disabled);
-        filterClear.setDisabled(disabled || parent.getLogData().isCurrentFilterCriteriaEmpty());
+        filterClear.setDisabled(disabled || parent.getProcessAnalyst().isCurrentFilterCriteriaEmpty());
         searchText.setDisabled(disabled);
         shortcutButton.setDisabled(disabled);
     }

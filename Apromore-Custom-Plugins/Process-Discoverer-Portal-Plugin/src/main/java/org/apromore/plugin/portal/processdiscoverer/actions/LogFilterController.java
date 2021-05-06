@@ -32,7 +32,6 @@ import org.zkoss.zk.ui.event.Event;
  * This class allows to filter the log via the LogFilter window UI.
  * Note that this is a different way of filtering logs by mouse/keyboard shortcuts
  * which is managed directly by ProcessDiscovererController
- * The filtering result will be updated to LogData finally.
  * 
  * @author Bruce Nguyen
  *

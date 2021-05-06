@@ -25,11 +25,6 @@ package org.apromore.plugin.portal.processdiscoverer.actions;
 import org.apromore.plugin.portal.processdiscoverer.InteractiveMode;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
 import org.apromore.plugin.portal.processdiscoverer.components.AbstractController;
-import org.apromore.plugin.portal.processdiscoverer.vis.MissingLayoutException;
-import org.apromore.processdiscoverer.Abstraction;
-import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
-import org.apromore.processmining.models.jgraph.ProMJGraph;
-import org.apromore.processmining.plugins.bpmn.BpmnDefinitions;
 import org.zkoss.zk.ui.event.Event;
 
 public class AnimationController extends AbstractController {
@@ -43,11 +38,6 @@ public class AnimationController extends AbstractController {
             return;
         }
         
-        Abstraction abs = parent.getOutputData().getAbstraction();
-        if (abs.getLayout() == null) {
-            throw new MissingLayoutException("Missing layout of the process map for animating");
-        }
-        
         // Toggle between model and animation views
         if (parent.getInteractiveMode() == InteractiveMode.MODEL_MODE) {
             parent.switchToAnimationView();
@@ -55,30 +45,5 @@ public class AnimationController extends AbstractController {
         else {
             parent.switchToModelView();
         }
-    }
-    
-    private String getBPMN(BPMNDiagram diagram, ProMJGraph layoutInfo) {
-        BpmnDefinitions.BpmnDefinitionsBuilder definitionsBuilder = null;
-        if (layoutInfo != null) {
-            definitionsBuilder = new BpmnDefinitions.BpmnDefinitionsBuilder(diagram, layoutInfo);
-        }
-        else {
-            definitionsBuilder = new BpmnDefinitions.BpmnDefinitionsBuilder(diagram);
-        }
-        BpmnDefinitions definitions = new BpmnDefinitions("definitions", definitionsBuilder);
-        StringBuilder sb = new StringBuilder();
-        sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                "<definitions xmlns=\"http://www.omg.org/spec/BPMN/20100524/MODEL\"\n " +
-                "xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\"\n " +
-                "xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\"\n " +
-                "xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\"\n " +
-                "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n " +
-                "targetNamespace=\"http://www.omg.org/bpmn20\"\n " +
-                "xsi:schemaLocation=\"http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd\">");
-        sb.append(definitions.exportElements());
-        sb.append("</definitions>");
-        String bpmnText = sb.toString();
-        bpmnText.replaceAll("\n", "");
-        return bpmnText;
     }
 }

@@ -47,7 +47,7 @@ public class PerspectiveDetailsController extends DataListController {
         records = new ListModelList();
         rows = new ArrayList<String []>();
 
-        for (AttributeInfo info : parent.getLogData().getAttributeInfoList()) {
+        for (AttributeInfo info : parent.getProcessAnalyst().getAttributeInfoList()) {
             ArrayList<String> cells = new ArrayList<>();
 
             String value = info.getAttributeValue();

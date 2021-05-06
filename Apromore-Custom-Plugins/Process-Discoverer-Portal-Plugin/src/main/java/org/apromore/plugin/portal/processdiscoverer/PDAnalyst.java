@@ -50,6 +50,7 @@ import org.apromore.commons.datetime.DurationUtils;
 import org.apromore.logman.ALog;
 import org.apromore.logman.LogBitMap;
 import org.apromore.logman.attribute.AbstractAttribute;
+import org.apromore.logman.attribute.AttributeType;
 import org.apromore.logman.attribute.IndexableAttribute;
 import org.apromore.logman.attribute.graph.MeasureAggregation;
 import org.apromore.logman.attribute.graph.MeasureRelation;
@@ -63,8 +64,11 @@ import org.apromore.plugin.portal.processdiscoverer.data.ConfigData;
 import org.apromore.plugin.portal.processdiscoverer.data.ContextData;
 import org.apromore.plugin.portal.processdiscoverer.data.InvalidDataException;
 import org.apromore.plugin.portal.processdiscoverer.data.NotFoundAttributeException;
+import org.apromore.plugin.portal.processdiscoverer.data.OutputData;
 import org.apromore.plugin.portal.processdiscoverer.data.PerspectiveDetails;
 import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
+import org.apromore.plugin.portal.processdiscoverer.impl.json.ProcessJSONVisualizer;
+import org.apromore.plugin.portal.processdiscoverer.vis.ProcessVisualizer;
 import org.apromore.processdiscoverer.Abstraction;
 import org.apromore.processdiscoverer.AbstractionParams;
 import org.apromore.processdiscoverer.ProcessDiscoverer;
@@ -76,13 +80,17 @@ import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 /**
- * PDAnalyzer represents the main PD business logic. It encapsulates {@link ProcessDiscoverer} which provides the logic as well as
- * <{@link LogData> which provides data.
+ * PDAnalyst acts as a process analyst who receives the context (including the logs), configuration and support services to do
+ * process analysis. It encapsulates {@link ProcessDiscoverer} which provides the logic as well as <{@link LogData> which provides data.
  * 
  * @author Bruce Nguyen
  */
-public class PDAnalyzer {
+public class PDAnalyst {
+    // Logic support
     private ProcessDiscoverer processDiscoverer;
+    private ProcessVisualizer processVisualizer;
+    
+    // Data for graph
     private ALog aLog;
     private AttributeLog attLog;
     private Object currentFilterCriteria = new ArrayList<LogFilterRule>(); // list of log filter criteria
@@ -94,10 +102,10 @@ public class PDAnalyzer {
     private APMLog filteredAPMLog;
     private PLog filteredPLog;
     private APMLogFilter apmLogFilter;
-
+    
     private int sourceLogId; // plugin maintain log ID for Filter; Filter remove value to avoid conflic from multiple plugins
     
-    public PDAnalyzer(ContextData contextData, ConfigData configData, EventLogService eventLogService) throws Exception {
+    public PDAnalyst(ContextData contextData, ConfigData configData, EventLogService eventLogService) throws Exception {
         XLog xlog = eventLogService.getXLog(contextData.getLogId());
         APMLog apmLog = eventLogService.getAggregatedLog(contextData.getLogId());
         if (xlog == null) {
@@ -109,6 +117,8 @@ public class PDAnalyzer {
         long timer = System.currentTimeMillis();
         this.aLog = new ALog(xlog);
         System.out.println("ALog.constructor: " + (System.currentTimeMillis() - timer) + " ms.");
+        indexableAttributes = aLog.getAttributeStore().getPerspectiveEventAttributes(
+                configData.getMaxNumberOfUniqueValues(), AttributeType.BOOLEAN);
         
         this.originalAPMLog = apmLog;
         this.filteredAPMLog = apmLog;
@@ -118,6 +128,12 @@ public class PDAnalyzer {
         // ProcessDiscoverer logic with default attribute
         this.setMainAttribute(configData.getDefaultAttribute());
         this.processDiscoverer = new ProcessDiscoverer(this.attLog);
+        this.processVisualizer = new ProcessJSONVisualizer();
+    }
+    
+    public void cleanUp() {
+        processDiscoverer.cleanUp();
+        processVisualizer.cleanUp();
     }
     
     private AbstractionParams genAbstractionParams(UserOptionsData userOptions) {
@@ -169,7 +185,7 @@ public class PDAnalyzer {
     /*
      * This is the main processing method calling to process-discoverer-logic
      */
-    public Optional<Abstraction> discoverProcess(UserOptionsData userOptions) throws Exception {
+    public Optional<OutputData> discoverProcess(UserOptionsData userOptions) throws Exception {
         AbstractionParams params = genAbstractionParams(userOptions);
 
         // Find a DFG first
@@ -183,14 +199,22 @@ public class PDAnalyzer {
         }
 
         // Actual operation with the new params
-        params.setCorrespondingDFG(dfgAbstraction);
-        return userOptions.getBPMNMode() ? Optional.of(processDiscoverer.generateBPMNAbstraction(params, dfgAbstraction)) :
-                Optional.of(dfgAbstraction);
+        Abstraction currentAbstraction;
+        if (userOptions.getBPMNMode()) {
+            currentAbstraction = processDiscoverer.generateBPMNAbstraction(params, dfgAbstraction);
+        } else {
+            currentAbstraction = dfgAbstraction;
+        }
+
+        String visualizedText = processVisualizer.generateVisualizationText(currentAbstraction);
+        return Optional.of(new OutputData(currentAbstraction, visualizedText));
     }
     
-    public Abstraction discoverTrace(String traceID, UserOptionsData userOptions) throws Exception {
+    public OutputData discoverTrace(String traceID, UserOptionsData userOptions) throws Exception {
         AbstractionParams params = genAbstractionParamsForTrace(userOptions);
-        return processDiscoverer.generateTraceAbstraction(traceID, params);
+        Abstraction traceAbs = processDiscoverer.generateTraceAbstraction(traceID, params);
+        String traceVisualization = processVisualizer.generateVisualizationText(traceAbs);
+        return new OutputData(traceAbs, traceVisualization);
     }
 
     public int getSourceLogId() {
@@ -203,6 +227,10 @@ public class PDAnalyzer {
     
     public AttributeLog getAttributeLog() {
         return this.attLog;
+    }
+    
+    public boolean hasEmptyData() {
+        return (this.attLog != null && this.attLog.getTraces().size() == 0);
     }
     
     public IndexableAttribute getAttribute(String key) {

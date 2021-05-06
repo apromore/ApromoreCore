@@ -49,7 +49,7 @@ public class UndoRedoController {
     }
 
     public void add(String actionName) {
-        List<LogFilterRule> currentFilterCriteria = (List<LogFilterRule>)parent.getLogData().getCurrentFilterCriteria();
+        List<LogFilterRule> currentFilterCriteria = (List<LogFilterRule>)parent.getProcessAnalyst().getCurrentFilterCriteria();
         // deep copy
         List<LogFilterRule> filterCriteria = currentFilterCriteria
             .stream()
@@ -74,7 +74,7 @@ public class UndoRedoController {
      */
     public void execute (FilterAction action) throws Exception {
         List<LogFilterRule> filterCriteria = action.getFilterCriteria();
-        LogDataWithAPMLog logData = (LogDataWithAPMLog)parent.getLogData();
+        LogDataWithAPMLog logData = (LogDataWithAPMLog)parent.getProcessAnalyst();
         // logData.setCurrentFilterCriteria(filterCriteria); // done by the next method
         logData.filter(filterCriteria);
         parent.updateUI(false);

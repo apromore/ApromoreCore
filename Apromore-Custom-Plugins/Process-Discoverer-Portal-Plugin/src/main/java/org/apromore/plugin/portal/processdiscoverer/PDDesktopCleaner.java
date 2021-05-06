@@ -21,8 +21,6 @@
  */
 package org.apromore.plugin.portal.processdiscoverer;
 
-import org.apromore.plugin.portal.processdiscoverer.vis.ProcessVisualizer;
-import org.apromore.processdiscoverer.ProcessDiscoverer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Desktop;
@@ -44,16 +42,9 @@ public class PDDesktopCleaner implements DesktopCleanup {
         LOGGER.info("PD cleanup starts for desktopID = " + desktop.getId());
         
         // Clean up this plugin
-        if (desktop.hasAttribute("processDiscoverer")) {
-            ((ProcessDiscoverer)desktop.getAttribute("processDiscoverer")).cleanUp();
+        if (desktop.hasAttribute("processAnalyst")) {
+            ((PDAnalyst)desktop.getAttribute("processAnalyst")).cleanUp();
         }
-        if (desktop.hasAttribute("processVisualizer")) {
-            ((ProcessVisualizer)desktop.getAttribute("processVisualizer")).cleanUp();
-        }
-
-        // Clean up the Portal session as it doesn't control plugin session
-        // TEMPORARY: remove this step to keep PD keeps working from refreshing the page after session timeout  
-        //UserSessionManager.removeEditSession(desktop.getAttribute("pluginSessionId").toString());
 
         LOGGER.info("PD cleanup is done for desktopID = " + desktop.getId());
     }

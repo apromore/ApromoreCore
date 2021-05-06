@@ -28,7 +28,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apromore.plugin.portal.processdiscoverer.PDController;
-import org.apromore.plugin.portal.processdiscoverer.vis.MissingLayoutException;
+import org.apromore.plugin.portal.processdiscoverer.vis.InvalidOutputException;
 import org.apromore.processdiscoverer.Abstraction;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.apromore.processmining.plugins.bpmn.BpmnDefinitions;
@@ -102,7 +102,7 @@ public class GraphVisController extends VisualController {
             @Override
             public void onEvent(Event event) throws Exception {
                 //filterForNodeEvent(event, Action.REMOVE, Level.TRACE, Containment.CONTAIN_ANY);
-                if (parent.getLogData().filter_RemoveTracesAnyValueOfEventAttribute(event.getData().toString(),
+                if (parent.getProcessAnalyst().filter_RemoveTracesAnyValueOfEventAttribute(event.getData().toString(),
                         parent.getUserOptions().getMainAttributeKey())) {
                     parent.updateUI(false);
                     parent.addAction(event.getName());
@@ -116,7 +116,7 @@ public class GraphVisController extends VisualController {
             @Override
             public void onEvent(Event event) throws Exception {
                 //filterForNodeEvent(event, Action.RETAIN, Level.TRACE, Containment.CONTgetDataAIN_ANY);
-                if (parent.getLogData().filter_RetainTracesAnyValueOfEventAttribute(event.getData().toString(),
+                if (parent.getProcessAnalyst().filter_RetainTracesAnyValueOfEventAttribute(event.getData().toString(),
                         parent.getUserOptions().getMainAttributeKey())) {
                     parent.updateUI(false);
                     parent.addAction(event.getName());
@@ -130,7 +130,7 @@ public class GraphVisController extends VisualController {
             @Override
             public void onEvent(Event event) throws Exception {
                 //filterForNodeEvent(event, Action.REMOVE, Level.EVENT, Containment.CONTAIN_ANY);
-                if (parent.getLogData().filter_RemoveEventsAnyValueOfEventAttribute(event.getData().toString(),
+                if (parent.getProcessAnalyst().filter_RemoveEventsAnyValueOfEventAttribute(event.getData().toString(),
                         parent.getUserOptions().getMainAttributeKey())) {
                     parent.updateUI(false);
                     parent.addAction(event.getName());
@@ -144,7 +144,7 @@ public class GraphVisController extends VisualController {
             @Override
             public void onEvent(Event event) throws Exception {
                 //filterForNodeEvent(event, Action.RETAIN, Level.EVENT, Containment.CONTAIN_ANY);
-                if (parent.getLogData().filter_RetainEventsAnyValueOfEventAttribute(event.getData().toString(),
+                if (parent.getProcessAnalyst().filter_RetainEventsAnyValueOfEventAttribute(event.getData().toString(),
                         parent.getUserOptions().getMainAttributeKey())) {
                     parent.updateUI(false);
                     parent.addAction(event.getName());
@@ -161,7 +161,7 @@ public class GraphVisController extends VisualController {
                 String edge = event.getData().toString();
                 if (isGatewayEdge(edge)) return;
                 if (isStartOrEndEdge(edge)) edge = convertStartOrEndEdge(edge);
-                if (parent.getLogData().filter_RemoveTracesAnyValueOfDirectFollowRelation(edge,
+                if (parent.getProcessAnalyst().filter_RemoveTracesAnyValueOfDirectFollowRelation(edge,
                         parent.getUserOptions().getMainAttributeKey())) {
                     parent.updateUI(false);
                     parent.addAction(event.getName());
@@ -178,7 +178,7 @@ public class GraphVisController extends VisualController {
                 String edge = event.getData().toString();
                 if (isGatewayEdge(edge)) return;
                 if (isStartOrEndEdge(edge)) edge = convertStartOrEndEdge(edge);
-                if (parent.getLogData().filter_RetainTracesAnyValueOfDirectFollowRelation(edge,
+                if (parent.getProcessAnalyst().filter_RetainTracesAnyValueOfDirectFollowRelation(edge,
                         parent.getUserOptions().getMainAttributeKey())) {
                     parent.updateUI(false);
                     parent.addAction(event.getName());
@@ -308,7 +308,7 @@ public class GraphVisController extends VisualController {
         // Align log and model
         BPMNDiagram oriDiagram = parent.getOutputData().getAbstraction().getDiagram();
         BPMNDiagram alignDiagram = parent.getOutputData().getAbstraction().getValidBPMNDiagram();
-        AnimationResult alignmentResult = createAlignment(oriDiagram, alignDiagram, parent.getLogData().getLog().getActualXLog());
+        AnimationResult alignmentResult = createAlignment(oriDiagram, alignDiagram, parent.getProcessAnalyst().getLog().getActualXLog());
         
         // Prepare animation data
         AnimationContext animateContext = new AnimationContext(alignmentResult.getAnimationLogs());
@@ -367,7 +367,7 @@ public class GraphVisController extends VisualController {
     private AnimationResult createAlignment(BPMNDiagram oriDiagram, BPMNDiagram alignDiagram, XLog log) throws Exception {
         Abstraction abs = parent.getOutputData().getAbstraction();
         if (abs.getLayout() == null) {
-            throw new MissingLayoutException("Missing layout of the process map for animating");
+            throw new InvalidOutputException("Missing layout of the process map for animating");
         }
         
         LogAnimationService2 logAnimationService = parent.getLogAnimationService();

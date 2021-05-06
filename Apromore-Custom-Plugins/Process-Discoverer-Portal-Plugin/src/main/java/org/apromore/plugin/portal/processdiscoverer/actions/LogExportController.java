@@ -28,10 +28,10 @@ import java.util.GregorianCalendar;
 
 import javax.xml.datatype.DatatypeFactory;
 
+import org.apromore.plugin.portal.processdiscoverer.PDAnalyst;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
 import org.apromore.plugin.portal.processdiscoverer.components.AbstractController;
 import org.apromore.plugin.portal.processdiscoverer.data.ContextData;
-import org.apromore.plugin.portal.processdiscoverer.data.LogData;
 import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
 import org.apromore.plugin.portal.processdiscoverer.utils.InputDialog;
 import org.apromore.portal.common.notification.Notification;
@@ -43,13 +43,13 @@ import org.zkoss.zk.ui.event.EventListener;
 public class LogExportController extends AbstractController {
     private ContextData contextData;
     private UserOptionsData userOptions;
-    private LogData logData;
+    private PDAnalyst analyst;
     
     public LogExportController(PDController controller) {
         super(controller);
         contextData = parent.getContextData();
         userOptions = parent.getUserOptions();
-        logData = parent.getLogData();
+        analyst = parent.getProcessAnalyst();
     }
     
     @Override
@@ -60,7 +60,7 @@ public class LogExportController extends AbstractController {
         
         InputDialog.showInputDialog(
             Labels.getLabel("e.pd.saveLogWin.text"), // "Save filtered log",
-            "Enter a log name (no more than 60 characters)", 
+            "Enter a log name (no more than 60 characters)",
             contextData.getLogName() + "_filtered",
             new EventListener<Event>() {
                 @Override
@@ -69,7 +69,7 @@ public class LogExportController extends AbstractController {
                         String logName = (String)event.getData();
 //                        userOptions.setActivityFilterValue(activities.getCurpos());
 //                        userOptions.setArcFilterValue(arcs.getCurpos());
-                        saveLog(logData.getLog().getActualXLog(), logName);
+                        saveLog(analyst.getLog().getActualXLog(), logName);
                     }
                 }
             });

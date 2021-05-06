@@ -25,14 +25,10 @@ package org.apromore.plugin.portal.processdiscoverer.components;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apromore.logman.attribute.graph.MeasureAggregation;
-import org.apromore.logman.attribute.graph.MeasureRelation;
-import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.plugin.portal.processdiscoverer.InteractiveMode;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
 import org.apromore.plugin.portal.processdiscoverer.data.CaseDetails;
-import org.apromore.processdiscoverer.Abstraction;
-import org.apromore.processdiscoverer.AbstractionParams;
+import org.apromore.plugin.portal.processdiscoverer.data.OutputData;
 import org.zkoss.json.JSONObject;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
@@ -53,7 +49,7 @@ public class CaseDetailsController extends DataListController {
 	}
 
 	private void generateData() {
-		List<CaseDetails> caseDetails = parent.getLogData().getCaseDetails();
+		List<CaseDetails> caseDetails = parent.getProcessAnalyst().getCaseDetails();
 		records = new ListModelList();
 		rows = new ArrayList<String[]>();
 		for (CaseDetails c : caseDetails) {
@@ -104,12 +100,8 @@ public class CaseDetailsController extends DataListController {
 				    if (disabled) return;
 					try {
 						String traceID = ((Listcell) (listbox.getSelectedItem()).getChildren().get(0)).getLabel();
-						AbstractionParams params = parent.genAbstractionParamsSimple(false, true, false,
-								MeasureType.DURATION, MeasureAggregation.CASES, MeasureRelation.ABSOLUTE,
-								MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.ABSOLUTE);
-						Abstraction traceAbs = parent.getProcessDiscoverer().generateTraceAbstraction(traceID, params);
-						String visualizedText = parent.getProcessVisualizer().generateVisualizationText(traceAbs);
-						parent.showTrace(visualizedText);
+						OutputData result = parent.getProcessAnalyst().discoverTrace(traceID, parent.getUserOptions());
+						parent.showTrace(result.getVisualizedText());
 					} catch (Exception e) {
 						Messagebox.show(e.getMessage());
 					}

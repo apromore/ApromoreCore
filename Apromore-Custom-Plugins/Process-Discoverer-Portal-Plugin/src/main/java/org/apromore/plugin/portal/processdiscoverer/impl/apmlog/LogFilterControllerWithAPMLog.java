@@ -38,9 +38,9 @@ import org.apromore.plugin.portal.logfilter.generic.LogFilterClient;
 import org.apromore.plugin.portal.logfilter.generic.LogFilterOutputResult;
 import org.apromore.plugin.portal.logfilter.generic.LogFilterRequest;
 import org.apromore.plugin.portal.logfilter.generic.LogFilterResponse;
+import org.apromore.plugin.portal.processdiscoverer.PDAnalyst;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
 import org.apromore.plugin.portal.processdiscoverer.actions.LogFilterController;
-import org.apromore.plugin.portal.processdiscoverer.data.InvalidDataException;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.zkoss.json.JSONObject;
 import org.zkoss.zk.ui.event.Event;
@@ -54,23 +54,18 @@ import org.zkoss.zul.Messagebox;
  *
  */
 public class LogFilterControllerWithAPMLog extends LogFilterController implements LogFilterClient {
-    private LogDataWithAPMLog logData;
+    private PDAnalyst analyst;
     public LogFilterControllerWithAPMLog(PDController controller) throws Exception {
         super(controller);
-        if (!(parent.getLogData() instanceof LogDataWithAPMLog)) {
-            throw new InvalidDataException("Expect LogDataWithAPMLog data but receiving different data!");
-        }
-        else {
-            logData = (LogDataWithAPMLog)controller.getLogData();
-        }
+        analyst = controller.getProcessAnalyst();
     }
 
     @Override
     // Open LogFilter window
     public void onEvent(Event event) throws Exception {
         if (event.getData() == null) {
-            LogFilterRequest lfr = logData.getCurrentFilterCriteria() == null ||
-                    ((List<LogFilterRule>) logData.getCurrentFilterCriteria()).isEmpty() ?
+            LogFilterRequest lfr = analyst.getCurrentFilterCriteria() == null ||
+                    ((List<LogFilterRule>) analyst.getCurrentFilterCriteria()).isEmpty() ?
                     getRequestWithOption(new EditorOption(FilterType.CASE_VARIANT)) : getDefaultRequest();
             parent.getLogFilterPlugin().execute(lfr);
         } else if (event.getData() instanceof JSONObject) {
@@ -82,7 +77,7 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
 
     private void onInvokeEvent(String payload) {
         FilterType filterType = getFilterType(payload);
-        LogFilterRule rule = getLastMatchedRule(filterType, (List<LogFilterRule>) logData.getCurrentFilterCriteria());
+        LogFilterRule rule = getLastMatchedRule(filterType, (List<LogFilterRule>) analyst.getCurrentFilterCriteria());
         EditorOption option = rule != null ? new EditorOption(filterType, rule) : new EditorOption(filterType);
         LogFilterRequest lfr = getRequestWithOption(option);
         parent.getLogFilterPlugin().execute(lfr);
@@ -100,7 +95,7 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
             case EVENT_ATTRIBUTE_DURATION:
                 data = (String) param.get("data");
                 if (filterType == FilterType.EVENT_ATTRIBUTE_DURATION &&
-                        !logData.hasSufficientDurationVariant(mainAttribute, data)) {
+                        !analyst.hasSufficientDurationVariant(mainAttribute, data)) {
                     Messagebox.show("Unable to filter on node duration as there's only one value.",
                             "Filter error", Messagebox.OK, Messagebox.ERROR);
                     return;
@@ -111,7 +106,7 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
             case ATTRIBUTE_ARC_DURATION:
                 source = (String) param.get("source");
                 target = (String) param.get("target");
-                if (!logData.hasSufficientDurationVariant(mainAttribute, source, target)) {
+                if (!analyst.hasSufficientDurationVariant(mainAttribute, source, target)) {
                     Messagebox.show("Unable to filter on arc duration as there's only one value.",
                             "Filter error", Messagebox.OK, Messagebox.ERROR);
                     return;
@@ -127,7 +122,7 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
         Clients.showBusy("Launch Filter Dialog ...");
 
         LogFilterRule rule = getLastMatchedRuleWithValues(filterType, parameters,
-                (List<LogFilterRule>) logData.getCurrentFilterCriteria());
+                (List<LogFilterRule>) analyst.getCurrentFilterCriteria());
 
         EditorOption option = rule != null ? new EditorOption(filterType, rule) :
                 new EditorOption(filterType, parameters);
@@ -138,7 +133,7 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
     }
 
     private boolean isValidEventAttributeDuration(String mainAttribute, String data) {
-        if (!logData.hasSufficientDurationVariant(mainAttribute, data)) {
+        if (!analyst.hasSufficientDurationVariant(mainAttribute, data)) {
             Messagebox.show("Unable to filter on node duration as there's only one value.",
                     "Filter error", Messagebox.OK, Messagebox.ERROR);
             return false;
@@ -149,12 +144,12 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
 
     private LogFilterRequest getRequestWithOption(EditorOption option) {
         return new LogFilterRequest(this, parent.getSourceLogId(), parent.getTitle(),
-                logData.getOriginalAPMLog(), (List<LogFilterRule>) logData.getCurrentFilterCriteria(), option);
+                analyst.getOriginalAPMLog(), (List<LogFilterRule>) analyst.getCurrentFilterCriteria(), option);
     }
 
     private LogFilterRequest getDefaultRequest() {
         return new LogFilterRequest(this, parent.getSourceLogId(), parent.getTitle(),
-                logData.getOriginalAPMLog(), (List<LogFilterRule>) logData.getCurrentFilterCriteria());
+                analyst.getOriginalAPMLog(), (List<LogFilterRule>) analyst.getCurrentFilterCriteria());
     }
 
     private FilterType getFilterType(String payload) {
@@ -255,7 +250,7 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
 
     @Override
     public void clearFilter() throws Exception {
-        logData.clearFilter();
+        analyst.clearFilter();
         parent.updateUI(true);
         parent.addAction("CLEAR");
     }
@@ -264,9 +259,9 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
     public void processResponse(LogFilterResponse logFilterResponse) {
         PLog pLog = logFilterResponse.getPLog();
         if (!pLog.getPTraceList().isEmpty()) {
-            parent.getLogData().setCurrentFilterCriteria(logFilterResponse.getCriteria());
+            parent.getProcessAnalyst().setCurrentFilterCriteria(logFilterResponse.getCriteria());
             try {
-                logData.updateLog(pLog, logFilterResponse.getApmLog());
+                analyst.updateLog(pLog, logFilterResponse.getApmLog());
                 parent.updateUI(true);
                 parent.addAction("CUSTOM");
             } catch (Exception e) {

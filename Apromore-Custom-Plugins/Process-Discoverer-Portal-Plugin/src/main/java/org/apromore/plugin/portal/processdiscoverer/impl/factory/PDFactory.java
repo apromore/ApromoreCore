@@ -35,18 +35,8 @@ import org.apromore.plugin.portal.processdiscoverer.components.PerspectiveDetail
 import org.apromore.plugin.portal.processdiscoverer.components.TimeStatsController;
 import org.apromore.plugin.portal.processdiscoverer.components.ToolbarController;
 import org.apromore.plugin.portal.processdiscoverer.components.ViewSettingsController;
-import org.apromore.plugin.portal.processdiscoverer.data.ConfigData;
-import org.apromore.plugin.portal.processdiscoverer.data.ContextData;
-import org.apromore.plugin.portal.processdiscoverer.data.LogData;
-import org.apromore.plugin.portal.processdiscoverer.data.OutputData;
-import org.apromore.plugin.portal.processdiscoverer.vis.ProcessVisualizer;
-import org.apromore.processdiscoverer.Abstraction;
-import org.apromore.service.EventLogService;
 
 public interface PDFactory {
-    LogData createLogData(ContextData contextData, ConfigData configData, EventLogService eventLogService)  throws Exception;
-    OutputData createOutputData(Abstraction currentAbstraction, String visualizedText)  throws Exception;
-    
     GraphVisController createGraphVisController(PDController pdController) throws Exception;
     GraphSettingsController createGraphSettingsController(PDController pdController) throws Exception;
     ViewSettingsController createViewSettingsController(PDController pdController) throws Exception;
@@ -59,6 +49,5 @@ public interface PDFactory {
     BPMNExportController createBPMNExportController(PDController pdController) throws Exception;
     LogExportController createLogExportController(PDController pdController) throws Exception;
     ToolbarController createToolbarController(PDController controller) throws Exception;
-    ProcessVisualizer createProcessVisualizer(PDController pdController) throws Exception;
     UndoRedoController createUndoRedoController(PDController pdController) throws Exception;
 }
