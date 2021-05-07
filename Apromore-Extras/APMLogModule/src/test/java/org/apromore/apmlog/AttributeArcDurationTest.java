@@ -267,6 +267,7 @@ public class AttributeArcDurationTest {
         UnifiedSet<EventAttributeValue> eavSet = pLog.getEventAttributeValues().get(key);
         Map<String, List<CustomTriple>> data = StatsUtil.getTargetNodeDataBySourceNode(key, "A", pLog, eavSet);
 
+        assert data != null;
         double[] durArray = data.get("A").stream().mapToDouble(CustomTriple::getDuration).toArray();
         DoubleArrayList dal = new DoubleArrayList(durArray);
 
@@ -283,7 +284,7 @@ public class AttributeArcDurationTest {
     public static void testSequencialFiltering01(APMLog originalLog) {
 
         /** First rule **/
-        Set<String> r1V = new HashSet<>(Arrays.asList("b"));
+        Set<String> r1V = new HashSet<>(Collections.singletonList("b"));
         RuleValue rv1 = new RuleValue(EVENT_EVENT_ATTRIBUTE, OperationType.EQUAL, "concept:name", r1V);
         Set<RuleValue> primaryValues = new HashSet<>();
         primaryValues.add(rv1);
@@ -342,6 +343,6 @@ public class AttributeArcDurationTest {
         apmLogFilter.filter(rules);
         APMLog filteredLog = apmLogFilter.getApmLog();
 
-        assertTrue(filteredLog.getTraceList().get(0).getCaseId().equals("c1"));
+        assertEquals("c1", filteredLog.getTraceList().get(0).getCaseId());
     }
 }

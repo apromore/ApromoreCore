@@ -45,13 +45,10 @@ import org.apromore.apmlog.AActivity;
 import org.apromore.apmlog.AEvent;
 import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
-import org.apromore.apmlog.filter.rules.RuleValue;
 import org.apromore.apmlog.filter.typefilters.*;
 import org.apromore.apmlog.filter.types.Choice;
 import org.apromore.apmlog.filter.types.FilterType;
 import org.apromore.apmlog.filter.types.OperationType;
-import org.apromore.apmlog.filter.types.Section;
-import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,7 +90,7 @@ public class APMLogFilter {
     }
 
 
-    APMLog finalAPMLog;
+    private APMLog finalAPMLog;
 
     public APMLog getFinalAPMLog() {
         if (finalAPMLog == null) finalAPMLog = pLog.toAPMLog();
@@ -268,7 +265,7 @@ public class APMLogFilter {
 
     }
 
-    public List<PTrace> filterByEventSectAttribute(LogFilterRule rule, List<PTrace> traces) {
+    private List<PTrace> filterByEventSectAttribute(LogFilterRule rule, List<PTrace> traces) {
         return traces.stream()
                 .filter(x -> filterActivitiesByAttribute(rule, x))
                 .collect(Collectors.toList());

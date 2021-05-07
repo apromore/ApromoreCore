@@ -33,7 +33,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 public class ProcureToPayAdvFilterTest {
 
@@ -44,7 +44,7 @@ public class ProcureToPayAdvFilterTest {
         apmLogFilter.filter(criteria);
         APMLog filteredLog = apmLogFilter.getFinalAPMLog();
 
-        assertTrue(filteredLog.getTraceList().size() == 242);
+        assertEquals(242, filteredLog.getTraceList().size());
     }
 
     private static LogFilterRule getRetainActivitiesRule() {

@@ -38,7 +38,8 @@ public class CaseIDDesc {
 
         StringBuilder desc = new StringBuilder();
         String choice = logFilterRule.getChoice().toString().toLowerCase();
-        desc.append(choice.substring(0, 1).toUpperCase() + choice.substring(1) + " all cases where case ID is ");
+        desc.append(choice.substring(0, 1).toUpperCase()).append(choice.substring(1)).append(" all cases where case " +
+                "ID is ");
         Set<RuleValue> ruleValues = logFilterRule.getPrimaryValues();
 
 

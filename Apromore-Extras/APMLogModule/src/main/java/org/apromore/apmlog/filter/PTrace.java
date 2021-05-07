@@ -115,7 +115,7 @@ public class PTrace implements Comparable<PTrace>, ATrace{
         List<AActivity> validActs = StatsUtil.getValidActivitiesOf(this);
         double[] waitTimesArray = validActs.stream()
                 .filter(x -> StatsUtil.getValidPreviousActivity(x, this) != null)
-                .mapToDouble(x -> StatsUtil.getArcDurationOf(StatsUtil.getValidPreviousActivity(x, this), x))
+                .mapToDouble(x -> StatsUtil.getArcDurationOf(Objects.requireNonNull(StatsUtil.getValidPreviousActivity(x, this)), x))
                 .toArray();
         DoubleArrayList wtDal = new DoubleArrayList(waitTimesArray);
         return wtDal;

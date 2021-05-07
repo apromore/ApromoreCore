@@ -31,6 +31,7 @@ import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 import java.util.*;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class EventSectionAttributeFilterTest {
@@ -129,13 +130,13 @@ public class EventSectionAttributeFilterTest {
         LogFilterRule logFilterRule = new LogFilterRuleImpl(Choice.RETAIN, Inclusion.ANY_VALUE, Section.EVENT,
                 FilterType.EVENT_EVENT_ATTRIBUTE, "concept:name", primaryValues, null);
 
-        List<LogFilterRule> rules = Arrays.asList(logFilterRule);
+        List<LogFilterRule> rules = Collections.singletonList(logFilterRule);
 
         APMLogFilter apmLogFilter = new APMLogFilter(apmLog);
         apmLogFilter.filterIndex(rules);
 
         int actSizeOfCFM = apmLogFilter.getPLog().getEventAttributeValues().get("concept:name").size();
 
-        assertTrue(actSizeOfCFM == 2);
+        assertEquals(2, actSizeOfCFM);
     }
 }

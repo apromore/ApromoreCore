@@ -30,7 +30,6 @@ import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ImmutableActivity implements AActivity {
     private int immutableIndex;

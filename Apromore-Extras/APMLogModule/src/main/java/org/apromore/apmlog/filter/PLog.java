@@ -312,8 +312,8 @@ public class PLog implements APMLog {
     public IntArrayList getActivityNameIndexes(PTrace trace) {
         IntArrayList nameIndexes = new IntArrayList(trace.getActivityList().size());
         List<AActivity> activityList = trace.getActivityList();
-        for (int i = 0; i < activityList.size(); i++) {
-            int actNameIndex = activityNameBiMap.get(activityList.get(i).getName());
+        for (AActivity aActivity : activityList) {
+            int actNameIndex = activityNameBiMap.get(aActivity.getName());
             nameIndexes.add(actNameIndex);
         }
         return nameIndexes;
@@ -593,7 +593,7 @@ public class PLog implements APMLog {
 
 
     public long getEventSize() {
-        return getPTraceList().stream().collect(Collectors.summingLong(PTrace::getEventSize));
+        return getPTraceList().stream().mapToLong(PTrace::getEventSize).sum();
     }
 
 

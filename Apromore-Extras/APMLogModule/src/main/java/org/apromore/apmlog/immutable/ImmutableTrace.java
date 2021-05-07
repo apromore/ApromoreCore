@@ -161,8 +161,8 @@ public class ImmutableTrace implements ATrace {
     @Override
     public List<String> getActivityNameList() {
         List<String> names = new ArrayList<>();
-        for (int i = 0; i < activities.size(); i++) {
-            UnifiedMap<String, String> attrMap = activities.get(i).getAttributes();
+        for (AActivity activity : activities) {
+            UnifiedMap<String, String> attrMap = activity.getAttributes();
             if (attrMap != null) {
                 if (attrMap.containsKey("concept:name")) names.add(attrMap.get("concept:name"));
             }
