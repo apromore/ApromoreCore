@@ -131,6 +131,20 @@ public class PDAnalyst {
         this.processVisualizer = new ProcessJSONVisualizer();
     }
     
+    // Without filter, for testing only
+    private PDAnalyst(ALog aLog, ConfigData configData) throws Exception {
+        this.aLog = aLog;
+        indexableAttributes = aLog.getAttributeStore().getPerspectiveEventAttributes(
+                configData.getMaxNumberOfUniqueValues(), AttributeType.BOOLEAN);
+        this.setMainAttribute(configData.getDefaultAttribute());
+        this.processDiscoverer = new ProcessDiscoverer(this.attLog);
+        this.processVisualizer = new ProcessJSONVisualizer();
+    }
+    
+    public static PDAnalyst newInstanceWithoutFilter(ALog aLog, ConfigData configData) throws Exception {
+        return new PDAnalyst(aLog, configData);
+    }
+    
     public void cleanUp() {
         processDiscoverer.cleanUp();
         processVisualizer.cleanUp();

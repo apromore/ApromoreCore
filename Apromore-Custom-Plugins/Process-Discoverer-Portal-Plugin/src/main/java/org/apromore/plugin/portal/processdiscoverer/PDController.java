@@ -35,7 +35,6 @@ import java.util.Optional;
 import javax.servlet.http.HttpSession;
 
 import org.apromore.logman.attribute.IndexableAttribute;
-import org.apromore.logman.attribute.graph.MeasureAggregation;
 import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalPlugin;
@@ -265,18 +264,7 @@ public class PDController extends BaseController {
                                 Messagebox.INFORMATION);
                 return;
             }
-            
-            // Set default user options
-            userOptions = new UserOptionsData();
-            userOptions.setPrimaryType(FREQUENCY);
-            userOptions.setPrimaryAggregation(MeasureAggregation.CASES);
-            userOptions.setSecondaryType(DURATION);
-            userOptions.setSecondaryAggregation(MeasureAggregation.MEAN);
-            userOptions.setFixedType(FREQUENCY);
-            userOptions.setFixedAggregation(MeasureAggregation.CASES);
-            userOptions.setInvertedNodesMode(false);
-            userOptions.setInvertedArcsMode(false);
-            userOptions.setMainAttributeKey(configData.getDefaultAttribute());
+            userOptions = UserOptionsData.DEFAULT(configData);
             
             // Set up UI components
             graphVisController = pdFactory.createGraphVisController(this);

@@ -47,7 +47,7 @@ public class UserOptionsData {
     protected boolean use_dynamic = false;
     protected boolean includeSecondary = false;
     
-    protected double nodes_value = 100;    
+    protected double nodes_value = 100;
     protected double arcs_value = 10;
     protected double parallelism_value = 40;
  
@@ -85,7 +85,21 @@ public class UserOptionsData {
     protected boolean duration_median = false;
     
     protected RelationReader relationReader = new DirectFollowReader();
-
+    
+    public static UserOptionsData DEFAULT(ConfigData configData) {
+        UserOptionsData userOptions = new UserOptionsData();
+        userOptions.setPrimaryType(FREQUENCY);
+        userOptions.setPrimaryAggregation(MeasureAggregation.CASES);
+        userOptions.setSecondaryType(DURATION);
+        userOptions.setSecondaryAggregation(MeasureAggregation.MEAN);
+        userOptions.setFixedType(FREQUENCY);
+        userOptions.setFixedAggregation(MeasureAggregation.CASES);
+        userOptions.setInvertedNodesMode(false);
+        userOptions.setInvertedArcsMode(false);
+        userOptions.setMainAttributeKey(configData.getDefaultAttribute());
+        return userOptions;
+    }
+    
     public String getMainAttributeKey() {
         return this.mainAttributeKey;
     }

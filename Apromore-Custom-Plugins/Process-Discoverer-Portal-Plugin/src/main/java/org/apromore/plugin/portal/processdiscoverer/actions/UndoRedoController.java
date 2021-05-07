@@ -21,17 +21,17 @@
  */
 package org.apromore.plugin.portal.processdiscoverer.actions;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import org.apromore.apmlog.filter.rules.LogFilterRule;
+import org.apromore.plugin.portal.processdiscoverer.PDAnalyst;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
 import org.apromore.plugin.portal.processdiscoverer.actions.history.FilterAction;
 import org.apromore.plugin.portal.processdiscoverer.actions.history.FilterActionHistory;
-import org.apromore.plugin.portal.processdiscoverer.impl.apmlog.LogDataWithAPMLog;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class UndoRedoController {
 
@@ -74,9 +74,9 @@ public class UndoRedoController {
      */
     public void execute (FilterAction action) throws Exception {
         List<LogFilterRule> filterCriteria = action.getFilterCriteria();
-        LogDataWithAPMLog logData = (LogDataWithAPMLog)parent.getProcessAnalyst();
+        PDAnalyst analyst = parent.getProcessAnalyst();
         // logData.setCurrentFilterCriteria(filterCriteria); // done by the next method
-        logData.filter(filterCriteria);
+        analyst.filter(filterCriteria);
         parent.updateUI(false);
         parent.updateUndoRedoButtons(filterActionHistory.canUndo(), filterActionHistory.canRedo());
     }
