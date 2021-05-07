@@ -69,7 +69,7 @@ public class LogExportController extends AbstractController {
                         String logName = (String)event.getData();
 //                        userOptions.setActivityFilterValue(activities.getCurpos());
 //                        userOptions.setArcFilterValue(arcs.getCurpos());
-                        saveLog(analyst.getLog().getActualXLog(), logName);
+                        saveLog(analyst.getXLog(), logName);
                     }
                 }
             });

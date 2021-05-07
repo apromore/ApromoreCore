@@ -308,7 +308,7 @@ public class GraphVisController extends VisualController {
         // Align log and model
         BPMNDiagram oriDiagram = parent.getOutputData().getAbstraction().getDiagram();
         BPMNDiagram alignDiagram = parent.getOutputData().getAbstraction().getValidBPMNDiagram();
-        AnimationResult alignmentResult = createAlignment(oriDiagram, alignDiagram, parent.getProcessAnalyst().getLog().getActualXLog());
+        AnimationResult alignmentResult = createAlignment(oriDiagram, alignDiagram, parent.getProcessAnalyst().getXLog());
         
         // Prepare animation data
         AnimationContext animateContext = new AnimationContext(alignmentResult.getAnimationLogs());

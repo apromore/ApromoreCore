@@ -57,8 +57,6 @@ import org.apromore.logman.attribute.graph.MeasureRelation;
 import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.logman.attribute.log.AttributeInfo;
 import org.apromore.logman.attribute.log.AttributeLog;
-import org.apromore.logman.attribute.log.AttributeLogSummary;
-import org.apromore.logman.attribute.log.CaseInfo;
 import org.apromore.plugin.portal.processdiscoverer.data.CaseDetails;
 import org.apromore.plugin.portal.processdiscoverer.data.ConfigData;
 import org.apromore.plugin.portal.processdiscoverer.data.ContextData;
@@ -82,6 +80,7 @@ import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 /**
  * PDAnalyst acts as a process analyst who receives the context (including the logs), configuration and support services to do
  * process analysis. It encapsulates {@link ProcessDiscoverer} which provides the logic as well as <{@link LogData> which provides data.
+ * It provides the  main business logic in PD while PDController manages the application as a whole.
  * 
  * @author Bruce Nguyen
  */
@@ -235,12 +234,12 @@ public class PDAnalyst {
         return sourceLogId;
     }
     
-    public ALog getLog() {
-        return this.aLog;
-    }
-    
     public AttributeLog getAttributeLog() {
         return this.attLog;
+    }
+    
+    public XLog getXLog() {
+        return this.aLog.getActualXLog();
     }
     
     public boolean hasEmptyData() {
@@ -275,20 +274,12 @@ public class PDAnalyst {
         }
     }
     
-    public AttributeLogSummary getLogSummary() {
-        return this.attLog.getLogSummary();
-    }
-    
     public ImmutableList<AbstractAttribute> getAvailableAttributes() {
         return this.indexableAttributes;
     }
     
     public IndexableAttribute getMainAttribute() {
         return this.mainAttribute;
-    }
-    
-    public ListIterable<CaseInfo> getCaseInfoList() {
-        return this.attLog.getCaseInfoList();
     }
     
     public ListIterable<AttributeInfo> getAttributeInfoList() {
@@ -315,10 +306,6 @@ public class PDAnalyst {
     
     public APMLog getOriginalAPMLog() {
         return this.originalAPMLog;
-    }
-    
-    public APMLog getFilteredAPMLog() {
-        return this.filteredAPMLog;
     }
     
     public PLog getFilteredPLog() {
