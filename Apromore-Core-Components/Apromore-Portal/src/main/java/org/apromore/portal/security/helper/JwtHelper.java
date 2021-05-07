@@ -43,10 +43,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.security.Key;
-import java.security.KeyStore;
-import java.security.PrivateKey;
-import java.security.PublicKey;
+import java.nio.charset.StandardCharsets;
+import java.security.*;
 import java.security.cert.Certificate;
 import java.security.interfaces.RSAPublicKey;
 import java.text.DateFormat;
@@ -203,21 +201,25 @@ public class JwtHelper {
         return user;
     }
 
-    public static boolean isJwtStrVerifiable(final String signedJwtStr) {
+    public static boolean isSignedStrVerifiable(final String dataStr, final byte[] signedMsg) {
+        LOGGER.info("dataStr {}", dataStr);
+        LOGGER.info("signedMsg {}", signedMsg);
+
+        boolean verified = false;
+
         try {
-            final JWSObject jwsObject = JWSObject.parse(signedJwtStr);
-            LOGGER.info("jwsObject: {}", jwsObject);
+            final Signature signature = Signature.getInstance("SHA256withRSA");
 
             final PublicKey publicKey = SecurityUtils.getPublicKey(SecurityUtils.DEFAULT_KEY_ALIAS);
             LOGGER.info("publicKey for verification of JWT signed: {}", publicKey);
 
-            final JWSVerifier verifier = new RSASSAVerifier((RSAPublicKey) publicKey);
-
-            return jwsObject.verify(verifier);
+            signature.initVerify(publicKey);
+            signature.update(dataStr.getBytes(StandardCharsets.UTF_8));
+            verified = signature.verify(signedMsg);
         } catch (final Exception e) {
-            LOGGER.error("Exception when verifying signedJWT - returning false", e);
-
-            return false;
+            LOGGER.error("Exception in verifying signed message", e);
+        } finally {
+            return verified;
         }
     }
 
