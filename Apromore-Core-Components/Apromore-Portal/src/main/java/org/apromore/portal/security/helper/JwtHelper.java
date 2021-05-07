@@ -21,6 +21,9 @@
  */
 package org.apromore.portal.security.helper;
 
+import com.nimbusds.jose.JWSObject;
+import com.nimbusds.jose.JWSVerifier;
+import com.nimbusds.jose.crypto.RSASSAVerifier;
 import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.JWTParser;
@@ -28,9 +31,9 @@ import org.apromore.dao.model.Membership;
 import org.apromore.dao.model.User;
 import org.apromore.manager.client.ManagerService;
 import org.apromore.mapper.SearchHistoryMapper;
-import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.model.RoleType;
 import org.apromore.portal.model.UserType;
+import org.apromore.portal.util.SecurityUtils;
 import org.apromore.security.util.SecurityUtil;
 import org.apromore.service.SecurityService;
 import org.slf4j.Logger;
@@ -38,6 +41,14 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.security.Key;
+import java.security.KeyStore;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.cert.Certificate;
+import java.security.interfaces.RSAPublicKey;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -190,6 +201,24 @@ public class JwtHelper {
         }
 
         return user;
+    }
+
+    public static boolean isJwtStrVerifiable(final String signedJwtStr) {
+        try {
+            final JWSObject jwsObject = JWSObject.parse(signedJwtStr);
+            LOGGER.info("jwsObject: {}", jwsObject);
+
+            final PublicKey publicKey = SecurityUtils.getPublicKey(SecurityUtils.DEFAULT_KEY_ALIAS);
+            LOGGER.info("publicKey for verification of JWT signed: {}", publicKey);
+
+            final JWSVerifier verifier = new RSASSAVerifier((RSAPublicKey) publicKey);
+
+            return jwsObject.verify(verifier);
+        } catch (final Exception e) {
+            LOGGER.error("Exception when verifying signedJWT - returning false", e);
+
+            return false;
+        }
     }
 
     private static long calculateExpiryTime(final long createdAtEpoch, final Duration sessionDuration) {

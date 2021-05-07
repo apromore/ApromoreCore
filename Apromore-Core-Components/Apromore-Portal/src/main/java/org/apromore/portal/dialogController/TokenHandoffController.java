@@ -83,12 +83,15 @@ public class TokenHandoffController extends SelectorComposer<Window> {
             final String appAuthCookieStr = JwtHelper.readCookie(httpServletRequest, "App_Auth");
             final String signedAppAuthCookieStr =
                     JwtHelper.readCookie(httpServletRequest, "Signed_App_Auth");
-            LOGGER.debug("\n\n>>> appAuthCookieStr: {}", appAuthCookieStr);
-            LOGGER.debug("\n\n>>> signedAppAuthCookieStr: {}", signedAppAuthCookieStr);
+            LOGGER.debug(">>> appAuthCookieStr: {}", appAuthCookieStr);
+            LOGGER.debug(">>> signedAppAuthCookieStr: {}", signedAppAuthCookieStr);
+
+            final boolean jwtSignatureVerified = JwtHelper.isJwtStrVerifiable(signedAppAuthCookieStr);
+            LOGGER.info(">>> jwtSignatureVerified {}", jwtSignatureVerified);
 
             final UserType userType = JwtHelper.userFromJwt(managerService, appAuthCookieStr);
 
-            if (userType != null) {
+            if ((jwtSignatureVerified) && (userType != null)) {
                 UserSessionManager.setCurrentUser(userType);
 
                 final UserType currentUserType = UserSessionManager.getCurrentUser();
