@@ -89,6 +89,9 @@ zk.afterMount(function() {
       },
       region: function (selected) {
         params['region'] = selected;
+      },
+      year: function (selected) {
+        params['year'] = selected;
       }
     };
 

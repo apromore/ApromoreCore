@@ -25,41 +25,14 @@
 
 package org.apromore.portal.dialogController;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
-import java.util.regex.Pattern;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-
-import javax.xml.bind.JAXBException;
-import javax.xml.datatype.DatatypeFactory;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apromore.commons.item.ItemNameUtils;
 import org.apromore.plugin.portal.FileImporterPlugin;
 import org.apromore.portal.ConfigBean;
-import org.apromore.portal.common.notification.Notification;
 import org.apromore.portal.common.UserSessionManager;
-import org.apromore.portal.exception.DialogException;
-import org.apromore.portal.exception.ExceptionAllUsers;
-import org.apromore.portal.exception.ExceptionDomains;
-import org.apromore.portal.exception.ExceptionFormats;
-import org.apromore.portal.exception.ExceptionImport;
+import org.apromore.portal.common.notification.Notification;
+import org.apromore.portal.exception.*;
 import org.apromore.portal.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,12 +45,22 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.MouseEvent;
 import org.zkoss.zk.ui.event.UploadEvent;
-import org.zkoss.zul.Button;
-import org.zkoss.zul.Checkbox;
-import org.zkoss.zul.Label;
-import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.Textbox;
-import org.zkoss.zul.Window;
+import org.zkoss.zul.*;
+
+import javax.xml.bind.JAXBException;
+import javax.xml.datatype.DatatypeFactory;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 public class ImportController extends BaseController {
 
@@ -168,6 +151,11 @@ public class ImportController extends BaseController {
             supportedExtL.setValue(supportedExtS);
             supportedExtURL.setValue(supportedExtS);
 
+            uploadButton.addEventListener("onClick", new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    okButton.setDisabled(true);
+                }
+            });
             uploadButton.addEventListener("onUpload", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
                     uploadFile((UploadEvent) event);
@@ -231,6 +219,7 @@ public class ImportController extends BaseController {
             }
         }
 
+        assert extension != null;
         if(!extension.equalsIgnoreCase("zip") && !extension.equalsIgnoreCase("gz") && !extension.equalsIgnoreCase("xes") && !extension.equalsIgnoreCase("mxml")) {
             String fileType = this.mainC.getNativeTypes().get(extension);
             if (fileType == null) {
@@ -254,33 +243,14 @@ public class ImportController extends BaseController {
         int CONNECT_TIMEOUT = 10000;
         int READ_TIMEOUT = 10000;
 
-        String patternDropBox = "^https:\\/\\/www\\.dropbox\\.com.*dl=0$";
-        String patternGoogleDrive = "^https:\\/\\/drive\\.google\\.com\\/file\\/d\\/.*sharing$";
-        String patternOneDrive = "^https:\\/\\/onedrive\\.live\\.com\\/embed\\?cid.*resid.*authkey.*";
-
-        // Parse sharable link of DropBox, GoogleDrive, OneDrive to direct file download URL
-        if (Pattern.matches(patternDropBox, fileUrl)) {
-            fileUrl = fileUrl.substring(0, fileUrl.length()-1) + 1;
-        }
-        if (Pattern.matches(patternGoogleDrive, fileUrl)) {
-            String fileID;
-            int fileIDStart = fileUrl.indexOf("/d/");
-            int fileIDEnd = fileUrl.indexOf('/', fileIDStart + 3);
-            if (fileIDStart == -1) {
-                return;
-            }
-            if (fileIDEnd == -1){
-                fileID = fileUrl.substring(fileIDStart+3);
-            } else {
-                fileID = fileUrl.substring(fileIDStart+3, fileIDEnd);
-            }
-            fileUrl = "https://drive.google.com/uc?export=download&id=" + fileID;
-        }
-        if (Pattern.matches(patternOneDrive, fileUrl)) {
-            fileUrl = fileUrl.replace("embed?", "download?");
-        }
-
         try {
+            fileUrl = StringUtil.validateFileURL(fileUrl);
+
+            if ("".equals(fileUrl)) {
+                throw new ExceptionImport("URL link is empty or not correct.");
+            }
+
+
             url = new URL(fileUrl.trim());
 
             // open the connection
@@ -288,7 +258,7 @@ public class ImportController extends BaseController {
             // get and verify the header field
             String fieldValue = con.getHeaderField("Content-Disposition");
 
-            filename = getFileName(fileUrl, fieldValue);
+            filename = StringUtil.getFileName(fileUrl, fieldValue);
 
             if (filename == null) {
                 note.show("Couldn't find supported file. ");
@@ -312,11 +282,11 @@ public class ImportController extends BaseController {
             }
             InputStream targetStream = new FileInputStream(testData);
 
-	    media = new MediaImpl(testData.getName(), targetStream, StandardCharsets.UTF_8,
-		    ItemNameUtils.findExtension(filename));
+            media = new MediaImpl(testData.getName(), targetStream, StandardCharsets.UTF_8,
+                    ItemNameUtils.findExtension(filename));
             this.fileUrl.setValue(fileUrl);
 
-	    String extension = ItemNameUtils.findExtension(media.getName());
+            String extension = ItemNameUtils.findExtension(media.getName());
 
             List<FileImporterPlugin> fileImporterPlugins = (List<FileImporterPlugin>) SpringUtil.getBean(
                     "fileImporterPlugins");
@@ -338,7 +308,7 @@ public class ImportController extends BaseController {
             }
             okButton_URL.setDisabled(false);
 
-        } catch (MalformedURLException | URISyntaxException e) {
+        } catch (MalformedURLException e) {
             okButton_URL.setDisabled(true);
             throw new ExceptionImport("URL link is empty or not correct.");
         } catch (IOException | NullPointerException e) {
@@ -346,31 +316,6 @@ public class ImportController extends BaseController {
             throw new ExceptionImport("Couldn't find supported file. Please check the URL and try again. ");
         }
     }
-
-    private String getFileName(String url, String contentDisposition) throws URISyntaxException {
-        String fileName = "";
-        if (!StringUtil.isEmpty(contentDisposition)) {
-            fileName = StringUtil.contentDispositionFileName(contentDisposition);
-        }
-        if (StringUtil.isEmpty(fileName) && !StringUtil.isEmpty(contentDisposition)) {
-            fileName = contentDisposition.substring(contentDisposition.indexOf("filename=") + 9);
-        }
-        if (StringUtil.isEmpty(fileName)) {
-            fileName = url.substring(url.lastIndexOf('/') + 1);
-        }
-        if (fileName.startsWith("\"")) {
-            fileName = fileName.substring(1);
-        }
-        if (fileName.endsWith("\"")) {
-            fileName = fileName.substring(0, fileName.length() - 1);
-        }
-        if (StringUtil.isEmpty(fileName) || !StringUtil.isValidFileName(fileName)) {
-            fileName = String.valueOf(System.currentTimeMillis());
-        }
-        return fileName;
-    }
-
-
 
     void importFile(Media importedMedia) throws InterruptedException, IOException, ExceptionDomains, ExceptionAllUsers, JAXBException {
         String name = importedMedia.getName();

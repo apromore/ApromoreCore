@@ -703,7 +703,7 @@ public class PDController extends BaseController {
         return viewSettingsController.getPerspectiveName();
     }
 
-    public void setPerspective(String value) throws Exception {
+    public void setPerspective(String value, String label) throws Exception {
         if (this.mode != InteractiveMode.MODEL_MODE) return;
         if (!value.equals(userOptions.getMainAttributeKey())) {
             toolbarController.setDisabledAnimation(!value.equals(configData.getDefaultAttribute()));
@@ -711,6 +711,7 @@ public class PDController extends BaseController {
             logData.setMainAttribute(value);
             timeStatsController.updateUI(contextData);
             logStatsController.updateUI(contextData);
+            logStatsController.updatePerspectiveHeading(label);
             generateViz();
         }
     }

@@ -155,6 +155,7 @@ public class Calendar extends SelectorComposer<Window> {
 
     populateTimeZone();
     initialize();
+    win.setTitle("Custom Calendar - " + calendarModel.getName());
 
     actionBridge.addEventListener("onLoaded", new EventListener<Event>() {
       @Override
@@ -180,6 +181,10 @@ public class Calendar extends SelectorComposer<Window> {
         int startMin = (Integer) params.get("startMin");
         int endHour = (Integer) params.get("endHour");
         int endMin = (Integer) params.get("endMin");
+        if (endHour == 24 && endMin == 0) {
+          endHour = 23;
+          endMin = 59;
+        }
         Date start =
             TimeUtils.localDateAndTimeToDate(Constants.LOCAL_DATE_REF, startHour, startMin);
         Date end = TimeUtils.localDateAndTimeToDate(Constants.LOCAL_DATE_REF, endHour, endMin);
@@ -206,18 +211,29 @@ public class Calendar extends SelectorComposer<Window> {
         JSONObject params = (JSONObject) event.getData();
         int dowIndex = (Integer) params.get("dow");
         JSONArray rangeArray = (JSONArray) params.get("ranges");
-        for (Object range : rangeArray) {
+        boolean workday = (boolean) params.get("workday");
+        WorkDayModel dowItem = getDayOfWeekItem(dowIndex);
+        dowItem.setWorkingDay(workday);
+        int startHour = 0;
+        int startMin = 0;
+        int endHour = 0;
+        int endMin = 0;
+        // TO DO: WorkDayModel currently only support a single range
+        if (rangeArray.size() > 0) {
+          Object range = rangeArray.get(0);
           JSONObject item = (JSONObject) range;
-          int startHour = (Integer) item.get("startHour");
-          int startMin = (Integer) item.get("startMin");
-          int endHour = (Integer) item.get("endHour");
-          int endMin = (Integer) item.get("endMin");                    
-          WorkDayModel dowItem = getDayOfWeekItem(dowIndex);
-          // TO DO: WorkDayModel currently only support a single range
-          dowItem.setStartTime(OffsetTime.from(OffsetTime.of(LocalTime.of(startHour, startMin), ZoneOffset.UTC)));
-          dowItem.setEndTime(OffsetTime.from(OffsetTime.of(LocalTime.of(endHour, endMin), ZoneOffset.UTC)));          
-          refresh(dowItem);
-        }        
+          startHour = (Integer) item.get("startHour");
+          startMin = (Integer) item.get("startMin");
+          endHour = (Integer) item.get("endHour");
+          endMin = (Integer) item.get("endMin");
+          if (endHour == 24 && endMin == 0) {
+            endHour = 23;
+            endMin = 59;
+          }
+        }
+        dowItem.setStartTime(OffsetTime.from(OffsetTime.of(LocalTime.of(startHour, startMin), ZoneOffset.UTC)));
+        dowItem.setEndTime(OffsetTime.from(OffsetTime.of(LocalTime.of(endHour, endMin), ZoneOffset.UTC)));
+        refresh(dowItem);
         Clients.evalJavaScript("Ap.calendar.buildRow(" + dowIndex + ")");
       }
     });
@@ -340,6 +356,10 @@ public class Calendar extends SelectorComposer<Window> {
 
   public void updateRange(int dowIndex, int index, int startHour, int startMin, int endHour,
       int endMin) {
+    if (endHour == 23 && endMin == 59) {
+      endHour = 24;
+      endMin = 0;
+    }
     String cmd = String.format("Ap.calendar.updateRange(%d, %d, %d, %d, %d, %d)", dowIndex, index,
         startHour, startMin, endHour, endMin);
     Clients.evalJavaScript(cmd);
@@ -367,16 +387,20 @@ public class Calendar extends SelectorComposer<Window> {
     Clients.evalJavaScript("(function () { if (Ap.calendar && Ap.calendar.rebuild) { Ap.calendar.rebuild(); } })()");
   }
 
-  public void rebuildRow(int dowIndex, String json) {
+  public void rebuildRow(int dowIndex, String json, boolean workday) {
     Clients.evalJavaScript("(function () { if (Ap.calendar && Ap.calendar.updateRanges) { Ap.calendar.updateRanges(" +
             Integer.toString(dowIndex) + "," + json +
-            "); } })()");
+            "," + (workday ? "true" : "false") + "); } })()");
   }
 
-  public void syncRows() {
+  /**
+   * Sync server model to client side
+   */
+  public void syncRows
+  () {
     for (int i = 1; i < 8; i++) {
       String json = toJSON(i);
-      rebuildRow(i, json);
+      rebuildRow(i, json, dayOfWeekListModel.getElementAt(i - 1).isWorkingDay());
     }
   }
 
@@ -410,38 +434,41 @@ public class Calendar extends SelectorComposer<Window> {
     DayOfWeek dow = DayOfWeek.of(dowIndex);
     WorkDayModel dowItem = (WorkDayModel) dayOfWeekListbox.getModel().getElementAt(dowIndex-1);    
     json += "{";
-    
       json += "startHour: " + Integer.toString(dowItem.getStartTime().getHour()) + ",";
       json += "startMin: " + Integer.toString(dowItem.getStartTime().getMinute()) + ",";
-      json += "endHour: " + Integer.toString(dowItem.getEndTime().getHour()) + ",";
-      json += "endMin: " + Integer.toString(dowItem.getEndTime().getMinute());
-    
+      Integer endHour = dowItem.getEndTime().getHour();
+      Integer endMin = dowItem.getEndTime().getMinute();
+      if (endHour == 23 && endMin == 59) {
+        endHour = 24;
+        endMin = 0;
+      }
+      json += "endHour: " + Integer.toString(endHour) + ",";
+      json += "endMin: " + Integer.toString(endMin);
     json += "}";
     json += "]";
     return json;
   }
 
   private void toModels() {
-
-
-    if(calendarExists)
-    {
-    	try {
-    		
-    		
-    		calendarService.updateZoneInfo(calendarModel.getId(), 
-					((Zone)zoneCombobox.getModel().getElementAt(zoneCombobox.getSelectedIndex())).getId());
-    		
-    		calendarService.updateWorkDays(calendarModel.getId(), 
-					(List<WorkDayModel>) dayOfWeekListbox.getModel());
-    		
-			calendarService.updateHoliday(calendarModel.getId(), 
-					(List<HolidayModel>) holidayListbox.getModel());
-		} catch (CalendarNotExistsException e) {
-//			 post event to notificaton
-		}
+    Long calendarId = calendarModel.getId();
+    if (calendarExists) {
+      try {
+    	calendarService.updateZoneInfo(
+    	  calendarId,
+		  ((Zone)zoneCombobox.getModel().getElementAt(zoneCombobox.getSelectedIndex())).getId()
+        );
+    	calendarService.updateWorkDays(
+    	  calendarId,
+		  (List<WorkDayModel>) dayOfWeekListbox.getModel()
+        );
+		calendarService.updateHoliday(
+		  calendarId,
+		  (List<HolidayModel>) holidayListbox.getModel()
+        );
+      } catch (CalendarNotExistsException e) {
+          // Post event to notificaton
+      }
     }
-
   }
 
   private void mock() {

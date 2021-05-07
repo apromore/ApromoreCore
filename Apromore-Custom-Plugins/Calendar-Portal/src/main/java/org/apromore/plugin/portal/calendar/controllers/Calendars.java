@@ -23,11 +23,15 @@ package org.apromore.plugin.portal.calendar.controllers;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apromore.calendar.exception.CalendarAlreadyExistsException;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.calendar.service.CalendarService;
+import org.apromore.dao.model.Group;
 import org.apromore.plugin.portal.calendar.CalendarItemRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +39,7 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
+import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
@@ -71,19 +76,19 @@ public class Calendars extends SelectorComposer<Window> {
 
     @Override
     public void doAfterCompose(Window win) throws Exception {
-	super.doAfterCompose(win);
-	initialize();
+        super.doAfterCompose(win);
+        initialize();
     }
 
     public void initialize() {
 
-	Integer logId = (Integer) Executions.getCurrent().getArg().get("logId");
-	calendarEventQueue = EventQueues.lookup(CalendarService.EVENT_TOPIC,
-		false);
+        Integer logId = (Integer) Executions.getCurrent().getArg().get("logId");
+        calendarEventQueue = EventQueues.lookup(CalendarService.EVENT_TOPIC,
+            false);
 
-	CalendarItemRenderer itemRenderer = new CalendarItemRenderer(calendarService);
-	calendarListbox.setItemRenderer(itemRenderer);
-	calendarListModel = new ListModelList<CalendarModel>();
+        CalendarItemRenderer itemRenderer = new CalendarItemRenderer(calendarService);
+        calendarListbox.setItemRenderer(itemRenderer);
+        calendarListModel = new ListModelList<CalendarModel>();
         calendarListModel.setMultiple(false);
         populateCalendarList();
 
@@ -110,25 +115,33 @@ public class Calendars extends SelectorComposer<Window> {
 
     @Listen("onClick = #selectBtn")
     public void onClickPublishBtn() {
-	calendarEventQueue.publish(
-		new Event("onCalendarPublish", null,
-			((CalendarModel) calendarListModel.getSelection().iterator().next()).getId()));
-	getSelf().detach();
+        calendarEventQueue.publish(
+            new Event("onCalendarPublish", null,
+                ((CalendarModel) calendarListModel.getSelection().iterator().next()).getId()));
+            getSelf().detach();
     }
 
     @Listen("onClick = #addNewCalendarBtn")
     public void onClickAddNewCalendar() {
-
-	CalendarModel model;
-	try {
-	    String calendarName = "Generic Calender 9 to 5 created on" + LocalDateTime.now();
-	    model = calendarService.createBusinessCalendar(calendarName, true, ZoneId.systemDefault().toString());
+        CalendarModel model;
+        try {
+            String calendarName = "Generic Calender 9 to 5 created on" + LocalDateTime.now();
+            model = calendarService.createBusinessCalendar(calendarName, true, ZoneId.systemDefault().toString());
             populateCalendarList();
-
-	} catch (CalendarAlreadyExistsException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	}
+            Long calendarId = model.getId();
+            try {
+                Map arg = new HashMap<>();
+                arg.put("calendarId", calendarId);
+                Window window = (Window) Executions.getCurrent().createComponents("/calendar/zul/calendar.zul", null, arg);
+                window.doModal();
+            } catch(Exception e) {
+                LOGGER.error("Unable to create custom calendar dialog", e);
+                // Notification.error("Unable to create custom calendar dialog");
+            }
+        } catch (CalendarAlreadyExistsException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
     }
 

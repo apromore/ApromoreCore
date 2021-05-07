@@ -68,15 +68,17 @@ zk.afterMount(function() {
     newRanges.forEach((range, index) => { range.index = index; });
     dayOfWeek[dow].ranges = newRanges;
     updateRow(dow);
-    sendCalendarEvent('onUpdateRanges', { dow, ranges: newRanges });
+    sendCalendarEvent('onUpdateRanges', { dow, ranges: newRanges, workday: dayOfWeek[dow].workday });
   };
 
-  Ap.calendar.updateRanges = function (dow, newRanges) {
+  Ap.calendar.updateRanges = function (dow, newRanges, workday) {
     if (typeof newRanges === 'string') {
       newRanges = JSON.parse(newRanges);
     }
     newRanges.forEach((range, index) => { range.index = index; });
     dayOfWeek[dow].ranges = newRanges;
+    dayOfWeek[dow].workday = workday;
+    console.log(dow, newRanges, workday);
     updateRow(dow);
   };
 
@@ -86,18 +88,29 @@ zk.afterMount(function() {
     ranges.forEach((range, index) => { range.index = index; });
     dayOfWeek[dow].ranges = ranges;
     updateRow(dow);
-    sendCalendarEvent('onUpdateRanges', { dow, ranges: ranges });
+    sendCalendarEvent('onUpdateRanges', { dow, ranges: ranges, workday: dayOfWeek[dow].workday });
   };
 
   const TEMPLATES = {
-    '9to5': {
+    '5d_9to5': {
+      workDays: [1, 2, 3, 4, 5],
       index: 0,
       startHour: 9,
       startMin: 0,
       endHour: 17,
       endMin: 0,
     },
-    '24h': {
+    '5d_24h': {
+      workDays: [1, 2, 3, 4, 5],
+      index: 0,
+      startHour: 0,
+      startMin: 0,
+      endHour: 24,
+      endMin: 0,
+    },
+    '7d_24h': {
+      workDays: [1, 2, 3, 4, 5, 6, 7],
+      endDay: 7,
       index: 0,
       startHour: 0,
       startMin: 0,
@@ -110,14 +123,18 @@ zk.afterMount(function() {
     let template = TEMPLATES[name]
 
     if (template) {
-      for (let i = 1; i < 6; i++) {
-        dayOfWeek[i].ranges = [Object.assign({}, template)];
-      }
-      for (let i = 6; i < 8; i++) {
-        dayOfWeek[i].workday = false;
+      for (let dow = 1; dow <= 7; dow++) {
+        if (template.workDays.indexOf(dow) !== -1) {
+            dayOfWeek[dow].ranges = [Object.assign({}, template)];
+            dayOfWeek[dow].workday = true;
+        } else {
+            dayOfWeek[dow].ranges = [];
+            dayOfWeek[dow].workday = false;
+        }
+        sendCalendarEvent('onUpdateRanges', { dow, ranges: dayOfWeek[dow].ranges, workday: dayOfWeek[dow].workday });
+        console.log(dow, dayOfWeek[dow].ranges, dayOfWeek[dow].workday);
       }
     }
-    reset();
   };
 
   Ap.calendar.toggleWorkday = function(dow) {
@@ -352,13 +369,17 @@ zk.afterMount(function() {
   function updateRow(dow) {
     clearTippies(dow);
     const wrapper = $(`.ap-period-picker[data-dow='${dow}']`);
+    const icon = $(`.ap-calendar-row[data-dow='${dow}'] .ap-icon`);
     let ranges = dayOfWeek[dow].ranges;
     let workday = dayOfWeek[dow].workday;
+    console.log(">>>", dayOfWeek[dow]);
     if (!workday) {
       ranges = dayOfWeek[dow].ranges = [];
-      wrapper.addClass('offday');
+      wrapper.removeClass('workday').addClass('offday');
+      icon.removeClass('ap-icon-workday').addClass('ap-icon-holiday');
     } else {
-      wrapper.removeClass('offday');
+      wrapper.removeClass('offday').addClass('workday');
+      icon.removeClass('ap-icon-holiday').addClass('ap-icon-workday');
     }
     wrapper.show();
     selectCells(dow, 0, 0, 23, 30, false);
@@ -381,6 +402,7 @@ zk.afterMount(function() {
 
     Object.keys(dayOfWeek).forEach(
         function(dow) {
+          dow = parseInt(dow);
           updateRow(dow);
         }
     );
@@ -452,7 +474,7 @@ zk.afterMount(function() {
               selectCells(currentDOW, startHour, startMin, endHour, endMin, !startSelected);
               let ranges = collectRanges(currentDOW);
               // send changes to the backend
-              sendCalendarEvent('onUpdateRanges', { dow: currentDOW, ranges: ranges });
+              sendCalendarEvent('onUpdateRanges', { dow: currentDOW, ranges: ranges, workday: dayOfWeek[currentDOW].workday });
               currentDOW = null;
               startHour = null;
               currentHour = null;

@@ -20,6 +20,33 @@
  * #L%
  */
 
+.ap-calendars-listbox .z-listitem-radio {
+    width: 16px;
+    height: 16px;
+    opacity: 0;
+    border: none !important;
+    background-color: transparent !important;
+    margin-right: 6px !important;
+}
+
+.ap-calendars-listbox .ap-icon {
+    display: inline-block;
+}
+
+.ap-calendars-listbox .z-listitem-selected .z-listitem-radio {
+    opacity: 1;
+    background-image: url('/themes/ap/common/img/icons/check-circle.svg');
+    background-size: auto 16px !important;
+}
+
+.ap-calendars-listbox .z-listitem-radio .z-listitem-icon {
+    visibility: hidden;
+}
+
+.ap-calendar-log-detail > span {
+    vertical-align: middle;
+}
+
 .ap-period-picker-wrapper {
     padding: 0 !important;
     margin: 0 !important;
@@ -91,11 +118,11 @@
     filter: none !important;
 }
 
-.ap-calendar-win .z-listitem.workday .ap-icon-workday {
+.ap-calendar-win .ap-icon-workday {
     filter: var(--ap-filter-ico-green);
 }
 
-.ap-calendar-win .z-listitem.offday .ap-icon-holiday {
+.ap-calendar-win .ap-icon-holiday {
     filter: var(--ap-filter-ico-maroon);
 }
 
@@ -201,7 +228,7 @@
 }
 
 .ap-holidays .z-listitem:hover > .z-listcell,
-.ap-calendars-win .z-listitem:not([class^="selected"]):hover > .z-listcell {
+.ap-calendar    -win .z-listitem:not([class^="selected"]):hover > .z-listcell {
     background: transparent !important;
 }
 

@@ -125,7 +125,7 @@
                         'ap-pd-la-timeline',
                         'ap-pd-la-speed-control',
                         'ap-la-progress',
-                        '',
+                        'ap-la-info-tip',
                         'ap-pd-la-clock',
                         'ap-pd-la-buttons',
                         'ap-mc-icon-play',

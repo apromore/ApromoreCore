@@ -275,4 +275,9 @@ public class LogStatsControllerWithAPMLog extends LogStatsController {
     public void setDisabled(boolean disabled) {
         this.disabled = disabled;
     }
+
+    @Override
+    public void updatePerspectiveHeading(String perspective) {
+        lblActivityHeading.setValue(perspective);
+    }
 }
