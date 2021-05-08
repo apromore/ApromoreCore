@@ -35,12 +35,16 @@
           <hbox sclass="ap-window-header-actions" hflex="1" align="center" pack="start" spacing="0"
                 style="padding: 8px;">
             <button id="template9To5Btn"
-                    ca:onClick="Ap.calendar.applyTemplate('9to5')">
+                    ca:onClick="Ap.calendar.applyTemplate('5d_9to5')">
               9AM-5PM 5 Business Days
             </button>
             <button id="template24hBtn"
-                    ca:onClick="Ap.calendar.applyTemplate('24h')">
+                    ca:onClick="Ap.calendar.applyTemplate('5d_24h')">
               24hr 5 Business Days
+            </button>
+            <button id="template24x7Btn"
+                    ca:onClick="Ap.calendar.applyTemplate('7d_24h')">
+              24hr 7 Days
             </button>
             <label style="padding-right: 5px">Time zone</label>
             <combobox id="zoneCombobox" placeholder="Select a time zone" width="270px">
@@ -56,7 +60,7 @@
               <listheader align="left" label="" hflex="1" />
             </listhead>
             <template name="model">
-              <listitem sclass="${each.workingDay ? 'workday' : 'offday'}">
+              <listitem sclass="ap-calendar-row ${each.workingDay ? 'workday' : 'offday'}" ca:data-dow="${forEachStatus.index + 1}">
                 <listcell>
                   <button sclass="ap-icon ${each.workingDay ? 'ap-icon-workday' : 'ap-icon-holiday'}"
                           style="display: inline-block"

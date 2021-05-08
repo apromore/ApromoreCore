@@ -37,13 +37,9 @@ Ap.uploadFileSelected = function (evt) {
 
         if (file.size > maxUploadSize) {
             Ap.common.notify('File size exceeds the allowable limit', 'error');
-            setTimeout(function () {
-                zk.$("$okButtonImport").setDisabled(true);
-            }, 200); // need some delay to catch up with server-side update
             zAu.send(new zk.Event(zk.Widget.$('$uploadButton'), 'onSizeCheck', 1));
             return;
         } else {
-            zk.$("$okButtonImport").setDisabled(false);
             zAu.send(new zk.Event(zk.Widget.$('$uploadButton'), 'onSizeCheck', 0));
         }
         if (!file || !file.name.endsWith('csv')) {
@@ -64,8 +60,10 @@ Ap.uploadBtnClick = function () {
     const CHANGE = 'change';
     let target = $('.ap-importer-chooser input[type="file"]')[0];
 
+    // ensure handler is called
     target.removeEventListener(CHANGE, Ap.uploadFileSelected);
     target.addEventListener(CHANGE, Ap.uploadFileSelected);
+    zk.$('$okButtonImport').setDisabled(true);
 };
 
 Ap.encodingDetectSeed = -1;
