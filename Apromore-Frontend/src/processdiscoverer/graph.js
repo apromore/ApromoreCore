@@ -317,9 +317,10 @@ PDp.init = function() {
     cy.on('mouseover', 'node', function (event) {
         let node = event.target;
         let name = node.data(NAME_PROP);
-        if (name) {
+        let id = node.data('id');
+        if (id) {
             if (activityToAttributeMap) { // more detail tooltip for trace mode
-                let attributes = activityToAttributeMap[name];
+                let attributes = activityToAttributeMap[id];
                 if (attributes && Object.keys(attributes).length) {
                     currentNodeTooltip = pd.makeTippy(node, tablize(attributes, 'ap-pd-case-activity-attrs'));
                 } else {

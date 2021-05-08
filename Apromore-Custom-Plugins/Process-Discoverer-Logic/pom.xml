@@ -33,7 +33,8 @@
                         </Import-Package>
                         <Export-Package>
                             org.apromore.processdiscoverer,
-                            org.apromore.processdiscoverer.layout
+                            org.apromore.processdiscoverer.layout,
+                            org.apromore.processdiscoverer.bpmn
                         </Export-Package>
                     </instructions>
                 </configuration>
