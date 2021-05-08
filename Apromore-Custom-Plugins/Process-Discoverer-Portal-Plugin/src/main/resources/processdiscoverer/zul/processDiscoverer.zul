@@ -88,20 +88,20 @@
             
             <!-- Graph abstraction settings -->
             <div hflex="2"></div>
-            <graphSettings sclass="ap-pd-drawer-box" hflex="75" />
+            <graphSettings sclass="ap-pd-drawer-box" hflex="61" />
             <div hflex="2"></div>
             <div sclass="ap-panel-sep" vflex="1" hflex="1">
               <n:div></n:div>
             </div>
             
             <!-- Log stats -->
-            <logStats sclass="ap-pd-drawer-box" hflex="64" />
+            <logStats sclass="ap-pd-drawer-box" hflex="77" />
             <div sclass="ap-panel-sep" vflex="1" hflex="1">
               <n:div></n:div>
             </div>
             
             <!-- Time stats -->
-            <timeStats sclass="ap-pd-drawer-box" hflex="43" />
+            <timeStats sclass="ap-pd-drawer-box" hflex="45" />
           </hlayout>
         </div>
       </div>

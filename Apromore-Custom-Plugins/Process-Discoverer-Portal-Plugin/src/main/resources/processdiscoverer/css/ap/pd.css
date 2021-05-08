@@ -910,8 +910,8 @@ div.ap-pd-drawer-splitter:hover {
 }
 
 .ap-pd-logstats-header span {
-    max-width: 90px;
-    width: 90px;
+    max-width: 105px;
+    width: 105px;
     white-space: nowrap;
     overflow: visible;
     text-overflow: ellipsis;
