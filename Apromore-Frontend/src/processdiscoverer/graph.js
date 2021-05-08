@@ -427,16 +427,21 @@ PDp.loadTrace = function(json) {
     });
 }
 
+const getViewportCenter = (extent) => {
+    let { x1, x2, y1, y2 } = extent;
+    let x = (x1 + x2) / 2;
+    let y = (y1 + y2) / 2;
+    return { x, y };
+}
+
 PDp.zoomIn = function() {
     let cy = this._private.cy;
-    cy.zoom(cy.zoom() + 0.1);
-    cy.center();
+    cy.zoom({ level: cy.zoom() + 0.1, position: getViewportCenter(cy.extent()) });
 }
 
 PDp.zoomOut = function() {
     let cy = this._private.cy;
-    cy.zoom(cy.zoom() - 0.1);
-    cy.center();
+    cy.zoom({ level: cy.zoom() - 0.1, position: getViewportCenter(cy.extent()) });
 }
 
 PDp.fit = function(layoutType) {
