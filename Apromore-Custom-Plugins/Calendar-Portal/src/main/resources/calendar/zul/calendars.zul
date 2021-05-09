@@ -34,8 +34,8 @@
     <vbox id="calendarsWrapper" hflex="1" vflex="1" spacing="0">
     <hbox sclass="ap-window-header-actions" hflex="1" align="start" pack="start" spacing="0"
             style="padding: 8px;">
-       <div style="padding: 8px 8px 0 8px;" vflex="min">
-            <div sclass="ap-share-detail">
+       <div style="margin-bottom: 8px;" vflex="min">
+            <div sclass="ap-calendar-log-detail">
                 <span id="selectedIconLog" sclass="ap-icon ap-icon-log"/>   
                 <label id="selectedName">${arg.artifactName}</label>             
             </div>            
@@ -44,13 +44,13 @@
       <hbox sclass="ap-window-header-actions" hflex="1" align="start" pack="start" spacing="0"
             style="padding: 8px;">
         <button id="addNewCalendarBtn" iconSclass="z-icon-plus-circle">
-          Add New Calendar
+          Add new calendar
         </button>
-        <button id="selectBtn" iconSclass="z-icon-check-circle">
-          Select Calendar
+        <button id="selectBtn" iconSclass="z-icon-check-circle" tooltiptext="Apply calendar to the current log">
+          Apply calendar to the log
         </button>
       </hbox>
-      <listbox checkmark="true" multiple="false" id="calendarListbox" vflex="1" hflex="1" nonselectableTags="*">
+      <listbox checkmark="true" multiple="false" sclass="ap-calendars-listbox" id="calendarListbox" vflex="1" hflex="1" nonselectableTags="input">
         <listhead>
           <listheader align="left" label="Name" hflex="1" />
           <listheader align="left" label="Created on" width="120px" />

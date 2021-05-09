@@ -171,7 +171,7 @@
         <h:span class="ap-action-sep"></h:span>
         <button id="share" sclass="ap-icon ap-icon-share" ca:data-t="share" tooltiptext="Share file or folder"/>
       </div>
-      <div hflex="1" align="right">
+      <div hflex="1" align="right" id="rightToolbar" sclass="ap-pd-toolbar-right">
         <!-- Exact single search -->
         <!--
           <n:span>Search node</n:span>

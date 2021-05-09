@@ -188,6 +188,10 @@
   padding-left: 10px;
 }
 
+.ap-portal-left-section .z-borderlayout-icon.z-icon-angle-double-left {
+    top: 4px;
+}
+
 .ap-portal-right-section .z-tab-content li {
   padding-bottom: 0 !important;
 }

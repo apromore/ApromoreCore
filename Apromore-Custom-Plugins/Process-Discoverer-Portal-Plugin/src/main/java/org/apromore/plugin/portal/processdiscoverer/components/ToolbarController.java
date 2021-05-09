@@ -29,6 +29,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
 
@@ -52,6 +53,7 @@ public class ToolbarController extends AbstractController {
     
     private Textbox searchText;
     private Button shortcutButton;
+    private Div rightToolbar;
     
     private UserOptionsData userOptions;
     
@@ -84,6 +86,7 @@ public class ToolbarController extends AbstractController {
 
         searchText = (Textbox) toolbar.getFellow("searchText");
         shortcutButton = (Button) toolbar.getFellow("shortcutButton");
+        rightToolbar = (Div) toolbar.getFellow("rightToolbar");
     }
     
     @Override
@@ -164,6 +167,7 @@ public class ToolbarController extends AbstractController {
         filterClear.setDisabled(disabled || parent.getLogData().isCurrentFilterCriteriaEmpty());
         searchText.setDisabled(disabled);
         shortcutButton.setDisabled(disabled);
+        rightToolbar.setClientDataAttribute("disabled", disabled ? "on" : "off" );
     }
 
     public void setDisabledAnimation(boolean disabled) {
@@ -172,6 +176,7 @@ public class ToolbarController extends AbstractController {
 
     public void toogleAnimateBtn(boolean state) {
         parent.toggleComponentSclass(animate, state, "ap-btn-anim-off", "ap-btn-anim-on");
+        animate.setTooltiptext(state ? "Stop animation" : "Animate");
     }
 
     public void setDisabledFilterClear(boolean disabled) {
