@@ -22,10 +22,10 @@
 package org.apromore.plugin.portal.processdiscoverer.impl.factory;
 
 import org.apromore.plugin.portal.processdiscoverer.PDController;
-import org.apromore.plugin.portal.processdiscoverer.actions.AnimationController;
-import org.apromore.plugin.portal.processdiscoverer.actions.BPMNExportController;
-import org.apromore.plugin.portal.processdiscoverer.actions.LogExportController;
-import org.apromore.plugin.portal.processdiscoverer.actions.LogFilterController;
+import org.apromore.plugin.portal.processdiscoverer.actionlisteners.AnimationController;
+import org.apromore.plugin.portal.processdiscoverer.actionlisteners.BPMNExportController;
+import org.apromore.plugin.portal.processdiscoverer.actionlisteners.LogExportController;
+import org.apromore.plugin.portal.processdiscoverer.actionlisteners.LogFilterController;
 import org.apromore.plugin.portal.processdiscoverer.actions.UndoRedoController;
 import org.apromore.plugin.portal.processdiscoverer.components.CaseDetailsController;
 import org.apromore.plugin.portal.processdiscoverer.components.GraphSettingsController;

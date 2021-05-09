@@ -24,10 +24,13 @@ package org.apromore.plugin.portal.processdiscoverer.components;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apromore.plugin.portal.processdiscoverer.PDController;
+import org.apromore.plugin.portal.processdiscoverer.actions.FilterAction;
 import org.apromore.plugin.portal.processdiscoverer.vis.InvalidOutputException;
 import org.apromore.processdiscoverer.Abstraction;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
@@ -79,6 +82,8 @@ public class GraphVisController extends VisualController {
     
     private Movie animationMovie;
     
+    private Map<String, FilterAction> filterActions = new HashMap<>();
+    
     public GraphVisController(PDController controller) {
         super(controller);
     }
@@ -87,6 +92,10 @@ public class GraphVisController extends VisualController {
     public void initializeControls(Object data) {
         if (this.parent == null) return;
         vizBridge = parent.getFellow("vizBridge");
+    }
+    
+    public void setActions(Map<String, FilterAction> filterActions) {
+        this.filterActions = filterActions;
     }
     
     private void showEmptyLogMessageBox() {
@@ -98,9 +107,18 @@ public class GraphVisController extends VisualController {
 
     @Override
     public void initializeEventListeners(Object data) {
-        vizBridge.addEventListener("onNodeRemovedTrace", new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
+        filterActions.entrySet().forEach(entry -> {
+            FilterAction action = entry.getValue();
+            vizBridge.addEventListener(entry.getKey(), event -> {
+               action.setExecutionParams(parent.getUserOptions().getMainAttributeKey(), event.getData().toString());
+               parent.executeAction(action);
+            });
+        });
+        
+        
+        ///// BELOW WILL BE REMOVED
+        
+        vizBridge.addEventListener("onNodeRemovedTrace", event -> {
                 //filterForNodeEvent(event, Action.REMOVE, Level.TRACE, Containment.CONTAIN_ANY);
                 if (parent.getProcessAnalyst().filter_RemoveTracesAnyValueOfEventAttribute(event.getData().toString(),
                         parent.getUserOptions().getMainAttributeKey())) {
@@ -110,8 +128,8 @@ public class GraphVisController extends VisualController {
                 else {
                     showEmptyLogMessageBox();
                 }
-            }
-        });
+            });
+        
         vizBridge.addEventListener("onNodeRetainedTrace", new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
@@ -126,6 +144,7 @@ public class GraphVisController extends VisualController {
                 }
             }
         });
+        
         vizBridge.addEventListener("onNodeRemovedEvent", new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {

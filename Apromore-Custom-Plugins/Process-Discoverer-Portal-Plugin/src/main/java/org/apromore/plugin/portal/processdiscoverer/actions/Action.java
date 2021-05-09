@@ -22,28 +22,8 @@
 
 package org.apromore.plugin.portal.processdiscoverer.actions;
 
-import org.apromore.plugin.portal.processdiscoverer.InteractiveMode;
-import org.apromore.plugin.portal.processdiscoverer.PDController;
-import org.apromore.plugin.portal.processdiscoverer.components.AbstractController;
-import org.zkoss.zk.ui.event.Event;
 
-public class AnimationController extends AbstractController {
-    public AnimationController(PDController controller) {
-        super(controller);
-    }
-    
-    @Override
-    public void onEvent(Event event) throws Exception {
-        if (!parent.prepareCriticalServices()) {
-            return;
-        }
-        
-        // Toggle between model and animation views
-        if (parent.getInteractiveMode() == InteractiveMode.MODEL_MODE) {
-            parent.switchToAnimationView();
-        }
-        else {
-            parent.switchToModelView();
-        }
-    }
+public interface Action {
+    boolean execute();
+    void undo();
 }

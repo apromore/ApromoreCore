@@ -20,7 +20,7 @@
  * #L%
  */
 
-package org.apromore.plugin.portal.processdiscoverer.actions;
+package org.apromore.plugin.portal.processdiscoverer.actionlisteners;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

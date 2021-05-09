@@ -39,10 +39,12 @@ import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.plugin.portal.logfilter.generic.LogFilterPlugin;
-import org.apromore.plugin.portal.processdiscoverer.actions.AnimationController;
-import org.apromore.plugin.portal.processdiscoverer.actions.BPMNExportController;
-import org.apromore.plugin.portal.processdiscoverer.actions.LogExportController;
-import org.apromore.plugin.portal.processdiscoverer.actions.LogFilterController;
+import org.apromore.plugin.portal.processdiscoverer.actionlisteners.AnimationController;
+import org.apromore.plugin.portal.processdiscoverer.actionlisteners.BPMNExportController;
+import org.apromore.plugin.portal.processdiscoverer.actionlisteners.LogExportController;
+import org.apromore.plugin.portal.processdiscoverer.actionlisteners.LogFilterController;
+import org.apromore.plugin.portal.processdiscoverer.actions.Action;
+import org.apromore.plugin.portal.processdiscoverer.actions.ActionHistory;
 import org.apromore.plugin.portal.processdiscoverer.actions.UndoRedoController;
 import org.apromore.plugin.portal.processdiscoverer.components.CaseDetailsController;
 import org.apromore.plugin.portal.processdiscoverer.components.GraphSettingsController;
@@ -108,6 +110,7 @@ public class PDController extends BaseController {
     //////////////////// THE MAIN PD Business Analyst //////////////////////////
     
     private PDAnalyst processAnalyst;
+    private ActionHistory actionHistory = new ActionHistory();
 
     //////////////////// UI COMPONENTS ///////////////////////////////////
 
@@ -449,17 +452,28 @@ public class PDController extends BaseController {
     public void updateUndoRedoButtons(boolean undoState, boolean redoState) {
         toolbarController.updateUndoRedoButtons(undoState, redoState);
     }
-
-    public void addAction(String actionName) {
-        undoRedoController.add(actionName);
+    
+    public void executeAction(Action action) {
+        if (action.execute()) {
+            actionHistory.undoPush(action);
+        }
     }
 
     public void undo() {
-        undoRedoController.undo();
+        Action action = actionHistory.undoPop();
+        if (action != null) {
+            action.undo();
+            actionHistory.redoPush(action);
+        }
     }
 
     public void redo() {
-        undoRedoController.redo();
+        Action action = actionHistory.redoPop();
+        if (action != null) {
+            if (action.execute()) {
+                actionHistory.undoPush(action);
+            }
+        }
     }
 
     /**

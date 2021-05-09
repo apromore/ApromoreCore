@@ -28,8 +28,6 @@ import java.util.stream.Collectors;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.plugin.portal.processdiscoverer.PDAnalyst;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
-import org.apromore.plugin.portal.processdiscoverer.actions.history.FilterAction;
-import org.apromore.plugin.portal.processdiscoverer.actions.history.FilterActionHistory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -19,7 +19,7 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.plugin.portal.processdiscoverer.actions.history;
+package org.apromore.plugin.portal.processdiscoverer.actions;
 
 import java.util.Stack;
 
@@ -31,6 +31,12 @@ public class ActionHistory {
     private Stack<Action> redoStack;
     private Action initialAction;
 
+    public ActionHistory() {
+        undoStack = new Stack<Action>();
+        redoStack = new Stack<Action>();
+        clear();
+    }
+    
     public ActionHistory(Action initialAction) {
         undoStack = new Stack<Action>();
         redoStack = new Stack<Action>();
@@ -52,11 +58,23 @@ public class ActionHistory {
         redoStack.clear();
     }
 
-    public void add(Action action) {
+    // push/pop is for undo
+    public void undoPush(Action action) {
         undoStack.push(action);
-        redoStack.clear();
+    }
+    
+    public Action undoPop() {
+        return undoStack.pop();
     }
 
+    public void redoPush(Action action) {
+        redoStack.push(action);
+    }
+    
+    public Action redoPop() {
+        return redoStack.pop();
+    }
+    
     public Action undo() {
         if (!canUndo()) {
             return null;

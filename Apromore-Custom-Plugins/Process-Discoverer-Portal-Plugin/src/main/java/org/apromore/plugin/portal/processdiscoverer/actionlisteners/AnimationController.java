@@ -20,39 +20,30 @@
  * #L%
  */
 
-package org.apromore.plugin.portal.processdiscoverer.actions;
+package org.apromore.plugin.portal.processdiscoverer.actionlisteners;
 
-import org.apromore.plugin.portal.logfilter.generic.LogFilterOutputResult;
-import org.apromore.plugin.portal.logfilter.generic.LogFilterResultListener;
+import org.apromore.plugin.portal.processdiscoverer.InteractiveMode;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
 import org.apromore.plugin.portal.processdiscoverer.components.AbstractController;
 import org.zkoss.zk.ui.event.Event;
 
-/**
- * This class allows to filter the log via the LogFilter window UI.
- * Note that this is a different way of filtering logs by mouse/keyboard shortcuts
- * which is managed directly by ProcessDiscovererController
- * 
- * @author Bruce Nguyen
- *
- */
-public class LogFilterController extends AbstractController implements LogFilterResultListener {
-    public LogFilterController(PDController controller) {
+public class AnimationController extends AbstractController {
+    public AnimationController(PDController controller) {
         super(controller);
     }
-
+    
     @Override
-    // Open LogFilter window
     public void onEvent(Event event) throws Exception {
-        throw new Exception("This class has been replaced with LogFilterControllerWithAPMLog");
+        if (!parent.prepareCriticalServices()) {
+            return;
+        }
+        
+        // Toggle between model and animation views
+        if (parent.getInteractiveMode() == InteractiveMode.MODEL_MODE) {
+            parent.switchToAnimationView();
+        }
+        else {
+            parent.switchToModelView();
+        }
     }
-
-    @Override
-    public void onPluginExecutionFinished(LogFilterOutputResult outputParams) throws Exception {
-        throw new Exception("This class has been replaced with LogFilterControllerWithAPMLog");
-    }
-
-    public void subscribeFilterResult() {}
-
-    public void clearFilter() throws Exception {}
 }
