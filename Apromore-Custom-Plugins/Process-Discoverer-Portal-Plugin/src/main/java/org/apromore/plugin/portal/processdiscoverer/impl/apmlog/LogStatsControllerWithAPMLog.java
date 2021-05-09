@@ -32,6 +32,7 @@ import org.apromore.plugin.portal.processdiscoverer.components.LogStatsControlle
 import org.apromore.plugin.portal.processdiscoverer.data.InvalidDataException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zkoss.json.JSONObject;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -175,40 +176,29 @@ public class LogStatsControllerWithAPMLog extends LogStatsController {
                 parent.openLogFilter(new Event("", null, "EventTabAttribute"));
             }
         });
-        
-        btnActivityHeading.addEventListener("onClick", new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                if (disabled) return;
-                parent.openLogFilter(new Event("", null, "CaseTabAttribute"));
-            }
-        });
-        
-        lblActivityHeading.addEventListener("onClick", new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                if (disabled) return;
-                parent.openLogFilter(new Event("", null, "CaseTabAttribute"));
-            }
-        });
+
+        btnActivityHeading.addEventListener("onClick", event -> onOpenFilterForCaseTabAttribute());
+        lblActivityHeading.addEventListener("onClick", event -> onOpenFilterForCaseTabAttribute());
+    }
+
+    private void onOpenFilterForCaseTabAttribute() {
+        if (disabled) return;
+
+        String label = lblActivityHeading.getValue();
+        JSONObject payload = LogFilterControllerWithAPMLog.getDefaultCaseTabAttributePayload(label);
+        parent.openLogFilter(new Event("", null, payload));
     }
 
     private void updateFromLogSummary(AttributeLogSummary filtered, AttributeLogSummary total) {
         PLog pLog = logData.getFilteredPLog();
 
-        // totalEventCount = total.getEventCount();
-        totalEventCount = pLog.getOriginalEventSize();
-        // totalCaseCount = total.getCaseCount();
+        totalEventCount = pLog.getAllOriginalActivities().size();
         totalCaseCount = pLog.getOriginalPTraceList().size();
-        // totalVariantCount = total.getVariantCount();
         totalVariantCount = pLog.getOriginalCaseVariantSize();
         totalNodeCount = total.getActivityCount();
 
-        // long filteredEventCount = filtered.getEventCount();
-        long filteredEventCount = pLog.getEventSize();
-        // long filteredCaseCount = filtered.getCaseCount();
+        long filteredEventCount = pLog.getAllActivities().size();
         long filteredCaseCount = pLog.getPTraceList().size();
-        // long filteredVariantCount = filtered.getVariantCount();
         long filteredVariantCount = pLog.getVariantIdFreqMap().size();
         long filteredNodeCount = filtered.getActivityCount();
 

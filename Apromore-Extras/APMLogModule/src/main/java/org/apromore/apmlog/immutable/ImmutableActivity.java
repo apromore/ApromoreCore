@@ -38,6 +38,7 @@ public class ImmutableActivity implements AActivity {
     private IntArrayList eventIndexes;
     private long startTime;
     private long endTime;
+    private int mutableTraceIndex;
     private UnifiedMap<String, String> attributes;
 
     public ImmutableActivity(int immutableIndex,
@@ -100,7 +101,7 @@ public class ImmutableActivity implements AActivity {
     }
 
     public int getMutableTraceIndex() {
-        return parentTrace.getMutableIndex();
+        return mutableTraceIndex;
     }
 
     @Override
@@ -127,7 +128,6 @@ public class ImmutableActivity implements AActivity {
 
     public UnifiedMap<String, String> getAttributes() {
         return attributes;
-//        return parentTrace.getActivityAttributesList().get(immutableIndex);
     }
 
     @Override
@@ -200,6 +200,12 @@ public class ImmutableActivity implements AActivity {
     public long getEventSize() {
         return eventIndexes.size();
     }
+
+    public void setMutableTraceIndex(int mutableTraceIndex) {
+        this.mutableTraceIndex = mutableTraceIndex;
+    }
+
+
 
     @Override
     public AActivity clone(ATrace parentTrace) {

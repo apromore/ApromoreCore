@@ -31,12 +31,14 @@ import java.util.List;
  * Modified: Chii Chang (07/10/2020) - "schedule" event included; added start time method.
  * Modified: Chii Chang (27/10/2020)
  * Modified: Chii Chang (26/01/2021)
+ * Modified: Chii Chang (05/05/2021)
  */
 public interface AActivity  {
 
      int getImmutableIndex();
 
      void setMutableIndex(int mutableIndex);
+     void setMutableTraceIndex(int mutableTraceIndex);
 
      int getMutableIndex();
 
