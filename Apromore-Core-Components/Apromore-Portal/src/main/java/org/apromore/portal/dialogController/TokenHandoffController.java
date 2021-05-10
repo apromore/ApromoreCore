@@ -50,8 +50,6 @@ public class TokenHandoffController extends SelectorComposer<Window> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TokenHandoffController.class);
 
-    private static final Duration WEBAPP_SSO_SESSION_TIMEOUT = Duration.ofMinutes(30);
-
     private ManagerService managerService;
     private SecurityService securityService;
 
@@ -81,14 +79,18 @@ public class TokenHandoffController extends SelectorComposer<Window> {
             LOGGER.debug("httpServletRequest: {}", httpServletRequest);
 
             final String appAuthCookieStr = JwtHelper.readCookie(httpServletRequest, "App_Auth");
-            final String signedAppAuthCookieStr =
-                    JwtHelper.readCookie(httpServletRequest, "Signed_App_Auth");
-            LOGGER.debug("\n\n>>> appAuthCookieStr: {}", appAuthCookieStr);
-            LOGGER.debug("\n\n>>> signedAppAuthCookieStr: {}", signedAppAuthCookieStr);
+            final byte[] base64DecodedSignedAppAuth = Base64.getDecoder().decode(
+                            JwtHelper.readCookie(httpServletRequest, "Signed_App_Auth"));
+            LOGGER.debug(">>> appAuthCookieStr: {}", appAuthCookieStr);
+            LOGGER.debug(">>> base64DecodedSignedAppAuth: {}", base64DecodedSignedAppAuth);
+
+            final boolean jwtSignatureVerified =
+                    JwtHelper.isSignedStrVerifiable(appAuthCookieStr, base64DecodedSignedAppAuth);
+            LOGGER.info(">>> jwtSignatureVerified {}", jwtSignatureVerified);
 
             final UserType userType = JwtHelper.userFromJwt(managerService, appAuthCookieStr);
 
-            if (userType != null) {
+            if ((jwtSignatureVerified) && (userType != null)) {
                 UserSessionManager.setCurrentUser(userType);
 
                 final UserType currentUserType = UserSessionManager.getCurrentUser();

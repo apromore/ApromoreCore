@@ -28,9 +28,9 @@ import org.apromore.dao.model.Membership;
 import org.apromore.dao.model.User;
 import org.apromore.manager.client.ManagerService;
 import org.apromore.mapper.SearchHistoryMapper;
-import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.model.RoleType;
 import org.apromore.portal.model.UserType;
+import org.apromore.portal.util.SecurityUtils;
 import org.apromore.security.util.SecurityUtil;
 import org.apromore.service.SecurityService;
 import org.slf4j.Logger;
@@ -38,6 +38,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import java.nio.charset.StandardCharsets;
+import java.security.*;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -73,7 +75,7 @@ public class JwtHelper {
     public static boolean isJwtExpired(final JWTClaimsSet jwtClaimsSet,
                                        final String issuedAtStr,
                                        final String expiredAtStr) {
-        long jwtExpiryEpoch;
+        final long jwtExpiryEpoch;
         if (expiredAtStr != null) {
             jwtExpiryEpoch = Long.valueOf(expiredAtStr.substring(3));
         } else { // Calculate relative
@@ -190,6 +192,28 @@ public class JwtHelper {
         }
 
         return user;
+    }
+
+    public static boolean isSignedStrVerifiable(final String dataStr, final byte[] signedMsg) {
+        LOGGER.debug("dataStr {}", dataStr);
+        LOGGER.debug("signedMsg {}", signedMsg);
+
+        boolean verified = false;
+
+        try {
+            final Signature signature = Signature.getInstance("SHA256withRSA");
+
+            final PublicKey publicKey = SecurityUtils.getPublicKey(SecurityUtils.DEFAULT_KEY_ALIAS);
+            LOGGER.debug("publicKey for verification of JWT signed: {}", publicKey);
+
+            signature.initVerify(publicKey);
+            signature.update(dataStr.getBytes(StandardCharsets.UTF_8));
+            verified = signature.verify(signedMsg);
+        } catch (final Exception e) {
+            LOGGER.error("Exception in verifying signed JWT message", e);
+        } finally {
+            return verified;
+        }
     }
 
     private static long calculateExpiryTime(final long createdAtEpoch, final Duration sessionDuration) {
