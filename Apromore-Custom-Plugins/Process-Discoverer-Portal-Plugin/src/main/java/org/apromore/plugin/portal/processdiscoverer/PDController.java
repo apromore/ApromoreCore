@@ -30,21 +30,18 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
+import java.util.Optional;
 
 import javax.servlet.http.HttpSession;
 
 import org.apromore.logman.attribute.IndexableAttribute;
-import org.apromore.logman.attribute.graph.MeasureAggregation;
-import org.apromore.logman.attribute.graph.MeasureRelation;
 import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.plugin.portal.logfilter.generic.LogFilterPlugin;
-import org.apromore.plugin.portal.processdiscoverer.actions.AnimationController;
-import org.apromore.plugin.portal.processdiscoverer.actions.BPMNExportController;
-import org.apromore.plugin.portal.processdiscoverer.actions.LogExportController;
-import org.apromore.plugin.portal.processdiscoverer.actions.LogFilterController;
+import org.apromore.plugin.portal.processdiscoverer.actions.Action;
+import org.apromore.plugin.portal.processdiscoverer.actions.ActionHistory;
+import org.apromore.plugin.portal.processdiscoverer.actions.FilterAction;
 import org.apromore.plugin.portal.processdiscoverer.components.CaseDetailsController;
 import org.apromore.plugin.portal.processdiscoverer.components.GraphSettingsController;
 import org.apromore.plugin.portal.processdiscoverer.components.GraphVisController;
@@ -55,11 +52,13 @@ import org.apromore.plugin.portal.processdiscoverer.components.ToolbarController
 import org.apromore.plugin.portal.processdiscoverer.components.ViewSettingsController;
 import org.apromore.plugin.portal.processdiscoverer.data.ConfigData;
 import org.apromore.plugin.portal.processdiscoverer.data.ContextData;
-import org.apromore.plugin.portal.processdiscoverer.data.LogData;
 import org.apromore.plugin.portal.processdiscoverer.data.OutputData;
 import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
+import org.apromore.plugin.portal.processdiscoverer.eventlisteners.AnimationController;
+import org.apromore.plugin.portal.processdiscoverer.eventlisteners.BPMNExportController;
+import org.apromore.plugin.portal.processdiscoverer.eventlisteners.LogExportController;
+import org.apromore.plugin.portal.processdiscoverer.eventlisteners.LogFilterController;
 import org.apromore.plugin.portal.processdiscoverer.impl.factory.PDFactory;
-import org.apromore.plugin.portal.processdiscoverer.vis.ProcessVisualizer;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.BaseController;
 import org.apromore.portal.dialogController.dto.ApromoreSession;
@@ -67,9 +66,6 @@ import org.apromore.portal.model.FolderType;
 import org.apromore.portal.model.LogSummaryType;
 import org.apromore.portal.plugincontrol.PluginExecution;
 import org.apromore.portal.plugincontrol.PluginExecutionManager;
-import org.apromore.processdiscoverer.Abstraction;
-import org.apromore.processdiscoverer.AbstractionParams;
-import org.apromore.processdiscoverer.ProcessDiscoverer;
 import org.apromore.service.DomainService;
 import org.apromore.service.EventLogService;
 import org.apromore.service.ProcessService;
@@ -78,7 +74,6 @@ import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -86,36 +81,29 @@ import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
 /**
- * PDController manages the main UI of PD. Other sub-controllers are either action (under the actions package)
- * or component controllers (under the components package). Each component controller manages one UI area such as
- * Abstraction settings, view settings, or log statistics.<br>
- * PDController is also the Mediator for the sub-controllers, representing them to communicate with
- * the outside as well as among them, avoiding direct communication between sub-controllers,
- * e.g. a UI change needs to communicate from a sub-controller to PDController which will coordinate
- * this change to other sub-controllers.
+ * PDController is the top-level application object to manage PD plugin as a whole. It
  * <p>
- * Data items in PD are grouped under three objects: <b>ContextData</b> contains contextual variables<br> relating to
- * the environment calling this plugin, <b>LogData</b> represents the log, <b>UserOptions</b><br> manages all user
- * variables set via UI controls, and <b>OutputData</b> represents the existing output data being displayed on the UI.
- * All controllers share common data which is provided via DataManager.
+ * Under PDController is different UI actions (under the actions package) and components (under components package).
+ * PDController plays as a Mediator for these UI actions and components. It mediates the communication between these components to avoid direct communication between them.
  * <p>
- * PD consumes memory resources in various ways (e.g. using third-party libraries), it implements SessionCleanup
- * interface to be called upon the Session is destroyed by ZK.
- * <p>
- * Starting point: first, the window will be created which fires onCreate(), then ZK client engine sends an
+ * Starting point of PDController: first, the window will be created which fires onCreate(), then ZK client engine sends an
  * onLoaded event to the main window triggering windowListener().
  * <p>
- * PD has three <b>modes</b>: MODEL view, ANIMATION view and TRACE view. Initially it is in MODEL mode.
- * Each <b>action</b> will change PD to different modes. There are transition rules between modes
- * and active state of UI controls in each mode.
+ * PDController has three <b>modes</b>: MODEL view, ANIMATION view and TRACE view. Initially it is in MODEL mode.
+ * Each <b>action</b> will change PD to different modes. There are transition rules between modes and active state of UI controls
+ * in each mode.
+ * <p>
+ * PDController provides an action management capability. Actions can be bundled into Action object which can be undo/redo to reduce
+ * dependencies among various objects.
+ * <ul>
+ *  <li>UI Components such as ToolbarController and GraphVisController set up these actions (Invoker)
+ *  <li>These actions have access to PDController and PDAnalyst (Receiver) to fulfill the request
+ * </ul>
  * 
  */
 public class PDController extends BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PDController.class);
-
-    ///////////////////// UI CONTROLS /////////////////////////////
-    private Window mainWindow;
 
     //////////////////// SUPPORT SERVICES ///////////////////////////////////
 
@@ -123,12 +111,17 @@ public class PDController extends BaseController {
     private ProcessService processService;
     private EventLogService eventLogService;
     private LogAnimationService2 logAnimationService;
-    private ProcessDiscoverer processDiscoverer;
     private LogFilterPlugin logFilterPlugin;
     private PDFactory pdFactory;
+    
+    //////////////////// THE MAIN PD Business Analyst //////////////////////////
+    
+    private PDAnalyst processAnalyst;
+    private ActionHistory actionHistory = new ActionHistory();
 
-    //////////////////// LOCAL UTILITIES ///////////////////////////////////
+    //////////////////// UI COMPONENTS ///////////////////////////////////
 
+    private Window mainWindow;
     private final DecimalFormat decimalFormat = new DecimalFormat("##############0.##");
     private GraphVisController graphVisController;
     private CaseDetailsController caseDetailsController;
@@ -137,7 +130,6 @@ public class PDController extends BaseController {
     private GraphSettingsController graphSettingsController;
     private LogStatsController logStatsController;
     private TimeStatsController timeStatsController;
-    private ProcessVisualizer processVisualizer;
     private LogFilterController logFilterController;
     private AnimationController animationController;
     private LogExportController logExportController;
@@ -150,7 +142,6 @@ public class PDController extends BaseController {
     private ApromoreSession portalSession;
     private ConfigData configData;
     private ContextData contextData;
-    private LogData logData;
     private UserOptionsData userOptions;
     private OutputData outputData;
     private LogSummaryType logSummary;
@@ -250,12 +241,11 @@ public class PDController extends BaseController {
                 return;
             }
 
-            // Prepare data
+            // Set up Process Analyst
             ApromoreSession session = UserSessionManager.getEditSession(pluginSessionId);
             PortalContext portalContext = (PortalContext) session.get("context");
             LogSummaryType logSummary = (LogSummaryType) session.get("selection");
             pdFactory = (PDFactory) session.get("pdFactory");
-            
             configData = ConfigData.DEFAULT;
             contextData = ContextData.valueOf(
                     logSummary.getDomain(),
@@ -264,19 +254,10 @@ public class PDController extends BaseController {
                     logSummary.getName(),
                     portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId(),
                     portalContext.getCurrentFolder() == null ? "Home" : portalContext.getCurrentFolder().getFolderName());
-            userOptions = new UserOptionsData();
-            userOptions.setPrimaryType(FREQUENCY);
-            userOptions.setPrimaryAggregation(MeasureAggregation.CASES);
-            userOptions.setSecondaryType(DURATION);
-            userOptions.setSecondaryAggregation(MeasureAggregation.MEAN);
-            userOptions.setFixedType(FREQUENCY);
-            userOptions.setFixedAggregation(MeasureAggregation.CASES);
-            userOptions.setInvertedNodesMode(false);
-            userOptions.setInvertedArcsMode(false);
-
-            // Prepare log data
-            logData = pdFactory.createLogData(contextData, configData, eventLogService);
-            IndexableAttribute mainAttribute = logData.getAttribute(configData.getDefaultAttribute());
+            processAnalyst = new PDAnalyst(contextData, configData, eventLogService);
+            
+            // Check data against the capacity of Process Analyst
+            IndexableAttribute mainAttribute = processAnalyst.getAttribute(configData.getDefaultAttribute());
             if (mainAttribute == null) {
                 Messagebox.show("We cannot display the process map due to missing activity (i.e. concept:name) attribute in the log.",
                         "Process Discoverer",
@@ -292,13 +273,9 @@ public class PDController extends BaseController {
                                 Messagebox.INFORMATION);
                 return;
             }
+            userOptions = UserOptionsData.DEFAULT(configData);
             
-            logData.setMainAttribute(configData.getDefaultAttribute());
-            userOptions.setMainAttributeKey(configData.getDefaultAttribute());
-            processDiscoverer = new ProcessDiscoverer(logData.getAttributeLog());
-            processVisualizer = pdFactory.createProcessVisualizer(this);
-
-            // Set up controllers
+            // Set up UI components
             graphVisController = pdFactory.createGraphVisController(this);
             caseDetailsController = pdFactory.createCaseDetailsController(this);
             perspectiveDetailsController = pdFactory.createPerspectiveDetailsController(this);
@@ -317,8 +294,7 @@ public class PDController extends BaseController {
             LOGGER.debug("Desktop ID = " + getDesktop().getId());
             
             // Finally, store objects to be cleaned up when the session timeouts
-            getDesktop().setAttribute("processDiscoverer", processDiscoverer);
-            getDesktop().setAttribute("processVisualizer", processVisualizer);
+            getDesktop().setAttribute("processAnalyst", processAnalyst);
             getDesktop().setAttribute("pluginSessionId", pluginSessionId);
         }
         catch (Exception ex) {
@@ -404,11 +380,6 @@ public class PDController extends BaseController {
         graphVisController.exportJSON(viewSettingsController.getOutputName());
     }
 
-    public void clearFilter() throws Exception {
-        if (this.mode != InteractiveMode.MODEL_MODE) return;
-        logFilterController.clearFilter();
-    }
-    
     public void changeLayout() throws Exception {
         if (this.mode != InteractiveMode.MODEL_MODE) return;
         graphVisController.changeLayout();
@@ -493,39 +464,14 @@ public class PDController extends BaseController {
             userOptions.setRetainZoomPan(!reset);
             generateViz();
             if (!reset) graphVisController.centerToWindow();
-            toolbarController.setDisabledFilterClear(this.getLogData().isCurrentFilterCriteriaEmpty());
+            toolbarController.setDisabledFilterClear(this.getProcessAnalyst().isCurrentFilterCriteriaEmpty());
+            toolbarController.updateUndoRedoButtons(actionHistory.canUndo(), actionHistory.canRedo());
         }
         catch (Exception ex) {
             Messagebox.show("Errors occured while updating UI: " + ex.getMessage());
         }
     }
 
-    public AbstractionParams genAbstractionParamsSimple(
-            boolean prioritizeParallelism, boolean preserve_connectivity, boolean secondary,
-            MeasureType primaryType, MeasureAggregation primaryAggregation, MeasureRelation primaryRelation,
-            MeasureType secondaryType, MeasureAggregation secondaryAggregation, MeasureRelation secondaryRelation
-            ) {
-        return new AbstractionParams(
-                logData.getMainAttribute(),
-                userOptions.getNodeFilterValue() / 100,
-                userOptions.getArcFilterValue() / 100,
-                userOptions.getParallelismFilterValue() / 100,
-                prioritizeParallelism, preserve_connectivity,
-                userOptions.getInvertedNodesMode(),
-                userOptions.getInvertedArcsMode(),
-                secondary,
-                userOptions.getFixedType(),
-                userOptions.getFixedAggregation(),
-                userOptions.getFixedRelation(),
-                primaryType,
-                primaryAggregation,
-                primaryRelation,
-                secondaryType,
-                secondaryAggregation,
-                secondaryRelation,
-                userOptions.getRelationReader(),
-                null);
-    }
     /*
      * This is the main processing method calling to process-discoverer-logic
      */
@@ -534,13 +480,7 @@ public class PDController extends BaseController {
         
         if (this.mode != InteractiveMode.MODEL_MODE) return;
 
-        if (logData.getAttributeLog() == null) {
-            Messagebox.show("Cannot create data for visualization. Please check the log!",
-                    "Process Discoverer",
-                    Messagebox.OK,
-                    Messagebox.INFORMATION);
-            return;
-        } else if (logData.getAttributeLog().getTraces().size() == 0) {
+        if (processAnalyst.hasEmptyData()) {
             Messagebox.show("Data for visualization is empty. Please check the log!",
                     "Process Discoverer",
                     Messagebox.OK,
@@ -559,52 +499,25 @@ public class PDController extends BaseController {
         }
 
         try {
-            AbstractionParams params = genAbstractionParamsSimple(
-                true, true,
-                userOptions.getIncludeSecondary(),
-                userOptions.getPrimaryType(),
-                userOptions.getPrimaryAggregation(),
-                userOptions.getPrimaryRelation(),
-                userOptions.getSecondaryType(),
-                userOptions.getSecondaryAggregation(),
-                userOptions.getSecondaryRelation()
-            );
-
-            // Find a DFG first
-            Abstraction dfgAbstraction = processDiscoverer.generateDFGAbstraction(params);
-            if (dfgAbstraction == null ||
-                    dfgAbstraction.getDiagram() == null ||
-                    dfgAbstraction.getDiagram().getNodes().isEmpty() ||
-                    dfgAbstraction.getDiagram().getEdges().isEmpty()
-            ) {
+            Optional<OutputData> analysisResult = processAnalyst.discoverProcess(userOptions);
+            if (analysisResult.isEmpty()) {
                 Messagebox.show("Unexpected error: empty process map or failure is returned after this action!",
                         "Process Discoverer",
                         Messagebox.OK,
                         Messagebox.ERROR);
                 return;
             }
-
-            // Actual operation with the new params
-            params.setCorrespondingDFG(dfgAbstraction);
-            Abstraction currentAbstraction;
-            if (userOptions.getBPMNMode()) {
-                currentAbstraction = processDiscoverer.generateBPMNAbstraction(params, dfgAbstraction);
-            } else {
-                currentAbstraction = dfgAbstraction;
-            }
-
-            timer1 = System.currentTimeMillis();
-            String visualizedText = processVisualizer.generateVisualizationText(currentAbstraction);
-            LOGGER.debug("JsonBuilder.generateJSONFromBPMN: " + (System.currentTimeMillis() - timer1) + " ms.");
-            outputData = pdFactory.createOutputData(currentAbstraction, visualizedText);
+            this.outputData = analysisResult.get();
+            LOGGER.debug("PDAnalyst.discoverProcess: " + (System.currentTimeMillis() - timer1) + " ms.");
+            
+            graphVisController.displayDiagram(this.outputData.getVisualizedText());
             SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
             LOGGER.debug("Sent json data to browser at " + formatter.format(new Date()));
-
-            graphVisController.displayDiagram(visualizedText);
+            
             this.setInteractiveMode(InteractiveMode.MODEL_MODE);
 
         } catch (Exception e) {
-            LOGGER.error("Unexpected error while generating visualization.", e);
+            LOGGER.error("Unexpected error when discovering process.", e);
             Messagebox.show(!e.getMessage().trim().isEmpty() ? e.getMessage() : "Unexpected error has occurred! Check log files.",
                     "Process Discoverer",
                     Messagebox.OK,
@@ -660,7 +573,7 @@ public class PDController extends BaseController {
      * @param newMode
      * @return: true if the mode has been changed
      */
-    public boolean setInteractiveMode(InteractiveMode newMode) {
+    private boolean setInteractiveMode(InteractiveMode newMode) {
         if (newMode == InteractiveMode.ANIMATION_MODE) {
             if (this.mode == InteractiveMode.TRACE_MODE) return false; //invalid move
             viewSettingsController.setDisabled(true);
@@ -708,7 +621,7 @@ public class PDController extends BaseController {
         if (!value.equals(userOptions.getMainAttributeKey())) {
             toolbarController.setDisabledAnimation(!value.equals(configData.getDefaultAttribute()));
             userOptions.setMainAttributeKey(value);
-            logData.setMainAttribute(value);
+            processAnalyst.setMainAttribute(value);
             timeStatsController.updateUI(contextData);
             logStatsController.updateUI(contextData);
             logStatsController.updatePerspectiveHeading(label);
@@ -720,8 +633,8 @@ public class PDController extends BaseController {
         return this.contextData;
     }
 
-    public LogData getLogData() {
-        return this.logData;
+    public PDAnalyst getProcessAnalyst() {
+        return this.processAnalyst;
     }
 
     public UserOptionsData getUserOptions() {
@@ -731,17 +644,9 @@ public class PDController extends BaseController {
     public OutputData getOutputData() {
         return this.outputData;
     }
-
+    
     public ConfigData getConfigData() {
         return this.configData;
-    }
-
-    public ProcessDiscoverer getProcessDiscoverer() {
-        return this.processDiscoverer;
-    }
-    
-    public ProcessVisualizer getProcessVisualizer() {
-        return this.processVisualizer;
     }
 
     public EventLogService getEvenLogService() {
@@ -803,5 +708,48 @@ public class PDController extends BaseController {
      */
     private String escapeQuotedJavascript(String json) {
         return json.replace("\n", " ").replace("'", "\\u0027").trim();
+    }
+    
+    //////////////////////// ACTION MANAGEMENT /////////////////////////
+
+    /** For real action that perform changes */
+    public void executeAction(Action action) {
+        if (action.execute()) {
+            actionHistory.undoPush(action);
+            // Redo actions are those actions that have been undoed.
+            // When an action is redoed (re-executed), it assumes that the undo stack is the same as before it is pushed to undo
+            // Thus, whenever a NEW action is pushed to the undo stack, all current redoable actions must be clear to ensure consistent state.
+            actionHistory.clearRedo();
+            if (action instanceof FilterAction) this.updateUI(false);
+        }
+    }
+    
+    /**
+     * For actions that don't change anything but need to be bundled for undo/redo
+     * Some actions fall into this category, such as do filtering via opening a LogFilter window
+     * These actions can't be executed directly via executeAction() method, but they can be stored to support undo/redo
+     */
+    public void storeAction(Action action) {
+        actionHistory.undoPush(action);
+    }
+
+    public void undoAction() {
+        Action action = actionHistory.undoPop();
+        if (action != null) {
+            action.undo();
+            actionHistory.redoPush(action);
+            if (action instanceof FilterAction) this.updateUI(false);
+        }
+    }
+
+    // Re-execute
+    public void redoAction() {
+        Action action = actionHistory.redoPop();
+        if (action != null) {
+            if (action.execute()) {
+                actionHistory.undoPush(action);
+                if (action instanceof FilterAction) this.updateUI(false);
+            }
+        }
     }
 }

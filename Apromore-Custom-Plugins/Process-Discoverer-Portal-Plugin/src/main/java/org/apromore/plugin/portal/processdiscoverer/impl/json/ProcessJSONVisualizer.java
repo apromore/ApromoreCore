@@ -24,7 +24,7 @@ package org.apromore.plugin.portal.processdiscoverer.impl.json;
 
 import org.apromore.plugin.portal.processdiscoverer.impl.layout.JGraphLayouter;
 import org.apromore.plugin.portal.processdiscoverer.vis.Layouter;
-import org.apromore.plugin.portal.processdiscoverer.vis.MissingLayoutException;
+import org.apromore.plugin.portal.processdiscoverer.vis.InvalidOutputException;
 import org.apromore.plugin.portal.processdiscoverer.vis.ProcessVisualizer;
 import org.apromore.plugin.portal.processdiscoverer.vis.UnsupportedElementException;
 import org.apromore.plugin.portal.processdiscoverer.vis.VisualContext;
@@ -62,7 +62,7 @@ public class ProcessJSONVisualizer implements ProcessVisualizer {
     }
     
 	private JSONArray generateJSON(Abstraction abs, VisualContext visContext, 
-	        VisualSettings visSettings) throws UnsupportedElementException, JSONException, MissingLayoutException {
+	        VisualSettings visSettings) throws UnsupportedElementException, JSONException, InvalidOutputException {
 		JSONArray jsonProcess = new JSONArray();
 		
 		for (BPMNNode node : abs.getDiagram().getNodes()) {

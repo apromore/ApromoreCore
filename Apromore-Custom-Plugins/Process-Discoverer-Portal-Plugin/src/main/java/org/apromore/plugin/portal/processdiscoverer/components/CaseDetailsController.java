@@ -27,16 +27,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apromore.logman.attribute.graph.MeasureAggregation;
-import org.apromore.logman.attribute.graph.MeasureRelation;
-import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.logman.attribute.log.AttributeLog;
 import org.apromore.logman.attribute.log.AttributeTrace;
 import org.apromore.plugin.portal.processdiscoverer.InteractiveMode;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
 import org.apromore.plugin.portal.processdiscoverer.data.CaseDetails;
-import org.apromore.processdiscoverer.Abstraction;
-import org.apromore.processdiscoverer.AbstractionParams;
+import org.apromore.plugin.portal.processdiscoverer.data.OutputData;
 import org.apromore.processdiscoverer.bpmn.TraceBPMNDiagram;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNNode;
 import org.json.JSONObject;
@@ -61,7 +57,7 @@ public class CaseDetailsController extends DataListController {
 	}
 
 	private void generateData() {
-		List<CaseDetails> caseDetails = parent.getLogData().getCaseDetails();
+		List<CaseDetails> caseDetails = parent.getProcessAnalyst().getCaseDetails();
 		records = new ListModelList();
 		rows = new ArrayList<String[]>();
 		for (CaseDetails c : caseDetails) {
@@ -91,7 +87,7 @@ public class CaseDetailsController extends DataListController {
 	 **/
 	private void updateActivityToAttributeMap(String caseId, TraceBPMNDiagram diagram) {
 		activityToAttributeMap.clear();
-		AttributeLog attLog = parent.getLogData().getAttributeLog();
+		AttributeLog attLog = parent.getProcessAnalyst().getAttributeLog();
 		AttributeTrace attTrace = attLog.getTraceFromTraceId(caseId);
 		if (attTrace != null) {
 		    BPMNNode node = diagram.getStartNode();
@@ -142,13 +138,9 @@ public class CaseDetailsController extends DataListController {
 				    if (disabled) return;
 					try {
 						String traceID = ((Listcell) (listbox.getSelectedItem()).getChildren().get(0)).getLabel();
-						AbstractionParams params = parent.genAbstractionParamsSimple(false, true, false,
-								MeasureType.DURATION, MeasureAggregation.CASES, MeasureRelation.ABSOLUTE,
-								MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.ABSOLUTE);
-						Abstraction traceAbs = parent.getProcessDiscoverer().generateTraceAbstraction(traceID, params);
-						String visualizedText = parent.getProcessVisualizer().generateVisualizationText(traceAbs);
-						updateActivityToAttributeMap(traceID, (TraceBPMNDiagram)traceAbs.getDiagram());
-						parent.showTrace(visualizedText);
+						OutputData result = parent.getProcessAnalyst().discoverTrace(traceID, parent.getUserOptions());
+						updateActivityToAttributeMap(traceID, (TraceBPMNDiagram)result.getAbstraction().getDiagram());
+						parent.showTrace(result.getVisualizedText());
 					} catch (Exception e) {
 						Messagebox.show(e.getMessage());
 					}

@@ -40,8 +40,8 @@ import org.apromore.logman.attribute.AbstractAttribute;
 import org.apromore.logman.attribute.graph.MeasureAggregation;
 import org.apromore.logman.attribute.graph.MeasureRelation;
 import org.apromore.logman.attribute.graph.MeasureType;
+import org.apromore.plugin.portal.processdiscoverer.PDAnalyst;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
-import org.apromore.plugin.portal.processdiscoverer.data.LogData;
 import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -183,7 +183,7 @@ public class ViewSettingsController extends VisualController {
     }
     
     @Override
-    public void initializeEventListeners(Object data) { 
+    public void initializeEventListeners(Object data) {
         perspectiveSelector.addEventListener("onSelect", new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
@@ -301,7 +301,7 @@ public class ViewSettingsController extends VisualController {
     }
 
     @Override
-    public void updateUI(Object data) {   
+    public void updateUI(Object data) {
         perspectiveSelector.getItems().clear();
         int selIndex = 0, i = 0;
         for (Map.Entry<String, String> entry : getPerspectiveMap().entrySet()) {
@@ -331,9 +331,9 @@ public class ViewSettingsController extends VisualController {
             }
         };
 
-        LogData logData = parent.getLogData();
+        PDAnalyst analyst = parent.getProcessAnalyst();
         Set<String> set = new HashSet<>();
-        for (AbstractAttribute att : logData.getAvailableAttributes()) {
+        for (AbstractAttribute att : analyst.getAvailableAttributes()) {
             String key = att.getKey();
             if (!BLACKLISTED_PERSPECTIVES.contains(key)) {
                 set.add(key);

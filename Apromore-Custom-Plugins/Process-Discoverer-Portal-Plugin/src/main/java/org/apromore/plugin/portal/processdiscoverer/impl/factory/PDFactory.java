@@ -22,10 +22,6 @@
 package org.apromore.plugin.portal.processdiscoverer.impl.factory;
 
 import org.apromore.plugin.portal.processdiscoverer.PDController;
-import org.apromore.plugin.portal.processdiscoverer.actions.AnimationController;
-import org.apromore.plugin.portal.processdiscoverer.actions.BPMNExportController;
-import org.apromore.plugin.portal.processdiscoverer.actions.LogExportController;
-import org.apromore.plugin.portal.processdiscoverer.actions.LogFilterController;
 import org.apromore.plugin.portal.processdiscoverer.components.CaseDetailsController;
 import org.apromore.plugin.portal.processdiscoverer.components.GraphSettingsController;
 import org.apromore.plugin.portal.processdiscoverer.components.GraphVisController;
@@ -34,18 +30,12 @@ import org.apromore.plugin.portal.processdiscoverer.components.PerspectiveDetail
 import org.apromore.plugin.portal.processdiscoverer.components.TimeStatsController;
 import org.apromore.plugin.portal.processdiscoverer.components.ToolbarController;
 import org.apromore.plugin.portal.processdiscoverer.components.ViewSettingsController;
-import org.apromore.plugin.portal.processdiscoverer.data.ConfigData;
-import org.apromore.plugin.portal.processdiscoverer.data.ContextData;
-import org.apromore.plugin.portal.processdiscoverer.data.LogData;
-import org.apromore.plugin.portal.processdiscoverer.data.OutputData;
-import org.apromore.plugin.portal.processdiscoverer.vis.ProcessVisualizer;
-import org.apromore.processdiscoverer.Abstraction;
-import org.apromore.service.EventLogService;
+import org.apromore.plugin.portal.processdiscoverer.eventlisteners.AnimationController;
+import org.apromore.plugin.portal.processdiscoverer.eventlisteners.BPMNExportController;
+import org.apromore.plugin.portal.processdiscoverer.eventlisteners.LogExportController;
+import org.apromore.plugin.portal.processdiscoverer.eventlisteners.LogFilterController;
 
 public interface PDFactory {
-    LogData createLogData(ContextData contextData, ConfigData configData, EventLogService eventLogService)  throws Exception;
-    OutputData createOutputData(Abstraction currentAbstraction, String visualizedText)  throws Exception;
-    
     GraphVisController createGraphVisController(PDController pdController) throws Exception;
     GraphSettingsController createGraphSettingsController(PDController pdController) throws Exception;
     ViewSettingsController createViewSettingsController(PDController pdController) throws Exception;
@@ -57,6 +47,5 @@ public interface PDFactory {
     AnimationController createAnimationController(PDController pdController) throws Exception;
     BPMNExportController createBPMNExportController(PDController pdController) throws Exception;
     LogExportController createLogExportController(PDController pdController) throws Exception;
-    ToolbarController createToolbarController(PDController controller) throws Exception; 
-    ProcessVisualizer createProcessVisualizer(PDController pdController) throws Exception;
+    ToolbarController createToolbarController(PDController controller) throws Exception;
 }

@@ -24,64 +24,19 @@ package org.apromore.plugin.portal.processdiscoverer;
 
 import org.apromore.logman.ALog;
 import org.apromore.plugin.portal.processdiscoverer.data.ConfigData;
-import org.apromore.plugin.portal.processdiscoverer.data.LogData;
 import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
-import org.apromore.plugin.portal.processdiscoverer.impl.factory.PDCustomFactory;
-import org.apromore.plugin.portal.processdiscoverer.impl.factory.PDFactory;
-import org.apromore.plugin.portal.processdiscoverer.vis.ProcessVisualizer;
-import org.apromore.processdiscoverer.Abstraction;
-import org.apromore.processdiscoverer.AbstractionParams;
-import org.apromore.processdiscoverer.ProcessDiscoverer;
 import org.deckfour.xes.model.XLog;
 
 public class PerformanceTest extends TestDataSetup {
     
     private void discoverProcessFromXLog(XLog xlog) {
-        PDFactory pdFactory = new PDCustomFactory();
         try {
             long timer = System.currentTimeMillis();
             ALog aLog = new ALog(xlog);
             System.out.println("Create ALog: " + (System.currentTimeMillis() - timer) + " ms.");
-            
             ConfigData configData = ConfigData.DEFAULT;
-            UserOptionsData userOptions = new UserOptionsData();
-            userOptions.setMainAttributeKey(configData.getDefaultAttribute());
-            
-            LogData logData = new LogData(configData, aLog);
-            logData.setMainAttribute(configData.getDefaultAttribute());
-    
-            ProcessDiscoverer processDiscoverer = new ProcessDiscoverer(logData.getAttributeLog());
-            AbstractionParams params = new AbstractionParams(
-                    logData.getMainAttribute(), 
-                    userOptions.getNodeFilterValue() / 100, 
-                    userOptions.getArcFilterValue() / 100, 
-                    userOptions.getParallelismFilterValue() / 100, 
-                    true, true, 
-                    userOptions.getInvertedNodesMode(), 
-                    userOptions.getInvertedArcsMode(),
-                    userOptions.getIncludeSecondary(),
-                    
-                    userOptions.getFixedType(), 
-                    userOptions.getFixedAggregation(), 
-                    userOptions.getFixedRelation(),
-                    
-                    userOptions.getPrimaryType(), 
-                    userOptions.getPrimaryAggregation(),
-                    userOptions.getPrimaryRelation(),
-                    
-                    userOptions.getSecondaryType(), 
-                    userOptions.getSecondaryAggregation(),
-                    userOptions.getSecondaryRelation(),
-                    
-                    userOptions.getRelationReader(),
-                    null);
-            Abstraction dfgAbstraction = processDiscoverer.generateDFGAbstraction(params);
-            params.setCorrespondingDFG(dfgAbstraction);            
-            //AbstractAbstraction bpmnAbstraction = processDiscoverer.generateBPMNAbstraction(params, (DFGAbstraction)dfgAbstraction);
-            
-            ProcessVisualizer processVisualizer = pdFactory.createProcessVisualizer(null);
-            timer = System.currentTimeMillis();
-            String visualizedText = processVisualizer.generateVisualizationText(dfgAbstraction);
+            PDAnalyst analyst = PDAnalyst.newInstanceWithoutFilter(aLog, configData);
+            analyst.discoverProcess(UserOptionsData.DEFAULT(configData));
             System.out.println("Generate JSON data from BPMNDiagram: " + (System.currentTimeMillis() - timer) + " ms.");
         }
         catch (Exception ex) {

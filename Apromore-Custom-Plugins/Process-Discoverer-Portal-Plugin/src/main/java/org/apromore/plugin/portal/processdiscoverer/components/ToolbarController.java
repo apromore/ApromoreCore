@@ -22,6 +22,8 @@
 package org.apromore.plugin.portal.processdiscoverer.components;
 
 import org.apromore.plugin.portal.processdiscoverer.PDController;
+import org.apromore.plugin.portal.processdiscoverer.actions.FilterAction;
+import org.apromore.plugin.portal.processdiscoverer.actions.FilterActionOnClearFilter;
 import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
@@ -41,6 +43,8 @@ public class ToolbarController extends AbstractController {
 
     private Button filter;
     private Button filterClear;
+    private Button filterUndo;
+    private Button filterRedo;
     private Button animate;
     private Button fitScreen;
     private Button share;
@@ -69,6 +73,8 @@ public class ToolbarController extends AbstractController {
         filter = (Button) toolbar.getFellow("filter");
         filterClear = (Button) toolbar.getFellow("filterClear");
         filterClear.setDisabled(true);
+        filterUndo = (Button) toolbar.getFellow("filterUndo");
+        filterRedo = (Button) toolbar.getFellow("filterRedo");
         animate = (Button) toolbar.getFellow("animate");
         fitScreen = (Button) toolbar.getFellow("fitScreen");
         share = (Button) toolbar.getFellow("share");
@@ -88,7 +94,12 @@ public class ToolbarController extends AbstractController {
         shortcutButton = (Button) toolbar.getFellow("shortcutButton");
         rightToolbar = (Div) toolbar.getFellow("rightToolbar");
     }
-    
+
+    public void updateUndoRedoButtons(boolean undoState, boolean redoState) {
+        filterUndo.setDisabled(!undoState);
+        filterRedo.setDisabled(!redoState);
+    }
+
     @Override
     public void initializeEventListeners(Object data) throws Exception {
         // Layout
@@ -110,51 +121,49 @@ public class ToolbarController extends AbstractController {
             }
         };
         
-        layoutHierarchy.addEventListener("onClick", layoutListener);
-        
-        layoutDagreTopBottom.addEventListener("onClick", layoutListener);
+        layoutHierarchy.addEventListener(Events.ON_CLICK, layoutListener);
+        layoutDagreTopBottom.addEventListener(Events.ON_CLICK, layoutListener);
 
-        fitScreen.addEventListener("onClick", new EventListener<Event>() {
+        fitScreen.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
                 parent.fitVisualizationToWindow();
             }
         });
 
-        filterClear.addEventListener("onClick", e -> onClearFilter());
-        
         filter.addEventListener("onInvoke", e -> parent.openLogFilter(e));
         filter.addEventListener("onInvokeExt", e -> parent.openLogFilter(e));
         filter.addEventListener(Events.ON_CLICK, e -> parent.openLogFilter(e));
+        filterClear.addEventListener(Events.ON_CLICK, e -> onClearFilter());
+        filterUndo.addEventListener(Events.ON_CLICK, e -> parent.undoAction());
+        filterRedo.addEventListener(Events.ON_CLICK, e -> parent.redoAction());
         
-        animate.addEventListener("onClick", e -> parent.openAnimation(e));
-
+        animate.addEventListener(Events.ON_CLICK, e -> parent.openAnimation(e));
         exportFilteredLog.addEventListener("onExport", e -> parent.openLogExport(e));
-        
-        exportBPMN.addEventListener("onClick", e -> parent.openBPMNExport(e));
-        
-        downloadPDF.addEventListener("onClick", new EventListener<Event>() {
+        exportBPMN.addEventListener(Events.ON_CLICK, e -> parent.openBPMNExport(e));
+
+        downloadPDF.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
                 parent.exportPDF();
             }
         });
         
-        downloadPNG.addEventListener("onClick", new EventListener<Event>() {
+        downloadPNG.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
                 parent.exportPNG();
             }
         });
         
-        downloadJSON.addEventListener("onClick", new EventListener<Event>() {
+        downloadJSON.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
                 parent.exportJSON();
             }
         });
 
-        share.addEventListener("onClick", event -> {
+        share.addEventListener(Events.ON_CLICK, event -> {
             parent.openSharingWindow();
         });
     }
@@ -164,7 +173,7 @@ public class ToolbarController extends AbstractController {
         layoutHierarchy.setDisabled(disabled);
         layoutDagreTopBottom.setDisabled(disabled);
         filter.setDisabled(disabled);
-        filterClear.setDisabled(disabled || parent.getLogData().isCurrentFilterCriteriaEmpty());
+        filterClear.setDisabled(disabled || parent.getProcessAnalyst().isCurrentFilterCriteriaEmpty());
         searchText.setDisabled(disabled);
         shortcutButton.setDisabled(disabled);
         rightToolbar.setClientDataAttribute("disabled", disabled ? "on" : "off" );
@@ -201,7 +210,9 @@ public class ToolbarController extends AbstractController {
     private void proceedClearFilter(Event evt) {
         if (evt.getName().equals("onOK")) {
             try {
-                clearFilter();
+                FilterAction action = new FilterActionOnClearFilter(parent, parent.getProcessAnalyst());
+                action.setPreActionFilterCriteria(parent.getProcessAnalyst().copyCurrentFilterCriteria());
+                parent.executeAction(action);
             } catch (Exception e) {
                 Messagebox.show("Unable to clear the filter", "Filter error",
                         Messagebox.OK, Messagebox.ERROR);
@@ -209,7 +220,4 @@ public class ToolbarController extends AbstractController {
         }
     }
 
-    private void clearFilter() throws Exception {
-        parent.clearFilter();
-    }
 }
