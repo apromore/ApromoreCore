@@ -33,7 +33,7 @@ import java.io.Serializable;
 public class OutputLogInfo implements Serializable {
     private String logName;
     private String apromoreWorkspaceDirectory;
-    private S3Destination s3Destination;
+    private S3Destination etlOutputDestination;
 
     @Column(name = "log_name")
     public String getLogName() {
@@ -46,7 +46,7 @@ public class OutputLogInfo implements Serializable {
     }
 
     @Embedded
-    public S3Destination getS3Destination() {
-        return s3Destination;
+    public S3Destination getEtlOutputDestination() {
+        return etlOutputDestination;
     }
 }

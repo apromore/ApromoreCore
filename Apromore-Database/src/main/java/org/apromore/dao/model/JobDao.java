@@ -55,10 +55,11 @@ public class JobDao implements Serializable {
     private String dagId;
     private List<DagConnection> connections = new ArrayList<>();
     private List<StaticLog> staticLogs = new ArrayList<>();
-    private OutputLogInfo outputLogInfo;
+    private OutputLogInfo logInfo;
     private String finalTransformQuery;
     private String schedule;
     private String username;
+    private String pipelineName;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -97,9 +98,14 @@ public class JobDao implements Serializable {
         return username;
     }
 
+    @Column(name = "pipeline_name")
+    public String getPipelineName() {
+        return pipelineName;
+    }
+
     @Embedded
-    public OutputLogInfo getOutputLogInfo() {
-        return outputLogInfo;
+    public OutputLogInfo getLogInfo() {
+        return logInfo;
     }
 
     public void synchronizedMetaData() {

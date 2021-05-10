@@ -38,7 +38,7 @@ public class S3Destination {
         return bucketName;
     }
 
-    @Column(name = "key")
+    @Column(name = "`key`")
     public String getKey() {
         return key;
     }

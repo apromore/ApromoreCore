@@ -976,6 +976,10 @@ databaseChangeLog:
              - column:
                  name: url
                  type: VARCHAR(200)
+             - column:
+                 name: pipeline_name
+                 type: VARCHAR(200)
+
        - createTable:
            tableName: dag_connection
            columns:
@@ -1014,6 +1018,7 @@ databaseChangeLog:
                    referencedColumnNames: id
                    foreignKeyName: fk_dag_conn_job_idk
                    deleteCascade: true
+
        - createTable:
            tableName: static_log
            columns:
