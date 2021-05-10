@@ -23,11 +23,15 @@
 package org.apromore.plugin.portal.account;
 
 import java.util.Locale;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.zkoss.spring.SpringUtil;
+
+import org.apromore.portal.ConfigBean;
 import org.apromore.service.SecurityService;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apromore.plugin.portal.PortalPlugin.Availability;
 
 public class ChangePasswordPlugin extends DefaultPortalPlugin {
 
@@ -43,6 +47,14 @@ public class ChangePasswordPlugin extends DefaultPortalPlugin {
     }
 
     // PortalPlugin overrides
+
+    @Override
+    public Availability getAvailability() {
+        ConfigBean config = (ConfigBean) SpringUtil.getBean("portalConfig");
+        boolean isUseKeycloakSso = config.isUseKeycloakSso();
+
+        return isUseKeycloakSso ? Availability.UNAVAILABLE : Availability.AVAILABLE;
+    }
 
     @Override
     public String getLabel(Locale locale) {
