@@ -23,6 +23,8 @@
 package org.apromore.logman;
 
 import java.util.BitSet;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apromore.logman.attribute.IndexableAttribute;
 import org.apromore.logman.attribute.graph.AttributeTraceGraph;
@@ -87,16 +89,16 @@ public class LogTest extends DataSetup {
         Assert.assertEquals(1, log.getTraces().size());
         Assert.assertEquals(1, log.getOriginalTraceStatus().cardinality());
 
-        Assert.assertEquals(null, log.getTraces().get(0).getTraceId()); 
+        Assert.assertEquals(null, log.getTraces().get(0).getTraceId());
         Assert.assertEquals(0, log.getTraces().get(0).getOriginalActivities().size());
         Assert.assertEquals(0, log.getTraces().get(0).getActivities().size());
         Assert.assertEquals(0, log.getTraces().get(0).getEvents().size());
         Assert.assertEquals(0, log.getTraces().get(0).getOriginalEvents().size());
-        Assert.assertEquals(0, log.getTraces().get(0).getAttributes().size());  
-        Assert.assertEquals(0, log.getTraces().get(0).getOriginalEventStatus().cardinality()); 
+        Assert.assertEquals(0, log.getTraces().get(0).getAttributes().size());
+        Assert.assertEquals(0, log.getTraces().get(0).getOriginalEventStatus().cardinality());
         Assert.assertEquals(0, log.getTraces().get(0).getOriginalActivityStatus().cardinality());
         Assert.assertEquals(0,  log.getOriginalNumberOfEvents());
-        Assert.assertEquals(0,  log.getNumberOfEvents());        
+        Assert.assertEquals(0,  log.getNumberOfEvents());
         
         // AttributeLog
         AttributeLog attLog = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName());
@@ -164,16 +166,16 @@ public class LogTest extends DataSetup {
         Assert.assertEquals(1, log.getOriginalTraceStatus().cardinality());
         Assert.assertEquals("L1", log.getAttributes().get("concept:name").toString());
         Assert.assertEquals(1,  log.getOriginalNumberOfEvents());
-        Assert.assertEquals(1,  log.getNumberOfEvents());  
+        Assert.assertEquals(1,  log.getNumberOfEvents());
         
         // ATrace
-        Assert.assertEquals("Case1", log.getTraces().get(0).getTraceId()); 
+        Assert.assertEquals("Case1", log.getTraces().get(0).getTraceId());
         Assert.assertEquals(1, trace0.getOriginalActivities().size());
         Assert.assertEquals(1, trace0.getActivities().size());
         Assert.assertEquals(1, trace0.getEvents().size());
         Assert.assertEquals(1, trace0.getOriginalEvents().size());
-        Assert.assertEquals(1, trace0.getAttributes().size());  
-        Assert.assertEquals(1, trace0.getOriginalEventStatus().cardinality()); 
+        Assert.assertEquals(1, trace0.getAttributes().size());
+        Assert.assertEquals(1, trace0.getOriginalEventStatus().cardinality());
         Assert.assertEquals(1, trace0.getOriginalActivityStatus().cardinality());
         
         Assert.assertEquals(dateFormatter.parseDateTime("2010-10-27T22:31:19.495+10:00").getMillis(), trace0.getStartTime());
@@ -183,7 +185,7 @@ public class LogTest extends DataSetup {
         
         Assert.assertEquals("a", trace0.getEventFromIndex(0).getAttributes().get("concept:name").toString());
         Assert.assertEquals("complete", trace0.getEventFromIndex(0).getAttributes().get("lifecycle:transition").toString());
-        Assert.assertEquals(dateFormatter.parseDateTime("2010-10-27T22:31:19.495+10:00"), 
+        Assert.assertEquals(dateFormatter.parseDateTime("2010-10-27T22:31:19.495+10:00"),
                             dateFormatter.parseDateTime(trace0.getEventFromIndex(0).getAttributes().get("time:timestamp").toString()));
         
         // Activity
@@ -255,7 +257,7 @@ public class LogTest extends DataSetup {
         Assert.assertEquals(LongArrayList.newListWith(
                 dateFormatter.parseDateTime("2010-10-27T22:31:19.495+10:00").getMillis(),
                 dateFormatter.parseDateTime("2010-10-27T22:31:19.495+10:00").getMillis(),
-                dateFormatter.parseDateTime("2010-10-27T22:31:19.495+10:00").getMillis()), attTrace0.getEndTimeTrace());    
+                dateFormatter.parseDateTime("2010-10-27T22:31:19.495+10:00").getMillis()), attTrace0.getEndTimeTrace());
         Assert.assertEquals(false, attTrace0.isEmpty());
         
         Assert.assertEquals(IntSets.mutable.of(3,2), attTrace0.getActiveGraph().getArcs());
@@ -268,16 +270,16 @@ public class LogTest extends DataSetup {
         Assert.assertEquals(0, attTrace0.getActiveGraph().getNodeMinDuration(0));
         Assert.assertEquals(0, attTrace0.getActiveGraph().getNodeMaxDuration(0));
         Assert.assertEquals(0, attTrace0.getActiveGraph().getNodeMinDuration(1));
-        Assert.assertEquals(0, attTrace0.getActiveGraph().getNodeMaxDuration(1));        
+        Assert.assertEquals(0, attTrace0.getActiveGraph().getNodeMaxDuration(1));
         Assert.assertEquals(0, attTrace0.getActiveGraph().getNodeMinDuration(2));
-        Assert.assertEquals(0, attTrace0.getActiveGraph().getNodeMaxDuration(2));   
+        Assert.assertEquals(0, attTrace0.getActiveGraph().getNodeMaxDuration(2));
         
         Assert.assertEquals(1, attTrace0.getActiveGraph().getArcTotalFrequency(2));
         Assert.assertEquals(1, attTrace0.getActiveGraph().getArcTotalFrequency(3));
         Assert.assertEquals(0, attTrace0.getActiveGraph().getArcMinDuration(2));
         Assert.assertEquals(0, attTrace0.getActiveGraph().getArcMaxDuration(2));
         Assert.assertEquals(0, attTrace0.getActiveGraph().getArcMinDuration(3));
-        Assert.assertEquals(0, attTrace0.getActiveGraph().getArcMaxDuration(3));        
+        Assert.assertEquals(0, attTrace0.getActiveGraph().getArcMaxDuration(3));
 
     }
     
@@ -291,7 +293,7 @@ public class LogTest extends DataSetup {
         
         // ALog
         Assert.assertEquals(1, log.getOriginalTraces().size());
-        Assert.assertEquals(1, log.getTraces().size());        
+        Assert.assertEquals(1, log.getTraces().size());
         Assert.assertEquals(1, log.getOriginalTraceStatus().cardinality());
         Assert.assertEquals("L1", log.getAttributes().get("concept:name").toString());
         Assert.assertEquals(11,  log.getOriginalNumberOfEvents());
@@ -300,13 +302,13 @@ public class LogTest extends DataSetup {
         Assert.assertEquals(Lists.mutable.of(trace0), log.getOriginalTraces());
         
         // ATrace
-        Assert.assertEquals("Case1", trace0.getTraceId()); 
+        Assert.assertEquals("Case1", trace0.getTraceId());
         Assert.assertEquals(11, trace0.getOriginalActivities().size());
         Assert.assertEquals(11, trace0.getActivities().size());
         Assert.assertEquals(11, trace0.getEvents().size());
         Assert.assertEquals(11, trace0.getOriginalEvents().size());
-        Assert.assertEquals(1, trace0.getAttributes().size());  
-        Assert.assertEquals(11, trace0.getOriginalEventStatus().cardinality()); 
+        Assert.assertEquals(1, trace0.getAttributes().size());
+        Assert.assertEquals(11, trace0.getOriginalEventStatus().cardinality());
         Assert.assertEquals(11, trace0.getOriginalActivityStatus().cardinality());
         
         
@@ -367,7 +369,7 @@ public class LogTest extends DataSetup {
                 dateFormatter.parseDateTime("2010-10-27T22:01:19.308+10:00").getMillis(), //arc 0: 0->0
                 dateFormatter.parseDateTime("2010-10-27T22:03:19.308+10:00").getMillis(), // 1: 0->1
                 dateFormatter.parseDateTime("2010-10-27T22:06:19.308+10:00").getMillis(), // 2: 1->2
-                dateFormatter.parseDateTime("2010-10-27T22:10:19.308+10:00").getMillis(), // 
+                dateFormatter.parseDateTime("2010-10-27T22:10:19.308+10:00").getMillis(), //
                 dateFormatter.parseDateTime("2010-10-27T22:15:19.308+10:00").getMillis(),
                 dateFormatter.parseDateTime("2010-10-27T22:21:19.308+10:00").getMillis(),
                 dateFormatter.parseDateTime("2010-10-27T22:28:19.308+10:00").getMillis(),
@@ -391,11 +393,29 @@ public class LogTest extends DataSetup {
                 dateFormatter.parseDateTime("2010-10-27T22:45:19.308+10:00").getMillis(),
                 dateFormatter.parseDateTime("2010-10-27T22:55:19.308+10:00").getMillis(),
                 dateFormatter.parseDateTime("2010-10-27T22:55:19.308+10:00").getMillis()),
-                attTrace0.getEndTimeTrace());   
+                attTrace0.getEndTimeTrace());
         
-        Assert.assertEquals(LongArrayList.newListWith(0,0,0,0,0,0,0,0,0,0,0,0,0), attTrace0.getDurationTrace());         
+        Assert.assertEquals(LongArrayList.newListWith(0,0,0,0,0,0,0,0,0,0,0,0,0), attTrace0.getDurationTrace());
         
         Assert.assertEquals(false, attTrace0.isEmpty());
+        
+        // Test Activity Attribute Map
+        Assert.assertEquals(true, attTrace0.getAttributeMapAtIndex(0).isEmpty());
+        Assert.assertEquals(Stream.of(new Object[][] {
+                                { "org:resource", "R1" },
+                                { "concept:name", "a" },
+                                { "time:timestamp", "2010-10-27T22:00:19.308+10:00" },
+                                { "lifecycle:transition", "complete" }
+                            }).collect(Collectors.toMap(data -> (String) data[0], data -> (String) data[1])),
+                attTrace0.getAttributeMapAtIndex(1));
+        Assert.assertEquals(Stream.of(new Object[][] {
+                                { "org:resource", "R2" },
+                                { "concept:name", "a" },
+                                { "time:timestamp", "2010-10-27T22:01:19.308+10:00" },
+                                { "lifecycle:transition", "complete" }
+                            }).collect(Collectors.toMap(data -> (String) data[0], data -> (String) data[1])),
+                attTrace0.getAttributeMapAtIndex(2));
+        Assert.assertEquals(true, attTrace0.getAttributeMapAtIndex(attTrace0.getValueTrace().size()-1).isEmpty());
         
         AttributeTraceGraph traceGraph0 = attTrace0.getActiveGraph();
         Assert.assertEquals(IntSets.mutable.of(0,1,2,8,12,15,17,20,24), traceGraph0.getArcs());
@@ -414,11 +434,11 @@ public class LogTest extends DataSetup {
         
         Assert.assertEquals(0, traceGraph0.getNodeTotalDuration(1));
         Assert.assertEquals(0, traceGraph0.getNodeMinDuration(1));
-        Assert.assertEquals(0, traceGraph0.getNodeMaxDuration(1));        
+        Assert.assertEquals(0, traceGraph0.getNodeMaxDuration(1));
         
         Assert.assertEquals(0, traceGraph0.getNodeTotalDuration(2));
         Assert.assertEquals(0, traceGraph0.getNodeMinDuration(2));
-        Assert.assertEquals(0, traceGraph0.getNodeMaxDuration(2));   
+        Assert.assertEquals(0, traceGraph0.getNodeMaxDuration(2));
 
         Assert.assertEquals(0, traceGraph0.getNodeTotalDuration(3));
         Assert.assertEquals(0, traceGraph0.getNodeMinDuration(3));
@@ -426,11 +446,11 @@ public class LogTest extends DataSetup {
         
         Assert.assertEquals(0, traceGraph0.getNodeTotalDuration(4));
         Assert.assertEquals(0, traceGraph0.getNodeMinDuration(4));
-        Assert.assertEquals(0, traceGraph0.getNodeMaxDuration(4));   
+        Assert.assertEquals(0, traceGraph0.getNodeMaxDuration(4));
 
         Assert.assertEquals(0, traceGraph0.getNodeTotalDuration(5));
         Assert.assertEquals(0, traceGraph0.getNodeMinDuration(5));
-        Assert.assertEquals(0, traceGraph0.getNodeMaxDuration(5));   
+        Assert.assertEquals(0, traceGraph0.getNodeMaxDuration(5));
         
         Assert.assertEquals(2, traceGraph0.getArcTotalFrequency(0)); //0,1,2,8,12,15,17,20,24
         Assert.assertEquals(1, traceGraph0.getArcTotalFrequency(1));
@@ -504,7 +524,7 @@ public class LogTest extends DataSetup {
         Assert.assertEquals("R2", attLog.getStringFromValue(1));
         Assert.assertEquals("R3", attLog.getStringFromValue(2));
         Assert.assertEquals("R4", attLog.getStringFromValue(3));
-        Assert.assertEquals("R5", attLog.getStringFromValue(4));        
+        Assert.assertEquals("R5", attLog.getStringFromValue(4));
         Assert.assertEquals(Constants.START_NAME, attLog.getStringFromValue(attLog.getStartEvent()));
         Assert.assertEquals(Constants.END_NAME, attLog.getStringFromValue(attLog.getEndEvent()));
         Assert.assertEquals(attLog.getAttribute().getArtificialStartIndex(), attLog.getStartEvent());
@@ -546,11 +566,11 @@ public class LogTest extends DataSetup {
         
         Assert.assertEquals(LongArrayList.newListWith(
                 dateFormatter.parseDateTime("2010-10-27T22:00:19.308+10:00").getMillis(),
-                dateFormatter.parseDateTime("2010-10-27T22:00:19.308+10:00").getMillis(), 
-                dateFormatter.parseDateTime("2010-10-27T22:01:19.308+10:00").getMillis(), 
-                dateFormatter.parseDateTime("2010-10-27T22:03:19.308+10:00").getMillis(), 
-                dateFormatter.parseDateTime("2010-10-27T22:06:19.308+10:00").getMillis(), 
-                dateFormatter.parseDateTime("2010-10-27T22:10:19.308+10:00").getMillis(), 
+                dateFormatter.parseDateTime("2010-10-27T22:00:19.308+10:00").getMillis(),
+                dateFormatter.parseDateTime("2010-10-27T22:01:19.308+10:00").getMillis(),
+                dateFormatter.parseDateTime("2010-10-27T22:03:19.308+10:00").getMillis(),
+                dateFormatter.parseDateTime("2010-10-27T22:06:19.308+10:00").getMillis(),
+                dateFormatter.parseDateTime("2010-10-27T22:10:19.308+10:00").getMillis(),
                 dateFormatter.parseDateTime("2010-10-27T22:15:19.308+10:00").getMillis(),
                 dateFormatter.parseDateTime("2010-10-27T22:21:19.308+10:00").getMillis(),
                 dateFormatter.parseDateTime("2010-10-27T22:28:19.308+10:00").getMillis(),
@@ -574,9 +594,9 @@ public class LogTest extends DataSetup {
                 dateFormatter.parseDateTime("2010-10-27T22:45:19.308+10:00").getMillis(),
                 dateFormatter.parseDateTime("2010-10-27T22:55:19.308+10:00").getMillis(),
                 dateFormatter.parseDateTime("2010-10-27T22:55:19.308+10:00").getMillis()),
-                attTrace0.getEndTimeTrace());   
+                attTrace0.getEndTimeTrace());
         
-        Assert.assertEquals(LongArrayList.newListWith(0,0,0,0,0,0,0,0,0,0,0,0,0), attTrace0.getDurationTrace());         
+        Assert.assertEquals(LongArrayList.newListWith(0,0,0,0,0,0,0,0,0,0,0,0,0), attTrace0.getDurationTrace());
         
         Assert.assertEquals(false, attTrace0.isEmpty());
         
@@ -588,9 +608,9 @@ public class LogTest extends DataSetup {
         Assert.assertEquals(4, traceGraph0.getNodeTotalFrequency(1));
         Assert.assertEquals(2, traceGraph0.getNodeTotalFrequency(2));
         Assert.assertEquals(2, traceGraph0.getNodeTotalFrequency(3));
-        Assert.assertEquals(1, traceGraph0.getNodeTotalFrequency(4)); 
-        Assert.assertEquals(1, traceGraph0.getNodeTotalFrequency(5)); 
-        Assert.assertEquals(1, traceGraph0.getNodeTotalFrequency(6)); 
+        Assert.assertEquals(1, traceGraph0.getNodeTotalFrequency(4));
+        Assert.assertEquals(1, traceGraph0.getNodeTotalFrequency(5));
+        Assert.assertEquals(1, traceGraph0.getNodeTotalFrequency(6));
         
         Assert.assertEquals(0, traceGraph0.getNodeTotalDuration(0));
         Assert.assertEquals(0, traceGraph0.getNodeMinDuration(0));
@@ -598,11 +618,11 @@ public class LogTest extends DataSetup {
         
         Assert.assertEquals(0, traceGraph0.getNodeTotalDuration(1));
         Assert.assertEquals(0, traceGraph0.getNodeMinDuration(1));
-        Assert.assertEquals(0, traceGraph0.getNodeMaxDuration(1));        
+        Assert.assertEquals(0, traceGraph0.getNodeMaxDuration(1));
         
         Assert.assertEquals(0, traceGraph0.getNodeTotalDuration(2));
         Assert.assertEquals(0, traceGraph0.getNodeMinDuration(2));
-        Assert.assertEquals(0, traceGraph0.getNodeMaxDuration(2));   
+        Assert.assertEquals(0, traceGraph0.getNodeMaxDuration(2));
 
         Assert.assertEquals(0, traceGraph0.getNodeTotalDuration(3));
         Assert.assertEquals(0, traceGraph0.getNodeMinDuration(3));
@@ -610,15 +630,15 @@ public class LogTest extends DataSetup {
         
         Assert.assertEquals(0, traceGraph0.getNodeTotalDuration(4));
         Assert.assertEquals(0, traceGraph0.getNodeMinDuration(4));
-        Assert.assertEquals(0, traceGraph0.getNodeMaxDuration(4));   
+        Assert.assertEquals(0, traceGraph0.getNodeMaxDuration(4));
 
         Assert.assertEquals(0, traceGraph0.getNodeTotalDuration(5));
         Assert.assertEquals(0, traceGraph0.getNodeMinDuration(5));
-        Assert.assertEquals(0, traceGraph0.getNodeMaxDuration(5));   
+        Assert.assertEquals(0, traceGraph0.getNodeMaxDuration(5));
         
         Assert.assertEquals(0, traceGraph0.getNodeTotalDuration(6));
         Assert.assertEquals(0, traceGraph0.getNodeMinDuration(6));
-        Assert.assertEquals(0, traceGraph0.getNodeMaxDuration(6));          
+        Assert.assertEquals(0, traceGraph0.getNodeMaxDuration(6));
         
         Assert.assertEquals(2, traceGraph0.getArcTotalFrequency(1)); //1,8,9,11,14,17,23,24,34,35
         Assert.assertEquals(2, traceGraph0.getArcTotalFrequency(8));
@@ -656,10 +676,10 @@ public class LogTest extends DataSetup {
         Assert.assertEquals(360000, traceGraph0.getArcMaxDuration(24));
         
         Assert.assertEquals(0, traceGraph0.getArcMinDuration(34));
-        Assert.assertEquals(0, traceGraph0.getArcMaxDuration(34));     
+        Assert.assertEquals(0, traceGraph0.getArcMaxDuration(34));
         
         Assert.assertEquals(0, traceGraph0.getArcMinDuration(35));
-        Assert.assertEquals(0, traceGraph0.getArcMaxDuration(35));           
+        Assert.assertEquals(0, traceGraph0.getArcMaxDuration(35));
     }
     
     @Test
@@ -753,7 +773,7 @@ public class LogTest extends DataSetup {
         }
 
         Assert.assertEquals(1, log.getOriginalTraces().size());
-        Assert.assertEquals(0, log.getTraces().size());        
+        Assert.assertEquals(0, log.getTraces().size());
         Assert.assertEquals(0, log.getOriginalTraceStatus().cardinality());
         Assert.assertEquals("L1", log.getAttributes().get("concept:name").toString());
         Assert.assertEquals(11,  log.getOriginalNumberOfEvents());
@@ -807,7 +827,7 @@ public class LogTest extends DataSetup {
         Assert.assertEquals(0, logSummary.getTraceDurationMedian(), 0.05);
         
         
-        // Restore 
+        // Restore
         try {
             logBitMap1.clear();
             logBitMap1.setTraceBitSet(LogBitMap.newBitSet(1), 1); // re-add trace
@@ -820,7 +840,7 @@ public class LogTest extends DataSetup {
         
         // ALog
         Assert.assertEquals(1, log.getOriginalTraces().size());
-        Assert.assertEquals(1, log.getTraces().size());        
+        Assert.assertEquals(1, log.getTraces().size());
         Assert.assertEquals(1, log.getOriginalTraceStatus().cardinality());
         Assert.assertEquals("L1", log.getAttributes().get("concept:name").toString());
         Assert.assertEquals(11, log.getOriginalNumberOfEvents());
@@ -908,7 +928,7 @@ public class LogTest extends DataSetup {
         }
         
         Assert.assertEquals(1, log.getOriginalTraces().size());
-        Assert.assertEquals(1, log.getTraces().size());        
+        Assert.assertEquals(1, log.getTraces().size());
         Assert.assertEquals(1, log.getOriginalTraceStatus().cardinality());
         Assert.assertEquals("L1", log.getAttributes().get("concept:name").toString());
         Assert.assertEquals(11,  log.getOriginalNumberOfEvents());
@@ -927,7 +947,7 @@ public class LogTest extends DataSetup {
         Assert.assertEquals(6, attLog.getNumberOfEvents());
         Assert.assertEquals("a", attLog.getStringFromValue(0));
         Assert.assertEquals("c", attLog.getStringFromValue(2));
-        Assert.assertEquals("d", attLog.getStringFromValue(3));        
+        Assert.assertEquals("d", attLog.getStringFromValue(3));
         Assert.assertEquals(IntSets.mutable.of(attLog.getEndEvent(),attLog.getStartEvent(),0,1,2,3), attLog.getOriginalAttributeValues());
         Assert.assertEquals(IntSets.mutable.of(attLog.getEndEvent(),attLog.getStartEvent(),0,2,3), attLog.getAttributeValues());
         Assert.assertEquals(Constants.START_NAME, attLog.getStringFromValue(attLog.getStartEvent()));
@@ -973,7 +993,7 @@ public class LogTest extends DataSetup {
         Assert.assertEquals(IntArrayList.newListWith(attLog.getStartEvent(),0,0,0,1,2,3,2,3,2,0,2,attLog.getEndEvent()), attTrace0.getOriginalValueTrace());
         
         Assert.assertEquals(LongArrayList.newListWith(
-                dateFormatter.parseDateTime("2010-10-27T22:15:19.308+10:00").getMillis(),                
+                dateFormatter.parseDateTime("2010-10-27T22:15:19.308+10:00").getMillis(),
                 dateFormatter.parseDateTime("2010-10-27T22:15:19.308+10:00").getMillis(),
                 dateFormatter.parseDateTime("2010-10-27T22:21:19.308+10:00").getMillis(),
                 dateFormatter.parseDateTime("2010-10-27T22:28:19.308+10:00").getMillis(),
@@ -984,7 +1004,7 @@ public class LogTest extends DataSetup {
                 attTrace0.getStartTimeTrace());
         
         Assert.assertEquals(LongArrayList.newListWith(
-                dateFormatter.parseDateTime("2010-10-27T22:15:19.308+10:00").getMillis(),                
+                dateFormatter.parseDateTime("2010-10-27T22:15:19.308+10:00").getMillis(),
                 dateFormatter.parseDateTime("2010-10-27T22:15:19.308+10:00").getMillis(),
                 dateFormatter.parseDateTime("2010-10-27T22:21:19.308+10:00").getMillis(),
                 dateFormatter.parseDateTime("2010-10-27T22:28:19.308+10:00").getMillis(),
@@ -992,9 +1012,9 @@ public class LogTest extends DataSetup {
                 dateFormatter.parseDateTime("2010-10-27T22:45:19.308+10:00").getMillis(),
                 dateFormatter.parseDateTime("2010-10-27T22:55:19.308+10:00").getMillis(),
                 dateFormatter.parseDateTime("2010-10-27T22:55:19.308+10:00").getMillis()),
-                attTrace0.getEndTimeTrace());   
+                attTrace0.getEndTimeTrace());
         
-        Assert.assertEquals(LongArrayList.newListWith(0,0,0,0,0,0,0,0), attTrace0.getDurationTrace());         
+        Assert.assertEquals(LongArrayList.newListWith(0,0,0,0,0,0,0,0), attTrace0.getDurationTrace());
         
         Assert.assertEquals(false, attTrace0.isEmpty());
         
@@ -1014,7 +1034,7 @@ public class LogTest extends DataSetup {
         
         Assert.assertEquals(0, traceGraph0.getNodeTotalDuration(2));
         Assert.assertEquals(0, traceGraph0.getNodeMinDuration(2));
-        Assert.assertEquals(0, traceGraph0.getNodeMaxDuration(2));   
+        Assert.assertEquals(0, traceGraph0.getNodeMaxDuration(2));
 
         Assert.assertEquals(0, traceGraph0.getNodeTotalDuration(3));
         Assert.assertEquals(0, traceGraph0.getNodeMinDuration(3));
@@ -1022,11 +1042,11 @@ public class LogTest extends DataSetup {
         
         Assert.assertEquals(0, traceGraph0.getNodeTotalDuration(4));
         Assert.assertEquals(0, traceGraph0.getNodeMinDuration(4));
-        Assert.assertEquals(0, traceGraph0.getNodeMaxDuration(4));   
+        Assert.assertEquals(0, traceGraph0.getNodeMaxDuration(4));
 
         Assert.assertEquals(0, traceGraph0.getNodeTotalDuration(5));
         Assert.assertEquals(0, traceGraph0.getNodeMinDuration(5));
-        Assert.assertEquals(0, traceGraph0.getNodeMaxDuration(5));   
+        Assert.assertEquals(0, traceGraph0.getNodeMaxDuration(5));
         
         Assert.assertEquals(1, traceGraph0.getArcTotalFrequency(2)); //2,12,15,17,20,27
         Assert.assertEquals(1, traceGraph0.getArcTotalFrequency(12));
@@ -1066,7 +1086,7 @@ public class LogTest extends DataSetup {
         
         // ALog
         Assert.assertEquals(1, log.getOriginalTraces().size());
-        Assert.assertEquals(1, log.getTraces().size());        
+        Assert.assertEquals(1, log.getTraces().size());
         Assert.assertEquals(1, log.getOriginalTraceStatus().cardinality());
         Assert.assertEquals("L1", log.getAttributes().get("concept:name").toString());
         Assert.assertEquals(22,  log.getOriginalNumberOfEvents());
@@ -1075,13 +1095,13 @@ public class LogTest extends DataSetup {
         Assert.assertEquals(Lists.mutable.of(trace0), log.getOriginalTraces());
         
         // ATrace
-        Assert.assertEquals("Case1", trace0.getTraceId()); 
+        Assert.assertEquals("Case1", trace0.getTraceId());
         Assert.assertEquals(11, trace0.getOriginalActivities().size());
         Assert.assertEquals(11, trace0.getActivities().size());
         Assert.assertEquals(22, trace0.getEvents().size());
         Assert.assertEquals(22, trace0.getOriginalEvents().size());
-        Assert.assertEquals(1, trace0.getAttributes().size());  
-        Assert.assertEquals(22, trace0.getOriginalEventStatus().cardinality()); 
+        Assert.assertEquals(1, trace0.getAttributes().size());
+        Assert.assertEquals(22, trace0.getOriginalEventStatus().cardinality());
         Assert.assertEquals(11, trace0.getOriginalActivityStatus().cardinality());
         
         
@@ -1139,11 +1159,11 @@ public class LogTest extends DataSetup {
         Assert.assertEquals(LongArrayList.newListWith(
                 dateFormatter.parseDateTime("2010-10-27T21:59:19.308+10:00").getMillis(),
                 dateFormatter.parseDateTime("2010-10-27T21:59:19.308+10:00").getMillis(),
-                dateFormatter.parseDateTime("2010-10-27T22:00:19.308+10:00").getMillis(), 
-                dateFormatter.parseDateTime("2010-10-27T22:02:19.308+10:00").getMillis(), 
-                dateFormatter.parseDateTime("2010-10-27T22:05:19.308+10:00").getMillis(), 
-                dateFormatter.parseDateTime("2010-10-27T22:09:19.308+10:00").getMillis(), 
-                dateFormatter.parseDateTime("2010-10-27T22:14:19.308+10:00").getMillis(),  
+                dateFormatter.parseDateTime("2010-10-27T22:00:19.308+10:00").getMillis(),
+                dateFormatter.parseDateTime("2010-10-27T22:02:19.308+10:00").getMillis(),
+                dateFormatter.parseDateTime("2010-10-27T22:05:19.308+10:00").getMillis(),
+                dateFormatter.parseDateTime("2010-10-27T22:09:19.308+10:00").getMillis(),
+                dateFormatter.parseDateTime("2010-10-27T22:14:19.308+10:00").getMillis(),
                 dateFormatter.parseDateTime("2010-10-27T22:20:19.308+10:00").getMillis(),
                 dateFormatter.parseDateTime("2010-10-27T22:27:19.308+10:00").getMillis(),
                 dateFormatter.parseDateTime("2010-10-27T22:35:19.308+10:00").getMillis(),
@@ -1166,9 +1186,9 @@ public class LogTest extends DataSetup {
                 dateFormatter.parseDateTime("2010-10-27T22:45:19.308+10:00").getMillis(),
                 dateFormatter.parseDateTime("2010-10-27T22:55:19.308+10:00").getMillis(),
                 dateFormatter.parseDateTime("2010-10-27T22:55:19.308+10:00").getMillis()),
-                attTrace0.getEndTimeTrace());   
+                attTrace0.getEndTimeTrace());
         
-        Assert.assertEquals(LongArrayList.newListWith(0,60000,60000,60000,60000,60000,60000,60000,60000,60000,60000,60000,0), attTrace0.getDurationTrace());         
+        Assert.assertEquals(LongArrayList.newListWith(0,60000,60000,60000,60000,60000,60000,60000,60000,60000,60000,60000,0), attTrace0.getDurationTrace());
         
         AttributeTraceGraph traceGraph0 = attTrace0.getActiveGraph();
         Assert.assertEquals(IntSets.mutable.of(0,1,2,8,12,15,17,20,24), traceGraph0.getArcs());
@@ -1187,11 +1207,11 @@ public class LogTest extends DataSetup {
         
         Assert.assertEquals(60000, traceGraph0.getNodeTotalDuration(1));
         Assert.assertEquals(60000, traceGraph0.getNodeMinDuration(1));
-        Assert.assertEquals(60000, traceGraph0.getNodeMaxDuration(1));        
+        Assert.assertEquals(60000, traceGraph0.getNodeMaxDuration(1));
         
         Assert.assertEquals(240000, traceGraph0.getNodeTotalDuration(2));
         Assert.assertEquals(60000, traceGraph0.getNodeMinDuration(2));
-        Assert.assertEquals(60000, traceGraph0.getNodeMaxDuration(2));   
+        Assert.assertEquals(60000, traceGraph0.getNodeMaxDuration(2));
 
         Assert.assertEquals(120000, traceGraph0.getNodeTotalDuration(3));
         Assert.assertEquals(60000, traceGraph0.getNodeMinDuration(3));
@@ -1199,11 +1219,11 @@ public class LogTest extends DataSetup {
         
         Assert.assertEquals(0, traceGraph0.getNodeTotalDuration(4));
         Assert.assertEquals(0, traceGraph0.getNodeMinDuration(4));
-        Assert.assertEquals(0, traceGraph0.getNodeMaxDuration(4));   
+        Assert.assertEquals(0, traceGraph0.getNodeMaxDuration(4));
 
         Assert.assertEquals(0, traceGraph0.getNodeTotalDuration(5));
         Assert.assertEquals(0, traceGraph0.getNodeMinDuration(5));
-        Assert.assertEquals(0, traceGraph0.getNodeMaxDuration(5));   
+        Assert.assertEquals(0, traceGraph0.getNodeMaxDuration(5));
         
         Assert.assertEquals(2, traceGraph0.getArcTotalFrequency(0)); //0,1,2,8,12,15,17,20,24
         Assert.assertEquals(1, traceGraph0.getArcTotalFrequency(1));
@@ -1284,11 +1304,11 @@ public class LogTest extends DataSetup {
         
         // ALog
         Assert.assertEquals(6, log.getOriginalTraces().size());
-        Assert.assertEquals(6, log.getTraces().size());        
+        Assert.assertEquals(6, log.getTraces().size());
         Assert.assertEquals(6, log.getOriginalTraceStatus().cardinality());
         Assert.assertEquals("L1_complete_events_only_with_resources", log.getAttributes().get("concept:name").toString());
         Assert.assertEquals(23,  log.getOriginalNumberOfEvents());
-        Assert.assertEquals(23,  log.getNumberOfEvents());          
+        Assert.assertEquals(23,  log.getNumberOfEvents());
         
         // ATrace
         
@@ -1305,7 +1325,7 @@ public class LogTest extends DataSetup {
         Assert.assertEquals(Constants.START_NAME, attLog.getStringFromValue(attLog.getStartEvent()));
         Assert.assertEquals(Constants.END_NAME, attLog.getStringFromValue(attLog.getEndEvent()));
         Assert.assertEquals(attLog.getAttribute().getArtificialStartIndex(), attLog.getStartEvent());
-        Assert.assertEquals(attLog.getAttribute().getArtificialEndIndex(), attLog.getEndEvent());     
+        Assert.assertEquals(attLog.getAttribute().getArtificialEndIndex(), attLog.getEndEvent());
         
         // LogSummary
         AttributeLogSummary oriLogSummary = attLog.getOriginalLogSummary();

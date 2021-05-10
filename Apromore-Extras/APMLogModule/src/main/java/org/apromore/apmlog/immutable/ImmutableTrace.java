@@ -25,6 +25,7 @@ import org.apromore.apmlog.AActivity;
 import org.apromore.apmlog.AEvent;
 import org.apromore.apmlog.ATrace;
 import org.apromore.apmlog.util.Util;
+import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
 import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
@@ -160,8 +161,8 @@ public class ImmutableTrace implements ATrace {
     @Override
     public List<String> getActivityNameList() {
         List<String> names = new ArrayList<>();
-        for (int i = 0; i < activities.size(); i++) {
-            UnifiedMap<String, String> attrMap = activities.get(i).getAttributes();
+        for (AActivity activity : activities) {
+            UnifiedMap<String, String> attrMap = activity.getAttributes();
             if (attrMap != null) {
                 if (attrMap.containsKey("concept:name")) names.add(attrMap.get("concept:name"));
             }
@@ -319,6 +320,18 @@ public class ImmutableTrace implements ATrace {
     @Override
     public List<Integer> getActivityNameIndexList() {
         return null;
+    }
+
+    public String getActivityNameIndexString(HashBiMap<String, Integer> nameIndexBiMap) {
+        try {
+            StringBuilder sb = new StringBuilder();
+            for (AActivity activity : getActivityList()) {
+                sb.append(nameIndexBiMap.get(activity.getName()));
+            }
+            return sb.toString();
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     @Override

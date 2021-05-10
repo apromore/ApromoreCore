@@ -22,8 +22,12 @@
 
 package org.apromore.logman;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apromore.logman.utils.LogUtils;
 import org.deckfour.xes.model.XAttribute;
+import org.deckfour.xes.model.XAttributeMap;
 import org.deckfour.xes.model.impl.XEventImpl;
 import org.joda.time.DateTime;
 
@@ -36,7 +40,7 @@ import org.joda.time.DateTime;
  * to an instant activity if it has only one active event left
  * 
  * An activity can be inactive when all of its events are inactive (e.g. filtered out)
- * If an Activity is used, isActive() should be checked if it is unsure of its status   
+ * If an Activity is used, isActive() should be checked if it is unsure of its status
  * 
  * @author Bruce Nguyen
  *
@@ -48,13 +52,13 @@ public class AActivity extends XEventImpl {// implements Map.Entry<XEvent,XEvent
     private ATrace trace;
     
     public AActivity(ATrace trace, int start, int complete) {
-    	this(trace, start,complete,true); 
+    	this(trace, start,complete,true);
     }
     
     public AActivity(ATrace trace, int originalStartIndex, int originalCompleteIndex, boolean useComplete) {
     	super();
     	this.trace = trace;
-    	this.setAttributes(useComplete ? trace.getOriginalEventFromIndex(originalCompleteIndex).getAttributes() : 
+    	this.setAttributes(useComplete ? trace.getOriginalEventFromIndex(originalCompleteIndex).getAttributes() :
     	                    trace.getOriginalEventFromIndex(originalStartIndex).getAttributes());
     	this.originalStartIndex = originalStartIndex;
     	this.originalCompleteIndex = originalCompleteIndex;
@@ -121,7 +125,7 @@ public class AActivity extends XEventImpl {// implements Map.Entry<XEvent,XEvent
         else {
             return null;
         }
-    }   
+    }
     
     public DateTime getStartTime() {
         if (trace.getOriginalEventStatus(originalStartIndex)) {
@@ -204,6 +208,14 @@ public class AActivity extends XEventImpl {// implements Map.Entry<XEvent,XEvent
     @Override
     public String toString() {
         return LogUtils.getConceptName(this);
+    }
+    
+    public Map<String,String> getAttributeMap() {
+        XAttributeMap xMap = useComplete ? trace.getOriginalEventFromIndex(originalCompleteIndex).getAttributes() :
+                                trace.getOriginalEventFromIndex(originalStartIndex).getAttributes();
+        Map<String,String> attributes = new HashMap<>();
+        xMap.entrySet().forEach(entry -> attributes.put(entry.getKey(), entry.getValue().toString()));
+        return attributes;
     }
     
 }
