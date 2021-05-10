@@ -42,12 +42,6 @@ import org.apromore.plugin.portal.logfilter.generic.LogFilterPlugin;
 import org.apromore.plugin.portal.processdiscoverer.actions.Action;
 import org.apromore.plugin.portal.processdiscoverer.actions.ActionHistory;
 import org.apromore.plugin.portal.processdiscoverer.actions.FilterAction;
-import org.apromore.plugin.portal.processdiscoverer.actions.FilterActionOnEdgeRemoveTrace;
-import org.apromore.plugin.portal.processdiscoverer.actions.FilterActionOnEdgeRetainTrace;
-import org.apromore.plugin.portal.processdiscoverer.actions.FilterActionOnNodeRemoveEvent;
-import org.apromore.plugin.portal.processdiscoverer.actions.FilterActionOnNodeRemoveTrace;
-import org.apromore.plugin.portal.processdiscoverer.actions.FilterActionOnNodeRetainEvent;
-import org.apromore.plugin.portal.processdiscoverer.actions.FilterActionOnNodeRetainTrace;
 import org.apromore.plugin.portal.processdiscoverer.components.CaseDetailsController;
 import org.apromore.plugin.portal.processdiscoverer.components.GraphSettingsController;
 import org.apromore.plugin.portal.processdiscoverer.components.GraphVisController;
@@ -283,15 +277,6 @@ public class PDController extends BaseController {
             
             // Set up UI components
             graphVisController = pdFactory.createGraphVisController(this);
-            Map<String, FilterAction> filterActions = new HashMap<>();
-            filterActions.put("onNodeRemovedTrace", new FilterActionOnNodeRemoveTrace(this, this.getProcessAnalyst()));
-            filterActions.put("onNodeRetainedTrace", new FilterActionOnNodeRetainTrace(this, this.getProcessAnalyst()));
-            filterActions.put("onNodeRemovedEvent", new FilterActionOnNodeRemoveEvent(this, this.getProcessAnalyst()));
-            filterActions.put("onNodeRetainedEvent", new FilterActionOnNodeRetainEvent(this, this.getProcessAnalyst()));
-            filterActions.put("onEdgeRemoved", new FilterActionOnEdgeRemoveTrace(this, this.getProcessAnalyst()));
-            filterActions.put("onEdgeRetained", new FilterActionOnEdgeRetainTrace(this, this.getProcessAnalyst()));
-            graphVisController.setActions(filterActions);
-            
             caseDetailsController = pdFactory.createCaseDetailsController(this);
             perspectiveDetailsController = pdFactory.createPerspectiveDetailsController(this);
             viewSettingsController = pdFactory.createViewSettingsController(this);
@@ -727,7 +712,7 @@ public class PDController extends BaseController {
     
     //////////////////////// ACTION MANAGEMENT /////////////////////////
 
-    // For real action that perform changes
+    /** For real action that perform changes */
     public void executeAction(Action action) {
         if (action.execute()) {
             actionHistory.undoPush(action);
@@ -739,9 +724,11 @@ public class PDController extends BaseController {
         }
     }
     
-    // For actions that don't change anything but need to be bundled for undo/redo
-    // Some actions fall into this category, such as do filtering via opening a LogFilter window
-    // These actions can't be executed directly via executeAction() method, but they can be stored to support undo/redo
+    /**
+     * For actions that don't change anything but need to be bundled for undo/redo
+     * Some actions fall into this category, such as do filtering via opening a LogFilter window
+     * These actions can't be executed directly via executeAction() method, but they can be stored to support undo/redo
+     */
     public void storeAction(Action action) {
         actionHistory.undoPush(action);
     }

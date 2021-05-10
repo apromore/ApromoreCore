@@ -22,6 +22,7 @@
 package org.apromore.plugin.portal.processdiscoverer.components;
 
 import org.apromore.plugin.portal.processdiscoverer.PDController;
+import org.apromore.plugin.portal.processdiscoverer.actions.FilterAction;
 import org.apromore.plugin.portal.processdiscoverer.actions.FilterActionOnClearFilter;
 import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
 import org.zkoss.zk.ui.Component;
@@ -209,7 +210,7 @@ public class ToolbarController extends AbstractController {
     private void proceedClearFilter(Event evt) {
         if (evt.getName().equals("onOK")) {
             try {
-                FilterActionOnClearFilter action = new FilterActionOnClearFilter(parent, parent.getProcessAnalyst());
+                FilterAction action = new FilterActionOnClearFilter(parent, parent.getProcessAnalyst());
                 action.setPreActionFilterCriteria(parent.getProcessAnalyst().copyCurrentFilterCriteria());
                 parent.executeAction(action);
             } catch (Exception e) {

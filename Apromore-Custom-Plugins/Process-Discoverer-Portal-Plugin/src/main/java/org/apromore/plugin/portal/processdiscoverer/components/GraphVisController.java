@@ -24,13 +24,10 @@ package org.apromore.plugin.portal.processdiscoverer.components;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.apromore.plugin.portal.processdiscoverer.PDController;
-import org.apromore.plugin.portal.processdiscoverer.actions.FilterAction;
 import org.apromore.plugin.portal.processdiscoverer.actions.FilterActionOnEdgeRemoveTrace;
 import org.apromore.plugin.portal.processdiscoverer.actions.FilterActionOnEdgeRetainTrace;
 import org.apromore.plugin.portal.processdiscoverer.actions.FilterActionOnElementFilter;
@@ -87,8 +84,6 @@ public class GraphVisController extends VisualController {
     
     private Movie animationMovie;
     
-    private Map<String, FilterAction> filterActions = new HashMap<>();
-    
     public GraphVisController(PDController controller) {
         super(controller);
     }
@@ -97,10 +92,6 @@ public class GraphVisController extends VisualController {
     public void initializeControls(Object data) {
         if (this.parent == null) return;
         vizBridge = parent.getFellow("vizBridge");
-    }
-    
-    public void setActions(Map<String, FilterAction> filterActions) {
-        this.filterActions = filterActions;
     }
     
     @Override

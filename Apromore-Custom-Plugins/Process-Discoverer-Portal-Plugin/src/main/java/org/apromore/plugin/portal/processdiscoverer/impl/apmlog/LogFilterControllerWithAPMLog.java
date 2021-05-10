@@ -40,7 +40,7 @@ import org.apromore.plugin.portal.logfilter.generic.LogFilterRequest;
 import org.apromore.plugin.portal.logfilter.generic.LogFilterResponse;
 import org.apromore.plugin.portal.processdiscoverer.PDAnalyst;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
-import org.apromore.plugin.portal.processdiscoverer.actions.FilterActionOnClearFilter;
+import org.apromore.plugin.portal.processdiscoverer.actions.FilterAction;
 import org.apromore.plugin.portal.processdiscoverer.actions.FilterActionOnCompositeFilterCriteria;
 import org.apromore.plugin.portal.processdiscoverer.eventlisteners.LogFilterController;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
@@ -57,8 +57,7 @@ import org.zkoss.zul.Messagebox;
  */
 public class LogFilterControllerWithAPMLog extends LogFilterController implements LogFilterClient {
     private PDAnalyst analyst;
-    private FilterActionOnCompositeFilterCriteria compositeFilterAction;
-    private FilterActionOnClearFilter clearFilterAction;
+    private FilterAction compositeFilterAction;
     
     public LogFilterControllerWithAPMLog(PDController controller) throws Exception {
         super(controller);
