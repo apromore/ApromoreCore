@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- This file has been generated with the OpenXES library. It conforms -->
+<!-- to the XML serialization of the XES standard for log storage and -->
+<!-- management. -->
+<!-- XES standard version: 2.0 -->
+<!-- OpenXES library version: 2.27 -->
+<!-- OpenXES is available from http://www.openxes.org/ -->
+<log xes.version="2.0" xes.features="nested-attributes" openxes.version="2.27">
+	<string key="concept:name" value="Poking example"/>
+	<trace>
+		<string key="concept:name" value="c1"/>
+		<event>
+			<string key="org:resource" value="r1"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="concept:name" value="a"/>
+			<date key="time:timestamp" value="2020-01-10T21:01:30.922+11:00"/>
+		</event>
+		<event>
+			<string key="org:resource" value="r1"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="concept:name" value="b"/>
+			<date key="time:timestamp" value="2020-01-10T23:02:00.922+11:00"/>
+		</event>
+		<event>
+			<string key="org:resource" value="r1"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="concept:name" value="c"/>
+			<date key="time:timestamp" value="2020-01-10T23:02:30.922+11:00"/>
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="c2"/>
+		<event>
+			<string key="org:resource" value="r1"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="concept:name" value="a"/>
+			<date key="time:timestamp" value="2020-01-11T21:01:30.922+11:00"/>
+		</event>
+		<event>
+			<string key="org:resource" value="r2"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="concept:name" value="b"/>
+			<date key="time:timestamp" value="2020-01-11T21:11:30.922+11:00"/>
+		</event>
+		<event>
+			<string key="org:resource" value="r2"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="concept:name" value="c"/>
+			<date key="time:timestamp" value="2020-01-11T22:12:30.922+11:00"/>
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="c3"/>
+		<event>
+			<string key="org:resource" value="r1"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="concept:name" value="a"/>
+			<date key="time:timestamp" value="2020-01-12T21:01:30.922+11:00"/>
+		</event>
+		<event>
+			<string key="org:resource" value="r2"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="concept:name" value="b"/>
+			<date key="time:timestamp" value="2020-01-12T21:05:31.922+11:00"/>
+		</event>
+		<event>
+			<string key="org:resource" value="r2"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="concept:name" value="c"/>
+			<date key="time:timestamp" value="2020-01-12T21:10:32.922+11:00"/>
+		</event>
+	</trace>
+</log>

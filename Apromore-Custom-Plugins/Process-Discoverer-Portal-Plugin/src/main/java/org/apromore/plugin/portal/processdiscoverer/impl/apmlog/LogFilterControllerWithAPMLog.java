@@ -86,10 +86,31 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
     private void onInvokeExtEvent(JSONObject param) {
         String type = (String) param.get("type");
         FilterType filterType = getFilterType(type);
-        String data, source, target;
-        Map<String, Object> parameters = new UnifiedMap<>();
-        String mainAttribute = parent.getUserOptions().getMainAttributeKey();
 
+
+        Map<String, Object> payload = getEditorOptionPayload(filterType, param);
+        if (payload == null || payload.isEmpty()) {
+            return;
+        }
+
+        Clients.showBusy("Launch Filter Dialog ...");
+
+        LogFilterRule rule = getLastMatchedRuleWithValues(filterType, payload,
+                (List<LogFilterRule>) logData.getCurrentFilterCriteria());
+
+        EditorOption option = rule != null ? new EditorOption(filterType, rule) :
+                new EditorOption(filterType, payload);
+
+        LogFilterRequest lfr = getRequestWithOption(option);
+        parent.getLogFilterPlugin().execute(lfr);
+        Clients.clearBusy();
+    }
+
+    private Map<String, Object> getEditorOptionPayload(FilterType filterType,
+                                                       JSONObject param) {
+        String data, source, target;
+        String mainAttribute = parent.getUserOptions().getMainAttributeKey();
+        Map<String, Object> parameters = new UnifiedMap<>();
         switch (filterType) {
             case CASE_SECTION_ATTRIBUTE_COMBINATION:
             case EVENT_ATTRIBUTE_DURATION:
@@ -98,7 +119,7 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
                         !analyst.hasSufficientDurationVariant(mainAttribute, data)) {
                     Messagebox.show("Unable to filter on node duration as there's only one value.",
                             "Filter error", Messagebox.OK, Messagebox.ERROR);
-                    return;
+                    return null;
                 }
                 parameters.put("key", mainAttribute);
                 parameters.put("value", data);
@@ -109,27 +130,16 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
                 if (!analyst.hasSufficientDurationVariant(mainAttribute, source, target)) {
                     Messagebox.show("Unable to filter on arc duration as there's only one value.",
                             "Filter error", Messagebox.OK, Messagebox.ERROR);
-                    return;
+                    return null;
                 }
                 parameters.put("key", mainAttribute);
                 parameters.put("from", source);
                 parameters.put("to", target);
                 break;
             default:
-                return;
+                return null;
         }
-
-        Clients.showBusy("Launch Filter Dialog ...");
-
-        LogFilterRule rule = getLastMatchedRuleWithValues(filterType, parameters,
-                (List<LogFilterRule>) analyst.getCurrentFilterCriteria());
-
-        EditorOption option = rule != null ? new EditorOption(filterType, rule) :
-                new EditorOption(filterType, parameters);
-
-        LogFilterRequest lfr = getRequestWithOption(option);
-        parent.getLogFilterPlugin().execute(lfr);
-        Clients.clearBusy();
+        return parameters;
     }
 
     private boolean isValidEventAttributeDuration(String mainAttribute, String data) {
@@ -221,6 +231,8 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
         if (primVals == null || primVals.isEmpty()) return false;
 
         switch (filterType) {
+            case CASE_EVENT_ATTRIBUTE:
+                return parameters.get("key").toString().equals(logFilterRule.getKey());
             case ATTRIBUTE_ARC_DURATION:
                 RuleValue rvFrom = findRuleValueByOpeType(OperationType.FROM, primVals);
                 RuleValue rvTo = findRuleValueByOpeType(OperationType.TO, primVals);
@@ -241,6 +253,23 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
                 .filter(e -> e.getOperationType() == operationType)
                 .findFirst()
                 .orElse(null);
+    }
+
+    public static JSONObject getDefaultCaseTabAttributePayload(String label) {
+        JSONObject payload = new JSONObject();
+        payload.put("type", "CaseTabAttribute");
+        payload.put("key", convertAttributeKey(label));
+        payload.put("data", "");
+        return payload;
+    }
+
+    private static String convertAttributeKey(String label) {
+        switch (label) {
+            case "Resources": return "org:resource";
+            case "Activities": return "concept:name";
+            case "Groups": return "org:group";
+            default: return label;
+        }
     }
 
     @Override

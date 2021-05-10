@@ -25,6 +25,7 @@ import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.APMLogUnitTest;
 import org.apromore.apmlog.ATrace;
 import org.apromore.apmlog.filter.APMLogFilter;
+import org.apromore.apmlog.filter.PLog;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.LogFilterRuleImpl;
 import org.apromore.apmlog.filter.rules.RuleValue;
@@ -115,6 +116,12 @@ public class ReworkRepetitionFilterTest {
         APMLogFilter apmLogFilter = new APMLogFilter(apmLog);
         apmLogFilter.filter(rules);
 
+        PLog pLog = apmLogFilter.getPLog();
+
+        if (expectedCaseIds.isEmpty() && pLog.getValidTraceIndexBS().cardinality() == 0) {
+            return; // passed
+        }
+
         List<ATrace> traceList = apmLogFilter.getApmLog().getTraceList();
 
         UnifiedMap<String, Boolean> expectedIdMatch = new UnifiedMap<>();
@@ -124,8 +131,6 @@ public class ReworkRepetitionFilterTest {
         }
 
         UnifiedSet<String> resultCaseIds = new UnifiedSet<>();
-
-        System.out.println("Trace size:" + traceList.size());
 
         for (ATrace trace : traceList) {
             System.out.println(trace.getCaseId());

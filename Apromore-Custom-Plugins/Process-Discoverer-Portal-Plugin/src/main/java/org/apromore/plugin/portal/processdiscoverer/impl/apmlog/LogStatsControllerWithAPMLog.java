@@ -187,19 +187,13 @@ public class LogStatsControllerWithAPMLog extends LogStatsController {
     private void updateFromLogSummary(AttributeLogSummary filtered, AttributeLogSummary total) {
         PLog pLog = analyst.getFilteredPLog();
 
-        // totalEventCount = total.getEventCount();
-        totalEventCount = pLog.getOriginalEventSize();
-        // totalCaseCount = total.getCaseCount();
+        totalEventCount = pLog.getAllOriginalActivities().size();
         totalCaseCount = pLog.getOriginalPTraceList().size();
-        // totalVariantCount = total.getVariantCount();
         totalVariantCount = pLog.getOriginalCaseVariantSize();
         totalNodeCount = total.getActivityCount();
 
-        // long filteredEventCount = filtered.getEventCount();
-        long filteredEventCount = pLog.getEventSize();
-        // long filteredCaseCount = filtered.getCaseCount();
+        long filteredEventCount = pLog.getAllActivities().size();
         long filteredCaseCount = pLog.getPTraceList().size();
-        // long filteredVariantCount = filtered.getVariantCount();
         long filteredVariantCount = pLog.getVariantIdFreqMap().size();
         long filteredNodeCount = filtered.getActivityCount();
 

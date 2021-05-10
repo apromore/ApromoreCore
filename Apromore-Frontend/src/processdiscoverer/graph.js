@@ -226,6 +226,33 @@ let currentZoomLevel = 1;
 let currentPanPosition;
 let isTraceMode = false; // source trace or source full log
 
+// Map of activity attributes for trace mode
+const attrMap = {
+	"concept:name": "Activity",
+    "org:group": "Group",
+    "org:resource": "Resource",
+    "lifecycle:transition": "State",
+    "org:role": "Role"
+};
+
+let activityToAttributeMap = null;
+
+const tablize = function (obj, klass) {
+    var html = `<table class="${klass}">`;
+
+    for (const prop in obj) {
+        let val = obj[prop];
+        let attr = (prop in attrMap) ? attrMap[prop] : prop;
+        html += `<tr><td>${attr}</td><td>${val}</td></tr>`;
+    }
+    html += '</table>';
+    return html;
+};
+
+PDp.updateActivityToAttributeMap = function (json) {
+    activityToAttributeMap = json || null;
+};
+
 PDp.init = function() {
     let pd = this;
     SIGNATURE = `/themes/${Ap.theme}/common/img/brand/logo-colour.svg`;
@@ -262,8 +289,19 @@ PDp.init = function() {
 
     cy.on('mouseover', 'node', function (event) {
         let node = event.target;
-        if (node.data(NAME_PROP)) {
-            currentNodeTooltip = pd.makeTippy(node, node.data(NAME_PROP));
+        let name = node.data(NAME_PROP);
+        let id = node.data('id');
+        if (id) {
+            if (activityToAttributeMap) { // more detail tooltip for trace mode
+                let attributes = activityToAttributeMap[id];
+                if (attributes && Object.keys(attributes).length) {
+                    currentNodeTooltip = pd.makeTippy(node, tablize(attributes, 'ap-pd-case-activity-attrs'));
+                } else {
+                    currentNodeTooltip = pd.makeTippy(node, name);
+                }
+            } else {
+                currentNodeTooltip = pd.makeTippy(node, name);
+            }
             currentNodeTooltip.show();
         } else {
             currentNodeTooltip = undefined;

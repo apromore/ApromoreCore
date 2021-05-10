@@ -36,6 +36,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static org.junit.Assert.assertTrue;
+
 public class EventualFollowFilterTest {
     public static void runTest1(APMLog apmLog, APMLogUnitTest parent) throws UnsupportedEncodingException {
         FilterType filterType = FilterType.EVENTUAL_FOLLOW;
@@ -59,12 +61,12 @@ public class EventualFollowFilterTest {
         secondaryValues.add(rv5);
 
         OperationType optType6 = OperationType.GREATER;
-        long fromVal = 1000 * 60 * 2;
+        long fromVal = 1000L;
         RuleValue rv6 = new RuleValue(filterType, optType6, attrKey, fromVal);
         secondaryValues.add(rv6);
 
         OperationType optType7 = OperationType.LESS_EQUAL;
-        long toVal = 1000 * 60 * 4;
+        long toVal = 720000;
         RuleValue rv7 = new RuleValue(filterType, optType7, attrKey, toVal);
         secondaryValues.add(rv7);
 
@@ -79,17 +81,7 @@ public class EventualFollowFilterTest {
         apmLogFilter.filter(rules);
 
         List<ATrace> traceList = apmLogFilter.getApmLog().getTraceList();
-        boolean hasC1 = false;
 
-
-        for (ATrace trace : traceList) {
-            if (trace.getCaseId().equals("c1")) hasC1 = true;
-        }
-
-        if (hasC1) {
-            throw new AssertionError("TEST FAILED. RESULT TRACE LIST MISMATCH.");
-        } else {
-            parent.printString("'Eventual Follow' Test 1 PASS.");
-        }
+        assertTrue(traceList.get(0).getCaseId().equalsIgnoreCase("c3"));
     }
 }
