@@ -223,5 +223,8 @@
     <error-code>404</error-code>
     <location>/pages/404.zul</location>
   </error-page>
-
+  <error-page>
+    <exception-type>java.lang.Throwable</exception-type>
+    <location>/etlplugin/views/error/500.zul</location>
+  </error-page>
 </web-app>
