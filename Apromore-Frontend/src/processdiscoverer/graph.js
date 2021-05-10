@@ -326,8 +326,10 @@ PDp.init = function() {
             }
             if (isCtrlPressed && evt.which === 90) { // "Z" key
                 evt.preventDefault();
+                pd.zkSendEvent("$filterUndo", "onClick", "");
             } else if (isCtrlPressed && evt.which === 89) { // "Y" key
                 evt.preventDefault();
+                pd.zkSendEvent("$filterRedo", "onClick", "");
             }
         });
         $(document).keyup(function () {
