@@ -50,8 +50,6 @@ public class TokenHandoffController extends SelectorComposer<Window> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TokenHandoffController.class);
 
-    private static final Duration WEBAPP_SSO_SESSION_TIMEOUT = Duration.ofMinutes(30);
-
     private ManagerService managerService;
     private SecurityService securityService;
 

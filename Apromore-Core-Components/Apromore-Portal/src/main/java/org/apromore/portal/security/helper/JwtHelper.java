@@ -21,9 +21,6 @@
  */
 package org.apromore.portal.security.helper;
 
-import com.nimbusds.jose.JWSObject;
-import com.nimbusds.jose.JWSVerifier;
-import com.nimbusds.jose.crypto.RSASSAVerifier;
 import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.JWTParser;
@@ -41,12 +38,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
-import java.security.cert.Certificate;
-import java.security.interfaces.RSAPublicKey;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -82,7 +75,7 @@ public class JwtHelper {
     public static boolean isJwtExpired(final JWTClaimsSet jwtClaimsSet,
                                        final String issuedAtStr,
                                        final String expiredAtStr) {
-        long jwtExpiryEpoch;
+        final long jwtExpiryEpoch;
         if (expiredAtStr != null) {
             jwtExpiryEpoch = Long.valueOf(expiredAtStr.substring(3));
         } else { // Calculate relative
@@ -202,8 +195,8 @@ public class JwtHelper {
     }
 
     public static boolean isSignedStrVerifiable(final String dataStr, final byte[] signedMsg) {
-        LOGGER.info("dataStr {}", dataStr);
-        LOGGER.info("signedMsg {}", signedMsg);
+        LOGGER.debug("dataStr {}", dataStr);
+        LOGGER.debug("signedMsg {}", signedMsg);
 
         boolean verified = false;
 
@@ -211,13 +204,13 @@ public class JwtHelper {
             final Signature signature = Signature.getInstance("SHA256withRSA");
 
             final PublicKey publicKey = SecurityUtils.getPublicKey(SecurityUtils.DEFAULT_KEY_ALIAS);
-            LOGGER.info("publicKey for verification of JWT signed: {}", publicKey);
+            LOGGER.debug("publicKey for verification of JWT signed: {}", publicKey);
 
             signature.initVerify(publicKey);
             signature.update(dataStr.getBytes(StandardCharsets.UTF_8));
             verified = signature.verify(signedMsg);
         } catch (final Exception e) {
-            LOGGER.error("Exception in verifying signed message", e);
+            LOGGER.error("Exception in verifying signed JWT message", e);
         } finally {
             return verified;
         }
