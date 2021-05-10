@@ -24,15 +24,14 @@ package org.apromore.plugin.portal.processdiscoverer.actions;
 import org.apromore.plugin.portal.processdiscoverer.PDAnalyst;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
 
-public class FilterActionOnNodeRemoveTrace extends FilterActionOnElementFilter {
+public class FilterActionOnNodeRemoveEvent extends FilterActionOnElementFilter {
 
-    public FilterActionOnNodeRemoveTrace(PDController appController, PDAnalyst analyst) {
+    public FilterActionOnNodeRemoveEvent(PDController appController, PDAnalyst analyst) {
         super(appController, analyst);
     }
-
+    
     @Override
     public boolean performFiltering(String elementValue, String attributeKey) throws Exception {
-        return analyst.filter_RemoveTracesAnyValueOfEventAttribute(elementValue, attributeKey);
+        return analyst.filter_RemoveEventsAnyValueOfEventAttribute(elementValue, attributeKey);
     }
-    
 }

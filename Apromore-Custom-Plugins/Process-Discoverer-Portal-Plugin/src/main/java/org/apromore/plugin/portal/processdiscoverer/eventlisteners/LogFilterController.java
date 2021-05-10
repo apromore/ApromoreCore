@@ -20,7 +20,7 @@
  * #L%
  */
 
-package org.apromore.plugin.portal.processdiscoverer.actionlisteners;
+package org.apromore.plugin.portal.processdiscoverer.eventlisteners;
 
 import org.apromore.plugin.portal.logfilter.generic.LogFilterOutputResult;
 import org.apromore.plugin.portal.logfilter.generic.LogFilterResultListener;

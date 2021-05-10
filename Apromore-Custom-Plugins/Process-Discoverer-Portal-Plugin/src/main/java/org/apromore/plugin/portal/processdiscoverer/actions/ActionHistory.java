@@ -29,42 +29,26 @@ import java.util.Stack;
 public class ActionHistory {
     private Stack<Action> undoStack;
     private Stack<Action> redoStack;
-    private Action initialAction;
 
     public ActionHistory() {
         undoStack = new Stack<Action>();
         redoStack = new Stack<Action>();
-        clear();
     }
     
-    public ActionHistory(Action initialAction) {
-        undoStack = new Stack<Action>();
-        redoStack = new Stack<Action>();
-        this.initialAction = initialAction;
-        clear();
-    }
-
     public boolean canUndo() {
-        return undoStack.size() > 1;
+        return !undoStack.isEmpty();
     }
 
     public boolean canRedo() {
         return !redoStack.isEmpty();
     }
 
-    public void clear() {
-        undoStack.clear();
-        undoStack.push(this.initialAction);
-        redoStack.clear();
-    }
-
-    // push/pop is for undo
     public void undoPush(Action action) {
         undoStack.push(action);
     }
     
     public Action undoPop() {
-        return undoStack.pop();
+        return !undoStack.isEmpty() ? undoStack.pop() : null;
     }
 
     public void redoPush(Action action) {
@@ -72,25 +56,10 @@ public class ActionHistory {
     }
     
     public Action redoPop() {
-        return redoStack.pop();
+        return !redoStack.isEmpty() ? redoStack.pop() : null;
     }
     
-    public Action undo() {
-        if (!canUndo()) {
-            return null;
-        }
-        Action undoAction = undoStack.pop();
-        redoStack.push(undoAction);
-        Action currentAction = undoStack.peek();
-        return currentAction;
-    }
-
-    public Action redo() {
-        if (!canRedo()) {
-            return null;
-        }
-        Action redoAction = redoStack.pop();
-        undoStack.push(redoAction);
-        return redoAction;
+    public void clearRedo() {
+        redoStack.clear();
     }
 }

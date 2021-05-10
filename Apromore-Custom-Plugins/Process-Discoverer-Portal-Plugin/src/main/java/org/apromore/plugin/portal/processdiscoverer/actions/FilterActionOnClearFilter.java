@@ -23,16 +23,26 @@ package org.apromore.plugin.portal.processdiscoverer.actions;
 
 import org.apromore.plugin.portal.processdiscoverer.PDAnalyst;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
+import org.zkoss.zul.Messagebox;
 
-public class FilterActionOnNodeRemoveTrace extends FilterActionOnElementFilter {
-
-    public FilterActionOnNodeRemoveTrace(PDController appController, PDAnalyst analyst) {
+/**
+ * This action handles clearing the filter criteria
+ */
+public class FilterActionOnClearFilter extends FilterAction {
+    public FilterActionOnClearFilter(PDController appController, PDAnalyst analyst) {
         super(appController, analyst);
     }
-
-    @Override
-    public boolean performFiltering(String elementValue, String attributeKey) throws Exception {
-        return analyst.filter_RemoveTracesAnyValueOfEventAttribute(elementValue, attributeKey);
-    }
     
+    @Override
+    public boolean execute() {
+        try {
+            this.setPreActionFilterCriteria(analyst.copyCurrentFilterCriteria());
+            analyst.clearFilter();
+            return true;
+        } catch (Exception e) {
+            Messagebox.show("Error in clearing filter. Error message: " + e.getMessage());
+            return false;
+        }
+    }
+
 }

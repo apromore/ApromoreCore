@@ -39,13 +39,15 @@ import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.plugin.portal.logfilter.generic.LogFilterPlugin;
-import org.apromore.plugin.portal.processdiscoverer.actionlisteners.AnimationController;
-import org.apromore.plugin.portal.processdiscoverer.actionlisteners.BPMNExportController;
-import org.apromore.plugin.portal.processdiscoverer.actionlisteners.LogExportController;
-import org.apromore.plugin.portal.processdiscoverer.actionlisteners.LogFilterController;
 import org.apromore.plugin.portal.processdiscoverer.actions.Action;
 import org.apromore.plugin.portal.processdiscoverer.actions.ActionHistory;
-import org.apromore.plugin.portal.processdiscoverer.actions.UndoRedoController;
+import org.apromore.plugin.portal.processdiscoverer.actions.FilterAction;
+import org.apromore.plugin.portal.processdiscoverer.actions.FilterActionOnEdgeRemoveTrace;
+import org.apromore.plugin.portal.processdiscoverer.actions.FilterActionOnEdgeRetainTrace;
+import org.apromore.plugin.portal.processdiscoverer.actions.FilterActionOnNodeRemoveEvent;
+import org.apromore.plugin.portal.processdiscoverer.actions.FilterActionOnNodeRemoveTrace;
+import org.apromore.plugin.portal.processdiscoverer.actions.FilterActionOnNodeRetainEvent;
+import org.apromore.plugin.portal.processdiscoverer.actions.FilterActionOnNodeRetainTrace;
 import org.apromore.plugin.portal.processdiscoverer.components.CaseDetailsController;
 import org.apromore.plugin.portal.processdiscoverer.components.GraphSettingsController;
 import org.apromore.plugin.portal.processdiscoverer.components.GraphVisController;
@@ -58,6 +60,10 @@ import org.apromore.plugin.portal.processdiscoverer.data.ConfigData;
 import org.apromore.plugin.portal.processdiscoverer.data.ContextData;
 import org.apromore.plugin.portal.processdiscoverer.data.OutputData;
 import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
+import org.apromore.plugin.portal.processdiscoverer.eventlisteners.AnimationController;
+import org.apromore.plugin.portal.processdiscoverer.eventlisteners.BPMNExportController;
+import org.apromore.plugin.portal.processdiscoverer.eventlisteners.LogExportController;
+import org.apromore.plugin.portal.processdiscoverer.eventlisteners.LogFilterController;
 import org.apromore.plugin.portal.processdiscoverer.impl.factory.PDFactory;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.BaseController;
@@ -92,6 +98,13 @@ import org.zkoss.zul.Window;
  * PDController has three <b>modes</b>: MODEL view, ANIMATION view and TRACE view. Initially it is in MODEL mode.
  * Each <b>action</b> will change PD to different modes. There are transition rules between modes and active state of UI controls
  * in each mode.
+ * <p>
+ * PDController provides an action management capability. Actions can be bundled into Action object which can be undo/redo to reduce
+ * dependencies among various objects.
+ * <ul>
+ *  <li>UI Components such as ToolbarController and GraphVisController set up these actions (Invoker)
+ *  <li>These actions have access to PDController and PDAnalyst (Receiver) to fulfill the request
+ * </ul>
  * 
  */
 public class PDController extends BaseController {
@@ -128,7 +141,6 @@ public class PDController extends BaseController {
     private LogExportController logExportController;
     private BPMNExportController bpmnExportController;
     private ToolbarController toolbarController;
-    private UndoRedoController undoRedoController;
 
     //////////////////// DATA ///////////////////////////////////
 
@@ -271,6 +283,15 @@ public class PDController extends BaseController {
             
             // Set up UI components
             graphVisController = pdFactory.createGraphVisController(this);
+            Map<String, FilterAction> filterActions = new HashMap<>();
+            filterActions.put("onNodeRemovedTrace", new FilterActionOnNodeRemoveTrace(this, this.getProcessAnalyst()));
+            filterActions.put("onNodeRetainedTrace", new FilterActionOnNodeRetainTrace(this, this.getProcessAnalyst()));
+            filterActions.put("onNodeRemovedEvent", new FilterActionOnNodeRemoveEvent(this, this.getProcessAnalyst()));
+            filterActions.put("onNodeRetainedEvent", new FilterActionOnNodeRetainEvent(this, this.getProcessAnalyst()));
+            filterActions.put("onEdgeRemoved", new FilterActionOnEdgeRemoveTrace(this, this.getProcessAnalyst()));
+            filterActions.put("onEdgeRetained", new FilterActionOnEdgeRetainTrace(this, this.getProcessAnalyst()));
+            graphVisController.setActions(filterActions);
+            
             caseDetailsController = pdFactory.createCaseDetailsController(this);
             perspectiveDetailsController = pdFactory.createPerspectiveDetailsController(this);
             viewSettingsController = pdFactory.createViewSettingsController(this);
@@ -282,7 +303,6 @@ public class PDController extends BaseController {
             logExportController = pdFactory.createLogExportController(this);
             bpmnExportController = pdFactory.createBPMNExportController(this);
             toolbarController = pdFactory.createToolbarController(this);
-            undoRedoController = pdFactory.createUndoRedoController(this);
 
             initialize();
             LOGGER.debug("Session ID = " + ((HttpSession)Sessions.getCurrent().getNativeSession()).getId());
@@ -375,11 +395,6 @@ public class PDController extends BaseController {
         graphVisController.exportJSON(viewSettingsController.getOutputName());
     }
 
-    public void clearFilter() throws Exception {
-        if (this.mode != InteractiveMode.MODEL_MODE) return;
-        logFilterController.clearFilter();
-    }
-    
     public void changeLayout() throws Exception {
         if (this.mode != InteractiveMode.MODEL_MODE) return;
         graphVisController.changeLayout();
@@ -449,33 +464,6 @@ public class PDController extends BaseController {
         }
     }
 
-    public void updateUndoRedoButtons(boolean undoState, boolean redoState) {
-        toolbarController.updateUndoRedoButtons(undoState, redoState);
-    }
-    
-    public void executeAction(Action action) {
-        if (action.execute()) {
-            actionHistory.undoPush(action);
-        }
-    }
-
-    public void undo() {
-        Action action = actionHistory.undoPop();
-        if (action != null) {
-            action.undo();
-            actionHistory.redoPush(action);
-        }
-    }
-
-    public void redo() {
-        Action action = actionHistory.redoPop();
-        if (action != null) {
-            if (action.execute()) {
-                actionHistory.undoPush(action);
-            }
-        }
-    }
-
     /**
      * Update UI
      * This is used if the underlying data is changed via filtering
@@ -492,6 +480,7 @@ public class PDController extends BaseController {
             generateViz();
             if (!reset) graphVisController.centerToWindow();
             toolbarController.setDisabledFilterClear(this.getProcessAnalyst().isCurrentFilterCriteriaEmpty());
+            toolbarController.updateUndoRedoButtons(actionHistory.canUndo(), actionHistory.canRedo());
         }
         catch (Exception ex) {
             Messagebox.show("Errors occured while updating UI: " + ex.getMessage());
@@ -734,5 +723,46 @@ public class PDController extends BaseController {
      */
     private String escapeQuotedJavascript(String json) {
         return json.replace("\n", " ").replace("'", "\\u0027").trim();
+    }
+    
+    //////////////////////// ACTION MANAGEMENT /////////////////////////
+
+    // For real action that perform changes
+    public void executeAction(Action action) {
+        if (action.execute()) {
+            actionHistory.undoPush(action);
+            // Redo actions are those actions that have been undoed.
+            // When an action is redoed (re-executed), it assumes that the undo stack is the same as before it is pushed to undo
+            // Thus, whenever a NEW action is pushed to the undo stack, all current redoable actions must be clear to ensure consistent state.
+            actionHistory.clearRedo();
+            if (action instanceof FilterAction) this.updateUI(false);
+        }
+    }
+    
+    // For actions that don't change anything but need to be bundled for undo/redo
+    // Some actions fall into this category, such as do filtering via opening a LogFilter window
+    // These actions can't be executed directly via executeAction() method, but they can be stored to support undo/redo
+    public void storeAction(Action action) {
+        actionHistory.undoPush(action);
+    }
+
+    public void undoAction() {
+        Action action = actionHistory.undoPop();
+        if (action != null) {
+            action.undo();
+            actionHistory.redoPush(action);
+            if (action instanceof FilterAction) this.updateUI(false);
+        }
+    }
+
+    // Re-execute
+    public void redoAction() {
+        Action action = actionHistory.redoPop();
+        if (action != null) {
+            if (action.execute()) {
+                actionHistory.undoPush(action);
+                if (action instanceof FilterAction) this.updateUI(false);
+            }
+        }
     }
 }

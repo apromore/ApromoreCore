@@ -29,6 +29,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.ATrace;
@@ -78,25 +79,30 @@ import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 /**
- * PDAnalyst acts as a process analyst who receives the context (including the logs), configuration and support services to do
- * process analysis. It encapsulates {@link ProcessDiscoverer} which provides the logic as well as <{@link LogData> which provides data.
- * It provides the  main business logic in PD while PDController manages the application as a whole.
- * 
+ * PDAnalyst represents a process analyst who will performs log analysis in the form of graphs and BPMN diagrams
+ * PDAnalyst has a number of tools to do its job:
+ * <p><ul>
+ * <li>It uses {@link ProcessDiscoverer} which provides the graph and BPMN diagram logic
+ * <li>It uses {@link ProcessVisualizer} to serialize the analysis result in a form suitable for visualization
+ * <li>It uses {@link LogAPMLogFilter} to do log filtering
+ * </ul>
  * @author Bruce Nguyen
  */
 public class PDAnalyst {
-    // Logic support
+    // Graph/BPMN analysis tool
     private ProcessDiscoverer processDiscoverer;
+    
+    // Visualization tool
     private ProcessVisualizer processVisualizer;
     
-    // Data for graph
+    // Log management tool
     private ALog aLog;
     private AttributeLog attLog;
     private Object currentFilterCriteria = new ArrayList<LogFilterRule>(); // list of log filter criteria
     private IndexableAttribute mainAttribute;
     private ImmutableList<AbstractAttribute> indexableAttributes;
     
-    // APMLog provides filter
+    // Log filtering tool
     private APMLog originalAPMLog;
     private APMLog filteredAPMLog;
     private PLog filteredPLog;
@@ -304,6 +310,13 @@ public class PDAnalyst {
         return true;
     }
     
+    public List<LogFilterRule> copyCurrentFilterCriteria() {
+        return ((List<LogFilterRule>)this.getCurrentFilterCriteria())
+            .stream()
+            .map((c) -> c.clone())
+            .collect(Collectors.toList());
+    }
+    
     public APMLog getOriginalAPMLog() {
         return this.originalAPMLog;
     }
@@ -323,7 +336,7 @@ public class PDAnalyst {
         return this.filter(criteria);
     }
     
-    // Apply a filter criterion on top of the current filter criteria
+    // Apply filter criteria on top of the original log
     public boolean filter(List<LogFilterRule> criteria) throws Exception {
         this.apmLogFilter.filter(criteria);
         if (apmLogFilter.getPLog().getPTraceList().isEmpty()) { // Restore to the last state

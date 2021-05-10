@@ -23,16 +23,31 @@ package org.apromore.plugin.portal.processdiscoverer.actions;
 
 import org.apromore.plugin.portal.processdiscoverer.PDAnalyst;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
+import org.zkoss.zul.Messagebox;
 
-public class FilterActionOnNodeRemoveTrace extends FilterActionOnElementFilter {
-
-    public FilterActionOnNodeRemoveTrace(PDController appController, PDAnalyst analyst) {
+/*
+ * This filter action is used with the LogFilter window.
+ * It is a special action because the filtering is actually executed inside the window (when click on the OK button)
+ * instead of this action. Therefore, this action's execute() only does some data preparation to support undo and redo.
+ * It should be used with PDController.storeAction rather than PDController.executeAction.
+ */
+public class FilterActionOnCompositeFilterCriteria extends FilterAction {
+    public FilterActionOnCompositeFilterCriteria(PDController appController, PDAnalyst analyst) {
         super(appController, analyst);
     }
-
-    @Override
-    public boolean performFiltering(String elementValue, String attributeKey) throws Exception {
-        return analyst.filter_RemoveTracesAnyValueOfEventAttribute(elementValue, attributeKey);
-    }
     
+    /**
+     * This is only called via redo while the first execution is done by the LogFilter window
+     */
+    @Override
+    public boolean execute() {
+        try {
+            analyst.filter(postActionFilterCriteria);
+            return true;
+        } catch (Exception e) {
+            Messagebox.show("Error in filtering. Error message: " + e.getMessage());
+            return false;
+        }
+    }
+
 }
