@@ -23,20 +23,23 @@
 package org.apromore.plugin.portal.processdiscoverer.components;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import org.apromore.logman.attribute.graph.MeasureAggregation;
-import org.apromore.logman.attribute.graph.MeasureRelation;
-import org.apromore.logman.attribute.graph.MeasureType;
+import org.apromore.logman.attribute.log.AttributeLog;
+import org.apromore.logman.attribute.log.AttributeTrace;
 import org.apromore.plugin.portal.processdiscoverer.InteractiveMode;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
 import org.apromore.plugin.portal.processdiscoverer.data.CaseDetails;
-import org.apromore.processdiscoverer.Abstraction;
-import org.apromore.processdiscoverer.AbstractionParams;
-import org.zkoss.json.JSONObject;
+import org.apromore.plugin.portal.processdiscoverer.data.OutputData;
+import org.apromore.processdiscoverer.bpmn.TraceBPMNDiagram;
+import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNNode;
+import org.json.JSONObject;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
@@ -84,7 +87,7 @@ public class CaseDetailsController extends DataListController {
 	 **/
 	private void updateActivityToAttributeMap(String caseId, TraceBPMNDiagram diagram) {
 		activityToAttributeMap.clear();
-		AttributeLog attLog = parent.getLogData().getAttributeLog();
+		AttributeLog attLog = parent.getProcessAnalyst().getAttributeLog();
 		AttributeTrace attTrace = attLog.getTraceFromTraceId(caseId);
 		if (attTrace != null) {
 		    BPMNNode node = diagram.getStartNode();

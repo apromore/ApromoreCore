@@ -456,43 +456,6 @@ public class PDController extends BaseController {
             LOGGER.error(ex.getMessage(), ex);
         }
     }
-    
-    //////////////////////// ACTION MANAGEMENT /////////////////////////
-
-    // For real action that perform changes
-    public void executeAction(Action action) {
-        if (action.execute()) {
-            actionHistory.undoPush(action);
-            // Redo actions are those actions that have been undoed.
-            // When an action is redoed, it assumes that the undo stack is the same as before it is pushed to undo
-            // So, whenever a new action is pushed to the undo stack, all redoable actions must be clear to ensure consistent state.
-            actionHistory.clearRedo();
-        }
-    }
-    
-    // For actions that don't change anything but only support undo/redo (e.g. filter with LogFilter window)
-    public void storeAction(Action action) {
-        actionHistory.undoPush(action);
-    }
-
-    public void undoAction() {
-        Action action = actionHistory.undoPop();
-        if (action != null) {
-            action.undo();
-            actionHistory.redoPush(action);
-        }
-    }
-
-    public void redoAction() {
-        Action action = actionHistory.redoPop();
-        if (action != null) {
-            if (action.execute()) {
-                actionHistory.undoPush(action);
-            }
-        }
-    }
-    
-    //////////////////////////////////////////////////////////////////////
 
     /**
      * Update UI
@@ -753,5 +716,43 @@ public class PDController extends BaseController {
      */
     private String escapeQuotedJavascript(String json) {
         return json.replace("\n", " ").replace("'", "\\u0027").trim();
+    }
+    
+    //////////////////////// ACTION MANAGEMENT /////////////////////////
+
+    // For real action that perform changes
+    public void executeAction(Action action) {
+        if (action.execute()) {
+            actionHistory.undoPush(action);
+            // Redo actions are those actions that have been undoed.
+            // When an action is redoed (re-executed), it assumes that the undo stack is the same as before it is pushed to undo
+            // Thus, whenever a NEW action is pushed to the undo stack, all current redoable actions must be clear to ensure consistent state.
+            actionHistory.clearRedo();
+        }
+    }
+    
+    // For actions that don't change anything but need to be bundled for undo/redo
+    // Some actions fall into this category, such as do filtering via opening a LogFilter window
+    // These actions can't be executed directly via executeAction() method, but they can be stored to support undo/redo
+    public void storeAction(Action action) {
+        actionHistory.undoPush(action);
+    }
+
+    public void undoAction() {
+        Action action = actionHistory.undoPop();
+        if (action != null) {
+            action.undo();
+            actionHistory.redoPush(action);
+        }
+    }
+
+    // Re-execute
+    public void redoAction() {
+        Action action = actionHistory.redoPop();
+        if (action != null) {
+            if (action.execute()) {
+                actionHistory.undoPush(action);
+            }
+        }
     }
 }

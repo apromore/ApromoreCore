@@ -31,10 +31,9 @@ import org.zkoss.zul.Messagebox;
 
 /**
  * FilterAction bundles different type of filtering requests to filter log data.
- * Each type of request is implemented by a subclass of FilterAction
- * To maintain the right context, FilterAction keeps track of the filter criteria used
- * before and after the filter action is executed. These criteria are deep cloned
- * from the original criteria kept by <{@link }PDAnalyst>.
+ * Each type of request is bundled as a subclass of FilterAction
+ * To maintain the right context, FilterAction keeps track of the filter criteria used by {@link}PDAnalyst
+ * before and after the filter action is executed. These criteria are deep cloned from the original criteria.
  * They are used to support undo/redo and ensures the consistency. For example, the previous
  * criteria are used for undo (the original log is filtered again).
  */

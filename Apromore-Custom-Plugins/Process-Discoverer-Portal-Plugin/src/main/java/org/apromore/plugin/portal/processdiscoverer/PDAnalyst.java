@@ -79,25 +79,29 @@ import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 /**
- * PDAnalyst acts as a process analyst who receives the context (including the logs), configuration and support services to do
- * process analysis. It encapsulates {@link ProcessDiscoverer} which provides the logic as well as <{@link LogData> which provides data.
- * It provides the  main business logic in PD while PDController manages the application as a whole.
+ * PDAnalyst represents a process analyst who will performs log analysis in the form of graphs and BPMN diagrams
+ * PDAnalyst has a number of tools to do its job:
+ * - It uses {@link ProcessDiscoverer} which provides the graph and BPMN diagram logic
+ * - It uses {@link ProcessVisualizer} to serialize the analysis result in a form suitable for visualization
+ * - It uses {@link LogAPMLogFilter} to do log filtering
  * 
  * @author Bruce Nguyen
  */
 public class PDAnalyst {
-    // Logic support
+    // Graph/BPMN analysis tool
     private ProcessDiscoverer processDiscoverer;
+    
+    // Visualization tool
     private ProcessVisualizer processVisualizer;
     
-    // Data for graph
+    // Log management tool
     private ALog aLog;
     private AttributeLog attLog;
     private Object currentFilterCriteria = new ArrayList<LogFilterRule>(); // list of log filter criteria
     private IndexableAttribute mainAttribute;
     private ImmutableList<AbstractAttribute> indexableAttributes;
     
-    // APMLog provides filter
+    // Log filtering tool
     private APMLog originalAPMLog;
     private APMLog filteredAPMLog;
     private PLog filteredPLog;
