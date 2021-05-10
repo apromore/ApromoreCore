@@ -47,7 +47,7 @@ public class AAttributeGraph {
     // =========================================
     // Used by PD
     // =========================================
-    public DurSubGraph getValueDurations(String key) {
+    public static DurSubGraph getValueDurations(String key, APMLog apmLog) {
         UnifiedMap<String, UnifiedSet<EventAttributeValue>> eavMap = apmLog.getEventAttributeValues();
         if (!eavMap.containsKey(key)) return null;
 
@@ -65,11 +65,11 @@ public class AAttributeGraph {
         return durSubGraph;
     }
 
-    public DurSubGraph getNextValueDurations(String key, String baseValue, APMLog log) {
+    public static DurSubGraph getNextValueDurations(String key, String baseValue, APMLog log) {
         return getArcValueDurations(key, baseValue, "next", log);
     }
 
-    public DurSubGraph getArcValueDurations(String key, String baseValue, String direction, APMLog log) {
+    public static DurSubGraph getArcValueDurations(String key, String baseValue, String direction, APMLog log) {
         UnifiedMap<String, UnifiedSet<EventAttributeValue>> eavMap = log.getEventAttributeValues();
 
         if (!eavMap.containsKey(key)) return null;
@@ -122,7 +122,7 @@ public class AAttributeGraph {
      * @param theLog
      * @return
      */
-    public UnifiedSet<Double> getDurations(String attributeKey, String indegree, String outdegree, APMLog theLog) {
+    public static UnifiedSet<Double> getDurations(String attributeKey, String indegree, String outdegree, APMLog theLog) {
 
         DurSubGraph subGraph = getNextValueDurations(attributeKey, indegree, theLog);
 

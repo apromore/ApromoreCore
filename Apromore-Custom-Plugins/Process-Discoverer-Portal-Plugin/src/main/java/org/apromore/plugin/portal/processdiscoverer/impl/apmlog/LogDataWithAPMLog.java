@@ -201,7 +201,7 @@ public class LogDataWithAPMLog extends LogData {
 
     @Override
     public boolean hasSufficientDurationVariant(String attribute, String value) {
-        DurSubGraph dsg = this.originalAPMLog.getAAttributeGraph().getValueDurations(attribute);
+        DurSubGraph dsg = AAttributeGraph.getValueDurations(attribute, filteredAPMLog);
         if (!dsg.getValDurCaseIndexMap().containsKey(value)) return false;
         if (dsg.getValDurCaseIndexMap().get(value).isEmpty()) return false;
         return dsg.getValDurCaseIndexMap().get(value).size() > 1;
@@ -209,8 +209,7 @@ public class LogDataWithAPMLog extends LogData {
 
     @Override
     public boolean hasSufficientDurationVariant(String attribute, String inDegree, String outDegree) {
-        AAttributeGraph aAttributeGraph = this.originalAPMLog.getAAttributeGraph();
-        UnifiedSet<Double> durations = aAttributeGraph.getDurations(attribute, inDegree, outDegree, this.originalAPMLog);
+        UnifiedSet<Double> durations = AAttributeGraph.getDurations(attribute, inDegree, outDegree, filteredAPMLog);
         return (durations.size() > 1);
     }
 
