@@ -52,9 +52,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.Messagebox;
 
 /**
  * Manage the graph visualization
@@ -98,127 +96,21 @@ public class GraphVisController extends VisualController {
         this.filterActions = filterActions;
     }
     
-    private void showEmptyLogMessageBox() {
-        Messagebox.show("The log is empty after applying all filter criteria! Please use different criteria.",
-              "Process Discoverer",
-              Messagebox.OK,
-              Messagebox.INFORMATION);
-    }
-
     @Override
     public void initializeEventListeners(Object data) {
         filterActions.entrySet().forEach(entry -> {
             FilterAction action = entry.getValue();
             vizBridge.addEventListener(entry.getKey(), event -> {
-               action.setExecutionParams(parent.getUserOptions().getMainAttributeKey(), event.getData().toString());
-               parent.executeAction(action);
+                String filterAttKey = parent.getUserOptions().getMainAttributeKey();
+                String filterValue = event.getData().toString();
+                if (entry.getKey().startsWith("OnEdge")) {
+                    String edge = event.getData().toString();
+                    if (isGatewayEdge(edge)) return;
+                    if (isStartOrEndEdge(edge)) filterValue = convertStartOrEndEdge(edge);
+                }
+                action.setExecutionParams(filterAttKey, filterValue);
+                parent.executeAction(action);
             });
-        });
-        
-        
-        ///// BELOW WILL BE REMOVED
-        
-        vizBridge.addEventListener("onNodeRemovedTrace", event -> {
-                //filterForNodeEvent(event, Action.REMOVE, Level.TRACE, Containment.CONTAIN_ANY);
-                if (parent.getProcessAnalyst().filter_RemoveTracesAnyValueOfEventAttribute(event.getData().toString(),
-                        parent.getUserOptions().getMainAttributeKey())) {
-                    parent.updateUI(false);
-                    parent.addAction(event.getName());
-                }
-                else {
-                    showEmptyLogMessageBox();
-                }
-            });
-        
-        vizBridge.addEventListener("onNodeRetainedTrace", new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                //filterForNodeEvent(event, Action.RETAIN, Level.TRACE, Containment.CONTgetDataAIN_ANY);
-                if (parent.getProcessAnalyst().filter_RetainTracesAnyValueOfEventAttribute(event.getData().toString(),
-                        parent.getUserOptions().getMainAttributeKey())) {
-                    parent.updateUI(false);
-                    parent.addAction(event.getName());
-                }
-                else {
-                    showEmptyLogMessageBox();
-                }
-            }
-        });
-        
-        vizBridge.addEventListener("onNodeRemovedEvent", new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                //filterForNodeEvent(event, Action.REMOVE, Level.EVENT, Containment.CONTAIN_ANY);
-                if (parent.getProcessAnalyst().filter_RemoveEventsAnyValueOfEventAttribute(event.getData().toString(),
-                        parent.getUserOptions().getMainAttributeKey())) {
-                    parent.updateUI(false);
-                    parent.addAction(event.getName());
-                }
-                else {
-                    showEmptyLogMessageBox();
-                }
-            }
-        });
-        vizBridge.addEventListener("onNodeRetainedEvent", new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                //filterForNodeEvent(event, Action.RETAIN, Level.EVENT, Containment.CONTAIN_ANY);
-                if (parent.getProcessAnalyst().filter_RetainEventsAnyValueOfEventAttribute(event.getData().toString(),
-                        parent.getUserOptions().getMainAttributeKey())) {
-                    parent.updateUI(false);
-                    parent.addAction(event.getName());
-                }
-                else {
-                    showEmptyLogMessageBox();
-                }
-            }
-        });
-        vizBridge.addEventListener("onEdgeRemoved", new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                //filterForEdgeEvent(event, Action.REMOVE, Level.TRACE, Containment.CONTAIN_ANY);
-                String edge = event.getData().toString();
-                if (isGatewayEdge(edge)) return;
-                if (isStartOrEndEdge(edge)) edge = convertStartOrEndEdge(edge);
-                if (parent.getProcessAnalyst().filter_RemoveTracesAnyValueOfDirectFollowRelation(edge,
-                        parent.getUserOptions().getMainAttributeKey())) {
-                    parent.updateUI(false);
-                    parent.addAction(event.getName());
-                }
-                else {
-                    showEmptyLogMessageBox();
-                }
-            }
-        });
-        vizBridge.addEventListener("onEdgeRetained", new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                //filterForEdgeEvent(event, Action.RETAIN, Level.TRACE, Containment.CONTAIN_ANY);
-                String edge = event.getData().toString();
-                if (isGatewayEdge(edge)) return;
-                if (isStartOrEndEdge(edge)) edge = convertStartOrEndEdge(edge);
-                if (parent.getProcessAnalyst().filter_RetainTracesAnyValueOfDirectFollowRelation(edge,
-                        parent.getUserOptions().getMainAttributeKey())) {
-                    parent.updateUI(false);
-                    parent.addAction(event.getName());
-                }
-                else {
-                    showEmptyLogMessageBox();
-                }
-            }
-        });
-        vizBridge.addEventListener("onCaseFilter", new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                String json = event.getData().toString();
-                displayTraceDiagram(json);
-            }
-        });
-        vizBridge.addEventListener("onClearFilter", new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                parent.clearFilter();
-            }
         });
     }
 

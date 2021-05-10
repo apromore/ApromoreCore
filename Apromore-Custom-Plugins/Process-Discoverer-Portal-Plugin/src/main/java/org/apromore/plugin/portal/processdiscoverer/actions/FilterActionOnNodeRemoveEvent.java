@@ -25,9 +25,9 @@ import org.apromore.plugin.portal.processdiscoverer.PDAnalyst;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
 import org.zkoss.zhtml.Messagebox;
 
-public class FilterActionOnNodeRetainTrace extends FilterAction {
-    
-    public FilterActionOnNodeRetainTrace(PDController appController, PDAnalyst analyst) {
+public class FilterActionOnNodeRemoveEvent extends FilterAction {
+
+    public FilterActionOnNodeRemoveEvent(PDController appController, PDAnalyst analyst) {
         super(appController, analyst);
     }
     
@@ -35,7 +35,7 @@ public class FilterActionOnNodeRetainTrace extends FilterAction {
     public boolean execute() {
         try {
             this.previousFilterCriteria = copyCurrentFilterCriteria();
-            if (analyst.filter_RetainTracesAnyValueOfEventAttribute(this.filterValue, this.filterAttributeKey)) {
+            if (analyst.filter_RemoveEventsAnyValueOfEventAttribute(this.filterValue, this.filterAttributeKey)) {
                 appController.updateUI(false);
                 return true;
             }
@@ -47,5 +47,4 @@ public class FilterActionOnNodeRetainTrace extends FilterAction {
         }
         return false;
     }
-
 }

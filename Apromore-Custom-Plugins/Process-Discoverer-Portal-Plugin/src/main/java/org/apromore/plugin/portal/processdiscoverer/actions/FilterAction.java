@@ -33,7 +33,7 @@ import org.zkoss.zul.Messagebox;
 public abstract class FilterAction implements Action {
     protected PDController appController;
     protected PDAnalyst analyst;
-    protected List<LogFilterRule> filterCriteria;
+    protected List<LogFilterRule> previousFilterCriteria;
     protected String filterValue;
     protected String filterAttributeKey;
 
@@ -66,5 +66,10 @@ public abstract class FilterAction implements Action {
 
     
     @Override
-    public abstract void undo();
+    public void undo() {
+        PDAnalyst analyst = appController.getProcessAnalyst();
+        analyst.filter(this.previousFilterCriteria);
+        appController.updateUI(false);
+        appController.updateUndoRedoButtons();
+    }
 }

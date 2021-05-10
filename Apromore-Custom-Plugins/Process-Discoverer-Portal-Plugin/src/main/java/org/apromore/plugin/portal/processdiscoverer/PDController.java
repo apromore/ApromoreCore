@@ -449,8 +449,8 @@ public class PDController extends BaseController {
         }
     }
 
-    public void updateUndoRedoButtons(boolean undoState, boolean redoState) {
-        toolbarController.updateUndoRedoButtons(undoState, redoState);
+    public void updateUndoRedoButtons() {
+        toolbarController.updateUndoRedoButtons(actionHistory.canUndo(), actionHistory.canRedo());
     }
     
     public void executeAction(Action action) {
