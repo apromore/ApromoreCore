@@ -36,9 +36,9 @@ import org.zkoss.zul.Messagebox;
  * To be able to do undo/redo, FilterAction keeps track of the filter criteria used by {@link}PDAnalyst
  * before and after the filter action is executed. These criteria are deep cloned from the original one.
  * <p>
- * For undo, PDAnalyst is called with pre-action filter criteria ({@link PDAnalyst#filter(List)}).
+ * For undo, PDAnalyst is called with pre-action filter criteria ({@link PDAnalyst#filter}).
  * <p>
- * For redo, PDAnalyst is called with either post-action filter criteria or additive criteria ({@link PDAnalyst#filterAdditive(LogFilterRule)).
+ * For redo, PDAnalyst is called with either post-action filter criteria or additive criteria ({@link PDAnalyst#filterAdditive).
  */
 public abstract class FilterAction implements Action {
     protected PDController appController;
@@ -68,8 +68,7 @@ public abstract class FilterAction implements Action {
     @Override
     public void undo() {
         try {
-            appController.getProcessAnalyst().filter(this.preActionFilterCriteria);
-            appController.updateUI(false);
+            analyst.filter(this.preActionFilterCriteria);
         } catch (Exception e) {
             Messagebox.show("Error when undoing filter action. Error message: " + e.getMessage());
         }

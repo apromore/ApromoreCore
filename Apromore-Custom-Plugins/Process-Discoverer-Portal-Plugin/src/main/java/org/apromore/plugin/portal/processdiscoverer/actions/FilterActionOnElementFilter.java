@@ -45,7 +45,6 @@ public abstract class FilterActionOnElementFilter extends FilterAction {
             }
             setPreActionFilterCriteria(analyst.copyCurrentFilterCriteria());
             if (performFiltering(this.elementValue, this.attributeKey)) {
-                appController.updateUI(false);
                 return true;
             }
             else {

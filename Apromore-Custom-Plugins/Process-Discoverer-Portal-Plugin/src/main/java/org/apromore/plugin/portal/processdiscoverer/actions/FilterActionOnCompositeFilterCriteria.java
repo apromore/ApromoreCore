@@ -43,7 +43,6 @@ public class FilterActionOnCompositeFilterCriteria extends FilterAction {
     public boolean execute() {
         try {
             analyst.filter(postActionFilterCriteria);
-            appController.updateUI(false);
             return true;
         } catch (Exception e) {
             Messagebox.show("Error in filtering. Error message: " + e.getMessage());

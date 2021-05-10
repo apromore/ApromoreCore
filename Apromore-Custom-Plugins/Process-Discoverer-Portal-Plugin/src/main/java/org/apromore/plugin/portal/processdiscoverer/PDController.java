@@ -735,6 +735,7 @@ public class PDController extends BaseController {
             // When an action is redoed (re-executed), it assumes that the undo stack is the same as before it is pushed to undo
             // Thus, whenever a NEW action is pushed to the undo stack, all current redoable actions must be clear to ensure consistent state.
             actionHistory.clearRedo();
+            if (action instanceof FilterAction) this.updateUI(false);
         }
     }
     
@@ -750,6 +751,7 @@ public class PDController extends BaseController {
         if (action != null) {
             action.undo();
             actionHistory.redoPush(action);
+            if (action instanceof FilterAction) this.updateUI(false);
         }
     }
 
@@ -759,6 +761,7 @@ public class PDController extends BaseController {
         if (action != null) {
             if (action.execute()) {
                 actionHistory.undoPush(action);
+                if (action instanceof FilterAction) this.updateUI(false);
             }
         }
     }

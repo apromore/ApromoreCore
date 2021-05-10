@@ -38,7 +38,6 @@ public class FilterActionOnClearFilter extends FilterAction {
         try {
             this.setPreActionFilterCriteria(analyst.copyCurrentFilterCriteria());
             analyst.clearFilter();
-            appController.updateUI(false);
             return true;
         } catch (Exception e) {
             Messagebox.show("Error in clearing filter. Error message: " + e.getMessage());

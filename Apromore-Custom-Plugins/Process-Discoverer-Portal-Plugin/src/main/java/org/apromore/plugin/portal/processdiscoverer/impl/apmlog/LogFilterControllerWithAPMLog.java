@@ -63,13 +63,15 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
     public LogFilterControllerWithAPMLog(PDController controller) throws Exception {
         super(controller);
         analyst = controller.getProcessAnalyst();
-        compositeFilterAction = new FilterActionOnCompositeFilterCriteria(parent, analyst);
-        compositeFilterAction.setPreActionFilterCriteria(analyst.copyCurrentFilterCriteria());
     }
 
     @Override
     // Open LogFilter window
     public void onEvent(Event event) throws Exception {
+        // Each time of filtering via LogFilter window must generate a new action object
+        compositeFilterAction = new FilterActionOnCompositeFilterCriteria(parent, analyst);
+        compositeFilterAction.setPreActionFilterCriteria(analyst.copyCurrentFilterCriteria());
+        
         if (event.getData() == null) {
             LogFilterRequest lfr = analyst.getCurrentFilterCriteria() == null ||
                     ((List<LogFilterRule>) analyst.getCurrentFilterCriteria()).isEmpty() ?
