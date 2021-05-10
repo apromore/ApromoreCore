@@ -30,6 +30,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -39,20 +40,21 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@ReadOnly
-@Table(name = "job", uniqueConstraints = {@UniqueConstraint(columnNames = {"dagId"})})
+@Table(name = "job", uniqueConstraints = {@UniqueConstraint(columnNames = {"dag_id"})})
 @Configurable("job")
 @Cache(expiry = 180000, size = 1000,
     coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
 @Setter
-public class Job implements Serializable {
+public class JobDao implements Serializable {
+
     private Long id;
     private String dagId;
-    private List<DagConnection> connections;
-    private List<StaticLog> staticLogs;
+    private List<DagConnection> connections = new ArrayList<>();
+    private List<StaticLog> staticLogs = new ArrayList<>();
     private OutputLogInfo outputLogInfo;
     private String finalTransformQuery;
     private String schedule;
@@ -65,12 +67,12 @@ public class Job implements Serializable {
         return id;
     }
 
-    @OneToMany(mappedBy = "dag_connection", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, orphanRemoval = true)
     public List<DagConnection> getConnections() {
         return connections;
     }
 
-    @OneToMany(mappedBy = "static_log", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, orphanRemoval = true)
     public List<StaticLog> getStaticLogs() {
         return staticLogs;
     }
@@ -95,8 +97,17 @@ public class Job implements Serializable {
         return username;
     }
 
-    @OneToOne(mappedBy = "output_log_info", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Embedded
     public OutputLogInfo getOutputLogInfo() {
         return outputLogInfo;
+    }
+
+    public void synchronizedMetaData() {
+        for (DagConnection connection: connections) {
+            connection.setJob(this);
+        }
+        for (StaticLog staticLog: staticLogs) {
+            staticLog.setJob(this);
+        }
     }
 }

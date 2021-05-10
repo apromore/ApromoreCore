@@ -21,36 +21,17 @@
  */
 package org.apromore.dao.model;
 
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.eclipse.persistence.annotations.Cache;
-import org.eclipse.persistence.annotations.CacheCoordinationType;
-import org.springframework.beans.factory.annotation.Configurable;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.Embeddable;
 
-@Entity
-@Table(name = "s3_destination")
-@Configurable("s3_destination")
-@Cache(expiry = 180000, size = 1000, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
+@Embeddable
 @Setter
 public class S3Destination {
-    private Long id;
     private String bucketName;
     private String key;
     private String url;
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true, nullable = false)
-    public Long getId() {
-        return id;
-    }
 
     @Column(name = "bucket_name")
     public String getBucketName() {

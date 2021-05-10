@@ -21,26 +21,23 @@
  */
 package org.apromore.dao.model;
 
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.eclipse.persistence.annotations.Cache;
 import org.eclipse.persistence.annotations.CacheCoordinationType;
-import org.eclipse.persistence.annotations.ReadOnly;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 import java.io.Serializable;
 
 @Entity
-@ReadOnly
 @Table(name = "dag_connection")
 @Configurable("dag_connection")
 @Cache(expiry = 180000, size = 1000,
@@ -53,6 +50,7 @@ public class DagConnection implements Serializable {
     private S3Destination s3Destination;
     private String tableName;
     private String query;
+    private JobDao job;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -66,7 +64,7 @@ public class DagConnection implements Serializable {
         return connectionId;
     }
 
-    @OneToMany(mappedBy = "s3_destination", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Embedded
     public S3Destination getS3Destination() {
         return s3Destination;
     }
@@ -79,5 +77,11 @@ public class DagConnection implements Serializable {
     @Column(name = "query")
     public String getQuery() {
         return query;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "job_id")
+    public JobDao getJob() {
+        return job;
     }
 }

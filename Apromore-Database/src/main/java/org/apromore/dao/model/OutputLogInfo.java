@@ -22,37 +22,18 @@
 package org.apromore.dao.model;
 
 import lombok.Setter;
-import org.eclipse.persistence.annotations.Cache;
-import org.eclipse.persistence.annotations.CacheCoordinationType;
-import org.springframework.beans.factory.annotation.Configurable;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.Embeddable;
+import javax.persistence.Embedded;
 import java.io.Serializable;
 
-@Entity
-@Table(name = "output_log_info")
-@Configurable("output_log_info")
-@Cache(expiry = 180000, size = 1000, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
+@Embeddable
 @Setter
 public class OutputLogInfo implements Serializable {
-    private Long id;
     private String logName;
     private String apromoreWorkspaceDirectory;
     private S3Destination s3Destination;
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true, nullable = false)
-    public Long getId() {
-        return id;
-    }
 
     @Column(name = "log_name")
     public String getLogName() {
@@ -64,7 +45,7 @@ public class OutputLogInfo implements Serializable {
         return apromoreWorkspaceDirectory;
     }
 
-    @OneToOne(mappedBy = "s3_destination", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Embedded
     public S3Destination getS3Destination() {
         return s3Destination;
     }

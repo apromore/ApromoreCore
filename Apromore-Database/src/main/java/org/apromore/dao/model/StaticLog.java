@@ -1,6 +1,5 @@
 package org.apromore.dao.model;
 
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.eclipse.persistence.annotations.Cache;
 import org.eclipse.persistence.annotations.CacheCoordinationType;
@@ -11,6 +10,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -19,11 +20,13 @@ import javax.persistence.Table;
 @Cache(expiry = 180000, size = 1000, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
 @Setter
 public class StaticLog {
+
     private Long id;
-    private Boolean isParquetOrigin;
+    private boolean isParquetOrigin;
     private String tableName;
     private String s3Location;
     private String schemaInfo;
+    private JobDao job;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,7 +36,7 @@ public class StaticLog {
     }
 
     @Column(name = "parquet_origin")
-    public Boolean getParquetOrigin() {
+    public boolean isParquetOrigin() {
         return isParquetOrigin;
     }
 
@@ -50,5 +53,11 @@ public class StaticLog {
     @Column(name = "schema_info")
     public String getSchemaInfo() {
         return schemaInfo;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "job_id")
+    public JobDao getJob() {
+        return job;
     }
 }

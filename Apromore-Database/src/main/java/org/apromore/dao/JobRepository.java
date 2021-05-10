@@ -21,14 +21,13 @@
  */
 package org.apromore.dao;
 
-import org.apromore.dao.model.Job;
-import org.apromore.dao.model.User;
+import org.apromore.dao.model.JobDao;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface JobRepository extends JpaRepository<Job, Integer> {
-    List<Job> findByUser(User user);
+public interface JobRepository extends JpaRepository<JobDao, Integer> {
+    List<JobDao> findByUsername(String username);
 }
