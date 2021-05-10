@@ -22,8 +22,8 @@
 package org.apromore.plugin.portal.processdiscoverer.impl.factory;
 
 import org.apromore.plugin.portal.processdiscoverer.PDController;
-import org.apromore.plugin.portal.processdiscoverer.actionlisteners.LogFilterController;
 import org.apromore.plugin.portal.processdiscoverer.components.LogStatsController;
+import org.apromore.plugin.portal.processdiscoverer.eventlisteners.LogFilterController;
 import org.apromore.plugin.portal.processdiscoverer.impl.apmlog.LogFilterControllerWithAPMLog;
 import org.apromore.plugin.portal.processdiscoverer.impl.apmlog.LogStatsControllerWithAPMLog;
 

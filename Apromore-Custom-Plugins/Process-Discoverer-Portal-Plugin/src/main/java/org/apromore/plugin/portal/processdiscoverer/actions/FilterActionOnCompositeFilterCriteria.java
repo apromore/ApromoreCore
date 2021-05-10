@@ -28,7 +28,7 @@ import org.zkoss.zul.Messagebox;
 /*
  * This filter action is used with the LogFilter window.
  * It is a special action because the filtering is actually executed inside the window (when click on the OK button)
- * instead of by this action. Therefore, this action's execute() only does some data preparation to support undo and redo.
+ * instead of this action. Therefore, this action's execute() only does some data preparation to support undo and redo.
  * It should be used with PDController.storeAction rather than PDController.executeAction.
  */
 public class FilterActionOnCompositeFilterCriteria extends FilterAction {
@@ -42,7 +42,7 @@ public class FilterActionOnCompositeFilterCriteria extends FilterAction {
     @Override
     public boolean execute() {
         try {
-            analyst.filter(actionFilterCriteria);
+            analyst.filter(postActionFilterCriteria);
             appController.updateUI(false);
             return true;
         } catch (Exception e) {

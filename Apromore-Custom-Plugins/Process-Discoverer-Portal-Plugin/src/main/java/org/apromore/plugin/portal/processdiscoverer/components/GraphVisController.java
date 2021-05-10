@@ -107,25 +107,25 @@ public class GraphVisController extends VisualController {
     public void initializeEventListeners(Object data) {
         vizBridge.addEventListener("onNodeRemovedTrace", event -> {
             FilterActionOnElementFilter action = new FilterActionOnNodeRemoveTrace(parent, parent.getProcessAnalyst());
-            action.setExecutionParams(event.getData().toString(), parent.getUserOptions().getMainAttributeKey());
+            action.setElement(event.getData().toString(), parent.getUserOptions().getMainAttributeKey());
             parent.executeAction(action);
         });
         
         vizBridge.addEventListener("onNodeRetainedTrace", event -> {
             FilterActionOnElementFilter action = new FilterActionOnNodeRetainTrace(parent, parent.getProcessAnalyst());
-            action.setExecutionParams(event.getData().toString(), parent.getUserOptions().getMainAttributeKey());
+            action.setElement(event.getData().toString(), parent.getUserOptions().getMainAttributeKey());
             parent.executeAction(action);
         });
         
         vizBridge.addEventListener("onNodeRemovedEvent", event -> {
             FilterActionOnElementFilter action = new FilterActionOnNodeRemoveEvent(parent, parent.getProcessAnalyst());
-            action.setExecutionParams(event.getData().toString(), parent.getUserOptions().getMainAttributeKey());
+            action.setElement(event.getData().toString(), parent.getUserOptions().getMainAttributeKey());
             parent.executeAction(action);
         });
         
         vizBridge.addEventListener("onNodeRetainedEvent", event -> {
             FilterActionOnElementFilter action = new FilterActionOnNodeRetainEvent(parent, parent.getProcessAnalyst());
-            action.setExecutionParams(event.getData().toString(), parent.getUserOptions().getMainAttributeKey());
+            action.setElement(event.getData().toString(), parent.getUserOptions().getMainAttributeKey());
             parent.executeAction(action);
         });
         
@@ -134,7 +134,7 @@ public class GraphVisController extends VisualController {
             if (isGatewayEdge(edge)) return;
             if (isStartOrEndEdge(edge)) edge = convertStartOrEndEdge(edge);
             FilterActionOnElementFilter action = new FilterActionOnEdgeRemoveTrace(parent, parent.getProcessAnalyst());
-            action.setExecutionParams(edge, parent.getUserOptions().getMainAttributeKey());
+            action.setElement(edge, parent.getUserOptions().getMainAttributeKey());
             parent.executeAction(action);
         });
         
@@ -143,7 +143,7 @@ public class GraphVisController extends VisualController {
             if (isGatewayEdge(edge)) return;
             if (isStartOrEndEdge(edge)) edge = convertStartOrEndEdge(edge);
             FilterActionOnElementFilter action = new FilterActionOnEdgeRetainTrace(parent, parent.getProcessAnalyst());
-            action.setExecutionParams(edge, parent.getUserOptions().getMainAttributeKey());
+            action.setElement(edge, parent.getUserOptions().getMainAttributeKey());
         });
     }
 

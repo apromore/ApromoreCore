@@ -81,10 +81,11 @@ import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 /**
  * PDAnalyst represents a process analyst who will performs log analysis in the form of graphs and BPMN diagrams
  * PDAnalyst has a number of tools to do its job:
- * - It uses {@link ProcessDiscoverer} which provides the graph and BPMN diagram logic
- * - It uses {@link ProcessVisualizer} to serialize the analysis result in a form suitable for visualization
- * - It uses {@link LogAPMLogFilter} to do log filtering
- * 
+ * <p><ul>
+ * <li>It uses {@link ProcessDiscoverer} which provides the graph and BPMN diagram logic
+ * <li>It uses {@link ProcessVisualizer} to serialize the analysis result in a form suitable for visualization
+ * <li>It uses {@link LogAPMLogFilter} to do log filtering
+ * </ul>
  * @author Bruce Nguyen
  */
 public class PDAnalyst {

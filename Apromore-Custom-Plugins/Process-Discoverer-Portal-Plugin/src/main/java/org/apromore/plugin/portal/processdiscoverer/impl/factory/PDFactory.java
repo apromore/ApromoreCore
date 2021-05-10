@@ -22,10 +22,6 @@
 package org.apromore.plugin.portal.processdiscoverer.impl.factory;
 
 import org.apromore.plugin.portal.processdiscoverer.PDController;
-import org.apromore.plugin.portal.processdiscoverer.actionlisteners.AnimationController;
-import org.apromore.plugin.portal.processdiscoverer.actionlisteners.BPMNExportController;
-import org.apromore.plugin.portal.processdiscoverer.actionlisteners.LogExportController;
-import org.apromore.plugin.portal.processdiscoverer.actionlisteners.LogFilterController;
 import org.apromore.plugin.portal.processdiscoverer.components.CaseDetailsController;
 import org.apromore.plugin.portal.processdiscoverer.components.GraphSettingsController;
 import org.apromore.plugin.portal.processdiscoverer.components.GraphVisController;
@@ -34,6 +30,10 @@ import org.apromore.plugin.portal.processdiscoverer.components.PerspectiveDetail
 import org.apromore.plugin.portal.processdiscoverer.components.TimeStatsController;
 import org.apromore.plugin.portal.processdiscoverer.components.ToolbarController;
 import org.apromore.plugin.portal.processdiscoverer.components.ViewSettingsController;
+import org.apromore.plugin.portal.processdiscoverer.eventlisteners.AnimationController;
+import org.apromore.plugin.portal.processdiscoverer.eventlisteners.BPMNExportController;
+import org.apromore.plugin.portal.processdiscoverer.eventlisteners.LogExportController;
+import org.apromore.plugin.portal.processdiscoverer.eventlisteners.LogFilterController;
 
 public interface PDFactory {
     GraphVisController createGraphVisController(PDController pdController) throws Exception;

@@ -210,6 +210,7 @@ public class ToolbarController extends AbstractController {
         if (evt.getName().equals("onOK")) {
             try {
                 FilterActionOnClearFilter action = new FilterActionOnClearFilter(parent, parent.getProcessAnalyst());
+                action.setPreActionFilterCriteria(parent.getProcessAnalyst().copyCurrentFilterCriteria());
                 parent.executeAction(action);
             } catch (Exception e) {
                 Messagebox.show("Unable to clear the filter", "Filter error",

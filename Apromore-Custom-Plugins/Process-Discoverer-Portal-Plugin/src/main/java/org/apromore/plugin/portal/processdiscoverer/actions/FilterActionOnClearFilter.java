@@ -36,7 +36,7 @@ public class FilterActionOnClearFilter extends FilterAction {
     @Override
     public boolean execute() {
         try {
-            this.setPreviousFilterCriteria(analyst.copyCurrentFilterCriteria());
+            this.setPreActionFilterCriteria(analyst.copyCurrentFilterCriteria());
             analyst.clearFilter();
             appController.updateUI(false);
             return true;

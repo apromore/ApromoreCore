@@ -32,16 +32,19 @@ import org.zkoss.zul.Messagebox;
 /**
  * FilterAction bundles different type of filtering requests to filter log data.
  * Each type of request is bundled as a subclass of FilterAction
- * To maintain the right context, FilterAction keeps track of the filter criteria used by {@link}PDAnalyst
- * before and after the filter action is executed. These criteria are deep cloned from the original criteria.
- * They are used to support undo/redo and ensures the consistency. For example, the previous
- * criteria are used for undo (the original log is filtered again).
+ * <p>
+ * To be able to do undo/redo, FilterAction keeps track of the filter criteria used by {@link}PDAnalyst
+ * before and after the filter action is executed. These criteria are deep cloned from the original one.
+ * <p>
+ * For undo, PDAnalyst is called with pre-action filter criteria ({@link PDAnalyst#filter(List)}).
+ * <p>
+ * For redo, PDAnalyst is called with either post-action filter criteria or additive criteria ({@link PDAnalyst#filterAdditive(LogFilterRule)).
  */
 public abstract class FilterAction implements Action {
     protected PDController appController;
     protected PDAnalyst analyst;
-    protected List<LogFilterRule> previousFilterCriteria;
-    protected List<LogFilterRule> actionFilterCriteria;
+    protected List<LogFilterRule> preActionFilterCriteria;
+    protected List<LogFilterRule> postActionFilterCriteria;
 
     public FilterAction(PDController appController, PDAnalyst analyst) {
         this.appController = appController;
@@ -49,13 +52,13 @@ public abstract class FilterAction implements Action {
     }
     
     // Call before filtering action is done
-    public void setPreviousFilterCriteria(List<LogFilterRule> filterCriteria) {
-        this.previousFilterCriteria = filterCriteria;
+    public void setPreActionFilterCriteria(List<LogFilterRule> filterCriteria) {
+        this.preActionFilterCriteria = filterCriteria;
     }
     
     // Call after filtering is done
-    public void setActionFilterCriteria(List<LogFilterRule> filterCriteria) {
-        actionFilterCriteria = filterCriteria;
+    public void setPostActionFilterCriteria(List<LogFilterRule> filterCriteria) {
+        postActionFilterCriteria = filterCriteria;
     }
     
     @Override
@@ -65,7 +68,7 @@ public abstract class FilterAction implements Action {
     @Override
     public void undo() {
         try {
-            appController.getProcessAnalyst().filter(this.previousFilterCriteria);
+            appController.getProcessAnalyst().filter(this.preActionFilterCriteria);
             appController.updateUI(false);
         } catch (Exception e) {
             Messagebox.show("Error when undoing filter action. Error message: " + e.getMessage());

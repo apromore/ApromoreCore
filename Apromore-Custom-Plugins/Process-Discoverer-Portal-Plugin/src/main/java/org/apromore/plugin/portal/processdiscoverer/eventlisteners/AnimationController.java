@@ -20,7 +20,7 @@
  * #L%
  */
 
-package org.apromore.plugin.portal.processdiscoverer.actionlisteners;
+package org.apromore.plugin.portal.processdiscoverer.eventlisteners;
 
 import org.apromore.plugin.portal.processdiscoverer.InteractiveMode;
 import org.apromore.plugin.portal.processdiscoverer.PDController;

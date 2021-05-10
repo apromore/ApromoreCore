@@ -40,7 +40,10 @@ public abstract class FilterActionOnElementFilter extends FilterAction {
     @Override
     public boolean execute() {
         try {
-            setPreviousFilterCriteria(analyst.copyCurrentFilterCriteria());
+            if (elementValue == null || elementValue.isEmpty() || attributeKey == null || attributeKey.isEmpty()) {
+                Messagebox.show("Invalid element filter action: element and attribute key were not set!");
+            }
+            setPreActionFilterCriteria(analyst.copyCurrentFilterCriteria());
             if (performFiltering(this.elementValue, this.attributeKey)) {
                 appController.updateUI(false);
                 return true;
@@ -58,7 +61,7 @@ public abstract class FilterActionOnElementFilter extends FilterAction {
         }
     }
     
-    public void setExecutionParams(String elementValue, String attributeKey) {
+    public void setElement(String elementValue, String attributeKey) {
         this.elementValue = elementValue;
         this.attributeKey = attributeKey;
     }

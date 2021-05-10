@@ -39,10 +39,6 @@ import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.plugin.portal.logfilter.generic.LogFilterPlugin;
-import org.apromore.plugin.portal.processdiscoverer.actionlisteners.AnimationController;
-import org.apromore.plugin.portal.processdiscoverer.actionlisteners.BPMNExportController;
-import org.apromore.plugin.portal.processdiscoverer.actionlisteners.LogExportController;
-import org.apromore.plugin.portal.processdiscoverer.actionlisteners.LogFilterController;
 import org.apromore.plugin.portal.processdiscoverer.actions.Action;
 import org.apromore.plugin.portal.processdiscoverer.actions.ActionHistory;
 import org.apromore.plugin.portal.processdiscoverer.actions.FilterAction;
@@ -64,6 +60,10 @@ import org.apromore.plugin.portal.processdiscoverer.data.ConfigData;
 import org.apromore.plugin.portal.processdiscoverer.data.ContextData;
 import org.apromore.plugin.portal.processdiscoverer.data.OutputData;
 import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
+import org.apromore.plugin.portal.processdiscoverer.eventlisteners.AnimationController;
+import org.apromore.plugin.portal.processdiscoverer.eventlisteners.BPMNExportController;
+import org.apromore.plugin.portal.processdiscoverer.eventlisteners.LogExportController;
+import org.apromore.plugin.portal.processdiscoverer.eventlisteners.LogFilterController;
 import org.apromore.plugin.portal.processdiscoverer.impl.factory.PDFactory;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.BaseController;
@@ -98,6 +98,13 @@ import org.zkoss.zul.Window;
  * PDController has three <b>modes</b>: MODEL view, ANIMATION view and TRACE view. Initially it is in MODEL mode.
  * Each <b>action</b> will change PD to different modes. There are transition rules between modes and active state of UI controls
  * in each mode.
+ * <p>
+ * PDController provides an action management capability. Actions can be bundled into Action object which can be undo/redo to reduce
+ * dependencies among various objects.
+ * <ul>
+ *  <li>UI Components such as ToolbarController and GraphVisController set up these actions (Invoker)
+ *  <li>These actions have access to PDController and PDAnalyst (Receiver) to fulfill the request
+ * </ul>
  * 
  */
 public class PDController extends BaseController {

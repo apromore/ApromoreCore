@@ -40,9 +40,9 @@ import org.apromore.plugin.portal.logfilter.generic.LogFilterRequest;
 import org.apromore.plugin.portal.logfilter.generic.LogFilterResponse;
 import org.apromore.plugin.portal.processdiscoverer.PDAnalyst;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
-import org.apromore.plugin.portal.processdiscoverer.actionlisteners.LogFilterController;
 import org.apromore.plugin.portal.processdiscoverer.actions.FilterActionOnClearFilter;
 import org.apromore.plugin.portal.processdiscoverer.actions.FilterActionOnCompositeFilterCriteria;
+import org.apromore.plugin.portal.processdiscoverer.eventlisteners.LogFilterController;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.zkoss.json.JSONObject;
 import org.zkoss.zk.ui.event.Event;
@@ -63,12 +63,8 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
     public LogFilterControllerWithAPMLog(PDController controller) throws Exception {
         super(controller);
         analyst = controller.getProcessAnalyst();
-        
         compositeFilterAction = new FilterActionOnCompositeFilterCriteria(parent, analyst);
-        compositeFilterAction.setPreviousFilterCriteria(analyst.copyCurrentFilterCriteria());
-        
-        clearFilterAction = new FilterActionOnClearFilter(parent, analyst);
-        clearFilterAction.setPreviousFilterCriteria(analyst.copyCurrentFilterCriteria());
+        compositeFilterAction.setPreActionFilterCriteria(analyst.copyCurrentFilterCriteria());
     }
 
     @Override
@@ -296,7 +292,7 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
             try {
                 analyst.updateLog(pLog, logFilterResponse.getApmLog());
                 parent.updateUI(true);
-                compositeFilterAction.setActionFilterCriteria(analyst.copyCurrentFilterCriteria());
+                compositeFilterAction.setPostActionFilterCriteria(analyst.copyCurrentFilterCriteria());
                 parent.storeAction(compositeFilterAction);
             } catch (Exception e) {
                 Messagebox.show(e.toString(), "Filter Response Error. " + e.getMessage(),
