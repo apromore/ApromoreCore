@@ -22,6 +22,10 @@
 
 package org.apromore.logman.utils;
 
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.TemporalAccessor;
 import java.util.Date;
 
 import org.apromore.logman.AActivity;
@@ -41,8 +45,21 @@ import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XTrace;
 import org.joda.time.DateTime;
 
+import com.esotericsoftware.kryo.serializers.FieldSerializer.Optional;
+
 public class LogUtils {
 
+	public static final String KEY_TIMESTAMP = "time:timestamp";
+	
+	private static DateTimeFormatterBuilder dateTimeFormatterBuilder =new DateTimeFormatterBuilder();
+	
+	private static DateTimeFormatter formatter;
+	
+	static {
+		dateTimeFormatterBuilder.parseLenient()
+		.appendOptional(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"));
+		formatter=dateTimeFormatterBuilder.toFormatter();
+	}
 	////////////////////////// Attribute utilities //////////////////////////
 	public static String getConceptName(XAttributable attrib) {
 		String value = XConceptExtension.instance().extractName(attrib);
@@ -111,13 +128,31 @@ public class LogUtils {
 	}
 	
     public static long getTimestamp(XEvent event) {
-        Date eventDate = XTimeExtension.instance().extractTimestamp(event);
-        if (eventDate != null) {
-            return XTimeExtension.instance().extractTimestamp(event).toInstant().toEpochMilli();
-        }
-        else {
-            return Constants.MISSING_TIMESTAMP;
-        }
+    	XAttribute attribute= event.getAttributes().get(KEY_TIMESTAMP);
+    	
+    	if(attribute instanceof XAttributeTimestamp) 
+    	{
+    		 Date eventDate = XTimeExtension.instance().extractTimestamp(event);
+    	        if (eventDate != null) {
+    	            return XTimeExtension.instance().extractTimestamp(event).toInstant().toEpochMilli();
+    	        }
+    	        else {
+    	            return Constants.MISSING_TIMESTAMP;
+    	        }		
+    	}
+//    	fallback as client did not set data type correctly. Considering only 1 dateformat for now.
+    	else {
+			String expectedDateString = getValueString(attribute);
+			try {
+				OffsetDateTime offsetDateTime=OffsetDateTime.parse(expectedDateString,formatter);
+				return offsetDateTime.toInstant().toEpochMilli();
+			} catch (Exception e) {
+				return Constants.MISSING_TIMESTAMP;
+			}
+			
+		}
+    	
+       
     }	
     
 //    public static long getStartTimestamp(XEvent event) {
@@ -182,7 +217,6 @@ public class LogUtils {
 		return (value != null ? value : Constants.MISSING_STRING_VALUE);
 	}
 	
-
-
+	
 	
 }
