@@ -49,7 +49,7 @@ public abstract class AbstractNodeVisualizer extends AbstractElementVisualizer {
     }
 	
 	@Override
-	public JSONObject generateJSON(ContainableDirectedGraphElement element) 
+	public JSONObject generateJSON(ContainableDirectedGraphElement element)
 	        throws UnsupportedElementException, JSONException, MissingLayoutException {
 		if (!(element instanceof BPMNNode)) {
 			throw new UnsupportedElementException("Unsupported element while expecting a BPMNNode object.");
@@ -65,7 +65,6 @@ public abstract class AbstractNodeVisualizer extends AbstractElementVisualizer {
 	    jsonNode = new JSONObject();
 		
 		// Common visual data
-		jsonData.put("id", visContext.getProcessAbstraction().getNodeId(node));
 		jsonData.put("name", "");
 		jsonData.put("textcolor", "black");
 		jsonData.put("textwidth", visSettings.getTextWidth() + "px");
