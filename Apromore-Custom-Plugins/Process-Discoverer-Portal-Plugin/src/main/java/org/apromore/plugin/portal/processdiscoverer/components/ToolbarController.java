@@ -22,6 +22,7 @@
 package org.apromore.plugin.portal.processdiscoverer.components;
 
 import org.apromore.plugin.portal.processdiscoverer.PDController;
+import org.apromore.plugin.portal.processdiscoverer.actions.FilterActionOnClearFilter;
 import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
@@ -133,8 +134,8 @@ public class ToolbarController extends AbstractController {
         filter.addEventListener("onInvokeExt", e -> parent.openLogFilter(e));
         filter.addEventListener(Events.ON_CLICK, e -> parent.openLogFilter(e));
         filterClear.addEventListener(Events.ON_CLICK, e -> onClearFilter());
-        filterUndo.addEventListener(Events.ON_CLICK, e -> parent.undo());
-        filterRedo.addEventListener(Events.ON_CLICK, e -> parent.redo());
+        filterUndo.addEventListener(Events.ON_CLICK, e -> parent.undoAction());
+        filterRedo.addEventListener(Events.ON_CLICK, e -> parent.redoAction());
         
         animate.addEventListener(Events.ON_CLICK, e -> parent.openAnimation(e));
         exportFilteredLog.addEventListener("onExport", e -> parent.openLogExport(e));
@@ -208,7 +209,8 @@ public class ToolbarController extends AbstractController {
     private void proceedClearFilter(Event evt) {
         if (evt.getName().equals("onOK")) {
             try {
-                clearFilter();
+                FilterActionOnClearFilter action = new FilterActionOnClearFilter(parent, parent.getProcessAnalyst());
+                parent.executeAction(action);
             } catch (Exception e) {
                 Messagebox.show("Unable to clear the filter", "Filter error",
                         Messagebox.OK, Messagebox.ERROR);
@@ -216,7 +218,4 @@ public class ToolbarController extends AbstractController {
         }
     }
 
-    private void clearFilter() throws Exception {
-        parent.clearFilter();
-    }
 }

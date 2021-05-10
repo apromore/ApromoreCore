@@ -23,42 +23,40 @@
 package org.apromore.plugin.portal.processdiscoverer.actions;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.plugin.portal.processdiscoverer.PDAnalyst;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
 import org.zkoss.zul.Messagebox;
 
+/**
+ * FilterAction bundles different type of filtering requests to filter log data.
+ * Each type of request is implemented by a subclass of FilterAction
+ * To maintain the right context, FilterAction keeps track of the filter criteria used
+ * before and after the filter action is executed. These criteria are deep cloned
+ * from the original criteria kept by <{@link }PDAnalyst>.
+ * They are used to support undo/redo and ensures the consistency. For example, the previous
+ * criteria are used for undo (the original log is filtered again).
+ */
 public abstract class FilterAction implements Action {
     protected PDController appController;
     protected PDAnalyst analyst;
     protected List<LogFilterRule> previousFilterCriteria;
-    protected String filterValue;
-    protected String filterAttributeKey;
+    protected List<LogFilterRule> actionFilterCriteria;
 
     public FilterAction(PDController appController, PDAnalyst analyst) {
         this.appController = appController;
         this.analyst = analyst;
     }
     
-    public void setExecutionParams(String filterValue, String filterAttributeKey) {
-        this.filterValue = filterValue;
-        this.filterAttributeKey = filterAttributeKey;
+    // Call before filtering action is done
+    public void setPreviousFilterCriteria(List<LogFilterRule> filterCriteria) {
+        this.previousFilterCriteria = filterCriteria;
     }
     
-    protected List<LogFilterRule> copyCurrentFilterCriteria() {
-        return ((List<LogFilterRule>)analyst.getCurrentFilterCriteria())
-            .stream()
-            .map((c) -> c.clone())
-            .collect(Collectors.toList());
-    }
-    
-    protected void showEmptyLogMessageBox() {
-        Messagebox.show("The log is empty after applying all filter criteria! Please use different criteria.",
-              "Process Discoverer",
-              Messagebox.OK,
-              Messagebox.INFORMATION);
+    // Call after filtering is done
+    public void setActionFilterCriteria(List<LogFilterRule> filterCriteria) {
+        actionFilterCriteria = filterCriteria;
     }
     
     @Override
@@ -67,9 +65,11 @@ public abstract class FilterAction implements Action {
     
     @Override
     public void undo() {
-        PDAnalyst analyst = appController.getProcessAnalyst();
-        analyst.filter(this.previousFilterCriteria);
-        appController.updateUI(false);
-        appController.updateUndoRedoButtons();
+        try {
+            appController.getProcessAnalyst().filter(this.previousFilterCriteria);
+            appController.updateUI(false);
+        } catch (Exception e) {
+            Messagebox.show("Error when undoing filter action. Error message: " + e.getMessage());
+        }
     }
 }

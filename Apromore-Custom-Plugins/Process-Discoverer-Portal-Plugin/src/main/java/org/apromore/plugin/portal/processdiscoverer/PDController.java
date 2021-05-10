@@ -45,7 +45,13 @@ import org.apromore.plugin.portal.processdiscoverer.actionlisteners.LogExportCon
 import org.apromore.plugin.portal.processdiscoverer.actionlisteners.LogFilterController;
 import org.apromore.plugin.portal.processdiscoverer.actions.Action;
 import org.apromore.plugin.portal.processdiscoverer.actions.ActionHistory;
-import org.apromore.plugin.portal.processdiscoverer.actions.UndoRedoController;
+import org.apromore.plugin.portal.processdiscoverer.actions.FilterAction;
+import org.apromore.plugin.portal.processdiscoverer.actions.FilterActionOnEdgeRemoveTrace;
+import org.apromore.plugin.portal.processdiscoverer.actions.FilterActionOnEdgeRetainTrace;
+import org.apromore.plugin.portal.processdiscoverer.actions.FilterActionOnNodeRemoveEvent;
+import org.apromore.plugin.portal.processdiscoverer.actions.FilterActionOnNodeRemoveTrace;
+import org.apromore.plugin.portal.processdiscoverer.actions.FilterActionOnNodeRetainEvent;
+import org.apromore.plugin.portal.processdiscoverer.actions.FilterActionOnNodeRetainTrace;
 import org.apromore.plugin.portal.processdiscoverer.components.CaseDetailsController;
 import org.apromore.plugin.portal.processdiscoverer.components.GraphSettingsController;
 import org.apromore.plugin.portal.processdiscoverer.components.GraphVisController;
@@ -128,7 +134,6 @@ public class PDController extends BaseController {
     private LogExportController logExportController;
     private BPMNExportController bpmnExportController;
     private ToolbarController toolbarController;
-    private UndoRedoController undoRedoController;
 
     //////////////////// DATA ///////////////////////////////////
 
@@ -271,6 +276,15 @@ public class PDController extends BaseController {
             
             // Set up UI components
             graphVisController = pdFactory.createGraphVisController(this);
+            Map<String, FilterAction> filterActions = new HashMap<>();
+            filterActions.put("onNodeRemovedTrace", new FilterActionOnNodeRemoveTrace(this, this.getProcessAnalyst()));
+            filterActions.put("onNodeRetainedTrace", new FilterActionOnNodeRetainTrace(this, this.getProcessAnalyst()));
+            filterActions.put("onNodeRemovedEvent", new FilterActionOnNodeRemoveEvent(this, this.getProcessAnalyst()));
+            filterActions.put("onNodeRetainedEvent", new FilterActionOnNodeRetainEvent(this, this.getProcessAnalyst()));
+            filterActions.put("onEdgeRemoved", new FilterActionOnEdgeRemoveTrace(this, this.getProcessAnalyst()));
+            filterActions.put("onEdgeRetained", new FilterActionOnEdgeRetainTrace(this, this.getProcessAnalyst()));
+            graphVisController.setActions(filterActions);
+            
             caseDetailsController = pdFactory.createCaseDetailsController(this);
             perspectiveDetailsController = pdFactory.createPerspectiveDetailsController(this);
             viewSettingsController = pdFactory.createViewSettingsController(this);
@@ -282,7 +296,6 @@ public class PDController extends BaseController {
             logExportController = pdFactory.createLogExportController(this);
             bpmnExportController = pdFactory.createBPMNExportController(this);
             toolbarController = pdFactory.createToolbarController(this);
-            undoRedoController = pdFactory.createUndoRedoController(this);
 
             initialize();
             LOGGER.debug("Session ID = " + ((HttpSession)Sessions.getCurrent().getNativeSession()).getId());
@@ -375,11 +388,6 @@ public class PDController extends BaseController {
         graphVisController.exportJSON(viewSettingsController.getOutputName());
     }
 
-    public void clearFilter() throws Exception {
-        if (this.mode != InteractiveMode.MODEL_MODE) return;
-        logFilterController.clearFilter();
-    }
-    
     public void changeLayout() throws Exception {
         if (this.mode != InteractiveMode.MODEL_MODE) return;
         graphVisController.changeLayout();
@@ -448,18 +456,26 @@ public class PDController extends BaseController {
             LOGGER.error(ex.getMessage(), ex);
         }
     }
-
-    public void updateUndoRedoButtons() {
-        toolbarController.updateUndoRedoButtons(actionHistory.canUndo(), actionHistory.canRedo());
-    }
     
+    //////////////////////// ACTION MANAGEMENT /////////////////////////
+
+    // For real action that perform changes
     public void executeAction(Action action) {
         if (action.execute()) {
             actionHistory.undoPush(action);
+            // Redo actions are those actions that have been undoed.
+            // When an action is redoed, it assumes that the undo stack is the same as before it is pushed to undo
+            // So, whenever a new action is pushed to the undo stack, all redoable actions must be clear to ensure consistent state.
+            actionHistory.clearRedo();
         }
     }
+    
+    // For actions that don't change anything but only support undo/redo (e.g. filter with LogFilter window)
+    public void storeAction(Action action) {
+        actionHistory.undoPush(action);
+    }
 
-    public void undo() {
+    public void undoAction() {
         Action action = actionHistory.undoPop();
         if (action != null) {
             action.undo();
@@ -467,7 +483,7 @@ public class PDController extends BaseController {
         }
     }
 
-    public void redo() {
+    public void redoAction() {
         Action action = actionHistory.redoPop();
         if (action != null) {
             if (action.execute()) {
@@ -475,6 +491,8 @@ public class PDController extends BaseController {
             }
         }
     }
+    
+    //////////////////////////////////////////////////////////////////////
 
     /**
      * Update UI
@@ -492,6 +510,7 @@ public class PDController extends BaseController {
             generateViz();
             if (!reset) graphVisController.centerToWindow();
             toolbarController.setDisabledFilterClear(this.getProcessAnalyst().isCurrentFilterCriteriaEmpty());
+            toolbarController.updateUndoRedoButtons(actionHistory.canUndo(), actionHistory.canRedo());
         }
         catch (Exception ex) {
             Messagebox.show("Errors occured while updating UI: " + ex.getMessage());

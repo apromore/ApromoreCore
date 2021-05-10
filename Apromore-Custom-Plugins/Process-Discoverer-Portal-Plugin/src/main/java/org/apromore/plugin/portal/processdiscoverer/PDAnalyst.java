@@ -29,6 +29,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.ATrace;
@@ -304,6 +305,13 @@ public class PDAnalyst {
         return true;
     }
     
+    public List<LogFilterRule> copyCurrentFilterCriteria() {
+        return ((List<LogFilterRule>)this.getCurrentFilterCriteria())
+            .stream()
+            .map((c) -> c.clone())
+            .collect(Collectors.toList());
+    }
+    
     public APMLog getOriginalAPMLog() {
         return this.originalAPMLog;
     }
@@ -323,7 +331,7 @@ public class PDAnalyst {
         return this.filter(criteria);
     }
     
-    // Apply a filter criterion on top of the current filter criteria
+    // Apply filter criteria on top of the original log
     public boolean filter(List<LogFilterRule> criteria) throws Exception {
         this.apmLogFilter.filter(criteria);
         if (apmLogFilter.getPLog().getPTraceList().isEmpty()) { // Restore to the last state

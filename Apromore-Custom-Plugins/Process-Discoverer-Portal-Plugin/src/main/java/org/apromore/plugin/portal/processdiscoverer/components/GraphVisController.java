@@ -31,6 +31,13 @@ import java.util.Map;
 
 import org.apromore.plugin.portal.processdiscoverer.PDController;
 import org.apromore.plugin.portal.processdiscoverer.actions.FilterAction;
+import org.apromore.plugin.portal.processdiscoverer.actions.FilterActionOnEdgeRemoveTrace;
+import org.apromore.plugin.portal.processdiscoverer.actions.FilterActionOnEdgeRetainTrace;
+import org.apromore.plugin.portal.processdiscoverer.actions.FilterActionOnElementFilter;
+import org.apromore.plugin.portal.processdiscoverer.actions.FilterActionOnNodeRemoveEvent;
+import org.apromore.plugin.portal.processdiscoverer.actions.FilterActionOnNodeRemoveTrace;
+import org.apromore.plugin.portal.processdiscoverer.actions.FilterActionOnNodeRetainEvent;
+import org.apromore.plugin.portal.processdiscoverer.actions.FilterActionOnNodeRetainTrace;
 import org.apromore.plugin.portal.processdiscoverer.vis.InvalidOutputException;
 import org.apromore.processdiscoverer.Abstraction;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
@@ -98,19 +105,45 @@ public class GraphVisController extends VisualController {
     
     @Override
     public void initializeEventListeners(Object data) {
-        filterActions.entrySet().forEach(entry -> {
-            FilterAction action = entry.getValue();
-            vizBridge.addEventListener(entry.getKey(), event -> {
-                String filterAttKey = parent.getUserOptions().getMainAttributeKey();
-                String filterValue = event.getData().toString();
-                if (entry.getKey().startsWith("OnEdge")) {
-                    String edge = event.getData().toString();
-                    if (isGatewayEdge(edge)) return;
-                    if (isStartOrEndEdge(edge)) filterValue = convertStartOrEndEdge(edge);
-                }
-                action.setExecutionParams(filterAttKey, filterValue);
-                parent.executeAction(action);
-            });
+        vizBridge.addEventListener("onNodeRemovedTrace", event -> {
+            FilterActionOnElementFilter action = new FilterActionOnNodeRemoveTrace(parent, parent.getProcessAnalyst());
+            action.setExecutionParams(event.getData().toString(), parent.getUserOptions().getMainAttributeKey());
+            parent.executeAction(action);
+        });
+        
+        vizBridge.addEventListener("onNodeRetainedTrace", event -> {
+            FilterActionOnElementFilter action = new FilterActionOnNodeRetainTrace(parent, parent.getProcessAnalyst());
+            action.setExecutionParams(event.getData().toString(), parent.getUserOptions().getMainAttributeKey());
+            parent.executeAction(action);
+        });
+        
+        vizBridge.addEventListener("onNodeRemovedEvent", event -> {
+            FilterActionOnElementFilter action = new FilterActionOnNodeRemoveEvent(parent, parent.getProcessAnalyst());
+            action.setExecutionParams(event.getData().toString(), parent.getUserOptions().getMainAttributeKey());
+            parent.executeAction(action);
+        });
+        
+        vizBridge.addEventListener("onNodeRetainedEvent", event -> {
+            FilterActionOnElementFilter action = new FilterActionOnNodeRetainEvent(parent, parent.getProcessAnalyst());
+            action.setExecutionParams(event.getData().toString(), parent.getUserOptions().getMainAttributeKey());
+            parent.executeAction(action);
+        });
+        
+        vizBridge.addEventListener("onEdgeRemoved", event -> {
+            String edge = event.getData().toString();
+            if (isGatewayEdge(edge)) return;
+            if (isStartOrEndEdge(edge)) edge = convertStartOrEndEdge(edge);
+            FilterActionOnElementFilter action = new FilterActionOnEdgeRemoveTrace(parent, parent.getProcessAnalyst());
+            action.setExecutionParams(edge, parent.getUserOptions().getMainAttributeKey());
+            parent.executeAction(action);
+        });
+        
+        vizBridge.addEventListener("onEdgeRetained", event -> {
+            String edge = event.getData().toString();
+            if (isGatewayEdge(edge)) return;
+            if (isStartOrEndEdge(edge)) edge = convertStartOrEndEdge(edge);
+            FilterActionOnElementFilter action = new FilterActionOnEdgeRetainTrace(parent, parent.getProcessAnalyst());
+            action.setExecutionParams(edge, parent.getUserOptions().getMainAttributeKey());
         });
     }
 

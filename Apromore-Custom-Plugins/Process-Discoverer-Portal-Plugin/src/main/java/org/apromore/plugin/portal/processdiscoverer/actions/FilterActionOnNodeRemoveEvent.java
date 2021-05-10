@@ -23,28 +23,15 @@ package org.apromore.plugin.portal.processdiscoverer.actions;
 
 import org.apromore.plugin.portal.processdiscoverer.PDAnalyst;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
-import org.zkoss.zhtml.Messagebox;
 
-public class FilterActionOnNodeRemoveEvent extends FilterAction {
+public class FilterActionOnNodeRemoveEvent extends FilterActionOnElementFilter {
 
     public FilterActionOnNodeRemoveEvent(PDController appController, PDAnalyst analyst) {
         super(appController, analyst);
     }
     
     @Override
-    public boolean execute() {
-        try {
-            this.previousFilterCriteria = copyCurrentFilterCriteria();
-            if (analyst.filter_RemoveEventsAnyValueOfEventAttribute(this.filterValue, this.filterAttributeKey)) {
-                appController.updateUI(false);
-                return true;
-            }
-            else {
-                showEmptyLogMessageBox();
-            }
-        } catch (Exception e) {
-            Messagebox.show("Error during filtering. Error message: " + e.getMessage());
-        }
-        return false;
+    public boolean performFiltering(String elementValue, String attributeKey) throws Exception {
+        return analyst.filter_RemoveEventsAnyValueOfEventAttribute(elementValue, attributeKey);
     }
 }

@@ -41,6 +41,8 @@ import org.apromore.plugin.portal.logfilter.generic.LogFilterResponse;
 import org.apromore.plugin.portal.processdiscoverer.PDAnalyst;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
 import org.apromore.plugin.portal.processdiscoverer.actionlisteners.LogFilterController;
+import org.apromore.plugin.portal.processdiscoverer.actions.FilterActionOnClearFilter;
+import org.apromore.plugin.portal.processdiscoverer.actions.FilterActionOnCompositeFilterCriteria;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.zkoss.json.JSONObject;
 import org.zkoss.zk.ui.event.Event;
@@ -55,9 +57,18 @@ import org.zkoss.zul.Messagebox;
  */
 public class LogFilterControllerWithAPMLog extends LogFilterController implements LogFilterClient {
     private PDAnalyst analyst;
+    private FilterActionOnCompositeFilterCriteria compositeFilterAction;
+    private FilterActionOnClearFilter clearFilterAction;
+    
     public LogFilterControllerWithAPMLog(PDController controller) throws Exception {
         super(controller);
         analyst = controller.getProcessAnalyst();
+        
+        compositeFilterAction = new FilterActionOnCompositeFilterCriteria(parent, analyst);
+        compositeFilterAction.setPreviousFilterCriteria(analyst.copyCurrentFilterCriteria());
+        
+        clearFilterAction = new FilterActionOnClearFilter(parent, analyst);
+        clearFilterAction.setPreviousFilterCriteria(analyst.copyCurrentFilterCriteria());
     }
 
     @Override
@@ -96,7 +107,7 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
         Clients.showBusy("Launch Filter Dialog ...");
 
         LogFilterRule rule = getLastMatchedRuleWithValues(filterType, payload,
-                (List<LogFilterRule>) logData.getCurrentFilterCriteria());
+                (List<LogFilterRule>) analyst.getCurrentFilterCriteria());
 
         EditorOption option = rule != null ? new EditorOption(filterType, rule) :
                 new EditorOption(filterType, payload);
@@ -278,13 +289,6 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
     }
 
     @Override
-    public void clearFilter() throws Exception {
-        analyst.clearFilter();
-        parent.updateUI(true);
-        parent.addAction("CLEAR");
-    }
-
-    @Override
     public void processResponse(LogFilterResponse logFilterResponse) {
         PLog pLog = logFilterResponse.getPLog();
         if (!pLog.getPTraceList().isEmpty()) {
@@ -292,7 +296,8 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
             try {
                 analyst.updateLog(pLog, logFilterResponse.getApmLog());
                 parent.updateUI(true);
-                parent.addAction("CUSTOM");
+                compositeFilterAction.setActionFilterCriteria(analyst.copyCurrentFilterCriteria());
+                parent.storeAction(compositeFilterAction);
             } catch (Exception e) {
                 Messagebox.show(e.toString(), "Filter Response Error. " + e.getMessage(),
                         Messagebox.OK,
