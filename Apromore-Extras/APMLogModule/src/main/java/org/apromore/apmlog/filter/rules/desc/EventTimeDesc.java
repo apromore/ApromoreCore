@@ -40,7 +40,7 @@ public class EventTimeDesc {
 
         sb.append(choice.substring(0, 1).toUpperCase() + choice.substring(1) + " ");
 
-        sb.append("all events whose timestamp ");
+        sb.append("all activity instances whose timestamp ");
         sb.append("is [from " + TimeUtil.convertTimestamp(fromTime) + " ");
         sb.append("to " + TimeUtil.convertTimestamp(toTime) + "]");
 

@@ -36,7 +36,7 @@ public class EventSectionAttributeDesc extends AttributeDesc{
 
         StringBuilder sb = new StringBuilder();
         String choice = logFilterRule.getChoice().toString().toLowerCase();
-        sb.append(choice.substring(0, 1).toUpperCase() + choice.substring(1) + " all events where attribute ");
+        sb.append(choice.substring(0, 1).toUpperCase() + choice.substring(1) + " all activity instances where attribute ");
 
         String attributeKey = logFilterRule.getKey();
 
