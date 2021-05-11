@@ -731,6 +731,7 @@ public class PDController extends BaseController {
      */
     public void storeAction(Action action) {
         actionHistory.undoPush(action);
+        if (action instanceof FilterAction) this.updateUI(false);
     }
 
     public void undoAction() {
