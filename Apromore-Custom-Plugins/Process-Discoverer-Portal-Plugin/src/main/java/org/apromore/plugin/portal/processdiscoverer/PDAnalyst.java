@@ -105,6 +105,10 @@ public class PDAnalyst {
     // Log filtering tool
     private APMLog originalAPMLog;
     private APMLog filteredAPMLog;
+    // ==========================================
+    // use PLog mainly for indexing purpose only.
+    // use filteredAPMLog for the updated stats
+    // ==========================================
     private PLog filteredPLog;
     private APMLogFilter apmLogFilter;
     
@@ -495,6 +499,14 @@ public class PDAnalyst {
 
     public String getFilteredMaxDuration() {
         return DurationUtils.humanize(this.filteredAPMLog.getMaxDuration(), true);
+    }
+
+    public long getFilteredCaseVariantSize() {
+        // ==================================================================================================
+        // PLog does not always have the updated case variants due to performance concern.
+        // Such a value can be obtained from the filteredAPMLog (the output)
+        // ==================================================================================================
+        return this.filteredAPMLog.getCaseVariantSize();
     }
     
     public void updateLog(PLog pLog, APMLog apmLog) throws Exception {
