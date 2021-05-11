@@ -105,6 +105,10 @@ public class PDAnalyst {
     // Log filtering tool
     private APMLog originalAPMLog;
     private APMLog filteredAPMLog;
+    // ==========================================
+    // use PLog mainly for indexing purpose only.
+    // use filteredAPMLog for the updated stats
+    // ==========================================
     private PLog filteredPLog;
     private APMLogFilter apmLogFilter;
     
@@ -428,15 +432,14 @@ public class PDAnalyst {
     }
 
     public boolean hasSufficientDurationVariant(String attribute, String value) {
-        DurSubGraph dsg = this.originalAPMLog.getAAttributeGraph().getValueDurations(attribute);
+        DurSubGraph dsg = AAttributeGraph.getValueDurations(attribute, filteredAPMLog);
         if (!dsg.getValDurCaseIndexMap().containsKey(value)) return false;
         if (dsg.getValDurCaseIndexMap().get(value).isEmpty()) return false;
         return dsg.getValDurCaseIndexMap().get(value).size() > 1;
     }
 
     public boolean hasSufficientDurationVariant(String attribute, String inDegree, String outDegree) {
-        AAttributeGraph aAttributeGraph = this.originalAPMLog.getAAttributeGraph();
-        UnifiedSet<Double> durations = aAttributeGraph.getDurations(attribute, inDegree, outDegree, this.originalAPMLog);
+        UnifiedSet<Double> durations = AAttributeGraph.getDurations(attribute, inDegree, outDegree, filteredAPMLog);
         return (durations.size() > 1);
     }
 
@@ -496,6 +499,14 @@ public class PDAnalyst {
 
     public String getFilteredMaxDuration() {
         return DurationUtils.humanize(this.filteredAPMLog.getMaxDuration(), true);
+    }
+
+    public long getFilteredCaseVariantSize() {
+        // ==================================================================================================
+        // PLog does not always have the updated case variants due to performance concern.
+        // Such a value can be obtained from the filteredAPMLog (the output)
+        // ==================================================================================================
+        return this.filteredAPMLog.getCaseVariantSize();
     }
     
     public void updateLog(PLog pLog, APMLog apmLog) throws Exception {

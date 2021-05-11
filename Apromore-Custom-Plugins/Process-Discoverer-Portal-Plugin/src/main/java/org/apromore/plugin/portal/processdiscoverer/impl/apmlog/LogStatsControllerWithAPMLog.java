@@ -194,7 +194,7 @@ public class LogStatsControllerWithAPMLog extends LogStatsController {
 
         long filteredEventCount = pLog.getAllActivities().size();
         long filteredCaseCount = pLog.getPTraceList().size();
-        long filteredVariantCount = pLog.getVariantIdFreqMap().size();
+        long filteredVariantCount = analyst.getFilteredCaseVariantSize();
         long filteredNodeCount = filtered.getActivityCount();
 
         setNumber(this.lblCaseNumberFiltered, filteredCaseCount);
