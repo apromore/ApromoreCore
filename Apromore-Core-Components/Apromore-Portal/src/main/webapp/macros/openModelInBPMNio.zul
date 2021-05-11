@@ -33,6 +33,10 @@
     .x-panel-editor-north .x-btn {
       opacity: 0 !important;
     }
+
+    .x-layout-collapsed-east {
+      top: 66px !important;
+    }
   </z:style>
 	<!-- STYLESHEET FOR THE WRAPPER EDITOR -->
     <n:style media="screen" type="text/css">

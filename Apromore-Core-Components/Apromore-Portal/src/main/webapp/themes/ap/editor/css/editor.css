@@ -20,6 +20,11 @@
  * #L%
  */
 
+button.x-btn-text.disabled {
+    pointer-events: none;
+    background-color: transparent !important;
+    filter: var(--ap-filter-ico-grey-minor) !important;
+}
 
 .x-panel-editor-north .x-toolbar .ytb-sep {
     background-image: none !important;

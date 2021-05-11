@@ -56,8 +56,32 @@ Apromore.Editor = {
         return Ext.get(this.rootNode).parent("div{overflow=auto}", true);
     },
 
+    updateUndoRedo: function () {
+        try {
+            var undo = jq("button[title='Undo the last action']");
+            var redo = jq("button[title='Redo the last undone action']");
+            if (this.canUndo()) {
+                undo.removeClass('disabled');
+            } else {
+                undo.addClass('disabled');
+            }
+            if (this.canRedo()) {
+                redo.removeClass('disabled');
+            } else {
+                redo.addClass('disabled');
+            }
+        } catch(e) {
+            // pass
+        }
+    },
+
     attachEditor: function (editor) {
+        var me = this;
         this.actualEditor = editor;
+        this.updateUndoRedo();
+        this.addCommandStackChangeListener(function () {
+            me.updateUndoRedo();
+        });
     },
 
     getSVGContainer: function() {
