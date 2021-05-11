@@ -28,7 +28,7 @@ import java.text.DecimalFormat;
 import org.apromore.logman.attribute.graph.MeasureRelation;
 import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.plugin.portal.processdiscoverer.utils.BPMNHelper;
-import org.apromore.plugin.portal.processdiscoverer.vis.MissingLayoutException;
+import org.apromore.plugin.portal.processdiscoverer.vis.InvalidOutputException;
 import org.apromore.plugin.portal.processdiscoverer.vis.UnsupportedElementException;
 import org.apromore.plugin.portal.processdiscoverer.vis.VisualContext;
 import org.apromore.plugin.portal.processdiscoverer.vis.VisualSettings;
@@ -54,13 +54,13 @@ public class EdgeVisualizer extends AbstractElementVisualizer {
     
 	@Override
 	public JSONObject generateJSON(ContainableDirectedGraphElement element) 
-	            throws UnsupportedElementException, JSONException, MissingLayoutException {
+	            throws UnsupportedElementException, JSONException, InvalidOutputException {
 		if (!(element instanceof BPMNEdge<?, ?>)) {
 			throw new UnsupportedElementException("Unsupported element while expecting a BPMNEdge object.");
 		}
 		
         if (visContext.getProcessAbstraction().getLayout() == null) {
-            throw new MissingLayoutException("Missing layout of the process map for generating JSON.");
+            throw new InvalidOutputException("Missing layout of the process map for generating JSON.");
         }
 		
 		BPMNEdge<? extends BPMNNode, ? extends BPMNNode> edge = (BPMNEdge<?,?>)element;
@@ -88,7 +88,7 @@ public class EdgeVisualizer extends AbstractElementVisualizer {
         //Add (distance, weight) points for the edge
         LayoutElement edgeLayout = abs.getLayout().getLayoutElement(edge.getEdgeID().toString());
         if (edgeLayout == null) {
-            throw new MissingLayoutException("Missing layout info for the edge with id=" + edge.getEdgeID().toString());
+            throw new InvalidOutputException("Missing layout info for the edge with id=" + edge.getEdgeID().toString());
         }
         else {
             if (edge.getSource() != edge.getTarget()) {

@@ -27,12 +27,9 @@ import java.text.DecimalFormat;
 import org.apromore.apmlog.filter.PLog;
 import org.apromore.logman.attribute.log.AttributeLog;
 import org.apromore.logman.attribute.log.AttributeLogSummary;
+import org.apromore.plugin.portal.processdiscoverer.PDAnalyst;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
 import org.apromore.plugin.portal.processdiscoverer.components.LogStatsController;
-import org.apromore.plugin.portal.processdiscoverer.data.InvalidDataException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.zkoss.json.JSONObject;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -68,8 +65,6 @@ public class LogStatsControllerWithAPMLog extends LogStatsController {
     private Label lblCasePercent, lblVariantPercent, lblEventPercent;
     private Label lblCaseNumberFiltered, lblCaseNumberTotal, lblVariantNumberFiltered, lblVariantNumberTotal, lblEventNumberFiltered, lblEventNumberTotal;
     private Label lblNodePercent, lblNodeNumberFiltered, lblNodeNumberTotal;
-    // private final String CHART_SERIES_COLOR = "#afdaed"; // "#7FD6A0";
-    private static final Logger LOGGER = LoggerFactory.getLogger(LogStatsControllerWithAPMLog.class);
 
     // TO DO: Check if total can be persisted during init
     private long totalEventCount;
@@ -77,18 +72,13 @@ public class LogStatsControllerWithAPMLog extends LogStatsController {
     private long totalVariantCount;
     private long totalNodeCount;
     
-    private LogDataWithAPMLog logData;
+    private PDAnalyst analyst;
     
     private boolean disabled = false;
 
     public LogStatsControllerWithAPMLog(PDController parent)  throws Exception {
         super(parent);
-        if (!(parent.getLogData() instanceof LogDataWithAPMLog)) {
-            throw new InvalidDataException("Expect LogDataWithAPMLog data but receiving different data!");
-        }
-        else {
-            logData = (LogDataWithAPMLog)parent.getLogData();            
-        }
+        analyst = parent.getProcessAnalyst();
     }
 
     @Override
@@ -123,7 +113,7 @@ public class LogStatsControllerWithAPMLog extends LogStatsController {
         lblNodeNumberFiltered = (Label) wdLogStats.getFellow("lblNodeNumberFiltered");
         lblNodeNumberTotal = (Label) wdLogStats.getFellow("lblNodeNumberTotal");
 
-        AttributeLogSummary oriLogSummary = parent.getLogData().getAttributeLog().getOriginalLogSummary();
+        AttributeLogSummary oriLogSummary = parent.getProcessAnalyst().getAttributeLog().getOriginalLogSummary();
         updateFromLogSummary(oriLogSummary, oriLogSummary);
     }
     
@@ -176,21 +166,26 @@ public class LogStatsControllerWithAPMLog extends LogStatsController {
                 parent.openLogFilter(new Event("", null, "EventTabAttribute"));
             }
         });
-
-        btnActivityHeading.addEventListener("onClick", event -> onOpenFilterForCaseTabAttribute());
-        lblActivityHeading.addEventListener("onClick", event -> onOpenFilterForCaseTabAttribute());
-    }
-
-    private void onOpenFilterForCaseTabAttribute() {
-        if (disabled) return;
-
-        String label = lblActivityHeading.getValue();
-        JSONObject payload = LogFilterControllerWithAPMLog.getDefaultCaseTabAttributePayload(label);
-        parent.openLogFilter(new Event("", null, payload));
+        
+        btnActivityHeading.addEventListener("onClick", new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                if (disabled) return;
+                parent.openLogFilter(new Event("", null, "CaseTabAttribute"));
+            }
+        });
+        
+        lblActivityHeading.addEventListener("onClick", new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                if (disabled) return;
+                parent.openLogFilter(new Event("", null, "CaseTabAttribute"));
+            }
+        });
     }
 
     private void updateFromLogSummary(AttributeLogSummary filtered, AttributeLogSummary total) {
-        PLog pLog = logData.getFilteredPLog();
+        PLog pLog = analyst.getFilteredPLog();
 
         totalEventCount = pLog.getAllOriginalActivities().size();
         totalCaseCount = pLog.getOriginalPTraceList().size();
@@ -259,7 +254,7 @@ public class LogStatsControllerWithAPMLog extends LogStatsController {
 
     @Override
     public void updateUI(Object data) {
-        AttributeLog attLog = parent.getLogData().getAttributeLog();
+        AttributeLog attLog = parent.getProcessAnalyst().getAttributeLog();
         AttributeLogSummary oriLogSummary = attLog.getOriginalLogSummary();
         AttributeLogSummary logSummary = attLog.getLogSummary();
         updateFromLogSummary(logSummary, oriLogSummary);
