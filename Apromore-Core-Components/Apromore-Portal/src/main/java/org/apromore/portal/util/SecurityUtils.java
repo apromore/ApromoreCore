@@ -45,6 +45,8 @@ public final class SecurityUtils {
 
     private static final String KEYSTORE_FILE = "apSecurityTS.jks";
 
+    public static final String DEFAULT_KEY_ALIAS = "apseckey";
+
     private static SecretKeySpec secretKey;
     private static byte[] key;
 

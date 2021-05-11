@@ -81,7 +81,7 @@ public class XLogging {
 	/**
 	 * Logging listener for receiving log messages.
 	 */
-	private static XLoggingListener listener = new XStdoutLoggingListener();
+	private static XLoggingListener listener = new SLF4JLoggingListener();
 	
 	/**
 	 * Sets a new logging listener.

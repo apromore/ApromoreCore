@@ -20,12 +20,10 @@
  * #L%
  */
 
-package org.apromore.plugin.portal.processdiscoverer.vis;
+package org.apromore.plugin.portal.processdiscoverer.actions;
 
-public class MissingLayoutException extends Exception {
-    public MissingLayoutException(String message) {
-        super(message);
-    }
-    
-    
+
+public interface Action {
+    boolean execute();
+    void undo();
 }

@@ -22,17 +22,19 @@
 
 package org.apromore.portal.dialogController;
 
+import org.apromore.commons.item.ItemNameUtils;
+import org.apromore.plugin.portal.FileImporterPlugin;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.zkoss.util.media.Media;
+
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import org.apromore.commons.item.ItemNameUtils;
-import org.apromore.plugin.portal.FileImporterPlugin;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.zkoss.util.media.Media;
+import static org.junit.Assert.assertEquals;
 
 /** Test suite for {@link ImportController}. */
 public class ImportControllerUnitTest {
@@ -55,7 +57,7 @@ public class ImportControllerUnitTest {
 
     /** Test the {@link ImportController#importFile} method with no file importers and a CSV log. */
     @Test
-    public void testImportFilei_CSV() throws Exception {
+    public void testImportFile_CSV() throws Exception {
         testImportFile(Collections.emptyList(), "CallcenterExample.csv");
     }
 
@@ -77,11 +79,12 @@ public class ImportControllerUnitTest {
 
     private void testImportFile(List<FileImporterPlugin> fileImporterPlugins, String path) throws Exception {
         MainController mainController = new MainController(null);
-        ImportController controller = new ImportController(mainController, null, fileImporterPlugins, (message) -> { System.out.println(message); });
+        ImportController controller = new ImportController(mainController, null, fileImporterPlugins,
+                System.out::println);
 
         InputStream in = ImportControllerUnitTest.class.getResourceAsStream("/" + path);
         assert in != null;
 
-	controller.importFile(new MediaImpl(path, in, Charset.forName("UTF-8"), ItemNameUtils.findExtension(path)));
+        controller.importFile(new MediaImpl(path, in, Charset.forName("UTF-8"), ItemNameUtils.findExtension(path)));
     }
 }

@@ -919,6 +919,40 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
   }
 
 
+  /**
+   * Test the {@link ProcessServiceImpl#sanitizeBPMN} method.
+   */
+  @Test
+  public void testSanitizeBPMN() throws Exception {
+      for (String[] s: new String[][] {
+        // unsanitized input file            expected sanitized output       issue description
+          {"Cyclic.bpmn",                    "Cyclic.bpmn",                  "Innocuous files should be unchanged"},
+          {"unsanitized_documentation.bpmn", "sanitized_documentation.bpmn", "bpmn:documentation should have complex content removed"},
+          {"unsanitized_naked_script.bpmn",  "sanitized_naked_script.bpmn",  "Spurious <script> tags should be commented out"},
+          {"unsanitized_script.bpmn",        "sanitized_script.bpmn",        "bpmn:scriptTask must have its script child commented out"},
+          {"unsanitized_text.bpmn",          "sanitized_text.bpmn",          "bpmn:text should have complex content removed"}
+      }) {
+          Assert.assertEquals(
+              s[2],
+              CharStreams.toString(new InputStreamReader(getResourceAsStream("BPMN_models/" + s[1]))).trim(),
+              CharStreams.toString(new InputStreamReader(ProcessServiceImpl.sanitizeBPMN(getResourceAsStream("BPMN_models/" + s[0]))))
+          );
+      }
+  }
+
+  /**
+   * @param path  the classpath of a desired resource within the test JAR
+   * @return the content of the resource at <var>path</var>
+   * @throws Exception  if <var>path</var> doesn't match a resource in the test JAR
+   */
+  private InputStream getResourceAsStream(String path) throws Exception {
+      InputStream result = getClass().getClassLoader().getResourceAsStream(path);
+      if (result == null) {
+          throw new Exception(path + " is not a resource");
+      }
+
+      return result;
+  }
 
   ///////////////////////////////// DATA METHODS ////////////////////////////////////////
 

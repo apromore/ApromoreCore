@@ -41,7 +41,8 @@ public class EventAttributeDurationDesc {
 
         sb.append(logFilterRule.getChoice() == Choice.RETAIN ? "Retain " : "Remove ");
         sb.append(" all cases where ");
-        sb.append(getDisplayAttributeKey(attributeKey) + " '" + attributeVal + "' has duration between ");
+        sb.append(getDisplayAttributeKey(attributeKey)).append(" '").append(attributeVal).append("' has duration " +
+                "between [");
 
         Set<RuleValue> ruleValues = logFilterRule.getPrimaryValues();
         List<RuleValue> ruleValueList = new ArrayList<>(ruleValues);
@@ -55,6 +56,8 @@ public class EventAttributeDurationDesc {
                 sb.append(" AND ");
             }
         }
+
+        sb.append("]");
 
         return sb.toString();
     }

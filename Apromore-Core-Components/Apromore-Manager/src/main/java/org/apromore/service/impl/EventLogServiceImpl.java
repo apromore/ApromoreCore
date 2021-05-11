@@ -431,7 +431,6 @@ public class EventLogServiceImpl implements EventLogService {
         return xLog;
     }
 
-    // add inline comments
     @Override
     @Transactional
     public void deleteLogs(List<Log> logs, User user) throws NotAuthorizedException, UserNotFoundException {
@@ -443,8 +442,6 @@ public class EventLogServiceImpl implements EventLogService {
 
             Set<Usermetadata> usermetadataSet = realLog.getUsermetadataSet();
 
-            logRepo.delete(realLog);
-
             // delete associated user metadata
             for (Usermetadata u : usermetadataSet) {
                 usermetadataRepo.delete(u.getId());
@@ -455,8 +452,10 @@ public class EventLogServiceImpl implements EventLogService {
                 LOGGER.info("Deleting file: " + realLog.getName());
                 storageRepository.delete(realLog.getStorage() == null ? 0L : realLog.getStorage().getId());
                 tempCacheService.deleteProcessLog(realLog);
-
             }
+
+            logRepo.delete(realLog.getId());
+
             LOGGER.info("Delete XES log " + log.getId() + " from repository.");
         }
     }

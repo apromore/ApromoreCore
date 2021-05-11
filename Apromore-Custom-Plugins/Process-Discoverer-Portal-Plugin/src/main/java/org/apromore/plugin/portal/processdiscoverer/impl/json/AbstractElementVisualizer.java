@@ -24,7 +24,7 @@ package org.apromore.plugin.portal.processdiscoverer.impl.json;
 
 import org.apromore.logman.attribute.graph.MeasureRelation;
 import org.apromore.logman.attribute.graph.MeasureType;
-import org.apromore.plugin.portal.processdiscoverer.vis.MissingLayoutException;
+import org.apromore.plugin.portal.processdiscoverer.vis.InvalidOutputException;
 import org.apromore.plugin.portal.processdiscoverer.vis.UnsupportedElementException;
 import org.apromore.plugin.portal.processdiscoverer.vis.VisualContext;
 import org.apromore.plugin.portal.processdiscoverer.vis.VisualSettings;
@@ -75,6 +75,6 @@ public abstract class AbstractElementVisualizer implements ElementVisualizer {
 	
 	@Override
     public abstract JSONObject generateJSON(ContainableDirectedGraphElement element) 
-	            throws UnsupportedElementException, JSONException, MissingLayoutException;
+	            throws UnsupportedElementException, JSONException, InvalidOutputException;
 
 }

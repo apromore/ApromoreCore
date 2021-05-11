@@ -25,17 +25,14 @@ package org.apromore.plugin.portal.processdiscoverer.vis.json;
 import static org.junit.Assert.fail;
 
 import org.apromore.logman.ALog;
-import org.apromore.logman.attribute.IndexableAttribute;
 import org.apromore.logman.attribute.graph.MeasureAggregation;
 import org.apromore.logman.attribute.graph.MeasureRelation;
 import org.apromore.logman.attribute.graph.MeasureType;
-import org.apromore.logman.attribute.log.AttributeLog;
+import org.apromore.plugin.portal.processdiscoverer.PDAnalyst;
 import org.apromore.plugin.portal.processdiscoverer.TestDataSetup;
-import org.apromore.plugin.portal.processdiscoverer.impl.factory.PDCustomFactory;
-import org.apromore.plugin.portal.processdiscoverer.vis.ProcessVisualizer;
-import org.apromore.processdiscoverer.Abstraction;
-import org.apromore.processdiscoverer.AbstractionParams;
-import org.apromore.processdiscoverer.ProcessDiscoverer;
+import org.apromore.plugin.portal.processdiscoverer.data.ConfigData;
+import org.apromore.plugin.portal.processdiscoverer.data.OutputData;
+import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
 import org.deckfour.xes.model.XLog;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,50 +40,48 @@ import org.json.JSONObject;
 import org.junit.Test;
 
 public class ProcessJSONVisualizerTest extends TestDataSetup {
-    private String NODE_KEY = "shape"; 
-//    private String[] nodeCompareKeys = new String[] {"shape", "color", "borderwidth", 
-//                                                    "name", "oriname", 
+    private String NODE_KEY = "shape";
+//    private String[] nodeCompareKeys = new String[] {"shape", "color", "borderwidth",
+//                                                    "name", "oriname",
 //                                                    "textsize", "textwidth", "textcolor",
 //                                                    "width", "height"};
-//    private String[] edgeCompareKeys = new String[] {"strength", "color", "edge-style", 
-//                                                    "style", "label"};    
+//    private String[] edgeCompareKeys = new String[] {"strength", "color", "edge-style",
+//                                                    "style", "label"};
     private String[] nodeCompareKeys = new String[] {"name", "oriname"};
-    private String[] edgeCompareKeys = new String[] {"style", "label"};    
+    private String[] edgeCompareKeys = new String[] {"style", "label"};
 
     
-    private Abstraction discoverProcess(XLog xlog, double nodeSlider, double arcSlider, double paraSlider,
+    private OutputData discoverProcess(XLog xlog, double nodeSlider, double arcSlider, double paraSlider,
                         MeasureType structureType, MeasureAggregation structureAggregate, MeasureRelation structureRelation,
                         MeasureType primaryType, MeasureAggregation primaryAggregate, MeasureRelation primaryRelation,
                         MeasureType secondaryType, MeasureAggregation secondaryAggregate, MeasureRelation secondaryRelation,
                         boolean useSecondary,
                         boolean bpmn) throws Exception {
         ALog log = new ALog(xlog);
-        IndexableAttribute mainAttribute = log.getAttributeStore().getStandardEventConceptName();
-        AttributeLog attLog = new AttributeLog(log, mainAttribute);
-        ProcessDiscoverer pd = new ProcessDiscoverer(attLog);
-        AbstractionParams params = new AbstractionParams(
-                mainAttribute,
-                nodeSlider,
-                arcSlider,
-                paraSlider,
-                true, true,
-                false,
-                false,
-                useSecondary,
-                structureType,
-                structureAggregate,
-                structureRelation,
-                primaryType,
-                primaryAggregate,
-                primaryRelation,
-                secondaryType,
-                secondaryAggregate,
-                secondaryRelation,
-                null,
-                null);
+        ConfigData configData = ConfigData.DEFAULT;
+        UserOptionsData userOptions = UserOptionsData.DEFAULT(configData);
         
-        Abstraction dfgAbs = pd.generateDFGAbstraction(params);
-        return (!bpmn ? dfgAbs : pd.generateBPMNAbstraction(params, dfgAbs));
+        userOptions.setNodeFilterValue(nodeSlider);
+        userOptions.setArcFilterValue(arcSlider);
+        userOptions.setParallelismFilterValue(paraSlider);
+        
+        userOptions.setFixedType(structureType);
+        userOptions.setFixedAggregation(structureAggregate);
+        userOptions.setFixedRelation(structureRelation);
+        
+        userOptions.setPrimaryType(primaryType);
+        userOptions.setPrimaryAggregation(primaryAggregate);
+        userOptions.setPrimaryRelation(primaryRelation);
+        
+        userOptions.setSecondaryType(secondaryType);
+        userOptions.setSecondaryAggregation(secondaryAggregate);
+        userOptions.setSecondaryRelation(secondaryRelation);
+        
+        userOptions.setIncludeSecondary(useSecondary);
+        userOptions.setBPMNMode(bpmn);
+        
+        PDAnalyst analyst = PDAnalyst.newInstanceWithoutFilter(log, configData);
+        return analyst.discoverProcess(userOptions).get();
     }
     
     public boolean findSimilarNodeObject(JSONObject node, JSONArray array) throws JSONException {
@@ -194,8 +189,8 @@ public class ProcessJSONVisualizerTest extends TestDataSetup {
     @Test
     public void testGenerateJSON_DFG_Frequency() {
         try {
-            Abstraction abs = discoverProcess(readLogWithStartCompleteEventsNonOverlapping(), 
-                                                1.0, 1.0, 0.4, 
+            OutputData output = discoverProcess(readLogWithStartCompleteEventsNonOverlapping(),
+                                                100, 100, 40,
                                                 MeasureType.FREQUENCY,
                                                 MeasureAggregation.CASES,
                                                 MeasureRelation.ABSOLUTE,
@@ -207,9 +202,7 @@ public class ProcessJSONVisualizerTest extends TestDataSetup {
                                                 MeasureRelation.ABSOLUTE,
                                                 false,
                                                 false);
-            ProcessVisualizer visualizer = (new PDCustomFactory()).createProcessVisualizer(null);
-            String visText = visualizer.generateVisualizationText(abs);
-            JSONArray result = new JSONArray(visText);
+            JSONArray result = new JSONArray(output.getVisualizedText());
             JSONArray expected = readJSON_DFG_Frequency_LogWithStartCompleteEventsNonOverlapping_100_100();
             if (!isSimilar(result, expected)) {
                 fail("JSON is different");
@@ -222,8 +215,8 @@ public class ProcessJSONVisualizerTest extends TestDataSetup {
     @Test
     public void testGenerateJSON_DFG_Duration() {
         try {
-            Abstraction abs = discoverProcess(readLogWithStartCompleteEventsNonOverlapping(), 
-                                                1.0, 1.0, 0.4, 
+            OutputData output = discoverProcess(readLogWithStartCompleteEventsNonOverlapping(),
+                                                100, 100, 40,
                                                 MeasureType.FREQUENCY,
                                                 MeasureAggregation.CASES,
                                                 MeasureRelation.ABSOLUTE,
@@ -235,9 +228,7 @@ public class ProcessJSONVisualizerTest extends TestDataSetup {
                                                 MeasureRelation.ABSOLUTE,
                                                 false,
                                                 false);
-            ProcessVisualizer visualizer = (new PDCustomFactory()).createProcessVisualizer(null);
-            String visText = visualizer.generateVisualizationText(abs);
-            JSONArray result = new JSONArray(visText);
+            JSONArray result = new JSONArray(output.getVisualizedText());
             JSONArray expected = readJSON_DFG_Duration_LogWithStartCompleteEventsNonOverlapping_100_100();
             if (!isSimilar(result, expected)) {
                 fail("JSON is different");
@@ -250,8 +241,8 @@ public class ProcessJSONVisualizerTest extends TestDataSetup {
     @Test
     public void testGenerateJSON_DFG_Frequency_DoubleWeight() {
         try {
-            Abstraction abs = discoverProcess(readLogWithStartCompleteEventsNonOverlapping(), 
-                                                1.0, 1.0, 0.4, 
+            OutputData output = discoverProcess(readLogWithStartCompleteEventsNonOverlapping(),
+                                                100, 100, 40,
                                                 MeasureType.FREQUENCY,
                                                 MeasureAggregation.CASES,
                                                 MeasureRelation.ABSOLUTE,
@@ -263,9 +254,7 @@ public class ProcessJSONVisualizerTest extends TestDataSetup {
                                                 MeasureRelation.ABSOLUTE,
                                                 true,
                                                 false);
-            ProcessVisualizer visualizer = (new PDCustomFactory()).createProcessVisualizer(null);
-            String visText = visualizer.generateVisualizationText(abs);
-            JSONArray result = new JSONArray(visText);
+            JSONArray result = new JSONArray(output.getVisualizedText());
             JSONArray expected = readJSON_DFG_DoubleWeight_LogWithStartCompleteEventsNonOverlapping_100_100();
             if (!isSimilar(result, expected)) {
                 fail("JSON is different");
@@ -278,8 +267,8 @@ public class ProcessJSONVisualizerTest extends TestDataSetup {
     @Test
     public void testGenerateJSON_BPMN_Frequency() {
         try {
-            Abstraction abs = discoverProcess(readLogWithStartCompleteEventsNonOverlapping(), 
-                                                1.0, 1.0, 0.4, 
+            OutputData output = discoverProcess(readLogWithStartCompleteEventsNonOverlapping(),
+                                                100, 100, 40,
                                                 MeasureType.FREQUENCY,
                                                 MeasureAggregation.CASES,
                                                 MeasureRelation.ABSOLUTE,
@@ -291,9 +280,7 @@ public class ProcessJSONVisualizerTest extends TestDataSetup {
                                                 MeasureRelation.ABSOLUTE,
                                                 false,
                                                 true);
-            ProcessVisualizer visualizer = (new PDCustomFactory()).createProcessVisualizer(null);
-            String visText = visualizer.generateVisualizationText(abs);
-            JSONArray result = new JSONArray(visText);
+            JSONArray result = new JSONArray(output.getVisualizedText());
             JSONArray expected = readJSON_BPMN_Frequency_LogWithStartCompleteEventsNonOverlapping_100_100();
             if (!isSimilar(result, expected)) {
                 fail("JSON is different");
@@ -306,8 +293,8 @@ public class ProcessJSONVisualizerTest extends TestDataSetup {
     @Test
     public void testGenerateJSON_BPMN_Duration() {
         try {
-            Abstraction abs = discoverProcess(readLogWithStartCompleteEventsNonOverlapping(), 
-                                                1.0, 1.0, 0.4, 
+            OutputData output = discoverProcess(readLogWithStartCompleteEventsNonOverlapping(),
+                                                100, 100, 40,
                                                 MeasureType.FREQUENCY,
                                                 MeasureAggregation.CASES,
                                                 MeasureRelation.ABSOLUTE,
@@ -319,9 +306,7 @@ public class ProcessJSONVisualizerTest extends TestDataSetup {
                                                 MeasureRelation.ABSOLUTE,
                                                 false,
                                                 true);
-            ProcessVisualizer visualizer = (new PDCustomFactory()).createProcessVisualizer(null);
-            String visText = visualizer.generateVisualizationText(abs);
-            JSONArray result = new JSONArray(visText);
+            JSONArray result = new JSONArray(output.getVisualizedText());
             JSONArray expected = readJSON_BPMN_Duration_LogWithStartCompleteEventsNonOverlapping_100_100();
             if (!isSimilar(result, expected)) {
                 fail("JSON is different");
@@ -334,8 +319,8 @@ public class ProcessJSONVisualizerTest extends TestDataSetup {
     @Test
     public void testGenerateJSON_BPMN_Frequency_DoubleWeight() {
         try {
-            Abstraction abs = discoverProcess(readLogWithStartCompleteEventsNonOverlapping(), 
-                                                1.0, 1.0, 0.4, 
+            OutputData output = discoverProcess(readLogWithStartCompleteEventsNonOverlapping(),
+                                                100, 100, 40,
                                                 MeasureType.FREQUENCY,
                                                 MeasureAggregation.CASES,
                                                 MeasureRelation.ABSOLUTE,
@@ -347,9 +332,7 @@ public class ProcessJSONVisualizerTest extends TestDataSetup {
                                                 MeasureRelation.ABSOLUTE,
                                                 true,
                                                 true);
-            ProcessVisualizer visualizer = (new PDCustomFactory()).createProcessVisualizer(null);
-            String visText = visualizer.generateVisualizationText(abs);
-            JSONArray result = new JSONArray(visText);
+            JSONArray result = new JSONArray(output.getVisualizedText());
             JSONArray expected = readJSON_BPMN_DoubleWeight_LogWithStartCompleteEventsNonOverlapping_100_100();
             if (!isSimilar(result, expected)) {
                 fail("JSON is different");

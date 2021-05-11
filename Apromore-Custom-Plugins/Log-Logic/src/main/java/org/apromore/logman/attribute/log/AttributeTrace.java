@@ -23,6 +23,8 @@
 package org.apromore.logman.attribute.log;
 
 import java.util.BitSet;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apromore.logman.AActivity;
 import org.apromore.logman.ATrace;
@@ -39,22 +41,22 @@ import org.eclipse.collections.impl.factory.primitive.IntLists;
 import org.eclipse.collections.impl.factory.primitive.LongLists;
 
 /**
- * AttributeTrac represents a sequence of activities created from an ATrace based on a chosen attribute. 
- * The values of the attribute form a value trace (they are the value indexes of the attribute). 
+ * AttributeTrac represents a sequence of activities created from an ATrace based on a chosen attribute.
+ * The values of the attribute form a value trace (they are the value indexes of the attribute).
  *
- * AttributeTrace stores the start time and end time traces(copied from ATrace), and a duration trace. 
- * The start and end time traces are used to compute the duration of transitions, and the duration trace which 
- * is used to compute the duration of each value (a value is a node) based on the start-complete of the 
+ * AttributeTrace stores the start time and end time traces(copied from ATrace), and a duration trace.
+ * The start and end time traces are used to compute the duration of transitions, and the duration trace which
+ * is used to compute the duration of each value (a value is a node) based on the start-complete of the
  * corresponding activity. Different from ATrace, each AttributeTrace has an artificial start and end event.
- *  
+ * 
  * Note that events in an AttributeTrace is not one-to-one mapping with activities in the ATrace because
  * some activities may have missing values for the chosen attribute. Thus, the value trace, start time,
  * end time and duration traces in the AttributeTrace could be different from the activity sequence of ATrace.
- * Consequently, AttributeTrace also keeps track of what activities in ATrace are mapped to its value trace.  
+ * Consequently, AttributeTrace also keeps track of what activities in ATrace are mapped to its value trace.
  * 
- * In addition to the sequence view above, an AttributeTrace can be seen as a subgraph of the AttributeMatrixGraph 
+ * In addition to the sequence view above, an AttributeTrace can be seen as a subgraph of the AttributeMatrixGraph
  * created by the chosen attribute.
- *  
+ * 
  * @author Bruce Nguyen
  *
  */
@@ -63,7 +65,7 @@ public class AttributeTrace {
     private ATrace originalTrace;
     private AttributeTraceVariants variants;
 
-    private MutableIntList originalActIndexes = IntLists.mutable.empty(); //applicable activity indexes in the original trace 
+    private MutableIntList originalActIndexes = IntLists.mutable.empty(); //applicable activity indexes in the original trace
     private MutableIntList originalValueTrace = IntLists.mutable.empty();
     private MutableLongList originalStartTimeTrace = LongLists.mutable.empty();
     private MutableLongList originalEndTimeTrace = LongLists.mutable.empty();
@@ -236,7 +238,7 @@ public class AttributeTrace {
             int sinkArc = attribute.getMatrixGraph().getArc(attribute.getMatrixGraph().getNodeFromValueIndex(activeValueTrace.get(activeValueTrace.size()-2)), sinkNode);
             activeGraph.addArc(sinkArc);
             activeGraph.incrementArcTotalFrequency(sinkArc, 1);
-            activeGraph.collectArcDuration(sinkArc, 0);            
+            activeGraph.collectArcDuration(sinkArc, 0);
         }
         
     }
@@ -357,6 +359,15 @@ public class AttributeTrace {
         long targetStart = getStartTimeAtIndex(targetIndex);
         long sourceEnd = getEndTimeAtIndex(sourceIndex);
         return (targetStart > sourceEnd) ? targetStart - sourceEnd : 0;
+    }
+    
+    public  Map<String,String> getAttributeMapAtIndex(int index) {
+        if (index == 0 || index == this.getValueTrace().size()-1) {
+            return new HashMap<>();
+        }
+        else { // ATrace doesn't contain the artificial start/end events
+            return this.originalTrace.getActivityFromIndex(index-1).getAttributeMap();
+        }
     }
     
     @Override

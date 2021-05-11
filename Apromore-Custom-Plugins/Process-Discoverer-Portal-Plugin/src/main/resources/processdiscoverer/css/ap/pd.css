@@ -674,7 +674,7 @@ div.ap-pd-drawer-splitter:hover {
 .ap-pd-timestats-header,
 .ap-pd-logstats-header {
     display: flex;
-    height: 40px;
+    height: 42px;
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -910,8 +910,8 @@ div.ap-pd-drawer-splitter:hover {
 }
 
 .ap-pd-logstats-header span {
-    max-width: 90px;
-    width: 90px;
+    max-width: 105px;
+    width: 105px;
     white-space: nowrap;
     overflow: visible;
     text-overflow: ellipsis;
@@ -1149,9 +1149,10 @@ div.ap-pd-drawer-splitter:hover {
 #ap-pd-search-graph input {
     width: 230px;
     background-color: white;
-    border: 1px solid white;
+    border: none;
     padding-left: 3px;
     color: grey !important;
+    border-radius: 0 !important;
 }
 
 #ap-pd-search-graph > * {
@@ -1162,6 +1163,11 @@ div.ap-pd-drawer-splitter:hover {
     margin: 0;
     box-sizing: border-box;
 }
+
+.ap-pd-toolbar-right[data-disabled='on'] #ap-pd-search-graph > *:first-child,
+.ap-pd-toolbar-right[data-disabled='on'] #ap-pd-search-graph > *:last-child {
+     background: var(--color-grey-lighter) !important;
+ }
 
 #ap-pd-search-graph i {
     line-height: 20px;
@@ -1220,4 +1226,20 @@ div.ap-pd-drawer-splitter:hover {
 .ap-pd-action-buttons .ap-btn-off {
     pointer-events: none;
     opacity: 0.6;
+}
+
+/* Case details attribute table */
+
+table.ap-pd-case-activity-attrs {
+    border: none;
+}
+
+table.ap-pd-case-activity-attrs td:first-child {
+    text-align: left;
+    padding-right: 5px;
+}
+
+table.ap-pd-case-activity-attrs td:nth-child(2) {
+    text-align: left;
+    font-weight: bold
 }

@@ -39,8 +39,8 @@ import java.util.stream.Collectors;
 public class ImmutableLog extends LaLog {
 
     public ImmutableLog() {
-        traceList = new ArrayList<>();
-        immutableTraces = new ArrayList<>();
+        traceList.clear();
+        immutableTraces.clear();
         eventAttributeOccurMap = new UnifiedMap<>();
         activityNameBiMap = new HashBiMap<>();
         caseAttributeValues = new UnifiedMap<>();
@@ -49,8 +49,8 @@ public class ImmutableLog extends LaLog {
     }
 
     public ImmutableLog(List<ATrace> traceList) {
-        this.traceList = traceList;
-        this.immutableTraces = traceList;
+        setTraces(traceList);
+        setImmutableTraces(traceList);
         eventAttributeOccurMap = new UnifiedMap<>();
         activityNameBiMap = new HashBiMap<>();
         caseAttributeValues = new UnifiedMap<>();
@@ -64,9 +64,9 @@ public class ImmutableLog extends LaLog {
 
         List<ATrace> traceListForClone = new ArrayList<>();
 
-        for (int i = 0; i < this.traceList.size(); i++) {
-            ATrace aTrace = this.traceList.get(i).clone();
-            traceListForClone.add(aTrace);
+        for (ATrace aTrace : this.traceList) {
+            ATrace clone = aTrace.clone();
+            traceListForClone.add(clone);
         }
 
         UnifiedMap<Integer, Integer> variIdFreqMapForClone = new UnifiedMap<>();
@@ -124,20 +124,19 @@ public class ImmutableLog extends LaLog {
     }
 
     public ImmutableLog(List<ATrace> traceList,
-                      UnifiedMap<Integer, Integer> variantIdFreqMap,
+                        UnifiedMap<Integer, Integer> variantIdFreqMap,
                         UnifiedMap<String, UnifiedSet<EventAttributeValue>> eventAttributeValues,
                         UnifiedMap<String, UnifiedSet<CaseAttributeValue>> caseAttributeValues,
                         DoubleArrayList caseDurationList,
-                      String timeZone,
-                      long startTime,
-                      long endTime,
-                      long eventSize,
-                      ActivityNameMapper activityNameMapper,
-                      UnifiedMap<String, Integer> activityMaxOccurMap) {
-        this.immutableTraces = traceList;
-        this.traceList = traceList;
+                        String timeZone,
+                        long startTime,
+                        long endTime,
+                        long eventSize,
+                        ActivityNameMapper activityNameMapper,
+                        UnifiedMap<String, Integer> activityMaxOccurMap) {
+        setImmutableTraces(traceList);
+        setTraces(traceList);
         this.variantIdFreqMap = variantIdFreqMap;
-        this.actIdNameMap = actIdNameMap;
         this.eventAttributeValues = eventAttributeValues;
         this.caseAttributeValues = caseAttributeValues;
         this.caseDurationList = caseDurationList;
@@ -155,32 +154,29 @@ public class ImmutableLog extends LaLog {
     }
 
     public ImmutableLog(PLog pLog) {
-        super.traceList = pLog.getPTraceList().stream()
+        List<ATrace> traces = pLog.getPTraceList().stream()
                 .map(PTrace::toATrace)
                 .collect(Collectors.toList());
 
-        super.immutableTraces = pLog.getOriginalPTraceList().stream()
-                .map(PTrace::getOriginalATrace)
-                .collect(Collectors.toList());
+        setImmutableTraces(traces);
+        setTraces(traces);
 
-        super.eventAttributeOccurMap = pLog.getEventAttributeOccurMap();
-        super.activityNameBiMap = pLog.getActivityNameBiMap();
-        super.variantIdFreqMap = pLog.getVariantIdFreqMap();
-        super.activityMaxOccurMap = pLog.getActivityMaxOccurMap();
-        super.timeZone = pLog.getTimeZone();
-        super.startTime = pLog.getStartTime();
-        super.endTime = pLog.getEndTime();
-        super.eventSize = pLog.getEventSize();
+        this.variantIdFreqMap = pLog.getVariantIdFreqMap();
+        this.eventAttributeValues = pLog.getEventAttributeValues();
+        this.caseAttributeValues = pLog.getCaseAttributeValues();
+        this.caseDurationList = pLog.getCaseDurations();
+        this.timeZone = pLog.getTimeZone();
+        this.startTime = pLog.getStartTime();
+        this.endTime = pLog.getEndTime();
+        this.eventSize = pLog.getEventSize();
+        this.activityNameMapper = pLog.getActivityNameMapper();
+        this.activityMaxOccurMap = pLog.getActivityMaxOccurMap();
+        if (traceList.size() > 0) {
+            if (traceList.get(0).getDuration() > 0) {
+                defaultChartDataCollection = new DefaultChartDataCollection(this);
+            }
+        }
 
-        super.variantIdFreqMap = pLog.getVariantIdFreqMap();
-        super.activityNameMapper = pLog.getActivityNameMapper();
-
-        super.attributeGraph = pLog.getAttributeGraph();
-        super.caseDurationList = new DoubleArrayList(pLog.getCaseDurations().toArray());
-
-        super.eventAttributeValues = pLog.getEventAttributeValues();
-        super.caseAttributeValues = pLog.getCaseAttributeValues();
-
-        super.defaultChartDataCollection = new DefaultChartDataCollection(this);
+        updateCaseVariants();
     }
 }

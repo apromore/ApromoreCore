@@ -20,7 +20,7 @@
  * #L%
  */
 
-package org.apromore.plugin.portal.processdiscoverer.actions;
+package org.apromore.plugin.portal.processdiscoverer.eventlisteners;
 
 import java.io.ByteArrayInputStream;
 import java.util.GregorianCalendar;
@@ -32,7 +32,7 @@ import javax.xml.datatype.DatatypeFactory;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
 import org.apromore.plugin.portal.processdiscoverer.components.AbstractController;
 import org.apromore.plugin.portal.processdiscoverer.utils.InputDialog;
-import org.apromore.plugin.portal.processdiscoverer.vis.MissingLayoutException;
+import org.apromore.plugin.portal.processdiscoverer.vis.InvalidOutputException;
 import org.apromore.portal.common.notification.Notification;
 import org.apromore.portal.helper.Version;
 import org.apromore.processdiscoverer.Abstraction;
@@ -57,12 +57,12 @@ import org.zkoss.zul.Window;
  * This class provides a facility to export BPMN models from ProcessDiscoverer and save
  * the models to the portal.
  * It shows a progress window with progress bar indicating the completion percent for long-running task
- * To do that, it uses an EventQueue at the session scope where other parties can post events to 
+ * To do that, it uses an EventQueue at the session scope where other parties can post events to
  * or listen to events during this process.
  * Note that instances of this class can only be used once at a time, i.e. one instance is used
  * and then finished, then another instance is used and then finished.
  * If multiple instances concurrently exist and run, it may happen that one instance may respond
- * to events occuring in another instance. 
+ * to events occuring in another instance.
  * 
  * @author Simon Rabozi
  * @modified Bruce Nguyen
@@ -79,7 +79,7 @@ public class BPMNExportController extends AbstractController {
     private EventQueue<Event> eventQueue = null;
 
     private PDController controller = null;
-    private String minedModel = null; 
+    private String minedModel = null;
     
     //Progress window
     private Window window;
@@ -180,13 +180,16 @@ public class BPMNExportController extends AbstractController {
     }
     
     private void mine() throws Exception {
+        if (controller.getOutputData() == null) {
+            throw new InvalidOutputException("Output data is not available yet!");
+        }
         Abstraction abs = controller.getOutputData().getAbstraction();
-        BPMNDiagram d = abs.getValidBPMNDiagram();
         if (abs.getLayout() == null) {
-            throw new MissingLayoutException("Missing layout of the process map for exporting BPMN diagram.");
+            throw new InvalidOutputException("Missing layout of the process map for exporting BPMN diagram.");
         }
         
         // Prepare diagram for export
+        BPMNDiagram d = abs.getValidBPMNDiagram();
         BpmnDefinitions.BpmnDefinitionsBuilder definitionsBuilder = null;
         Map<ContainableDirectedGraphElement, String> labelMapping = null;
         labelMapping = cleanDiagramBeforeExport(d);
@@ -274,7 +277,7 @@ public class BPMNExportController extends AbstractController {
     				                publicModel);
                             Notification.info("A new BPMN model named <strong>" + modelName + "</strong> has been saved in the <strong>" + controller.getContextData().getFolderName() + "</strong> folder.");
     				        controller.refreshPortal();
-				        } 
+				        }
 				        catch (Exception ex) {
 				            Messagebox.show("Error in saving model: " + ex.getMessage());
 				            LOGGER.error("Error in saving model: ", ex);

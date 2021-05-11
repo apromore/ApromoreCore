@@ -346,15 +346,22 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
     }
 
     /**
+     * @throws MissingHeaderFieldsException if {@link #validateUniqueAttributes} doesn't pass
+     */
+    protected void validateHeaderFields() throws MissingHeaderFieldsException {
+        StringBuilder headNOTDefined = validateUniqueAttributes();
+        if (headNOTDefined.length() != 0) {
+            throw new MissingHeaderFieldsException(headNOTDefined.toString());
+        }
+    }
+
+    /**
      * @return the log as currently configured by this UI
      * @throws MissingHeaderFieldsException if {@link #validateUniqueAttributes} doesn't pass
      * @throws Exception if the log can't be obtained otherwise
      */
     protected LogModel getLogModel() throws Exception {
-        StringBuilder headNOTDefined = validateUniqueAttributes();
-        if (headNOTDefined.length() != 0) {
-            throw new MissingHeaderFieldsException(headNOTDefined.toString());
-        }
+        validateHeaderFields();
 
         LogModel logModel;
         if (useParquet) {

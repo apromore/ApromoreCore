@@ -22,7 +22,7 @@
 
 package org.apromore.plugin.portal.processdiscoverer.impl.json;
 
-import org.apromore.plugin.portal.processdiscoverer.vis.MissingLayoutException;
+import org.apromore.plugin.portal.processdiscoverer.vis.InvalidOutputException;
 import org.apromore.plugin.portal.processdiscoverer.vis.UnsupportedElementException;
 import org.apromore.plugin.portal.processdiscoverer.vis.VisualContext;
 import org.apromore.plugin.portal.processdiscoverer.vis.VisualSettings;
@@ -50,13 +50,13 @@ public abstract class AbstractNodeVisualizer extends AbstractElementVisualizer {
 	
 	@Override
 	public JSONObject generateJSON(ContainableDirectedGraphElement element) 
-	        throws UnsupportedElementException, JSONException, MissingLayoutException {
+	        throws UnsupportedElementException, JSONException, InvalidOutputException {
 		if (!(element instanceof BPMNNode)) {
 			throw new UnsupportedElementException("Unsupported element while expecting a BPMNNode object.");
 		}
 		
         if (visContext.getProcessAbstraction().getLayout() == null) {
-            throw new MissingLayoutException("Missing layout for the process map for generating JSON.");
+            throw new InvalidOutputException("Missing layout for the process map for generating JSON.");
         }
 		
 		this.node = (BPMNNode)element;
@@ -77,7 +77,7 @@ public abstract class AbstractNodeVisualizer extends AbstractElementVisualizer {
 		// Position data
 		LayoutElement nodeLayout = visContext.getProcessAbstraction().getLayout().getLayoutElement(node);
         if (nodeLayout == null) {
-            throw new MissingLayoutException("Missing layout info for the node with id=" + node.getId().toString());
+            throw new InvalidOutputException("Missing layout info for the node with id=" + node.getId().toString());
         }
         else {
 			double[] nodeCoords = visSettings.getCenterXY(node, nodeLayout.getX(), nodeLayout.getY());

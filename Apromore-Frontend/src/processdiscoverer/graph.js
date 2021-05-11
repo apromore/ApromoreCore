@@ -2,7 +2,8 @@ import cytoscape from "cytoscape/dist/cytoscape.esm";
 import popper from 'cytoscape-popper';
 import dagre from 'cytoscape-dagre';
 const edgeBendEditing = require('cytoscape-edge-bend-editing');
-const undoRedo = require('cytoscape-undo-redo');
+// Disable this to avoid interference with server side undo/redo
+// const undoRedo = require('cytoscape-undo-redo');
 
 cytoscape.use(popper);
 cytoscape.use( dagre );
@@ -12,15 +13,13 @@ edgeBendEditing(cytoscape, {
     initBendPointsAutomatically: false,
     undoable: true,
 });
-undoRedo(cytoscape);
+// undoRedo(cytoscape);
 
 import GraphModelWrapper from "../processmap/graphModelWrapper";
 import LogAnimation from "../loganimation/logAnimation";
 import tippy from "tippy.js";
 import * as jsPDF from "jspdf";
 import { saveAs } from 'file-saver';
-const Undoo = require('undoo');
-
 
 const LAYOUT_MANUAL_BEZIER = 0;
 const LAYOUT_DAGRE_LR = 1;
@@ -101,32 +100,6 @@ const layouters = {
         }).run();
     },
 };
-
-let history = new Undoo();
-history.save({
-    event: 'onClearFilter',
-    data: ''
-});
-history.onUpdate(function () {
-    let undoBtn = zk.$('$filterUndo');
-    let redoBtn = zk.$('$filterRedo');
-    let undoCls = undoBtn.getSclass();
-    let redoCls = redoBtn.getSclass();
-    if (!history.canUndo() || history.count() === 0) {
-        undoBtn.setDisabled(true);
-        undoBtn.setSclass(undoCls + " ap-btn-off");
-    } else {
-        undoBtn.setDisabled(false);
-        undoBtn.setSclass(undoCls.replace(" ap-btn-off", ""));
-    }
-    if (!history.canRedo() || history.count() === 0) {
-        redoBtn.setDisabled(true);
-        redoBtn.setSclass(redoCls + " ap-btn-off");
-    } else {
-        redoBtn.setDisabled(false);
-        redoBtn.setSclass(redoCls.replace(" ap-btn-off", ""));
-    }
-});
 
 let container;
 let sourceJSON;
@@ -253,6 +226,33 @@ let currentZoomLevel = 1;
 let currentPanPosition;
 let isTraceMode = false; // source trace or source full log
 
+// Map of activity attributes for trace mode
+const attrMap = {
+	"concept:name": "Activity",
+    "org:group": "Group",
+    "org:resource": "Resource",
+    "lifecycle:transition": "State",
+    "org:role": "Role"
+};
+
+let activityToAttributeMap = null;
+
+const tablize = function (obj, klass) {
+    var html = `<table class="${klass}">`;
+
+    for (const prop in obj) {
+        let val = obj[prop];
+        let attr = (prop in attrMap) ? attrMap[prop] : prop;
+        html += `<tr><td>${attr}</td><td>${val}</td></tr>`;
+    }
+    html += '</table>';
+    return html;
+};
+
+PDp.updateActivityToAttributeMap = function (json) {
+    activityToAttributeMap = json || null;
+};
+
 PDp.init = function() {
     let pd = this;
     SIGNATURE = `/themes/${Ap.theme}/common/img/brand/logo-colour.svg`;
@@ -289,8 +289,19 @@ PDp.init = function() {
 
     cy.on('mouseover', 'node', function (event) {
         let node = event.target;
-        if (node.data(NAME_PROP)) {
-            currentNodeTooltip = pd.makeTippy(node, node.data(NAME_PROP));
+        let name = node.data(NAME_PROP);
+        let id = node.data('id');
+        if (id) {
+            if (activityToAttributeMap) { // more detail tooltip for trace mode
+                let attributes = activityToAttributeMap[id];
+                if (attributes && Object.keys(attributes).length) {
+                    currentNodeTooltip = pd.makeTippy(node, tablize(attributes, 'ap-pd-case-activity-attrs'));
+                } else {
+                    currentNodeTooltip = pd.makeTippy(node, name);
+                }
+            } else {
+                currentNodeTooltip = pd.makeTippy(node, name);
+            }
             currentNodeTooltip.show();
         } else {
             currentNodeTooltip = undefined;
@@ -315,43 +326,15 @@ PDp.init = function() {
             }
             if (isCtrlPressed && evt.which === 90) { // "Z" key
                 evt.preventDefault();
-                this.undo();
+                pd.zkSendEvent("$filterUndo", "onClick", "");
             } else if (isCtrlPressed && evt.which === 89) { // "Y" key
                 evt.preventDefault();
-                this.redo();
+                pd.zkSendEvent("$filterRedo", "onClick", "");
             }
         });
         $(document).keyup(function () {
             isAltPressed = isCtrlPressed = isShiftPressed = false;
         });
-    }
-}
-
-PDp.undo = function() {
-    let pd = this;
-    let cy = this._private.cy;
-    if (cy.undoRedo().isUndoStackEmpty()) {
-        history.undo((hist) => {
-            if (hist) {
-                pd.zkSendEvent(vizBridgeId, hist.event, hist.payload);
-            }
-        });
-    } else {
-        cy.undoRedo().undo();
-    }
-}
-
-PDp.redo = function() {
-    let pd = this;
-    let cy = this._private.cy;
-    if (cy.undoRedo().isRedoStackEmpty()) {
-        let hist = history.redo((hist) => {
-            if (hist) {
-                pd.zkSendEvent(vizBridgeId, hist.event, hist.payload);
-            }
-        });
-    } else {
-        cy.undoRedo().redo();
     }
 }
 
@@ -420,23 +403,23 @@ PDp.loadTrace = function(json) {
     this.layout(LAYOUT_MANUAL_BEZIER);
     this.setupSearch(source);
     this.fit(1);
-    history.save({
-        compId: vizBridgeId,
-        event: "onCaseFilter",
-        payload: json
-    });
+}
+
+const getViewportCenter = (extent) => {
+    let { x1, x2, y1, y2 } = extent;
+    let x = (x1 + x2) / 2;
+    let y = (y1 + y2) / 2;
+    return { x, y };
 }
 
 PDp.zoomIn = function() {
     let cy = this._private.cy;
-    cy.zoom(cy.zoom() + 0.1);
-    cy.center();
+    cy.zoom({ level: cy.zoom() + 0.1, position: getViewportCenter(cy.extent()) });
 }
 
 PDp.zoomOut = function() {
     let cy = this._private.cy;
-    cy.zoom(cy.zoom() - 0.1);
-    cy.center();
+    cy.zoom({ level: cy.zoom() - 0.1, position: getViewportCenter(cy.extent()) });
 }
 
 PDp.fit = function(layoutType) {
@@ -522,11 +505,6 @@ PDp.removeEdge = function(evt) {
         graphEvent = 'onEdgeRemoved';
     }
     this.zkSendEvent(compId, graphEvent, payload);
-    history.save({
-        compId,
-        event: graphEvent,
-        payload
-    });
 }
 
 PDp.removeNode = function(evt) {
@@ -555,12 +533,7 @@ PDp.removeNode = function(evt) {
       } else {
         graphEvent = 'onNodeRemovedTrace'
       }
-      this.zkSendEvent(vizBridgeId, graphEvent, payload);
-      history.save({
-        compId,
-        event: graphEvent,
-        payload
-      });
+      this.zkSendEvent(compId, graphEvent, payload);
     }
   }
 

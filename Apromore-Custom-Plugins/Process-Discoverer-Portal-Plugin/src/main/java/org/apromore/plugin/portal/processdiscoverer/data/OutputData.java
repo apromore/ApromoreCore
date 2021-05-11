@@ -32,8 +32,8 @@ import org.apromore.processdiscoverer.Abstraction;
  *
  */
 public class OutputData {
-    private Abstraction currentAbstraction;
-    private String visualizedText; // the corresponding JSON format of the diagram
+    private final Abstraction currentAbstraction;
+    private final String visualizedText; // the corresponding JSON format of the diagram
     
     public OutputData(Abstraction currentAbstraction, String visualizedText) {
         this.currentAbstraction = currentAbstraction;

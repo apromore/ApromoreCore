@@ -88,20 +88,20 @@
             
             <!-- Graph abstraction settings -->
             <div hflex="2"></div>
-            <graphSettings sclass="ap-pd-drawer-box" hflex="75" />
+            <graphSettings sclass="ap-pd-drawer-box" hflex="61" />
             <div hflex="2"></div>
             <div sclass="ap-panel-sep" vflex="1" hflex="1">
               <n:div></n:div>
             </div>
             
             <!-- Log stats -->
-            <logStats sclass="ap-pd-drawer-box" hflex="64" />
+            <logStats sclass="ap-pd-drawer-box" hflex="77" />
             <div sclass="ap-panel-sep" vflex="1" hflex="1">
               <n:div></n:div>
             </div>
             
             <!-- Time stats -->
-            <timeStats sclass="ap-pd-drawer-box" hflex="43" />
+            <timeStats sclass="ap-pd-drawer-box" hflex="45" />
           </hlayout>
         </div>
       </div>
@@ -125,12 +125,12 @@
                         'ap-pd-la-timeline',
                         'ap-pd-la-speed-control',
                         'ap-la-progress',
-                        '',
+                        'ap-la-info-tip',
                         'ap-pd-la-clock',
                         'ap-pd-la-buttons',
                         'ap-mc-icon-play',
                         'ap-mc-icon-pause');
-    
+
     zk.afterMount(function () {
         zAu.send(new zk.Event(zk.Widget.$('$win'), 'onLoaded'));
         setTimeout(function () {

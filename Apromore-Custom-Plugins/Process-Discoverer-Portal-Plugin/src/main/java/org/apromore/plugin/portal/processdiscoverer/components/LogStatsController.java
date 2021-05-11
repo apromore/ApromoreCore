@@ -84,7 +84,7 @@ public class LogStatsController extends AbstractController {
         lblNodeNumberFiltered = (Label) wdLogStats.getFellow("lblNodeNumberFiltered");
         lblNodeNumberTotal = (Label) wdLogStats.getFellow("lblNodeNumberTotal");
 
-        AttributeLogSummary oriLogSummary = parent.getLogData().getAttributeLog().getOriginalLogSummary();
+        AttributeLogSummary oriLogSummary = parent.getProcessAnalyst().getAttributeLog().getOriginalLogSummary();
         updateFromLogSummary(oriLogSummary, oriLogSummary);
     }
     
@@ -169,7 +169,7 @@ public class LogStatsController extends AbstractController {
 
     @Override
     public void updateUI(Object data) {
-        AttributeLog attLog = parent.getLogData().getAttributeLog();
+        AttributeLog attLog = parent.getProcessAnalyst().getAttributeLog();
         AttributeLogSummary oriLogSummary = attLog.getOriginalLogSummary();
         AttributeLogSummary logSummary = attLog.getLogSummary();
 
@@ -178,6 +178,10 @@ public class LogStatsController extends AbstractController {
 
     @Override
     public void onEvent(Event event) throws Exception {
+        throw new Exception("Refer to LogStatsControllerWithAPMLog.");
+    }
+
+    public void updatePerspectiveHeading(String perspective) throws Exception {
         throw new Exception("Refer to LogStatsControllerWithAPMLog.");
     }
 }

@@ -22,8 +22,8 @@
 
 package org.apromore.plugin.portal.processdiscoverer.components;
 
+import org.apromore.plugin.portal.processdiscoverer.PDAnalyst;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
-import org.apromore.plugin.portal.processdiscoverer.data.LogData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Component;
@@ -124,15 +124,15 @@ public class TimeStatsController extends AbstractController {
 
     @Override
     public void updateUI(Object data) {
-        LogData logData = parent.getLogData();
+        PDAnalyst analyst = parent.getProcessAnalyst();
 
-        minDuration.setValue(logData.getFilteredMinDuration());
-        medianDuration.setValue(logData.getFilteredMedianDuration());
-        meanDuration.setValue(logData.getFilteredMeanDuration());
-        maxDuration.setValue(logData.getFilteredMaxDuration());
+        minDuration.setValue(analyst.getFilteredMinDuration());
+        medianDuration.setValue(analyst.getFilteredMedianDuration());
+        meanDuration.setValue(analyst.getFilteredMeanDuration());
+        maxDuration.setValue(analyst.getFilteredMaxDuration());
 
-        logStartTime.setValue(logData.getFilteredStartTime());
-        logEndTime.setValue(logData.getFilteredEndTime());
+        logStartTime.setValue(analyst.getFilteredStartTime());
+        logEndTime.setValue(analyst.getFilteredEndTime());
     }
 
     @Override

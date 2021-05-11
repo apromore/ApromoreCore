@@ -27,8 +27,12 @@ import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.LogFilterRuleImpl;
 import org.apromore.apmlog.filter.rules.RuleValue;
 import org.apromore.apmlog.filter.types.*;
+import org.apromore.apmlog.stats.CustomTriple;
 import org.apromore.apmlog.stats.DurSubGraph;
+import org.apromore.apmlog.stats.EventAttributeValue;
+import org.apromore.apmlog.stats.StatsUtil;
 import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 import java.io.UnsupportedEncodingException;
 import java.util.*;
@@ -254,14 +258,20 @@ public class AttributeArcDurationTest {
         assert hasC4;
     }
 
-    public static void testAvgDur1(APMLog apmLog, APMLogUnitTest parent) throws UnsupportedEncodingException {
+    public static void testAvgDur1(APMLog apmLog, APMLogUnitTest parent) {
         APMLogFilter apmLogFilter = new APMLogFilter(apmLog);
         PLog pLog = apmLogFilter.getPLog();
         pLog.updateStats();
-        DurSubGraph subGraph = pLog.getAttributeGraph().getNextValueDurations("concept:name", "A", pLog);
-        DoubleArrayList durList = subGraph.getValDurListMap().get("A");
 
-        assertEquals(1000 * 60 * 60 * 2d, durList.average(), 0 /* comparison tolerance */);
+        String key = "concept:name";
+        UnifiedSet<EventAttributeValue> eavSet = pLog.getEventAttributeValues().get(key);
+        Map<String, List<CustomTriple>> data = StatsUtil.getTargetNodeDataBySourceNode(key, "A", pLog, eavSet);
+
+        assert data != null;
+        double[] durArray = data.get("A").stream().mapToDouble(CustomTriple::getDuration).toArray();
+        DoubleArrayList dal = new DoubleArrayList(durArray);
+
+        assertEquals(1000 * 60 * 60 * 2d, dal.average(), 0 /* comparison tolerance */);
     }
 
     /**
@@ -274,7 +284,7 @@ public class AttributeArcDurationTest {
     public static void testSequencialFiltering01(APMLog originalLog) {
 
         /** First rule **/
-        Set<String> r1V = new HashSet<>(Arrays.asList("b"));
+        Set<String> r1V = new HashSet<>(Collections.singletonList("b"));
         RuleValue rv1 = new RuleValue(EVENT_EVENT_ATTRIBUTE, OperationType.EQUAL, "concept:name", r1V);
         Set<RuleValue> primaryValues = new HashSet<>();
         primaryValues.add(rv1);
@@ -333,6 +343,6 @@ public class AttributeArcDurationTest {
         apmLogFilter.filter(rules);
         APMLog filteredLog = apmLogFilter.getApmLog();
 
-        assertTrue(filteredLog.getTraceList().get(0).getCaseId().equals("c1"));
+        assertEquals("c1", filteredLog.getTraceList().get(0).getCaseId());
     }
 }

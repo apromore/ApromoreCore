@@ -43,6 +43,7 @@ import static java.util.Map.Entry.comparingByValue;
  * Modified: Chii Chang (12/05/2020)
  * Modified: Chii Chang (27/10/2020)
  * Modified: Chii Chang (26/01/2021)
+ * Modified: Chii Chang (05/05/2021)
  */
 public interface APMLog {
 
@@ -134,7 +135,10 @@ public interface APMLog {
 
     void setActivityNameBiMap(HashBiMap<String, Integer> activityNameBiMap);
 
-    UnifiedMap<String, UnifiedMap<String, UnifiedSet<AActivity>>> getEventAttributeOccurMap();
     UnifiedMap<String, UnifiedSet<EventAttributeValue>> getEventAttributeValues();
     UnifiedMap<String, UnifiedSet<CaseAttributeValue>> getCaseAttributeValues();
+    UnifiedMap<String, UnifiedMap<String, UnifiedSet<AActivity>>> getEventAttributeOccurMap();
+
+    DoubleArrayList getTraceProcessingTimes();
+    DoubleArrayList getTraceWaitingTimes();
 }

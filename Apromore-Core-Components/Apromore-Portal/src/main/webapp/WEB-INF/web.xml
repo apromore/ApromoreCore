@@ -214,7 +214,6 @@
   <welcome-file-list>
     <welcome-file>index.zul</welcome-file>
   </welcome-file-list>
-
   <error-page>
     <error-code>401</error-code>
     <location>/pages/401.zul</location>
@@ -223,5 +222,8 @@
     <error-code>404</error-code>
     <location>/pages/404.zul</location>
   </error-page>
-
+  <error-page>
+    <exception-type>org.apromore.commons.exceptions.ServiceUnavailableException</exception-type>
+    <location>/pages/500.zul</location>
+  </error-page>
 </web-app>

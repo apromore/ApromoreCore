@@ -48,8 +48,7 @@ import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.typefilters.*;
 import org.apromore.apmlog.filter.types.Choice;
 import org.apromore.apmlog.filter.types.FilterType;
-import org.apromore.apmlog.filter.types.Section;
-import org.eclipse.collections.impl.map.mutable.UnifiedMap;
+import org.apromore.apmlog.filter.types.OperationType;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,7 +90,7 @@ public class APMLogFilter {
     }
 
 
-    APMLog finalAPMLog;
+    private APMLog finalAPMLog;
 
     public APMLog getFinalAPMLog() {
         if (finalAPMLog == null) finalAPMLog = pLog.toAPMLog();
@@ -266,7 +265,7 @@ public class APMLogFilter {
 
     }
 
-    public List<PTrace> filterByEventSectAttribute(LogFilterRule rule, List<PTrace> traces) {
+    private List<PTrace> filterByEventSectAttribute(LogFilterRule rule, List<PTrace> traces) {
         return traces.stream()
                 .filter(x -> filterActivitiesByAttribute(rule, x))
                 .collect(Collectors.toList());
@@ -316,7 +315,8 @@ public class APMLogFilter {
                 .filter(x -> pTrace.getValidEventIndexBitSet().get(x.getIndex()) &&
                         EventTimeFilter.toKeep(x, rule))
                 .collect(Collectors.toList());
-        pTrace.setEventList(validEvents);
+        pTrace.getEventList().clear();
+        pTrace.getEventList().addAll(validEvents);
         pTrace.setValidEventIndexBS(new BitSet(pTrace.getOriginalEventList().size()));
         for (AEvent aEvent : validEvents) {
             pTrace.getValidEventIndexBitSet().set(aEvent.getIndex());
@@ -344,4 +344,53 @@ public class APMLogFilter {
                 .collect(Collectors.toList());
     }
 
+    private List<PTrace> filterByDirectlyFollows(LogFilterRule rule, List<PTrace> traces) {
+        String attrKey = rule.getKey();
+        Choice choice = rule.getChoice();
+
+        UnifiedSet<String> fromVals = rule.getPrimaryValues().stream()
+                .filter(x -> x.getOperationType() == OperationType.FROM)
+                .map(x -> x.getStringValue())
+                .collect(Collectors.toCollection(UnifiedSet::new));
+
+        UnifiedSet<String> toVals = rule.getPrimaryValues().stream()
+                .filter(x -> x.getOperationType() == OperationType.TO)
+                .map(x -> x.getStringValue())
+                .collect(Collectors.toCollection(UnifiedSet::new));
+
+        return traces.stream()
+                .filter(x -> containsOneOfDirectlyFollows(choice, attrKey, fromVals, toVals, x))
+                .collect(Collectors.toList());
+    }
+
+    private boolean containsOneOfDirectlyFollows(Choice choice,
+                                                 String key,
+                                                 UnifiedSet<String> fromVals,
+                                                 UnifiedSet<String> toVals,
+                                                 PTrace pTrace) {
+
+
+        List<AActivity> validActs = pTrace.getOriginalActivityList().stream()
+                .filter(x -> pTrace.getValidEventIndexBitSet().get(x.getImmutableEventList().get(0).getIndex()))
+                .collect(Collectors.toList());
+
+        boolean match = false;
+
+        for (int i = 0; i < validActs.size() - 1; i++) {
+            AActivity act1 = validActs.get(i);
+            AActivity act2 = validActs.get(i + 1);
+            if (
+                    (act1.getAllAttributes().containsKey(key) &&
+                            fromVals.contains(act1.getAllAttributes().get(key)))
+                            &&
+                            (act2.getAllAttributes().containsKey(key) &&
+                                    toVals.contains(act2.getAllAttributes().get(key)))
+            ) {
+                match = true;
+                break;
+            }
+        }
+
+        return (match && choice == Choice.RETAIN) || (!match && choice == Choice.REMOVE);
+    }
 }
