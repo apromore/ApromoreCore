@@ -8,16 +8,15 @@
 <!-- Disallow any complex content (e.g. <img>, <script>) in human-legible elements by entering textOnly mode. -->
 <xsl:template match="bpmn:documentation|bpmn:text">
     <xsl:copy>
-        <xsl:apply-templates select="@*|node()" mode="textOnly"/>
+        <xsl:apply-templates select="@*"/>
+        <xsl:apply-templates select="node()" mode="textOnly"/>
     </xsl:copy>
 </xsl:template>
 
 <!-- Any <script> tags outside of textOnly mode will still be executed by bpmn.io, so we comment them out. -->
 <xsl:template match="*[local-name()='script']">
     <xsl:comment>
-        <xsl:text>&lt;script&gt;</xsl:text>
-        <xsl:apply-templates select="@*|node()" mode="textOnly"/>
-        <xsl:text>&lt;/script&gt;</xsl:text>
+        <xsl:apply-templates select="." mode="textOnly"/>
     </xsl:comment>
 </xsl:template>
 
@@ -31,17 +30,19 @@
 
 <!-- Templates supporting textOnly mode -->
 
-<!-- Inside an element which is disallowed complex content, attributes and text get passed through unchanged. -->
-<xsl:template match="@*|text()" mode="textOnly">
-    <xsl:copy>
-        <xsl:apply-templates select="@*|node()" mode="textOnly"/>
-    </xsl:copy>
+<!-- Inside an element which is disallowed complex content, text gets passed through unchanged. -->
+<xsl:template match="text()" mode="textOnly">
+    <xsl:value-of select="."/>
 </xsl:template>
 
 <!-- Inside an element which is disallowed complex content, elements are converted into text. -->
 <xsl:template match="*" mode="textOnly">
-    <xsl:value-of select="concat('&lt;', name(), '&gt;')"/>
-    <xsl:apply-templates select="@*|node()" mode="textOnly"/>
+    <xsl:value-of select="concat('&lt;', name())"/>
+    <xsl:for-each select="@*">
+        <xsl:value-of select="concat(' ', name(), '=&quot;', current(), '&quot;')"/>
+    </xsl:for-each>
+    <xsl:text>&gt;</xsl:text>
+    <xsl:apply-templates select="node()" mode="textOnly"/>
     <xsl:value-of select="concat('&lt;/', name(), '&gt;')"/>
 </xsl:template>
 
