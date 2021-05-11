@@ -135,6 +135,7 @@ public class GraphVisController extends VisualController {
             if (isStartOrEndEdge(edge)) edge = convertStartOrEndEdge(edge);
             FilterActionOnElementFilter action = new FilterActionOnEdgeRetainTrace(parent, parent.getProcessAnalyst());
             action.setElement(edge, parent.getUserOptions().getMainAttributeKey());
+            parent.executeAction(action);
         });
     }
 
