@@ -105,7 +105,6 @@ public class UserMenuController extends SelectorComposer<Menubar> {
 
     @Override
     public void doAfterCompose(Menubar menubar) {
-
         // If there are portal plugins, create the menus for launching them
         if (!PortalPluginResolver.resolve().isEmpty()) {
             
@@ -120,6 +119,7 @@ public class UserMenuController extends SelectorComposer<Menubar> {
                 }
 
                 String menuName = plugin.getGroupLabel(Locale.getDefault());
+                String label = plugin.getLabel(Locale.getDefault());
 
                 // Create a new menu if this is the first menu item within it
                 if (!menuMap.containsKey(menuName)) {
@@ -148,7 +148,6 @@ public class UserMenuController extends SelectorComposer<Menubar> {
                 } else {
                     menuitem.setImageContent(plugin.getIcon());
                 }
-                String label = plugin.getLabel(Locale.getDefault());
                 menuitem.setLabel(label);
                 menuitem.setDisabled(plugin.getAvailability() == PortalPlugin.Availability.DISABLED);
                 menuitem.addEventListener("onClick", new EventListener<Event>() {
