@@ -247,6 +247,15 @@ input {
     background-color: var(--ap-c-button-active);
 }
 
+.z-button[disabled]:hover,
+.z-combobutton[disabled]:hover .z-combobutton-content,
+.z-button[disabled]:active,
+.z-combobutton[disabled]:active .z-combobutton-content,
+.z-button[disabled]:focus {
+    color: var(--text-color-lighter);
+    background-color: var(--color-grey-light);
+}
+
 .z-combobutton-button {
     border-left: 1px solid var(--ap-c-button-sep);
 }
