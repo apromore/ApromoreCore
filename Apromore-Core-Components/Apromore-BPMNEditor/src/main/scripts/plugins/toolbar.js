@@ -162,16 +162,20 @@ Apromore.Plugins.Toolbar = Clazz.extend({
                 splitButton.menu.add(button);
 
 			} else { // create normal, simple button
-                var button = new Ext.Toolbar.Button({
+			    var options = {
                     icon:           plugin.icon,         // icons can also be specified inline
                     cls:            'x-btn-icon',       // Class who shows only the icon
                     itemId:         plugin.id,
-					tooltip:        plugin.description,  // Set the tooltip
+                    tooltip:        plugin.description,  // Set the tooltip
                     tooltipType:    'title',            // Tooltip will be shown as in the html-title attribute
                     handler:        plugin.toggle ? null : plugin.functionality,  // Handler for mouse click
                     enableToggle:   plugin.toggle, // Option for enabling toggling
                     toggleHandler:  plugin.toggle ? plugin.functionality : null // Handler for toggle (Parameters: button, active)
-                });
+                }
+                if (plugin.btnId) {
+                    options.id = plugin.btnId
+                }
+                var button = new Ext.Toolbar.Button(options);
 
                 this.toolbar.add(button);
 
