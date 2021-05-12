@@ -58,8 +58,8 @@ Apromore.Editor = {
 
     updateUndoRedo: function () {
         try {
-            var undo = jq("button[title='Undo the last action']");
-            var redo = jq("button[title='Redo the last undone action']");
+            var undo = jq('#ap-id-editor-undo-btn');
+            var redo = jq('#ap-id-editor-redo-btn');
             if (this.canUndo()) {
                 undo.removeClass('disabled');
             } else {
@@ -71,7 +71,7 @@ Apromore.Editor = {
                 redo.addClass('disabled');
             }
         } catch(e) {
-            // pass
+            console.log('Unexpected error occurred when update button status', e);
         }
     },
 

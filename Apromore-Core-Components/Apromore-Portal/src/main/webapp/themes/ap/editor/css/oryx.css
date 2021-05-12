@@ -69,11 +69,3 @@
     border-radius: 3px !important;
     margin: 0 4px 0 4px !important;
 }
-
-.x-panel-editor-north .x-toolbar .x-btn-over .x-btn-center {
-    background-color: var(--ap-c-action-bg-hover) !important;
-}
-
-.x-panel-editor-north .x-toolbar .x-btn-over button {
-    filter: none !important;
-}

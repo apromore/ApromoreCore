@@ -55,6 +55,7 @@ Apromore.Plugins.Undo = Clazz.extend({
 			name			: window.Apromore.I18N.Undo.undo,
 			description		: window.Apromore.I18N.Undo.undoDesc,
 			icon			: Apromore.PATH + "images/arrow_undo.png",
+			btnId           : 'ap-id-editor-undo-btn',
 			keyCodes: [{
 					metaKeys: [Apromore.CONFIG.META_KEY_META_CTRL],
 					keyCode: 90,
@@ -72,6 +73,7 @@ Apromore.Plugins.Undo = Clazz.extend({
 			name			: window.Apromore.I18N.Undo.redo,
 			description		: window.Apromore.I18N.Undo.redoDesc,
 			icon			: Apromore.PATH + "images/arrow_redo.png",
+			btnId           : 'ap-id-editor-redo-btn',
 			keyCodes: [{
 					metaKeys: [Apromore.CONFIG.META_KEY_META_CTRL],
 					keyCode: 89,

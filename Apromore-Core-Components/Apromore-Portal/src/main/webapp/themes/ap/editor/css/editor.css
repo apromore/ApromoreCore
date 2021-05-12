@@ -20,10 +20,23 @@
  * #L%
  */
 
-button.x-btn-text.disabled {
+.x-panel-editor-north .x-toolbar .x-btn.disabled button,
+.x-panel-editor-north .x-toolbar .x-btn.x-btn-over.disabled button {
     pointer-events: none;
-    background-color: transparent !important;
     filter: var(--ap-filter-ico-grey-minor) !important;
+}
+
+.x-panel-editor-north .x-toolbar .x-btn.disabled .x-btn-center,
+.x-panel-editor-north .x-toolbar .x-btn.x-btn-over.disabled .x-btn-center{
+    background-color: transparent !important;
+}
+
+.x-panel-editor-north .x-toolbar .x-btn-over .x-btn-center {
+    background-color: var(--ap-c-action-bg-hover) !important;
+}
+
+.x-panel-editor-north .x-toolbar .x-btn-over button {
+    filter: none !important;
 }
 
 .x-panel-editor-north .x-toolbar .ytb-sep {
