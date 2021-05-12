@@ -130,7 +130,7 @@ public class UserAdminController extends SelectorComposer<Window> {
 
     Window mainWindow;
     User currentUser;
-    User selectedUser;
+    User selectedUser = null;
     Group selectedGroup;
     Set<User> selectedUsers;
 
@@ -265,7 +265,7 @@ public class UserAdminController extends SelectorComposer<Window> {
         mainWindow = win;
         String userName = portalContext.getCurrentUser().getUsername();
         currentUser = securityService.getUserByName(userName);
-        selectedUser = currentUser;
+        selectedUser = null;
 
         canViewUsers = hasPermission(Permissions.VIEW_USERS);
         canEditUsers = hasPermission(Permissions.EDIT_USERS);
@@ -777,6 +777,7 @@ public class UserAdminController extends SelectorComposer<Window> {
         }
         updateAssignedRoleModel(users);
         updateAssignedGroupModel(users);
+        isUserDetailDirty = false; // extra defensive, ensure dirty is not set by field's setValue
     }
 
     private Group setSelectedGroup(Group group) {
@@ -808,6 +809,7 @@ public class UserAdminController extends SelectorComposer<Window> {
         nonAssignedUserModel.setMultiple(true);
         nonAssignedUserList = new AssignedUserListbox(nonAssignedUserListbox, nonAssignedUserModel, "Users not in the group");
         selectedGroup = group;
+        isGroupDetailDirty = false; // extra defensive, ensure dirty is not set by field's setValue
         return group;
     }
 
