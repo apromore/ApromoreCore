@@ -56,8 +56,32 @@ Apromore.Editor = {
         return Ext.get(this.rootNode).parent("div{overflow=auto}", true);
     },
 
+    updateUndoRedo: function () {
+        try {
+            var undo = jq('#ap-id-editor-undo-btn');
+            var redo = jq('#ap-id-editor-redo-btn');
+            if (this.canUndo()) {
+                undo.removeClass('disabled');
+            } else {
+                undo.addClass('disabled');
+            }
+            if (this.canRedo()) {
+                redo.removeClass('disabled');
+            } else {
+                redo.addClass('disabled');
+            }
+        } catch(e) {
+            console.log('Unexpected error occurred when update button status', e);
+        }
+    },
+
     attachEditor: function (editor) {
+        var me = this;
         this.actualEditor = editor;
+        this.updateUndoRedo();
+        this.addCommandStackChangeListener(function () {
+            me.updateUndoRedo();
+        });
     },
 
     getSVGContainer: function() {
