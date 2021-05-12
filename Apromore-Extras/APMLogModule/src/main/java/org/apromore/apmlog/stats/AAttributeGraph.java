@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class AAttributeGraph {
 
@@ -47,6 +48,36 @@ public class AAttributeGraph {
     // =========================================
     // Used by PD
     // =========================================
+
+    public static boolean hasSufficientDataPoint(String attribute, String inDegree, String outDegree, APMLog apmLog) {
+        UnifiedMap<String, UnifiedSet<EventAttributeValue>> eavMap = apmLog.getEventAttributeValues();
+        if (!eavMap.containsKey(attribute)) return false;
+
+        EventAttributeValue sourceEav = eavMap.get(attribute).stream()
+                .filter(x -> x.getValue().equals(inDegree))
+                .findFirst()
+                .orElse(null);
+
+        if (sourceEav == null) return false;
+
+        Set<Object> set = sourceEav.getOccurActivities().stream()
+                .filter(x->getNextActivityOf(x) != null)
+                .filter(x->getNextActivityOf(x).getAllAttributes().containsKey(attribute))
+                .filter(x->getNextActivityOf(x).getAllAttributes().get(attribute).equals(outDegree))
+                .map(x -> getNextActivityOf(x).getStartTimeMilli() - x.getEndTimeMilli())
+                .collect(Collectors.toSet());
+
+        return set.size() > 1;
+    }
+
+    public static AActivity getNextActivityOf(AActivity activity) {
+        return activity.getParentTrace().getActivityList().stream()
+                .filter(x -> x.getImmutableIndex() > activity.getImmutableIndex())
+                .findFirst()
+                .orElse(null);
+    }
+
+
     public static DurSubGraph getValueDurations(String key, APMLog apmLog) {
         UnifiedMap<String, UnifiedSet<EventAttributeValue>> eavMap = apmLog.getEventAttributeValues();
         if (!eavMap.containsKey(key)) return null;

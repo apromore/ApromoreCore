@@ -439,8 +439,7 @@ public class PDAnalyst {
     }
 
     public boolean hasSufficientDurationVariant(String attribute, String inDegree, String outDegree) {
-        UnifiedSet<Double> durations = AAttributeGraph.getDurations(attribute, inDegree, outDegree, filteredAPMLog);
-        return (durations.size() > 1);
+        return AAttributeGraph.hasSufficientDataPoint(attribute, inDegree, outDegree, filteredAPMLog);
     }
 
     public List<CaseDetails> getCaseDetails() {
@@ -507,6 +506,11 @@ public class PDAnalyst {
         // Such a value can be obtained from the filteredAPMLog (the output)
         // ==================================================================================================
         return this.filteredAPMLog.getCaseVariantSize();
+    }
+
+    public long getFilteredActivityInstanceSize() {
+        return this.filteredAPMLog.getTraceList().stream()
+                .flatMap(x -> x.getActivityList().stream()).collect(Collectors.toList()).size();
     }
     
     public void updateLog(PLog pLog, APMLog apmLog) throws Exception {
