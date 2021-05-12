@@ -402,8 +402,8 @@ export default class TokenAnimation {
                     console.log('Point not found', "elementIndex:" + elementIndex, 'distance:'+ distance, 'caseIndex:' + caseIndex);
                     continue;
                 }
-                console.log("elementIndex:" + elementIndex, 'distance:'+ distance, 'caseIndex:' + caseIndex);
-                console.log(point.x, point.y);
+                //console.log("elementIndex:" + elementIndex, 'distance:'+ distance, 'caseIndex:' + caseIndex);
+                //console.log(point.x, point.y);
                 let y = this._animationController.getNumberOfLogs() > 1 ? this._getLogYAxis(logIndex, point.y) : point.y;
                 this._canvasContext.beginPath();
                 this._canvasContext.strokeStyle = this._getTokenBorderColor(logIndex);
