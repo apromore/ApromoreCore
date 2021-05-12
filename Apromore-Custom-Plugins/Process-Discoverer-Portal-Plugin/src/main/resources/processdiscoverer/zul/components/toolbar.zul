@@ -42,6 +42,30 @@
     </style>
     <popup id="shortcutPopup" width="650px">
       <div sclass="ap-key-help">
+        <!-- Shortcuts -->
+        <n:div class="ap-key-help-header">
+          <n:div>
+            <n:strong>Shortcuts</n:strong>
+          </n:div>
+          <n:div></n:div>
+        </n:div>
+        <n:div>
+          <n:div>
+            <n:kbd title="control" class="control-kbd"></n:kbd>
+            <n:span> + Z</n:span>
+          </n:div>
+          <n:div>Undo the last action
+          </n:div>
+        </n:div>
+        <n:div>
+          <n:div>
+            <n:kbd title="control" class="control-kbd"></n:kbd>
+            <n:span> + Y</n:span>
+          </n:div>
+          <n:div>Redo the last undone action
+          </n:div>
+        </n:div>
+        <!-- Arc shortcuts -->
         <n:div class="ap-key-help-header">
           <n:div>
             <n:strong>On an arc:</n:strong>
@@ -72,6 +96,7 @@
             filter cases based on this arc's duration (from any perspective)
           </n:div>
         </n:div>
+        <!-- Node shortcuts -->
         <n:div class="ap-key-help-header">
           <n:div>
             <n:strong>On a node:</n:strong>
