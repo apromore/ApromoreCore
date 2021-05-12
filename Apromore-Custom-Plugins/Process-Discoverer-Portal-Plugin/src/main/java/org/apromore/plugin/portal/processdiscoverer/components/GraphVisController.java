@@ -82,6 +82,7 @@ public class GraphVisController extends VisualController {
 
     private Component vizBridge;
     
+    private AnimationContext animateContext;
     private Movie animationMovie;
     
     public GraphVisController(PDController controller) {
@@ -247,7 +248,7 @@ public class GraphVisController extends VisualController {
         AnimationResult alignmentResult = createAlignment(oriDiagram, alignDiagram, parent.getProcessAnalyst().getXLog());
         
         // Prepare animation data
-        AnimationContext animateContext = new AnimationContext(alignmentResult.getAnimationLogs());
+        animateContext = new AnimationContext(alignmentResult.getAnimationLogs());
         ModelMapping modelMapping = new BpmnModelMapping(oriDiagram);
         
         long timer = System.currentTimeMillis();
@@ -326,6 +327,10 @@ public class GraphVisController extends VisualController {
     
     public Movie getAnimationMovie() {
         return this.animationMovie;
+    }
+    
+    public void setFrameSkip(String frameSkip) {
+        animateContext.setFrameSkip(Integer.valueOf((frameSkip)));
     }
     
     private String getBPMN(BPMNDiagram diagram) {
