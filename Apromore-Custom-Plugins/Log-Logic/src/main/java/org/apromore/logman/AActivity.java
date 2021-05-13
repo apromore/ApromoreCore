@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apromore.logman.utils.LogUtils;
+import org.deckfour.xes.extension.std.XTimeExtension;
 import org.deckfour.xes.model.XAttribute;
 import org.deckfour.xes.model.XAttributeMap;
 import org.deckfour.xes.model.impl.XEventImpl;
@@ -215,6 +216,16 @@ public class AActivity extends XEventImpl {// implements Map.Entry<XEvent,XEvent
                                 trace.getOriginalEventFromIndex(originalStartIndex).getAttributes();
         Map<String,String> attributes = new HashMap<>();
         xMap.entrySet().forEach(entry -> attributes.put(entry.getKey(), entry.getValue().toString()));
+
+        //Adjust for timestamp and lifecycle transition
+        if (!isInstant()) {
+            attributes.remove(Constants.ATT_KEY_LIFECYCLE_TRANSITION);
+            attributes.remove(Constants.ATT_KEY_TIMESTAMP);
+            XAttributeMap startEventAtts = trace.getOriginalEventFromIndex(originalStartIndex).getAttributes();
+            XAttributeMap endEventAtts = trace.getOriginalEventFromIndex(originalCompleteIndex).getAttributes();
+            attributes.put(Constants.ATT_KEY_START_TIME, startEventAtts.get(XTimeExtension.KEY_TIMESTAMP).toString());
+            attributes.put(Constants.ATT_KEY_END_TIME, endEventAtts.get(XTimeExtension.KEY_TIMESTAMP).toString());
+        }
         return attributes;
     }
     

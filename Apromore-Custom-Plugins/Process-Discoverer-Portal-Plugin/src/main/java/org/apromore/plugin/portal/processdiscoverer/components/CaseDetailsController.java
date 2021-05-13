@@ -33,8 +33,10 @@ import org.apromore.plugin.portal.processdiscoverer.InteractiveMode;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
 import org.apromore.plugin.portal.processdiscoverer.data.CaseDetails;
 import org.apromore.plugin.portal.processdiscoverer.data.OutputData;
+import org.apromore.plugin.portal.processdiscoverer.utils.AttributesStandardizer;
 import org.apromore.processdiscoverer.bpmn.TraceBPMNDiagram;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNNode;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
@@ -51,9 +53,11 @@ public class CaseDetailsController extends DataListController {
 	private Window caseDetailsWindow;
 	private boolean disabled = false;
 	private Map<String,Map<String,String>> activityToAttributeMap = new HashMap<>();
+	private AttributesStandardizer attStandardizer = new AttributesStandardizer();
 
 	public CaseDetailsController(PDController controller) {
 		super(controller);
+		attStandardizer = AttributesStandardizer.SIMPLE;
 	}
 
 	private void generateData() {
@@ -92,7 +96,8 @@ public class CaseDetailsController extends DataListController {
 		if (attTrace != null) {
 		    BPMNNode node = diagram.getStartNode();
 		    for (int index=0; index<attTrace.getValueTrace().size(); index++) {
-		        activityToAttributeMap.put(node.getId().toString(), attTrace.getAttributeMapAtIndex(index));
+		        activityToAttributeMap.put(node.getId().toString(),
+		                attStandardizer.standardizedAttributeMap(attTrace.getAttributeMapAtIndex(index)));
 		        if (!diagram.getOutEdges(node).isEmpty()) node = diagram.getOutEdges(node).iterator().next().getTarget();
 		    }
 		    updateActivityToAttributeMapClient();
@@ -106,9 +111,17 @@ public class CaseDetailsController extends DataListController {
 	private void updateActivityToAttributeMapClient() {
 		JSONObject json = new JSONObject();
 		for (String nodeId : activityToAttributeMap.keySet()) {
-			json.put(nodeId, new JSONObject(activityToAttributeMap.get(nodeId)));
+			json.put(nodeId, makeJSONArray(activityToAttributeMap.get(nodeId)));
 		}
 		Clients.evalJavaScript("Ap.pd.updateActivityToAttributeMap(" + json.toString() + ")");
+	}
+	
+	private JSONArray makeJSONArray(Map<String,String> attributeMap) {
+	    JSONArray array = new JSONArray();
+	    for (Map.Entry<String, String> entry : attributeMap.entrySet()) {
+	        array.put((new JSONObject()).put(entry.getKey(), entry.getValue()));
+	    }
+	    return array;
 	}
 
 	@Override

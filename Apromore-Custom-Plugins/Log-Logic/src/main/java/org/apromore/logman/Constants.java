@@ -40,7 +40,7 @@ public class Constants {
     
     public static final String MISSING_STRING_VALUE = "";
     public static final long MISSING_TIMESTAMP = Instant.EPOCH.toEpochMilli();
-    public static final DateTime MISSING_DATETIME = new DateTime(MISSING_TIMESTAMP); 
+    public static final DateTime MISSING_DATETIME = new DateTime(MISSING_TIMESTAMP);
     public static final long MISSING_LONG_VALUE = Long.MIN_VALUE;
     public static final double MISSING_DOUBLE_VALUE = Double.MIN_VALUE;
     
@@ -53,8 +53,6 @@ public class Constants {
     public final static String ATT_KEY_ROLE = XOrganizationalExtension.KEY_ROLE;
     public final static String ATT_KEY_LIFECYCLE_TRANSITION = XLifecycleExtension.KEY_TRANSITION;
     public final static String ATT_KEY_TIMESTAMP = XTimeExtension.KEY_TIMESTAMP;
-    public final static String ATT_KEY_DIRECT_FOLLOW = "apromore_derivative_direct_follow";
-    public final static String ATT_KEY_EVENTUALLY_FOLLOW = "apromore_derivative_eventually_follow";   
-    public final static String ATT_KEY_START_TIME = "apromore_event_start_time"; 
-    public final static String ATT_KEY_END_TIME = "apromore_event_end_time"; 
+    public final static String ATT_KEY_START_TIME = "time:start_timestamp";
+    public final static String ATT_KEY_END_TIME = "time:end_timestamp";
 }

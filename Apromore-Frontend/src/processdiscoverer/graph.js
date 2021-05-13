@@ -226,24 +226,15 @@ let currentZoomLevel = 1;
 let currentPanPosition;
 let isTraceMode = false; // source trace or source full log
 
-// Map of activity attributes for trace mode
-const attrMap = {
-	"concept:name": "Activity",
-    "org:group": "Group",
-    "org:resource": "Resource",
-    "lifecycle:transition": "State",
-    "org:role": "Role"
-};
-
 let activityToAttributeMap = null;
 
-const tablize = function (obj, klass) {
+const tablize = function (attributeArray, klass) {
     var html = `<table class="${klass}">`;
 
-    for (const prop in obj) {
-        let val = obj[prop];
-        let attr = (prop in attrMap) ? attrMap[prop] : prop;
-        html += `<tr><td>${attr}</td><td>${val}</td></tr>`;
+    for (const att of attributeArray) {
+        let attName = Object.keys(att)[0];
+        let val = att[attName];
+        html += `<tr><td>${attName}</td><td>${val}</td></tr>`;
     }
     html += '</table>';
     return html;
