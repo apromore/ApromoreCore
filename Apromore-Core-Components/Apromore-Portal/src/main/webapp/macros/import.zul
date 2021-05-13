@@ -99,7 +99,7 @@
                             </row>
                             <row spans="1,2">
                                 <label value="Supported Cloud Storage"/>
-                                <label id="supportedCS" value="DropBox, Google Drive, Microsoft OneDrive" />
+                                <label id="supportedCS" value="Dropbox, Google Drive, Microsoft OneDrive" />
                             </row>
                             <row spans="1,2">
                                 <label value="Supported extensions"/>
