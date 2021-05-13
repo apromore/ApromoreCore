@@ -727,7 +727,6 @@ public class UserAdminController extends SelectorComposer<Window> {
     }
 
     private void setSelectedUsers(Set<User> users) {
-        isUserDetailDirty = false;
         passwordTextbox.setValue("");
         confirmPasswordTextbox.setValue("");
         assignedRoleItemRenderer.setDisabled(false);
@@ -777,11 +776,10 @@ public class UserAdminController extends SelectorComposer<Window> {
         }
         updateAssignedRoleModel(users);
         updateAssignedGroupModel(users);
-        isUserDetailDirty = false; // extra defensive, ensure dirty is not set by field's setValue
+        isUserDetailDirty = false; // ensure dirty is not set by field's setValue
     }
 
     private Group setSelectedGroup(Group group) {
-        isGroupDetailDirty = false;
         assignedUserAddView.setVisible(false);
 
         if (group == null) {
@@ -809,7 +807,7 @@ public class UserAdminController extends SelectorComposer<Window> {
         nonAssignedUserModel.setMultiple(true);
         nonAssignedUserList = new AssignedUserListbox(nonAssignedUserListbox, nonAssignedUserModel, "Users not in the group");
         selectedGroup = group;
-        isGroupDetailDirty = false; // extra defensive, ensure dirty is not set by field's setValue
+        isGroupDetailDirty = false; // ensure dirty is not set by field's setValue
         return group;
     }
 
