@@ -1,7 +1,7 @@
-group = 'org.apromore.plugin'
+group = 'org.apromore.plugin.portal'
 version = '1.1'
 description = 'Apromore Portal Plugin API'
-
+jar.baseName="portal-api"
 dependencies {
 	implementation project(':Apromore-Clients:portal-model')
 	implementation project(':Apromore-Plugins:plugin-core:core:api')
