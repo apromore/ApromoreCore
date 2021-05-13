@@ -130,7 +130,7 @@ public class UserAdminController extends SelectorComposer<Window> {
 
     Window mainWindow;
     User currentUser;
-    User selectedUser;
+    User selectedUser = null;
     Group selectedGroup;
     Set<User> selectedUsers;
 
@@ -265,7 +265,7 @@ public class UserAdminController extends SelectorComposer<Window> {
         mainWindow = win;
         String userName = portalContext.getCurrentUser().getUsername();
         currentUser = securityService.getUserByName(userName);
-        selectedUser = currentUser;
+        selectedUser = null;
 
         canViewUsers = hasPermission(Permissions.VIEW_USERS);
         canEditUsers = hasPermission(Permissions.EDIT_USERS);
@@ -727,7 +727,6 @@ public class UserAdminController extends SelectorComposer<Window> {
     }
 
     private void setSelectedUsers(Set<User> users) {
-        isUserDetailDirty = false;
         passwordTextbox.setValue("");
         confirmPasswordTextbox.setValue("");
         assignedRoleItemRenderer.setDisabled(false);
@@ -777,10 +776,10 @@ public class UserAdminController extends SelectorComposer<Window> {
         }
         updateAssignedRoleModel(users);
         updateAssignedGroupModel(users);
+        isUserDetailDirty = false; // ensure dirty is not set by field's setValue
     }
 
     private Group setSelectedGroup(Group group) {
-        isGroupDetailDirty = false;
         assignedUserAddView.setVisible(false);
 
         if (group == null) {
@@ -808,6 +807,7 @@ public class UserAdminController extends SelectorComposer<Window> {
         nonAssignedUserModel.setMultiple(true);
         nonAssignedUserList = new AssignedUserListbox(nonAssignedUserListbox, nonAssignedUserModel, "Users not in the group");
         selectedGroup = group;
+        isGroupDetailDirty = false; // ensure dirty is not set by field's setValue
         return group;
     }
 
