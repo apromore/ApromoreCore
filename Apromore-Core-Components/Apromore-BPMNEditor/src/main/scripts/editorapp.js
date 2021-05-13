@@ -134,7 +134,7 @@ Apromore.EditorApp = {
                 collapsible: true,
                 width: 450,
                 split: true,
-                title: "Simulation Parameters",
+                title: "Simulation parameters",
                 items: {
                     layout: "fit",
                     autoHeight: true,
