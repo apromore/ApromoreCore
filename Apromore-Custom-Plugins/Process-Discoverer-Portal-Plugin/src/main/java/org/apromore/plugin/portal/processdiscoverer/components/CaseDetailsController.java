@@ -119,7 +119,11 @@ public class CaseDetailsController extends DataListController {
 	private JSONArray makeJSONArray(Map<String,String> attributeMap) {
 	    JSONArray array = new JSONArray();
 	    for (Map.Entry<String, String> entry : attributeMap.entrySet()) {
-	        array.put((new JSONObject()).put(entry.getKey(), entry.getValue()));
+			array.put(
+				(new JSONObject())
+					.put("name", entry.getKey())
+					.put("value", entry.getValue())
+			);
 	    }
 	    return array;
 	}

@@ -231,10 +231,8 @@ let activityToAttributeMap = null;
 const tablize = function (attributeArray, klass) {
     var html = `<table class="${klass}">`;
 
-    for (const att of attributeArray) {
-        let attName = Object.keys(att)[0];
-        let val = att[attName];
-        html += `<tr><td>${attName}</td><td>${val}</td></tr>`;
+    for (const { name, value } of attributeArray) {
+        html += `<tr><td>${name}</td><td>${value}</td></tr>`;
     }
     html += '</table>';
     return html;
