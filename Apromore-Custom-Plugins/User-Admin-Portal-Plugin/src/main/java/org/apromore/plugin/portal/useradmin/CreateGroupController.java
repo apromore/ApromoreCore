@@ -43,10 +43,11 @@ public class CreateGroupController extends SelectorComposer<Window> {
     @Wire("#groupNameTextbox") Textbox groupNameTextbox;
 
     @Listen("onClick = #createBtn")
-    public void onClickCreateButton() throws Exception {
+    public void onClickCreateButton() {
         boolean canEditGroups = securityService.hasAccess(portalContext.getCurrentUser().getId(), Permissions.EDIT_GROUPS.getRowGuid());
         if (!canEditGroups) {
-            throw new Exception("Cannot edit groups without permission");
+            Messagebox.show("You do not have privilege to create group.");
+            return;
         }
 
         try {

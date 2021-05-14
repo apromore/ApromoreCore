@@ -49,23 +49,23 @@ public class CreateUserController extends SelectorComposer<Window> {
     @Wire("#passwordTextbox")  Textbox passwordTextbox;
 
     @Listen("onClick = #createBtn")
-    public void onClickCreateButton() throws Exception {
+    public void onClickCreateButton() {
         boolean canEditUsers = securityService.hasAccess(portalContext.getCurrentUser().getId(), Permissions.EDIT_USERS.getRowGuid());
         if (!canEditUsers) {
-            throw new Exception("Cannot edit users without permission");
+            Messagebox.show("You do not have privilege to create user.");
+            return;
         }
 
-        User user = new User();
-        user.setUsername(userNameTextbox.getValue());
-        user.setFirstName(firstNameTextbox.getValue());
-        user.setLastName(lastNameTextbox.getValue());
-
-        user.getMembership().setEmail(emailTextbox.getValue());
-        user.getMembership().setPassword(SecurityUtil.hashPassword(passwordTextbox.getValue()));
-        user.getMembership().setSalt("username");
-        user.getMembership().setUser(user);
-
         try {
+            User user = new User();
+            user.setUsername(userNameTextbox.getValue());
+            user.setFirstName(firstNameTextbox.getValue());
+            user.setLastName(lastNameTextbox.getValue());
+
+            user.getMembership().setEmail(emailTextbox.getValue());
+            user.getMembership().setPassword(SecurityUtil.hashPassword(passwordTextbox.getValue()));
+            user.getMembership().setSalt("username");
+            user.getMembership().setUser(user);
             securityService.createUser(user);
         } catch (Exception e) {
             LOGGER.error("Unable to create user", e);
