@@ -834,7 +834,8 @@ public class UserAdminController extends SelectorComposer<Window> {
     @Listen("onSelect = #userListbox")
     public void onSelectUserListbox(SelectEvent event) throws Exception {
         if (!hasPermission(Permissions.VIEW_USERS)) {
-            throw new Exception("Cannot view users without permission");
+            Messagebox.show("You do not have privilege to view user.");
+            return;
         }
         Set<User> prevUsers = event.getPreviousSelectedObjects();
         Set<User> newUsers = event.getSelectedObjects();

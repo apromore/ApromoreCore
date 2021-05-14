@@ -38,6 +38,24 @@
 
     .x-layout-collapsed-east {
       top: 66px !important;
+      overflow: visible;
+    }
+
+    .x-layout-collapsed-east .x-tool {
+      overflow: visible;
+    }
+
+    /* A fix for simulation panel title */
+    .x-layout-collapsed-east:after {
+      content: "Simulation parameters";
+      color: black;
+      font-weight: 700;
+      transform: rotate(90deg) translate(192px, 196px);
+      display: block;
+      overflow: visible;
+      width: 400px;
+      height: 30px;
+      color: #333;
     }
   </z:style>
 	<!-- STYLESHEET FOR THE WRAPPER EDITOR -->

@@ -26,8 +26,8 @@
   <listbox id="caseDetailsList" vflex="1" rows="10" mold="paging" pageSize="100">
     <listhead sizable="true">
       <listheader label="Case ID" sort="auto(caseId)"/>
-      <listheader label="Events" sort="auto(caseEvents)"/>
-      <listheader label="Case Variant" sort="auto(caseVariantId)"/>
+      <listheader label="Activity instances" sort="auto(caseEvents)"/>
+      <listheader label="Case variant ID" sort="auto(caseVariantId)"/>
       <listheader label="Percentage (%)" sort="auto(caseVariantFreq)"/>
     </listhead>
     <template name="model">
