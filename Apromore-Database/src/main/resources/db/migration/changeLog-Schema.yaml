@@ -929,3 +929,127 @@ databaseChangeLog:
            columnName: version_number
            newDataType: VARCHAR(100)
            tableName: process_model_version
+
+ - changeSet:
+     id: 20210505030600
+     author: mtomar
+     changes:
+       - createTable:
+           tableName: job
+           columns:
+             - column:
+                 name: id
+                 type: BIGINT
+                 autoIncrement: true
+                 constraints:
+                   nullable: false
+                   primaryKey: true
+                   primaryKeyName: pk_job_id
+             - column:
+                 constraints:
+                   nullable: false
+                   unique: true
+                 name: dag_id
+                 type: VARCHAR(100)
+                 remarks: 'Dag id for creating and mapping to DAG'
+             - column:
+                 name: final_transform_query
+                 type: VARCHAR(1000)
+             - column:
+                 name: schedule
+                 type: VARCHAR(50)
+             - column:
+                 name: log_name
+                 type: VARCHAR(100)
+             - column:
+                 name: apromore_workspace_directory
+                 type: VARCHAR(200)
+             - column:
+                 name: username
+                 type: VARCHAR(100)
+             - column:
+                 name: bucket_name
+                 type: VARCHAR(50)
+             - column:
+                 name: key
+                 type: VARCHAR(200)
+             - column:
+                 name: url
+                 type: VARCHAR(200)
+             - column:
+                 name: pipeline_name
+                 type: VARCHAR(200)
+
+       - createTable:
+           tableName: dag_connection
+           columns:
+             - column:
+                 name: id
+                 type: BIGINT
+                 autoIncrement: true
+                 constraints:
+                   nullable: false
+                   primaryKey: true
+                   primaryKeyName: pk_dag_conn_id
+             - column:
+                 name: connection_id
+                 type: VARCHAR(100)
+             - column:
+                 name: table_name
+                 type: VARCHAR(100)
+             - column:
+                 name: query
+                 type: VARCHAR(500)
+             - column:
+                 name: bucket_name
+                 type: VARCHAR(50)
+             - column:
+                 name: key
+                 type: VARCHAR(200)
+             - column:
+                 name: url
+                 type: VARCHAR(200)
+             - column:
+                 name: job_id
+                 type: BIGINT
+                 constraints:
+                   nullable: false
+                   referencedTableName: job
+                   referencedColumnNames: id
+                   foreignKeyName: fk_dag_conn_job_idk
+                   deleteCascade: true
+
+       - createTable:
+           tableName: static_log
+           columns:
+             - column:
+                 name: id
+                 type: BIGINT
+                 autoIncrement: true
+                 constraints:
+                   nullable: false
+                   primaryKey: true
+                   primaryKeyName: pk_static_log_id
+             - column:
+                 name: parquet_origin
+                 type: BOOLEAN
+             - column:
+                 name: table_name
+                 type: VARCHAR(100)
+             - column:
+                 name: s3_location
+                 type: VARCHAR(200)
+             - column:
+                 name: schema_info
+                 type: VARCHAR(100)
+             - column:
+                 name: job_id
+                 type: BIGINT
+                 constraints:
+                   nullable: false
+                   referencedTableName: job
+                   referencedColumnNames: id
+                   foreignKeyName: fk_static_log_job_idk
+                   deleteCascade: true
+
+
