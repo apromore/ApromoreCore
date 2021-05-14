@@ -28,18 +28,6 @@ import org.apromore.common.ConfigBean;
 import org.apromore.common.Constants;
 import org.apromore.dao.*;
 import org.apromore.dao.model.*;
-import org.apromore.dao.CustomCalendarRepository;
-import org.apromore.dao.FolderRepository;
-import org.apromore.dao.GroupLogRepository;
-import org.apromore.dao.GroupRepository;
-import org.apromore.dao.LogRepository;
-import org.apromore.dao.StorageRepository;
-import org.apromore.dao.model.CustomCalendar;
-import org.apromore.dao.model.Group;
-import org.apromore.dao.model.GroupLog;
-import org.apromore.dao.model.Log;
-import org.apromore.dao.model.Storage;
-import org.apromore.dao.model.User;
 import org.apromore.exception.NotAuthorizedException;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.portal.model.ExportLogResultType;
@@ -55,7 +43,9 @@ import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryRegistry;
 import org.deckfour.xes.in.*;
-import org.deckfour.xes.model.*;
+import org.deckfour.xes.model.XEvent;
+import org.deckfour.xes.model.XLog;
+import org.deckfour.xes.model.XTrace;
 import org.deckfour.xes.model.impl.XAttributeLiteralImpl;
 import org.deckfour.xes.out.XSerializer;
 import org.deckfour.xes.out.XesXmlGZIPSerializer;
@@ -193,34 +183,37 @@ public class EventLogServiceImpl implements EventLogService {
             throw new Exception("No process instances contained in log!");
         }
 
-        return checkMissingLifecycleTransitionAttribute(log);
+        return validateLog(log);
 
     }
 
-    private static XLog checkMissingLifecycleTransitionAttribute(XLog log) {
-
-        boolean hasTransitionAttribute = false;
-
+    public static XLog validateLog(XLog log) {
+        List<XTrace> tobeRemovedTraces  = new ArrayList<>();
         for(XTrace trace : log) {
+            List<XEvent> tobeRemovedEvents = new ArrayList<>();
             for(XEvent event : trace) {
-                XAttributeMap attributeMap = event.getAttributes();
-                for(XAttribute attribute : attributeMap.values()) {
-                    String key = attribute.getKey();
-                    if ("lifecycle:transition".equals(key)){
-                        hasTransitionAttribute = true;
-                        break;
-                    }
+                if(!event.getAttributes().containsKey("lifecycle:transition")) {
+                    event.getAttributes().put("lifecycle:transition",
+                            new XAttributeLiteralImpl("lifecycle:transition", "complete", null));
                 }
-
-                if(!hasTransitionAttribute) {
-                    attributeMap.put("lifecycle:transition", new XAttributeLiteralImpl("lifecycle:transition",
-                            "complete", null));
-                    hasTransitionAttribute = false;
+                if (isInvalidEvent(event)) {
+                    tobeRemovedEvents.add(event);
                 }
             }
+            if (!tobeRemovedEvents.isEmpty()) {
+                trace.removeAll(tobeRemovedEvents);
+            }
+            if (trace.isEmpty()) tobeRemovedTraces.add(trace);
         }
-
+        if (!tobeRemovedTraces.isEmpty()) log.removeAll(tobeRemovedTraces);
         return log;
+    }
+
+    private static boolean isInvalidEvent(XEvent event) {
+        return !event.getAttributes().containsKey("time:timestamp") ||
+                !event.getAttributes().containsKey("concept:name") ||
+                (!"start".equalsIgnoreCase(event.getAttributes().get("lifecycle:transition").toString()) &&
+                        !"complete".equalsIgnoreCase(event.getAttributes().get("lifecycle:transition").toString()));
     }
 
     @Override

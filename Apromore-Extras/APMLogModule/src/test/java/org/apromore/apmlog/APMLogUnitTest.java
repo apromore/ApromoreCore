@@ -22,18 +22,11 @@
 
 package org.apromore.apmlog;
 
-import org.apromore.apmlog.filter.APMLogFilter;
 import org.apromore.apmlog.filter.PLog;
-import org.apromore.apmlog.filter.rules.LogFilterRule;
-import org.apromore.apmlog.filter.rules.LogFilterRuleImpl;
-import org.apromore.apmlog.filter.rules.RuleValue;
-import org.apromore.apmlog.filter.types.*;
+import org.apromore.apmlog.filter.PTrace;
 import org.deckfour.xes.in.XesXmlGZIPParser;
 import org.deckfour.xes.in.XesXmlParser;
 import org.deckfour.xes.model.XLog;
-import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
-import org.eclipse.collections.impl.map.mutable.UnifiedMap;
-import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -46,8 +39,6 @@ import java.io.File;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 
-import static org.apromore.apmlog.filter.types.FilterType.EVENT_EVENT_ATTRIBUTE;
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -89,9 +80,6 @@ public class APMLogUnitTest {
 
         xLog = getXLog("files/simplelogs/L1_activities with start or complete events only.xes");
         APMLogParsingTest.testActivityStartCompleteEventsOnly(xLog, this);
-
-        xLog = getXLog("files/simplelogs/L1_complete_events_only_with_resources_missing_timestamps.xes");
-        APMLogParsingTest.testMissingTimestamp(xLog, this);
 
         xLog = getXLog("files/simplelogs/L1_complete_events_only_with_resources.xes");
         APMLogParsingTest.testCompleteOnlyWithResources(xLog, this);
@@ -397,13 +385,6 @@ public class APMLogUnitTest {
     }
 
     @Test
-    public void testNoLifecycle() throws Exception {
-        XLog xLog = getXLog("files/DiscardNoLifecycle.xes");
-        APMLog apmLog = LogFactory.convertXLog(xLog);
-        DiscardNoLifecycleTest.test1(apmLog);
-    }
-
-    @Test
     public void testCaseIdRemove() throws Exception {
         XLog xLog = getXLog("files/5cases.xes");
         APMLog originalLog = LogFactory.convertXLog(xLog);
@@ -429,6 +410,20 @@ public class APMLogUnitTest {
         XLog xLog = getXLog("files/Procure-to-Pay.xes.gz");
         APMLog apmLog = LogFactory.convertXLog(xLog);
         ProcureToPayAdvFilterTest.run(apmLog, this);
+    }
+
+    @Test
+    public void testNoErrorByCalling0WaitingTime() throws Exception {
+        XLog xLog = getXLog("files/A2_overlap_mixed.xes");
+        APMLog apmLog = LogFactory.convertXLog(xLog);
+        PLog pLog = new PLog(apmLog);
+        for (PTrace pTrace : pLog.getPTraceList()) {
+            assertTrue(pTrace.getWaitingTimes().min() == 0);
+            assertTrue(pTrace.getWaitingTimes().median() == 0);
+            assertTrue(pTrace.getWaitingTimes().average() == 0);
+            assertTrue(pTrace.getWaitingTimes().max() == 0);
+            assertTrue(pTrace.getWaitingTimes().sum() == 0);
+        }
     }
 
     public void printString(String unicodeMessage) throws UnsupportedEncodingException {
