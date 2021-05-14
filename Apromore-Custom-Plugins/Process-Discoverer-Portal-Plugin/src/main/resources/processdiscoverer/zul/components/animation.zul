@@ -72,7 +72,7 @@
                 </n:div>
                 -->
                 <n:div style="position:absolute; background:none; width:100%">
-                    <n:svg id="ap-pd-la-timeline" style="background:none;" xmlns="http://www.w3.org/2000/svg" viewBox="-10 -10 1140 80"></n:svg>
+                    <n:svg id="ap-pd-la-timeline" style="background:none;" xmlns="http://www.w3.org/2000/svg"></n:svg>
                 </n:div>                  
             </n:div>
         </n:div>
