@@ -48,33 +48,7 @@ import java.util.stream.Collectors;
  */
 public class LogFactory {
 
-    private static void validateXLog(XLog xLog) {
-        List<XTrace> tobeRemovedTraces  = new ArrayList<>();
-
-        for (XTrace xTrace : xLog) {
-
-            List<XEvent> tobeRemovedEvents = xTrace.stream()
-                    .filter(e -> !e.getAttributes().containsKey("time:timestamp") ||
-                            !e.getAttributes().containsKey("lifecycle:transition") ||
-                            (!e.getAttributes().get("lifecycle:transition").toString()
-                                    .equalsIgnoreCase("start") &&
-                                    !e.getAttributes().get("lifecycle:transition").toString()
-                                            .equalsIgnoreCase("complete")))
-                    .collect(Collectors.toList());
-
-            if (!tobeRemovedEvents.isEmpty()) {
-                xTrace.removeAll(tobeRemovedEvents);
-            }
-
-            if (xTrace.isEmpty()) tobeRemovedTraces.add(xTrace);
-        }
-
-        if (!tobeRemovedTraces.isEmpty()) xLog.removeAll(tobeRemovedTraces);
-    }
-
     public static APMLog convertXLog(XLog xLog) {
-
-        validateXLog(xLog);
 
         ImmutableLog log = new ImmutableLog();
 

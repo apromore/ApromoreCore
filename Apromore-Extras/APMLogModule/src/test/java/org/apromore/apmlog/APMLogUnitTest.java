@@ -22,19 +22,12 @@
 
 package org.apromore.apmlog;
 
-import org.apromore.apmlog.filter.APMLogFilter;
 import org.apromore.apmlog.filter.PLog;
 import org.apromore.apmlog.filter.PTrace;
-import org.apromore.apmlog.filter.rules.LogFilterRule;
-import org.apromore.apmlog.filter.rules.LogFilterRuleImpl;
-import org.apromore.apmlog.filter.rules.RuleValue;
-import org.apromore.apmlog.filter.types.*;
+import org.apromore.service.impl.EventLogServiceImpl;
 import org.deckfour.xes.in.XesXmlGZIPParser;
 import org.deckfour.xes.in.XesXmlParser;
 import org.deckfour.xes.model.XLog;
-import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
-import org.eclipse.collections.impl.map.mutable.UnifiedMap;
-import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -47,8 +40,6 @@ import java.io.File;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 
-import static org.apromore.apmlog.filter.types.FilterType.EVENT_EVENT_ATTRIBUTE;
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -91,17 +82,11 @@ public class APMLogUnitTest {
         xLog = getXLog("files/simplelogs/L1_activities with start or complete events only.xes");
         APMLogParsingTest.testActivityStartCompleteEventsOnly(xLog, this);
 
-        xLog = getXLog("files/simplelogs/L1_complete_events_only_with_resources_missing_timestamps.xes");
-        APMLogParsingTest.testMissingTimestamp(xLog, this);
-
         xLog = getXLog("files/simplelogs/L1_complete_events_only_with_resources.xes");
         APMLogParsingTest.testCompleteOnlyWithResources(xLog, this);
 
         xLog = getXLog("files/BPI Challenge 2017-480049.xes");
         APMLogParsingTest.testCountAsSameActivityEvenResourcesAreDifferent(xLog, this);
-
-        xLog = getXLog("files/simplelogs/L2_mixed_lifecycle_no_overlapping.xes");
-        APMLogParsingTest.testMixedLifecycleNoOverlapping(xLog, this);
     }
 
     @Test
@@ -401,13 +386,6 @@ public class APMLogUnitTest {
     }
 
     @Test
-    public void testNoLifecycle() throws Exception {
-        XLog xLog = getXLog("files/DiscardNoLifecycle.xes");
-        APMLog apmLog = LogFactory.convertXLog(xLog);
-        DiscardNoLifecycleTest.test1(apmLog);
-    }
-
-    @Test
     public void testCaseIdRemove() throws Exception {
         XLog xLog = getXLog("files/5cases.xes");
         APMLog originalLog = LogFactory.convertXLog(xLog);
@@ -437,7 +415,8 @@ public class APMLogUnitTest {
 
     @Test
     public void testNoErrorByCalling0WaitingTime() throws Exception {
-        XLog xLog = getXLog("files/A1_overlap_no_waiting_time.xes");
+        XLog xLog = getXLog("files/A2_overlap_mixed.xes");
+        xLog = EventLogServiceImpl.validateLog(xLog);
         APMLog apmLog = LogFactory.convertXLog(xLog);
         PLog pLog = new PLog(apmLog);
         for (PTrace pTrace : pLog.getPTraceList()) {
@@ -447,20 +426,6 @@ public class APMLogUnitTest {
             assertTrue(pTrace.getWaitingTimes().max() == 0);
             assertTrue(pTrace.getWaitingTimes().sum() == 0);
         }
-    }
-
-    @Test
-    public void testLogValidated() throws Exception {
-        // =====================================================================================================
-        // LogFactory will delete the events that have lifecycle:transition not 'start' and not 'complete'
-        // or have no lifecycle:transition or have no time:timestamp
-        // =====================================================================================================
-        XLog xLog = getXLog("files/A1_overlap_no_waiting_time.xes");
-        APMLog apmLog = LogFactory.convertXLog(xLog);
-        assertTrue(apmLog.getTraceList().size() == 4);
-        assertTrue(apmLog.getTraceList().stream().flatMap(x->x.getActivityList().stream())
-                .collect(Collectors.toList()).size() == 8);
-        assertTrue(apmLog.getUniqueActivitySize() == 4);
     }
 
     public void printString(String unicodeMessage) throws UnsupportedEncodingException {
