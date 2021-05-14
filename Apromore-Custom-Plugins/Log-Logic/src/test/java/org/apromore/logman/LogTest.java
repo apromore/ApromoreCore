@@ -22,7 +22,9 @@
 
 package org.apromore.logman;
 
+import java.time.ZonedDateTime;
 import java.util.BitSet;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -400,22 +402,36 @@ public class LogTest extends DataSetup {
         Assert.assertEquals(false, attTrace0.isEmpty());
         
         // Test Activity Attribute Map
-        Assert.assertEquals(true, attTrace0.getAttributeMapAtIndex(0).isEmpty());
-        Assert.assertEquals(Stream.of(new Object[][] {
+        Assert.assertEquals(true, attTrace0.getAttributeMapAtIndex(0).isEmpty()); // start event
+        
+        Map<String,String> expectedAttMap1 = Stream.of(new Object[][] { // first activity
                                 { "org:resource", "R1" },
                                 { "concept:name", "a" },
                                 { "time:timestamp", "2010-10-27T22:00:19.308+10:00" },
                                 { "lifecycle:transition", "complete" }
-                            }).collect(Collectors.toMap(data -> (String) data[0], data -> (String) data[1])),
-                attTrace0.getAttributeMapAtIndex(1));
-        Assert.assertEquals(Stream.of(new Object[][] {
+                            }).collect(Collectors.toMap(data -> (String) data[0], data -> (String) data[1]));
+        Map<String,String> resultAttMap1 = attTrace0.getAttributeMapAtIndex(1);
+        
+        Assert.assertEquals(expectedAttMap1.get("org:resource"), resultAttMap1.get("org:resource"));
+        Assert.assertEquals(expectedAttMap1.get("concept:name"), resultAttMap1.get("concept:name"));
+        Assert.assertEquals(expectedAttMap1.get("lifecycle:transition"), resultAttMap1.get("lifecycle:transition"));
+        Assert.assertEquals(ZonedDateTime.parse(expectedAttMap1.get("time:timestamp")).toInstant().toEpochMilli(),
+                            ZonedDateTime.parse(resultAttMap1.get("time:timestamp")).toInstant().toEpochMilli());
+        
+                
+        Map<String,String> expectedAttMap2 = Stream.of(new Object[][] { // second activity
                                 { "org:resource", "R2" },
                                 { "concept:name", "a" },
                                 { "time:timestamp", "2010-10-27T22:01:19.308+10:00" },
                                 { "lifecycle:transition", "complete" }
-                            }).collect(Collectors.toMap(data -> (String) data[0], data -> (String) data[1])),
-                attTrace0.getAttributeMapAtIndex(2));
-        Assert.assertEquals(true, attTrace0.getAttributeMapAtIndex(attTrace0.getValueTrace().size()-1).isEmpty());
+                            }).collect(Collectors.toMap(data -> (String) data[0], data -> (String) data[1]));
+        Map<String,String> resultAttMap2 = attTrace0.getAttributeMapAtIndex(2);
+        
+        Assert.assertEquals(expectedAttMap2.get("org:resource"), resultAttMap2.get("org:resource"));
+        Assert.assertEquals(expectedAttMap2.get("concept:name"), resultAttMap2.get("concept:name"));
+        Assert.assertEquals(expectedAttMap2.get("lifecycle:transition"), resultAttMap2.get("lifecycle:transition"));
+        Assert.assertEquals(ZonedDateTime.parse(expectedAttMap2.get("time:timestamp")).toInstant().toEpochMilli(),
+                            ZonedDateTime.parse(resultAttMap2.get("time:timestamp")).toInstant().toEpochMilli());
         
         AttributeTraceGraph traceGraph0 = attTrace0.getActiveGraph();
         Assert.assertEquals(IntSets.mutable.of(0,1,2,8,12,15,17,20,24), traceGraph0.getArcs());
