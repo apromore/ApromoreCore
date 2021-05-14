@@ -24,6 +24,7 @@ package org.apromore.apmlog;
 
 import org.apromore.apmlog.filter.APMLogFilter;
 import org.apromore.apmlog.filter.PLog;
+import org.apromore.apmlog.filter.PTrace;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.LogFilterRuleImpl;
 import org.apromore.apmlog.filter.rules.RuleValue;
@@ -98,6 +99,9 @@ public class APMLogUnitTest {
 
         xLog = getXLog("files/BPI Challenge 2017-480049.xes");
         APMLogParsingTest.testCountAsSameActivityEvenResourcesAreDifferent(xLog, this);
+
+        xLog = getXLog("files/simplelogs/L2_mixed_lifecycle_no_overlapping.xes");
+        APMLogParsingTest.testMixedLifecycleNoOverlapping(xLog, this);
     }
 
     @Test
@@ -429,6 +433,34 @@ public class APMLogUnitTest {
         XLog xLog = getXLog("files/Procure-to-Pay.xes.gz");
         APMLog apmLog = LogFactory.convertXLog(xLog);
         ProcureToPayAdvFilterTest.run(apmLog, this);
+    }
+
+    @Test
+    public void testNoErrorByCalling0WaitingTime() throws Exception {
+        XLog xLog = getXLog("files/A1_overlap_no_waiting_time.xes");
+        APMLog apmLog = LogFactory.convertXLog(xLog);
+        PLog pLog = new PLog(apmLog);
+        for (PTrace pTrace : pLog.getPTraceList()) {
+            assertTrue(pTrace.getWaitingTimes().min() == 0);
+            assertTrue(pTrace.getWaitingTimes().median() == 0);
+            assertTrue(pTrace.getWaitingTimes().average() == 0);
+            assertTrue(pTrace.getWaitingTimes().max() == 0);
+            assertTrue(pTrace.getWaitingTimes().sum() == 0);
+        }
+    }
+
+    @Test
+    public void testLogValidated() throws Exception {
+        // =====================================================================================================
+        // LogFactory will delete the events that have lifecycle:transition not 'start' and not 'complete'
+        // or have no lifecycle:transition or have no time:timestamp
+        // =====================================================================================================
+        XLog xLog = getXLog("files/A1_overlap_no_waiting_time.xes");
+        APMLog apmLog = LogFactory.convertXLog(xLog);
+        assertTrue(apmLog.getTraceList().size() == 4);
+        assertTrue(apmLog.getTraceList().stream().flatMap(x->x.getActivityList().stream())
+                .collect(Collectors.toList()).size() == 8);
+        assertTrue(apmLog.getUniqueActivitySize() == 4);
     }
 
     public void printString(String unicodeMessage) throws UnsupportedEncodingException {

@@ -37,25 +37,44 @@ import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Chii Chang
  */
 public class LogFactory {
 
-    public static APMLog convertXLog(XLog xLog) {
+    private static void validateXLog(XLog xLog) {
+        List<XTrace> tobeRemovedTraces  = new ArrayList<>();
 
         for (XTrace xTrace : xLog) {
-            Set<XEvent> tobeRemoved = new HashSet<>();
-            for (XEvent xEvent : xTrace) {
-                XAttributeMap xAttributeMap = xEvent.getAttributes();
-                if (!xAttributeMap.containsKey("lifecycle:transition")) tobeRemoved.add(xEvent);
+
+            List<XEvent> tobeRemovedEvents = xTrace.stream()
+                    .filter(e -> !e.getAttributes().containsKey("time:timestamp") ||
+                            !e.getAttributes().containsKey("lifecycle:transition") ||
+                            (!e.getAttributes().get("lifecycle:transition").toString()
+                                    .equalsIgnoreCase("start") &&
+                                    !e.getAttributes().get("lifecycle:transition").toString()
+                                            .equalsIgnoreCase("complete")))
+                    .collect(Collectors.toList());
+
+            if (!tobeRemovedEvents.isEmpty()) {
+                xTrace.removeAll(tobeRemovedEvents);
             }
-            if (!tobeRemoved.isEmpty()) xTrace.removeAll(tobeRemoved);
+
+            if (xTrace.isEmpty()) tobeRemovedTraces.add(xTrace);
         }
+
+        if (!tobeRemovedTraces.isEmpty()) xLog.removeAll(tobeRemovedTraces);
+    }
+
+    public static APMLog convertXLog(XLog xLog) {
+
+        validateXLog(xLog);
 
         ImmutableLog log = new ImmutableLog();
 
