@@ -132,7 +132,7 @@ public class CaseDetailsController extends DataListController {
 	public void onEvent(Event event) throws Exception {
 		if (caseDetailsWindow == null) {
 			caseDetailsWindow = (Window) Executions.createComponents("caseDetails.zul", null, null);
-			caseDetailsWindow.setTitle("Cases");
+			caseDetailsWindow.setTitle("Case Inspector");
 			caseDetailsWindow.getFellow("lblClickACase").setVisible(!this.disabled);
 
 			caseDetailsWindow.addEventListener("onClose", new EventListener<Event>() {
