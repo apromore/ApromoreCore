@@ -860,18 +860,11 @@ public class MainController extends BaseController implements MainControllerInte
         LOGGER.trace("Loading properties of webapp");
 
         setHost("http://" + config.getSiteExternalHost() + ":" + config.getSiteExternalPort());
-        String date = config.getVersionBuildDate();
-        date = date.substring(0, date.indexOf("@") - 1);
-        String subversion = "";
-        StringTokenizer st = new StringTokenizer(date, ".");
-        while (st.hasMoreTokens()) {
-            String token = st.nextToken();
-            if(token.length() == 4) token = token.substring(2);
-            subversion = token + subversion;
-        }
-        setMajorVersionNumber(config.getMajorVersionNumber() + "." + subversion);
+        
+
+        setMajorVersionNumber(config.getMajorVersionNumber());
         setMinorVersionNumber(config.getMinorVersionNumber());
-        setBuildDate(config.getVersionBuildDate());
+        
     }
 
     public String getContactEmail () {
@@ -927,13 +920,7 @@ public class MainController extends BaseController implements MainControllerInte
         minorVersionNumber = newMinorVersionNumber;
     }
 
-    public String getBuildDate() {
-        return buildDate;
-    }
-
-    public void setBuildDate(final String newBuildDate) {
-        buildDate = newBuildDate;
-    }
+   
 
     private void updateTabs(String userId){
         Window mainW = (Window) this.getFellow("mainW");

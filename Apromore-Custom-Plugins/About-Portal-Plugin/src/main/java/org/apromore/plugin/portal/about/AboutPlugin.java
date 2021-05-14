@@ -109,9 +109,7 @@ public class AboutPlugin extends DefaultPortalPlugin {
 			args.put("holder", this.holder);
 			args.put("detail", this.detail);
 			args.put("version",
-					config.getMajorVersionNumber() + " (commit " + getCommitId() + " built on " + getBuildDate()
-							+ " / core: " + config.getMinorVersionNumber() + " built on " + config.getVersionBuildDate()
-							+ ")");
+					config.getMajorVersionNumber()+"."+config.getMinorVersionNumber() + " (commit " + getCommitId() + " built on " + getBuildDate()+ ")");
 			final Window pluginWindow = (Window) Executions.getCurrent()
 					.createComponentsDirectly(
 							new InputStreamReader(

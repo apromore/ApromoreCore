@@ -65,7 +65,7 @@ logging:
     root: INFO
 
 logs:
-  dir: ${user.home}/.apromore/Event-Logs-Repository
+  dir: ${user_home}/.apromore/Event-Logs-Repository
 
 mail:
   host: smtp.gmail.com
@@ -128,10 +128,10 @@ site:
 
 spring:
   datasource:
-    password: Apromore#!dev
+    password: MAcri
 #    url: jdbc:h2:mem:Manager-Repository;DATABASE_TO_UPPER=FALSE;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-    url : jdbc:mysql://localhost:3306/apromore?createDatabaseIfNotExist=true&autoReconnect=true&allowMultiQueries=true&rewriteBatchedStatements=true&characterEncoding=utf-8&serverTimezone=GMT%2B10
-    username: apromore
+    url : jdbc:mysql://localhost:3307/apromore?createDatabaseIfNotExist=true&autoReconnect=true&allowMultiQueries=true&rewriteBatchedStatements=true&characterEncoding=utf-8&serverTimezone=GMT%2B10
+    username: root
   jpa:
     hibernate:
       ddl-auto: none
@@ -141,17 +141,17 @@ spring:
   liquibase:
     change-log: classpath:db/migration/changeLog.yaml
     contexts: MYSQL
-    password: Apromore#!dev
-    user: liquibase_user
+    password: MAcri
+    user: root
 
 
 storage:
-  path: FILE::${user.home}/.apromore/Event-Logs-Repository
+  path: FILE::${user_home}/.apromore/Event-Logs-Repository
 
 
 version:
-  number: 7.20-SNAPSHOT
-  edition: '@version.edition@'
+  number: ${project_version}
+  edition: ${version_edition}  
 
 maxUploadSize : 100000000
 

@@ -24,6 +24,7 @@
 
 package org.apromore.commons.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -110,16 +111,13 @@ public class ConfigBean {
     // Email for issue reporting
     private String  contactEmail;
     
-    private String versionEdition;
-    
-    private String versionNumber;
     
     private Version version = new Version();
     
     @Data
     public class Version{
     	private String number;
-    	private String edition;
+    	private String edition;    	
     }
     
     
@@ -172,15 +170,18 @@ public class ConfigBean {
 	}
 	
 	public String getMajorVersionNumber() {
-		return "7";
+		return version.getNumber().split("\\.")[0];
 	}
+	
 	
 	public String getMinorVersionNumber() {
-		return "20";
+		return version.getNumber().split("\\.")[1];
+	}
+		
+	
+	public String getVersionEdition() {
+		return version.getEdition();
 	}
 	
-	public String getVersionBuildDate() {
-		return "23.02.2021 @ 21:06:07 AEDT";
-	}
 	
 }	

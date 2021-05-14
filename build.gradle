@@ -84,11 +84,16 @@ subprojects {
 	project(':Apromore-Boot') {
 
 		bootJar.baseName="Apromore-Core"
+		ext['user_home'] = System.properties['user.home']
+		ext['version_edition'] = 'Apromore Community Edition'
 
 		processResources {
-			dependsOn generateGitProperties
-
-			from ('../build/resources/main')
+			dependsOn generateGitProperties	
+			filesMatching('**/application*.yml') {
+			expand(user_home: user_home, version_edition : version_edition, project_version : project.version)
+		}
+		
+		 from ('../build/resources/main')
 		}
 	}
 
@@ -103,4 +108,11 @@ subprojects {
 	jar {
 		enabled = true
 	}
+}
+
+gitProperties {
+	failOnNoGitDirectory = false
+	keys = ['git.commit.id','git.commit.time','git.commit.id.abbrev']
+	dateFormat = "yyyy-MM-dd'T'HH.mmZ"
+	
 }
