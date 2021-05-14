@@ -633,13 +633,13 @@ PDp.exportJSON = function(filename) {
 PDp.showCaseDetails = function() {
     let {left, top} = $('.ap-pd-logstats').offset();
     left -= 700; // width of caseDetail window
-    this.zkSendEvent('$win', 'onCaseDetails', {top: 0 + 'px', left: left + 'px'});
+    this.zkSendEvent('$win', 'onCaseDetails', {top: top + 'px', left: left + 'px'});
 }
 
 PDp.showPerspectiveDetails = function() {
     let {left, top} = $('.ap-pd-logstats').offset();
     left -= 700; // width of perspectiveDetail window
-    this.zkSendEvent('$win', 'onPerspectiveDetails', {top: 0 + 'px', left: left + 'px'});
+    this.zkSendEvent('$win', 'onPerspectiveDetails', {top: top + 'px', left: left + 'px'});
 }
 
 PDp.switchToAnimationView = function(setupDataJSON) {

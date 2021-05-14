@@ -34,6 +34,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listheader;
 import org.zkoss.zul.Window;
 
 public class PerspectiveDetailsController extends DataListController {
@@ -67,20 +68,20 @@ public class PerspectiveDetailsController extends DataListController {
 
     @Override
     public String getExportFilename () {
-        String perspective = parent.getPerspective();
-        return parent.getContextData().getLogName() + "-" + 
-                    (perspective.isEmpty() ? "EmptyPerspectiveName" : perspective) + 
-                    ".csv";
+        String perspectiveName = parent.getPerspectiveName();
+        return parent.getContextData().getLogName() + "-" + perspectiveName + ".csv";
     }
 
     @Override
     public void onEvent(Event event) throws Exception {
     	if (perspectiveDetailsWindow==null) {
             perspectiveDetailsWindow = (Window) Executions.createComponents("perspectiveDetails.zul", null, null);
-            String perspective = parent.getPerspective();
-            perspectiveDetailsWindow.setTitle(!perspective.isEmpty() ? perspective : "EmptyPerspective");
+            String perspectiveName = parent.getPerspectiveName();
+            perspectiveDetailsWindow.setTitle(perspectiveName + " Inspector");
             Listbox listbox = (Listbox) perspectiveDetailsWindow.getFellow("perspectiveDetailsList");
-    
+            Listheader listheader = (Listheader) perspectiveDetailsWindow.getFellow("perspectiveDetailName");
+            listheader.setLabel(perspectiveName);
+
             generateData();
             listbox.setModel(records);
     
@@ -93,7 +94,7 @@ public class PerspectiveDetailsController extends DataListController {
             });
     
             try {
-                JSONObject param = (JSONObject) event.getData();
+                org.zkoss.json.JSONObject param = (org.zkoss.json.JSONObject) event.getData();
                 perspectiveDetailsWindow.setPosition("nocenter");
                 perspectiveDetailsWindow.setLeft((String)param.get("left"));
                 perspectiveDetailsWindow.setTop((String)param.get("top"));

@@ -172,7 +172,7 @@ public class CaseDetailsController extends DataListController {
 				}
 			});
 			try {
-				JSONObject param = (JSONObject) event.getData();
+				org.zkoss.json.JSONObject param = (org.zkoss.json.JSONObject) event.getData();
 				caseDetailsWindow.setPosition("nocenter");
 				caseDetailsWindow.setLeft((String) param.get("left"));
 				caseDetailsWindow.setTop((String) param.get("top"));

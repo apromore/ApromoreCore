@@ -457,7 +457,14 @@ public class ViewSettingsController extends VisualController {
     }
     
     public String getPerspectiveName() {
-        return (perspectiveSelector != null) ? perspectiveSelector.getSelectedItem().getLabel() : "";
+        String name = "Untitled-perspective";
+        if (perspectiveSelector != null) {
+            String value = perspectiveSelector.getSelectedItem().getValue();
+            if (!value.isEmpty()) {
+                name = Labels.getLabel("e.pd.perspective." + value.replace(':', '.') + ".title", value);
+            }
+        }
+        return name;
     }
     
 }
