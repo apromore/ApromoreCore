@@ -22,8 +22,11 @@
 
 package org.apromore.test.service.impl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.powermock.api.easymock.PowerMock.createMock;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -61,6 +64,8 @@ import org.apromore.storage.factory.StorageManagementFactory;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryRegistry;
 import org.deckfour.xes.in.XesXmlParser;
+import org.deckfour.xes.info.XLogInfo;
+import org.deckfour.xes.info.XLogInfoFactory;
 import org.deckfour.xes.model.XAttributable;
 import org.deckfour.xes.model.XAttribute;
 import org.deckfour.xes.model.XAttributeMap;
@@ -186,6 +191,40 @@ public class EventLogServiceImplTest {
 
         System.out.println("Imported and walked log: " + path.getFileName());
         System.out.println("Duration: " + timer.getDurationString());
+    }
+
+    @Test
+    public void eventLogValidationTest() {
+        Path name = Paths.get(ClassLoader.getSystemResource("XES_logs/A1_overlap_no_waiting_time.xes").getPath());
+        XLog xLog = fetchXlog(name);
+
+        assert xLog != null;
+        EventLogServiceImpl.validateLog(xLog);
+        assertEquals(4, xLog.size());
+        int totalEventSize = 0;
+        Set<String> uniqueActs = new HashSet<>();
+        for (XTrace trace : xLog) {
+            totalEventSize += trace.size();
+            for (XEvent event : trace) {
+                uniqueActs.add(event.getAttributes().get("concept:name").toString());
+            }
+        }
+        assertEquals(17, totalEventSize);
+        assertEquals(5, uniqueActs.size());
+    }
+
+    private XLog fetchXlog(Path path) {
+        List<XLog> parsedLog;
+        XFactory factory = XFactoryRegistry.instance().currentDefault();
+        XesXmlParser parser = new XesXmlParser(factory);
+        try {
+            parsedLog = parser.parse(new FileInputStream(path.toFile()));
+            return parsedLog.iterator().next();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     @Test
