@@ -118,6 +118,7 @@ public class PTrace implements Comparable<PTrace>, ATrace{
                 .mapToDouble(x -> StatsUtil.getArcDurationOf(Objects.requireNonNull(StatsUtil.getValidPreviousActivity(x, this)), x))
                 .toArray();
         DoubleArrayList wtDal = new DoubleArrayList(waitTimesArray);
+        if (wtDal.isEmpty()) wtDal.add(0.0);
         return wtDal;
     }
 
@@ -127,6 +128,7 @@ public class PTrace implements Comparable<PTrace>, ATrace{
                 .mapToDouble(AActivity::getDuration)
                 .toArray();
         DoubleArrayList ptDal = new DoubleArrayList(procTimesArray);
+        if (ptDal.isEmpty()) ptDal.add(0.0);
         return ptDal;
     }
 
