@@ -25,8 +25,8 @@
         contentStyle="overflow:auto">
   <listbox id="perspectiveDetailsList" rows="10" vflex="1">
     <listhead sizable="true">
-      <listheader label="Value" width="45%" sort="auto(value)"/>
-      <listheader label="Occurrences" width="20%" sort="auto(occurrences)"/>
+      <listheader id="perspectiveDetailName" label="Value" width="45%" sort="auto(value)"/>
+      <listheader label="Activity instances" width="20%" sort="auto(occurrences)"/>
       <listheader label="Percentage (%)" width="20%" sort="auto(freq)"/>
     </listhead>
     <template name="model">

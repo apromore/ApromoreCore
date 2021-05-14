@@ -612,7 +612,7 @@ public class PDController extends BaseController {
         return this.mode;
     }
 
-    public String getPerspective() {
+    public String getPerspectiveName() {
         return viewSettingsController.getPerspectiveName();
     }
 
