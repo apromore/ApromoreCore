@@ -52,6 +52,7 @@ public class ChangePasswordPlugin extends DefaultPortalPlugin {
     public Availability getAvailability() {
         ConfigBean config = (ConfigBean) SpringUtil.getBean("portalConfig");
         boolean isUseKeycloakSso = config.isUseKeycloakSso();
+        isUseKeycloakSso = false; // always show  change password for now
 
         return isUseKeycloakSso ? Availability.UNAVAILABLE : Availability.AVAILABLE;
     }
