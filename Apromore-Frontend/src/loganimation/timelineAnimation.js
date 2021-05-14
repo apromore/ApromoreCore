@@ -27,10 +27,10 @@ export default class TimelineAnimation {
         this.currentSpeedLevel = 1.0;
 
         // Timeline settings: all is based on timelineWidth and timelineOffset
-        this.timelineWidth = $j('#' + uiContainerId).width();
+        this.timelineWidth = $j(window).width() - 490; // use hard-coded number here because sizes are set fixed in CSS and HTML
         this.startGap = this.animationContext.getStartGapRatio()*this.timelineWidth;
         this.endGap = this.animationContext.getEndGapRatio()*this.timelineWidth;
-        this.timelineOffset = { x: 20, y: 20,};
+        this.timelineOffset = { x: 20, y: 40,};
         this.timelineStartX = this.timelineOffset.x;
         this.timelineEndX = this.timelineStartX + this.timelineWidth;
         this.logStartX = this.timelineStartX + this.startGap;
