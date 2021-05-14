@@ -37,9 +37,11 @@ import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Chii Chang
@@ -47,15 +49,6 @@ import java.util.Set;
 public class LogFactory {
 
     public static APMLog convertXLog(XLog xLog) {
-
-        for (XTrace xTrace : xLog) {
-            Set<XEvent> tobeRemoved = new HashSet<>();
-            for (XEvent xEvent : xTrace) {
-                XAttributeMap xAttributeMap = xEvent.getAttributes();
-                if (!xAttributeMap.containsKey("lifecycle:transition")) tobeRemoved.add(xEvent);
-            }
-            if (!tobeRemoved.isEmpty()) xTrace.removeAll(tobeRemoved);
-        }
 
         ImmutableLog log = new ImmutableLog();
 

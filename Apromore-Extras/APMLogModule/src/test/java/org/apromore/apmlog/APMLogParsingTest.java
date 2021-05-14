@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -21,111 +21,95 @@
  */
 package org.apromore.apmlog;
 
-import org.apromore.apmlog.APMLog;
-import org.apromore.apmlog.APMLogUnitTest;
+import org.apromore.apmlog.stats.EventAttributeValue;
 import org.deckfour.xes.model.XLog;
 
+import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.junit.Assert.assertTrue;
 
 public class APMLogParsingTest {
 
-    public static void testConcurrentStartCompleteEvents(XLog xLog, APMLogUnitTest parent)
-            throws Exception {
-        parent.printString("\n(/ 'o')/ ~ Test 'ConcurrentStartCompleteEvents'");
+    public static void testConcurrentStartCompleteEvents(XLog xLog, APMLogUnitTest parent) {
         APMLog apmLog = LogFactory.convertXLog(xLog);
-        if (apmLog.getTraceList().get(0).getActivityList().size() != 10) {
-            throw new AssertionError("TEST FAILED. OUTPUT ACTIVITY LIST SIZE MISMATCH.");
-        } else {
-            parent.printString("'ConcurrentStartCompleteEvents' test PASS.");
-        }
+        assertTrue(apmLog.getTraceList().stream().flatMap(x->x.getActivityList().stream())
+                .collect(Collectors.toList()).size() == 10);
     }
 
-    public static void testStartCompleteNoOverlap(XLog xLog, APMLogUnitTest parent)
-            throws Exception {
-        parent.printString("\n(/ 'o')/ ~ Test 'StartCompleteNoOverlap'");
+    public static void testStartCompleteNoOverlap(XLog xLog, APMLogUnitTest parent) {
         APMLog apmLog = LogFactory.convertXLog(xLog);
-        if (apmLog.getTraceList().get(0).getEventList().size() != 22) {
-            throw new AssertionError("TEST FAILED. OUTPUT EVENT LIST SIZE MISMATCH.");
-        } else {
-            parent.printString("'StartCompleteNoOverlap' test PASS.");
-        }
+        assertTrue(apmLog.getTraceList().stream().flatMap(x->x.getActivityList().stream())
+                .collect(Collectors.toList()).size() == 11);
     }
 
-    public static void testActivityStartCompleteEventsOnly(XLog xLog, APMLogUnitTest parent)
-            throws Exception {
-        parent.printString("\n(/ 'o')/ ~ Test 'ActivityStartCompleteEventsOnly'");
+    public static void testActivityStartCompleteEventsOnly(XLog xLog, APMLogUnitTest parent) {
         APMLog apmLog = LogFactory.convertXLog(xLog);
 
-//        parent.printString("event size = " + apmLog.getEventSize());
-//        parent.printString("trace 0 event size = " + apmLog.getTraceList().get(0).getEventList().size());
-
-        parent.printString("variant size = " + apmLog.getCaseVariantSize());
-
-
-        if (apmLog.getTraceList().size() != 6) {
-            throw new AssertionError("TEST FAILED. OUTPUT TRACE LIST SIZE MISMATCH.");
-        } else if (apmLog.getCaseVariantSize() != 3) {
-            throw new AssertionError("TEST FAILED. OUTPUT CASE VARIANT SIZE MISMATCH.");
-        } else if (apmLog.getEventSize() != 23) {
-            throw new AssertionError("TEST FAILED. OUTPUT TOTAL EVENTS SIZE MISMATCH.");
-        } else if (apmLog.getUniqueActivitySize() != 5) {
-            throw new AssertionError("TEST FAILED. OUTPUT UNIQUE ACTIVITY SIZE MISMATCH.");
-        } else {
-            parent.printString("'ActivityStartCompleteEventsOnly' test PASS.");
-        }
+        assertTrue(apmLog.getTraceList().size() == 6);
+        assertTrue(apmLog.getCaseVariantSize() == 3);
+        assertTrue(apmLog.getTraceList().stream().flatMap(x->x.getActivityList().stream())
+                .collect(Collectors.toList()).size() == 23);
+        assertTrue(apmLog.getUniqueActivitySize() == 5);
     }
 
-    public static void testMissingTimestamp(XLog xLog, APMLogUnitTest parent) throws Exception {
-        parent.printString("\n(/ 'o')/ ~ Test 'MissingTimestamp'");
+    public static void testMissingTimestamp(XLog xLog, APMLogUnitTest parent) {
         APMLog apmLog = LogFactory.convertXLog(xLog);
-        if (apmLog.getTraceList().size() != 6) {
-            throw new AssertionError("TEST FAILED. OUTPUT TRACE LIST SIZE MISMATCH.");
-        } else if (apmLog.getCaseVariantSize() != 3) {
-            throw new AssertionError("TEST FAILED. OUTPUT CASE VARIANT SIZE MISMATCH.");
-        } else if (apmLog.getEventSize() != 23) {
-            throw new AssertionError("TEST FAILED. OUTPUT TOTAL EVENTS SIZE MISMATCH.");
-        } else if (apmLog.getUniqueActivitySize() != 5) {
-            throw new AssertionError("TEST FAILED. OUTPUT UNIQUE ACTIVITY SIZE MISMATCH.");
-        } else {
-            parent.printString("'MissingTimestamp' test PASS.");
-        }
+
+        assertTrue(apmLog.getTraceList().size() == 6);
+        assertTrue(apmLog.getCaseVariantSize() == 3);
+        assertTrue(apmLog.getTraceList().stream().flatMap(x->x.getActivityList().stream())
+                .collect(Collectors.toList()).size() == 22);
+        assertTrue(apmLog.getUniqueActivitySize() == 4);
     }
 
-    public static void testCompleteOnlyWithResources(XLog xLog, APMLogUnitTest parent) throws Exception {
-        parent.printString("\n(/ 'o')/ ~ Test 'CompleteOnlyWithResources'");
+    public static void testCompleteOnlyWithResources(XLog xLog, APMLogUnitTest parent) {
         APMLog apmLog = LogFactory.convertXLog(xLog);
-        if (apmLog.getTraceList().size() != 6) {
-            throw new AssertionError("TEST FAILED. OUTPUT TRACE LIST SIZE MISMATCH.");
-        } else if (apmLog.getCaseVariantSize() != 3) {
-            throw new AssertionError("TEST FAILED. OUTPUT CASE VARIANT SIZE MISMATCH.");
-        } else if (apmLog.getEventSize() != 23) {
-            throw new AssertionError("TEST FAILED. OUTPUT TOTAL EVENTS SIZE MISMATCH.");
-        } else if (apmLog.getUniqueActivitySize() != 5) {
-            throw new AssertionError("TEST FAILED. OUTPUT UNIQUE ACTIVITY SIZE MISMATCH.");
-        } else {
-            parent.printString("'CompleteOnlyWithResources' test PASS.");
-        }
+
+        assertTrue(apmLog.getTraceList().size() == 6);
+        assertTrue(apmLog.getCaseVariantSize() == 3);
+        assertTrue(apmLog.getTraceList().stream().flatMap(x->x.getActivityList().stream())
+                .collect(Collectors.toList()).size() == 23);
+        assertTrue(apmLog.getUniqueActivitySize() == 5);
     }
 
-    public static void testCountAsSameActivityEvenResourcesAreDifferent(XLog xLog, APMLogUnitTest parent)
-            throws Exception {
-        parent.printString("\n(/ 'o')/ ~ Test 'CountAsSameActivityEvenResourcesAreDifferent'");
+    public static void testCountAsSameActivityEvenResourcesAreDifferent(XLog xLog, APMLogUnitTest parent) {
         APMLog apmLog = LogFactory.convertXLog(xLog);
         List<AActivity> activityList = apmLog.getTraceList().get(0).getActivityList();
         String lastActivity = activityList.get(activityList.size()-1).getName();
 
-        if (apmLog.getTraceList().size() != 1) {
-            throw new AssertionError("TEST FAILED. OUTPUT TRACE LIST SIZE MISMATCH.");
-        } else if (apmLog.getCaseVariantSize() != 1) {
-            throw new AssertionError("TEST FAILED. OUTPUT CASE VARIANT SIZE MISMATCH.");
-        } else if (apmLog.getEventSize() != 27) {
-            throw new AssertionError("TEST FAILED. OUTPUT TOTAL EVENTS SIZE MISMATCH.");
-        } else if (apmLog.getUniqueActivitySize() != 14) {
-            throw new AssertionError("TEST FAILED. OUTPUT UNIQUE ACTIVITY SIZE MISMATCH.");
-        } else if (!lastActivity.equals("O_Refused")) {
-            throw new AssertionError("TEST FAILED. THE LAST ACTIVITY MISMATCH.");
-        } else {
-            parent.printString("'CountAsSameActivityEvenResourcesAreDifferent' test PASS.");
+        assertTrue(apmLog.getTraceList().size() == 1);
+        assertTrue(apmLog.getCaseVariantSize() == 1);
+        assertTrue(apmLog.getTraceList().stream().flatMap(x->x.getActivityList().stream())
+                .collect(Collectors.toList()).size() == 14);
+        assertTrue(apmLog.getUniqueActivitySize() == 14);
+        assertTrue(lastActivity.equals("O_Refused"));
+    }
+
+    public static void testMixedLifecycleNoOverlapping(XLog xLog, APMLogUnitTest parent) throws UnsupportedEncodingException {
+        APMLog apmLog = LogFactory.convertXLog(xLog);
+
+        assertTrue(apmLog.getTraceList().size() == 2);
+        assertTrue(apmLog.getCaseVariantSize() == 2);
+        assertTrue(apmLog.getTraceList().stream().flatMap(x->x.getActivityList().stream())
+                .collect(Collectors.toList()).size() == 6);
+        assertTrue(apmLog.getUniqueActivitySize() == 5);
+
+        List<String> conceptNames = Arrays.asList("a", "b", "c", "d", "e");
+        List<Long> sizes = Arrays.asList(1L, 1L, 1L, 2L, 1L);
+
+        for (int i = 0; i < conceptNames.size(); i++) {
+            EventAttributeValue eav = getEventAttributeValueByConceptName(conceptNames.get(i), apmLog);
+            assertTrue(eav.getCases() == sizes.get(i));
         }
+    }
+
+    private static EventAttributeValue getEventAttributeValueByConceptName(String conceptName, APMLog apmLog) {
+        return apmLog.getEventAttributeValues().get("concept:name").stream()
+                .filter(x -> x.getValue().equals(conceptName))
+                .findFirst()
+                .orElse(null);
     }
 }
