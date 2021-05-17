@@ -38,7 +38,7 @@
                 <label value=" An existing schema mapping has been found for your log.  "/>
                 <separator/>
                 <separator/>
-                <label id="fileNameLabel" value=""/>
+                <label value="  This mapping was extracted from file "/><label id="fileNameLabel" value="" style="font-weight: bold;"/><label id="fileTimeLabel" value=""/>
                 <separator/>
                 <separator/>
                 <separator/>

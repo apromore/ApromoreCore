@@ -162,11 +162,12 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
                             String formattedTime = new SimpleDateFormat("HH:mm:ss").format(date);
 
                             Label fileNameLabel = (Label) matchedMappingPopUp.getFellow("fileNameLabel");
+                            Label fileTimeLabel = (Label) matchedMappingPopUp.getFellow("fileTimeLabel");
                             Set<Log> logs = usermetadata.getLogs();
 
                             for (Log log : logs) {
-                                fileNameLabel.setValue("  This mapping was extracted from file \"" + log.getName() +
-                                        "\", uploaded at " + formattedTime + " on " + formattedDate);
+                                fileNameLabel.setValue(log.getName());
+                                fileTimeLabel.setValue(" , uploaded at " + formattedTime + " on " + formattedDate);
                             }
 
                             Button uploadWithMatchedMappingBtn = (Button) matchedMappingPopUp.getFellow(
