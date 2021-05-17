@@ -26,9 +26,9 @@ import java.text.DecimalFormat;
 
 import org.apromore.logman.attribute.log.AttributeLog;
 import org.apromore.logman.attribute.log.AttributeLogSummary;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -50,7 +50,7 @@ public class LogStatsController extends AbstractController {
     private Label lblCaseNumberFiltered, lblCaseNumberTotal, lblVariantNumberFiltered, lblVariantNumberTotal, lblEventNumberFiltered, lblEventNumberTotal;
     private Label lblNodePercent, lblNodeNumberFiltered, lblNodeNumberTotal;
     // private final String CHART_SERIES_COLOR = "#afdaed"; // "#7FD6A0";
-    private static final Logger LOGGER = LoggerFactory.getLogger(LogStatsController.class);
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(LogStatsController.class);
 
     // TO DO: Check if total can be persisted during init
     private long totalEventCount;

@@ -37,11 +37,11 @@ import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.service.EventLogService;
 import org.apromore.service.csvexporter.CSVExporterLogic;
 import org.deckfour.xes.model.XLog;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -50,7 +50,7 @@ import org.zkoss.zul.*;
 @Component("csvExporterPlugin")
 public class CSVExporterPlugin extends DefaultPortalPlugin {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(CSVExporterPlugin.class);
+    private static Logger LOGGER = PortalLoggerFactory.getLogger(CSVExporterPlugin.class);
 
     private String label = "Export log as CSV";
     private String groupLabel = "File";

@@ -37,6 +37,7 @@ import javax.naming.directory.SearchResult;
 
 import org.apromore.dao.model.User;
 import org.apromore.manager.client.ManagerService;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.ConfigBean;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.dialogController.UserAuthenticationHelper;
@@ -45,7 +46,6 @@ import org.apromore.portal.model.MembershipType;
 import org.apromore.portal.model.UserType;
 import org.apromore.security.ApromoreWebAuthenticationDetails;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
@@ -61,7 +61,7 @@ import org.zkoss.zk.ui.event.EventQueues;
  */
 public abstract class UserSessionManager {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserSessionManager.class);
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(UserSessionManager.class);
 
     public static final String USER = "USER";
     public static final String CURRENT_FOLDER = "CURRENT_FOLDER";
@@ -75,17 +75,14 @@ public abstract class UserSessionManager {
     public static final String SELECTED_PROCESS_IDS = "SELECTED_PROCESS_IDS";
 
     public static void setCurrentUser(UserType user) {
-        if (getAttribute(USER) != null) {
-            LOGGER.info("No initialization required as the user is already set");
-            return;
-        } else {
-            setAttribute(USER, user);
 
-            final Session session = Sessions.getCurrent();
+        // Update the user on the ZK session
+        setAttribute(USER, user);
+        LOGGER.debug("Set user session current user attribute to {}", user == null ? null : user.getUsername());
 
-            EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, session, true)
-                    .publish(new Event(Constants.EVENT_QUEUE_SESSION_ATTRIBUTES, null, USER));
-        }
+        // Broadcast that the user has changed for this ZK session, although not the changed value
+        EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, Sessions.getCurrent(), true)
+                   .publish(new Event(Constants.EVENT_QUEUE_SESSION_ATTRIBUTES, null, USER));
     }
 
     private static Object getAttribute(String attribute) {
@@ -97,7 +94,9 @@ public abstract class UserSessionManager {
     }
 
     public static UserType getCurrentUser() {
-        return (UserType) getAttribute(USER);
+        Object attribute = getAttribute(USER);
+
+        return attribute instanceof UserType ? (UserType) attribute : null;
     }
 
     public static void initializeUser(ManagerService manager, ConfigBean config, UserType userType, User userAcct) {
@@ -112,7 +111,6 @@ public abstract class UserSessionManager {
             Object details = authentication.getDetails();
             if (details instanceof ApromoreWebAuthenticationDetails) {  // LDAP login
                 String username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-                LOGGER.info("LDAP login, user=" + username);
                 UserType user = manager.readUserByUsername(username);
                 if (user == null) {
                     try {
@@ -125,25 +123,29 @@ public abstract class UserSessionManager {
                     }
                 }
                 setCurrentUser(user);
+                LOGGER.info("User {} login via LDAP account", username);
+
             } else if (details instanceof WebAuthenticationDetails) {
                 UserAuthenticationHelper userAuthenticationHelper = new UserAuthenticationHelper(userAcct);
                 try {
                     authentication = userAuthenticationHelper.attemptAuthentication(null, null);
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    LOGGER.error("Failed login", e);
                 }
 
                 if (userType != null) { // e.g. SSO SAML
                     setCurrentUser(userType);
+                    LOGGER.info("User {} login via SSO SAML account", userType.getUsername());
                 }
             } else if (details instanceof UserType) {  // Locally created user (via password)
                 UserType user = (UserType) details;
-                LOGGER.info("Local login, user=" + user.getUsername());
                 setCurrentUser(user);
+                LOGGER.info("User {} login via local account", user.getUsername());
 
             } else if (userType != null) { // e.g. SSO SAML
                 setCurrentUser(userType);
+                LOGGER.info("User {} login via SSO SAML account", userType.getUsername(), details);
             } else if (details != null) {
                 LOGGER.warn("Unsupported details class " + details.getClass());
             } else {

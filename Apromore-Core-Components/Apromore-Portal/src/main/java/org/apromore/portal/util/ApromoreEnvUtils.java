@@ -21,13 +21,13 @@
  */
 package org.apromore.portal.util;
 
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 public final class ApromoreEnvUtils {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ApromoreEnvUtils.class);
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(ApromoreEnvUtils.class);
 
     public static String getEnvPropValue(final String envPropKey, final String errMsgIfNotFound) {
         if (envPropKey == null) {

@@ -27,9 +27,9 @@ import java.util.List;
 import java.util.HashSet;
 import java.util.Set;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zkoss.zul.Messagebox;
 
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.common.ItemHelpers;
 import org.apromore.portal.common.notification.Notification;
 import org.apromore.portal.dialogController.BaseController;
@@ -59,7 +59,7 @@ public class CopyAndPasteController extends BaseController {
     private String userId;
     private Integer selectedTargetFolderId = null;
     private ArrayList<Object> selectedItems = new ArrayList<>();
-    private static final Logger LOGGER = LoggerFactory.getLogger(CopyAndPasteController.class);
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(CopyAndPasteController.class);
 
     public CopyAndPasteController(MainController mainController, UserType user) {
         super();

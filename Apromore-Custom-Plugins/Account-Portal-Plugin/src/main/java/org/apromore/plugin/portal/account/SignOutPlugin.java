@@ -30,9 +30,9 @@ import java.util.Locale;
 import javax.imageio.ImageIO;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.common.UserSessionManager;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
@@ -42,7 +42,7 @@ import org.zkoss.zul.Messagebox;
 
 public class SignOutPlugin extends DefaultPortalPlugin {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(SignOutPlugin.class);
+    private static Logger LOGGER = PortalLoggerFactory.getLogger(SignOutPlugin.class);
 
     private String label = "Sign out";
     private String groupLabel = "Account";

@@ -34,6 +34,7 @@ import javax.inject.Inject;
 
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.common.notification.Notification;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.MainController;
@@ -48,7 +49,6 @@ import org.apromore.service.EventLogService;
 import org.apromore.service.csvexporter.CSVExporterLogic;
 import org.deckfour.xes.model.XLog;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -62,7 +62,7 @@ import org.zkoss.zul.Window;
 
 public class DownloadSelectionPlugin extends DefaultPortalPlugin {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(DownloadSelectionPlugin.class);
+    private static Logger LOGGER = PortalLoggerFactory.getLogger(DownloadSelectionPlugin.class);
 
     private String label = "Download";
     private String groupLabel = "File";

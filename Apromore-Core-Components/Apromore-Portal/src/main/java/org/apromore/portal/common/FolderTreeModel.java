@@ -24,6 +24,8 @@
 
 package org.apromore.portal.common;
 
+import org.apromore.plugin.portal.PortalLoggerFactory;
+import org.slf4j.Logger;
 import org.zkoss.zul.DefaultTreeModel;
 import org.zkoss.zul.DefaultTreeNode;
 
@@ -42,6 +44,8 @@ public class FolderTreeModel extends DefaultTreeModel {
      *
      */
     private static final long serialVersionUID = -5513180500300189445L;
+
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(FolderTreeModel.class);
 
     DefaultTreeNode _root;
 
@@ -73,7 +77,7 @@ public class FolderTreeModel extends DefaultTreeModel {
             try {
                 parent.getChildren().remove(i);
             } catch (Exception exp) {
-                exp.printStackTrace();
+                LOGGER.error("Unable to remove node " + i, exp);
             }
     }
 

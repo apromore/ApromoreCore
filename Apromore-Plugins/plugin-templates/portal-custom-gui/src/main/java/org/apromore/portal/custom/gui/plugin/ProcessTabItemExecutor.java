@@ -27,17 +27,21 @@ package org.apromore.portal.custom.gui.plugin;
 import java.util.HashSet;
 
 import org.apromore.plugin.portal.MainControllerInterface;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.custom.gui.tab.TabItemExecutor;
 import org.apromore.portal.custom.gui.tab.impl.ProcessSummaryRowValue;
 import org.apromore.portal.custom.gui.tab.impl.TabItem;
 import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.VersionSummaryType;
+import org.slf4j.Logger;
 
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 2/05/2016.
  */
 public class ProcessTabItemExecutor implements TabItemExecutor {
+
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(ProcessTabItemExecutor.class);
 
     private MainControllerInterface mainControllerInterface;
 
@@ -52,9 +56,7 @@ public class ProcessTabItemExecutor implements TabItemExecutor {
         try {
             mainControllerInterface.editProcess2(pst, vst, pst.getOriginalNativeType(), new HashSet<RequestParameterType<?>>(), false);
         } catch (InterruptedException e) {
-            System.out.println(pst);
-            System.out.println(vst);
-            e.printStackTrace();
+            LOGGER.error("Unable to execute tab item for process model " + pst + " (version " + vst + ")", e);
         }
     }
 

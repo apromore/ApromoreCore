@@ -147,7 +147,7 @@ public class EventLogServiceImpl implements EventLogService {
             assert parser != null;
             logs = parser.parse(is);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("Unable parse logs from stream", e);
             logs = null;
         }
         if (logs == null) {

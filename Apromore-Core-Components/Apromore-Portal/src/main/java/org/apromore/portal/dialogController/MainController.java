@@ -49,6 +49,7 @@ import org.apromore.dao.model.User;
 import org.apromore.dao.model.Log;
 import org.apromore.plugin.portal.MainControllerInterface;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.portal.context.PortalPluginResolver;
 import org.apromore.plugin.portal.SessionTab;
@@ -80,7 +81,6 @@ import org.apromore.portal.model.UsernamesType;
 import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.portal.security.helper.JwtHelper;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
@@ -113,7 +113,7 @@ public class MainController extends BaseController implements MainControllerInte
     private static final long serialVersionUID = 5147685906484044300L;
 
     private static MainController controller = null;
-    private static final Logger LOGGER = LoggerFactory.getLogger(MainController.class);
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(MainController.class);
 
     private static String encKey;
 
@@ -492,7 +492,7 @@ public class MainController extends BaseController implements MainControllerInte
             }
             displayMessage(message);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.warn("Unable to delete elements", e);
             Messagebox.show("Deletion failed. You are not the owner of this file", "Attention", Messagebox.OK, Messagebox.ERROR);
         }
     }
@@ -539,12 +539,14 @@ public class MainController extends BaseController implements MainControllerInte
 
     public void openProcess(ProcessSummaryType process, VersionSummaryType version) throws Exception {
         String nativeType = getNativeType(process.getOriginalNativeType());
+        LOGGER.info("Open process model {} version {}", process.getName(), version.getVersionNumber());
         editProcess2(process, version, nativeType, new HashSet<RequestParameterType<?>>(), false);
     }
     
     public void openNewProcess() throws InterruptedException {
         ProcessSummaryType process = getService().createNewEmptyProcess(UserSessionManager.getCurrentUser().getUsername());
         VersionSummaryType version = process.getVersionSummaries().get(0);
+        LOGGER.info("Create process model {} version {}", process.getName(), version.getVersionNumber());
         editProcess2(process, version, process.getOriginalNativeType(), new HashSet<RequestParameterType<?>>(), true);
     }
 
@@ -602,6 +604,7 @@ public class MainController extends BaseController implements MainControllerInte
 
             Clients.evalJavaScript(instruction);
         } catch (Exception e) {
+            LOGGER.warn("Unable to edit process model " + process.getName() + " version " + version.getVersionNumber(), e);
             Messagebox.show("Cannot edit " + process.getName() + " (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
         }
     }
@@ -760,7 +763,7 @@ public class MainController extends BaseController implements MainControllerInte
                 }
             }
         }
-        LOGGER.info("Got selected elements and versions");
+        LOGGER.debug("Got selected elements and versions");
         return summaryTypes;
     }
     

@@ -26,12 +26,12 @@ package org.apromore.portal.servlet;
 
 import org.apache.commons.lang.StringUtils;
 import org.apromore.manager.client.ManagerService;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.common.WebAttributes;
 import org.apromore.portal.model.UserType;
 import org.apromore.portal.util.RandomPasswordGenerator;
 import org.apromore.security.util.SecurityUtil;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -56,7 +56,7 @@ import java.util.Set;
 @Component("resetPassword")
 public class ResetPasswordHttpServletRequestHandler extends BaseServletRequestHandler {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ResetPasswordHttpServletRequestHandler.class);
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(ResetPasswordHttpServletRequestHandler.class);
 
     @Autowired
     private ManagerService manager;

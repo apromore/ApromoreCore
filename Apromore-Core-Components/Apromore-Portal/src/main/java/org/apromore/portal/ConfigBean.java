@@ -28,15 +28,15 @@ package org.apromore.portal;
 import java.io.Serializable;
 
 // Third party packages
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ConfigBean implements Serializable {
 
     private static final long serialVersionUID = 117L;
     private static final String COMMUNITY_TAG = "community";
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ConfigBean.class);
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(ConfigBean.class);
 
     private String  siteEditor;
     private String  siteExternalHost;

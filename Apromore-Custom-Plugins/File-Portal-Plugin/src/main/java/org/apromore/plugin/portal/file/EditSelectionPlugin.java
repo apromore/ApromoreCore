@@ -28,17 +28,17 @@ import java.util.Map;
 import org.apromore.portal.common.notification.Notification;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.VersionSummaryType;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zkoss.zul.Messagebox;
 
 public class EditSelectionPlugin extends DefaultPortalPlugin {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(EditSelectionPlugin.class);
+    private static Logger LOGGER = PortalLoggerFactory.getLogger(EditSelectionPlugin.class);
 
     private String label = "Edit model";
     private String groupLabel = "Discover";

@@ -27,6 +27,7 @@ package org.apromore.portal.dialogController.renderer;
 import java.util.HashSet;
 import java.util.List;
 
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.PortalProcessAttributePlugin;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.common.Constants;
@@ -40,7 +41,6 @@ import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.commons.datetime.DateTimeUtils;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
@@ -56,7 +56,7 @@ import org.zkoss.zul.ListitemRenderer;
 
 public class SummaryItemRenderer implements ListitemRenderer {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SummaryItemRenderer.class.getName());
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(SummaryItemRenderer.class.getName());
     private static final String CENTRE_ALIGN = "vertical-align: middle; text-align:center";
     private static final String VERTICAL_ALIGN = "vertical-align: middle;";
 
@@ -113,6 +113,7 @@ public class SummaryItemRenderer implements ListitemRenderer {
             @Override
             public void onEvent(Event event) throws Exception {
                 VersionSummaryType version = getLatestVersion(process.getVersionSummaries());
+                LOGGER.info("Open process model {} (id {}) version {}", process.getName(), process.getId(), version.getVersionNumber());
                 mainController.editProcess2(process, version, getNativeType(process.getOriginalNativeType()), new HashSet<RequestParameterType<?>>(), false);
             }
 
@@ -148,6 +149,7 @@ public class SummaryItemRenderer implements ListitemRenderer {
         listItem.addEventListener(Events.ON_DOUBLE_CLICK, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
+                LOGGER.info("Open log {} (id {})", log.getName(), log.getId());
                 mainController.visualizeLog();
             }
         });
@@ -174,6 +176,7 @@ public class SummaryItemRenderer implements ListitemRenderer {
         listitem.addEventListener(Events.ON_DOUBLE_CLICK, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
+                LOGGER.info("Open {} (id {})", folder.getName(), folder.getId());
                 // UserSessionManager.setCurrentFolder(convertFolderSummaryTypeToFolderType(folder));
                 mainController.getPortalSession().setCurrentFolder(convertFolderSummaryTypeToFolderType(folder));
                 mainController.reloadSummaries2();

@@ -26,14 +26,14 @@ import java.util.Map;
 
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.Window;
 
 public class CalendarPlugin extends DefaultPortalPlugin {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(CalendarPlugin.class);
+    private static Logger LOGGER = PortalLoggerFactory.getLogger(CalendarPlugin.class);
 
     private String label = "Manage calendars";
     private String groupLabel = "Settings";

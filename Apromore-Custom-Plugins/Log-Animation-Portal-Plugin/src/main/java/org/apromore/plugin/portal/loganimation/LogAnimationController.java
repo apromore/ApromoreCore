@@ -35,6 +35,7 @@ import java.util.stream.Collectors;
 
 // Third party packages
 import org.apromore.plugin.editor.EditorPlugin;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.common.UserSessionManager;
 //import org.apromore.portal.context.EditorPluginResolver;
@@ -51,7 +52,6 @@ import org.apromore.service.loganimation.LogAnimationService;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WebApps;
@@ -63,7 +63,7 @@ import org.zkoss.zk.ui.event.EventListener;
  */
 public class LogAnimationController extends BaseController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(LogAnimationController.class.getCanonicalName());
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(LogAnimationController.class);
 
     private MainController mainC;
     private String pluginSessionId;

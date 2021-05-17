@@ -27,6 +27,7 @@ import java.util.Map;
 
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.file.impl.EditListMetadataController;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.common.notification.Notification;
@@ -36,12 +37,11 @@ import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.VersionSummaryType;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zkoss.zul.Messagebox;
 
 public class EditSelectionMetadataPlugin extends DefaultPortalPlugin {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(EditSelectionMetadataPlugin.class);
+    private static Logger LOGGER = PortalLoggerFactory.getLogger(EditSelectionMetadataPlugin.class);
 
     private String label = "Rename"; // "Edit metadata"
     private String groupLabel = "File";

@@ -36,6 +36,7 @@ import java.util.TreeMap;
 import com.google.common.base.Strings;
 import org.apromore.manager.client.ManagerService;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.portal.ConfigBean;
 import org.apromore.portal.common.Constants;
@@ -44,7 +45,6 @@ import org.apromore.portal.context.PortalPluginResolver;
 import org.apromore.portal.model.UserType;
 import org.apromore.portal.util.ExplicitComparator;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.zkoss.spring.SpringUtil;
@@ -65,7 +65,7 @@ import org.apromore.portal.common.LabelConstants;
 
 public class UserMenuController extends SelectorComposer<Menubar> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserMenuController.class);
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(UserMenuController.class);
 
     private Menuitem aboutMenuitem;
 

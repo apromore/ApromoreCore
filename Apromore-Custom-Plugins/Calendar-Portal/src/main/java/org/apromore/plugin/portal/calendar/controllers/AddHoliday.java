@@ -26,8 +26,8 @@ import java.util.Date;
 
 import org.apromore.calendar.model.HolidayModel;
 import org.apromore.commons.datetime.TimeUtils;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -42,7 +42,7 @@ import org.zkoss.zul.Window;
 
 public class AddHoliday extends SelectorComposer<Window> {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(AddHoliday.class);
+    private final static Logger LOGGER = PortalLoggerFactory.getLogger(AddHoliday.class);
 
     private Calendar parentController = (Calendar) Executions.getCurrent().getArg().get("parentController");
 

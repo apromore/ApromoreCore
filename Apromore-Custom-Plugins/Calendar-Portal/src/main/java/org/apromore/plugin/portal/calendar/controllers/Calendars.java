@@ -32,9 +32,9 @@ import org.apromore.calendar.exception.CalendarAlreadyExistsException;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.calendar.service.CalendarService;
 import org.apromore.dao.model.Group;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.calendar.CalendarItemRenderer;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventQueue;
@@ -56,7 +56,7 @@ import org.zkoss.zul.Window;
 @VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
 public class Calendars extends SelectorComposer<Window> {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(Calendars.class);
+    private static Logger LOGGER = PortalLoggerFactory.getLogger(Calendars.class);
 
     @Wire("#calendarListbox")
     Listbox calendarListbox;

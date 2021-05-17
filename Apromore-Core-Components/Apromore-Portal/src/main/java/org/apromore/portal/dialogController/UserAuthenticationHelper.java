@@ -23,9 +23,9 @@ package org.apromore.portal.dialogController;
 
 import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.security.filter.SecurityPrincipal;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.Authentication;
@@ -48,7 +48,7 @@ import java.util.Set;
 
 public class UserAuthenticationHelper {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserAuthenticationHelper.class);
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(UserAuthenticationHelper.class);
 
     private User user;
 
