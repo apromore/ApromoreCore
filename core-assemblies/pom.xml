@@ -24,7 +24,7 @@
     <java.version>1.8</java.version>
     <karaf.archive.tar.gz>false</karaf.archive.tar.gz>
     <karaf.archive.zip>false</karaf.archive.zip>
-    <karaf.version>4.3.1</karaf.version>
+    <karaf.version>4.3.2</karaf.version>
     <license.skipUpdateLicense>true</license.skipUpdateLicense>
     <maven.javadoc.skip>true</maven.javadoc.skip>
     <virgo.spring.version>3.1.4.RELEASE</virgo.spring.version>
