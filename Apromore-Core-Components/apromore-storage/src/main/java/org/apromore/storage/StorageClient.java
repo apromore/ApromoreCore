@@ -23,6 +23,7 @@ package org.apromore.storage;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.List;
 
 import org.apromore.storage.exception.ObjectCreationException;
 import org.apromore.storage.exception.ObjectNotFoundException;
@@ -40,6 +41,7 @@ public interface StorageClient {
     OutputStream getOutputStream(String prefix, String key) throws ObjectCreationException;
     boolean delete(String prefix, String key);
     boolean delete(String prefix) throws IllegalAccessException;
+    List<String> listObjects(String prefix);
 
     default String getValidPrefix(String prefix) {
 	prefix = prefix == null ? "" : prefix;

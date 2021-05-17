@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Paths;
+import java.util.List;
 
 import org.apromore.storage.exception.ObjectCreationException;
 import org.apromore.storage.exception.ObjectNotFoundException;
@@ -87,5 +88,10 @@ public class FileStorageClient implements StorageClient {
 	@Override
 	public boolean delete(String prefix) throws IllegalAccessException {
     	throw new IllegalAccessException();
+	}
+
+	@Override
+	public List<String> listObjects(String prefix) {
+		return null;
 	}
 }
