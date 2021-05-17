@@ -24,7 +24,7 @@
     closable="false"
     title="File/folder sharing" apply="org.apromore.plugin.portal.accesscontrol.controllers.ShareController">
     <caption>
-        <toolbarbutton iconSclass="ap-icon ap-icon-help" href="https://documentation.apromore.org/gettingstarted/sharingandaccessrights.html" target="_blank" />
+        <toolbarbutton iconSclass="ap-icon ap-icon-help" href="https://documentation.apromore.org/theapromoreportal/sharingandaccessrights.html" target="_blank" />
     </caption>
     <AccessControl vflex="1" hflex="1" id="accessControl"
                    currentUser="${arg.currentUser}"
