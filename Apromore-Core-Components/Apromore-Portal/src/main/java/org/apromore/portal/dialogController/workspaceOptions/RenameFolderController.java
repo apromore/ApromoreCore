@@ -111,6 +111,7 @@ public class RenameFolderController extends BaseController {
             this.folderEditWindow.detach();
 
         } catch (WrongValueException ex) {
+            LOGGER.debug("Unable to rename folder", ex);
             // Messagebox.show("You have entered invalid value.", "Apromore", Messagebox.OK, Messagebox.ERROR);
             return;
 

@@ -127,6 +127,7 @@ public class AddFolderController extends BaseController {
             this.mainController.reloadSummaries();
 
         } catch (WrongValueException ex) {
+            LOGGER.debug("Unable to create folder", ex);
             // Messagebox.show("You have entered invalid value.", "Apromore", Messagebox.OK, Messagebox.ERROR);
             return;
 
