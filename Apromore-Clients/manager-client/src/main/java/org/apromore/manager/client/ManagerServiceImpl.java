@@ -47,6 +47,7 @@ import org.apromore.mapper.UserMapper;
 import org.apromore.mapper.WorkspaceMapper;
 import org.apromore.plugin.ParameterAwarePlugin;
 import org.apromore.plugin.Plugin;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.helper.Version;
 import org.apromore.portal.model.DomainsType;
@@ -80,7 +81,6 @@ import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.service.model.ProcessData;
 import org.apromore.util.AccessType;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
@@ -109,9 +109,7 @@ public class ManagerServiceImpl implements ManagerService {
 
     private boolean isGEDMatrixReady = true;
     
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ManagerServiceImpl.class);
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(ManagerServiceImpl.class);
 
     @Bean
     public RestTemplate restTemplate() {
@@ -137,8 +135,8 @@ public class ManagerServiceImpl implements ManagerService {
     public boolean logoutUserAllSessions(final String username,
                                          final String kcHttpLogoutUrl,
                                          final String kcHttpsLogoutUrl) throws Exception {
-        logger.info("Using kcHttpLogoutUrl {}", kcHttpLogoutUrl);
-        logger.info("Using kcHttpsLogoutUrl {}", kcHttpsLogoutUrl);
+        LOGGER.info("Using kcHttpLogoutUrl {}", kcHttpLogoutUrl);
+        LOGGER.info("Using kcHttpsLogoutUrl {}", kcHttpsLogoutUrl);
 
         Boolean restRespResult = false;
 
@@ -150,29 +148,28 @@ public class ManagerServiceImpl implements ManagerService {
             restRespResult = restTemplate.getForObject(
                             securityMsProps.getProperty(kcHttpLogoutUrl) + username,
                             Boolean.class);
-            logger.debug("\n\nrestRespResult: {}", restRespResult);
+            LOGGER.debug("\n\nrestRespResult: {}", restRespResult);
         } catch (final Exception e) {
             final String exceptionMsg = e.getMessage();
 
             if (e instanceof CertificateException || ((exceptionMsg != null) &&
                     (exceptionMsg.indexOf("No subject alternative DNS") != -1)) ) {
-                logger.info("This is a non-fatal exception {}; can continue", e.getMessage());
-                logger.info("This is a non-fatal exception {}; can continue", e.getMessage());
+                LOGGER.info("This is a non-fatal exception {}; can continue", e.getMessage());
 
                 restRespResult = restTemplate.getForObject(
                                 securityMsProps.getProperty(kcHttpsLogoutUrl) + username,
                                 Boolean.class);
-                logger.debug("\n\nrestRespResult: {}", restRespResult);
+                LOGGER.debug("\n\nrestRespResult: {}", restRespResult);
 
                 restRespResult = true;
             } else {
-                logger.error("\n\nException in logging out user - stacktrace: {}",
+                LOGGER.error("\n\nException in logging out user - stacktrace: {}",
                         ExceptionUtils.getStackTrace(e));
 
                 throw e;
             }
         } finally {
-            logger.info("\n\n>>>>> Logging out user result: {}", restRespResult);
+            LOGGER.info("\n\n>>>>> Logging out user result: {}", restRespResult);
 
             return restRespResult;
         }
@@ -255,6 +252,7 @@ public class ManagerServiceImpl implements ManagerService {
      */
     @Override
     public boolean resetUserPassword(String username, String password) {
+        LOGGER.info("Reset password for {}", username);
         return secSrv.resetUserPassword(username, password);
     }
 
@@ -300,6 +298,7 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Override
     public ImportLogResultType importLog(String username, Integer folderId, String logName, InputStream log, String extension, String domain, String created, boolean makePublic) throws Exception {
+        LOGGER.info("User {} importing log {}", username, logName);
         LogSummaryType logSummary = (LogSummaryType) uiHelper.buildLogSummary(logSrv.importLog(username, folderId, logName, log, extension, domain, created, makePublic));
         ImportLogResultType importResult = new ImportLogResultType();
         importResult.setLogSummary(logSummary);
@@ -309,11 +308,13 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Override
     public void editLogData(Integer logId, String logName, String username, boolean isPublic) throws Exception {
+        LOGGER.info("User {} modifying metadata for log {}", username, logName);
         logSrv.updateLogMetaData(logId, logName, isPublic);
     }
 
     @Override
     public void createFolder(String userId, String folderName, int parentFolderId) {
+        LOGGER.info("User {} create folder \"{}\" in parent id {}", userId, folderName, parentFolderId);
         workspaceSrv.createFolder(userId, folderName, parentFolderId, isGEDMatrixReady);
     }
 
@@ -324,6 +325,7 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Override
     public void updateFolder(int folderId, String folderName, String username) {
+        LOGGER.info("User {} updating folder {} (id {})", username, folderName, folderId);
         try {
             workspaceSrv.updateFolder(folderId, folderName, isGEDReadyFolder(folderId), secSrv.getUserByName(username));
 
@@ -334,36 +336,43 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Override
     public void deleteFolder(int folderId, String username) throws Exception {
+        LOGGER.info("User {} delete folder {}", username, folderId);
         workspaceSrv.deleteFolder(folderId, secSrv.getUserByName(username));
     }
 
     @Override
     public String saveFolderPermissions(int folderId, String userId, boolean hasRead, boolean hasWrite, boolean hasOwnership) {
+        LOGGER.info("User {} modify folder {} permissions: read {} write {} owner {}", userId, folderId, hasRead, hasWrite, hasOwnership);
         return workspaceSrv.saveFolderPermissions(folderId, userId, hasRead, hasWrite, hasOwnership);
     }
 
     @Override
     public String saveProcessPermissions(int processId, String userId, boolean hasRead, boolean hasWrite, boolean hasOwnership) {
+        LOGGER.info("User {} modify process model {} permissions: read {} write {} owner {}", userId, processId, hasRead, hasWrite, hasOwnership);
         return workspaceSrv.saveProcessPermissions(processId, userId, hasRead, hasWrite, hasOwnership);
     }
 
     @Override
     public String saveLogPermissions(int logId, String userId, boolean hasRead, boolean hasWrite, boolean hasOwnership) {
+        LOGGER.info("User {} modify log {} permissions: read {} write {} owner {}", userId, logId, hasRead, hasWrite, hasOwnership);
         return workspaceSrv.saveLogPermissions(logId, userId, hasRead, hasWrite, hasOwnership);
     }
 
     @Override
     public String removeFolderPermissions(int folderId, String userId) {
+        LOGGER.info("User {} remove folder {} permissions", userId, folderId);
         return workspaceSrv.removeFolderPermissions(folderId, userId);
     }
 
     @Override
     public String removeProcessPermissions(int processId, String userId) {
+        LOGGER.info("User {} remove permissions from process model {}", userId, processId);
         return workspaceSrv.removeProcessPermissions(processId, userId);
     }
 
     @Override
     public String removeLogPermissions(int logId, String userId, String username, AccessType accessType) throws UserNotFoundException {
+        LOGGER.info("User {} (id {}) remove permissions from log {} (access type {})", username, userId, logId, accessType);
         return workspaceSrv.removeLogPermissions(logId, userId, username, accessType);
     }
 
@@ -470,11 +479,13 @@ public class ManagerServiceImpl implements ManagerService {
     @Override
     public ExportFormatResultType exportFormat(int processId, String processName, String branch, String versionNumber, String nativeType, String owner)
             throws Exception {
+        LOGGER.info("Export process model {}/{}/{} (id {}, type {}, owner {})", processName, branch, versionNumber, processId, nativeType, owner);
         return procSrv.exportProcess(processName, processId, branch, new Version(versionNumber), nativeType);
     }
 
     @Override
     public ExportLogResultType exportLog(int logId, String logName) throws Exception {
+        LOGGER.info("Export log {} (id {})", logName, logId);
         return logSrv.exportLog(logId);
     }
 
@@ -496,6 +507,8 @@ public class ManagerServiceImpl implements ManagerService {
     @Override
     public ImportProcessResultType importProcess(String username, Integer folderId, String nativeType, String processName, String versionNumber,
             InputStream nativeStream, String domain, String documentation, String created, String lastUpdate, boolean makePublic) throws Exception {
+
+        LOGGER.info("Import process model {} version {}", processName, versionNumber);
 
         ProcessModelVersion pmv = procSrv.importProcess(username, folderId, processName, new Version(versionNumber), nativeType, nativeStream,
                 domain, "", created, lastUpdate, makePublic);
@@ -652,6 +665,7 @@ public class ManagerServiceImpl implements ManagerService {
     public void editProcessData(Integer processId, String processName, String domain, String username, String preVersion, String newVersion,
             String ranking, boolean isPublic) throws Exception {
 
+        LOGGER.info("User {} modify process model {} (id {}, version {}->{})", username, processName, processId, preVersion, newVersion);
         procSrv.updateProcessMetaData(processId, processName, domain, username, new Version(preVersion), new Version(newVersion), ranking, isPublic);
     }
 
@@ -663,6 +677,7 @@ public class ManagerServiceImpl implements ManagerService {
      */
     @Override
     public UserType writeUser(UserType user) throws Exception {
+        LOGGER.info("Create user {}", user);
         return UserMapper.convertUserTypes(secSrv.createUser(UserMapper.convertFromUserType(user, secSrv)), secSrv);
     }
 
@@ -695,15 +710,18 @@ public class ManagerServiceImpl implements ManagerService {
     @Override
     public void deleteElements(Map<SummaryType, List<VersionSummaryType>> elements, String username) throws Exception {
         for (Map.Entry<SummaryType, List<VersionSummaryType>> entry: elements.entrySet()) {
+            Integer id = entry.getKey().getId();
             if (entry.getKey() instanceof ProcessSummaryType) {
                 List<ProcessData> processDatas = new ArrayList<>();
                 for (VersionSummaryType versionSummary: entry.getValue()) {
-                    processDatas.add(new ProcessData(entry.getKey().getId(), new Version(versionSummary.getVersionNumber())));
+                    LOGGER.info("User {} delete process model {} version {}", username, id, versionSummary.getVersionNumber());
+                    processDatas.add(new ProcessData(id, new Version(versionSummary.getVersionNumber())));
                 }
                 procSrv.deleteProcessModel(processDatas, secSrv.getUserByName(username));
 
             } else if (entry.getKey() instanceof LogSummaryType) {
-                logSrv.deleteLogs(Collections.singletonList(new Log(((LogSummaryType) entry.getKey()).getId())), secSrv.getUserByName(username));
+                LOGGER.info("User {} delete log {}", username, id);
+                logSrv.deleteLogs(Collections.singletonList(new Log(id)), secSrv.getUserByName(username));
 
             } else {
                 throw new Exception("Deletion not supported for " + entry.getKey());

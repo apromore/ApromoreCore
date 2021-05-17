@@ -30,13 +30,13 @@ import javax.inject.Inject;
 import org.apromore.portal.common.Constants;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.plugin.portal.accesscontrol.controllers.SecuritySetupController;
 import org.apromore.service.AuthorizationService;
 import org.apromore.service.UserMetadataService;
 import org.apromore.service.WorkspaceService;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.Messagebox;
@@ -50,7 +50,7 @@ import org.apromore.service.SecurityService;
 @Component("accessControlPlugin")
 public class AccessControlPlugin extends DefaultPortalPlugin {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AccessControlPlugin.class);
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(AccessControlPlugin.class);
 
     private String ID = Constants.ACCESS_CONTROL_PLUGIN;
     private String label = "Manage access control";

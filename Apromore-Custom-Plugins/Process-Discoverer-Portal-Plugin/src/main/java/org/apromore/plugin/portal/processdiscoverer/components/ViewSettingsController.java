@@ -40,11 +40,11 @@ import org.apromore.logman.attribute.AbstractAttribute;
 import org.apromore.logman.attribute.graph.MeasureAggregation;
 import org.apromore.logman.attribute.graph.MeasureRelation;
 import org.apromore.logman.attribute.graph.MeasureType;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.processdiscoverer.PDAnalyst;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
 import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
@@ -61,7 +61,7 @@ import org.zkoss.zul.Span;
  * Modified: Ivo Widjaja
  */
 public class ViewSettingsController extends VisualController {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ViewSettingsController.class);
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(ViewSettingsController.class);
 
     private final List<String> BLACKLISTED_PERSPECTIVES = Arrays.asList(
             "lifecycle:transition"

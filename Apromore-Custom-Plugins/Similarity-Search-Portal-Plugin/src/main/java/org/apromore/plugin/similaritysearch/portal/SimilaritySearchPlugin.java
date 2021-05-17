@@ -26,6 +26,7 @@ package org.apromore.plugin.similaritysearch.portal;
 
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.portal.context.PluginPortalContext;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.SessionTab;
 import org.apromore.plugin.similaritysearch.logic.SimilarityService;
 import org.apromore.portal.custom.gui.plugin.PluginCustomGui;
@@ -34,7 +35,6 @@ import org.apromore.portal.exception.DialogException;
 import org.apromore.portal.model.*;
 import org.springframework.stereotype.Component;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.*;
 import org.zkoss.zul.*;
@@ -54,7 +54,7 @@ public class SimilaritySearchPlugin extends PluginCustomGui {
     private SimilarityService similarityService;
 
     private final String GREEDY_ALGORITHM = "Greedy";
-    private final static Logger LOGGER = LoggerFactory.getLogger(SimilaritySearchPlugin.class);
+    private final static Logger LOGGER = PortalLoggerFactory.getLogger(SimilaritySearchPlugin.class);
 
     private PortalContext context;
     private Window similaritySearchW;
@@ -226,13 +226,11 @@ public class SimilaritySearchPlugin extends PluginCustomGui {
                 displayProcessSummaries(process.getName() + ": Sim Search", resultToDisplay, context);
             }
             context.refreshContent();
+            LOGGER.info("Similarity search: {}", message);
             Messagebox.show(message);
         } catch (Exception e) {
             StringBuilder sb = new StringBuilder();
-            e.printStackTrace();
-            for(StackTraceElement element : e.getStackTrace()) {
-                sb.append(element.toString() + "\n");
-            }
+            LOGGER.error("Unable to perform similarity search", e);
             // message = "Search failed (" + sb.toString() + ")";
             // message = "The Apromore Repository has changed between versions. Please export and re-import this database to Apromore for additional support”;
             message = "Search may fail if you have process models in your folder generated with the older version of this software. Please try to export and re-import the model";

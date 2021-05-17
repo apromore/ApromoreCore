@@ -25,9 +25,9 @@ package org.apromore.plugin.portal.account;
 import java.io.IOException;
 import java.util.Objects;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.service.SecurityService;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Button;
@@ -38,7 +38,7 @@ import org.zkoss.zul.Window;
 
 public class ChangePasswordController {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(ChangePasswordController.class);
+    private static Logger LOGGER = PortalLoggerFactory.getLogger(ChangePasswordController.class);
 
     public ChangePasswordController(PortalContext portalContext, SecurityService securityService) {
         try {

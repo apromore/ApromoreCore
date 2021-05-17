@@ -25,7 +25,6 @@
 package org.apromore.plugin.portal;
 
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zkoss.zul.Tab;
 
 import java.util.ArrayList;
@@ -39,7 +38,7 @@ import java.util.List;
 public class SessionTab {
 
     private static SessionTab sessionTab;  // singleton instance
-    private static Logger LOGGER = LoggerFactory.getLogger(SessionTab.class);
+    private static Logger LOGGER = PortalLoggerFactory.getLogger(SessionTab.class);
     private HashMap<String, LinkedList<Tab>> mapTabs;  // value is the set of tabs for a user's session, keyed on their user ID
     private PortalContext portalContext;
 

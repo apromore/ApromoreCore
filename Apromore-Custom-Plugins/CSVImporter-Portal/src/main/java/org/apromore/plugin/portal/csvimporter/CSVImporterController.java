@@ -29,6 +29,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apromore.dao.model.Log;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.service.EventLogService;
 import org.apromore.service.UserMetadataService;
 import org.apromore.service.csvimporter.model.LogErrorReport;
@@ -40,7 +41,6 @@ import org.apromore.service.csvimporter.services.legacy.LogImporterProvider;
 import org.apromore.util.UserMetadataTypeEnum;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zkoss.json.JSONObject;
 import org.zkoss.util.Locales;
 import org.zkoss.util.media.Media;
@@ -71,7 +71,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
      * Attribute of the ZK session containing this controller's arguments.
      */
     public static final String SESSION_ATTRIBUTE_KEY = "csvimport";
-    private static final Logger LOGGER = LoggerFactory.getLogger(CSVImporterController.class);
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(CSVImporterController.class);
     private static final int ROW_INDEX_START_FROM = 1;
     //Get Data layer config
     private final String propertyFile = "datalayer.config";

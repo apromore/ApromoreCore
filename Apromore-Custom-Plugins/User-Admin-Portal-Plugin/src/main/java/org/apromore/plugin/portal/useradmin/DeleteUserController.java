@@ -29,7 +29,6 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Set;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.*;
@@ -49,6 +48,7 @@ import org.apromore.dao.model.Process;
 import org.apromore.dao.model.User;
 import org.apromore.dao.model.Group;
 import org.apromore.dao.model.Group.Type;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.common.Item;
 import org.apromore.portal.common.ItemType;
 import org.apromore.portal.accesscontrol.model.Assignment;
@@ -64,7 +64,7 @@ import org.apromore.util.AccessType;
 @VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
 public class DeleteUserController extends SelectorComposer<Window> {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(DeleteUserController.class);
+    private static Logger LOGGER = PortalLoggerFactory.getLogger(DeleteUserController.class);
     private static boolean USE_STRICT_USER_ADDITION = true;
 
     @WireVariable("workspaceService")

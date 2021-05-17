@@ -29,14 +29,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.model.FolderType;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class PortalSession {
 
-    private final Logger LOGGER = LoggerFactory.getLogger(PortalSession.class);
+    private final Logger LOGGER = PortalLoggerFactory.getLogger(PortalSession.class);
 
     public final String CURRENT_FOLDER = "CURRENT_FOLDER";
     public final String PREVIOUS_FOLDER = "PREVIOUS_FOLDER";

@@ -24,10 +24,10 @@
 
 package org.apromore.portal.common;
 
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.model.FolderType;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -50,7 +50,7 @@ public class MiscFolderTreeRenderer implements TreeitemRenderer {
 
     MainController mainController;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MiscFolderTreeRenderer.class.getName());
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(MiscFolderTreeRenderer.class);
 
     public MiscFolderTreeRenderer(MainController mainController) {
         this.mainController = mainController;

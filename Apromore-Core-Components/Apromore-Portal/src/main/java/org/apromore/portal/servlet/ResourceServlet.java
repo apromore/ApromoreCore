@@ -36,12 +36,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.WebContentService;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.google.common.io.ByteStreams;
 
@@ -62,7 +62,7 @@ public class ResourceServlet extends HttpServlet {
 
     private Map<String, String> contentTypeMap = new HashMap<>();
     private static final String PORTAL_SERVLET_BUNDLE_KEY = "org.apromore.portal.servlet.pattern";
-    private static final Logger LOGGER = LoggerFactory.getLogger(ResourceServlet.class);
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(ResourceServlet.class);
 
     @Override
     public void init() throws ServletException {

@@ -28,13 +28,13 @@ import org.apromore.dao.model.Membership;
 import org.apromore.dao.model.User;
 import org.apromore.manager.client.ManagerService;
 import org.apromore.mapper.SearchHistoryMapper;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.model.RoleType;
 import org.apromore.portal.model.UserType;
 import org.apromore.portal.util.SecurityUtils;
 import org.apromore.security.util.SecurityUtil;
 import org.apromore.service.SecurityService;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -55,7 +55,7 @@ public class JwtHelper {
     public static final String STR_JWT_EXPIRY_TIME = "strexp";
     public static final Duration WEBAPP_SSO_SESSION_TIMEOUT = Duration.ofMinutes(30);
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(JwtHelper.class);
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(JwtHelper.class);
 
     public static String readCookie(final HttpServletRequest httpServletRequest,
                                     final String cookieName) {

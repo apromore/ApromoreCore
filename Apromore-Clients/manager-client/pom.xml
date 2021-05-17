@@ -27,8 +27,14 @@
             <groupId>org.apromore</groupId>
             <artifactId>prom-bpmn-osgi</artifactId>
             <version>1.0</version>
-        </dependency>  
+        </dependency>
         
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>portal-plugin-api</artifactId>
+            <version>${apromore.plugin.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>

@@ -27,6 +27,7 @@ import org.apromore.dao.model.Group.Type;
 import org.apromore.dao.model.Usermetadata;
 import org.apromore.dao.model.UsermetadataType;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.accesscontrol.model.Artifact;
 import org.apromore.plugin.portal.accesscontrol.model.Assignee;
 import org.apromore.plugin.portal.accesscontrol.model.Assignment;
@@ -40,7 +41,6 @@ import org.apromore.service.UserMetadataService;
 import org.apromore.util.AccessType;
 import org.apromore.util.UserMetadataTypeEnum;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zkoss.json.JSONObject;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
@@ -63,7 +63,7 @@ import java.util.*;
 @VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
 public class AccessController extends SelectorComposer<Div> {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(AccessController.class);
+    private static Logger LOGGER = PortalLoggerFactory.getLogger(AccessController.class);
     private static boolean USE_STRICT_USER_ADDITION = true;
 
     @WireVariable("securityService")

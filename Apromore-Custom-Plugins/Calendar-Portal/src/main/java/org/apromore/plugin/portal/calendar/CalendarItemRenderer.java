@@ -32,8 +32,8 @@ import java.util.Map;
 import org.apromore.calendar.exception.CalendarNotExistsException;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.calendar.service.CalendarService;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
@@ -49,7 +49,7 @@ import org.zkoss.zul.Window;
 
 public class CalendarItemRenderer implements ListitemRenderer {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(CalendarItemRenderer.class);
+    private static Logger LOGGER = PortalLoggerFactory.getLogger(CalendarItemRenderer.class);
 
     CalendarService calendarService;
     

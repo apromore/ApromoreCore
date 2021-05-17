@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Implementation-Title: cal10n-api
+Implementation-Version: 0.7.7
+Built-By: ceki
+Bundle-Name: cal10n-api
+Created-By: Apache Maven
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-Vendor: qos.ch
+Bundle-Version: 0.7.7
+Build-Jdk: 1.6.0_23
+Bundle-ManifestVersion: 2
+Bundle-Description: Compiler assisted localization library (CAL10N)
+Bundle-SymbolicName: cal10n.api
+Archiver-Version: Plexus Archiver
+

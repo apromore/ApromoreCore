@@ -30,13 +30,13 @@ import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zkoss.zul.Messagebox;
 
 public class DeleteSelectionPlugin extends DefaultPortalPlugin {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(DeleteSelectionPlugin.class);
+    private static Logger LOGGER = PortalLoggerFactory.getLogger(DeleteSelectionPlugin.class);
 
     private String label = "Delete";
     private String groupLabel = "File";

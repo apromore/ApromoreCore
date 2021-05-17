@@ -24,18 +24,18 @@ package org.apromore.plugin.portal.account;
 
 import java.util.Locale;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zkoss.spring.SpringUtil;
 
 import org.apromore.portal.ConfigBean;
 import org.apromore.service.SecurityService;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.PortalPlugin.Availability;
 
 public class ChangePasswordPlugin extends DefaultPortalPlugin {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(ChangePasswordPlugin.class);
+    private static Logger LOGGER = PortalLoggerFactory.getLogger(ChangePasswordPlugin.class);
 
     private String label = "Change password";
     private String groupLabel = "Account";

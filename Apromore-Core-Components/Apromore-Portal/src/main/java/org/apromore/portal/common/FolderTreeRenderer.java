@@ -27,10 +27,10 @@ package org.apromore.portal.common;
 import java.util.Collections;
 import java.util.List;
 
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.model.FolderType;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -51,7 +51,7 @@ import org.zkoss.zul.Treerow;
  */
 public class FolderTreeRenderer implements TreeitemRenderer {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(FolderTreeRenderer.class.getName());
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(FolderTreeRenderer.class);
     private MainController mainC;
 
 

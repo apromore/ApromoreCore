@@ -24,9 +24,9 @@
 
 package org.apromore.portal.servlet;
 
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.common.WebAttributes;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.web.util.UrlUtils;
 import org.springframework.web.HttpRequestHandler;
 
@@ -43,7 +43,7 @@ import java.io.IOException;
  */
 public abstract class BaseServletRequestHandler implements HttpRequestHandler {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(BaseServletRequestHandler.class);
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(BaseServletRequestHandler.class);
 
     protected static final String FIRSTNAME = "firstname";
     protected static final String SURNAME = "surname";

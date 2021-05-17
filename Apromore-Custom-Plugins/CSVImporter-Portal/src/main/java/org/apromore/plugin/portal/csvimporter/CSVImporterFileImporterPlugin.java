@@ -28,13 +28,13 @@ import org.apromore.dao.model.Usermetadata;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.plugin.portal.FileImporterPlugin;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.csvimporter.listener.CsvImportListener;
 import org.apromore.service.UserMetadataService;
 import org.apromore.service.csvimporter.services.ParquetFactoryProvider;
 import org.apromore.service.csvimporter.services.legacy.LogImporterProvider;
 import org.apromore.util.UserMetadataTypeEnum;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zkoss.json.JSONObject;
 import org.zkoss.json.JSONValue;
 import org.zkoss.util.media.Media;
@@ -51,7 +51,7 @@ import java.util.*;
 
 public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(CSVImporterFileImporterPlugin.class);
+    private static Logger LOGGER = PortalLoggerFactory.getLogger(CSVImporterFileImporterPlugin.class);
 
     private ParquetFactoryProvider parquetFactoryProvider;
     private LogImporterProvider logImporterProvider;

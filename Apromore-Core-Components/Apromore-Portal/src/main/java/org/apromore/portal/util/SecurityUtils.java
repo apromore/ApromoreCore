@@ -24,8 +24,8 @@ package org.apromore.portal.util;
 import static org.apromore.portal.util.AssertUtils.notNullAssert;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 import javax.crypto.Cipher;
@@ -41,7 +41,7 @@ import java.util.Base64;
 
 public final class SecurityUtils {
 
-    private static final Logger logger = LoggerFactory.getLogger(SecurityUtils.class);
+    private static final Logger logger = PortalLoggerFactory.getLogger(SecurityUtils.class);
 
     private static final String KEYSTORE_FILE = "apSecurityTS.jks";
 

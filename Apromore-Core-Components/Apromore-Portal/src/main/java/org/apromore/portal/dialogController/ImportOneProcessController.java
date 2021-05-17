@@ -32,6 +32,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.common.Utils;
 import org.apromore.portal.exception.ExceptionAllUsers;
@@ -39,7 +40,6 @@ import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.model.FolderType;
 import org.apromore.portal.model.ImportProcessResultType;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
@@ -55,7 +55,7 @@ import org.zkoss.zul.Window;
 public class ImportOneProcessController extends BaseController {
 
     private static final String FILENAME_CONSTRAINT = "[a-zA-Z0-9 \\[\\]\\._\\+\\-\\(\\)]+";
-    private static final Logger LOGGER = LoggerFactory.getLogger(ImportOneProcessController.class);
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(ImportOneProcessController.class);
 
     private final MainController mainC;
     private final ImportController importProcessesC;

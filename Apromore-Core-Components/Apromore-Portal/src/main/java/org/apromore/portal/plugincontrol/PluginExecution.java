@@ -27,7 +27,9 @@ import java.io.OutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.dialogController.BaseController;
+import org.slf4j.Logger;
 
 /**
  * This class represents a running plugin (called plugin execution or plugin instance).
@@ -45,6 +47,9 @@ import org.apromore.portal.dialogController.BaseController;
  *
  */
 public class PluginExecution {
+
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(PluginExecution.class);
+
     private BaseController pluginController;
     
     public PluginExecution(BaseController pluginController) {
@@ -64,7 +69,7 @@ public class PluginExecution {
             os.write(data);
             response.flushBuffer();
         } catch (IOException e) {
-            System.err.println(e.getStackTrace());
+            LOGGER.error("Unable to process request", e);
         }
     }
 }

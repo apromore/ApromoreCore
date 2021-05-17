@@ -132,6 +132,7 @@
     <feature>jms</feature>
     <feature>war</feature>
     <requirement>osgi.wiring.package; filter:="(&amp;(osgi.wiring.package=org.zkoss.zul)(version>=8.6.0)(!(version>=10.0.0)))"</requirement>
+    <bundle>mvn:ch.qos.cal10n/cal10n-api/0.7.4</bundle>
     <bundle>mvn:com.google.guava/guava/${google.guava.version}</bundle>
     <bundle>mvn:javax.validation/com.springsource.javax.validation/1.0.0.GA</bundle>
     <bundle>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.saaj-api-1.3/2.9.0</bundle>
@@ -142,6 +143,7 @@
     <bundle>mvn:org.apromore.plugin/log-filter-portal-plugin-generic/1.0.0</bundle>
     <bundle>mvn:org.igniterealtime/com.springsource.org.jivesoftware.smack/3.1.0</bundle>
     <bundle>mvn:org.igniterealtime/com.springsource.org.jivesoftware.smackx/3.1.0</bundle>
+    <bundle>mvn:org.slf4j/slf4j-ext/${slf4j.version}</bundle>
     <bundle>mvn:org.springframework/spring-jms/${virgo.spring.version}</bundle>
     <bundle>mvn:org.springframework.security/org.springframework.security.remoting/${virgo.spring.version}</bundle>
     <!-- <bundle>webbundle:mvn:org.apromore/apromore-portal/1.1/war?Web-ContextPath=</bundle> -->

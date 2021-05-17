@@ -22,10 +22,10 @@
 
 package org.apromore.plugin.portal.processdiscoverer.components;
 
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.processdiscoverer.PDAnalyst;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -37,7 +37,7 @@ import org.zkoss.zul.Span;
  * Modified: Ivo Widjaja
  */
 public class TimeStatsController extends AbstractController {
-    private static final Logger LOGGER = LoggerFactory.getLogger(TimeStatsController.class);
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(TimeStatsController.class);
     
     private Span spnCaseHeading;
     private Label lblCaseHeading;

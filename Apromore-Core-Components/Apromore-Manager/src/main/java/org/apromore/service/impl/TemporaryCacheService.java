@@ -430,7 +430,7 @@ public class TemporaryCacheService {
 	try {
 	    logs = parser.parse(inputStream);
 	} catch (Exception e) {
-	    e.printStackTrace();
+            LOGGER.error("Unable to parse logs from stream", e);
 	    logs = null;
 	}
 	if (logs == null) {
@@ -477,8 +477,7 @@ public class TemporaryCacheService {
 	    outputStream.close();
 
 	} catch (Exception e) {
-	    e.printStackTrace();
-	    System.out.println("Error");
+            LOGGER.error("Unable to export log " + name + " to input stream", e);
 	}
     }
 

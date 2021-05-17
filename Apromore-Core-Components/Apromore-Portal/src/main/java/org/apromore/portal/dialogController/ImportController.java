@@ -29,13 +29,13 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apromore.commons.item.ItemNameUtils;
 import org.apromore.plugin.portal.FileImporterPlugin;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.ConfigBean;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.common.notification.Notification;
 import org.apromore.portal.exception.*;
 import org.apromore.portal.util.StringUtil;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.Executions;
@@ -64,7 +64,7 @@ import java.util.zip.ZipInputStream;
 
 public class ImportController extends BaseController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ImportController.class);
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(ImportController.class);
     private static final String UTF8_CHARSET = StandardCharsets.UTF_8.toString();
     private static final String MAX_UPLOAD_SIZE = "max-upload-size";
     private long maxUploadSize = 100000000L; // default 100MB

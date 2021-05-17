@@ -28,12 +28,12 @@ package org.apromore.portal.dialogController;
 import org.zkoss.zul.*;
 import org.zkoss.util.resource.Labels;
 
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class LoginController extends BaseController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(LoginController.class);
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(LoginController.class);
     public LoginController() {
         super();
     }

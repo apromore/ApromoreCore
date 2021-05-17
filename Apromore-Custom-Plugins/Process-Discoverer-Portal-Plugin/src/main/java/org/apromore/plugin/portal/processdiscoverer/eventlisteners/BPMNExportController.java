@@ -29,6 +29,7 @@ import java.util.Map;
 
 import javax.xml.datatype.DatatypeFactory;
 
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
 import org.apromore.plugin.portal.processdiscoverer.components.AbstractController;
 import org.apromore.plugin.portal.processdiscoverer.utils.InputDialog;
@@ -41,7 +42,6 @@ import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNEdge;
 import org.apromore.processmining.plugins.bpmn.BpmnDefinitions;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -69,7 +69,7 @@ import org.zkoss.zul.Window;
  *
  */
 public class BPMNExportController extends AbstractController {
-	private static final Logger LOGGER = LoggerFactory.getLogger(PDController.class);
+	private static final Logger LOGGER = PortalLoggerFactory.getLogger(PDController.class);
     private static final String EVENT_QUEUE = BPMNExportController.class.getCanonicalName();
     private static final String CHANGE_DESCRIPTION = "CHANGE_DESCRIPTION";
     private static final String CHANGE_FRACTION_COMPLETE = "CHANGE_FRACTION_COMPLETE";

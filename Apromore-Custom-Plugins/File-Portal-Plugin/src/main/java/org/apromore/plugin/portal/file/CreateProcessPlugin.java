@@ -25,14 +25,14 @@ import java.util.Locale;
 
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.dialogController.MainController;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zkoss.zul.Messagebox;
 
 public class CreateProcessPlugin extends DefaultPortalPlugin {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(CreateProcessPlugin.class);
+    private static Logger LOGGER = PortalLoggerFactory.getLogger(CreateProcessPlugin.class);
 
     private String label = "Create model";
     private String groupLabel = "Discover";

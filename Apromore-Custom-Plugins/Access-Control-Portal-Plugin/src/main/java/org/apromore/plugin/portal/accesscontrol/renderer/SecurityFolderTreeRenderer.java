@@ -28,12 +28,12 @@ import org.apromore.dao.model.Group;
 import org.apromore.dao.model.User;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.manager.client.ManagerService;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.common.FolderTreeNode;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.model.*;
 import org.apromore.service.UserService;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -52,7 +52,7 @@ import org.apromore.plugin.portal.accesscontrol.controllers.SecuritySetupControl
  */
 public class SecurityFolderTreeRenderer implements TreeitemRenderer {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SecurityFolderTreeRenderer.class.getName());
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(SecurityFolderTreeRenderer.class);
 
     private SecuritySetupController securitySetupController;
 

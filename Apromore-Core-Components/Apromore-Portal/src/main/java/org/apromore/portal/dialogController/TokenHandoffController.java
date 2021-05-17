@@ -24,13 +24,13 @@ package org.apromore.portal.dialogController;
 import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
 import org.apromore.manager.client.ManagerService;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.model.UserType;
 import org.apromore.portal.security.helper.JwtHelper;
 import org.apromore.service.SecurityService;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -48,7 +48,7 @@ import java.util.*;
 
 public class TokenHandoffController extends SelectorComposer<Window> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(TokenHandoffController.class);
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(TokenHandoffController.class);
 
     private ManagerService managerService;
     private SecurityService securityService;

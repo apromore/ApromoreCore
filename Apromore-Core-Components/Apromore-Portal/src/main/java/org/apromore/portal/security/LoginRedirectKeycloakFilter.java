@@ -21,8 +21,8 @@
  */
 package org.apromore.portal.security;
 
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.filter.GenericFilterBean;
 
 import javax.servlet.FilterChain;
@@ -36,7 +36,7 @@ import java.util.UUID;
 
 public class LoginRedirectKeycloakFilter extends GenericFilterBean {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(LoginRedirectKeycloakFilter.class);
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(LoginRedirectKeycloakFilter.class);
 
     private static final String ENV_KEYCLOAK_REALM_NAME_KEY = "KEYCLOAK_REALM_NAME";
     private static final String KEYCLOAK_REALM_PLACEHOLDER = "<keycloakRealm>";
@@ -119,7 +119,7 @@ public class LoginRedirectKeycloakFilter extends GenericFilterBean {
                 chain.doFilter(servletRequest, servletResponse);
             }
         } else {
-            LOGGER.info("[[ Keycloak SSO is disabled ]]");
+            LOGGER.debug("[[ Keycloak SSO is disabled ]]");
             chain.doFilter(servletRequest, servletResponse);
         }
     }

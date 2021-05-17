@@ -25,8 +25,8 @@
 package org.apromore.portal.dialogController.workspaceOptions;
 
 import java.io.IOException;
-import java.util.logging.Logger;
 
+import org.slf4j.Logger;
 import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
@@ -38,6 +38,7 @@ import org.zkoss.zul.*;
 
 import org.apromore.dao.model.User;
 import org.apromore.exception.NotAuthorizedException;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.common.ItemHelpers;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.common.notification.Notification;
@@ -53,7 +54,7 @@ public class AddFolderController extends BaseController {
     private Button btnSave;
     private Button btnCancel;
     private Textbox txtName;
-    private Logger LOGGER = Logger.getLogger(AddFolderController.class.getCanonicalName());
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(AddFolderController.class);
 
     public AddFolderController(MainController mainController, User currentUser, FolderType currentFolder) throws DialogException {
         this.mainController = mainController;
@@ -118,24 +119,22 @@ public class AddFolderController extends BaseController {
                 return;
             }
 
-            LOGGER.warning("folderName " + folderName);
+            LOGGER.info("Creating folder " + folderName);
             String userId = UserSessionManager.getCurrentUser().getId();
             FolderType currentFolder = this.mainController.getPortalSession().getCurrentFolder();
             int currentParentFolderId = currentFolder == null || currentFolder.getId() == 0 ? 0 : currentFolder.getId();
             this.mainController.getService().createFolder(userId, folderName, currentParentFolderId);
             this.mainController.reloadSummaries();
+
+        } catch (WrongValueException ex) {
+            // Messagebox.show("You have entered invalid value.", "Apromore", Messagebox.OK, Messagebox.ERROR);
+            return;
+
         } catch (Exception ex) {
             if (ex.getCause() instanceof NotAuthorizedException || ex instanceof NotAuthorizedException) {
                 Messagebox.show("You are not authorized to perform this operation. Contact your system administrator to gain relevant access rights for the folder or file you are trying to rename.", "Apromore", Messagebox.OK, Messagebox.ERROR);
             }
-            if (ex instanceof WrongValueException) {
-                // Messagebox.show("You have entered invalid value.", "Apromore", Messagebox.OK, Messagebox.ERROR);
-                return;
-            }
-            LOGGER.warning("Exception ");
-            StackTraceElement[] trace = ex.getStackTrace();
-            for (StackTraceElement traceElement : trace)
-                LOGGER.warning("\tat " + traceElement);
+            LOGGER.warn("Unable to create folder", ex);
         }
         this.folderEditWindow.detach();
     }

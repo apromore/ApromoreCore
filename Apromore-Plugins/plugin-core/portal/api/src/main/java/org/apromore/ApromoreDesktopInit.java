@@ -21,14 +21,14 @@
  */
 package org.apromore.zk;
 
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.util.DesktopInit;
 
 public class ApromoreDesktopInit implements DesktopInit {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ApromoreDesktopInit.class);
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(ApromoreDesktopInit.class);
 
     @Override
     public void init(Desktop desktop, Object request) throws Exception {

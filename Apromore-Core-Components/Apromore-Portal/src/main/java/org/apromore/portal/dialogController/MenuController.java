@@ -35,15 +35,15 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.portal.common.Constants;
-import org.apromore.portal.common.UserSessionManager;;
+import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.context.PluginPortalContext;
 import org.apromore.portal.context.PortalPluginResolver;
 import org.apromore.portal.exception.ExceptionFormats;
 import org.apromore.portal.util.ExplicitComparator;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
@@ -58,7 +58,7 @@ import org.zkoss.zul.Menuseparator;
 
 public class MenuController extends SelectorComposer<Menubar> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MenuController.class);
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(MenuController.class);
 
     private Menuitem aboutMenuitem;
     private Menuitem targetMenuitem;
