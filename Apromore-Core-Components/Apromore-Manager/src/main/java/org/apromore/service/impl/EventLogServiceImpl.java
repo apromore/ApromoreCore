@@ -446,8 +446,11 @@ public class EventLogServiceImpl implements EventLogService {
 
             if (shouldDeleteLogFile(realLog.getStorage())) {
                 LOGGER.info("Deleting file: " + realLog.getName());
-                storageRepository.delete(realLog.getStorage() == null ? 0L : realLog.getStorage().getId());
+                if (realLog.getStorage() != null) {
+                    storageRepository.delete(realLog.getStorage().getId());
+                }
                 tempCacheService.deleteProcessLog(realLog);
+
             }
 
             LOGGER.info("Delete XES log " + log.getId() + " from repository.");
