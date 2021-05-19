@@ -31,6 +31,21 @@
     </dependency>
 
     <dependency>
+      <groupId>no.priv.bang.karaf</groupId>
+      <artifactId>liquibase-core-karaf</artifactId>
+      <version>${liquibase.version}</version>
+      <type>xml</type>
+      <classifier>features</classifier>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.karaf.features</groupId>
+      <artifactId>enterprise</artifactId>
+      <type>xml</type>
+      <classifier>features</classifier>
+    </dependency>
+
+    <dependency>
       <groupId>org.apache.karaf.features</groupId>
       <artifactId>framework</artifactId>
       <type>kar</type>
@@ -42,6 +57,14 @@
       <classifier>features</classifier>
       <type>xml</type>
       <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.karaf.features</groupId>
+      <artifactId>spring-legacy</artifactId>
+      <version>${karaf.version}</version>
+      <type>xml</type>
+      <classifier>features</classifier>
     </dependency>
 
     <dependency>

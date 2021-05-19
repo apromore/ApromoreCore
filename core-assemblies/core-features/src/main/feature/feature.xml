@@ -153,9 +153,9 @@
   </feature>
 
   <feature name="docx4j" version="8.2.4" description="Docx4J Word format support">
-    <bundle>mvn:com.fasterxml.jackson.core/jackson-annotations/2.11.3</bundle>
-    <bundle>mvn:com.fasterxml.jackson.core/jackson-databind/2.11.3</bundle>
-    <bundle>mvn:com.fasterxml.jackson.core/jackson-core/2.11.3</bundle>
+    <bundle>mvn:com.fasterxml.jackson.core/jackson-annotations/2.11.4</bundle>
+    <bundle>mvn:com.fasterxml.jackson.core/jackson-databind/2.11.4</bundle>
+    <bundle>mvn:com.fasterxml.jackson.core/jackson-core/2.11.4</bundle>
     <bundle>mvn:net.engio/mbassador/1.3.2</bundle>
     <bundle>mvn:org.apache.httpcomponents/httpclient-osgi/4.5.13</bundle>
     <bundle>mvn:org.apache.httpcomponents/httpcore-osgi/4.4.14</bundle>
@@ -228,6 +228,20 @@
     <feature version="${virgo.spring.version}">spring-orm</feature>
     <feature version="${virgo.spring.version}">spring-web</feature>  <!-- install before spring-dm-web, otherwise Spring 3.2 will be installed -->
     <feature>spring-dm-web</feature>
+
+    <feature version="4.3.30.RELEASE_1">spring</feature>
+    <feature version="4.2.4.RELEASE_1">spring-security</feature>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.spring-aspects/4.3.30.RELEASE_1</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.spring-jdbc/4.3.30.RELEASE_1</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.spring-orm/4.3.30.RELEASE_1</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.spring-oxm/4.3.30.RELEASE_1</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.spring-tx/4.3.30.RELEASE_1</bundle>
+
+    <feature version="5.2.13.RELEASE_1">spring</feature>
+    <feature version="5.3.3.RELEASE_2">spring-security</feature>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.spring-aspects/5.2.13.RELEASE_1</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.spring-orm/5.2.13.RELEASE_1</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.spring-oxm/5.2.13.RELEASE_1</bundle>
   </feature>
 
   <feature name="zk-framework" version="${project.version}" description="ZK framework">
