@@ -28,23 +28,23 @@
         <rows>
             <row>
                 <label value="Username"/>
-                <textbox id="userNameTextbox" value="New_username" constraint="no empty,/^[a-zA-Z0-9 \\._\-]{1,}$/: {Use only letters, numbers, and .-_}" placeholder="Enter user name"/>
+                <textbox id="userNameTextbox" value="New_username" constraint="no empty,/^[a-zA-Z0-9 @\\._\-]{4,}$/: {Use only letters, numbers, and @.-_}" placeholder="Username"/>
             </row>
             <row>
                 <label value="First Name"/>
-                <textbox id="firstNameTextbox" placeholder="First"/>
+                <textbox id="firstNameTextbox" placeholder="First name"/>
             </row>
             <row>
                 <label value="Last Name"/>
-                <textbox id="lastNameTextbox" placeholder="Last"/>
+                <textbox id="lastNameTextbox" placeholder="Last name"/>
             </row>
             <row>
                 <label value="Email"/>
-                <textbox id="emailTextbox" constraint="no empty: {Email is mandatory}" placeholder="Enter email address"/>
+                <textbox id="emailTextbox" constraint="no empty: {Email is mandatory}" placeholder="Email address"/>
             </row>
             <row>
                 <label value="Password"/>
-                <textbox id="passwordTextbox" constraint="no empty" placeholder="Enter password" type="password"/>
+                <textbox id="passwordTextbox" constraint="no empty" placeholder="Password" type="password"/>
             </row>
         </rows>
     </grid>
