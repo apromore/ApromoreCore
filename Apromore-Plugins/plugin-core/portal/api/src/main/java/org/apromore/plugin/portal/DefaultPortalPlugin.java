@@ -25,6 +25,7 @@
 package org.apromore.plugin.portal;
 
 import org.apromore.plugin.DefaultParameterAwarePlugin;
+import org.slf4j.Logger;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
@@ -40,6 +41,8 @@ import javax.imageio.ImageIO;
  * Override all methods that you want to customize. By default the plugin returns the label default and does nothing.
  */
 public class DefaultPortalPlugin extends DefaultParameterAwarePlugin implements PortalPlugin {
+
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(DefaultPortalPlugin.class);
 
     private Map params;
 
@@ -84,7 +87,7 @@ public class DefaultPortalPlugin extends DefaultParameterAwarePlugin implements 
             in.close();
             return icon;
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.warn("Unable to get icon", e);
             return null;
         }
     }

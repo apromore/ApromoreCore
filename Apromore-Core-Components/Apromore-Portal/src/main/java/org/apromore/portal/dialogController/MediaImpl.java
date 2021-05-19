@@ -38,8 +38,8 @@ import java.util.zip.ZipInputStream;
 
 import org.apache.commons.io.FileUtils;
 import org.apromore.commons.item.ItemNameUtils;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zkoss.util.media.Media;
 
 /**
@@ -47,7 +47,7 @@ import org.zkoss.util.media.Media;
  */
 class MediaImpl implements Media {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MediaImpl.class);
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(MediaImpl.class);
 
     private final String format;
     private final String streamExtension;

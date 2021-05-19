@@ -22,8 +22,8 @@
 package org.apromore.portal.security;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 
@@ -37,7 +37,7 @@ import java.util.UUID;
 
 public class KeycloakLoginUrlAuthenticationEntryPoint extends LoginUrlAuthenticationEntryPoint {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(KeycloakLoginUrlAuthenticationEntryPoint.class);
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(KeycloakLoginUrlAuthenticationEntryPoint.class);
 
     private static final String ENV_KEYCLOAK_REALM_NAME_KEY = "KEYCLOAK_REALM_NAME";
     private static final String KEYCLOAK_REALM_PLACEHOLDER = "<keycloakRealm>";

@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.PortalProcessAttributePlugin;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.UserSessionManager;
@@ -35,7 +36,6 @@ import org.apromore.portal.dialogController.renderer.SummaryItemRenderer;
 import org.apromore.portal.model.*;
 // import org.apromore.portal.util.SummaryComparator;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -46,7 +46,7 @@ import org.zkoss.zul.Listheader;
 public class ProcessListboxController extends BaseListboxController {
 
     private static final long serialVersionUID = -6874531673992239378L;
-    private static final Logger LOGGER = LoggerFactory.getLogger(ProcessListboxController.class);
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(ProcessListboxController.class);
 
     private Listheader columnScore;
     private Listheader columnName;

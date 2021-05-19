@@ -39,6 +39,7 @@ import org.apromore.commons.item.ItemNameUtils;
 import org.apromore.plugin.merge.logic.MergeService;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.model.ParameterType;
 import org.apromore.portal.model.ParametersType;
 import org.apromore.portal.model.ProcessSummaryType;
@@ -48,7 +49,6 @@ import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.service.DomainService;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
@@ -76,7 +76,7 @@ public class MergePlugin extends DefaultPortalPlugin {
     private final String GREEDY_ALGORITHM = "Greedy";
 
     public static final String INITIAL_VERSION = "1.0";
-    private static final Logger LOGGER = LoggerFactory.getLogger(MergePlugin.class.getCanonicalName());
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(MergePlugin.class);
 
     private PortalContext context;
     private Window processMergeW;

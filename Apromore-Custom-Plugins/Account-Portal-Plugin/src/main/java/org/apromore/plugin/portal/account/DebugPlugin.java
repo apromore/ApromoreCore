@@ -26,12 +26,12 @@ import java.util.Locale;
 import org.apromore.service.SecurityService;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class DebugPlugin extends DefaultPortalPlugin {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(DebugPlugin.class);
+    private static Logger LOGGER = PortalLoggerFactory.getLogger(DebugPlugin.class);
 
     private String label = "Debug";
     private String groupLabel = "Account";

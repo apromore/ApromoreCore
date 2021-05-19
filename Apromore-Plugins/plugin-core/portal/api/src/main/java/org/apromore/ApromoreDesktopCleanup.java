@@ -22,11 +22,11 @@
 package org.apromore.zk;
 
 import java.util.Collection;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.util.DesktopCleanup;
 
@@ -38,7 +38,7 @@ import org.zkoss.zk.ui.util.DesktopCleanup;
  */
 public class ApromoreDesktopCleanup implements DesktopCleanup {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ApromoreDesktopCleanup.class);
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(ApromoreDesktopCleanup.class);
 
     @Override
     public void cleanup(Desktop desktop) throws InvalidSyntaxException {

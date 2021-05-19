@@ -36,6 +36,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apromore.dao.model.User;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.ItemHelpers;
@@ -55,7 +56,6 @@ import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.UserType;
 import org.apromore.portal.model.VersionSummaryType;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -75,7 +75,7 @@ import org.zkoss.zul.Paging;
 public abstract class BaseListboxController extends BaseController {
 
 	private static final long serialVersionUID = -4693075788311730404L;
-	private static final Logger LOGGER = LoggerFactory.getLogger(BaseListboxController.class);
+	private static final Logger LOGGER = PortalLoggerFactory.getLogger(BaseListboxController.class);
 
 	private static final String ALERT = "Alert";
 	private static final String ETL_PLUGIN_LABEL = "Create data pipeline";

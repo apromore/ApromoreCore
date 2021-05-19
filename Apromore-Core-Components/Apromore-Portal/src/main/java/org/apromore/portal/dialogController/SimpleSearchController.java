@@ -37,6 +37,7 @@ import org.apromore.dao.model.SearchHistory;
 import org.apromore.dao.model.User;
 import org.apromore.mapper.SearchHistoryMapper;
 import org.apromore.mapper.UserMapper;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.common.notification.Notification;
@@ -49,7 +50,6 @@ import org.apromore.service.UserService;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.service.search.SearchExpressionBuilder;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.InputEvent;
@@ -58,7 +58,7 @@ import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.*;
 
 public class SimpleSearchController {
-    private static final Logger LOGGER = LoggerFactory.getLogger(SimpleSearchController.class);
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(SimpleSearchController.class);
 
     private MainController mainC;
     private Combobox previousSearchesCB;

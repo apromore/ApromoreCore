@@ -26,8 +26,8 @@ import java.io.InputStream;
 import java.util.regex.Pattern;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A generic implementation of {@link WebContentService}.
@@ -49,7 +49,7 @@ import org.slf4j.LoggerFactory;
  */
 public class SimpleWebContentService implements WebContentService {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(SimpleWebContentService.class);
+    private static Logger LOGGER = PortalLoggerFactory.getLogger(SimpleWebContentService.class);
 
     /**
      * A classloader to access the web content.
@@ -84,7 +84,7 @@ public class SimpleWebContentService implements WebContentService {
 
     @Override
     public InputStream getResourceAsStream(String path) {
-        LOGGER.info("Getting resource " + path);
+        LOGGER.debug("Getting resource " + path);
         assert hasResource(path);
         return classLoader.getResourceAsStream(path);
     }

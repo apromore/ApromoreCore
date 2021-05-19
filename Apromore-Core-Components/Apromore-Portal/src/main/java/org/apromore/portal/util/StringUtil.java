@@ -22,8 +22,8 @@
 
 package org.apromore.portal.util;
 
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 import java.net.URLDecoder;
@@ -35,7 +35,7 @@ import java.util.regex.Pattern;
 
 public class StringUtil {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(StringUtil.class);
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(StringUtil.class);
 
     private static final String[] DICTIONARY = {"bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"};
     private static final StringBuilder STRING_BUILDER;

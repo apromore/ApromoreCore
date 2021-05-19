@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
 import org.apromore.plugin.portal.processdiscoverer.actions.FilterActionOnEdgeRemoveTrace;
 import org.apromore.plugin.portal.processdiscoverer.actions.FilterActionOnEdgeRetainTrace;
@@ -53,7 +54,6 @@ import org.deckfour.xes.model.XLog;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.util.Clients;
@@ -78,7 +78,7 @@ public class GraphVisController extends VisualController {
     private final String AND_FROM_PATTERN = "+ =>";
     private final String AND_TO_PATTERN = "=> +";
     
-    private static final Logger LOGGER = LoggerFactory.getLogger(GraphVisController.class);
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(GraphVisController.class);
 
     private Component vizBridge;
     

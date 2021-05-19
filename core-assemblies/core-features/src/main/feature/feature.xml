@@ -132,7 +132,9 @@
     <feature>jms</feature>
     <feature>war</feature>
     <requirement>osgi.wiring.package; filter:="(&amp;(osgi.wiring.package=org.zkoss.zul)(version>=8.6.0)(!(version>=10.0.0)))"</requirement>
+    <bundle>mvn:ch.qos.cal10n/cal10n-api/0.7.4</bundle>
     <bundle>mvn:com.google.guava/guava/${google.guava.version}</bundle>
+    <bundle>mvn:com.nimbusds/nimbus-jose-jwt/9.7</bundle>
     <bundle>mvn:javax.validation/com.springsource.javax.validation/1.0.0.GA</bundle>
     <bundle>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.saaj-api-1.3/2.9.0</bundle>
     <bundle>mvn:org.apromore/manager-client/1.1</bundle>
@@ -142,6 +144,8 @@
     <bundle>mvn:org.apromore.plugin/log-filter-portal-plugin-generic/1.0.0</bundle>
     <bundle>mvn:org.igniterealtime/com.springsource.org.jivesoftware.smack/3.1.0</bundle>
     <bundle>mvn:org.igniterealtime/com.springsource.org.jivesoftware.smackx/3.1.0</bundle>
+    <bundle>mvn:org.ow2.bundles/ow2-bundles-externals-annotations/1.0.36</bundle>
+    <bundle>mvn:org.slf4j/slf4j-ext/${slf4j.version}</bundle>
     <bundle>mvn:org.springframework/spring-jms/${virgo.spring.version}</bundle>
     <bundle>mvn:org.springframework.security/org.springframework.security.remoting/${virgo.spring.version}</bundle>
     <!-- <bundle>webbundle:mvn:org.apromore/apromore-portal/1.1/war?Web-ContextPath=</bundle> -->
@@ -149,9 +153,9 @@
   </feature>
 
   <feature name="docx4j" version="8.2.4" description="Docx4J Word format support">
-    <bundle>mvn:com.fasterxml.jackson.core/jackson-annotations/2.11.3</bundle>
-    <bundle>mvn:com.fasterxml.jackson.core/jackson-databind/2.11.3</bundle>
-    <bundle>mvn:com.fasterxml.jackson.core/jackson-core/2.11.3</bundle>
+    <bundle>mvn:com.fasterxml.jackson.core/jackson-annotations/2.11.4</bundle>
+    <bundle>mvn:com.fasterxml.jackson.core/jackson-databind/2.11.4</bundle>
+    <bundle>mvn:com.fasterxml.jackson.core/jackson-core/2.11.4</bundle>
     <bundle>mvn:net.engio/mbassador/1.3.2</bundle>
     <bundle>mvn:org.apache.httpcomponents/httpclient-osgi/4.5.13</bundle>
     <bundle>mvn:org.apache.httpcomponents/httpcore-osgi/4.4.14</bundle>
@@ -224,6 +228,20 @@
     <feature version="${virgo.spring.version}">spring-orm</feature>
     <feature version="${virgo.spring.version}">spring-web</feature>  <!-- install before spring-dm-web, otherwise Spring 3.2 will be installed -->
     <feature>spring-dm-web</feature>
+
+    <feature version="4.3.30.RELEASE_1">spring</feature>
+    <feature version="4.2.4.RELEASE_1">spring-security</feature>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.spring-aspects/4.3.30.RELEASE_1</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.spring-jdbc/4.3.30.RELEASE_1</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.spring-orm/4.3.30.RELEASE_1</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.spring-oxm/4.3.30.RELEASE_1</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.spring-tx/4.3.30.RELEASE_1</bundle>
+
+    <feature version="5.2.13.RELEASE_1">spring</feature>
+    <feature version="5.3.3.RELEASE_2">spring-security</feature>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.spring-aspects/5.2.13.RELEASE_1</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.spring-orm/5.2.13.RELEASE_1</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.spring-oxm/5.2.13.RELEASE_1</bundle>
   </feature>
 
   <feature name="zk-framework" version="${project.version}" description="ZK framework">

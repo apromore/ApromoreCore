@@ -21,9 +21,9 @@
  */
 package org.apromore.plugin.portal.loganimation;
 
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.common.UserSessionManager;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.util.DesktopCleanup;
 
@@ -36,7 +36,7 @@ import org.zkoss.zk.ui.util.DesktopCleanup;
  *
  */
 public class LogAnimationCleaner implements DesktopCleanup {
-    private static final Logger LOGGER = LoggerFactory.getLogger(LogAnimationCleaner.class.getCanonicalName());
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(LogAnimationCleaner.class);
 
     @Override
     public void cleanup(Desktop desktop) throws Exception {

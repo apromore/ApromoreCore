@@ -35,10 +35,10 @@ import org.apromore.portal.model.PermissionType;
 import org.apromore.portal.model.UserType;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.service.SecurityService;
 import org.apromore.service.WorkspaceService;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
@@ -48,7 +48,7 @@ import org.zkoss.zul.Window;
 @Component("userAdminPlugin")
 public class UserAdminPlugin extends DefaultPortalPlugin {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(UserAdminPlugin.class);
+    private static Logger LOGGER = PortalLoggerFactory.getLogger(UserAdminPlugin.class);
 
     private String ID = Constants.USER_ADMIN_PLUGIN;
     private String label = "Manage user permissions";

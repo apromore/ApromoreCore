@@ -44,11 +44,11 @@ import org.apromore.calendar.model.HolidayModel;
 import org.apromore.calendar.model.WorkDayModel;
 import org.apromore.calendar.service.CalendarService;
 import org.apromore.commons.datetime.TimeUtils;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.calendar.Constants;
 import org.apromore.plugin.portal.calendar.TimeRange;
 import org.apromore.plugin.portal.calendar.Zone;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zkoss.json.JSONArray;
 import org.zkoss.json.JSONObject;
 import org.zkoss.zk.ui.Executions;
@@ -102,7 +102,7 @@ public class Calendar extends SelectorComposer<Window> {
     }
   };
 
-  private static Logger LOGGER = LoggerFactory.getLogger(Calendar.class);
+  private static Logger LOGGER = PortalLoggerFactory.getLogger(Calendar.class);
   private static final OffsetTime DEFAULT_START_TIME =
       OffsetTime.of(LocalTime.of(9, 0), ZoneOffset.UTC);
   private static final OffsetTime DEFAULT_END_TIME =

@@ -29,6 +29,7 @@ import org.apromore.dao.model.User;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.manager.client.ManagerService;
 import org.apromore.mapper.UserMapper;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.ConfigBean;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.PortalSession;
@@ -38,7 +39,6 @@ import org.apromore.portal.util.ApromoreEnvUtils;
 import org.apromore.service.SecurityService;
 import org.apromore.service.UserService;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
@@ -48,7 +48,7 @@ import java.util.StringTokenizer;
 
 public class SecuritySsoHelper {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SecuritySsoHelper.class);
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(SecuritySsoHelper.class);
 
     private static final String SYMMETRIC_KEY_SECRET_ENV_KEY = "ENV_KEY";
 

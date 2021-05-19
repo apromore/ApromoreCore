@@ -22,13 +22,13 @@
 package org.apromore.plugin.portal.loganimation;
 
 import java.io.InputStream;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.WebContentService;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 class LogAnimationWebContentService implements WebContentService {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(LogAnimationWebContentService.class);
+    private static Logger LOGGER = PortalLoggerFactory.getLogger(LogAnimationWebContentService.class);
 
     private final ClassLoader classLoader = LogAnimationWebContentService.class.getClassLoader();
 

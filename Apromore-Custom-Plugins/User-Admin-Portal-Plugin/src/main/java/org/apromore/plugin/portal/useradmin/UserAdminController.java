@@ -42,6 +42,7 @@ import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
 import org.apromore.portal.model.UserType;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.types.EventQueueTypes;
 import org.apromore.portal.types.EventQueueEvents;
 import org.apromore.service.SecurityService;
@@ -53,7 +54,6 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.service.event.EventConstants;
 import org.osgi.service.event.EventHandler;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 //import org.zkoss.spring.SpringUtil;
 import org.zkoss.json.JSONObject;
 import org.zkoss.zk.ui.Component;
@@ -95,7 +95,7 @@ import org.apromore.plugin.portal.useradmin.listbox.TristateModel;
 
 public class UserAdminController extends SelectorComposer<Window> {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(UserAdminController.class);
+    private static Logger LOGGER = PortalLoggerFactory.getLogger(UserAdminController.class);
     private Map<String, String> roleMap = new HashMap<String, String>() {
         {
             put("ROLE_USER", "User");

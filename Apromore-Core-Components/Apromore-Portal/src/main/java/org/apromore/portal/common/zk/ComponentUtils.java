@@ -22,15 +22,15 @@
 
 package org.apromore.portal.common.zk;
 
-import org.zkoss.zk.ui.HtmlBasedComponent;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.zkoss.zk.ui.HtmlBasedComponent;
 
 public final class ComponentUtils {
     private static final String SCLASS_OFF = "ap-state-off";
     private static final String SCLASS_ON = "ap-state-on";
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ComponentUtils.class.getName());
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(ComponentUtils.class);
 
     public static void toggleSclass(HtmlBasedComponent comp, boolean newState, String sclassOff, String sclassOn) {
         String sclass = comp.getSclass();

@@ -28,10 +28,10 @@ import static org.apromore.logman.attribute.graph.MeasureAggregation.TOTAL;
 import static org.apromore.logman.attribute.graph.MeasureType.DURATION;
 import static org.apromore.logman.attribute.graph.MeasureType.FREQUENCY;
 
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
 import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
@@ -50,7 +50,7 @@ import org.zkoss.zul.Slider;
  * Modified: Ivo Widjaja
  */
 public class GraphSettingsController extends VisualController {
-    private static final Logger LOGGER = LoggerFactory.getLogger(GraphSettingsController.class);
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(GraphSettingsController.class);
 
     private final String METRIC_CASE_FREQ = "metricCaseFreq";
     private final String METRIC_AVG_DURATION = "metricAvgDuration";

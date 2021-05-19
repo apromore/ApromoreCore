@@ -21,8 +21,8 @@
  */
 package org.apromore.plugin.portal.processdiscoverer;
 
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.util.DesktopCleanup;
 
@@ -35,7 +35,7 @@ import org.zkoss.zk.ui.util.DesktopCleanup;
  *
  */
 public class PDDesktopCleaner implements DesktopCleanup {
-    private static final Logger LOGGER = LoggerFactory.getLogger(PDDesktopCleaner.class.getCanonicalName());
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(PDDesktopCleaner.class);
 
     @Override
     public void cleanup(Desktop desktop) throws Exception {

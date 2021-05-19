@@ -23,10 +23,12 @@
 package org.apromore.portal.dialogController.workspaceOptions;
 
 import org.apromore.exception.NotAuthorizedException;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.BaseController;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.exception.DialogException;
+import org.slf4j.Logger;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -36,7 +38,6 @@ import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zul.*;
 
 import java.io.IOException;
-import java.util.logging.Logger;
 
 public class RenameFolderController extends BaseController {
 
@@ -46,7 +47,7 @@ public class RenameFolderController extends BaseController {
     private Button btnCancel;
     private Textbox txtName;
     private int folderId;
-    private Logger LOGGER = Logger.getLogger(AddFolderController.class.getCanonicalName());
+    private Logger LOGGER = PortalLoggerFactory.getLogger(AddFolderController.class);
 
     public RenameFolderController(MainController mainController, int folderId, String name) throws DialogException {
         this.mainController = mainController;
@@ -104,23 +105,21 @@ public class RenameFolderController extends BaseController {
                 return;
             }
 
-            LOGGER.warning("folderName " + folderName);
+            LOGGER.info("Rename folder " + folderName);
             this.mainController.getService().updateFolder(this.folderId, folderName, UserSessionManager.getCurrentUser().getUsername());
             this.mainController.reloadSummaries();
             this.folderEditWindow.detach();
+
+        } catch (WrongValueException ex) {
+            LOGGER.debug("Unable to rename folder", ex);
+            // Messagebox.show("You have entered invalid value.", "Apromore", Messagebox.OK, Messagebox.ERROR);
+            return;
+
         } catch (Exception ex) {
             if (ex.getCause() instanceof NotAuthorizedException || ex instanceof NotAuthorizedException) {
                 Messagebox.show("You are not authorized to perform this operation. Contact your system administrator to gain relevant access rights for the folder or file you are trying to rename.", "Apromore", Messagebox.OK, Messagebox.ERROR);
             }
-            if (ex instanceof WrongValueException) {
-                // Messagebox.show("You have entered invalid value.", "Apromore", Messagebox.OK, Messagebox.ERROR);
-                return;
-            }
-            LOGGER.warning("Exception ");
-            StackTraceElement[] trace = ex.getStackTrace();
-            for (StackTraceElement traceElement : trace)
-                LOGGER.warning("\tat " + traceElement);
-
+            LOGGER.warn("Unable to rename folder", ex);
         }
         this.folderEditWindow.detach();
     }

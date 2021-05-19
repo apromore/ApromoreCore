@@ -24,8 +24,8 @@ package org.apromore.plugin.portal.file;
 import java.util.Locale;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import org.apromore.portal.dialogController.ImportController;
 import org.apromore.portal.dialogController.MainController;
@@ -34,7 +34,7 @@ import org.zkoss.zul.Messagebox;
 
 public class UploadFilePlugin extends DefaultPortalPlugin {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(UploadFilePlugin.class);
+    private static Logger LOGGER = PortalLoggerFactory.getLogger(UploadFilePlugin.class);
 
     private String label = "Upload";
     private String groupLabel = "File";

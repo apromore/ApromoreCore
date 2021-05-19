@@ -26,8 +26,8 @@ import java.util.Date;
 import java.util.Map;
 import java.util.TimeZone;
 import org.apromore.commons.datetime.TimeUtils;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
@@ -39,7 +39,7 @@ import org.zkoss.zul.Window;
 
 public class EditRange extends SelectorComposer<Window> {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(EditRange.class);
+    private final static Logger LOGGER = PortalLoggerFactory.getLogger(EditRange.class);
     private Map argMap = Executions.getCurrent().getArg();
     private Calendar parentController = (Calendar) argMap.get("parentController");
     private int dowIndex = (Integer)argMap.get("dowIndex");

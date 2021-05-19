@@ -25,8 +25,8 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zkoss.json.JSONObject;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -41,7 +41,7 @@ import org.zkoss.zul.Window;
  */
 public class CsvImportListener implements EventListener<Event> {
 
-    private static Logger logger = LoggerFactory.getLogger(CsvImportListener.class);
+    private static Logger logger = PortalLoggerFactory.getLogger(CsvImportListener.class);
     private static final String MODAL = "modal";
     private static final String PAGE = "page";
     Map args;

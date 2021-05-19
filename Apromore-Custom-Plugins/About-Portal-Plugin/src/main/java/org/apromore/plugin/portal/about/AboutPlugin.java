@@ -28,10 +28,10 @@ import java.util.Locale;
 import java.util.Map;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.ConfigBean;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Executions;
@@ -43,7 +43,7 @@ import org.zkoss.zul.Window;
 
 public class AboutPlugin extends DefaultPortalPlugin {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AboutPlugin.class);
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(AboutPlugin.class);
 
     private String label = "About Apromore"; // default label
     private String groupLabel = "About";

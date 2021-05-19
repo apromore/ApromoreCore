@@ -22,13 +22,13 @@
 package org.apromore.plugin.portal.processdiscoverer;
 
 import java.io.InputStream;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.WebContentService;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 class PDWebContentService implements WebContentService {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(PDWebContentService.class);
+    private static Logger LOGGER = PortalLoggerFactory.getLogger(PDWebContentService.class);
 
     private final ClassLoader classLoader = PDWebContentService.class.getClassLoader();
 

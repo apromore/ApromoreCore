@@ -37,6 +37,7 @@ import javax.servlet.http.HttpSession;
 import org.apromore.logman.attribute.IndexableAttribute;
 import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.plugin.portal.logfilter.generic.LogFilterPlugin;
 import org.apromore.plugin.portal.processdiscoverer.actions.Action;
@@ -72,7 +73,6 @@ import org.apromore.service.ProcessService;
 import org.apromore.service.loganimation.LogAnimationService2;
 import org.json.JSONException;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
@@ -103,7 +103,7 @@ import org.zkoss.zul.Window;
  */
 public class PDController extends BaseController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PDController.class);
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(PDController.class);
 
     //////////////////// SUPPORT SERVICES ///////////////////////////////////
 

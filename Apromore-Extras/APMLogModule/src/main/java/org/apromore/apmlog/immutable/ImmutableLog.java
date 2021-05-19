@@ -34,6 +34,7 @@ import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.LongSummaryStatistics;
 import java.util.stream.Collectors;
 
 public class ImmutableLog extends LaLog {
@@ -161,13 +162,23 @@ public class ImmutableLog extends LaLog {
         setImmutableTraces(traces);
         setTraces(traces);
 
+        // =====================================================
+        // PLog does not update its start time and end time.
+        // Such values need to be reproduced.
+        // =====================================================
+        LongSummaryStatistics allST = traces.stream()
+                .collect(Collectors.summarizingLong(ATrace::getStartTimeMilli));
+
+        LongSummaryStatistics allET = traces.stream()
+                .collect(Collectors.summarizingLong(ATrace::getEndTimeMilli));
+
         this.variantIdFreqMap = pLog.getVariantIdFreqMap();
         this.eventAttributeValues = pLog.getEventAttributeValues();
         this.caseAttributeValues = pLog.getCaseAttributeValues();
         this.caseDurationList = pLog.getCaseDurations();
         this.timeZone = pLog.getTimeZone();
-        this.startTime = pLog.getStartTime();
-        this.endTime = pLog.getEndTime();
+        this.startTime = allST.getMin();
+        this.endTime = allET.getMax();
         this.eventSize = pLog.getEventSize();
         this.activityNameMapper = pLog.getActivityNameMapper();
         this.activityMaxOccurMap = pLog.getActivityMaxOccurMap();

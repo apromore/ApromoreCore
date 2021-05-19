@@ -33,6 +33,7 @@ import javax.inject.Inject;
 import org.apromore.dao.model.User;
 import org.apromore.plugin.editor.EditorPlugin;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.UserSessionManager;
@@ -44,7 +45,6 @@ import org.apromore.portal.util.StreamUtil;
 import org.apromore.util.AccessType;
 
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -66,7 +66,7 @@ import org.zkoss.zul.Messagebox;
 public class BPMNEditorController extends BaseController {
     public static final String EVENT_MESSAGE_SAVE = "SaveEvent";
     
-    private static final Logger LOGGER = LoggerFactory.getLogger(BPMNEditorController.class.getCanonicalName());
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(BPMNEditorController.class);
     private EventQueue<Event> qeBPMNEditor = EventQueues.lookup(Constants.EVENT_QUEUE_BPMN_EDITOR, EventQueues.SESSION, true);
 
     private MainController mainC;

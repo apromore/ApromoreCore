@@ -147,7 +147,7 @@ public class EventLogServiceImpl implements EventLogService {
             assert parser != null;
             logs = parser.parse(is);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("Unable parse logs from stream", e);
             logs = null;
         }
         if (logs == null) {
@@ -377,6 +377,7 @@ public class EventLogServiceImpl implements EventLogService {
         return publicGroupLogs;
     }
 
+    @Override
     public boolean canUserWriteLog(String username, Integer logId) throws UserNotFoundException {
         User user = userSrv.findUserByLogin(username);
         for (GroupLog gl : groupLogRepo.findByLogAndUser(logId, user.getRowGuid())) {
@@ -441,13 +442,16 @@ public class EventLogServiceImpl implements EventLogService {
                 LOGGER.info("User: {} Delete user metadata ID: {}.", user.getUsername(), u.getId());
             }
 
+            logRepo.delete(realLog.getId());
+
             if (shouldDeleteLogFile(realLog.getStorage())) {
                 LOGGER.info("Deleting file: " + realLog.getName());
-                storageRepository.delete(realLog.getStorage() == null ? 0L : realLog.getStorage().getId());
+                if (realLog.getStorage() != null) {
+                    storageRepository.delete(realLog.getStorage().getId());
+                }
                 tempCacheService.deleteProcessLog(realLog);
-            }
 
-            logRepo.delete(realLog.getId());
+            }
 
             LOGGER.info("Delete XES log " + log.getId() + " from repository.");
         }
