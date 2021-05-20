@@ -70,7 +70,7 @@ import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listhead;
 import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.Paging;
+import org.zkoss.zul.Span;
 
 public abstract class BaseListboxController extends BaseController {
 
@@ -111,6 +111,7 @@ public abstract class BaseListboxController extends BaseController {
 	private final Button btnSecurity;
 	private final Button btnUserMgmt;
 	private final Button btnShare;
+	private final Span btnCalendarSep;
 	private final Button btnCalendar;
 
 	private User currentUser;
@@ -155,8 +156,8 @@ public abstract class BaseListboxController extends BaseController {
 		btnSecurity = (Button) mainController.getFellow("btnSecurity");
 		btnUserMgmt = (Button) mainController.getFellow("btnUserMgmt");
 		btnShare = (Button) mainController.getFellow("btnShare");
+		btnCalendarSep = (Span) mainController.getFellow("btnCalendarSep");
 		btnCalendar = (Button) mainController.getFellow("btnCalendar");
-
 		portalPluginMap = PortalPluginResolver.getPortalPluginMap();
 
 		attachEvents();
@@ -351,6 +352,7 @@ public abstract class BaseListboxController extends BaseController {
 			}
 		});
 
+		this.btnCalendarSep.setVisible(config.getEnableCalendar());
 		this.btnCalendar.setVisible(config.getEnableCalendar());
 		this.btnCalendar.addEventListener("onClick", new EventListener<Event>() {
 			@Override
