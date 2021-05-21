@@ -84,11 +84,13 @@ export default class GraphModelWrapper {
         let skipElementIndexIDMap = elementMapping[1];
         this._elementIndexToElement = {};
         this._elementIndexToPath = {}; // mapping from element index to array of points on the element
+        this._elementIndexToPoint = new Map();
 
         for (let elementIndex in elementIndexIDMap) {
             let elementId = elementIndexIDMap[elementIndex];
             let element = cy.getElementById(elementId);
             this._elementIndexToElement[elementIndex] = element;
+            this._elementIndexToPoint.set(elementIndex, []);
             if (element.isEdge()) {
                 this._elementIndexToPath[elementIndex] = element._private.rscratch.allpts;
             }
@@ -101,8 +103,17 @@ export default class GraphModelWrapper {
             let elementId = skipElementIndexIDMap[elementIndex];
             let element = cy.getElementById(elementId);
             this._elementIndexToElement[elementIndex] = element;
+            this._elementIndexToPoint.set(elementIndex, []);
             if (element.incomers().length > 0 && element.outgoers().length > 0) {
                 this._elementIndexToPath[elementIndex] = graph._getNodeSkipPath(elementId);
+            }
+        }
+
+        this._ELEMENT_SLOTS = 1000; // number of slots on an element, the element has (number of slots + 1) points
+        let elementDistanceStep = 1/this._ELEMENT_SLOTS;
+        for (let [eleIndex, elePoints] of this._elementIndexToPoint) {
+            for (let i=0; i<= this._ELEMENT_SLOTS; i++) {
+                elePoints.push(this._getPointAtDistance(eleIndex, i/this._ELEMENT_SLOTS));
             }
         }
     }
@@ -134,17 +145,35 @@ export default class GraphModelWrapper {
         return false;
     }
 
+    /**
+     * @param elementIndex
+     * @param distance: from 0 to 1, two decimal points, e.g. 0.01, 0.02, 0.03...
+     */
     getPointAtDistance(elementIndex, distance) {
+        let p = this._elementIndexToPoint.get(elementIndex)[this._getIndexFromDistance(distance)];
+        let zoom = this._cy.zoom();
+        let pan = this._cy.pan();
+        return {x: p.x * zoom + pan.x, y: p.y * zoom + pan.y};
+    }
+
+    /**
+     * @param {Number} distance: 0 to 1
+     * @returns {number|*}
+     * @private
+     */
+    _getIndexFromDistance(distance) {
+        if (!this._ELEMENT_SLOTS) return 0;
+        let elementDistanceStep = 1/this._ELEMENT_SLOTS;
+        let roundDistance = window.Math.round(distance*1000)/1000; // rounded to 3 decimal points
+        let index = window.Math.floor(roundDistance/elementDistanceStep);
+        if (index > this._ELEMENT_SLOTS) index = this._ELEMENT_SLOTS;
+        return index;
+    }
+
+    _getPointAtDistance(elementIndex, distance) {
         let p = this._element(elementIndex).isEdge() ? this._getPointAtDistanceOnEdge(elementIndex, distance)
                                             : this._getPointAtDistanceOnNode(elementIndex, distance);
-        if (p) {
-            let cy = this._cy;
-            let zoom = cy.zoom();
-            let pan = cy.pan();
-            p.x = p.x * zoom + pan.x;
-            p.y = p.y * zoom + pan.y;
-        }
-        else {
+        if (!p) {
             console.log("Error getPointAtDistance for elementIndex=" + elementIndex + ', distance=' + distance );
             console.log(this._element(elementIndex).isEdge() ? 'This element is an edge' : 'This element is a node');
         }
