@@ -22,6 +22,7 @@
 package org.apromore.apmlog.stats;
 
 import org.apromore.apmlog.AActivity;
+import org.apromore.apmlog.ATrace;
 import org.apromore.apmlog.filter.PLog;
 import org.apromore.apmlog.filter.PTrace;
 import org.apromore.apmlog.filter.types.FilterType;
@@ -57,6 +58,54 @@ public class StatsUtil {
         return pLog.getPTraceList().stream()
                 .filter(x -> caseIndexBS.get(x.getImmutableIndex()))
                 .collect(Collectors.toList());
+    }
+
+    public static UnifiedMap<String, UnifiedSet<EventAttributeValue>> getEventAttributeValues(List<ATrace> aTraces) {
+
+        UnifiedMap<String, UnifiedMap<String, UnifiedSet<AActivity>>> eavaMap = new UnifiedMap<>();
+
+        List<AActivity> allActs = aTraces.stream()
+                .flatMap(x -> x.getActivityList().stream())
+                .collect(Collectors.toList());
+
+        for (AActivity activity : allActs) {
+            UnifiedMap<String, String> attributes = activity.getAttributes();
+            for (Map.Entry<String, String> entry : attributes.entrySet()) {
+                if (!eavaMap.containsKey(entry.getKey())) {
+                    UnifiedSet<AActivity> actSet = new UnifiedSet<>();
+                    actSet.add(activity);
+                    UnifiedMap<String, UnifiedSet<AActivity>> eavvMap = new UnifiedMap<>();
+                    eavvMap.put(entry.getValue(), actSet);
+                    eavaMap.put(entry.getKey(), eavvMap);
+                } else {
+                    UnifiedMap<String, UnifiedSet<AActivity>> eavvMap = eavaMap.get(entry.getKey());
+                    if (!eavvMap.containsKey(entry.getValue())) {
+                        UnifiedSet<AActivity> actSet = new UnifiedSet<>();
+                        actSet.add(activity);
+                        eavvMap.put(entry.getValue(), actSet);
+                    } else {
+                        eavvMap.get(entry.getValue()).put(activity);
+                    }
+                }
+            }
+        }
+
+        UnifiedMap<String, UnifiedSet<EventAttributeValue>> eavMap = new UnifiedMap<>();
+
+        for (Map.Entry<String, UnifiedMap<String, UnifiedSet<AActivity>>> entry : eavaMap.entrySet()) {
+
+            eavMap.put(entry.getKey(), new UnifiedSet<>(entry.getValue().size()));
+
+            UnifiedMap<String, UnifiedSet<AActivity>> vals = entry.getValue();
+            for (Map.Entry<String, UnifiedSet<AActivity>> valEntry : vals.entrySet()) {
+                EventAttributeValue eav =
+                        new EventAttributeValue(valEntry.getKey(), valEntry.getValue(), aTraces.size());
+
+                eavMap.get(entry.getKey()).put(eav);
+            }
+        }
+
+        return eavMap;
     }
 
 

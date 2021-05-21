@@ -24,9 +24,12 @@ package org.apromore.apmlog;
 
 import org.apromore.apmlog.filter.PLog;
 import org.apromore.apmlog.filter.PTrace;
+import org.apromore.apmlog.stats.EventAttributeValue;
 import org.deckfour.xes.in.XesXmlGZIPParser;
 import org.deckfour.xes.in.XesXmlParser;
 import org.deckfour.xes.model.XLog;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -423,6 +426,21 @@ public class APMLogUnitTest {
             assertTrue(pTrace.getWaitingTimes().average() == 0);
             assertTrue(pTrace.getWaitingTimes().max() == 0);
             assertTrue(pTrace.getWaitingTimes().sum() == 0);
+        }
+    }
+
+    @Test
+    public void testCasePerspectiveActivityFrequency() throws Exception {
+        XLog xLog = getXLog("files/_reworkTest2.xes");
+        APMLog apmLog = LogFactory.convertXLog(xLog);
+
+        UnifiedMap<String, String> expected = new UnifiedMap<>();
+        expected.put("a", "100.00");
+        expected.put("b", "50.00");
+
+        UnifiedSet<EventAttributeValue> eavSet = apmLog.getEventAttributeValues().get("concept:name");
+        for (EventAttributeValue eav : eavSet) {
+            assertTrue(eav.getFrequency().equals(expected.get(eav.getValue())));
         }
     }
 
