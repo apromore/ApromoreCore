@@ -166,7 +166,7 @@ public class Frame {
         for (IntDoublePair tokenPair : tokenDistances) {
             double tokenDistance = tokenPair.getTwo();
             double diff = tokenGroup.isEmpty() ? 0 : Math.abs(tokenDistance - tokenGroupRadius);
-            if (diff <= 5) {
+            if (diff <= 100) { //tokens within 1 second apart can be merged
                 tokenGroup.add(tokenPair.getOne());
                 tokenGroupTotalDist += tokenDistance;
                 tokenGroupRadius = tokenGroupTotalDist/tokenGroup.size();
