@@ -249,9 +249,11 @@ export default class LogAnimation {
      * @param {Number} frameRate: frames per second
      */
     setSpeedLevel(frameRate) {
+        this.pause();
         let newSpeedLevel = frameRate / this.animationContext.getRecordingFrameRate();
         console.log('AnimationController - changeSpeed: speedLevel = ' + newSpeedLevel);
         this.tokenAnimation.setPlayingFrameRate(frameRate);
+        this.unPause();
     }
 
     // Move forward 1 slot

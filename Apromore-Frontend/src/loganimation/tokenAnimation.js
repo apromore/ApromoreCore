@@ -9,6 +9,7 @@
 import FrameBuffer from "./frameBuffer";
 import {AnimationState} from "./animationContextState";
 import {AnimationEvent, AnimationEventType} from "./animationEvents";
+const Queue = require('yocto-queue');
 
 /**
  * The animation reads frames from the Buffer into a Frame Queue and draws them on the canvas.
@@ -48,7 +49,7 @@ export default class TokenAnimation {
         this._processMapController = processMapController;
 
         this._frameBuffer = new FrameBuffer(animation.getAnimationContext()); //the buffer start filling immediately based on the animation context.
-        this._frameQueue = []; // queue of frames used for animating
+        this._frameQueue = new Queue(); // queue of frames used for animating
         this._currentFrame = {index: 0};
 
         this._playingFrameRate = 0;
@@ -139,9 +140,6 @@ export default class TokenAnimation {
     setPlayingFrameRate(playingFrameRate) {
         if (playingFrameRate === this._playingFrameRate) return;
 
-        // frameSkip= 0 if rate = (0,_MAX_BROWSER_REPAINT_RATE]
-        //          = 1 if rate = (_MAX_BROWSER_REPAINT_RATE, 2*_MAX_BROWSER_REPAINT_RATE]
-        //          = 2 if rate = (2*_MAX_BROWSER_REPAINT_RATE, 3*_MAX_BROWSER_REPAINT_RATE]...
         let compoundRate = playingFrameRate >= this._MAX_BROWSER_REPAINT_RATE && (playingFrameRate%this._MAX_BROWSER_REPAINT_RATE) === 0;
         let newFrameSkip = Math.floor(playingFrameRate/this._MAX_BROWSER_REPAINT_RATE) - (compoundRate ? 1 : 0);
 
@@ -152,7 +150,6 @@ export default class TokenAnimation {
         // Notify the server to do frame skipping and reset the frame buffer to the current frame index
         if (newFrameSkip !== this._frameSkip) {
             this._frameSkip = newFrameSkip;
-            zAu.send(new zk.Event(zk.Widget.$('$win'), 'onFrameSkipChanged', newFrameSkip));
             this._frameBuffer.resetWithFrameSkip(this.getCurrentFrameIndex(), newFrameSkip);
             this._clearData();
         }
@@ -279,7 +276,7 @@ export default class TokenAnimation {
     }
 
     addFrames(frames) {
-        this._frameQueue.push(...frames);
+        frames.forEach(frame => this._frameQueue.enqueue(frame));
     }
 
     getCurrentFrameIndex() {
@@ -304,13 +301,13 @@ export default class TokenAnimation {
         if (!this._backgroundJobsAllowed) return;
         setTimeout(this._loopBufferRead.bind(this), 1000);
         if (this._state === AnimationState.PLAYING || this._state === AnimationState.PAUSING) {
-            if (this._frameQueue.length >= 2*FrameBuffer.DEFAULT_CHUNK_SIZE) return;
+            if (this._frameQueue.size >= 2*FrameBuffer.DEFAULT_CHUNK_SIZE) return;
             let frames = this._frameBuffer.readNextChunk();
             if (frames && frames.length > 0) {
                 this.addFrames(frames);
                 console.log('TokenAnimation - loopBufferReading: readNext returns result, first frame index=' + frames[0].index);
             } else {
-                console.log('TokenAnimation - loopBufferReading: readNext returns EMPTY. FrameQueue size=' + this._frameQueue.length);
+                console.log('TokenAnimation - loopBufferReading: readNext returns EMPTY. FrameQueue size=' + this._frameQueue.size);
             }
         }
     }
@@ -330,14 +327,15 @@ export default class TokenAnimation {
             let elapsed = this._now - this._then;
             if (elapsed >= this._drawingInterval) {
                 this._then = this._now - (elapsed % this._drawingInterval);
-                let frame = this._frameQueue.shift();
+                for (let i=0; i<this._frameSkip; i++) this._frameQueue.dequeue();
+                let frame = this._frameQueue.dequeue();
                 if (frame) {
                     this._currentTime += this._drawingInterval;
                     this._currentFrame = frame;
                     this._drawFrame(frame);
                     if (this.isAtEndFrame()) {
                         console.log('Frame index = ' + frame.index + ' reached max frame index. Notify end of animation');
-                        console.log('Frame queue size = ' + this._frameQueue.length);
+                        console.log('Frame queue size = ' + this._frameQueue.size);
                         this._notifyAll(new AnimationEvent(AnimationEventType.END_OF_ANIMATION, {}));
                         this._setState(AnimationState.PAUSING);
                     }
@@ -357,7 +355,7 @@ export default class TokenAnimation {
         */
         else if (this._state === AnimationState.PAUSING) {
             if (this.isWaitingForData()) {
-                let frame = this._frameQueue.shift();
+                let frame = this._frameQueue.dequeue();
                 if (frame) {
                     this._drawFrame(frame);
                     this._currentFrame = frame;
@@ -402,16 +400,14 @@ export default class TokenAnimation {
                     console.log('Point not found', "elementIndex:" + elementIndex, 'distance:'+ distance, 'caseIndex:' + caseIndex);
                     continue;
                 }
-                //console.log("elementIndex:" + elementIndex, 'distance:'+ distance, 'caseIndex:' + caseIndex);
-                //console.log(point.x, point.y);
                 let y = this._animationController.getNumberOfLogs() > 1 ? this._getLogYAxis(logIndex, point.y) : point.y;
                 this._canvasContext.beginPath();
+                this._canvasContext.arc(point.x, y, this._getTokenCircleRadius(count), 0, 2 * Math.PI);
+                this._canvasContext.closePath();
                 this._canvasContext.strokeStyle = this._getTokenBorderColor(logIndex);
                 this._canvasContext.fillStyle = this._getTokenFillColor(logIndex, count);
-                this._canvasContext.arc(point.x, y, this._getTokenCircleRadius(count), 0, 2 * Math.PI);
                 this._canvasContext.stroke();
                 this._canvasContext.fill();
-                this._canvasContext.closePath();
             }
         }
     }
@@ -495,9 +491,9 @@ export default class TokenAnimation {
             this._canvasContext.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.e, matrix.f);
         }
         else {
-            let w = this._canvasContext.canvas.clientWidth;
-            let h = this._canvasContext.canvas.clientHeight;
-            this._canvasContext.clearRect(0, 0, 10000, 10000);
+            //let w = this._canvasContext.canvas.clientWidth;
+            //let h = this._canvasContext.canvas.clientHeight;
+            this._canvasContext.clearRect(0, 0, this._canvasContext.canvas.width, this._canvasContext.canvas.height);
         }
     }
 
@@ -520,7 +516,7 @@ export default class TokenAnimation {
     }
 
     _clearData() {
-        this._frameQueue = [];
+        this._frameQueue.clear();
         this._currentFrame = {};
     }
 
