@@ -173,12 +173,15 @@ public class EventAttributeValue implements AttributeValue {
     }
 
     public EventAttributeValue clone() {
-        IntArrayList occurCaseIndexesClone = new IntArrayList(occurCaseIndexes.size());
-        for (int i = 0; i < occurCaseIndexes.size(); i++) {
-            occurCaseIndexesClone.add(occurCaseIndexes.get(i));
+        IntArrayList occurCaseIndexesClone = new IntArrayList(this.getOccurCaseIndexes().size());
+        for (int i = 0; i < this.getOccurCaseIndexes().size(); i++) {
+            occurCaseIndexesClone.add(this.getOccurCaseIndexes().get(i));
         }
 
-        return new EventAttributeValue(
-                value, occurCaseIndexesClone, totalCases, new UnifiedSet<>(occurActivities) );
+        EventAttributeValue eavClone = new EventAttributeValue(
+                this.getValue(), occurCaseIndexesClone, this.getCases(),
+                new UnifiedSet<>(this.getOccurActivities()) );
+
+        return eavClone;
     }
 }

@@ -27,6 +27,7 @@ import org.apromore.apmlog.immutable.ImmutableTrace;
 import org.apromore.apmlog.stats.AAttributeGraph;
 import org.apromore.apmlog.stats.CaseAttributeValue;
 import org.apromore.apmlog.stats.EventAttributeValue;
+import org.apromore.apmlog.stats.StatsUtil;
 import org.apromore.apmlog.util.Util;
 import org.deckfour.xes.model.XLog;
 import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
@@ -181,44 +182,7 @@ public class LaLog implements APMLog {
             trace.setCaseVariantId(cId);
         }
 
-        int size = eventAttributeOccurMap.size();
-
-        eventAttributeValues = new UnifiedMap<>();
-
-
-        int counter = 0;
-
-        for (String key : eventAttributeOccurMap.keySet()) {
-            UnifiedMap<String, UnifiedSet<AActivity>> valOccurMap = eventAttributeOccurMap.get(key);
-
-            UnifiedMap<String, Integer> valCaseFreqMap = new UnifiedMap<>(valOccurMap.size());
-
-            UnifiedSet<EventAttributeValue> eventAttrVals = new UnifiedSet<>();
-
-            double maxCasesOfCSEventAttrVal = 0;
-
-            for (String val : valOccurMap.keySet()) {
-
-                UnifiedSet<AActivity> occurSet = valOccurMap.get(val);
-                IntArrayList traceIndexes = new IntArrayList();
-                for (AActivity act : occurSet) {
-                    int traceIndex = act.getMutableTraceIndex();
-                    if (!traceIndexes.contains(traceIndex)) traceIndexes.add(traceIndex);
-                }
-                valCaseFreqMap.put(val, traceIndexes.size());
-
-                eventAttrVals.add(new EventAttributeValue(val, traceIndexes, traceList.size(), occurSet));
-                if (traceIndexes.size() > maxCasesOfCSEventAttrVal) maxCasesOfCSEventAttrVal = traceIndexes.size();
-            }
-
-            for (EventAttributeValue v : eventAttrVals) {
-                v.setRatio(100 * ( (double) v.getCases() / maxCasesOfCSEventAttrVal));
-            }
-
-            eventAttributeValues.put(key, eventAttrVals);
-
-            counter += 1;
-        }
+        eventAttributeValues = StatsUtil.getEventAttributeValues(traceList);
 
         defaultChartDataCollection = new DefaultChartDataCollection(this);
 
