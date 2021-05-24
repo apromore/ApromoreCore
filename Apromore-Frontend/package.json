@@ -33,7 +33,8 @@
     "ramda": "^0.27.1",
     "sortablejs": "^1.13.0",
     "color": "^3.1.3",
-    "spectrum-colorpicker2": "^2.0.5"
+    "spectrum-colorpicker2": "^2.0.5",
+    "yocto-queue": "^0.1.0"
   },
   "devDependencies": {
     "css-loader": "^5.0.1",

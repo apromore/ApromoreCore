@@ -353,7 +353,6 @@ public class PDController extends BaseController {
             });
             mainWindow.addEventListener("onCaseDetails", event -> caseDetailsController.onEvent(event));
             mainWindow.addEventListener("onPerspectiveDetails", event -> perspectiveDetailsController.onEvent(event));
-            mainWindow.addEventListener("onFrameSkipChanged", event -> graphVisController.setFrameSkip(event.getData().toString()));
         }
         catch (Exception ex) {
             Messagebox.show("Errors occured while initializing event handlers.");
