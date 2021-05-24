@@ -45,9 +45,15 @@ public class ApromoreZKListener implements ExecutionInit {
     @Override
     public void init(Execution exec, Execution parent) {
         
+        LOGGER.info("Initialize execution {} with parent {}", exec, parent);
+
+        // If there's a parent execution, it will have already performed the required work
+        if (parent != null) {
+            return;
+        }
+
         // TODO: check the JWT and expire it if required, e.g. with signOut(exec.getSession())
         // TODO: check the JWT and refresh it if required, e.g. with refreshSessionTimeout(exec)
-        LOGGER.info("Initialize execution {}", exec);
     }
 
     /**
