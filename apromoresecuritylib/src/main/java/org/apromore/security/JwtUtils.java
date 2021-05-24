@@ -23,17 +23,11 @@ package org.apromore.security;
 
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.RSASSASigner;
-import com.nimbusds.jose.proc.DefaultJOSEObjectTypeVerifier;
-import com.nimbusds.jose.proc.SecurityContext;
 import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.JWTParser;
 import com.nimbusds.jwt.SignedJWT;
-import com.nimbusds.jwt.proc.ConfigurableJWTProcessor;
-import com.nimbusds.jwt.proc.DefaultJWTClaimsVerifier;
-import com.nimbusds.jwt.proc.DefaultJWTProcessor;
 import org.apache.commons.lang3.StringUtils;
-import org.keycloak.adapters.RefreshableKeycloakSecurityContext;
 import org.keycloak.adapters.springsecurity.account.SimpleKeycloakAccount;
 import org.keycloak.representations.AccessToken;
 import org.slf4j.Logger;
@@ -43,12 +37,9 @@ import java.security.Principal;
 import java.security.PrivateKey;
 
 import java.time.Duration;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.HashSet;
 
 import static org.apromore.security.util.AssertUtils.*;
 
@@ -154,38 +145,4 @@ public class JwtUtils {
     private static AccessToken getKeycloakAccessToken(final SimpleKeycloakAccount simpleKeycloakAccount) {
         return simpleKeycloakAccount.getKeycloakSecurityContext().getToken();
     }
-
-    public static boolean verifyJsonWebToken(
-            final String keycloakIssuerUrl,
-            final String tenantIpAddress,
-            final RefreshableKeycloakSecurityContext refreshableKeycloakSecurityContext) {
-        // Create a JWT processor for the access tokens
-        final ConfigurableJWTProcessor<SecurityContext> jwtProcessor = new DefaultJWTProcessor<>();
-
-        // Set the required "typ" header "at+jwt" for access tokens issued by the
-        // Connect2id server, may not be set by other servers
-        jwtProcessor.setJWSTypeVerifier(new DefaultJOSEObjectTypeVerifier<>(JOSEObjectType.JWT));
-
-        // The public RSA keys to validate the signatures will be sourced from the
-        // OAuth 2.0 server's JWK set, published at a well-known URL. The RemoteJWKSet
-        // object caches the retrieved keys to speed up subsequent look-ups and can
-        // also handle key-rollover
-        // final JWKSource<SecurityContext> keySource =
-        //        new RemoteJWKSet<>(new URL("https://demo.c2id.com/c2id/jwks.json"));
-
-        // The expected JWS algorithm of the access tokens (agreed out-of-band)
-        final JWSAlgorithm expectedJWSAlg = JWSAlgorithm.RS256;
-
-        jwtProcessor.setJWTClaimsSetVerifier(new DefaultJWTClaimsVerifier<>(
-                new JWTClaimsSet.Builder().issuer(keycloakIssuerUrl).build(),
-                new HashSet<>(Arrays.asList(
-                        JWT_KEY_SUBJECT_USERNAME,
-                        JWT_KEY_ISSUED_AT,
-                        JWT_EXPIRY_TIME))));
-
-        // @2do: Remove hard-coding
-
-        return false;
-    }
-
 }

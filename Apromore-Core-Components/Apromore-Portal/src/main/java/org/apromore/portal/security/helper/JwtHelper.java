@@ -35,8 +35,6 @@ import org.apromore.portal.model.UserType;
 import org.apromore.portal.util.SecurityUtils;
 import org.apromore.security.util.SecurityUtil;
 import org.apromore.service.SecurityService;
-import org.keycloak.adapters.springsecurity.account.SimpleKeycloakAccount;
-import org.keycloak.representations.AccessToken;
 import org.slf4j.Logger;
 
 import javax.servlet.http.Cookie;
@@ -106,6 +104,7 @@ public class JwtHelper {
         return updatedJwtClaimsSet;
     }
 
+    /*
     public static JWTClaimsSet createJsonWebToken(
             final String keycloakIssuerUrl,
             final String tenantIpAddress,
@@ -143,6 +142,7 @@ public class JwtHelper {
     private static AccessToken getKeycloakAccessToken(final SimpleKeycloakAccount simpleKeycloakAccount) {
         return simpleKeycloakAccount.getKeycloakSecurityContext().getToken();
     }
+    */
 
     public static boolean isJwtExpired(final JWTClaimsSet jwtClaimsSet,
                                        final String issuedAtStr,
