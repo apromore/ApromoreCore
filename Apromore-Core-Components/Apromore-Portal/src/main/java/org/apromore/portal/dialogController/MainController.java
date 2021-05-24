@@ -169,16 +169,6 @@ public class MainController extends BaseController implements MainControllerInte
                 final String expiryAtStr = (String)jwtClaimsSet.getStringClaim(
                         JwtHelper.STR_JWT_EXPIRY_TIME);
                 LOGGER.debug("expiryAtStr {}", expiryAtStr);
-
-                final boolean jwtHasExpired = JwtHelper.isJwtExpired(jwtClaimsSet, issuedAtStr, expiryAtStr);
-
-                if (jwtHasExpired) {
-                    LOGGER.debug("JWT IS expired");
-
-                    Executions.getCurrent().sendRedirect("/login.zul?error=2");
-                } else {
-                    LOGGER.debug("JWT is NOT expired");
-                }
             } catch (final Exception e) {
                 LOGGER.error("Failed to check JWT expiry", e);
             }

@@ -71,4 +71,18 @@ public class ApromoreZKListener implements ExecutionInit {
         EventQueues.lookup("signOutQueue", EventQueues.APPLICATION, true)
                 .publish(new Event("onSignout", null, session));
     }
+
+    /*
+    // This old logic was in MainController.java
+
+                final boolean jwtHasExpired = JwtHelper.isJwtExpired(jwtClaimsSet, issuedAtStr, expiryAtStr);
+
+                if (jwtHasExpired) {
+                    LOGGER.debug("JWT IS expired");
+
+                    Executions.getCurrent().sendRedirect("/login.zul?error=2");
+                } else {
+                    LOGGER.debug("JWT is NOT expired");
+                }
+     */
 }
