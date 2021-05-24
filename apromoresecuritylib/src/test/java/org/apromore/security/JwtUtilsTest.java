@@ -49,7 +49,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.Principal;
 import java.security.interfaces.RSAPublicKey;
 import java.text.ParseException;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
@@ -141,7 +140,6 @@ public class JwtUtilsTest {
         environmentVariables.set(KS_AND_KEY_PASSWORD_ENV_KEY, "topSecret");
     }
 
-
     /**
      *
      *
@@ -170,32 +168,6 @@ public class JwtUtilsTest {
         exceptionRule.expectMessage("'jwtClaimsSet' must not be null");
 
         JwtUtils.isJwtExpired(null);
-    }
-
-    @Test
-    public void refreshJwt() {
-        final JWTClaimsSet jwtClaimsSet =
-                JwtUtils.createJsonWebToken(VALID_KC_ISSUER_URL, VALID_TENANT_IP_ADDRESS, s_validSimpleKeycloakAccount);
-
-        final JWTClaimsSet refreshedJwtClaimsSet = JwtUtils.refreshJwt(jwtClaimsSet);
-
-        Assert.assertEquals(jwtClaimsSet.getClaim(JwtUtils.JWT_KEY_SUBJECT_USERNAME),
-                refreshedJwtClaimsSet.getClaim(JwtUtils.JWT_KEY_SUBJECT_USERNAME));
-        Assert.assertEquals(jwtClaimsSet.getClaim(JwtUtils.JWT_KEY_SUBJECT_EMAIL),
-                refreshedJwtClaimsSet.getClaim(JwtUtils.JWT_KEY_SUBJECT_EMAIL));
-        Assert.assertEquals(jwtClaimsSet.getClaim(JwtUtils.JWT_KEY_GIVEN_NAME),
-                refreshedJwtClaimsSet.getClaim(JwtUtils.JWT_KEY_GIVEN_NAME));
-        Assert.assertEquals(jwtClaimsSet.getClaim(JwtUtils.JWT_KEY_FAMILY_NAME),
-                refreshedJwtClaimsSet.getClaim(JwtUtils.JWT_KEY_FAMILY_NAME));
-        Assert.assertEquals(jwtClaimsSet.getClaim(JwtUtils.JWT_KEY_ISSUED_AT),
-                refreshedJwtClaimsSet.getClaim(JwtUtils.JWT_KEY_ISSUED_AT));
-        Assert.assertEquals(jwtClaimsSet.getClaim("str" + JwtUtils.JWT_KEY_ISSUED_AT),
-                refreshedJwtClaimsSet.getClaim("str" + JwtUtils.JWT_KEY_ISSUED_AT));
-        Assert.assertNotEquals(jwtClaimsSet.getClaim(JwtUtils.JWT_EXPIRY_TIME),
-                refreshedJwtClaimsSet.getClaim(JwtUtils.JWT_EXPIRY_TIME));
-        final Long originalExp = (Long)jwtClaimsSet.getClaim(JwtUtils.JWT_EXPIRY_TIME);
-        final Long newExp = (Long)refreshedJwtClaimsSet.getClaim(JwtUtils.JWT_EXPIRY_TIME);
-        Assert.assertTrue(newExp.longValue() > originalExp.longValue());
     }
 
     @Test

@@ -147,52 +147,13 @@ public class MainController extends BaseController implements MainControllerInte
     }
 
     public MainController() {
-        final boolean usingKeycloak = config.isUseKeycloakSso();
-        LOGGER.debug("Using keycloak: {}", usingKeycloak);
-
         portalSession = new PortalSession(this);
 
-        String usernameParsed = null;
-
-        if (usingKeycloak) {
-            try {
-                final HttpServletRequest httpServletRequest =
-                        (HttpServletRequest) Executions.getCurrent().getNativeRequest();
-                final String appAuthHeader =
-                        JwtHelper.readCookie(httpServletRequest, "App_Auth");
-                LOGGER.debug("Read App_Auth cookie: {}", appAuthHeader);
-
-                final JWTClaimsSet jwtClaimsSet = JwtHelper.getClaimsSetFromJWT(appAuthHeader);
-                final String issuedAtStr = (String)jwtClaimsSet.getStringClaim(
-                        JwtHelper.STR_JWT_KEY_ISSUED_AT);
-                LOGGER.debug("issuedAtStr {}", issuedAtStr);
-                final String expiryAtStr = (String)jwtClaimsSet.getStringClaim(
-                        JwtHelper.STR_JWT_EXPIRY_TIME);
-                LOGGER.debug("expiryAtStr {}", expiryAtStr);
-            } catch (final Exception e) {
-                LOGGER.error("Failed to check JWT expiry", e);
-            }
-
-            // MainController.encKey = SecuritySsoHelper.getEnvEncKey();
-
-            try {
-                qe = EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION,
-                        true);
-                portalSession = new PortalSession(this);
-
-                initializeUser(getService(), config, null, null);
-            } catch (final Exception e) {
-                LOGGER.error("Error in decrypting url param: {} - stackTrace {}",
-                        e.getMessage(),
-                        ExceptionUtils.getStackTrace(e));
-            }
-        } else {
-            qe = EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION,
+        qe = EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION,
                     true);
-            portalSession = new PortalSession(this);
+        portalSession = new PortalSession(this);
 
-            initializeUser(getService(), config, null, null);
-        }
+        initializeUser(getService(), config, null, null);
 
         portalPluginMap = PortalPluginResolver.getPortalPluginMap();
     }

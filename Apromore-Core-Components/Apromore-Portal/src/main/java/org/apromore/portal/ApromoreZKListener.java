@@ -25,7 +25,6 @@ package org.apromore.portal;
 import com.nimbusds.jwt.JWTClaimsSet;
 import javax.servlet.http.HttpServletRequest;
 import org.apromore.plugin.portal.PortalLoggerFactory;
-import org.apromore.portal.ConfigBean;
 import org.apromore.portal.security.helper.JwtHelper;
 import org.slf4j.Logger;
 import org.zkoss.spring.SpringUtil;
@@ -50,16 +49,15 @@ public class ApromoreZKListener implements ExecutionInit {
      */
     @Override
     public void init(Execution exec, Execution parent) {
-
         LOGGER.debug("Initialize execution {} with parent {}", exec, parent);
 
-        // If there's a parent execution, it will have already performed the required work
+        // If there is a parent execution, it will have already performed the required work
         if (parent != null) {
             return;
         }
 
-        // If we're not using Keycloak, we don't have to manage JWTs
-        ConfigBean config = (ConfigBean) SpringUtil.getBean("portalConfig");
+        // If we are not using Keycloak, we don't have to manage JWTs
+        final ConfigBean config = (ConfigBean) SpringUtil.getBean("portalConfig");
         final boolean usingKeycloak = config.isUseKeycloakSso();
         if (!usingKeycloak) {
             LOGGER.debug("Skipping JWT check because not using Keycloak");
@@ -91,6 +89,8 @@ public class ApromoreZKListener implements ExecutionInit {
         }
 
         // TODO: check the JWT and refresh it if required, e.g. with refreshSessionTimeout(exec)
+        // JwtHelper.refreshJwt();
+
     }
 
     /**

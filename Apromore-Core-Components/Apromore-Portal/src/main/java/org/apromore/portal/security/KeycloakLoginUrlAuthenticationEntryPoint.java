@@ -154,7 +154,7 @@ public class KeycloakLoginUrlAuthenticationEntryPoint extends LoginUrlAuthentica
 
                 final String host = uri.getHost();
                 final String path = uri.getPath();
-                final int port = uri.getPort();
+                int port = (uri.getPort() == -1) ? 80 : uri.getPort();
                 LOGGER.info("host {} path {} port {}", host, path, port);
 
                 if (host.endsWith("/") || ( (port == 80) || (port == 8181)) ) {

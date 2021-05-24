@@ -24,6 +24,7 @@
 
     <properties>
         <junit.jupiter.version>5.7.0</junit.jupiter.version>
+        <keycloak.version>12.0.4</keycloak.version>
     </properties>
 
     <build>
@@ -117,6 +118,25 @@
     </build>
 
     <dependencies>
+        <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-admin-client</artifactId>
+            <!-- <version>${keycloak.version}</version> -->
+            <!--
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
+            -->
+        </dependency>
+
+        <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-spring-boot-starter</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
