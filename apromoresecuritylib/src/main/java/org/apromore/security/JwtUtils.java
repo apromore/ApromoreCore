@@ -43,6 +43,7 @@ import java.security.Principal;
 import java.security.PrivateKey;
 
 import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Arrays;
@@ -61,7 +62,7 @@ import static org.apromore.security.util.AssertUtils.*;
  */
 public class JwtUtils {
 
-    public static final Duration WEBAPP_SSO_SESSION_TIMEOUT = Duration.ofMinutes(30);
+    public static final Duration WEBAPP_SSO_SESSION_TIMEOUT = Duration.ofMinutes(1); // Temporary test
 
     public static final String JWT_KEY_SUBJECT_USERNAME = "sub";
     public static final String JWT_KEY_ISSUED_AT = "iat";
@@ -73,6 +74,26 @@ public class JwtUtils {
     public static final String JWT_KEY_FAMILY_NAME = "familyName";
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    public static JWTClaimsSet refreshJwt(final JWTClaimsSet jwtClaimsSet) {
+        try { Thread.sleep(10); } catch (final InterruptedException ie) { };
+
+        final Instant newExpiryTime = Instant.now().plus(WEBAPP_SSO_SESSION_TIMEOUT);
+
+        final JWTClaimsSet updatedJwtClaimsSet = new JWTClaimsSet.Builder()
+                .claim(JWT_KEY_SUBJECT_USERNAME, jwtClaimsSet.getClaim(JWT_KEY_SUBJECT_USERNAME))
+                .claim(JWT_KEY_SUBJECT_EMAIL, jwtClaimsSet.getClaim(JWT_KEY_SUBJECT_EMAIL))
+                .claim(JWT_KEY_GIVEN_NAME, jwtClaimsSet.getClaim(JWT_KEY_GIVEN_NAME))
+                .claim(JWT_KEY_FAMILY_NAME, jwtClaimsSet.getClaim(JWT_KEY_FAMILY_NAME))
+                .claim(JWT_KC_USER_ID, jwtClaimsSet.getClaim(JWT_KC_USER_ID))
+                .claim(JWT_KEY_ISSUED_AT, jwtClaimsSet.getClaim(JWT_KEY_ISSUED_AT))
+                .claim(JWT_EXPIRY_TIME, newExpiryTime.toEpochMilli())
+                .claim("str" + JWT_KEY_ISSUED_AT, jwtClaimsSet.getClaim("str" + JWT_KEY_ISSUED_AT))
+                .claim("str" + JWT_EXPIRY_TIME, jwtClaimsSet.getClaim("str" + JWT_EXPIRY_TIME))
+                .build();
+
+        return updatedJwtClaimsSet;
+    }
 
     public static JWTClaimsSet createJsonWebToken(
             final String keycloakIssuerUrl,
