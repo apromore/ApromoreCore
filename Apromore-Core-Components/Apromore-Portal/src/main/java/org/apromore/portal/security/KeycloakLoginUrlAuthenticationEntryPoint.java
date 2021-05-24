@@ -33,6 +33,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Base64;
 import java.util.UUID;
 
 public class KeycloakLoginUrlAuthenticationEntryPoint extends LoginUrlAuthenticationEntryPoint {
@@ -50,7 +51,8 @@ public class KeycloakLoginUrlAuthenticationEntryPoint extends LoginUrlAuthentica
     private String keycloakLoginFormUrl;
 
     public void setFullProtocolHostPortUrl(final String fullProtocolHostPortUrl) {
-        fullConfigurableReturnPath = fullProtocolHostPortUrl;
+        fullConfigurableReturnPath = new String(
+                Base64.getEncoder().encode(fullProtocolHostPortUrl.getBytes()));
 
         LOGGER.info("Set fullConfigurableReturnPath to {}", fullConfigurableReturnPath);
     }

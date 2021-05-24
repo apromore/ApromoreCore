@@ -32,6 +32,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Base64;
 import java.util.UUID;
 
 public class LoginRedirectKeycloakFilter extends GenericFilterBean {
@@ -51,7 +52,8 @@ public class LoginRedirectKeycloakFilter extends GenericFilterBean {
     private boolean s_utiliseKeycloakSso = false;
 
     public void setFullProtocolHostPortUrl(final String fullProtocolHostPortUrl) {
-        s_fullConfigurableReturnPath = fullProtocolHostPortUrl;
+        s_fullConfigurableReturnPath = new String(
+                Base64.getEncoder().encode(fullProtocolHostPortUrl.getBytes()));
 
         LOGGER.info("Set fullProtocolHostPortUrl to {}", s_fullConfigurableReturnPath);
     }
