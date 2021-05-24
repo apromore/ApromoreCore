@@ -77,20 +77,24 @@ public class ApromoreZKListener implements ExecutionInit {
                         JwtHelper.STR_JWT_EXPIRY_TIME);
             LOGGER.debug("expiryAtStr {}", expiryAtStr);
 
+            // If the token is expired, sign the session out
             if (JwtHelper.isJwtExpired(jwtClaimsSet, issuedAtStr, expiryAtStr)) {
                 LOGGER.debug("JWT is expired");
                 signOut(exec.getSession());
-            } else {
-                LOGGER.debug("JWT is not expired");
+            }
+            LOGGER.debug("JWT is not expired");
+
+            // If the token is close to expiry, refresh it (currently, we do this whether close to expiry or not)
+            if (true) {
+                final JWTClaimSet newJWTClaimsSet = JwtHelper.refreshJwt(jwtClaimsSet);
+                LOGGER.debug("JWT expiry refreshed from {} to {}", expiryAtStr,
+                    newJWTClaimsSet.getStringClaim(JwtHelper.STR_JWT_EXPIRY_TIME));
+                // TODO: update the JWT on the servlet response
             }
         } catch (Exception e) {
-            LOGGER.error("JWT expiration check failed; terminating session", e);
+            LOGGER.error("JWT expiration/refresh check failed; terminating session", e);
             signOut(exec.getSession());
         }
-
-        // TODO: check the JWT and refresh it if required, e.g. with refreshSessionTimeout(exec)
-        // JwtHelper.refreshJwt();
-
     }
 
     /**
