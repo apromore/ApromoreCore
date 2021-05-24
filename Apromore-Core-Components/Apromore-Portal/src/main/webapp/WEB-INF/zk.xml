@@ -401,7 +401,7 @@
     </listener>
 
     <listener>
-            <listener-class>org.apromore.portal.ApromoreExecutionCleanup</listener-class>
+            <listener-class>org.apromore.portal.ApromoreZKListener</listener-class>
     </listener>
 
     <!-- Configure the error page
