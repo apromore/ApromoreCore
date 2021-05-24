@@ -20697,7 +20697,7 @@ module.exports = {
 
   'scenarioGroup.label': 'Scenario Specification',
   'scenarioGroup.distribution.label': 'Inter arrival time',
-  'scenarioGroup.processInstances.label': 'Total number of process instances',
+  'scenarioGroup.processInstances.label': 'Total number of cases',
   'scenarioGroup.startDate.label': 'Scenario start date',
   'scenarioGroup.startTime.label': 'Scenario start time',
   'scenarioGroup.startExclude.label': '% to exclude from stats at the start',
