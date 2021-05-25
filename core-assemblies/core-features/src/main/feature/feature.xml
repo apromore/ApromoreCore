@@ -129,6 +129,7 @@
   <feature name="apromore-portal" version="${project.version}" description="Apromore core web browser interface">
     <feature>apromore-calendar</feature>
     <feature>apromore-manager</feature>
+    <feature>jersey2</feature>
     <feature>jms</feature>
     <feature>war</feature>
     <requirement>osgi.wiring.package; filter:="(&amp;(osgi.wiring.package=org.zkoss.zul)(version>=8.6.0)(!(version>=10.0.0)))"</requirement>
@@ -190,6 +191,17 @@
   <feature name="jaxb" version="2.3">  <!-- JAXB 2.3, including com.sun.xml.bind.* packages -->
     <bundle>mvn:javax.xml.bind/jaxb-api/2.3.1</bundle>
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.jaxb-runtime/2.3.2_2</bundle>
+  </feature>
+
+  <feature name="jersey2">
+    <bundle>mvn:javax.ws.rs/javax.ws.rs-api/2.1</bundle>
+    <bundle>mvn:org.glassfish.hk2/hk2-api/2.6.1</bundle>
+    <bundle>mvn:org.glassfish.hk2/hk2-locator/2.6.1</bundle>
+    <bundle>mvn:org.glassfish.hk2/hk2-utils/2.6.1</bundle>
+    <bundle>mvn:org.glassfish.hk2/osgi-resource-locator/1.0.3</bundle>
+    <bundle>mvn:org.glassfish.jersey.core/jersey-common/2.34</bundle>
+    <bundle>mvn:org.glassfish.jersey.core/jersey-client/2.34</bundle>
+    <bundle>mvn:org.glassfish.jersey.inject/jersey-hk2/2.34</bundle>
   </feature>
 
   <feature name="opencsv">
