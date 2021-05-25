@@ -49,7 +49,9 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import static org.apromore.portal.util.AssertUtils.notNullAssert;
 
@@ -135,6 +137,42 @@ public class JwtHelper {
         return jwtExpired;
     }
 
+    public static boolean doesJwtExpiryWithinNMinutes(final JWTClaimsSet preExistingJwtClaimsSet,
+                                                      final int nMinutes) {
+        try {
+            // final Date jwtExpiryDate = preExistingJwtClaimsSet.getDateClaim(JwtHelper.JWT_EXPIRY_TIME);
+            final String strExpAt = preExistingJwtClaimsSet.getStringClaim("str" + JwtHelper.JWT_EXPIRY_TIME);
+            final String epochStr = strExpAt.substring(3);
+            LOGGER.info("\nepochStr >>> {}", epochStr);
+
+            final Date jwtExpiryDate = new Date(Long.valueOf(epochStr));
+
+            LOGGER.info("\njwtExpiryDate {}", jwtExpiryDate);
+            // LOGGER.info("\njwtExpiryDate.getHours() {}", jwtExpiryDate.getHours());
+            // LOGGER.info("\njwtExpiryDate.getMinutes() {}", jwtExpiryDate.getMinutes());
+            // LOGGER.info("\njwtExpiryDate.getSeconds() {}", jwtExpiryDate.getSeconds());
+
+            // LOGGER.info("\njwtExpiryDate.getYear() {}", jwtExpiryDate.getYear());
+            // LOGGER.info("\njwtExpiryDate.getMonth() {}", jwtExpiryDate.getMonth());
+            // LOGGER.info("\njwtExpiryDate.getDay() {}", jwtExpiryDate.getDay());
+
+            final Date dateInFutureForExpSoon =
+                    new Date(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(nMinutes));
+            LOGGER.info("\ndateInFutureForExpSoon {}", dateInFutureForExpSoon);
+            // LOGGER.info("\ndateInFiveMins.getHours() {}", dateInFutureForExpSoon.getHours());
+            // LOGGER.info("\ndateInFiveMins.getMinutes() {}", dateInFutureForExpSoon.getMinutes());
+            // LOGGER.info("\ndateInFiveMins.getSeconds() {}", dateInFutureForExpSoon.getSeconds());
+
+            // LOGGER.info("\ndateInFiveMins.getYear() + 1900 {}", dateInFutureForExpSoon.getYear() + 1900);
+            // LOGGER.info("\ndateInFiveMins.getMonth() + 1 {}", dateInFutureForExpSoon.getMonth() + 1);
+            // LOGGER.info("\ndateInFiveMins.getDate() {}", dateInFutureForExpSoon.getDate());
+
+            return true;
+        } catch (final ParseException pe) {
+            return false;
+        }
+    }
+
     public static JWTClaimsSet getClaimsSetFromJWT(final String jwtStr) throws Exception {
         final JWT jwtParsed = JWTParser.parse(jwtStr);
         final JWTClaimsSet jwtClaimsSet = jwtParsed.getJWTClaimsSet();
@@ -152,7 +190,7 @@ public class JwtHelper {
             final JWTClaimsSet jwtClaimsSet = JwtHelper.getClaimsSetFromJWT(appAuthHeader);
 
             final String issuedAtStr = jwtClaimsSet.getStringClaim(JwtHelper.STR_JWT_KEY_ISSUED_AT);
-            final String expiryAtStr = jwtClaimsSet.getStringClaim(JwtHelper.STR_JWT_EXPIRY_TIME);
+            final String expiryAtStr = jwtClaimsSet.getStringClaim("str" + JwtHelper.STR_JWT_EXPIRY_TIME);
 
             final boolean jwtExpired = JwtHelper.isJwtExpired(jwtClaimsSet, issuedAtStr, expiryAtStr);
 

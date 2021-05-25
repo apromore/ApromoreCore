@@ -22,11 +22,14 @@ package org.apromore.portal;
  * #L%
  */
 
+import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTClaimsSet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.MediaType;
+
+import com.nimbusds.jwt.JWTParser;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.security.helper.JwtHelper;
 import org.slf4j.Logger;
@@ -43,9 +46,6 @@ import org.zkoss.zk.ui.util.ExecutionInit;
 public class ApromoreZKListener implements ExecutionInit {
 
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(ApromoreZKListener.class);
-
-    private static final String HARDCODED_INITIAL_TEST_ONLY_JWT =
-            "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImdpdmVuTmFtZSI6IlRlc3QiLCJmYW1pbHlOYW1lIjoiVXNlciIsImV4cCI6MTYxOTE1NDgyNTkwMywiaWF0IjoxNjE5MTQ3NjI1OTAzLCJlbWFpbCI6IiIsImtjdXNlcmlkIjoiZjoyY2JjM2E2NS0yNzNhLTRjMTEtYjFlNC0zZjhkNjVlM2JiYjg6OCJ9.XtEHtIevrp7PVbYLwGbjBbvB32kZ8ZM2au-fbKGn03zjLYXojibRXbLfqJb1p45WbEn9nvoGn-oFvmSecWQsQGBSF3iGhy1RjpPgKuZxMdKBaGDaLdqix0OgQYFOk2RLaSRoBTVEdd579UCIavF66vVW9rKCC4zE2AIFSFFFPgJK25lwq7c31DyYjs5deA_SlmV5z1tfkk27ksrOuVmy-LzmAf81fFp5OTftTvM3Zfb04AmKBnMLyIuSb63zdlRlHrgjVbsE29CIr4u0NIdNt-hOrjXXe_j8PMO26tsycG0ku2Fg8ZYcvozWeTa3uvH4dvYN7Dsrn44A9P2tDwze8w";
 
     /**
      * {@inheritDoc}
@@ -70,7 +70,7 @@ public class ApromoreZKListener implements ExecutionInit {
         final boolean usingKeycloak = config.isUseKeycloakSso();
         if (!usingKeycloak) {
             LOGGER.debug("Skipping JWT check because not using Keycloak");
-            refreshSessionTimeout(exec, HARDCODED_INITIAL_TEST_ONLY_JWT, httpServletResponse);
+
             return;
         }
 
@@ -95,10 +95,12 @@ public class ApromoreZKListener implements ExecutionInit {
 
             // If the token is close to expiry, refresh it (currently, we do this whether close to expiry or not)
             if (true) {
-                final JWTClaimsSet newJWTClaimsSet = JwtHelper.refreshJwt(jwtClaimsSet);
-                LOGGER.debug("JWT expiry refreshed from {} to {}", expiryAtStr,
-                    newJWTClaimsSet.getStringClaim(JwtHelper.STR_JWT_EXPIRY_TIME));
+                // final JWTClaimsSet newJWTClaimsSet = JwtHelper.refreshJwt(jwtClaimsSet);
+                // LOGGER.debug("JWT expiry refreshed from {} to {}", expiryAtStr,
+                //    newJWTClaimsSet.getStringClaim(JwtHelper.STR_JWT_EXPIRY_TIME));
                 // TODO: update the JWT on the servlet response
+
+                refreshSessionTimeout(jwtClaimsSet, exec, appAuthHeader, httpServletResponse);
             }
         } catch (final Exception e) {
             LOGGER.error("JWT expiration/refresh check failed; terminating session", e);
@@ -110,6 +112,7 @@ public class ApromoreZKListener implements ExecutionInit {
      * Issue a new JWT with an extended expiry.
      */
     private static void refreshSessionTimeout(
+            final JWTClaimsSet preExistingJwtClaimsSet,
             final Execution exec,
             final String existingJwtStr,
             final HttpServletResponse httpServletResponse) {
@@ -120,17 +123,24 @@ public class ApromoreZKListener implements ExecutionInit {
                 .request(MediaType.APPLICATION_JSON)
                 .get(RefreshTokenResponse.class);
 
+            LOGGER.info("Refreshed session timeout, refreshTokenResponse {}", refreshTokenResponse);
+
             final String updatedAuthHeader = refreshTokenResponse.getAuthHeader();
             final String updatedSignedAuthHeader = refreshTokenResponse.getSignedAuthHeader();
             LOGGER.info(">>> updatedAuthHeader {}", updatedAuthHeader);
             LOGGER.info(">>> updatedSignedAuthHeader {}", updatedSignedAuthHeader);
 
+            final JWT jwt = JWTParser.parse(updatedAuthHeader);
+            final JWTClaimsSet jwtClaimsSet = jwt.getJWTClaimsSet();
+
+            boolean expiresSoon = JwtHelper.doesJwtExpiryWithinNMinutes(
+                    preExistingJwtClaimsSet, 5);
+            LOGGER.info(">>> expiresSoon {}", expiresSoon);
+
             JwtHelper.writeCookie(httpServletResponse, JwtHelper.AUTH_HEADER_KEY, updatedAuthHeader);
             JwtHelper.writeCookie(httpServletResponse, JwtHelper.SIGNED_AUTH_HEADER_KEY,
                     updatedSignedAuthHeader);
             LOGGER.debug("Updated cookie values written to the HttpServletResponse");
-
-            LOGGER.info("Refreshed session timeout, refreshTokenResponse {}", refreshTokenResponse);
         } catch (final Exception e) {
             LOGGER.warn("Unable to refresh session timeout", e);
         }
