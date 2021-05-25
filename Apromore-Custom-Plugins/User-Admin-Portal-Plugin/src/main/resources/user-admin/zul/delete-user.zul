@@ -68,33 +68,38 @@
         </div>
         <hbox hflex="1" height="73px" spacing="8px">
             <radiogroup id="deleteOptionGroup" />
-            <div hflex="1" vflex="1" style="padding-bottom: 8px;">
+            <div hflex="3" vflex="1" style="padding-bottom: 8px;">
                 <div hflex="1" vflex="1" sclass="ap-usrmgt-delete-option-container">
                     <div style="margin-bottom: 4px;">
                         <radio id="deleteOptionTransfer" checked="true" label="" radiogroup="deleteOptionGroup" />
                         <span sclass="ap-usrmgt-delete-option">Transfer ownership</span>
                     </div>
-                    <span>Transfer ownership from </span>
-                    <label id="transferFromLabel" class="ap-transfer-from"></label>
-                    <span> to</span>
-                    <combobox id="transferToCombobox" placeholder="Select a user">
-                        <template name="model">
-                            <comboitem label="${each.username}"/>
-                        </template>
-                    </combobox>
-                    <textbox id="transferToTextbox"
-                             width="200px" style="margin-right: 7px"
-                             placeholder="Type in a user or group name"
-                    />
+                    <div sclass="ap-usrmgt-delete-option-detail">
+                        <span>Transfer ownership from </span>
+                        <label id="transferFromLabel" class="ap-transfer-from"></label>
+                        <span> to</span>
+                        <combobox id="transferToCombobox" placeholder="Select a user">
+                            <template name="model">
+                                <comboitem label="${each.username}"/>
+                            </template>
+                        </combobox>
+                        <textbox id="transferToTextbox"
+                                 width="150px" style="margin-right: 7px; vertical-align: middle"
+                                 placeholder="Type in a user or group name"
+                        />
+                    </div>
                 </div>
             </div>
-            <div hflex="1" vflex="1" style="padding: 0 8px 8px 0;">
+            <div hflex="2" vflex="1" style="padding: 0 8px 8px 0;">
                 <div hflex="1" vflex="1" sclass="ap-usrmgt-delete-option-container">
                     <div style="margin-bottom: 4px;">
                         <radio id="deleteOptionPurge" label="" radiogroup="deleteOptionGroup" />
                         <span sclass="ap-usrmgt-delete-option">Delete assets</span>
                     </div>
-                    <span>Delete all assets owned by <label id="deletedUserLabelPurge" class="ap-transfer-from"></label></span>
+                    <div sclass="ap-usrmgt-delete-option-detail" style="margin-top: 7px;">
+                        <span>Delete all assets owned by </span>
+                        <label id="deletedUserLabelPurge" class="ap-transfer-from"></label>
+                    </div>
                 </div>
             </div>
         </hbox>
