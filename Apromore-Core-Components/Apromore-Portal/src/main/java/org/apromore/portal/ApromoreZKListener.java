@@ -24,10 +24,9 @@ package org.apromore.portal;
 
 import com.nimbusds.jwt.JWTClaimsSet;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.client.Client;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.security.helper.JwtHelper;
 import org.slf4j.Logger;
@@ -55,7 +54,7 @@ public class ApromoreZKListener implements ExecutionInit {
      * if it's still valid but close to expiry.
      */
     @Override
-    public void init(Execution exec, Execution parent) {
+    public void init(final Execution exec, final Execution parent) {
         LOGGER.debug("Initialize execution {} with parent {}", exec, parent);
 
         // If there is a parent execution, it will have already performed the required work
@@ -63,16 +62,18 @@ public class ApromoreZKListener implements ExecutionInit {
             return;
         }
 
+        final HttpServletRequest httpServletRequest = (HttpServletRequest) exec.getNativeRequest();
+        final HttpServletResponse httpServletResponse = (HttpServletResponse) exec.getNativeResponse();
+
         // If we are not using Keycloak, we don't have to manage JWTs
         final ConfigBean config = (ConfigBean) SpringUtil.getBean("portalConfig");
         final boolean usingKeycloak = config.isUseKeycloakSso();
         if (!usingKeycloak) {
             LOGGER.debug("Skipping JWT check because not using Keycloak");
-            refreshSessionTimeout(exec, HARDCODED_INITIAL_TEST_ONLY_JWT);
+            refreshSessionTimeout(exec, HARDCODED_INITIAL_TEST_ONLY_JWT, httpServletResponse);
             return;
         }
 
-        final HttpServletRequest httpServletRequest = (HttpServletRequest) exec.getNativeRequest();
         final String appAuthHeader = JwtHelper.readCookie(httpServletRequest, "App_Auth");
         LOGGER.debug("Read App_Auth cookie: {}", appAuthHeader);
 
@@ -110,13 +111,25 @@ public class ApromoreZKListener implements ExecutionInit {
      */
     private static void refreshSessionTimeout(
             final Execution exec,
-            final String existingJwtStr) {
+            final String existingJwtStr,
+            final HttpServletResponse httpServletResponse) {
         LOGGER.debug(">>>>> Refreshing session timeout");
         try {
             final RefreshTokenResponse refreshTokenResponse = ClientBuilder.newClient()
                 .target("http://localhost:8282/refreshJwtToken/" + existingJwtStr)
                 .request(MediaType.APPLICATION_JSON)
                 .get(RefreshTokenResponse.class);
+
+            final String updatedAuthHeader = refreshTokenResponse.getAuthHeader();
+            final String updatedSignedAuthHeader = refreshTokenResponse.getSignedAuthHeader();
+            LOGGER.info(">>> updatedAuthHeader {}", updatedAuthHeader);
+            LOGGER.info(">>> updatedSignedAuthHeader {}", updatedSignedAuthHeader);
+
+            JwtHelper.writeCookie(httpServletResponse, JwtHelper.AUTH_HEADER_KEY, updatedAuthHeader);
+            JwtHelper.writeCookie(httpServletResponse, JwtHelper.SIGNED_AUTH_HEADER_KEY,
+                    updatedSignedAuthHeader);
+            LOGGER.debug("Updated cookie values written to the HttpServletResponse");
+
             LOGGER.info("Refreshed session timeout, refreshTokenResponse {}", refreshTokenResponse);
         } catch (final Exception e) {
             LOGGER.warn("Unable to refresh session timeout", e);

@@ -39,6 +39,7 @@ import org.slf4j.Logger;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.text.DateFormat;
@@ -67,6 +68,9 @@ public class JwtHelper {
     public static final String STR_JWT_EXPIRY_TIME = "strexp";
     public static final Duration WEBAPP_SSO_SESSION_TIMEOUT = Duration.ofMinutes(30);
 
+    public static final String AUTH_HEADER_KEY = "App_Auth";
+    public static final String SIGNED_AUTH_HEADER_KEY = "Signed_App_Auth";
+
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(JwtHelper.class);
 
     public static String readCookie(final HttpServletRequest httpServletRequest,
@@ -82,6 +86,14 @@ public class JwtHelper {
         }
 
         return null;
+    }
+
+    public static void writeCookie(final HttpServletResponse httpServletResponse,
+                                   final String cookieName,
+                                   final String cookieValue) {
+        final Cookie cookie = new Cookie(cookieName, cookieValue);
+        cookie.setPath("/");
+        httpServletResponse.addCookie(cookie);
     }
 
     public static JWTClaimsSet refreshJwt(final JWTClaimsSet jwtClaimsSet) {
@@ -103,46 +115,6 @@ public class JwtHelper {
 
         return updatedJwtClaimsSet;
     }
-
-    /*
-    public static JWTClaimsSet createJsonWebToken(
-            final String keycloakIssuerUrl,
-            final String tenantIpAddress,
-            final SimpleKeycloakAccount simpleKeycloakAccount) {
-        notNullAssert(keycloakIssuerUrl, "keycloakIssuerUrl");
-        // validHttpProtocolUrl(keycloakIssuerUrl, true);
-        // validIpAddress(tenantIpAddress);
-        notNullAssert(simpleKeycloakAccount, "simpleKeycloakAccount");
-
-        final long issuedAtEpoch = new Date().getTime();
-
-        final Principal securityPrincipal = simpleKeycloakAccount.getPrincipal();
-
-        final AccessToken kcAccessToken = JwtHelper.getKeycloakAccessToken(simpleKeycloakAccount);
-
-        final String username =
-                StringUtils.isEmpty(kcAccessToken.getPreferredUsername()) ?
-                        kcAccessToken.getEmail() : kcAccessToken.getPreferredUsername();
-
-        final String kcUserId = kcAccessToken.getSubject();
-
-        final JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
-                .claim(JWT_KEY_SUBJECT_USERNAME, username)
-                .claim(JWT_KEY_SUBJECT_EMAIL, kcAccessToken.getEmail())
-                .claim(JWT_KEY_GIVEN_NAME, kcAccessToken.getGivenName())
-                .claim(JWT_KEY_FAMILY_NAME, kcAccessToken.getFamilyName())
-                .claim(JWT_KC_USER_ID, kcUserId)
-                .claim(JWT_KEY_ISSUED_AT, issuedAtEpoch)
-                .claim(JWT_EXPIRY_TIME, calculateExpiryTime(issuedAtEpoch, WEBAPP_SSO_SESSION_TIMEOUT))
-                .build();
-
-        return jwtClaimsSet;
-    }
-
-    private static AccessToken getKeycloakAccessToken(final SimpleKeycloakAccount simpleKeycloakAccount) {
-        return simpleKeycloakAccount.getKeycloakSecurityContext().getToken();
-    }
-    */
 
     public static boolean isJwtExpired(final JWTClaimsSet jwtClaimsSet,
                                        final String issuedAtStr,
