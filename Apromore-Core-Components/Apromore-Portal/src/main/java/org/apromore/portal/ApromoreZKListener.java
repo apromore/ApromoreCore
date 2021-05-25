@@ -45,6 +45,9 @@ public class ApromoreZKListener implements ExecutionInit {
 
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(ApromoreZKListener.class);
 
+    private static final String HARDCODED_INITIAL_TEST_ONLY_JWT =
+            "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImdpdmVuTmFtZSI6IlRlc3QiLCJmYW1pbHlOYW1lIjoiVXNlciIsImV4cCI6MTYxOTE1NDgyNTkwMywiaWF0IjoxNjE5MTQ3NjI1OTAzLCJlbWFpbCI6IiIsImtjdXNlcmlkIjoiZjoyY2JjM2E2NS0yNzNhLTRjMTEtYjFlNC0zZjhkNjVlM2JiYjg6OCJ9.XtEHtIevrp7PVbYLwGbjBbvB32kZ8ZM2au-fbKGn03zjLYXojibRXbLfqJb1p45WbEn9nvoGn-oFvmSecWQsQGBSF3iGhy1RjpPgKuZxMdKBaGDaLdqix0OgQYFOk2RLaSRoBTVEdd579UCIavF66vVW9rKCC4zE2AIFSFFFPgJK25lwq7c31DyYjs5deA_SlmV5z1tfkk27ksrOuVmy-LzmAf81fFp5OTftTvM3Zfb04AmKBnMLyIuSb63zdlRlHrgjVbsE29CIr4u0NIdNt-hOrjXXe_j8PMO26tsycG0ku2Fg8ZYcvozWeTa3uvH4dvYN7Dsrn44A9P2tDwze8w";
+
     /**
      * {@inheritDoc}
      *
@@ -65,7 +68,7 @@ public class ApromoreZKListener implements ExecutionInit {
         final boolean usingKeycloak = config.isUseKeycloakSso();
         if (!usingKeycloak) {
             LOGGER.debug("Skipping JWT check because not using Keycloak");
-            refreshSessionTimeout(exec);
+            refreshSessionTimeout(exec, HARDCODED_INITIAL_TEST_ONLY_JWT);
             return;
         }
 
@@ -96,7 +99,7 @@ public class ApromoreZKListener implements ExecutionInit {
                     newJWTClaimsSet.getStringClaim(JwtHelper.STR_JWT_EXPIRY_TIME));
                 // TODO: update the JWT on the servlet response
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOGGER.error("JWT expiration/refresh check failed; terminating session", e);
             signOut(exec.getSession());
         }
@@ -105,16 +108,17 @@ public class ApromoreZKListener implements ExecutionInit {
     /**
      * Issue a new JWT with an extended expiry.
      */
-    private static void refreshSessionTimeout(final Execution exec) {
-        LOGGER.debug("Refreshing session timeout");
+    private static void refreshSessionTimeout(
+            final Execution exec,
+            final String existingJwtStr) {
+        LOGGER.debug(">>>>> Refreshing session timeout");
         try {
-            RefreshTokenResponse response = ClientBuilder.newClient()
-                .target("https://raboczi.id.au/test.json")
+            final RefreshTokenResponse refreshTokenResponse = ClientBuilder.newClient()
+                .target("http://localhost:8282/refreshJwtToken/" + existingJwtStr)
                 .request(MediaType.APPLICATION_JSON)
                 .get(RefreshTokenResponse.class);
-            LOGGER.debug("Refreshed session timeout, response {}", response);
-
-        } catch (Exception e) {
+            LOGGER.info("Refreshed session timeout, refreshTokenResponse {}", refreshTokenResponse);
+        } catch (final Exception e) {
             LOGGER.warn("Unable to refresh session timeout", e);
         }
     }

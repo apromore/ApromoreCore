@@ -26,6 +26,9 @@ public class RefreshTokenResponse {
     private String signedAuthHeader;
     private boolean wasRefreshed;
 
+    public RefreshTokenResponse() {
+    }
+
     public RefreshTokenResponse(
             final String authHeader,
             final String signedAuthHeader,
@@ -45,5 +48,17 @@ public class RefreshTokenResponse {
 
     public boolean isWasRefreshed() {
         return wasRefreshed;
+    }
+
+    public void setAuthHeader(String authHeader) {
+        this.authHeader = authHeader;
+    }
+
+    public void setSignedAuthHeader(String signedAuthHeader) {
+        this.signedAuthHeader = signedAuthHeader;
+    }
+
+    public void setWasRefreshed(boolean wasRefreshed) {
+        this.wasRefreshed = wasRefreshed;
     }
 }
