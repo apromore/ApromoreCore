@@ -24,7 +24,6 @@ package org.apromore.portal.security.helper;
 import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.JWTParser;
-import org.apache.commons.lang3.StringUtils;
 import org.apromore.dao.model.Membership;
 import org.apromore.dao.model.User;
 import org.apromore.manager.client.ManagerService;
@@ -49,10 +48,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
-
 import static org.apromore.portal.util.AssertUtils.notNullAssert;
 
 public class JwtHelper {
@@ -110,7 +106,7 @@ public class JwtHelper {
                 .claim(JWT_KEY_FAMILY_NAME, jwtClaimsSet.getClaim(JWT_KEY_FAMILY_NAME))
                 .claim(JWT_KC_USER_ID, jwtClaimsSet.getClaim(JWT_KC_USER_ID))
                 .claim(JWT_KEY_ISSUED_AT, jwtClaimsSet.getClaim(JWT_KEY_ISSUED_AT))
-                .claim(JWT_EXPIRY_TIME, newExpiryTime.toEpochMilli())
+                .claim(JWT_EXPIRY_TIME, (newExpiryTime.toEpochMilli() / 1000)) // JWT spec is epoch *seconds* relative
                 .claim("str" + JWT_KEY_ISSUED_AT, jwtClaimsSet.getClaim("str" + JWT_KEY_ISSUED_AT))
                 .claim("str" + JWT_EXPIRY_TIME, jwtClaimsSet.getClaim("str" + JWT_EXPIRY_TIME))
                 .build();
@@ -145,41 +141,6 @@ public class JwtHelper {
         return Duration.between(Instant.now(), preExistingJwtClaimsSet.getExpirationTime().toInstant())
                        .minus(Duration.ofMinutes(nMinutes))
                        .isNegative();
-        /*
-        try {
-            // final Date jwtExpiryDate = preExistingJwtClaimsSet.getDateClaim(JwtHelper.JWT_EXPIRY_TIME);
-            final String strExpAt = preExistingJwtClaimsSet.getStringClaim("str" + JwtHelper.JWT_EXPIRY_TIME);
-            final String epochStr = strExpAt.substring(3);
-            LOGGER.info("\nepochStr >>> {}", epochStr);
-
-            final Date jwtExpiryDate = new Date(Long.valueOf(epochStr));
-
-            LOGGER.info("\njwtExpiryDate {}", jwtExpiryDate);
-            // LOGGER.info("\njwtExpiryDate.getHours() {}", jwtExpiryDate.getHours());
-            // LOGGER.info("\njwtExpiryDate.getMinutes() {}", jwtExpiryDate.getMinutes());
-            // LOGGER.info("\njwtExpiryDate.getSeconds() {}", jwtExpiryDate.getSeconds());
-
-            // LOGGER.info("\njwtExpiryDate.getYear() {}", jwtExpiryDate.getYear());
-            // LOGGER.info("\njwtExpiryDate.getMonth() {}", jwtExpiryDate.getMonth());
-            // LOGGER.info("\njwtExpiryDate.getDay() {}", jwtExpiryDate.getDay());
-
-            final Date dateInFutureForExpSoon =
-                    new Date(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(nMinutes));
-            LOGGER.info("\ndateInFutureForExpSoon {}", dateInFutureForExpSoon);
-            // LOGGER.info("\ndateInFiveMins.getHours() {}", dateInFutureForExpSoon.getHours());
-            // LOGGER.info("\ndateInFiveMins.getMinutes() {}", dateInFutureForExpSoon.getMinutes());
-            // LOGGER.info("\ndateInFiveMins.getSeconds() {}", dateInFutureForExpSoon.getSeconds());
-
-            // LOGGER.info("\ndateInFiveMins.getYear() + 1900 {}", dateInFutureForExpSoon.getYear() + 1900);
-            // LOGGER.info("\ndateInFiveMins.getMonth() + 1 {}", dateInFutureForExpSoon.getMonth() + 1);
-            // LOGGER.info("\ndateInFiveMins.getDate() {}", dateInFutureForExpSoon.getDate());
-
-            return true;
-
-        } catch (final ParseException pe) {
-            return false;
-        }
-        */
     }
 
     public static JWTClaimsSet getClaimsSetFromJWT(final String jwtStr) throws Exception {

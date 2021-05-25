@@ -25,11 +25,8 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.security.Principal;
 import java.time.Instant;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 public class JwtHelperUnitTest {
@@ -41,68 +38,6 @@ public class JwtHelperUnitTest {
     private static final String SUBJECT_EMAIL_ADDRESS = "mic.giansiracusa@apromore.com";
     private static final String FIRST_NAME = "Mic";
     private static final String SURNAME = "G";
-
-    /*
-    private static SimpleKeycloakAccount s_validSimpleKeycloakAccount;
-
-    @BeforeClass
-    public static void setupBeforeClass() {
-        final AccessToken accessToken = new AccessToken();
-        accessToken.setGivenName(FIRST_NAME);
-        accessToken.setFamilyName(SURNAME);
-        accessToken.setEmail(SUBJECT_EMAIL_ADDRESS);
-        accessToken.setSubject(SUBJECT_UUID);
-
-        final AuthorizationContext authorizationContext =
-                new AuthorizationContext(accessToken, new PolicyEnforcerConfig.PathConfig());
-
-        final RefreshableKeycloakSecurityContext keycloakSecurityCtxt =
-                new RefreshableKeycloakSecurityContext(null,
-                        null,
-                        "626893224",
-                        accessToken,
-                        "626893224",
-                        null,
-                        "886653252");
-        keycloakSecurityCtxt.setAuthorizationContext(authorizationContext);
-
-        final Principal principal = new KeycloakPrincipal<>("mic", keycloakSecurityCtxt);
-        final Set<String> roles = new HashSet<>();
-        roles.add("ADMIN");
-
-        s_validSimpleKeycloakAccount = new SimpleKeycloakAccount(principal, roles, keycloakSecurityCtxt);
-    }
-    */
-
-    /*
-    @Test
-    public void refreshJwt() {
-        final JWTClaimsSet jwtClaimsSet =
-                JwtHelper.createJsonWebToken(VALID_KC_ISSUER_URL,
-                        VALID_TENANT_IP_ADDRESS,
-                        s_validSimpleKeycloakAccount);
-
-        final JWTClaimsSet refreshedJwtClaimsSet = JwtHelper.refreshJwt(jwtClaimsSet);
-
-        Assert.assertEquals(jwtClaimsSet.getClaim(JwtHelper.JWT_KEY_SUBJECT_USERNAME),
-                refreshedJwtClaimsSet.getClaim(JwtHelper.JWT_KEY_SUBJECT_USERNAME));
-        Assert.assertEquals(jwtClaimsSet.getClaim(JwtHelper.JWT_KEY_SUBJECT_EMAIL),
-                refreshedJwtClaimsSet.getClaim(JwtHelper.JWT_KEY_SUBJECT_EMAIL));
-        Assert.assertEquals(jwtClaimsSet.getClaim(JwtHelper.JWT_KEY_GIVEN_NAME),
-                refreshedJwtClaimsSet.getClaim(JwtHelper.JWT_KEY_GIVEN_NAME));
-        Assert.assertEquals(jwtClaimsSet.getClaim(JwtHelper.JWT_KEY_FAMILY_NAME),
-                refreshedJwtClaimsSet.getClaim(JwtHelper.JWT_KEY_FAMILY_NAME));
-        Assert.assertEquals(jwtClaimsSet.getClaim(JwtHelper.JWT_KEY_ISSUED_AT),
-                refreshedJwtClaimsSet.getClaim(JwtHelper.JWT_KEY_ISSUED_AT));
-        Assert.assertEquals(jwtClaimsSet.getClaim("str" + JwtHelper.JWT_KEY_ISSUED_AT),
-                refreshedJwtClaimsSet.getClaim("str" + JwtHelper.JWT_KEY_ISSUED_AT));
-        Assert.assertNotEquals(jwtClaimsSet.getClaim(JwtHelper.JWT_EXPIRY_TIME),
-                refreshedJwtClaimsSet.getClaim(JwtHelper.JWT_EXPIRY_TIME));
-        final Long originalExp = (Long)jwtClaimsSet.getClaim(JwtHelper.JWT_EXPIRY_TIME);
-        final Long newExp = (Long)refreshedJwtClaimsSet.getClaim(JwtHelper.JWT_EXPIRY_TIME);
-        Assert.assertTrue(newExp.longValue() > originalExp.longValue());
-    }
-    */
 
     /**
      * Test the {@link JwtHelper#getClaimsSetFromJWT} method.
