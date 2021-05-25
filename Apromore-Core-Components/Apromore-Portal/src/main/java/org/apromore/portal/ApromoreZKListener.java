@@ -22,6 +22,8 @@ package org.apromore.portal;
  * #L%
  */
 
+import com.nimbusds.jwt.PlainJWT;
+import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTClaimsSet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -99,7 +101,8 @@ public class ApromoreZKListener implements ExecutionInit {
                 final JWTClaimsSet newJWTClaimsSet = JwtHelper.refreshJwt(jwtClaimsSet);
                 LOGGER.debug("JWT expiry refreshed from {} to {}", expiryAtStr,
                     newJWTClaimsSet.getStringClaim(JwtHelper.STR_JWT_EXPIRY_TIME));
-                JwtHelper.writeCookie(httpServletResponse, COOKIE_NAME, newJWTClaimsSet.serialize());
+                JWT newJWT = new PlainJWT(newJWTClaimsSet);
+                JwtHelper.writeCookie(httpServletResponse, COOKIE_NAME, newJWT.serialize());
             }
         } catch (final Exception e) {
             LOGGER.error("JWT expiration/refresh check failed; terminating session", e);
