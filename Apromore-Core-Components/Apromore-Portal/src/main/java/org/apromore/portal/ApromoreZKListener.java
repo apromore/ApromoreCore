@@ -44,6 +44,7 @@ public class ApromoreZKListener implements ExecutionInit {
 
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(ApromoreZKListener.class);
 
+    private static final String COOKIE_NAME = "App_Auth";
     private static final String HARDCODED_INITIAL_TEST_ONLY_JWT =
             "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImdpdmVuTmFtZSI6IlRlc3QiLCJmYW1pbHlOYW1lIjoiVXNlciIsImV4cCI6MTYxOTE1NDgyNTkwMywiaWF0IjoxNjE5MTQ3NjI1OTAzLCJlbWFpbCI6IiIsImtjdXNlcmlkIjoiZjoyY2JjM2E2NS0yNzNhLTRjMTEtYjFlNC0zZjhkNjVlM2JiYjg6OCJ9.XtEHtIevrp7PVbYLwGbjBbvB32kZ8ZM2au-fbKGn03zjLYXojibRXbLfqJb1p45WbEn9nvoGn-oFvmSecWQsQGBSF3iGhy1RjpPgKuZxMdKBaGDaLdqix0OgQYFOk2RLaSRoBTVEdd579UCIavF66vVW9rKCC4zE2AIFSFFFPgJK25lwq7c31DyYjs5deA_SlmV5z1tfkk27ksrOuVmy-LzmAf81fFp5OTftTvM3Zfb04AmKBnMLyIuSb63zdlRlHrgjVbsE29CIr4u0NIdNt-hOrjXXe_j8PMO26tsycG0ku2Fg8ZYcvozWeTa3uvH4dvYN7Dsrn44A9P2tDwze8w";
 
@@ -74,7 +75,7 @@ public class ApromoreZKListener implements ExecutionInit {
             return;
         }
 
-        final String appAuthHeader = JwtHelper.readCookie(httpServletRequest, "App_Auth");
+        final String appAuthHeader = JwtHelper.readCookie(httpServletRequest, COOKIE_NAME);
         LOGGER.debug("Read App_Auth cookie: {}", appAuthHeader);
 
         try {
@@ -98,7 +99,7 @@ public class ApromoreZKListener implements ExecutionInit {
                 final JWTClaimsSet newJWTClaimsSet = JwtHelper.refreshJwt(jwtClaimsSet);
                 LOGGER.debug("JWT expiry refreshed from {} to {}", expiryAtStr,
                     newJWTClaimsSet.getStringClaim(JwtHelper.STR_JWT_EXPIRY_TIME));
-                // TODO: update the JWT on the servlet response
+                JwtHelper.writeCookie(httpServletResponse, COOKIE_NAME, newJWTClaimsSet.serialize());
             }
         } catch (final Exception e) {
             LOGGER.error("JWT expiration/refresh check failed; terminating session", e);
@@ -116,7 +117,8 @@ public class ApromoreZKListener implements ExecutionInit {
         LOGGER.debug(">>>>> Refreshing session timeout");
         try {
             final RefreshTokenResponse refreshTokenResponse = ClientBuilder.newClient()
-                .target("http://localhost:8282/refreshJwtToken/" + existingJwtStr)
+                .target("http://localhost:8282/refreshJwtToken")
+                .path(existingJwtStr)
                 .request(MediaType.APPLICATION_JSON)
                 .get(RefreshTokenResponse.class);
 
