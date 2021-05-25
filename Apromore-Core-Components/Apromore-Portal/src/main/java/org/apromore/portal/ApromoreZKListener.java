@@ -24,6 +24,10 @@ package org.apromore.portal;
 
 import com.nimbusds.jwt.JWTClaimsSet;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.security.helper.JwtHelper;
 import org.slf4j.Logger;
@@ -61,6 +65,7 @@ public class ApromoreZKListener implements ExecutionInit {
         final boolean usingKeycloak = config.isUseKeycloakSso();
         if (!usingKeycloak) {
             LOGGER.debug("Skipping JWT check because not using Keycloak");
+            refreshSessionTimeout(exec);
             return;
         }
 
@@ -101,7 +106,17 @@ public class ApromoreZKListener implements ExecutionInit {
      * Issue a new JWT with an extended expiry.
      */
     private static void refreshSessionTimeout(final Execution exec) {
-        // exec.addResponseHeader(...);  or maybe  ((HttpServletResponse) exec.getNativeResponse())...
+        LOGGER.debug("Refreshing session timeout");
+        try {
+            RefreshTokenResponse response = ClientBuilder.newClient()
+                .target("https://raboczi.id.au/test.json")
+                .request(MediaType.APPLICATION_JSON)
+                .get(RefreshTokenResponse.class);
+            LOGGER.debug("Refreshed session timeout, response {}", response);
+
+        } catch (Exception e) {
+            LOGGER.warn("Unable to refresh session timeout", e);
+        }
     }
 
     /**
