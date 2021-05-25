@@ -61,4 +61,13 @@ public class RefreshTokenResponse {
     public void setWasRefreshed(boolean wasRefreshed) {
         this.wasRefreshed = wasRefreshed;
     }
+
+    @Override
+    public String toString() {
+        return "RefreshTokenResponse{" +
+                "authHeader='" + authHeader + '\'' +
+                ", signedAuthHeader='" + signedAuthHeader + '\'' +
+                ", wasRefreshed=" + wasRefreshed +
+                '}';
+    }
 }
