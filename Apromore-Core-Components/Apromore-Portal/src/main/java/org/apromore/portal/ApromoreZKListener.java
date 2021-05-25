@@ -47,6 +47,8 @@ public class ApromoreZKListener implements ExecutionInit {
 
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(ApromoreZKListener.class);
 
+    private static final String COOKIE_NAME = "App_Auth";
+
     /**
      * {@inheritDoc}
      *
@@ -74,7 +76,7 @@ public class ApromoreZKListener implements ExecutionInit {
             return;
         }
 
-        final String appAuthHeader = JwtHelper.readCookie(httpServletRequest, "App_Auth");
+        final String appAuthHeader = JwtHelper.readCookie(httpServletRequest, COOKIE_NAME);
         LOGGER.debug("Read App_Auth cookie: {}", appAuthHeader);
 
         try {
@@ -100,7 +102,10 @@ public class ApromoreZKListener implements ExecutionInit {
                 //    newJWTClaimsSet.getStringClaim(JwtHelper.STR_JWT_EXPIRY_TIME));
                 // TODO: update the JWT on the servlet response
 
+                LOGGER.debug("JWT needs refresh");
                 refreshSessionTimeout(jwtClaimsSet, exec, appAuthHeader, httpServletResponse);
+            } else {
+                LOGGER.debug("JWT is fresh");
             }
         } catch (final Exception e) {
             LOGGER.error("JWT expiration/refresh check failed; terminating session", e);
@@ -119,7 +124,8 @@ public class ApromoreZKListener implements ExecutionInit {
         LOGGER.debug(">>>>> Refreshing session timeout");
         try {
             final RefreshTokenResponse refreshTokenResponse = ClientBuilder.newClient()
-                .target("http://localhost:8282/refreshJwtToken/" + existingJwtStr)
+                .target("http://localhost:8282/refreshJwtToken")
+                .path(existingJwtStr)
                 .request(MediaType.APPLICATION_JSON)
                 .get(RefreshTokenResponse.class);
 
