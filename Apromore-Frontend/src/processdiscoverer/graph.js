@@ -170,7 +170,7 @@ let style = [
         selector: 'edge',
         style: {
             'color': 'data(color)',
-            'control-point-step-size': 60,
+            'control-point-step-size': 200,
             'curve-style': 'bezier',
             'edge-text-rotation': 0,
             'font-size': 16,
