@@ -119,7 +119,6 @@ public class ApromoreZKListener implements ExecutionInit {
         LOGGER.debug(">>>>> Refreshing session timeout");
         try {
             final ConfigBean config = (ConfigBean) SpringUtil.getBean("portalConfig");
-            final boolean usingKeycloak = config.isUseKeycloakSso();
             final String securityMsHost = config.getSecurityMsHost();
             final String securityMsPort = config.getSecurityMsPort();
             LOGGER.info("Using securityMsHost {} and securityMsPort {}", securityMsHost, securityMsPort);
