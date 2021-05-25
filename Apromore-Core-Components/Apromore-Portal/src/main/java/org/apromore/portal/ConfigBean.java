@@ -186,6 +186,14 @@ public class ConfigBean implements Serializable {
 
     public boolean isUseKeycloakSso() { return useKeycloakSso; }
 
+    public String getSecurityMsHost() {
+        return securityMsHost;
+    }
+
+    public String getSecurityMsPort() {
+        return securityMsPort;
+    }
+
     public String getSecurityMsHttpLogoutUrl() {
         return securityMsHttpLogoutUrl;
     }

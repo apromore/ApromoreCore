@@ -92,6 +92,8 @@ public class JwtHelper {
         final Cookie cookie = new Cookie(cookieName, cookieValue);
         cookie.setPath("/");
         httpServletResponse.addCookie(cookie);
+        LOGGER.info("Added written cookie {} with name {} and value {} to the HttpServletResponse",
+                cookie, cookie.getName(), cookie.getValue());
     }
 
     public static JWTClaimsSet refreshJwt(final JWTClaimsSet jwtClaimsSet) {

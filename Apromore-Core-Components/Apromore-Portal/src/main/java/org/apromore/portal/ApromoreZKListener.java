@@ -118,8 +118,16 @@ public class ApromoreZKListener implements ExecutionInit {
             final HttpServletResponse httpServletResponse) {
         LOGGER.debug(">>>>> Refreshing session timeout");
         try {
+            final ConfigBean config = (ConfigBean) SpringUtil.getBean("portalConfig");
+            final boolean usingKeycloak = config.isUseKeycloakSso();
+            final String securityMsHost = config.getSecurityMsHost();
+            final String securityMsPort = config.getSecurityMsPort();
+            LOGGER.info("Using securityMsHost {} and securityMsPort {}", securityMsHost, securityMsPort);
+            final String refreshTokenUrl = "http://" + securityMsHost + ":" + securityMsHost + "/refreshJwtToken";
+            LOGGER.info("Using refreshTokenUrl {}", refreshTokenUrl);
+
             final RefreshTokenResponse refreshTokenResponse = ClientBuilder.newClient()
-                .target("http://localhost:8282/refreshJwtToken")
+                .target(refreshTokenUrl)
                 .path(existingJwtStr)
                 .request(MediaType.APPLICATION_JSON)
                 .get(RefreshTokenResponse.class);
