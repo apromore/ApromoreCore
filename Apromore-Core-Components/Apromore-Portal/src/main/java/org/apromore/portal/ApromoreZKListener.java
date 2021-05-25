@@ -22,8 +22,6 @@ package org.apromore.portal;
  * #L%
  */
 
-import com.nimbusds.jwt.PlainJWT;
-import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTClaimsSet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -73,7 +71,6 @@ public class ApromoreZKListener implements ExecutionInit {
         final boolean usingKeycloak = config.isUseKeycloakSso();
         if (!usingKeycloak) {
             LOGGER.debug("Skipping JWT check because not using Keycloak");
-            refreshSessionTimeout(exec, HARDCODED_INITIAL_TEST_ONLY_JWT, httpServletResponse);
             return;
         }
 
@@ -93,16 +90,11 @@ public class ApromoreZKListener implements ExecutionInit {
             if (JwtHelper.isJwtExpired(jwtClaimsSet, issuedAtStr, expiryAtStr)) {
                 LOGGER.debug("JWT is expired");
                 signOut(exec.getSession());
-            }
-            LOGGER.debug("JWT is not expired");
-
-            // If the token is close to expiry, refresh it (currently, we do this whether close to expiry or not)
-            if (true) {
-                final JWTClaimsSet newJWTClaimsSet = JwtHelper.refreshJwt(jwtClaimsSet);
-                LOGGER.debug("JWT expiry refreshed from {} to {}", expiryAtStr,
-                    newJWTClaimsSet.getStringClaim(JwtHelper.STR_JWT_EXPIRY_TIME));
-                JWT newJWT = new PlainJWT(newJWTClaimsSet);
-                JwtHelper.writeCookie(httpServletResponse, COOKIE_NAME, newJWT.serialize());
+            } else if (true) {  // TODO: test if expiry is close
+                LOGGER.debug("JWT needs refresh");
+                refreshSessionTimeout(exec, HARDCODED_INITIAL_TEST_ONLY_JWT, httpServletResponse);
+            } else {
+                LOGGER.debug("JWT is fresh");
             }
         } catch (final Exception e) {
             LOGGER.error("JWT expiration/refresh check failed; terminating session", e);
