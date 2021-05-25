@@ -97,11 +97,6 @@ public class ApromoreZKListener implements ExecutionInit {
 
             // If the token is close to expiry, refresh it (currently, we do this whether close to expiry or not)
             if (true) {
-                // final JWTClaimsSet newJWTClaimsSet = JwtHelper.refreshJwt(jwtClaimsSet);
-                // LOGGER.debug("JWT expiry refreshed from {} to {}", expiryAtStr,
-                //    newJWTClaimsSet.getStringClaim(JwtHelper.STR_JWT_EXPIRY_TIME));
-                // TODO: update the JWT on the servlet response
-
                 LOGGER.debug("JWT needs refresh");
                 refreshSessionTimeout(jwtClaimsSet, exec, appAuthHeader, httpServletResponse);
             } else {
