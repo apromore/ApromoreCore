@@ -139,6 +139,13 @@ public class JwtHelper {
 
     public static boolean doesJwtExpiryWithinNMinutes(final JWTClaimsSet preExistingJwtClaimsSet,
                                                       final int nMinutes) {
+
+        assert preExistingJwtClaimsSet.getExpirationTime() != null;
+
+        return Duration.between(Instant.now(), preExistingJwtClaimsSet.getExpirationTime().toInstant())
+                       .minus(Duration.ofMinutes(nMinutes))
+                       .isNegative();
+        /*
         try {
             // final Date jwtExpiryDate = preExistingJwtClaimsSet.getDateClaim(JwtHelper.JWT_EXPIRY_TIME);
             final String strExpAt = preExistingJwtClaimsSet.getStringClaim("str" + JwtHelper.JWT_EXPIRY_TIME);
@@ -168,9 +175,11 @@ public class JwtHelper {
             // LOGGER.info("\ndateInFiveMins.getDate() {}", dateInFutureForExpSoon.getDate());
 
             return true;
+
         } catch (final ParseException pe) {
             return false;
         }
+        */
     }
 
     public static JWTClaimsSet getClaimsSetFromJWT(final String jwtStr) throws Exception {
