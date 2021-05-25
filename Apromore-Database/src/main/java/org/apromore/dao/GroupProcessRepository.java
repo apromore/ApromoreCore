@@ -66,10 +66,10 @@ public interface GroupProcessRepository extends JpaRepository<GroupProcess, Inte
     List<GroupProcess> findByGroupId(final Integer groupId);
 
     /**
-     * Search for processes to which a particular user has access
+     * Search for processes in Home Folder to which a particular user has access
      *
      * @param userRowGuid the rowGuid of a user
-     * @return processes to which the user has access
+     * @return processes to which the user has access in Home Folder
      */
     @Query("SELECT gp FROM GroupProcess gp JOIN gp.process p JOIN gp.group g1, " +
            "               User u JOIN u.groups g2 " +
