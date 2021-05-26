@@ -79,32 +79,46 @@ public class ApromoreZKListener implements ExecutionInit {
         }
 
         final String appAuthHeader = JwtHelper.readCookieValue(httpServletRequest, COOKIE_NAME);
-        // LOGGER.info("Read App_Auth cookie: {}", appAuthHeader);
+        LOGGER.trace("Read App_Auth cookie: {}", appAuthHeader);
 
         try {
             final JWTClaimsSet jwtClaimsSet = JwtHelper.getClaimsSetFromJWT(appAuthHeader);
-            final String issuedAtStr = (String)jwtClaimsSet.getStringClaim(
-                        JwtHelper.STR_JWT_KEY_ISSUED_AT);
-            LOGGER.debug("issuedAtStr {}", issuedAtStr);
-            final Date issuedAtDate = jwtClaimsSet.getIssueTime();
-            // LOGGER.info("issuedAtDate {}", issuedAtDate);
-            final Date expiryAtDate = jwtClaimsSet.getExpirationTime();
-            LOGGER.info("expiryAtDate {}", expiryAtDate);
+            // final jwtVerified = @todo: JwtHelper.isSignedStrVerifiable();
 
-            // If the token is expired, sign the session out
-            if (JwtHelper.isJwtExpired(jwtClaimsSet, issuedAtDate, expiryAtDate)) {
-                LOGGER.info("JWT is expired");
-                signOut(exec.getSession());
-                return;
-            }
-            LOGGER.info("JWT is not expired");
+            final boolean jwtVerified = true;
 
-            // If the token is close to expiry, refresh it
-            if (JwtHelper.doesJwtExpiryWithinNMinutes(jwtClaimsSet, 1)) {
-                LOGGER.info("JWT needs refresh");
-                refreshSessionTimeout(jwtClaimsSet, exec, appAuthHeader, httpServletResponse);
+            if (jwtVerified) {
+                final String issuedAtStr = jwtClaimsSet.getStringClaim(JwtHelper.STR_JWT_KEY_ISSUED_AT);
+                LOGGER.debug("issuedAtStr {}", issuedAtStr);
+                final Date issuedAtDate = jwtClaimsSet.getIssueTime();
+                LOGGER.trace("issuedAtDate {}", issuedAtDate);
+                final Date expiryAtDate = jwtClaimsSet.getExpirationTime();
+                LOGGER.info("expiryAtDate {}", expiryAtDate);
+
+                // If the token is expired, sign the session out
+                if (JwtHelper.isJwtExpired(jwtClaimsSet, issuedAtDate, expiryAtDate)) {
+                    LOGGER.info("JWT is expired");
+                    signOut(exec.getSession());
+                    // @todo (trivial): call managerService.logout();
+                    //                                   logoutSuccess =
+                    //                                            managerService.logoutUserAllSessions(
+                    //                                                    currentUser.getUsername(),
+                    //                                                    config.getSecurityMsHttpLogoutUrl(),
+                    //                                                    config.getSecurityMsHttpsLogoutUrl());
+                    return;
+                }
+                LOGGER.info("JWT is not expired");
+
+                // If the token is close to expiry, refresh it
+                if (JwtHelper.doesJwtExpiryWithinNMinutes(jwtClaimsSet, 1)) {
+                    LOGGER.info("JWT needs refresh");
+                    refreshSessionTimeout(jwtClaimsSet, exec, appAuthHeader, httpServletResponse);
+                } else {
+                    LOGGER.info("JWT is fresh");
+                }
             } else {
-                LOGGER.info("JWT is fresh");
+                LOGGER.warn("JWT signature verification failed");
+                return;
             }
         } catch (final Exception e) {
             LOGGER.error("JWT expiration/refresh check failed; terminating session", e);
