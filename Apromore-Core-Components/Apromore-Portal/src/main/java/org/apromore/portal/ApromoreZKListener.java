@@ -30,8 +30,10 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.MediaType;
 
 import com.nimbusds.jwt.JWTParser;
+import io.netty.handler.codec.base64.Base64Decoder;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.security.helper.JwtHelper;
+import org.apromore.portal.util.SecurityUtils;
 import org.slf4j.Logger;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.ui.Execution;
@@ -40,6 +42,9 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.util.ExecutionInit;
 
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.util.Base64;
 import java.util.Date;
 
 /**
@@ -50,6 +55,8 @@ public class ApromoreZKListener implements ExecutionInit {
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(ApromoreZKListener.class);
 
     private static final String JWT_COOKIE_NAME = "App_Auth";
+
+    private static final String KEY_ALIAS = "apseckey";
 
     /**
      * {@inheritDoc}
@@ -80,12 +87,11 @@ public class ApromoreZKListener implements ExecutionInit {
 
         final String appAuthHeader = JwtHelper.readCookieValue(httpServletRequest, JWT_COOKIE_NAME);
         LOGGER.trace("Read App_Auth cookie: {}", appAuthHeader);
+        final String signedAuthHeader = JwtHelper.readCookieValue(httpServletRequest, JwtHelper.SIGNED_AUTH_HEADER_KEY);
 
         try {
             final JWTClaimsSet jwtClaimsSet = JwtHelper.getClaimsSetFromJWT(appAuthHeader);
-            // final jwtVerified = @todo: JwtHelper.isSignedStrVerifiable();
-
-            final boolean jwtVerified = true;
+            final boolean jwtVerified = this.checkDigitalSignature(appAuthHeader, signedAuthHeader);
 
             if (jwtVerified) {
                 final String issuedAtStr = jwtClaimsSet.getStringClaim(JwtHelper.STR_JWT_KEY_ISSUED_AT);
@@ -124,6 +130,23 @@ public class ApromoreZKListener implements ExecutionInit {
             LOGGER.error("JWT expiration/refresh check failed; terminating session", e);
             signOut(exec.getSession());
             return;
+        }
+    }
+
+    private boolean checkDigitalSignature(final String jwtStr, final String base64EncodedAndSignedJwtStr) {
+        try {
+            byte[] signedJwtStr = Base64.getDecoder().decode(base64EncodedAndSignedJwtStr);
+
+            final PublicKey publicKey = SecurityUtils.getPublicKey(KEY_ALIAS);
+
+            final boolean verifiedSignature = SecurityUtils.verifyData(publicKey, jwtStr, signedJwtStr, LOGGER);
+            LOGGER.info(">>>>> >>> > verifiedSignature {}", verifiedSignature);
+
+            return verifiedSignature;
+        } catch (final Exception e) {
+            LOGGER.error("Exception when verifying digital signature of JWT", e);
+
+            return false;
         }
     }
 
