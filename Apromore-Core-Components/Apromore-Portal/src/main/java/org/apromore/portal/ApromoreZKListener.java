@@ -106,11 +106,6 @@ public class ApromoreZKListener implements ExecutionInit {
                     LOGGER.info("JWT is expired");
                     signOut(exec.getSession());
 
-                    // ----------------------------------------------------------
-                    // [N.B. Mic] Ensure being signed out keycloak ( should be in
-                    // eventQueue listener 'signOutQueue' event ).
-                    // ----------------------------------------------------------
-                    // managerService.logout();
                     return;
                 }
                 LOGGER.info("JWT is not expired");
