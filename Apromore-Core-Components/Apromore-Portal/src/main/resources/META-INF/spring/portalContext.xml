@@ -66,6 +66,7 @@
         <constructor-arg type="long" value="${import.maxSize}"/> <!-- flag for calendar enable / disable-->
         <constructor-arg type="String" value="${contact.email}"/>
         <constructor-arg type="boolean" value="${site.useKeycloakSso}"/>
+        <constructor-arg type="int" value="${site.minutesUntilExpiryBeforeSessionRefresh}"/>
         <constructor-arg type="String" value="${site.securitymshost}"/>
         <constructor-arg type="String" value="${site.securitymsport}"/>
         <constructor-arg type="String" value="${site.securityms.http.logoutUrl}"/>
