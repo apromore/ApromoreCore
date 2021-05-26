@@ -43,7 +43,6 @@ import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zul.Window;
 
 import javax.servlet.http.HttpServletRequest;
-import java.time.Duration;
 import java.util.*;
 
 public class TokenHandoffController extends SelectorComposer<Window> {
@@ -78,9 +77,9 @@ public class TokenHandoffController extends SelectorComposer<Window> {
                     (HttpServletRequest) Executions.getCurrent().getNativeRequest();
             LOGGER.debug("httpServletRequest: {}", httpServletRequest);
 
-            final String appAuthCookieStr = JwtHelper.readCookie(httpServletRequest, "App_Auth");
+            final String appAuthCookieStr = JwtHelper.readCookieValue(httpServletRequest, "App_Auth");
             final byte[] base64DecodedSignedAppAuth = Base64.getDecoder().decode(
-                            JwtHelper.readCookie(httpServletRequest, "Signed_App_Auth"));
+                            JwtHelper.readCookieValue(httpServletRequest, "Signed_App_Auth"));
             LOGGER.debug(">>> appAuthCookieStr: {}", appAuthCookieStr);
             LOGGER.debug(">>> base64DecodedSignedAppAuth: {}", base64DecodedSignedAppAuth);
 

@@ -40,6 +40,8 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.util.ExecutionInit;
 
+import java.util.Date;
+
 /**
  * Callbacks during the lifecycle of ZK scopes.
  */
@@ -76,35 +78,38 @@ public class ApromoreZKListener implements ExecutionInit {
             return;
         }
 
-        final String appAuthHeader = JwtHelper.readCookie(httpServletRequest, COOKIE_NAME);
-        LOGGER.debug("Read App_Auth cookie: {}", appAuthHeader);
+        final String appAuthHeader = JwtHelper.readCookieValue(httpServletRequest, COOKIE_NAME);
+        // LOGGER.info("Read App_Auth cookie: {}", appAuthHeader);
 
         try {
             final JWTClaimsSet jwtClaimsSet = JwtHelper.getClaimsSetFromJWT(appAuthHeader);
             final String issuedAtStr = (String)jwtClaimsSet.getStringClaim(
                         JwtHelper.STR_JWT_KEY_ISSUED_AT);
             LOGGER.debug("issuedAtStr {}", issuedAtStr);
-            final String expiryAtStr = (String)jwtClaimsSet.getStringClaim(
-                        JwtHelper.STR_JWT_EXPIRY_TIME);
-            LOGGER.debug("expiryAtStr {}", expiryAtStr);
+            final Date issuedAtDate = jwtClaimsSet.getIssueTime();
+            // LOGGER.info("issuedAtDate {}", issuedAtDate);
+            final Date expiryAtDate = jwtClaimsSet.getExpirationTime();
+            LOGGER.info("expiryAtDate {}", expiryAtDate);
 
             // If the token is expired, sign the session out
-            if (JwtHelper.isJwtExpired(jwtClaimsSet, issuedAtStr, expiryAtStr)) {
-                LOGGER.debug("JWT is expired");
+            if (JwtHelper.isJwtExpired(jwtClaimsSet, issuedAtDate, expiryAtDate)) {
+                LOGGER.info("JWT is expired");
                 signOut(exec.getSession());
+                return;
             }
-            LOGGER.debug("JWT is not expired");
+            LOGGER.info("JWT is not expired");
 
             // If the token is close to expiry, refresh it
             if (JwtHelper.doesJwtExpiryWithinNMinutes(jwtClaimsSet, 1)) {
-                LOGGER.debug("JWT needs refresh");
+                LOGGER.info("JWT needs refresh");
                 refreshSessionTimeout(jwtClaimsSet, exec, appAuthHeader, httpServletResponse);
             } else {
-                LOGGER.debug("JWT is fresh");
+                LOGGER.info("JWT is fresh");
             }
         } catch (final Exception e) {
             LOGGER.error("JWT expiration/refresh check failed; terminating session", e);
             signOut(exec.getSession());
+            return;
         }
     }
 
@@ -122,7 +127,7 @@ public class ApromoreZKListener implements ExecutionInit {
             final String securityMsHost = config.getSecurityMsHost();
             final String securityMsPort = config.getSecurityMsPort();
             LOGGER.info("Using securityMsHost {} and securityMsPort {}", securityMsHost, securityMsPort);
-            final String refreshTokenUrl = "http://" + securityMsHost + ":" + securityMsHost + "/refreshJwtToken";
+            final String refreshTokenUrl = "http://" + securityMsHost + ":" + securityMsPort + "/refreshJwtToken";
             LOGGER.info("Using refreshTokenUrl {}", refreshTokenUrl);
 
             final RefreshTokenResponse refreshTokenResponse = ClientBuilder.newClient()
@@ -136,10 +141,11 @@ public class ApromoreZKListener implements ExecutionInit {
             final String updatedAuthHeader = refreshTokenResponse.getAuthHeader();
             final String updatedSignedAuthHeader = refreshTokenResponse.getSignedAuthHeader();
             LOGGER.info(">>> updatedAuthHeader {}", updatedAuthHeader);
-            LOGGER.info(">>> updatedSignedAuthHeader {}", updatedSignedAuthHeader);
 
-            final JWT jwt = JWTParser.parse(updatedAuthHeader);
-            final JWTClaimsSet jwtClaimsSet = jwt.getJWTClaimsSet();
+            final JWT refreshedJwt = JWTParser.parse(updatedAuthHeader);
+            final JWTClaimsSet refreshedJwtClaimsSet = refreshedJwt.getJWTClaimsSet();
+            LOGGER.info("refreshedJwtClaimsSet {}", refreshedJwtClaimsSet);
+            LOGGER.info("refreshedJwtClaimsSet.getExpirationTime() {}", refreshedJwtClaimsSet.getExpirationTime());
 
             boolean expiresSoon = JwtHelper.doesJwtExpiryWithinNMinutes(
                     preExistingJwtClaimsSet, 5);

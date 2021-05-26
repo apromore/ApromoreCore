@@ -145,8 +145,11 @@ public class ManagerServiceImpl implements ManagerService {
         final Properties securityMsProps = readSecurityMsProperties();
 
         try {
+            final String logoutUserUrl = kcHttpLogoutUrl + username;
+            LOGGER.info(">>> logoutUserUrl {}", logoutUserUrl);
+
             restRespResult = restTemplate.getForObject(
-                            securityMsProps.getProperty(kcHttpLogoutUrl) + username,
+                            logoutUserUrl,
                             Boolean.class);
             LOGGER.debug("\n\nrestRespResult: {}", restRespResult);
         } catch (final Exception e) {
@@ -157,7 +160,7 @@ public class ManagerServiceImpl implements ManagerService {
                 LOGGER.info("This is a non-fatal exception {}; can continue", e.getMessage());
 
                 restRespResult = restTemplate.getForObject(
-                                securityMsProps.getProperty(kcHttpsLogoutUrl) + username,
+                                kcHttpsLogoutUrl + username,
                                 Boolean.class);
                 LOGGER.debug("\n\nrestRespResult: {}", restRespResult);
 

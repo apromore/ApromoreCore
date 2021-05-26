@@ -71,13 +71,14 @@ public class JwtHelper {
 
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(JwtHelper.class);
 
-    public static String readCookie(final HttpServletRequest httpServletRequest,
-                                    final String cookieName) {
+    public static String readCookieValue(final HttpServletRequest httpServletRequest,
+                                         final String cookieName) {
         final Cookie[] cookies = httpServletRequest.getCookies();
 
         if (cookies != null) {
             for (final Cookie cookie : cookies) {
                 if (cookie.getName().equals(cookieName)) {
+                    // LOGGER.info("cookie {} read value {}", cookieName, cookie);
                     return cookie.getValue();
                 }
             }
@@ -117,22 +118,9 @@ public class JwtHelper {
     }
 
     public static boolean isJwtExpired(final JWTClaimsSet jwtClaimsSet,
-                                       final String issuedAtStr,
-                                       final String expiredAtStr) {
-        final long jwtExpiryEpoch;
-        if (expiredAtStr != null) {
-            jwtExpiryEpoch = Long.valueOf(expiredAtStr.substring(3));
-        } else { // Calculate relative
-            final Long jwtIssuedAt = Long.valueOf(issuedAtStr.substring(3));
-
-            jwtExpiryEpoch = calculateExpiryTime(jwtIssuedAt, WEBAPP_SSO_SESSION_TIMEOUT);
-        }
-
-        final Long nowEpoch = LocalDateTime.now().atZone(ZoneId.systemDefault()).toEpochSecond();
-
-        final boolean jwtExpired = (nowEpoch > jwtExpiryEpoch);
-
-        return jwtExpired;
+                                       final Date issuedAtDate,
+                                       final Date expiryAtDate) {
+        return doesJwtExpiryWithinNMinutes(jwtClaimsSet, 0);
     }
 
     public static boolean doesJwtExpiryWithinNMinutes(final JWTClaimsSet preExistingJwtClaimsSet,
@@ -164,7 +152,7 @@ public class JwtHelper {
             final String issuedAtStr = jwtClaimsSet.getStringClaim(JwtHelper.STR_JWT_KEY_ISSUED_AT);
             final String expiryAtStr = jwtClaimsSet.getStringClaim("str" + JwtHelper.STR_JWT_EXPIRY_TIME);
 
-            final boolean jwtExpired = JwtHelper.isJwtExpired(jwtClaimsSet, issuedAtStr, expiryAtStr);
+            final boolean jwtExpired = doesJwtExpiryWithinNMinutes(jwtClaimsSet, 0);
 
             if (!jwtExpired) {
                 final UserType authUserType =
