@@ -110,7 +110,7 @@ public class ApromoreZKListener implements ExecutionInit {
                 LOGGER.info("JWT is not expired");
 
                 // If the token is close to expiry, refresh it
-                if (JwtHelper.doesJwtExpiryWithinNMinutes(jwtClaimsSet, 1)) {
+                if (JwtHelper.doesJwtExpiryWithinNMinutes(jwtClaimsSet, config.getMinutesUntilExpiryBeforeSessionRefresh())) {
                     LOGGER.info("JWT needs refresh");
                     refreshSessionTimeout(jwtClaimsSet, exec, appAuthHeader, httpServletResponse);
                 } else {
