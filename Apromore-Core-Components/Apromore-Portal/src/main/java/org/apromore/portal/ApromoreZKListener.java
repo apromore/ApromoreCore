@@ -49,7 +49,7 @@ public class ApromoreZKListener implements ExecutionInit {
 
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(ApromoreZKListener.class);
 
-    private static final String COOKIE_NAME = "App_Auth";
+    private static final String JWT_COOKIE_NAME = "App_Auth";
 
     /**
      * {@inheritDoc}
@@ -78,7 +78,7 @@ public class ApromoreZKListener implements ExecutionInit {
             return;
         }
 
-        final String appAuthHeader = JwtHelper.readCookieValue(httpServletRequest, COOKIE_NAME);
+        final String appAuthHeader = JwtHelper.readCookieValue(httpServletRequest, JWT_COOKIE_NAME);
         LOGGER.trace("Read App_Auth cookie: {}", appAuthHeader);
 
         try {
@@ -99,12 +99,12 @@ public class ApromoreZKListener implements ExecutionInit {
                 if (JwtHelper.isJwtExpired(jwtClaimsSet, issuedAtDate, expiryAtDate)) {
                     LOGGER.info("JWT is expired");
                     signOut(exec.getSession());
-                    // @todo (trivial): call managerService.logout();
-                    //                                   logoutSuccess =
-                    //                                            managerService.logoutUserAllSessions(
-                    //                                                    currentUser.getUsername(),
-                    //                                                    config.getSecurityMsHttpLogoutUrl(),
-                    //                                                    config.getSecurityMsHttpsLogoutUrl());
+
+                    // ----------------------------------------------------------
+                    // [N.B. Mic] Ensure being signed out keycloak ( should be in
+                    // eventQueue listener 'signOutQueue' event ).
+                    // ----------------------------------------------------------
+                    // managerService.logout();
                     return;
                 }
                 LOGGER.info("JWT is not expired");
@@ -180,7 +180,5 @@ public class ApromoreZKListener implements ExecutionInit {
     private static void signOut(final Session session) {
         EventQueues.lookup("signOutQueue", EventQueues.APPLICATION, true)
                 .publish(new Event("onSignout", null, session));
-
-        // executions.sendRedirect("/login.zul?error=2");
     }
 }
