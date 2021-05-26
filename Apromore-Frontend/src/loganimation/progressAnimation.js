@@ -222,6 +222,8 @@ export default class ProgressAnimation {
                 showInitial: true,
                 showAlpha: false,
                 allowEmpty: false,
+                showButtons: true,
+                hideAfterPaletteSelect: true,
                 containerClassName: 'ap-la-cpicker-wrapper',
                 palette: me._colorPalette.getPalette(),
                 change: (function (idx) {
