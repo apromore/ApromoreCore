@@ -32,14 +32,6 @@ import java.util.UUID;
 
 public class JwtHelperUnitTest {
 
-    private static final String VALID_KC_ISSUER_URL = "http://keycloak.apromoresso.net";
-    private static final String VALID_TENANT_IP_ADDRESS = "203.20.10.4";
-
-    private static final String SUBJECT_UUID = UUID.randomUUID().toString();
-    private static final String SUBJECT_EMAIL_ADDRESS = "mic.giansiracusa@apromore.com";
-    private static final String FIRST_NAME = "Mic";
-    private static final String SURNAME = "G";
-
     /**
      * Test the {@link JwtHelper#getClaimsSetFromJWT} method.
      */
