@@ -115,9 +115,7 @@ public class JwtHelper {
         return updatedJwtClaimsSet;
     }
 
-    public static boolean isJwtExpired(final JWTClaimsSet jwtClaimsSet,
-                                       final Date issuedAtDate,
-                                       final Date expiryAtDate) {
+    public static boolean isJwtExpired(final JWTClaimsSet jwtClaimsSet) {
         return doesJwtExpiryWithinNMinutes(jwtClaimsSet, 0);
     }
 
