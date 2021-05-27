@@ -53,6 +53,9 @@ public final class DateTimeUtils {
       .appendOptional(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss"))
       .appendOptional(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))
       .appendOptional(DateTimeFormatter.ofPattern("dd/MM/yyyy[ HH:mm:ss]"))
+      .appendOptional(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+      .appendOptional(DateTimeFormatter.ISO_ZONED_DATE_TIME)
+      .appendOptional(DateTimeFormatter.ofPattern("[[MMMM][MMM] dd, yyyy][yyyy-MM-dd][MM/dd/yyyy]"))
       .appendOptional(Constants.DATE_TIME_FORMATTER_HUMANIZED)
       .parseDefaulting(ChronoField.HOUR_OF_DAY, 0)
       .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0)
@@ -64,7 +67,7 @@ public final class DateTimeUtils {
    * <p>
    * TO DO: - To be optimized when all formats are standardized
    *
-   * @param dateTimeStr A date string
+   * @param timestamp A date string
    * @return LocalDateTime
    */
   public static LocalDateTime parse(String timestamp) {
