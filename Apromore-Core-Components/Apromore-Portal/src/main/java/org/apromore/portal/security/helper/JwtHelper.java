@@ -46,8 +46,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Date;
 import static org.apromore.portal.util.AssertUtils.notNullAssert;
 
@@ -103,12 +101,12 @@ public class JwtHelper {
         final Instant newExpiryTime = Instant.now().plus(WEBAPP_SSO_SESSION_TIMEOUT);
 
         final JWTClaimsSet updatedJwtClaimsSet = new JWTClaimsSet.Builder()
-                .claim(JWT_KEY_SUBJECT_USERNAME, jwtClaimsSet.getClaim(JWT_KEY_SUBJECT_USERNAME))
+                .claim(JWT_KEY_SUBJECT_USERNAME, jwtClaimsSet.getSubject())
                 .claim(JWT_KEY_SUBJECT_EMAIL, jwtClaimsSet.getClaim(JWT_KEY_SUBJECT_EMAIL))
                 .claim(JWT_KEY_GIVEN_NAME, jwtClaimsSet.getClaim(JWT_KEY_GIVEN_NAME))
                 .claim(JWT_KEY_FAMILY_NAME, jwtClaimsSet.getClaim(JWT_KEY_FAMILY_NAME))
                 .claim(JWT_KC_USER_ID, jwtClaimsSet.getClaim(JWT_KC_USER_ID))
-                .claim(JWT_KEY_ISSUED_AT, jwtClaimsSet.getClaim(JWT_KEY_ISSUED_AT))
+                .claim(JWT_KEY_ISSUED_AT, jwtClaimsSet.getIssueTime())
                 .claim(JWT_EXPIRY_TIME, (newExpiryTime.toEpochMilli() / 1000)) // JWT spec is epoch *seconds* relative
                 .claim("str" + JWT_KEY_ISSUED_AT, jwtClaimsSet.getClaim("str" + JWT_KEY_ISSUED_AT))
                 .claim("str" + JWT_EXPIRY_TIME, jwtClaimsSet.getClaim("str" + JWT_EXPIRY_TIME))
@@ -149,7 +147,7 @@ public class JwtHelper {
         try {
             final JWTClaimsSet jwtClaimsSet = JwtHelper.getClaimsSetFromJWT(appAuthHeader);
 
-            final String issuedAtStr = jwtClaimsSet.getStringClaim(JwtHelper.STR_JWT_KEY_ISSUED_AT);
+            final String issuedAtStr = jwtClaimsSet.getStringClaim("str" + JwtHelper.STR_JWT_KEY_ISSUED_AT);
             final String expiryAtStr = jwtClaimsSet.getStringClaim("str" + JwtHelper.STR_JWT_EXPIRY_TIME);
 
             final boolean jwtExpired = doesJwtExpiryWithinNMinutes(jwtClaimsSet, 0);
