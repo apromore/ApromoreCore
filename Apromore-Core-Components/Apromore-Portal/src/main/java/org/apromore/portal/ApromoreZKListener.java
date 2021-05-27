@@ -88,43 +88,43 @@ public class ApromoreZKListener implements ExecutionInit {
 
         try {
             final JWTClaimsSet jwtClaimsSet = JwtHelper.getClaimsSetFromJWT(appAuthHeader);
-            final boolean jwtVerified = this.checkDigitalSignature(appAuthHeader, signedAuthHeader);
 
-            if (jwtVerified) {
-                final String issuedAtStr = jwtClaimsSet.getStringClaim(JwtHelper.STR_JWT_KEY_ISSUED_AT);
-                LOGGER.debug("issuedAtStr {}", issuedAtStr);
-                final Date issuedAtDate = jwtClaimsSet.getIssueTime();
-                LOGGER.trace("issuedAtDate {}", issuedAtDate);
-                final Date expiryAtDate = jwtClaimsSet.getExpirationTime();
-                LOGGER.debug("expiryAtDate {}", expiryAtDate);
+            final String issuedAtStr = jwtClaimsSet.getStringClaim(JwtHelper.STR_JWT_KEY_ISSUED_AT);
+            LOGGER.debug("issuedAtStr {}", issuedAtStr);
+            final Date issuedAtDate = jwtClaimsSet.getIssueTime();
+            LOGGER.trace("issuedAtDate {}", issuedAtDate);
+            final Date expiryAtDate = jwtClaimsSet.getExpirationTime();
+            LOGGER.debug("expiryAtDate {}", expiryAtDate);
 
-                // If the token is expired, sign the session out
-                if (JwtHelper.isJwtExpired(jwtClaimsSet, issuedAtDate, expiryAtDate)) {
-                    LOGGER.info("JWT is expired");
-                    signOut(exec.getSession());
+            if (!checkDigitalSignature(appAuthHeader, signedAuthHeader)) {
+                throw new Exception("JWT was not correctly signed: appAuthHeader " + appAuthHeader +
+                    " signedAuthHeader " + signedAuthHeader);
 
-                    return;
-                }
-                LOGGER.debug("JWT is not expired");
+            } else if (JwtHelper.isJwtExpired(jwtClaimsSet, issuedAtDate, expiryAtDate)) {
+                LOGGER.info("JWT is expired, signing this session out");
+                signOut(exec.getSession());
 
+            } else if (JwtHelper.doesJwtExpiryWithinNMinutes(jwtClaimsSet, config.getMinutesUntilExpiryBeforeSessionRefresh())) {
                 // If the token is close to expiry, refresh it
-                if (JwtHelper.doesJwtExpiryWithinNMinutes(jwtClaimsSet, config.getMinutesUntilExpiryBeforeSessionRefresh())) {
-                    LOGGER.info("JWT needs refresh");
-                    refreshSessionTimeout(jwtClaimsSet, exec, appAuthHeader, httpServletResponse);
-                } else {
-                    LOGGER.debug("JWT is fresh");
-                }
+                LOGGER.info("JWT is close to expiry, refreshing it");
+                refreshSessionTimeout(jwtClaimsSet, exec, appAuthHeader, httpServletResponse);
+
             } else {
-                LOGGER.warn("JWT signature verification failed");
-                return;
+                LOGGER.debug("JWT is fresh");
             }
         } catch (final Exception e) {
-            LOGGER.error("JWT expiration/refresh check failed; terminating session", e);
+            LOGGER.error("JWT security token check failed; terminating session", e);
             signOut(exec.getSession());
-            return;
         }
     }
 
+    /**
+     * @param jwtStr  a plaintext JSON web token
+     * @param base64EncodedAndSignedJwtStr  an encoded and signed JSON web token
+     * @return whether  <var>base64EncodedAndSignedJwtStr</var> has content matching
+     *     <var>jwtStr</var> and is correctly encoded and signed by the key pair
+     *     identified by {@link KEY_ALIAS}
+     */
     private boolean checkDigitalSignature(final String jwtStr, final String base64EncodedAndSignedJwtStr) {
         try {
             byte[] signedJwtStr = Base64.getDecoder().decode(base64EncodedAndSignedJwtStr);
@@ -135,6 +135,7 @@ public class ApromoreZKListener implements ExecutionInit {
             LOGGER.debug(">>>>> >>> > verifiedSignature {}", verifiedSignature);
 
             return verifiedSignature;
+
         } catch (final Exception e) {
             LOGGER.error("Exception when verifying digital signature of JWT", e);
 
