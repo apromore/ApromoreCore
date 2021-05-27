@@ -42,7 +42,6 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.util.ExecutionInit;
 
-import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.Base64;
 import java.util.Date;
@@ -53,9 +52,7 @@ import java.util.Date;
 public class ApromoreZKListener implements ExecutionInit {
 
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(ApromoreZKListener.class);
-
     private static final String JWT_COOKIE_NAME = "App_Auth";
-
     private static final String KEY_ALIAS = "apseckey";
 
     /**
@@ -108,14 +105,14 @@ public class ApromoreZKListener implements ExecutionInit {
 
                     return;
                 }
-                LOGGER.info("JWT is not expired");
+                LOGGER.debug("JWT is not expired");
 
                 // If the token is close to expiry, refresh it
                 if (JwtHelper.doesJwtExpiryWithinNMinutes(jwtClaimsSet, config.getMinutesUntilExpiryBeforeSessionRefresh())) {
                     LOGGER.info("JWT needs refresh");
                     refreshSessionTimeout(jwtClaimsSet, exec, appAuthHeader, httpServletResponse);
                 } else {
-                    LOGGER.info("JWT is fresh");
+                    LOGGER.debug("JWT is fresh");
                 }
             } else {
                 LOGGER.warn("JWT signature verification failed");
@@ -135,7 +132,7 @@ public class ApromoreZKListener implements ExecutionInit {
             final PublicKey publicKey = SecurityUtils.getPublicKey(KEY_ALIAS);
 
             final boolean verifiedSignature = SecurityUtils.verifyData(publicKey, jwtStr, signedJwtStr, LOGGER);
-            LOGGER.info(">>>>> >>> > verifiedSignature {}", verifiedSignature);
+            LOGGER.debug(">>>>> >>> > verifiedSignature {}", verifiedSignature);
 
             return verifiedSignature;
         } catch (final Exception e) {
@@ -158,9 +155,9 @@ public class ApromoreZKListener implements ExecutionInit {
             final ConfigBean config = (ConfigBean) SpringUtil.getBean("portalConfig");
             final String securityMsHost = config.getSecurityMsHost();
             final String securityMsPort = config.getSecurityMsPort();
-            LOGGER.info("Using securityMsHost {} and securityMsPort {}", securityMsHost, securityMsPort);
+            LOGGER.debug("Using securityMsHost {} and securityMsPort {}", securityMsHost, securityMsPort);
             final String refreshTokenUrl = "http://" + securityMsHost + ":" + securityMsPort + "/refreshJwtToken";
-            LOGGER.info("Using refreshTokenUrl {}", refreshTokenUrl);
+            LOGGER.debug("Using refreshTokenUrl {}", refreshTokenUrl);
 
             final RefreshTokenResponse refreshTokenResponse = ClientBuilder.newClient()
                 .target(refreshTokenUrl)
@@ -168,7 +165,7 @@ public class ApromoreZKListener implements ExecutionInit {
                 .request(MediaType.APPLICATION_JSON)
                 .get(RefreshTokenResponse.class);
 
-            LOGGER.info("Refreshed session timeout, refreshTokenResponse {}", refreshTokenResponse);
+            LOGGER.debug("Refreshed session timeout, refreshTokenResponse {}", refreshTokenResponse);
 
             final String updatedAuthHeader = refreshTokenResponse.getAuthHeader();
             final String updatedSignedAuthHeader = refreshTokenResponse.getSignedAuthHeader();
@@ -176,12 +173,12 @@ public class ApromoreZKListener implements ExecutionInit {
 
             final JWT refreshedJwt = JWTParser.parse(updatedAuthHeader);
             final JWTClaimsSet refreshedJwtClaimsSet = refreshedJwt.getJWTClaimsSet();
-            LOGGER.info("refreshedJwtClaimsSet {}", refreshedJwtClaimsSet);
-            LOGGER.info("refreshedJwtClaimsSet.getExpirationTime() {}", refreshedJwtClaimsSet.getExpirationTime());
+            LOGGER.debug("refreshedJwtClaimsSet {}", refreshedJwtClaimsSet);
+            LOGGER.debug("refreshedJwtClaimsSet.getExpirationTime() {}", refreshedJwtClaimsSet.getExpirationTime());
 
             boolean expiresSoon = JwtHelper.doesJwtExpiryWithinNMinutes(
                     preExistingJwtClaimsSet, 5);
-            LOGGER.info(">>> expiresSoon {}", expiresSoon);
+            LOGGER.debug(">>> expiresSoon {}", expiresSoon);
 
             JwtHelper.writeCookie(httpServletResponse, JwtHelper.AUTH_HEADER_KEY, updatedAuthHeader);
             JwtHelper.writeCookie(httpServletResponse, JwtHelper.SIGNED_AUTH_HEADER_KEY,
