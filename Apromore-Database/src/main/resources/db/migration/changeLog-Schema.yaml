@@ -1052,11 +1052,11 @@ databaseChangeLog:
                    foreignKeyName: fk_static_log_job_idk
                    deleteCascade: true
 
-       - changeSet:
-           id: 20212705120000
-           author: mtomar
-           changes:
-             - modifyDataType:
-                 columnName: schema_info
-                 newDataType: VARCHAR(5000)
-                 tableName: static_log
+ - changeSet:
+     id: 20212705120000
+     author: mtomar
+     changes:
+       - modifyDataType:
+           columnName: schema_info
+           newDataType: VARCHAR(5000)
+           tableName: static_log
