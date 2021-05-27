@@ -76,7 +76,6 @@ import org.deckfour.xes.model.XLog;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.ListIterable;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
-import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 /**
  * PDAnalyst represents a process analyst who will performs log analysis in the form of graphs and BPMN diagrams
@@ -314,11 +313,15 @@ public class PDAnalyst {
         return true;
     }
     
+    private List<LogFilterRule> copyFilterCriteria(List<LogFilterRule> criteria) {
+        return criteria
+                .stream()
+                .map((c) -> c.clone())
+                .collect(Collectors.toList());
+    }
+    
     public List<LogFilterRule> copyCurrentFilterCriteria() {
-        return ((List<LogFilterRule>)this.getCurrentFilterCriteria())
-            .stream()
-            .map((c) -> c.clone())
-            .collect(Collectors.toList());
+        return copyFilterCriteria((List<LogFilterRule>)this.getCurrentFilterCriteria());
     }
     
     public APMLog getOriginalAPMLog() {
@@ -336,20 +339,28 @@ public class PDAnalyst {
     // Apply a filter criterion on top of the current filter criteria
     public boolean filterAdditive(LogFilterRule filterCriterion) throws Exception {
         List<LogFilterRule> criteria = (List<LogFilterRule>)currentFilterCriteria;
-        criteria.add(filterCriterion);
-        return this.filter(criteria);
+        criteria.add(filterCriterion.clone());
+        this.apmLogFilter.filter(criteria);
+        if (apmLogFilter.getPLog().getPTraceList().isEmpty()) { // Restore to the last state
+            criteria.remove(criteria.get(criteria.size() - 1));
+            apmLogFilter.filter(criteria);
+            return false;
+        }
+        else {
+            this.updateLog(apmLogFilter.getPLog(), apmLogFilter.getApmLog());
+            return true;
+        }
     }
     
     // Apply filter criteria on top of the original log
     public boolean filter(List<LogFilterRule> criteria) throws Exception {
         this.apmLogFilter.filter(criteria);
         if (apmLogFilter.getPLog().getPTraceList().isEmpty()) { // Restore to the last state
-            criteria.remove(criteria.get(criteria.size() - 1));
             apmLogFilter.filter((List<LogFilterRule>)currentFilterCriteria);
             return false;
         } else {
             this.updateLog(apmLogFilter.getPLog(), apmLogFilter.getApmLog());
-            currentFilterCriteria = criteria;
+            currentFilterCriteria = copyFilterCriteria(criteria);
             return true;
         }
     }
