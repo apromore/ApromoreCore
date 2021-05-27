@@ -25,6 +25,7 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
@@ -41,15 +42,11 @@ public class JwtHelperUnitTest {
 
     /**
      * Test the {@link JwtHelper#getClaimsSetFromJWT} method.
-     *
-     * This test shows up a problem that may originate with the security microservice, that
-     * it's issuing JWTs with time-valued fields encoded as milliseconds since the unix
-     * epoch rather than seconds since the unix epoch.
      */
     @Test
     public void testGetClaimsSetFromJWT() throws Exception {
 
-        final String testJWT = "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImdpdmVuTmFtZSI6IlRlc3QiLCJmYW1pbHlOYW1lIjoiVXNlciIsImV4cCI6MTYxOTE1NDgyNTkwMywiaWF0IjoxNjE5MTQ3NjI1OTAzLCJlbWFpbCI6IiIsImtjdXNlcmlkIjoiZjoyY2JjM2E2NS0yNzNhLTRjMTEtYjFlNC0zZjhkNjVlM2JiYjg6OCJ9.XtEHtIevrp7PVbYLwGbjBbvB32kZ8ZM2au-fbKGn03zjLYXojibRXbLfqJb1p45WbEn9nvoGn-oFvmSecWQsQGBSF3iGhy1RjpPgKuZxMdKBaGDaLdqix0OgQYFOk2RLaSRoBTVEdd579UCIavF66vVW9rKCC4zE2AIFSFFFPgJK25lwq7c31DyYjs5deA_SlmV5z1tfkk27ksrOuVmy-LzmAf81fFp5OTftTvM3Zfb04AmKBnMLyIuSb63zdlRlHrgjVbsE29CIr4u0NIdNt-hOrjXXe_j8PMO26tsycG0ku2Fg8ZYcvozWeTa3uvH4dvYN7Dsrn44A9P2tDwze8w";
+        final String testJWT = "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImdpdmVuTmFtZSI6IlRlc3QiLCJmYW1pbHlOYW1lIjoiVXNlciIsInN0cmV4cCI6IjE2MjIwODExNTEiLCJleHAiOjE2MjIwODExNTEsImlhdCI6MTYyMjA4MTAwNCwiZW1haWwiOiIiLCJzdHJpYXQiOiJzdHIxNjIyMDgxMDA0Iiwia2N1c2VyaWQiOiJmOjJjYmMzYTY1LTI3M2EtNGMxMS1iMWU0LTNmOGQ2NWUzYmJiODo4In0.IR-srkII0aPVmWkGMdHf9UkHQbCTZOpId-tZwi4HTRoAKkOV4zv08jGshMWiiLG87RRBY-kOjoS3Hfr2-P5C09cTLucZOKsOHKa5_yKBem-IqO3fSLZvD80wSDd_36g1t9XLOESxIzoS0px7NwgGWK86uQ3D1PsqSLST6aW_usuiaV7zuQP5_1d2FsUObMTaI1QX_f5ZRnB8YQ6ElF5qSECJ0o_D9YQfUd_Cq07SP010za-azzmPjzExWyzmfZPXwHODHUupr1QtJDCmOJf3NygTbvO4QOPmgO-5mC1NnUi0WS8ONIcfTlBLi7mPzaCVnN7UeNLkuVC8FcmBfRWbMA;";
 
         final JWTClaimsSet jwtClaimsSet = JwtHelper.getClaimsSetFromJWT(testJWT);
 
@@ -59,14 +56,14 @@ public class JwtHelperUnitTest {
         Assertions.assertEquals("", jwtClaimsSet.getStringClaim(JwtHelper.JWT_KEY_SUBJECT_EMAIL));
         Assertions.assertEquals("f:2cbc3a65-273a-4c11-b1e4-3f8d65e3bbb8:8", jwtClaimsSet.getStringClaim(JwtHelper.JWT_KC_USER_ID));
 
-        // Because the expiry is misencoded using milliseconds rather than seconds in testJWT, it ends up in the nonsensical future
-        Date expectedExpirationTime = new Date(1619154825903L * 1000);  // the sensible date would be if we didn't multiply by 1000
-        Assertions.assertEquals(51378, expectedExpirationTime.getYear());
+        // Expiry time
+        Date expectedExpirationTime = new Date(1622081151 * 1000L);  // 1622081151 is seconds since the epoch; Date expects milliseconds
+        Assertions.assertEquals(Instant.parse("2021-05-27T02:05:51Z"), expectedExpirationTime.toInstant());
         Assertions.assertEquals(expectedExpirationTime, jwtClaimsSet.getExpirationTime());
 
-        // Because the issue time is misencoded using milliseconds rather than seconds in testJWT, it ends up in the nonsensical future
-        Date expectedIssueTime = new Date(1619147625903L * 1000);
-        Assertions.assertEquals(51378, expectedIssueTime.getYear());
+        // Issue time
+        Date expectedIssueTime = new Date(1622081004 * 1000L);  // 1622081004 is seconds since the epoch; Date expects milliseconds
+        Assertions.assertEquals(Instant.parse("2021-05-27T02:03:24Z"), expectedIssueTime.toInstant());
         Assertions.assertEquals(expectedIssueTime, jwtClaimsSet.getIssueTime());
     }
 
@@ -81,7 +78,7 @@ public class JwtHelperUnitTest {
 
         // Test claim expiring 2 minutes hence
         final JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
-            .expirationTime(Date.from(Instant.now().plusSeconds(120)))
+            .expirationTime(Date.from(Instant.now().plus(Duration.ofMinutes(2))))
             .build();
 
         Assertions.assertFalse(JwtHelper.doesJwtExpiryWithinNMinutes(jwtClaimsSet, 1), "Shouldn't expire within the next minute");
