@@ -96,7 +96,7 @@ public class ApromoreZKListener implements ExecutionInit {
                 final Date issuedAtDate = jwtClaimsSet.getIssueTime();
                 LOGGER.trace("issuedAtDate {}", issuedAtDate);
                 final Date expiryAtDate = jwtClaimsSet.getExpirationTime();
-                LOGGER.info("expiryAtDate {}", expiryAtDate);
+                LOGGER.debug("expiryAtDate {}", expiryAtDate);
 
                 // If the token is expired, sign the session out
                 if (JwtHelper.isJwtExpired(jwtClaimsSet, issuedAtDate, expiryAtDate)) {

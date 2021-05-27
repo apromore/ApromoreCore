@@ -78,7 +78,7 @@ public class JwtHelper {
         if (cookies != null) {
             for (final Cookie cookie : cookies) {
                 if (cookie.getName().equals(cookieName)) {
-                    // LOGGER.info("cookie {} read value {}", cookieName, cookie);
+                    LOGGER.trace("cookie {} read value {}", cookieName, cookie);
                     return cookie.getValue();
                 }
             }
@@ -93,7 +93,7 @@ public class JwtHelper {
         final Cookie cookie = new Cookie(cookieName, cookieValue);
         cookie.setPath("/");
         httpServletResponse.addCookie(cookie);
-        LOGGER.info("Added written cookie {} with name {} and value {} to the HttpServletResponse",
+        LOGGER.debug("Added written cookie {} with name {} and value {} to the HttpServletResponse",
                 cookie, cookie.getName(), cookie.getValue());
     }
 
@@ -164,7 +164,7 @@ public class JwtHelper {
                 return null;
             }
         } catch (final Exception pe) {
-            LOGGER.debug("Exception in processing JWT (returning null)", pe);
+            LOGGER.error("Exception in processing JWT (returning null)", pe);
 
             return null;
         }
