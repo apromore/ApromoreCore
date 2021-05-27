@@ -22,6 +22,17 @@
 
 .ap-transfer-from {
     font-weight: 700;
+    max-width: 150px;
+    display: inline-block;
+    white-space: nowrap;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    overflow-y: visible;
+    font-size: 14px;
+}
+
+.ap-usrmgt-delete-option-detail > * {
+    vertical-align: text-bottom;
 }
 
 .ap-usrmgt-delete-option .z-label {
