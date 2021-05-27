@@ -931,7 +931,7 @@ databaseChangeLog:
            tableName: process_model_version
 
  - changeSet:
-     id: 20210505030600
+     id: 20212705030600
      author: mtomar
      changes:
        - createTable:
@@ -1041,7 +1041,7 @@ databaseChangeLog:
                  type: VARCHAR(200)
              - column:
                  name: schema_info
-                 type: VARCHAR(100)
+                 type: VARCHAR(4000)
              - column:
                  name: job_id
                  type: BIGINT
