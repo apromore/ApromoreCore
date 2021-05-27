@@ -142,8 +142,6 @@ public class ManagerServiceImpl implements ManagerService {
 
         final RestTemplate restTemplate = restTemplate();
 
-        final Properties securityMsProps = readSecurityMsProperties();
-
         try {
             final String logoutUserUrl = kcHttpLogoutUrl + username;
             LOGGER.info(">>> logoutUserUrl {}", logoutUserUrl);
