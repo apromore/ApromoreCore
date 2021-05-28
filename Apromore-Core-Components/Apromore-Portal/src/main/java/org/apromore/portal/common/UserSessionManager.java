@@ -204,18 +204,18 @@ public abstract class UserSessionManager {
 
     // TODO: fix the memory leak by reclaiming stale sessions
     public static void setEditSession(String id, ApromoreSession session) {
-        //editSessionMap.put(id, session);
         setAttribute(id, session);
     }
 
     public static ApromoreSession getEditSession(String id) {
-        //return editSessionMap.get(id);
         return (ApromoreSession) getAttribute(id);
     }
     
     public static void removeEditSession(String id) {
-        //editSessionMap.remove(id);
-        Sessions.getCurrent().removeAttribute(id);
+        Session session = Sessions.getCurrent();
+        if (session != null) {
+            session.removeAttribute(id);
+        }
     }
 
     /*
