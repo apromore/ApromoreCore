@@ -36,6 +36,7 @@ import org.apromore.security.util.SecurityUtil;
 import org.apromore.service.SecurityService;
 import org.slf4j.Logger;
 
+import javax.servlet.SessionCookieConfig;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -88,11 +89,19 @@ public class JwtHelper {
         throw new Exception("Cookie " + cookieName + " is not set");
     }
 
+    /**
+     * @param cookieConfig  the cookie will have its HttpOnly and Secure flags set to match this config
+     */
     public static void writeCookie(final HttpServletResponse httpServletResponse,
                                    final String cookieName,
-                                   final String cookieValue) {
+                                   final String cookieValue,
+                                   final SessionCookieConfig cookieConfig) {
+
         final Cookie cookie = new Cookie(cookieName, cookieValue);
         cookie.setPath("/");
+        cookie.setHttpOnly(cookieConfig.isHttpOnly());
+        cookie.setSecure(cookieConfig.isSecure());
+
         httpServletResponse.addCookie(cookie);
         LOGGER.debug("Added written cookie {} with name {} and value {} to the HttpServletResponse",
                 cookie, cookie.getName(), cookie.getValue());

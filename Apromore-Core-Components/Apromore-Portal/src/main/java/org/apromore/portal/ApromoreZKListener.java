@@ -24,6 +24,7 @@ package org.apromore.portal;
 
 import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTClaimsSet;
+import javax.servlet.SessionCookieConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.client.ClientBuilder;
@@ -84,25 +85,16 @@ public class ApromoreZKListener implements ExecutionInit {
         try {
             final HttpServletRequest httpServletRequest = (HttpServletRequest) exec.getNativeRequest();
             final HttpServletResponse httpServletResponse = (HttpServletResponse) exec.getNativeResponse();
-
             final String appAuthHeader = JwtHelper.readCookieValue(httpServletRequest, JWT_COOKIE_NAME);
             LOGGER.trace("Read App_Auth cookie: {}", appAuthHeader);
             final String signedAuthHeader = JwtHelper.readCookieValue(httpServletRequest, JwtHelper.SIGNED_AUTH_HEADER_KEY);
-
             final JWTClaimsSet jwtClaimsSet = JwtHelper.getClaimsSetFromJWT(appAuthHeader);
-
-            final String issuedAtStr = jwtClaimsSet.getStringClaim(JwtHelper.STR_JWT_KEY_ISSUED_AT);
-            LOGGER.debug("issuedAtStr {}", issuedAtStr);
-            final Date issuedAtDate = jwtClaimsSet.getIssueTime();
-            LOGGER.trace("issuedAtDate {}", issuedAtDate);
-            final Date expiryAtDate = jwtClaimsSet.getExpirationTime();
-            LOGGER.debug("expiryAtDate {}", expiryAtDate);
 
             if (!checkDigitalSignature(appAuthHeader, signedAuthHeader)) {
                 throw new Exception("JWT was not correctly signed: appAuthHeader " + appAuthHeader +
                     " signedAuthHeader " + signedAuthHeader);
 
-            } else if (JwtHelper.isJwtExpired(jwtClaimsSet, issuedAtDate, expiryAtDate)) {
+            } else if (JwtHelper.isJwtExpired(jwtClaimsSet)) {
                 LOGGER.info("JWT is expired, signing this session out");
                 signOut(exec.getSession());
 
@@ -183,9 +175,10 @@ public class ApromoreZKListener implements ExecutionInit {
                     preExistingJwtClaimsSet, 5);
             LOGGER.debug(">>> expiresSoon {}", expiresSoon);
 
-            JwtHelper.writeCookie(httpServletResponse, JwtHelper.AUTH_HEADER_KEY, updatedAuthHeader);
+            SessionCookieConfig cookieConfig = exec.getSession().getWebApp().getServletContext().getSessionCookieConfig();
+            JwtHelper.writeCookie(httpServletResponse, JwtHelper.AUTH_HEADER_KEY, updatedAuthHeader, cookieConfig);
             JwtHelper.writeCookie(httpServletResponse, JwtHelper.SIGNED_AUTH_HEADER_KEY,
-                    updatedSignedAuthHeader);
+                    updatedSignedAuthHeader, cookieConfig);
             LOGGER.debug("Updated cookie values written to the HttpServletResponse");
         } catch (final Exception e) {
             LOGGER.warn("Unable to refresh session timeout", e);
