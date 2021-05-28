@@ -121,8 +121,6 @@ public class ApromoreZKListener implements ExecutionInit {
         try {
             byte[] signedJwtStr = Base64.getDecoder().decode(base64EncodedAndSignedJwtStr);
 
-            final PublicKey publicKey = SecurityUtils.getPublicKey(KEY_ALIAS);
-
             final boolean verifiedSignature = JwtHelper.isSignedStrVerifiable(jwtStr, signedJwtStr);
             LOGGER.debug(">>>>> >>> > verifiedSignature {}", verifiedSignature);
 
