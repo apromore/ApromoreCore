@@ -23,7 +23,7 @@
 <?component name="AccessView" macroURI="/user-admin/zul/access-view.zul" inline="true" ?>
 <window
     sclass="ap-transfer-win"
-    width="900px" height="700px" position="center"
+    width="950px" height="700px" position="center"
     closable="true"
     title="Delete user"
     apply="org.apromore.plugin.portal.useradmin.DeleteUserController">
@@ -84,7 +84,7 @@
                             </template>
                         </combobox>
                         <textbox id="transferToTextbox"
-                                 width="150px" style="margin-right: 7px; vertical-align: middle"
+                                 width="190px" style="margin-right: 7px; vertical-align: middle"
                                  placeholder="Type in a user or group name"
                         />
                     </div>
