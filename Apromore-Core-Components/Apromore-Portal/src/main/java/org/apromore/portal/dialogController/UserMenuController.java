@@ -43,6 +43,7 @@ import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.context.PortalPluginResolver;
 import org.apromore.portal.model.UserType;
+import org.apromore.portal.security.helper.SecuritySsoHelper;
 import org.apromore.portal.util.ExplicitComparator;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
@@ -205,34 +206,10 @@ public class UserMenuController extends SelectorComposer<Menubar> {
                                 "sessions [transparently calls Keycloak, via the Security Microservice]");
 
                         final ManagerService managerService = getManagerService();
-                        LOGGER.debug("\n\nmanagerService: {}", managerService);
 
                         final UserType currentUser = UserSessionManager.getCurrentUser();
-                        LOGGER.debug("\n\nLOGGING OUT currentUser username [{}]", currentUser.getUsername());
 
-                        try {
-                            boolean logoutSuccess = false;
-
-                            final Session session = Sessions.getCurrent();
-
-                            if ((config.isUseKeycloakSso()) && (event.getData().equals(session))) {
-                                logoutSuccess =
-                                        managerService.logoutUserAllSessions(
-                                                currentUser.getUsername(),
-                                                config.getSecurityMsHttpLogoutUrl(),
-                                                config.getSecurityMsHttpsLogoutUrl());
-                                LOGGER.info("\nlogoutSuccess: {}", logoutSuccess);
-                            }
-
-                            if ((session == null || event.getData().equals(session)) || (logoutSuccess)) {
-                                Clients.evalJavaScript("window.close()");
-                                Executions.sendRedirect("/j_spring_security_logout");
-                            }
-                        } catch (final Exception e) {
-                            LOGGER.error("\n\nException in logging out: " + e.getMessage());
-
-                            e.printStackTrace();
-                        }
+                        SecuritySsoHelper.logoutCurrentUser(currentUser, event, config, managerService);
                     }
                 }
             );

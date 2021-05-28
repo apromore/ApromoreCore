@@ -41,8 +41,11 @@ import org.apromore.service.UserService;
 import org.slf4j.Logger;
 import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.Sessions;
+import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventQueues;
+import org.zkoss.zk.ui.util.Clients;
 
 import java.util.StringTokenizer;
 
@@ -137,4 +140,49 @@ public class SecuritySsoHelper {
         return servReqWrapper;
     }
 
+    public static boolean logoutCurrentUser(final UserType currentUser, final Event event, final ConfigBean config,
+            final ManagerService managerService) {
+        LOGGER.debug("\n\nLOGGING OUT currentUser username [{}]", currentUser.getUsername());
+
+        boolean logoutSuccess = false;
+
+        Session session = null;
+        try {
+            boolean kcLogoutSuccess;
+
+            session = Sessions.getCurrent();
+
+            if ((config.isUseKeycloakSso()) && (event.getData().equals(session))) {
+                kcLogoutSuccess =
+                        managerService.logoutUserAllSessions(
+                                currentUser.getUsername(),
+                                config.getSecurityMsHttpLogoutUrl(),
+                                config.getSecurityMsHttpsLogoutUrl());
+                LOGGER.info("\nkcLogoutSuccess: {}", kcLogoutSuccess);
+            }
+        } catch (final Exception e) {
+            LOGGER.error("\n\nException in logging out user from Keycloak [{}]",
+                    currentUser.getUsername(), e.getMessage());
+        } finally {
+            // Regardless of whether the server is configured to use Keycloak or not, or whether for some exceptional
+            // case Keycloak server session logout fails - the user should be logged out of ZK/servlet/Spring security.
+            // Even, in the exceptional case (i.e. the Keycloak logout fails), the Jwt is timed to maximum period -
+            // usually 30 minutes, therefore this is not a super huge problem.
+            try {
+                if (session == null || event.getData().equals(session)) {
+                    Clients.evalJavaScript("window.close()");
+                    LOGGER.info("Redirecting to spring security logout");
+                    Executions.sendRedirect("/j_spring_security_logout");
+
+                    logoutSuccess = true;
+                }
+            } catch (final Exception e) {
+                LOGGER.error("\n\nException in logging out user via spring security [{}]",
+                        currentUser.getUsername(), e.getMessage());
+            }
+
+            return logoutSuccess;
+
+        }
+    }
 }
