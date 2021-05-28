@@ -63,15 +63,12 @@ public class ApromoreZKListener implements ExecutionInit {
      */
     @Override
     public void init(final Execution exec, final Execution parent) {
-        LOGGER.debug("Initialize execution {} with parent {}", exec, parent);
+        LOGGER.trace("Initialize execution {} with parent {}", exec, parent);
 
         // If there is a parent execution, it will have already performed the required work
         if (parent != null) {
             return;
         }
-
-        final HttpServletRequest httpServletRequest = (HttpServletRequest) exec.getNativeRequest();
-        final HttpServletResponse httpServletResponse = (HttpServletResponse) exec.getNativeResponse();
 
         // If we are not using Keycloak, we don't have to manage JWTs
         final ConfigBean config = (ConfigBean) SpringUtil.getBean("portalConfig");
@@ -82,11 +79,16 @@ public class ApromoreZKListener implements ExecutionInit {
             return;
         }
 
-        final String appAuthHeader = JwtHelper.readCookieValue(httpServletRequest, JWT_COOKIE_NAME);
-        LOGGER.trace("Read App_Auth cookie: {}", appAuthHeader);
-        final String signedAuthHeader = JwtHelper.readCookieValue(httpServletRequest, JwtHelper.SIGNED_AUTH_HEADER_KEY);
-
+        // At this point we've committed to requiring a valid security token
+        // If anything goes wrong in this try-catch block, we err on the side of caution and terminate the session
         try {
+            final HttpServletRequest httpServletRequest = (HttpServletRequest) exec.getNativeRequest();
+            final HttpServletResponse httpServletResponse = (HttpServletResponse) exec.getNativeResponse();
+
+            final String appAuthHeader = JwtHelper.readCookieValue(httpServletRequest, JWT_COOKIE_NAME);
+            LOGGER.trace("Read App_Auth cookie: {}", appAuthHeader);
+            final String signedAuthHeader = JwtHelper.readCookieValue(httpServletRequest, JwtHelper.SIGNED_AUTH_HEADER_KEY);
+
             final JWTClaimsSet jwtClaimsSet = JwtHelper.getClaimsSetFromJWT(appAuthHeader);
 
             final String issuedAtStr = jwtClaimsSet.getStringClaim(JwtHelper.STR_JWT_KEY_ISSUED_AT);

@@ -69,8 +69,11 @@ public class JwtHelper {
 
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(JwtHelper.class);
 
+    /**
+     * @throws Exception  if <var>cookieName</var> is not present in <var>httpServletRequest</var>
+     */
     public static String readCookieValue(final HttpServletRequest httpServletRequest,
-                                         final String cookieName) {
+                                         final String cookieName) throws Exception {
         final Cookie[] cookies = httpServletRequest.getCookies();
 
         if (cookies != null) {
@@ -82,7 +85,7 @@ public class JwtHelper {
             }
         }
 
-        return null;
+        throw new Exception("Cookie " + cookieName + " is not set");
     }
 
     public static void writeCookie(final HttpServletResponse httpServletResponse,
