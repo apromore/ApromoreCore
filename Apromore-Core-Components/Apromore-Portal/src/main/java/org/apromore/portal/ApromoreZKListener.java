@@ -31,7 +31,6 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.MediaType;
 
 import com.nimbusds.jwt.JWTParser;
-import io.netty.handler.codec.base64.Base64Decoder;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.security.helper.JwtHelper;
 import org.apromore.portal.util.SecurityUtils;
@@ -45,7 +44,6 @@ import org.zkoss.zk.ui.util.ExecutionInit;
 
 import java.security.PublicKey;
 import java.util.Base64;
-import java.util.Date;
 
 /**
  * Callbacks during the lifecycle of ZK scopes.
@@ -90,7 +88,7 @@ public class ApromoreZKListener implements ExecutionInit {
             final String signedAuthHeader = JwtHelper.readCookieValue(httpServletRequest, JwtHelper.SIGNED_AUTH_HEADER_KEY);
             final JWTClaimsSet jwtClaimsSet = JwtHelper.getClaimsSetFromJWT(appAuthHeader);
 
-            if (!checkDigitalSignature(appAuthHeader, signedAuthHeader)) {
+            if (!isJwtDigitalSignatureVerified(appAuthHeader, signedAuthHeader)) {
                 throw new Exception("JWT was not correctly signed: appAuthHeader " + appAuthHeader +
                     " signedAuthHeader " + signedAuthHeader);
 
@@ -119,13 +117,13 @@ public class ApromoreZKListener implements ExecutionInit {
      *     <var>jwtStr</var> and is correctly encoded and signed by the key pair
      *     identified by {@link KEY_ALIAS}
      */
-    private boolean checkDigitalSignature(final String jwtStr, final String base64EncodedAndSignedJwtStr) {
+    private boolean isJwtDigitalSignatureVerified(final String jwtStr, final String base64EncodedAndSignedJwtStr) {
         try {
             byte[] signedJwtStr = Base64.getDecoder().decode(base64EncodedAndSignedJwtStr);
 
             final PublicKey publicKey = SecurityUtils.getPublicKey(KEY_ALIAS);
 
-            final boolean verifiedSignature = SecurityUtils.verifyData(publicKey, jwtStr, signedJwtStr, LOGGER);
+            final boolean verifiedSignature = JwtHelper.isSignedStrVerifiable(jwtStr, signedJwtStr);
             LOGGER.debug(">>>>> >>> > verifiedSignature {}", verifiedSignature);
 
             return verifiedSignature;
