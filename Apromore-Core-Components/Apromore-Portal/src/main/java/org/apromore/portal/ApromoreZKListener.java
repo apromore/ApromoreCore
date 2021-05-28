@@ -87,27 +87,12 @@ public class ApromoreZKListener implements ExecutionInit {
             LOGGER.trace("Read App_Auth cookie: {}", appAuthHeader);
             final String signedAuthHeader = JwtHelper.readCookieValue(httpServletRequest, JwtHelper.SIGNED_AUTH_HEADER_KEY);
             final JWTClaimsSet jwtClaimsSet = JwtHelper.getClaimsSetFromJWT(appAuthHeader);
-            final Session session = exec.getSession();
 
-            // Validate that the JWT is correctly signed; easy case is if we remember having validated it previously
-            final boolean isSignaturePreviouslyValidated =
-                signedAuthHeader != null && signedAuthHeader.equals(session.getAttribute(JwtHelper.SIGNED_AUTH_HEADER_KEY));
-            if (!isSignaturePreviouslyValidated) {
+            if (!isJwtDigitalSignatureVerified(appAuthHeader, signedAuthHeader, exec.getSession())) {
+                throw new Exception("JWT was not correctly signed: appAuthHeader " + appAuthHeader +
+                    " signedAuthHeader " + signedAuthHeader);
 
-                // This isn't a JWT we've checked the signature for previously, so do the expensive crypto check
-                if (isJwtDigitalSignatureVerified(appAuthHeader, signedAuthHeader)) {
-                    LOGGER.debug("JWT has changed, but the new one was correctly signed");
-                    session.setAttribute(JwtHelper.SIGNED_AUTH_HEADER_KEY, signedAuthHeader);  // remember JWT is correctly signed
-
-                } else {
-                    throw new Exception("JWT was not correctly signed: appAuthHeader " + appAuthHeader +
-                        " signedAuthHeader " + signedAuthHeader);
-                }
-            }
-            assert signedAuthHeader.equals(session.getAttribute(JwtHelper.SIGNED_AUTH_HEADER_KEY));
-
-            // Now that we're sure we have a correctly signed JWT, we check how old it is
-            if (JwtHelper.isJwtExpired(jwtClaimsSet)) {
+            } else if (JwtHelper.isJwtExpired(jwtClaimsSet)) {
                 LOGGER.info("JWT is expired, signing this session out");
                 signOut(exec.getSession());
 
@@ -132,12 +117,23 @@ public class ApromoreZKListener implements ExecutionInit {
      *     <var>jwtStr</var> and is correctly encoded and signed by the key pair
      *     identified by {@link KEY_ALIAS}
      */
-    private boolean isJwtDigitalSignatureVerified(final String jwtStr, final String base64EncodedAndSignedJwtStr) {
+    private boolean isJwtDigitalSignatureVerified(final String jwtStr,
+                                                  final String base64EncodedAndSignedJwtStr,
+                                                  final Session session) {
+
+        Object previousBase64EncodedAndSignedJwtStr = session.getAttribute(JwtHelper.SIGNED_AUTH_HEADER_KEY);
+        if (previousBase64EncodedAndSignedJwtStr != null &&
+            previousBase64EncodedAndSignedJwtStr.equals(base64EncodedAndSignedJwtStr)) {
+
+            return true;  // this is the same JWT we previously confirmed to be correctly signed
+        }
+
         try {
             byte[] signedJwtStr = Base64.getDecoder().decode(base64EncodedAndSignedJwtStr);
 
             final boolean verifiedSignature = JwtHelper.isSignedStrVerifiable(jwtStr, signedJwtStr);
             LOGGER.debug(">>>>> >>> > verifiedSignature {}", verifiedSignature);
+            session.setAttribute(JwtHelper.SIGNED_AUTH_HEADER_KEY, signedJwtStr);  // remember this JWT is correctly signed
 
             return verifiedSignature;
 
