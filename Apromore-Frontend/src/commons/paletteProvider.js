@@ -28,8 +28,8 @@ import { range, map, findIndex } from 'ramda';
 const DEFAULT_PALETTE = [
     ['#84c7e3', '#76b3cc', '#699fb5', '#5c8b9e', '#4f7788', '#426371', '#344f5a', '#273b44'], // light blue
     ['#bb3a50', '#a83448', '#952e40', '#822838', '#702230', '#5d1d28', '#4a1720', '#381118'], // red
-    ['#ffe066', '#ffdb4d', '#ffd633', '#ffd11a', '#ffcc00', '#e6b800', '#cca300', '#b38f00'], // orange
     ['#34AD61', '#249D51', '#148D41', '#047D31', '#047D21', '#046D21', '#047D11', '#046D11'], // green
+    ['#E98C2D', '#ffdb4d', '#ffd633', '#ffd11a', '#ffcc00', '#e6b800', '#cca300', '#b38f00'], // orange
     ['#bf80ff', '#b366ff', '#a64dff', '#9933ff', '#8c1aff', '#8000ff', '#7300e6', '#6600cc'], // green
     ['#6666ff', '#4d4dff', '#3333ff', '#1a1aff', '#0000ff', '#0000e6', '#0000cc', '#0000b3'], // dark blue
     ['#ff80ff', '#ff66ff', '#ff4dff', '#ff33ff', '#ff1aff', '#ff00ff', '#e600e6', '#cc00cc'], // pink
