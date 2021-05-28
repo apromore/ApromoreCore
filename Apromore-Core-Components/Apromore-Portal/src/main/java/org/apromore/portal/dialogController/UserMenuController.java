@@ -215,15 +215,13 @@ public class UserMenuController extends SelectorComposer<Menubar> {
 
                             final Session session = Sessions.getCurrent();
 
-                            if (config.isUseKeycloakSso()) {
-                                if (event.getData().equals(session)) {
-                                    logoutSuccess =
-                                            managerService.logoutUserAllSessions(
-                                                    currentUser.getUsername(),
-                                                    config.getSecurityMsHttpLogoutUrl(),
-                                                    config.getSecurityMsHttpsLogoutUrl());
-                                    LOGGER.info("\nlogoutSuccess: {}", logoutSuccess);
-                                }
+                            if ((config.isUseKeycloakSso()) && (event.getData().equals(session))) {
+                                logoutSuccess =
+                                        managerService.logoutUserAllSessions(
+                                                currentUser.getUsername(),
+                                                config.getSecurityMsHttpLogoutUrl(),
+                                                config.getSecurityMsHttpsLogoutUrl());
+                                LOGGER.info("\nlogoutSuccess: {}", logoutSuccess);
                             }
 
                             if ((session == null || event.getData().equals(session)) || (logoutSuccess)) {
