@@ -96,7 +96,6 @@ public class JwtHelper {
                                    final String cookieName,
                                    final String cookieValue,
                                    final SessionCookieConfig cookieConfig) {
-
         final Cookie cookie = new Cookie(cookieName, cookieValue);
         cookie.setPath("/");
         cookie.setHttpOnly(cookieConfig.isHttpOnly());
@@ -133,8 +132,7 @@ public class JwtHelper {
 
     public static boolean doesJwtExpiryWithinNMinutes(final JWTClaimsSet preExistingJwtClaimsSet,
                                                       final int nMinutes) {
-
-        assert preExistingJwtClaimsSet.getExpirationTime() != null;
+        notNullAssert(preExistingJwtClaimsSet.getExpirationTime(), "preExistingJwtClaimsSet.getExpirationTime()");
 
         return Duration.between(Instant.now(), preExistingJwtClaimsSet.getExpirationTime().toInstant())
                        .minus(Duration.ofMinutes(nMinutes))
@@ -245,8 +243,8 @@ public class JwtHelper {
     }
 
     public static boolean isSignedStrVerifiable(final String dataStr, final byte[] signedMsg) {
-        LOGGER.debug("dataStr {}", dataStr);
-        LOGGER.debug("signedMsg {}", signedMsg);
+        LOGGER.trace("dataStr {}", dataStr);
+        LOGGER.trace("signedMsg {}", signedMsg);
 
         boolean verified = false;
 
@@ -254,7 +252,7 @@ public class JwtHelper {
             final Signature signature = Signature.getInstance("SHA256withRSA");
 
             final PublicKey publicKey = SecurityUtils.getPublicKey(SecurityUtils.DEFAULT_KEY_ALIAS);
-            LOGGER.debug("publicKey for verification of JWT signed: {}", publicKey);
+            LOGGER.trace("publicKey for verification of JWT signed: {}", publicKey);
 
             signature.initVerify(publicKey);
             signature.update(dataStr.getBytes(StandardCharsets.UTF_8));

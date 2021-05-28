@@ -150,6 +150,8 @@ public class ManagerServiceImpl implements ManagerService {
                             logoutUserUrl,
                             Boolean.class);
             LOGGER.debug("\n\nrestRespResult: {}", restRespResult);
+
+            restRespResult = true;
         } catch (final Exception e) {
             final String exceptionMsg = e.getMessage();
 
@@ -170,7 +172,7 @@ public class ManagerServiceImpl implements ManagerService {
                 throw e;
             }
         } finally {
-            LOGGER.info("\n\n>>>>> Logging out user result: {}", restRespResult);
+            LOGGER.debug("\n\n>>>>> KC logging out user result: {}", restRespResult);
 
             return restRespResult;
         }
