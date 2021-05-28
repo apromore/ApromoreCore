@@ -133,7 +133,7 @@ public class ApromoreZKListener implements ExecutionInit {
 
             final boolean verifiedSignature = JwtHelper.isSignedStrVerifiable(jwtStr, signedJwtStr);
             LOGGER.debug(">>>>> >>> > verifiedSignature {}", verifiedSignature);
-            session.setAttribute(JwtHelper.SIGNED_AUTH_HEADER_KEY, signedJwtStr);  // remember this JWT is correctly signed
+            session.setAttribute(JwtHelper.SIGNED_AUTH_HEADER_KEY, base64EncodedAndSignedJwtStr);
 
             return verifiedSignature;
 
