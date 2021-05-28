@@ -21,53 +21,14 @@
  */
 package org.apromore.portal;
 
+import lombok.*;
+
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
 public class RefreshTokenResponse {
-    private String authHeader;
-    private String signedAuthHeader;
-    private boolean wasRefreshed;
 
-    public RefreshTokenResponse() {
-    }
-
-    public RefreshTokenResponse(
-            final String authHeader,
-            final String signedAuthHeader,
-            final boolean wasRefreshed) {
-        this.authHeader = authHeader;
-        this.signedAuthHeader = signedAuthHeader;
-        this.wasRefreshed = wasRefreshed;
-    }
-
-    public String getAuthHeader() {
-        return authHeader;
-    }
-
-    public String getSignedAuthHeader() {
-        return signedAuthHeader;
-    }
-
-    public boolean isWasRefreshed() {
-        return wasRefreshed;
-    }
-
-    public void setAuthHeader(String authHeader) {
-        this.authHeader = authHeader;
-    }
-
-    public void setSignedAuthHeader(String signedAuthHeader) {
-        this.signedAuthHeader = signedAuthHeader;
-    }
-
-    public void setWasRefreshed(boolean wasRefreshed) {
-        this.wasRefreshed = wasRefreshed;
-    }
-
-    @Override
-    public String toString() {
-        return "RefreshTokenResponse{" +
-                "authHeader='" + authHeader + '\'' +
-                ", signedAuthHeader='" + signedAuthHeader + '\'' +
-                ", wasRefreshed=" + wasRefreshed +
-                '}';
-    }
+    @Getter @Setter private String authHeader;
+    @Getter @Setter private String signedAuthHeader;
+    @Getter @Setter private boolean wasRefreshed;
 }
