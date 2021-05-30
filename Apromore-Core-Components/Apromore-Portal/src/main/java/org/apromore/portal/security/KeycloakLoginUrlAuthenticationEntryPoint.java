@@ -54,13 +54,13 @@ public class KeycloakLoginUrlAuthenticationEntryPoint extends LoginUrlAuthentica
         fullConfigurableReturnPath = new String(
                 Base64.getEncoder().encode(fullProtocolHostPortUrl.getBytes()));
 
-        LOGGER.info("Set fullConfigurableReturnPath to {}", fullConfigurableReturnPath);
+        LOGGER.trace("Set fullConfigurableReturnPath to {}", fullConfigurableReturnPath);
     }
 
     public void setUseKeycloakSso(final boolean useKeycloakSso) {
         utiliseKeycloakSso = useKeycloakSso;
 
-        LOGGER.info("Set useKeycloakSso to {}", utiliseKeycloakSso);
+        LOGGER.trace("Set useKeycloakSso to {}", utiliseKeycloakSso);
     }
 
     public String getKeycloakLoginFormUrl() {
@@ -71,22 +71,22 @@ public class KeycloakLoginUrlAuthenticationEntryPoint extends LoginUrlAuthentica
         if ((this.keycloakLoginFormUrl == null) ||
                 (this.keycloakLoginFormUrl.contains(KEYCLOAK_REALM_PLACEHOLDER))) {
             final String keycloakRealm = System.getenv(ENV_KEYCLOAK_REALM_NAME_KEY);
-            LOGGER.info("FROM environment property keycloakRealm[" + keycloakRealm + "]");
+            LOGGER.trace("FROM environment property keycloakRealm[" + keycloakRealm + "]");
 
             if (keycloakRealm != null) {
                 String tmpUrl = keycloakLoginFormUrl;
 
                 final String randomStateUuid = UUID.randomUUID().toString();
-                LOGGER.info("randomStateUuid: {}", randomStateUuid);
+                LOGGER.trace("randomStateUuid: {}", randomStateUuid);
 
                 tmpUrl = tmpUrl.replaceFirst(KEYCLOAK_REALM_PLACEHOLDER, keycloakRealm);
                 tmpUrl = tmpUrl.replaceFirst(STATE_UUID_PLACEHOLDER, randomStateUuid);
                 tmpUrl = tmpUrl.replaceFirst(FULL_RETURN_PATH_PLACEHOLDER, fullConfigurableReturnPath);
-                LOGGER.info(">>>>> >>> > tmpUrl=[" + tmpUrl + "]");
+                LOGGER.trace(">>>>> >>> > tmpUrl=[" + tmpUrl + "]");
 
                 this.keycloakLoginFormUrl = tmpUrl;
             }  else {
-                LOGGER.info("Keycloak login realm was null - maybe keycloak feature turned-off? [proceeding]");
+                LOGGER.trace("Keycloak login realm was null - maybe keycloak feature turned-off? [proceeding]");
             }
         }
     }
@@ -97,8 +97,8 @@ public class KeycloakLoginUrlAuthenticationEntryPoint extends LoginUrlAuthentica
                          final AuthenticationException authenticationException) throws IOException, ServletException {
         final String requestServletPath = httpServletRequest.getServletPath();
         final String requestURL = httpServletRequest.getRequestURL().toString();
-        LOGGER.info("requestServletPath {}", requestServletPath);
-        LOGGER.info("requestURL {}", requestURL);
+        LOGGER.trace("requestServletPath {}", requestServletPath);
+        LOGGER.trace("requestURL {}", requestURL);
 
         super.commence(httpServletRequest, httpServletResponse, authenticationException);
     }
@@ -127,27 +127,27 @@ public class KeycloakLoginUrlAuthenticationEntryPoint extends LoginUrlAuthentica
             final HttpServletResponse httpServletResponse,
             final AuthenticationException exception) {
         if (utiliseKeycloakSso) {
-            LOGGER.info("[ Utilising keycloak ]");
+            LOGGER.trace("[ Utilising keycloak ]");
 
             final String loginFormPattern = getKeycloakLoginFormUrl();
-            LOGGER.info("### loginFormPattern: {}", loginFormPattern);
+            LOGGER.trace("### loginFormPattern: {}", loginFormPattern);
 
             final String keycloakRealmOfCustomer = System.getenv(ENV_KEYCLOAK_REALM_NAME_KEY);
-            LOGGER.info("keycloakRealmOfCustomer {}", keycloakRealmOfCustomer);
+            LOGGER.trace("keycloakRealmOfCustomer {}", keycloakRealmOfCustomer);
 
             String loginUrl = loginFormPattern.replaceAll(KEYCLOAK_REALM_PLACEHOLDER, keycloakRealmOfCustomer);
-            LOGGER.info("loginUrl[1] {}", loginUrl);
+            LOGGER.trace("loginUrl[1] {}", loginUrl);
             loginUrl = loginUrl.replaceAll(FULL_RETURN_PATH_PLACEHOLDER, fullConfigurableReturnPath);
-            LOGGER.info("loginUrl[2] {}", loginUrl);
+            LOGGER.trace("loginUrl[2] {}", loginUrl);
 
-            LOGGER.info(">>> Resolved Keycloak loginUrl (via securityms): {}", loginUrl);
+            LOGGER.trace(">>> Resolved Keycloak loginUrl (via securityms): {}", loginUrl);
 
             return loginUrl;
         } else {
-            LOGGER.info("[ Keycloak SSO turned off ]");
+            LOGGER.trace("[ Keycloak SSO turned off ]");
 
             String requestUriStr = httpServletRequest.getRequestURL().toString().trim();
-            LOGGER.info("requestUriStr: {}", requestUriStr);
+            LOGGER.trace("requestUriStr: {}", requestUriStr);
 
             try {
                 final URI uri = new URI(requestUriStr);
@@ -155,7 +155,7 @@ public class KeycloakLoginUrlAuthenticationEntryPoint extends LoginUrlAuthentica
                 final String host = uri.getHost();
                 final String path = uri.getPath();
                 int port = (uri.getPort() == -1) ? 80 : uri.getPort();
-                LOGGER.info("host {} path {} port {}", host, path, port);
+                LOGGER.trace("host {} path {} port {}", host, path, port);
 
                 if (host.endsWith("/") || ( (port == 80) || (port == 8181)) ) {
                     if ( (path == null) ||
@@ -163,7 +163,7 @@ public class KeycloakLoginUrlAuthenticationEntryPoint extends LoginUrlAuthentica
                                     ((path != null)  && (! path.endsWith("zul"))))) {
                         requestUriStr = requestUriStr + "/login.zul";
 
-                        LOGGER.info("requestUriStr: {}", requestUriStr);
+                        LOGGER.trace("requestUriStr: {}", requestUriStr);
                     }
                 }
             } catch (final URISyntaxException use) {

@@ -135,8 +135,8 @@ public class ManagerServiceImpl implements ManagerService {
     public boolean logoutUserAllSessions(final String username,
                                          final String kcHttpLogoutUrl,
                                          final String kcHttpsLogoutUrl) throws Exception {
-        LOGGER.info("Using kcHttpLogoutUrl {}", kcHttpLogoutUrl);
-        LOGGER.info("Using kcHttpsLogoutUrl {}", kcHttpsLogoutUrl);
+        LOGGER.trace("Using kcHttpLogoutUrl {}", kcHttpLogoutUrl);
+        LOGGER.trace("Using kcHttpsLogoutUrl {}", kcHttpsLogoutUrl);
 
         Boolean restRespResult = false;
 
@@ -144,12 +144,12 @@ public class ManagerServiceImpl implements ManagerService {
 
         try {
             final String logoutUserUrl = kcHttpLogoutUrl + username;
-            LOGGER.info(">>> logoutUserUrl {}", logoutUserUrl);
+            LOGGER.trace(">>> logoutUserUrl {}", logoutUserUrl);
 
             restRespResult = restTemplate.getForObject(
                             logoutUserUrl,
                             Boolean.class);
-            LOGGER.debug("\n\nrestRespResult: {}", restRespResult);
+            LOGGER.trace("\n\nrestRespResult: {}", restRespResult);
 
             restRespResult = true;
         } catch (final Exception e) {
@@ -157,7 +157,7 @@ public class ManagerServiceImpl implements ManagerService {
 
             if (e instanceof CertificateException || ((exceptionMsg != null) &&
                     (exceptionMsg.indexOf("No subject alternative DNS") != -1)) ) {
-                LOGGER.info("This is a non-fatal exception {}; can continue", e.getMessage());
+                LOGGER.trace("This is a non-fatal exception {}; can continue", e.getMessage());
 
                 restRespResult = restTemplate.getForObject(
                                 kcHttpsLogoutUrl + username,
@@ -186,7 +186,7 @@ public class ManagerServiceImpl implements ManagerService {
                              "/securityms.properties")) {
 
             properties.load(inputStream);
-            LOGGER.info("\n\nsecurityms.properties properties file properties {}", properties);
+            LOGGER.trace("\n\nsecurityms.properties properties file properties {}", properties);
 
             return properties;
         } catch (final IOException | NullPointerException e) {

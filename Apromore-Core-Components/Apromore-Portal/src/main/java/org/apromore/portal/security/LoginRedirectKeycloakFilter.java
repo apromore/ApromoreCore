@@ -55,13 +55,13 @@ public class LoginRedirectKeycloakFilter extends GenericFilterBean {
         s_fullConfigurableReturnPath = new String(
                 Base64.getEncoder().encode(fullProtocolHostPortUrl.getBytes()));
 
-        LOGGER.info("Set fullProtocolHostPortUrl to {}", s_fullConfigurableReturnPath);
+        LOGGER.trace("Set fullProtocolHostPortUrl to {}", s_fullConfigurableReturnPath);
     }
 
     public void setUseKeycloakSso(final boolean useKeycloakSso) {
         s_utiliseKeycloakSso = useKeycloakSso;
 
-        LOGGER.info("Set useKeycloakSso to {}", s_utiliseKeycloakSso);
+        LOGGER.trace("Set useKeycloakSso to {}", s_utiliseKeycloakSso);
     }
 
     public String getKeycloakLoginFormUrl() {
@@ -72,24 +72,24 @@ public class LoginRedirectKeycloakFilter extends GenericFilterBean {
         if ((this.keycloakLoginFormUrl == null) ||
                 (this.keycloakLoginFormUrl.contains(KEYCLOAK_REALM_PLACEHOLDER))) {
             final String keycloakRealm = System.getenv(ENV_KEYCLOAK_REALM_NAME_KEY);
-            LOGGER.info("\n\nFROM environment property keycloakRealm[" + keycloakRealm + "]");
+            LOGGER.trace("\n\nFROM environment property keycloakRealm[" + keycloakRealm + "]");
 
             if (keycloakRealm != null) {
                 String tmpUrl = keycloakLoginFormUrl;
 
                 final String randomStateUuid = UUID.randomUUID().toString();
-                LOGGER.info("\n\nrandomStateUuid: {}", randomStateUuid);
+                LOGGER.trace("\n\nrandomStateUuid: {}", randomStateUuid);
 
                 tmpUrl = tmpUrl.replaceFirst(KEYCLOAK_REALM_PLACEHOLDER, keycloakRealm);
                 tmpUrl = tmpUrl.replaceFirst(STATE_UUID_PLACEHOLDER, randomStateUuid);
                 tmpUrl = tmpUrl.replaceFirst(FULL_RETURN_PATH_PLACEHOLDER,
                         s_fullConfigurableReturnPath);
 
-                LOGGER.info("\n\n>>>>> >>> > tmpUrl=[" + tmpUrl + "]");
+                LOGGER.trace("\n\n>>>>> >>> > tmpUrl=[" + tmpUrl + "]");
 
                 this.keycloakLoginFormUrl = tmpUrl;
             } else {
-                LOGGER.info("Keycloak login realm was null - maybe keycloak feature turned-off? [proceeding]");
+                LOGGER.trace("Keycloak login realm was null - maybe keycloak feature turned-off? [proceeding]");
             }
         }
     }
@@ -109,10 +109,10 @@ public class LoginRedirectKeycloakFilter extends GenericFilterBean {
 
         if (s_utiliseKeycloakSso) {
             if ((requestURI != null) && (requestURI.contains(TRAD_LOGIN_REQUEST_URI))) {
-                LOGGER.info("\n\n>>>>> Detected [" + TRAD_LOGIN_REQUEST_URI + "] URI request <<<<<\n\n");
+                LOGGER.trace("\n\n>>>>> Detected [" + TRAD_LOGIN_REQUEST_URI + "] URI request <<<<<\n\n");
 
                 final String urlToUseForKeycloakLoginPage = this.determineUrlToUseForLoginRequest();
-                LOGGER.info("\n\n##### [INITIAL] urlToUseKeycloakLoginPage " + urlToUseForKeycloakLoginPage);
+                LOGGER.trace("\n\n##### [INITIAL] urlToUseKeycloakLoginPage " + urlToUseForKeycloakLoginPage);
 
                 HttpServletResponse httpServletResponse = ((HttpServletResponse) response);
 
@@ -121,7 +121,7 @@ public class LoginRedirectKeycloakFilter extends GenericFilterBean {
                 chain.doFilter(servletRequest, servletResponse);
             }
         } else {
-            LOGGER.debug("[[ Keycloak SSO is disabled ]]");
+            LOGGER.trace("[[ Keycloak SSO is disabled ]]");
             chain.doFilter(servletRequest, servletResponse);
         }
     }
@@ -132,14 +132,14 @@ public class LoginRedirectKeycloakFilter extends GenericFilterBean {
         final String keycloakRealmOfCustomer = System.getenv(ENV_KEYCLOAK_REALM_NAME_KEY);;
 
         final String randomStateUuid = UUID.randomUUID().toString();
-        LOGGER.info("\n\n>>>>> randomStateUuid: {}", randomStateUuid);
+        LOGGER.trace("\n\n>>>>> randomStateUuid: {}", randomStateUuid);
 
         String loginUrl = loginFormPattern.replaceAll(KEYCLOAK_REALM_PLACEHOLDER, keycloakRealmOfCustomer);
         loginUrl = loginUrl.replaceFirst(STATE_UUID_PLACEHOLDER, randomStateUuid);
         loginUrl = loginUrl.replaceFirst(FULL_RETURN_PATH_PLACEHOLDER,
                 s_fullConfigurableReturnPath);
 
-        LOGGER.info("\n\n>>> >>> >>> Resolved/populated substitution placeholders Keycloak loginUrl: {}", loginUrl);
+        LOGGER.trace("\n\n>>> >>> >>> Resolved/populated substitution placeholders Keycloak loginUrl: {}", loginUrl);
 
         return loginUrl;
     }
