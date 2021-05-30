@@ -88,7 +88,7 @@ public class ApromoreZKListener implements ExecutionInit {
             final String signedAuthHeader = JwtHelper.readCookieValue(httpServletRequest, JwtHelper.SIGNED_AUTH_HEADER_KEY);
             final JWTClaimsSet jwtClaimsSet = JwtHelper.getClaimsSetFromJWT(appAuthHeader);
 
-            if (!isJwtDigitalSignatureVerified(appAuthHeader, signedAuthHeader)) {
+            if (!isJwtDigitalSignatureVerified(appAuthHeader, signedAuthHeader, exec.getSession())) {
                 throw new Exception("JWT was not correctly signed: appAuthHeader " + appAuthHeader +
                     " signedAuthHeader " + signedAuthHeader);
 
@@ -117,12 +117,23 @@ public class ApromoreZKListener implements ExecutionInit {
      *     <var>jwtStr</var> and is correctly encoded and signed by the key pair
      *     identified by {@link KEY_ALIAS}
      */
-    private boolean isJwtDigitalSignatureVerified(final String jwtStr, final String base64EncodedAndSignedJwtStr) {
+    private boolean isJwtDigitalSignatureVerified(final String jwtStr,
+                                                  final String base64EncodedAndSignedJwtStr,
+                                                  final Session session) {
+
+        Object previousBase64EncodedAndSignedJwtStr = session.getAttribute(JwtHelper.SIGNED_AUTH_HEADER_KEY);
+        if (previousBase64EncodedAndSignedJwtStr != null &&
+            previousBase64EncodedAndSignedJwtStr.equals(base64EncodedAndSignedJwtStr)) {
+
+            return true;  // this is the same JWT we previously confirmed to be correctly signed
+        }
+
         try {
             byte[] signedJwtStr = Base64.getDecoder().decode(base64EncodedAndSignedJwtStr);
 
             final boolean verifiedSignature = JwtHelper.isSignedStrVerifiable(jwtStr, signedJwtStr);
             LOGGER.debug(">>>>> >>> > verifiedSignature {}", verifiedSignature);
+            session.setAttribute(JwtHelper.SIGNED_AUTH_HEADER_KEY, base64EncodedAndSignedJwtStr);
 
             return verifiedSignature;
 
@@ -185,6 +196,7 @@ public class ApromoreZKListener implements ExecutionInit {
      * Broadcast that this session has been signed out.
      */
     private static void signOut(final Session session) {
+        session.removeAttribute(JwtHelper.SIGNED_AUTH_HEADER_KEY);
         EventQueues.lookup("signOutQueue", EventQueues.APPLICATION, true)
                 .publish(new Event("onSignout", null, session));
     }
