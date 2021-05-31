@@ -24,6 +24,12 @@ package org.apromore.portal;
 
 import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTClaimsSet;
+import java.io.IOException;
+import java.util.Dictionary;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+import javax.servlet.ServletContext;
 import javax.servlet.SessionCookieConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -34,13 +40,19 @@ import com.nimbusds.jwt.JWTParser;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.security.helper.JwtHelper;
 import org.apromore.portal.util.SecurityUtils;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
+import org.osgi.service.cm.Configuration;
+import org.osgi.service.cm.ConfigurationAdmin;
 import org.slf4j.Logger;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Session;
+import org.zkoss.zk.ui.WebApp;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.util.ExecutionInit;
+import org.zkoss.zk.ui.util.WebAppInit;
 
 import java.security.PublicKey;
 import java.util.Base64;
@@ -48,11 +60,23 @@ import java.util.Base64;
 /**
  * Callbacks during the lifecycle of ZK scopes.
  */
-public class ApromoreZKListener implements ExecutionInit {
+public class ApromoreZKListener implements ExecutionInit, WebAppInit {
 
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(ApromoreZKListener.class);
     private static final String JWT_COOKIE_NAME = "App_Auth";
     private static final String KEY_ALIAS = "apseckey";
+
+    /**
+     * If this property key appears in <code>site.cfg</code>, it will be parsed as a boolean and
+     * determines whether session cookie "HttpOnly" flags will be set.
+     */
+    public static final String COOKIE_HTTP_ONLY = "site.cookie.httpOnly";
+
+    /**
+     * If this property key appears in <code>site.cfg</code>, it will be parsed as a boolean and
+     * determines whether session cookie "Secure" flags will be set.
+     */
+    public static final String COOKIE_SECURE = "site.cookie.secure";
 
     /**
      * {@inheritDoc}
@@ -108,6 +132,76 @@ public class ApromoreZKListener implements ExecutionInit {
             LOGGER.error("JWT security token check failed; terminating session", e);
             signOut(exec.getSession());
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * This implementation allows the cookie configuration to be set from the central application
+     * configuration file <code>site.cfg</code>, overriding the Portal's <code>web.xml</code>.
+     */
+    @Override
+    public void init(final WebApp webApp) {
+        LOGGER.trace("Initialize web app {}", webApp);
+        try {
+            Map<String, Object> siteConfiguration = getSiteConfiguration(webApp.getServletContext());
+            LOGGER.trace("Site configuration {}", siteConfiguration);
+
+            // Allow override of the "HttpOnly" cookie flag
+            if (siteConfiguration.containsKey(COOKIE_HTTP_ONLY)) {
+                boolean isHttpOnly = Boolean.parseBoolean((String) siteConfiguration.get(COOKIE_HTTP_ONLY));
+                LOGGER.info("Overriding session cookie configuration: HttpOnly is now {}", isHttpOnly);
+                webApp.getServletContext().getSessionCookieConfig().setHttpOnly(isHttpOnly);
+            }
+
+            // Allow override of the "Secure" cookie flag
+            if (siteConfiguration.containsKey(COOKIE_SECURE)) {
+                boolean isSecure = Boolean.parseBoolean((String) siteConfiguration.get(COOKIE_SECURE));
+                LOGGER.info("Overriding session cookie configuration: Secure is now {}", isSecure);
+                webApp.getServletContext().getSessionCookieConfig().setSecure(isSecure);
+            }
+
+        } catch (Exception e) {
+            LOGGER.error("Failed to initialize web app", e);
+        }
+    }
+
+    /**
+     * Access the application configuration.
+     *
+     * This works during application initialization, before {@link SpringUtil} would be able to
+     * access {@link ConfigBean}.
+     *
+     * @return the contents of <code>site.cfg</code> as a mapping from property keys to values; all
+     *     values are actually {@link String}s because we're using a very early edition of OSGi.
+     * @throws IOException if the configuration can't be read
+     */
+    private Map<String, Object> getSiteConfiguration(final ServletContext servletContext) throws IOException {
+        BundleContext bundleContext = (BundleContext) servletContext.getAttribute("osgi-bundlecontext");
+        ServiceReference serviceReference = bundleContext.getServiceReference(ConfigurationAdmin.class);
+        ConfigurationAdmin configurationAdmin = (ConfigurationAdmin) bundleContext.getService(serviceReference);
+
+        return toMap(configurationAdmin.getConfiguration("site").getProperties());
+    }
+
+    /**
+     * Convert {@link Dictionary} to {@link Map}.
+     *
+     * @param dict  an arbitrary dictionary, or <code>null</code>
+     * @return an equivalent map, or <code>null</code> if <var>dict</var> was <code>null</code>
+     */
+    private <K, V> Map<K, V> toMap(final Dictionary<K, V> dict) {
+        if (dict == null) {
+            return null;
+        }
+
+        Map<K, V> map = new HashMap<>();
+        for (Enumeration<K> e = dict.keys(); e.hasMoreElements();) {
+            K key = e.nextElement();
+            map.put(key, dict.get(key));
+        }
+
+        return map;
     }
 
     /**
