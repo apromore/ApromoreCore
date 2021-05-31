@@ -23,7 +23,10 @@
 package org.apromore.plugin.portal.account;
 
 import java.util.Locale;
+
+import org.apromore.portal.ConfigBean;
 import org.slf4j.Logger;
+import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.ui.util.Clients;
 
 import org.apromore.plugin.portal.DefaultPortalPlugin;
@@ -39,6 +42,16 @@ public class ReportIssuePlugin extends DefaultPortalPlugin {
     private String groupLabel = "Account";
 
     // PortalPlugin overrides
+
+    @Override
+    public Availability getAvailability() {
+        ConfigBean config = (ConfigBean) SpringUtil.getBean("portalConfig");
+        String email = config.getContactEmail();
+
+        return (email == null || email.isEmpty() || email.indexOf("@") < 0) ?
+            Availability.UNAVAILABLE :
+            Availability.AVAILABLE;
+    }
 
     @Override
     public String getLabel(Locale locale) {
