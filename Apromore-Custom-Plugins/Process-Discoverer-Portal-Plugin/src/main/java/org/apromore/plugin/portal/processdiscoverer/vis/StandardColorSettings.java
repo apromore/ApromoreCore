@@ -47,20 +47,19 @@ public class StandardColorSettings {
     private final String gateway_bg_color = "white"; //"#C0A1BE";
     private final String edge_starting_ending_color = "#646464";
 
-	// private final Color NODE_LIGHT_BLUE = new Color(226,242,248);
-	// private final Color NODE_DARK_BLUE = new Color(91,136,155);
-	// private final Color NODE_LIGHT_RED = new Color(238,206,211);
-	// private final Color NODE_DARK_RED = new Color(142,43,60);
+	 private final Color NODE_LIGHT_BLUE = new Color(226,242,248);
+	 private final Color NODE_DARK_BLUE = new Color(91,136,155);
+	 private final Color NODE_LIGHT_RED = new Color(238,206,211);
+	 private final Color NODE_DARK_RED = new Color(142,43,60);
 
 	// Sync closer to dash palette
 	// Two bases for the frequency and duration:
 	// Blue, #84c7e3, 132, 199, 227
 	// Red, #bb3a50, 187, 58, 80
-
-	private final Color NODE_LIGHT_BLUE = new Color(196,228,242);
-	private final Color NODE_DARK_BLUE = new Color(34,115,149);
-	private final Color NODE_LIGHT_RED = new Color(239,202,209);
-	private final Color NODE_DARK_RED = new Color(157,49,67);
+	// private final Color NODE_LIGHT_BLUE = new Color(196,228,242);
+	// private final Color NODE_DARK_BLUE = new Color(34,115,149);
+	// private final Color NODE_LIGHT_RED = new Color(239,202,209);
+	// private final Color NODE_DARK_RED = new Color(157,49,67);
 
 	private final Color EDGE_LIGHT_BLUE = new Color(103,156,178);
 	private final Color EDGE_DARK_BLUE = new Color(70,105,119);
