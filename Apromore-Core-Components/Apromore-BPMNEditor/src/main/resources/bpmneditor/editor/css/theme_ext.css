@@ -236,11 +236,21 @@ text * {
 }
 
 .x-panel-editor-center {
-	background: #777777;
+    background: #777777;
+    position: fixed;
+    top: calc(var(--ap-menu-height) + var(--ap-header-height)) !important;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.x-panel-editor-center > .x-panel-bwrap {
+    height: 100% !important;
 }
 
 .x-panel-editor-center .x-panel-body {
-	background: transparent none repeat scroll 0 0;
+    background: transparent none repeat scroll 0 0;
+    height: 100% !important;
 }
 
 .x-panel-editor-west .x-panel-body .x-panel-body,
