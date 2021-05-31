@@ -43,7 +43,6 @@ import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zul.Window;
 
 import javax.servlet.http.HttpServletRequest;
-import java.time.Duration;
 import java.util.*;
 
 public class TokenHandoffController extends SelectorComposer<Window> {
@@ -52,17 +51,6 @@ public class TokenHandoffController extends SelectorComposer<Window> {
 
     private ManagerService managerService;
     private SecurityService securityService;
-
-    private static final String JWT_KEY_SUBJECT_USERNAME = "sub";
-    private static final String JWT_KEY_ISSUED_AT = "iat";
-    private static final String JWT_EXPIRY_TIME = "exp";
-    private static final String STR_JWT_KEY_ISSUED_AT = "striat";
-    private static final String STR_JWT_EXPIRY_TIME = "strexp";
-    private static final String JWT_KC_USER_ID = "kcuserid";
-
-    private static final String JWT_KEY_SUBJECT_EMAIL = "email";
-    private static final String JWT_KEY_GIVEN_NAME = "givenName";
-    private static final String JWT_KEY_FAMILY_NAME = "familyName";
 
     @Override
     public void doAfterCompose(final Window window) {
@@ -78,9 +66,9 @@ public class TokenHandoffController extends SelectorComposer<Window> {
                     (HttpServletRequest) Executions.getCurrent().getNativeRequest();
             LOGGER.debug("httpServletRequest: {}", httpServletRequest);
 
-            final String appAuthCookieStr = JwtHelper.readCookie(httpServletRequest, "App_Auth");
+            final String appAuthCookieStr = JwtHelper.readCookieValue(httpServletRequest, "App_Auth");
             final byte[] base64DecodedSignedAppAuth = Base64.getDecoder().decode(
-                            JwtHelper.readCookie(httpServletRequest, "Signed_App_Auth"));
+                            JwtHelper.readCookieValue(httpServletRequest, "Signed_App_Auth"));
             LOGGER.debug(">>> appAuthCookieStr: {}", appAuthCookieStr);
             LOGGER.debug(">>> base64DecodedSignedAppAuth: {}", base64DecodedSignedAppAuth);
 

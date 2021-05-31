@@ -36,59 +36,107 @@ import org.apromore.security.util.SecurityUtil;
 import org.apromore.service.SecurityService;
 import org.slf4j.Logger;
 
+import javax.servlet.SessionCookieConfig;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.Instant;
 import java.util.Date;
+import static org.apromore.portal.util.AssertUtils.notNullAssert;
 
 public class JwtHelper {
 
     public static final String JWT_KEY_SUBJECT_USERNAME = "sub";
+    public static final String JWT_KEY_ISSUED_AT = "iat";
+    public static final String JWT_EXPIRY_TIME = "exp";
+    public static final String JWT_KC_USER_ID = "kcuserid";
+
+    public static final String JWT_KEY_SUBJECT_EMAIL = "email";
+    public static final String JWT_KEY_GIVEN_NAME = "givenName";
+    public static final String JWT_KEY_FAMILY_NAME = "familyName";
+
     public static final String STR_JWT_KEY_ISSUED_AT = "striat";
     public static final String STR_JWT_EXPIRY_TIME = "strexp";
     public static final Duration WEBAPP_SSO_SESSION_TIMEOUT = Duration.ofMinutes(30);
 
+    public static final String AUTH_HEADER_KEY = "App_Auth";
+    public static final String SIGNED_AUTH_HEADER_KEY = "Signed_App_Auth";
+
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(JwtHelper.class);
 
-    public static String readCookie(final HttpServletRequest httpServletRequest,
-                                    final String cookieName) {
+    /**
+     * @throws Exception  if <var>cookieName</var> is not present in <var>httpServletRequest</var>
+     */
+    public static String readCookieValue(final HttpServletRequest httpServletRequest,
+                                         final String cookieName) throws Exception {
         final Cookie[] cookies = httpServletRequest.getCookies();
 
         if (cookies != null) {
             for (final Cookie cookie : cookies) {
                 if (cookie.getName().equals(cookieName)) {
+                    LOGGER.trace("cookie {} read value {}", cookieName, cookie);
                     return cookie.getValue();
                 }
             }
         }
 
-        return null;
+        throw new Exception("Cookie " + cookieName + " is not set");
     }
 
-    public static boolean isJwtExpired(final JWTClaimsSet jwtClaimsSet,
-                                       final String issuedAtStr,
-                                       final String expiredAtStr) {
-        final long jwtExpiryEpoch;
-        if (expiredAtStr != null) {
-            jwtExpiryEpoch = Long.valueOf(expiredAtStr.substring(3));
-        } else { // Calculate relative
-            final Long jwtIssuedAt = Long.valueOf(issuedAtStr.substring(3));
+    /**
+     * @param cookieConfig  the cookie will have its HttpOnly and Secure flags set to match this config
+     */
+    public static void writeCookie(final HttpServletResponse httpServletResponse,
+                                   final String cookieName,
+                                   final String cookieValue,
+                                   final SessionCookieConfig cookieConfig) {
+        final Cookie cookie = new Cookie(cookieName, cookieValue);
+        cookie.setPath("/");
+        cookie.setHttpOnly(cookieConfig.isHttpOnly());
+        cookie.setSecure(cookieConfig.isSecure());
 
-            jwtExpiryEpoch = calculateExpiryTime(jwtIssuedAt, WEBAPP_SSO_SESSION_TIMEOUT);
-        }
+        httpServletResponse.addCookie(cookie);
+        LOGGER.debug("Added written cookie {} with name {} and value {} to the HttpServletResponse",
+                cookie, cookie.getName(), cookie.getValue());
+    }
 
-        final Long nowEpoch = LocalDateTime.now().atZone(ZoneId.systemDefault()).toEpochSecond();
+    public static JWTClaimsSet refreshJwt(final JWTClaimsSet jwtClaimsSet) {
+        try { Thread.sleep(10); } catch (final InterruptedException ie) { };
 
-        final boolean jwtExpired = (nowEpoch > jwtExpiryEpoch);
+        final Instant newExpiryTime = Instant.now().plus(WEBAPP_SSO_SESSION_TIMEOUT);
 
-        return jwtExpired;
+        final JWTClaimsSet updatedJwtClaimsSet = new JWTClaimsSet.Builder()
+                .claim(JWT_KEY_SUBJECT_USERNAME, jwtClaimsSet.getSubject())
+                .claim(JWT_KEY_SUBJECT_EMAIL, jwtClaimsSet.getClaim(JWT_KEY_SUBJECT_EMAIL))
+                .claim(JWT_KEY_GIVEN_NAME, jwtClaimsSet.getClaim(JWT_KEY_GIVEN_NAME))
+                .claim(JWT_KEY_FAMILY_NAME, jwtClaimsSet.getClaim(JWT_KEY_FAMILY_NAME))
+                .claim(JWT_KC_USER_ID, jwtClaimsSet.getClaim(JWT_KC_USER_ID))
+                .claim(JWT_KEY_ISSUED_AT, jwtClaimsSet.getIssueTime())
+                .claim(JWT_EXPIRY_TIME, (newExpiryTime.toEpochMilli() / 1000)) // JWT spec is epoch *seconds* relative
+                .claim("str" + JWT_KEY_ISSUED_AT, jwtClaimsSet.getClaim("str" + JWT_KEY_ISSUED_AT))
+                .claim("str" + JWT_EXPIRY_TIME, jwtClaimsSet.getClaim("str" + JWT_EXPIRY_TIME))
+                .build();
+
+        return updatedJwtClaimsSet;
+    }
+
+    public static boolean isJwtExpired(final JWTClaimsSet jwtClaimsSet) {
+        return doesJwtExpiryWithinNMinutes(jwtClaimsSet, 0);
+    }
+
+    public static boolean doesJwtExpiryWithinNMinutes(final JWTClaimsSet preExistingJwtClaimsSet,
+                                                      final int nMinutes) {
+        notNullAssert(preExistingJwtClaimsSet.getExpirationTime(), "preExistingJwtClaimsSet.getExpirationTime()");
+
+        return Duration.between(Instant.now(), preExistingJwtClaimsSet.getExpirationTime().toInstant())
+                       .minus(Duration.ofMinutes(nMinutes))
+                       .isNegative();
     }
 
     public static JWTClaimsSet getClaimsSetFromJWT(final String jwtStr) throws Exception {
@@ -107,10 +155,10 @@ public class JwtHelper {
         try {
             final JWTClaimsSet jwtClaimsSet = JwtHelper.getClaimsSetFromJWT(appAuthHeader);
 
-            final String issuedAtStr = jwtClaimsSet.getStringClaim(JwtHelper.STR_JWT_KEY_ISSUED_AT);
-            final String expiryAtStr = jwtClaimsSet.getStringClaim(JwtHelper.STR_JWT_EXPIRY_TIME);
+            final String issuedAtStr = jwtClaimsSet.getStringClaim("str" + JwtHelper.STR_JWT_KEY_ISSUED_AT);
+            final String expiryAtStr = jwtClaimsSet.getStringClaim("str" + JwtHelper.STR_JWT_EXPIRY_TIME);
 
-            final boolean jwtExpired = JwtHelper.isJwtExpired(jwtClaimsSet, issuedAtStr, expiryAtStr);
+            final boolean jwtExpired = doesJwtExpiryWithinNMinutes(jwtClaimsSet, 0);
 
             if (!jwtExpired) {
                 final UserType authUserType =
@@ -122,7 +170,7 @@ public class JwtHelper {
                 return null;
             }
         } catch (final Exception pe) {
-            LOGGER.debug("Exception in processing JWT (returning null)", pe);
+            LOGGER.error("Exception in processing JWT (returning null)", pe);
 
             return null;
         }
@@ -195,8 +243,8 @@ public class JwtHelper {
     }
 
     public static boolean isSignedStrVerifiable(final String dataStr, final byte[] signedMsg) {
-        LOGGER.debug("dataStr {}", dataStr);
-        LOGGER.debug("signedMsg {}", signedMsg);
+        LOGGER.trace("dataStr {}", dataStr);
+        LOGGER.trace("signedMsg {}", signedMsg);
 
         boolean verified = false;
 
@@ -204,7 +252,7 @@ public class JwtHelper {
             final Signature signature = Signature.getInstance("SHA256withRSA");
 
             final PublicKey publicKey = SecurityUtils.getPublicKey(SecurityUtils.DEFAULT_KEY_ALIAS);
-            LOGGER.debug("publicKey for verification of JWT signed: {}", publicKey);
+            LOGGER.trace("publicKey for verification of JWT signed: {}", publicKey);
 
             signature.initVerify(publicKey);
             signature.update(dataStr.getBytes(StandardCharsets.UTF_8));

@@ -71,7 +71,8 @@ public class ConfigBean implements Serializable {
     // Maximum upload size
     private long     maxUploadSize;
 
-    private boolean useKeycloakSso;
+    private boolean  useKeycloakSso;
+    private int      minutesUntilExpiryBeforeSessionRefresh;
 
     private String securityMsHost;
     private String securityMsPort;
@@ -94,6 +95,7 @@ public class ConfigBean implements Serializable {
                       long maxUploadSize,
                       String contactEmail,
                       boolean useKeycloakSso,
+                      int minutesUntilExpiryBeforeSessionRefresh,
                       String securityMsHost,
                       String securityMsPort,
                       String securityMsHttpLogoutUrl,
@@ -145,6 +147,7 @@ public class ConfigBean implements Serializable {
         this.maxUploadSize = maxUploadSize;
 
         this.useKeycloakSso = useKeycloakSso;
+        this.minutesUntilExpiryBeforeSessionRefresh = minutesUntilExpiryBeforeSessionRefresh;
 
         this.contactEmail       = contactEmail;
 
@@ -186,12 +189,24 @@ public class ConfigBean implements Serializable {
 
     public boolean isUseKeycloakSso() { return useKeycloakSso; }
 
+    public String getSecurityMsHost() {
+        return securityMsHost;
+    }
+
+    public String getSecurityMsPort() {
+        return securityMsPort;
+    }
+
     public String getSecurityMsHttpLogoutUrl() {
         return securityMsHttpLogoutUrl;
     }
 
     public String getSecurityMsHttpsLogoutUrl() {
         return securityMsHttpsLogoutUrl;
+    }
+
+    public int getMinutesUntilExpiryBeforeSessionRefresh() {
+        return minutesUntilExpiryBeforeSessionRefresh;
     }
 
     public boolean isCommunity() {

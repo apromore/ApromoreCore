@@ -135,29 +135,32 @@ public class ManagerServiceImpl implements ManagerService {
     public boolean logoutUserAllSessions(final String username,
                                          final String kcHttpLogoutUrl,
                                          final String kcHttpsLogoutUrl) throws Exception {
-        LOGGER.info("Using kcHttpLogoutUrl {}", kcHttpLogoutUrl);
-        LOGGER.info("Using kcHttpsLogoutUrl {}", kcHttpsLogoutUrl);
+        LOGGER.trace("Using kcHttpLogoutUrl {}", kcHttpLogoutUrl);
+        LOGGER.trace("Using kcHttpsLogoutUrl {}", kcHttpsLogoutUrl);
 
         Boolean restRespResult = false;
 
         final RestTemplate restTemplate = restTemplate();
 
-        final Properties securityMsProps = readSecurityMsProperties();
-
         try {
+            final String logoutUserUrl = kcHttpLogoutUrl + username;
+            LOGGER.trace(">>> logoutUserUrl {}", logoutUserUrl);
+
             restRespResult = restTemplate.getForObject(
-                            securityMsProps.getProperty(kcHttpLogoutUrl) + username,
+                            logoutUserUrl,
                             Boolean.class);
-            LOGGER.debug("\n\nrestRespResult: {}", restRespResult);
+            LOGGER.trace("\n\nrestRespResult: {}", restRespResult);
+
+            restRespResult = true;
         } catch (final Exception e) {
             final String exceptionMsg = e.getMessage();
 
             if (e instanceof CertificateException || ((exceptionMsg != null) &&
                     (exceptionMsg.indexOf("No subject alternative DNS") != -1)) ) {
-                LOGGER.info("This is a non-fatal exception {}; can continue", e.getMessage());
+                LOGGER.trace("This is a non-fatal exception {}; can continue", e.getMessage());
 
                 restRespResult = restTemplate.getForObject(
-                                securityMsProps.getProperty(kcHttpsLogoutUrl) + username,
+                                kcHttpsLogoutUrl + username,
                                 Boolean.class);
                 LOGGER.debug("\n\nrestRespResult: {}", restRespResult);
 
@@ -169,7 +172,7 @@ public class ManagerServiceImpl implements ManagerService {
                 throw e;
             }
         } finally {
-            LOGGER.info("\n\n>>>>> Logging out user result: {}", restRespResult);
+            LOGGER.debug("\n\n>>>>> KC logging out user result: {}", restRespResult);
 
             return restRespResult;
         }
@@ -183,7 +186,7 @@ public class ManagerServiceImpl implements ManagerService {
                              "/securityms.properties")) {
 
             properties.load(inputStream);
-            LOGGER.info("\n\nsecurityms.properties properties file properties {}", properties);
+            LOGGER.trace("\n\nsecurityms.properties properties file properties {}", properties);
 
             return properties;
         } catch (final IOException | NullPointerException e) {

@@ -18,7 +18,7 @@
     <properties>
         <java.version>11</java.version>
         <spring.framework.version>3.1.1.RELEASE</spring.framework.version> <!-- as ApromoreEE is currently contrained to about this -->
-        <keycloak.version>11.0.3</keycloak.version>
+        <!-- <keycloak.version>12.0.4</keycloak.version> -->
     </properties>
 
     <dependencies>
@@ -44,13 +44,15 @@
         <dependency>
             <groupId>org.keycloak</groupId>
             <artifactId>keycloak-admin-client</artifactId>
-            <version>${keycloak.version}</version>
+            <!-- <version>${keycloak.version}</version> -->
+            <!--
             <exclusions>
                 <exclusion>
                     <groupId>commons-logging</groupId>
                     <artifactId>commons-logging</artifactId>
                 </exclusion>
             </exclusions>
+            -->
         </dependency>
 
         <dependency>
