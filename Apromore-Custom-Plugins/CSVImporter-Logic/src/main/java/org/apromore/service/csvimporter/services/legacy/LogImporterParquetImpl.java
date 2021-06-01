@@ -26,6 +26,7 @@ import org.apache.parquet.example.data.Group;
 import org.apache.parquet.hadoop.ParquetReader;
 import org.apache.parquet.schema.MessageType;
 import org.apromore.dao.model.Log;
+import org.apromore.service.csvimporter.common.ConfigBean;
 import org.apromore.service.csvimporter.common.EventLogImporter;
 import org.apromore.service.csvimporter.constants.Constants;
 import org.apromore.service.csvimporter.io.ParquetLocalFileReader;
@@ -57,6 +58,7 @@ import static org.apromore.service.csvimporter.utilities.ParquetUtilities.getHea
 public class LogImporterParquetImpl implements LogImporter, Constants {
 
     @Inject EventLogImporter eventLogImporter;
+    @Inject private ConfigBean config;
     private List<LogErrorReport> logErrorReport;
     private LogProcessor logProcessor;
     private ParquetReader<Group> reader;
@@ -194,7 +196,7 @@ public class LogImporterParquetImpl implements LogImporter, Constants {
     }
 
     private boolean isValidLineCount(int lineCount) {
-        return true;
+        return config == null || config.getMaxEventCount() == null || lineCount <= config.getMaxEventCount();
     }
 
     private String[] readGroup(Group g, MessageType schema) {
