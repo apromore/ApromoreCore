@@ -21,8 +21,9 @@
  */
 package org.apromore.service.csvimporter.common;
 
-import static org.apromore.service.csvimporter.constants.Constants.XES_EXTENSION;
-
+/**
+ * Log importer plugin configuration.
+ */
 public class ConfigBean {
 
     private Long maxEventCount;
