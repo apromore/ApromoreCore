@@ -43,6 +43,12 @@
     </param-value>
   </context-param>
 
+  <!-- Jetty will not honor disabling URL rewriting via session-config/tracking-mode.  It must be done with this parameter instead. -->
+  <context-param>
+    <param-name>org.eclipse.jetty.servlet.SessionIdPathParameterName</param-name>
+    <param-value>none</param-value>
+  </context-param>
+
   <listener>
     <listener-class>org.zkoss.zk.ui.http.HttpSessionListener</listener-class>
   </listener>
