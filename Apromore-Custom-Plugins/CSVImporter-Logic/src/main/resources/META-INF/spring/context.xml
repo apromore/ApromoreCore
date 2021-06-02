@@ -35,6 +35,10 @@
             http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd
             http://www.springframework.org/schema/util            http://www.springframework.org/schema/util/spring-util.xsd">
 
+    <!-- Make site.properties available as EL expressions, i.e. ${...} -->
+    <osgi-compendium:cm-properties id="siteProperties" persistent-id="site"/>
+    <context:property-placeholder properties-ref="siteProperties"/>
+
     <!-- Inject dependencies for @Autowired/@Inject annotations -->
     <context:annotation-config/>
 
@@ -43,6 +47,10 @@
 
     <!-- Import OSGi services as beans -->
     <osgi:reference id="eventLogService" interface="org.apromore.service.EventLogService"/>
+
+    <bean id="config" class="org.apromore.service.csvimporter.common.ConfigBean">
+        <property name="maxEventCount" value="${import.log.maxEventCount:#{null}}"/>
+    </bean>
 
     <util:map id="logImporterMap" map-class="java.util.HashMap" key-type="java.lang.String" value-type="org.apromore.service.csvimporter.services.legacy.LogImporter">
         <entry key="csv"     value-ref="csvLogImporter"/>

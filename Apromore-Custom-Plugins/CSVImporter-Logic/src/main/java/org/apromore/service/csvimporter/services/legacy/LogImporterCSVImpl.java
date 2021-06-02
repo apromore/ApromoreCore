@@ -25,6 +25,7 @@ import com.google.common.base.Splitter;
 import com.opencsv.CSVReader;
 import org.apache.commons.io.input.ReaderInputStream;
 import org.apromore.dao.model.Log;
+import org.apromore.service.csvimporter.common.ConfigBean;
 import org.apromore.service.csvimporter.common.EventLogImporter;
 import org.apromore.service.csvimporter.constants.Constants;
 import org.apromore.service.csvimporter.io.CSVFileReader;
@@ -54,14 +55,15 @@ import static org.apromore.service.csvimporter.utilities.CSVUtilities.getMaxOccu
 @Service("csvLogImporter")
 public class LogImporterCSVImpl implements LogImporter, Constants {
 
-    @Inject
-    private EventLogImporter eventLogImporter;
+    @Inject private EventLogImporter eventLogImporter;
+    @Inject private ConfigBean config;
     private List<LogErrorReport> logErrorReport;
     private LogProcessor logProcessor;
     private Reader readerin;
     private BufferedReader brReader;
     private InputStream in2;
     private CSVReader reader;
+
 
     @Override
     public LogModel importLog(InputStream in, LogMetaData logMetaData, String charset, boolean skipInvalidRow,
@@ -194,7 +196,7 @@ public class LogImporterCSVImpl implements LogImporter, Constants {
     }
 
     public boolean isValidLineCount(int lineCount) {
-        return true;
+        return config == null || config.getMaxEventCount() == null || lineCount <= config.getMaxEventCount();
     }
 
     private void assignEventsToTrace(LogEventModel logEventModel, XTrace xTrace) {

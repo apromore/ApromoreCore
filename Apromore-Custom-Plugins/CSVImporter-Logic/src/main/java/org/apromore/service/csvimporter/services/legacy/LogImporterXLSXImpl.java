@@ -26,6 +26,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apromore.dao.model.Log;
+import org.apromore.service.csvimporter.common.ConfigBean;
 import org.apromore.service.csvimporter.common.EventLogImporter;
 import org.apromore.service.csvimporter.constants.Constants;
 import org.apromore.service.csvimporter.io.XLSReader;
@@ -57,6 +58,7 @@ public class LogImporterXLSXImpl implements LogImporter, Constants {
     private final int BUFFER_SIZE = 2048;
     private final int DEFAULT_NUMBER_OF_ROWS = 100;
     @Inject EventLogImporter eventLogImporter;
+    @Inject private ConfigBean config;
 
     @Override
     public LogModel importLog(InputStream in, LogMetaData logMetaData, String charset, boolean skipInvalidRow,
@@ -189,7 +191,7 @@ public class LogImporterXLSXImpl implements LogImporter, Constants {
     }
 
     public boolean isValidLineCount(int lineCount) {
-        return true;
+        return config == null || config.getMaxEventCount() == null || lineCount <= config.getMaxEventCount();
     }
 
     private void assignEventsToTrace(LogEventModel logEventModel, XTrace xTrace) {
