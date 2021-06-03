@@ -50,6 +50,7 @@ public final class DateTimeUtils {
 
   private static final DateTimeFormatter dateTimeFormatter = new DateTimeFormatterBuilder()
       .appendOptional(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"))
+      .appendOptional(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH-mm-ss"))
       .appendOptional(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss"))
       .appendOptional(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))
       .appendOptional(DateTimeFormatter.ofPattern("dd/MM/yyyy[ HH:mm:ss]"))
