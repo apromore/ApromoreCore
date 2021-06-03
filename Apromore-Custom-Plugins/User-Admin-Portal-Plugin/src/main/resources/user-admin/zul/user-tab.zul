@@ -21,7 +21,8 @@
   -->
 <?component name="userListboxComp" macroURI="/user-admin/zul/user-listbox.zul" inline="true" ?>
 <?component name="tristateListboxComp" macroURI="/user-admin/zul/tristate-listbox.zul" inline="true" ?>
-<hbox vflex="1" hflex="1" spacing="0" style="padding: 0;" xmlns:h="http://www.w3.org/1999/xhtml" sclass="ap-usrmgt-tab-user">
+<hbox vflex="1" hflex="1" spacing="0" style="padding: 0;" xmlns:h="http://www.w3.org/1999/xhtml"
+      sclass="ap-usrmgt-tab-user" xmlns:ca="client/attribute">
   <vbox hflex="1" vflex="1" spacing="0" id="userListView">
     <hbox sclass="ap-portal-menu-actions" hflex="1" height="32px">
       <hbox sclass="ap-portal-action-buttons" align="start" pack="start" spacing="0"
@@ -71,14 +72,14 @@
         <row>
           <label value="Email"/>
           <hbox>
-            <textbox id="emailTextbox" placeholder="Enter email" width="200px"/>
+            <textbox id="emailTextbox" ca:autocomplete="new-password" placeholder="Enter email" width="200px"/>
           </hbox>
         </row>
         <row>
           <label value="New password"/>
           <hbox>
-            <textbox id="passwordTextbox" type="password" placeholder="Enter password" width="200px"/>
-            <textbox id="confirmPasswordTextbox" type="password" placeholder="Confirm password"
+            <textbox id="passwordTextbox" ca:autocomplete="new-password" type="password" placeholder="Enter password" width="200px"/>
+            <textbox id="confirmPasswordTextbox" ca:autocomplete="new-password" type="password" placeholder="Confirm password"
                      width="200px"/>
           </hbox>
         </row>

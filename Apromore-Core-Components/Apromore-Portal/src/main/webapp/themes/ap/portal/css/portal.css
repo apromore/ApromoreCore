@@ -278,6 +278,12 @@
   border-right: none;
 }
 
+.ap-container-search .z-combobox-input::-moz-selection,
+.ap-container-search .z-combobox-input::selection {
+    color: white;
+    background-color: #a0a0a0;
+}
+
 /*
 .ap-container-search .z-combobox-input:focus {
   border-color: var(--ap-c-grey-minor);
