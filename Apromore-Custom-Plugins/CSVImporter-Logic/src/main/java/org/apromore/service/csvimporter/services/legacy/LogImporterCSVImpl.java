@@ -56,7 +56,7 @@ import static org.apromore.service.csvimporter.utilities.CSVUtilities.getMaxOccu
 public class LogImporterCSVImpl implements LogImporter, Constants {
 
     @Inject private EventLogImporter eventLogImporter;
-    @Inject private ConfigBean config;
+    @Inject ConfigBean config;
     private List<LogErrorReport> logErrorReport;
     private LogProcessor logProcessor;
     private Reader readerin;
@@ -112,7 +112,13 @@ public class LogImporterCSVImpl implements LogImporter, Constants {
 
             LogEventModelExt logEventModelExt;
             Log log = null;
-            while ((line = reader.readNext()) != null && isValidLineCount(lineIndex - 1)) {
+            while ((line = reader.readNext()) != null) {
+
+                // row in excess of the allowed limit
+                if (!isValidLineCount(lineIndex)) {
+                    rowLimitExceeded = true;
+                    break;
+                }
 
                 // new row, new event.
                 lineIndex++;
@@ -171,9 +177,6 @@ public class LogImporterCSVImpl implements LogImporter, Constants {
                         }
                     }
             );
-
-            if (!isValidLineCount(lineIndex - 1))
-                rowLimitExceeded = true;
 
             //Import XES
             if (username != null &&
