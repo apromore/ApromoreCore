@@ -37,7 +37,7 @@ public class MovieTest extends TestDataSetup {
         AnimationContext animationContext = new AnimationContext(result.getAnimationLogs(), 60, 600);
         ModelMapping modelMapping = new OldBpmnModelMapping(result.getModel());
         AnimationIndex animationIndex = new AnimationIndex(result.getAnimationLogs().get(0), modelMapping, animationContext);
-        Movie movie = FrameRecorder.record(result.getAnimationLogs(), Arrays.asList(animationIndex), animationContext);
+        Movie movie = FrameRecorder.record(Arrays.asList(animationIndex), animationContext);
         
         Assert.assertEquals(36000, movie.size());
         
@@ -55,8 +55,7 @@ public class MovieTest extends TestDataSetup {
         AnimationResult result = this.animate_TwoLogs_With_BPMNDiagram();
         AnimationContext animationContext = new AnimationContext(result.getAnimationLogs(), 60, 600);
         ModelMapping modelMapping = new OldBpmnModelMapping(result.getModel());
-        Movie movie = FrameRecorder.record(result.getAnimationLogs(),
-                                        createAnimationIndexes(result.getAnimationLogs(), modelMapping, animationContext),
+        Movie movie = FrameRecorder.record(createAnimationIndexes(result.getAnimationLogs(), modelMapping, animationContext),
                                         animationContext);
         
         Assert.assertEquals(36000, movie.size());

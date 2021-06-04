@@ -260,12 +260,12 @@ public class GraphVisController extends VisualController {
             logStartFrameIndexes.put(animateContext.getFrameIndexFromLogTimestamp(log.getStartDate().getMillis()));
             logEndFrameIndexes.put(animateContext.getFrameIndexFromLogTimestamp(log.getEndDate().getMillis()));
         }
-        LOGGER.debug("Create animation index: " + (System.currentTimeMillis() - timer)/1000 + " seconds.");
+        LOGGER.info("Create animation index: " + (System.currentTimeMillis() - timer)/1000 + " seconds.");
         
-        LOGGER.debug("Start recording frames");
+        LOGGER.info("Start recording frames");
         timer = System.currentTimeMillis();
-        animationMovie = FrameRecorder.record(alignmentResult.getAnimationLogs(), animationIndexes, animateContext);
-        LOGGER.debug("Finished recording frames: " + (System.currentTimeMillis() - timer)/1000 + " seconds.");
+        animationMovie = FrameRecorder.record(animationIndexes, animateContext);
+        LOGGER.info("Finished recording frames: " + (System.currentTimeMillis() - timer)/1000 + " seconds.");
         
         // Prepare initial setup data for the animation
         JSONObject setupData = alignmentResult.getSetupJSON();
