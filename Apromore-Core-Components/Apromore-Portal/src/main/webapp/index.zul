@@ -21,7 +21,7 @@
   #L%
   -->
 
-<?page title="${labels.brand.shortName} - Portal" contentType="text/html;charset=UTF-8" ?>
+<?page title="${labels.brand_shortName} - ${labels.portal_title_text}" contentType="text/html;charset=UTF-8" ?>
 
 <?component name="ShortMessages" macroURI="macros/shortmessages.zul" ?>
 <?component name="Navigation" macroURI="macros/navigation.zul" ?>
@@ -29,6 +29,7 @@
 <!--<?component name="Filter" macroURI="macros/filter/baseFilter.zul" ?>-->
 <?component name="DetailView" macroURI="macros/detail/baseDetail.zul" ?>
 <?component name="BaseListbox" macroURI="macros/listbox/baseListbox.zul" ?>
+<?component name="LangChooser" macroURI="macros/langChooser.zul" ?>
 
 <!-- must call this in the head -->
 <?link rel="shortcut icon" href="themes/${labels.theme}/common/img/brand/favicon.ico" ?>
@@ -144,6 +145,12 @@
         .ap-portal-menu-buttons button img {
         visibility: hidden;
         }
+        .ap-lang-chooser {
+            position: fixed;
+            top: 37px;
+            right: 5px;
+            font-size: 12px;
+        }
     </style>
 
     <script type="text/javascript">
@@ -177,7 +184,7 @@
                 <div height="34px" hflex="1">
                     <h:div class="ap-header">
                         <h:a href="/index.zul"><h:div class="ap-header-logo"></h:div></h:a>
-                        <h:div class="ap-header-title">Portal</h:div>
+                        <h:div class="ap-header-title">${labels.portal_title_text}</h:div>
                         <h:div class="ap-header-actions">
                             <h:a href="https://documentation.apromore.org/theapromoreportal/navigatingtheapromoreportal.html" target="_blank">
                                 <h:button class="ap-icon ap-icon-help"/>
@@ -186,13 +193,13 @@
                     </h:div>
                 </div>
             </north>
-            <west id="leftPanel" title="Navigation" width="400px" collapsible="true" splittable="true" sclass="ap-portal-left-section" border="0">
+            <west id="leftPanel" title="${labels.portal_navigation_text}" width="400px" collapsible="true" splittable="true" sclass="ap-portal-left-section" border="0">
                 <borderlayout sclass="ap-left-layout">
                     <!--<north id="leftNorthPanel" sclass="ap-wrapper-search" height="0px" border="0"></north>-->
                     <center id="leftInnerCenterPanel" border="0" vflex="true" hflex="true" style="padding: 10px 3px 10px 10px;">
                         <Navigation id="navigationcomp" vflex="true" hflex="true" border="0" />
                     </center>
-                    <south title="Details" size="25%" hflex="true" splittable="true" border="0" sclass="ap-process-detail-wrapper">
+                    <south title="${labels.portal_detailsTitle_text}" size="25%" hflex="true" splittable="true" border="0" sclass="ap-process-detail-wrapper">
                         <DetailView id="baseDetail" vflex="true" hflex="true" border="0" style="margin-left: 5px; margin-top: 5px"/>
                     </south>
                 </borderlayout>
@@ -201,45 +208,53 @@
                 <vlayout vflex="1" sclass="ap-portal-right-content" spacing="0">
 
                     <menubar id="menucomp" sclass="ap-portal-menu" height="32px" width="100%" apply="org.apromore.portal.dialogController.MenuController" />
+                    <combobox
+                        sclass="ap-lang-chooser"
+                        id="langChooser"
+                        autodrop="true"
+                        mold="rounded"
+                        width="150px"
+                        buttonVisible="true"
+                    />
                     <hbox id="pagingandbuttons" sclass="ap-portal-menu-actions" height="32px" width="100%" spacing="0"  >
                         <paging sclass="ap-portal-paging" id="pg" width="140px" style="border: 0" visible="false" />
                         <hbox sclass="ap-portal-action-buttons" id="buttons" align="start" pack="start" width="300px" spacing="0" style="margin-left: 10px;" >
-                            <button id="refreshB" sclass="ap-icon ap-icon-sync" ca:data-t="reload" tooltiptext="${labels.e.portal.reload.hint}" />
+                            <button id="refreshB" sclass="ap-icon ap-icon-sync" ca:data-t="reload" tooltiptext="${labels.portal_reload_hint}" />
                             <h:span class="ap-action-sep"></h:span>
                             <!--<button id="showVisualisation" label="" style="background: transparent; border:none" image="img/clustering.png" tooltiptext="Show Clustering" />-->
-                            <button id="btnUpload" sclass="ap-icon ap-icon-upload" ca:data-t="upload" tooltiptext="${labels.e.portal.upload.hint}"/>
-                            <button id="btnDownload" sclass="ap-icon ap-icon-download" ca:data-t="download" tooltiptext="${labels.e.portal.download.hint}"/>
+                            <button id="btnUpload" sclass="ap-icon ap-icon-upload" ca:data-t="upload" tooltiptext="${labels.portal_upload_hint}"/>
+                            <button id="btnDownload" sclass="ap-icon ap-icon-download" ca:data-t="download" tooltiptext="${labels.portal_download_hint}"/>
                             <h:span class="ap-action-sep"></h:span>
                             <hlayout id="dataPipelinesSection" visible="false">
-                                <button id="btnCreateDataPipeline" sclass="ap-icon ap-icon-etl-pipeline" ca:data-t="createDataPipeline" tooltiptext="${labels.e.portal.createDataPipeline.hint}"/>
-                                <button id="btnManageDataPipelines" sclass="ap-icon ap-icon-clock" ca:data-t="manageDataPipelines" tooltiptext="${labels.e.portal.manageDataPipelines.hint}"/>
+                                <button id="btnCreateDataPipeline" sclass="ap-icon ap-icon-etl-pipeline" ca:data-t="createDataPipeline" tooltiptext="${labels.portal_createDataPipeline_hint}"/>
+                                <button id="btnManageDataPipelines" sclass="ap-icon ap-icon-clock" ca:data-t="manageDataPipelines" tooltiptext="${labels.portal_manageDataPipeline_hint}"/>
                                 <h:span class="ap-action-sep"></h:span>
                             </hlayout>
-                            <button id="btnSelectAll" visible="true" sclass="ap-icon ap-icon-select-all" ca:data-t="selectAll" tooltiptext="Select all"/>
-                            <button id="btnSelectNone" visible="true" sclass="ap-icon ap-icon-select-none" ca:data-t="selectNone" tooltiptext="Select none"/>
+                            <button id="btnSelectAll" visible="true" sclass="ap-icon ap-icon-select-all" ca:data-t="selectAll" tooltiptext="${labels.common_selectAll_text}"/>
+                            <button id="btnSelectNone" visible="true" sclass="ap-icon ap-icon-select-none" ca:data-t="selectNone" tooltiptext="${labels.common_selectNone_text}"/>
                             <h:span class="ap-action-sep"></h:span>
-                            <button id="btnCut" visible="true" sclass="ap-icon ap-icon-cut" ca:data-t="cut" tooltiptext="Cut"/>
-                            <button id="btnCopy" visible="true" sclass="ap-icon ap-icon-copy" ca:data-t="copy" tooltiptext="Copy"/>
-                            <button id="btnPaste" visible="true" sclass="ap-icon ap-icon-paste" ca:data-t="paste" tooltiptext="Paste"/>
+                            <button id="btnCut" visible="true" sclass="ap-icon ap-icon-cut" ca:data-t="cut" tooltiptext="${labels.common_cut_text}"/>
+                            <button id="btnCopy" visible="true" sclass="ap-icon ap-icon-copy" ca:data-t="copy" tooltiptext="${labels.common_copy_text}"/>
+                            <button id="btnPaste" visible="true" sclass="ap-icon ap-icon-paste" ca:data-t="paste" tooltiptext="${labels.common_paste_text}"/>
                             <h:span class="ap-action-sep"></h:span>
-                            <button id="btnAddFolder" sclass="ap-icon ap-icon-folder-add" ca:data-t="addFolder" tooltiptext="${labels.e.portal.addFolder.hint}"/>
-                            <button id="btnAddProcess" visible="false" sclass="ap-icon ap-icon-bpmn-add" ca:data-t="addModel" tooltiptext="${labels.e.portal.addModel.hint}"/>
-                            <button id="btnRenameFolder" sclass="ap-icon ap-icon-rename" ca:data-t="rename" tooltiptext="${labels.e.portal.rename.hint}" visible="true"/>
-                            <button id="btnRemoveFolder" sclass="ap-icon ap-icon-trash" ca:data-t="delete" tooltiptext="${labels.e.portal.delete.hint}" visible="true" />
+                            <button id="btnAddFolder" sclass="ap-icon ap-icon-folder-add" ca:data-t="addFolder" tooltiptext="${labels.portal_addFolder_hint}"/>
+                            <button id="btnAddProcess" visible="false" sclass="ap-icon ap-icon-bpmn-add" ca:data-t="addModel" tooltiptext="${labels.portal_addModel_hint}"/>
+                            <button id="btnRenameFolder" sclass="ap-icon ap-icon-rename" ca:data-t="rename" tooltiptext="${labels.portal_rename_hint}" visible="true"/>
+                            <button id="btnRemoveFolder" sclass="ap-icon ap-icon-trash" ca:data-t="delete" tooltiptext="${labels.portal_delete_hint}" visible="true" />
                             <h:span class="ap-action-sep"></h:span>
                             <!--<button id="btnGEDFolder" label="" style="background: transparent; border:none; cursor: pointer;" image="img/rename.png" tooltiptext="GED" visible="true"/>-->
-                            <button id="btnUserMgmt" visible="false" sclass="ap-icon ap-icon-users" ca:data-t="userMgmt" tooltiptext="Manage users and groups"/>
-                            <button id="btnSecurity" sclass="ap-icon ap-icon-user-lock" ca:data-t="security" tooltiptext="Manage access rights"/>
-                            <button id="btnShare" sclass="ap-icon ap-icon-share" ca:data-t="share" tooltiptext="Share file or folder"/>
+                            <button id="btnUserMgmt" visible="false" sclass="ap-icon ap-icon-users" ca:data-t="userMgmt" tooltiptext="${labels.portal_tbarUsrMgt_hint}"/>
+                            <button id="btnSecurity" sclass="ap-icon ap-icon-user-lock" ca:data-t="security" tooltiptext="${labels.portal_tbarAccessCtrl_hint}"/>
+                            <button id="btnShare" sclass="ap-icon ap-icon-share" ca:data-t="share" tooltiptext="${labels.portal_tbarShare_hint}"/>
                             <span id="btnCalendarSep" class="ap-action-sep"></span>
-                            <button id="btnCalendar" sclass="ap-icon ap-icon-calendar" ca:data-t="calendar" tooltiptext="Manage calendars"/>
+                            <button id="btnCalendar" sclass="ap-icon ap-icon-calendar" ca:data-t="calendar" tooltiptext="${labels.portal_tbarCalendar_hint}"/>
                         </hbox>
                         <div hflex="1"></div>
                         <SimpleSearch id="simplesearchcomp" border="0" width="400px" />
                         <hbox sclass="ap-portal-action-buttons" align="start" pack="end" width="70px" spacing="0" style="margin-right: 5px;" >
                             <h:span class="ap-action-sep"></h:span>
-                            <button id="btnTileView" sclass="ap-icon ap-icon-tiles" ca:data-t="tileView" tooltiptext="Tile view"/>
-                            <button id="btnListView" sclass="ap-icon ap-icon-list" ca:data-t="listView" tooltiptext="List view"/>
+                            <button id="btnTileView" sclass="ap-icon ap-icon-tiles" ca:data-t="tileView" tooltiptext="${labels.portal_viewTile_hint}"/>
+                            <button id="btnListView" sclass="ap-icon ap-icon-list" ca:data-t="listView" tooltiptext="${labels.portal_viewList_hint}"/>
                         </hbox>
                     </hbox>
                     <html id="folders" visible="false" />

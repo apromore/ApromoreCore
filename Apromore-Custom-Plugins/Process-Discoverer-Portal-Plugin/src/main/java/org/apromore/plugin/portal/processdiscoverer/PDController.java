@@ -26,11 +26,9 @@ import static org.apromore.logman.attribute.graph.MeasureType.DURATION;
 import static org.apromore.logman.attribute.graph.MeasureType.FREQUENCY;
 
 import java.text.DecimalFormat;
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import javax.servlet.http.HttpSession;
 
@@ -73,12 +71,14 @@ import org.apromore.service.ProcessService;
 import org.apromore.service.loganimation.LogAnimationService2;
 import org.json.JSONException;
 import org.slf4j.Logger;
+import org.zkoss.util.Locales;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
+import org.zkoss.web.Attributes;
 
 /**
  * PDController is the top-level application object to manage PD plugin as a whole. It
@@ -159,7 +159,30 @@ public class PDController extends BaseController {
         Map<String, Object> pageParams = new HashMap<>();
         pluginExecutionId = PluginExecutionManager.registerPluginExecution(new PluginExecution(this), Sessions.getCurrent());
         pageParams.put("pluginExecutionId", pluginExecutionId);
+        pageParams.put("pdLabels", getLabels());
         Executions.getCurrent().pushArg(pageParams);
+    }
+
+    public ResourceBundle getLabels() {
+        return ResourceBundle.getBundle("metainfo.zk-label",
+            (Locale) Sessions.getCurrent().getAttribute(Attributes.PREFERRED_LOCALE),
+            PDController.class.getClassLoader());
+    }
+
+    public String getLabel(String key) {
+        String label = getLabels().getString(key);
+        if (label == null) {
+            label = "";
+        }
+        return label;
+    }
+
+    public String getLabel(String key, String defaultVal) {
+        String label = getLabels().getString(key);
+        if (label == null) {
+            label = defaultVal;
+        }
+        return label;
     }
 
     //Note: this method is only valid inside onCreate() as it calls ZK current Execution
@@ -213,17 +236,17 @@ public class PDController extends BaseController {
     // E.g. before calling export log/model to the portal.
     public boolean prepareCriticalServices() {
         if (pluginSessionId == null) {
-            Messagebox.show("You have logged off or your session has expired. Please log in again and reopen the file.");
+            Messagebox.show(getLabel("sessionTimeout_message"));
             return false;
         }
-        
+
         if (!preparePortalSession(pluginSessionId)) {
-            Messagebox.show("You have logged off or your session has expired. Please log in again and reopen the file.");
+            Messagebox.show(getLabel("sessionTimeout_message"));
             return false;
         }
         
         if (!prepareSystemServices()) {
-            Messagebox.show("Key system services for PD are not available. Please contact your administrator.");
+            Messagebox.show(getLabel("servicesUnavailable_message"));
             return false;
         }
         
@@ -233,7 +256,7 @@ public class PDController extends BaseController {
     public void onCreate() throws InterruptedException {
         try {
             if (!preparePluginSessionId()) {
-                Messagebox.show("Process Discoverer session has not been initialized. Please open it again properly!");
+                Messagebox.show(getLabel("sessionNotInitialized_message"));
                 return;
             }
 
@@ -259,18 +282,21 @@ public class PDController extends BaseController {
             // Check data against the capacity of Process Analyst
             IndexableAttribute mainAttribute = processAnalyst.getAttribute(configData.getDefaultAttribute());
             if (mainAttribute == null) {
-                Messagebox.show("We cannot display the process map due to missing activity (i.e. concept:name) attribute in the log.",
-                        "Process Discoverer",
-                        Messagebox.OK,
-                        Messagebox.INFORMATION);
+                Messagebox.show(
+                    getLabel("missingActivity_message"),
+                    getLabel("missingActivity_title"),
+                    Messagebox.OK,
+                    Messagebox.INFORMATION
+                );
                 return;
             }
             else if (mainAttribute.getValueSize() > configData.getMaxNumberOfUniqueValues()) {
-                Messagebox.show("We cannot display the process map due to a large number of activities in the log " +
-                                " (more than " + configData.getMaxNumberOfUniqueValues() + ")",
-                                "Process Discoverer",
-                                Messagebox.OK,
-                                Messagebox.INFORMATION);
+                Messagebox.show(
+                    MessageFormat.format(getLabel("tooManyActivities_message"), configData.getMaxNumberOfUniqueValues()),
+                    getLabel("tooManyActivities_title"),
+                    Messagebox.OK,
+                    Messagebox.INFORMATION
+                );
                 return;
             }
             userOptions = UserOptionsData.DEFAULT(configData);
@@ -298,7 +324,7 @@ public class PDController extends BaseController {
             getDesktop().setAttribute("pluginSessionId", pluginSessionId);
         }
         catch (Exception ex) {
-            Messagebox.show("Error occurred while initializing: " + ex.getMessage());
+            Messagebox.show(getLabel("initError_message"));
             LOGGER.error("Error occurred while initializing: " + ex.getMessage(), ex);
         }
     }
@@ -312,7 +338,7 @@ public class PDController extends BaseController {
             initializeEventListeners();
         } catch (Exception e) {
             LOGGER.error("Unable to initialize PD controller", e);
-            Messagebox.show(e.getMessage(), "Process Discoverer", Messagebox.OK, Messagebox.ERROR);
+            Messagebox.show(getLabel("initError_message"), getLabel("initError_title"), Messagebox.OK, Messagebox.ERROR);
         }
     }
 
@@ -328,7 +354,8 @@ public class PDController extends BaseController {
             toolbarController.initializeControls(contextData);
         }
         catch (Exception ex) {
-            Messagebox.show("An error occurred while initializing UI: " + ex.getMessage());
+            Messagebox.show(getLabel("initError_message"));
+            LOGGER.error("An error occurred while initializing UI: " + ex.getMessage());
         }
     }
 
@@ -355,7 +382,7 @@ public class PDController extends BaseController {
             mainWindow.addEventListener("onPerspectiveDetails", event -> perspectiveDetailsController.onEvent(event));
         }
         catch (Exception ex) {
-            Messagebox.show("Errors occured while initializing event handlers.");
+            Messagebox.show(getLabel("initEventHandlerError_message"));
             LOGGER.error("Errors occured while initializing event handlers.", ex);
         }
 
@@ -403,17 +430,17 @@ public class PDController extends BaseController {
             accessControlPlugin.setSimpleParams(arg);
             accessControlPlugin.execute(portalContext);
         } catch (Exception e) {
-            Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
+            Messagebox.show(getLabel("failedShare_message"), getLabel("failedShare_title"), Messagebox.OK, Messagebox.ERROR);
             LOGGER.error(e.getMessage(), e);
         }
     }
-    
+
     public void openAnimation(Event e) {
         try {
             animationController.onEvent(e);
         }
         catch (Exception ex) {
-            Messagebox.show(ex.getMessage());
+            Messagebox.show(getLabel("failedOpenAnimation_message"));
             LOGGER.error(ex.getMessage(), ex);
         }
     }
@@ -423,7 +450,7 @@ public class PDController extends BaseController {
             logExportController.onEvent(e);
         }
         catch (Exception ex) {
-            Messagebox.show(ex.getMessage());
+            Messagebox.show(getLabel("failedExportLog_message"));
             LOGGER.error(ex.getMessage(), ex);
         }
     }
@@ -433,7 +460,7 @@ public class PDController extends BaseController {
             bpmnExportController.onEvent(e);
         }
         catch (Exception ex) {
-            Messagebox.show(ex.getMessage());
+            Messagebox.show(getLabel("failedExportBPMN_message"));
             LOGGER.error(ex.getMessage(), ex);
         }
     }
@@ -443,7 +470,7 @@ public class PDController extends BaseController {
             logFilterController.onEvent(e);
         }
         catch (Exception ex) {
-            Messagebox.show(ex.getMessage());
+            Messagebox.show(getLabel("failedOpenFilter_message"));
             LOGGER.error(ex.getMessage(), ex);
         }
     }
@@ -467,7 +494,8 @@ public class PDController extends BaseController {
             toolbarController.updateUndoRedoButtons(actionHistory.canUndo(), actionHistory.canRedo());
         }
         catch (Exception ex) {
-            Messagebox.show("Errors occured while updating UI: " + ex.getMessage());
+            Messagebox.show(getLabel("failedUpdateUI_message"));
+            LOGGER.error("Errors occured while updating UI: " + ex.getMessage());
         }
     }
 
@@ -480,10 +508,12 @@ public class PDController extends BaseController {
         if (this.mode != InteractiveMode.MODEL_MODE) return;
 
         if (processAnalyst.hasEmptyData()) {
-            Messagebox.show("Data for visualization is empty. Please check the log!",
-                    "Process Discoverer",
-                    Messagebox.OK,
-                    Messagebox.INFORMATION);
+            Messagebox.show(
+                getLabel("failedViz_message"),
+                getLabel("title_text"),
+                Messagebox.OK,
+                Messagebox.INFORMATION
+            );
             return;
         }
 
@@ -500,10 +530,12 @@ public class PDController extends BaseController {
         try {
             Optional<OutputData> analysisResult = processAnalyst.discoverProcess(userOptions);
             if (analysisResult.isEmpty()) {
-                Messagebox.show("Unexpected error: empty process map or failure is returned after this action!",
-                        "Process Discoverer",
-                        Messagebox.OK,
-                        Messagebox.ERROR);
+                Messagebox.show(
+                    getLabel("failedMapProcess_message"),
+                    getLabel("title_text"),
+                    Messagebox.OK,
+                    Messagebox.ERROR
+                );
                 return;
             }
             this.outputData = analysisResult.get();
@@ -517,10 +549,12 @@ public class PDController extends BaseController {
 
         } catch (Exception e) {
             LOGGER.error("Unexpected error when discovering process.", e);
-            Messagebox.show(!e.getMessage().trim().isEmpty() ? e.getMessage() : "Unexpected error has occurred! Check log files.",
-                    "Process Discoverer",
-                    Messagebox.OK,
-                    Messagebox.ERROR);
+            Messagebox.show(
+                getLabel("otherError_message"),
+                getLabel("title_text"),
+                Messagebox.OK,
+                Messagebox.ERROR
+            );
         }
     }
     
@@ -739,7 +773,12 @@ public class PDController extends BaseController {
     public void undoAction() {
         Action action = actionHistory.undoPop();
         if (action != null) {
-            action.undo();
+            try {
+                action.undo();
+            } catch (Exception e) {
+                // LOGGER.error("Error when undoing filter action. Error message: " + e.getMessage());
+                Messagebox.show(getLabel("undoError_message"));
+            }
             actionHistory.redoPush(action);
             if (action instanceof FilterAction) this.updateUI(false);
         }

@@ -87,6 +87,11 @@
         <constructor-arg type="String" value="${portal.menuitemorder.File}"/>
     </bean>
 
+    <bean id="i18nConfig" class="org.apromore.portal.common.i18n.I18nConfig">
+        <constructor-arg type="String" value="${i18n.languagetags}"/>
+        <constructor-arg type="String" value="${i18n.datetimepatterns}"/>
+    </bean>
+
     <import resource="portal-osgi-context.xml" />
     <import resource="portalContext-services.xml" />
     <import resource="file:etc/portalContext-security.xml" />

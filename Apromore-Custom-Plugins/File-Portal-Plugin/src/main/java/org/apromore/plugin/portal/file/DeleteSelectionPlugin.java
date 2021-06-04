@@ -32,6 +32,7 @@ import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.slf4j.Logger;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zul.Messagebox;
 
 public class DeleteSelectionPlugin extends DefaultPortalPlugin {
@@ -41,18 +42,26 @@ public class DeleteSelectionPlugin extends DefaultPortalPlugin {
     private String label = "Delete";
     private String groupLabel = "File";
 
+    @Override
+    public String getItemCode(Locale locale) { return label; }
 
     // PortalPlugin overrides
 
     @Override
+    public String getGroup(Locale locale) {
+        return "File";
+    }
+
+    @Override
     public String getLabel(Locale locale) {
-        return label;
+        return Labels.getLabel("plugin_file_delete_text",label);
     }
 
     @Override
     public String getGroupLabel(Locale locale) {
-        return groupLabel;
+        return Labels.getLabel("plugin_file_title_text", groupLabel);
     }
+
 
     @Override
     public String getIconPath() {

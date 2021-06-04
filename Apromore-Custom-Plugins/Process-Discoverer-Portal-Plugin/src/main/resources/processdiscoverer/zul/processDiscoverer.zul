@@ -20,7 +20,7 @@
   #L%
   -->
 
-<?page id="ap-pd2" title="${labels.brand.shortName} - Process Discoverer" contentType="text/html;charset=UTF-8" ?>
+<?page id="ap-pd2" title="${labels.brand_shortName} - Process Discoverer" contentType="text/html;charset=UTF-8" ?>
 <?component name="pdheader" macroURI="components/header.zul" ?>
 <?component name="pdtoolbar" macroURI="components/toolbar.zul" ?>
 <?component name="menuitem" extends="menuitem" autocheck="true" checkmark="true" ?> 
@@ -57,7 +57,7 @@
   <script src="/processdiscoverer/js/ap/processdiscoverer.js"></script>
 
   <!-- Header of the page -->
-  <pdheader />   
+  <pdheader pdLabels="${arg.pdLabels}" />
   
   <window id="win" border="0" closable="false" height="100%" width="100%" sclass="ap-pd ap-font-base"
           use="org.apromore.plugin.portal.processdiscoverer.PDController">
@@ -70,7 +70,7 @@
     <menubar sclass="ap-user-menu" id="userMenu" style="position: absolute;" apply="org.apromore.portal.dialogController.UserMenuController" />
 
     <!-- Toolbar of the page -->
-    <pdtoolbar id="toolbar" />
+    <pdtoolbar id="toolbar" pdLabels="${arg.pdLabels}" />
 
     <!-- Main UI -->
     <n:div class="ap-pd-main-torso">
@@ -80,7 +80,7 @@
           <hlayout width="100%" height="170px" valign="top" spacing="0px">
             <!-- View settings -->
             <div hflex="2"></div>
-            <viewSettings sclass="ap-pd-drawer-box" width="300px"/>
+            <viewSettings sclass="ap-pd-drawer-box" width="300px" pdLabels="${arg.pdLabels}"/>
             <div hflex="2"></div>
             <div sclass="ap-panel-sep" vflex="1" hflex="1">
               <n:div></n:div>
@@ -88,20 +88,20 @@
             
             <!-- Graph abstraction settings -->
             <div hflex="2"></div>
-            <graphSettings sclass="ap-pd-drawer-box" hflex="61" />
+            <graphSettings sclass="ap-pd-drawer-box" hflex="61" pdLabels="${arg.pdLabels}" />
             <div hflex="2"></div>
             <div sclass="ap-panel-sep" vflex="1" hflex="1">
               <n:div></n:div>
             </div>
             
             <!-- Log stats -->
-            <logStats sclass="ap-pd-drawer-box" hflex="77" />
+            <logStats sclass="ap-pd-drawer-box" hflex="77" pdLabels="${arg.pdLabels}" />
             <div sclass="ap-panel-sep" vflex="1" hflex="1">
               <n:div></n:div>
             </div>
             
             <!-- Time stats -->
-            <timeStats sclass="ap-pd-drawer-box" hflex="45" />
+            <timeStats sclass="ap-pd-drawer-box" hflex="45" pdLabels="${arg.pdLabels}" />
           </hlayout>
         </div>
       </div>

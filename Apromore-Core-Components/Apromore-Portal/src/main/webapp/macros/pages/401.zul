@@ -20,7 +20,7 @@
   #L%
   -->
 
-<?page title="${labels.brand.name} - Access denied" contentType="text/html;charset=UTF-8"?>
+<?page title="${labels.brand_name} - Access denied" contentType="text/html;charset=UTF-8"?>
 <?link rel="stylesheet" type="text/css" href="/themes/${labels.theme}/common/css/index.css" ?>
 <?link rel="stylesheet" type="text/css" href="/themes/ap/common/css/errors.css" ?>
 <zk>

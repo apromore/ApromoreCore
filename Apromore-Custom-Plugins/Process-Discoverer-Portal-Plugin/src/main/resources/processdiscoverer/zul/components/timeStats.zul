@@ -26,7 +26,7 @@
          xmlns:ca="client/attribute"
          xmlns:w="client"
          xmlns:n="native">
-  <n:div class="section">Temporal statistics</n:div>
+  <n:div class="section">${arg.pdLabels.compTimeStats_text}</n:div>
   <n:div class="spacer" style="height:1px;"></n:div>
   <hlayout
       style="overflow:auto;"
@@ -34,31 +34,33 @@
       spacing="0px"
       sclass="ap-pd-timestats-duration">
     <vlayout spacing="15px" hflex="8">
-      <div sclass="ap-pd-timestats-header ap-link" tooltiptext="Filter by Performance">
+      <div sclass="ap-pd-timestats-header ap-link" tooltiptext="${arg.pdLabels.filterByPerformance_text}">
         <span id="spnCaseHeading" class="ap-icon ap-icon-duration-range"></span>
-        <label id="lblCaseHeading" sclass="title">${labels.e.pd.statDuration.text}</label>
+        <label id="lblCaseHeading" sclass="title" ca:title="${arg.pdLabels.statDuration_text}">
+          ${arg.pdLabels.statDuration_text}
+        </label>
       </div>
       <div sclass="ap-pd-duration">
         <div>
-          <n:span>${labels.e.agg.min.text}</n:span>
+          <n:span>${arg.pdLabels.stat_min_text}</n:span>
           <label id="minDuration"
                  sclass="ap-stat-val">CaseMinDuration
           </label>
         </div>
         <div>
-          <n:span>${labels.e.agg.median.text}</n:span>
+          <n:span>${arg.pdLabels.stat_median_text}</n:span>
           <label id="medianDuration"
                  sclass="ap-stat-val">CaseMedianDuration
           </label>
         </div>
         <div>
-          <n:span>${labels.e.agg.mean.text}</n:span>
+          <n:span>${arg.pdLabels.stat_mean_text}</n:span>
           <label id="meanDuration"
                  sclass="ap-stat-val">CaseAverageDuration
           </label>
         </div>
         <div>
-          <n:span>${labels.e.agg.max.text}</n:span>
+          <n:span>${arg.pdLabels.stat_max_text}</n:span>
           <label id="maxDuration"
                  sclass="ap-stat-val">CaseMaxDuration
           </label>
@@ -68,14 +70,17 @@
     <vlayout sclass="ap-pd-timestats-range"
           hflex="7"
           spacing="15px">
-      <div sclass="ap-pd-timestats-header ap-link" tooltiptext="Filter by Timeframe">
+      <div sclass="ap-pd-timestats-header ap-link" tooltiptext="${arg.pdLabels.filterByTimeframe_text}">
         <span id="spnLogHeading" class="ap-icon ap-icon-clock"></span>
-        <label id="lblLogHeading" sclass="title">${labels.e.pd.statTimerange.text}</label>
+        <label id="lblLogHeading" sclass="title" ca:title="${arg.pdLabels.statTimerange_text}">
+          ${arg.pdLabels.statTimerange_text}
+        </label>
       </div>
       <div sclass="ap-pd-timerange">
         <div>
           <label sclass="ap-stat-val ap-pd-start-time"
-                 id="startTime">Start time
+                 id="startTime">
+            ${arg.pdLabels.stat_startTime_text}
           </label>
         </div>
         <div sclass="from-to-x"
@@ -88,7 +93,8 @@
         </div>
         <div>
           <label sclass="ap-stat-val ap-pd-end-time"
-                 id="endTime">End time
+                 id="endTime">
+            ${arg.pdLabels.stat_endTime_text}
           </label>
         </div>
       </div>

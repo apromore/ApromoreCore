@@ -32,6 +32,7 @@ import java.io.InputStreamReader;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -45,6 +46,7 @@ import org.apromore.service.UserService;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.zkoss.spring.SpringUtil;
+import org.zkoss.web.Attributes;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlBasedComponent;
@@ -155,6 +157,7 @@ public class BaseController extends Window {
      * @throws IllegalArgumentException if no resource can be read from <var>zulPath</var>
      */
     protected <T extends Component> T createComponent(String zulPath) {
+
         try {
             InputStream in = getClass().getClassLoader().getResourceAsStream(zulPath);
 

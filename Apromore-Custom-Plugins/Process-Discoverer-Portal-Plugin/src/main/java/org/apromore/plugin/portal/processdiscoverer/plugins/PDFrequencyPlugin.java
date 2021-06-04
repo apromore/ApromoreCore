@@ -34,6 +34,7 @@ import org.apromore.service.EventLogService;
 import org.apromore.service.ProcessService;
 import org.apromore.service.loganimation.LogAnimationService2;
 import org.springframework.stereotype.Component;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Session;
@@ -53,8 +54,16 @@ public class PDFrequencyPlugin extends PDAbstractPlugin {
     @Inject LogAnimationService2 logAnimationService;
 
     @Override
+    public String getItemCode(Locale locale) { return "Discover model"; }
+
+    @Override
     public String getLabel(Locale locale) {
-        return label;
+        return Labels.getLabel("plugin_discover_discoverModel_text",label);
+    }
+
+    @Override
+    public String getGroupLabel(Locale locale) {
+        return Labels.getLabel("plugin_discover_title_text", groupLabel);
     }
 
     @Override
@@ -63,8 +72,8 @@ public class PDFrequencyPlugin extends PDAbstractPlugin {
     }
 
     @Override
-    public String getGroupLabel(Locale locale) {
-        return groupLabel;
+    public String getGroup(Locale locale) {
+        return "Discover";
     }
 
     @Override

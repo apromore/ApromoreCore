@@ -131,7 +131,9 @@ public class CaseDetailsController extends DataListController {
 	@Override
 	public void onEvent(Event event) throws Exception {
 		if (caseDetailsWindow == null) {
-			caseDetailsWindow = (Window) Executions.createComponents("caseDetails.zul", null, null);
+			Map<String, Object> arg = new HashMap<>();
+			arg.put("pdLabels", parent.getLabels());
+			caseDetailsWindow = (Window) Executions.createComponents("caseDetails.zul", null, arg);
 			caseDetailsWindow.setTitle("Case Inspector");
 			caseDetailsWindow.getFellow("lblClickACase").setVisible(!this.disabled);
 
@@ -159,7 +161,8 @@ public class CaseDetailsController extends DataListController {
 						updateActivityToAttributeMap(traceID, (TraceBPMNDiagram)result.getAbstraction().getDiagram());
 						parent.showTrace(result.getVisualizedText());
 					} catch (Exception e) {
-						Messagebox.show(e.getMessage());
+						// LOGGER.error(e.getMessage());
+						Messagebox.show("Fail to show trace detail for the selected case");
 					}
 				}
 			});

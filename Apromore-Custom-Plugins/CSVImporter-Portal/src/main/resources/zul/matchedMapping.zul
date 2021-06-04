@@ -20,9 +20,9 @@
   #L%
   -->
 <window closable="true" id="matchedMappingWindow" maximizable="false" hflex="min"
-        vflex="min" height="230px"
+        vflex="min" height="300px"
         width="672px"
-        position="center" title="Matched schema mapping found!">
+        position="center" title="${arg.labels.matchedSchemaFound}">
     <style src="/themes/ap/csv-importer/css/index.css"/>
     <style src="/themes/ap/common/css/utils.css"/>
     <!--<style>-->
@@ -35,20 +35,20 @@
             <div style="padding: 8px">
                 <separator/>
                 <separator/>
-                <label value=" An existing schema mapping has been found for your log.  "/>
+                <label value=" ${arg.labels.existingSchemaFound}  "/>
                 <separator/>
                 <separator/>
-                <label value="  This mapping was extracted from file "/><label id="fileNameLabel" value="" style="font-weight: bold;"/><label id="fileTimeLabel" value=""/>
+                <label value="This mapping was extracted from file "/><label id="fileNameLabel" value="" style="font-weight: bold;"/><label id="fileTimeLabel" value=""/>
                 <separator/>
                 <separator/>
                 <separator/>
                 <separator/>
                 <separator/>
-                <label value="Select 'Yes' to apply the existing schema mapping to your log. You will still be able to refine it in the next screen."/>
+                <label value="${arg.labels.schemaMapYes}"/>
                 <separator/>
-                <label visible="false" value="Select 'Edit' to load this existing csv schema mapping."/>
+                <label visible="false" value="${arg.labels.schemaMapEdit}"/>
                 <separator visible="false"/>
-                <label value="Select 'No' to configure your log schema mapping from scratch."/>
+                <label value="${arg.labels.schemaMapNo}"/>
                 <separator/>
                 <separator/>
             </div>
@@ -59,7 +59,7 @@
                 <hbox spacing="0" align="center" pack="center" hflex="1" vflex="1">
                     <div hflex="1" style="text-align: center;">
                         <button id="uploadWithMatchedMapping" label="Yes"
-                                iconSclass="z-icon-check-circle fa-lg z-icon-fw" style="position:relative;"/>
+                                iconSclass="z-icon-check-circle fa-lg z-icon-fw"  style="position:relative;"/>
 
                         <button id="editWithMatchedMapping" label="Edit"
                                 iconSclass="z-icon-check-circle fa-lg z-icon-fw" style="position:relative;"

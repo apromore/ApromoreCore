@@ -25,28 +25,28 @@
          xmlns:ca="client/attribute"
          xmlns:w="client"
          xmlns:n="native">
-  <n:div class="section">Log statistics</n:div>
+  <n:div class="section">${arg.pdLabels.compLogStats_text}</n:div>
   <hlayout spacing="0">
     <div hflex="1"
          align="center">
       <vlayout spacing="0">
-        <n:div class="ap-pd-logstats-header ap-link" title="Filter by Cases">
+        <n:div class="ap-pd-logstats-header ap-link" title="${arg.pdLabels.filterByCases_text}">
           <button id="btnCaseHeading" sclass="ap-icon ap-icon-road"></button>
-          <label id="lblCaseHeading" sclass="title" value="Cases"></label>
+          <label id="lblCaseHeading" sclass="title" value="${arg.pdLabels.logStatCases_text}"></label>
         </n:div>
         <n:div id="ap-pd-chart-case" class="ap-pd-chart" />
         <label id="lblCasePercent"
-               value="Cases percent"/>
+               value="${arg.pdLabels.casesPercent_text}"/>
         <div sclass="ap-link" w:onClick="Ap.pd.showCaseDetails()">
           <label id="lblCaseNumberFiltered"
-                 value="Cases number"
+                 value="${arg.pdLabels.casesNumber_text}"
                  sclass="ap-case-filtered"/>
           /
           <label id="lblCaseNumberTotal"
-                 value="Cases number"
+                 value="${arg.pdLabels.casesNumber_text}"
                  sclass="ap-case-total"/>
           <label id="lblCaseNumber"
-                 value="Cases number"
+                 value="${arg.pdLabels.casesNumber_text}"
                  visible="false"/>
         </div>
       </vlayout>
@@ -54,23 +54,23 @@
     <div hflex="1"
          align="center">
       <vlayout spacing="0">
-        <n:div class="ap-pd-logstats-header ap-link" title="Filter by Case variants">
+        <n:div class="ap-pd-logstats-header ap-link" title="${arg.pdLabels.filterByCaseVariants_text}">
           <button id="btnCaseVariantHeading" sclass="ap-icon ap-icon-random"></button>
-          <label id="lblCaseVariantHeading" sclass="title" value="Case variants"/>
+          <label id="lblCaseVariantHeading" sclass="title" value="${arg.pdLabels.logStatCaseVariants_text}"/>
         </n:div>
         <n:div id="ap-pd-chart-variant" class="ap-pd-chart" />
         <label id="lblVariantPercent"
-               value="Case variants percent"/>
+               value="${arg.pdLabels.caseVariantsPercent_text}"/>
         <div>
           <label id="lblVariantNumberFiltered"
-                 value="Case variants number"
+                 value="${arg.pdLabels.caseVariantsNumber_text}"
                  sclass="ap-variant-filtered"/>
           /
           <label id="lblVariantNumberTotal"
-                 value="Case variants number"
+                 value="${arg.pdLabels.caseVariantsNumber_text}"
                  sclass="ap-variant-total"/>
           <label id="lblVariantNumber"
-                 value="Case variants number"
+                 value="${arg.pdLabels.caseVariantsNumber_text}"
                  visible="false"/>
         </div>
       </vlayout>
@@ -78,20 +78,20 @@
     <div hflex="1"
          align="center">
       <vlayout spacing="0">
-        <n:div class="ap-pd-logstats-header ap-link" title="Filter by Activity instances">
+        <n:div class="ap-pd-logstats-header ap-link" title="${arg.pdLabels.filterByActivityInstances_text}">
           <button id="btnEventHeading" sclass="ap-icon ap-icon-flag" ></button>
-          <label id="lblEventHeading" sclass="title" value="Activity instances"/>
+          <label id="lblEventHeading" sclass="title" value="${arg.pdLabels.logStatActivityInstances_text}"/>
         </n:div>
         <n:div id="ap-pd-chart-event" class="ap-pd-chart" />
         <label id="lblEventPercent"
-               value="Events percent"/>
+               value="${arg.pdLabels.activityInstancesPercent_text}"/>
         <div>
           <label id="lblEventNumberFiltered"
-                 value="Events number"
+                 value="${arg.pdLabels.activityInstancesNumber_text}"
                  sclass="ap-event-filtered"/>
           /
           <label id="lblEventNumberTotal"
-                 value="Events number"
+                 value="${arg.pdLabels.activityInstancesNumber_text}"
                  sclass="ap-event-total"/>
           <label id="lblEventNumber"
                  value="Events number"
@@ -102,26 +102,26 @@
     <div hflex="1"
          align="center">
       <vlayout spacing="0">
-        <n:div class="ap-pd-logstats-header ap-link" title="Filter by Attribute">
+        <n:div class="ap-pd-logstats-header ap-link" title="${arg.pdLabels.filterByAttribute_text}">
           <button id="btnActivityHeading"
                   sclass="ap-icon ap-icon-perspective" >
           </button>
           <label sclass="title"
                  id="lblActivityHeading"
                  style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
-                 value="Activities" >
+                 value="${arg.pdLabels.logStatActivities_text}" >
           </label>
         </n:div>
         <div id="ap-pd-chart-perspective" class="ap-pd-chart" xmlns="http://www.zkoss.org/2005/zk/native" /> 
         <label id="lblNodePercent"
-               value="Nodes percent"/>
+               value="${arg.pdLabels.nodesPercent_text}"/>
         <div sclass="ap-link" w:onClick="Ap.pd.showPerspectiveDetails()">
           <label id="lblNodeNumberFiltered"
-                 value="Nodes number"
+                 value="${arg.pdLabels.nodesNumber_text}"
                  sclass="ap-nodes-filtered"/>
           /
           <label id="lblNodeNumberTotal"
-                 value="Nodes number"
+                 value="${arg.pdLabels.nodesNumber_text}"
                  sclass="ap-nodes-total"/>
         </div>
 

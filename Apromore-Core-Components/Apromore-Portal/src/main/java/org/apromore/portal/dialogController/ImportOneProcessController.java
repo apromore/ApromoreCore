@@ -40,6 +40,7 @@ import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.model.FolderType;
 import org.apromore.portal.model.ImportProcessResultType;
 import org.slf4j.Logger;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
@@ -100,7 +101,7 @@ public class ImportOneProcessController extends BaseController {
             @Override
             public void onEvent(final Event event) throws Exception {
                 if (processNameTb.getValue().trim().compareTo("") == 0) {
-                    Messagebox.show("Please enter a value for each field.", "Attention", Messagebox.OK, Messagebox.EXCLAMATION);
+                    Messagebox.show(Labels.getLabel("portal_enterValueEachField_message"), "Apromore", Messagebox.OK, Messagebox.EXCLAMATION);
                 } else {
                     importProcess("", username);
                 }
@@ -160,7 +161,7 @@ public class ImportOneProcessController extends BaseController {
             this.importProcessesC.deleteFromToBeImported(this);
         } catch (Exception e) {
             LOGGER.error("Import failed!", e);
-            Messagebox.show("Import failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
+            Messagebox.show(Labels.getLabel("portal_failedImport_message"), "Apromore", Messagebox.OK, Messagebox.ERROR);
         } finally {
             closePopup();
         }

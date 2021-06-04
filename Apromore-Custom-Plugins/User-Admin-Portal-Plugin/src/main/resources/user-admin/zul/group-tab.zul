@@ -24,13 +24,13 @@
     <hbox sclass="ap-portal-menu-actions" hflex="1" height="32px">
       <hbox sclass="ap-portal-action-buttons" align="start" pack="start" spacing="0"
             style="margin-left: 10px;">
-        <button id="groupAddBtn" sclass="ap-icon ap-icon-group-add" tooltiptext="Create new group"/>
+        <button id="groupAddBtn" sclass="ap-icon ap-icon-group-add" tooltiptext="${$composer.labels.createGroup_text}"/>
         <button visible="false" id="groupEditBtn" sclass="ap-icon ap-icon-group-edit"
-                tooltiptext="Edit group"/>
-        <button id="groupRemoveBtn" sclass="ap-icon ap-icon-group-remove" tooltiptext="Remove group"/>
+                tooltiptext="${$composer.labels.editGroup_text}"/>
+        <button id="groupRemoveBtn" sclass="ap-icon ap-icon-group-remove" tooltiptext="${$composer.labels.removeGroup_text}"/>
         <h:span class="ap-action-sep"></h:span>
-        <button id="groupSelectAllBtn" sclass="ap-icon ap-icon-select-all" tooltiptext="Select all"/>
-        <button id="groupSelectNoneBtn" sclass="ap-icon ap-icon-select-none" tooltiptext="Select none"/>
+        <button id="groupSelectAllBtn" sclass="ap-icon ap-icon-select-all" tooltiptext="${labels.common_selectAll_text}"/>
+        <button id="groupSelectNoneBtn" sclass="ap-icon ap-icon-select-none" tooltiptext="${labels.common_selectNone_text}"/>
       </hbox>
     </hbox>
     <groupListboxComp/>
@@ -46,9 +46,9 @@
       </columns>
       <rows>
         <row>
-          <label value="Group name"/>
+          <label value="${$composer.labels.groupName_text}"/>
           <hbox>
-            <textbox id="groupNameTextbox" placeholder="Enter group name"/>
+            <textbox id="groupNameTextbox" placeholder="${$composer.labels.groupName_hint}"/>
           </hbox>
         </row>
       </rows>
@@ -57,16 +57,16 @@
       <hbox sclass="ap-portal-menu-actions" hflex="1" height="32px" visible="false">
         <hbox sclass="ap-portal-action-buttons" align="start" pack="start" spacing="0"
               style="margin-left: 10px;">
-          <button id="assignedUserAddBtn" sclass="ap-icon ap-icon-user-add" tooltiptext="Add new user to the group"/>
-          <button id="assignedUserRemoveBtn" sclass="ap-icon ap-icon-user-remove" tooltiptext="Remove user from the group"/>
+          <button id="assignedUserAddBtn" sclass="ap-icon ap-icon-user-add" tooltiptext="${$composer.labels.addUserToGroup_hint}"/>
+          <button id="assignedUserRemoveBtn" sclass="ap-icon ap-icon-user-remove" tooltiptext="${$composer.labels.removeUserFromGroup_hint}"/>
           <div id="assignedUserAddView">
             <h:span class="ap-action-sep"></h:span>
-            <combobox id="candidateUser" placeholder="Select a user">
+            <combobox id="candidateUser" placeholder="${$composer.labels.selectUser_text}">
               <template name="model">
                 <comboitem label="${each.username}"/>
               </template>
             </combobox>
-            <button id="candidateUserAdd" label="Add"/>
+            <button id="candidateUserAdd" label="${labels.common_add_text}"/>
             <!--<button id="candidateUserRemove" label="Remove"/>-->
           </div>
           <!--
@@ -85,7 +85,7 @@
       </hbox>
     </vbox>
     <div align="right" style="padding: 0 8px 8px 8px" hflex="1" height="35px">
-      <button id="groupSaveBtn" label="Save" iconSclass="z-icon-check-circle"/>
+      <button id="groupSaveBtn" label="${labels.common_save_text}" iconSclass="z-icon-check-circle"/>
     </div>
   </vbox>
 </hbox>

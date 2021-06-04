@@ -66,11 +66,7 @@ public abstract class FilterAction implements Action {
 
     
     @Override
-    public void undo() {
-        try {
-            analyst.filter(this.preActionFilterCriteria);
-        } catch (Exception e) {
-            Messagebox.show("Error when undoing filter action. Error message: " + e.getMessage());
-        }
+    public void undo() throws Exception {
+        analyst.filter(this.preActionFilterCriteria);
     }
 }

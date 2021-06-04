@@ -25,8 +25,10 @@ package org.apromore.plugin.portal.accesscontrol;
 import java.util.Locale;
 import java.util.Map;
 import java.lang.Boolean;
+import java.util.ResourceBundle;
 import javax.inject.Inject;
 
+import org.apromore.plugin.portal.accesscontrol.controllers.AccessController;
 import org.apromore.portal.common.Constants;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
@@ -38,7 +40,9 @@ import org.apromore.service.UserMetadataService;
 import org.apromore.service.WorkspaceService;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
+import org.zkoss.web.Attributes;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 import org.apromore.dao.model.User;
@@ -83,6 +87,18 @@ public class AccessControlPlugin extends DefaultPortalPlugin {
         return Availability.HIDDEN;
     }
 
+    public ResourceBundle getLabels() {
+        // Locale locale = Locales.getCurrent()
+        Locale locale = (Locale) Sessions.getCurrent().getAttribute(Attributes.PREFERRED_LOCALE);
+        return ResourceBundle.getBundle("metainfo.zk-label",
+            locale,
+            AccessControlPlugin.class.getClassLoader());
+    }
+
+    public String getLabel(String key) {
+        return getLabels().getString(key);
+    }
+
     @Override
     public void execute(final PortalContext portalContext) {
         LOGGER.info("execute");
@@ -108,11 +124,11 @@ public class AccessControlPlugin extends DefaultPortalPlugin {
                     Window window = (Window) Executions.getCurrent().createComponents("/accesscontrol/zul/share.zul", null, arg);
                     window.doModal();
                 } else {
-                    Notification.error("Only Owner can share an item");
+                    Notification.error(getLabel("onlyOwnerCanShare_message"));
                 }
             }
         } catch (Exception e) {
-            Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
+            Messagebox.show(e.getMessage(), "Apromore", Messagebox.OK, Messagebox.ERROR);
         }
     }
 }

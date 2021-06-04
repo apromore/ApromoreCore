@@ -243,7 +243,10 @@ public class ViewSettingsController extends VisualController {
                 userOptions.setIncludeSecondary(isShown);
                 includeSecondary.setChecked(isShown);
                 toggleComponentSclass(freqShow, isShown, "ap-icon-eye-close", "ap-icon-eye-open");
-                freqShow.setTooltiptext(isShown ? "Hide as secondary metric" : "Show as secondary metric");
+                freqShow.setTooltiptext(isShown ?
+                    parent.getLabel("metricHideSecondary_text") :
+                    parent.getLabel("metricShowSecondary_text")
+                );
                 userOptions.setRetainZoomPan(true);
                 parent.generateViz();
             }
@@ -257,7 +260,10 @@ public class ViewSettingsController extends VisualController {
                 userOptions.setIncludeSecondary(isShown);
                 includeSecondary.setChecked(isShown);
                 toggleComponentSclass(durationShow, isShown, "ap-icon-eye-close", "ap-icon-eye-open");
-                durationShow.setTooltiptext(isShown ? "Hide as secondary metric" : "Show as secondary metric");
+                durationShow.setTooltiptext(isShown ?
+                    parent.getLabel("metricHideSecondary_text") :
+                    parent.getLabel("metricShowSecondary_text")
+                );
                 userOptions.setRetainZoomPan(true);
                 parent.generateViz();
             }
@@ -347,7 +353,8 @@ public class ViewSettingsController extends VisualController {
             if (!CANONICAL_PERSPECTIVES.contains(key)) {
                 map.put(key, key);
             } else {
-                String value = Labels.getLabel("e.pd.perspective." + key.replace(':', '.') + ".text", key);
+                // String value = Labels.getLabel("e.pd.perspective." + key.replace(':', '.') + ".hint", key);
+                String value = parent.getLabel("perspective_" + key.replace(':', '_') + "_hint", key);
                 canonMap.put(key, value);
             }
         }
@@ -381,7 +388,10 @@ public class ViewSettingsController extends VisualController {
         toggleComponentClass(freqOption, true);
         toggleComponentClass(durationOption, false);
         toggleComponentSclass(durationShow, includeSecondary.isChecked(), "ap-icon-eye-close", "ap-icon-eye-open");
-        durationShow.setTooltiptext(includeSecondary.isChecked() ? "Hide as secondary metric" : "Show as secondary metric");
+        durationShow.setTooltiptext(includeSecondary.isChecked() ?
+            parent.getLabel("metricHideSecondary_text") :
+            parent.getLabel("metricShowSecondary_text")
+        );
 
         setOverlay(
             FREQUENCY,
@@ -406,7 +416,10 @@ public class ViewSettingsController extends VisualController {
         toggleComponentClass(freqOption, false);
         toggleComponentClass(durationOption, true);
         toggleComponentSclass(freqShow, includeSecondary.isChecked(), "ap-icon-eye-close", "ap-icon-eye-open");
-        freqShow.setTooltiptext(includeSecondary.isChecked() ? "Hide as secondary metric" : "Show as secondary metric");
+        freqShow.setTooltiptext(includeSecondary.isChecked() ?
+            parent.getLabel("metricHideSecondary_text") :
+            parent.getLabel("metricShowSecondary_text")
+        );
 
         setOverlay(
             DURATION,
@@ -444,16 +457,16 @@ public class ViewSettingsController extends VisualController {
 
         primaryAggregateCode = aggregateCode;
         if (primaryType == FREQUENCY) {
-            primaryTypeLabel = FREQ_LABEL;
+            primaryTypeLabel = parent.getLabel("common_frequencyLabel_text", FREQ_LABEL);
         } else { // (overlay == DURATION) assume DURATION
-            primaryTypeLabel = DURATION_LABEL;
+            primaryTypeLabel = parent.getLabel("common_durationLabel_text", DURATION_LABEL);
         }
         parent.generateViz();
     }
     
     public String getOutputName() {
         return parent.getContextData().getLogName() + " - " +
-                Labels.getLabel("e.agg." + primaryAggregateCode + ".text") + " " + primaryTypeLabel;
+            parent.getLabel("stat_" + primaryAggregateCode + "_text") + " " + primaryTypeLabel;
     }
     
     public String getPerspectiveName() {
@@ -461,7 +474,7 @@ public class ViewSettingsController extends VisualController {
         if (perspectiveSelector != null) {
             String value = perspectiveSelector.getSelectedItem().getValue();
             if (!value.isEmpty()) {
-                name = Labels.getLabel("e.pd.perspective." + value.replace(':', '.') + ".title", value);
+                name = parent.getLabel("perspective_" + value.replace(':', '_') + "_text", value);
             }
         }
         return name;

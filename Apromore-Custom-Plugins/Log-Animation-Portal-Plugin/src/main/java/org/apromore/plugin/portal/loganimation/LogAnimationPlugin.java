@@ -100,7 +100,7 @@ public class LogAnimationPlugin extends DefaultPortalPlugin implements LogAnimat
         }
 
         if (processes.size() != 1 || logSummaries.size() < 1) {
-            Messagebox.show("Select exactly one BPMN model and at least one log", "Attention", Messagebox.OK, Messagebox.ERROR);
+            Messagebox.show("Select exactly one BPMN model and at least one log", "Apromore", Messagebox.OK, Messagebox.ERROR);
             return;
         }
 

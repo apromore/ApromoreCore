@@ -96,8 +96,8 @@ public class PortalPluginResourceServlet extends HttpServlet {
             AutowireCapableBeanFactory beanFactory = WebApplicationContextUtils.getWebApplicationContext(getServletContext()).getAutowireCapableBeanFactory();
             
             for (PortalPlugin portalPlugin: (List<PortalPlugin>) beanFactory.getBean("portalPlugins")){
-                if (groupLabel.equals(portalPlugin.getGroupLabel(Locales.getCurrent())) &&
-                    label.equals(portalPlugin.getLabel(Locales.getCurrent()))) {
+                if (groupLabel.equals(portalPlugin.getGroup(Locales.getCurrent())) &&
+                    label.equals(portalPlugin.getItemCode(Locales.getCurrent()))) {
 
                     //log("Portal plugin " + portalPlugin);
                     

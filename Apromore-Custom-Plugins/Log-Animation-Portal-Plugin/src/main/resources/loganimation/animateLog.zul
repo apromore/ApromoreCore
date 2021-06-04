@@ -119,7 +119,7 @@
                   // Wait for SVG element ready, so jQuery can refer to it
                   window.setTimeout(function() {
                     Ap.la.session.initController();
-                    document.title = '${labels.brand.shortName} - Log Animator';
+                    document.title = '${labels.brand_shortName} - Log Animator';
                   }, 1000);
                 })
 	            ]]>

@@ -192,7 +192,7 @@ public class ToolbarController extends AbstractController {
 
     public void toogleAnimateBtn(boolean state) {
         parent.toggleComponentSclass(animate, state, "ap-btn-anim-off", "ap-btn-anim-on");
-        animate.setTooltiptext(state ? "Stop animation" : "Animate");
+        animate.setTooltiptext(state ? parent.getLabel("stopAnimation_text") : parent.getLabel("animate_text"));
     }
 
     public void setDisabledFilterClear(boolean disabled) {
@@ -206,11 +206,11 @@ public class ToolbarController extends AbstractController {
     
     private void onClearFilter() {
         Messagebox.show(
-                "Are you sure you want to clear all filters?",
-                "Filter log",
-                Messagebox.OK | Messagebox.CANCEL,
-                Messagebox.QUESTION,
-                e -> proceedClearFilter(e)
+            parent.getLabel("filterClear_message"),
+            parent.getLabel("filterClear_title"),
+            Messagebox.OK | Messagebox.CANCEL,
+            Messagebox.QUESTION,
+            e -> proceedClearFilter(e)
         );
     }
 
@@ -221,8 +221,11 @@ public class ToolbarController extends AbstractController {
                 action.setPreActionFilterCriteria(parent.getProcessAnalyst().copyCurrentFilterCriteria());
                 parent.executeAction(action);
             } catch (Exception e) {
-                Messagebox.show("Unable to clear the filter", "Filter error",
-                        Messagebox.OK, Messagebox.ERROR);
+                Messagebox.show(
+                    parent.getLabel("filterError_message"),
+                    parent.getLabel("filterError_title"),
+                    Messagebox.OK, Messagebox.ERROR
+                );
             }
         }
     }

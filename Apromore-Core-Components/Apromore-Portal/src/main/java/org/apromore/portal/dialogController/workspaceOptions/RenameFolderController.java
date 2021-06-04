@@ -29,6 +29,7 @@ import org.apromore.portal.dialogController.BaseController;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.exception.DialogException;
 import org.slf4j.Logger;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -101,7 +102,7 @@ public class RenameFolderController extends BaseController {
         try {
             String folderName = txtName.getValue().trim();
             if (folderName.isEmpty()) {
-                Messagebox.show("Name cannot be empty.", "Attention", Messagebox.OK, Messagebox.ERROR);
+                Messagebox.show(Labels.getLabel("portal_noEmptyName_message"), "Apromore", Messagebox.OK, Messagebox.ERROR);
                 return;
             }
 
@@ -112,12 +113,12 @@ public class RenameFolderController extends BaseController {
 
         } catch (WrongValueException ex) {
             LOGGER.debug("Unable to rename folder", ex);
-            // Messagebox.show("You have entered invalid value.", "Apromore", Messagebox.OK, Messagebox.ERROR);
+            // Messagebox.show(Labels.getLabel("portal_invalidValue_message"), "Apromore", Messagebox.OK, Messagebox.ERROR);
             return;
 
         } catch (Exception ex) {
             if (ex.getCause() instanceof NotAuthorizedException || ex instanceof NotAuthorizedException) {
-                Messagebox.show("You are not authorized to perform this operation. Contact your system administrator to gain relevant access rights for the folder or file you are trying to rename.", "Apromore", Messagebox.OK, Messagebox.ERROR);
+                Messagebox.show(Labels.getLabel("portal_noAuthorizedRename_message"), "Apromore", Messagebox.OK, Messagebox.ERROR);
             }
             LOGGER.warn("Unable to rename folder", ex);
         }

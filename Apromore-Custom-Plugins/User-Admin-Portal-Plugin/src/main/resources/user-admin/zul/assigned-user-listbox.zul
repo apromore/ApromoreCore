@@ -44,7 +44,7 @@
         </div>
         <label sclass="ap-listbox-search-count" width="200px" style="padding:0px 10px 0px 10px"/>
         <div width="70px" align="right" visible="false">
-          <button sclass="ap-listbox-search-btn" label="Search"/>
+          <button sclass="ap-listbox-search-btn" label="${labels.common_search_text}"/>
         </div>
       </hlayout>
     </auxheader>

@@ -172,10 +172,11 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
                         if (sampleHeader != null && sampleHeader.equals(header)) try {
 
                             LOGGER.debug("Found matched schema: {} : {}", sampleHeader, header);
-
+                            Map<String, Object> arg2 = new HashMap<>();
+                            arg2.put("labels", getLabels());
                             Window matchedMappingPopUp =
                                     (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul" +
-                                            "/matchedMapping.zul", null, null);
+                                            "/matchedMapping.zul", null, arg2);
                             matchedMappingPopUp.doModal();
 
                             Date date = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").parse(usermetadata.getCreatedTime());

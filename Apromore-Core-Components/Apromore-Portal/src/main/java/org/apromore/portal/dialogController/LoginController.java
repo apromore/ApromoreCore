@@ -25,6 +25,10 @@
 
 package org.apromore.portal.dialogController;
 
+import org.apromore.portal.common.UserSessionManager;
+import org.apromore.portal.common.i18n.I18nConfig;
+import org.apromore.portal.common.i18n.I18nSession;
+import org.zkoss.spring.SpringUtil;
 import org.zkoss.zul.*;
 import org.zkoss.util.resource.Labels;
 
@@ -87,6 +91,13 @@ public class LoginController extends BaseController {
             src += "-" + "community";
         }
         logoWithTag.setSrc(src + ".svg");
+        setupLocale();
     }
 
+    private void setupLocale() {
+        I18nConfig config = (I18nConfig) SpringUtil.getBean("i18nConfig");
+        I18nSession i18nSession = new I18nSession(config);
+        UserSessionManager.setCurrentI18nSession(i18nSession);
+        i18nSession.applyLocaleFromClient();
+    }
 }

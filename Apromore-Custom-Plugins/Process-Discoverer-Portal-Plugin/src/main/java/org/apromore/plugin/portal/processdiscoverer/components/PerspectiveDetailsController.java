@@ -23,6 +23,8 @@
 package org.apromore.plugin.portal.processdiscoverer.components;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apromore.logman.attribute.log.AttributeInfo;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
@@ -75,7 +77,9 @@ public class PerspectiveDetailsController extends DataListController {
     @Override
     public void onEvent(Event event) throws Exception {
     	if (perspectiveDetailsWindow==null) {
-            perspectiveDetailsWindow = (Window) Executions.createComponents("perspectiveDetails.zul", null, null);
+            Map<String, Object> arg = new HashMap<>();
+            arg.put("pdLabels", parent.getLabels());
+            perspectiveDetailsWindow = (Window) Executions.createComponents("perspectiveDetails.zul", null, arg);
             String perspectiveName = parent.getPerspectiveName();
             perspectiveDetailsWindow.setTitle(perspectiveName + " Inspector");
             Listbox listbox = (Listbox) perspectiveDetailsWindow.getFellow("perspectiveDetailsList");

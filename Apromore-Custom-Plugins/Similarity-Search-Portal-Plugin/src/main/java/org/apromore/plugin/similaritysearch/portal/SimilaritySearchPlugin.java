@@ -234,7 +234,7 @@ public class SimilaritySearchPlugin extends PluginCustomGui {
             // message = "Search failed (" + sb.toString() + ")";
             // message = "The Apromore Repository has changed between versions. Please export and re-import this database to Apromore for additional support”;
             message = "Search may fail if you have process models in your folder generated with the older version of this software. Please try to export and re-import the model";
-            Messagebox.show(message, "Attention", Messagebox.OK, Messagebox.ERROR);
+            Messagebox.show(message, "Apromore", Messagebox.OK, Messagebox.ERROR);
         } finally {
             this.similaritySearchW.detach();
         }

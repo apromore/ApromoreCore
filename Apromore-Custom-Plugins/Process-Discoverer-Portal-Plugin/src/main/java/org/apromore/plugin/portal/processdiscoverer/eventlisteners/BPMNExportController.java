@@ -23,6 +23,7 @@
 package org.apromore.plugin.portal.processdiscoverer.eventlisteners;
 
 import java.io.ByteArrayInputStream;
+import java.text.MessageFormat;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -122,14 +123,14 @@ public class BPMNExportController extends AbstractController {
     
                 case MINING_COMPLETE:
                 	if (fractionCompleteProgressmeter != null) fractionCompleteProgressmeter.setValue(100);
-                    if (descriptionLabel != null) descriptionLabel.setValue("Saving BPMN model");
+                    if (descriptionLabel != null) descriptionLabel.setValue(parent.getLabel("savingBPMN_message"));
                     try {
                     	BPMNExportController.this.save();
                     	if (window != null) window.detach();
                         eventQueue.unsubscribe(this); //unsubscribe after finishing work
                     } catch (Exception e) {
                         e.printStackTrace();
-                        Messagebox.show("Process mining failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
+                        Messagebox.show(parent.getLabel("failedProcessMining_message"), "Apromore", Messagebox.OK, Messagebox.ERROR);
                         eventQueue.unsubscribe(this); //unsubscribe after finishing work even fails
                     }
                     break;
@@ -137,13 +138,14 @@ public class BPMNExportController extends AbstractController {
                 case MINING_EXCEPTION:
                     Exception e = (Exception) event.getData();
                     if (window != null) window.detach();
-                    Messagebox.show("Process mining failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
+                    Messagebox.show(parent.getLabel("failedProcessMining_message"), "Apromore", Messagebox.OK, Messagebox.ERROR);
                     eventQueue.unsubscribe(this); //unsubscribe after finishing work even fails
                     break;
 
                 case ANNOTATION_EXCEPTION:
                     Exception e2 = (Exception) event.getData();
-                    Messagebox.show("Unable to annotate BPMN model for BIMP simulation (" + e2.getMessage() + ")\n\nModel will be created without annotations.", "Attention", Messagebox.OK, Messagebox.EXCLAMATION);
+                    e2.printStackTrace();
+                    Messagebox.show(parent.getLabel("failedAnnotateBPMN_message"), "Apromore", Messagebox.OK, Messagebox.EXCLAMATION);
                     eventQueue.unsubscribe(this); //unsubscribe after finishing work even fails
                     break;
                 }
@@ -252,10 +254,9 @@ public class BPMNExportController extends AbstractController {
         if (parent.getContextData().getLogName() != null) {
             defaultProcessName = parent.getContextData().getLogName().split("\\.")[0];
         }
-        
         InputDialog.showInputDialog(
-			"Save BPMN model",
-			"Enter a name for the BPMN model (no more than 60 characters)",
+            parent.getLabel("saveBPMN_message"),
+            parent.getLabel("saveBPMNName_message"),
 			defaultProcessName,
 			new EventListener<Event>() {
 				@Override
@@ -281,12 +282,18 @@ public class BPMNExportController extends AbstractController {
     				                publicModel);
                             Folder folder = controller.getProcessService().getFolderByPmv(pmv);
                             String folderName = folder == null ? HOME_FOLDER_NAME : folder.getName();
-                            Notification.info("A new BPMN model named <strong>" + modelName + "</strong> has been " +
-                                    "saved in the <strong>" + folderName + "</strong> folder.");
+                            String notif = MessageFormat.format(
+                                parent.getLabel("successSaveBPMN_message"),
+                                "<strong>" + modelName + "</strong>",
+                                "<strong>" + folderName + "</strong>"
+                            );
+                            Notification.info(notif);
     				        controller.refreshPortal();
 				        }
 				        catch (Exception ex) {
-				            Messagebox.show("Error in saving model: " + ex.getMessage());
+				            Messagebox.show(
+                                parent.getLabel("failedSaveModel_message")
+                            );
 				            LOGGER.error("Error in saving model: ", ex);
 				        }
 					}

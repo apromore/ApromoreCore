@@ -25,16 +25,16 @@
     sclass="ap-transfer-win"
     width="950px" height="700px" position="center"
     closable="true"
-    title="Delete user"
+    title="${$composer.labels.deleteUser_text}"
     apply="org.apromore.plugin.portal.useradmin.DeleteUserController">
     <caption>
         <toolbarbutton visible="false" iconSclass="ap-icon ap-icon-help" href="https://documentation.apromore.org/theapromoreportal/manageusersandgroups.html" target="_blank" />
     </caption>
     <vbox hflex="1" vflex="1" spacing="0">
         <div hflex="1" height="34px" style="box-sizing: border-box; padding: 8px;">
-            <span>We found that </span>
+            <span>${$composer.labels.deleteUserHasAssets1_text} </span>
             <label id="deletedUserLabel" class="ap-transfer-from"></label>
-            <span> is the only owner of the following assets:</span>
+            <span> ${$composer.labels.deleteUserHasAssets2_text}</span>
         </div>
         <borderlayout hflex="1" vflex="1">
             <west autoscroll="true" sclass="ap-owned-assets" splittable="true" size="60%" vflex="1" border="none">
@@ -45,8 +45,8 @@
                          hflex="1">
                     <listhead>
                         <listheader align="center" label="" width="40px"/><!-- type icon -->
-                        <listheader align="left" hflex="1" label="Asset" sort="auto(name)"/>
-                        <listheader align="left" width="160px" label="Last update" sort="auto(updatedTime)"/>
+                        <listheader align="left" hflex="1" label="${$composer.labels.asset_text}" sort="auto(name)"/>
+                        <listheader align="left" width="160px" label="${$composer.labels.lastUpdate_text}" sort="auto(updatedTime)"/>
                     </listhead>
                     <template name="model">
                         <listitem>
@@ -64,7 +64,7 @@
             </center>
         </borderlayout>
         <div hflex="1" height="34px" style="box-sizing: border-box; padding: 8px 8px 0 8px;" >
-            Select one of the two options below:
+            ${$composer.labels.deleteUserOptions_hint}
         </div>
         <hbox hflex="1" height="73px" spacing="8px">
             <radiogroup id="deleteOptionGroup" />
@@ -72,10 +72,12 @@
                 <div hflex="1" vflex="1" sclass="ap-usrmgt-delete-option-container">
                     <div style="margin-bottom: 4px;">
                         <radio id="deleteOptionTransfer" checked="true" label="" radiogroup="deleteOptionGroup" />
-                        <span sclass="ap-usrmgt-delete-option">Transfer ownership</span>
+                        <span sclass="ap-usrmgt-delete-option">
+                            ${$composer.labels.deleteUserOptTransferOwnership_text}
+                        </span>
                     </div>
                     <div sclass="ap-usrmgt-delete-option-detail">
-                        <span>Transfer ownership to</span>
+                        <span>${$composer.labels.deleteUserOptTransferOwnership_hint}</span>
                         <combobox id="transferToCombobox" placeholder="Select a user">
                             <template name="model">
                                 <comboitem label="${each.username}"/>
@@ -83,7 +85,7 @@
                         </combobox>
                         <textbox id="transferToTextbox"
                                  width="190px" style="margin-right: 7px; vertical-align: middle"
-                                 placeholder="Type in a user or group name"
+                                 placeholder="${$composer.labels.typeUserOrGroup_text}"
                         />
                     </div>
                 </div>
@@ -92,18 +94,20 @@
                 <div hflex="1" vflex="1" sclass="ap-usrmgt-delete-option-container">
                     <div style="margin-bottom: 4px;">
                         <radio id="deleteOptionPurge" label="" radiogroup="deleteOptionGroup" />
-                        <span sclass="ap-usrmgt-delete-option">Delete assets</span>
+                        <span sclass="ap-usrmgt-delete-option">
+                            ${$composer.labels.deleteUserOptPurgeAssets_text}
+                        </span>
                     </div>
                     <div sclass="ap-usrmgt-delete-option-detail" style="margin-top: 7px;">
-                        <span>Delete all assets owned by </span>
+                        <span>${$composer.labels.deleteUserOptPurgeAssets_hint} </span>
                         <label id="deletedUserLabelPurge" class="ap-transfer-from"></label>
                     </div>
                 </div>
             </div>
         </hbox>
         <div sclass="ap-window-footer-actions" height="42px">
-            <button id="btnApply" style="background-color: red;" label="Delete user" iconSclass="z-icon-check-circle"/>
-            <button id="btnCancel" label="Cancel" iconSclass="z-icon-times-circle"/>
+            <button id="btnApply" style="background-color: red;" label="${$composer.labels.deleteUser_text}" iconSclass="z-icon-check-circle"/>
+            <button id="btnCancel" label="${labels.common_cancel_text}" iconSclass="z-icon-times-circle"/>
         </div>
     </vbox>
 </window>

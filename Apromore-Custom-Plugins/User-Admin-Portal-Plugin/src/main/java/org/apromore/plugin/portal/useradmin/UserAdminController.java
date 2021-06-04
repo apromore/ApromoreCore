@@ -21,18 +21,8 @@
  */
 package org.apromore.plugin.portal.useradmin;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Dictionary;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.text.MessageFormat;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.apromore.portal.common.zk.ComponentUtils;
@@ -56,8 +46,10 @@ import org.osgi.service.event.EventHandler;
 import org.slf4j.Logger;
 //import org.zkoss.spring.SpringUtil;
 import org.zkoss.json.JSONObject;
+import org.zkoss.web.Attributes;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.EventListener;
@@ -259,6 +251,18 @@ public class UserAdminController extends SelectorComposer<Window> {
         return securityService.hasAccess(portalContext.getCurrentUser().getId(), permission.getRowGuid());
     }
 
+    public ResourceBundle getLabels() {
+        // Locale locale = Locales.getCurrent()
+        Locale locale = (Locale) Sessions.getCurrent().getAttribute(Attributes.PREFERRED_LOCALE);
+        return ResourceBundle.getBundle("metainfo.zk-label",
+            locale,
+            UserAdminController.class.getClassLoader());
+    }
+
+    public String getLabel(String key) {
+        return getLabels().getString(key);
+    }
+
     @Override
     public void doAfterCompose(Window win) throws Exception {
         super.doAfterCompose(win);
@@ -275,7 +279,7 @@ public class UserAdminController extends SelectorComposer<Window> {
         // Users tab
         userModel = new ListModelList<>(securityService.getAllUsers(), false);
         userModel.setMultiple(true);
-        userList = new UserListbox(userListbox, userModel, "User name");
+        userList = new UserListbox(userListbox, userModel, getLabel("userName_text"));
 
         refreshAssignedRoles();
         refreshAssignedGroups();
@@ -291,7 +295,7 @@ public class UserAdminController extends SelectorComposer<Window> {
         // Groups tab
         groupModel = new ListModelList<>(securityService.findElectiveGroups(), false);
         groupModel.setMultiple(true);
-        groupList = new GroupListbox(groupListbox, groupModel, "Group name");
+        groupList = new GroupListbox(groupListbox, groupModel, getLabel("groupName_text"));
 
         allUserModel = new ListModelList<User>(securityService.getAllUsers(), false);
         refreshNonAssignedUsers();
@@ -860,8 +864,8 @@ public class UserAdminController extends SelectorComposer<Window> {
      */
     public void checkDirtyUser(Set<User> prevUsers, Set<User> newUsers, Boolean select, Tab tab) {
         if (isUserDetailDirty) {
-            Messagebox.show("There is unsaved user detail. Do you want to save the information?",
-                    "Question",
+            Messagebox.show(getLabel("dirtyUser_message"),
+                    "Apromore",
                     new Messagebox.Button[] {Messagebox.Button.YES, Messagebox.Button.NO, Messagebox.Button.CANCEL},
                     Messagebox.QUESTION,
                     new org.zkoss.zk.ui.event.EventListener() {
@@ -954,23 +958,23 @@ public class UserAdminController extends SelectorComposer<Window> {
 
         } catch (Exception e) {
             LOGGER.error("Unable to create user creation dialog", e);
-            Messagebox.show("Unable to create user creation dialog");
+            Messagebox.show(getLabel("failedLaunchCreateUser_message"));
         }
     }
 
     @Listen("onClick = #userRemoveBtn")
     public void onClickUserRemoveBtn() {
         if (!hasPermission(Permissions.EDIT_USERS)) {
-            Notification.error("You do not have permission to delete user");
+            Notification.error(getLabel("noPermissionDeleteUser_message"));
             return;
         }
         Set<User> selectedUsers = userList.getSelection();
         if (userList.getSelectionCount() == 0) {
-            Notification.error("Nothing to delete");
+            Notification.error(getLabel("nothingToDelete_message"));
             return;
         }
         if (selectedUsers.contains(currentUser)) {
-            Notification.error("You cannot delete your own account");
+            Notification.error(getLabel("noDeleteSelf_message"));
             return;
         }
         List<String> users = new ArrayList<>();
@@ -978,8 +982,9 @@ public class UserAdminController extends SelectorComposer<Window> {
             users.add(u.getUsername());
         }
         String userNames = String.join(",", users);
-        Messagebox.show("Do you really want to delete " + userNames + "?",
-                "Question",
+        Messagebox.show(
+                MessageFormat.format(getLabel("deletePrompt_message"), userNames),
+                "Apromore",
                 Messagebox.OK | Messagebox.CANCEL,
                 Messagebox.QUESTION,
                 new org.zkoss.zk.ui.event.EventListener() {
@@ -995,7 +1000,7 @@ public class UserAdminController extends SelectorComposer<Window> {
                                         window.doModal();
                                     } catch (Exception ex) {
                                         LOGGER.error("Unable to create transfer owner dialog", ex);
-                                        Messagebox.show("Unable to create transfer owner dialog");
+                                        Messagebox.show(getLabel("failedLaunchTransferOwner_message"));
                                     }
                                 } else {
                                     securityService.deleteUser(user);
@@ -1016,16 +1021,16 @@ public class UserAdminController extends SelectorComposer<Window> {
         boolean passwordDirty = false;
 
         if (!hasPermission(Permissions.EDIT_USERS)) {
-            Notification.error("You do not have permission to edit user");
+                Notification.error("You do not have permission to edit user");
             return;
         }
         if (selectedUser != null) {
             if (passwordTextbox.getValue() != null && passwordTextbox.getValue().length() > 0) {
                 if (passwordTextbox.getValue().length() < 6) {
-                    Messagebox.show("New password must be at least 6 characters long.", null, Messagebox.OK, Messagebox.ERROR);
+                    Messagebox.show(getLabel("passwordTooShort_message"), null, Messagebox.OK, Messagebox.ERROR);
                     return;
                 } else if (!Objects.equals(passwordTextbox.getValue(), confirmPasswordTextbox.getValue())) {
-                    Messagebox.show("Password does not match.", null, Messagebox.OK, Messagebox.ERROR);
+                    Messagebox.show(getLabel("passwordNoMatch_message"), null, Messagebox.OK, Messagebox.ERROR);
                     return;
                 }
                 passwordDirty = true;
@@ -1042,11 +1047,11 @@ public class UserAdminController extends SelectorComposer<Window> {
             }
             selectedUser.getMembership().setUser(selectedUser);
             securityService.updateUser(selectedUser);
-            Notification.info("Details for user " + selectedUser.getUsername() + " is updated");
+            Notification.info(MessageFormat.format(getLabel("userUpdated_message"), selectedUser.getUsername()));
         } else {
             saveAssignedGroup(selectedUsers, true);
             saveAssignedRole(selectedUsers, true);
-            Notification.info("Roles and groups for multiple users are updated");
+            Notification.info(getLabel("multipleUsersUpdated_message"));
         }
         isUserDetailDirty = false;
     }

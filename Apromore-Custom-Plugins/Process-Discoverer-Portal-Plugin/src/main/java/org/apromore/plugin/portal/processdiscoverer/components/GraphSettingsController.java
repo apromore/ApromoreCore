@@ -74,7 +74,7 @@ public class GraphSettingsController extends VisualController {
     private Intbox parallelismInput;
     private Row parallelismRow;
 
-    private String[] orderingLabels = Labels.getLabel("e.pd.orderCaseFreq.text").split(",");
+    private String[] orderingLabels; // = Labels.getLabel("e.pd.orderCaseFreq.text").split(",");
 
     private boolean isNormalOrdering = true;
 
@@ -84,6 +84,7 @@ public class GraphSettingsController extends VisualController {
 
     public GraphSettingsController(PDController parent) {
         super(parent);
+        orderingLabels = parent.getLabel("orderCaseFreq_text").split(",");
     }
 
     @Override
@@ -259,7 +260,8 @@ public class GraphSettingsController extends VisualController {
                 toggleComponentClass(metricCaseVariant, false);
                 metricAvgDuration.setChecked(false);
                 metricCaseVariant.setChecked(false);
-                orderingLabels = Labels.getLabel("e.pd.orderCaseFreq.text").split(",");
+                // orderingLabels = Labels.getLabel("e.pd.orderCaseFreq.text").split(",");
+                orderingLabels = parent.getLabel("orderCaseFreq_text").split(",");
                 break;
             case METRIC_AVG_DURATION:
                 userOptions.setFixedType(DURATION);
@@ -269,7 +271,8 @@ public class GraphSettingsController extends VisualController {
                 toggleComponentClass(metricCaseVariant, false);
                 metricCaseFreq.setChecked(false);
                 metricCaseVariant.setChecked(false);
-                orderingLabels = Labels.getLabel("e.pd.orderDuration.text").split(",");
+                // orderingLabels = Labels.getLabel("e.pd.orderDuration.text").split(",");
+                orderingLabels = parent.getLabel("orderDuration_text").split(",");
                 break;
             case METRIC_CASE_VARIANT:
                 userOptions.setFixedType(FREQUENCY);
@@ -279,7 +282,8 @@ public class GraphSettingsController extends VisualController {
                 toggleComponentClass(metricCaseVariant, true);
                 metricAvgDuration.setChecked(false);
                 metricCaseFreq.setChecked(false);
-                orderingLabels = Labels.getLabel("e.pd.orderCaseVariant.text").split(",");
+                // orderingLabels = Labels.getLabel("e.pd.orderCaseVariant.text").split(",");
+                orderingLabels = parent.getLabel("orderCaseVariant_text").split(",");
                 break;
         }
         updateOrderingLabels();

@@ -27,7 +27,7 @@
 <!-- as many instances of this window might be created at once, components are
 	not given an id, instead, there are retrieve by their position by controller 
 	importOneProcessWindow -->
-<window position="center" title="Upload model" visible="true" mode="modal"
+<window position="center" title="${labels.portal_importModel_text}" visible="true" mode="modal"
         sizable="true" width="600px">
     <vbox vflex="1">
         <grid sclass="ap-grid ap-form">
@@ -38,13 +38,13 @@
             </columns>
             <rows>
                 <row spans="1,2">
-                    <label value="Model name" width="100%"/>
-                    <textbox width="100%" constraint="${labels.e.common.nameConstraint.text}" />
+                    <label value="${labels.common_modelName_text}" width="100%"/>
+                    <textbox width="100%" constraint="${labels.common_nameConstraint_text}" />
                 </row>
                 <row spans="3" sclass="ap-window-footer-actions">
                     <div id="div" align="center">
-                        <button label="OK" iconSclass="z-icon-check-circle"></button>
-                        <button label="Cancel" iconSclass="z-icon-times-circle"></button>
+                        <button label="${labels.common_ok_text}" iconSclass="z-icon-check-circle"></button>
+                        <button label="${labels.common_cancel_text}" iconSclass="z-icon-times-circle"></button>
                     </div>
                 </row>
             </rows>

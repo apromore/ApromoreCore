@@ -146,7 +146,7 @@ public class MergePlugin extends DefaultPortalPlugin {
                 sb.append(element.toString() + "\n");
             }
             String message = "Search failed (" + sb.toString() + ")";
-            Messagebox.show(message, "Attention", Messagebox.OK, Messagebox.ERROR);
+            Messagebox.show(message, "Apromore", Messagebox.OK, Messagebox.ERROR);
         }
     }
 
@@ -159,7 +159,7 @@ public class MergePlugin extends DefaultPortalPlugin {
         this.context = context;
 
         this.processMergeW = (Window) context.getUI().createComponent(getClass().getClassLoader(), "zul/processmerge.zul", null, null);
-        this.processMergeW.setTitle(Labels.getLabel("e.merge.title.text", "Process merging"));
+        this.processMergeW.setTitle(Labels.getLabel("merge_title_text", "Process merging"));
 
         Row processNameR = (Row) this.processMergeW.getFellow("mergednamep");
         this.processNameT = (Textbox) processNameR.getFirstChild().getNextSibling();

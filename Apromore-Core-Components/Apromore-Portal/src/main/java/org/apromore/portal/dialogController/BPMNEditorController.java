@@ -45,6 +45,7 @@ import org.apromore.portal.util.StreamUtil;
 import org.apromore.util.AccessType;
 
 import org.slf4j.Logger;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -180,10 +181,13 @@ public class BPMNEditorController extends BaseController {
             if (mainC != null) {
                 mainC.showPluginMessages(pluginMessages);
             }
-
+            String langTag = mainC.getI18nSession().getPreferredLangTag();
+            if ("en".equals(langTag)) {
+                langTag = "en_us";
+            }
             List<EditorPlugin> editorPlugins = EditorPluginResolver.resolve("bpmnEditorPlugins");
             param.put("plugins", editorPlugins);
-
+            param.put("langTag", langTag);
             Executions.getCurrent().pushArg(param);
 
         } catch (Exception e) {
@@ -197,7 +201,7 @@ public class BPMNEditorController extends BaseController {
             @Override
             public void onEvent(final Event event) throws InterruptedException {
                 if (currentUserAccessType == AccessType.VIEWER) {
-                    Notification.error("You do not have a sufficient privilege to save or modify this file");
+                    Notification.error(Labels.getLabel("portal_noPrivilegeSaveEdit_message"));
                     return;
                 }
             	if (isNewProcess) {
@@ -213,7 +217,7 @@ public class BPMNEditorController extends BaseController {
             @Override
             public void onEvent(final Event event) throws InterruptedException {
                 if (currentUserAccessType == AccessType.VIEWER) {
-                    Notification.error("You do not have a sufficient privilege to save or modify this file");
+                    Notification.error(Labels.getLabel("portal_noPrivilegeSaveEdit_message"));
                     return;
                 }
                 new SaveAsDialogController(process, vst, session, false, eventToString(event));
@@ -225,12 +229,12 @@ public class BPMNEditorController extends BaseController {
             public void onEvent(final Event event) throws InterruptedException {
                 PortalPlugin accessControlPlugin;
                 if (currentUserAccessType != AccessType.OWNER) {
-                    Notification.error("You do not have a sufficient privilege to share this file");
+                    Notification.error(Labels.getLabel("portal_noPrivilegeShare_message"));
                     return;
                 }
 
                 if (isNewProcess || process == null) {
-                    Notification.error("You need to save your new model first.");
+                    Notification.error(Labels.getLabel("portal_saveModelFirst_message"));
                 } else {
                     PortalContext portalContext = mainC.getPortalContext();
                     try {
@@ -247,7 +251,7 @@ public class BPMNEditorController extends BaseController {
                         accessControlPlugin.setSimpleParams(arg);
                         accessControlPlugin.execute(portalContext);
                     } catch (Exception e) {
-                        Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
+                        Messagebox.show(e.getMessage(), "Apromore", Messagebox.OK, Messagebox.ERROR);
                     }
                 }
             }

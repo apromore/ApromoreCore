@@ -84,7 +84,7 @@ public class ChangePasswordController {
 
         } catch (IOException e) {
             LOGGER.warn("Unable to edit account", e);
-            Messagebox.show("Unable to edit account", "Attention", Messagebox.OK, Messagebox.ERROR);
+            Messagebox.show("Unable to edit account", "Apromore", Messagebox.OK, Messagebox.ERROR);
         }
     }
 }

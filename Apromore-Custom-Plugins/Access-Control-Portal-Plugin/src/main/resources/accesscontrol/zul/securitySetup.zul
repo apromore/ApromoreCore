@@ -24,7 +24,7 @@
 <?component name="FolderTree" macroURI="/macros/folderTree.zul" ?>
 <?component name="AccessControl" macroURI="/accesscontrol/zul/access.zul" ?>
 <?component name="Groups" macroURI="/macros/groups.zul" ?>
-<window width="1200px" height="90%" closable="true" title="Access rights management" position="center" id="winSecuritySetup">
+<window width="1200px" height="90%" closable="true" title="${labels.accessCtrl_title_text}" position="center" id="winSecuritySetup">
     <caption>
         <toolbarbutton iconSclass="ap-icon ap-icon-help" href="https://documentation.apromore.org/theapromoreportal/sharingandaccessrights.html" target="_blank" />
     </caption>
@@ -41,7 +41,7 @@
 
     </style>
     <borderlayout hflex="1" vflex="1">
-        <west autoscroll="true" sclass="ap-security-setup" title="My Workspace" collapsible="true" splittable="true" vflex="1" width="30%" border="none">
+        <west autoscroll="true" sclass="ap-security-setup" title="${labels.portal_workspace_text}" collapsible="true" splittable="true" vflex="1" width="30%" border="none">
             <FolderTree id="mainTree"/>
         </west>
         <center hflex="1" vflex="1" border="none">

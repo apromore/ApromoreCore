@@ -25,5 +25,5 @@ package org.apromore.plugin.portal.processdiscoverer.actions;
 
 public interface Action {
     boolean execute();
-    void undo();
+    void undo() throws Exception;
 }

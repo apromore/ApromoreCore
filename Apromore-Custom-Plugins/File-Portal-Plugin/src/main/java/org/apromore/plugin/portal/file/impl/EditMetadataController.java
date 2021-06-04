@@ -230,7 +230,7 @@ public class EditMetadataController extends BaseController {
         String logName = this.nameT.getValue();
         boolean isPublic = this.makePublicCb.isChecked();
         if (this.nameT.getValue().compareTo("") == 0) {
-            Messagebox.show("Please enter a value for each mandatory field.", "Attention", Messagebox.OK, Messagebox.ERROR);
+            Messagebox.show("Please enter a value for each mandatory field.", "Apromore", Messagebox.OK, Messagebox.ERROR);
         } else {
             getService().editLogData(logId, logName, "", isPublic);
             this.editDataListProcessesC.getEditedList().add(this);
@@ -252,7 +252,7 @@ public class EditMetadataController extends BaseController {
             ranking = this.rankingRG.getSelectedItem().getLabel();
         }
         if (this.nameT.getValue().compareTo("") == 0 || this.versionNumberT.getValue().compareTo("") == 0) {
-            Messagebox.show("Please enter a value for each mandatory field.", "Attention", Messagebox.OK, Messagebox.ERROR);
+            Messagebox.show("Please enter a value for each mandatory field.", "Apromore", Messagebox.OK, Messagebox.ERROR);
         } else {
             getService().editProcessData(processId, processName, domain, username, preVersion, newVersion, ranking, isPublic);
             this.editDataListProcessesC.getEditedList().add(this);

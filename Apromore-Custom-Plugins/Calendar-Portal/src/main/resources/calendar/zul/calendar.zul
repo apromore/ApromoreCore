@@ -27,7 +27,7 @@
           style="max-width: 1400px;"
           closable="true"
           client:onBind="Ap.calendar.syncRows()"
-          title="Custom Calendar" apply="org.apromore.plugin.portal.calendar.controllers.Calendar">
+          title="${labels.calendar_title_text}" apply="org.apromore.plugin.portal.calendar.controllers.Calendar">
     <div id="actionBridge" visible="false" />
     <vbox height="100%" hflex="1" spacing="0">    
       <hbox hflex="1" vflex="1">

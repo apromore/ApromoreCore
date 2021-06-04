@@ -28,5 +28,5 @@ package org.apromore.portal.common;
 public abstract class LabelConstants {
 
     public static final String TRUE = "true";
-    public static final String IS_DISPLAYNAME_CAPITALIZED = "brand.usernameCaps";
+    public static final String IS_DISPLAYNAME_CAPITALIZED = "brand_usernameCaps";
 }
