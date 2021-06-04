@@ -30,14 +30,14 @@ import org.apromore.service.csvimporter.model.LogMetaData;
 
 import java.io.*;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 class MetaDataServiceCSVImpl implements MetaDataService {
 
-    private static final int MAX_ROW_COUNT = 2;
+    /**
+     * Sample rows that are used to determine Delimiter
+     */
+    private static final int SAMPLE_ROW_COUNT = 2;
 
     private Reader reader;
     private BufferedReader brReader;
@@ -125,6 +125,11 @@ class MetaDataServiceCSVImpl implements MetaDataService {
             List<List<String>> lines = new ArrayList<>();
             String[] myLine;
 
+            // Add content lines to sample log to avoid resetting of stream
+            for (int i = 1; i < SAMPLE_ROW_COUNT; i++) {
+                lines.add(Splitter.on(separator).splitToList(sampleRows.get(i)));
+            }
+
             while ((myLine = csvReader.readNext()) != null && lines.size() < sampleSize) {
                 if (myLine.length != header.size())
                     continue;
@@ -139,13 +144,16 @@ class MetaDataServiceCSVImpl implements MetaDataService {
     }
 
     private List<String> getSampleRows(BufferedReader brReader) throws IOException {
-        int rowCount = MAX_ROW_COUNT;
+
         List<String> rows = new ArrayList<>();
-        String rowLine = brReader.readLine();
-        while (--rowCount > 0 && rowLine != null) {
-            rows.add(rowLine);
-            rowLine = brReader.readLine();
+
+        for (int i = 0; i < SAMPLE_ROW_COUNT; i++) {
+            String rowLine = brReader.readLine();
+            if (!"".equals(rowLine)) {
+                rows.add(rowLine);
+            }
         }
+
         return rows;
     }
 
