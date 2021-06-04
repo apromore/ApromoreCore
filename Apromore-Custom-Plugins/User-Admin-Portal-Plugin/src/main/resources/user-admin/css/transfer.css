@@ -27,8 +27,7 @@
 
 .ap-usrmgt-delete-option-detail {
     white-space: nowrap;
-    overflow-x: hidden;
-    overflow-y: visible;
+    overflow: hidden;
     text-overflow: ellipsis;
 }
 
