@@ -58,7 +58,7 @@ public class LogImporterXLSXImpl implements LogImporter, Constants {
     private final int BUFFER_SIZE = 2048;
     private final int DEFAULT_NUMBER_OF_ROWS = 100;
     @Inject EventLogImporter eventLogImporter;
-    @Inject private ConfigBean config;
+    @Inject ConfigBean config;
 
     @Override
     public LogModel importLog(InputStream in, LogMetaData logMetaData, String charset, boolean skipInvalidRow,
@@ -106,8 +106,11 @@ public class LogImporterXLSXImpl implements LogImporter, Constants {
                 if (r.getRowNum() == 0)
                     continue;
 
-                if (!isValidLineCount(lineIndex - 1))
-                    break;
+                // row in excess of the allowed limit
+                if (!isValidLineCount(lineIndex + 1)) {
+                    rowLimitExceeded = true;
+                     break;
+                }
 
                 // new row, new event.
                 lineIndex++;
@@ -171,9 +174,6 @@ public class LogImporterXLSXImpl implements LogImporter, Constants {
                     }
                 }
             );
-
-            if (!isValidLineCount(lineIndex - 1))
-                rowLimitExceeded = true;
 
             //Import XES
             if (xLog != null &&
