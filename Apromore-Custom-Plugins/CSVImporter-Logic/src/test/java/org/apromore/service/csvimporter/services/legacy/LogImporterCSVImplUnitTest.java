@@ -22,6 +22,7 @@
 
 package org.apromore.service.csvimporter.services.legacy;
 
+import org.apromore.service.csvimporter.common.ConfigBean;
 import org.apromore.service.csvimporter.model.LogMetaData;
 import org.apromore.service.csvimporter.model.LogModel;
 import org.apromore.service.csvimporter.services.MetaDataService;
@@ -51,7 +52,7 @@ public class LogImporterCSVImplUnitTest {
             , " process type");
     private TestUtilities utilities;
     private MetaDataService metaDataService;
-    private LogImporter logImporter;
+    private LogImporterCSVImpl logImporter;
     private MetaDataUtilities metaDataUtilities;
 
     @Before
@@ -61,6 +62,7 @@ public class LogImporterCSVImplUnitTest {
         metaDataService = parquetImporterFactory.getMetaDataService();
         metaDataUtilities = parquetImporterFactory.getMetaDataUtilities();
         logImporter = new LogImporterCSVImpl();
+        logImporter.config = new ConfigBean();
     }
 
     /**
@@ -142,6 +144,48 @@ public class LogImporterCSVImplUnitTest {
         assertEquals(
                 utilities.removeTimezone(expectedXES),
                 utilities.removeTimezone(utilities.xlogToString(xlog)));
+    }
+
+    /**
+     * Test {@link LogImporterCSVImpl} against an valid CSV log <code>test1-valid.csv</code>
+     * when upload limiting is in effect.
+     */
+    @Test
+    public void testImportLog_maxEventCount() throws Exception {
+
+        // Test file data
+        String testFile = "/test1-valid.csv";
+
+        LogMetaData logMetaData = metaDataService.extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+        List<List<String>> sampleLog = metaDataService.generateSampleLog(this.getClass().getResourceAsStream(testFile), 100, "UTF-8");
+        logMetaData = metaDataUtilities.processMetaData(logMetaData, sampleLog);
+
+        // Log size below the limit
+        logImporter.config.setMaxEventCount(4L);
+        LogModel logModel = logImporter.importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true, null, null, null);
+
+        assertNotNull(logModel);
+        assertEquals(3, logModel.getRowsCount());
+        assertEquals(0, logModel.getLogErrorReport().size());
+        assertEquals(false, logModel.isRowLimitExceeded());
+
+        // Log size exactly equal to the limit
+        logImporter.config.setMaxEventCount(3L);
+        logModel = logImporter.importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true, null, null, null);
+
+        assertNotNull(logModel);
+        assertEquals(3, logModel.getRowsCount());
+        assertEquals(0, logModel.getLogErrorReport().size());
+        assertEquals(false, logModel.isRowLimitExceeded());
+
+        // Log size exceeding the limit
+        logImporter.config.setMaxEventCount(2L);
+        logModel = logImporter.importLog(this.getClass().getResourceAsStream(testFile), logMetaData, "UTF-8", true, null, null, null);
+
+        assertNotNull(logModel);
+        assertEquals(2, logModel.getRowsCount());
+        assertEquals(0, logModel.getLogErrorReport().size());
+        assertEquals(true, logModel.isRowLimitExceeded());
     }
 
     /**

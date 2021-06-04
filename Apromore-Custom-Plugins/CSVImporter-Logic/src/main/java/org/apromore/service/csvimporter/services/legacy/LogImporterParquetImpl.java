@@ -58,7 +58,7 @@ import static org.apromore.service.csvimporter.utilities.ParquetUtilities.getHea
 public class LogImporterParquetImpl implements LogImporter, Constants {
 
     @Inject EventLogImporter eventLogImporter;
-    @Inject private ConfigBean config;
+    @Inject ConfigBean config;
     private List<LogErrorReport> logErrorReport;
     private LogProcessor logProcessor;
     private ParquetReader<Group> reader;
@@ -111,7 +111,14 @@ public class LogImporterParquetImpl implements LogImporter, Constants {
             Log log = null;
 
             Group g;
-            while ((g = reader.read()) != null && isValidLineCount(lineIndex)) {
+            while ((g = reader.read()) != null) {
+
+                // row in excess of the allowed limit
+                if (!isValidLineCount(lineIndex + 1)) {
+                    rowLimitExceeded = true;
+                    break;
+                }
+
                 try {
                     line = readGroup(g, tempFileSchema);
                 } catch (Exception e) {
@@ -177,9 +184,6 @@ public class LogImporterParquetImpl implements LogImporter, Constants {
                     }
                 }
             );
-
-            if (!isValidLineCount(lineIndex))
-                rowLimitExceeded = true;
 
             //Import XES
             if (xLog != null &&

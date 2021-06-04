@@ -17,6 +17,12 @@
       zAu.send(new zk.Event(zk.Widget.$('$breadCrumbs'), 'onReloadBreadcrumbs', {}));
       setTimeout(function() {
         Ap.portal.updateBreadcrumbs();
+        try {
+            // prevent autocompletion on the search
+            jq('$previoussearchescombobox input').attr('autocomplete', 'new-password')
+        } catch(e) {
+            // pass
+        }
       }, 500);
     }, 500);
   });
