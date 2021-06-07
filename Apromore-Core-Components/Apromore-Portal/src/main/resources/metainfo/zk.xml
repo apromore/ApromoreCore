@@ -430,6 +430,10 @@
             </error-reload>
     </client-config>
 
+    <error-page>
+        <exception-type>java.lang.Throwable</exception-type>
+        <location>/pages/401.zul</location>
+    </error-page>
 
     <!-- Uncomment the following to customize the client-polling-based
             server push.
