@@ -108,8 +108,8 @@ public class AnimationJSONBuilder2 {
         json.put("play", animationLog.getTraces().size());
         json.put("startDateLabel", animationLog.getStartDate().toString());
         json.put("endDateLabel", animationLog.getEndDate().toString());
-        json.put("startLogDateLabel", animationLog.getStartDate().plus(params.getStartEventToFirstEventDuration()*1000));
-        json.put("endLogDateLabel", animationLog.getEndDate().minus(params.getLastEventToEndEventDuration()*1000));
+        json.put("startLogDateLabel", animationLog.getStartDate().plus(((long)params.getStartEventToFirstEventDuration())*1000));
+        json.put("endLogDateLabel", animationLog.getEndDate().minus(((long)params.getLastEventToEndEventDuration())*1000));
         json.put("unplayTraces", animationLog.getUnplayTracesString());
         json.put("reliable", animationLog.getReliableTraceCount());
         json.put("unreliableTraces", animationLog.getUnReliableTraceIDs());
@@ -123,8 +123,8 @@ public class AnimationJSONBuilder2 {
         
         json.put("startDateLabel", totalRealInterval.getStart().toString());
         json.put("endDateLabel", totalRealInterval.getEnd().toString());
-        json.put("startLogDateLabel", totalRealInterval.getStart().plus(params.getStartEventToFirstEventDuration()*1000));
-        json.put("endLogDateLabel", totalRealInterval.getEnd().minus(params.getLastEventToEndEventDuration()*1000));
+        json.put("startLogDateLabel", totalRealInterval.getStart().plus(((long)params.getStartEventToFirstEventDuration())*1000));
+        json.put("endLogDateLabel", totalRealInterval.getEnd().minus(((long)params.getLastEventToEndEventDuration())*1000));
         json.put("timelineSlots", params.getTimelineSlots());
         json.put("totalEngineSeconds", params.getTotalEngineSeconds());
         json.put("timezone", ZoneId.systemDefault().toString());
