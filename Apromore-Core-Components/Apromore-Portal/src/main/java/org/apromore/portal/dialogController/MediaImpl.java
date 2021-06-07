@@ -45,7 +45,7 @@ import org.zkoss.util.media.Media;
 /**
  * A ZK {@link Media} implementation.
  */
-class MediaImpl implements Media {
+public class MediaImpl implements Media {
 
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(MediaImpl.class);
 

@@ -406,10 +406,10 @@ public class ImportController extends BaseController {
             ZipInputStream in = new ZipInputStream(zippedMedia.getStreamData());
             ZipEntry entry;
             while ((entry = in.getNextEntry()) != null) {
-                try { 
-		    importFile(new MediaImpl(entry.getName(), zippedMedia.getStreamData(), StandardCharsets.UTF_8,
-			    ItemNameUtils.findExtension(zippedMedia.getName())));
-		    break;
+                try {
+                    importFile(new MediaImpl(entry.getName(), zippedMedia.getStreamData(), StandardCharsets.UTF_8,
+                            ItemNameUtils.findExtension(zippedMedia.getName())));
+                    break;
 
                 } catch (ExceptionAllUsers | ExceptionDomains e) {
                     note.show("Zip component couldn't be loaded: " + e);
@@ -422,9 +422,9 @@ public class ImportController extends BaseController {
     }
 
     private void importGzip(Media gzippedMedia) throws ExceptionAllUsers, ExceptionDomains, IOException, InterruptedException, JAXBException {
-	importFile(new MediaImpl(ItemNameUtils.findBasename(gzippedMedia.getName()),
-		gzippedMedia.getStreamData(), Charset.forName("UTF-8"),
-		ItemNameUtils.findExtension(gzippedMedia.getName())));
+        importFile(new MediaImpl(ItemNameUtils.findBasename(gzippedMedia.getName()),
+                gzippedMedia.getStreamData(), Charset.forName("UTF-8"),
+                ItemNameUtils.findExtension(gzippedMedia.getName())));
     }
 
     private void importProcess(MainController mainC, ImportController importC, InputStream xml_is, String processName, String nativeType, String filename) throws SuspendNotAllowedException, InterruptedException, JAXBException, IOException, ExceptionDomains, ExceptionAllUsers {
