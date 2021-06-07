@@ -72,6 +72,18 @@ public class TestDataSetup {
                             this.readBPNDiagram_OneTraceAndCompleteEvents_NoGateways());
     }
     
+    public AnimationResult animate_OneTraceOneEvent_OneTaskGraph() throws Exception {
+        return this.replay(this.readLog_OneTraceOneEvent(),
+                            this.readBPNDiagram_OneTask(),
+                            this.readBPNDiagram_OneTask());
+    }
+    
+    public AnimationResult animate_TwoTracesOneEvent_OneTaskGraph() throws Exception {
+        return this.replay(this.readLog_TwoTracesOneEvent(),
+                            this.readBPNDiagram_OneTask(),
+                            this.readBPNDiagram_OneTask());
+    }
+    
     public AnimationResult animate_OneLog_With_BPMNDiagram() throws Exception {
         return this.replay(Arrays.asList(this.readLog_ab(), this.readLog_ac()), this.readBPNDiagram_abc());
     }
@@ -123,6 +135,14 @@ public class TestDataSetup {
         return logAnimationService.createAnimation(diagram, serviceLogs);
     }
     
+    private XLog readLog_OneTraceOneEvent() throws Exception {
+        return this.readXESFile("src/test/logs/L1_1trace_1event.xes");
+    }
+    
+    private XLog readLog_TwoTracesOneEvent() throws Exception {
+        return this.readXESFile("src/test/logs/L1_2trace_1event.xes");
+    }
+    
     private XLog readLog_OneTraceAndCompleteEvents() throws Exception {
         return this.readXESFile("src/test/logs/L1_1trace_complete_events_only.xes");
     }
@@ -137,6 +157,10 @@ public class TestDataSetup {
     
     private XLog readLog_ac() throws Exception {
         return this.readXESFile("src/test/logs/ac.xes");
+    }
+    
+    private BPMNDiagram readBPNDiagram_OneTask() throws Exception {
+        return this.readBPMNDiagram("src/test/logs/L1_1task.bpmn");
     }
     
     private BPMNDiagram readBPNDiagram_OneTraceAndCompleteEvents_WithGateways() throws Exception {

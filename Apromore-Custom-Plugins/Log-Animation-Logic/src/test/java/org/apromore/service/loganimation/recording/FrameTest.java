@@ -36,7 +36,7 @@ public class FrameTest extends TestDataSetup {
         AnimationContext animationContext = new AnimationContext(result.getAnimationLogs(), 60, 600);
         ModelMapping modelMapping = new OldBpmnModelMapping(result.getModel());
         AnimationIndex animationIndex = new AnimationIndex(result.getAnimationLogs().get(0), modelMapping, animationContext);
-        return FrameRecorder.record(result.getAnimationLogs(), Arrays.asList(animationIndex), animationContext);
+        return FrameRecorder.record(Arrays.asList(animationIndex), animationContext);
     }
     
     protected Movie createAnimationMovie_TwoTraceAndCompleteEvents_Graph() throws Exception {
@@ -44,15 +44,14 @@ public class FrameTest extends TestDataSetup {
         AnimationContext animationContext = new AnimationContext(result.getAnimationLogs(), 60, 600);
         ModelMapping modelMapping = new OldBpmnModelMapping(result.getModel());
         AnimationIndex animationIndex = new AnimationIndex(result.getAnimationLogs().get(0), modelMapping, animationContext);
-        return FrameRecorder.record(result.getAnimationLogs(), Arrays.asList(animationIndex), animationContext);
+        return FrameRecorder.record(Arrays.asList(animationIndex), animationContext);
     }
     
     protected Movie createAnimationMovie_TwoLogs() throws Exception {
         AnimationResult result = this.animate_TwoLogs_With_BPMNDiagram();
         AnimationContext animationContext = new AnimationContext(result.getAnimationLogs(), 60, 600);
         ModelMapping modelMapping = new OldBpmnModelMapping(result.getModel());
-        return FrameRecorder.record(result.getAnimationLogs(),
-                                    createAnimationIndexes(result.getAnimationLogs(), modelMapping, animationContext),
+        return FrameRecorder.record(createAnimationIndexes(result.getAnimationLogs(), modelMapping, animationContext),
                                     animationContext);
     }
     
@@ -64,25 +63,25 @@ public class FrameTest extends TestDataSetup {
         Assert.assertEquals(0, frame0.getIndex());
         Assert.assertArrayEquals(new int[] {0}, frame0.getCaseIndexes(0));
         Assert.assertArrayEquals(new int[] {13}, frame0.getElementIndexes(0));
-        Assert.assertArrayEquals(new int[] {0}, frame0.getTokenIndexes(0));
-        Assert.assertArrayEquals(new int[] {}, frame0.getTokenIndexesByElement(0,0));
-        Assert.assertArrayEquals(new int[] {0}, frame0.getTokenIndexesByElement(0, 13));
+        Assert.assertArrayEquals(new int[] {0}, frame0.getOriginalTokens(0));
+        Assert.assertArrayEquals(new int[] {}, frame0.getOriginalTokensByElement(0,0));
+        Assert.assertArrayEquals(new int[] {0}, frame0.getOriginalTokensByElement(0, 13));
         
         Frame frame299 = animationMovie.get(299);
         Assert.assertEquals(299, frame299.getIndex());
         Assert.assertArrayEquals(new int[] {0}, frame299.getCaseIndexes(0));
         Assert.assertArrayEquals(new int[] {13}, frame299.getElementIndexes(0));
-        Assert.assertArrayEquals(new int[] {0}, frame299.getTokenIndexes(0));
-        Assert.assertArrayEquals(new int[] {}, frame299.getTokenIndexesByElement(0,0));
-        Assert.assertArrayEquals(new int[] {0}, frame299.getTokenIndexesByElement(0,13));
+        Assert.assertArrayEquals(new int[] {0}, frame299.getOriginalTokens(0));
+        Assert.assertArrayEquals(new int[] {}, frame299.getOriginalTokensByElement(0,0));
+        Assert.assertArrayEquals(new int[] {0}, frame299.getOriginalTokensByElement(0,13));
        
         Frame frame35999 = animationMovie.get(35999);
         Assert.assertEquals(35999, frame35999.getIndex());
         Assert.assertArrayEquals(new int[] {0}, frame35999.getCaseIndexes(0));
         Assert.assertArrayEquals(new int[] {11}, frame35999.getElementIndexes(0));
-        Assert.assertArrayEquals(new int[] {3}, frame35999.getTokenIndexes(0));
-        Assert.assertArrayEquals(new int[] {}, frame35999.getTokenIndexesByElement(0,0));
-        Assert.assertArrayEquals(new int[] {3}, frame35999.getTokenIndexesByElement(0,11));
+        Assert.assertArrayEquals(new int[] {3}, frame35999.getOriginalTokens(0));
+        Assert.assertArrayEquals(new int[] {}, frame35999.getOriginalTokensByElement(0,0));
+        Assert.assertArrayEquals(new int[] {3}, frame35999.getOriginalTokensByElement(0,11));
     }
     
     @Test
@@ -113,20 +112,20 @@ public class FrameTest extends TestDataSetup {
         // This frame only has one token for the 2nd log
         Frame firstFrame = animationMovie.get(0);
         Assert.assertEquals(0, firstFrame.getIndex());
-        Assert.assertEquals(true, firstFrame.getTokenIndexes(0).length > 0);
-        Assert.assertEquals(true, firstFrame.getTokenIndexes(1).length == 0); // no token for the 2nd log in this frame
+        Assert.assertEquals(true, firstFrame.getOriginalTokens(0).length > 0);
+        Assert.assertEquals(true, firstFrame.getOriginalTokens(1).length == 0); // no token for the 2nd log in this frame
         
         // This frame has one token for both logs
         Frame frameTwoTokens = animationMovie.get(19036);
         Assert.assertEquals(19036, frameTwoTokens.getIndex());
-        Assert.assertEquals(true, frameTwoTokens.getTokenIndexes(0).length > 0);
-        Assert.assertEquals(true, frameTwoTokens.getTokenIndexes(1).length > 0);
+        Assert.assertEquals(true, frameTwoTokens.getOriginalTokens(0).length > 0);
+        Assert.assertEquals(true, frameTwoTokens.getOriginalTokens(1).length > 0);
        
         // This frame only has one token for the 1st log
         Frame lastFrame = animationMovie.get(35999);
         Assert.assertEquals(35999, lastFrame.getIndex());
-        Assert.assertEquals(true, lastFrame.getTokenIndexes(1).length > 0);
-        Assert.assertEquals(true, lastFrame.getTokenIndexes(0).length == 0); // no token for the 1st log in this frame
+        Assert.assertEquals(true, lastFrame.getOriginalTokens(1).length > 0);
+        Assert.assertEquals(true, lastFrame.getOriginalTokens(0).length == 0); // no token for the 1st log in this frame
     }
     
     @Test

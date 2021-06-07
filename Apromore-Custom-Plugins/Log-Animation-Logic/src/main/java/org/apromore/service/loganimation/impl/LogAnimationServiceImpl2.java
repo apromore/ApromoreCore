@@ -375,6 +375,8 @@ public class LogAnimationServiceImpl2 extends DefaultParameterAwarePlugin implem
         else if (avgTransitionRatio <= LOWER_BOUND) {
             artificialTransitionDur = timelineDur*LOWER_BOUND/1000;
         }
+        
+        if (artificialTransitionDur == 0) artificialTransitionDur = 10;
 
         return artificialTransitionDur;
     }
