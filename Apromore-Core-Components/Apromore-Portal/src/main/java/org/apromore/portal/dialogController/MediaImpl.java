@@ -140,7 +140,7 @@ public class MediaImpl implements Media {
 		stream.getNextEntry();
 		return stream;
 
-	    case "gzip":
+	    case "gzip": case "gz":
 		return new GZIPInputStream(new FileInputStream(tempFile));
 
 	    default:
