@@ -290,10 +290,6 @@
 
         <!-- Commons Libraries -->
         <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>com.springsource.org.apache.httpcomponents.httpclient</artifactId>
-        </dependency>
-        <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
         </dependency>

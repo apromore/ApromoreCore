@@ -88,12 +88,6 @@
             <artifactId>org.springframework.context.support</artifactId>
         </dependency>
 
-        <!-- HTTP Commons, used in the spring config. -->
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>com.springsource.org.apache.httpcomponents.httpclient</artifactId>
-        </dependency>
-
         <!-- Testing -->
         <dependency>
             <groupId>junit</groupId>
