@@ -66,6 +66,7 @@ subprojects {
 		implementation "org.json:json:20201115"
 		implementation 'org.apache.servicemix.bundles:org.apache.servicemix.bundles.joda-time:2.3_1'
 		implementation 'org.eclipse.collections:eclipse-collections:10.4.0'
+		implementation 'org.springframework.boot:spring-boot-starter-jersey'
 
 		implementation 'org.codehaus.groovy:groovy-all:2.0.5'
 

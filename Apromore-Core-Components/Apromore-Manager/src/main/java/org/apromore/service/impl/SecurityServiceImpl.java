@@ -50,6 +50,7 @@ import org.apromore.exception.UserNotFoundException;
 import org.apromore.security.util.SecurityUtil;
 import org.apromore.service.SecurityService;
 import org.apromore.service.WorkspaceService;
+import org.hibernate.Hibernate;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
@@ -129,7 +130,14 @@ public class SecurityServiceImpl implements SecurityService {
      */
     @Override
     public User getUserByName(String username) {
-        return userRepo.findByUsername(username);
+        User user = userRepo.findByUsername(username);
+        Hibernate.initialize(user.getRoles());
+        for (Role role:user.getRoles()) {
+            Hibernate.initialize(role.getPermissions());
+        }
+        Hibernate.initialize(user.getMembership());
+        Hibernate.initialize(user.getSearchHistories());
+        return user;
     }
 
     /**

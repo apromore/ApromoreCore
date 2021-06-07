@@ -6,6 +6,7 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -44,7 +45,8 @@ public class PortalSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/login").permitAll()
 				.antMatchers("/zkau/web/login.zul").permitAll()
 				.antMatchers("/zkau/web/denied.zul").permitAll()
-				.antMatchers("/zkau/web/index.zul*").authenticated()				
+				.antMatchers("/zkau/web/index.zul*").authenticated()
+				.antMatchers("/zkau/web/index.zul*").authenticated()
 				.antMatchers("/zkau/**").permitAll()
 				.antMatchers("/zkau").permitAll()
 				.and()
@@ -56,6 +58,11 @@ public class PortalSecurityConfig extends WebSecurityConfigurerAdapter {
 				.logout().deleteCookies("JSESSIONID","portalContext").deleteCookies("Apromore","pluginSessionId")
 				.logoutSuccessUrl("/zkau/web/login.zul");
 
+	}
+
+	@Bean
+	public AuthenticationManager authenticationManagerBean() throws Exception {
+		return super.authenticationManagerBean();
 	}
 
 }
