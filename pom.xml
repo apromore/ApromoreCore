@@ -138,7 +138,6 @@
         <apromore-storage.version>1.0</apromore-storage.version>
 
         <gemini.blueprint.version>1.0.2.RELEASE</gemini.blueprint.version>
-        <httpcomponents.version>4.2.1</httpcomponents.version>
         <osgi.version>7.0.0</osgi.version>
         <pax.runner.version>1.7.6</pax.runner.version>
 
@@ -164,7 +163,6 @@
         <commons.lang3.version>3.11</commons.lang3.version>
         <commons.io.version>2.7</commons.io.version>
         <commons.codec.version>1.14</commons.codec.version>
-        <commons.httpclient.version>4.2.1</commons.httpclient.version>
         <eclipse.collections.version>9.2.0</eclipse.collections.version>
         <servlet-api.version>3.0.1</servlet-api.version>
         <slf4j.version>1.7.5</slf4j.version>
@@ -824,17 +822,6 @@
                 <groupId>commons-fileupload</groupId>
                 <artifactId>commons-fileupload</artifactId>
                 <version>${commons.fileupload.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>com.springsource.org.apache.httpcomponents.httpclient</artifactId>
-                <version>${commons.httpclient.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.apache.commons</groupId>
-                        <artifactId>com.springsource.org.apache.commons.logging</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>net.sourceforge.cglib</groupId>
