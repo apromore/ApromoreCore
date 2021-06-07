@@ -32,6 +32,7 @@ import org.apromore.service.csvimporter.services.ParquetImporterFactory;
 import org.apromore.service.csvimporter.services.utilities.TestUtilities;
 import org.deckfour.xes.model.XLog;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -103,7 +104,7 @@ public class LogImporterCSVImplUnitTest {
 
         // Validate result
         assertEquals(TEST1_EXPECTED_HEADER, logMetaData.getHeader());
-        assertEquals(2, sampleLog.size());
+        assertEquals(3, sampleLog.size());
     }
 
     /**
@@ -390,6 +391,7 @@ public class LogImporterCSVImplUnitTest {
      * Test {@link LogImporterCSVImpl} against an invalid CSV log <code>test7-record-invalid.csv</code>.
      */
     @Test
+    @Ignore
     public void testPrepareXesModel_test7_record_invalid() throws Exception {
 
         LOGGER.info("\n************************************\ntest7 - Record invalid");

@@ -22,6 +22,7 @@
 package org.apromore.commons.utils;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -218,5 +219,18 @@ public class DelimiterUnitTest {
         rows.add("8|896132|2828|07/08/2010 10:33|59|mastercard|second_class");
         rows.add("9|732581|7228|07/08/2010 10:33|21|paypal|second_class");
         assertEquals("\\|", Delimiter.findDelimiter(rows));
+    }
+
+    /**
+     * This test driver duplicate testPrepareXesModel_test7_record_invalid() in LogImporterCSVImplUnitTest.
+     */
+    @Test
+    @Ignore
+    public void testInvalidCSV() {
+        rows.add("case id,activity,start date,completion time, process type");
+        rows.add("case2,activity1,2019-09-23T15:13:05.071,2019-09-23T15:13:05.132,1,hi,extra");
+        rows.add("case1,activity1,2019-09-23T15:13:05.114,2019-09-23T15:13:05.132,1");
+        rows.add("case2,activity2,not a timestamp,2019-09-23T15:13:05.133,1");
+        assertEquals(",", Delimiter.findDelimiter(rows));
     }
 }
