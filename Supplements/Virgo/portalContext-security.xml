@@ -122,7 +122,7 @@
 
     <beans:bean id="loginKeycloakFilter" class="org.apromore.portal.security.LoginRedirectKeycloakFilter">
         <beans:property name="keycloakLoginFormUrl"
-                        value="http://${site.securitymshost}:${site.securitymsport}/sso/initiateLogin?fullReturnPath=&lt;full_return_path&gt;" />
+                        value="https://${site.securitymshost}:${site.securitymsport}/sso/initiateLogin?fullReturnPath=&lt;full_return_path&gt;" />
         <beans:property name="fullProtocolHostPortUrl" value="${site.fullProtocolHostPortUrl}"/>
         <beans:property name="useKeycloakSso" value="${site.useKeycloakSso}"/>
     </beans:bean>
@@ -151,7 +151,7 @@
         <beans:property name="loginFormUrl"
                         value="/login.zul" />
         <beans:property name="keycloakLoginFormUrl"
-                        value="http://${site.securitymshost}:${site.securitymsport}/sso/initiateLogin?fullReturnPath=&lt;full_return_path&gt;" />
+                        value="https://${site.securitymshost}:${site.securitymsport}/sso/initiateLogin?fullReturnPath=&lt;full_return_path&gt;" />
         <beans:property name="fullProtocolHostPortUrl" value="${site.fullProtocolHostPortUrl}" />
         <beans:property name="useKeycloakSso" value="${site.useKeycloakSso}" />
     </beans:bean>

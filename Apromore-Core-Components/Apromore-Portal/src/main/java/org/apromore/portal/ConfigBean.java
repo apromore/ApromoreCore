@@ -154,7 +154,7 @@ public class ConfigBean implements Serializable {
         this.securityMsHost = securityMsHost;
         this.securityMsPort = securityMsPort;
 
-        this.securityMsHttpLogoutUrl = "http://" + securityMsHost + ":" + securityMsPort + "/logout/";
+        this.securityMsHttpLogoutUrl = "https://" + securityMsHost + ":" + securityMsPort + "/logout/";
         this.securityMsHttpsLogoutUrl = "https://" + securityMsHost + ":8443" + "/logout/";
     }
 
