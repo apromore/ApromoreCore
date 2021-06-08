@@ -36,7 +36,6 @@
     <client-config>
             <debug-js>true</debug-js>
     </client-config>
-
     <library-property>
         <name>org.zkoss.theme.preferred</name>
         <value>chiaroscuro_c</value>  <!-- atlantic, breeze, iceblue, iceblue_c, sapphire, silvertail, chiaroscuro_c -->
