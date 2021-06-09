@@ -144,7 +144,7 @@ public class ApromoreZKListener implements ExecutionInit, WebAppInit {
     public void init(final WebApp webApp) {
         LOGGER.trace("Initialize web app {}", webApp);
         try {
-            Map<String, Object> siteConfiguration = getSiteConfiguration(webApp.getServletContext());
+            Map<String, Object> siteConfiguration = OSGi.getConfiguration("site", webApp.getServletContext());
             LOGGER.trace("Site configuration {}", siteConfiguration);
 
             // Allow override of the "HttpOnly" cookie flag
@@ -164,44 +164,6 @@ public class ApromoreZKListener implements ExecutionInit, WebAppInit {
         } catch (Exception e) {
             LOGGER.error("Failed to initialize web app", e);
         }
-    }
-
-    /**
-     * Access the application configuration.
-     *
-     * This works during application initialization, before {@link SpringUtil} would be able to
-     * access {@link ConfigBean}.
-     *
-     * @return the contents of <code>site.cfg</code> as a mapping from property keys to values; all
-     *     values are actually {@link String}s because we're using a very early edition of OSGi.
-     * @throws IOException if the configuration can't be read
-     */
-    private Map<String, Object> getSiteConfiguration(final ServletContext servletContext) throws IOException {
-        BundleContext bundleContext = (BundleContext) servletContext.getAttribute("osgi-bundlecontext");
-        ServiceReference serviceReference = bundleContext.getServiceReference(ConfigurationAdmin.class);
-        ConfigurationAdmin configurationAdmin = (ConfigurationAdmin) bundleContext.getService(serviceReference);
-
-        return toMap(configurationAdmin.getConfiguration("site").getProperties());
-    }
-
-    /**
-     * Convert {@link Dictionary} to {@link Map}.
-     *
-     * @param dict  an arbitrary dictionary, or <code>null</code>
-     * @return an equivalent map, or <code>null</code> if <var>dict</var> was <code>null</code>
-     */
-    private <K, V> Map<K, V> toMap(final Dictionary<K, V> dict) {
-        if (dict == null) {
-            return null;
-        }
-
-        Map<K, V> map = new HashMap<>();
-        for (Enumeration<K> e = dict.keys(); e.hasMoreElements();) {
-            K key = e.nextElement();
-            map.put(key, dict.get(key));
-        }
-
-        return map;
     }
 
     /**
