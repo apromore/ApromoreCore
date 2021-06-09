@@ -63,6 +63,13 @@ ldap:
 logging:
   level:
     root: INFO
+  file:
+    name: ${user_home}/.apromore/logs/apromore.log
+    max-size: 20MB
+    total-size-cap: 20GB
+    clean-history-on-start: true
+  pattern:
+    rolling-file-name: ${user_home}/.apromore/logs/apromore-%d{yyyy-MM-dd}.%i.log
 
 logs:
   dir: ${user_home}/.apromore/Event-Logs-Repository
