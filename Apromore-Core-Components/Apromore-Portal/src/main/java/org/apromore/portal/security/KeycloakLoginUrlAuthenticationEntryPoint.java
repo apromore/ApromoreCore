@@ -45,7 +45,8 @@ public class KeycloakLoginUrlAuthenticationEntryPoint extends LoginUrlAuthentica
     private static final String STATE_UUID_PLACEHOLDER = "<state_uuid>";
     private static final String FULL_RETURN_PATH_PLACEHOLDER = "<full_return_path>";
 
-    private String fullConfigurableReturnPath = "http://localhost:8181/";
+    private String fullConfigurableReturnPath = new String(
+            Base64.getEncoder().encode("http://localhost:8181/".getBytes()));
     private boolean utiliseKeycloakSso = false;
 
     private String keycloakLoginFormUrl;
