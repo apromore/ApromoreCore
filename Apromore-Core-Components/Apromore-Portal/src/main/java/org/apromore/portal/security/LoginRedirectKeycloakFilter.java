@@ -48,7 +48,9 @@ public class LoginRedirectKeycloakFilter extends GenericFilterBean {
 
     private static String keycloakLoginFormUrl;
 
-    private String s_fullConfigurableReturnPath = "http://localhost:8181/";
+    private String s_fullConfigurableReturnPath =
+            new String(
+                    Base64.getEncoder().encode("http://localhost:8181/".getBytes()));
     private boolean s_utiliseKeycloakSso = false;
 
     public void setFullProtocolHostPortUrl(final String fullProtocolHostPortUrl) {
