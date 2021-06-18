@@ -78,7 +78,7 @@
     <div hflex="1"
          align="center">
       <vlayout spacing="0">
-        <n:div class="ap-pd-logstats-header ap-link" title="Filter by Events">
+        <n:div class="ap-pd-logstats-header ap-link" title="Filter by Activity instances">
           <button id="btnEventHeading" sclass="ap-icon ap-icon-flag" ></button>
           <label id="lblEventHeading" sclass="title" value="Activity instances"/>
         </n:div>
