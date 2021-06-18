@@ -176,7 +176,7 @@
             <north height="34px" border="0" sclass="ap-header-region" >
                 <div height="34px" hflex="1">
                     <h:div class="ap-header">
-                        <h:a href="/"><h:div class="ap-header-logo"></h:div></h:a>
+                        <h:a href="/index.zul"><h:div class="ap-header-logo"></h:div></h:a>
                         <h:div class="ap-header-title">Portal</h:div>
                         <h:div class="ap-header-actions">
                             <h:a href="https://documentation.apromore.org/theapromoreportal/navigatingtheapromoreportal.html" target="_blank">
