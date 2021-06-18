@@ -20,7 +20,7 @@
   #L%
   -->
 <h:div id="ap-pd-header" class="ap-header" xmlns:h="http://www.w3.org/1999/xhtml">
-    <h:a href="/">
+    <h:a href="/index.zul">
       <h:div class="ap-header-logo"></h:div>
     </h:a>
     <h:div class="ap-header-title">Process Discoverer</h:div>
