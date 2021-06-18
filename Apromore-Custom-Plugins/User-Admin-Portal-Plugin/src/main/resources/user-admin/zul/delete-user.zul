@@ -75,9 +75,7 @@
                         <span sclass="ap-usrmgt-delete-option">Transfer ownership</span>
                     </div>
                     <div sclass="ap-usrmgt-delete-option-detail">
-                        <span>Transfer ownership from </span>
-                        <label id="transferFromLabel" class="ap-transfer-from"></label>
-                        <span> to</span>
+                        <span>Transfer ownership to</span>
                         <combobox id="transferToCombobox" placeholder="Select a user">
                             <template name="model">
                                 <comboitem label="${each.username}"/>
