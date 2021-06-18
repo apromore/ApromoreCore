@@ -44,6 +44,7 @@
                         <Export-Package>
                             org.apromore.service.csvimporter.model,
                             org.apromore.service.csvimporter.services.*,
+                            org.apromore.service.csvimporter.exception,
                             org.apromore.service.csvimporter.utilities
                         </Export-Package>
                     </instructions>
