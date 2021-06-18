@@ -1155,7 +1155,12 @@ div.ap-pd-drawer-splitter:hover {
     border-radius: 0 !important;
 }
 
-#ap-pd-search-graph > * {
+.ap-pd-search-graph-c {
+    display: flex;
+    flex-direction: row;
+}
+
+.ap-pd-search-graph-c > * {
     display: inline-block;
     height: 20px;
     vertical-align: middle;
@@ -1164,10 +1169,10 @@ div.ap-pd-drawer-splitter:hover {
     box-sizing: border-box;
 }
 
-.ap-pd-toolbar-right[data-disabled='on'] #ap-pd-search-graph > *:first-child,
-.ap-pd-toolbar-right[data-disabled='on'] #ap-pd-search-graph > *:last-child {
-     background: var(--color-grey-lighter) !important;
- }
+.ap-pd-search-graph-c[data-disabled='on'] > *:first-child,
+.ap-pd-search-graph-c[data-disabled='on'] > *:last-child {
+    background: var(--color-grey-lighter) !important;
+}
 
 #ap-pd-search-graph i {
     line-height: 20px;
@@ -1176,16 +1181,16 @@ div.ap-pd-drawer-splitter:hover {
     color: grey;
 }
 
-#ap-pd-search-graph > *:first-child {
+.ap-pd-search-graph-c > *:first-child {
     border-radius: 3px 0 0 3px;
 }
 
-#ap-pd-search-graph > *:last-child {
+.ap-pd-search-graph-c > *:last-child {
     border-radius: 0 3px 3px 0;
     cursor: pointer;
 }
 
-#ap-pd-search-graph i:last-child {
+.ap-pd-search-graph-c i:last-child {
     visibility: hidden;
 }
 
