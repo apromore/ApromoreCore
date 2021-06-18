@@ -22,46 +22,55 @@
 
 package org.apromore.portal.common;
 
-import org.junit.Test;
+import java.util.regex.Pattern;
 import org.apromore.portal.common.notification.Notification;
+import org.junit.Test;
 
 /* Test suite for {@link Navigation}. */
 public class NotificationUnitTest {
 
-    final String CASE1 = "A string with \"double quotes\" in it";
-    final String CASE2 = "A string with 'single quotes' in it";
-    final String CASE3 = "A string with HTML <strong>snippets</strong> in it";
+  final String CASE1 = "A string with \"double quotes\" in it";
+  final String CASE2 = "A string with 'single quotes' in it";
+  final String CASE3 = "A string with HTML <strong>snippets</strong> in it";
 
-    // Test cases.
+  // Test cases.
 
-    /**
-     * Test {@link Notification#sanitize} method.
-     */
-    @Test
-    public void testSanitize() throws Exception {
-        assertValidMessage(Notification.sanitize(CASE1));
-        assertValidMessage(Notification.sanitize(CASE2));
-        assertValidMessage(Notification.sanitize(CASE3));
-    }
+  @Test
+  public void test1() {
+    Pattern p = Pattern.compile("^/(zkau|zkau/.*|.*\\.css|.*\\.js)", Pattern.DOTALL);
 
-    // Internal methods
+    boolean isMathed = p.matcher("/zkau/web/_zv2018112010/js/zul.wnd.wpd").matches();
+    System.out.println(isMathed);
+  }
 
-    /**
-     * Assert if message is valid, all single quotes are properly escaped
-     *
-     * @param message
-     */
-    private void assertValidMessage(String message) throws Exception {
-        char ch, prevCh = ' ';
+  /**
+   * Test {@link Notification#sanitize} method.
+   */
+  @Test
+  public void testSanitize() throws Exception {
+    assertValidMessage(Notification.sanitize(CASE1));
+    assertValidMessage(Notification.sanitize(CASE2));
+    assertValidMessage(Notification.sanitize(CASE3));
+  }
 
-        for (int i = 0; i < message.length(); i++) {
-            ch = message.charAt(i);
-            if (ch == '\'') {
-                if (prevCh != '\\') {
-                    throw new Exception("Invalid message");
-                }
-            }
-            prevCh = ch;
+  // Internal methods
+
+  /**
+   * Assert if message is valid, all single quotes are properly escaped
+   *
+   * @param message
+   */
+  private void assertValidMessage(String message) throws Exception {
+    char ch, prevCh = ' ';
+
+    for (int i = 0; i < message.length(); i++) {
+      ch = message.charAt(i);
+      if (ch == '\'') {
+        if (prevCh != '\\') {
+          throw new Exception("Invalid message");
         }
+      }
+      prevCh = ch;
     }
+  }
 }

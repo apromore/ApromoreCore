@@ -1,0 +1,10 @@
+{
+  "realm": "apro",
+  "auth-server-url": "http://localhost:8080/auth/",
+  "ssl-required": "external",
+  "resource": "apromore",
+  "credentials": {
+    "secret": "ecc2b2e3-4d56-47a9-9a55-4790535518c5"
+  },
+  "confidential-port": 0
+}
