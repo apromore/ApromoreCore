@@ -25,6 +25,8 @@ import javax.servlet.Filter;
 import javax.servlet.ServletContext;
 import org.keycloak.adapters.servlet.KeycloakOIDCFilter;
 import org.springframework.beans.factory.FactoryBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.ServletContextAware;
@@ -34,6 +36,10 @@ public class FilterObjectFactory implements FactoryBean<Filter>, ServletContextA
 
   @Value("${site.useKeycloakSso}")
   private boolean useKeyCloak = true;
+
+  @Autowired
+  @Qualifier("springSecurityFilterChain")
+  Filter securityFilter;
 
   ServletContext context;
 
@@ -45,7 +51,7 @@ public class FilterObjectFactory implements FactoryBean<Filter>, ServletContextA
       kcFiler.init(null);
       return kcFiler;
     }
-    return new SkipFilter();
+    return securityFilter;
   }
 
   @Override

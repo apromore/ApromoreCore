@@ -25,9 +25,8 @@ import java.util.regex.Pattern;
 
 public class FilterRegexUtil {
 
-  static Pattern p =
-      Pattern.compile("^/(zkau|zkau/.*|.*\\.css|.*\\.js|.*\\.svg|.*\\.png|themes/.*|favicon\\.ico)",
-          Pattern.DOTALL);
+  static Pattern p = Pattern.compile("^/(zkau|zkau/.*|.*\\.css|.*\\.js"
+      + "|.*\\.svg|.*\\.png|themes/.*|favicon\\.ico" + "|.*/css/.*)", Pattern.DOTALL);
 
   public static boolean isMatchingFilterRegex(String urlData) {
     return p.matcher(urlData).matches();

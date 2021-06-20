@@ -60,7 +60,30 @@
     <http pattern="/robots.txt" security="none"/>
     <http pattern="/zkau/**" security="none"/>
 
-    
+    <http auto-config="false" access-denied-page="/denied.zul" use-expressions="true"
+          entry-point-ref="apromoreAuthenticationEntryPoint" authentication-manager-ref="authenticationManager">
+        <intercept-url pattern="/login.zul*" access="permitAll" requires-channel="any"/>
+        <intercept-url pattern="/tokenHandoff.zul*" access="permitAll" requires-channel="any"/>
+
+        <intercept-url pattern="/**" access="hasAnyRole('ROLE_USER', 'ROLE_ADMIN')" requires-channel="any"/>
+
+        <logout logout-url="/j_spring_security_logout" logout-success-url="/login.zul" delete-cookies="Apromore"/>
+
+        <custom-filter position="FORM_LOGIN_FILTER" ref="apromoreUsernamePasswordAuthenticationFilter"/>
+
+        <custom-filter before="FIRST" ref="loginKeycloakFilter" />
+
+        <!--
+        <custom-filter before="FIRST" ref="metadataGeneratorFilter"/>
+        <custom-filter after="BASIC_AUTH_FILTER" ref="samlFilter"/>
+        -->
+
+        <!-- <custom-filter before="BASIC_AUTH_FILTER" ref="ssoApprovedFilter"/> -->
+
+        <session-management session-fixation-protection="newSession"/>
+        <remember-me services-ref="rememberMeServices"/>
+    </http>
+
 
     <!-- The remote authentication details -->
     <authentication-manager id="authenticationManager">
@@ -101,7 +124,7 @@
         <beans:property name="keycloakLoginFormUrl"
                         value="https://${site.securitymshost}:${site.securitymsport}/sso/initiateLogin?fullReturnPath=&lt;full_return_path&gt;" />
         <beans:property name="fullProtocolHostPortUrl" value="${site.fullProtocolHostPortUrl}"/>
-        <beans:property name="useKeycloakSso" value="${site.useKeycloakSso}"/>
+        <beans:property name="useKeycloakSso" value="false"/>
     </beans:bean>
 
     <beans:bean id="remoteAuthenticationProvider" class="org.apromore.security.provider.ApromoreRemoteAuthenticationProvider">
@@ -130,7 +153,7 @@
         <beans:property name="keycloakLoginFormUrl"
                         value="https://${site.securitymshost}:${site.securitymsport}/sso/initiateLogin?fullReturnPath=&lt;full_return_path&gt;" />
         <beans:property name="fullProtocolHostPortUrl" value="${site.fullProtocolHostPortUrl}" />
-        <beans:property name="useKeycloakSso" value="${site.useKeycloakSso}" />
+        <beans:property name="useKeycloakSso" value="false" />
     </beans:bean>
 
     <beans:bean id="apromoreUsernamePasswordAuthenticationFilter" class="org.apromore.security.filter.ApromoreUsernamePasswordAuthenticationFilter">
