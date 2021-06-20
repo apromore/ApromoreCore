@@ -81,7 +81,7 @@
     <n:link rel="stylesheet" type="text/css" href='/themes/ap/editor/css/simulation.css'  />
 
     <n:div class="ap-header">
-        <n:a href="/"><n:div class="ap-header-logo"></n:div></n:a>
+        <n:a href="/index.zul"><n:div class="ap-header-logo"></n:div></n:a>
         <n:div class="ap-header-title">BPMN Editor</n:div>
         <n:div class="ap-header-actions">
             <n:a href="https://documentation.apromore.org/theapromoreportal/createoreditprocessmodel.html" target="_blank">

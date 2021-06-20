@@ -27,7 +27,8 @@ import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.RFC4180ParserBuilder;
 import com.opencsv.enums.CSVReaderNullFieldIndicator;
-import org.apromore.service.csvimporter.utilities.InvalidCSVException;
+import org.apromore.service.csvimporter.exception.EmptyHeaderException;
+import org.apromore.service.csvimporter.exception.UnsupportedSeparatorException;
 import org.zkoss.util.media.Media;
 import org.zkoss.zul.Messagebox;
 
@@ -38,39 +39,30 @@ import java.io.Reader;
 
 public class CSVFileReader {
 
-    CSVReader newCSVReader(Media media, String charset) {
-        try {
-            // Guess at ethe separator character
-            Reader reader = media.isBinary() ? new InputStreamReader(media.getStreamData(), charset) :
-                    media.getReaderData();
+    CSVReader newCSVReader(Media media, String charset) throws Exception {
+        // Guess at ethe separator character
+        Reader reader = media.isBinary() ? new InputStreamReader(media.getStreamData(), charset) :
+                media.getReaderData();
 
-            BufferedReader brReader = new BufferedReader(reader);
-            String firstLine = brReader.readLine();
-            brReader.close();
-            if (firstLine == null || firstLine.isEmpty()) {
-                throw new InvalidCSVException("Failed to read the log! header must have non-empty value!");
-            }
-
-            char separator = getMaxOccurringChar(firstLine);
-            if (!(new String(Constants.supportedSeparators).contains(String.valueOf(separator)))) {
-                throw new InvalidCSVException("Failed to read the log! Try different encoding");
-            }
-
-            // Create the CSV reader
-            reader = media.isBinary() ? new InputStreamReader(media.getStreamData(), charset) : media.getReaderData();
-            return (new CSVReaderBuilder(reader))
-                    .withSkipLines(0)
-                    .withCSVParser((new RFC4180ParserBuilder()).withSeparator(separator).build())
-                    .withFieldAsNull(CSVReaderNullFieldIndicator.BOTH)
-                    .build();
-
-        } catch (InvalidCSVException e) {
-            Messagebox.show(e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
-            return null;
-        } catch (IOException e) {
-            Messagebox.show("Unable to import file : " + e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
-            return null;
+        BufferedReader brReader = new BufferedReader(reader);
+        String firstLine = brReader.readLine();
+        brReader.close();
+        if (firstLine == null || firstLine.isEmpty()) {
+            throw new EmptyHeaderException();
         }
+
+        char separator = getMaxOccurringChar(firstLine);
+        if (!(new String(Constants.supportedSeparators).contains(String.valueOf(separator)))) {
+            throw new UnsupportedSeparatorException();
+        }
+
+        // Create the CSV reader
+        reader = media.isBinary() ? new InputStreamReader(media.getStreamData(), charset) : media.getReaderData();
+        return (new CSVReaderBuilder(reader))
+                .withSkipLines(0)
+                .withCSVParser((new RFC4180ParserBuilder()).withSeparator(separator).build())
+                .withFieldAsNull(CSVReaderNullFieldIndicator.BOTH)
+                .build();
     }
 
     private char getMaxOccurringChar(String str) {

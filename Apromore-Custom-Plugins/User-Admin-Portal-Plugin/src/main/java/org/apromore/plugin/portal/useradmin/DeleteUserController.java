@@ -94,9 +94,6 @@ public class DeleteUserController extends SelectorComposer<Window> {
     private ListModelList<Assignment> assignmentModel;
     private ListModelList<Item> ownedModel;
 
-    @Wire("#transferFromLabel")
-    Label transferFromLabel;
-
     @Wire("#deletedUserLabel")
     Label deletedUserLabel;
 
@@ -140,7 +137,6 @@ public class DeleteUserController extends SelectorComposer<Window> {
         container = win;
         transferToTextbox.setVisible(USE_STRICT_USER_ADDITION);
         transferToCombobox.setVisible(!USE_STRICT_USER_ADDITION);
-        transferFromLabel.setValue(selectedUserName);
         deletedUserLabel.setValue(selectedUserName);
         deletedUserLabelPurge.setValue(selectedUserName);
         loadTransferTo();

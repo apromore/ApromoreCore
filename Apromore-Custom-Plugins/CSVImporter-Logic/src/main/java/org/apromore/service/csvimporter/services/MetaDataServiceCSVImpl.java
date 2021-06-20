@@ -84,8 +84,6 @@ class MetaDataServiceCSVImpl implements MetaDataService {
             List<String> sampleRows = getSampleRows(brReader);
 
             String firstLine = sampleRows.get(0);
-            firstLine = firstLine.replaceAll("\"", "");
-
             String separator = Delimiter.findDelimiter(sampleRows);
 
             List<String> header = Splitter.on(separator).splitToList(firstLine);
@@ -107,7 +105,6 @@ class MetaDataServiceCSVImpl implements MetaDataService {
             List<String> sampleRows = getSampleRows(brReader);
 
             String firstLine = sampleRows.get(0);
-            firstLine = firstLine.replaceAll("\"", "");
 
             String separator = !Objects.equals(this.separator, "") ? this.separator :
 					Delimiter.findDelimiter(sampleRows);
@@ -127,7 +124,7 @@ class MetaDataServiceCSVImpl implements MetaDataService {
 
             // Add content lines to sample log to avoid resetting of stream
             for (int i = 1; i < SAMPLE_ROW_COUNT; i++) {
-                lines.add(Splitter.on(separator).splitToList(sampleRows.get(i)));
+                lines.add(Splitter.on(separator).splitToList(sampleRows.get(i).replaceAll("\"", "")));
             }
 
             while ((myLine = csvReader.readNext()) != null && lines.size() < sampleSize) {
@@ -150,7 +147,7 @@ class MetaDataServiceCSVImpl implements MetaDataService {
         for (int i = 0; i < SAMPLE_ROW_COUNT; i++) {
             String rowLine = brReader.readLine();
             if (!"".equals(rowLine)) {
-                rows.add(rowLine);
+                rows.add(rowLine.replaceAll("\"", ""));
             }
         }
 
