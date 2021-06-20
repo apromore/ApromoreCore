@@ -65,10 +65,11 @@ public class AuthDetailsFilter implements Filter {
     HttpServletRequest req = (HttpServletRequest) request;
     String requestPath = req.getRequestURI().substring(req.getContextPath().length());
     HttpSession existingSession = req.getSession(false);
+
     boolean isExistingSession = existingSession == null ? false
         : existingSession.getAttribute("USER") == null ? false : true;
 
-    if (!useKeyCloak || FilterRegexUtil.isMatchingFilterRegex(requestPath)) {
+    if (!useKeyCloak || FilterRegexUtil.isMatchingFilterRegex(requestPath) || isExistingSession) {
       chain.doFilter(request, response);
       return;
     }
@@ -80,11 +81,17 @@ public class AuthDetailsFilter implements Filter {
     AccessToken token = context.getToken();
 
     String userName = token.getPreferredUsername();
+    userName = userName == null ? token.getEmail() : userName;
     String email = token.getEmail();
     String givenName = token.getGivenName();
     String familyName = token.getFamilyName();
 
     UserType userType = managerService.readUserByUsername(userName);
+    try {
+      userType = userType == null ? managerService.readUserByEmail(email) : userType;
+    } catch (Exception e1) {
+      // ignoreing for now.
+    }
 
     if (Objects.isNull(userType)) {
       userType = new UserType(userName, email, givenName, familyName);

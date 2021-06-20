@@ -205,8 +205,9 @@ public class UserMenuController extends SelectorComposer<Menubar> {
             public void onEvent(Event event) {
               Session session = Sessions.getCurrent();
 
-              UserType userType = (UserType) Sessions.getCurrent().getAttribute("USER");
-              if (session == null || event.getData().equals(userType.getUsername())) {
+
+              if (session != null) {
+                session.invalidate();
                 Executions.sendRedirect("/j_spring_security_logout");
               }
             }

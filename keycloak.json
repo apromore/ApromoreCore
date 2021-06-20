@@ -1,10 +1,8 @@
 {
   "realm": "apro",
-  "auth-server-url": "http://localhost:8080/auth/",
+  "auth-server-url": "https://test2-kc.apromore.org:8443/auth/",
   "ssl-required": "external",
-  "resource": "apromore",
-  "credentials": {
-    "secret": "ecc2b2e3-4d56-47a9-9a55-4790535518c5"
-  },
+  "resource": "product-app",
+  "public-client": true,
   "confidential-port": 0
 }
