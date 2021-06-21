@@ -354,35 +354,4 @@ public class ImmutableTrace implements ATrace {
     }
 
 
-    @Override
-    public ATrace clone() {
-        UnifiedMap<String, String> attrClone = new UnifiedMap<>();
-        for (String key : attributes.keySet()) {
-            attrClone.put(key.intern(), attributes.get(key).intern());
-        }
-
-        ImmutableTrace traceClone = new ImmutableTrace(immutableIndex, mutableIndex, caseId, attrClone);
-
-
-        for (int i = 0; i < activities.size(); i++) {
-            AActivity originAct = activities.get(i);
-
-            traceClone.addActivity(originAct.clone(traceClone));
-        }
-
-        for (int i = 0; i < events.size(); i++) {
-            AEvent event = events.get(i);
-            int parentActIndex = event.getParentActivityIndex();
-            traceClone.addEvent(events.get(i).clone(traceClone, traceClone.getActivityList().get(parentActIndex)));
-        }
-
-        traceClone.setCaseVariantId(caseVariantId);
-        traceClone.setHasActivity(hasActivity);
-        traceClone.setWaitingTimes(new DoubleArrayList(waitingTimes.toArray()));
-        traceClone.setProcessingTimes(new DoubleArrayList(processingTimes.toArray()));
-        traceClone.setCaseId(caseId);
-
-        return traceClone;
-    }
-
 }

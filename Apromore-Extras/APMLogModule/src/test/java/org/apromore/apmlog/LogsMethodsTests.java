@@ -56,15 +56,6 @@ public class LogsMethodsTests {
             assertArrayEquals(expectedActIndexes[i], actNameIndexes.toArray());
         }
 
-        // Cloned version
-        ImmutableLog clone = (ImmutableLog) immutableLog.clone();
-
-        // Test ActivityNameIndexes of the cloned version
-        for (int i = 0; i < immutableLog.size(); i++) {
-            IntArrayList actNameIndexes = clone.getActivityNameIndexes(immutableLog.get(i));
-            assertArrayEquals(expectedActIndexes[i], actNameIndexes.toArray());
-        }
-
         // PLog
         APMLogFilter apmLogFilter = new APMLogFilter(apmLog);
         PLog pLog = apmLogFilter.getPLog();
@@ -86,9 +77,4 @@ public class LogsMethodsTests {
             assertArrayEquals(expectedActIndexes[i], actNameIndexes.toArray());
         }
     }
-
-
-
-
-
 }
