@@ -219,25 +219,13 @@ public class UserMenuController extends SelectorComposer<Menubar> {
                         final Object validJwtsObj =
                                 httpServletRequest.getServletContext().getAttribute(JWTS_MAP_BY_USER_KEY);
                         if (validJwtsObj != null) {
-                            final Map<String, List<String>> validJwtsMap = (Map<String, List<String>>) validJwtsObj;
+                            final Map<String, Long> usersToValidIssuedAtAtJwtMap = (Map<String, Long>) validJwtsObj;
 
-                            try {
-                                final String appAuthHeaderVal =
-                                        JwtHelper.readCookieValue(httpServletRequest, "App_Auth");
+                            usersToValidIssuedAtAtJwtMap.remove(username);
+                            LOGGER.info("usersToValidIssuedAtAtJwtMap is: {}", usersToValidIssuedAtAtJwtMap);
 
-                                final List<String> listOfCurrentValidJwtsForUser = validJwtsMap.get(username);
-
-                                listOfCurrentValidJwtsForUser.remove(appAuthHeaderVal);
-                                validJwtsMap.put(username, listOfCurrentValidJwtsForUser);
-                                LOGGER.info("listOfCurrentValidJwtsForUser is: {}", listOfCurrentValidJwtsForUser);
-
-                                LOGGER.info("validJwtsMap is: {}", validJwtsMap);
-
-                                httpServletRequest.getServletContext().setAttribute(
-                                        JWTS_MAP_BY_USER_KEY, validJwtsMap);
-                            } catch (final Exception e) {
-                                LOGGER.error("Exception in reading/updating valid JWTs {}", e.getMessage(), e);
-                            }
+                            httpServletRequest.getServletContext().setAttribute(
+                                    JWTS_MAP_BY_USER_KEY, usersToValidIssuedAtAtJwtMap);
                         }
                         // ############# ############# ############# ############# ############# #############
 

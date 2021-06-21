@@ -93,27 +93,21 @@ public class TokenHandoffController extends SelectorComposer<Window> {
                 final SecurityContext springSecurityContext = SecurityContextHolder.getContext();
                 LOGGER.debug("springSecurityContext {}", springSecurityContext);
 
-                // ####################### ####################### #######################
+                // ####################### ####################### ####################### #######################
+                final JWTClaimsSet jwtClaimsSet = JwtHelper.getClaimsSetFromJWT(appAuthCookieStr);
+                Map<String, Long> usersToValidIssuedAtAtJwtMap = new HashMap<>();
+
                 final Object validJwtsObj =
                         httpServletRequest.getServletContext().getAttribute(JWTS_MAP_BY_USER_KEY);
                 if (validJwtsObj != null) {
-                    final Map<String, List<String>> validJwtsMap = (Map<String, List<String>>)validJwtsObj;
-
-                    List<String> listOfCurrentValidJwtsForUser = validJwtsMap.get(username);
-
-                    if (listOfCurrentValidJwtsForUser == null) {
-                        listOfCurrentValidJwtsForUser = new ArrayList<>();
-                    }
-
-                    listOfCurrentValidJwtsForUser.add(appAuthCookieStr);
-                    LOGGER.info("listOfCurrentValidJwtsForUser is: {}", listOfCurrentValidJwtsForUser);
-
-                    validJwtsMap.put(username, listOfCurrentValidJwtsForUser);
-                    LOGGER.info("validJwtsMap is: {}", validJwtsMap);
-
-                    httpServletRequest.getServletContext().setAttribute(JWTS_MAP_BY_USER_KEY, validJwtsMap);
+                    usersToValidIssuedAtAtJwtMap = (Map<String, Long>)validJwtsObj;
                 }
-                // ####################### ####################### #######################
+
+                usersToValidIssuedAtAtJwtMap.put(username, jwtClaimsSet.getIssueTime().getTime());
+                LOGGER.info("usersToValidIssuedAtAtJwtMap is: {}", usersToValidIssuedAtAtJwtMap);
+
+                httpServletRequest.getServletContext().setAttribute(JWTS_MAP_BY_USER_KEY, usersToValidIssuedAtAtJwtMap);
+                // ####################### ####################### ####################### #######################
 
                 if (springSecurityContext != null) {
                     final Authentication springAuthObj = springSecurityContext.getAuthentication();
