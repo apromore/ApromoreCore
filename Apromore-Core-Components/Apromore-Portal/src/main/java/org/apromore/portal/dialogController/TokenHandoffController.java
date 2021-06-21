@@ -103,10 +103,19 @@ public class TokenHandoffController extends SelectorComposer<Window> {
                     usersToValidIssuedAtAtJwtMap = (Map<String, Long>)validJwtsObj;
                 }
 
-                usersToValidIssuedAtAtJwtMap.put(username, jwtClaimsSet.getIssueTime().getTime());
-                LOGGER.info("usersToValidIssuedAtAtJwtMap is: {}", usersToValidIssuedAtAtJwtMap);
+                final long issuedAtEpochSecs = jwtClaimsSet.getIssueTime().getTime();
+                final long epochTimeNowSecs = new Date().getTime();
 
-                httpServletRequest.getServletContext().setAttribute(JWTS_MAP_BY_USER_KEY, usersToValidIssuedAtAtJwtMap);
+                // Token handoff is invalid if issued greater than 15 seconds ago
+                if ((epochTimeNowSecs - issuedAtEpochSecs) > 15) {
+                    Executions.getCurrent().sendRedirect("/login.zul?error=2");
+                } else {
+                    usersToValidIssuedAtAtJwtMap.put(username, issuedAtEpochSecs);
+
+                    LOGGER.info("usersToValidIssuedAtAtJwtMap is: {}", usersToValidIssuedAtAtJwtMap);
+
+                    httpServletRequest.getServletContext().setAttribute(JWTS_MAP_BY_USER_KEY, usersToValidIssuedAtAtJwtMap);
+                }
                 // ####################### ####################### ####################### #######################
 
                 if (springSecurityContext != null) {
