@@ -229,6 +229,9 @@ public class UserMenuController extends SelectorComposer<Menubar> {
 
                                 listOfCurrentValidJwtsForUser.remove(appAuthHeaderVal);
                                 validJwtsMap.put(username, listOfCurrentValidJwtsForUser);
+                                LOGGER.info("listOfCurrentValidJwtsForUser is: {}", listOfCurrentValidJwtsForUser);
+
+                                LOGGER.info("validJwtsMap is: {}", validJwtsMap);
 
                                 httpServletRequest.getServletContext().setAttribute(
                                         JWTS_MAP_BY_USER_KEY, validJwtsMap);

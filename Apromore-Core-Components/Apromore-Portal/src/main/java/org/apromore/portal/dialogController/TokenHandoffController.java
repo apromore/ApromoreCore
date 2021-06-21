@@ -106,8 +106,10 @@ public class TokenHandoffController extends SelectorComposer<Window> {
                     }
 
                     listOfCurrentValidJwtsForUser.add(appAuthCookieStr);
+                    LOGGER.info("listOfCurrentValidJwtsForUser is: {}", listOfCurrentValidJwtsForUser);
 
                     validJwtsMap.put(username, listOfCurrentValidJwtsForUser);
+                    LOGGER.info("validJwtsMap is: {}", validJwtsMap);
 
                     httpServletRequest.getServletContext().setAttribute(JWTS_MAP_BY_USER_KEY, validJwtsMap);
                 }
