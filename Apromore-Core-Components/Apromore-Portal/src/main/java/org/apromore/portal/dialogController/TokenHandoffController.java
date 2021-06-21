@@ -21,6 +21,7 @@
  */
 package org.apromore.portal.dialogController;
 
+import com.nimbusds.jwt.JWTClaimsSet;
 import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
 import org.apromore.manager.client.ManagerService;
@@ -49,6 +50,8 @@ public class TokenHandoffController extends SelectorComposer<Window> {
 
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(TokenHandoffController.class);
 
+    public static final String JWTS_MAP_BY_USER_KEY = "VALID_JWTS_MAP_BY_USER";
+
     private ManagerService managerService;
     private SecurityService securityService;
 
@@ -76,6 +79,7 @@ public class TokenHandoffController extends SelectorComposer<Window> {
                     JwtHelper.isSignedStrVerifiable(appAuthCookieStr, base64DecodedSignedAppAuth);
             LOGGER.info(">>> jwtSignatureVerified {}", jwtSignatureVerified);
 
+            // [Next call returns null if the Jwt is expired]
             final UserType userType = JwtHelper.userFromJwt(managerService, appAuthCookieStr);
 
             if ((jwtSignatureVerified) && (userType != null)) {
@@ -83,10 +87,31 @@ public class TokenHandoffController extends SelectorComposer<Window> {
 
                 final UserType currentUserType = UserSessionManager.getCurrentUser();
                 LOGGER.debug("Current session logged-in currentUserType: " + currentUserType);
-                LOGGER.debug("Current session logged-in username: " + currentUserType.getUsername());
+                final String username = currentUserType.getUsername();
+                LOGGER.debug("Current session logged-in username: " + username);
 
                 final SecurityContext springSecurityContext = SecurityContextHolder.getContext();
                 LOGGER.debug("springSecurityContext {}", springSecurityContext);
+
+                // ####################### ####################### #######################
+                final Object validJwtsObj =
+                        httpServletRequest.getServletContext().getAttribute(JWTS_MAP_BY_USER_KEY);
+                if (validJwtsObj != null) {
+                    final Map<String, List<String>> validJwtsMap = (Map<String, List<String>>)validJwtsObj;
+
+                    List<String> listOfCurrentValidJwtsForUser = validJwtsMap.get(username);
+
+                    if (listOfCurrentValidJwtsForUser == null) {
+                        listOfCurrentValidJwtsForUser = new ArrayList<>();
+                    }
+
+                    listOfCurrentValidJwtsForUser.add(appAuthCookieStr);
+
+                    validJwtsMap.put(username, listOfCurrentValidJwtsForUser);
+
+                    httpServletRequest.getServletContext().setAttribute(JWTS_MAP_BY_USER_KEY, validJwtsMap);
+                }
+                // ####################### ####################### #######################
 
                 if (springSecurityContext != null) {
                     final Authentication springAuthObj = springSecurityContext.getAuthentication();

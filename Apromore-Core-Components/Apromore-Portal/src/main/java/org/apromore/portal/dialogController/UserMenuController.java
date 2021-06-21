@@ -28,11 +28,8 @@ package org.apromore.portal.dialogController;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Locale;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.*;
+
 import com.google.common.base.Strings;
 import org.apromore.manager.client.ManagerService;
 import org.apromore.plugin.portal.PortalContext;
@@ -43,6 +40,7 @@ import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.context.PortalPluginResolver;
 import org.apromore.portal.model.UserType;
+import org.apromore.portal.security.helper.JwtHelper;
 import org.apromore.portal.security.helper.SecuritySsoHelper;
 import org.apromore.portal.util.ExplicitComparator;
 import org.slf4j.Logger;
@@ -57,16 +55,19 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.select.SelectorComposer;
-import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Menu;
 import org.zkoss.zul.Menubar;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Menupopup;
 import org.apromore.portal.common.LabelConstants;
 
+import javax.servlet.http.HttpServletRequest;
+
 public class UserMenuController extends SelectorComposer<Menubar> {
 
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(UserMenuController.class);
+
+    private static final String JWTS_MAP_BY_USER_KEY = TokenHandoffController.JWTS_MAP_BY_USER_KEY;
 
     private Menuitem aboutMenuitem;
 
@@ -209,7 +210,35 @@ public class UserMenuController extends SelectorComposer<Menubar> {
 
                         final UserType currentUser = UserSessionManager.getCurrentUser();
 
-                        SecuritySsoHelper.logoutCurrentUser(currentUser, event, config, managerService);
+                        // ############# ############# ############# ############# ############# #############
+                        final HttpServletRequest httpServletRequest =
+                                (HttpServletRequest) Executions.getCurrent().getNativeRequest();
+                        LOGGER.debug("httpServletRequest: {}", httpServletRequest);
+
+                        final String username = currentUser.getUsername();
+                        final Object validJwtsObj =
+                                httpServletRequest.getServletContext().getAttribute(JWTS_MAP_BY_USER_KEY);
+                        if (validJwtsObj != null) {
+                            final Map<String, List<String>> validJwtsMap = (Map<String, List<String>>) validJwtsObj;
+
+                            try {
+                                final String appAuthHeaderVal =
+                                        JwtHelper.readCookieValue(httpServletRequest, "App_Auth");
+
+                                final List<String> listOfCurrentValidJwtsForUser = validJwtsMap.get(username);
+
+                                listOfCurrentValidJwtsForUser.remove(appAuthHeaderVal);
+                                validJwtsMap.put(username, listOfCurrentValidJwtsForUser);
+
+                                httpServletRequest.getServletContext().setAttribute(
+                                        JWTS_MAP_BY_USER_KEY, validJwtsMap);
+                            } catch (final Exception e) {
+                                LOGGER.error("Exception in reading/updating valid JWTs {}", e.getMessage(), e);
+                            }
+                        }
+                        // ############# ############# ############# ############# ############# #############
+
+                            SecuritySsoHelper.logoutCurrentUser(currentUser, event, config, managerService);
                     }
                 }
             );
