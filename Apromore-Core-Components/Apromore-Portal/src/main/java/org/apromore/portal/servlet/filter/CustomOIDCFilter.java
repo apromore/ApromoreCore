@@ -91,6 +91,12 @@ public class CustomOIDCFilter extends KeycloakOIDCFilter {
       return;
     }
 
+    if (requestPath.startsWith("/login.zul")) {
+      String redirecturi = getRedirectUri(request, requestPath);
+      response.sendRedirect(redirecturi);
+      return;
+    }
+
     boolean isExistingSession = existingSession == null ? false
         : existingSession.getAttribute("USER") == null ? false : true;
 
@@ -98,15 +104,20 @@ public class CustomOIDCFilter extends KeycloakOIDCFilter {
       OIDCServletHttpFacade facade = new OIDCServletHttpFacade(request, response);
       KeycloakDeployment deployment = deploymentContext.resolveDeployment(facade);
 
-      String redirecturi = request.getRequestURL().toString().substring(0,
-          request.getRequestURL().toString().indexOf(requestPath));
+      String redirecturi = getRedirectUri(request, requestPath);
 
       String logoutUrlString = deployment.getLogoutUrl().toTemplate() + "?redirect_uri="
           + URLEncoder.encode(redirecturi, "UTF-8");
       existingSession.invalidate();
       response.sendRedirect(logoutUrlString);
+      return;
     }
     super.doFilter(req, res, chain);
+  }
+
+  private String getRedirectUri(HttpServletRequest request, String requestPath) {
+    return request.getRequestURL().toString().substring(0,
+        request.getRequestURL().toString().indexOf(requestPath));
   }
 
 
