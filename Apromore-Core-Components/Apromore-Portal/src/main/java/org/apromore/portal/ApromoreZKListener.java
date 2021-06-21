@@ -57,6 +57,8 @@ import org.zkoss.zk.ui.util.WebAppInit;
 import java.security.PublicKey;
 import java.util.Base64;
 
+import static org.apromore.portal.dialogController.TokenHandoffController.JWTS_MAP_BY_USER_KEY;
+
 /**
  * Callbacks during the lifecycle of ZK scopes.
  */
@@ -112,19 +114,28 @@ public class ApromoreZKListener implements ExecutionInit, WebAppInit {
             final String signedAuthHeader = JwtHelper.readCookieValue(httpServletRequest, JwtHelper.SIGNED_AUTH_HEADER_KEY);
             final JWTClaimsSet jwtClaimsSet = JwtHelper.getClaimsSetFromJWT(appAuthHeader);
 
-            if (!isJwtDigitalSignatureVerified(appAuthHeader, signedAuthHeader, exec.getSession())) {
-                throw new Exception("JWT was not correctly signed: appAuthHeader " + appAuthHeader +
-                    " signedAuthHeader " + signedAuthHeader);
+            Long validIssueTimeForUser = null;
+            Map<String, Long> usersToValidIssuedAtAtJwtMap = new HashMap<>();
+            final Object validJwtsObj =
+                    httpServletRequest.getServletContext().getAttribute(JWTS_MAP_BY_USER_KEY);
+            if (validJwtsObj != null) {
+                usersToValidIssuedAtAtJwtMap = (Map<String, Long>)validJwtsObj;
+                validIssueTimeForUser =
+                        usersToValidIssuedAtAtJwtMap.get(jwtClaimsSet.getSubject());
+            }
 
+            if (!isJwtDigitalSignatureVerified(appAuthHeader, signedAuthHeader, exec.getSession())) {
+                throw new Exception("JWT was not correctly signed: appAuthHeader " + appAuthHeader +" signedAuthHeader " + signedAuthHeader);
+            } else if (jwtClaimsSet.getIssueTime().getTime() != validIssueTimeForUser) {
+                LOGGER.warn("JWT has been invalidated, signing out");
+                signOut(exec.getSession());
             } else if (JwtHelper.isJwtExpired(jwtClaimsSet)) {
                 LOGGER.info("JWT is expired, signing this session out");
                 signOut(exec.getSession());
-
             } else if (JwtHelper.doesJwtExpiryWithinNMinutes(jwtClaimsSet, config.getMinutesUntilExpiryBeforeSessionRefresh())) {
                 // If the token is close to expiry, refresh it
                 LOGGER.info("JWT is close to expiry, refreshing it");
                 refreshSessionTimeout(jwtClaimsSet, exec, appAuthHeader, httpServletResponse);
-
             } else {
                 LOGGER.debug("JWT is fresh");
             }
