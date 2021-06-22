@@ -112,7 +112,7 @@ public class TokenHandoffController extends SelectorComposer<Window> {
                 LOGGER.info("Token differenceInSecs{}", differenceInSecs);
                 // Token handoff is invalid if issued greater than 10 seconds ago
                 if (differenceInSecs > 10) {
-                    LOGGER.warn("Greater than 10 second disparity");
+                    LOGGER.warn("Greater than 10 second disparity - dis-continuing token handoff login");
                     Executions.getCurrent().sendRedirect("/login.zul?error=2");
                 } else {
                     usersToValidIssuedAtAtJwtMap.put(username, issuedAtEpochSecs);
