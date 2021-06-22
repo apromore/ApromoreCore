@@ -24,12 +24,10 @@ package org.apromore.portal;
 
 import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTClaimsSet;
-import java.io.IOException;
-import java.util.Dictionary;
-import java.util.Enumeration;
+import java.util.Base64;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import javax.servlet.ServletContext;
 import javax.servlet.SessionCookieConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -55,7 +53,8 @@ import org.zkoss.zk.ui.util.ExecutionInit;
 import org.zkoss.zk.ui.util.WebAppInit;
 
 import java.security.PublicKey;
-import java.util.Base64;
+
+import static org.apromore.portal.dialogController.TokenHandoffController.JWTS_MAP_BY_USER_KEY;
 
 /**
  * Callbacks during the lifecycle of ZK scopes.
@@ -111,20 +110,43 @@ public class ApromoreZKListener implements ExecutionInit, WebAppInit {
             LOGGER.trace("Read App_Auth cookie: {}", appAuthHeader);
             final String signedAuthHeader = JwtHelper.readCookieValue(httpServletRequest, JwtHelper.SIGNED_AUTH_HEADER_KEY);
             final JWTClaimsSet jwtClaimsSet = JwtHelper.getClaimsSetFromJWT(appAuthHeader);
+            LOGGER.trace("jwtClaimsSet {}", jwtClaimsSet);
+            Long issuedAtTimeSecs = null;
+
+            final Object issuedAtTime = jwtClaimsSet.getClaim("iat");
+
+            if (issuedAtTime != null) {
+                issuedAtTimeSecs = ((Date)issuedAtTime).getTime();
+            }
+            LOGGER.debug("issuedAtTimeSecs {}", issuedAtTimeSecs);
+
+            Long validIssueTimeForUser = null;
+            Map<String, Long> usersToValidIssuedAtAtJwtMap = new HashMap<>();
+            final Object validJwtsObj =
+                    httpServletRequest.getServletContext().getAttribute(JWTS_MAP_BY_USER_KEY);
+            if (validJwtsObj != null) {
+                usersToValidIssuedAtAtJwtMap = (Map<String, Long>)validJwtsObj;
+                final String subjectUsername = jwtClaimsSet.getSubject();
+                LOGGER.trace("subjectUsername {}", subjectUsername);
+                validIssueTimeForUser =
+                        usersToValidIssuedAtAtJwtMap.get(subjectUsername);
+            }
+            LOGGER.debug("validIssueTimeForUser {}", validIssueTimeForUser);
 
             if (!isJwtDigitalSignatureVerified(appAuthHeader, signedAuthHeader, exec.getSession())) {
-                throw new Exception("JWT was not correctly signed: appAuthHeader " + appAuthHeader +
-                    " signedAuthHeader " + signedAuthHeader);
-
+                throw new Exception("JWT was not correctly signed: appAuthHeader " + appAuthHeader +" signedAuthHeader " + signedAuthHeader);
+            } else if ((jwtClaimsSet != null) &&
+                    (issuedAtTimeSecs != null) &&
+                    (! issuedAtTimeSecs.equals(validIssueTimeForUser))) {
+                LOGGER.warn("JWT has been invalidated, signing out");
+                signOut(exec.getSession());
             } else if (JwtHelper.isJwtExpired(jwtClaimsSet)) {
                 LOGGER.info("JWT is expired, signing this session out");
                 signOut(exec.getSession());
-
             } else if (JwtHelper.doesJwtExpiryWithinNMinutes(jwtClaimsSet, config.getMinutesUntilExpiryBeforeSessionRefresh())) {
                 // If the token is close to expiry, refresh it
                 LOGGER.info("JWT is close to expiry, refreshing it");
                 refreshSessionTimeout(jwtClaimsSet, exec, appAuthHeader, httpServletResponse);
-
             } else {
                 LOGGER.debug("JWT is fresh");
             }

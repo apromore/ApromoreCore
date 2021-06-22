@@ -21,6 +21,7 @@
  */
 package org.apromore.portal.dialogController;
 
+import com.nimbusds.jwt.JWTClaimsSet;
 import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
 import org.apromore.manager.client.ManagerService;
@@ -43,11 +44,20 @@ import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zul.Window;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class TokenHandoffController extends SelectorComposer<Window> {
 
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(TokenHandoffController.class);
+
+    public static final String JWTS_MAP_BY_USER_KEY = "VALID_JWTS_MAP_BY_USER";
 
     private ManagerService managerService;
     private SecurityService securityService;
@@ -76,6 +86,7 @@ public class TokenHandoffController extends SelectorComposer<Window> {
                     JwtHelper.isSignedStrVerifiable(appAuthCookieStr, base64DecodedSignedAppAuth);
             LOGGER.info(">>> jwtSignatureVerified {}", jwtSignatureVerified);
 
+            // [Next call returns null if the Jwt is expired]
             final UserType userType = JwtHelper.userFromJwt(managerService, appAuthCookieStr);
 
             if ((jwtSignatureVerified) && (userType != null)) {
@@ -83,10 +94,40 @@ public class TokenHandoffController extends SelectorComposer<Window> {
 
                 final UserType currentUserType = UserSessionManager.getCurrentUser();
                 LOGGER.debug("Current session logged-in currentUserType: " + currentUserType);
-                LOGGER.debug("Current session logged-in username: " + currentUserType.getUsername());
+                final String username = currentUserType.getUsername();
+                LOGGER.debug("Current session logged-in username: " + username);
 
                 final SecurityContext springSecurityContext = SecurityContextHolder.getContext();
                 LOGGER.debug("springSecurityContext {}", springSecurityContext);
+
+                final JWTClaimsSet jwtClaimsSet = JwtHelper.getClaimsSetFromJWT(appAuthCookieStr);
+                Map<String, Long> usersToValidIssuedAtAtJwtMap = new HashMap<>();
+
+                final Object validJwtsObj =
+                        httpServletRequest.getServletContext().getAttribute(JWTS_MAP_BY_USER_KEY);
+                if (validJwtsObj != null) {
+                    usersToValidIssuedAtAtJwtMap = (Map<String, Long>)validJwtsObj;
+                }
+                LOGGER.debug("usersToValidIssuedAtAtJwtMap is: {}", usersToValidIssuedAtAtJwtMap);
+
+                final long issuedAtEpochSecs = jwtClaimsSet.getIssueTime().getTime();
+                final long epochTimeNowSecs = new Date().getTime();
+                LOGGER.debug("issuedAtEpochSecs {}", issuedAtEpochSecs);
+                LOGGER.debug("epochTimeNowSecs {}", epochTimeNowSecs);
+
+                long differenceInSecs = (epochTimeNowSecs - issuedAtEpochSecs) / 1000;
+                LOGGER.info("Token differenceInSecs{}", differenceInSecs);
+                // Token handoff is invalid if issued greater than 10 seconds ago
+                if (differenceInSecs > 10) {
+                    LOGGER.warn("Greater than 10 second disparity - dis-continuing token handoff login");
+                    Executions.getCurrent().sendRedirect("/login.zul?error=2");
+                } else {
+                    usersToValidIssuedAtAtJwtMap.put(username, issuedAtEpochSecs);
+
+                    LOGGER.debug("usersToValidIssuedAtAtJwtMap is: {}", usersToValidIssuedAtAtJwtMap);
+
+                    httpServletRequest.getServletContext().setAttribute(JWTS_MAP_BY_USER_KEY, usersToValidIssuedAtAtJwtMap);
+                }
 
                 if (springSecurityContext != null) {
                     final Authentication springAuthObj = springSecurityContext.getAuthentication();
