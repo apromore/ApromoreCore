@@ -21,6 +21,7 @@
  */
 package org.apromore.portal.servlet.filter;
 
+import java.io.File;
 import java.util.regex.Pattern;
 
 public class FilterRegexUtil {
@@ -34,6 +35,11 @@ public class FilterRegexUtil {
 
   public static Pattern getPattern() {
     return p;
+  }
+
+  public static boolean useKeyCloak() {
+    return new File(System.getProperty("karaf.etc"), "/config/" + "keycloak.json").exists();
+
   }
 
 }

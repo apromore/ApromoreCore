@@ -41,12 +41,15 @@ public class FilterObjectFactory implements FactoryBean<Filter>, ServletContextA
   @Qualifier("springSecurityFilterChain")
   Filter securityFilter;
 
+
+
   ServletContext context;
 
   @Override
   public Filter getObject() throws Exception {
-    if (useKeyCloak) {
 
+
+    if (FilterRegexUtil.useKeyCloak()) {
       KeycloakOIDCFilter kcFiler = new CustomOIDCFilter(context);
       kcFiler.init(null);
       return kcFiler;

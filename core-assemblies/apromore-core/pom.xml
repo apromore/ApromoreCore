@@ -244,18 +244,7 @@
               <destinationFile>${project.build.directory}/assembly/etc/site.cfg</destinationFile>
             </configuration>
           </execution>
-          
-           <execution>
-            <id>keycloak.json</id>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>copy</goal>
-            </goals>
-            <configuration>
-              <sourceFile>${core.basedir}/keycloak.json</sourceFile>
-              <destinationFile>${project.build.directory}/assembly/etc/config/keycloak.json</destinationFile>
-            </configuration>
-          </execution>
+         
         </executions>
       </plugin>
     </plugins>
