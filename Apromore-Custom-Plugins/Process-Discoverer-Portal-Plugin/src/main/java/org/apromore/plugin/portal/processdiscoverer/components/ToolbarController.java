@@ -56,6 +56,7 @@ public class ToolbarController extends AbstractController {
     private Button exportBPMN;
     
     private Textbox searchText;
+    private Div searchNode;
     private Button shortcutButton;
     private Div rightToolbar;
     
@@ -91,6 +92,7 @@ public class ToolbarController extends AbstractController {
         layoutDagreTopBottom.setChecked(userOptions.getLayoutDagre());
 
         searchText = (Textbox) toolbar.getFellow("searchText");
+        searchNode = (Div) toolbar.getFellow("searchNode");
         shortcutButton = (Button) toolbar.getFellow("shortcutButton");
         rightToolbar = (Div) toolbar.getFellow("rightToolbar");
     }
@@ -174,9 +176,14 @@ public class ToolbarController extends AbstractController {
         layoutDagreTopBottom.setDisabled(disabled);
         filter.setDisabled(disabled);
         filterClear.setDisabled(disabled || parent.getProcessAnalyst().isCurrentFilterCriteriaEmpty());
-        searchText.setDisabled(disabled);
         shortcutButton.setDisabled(disabled);
         rightToolbar.setClientDataAttribute("disabled", disabled ? "on" : "off" );
+    }
+
+    public void setDisabledSearch(boolean disabled) {
+        searchNode.setClientDataAttribute("disabled", disabled ? "on" : "off" );
+        searchText.setDisabled(disabled);
+        searchText.setValue("");
     }
 
     public void setDisabledAnimation(boolean disabled) {

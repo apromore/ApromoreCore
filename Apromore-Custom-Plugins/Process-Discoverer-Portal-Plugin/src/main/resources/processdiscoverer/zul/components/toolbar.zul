@@ -200,11 +200,13 @@
         -->
         <n:div id="ap-pd-search-graph-wrapper">
           <n:div id="ap-pd-search-graph">
-            <n:i class="z-icon-search" />
-            <textbox id="searchText" placeholder="Search node" />
-            <n:span>
-              <n:i class="z-icon-times-circle" />
-            </n:span>
+            <div id="searchNode" sclass="ap-pd-search-graph-c">
+              <n:i class="z-icon-search" />
+              <textbox id="searchText" placeholder="Search node" ca:autocomplete="off" />
+              <n:span>
+                <n:i class="z-icon-times-circle" />
+              </n:span>
+            </div>
           </n:div>
         </n:div>
         <n:div class="ap-pd-search-graph-options" />
