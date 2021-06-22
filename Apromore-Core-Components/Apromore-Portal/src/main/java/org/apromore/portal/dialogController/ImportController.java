@@ -316,7 +316,7 @@ public class ImportController extends BaseController {
             }
             okButton_URL.setDisabled(false);
 
-        } catch (URISyntaxException | MalformedURLException e) {
+        } catch (MalformedURLException e) {
             okButton_URL.setDisabled(true);
             throw new ExceptionImport("URL link is empty or not correct.");
         } catch (IOException | NullPointerException e) {

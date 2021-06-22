@@ -178,13 +178,20 @@ public class StringUtil {
         return filename.length() > FILE_NAME_MAX_LENGTH ? filename.substring(0, FILE_NAME_MAX_LENGTH) : filename;
     }
 
-    public static boolean isValidCloudStorageURL(String fileUrl) throws URISyntaxException {
+    public static boolean isValidCloudStorageURL(String fileUrl) {
 
         if (fileUrl.length() == 0 || !fileUrl.startsWith(VALID_PROTOCOL)) {
             return false;
         }
 
-        URI uri = new URI(fileUrl);
+        URI uri;
+        try {
+            uri = new URI(fileUrl);
+        } catch (URISyntaxException e) {
+            LOGGER.error(e.getMessage(), e);
+            return false;
+        }
+
         String domain = uri.getHost();
 
         String urlPattern = "^(" + DROPBOX_DOMAIN + "|" + GOOGLE_DRIVE_DOMAIN + "|" + ONE_DRIVE_DOMAIN + ")$";
