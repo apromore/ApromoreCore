@@ -93,7 +93,6 @@ public class TokenHandoffController extends SelectorComposer<Window> {
                 final SecurityContext springSecurityContext = SecurityContextHolder.getContext();
                 LOGGER.debug("springSecurityContext {}", springSecurityContext);
 
-                // ####################### ####################### ####################### #######################
                 final JWTClaimsSet jwtClaimsSet = JwtHelper.getClaimsSetFromJWT(appAuthCookieStr);
                 Map<String, Long> usersToValidIssuedAtAtJwtMap = new HashMap<>();
 
@@ -102,21 +101,26 @@ public class TokenHandoffController extends SelectorComposer<Window> {
                 if (validJwtsObj != null) {
                     usersToValidIssuedAtAtJwtMap = (Map<String, Long>)validJwtsObj;
                 }
+                LOGGER.debug("usersToValidIssuedAtAtJwtMap is: {}", usersToValidIssuedAtAtJwtMap);
 
                 final long issuedAtEpochSecs = jwtClaimsSet.getIssueTime().getTime();
                 final long epochTimeNowSecs = new Date().getTime();
+                LOGGER.debug("issuedAtEpochSecs {}", issuedAtEpochSecs);
+                LOGGER.debug("epochTimeNowSecs {}", epochTimeNowSecs);
 
-                // Token handoff is invalid if issued greater than 15 seconds ago
-                if ((epochTimeNowSecs - issuedAtEpochSecs) > 15) {
+                long differenceInSecs = (epochTimeNowSecs - issuedAtEpochSecs) / 1000;
+                LOGGER.info("Token differenceInSecs{}", differenceInSecs);
+                // Token handoff is invalid if issued greater than 10 seconds ago
+                if (differenceInSecs > 10) {
+                    LOGGER.warn("Greater than 10 second disparity");
                     Executions.getCurrent().sendRedirect("/login.zul?error=2");
                 } else {
                     usersToValidIssuedAtAtJwtMap.put(username, issuedAtEpochSecs);
 
-                    LOGGER.info("usersToValidIssuedAtAtJwtMap is: {}", usersToValidIssuedAtAtJwtMap);
+                    LOGGER.debug("usersToValidIssuedAtAtJwtMap is: {}", usersToValidIssuedAtAtJwtMap);
 
                     httpServletRequest.getServletContext().setAttribute(JWTS_MAP_BY_USER_KEY, usersToValidIssuedAtAtJwtMap);
                 }
-                // ####################### ####################### ####################### #######################
 
                 if (springSecurityContext != null) {
                     final Authentication springAuthObj = springSecurityContext.getAuthentication();
