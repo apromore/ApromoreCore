@@ -94,7 +94,9 @@ public abstract class UserSessionManager {
     }
 
     private static void setAttribute(String attribute, Object value) {
-        Sessions.getCurrent().setAttribute(attribute, value);
+       Session session = Sessions.getCurrent();
+       if(session != null)
+        session.setAttribute(attribute, value);
     }
 
     public static UserType getCurrentUser() {
