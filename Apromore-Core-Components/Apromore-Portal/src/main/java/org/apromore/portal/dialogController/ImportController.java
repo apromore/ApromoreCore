@@ -54,6 +54,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
@@ -67,6 +68,10 @@ public class ImportController extends BaseController {
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(ImportController.class);
     private static final String UTF8_CHARSET = StandardCharsets.UTF_8.toString();
     private static final String MAX_UPLOAD_SIZE = "max-upload-size";
+
+    private static final int CONNECT_TIMEOUT = 10000;
+    private static final int READ_TIMEOUT = 10000;
+
     private long maxUploadSize = 100000000L; // default 100MB
     private boolean uploadSizeExceeded = false;
 
@@ -240,11 +245,14 @@ public class ImportController extends BaseController {
 
         URL url;
         String filename;
-        int CONNECT_TIMEOUT = 10000;
-        int READ_TIMEOUT = 10000;
 
         try {
-            fileUrl = StringUtil.validateFileURL(fileUrl);
+            if(!StringUtil.isValidCloudStorageURL(fileUrl)) {
+                throw new ExceptionImport("URL link is not from supported cloud storage or not using valid protocol.");
+            }
+
+            fileUrl = StringUtil.parseFileURL(fileUrl);
+
 
             if ("".equals(fileUrl)) {
                 throw new ExceptionImport("URL link is empty or not correct.");

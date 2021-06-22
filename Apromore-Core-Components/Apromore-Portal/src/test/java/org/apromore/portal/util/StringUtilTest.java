@@ -129,10 +129,10 @@ public class StringUtilTest {
     @Test
     public void testValidateFileUrl_dropBox() {
 
-        String validFileUrl = StringUtil.validateFileURL("https://www.dropbox.com/s/xadcmvtji1ojvwo/PurchasingExample" +
+        String validFileUrl = StringUtil.parseFileURL("https://www.dropbox.com/s/xadcmvtji1ojvwo/PurchasingExample" +
                 ".csv?dl=0");
-        String maliciousFileUrl = StringUtil.validateFileURL("https://www.dropbox.com.abc.com/s/xadcmvtji1ojvwo/PurchasingExample.csv?dl=0");
-        String maliciousFileUrl1 = StringUtil.validateFileURL("https://www.dropbox.com" +
+        String maliciousFileUrl = StringUtil.parseFileURL("https://www.dropbox.com.abc.com/s/xadcmvtji1ojvwo/PurchasingExample.csv?dl=0");
+        String maliciousFileUrl1 = StringUtil.parseFileURL("https://www.dropbox.com" +
                 "./s/xadcmvtji1ojvwo/PurchasingExample.csv?dl=0");
 
         Assert.assertEquals("https://www.dropbox.com/s/xadcmvtji1ojvwo/PurchasingExample.csv?dl=1", validFileUrl);
@@ -143,10 +143,10 @@ public class StringUtilTest {
     @Test
     public void testValidateFileUrl_googleDrive() {
 
-        String validFileUrl = StringUtil.validateFileURL("https://drive.google" +
+        String validFileUrl = StringUtil.parseFileURL("https://drive.google" +
                 ".com/file/d/1hQaySFOh06x6oBxTSNZYf1pqOQtm8gik/view?usp=sharing");
-        String maliciousFileUrl = StringUtil.validateFileURL("https://drive.google.com.abc.com/file/d/1hQaySFOh06x6oBxTSNZYf1pqOQtm8gik/view?usp=sharing");
-        String maliciousFileUrl1 = StringUtil.validateFileURL("https://drive.google.com./file/d/1hQaySFOh06x6oBxTSNZYf1pqOQtm8gik/view?usp=sharing");
+        String maliciousFileUrl = StringUtil.parseFileURL("https://drive.google.com.abc.com/file/d/1hQaySFOh06x6oBxTSNZYf1pqOQtm8gik/view?usp=sharing");
+        String maliciousFileUrl1 = StringUtil.parseFileURL("https://drive.google.com./file/d/1hQaySFOh06x6oBxTSNZYf1pqOQtm8gik/view?usp=sharing");
 
         Assert.assertEquals("https://drive.google.com/uc?export=download&id=1hQaySFOh06x6oBxTSNZYf1pqOQtm8gik",
                 validFileUrl);
@@ -157,10 +157,10 @@ public class StringUtilTest {
     @Test
     public void testValidateFileUrl_oneDrive() {
 
-        String validFileUrl = StringUtil.validateFileURL("https://onedrive.live.com/embed?cid=9AA1F51B7D69569C&resid" +
+        String validFileUrl = StringUtil.parseFileURL("https://onedrive.live.com/embed?cid=9AA1F51B7D69569C&resid" +
                 "=9AA1F51B7D69569C%21379&authkey=AA5cjmnDDs2_yOo");
-        String maliciousFileUrl = StringUtil.validateFileURL("https://onedrive.live.com.abc.com/embed?cid=9AA1F51B7D69569C&resid=9AA1F51B7D69569C%21379&authkey=AA5cjmnDDs2_yOo");
-        String maliciousFileUrl1 = StringUtil.validateFileURL("https://onedrive.live.com./embed?cid=9AA1F51B7D69569C&resid=9AA1F51B7D69569C%21379&authkey=AA5cjmnDDs2_yOo");
+        String maliciousFileUrl = StringUtil.parseFileURL("https://onedrive.live.com.abc.com/embed?cid=9AA1F51B7D69569C&resid=9AA1F51B7D69569C%21379&authkey=AA5cjmnDDs2_yOo");
+        String maliciousFileUrl1 = StringUtil.parseFileURL("https://onedrive.live.com./embed?cid=9AA1F51B7D69569C&resid=9AA1F51B7D69569C%21379&authkey=AA5cjmnDDs2_yOo");
 
         Assert.assertEquals("https://onedrive.live.com/download?cid=9AA1F51B7D69569C&resid=9AA1F51B7D69569C%21379" +
                 "&authkey=AA5cjmnDDs2_yOo", validFileUrl);

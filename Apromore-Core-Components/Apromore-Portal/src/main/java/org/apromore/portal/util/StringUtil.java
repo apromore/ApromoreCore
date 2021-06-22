@@ -26,6 +26,7 @@ import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.slf4j.Logger;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Formatter;
@@ -44,10 +45,13 @@ public class StringUtil {
     private static final char[] INVALID_CHARS = {'\\', '/', ':', '*', '?', '"', '<', '>', '|', '[', ']', '\'', ';',
             '=', ','};
     private static final char SANITIZED_CHAR = '_';
+    private static final int FILE_NAME_MAX_LENGTH = 255;
 
-    private static final String dropboxPrefix = "https://www.dropbox.com";
-    private static final String googleDrivePrefix = "https://drive.google.com";
-    private static final String oneDrivePrefix = "https://onedrive.live.com";
+    private static final String VALID_PROTOCOL = "https://";
+
+    private static final String DROPBOX_DOMAIN = "www.dropbox.com";
+    private static final String GOOGLE_DRIVE_DOMAIN = "drive.google.com";
+    private static final String ONE_DRIVE_DOMAIN = "onedrive.live.com";
 
     /**
      * Regex used to parse content-disposition headers
@@ -171,7 +175,29 @@ public class StringUtil {
             }
         }
 
-        return filename;
+        return filename.length() > FILE_NAME_MAX_LENGTH ? filename.substring(0, FILE_NAME_MAX_LENGTH) : filename;
+    }
+
+    public static boolean isValidCloudStorageURL(String fileUrl) {
+
+        if (fileUrl.length() == 0 || !fileUrl.startsWith(VALID_PROTOCOL)) {
+            return false;
+        }
+
+        URI uri;
+        try {
+            uri = new URI(fileUrl);
+        } catch (URISyntaxException e) {
+            LOGGER.error(e.getMessage(), e);
+            return false;
+        }
+
+        String domain = uri.getHost();
+
+        String urlPattern = "^(" + DROPBOX_DOMAIN + "|" + GOOGLE_DRIVE_DOMAIN + "|" + ONE_DRIVE_DOMAIN + ")$";
+
+        return Pattern.matches(urlPattern, domain);
+
     }
 
     /**
@@ -180,16 +206,13 @@ public class StringUtil {
      * @param fileUrl file download url inputted by user
      * @return validated file url
      */
-    public static String validateFileURL(String fileUrl) {
+    public static String parseFileURL(String fileUrl) {
 
-        if (fileUrl.startsWith(dropboxPrefix)) {
-            if (isValidDropBoxURL(fileUrl)) {
+        if (fileUrl.contains(DROPBOX_DOMAIN)) {
                 fileUrl = fileUrl.substring(0, fileUrl.length() - 1) + 1;
-            } else return "";
         }
 
-        if (fileUrl.startsWith(googleDrivePrefix)) {
-            if (isValidGoogleDriveURL(fileUrl)) {
+        if (fileUrl.contains(GOOGLE_DRIVE_DOMAIN)) {
                 String fileID;
                 int fileIDStart = fileUrl.indexOf("/d/");
                 int fileIDEnd = fileUrl.indexOf('/', fileIDStart + 3);
@@ -202,12 +225,9 @@ public class StringUtil {
                     fileID = fileUrl.substring(fileIDStart + 3, fileIDEnd);
                 }
                 fileUrl = "https://drive.google.com/uc?export=download&id=" + fileID;
-            } else return "";
         }
-        if (fileUrl.startsWith(oneDrivePrefix)) {
-            if (isValidOneDriveURL(fileUrl)) {
+        if (fileUrl.contains(ONE_DRIVE_DOMAIN)) {
                 fileUrl = fileUrl.replace("embed?", "download?");
-            } else return "";
         }
 
         return fileUrl;

@@ -34,7 +34,7 @@
     <tabbox>
         <tabs>
             <tab label="Upload local file" />
-            <tab label="Upload file from URL" />
+            <tab label="Upload file from supported cloud storage" />
         </tabs>
         <tabpanels>
             <tabpanel>
@@ -95,7 +95,7 @@
                             </row>
                             <row spans="1,2">
                                 <label value="Supported Protocols"/>
-                                <label id="supportedProtocols" value="HTTP, HTTPS, FTP" />
+                                <label id="supportedProtocols" value="HTTPS" />
                             </row>
                             <row spans="1,2">
                                 <label value="Supported Cloud Storage"/>
