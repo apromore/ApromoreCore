@@ -61,17 +61,17 @@
     width: 26px !important;
 }
 
-.x-panel-editor-north .x-toolbar button[title='Export as .SVG'] {
+.x-panel-editor-north .x-toolbar button[title='Download as SVG'] {
     background-image: url('../../common/img/icons/export-svg.svg') !important;
     width: 26px !important;
 }
 
-.x-panel-editor-north .x-toolbar button[title='Export as .BPMN'] {
+.x-panel-editor-north .x-toolbar button[title='Download as BPMN'] {
     background-image: url('../../common/img/icons/export-bpmn.svg') !important;
     width: 26px !important;
 }
 
-.x-panel-editor-north .x-toolbar button[title='Export as PDF'] {
+.x-panel-editor-north .x-toolbar button[title='Download as PDF'] {
     background-image: url('../../common/img/icons/export-pdf.svg') !important;
     width: 26px !important;
 }
