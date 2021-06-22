@@ -1,6 +1,6 @@
 {
   "realm": "apro",
-  "auth-server-url": "https://test2-kc.apromore.org:8443/auth/",
+  "auth-server-url": "https://test1-kc.apromore.org:8443/auth/",
   "ssl-required": "external",
   "resource": "product-app",
   "public-client": true,
