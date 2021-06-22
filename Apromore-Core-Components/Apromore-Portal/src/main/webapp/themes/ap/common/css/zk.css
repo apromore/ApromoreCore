@@ -898,3 +898,9 @@ tr.z-row-disabled td.z-row-inner .z-slider-area {
     font-size: 16px !important;
     line-height: 18px !important;
 }
+
+/* Make pagination index input wider */
+.z-paging-input {
+    width: 60px;
+    text-align: right;
+}
