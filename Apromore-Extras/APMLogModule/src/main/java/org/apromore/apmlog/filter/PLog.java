@@ -433,8 +433,6 @@ public class PLog implements APMLog {
     public void setPTraceList(List<PTrace> pTraceList) {
         this.pTraceList.clear();
         this.pTraceList.addAll(pTraceList);
-
-
     }
 
     public void setVariantIdFreqMap(UnifiedMap<Integer, Integer> variantIdFreqMap) {
