@@ -86,7 +86,7 @@ public class FrameRecorder {
 		        frame.clusterTokens(logIndex);
 		    }
 		});
-		LOGGER.info("Clustering tokens: " + (System.currentTimeMillis() - timer)/1000 + " seconds.");
+		LOGGER.debug("Clustering tokens: " + (System.currentTimeMillis() - timer)/1000 + " seconds.");
 		
 		return movie;
 	}

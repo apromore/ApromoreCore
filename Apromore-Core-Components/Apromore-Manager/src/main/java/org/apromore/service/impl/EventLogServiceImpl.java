@@ -421,7 +421,7 @@ public class EventLogServiceImpl implements EventLogService {
     public XLog getXLog(Integer logId, String factoryName) {
         Log log = logRepo.findUniqueByID(logId);
         XLog xLog = tempCacheService.getProcessLog(log, factoryName);
-        LOGGER.info("[--IMPORTANT--] Plugin take over control ");
+        LOGGER.debug("Plugin take over control");
         return xLog;
     }
 

@@ -58,6 +58,7 @@ import org.apromore.logman.attribute.graph.MeasureRelation;
 import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.logman.attribute.log.AttributeInfo;
 import org.apromore.logman.attribute.log.AttributeLog;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.processdiscoverer.data.CaseDetails;
 import org.apromore.plugin.portal.processdiscoverer.data.ConfigData;
 import org.apromore.plugin.portal.processdiscoverer.data.ContextData;
@@ -76,6 +77,7 @@ import org.deckfour.xes.model.XLog;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.ListIterable;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
+import org.slf4j.Logger;
 
 /**
  * PDAnalyst represents a process analyst who will performs log analysis in the form of graphs and BPMN diagrams
@@ -88,6 +90,8 @@ import org.eclipse.collections.impl.map.mutable.UnifiedMap;
  * @author Bruce Nguyen
  */
 public class PDAnalyst {
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(PDAnalyst.class);
+
     // Graph/BPMN analysis tool
     private ProcessDiscoverer processDiscoverer;
     
@@ -124,7 +128,7 @@ public class PDAnalyst {
         }
         long timer = System.currentTimeMillis();
         this.aLog = new ALog(xlog);
-        System.out.println("ALog.constructor: " + (System.currentTimeMillis() - timer) + " ms.");
+        LOGGER.debug("ALog.constructor: {} ms.", System.currentTimeMillis() - timer);
         indexableAttributes = aLog.getAttributeStore().getPerspectiveEventAttributes(
                 configData.getMaxNumberOfUniqueValues(), AttributeType.BOOLEAN);
         
@@ -268,12 +272,12 @@ public class PDAnalyst {
                 if (attLog == null) {
                     timer = System.currentTimeMillis();
                     attLog = new AttributeLog(aLog, mainAttribute);
-                    System.out.println("Create AttributeLog for the perspective attribute: " + (System.currentTimeMillis() - timer) + "ms.");
+                    LOGGER.debug("Create AttributeLog for the perspective attribute: {} ms.", System.currentTimeMillis() - timer);
                 }
                 else {
                     timer = System.currentTimeMillis();
                     attLog.setAttribute(mainAttribute);
-                    System.out.println("Update AttributeLog to the new perspective attribute: " + (System.currentTimeMillis() - timer) + "ms.");
+                    LOGGER.debug("Update AttributeLog to the new perspective attribute: {} ms.", System.currentTimeMillis() - timer);
                 }
                 
             }
@@ -548,22 +552,20 @@ public class PDAnalyst {
     private void printPLogBitMap(PLog log) {
         BitSet bitSet = log.getValidTraceIndexBS();
         List<PTrace> pTraces = log.getCustomPTraceList();
-        System.out.println("PLog trace status (trace_number:bit): ");
+        LOGGER.debug("PLog trace status (trace_number:bit): ");
         for (int i=0; i<pTraces.size(); i++) {
-            System.out.print(i + ":" + (bitSet.get(i) ? "1" : "0") + ",");
+            LOGGER.debug(i + ":" + (bitSet.get(i) ? "1" : "0") + ",");
         }
-        System.out.print("end");
-        System.out.println();
+        LOGGER.debug("end");
         
-        System.out.println("PLog trace event status: ");
+        LOGGER.debug("PLog trace event status: ");
         for (int i=0; i<pTraces.size(); i++) {
-            System.out.println("Trace " + i + " event status (event_number:bit):");
+            LOGGER.debug("Trace " + i + " event status (event_number:bit):");
             BitSet eventBitSet = pTraces.get(i).getValidEventIndexBitSet();
             for (int j=0; j<pTraces.get(i).getOriginalEventList().size(); j++) {
-                System.out.print(j + ":" + (eventBitSet.get(j) ? "1" : "0") + ",");
+                LOGGER.debug(j + ":" + (eventBitSet.get(j) ? "1" : "0") + ",");
             }
-            System.out.print("end");
-            System.out.println();
+            LOGGER.debug("end");
         }
         
     }
@@ -571,44 +573,40 @@ public class PDAnalyst {
     // For debug only
     private void printALogBitMap(ALog log) {
         BitSet bitSet = log.getOriginalTraceStatus();
-        System.out.println("ALog trace status (trace_number:bit): ");
+        LOGGER.debug("ALog trace status (trace_number:bit): ");
         for (int i=0; i<log.getOriginalTraces().size(); i++) {
-            System.out.print(i + ":" + (bitSet.get(i) ? "1" : "0") + ",");
+            LOGGER.debug(i + ":" + (bitSet.get(i) ? "1" : "0") + ",");
         }
-        System.out.print("end");
-        System.out.println();
+        LOGGER.debug("end");
         
-        System.out.println("ALog trace event status: ");
+        LOGGER.debug("ALog trace event status: ");
         for (int i=0; i<log.getOriginalTraces().size(); i++) {
-            System.out.println("Trace " + i + " event status (event_number:bit):");
+            LOGGER.debug("Trace " + i + " event status (event_number:bit):");
             BitSet eventBitSet = log.getOriginalTraceFromIndex(i).getOriginalEventStatus();
             for (int j=0; j<log.getOriginalTraceFromIndex(i).getOriginalEvents().size(); j++) {
-                System.out.print(j + ":" + (eventBitSet.get(j) ? "1" : "0") + ",");
+                LOGGER.debug(j + ":" + (eventBitSet.get(j) ? "1" : "0") + ",");
             }
-            System.out.print("end");
-            System.out.println();
+            LOGGER.debug("end");
         }
     }
     
     private void printAttributeLogBitMap(AttributeLog log) {
         BitSet bitSet = log.getOriginalTraceStatus();
-        System.out.println("AttributeLog trace status (trace_number:bit): ");
+        LOGGER.debug("AttributeLog trace status (trace_number:bit): ");
         for (int i=0; i<log.getOriginalTraces().size(); i++) {
-            System.out.print(i + ":" + (bitSet.get(i) ? "1" : "0") + ",");
+            LOGGER.debug(i + ":" + (bitSet.get(i) ? "1" : "0") + ",");
         }
-        System.out.print("end");
-        System.out.println();
+        LOGGER.debug("end");
         
-        System.out.println("AttributeLog trace (aggregated) event status: ");
+        LOGGER.debug("AttributeLog trace (aggregated) event status: ");
         for (int i=0; i<log.getOriginalTraces().size(); i++) {
-            System.out.println("Trace " + i + " event status (event_number:bit):");
+            LOGGER.debug("Trace " + i + " event status (event_number:bit):");
             BitSet eventBitSet = log.getOriginalTraceFromIndex(i).getOriginalEventStatus();
             // Don't count the artificial start and end events
             for (int j=1; j<(log.getOriginalTraceFromIndex(i).getOriginalValueTrace().size()-1); j++) {
-                System.out.print((j-1) + ":" + (eventBitSet.get(j) ? "1" : "0") + ",");
+                LOGGER.debug((j-1) + ":" + (eventBitSet.get(j) ? "1" : "0") + ",");
             }
-            System.out.print("end");
-            System.out.println();
+            LOGGER.debug("end");
         }
     }
 }

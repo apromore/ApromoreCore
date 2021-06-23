@@ -301,7 +301,7 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Override
     public ImportLogResultType importLog(String username, Integer folderId, String logName, InputStream log, String extension, String domain, String created, boolean makePublic) throws Exception {
-        LOGGER.info("User {} importing log {}", username, logName);
+        LOGGER.info("User \"{}\" importing log \"{}\" into folder id {}", username, logName, folderId);
         LogSummaryType logSummary = (LogSummaryType) uiHelper.buildLogSummary(logSrv.importLog(username, folderId, logName, log, extension, domain, created, makePublic));
         ImportLogResultType importResult = new ImportLogResultType();
         importResult.setLogSummary(logSummary);
@@ -311,13 +311,13 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Override
     public void editLogData(Integer logId, String logName, String username, boolean isPublic) throws Exception {
-        LOGGER.info("User {} modifying metadata for log {}", username, logName);
+        LOGGER.info("User \"{}\" modifying metadata for log \"{}\"", username, logName);
         logSrv.updateLogMetaData(logId, logName, isPublic);
     }
 
     @Override
     public void createFolder(String userId, String folderName, int parentFolderId) {
-        LOGGER.info("User {} create folder \"{}\" in parent id {}", userId, folderName, parentFolderId);
+        LOGGER.info("User \"{}\" create folder \"{}\" within parent folder id {}", userId, folderName, parentFolderId);
         workspaceSrv.createFolder(userId, folderName, parentFolderId, isGEDMatrixReady);
     }
 
@@ -328,7 +328,7 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Override
     public void updateFolder(int folderId, String folderName, String username) {
-        LOGGER.info("User {} updating folder {} (id {})", username, folderName, folderId);
+        LOGGER.info("User \"{}\" updating folder \"{}\" (id {})", username, folderName, folderId);
         try {
             workspaceSrv.updateFolder(folderId, folderName, isGEDReadyFolder(folderId), secSrv.getUserByName(username));
 
@@ -339,43 +339,43 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Override
     public void deleteFolder(int folderId, String username) throws Exception {
-        LOGGER.info("User {} delete folder {}", username, folderId);
+        LOGGER.info("User \"{}\" delete folder id {}", username, folderId);
         workspaceSrv.deleteFolder(folderId, secSrv.getUserByName(username));
     }
 
     @Override
     public String saveFolderPermissions(int folderId, String userId, boolean hasRead, boolean hasWrite, boolean hasOwnership) {
-        LOGGER.info("User {} modify folder {} permissions: read {} write {} owner {}", userId, folderId, hasRead, hasWrite, hasOwnership);
+        LOGGER.info("User \"{}\" modify folder id {} permissions: read {} write {} owner {}", userId, folderId, hasRead, hasWrite, hasOwnership);
         return workspaceSrv.saveFolderPermissions(folderId, userId, hasRead, hasWrite, hasOwnership);
     }
 
     @Override
     public String saveProcessPermissions(int processId, String userId, boolean hasRead, boolean hasWrite, boolean hasOwnership) {
-        LOGGER.info("User {} modify process model {} permissions: read {} write {} owner {}", userId, processId, hasRead, hasWrite, hasOwnership);
+        LOGGER.info("User id {} modify process model id {} permissions: read {} write {} owner {}", userId, processId, hasRead, hasWrite, hasOwnership);
         return workspaceSrv.saveProcessPermissions(processId, userId, hasRead, hasWrite, hasOwnership);
     }
 
     @Override
     public String saveLogPermissions(int logId, String userId, boolean hasRead, boolean hasWrite, boolean hasOwnership) {
-        LOGGER.info("User {} modify log {} permissions: read {} write {} owner {}", userId, logId, hasRead, hasWrite, hasOwnership);
+        LOGGER.info("User id {} modify log id {} permissions: read {} write {} owner {}", userId, logId, hasRead, hasWrite, hasOwnership);
         return workspaceSrv.saveLogPermissions(logId, userId, hasRead, hasWrite, hasOwnership);
     }
 
     @Override
     public String removeFolderPermissions(int folderId, String userId) {
-        LOGGER.info("User {} remove folder {} permissions", userId, folderId);
+        LOGGER.info("User id {} remove folder id {} permissions", userId, folderId);
         return workspaceSrv.removeFolderPermissions(folderId, userId);
     }
 
     @Override
     public String removeProcessPermissions(int processId, String userId) {
-        LOGGER.info("User {} remove permissions from process model {}", userId, processId);
+        LOGGER.info("User id {} remove permissions from process model id {}", userId, processId);
         return workspaceSrv.removeProcessPermissions(processId, userId);
     }
 
     @Override
     public String removeLogPermissions(int logId, String userId, String username, AccessType accessType) throws UserNotFoundException {
-        LOGGER.info("User {} (id {}) remove permissions from log {} (access type {})", username, userId, logId, accessType);
+        LOGGER.info("User \"{}\" (id {}) remove permissions from log id {} (access type {})", username, userId, logId, accessType);
         return workspaceSrv.removeLogPermissions(logId, userId, username, accessType);
     }
 
@@ -482,13 +482,13 @@ public class ManagerServiceImpl implements ManagerService {
     @Override
     public ExportFormatResultType exportFormat(int processId, String processName, String branch, String versionNumber, String nativeType, String owner)
             throws Exception {
-        LOGGER.info("Export process model {}/{}/{} (id {}, type {}, owner {})", processName, branch, versionNumber, processId, nativeType, owner);
+        LOGGER.info("Export process model \"{}\" (id {}, branch {}, version {}, type {}, owner {})", processName, processId, branch, versionNumber, nativeType, owner);
         return procSrv.exportProcess(processName, processId, branch, new Version(versionNumber), nativeType);
     }
 
     @Override
     public ExportLogResultType exportLog(int logId, String logName) throws Exception {
-        LOGGER.info("Export log {} (id {})", logName, logId);
+        LOGGER.info("Export log \"{}\" (id {})", logName, logId);
         return logSrv.exportLog(logId);
     }
 
@@ -511,7 +511,7 @@ public class ManagerServiceImpl implements ManagerService {
     public ImportProcessResultType importProcess(String username, Integer folderId, String nativeType, String processName, String versionNumber,
             InputStream nativeStream, String domain, String documentation, String created, String lastUpdate, boolean makePublic) throws Exception {
 
-        LOGGER.info("Import process model {} version {}", processName, versionNumber);
+        LOGGER.info("Import process model \"{}\" (version {}) into folder id {}", processName, versionNumber, folderId);
 
         ProcessModelVersion pmv = procSrv.importProcess(username, folderId, processName, new Version(versionNumber), nativeType, nativeStream,
                 domain, "", created, lastUpdate, makePublic);
@@ -668,7 +668,7 @@ public class ManagerServiceImpl implements ManagerService {
     public void editProcessData(Integer processId, String processName, String domain, String username, String preVersion, String newVersion,
             String ranking, boolean isPublic) throws Exception {
 
-        LOGGER.info("User {} modify process model {} (id {}, version {}->{})", username, processName, processId, preVersion, newVersion);
+        LOGGER.info("User \"{}\" modify process model \"{}\" (id {}, version {}->{})", username, processName, processId, preVersion, newVersion);
         procSrv.updateProcessMetaData(processId, processName, domain, username, new Version(preVersion), new Version(newVersion), ranking, isPublic);
     }
 
@@ -717,13 +717,15 @@ public class ManagerServiceImpl implements ManagerService {
             if (entry.getKey() instanceof ProcessSummaryType) {
                 List<ProcessData> processDatas = new ArrayList<>();
                 for (VersionSummaryType versionSummary: entry.getValue()) {
-                    LOGGER.info("User {} delete process model {} version {}", username, id, versionSummary.getVersionNumber());
+                    LOGGER.info("User \"{}\" delete process model \"{}\" (id {}, version {})",
+                        username, versionSummary.getName(), id, versionSummary.getVersionNumber());
                     processDatas.add(new ProcessData(id, new Version(versionSummary.getVersionNumber())));
                 }
                 procSrv.deleteProcessModel(processDatas, secSrv.getUserByName(username));
 
             } else if (entry.getKey() instanceof LogSummaryType) {
-                LOGGER.info("User {} delete log {}", username, id);
+                LogSummaryType logSummary = (LogSummaryType) entry.getKey();
+                LOGGER.info("User \"{}\" delete log \"{}\" (id {})", username, logSummary.getName(), id);
                 logSrv.deleteLogs(Collections.singletonList(new Log(id)), secSrv.getUserByName(username));
 
             } else {

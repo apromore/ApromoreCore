@@ -39,13 +39,13 @@ public class PDDesktopCleaner implements DesktopCleanup {
 
     @Override
     public void cleanup(Desktop desktop) throws Exception {
-        LOGGER.info("PD cleanup starts for desktopID = " + desktop.getId());
+        LOGGER.debug("PD cleanup starts for desktopID = " + desktop.getId());
         
         // Clean up this plugin
         if (desktop.hasAttribute("processAnalyst")) {
             ((PDAnalyst)desktop.getAttribute("processAnalyst")).cleanUp();
         }
 
-        LOGGER.info("PD cleanup is done for desktopID = " + desktop.getId());
+        LOGGER.debug("PD cleanup is done for desktopID = " + desktop.getId());
     }
 }

@@ -129,7 +129,6 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin {
 
         Map<SummaryType, List<VersionSummaryType>> selectedProcessVersions = mainC.getSelectedElementsAndVersions();
         if (selectedProcessVersions.size() == 1) {
-            //new ExportListNativeController(mainC, null, selectedProcessVersions);
             ProcessSummaryType model = (ProcessSummaryType)selectedProcessVersions.keySet().iterator().next();
             VersionSummaryType version = selectedProcessVersions.get(model).get(0);
             try {
@@ -137,14 +136,15 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin {
                         version.getVersionNumber(), model.getOriginalNativeType(), UserSessionManager.getCurrentUser().getUsername());
                 InputStream nativeStream = exportResult.getNative().getInputStream();
                 Filedownload.save(nativeStream, "text/xml", model.getName() + ".bpmn");
+                LOGGER.info("User {} downloaded process model \"{}\" (id {}, version {}/{})", UserSessionManager.getCurrentUser().getUsername(),
+                    model.getName(), model.getId(), version.getName(), version.getVersionNumber());
             }
             catch (Exception e) {
-                LOGGER.error("", e);
+                LOGGER.error("Export process model failed", e);
                 Messagebox.show("Export failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
             }
         } else {
             Notification.error("Please select one process model");
-            // mainC.displayMessage("Please select one process model");
         }
     }
 
@@ -176,6 +176,8 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin {
                     } else {
                         exportXES(logSummary, mainC);
                     }
+                    LOGGER.info("User {} downloaded log \"{}\" (id {}) in format {}", UserSessionManager.getCurrentUser().getUsername(),
+                        logSummary.getName(), logSummary.getId(), format.getSelectedItem().getLabel());
                     window.invalidate();
                     window.detach();
                 }
