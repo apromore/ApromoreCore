@@ -107,6 +107,11 @@ public class MergePlugin extends DefaultPortalPlugin {
     }
 
     @Override
+    public String getIconPath() {
+        return "merge_model.svg";
+    }
+
+    @Override
     public String getGroupLabel(Locale locale) {
         return "Redesign";
     }

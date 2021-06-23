@@ -82,6 +82,11 @@ public class PDFrequencyPlugin extends PDAbstractPlugin {
     }
 
     @Override
+    public String getIconPath() {
+        return "discover_model.svg";
+    }
+
+    @Override
     public void execute(PortalContext context) {
         try {
         	boolean prepare = this.prepare(context, MeasureType.FREQUENCY); //prepare session

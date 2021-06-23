@@ -82,6 +82,11 @@ public class SimilaritySearchPlugin extends PluginCustomGui {
     }
 
     @Override
+    public String getIconPath() {
+        return "search_similar_model.svg";
+    }
+
+    @Override
     public void execute(PortalContext context) {
         // Show a message on the portal
         try {
