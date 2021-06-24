@@ -161,7 +161,7 @@ public class KeycloakLoginUrlAuthenticationEntryPoint extends LoginUrlAuthentica
                 if (host.endsWith("/") || ( (port == 80) || (port == 8181)) ) {
                     if ( (path == null) ||
                             ( ((port == 80) || (port == 8181)) &&
-                                    ((path != null)  && (! path.endsWith("zul"))))) {
+                                    ((path != null) ))) {
                         requestUriStr = uri.resolve("/login.zul").toString();
 
                         LOGGER.trace("requestUriStr: {}", requestUriStr);
