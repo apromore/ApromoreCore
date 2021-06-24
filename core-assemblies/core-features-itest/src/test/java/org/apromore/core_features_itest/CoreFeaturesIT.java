@@ -25,7 +25,7 @@ public class CoreFeaturesIT extends KarafTestSupport {
     public void setup() throws Exception {
         String source = executeCommand("shell:source ../../test-classes/setup.karaf");
         Assert.assertEquals(
-            "Adding feature url mvn:org.apromore/core-features/7.20-SNAPSHOT/xml\n" +
+            "Adding feature url mvn:org.apromore/core-features/7.20/xml\n" +
             "Creating configuration file ehcache.xml\n" +
             "Creating configuration file git.cfg\n" +
             "Creating configuration file git.core.cfg\n" +

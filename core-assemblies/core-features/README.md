@@ -11,6 +11,6 @@ config:install file:/wherever/ApromoreCore/target/classes/META-INF/git.propertie
 config:install file:/wherever/ApromoreCore/target/classes/META-INF/git.properties git.core.cfg
 config:install file:/wherever/ApromoreCore/Supplements/Virgo/portalContext-security.xml portalContext-security.xml
 config:install file:/wherever/ApromoreCore/site.properties site.cfg
-feature:repo-add mvn:org.apromore/core-features/7.20-SNAPSHOT/xml
+feature:repo-add mvn:org.apromore/core-features/7.20/xml
 feature:install apromore-core
 ```
