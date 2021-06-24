@@ -201,9 +201,9 @@ public class UserMenuController extends SelectorComposer<Menubar> {
             EventQueues.lookup("signOutQueue", EventQueues.APPLICATION, true).subscribe(
                 new EventListener() {
                     public void onEvent(Event event) {
-                        LOGGER.debug("\n\nIn sign out queue/event handler for logout");
+                        LOGGER.debug("In sign out queue/event handler for logout");
 
-                        LOGGER.debug("\n\n>>>>> About to utilise managerService to logout of all user " +
+                        LOGGER.debug("About to utilise managerService to logout of all user " +
                                 "sessions [transparently calls Keycloak, via the Security Microservice]");
 
                         final ManagerService managerService = getManagerService();

@@ -123,7 +123,7 @@ public abstract class UserSessionManager {
                     }
                 }
                 setCurrentUser(user);
-                LOGGER.info("User {} login via LDAP account", username);
+                LOGGER.info("User \"{}\" login via LDAP account", username);
 
             } else if (details instanceof WebAuthenticationDetails) {
                 UserAuthenticationHelper userAuthenticationHelper = new UserAuthenticationHelper(userAcct);
@@ -136,18 +136,20 @@ public abstract class UserSessionManager {
 
                 if (userType != null) { // e.g. SSO SAML
                     setCurrentUser(userType);
-                    LOGGER.info("User {} login via SSO SAML account", userType.getUsername());
+                    LOGGER.info("User \"{}\" login via SSO SAML account", userType.getUsername());
                 }
             } else if (details instanceof UserType) {  // Locally created user (via password)
                 UserType user = (UserType) details;
                 setCurrentUser(user);
-                LOGGER.info("User {} login via local account", user.getUsername());
+                LOGGER.info("User \"{}\" login via local account", user.getUsername());
 
             } else if (userType != null) { // e.g. SSO SAML
                 setCurrentUser(userType);
-                LOGGER.info("User {} login via SSO SAML account", userType.getUsername(), details);
+                LOGGER.info("User \"{}\" login via SSO SAML account", userType.getUsername(), details);
+
             } else if (details != null) {
                 LOGGER.warn("Unsupported details class " + details.getClass());
+
             } else {
                 LOGGER.warn("User's authentication has null details");
             }

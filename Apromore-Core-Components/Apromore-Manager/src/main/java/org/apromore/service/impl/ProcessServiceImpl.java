@@ -154,8 +154,8 @@ public class ProcessServiceImpl implements ProcessService {
         LOGGER.debug("Executing operation canoniseProcess");
 
         if (nativeStream == null) {
-            LOGGER.error("Process " + processName + " Failed to import correctly.");
-            throw new ImportException("Process " + processName + " Failed to import correctly.");
+            LOGGER.error("Process \"{}\" failed to import correctly.", processName);
+            throw new ImportException("Process " + processName + " failed to import correctly.");
         }
 
         ProcessModelVersion pmv;
@@ -174,16 +174,16 @@ public class ProcessServiceImpl implements ProcessService {
 
             Native nat = formatSrv.storeNative(processName, created, lastUpdate, user, nativeType, Constants.INITIAL_ANNOTATION, sanitizedStream);
             pmv = addProcessModelVersion(process, processName, version, Constants.TRUNK_NAME, created, lastUpdate, nativeType,nat);
-            LOGGER.info("Process model version: " + pmv);
+            LOGGER.debug("Process model version: {}", pmv);
             
             workspaceSrv.addProcessToFolder(user, process.getId(), folderId);
-            LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>IMPORT: "+ processName+" "+process.getId());//call when net is change and then save
+            LOGGER.info("Import process model \"{}\" (id {})", processName, process.getId());//call when net is change and then save
 
         } catch (ImportException e) {
             throw e;
 
         } catch (Exception e) {
-            LOGGER.error("Failed to import process {} with native type {}", processName, natType);
+            LOGGER.error("Failed to import process \"{}\" (native type {})", processName, natType);
             LOGGER.error("Original exception was: ", e);
             throw new ImportException(e);
         }
@@ -252,7 +252,7 @@ public class ProcessServiceImpl implements ProcessService {
                     pmv.getNativeDocument().setContent(StreamUtil.inputStream2String(nativeStream).trim());
                     pmv.getNativeDocument().setLastUpdateDate(now);
                     processModelVersionRepo.save(pmv);
-                    LOGGER.info("UPDATED EXISTING PROCESS: ", processName);
+                    LOGGER.info("Updated existing process model \"{}\"", processName);
                     return pmv;
 
                 } else {
@@ -307,14 +307,14 @@ public class ProcessServiceImpl implements ProcessService {
                     }
                     else {
                         Native nat = formatSrv.storeNative(processName, now, now, user, nativeType, newVersion.toString(), nativeStream);
-                        pmv = createProcessModelVersion(currentVersion.getProcessBranch(), newVersion, nativeType, null,nat);
-                        LOGGER.info("UPDATED EXISTING PROCESS: ", processName);
+                        pmv = createProcessModelVersion(currentVersion.getProcessBranch(), newVersion, nativeType, null, nat);
+                        LOGGER.info("Updated existing process model \"{}\"", processName);
                         return pmv;
                     }
 
                 } else {
-                    LOGGER.error("Unable to find the Process Model to update. Id=" + processId + ", name=" + processName 
-                            + ", branch=" + branchName + ", current version=" + originalVersion.toString());
+                    LOGGER.error("Unable to find the Process Model to update. Id={}, name={}, branch={}, current version={}",
+                        processId, processName, branchName, originalVersion);
                     throw new RepositoryException("Unable to find the Process Model to update. Id=" + processId + ", name=" + processName 
                             + ", branch=" + branchName + ", current version=" + originalVersion.toString());
                 }
@@ -350,15 +350,6 @@ public class ProcessServiceImpl implements ProcessService {
             final String format)
             throws ExportFormatException {
         try {
-            // Debug tracing of the authenticated principal
-            org.springframework.security.core.Authentication auth =
-                org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
-            if (auth != null) {
-                LOGGER.info("Authentication principal=" + auth.getPrincipal() + " details=" + auth.getDetails() + " thread=" + Thread.currentThread());
-            } else {
-                LOGGER.info("Authentication is null");
-            }
-
             ExportFormatResultType exportResult = new ExportFormatResultType();
 
             if (isRequestForNativeFormat(processId, branch, version, format)) {
@@ -500,29 +491,20 @@ public class ProcessServiceImpl implements ProcessService {
         String format = "BPMN 2.0";
 
         try {
-            // Debug tracing of the authenticated principal
-            org.springframework.security.core.Authentication auth =
-                    org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
-            if (auth != null) {
-                LOGGER.info("Authentication principal=" + auth.getPrincipal() + " details=" + auth.getDetails() + " thread=" + Thread.currentThread());
-            } else {
-                LOGGER.info("Authentication is null");
-            }
-
             // Work out if we are looking at the original format or native format for this model.
             if (isRequestForNativeFormat(processId, branch, version, format)) {
                 xmlBPMNProcess = nativeRepo.getNative(processId, branch, version.toString(), format).getContent();
-                LOGGER.info("native");
+                LOGGER.debug("native");
             } else {
                 LOGGER.error("Not supported to retrieve the canonical format");
                 throw new RepositoryException("Not supported to retrieve the canonical format");
             }
 
-            //LOGGER.info("[new method] PROCESS:\n" + xmlBPMNProcess);
+            //LOGGER.debug("[new method] PROCESS:\n" + xmlBPMNProcess);
             return xmlBPMNProcess;
 
         } catch (Exception e) {
-            LOGGER.error("Failed to retrive the process!");
+            LOGGER.error("Failed to retrieve the process!");
             LOGGER.error("Original exception was: ", e);
             throw new RepositoryException(e);
         }

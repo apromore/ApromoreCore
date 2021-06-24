@@ -63,7 +63,7 @@ public class TimeStatsController extends AbstractController {
     public void initializeControls(Object data) {
         if (this.parent == null) return;
 
-        LOGGER.info("TimeSettingsController");
+        LOGGER.debug("TimeStatsController");
         Component compTimeStats = parent.query(".ap-pd-timestats");
         
         spnCaseHeading = (Span) compTimeStats.getFellow("spnCaseHeading");

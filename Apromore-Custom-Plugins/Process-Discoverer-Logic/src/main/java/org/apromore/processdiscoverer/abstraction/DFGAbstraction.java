@@ -29,6 +29,8 @@ import org.apromore.processdiscoverer.bpmn.ProcessBPMNDiagram;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNEdge;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class represents the directly-follows graph abstraction (or process maps) 
@@ -38,13 +40,16 @@ import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNNode;
  *
  */
 public class DFGAbstraction extends AbstractAbstraction {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(DFGAbstraction.class);
+
 	public DFGAbstraction(AttributeLog log, FilteredGraph graph, AbstractionParams params) throws Exception {
 		super(log, params);
 		this.diagram = new ProcessBPMNDiagram(graph, log);
 		
 		long timer1 = System.currentTimeMillis();
 		this.updateWeights(params);
-		System.out.println("Update weights on BPMNDiagram: " + (System.currentTimeMillis() - timer1) + " ms.");
+		LOGGER.debug("Update weights on BPMNDiagram: {} ms.", System.currentTimeMillis() - timer1);
 	}
 	
 	// Create a DFGAbstraction based on an existing DFGAbstraction with a new AbstractionParams

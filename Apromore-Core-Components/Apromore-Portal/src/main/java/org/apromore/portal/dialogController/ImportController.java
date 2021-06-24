@@ -365,8 +365,7 @@ public class ImportController extends BaseController {
 
             String fileName = logMedia.getName();
             String extension = discoverExtension(fileName);
-            System.out.println(fileName);
-            System.out.println(extension);
+            LOGGER.debug("File name \"{}\", extension \"{}\"", fileName, extension);
             String logFileName = FilenameUtils.removeExtension(fileName);
 
             getService().importLog(UserSessionManager.getCurrentUser().getUsername(), folderId, logFileName, logMedia.getStreamData(),
