@@ -24,6 +24,7 @@
 package org.apromore.service.impl;
 
 import org.apromore.apmlog.APMLog;
+import org.apromore.calendar.service.CustomCalendarService;
 import org.apromore.common.ConfigBean;
 import org.apromore.common.Constants;
 import org.apromore.dao.*;
@@ -88,6 +89,7 @@ public class EventLogServiceImpl implements EventLogService {
     private EventLogFileService logFileService;
     private StorageRepository storageRepository;
     private CustomCalendarRepository customCalendarRepository;
+    private CustomCalendarService customCalendarService;
 
     /**
      * Default Constructor allowing Spring to Autowire for testing and normal use.
@@ -114,7 +116,8 @@ public class EventLogServiceImpl implements EventLogService {
 	    final StorageManagementFactory storageFactory,
 	    final EventLogFileService logFileService,
 	    final StorageRepository storageRepository,
-		final CustomCalendarRepository customCalendarRepository) {
+		final CustomCalendarRepository customCalendarRepository,
+		final CustomCalendarService customCalendarService) {
 	this.logRepo = logRepository;
 	this.groupRepo = groupRepository;
 	this.groupLogRepo = groupLogRepository;
@@ -127,6 +130,7 @@ public class EventLogServiceImpl implements EventLogService {
 	this.logFileService = logFileService;
 	this.storageRepository = storageRepository;
 	this.customCalendarRepository = customCalendarRepository;
+	this.customCalendarService = customCalendarService;
     }
 
     private static XLog importFromStream(XFactory factory, InputStream is, String extension) throws Exception {
@@ -492,7 +496,8 @@ public class EventLogServiceImpl implements EventLogService {
 
     @Override
     public CustomCalendar getCalendarFromLog(Integer logId) {
-        return logRepo.findUniqueByID(logId).getCalendar();
+        CustomCalendar calendar = logRepo.findUniqueByID(logId).getCalendar();
+        return calendar == null ? customCalendarService.getCalendar(calendar.getId()) : calendar;
     }
 
 }
