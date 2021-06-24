@@ -85,6 +85,11 @@
             <groupId>org.apromore.plugin</groupId>
             <artifactId>process-plugin-api</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>apromore-calendar</artifactId>
+        </dependency>
         
         <!--
             Embedded  Dependencies, these are not 'provided' as otherwise they are not included in the WAR.
