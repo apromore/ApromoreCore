@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.apromore</groupId>
     <artifactId>core-assemblies</artifactId>
-    <version>7.20-SNAPSHOT</version>
+    <version>7.20</version>
   </parent>
   <artifactId>core-features</artifactId>
   <packaging>pom</packaging>
