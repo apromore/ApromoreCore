@@ -13,7 +13,7 @@ dependencies {
 	runtime project(':Apromore-Custom-Plugins:Calendar-Portal')
 	runtime project(':Apromore-Custom-Plugins:CSVImporter-Logic')
 	runtime project(':Apromore-Custom-Plugins:CSVImporter-Portal')
-	runtime project(':Apromore-Custom-Plugins:CSVExporter-Portal')
+//	runtime project(':Apromore-Custom-Plugins:CSVExporter-Portal')
 	runtime project(':Apromore-Custom-Plugins:User-Admin-Portal-Plugin')
 	runtime project(':Apromore-Custom-Plugins:SplitMiner-Logic')
 
