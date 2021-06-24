@@ -23,7 +23,6 @@ package org.apromore.integration.config;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import org.apromore.apmlog.APMLogService;
 import org.apromore.apmlog.impl.APMLogServiceImpl;
 import org.apromore.plugin.DefaultPlugin;
@@ -41,54 +40,53 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
 @Configuration
-@ImportResource(value = {
-	"classpath:META-INF/spring/database-jpa.xml",
-	"classpath:META-INF/spring/cache-config.xml", "classpath:META-INF/spring/storage-context.xml",
-	"classpath:META-INF/spring/managerContext-services.xml" })
+@ImportResource(value = {"classpath:META-INF/spring/database-jpa.xml",
+    "classpath:META-INF/spring/cache-config.xml", "classpath:META-INF/spring/storage-context.xml",
+    "classpath:META-INF/spring/managerContext-services.xml",
+    "classpath:META-INF/spring/calendar-service.xml"})
 public class TestConfig {
 
-    @Bean
-    public static PropertyPlaceholderConfigurer properties() {
-	PropertyPlaceholderConfigurer ppc = new PropertyPlaceholderConfigurer();
-	Resource[] resources = new ClassPathResource[] { new ClassPathResource("integration-test/db-config.properties"),
-		new ClassPathResource("integration-test/cache-config.properties"),
-		new ClassPathResource("integration-test/mail-config.properties") };
-	ppc.setLocations(resources);
-	ppc.setIgnoreUnresolvablePlaceholders(true);
-	return ppc;
-    }
+  @Bean
+  public static PropertyPlaceholderConfigurer properties() {
+    PropertyPlaceholderConfigurer ppc = new PropertyPlaceholderConfigurer();
+    Resource[] resources =
+        new ClassPathResource[] {new ClassPathResource("integration-test/db-config.properties"),
+            new ClassPathResource("integration-test/cache-config.properties"),
+            new ClassPathResource("integration-test/mail-config.properties")};
+    ppc.setLocations(resources);
+    ppc.setIgnoreUnresolvablePlaceholders(true);
+    return ppc;
+  }
 
-    @Bean
-    public APMLogService apmLogService() {
-	return new APMLogServiceImpl();
-    }
-   
-    @Bean
-    public EventAdmin eventAdmin() {
-	return new EventAdminStub();
-    }
-    
-    
-    @Bean
-    @Qualifier("pluginProvider")
-    public PluginProvider PluginProvider()
-    {
-	PluginProviderImpl pluginProvider=new PluginProviderImpl();
-	Set<Plugin> pluginSet=new HashSet<Plugin>();
-	pluginSet.add(testPlugin());
-	pluginProvider.setPluginList(pluginSet);
-	return pluginProvider;
-	
-    }
-    @Bean
-    public Plugin testPlugin() {
-	return new DefaultPlugin() {
-	    
-	};
-    }
-    
+  @Bean
+  public APMLogService apmLogService() {
+    return new APMLogServiceImpl();
+  }
 
-  
-   
+  @Bean
+  public EventAdmin eventAdmin() {
+    return new EventAdminStub();
+  }
+
+
+  @Bean
+  @Qualifier("pluginProvider")
+  public PluginProvider PluginProvider() {
+    PluginProviderImpl pluginProvider = new PluginProviderImpl();
+    Set<Plugin> pluginSet = new HashSet<Plugin>();
+    pluginSet.add(testPlugin());
+    pluginProvider.setPluginList(pluginSet);
+    return pluginProvider;
+
+  }
+
+  @Bean
+  public Plugin testPlugin() {
+    return new DefaultPlugin() {
+
+    };
+  }
+
+
 
 }
