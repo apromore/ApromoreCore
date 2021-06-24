@@ -350,15 +350,6 @@ public class ProcessServiceImpl implements ProcessService {
             final String format)
             throws ExportFormatException {
         try {
-            // Debug tracing of the authenticated principal
-            org.springframework.security.core.Authentication auth =
-                org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
-            if (auth != null) {
-                LOGGER.debug("Authentication principal={} details={} thread={}", auth.getPrincipal(), auth.getDetails(), Thread.currentThread());
-            } else {
-                LOGGER.debug("Authentication is null");
-            }
-
             ExportFormatResultType exportResult = new ExportFormatResultType();
 
             if (isRequestForNativeFormat(processId, branch, version, format)) {
@@ -500,15 +491,6 @@ public class ProcessServiceImpl implements ProcessService {
         String format = "BPMN 2.0";
 
         try {
-            // Debug tracing of the authenticated principal
-            org.springframework.security.core.Authentication auth =
-                    org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
-            if (auth != null) {
-                LOGGER.debug("Authentication principal={} details={} thread={}", auth.getPrincipal(), auth.getDetails(), Thread.currentThread());
-            } else {
-                LOGGER.debug("Authentication is null");
-            }
-
             // Work out if we are looking at the original format or native format for this model.
             if (isRequestForNativeFormat(processId, branch, version, format)) {
                 xmlBPMNProcess = nativeRepo.getNative(processId, branch, version.toString(), format).getContent();
