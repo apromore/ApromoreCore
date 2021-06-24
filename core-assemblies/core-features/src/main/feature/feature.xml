@@ -139,8 +139,6 @@
     <bundle>mvn:org.keycloak/keycloak-servlet-filter-adapter/12.0.4</bundle>
     <bundle>mvn:org.keycloak/keycloak-core/12.0.4</bundle>
     <bundle>mvn:org.keycloak/keycloak-common/12.0.4</bundle>    
-    
-
     <bundle>mvn:org.keycloak/keycloak-adapter-spi/12.0.4</bundle>
     <bundle>mvn:org.keycloak/keycloak-servlet-adapter-spi/12.0.4</bundle>
     <bundle>mvn:org.keycloak/keycloak-adapter-core/12.0.4</bundle>

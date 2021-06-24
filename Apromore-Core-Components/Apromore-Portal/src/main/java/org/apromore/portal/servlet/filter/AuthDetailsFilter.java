@@ -37,6 +37,7 @@ import org.apromore.portal.model.UserType;
 import org.keycloak.adapters.RefreshableKeycloakSecurityContext;
 import org.keycloak.representations.AccessToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 
@@ -47,6 +48,8 @@ public class AuthDetailsFilter implements Filter {
   @Autowired
   ManagerService managerService;
 
+  @Value("${site.useKeycloakSso}")
+  private boolean useKeyCloak = true;
 
   @Override
   public void init(FilterConfig filterConfig) throws ServletException {
@@ -66,8 +69,7 @@ public class AuthDetailsFilter implements Filter {
     boolean isExistingSession = existingSession == null ? false
         : existingSession.getAttribute("USER") == null ? false : true;
 
-    if (!FilterRegexUtil.useKeyCloak() || FilterRegexUtil.isMatchingFilterRegex(requestPath)
-        || isExistingSession) {
+    if (!useKeyCloak || FilterRegexUtil.isMatchingFilterRegex(requestPath) || isExistingSession) {
       chain.doFilter(request, response);
       return;
     }

@@ -22,8 +22,8 @@
 
 package org.apromore.portal.common;
 
-import java.util.regex.Pattern;
 import org.apromore.portal.common.notification.Notification;
+import org.apromore.portal.servlet.filter.FilterRegexUtil;
 import org.junit.Test;
 
 /* Test suite for {@link Navigation}. */
@@ -37,9 +37,9 @@ public class NotificationUnitTest {
 
   @Test
   public void test1() {
-    Pattern p = Pattern.compile("^/(zkau|zkau/.*|.*\\.css|.*\\.js)", Pattern.DOTALL);
 
-    boolean isMathed = p.matcher("/zkau/web/_zv2018112010/js/zul.wnd.wpd").matches();
+    String dString = "/dashboard/fonts/icomoon.jpeg";
+    boolean isMathed = FilterRegexUtil.isMatchingFilterRegex(dString);
     System.out.println(isMathed);
   }
 
