@@ -490,4 +490,9 @@ public class EventLogServiceImpl implements EventLogService {
 	return calendar == null ? 0 : calendar.getId();
     }
 
+    @Override
+    public CustomCalendar getCalendarFromLog(Integer logId) {
+        return logRepo.findUniqueByID(logId).getCalendar();
+    }
+
 }

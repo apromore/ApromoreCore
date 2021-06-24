@@ -25,6 +25,7 @@
 package org.apromore.service;
 
 import org.apromore.apmlog.APMLog;
+import org.apromore.dao.model.CustomCalendar;
 import org.apromore.dao.model.Log;
 import org.apromore.dao.model.User;
 import org.apromore.exception.ImportException;
@@ -104,13 +105,33 @@ public interface EventLogService {
     /**
      * Get aggregated log.
      *
-     * @param logId
+     * @param logId logId of Log
      * @return The aggregated log placed into the cache, or generated on the fly if not found or expired
      */
     APMLog getAggregatedLog(Integer logId);
 
 
+    /**
+     * Update specified CustomCalendar that linked to specified Log
+     *
+     * @param logId logId of Log
+     * @param calenderId calenderId of CustomCalendar
+     */
     void updateCalendarForLog(Integer logId, Long calenderId);
 
+    /**
+     * Get specified Log by logId
+     *
+     * @param logId logId of Log
+     * @return CalendarId
+     */
     Long getCalendarIdFromLog(Integer logId);
+
+    /**
+     * Get the CustomCalendar that linked to specified Log
+     *
+     * @param logId logId of Log
+     * @return CustomCalendar
+     */
+    CustomCalendar getCalendarFromLog(Integer logId);
 }
