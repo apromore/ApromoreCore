@@ -77,7 +77,8 @@
     <osgi:reference id="nativeTypeRepository" interface="org.apromore.dao.NativeTypeRepository"/>
     <osgi:reference id="permissionRepository" interface="org.apromore.dao.PermissionRepository"/>
     <osgi:reference id="processBranchRepository" interface="org.apromore.dao.ProcessBranchRepository"/>
-    <osgi:reference id="customCalendarRepository" interface="org.apromore.dao.CustomCalendarRepository"/>    
+    <osgi:reference id="customCalendarRepository" interface="org.apromore.dao.CustomCalendarRepository"/>
+    <osgi:reference id="calendarService" interface="org.apromore.calendar.service.CalendarService"/>    
     
     <osgi:reference id="processModelAttributeRepository" interface="org.apromore.dao.ProcessModelAttributeRepository"/>
     <osgi:reference id="processModelVersionRepository" interface="org.apromore.dao.ProcessModelVersionRepository"/>
