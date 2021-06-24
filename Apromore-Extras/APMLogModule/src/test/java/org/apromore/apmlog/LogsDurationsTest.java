@@ -63,16 +63,6 @@ public class LogsDurationsTest {
         proceedImmutableLogDurTest(immutableLog);
     }
 
-    public static void testClonedImmutableLogDurations(XLog xLog) {
-        ImmutableLog immutableLog = (ImmutableLog) LogFactory.convertXLog(xLog);
-
-        ImmutableLog clone = (ImmutableLog) immutableLog.clone();
-        proceedImmutableLogDurTest(clone);
-
-        clone.updateStats(); // test after-updated values
-        proceedImmutableLogDurTest(clone);
-    }
-
     private static void proceedAPMLogDurTest(APMLog apmLog) {
         double minDur = apmLog.getMinDuration();
         double medDur = apmLog.getMedianDuration();
