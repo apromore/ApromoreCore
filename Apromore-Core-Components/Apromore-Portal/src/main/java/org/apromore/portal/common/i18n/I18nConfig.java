@@ -26,6 +26,7 @@ import org.zkoss.web.Attributes;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.util.Clients;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -50,15 +51,16 @@ public class I18nConfig {
         if (languageTags.size() == 0 || languageTags.size() != dateTimePatterns.size()) {
             return;
         }
-        System.out.println(languageTags);
-        System.out.println(dateTimePatterns);
+        // System.out.println(languageTags);
+        // System.out.println(dateTimePatterns);
         for (int i = 0 ; i < languageTags.size() ; i++) {
             Locale locale = Locale.forLanguageTag(languageTags.get(i));
             String dateTimePattern = dateTimePatterns.get(i);
-            // TO DO: Fix encoding issue in site.properties,
-            if ("ja".equals(languageTags.get(i))) {
-                dateTimePattern = "yyyy年MM月dd日, HH:mm";
-            }
+            // Fix encoding issue in site.properties
+            dateTimePattern = new String(dateTimePattern.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
+//            if ("ja".equals(languageTags.get(i))) {
+//                dateTimePattern = "yyyy年MM月dd日, HH:mm";
+//            }
             supportedLocales.put(locale, dateTimePattern);
         }
     }

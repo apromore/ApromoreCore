@@ -56,7 +56,7 @@ Apromore.Plugins.File = Clazz.extend({
             'name': window.Apromore.I18N.File.pdf,
             'functionality': this.exportPDF.bind(this),
             'group': window.Apromore.I18N.File.group,
-            'icon': Apromore.PATH + "images/page_white_acrobat.png",
+            'icon': Apromore.PATH + "images/ap/export-pdf.svg",
             'description': window.Apromore.I18N.File.pdfDesc,
             'index': 5,
             'minShape': 0,

@@ -40,6 +40,7 @@ public class LoginController extends BaseController {
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(LoginController.class);
     public LoginController() {
         super();
+        setupLocale();
     }
 
     /**
@@ -91,7 +92,6 @@ public class LoginController extends BaseController {
             src += "-" + "community";
         }
         logoWithTag.setSrc(src + ".svg");
-        setupLocale();
     }
 
     private void setupLocale() {
