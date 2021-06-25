@@ -204,11 +204,8 @@ public class DateUtil extends DatePatterns {
     }
 
     private static String removeUnwantedChartsFromDate(String str) {
-        //Remove timezone
-        str.replaceAll("(?:Z|[+-](?:2[0-3]|[01][0-9]):[0-5][0-9])", "");
-        //Remove 1st, 2nd, ect
-        str.replaceAll("(?<=\\d)(st|nd|rd|th)", "");
-
-        return str.toLowerCase();
+        //Remove timezone: (?:Z|[+-](?:2[0-3]|[01][0-9]):[0-5][0-9])
+        //Remove 1st, 2nd, ect: (?<=\d)(st|nd|rd|th)
+        return str.replaceAll("(?:Z|[+-](?:2[0-3]|[01][0-9]):[0-5][0-9])", "").replaceAll("(?<=\\d)(st|nd|rd|th)", "").toLowerCase();
     }
 }
