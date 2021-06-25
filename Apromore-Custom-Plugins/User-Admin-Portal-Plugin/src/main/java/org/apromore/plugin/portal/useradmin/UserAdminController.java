@@ -555,7 +555,7 @@ public class UserAdminController extends SelectorComposer<Window> {
     private void refreshNonAssignedUsers() {
         nonAssignedUserModel = new ListModelList<>(securityService.getAllUsers(), false);
         nonAssignedUserModel.setMultiple(true);
-        nonAssignedUserList = new AssignedUserListbox(nonAssignedUserListbox, nonAssignedUserModel, "Users not in the group");
+        nonAssignedUserList = new AssignedUserListbox(nonAssignedUserListbox, nonAssignedUserModel, getLabel("usersNotInGroup_text"));
     }
 
     private void refreshGroups() {
@@ -585,7 +585,7 @@ public class UserAdminController extends SelectorComposer<Window> {
         assignedRoleListbox.setNonselectableTags("*");
         assignedRoleItemRenderer = new TristateItemRenderer();
         assignedRoleListbox.setItemRenderer(assignedRoleItemRenderer);
-        assignedRoleList = new TristateListbox<Role>(assignedRoleListbox, assignedRoleModel, "Assigned Roles");
+        assignedRoleList = new TristateListbox<Role>(assignedRoleListbox, assignedRoleModel, getLabel("assignedRoles_text"));
         assignedRoleItemRenderer.setList(assignedRoleList);
 
     }
@@ -611,7 +611,7 @@ public class UserAdminController extends SelectorComposer<Window> {
         assignedGroupListbox.setNonselectableTags("*");
         assignedGroupItemRenderer = new TristateItemRenderer();
         assignedGroupListbox.setItemRenderer(assignedGroupItemRenderer);
-        assignedGroupList = new TristateListbox<Group>(assignedGroupListbox, assignedGroupModel, "Assigned Groups");
+        assignedGroupList = new TristateListbox<Group>(assignedGroupListbox, assignedGroupModel, getLabel("assignedGroups_text"));
         assignedGroupItemRenderer.setList(assignedGroupList);
     }
 
@@ -807,9 +807,9 @@ public class UserAdminController extends SelectorComposer<Window> {
             ComponentUtils.toggleSclass(groupDetailContainer, true);
         }
         assignedUserModel.setMultiple(true);
-        assignedUserList = new AssignedUserListbox(assignedUserListbox, assignedUserModel, "Assigned Users");
+        assignedUserList = new AssignedUserListbox(assignedUserListbox, assignedUserModel, getLabel("assignedUsers_text"));
         nonAssignedUserModel.setMultiple(true);
-        nonAssignedUserList = new AssignedUserListbox(nonAssignedUserListbox, nonAssignedUserModel, "Users not in the group");
+        nonAssignedUserList = new AssignedUserListbox(nonAssignedUserListbox, nonAssignedUserModel, getLabel("usersNotInGroup_text"));
         selectedGroup = group;
         isGroupDetailDirty = false; // ensure dirty is not set by field's setValue
         return group;
@@ -1254,7 +1254,7 @@ public class UserAdminController extends SelectorComposer<Window> {
         }
         Set<Group> selectedGroups = groupList.getSelection();
         if (groupList.getSelectionCount() == 0) {
-            Notification.error("Nothing to delete");
+            Notification.error(getLabel("nothingToDelete_message"));
             return;
         }
 
@@ -1292,7 +1292,7 @@ public class UserAdminController extends SelectorComposer<Window> {
         selectedGroup.setName(groupNameTextbox.getValue());
         selectedGroup.setUsers(users);
         securityService.updateGroup(selectedGroup);
-        Notification.info("Details for group " + selectedGroup.getName() + " is updated");
+        Notification.info(MessageFormat.format(getLabel("updatedGroupDetails_message"), selectedGroup.getName()));
         isGroupDetailDirty = false;
         refreshGroups();
         setSelectedGroup(null);

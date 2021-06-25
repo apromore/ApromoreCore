@@ -64,13 +64,6 @@ public class I18nSession {
         this.config = config;
     }
 
-    public I18nSession(I18nConfig config, Locale locale) {
-        this.config = config;
-        if (locale != null) {
-            applyLocale(locale);
-        }
-    }
-
     public String getPreferredLangTag() {
         if (preferredLocale != null) {
             return  preferredLocale.toLanguageTag();
@@ -148,6 +141,10 @@ public class I18nSession {
     }
 
     public void applyLocaleFromClient() {
+        if (!config.isEnabled()) {
+            applyLocale(DEFAULT_LANG_TAG);
+            return;
+        }
         Map<String, String> clientPreferred = pullClientPreferredLocale();
         String clientDateTimePattern = clientPreferred.get(COOKIE_DATE_TIME_PATTERN_TAG);
 

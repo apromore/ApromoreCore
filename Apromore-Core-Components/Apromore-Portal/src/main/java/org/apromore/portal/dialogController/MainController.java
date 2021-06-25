@@ -207,8 +207,14 @@ public class MainController extends BaseController implements MainControllerInte
             this.portalContext = new PluginPortalContext(this);
             this.navigation = new NavigationController(this);
 
-            langChooserController = new LangChooserController((Combobox) mainW.getFellow("langChooser"), this);
-            langChooserController.populate();
+            Combobox langChooser = (Combobox) mainW.getFellow("langChooser");
+            if (i18nSession.getConfig().isEnabled()) {
+                langChooserController = new LangChooserController(langChooser, this);
+                langChooserController.populate();
+                langChooser.setVisible(true);
+            } else {
+                langChooser.setVisible(false);
+            }
 
             controller = this;
             MainController self = this;

@@ -88,6 +88,7 @@
     </bean>
 
     <bean id="i18nConfig" class="org.apromore.portal.common.i18n.I18nConfig">
+        <constructor-arg type="boolean" value="${i18n.enable}"/>
         <constructor-arg type="String" value="${i18n.languagetags}"/>
         <constructor-arg type="String" value="${i18n.datetimepatterns}"/>
     </bean>

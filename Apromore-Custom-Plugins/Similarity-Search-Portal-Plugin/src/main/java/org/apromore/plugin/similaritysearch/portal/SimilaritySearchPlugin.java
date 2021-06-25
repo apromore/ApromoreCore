@@ -35,6 +35,7 @@ import org.apromore.portal.exception.DialogException;
 import org.apromore.portal.model.*;
 import org.springframework.stereotype.Component;
 import org.slf4j.Logger;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.*;
 import org.zkoss.zul.*;
@@ -71,13 +72,31 @@ public class SimilaritySearchPlugin extends PluginCustomGui {
     private ProcessSummaryType process;
     private VersionSummaryType version;
 
+//    @Override
+//    public String getLabel(Locale locale) {
+//        return "Search similar models";
+//    }
+//
+//    @Override
+//    public String getGroupLabel(Locale locale) {
+//        return "Redesign";
+//    }
+
+    @Override
+    public String getItemCode(Locale locale) { return "Search similar models"; }
+
     @Override
     public String getLabel(Locale locale) {
-        return "Search similar models";
+        return Labels.getLabel("plugin_redesign_searchModels_text","Search similar models");
     }
 
     @Override
     public String getGroupLabel(Locale locale) {
+        return Labels.getLabel("plugin_redesign_title_text","Redesign");
+    }
+
+    @Override
+    public String getGroup(Locale locale) {
         return "Redesign";
     }
 

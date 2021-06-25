@@ -37,6 +37,7 @@ import lombok.Getter;
 public class I18nConfig {
 
     @Getter private Map<Locale, String> supportedLocales;
+    @Getter private boolean enabled;
 
     /**
      * Constructor
@@ -44,7 +45,8 @@ public class I18nConfig {
      * @param languageTagList  Vertically-separated list of string languageTags
      * @param dateTimePatternList  Vertically-separated list of string Date Time patterns
      */
-    public I18nConfig(String languageTagList, String dateTimePatternList) {
+    public I18nConfig(boolean enabled, String languageTagList, String dateTimePatternList) {
+        this.enabled = enabled;
         supportedLocales = new LinkedHashMap<>();
         List<String> languageTags = Arrays.asList(languageTagList.split("\\|"));
         List<String> dateTimePatterns = Arrays.asList(dateTimePatternList.split("\\|"));
