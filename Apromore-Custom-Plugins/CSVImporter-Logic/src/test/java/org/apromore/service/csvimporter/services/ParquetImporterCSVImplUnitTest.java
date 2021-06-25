@@ -353,7 +353,6 @@ public class ParquetImporterCSVImplUnitTest {
      * Test {@link ParquetImporterCSVImpl} against an invalid CSV log <code>test7-record-invalid.csv</code>.
      */
     @Test
-    @Ignore
     public void testPrepareXesModel_test7_record_invalid() throws Exception {
 
         LOGGER.info("\n************************************\ntest7 - Record invalid");
