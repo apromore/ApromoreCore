@@ -128,10 +128,11 @@ public class PLog implements APMLog {
     private long eventSize = 0;
     private HashBiMap<IntArrayList, Integer> actNameIdxCId;
     private ActivityNameMapper activityNameMapper;
-    private DefaultChartDataCollection defaultChartDataCollection;
     private AAttributeGraph attributeGraph;
     private DoubleArrayList caseDurationList;
     //************
+
+    private final List<AActivity> activities = new ArrayList<>();
 
     public APMLog getApmLog() {
         return apmLog;
@@ -153,9 +154,12 @@ public class PLog implements APMLog {
                 .collect(Collectors.toList());
     }
 
+    public List<AActivity> getActivities() {
+        if (activities.isEmpty()) {
+            activities.addAll(pTraceList.stream().flatMap(x->x.getActivityList().stream()).collect(Collectors.toList()));
+        }
 
-    public DefaultChartDataCollection getDefaultChartDataCollection() {
-        return defaultChartDataCollection;
+        return activities;
     }
 
     public PLog(APMLog apmLog, boolean initIndexOnly) {
@@ -177,6 +181,9 @@ public class PLog implements APMLog {
                 index += 1;
             }
         }
+
+        activities.clear();
+        activities.addAll(pTraceList.stream().flatMap(x->x.getActivityList().stream()).collect(Collectors.toList()));
     }
 
     public PLog(APMLog apmLog) {
@@ -190,8 +197,6 @@ public class PLog implements APMLog {
         activityNameBiMap = apmLog.getActivityNameBiMap();
 
         originalAttributeGraph = apmLog.getAAttributeGraph();
-
-        this.defaultChartDataCollection = apmLog.getDefaultChartDataCollection();
 
         this.activityNameMapper = apmLog.getActivityNameMapper();
 
@@ -294,9 +299,6 @@ public class PLog implements APMLog {
 
     public void updateStats() {
         updateTraceStats();
-        List<PTrace> traces = getPTraceList();
-        caseAttributeValues = StatsUtil.getValidCaseAttributeValues(traces);
-        eventAttributeValues = StatsUtil.getValidEventAttributeValues(traces);
     }
 
     public void updateTraceStats() {
@@ -445,6 +447,11 @@ public class PLog implements APMLog {
 
     public void setActivityMaxOccurMap(UnifiedMap<String, Integer> activityMaxOccurMap) {
         this.activityMaxOccurMap = activityMaxOccurMap;
+    }
+
+    @Override
+    public Set<Integer> getCaseIndexes() {
+        return StatsUtil.getCaseIndexes(pTraceList.stream().collect(Collectors.toList()));
     }
 
     public UnifiedMap<String, Integer> getActivityMaxOccurMap() {
@@ -778,27 +785,22 @@ public class PLog implements APMLog {
     public List<PTrace> getCustomPTraceList() {
         BitSet currentBS = this.validTraceIndexBS;
 
-        List<PTrace> theCusPTraceList = new ArrayList<>();
+        Map<String, List<PTrace>> idPTraces = pTraceList.stream()
+                .parallel()
+                .collect(Collectors.groupingBy(PTrace::getCaseId));
 
-        List<ATrace> immutableTraces = apmLog.getTraceList();
+        List<PTrace> theCusPTraceList = originalPTraceList;
 
-        int mutableIndex = 0;
-
-        for (ATrace aTrace : immutableTraces) {
-            PTrace pt = null;
-            if (!currentBS.get(aTrace.getImmutableIndex())) {
-                pt = new PTrace(mutableIndex, aTrace, this);
-                pt.setValidEventIndexBS(new BitSet(aTrace.getEventSize()));
+        for (PTrace pTrace : theCusPTraceList) {
+            if (currentBS.get(pTrace.getImmutableIndex())) {
+                pTrace.setValidEventIndexBS(idPTraces.get(pTrace.getCaseId()).get(0).getValidEventIndexBitSet());
             } else {
-                pt = getPTraceByImmutableIndex(aTrace.getImmutableIndex());
-            }
-
-            if (pt != null) {
-                theCusPTraceList.add(pt);
-                mutableIndex += 1;
+                pTrace.setValidEventIndexBS(new BitSet(pTrace.getOriginalEventList().size()));
             }
         }
+
         return theCusPTraceList;
+
     }
 
     /**

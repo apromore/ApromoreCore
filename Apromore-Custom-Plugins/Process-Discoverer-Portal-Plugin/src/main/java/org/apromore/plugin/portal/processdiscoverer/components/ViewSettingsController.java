@@ -145,7 +145,7 @@ public class ViewSettingsController extends VisualController {
     public void initializeControls(Object data) {
         if (this.parent == null) return;
 
-        LOGGER.info("ViewSettingsController");
+        LOGGER.debug("ViewSettingsController");
         userOptions = parent.getUserOptions();
 
         Component compViewSettings = parent.query(".ap-pd-view-settings");

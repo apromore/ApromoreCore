@@ -29,6 +29,8 @@ import org.apromore.logman.attribute.log.AttributeLog;
 import org.apromore.logman.attribute.log.AttributeTrace;
 import org.apromore.processdiscoverer.Abstraction;
 import org.apromore.processdiscoverer.AbstractionParams;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class builds an abstraction based on a <b>AttributeLog</b>
@@ -41,6 +43,8 @@ import org.apromore.processdiscoverer.AbstractionParams;
  *
  */
 public class AbstractionManager {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractionManager.class);
+
     private AttributeLog log;
     private AttributeLogGraph graph;
     private DFGAbstraction dfgAbstraction;
@@ -91,8 +95,8 @@ public class AbstractionManager {
         FilteredGraph filteredGraph = graph.filter(params.getNodeSelectThreshold(), params.getArcSelectThreshold());
         this.dfgAbstraction = new DFGAbstraction(log, filteredGraph, params);
         log.resetDataStatus();
-        System.out.println("Select a graph based on node/arc sliders and convert it to BPMNDiagram: " + 
-                (System.currentTimeMillis() - timer) + " ms.");
+        LOGGER.debug("Select a graph based on node/arc sliders and convert it to BPMNDiagram: {} ms.",
+                System.currentTimeMillis() - timer);
         return dfgAbstraction;
     }
     

@@ -35,6 +35,8 @@ import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNNode;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The main class use to serialize a process map in JSON format
@@ -44,6 +46,9 @@ import org.json.JSONObject;
  *
  */
 public class ProcessJSONVisualizer implements ProcessVisualizer {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ProcessJSONVisualizer.class);
+
 	private VisualToolkit visToolkit = new VisualToolkit();
 	private Layouter layouter = new JGraphLayouter(); 
 	
@@ -55,7 +60,7 @@ public class ProcessJSONVisualizer implements ProcessVisualizer {
         long timer1 = System.currentTimeMillis();
         layouter.setVisualSettings(visSettings);
         layouter.layout(abs);
-        System.out.println("Layout BPMNDiagram: " + (System.currentTimeMillis() - timer1) + " ms.");
+        LOGGER.debug("Layout BPMNDiagram: {} ms.", System.currentTimeMillis() - timer1);
         
         JSONArray json = generateJSON(abs, visContext, visSettings);
         return json.toString().replaceAll("'", "\\\\\'");

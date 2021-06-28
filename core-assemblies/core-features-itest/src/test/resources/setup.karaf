@@ -3,7 +3,7 @@
 log:log "Preparing for Apromore Core features"
 
 # Add the features for Apromore Core Edition
-feature:repo-add mvn:org.apromore/core-features/7.20-SNAPSHOT/xml
+feature:repo-add mvn:org.apromore/core-features/8.0-SNAPSHOT/xml
 
 # Copy the various configuration files to the server (the etc/ directory)
 config:install --override file:../../../../../Apromore-Cache/src/main/resources/ehcache.xml ehcache.xml

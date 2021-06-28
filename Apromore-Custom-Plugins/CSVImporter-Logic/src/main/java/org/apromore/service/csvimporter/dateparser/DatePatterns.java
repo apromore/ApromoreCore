@@ -60,8 +60,8 @@ class DatePatterns {
     private static final String MINUTES_OR_SECOND_TWO_DIGIT = "([0-5][0-9])";
     //am/pm
     private static final String AM_PM = "(am|pm)";
-//    //TimeZone e.g., Z, +07 or +07:00
-//    private static final String TIME_ZONE = "(Z|[+-](?:2[0-3]|[01][0-9])(?::?(?:[0-5][0-9]))?)";
+    //TimeZone e.g., Z, +07 or +07:00
+    private static final String TIME_ZONE = "(Z|[+-](?:2[0-3]|[01][0-9])(?::?(?:[0-5][0-9]))?)";
 
     //yyMMdd
     private static final String DATE_NO_SPACE_YEAR_TWO_DIGIT_MONTH_DAY = YEAR_TWO_DIGIT + "{1}" + MONTH_DIGIT_TWO_DIGIT + "{1}" + DAY_DIGIT_TWO_DIGIT + "{1}";
@@ -380,6 +380,8 @@ class DatePatterns {
         DATE_FORMAT_REGEXPS.put("^" + DATE_DASH_DAY_MONTH_YEAR + "t" + "{1}" + TIME_COLON_SECOND + "\\." + "\\d{3}" + "$", "dd-MM-yyyy'T'HH:mm:ss.SSS");
         DATE_FORMAT_REGEXPS.put("^" + DATE_DASH_MONTH_DAY_YEAR + "t" + "{1}" + TIME_COLON_SECOND + "\\." + "\\d{3}" + "$", "MM-dd-yyyy'T'HH:mm:ss.SSS");
         DATE_FORMAT_REGEXPS.put("^" + DATE_DASH_YEAR_MONTH_DAY + "t" + "{1}" + TIME_COLON_SECOND + "\\." + "\\d{3}" + "$", "yyyy-MM-dd'T'HH:mm:ss.SSS");
+        // ISO 8601 Data elements and interchange formats
+        DATE_FORMAT_REGEXPS.put("^" + DATE_DASH_YEAR_MONTH_DAY + "t" + "{1}" + TIME_COLON_SECOND + "\\." + "\\d{3}" + TIME_ZONE + "$", "yyyy-MM-dd'T'HH:mm:ss.SSSZ");
         DATE_FORMAT_REGEXPS.put("^" + DATE_DASH_YEAR_DAY_MONTH + "t" + "{1}" + TIME_COLON_SECOND + "\\." + "\\d{3}" + "$", "yyyy-dd-MM'T'HH:mm:ss.SSS");
         DATE_FORMAT_REGEXPS.put("^" + DATE_SLASH_DAY_MONTH_YEAR + "\\s+" + TIME_COLON_SECOND + "\\." + "\\d{3}" + "$", "dd/MM/yyyy HH:mm:ss.SSS");
         DATE_FORMAT_REGEXPS.put("^" + DATE_SLASH_MONTH_DAY_YEAR + "\\s+" + TIME_COLON_SECOND + "\\." + "\\d{3}" + "$", "MM/dd/yyyy HH:mm:ss.SSS");

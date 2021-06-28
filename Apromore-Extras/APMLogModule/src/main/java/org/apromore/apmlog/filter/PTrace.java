@@ -59,6 +59,7 @@ import java.util.stream.Stream;
  * Modified: Chii Chang (17/03/2021)
  * Modified: Chii Chang (21/04/2021)
  * Modified: Chii Chang (05/05/2021)
+ * Modified: Chii Chang (21/06/2021)
  */
 public class PTrace implements Comparable<PTrace>, ATrace{
 
@@ -71,6 +72,11 @@ public class PTrace implements Comparable<PTrace>, ATrace{
 
     private PLog pLog;
     private final List<AActivity> activityList = new ArrayList<>();
+    private DoubleArrayList waitingTimes;
+    private DoubleArrayList processingTimes;
+    private List<AEvent> eventList;
+
+    private long startTime, endTime;
 
     // ==================================================
     // Case variant ID of PTrace is a mutable value
@@ -105,13 +111,20 @@ public class PTrace implements Comparable<PTrace>, ATrace{
             activity.setMutableIndex(index);
             index += 1;
         }
+
+        updateTimeStats();
+
+        eventList = aTrace.getImmutableEvents().stream()
+                .filter(x -> validEventIndexBS.get(x.getIndex()))
+                .collect(Collectors.toList());
     }
 
-    public ATrace getOriginalATrace() {
-        return aTrace;
+    public void updateValidActivities() {
+        List<AActivity> validActs = StatsUtil.getValidActivitiesOf(this);
+        setActivities(validActs);
     }
 
-    public DoubleArrayList getWaitingTimes() {
+    public void updateTimeStats() {
         List<AActivity> validActs = StatsUtil.getValidActivitiesOf(this);
         double[] waitTimesArray = validActs.stream()
                 .filter(x -> StatsUtil.getValidPreviousActivity(x, this) != null)
@@ -119,17 +132,28 @@ public class PTrace implements Comparable<PTrace>, ATrace{
                 .toArray();
         DoubleArrayList wtDal = new DoubleArrayList(waitTimesArray);
         if (wtDal.isEmpty()) wtDal.add(0.0);
-        return wtDal;
-    }
 
-    public DoubleArrayList getProcessingTimes() {
-        List<AActivity> validActs = StatsUtil.getValidActivitiesOf(this);
+        waitingTimes = wtDal;
+
         double[] procTimesArray = validActs.stream()
                 .mapToDouble(AActivity::getDuration)
                 .toArray();
         DoubleArrayList ptDal = new DoubleArrayList(procTimesArray);
         if (ptDal.isEmpty()) ptDal.add(0.0);
-        return ptDal;
+
+        processingTimes = ptDal;
+    }
+
+    public ATrace getOriginalATrace() {
+        return aTrace;
+    }
+
+    public DoubleArrayList getWaitingTimes() {
+        return waitingTimes;
+    }
+
+    public DoubleArrayList getProcessingTimes() {
+        return processingTimes;
     }
 
     public void updateStats(int mutableTraceIndex) {
@@ -145,12 +169,12 @@ public class PTrace implements Comparable<PTrace>, ATrace{
 
     @Override
     public void setStartTimeMilli(long startTimeMilli) {
-
+        startTime = startTimeMilli;
     }
 
     @Override
     public void setEndTimeMilli(long endTimeMilli) {
-
+        endTime = endTimeMilli;
     }
 
     @Override
@@ -178,7 +202,7 @@ public class PTrace implements Comparable<PTrace>, ATrace{
 
     @Override
     public void setMutableIndex(int mutableIndex) {
-
+        this.mutableIndex = mutableIndex;
     }
 
     public String getCaseId() {
@@ -216,17 +240,17 @@ public class PTrace implements Comparable<PTrace>, ATrace{
 
     @Override
     public void setEventList(List<AEvent> eventList) {
-
+        this.eventList = eventList;
     }
 
     @Override
     public List<AEvent> getImmutableEvents() {
-        return null;
+        return getOriginalATrace().getImmutableEvents();
     }
 
     @Override
     public void setImmutableEvents(List<AEvent> events) {
-
+        eventList = events;
     }
 
     public int getCaseVariantId() {
@@ -258,7 +282,7 @@ public class PTrace implements Comparable<PTrace>, ATrace{
 
     @Override
     public boolean isHasActivity() {
-        return false;
+        return processingTimes.max() > 0;
     }
 
     @Override
@@ -283,7 +307,7 @@ public class PTrace implements Comparable<PTrace>, ATrace{
     }
 
     public List<AActivity> getActivityList() {
-        return StatsUtil.getValidActivitiesOf(this);
+        return activityList;
     }
 
     public List<String> getActivityNameList() {
@@ -292,7 +316,11 @@ public class PTrace implements Comparable<PTrace>, ATrace{
 
     @Override
     public UnifiedSet<String> getEventNameSet() {
-        return null;
+        UnifiedSet<String> set = new UnifiedSet<>();
+        for (AActivity act : activityList) {
+            set.put(act.getName());
+        }
+        return set;
     }
 
     public UnifiedMap<String, String> getAttributeMap() {
@@ -304,9 +332,7 @@ public class PTrace implements Comparable<PTrace>, ATrace{
     }
 
     public List<AEvent> getEventList() {
-        return aTrace.getImmutableEvents().stream()
-                .filter(x -> validEventIndexBS.get(x.getIndex()))
-                .collect(Collectors.toList());
+        return eventList;
     }
 
     public int size() {
@@ -450,12 +476,12 @@ public class PTrace implements Comparable<PTrace>, ATrace{
             trace.addActivity(activity);
         }
 
-        trace.setEventList(getEventList());
+        trace.setEventList(eventList);
         trace.setImmutableEvents(aTrace.getImmutableEvents());
         trace.setCaseVariantId(getCaseVariantId());
         trace.setHasActivity(true);
-        trace.setWaitingTimes(getWaitingTimes());
-        trace.setProcessingTimes(getProcessingTimes());
+        trace.setWaitingTimes(waitingTimes);
+        trace.setProcessingTimes(processingTimes);
         trace.setStartTimeMilli(getStartTimeMilli());
         trace.setEndTimeMilli(getEndTimeMilli());
 

@@ -40,7 +40,7 @@ public class LogAnimationCleaner implements DesktopCleanup {
 
     @Override
     public void cleanup(Desktop desktop) throws Exception {
-        LOGGER.info("LogAnimation cleanup starts for desktopID = " + desktop.getId());
+        LOGGER.info("LogAnimation cleanup starts for desktopID = {}", desktop.getId());
         
         // Clean up this plugin
         // Log animation logic has no tricky resources to be cleaned up, auto cleaned by the GC
@@ -50,6 +50,6 @@ public class LogAnimationCleaner implements DesktopCleanup {
             UserSessionManager.removeEditSession(desktop.getAttribute("pluginSessionId").toString());
         }
         
-        LOGGER.info("LogAnimation cleanup is done for desktopID = " + desktop.getId());
+        LOGGER.debug("LogAnimation cleanup is done for desktopID = {}", desktop.getId());
     }
 }

@@ -168,11 +168,11 @@
                 sclass="ap-icon ap-icon-export-bpmn"/>
         <button ca:data-t="saveBPMNAnnotated" id="exportBPMNAnnotatedForBIMP" visible="false"
                 tooltiptext="Save as BPMN model annotated for BIMP..." sclass="ap-icon ap-icon-export-bpmn"/>
-        <button ca:data-t="downloadPDF" id="downloadPDF" tooltiptext="${labels.e.pd.downloadPDF.text}"
+        <button ca:data-t="downloadPDF" id="downloadPDF" tooltiptext="Download as PDF"
                 sclass="ap-icon ap-icon-export-pdf"/>
-        <button ca:data-t="downloadPNG" id="downloadPNG" tooltiptext="${labels.e.pd.downloadPNG.text}"
+        <button ca:data-t="downloadPNG" id="downloadPNG" tooltiptext="Download as PNG"
                 sclass="ap-icon ap-icon-export-image"/>
-        <button ca:data-t="downloadJSON" id="downloadJSON" tooltiptext="Download JSON"
+        <button ca:data-t="downloadJSON" id="downloadJSON" tooltiptext="Download as JSON"
                 sclass="ap-icon ap-icon-export-json"/>
         <n:span class="ap-action-sep"></n:span>
         <checkbox sclass="ap-stateful-button" id="layoutHierarchy"
@@ -200,11 +200,13 @@
         -->
         <n:div id="ap-pd-search-graph-wrapper">
           <n:div id="ap-pd-search-graph">
-            <n:i class="z-icon-search" />
-            <textbox id="searchText" placeholder="Search node" />
-            <n:span>
-              <n:i class="z-icon-times-circle" />
-            </n:span>
+            <div id="searchNode" sclass="ap-pd-search-graph-c">
+              <n:i class="z-icon-search" />
+              <textbox id="searchText" placeholder="Search node" ca:autocomplete="off" />
+              <n:span>
+                <n:i class="z-icon-times-circle" />
+              </n:span>
+            </div>
           </n:div>
         </n:div>
         <n:div class="ap-pd-search-graph-options" />

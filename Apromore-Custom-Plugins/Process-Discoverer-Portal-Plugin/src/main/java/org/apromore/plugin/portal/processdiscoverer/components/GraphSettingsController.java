@@ -90,7 +90,7 @@ public class GraphSettingsController extends VisualController {
     public void initializeControls(Object data) {
         if (this.parent == null) return;
 
-        LOGGER.info("GraphSettingsController");
+        LOGGER.debug("GraphSettingsController");
         userOptions = parent.getUserOptions();
         Component compGraphSettings = parent.query(".ap-pd-graph-settings");
 

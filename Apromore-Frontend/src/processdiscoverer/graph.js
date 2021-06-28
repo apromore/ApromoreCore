@@ -672,6 +672,7 @@ PDp.switchToInteractiveView = function() {
     $j('#' + pd._private.animationPanelContainerId).hide();
     pd._private.logAnimation = null;
     pd._private.logAnimationMapController = null;
+    pd.setupSearch(sourceJSON, true);
 }
 
 export default PDp;

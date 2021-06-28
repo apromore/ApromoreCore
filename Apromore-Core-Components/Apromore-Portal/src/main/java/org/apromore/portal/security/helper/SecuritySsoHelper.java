@@ -170,8 +170,8 @@ public class SecuritySsoHelper {
             // usually 30 minutes, therefore this is not a super huge problem.
             try {
                 if (session == null || event.getData().equals(session)) {
+                    LOGGER.info("User {} logout", currentUser.getUsername());
                     Clients.evalJavaScript("window.close()");
-                    LOGGER.info("Redirecting to spring security logout");
                     Executions.sendRedirect("/j_spring_security_logout");
 
                     logoutSuccess = true;

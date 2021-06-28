@@ -40,8 +40,9 @@ public class Delimiter {
     public static String findDelimiter(final List<String> rows) {
         Map<String, Integer> delimiterMap = new ConcurrentHashMap<>();
         try {
+            // parse row per for DelimiterTypes and get integers List and compare if they all are bigger
             Arrays.stream(DelimiterType.values()).forEach(d -> {
-                delimiterMap.put(d.getDelimiter(), findDelimiterCount(rows, d.getDelimiter()));
+                delimiterMap.put(d.getDelimiter(), findDelimiterWeight(rows, d.getDelimiter()));
             });
             int maxValue = delimiterMap.values()
             .stream()
@@ -60,22 +61,25 @@ public class Delimiter {
     }
 
     /**
-     * Find the delimiter count.
+     * Find the delimiter weight based on:
+     * 1) The number of times the delimiter appears in the header.
+     * 2) The rows which match the header's delimiter count.
      *
-     * @param rows
+     * @param rows 2D array of rows. Must include headers row for CSV file.
      * @param delimiter
      * @return
      * @throws NullPointerException
      */
-    private static int findDelimiterCount(final List<String> rows, final String delimiter)
+    private static int findDelimiterWeight(final List<String> rows, final String delimiter)
             throws NullPointerException  {
         int headRowCount = rows.isEmpty() ? -1 : (rows.get(0) + PLACE_HOLDER).split(delimiter).length;
-        // parse row per for DelimiterTypes and get integers List and compare if they all are bigger
+        //The number of extra/missing values in the rows.
+        int mismatchedValuesCount = 0;
+
         for (String row : rows) {
-            if ((row + PLACE_HOLDER).split(delimiter).length != headRowCount) {
-                return -1;
-            }
+            int delimiterCount = (row + PLACE_HOLDER).split(delimiter).length;
+            mismatchedValuesCount += Math.abs(headRowCount - delimiterCount);
         }
-        return headRowCount;
+        return headRowCount * rows.size() - mismatchedValuesCount;
     }
 }

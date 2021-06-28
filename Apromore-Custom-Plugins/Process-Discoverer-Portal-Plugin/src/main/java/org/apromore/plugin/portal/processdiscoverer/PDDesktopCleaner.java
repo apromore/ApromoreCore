@@ -46,6 +46,6 @@ public class PDDesktopCleaner implements DesktopCleanup {
             ((PDAnalyst)desktop.getAttribute("processAnalyst")).cleanUp();
         }
 
-        LOGGER.info("PD cleanup is done for desktopID = " + desktop.getId());
+        LOGGER.debug("PD cleanup is done for desktopID = " + desktop.getId());
     }
 }

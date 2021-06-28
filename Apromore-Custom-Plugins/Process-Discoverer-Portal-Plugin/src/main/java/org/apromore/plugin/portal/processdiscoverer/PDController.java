@@ -580,6 +580,7 @@ public class PDController extends BaseController {
             logStatsController.setDisabled(true);
             timeStatsController.setDisabled(true);
             toolbarController.setDisabled(true);
+            toolbarController.setDisabledSearch(true);
             toolbarController.toogleAnimateBtn(true);
             caseDetailsController.setDisabled(true);
         }
@@ -589,6 +590,7 @@ public class PDController extends BaseController {
             logStatsController.setDisabled(false);
             timeStatsController.setDisabled(false);
             toolbarController.setDisabled(false);
+            toolbarController.setDisabledSearch(false);
             toolbarController.setDisabledAnimation(false);
             toolbarController.toogleAnimateBtn(false);
             caseDetailsController.setDisabled(false);
@@ -600,6 +602,7 @@ public class PDController extends BaseController {
             logStatsController.setDisabled(true);
             timeStatsController.setDisabled(true);
             toolbarController.setDisabled(true);
+            toolbarController.setDisabledSearch(false);
             toolbarController.setDisabledAnimation(true);
             toolbarController.toogleAnimateBtn(false);
         }

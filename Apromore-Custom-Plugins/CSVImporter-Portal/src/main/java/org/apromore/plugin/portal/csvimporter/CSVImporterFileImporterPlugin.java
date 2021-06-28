@@ -158,18 +158,21 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
 
                     // Matching from the latest record
                     for (int i = mappingJSONList.size() - 1; i >= 0; i--) {
-                        System.out.println(mappingJSONList.get(i));
 
                         Usermetadata usermetadata = mappingJSONList.get(i);
 
                         JSONObject jsonObject = (JSONObject) JSONValue.parse(usermetadata.getContent());
 
-                        System.out.println(JSONValue.parse(jsonObject.get("header").toString()));
+                        assert jsonObject != null;
+                        LOGGER.debug("Trying to match with stored schema: {}", JSONValue.parse(jsonObject.get("header").toString()));
 
                         List<String> sampleHeader = (List<String>) jsonObject.get("header");
 
-                        // Attempt 1: try to create a popup window on top of csvImporter window here.
+                        // Create a popup window on top of Importer window to prompt matched schema
                         if (sampleHeader != null && sampleHeader.equals(header)) try {
+
+                            LOGGER.debug("Found matched schema: {} : {}", sampleHeader, header);
+
                             Window matchedMappingPopUp =
                                     (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul" +
                                             "/matchedMapping.zul", null, null);

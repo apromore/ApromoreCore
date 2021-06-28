@@ -40,6 +40,8 @@ import javax.servlet.http.HttpServletResponse;
  *     add a <code>Content-Security-Policy</code> HTTP header with the given value</li>
  * <li>If a <code>site.reportingEndpoints</code> property is present in <code>site.cfg</code>,
  *     add a <code>Reporting-Endpoints</code> HTTP header with the given value</li>
+ * <li>If a <code>site.server</code> property is present in <code>site.cfg</code>,
+ *     override the <code>Server</code> HTTP header with the given value</li>
  * <li>If a <code>site.strictTransportSecurity</code> property is present in <code>site.cfg</code>,
  *     add a <code>Strict-Transport-Security</code> HTTP header with the given value</li>
  * </ul>
@@ -59,6 +61,12 @@ public class PortalFilter implements Filter {
     public static final String REPORTING_ENDPOINTS = "site.reportingEndpoints";
 
     /**
+     * If this property key appears in <code>site.cfg</code>, the Server HTTP header will be
+     * overwritten with the property's value.
+     */
+    public static final String SERVER = "site.server";
+
+    /**
      * If this property key appears in <code>site.cfg</code>, a Strict-Transport-Security HTTP
      * header will added using the property's value.
      */
@@ -66,6 +74,7 @@ public class PortalFilter implements Filter {
 
     private String contentSecurityPolicy;
     private String reportingEndpoints;
+    private String server;
     private String strictTransportSecurity;
 
     // Filter interface methods
@@ -77,6 +86,7 @@ public class PortalFilter implements Filter {
 
             contentSecurityPolicy   = (String) siteConfiguration.get(CONTENT_SECURITY_POLICY);
             reportingEndpoints      = (String) siteConfiguration.get(REPORTING_ENDPOINTS);
+            server                  = (String) siteConfiguration.get(SERVER);
             strictTransportSecurity = (String) siteConfiguration.get(STRICT_TRANSPORT_SECURITY);
 
         } catch (IOException e) {
@@ -99,6 +109,10 @@ public class PortalFilter implements Filter {
             httpResponse.setHeader("Reporting-Endpoints", reportingEndpoints);
         }
 
+        if (server != null) {
+            httpResponse.setHeader("Server", server);
+        }
+
         if (strictTransportSecurity != null) {
             httpResponse.setHeader("Strict-Transport-Security", strictTransportSecurity);
         }
@@ -110,6 +124,7 @@ public class PortalFilter implements Filter {
     public void destroy() {
         contentSecurityPolicy   = null;
         reportingEndpoints      = null;
+        server                  = null;
         strictTransportSecurity = null;
     }
 }

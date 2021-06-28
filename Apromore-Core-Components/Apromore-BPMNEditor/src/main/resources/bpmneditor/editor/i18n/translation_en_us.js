@@ -89,8 +89,8 @@ if(!Apromore.I18N.File) Apromore.I18N.File = {};
 Apromore.I18N.File.group = "File";
 Apromore.I18N.File.print = "Print";
 Apromore.I18N.File.printDesc = "Print current model";
-Apromore.I18N.File.pdf = "Export as PDF";
-Apromore.I18N.File.pdfDesc = "Export as PDF";
+Apromore.I18N.File.pdf = "Download as PDF";
+Apromore.I18N.File.pdfDesc = "Download as PDF";
 Apromore.I18N.File.info = "Info";
 Apromore.I18N.File.infoDesc = "Info";
 Apromore.I18N.File.genPDF = "Generating PDF";
@@ -98,10 +98,10 @@ Apromore.I18N.File.genPDFFailed = "Generating PDF failed.";
 Apromore.I18N.File.printTitle = "Print";
 Apromore.I18N.File.printMsg = "We are currently experiencing problems with the printing function. We recommend using the PDF Export to print the diagram. Do you really want to continue printing?";
 
-Apromore.I18N.File.svg = "Export as .SVG";
-Apromore.I18N.File.svgDesc = "Export as .SVG";
-Apromore.I18N.File.bpmn = "Export as .BPMN";
-Apromore.I18N.File.bpmnDesc = "Export as .BPMN";
+Apromore.I18N.File.svg = "Download as SVG";
+Apromore.I18N.File.svgDesc = "Download as SVG";
+Apromore.I18N.File.bpmn = "Download as BPMN";
+Apromore.I18N.File.bpmnDesc = "Download as BPMN";
 
 if(!Apromore.I18N.Grouping) Apromore.I18N.Grouping = {};
 
