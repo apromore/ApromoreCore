@@ -492,7 +492,8 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
         Span[] parsedIcons = new Span[logMetaData.getHeader().size()];
         for (int pos = 0; pos < logMetaData.getHeader().size(); pos++) {
             Column newColumn = new Column();
-            String label = logMetaData.getHeader().get(pos);
+            String header = logMetaData.getHeader().get(pos);
+            String label = "".equals(header) ? "Column" + (pos + 1) : header;
             newColumn.setValue(label);
             newColumn.setLabel(label);
             int labelLen = (label.length() * 14) + 20;
