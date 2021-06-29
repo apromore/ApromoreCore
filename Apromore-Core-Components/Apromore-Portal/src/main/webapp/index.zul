@@ -212,6 +212,7 @@
                             <h:span class="ap-action-sep"></h:span>
                             <hlayout id="dataPipelinesSection" visible="false">
                                 <button id="btnCreateDataPipeline" sclass="ap-icon ap-icon-etl-pipeline" ca:data-t="createDataPipeline" tooltiptext="${labels.e.portal.createDataPipeline.hint}"/>
+                                <button id="btnManageDataPipelines" sclass="ap-icon ap-icon-clock" ca:data-t="manageDataPipelines" tooltiptext="${labels.e.portal.manageDataPipelines.hint}"/>
                                 <h:span class="ap-action-sep"></h:span>
                             </hlayout>
                             <button id="btnSelectAll" visible="true" sclass="ap-icon ap-icon-select-all" ca:data-t="selectAll" tooltiptext="Select all"/>
