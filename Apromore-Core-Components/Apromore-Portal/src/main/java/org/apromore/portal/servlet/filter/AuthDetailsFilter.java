@@ -36,6 +36,8 @@ import org.apromore.manager.client.ManagerService;
 import org.apromore.portal.model.UserType;
 import org.keycloak.adapters.RefreshableKeycloakSecurityContext;
 import org.keycloak.representations.AccessToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -44,6 +46,8 @@ import org.springframework.stereotype.Component;
 
 @Component("authDetailsFilter")
 public class AuthDetailsFilter implements Filter {
+
+  Logger logger = LoggerFactory.getLogger(getClass());
 
   @Autowired
   ManagerService managerService;
@@ -90,7 +94,7 @@ public class AuthDetailsFilter implements Filter {
     try {
       userType = userType == null ? managerService.readUserByEmail(email) : userType;
     } catch (Exception e1) {
-      // ignoreing for now.
+      logger.warn("User not in system ", ExceptionUtils.getStackTrace(e1));
     }
 
     if (Objects.isNull(userType)) {
@@ -104,7 +108,6 @@ public class AuthDetailsFilter implements Filter {
     }
 
     httpRequest.getSession().setAttribute("USER", userType);
-
 
     chain.doFilter(httpRequest, response);
 

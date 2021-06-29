@@ -66,7 +66,6 @@ public class UserMenuController extends SelectorComposer<Menubar> {
 
   private static final Logger LOGGER = PortalLoggerFactory.getLogger(UserMenuController.class);
 
-
   private static final String JWTS_MAP_BY_USER_KEY = TokenHandoffController.JWTS_MAP_BY_USER_KEY;
 
   private Menuitem aboutMenuitem;
@@ -205,7 +204,6 @@ public class UserMenuController extends SelectorComposer<Menubar> {
       // If this desktop is part of a signed-out session, close the browser tab or switch to login
       EventQueues.lookup("signOutQueue", EventQueues.APPLICATION, true)
           .subscribe(new EventListener() {
-
             public void onEvent(Event event) {
               Session session = Sessions.getCurrent();
 
@@ -217,6 +215,7 @@ public class UserMenuController extends SelectorComposer<Menubar> {
               }
             }
           });
+
       // Force logout a user that has been deleted by admin
       EventQueues.lookup("forceSignOutQueue", EventQueues.APPLICATION, true)
           .subscribe(new EventListener() {
@@ -229,7 +228,6 @@ public class UserMenuController extends SelectorComposer<Menubar> {
               }
             }
           });
-
     }
   }
 }

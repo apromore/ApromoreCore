@@ -100,7 +100,7 @@ public class CustomOIDCFilter extends KeycloakOIDCFilter {
     boolean isExistingSession = existingSession == null ? false
         : existingSession.getAttribute("USER") == null ? false : true;
 
-    System.out.println("Auth-path=" + requestPath);
+
     if (isExistingSession && requestPath.equals("/j_spring_security_logout")) {
       OIDCServletHttpFacade facade = new OIDCServletHttpFacade(request, response);
       KeycloakDeployment deployment = deploymentContext.resolveDeployment(facade);
