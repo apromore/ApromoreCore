@@ -60,9 +60,9 @@ public class CustomOIDCFilter extends KeycloakOIDCFilter {
 
     skipPattern = FilterRegexUtil.getPattern();
 
-    File f = new File(System.getProperty("karaf.etc"), "/config/" + "keycloak.json");
-    try {
-      FileInputStream keyCloakJsonFile = new FileInputStream(f);
+    try (FileInputStream keyCloakJsonFile = new FileInputStream(
+        new File(System.getProperty("karaf.etc"), "/config/" + "keycloak.json"));) {
+
       ObjectMapper mapper = new ObjectMapper();
       AdapterConfig adapterConfig = mapper.readValue(keyCloakJsonFile, AdapterConfig.class);
       KeycloakDeployment kcDeployment = KeycloakDeploymentBuilder.build(adapterConfig);
@@ -99,7 +99,6 @@ public class CustomOIDCFilter extends KeycloakOIDCFilter {
 
     boolean isExistingSession = existingSession == null ? false
         : existingSession.getAttribute("USER") == null ? false : true;
-
 
     if (isExistingSession && requestPath.equals("/j_spring_security_logout")) {
       OIDCServletHttpFacade facade = new OIDCServletHttpFacade(request, response);

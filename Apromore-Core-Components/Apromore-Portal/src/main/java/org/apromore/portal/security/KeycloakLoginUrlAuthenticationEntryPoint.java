@@ -30,6 +30,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.security.core.AuthenticationException;
@@ -151,8 +152,7 @@ public class KeycloakLoginUrlAuthenticationEntryPoint extends LoginUrlAuthentica
       try {
         uri = new URI(requestUriStr);
       } catch (URISyntaxException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
+        LOGGER.error("Exception " + ExceptionUtils.getStackTrace(e));
       }
       if (session == null || session.getAttribute("USER") == null) {
         requestUriStr = uri.resolve("/login.zul").toString();

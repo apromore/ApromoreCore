@@ -56,15 +56,11 @@ public class AuthDetailsFilter implements Filter {
   private boolean useKeyCloak = true;
 
   @Override
-  public void init(FilterConfig filterConfig) throws ServletException {
-
-
-  }
+  public void init(FilterConfig filterConfig) throws ServletException {}
 
   @Override
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
       throws IOException, ServletException {
-
 
     HttpServletRequest req = (HttpServletRequest) request;
     String requestPath = req.getRequestURI().substring(req.getContextPath().length());
@@ -87,9 +83,6 @@ public class AuthDetailsFilter implements Filter {
     String userName = token.getPreferredUsername();
     userName = userName == null ? token.getEmail() : userName;
     String email = token.getEmail();
-    String givenName = token.getGivenName();
-    String familyName = token.getFamilyName();
-
     UserType userType = managerService.readUserByUsername(userName);
     try {
       userType = userType == null ? managerService.readUserByEmail(email) : userType;
@@ -98,7 +91,7 @@ public class AuthDetailsFilter implements Filter {
     }
 
     if (Objects.isNull(userType)) {
-      userType = new UserType(userName, email, givenName, familyName);
+      userType = new UserType(userName, email, token.getGivenName(), token.getFamilyName());
       try {
         userType = managerService.writeUser(userType);
       } catch (Exception e) {
@@ -115,7 +108,6 @@ public class AuthDetailsFilter implements Filter {
 
   @Override
   public void destroy() {
-    // TODO Auto-generated method stub
 
   }
 
