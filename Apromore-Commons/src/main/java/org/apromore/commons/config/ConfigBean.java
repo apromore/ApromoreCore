@@ -24,10 +24,9 @@
 
 package org.apromore.commons.config;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -37,6 +36,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @ConfigurationProperties
+@RefreshScope
 public class ConfigBean {
     private String logsDir = "../Event-Logs-Repository";
     private String numOfEvent;
@@ -47,7 +47,7 @@ public class ConfigBean {
     private static final long serialVersionUID = 117L;
     private static final String COMMUNITY_TAG = "community";
     
-    
+
     private Site site = new Site();
     
     @Data

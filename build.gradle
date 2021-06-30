@@ -25,7 +25,15 @@ subprojects {
 	apply plugin : "java-library"
 	apply plugin: "eclipse"
 	apply plugin: "com.github.hierynomus.license"
+	ext {
+		set('springCloudVersion', "2020.0.1")
+	}
 
+	dependencyManagement {
+		imports {
+			mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+		}
+	}
 	sourceCompatibility = '11'
 
 	configurations {
@@ -56,6 +64,8 @@ subprojects {
 	dependencies {
 		implementation 'org.springframework.boot:spring-boot-starter'
 		implementation 'org.springframework.boot:spring-boot-starter-security'
+		implementation 'org.springframework.cloud:spring-cloud-starter-config'
+		implementation 'org.springframework.boot:spring-boot-starter-actuator'
 		implementation 'javax.activation:javax.activation-api'
 		implementation 'javax.annotation:javax.annotation-api'
 		implementation 'javax.inject:javax.inject:1'
@@ -67,7 +77,6 @@ subprojects {
 		implementation 'org.apache.servicemix.bundles:org.apache.servicemix.bundles.joda-time:2.3_1'
 		implementation 'org.eclipse.collections:eclipse-collections:10.4.0'
 		implementation 'org.springframework.boot:spring-boot-starter-jersey'
-
 		implementation 'org.codehaus.groovy:groovy-all:2.0.5'
 
 
