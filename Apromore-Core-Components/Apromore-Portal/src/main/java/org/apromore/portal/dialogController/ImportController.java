@@ -1,7 +1,7 @@
 /*-
  * #%L
  * This file is part of "Apromore Core".
- * 
+ *
  * Copyright (C) 2011 - 2017 Queensland University of Technology.
  * Copyright (C) 2017 Adriano Augusto.
  * %%
@@ -11,12 +11,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -54,12 +54,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -410,12 +410,14 @@ public class ImportController extends BaseController {
      */
     private void importZip(Media zippedMedia) throws InterruptedException {
         try {
-            ZipInputStream in = new ZipInputStream(zippedMedia.getStreamData());
+            ZipInputStream in = zippedMedia instanceof MediaImpl ?
+                    new ZipInputStream(new FileInputStream(((MediaImpl) zippedMedia).getTempFile())) :
+                    new ZipInputStream(zippedMedia.getStreamData());
             ZipEntry entry;
             while ((entry = in.getNextEntry()) != null) {
                 try {
-                    importFile(new MediaImpl(entry.getName(), zippedMedia.getStreamData(), StandardCharsets.UTF_8,
-                            ItemNameUtils.findExtension(zippedMedia.getName())));
+                    importFile(new MediaImpl(entry.getName(), in, StandardCharsets.UTF_8,
+                            ItemNameUtils.findExtension(entry.getName())));
                     break;
 
                 } catch (ExceptionAllUsers | ExceptionDomains e) {
@@ -429,9 +431,13 @@ public class ImportController extends BaseController {
     }
 
     private void importGzip(Media gzippedMedia) throws ExceptionAllUsers, ExceptionDomains, IOException, InterruptedException, JAXBException {
+
+        GZIPInputStream in = gzippedMedia instanceof MediaImpl ?
+                new GZIPInputStream(new FileInputStream(((MediaImpl) gzippedMedia).getTempFile())) :
+                new GZIPInputStream(gzippedMedia.getStreamData());
+
         importFile(new MediaImpl(ItemNameUtils.findBasename(gzippedMedia.getName()),
-                gzippedMedia.getStreamData(), Charset.forName("UTF-8"),
-                ItemNameUtils.findExtension(gzippedMedia.getName())));
+                in, StandardCharsets.UTF_8, ItemNameUtils.findExtension(ItemNameUtils.findBasename(gzippedMedia.getName()))));
     }
 
     private void importProcess(MainController mainC, ImportController importC, InputStream xml_is, String processName, String nativeType, String filename) throws SuspendNotAllowedException, InterruptedException, JAXBException, IOException, ExceptionDomains, ExceptionAllUsers {

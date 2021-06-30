@@ -171,5 +171,9 @@ public class MediaImpl implements Media {
     public boolean isContentDisposition() {
 	return false;
     }
-    
+
+    public File getTempFile() {
+    	return tempFile;
+	}
+
 }
