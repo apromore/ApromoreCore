@@ -152,7 +152,7 @@ public class KeycloakLoginUrlAuthenticationEntryPoint extends LoginUrlAuthentica
       try {
         uri = new URI(requestUriStr);
       } catch (URISyntaxException e) {
-        LOGGER.error("Exception " + ExceptionUtils.getStackTrace(e));
+        LOGGER.error("Bad request URI", e);
       }
       if (session == null || session.getAttribute("USER") == null) {
         requestUriStr = uri.resolve("/login.zul").toString();
