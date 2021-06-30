@@ -22,13 +22,6 @@
 package org.apromore.apmlog.filter.rules.desc;
 
 import org.apromore.apmlog.filter.rules.LogFilterRule;
-import org.apromore.apmlog.filter.rules.RuleValue;
-import org.apromore.apmlog.filter.types.Inclusion;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
 
 public class CaseSectionEventAttributeCombinationDesc extends AttributeDesc {
     public static String getDescription(LogFilterRule logFilterRule) {
@@ -46,7 +39,6 @@ public class CaseSectionEventAttributeCombinationDesc extends AttributeDesc {
 
         desc.append(secondKey + " ");
         desc.append(getDescriptionFromSetValue(logFilterRule.getSecondaryValues(), logFilterRule.getInclusion()));
-//        desc.append("]");
 
         return desc.toString();
     }

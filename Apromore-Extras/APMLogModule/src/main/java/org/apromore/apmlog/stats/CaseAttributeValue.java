@@ -22,16 +22,18 @@
 package org.apromore.apmlog.stats;
 
 import org.apromore.apmlog.util.Util;
+import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
-import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
+import java.io.Serializable;
 import java.util.Arrays;
+import java.util.BitSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class CaseAttributeValue implements AttributeValue {
+public class CaseAttributeValue implements AttributeValue, Serializable {
     private String value;
 
     // the percentage of cases
@@ -45,34 +47,25 @@ public class CaseAttributeValue implements AttributeValue {
     private double oppCases;
 
     private IntArrayList occurCaseIndexes;
-    private UnifiedSet<Integer> occurCaseIndexSet;
 
     private long totalCases;
 
-    public CaseAttributeValue(String value, IntArrayList occurCaseIndexes, long totalCases) {
+    private DoubleArrayList allDurations;
+
+    public CaseAttributeValue(String value, IntArrayList occurCaseIndexes, DoubleArrayList allDurations, long totalCases) {
         this.value = value.intern();
         this.occurCaseIndexes = occurCaseIndexes;
         this.percent = 100 * ((double) occurCaseIndexes.size() / totalCases);
         this.frequency = String.format("%.2f",  percent );
+        this.allDurations = allDurations;
         this.totalCases = totalCases;
 
         this.oppCases = totalCases - occurCaseIndexes.size();
-
-        occurCaseIndexSet = Arrays.stream(occurCaseIndexes.toArray()).boxed().collect(Collectors.toCollection(UnifiedSet::new));
-    }
-
-    public CaseAttributeValue(String value, UnifiedSet<Integer> occurCaseIndexSet, long totalCases) {
-        this.value = value.intern();
-        this.occurCaseIndexSet = occurCaseIndexSet;
-        this.percent = 100 * ((double) occurCaseIndexSet.size() / totalCases);
-        this.frequency = String.format("%.2f",  percent );
-        this.totalCases = totalCases;
-
-        this.oppCases = totalCases - occurCaseIndexSet.size();
     }
 
     public Set<Integer> getOccurCasesIndexSet() {
-        return occurCaseIndexSet;
+        List<Integer> list = Arrays.stream(occurCaseIndexes.toArray()).boxed().collect(Collectors.toList());
+        return new HashSet<>(list);
     }
 
     public void setRatio(double ratio) {
@@ -83,17 +76,18 @@ public class CaseAttributeValue implements AttributeValue {
         return value;
     }
 
+    @Override
+    public long getCases(BitSet validCaseIndexes) {
+        return getOccurCasesIndexSet().stream().filter(x -> validCaseIndexes.get(x)).collect(Collectors.toSet()).size();
+    }
+
+
     public long getCases() {
         return getOccurCasesIndexSet().size();
     }
 
     public String getFrequency() {
-        return String.format("%.2f",  getPercent() );
-    }
-
-    @Override
-    public long getTotal() {
-        return getCases();
+        return frequency;
     }
 
     public double getRatio() {
@@ -105,8 +99,63 @@ public class CaseAttributeValue implements AttributeValue {
     }
 
     public double getPercent() {
-        return 100 * ((double) getOccurCasesIndexSet().size() / totalCases);
+        return percent;
     }
+
+    public double getInterCasesDoubleValue(BitSet validCaseIndexes) {
+        return getValueInDouble() * getCases(validCaseIndexes);
+    }
+
+    public double getInterCasesDoubleValue() {
+        return getValueInDouble() * getCases();
+    }
+
+    // ===============================================================
+    // Config methods below when use this class as UI data object
+    // ===============================================================
+
+    public long getCaseSize() {
+        return occurCaseIndexes.size();
+    }
+
+    public double getTotalDuration() {
+        return allDurations.sum();
+    }
+
+    public double getMinDuration() {
+        return allDurations.min();
+    }
+
+    public double getMedianDuration() {
+        return allDurations.median();
+    }
+
+    public double getAverageDuration() {
+        return allDurations.average();
+    }
+
+    public double getMaxDuration() {
+        return allDurations.max();
+    }
+
+    public String getMinDurationString() {
+        return Util.durationStringOf(getMinDuration());
+    }
+
+    public String getMedianDurationString() {
+        return Util.durationStringOf(getMedianDuration());
+    }
+
+    public String getAverageDurationString() {
+        return Util.durationStringOf(getAverageDuration());
+    }
+
+    public String getMaxDurationString() {
+        return Util.durationStringOf(getMaxDuration());
+    }
+
+    // ===============================================================
+
 
     @Override
     public double getValueInDouble() {
@@ -114,9 +163,8 @@ public class CaseAttributeValue implements AttributeValue {
         else return Double.valueOf(value);
     }
 
-    @Override
     public IntArrayList getOccurCaseIndexes() {
-        return new IntArrayList(getOccurCasesIndexSet().stream().mapToInt(x->x).toArray());
+        return occurCaseIndexes;
     }
 
     public CaseAttributeValue clone() {
@@ -124,6 +172,6 @@ public class CaseAttributeValue implements AttributeValue {
         for (int i = 0; i < occurCaseIndexes.size(); i++) {
             occurCaseIndexesClone.add(occurCaseIndexes.get(i));
         }
-        return new CaseAttributeValue(value, occurCaseIndexesClone, totalCases);
+        return new CaseAttributeValue(value, occurCaseIndexesClone, allDurations, totalCases);
     }
 }

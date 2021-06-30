@@ -21,7 +21,6 @@
  */
 package org.apromore.apmlog.filter.rules;
 
-import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.filter.types.Choice;
 import org.apromore.apmlog.filter.types.FilterType;
 import org.apromore.apmlog.filter.types.Inclusion;
@@ -68,6 +67,13 @@ public class LogFilterRuleImpl implements LogFilterRule, Serializable {
         }
     }
 
+    public void setPrimaryValues(Set<RuleValue> primaryValues) {
+        this.primaryValues = primaryValues;
+    }
+
+    public void setSecondaryValues(Set<RuleValue> secondaryValues) {
+        this.secondaryValues = secondaryValues;
+    }
 
     public Choice getChoice() {
         return choice;
@@ -104,7 +110,6 @@ public class LogFilterRuleImpl implements LogFilterRule, Serializable {
         return secondaryStringValues;
     }
 
-
     public Set<RuleValue> getSecondaryValues() {
         return secondaryValues;
     }
@@ -130,14 +135,20 @@ public class LogFilterRuleImpl implements LogFilterRule, Serializable {
 
         String keyCopy = key;
 
-        return new LogFilterRuleImpl(choiceCopy, inclusionCopy, sectionCopy, filterTypeCopy, keyCopy, priValCopy, secValCopy);
+        LogFilterRule lfr = new LogFilterRuleImpl(
+                choiceCopy, inclusionCopy, sectionCopy, filterTypeCopy, keyCopy, priValCopy, secValCopy);
+
+        return lfr;
     }
 
     @Override
-    public String toString(APMLog log) {
-        return DescriptionProducer.getDescription(this, log);
+    public String toString() { return DescriptionProducer.getDescription(this); }
+
+    public String getFilterTypeDesc() {
+        return filterType.toDisplay();
     }
 
-    @Override
-    public String toString() { return DescriptionProducer.getDescription(this, null); }
+    public String getFilterRuleDesc() {
+        return toString();
+    }
 }

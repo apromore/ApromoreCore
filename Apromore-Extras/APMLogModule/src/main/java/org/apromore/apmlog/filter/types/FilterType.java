@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -23,6 +23,10 @@ package org.apromore.apmlog.filter.types;
 
 public enum FilterType {
 
+    // =====================================================================
+    // Do not change the string values of the enums.
+    // The String values have been used in the usermetadata already.
+    // =====================================================================
     // attributes
     EVENT_EVENT_ATTRIBUTE("EVENT_EVENT_ATTRIBUTE"),
     CASE_EVENT_ATTRIBUTE("CASE_EVENT_ATTRIBUTE"),
@@ -66,8 +70,30 @@ public enum FilterType {
         this.stringValue = stringValue;
     }
 
-    public String toString() {
-        return stringValue;
+    public String toDisplay() {
+        switch (this) {
+            case EVENT_EVENT_ATTRIBUTE: return "Event attribute (Inner cases)";
+            case CASE_EVENT_ATTRIBUTE: return "Event attribute (Inter cases)";
+            case CASE_CASE_ATTRIBUTE: return "Case attribute";
+            case CASE_ID: return "Case ID";
+            case REWORK_REPETITION: return "Rework";
+            case CASE_TIME: return "Case timeframe";
+            case EVENT_TIME: return "Event timeframe";
+            case DURATION: return "Duration";
+            case CASE_UTILISATION: return "Case utilization";
+            case TOTAL_PROCESSING_TIME: return "Total processing time";
+            case AVERAGE_PROCESSING_TIME: return "Average processing time";
+            case MAX_PROCESSING_TIME: return "Max processing time";
+            case TOTAL_WAITING_TIME: return "Total waiting time";
+            case AVERAGE_WAITING_TIME: return "Average waiting time";
+            case MAX_WAITING_TIME: return "Max waiting time";
+            case CASE_SECTION_ATTRIBUTE_COMBINATION: return "Attribute combination (Inter cases)";
+            case EVENT_ATTRIBUTE_DURATION: return "Node duration";
+            case ATTRIBUTE_ARC_DURATION: return "Arc duration";
+            case CASE_LENGTH: return "Case length";
+            case CASE_VARIANT: return "Case variant";
+            default: return "Unknown";
+        }
     }
 
 }

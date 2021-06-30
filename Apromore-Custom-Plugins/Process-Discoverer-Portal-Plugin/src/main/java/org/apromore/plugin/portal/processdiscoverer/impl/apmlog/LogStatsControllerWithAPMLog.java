@@ -25,6 +25,7 @@ package org.apromore.plugin.portal.processdiscoverer.impl.apmlog;
 import java.text.DecimalFormat;
 
 import org.apromore.apmlog.filter.PLog;
+import org.apromore.apmlog.stats.LogStatsAnalyzer;
 import org.apromore.logman.attribute.log.AttributeLog;
 import org.apromore.logman.attribute.log.AttributeLogSummary;
 import org.apromore.plugin.portal.processdiscoverer.PDAnalyst;
@@ -187,13 +188,13 @@ public class LogStatsControllerWithAPMLog extends LogStatsController {
     private void updateFromLogSummary(AttributeLogSummary filtered, AttributeLogSummary total) {
         PLog pLog = analyst.getFilteredPLog();
 
-        totalEventCount = pLog.getAllOriginalActivities().size();
-        totalCaseCount = pLog.getOriginalPTraceList().size();
-        totalVariantCount = pLog.getOriginalCaseVariantSize();
+        totalEventCount = pLog.getImmutableLog().getActivityInstances().size();
+        totalCaseCount = pLog.getImmutableLog().size();
+        totalVariantCount = LogStatsAnalyzer.getCaseVariantGroupMap(pLog.getImmutableLog().getTraces()).size();
         totalNodeCount = total.getActivityCount();
 
         long filteredEventCount = analyst.getFilteredActivityInstanceSize();
-        long filteredCaseCount = pLog.getPTraceList().size();
+        long filteredCaseCount = pLog.getValidTraceIndexBS().cardinality();
         long filteredVariantCount = analyst.getFilteredCaseVariantSize();
         long filteredNodeCount = filtered.getActivityCount();
 

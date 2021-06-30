@@ -41,15 +41,18 @@
 
 package org.apromore.apmlog.filter;
 
-import org.apromore.apmlog.AActivity;
-import org.apromore.apmlog.AEvent;
 import org.apromore.apmlog.APMLog;
+import org.apromore.apmlog.filter.rules.RuleValue;
+import org.apromore.apmlog.filter.types.OperationType;
+import org.apromore.apmlog.histogram.TimeHistogram;
+import org.apromore.apmlog.logobjects.ActivityInstance;
+import org.apromore.apmlog.exceptions.EmptyInputException;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.typefilters.*;
 import org.apromore.apmlog.filter.types.Choice;
 import org.apromore.apmlog.filter.types.FilterType;
-import org.apromore.apmlog.filter.types.OperationType;
-import org.eclipse.collections.impl.set.mutable.UnifiedSet;
+import org.apromore.apmlog.stats.LogStatsAnalyzer;
+import org.apromore.apmlog.stats.TimeStatsProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,7 +77,7 @@ import java.util.stream.Collectors;
  * Modified: Chii Chang (17/04/2020) - bug fixed
  * Modified: Chii Chang (26/01/2020)
  * Modified: Chii Chang (16/03/2021) - Replaced with new code
- * Modified: Chii Chang (21/06/2021)
+ * Modified: Chii Chang (22/06/2021)
  */
 public class APMLogFilter {
 
@@ -90,17 +93,8 @@ public class APMLogFilter {
         return pLog;
     }
 
-
-    private APMLog finalAPMLog;
-
-    public APMLog getFinalAPMLog() {
-        if (finalAPMLog == null) finalAPMLog = pLog.toAPMLog();
-        return this.finalAPMLog;
-    }
-
-    public APMLog getApmLog() {
-        finalAPMLog = this.pLog.toAPMLog();
-        return finalAPMLog;
+    public APMLog getAPMLog() throws EmptyInputException {
+        return this.pLog.toImmutableLog();
     }
 
     /**
@@ -109,7 +103,7 @@ public class APMLogFilter {
      * @return
      */
     public PLog filterIndex(List<LogFilterRule> logFilterRuleList) {
-        proceedFiltering(logFilterRuleList);
+        proceedFiltering(logFilterRuleList, false);
         return pLog;
     }
 
@@ -118,15 +112,13 @@ public class APMLogFilter {
      * @param logFilterRuleList
      */
     public void filter(List<LogFilterRule> logFilterRuleList) {
-        proceedFiltering(logFilterRuleList);
+        proceedFiltering(logFilterRuleList, true);
     }
 
-    private void proceedFiltering(List<LogFilterRule> logFilterRuleList) {
-        // Reset indexes
-        List<PTrace> traces = new ArrayList<>(pLog.getOriginalPTraceList());
-        for (PTrace pTrace : traces) {
-            pTrace.setValidEventIndexBS(pTrace.getOriginalValidEventIndexBS());
-        }
+    private void proceedFiltering(List<LogFilterRule> logFilterRuleList, boolean updateStats) {
+
+        List<PTrace> traces = new ArrayList<>(pLog.getOriginalPTraces());
+
 
         if (logFilterRuleList != null && !logFilterRuleList.isEmpty()) {
             for (LogFilterRule rule : logFilterRuleList) {
@@ -134,6 +126,9 @@ public class APMLogFilter {
                 switch (filterType) {
                     case CASE_ID:
                     case CASE_VARIANT:
+                        LogStatsAnalyzer.updateCaseVariants(traces.stream().collect(Collectors.toList()));
+                        traces = filterByCaseSectionCaseAttribute(rule, traces);
+                        break;
                     case CASE_CASE_ATTRIBUTE:
                         traces = filterByCaseSectionCaseAttribute(rule, traces);
                         break;
@@ -180,7 +175,7 @@ public class APMLogFilter {
                         traces = filterByEventSectAttribute(rule, traces);
                         break;
                     case EVENT_TIME:
-                        traces = filterByEventTime(rule, traces);
+                        traces = filterByEventSectTime(rule, traces);
                         break;
                     default:
                         break;
@@ -188,15 +183,13 @@ public class APMLogFilter {
             }
         }
 
-        BitSet validTracesBS = new BitSet(pLog.getOriginalPTraceList().size());
+        BitSet validTracesBS = new BitSet(pLog.getImmutableLog().size());
         for (PTrace trace : traces) {
             validTracesBS.set(trace.getImmutableIndex());
-
-            trace.updateTimeStats();
         }
 
         pLog.setValidTraceIndexBS(validTracesBS);
-        pLog.setPTraceList(traces);
+        if (updateStats) pLog.setPTraces(traces);
     }
 
 
@@ -267,7 +260,7 @@ public class APMLogFilter {
 
     }
 
-    private List<PTrace> filterByEventSectAttribute(LogFilterRule rule, List<PTrace> traces) {
+    public List<PTrace> filterByEventSectAttribute(LogFilterRule rule, List<PTrace> traces) {
         return traces.stream()
                 .filter(x -> filterActivitiesByAttribute(rule, x))
                 .collect(Collectors.toList());
@@ -280,32 +273,79 @@ public class APMLogFilter {
 
         Set<String> values = (Set<String>) rule.getPrimaryValues().iterator().next().getObjectVal();
 
-        List<AActivity> validActs = pTrace.getOriginalActivityList().stream()
-                .filter(x -> pTrace.getValidEventIndexBitSet().get(x.getEventIndexes().get(0)))
+        List<ActivityInstance> validActs = LogStatsAnalyzer.getValidActivitiesOf(pTrace).stream()
+                .filter(x -> toKeepByEventAttr(x, key, values, rule.getChoice() == Choice.RETAIN))
                 .collect(Collectors.toList());
 
-        List<AActivity> matched = pTrace.getOriginalActivityList().stream()
-                .filter(x -> x.getAllAttributes().containsKey(key) && values.contains(x.getAllAttributes().get(key)))
-                .collect(Collectors.toList());
-
-        if (rule.getChoice() == Choice.RETAIN) {
-            validActs = matched;
-        } else {
-            validActs.removeAll(matched);
+        if (validActs.isEmpty()) {
+            pTrace.setValidEventIndexBS(new BitSet(pTrace.getImmutableEvents().size()));
+            return false;
         }
 
-        if (validActs.size() == 0) return false;
+        BitSet bitSet = new BitSet(pTrace.getOriginalActivityInstances().size());
 
-        // update valid event index BitSet
-        pTrace.setValidEventIndexBS(new BitSet(pTrace.getOriginalValidEventIndexBS().size()));
-
-        for (AActivity activity : validActs) {
-            updateValidEventBitSet(pTrace, activity);
+        for (ActivityInstance act : validActs) {
+            for (int index : act.getImmutableEventIndexes()) {
+                bitSet.set(index);
+            }
         }
 
-        pTrace.setActivities(validActs);
+        pTrace.setValidEventIndexBS(bitSet);
 
         return true;
+    }
+
+    private static boolean toKeepByEventAttr(ActivityInstance activity, String key, Set<String> values, boolean retain) {
+        return retain ?
+                activity.getAttributes().containsKey(key) && values.contains(activity.getAttributes().get(key))
+                :
+                !activity.getAttributes().containsKey(key) || !values.contains(activity.getAttributes().get(key));
+    }
+
+    public List<PTrace> filterByEventSectTime(LogFilterRule rule, List<PTrace> traces) {
+        return traces.stream()
+                .filter(x -> filterActivitiesByTime(rule, x))
+                .collect(Collectors.toList());
+    }
+
+    private boolean filterActivitiesByTime(LogFilterRule rule, PTrace pTrace) {
+
+        long fromTime = 0, toTime = 0;
+        for (RuleValue ruleValue : rule.getPrimaryValues()) {
+            OperationType operationType = ruleValue.getOperationType();
+            if (operationType == OperationType.GREATER_EQUAL) fromTime = ruleValue.getLongValue();
+            if (operationType == OperationType.LESS_EQUAL) toTime = ruleValue.getLongValue();
+        }
+
+        long finalFromTime = fromTime;
+        long finalToTime = toTime;
+        List<ActivityInstance> validActs = LogStatsAnalyzer.getValidActivitiesOf(pTrace).stream()
+                .filter(x -> toKeepByEventTime(x, finalFromTime, finalToTime, rule.getChoice() == Choice.RETAIN))
+                .collect(Collectors.toList());
+
+        if (validActs.isEmpty()) {
+            pTrace.setValidEventIndexBS(new BitSet(pTrace.getImmutableEvents().size()));
+            return false;
+        }
+
+        BitSet bitSet = new BitSet(pTrace.getOriginalActivityInstances().size());
+
+        for (ActivityInstance act : validActs) {
+            for (int index : act.getImmutableEventIndexes()) {
+                bitSet.set(index);
+            }
+        }
+
+        pTrace.setValidEventIndexBS(bitSet);
+
+        return true;
+    }
+
+    private static boolean toKeepByEventTime(ActivityInstance activity, long startTime, long endTime, boolean retain) {
+        return retain ?
+                TimeHistogram.withinTime(activity.getStartTime(), activity.getEndTime(), startTime, endTime)
+                :
+                !TimeHistogram.withinTime(activity.getStartTime(), activity.getEndTime(), startTime, endTime);
     }
 
     public static List<PTrace> filterByEventTime(LogFilterRule rule, List<PTrace> traces) {
@@ -315,26 +355,20 @@ public class APMLogFilter {
     }
 
     private static boolean filterEventsByTime(LogFilterRule rule, PTrace pTrace) {
-        List<AEvent> validEvents = pTrace.getOriginalEventList().stream()
-                .filter(x -> pTrace.getValidEventIndexBitSet().get(x.getIndex()) &&
-                        EventTimeFilter.toKeep(x, rule))
+        List<Integer> validEventIndexList = pTrace.getActivityInstances().stream()
+                .filter(x -> EventTimeFilter.toKeep(x, rule))
+                .flatMap(x -> x.getImmutableEventIndexes().stream())
                 .collect(Collectors.toList());
-        pTrace.getEventList().clear();
-        pTrace.getEventList().addAll(validEvents);
-        pTrace.setValidEventIndexBS(new BitSet(pTrace.getOriginalEventList().size()));
-        for (AEvent aEvent : validEvents) {
-            pTrace.getValidEventIndexBitSet().set(aEvent.getIndex());
+
+        BitSet validBS = new BitSet(pTrace.getImmutableEvents().size());
+
+        for (int validIndex : validEventIndexList) {
+            validBS.set(validIndex);
         }
 
-        pTrace.updateValidActivities();
+        pTrace.setValidEventIndexBS(validBS);
 
-        return !validEvents.isEmpty();
-    }
-
-    private static void updateValidEventBitSet(PTrace trace, AActivity activity) {
-        for (int i = 0; i < activity.getEventIndexes().size(); i++) {
-            trace.getValidEventIndexBitSet().set(activity.getEventIndexes().get(i));
-        }
+        return validEventIndexList == null || validEventIndexList.isEmpty();
     }
 
     private List<PTrace> filterByPath(LogFilterRule rule, List<PTrace> traces) {
@@ -351,53 +385,4 @@ public class APMLogFilter {
                 .collect(Collectors.toList());
     }
 
-    private List<PTrace> filterByDirectlyFollows(LogFilterRule rule, List<PTrace> traces) {
-        String attrKey = rule.getKey();
-        Choice choice = rule.getChoice();
-
-        UnifiedSet<String> fromVals = rule.getPrimaryValues().stream()
-                .filter(x -> x.getOperationType() == OperationType.FROM)
-                .map(x -> x.getStringValue())
-                .collect(Collectors.toCollection(UnifiedSet::new));
-
-        UnifiedSet<String> toVals = rule.getPrimaryValues().stream()
-                .filter(x -> x.getOperationType() == OperationType.TO)
-                .map(x -> x.getStringValue())
-                .collect(Collectors.toCollection(UnifiedSet::new));
-
-        return traces.stream()
-                .filter(x -> containsOneOfDirectlyFollows(choice, attrKey, fromVals, toVals, x))
-                .collect(Collectors.toList());
-    }
-
-    private boolean containsOneOfDirectlyFollows(Choice choice,
-                                                 String key,
-                                                 UnifiedSet<String> fromVals,
-                                                 UnifiedSet<String> toVals,
-                                                 PTrace pTrace) {
-
-
-        List<AActivity> validActs = pTrace.getOriginalActivityList().stream()
-                .filter(x -> pTrace.getValidEventIndexBitSet().get(x.getImmutableEventList().get(0).getIndex()))
-                .collect(Collectors.toList());
-
-        boolean match = false;
-
-        for (int i = 0; i < validActs.size() - 1; i++) {
-            AActivity act1 = validActs.get(i);
-            AActivity act2 = validActs.get(i + 1);
-            if (
-                    (act1.getAllAttributes().containsKey(key) &&
-                            fromVals.contains(act1.getAllAttributes().get(key)))
-                            &&
-                            (act2.getAllAttributes().containsKey(key) &&
-                                    toVals.contains(act2.getAllAttributes().get(key)))
-            ) {
-                match = true;
-                break;
-            }
-        }
-
-        return (match && choice == Choice.RETAIN) || (!match && choice == Choice.REMOVE);
-    }
 }

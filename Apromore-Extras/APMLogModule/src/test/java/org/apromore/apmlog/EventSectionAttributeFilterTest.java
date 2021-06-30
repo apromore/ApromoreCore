@@ -21,18 +21,30 @@
  */
 package org.apromore.apmlog;
 
+import org.apromore.apmlog.exceptions.EmptyInputException;
 import org.apromore.apmlog.filter.APMLogFilter;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.LogFilterRuleImpl;
 import org.apromore.apmlog.filter.rules.RuleValue;
-import org.apromore.apmlog.filter.types.*;
+import org.apromore.apmlog.filter.types.Choice;
+import org.apromore.apmlog.filter.types.FilterType;
+import org.apromore.apmlog.filter.types.Inclusion;
+import org.apromore.apmlog.filter.types.OperationType;
+import org.apromore.apmlog.filter.types.Section;
+import org.apromore.apmlog.stats.EventAttributeValue;
+import org.eclipse.collections.impl.map.immutable.ImmutableUnifiedMap;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
-import java.util.*;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class EventSectionAttributeFilterTest {
 
@@ -76,7 +88,7 @@ public class EventSectionAttributeFilterTest {
         APMLogFilter apmLogFilter = new APMLogFilter(apmLog);
         apmLogFilter.filter(rules);
 
-        List<ATrace> traceList = apmLogFilter.getApmLog().getTraceList();
+        List<ATrace> traceList = apmLogFilter.getAPMLog().getTraces();
 
         UnifiedMap<String, Boolean> expectedIdMatch = new UnifiedMap<>();
 
@@ -119,7 +131,7 @@ public class EventSectionAttributeFilterTest {
         }
     }
 
-    public static void testEventAttrFreqAfterEventAttrFilter(APMLog apmLog) {
+    public static void testEventAttrFreqAfterEventAttrFilter(APMLog apmLog, APMLogUnitTest parent) throws UnsupportedEncodingException, EmptyInputException {
         Set<RuleValue> primaryValues = new HashSet<>();
 
         Set<String> selectedVals = new HashSet<>(Arrays.asList("Turning & Milling Q.C.", "Laser Marking - Machine 7"));
@@ -133,9 +145,12 @@ public class EventSectionAttributeFilterTest {
         List<LogFilterRule> rules = Collections.singletonList(logFilterRule);
 
         APMLogFilter apmLogFilter = new APMLogFilter(apmLog);
-        apmLogFilter.filterIndex(rules);
+        apmLogFilter.filter(rules);
+        APMLog filteredLog = apmLogFilter.getAPMLog();
 
-        int actSizeOfCFM = apmLogFilter.getPLog().getEventAttributeValues().get("concept:name").size();
+        ImmutableUnifiedMap<String, UnifiedSet<EventAttributeValue>> eavMap = filteredLog.getImmutableEventAttributeValues();
+
+        int actSizeOfCFM = eavMap.get("concept:name").size();
 
         assertEquals(2, actSizeOfCFM);
     }

@@ -41,12 +41,11 @@
 
 package org.apromore.apmlog;
 
-import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
+import org.apromore.apmlog.logobjects.ActivityInstance;
+import org.apromore.apmlog.logobjects.ImmutableEvent;
 import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
-import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
-import java.util.BitSet;
 import java.util.List;
 
 /**
@@ -70,95 +69,119 @@ import java.util.List;
  * Modified: Chii Chang (22/01/2021)
  * Modified: Chii Chang (26/01/2021)
  * Modified: Chii Chang (17/03/2021)
- * Modified: Chii Chang (21/06/2021)
+ * Modified: Chii Chang (06/05/2021)
+ *
+ * ATrace is the common interface of the trace objects.
+ * For immutable trace, implement it with ImmutableTrace.
+ * For mutable trace, implement it with PTrace.
  */
 public interface ATrace {
 
-
-    UnifiedMap<String, UnifiedMap<String, Integer>> getEventAttributeValueFreqMap();
-
-    void addActivity(AActivity aActivity);
-
+    // ========================================================
+    // GET methods
+    // ========================================================
     int getImmutableIndex();
-
-    int getMutableIndex();
-
-    void setMutableIndex(int mutableIndex);
-
     String getCaseId();
 
-    void setCaseVariantId(int caseVariantId);
+    /**
+     * returns null if the case ID is not numeric
+     * @return
+     */
+    Number getCaseIdDigit();
 
     int getCaseVariantId();
 
-    int getEventSize();
+    List<ActivityInstance> getActivityInstances();
 
-    long getStartTimeMilli();
+    /**
+     * A string contains the activity instance name indicator.
+     * For example, suppose this log has three unique activities - 'Act1', 'Act2' and 'Act3'.
+     * During the initiation phase, the log can assign Act1 as 1, Act2 as 2 and Act3 as 3
+     * in the ActivityNameIndicatorMap of APMLog.
+     * Suppose this ATrace contains the activity instances in the order of 'Act2'->'Act3'->'Act1'
+     * then this method shall returns "231'.
+     * @return
+     */
+    String getCaseVariantIndicator();
 
-    long getEndTimeMilli();
+    UnifiedMap<String, String> getAttributes();
+
+    /**
+     * A processing time is the duration of an activity instance
+     * @return Time intervals of activity instances
+     */
+    DoubleArrayList getProcessingTimes();
+
+    /**
+     * A waiting time is the duration between the end timestamp of prior activity instance and
+     * the start timestamp of the later activity instance
+     * @return Idle times within the trace
+     */
+    DoubleArrayList getWaitingTimes();
+
+    /**
+     *
+     * @return Epoch/Unix time
+     */
+    long getStartTime();
+
+    /**
+     *
+     * @return Epoch/Unix time
+     */
+    long getEndTime();
 
     double getDuration();
 
-    boolean isHasActivity();
-
-    void setHasActivity(boolean opt);
-
-    List<AActivity> getActivityList();
-
-    List<String> getActivityNameList();
-
-    UnifiedSet<String> getEventNameSet();
-
-    UnifiedMap<String, String> getAttributeMap();
-
-    List<AEvent> getEventList();
-
-    int size();
-
-    AEvent get(int index);
-
-    double getTotalProcessingTime();
-
-    double getAverageProcessingTime();
-
-    double getMaxProcessingTime();
-
-    double getTotalWaitingTime();
-
-    double getAverageWaitingTime();
-
-    double getMaxWaitingTime();
-
     double getCaseUtilization();
 
-    BitSet getValidEventIndexBitSet();
+    /**
+     * XEvent list is immutable
+     * @return the data source of the activity instances
+     */
+    List<ImmutableEvent> getImmutableEvents();
 
-    String getStartTimeString();
+    /**
+     *
+     * @return first activity instance
+     */
+    ActivityInstance getFirst();
 
-    String getEndTimeString();
+    /**
+     *
+     * @return last activity instance
+     */
+    ActivityInstance getLast();
 
-    String getDurationString();
+    /**
+     *
+     * @param activityInstance
+     * @return next activity instance of the parameter
+     */
+    ActivityInstance getNextOf(ActivityInstance activityInstance);
 
-    long getCaseIdDigit();
+    /**
+     *
+     * @param activityInstance
+     * @return previous activity instance of the parameter
+     */
+    ActivityInstance getPreviousOf(ActivityInstance activityInstance);
 
-    List<Integer> getActivityNameIndexList();
+    // ========================================================
+    // SET methods
+    // ========================================================
 
-    void setCaseVariantIdForDisplay(int caseVariantIdForDisplay);
+    /**
+     * APMLog need to completely initiating the traces before assign case variant IDs.
+     * Hence, the set case variant ID method is called separately.
+     * @param caseVariantId
+     */
+    void setCaseVariantId(int caseVariantId);
 
-    int getCaseVariantIdForDisplay();
+    // ========================================================
+    // Operation methods
+    // ========================================================
 
-    void addEvent(AEvent event);
+    ATrace deepClone();
 
-    void setEventList(List<AEvent> eventList);
-
-    List<AEvent> getImmutableEvents();
-
-    void setImmutableEvents(List<AEvent> events);
-
-    DoubleArrayList getWaitingTimes();
-    DoubleArrayList getProcessingTimes();
-
-    void setStartTimeMilli(long startTimeMilli);
-    void setEndTimeMilli(long endTimeMilli);
-    String getActivityNameIndexString(HashBiMap<String, Integer> nameIndexBiMap);
 }

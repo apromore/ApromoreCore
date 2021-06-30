@@ -27,7 +27,7 @@ public class TripleOverlapTest {
 
     public static void test1(APMLog apmLog) {
         double[] expected = new double[]{100, 110, 200};
-        double[] result = apmLog.getTraceList().get(0).getActivityList().stream()
+        double[] result = apmLog.getTraces().get(0).getActivityInstances().stream()
                 .mapToDouble(s -> s.getDuration()).toArray();
         assertArrayEquals(expected, result, 0);
     }

@@ -19,15 +19,23 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.apmlog;
+package org.apromore.apmlog.filter.typefilters;
 
-import static org.junit.Assert.assertArrayEquals;
+import java.util.List;
 
-public class DiscardNoLifecycleTest {
-    public static void test1(APMLog apmLog) {
-        double[] expected = new double[]{100, 110, 0};
-        double[] result = apmLog.getTraceList().get(0).getActivityList().stream()
-                .mapToDouble(s -> s.getDuration()).toArray();
-        assertArrayEquals(expected, result, 0);
+public class AbstractAttributeDurationFilter {
+
+    public static boolean containsInvalidDuration(List<Double> durations, double lowBoundVal, double upBoundVal) {
+        if (durations == null) return false;
+        if (durations.isEmpty()) return false;
+
+        final double finalLowBoundVal = lowBoundVal;
+        final double finalUpBoundVal = upBoundVal;
+        double falseVal = durations.stream()
+                .filter(x -> x < finalLowBoundVal || x > finalUpBoundVal)
+                .findFirst()
+                .orElse(-1.0);
+
+        return falseVal != -1.0;
     }
 }

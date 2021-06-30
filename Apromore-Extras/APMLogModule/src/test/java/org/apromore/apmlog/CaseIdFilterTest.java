@@ -21,6 +21,7 @@
  */
 package org.apromore.apmlog;
 
+import org.apromore.apmlog.exceptions.EmptyInputException;
 import org.apromore.apmlog.filter.APMLogFilter;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.LogFilterRuleImpl;
@@ -35,7 +36,7 @@ import java.util.stream.Collectors;
 import static org.junit.Assert.assertArrayEquals;
 
 public class CaseIdFilterTest {
-    public static void test1(APMLog originalLog) {
+    public static void test1(APMLog originalLog) throws EmptyInputException {
 
         Choice choice =  Choice.REMOVE;
 
@@ -58,10 +59,10 @@ public class CaseIdFilterTest {
 
         APMLogFilter apmLogFilter = new APMLogFilter(originalLog);
         apmLogFilter.filter(rules);
-        APMLog apmLog = apmLogFilter.getApmLog();
+        APMLog apmLog = apmLogFilter.getAPMLog();
 
         Object[] expected = new Object[]{"3011"};
-        Object[] result = apmLog.getTraceList().stream()
+        Object[] result = apmLog.getTraces().stream()
                 .map(ATrace::getCaseId)
                 .toArray();
 

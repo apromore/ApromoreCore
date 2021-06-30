@@ -21,8 +21,8 @@
  */
 package org.apromore.apmlog.filter.typefilters;
 
-import org.apromore.apmlog.AActivity;
-import org.apromore.apmlog.ATrace;
+import org.apromore.apmlog.logobjects.ActivityInstance;
+import org.apromore.apmlog.filter.PTrace;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.RuleValue;
 import org.apromore.apmlog.filter.types.Choice;
@@ -31,8 +31,8 @@ import org.apromore.apmlog.filter.types.OperationType;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EventAttributeDurationFilter {
-    public static boolean toKeep(ATrace trace, LogFilterRule logFilterRule) {
+public class EventAttributeDurationFilter extends AbstractAttributeDurationFilter {
+    public static boolean toKeep(PTrace trace, LogFilterRule logFilterRule) {
         Choice choice = logFilterRule.getChoice();
         switch (choice) {
             case RETAIN: return conformRule(trace, logFilterRule);
@@ -40,10 +40,8 @@ public class EventAttributeDurationFilter {
         }
     }
 
-    private static boolean conformRule(ATrace trace, LogFilterRule logFilterRule) {
+    private static boolean conformRule(PTrace trace, LogFilterRule logFilterRule) {
         String attributeKey = logFilterRule.getKey();
-
-
 
         double durRangeFrom = 0, durRangeTo = 0;
         for (RuleValue ruleValue : logFilterRule.getPrimaryValues()) {
@@ -56,26 +54,25 @@ public class EventAttributeDurationFilter {
 
         List<Double> durList = getAttributeDurationList(trace, attributeKey, attributeValue);
 
-        if (durList.size() < 1) {
-            return false;
-        } else {
-            for (double dur : durList) {
-                if (dur >= durRangeFrom && dur <= durRangeTo) {
-                    return true;
-                }
+        if (durList.size() < 1) return false;
+
+        if (containsInvalidDuration(durList, durRangeFrom, durRangeTo)) return false;
+
+        for (double dur : durList) {
+            if (dur >= durRangeFrom && dur <= durRangeTo) {
+                return true;
             }
         }
 
         return false;
     }
 
-    private static List<Double> getAttributeDurationList(ATrace trace, String key, String value) {
+    private static List<Double> getAttributeDurationList(PTrace trace, String key, String value) {
         List<Double> durList= new ArrayList<>();
 
-        List<AActivity> activityList = trace.getActivityList();
+        List<ActivityInstance> activityList = trace.getActivityInstances();
 
-        for (int i = 0; i < activityList.size(); i++) {
-            AActivity activity = activityList.get(i);
+        for (ActivityInstance activity : activityList) {
             String attrVal = getAttributeValue(activity, key);
             if (attrVal.equals(value)) {
                 durList.add(activity.getDuration());
@@ -85,14 +82,7 @@ public class EventAttributeDurationFilter {
         return durList;
     }
 
-    private static String getAttributeValue(AActivity activity, String key) {
+    private static String getAttributeValue(ActivityInstance activity, String key) {
         return activity.getAttributeValue(key);
-//        switch (key) {
-//            case "concept:name": return activity.getName();
-//            case "org:resource": return activity.getEventList().get(0).getResource();
-//            default:
-//                UnifiedMap<String, String> attrMap = activity.getEventList().get(0).getAttributeMap();
-//                return attrMap.get(key);
-//        }
     }
 }

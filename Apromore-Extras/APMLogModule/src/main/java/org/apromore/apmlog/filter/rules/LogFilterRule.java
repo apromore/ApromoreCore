@@ -21,8 +21,6 @@
  */
 package org.apromore.apmlog.filter.rules;
 
-
-import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.filter.types.Choice;
 import org.apromore.apmlog.filter.types.FilterType;
 import org.apromore.apmlog.filter.types.Inclusion;
@@ -42,5 +40,8 @@ public interface LogFilterRule {
     Set<String> getPrimaryValuesInString();
     Set<String> getSecondaryValuesInString();
     LogFilterRule clone();
-    String toString(APMLog log);
+    void setPrimaryValues(Set<RuleValue> primaryValues);
+    void setSecondaryValues(Set<RuleValue> secondaryValues);
+    String getFilterRuleDesc();
+    String getFilterTypeDesc();
 }
