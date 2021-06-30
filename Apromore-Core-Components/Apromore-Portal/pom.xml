@@ -388,7 +388,7 @@
 		<dependency>
 		    <groupId>org.keycloak</groupId>
 		    <artifactId>keycloak-servlet-filter-adapter</artifactId>
-		    <version>14.0.0</version>
+		    <version>${keycloak.version}</version>
 		  <exclusions>
 	        <exclusion>  <!-- declare the exclusion here -->
 	          <groupId>commons-logging</groupId>
@@ -400,7 +400,7 @@
 		<dependency>
     		<groupId>org.keycloak</groupId>
     		<artifactId>keycloak-osgi-adapter</artifactId>
-    		<version>14.0.0</version>
+    		<version>${keycloak.version}</version>
 		</dependency>
 
     </dependencies>

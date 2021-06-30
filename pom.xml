@@ -135,7 +135,7 @@
         <apromore-cache.version>1.0</apromore-cache.version>
         <apromore-database.version>1.0</apromore-database.version>
         <apromore-calendar.version>1.0</apromore-calendar.version>
-        <apromore-storage.version>1.0</apromore-storage.version>
+        <apromore-storage.version>1.0</apromore-storage.version>        
 
         <gemini.blueprint.version>1.0.2.RELEASE</gemini.blueprint.version>
         <osgi.version>7.0.0</osgi.version>
