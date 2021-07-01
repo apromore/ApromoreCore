@@ -400,9 +400,13 @@
             <listener-class>org.apromore.zk.ApromoreDesktopCleanup</listener-class>
     </listener>
 
-   <!-- <listener>
+    <listener>
             <listener-class>org.apromore.portal.ApromoreZKListener</listener-class>
-    </listener> -->
+    </listener>
+
+    <listener>
+            <listener-class>org.apromore.portal.LoggingZKListener</listener-class>
+    </listener>
 
 
     <!-- Configure the error page

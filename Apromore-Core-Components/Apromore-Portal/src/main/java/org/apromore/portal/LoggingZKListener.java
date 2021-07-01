@@ -49,7 +49,7 @@ public class LoggingZKListener implements SessionCleanup {
             LOGGER.debug("Unauthenticated user session expired");
 
         } else if (MDC.get(PortalLoggerFactory.MDC_APROMORE_USER_KEY) != null) {
-            LOGGER.info("User \"{}\" logout due to inactivity", user.getUsername());
+            LOGGER.info("User \"{}\" logout", user.getUsername());
 
         } else {
             LOGGER.debug("User \"{}\" session expired", user.getUsername());
