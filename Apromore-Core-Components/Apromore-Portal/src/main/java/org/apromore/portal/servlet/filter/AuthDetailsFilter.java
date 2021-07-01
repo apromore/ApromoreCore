@@ -30,6 +30,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apromore.manager.client.ManagerService;
@@ -63,11 +64,24 @@ public class AuthDetailsFilter implements Filter {
       throws IOException, ServletException {
 
     HttpServletRequest req = (HttpServletRequest) request;
+    HttpServletResponse res = (HttpServletResponse) response;
+
     String requestPath = req.getRequestURI().substring(req.getContextPath().length());
     HttpSession existingSession = req.getSession(false);
 
     boolean isExistingSession = existingSession == null ? false
         : existingSession.getAttribute("USER") == null ? false : true;
+
+
+    if (useKeyCloak && isExistingSession && requestPath.equals("/j_spring_security_logout")) {
+
+      req.logout();
+      existingSession.invalidate();
+      res.sendRedirect("/");
+      return;
+    }
+
+
 
     if (!useKeyCloak || FilterRegexUtil.isMatchingFilterRegex(requestPath) || isExistingSession) {
       chain.doFilter(request, response);

@@ -24,7 +24,6 @@ package org.apromore.portal.servlet.filter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.URLEncoder;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;
@@ -40,7 +39,6 @@ import org.keycloak.adapters.KeycloakDeployment;
 import org.keycloak.adapters.KeycloakDeploymentBuilder;
 import org.keycloak.adapters.NodesRegistrationManagement;
 import org.keycloak.adapters.servlet.KeycloakOIDCFilter;
-import org.keycloak.adapters.servlet.OIDCServletHttpFacade;
 import org.keycloak.representations.adapters.config.AdapterConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -97,21 +95,8 @@ public class CustomOIDCFilter extends KeycloakOIDCFilter {
       return;
     }
 
-    boolean isExistingSession = existingSession == null ? false
-        : existingSession.getAttribute("USER") == null ? false : true;
 
-    if (isExistingSession && requestPath.equals("/j_spring_security_logout")) {
-      OIDCServletHttpFacade facade = new OIDCServletHttpFacade(request, response);
-      KeycloakDeployment deployment = deploymentContext.resolveDeployment(facade);
 
-      String redirecturi = getRedirectUri(request, requestPath);
-
-      String logoutUrlString = deployment.getLogoutUrl().toTemplate() + "?redirect_uri="
-          + URLEncoder.encode(redirecturi, "UTF-8");
-      existingSession.invalidate();
-      response.sendRedirect(logoutUrlString);
-      return;
-    }
     super.doFilter(req, res, chain);
   }
 

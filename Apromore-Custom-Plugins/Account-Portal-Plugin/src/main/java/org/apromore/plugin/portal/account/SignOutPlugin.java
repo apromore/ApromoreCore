@@ -24,16 +24,14 @@ package org.apromore.plugin.portal.account;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Locale;
 import javax.imageio.ImageIO;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
-import org.apromore.portal.common.UserSessionManager;
 import org.slf4j.Logger;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -42,55 +40,54 @@ import org.zkoss.zul.Messagebox;
 
 public class SignOutPlugin extends DefaultPortalPlugin {
 
-    private static Logger LOGGER = PortalLoggerFactory.getLogger(SignOutPlugin.class);
+  private static Logger LOGGER = PortalLoggerFactory.getLogger(SignOutPlugin.class);
 
-    private String label = "Sign out";
-    private String groupLabel = "Account";
+  private String label = "Sign out";
+  private String groupLabel = "Account";
 
-    // PortalPlugin overrides
+  // PortalPlugin overrides
 
-    @Override
-    public String getLabel(Locale locale) {
-        return label;
+  @Override
+  public String getLabel(Locale locale) {
+    return label;
+  }
+
+  @Override
+  public String getGroupLabel(Locale locale) {
+    return groupLabel;
+  }
+
+  @Override
+  public RenderedImage getIcon() {
+    try (InputStream in = getClass().getClassLoader().getResourceAsStream("/sign-out-icon.png")) {
+      BufferedImage icon = ImageIO.read(in);
+      return icon;
+
+    } catch (IOException e) {
+      e.printStackTrace();
+      return null;
     }
+  }
 
-    @Override
-    public String getGroupLabel(Locale locale) {
-        return groupLabel;
-    }
+  @Override
+  public String getIconPath() {
+    return "/sign-out-icon.svg";
+  }
 
-    @Override
-    public RenderedImage getIcon() {
-        try (InputStream in = getClass().getClassLoader().getResourceAsStream("/sign-out-icon.png")) {
-            BufferedImage icon = ImageIO.read(in);
-            return icon;
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    @Override
-    public String getIconPath() {
-        return "/sign-out-icon.svg";
-    }
-
-    @Override
-    public void execute(PortalContext portalContext) {
-        Messagebox.show("Are you sure you want to logout?", "Logout", Messagebox.YES | Messagebox.NO, Messagebox.QUESTION,
-                new EventListener<Event>() {
-                    public void onEvent(Event evt) throws Exception {
-                        switch ((Integer) evt.getData()) {
-                            case Messagebox.YES:
-                                EventQueues.lookup("signOutQueue", EventQueues.APPLICATION, true)
-                                           .publish(new Event("onSignout", null, Sessions.getCurrent()));
-                                break;
-                            case Messagebox.NO:
-                                break;
-                        }
-                    }
-                }
-        );
-    }
+  @Override
+  public void execute(PortalContext portalContext) {
+    Messagebox.show("Are you sure you want to logout?", "Logout", Messagebox.YES | Messagebox.NO,
+        Messagebox.QUESTION, new EventListener<Event>() {
+          public void onEvent(Event evt) throws Exception {
+            switch ((Integer) evt.getData()) {
+              case Messagebox.YES:
+                EventQueues.lookup("signOutQueue", EventQueues.DESKTOP, true)
+                    .publish(new Event("onSignout", null, Sessions.getCurrent()));
+                break;
+              case Messagebox.NO:
+                break;
+            }
+          }
+        });
+  }
 }

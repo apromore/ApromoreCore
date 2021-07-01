@@ -202,22 +202,21 @@ public class UserMenuController extends SelectorComposer<Menubar> {
 
       // The signOutQueue receives events whose data is a ZK session which has signed out
       // If this desktop is part of a signed-out session, close the browser tab or switch to login
-      EventQueues.lookup("signOutQueue", EventQueues.APPLICATION, true)
-          .subscribe(new EventListener() {
-            public void onEvent(Event event) {
-              Session session = Sessions.getCurrent();
+      EventQueues.lookup("signOutQueue", EventQueues.DESKTOP, true).subscribe(new EventListener() {
+        public void onEvent(Event event) {
+          Session session = Sessions.getCurrent();
 
-              if (session != null) {
-                if (!config.isUseKeycloakSso()) {
-                  session.invalidate();
-                }
-                Executions.sendRedirect("/j_spring_security_logout");
-              }
+          if (session != null) {
+            if (!config.isUseKeycloakSso()) {
+              session.invalidate();
             }
-          });
+            Executions.sendRedirect("/j_spring_security_logout");
+          }
+        }
+      });
 
       // Force logout a user that has been deleted by admin
-      EventQueues.lookup("forceSignOutQueue", EventQueues.APPLICATION, true)
+      EventQueues.lookup("forceSignOutQueue", EventQueues.SESSION, true)
           .subscribe(new EventListener() {
             public void onEvent(Event event) {
               Session session = Sessions.getCurrent();
