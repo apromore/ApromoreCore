@@ -34,7 +34,7 @@
     <tabbox>
         <tabs>
             <tab label="Upload local file" />
-            <tab label="Upload file from supported cloud storage" />
+            <tab label="Upload from cloud storage" />
         </tabs>
         <tabpanels>
             <tabpanel>
