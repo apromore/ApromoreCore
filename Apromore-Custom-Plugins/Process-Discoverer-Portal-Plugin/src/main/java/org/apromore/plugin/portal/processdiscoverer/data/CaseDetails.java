@@ -27,6 +27,7 @@ import java.text.DecimalFormat;
 public class CaseDetails {
 
     private final String caseId;
+    private Number caseIdDigit;
     private final int caseEvents;
     private final int caseVariantId;
     private final double caseVariantFreq;
@@ -34,20 +35,25 @@ public class CaseDetails {
 
     private final DecimalFormat decimalFormat = new DecimalFormat("##############0.##");
 
-    private CaseDetails(String caseId, int caseEvents, int caseVariantId, double caseVariantFreq) {
+    private CaseDetails(String caseId, Number caseIdDigit, int caseEvents, int caseVariantId, double caseVariantFreq) {
         this.caseId = caseId;
+        this.caseIdDigit = caseIdDigit;
         this.caseEvents = caseEvents;
         this.caseVariantId = caseVariantId;
         this.caseVariantFreq = caseVariantFreq;
         this.caseVariantFreqStr = decimalFormat.format(100 * caseVariantFreq);
     }
     
-    public static CaseDetails valueOf(String caseId, int caseEvents, int caseVariantId, double caseVariantFreq) {
-        return new CaseDetails(caseId, caseEvents, caseVariantId, caseVariantFreq);
+    public static CaseDetails valueOf(String caseId, Number caseIdDigit, int caseEvents, int caseVariantId, double caseVariantFreq) {
+        return new CaseDetails(caseId, caseIdDigit, caseEvents, caseVariantId, caseVariantFreq);
     }
 
     public String getCaseId () {
         return caseId;
+    }
+
+    public Number getCaseIdDigit() {
+        return caseIdDigit;
     }
 
     public int getCaseEvents() {

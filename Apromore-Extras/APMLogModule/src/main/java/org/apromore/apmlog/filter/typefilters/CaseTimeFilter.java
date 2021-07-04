@@ -21,9 +21,6 @@
  */
 package org.apromore.apmlog.filter.typefilters;
 
-import org.apromore.apmlog.AEvent;
-import org.apromore.apmlog.ATrace;
-
 import org.apromore.apmlog.filter.PTrace;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.RuleValue;
@@ -32,11 +29,9 @@ import org.apromore.apmlog.filter.types.FilterType;
 import org.apromore.apmlog.filter.types.Inclusion;
 import org.apromore.apmlog.filter.types.OperationType;
 
-import java.util.List;
-
 
 public class CaseTimeFilter {
-    public static boolean toKeep(ATrace trace, LogFilterRule logFilterRule) {
+    public static boolean toKeep(PTrace trace, LogFilterRule logFilterRule) {
         Choice choice = logFilterRule.getChoice();
         switch (choice) {
             case RETAIN: return conformRule(trace, logFilterRule);
@@ -44,8 +39,8 @@ public class CaseTimeFilter {
         }
     }
 
-    private static boolean conformRule(ATrace trace, LogFilterRule logFilterRule) {
-        long traceStartTime = trace.getStartTimeMilli(), traceEndTime = trace.getEndTimeMilli();
+    private static boolean conformRule(PTrace trace, LogFilterRule logFilterRule) {
+        long traceStartTime = trace.getStartTime(), traceEndTime = trace.getEndTime();
 
 
         FilterType filterType = logFilterRule.getFilterType();
@@ -78,9 +73,9 @@ public class CaseTimeFilter {
         return traceStartTime >= fromTime && traceEndTime <= toTime;
     }
 
-    private static boolean intersectTimeRange(long fromTime, long toTime, ATrace trace) {
-        long traceST = trace.getStartTimeMilli();
-        long traceET = trace.getEndTimeMilli();
+    private static boolean intersectTimeRange(long fromTime, long toTime, PTrace trace) {
+        long traceST = trace.getStartTime();
+        long traceET = trace.getEndTime();
 
         if (traceST <= fromTime && traceET >= toTime) return true;
         if (traceST <= fromTime && traceET >= fromTime) return true;

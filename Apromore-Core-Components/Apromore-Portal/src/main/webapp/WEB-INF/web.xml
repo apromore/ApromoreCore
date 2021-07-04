@@ -61,6 +61,28 @@
   <listener>
     <listener-class>org.springframework.security.web.session.HttpSessionEventPublisher</listener-class>
   </listener>
+  
+   <filter>
+    <filter-name>keycloakFilter</filter-name>
+    <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+  </filter>
+  
+  <filter-mapping>
+    <filter-name>keycloakFilter</filter-name>
+    <url-pattern>/keycloak/*</url-pattern>
+    <url-pattern>/*</url-pattern>
+    <url-pattern>/j_spring_security_logout</url-pattern>
+  </filter-mapping>
+  
+  <filter>
+    <filter-name>authDetailsFilter</filter-name>
+    <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+  </filter>
+  
+  <filter-mapping>
+    <filter-name>authDetailsFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
 
   <filter>
     <filter-name>portalFilter</filter-name>
@@ -69,16 +91,8 @@
   <filter-mapping>
     <filter-name>portalFilter</filter-name>
     <url-pattern>/*</url-pattern>
-  </filter-mapping>
+  </filter-mapping> 
 
-  <filter>
-    <filter-name>springSecurityFilterChain</filter-name>
-    <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
-  </filter>
-  <filter-mapping>
-    <filter-name>springSecurityFilterChain</filter-name>
-    <url-pattern>/*</url-pattern>
-  </filter-mapping>
 
   <servlet>
     <description>ZK loader for ZUML pages</description>

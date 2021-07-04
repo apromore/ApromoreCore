@@ -25,7 +25,7 @@
         contentStyle="overflow:auto">
   <listbox id="caseDetailsList" vflex="1" rows="10" mold="paging" pageSize="100">
     <listhead sizable="true">
-      <listheader label="Case ID" sort="auto(caseId)"/>
+      <listheader label="Case ID" sort="auto(caseIdDigit, caseId)" onCreate="self.sort(true);"/>
       <listheader label="Activity instances" sort="auto(caseEvents)"/>
       <listheader label="Case variant ID" sort="auto(caseVariantId)"/>
       <listheader label="Percentage (%)" sort="auto(caseVariantFreq)"/>

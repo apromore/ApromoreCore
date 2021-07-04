@@ -21,18 +21,17 @@
  */
 package org.apromore.apmlog.filter.typefilters;
 
-import org.apromore.apmlog.ATrace;
+import org.apromore.apmlog.filter.PTrace;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.types.Choice;
 import org.apromore.apmlog.filter.types.FilterType;
 
 import java.util.BitSet;
-import java.util.NoSuchElementException;
 import java.util.Set;
 
 public class CaseSectionCaseAttributeFilter {
 
-    public static boolean toKeep(ATrace trace, LogFilterRule logFilterRule) {
+    public static boolean toKeep(PTrace trace, LogFilterRule logFilterRule) {
         Choice choice = logFilterRule.getChoice();
         switch (choice) {
             case RETAIN: return conformRule(trace, logFilterRule);
@@ -40,7 +39,7 @@ public class CaseSectionCaseAttributeFilter {
         }
     }
 
-    private static boolean conformRule(ATrace trace, LogFilterRule logFilterRule) {
+    private static boolean conformRule(PTrace trace, LogFilterRule logFilterRule) {
         String attributeKey = logFilterRule.getKey();
 
         FilterType filterType = logFilterRule.getFilterType();
@@ -59,8 +58,8 @@ public class CaseSectionCaseAttributeFilter {
                 Set<String> variants = logFilterRule.getPrimaryValuesInString();
                 return variants.contains(caseVariant);
             default:
-                if (!trace.getAttributeMap().keySet().contains(attributeKey)) return false;
-                String value = trace.getAttributeMap().get(attributeKey);
+                if (!trace.getAttributes().keySet().contains(attributeKey)) return false;
+                String value = trace.getAttributes().get(attributeKey);
                 Set<String> ruleVals = (Set<String>) logFilterRule.getPrimaryValues().iterator().next().getObjectVal();
                 return ruleVals.contains(value);
         }

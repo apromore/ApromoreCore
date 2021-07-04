@@ -408,7 +408,9 @@
             <listener-class>org.apromore.portal.LoggingZKListener</listener-class>
     </listener>
 
+
     <!-- Configure the error page
+
     <error-page>
             <exception-type>java.lang.Throwable</exception-type>
             <location>/WEB-INF/sys/error.zul</location>

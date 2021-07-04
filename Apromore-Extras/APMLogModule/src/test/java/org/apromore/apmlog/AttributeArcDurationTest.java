@@ -21,28 +21,38 @@
  */
 package org.apromore.apmlog;
 
+import org.apromore.apmlog.exceptions.EmptyInputException;
 import org.apromore.apmlog.filter.APMLogFilter;
 import org.apromore.apmlog.filter.PLog;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.LogFilterRuleImpl;
 import org.apromore.apmlog.filter.rules.RuleValue;
-import org.apromore.apmlog.filter.types.*;
+import org.apromore.apmlog.filter.types.Choice;
+import org.apromore.apmlog.filter.types.FilterType;
+import org.apromore.apmlog.filter.types.Inclusion;
+import org.apromore.apmlog.filter.types.OperationType;
+import org.apromore.apmlog.filter.types.Section;
 import org.apromore.apmlog.stats.CustomTriple;
-import org.apromore.apmlog.stats.DurSubGraph;
 import org.apromore.apmlog.stats.EventAttributeValue;
-import org.apromore.apmlog.stats.StatsUtil;
+import org.apromore.apmlog.stats.LogStatsAnalyzer;
 import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 import java.io.UnsupportedEncodingException;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.Set;
+import java.util.Collections;
 
 import static org.apromore.apmlog.filter.types.FilterType.EVENT_EVENT_ATTRIBUTE;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class AttributeArcDurationTest {
-    public static void testRetain1(APMLog apmLog, APMLogUnitTest parent) throws UnsupportedEncodingException {
+    public static void testRetain1(APMLog apmLog, APMLogUnitTest parent) throws UnsupportedEncodingException, EmptyInputException {
         FilterType filterType = FilterType.ATTRIBUTE_ARC_DURATION;
         Choice choice =  Choice.RETAIN;
         Inclusion inclusion = Inclusion.ANY_VALUE;
@@ -93,7 +103,7 @@ public class AttributeArcDurationTest {
         APMLogFilter apmLogFilter = new APMLogFilter(apmLog);
         apmLogFilter.filter(rules);
 
-        List<ATrace> traceList = apmLogFilter.getApmLog().getTraceList();
+        List<ATrace> traceList = apmLogFilter.getAPMLog().getTraces();
         boolean hasC1 = false;
         boolean hasC2 = false;
         boolean hasC3 = false;
@@ -113,7 +123,7 @@ public class AttributeArcDurationTest {
         assert hasC4;
     }
 
-    public static void testRetain2(APMLog apmLog, APMLogUnitTest parent) throws UnsupportedEncodingException {
+    public static void testRetain2(APMLog apmLog, APMLogUnitTest parent) throws UnsupportedEncodingException, EmptyInputException {
         FilterType filterType = FilterType.ATTRIBUTE_ARC_DURATION;
         Choice choice =  Choice.RETAIN;
         Inclusion inclusion = Inclusion.ANY_VALUE;
@@ -164,7 +174,7 @@ public class AttributeArcDurationTest {
         APMLogFilter apmLogFilter = new APMLogFilter(apmLog);
         apmLogFilter.filter(rules);
 
-        List<ATrace> traceList = apmLogFilter.getApmLog().getTraceList();
+        List<ATrace> traceList = apmLogFilter.getAPMLog().getTraces();
         boolean hasC1 = false;
         boolean hasC2 = false;
         boolean hasC3 = false;
@@ -184,7 +194,7 @@ public class AttributeArcDurationTest {
         assert hasC4;
     }
 
-    public static void testRetain3(APMLog apmLog, APMLogUnitTest parent) throws UnsupportedEncodingException {
+    public static void testRetain3(APMLog apmLog, APMLogUnitTest parent) throws UnsupportedEncodingException, EmptyInputException {
         FilterType filterType = FilterType.ATTRIBUTE_ARC_DURATION;
         Choice choice =  Choice.RETAIN;
         Inclusion inclusion = Inclusion.ANY_VALUE;
@@ -238,7 +248,7 @@ public class AttributeArcDurationTest {
         APMLogFilter apmLogFilter = new APMLogFilter(apmLog);
         apmLogFilter.filter(rules);
 
-        List<ATrace> traceList = apmLogFilter.getApmLog().getTraceList();
+        List<ATrace> traceList = apmLogFilter.getAPMLog().getTraces();
         boolean hasC1 = false;
         boolean hasC2 = false;
         boolean hasC3 = false;
@@ -261,11 +271,15 @@ public class AttributeArcDurationTest {
     public static void testAvgDur1(APMLog apmLog, APMLogUnitTest parent) {
         APMLogFilter apmLogFilter = new APMLogFilter(apmLog);
         PLog pLog = apmLogFilter.getPLog();
-        pLog.updateStats();
 
         String key = "concept:name";
-        UnifiedSet<EventAttributeValue> eavSet = pLog.getEventAttributeValues().get(key);
-        Map<String, List<CustomTriple>> data = StatsUtil.getTargetNodeDataBySourceNode(key, "A", pLog, eavSet);
+
+        UnifiedMap<String, UnifiedSet<EventAttributeValue>> eavMap =
+                LogStatsAnalyzer.getEventAttributeValues(pLog.getActivityInstances(),
+                        pLog.getValidTraceIndexBS().cardinality());
+
+        UnifiedSet<EventAttributeValue> eavSet = eavMap.get(key);
+        Map<String, List<CustomTriple>> data = LogStatsAnalyzer.getTargetNodeDataBySourceNode(key, "A", pLog, eavSet);
 
         assert data != null;
         double[] durArray = data.get("A").stream().mapToDouble(CustomTriple::getDuration).toArray();
@@ -281,7 +295,7 @@ public class AttributeArcDurationTest {
      * activities (i.e. 'a' and 'c') without considering the medium activity - 'b' which is no longer exist.
      * @param originalLog
      */
-    public static void testSequencialFiltering01(APMLog originalLog) {
+    public static void testSequencialFiltering01(APMLog originalLog) throws EmptyInputException {
 
         /** First rule **/
         Set<String> r1V = new HashSet<>(Collections.singletonList("b"));
@@ -341,8 +355,8 @@ public class AttributeArcDurationTest {
         /** Filter by first rule **/
         APMLogFilter apmLogFilter = new APMLogFilter(originalLog);
         apmLogFilter.filter(rules);
-        APMLog filteredLog = apmLogFilter.getApmLog();
+        APMLog filteredLog = apmLogFilter.getAPMLog();
 
-        assertEquals("c1", filteredLog.getTraceList().get(0).getCaseId());
+        assertEquals("c1", filteredLog.getTraces().get(0).getCaseId());
     }
 }

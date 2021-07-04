@@ -19,18 +19,28 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.apmlog.util;
+package org.apromore.portal.servlet.filter;
 
-public class AttributeKeyTranslator {
+import java.io.File;
+import java.util.regex.Pattern;
 
-    public static String translate(String xesAttributeKey) {
-        switch (xesAttributeKey) {
-            case "concept:name": return "Activity";
-            case "org:resource": return "Resource";
-            case "org:group": return "Group";
-            case "org:role": return "Role";
-            case "lifecycle:transition": return "Status";
-            default: return xesAttributeKey;
-        }
-    }
+public class FilterRegexUtil {
+
+  static Pattern p = Pattern.compile("^/(zkau|zkau/.*|.*\\.css|.*\\.js"
+      + "|.*\\.(svg|jpg|jpeg|png)|themes/.*|favicon\\.ico" + "|css/.*|" + ".*/js/.* |.*/fonts/.*)",
+      Pattern.DOTALL);
+
+  public static boolean isMatchingFilterRegex(String urlData) {
+    return p.matcher(urlData).matches();
+  }
+
+  public static Pattern getPattern() {
+    return p;
+  }
+
+  public static boolean useKeyCloak() {
+    return new File(System.getProperty("karaf.etc"), "/config/" + "keycloak.json").exists();
+
+  }
+
 }

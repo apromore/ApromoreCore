@@ -21,8 +21,15 @@
  */
 package org.apromore.apmlog;
 
+import org.apromore.apmlog.exceptions.EmptyInputException;
+import org.apromore.apmlog.logobjects.ActivityInstance;
 import org.apromore.apmlog.stats.EventAttributeValue;
+import org.apromore.apmlog.xes.XESAttributeCodes;
+import org.apromore.apmlog.xes.XLogToImmutableLog;
 import org.deckfour.xes.model.XLog;
+import org.eclipse.collections.impl.map.immutable.ImmutableUnifiedMap;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
@@ -33,69 +40,69 @@ import static org.junit.Assert.assertTrue;
 
 public class APMLogParsingTest {
 
-    public static void testConcurrentStartCompleteEvents(XLog xLog, APMLogUnitTest parent) {
-        APMLog apmLog = LogFactory.convertXLog(xLog);
-        assertTrue(apmLog.getTraceList().stream().flatMap(x->x.getActivityList().stream())
+    public static void testConcurrentStartCompleteEvents(XLog xLog, APMLogUnitTest parent) throws EmptyInputException {
+        APMLog apmLog = XLogToImmutableLog.convertXLog("Process Log", xLog);
+        assertTrue(apmLog.getTraces().stream().flatMap(x->x.getActivityInstances().stream())
                 .collect(Collectors.toList()).size() == 10);
     }
 
-    public static void testStartCompleteNoOverlap(XLog xLog, APMLogUnitTest parent) {
-        APMLog apmLog = LogFactory.convertXLog(xLog);
-        assertTrue(apmLog.getTraceList().stream().flatMap(x->x.getActivityList().stream())
+    public static void testStartCompleteNoOverlap(XLog xLog, APMLogUnitTest parent) throws EmptyInputException {
+        APMLog apmLog = XLogToImmutableLog.convertXLog("Process Log", xLog);
+        assertTrue(apmLog.getTraces().stream().flatMap(x->x.getActivityInstances().stream())
                 .collect(Collectors.toList()).size() == 11);
     }
 
-    public static void testActivityStartCompleteEventsOnly(XLog xLog, APMLogUnitTest parent) {
-        APMLog apmLog = LogFactory.convertXLog(xLog);
+    public static void testActivityStartCompleteEventsOnly(XLog xLog, APMLogUnitTest parent) throws EmptyInputException {
+        APMLog apmLog = XLogToImmutableLog.convertXLog("Process Log", xLog);
 
-        assertTrue(apmLog.getTraceList().size() == 6);
-        assertTrue(apmLog.getCaseVariantSize() == 3);
-        assertTrue(apmLog.getTraceList().stream().flatMap(x->x.getActivityList().stream())
+        assertTrue(apmLog.getTraces().size() == 6);
+        assertTrue(apmLog.getCaseVariantGroupMap().size() == 3);
+        assertTrue(apmLog.getTraces().stream().flatMap(x->x.getActivityInstances().stream())
                 .collect(Collectors.toList()).size() == 23);
-        assertTrue(apmLog.getUniqueActivitySize() == 5);
+        assertTrue(getUniqueActivitySize(apmLog) == 5);
     }
 
-    public static void testMissingTimestamp(XLog xLog, APMLogUnitTest parent) {
-        APMLog apmLog = LogFactory.convertXLog(xLog);
+    public static void testMissingTimestamp(XLog xLog, APMLogUnitTest parent) throws EmptyInputException {
+        APMLog apmLog = XLogToImmutableLog.convertXLog("Process Log", xLog);
 
-        assertTrue(apmLog.getTraceList().size() == 6);
-        assertTrue(apmLog.getCaseVariantSize() == 3);
-        assertTrue(apmLog.getTraceList().stream().flatMap(x->x.getActivityList().stream())
+        assertTrue(apmLog.getTraces().size() == 6);
+        assertTrue(apmLog.getCaseVariantGroupMap().size() == 3);
+        assertTrue(apmLog.getTraces().stream().flatMap(x->x.getActivityInstances().stream())
                 .collect(Collectors.toList()).size() == 22);
-        assertTrue(apmLog.getUniqueActivitySize() == 4);
+        assertTrue(getUniqueActivitySize(apmLog) == 4);
     }
 
-    public static void testCompleteOnlyWithResources(XLog xLog, APMLogUnitTest parent) {
-        APMLog apmLog = LogFactory.convertXLog(xLog);
+    public static void testCompleteOnlyWithResources(XLog xLog, APMLogUnitTest parent) throws EmptyInputException {
+        APMLog apmLog = XLogToImmutableLog.convertXLog("Process Log", xLog);
 
-        assertTrue(apmLog.getTraceList().size() == 6);
-        assertTrue(apmLog.getCaseVariantSize() == 3);
-        assertTrue(apmLog.getTraceList().stream().flatMap(x->x.getActivityList().stream())
+        assertTrue(apmLog.getTraces().size() == 6);
+        assertTrue(apmLog.getCaseVariantGroupMap().size() == 3);
+        assertTrue(apmLog.getTraces().stream().flatMap(x->x.getActivityInstances().stream())
                 .collect(Collectors.toList()).size() == 23);
-        assertTrue(apmLog.getUniqueActivitySize() == 5);
+        assertTrue(getUniqueActivitySize(apmLog) == 5);
     }
 
-    public static void testCountAsSameActivityEvenResourcesAreDifferent(XLog xLog, APMLogUnitTest parent) {
-        APMLog apmLog = LogFactory.convertXLog(xLog);
-        List<AActivity> activityList = apmLog.getTraceList().get(0).getActivityList();
+    public static void testCountAsSameActivityEvenResourcesAreDifferent(XLog xLog, APMLogUnitTest parent) throws EmptyInputException {
+        APMLog apmLog = XLogToImmutableLog.convertXLog("Process Log", xLog);
+        List<ActivityInstance> activityList = apmLog.getTraces().get(0).getActivityInstances();
         String lastActivity = activityList.get(activityList.size()-1).getName();
 
-        assertTrue(apmLog.getTraceList().size() == 1);
-        assertTrue(apmLog.getCaseVariantSize() == 1);
-        assertTrue(apmLog.getTraceList().stream().flatMap(x->x.getActivityList().stream())
+        assertTrue(apmLog.getTraces().size() == 1);
+        assertTrue(apmLog.getCaseVariantGroupMap().size() == 1);
+        assertTrue(apmLog.getTraces().stream().flatMap(x->x.getActivityInstances().stream())
                 .collect(Collectors.toList()).size() == 14);
-        assertTrue(apmLog.getUniqueActivitySize() == 14);
+        assertTrue(getUniqueActivitySize(apmLog) == 14);
         assertTrue(lastActivity.equals("O_Refused"));
     }
 
-    public static void testMixedLifecycleNoOverlapping(XLog xLog, APMLogUnitTest parent) throws UnsupportedEncodingException {
-        APMLog apmLog = LogFactory.convertXLog(xLog);
+    public static void testMixedLifecycleNoOverlapping(XLog xLog, APMLogUnitTest parent) throws UnsupportedEncodingException, EmptyInputException {
+        APMLog apmLog = XLogToImmutableLog.convertXLog("Process Log", xLog);
 
-        assertTrue(apmLog.getTraceList().size() == 2);
-        assertTrue(apmLog.getCaseVariantSize() == 2);
-        assertTrue(apmLog.getTraceList().stream().flatMap(x->x.getActivityList().stream())
+        assertTrue(apmLog.getTraces().size() == 2);
+        assertTrue(apmLog.getCaseVariantGroupMap().size() == 2);
+        assertTrue(apmLog.getTraces().stream().flatMap(x->x.getActivityInstances().stream())
                 .collect(Collectors.toList()).size() == 6);
-        assertTrue(apmLog.getUniqueActivitySize() == 5);
+        assertTrue(getUniqueActivitySize(apmLog) == 5);
 
         List<String> conceptNames = Arrays.asList("a", "b", "c", "d", "e");
         List<Long> sizes = Arrays.asList(1L, 1L, 1L, 2L, 1L);
@@ -106,8 +113,13 @@ public class APMLogParsingTest {
         }
     }
 
+    private static int getUniqueActivitySize(APMLog apmLog) {
+        ImmutableUnifiedMap<String, UnifiedSet<EventAttributeValue>> eavMap = apmLog.getImmutableEventAttributeValues();
+        return eavMap.get(XESAttributeCodes.CONCEPT_NAME).size();
+    }
+
     private static EventAttributeValue getEventAttributeValueByConceptName(String conceptName, APMLog apmLog) {
-        return apmLog.getEventAttributeValues().get("concept:name").stream()
+        return apmLog.getImmutableEventAttributeValues().get("concept:name").stream()
                 .filter(x -> x.getValue().equals(conceptName))
                 .findFirst()
                 .orElse(null);

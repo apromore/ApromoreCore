@@ -24,6 +24,7 @@ package org.apromore.apmlog;
 import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.APMLogUnitTest;
 import org.apromore.apmlog.ATrace;
+import org.apromore.apmlog.exceptions.EmptyInputException;
 import org.apromore.apmlog.filter.APMLogFilter;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.LogFilterRuleImpl;
@@ -40,7 +41,7 @@ import java.util.Set;
 
 public class CaseTimeFilterTest {
 
-    public static void testActiveIn(APMLog apmLog, APMLogUnitTest parent) throws UnsupportedEncodingException {
+    public static void testActiveIn(APMLog apmLog, APMLogUnitTest parent) throws UnsupportedEncodingException, EmptyInputException {
         FilterType filterType = FilterType.CASE_TIME;
 
         Inclusion inclusion = Inclusion.ANY_VALUE;
@@ -69,7 +70,7 @@ public class CaseTimeFilterTest {
         APMLogFilter apmLogFilter = new APMLogFilter(apmLog);
         apmLogFilter.filter(rules);
 
-        List<ATrace> traceList = apmLogFilter.getApmLog().getTraceList();
+        List<ATrace> traceList = apmLogFilter.getAPMLog().getTraces();
         boolean hasC1 = false;
         boolean hasC2 = false;
         boolean hasC3 = false;
@@ -88,7 +89,7 @@ public class CaseTimeFilterTest {
         }
     }
 
-    public static void testContainIn(APMLog apmLog, APMLogUnitTest parent) throws UnsupportedEncodingException {
+    public static void testContainIn(APMLog apmLog, APMLogUnitTest parent) throws UnsupportedEncodingException, EmptyInputException {
         FilterType filterType = FilterType.CASE_TIME;
 
         Inclusion inclusion = Inclusion.ALL_VALUES;
@@ -117,7 +118,7 @@ public class CaseTimeFilterTest {
         APMLogFilter apmLogFilter = new APMLogFilter(apmLog);
         apmLogFilter.filter(rules);
 
-        List<ATrace> traceList = apmLogFilter.getApmLog().getTraceList();
+        List<ATrace> traceList = apmLogFilter.getAPMLog().getTraces();
         boolean hasC1 = false;
         boolean hasC2 = false;
         boolean hasC3 = false;
@@ -138,7 +139,7 @@ public class CaseTimeFilterTest {
         }
     }
 
-    public static void testStartIn(APMLog apmLog, APMLogUnitTest parent) throws UnsupportedEncodingException {
+    public static void testStartIn(APMLog apmLog, APMLogUnitTest parent) throws UnsupportedEncodingException, EmptyInputException {
         FilterType filterType = FilterType.STARTTIME;
 
         Inclusion inclusion = Inclusion.ALL_VALUES;
@@ -167,7 +168,7 @@ public class CaseTimeFilterTest {
         APMLogFilter apmLogFilter = new APMLogFilter(apmLog);
         apmLogFilter.filter(rules);
 
-        List<ATrace> traceList = apmLogFilter.getApmLog().getTraceList();
+        List<ATrace> traceList = apmLogFilter.getAPMLog().getTraces();
         boolean hasC1 = false;
         boolean hasC2 = false;
         boolean hasC3 = false;
@@ -188,7 +189,7 @@ public class CaseTimeFilterTest {
         }
     }
 
-    public static void testEndIn(APMLog apmLog, APMLogUnitTest parent) throws UnsupportedEncodingException {
+    public static void testEndIn(APMLog apmLog, APMLogUnitTest parent) throws UnsupportedEncodingException, EmptyInputException {
         FilterType filterType = FilterType.ENDTIME;
 
         Inclusion inclusion = Inclusion.ALL_VALUES;
@@ -217,7 +218,7 @@ public class CaseTimeFilterTest {
         APMLogFilter apmLogFilter = new APMLogFilter(apmLog);
         apmLogFilter.filter(rules);
 
-        List<ATrace> traceList = apmLogFilter.getApmLog().getTraceList();
+        List<ATrace> traceList = apmLogFilter.getAPMLog().getTraces();
         boolean hasC1 = false;
         boolean hasC2 = false;
         boolean hasC3 = false;

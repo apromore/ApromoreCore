@@ -21,21 +21,18 @@
  */
 package org.apromore.apmlog.filter.typefilters;
 
-import org.apromore.apmlog.AEvent;
-import org.apromore.apmlog.ATrace;
+import org.apromore.apmlog.filter.PTrace;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.RuleValue;
 import org.apromore.apmlog.filter.types.Choice;
 import org.apromore.apmlog.filter.types.Inclusion;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class CaseSectionEventAttributeFilter {
 
-    public static boolean toKeep(ATrace trace, LogFilterRule logFilterRule) {
+    public static boolean toKeep(PTrace trace, LogFilterRule logFilterRule) {
         Choice choice = logFilterRule.getChoice();
         switch (choice) {
             case RETAIN: return conformRule(trace, logFilterRule);
@@ -43,65 +40,20 @@ public class CaseSectionEventAttributeFilter {
         }
     }
 
-    private static boolean conformRule(ATrace trace, LogFilterRule logFilterRule) {
+    private static boolean conformRule(PTrace trace, LogFilterRule logFilterRule) {
         String attributeKey = logFilterRule.getKey();
         Set<RuleValue> primRV = logFilterRule.getPrimaryValues();
 
         if (primRV == null || primRV.isEmpty()) return false;
 
-        Set<String> values = (Set<String>) primRV.iterator().next().getObjectVal();
+        final Set<String> values = (Set<String>) primRV.iterator().next().getObjectVal();
 
-        if (values == null) {
-            if (primRV.size() > 0) {
-                String val = primRV.iterator().next().getStringValue();
-                values = new HashSet<>(Arrays.asList(val));
-            } else return false;
-        }
+        Set<String> containedVals = trace.getActivityInstances().stream()
+                .filter(x -> values.contains(x.getAttributeValue(attributeKey)))
+                .map(x -> x.getAttributeValue(attributeKey))
+                .collect(Collectors.toSet());
 
-        List<AEvent> eventList = trace.getEventList();
-
-        if (logFilterRule.getInclusion() == Inclusion.ALL_VALUES) {
-
-            Set<String> matchedValues = new HashSet<>();
-
-            for (AEvent event : eventList) {
-                String matchedVal = getConformdValue(event, attributeKey, values);
-                if (matchedVal != null) matchedValues.add(matchedVal);
-            }
-
-            if (matchedValues.size() == values.size()) return true;
-            else return false;
-        } else {
-            for (AEvent event : eventList) {
-                String matchedVal = getConformdValue(event, attributeKey, values);
-                if (matchedVal != null) return true;
-            }
-            return false;
-        }
-
-    }
-
-    private static String getConformdValue(AEvent event, String attributeKey, Set<String> values) {
-
-        switch (attributeKey) {
-            case "concept:name":
-                if (values.contains(event.getName())) return event.getName();
-                break;
-            case "org:resource":
-                if (values.contains(event.getResource())) return event.getResource();
-                break;
-            case "lifecycle:transition":
-                if (values.contains(event.getLifecycle())) return event.getLifecycle();
-                break;
-                default:
-                    if (!event.getAttributeMap().keySet().contains(attributeKey)) return null;
-
-                    String val = event.getAttributeValue(attributeKey);
-                    if (values.contains(val)) return val;
-
-                    break;
-        }
-
-        return null;
+        if (logFilterRule.getInclusion() == Inclusion.ALL_VALUES) return containedVals.size() >= values.size();
+        else return containedVals.size() > 0;
     }
 }

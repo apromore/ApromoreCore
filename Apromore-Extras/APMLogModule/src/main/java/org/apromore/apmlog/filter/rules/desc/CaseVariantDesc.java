@@ -24,7 +24,11 @@ package org.apromore.apmlog.filter.rules.desc;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.RuleValue;
 
-import java.util.*;
+import java.util.BitSet;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 public class CaseVariantDesc {
 
@@ -54,7 +58,7 @@ public class CaseVariantDesc {
 
     private static List<Pair> getPairs(List<RuleValue> ruleValueList) {
 
-        List<Pair> pairList = new ArrayList<Pair>();
+        List<Pair> pairList = new ArrayList<>();
 
         BitSet marked  = new BitSet(ruleValueList.size());
         for (int i = 0; i < ruleValueList.size(); i++) {

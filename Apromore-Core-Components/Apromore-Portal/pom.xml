@@ -79,6 +79,7 @@
                             org.springframework.web.context.request,
                             org.springframework.web.filter,
                             org.zkoss.zel.impl,
+                            com.fasterxml.jackson.annotation,
                             org.zkoss.zk.au.http,
                             *
                         </Import-Package>
@@ -122,6 +123,12 @@
             <artifactId>jersey-media-json-jackson</artifactId>
             <version>2.22</version>
         </dependency>
+        
+        <dependency>
+    		<groupId>com.fasterxml.jackson.core</groupId>
+    		<artifactId>jackson-annotations</artifactId>
+    		<version>2.10.5</version>
+	</dependency>
 
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -377,6 +384,24 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
         </dependency>
+
+		<dependency>
+		    <groupId>org.keycloak</groupId>
+		    <artifactId>keycloak-servlet-filter-adapter</artifactId>
+		    <version>${keycloak.version}</version>
+		  <exclusions>
+	        <exclusion>  <!-- declare the exclusion here -->
+	          <groupId>commons-logging</groupId>
+	          <artifactId>commons-logging</artifactId>
+	        </exclusion>
+	      </exclusions> 
+		</dependency>
+		
+		<dependency>
+    		<groupId>org.keycloak</groupId>
+    		<artifactId>keycloak-osgi-adapter</artifactId>
+    		<version>${keycloak.version}</version>
+		</dependency>
 
     </dependencies>
 

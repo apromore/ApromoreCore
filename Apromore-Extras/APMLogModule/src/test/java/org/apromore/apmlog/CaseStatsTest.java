@@ -21,6 +21,7 @@
  */
 package org.apromore.apmlog;
 
+import org.apromore.apmlog.exceptions.EmptyInputException;
 import org.apromore.apmlog.filter.APMLogFilter;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.LogFilterRuleImpl;
@@ -29,6 +30,8 @@ import org.apromore.apmlog.filter.types.Choice;
 import org.apromore.apmlog.filter.types.Inclusion;
 import org.apromore.apmlog.filter.types.OperationType;
 import org.apromore.apmlog.filter.types.Section;
+import org.apromore.apmlog.stats.LogStatsAnalyzer;
+import org.apromore.apmlog.stats.TimeStatsProcessor;
 import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
@@ -46,7 +49,14 @@ public class CaseStatsTest {
     public static void testCaseVariantFrequency(APMLog apmLog, Map<String, String> expectedMap, APMLogUnitTest parent)
             throws Exception
     {
-        UnifiedMap<Integer, Integer> result = apmLog.getCaseVariantIdFrequencyMap();
+        Map<Integer, List<ATrace>> caseVariGroupMap = LogStatsAnalyzer.getCaseVariantGroupMap(apmLog.getTraces());
+
+        UnifiedMap<Integer, Integer> result = UnifiedMap.newMap(
+                caseVariGroupMap.entrySet().stream().collect(
+                        Collectors.toMap(e -> Integer.valueOf(e.getKey()), e -> Integer.valueOf(e.getValue().size()))
+                )
+        );
+
         UnifiedMap<Integer, Integer> expected = UnifiedMap.newMap(
             expectedMap.entrySet().stream().collect(
                 Collectors.toMap(e -> Integer.valueOf(e.getKey()), e -> Integer.valueOf(e.getValue()))
@@ -60,7 +70,7 @@ public class CaseStatsTest {
         }
     }
 
-    public static void testCaseDurationAfterEventAttrFilter(APMLog apmLog) throws UnsupportedEncodingException {
+    public static void testCaseDurationAfterEventAttrFilter(APMLog apmLog) throws UnsupportedEncodingException, EmptyInputException {
 
         String key = "concept:name";
         Set<String> selActVals = new HashSet<>(Arrays.asList("a", "c"));
@@ -73,10 +83,10 @@ public class CaseStatsTest {
         List<LogFilterRule> criteria = Arrays.asList(logFilterRule2);
         APMLogFilter apmLogFilter = new APMLogFilter(apmLog);
         apmLogFilter.filter(criteria);
-        apmLogFilter.getPLog().updateStats();
+        APMLog filteredLog = apmLogFilter.getAPMLog();
 
 
-        DoubleArrayList caseDurs = apmLogFilter.getPLog().getCaseDurations();
+        DoubleArrayList caseDurs = TimeStatsProcessor.getCaseDurations(filteredLog.getTraces());
 
         double[] expected = {900000.0,
                 1200000.0,

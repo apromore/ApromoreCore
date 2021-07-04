@@ -19,8 +19,11 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.apmlog;
+package org.apromore.apmlog.xes;
 
+import org.apromore.apmlog.APMLog;
+import org.apromore.apmlog.ATrace;
+import org.apromore.apmlog.logobjects.ActivityInstance;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.extension.std.XLifecycleExtension;
 import org.deckfour.xes.extension.std.XOrganizationalExtension;
@@ -57,7 +60,7 @@ public class APMLogToXLog {
 
         xLifecycleExtension.assignModel(xLog, XLifecycleExtension.VALUE_MODEL_STANDARD);
 
-        List<ATrace> aTraceList = apmLog.getTraceList();
+        List<ATrace> aTraceList = apmLog.getTraces();
 
         List<XTrace> xTraceList = new ArrayList<>();
 
@@ -68,24 +71,19 @@ public class APMLogToXLog {
             XTrace xTrace = xFactory.createTrace();
             xConceptExtension.assignName(xTrace, caseId);
 
-            UnifiedMap<String, String> aTraceAttributes = aTrace.getAttributeMap();
+            UnifiedMap<String, String> aTraceAttributes = aTrace.getAttributes();
             for (String key : aTraceAttributes.keySet()) {
                 XAttribute attribute = new XAttributeLiteralImpl(key, aTraceAttributes.get(key));
                 xTrace.getAttributes().put(key, attribute);
             }
 
-            List<XEvent> xEventList = new ArrayList<>();
+            for (ActivityInstance a : aTrace.getActivityInstances()) {
+                if (a.getImmutableEventIndexes().size() > 1) {
+                    xTrace.add(getXEvent(a.getStartTime(), "start", a, xFactory));
+                }
 
-            List<AEvent> aEventList = aTrace.getEventList();
-            for (int j = 0; j < aEventList.size(); j++) {
-                AEvent aEvent = aEventList.get(j);
-
-                XEvent xEvent = getXEvent(aEvent, xFactory, xConceptExtension, xLifecycleExtension, xTimeExtension,
-                        xOrganizationalExtension);
-                xEventList.add(xEvent);
+                xTrace.add(getXEvent(a.getEndTime(), "complete", a, xFactory));
             }
-
-            xTrace.addAll(xEventList);
 
             xTraceList.add(xTrace);
         }
@@ -95,32 +93,22 @@ public class APMLogToXLog {
         return xLog;
     }
 
-
-    private static XEvent getXEvent(AEvent aEvent,
-                                    XFactory xFactory,
-                                    XConceptExtension xConceptExtension,
-                                    XLifecycleExtension xLifecycleExtension,
-                                    XTimeExtension xTimeExtension,
-                                    XOrganizationalExtension xOrganizationalExtension) {
-
+    private static XEvent getXEvent(long timestamp,
+                                    String lifecycle,
+                                    ActivityInstance activityInstance, XFactory xFactory) {
         XEvent xEvent = xFactory.createEvent();
-        xConceptExtension.assignName(xEvent, aEvent.getName());
 
-        xOrganizationalExtension.assignResource(xEvent, aEvent.getResource());
-
-        XAttribute timestampAttribute = new XAttributeTimestampImpl("time:timestamp", aEvent.getTimestampMilli());
+        XAttribute timestampAttribute = new XAttributeTimestampImpl("time:timestamp", timestamp);
         xEvent.getAttributes().put("time:timestamp", timestampAttribute);
 
-        XAttribute lifecycleAttribute = new XAttributeLiteralImpl("lifecycle:transition", aEvent.getLifecycle());
+        XAttribute lifecycleAttribute = new XAttributeLiteralImpl("lifecycle:transition", lifecycle);
         xEvent.getAttributes().put("lifecycle:transition", lifecycleAttribute);
 
-        UnifiedMap<String, String> aEventOtherAttributes = aEvent.getAttributeMap();
-
-        for (String key : aEventOtherAttributes.keySet()) {
-            XAttribute xAttribute = new XAttributeLiteralImpl(key, aEventOtherAttributes.get(key));
+        UnifiedMap<String, String> attributes = activityInstance.getAttributes();
+        for (String key : attributes.keySet()) {
+            XAttribute xAttribute = new XAttributeLiteralImpl(key, attributes.get(key));
             xEvent.getAttributes().put(key, xAttribute);
         }
-
         return xEvent;
     }
 }

@@ -21,6 +21,7 @@
  */
 package org.apromore.apmlog;
 
+import org.apromore.apmlog.exceptions.EmptyInputException;
 import org.apromore.apmlog.filter.APMLogFilter;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.LogFilterRuleImpl;
@@ -37,14 +38,14 @@ import static org.junit.Assert.assertEquals;
 
 public class ProcureToPayAdvFilterTest {
 
-    public static void run(APMLog apmLog, APMLogUnitTest parent) throws UnsupportedEncodingException {
+    public static void run(APMLog apmLog, APMLogUnitTest parent) throws EmptyInputException {
         List<LogFilterRule> criteria = Arrays.asList(getRetainActivitiesRule(), getRemoveDirectFollow1(),
                 getRemoveDirectFollow2(), getRemoveDirectFollow3());
         APMLogFilter apmLogFilter = new APMLogFilter(apmLog);
         apmLogFilter.filter(criteria);
-        APMLog filteredLog = apmLogFilter.getFinalAPMLog();
+        APMLog filteredLog = apmLogFilter.getAPMLog();
 
-        assertEquals(242, filteredLog.getTraceList().size());
+        assertEquals(242, filteredLog.getTraces().size());
     }
 
     private static LogFilterRule getRetainActivitiesRule() {
