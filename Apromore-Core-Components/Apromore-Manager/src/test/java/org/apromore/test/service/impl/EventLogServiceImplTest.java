@@ -46,6 +46,7 @@ import org.apromore.dao.GroupRepository;
 import org.apromore.dao.LogRepository;
 import org.apromore.dao.StorageRepository;
 import org.apromore.dao.UsermetadataRepository;
+import org.apromore.service.AuthorizationService;
 import org.apromore.service.EventLogFileService;
 import org.apromore.service.UserService;
 import org.apromore.service.impl.EventLogServiceImpl;
@@ -92,6 +93,7 @@ public class EventLogServiceImplTest {
   private StorageRepository storageRepository;
   private CustomCalendarRepository calendarRepository;
   private CustomCalendarService calendarService;
+  private AuthorizationService authorizationService;
 
 
   private static void walkLog(XLog log) {
@@ -140,11 +142,12 @@ public class EventLogServiceImplTest {
     storageRepository = createMock(StorageRepository.class);
     calendarRepository = createMock(CustomCalendarRepository.class);
     calendarService = createMock(CustomCalendarService.class);
+    authorizationService = createMock(AuthorizationService.class);
     ConfigBean config = new ConfigBean();
 
     eventLogService = new EventLogServiceImpl(logRepository, groupRepository, groupLogRepository,
         folderRepo, userSrv, config, userMetadataRepo, temporaryCacheService, storageFactory,
-        logFileService, storageRepository, calendarRepository, calendarService);
+        logFileService, storageRepository, calendarRepository, calendarService, authorizationService);
   }
 
   @Test

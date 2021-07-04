@@ -21,9 +21,7 @@
  */
 package org.apromore.service;
 
-import org.apromore.dao.model.Group;
-import org.apromore.dao.model.Log;
-import org.apromore.dao.model.User;
+import org.apromore.dao.model.*;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.util.AccessType;
 
@@ -32,6 +30,13 @@ import java.util.Map;
 import java.util.Set;
 
 public interface AuthorizationService {
+
+
+    List<GroupFolder> getGroupFolders(Integer folderId);
+
+    List<GroupProcess> getGroupProcesses(Integer processId);
+
+    List<GroupLog> getGroupLogs(Integer logId);
 
     /**
      * Get list of Group and AccessType pairs that have access to the specified Log
@@ -257,5 +262,27 @@ public interface AuthorizationService {
      * @param groupRowGuid   Group UID
      */
     void deleteUserMetadataAccess(Integer userMetadataId, String groupRowGuid);
+
+    String saveFolderPermissions(Integer folderId, String groupRowGuid, boolean hasRead, boolean hasWrite,
+                                 boolean hasOwnership);
+
+    String saveProcessPermissions(Integer processId, String groupRowGuid, boolean hasRead, boolean hasWrite,
+                                  boolean hasOwnership);
+
+    String saveLogPermissions(Integer logId, String groupRowGuid, boolean hasRead, boolean hasWrite,
+                              boolean hasOwnership);
+
+    String removeFolderPermissions(Integer folderId, String groupRowGuid);
+
+    String removeProcessPermissions(Integer processId, String groupRowGuid);
+
+    String removeLogPermissions(Integer logId, String groupRowGuid, String username, AccessType accessType);
+
+    String removeUsermetadataPermissions(Integer usermetadataId, String groupRowGuid);
+
+
+    String saveLogAccessRights(Integer logId, String groupRowGuid, AccessType accessType, boolean shareUserMetadata);
+
+    String saveUserMetadataAccessRights(Integer usermetadataId, String groupRowGuid, AccessType accessType);
 
 }

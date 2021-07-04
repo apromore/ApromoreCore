@@ -43,5 +43,6 @@
     <osgi:reference id="workspaceServiceImpl" interface="org.apromore.service.WorkspaceService"/>
     <osgi:reference id="UIHelper" interface="org.apromore.service.helper.UserInterfaceHelper"/>
     <osgi:reference id="logServiceImpl" interface="org.apromore.service.EventLogService"/>
+    <osgi:reference id="authorizationServiceImpl" interface="org.apromore.service.AuthorizationService"/>
 
 </beans:beans>

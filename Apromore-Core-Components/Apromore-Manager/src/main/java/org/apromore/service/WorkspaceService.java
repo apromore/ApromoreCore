@@ -50,11 +50,6 @@ public interface WorkspaceService {
      */
     Folder getFolder(Integer folderId);
 
-    List<GroupFolder> getGroupFolders(Integer folderId);
-
-    List<GroupProcess> getGroupProcesses(Integer processId);
-
-    List<GroupLog> getGroupLogs(Integer logId);
 
     List<GroupProcess> getGroupProcesses(String userId, Integer folderId);
 
@@ -82,26 +77,10 @@ public interface WorkspaceService {
 
     List<GroupFolder> getSubFolders(String userRowGuid, Integer folderId);
 
-    String saveFolderPermissions(Integer folderId, String groupRowGuid, boolean hasRead, boolean hasWrite,
-                                 boolean hasOwnership);
 
-    String saveProcessPermissions(Integer processId, String groupRowGuid, boolean hasRead, boolean hasWrite,
-                                  boolean hasOwnership);
 
-    String saveLogPermissions(Integer logId, String groupRowGuid, boolean hasRead, boolean hasWrite,
-                              boolean hasOwnership);
 
-    String saveLogAccessRights(Integer logId, String groupRowGuid, AccessType accessType, boolean shareUserMetadata);
 
-    String saveUserMetadataAccessRights(Integer usermetadataId, String groupRowGuid, AccessType accessType);
-
-    String removeFolderPermissions(Integer folderId, String groupRowGuid);
-
-    String removeProcessPermissions(Integer processId, String groupRowGuid);
-
-    String removeLogPermissions(Integer logId, String groupRowGuid, String username, AccessType accessType);
-
-    String removeUsermetadataPermissions(Integer usermetadataId, String groupRowGuid);
 
 
     /**
