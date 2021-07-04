@@ -21,18 +21,18 @@
  */
 package org.apromore.apmlog;
 
+import org.apromore.apmlog.logobjects.ActivityInstance;
+import org.apromore.apmlog.exceptions.CaseIdNotFoundException;
+import org.apromore.apmlog.exceptions.EmptyInputException;
 import org.apromore.apmlog.stats.CaseAttributeValue;
 import org.apromore.apmlog.stats.EventAttributeValue;
-import org.apromore.apmlog.stats.AAttributeGraph;
 import org.deckfour.xes.model.XLog;
 import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
-import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
-import org.eclipse.collections.impl.map.mutable.UnifiedMap;
+import org.eclipse.collections.impl.map.immutable.ImmutableUnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
-import java.util.*;
-
-import static java.util.Map.Entry.comparingByValue;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Chii Chang (11/2019)
@@ -43,101 +43,105 @@ import static java.util.Map.Entry.comparingByValue;
  * Modified: Chii Chang (12/05/2020)
  * Modified: Chii Chang (27/10/2020)
  * Modified: Chii Chang (26/01/2021)
- * Modified: Chii Chang (05/05/2021)
- * Modified: Chii Chang (21/06/2021)
+ * Modified: Chii Chang (22/06/2021)
+ *
+ * An APMLog contains a list of ATrace
+ * An ATrace contains a list of events
+ * An ActivityInstance is a list of related events
+ * An event describes the detail of an ActivityInstance.
+ *
+ * Threre are two types implementations - ImmutableLog and PLog
+ * ImmutableLog is the default log object converted from XLog.
+ * ImmutableLog is for caching purpose and it provides the basic stats values of the log.
+ * PLog contains indexes. It is the mutable log object for runtime operations.
  */
 public interface APMLog {
-    Set<Integer> getCaseIndexes();
-    List<AActivity> getActivities();
 
-    UnifiedMap<String, Integer> getActivityMaxOccurMap();
+    String getLogName();
 
-    ActivityNameMapper getActivityNameMapper();
+    List<ATrace> getTraces();
 
-    ATrace get(String caseId);
+    /**
+     * Returns all the activity instances of the traces
+     * @return
+     */
+    List<ActivityInstance> getActivityInstances();
 
-    UnifiedMap<String, ATrace> getTraceUnifiedMap();
+    /**
+     * APMLog identifies the case variant of a Trace based on the sequence of its activities.
+     * In order to reduce memory usage, each activity instance name in APMLog
+     * has an indicator (nameIndicator).
+     * ActivityNameIndicatorMap is the map that manages such mapping information
+     * @return
+     */
+    HashBiMap<String, Integer> getActivityNameIndicatorMap();
 
-    int getUniqueActivitySize();
+    /**
+     * This map is for rapidly retrieve a trace based on caseId.
+     * Store Key as 'caseId' and Value as the trace
+     *
+     * @return
+     */
+//    Map<String, ATrace> getTracesMap();
 
-    UnifiedMap<Integer, Integer> getCaseVariantIdFrequencyMap();
+    ATrace get(String caseId) throws CaseIdNotFoundException;
 
-    List<String> getCaseAttributeNameList();
+    /**
+     * Traces grouped by case variant Ids
+     * @return <k, v> as <caseVariantId, List of ATrace>
+     */
+    Map<Integer, List<ATrace>> getCaseVariantGroupMap();
 
-    long getEventSize();
+    /**
+     * The main attribute data of 'activity instances'/events
+     * @return
+     */
+    ImmutableUnifiedMap<String, UnifiedSet<EventAttributeValue>> getImmutableEventAttributeValues();
 
-    void setEventSize(int eventSize);
+    /**
+     * The main attribute data of cases
+     * @return
+     */
+    ImmutableUnifiedMap<String, UnifiedSet<CaseAttributeValue>> getImmutableCaseAttributeValues();
 
-    long getCaseVariantSize();
-
-    List<String> getActivityNameList(int caseVariantId);
-
-    void setVariantIdFreqMap(UnifiedMap<Integer, Integer> variantIdFreqMap);
-
-    UnifiedMap<Integer, Integer> getVariantIdFreqMap();
-
-    DoubleArrayList getCaseDurations();
-
-    double getMinDuration();
-
-    double getMaxDuration();
-
-    List<ATrace> getImmutableTraces();
-
-    List<ATrace> getTraceList();
-
-    void setTraceList(List<ATrace> traceList);
-
-    UnifiedSet<String> getEventAttributeNameSet();
-
+    /**
+     * Represents the size of traces
+     * @return
+     */
     int size();
 
+    /**
+     * Return a trace based on the index
+     * @param index
+     * @return
+     */
     ATrace get(int index);
-
-    ATrace getImmutable(int index);
-
-    int immutableSize();
-
-    long getStartTime();
-
-    void setStartTime(long startTime);
-
-    long getEndTime();
-
-    void setEndTime(long endTime);
 
     String getTimeZone();
 
-    String getMinDurationString();
+    /**
+     * Returns the start time of the log in epoch/Unix timestamp
+     * @return
+     */
+    long getStartTime();
 
-    String getMaxDurationString();
+    /**
+     * Returns the end time of the log in epoch/Unix timestamp
+     * @return
+     */
+    long getEndTime();
 
-    double getAverageDuration();
+    /**
+     * Returns the duration of the log in milliseconds
+     * @return
+     */
+    long getDuration();
 
-    double getMedianDuration();
+    APMLog deepClone() throws EmptyInputException;
 
-    String getAverageDurationString();
-
-    String getMedianDurationString();
-
-    String getStartTimeString();
-
-    String getEndTimeString();
-
+    /**
+     * Convert this APMLog to an OpenXES-XLog
+     * @return
+     */
     XLog toXLog();
-
-    AAttributeGraph getAAttributeGraph();
-
-    void add(ATrace trace);
-
-    HashBiMap<String, Integer> getActivityNameBiMap();
-
-    void setActivityNameBiMap(HashBiMap<String, Integer> activityNameBiMap);
-
-    UnifiedMap<String, UnifiedSet<EventAttributeValue>> getEventAttributeValues();
-    UnifiedMap<String, UnifiedSet<CaseAttributeValue>> getCaseAttributeValues();
-    UnifiedMap<String, UnifiedMap<String, UnifiedSet<AActivity>>> getEventAttributeOccurMap();
-
-    DoubleArrayList getTraceProcessingTimes();
-    DoubleArrayList getTraceWaitingTimes();
 }

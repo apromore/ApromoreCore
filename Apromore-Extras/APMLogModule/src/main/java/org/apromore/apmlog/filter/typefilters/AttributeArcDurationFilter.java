@@ -21,9 +21,8 @@
  */
 package org.apromore.apmlog.filter.typefilters;
 
-import org.apromore.apmlog.AActivity;
-
-import org.apromore.apmlog.ATrace;
+import org.apromore.apmlog.logobjects.ActivityInstance;
+import org.apromore.apmlog.filter.PTrace;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.RuleValue;
 import org.apromore.apmlog.filter.types.Choice;
@@ -34,8 +33,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class AttributeArcDurationFilter {
-    public static boolean toKeep(ATrace trace, LogFilterRule logFilterRule) {
+public class AttributeArcDurationFilter extends AbstractAttributeDurationFilter {
+    public static boolean toKeep(PTrace trace, LogFilterRule logFilterRule) {
         Choice choice = logFilterRule.getChoice();
         switch (choice) {
             case RETAIN: return conformRule(trace, logFilterRule);
@@ -43,7 +42,7 @@ public class AttributeArcDurationFilter {
         }
     }
 
-    private static boolean conformRule(ATrace trace, LogFilterRule logFilterRule) {
+    private static boolean conformRule(PTrace trace, LogFilterRule logFilterRule) {
         String attributeKey = logFilterRule.getKey();
 
         String fromVal = "", toVal = "";
@@ -56,7 +55,6 @@ public class AttributeArcDurationFilter {
             }
         }
 
-
         double lowBoundVal = 0, upBoundVal = 0;
         for (RuleValue ruleValue : logFilterRule.getSecondaryValues()) {
             OperationType operationType = ruleValue.getOperationType();
@@ -64,35 +62,37 @@ public class AttributeArcDurationFilter {
             if (operationType == OperationType.LESS_EQUAL) upBoundVal = ruleValue.getDoubleValue();
         }
 
-        List<Double> durList = getAttributeToAttributeDurationList(trace, attributeKey,
+        List<ActivityInstance> activityList = trace.getActivityInstances().stream()
+                .filter(x -> trace.getValidEventIndexBS().get(x.getImmutableEventIndexes().get(0)))
+                .collect(Collectors.toList());
+
+        List<Double> durList = getAttributeToAttributeDurationList(activityList, attributeKey,
                 fromVal, toVal, lowBoundVal, upBoundVal);
+
+        if (containsInvalidDuration(durList, lowBoundVal, upBoundVal)) return false;
 
         return durList.size() > 0;
     }
 
-    private static List<Double> getAttributeToAttributeDurationList(ATrace trace, String attributeKey,
+    private static List<Double> getAttributeToAttributeDurationList(List<ActivityInstance> activityList, String attributeKey,
                                                                     String value1, String value2,
                                                                     double lowBoundVal, double upBoundVal) {
         List<Double> durList= new ArrayList<>();
 
-        List<AActivity> activityList = trace.getActivityList().stream()
-                .filter(x -> trace.getValidEventIndexBitSet().get(x.getEventIndexes().get(0)))
-                .collect(Collectors.toList());
-
         for (int i = 0; i < activityList.size(); i++) {
             if (i < activityList.size()-1) {
-                AActivity activity1 = activityList.get(i);
-                AActivity activity2 = activityList.get(i+1);
+                ActivityInstance activity1 = activityList.get(i);
+                ActivityInstance activity2 = activityList.get(i+1);
 
-                UnifiedMap<String, String> attrMap1 = activity1.getAllAttributes();
-                UnifiedMap<String, String> attrMap2 = activity2.getAllAttributes();
+                UnifiedMap<String, String> attrMap1 = activity1.getAttributes();
+                UnifiedMap<String, String> attrMap2 = activity2.getAttributes();
 
                 if (attrMap1.containsKey(attributeKey) && attrMap2.containsKey(attributeKey)) {
                     String actVal1 = attrMap1.get(attributeKey);
                     String actVal2 = attrMap2.get(attributeKey);
                     if (actVal1.equals(value1) && actVal2.equals(value2)) {
-                        double act1EndTime = activity1.getEndTimeMilli();
-                        double act2StartTime = activity2.getStartTimeMilli();
+                        double act1EndTime = activity1.getEndTime();
+                        double act2StartTime = activity2.getStartTime();
                         double duration = act2StartTime > act1EndTime ? act2StartTime - act1EndTime : 0;
                         if (duration >= lowBoundVal && duration <= upBoundVal) {
                             durList.add(duration);

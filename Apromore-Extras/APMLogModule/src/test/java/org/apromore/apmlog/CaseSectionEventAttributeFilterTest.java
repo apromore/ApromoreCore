@@ -68,7 +68,7 @@ public class CaseSectionEventAttributeFilterTest {
         APMLogFilter apmLogFilter = new APMLogFilter(apmLog);
         apmLogFilter.filter(rules);
 
-        List<ATrace> traceList = apmLogFilter.getApmLog().getTraceList();
+        List<ATrace> traceList = apmLogFilter.getAPMLog().getTraces();
 
         UnifiedMap<String, Boolean> expectedIdMatch = new UnifiedMap<>();
 

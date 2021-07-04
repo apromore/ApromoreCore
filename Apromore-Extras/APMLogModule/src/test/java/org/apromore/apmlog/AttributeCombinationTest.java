@@ -21,18 +21,27 @@
  */
 package org.apromore.apmlog;
 
+import org.apromore.apmlog.exceptions.EmptyInputException;
 import org.apromore.apmlog.filter.APMLogFilter;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.LogFilterRuleImpl;
 import org.apromore.apmlog.filter.rules.RuleValue;
-import org.apromore.apmlog.filter.types.*;
+import org.apromore.apmlog.filter.types.Choice;
+import org.apromore.apmlog.filter.types.FilterType;
+import org.apromore.apmlog.filter.types.Inclusion;
+import org.apromore.apmlog.filter.types.OperationType;
+import org.apromore.apmlog.filter.types.Section;
 
 import java.io.UnsupportedEncodingException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class AttributeCombinationTest {
 
-    public static void testRetainEventEvent1(APMLog apmLog, APMLogUnitTest parent) throws UnsupportedEncodingException {
+    public static void testRetainEventEvent1(APMLog apmLog, APMLogUnitTest parent) throws UnsupportedEncodingException, EmptyInputException {
         FilterType filterType = FilterType.CASE_SECTION_ATTRIBUTE_COMBINATION;
         Choice choice =  Choice.RETAIN;
         Inclusion inclusion = Inclusion.ANY_VALUE;
@@ -64,7 +73,7 @@ public class AttributeCombinationTest {
         APMLogFilter apmLogFilter = new APMLogFilter(apmLog);
         apmLogFilter.filter(rules);
 
-        List<ATrace> traceList = apmLogFilter.getApmLog().getTraceList();
+        List<ATrace> traceList = apmLogFilter.getAPMLog().getTraces();
         boolean hasC1 = false;
         boolean hasC2 = false;
         boolean hasC3 = false;
@@ -83,7 +92,7 @@ public class AttributeCombinationTest {
         }
     }
 
-    public static void testRetainEventCase1(APMLog apmLog, APMLogUnitTest parent) throws UnsupportedEncodingException {
+    public static void testRetainEventCase1(APMLog apmLog, APMLogUnitTest parent) throws UnsupportedEncodingException, EmptyInputException {
         FilterType filterType = FilterType.CASE_SECTION_ATTRIBUTE_COMBINATION;
         Choice choice =  Choice.RETAIN;
         Inclusion inclusion = Inclusion.ANY_VALUE;
@@ -115,7 +124,7 @@ public class AttributeCombinationTest {
         APMLogFilter apmLogFilter = new APMLogFilter(apmLog);
         apmLogFilter.filter(rules);
 
-        List<ATrace> traceList = apmLogFilter.getApmLog().getTraceList();
+        List<ATrace> traceList = apmLogFilter.getAPMLog().getTraces();
         boolean hasC1 = false;
         boolean hasC2 = false;
         boolean hasC3 = false;

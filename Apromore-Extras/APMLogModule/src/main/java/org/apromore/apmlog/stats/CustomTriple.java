@@ -21,22 +21,22 @@
  */
 package org.apromore.apmlog.stats;
 
-import org.apromore.apmlog.AActivity;
+import org.apromore.apmlog.logobjects.ActivityInstance;
 
 public class CustomTriple {
-    AActivity activity1, activity2;
+    ActivityInstance activity1, activity2;
     String value;
-    public CustomTriple(AActivity activity1, AActivity activity2, String value) {
+    public CustomTriple(ActivityInstance activity1, ActivityInstance activity2, String value) {
         this.activity1 = activity1;
         this.activity2 = activity2;
         this.value = value;
     }
 
-    public AActivity getActivity1() {
+    public ActivityInstance getActivity1() {
         return activity1;
     }
 
-    public AActivity getActivity2() {
+    public ActivityInstance getActivity2() {
         return activity2;
     }
 
@@ -45,15 +45,15 @@ public class CustomTriple {
     }
 
     public double getDuration() {
-        return activity2.getStartTimeMilli() > activity1.getEndTimeMilli() ?
-                activity2.getStartTimeMilli() - activity1.getEndTimeMilli() : 0;
+        return activity2.getStartTime() > activity1.getEndTime() ?
+                activity2.getStartTime() - activity1.getEndTime() : 0;
     }
 
     public int getCaseIndex() {
         return activity1.getImmutableTraceIndex();
     }
 
-    public static CustomTriple of(AActivity activity1, AActivity activity2, String value) {
+    public static CustomTriple of(ActivityInstance activity1, ActivityInstance activity2, String value) {
         return new CustomTriple(activity1, activity2, value);
     }
 }

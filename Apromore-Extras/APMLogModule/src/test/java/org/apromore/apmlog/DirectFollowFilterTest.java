@@ -24,6 +24,7 @@ package org.apromore.apmlog;
 import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.APMLogUnitTest;
 import org.apromore.apmlog.ATrace;
+import org.apromore.apmlog.exceptions.EmptyInputException;
 import org.apromore.apmlog.filter.APMLogFilter;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.LogFilterRuleImpl;
@@ -38,7 +39,7 @@ import java.util.Set;
 
 public class DirectFollowFilterTest {
 
-    public static void runTest1(APMLog apmLog, APMLogUnitTest parent) throws UnsupportedEncodingException {
+    public static void runTest1(APMLog apmLog, APMLogUnitTest parent) throws UnsupportedEncodingException, EmptyInputException {
         FilterType filterType = FilterType.DIRECT_FOLLOW;
         Choice choice =  Choice.RETAIN;
         Inclusion inclusion = Inclusion.ANY_VALUE;
@@ -64,14 +65,12 @@ public class DirectFollowFilterTest {
         APMLogFilter apmLogFilter = new APMLogFilter(apmLog);
         apmLogFilter.filter(rules);
 
-        List<ATrace> traceList = apmLogFilter.getApmLog().getTraceList();
+        List<ATrace> traceList = apmLogFilter.getAPMLog().getTraces();
         boolean hasC1 = false;
         boolean hasC2 = false;
 
-//        System.out.println("\n\ntrace size = " + traceList.size() + "\n\n");
 
         for (ATrace trace : traceList) {
-//            System.out.println(trace.getCaseId());
             if (trace.getCaseId().equals("c1")) hasC1 = true;
             if (trace.getCaseId().equals("c2")) hasC2 = true;
         }
@@ -86,7 +85,7 @@ public class DirectFollowFilterTest {
         }
     }
 
-    public static void runTest2(APMLog apmLog, APMLogUnitTest parent) throws UnsupportedEncodingException {
+    public static void runTest2(APMLog apmLog, APMLogUnitTest parent) throws UnsupportedEncodingException, EmptyInputException {
         FilterType filterType = FilterType.DIRECT_FOLLOW;
         Choice choice =  Choice.RETAIN;
         Inclusion inclusion = Inclusion.ANY_VALUE;
@@ -134,17 +133,14 @@ public class DirectFollowFilterTest {
         APMLogFilter apmLogFilter = new APMLogFilter(apmLog);
         apmLogFilter.filter(rules);
 
-        List<ATrace> traceList = apmLogFilter.getApmLog().getTraceList();
+        List<ATrace> traceList = apmLogFilter.getAPMLog().getTraces();
         boolean hasC1 = false;
         boolean hasC2 = false;
         boolean hasC3 = false;
         boolean hasC4 = false;
         boolean hasC5 = false;
 
-//        System.out.println("\n\ntrace size = " + traceList.size() + "\n\n");
-
         for (ATrace trace : traceList) {
-//            System.out.println(trace.getCaseId());
             if (trace.getCaseId().equals("c1")) hasC1 = true;
             if (trace.getCaseId().equals("c2")) hasC2 = true;
             if (trace.getCaseId().equals("c3")) hasC3 = true;

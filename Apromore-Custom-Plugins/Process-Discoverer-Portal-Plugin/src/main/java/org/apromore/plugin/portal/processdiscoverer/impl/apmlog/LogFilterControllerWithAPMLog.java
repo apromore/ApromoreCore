@@ -288,7 +288,7 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
     @Override
     public void processResponse(LogFilterResponse logFilterResponse) {
         PLog pLog = logFilterResponse.getPLog();
-        if (!pLog.getPTraceList().isEmpty()) {
+        if (!pLog.getPTraces().isEmpty()) {
             parent.getProcessAnalyst().setCurrentFilterCriteria(logFilterResponse.getCriteria());
             try {
                 analyst.updateLog(pLog, logFilterResponse.getApmLog());

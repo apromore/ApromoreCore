@@ -19,18 +19,15 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.apmlog.util;
+package org.apromore.apmlog.labels;
 
-public class AttributeKeyTranslator {
+public class EnglishLabels {
 
-    public static String translate(String xesAttributeKey) {
-        switch (xesAttributeKey) {
-            case "concept:name": return "Activity";
-            case "org:resource": return "Resource";
-            case "org:group": return "Group";
-            case "org:role": return "Role";
-            case "lifecycle:transition": return "Status";
-            default: return xesAttributeKey;
+    public static String getLabel(LabelEnum labelEnum) {
+        switch (labelEnum) {
+            case RETAIN: return "Retain";
+            case REMOVE: return "Remove";
         }
+        return "N/A";
     }
 }

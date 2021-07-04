@@ -122,7 +122,7 @@ public class ReworkRepetitionFilterTest {
             return; // passed
         }
 
-        List<ATrace> traceList = apmLogFilter.getApmLog().getTraceList();
+        List<ATrace> traceList = apmLogFilter.getAPMLog().getTraces();
 
         UnifiedMap<String, Boolean> expectedIdMatch = new UnifiedMap<>();
 

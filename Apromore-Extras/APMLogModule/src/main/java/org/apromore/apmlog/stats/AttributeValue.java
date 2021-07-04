@@ -21,24 +21,19 @@
  */
 package org.apromore.apmlog.stats;
 
-import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
-
+import java.util.BitSet;
 import java.util.Set;
 
 public interface AttributeValue {
     String getValue();
 
-    long getCases();
+    long getCases(BitSet validCaseIndexes);
 
     String getFrequency();
-
-    long getTotal();
 
     double getRatio();
 
     double getOppCases();
-
-    IntArrayList getOccurCaseIndexes();
 
     Set<Integer> getOccurCasesIndexSet();
 

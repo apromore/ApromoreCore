@@ -55,8 +55,6 @@ import java.time.format.DateTimeFormatter;
  */
 public class TimeUtil {
 
-
-
     public static long epochMilliOf(ZonedDateTime zonedDateTime){
         long s = zonedDateTime.toInstant().toEpochMilli();
         return s;
@@ -69,8 +67,6 @@ public class TimeUtil {
     public static ZonedDateTime zonedDateTimeOf(XEvent xEvent) {
         String timestamp = xEvent.getAttributes().get(XTimeExtension.KEY_TIMESTAMP).toString();
         ZonedDateTime z = ZonedDateTime.parse(timestamp);
-//        Date d = ((XAttributeTimestamp) da).getValue();
-//        ZonedDateTime z = ZonedDateTime.ofInstant(d.toInstant(), ZoneId.systemDefault());
         return z;
     }
 
@@ -88,8 +84,6 @@ public class TimeUtil {
         long hrs = Long.valueOf("3600000");
         long mins = Long.valueOf("60000");
         long secs = Long.valueOf("1000");
-
-
 
         if (millis >  yr) {
             long yrPart =  millis / (long) yr;

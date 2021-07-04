@@ -23,8 +23,8 @@ package org.apromore.apmlog.impl;
 
 import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.APMLogService;
-//import org.apromore.service.EventLogService;
-import org.apromore.apmlog.LogFactory;
+import org.apromore.apmlog.exceptions.EmptyInputException;
+import org.apromore.apmlog.xes.XLogToImmutableLog;
 import org.deckfour.xes.model.XLog;
 
 /**
@@ -32,14 +32,12 @@ import org.deckfour.xes.model.XLog;
  */
 public class APMLogServiceImpl implements APMLogService {
 
-    //private EventLogService eventLogService;
-
-    //APMLogServiceImpl(final EventLogService newEventLogService) {
-    //    this.eventLogService = newEventLogService;
-    //}
-
     @Override
     public APMLog findAPMLogForXLog(XLog xLog) {
-        return LogFactory.convertXLog(xLog);
+        try {
+            return XLogToImmutableLog.convertXLog("ProcessLog", xLog);
+        } catch (EmptyInputException e) {
+           return null;
+        }
     }
 }

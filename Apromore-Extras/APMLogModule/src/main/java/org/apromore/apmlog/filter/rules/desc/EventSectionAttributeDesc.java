@@ -23,7 +23,6 @@ package org.apromore.apmlog.filter.rules.desc;
 
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.RuleValue;
-import org.apromore.apmlog.util.AttributeKeyTranslator;
 
 import java.util.ArrayList;
 import java.util.Collections;

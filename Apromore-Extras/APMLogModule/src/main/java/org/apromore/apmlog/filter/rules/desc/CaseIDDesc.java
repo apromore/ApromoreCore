@@ -21,43 +21,39 @@
  */
 package org.apromore.apmlog.filter.rules.desc;
 
-import org.apromore.apmlog.APMLog;
-import org.apromore.apmlog.filter.PLog;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.RuleValue;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.BitSet;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Chii Chang
  */
 public class CaseIDDesc {
 
-    public static String getDescription(LogFilterRule logFilterRule, APMLog apmLog) {
+    public static String getDescription(LogFilterRule logFilterRule) {
 
         StringBuilder desc = new StringBuilder();
         String choice = logFilterRule.getChoice().toString().toLowerCase();
-        desc.append(choice.substring(0, 1).toUpperCase()).append(choice.substring(1)).append(" all cases where case " +
-                "ID is ");
+        desc.append(choice.substring(0, 1).toUpperCase() + choice.substring(1) + " all cases where case ID is ");
         Set<RuleValue> ruleValues = logFilterRule.getPrimaryValues();
 
-
         if (ruleValues != null && !ruleValues.isEmpty()) {
-            BitSet selection = (BitSet) ruleValues.iterator().next().getObjectVal();
 
-            if (selection.cardinality() == 1) desc.append("equal to [");
+            Map<String, String> labels = ruleValues.iterator().next().getCustomAttributes();
+
+            if (labels.size() == 1) desc.append("equal to [");
             else desc.append(" [");
 
-            List<String> caseIds = apmLog.getImmutableTraces().stream()
-                    .filter(x -> selection.get(x.getImmutableIndex()))
-                    .map(x->x.getCaseId())
-                    .collect(Collectors.toList());
-
             int count = 0;
-            for (String s : caseIds) {
+            for (String s : labels.keySet()) {
                 desc.append(s.intern());
-                if (count < caseIds.size() - 1) desc.append(", ");
+                if (count < labels.size() - 1) desc.append(", ");
 
                 count += 1;
             }

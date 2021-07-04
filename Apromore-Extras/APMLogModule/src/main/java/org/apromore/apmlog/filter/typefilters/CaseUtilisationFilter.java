@@ -21,7 +21,7 @@
  */
 package org.apromore.apmlog.filter.typefilters;
 
-import org.apromore.apmlog.ATrace;
+import org.apromore.apmlog.filter.PTrace;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.RuleValue;
 import org.apromore.apmlog.filter.types.Choice;
@@ -29,7 +29,7 @@ import org.apromore.apmlog.filter.types.OperationType;
 
 public class CaseUtilisationFilter {
 
-    public static boolean toKeep(ATrace trace, LogFilterRule logFilterRule) {
+    public static boolean toKeep(PTrace trace, LogFilterRule logFilterRule) {
         Choice choice = logFilterRule.getChoice();
         switch (choice) {
             case RETAIN: return conformRule(trace, logFilterRule);
@@ -37,7 +37,7 @@ public class CaseUtilisationFilter {
         }
     }
 
-    private static boolean conformRule(ATrace trace, LogFilterRule logFilterRule) {
+    private static boolean conformRule(PTrace trace, LogFilterRule logFilterRule) {
         double traceUtilVal = trace.getCaseUtilization();
 
         double utilRangeFrom = 0, utilRangeTo = 0;

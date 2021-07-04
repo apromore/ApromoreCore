@@ -21,25 +21,23 @@
  */
 package org.apromore.apmlog.filter.typefilters;
 
-import org.apromore.apmlog.AActivity;
-import org.apromore.apmlog.AEvent;
+import org.apromore.apmlog.logobjects.ActivityInstance;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.RuleValue;
 import org.apromore.apmlog.filter.types.Choice;
 import org.apromore.apmlog.filter.types.OperationType;
 
-
 public class EventTimeFilter {
 
-    public static boolean toKeep(AActivity aActivity, LogFilterRule logFilterRule) {
+    public static boolean toKeep(ActivityInstance activityInstance, LogFilterRule logFilterRule) {
         Choice choice = logFilterRule.getChoice();
         switch (choice) {
-            case RETAIN: return conformRule(aActivity, logFilterRule);
-            default: return !conformRule(aActivity, logFilterRule);
+            case RETAIN: return conformRule(activityInstance, logFilterRule);
+            default: return !conformRule(activityInstance, logFilterRule);
         }
     }
 
-    private static boolean conformRule(AActivity aActivity, LogFilterRule logFilterRule) {
+    private static boolean conformRule(ActivityInstance activityInstance, LogFilterRule logFilterRule) {
 
 
         long fromTime = 0, toTime = 0;
@@ -49,37 +47,7 @@ public class EventTimeFilter {
             if (operationType == OperationType.LESS_EQUAL) toTime = ruleValue.getLongValue();
         }
 
-        return aActivity.getStartTimeMilli() >= fromTime && aActivity.getEndTimeMilli() <= toTime;
+        return activityInstance.getStartTime() >= fromTime && activityInstance.getEndTime() <= toTime;
 
-    }
-
-
-    public static boolean toKeep(AEvent event, LogFilterRule logFilterRule) {
-        Choice choice = logFilterRule.getChoice();
-        switch (choice) {
-            case RETAIN: return conformRule(event, logFilterRule);
-            default: return !conformRule(event, logFilterRule);
-        }
-    }
-
-    private static boolean conformRule(AEvent event, LogFilterRule logFilterRule) {
-
-        if (event.getLifecycle().equals("")) return false;
-
-        long eventEpochMilli = event.getTimestampMilli();
-
-        long fromTime = 0, toTime = 0;
-        for (RuleValue ruleValue : logFilterRule.getPrimaryValues()) {
-            OperationType operationType = ruleValue.getOperationType();
-            if (operationType == OperationType.GREATER_EQUAL) fromTime = ruleValue.getLongValue();
-            if (operationType == OperationType.LESS_EQUAL) toTime = ruleValue.getLongValue();
-        }
-
-        return withinTimeRange(fromTime, toTime, eventEpochMilli);
-
-    }
-
-    private static boolean withinTimeRange(long fromTime, long toTime, long eventEpochMilli) {
-        return eventEpochMilli >= fromTime && eventEpochMilli <= toTime;
     }
 }
