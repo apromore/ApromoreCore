@@ -55,6 +55,8 @@ import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Progressmeter;
 import org.zkoss.zul.Window;
 
+import static org.apromore.commons.item.Constants.HOME_FOLDER_NAME;
+
 /**
  * This class provides a facility to export BPMN models from ProcessDiscoverer and save
  * the models to the portal.
@@ -278,7 +280,7 @@ public class BPMNExportController extends AbstractController {
     				                now,  // last update timestamp
     				                publicModel);
                             Folder folder = controller.getProcessService().getFolderByPmv(pmv);
-                            String folderName = folder == null ? "Home folder" : folder.getName();
+                            String folderName = folder == null ? HOME_FOLDER_NAME : folder.getName();
                             Notification.info("A new BPMN model named <strong>" + modelName + "</strong> has been " +
                                     "saved in the <strong>" + folderName + "</strong> folder.");
     				        controller.refreshPortal();

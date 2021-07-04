@@ -41,6 +41,8 @@ import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 
+import static org.apromore.commons.item.Constants.HOME_FOLDER_NAME;
+
 public class LogExportController extends AbstractController {
     private ContextData contextData;
     private UserOptionsData userOptions;
@@ -85,7 +87,7 @@ public class LogExportController extends AbstractController {
                     logName, new ByteArrayInputStream(outputStream.toByteArray()), "xes.gz",
                     contextData.getDomain(), DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(),
                     false);
-            String folderName = log.getFolder() == null ? "Home folder" : log.getFolder().getName();
+            String folderName = log.getFolder() == null ? HOME_FOLDER_NAME : log.getFolder().getName();
             Notification.info("A new log named <strong>" + logName + "</strong> has been saved in the <strong>" + folderName + "</strong> folder.");
             parent.refreshPortal();
         } catch (Exception e) {
