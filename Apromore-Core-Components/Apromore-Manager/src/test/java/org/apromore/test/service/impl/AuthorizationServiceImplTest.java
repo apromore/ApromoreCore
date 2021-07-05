@@ -24,12 +24,10 @@ package org.apromore.test.service.impl;
 import junit.framework.Assert;
 import org.apromore.AbstractTest;
 import org.apromore.builder.UserManagementBuilder;
-import org.apromore.dao.GroupLogRepository;
-import org.apromore.dao.GroupUsermetadataRepository;
-import org.apromore.dao.LogRepository;
-import org.apromore.dao.UsermetadataRepository;
+import org.apromore.dao.*;
 import org.apromore.dao.model.Process;
 import org.apromore.dao.model.*;
+import org.apromore.service.FolderService;
 import org.apromore.service.WorkspaceService;
 import org.apromore.service.impl.AuthorizationServiceImpl;
 import org.apromore.util.AccessType;
@@ -50,6 +48,12 @@ public class AuthorizationServiceImplTest extends AbstractTest {
     private GroupLogRepository groupLogRepository;
     private UsermetadataRepository usermetadataRepository;
     private LogRepository logRepository;
+    private FolderService folderService;
+    private ProcessRepository processRepository;
+    private FolderRepository folderRepository;
+    private GroupRepository groupRepository;
+    private GroupProcessRepository groupProcessRepository;
+    private GroupFolderRepository groupFolderRepository;
 
     private Group group1;
     private Group group2;
@@ -63,13 +67,20 @@ public class AuthorizationServiceImplTest extends AbstractTest {
     @Before
     public void setUp() {
 
-        workspaceService = createMock(WorkspaceService.class);
         groupUsermetadataRepository = createMock(GroupUsermetadataRepository.class);
         groupLogRepository = createMock(GroupLogRepository.class);
         usermetadataRepository = createMock(UsermetadataRepository.class);
         logRepository = createMock(LogRepository.class);
-        authorizationService = new AuthorizationServiceImpl(workspaceService, groupUsermetadataRepository,
-                usermetadataRepository, logRepository, groupLogRepository);
+        folderService = createMock(FolderService.class);
+        processRepository = createMock(ProcessRepository.class);
+        folderRepository = createMock(FolderRepository.class);
+        groupRepository = createMock(GroupRepository.class);
+        groupProcessRepository = createMock(GroupProcessRepository.class);
+        groupFolderRepository = createMock(GroupFolderRepository.class);
+
+        authorizationService = new AuthorizationServiceImpl(groupUsermetadataRepository,
+                usermetadataRepository, logRepository, folderService, processRepository,
+                folderRepository, groupRepository, groupLogRepository, groupProcessRepository, groupFolderRepository);
 
         // Set up test data
         group1 = createGroup(1, Group.Type.GROUP);
@@ -100,7 +111,7 @@ public class AuthorizationServiceImplTest extends AbstractTest {
         groupLogs.add(new GroupLog(group4, log, false, false, false));
 
         // Mock recording
-        expect(workspaceService.getGroupLogs(123)).andReturn(groupLogs);
+        expect(authorizationService.getGroupLogs(123)).andReturn(groupLogs);
         replayAll();
 
         // Mock call
@@ -132,7 +143,7 @@ public class AuthorizationServiceImplTest extends AbstractTest {
         groupProcesses.add(new GroupProcess(process, group4, false, false, false));
 
         // Mock recording
-        expect(workspaceService.getGroupProcesses(123)).andReturn(groupProcesses);
+        expect(authorizationService.getGroupProcesses(123)).andReturn(groupProcesses);
         replayAll();
 
         // Mock call
@@ -162,7 +173,7 @@ public class AuthorizationServiceImplTest extends AbstractTest {
         groupFolders.add(new GroupFolder(group4, folder, false, false, false));
 
         // Mock recording
-        expect(workspaceService.getGroupFolders(123)).andReturn(groupFolders);
+        expect(authorizationService.getGroupFolders(123)).andReturn(groupFolders);
         replayAll();
 
         // Mock call
@@ -312,7 +323,7 @@ public class AuthorizationServiceImplTest extends AbstractTest {
 
 
         // Mock recording
-        expect(workspaceService.getGroupLogs(123)).andReturn(groupLogs);
+        expect(authorizationService.getGroupLogs(123)).andReturn(groupLogs);
         replayAll();
 
         // Mock call
@@ -354,8 +365,8 @@ public class AuthorizationServiceImplTest extends AbstractTest {
 
 
         // Mock recording
-        expect(workspaceService.getGroupLogs(1)).andReturn(groupLogs1);
-        expect(workspaceService.getGroupLogs(2)).andReturn(groupLogs2);
+        expect(authorizationService.getGroupLogs(1)).andReturn(groupLogs1);
+        expect(authorizationService.getGroupLogs(2)).andReturn(groupLogs2);
         replayAll();
 
         // Mock call
@@ -395,7 +406,7 @@ public class AuthorizationServiceImplTest extends AbstractTest {
 
 
         // Mock recording
-        expect(workspaceService.getGroupLogs(1)).andReturn(groupLogs1);
+        expect(authorizationService.getGroupLogs(1)).andReturn(groupLogs1);
         replayAll();
 
         // Mock call
@@ -436,8 +447,8 @@ public class AuthorizationServiceImplTest extends AbstractTest {
 
 
         // Mock recording
-        expect(workspaceService.getGroupLogs(1)).andReturn(groupLogs1);
-        expect(workspaceService.getGroupLogs(2)).andReturn(groupLogs2);
+        expect(authorizationService.getGroupLogs(1)).andReturn(groupLogs1);
+        expect(authorizationService.getGroupLogs(2)).andReturn(groupLogs2);
         replayAll();
 
         // Mock call
@@ -477,8 +488,8 @@ public class AuthorizationServiceImplTest extends AbstractTest {
 
 
         // Mock recording
-        expect(workspaceService.getGroupLogs(1)).andReturn(groupLogs1);
-        expect(workspaceService.getGroupLogs(2)).andReturn(groupLogs2);
+        expect(authorizationService.getGroupLogs(1)).andReturn(groupLogs1);
+        expect(authorizationService.getGroupLogs(2)).andReturn(groupLogs2);
         replayAll();
 
         // Mock call
@@ -521,8 +532,8 @@ public class AuthorizationServiceImplTest extends AbstractTest {
 
 
         // Mock recording
-        expect(workspaceService.getGroupLogs(1)).andReturn(groupLogs1);
-        expect(workspaceService.getGroupLogs(2)).andReturn(groupLogs2);
+        expect(authorizationService.getGroupLogs(1)).andReturn(groupLogs1);
+        expect(authorizationService.getGroupLogs(2)).andReturn(groupLogs2);
         expect(logRepository.findUniqueByID(1)).andReturn(log1);
         expect(logRepository.findUniqueByID(2)).andReturn(log2);
         replayAll();
@@ -565,7 +576,7 @@ public class AuthorizationServiceImplTest extends AbstractTest {
 
 
         // Mock recording
-        expect(workspaceService.getGroupLogs(1)).andReturn(groupLogs1);
+        expect(authorizationService.getGroupLogs(1)).andReturn(groupLogs1);
 //        expect(workspaceService.getGroupLogs(2)).andReturn(groupLogs2);
         expect(logRepository.findUniqueByID(1)).andReturn(log1);
         expect(logRepository.findUniqueByID(2)).andReturn(log2);
@@ -591,7 +602,7 @@ public class AuthorizationServiceImplTest extends AbstractTest {
         groupLogs.add(new GroupLog(group4, log, false, false, false));
 
         // Mock recording
-        expect(workspaceService.getGroupLogs(123)).andReturn(groupLogs);
+        expect(authorizationService.getGroupLogs(123)).andReturn(groupLogs);
         replayAll();
 
         // Mock call
@@ -625,7 +636,7 @@ public class AuthorizationServiceImplTest extends AbstractTest {
 
 
         // Mock recording
-        expect(workspaceService.getGroupProcesses(123)).andReturn(groupProcesses);
+        expect(authorizationService.getGroupProcesses(123)).andReturn(groupProcesses);
         replayAll();
 
         // Mock call
@@ -657,7 +668,7 @@ public class AuthorizationServiceImplTest extends AbstractTest {
 
 
         // Mock recording
-        expect(workspaceService.getGroupFolders(123)).andReturn(groupFolders);
+        expect(authorizationService.getGroupFolders(123)).andReturn(groupFolders);
         replayAll();
 
         // Mock call

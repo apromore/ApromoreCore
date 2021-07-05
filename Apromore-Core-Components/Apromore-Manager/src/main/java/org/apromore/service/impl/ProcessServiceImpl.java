@@ -24,17 +24,27 @@
  */
 package org.apromore.service.impl;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import org.apromore.aop.Event;
+import org.apromore.aop.HistoryEnum;
+import org.apromore.common.ConfigBean;
+import org.apromore.common.Constants;
+import org.apromore.dao.*;
+import org.apromore.dao.model.Process;
+import org.apromore.dao.model.*;
+import org.apromore.exception.*;
+import org.apromore.portal.helper.Version;
+import org.apromore.portal.model.ExportFormatResultType;
+import org.apromore.service.*;
+import org.apromore.service.helper.UserInterfaceHelper;
+import org.apromore.service.model.ProcessData;
+import org.apromore.util.AccessType;
+import org.apromore.util.StreamUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.activation.DataHandler;
 import javax.inject.Inject;
@@ -43,46 +53,13 @@ import javax.xml.bind.JAXBException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import org.apromore.aop.Event;
-import org.apromore.aop.HistoryEnum;
-import org.apromore.common.ConfigBean;
-import org.apromore.common.Constants;
-import org.apromore.dao.GroupProcessRepository;
-import org.apromore.dao.GroupRepository;
-import org.apromore.dao.NativeRepository;
-import org.apromore.dao.ProcessBranchRepository;
-import org.apromore.dao.ProcessModelVersionRepository;
-import org.apromore.dao.ProcessRepository;
-import org.apromore.dao.model.AccessRights;
-import org.apromore.dao.model.Group;
-import org.apromore.dao.model.GroupProcess;
-import org.apromore.dao.model.Native;
-import org.apromore.dao.model.NativeType;
-import org.apromore.dao.model.Process;
-import org.apromore.dao.model.ProcessBranch;
-import org.apromore.dao.model.ProcessModelVersion;
-import org.apromore.dao.model.User;
-import org.apromore.exception.ExceptionDao;
-import org.apromore.exception.ExportFormatException;
-import org.apromore.exception.ImportException;
-import org.apromore.exception.RepositoryException;
-import org.apromore.exception.UpdateProcessException;
-import org.apromore.portal.helper.Version;
-import org.apromore.portal.model.ExportFormatResultType;
-import org.apromore.service.FormatService;
-import org.apromore.service.LockService;
-import org.apromore.service.ProcessService;
-import org.apromore.service.UserService;
-import org.apromore.service.WorkspaceService;
-import org.apromore.service.helper.UserInterfaceHelper;
-import org.apromore.service.model.ProcessData;
-import org.apromore.util.StreamUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * Implementation of the ProcessService Contract.
@@ -104,29 +81,38 @@ public class ProcessServiceImpl implements ProcessService {
     private FormatService formatSrv;
     private UserInterfaceHelper ui;
     private WorkspaceService workspaceSrv;
+    private AuthorizationService authorizationService;
+    private FolderRepository folderRepository;
 
     private boolean sanitizationEnabled;
 
     /**
-     * Default Constructor allowing Spring to Autowire for testing and normal use.
-     * @param nativeRepo Native Repository.
-     * @param processBranchRepo Process Branch Map Repository.
+     *
+     * @param nativeRepo Native Repository
+     * @param groupRepo Group Repository
+     * @param processBranchRepo Process Branch Map Repository
      * @param processRepo Process Repository
-     * @param processModelVersionRepo Process Model Version Repository.
+     * @param processModelVersionRepo Process Model Version Repository
      * @param groupProcessRepo Group-Process Repository
-     * @param lService Lock Service.
+     * @param lService Lock Service
      * @param userSrv User Service
-     * @param fService Fragment Service
-     * @param formatSrv Format Service.
-     * @param ui User Interface Helper.
-     * @param workspaceService
+     * @param formatSrv Format Service
+     * @param ui User Interface Helper
+     * @param workspaceService Workspace Service
+     * @param authorizationService Authorization Service
+     * @param folderRepository Folder Repository
+     * @param config Config
      */
     @Inject
     public ProcessServiceImpl(final NativeRepository nativeRepo, final GroupRepository groupRepo,
-            final ProcessBranchRepository processBranchRepo, ProcessRepository processRepo,
-            final ProcessModelVersionRepository processModelVersionRepo, final GroupProcessRepository groupProcessRepo,
-            final LockService lService, final UserService userSrv, 
-            final FormatService formatSrv, final UserInterfaceHelper ui, final WorkspaceService workspaceService, final ConfigBean config) {
+                              final ProcessBranchRepository processBranchRepo, ProcessRepository processRepo,
+                              final ProcessModelVersionRepository processModelVersionRepo,
+                              final GroupProcessRepository groupProcessRepo,
+                              final LockService lService, final UserService userSrv,
+                              final FormatService formatSrv, final UserInterfaceHelper ui,
+                              final WorkspaceService workspaceService,
+                              final AuthorizationService authorizationService,
+                              final FolderRepository folderRepository, final ConfigBean config) {
         this.groupRepo = groupRepo;
         this.nativeRepo = nativeRepo;
         this.processBranchRepo = processBranchRepo;
@@ -137,13 +123,15 @@ public class ProcessServiceImpl implements ProcessService {
         this.formatSrv = formatSrv;
         this.ui = ui;
         this.workspaceSrv = workspaceService;
+        this.authorizationService = authorizationService;
+        this.folderRepository = folderRepository;
 
         this.sanitizationEnabled = config.isSanitizationEnabled();
     }
 
 
     /**
-     * @see org.apromore.service.ProcessService#.getBranchName()importProcess(String, Integer, String, Version, String, org.apromore.service.model.CanonisedProcess, String, String, String, String, boolean)
+     * @see org.apromore.service.ProcessService#importProcess(String, Integer, String, Version, String, InputStream, String, String, String, String, boolean)
      * {@inheritDoc}
      */
     @Override
@@ -167,7 +155,19 @@ public class ProcessServiceImpl implements ProcessService {
             InputStream sanitizedStream = sanitizationEnabled ? sanitize(nativeStream, nativeType) : nativeStream;
             assert sanitizedStream != null;
 
-            Process process = insertProcess(processName, user, nativeType, domain, folderId, created, publicModel);
+            Folder folder = folderRepository.findUniqueByID(folderId);
+
+            if (folder != null) {
+                AccessType accessType = authorizationService.getFolderAccessTypeByUser(folderId, user);
+
+                // If user is not the owner of specified folder, then put process in user's home folder
+                if (accessType != AccessType.OWNER) {
+                    folder = null;
+                }
+            }
+            Integer actualFolderId = folder == null ? 0 : folder.getId();
+
+            Process process = insertProcess(processName, user, nativeType, domain, actualFolderId, created, publicModel);
             if (process.getId() == null) {
                 throw new ImportException("Created New process named \"" + processName + "\", but JPA repository assigned a primary key ID of " + process.getId());
             }
@@ -175,8 +175,8 @@ public class ProcessServiceImpl implements ProcessService {
             Native nat = formatSrv.storeNative(processName, created, lastUpdate, user, nativeType, Constants.INITIAL_ANNOTATION, sanitizedStream);
             pmv = addProcessModelVersion(process, processName, version, Constants.TRUNK_NAME, created, lastUpdate, nativeType,nat);
             LOGGER.debug("Process model version: {}", pmv);
-            
-            workspaceSrv.addProcessToFolder(user, process.getId(), folderId);
+
+            workspaceSrv.addProcessToFolder(user, process.getId(), actualFolderId);
             LOGGER.info("Import process model \"{}\" (id {})", processName, process.getId());//call when net is change and then save
 
         } catch (ImportException e) {
@@ -342,7 +342,7 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     /**
-     * @see org.apromore.service.ProcessService#exportProcess(String, Integer, String, Version, String, String, boolean, java.util.Set)
+     * @see org.apromore.service.ProcessService#exportProcess(String, Integer, String, Version, String)
      * {@inheritDoc}
      */
     @Override
@@ -446,7 +446,7 @@ public class ProcessServiceImpl implements ProcessService {
 
 
     /**
-     * @see ProcessService#deleteProcessModel(java.util.List)
+     * @see ProcessService#deleteProcessModel(List, User)
      * {@inheritDoc}
      */
     @Override
@@ -508,6 +508,13 @@ public class ProcessServiceImpl implements ProcessService {
             LOGGER.error("Original exception was: ", e);
             throw new RepositoryException(e);
         }
+    }
+
+    @Override
+    public Folder getFolderByPmv(ProcessModelVersion pmv) {
+
+        Process process = processRepo.findOne(pmv.getId());
+        return process.getFolder();
     }
 
     private void deleteProcessModelVersion(List<ProcessModelVersion> pmvs, ProcessModelVersion pvidToDelete, ProcessBranch branch) throws ExceptionDao {

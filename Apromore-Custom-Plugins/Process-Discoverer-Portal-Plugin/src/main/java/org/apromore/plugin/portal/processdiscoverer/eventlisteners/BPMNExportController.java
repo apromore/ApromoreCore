@@ -29,6 +29,8 @@ import java.util.Map;
 
 import javax.xml.datatype.DatatypeFactory;
 
+import org.apromore.dao.model.Folder;
+import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
 import org.apromore.plugin.portal.processdiscoverer.components.AbstractController;
@@ -52,6 +54,8 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Progressmeter;
 import org.zkoss.zul.Window;
+
+import static org.apromore.commons.item.Constants.HOME_FOLDER_NAME;
 
 /**
  * This class provides a facility to export BPMN models from ProcessDiscoverer and save
@@ -257,14 +261,14 @@ public class BPMNExportController extends AbstractController {
 				@Override
             	public void onEvent(Event event) throws Exception {
 					if (event.getName().equals("onOK")) {
-    				   String modelName = (String)event.getData();
-				       String user = controller.getContextData().getUsername();
+    				    String modelName = (String)event.getData();
+				        String user = controller.getContextData().getUsername();
 				        Version version = new Version(1, 0);
 				        String now = DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString();
 				        boolean publicModel = false;
 
 				        try {
-    				        controller.getProcessService().importProcess(user,
+                            ProcessModelVersion pmv = controller.getProcessService().importProcess(user,
     				        		controller.getContextData().getFolderId(),
     				        		modelName,
     				                version,
@@ -275,7 +279,10 @@ public class BPMNExportController extends AbstractController {
     				                now,  // creation timestamp
     				                now,  // last update timestamp
     				                publicModel);
-                            Notification.info("A new BPMN model named <strong>" + modelName + "</strong> has been saved in the <strong>" + controller.getContextData().getFolderName() + "</strong> folder.");
+                            Folder folder = controller.getProcessService().getFolderByPmv(pmv);
+                            String folderName = folder == null ? HOME_FOLDER_NAME : folder.getName();
+                            Notification.info("A new BPMN model named <strong>" + modelName + "</strong> has been " +
+                                    "saved in the <strong>" + folderName + "</strong> folder.");
     				        controller.refreshPortal();
 				        }
 				        catch (Exception ex) {
@@ -286,7 +293,7 @@ public class BPMNExportController extends AbstractController {
             	}
 			});
 
- 
+
     };
 
 }

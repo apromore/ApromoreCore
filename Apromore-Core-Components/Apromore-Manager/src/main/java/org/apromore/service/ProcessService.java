@@ -28,6 +28,7 @@ package org.apromore.service;
 import java.io.InputStream;
 import java.util.List;
 
+import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.NativeType;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.dao.model.User;
@@ -151,4 +152,10 @@ public interface ProcessService {
      */
     String getBPMNRepresentation(final String name, final Integer processId, final String branch, final Version version) throws RepositoryException;
 
+    /**
+     * Get folder that the associated Process is saved in
+     * @param pmv processSummaryType
+     * @return Folder
+     */
+    Folder getFolderByPmv(ProcessModelVersion pmv);
 }

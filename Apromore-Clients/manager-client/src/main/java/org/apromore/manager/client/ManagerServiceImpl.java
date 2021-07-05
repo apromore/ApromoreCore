@@ -69,14 +69,7 @@ import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.UserType;
 import org.apromore.portal.model.UsernamesType;
 import org.apromore.portal.model.VersionSummaryType;
-import org.apromore.service.DomainService;
-import org.apromore.service.EventLogService;
-import org.apromore.service.FormatService;
-import org.apromore.service.PluginService;
-import org.apromore.service.ProcessService;
-import org.apromore.service.SecurityService;
-import org.apromore.service.UserService;
-import org.apromore.service.WorkspaceService;
+import org.apromore.service.*;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.service.model.ProcessData;
 import org.apromore.util.AccessType;
@@ -106,6 +99,7 @@ public class ManagerServiceImpl implements ManagerService {
     @Inject private SecurityService secSrv;
     @Inject private WorkspaceService workspaceSrv;
     @Inject private UserInterfaceHelper uiHelper;
+    @Inject private AuthorizationService authorizationSrv;
 
     private boolean isGEDMatrixReady = true;
     
@@ -276,17 +270,17 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Override
     public List<GroupAccessType> getFolderGroups(int folderId) {
-        return WorkspaceMapper.convertGroupFoldersToGroupAccessTypes(workspaceSrv.getGroupFolders(folderId));
+        return WorkspaceMapper.convertGroupFoldersToGroupAccessTypes(authorizationSrv.getGroupFolders(folderId));
     }
 
     @Override
     public List<GroupAccessType> getProcessGroups(int processId) {
-        return WorkspaceMapper.convertGroupProcessesToGroupAccessTypes(workspaceSrv.getGroupProcesses(processId));
+        return WorkspaceMapper.convertGroupProcessesToGroupAccessTypes(authorizationSrv.getGroupProcesses(processId));
     }
 
     @Override
     public List<GroupAccessType> getLogGroups(int logId) {
-        return WorkspaceMapper.convertGroupLogsToGroupAccessTypes(workspaceSrv.getGroupLogs(logId));
+        return WorkspaceMapper.convertGroupLogsToGroupAccessTypes(authorizationSrv.getGroupLogs(logId));
     }
 
     @Override
@@ -346,37 +340,37 @@ public class ManagerServiceImpl implements ManagerService {
     @Override
     public String saveFolderPermissions(int folderId, String userId, boolean hasRead, boolean hasWrite, boolean hasOwnership) {
         LOGGER.info("User \"{}\" modify folder id {} permissions: read {} write {} owner {}", userId, folderId, hasRead, hasWrite, hasOwnership);
-        return workspaceSrv.saveFolderPermissions(folderId, userId, hasRead, hasWrite, hasOwnership);
+        return authorizationSrv.saveFolderPermissions(folderId, userId, hasRead, hasWrite, hasOwnership);
     }
 
     @Override
     public String saveProcessPermissions(int processId, String userId, boolean hasRead, boolean hasWrite, boolean hasOwnership) {
         LOGGER.info("User id {} modify process model id {} permissions: read {} write {} owner {}", userId, processId, hasRead, hasWrite, hasOwnership);
-        return workspaceSrv.saveProcessPermissions(processId, userId, hasRead, hasWrite, hasOwnership);
+        return authorizationSrv.saveProcessPermissions(processId, userId, hasRead, hasWrite, hasOwnership);
     }
 
     @Override
     public String saveLogPermissions(int logId, String userId, boolean hasRead, boolean hasWrite, boolean hasOwnership) {
         LOGGER.info("User id {} modify log id {} permissions: read {} write {} owner {}", userId, logId, hasRead, hasWrite, hasOwnership);
-        return workspaceSrv.saveLogPermissions(logId, userId, hasRead, hasWrite, hasOwnership);
+        return authorizationSrv.saveLogPermissions(logId, userId, hasRead, hasWrite, hasOwnership);
     }
 
     @Override
     public String removeFolderPermissions(int folderId, String userId) {
         LOGGER.info("User id {} remove folder id {} permissions", userId, folderId);
-        return workspaceSrv.removeFolderPermissions(folderId, userId);
+        return authorizationSrv.removeFolderPermissions(folderId, userId);
     }
 
     @Override
     public String removeProcessPermissions(int processId, String userId) {
         LOGGER.info("User id {} remove permissions from process model id {}", userId, processId);
-        return workspaceSrv.removeProcessPermissions(processId, userId);
+        return authorizationSrv.removeProcessPermissions(processId, userId);
     }
 
     @Override
     public String removeLogPermissions(int logId, String userId, String username, AccessType accessType) throws UserNotFoundException {
         LOGGER.info("User \"{}\" (id {}) remove permissions from log id {} (access type {})", username, userId, logId, accessType);
-        return workspaceSrv.removeLogPermissions(logId, userId, username, accessType);
+        return authorizationSrv.removeLogPermissions(logId, userId, username, accessType);
     }
 
     /**

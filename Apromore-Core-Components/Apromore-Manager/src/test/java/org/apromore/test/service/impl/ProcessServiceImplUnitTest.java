@@ -25,6 +25,8 @@
 package org.apromore.test.service.impl;
 
 import com.google.common.io.CharStreams;
+import org.apromore.service.*;
+import org.apromore.util.AccessType;
 import org.junit.Assert;
 import org.apromore.TestData;
 import org.apromore.common.ConfigBean;
@@ -37,10 +39,6 @@ import org.apromore.exception.RepositoryException;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.portal.helper.Version;
 import org.apromore.portal.model.ExportFormatResultType;
-import org.apromore.service.FormatService;
-import org.apromore.service.LockService;
-import org.apromore.service.UserService;
-import org.apromore.service.WorkspaceService;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.service.impl.ProcessServiceImpl;
 import org.apromore.service.model.ProcessData;
@@ -74,6 +72,7 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
   private FormatService fmtSrv;
   private UserInterfaceHelper ui;
   private WorkspaceService workspaceSrv;
+  private AuthorizationService authorizationService;
   private LockService lockSrv;
   private ConfigBean config;
 
@@ -83,6 +82,7 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
   private ProcessBranchRepository processBranchRepo;
   private GroupRepository groupRepo;
   private GroupProcessRepository groupProcessRepo;
+  private FolderRepository folderRepository;
 
   @Before
   public final void setUp() throws Exception {
@@ -92,17 +92,19 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
     processBranchRepo = createMock(ProcessBranchRepository.class);
     processRepo = createMock(ProcessRepository.class);
     processModelVersionRepo = createMock(ProcessModelVersionRepository.class);
+    folderRepository = createMock(FolderRepository.class);
     nativeRepo = createMock(NativeRepository.class);
     usrSrv = createMock(UserService.class);
     fmtSrv = createMock(FormatService.class);
     ui = createMock(UserInterfaceHelper.class);
     workspaceSrv = createMock(WorkspaceService.class);
     lockSrv = createMock(LockService.class);
+    authorizationService = createMock(AuthorizationService.class);
     config = new ConfigBean();
 
     processService = new ProcessServiceImpl(nativeRepo, groupRepo, processBranchRepo, processRepo,
         processModelVersionRepo, groupProcessRepo, lockSrv,
-        usrSrv, fmtSrv, ui, workspaceSrv, config);
+        usrSrv, fmtSrv, ui, workspaceSrv, authorizationService, folderRepository, config);
   }
 
   @Test
@@ -148,6 +150,8 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
     // Store native
     expect(fmtSrv.storeNative(processName, createDate, lastUpdateDate, user,
         nativeType, Constants.INITIAL_ANNOTATION, nativeStream)).andReturn(nativeDoc);
+    expect(folderRepository.findUniqueByID(folder.getId())).andReturn(folder);
+    expect(authorizationService.getFolderAccessTypeByUser(folderId, user)).andReturn(AccessType.OWNER);
 
     // Update workspace
     workspaceSrv.addProcessToFolder(user, process.getId(), folder.getId());
@@ -169,6 +173,79 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
     Assert.assertEquals(pmvResult.getVersionNumber(), pmv.getVersionNumber());
     Assert.assertEquals(pmvResult.getNativeDocument().getContent(),
         pmv.getNativeDocument().getContent());
+    Assert.assertEquals(pmvResult.getCreateDate(), pmv.getCreateDate());
+    Assert.assertEquals(pmvResult.getLastUpdateDate(), pmv.getLastUpdateDate());
+  }
+
+  @Test
+  public void testImportProcess_FolderWithoutWriteAccess() throws Exception {
+    // Test data setup
+    Folder homeFolder = createFolder();
+    Folder folder = new Folder();
+    folder.setId(1);
+    Group group = createGroup(123, Group.Type.GROUP);
+    Role role = createRole(createSet(createPermission()));
+    User user = createUser("userName1", group, createSet(group), createSet(role));
+    Version version = createVersion("1.0.0");
+    NativeType nativeType = createNativeType();
+    Native nativeDoc = createNative(nativeType, TestData.XPDL);
+
+    Process process = createProcess(user, nativeType, homeFolder);
+    ProcessBranch branch = createBranch(process);
+    ProcessModelVersion pmv = createPMV(branch, nativeDoc, version);
+
+    // Parameter setup
+    String userName = user.getUsername();
+    String createDate = pmv.getCreateDate();
+    String lastUpdateDate = pmv.getLastUpdateDate();
+    String processName = process.getName();
+    String domainName = process.getDomain();
+    InputStream nativeStream =
+            (new DataHandler(new ByteArrayDataSource(nativeDoc.getContent().getBytes(), "text/xml")))
+                    .getInputStream();
+    String nativeTypeS = nativeType.getNatType();
+    Integer folderId = folder.getId();
+
+
+    // MOCK RECORDING
+
+    // Insert new process
+    expect(usrSrv.findUserByLogin(userName)).andReturn(user);
+    expect(fmtSrv.findNativeType(nativeTypeS)).andReturn(nativeType);
+    expect(workspaceSrv.getFolder(homeFolder.getId())).andReturn(homeFolder);
+    expect(processRepo.save((Process) anyObject())).andReturn(process);
+    expect(processRepo.saveAndFlush((Process) anyObject())).andReturn(process);
+    // Insert branch
+    expect(processBranchRepo.save((ProcessBranch) anyObject())).andReturn(branch);
+    // Insert process model version
+    expect(processModelVersionRepo.save((ProcessModelVersion) anyObject())).andReturn(pmv);
+    // Store native
+    expect(fmtSrv.storeNative(processName, createDate, lastUpdateDate, user,
+            nativeType, Constants.INITIAL_ANNOTATION, nativeStream)).andReturn(nativeDoc);
+    expect(folderRepository.findUniqueByID(folder.getId())).andReturn(folder);
+    expect(authorizationService.getFolderAccessTypeByUser(folderId, user)).andReturn(AccessType.EDITOR);
+
+    // Update workspace
+    workspaceSrv.addProcessToFolder(user, process.getId(), homeFolder.getId());
+
+    replayAll();
+
+    // MOCK CALL AND VERIFY
+    ProcessModelVersion pmvResult = processService.importProcess(userName, folderId, processName,
+            version, nativeType.getNatType(),
+            nativeStream, domainName, "", createDate, lastUpdateDate, false);
+
+    // VERIFY MOCK AND RESULT
+    verifyAll();
+    Assert.assertEquals(homeFolder.getId(), process.getFolder().getId());
+    Assert.assertEquals(pmvResult.getProcessBranch().getProcess().getName(),
+            pmv.getProcessBranch().getProcess().getName());
+    Assert.assertEquals(pmvResult.getProcessBranch().getBranchName(),
+            pmv.getProcessBranch().getBranchName());
+    Assert.assertEquals(pmvResult.getNativeType().getNatType(), pmv.getNativeType().getNatType());
+    Assert.assertEquals(pmvResult.getVersionNumber(), pmv.getVersionNumber());
+    Assert.assertEquals(pmvResult.getNativeDocument().getContent(),
+            pmv.getNativeDocument().getContent());
     Assert.assertEquals(pmvResult.getCreateDate(), pmv.getCreateDate());
     Assert.assertEquals(pmvResult.getLastUpdateDate(), pmv.getLastUpdateDate());
   }
@@ -249,6 +326,9 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
     // Store native
     expect(fmtSrv.storeNative(processName, createDate, lastUpdateDate, user, nativeType,
         Constants.INITIAL_ANNOTATION, nativeStream)).andReturn(nativeDoc);
+    expect(folderRepository.findUniqueByID(folder.getId())).andReturn(folder);
+    expect(authorizationService.getFolderAccessTypeByUser(folderId, user)).andReturn(AccessType.OWNER);
+
     // Update workspace
     workspaceSrv.addProcessToFolder(user, process.getId(), folder.getId());
 

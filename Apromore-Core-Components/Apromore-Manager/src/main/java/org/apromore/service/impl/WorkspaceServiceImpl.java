@@ -137,21 +137,6 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
 
     @Override
-    public List<GroupFolder> getGroupFolders(Integer folderId) {
-        return groupFolderRepo.findByFolderId(folderId);
-    }
-
-    @Override
-    public List<GroupProcess> getGroupProcesses(Integer processId) {
-        return groupProcessRepo.findByProcessId(processId);
-    }
-
-    @Override
-    public List<GroupLog> getGroupLogs(Integer logId) {
-        return groupLogRepo.findByLogId(logId);
-    }
-
-    @Override
     public List<GroupProcess> getGroupProcesses(String userId, Integer folderId) {
         return (folderId == 0) ? groupProcessRepo.findRootProcessesByUser(userId)
                 : groupProcessRepo.findAllProcessesInFolderForUser(folderId, userId);
@@ -202,8 +187,9 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         folder.setDateCreated(Calendar.getInstance().getTime());
         folder.setDateModified(Calendar.getInstance().getTime());
         folder.setDescription("");
-        if (isGEDMatrixReady != null)
+        if (isGEDMatrixReady != null) {
             folder.setGEDMatrixReady(isGEDMatrixReady);
+        }
         folder = folderRepo.saveAndFlush(folder);
 
         Set<GroupFolder> groupFolders = folder.getGroupFolders();
@@ -251,8 +237,9 @@ public class WorkspaceServiceImpl implements WorkspaceService {
                     "User " + user.getUsername() + " is not permitted to delete folder with id " + folderId);
         }
         Folder folder = folderRepo.findOne(folderId);
-        if (folderName != null && !folderName.isEmpty())
+        if (folderName != null && !folderName.isEmpty()) {
             folder.setName(folderName);
+        }
         if (isGEDMatrixReady != null) {
             folder.setGEDMatrixReady(isGEDMatrixReady);
             for (Folder subfolder : folder.getSubFolders()) {
@@ -343,182 +330,11 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         return folderUsers;
     }
 
-    @Override
-    @Transactional(readOnly = false)
-    public String saveFolderPermissions(Integer folderId, String groupRowGuid, boolean hasRead, boolean hasWrite,
-                                        boolean hasOwnership) {
 
-        List<Folder> subFoldersWithCurrentFolders = folderService.getSubFolders(folderId, true);
-        Group group = groupRepo.findByRowGuid(groupRowGuid);
-        List<Integer> folderIds = new ArrayList<>();
 
-        for (Folder folder : subFoldersWithCurrentFolders) {
-            createGroupFolder(group, folder, hasRead, hasWrite, hasOwnership);
-            folderIds.add(folder.getId());
-        }
 
-        List<Folder> parentFolders = folderService.getParentFolders(folderId);
-        for (Folder folder : parentFolders) {
-            // Give parent folders viewer access only if specified group doesn't have access to
-            if (groupFolderRepo.findByGroupAndFolder(group, folder) == null) {
-                createGroupFolder(group, folder, true, false, false);
-            }
-        }
 
-        for (Process process : processRepo.findByFolderIdIn(folderIds)) {
-            createGroupProcess(group, process, hasRead, hasWrite, hasOwnership);
-        }
 
-        for (Log log : logRepo.findByFolderIdIn(folderIds)) {
-            createGroupLog(group, log, hasRead, hasWrite, hasOwnership);
-        }
-
-        return "";
-    }
-
-    @Override
-    @Transactional(readOnly = false)
-    public String removeFolderPermissions(Integer folderId, String groupRowGuid) {
-
-//	
-        List<Folder> subFoldersWithCurrentFolders = folderService.getSubFolders(folderId, true);
-        Group group = groupRepo.findByRowGuid(groupRowGuid);
-        List<Integer> folderIds = new ArrayList<Integer>();
-
-        for (Folder folder : subFoldersWithCurrentFolders) {
-            folderIds.add(folder.getId());
-            removeGroupFolder(group, folder);
-        }
-
-        for (Process process : processRepo.findByFolderIdIn(folderIds)) {
-            removeGroupProcess(group, process);
-        }
-
-        for (Log log : logRepo.findByFolderIdIn(folderIds)) {
-            removeGroupLog(group, log);
-        }
-        return "";
-
-    }
-
-    @Override
-    @Transactional(readOnly = false)
-    public String removeProcessPermissions(Integer processId, String groupRowGuid) {
-        Process process = processRepo.findOne(processId);
-        Group group = groupRepo.findByRowGuid(groupRowGuid);
-        removeGroupProcess(group, process);
-        return "";
-    }
-
-    @Override
-    @Transactional(readOnly = false)
-    public String removeLogPermissions(Integer logId, String groupRowGuid, String username, AccessType accessType) {
-        Log log = logRepo.findOne(logId);
-        Group group = groupRepo.findByRowGuid(groupRowGuid);
-        removeGroupLog(group, log);
-
-        // TODO: If access type = restricted, remove GroupUsermetadata
-        // If access type = restricted, remove permission with user metadata that linked to specified log
-        // userMetadataServ.removeUserMetadataAccessRightsByLogAndGroup(logId, groupRowGuid, username);
-
-        if (accessType != AccessType.RESTRICTED) {
-
-            for (Usermetadata u : logRepo.findUniqueByID(logId).getUsermetadataSet()) {
-                removeGroupUsermetadata(group, u);
-            }
-        }
-
-        return "";
-    }
-
-    @Override
-    @Transactional(readOnly = false)
-    public String removeUsermetadataPermissions(Integer usermetadataId, String groupRowGuid) {
-        Usermetadata um = usermetadataRepo.findOne(usermetadataId);
-        Group group = groupRepo.findByRowGuid(groupRowGuid);
-        removeGroupUsermetadata(group, um);
-        return "";
-    }
-
-    @Override
-    @Transactional(readOnly = false)
-    public String saveProcessPermissions(Integer processId, String groupRowGuid, boolean hasRead, boolean hasWrite,
-                                         boolean hasOwnership) {
-        Process process = processRepo.findOne(processId);
-        Group group = groupRepo.findByRowGuid(groupRowGuid);
-        createGroupProcess(group, process, hasRead, hasWrite, hasOwnership);
-
-        Folder parentFolder = process.getFolder();
-        setReadOnlyParentFolders(group, parentFolder);
-
-        return "";
-    }
-
-    @Override
-    @Transactional(readOnly = false)
-    public String saveLogPermissions(Integer logId, String groupRowGuid, boolean hasRead, boolean hasWrite,
-                                     boolean hasOwnership) {
-        Log log = logRepo.findOne(logId);
-        Group group = groupRepo.findByRowGuid(groupRowGuid);
-
-        createGroupLog(group, log, hasRead, hasWrite, hasOwnership);
-
-        Folder parentFolder = log.getFolder();
-        setReadOnlyParentFolders(group, parentFolder);
-
-        return "";
-    }
-
-    private void setReadOnlyParentFolders(Group group, Folder parentFolder) {
-        if (parentFolder != null) {
-            List<Folder> parentFolders = folderService.getParentFolders(parentFolder.getId());
-            parentFolders.add(parentFolder);
-            for (Folder folder : parentFolders) {
-                GroupFolder groupFolder = groupFolderRepo.findByGroupAndFolder(group, folder);
-                if (groupFolder == null) { // Set read access only when specified group doesn't have access to parent
-                    // folder
-                    createGroupFolder(group, folder, true, false, false);
-                }
-            }
-        }
-    }
-
-    @Override
-    @Transactional
-    public String saveLogAccessRights(Integer logId, String groupRowGuid, AccessType accessType,
-                                      boolean shareUserMetadata) {
-        Log log = logRepo.findOne(logId);
-        Group group = groupRepo.findByRowGuid(groupRowGuid);
-
-        createGroupLog(group, log, accessType.isRead(), accessType.isWrite(), accessType.isOwner());
-
-        Folder parentFolder = log.getFolder();
-        setReadOnlyParentFolders(group, parentFolder);
-
-        // shareUserMetadata flag is disabled for now
-
-        // If not restricted viewer, then remove all GroupUsermetadata associated with specified log and group
-        if (accessType != AccessType.RESTRICTED) {
-
-            for (Usermetadata u : logRepo.findUniqueByID(logId).getUsermetadataSet()) {
-                removeGroupUsermetadata(group, u);
-            }
-        }
-
-        return "";
-    }
-
-    @Override
-    @Transactional
-    public String saveUserMetadataAccessRights(Integer usermetadataId, String groupRowGuid, AccessType accessType) {
-
-        Usermetadata usermetadata = usermetadataRepo.findById(usermetadataId);
-        Group group = groupRepo.findByRowGuid(groupRowGuid);
-
-        createGroupUsermetadata(group, usermetadata, accessType.isRead(), accessType.isWrite(), accessType.isOwner());
-
-        return "";
-    }
 
     @Override
     @Transactional(readOnly = false)

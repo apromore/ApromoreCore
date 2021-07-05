@@ -28,6 +28,7 @@ import java.util.GregorianCalendar;
 
 import javax.xml.datatype.DatatypeFactory;
 
+import org.apromore.dao.model.Log;
 import org.apromore.plugin.portal.processdiscoverer.PDAnalyst;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
 import org.apromore.plugin.portal.processdiscoverer.components.AbstractController;
@@ -39,6 +40,8 @@ import org.deckfour.xes.model.XLog;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+
+import static org.apromore.commons.item.Constants.HOME_FOLDER_NAME;
 
 public class LogExportController extends AbstractController {
     private ContextData contextData;
@@ -80,11 +83,12 @@ public class LogExportController extends AbstractController {
             final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             parent.getEvenLogService().exportToStream(outputStream, filtered_log);
 
-            parent.getEvenLogService().importLog(contextData.getUsername(), contextData.getFolderId(),
+            Log log = parent.getEvenLogService().importLog(contextData.getUsername(), contextData.getFolderId(),
                     logName, new ByteArrayInputStream(outputStream.toByteArray()), "xes.gz",
                     contextData.getDomain(), DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(),
                     false);
-            Notification.info("A new log named <strong>" + logName + "</strong> has been saved in the <strong>" + contextData.getFolderName() + "</strong> folder.");
+            String folderName = log.getFolder() == null ? HOME_FOLDER_NAME : log.getFolder().getName();
+            Notification.info("A new log named <strong>" + logName + "</strong> has been saved in the <strong>" + folderName + "</strong> folder.");
             parent.refreshPortal();
         } catch (Exception e) {
             e.printStackTrace();

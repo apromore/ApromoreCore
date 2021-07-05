@@ -29,4 +29,5 @@ public interface Constants {
   public static final String VALID_NAME_REGEX = "^[a-zA-Z0-9 &\\u0080-\\u9fff\\u005B\\u005D\\._\\+\\-\\(\\)]{1,60}$";
   public static final String VALID_NAME_MESSAGE = "Use only letters, numbers, space and .-_[]()&. No more than 60 chars.";
   public static final int VALID_NAME_MAX_LENGTH = 60;
+  public static final String HOME_FOLDER_NAME = "Home";
 }
