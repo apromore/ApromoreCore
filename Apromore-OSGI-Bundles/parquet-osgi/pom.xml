@@ -48,7 +48,6 @@
                             !jdiff,
                             mx4j.tools.adaptor.http;resolution:=optional,
                             !org.apache.avalon.framework.logger,
-                            !org.apache.avro.*,
                             !org.apache.commons.cli.*,
                             !org.apache.commons.codec.*,
                             !org.apache.commons.collections4.map,
@@ -159,19 +158,25 @@
 
         <dependency>
             <groupId>org.apache.parquet</groupId>
+            <artifactId>parquet-avro</artifactId>
+            <version>${parquet.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.parquet</groupId>
             <artifactId>parquet-column</artifactId>
             <version>${parquet.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.parquet</groupId>
-            <artifactId>parquet-encoding</artifactId>
+            <artifactId>parquet-common</artifactId>
             <version>${parquet.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.parquet</groupId>
-            <artifactId>parquet-common</artifactId>
+            <artifactId>parquet-encoding</artifactId>
             <version>${parquet.version}</version>
         </dependency>
 
