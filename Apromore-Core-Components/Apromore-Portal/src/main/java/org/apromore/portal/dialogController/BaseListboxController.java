@@ -79,6 +79,7 @@ public abstract class BaseListboxController extends BaseController {
 
 	private static final String ALERT = "Alert";
 	private static final String ETL_PLUGIN_LABEL = "Create data pipeline";
+	private static final String MANAGE_PIPELINES_LABEL = "Manage data pipelines";
 	private static final String FOLDER_DELETE = "Are you sure you want to delete selected folder(s) and all it's contents?";
 	private static final String LOG_DELETE = "Are you sure you want to delete selected log(s)?";
 	private static final String PROCESS_DELETE = "Are you sure you want to delete the selected process model(s)? If no version has been selected, the latest version will be removed.";
@@ -96,6 +97,7 @@ public abstract class BaseListboxController extends BaseController {
 	private final Button btnDownload;
 	private final Hlayout dataPipelinesSection;
 	private final Button btnCreateDataPipeline;
+	private final Button btnManageDataPipelines;
 	private final Button btnSelectAll;
 	private final Button btnSelectNone;
 	private final Button btnCut;
@@ -141,6 +143,7 @@ public abstract class BaseListboxController extends BaseController {
 		btnDownload = (Button) mainController.getFellow("btnDownload");
 		dataPipelinesSection = (Hlayout) mainController.getFellow("dataPipelinesSection");
 		btnCreateDataPipeline = (Button) mainController.getFellow("btnCreateDataPipeline");
+		btnManageDataPipelines = (Button) mainController.getFellow("btnManageDataPipelines");
 		btnSelectAll = (Button) mainController.getFellow("btnSelectAll");
 		btnSelectNone = (Button) mainController.getFellow("btnSelectNone");
 		btnCut = (Button) mainController.getFellow("btnCut");
@@ -238,6 +241,13 @@ public abstract class BaseListboxController extends BaseController {
 				@Override
 				public void onEvent(Event event) throws Exception {
 					openETL();
+				}
+			});
+
+			this.btnManageDataPipelines.addEventListener("onClick", new EventListener<Event>() {
+				@Override
+				public void onEvent(Event event) throws Exception {
+					openPipelineManager();
 				}
 			});
 		}
@@ -463,6 +473,17 @@ public abstract class BaseListboxController extends BaseController {
 		try {
 			etlPlugin = portalPluginMap.get(ETL_PLUGIN_LABEL);
 			etlPlugin.execute(portalContext);
+		} catch (Exception e) {
+			Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
+		}
+	}
+
+	protected void openPipelineManager() throws Exception {
+		PortalPlugin pipelineManager;
+
+		try {
+			pipelineManager = portalPluginMap.get(MANAGE_PIPELINES_LABEL);
+			pipelineManager.execute(portalContext);
 		} catch (Exception e) {
 			Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
 		}
