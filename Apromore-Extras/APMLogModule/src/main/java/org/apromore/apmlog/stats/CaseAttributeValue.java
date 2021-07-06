@@ -56,7 +56,7 @@ public class CaseAttributeValue implements AttributeValue, Serializable {
         this.value = value.intern();
         this.occurCaseIndexes = occurCaseIndexes;
         this.percent = 100 * ((double) occurCaseIndexes.size() / totalCases);
-        this.frequency = String.format("%.2f",  percent );
+        this.frequency = String.format("%.2f%s",  percent, "%" );
         this.allDurations = allDurations;
         this.totalCases = totalCases;
 
