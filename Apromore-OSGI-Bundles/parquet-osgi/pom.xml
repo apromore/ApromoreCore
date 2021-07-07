@@ -81,6 +81,14 @@
                             org.codehaus.stax2,
                             *
                         </Import-Package>
+
+                        <!-- ServiceLoader mediator (SPI-Fly configuration)
+                             See http://aries.apache.org/documentation/modules/spi-fly.html#specconf -->
+                        <Require-Capability>osgi.extender; filter:="(osgi.extender=osgi.serviceloader.registrar)",
+                                            osgi.extender; filter:="(osgi.extender=osgi.serviceloader.processor)",
+                                            osgi.serviceloader; filter:="(osgi.serviceloader=org.apache.hadoop.fs.FileSystem)"; cardinality:=multiple</Require-Capability>
+                        <Provide-Capability>osgi.serviceloader; osgi.serviceloader=org.apache.hadoop.fs.FileSystem</Provide-Capability>
+
                     </instructions>
                     <niceManifest>true</niceManifest>
                 </configuration>
