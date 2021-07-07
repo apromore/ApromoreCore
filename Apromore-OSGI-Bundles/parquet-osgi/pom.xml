@@ -44,11 +44,9 @@
                             !com.sun.jdmk.comm,
                             !com.sun.tools.doclets.standard,
                             !javax.servlet.*,
-                            !javax.ws.rs.core,
                             !jdiff,
                             mx4j.tools.adaptor.http;resolution:=optional,
                             !org.apache.avalon.framework.logger,
-                            !org.apache.avro.*,
                             !org.apache.commons.cli.*,
                             !org.apache.commons.codec.*,
                             !org.apache.commons.collections4.map,
@@ -83,6 +81,14 @@
                             org.codehaus.stax2,
                             *
                         </Import-Package>
+
+                        <!-- ServiceLoader mediator (SPI-Fly configuration)
+                             See http://aries.apache.org/documentation/modules/spi-fly.html#specconf -->
+                        <Require-Capability>osgi.extender; filter:="(osgi.extender=osgi.serviceloader.registrar)",
+                                            osgi.extender; filter:="(osgi.extender=osgi.serviceloader.processor)",
+                                            osgi.serviceloader; filter:="(osgi.serviceloader=org.apache.hadoop.fs.FileSystem)"; cardinality:=multiple</Require-Capability>
+                        <Provide-Capability>osgi.serviceloader; osgi.serviceloader=org.apache.hadoop.fs.FileSystem</Provide-Capability>
+
                     </instructions>
                     <niceManifest>true</niceManifest>
                 </configuration>
@@ -91,6 +97,24 @@
     </build>
 
     <dependencies>
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-client</artifactId>
+            <version>1.19.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-core</artifactId>
+            <version>1.19.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.aries.spec</groupId>
+            <artifactId>org.apache.aries.javax.jax.rs-api</artifactId>
+            <version>1.0.4</version>
+        </dependency>
+
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
@@ -113,6 +137,18 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-vfs2</artifactId>
             <version>2.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-osgi-locator</artifactId>
+            <version>1.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-osgi-registry</artifactId>
+            <version>1.1</version>
         </dependency>
 
         <dependency>
@@ -159,19 +195,25 @@
 
         <dependency>
             <groupId>org.apache.parquet</groupId>
+            <artifactId>parquet-avro</artifactId>
+            <version>${parquet.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.parquet</groupId>
             <artifactId>parquet-column</artifactId>
             <version>${parquet.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.parquet</groupId>
-            <artifactId>parquet-encoding</artifactId>
+            <artifactId>parquet-common</artifactId>
             <version>${parquet.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.parquet</groupId>
-            <artifactId>parquet-common</artifactId>
+            <artifactId>parquet-encoding</artifactId>
             <version>${parquet.version}</version>
         </dependency>
 

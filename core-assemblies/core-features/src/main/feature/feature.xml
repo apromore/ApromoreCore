@@ -191,6 +191,7 @@
     <bundle>mvn:commons-beanutils/commons-beanutils/1.9.3</bundle>
     <bundle>mvn:commons-collections/commons-collections/3.2.2</bundle>
     <bundle>mvn:org.apache.ant/com.springsource.org.apache.tools.ant/1.8.3</bundle>
+    <bundle>mvn:org.apache.avro/avro/1.10.2</bundle>
     <bundle>mvn:org.apache.commons/commons-math3/3.6</bundle>
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-httpclient/3.1_7</bundle>
     <bundle>mvn:org.codehaus.woodstox/stax2-api/3.1.4</bundle>
