@@ -236,7 +236,7 @@ public abstract class BaseListboxController extends BaseController {
 		});
 
 		if (portalPluginMap.containsKey(ETL_PLUGIN_LABEL)) {
-			dataPipelinesSection.setVisible(true);
+			dataPipelinesSection.setVisible(config.getEnableEtl());
 			this.btnCreateDataPipeline.addEventListener("onClick", new EventListener<Event>() {
 				@Override
 				public void onEvent(Event event) throws Exception {
