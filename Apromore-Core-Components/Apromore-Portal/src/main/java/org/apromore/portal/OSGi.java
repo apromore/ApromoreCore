@@ -35,7 +35,7 @@ import org.osgi.service.cm.ConfigurationAdmin;
 /**
  * OSGi-related servlet methods.
  */
-abstract class OSGi {
+public abstract class OSGi {
 
     /**
      * Access an OSGi configuration from a servlet context.
@@ -47,7 +47,7 @@ abstract class OSGi {
      *     values are actually {@link String}s because we're using a very early edition of OSGi.
      * @throws IOException if the configuration can't be read
      */
-    static Map<String, Object> getConfiguration(final String pid, final ServletContext servletContext) throws IOException {
+    public static Map<String, Object> getConfiguration(final String pid, final ServletContext servletContext) throws IOException {
         BundleContext bundleContext = (BundleContext) servletContext.getAttribute("osgi-bundlecontext");
         ServiceReference serviceReference = bundleContext.getServiceReference(ConfigurationAdmin.class);
         ConfigurationAdmin configurationAdmin = (ConfigurationAdmin) bundleContext.getService(serviceReference);

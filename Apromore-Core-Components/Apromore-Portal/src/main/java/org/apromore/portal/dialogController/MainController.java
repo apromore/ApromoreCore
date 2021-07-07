@@ -51,6 +51,7 @@ import org.apromore.plugin.portal.MainControllerInterface;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.PortalPlugin;
+import org.apromore.portal.OSGi;
 import org.apromore.portal.context.PortalPluginResolver;
 import org.apromore.plugin.portal.SessionTab;
 import org.apromore.plugin.property.RequestParameterType;
@@ -206,6 +207,9 @@ public class MainController extends BaseController implements MainControllerInte
             MainController self = this;
 
             Sessions.getCurrent().setAttribute("portalContext", portalContext);
+            Sessions.getCurrent().setAttribute("siteProperties",
+                    OSGi.getConfiguration("site", Sessions.getCurrent().getWebApp().getServletContext()));
+
 
             this.breadCrumbs.addEventListener("onSelectFolder", new EventListener<Event>() {
                 @Override
