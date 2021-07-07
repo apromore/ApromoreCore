@@ -65,6 +65,9 @@ public class ConfigBean implements Serializable {
     private boolean  enableFullUserReg;
     private boolean  enableSubscription;
 
+    //Switch for ETL
+    private boolean  enableETL;
+
     // Switch for custom calendar
     private boolean  enableCalendar;
 
@@ -91,6 +94,7 @@ public class ConfigBean implements Serializable {
                       String ldapEmailAttribute, String ldapFirstNameAttribute, String ldapLastNameAttribute,
                       boolean enablePublish, boolean enableTC, boolean enablePP,
                       boolean enableUserReg, boolean enableFullUserReg, boolean enableSubscription,
+                      boolean enableETL,
                       boolean enableCalendar,
                       long maxUploadSize,
                       String contactEmail,
@@ -142,6 +146,8 @@ public class ConfigBean implements Serializable {
         this.enableFullUserReg  = enableFullUserReg;
         this.enableSubscription = enableSubscription;
 
+        this.enableETL          = enableETL;
+
         this.enableCalendar     = enableCalendar;
 
         this.maxUploadSize = maxUploadSize;
@@ -183,6 +189,7 @@ public class ConfigBean implements Serializable {
     public boolean getEnableFullUserReg()   { return enableFullUserReg; }
     public boolean getEnableSubscription()  { return enableSubscription; }
 
+    public boolean getEnableEtl()  { return enableETL; }
     public boolean getEnableCalendar()  { return enableCalendar; }
     public long getMaxUploadSize()  { return maxUploadSize; }
     public String getContactEmail() { return contactEmail; }
