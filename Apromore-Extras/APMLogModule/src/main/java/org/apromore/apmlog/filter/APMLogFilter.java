@@ -49,6 +49,7 @@ import org.apromore.apmlog.filter.typefilters.*;
 import org.apromore.apmlog.filter.types.Choice;
 import org.apromore.apmlog.filter.types.FilterType;
 import org.apromore.apmlog.filter.types.OperationType;
+import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,6 +57,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -185,6 +187,8 @@ public class APMLogFilter {
                     default:
                         break;
                 }
+
+                updateCaseVariants(traces, pLog.getActivityNameBiMap());
             }
         }
 
@@ -199,7 +203,24 @@ public class APMLogFilter {
         pLog.setPTraceList(traces);
     }
 
+    private void updateCaseVariants(List<PTrace> traces, HashBiMap<String, Integer> nameIndexBiMap) {
+        Map<String, List<PTrace>> groups = traces.parallelStream()
+                .collect(Collectors.groupingByConcurrent(x -> x.getActivityNameIndexString(nameIndexBiMap)));
 
+        List<Map.Entry<String, List<PTrace>>> sorted = groups.entrySet().stream()
+                .sorted( (f1, f2) -> Long.compare(f2.getValue().size(), f1.getValue().size()) )
+                .collect(Collectors.toList());
+
+        int variId = 1;
+        for (Map.Entry<String, List<PTrace>> entry : sorted) {
+
+            for (PTrace trace : entry.getValue()) {
+                trace.setCaseVariantId(variId);
+            }
+
+            variId += 1;
+        }
+    }
 
     private List<PTrace> filterByCaseSectionCaseAttribute(LogFilterRule rule, List<PTrace> traces) {
         return traces.stream()
