@@ -288,11 +288,11 @@ public class ImportController extends BaseController {
                 Notification.error("File size exceeds the allowable limit");
                 return;
             }
-            InputStream targetStream = new FileInputStream(testData);
-
-            media = new MediaImpl(testData.getName(), targetStream, StandardCharsets.UTF_8,
+            try (InputStream targetStream = new FileInputStream(testData)) {
+                media = new MediaImpl(testData.getName(), targetStream, StandardCharsets.UTF_8,
                     ItemNameUtils.findExtension(filename));
-            this.fileUrl.setValue(fileUrl);
+                this.fileUrl.setValue(fileUrl);
+            }
 
             String extension = ItemNameUtils.findExtension(media.getName());
 

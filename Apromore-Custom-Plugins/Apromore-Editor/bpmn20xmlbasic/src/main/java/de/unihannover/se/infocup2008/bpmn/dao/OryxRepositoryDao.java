@@ -82,16 +82,16 @@ public class OryxRepositoryDao {
             URL url = new URL("http://oryx-editor.org/backend/poem/model/"
                     + oryxId + "/self");
 
-            BufferedReader in = new BufferedReader(new InputStreamReader(url
-                    .openStream()));
-
             StringBuffer buffer = new StringBuffer();
-            String inputLine;
-            while ((inputLine = in.readLine()) != null) {
-                buffer.append(inputLine);
-                buffer.append("\n");
+            try (BufferedReader in = new BufferedReader(new InputStreamReader(url
+                    .openStream()))) {
+
+                String inputLine;
+                while ((inputLine = in.readLine()) != null) {
+                    buffer.append(inputLine);
+                    buffer.append("\n");
+                }
             }
-            in.close();
 
             // System.out.println(buffer);
 
