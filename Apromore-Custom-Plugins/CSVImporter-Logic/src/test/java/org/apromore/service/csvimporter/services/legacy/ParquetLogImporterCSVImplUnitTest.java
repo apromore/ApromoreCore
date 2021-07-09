@@ -262,8 +262,8 @@ public class ParquetLogImporterCSVImplUnitTest {
 
         // Validate result
         assertNotNull(logModel);
-        assertEquals(3, logModel.getRowsCount());
-        assertEquals(1, logModel.getLogErrorReport().size());
+        assertEquals(4, logModel.getRowsCount());
+        assertEquals(0, logModel.getLogErrorReport().size());
         assertNotNull(xlog);
         assertEquals(
                 utilities.removeTimezone(expectedXES),
@@ -336,8 +336,8 @@ public class ParquetLogImporterCSVImplUnitTest {
 
         // Validate result
         assertNotNull(logModel);
-        assertEquals(0, logModel.getRowsCount());
-        assertEquals(3, logModel.getLogErrorReport().size());
+        assertEquals(1, logModel.getRowsCount());
+        assertEquals(2, logModel.getLogErrorReport().size());
     }
 
     /**

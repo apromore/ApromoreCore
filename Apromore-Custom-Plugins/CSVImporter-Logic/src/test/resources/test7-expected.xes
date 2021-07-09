@@ -25,4 +25,18 @@
 			<date key="time:timestamp" value="2019-09-23T15:13:05.132+03:00"/>
 		</event>
 	</trace>
+	<trace>
+		<string key="concept:name" value="case2"/>
+		<string key="process type" value="1"/>
+		<event>
+			<string key="concept:name" value="activity2"/>
+			<string key="lifecycle:transition" value="start"/>
+			<date key="time:timestamp" value="2019-09-23T15:13:05.133"/>
+		</event>
+		<event>
+			<string key="concept:name" value="activity2"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2019-09-23T15:13:05.133"/>
+		</event>
+	</trace>
 </log>
