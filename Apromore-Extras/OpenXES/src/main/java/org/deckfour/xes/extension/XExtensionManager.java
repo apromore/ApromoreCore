@@ -306,21 +306,19 @@ public class XExtensionManager {
 		File cacheFile = new File(XRuntimeUtils.getExtensionCacheFolder()
 				.getAbsolutePath() + File.separator + fileName);
 		// download extension file to cache directory
-		try {
+		try (BufferedInputStream bis = new BufferedInputStream(uri.toURL()
+                                        .openStream())) {
 			byte[] buffer = new byte[1024];
-			BufferedInputStream bis = new BufferedInputStream(uri.toURL()
-					.openStream());
 			cacheFile.createNewFile();
-			BufferedOutputStream bos = new BufferedOutputStream(
-					new FileOutputStream(cacheFile));
-			int read = bis.read(buffer);
-			while (read >= 0) {
+			try (BufferedOutputStream bos = new BufferedOutputStream(
+					new FileOutputStream(cacheFile))) {
+			    int read = bis.read(buffer);
+			    while (read >= 0) {
 				bos.write(buffer, 0, read);
 				read = bis.read(buffer);
+			    }
+			    bos.flush();
 			}
-			bis.close();
-			bos.flush();
-			bos.close();
 			XLogging.log("Cached XES extension '" + uri + "'",
 					XLogging.Importance.DEBUG);
 		} catch (IOException e) {
