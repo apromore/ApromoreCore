@@ -21,8 +21,13 @@
  */
 package org.apromore.plugin.portal.useradmin;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.Set;
 import javax.inject.Inject;
+
 import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
 import org.apromore.portal.common.Constants;
@@ -56,7 +61,6 @@ public class UserAdminPlugin extends DefaultPortalPlugin {
     @Inject private WorkspaceService workspaceService;
 
     public ResourceBundle getLabels() {
-        // Locale locale = Locales.getCurrent()
         Locale locale = (Locale) Sessions.getCurrent().getAttribute(Attributes.PREFERRED_LOCALE);
         return ResourceBundle.getBundle("metainfo.zk-label",
             locale,

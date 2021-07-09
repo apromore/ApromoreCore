@@ -2,7 +2,7 @@ if(!Apromore) var Apromore = {};
 
 if(!Apromore.I18N) Apromore.I18N = {};
 
-Apromore.I18N.Language = "en_us"; //Pattern <ISO language code>_<ISO country code> in lower case!
+Apromore.I18N.Language = "en"; //Pattern <ISO language code> in lower case!
 
 if(!Apromore.I18N.Apromore) Apromore.I18N.Apromore = {};
 

@@ -252,7 +252,6 @@ public class UserAdminController extends SelectorComposer<Window> {
     }
 
     public ResourceBundle getLabels() {
-        // Locale locale = Locales.getCurrent()
         Locale locale = (Locale) Sessions.getCurrent().getAttribute(Attributes.PREFERRED_LOCALE);
         return ResourceBundle.getBundle("metainfo.zk-label",
             locale,

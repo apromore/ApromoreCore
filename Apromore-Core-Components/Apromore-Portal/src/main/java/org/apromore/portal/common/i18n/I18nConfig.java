@@ -53,16 +53,11 @@ public class I18nConfig {
         if (languageTags.size() == 0 || languageTags.size() != dateTimePatterns.size()) {
             return;
         }
-        // System.out.println(languageTags);
-        // System.out.println(dateTimePatterns);
         for (int i = 0 ; i < languageTags.size() ; i++) {
             Locale locale = Locale.forLanguageTag(languageTags.get(i));
             String dateTimePattern = dateTimePatterns.get(i);
             // Fix encoding issue in site.properties
             dateTimePattern = new String(dateTimePattern.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
-//            if ("ja".equals(languageTags.get(i))) {
-//                dateTimePattern = "yyyy年MM月dd日, HH:mm";
-//            }
             supportedLocales.put(locale, dateTimePattern);
         }
     }

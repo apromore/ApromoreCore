@@ -182,9 +182,6 @@ public class BPMNEditorController extends BaseController {
                 mainC.showPluginMessages(pluginMessages);
             }
             String langTag = mainC.getI18nSession().getPreferredLangTag();
-            if ("en".equals(langTag)) {
-                langTag = "en_us";
-            }
             List<EditorPlugin> editorPlugins = EditorPluginResolver.resolve("bpmnEditorPlugins");
             param.put("plugins", editorPlugins);
             param.put("langTag", langTag);

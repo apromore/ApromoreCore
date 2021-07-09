@@ -165,13 +165,4 @@ public class I18nSession {
         preferredDateTimeFormatter = DateTimeFormatter.ofPattern(preferredDateTimePattern, preferredLocale);
     }
 
-    public Locale fromLocaleString(String localeString) {
-        Locale locale;
-        try {
-            locale = (Locale) Locale.class.getDeclaredField(localeString).get(null);
-        } catch (Exception e) {
-            locale = null;
-        }
-        return locale;
-    }
 }
