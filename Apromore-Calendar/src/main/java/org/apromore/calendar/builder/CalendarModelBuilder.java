@@ -75,8 +75,11 @@ public class CalendarModelBuilder {
   
   public CalendarModelBuilder withZoneId(String zoneId) {
     model.setZoneId(zoneId);
+    for (WorkDayModel workDay : model.getWorkDays()) {
+        workDay.setStartTime(workDay.getStartTime().withOffsetSameInstant(ZoneOffset.of(zoneId)));
+        workDay.setEndTime(workDay.getEndTime().withOffsetSameInstant(ZoneOffset.of(zoneId)));
+    }
     return this;
-
   }
 
   public CalendarModelBuilder with7DayWorking() {
