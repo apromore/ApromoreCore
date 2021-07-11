@@ -43,7 +43,7 @@
       </hbox>
       <hbox sclass="ap-window-header-actions" hflex="1" align="start" pack="start" spacing="0"
             style="padding: 8px;">
-        <button id="addNewCalendarBtn" iconSclass="z-icon-plus-circle">
+        <button id="addNewCalendarBtn" iconSclass="z-icon-plus-circle" tooltiptext="Add a new calendar">
           Add new calendar
         </button>
         <button id="selectBtn" iconSclass="z-icon-check-circle" tooltiptext="Apply calendar to the current log">
