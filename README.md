@@ -28,7 +28,7 @@ If you are looking for the commercial edition (Apromore Enterprise Edition), che
 * Execute `mvn clean install` to compile the source code into executable bundles.
 * Execute `core-assemblies/apromore-core/target/assembly/bin/karaf` to start the server.
   <b>Note:</b> If you deploy to port 80 (or another port below 1024), you will need to run the previous command as sudo.
-* Browse [(http://localhost:9000/)](http://localhost:8181/). Login as an administrator by using the following credentials: username - "admin" and password - "password". You can also create a new account. Once logged in, a user can change their password via `Account -> Change password` menu.
+* Browse [(http://localhost:8181/)](http://localhost:8181/). Login as an administrator by using the following credentials: username - "admin" and password - "password". You can also create a new account. Once logged in, a user can change their password via `Account -> Change password` menu.
 * Keep the prompt/terminal window open. Ctrl-D on the window will shut the server down.
 
 
@@ -41,8 +41,7 @@ The default version of this file from a fresh git checkout contains reasonable d
 
 
 ### MySQL setup
-By default, Apromore Core uses H2 database because it allows casual evaluation without requiring any configuration.
-For earnest use or development, Apromore should be configured to use MySQL instead.
+By default, Apromore Core uses MySQL database. For casual evaluation, Apromore can also be used with H2.
 
 * Ensure MySQL is configured to accept local TCP connections on port 3306 in its .cnf file; "skip-networking" should not be present.
 
@@ -61,9 +60,9 @@ GRANT ALL PRIVILEGES ON apromore.* TO 'liquibase_user'@'%';
 	
 ```
 
-* Edit the top-level `site.properties` file, replacing the H2 declarations in "Database and JPA" with the commented-out MySQL properties.
 * Rebuild the server using `mvn clean install -pl :apromore-core`, or simply copy the edited `site.properties` to `core-assemblies/apromore-core/target/assembly/etc/site.cfg`.
-* Identically to the default H2 database, the initial MySQL database will have one user: "admin".
+* Identically to the default MySQL database, the H2 database will have one user: "admin".
+* To use H2, edit the top-level `site.properties` file, replacing the MySQL declarations in "Database and JPA" with the commented-out H2 properties.
 
 
 ### Heap size
