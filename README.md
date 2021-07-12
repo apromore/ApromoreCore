@@ -41,8 +41,7 @@ The default version of this file from a fresh git checkout contains reasonable d
 
 
 ### MySQL setup
-By default, Apromore Core uses H2 database because it allows casual evaluation without requiring any configuration.
-For earnest use or development, Apromore should be configured to use MySQL instead.
+By default, Apromore Core uses MySQL database. For casual evaluation, Apromore can also be used with H2.
 
 * Ensure MySQL is configured to accept local TCP connections on port 3306 in its .cnf file; "skip-networking" should not be present.
 
@@ -61,9 +60,9 @@ GRANT ALL PRIVILEGES ON apromore.* TO 'liquibase_user'@'%';
 	
 ```
 
-* Edit the top-level `site.properties` file, replacing the H2 declarations in "Database and JPA" with the commented-out MySQL properties.
 * Rebuild the server using `mvn clean install -pl :apromore-core`, or simply copy the edited `site.properties` to `core-assemblies/apromore-core/target/assembly/etc/site.cfg`.
-* Identically to the default H2 database, the initial MySQL database will have one user: "admin".
+* Identically to the default MySQL database, the H2 database will have one user: "admin".
+* To use H2, edit the top-level `site.properties` file, replacing the MySQL declarations in "Database and JPA" with the commented-out H2 properties.
 
 
 ### Heap size
