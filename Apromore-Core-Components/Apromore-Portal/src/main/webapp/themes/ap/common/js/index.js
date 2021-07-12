@@ -85,6 +85,10 @@ Ap.common.setCookie = (name, value, days) => {
   document.cookie = name + '=' + value + ';' + expires + ';path=/';
 };
 
+Ap.common.removeCookie = (name) => {
+  document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+};
+
 Ap.common.pullClientTimeZone = function () {
   const pad = (num) => ('0' + num).slice(-2);
 

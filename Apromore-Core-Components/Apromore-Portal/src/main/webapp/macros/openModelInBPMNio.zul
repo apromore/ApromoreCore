@@ -82,7 +82,7 @@
 
     <n:div class="ap-header">
         <n:a href="/index.zul"><n:div class="ap-header-logo"></n:div></n:a>
-        <n:div class="ap-header-title">BPMN Editor</n:div>
+        <n:div class="ap-header-title">${labels.bpmnEditor_title_text}</n:div>
         <n:div class="ap-header-actions">
             <n:a href="https://documentation.apromore.org/theapromoreportal/createoreditprocessmodel.html" target="_blank">
               <n:button class="ap-icon ap-icon-help"/>
@@ -104,7 +104,7 @@
       <script src="/${arg.editor}/libs/iscroll.js" type="text/javascript"/>
       <script src="/${arg.editor}/libs/autolayout.js" type="text/javascript"/>
 
-      <script src="/${arg.editor}/editor/i18n/translation_en_us.js" type="text/javascript"/>
+      <script src="/${arg.editor}/editor/i18n/translation_${arg.langTag}.js" type="text/javascript"/>
       <script src="/${arg.editor}/editor/apromore-editor.js" type="text/javascript"/>
 
         <z:zk forEach="${arg.plugins}">
@@ -147,7 +147,7 @@
 					  //console.log(editorWrapper.getCanvas()._editor.getDefinitions());
 					//}, 1000);
 
-					document.title = '${labels.brand.shortName} - BPMN Editor';
+					document.title = '${labels.brand_shortNawme} - ${labels.bpmnEditor_title_text}';
                 ]]>
             </n:script>
         </n:span>

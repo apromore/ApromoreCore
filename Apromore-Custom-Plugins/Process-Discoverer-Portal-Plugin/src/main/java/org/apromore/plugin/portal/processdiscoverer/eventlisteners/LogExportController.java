@@ -24,6 +24,7 @@ package org.apromore.plugin.portal.processdiscoverer.eventlisteners;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.text.MessageFormat;
 import java.util.GregorianCalendar;
 
 import javax.xml.datatype.DatatypeFactory;
@@ -62,7 +63,8 @@ public class LogExportController extends AbstractController {
         }
         
         InputDialog.showInputDialog(
-            Labels.getLabel("e.pd.saveLogWin.text"), // "Save filtered log",
+            // Labels.getLabel("e.pd.saveLogWin.text"), // "Save filtered log",
+            parent.getLabel("saveLogWin_text"),
             "Enter a log name (no more than 60 characters)",
             contextData.getLogName() + "_filtered",
             new EventListener<Event>() {
@@ -88,7 +90,12 @@ public class LogExportController extends AbstractController {
                     contextData.getDomain(), DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(),
                     false);
             String folderName = log.getFolder() == null ? HOME_FOLDER_NAME : log.getFolder().getName();
-            Notification.info("A new log named <strong>" + logName + "</strong> has been saved in the <strong>" + folderName + "</strong> folder.");
+            String notif = MessageFormat.format(
+                parent.getLabel("successSaveLog_message"),
+                "<strong>" + logName + "</strong>",
+                "<strong>" + folderName + "</strong>"
+            );
+            Notification.info(notif);
             parent.refreshPortal();
         } catch (Exception e) {
             e.printStackTrace();

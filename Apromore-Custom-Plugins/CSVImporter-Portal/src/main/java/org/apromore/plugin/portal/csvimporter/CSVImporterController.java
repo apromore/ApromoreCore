@@ -45,6 +45,7 @@ import org.zkoss.json.JSONObject;
 import org.zkoss.util.Locales;
 import org.zkoss.util.media.Media;
 import org.zkoss.util.resource.Labels;
+import org.zkoss.web.Attributes;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.InputEvent;
@@ -97,6 +98,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
     private @Wire("#matchedMapping")
     Button matchedMapping;
 
+
     protected boolean isModal = true;
     private boolean useParquet;
     private File parquetFile;
@@ -126,6 +128,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
     public void doFinally() throws Exception {
         super.doFinally();
         // Populate the window
+
         try {
             parquetImporterFactory = parquetFactoryProvider.getParquetFactory(getMediaFormat(media));
             metaDataService = parquetImporterFactory.getMetaDataService();
@@ -159,8 +162,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                     this.logMetaData = metaDataUtilities.processMetaData(this.logMetaData, this.sampleLog);
 
                 } catch (Exception e) {
-                    Messagebox.show(getLabels().getString("failed_to_read_log") + " " + "Please select different " +
-                            "encoding", "Error", Messagebox.OK, Messagebox.ERROR);
+                    Messagebox.show(getLabel("failedImportEncoding"), getLabel("error"), Messagebox.OK, Messagebox.ERROR);
                 } finally {
                     if (logMetaData != null && sampleLog.size() > 0) setUpUI();
                 }
@@ -250,12 +252,12 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
 
         } catch (Exception e) {
             LOGGER.error("Failure while creating controller", e);
-            Messagebox.show(getLabels().getString(
-                    "failed_to_read_log") + " " + e.getMessage(),
-                    "Error",
-                    Messagebox.OK,
-                    Messagebox.ERROR,
-                    event -> close()
+            Messagebox.show(
+                getLabel("failed_to_read_log"),
+                getLabel("error"),
+                Messagebox.OK,
+                Messagebox.ERROR,
+                event -> close()
             );
         }
         // Clients.evalJavaScript("Ap.common.pullClientTimeZone()");
@@ -263,8 +265,10 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
 
     //Create a dialog to ask for user option regarding matched schema mapping
     private void handleMatchedMapping() throws IOException {
+        Map<String, Object> arg = new HashMap<>();
+        arg.put("labels", getLabels());
         Window matchedMappingPopUp = (Window) portalContext.getUI().createComponent(
-                CSVImporterController.class.getClassLoader(), "zul/matchedMapping.zul", null, null);
+                CSVImporterController.class.getClassLoader(), "zul/matchedMapping.zul", null, arg);
         matchedMappingPopUp.doModal();
     }
 
@@ -322,11 +326,9 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
             }
 
         } catch (MissingHeaderFieldsException e) {
-            Messagebox.show(e.getMessage(), getLabels().getString("missing_fields"),
-                    Messagebox.OK, Messagebox.ERROR);
-
+            Messagebox.show(getLabel("missing_fields"), getLabel("error"), Messagebox.OK, Messagebox.ERROR);
         } catch (Exception e) {
-            Messagebox.show(getLabels().getString("error") + e.getMessage(), "Error",
+            Messagebox.show(getLabel("failedExportXES"), getLabel("error"),
                     Messagebox.OK, Messagebox.ERROR);
             LOGGER.error("Conversion to XES button handler failed", e);
         }
@@ -421,9 +423,15 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
     }
 
     public ResourceBundle getLabels() {
+        // Locale locale = Locales.getCurrent()
+        Locale locale = (Locale) Sessions.getCurrent().getAttribute(Attributes.PREFERRED_LOCALE);
         return ResourceBundle.getBundle("WEB-INF.zk-label",
-                Locales.getCurrent(),
+                locale,
                 CSVImporterController.class.getClassLoader());
+    }
+
+    public String getLabel(String key) {
+        return getLabels().getString(key);
     }
 
     // Internal methods handling page setup (doFinally)
@@ -449,7 +457,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
             int size = indexColumnWidth + logMetaData.getHeader().size() * columnWidth + 35;
             window.setWidth(size + "px");
         }
-        String title = Labels.getLabel("e.csvImporter.title.text", "Log Importer") + " - " + media.getName();
+        String title = Labels.getLabel("csvImporter_title_text", "Log Importer") + " - " + media.getName();
         window.setTitle(title);
 
         setDropDownLists();
@@ -626,7 +634,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
 
                 if (StringUtils.isBlank(event.getValue())) {
                     textbox.setValue("");
-                    textbox.setPlaceholder(getLabels().getString("specify_timestamp_format"));
+                    textbox.setPlaceholder(getLabel("specify_timestamp_format"));
                     failedToParse(colPos);
                 } else {
                     String format = event.getValue();
@@ -664,15 +672,15 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
         List<Listbox> menuDropDownLists = new ArrayList<>();
         LinkedHashMap<String, String> menuItems = new LinkedHashMap<>();
 
-        menuItems.put(caseIdLabel, getLabels().getString("case_id"));
-        menuItems.put(activityLabel, getLabels().getString("activity"));
-        menuItems.put(endTimestampLabel, getLabels().getString("end_timestamp"));
-        menuItems.put(startTimestampLabel, getLabels().getString("start_timestamp"));
-        menuItems.put(otherTimestampLabel, getLabels().getString("other_timestamp"));
-        menuItems.put(resourceLabel, getLabels().getString("resource"));
-        menuItems.put(caseAttributeLabel, getLabels().getString("case_attribute"));
-        menuItems.put(eventAttributeLabel, getLabels().getString("event_attribute"));
-        menuItems.put(ignoreLabel, getLabels().getString("ignore_attribute"));
+        menuItems.put(caseIdLabel, getLabel("case_id"));
+        menuItems.put(activityLabel, getLabel("activity"));
+        menuItems.put(endTimestampLabel, getLabel("end_timestamp"));
+        menuItems.put(startTimestampLabel, getLabel("start_timestamp"));
+        menuItems.put(otherTimestampLabel, getLabel("other_timestamp"));
+        menuItems.put(resourceLabel, getLabel("resource"));
+        menuItems.put(caseAttributeLabel, getLabel("case_attribute"));
+        menuItems.put(eventAttributeLabel, getLabel("event_attribute"));
+        menuItems.put(ignoreLabel, getLabel("ignore_attribute"));
 
 
         for (int pos = 0; pos < logMetaData.getHeader().size(); pos++) {
@@ -860,23 +868,23 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
 
         if (type == Parsed.AUTO) {
             check_lbl.setZclass(greenLabelCSS);
-            check_lbl.setValue(parsedAutoMessage);
+            check_lbl.setValue(getLabel("timestampParseOverride"));
             check_lbl.setMultiline(true);
             showAutoParsedGreenIcon(parsedIcons[pos]);
         } else if (type == Parsed.MANUAL) {
             check_lbl.setZclass(greenLabelCSS);
-            check_lbl.setValue(parsedMessage);
+            check_lbl.setValue(getLabel("timestampParseSuccess"));
             showManualParsedGreenIcon(parsedIcons[pos]);
         } else if (type == Parsed.FAILED) {
             check_lbl.setZclass(redLabelCSS);
-            check_lbl.setValue(couldNotParseMessage);
+            check_lbl.setValue(getLabel("timestampParseFailed"));
             showParsedRedIcon(parsedIcons[pos]);
         }
     }
 
     private void showFormatBtn(Button myButton) {
         myButton.setSclass("ap-csv-importer-format-icon");
-        myButton.setTooltiptext(specifyTimestampformat);
+        myButton.setTooltiptext(getLabel("timestampSpecify"));
     }
 
     private void hideFormatBtn(Button myButton) {
@@ -922,25 +930,25 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
 
     private StringBuilder validateUniqueAttributes() {
         StringBuilder importMessage = new StringBuilder();
-        String mess = getLabels().getString("no_attribute_has_been_selected_as");
+        String mess = getLabel("no_attribute_has_been_selected_as");
 
         if (logMetaData.getCaseIdPos() == -1) {
-            importMessage.append(mess).append(getLabels().getString("case_id"));
+            importMessage.append(mess).append(getLabel("case_id"));
         }
         if (logMetaData.getActivityPos() == -1) {
             if (importMessage.length() == 0) {
-                importMessage.append(mess).append(getLabels().getString("activity"));
+                importMessage.append(mess).append(getLabel("activity"));
             } else {
                 importMessage.append(System.lineSeparator()).append(System.lineSeparator())
-                        .append(mess).append(getLabels().getString("activity"));
+                        .append(mess).append(getLabel("activity"));
             }
         }
         if (logMetaData.getEndTimestampPos() == -1) {
             if (importMessage.length() == 0) {
-                importMessage.append(mess).append(getLabels().getString("end_timestamp"));
+                importMessage.append(mess).append(getLabel("end_timestamp"));
             } else {
                 importMessage.append(System.lineSeparator()).append(System.lineSeparator())
-                        .append(mess).append(getLabels().getString("end_timestamp"));
+                        .append(mess).append(getLabel("end_timestamp"));
             }
         }
 
@@ -975,7 +983,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
             }
         }
         if (!invColList.isEmpty()) {
-            columnList.setValue(getLabels().getString("the_following_columns_include_errors") +
+            columnList.setValue(getLabel("the_following_columns_include_errors") +
                     columnList(invColList));
         }
 
@@ -1103,7 +1111,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
             Filedownload.save(csvLogStream, "text/csv; charset-UTF-8", "ErrorReport.csv");
         } catch (Exception e) {
             LOGGER.error("Failed to download error report", e);
-            Messagebox.show(getLabels().getString("failed_to_download_error_log") +
+            Messagebox.show(getLabel("failed_to_download_error_log") +
                     e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
         } finally {
             tempFile.delete();
@@ -1119,10 +1127,10 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                 String successMessage;
                 if (logModel.isRowLimitExceeded()) {
                     successMessage = MessageFormat.format(
-                            getLabels().getString("limit_reached"), logModel.getRowsCount());
+                            getLabel("limit_reached"), logModel.getRowsCount());
                 } else {
                     successMessage = MessageFormat.format(
-                            getLabels().getString("successful_upload"), logModel.getRowsCount());
+                            getLabel("successful_upload"), logModel.getRowsCount());
                 }
                 Messagebox.show(successMessage, new Messagebox.Button[]{Messagebox.Button.OK}, isModal ? event -> close() : null);
                 portalContext.refreshContent();
@@ -1131,10 +1139,10 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                 storeMappingAsJSON(media, logMetaData, logModel.getImportLog());
                 String successMessage;
                 if (logModel.isRowLimitExceeded()) {
-                    successMessage = MessageFormat.format(getLabels().getString("limit_reached"),
+                    successMessage = MessageFormat.format(getLabel("limit_reached"),
                             logModel.getRowsCount());
                 } else {
-                    successMessage = MessageFormat.format(getLabels().getString("successful_upload"),
+                    successMessage = MessageFormat.format(getLabel("successful_upload"),
                             logModel.getRowsCount());
                 }
 
@@ -1144,7 +1152,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
 
         } catch (Exception e) {
             LOGGER.error("Failed to save log", e);
-            Messagebox.show(getLabels().getString("failed_to_write_log") +
+            Messagebox.show(getLabel("failed_to_write_log") +
                     e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
         }
     }

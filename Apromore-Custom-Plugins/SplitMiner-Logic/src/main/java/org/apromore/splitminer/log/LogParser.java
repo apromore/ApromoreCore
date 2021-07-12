@@ -64,27 +64,24 @@ public class LogParser {
 
         int LID;
 
-        BufferedReader reader;
-
         events.put(STARTCODE, "autogen-start");
         events.put(ENDCODE, "autogen-end");
 
         try {
-            reader = new BufferedReader(new FileReader(path));
+            try (BufferedReader reader = new BufferedReader(new FileReader(path))) {
 
-            while( reader.ready() )
-            {
-                trace = reader.readLine();
-                tokenizer = new StringTokenizer(trace, "::");
-                tokenizer.nextToken();
+                while( reader.ready() )
+                {
+                    trace = reader.readLine();
+                    tokenizer = new StringTokenizer(trace, "::");
+                    tokenizer.nextToken();
 
-                while( tokenizer.hasMoreTokens() ) {
-                    event = tokenizer.nextToken();
-                    labels.add(event);
+                    while( tokenizer.hasMoreTokens() ) {
+                        event = tokenizer.nextToken();
+                        labels.add(event);
+                    }
                 }
             }
-
-            reader.close();
 
             orderedLabels = new ArrayList<>(labels);
             Collections.sort(orderedLabels);
@@ -97,26 +94,25 @@ public class LogParser {
                 LID++;
             }
 
-            reader = new BufferedReader(new FileReader(path));
+            try (BufferedReader reader = new BufferedReader(new FileReader(path))) {
 
-            while( reader.ready() )
-            {
-                trace = reader.readLine();
-                tokenizer = new StringTokenizer(trace, "::");
-                frequency = Integer.valueOf(tokenizer.nextToken());
+                while( reader.ready() )
+                {
+                    trace = reader.readLine();
+                    tokenizer = new StringTokenizer(trace, "::");
+                    frequency = Integer.valueOf(tokenizer.nextToken());
 
-                strace = "::" + STARTCODE + "::";
-                while( tokenizer.hasMoreTokens() ) {
-                    event = tokenizer.nextToken();
-                    strace += (labelsToIDs.get(event) + "::");
+                    strace = "::" + STARTCODE + "::";
+                    while( tokenizer.hasMoreTokens() ) {
+                        event = tokenizer.nextToken();
+                        strace += (labelsToIDs.get(event) + "::");
+                    }
+                    strace += ENDCODE + "::";
+
+                    if(!traces.containsKey(strace))  traces.put(strace, frequency);
+                    else traces.put(strace, traces.get(strace) + frequency);
                 }
-                strace += ENDCODE + "::";
-
-                if(!traces.containsKey(strace))  traces.put(strace, frequency);
-                else traces.put(strace, traces.get(strace) + frequency);
             }
-
-            reader.close();
 
             log = new SimpleLog(traces, events, null);
             log.setReverseMap(reverseMap);

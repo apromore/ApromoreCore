@@ -34,6 +34,7 @@ import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.VersionSummaryType;
 import org.slf4j.Logger;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zul.Messagebox;
 
 public class EditSelectionPlugin extends DefaultPortalPlugin {
@@ -43,17 +44,24 @@ public class EditSelectionPlugin extends DefaultPortalPlugin {
     private String label = "Edit model";
     private String groupLabel = "Discover";
 
+    @Override
+    public String getGroup(Locale locale) {
+        return "Discover";
+    }
+
+    @Override
+    public String getItemCode(Locale locale) { return "Edit model"; }
 
     // PortalPlugin overrides
 
     @Override
     public String getLabel(Locale locale) {
-        return label;
+        return Labels.getLabel("plugin_discover_editModel_text",label);
     }
 
     @Override
     public String getGroupLabel(Locale locale) {
-        return groupLabel;
+        return Labels.getLabel("plugin_discover_title_text", groupLabel);
     }
 
     @Override

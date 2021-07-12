@@ -35,18 +35,18 @@ and CreateProcessController.java for creating process purpose.
           <column width="70%"></column>
         </columns>
         <rows>
-          <row tooltiptext="Model name modification will be applied on all process versions.">
-            <label value="Model name" width="100%"/>
-            <textbox width="100%" constraint="${labels.e.common.nameConstraint.text}" submitByEnter="true" />
+          <row tooltiptext="${labels.common_modelName_hint}">
+            <label value="${labels.common_modelName_text}" width="100%"/>
+            <textbox width="100%" constraint="${labels.common_nameConstraint_text}" submitByEnter="true" />
           </row>
           <row>
-            <label value="Version number" width="100%" />
+            <label value="${labels.common_versionNumber_text}" width="100%" />
             <textbox width="100%" />
           </row>
           <row spans="3" sclass="ap-window-footer-actions">
             <div align="right">
-              <button label="OK" iconSclass="z-icon-check-circle" width="85px" />
-              <button label="Cancel" iconSclass="z-icon-times-circle" width="85px" />
+              <button label="${labels.common_ok_text}" iconSclass="z-icon-check-circle" />
+              <button label="${labels.common_cancel_text}" iconSclass="z-icon-times-circle" />
             </div>
           </row>
         </rows>

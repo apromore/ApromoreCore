@@ -40,8 +40,8 @@
                 </row>
                 <row spans="3" sclass="ap-window-footer-actions">
                     <div align="center">
-                        <button id="btnOK" label="OK" iconSclass="z-icon-check-circle"></button>
-                        <button id="btnCancel" label="Cancel" iconSclass="z-icon-times-circle"></button>
+                        <button id="btnOK" label="${labels.common_ok_text}" iconSclass="z-icon-check-circle"></button>
+                        <button id="btnCancel" label="${labels.common_cancel_text}" iconSclass="z-icon-times-circle"></button>
                     </div>
                 </row>
             </rows>

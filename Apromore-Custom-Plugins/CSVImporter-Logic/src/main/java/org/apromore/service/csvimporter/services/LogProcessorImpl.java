@@ -86,10 +86,9 @@ public class LogProcessorImpl implements LogProcessor {
 	if (logMetaData.getStartTimestampPos() != -1) {
 	    startTimestamp = parseTimestampValue(line.get(logMetaData.getStartTimestampPos()),
 		    logMetaData.getStartTimestampFormat(), logMetaData.getTimeZone());
-	    if (startTimestamp == null) {
-		logErrorReport.add(new LogErrorReportImpl(lineIndex, logMetaData.getStartTimestampPos(),
-			header.get(logMetaData.getStartTimestampPos()), "Start timestamp Can not parse!"));
-		validRow = false;
+	    if (endTimestamp != null && startTimestamp == null) {
+		startTimestamp = endTimestamp;
+		validRow = true;
 	    }
 	}
 

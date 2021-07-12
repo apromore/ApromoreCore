@@ -1,7 +1,7 @@
 /*-
  * #%L
  * This file is part of "Apromore Core".
- * 
+ *
  * Copyright (C) 2011 - 2017 Queensland University of Technology.
  * Copyright (C) 2012 Felix Mannhardt.
  * Copyright (C) 2015 Adriano Augusto.
@@ -12,12 +12,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.SortedMap;
 import java.util.TreeMap;
+
 import org.apromore.manager.client.ManagerService;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
@@ -77,8 +78,8 @@ public class UserMenuController extends SelectorComposer<Menubar> {
 
   public UserMenuController() {
     beanFactory = WebApplicationContextUtils
-        .getWebApplicationContext(Sessions.getCurrent().getWebApp().getServletContext())
-        .getAutowireCapableBeanFactory();
+      .getWebApplicationContext(Sessions.getCurrent().getWebApp().getServletContext())
+      .getAutowireCapableBeanFactory();
     config = (ConfigBean) beanFactory.getBean("portalConfig");
   }
 
@@ -111,31 +112,30 @@ public class UserMenuController extends SelectorComposer<Menubar> {
     // If there are portal plugins, create the menus for launching them
     if (!PortalPluginResolver.resolve().isEmpty()) {
 
-      // If present, this comparator expresses the preferred ordering for menus along the the menu
-      // bar
+      // If present, this comparator expresses the preferred ordering for menus along the the menu bar
       Comparator<String> ordering = (ExplicitComparator) SpringUtil.getBean("portalMenuOrder");
 
       SortedMap<String, Menu> menuMap = new TreeMap<>(ordering);
-      for (final PortalPlugin plugin : PortalPluginResolver.resolve()) {
+      for (final PortalPlugin plugin: PortalPluginResolver.resolve()) {
         PortalPlugin.Availability availability = plugin.getAvailability();
-        if (availability == PortalPlugin.Availability.UNAVAILABLE
-            || availability == PortalPlugin.Availability.HIDDEN) {
+        if (availability == PortalPlugin.Availability.UNAVAILABLE || availability == PortalPlugin.Availability.HIDDEN) {
           continue;
         }
 
+        String group = plugin.getGroup(Locale.getDefault());
         String menuName = plugin.getGroupLabel(Locale.getDefault());
         String label = plugin.getLabel(Locale.getDefault());
 
         // Create a new menu if this is the first menu item within it
-        if (!menuMap.containsKey(menuName)) {
+        if (!menuMap.containsKey(group)) {
           Menu menu = new Menu(menuName);
           menu.appendChild(new Menupopup());
-          menuMap.put(menuName, menu);
+          menuMap.put(group, menu);
         }
-        assert menuMap.containsKey(menuName);
+        assert menuMap.containsKey(group);
 
         // Create the menu item
-        Menu menu = menuMap.get(menuName);
+        Menu menu = menuMap.get(group);
         Menuitem menuitem = new Menuitem();
         if (plugin.getIconPath().startsWith("/")) {
           menuitem.setImage(plugin.getIconPath());
@@ -143,9 +143,9 @@ public class UserMenuController extends SelectorComposer<Menubar> {
         } else if (plugin.getResourceAsStream(plugin.getIconPath()) != null) {
           try {
             menuitem.setImage("portalPluginResource/"
-                + URLEncoder.encode(plugin.getGroupLabel(Locale.getDefault()), "utf-8") + "/"
-                + URLEncoder.encode(plugin.getLabel(Locale.getDefault()), "utf-8") + "/"
-                + plugin.getIconPath());
+              + URLEncoder.encode(plugin.getGroup(Locale.getDefault()), "utf-8") + "/"
+              + URLEncoder.encode(plugin.getItemCode(Locale.getDefault()), "utf-8") + "/"
+              + plugin.getIconPath());
 
           } catch (UnsupportedEncodingException e) {
             throw new Error("Hardcoded UTF-8 encoding failed", e);
@@ -158,8 +158,7 @@ public class UserMenuController extends SelectorComposer<Menubar> {
         menuitem.addEventListener("onClick", new EventListener<Event>() {
           @Override
           public void onEvent(Event event) throws Exception {
-            PortalContext portalContext =
-                (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
+            PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
             plugin.execute(portalContext);
           }
         });
@@ -172,7 +171,7 @@ public class UserMenuController extends SelectorComposer<Menubar> {
         // Insert the menu item into alphabetical position within the menu
         Menuitem precedingMenuitem = null;
         List<Menuitem> existingMenuitems = menu.getMenupopup().getChildren();
-        for (Menuitem existingMenuitem : existingMenuitems) {
+        for (Menuitem existingMenuitem: existingMenuitems) {
           int comparison = menuitem.getLabel().compareTo(existingMenuitem.getLabel());
 
           if (comparison <= 0) {
@@ -184,7 +183,7 @@ public class UserMenuController extends SelectorComposer<Menubar> {
 
       }
 
-      for (final Menu menu : menuMap.values()) {
+      for (final Menu menu: menuMap.values()) {
         if ("Account".equals(menu.getLabel())) {
           try {
             Menupopup userMenupopup = menu.getMenupopup();
@@ -217,16 +216,16 @@ public class UserMenuController extends SelectorComposer<Menubar> {
 
       // Force logout a user that has been deleted by admin
       EventQueues.lookup("forceSignOutQueue", EventQueues.SESSION, true)
-          .subscribe(new EventListener() {
-            public void onEvent(Event event) {
-              Session session = Sessions.getCurrent();
+        .subscribe(new EventListener() {
+          public void onEvent(Event event) {
+            Session session = Sessions.getCurrent();
 
-              UserType userType = (UserType) Sessions.getCurrent().getAttribute("USER");
-              if (session == null || event.getData().equals(userType.getUsername())) {
-                Executions.sendRedirect("/j_spring_security_logout");
-              }
+            UserType userType = (UserType) Sessions.getCurrent().getAttribute("USER");
+            if (session == null || event.getData().equals(userType.getUsername())) {
+              Executions.sendRedirect("/j_spring_security_logout");
             }
-          });
+          }
+        });
     }
   }
 }

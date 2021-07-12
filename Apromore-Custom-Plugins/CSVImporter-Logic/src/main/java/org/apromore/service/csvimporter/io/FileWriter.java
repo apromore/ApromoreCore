@@ -36,16 +36,16 @@ public class FileWriter {
 
     public void writeToFile() throws IOException {
 
-        OutputStream os = new FileOutputStream(outputFile);
-        byte[] buffer = new byte[BUFFER_SIZE];
-        int bytesRead;
-        //read from in to buffer
-        while ((bytesRead = in.read(buffer)) != -1)
-            os.write(buffer, 0, bytesRead);
+        try (OutputStream os = new FileOutputStream(outputFile)) {
+            byte[] buffer = new byte[BUFFER_SIZE];
+            int bytesRead;
+            //read from in to buffer
+            while ((bytesRead = in.read(buffer)) != -1)
+                os.write(buffer, 0, bytesRead);
 
-        in.close();
-        //flush OutputStream to write any buffered data to file
-        os.flush();
-        os.close();
+            in.close();
+            //flush OutputStream to write any buffered data to file
+            os.flush();
+        }
     }
 }

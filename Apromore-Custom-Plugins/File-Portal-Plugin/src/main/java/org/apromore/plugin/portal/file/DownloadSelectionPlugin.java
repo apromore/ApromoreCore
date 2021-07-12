@@ -49,6 +49,7 @@ import org.apromore.service.EventLogService;
 import org.apromore.service.csvexporter.CSVExporterLogic;
 import org.deckfour.xes.model.XLog;
 import org.slf4j.Logger;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -83,14 +84,23 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin {
     // PortalPlugin overrides
 
     @Override
+    public String getItemCode(Locale locale) { return label; }
+
+    @Override
+    public String getGroup(Locale locale) {
+        return "File";
+    }
+
+    @Override
     public String getLabel(Locale locale) {
-        return label;
+        return Labels.getLabel("plugin_file_download_text",label);
     }
 
     @Override
     public String getGroupLabel(Locale locale) {
-        return groupLabel;
+        return Labels.getLabel("plugin_file_title_text", groupLabel);
     }
+
 
     @Override
     public String getIconPath() {

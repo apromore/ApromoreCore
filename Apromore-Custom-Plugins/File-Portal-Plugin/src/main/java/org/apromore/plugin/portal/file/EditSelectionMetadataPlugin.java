@@ -37,6 +37,7 @@ import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.VersionSummaryType;
 import org.slf4j.Logger;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zul.Messagebox;
 
 public class EditSelectionMetadataPlugin extends DefaultPortalPlugin {
@@ -49,14 +50,23 @@ public class EditSelectionMetadataPlugin extends DefaultPortalPlugin {
     // PortalPlugin overrides
 
     @Override
+    public String getItemCode(Locale locale) { return label; }
+
+    @Override
+    public String getGroup(Locale locale) {
+        return "File";
+    }
+
+    @Override
     public String getLabel(Locale locale) {
-        return label;
+        return Labels.getLabel("plugin_file_rename_text",label);
     }
 
     @Override
     public String getGroupLabel(Locale locale) {
-        return groupLabel;
+        return Labels.getLabel("plugin_file_title_text", groupLabel);
     }
+
 
     @Override
     public String getIconPath() {

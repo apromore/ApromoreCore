@@ -38,6 +38,7 @@ import org.apromore.portal.util.StringUtil;
 import org.slf4j.Logger;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.util.media.Media;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
@@ -285,14 +286,14 @@ public class ImportController extends BaseController {
                     READ_TIMEOUT);
             long fileSize = testData.length();
             if (fileSize > this.maxUploadSize) {
-                Notification.error("File size exceeds the allowable limit");
+                Notification.error(Labels.getLabel("portal_fileSizeExceeded_message"));
                 return;
             }
-            InputStream targetStream = new FileInputStream(testData);
-
-            media = new MediaImpl(testData.getName(), targetStream, StandardCharsets.UTF_8,
+            try (InputStream targetStream = new FileInputStream(testData)) {
+                media = new MediaImpl(testData.getName(), targetStream, StandardCharsets.UTF_8,
                     ItemNameUtils.findExtension(filename));
-            this.fileUrl.setValue(fileUrl);
+                this.fileUrl.setValue(fileUrl);
+            }
 
             String extension = ItemNameUtils.findExtension(media.getName());
 
@@ -374,7 +375,7 @@ public class ImportController extends BaseController {
             mainC.refresh();
         } catch (Exception e) {
             LOGGER.warn("Import failed for " + logMedia.getName(), e);
-            Messagebox.show("Import failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
+            Messagebox.show(Labels.getLabel("portal_failedImport_message"), "Apromore", Messagebox.OK, Messagebox.ERROR);
         } /* finally {
             closePopup();
         } */
@@ -426,7 +427,7 @@ public class ImportController extends BaseController {
             }
         } catch (IOException | JAXBException e) {
             LOGGER.warn("Import failed for " + zippedMedia.getName(), e);
-            Messagebox.show("Import failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
+            Messagebox.show(Labels.getLabel("portal_failedImport_message"), "Apromore", Messagebox.OK, Messagebox.ERROR);
         }
     }
 
@@ -514,7 +515,7 @@ public class ImportController extends BaseController {
                 importOneProcess.importProcess(domain, UserSessionManager.getCurrentUser().getUsername());
             } catch (IOException e) {
                 LOGGER.warn("Import failed in domain " + domain, e);
-                Messagebox.show("Import failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
+                Messagebox.show(Labels.getLabel("portal_failedImport_message"), "Apromore", Messagebox.OK, Messagebox.ERROR);
             }
         }
         this.cancelAll();

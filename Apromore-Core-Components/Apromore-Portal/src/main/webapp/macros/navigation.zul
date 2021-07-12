@@ -75,9 +75,9 @@
         }
     </style>
     <div class="z-west-header" sclass="ap-nav-header" style="display: -webkit-flex; display: flex">
-        <label style="color: unset; padding-top: 5px; font-weight: bold; -webkit-flex: 1; flex: 1" value="My workspace"/>
-        <toolbarbutton sclass="ap-icon ap-icon-folder-expand-solid" id="expand" tooltiptext="Expand all folders"/>
-        <toolbarbutton sclass="ap-icon ap-icon-folder-collapse-solid" id="contract" tooltiptext="Minimize all folders"/>
+        <label style="color: unset; padding-top: 5px; font-weight: bold; -webkit-flex: 1; flex: 1" value="${labels.portal_workspace_text}"/>
+        <toolbarbutton sclass="ap-icon ap-icon-folder-expand-solid" id="expand" tooltiptext="${labels.portal_folderExpand}"/>
+        <toolbarbutton sclass="ap-icon ap-icon-folder-collapse-solid" id="contract" tooltiptext="${labels.portal_folderCollapse}"/>
     </div>
     <vlayout style="overflow: auto" height="calc(100% - 36px)">
         <tree id="tree" sclass="ap-folder-tree">

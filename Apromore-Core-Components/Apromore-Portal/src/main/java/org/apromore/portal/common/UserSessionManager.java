@@ -39,6 +39,7 @@ import org.apromore.dao.model.User;
 import org.apromore.manager.client.ManagerService;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.ConfigBean;
+import org.apromore.portal.common.i18n.I18nSession;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.dialogController.UserAuthenticationHelper;
 import org.apromore.portal.dialogController.dto.ApromoreSession;
@@ -73,6 +74,7 @@ public abstract class UserSessionManager {
     public static final String MAIN_CONTROLLER = "MAIN_CONTROLLER";
     public static final String SELECTED_FOLDER_IDS = "SELECTED_FOLDER_IDS";
     public static final String SELECTED_PROCESS_IDS = "SELECTED_PROCESS_IDS";
+    public static final String LOCALE = "LOCALE";
 
     public static void setCurrentUser(UserType user) {
 
@@ -91,6 +93,16 @@ public abstract class UserSessionManager {
 
     private static void setAttribute(String attribute, Object value) {
         Sessions.getCurrent().setAttribute(attribute, value);
+    }
+
+    public static void setCurrentI18nSession(I18nSession i18nSession) {
+        setAttribute(LOCALE, i18nSession);
+    }
+
+    public static I18nSession getCurrentI18nSession() {
+        Object attribute = getAttribute(LOCALE);
+
+        return attribute instanceof I18nSession ? (I18nSession) attribute : null;
     }
 
     public static UserType getCurrentUser() {

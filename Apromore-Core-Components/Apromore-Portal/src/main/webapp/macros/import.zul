@@ -22,7 +22,7 @@
   -->
 
 <!-- importProcessesWindow window has ImportProcessesController as a controller -->
-<window id="importWindow" position="center" title="Upload model or log"
+<window id="importWindow" position="center" title="${labels.portal_importModelOrLog_text}"
         visible="true" sizable="true" width="600px"
         sclass="ap-importer-chooser"
         closable="true"
@@ -33,8 +33,8 @@
     </caption>
     <tabbox>
         <tabs>
-            <tab label="Upload local file" />
-            <tab label="Upload from cloud storage" />
+            <tab label="${labels.portal_importLocal_text}" />
+            <tab label="${labels.portal_importURL_text}" />
         </tabs>
         <tabpanels>
             <tabpanel>
@@ -47,26 +47,26 @@
                         </columns>
                         <rows>
                             <row>
-                                <label value="File to upload"/>
-                                <button id="uploadButton" label="Browse" upload="true,maxsize=-1,multiple=false,native" w:onClick="Ap.uploadBtnClick()"/>
+                                <label value="${labels.portal_importFileToUpload_text}"/>
+                                <button id="uploadButton" label="${labels.common_browse_text}" upload="true,maxsize=-1,multiple=false,native" w:onClick="Ap.uploadBtnClick()"/>
                                 <label sclass="ap-importer-filename" id="fileNameLabel" value="" width="100%"/>
                             </row>
                             <row spans="1,2">
-                                <label value="Supported extensions"/>
+                                <label value="${labels.importSupportedExts_text}"/>
                                 <label id="supportedExt" value="" />
                             </row>
-                            <row spans="1,2" visible="${labels.publish.enable}">
-                                <label value="Make file Public"/>
+                            <row spans="1,2" visible="${labels.publish_enable}">
+                                <label value="${labels.importMakePublic_text}"/>
                                 <checkbox id="public" />
                             </row>
                             <row spans="1,2">
                                 <label value=""/>
-                                <label sclass="ap-importer-filename" value="Consider uploading logs in zip or gz format" />
+                                <label sclass="ap-importer-filename" value="${labels.importZipGZ_text}" />
                             </row>
                             <row spans="3" sclass="ap-window-footer-actions">
                                 <div align="center">
-                                    <button id="okButtonImport" label="OK" width="85px" iconSclass="z-icon-check-circle" disabled="true" />
-                                    <button id="cancelButtonImport" label="Cancel" width="85px" iconSclass="z-icon-times-circle" >
+                                    <button id="okButtonImport" label="${labels.common_ok_text}" iconSclass="z-icon-check-circle" disabled="true" />
+                                    <button id="cancelButtonImport" label="${labels.common_cancel_text}" iconSclass="z-icon-times-circle" >
                                     </button>
                                 </div>
                             </row>
@@ -85,7 +85,7 @@
                         <rows>
                             <row>
                                 <label value="File to upload"/>
-                                <textbox id="fileUrl" placeholder="Paste your link here" cols="53"
+                                <textbox id="fileUrl" placeholder="${labels.importPasteLink_text}" cols="53"
                                          constraint="/(http|https|ftp):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&amp;%@!\-\/]))?/: Invalid or empty URL"/>
                                 <button id="uploadURLButton" label="Select"/>
                             </row>
@@ -94,30 +94,30 @@
                                 <label sclass="ap-importer-filename" id="fileNameLabelURL" value="" />
                             </row>
                             <row spans="1,2">
-                                <label value="Supported Protocols"/>
+                                <label value="${labels.importSupportedProtocols_text}"/>
                                 <label id="supportedProtocols" value="HTTPS" />
                             </row>
                             <row spans="1,2">
-                                <label value="Supported Cloud Storage"/>
+                                <label value="${labels.importSupportedClouds_text}"/>
                                 <label id="supportedCS" value="Dropbox, Google Drive, Microsoft OneDrive" />
                             </row>
                             <row spans="1,2">
-                                <label value="Supported extensions"/>
+                                <label value="${labels.importSupportedExts_text}"/>
                                 <label id="supportedExtURL" value="" />
                             </row>
                             <row spans="1,2">
                                 <label value=""/>
-                                <label sclass="ap-importer-filename" value="Consider uploading logs in zip or gz format" />
+                                <label sclass="ap-importer-filename" value="${labels.importZipGZ_text}" />
                             </row>
-                            <row spans="1,2" visible="${labels.publish.enable}">
-                                <label value="Make file Public"/>
+                            <row spans="1,2" visible="${labels.publish_enable}">
+                                <label value="${labels.importMakePublic_text}"/>
                                 <checkbox id="public_URL" />
                             </row>
                             <row spans="3" sclass="ap-window-footer-actions">
                                 <div align="center">
-                                    <button id="okButtonImportURL" label="OK" width="85px"
+                                    <button id="okButtonImportURL" label="${labels.common_ok_text}"
                                             iconSclass="z-icon-check-circle" disabled="true" />
-                                    <button id="cancelButtonImportURL" label="Cancel" width="85px"
+                                    <button id="cancelButtonImportURL" label="${labels.common_cancel_text}"
                                             iconSclass="z-icon-times-circle" >
                                     </button>
                                 </div>

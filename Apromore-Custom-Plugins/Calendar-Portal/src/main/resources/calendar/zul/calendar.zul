@@ -27,7 +27,7 @@
           style="max-width: 1400px;"
           closable="true"
           client:onBind="Ap.calendar.syncRows()"
-          title="Custom Calendar" apply="org.apromore.plugin.portal.calendar.controllers.Calendar">
+          title="${labels.calendar_title_text}" apply="org.apromore.plugin.portal.calendar.controllers.Calendar">
     <div id="actionBridge" visible="false" />
     <vbox height="100%" hflex="1" spacing="0">    
       <hbox hflex="1" vflex="1">
@@ -53,6 +53,11 @@
               </template>
             </combobox>
           </hbox>
+          <div style="padding: 8px">
+            <label style="font-size: 12px">
+              Click and drag on each row to create a new time range. Click on an existing time range to edit.
+            </label>
+          </div>
           <listbox id="dayOfWeekListbox" vflex="1" hflex="1" nonselectableTags="*">
             <listhead>
               <listheader align="center" label="" width="36px" /><!-- icon -->
@@ -86,7 +91,7 @@
             <button id="importHolidaysBtn">Add public holidays</button>
             <button id="addHolidayBtn">Add a custom holiday</button>
           </hbox>
-          <listbox id="holidayListbox" vflex="1" hflex="1" nonselectableTags="*">
+          <listbox id="holidayListbox" vflex="1" hflex="1" nonselectableTags="*" mold="default">
             <listhead>
               <listheader align="center" label="" width="36px" /><!-- icon -->
               <listheader align="center" label="" width="120px" sort="auto(date)" />

@@ -67,10 +67,17 @@ public class DefaultPortalPlugin extends DefaultParameterAwarePlugin implements 
     }
 
     @Override
+    public String getItemCode(Locale locale) { return getLabel(locale); }
+
+    @Override
     public String getGroupLabel(Locale locale) {
         return "Plugins";
     }
 
+    @Override
+    public String getGroup(Locale locale) {
+        return getGroupLabel(locale);
+    }
     /**
      * Default implementation will look for the resource <code>/icon.png</code> in the
      * current classloader.  If this resource doesn't exist, a green "plugin" icon will

@@ -111,15 +111,15 @@ public class XExtensionParser {
 	 * @return The extension object, as defined in the provided file.
 	 */
 	public XExtension parse(File file) throws IOException, ParserConfigurationException, SAXException {
-		BufferedInputStream is = new BufferedInputStream(new FileInputStream(file));
-		// set up a specialized SAX2 handler to fill the container
-		XExtensionHandler handler = new XExtensionHandler();
-		// set up SAX parser and parse provided log file into the container
-		SAXParserFactory parserFactory = SAXParserFactory.newInstance();
-		SAXParser parser = parserFactory.newSAXParser();
-		parser.parse(is, handler);
-		is.close();
-		return handler.getExtension();
+		try (BufferedInputStream is = new BufferedInputStream(new FileInputStream(file))) {
+		    // set up a specialized SAX2 handler to fill the container
+		    XExtensionHandler handler = new XExtensionHandler();
+		    // set up SAX parser and parse provided log file into the container
+		    SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+		    SAXParser parser = parserFactory.newSAXParser();
+		    parser.parse(is, handler);
+		    return handler.getExtension();
+		}
 	}
 	
 	/**
@@ -130,15 +130,15 @@ public class XExtensionParser {
 	 * the given URI.
 	 */
 	public XExtension parse(URI uri) throws IOException, ParserConfigurationException, SAXException {
-		BufferedInputStream is = new BufferedInputStream(uri.toURL().openStream());
-		// set up a specialized SAX2 handler to fill the container
-		XExtensionHandler handler = new XExtensionHandler();
-		// set up SAX parser and parse provided log file into the container
-		SAXParserFactory parserFactory = SAXParserFactory.newInstance();
-		SAXParser parser = parserFactory.newSAXParser();
-		parser.parse(is, handler);
-		is.close();
-		return handler.getExtension();
+		try (BufferedInputStream is = new BufferedInputStream(uri.toURL().openStream())) {
+		    // set up a specialized SAX2 handler to fill the container
+		    XExtensionHandler handler = new XExtensionHandler();
+		    // set up SAX parser and parse provided log file into the container
+		    SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+		    SAXParser parser = parserFactory.newSAXParser();
+		    parser.parse(is, handler);
+		    return handler.getExtension();
+		}
 	}
 	
 	/**

@@ -27,13 +27,18 @@ import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.security.util.SecurityUtil;
 import org.apromore.service.SecurityService;
 import org.slf4j.Logger;
+import org.zkoss.web.Attributes;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
+
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 public class CreateUserController extends SelectorComposer<Window> {
 
@@ -47,6 +52,18 @@ public class CreateUserController extends SelectorComposer<Window> {
     @Wire("#lastNameTextbox")  Textbox lastNameTextbox;
     @Wire("#emailTextbox")     Textbox emailTextbox;
     @Wire("#passwordTextbox")  Textbox passwordTextbox;
+
+    public ResourceBundle getLabels() {
+        // Locale locale = Locales.getCurrent()
+        Locale locale = (Locale) Sessions.getCurrent().getAttribute(Attributes.PREFERRED_LOCALE);
+        return ResourceBundle.getBundle("metainfo.zk-label",
+            locale,
+            UserAdminController.class.getClassLoader());
+    }
+
+    public String getLabel(String key) {
+        return getLabels().getString(key);
+    }
 
     @Listen("onClick = #createBtn")
     public void onClickCreateButton() {
@@ -69,7 +86,7 @@ public class CreateUserController extends SelectorComposer<Window> {
             securityService.createUser(user);
         } catch (Exception e) {
             LOGGER.error("Unable to create user", e);
-            Messagebox.show("Unable to create user. The user could have been present in the system.");
+            Messagebox.show(getLabel("failedCreateUser_message"));
         }
         getSelf().detach();
     }

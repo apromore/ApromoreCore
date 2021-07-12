@@ -30,6 +30,7 @@ import org.slf4j.Logger;
 import org.apromore.portal.dialogController.ImportController;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.exception.DialogException;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zul.Messagebox;
 
 public class UploadFilePlugin extends DefaultPortalPlugin {
@@ -43,14 +44,23 @@ public class UploadFilePlugin extends DefaultPortalPlugin {
     // PortalPlugin overrides
 
     @Override
+    public String getItemCode(Locale locale) { return label; }
+
+    @Override
+    public String getGroup(Locale locale) {
+        return "File";
+    }
+
+    @Override
     public String getLabel(Locale locale) {
-        return label;
+        return Labels.getLabel("plugin_file_upload_text",label);
     }
 
     @Override
     public String getGroupLabel(Locale locale) {
-        return groupLabel;
+        return Labels.getLabel("plugin_file_title_text", groupLabel);
     }
+
 
     @Override
     public String getIconPath() {
@@ -66,7 +76,7 @@ public class UploadFilePlugin extends DefaultPortalPlugin {
             new ImportController(mainC);
 
         } catch (DialogException e) {
-            Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
+            Messagebox.show(e.getMessage(), "Apromore", Messagebox.OK, Messagebox.ERROR);
         }
     }
 }

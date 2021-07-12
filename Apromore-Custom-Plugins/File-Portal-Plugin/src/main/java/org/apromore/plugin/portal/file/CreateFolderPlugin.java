@@ -30,6 +30,7 @@ import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.slf4j.Logger;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zul.Messagebox;
 
 public class CreateFolderPlugin extends DefaultPortalPlugin {
@@ -42,13 +43,21 @@ public class CreateFolderPlugin extends DefaultPortalPlugin {
     // PortalPlugin overrides
 
     @Override
+    public String getItemCode(Locale locale) { return label; }
+
+    @Override
+    public String getGroup(Locale locale) {
+        return "File";
+    }
+
+    @Override
     public String getLabel(Locale locale) {
-        return label;
+        return Labels.getLabel("plugin_file_createFolder_text",label);
     }
 
     @Override
     public String getGroupLabel(Locale locale) {
-        return groupLabel;
+        return Labels.getLabel("plugin_file_title_text", groupLabel);
     }
 
     @Override
@@ -64,7 +73,7 @@ public class CreateFolderPlugin extends DefaultPortalPlugin {
         try {
             new AddFolderController(mainC, currentUser, portalContext.getCurrentFolder());
         } catch (DialogException e) {
-            Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
+            Messagebox.show(e.getMessage(), "Apromore", Messagebox.OK, Messagebox.ERROR);
         }
     }
 }

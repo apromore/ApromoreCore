@@ -49,8 +49,7 @@ public class CreateTestLog {
         CreateTestLog creator = new CreateTestLog(); 
         
         final int COPY_TRACE_NUM = 199;
-        try {
-            FileInputStream is = new FileInputStream("Sepsis.xes.gz");
+        try (FileInputStream is = new FileInputStream("Sepsis.xes.gz")) {
             XFactory factory = XFactoryRegistry.instance().currentDefault();
             XParser parser = new XesXmlGZIPParser(factory);
             List<XLog> logs = parser.parse(is);
@@ -66,10 +65,10 @@ public class CreateTestLog {
                     }
                 }
                 
-                FileOutputStream outputStream = new FileOutputStream("Sepsis_big.xes.gz");
-                XSerializer serializer = new XesXmlGZIPSerializer();
-                serializer.serialize(newLog, outputStream);
-                outputStream.close();
+                try (FileOutputStream outputStream = new FileOutputStream("Sepsis_big.xes.gz")) {
+                    XSerializer serializer = new XesXmlGZIPSerializer();
+                    serializer.serialize(newLog, outputStream);
+                }
             }
             else {
                 System.out.println("Error: cannot import log");

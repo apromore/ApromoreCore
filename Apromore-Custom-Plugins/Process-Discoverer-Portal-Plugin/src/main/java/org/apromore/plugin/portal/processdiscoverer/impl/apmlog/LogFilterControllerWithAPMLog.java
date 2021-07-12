@@ -125,8 +125,9 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
                 data = (String) param.get("data");
                 if (filterType == FilterType.EVENT_ATTRIBUTE_DURATION &&
                         !analyst.hasSufficientDurationVariant(mainAttribute, data)) {
-                    Messagebox.show("Unable to filter on node duration as there's only one value.",
-                            "Filter error", Messagebox.OK, Messagebox.ERROR);
+                    Messagebox.show(
+                        parent.getLabel("failedFilterNodeDurationSingleValue_message"),
+                        parent.getLabel("common_error_text"), Messagebox.OK, Messagebox.ERROR);
                     return null;
                 }
                 parameters.put("key", mainAttribute);
@@ -136,8 +137,9 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
                 source = (String) param.get("source");
                 target = (String) param.get("target");
                 if (!analyst.hasSufficientDurationVariant(mainAttribute, source, target)) {
-                    Messagebox.show("Unable to filter on arc duration as there's only one value.",
-                            "Filter error", Messagebox.OK, Messagebox.ERROR);
+                    Messagebox.show(
+                        parent.getLabel("failedFilterArcDurationSingleValue_message"),
+                        parent.getLabel("common_error_text"), Messagebox.OK, Messagebox.ERROR);
                     return null;
                 }
                 parameters.put("key", mainAttribute);
@@ -152,8 +154,9 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
 
     private boolean isValidEventAttributeDuration(String mainAttribute, String data) {
         if (!analyst.hasSufficientDurationVariant(mainAttribute, data)) {
-            Messagebox.show("Unable to filter on node duration as there's only one value.",
-                    "Filter error", Messagebox.OK, Messagebox.ERROR);
+            Messagebox.show(
+                parent.getLabel("failedFilterNodeDurationSingleValue_message"),
+                parent.getLabel("common_error_text"), Messagebox.OK, Messagebox.ERROR);
             return false;
         }
 
@@ -296,7 +299,8 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
                 compositeFilterAction.setPostActionFilterCriteria(analyst.copyCurrentFilterCriteria());
                 parent.storeAction(compositeFilterAction);
             } catch (Exception e) {
-                Messagebox.show(e.toString(), "Filter Response Error. " + e.getMessage(),
+                e.printStackTrace();
+                Messagebox.show("Filter Response Error", "Error",
                         Messagebox.OK,
                         Messagebox.ERROR);
             }

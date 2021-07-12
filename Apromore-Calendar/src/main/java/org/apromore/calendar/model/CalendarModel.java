@@ -39,12 +39,14 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.OffsetTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -55,16 +57,15 @@ import lombok.Data;
 @Data
 public class CalendarModel {
 
-  private Long id;
-  private String name;
-  private OffsetDateTime created;
-  private OffsetDateTime updated;
-  private String createdBy;
-  private String updatedBy;
-  private String zoneId;
+  private Long id = new Random().nextLong();
+  private String name = "CalendarModel";
+  private OffsetDateTime created = OffsetDateTime.now(ZoneOffset.UTC);
+  private OffsetDateTime updated = OffsetDateTime.now(ZoneOffset.UTC);
+  private String createdBy = "";
+  private String updatedBy = "";
+  private String zoneId = ZoneOffset.UTC.getId();
   private List<WorkDayModel> workDays = new ArrayList<WorkDayModel>();
   private List<HolidayModel> holidays = new ArrayList<HolidayModel>();
-
 
   public DurationModel getDuration(ZonedDateTime starDateTime, ZonedDateTime endDateTime) {
 
@@ -168,6 +169,27 @@ public class CalendarModel {
 
     return resultList;
   }
+  
+  public long[] getDuration(long[] starDateTimeUnixTs, long[] endDateTimeunixTs) {
+      if (starDateTimeUnixTs == null || starDateTimeUnixTs.length == 0 ||
+          endDateTimeunixTs == null || endDateTimeunixTs.length == 0) return new long[] {};
+        
+      long[] resultList = new long[starDateTimeUnixTs.length];
+
+      ZoneId zone = ZoneId.of(zoneId);
+
+      IntStream.range(0, starDateTimeUnixTs.length).parallel().forEach(i -> {
+
+        ZonedDateTime zonedStartDateTime =
+            ZonedDateTime.ofInstant(Instant.ofEpochMilli(starDateTimeUnixTs[i]), zone);
+        ZonedDateTime zonedEndDateTime =
+            ZonedDateTime.ofInstant(Instant.ofEpochMilli(endDateTimeunixTs[i]), zone);
+        resultList[i] = getDuration(zonedStartDateTime, zonedEndDateTime).getDuration().toMillis();
+
+      });
+
+      return resultList;
+    }
 
 
 

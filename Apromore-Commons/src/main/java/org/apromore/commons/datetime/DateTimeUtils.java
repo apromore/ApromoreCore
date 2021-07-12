@@ -29,6 +29,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoField;
+import java.util.Locale;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,7 +86,23 @@ public final class DateTimeUtils {
     LocalDateTime dateTime = parse(dateTimeStr);
 
     if (dateTime != null) {
-      return dateTime.format(Constants.DATE_TIME_FORMATTER_HUMANIZED);
+       return dateTime.format(Constants.DATE_TIME_FORMATTER_HUMANIZED);
+    }
+    return dateTimeStr;
+  }
+
+  /**
+   * Normalize a date string in various predefined formats to a simple format with i18n support
+   *
+   * @param dateTimeStr A date string
+   * @param formatter A DateTimeFormatter
+   * @return Normalized date for display (dd MMM yy, HH:mm)
+   */
+  public static String normalize(String dateTimeStr, DateTimeFormatter formatter) {
+    LocalDateTime dateTime = parse(dateTimeStr);
+
+    if (dateTime != null) {
+      return dateTime.format(formatter); // e.g. DateTimeFormatter.ofPattern("yyyy年MM月dd日, HH:mm", Locale.JAPAN)
     }
     return dateTimeStr;
   }

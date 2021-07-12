@@ -52,7 +52,7 @@
                     <label value="Remove entanglements"/>
                     <checkbox checked="false" tooltiptext="Tick this checkbox if you wish remove entanglements from mappings"/>
                 </row>
-                <row id="makePublic" visible="${labels.publish.enable}">
+                <row id="makePublic" visible="${labels.publish_enable}">
                     <label value="Make Process Public"/>
                     <checkbox checked="false" tooltiptext="Tick this checkbox if you wish to make this Process available to all Users"/>
                 </row>

@@ -55,7 +55,8 @@ public abstract class FilterActionOnElementFilter extends FilterAction {
                 return false;
             }
         } catch (Exception e) {
-            Messagebox.show("Error in filtering. Error message: " + e.getMessage());
+            // LOGGER.error("Error in filtering. Error message: " + e.getMessage());
+            Messagebox.show("Error in filtering");
             return false;
         }
     }

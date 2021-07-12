@@ -87,17 +87,16 @@ public class MediaImpl implements Media {
 	int size;
 	byte[] buffer = new byte[2048];
 
-	FileOutputStream fos = new FileOutputStream(tempFile);
-	BufferedOutputStream bos = new BufferedOutputStream(fos, buffer.length);
-
-	while ((size = in.read(buffer, 0, buffer.length)) != -1) {
-	    bos.write(buffer, 0, size);
+	try (FileOutputStream fos = new FileOutputStream(tempFile)) {
+	    try (BufferedOutputStream bos = new BufferedOutputStream(fos, buffer.length)) {
+	        while ((size = in.read(buffer, 0, buffer.length)) != -1) {
+	            bos.write(buffer, 0, size);
+	        }
+	        bos.flush();
+	    }
 	}
-	bos.flush();
-	bos.close();
-	fos.close();
-	in.close();
 
+	in.close();
     }
 
     // Implementation of the Media interface
@@ -136,9 +135,10 @@ public class MediaImpl implements Media {
 	try {
 	    switch (streamExtension) {
 	    case "zip":
-		ZipInputStream stream = new ZipInputStream(new FileInputStream(tempFile));
-		stream.getNextEntry();
-		return stream;
+		try (ZipInputStream stream = new ZipInputStream(new FileInputStream(tempFile))) {
+		    stream.getNextEntry();
+		    return stream;
+		}
 
 	    case "gzip": case "gz":
 		return new GZIPInputStream(new FileInputStream(tempFile));

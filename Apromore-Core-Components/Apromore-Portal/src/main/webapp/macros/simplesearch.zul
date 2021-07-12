@@ -47,8 +47,8 @@
         mold="rounded"
         width="300px"
         buttonVisible="true"
-        tooltip="list of keywords separated by ',' (and semantic) or/and by ';' (or semantic). Brackets allowed."
-        placeholder="Search"
+        tooltip="${labels.portal_search_hint}"
+        placeholder="${labels.portal_search_text}"
     />
     <span sclass="ap-search-part-clear" id="clearSearch" width="24px">
       <n:i class="z-icon-times-circle" />

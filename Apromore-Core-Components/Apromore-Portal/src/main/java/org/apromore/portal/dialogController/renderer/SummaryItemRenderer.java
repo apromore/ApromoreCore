@@ -24,8 +24,10 @@
 
 package org.apromore.portal.dialogController.renderer;
 
+import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.PortalProcessAttributePlugin;
@@ -41,6 +43,7 @@ import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.commons.datetime.DateTimeUtils;
 import org.slf4j.Logger;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
@@ -54,6 +57,7 @@ import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 
+
 public class SummaryItemRenderer implements ListitemRenderer {
 
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(SummaryItemRenderer.class.getName());
@@ -61,9 +65,11 @@ public class SummaryItemRenderer implements ListitemRenderer {
     private static final String VERTICAL_ALIGN = "vertical-align: middle;";
 
     private MainController mainController;
+    private DateTimeFormatter dateTimeFormatter;
 
     public SummaryItemRenderer(MainController main) {
         this.mainController = main;
+        this.dateTimeFormatter = main.getI18nSession().getPreferredDateTimeFormatter();
     }
 
     /* (non-Javadoc)
@@ -284,10 +290,14 @@ public class SummaryItemRenderer implements ListitemRenderer {
     protected Listcell renderProcessLastUpdate(final ProcessSummaryType process) {
         List<VersionSummaryType> summaries = process.getVersionSummaries();
         int lastIndex = summaries.size() - 1;
-        String lastUpdate = summaries.get(lastIndex).getLastUpdate();
+        String lastUpdate = (lastIndex < 0) ? null : summaries.get(lastIndex).getLastUpdate();
 
         if (lastUpdate != null) {
-            lastUpdate = DateTimeUtils.normalize(lastUpdate);
+            if (dateTimeFormatter != null) {
+                lastUpdate = DateTimeUtils.normalize(lastUpdate, dateTimeFormatter);
+            } else {
+                lastUpdate = DateTimeUtils.normalize(lastUpdate);
+            }
         }
         return wrapIntoListCell(new Label(lastUpdate));
     }

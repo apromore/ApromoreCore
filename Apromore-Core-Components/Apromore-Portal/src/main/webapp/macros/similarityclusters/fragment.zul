@@ -51,7 +51,7 @@
         <n:script src="/editor/libs/ext-2.0.2/adapter/ext/ext-base.js" type="text/javascript"/>
         <n:script src="/editor/libs/ext-2.0.2/ext-all.js" type="text/javascript"/>
         <n:script src="/editor/libs/ext-2.0.2/color-field.js" type="text/javascript"/>
-        <n:script src="/editor/editor/i18n/translation_en_us.js" type="text/javascript"/>
+        <n:script src="/editor/editor/i18n/translation_en.js" type="text/javascript"/>
         <n:script src="/editor/libs/utils.js" type="text/javascript"/>
         <n:script src="/editor/editor/oryx.debug.js" type="text/javascript"/>
 

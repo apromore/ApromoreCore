@@ -27,6 +27,7 @@ package org.apromore.portal.dialogController.workspaceOptions;
 import java.io.IOException;
 
 import org.slf4j.Logger;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
@@ -61,11 +62,11 @@ public class AddFolderController extends BaseController {
 
         try {
             if (!ItemHelpers.isOwner(currentUser, currentFolder)) {
-                Notification.error("Only Owner can add folder here");
+                Notification.error(Labels.getLabel("portal_onlyOwnerCanAddFolder_message"));
                 return;
             }
         } catch (Exception e) {
-            Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
+            Messagebox.show(e.getMessage(), "Apromore", Messagebox.OK, Messagebox.ERROR);
             return;
         }
         try {
@@ -115,7 +116,7 @@ public class AddFolderController extends BaseController {
         try {
             String folderName = txtName.getValue().trim();
             if (folderName.isEmpty()) {
-                Messagebox.show("Name cannot be empty.", "Attention", Messagebox.OK, Messagebox.ERROR);
+                Messagebox.show(Labels.getLabel("portal_noEmptyName_message"), "Apromore", Messagebox.OK, Messagebox.ERROR);
                 return;
             }
 
@@ -128,12 +129,12 @@ public class AddFolderController extends BaseController {
 
         } catch (WrongValueException ex) {
             LOGGER.debug("Unable to create folder", ex);
-            // Messagebox.show("You have entered invalid value.", "Apromore", Messagebox.OK, Messagebox.ERROR);
+            // Messagebox.show(Labels.getLabel("portal_invalidValue_message"), "Apromore", Messagebox.OK, Messagebox.ERROR);
             return;
 
         } catch (Exception ex) {
             if (ex.getCause() instanceof NotAuthorizedException || ex instanceof NotAuthorizedException) {
-                Messagebox.show("You are not authorized to perform this operation. Contact your system administrator to gain relevant access rights for the folder or file you are trying to rename.", "Apromore", Messagebox.OK, Messagebox.ERROR);
+                Messagebox.show(Labels.getLabel("portal_noAuthorizedRename_message"), "Apromore", Messagebox.OK, Messagebox.ERROR);
             }
             LOGGER.warn("Unable to create folder", ex);
         }
