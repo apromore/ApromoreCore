@@ -11,14 +11,14 @@ The instructions below are for the installation of Apromore Core from the source
 If you are looking for the commercial edition (Apromore Enterprise Edition), check the [Apromore web site](https://apromore.org/)
 
 ## System requirements
-* Linux Ubuntu 18.04 (We do not support newer versions as it may lead to dependency issues), Windows 10/WS2016/WS2019, Mac OSX 10.8 or newer.
-* Java SE 8 ["Server JRE"](https://www.oracle.com/technetwork/java/javase/downloads/server-jre8-downloads-2133154.html) or
-  ["JDK"](https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) Edition 1.8. For Ubuntu, it can be installed as `sudo apt install openjdk-8-jdk`
+* Linux Ubuntu 20.04 (We do not support newer versions as it may lead to dependency issues), Windows 10/WS2016/WS2019, Mac OSX 10.8 or newer.
+* Java SE 11 ["Server JRE"](https://www.oracle.com/java/technologies/javase-jdk11-downloads.html) or
+  ["JDK 11"](https://www.oracle.com/java/technologies/javase-jdk11-downloads.html) . For Ubuntu, it can be installed as `sudo apt install openjdk-11-jdk`
   Note that newer versions, including Java SE 11, are currently not supported
 * [Apache Maven](https://maven.apache.org/download.cgi) 3.5.2 or newer, and internet access for it to download this project's dependencies.
 * [Lessc](http://lesscss.org/usage/) 3.9.0 or newer
-* (optional) [MySQL server](https://dev.mysql.com/downloads/mysql/5.7.html) 5.7.
-* <b>Note:</b> These instructions are tested with Linux Ubuntu 18.04. In Linux Ubuntu 20.04 there may be some dependency management issues. With minor adaptations, these instructions may be used for Windows 10/WS20016/WS2019 and macOS 10.8 or newer.
+* (optional) [MySQL server](https://dev.mysql.com/downloads/mysql/) 8.0.
+* <b>Note:</b> These instructions are tested with Linux Ubuntu 20.04. With minor adaptations, these instructions may be used for Windows 10/WS20016/WS2019 and macOS 10.8 or newer.
 
 ## Installation Instructions
 
@@ -28,7 +28,7 @@ If you are looking for the commercial edition (Apromore Enterprise Edition), che
 * Execute `mvn clean install` to compile the source code into executable bundles.
 * Execute `core-assemblies/apromore-core/target/assembly/bin/karaf` to start the server.
   <b>Note:</b> If you deploy to port 80 (or another port below 1024), you will need to run the previous command as sudo.
-* Browse [(http://localhost:9000/)](http://localhost:8181/). Login as an administrator by using the following credentials: username - "admin" and password - "password". You can also create a new account. Once logged in, a user can change their password via `Account -> Change password` menu.
+* Browse [(http://localhost:8181/)](http://localhost:8181/). Login as an administrator by using the following credentials: username - "admin" and password - "password". You can also create a new account. Once logged in, a user can change their password via `Account -> Change password` menu.
 * Keep the prompt/terminal window open. Ctrl-D on the window will shut the server down.
 
 
@@ -41,8 +41,7 @@ The default version of this file from a fresh git checkout contains reasonable d
 
 
 ### MySQL setup
-By default, Apromore Core uses H2 database because it allows casual evaluation without requiring any configuration.
-For earnest use or development, Apromore should be configured to use MySQL instead.
+By default, Apromore Core uses MySQL database. For casual evaluation, Apromore can also be used with H2.
 
 * Ensure MySQL is configured to accept local TCP connections on port 3306 in its .cnf file; "skip-networking" should not be present.
 
@@ -61,9 +60,9 @@ GRANT ALL PRIVILEGES ON apromore.* TO 'liquibase_user'@'%';
 	
 ```
 
-* Edit the top-level `site.properties` file, replacing the H2 declarations in "Database and JPA" with the commented-out MySQL properties.
 * Rebuild the server using `mvn clean install -pl :apromore-core`, or simply copy the edited `site.properties` to `core-assemblies/apromore-core/target/assembly/etc/site.cfg`.
-* Identically to the default H2 database, the initial MySQL database will have one user: "admin".
+* Identically to the default MySQL database, the H2 database will have one user: "admin".
+* To use H2, edit the top-level `site.properties` file, replacing the MySQL declarations in "Database and JPA" with the commented-out H2 properties.
 
 
 ### Heap size
