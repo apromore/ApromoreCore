@@ -11,20 +11,20 @@ The instructions below are for the installation of Apromore Core from the source
 If you are looking for the commercial edition (Apromore Enterprise Edition), check the [Apromore web site](https://apromore.org/)
 
 ## System requirements
-* Linux Ubuntu 18.04 (We do not support newer versions as it may lead to dependency issues), Windows 10/WS2016/WS2019, Mac OSX 10.8 or newer.
-* Java SE 8 ["Server JRE"](https://www.oracle.com/technetwork/java/javase/downloads/server-jre8-downloads-2133154.html) or
-  ["JDK"](https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) Edition 1.8. For Ubuntu, it can be installed as `sudo apt install openjdk-8-jdk`
+* Linux Ubuntu 20.04 (We do not support newer versions as it may lead to dependency issues), Windows 10/WS2016/WS2019, Mac OSX 10.8 or newer.
+* Java SE 11 ["Server JRE"](https://www.oracle.com/java/technologies/javase-jdk11-downloads.html) or
+  ["JDK 11"](https://www.oracle.com/java/technologies/javase-jdk11-downloads.html) . For Ubuntu, it can be installed as `sudo apt install openjdk-11-jdk`
   Note that newer versions, including Java SE 11, are currently not supported
 * [Apache Maven](https://maven.apache.org/download.cgi) 3.5.2 or newer, and internet access for it to download this project's dependencies.
 * [Lessc](http://lesscss.org/usage/) 3.9.0 or newer
-* (optional) [MySQL server](https://dev.mysql.com/downloads/mysql/5.7.html) 5.7.
-* <b>Note:</b> These instructions are tested with Linux Ubuntu 18.04. In Linux Ubuntu 20.04 there may be some dependency management issues. With minor adaptations, these instructions may be used for Windows 10/WS20016/WS2019 and macOS 10.8 or newer.
+* (optional) [MySQL server](https://dev.mysql.com/downloads/mysql/) 8.0.
+* <b>Note:</b> These instructions are tested with Linux Ubuntu 20.04. With minor adaptations, these instructions may be used for Windows 10/WS20016/WS2019 and macOS 10.8 or newer.
 
 ## Installation Instructions
 
 * Check out the source code using git: `git clone https://github.com/apromore/ApromoreCore.git`
 * Switch to the ApromoreCore directory: `cd ApromoreCore`
-* Check out the desired branch or tag: `git checkout development`
+* Check out the desired branch or tag: `git checkout release/v7.20.1`
 * Execute `mvn clean install` to compile the source code into executable bundles.
 * Execute `core-assemblies/apromore-core/target/assembly/bin/karaf` to start the server.
   <b>Note:</b> If you deploy to port 80 (or another port below 1024), you will need to run the previous command as sudo.
