@@ -23,28 +23,33 @@
 package org.apromore.plugin.portal.processdiscoverer;
 
 import org.apromore.logman.ALog;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.processdiscoverer.data.ConfigData;
 import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
 import org.deckfour.xes.model.XLog;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.slf4j.Logger;
 
 public class PerformanceTest extends TestDataSetup {
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(PerformanceTest.class);
     
     private void discoverProcessFromXLog(XLog xlog) {
         try {
             long timer = System.currentTimeMillis();
             ALog aLog = new ALog(xlog);
-            System.out.println("Create ALog: " + (System.currentTimeMillis() - timer) + " ms.");
+            LOGGER.debug("Create ALog: " + (System.currentTimeMillis() - timer) + " ms.");
             ConfigData configData = ConfigData.DEFAULT;
-            PDAnalyst analyst = PDAnalyst.newInstanceWithoutFilter(aLog, configData);
+            PDAnalyst analyst = PDAnalyst.newInstanceWithoutFilter(aLog, configData, getAllDayAllTimeCalendar());
             analyst.discoverProcess(UserOptionsData.DEFAULT(configData));
-            System.out.println("Generate JSON data from BPMNDiagram: " + (System.currentTimeMillis() - timer) + " ms.");
+            LOGGER.debug("Total PD: " + (System.currentTimeMillis() - timer) + " ms.");
         }
         catch (Exception ex) {
             ex.printStackTrace();
         }
     }
     
-    //@Test
+    @Test
     public void test_Performance_Once() {
         System.out.println();
         System.out.println("==========  PERFORMANCE TEST: BPIC12 ==========");
@@ -83,7 +88,8 @@ public class PerformanceTest extends TestDataSetup {
         }
     }
 
-    //@Test
+    @Ignore
+    @Test
     public void test_Performance_Iterations() {
         System.out.println("Read all XLog data objects used in this test into memory");
         XLog[] logs = new XLog[7];

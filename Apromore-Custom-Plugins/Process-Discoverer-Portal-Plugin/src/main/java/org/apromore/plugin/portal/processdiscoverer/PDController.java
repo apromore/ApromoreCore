@@ -65,7 +65,6 @@ import org.apromore.portal.model.FolderType;
 import org.apromore.portal.model.LogSummaryType;
 import org.apromore.portal.plugincontrol.PluginExecution;
 import org.apromore.portal.plugincontrol.PluginExecutionManager;
-import org.apromore.service.DomainService;
 import org.apromore.service.EventLogService;
 import org.apromore.service.ProcessService;
 import org.apromore.service.loganimation.LogAnimationService2;
@@ -107,7 +106,6 @@ public class PDController extends BaseController {
 
     //////////////////// SUPPORT SERVICES ///////////////////////////////////
 
-    private DomainService domainService;
     private ProcessService processService;
     private EventLogService eventLogService;
     private LogAnimationService2 logAnimationService;
@@ -220,13 +218,12 @@ public class PDController extends BaseController {
     // because of system crashes or modules crashed/undeployed
     private boolean prepareSystemServices() {
         //canoniserService = (CanoniserService) beanFactory.getBean("canoniserService");
-        domainService = (DomainService) Sessions.getCurrent().getAttribute("domainService");
         processService = (ProcessService) Sessions.getCurrent().getAttribute("processService");
         eventLogService = (EventLogService) Sessions.getCurrent().getAttribute("eventLogService");
         logAnimationService = (LogAnimationService2) Sessions.getCurrent().getAttribute("logAnimationService");
         logFilterPlugin = (LogFilterPlugin) Sessions.getCurrent().getAttribute("logFilterPlugin"); //beanFactory.getBean("logFilterPlugin");
 
-        if (domainService == null || processService == null || eventLogService == null || logFilterPlugin == null) {
+        if (processService == null || eventLogService == null || logFilterPlugin == null) {
             return false;
         }
         return true;
@@ -421,7 +418,7 @@ public class PDController extends BaseController {
             Map<String, PortalPlugin> portalPluginMap = portalContext.getPortalPluginMap();
             Object selectedItem = logSummary;
             accessControlPlugin = portalPluginMap.get("ACCESS_CONTROL_PLUGIN");
-            Map arg = new HashMap<>();
+            Map<String, Object> arg = new HashMap<>();
             arg.put("withFolderTree", false);
             arg.put("selectedItem", selectedItem);
             arg.put("currentUser", UserSessionManager.getCurrentUser());

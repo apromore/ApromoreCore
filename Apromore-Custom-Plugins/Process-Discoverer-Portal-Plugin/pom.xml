@@ -74,6 +74,11 @@
                     <includes>
                         <include>**/*.java</include>
                     </includes>
+                    <classpathDependencyExcludes>
+                        <classpathDependencyExclude>org.slf4j:log4j-over-slf4j</classpathDependencyExclude>
+                        <classpathDependencyExclude>org.slf4j:slf4j-jdk14</classpathDependencyExclude>
+                        <classpathDependencyExclude>ch.qos.logback:logback-classic</classpathDependencyExclude>
+                    </classpathDependencyExcludes>                    
                 </configuration>
             </plugin>
         </plugins>
@@ -197,13 +202,30 @@
             <groupId>org.everit.osgi.bundles</groupId>
             <artifactId>org.everit.osgi.bundles.com.lodborg.interval-tree</artifactId>
             <version>1.0.0</version>
-        </dependency>               
+        </dependency>       
+        
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>apromore-calendar</artifactId>
+        </dependency>        
 
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
+        
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>         
+        </dependency>
+        
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.7.5</version>
+            <scope>test</scope>
+        </dependency>        
     </dependencies>
 </project>
 
