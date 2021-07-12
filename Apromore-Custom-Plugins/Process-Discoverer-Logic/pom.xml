@@ -110,6 +110,12 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
+        
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>apromore-calendar</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>
 

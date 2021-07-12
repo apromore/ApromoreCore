@@ -38,16 +38,20 @@ public class ProcessDiscoverer {
     }
     
     public Abstraction generateDFGAbstraction(AbstractionParams params) throws Exception {
+        if (params == null) throw new IllegalArgumentException("Invalid abstraction parameters");
     	return absManager.createDFGAbstraction(params.clone());
     }
     
     public Abstraction generateBPMNAbstraction(AbstractionParams params, Abstraction dfgAbstraction) throws Exception {
+        if (params == null || dfgAbstraction == null) throw new IllegalArgumentException("Invalid abstraction parameters");
     	return absManager.createBPMNAbstraction(params.clone(), dfgAbstraction);
     }
     
     // This method does not affect the internal state of ProcessDiscoverer object
     // It is a one-off use to view a trace
     public Abstraction generateTraceAbstraction(String traceID, AbstractionParams params) throws Exception {
+        if (traceID == null || traceID.isEmpty() || params == null) throw new IllegalArgumentException("Invalid abstraction parameters");
+        
         AttributeLog log = absManager.getLog();
     	if(log == null || log.getTraces().size() == 0) {
     		throw new Exception("No log abstraction has been done yet!");
