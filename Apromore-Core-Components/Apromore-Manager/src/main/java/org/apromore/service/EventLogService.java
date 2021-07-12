@@ -24,6 +24,8 @@
 
 package org.apromore.service;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
@@ -35,6 +37,7 @@ import org.apromore.exception.ImportException;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.portal.model.ExportLogResultType;
 import org.apromore.portal.model.SummariesType;
+import org.apromore.storage.exception.ObjectCreationException;
 import org.deckfour.xes.model.XLog;
 
 /**
@@ -132,4 +135,18 @@ public interface EventLogService {
    * @return CustomCalendar
    */
   CalendarModel getCalendarFromLog(Integer logId);
+
+  /**
+   * Save the file to the given path
+   *
+   * @param filename
+   * @param volumePath
+   * @param prefix
+   * @param baos
+   * @return
+   * @throws IOException
+   * @throws ObjectCreationException
+   */
+  boolean saveFileToVolume(String filename, String volumePath, String prefix,
+                           ByteArrayOutputStream baos) throws IOException, ObjectCreationException;
 }

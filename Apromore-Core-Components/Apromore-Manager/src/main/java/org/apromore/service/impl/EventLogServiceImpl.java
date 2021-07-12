@@ -41,6 +41,7 @@ import org.apromore.service.EventLogService;
 import org.apromore.service.UserService;
 import org.apromore.storage.StorageClient;
 import org.apromore.storage.StorageType;
+import org.apromore.storage.exception.ObjectCreationException;
 import org.apromore.storage.factory.StorageManagementFactory;
 import org.apromore.util.AccessType;
 import org.deckfour.xes.extension.std.XConceptExtension;
@@ -65,6 +66,7 @@ import javax.inject.Inject;
 import javax.mail.util.ByteArrayDataSource;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.*;
@@ -523,6 +525,18 @@ public class EventLogServiceImpl implements EventLogService {
     public CalendarModel getCalendarFromLog(Integer logId) {
         CustomCalendar calendar = logRepo.findUniqueByID(logId).getCalendar();
         return calendar != null ? calendarService.getCalendar(calendar.getId()) : null;
+    }
+
+    public boolean saveFileToVolume(String filename, String volumePath, String prefix,
+                                    ByteArrayOutputStream baos) throws IOException, ObjectCreationException {
+
+        StorageClient newStorage = storageFactory.getStorageClient(volumePath);
+
+        OutputStream outputStream = newStorage.getOutputStream(prefix, filename);
+        baos.writeTo(outputStream);
+        outputStream.close();
+
+        return true;
     }
 
 }
