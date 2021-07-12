@@ -60,7 +60,7 @@ public class LogTest extends DataSetup {
         Assert.assertEquals(0,  log.getOriginalNumberOfEvents());
         Assert.assertEquals(0,  log.getNumberOfEvents());
         
-        AttributeLog attLog = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName());
+        AttributeLog attLog = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName(), getAllDayAllTimeCalendar());
         Assert.assertEquals(0, attLog.getTraces().size());
         
         // LogSummary
@@ -103,7 +103,7 @@ public class LogTest extends DataSetup {
         Assert.assertEquals(0,  log.getNumberOfEvents());
         
         // AttributeLog
-        AttributeLog attLog = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName());
+        AttributeLog attLog = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName(), getAllDayAllTimeCalendar());
         Assert.assertEquals(0, attLog.getOriginalNumberOfEvents());
         Assert.assertEquals(0, attLog.getNumberOfEvents());
         Assert.assertEquals(IntLists.mutable.empty(), attLog.getOriginalAttributeValues());
@@ -155,7 +155,7 @@ public class LogTest extends DataSetup {
         ALog log = new ALog(readLogWithOneTraceOneEvent());
         ATrace trace0 = log.getTraces().get(0);
         AActivity activity0 = trace0.getActivityFromIndex(0);
-        AttributeLog attLog = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName());
+        AttributeLog attLog = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName(), getAllDayAllTimeCalendar());
         AttributeTraceVariants variants = attLog.getVariantView().getActiveVariants();
         AttributeTrace attTrace0 = attLog.getOriginalTraceFromIndex(0);
         
@@ -289,7 +289,7 @@ public class LogTest extends DataSetup {
     public void test1_AttributesOf_ATrace_AActivity_AttributeTrace_And_Changing_Attribute() {
         ALog log = new ALog(readLogWithOneTraceAndCompleteEvents());
         ATrace trace0 = log.getTraces().get(0);
-        AttributeLog attLog = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName());
+        AttributeLog attLog = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName(), getAllDayAllTimeCalendar());
         AttributeTraceVariants variants = attLog.getVariantView().getActiveVariants();
         AttributeTrace attTrace0 = attLog.getOriginalTraceFromIndex(0);
         
@@ -525,7 +525,7 @@ public class LogTest extends DataSetup {
     @Test
     public void test_Changing_Attribute() {
         ALog log = new ALog(readLogWithOneTraceAndCompleteEvents());
-        AttributeLog attLog = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName());
+        AttributeLog attLog = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName(), getAllDayAllTimeCalendar());
         AttributeTrace attTrace0 = attLog.getTraces().get(0);
         
         IndexableAttribute resAtt = log.getAttributeStore().getStandardEventResource();
@@ -701,7 +701,7 @@ public class LogTest extends DataSetup {
     @Test
     public void test_LogSummary_AfterChanging_Attribute() {
         ALog log = new ALog(readLogWithCompleteEventsOnly());
-        AttributeLog attLog = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName());
+        AttributeLog attLog = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName(), getAllDayAllTimeCalendar());
         
         AttributeLogSummary oriLogSummary = attLog.getOriginalLogSummary();
         Assert.assertEquals(6, oriLogSummary.getCaseCount());
@@ -752,8 +752,7 @@ public class LogTest extends DataSetup {
     public void test_Trace_Filtering() {
         ALog log = new ALog(readLogWithOneTraceAndCompleteEvents());
         ATrace trace0 = log.getTraces().get(0);
-        AttributeLog attLog = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName());
-        AttributeTrace attTrace0 = attLog.getTraces().get(0);
+        AttributeLog attLog = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName(), getAllDayAllTimeCalendar());
         
         // AttributeLogSummary
         AttributeLogSummary oriLogSummary = attLog.getOriginalLogSummary();
@@ -907,7 +906,7 @@ public class LogTest extends DataSetup {
     public void test_Event_Filtering() {
         ALog log = new ALog(readLogWithOneTraceAndCompleteEvents());
         ATrace trace0 = log.getTraces().get(0);
-        AttributeLog attLog = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName());
+        AttributeLog attLog = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName(), getAllDayAllTimeCalendar());
         AttributeTrace attTrace0 = attLog.getTraces().get(0);
         
         // AttributeLogSummary
@@ -1096,7 +1095,7 @@ public class LogTest extends DataSetup {
     public void test2_AttributesOf_ATrace_AActivity_AttributeTrace() {
         ALog log = new ALog(readLogWithOneTrace_StartCompleteEvents_NonOverlapping());
         ATrace trace0 = log.getTraces().get(0);
-        AttributeLog attLog = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName());
+        AttributeLog attLog = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName(), getAllDayAllTimeCalendar());
         AttributeTraceVariants variants = attLog.getVariantView().getActiveVariants();
         AttributeTrace attTrace0 = attLog.getOriginalTraceFromIndex(0);
         
@@ -1301,14 +1300,7 @@ public class LogTest extends DataSetup {
     public void test_AttributesOf_Alog_AttributeLog_And_AttributeTraceVariants() {
         ALog log = new ALog(readLogWithCompleteEventsOnly());
         
-        ATrace trace0 = log.getTraces().get(0);
-        ATrace trace1 = log.getTraces().get(1);
-        ATrace trace2 = log.getTraces().get(2);
-        ATrace trace3 = log.getTraces().get(3);
-        ATrace trace4 = log.getTraces().get(4);
-        ATrace trace5 = log.getTraces().get(5);
-        
-        AttributeLog attLog = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName());
+        AttributeLog attLog = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName(), getAllDayAllTimeCalendar());
         AttributeTraceVariants variants = attLog.getVariantView().getActiveVariants();
         
         AttributeTrace attTrace0 = attLog.getOriginalTraceFromIndex(0);

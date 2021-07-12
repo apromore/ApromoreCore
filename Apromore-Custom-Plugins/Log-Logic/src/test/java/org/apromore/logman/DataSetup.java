@@ -24,6 +24,8 @@ package org.apromore.logman;
 
 import java.io.File;
 
+import org.apromore.calendar.builder.CalendarModelBuilder;
+import org.apromore.calendar.model.CalendarModel;
 import org.deckfour.xes.in.XesXmlGZIPParser;
 import org.deckfour.xes.in.XesXmlParser;
 import org.deckfour.xes.model.XLog;
@@ -49,13 +51,17 @@ public class DataSetup {
         }
     }
     
+    public CalendarModel getAllDayAllTimeCalendar() {
+        return new CalendarModelBuilder().withAllDayAllTime().build();
+    }
+    
     public XLog readEmptyLog() {
         return this.readXESFile("src/test/logs/L1_empty_log.xes");
     }
     
     public XLog readLogWithEmptyTrace() {
         return this.readXESFile("src/test/logs/L1_1trace_empty_trace.xes");
-    }    
+    }
     
     public XLog readLogWithOneTraceOneEvent() {
         return this.readXESFile("src/test/logs/L1_1trace_1event.xes");
@@ -67,7 +73,7 @@ public class DataSetup {
     
     public XLog readLogWithOneTrace_StartCompleteEvents_NonOverlapping() {
         return this.readXESFile("src/test/logs/L1_1trace_start_complete_events_non_overlapping.xes");
-    }    
+    }
     
     public XLog readLogWithNoLifecycleTransitions() {
         return this.readXESFile("src/test/logs/L1_no_lifecycle_transition.xes");

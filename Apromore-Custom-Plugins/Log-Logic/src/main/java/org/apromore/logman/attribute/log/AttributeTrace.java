@@ -63,23 +63,26 @@ import org.eclipse.collections.impl.factory.primitive.LongLists;
 public class AttributeTrace {
     private IndexableAttribute attribute;
     private ATrace originalTrace;
-    private AttributeTraceVariants variants;
 
+    // Trace original data
     private MutableIntList originalActIndexes = IntLists.mutable.empty(); //applicable activity indexes in the original trace
     private MutableIntList originalValueTrace = IntLists.mutable.empty();
     private MutableLongList originalStartTimeTrace = LongLists.mutable.empty();
     private MutableLongList originalEndTimeTrace = LongLists.mutable.empty();
     private MutableLongList originalDurationTrace = LongLists.mutable.empty();
+    
+    // Filter bitset
     private BitSet originalEventStatus;
     
-    // These data are only to boost the retrieval of active elements, they are actually
-    // can be known from the original data and their status.
+    // The current trace data after applying filter bitset
     private MutableIntList activeValueTrace = IntLists.mutable.empty();
     private MutableLongList activeStartTimeTrace = LongLists.mutable.empty();
     private MutableLongList activeEndTimeTrace = LongLists.mutable.empty();
     private MutableLongList activeDurationTrace = LongLists.mutable.empty();
     
+    // Different views on traces
     private AttributeTraceGraph activeGraph;
+    private AttributeTraceVariants variants;
     
     public AttributeTrace(IndexableAttribute attribute, ATrace originalTrace) {
         this.originalTrace = originalTrace;
@@ -188,6 +191,7 @@ public class AttributeTrace {
                 long nodeDur = originalDurationTrace.get(i);
                 activeGraph.incrementNodeTotalFrequency(node, 1);
                 activeGraph.collectNodeDuration(node, nodeDur);
+                activeGraph.collectNodeInterval(node, originalStartTimeTrace.get(i), originalEndTimeTrace.get(i));
                 
                 if (preIndex >= 0) {
                     int preNode = originalValueTrace.get(preIndex);
@@ -197,6 +201,7 @@ public class AttributeTrace {
                     activeGraph.addArc(arc);
                     activeGraph.incrementArcTotalFrequency(arc, 1);
                     activeGraph.collectArcDuration(arc, arcDur);
+                    activeGraph.collectArcInterval(arc, originalEndTimeTrace.get(preIndex), originalStartTimeTrace.get(i));
                 }
                 preIndex = i;
             }

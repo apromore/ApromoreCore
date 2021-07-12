@@ -25,6 +25,7 @@ package org.apromore.logman.attribute.log;
 import java.util.BitSet;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
+import org.apromore.calendar.model.CalendarModel;
 import org.apromore.logman.ALog;
 import org.apromore.logman.ATrace;
 import org.apromore.logman.Constants;
@@ -47,7 +48,7 @@ import org.eclipse.collections.impl.factory.primitive.IntSets;
 
 /**
  * An AttributeLog is a view of ALog based on an attribute. This log extracts the traces with the chosen attribute only,
- * each trace is an AttributeTrace. Since it is based on a specific attribute, the trace sequence is specific to the 
+ * each trace is an AttributeTrace. Since it is based on a specific attribute, the trace sequence is specific to the
  * chosen attribute (e.g. some original events may not contain values of the attribute), and thus the timing and duration
  * also vary to the attribute. Note that AttributeTrace is created based on the aggregated activities of ATrace.
  * 
@@ -73,6 +74,9 @@ public class AttributeLog {
     // Main perspective attribute. AttributeLog is able to change the perspective attribute
     private IndexableAttribute attribute;
     
+    // Calendar model used for this log
+    private CalendarModel calendarModel;
+    
     // Original log data
     private MutableList<AttributeTrace> originalTraces = Lists.mutable.empty();
     private MutableMap<String, AttributeTrace> originalTraceIdMap = Maps.mutable.empty();
@@ -89,9 +93,10 @@ public class AttributeLog {
     // Graph view of the log
     private AttributeLogGraph graphView;
     
-	public AttributeLog(ALog log, IndexableAttribute attribute) {
+	public AttributeLog(ALog log, IndexableAttribute attribute, CalendarModel calendarModel) {
 	    this.fullLog = log;
 	    this.attribute = attribute;
+	    this.calendarModel = calendarModel;
 	    this.originalTraceStatus = fullLog.getOriginalTraceStatus();
 	    if (log.getOriginalTraces().size()==0 || attribute == null) return;
 	    
@@ -104,7 +109,7 @@ public class AttributeLog {
             originalTraces.add(attTrace);
             originalTraceIdMap.put(trace.getTraceId(), attTrace);
             variantView.addOriginalTrace(attTrace);
-            if (originalTraceStatus.get(i) && !attTrace.isEmpty()) { 
+            if (originalTraceStatus.get(i) && !attTrace.isEmpty()) {
                 activeTraces.add(attTrace);
                 variantView.addActiveTrace(attTrace);
                 graphView.addTraceGraph(attTrace.getActiveGraph());
@@ -117,6 +122,10 @@ public class AttributeLog {
 	
     public IndexableAttribute getAttribute() {
         return this.attribute;
+    }
+    
+    public CalendarModel getCalendarModel() {
+        return this.calendarModel;
     }
 	
     // Change the perspective attribute of this log without having to recreate a new AttributeLog
@@ -196,7 +205,7 @@ public class AttributeLog {
                     }
                 }
                 else {
-                    throw new InvalidAttributeLogStatusUpdateException("Invalid update of AttributeTrace at traceIndex=" + i + 
+                    throw new InvalidAttributeLogStatusUpdateException("Invalid update of AttributeTrace at traceIndex=" + i +
                                                                     ", traceId=" + trace.getTraceId() +
                                                                     ": different bitset size");
                 }
@@ -216,7 +225,7 @@ public class AttributeLog {
 	
     public ALog getFullLog() {
         return fullLog;
-    }	
+    }
     
     public long getOriginalNumberOfEvents() {
         return originalTraces.sumOfLong(trace -> trace.getOriginalValueTrace().size()-2);
@@ -269,7 +278,7 @@ public class AttributeLog {
     
     public int getEndEvent() {
         return attribute.getArtificialEndIndex();
-    }	
+    }
 	
 	public boolean isArtificialStart(int value) {
 	    return (value == attribute.getMatrixGraph().getSource());
@@ -328,14 +337,14 @@ public class AttributeLog {
         }
         DescriptiveStatistics traceDurationStats = new DescriptiveStatistics(caseDurations.toArray());
         return new AttributeLogSummary(
-                            fullLog.getOriginalNumberOfEvents(), 
-                            this.getOriginalAttributeValues().size()-2, 
-                            this.getOriginalTraces().size(), 
+                            fullLog.getOriginalNumberOfEvents(),
+                            this.getOriginalAttributeValues().size()-2,
+                            this.getOriginalTraces().size(),
                             variantView.getOriginalVariants().size(),
-                            startTime, endTime, 
-                            traceDurationStats.getMin(), 
-                            traceDurationStats.getMax(), 
-                            traceDurationStats.getMean(), 
+                            startTime, endTime,
+                            traceDurationStats.getMin(),
+                            traceDurationStats.getMax(),
+                            traceDurationStats.getMean(),
                             traceDurationStats.getPercentile(50));
     }
     
@@ -352,14 +361,14 @@ public class AttributeLog {
         }
         DescriptiveStatistics traceDurationStats = new DescriptiveStatistics(caseDurations.toArray());
         return new AttributeLogSummary(
-                            fullLog.getNumberOfEvents(), 
-                            this.getAttributeValues().size()-2, 
-                            this.getTraces().size(), 
+                            fullLog.getNumberOfEvents(),
+                            this.getAttributeValues().size()-2,
+                            this.getTraces().size(),
                             variantView.getActiveVariants().size(),
-                            startTime, endTime, 
-                            traceDurationStats.getMin(), 
-                            traceDurationStats.getMax(), 
-                            traceDurationStats.getMean(), 
+                            startTime, endTime,
+                            traceDurationStats.getMin(),
+                            traceDurationStats.getMax(),
+                            traceDurationStats.getMean(),
                             traceDurationStats.getPercentile(50));
     }
     
@@ -370,8 +379,8 @@ public class AttributeLog {
             IntList variant = getVariantFromTraceIndex(i);
             cases.add(new CaseInfo(
                     this.getTraceFromIndex(i).getTraceId(),
-                    variant.size()-2, 
-                    variantView.getActiveVariants().getRankOf(variant), 
+                    variant.size()-2,
+                    variantView.getActiveVariants().getRankOf(variant),
                     variantView.getActiveVariants().getVariantRelativeFrequency(variant)));
         }
         return cases;
