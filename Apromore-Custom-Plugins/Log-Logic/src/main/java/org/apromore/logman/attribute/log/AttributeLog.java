@@ -33,7 +33,6 @@ import org.apromore.logman.LogBitMap;
 import org.apromore.logman.attribute.IndexableAttribute;
 import org.apromore.logman.attribute.exception.InvalidAttributeLogStatusUpdateException;
 import org.apromore.logman.attribute.graph.AttributeLogGraph;
-import org.apromore.logman.attribute.log.variants.AttributeTraceVariants;
 import org.eclipse.collections.api.list.ListIterable;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.list.primitive.IntList;
@@ -312,10 +311,6 @@ public class AttributeLog {
         return originalTraceIdMap.get(traceId);
     }
     
-    
-    private AttributeTraceVariants getVariants() {
-        return variantView.getActiveVariants();
-    }
     
     private IntList getVariantFromTraceIndex(int traceIndex) {
         return activeTraces.get(traceIndex).getValueTrace();

@@ -276,24 +276,12 @@ public class AttributeLogGraph extends WeightedAttributeGraph {
         nodeCaseFreqs.put(node, nodeCaseFreqs.getIfAbsentPut(node, 0) + (nodeCaseCount>0 ? 1 : 0));
     }
     
-    private void incrementNodeTotalDuration(int node, double nodeTotalDuration) {
-        nodeTotalDurs.put(node, nodeTotalDurs.getIfAbsentPut(node, 0) + nodeTotalDuration);
-    }
-    
     private void updateNodeMinFrequency(int node, double nodeCount) {
         nodeMinFreqs.put(node, Math.min(nodeMinFreqs.getIfAbsentPut(node, Double.MAX_VALUE), nodeCount));
     }
     
     private void updateNodeMaxFrequency(int node, double nodeCount) {
         nodeMaxFreqs.put(node, Math.max(nodeMaxFreqs.getIfAbsentPut(node, 0), nodeCount));
-    }
-    
-    private void updateNodeMinDuration(int node, double nodeDuration) {
-        nodeMinDurs.put(node, Math.min(nodeMinDurs.getIfAbsentPut(node, Double.MAX_VALUE), nodeDuration));
-    }
-    
-    private void updateNodeMaxDuration(int node, double nodeDuration) {
-        nodeMaxDurs.put(node, Math.max(nodeMaxDurs.getIfAbsentPut(node, 0), nodeDuration));
     }
     
     private void collectNodeFrequency(int node, double nodeFreq) {
@@ -315,24 +303,12 @@ public class AttributeLogGraph extends WeightedAttributeGraph {
         arcCaseFreqs.put(arc, arcCaseFreqs.getIfAbsentPut(arc, 0) + (arcCaseCount>0 ? 1 : 0));
     }
     
-    private void incrementArcTotalDuration(int arc, double arcTotalDuration) {
-        arcTotalDurs.put(arc, arcTotalDurs.getIfAbsentPut(arc, 0) + arcTotalDuration);
-    }
-    
     private void updateArcMinFrequency(int arc, double arcCount) {
         arcMinFreqs.put(arc, Math.min(arcMinFreqs.getIfAbsentPut(arc, Double.MAX_VALUE), arcCount));
     }
     
     private void updateArcMaxFrequency(int arc, double arcCount) {
         arcMaxFreqs.put(arc, Math.max(arcMaxFreqs.getIfAbsentPut(arc, 0), arcCount));
-    }
-    
-    private void updateArcMinDuration(int arc, double arcDuration) {
-        arcMinDurs.put(arc, Math.min(arcMinDurs.getIfAbsentPut(arc, Double.MAX_VALUE), arcDuration));
-    }
-    
-    private void updateArcMaxDuration(int arc, double arcDuration) {
-        arcMaxDurs.put(arc, Math.max(arcMaxDurs.getIfAbsentPut(arc, 0), arcDuration));
     }
     
     private void collectArcFrequency(int arc, double arcFreq) {
