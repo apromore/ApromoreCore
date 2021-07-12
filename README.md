@@ -28,7 +28,7 @@ If you are looking for the commercial edition (Apromore Enterprise Edition), che
 * Execute `mvn clean install` to compile the source code into executable bundles.
 * Execute `core-assemblies/apromore-core/target/assembly/bin/karaf` to start the server.
   <b>Note:</b> If you deploy to port 80 (or another port below 1024), you will need to run the previous command as sudo.
-* Browse [(http://localhost:9000/)](http://localhost:8181/). Login as an administrator by using the following credentials: username - "admin" and password - "password". You can also create a new account. Once logged in, a user can change their password via `Account -> Change password` menu.
+* Browse [(http://localhost:8181/)](http://localhost:8181/). Login as an administrator by using the following credentials: username - "admin" and password - "password". You can also create a new account. Once logged in, a user can change their password via `Account -> Change password` menu.
 * Keep the prompt/terminal window open. Ctrl-D on the window will shut the server down.
 
 
