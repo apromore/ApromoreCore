@@ -680,6 +680,13 @@ div.ap-pd-drawer-splitter:hover {
     align-items: center;
 }
 
+.ap-pd-logstats-header .title,
+.ap-pd-timestats-header .title {
+    width: 120px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 
 /* Duration */
 

@@ -26,8 +26,8 @@
   <listbox id="perspectiveDetailsList" rows="10" vflex="1">
     <listhead sizable="true">
       <listheader id="perspectiveDetailName" label="Value" width="45%" sort="auto(value)"/>
-      <listheader label="Activity instances" width="20%" sort="auto(occurrences)"/>
-      <listheader label="Percentage (%)" width="20%" sort="auto(freq)"/>
+      <listheader label="${arg.pdLabels.detailsActivityInstances_text}" width="20%" sort="auto(occurrences)"/>
+      <listheader label="${arg.pdLabels.detailsPercentage_text}" width="20%" sort="auto(freq)"/>
     </listhead>
     <template name="model">
       <listitem>

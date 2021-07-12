@@ -45,6 +45,7 @@ import org.apromore.portal.exception.ExceptionFormats;
 import org.apromore.portal.util.ExplicitComparator;
 import org.slf4j.Logger;
 import org.zkoss.spring.SpringUtil;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -99,27 +100,30 @@ public class MenuController extends SelectorComposer<Menubar> {
                     continue;
                 }
 
+                String group = plugin.getGroup(Locale.getDefault());
                 String menuName = plugin.getGroupLabel(Locale.getDefault());
-
-                if (menuName == "Settings") {
+                String itemCode = plugin.getItemCode(Locale.getDefault());
+                if (group == "Settings") {
                     continue;
                 }
                 // Create a new menu if this is the first menu item within it
-                if (!menuMap.containsKey(menuName)) {
+                if (!menuMap.containsKey(group)) {
                     Menu menu = new Menu(menuName);
+                    menu.setClientDataAttribute("group", group);
                     menu.appendChild(new Menupopup());
-                    menuMap.put(menuName, menu);
+                    menuMap.put(group, menu);
                 }
-                assert menuMap.containsKey(menuName);
+                assert menuMap.containsKey(group);
 
                 // Create the menu item
-                Menu menu = menuMap.get(menuName);
+                Menu menu = menuMap.get(group);
                 Menuitem menuitem = new Menuitem();
                 if (plugin.getResourceAsStream(plugin.getIconPath()) != null) {
                     try {
+                        menuitem.setClientDataAttribute("itemCode", itemCode);
                         menuitem.setImage("portalPluginResource/"
-                            + URLEncoder.encode(plugin.getGroupLabel(Locale.getDefault()), "utf-8") + "/"
-                            + URLEncoder.encode(plugin.getLabel(Locale.getDefault()), "utf-8") + "/"
+                            + URLEncoder.encode(group, "utf-8") + "/"
+                            + URLEncoder.encode(itemCode, "utf-8") + "/"
                             + plugin.getIconPath());
 
                     } catch (UnsupportedEncodingException e) {
@@ -139,11 +143,11 @@ public class MenuController extends SelectorComposer<Menubar> {
                     }
                 });
 
-                if ("About".equals(menu.getLabel())) {
+                if ("About".equals(menu.getClientDataAttribute("group"))) {
                     aboutMenuitem = menuitem;
                     continue;
                 }
-                if ("Create folder".equals(menuitem.getLabel())) {
+                if ("Create folder".equals(menuitem.getClientDataAttribute("itemCode"))) {
                     targetMenuitem = menuitem;
                 }
 
@@ -152,7 +156,7 @@ public class MenuController extends SelectorComposer<Menubar> {
                 Menuitem precedingMenuitem = null;
                 List<Menuitem> existingMenuitems = menu.getMenupopup().getChildren();
                 for (Menuitem existingMenuitem: existingMenuitems) {
-                    int comparison = "File".equals(menuName) && (fileMenuitemOrdering != null)
+                    int comparison = "File".equals(group) && (fileMenuitemOrdering != null)
                         ? fileMenuitemOrdering.compare(menuitem.getLabel(), existingMenuitem.getLabel())
                         : menuitem.getLabel().compareTo(existingMenuitem.getLabel());
 
@@ -167,17 +171,17 @@ public class MenuController extends SelectorComposer<Menubar> {
 
             // Add the menus to the menu bar
             for (final Menu menu: menuMap.values()) {
-                if (!"Account".equals(menu.getLabel()) &&
-                    !"About".equals(menu.getLabel())) {
+                if (!"Account".equals(menu.getClientDataAttribute("group")) &&
+                    !"About".equals(menu.getClientDataAttribute("group"))) {
                     menubar.appendChild(menu);
                 }
             }
 
             for (final Menu menu: menuMap.values()) {
-                if ("Account".equals(menu.getLabel())) {
+                if ("Account".equals(menu.getClientDataAttribute("group"))) {
                     // ignore; belongs to the user menu
 
-                } else if ("File".equals(menu.getLabel())) {
+                } else if ("File".equals(menu.getClientDataAttribute("group"))) {
                     try {
                         Menupopup fileMenupopup = menu.getMenupopup();
 
@@ -185,7 +189,7 @@ public class MenuController extends SelectorComposer<Menubar> {
                         fileMenupopup.insertBefore(sep, targetMenuitem);
 
                         Menuitem item = new Menuitem();
-                        item.setLabel("Cut");
+                        item.setLabel(Labels.getLabel("common_cut_text"));
                         item.setImage("/themes/ap/common/img/icons/cut.svg");
                         item.addEventListener("onClick", new EventListener<Event>() {
                             @Override
@@ -196,7 +200,7 @@ public class MenuController extends SelectorComposer<Menubar> {
                         fileMenupopup.insertBefore(item, targetMenuitem);
 
                         item = new Menuitem();
-                        item.setLabel("Copy");
+                        item.setLabel(Labels.getLabel("common_copy_text"));
                         item.setImage("/themes/ap/common/img/icons/copy.svg");
                         item.addEventListener("onClick", new EventListener<Event>() {
                             @Override
@@ -207,7 +211,7 @@ public class MenuController extends SelectorComposer<Menubar> {
                         fileMenupopup.insertBefore(item, targetMenuitem);
 
                         item = new Menuitem();
-                        item.setLabel("Paste");
+                        item.setLabel(Labels.getLabel("common_paste_text"));
                         item.setImage("/themes/ap/common/img/icons/paste.svg");
                         item.addEventListener("onClick", new EventListener<Event>() {
                             @Override

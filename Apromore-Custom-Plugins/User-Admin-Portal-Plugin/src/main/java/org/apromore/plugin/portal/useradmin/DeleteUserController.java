@@ -22,13 +22,11 @@
 package org.apromore.plugin.portal.useradmin;
 
 // import java.util.stream.Collectors;
-import java.util.Comparator;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Set;
+import java.text.MessageFormat;
+import java.util.*;
+
 import org.slf4j.Logger;
+import org.zkoss.web.Attributes;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.*;
@@ -125,6 +123,18 @@ public class DeleteUserController extends SelectorComposer<Window> {
         pullArgs();
     }
 
+    public ResourceBundle getLabels() {
+        // Locale locale = Locales.getCurrent()
+        Locale locale = (Locale) Sessions.getCurrent().getAttribute(Attributes.PREFERRED_LOCALE);
+        return ResourceBundle.getBundle("metainfo.zk-label",
+            locale,
+            UserAdminController.class.getClassLoader());
+    }
+
+    public String getLabel(String key) {
+        return getLabels().getString(key);
+    }
+
     private void pullArgs() throws Exception {
         Map<String, Object> argMap = (Map<String, Object>) Executions.getCurrent().getArg();
         selectedUser = (User) argMap.get("selectedUser");
@@ -146,9 +156,8 @@ public class DeleteUserController extends SelectorComposer<Window> {
         if(!workspaceService.canDeleteOwnerlessFolder(selectedUser)){
             deleteOptionPurge.setDisabled(true);
 
-            Messagebox.show("The delete assets option has been disabled because [" + selectedUser.getUsername() +
-                    "] owns a folder that contains at least one asset co-owned by another user.",
-                    "Attention", Messagebox.OK, Messagebox.INFORMATION);
+            Messagebox.show(MessageFormat.format(getLabel("cantDeleteCoOwned_message"),selectedUser.getUsername()),
+                    "Apromore", Messagebox.OK, Messagebox.INFORMATION);
         }
     }
 
@@ -273,13 +282,13 @@ public class DeleteUserController extends SelectorComposer<Window> {
             String userName = transferToTextbox.getValue();
             User user = transferToUserMap.get(userName);
             if (user == null) {
-                Notification.error("There is no such user or group name");
+                Notification.error(getLabel("noTargetUser_message"));
             }
             return user;
         } else {
             Set<User> users = transferToModel.getSelection();
             if (users == null || users.size() != 1) {
-                Notification.error("No target user is specified");
+                Notification.error(getLabel("noSuchUserOrGroup_message"));
                 return null;
             }
             return users.iterator().next();
@@ -293,29 +302,33 @@ public class DeleteUserController extends SelectorComposer<Window> {
             return;
         }
         if (selectedUser.equals(targetUser)) {
-            Notification.error("You can not transfer to the user being deleted");
+            Notification.error(getLabel("noTransferToDeleted_message"));
             return;
         }
         try {
             workspaceService.transferOwnership(selectedUser, targetUser);
-            Notification.info("Transfer ownership is successfully applied");
+            Notification.info(getLabel("successTransferOwner_message"));
             EventQueues.lookup(EventQueueTypes.TRANSFER_OWNERSHIP, EventQueues.DESKTOP, true)
                 .publish(new Event(EventQueueEvents.ON_TRANSFERRED, null, selectedUser));
         } catch(Exception e) {
             LOGGER.error("Failed to transfer ownership", e);
-            Notification.error("An error occurred while trying to transfer ownership");
+            Notification.error(getLabel("failedTransferOwner_message"));
         }
     }
 
     private void purgeOwnedAssets() {
         try {
+
+
             workspaceService.deleteOwnerlessArtifact(selectedUser);
-            Notification.info("All items owned by the deleted user are successfully deleted");
+            Notification.info(getLabel("successDeleteAll_message"));
             EventQueues.lookup(EventQueueTypes.PURGE_ASSETS, EventQueues.DESKTOP, true)
                 .publish(new Event(EventQueueEvents.ON_PURGED, null, selectedUser));
         } catch(Exception e) {
             LOGGER.error("Failed to purge assets", e);
-            Notification.error("An error occurred while trying to delete all assets owned by " + selectedUser.getUsername());
+            Notification.error(
+                MessageFormat.format(getLabel("failedDeleteAll_message"), selectedUser.getUsername())
+            );
         }
     }
 

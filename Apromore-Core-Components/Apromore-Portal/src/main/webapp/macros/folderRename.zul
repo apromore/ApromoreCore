@@ -34,14 +34,14 @@ and CreateProcessController.java for creating process purpose.
                 <column width="70%"></column>
             </columns>
             <rows>
-                <row tooltiptext="Enter folder name.">
-                    <label value="Folder name" width="100%"/>
-                    <textbox id="txtName" width="100%" constraint="${labels.e.common.nameConstraint.text}" submitByEnter="true" />
+                <row tooltiptext="${labels.common_folderName_hint}">
+                    <label value="${labels.common_folderName_text}" width="100%"/>
+                    <textbox id="txtName" width="100%" constraint="${labels.common_nameConstraint_text}" submitByEnter="true" />
                 </row>
                 <row spans="3" sclass="ap-window-footer-actions">
                     <div align="center">
-                        <button id="btnSave" label="OK" iconSclass="z-icon-check-circle" width="85px"></button>
-                        <button id="btnCancel" label="Cancel" iconSclass="z-icon-times-circle" width="85px" ></button>
+                        <button id="btnSave" label="${labels.common_ok_text}" iconSclass="z-icon-check-circle"></button>
+                        <button id="btnCancel" label="${labels.common_cancel_text}" iconSclass="z-icon-times-circle"></button>
                     </div>
                 </row>
             </rows>

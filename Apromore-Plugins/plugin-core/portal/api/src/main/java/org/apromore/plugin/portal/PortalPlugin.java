@@ -52,6 +52,8 @@ public interface PortalPlugin extends ParameterAwarePlugin {
      */
     String getLabel(Locale locale);
 
+    String getItemCode(Locale locale);
+
     /**
      * Icon for the plug-in.
      *
@@ -75,6 +77,15 @@ public interface PortalPlugin extends ParameterAwarePlugin {
      * @return
      */
     String getGroupLabel(Locale locale);
+
+    /**
+     * Logical group of plug-ins this one belongs to.
+     *
+     * This is used for the menu.
+     *
+     * @return
+     */
+    String getGroup(Locale locale);
 
     void setSimpleParams(Map params);
     Map getSimpleParams();

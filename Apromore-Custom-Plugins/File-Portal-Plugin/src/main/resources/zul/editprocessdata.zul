@@ -27,7 +27,7 @@ for editing purpose
 and CreateProcessController.java for creating process purpose.
 -->
 <zk xmlns:h="native">
-    <window width="500px" closable="false" position="center" title="Rename process model" mode="modal">
+    <window width="500px" closable="false" position="center" title="${labels.file_renameModel_text}" mode="modal">
         <vbox height="100%" spacing="0">
             <grid sclass="ap-grid ap-form" height="100%">
                 <columns sizable="true">
@@ -35,9 +35,9 @@ and CreateProcessController.java for creating process purpose.
                     <column width="70%"></column>
                 </columns>
                 <rows>
-                    <row tooltiptext="Model name modification will be applied on all process versions.">
-                        <label value="Model name" width="100%"/>
-                        <textbox width="100%" constraint="${labels.e.common.nameConstraint.text}"  />
+                    <row tooltiptext="${labels.common_modelName_hint}">
+                        <label value="${labels.common_modelName_text}" width="100%"/>
+                        <textbox width="100%" constraint="${labels.common_nameConstraint_text}"  />
                     </row>
                     <row visible="false">
                         <label value="Version number*" width="100%"/>
@@ -65,20 +65,20 @@ and CreateProcessController.java for creating process purpose.
                             <radio label="uncheck all"/>
                         </radiogroup>
                     </row>
-                    <!--<row id="makePublic" visible="${labels.publish.enable}">-->
+                    <!--<row id="makePublic" visible="${labels.publish_enable}">-->
                     <row id="makePublic" visible="false">
-                        <label value="Make model Public"/>
-                        <checkbox checked="false" tooltiptext="Tick this checkbox if you wish to make this Process available to all Users"/>
+                        <label value="${labels.file_makeModelPublic_text}"/>
+                        <checkbox checked="false" tooltiptext="${labels.file_makeModelPublic_hint}"/>
                     </row>
                     <row spans="3" sclass="ap-footnotes" visible="false">
                         <label value="* mandatory fields" />
                     </row>
                     <row spans="3" sclass="ap-window-footer-actions">
                         <div align="right">
-                            <button id="okButton" label="OK" iconSclass="z-icon-check-circle" width="85px" />
-                            <button id="cancelButton" label="Cancel" iconSclass="z-icon-times-circle" width="85px" />
-                            <button id="cancelAllButton" label="Cancel all" iconSclass="z-icon-times-circle" width="85px" visible="false" tooltiptext="Cancel edit of all remaining process models." />
-                            <button id="resetButton" label="Reset" iconSclass="z-icon-undo" width="85px" tooltiptext="Restore initial values." />
+                            <button id="okButton"        label="${labels.common_ok_text}"         iconSclass="z-icon-check-circle" />
+                            <button id="cancelButton"    label="${labels.common_cancel_text}"     iconSclass="z-icon-times-circle" />
+                            <button id="cancelAllButton" label="Cancel all" iconSclass="z-icon-times-circle" visible="false" tooltiptext="Cancel edit of all remaining process models." />
+                            <button id="resetButton"     label="${labels.common_reset_text}"      iconSclass="z-icon-undo"         tooltiptext="${labels.common_reset_hint}" />
                         </div>
                     </row>
                 </rows>

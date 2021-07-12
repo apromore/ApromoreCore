@@ -22,15 +22,12 @@
 
 package org.apromore.plugin.portal.processdiscoverer.plugins;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.processdiscoverer.PDController;
 import org.apromore.plugin.portal.processdiscoverer.impl.factory.PDCustomFactory;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.common.UserSessionManager;
@@ -41,6 +38,8 @@ import org.apromore.portal.model.LogSummaryType;
 import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.VersionSummaryType;
+import org.zkoss.web.Attributes;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Messagebox;
 
 public class PDAbstractPlugin extends DefaultPortalPlugin {
@@ -72,16 +71,30 @@ public class PDAbstractPlugin extends DefaultPortalPlugin {
     	
     }
 
+    public ResourceBundle getLabels() {
+        return ResourceBundle.getBundle("metainfo.zk-label",
+            (Locale) Sessions.getCurrent().getAttribute(Attributes.PREFERRED_LOCALE),
+            PDController.class.getClassLoader());
+    }
+
+    public String getLabel(String key) {
+        String label = getLabels().getString(key);
+        if (label == null) {
+            label = "";
+        }
+        return label;
+    }
+
     protected boolean prepare(PortalContext context, MeasureType visType) {
         try {
             Map<SummaryType, List<VersionSummaryType>> elements = context.getSelection().getSelectedProcessModelVersions();
             if (elements.size() != 1) {
-                Messagebox.show("Please select exactly one log!", "Wrong Log Selection", Messagebox.OK, Messagebox.INFORMATION);
+                Messagebox.show(getLabel("selectOneLog_message"), "Apromore", Messagebox.OK, Messagebox.INFORMATION);
                 return false;
             }
             SummaryType selection = elements.keySet().iterator().next();
             if (!(selection instanceof LogSummaryType)) {
-            	Messagebox.show("Please select a log!", "Wrong Selection", Messagebox.OK, Messagebox.INFORMATION);
+            	Messagebox.show(getLabel("selectALog_message"), "Apromore", Messagebox.OK, Messagebox.INFORMATION);
                 return false;
             }
         	

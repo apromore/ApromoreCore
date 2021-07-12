@@ -27,12 +27,12 @@
     <hbox sclass="ap-portal-menu-actions" hflex="1" height="32px">
       <hbox sclass="ap-portal-action-buttons" align="start" pack="start" spacing="0"
             style="margin-left: 10px;">
-        <button id="userAddBtn" sclass="ap-icon ap-icon-user-add" tooltiptext="Create new user"/>
-        <button id="userEditBtn" visible="false" sclass="ap-icon ap-icon-user-edit" tooltiptext="Edit user"/>
-        <button id="userRemoveBtn" sclass="ap-icon ap-icon-user-remove" tooltiptext="Remove user"/>
+        <button id="userAddBtn" sclass="ap-icon ap-icon-user-add" tooltiptext="${$composer.labels.createUser_text}"/>
+        <button id="userEditBtn" visible="false" sclass="ap-icon ap-icon-user-edit" tooltiptext="${$composer.labels.editUser_text}"/>
+        <button id="userRemoveBtn" sclass="ap-icon ap-icon-user-remove" tooltiptext="${$composer.labels.removeUser_text}"/>
         <h:span class="ap-action-sep"></h:span>
-        <button id="userSelectAllBtn" sclass="ap-icon ap-icon-select-all" tooltiptext="Select all"/>
-        <button id="userSelectNoneBtn" sclass="ap-icon ap-icon-select-none" tooltiptext="Select none"/>
+        <button id="userSelectAllBtn" sclass="ap-icon ap-icon-select-all" tooltiptext="${labels.common_selectAll_text}"/>
+        <button id="userSelectNoneBtn" sclass="ap-icon ap-icon-select-none" tooltiptext="${labels.common_selectNone_text}"/>
       </hbox>
     </hbox>
     <userListboxComp/>
@@ -48,21 +48,21 @@
       </columns>
       <rows>
         <row>
-          <label value="First name"/>
+          <label value="${$composer.labels.firstName_text}"/>
           <hbox>
-            <textbox id="firstNameTextbox" placeholder="Enter first name" width="200px"/>
+            <textbox id="firstNameTextbox" placeholder="${$composer.labels.firstName_hint}" width="200px"/>
           </hbox>
         </row>
         <row>
-          <label value="Last name"/>
+          <label value="${$composer.labels.lastName_text}"/>
           <hbox>
-            <textbox id="lastNameTextbox" placeholder="Enter last name" width="200px"/>
+            <textbox id="lastNameTextbox" placeholder="${$composer.labels.lastName_hint}" width="200px"/>
           </hbox>
         </row>
         <row>
           <div>
-            <label value="Date created"/>/
-            <label value="Last activity"/>
+            <label value="${$composer.labels.dateCreated_text}"/>/
+            <label value="${$composer.labels.lastActivity_text}"/>
           </div>
           <hbox>
             <datebox id="dateCreatedDatebox" disabled="true" readonly="true" width="200px"/>
@@ -70,16 +70,18 @@
           </hbox>
         </row>
         <row>
-          <label value="Email"/>
+          <label value="${$composer.labels.email_text}"/>
           <hbox>
-            <textbox id="emailTextbox" ca:autocomplete="new-password" placeholder="Enter email" width="200px"/>
+            <textbox id="emailTextbox" ca:autocomplete="new-password" placeholder="${$composer.labels.email_hint}" width="200px"/>
           </hbox>
         </row>
         <row>
-          <label value="New password"/>
+          <label value="${$composer.labels.newPassword_text}"/>
           <hbox>
-            <textbox id="passwordTextbox" ca:autocomplete="new-password" type="password" placeholder="Enter password" width="200px"/>
-            <textbox id="confirmPasswordTextbox" ca:autocomplete="new-password" type="password" placeholder="Confirm password"
+            <textbox id="passwordTextbox" ca:autocomplete="new-password" type="password"
+                     placeholder="${$composer.labels.newPassword_hint}" width="200px"/>
+            <textbox id="confirmPasswordTextbox" ca:autocomplete="new-password" type="password"
+                     placeholder="${$composer.labels.confirmNewPassword_hint}"
                      width="200px"/>
           </hbox>
         </row>
@@ -123,11 +125,11 @@
           </auxheader>
         </auxhead>
       </listbox>-->
-      <tristateListboxComp id="assignedRoleListbox" title="Assigned Roles"/>
-      <tristateListboxComp id="assignedGroupListbox" title="Assigned Groups"/>
+      <tristateListboxComp id="assignedRoleListbox" title="${$composer.labels.assignedRoles_text}"/>
+      <tristateListboxComp id="assignedGroupListbox" title="${$composer.labels.assignedGroups_text}"/>
     </hbox>
     <div align="right" style="padding: 0 8px 8px 8px" height="35px" hflex="1">
-      <button id="userSaveBtn" label="Save" iconSclass="z-icon-check-circle"/>
+      <button id="userSaveBtn" label="${labels.common_save_text}" iconSclass="z-icon-check-circle"/>
     </div>
   </vbox>
 </hbox>

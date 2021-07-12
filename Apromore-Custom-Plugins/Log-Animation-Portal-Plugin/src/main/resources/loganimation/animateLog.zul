@@ -90,7 +90,7 @@
         <n:script src="/${arg.editor}/libs/ext-2.0.2/ext-all.js" type="text/javascript"/>
         <n:script src="/${arg.editor}/libs/ext-2.0.2/color-field.js" type="text/javascript"/>
         <n:script src="/${arg.editor}/libs/iscroll.js" type="text/javascript"/>
-        <n:script src="/${arg.editor}/editor/i18n/translation_en_us.js" type="text/javascript"/>
+        <n:script src="/${arg.editor}/editor/i18n/translation_en.js" type="text/javascript"/>
         <n:script src="/${arg.editor}/editor/apromore-editor.js" type="text/javascript"/>
 
         <n:script src="/loganimation/js/jquery-1.10.2.min.js" type="text/javascript"/>
@@ -119,7 +119,7 @@
                   // Wait for SVG element ready, so jQuery can refer to it
                   window.setTimeout(function() {
                     Ap.la.session.initController();
-                    document.title = '${labels.brand.shortName} - Log Animator';
+                    document.title = '${labels.brand_shortName} - Log Animator';
                   }, 1000);
                 })
 	            ]]>

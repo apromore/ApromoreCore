@@ -28,7 +28,7 @@
         sclass="ap-usrmgt-win"
         width="90%" height="90%" position="center"
         closable="true"
-        title="User and group management" apply="org.apromore.plugin.portal.useradmin.UserAdminController">
+        title="${labels.usrMgt_title_text}" apply="org.apromore.plugin.portal.useradmin.UserAdminController">
   <caption>
     <toolbarbutton iconSclass="ap-icon ap-icon-help" href="https://documentation.apromore.org/theapromoreportal/manageusersandgroups.html" target="_blank" />
   </caption>
@@ -39,8 +39,8 @@
   <vbox vflex="1" hflex="1" spacing="0">
     <tabbox id="tabbox" vflex="1" hflex="1" sclass="ap-usrmgt-tabbox" style="border: none;">
       <tabs id="tabs" vflex="1" hflex="1">
-        <tab label="Users" id="userTab" />
-        <tab label="Groups" id="groupTab" />
+        <tab label="${$composer.labels.users_text}" id="userTab" />
+        <tab label="${$composer.labels.groups_text}" id="groupTab" />
       </tabs>
       <tabpanels vflex="1" hflex="1">
         <tabpanel vflex="1" hflex="1" style="padding: 0;">
@@ -52,7 +52,7 @@
       </tabpanels>
     </tabbox>
     <div sclass="ap-window-footer-actions" visible="false">
-      <button id="okBtn" label="OK" iconSclass="z-icon-check-circle"/>
+      <button id="okBtn" label="${labels.common_ok_text}" iconSclass="z-icon-check-circle"/>
     </div>
   </vbox>
 </window>

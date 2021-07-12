@@ -21,9 +21,9 @@
   #L%
   -->
 
-<listbox id="processVersionsListbox" hflex="true" checkmark="false" span="true" emptyMessage="Select one model or log" sclass="ap-process-detail">
+<listbox id="processVersionsListbox" hflex="true" checkmark="false" span="true" emptyMessage="${labels.portal_detailsTitle_hint}" sclass="ap-process-detail">
     <listhead sizable="true">
-        <listheader hflex="min" label="Version" align="center" sort="auto(version.name)"/>
-        <listheader hflex="min" label="Last update" align="center" sort="auto(version.lastUpdate)"/>
+        <listheader hflex="min" label="${labels.portal_detailsVersion_text}" align="center" sort="auto(version.name)"/>
+        <listheader hflex="min" label="${labels.common_lastUpdated_text}" align="center" sort="auto(version.lastUpdate)"/>
     </listhead>
 </listbox>

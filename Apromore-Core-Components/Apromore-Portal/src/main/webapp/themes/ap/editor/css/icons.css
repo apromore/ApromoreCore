@@ -20,59 +20,62 @@
  * #L%
  */
 
+.x-panel-editor-north .x-toolbar button {
+    width: 26px !important;
+}
 
 .x-panel-editor-north .x-toolbar button[title='Save'] {
-    background-image: url('../../common/img/icons/save.svg') !important;
+    /* background-image: url('../../common/img/icons/save.svg') !important; */
     width: 25.0625px !important;
 }
 
 .x-panel-editor-north .x-toolbar button[title='Save a copy...'] {
-    background-image: url('../../common/img/icons/save-as.svg') !important;
+    /* background-image: url('../../common/img/icons/save-as.svg') !important; */
     width: 26px !important;
 }
 
 .x-panel-editor-north .x-toolbar button[title='Zoom into the model'] {
-    background-image: url('../../common/img/icons/zoom-in.svg') !important;
+    /* background-image: url('../../common/img/icons/zoom-in.svg') !important; */
     width: 26px !important;
 }
 
 .x-panel-editor-north .x-toolbar button[title='Zoom out of the model'] {
-    background-image: url('../../common/img/icons/zoom-out.svg') !important;
+    /* background-image: url('../../common/img/icons/zoom-out.svg') !important; */
     width: 26px !important;
 }
 
 .x-panel-editor-north .x-toolbar button[title='Zoom to fit the model size'] {
-    background-image: url('../../common/img/icons/zoom-to-fit.svg') !important;
+    /* background-image: url('../../common/img/icons/zoom-to-fit.svg') !important; */
     width: 26px !important;
 }
 
 .x-panel-editor-north .x-toolbar button[title='Undo the last action'] {
-    background-image: url('../../common/img/icons/undo.svg') !important;
+    /* background-image: url('../../common/img/icons/undo.svg') !important; */
     width: 26px !important;
 }
 
 .x-panel-editor-north .x-toolbar button[title='Toggle simulation parameters panel'] {
-    background-image: url('../../common/img/icons/simulate-model.svg') !important;
+    /* background-image: url('../../common/img/icons/simulate-model.svg') !important; */
     width: 26px !important;
 }
 
 .x-panel-editor-north .x-toolbar button[title='Redo the last undone action'] {
-    background-image: url('../../common/img/icons/redo.svg') !important;
+    /* background-image: url('../../common/img/icons/redo.svg') !important; */
     width: 26px !important;
 }
 
 .x-panel-editor-north .x-toolbar button[title='Download as SVG'] {
-    background-image: url('../../common/img/icons/export-svg.svg') !important;
+    /* background-image: url('../../common/img/icons/export-svg.svg') !important; */
     width: 26px !important;
 }
 
 .x-panel-editor-north .x-toolbar button[title='Download as BPMN'] {
-    background-image: url('../../common/img/icons/export-bpmn.svg') !important;
+    /* background-image: url('../../common/img/icons/export-bpmn.svg') !important; */
     width: 26px !important;
 }
 
 .x-panel-editor-north .x-toolbar button[title='Download as PDF'] {
-    background-image: url('../../common/img/icons/export-pdf.svg') !important;
+    /* background-image: url('../../common/img/icons/export-pdf.svg') !important; */
     width: 26px !important;
 }
 
@@ -82,7 +85,7 @@
 }
 
 .x-panel-editor-north .x-toolbar button[title='Share the model'] {
-    background-image: url('../../common/img/icons/share.svg') !important;
+    /* background-image: url('../../common/img/icons/share.svg') !important; */
     width: 26px !important;
 }
 

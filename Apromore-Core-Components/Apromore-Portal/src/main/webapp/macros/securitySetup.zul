@@ -40,7 +40,7 @@
         }
     </style>
     <borderlayout hflex="1" vflex="1">
-        <west sclass="ap-security-setup-title" title="My Workspace" collapsible="true" splittable="true" vflex="1" width="30%" border="none">
+        <west sclass="ap-security-setup-title" title="${labels.portal_workspace_text}" collapsible="true" splittable="true" vflex="1" width="30%" border="none">
             <FolderTree id="mainTree"/>
         </west>
         <center hflex="1" vflex="1" border="none">

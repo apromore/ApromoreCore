@@ -42,6 +42,7 @@ import org.apromore.util.AccessType;
 import org.apromore.util.UserMetadataTypeEnum;
 import org.slf4j.Logger;
 import org.zkoss.json.JSONObject;
+import org.zkoss.web.Attributes;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.EventListener;
@@ -176,6 +177,18 @@ public class AccessController extends SelectorComposer<Div> {
         }
     }
 
+    public ResourceBundle getLabels() {
+        // Locale locale = Locales.getCurrent()
+        Locale locale = (Locale) Sessions.getCurrent().getAttribute(Attributes.PREFERRED_LOCALE);
+        return ResourceBundle.getBundle("metainfo.zk-label",
+            locale,
+            AccessController.class.getClassLoader());
+    }
+
+    public String getLabel(String key) {
+        return getLabels().getString(key);
+    }
+
     @Override
     public void doAfterCompose(Div div) throws Exception {
         super.doAfterCompose(div);
@@ -198,7 +211,7 @@ public class AccessController extends SelectorComposer<Div> {
                     updateAssignment(rowGuid, access);
                 } catch(Exception e) {
                     LOGGER.error("Something is wrong in updating access");
-                    Messagebox.show("Unable to update permission", "Apromore", Messagebox.OK, Messagebox.ERROR);
+                    Messagebox.show(getLabel("failedUpdatePermission_message"), "Apromore", Messagebox.OK, Messagebox.ERROR);
                 }
 
             }
@@ -298,7 +311,12 @@ public class AccessController extends SelectorComposer<Div> {
     }
 
     private void ensureOneOwnerWarning() {
-        Messagebox.show("You cannot remove the only owner for this file", "Apromore", Messagebox.OK, Messagebox.ERROR);
+        Messagebox.show(
+            getLabel("ensureOwner_message"),
+            "Apromore",
+            Messagebox.OK,
+            Messagebox.ERROR
+        );
     }
 
     @SuppressWarnings("unchecked")
@@ -568,7 +586,7 @@ public class AccessController extends SelectorComposer<Div> {
             assignmentModel.add(assignment);
             assignmentMap.put(rowGuid, assignment);
         } else {
-            Notification.info("The user or group has already been assigned");
+            Notification.info(getLabel("alreadyAssignedUserOrGroup_message"));
         }
     }
 
@@ -580,7 +598,7 @@ public class AccessController extends SelectorComposer<Div> {
             if (assignee != null) {
                 addCandidateUser(assignee);
             } else {
-                Notification.error("There is no such user or group name");
+                Notification.error(getLabel("noSuchUserOrGroup_message"));
             }
         } else {
             Set<Assignee> assignees = candidateAssigneeModel.getSelection();
@@ -616,7 +634,7 @@ public class AccessController extends SelectorComposer<Div> {
     public void onClickBtnApply() {
         applyChanges();
         destroy();
-        Notification.info("Sharing is successfully applied");
+        Notification.info(getLabel("shareSuccess_message"));
 
         PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
         String username = portalContext.getCurrentUser().getUsername();

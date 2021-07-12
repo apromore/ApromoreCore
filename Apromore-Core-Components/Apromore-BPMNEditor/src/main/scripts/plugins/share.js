@@ -46,7 +46,7 @@ Apromore.Plugins.Share = Clazz.extend({
             'name': Apromore.I18N.Share.share,
             'functionality': this.share.bind(this),
             'group': Apromore.I18N.Share.group,
-            'icon': Apromore.PATH + "images/xforms_export.png",
+            'icon': Apromore.PATH + "images/ap/share.svg",
             'description': Apromore.I18N.Share.shareDesc,
             'index': 1,
             'minShape': 0,

@@ -20,7 +20,7 @@
   <http://www.gnu.org/licenses/lgpl-3.0.html>.
   #L%
   -->
-<?page title="${labels.brand.shortName}" contentType="text/html;charset=UTF-8"?>
+<?page title="${labels.brand_shortName}" contentType="text/html;charset=UTF-8"?>
 <?link rel="shortcut icon" href="themes/${labels.theme}/common/img/brand/favicon.ico" ?>
 <!--<?link rel="stylesheet" type="text/css" href="css/apromore.css" ?>-->
 <!--<?link rel="stylesheet" type="text/css" href="css/login.css" ?>-->
@@ -50,56 +50,55 @@
       }
     </h:script>
     <h:div id="wrapper" class="ap-wrapper">
-
       <h:div class="ap-left-panel">
         <html>
           <div if="${param['error'] == '1'}" xmlns="http://www.w3.org/1999/xhtml">
             <div class="alert alert-error">
               <button type="button" class="close" data-dismiss="alert">&#xd7;</button>
               <i class="icon-remove-circle"></i>
-              Login or password was incorrect. Please try again.
+              ${labels.auth_credInvalid_message}
             </div>
           </div>
           <div if="${param['error'] == '2'}" xmlns="http://www.w3.org/1999/xhtml">
             <div class="alert alert-error">
               <button type="button" class="close" data-dismiss="alert">&#xd7;</button>
               <i class="icon-remove-circle"></i>
-              You have logged off or your session has expired. Please log in again.
+              ${labels.auth_timeout_message}
             </div>
           </div>
           <div if="${param['error'] == '3'}" xmlns="http://www.w3.org/1999/xhtml">
             <div class="alert alert-error">
               <button type="button" class="close" data-dismiss="alert">&#xd7;</button>
               <i class="icon-remove-circle"></i>
-              Apromore is unable to process your request. Please try again.
+              ${labels.auth_failed_message}
             </div>
           </div>
           <div if="${param['error'] == '4'}" xmlns="http://www.w3.org/1999/xhtml">
             <div class="alert alert-error">
               <button type="button" class="close" data-dismiss="alert">&#xd7;</button>
               <i class="icon-remove-circle"></i>
-              Username or e-mail address is already in use. Please try a different username or e-mail address.
+              ${labels.auth_alreadyUsed_message}
             </div>
           </div>
           <div if="${param['success'] == '1'}" xmlns="http://www.w3.org/1999/xhtml">
             <div class="alert alert-success">
               <button type="button" class="close" data-dismiss="alert">&#xd7;</button>
               <i class="icon-remove-circle"></i>
-              User registration is accepted. Please login.
+              ${labels.auth_newUserSuccess_message}
             </div>
           </div>
           <div if="${param['success'] == '2'}" xmlns="http://www.w3.org/1999/xhtml">
             <div class="alert alert-success">
               <button type="button" class="close" data-dismiss="alert">&#xd7;</button>
               <i class="icon-remove-circle"></i>
-              Password is reset. Please check your email account for a new password.
+              ${labels.auth_passwordResetSuccess_message}
             </div>
           </div>
           <div xmlns="http://www.w3.org/1999/xhtml" class="ap-force-comply" style="display: none;">
             <div class="alert alert-warning">
               <button type="button" class="close" onClick="Ap.login.checkComply(true);">&#xd7;</button>
               <i class="icon-remove-circle"></i>
-              You need to agree with the Terms &amp;amp; Conditions and the Privacy Policy
+              ${labels.auth_needToAgree_message}
             </div>
           </div>
           <div xmlns="http://www.w3.org/1999/xhtml" id="ap-login-message" style="display: none;">
@@ -115,30 +114,30 @@
             <h:div class="tab-pane fade in active" id="login">
               <h:div class="ap-form">
                 <h:h4 class="ap-form-heading">
-                  ${labels.brand.login}
+                  ${labels.brand_login}
                 </h:h4>
                 <h:form method="post" action="j_spring_security_check" name="login_form" data-t="form-login">
                   <h:fieldset>
                     <h:div class="controls">
                       <h:input type="text" name="j_username" data-t="username"
-                               placeholder="${labels.e.auth.username.hint}"/>
+                               placeholder="${labels.auth_username_hint}"/>
                     </h:div>
                     <h:div class="controls controls-row">
                       <h:input type="password" name="j_password" data-t="password"
-                               placeholder="${labels.e.auth.password.hint}"/>
+                               placeholder="${labels.auth_password_hint}"/>
                     </h:div>
                     <h:div class="controls controls-row split">
                       <h:a style="display:none;" class="forgot-link button" href="#forgot" data-toggle="tab">Forgot
                         password?
                       </h:a>
                       <h:button class="signin-button button" type="submit" data-t="login">
-                        ${labels.e.auth.login.text}
+                        ${labels.auth_login_text}
                       </h:button>
                     </h:div>
                     <div sclass="controls controls-row register" id="registerBtn">
                       <h:a href="#register" class="register-button button link-button"
                            data-toggle="tab">
-                        ${labels.e.auth.addAccount.text}
+                        ${labels.auth_addAccount_text}
                       </h:a>
                     </div>
                   </h:fieldset>
@@ -234,21 +233,21 @@
                     <div id="agree" visible="false">
                       <h:input type="checkbox" id="ap-agree" />
                       <h:span>
-                        I agree with the
+                        ${labels.auth_complyAgree_text}
                         <html id="tcAgree">
-                          <h:a href="${labels.brand.urlTandC}">Terms &amp; Conditions</h:a>
+                          <h:a href="${labels.brand_urlTandC}">${labels.brand_textTandC}</h:a>
                         </html>
                         <html id="andAgree">
-                        and the
+                          ${labels.auth_complyAnd_text}
                         </html>
                         <html id="ppAgree">
-                          <h:a href="${labels.brand.urlPrivacy}">Privacy Policy</h:a>
+                          <h:a href="${labels.brand_urlPrivacy}">${labels.brand_textPrivacy}</h:a>
                         </html>
                       </h:span>
                     </div>
                     <div id="subscribe" visible="false">
                       <h:input type="checkbox" id="ap-subscribe" name="subscription" checked="true" value="subscribe"/>
-                      <h:span>I wish to be contacted about Apromore offers and news</h:span>
+                      <h:span>${labels.auth_subscribe_hint}</h:span>
                     </div>
                   </h:fieldset>
                   <h:fieldset>
@@ -260,7 +259,7 @@
                     <h:div class="input-group ap-back-wrapper">
                       <h:a href="#login" data-toggle="tab">
                         <h:div class="ap-back"
-                               title="back to login page"/>
+                               title="${labels.auth_backToLogin_hint}"/>
                         <h:span><!-- back to login page--></h:span>
                       </h:a>
                     </h:div>
@@ -275,12 +274,12 @@
           <h:img class="emblem" src="/themes/${labels.theme}/common/img/brand/emblem-white.svg"/>
           <h:div class="ap-h-links">
             <html id="tcLink">
-              <h:a href="${labels.brand.urlTandC}">Terms &amp; Conditions</h:a>
+              <h:a href="${labels.brand_urlTandC}">${labels.brand_textTandC}</h:a>
             </html>
             <html id="ppLink">
-              <h:a href="${labels.brand.urlPrivacy}">Privacy Policy</h:a>
+              <h:a href="${labels.brand_urlPrivacy}">${labels.brand_textPrivacy}</h:a>
             </html>
-            <html>${labels.brand.contact}</html>
+            <html>${labels.brand_contact}</html>
           </h:div>
         </h:div>
         <h:div class="slant-separator">
@@ -289,7 +288,7 @@
 
       <h:div class="ap-right-panel">
         <h:div class="ap-logo ap-centered">
-          <h:a href="${labels.brand.urlMain}">
+          <h:a href="${labels.brand_urlMain}">
             <image id="logoWithTag" src="/themes/${labels.theme}/common/img/brand/logo-colour-with-tag.svg"/>
           </h:a>
         </h:div>

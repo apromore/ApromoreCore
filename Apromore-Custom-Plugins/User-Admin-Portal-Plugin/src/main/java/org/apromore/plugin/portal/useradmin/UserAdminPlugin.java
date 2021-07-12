@@ -24,8 +24,10 @@ package org.apromore.plugin.portal.useradmin;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.Set;
 import javax.inject.Inject;
+
 import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
 import org.apromore.portal.common.Constants;
@@ -40,6 +42,7 @@ import org.apromore.service.SecurityService;
 import org.apromore.service.WorkspaceService;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
+import org.zkoss.web.Attributes;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Messagebox;
@@ -56,6 +59,17 @@ public class UserAdminPlugin extends DefaultPortalPlugin {
 
     @Inject private SecurityService securityService;
     @Inject private WorkspaceService workspaceService;
+
+    public ResourceBundle getLabels() {
+        Locale locale = (Locale) Sessions.getCurrent().getAttribute(Attributes.PREFERRED_LOCALE);
+        return ResourceBundle.getBundle("metainfo.zk-label",
+            locale,
+            UserAdminPlugin.class.getClassLoader());
+    }
+
+    public String getLabel(String key) {
+        return getLabels().getString(key);
+    }
 
     // PortalPlugin overrides
 
@@ -83,7 +97,7 @@ public class UserAdminPlugin extends DefaultPortalPlugin {
             User currentUser = securityService.getUserById(portalContext.getCurrentUser().getId());
             Set<Role> userRoles = securityService.findRolesByUser(currentUser);
             if (!userRoles.contains(adminRole)) {
-                Notification.info("Only administrator accounts may manage users");
+                Notification.info(getLabel("onlyAdmin_message"));
                 return;
             }
 
@@ -97,7 +111,7 @@ public class UserAdminPlugin extends DefaultPortalPlugin {
 
         } catch(Exception e) {
             LOGGER.error("Unable to create user administration dialog", e);
-            Notification.error("Unable to create user administration dialog");
+            Notification.error(getLabel("failedLaunch_message"));
         }
     }
 

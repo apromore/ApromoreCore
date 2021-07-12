@@ -28,20 +28,22 @@
     width="300px"
     spacing="5px"
     sclass="ap-pd-view-settings">
-  <n:div class="section">Visualization settings</n:div>
-  <n:div class="title" style="transform: rotate(-90deg);position:absolute;top:22px;left:-9px;">View</n:div>
+  <n:div class="section">${arg.pdLabels.compViewSettings_text}</n:div>
+  <n:div class="title" title="${arg.pdLabels.viewSettingView_text}" style="transform: rotate(-90deg);position:absolute;top: 22px;left: -22px;width: 60px;text-align: center;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;text-align: center;">
+    ${arg.pdLabels.viewSettingView_text}
+  </n:div>
   <div sclass="ap-switch">
-    <n:span class="start">${labels.e.pd.viewProcess.text}</n:span>
+    <n:span class="start">${arg.pdLabels.viewProcess_text}</n:span>
     <checkbox id="gateways"
               checked="false"
               mold="switch"/>
-    <n:span class="end">${labels.e.pd.viewBPMN.text}</n:span>
+    <n:span class="end">${arg.pdLabels.viewBPMN_text}</n:span>
   </div>
   <div>
     <div sclass="sublabel"
          id="defaultPerspective" ca:title="Reset to Activity perspective">
       <span class="ap-icon ap-icon-perspective"></span>
-      <label>Perspective</label>
+      <label>${arg.pdLabels.viewSettingPerspective_text}</label>
       <!--<label value="Perspective" sclass="sublabel" />-->
     </div>
     <combobox id="perspectiveSelector"
@@ -49,7 +51,9 @@
               width="126px">
     </combobox>
   </div>
-  <n:div class="title" style="transform: rotate(-90deg);position:absolute;top:38px;left:-18px;">Overlay</n:div>
+  <n:div class="title" title="${arg.pdLabels.viewSettingOverlay_text}" style="transform: rotate(-90deg);position:absolute;top: 38px;left: -28px;width: 70px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;text-align: center;">
+    ${arg.pdLabels.viewSettingOverlay_text}
+  </n:div>
   <n:div class="ap-line-sep-hz" style="width: calc(100% - 10px); margin-bottom: 6px;"></n:div>
   <!--
   <n:div class="ap-switch" style="display: none;">
@@ -70,28 +74,28 @@
              visible="false">1
       </label>
       <div sclass="ap-icon ap-icon-tally"></div>
-      <label>Frequency</label>
+      <label>${arg.pdLabels.viewSettingFrequency_text}</label>
     </div>
     <!--<label value="Frequency" sclass="sublabel" />-->
     <combobox id="frequencyAggSelector"
               width="126px"
               readonly="true"
               sclass="ap-pd-freq-selector"
-              value="${labels.e.agg.case_count.text}">
+              value="${arg.pdLabels.stat_case_count_text}">
       <comboitem value="case_count"
-                 label="${labels.e.agg.case_count.text}"/>
+                 label="${arg.pdLabels.stat_case_count_text}"/>
       <comboitem value="case_relative"
-                 label="${labels.e.agg.case_relative.text}"/>
+                 label="${arg.pdLabels.stat_case_relative_text}"/>
       <comboitem value="total"
-                 label="${labels.e.agg.total.text}"/>
+                 label="${arg.pdLabels.stat_total_text}"/>
       <comboitem value="mean"
-                 label="${labels.e.agg.mean.text}"/>
+                 label="${arg.pdLabels.stat_mean_text}"/>
       <comboitem value="median"
-                 label="${labels.e.agg.median.text}"/>
+                 label="${arg.pdLabels.stat_median_text}"/>
       <comboitem value="max"
-                 label="${labels.e.agg.max.text}"/>
+                 label="${arg.pdLabels.stat_max_text}"/>
       <comboitem value="min"
-                 label="${labels.e.agg.min.text}"/>
+                 label="${arg.pdLabels.stat_min_text}"/>
     </combobox>
     <span
         id="freqShow"
@@ -105,24 +109,24 @@
              visible="false">2
       </label>
       <div sclass="ap-icon ap-icon-hourglass"></div>
-      <label>Duration</label>
+      <label>${arg.pdLabels.viewSettingDuration_text}</label>
     </div>
     <!--<label value="Duration" sclass="sublabel" />-->
     <combobox id="durationAggSelector"
               width="126px"
               readonly="true"
               sclass="ap-pd-duration-selector"
-              value="${labels.e.agg.mean.text}">
+              value="${arg.pdLabels.stat_mean_text}">
       <comboitem value="total"
-                 label="${labels.e.agg.total.text}"/>
+                 label="${arg.pdLabels.stat_total_text}"/>
       <comboitem value="mean"
-                 label="${labels.e.agg.mean.text}"/>
+                 label="${arg.pdLabels.stat_mean_text}"/>
       <comboitem value="median"
-                 label="${labels.e.agg.median.text}"/>
+                 label="${arg.pdLabels.stat_median_text}"/>
       <comboitem value="max"
-                 label="${labels.e.agg.max.text}"/>
+                 label="${arg.pdLabels.stat_max_text}"/>
       <comboitem value="min"
-                 label="${labels.e.agg.min.text}"/>
+                 label="${arg.pdLabels.stat_min_text}"/>
     </combobox>
     <span ca:title="Show as secondary metric"
           id="durationShow"

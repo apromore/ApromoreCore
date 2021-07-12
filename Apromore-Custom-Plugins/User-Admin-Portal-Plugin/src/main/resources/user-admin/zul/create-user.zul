@@ -19,7 +19,7 @@
   <http://www.gnu.org/licenses/lgpl-3.0.html>.
   #L%
   -->
-<window width="500px" position="center" title="Create new user" apply="org.apromore.plugin.portal.useradmin.CreateUserController">
+<window width="500px" position="center" title="${$composer.labels.createUserTitle_text}" apply="org.apromore.plugin.portal.useradmin.CreateUserController">
     <grid sclass="ap-grid ap-form">
         <columns>
                 <column hflex="1"/>
@@ -27,29 +27,29 @@
         </columns>
         <rows>
             <row>
-                <label value="Username"/>
+                <label value="${$composer.labels.userName_text}"/>
                 <textbox id="userNameTextbox" value="New_username" constraint="no empty,/^[a-zA-Z0-9 @\\._\-]{4,}$/: {Use only letters, numbers, and @.-_}" placeholder="Username"/>
             </row>
             <row>
                 <label value="First Name"/>
-                <textbox id="firstNameTextbox" placeholder="First name"/>
+                <textbox id="firstNameTextbox" placeholder="${$composer.labels.firstName_text}"/>
             </row>
             <row>
                 <label value="Last Name"/>
-                <textbox id="lastNameTextbox" placeholder="Last name"/>
+                <textbox id="lastNameTextbox" placeholder="${$composer.labels.lastName_text}"/>
             </row>
             <row>
                 <label value="Email"/>
-                <textbox id="emailTextbox" constraint="no empty: {Email is mandatory}" placeholder="Email address"/>
+                <textbox id="emailTextbox" constraint="no empty: {Email is mandatory}" placeholder="${$composer.labels.email_text}"/>
             </row>
             <row>
                 <label value="Password"/>
-                <textbox id="passwordTextbox" constraint="no empty" placeholder="Password" type="password"/>
+                <textbox id="passwordTextbox" constraint="no empty" placeholder="${$composer.labels.password_text}" type="password"/>
             </row>
         </rows>
     </grid>
     <div sclass="ap-window-footer-actions">
-        <button id="createBtn" label="Create" iconSclass="z-icon-check-circle" />
-        <button id="cancelBtn" label="Cancel" iconSclass="z-icon-times-circle" />
+        <button id="createBtn" label="${labels.common_create_text}" iconSclass="z-icon-check-circle" />
+        <button id="cancelBtn" label="${labels.common_cancel_text}" iconSclass="z-icon-times-circle" />
     </div>
 </window>

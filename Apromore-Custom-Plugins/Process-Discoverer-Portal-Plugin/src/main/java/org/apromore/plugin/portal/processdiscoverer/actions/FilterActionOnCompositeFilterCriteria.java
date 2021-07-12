@@ -45,7 +45,8 @@ public class FilterActionOnCompositeFilterCriteria extends FilterAction {
             analyst.filter(postActionFilterCriteria);
             return true;
         } catch (Exception e) {
-            Messagebox.show("Error in filtering. Error message: " + e.getMessage());
+            // LOGGER.error("Error in filtering. Error message: " + e.getMessage());
+            Messagebox.show("Error in filtering");
             return false;
         }
     }

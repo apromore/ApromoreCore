@@ -22,11 +22,13 @@
 
 package org.apromore.portal.dialogController.workspaceOptions;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashSet;
 import java.util.Set;
 import org.slf4j.Logger;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zul.Messagebox;
 
 import org.apromore.plugin.portal.PortalLoggerFactory;
@@ -214,7 +216,7 @@ public class CopyAndPasteController extends BaseController {
             if (obj instanceof FolderType) {
                 FolderType folder = (FolderType) obj;
                 if (isInside(folder.getId(), selectedTargetFolderId, 0)) {
-                    Notification.error("A folder cannot be copied into its subfolder");
+                    Notification.error(Labels.getLabel("portal_noCopyFolderToSub_message"));
                 } else {
                     cloneFolder(folder, selectedTargetFolderId, 0);
                 }
@@ -231,7 +233,7 @@ public class CopyAndPasteController extends BaseController {
             if (obj instanceof FolderType) {
                 FolderType folder = (FolderType) obj;
                 if (isInside(folder.getId(), selectedTargetFolderId, 0)) {
-                    Notification.error("A folder cannot be moved into its subfolder");
+                    Notification.error(Labels.getLabel("portal_noMoveFolderToSub_message"));
                 } else {
                     moveFolder(folder, selectedTargetFolderId, 0);
                 }
@@ -254,11 +256,11 @@ public class CopyAndPasteController extends BaseController {
 
     private boolean checkContext(Set<Object> selections, int selectionCount, FolderType currentFolder) {
         if (currentFolder == null) {
-            Notification.error("Failed to find the current folder");
+            Notification.error(Labels.getLabel("portal_failedFind_message"));
             return false;
         } else if (selectionCount == 0) {
             clearSelectedItems();
-            Notification.error("Select at least one item");
+            Notification.error(Labels.getLabel("portal_selectOneItem_message"));
             return false;
         }
         return true;
@@ -269,16 +271,18 @@ public class CopyAndPasteController extends BaseController {
         if (checkContext(selections, selectionCount, currentFolder)) {
             try {
                 if (!checkImmediateOwnership(selections)) {
-                    Notification.error("Only Owner can cut the selected item(s)");
+                    Notification.error(Labels.getLabel("portal_onlyOwnerCanCutItems}"));
                 } else if (ItemHelpers.isOwner(this.currentUser, currentFolder)) {
                     isCut = true;
                     updateSelectedItems(selections);
-                    Notification.info(getSelectedItemsSize() + " item(s) have been selected to be moved");
+                    Notification.info(
+                        MessageFormat.format(Labels.getLabel("portal_itemsSelectedToMove_message"), getSelectedItemsSize())
+                    );
                 } else {
-                    Notification.error("Only Owner can cut from the current folder");
+                    Notification.error(Labels.getLabel("portal_onlyOwnerCanCutFromCurrent_message"));
                 }
             } catch (Exception e) {
-                Messagebox.show("An error occurred during cut process", "Apromore", Messagebox.OK,
+                Messagebox.show(Labels.getLabel("portal_failedCut_message"), "Apromore", Messagebox.OK,
                     Messagebox.ERROR);
                 LOGGER.error(e.getMessage());
             }
@@ -291,9 +295,11 @@ public class CopyAndPasteController extends BaseController {
             try {
                 isCut = false;
                 updateSelectedItems(selections);
-                Notification.info(getSelectedItemsSize() + " item(s) have been selected to be copied");
+                Notification.info(
+                    MessageFormat.format(Labels.getLabel("portal_itemsSelectedToCopy_message"), getSelectedItemsSize())
+                );
             } catch (Exception e) {
-                Messagebox.show("An error occurred during copy process", "Apromore", Messagebox.OK,
+                Messagebox.show(Labels.getLabel("portal_failedCopy_message"), "Apromore", Messagebox.OK,
                     Messagebox.ERROR);
                 LOGGER.error(e.getMessage());
             }
@@ -303,15 +309,15 @@ public class CopyAndPasteController extends BaseController {
     public void paste(FolderType currentFolder) throws Exception {
 
         if (currentFolder == null) {
-            Notification.error("Failed to find the current folder");
+            Notification.error(Labels.getLabel("portal_failedFind_message"));
             return;
         }
         if (selectedItems.isEmpty()) {
-            Notification.error("Select at least one item and press Cut or Copy first");
+            Notification.error(Labels.getLabel("portal_selectOneItemAndCutCopy_message"));
             return;
         }
         if (!ItemHelpers.isOwner(this.currentUser, currentFolder)) {
-            Notification.error("Only Owner can paste to the current folder");
+            Notification.error(Labels.getLabel("portal_onlyOwnerCanPasteToCurrent_message"));
             return;
         }
         try {
@@ -321,10 +327,12 @@ public class CopyAndPasteController extends BaseController {
             } else {
                 cloneSelectedItems();
             }
-            Notification.info(getSelectedItemsSize() + " item(s) have been successfully pasted");
+            Notification.info(
+                MessageFormat.format(Labels.getLabel("portal_itemsPasted_message"), getSelectedItemsSize())
+            );
             clearSelectedItems();
         } catch (Exception e) {
-            Messagebox.show("An error occurred during paste process", "Apromore", Messagebox.OK,
+            Messagebox.show(Labels.getLabel("portal_failedPaste_message"), "Apromore", Messagebox.OK,
                 Messagebox.ERROR);
             LOGGER.error(e.getMessage());
         }

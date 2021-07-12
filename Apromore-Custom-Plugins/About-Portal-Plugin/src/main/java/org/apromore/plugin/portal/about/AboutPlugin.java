@@ -77,7 +77,7 @@ public class AboutPlugin extends DefaultPortalPlugin {
 
     @Override
     public String getLabel(final Locale locale) {
-        return Labels.getLabel("brand.about", label);
+        return Labels.getLabel("brand_about", label);
     }
 
     @Override

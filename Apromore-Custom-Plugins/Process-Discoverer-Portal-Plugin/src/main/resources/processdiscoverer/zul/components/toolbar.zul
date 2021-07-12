@@ -45,7 +45,7 @@
         <!-- Shortcuts -->
         <n:div class="ap-key-help-header">
           <n:div>
-            <n:strong>Shortcuts</n:strong>
+            <n:strong>${arg.pdLabels.shortcut_text}</n:strong>
           </n:div>
           <n:div></n:div>
         </n:div>
@@ -54,7 +54,7 @@
             <n:kbd title="control" class="control-kbd"></n:kbd>
             <n:span> + Z</n:span>
           </n:div>
-          <n:div>Undo the last action
+          <n:div>${arg.pdLabels.undo_text}
           </n:div>
         </n:div>
         <n:div>
@@ -62,52 +62,55 @@
             <n:kbd title="control" class="control-kbd"></n:kbd>
             <n:span> + Y</n:span>
           </n:div>
-          <n:div>Redo the last undone action
+          <n:div>${arg.pdLabels.redo_text}
           </n:div>
         </n:div>
         <!-- Arc shortcuts -->
         <n:div class="ap-key-help-header">
           <n:div>
-            <n:strong>On an arc:</n:strong>
+            <n:strong>${arg.pdLabels.onAnArc_text}:</n:strong>
           </n:div>
           <n:div></n:div>
         </n:div>
         <n:div>
           <n:div>
-            <n:span>right-click</n:span>
+            <n:span>${arg.pdLabels.rightClick_text}</n:span>
           </n:div>
-          <n:div>remove <n:u>all</n:u> cases containing the selected directly-follows relation
+          <n:div>
+            ${arg.pdLabels.removeAllArc_text}
           </n:div>
         </n:div>
         <n:div>
           <n:div>
             <n:kbd title="control" class="control-kbd"></n:kbd>
-            <n:span> + right-click</n:span>
+            <n:span> + ${arg.pdLabels.rightClick_text}</n:span>
           </n:div>
-          <n:div>retain <n:u>only</n:u> cases containing the selected directly-follows relation
+          <n:div>
+            ${arg.pdLabels.retainOnlyArc_text}
           </n:div>
         </n:div>
         <n:div>
           <n:div>
             <n:kbd title="shift" class="shift-kbd"></n:kbd>
-            <n:span> + right-click</n:span>
+            <n:span> + ${arg.pdLabels.rightClick_text}</n:span>
           </n:div>
           <n:div>
-            filter cases based on this arc's duration (from any perspective)
+            ${arg.pdLabels.filterArcDuration_text}
           </n:div>
         </n:div>
         <!-- Node shortcuts -->
         <n:div class="ap-key-help-header">
           <n:div>
-            <n:strong>On a node:</n:strong>
+            <n:strong>${arg.pdLabels.onANode_text}:</n:strong>
           </n:div>
           <n:div></n:div>
         </n:div>
         <n:div>
           <n:div>
-            <n:span>right-click</n:span>
+            <n:span>${arg.pdLabels.rightClick_text}</n:span>
           </n:div>
-          <n:div>remove <n:u>all</n:u> cases with an event containing the selected attribute
+          <n:div>
+            ${arg.pdLabels.removeAllNode_text}
           </n:div>
         </n:div>
         <n:div>
@@ -115,16 +118,17 @@
             <n:kbd title="control" class="control-kbd"></n:kbd>
             <n:span> + right-click</n:span>
           </n:div>
-          <n:div>retain <n:u>only</n:u> cases with an event containing the selected attribute
+          <n:div>
+            ${arg.pdLabels.retainOnlyNode_text}
           </n:div>
         </n:div>
         <n:div>
           <n:div>
             <n:kbd title="shift" class="shift-kbd"></n:kbd>
-            <n:span> + right-click</n:span>
+            <n:span> + ${arg.pdLabels.rightClick_text}</n:span>
           </n:div>
           <n:div>
-            filter cases based on this node's duration (from any perspective)
+            ${arg.pdLabels.filterNodeDuration_text}
           </n:div>
         </n:div>
         <n:div>
@@ -132,18 +136,19 @@
             <n:kbd title="shift" class="shift-kbd"></n:kbd>
             <n:span>+</n:span>
             <n:kbd title="control" class="control-kbd"></n:kbd>
-            <n:span> + right-click</n:span>
+            <n:span> + ${arg.pdLabels.rightClick_text}</n:span>
           </n:div>
           <n:div>
-            filter cases using this node as a primary attribute
+            ${arg.pdLabels.filterNodePrimaryAttribute_text}
           </n:div>
         </n:div>
         <n:div>
           <n:div>
             <n:kbd title="alt" class="alt-kbd"></n:kbd>
-            <n:span> + right-click</n:span>
+            <n:span> + ${arg.pdLabels.rightClick_text}</n:span>
           </n:div>
-          <n:div>remove <n:u>all</n:u> events containing the selected attribute
+          <n:div>
+            ${arg.pdLabels.removeAllAttribute_text}
           </n:div>
         </n:div>
         <n:div>
@@ -151,9 +156,10 @@
             <n:kbd title="alt" class="alt-kbd"></n:kbd>
             <n:span>+</n:span>
             <n:kbd title="control" class="control-kbd"></n:kbd>
-            <n:span> + right-click</n:span>
+            <n:span> + ${arg.pdLabels.rightClick_text}</n:span>
           </n:div>
-          <n:div>retain <n:u>only</n:u> events containing the selected attribute
+          <n:div>
+            ${arg.pdLabels.retainOnlyAttribute_text}
           </n:div>
         </n:div>
       </div>
@@ -163,34 +169,34 @@
     <hlayout sclass="ap-pd-action-buttons" spacing="0">
       <div hflex="1" align="left">
         <button ca:data-t="saveLog" id="exportUnfitted" w:onClick="Ap.pd.exportUnfitted()"
-                tooltiptext="${labels.e.pd.saveLog.text}" label="" sclass="ap-icon ap-icon-export-log"/>
-        <button ca:data-t="saveBPMN" id="exportBPMN" tooltiptext="${labels.e.pd.saveBPMN.text}"
+                tooltiptext="${arg.pdLabels.saveLog_text}" label="" sclass="ap-icon ap-icon-export-log"/>
+        <button ca:data-t="saveBPMN" id="exportBPMN" tooltiptext="${arg.pdLabels.saveBPMN_text}"
                 sclass="ap-icon ap-icon-export-bpmn"/>
         <button ca:data-t="saveBPMNAnnotated" id="exportBPMNAnnotatedForBIMP" visible="false"
                 tooltiptext="Save as BPMN model annotated for BIMP..." sclass="ap-icon ap-icon-export-bpmn"/>
-        <button ca:data-t="downloadPDF" id="downloadPDF" tooltiptext="Download as PDF"
+        <button ca:data-t="downloadPDF" id="downloadPDF" tooltiptext="${arg.pdLabels.downloadPDF_text}"
                 sclass="ap-icon ap-icon-export-pdf"/>
-        <button ca:data-t="downloadPNG" id="downloadPNG" tooltiptext="Download as PNG"
+        <button ca:data-t="downloadPNG" id="downloadPNG" tooltiptext="${arg.pdLabels.downloadPNG_text}"
                 sclass="ap-icon ap-icon-export-image"/>
-        <button ca:data-t="downloadJSON" id="downloadJSON" tooltiptext="Download as JSON"
+        <button ca:data-t="downloadJSON" id="downloadJSON" tooltiptext="${arg.pdLabels.downloadJSON_text}"
                 sclass="ap-icon ap-icon-export-json"/>
         <n:span class="ap-action-sep"></n:span>
         <checkbox sclass="ap-stateful-button" id="layoutHierarchy"
-                  tooltiptext="Layout left-to-right" iconSclass="ap-icon ap-icon-dir-lr"/>
+                  tooltiptext="${arg.pdLabels.layoutLR_text}" iconSclass="ap-icon ap-icon-dir-lr"/>
         <checkbox sclass="ap-stateful-button" id="layoutDagreTopBottom"
-                  tooltiptext="Layout top-to-bottom" iconSclass="ap-icon ap-icon-dir-tb"/>
-        <button tooltiptext="Zoom in" sclass="ap-icon ap-icon-zoom-in" w:onClick="Ap.pd.zoomIn()"/>
-        <button tooltiptext="Zoom out" sclass="ap-icon ap-icon-zoom-out" w:onClick="Ap.pd.zoomOut()"/>
-        <button id="fitScreen" tooltiptext="Fit to screen" sclass="ap-icon ap-icon-zoom-to-fit"/>
+                  tooltiptext="${arg.pdLabels.layoutTB_text}" iconSclass="ap-icon ap-icon-dir-tb"/>
+        <button tooltiptext="${arg.pdLabels.zoomIn_text}" sclass="ap-icon ap-icon-zoom-in" w:onClick="Ap.pd.zoomIn()"/>
+        <button tooltiptext="${arg.pdLabels.zoomOut_text}" sclass="ap-icon ap-icon-zoom-out" w:onClick="Ap.pd.zoomOut()"/>
+        <button id="fitScreen" tooltiptext="${arg.pdLabels.fitScreen_text}" sclass="ap-icon ap-icon-zoom-to-fit"/>
         <n:span class="ap-action-sep"></n:span>
-        <button ca:data-t="filter" id="filter" tooltiptext="Filter" sclass="ap-icon ap-icon-filter"/>
-        <button ca:data-t="filter-clear" id="filterClear" disabled="true" tooltiptext="Clear all filter" sclass="ap-icon ap-icon-filter-delete"/>
-        <button ca:data-t="filter-undo" id="filterUndo" disabled="true" tooltiptext="Undo shortcut filter" sclass="ap-icon ap-icon-undo" />
-        <button ca:data-t="filter-redo" id="filterRedo" disabled="true" tooltiptext="Redo shortcut filter" sclass="ap-icon ap-icon-redo" />
+        <button ca:data-t="filter" id="filter" tooltiptext="${arg.pdLabels.filter_text}" sclass="ap-icon ap-icon-filter"/>
+        <button ca:data-t="filter-clear" id="filterClear" disabled="true" tooltiptext="${arg.pdLabels.filterClear_text}" sclass="ap-icon ap-icon-filter-delete"/>
+        <button ca:data-t="filter-undo" id="filterUndo" disabled="true" tooltiptext="${arg.pdLabels.filterUndo_text}" sclass="ap-icon ap-icon-undo" />
+        <button ca:data-t="filter-redo" id="filterRedo" disabled="true" tooltiptext="${arg.pdLabels.filterRedo_text}" sclass="ap-icon ap-icon-redo" />
         <n:span class="ap-action-sep"></n:span>
-        <button ca:data-t="animate" id="animate" tooltiptext="Animate" sclass="ap-icon ap-icon-play-circle"/>
+        <button ca:data-t="animate" id="animate" tooltiptext="${arg.pdLabels.animate_text}" sclass="ap-icon ap-icon-play-circle"/>
         <h:span class="ap-action-sep"></h:span>
-        <button id="share" sclass="ap-icon ap-icon-share" ca:data-t="share" tooltiptext="Share file or folder"/>
+        <button id="share" sclass="ap-icon ap-icon-share" ca:data-t="share" tooltiptext="${arg.pdLabels.share_text}"/>
       </div>
       <div hflex="1" align="right" id="rightToolbar" sclass="ap-pd-toolbar-right">
         <!-- Exact single search -->
@@ -202,7 +208,7 @@
           <n:div id="ap-pd-search-graph">
             <div id="searchNode" sclass="ap-pd-search-graph-c">
               <n:i class="z-icon-search" />
-              <textbox id="searchText" placeholder="Search node" ca:autocomplete="off" />
+              <textbox id="searchText" placeholder="${arg.pdLabels.searchNode_text}" ca:autocomplete="off" />
               <n:span>
                 <n:i class="z-icon-times-circle" />
               </n:span>

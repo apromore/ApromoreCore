@@ -19,7 +19,7 @@
   -->
 <listbox id="groupListbox" multiple="true" vflex="1" xmlns:ca="client/attribute">
   <listhead>
-    <listheader sclass="ap-listheader" label="Group name" style="cursor:pointer;" sort="auto(UPPER(name))">
+    <listheader sclass="ap-listheader" label="${$composer.labels.groupName_text}" style="cursor:pointer;" sort="auto(UPPER(name))">
       <div sclass="ap-listheader-search">
         <checkbox
             sclass="ap-listbox-search-toggle"
@@ -46,7 +46,7 @@
         </div>
         <label sclass="ap-listbox-search-count" width="200px" style="padding:0px 10px 0px 10px"/>
         <div width="70px" align="right" visible="false">
-          <button sclass="ap-listbox-search-btn" label="Search"/>
+          <button sclass="ap-listbox-search-btn" label="${$composer.labels.search_text}"/>
         </div>
       </hlayout>
     </auxheader>

@@ -29,6 +29,7 @@ import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.text.MessageFormat;
 
 import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.ProcessModelVersion;
@@ -42,6 +43,7 @@ import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.service.ProcessService;
 import org.apromore.service.WorkspaceService;
 import org.zkoss.spring.SpringUtil;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -170,7 +172,7 @@ public class SaveAsDialogController extends BaseController {
                             "", created, null, makePublic, containingFolderName);
             } else {
                 if (session.containVersion(versionNo)) {
-                    Messagebox.show("Version " + versionNo + " already existed. Do you want to overwrite it?", 
+                    Messagebox.show(MessageFormat.format(Labels.getLabel("portal_versionExisted_message"), versionNo),
                                 "Question", new Messagebox.Button[] { Messagebox.Button.YES, Messagebox.Button.NO}, 
                                 Messagebox.QUESTION,
                                 new org.zkoss.zk.ui.event.EventListener<ClickEvent>() {
@@ -217,7 +219,7 @@ public class SaveAsDialogController extends BaseController {
             qeBPMNEditor.publish(new Event(BPMNEditorController.EVENT_MESSAGE_SAVE, null, new String[] {processName, versionNumber}));
             closePopup();
         } catch (Exception e) {
-            Messagebox.show("Unable to save model! Error: " + e.getMessage(), null, Messagebox.OK, Messagebox.ERROR);
+            Messagebox.show(Labels.getLabel("portal_unableSave_message"), null, Messagebox.OK, Messagebox.ERROR);
         }
     }
     

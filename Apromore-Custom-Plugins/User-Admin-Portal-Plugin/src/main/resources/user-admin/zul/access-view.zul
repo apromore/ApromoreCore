@@ -28,8 +28,8 @@
         <listbox id="assignmentListbox" multiple="true" vflex="1" hflex="1">
             <listhead>
                 <listheader align="center" label="" width="40px"/><!-- user/group icon -->
-                <listheader align="left" label="Name" sort="auto(name)"/>
-                <listheader align="center" label="Permission" width="130px"/>
+                <listheader align="left" label="${$composer.labels.name_text}" sort="auto(name)"/>
+                <listheader align="center" label="${$composer.labels.permission_text}" width="130px"/>
             </listhead>
             <template name="model">
                 <listitem>

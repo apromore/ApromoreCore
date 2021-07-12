@@ -56,7 +56,7 @@
         <n:script src="/${arg.editor}/libs/ext-2.0.2/ext-all.js" type="text/javascript"/>
         <n:script src="/${arg.editor}/libs/ext-2.0.2/color-field.js" type="text/javascript"/>
         <n:script src="/${arg.editor}/libs/iscroll.js" type="text/javascript"/>
-        <n:script src="/${arg.editor}/editor/i18n/translation_en_us.js" type="text/javascript"/>
+        <n:script src="/${arg.editor}/editor/i18n/translation_en.js" type="text/javascript"/>
         <n:script src="/${arg.editor}/libs/utils.js" type="text/javascript"/>
         <n:script src="/${arg.editor}/editor/${arg.editorJavascript}" type="text/javascript"/>
 

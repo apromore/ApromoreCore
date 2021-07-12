@@ -29,6 +29,7 @@ Apromore.Plugins.SimulationPanel = Clazz.extend({
             'index': 1,
             'minShape': 0,
             'maxShape': 0,
+            'icon': Apromore.PATH + "images/ap/simulate-model.svg",
             isEnabled : function(){ return facade.useSimulationPanel}.bind(this),
         });
     },

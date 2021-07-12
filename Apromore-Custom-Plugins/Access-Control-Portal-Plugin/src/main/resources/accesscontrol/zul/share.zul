@@ -22,7 +22,7 @@
     sclass="ap-share-win"
     width="700px" height="80%" position="center"
     closable="false"
-    title="File/folder sharing" apply="org.apromore.plugin.portal.accesscontrol.controllers.ShareController">
+    title="${labels.accessCtrl_share_text}" apply="org.apromore.plugin.portal.accesscontrol.controllers.ShareController">
     <caption>
         <toolbarbutton iconSclass="ap-icon ap-icon-help" href="https://documentation.apromore.org/theapromoreportal/sharingandaccessrights.html" target="_blank" />
     </caption>

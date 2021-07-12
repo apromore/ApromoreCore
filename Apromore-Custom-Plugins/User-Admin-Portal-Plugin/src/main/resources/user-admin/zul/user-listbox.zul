@@ -21,7 +21,7 @@
   -->
 <listbox id="userListbox" multiple="true" vflex="1" hflex="1" xmlns:ca="client/attribute">
   <listhead>
-    <listheader sclass="ap-listheader" label="Username" hflex="1" style="cursor:pointer;" sort="auto(UPPER(username))">
+    <listheader sclass="ap-listheader" label="${$composer.labels.userName_text}" hflex="1" style="cursor:pointer;" sort="auto(UPPER(username))">
       <div sclass="ap-listheader-search">
         <checkbox width="20px"
                   sclass="ap-listbox-search-toggle"
@@ -30,7 +30,7 @@
         />
       </div>
     </listheader>
-    <listheader align="center" label="Created" width="130px" sort="auto(dateCreated)"/>
+    <listheader align="center" label="${$composer.labels.created_text}" width="130px" sort="auto(dateCreated)"/>
     <listheader align="center" label="" width="40px" visible="false" style="cursor:pointer;"/>
   </listhead>
   <auxhead sclass="ap-auxhead" visible="false">
@@ -48,7 +48,7 @@
         </div>
         <label sclass="ap-listbox-search-count" width="200px" style="padding:0px 10px 0px 10px"/>
         <div width="70px" align="right" visible="false">
-          <button sclass="ap-listbox-search-btn" label="Search"/>
+          <button sclass="ap-listbox-search-btn" label="${$composer.labels.search_text}"/>
         </div>
       </hlayout>
     </auxheader>
