@@ -259,7 +259,7 @@ public class TemporaryCacheService {
 
 	    } else {
 		// If cache hit
-		LOGGER.debug("Got object [HASH:{} KEY:{}] from cache [{}]", element.hashCode(), key, cacheRepo.getCacheName());
+		LOGGER.debug("Get XLog [HASH:{} KEY:{}] from cache [{}]", element.hashCode(), key, cacheRepo.getCacheName());
 		LOGGER.debug("Memory Used: {} MB", getMemoryUsage().getUsed() / 1024 / 1024);
 		return element;
 	    }
@@ -316,7 +316,7 @@ public class TemporaryCacheService {
 
 	    } else {
 		// If cache hit
-		LOGGER.debug("Get object [HASH:{} KEY:{}] from cache [{}]", element.hashCode(), key, cacheRepo.getCacheName());
+		LOGGER.debug("Get APMLog [HASH:{} KEY:{}] from cache [{}]", element.hashCode(), key, cacheRepo.getCacheName());
 		return element;
 	    }
 	}
