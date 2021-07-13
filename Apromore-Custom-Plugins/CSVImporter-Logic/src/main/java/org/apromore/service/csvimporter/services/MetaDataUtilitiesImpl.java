@@ -31,11 +31,7 @@ import static org.apromore.service.csvimporter.constants.Constants.timestampPatt
 import static org.apromore.service.csvimporter.dateparser.DateUtil.determineDateFormat;
 import static org.apromore.service.csvimporter.dateparser.DateUtil.parseToTimestamp;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -57,6 +53,19 @@ public class MetaDataUtilitiesImpl implements MetaDataUtilities {
         setOtherTimestamps();
         onlyOnetimestampFound();
         setEventAttributesPos();
+        setCaseAttributesPos();
+
+        return this.logMetaData;
+    }
+
+    @Override
+    public LogMetaData resetCaseAndEventAttributes(LogMetaData logMetaData, List<List<String>> lines) {
+        this.logMetaData = logMetaData;
+        this.lines = lines;
+
+        logMetaData.getEventAttributesPos().addAll(logMetaData.getCaseAttributesPos());
+        logMetaData.getCaseAttributesPos().clear();
+
         setCaseAttributesPos();
 
         return this.logMetaData;

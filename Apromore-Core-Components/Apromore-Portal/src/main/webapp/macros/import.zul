@@ -52,16 +52,16 @@
                                 <label sclass="ap-importer-filename" id="fileNameLabel" value="" width="100%"/>
                             </row>
                             <row spans="1,2">
-                                <label value="${labels.importSupportedExts_text}"/>
+                                <label value="${labels.portal_importSupportedExts_text}"/>
                                 <label id="supportedExt" value="" />
                             </row>
                             <row spans="1,2" visible="${labels.publish_enable}">
-                                <label value="${labels.importMakePublic_text}"/>
+                                <label value="${labels.portal_importMakePublic_text}"/>
                                 <checkbox id="public" />
                             </row>
                             <row spans="1,2">
                                 <label value=""/>
-                                <label sclass="ap-importer-filename" value="${labels.importZipGZ_text}" />
+                                <label sclass="ap-importer-filename" value="${labels.portal_importZipGZ_text}" />
                             </row>
                             <row spans="3" sclass="ap-window-footer-actions">
                                 <div align="center">
@@ -85,7 +85,7 @@
                         <rows>
                             <row>
                                 <label value="File to upload"/>
-                                <textbox id="fileUrl" placeholder="${labels.importPasteLink_text}" cols="53"
+                                <textbox id="fileUrl" placeholder="${labels.portal_importPasteLink_text}" cols="53"
                                          constraint="/(http|https|ftp):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&amp;%@!\-\/]))?/: Invalid or empty URL"/>
                                 <button id="uploadURLButton" label="Select"/>
                             </row>
@@ -94,23 +94,23 @@
                                 <label sclass="ap-importer-filename" id="fileNameLabelURL" value="" />
                             </row>
                             <row spans="1,2">
-                                <label value="${labels.importSupportedProtocols_text}"/>
+                                <label value="${labels.portal_importSupportedProtocols_text}"/>
                                 <label id="supportedProtocols" value="HTTPS" />
                             </row>
                             <row spans="1,2">
-                                <label value="${labels.importSupportedClouds_text}"/>
+                                <label value="${labels.portal_importSupportedClouds_text}"/>
                                 <label id="supportedCS" value="Dropbox, Google Drive, Microsoft OneDrive" />
                             </row>
                             <row spans="1,2">
-                                <label value="${labels.importSupportedExts_text}"/>
+                                <label value="${labels.portal_importSupportedExts_text}"/>
                                 <label id="supportedExtURL" value="" />
                             </row>
                             <row spans="1,2">
                                 <label value=""/>
-                                <label sclass="ap-importer-filename" value="${labels.importZipGZ_text}" />
+                                <label sclass="ap-importer-filename" value="${labels.portal_importZipGZ_text}" />
                             </row>
                             <row spans="1,2" visible="${labels.publish_enable}">
-                                <label value="${labels.importMakePublic_text}"/>
+                                <label value="${labels.portal_importMakePublic_text}"/>
                                 <checkbox id="public_URL" />
                             </row>
                             <row spans="3" sclass="ap-window-footer-actions">

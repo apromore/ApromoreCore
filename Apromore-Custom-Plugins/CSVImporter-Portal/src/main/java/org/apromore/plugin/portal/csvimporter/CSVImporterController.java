@@ -30,6 +30,7 @@ import org.apromore.dao.model.Log;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
+import org.apromore.portal.common.notification.Notification;
 import org.apromore.service.EventLogService;
 import org.apromore.service.UserMetadataService;
 import org.apromore.service.csvimporter.model.LogErrorReport;
@@ -42,7 +43,6 @@ import org.apromore.util.UserMetadataTypeEnum;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.zkoss.json.JSONObject;
-import org.zkoss.util.Locales;
 import org.zkoss.util.media.Media;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.web.Attributes;
@@ -684,6 +684,7 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
 
 
         for (int pos = 0; pos < logMetaData.getHeader().size(); pos++) {
+            String head = logMetaData.getHeader().get(pos);
             Listbox box = new Listbox();
             box.setMold("select"); // set listBox to select mode
             box.setId(String.valueOf(pos)); // set id of list as column position.
@@ -724,6 +725,29 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
                     case caseIdLabel:
                         resetUniqueAttribute(logMetaData.getCaseIdPos());
                         logMetaData.setCaseIdPos(colPos);
+                        logMetaData = metaDataUtilities.resetCaseAndEventAttributes(logMetaData, sampleLog);
+
+                        Listbox lb = (Listbox) window.getFellow(String.valueOf(0));
+                        int eventAttributeIndex = lb.getIndexOfItem((Listitem) lb.getFellow(eventAttributeLabel));
+                        int caseAttributeIndex = lb.getIndexOfItem((Listitem) lb.getFellow(caseAttributeLabel));
+
+                        for (int caseAttriPos : logMetaData.getCaseAttributesPos()) {
+                            lb = (Listbox) window.getFellow(String.valueOf(caseAttriPos));
+                            lb.setSelectedIndex(caseAttributeIndex);
+                        }
+
+                        lb.getSelectedItem().setStyle("background: #f00 !important;");
+
+                        for (int eventAttriPos : logMetaData.getEventAttributesPos()) {
+                            lb = (Listbox) window.getFellow(String.valueOf(eventAttriPos));
+                            lb.setSelectedIndex(eventAttributeIndex);
+                        }
+
+                        String message = MessageFormat.format(
+                                getLabels().getString("reset_event_case_attributes"), head);
+
+                        Notification.info(message);
+
                         break;
                     case activityLabel:
                         resetUniqueAttribute(logMetaData.getActivityPos());

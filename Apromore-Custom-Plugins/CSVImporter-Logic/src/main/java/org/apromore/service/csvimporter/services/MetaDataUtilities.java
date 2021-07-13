@@ -29,6 +29,8 @@ public interface MetaDataUtilities {
 
     LogMetaData processMetaData(LogMetaData logMetaData, List<List<String>> lines);
 
+    LogMetaData resetCaseAndEventAttributes(LogMetaData logMetaData, List<List<String>> lines);
+
     boolean isTimestamp(int colPos, List<List<String>> lines);
 
     boolean isTimestamp(int colPos, String format, List<List<String>> lines);
