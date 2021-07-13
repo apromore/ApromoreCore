@@ -220,9 +220,6 @@ public class MainController extends BaseController implements MainControllerInte
             MainController self = this;
 
             Sessions.getCurrent().setAttribute("portalContext", portalContext);
-            Sessions.getCurrent().setAttribute("siteProperties",
-                    OSGi.getConfiguration("site", Sessions.getCurrent().getWebApp().getServletContext()));
-
 
             this.breadCrumbs.addEventListener("onSelectFolder", new EventListener<Event>() {
                 @Override
