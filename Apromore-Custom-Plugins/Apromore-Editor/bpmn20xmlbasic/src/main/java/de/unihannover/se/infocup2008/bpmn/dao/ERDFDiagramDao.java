@@ -66,6 +66,7 @@ import org.w3c.dom.traversal.TreeWalker;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -317,10 +318,7 @@ public class ERDFDiagramDao {
             Result result = new StreamResult(file);
 
             // Write the DOM document to the file
-            Transformer xformer = TransformerFactory.newInstance()
-                    .newTransformer();
-
-            xformer.transform(source, result);
+            transform(source, result);
 
         } catch (Exception e) {
             System.err
@@ -339,10 +337,8 @@ public class ERDFDiagramDao {
         Result result = new StreamResult(writer);
 
         // Write the DOM document to the file
-        Transformer xformer;
         try {
-            xformer = TransformerFactory.newInstance().newTransformer();
-            xformer.transform(source, result);
+            transform(source, result);
         } catch (TransformerConfigurationException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -354,5 +350,14 @@ public class ERDFDiagramDao {
             e.printStackTrace();
         }
 
+    }
+
+    private void transform(Source source, Result result)
+        throws TransformerConfigurationException, TransformerException {
+
+        TransformerFactory factory = TransformerFactory.newInstance();
+        factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+        factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+        factory.newTransformer().transform(source, result);
     }
 }

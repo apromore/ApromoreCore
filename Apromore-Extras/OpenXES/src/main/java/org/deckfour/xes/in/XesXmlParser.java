@@ -66,11 +66,13 @@ import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import java.util.List;
 import java.util.Stack;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
@@ -188,18 +190,21 @@ public class XesXmlParser extends XParser {
 	 * @return The parsed log.
 	 */
 	public List<XLog> parse(InputStream is) throws Exception {
-		BufferedInputStream bis = new BufferedInputStream(is);
-		// set up a specialized SAX2 handler to fill the container
-		XesXmlHandler handler = new XesXmlHandler();
-		// set up SAX parser and parse provided log file into the container
-		SAXParserFactory parserFactory = SAXParserFactory.newInstance();
-		parserFactory.setNamespaceAware(false);
-		SAXParser parser = parserFactory.newSAXParser();
-		parser.parse(bis, handler);
-		bis.close();
-		ArrayList<XLog> wrapper = new ArrayList<XLog>();
-		wrapper.add(handler.getLog());
-		return wrapper;
+		try (BufferedInputStream bis = new BufferedInputStream(is)) {
+			// set up a specialized SAX2 handler to fill the container
+			XesXmlHandler handler = new XesXmlHandler();
+			// set up SAX parser and parse provided log file into the container
+			SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+			parserFactory.setNamespaceAware(false);
+			parserFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+			parserFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+			parserFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+			parserFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+			SAXParser parser = parserFactory.newSAXParser();
+			parser.parse(bis, handler);
+
+			return Collections.singletonList(handler.getLog());
+		}
 	}
 
 	/**

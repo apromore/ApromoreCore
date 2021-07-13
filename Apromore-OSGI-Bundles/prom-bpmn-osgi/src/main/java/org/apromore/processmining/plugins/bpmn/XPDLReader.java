@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
@@ -54,9 +55,14 @@ public class XPDLReader {
 		this.bpmndiagram = bpmndiagram;
 
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-		dbf.setValidating(false);
+		dbf.setAttribute(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+		dbf.setFeature("http://xml.org/sax/features/external-general-entities", false);
+		dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+		dbf.setExpandEntityReferences(false);
 		dbf.setIgnoringComments(true);
 		dbf.setIgnoringElementContentWhitespace(true);
+		dbf.setValidating(false);
+		dbf.setXIncludeAware(false);
 
 		Document rootNode = dbf.newDocumentBuilder().parse(input);
 
