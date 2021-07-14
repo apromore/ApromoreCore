@@ -46,6 +46,8 @@ public class ConfigBean {
   private boolean sanitizationEnabled = false;
   private Site site = new Site();
 
+  private int maxEventCount = 1000000;
+
   @Data
   public class Site {
     private String editor;
