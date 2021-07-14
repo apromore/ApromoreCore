@@ -38,7 +38,7 @@ import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNNode;
  *
  */
 public class TraceAbstraction extends AbstractAbstraction {
-	protected TraceAbstraction(AttributeTrace attTrace, AttributeLog log, AbstractionParams params) {
+	public TraceAbstraction(AttributeTrace attTrace, AttributeLog log, AbstractionParams params) {
 		super(log, params);
 		this.diagram = new TraceBPMNDiagram(attTrace, log);
 		this.updateWeights(params);
