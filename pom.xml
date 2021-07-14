@@ -69,6 +69,7 @@
         <module>Apromore-Custom-Plugins/Generic-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/Log-Filter-Portal-Plugin-Generic</module>
 
+        <module>Apromore-Custom-Plugins/About-Core-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/About-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/Access-Control-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/Account-Portal-Plugin</module>
