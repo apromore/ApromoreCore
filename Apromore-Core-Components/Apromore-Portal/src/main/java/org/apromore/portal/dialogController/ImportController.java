@@ -77,6 +77,7 @@ public class ImportController extends BaseController {
     public static final String MXML_GZ = "mxml.gz";
     public static final String ON_CLICK = "onClick";
     public static final String PORTAL_FAILED_IMPORT_MESSAGE = "portal_failedImport_message";
+    public static final String FILE_IMPORTER_PLUGINS = "fileImporterPlugins";
 
     private long maxUploadSize = 100000000L; // default 100MB
     private boolean uploadSizeExceeded = false;
@@ -120,7 +121,7 @@ public class ImportController extends BaseController {
         this.ignoredFiles = "";
         this.mainC = mainC;
         this.maxUploadSize = this.mainC.config.getMaxUploadSize();
-        this.fileImporterPlugins = (List<FileImporterPlugin>) SpringUtil.getBean("fileImporterPlugins");
+        this.fileImporterPlugins = (List<FileImporterPlugin>) SpringUtil.getBean(FILE_IMPORTER_PLUGINS);
         //this.note = (message) -> { Messagebox.show(message); };
         this.note = new NotificationHandler() { public void show(String message) { Messagebox.show(message); } };
 
@@ -146,7 +147,7 @@ public class ImportController extends BaseController {
             SortedSet<String> supportedExt = new TreeSet<>();
             Collections.addAll(supportedExt, "xes", XES_GZ, "mxml", MXML_GZ, "zip");
             supportedExt.addAll(this.mainC.getNativeTypes().keySet());
-            List<FileImporterPlugin> fileImporterPlugins = (List<FileImporterPlugin>) SpringUtil.getBean("fileImporterPlugins");
+            List<FileImporterPlugin> fileImporterPlugins = (List<FileImporterPlugin>) SpringUtil.getBean(FILE_IMPORTER_PLUGINS);
             for (FileImporterPlugin fileImporterPlugin: fileImporterPlugins) {
                 supportedExt.addAll(fileImporterPlugin.getFileExtensions());
             }
@@ -222,7 +223,7 @@ public class ImportController extends BaseController {
 	    String extension = ItemNameUtils.findExtension(media.getName());
 
         okButton.setDisabled(true);
-        List<FileImporterPlugin> fileImporterPlugins = (List<FileImporterPlugin>) SpringUtil.getBean("fileImporterPlugins");
+        List<FileImporterPlugin> fileImporterPlugins = (List<FileImporterPlugin>) SpringUtil.getBean(FILE_IMPORTER_PLUGINS);
         for (FileImporterPlugin fileImporterPlugin: fileImporterPlugins) {
             if (fileImporterPlugin.getFileExtensions().contains(extension)) {
                 okButton.setDisabled(uploadSizeExceeded);
@@ -303,7 +304,7 @@ public class ImportController extends BaseController {
             String extension = ItemNameUtils.findExtension(media.getName());
 
             List<FileImporterPlugin> fileImporterPlugins = (List<FileImporterPlugin>) SpringUtil.getBean(
-                    "fileImporterPlugins");
+                    FILE_IMPORTER_PLUGINS);
             for (FileImporterPlugin fileImporterPlugin : fileImporterPlugins) {
                 if (fileImporterPlugin.getFileExtensions().contains(extension)) {
                     okButton_URL.setDisabled(false);
