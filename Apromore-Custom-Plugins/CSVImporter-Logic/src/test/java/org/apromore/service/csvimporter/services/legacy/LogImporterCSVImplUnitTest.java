@@ -26,7 +26,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import java.util.Arrays;
 import java.util.List;
-import org.apromore.service.csvimporter.common.ConfigBean;
+import org.apromore.commons.config.ConfigBean;
 import org.apromore.service.csvimporter.model.LogMetaData;
 import org.apromore.service.csvimporter.model.LogModel;
 import org.apromore.service.csvimporter.services.MetaDataService;
@@ -164,7 +164,7 @@ public class LogImporterCSVImplUnitTest {
     logMetaData = metaDataUtilities.processMetaData(logMetaData, sampleLog);
 
     // Log size below the limit
-    logImporter.config.setMaxEventCount(4L);
+    logImporter.config.setMaxEventCount(4);
     LogModel logModel = logImporter.importLog(this.getClass().getResourceAsStream(testFile),
         logMetaData, "UTF-8", true, null, null, null);
 
@@ -174,7 +174,7 @@ public class LogImporterCSVImplUnitTest {
     assertEquals(false, logModel.isRowLimitExceeded());
 
     // Log size exactly equal to the limit
-    logImporter.config.setMaxEventCount(3L);
+    logImporter.config.setMaxEventCount(3);
     logModel = logImporter.importLog(this.getClass().getResourceAsStream(testFile), logMetaData,
         "UTF-8", true, null, null, null);
 
@@ -184,7 +184,7 @@ public class LogImporterCSVImplUnitTest {
     assertEquals(false, logModel.isRowLimitExceeded());
 
     // Log size exceeding the limit
-    logImporter.config.setMaxEventCount(2L);
+    logImporter.config.setMaxEventCount(2);
     logModel = logImporter.importLog(this.getClass().getResourceAsStream(testFile), logMetaData,
         "UTF-8", true, null, null, null);
 
