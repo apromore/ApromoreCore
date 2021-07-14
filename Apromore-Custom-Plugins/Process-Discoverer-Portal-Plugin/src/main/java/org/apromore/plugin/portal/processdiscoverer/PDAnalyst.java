@@ -139,7 +139,7 @@ public class PDAnalyst {
 
         // ProcessDiscoverer logic with default attribute
         this.setMainAttribute(configData.getDefaultAttribute());
-        this.processDiscoverer = new ProcessDiscoverer(this.attLog);
+        this.processDiscoverer = new ProcessDiscoverer();
         this.processVisualizer = new ProcessJSONVisualizer();
     }
 
@@ -149,7 +149,7 @@ public class PDAnalyst {
         indexableAttributes = aLog.getAttributeStore().getPerspectiveEventAttributes(
                 configData.getMaxNumberOfUniqueValues(), AttributeType.BOOLEAN);
         this.setMainAttribute(configData.getDefaultAttribute());
-        this.processDiscoverer = new ProcessDiscoverer(this.attLog);
+        this.processDiscoverer = new ProcessDiscoverer();
         this.processVisualizer = new ProcessJSONVisualizer();
     }
 
@@ -158,6 +158,7 @@ public class PDAnalyst {
     }
 
     public void cleanUp() {
+        attLog.clear();
         processDiscoverer.cleanUp();
         processVisualizer.cleanUp();
     }
@@ -215,7 +216,7 @@ public class PDAnalyst {
         AbstractionParams params = genAbstractionParams(userOptions);
 
         // Find a DFG first
-        Abstraction dfgAbstraction = processDiscoverer.generateDFGAbstraction(params);
+        Abstraction dfgAbstraction = processDiscoverer.generateDFGAbstraction(attLog, params);
         if (dfgAbstraction == null ||
                 dfgAbstraction.getDiagram() == null ||
                 dfgAbstraction.getDiagram().getNodes().isEmpty() ||
@@ -227,7 +228,7 @@ public class PDAnalyst {
         // Actual operation with the new params
         Abstraction currentAbstraction;
         if (userOptions.getBPMNMode()) {
-            currentAbstraction = processDiscoverer.generateBPMNAbstraction(params, dfgAbstraction);
+            currentAbstraction = processDiscoverer.generateBPMNAbstraction(attLog, params, dfgAbstraction);
         } else {
             currentAbstraction = dfgAbstraction;
         }
@@ -238,7 +239,7 @@ public class PDAnalyst {
 
     public OutputData discoverTrace(String traceID, UserOptionsData userOptions) throws Exception {
         AbstractionParams params = genAbstractionParamsForTrace(userOptions);
-        Abstraction traceAbs = processDiscoverer.generateTraceAbstraction(traceID, params);
+        Abstraction traceAbs = processDiscoverer.generateTraceAbstraction(attLog, traceID, params);
         String traceVisualization = processVisualizer.generateVisualizationText(traceAbs);
         return new OutputData(traceAbs, traceVisualization);
     }
