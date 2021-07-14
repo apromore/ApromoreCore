@@ -83,6 +83,12 @@ public abstract class BaseListboxController extends BaseController {
 
 	private static final String TILE_VIEW = "tile";
 	private static final String LIST_VIEW = "list";
+	public static final String APROMORE = "Apromore";
+	public static final String ON_CLICK = "onClick";
+	public static final String AP_TILES_VIEW = "ap-tiles-view";
+	public static final String AP_BTN_OFF = "ap-btn-off";
+	public static final String AP_BTN_ON = "ap-btn-on";
+	public static final String PORTAL_WARNING_TEXT = "portal_warning_text";
 
 	private final Listbox listBox;
 
@@ -171,7 +177,7 @@ public abstract class BaseListboxController extends BaseController {
 		try {
 			currentUser = getSecurityService().getUserById(UserSessionManager.getCurrentUser().getId());
 		} catch (Exception e) {
-			Messagebox.show(e.getMessage(), "Apromore", Messagebox.OK, Messagebox.ERROR);
+			Messagebox.show(e.getMessage(), APROMORE, Messagebox.OK, Messagebox.ERROR);
 		}
 	}
 
@@ -210,21 +216,21 @@ public abstract class BaseListboxController extends BaseController {
 			}
 		});
 
-		this.refreshB.addEventListener("onClick", new EventListener<Event>() {
+		this.refreshB.addEventListener(ON_CLICK, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
 				refreshContent();
 			}
 		});
 
-		this.btnUpload.addEventListener("onClick", new EventListener<Event>() {
+		this.btnUpload.addEventListener(ON_CLICK, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
 				importFile();
 			}
 		});
 
-		this.btnDownload.addEventListener("onClick", new EventListener<Event>() {
+		this.btnDownload.addEventListener(ON_CLICK, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
 				exportFile();
@@ -233,14 +239,14 @@ public abstract class BaseListboxController extends BaseController {
 
 		if (portalPluginMap.containsKey(ETL_PLUGIN_LABEL)) {
 			dataPipelinesSection.setVisible(config.getEnableEtl());
-			this.btnCreateDataPipeline.addEventListener("onClick", new EventListener<Event>() {
+			this.btnCreateDataPipeline.addEventListener(ON_CLICK, new EventListener<Event>() {
 				@Override
 				public void onEvent(Event event) throws Exception {
 					openETL();
 				}
 			});
 
-			this.btnManageDataPipelines.addEventListener("onClick", new EventListener<Event>() {
+			this.btnManageDataPipelines.addEventListener(ON_CLICK, new EventListener<Event>() {
 				@Override
 				public void onEvent(Event event) throws Exception {
 					openPipelineManager();
@@ -248,49 +254,49 @@ public abstract class BaseListboxController extends BaseController {
 			});
 		}
 
-		this.btnSelectAll.addEventListener("onClick", new EventListener<Event>() {
+		this.btnSelectAll.addEventListener(ON_CLICK, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
 				selectAll();
 			}
 		});
 
-		this.btnSelectNone.addEventListener("onClick", new EventListener<Event>() {
+		this.btnSelectNone.addEventListener(ON_CLICK, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
 				unselectAll();
 			}
 		});
 
-		this.btnCut.addEventListener("onClick", new EventListener<Event>() {
+		this.btnCut.addEventListener(ON_CLICK, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
 				cut();
 			}
 		});
 
-		this.btnCopy.addEventListener("onClick", new EventListener<Event>() {
+		this.btnCopy.addEventListener(ON_CLICK, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
 				copy();
 			}
 		});
 
-		this.btnPaste.addEventListener("onClick", new EventListener<Event>() {
+		this.btnPaste.addEventListener(ON_CLICK, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
 				paste();
 			}
 		});
 
-		this.btnAddFolder.addEventListener("onClick", new EventListener<Event>() {
+		this.btnAddFolder.addEventListener(ON_CLICK, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
 				addFolder();
 			}
 		});
 
-		this.btnAddProcess.addEventListener("onClick", new EventListener<Event>() {
+		this.btnAddProcess.addEventListener(ON_CLICK, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
 				mainController.openNewProcess();
@@ -302,35 +308,35 @@ public abstract class BaseListboxController extends BaseController {
 		 * public void onEvent(Event event) throws Exception { changeGED(); } });
 		 */
 
-		this.btnRenameFolder.addEventListener("onClick", new EventListener<Event>() {
+		this.btnRenameFolder.addEventListener(ON_CLICK, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
 				rename();
 			}
 		});
 
-		this.btnRemoveFolder.addEventListener("onClick", new EventListener<Event>() {
+		this.btnRemoveFolder.addEventListener(ON_CLICK, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
 				removeFolder();
 			}
 		});
 
-		this.btnListView.addEventListener("onClick", new EventListener<Event>() {
+		this.btnListView.addEventListener(ON_CLICK, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
 				setTileView(false);
 			}
 		});
 
-		this.btnTileView.addEventListener("onClick", new EventListener<Event>() {
+		this.btnTileView.addEventListener(ON_CLICK, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
 				setTileView(true);
 			}
 		});
 
-		this.btnSecurity.addEventListener("onClick", new EventListener<Event>() {
+		this.btnSecurity.addEventListener(ON_CLICK, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
 				security();
@@ -338,7 +344,7 @@ public abstract class BaseListboxController extends BaseController {
 		});
 
 		if (mainController.isCurrentUserAdmin()) {
-			this.btnUserMgmt.addEventListener("onClick", new EventListener<Event>() {
+			this.btnUserMgmt.addEventListener(ON_CLICK, new EventListener<Event>() {
 				@Override
 				public void onEvent(Event event) throws Exception {
 					userMgmt();
@@ -351,7 +357,7 @@ public abstract class BaseListboxController extends BaseController {
 			this.btnSecurity.setVisible(false);
 		}
 
-		this.btnShare.addEventListener("onClick", new EventListener<Event>() {
+		this.btnShare.addEventListener(ON_CLICK, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
 				share();
@@ -360,7 +366,7 @@ public abstract class BaseListboxController extends BaseController {
 
 		this.btnCalendarSep.setVisible(config.getEnableCalendar());
 		this.btnCalendar.setVisible(config.getEnableCalendar());
-		this.btnCalendar.addEventListener("onClick", new EventListener<Event>() {
+		this.btnCalendar.addEventListener(ON_CLICK, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
 
@@ -383,24 +389,24 @@ public abstract class BaseListboxController extends BaseController {
 		Listhead listHead = (Listhead) this.listBox.query(".ap-listbox-process-head");
 		String sclass = Objects.requireNonNull(this.listBox.getSclass(), "");
 		if (tileOn) {
-			if (!sclass.contains("ap-tiles-view")) {
+			if (!sclass.contains(AP_TILES_VIEW)) {
 				this.listBox.setSclass(sclass.trim() + " ap-tiles-view");
 			}
 			if (listHead != null) {
 				listHead.setVisible(false);
 			}
-			toggleComponentSclass(btnTileView, true, "ap-btn-off", "ap-btn-on");
-			toggleComponentSclass(btnListView, false, "ap-btn-off", "ap-btn-on");
+			toggleComponentSclass(btnTileView, true, AP_BTN_OFF, AP_BTN_ON);
+			toggleComponentSclass(btnListView, false, AP_BTN_OFF, AP_BTN_ON);
 			setPersistedView(TILE_VIEW);
 		} else {
-			if (sclass.contains("ap-tiles-view")) {
-				this.listBox.setSclass(sclass.replace("ap-tiles-view", ""));
+			if (sclass.contains(AP_TILES_VIEW)) {
+				this.listBox.setSclass(sclass.replace(AP_TILES_VIEW, ""));
 			}
 			if (listHead != null) {
 				listHead.setVisible(true);
 			}
-			toggleComponentSclass(btnListView, true, "ap-btn-off", "ap-btn-on");
-			toggleComponentSclass(btnTileView, false, "ap-btn-off", "ap-btn-on");
+			toggleComponentSclass(btnListView, true, AP_BTN_OFF, AP_BTN_ON);
+			toggleComponentSclass(btnTileView, false, AP_BTN_OFF, AP_BTN_ON);
 			setPersistedView(LIST_VIEW);
 		}
 	}
@@ -445,7 +451,7 @@ public abstract class BaseListboxController extends BaseController {
 			try {
 				new ImportController(getMainController());
 			} catch (DialogException e) {
-				Messagebox.show(e.getMessage(), "Apromore", Messagebox.OK, Messagebox.ERROR);
+				Messagebox.show(e.getMessage(), APROMORE, Messagebox.OK, Messagebox.ERROR);
 			}
 	    } else {
 			Notification.error(Labels.getLabel("portal_noUploadInReadOnly_message"));
@@ -459,7 +465,7 @@ public abstract class BaseListboxController extends BaseController {
 			downloadPlugin = portalPluginMap.get("Download");
 			downloadPlugin.execute(portalContext);
 		} catch (Exception e) {
-			Messagebox.show(e.getMessage(), "Apromore", Messagebox.OK, Messagebox.ERROR);
+			Messagebox.show(e.getMessage(), APROMORE, Messagebox.OK, Messagebox.ERROR);
 		}
 	}
 
@@ -470,7 +476,7 @@ public abstract class BaseListboxController extends BaseController {
 			etlPlugin = portalPluginMap.get(ETL_PLUGIN_LABEL);
 			etlPlugin.execute(portalContext);
 		} catch (Exception e) {
-			Messagebox.show(e.getMessage(), "Apromore", Messagebox.OK, Messagebox.ERROR);
+			Messagebox.show(e.getMessage(), APROMORE, Messagebox.OK, Messagebox.ERROR);
 		}
 	}
 
@@ -491,7 +497,7 @@ public abstract class BaseListboxController extends BaseController {
 		try {
 			new AddFolderController(getMainController(), currentUser, currentFolder);
 		} catch (DialogException e) {
-			Messagebox.show(e.getMessage(), "Apromore", Messagebox.OK, Messagebox.ERROR);
+			Messagebox.show(e.getMessage(), APROMORE, Messagebox.OK, Messagebox.ERROR);
 		}
 	}
 
@@ -519,7 +525,7 @@ public abstract class BaseListboxController extends BaseController {
 				Notification.error(Labels.getLabel("portal_noMultipleRename_message"));
 			}
 		} catch (DialogException e) {
-			Messagebox.show(e.getMessage(), "Apromore", Messagebox.OK, Messagebox.ERROR);
+			Messagebox.show(e.getMessage(), APROMORE, Messagebox.OK, Messagebox.ERROR);
 		}
 	}
 
@@ -531,7 +537,7 @@ public abstract class BaseListboxController extends BaseController {
 			editSelectionMetadataPlugin = portalPluginMap.get("Rename");
 			editSelectionMetadataPlugin.execute(portalContext);
 		} catch (Exception e) {
-			Messagebox.show(e.getMessage(), "Apromore", Messagebox.OK, Messagebox.ERROR);
+			Messagebox.show(e.getMessage(), APROMORE, Messagebox.OK, Messagebox.ERROR);
 		}
 	}
 
@@ -567,7 +573,7 @@ public abstract class BaseListboxController extends BaseController {
             }
 
 		} catch (DialogException e) {
-			Messagebox.show(e.getMessage(), "Apromore", Messagebox.OK, Messagebox.ERROR);
+			Messagebox.show(e.getMessage(), APROMORE, Messagebox.OK, Messagebox.ERROR);
 		}
 	}
 
@@ -672,7 +678,7 @@ public abstract class BaseListboxController extends BaseController {
 
 	/* Show the message tailored to deleting process model. */
 	private void showMessageProcessesDelete(final MainController mainController) throws Exception {
-		Messagebox.show(Labels.getLabel("portal_deleteModelPrompt_message"), Labels.getLabel("portal_warning_text"), Messagebox.YES | Messagebox.NO, Messagebox.QUESTION,
+		Messagebox.show(Labels.getLabel("portal_deleteModelPrompt_message"), Labels.getLabel(PORTAL_WARNING_TEXT), Messagebox.YES | Messagebox.NO, Messagebox.QUESTION,
 				new EventListener<Event>() {
 					@Override
 					public void onEvent(Event evt) throws Exception {
@@ -691,7 +697,7 @@ public abstract class BaseListboxController extends BaseController {
 
 	/* Show the message tailored to deleting log model. */
 	private void showMessageLogsDelete(final MainController mainController) throws Exception {
-		Messagebox.show(Labels.getLabel("portal_deleteLogPrompt_message"), Labels.getLabel("portal_warning_text"), Messagebox.YES | Messagebox.NO, Messagebox.QUESTION,
+		Messagebox.show(Labels.getLabel("portal_deleteLogPrompt_message"), Labels.getLabel(PORTAL_WARNING_TEXT), Messagebox.YES | Messagebox.NO, Messagebox.QUESTION,
 				new EventListener<Event>() {
 					@Override
 					public void onEvent(Event evt) throws Exception {
@@ -710,7 +716,7 @@ public abstract class BaseListboxController extends BaseController {
 
 	/* Show a message tailored to deleting a combo of folders and processes */
 	private void showMessageElementsDelete(final MainController mainController) throws Exception {
-		Messagebox.show(Labels.getLabel("portal_deleteMixedPrompt_message"), Labels.getLabel("portal_warning_text"), Messagebox.YES | Messagebox.NO, Messagebox.QUESTION,
+		Messagebox.show(Labels.getLabel("portal_deleteMixedPrompt_message"), Labels.getLabel(PORTAL_WARNING_TEXT), Messagebox.YES | Messagebox.NO, Messagebox.QUESTION,
 				new EventListener<Event>() {
 					@Override
 					public void onEvent(Event evt) throws Exception {
@@ -730,7 +736,7 @@ public abstract class BaseListboxController extends BaseController {
 	/* Show the message tailored to deleting one or more folders. */
 	private void showMessageFolderDelete(final MainController mainController, final ArrayList<FolderType> folders)
 			throws Exception {
-		Messagebox.show(Labels.getLabel("portal_deleteFolderPrompt_message"), Labels.getLabel("portal_warning_text"), Messagebox.YES | Messagebox.NO, Messagebox.QUESTION,
+		Messagebox.show(Labels.getLabel("portal_deleteFolderPrompt_message"), Labels.getLabel(PORTAL_WARNING_TEXT), Messagebox.YES | Messagebox.NO, Messagebox.QUESTION,
 				new EventListener<Event>() {
 					@Override
 					public void onEvent(Event evt) throws Exception {
@@ -750,7 +756,7 @@ public abstract class BaseListboxController extends BaseController {
 	/* Show a message tailored to deleting a combo of folders and processes */
 	private void showMessageFoldersAndElementsDelete(final MainController mainController,
 			final ArrayList<FolderType> folders) throws Exception {
-		Messagebox.show(Labels.getLabel("portal_deleteMixedPrompt_message"), Labels.getLabel("portal_warning_text"), Messagebox.YES | Messagebox.NO, Messagebox.QUESTION,
+		Messagebox.show(Labels.getLabel("portal_deleteMixedPrompt_message"), Labels.getLabel(PORTAL_WARNING_TEXT), Messagebox.YES | Messagebox.NO, Messagebox.QUESTION,
 				new EventListener<Event>() {
 					@Override
 					public void onEvent(Event evt) throws Exception {
@@ -804,7 +810,7 @@ public abstract class BaseListboxController extends BaseController {
 			accessControlPlugin.setSimpleParams(arg);
 			accessControlPlugin.execute(portalContext);
 		} catch (Exception e) {
-			Messagebox.show(e.getMessage(), "Apromore", Messagebox.OK, Messagebox.ERROR);
+			Messagebox.show(e.getMessage(), APROMORE, Messagebox.OK, Messagebox.ERROR);
 		}
 	}
 
@@ -836,7 +842,7 @@ public abstract class BaseListboxController extends BaseController {
 			accessControlPlugin.setSimpleParams(arg);
 			accessControlPlugin.execute(portalContext);
 		} catch (Exception e) {
-			Messagebox.show(e.getMessage(), "Apromore", Messagebox.OK, Messagebox.ERROR);
+			Messagebox.show(e.getMessage(), APROMORE, Messagebox.OK, Messagebox.ERROR);
 		}
 	}
 
@@ -904,7 +910,7 @@ public abstract class BaseListboxController extends BaseController {
 		if (failures > 0) {
 			Messagebox.show(
 					"Could not perform all delete operations. You may not be authorized to delete some of the resources.",
-					"Apromore", Messagebox.OK, Messagebox.ERROR);
+					APROMORE, Messagebox.OK, Messagebox.ERROR);
 		}
 		mainController.reloadSummaries();
 	}
