@@ -26,7 +26,9 @@ package org.apromore.service.csvexporter;
 
 import org.deckfour.xes.model.XLog;
 
+import java.io.File;
+
 public interface CSVExporterLogic {
 
-    String exportCSV(XLog myLog);
+    File exportCSV(XLog myLog);
 }
