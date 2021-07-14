@@ -136,9 +136,16 @@ public class TemporaryCacheService {
 		if (shouldCache(log)) {
 		    // Store corresponding object into cache
 		    cacheRepo.put(name, log);
-		    cacheRepo.put(logNameId + APMLOG_CACHE_KEY_SUFFIX, apmLogService.findAPMLogForXLog(log));
-		    LOGGER.debug("Put XLog [hash: {}] into Cache [{}] using Key [{}].", log.hashCode(), cacheRepo.getCacheName(), logNameId);
-		    LOGGER.debug("Put APMLog [hash: {}] into Cache [{}] using Key [{}].", log.hashCode(), cacheRepo.getCacheName(), logNameId + "APMLog");
+			LOGGER.debug("Put XLog [hash: {}] into Cache [{}] using Key [{}].", log.hashCode(), cacheRepo.getCacheName(), logNameId);
+
+			APMLog apmLog = apmLogService.findAPMLogForXLog(log);
+		    if (apmLog != null) {
+				cacheRepo.put(name + APMLOG_CACHE_KEY_SUFFIX, apmLog);
+				LOGGER.debug("Put APMLog [hash: {}] into Cache [{}] using Key [{}].", log.hashCode(), cacheRepo.getCacheName(), logNameId + APMLOG_CACHE_KEY_SUFFIX);
+			} else {
+				LOGGER.debug("The APMLog of XLog [hash: {}] is null, skip caching.", log.hashCode());
+			}
+
 		    LOGGER.debug("Memory Used: {} MB", getMemoryUsage().getUsed() / 1024 / 1024);
 		    LOGGER.debug("Memory Available: {} MB", (getMemoryUsage().getMax() - getMemoryUsage().getUsed()) / 1024 / 1024);
 		    LOGGER.debug("The number of elements in the memory store = {}", cacheRepo.getMemoryStoreSize());
@@ -161,7 +168,7 @@ public class TemporaryCacheService {
 		String storagePath = "FILE"+StorageType.STORAGE_PATH_SEPARATOR + config.getLogsDir();
 		String prefix = null;
 		String key = log.getFilePath() + "_" + log.getName() + ".xes.gz";
-		
+
 		if (log.getStorage() != null) {
 		    storagePath = log.getStorage().getStoragePath();
 		    prefix = log.getStorage().getPrefix();
@@ -187,7 +194,7 @@ public class TemporaryCacheService {
     /**
      * Load XES log file from cache, if not found then load from Event Logs
      * Repository
-     * 
+     *
      * @param log
      * @return
      */
@@ -240,10 +247,15 @@ public class TemporaryCacheService {
 			LOGGER.debug("Cache XLog [KEY:{}" + key + "]. " + "Elapsed time: {} ms.", key, elapsedNanos / 1000000);
 
 			startTime = System.nanoTime();
-			cacheRepo.put(key + APMLOG_CACHE_KEY_SUFFIX, apmLogService.findAPMLogForXLog(xlog));
-			elapsedNanos = System.nanoTime() - startTime;
-			LOGGER.debug("Construct and cache APMLog [KEY:{}]. Elapsed time: {} ms.", key + APMLOG_CACHE_KEY_SUFFIX,
-                            elapsedNanos / 1000000);
+			APMLog apmLog = apmLogService.findAPMLogForXLog(xlog);
+			if (apmLog != null) {
+				cacheRepo.put(key + APMLOG_CACHE_KEY_SUFFIX, apmLog);
+				elapsedNanos = System.nanoTime() - startTime;
+				LOGGER.debug("Construct and cache APMLog [KEY:{}]. Elapsed time: {} ms.", key + APMLOG_CACHE_KEY_SUFFIX,
+						elapsedNanos / 1000000);
+			} else {
+				LOGGER.debug("The APMLog of XLog [hash: {}] is null, skip caching.", xlog.hashCode());
+			}
 
 			LOGGER.debug("Memory Used: {} MB", getMemoryUsage().getUsed() / 1024 / 1024);
 			LOGGER.debug("Memory Available: {} MB", (getMemoryUsage().getMax() - getMemoryUsage().getUsed()) / 1024 / 1024);
@@ -259,7 +271,7 @@ public class TemporaryCacheService {
 
 	    } else {
 		// If cache hit
-		LOGGER.debug("Got object [HASH:{} KEY:{}] from cache [{}]", element.hashCode(), key, cacheRepo.getCacheName());
+		LOGGER.debug("Get XLog [HASH:{} KEY:{}] from cache [{}]", element.hashCode(), key, cacheRepo.getCacheName());
 		LOGGER.debug("Memory Used: {} MB", getMemoryUsage().getUsed() / 1024 / 1024);
 		return element;
 	    }
@@ -274,7 +286,7 @@ public class TemporaryCacheService {
 
     /**
      * Load aggregated log
-     * 
+     *
      * @param log
      * @return
      */
@@ -287,12 +299,13 @@ public class TemporaryCacheService {
 	    // ******* profiling code end here ********
 
 	    String key = log.getFilePath() + APMLOG_CACHE_KEY_SUFFIX;
-            APMLog element = (APMLog) cacheRepo.get(key);
 		if (log.getStorage() != null) {
                     key = log.getStorage().getKey() + APMLOG_CACHE_KEY_SUFFIX;
 		}
 
-	    if (element == null) {
+		APMLog element = (APMLog) cacheRepo.get(key);
+
+		if (element == null) {
 		// If doesn't hit cache
 		LOGGER.debug("Cache for [KEY: {}] is null.", key);
 
@@ -315,7 +328,7 @@ public class TemporaryCacheService {
 
 	    } else {
 		// If cache hit
-		LOGGER.debug("Get object [HASH:{} KEY:{}] from cache [{}]", element.hashCode(), key, cacheRepo.getCacheName());
+		LOGGER.debug("Get APMLog [HASH:{} KEY:{}] from cache [{}]", element.hashCode(), key, cacheRepo.getCacheName());
 		return element;
 	    }
 	}
