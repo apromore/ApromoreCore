@@ -367,7 +367,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
   public void addProcessToFolder(User user, Integer processId, Integer folderId) {
     if (folderId != null && processId != null) {
       Process process = processRepo.findById(processId).get();
-      Folder folder = folderRepo.findById(folderId).get();
+      Folder folder = folderRepo.findById(folderId).orElse(null);
 
       process.setFolder(folder);
 
