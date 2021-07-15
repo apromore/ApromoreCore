@@ -60,6 +60,8 @@ import org.zkoss.zul.Menuseparator;
 public class MenuController extends SelectorComposer<Menubar> {
 
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(MenuController.class);
+    public static final String GROUP = "group";
+    public static final String ON_CLICK = "onClick";
 
     private Menuitem aboutMenuitem;
     private Menuitem targetMenuitem;
@@ -109,7 +111,7 @@ public class MenuController extends SelectorComposer<Menubar> {
                 // Create a new menu if this is the first menu item within it
                 if (!menuMap.containsKey(group)) {
                     Menu menu = new Menu(menuName);
-                    menu.setClientDataAttribute("group", group);
+                    menu.setClientDataAttribute(GROUP, group);
                     menu.appendChild(new Menupopup());
                     menuMap.put(group, menu);
                 }
@@ -135,7 +137,7 @@ public class MenuController extends SelectorComposer<Menubar> {
                 String label = plugin.getLabel(Locale.getDefault());
                 menuitem.setLabel(label);
                 menuitem.setDisabled(plugin.getAvailability() == PortalPlugin.Availability.DISABLED);
-                menuitem.addEventListener("onClick", new EventListener<Event>() {
+                menuitem.addEventListener(ON_CLICK, new EventListener<Event>() {
                     @Override
                     public void onEvent(Event event) throws Exception {
                         PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
@@ -143,7 +145,7 @@ public class MenuController extends SelectorComposer<Menubar> {
                     }
                 });
 
-                if ("About".equals(menu.getClientDataAttribute("group"))) {
+                if ("About".equals(menu.getClientDataAttribute(GROUP))) {
                     aboutMenuitem = menuitem;
                     continue;
                 }
@@ -171,17 +173,17 @@ public class MenuController extends SelectorComposer<Menubar> {
 
             // Add the menus to the menu bar
             for (final Menu menu: menuMap.values()) {
-                if (!"Account".equals(menu.getClientDataAttribute("group")) &&
-                    !"About".equals(menu.getClientDataAttribute("group"))) {
+                if (!"Account".equals(menu.getClientDataAttribute(GROUP)) &&
+                    !"About".equals(menu.getClientDataAttribute(GROUP))) {
                     menubar.appendChild(menu);
                 }
             }
 
             for (final Menu menu: menuMap.values()) {
-                if ("Account".equals(menu.getClientDataAttribute("group"))) {
+                if ("Account".equals(menu.getClientDataAttribute(GROUP))) {
                     // ignore; belongs to the user menu
 
-                } else if ("File".equals(menu.getClientDataAttribute("group"))) {
+                } else if ("File".equals(menu.getClientDataAttribute(GROUP))) {
                     try {
                         Menupopup fileMenupopup = menu.getMenupopup();
 
@@ -191,7 +193,7 @@ public class MenuController extends SelectorComposer<Menubar> {
                         Menuitem item = new Menuitem();
                         item.setLabel(Labels.getLabel("common_cut_text"));
                         item.setImage("/themes/ap/common/img/icons/cut.svg");
-                        item.addEventListener("onClick", new EventListener<Event>() {
+                        item.addEventListener(ON_CLICK, new EventListener<Event>() {
                             @Override
                             public void onEvent(Event event) throws Exception {
                                 getBaseListboxController().cut();
@@ -202,7 +204,7 @@ public class MenuController extends SelectorComposer<Menubar> {
                         item = new Menuitem();
                         item.setLabel(Labels.getLabel("common_copy_text"));
                         item.setImage("/themes/ap/common/img/icons/copy.svg");
-                        item.addEventListener("onClick", new EventListener<Event>() {
+                        item.addEventListener(ON_CLICK, new EventListener<Event>() {
                             @Override
                             public void onEvent(Event event) throws Exception {
                                 getBaseListboxController().copy();
@@ -213,7 +215,7 @@ public class MenuController extends SelectorComposer<Menubar> {
                         item = new Menuitem();
                         item.setLabel(Labels.getLabel("common_paste_text"));
                         item.setImage("/themes/ap/common/img/icons/paste.svg");
-                        item.addEventListener("onClick", new EventListener<Event>() {
+                        item.addEventListener(ON_CLICK, new EventListener<Event>() {
                             @Override
                             public void onEvent(Event event) throws Exception {
                                 getBaseListboxController().paste();

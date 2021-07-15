@@ -66,8 +66,10 @@ import org.zkoss.zul.Messagebox;
  */
 public class BPMNEditorController extends BaseController {
     public static final String EVENT_MESSAGE_SAVE = "SaveEvent";
-    
+
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(BPMNEditorController.class);
+    public static final String BPMN_XML = "bpmnXML";
+    public static final String BPMN_2_01 = "BPMN 2.0";
     private EventQueue<Event> qeBPMNEditor = EventQueues.lookup(Constants.EVENT_QUEUE_BPMN_EDITOR, EventQueues.SESSION, true);
 
     private MainController mainC;
@@ -123,7 +125,7 @@ public class BPMNEditorController extends BaseController {
         Map<String, Object> param = new HashMap<>();
         try {
             PluginMessages pluginMessages = null;
-            String bpmnXML = (String) session.get("bpmnXML");
+            String bpmnXML = (String) session.get(BPMN_XML);
             
             if(bpmnXML == null) {
             	if (isNewProcess) {
@@ -162,16 +164,16 @@ public class BPMNEditorController extends BaseController {
                     param.put("doAutoLayout", "false");
             	}
             	
-                param.put("bpmnXML",       escapeXML(bpmnXML));
+                param.put(BPMN_XML,       escapeXML(bpmnXML));
                 param.put("url",           getURL(editSession.getNativeType()));
                 param.put("importPath",    getImportPath(editSession.getNativeType()));
                 param.put("exportPath",    getExportPath(editSession.getNativeType()));
                 param.put("editor",        "bpmneditor");
             } else {
-                param.put("bpmnXML",       bpmnXML);
-                param.put("url",           getURL("BPMN 2.0"));
-                param.put("importPath",    getImportPath("BPMN 2.0"));
-                param.put("exportPath",    getExportPath("BPMN 2.0"));
+                param.put(BPMN_XML,       bpmnXML);
+                param.put("url",           getURL(BPMN_2_01));
+                param.put("importPath",    getImportPath(BPMN_2_01));
+                param.put("exportPath",    getExportPath(BPMN_2_01));
                 param.put("editor",        "bpmneditor");
                 param.put("doAutoLayout", "false");
             }

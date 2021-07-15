@@ -104,6 +104,8 @@ import static org.apromore.portal.common.UserSessionManager.initializeUser;
 public class MainController extends BaseController implements MainControllerInterface {
 
     private static final long serialVersionUID = 5147685906484044300L;
+    public static final String APROMORE = "Apromore";
+    public static final String ON_CLICK = "onClick";
 
     private static MainController controller = null;
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(MainController.class);
@@ -458,7 +460,7 @@ public class MainController extends BaseController implements MainControllerInte
             displayMessage(message);
         } catch (Exception e) {
             LOGGER.warn("Unable to delete elements", e);
-            Messagebox.show(Labels.getLabel("portal_failedDeleteNonOwner_message"), "Apromore", Messagebox.OK, Messagebox.ERROR);
+            Messagebox.show(Labels.getLabel("portal_failedDeleteNonOwner_message"), APROMORE, Messagebox.OK, Messagebox.ERROR);
         }
     }
 
@@ -547,7 +549,7 @@ public class MainController extends BaseController implements MainControllerInte
             Clients.evalJavaScript(instruction);
         } catch (Exception e) {
             LOGGER.error("Cannot edit", e.getMessage() );
-            Messagebox.show(MessageFormat.format(Labels.getLabel("portal_cannotEdit_message"), process.getName()), "Apromore", Messagebox.OK, Messagebox.ERROR);
+            Messagebox.show(MessageFormat.format(Labels.getLabel("portal_cannotEdit_message"), process.getName()), APROMORE, Messagebox.OK, Messagebox.ERROR);
         }
     }
     
@@ -571,7 +573,7 @@ public class MainController extends BaseController implements MainControllerInte
             Clients.evalJavaScript(instruction);
         } catch (Exception e) {
             LOGGER.warn("Unable to edit process model " + process.getName() + " version " + version.getVersionNumber(), e);
-            Messagebox.show(MessageFormat.format(Labels.getLabel("portal_cannotEdit_message"), process.getName()), "Apromore", Messagebox.OK, Messagebox.ERROR);
+            Messagebox.show(MessageFormat.format(Labels.getLabel("portal_cannotEdit_message"), process.getName()), APROMORE, Messagebox.OK, Messagebox.ERROR);
         }
     }
     
@@ -945,7 +947,7 @@ public class MainController extends BaseController implements MainControllerInte
 
     	dialog.doModal();
 
-    	((Button)dialog.getFellow("btnCancel")).addEventListener("onClick", new EventListener<Event>() {
+    	((Button)dialog.getFellow("btnCancel")).addEventListener(ON_CLICK, new EventListener<Event>() {
     		@Override
     		public void onEvent(Event event) throws Exception {
     			dialog.detach();
@@ -953,7 +955,7 @@ public class MainController extends BaseController implements MainControllerInte
     		}
     	});
 
-    	((Button)dialog.getFellow("btnOK")).addEventListener("onClick", new EventListener<Event>() {
+    	((Button)dialog.getFellow("btnOK")).addEventListener(ON_CLICK, new EventListener<Event>() {
     		@Override
     		public void onEvent(Event event) throws Exception {
     			if (txtValue.getValue().trim().isEmpty()) {
@@ -972,7 +974,7 @@ public class MainController extends BaseController implements MainControllerInte
         win.addEventListener("onOK", new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
-                Events.sendEvent("onClick", dialog.getFellow("btnOK"), null);
+                Events.sendEvent(ON_CLICK, dialog.getFellow("btnOK"), null);
             }
         });
 

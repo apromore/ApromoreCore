@@ -66,12 +66,18 @@ import java.util.zip.ZipInputStream;
 
 public class ImportController extends BaseController {
 
+    public static final String APROMORE = "Apromore";
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(ImportController.class);
     private static final String UTF8_CHARSET = StandardCharsets.UTF_8.toString();
     private static final String MAX_UPLOAD_SIZE = "max-upload-size";
 
     private static final int CONNECT_TIMEOUT = 10000;
     private static final int READ_TIMEOUT = 10000;
+    public static final String XES_GZ = "xes.gz";
+    public static final String MXML_GZ = "mxml.gz";
+    public static final String ON_CLICK = "onClick";
+    public static final String PORTAL_FAILED_IMPORT_MESSAGE = "portal_failedImport_message";
+    public static final String FILE_IMPORTER_PLUGINS = "fileImporterPlugins";
 
     private long maxUploadSize = 100000000L; // default 100MB
     private boolean uploadSizeExceeded = false;
@@ -115,7 +121,7 @@ public class ImportController extends BaseController {
         this.ignoredFiles = "";
         this.mainC = mainC;
         this.maxUploadSize = this.mainC.config.getMaxUploadSize();
-        this.fileImporterPlugins = (List<FileImporterPlugin>) SpringUtil.getBean("fileImporterPlugins");
+        this.fileImporterPlugins = (List<FileImporterPlugin>) SpringUtil.getBean(FILE_IMPORTER_PLUGINS);
         //this.note = (message) -> { Messagebox.show(message); };
         this.note = new NotificationHandler() { public void show(String message) { Messagebox.show(message); } };
 
@@ -139,9 +145,9 @@ public class ImportController extends BaseController {
 
             // build the list of supported extensions to display
             SortedSet<String> supportedExt = new TreeSet<>();
-            Collections.addAll(supportedExt, "xes", "xes.gz", "mxml", "mxml.gz", "zip");
+            Collections.addAll(supportedExt, "xes", XES_GZ, "mxml", MXML_GZ, "zip");
             supportedExt.addAll(this.mainC.getNativeTypes().keySet());
-            List<FileImporterPlugin> fileImporterPlugins = (List<FileImporterPlugin>) SpringUtil.getBean("fileImporterPlugins");
+            List<FileImporterPlugin> fileImporterPlugins = (List<FileImporterPlugin>) SpringUtil.getBean(FILE_IMPORTER_PLUGINS);
             for (FileImporterPlugin fileImporterPlugin: fileImporterPlugins) {
                 supportedExt.addAll(fileImporterPlugin.getFileExtensions());
             }
@@ -157,7 +163,7 @@ public class ImportController extends BaseController {
             supportedExtL.setValue(supportedExtS);
             supportedExtURL.setValue(supportedExtS);
 
-            uploadButton.addEventListener("onClick", new EventListener<Event>() {
+            uploadButton.addEventListener(ON_CLICK, new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
                     okButton.setDisabled(true);
                 }
@@ -172,19 +178,19 @@ public class ImportController extends BaseController {
                     uploadSizeExceeded = ((int) event.getData() == 0) ? false : true;
                 }
             });
-            uploadURLButton.addEventListener("onClick", new EventListener<Event>() {
+            uploadURLButton.addEventListener(ON_CLICK, new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
                     uploadFileFromURL(fileUrl.getValue());
                 }
             });
-            okButton.addEventListener("onClick", new EventListener<MouseEvent>() {
+            okButton.addEventListener(ON_CLICK, new EventListener<MouseEvent>() {
                 public void onEvent(MouseEvent event) throws Exception {
                     importWindow.detach();
                     Sessions.getCurrent().setAttribute("fileimportertarget", ((event.getKeys() & MouseEvent.META_KEY) != 0) ? "page" : "modal");
                     importFile(ImportController.this.media);
                 }
             });
-            okButton_URL.addEventListener("onClick", new EventListener<MouseEvent>() {
+            okButton_URL.addEventListener(ON_CLICK, new EventListener<MouseEvent>() {
                 public void onEvent(MouseEvent event) throws Exception {
                     importWindow.detach();
                     Sessions.getCurrent().setAttribute("fileimportertarget", ((event.getKeys() & MouseEvent.META_KEY) != 0) ? "page" : "modal");
@@ -192,12 +198,12 @@ public class ImportController extends BaseController {
                     importFile(ImportController.this.media);
                 }
             });
-            cancelButton.addEventListener("onClick", new EventListener<Event>() {
+            cancelButton.addEventListener(ON_CLICK, new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
                     importWindow.detach();
                 }
             });
-            cancelButtonURL.addEventListener("onClick", new EventListener<Event>() {
+            cancelButtonURL.addEventListener(ON_CLICK, new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
                     importWindow.detach();
                 }
@@ -217,7 +223,7 @@ public class ImportController extends BaseController {
 	    String extension = ItemNameUtils.findExtension(media.getName());
 
         okButton.setDisabled(true);
-        List<FileImporterPlugin> fileImporterPlugins = (List<FileImporterPlugin>) SpringUtil.getBean("fileImporterPlugins");
+        List<FileImporterPlugin> fileImporterPlugins = (List<FileImporterPlugin>) SpringUtil.getBean(FILE_IMPORTER_PLUGINS);
         for (FileImporterPlugin fileImporterPlugin: fileImporterPlugins) {
             if (fileImporterPlugin.getFileExtensions().contains(extension)) {
                 okButton.setDisabled(uploadSizeExceeded);
@@ -298,7 +304,7 @@ public class ImportController extends BaseController {
             String extension = ItemNameUtils.findExtension(media.getName());
 
             List<FileImporterPlugin> fileImporterPlugins = (List<FileImporterPlugin>) SpringUtil.getBean(
-                    "fileImporterPlugins");
+                    FILE_IMPORTER_PLUGINS);
             for (FileImporterPlugin fileImporterPlugin : fileImporterPlugins) {
                 if (fileImporterPlugin.getFileExtensions().contains(extension)) {
                     okButton_URL.setDisabled(false);
@@ -345,7 +351,7 @@ public class ImportController extends BaseController {
             note.show("Ignoring file with no extension: " + name);
         } else if (extension.toLowerCase().equals("zip")) {
             importZip(importedMedia);
-        } else if (name.toLowerCase().endsWith("xes") || name.toLowerCase().endsWith("xes.gz") || name.toLowerCase().endsWith("mxml") || name.toLowerCase().endsWith("mxml.gz")) {
+        } else if (name.toLowerCase().endsWith("xes") || name.toLowerCase().endsWith(XES_GZ) || name.toLowerCase().endsWith("mxml") || name.toLowerCase().endsWith(MXML_GZ)) {
             importLog(importedMedia);
         } else if (extension.toLowerCase().equals("gz")) {
             importGzip(importedMedia);
@@ -375,11 +381,12 @@ public class ImportController extends BaseController {
             mainC.refresh();
         } catch (Exception e) {
             LOGGER.warn("Import failed for " + logMedia.getName(), e);
-            Messagebox.show(Labels.getLabel("portal_failedImport_message"), "Apromore", Messagebox.OK, Messagebox.ERROR);
+            Messagebox.show(Labels.getLabel(PORTAL_FAILED_IMPORT_MESSAGE), APROMORE, Messagebox.OK, Messagebox.ERROR);
         } /* finally {
             closePopup();
         } */
     }
+
 
     /*
     private void closePopup() {
@@ -392,12 +399,12 @@ public class ImportController extends BaseController {
     private String discoverExtension(String logFileName) {
         if(logFileName.endsWith("mxml")) {
             return "mxml";
-        }else if(logFileName.endsWith("mxml.gz")) {
-            return "mxml.gz";
+        }else if(logFileName.endsWith(MXML_GZ)) {
+            return MXML_GZ;
         }else if(logFileName.endsWith("xes")) {
             return "xes";
-        }else if(logFileName.endsWith("xes.gz")) {
-            return "xes.gz";
+        }else if(logFileName.endsWith(XES_GZ)) {
+            return XES_GZ;
         }
         return null;
     }
@@ -427,7 +434,7 @@ public class ImportController extends BaseController {
             }
         } catch (IOException | JAXBException e) {
             LOGGER.warn("Import failed for " + zippedMedia.getName(), e);
-            Messagebox.show(Labels.getLabel("portal_failedImport_message"), "Apromore", Messagebox.OK, Messagebox.ERROR);
+            Messagebox.show(Labels.getLabel(PORTAL_FAILED_IMPORT_MESSAGE), APROMORE, Messagebox.OK, Messagebox.ERROR);
         }
     }
 
@@ -515,7 +522,7 @@ public class ImportController extends BaseController {
                 importOneProcess.importProcess(domain, UserSessionManager.getCurrentUser().getUsername());
             } catch (IOException e) {
                 LOGGER.warn("Import failed in domain " + domain, e);
-                Messagebox.show(Labels.getLabel("portal_failedImport_message"), "Apromore", Messagebox.OK, Messagebox.ERROR);
+                Messagebox.show(Labels.getLabel(PORTAL_FAILED_IMPORT_MESSAGE), APROMORE, Messagebox.OK, Messagebox.ERROR);
             }
         }
         this.cancelAll();

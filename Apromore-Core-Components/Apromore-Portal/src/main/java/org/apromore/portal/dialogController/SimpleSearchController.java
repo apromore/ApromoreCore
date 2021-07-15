@@ -60,6 +60,7 @@ import org.zkoss.zul.*;
 
 public class SimpleSearchController {
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(SimpleSearchController.class);
+    public static final String ON_CLICK = "onClick";
 
     private MainController mainC;
     private Combobox previousSearchesCB;
@@ -77,19 +78,19 @@ public class SimpleSearchController {
         refreshSearch("");
         setVisibility(clearSearchBtn, false);
 
-        doSearchBtn.addEventListener("onClick", new EventListener<Event>() {
+        doSearchBtn.addEventListener(ON_CLICK, new EventListener<Event>() {
             public void onEvent(Event event) throws Exception {
                 processSearch();
             }
         });
-        clearSearchBtn.addEventListener("onClick", new EventListener<Event>() {
+        clearSearchBtn.addEventListener(ON_CLICK, new EventListener<Event>() {
             public void onEvent(Event event) throws Exception {
                 clearSearches();
                 mainC.reloadSummaries();
                 setVisibility(clearSearchBtn, false);
             }
         });
-        simpleSearchesBu.addEventListener("onClick", new EventListener<Event>() {
+        simpleSearchesBu.addEventListener(ON_CLICK, new EventListener<Event>() {
             public void onEvent(Event event) throws Exception {
                 processSearch();
             }
