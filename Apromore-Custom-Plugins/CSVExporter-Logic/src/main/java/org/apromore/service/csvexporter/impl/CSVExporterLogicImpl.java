@@ -56,17 +56,18 @@ public class CSVExporterLogicImpl implements CSVExporterLogic {
 
     @Override
     public File exportCSV(XLog myLog) {
-        List<LogModel> log = createModel(myLog);
-        return writeCSVFile(log);
+        createModel(myLog);
+        return writeCSVFile(myLog);
     }
 
-    private List<LogModel> createModel(List<XTrace> traces) {
+    private void createModel(List<XTrace> traces) {
 
         HashMap<String, String> attributeList;
         HashMap<String, String> eventAttributes;
 
-        List<LogModel> logData = new ArrayList<LogModel>();
-        String attributeValue;
+        columnNames = new ArrayList<String>();
+
+
 
         Set<String> listOfAttributes = new LinkedHashSet<String>();
         columnNames = new ArrayList<String>();
@@ -76,41 +77,18 @@ public class CSVExporterLogicImpl implements CSVExporterLogic {
         for (XTrace myTrace : traces) {
             listOfAttributes.addAll(myTrace.getAttributes().keySet());
 
-            attributeList = new HashMap<String, String>();
 
-            for (Map.Entry<String, XAttribute> tAtt : myTrace.getAttributes().entrySet()) {
-
-                attributeValue = getAttributeValue(tAtt.getValue());
-                if ("concept:name".equals(tAtt.getKey())) {
-                    attributeList.put(CASEID, attributeValue);
-                } else {
-                    attributeList.put(tAtt.getKey(), attributeValue);
-                }
-            }
 
             for (XEvent myEvent : myTrace) {
-                eventAttributes = new HashMap<String, String>();
-                eventAttributes.putAll(attributeList);
+
                 listOfAttributes.addAll(myEvent.getAttributes().keySet());
 
-                for (Map.Entry<String, XAttribute> eAtt : myEvent.getAttributes().entrySet()) {
-
-                    attributeValue = getAttributeValue(eAtt.getValue());
-                    if ("concept:name".equals(eAtt.getKey())) {
-                        eventAttributes.put(ACTIVITY, attributeValue);
-                    } else {
-                        eventAttributes.put(eAtt.getKey(), attributeValue);
-                    }
-                }
-
-                logData.add(new LogModel(eventAttributes));
             }
         }
 
         listOfAttributes.remove("concept:name");
         columnNames.addAll(new ArrayList<String>(listOfAttributes));
 
-        return logData;
     }
 
     private String getAttributeValue(XAttribute myAttribute) {
@@ -142,7 +120,7 @@ public class CSVExporterLogicImpl implements CSVExporterLogic {
      * @param log List of LogModel
      * @return Path of temp file
      */
-    private File writeCSVFile(List<LogModel> log) {
+    private File writeCSVFile(XLog xLog) {
 
         try {
 
@@ -172,24 +150,63 @@ public class CSVExporterLogicImpl implements CSVExporterLogic {
 
             // write rest columns
             String columnValue;
-            for (LogModel row : log) {
+            HashMap<String, String> attributeList;
+            HashMap<String, String> eventAttributes;
 
-                prefix = "";
-                for (String one : columnNames) {
+            List<LogModel> logData = new ArrayList<LogModel>();
+            String attributeValue;
 
-                    sb.append(prefix);
-                    prefix = ",";
 
-                    columnValue = row.getAttributeList().get(one);
-                    if (columnValue != null && columnValue.trim().length() != 0) {
-                        sb.append(columnValue);
+
+            for (XTrace myTrace : xLog) {
+
+                attributeList = new HashMap<String, String>();
+
+                for (Map.Entry<String, XAttribute> tAtt : myTrace.getAttributes().entrySet()) {
+
+                    attributeValue = getAttributeValue(tAtt.getValue());
+                    if ("concept:name".equals(tAtt.getKey())) {
+                        attributeList.put(CASEID, attributeValue);
+                    } else {
+                        attributeList.put(tAtt.getKey(), attributeValue);
                     }
                 }
-                sb.append('\n');
-                Files.write(tempCSV, sb.toString().getBytes(StandardCharsets.UTF_8),
-                        StandardOpenOption.APPEND);
-                //empty StringBuilder
-                sb.setLength(0);
+
+                for (XEvent myEvent : myTrace) {
+                    eventAttributes = new HashMap<String, String>();
+                    eventAttributes.putAll(attributeList);
+
+                    for (Map.Entry<String, XAttribute> eAtt : myEvent.getAttributes().entrySet()) {
+
+                        attributeValue = getAttributeValue(eAtt.getValue());
+                        if ("concept:name".equals(eAtt.getKey())) {
+                            eventAttributes.put(ACTIVITY, attributeValue);
+                        } else {
+                            eventAttributes.put(eAtt.getKey(), attributeValue);
+                        }
+                    }
+
+                    LogModel row = new LogModel(eventAttributes);
+
+                    // start to write row
+                    prefix = "";
+                    for (String one : columnNames) {
+
+                        sb.append(prefix);
+                        prefix = ",";
+
+                        columnValue = row.getAttributeList().get(one);
+                        if (columnValue != null && columnValue.trim().length() != 0) {
+                            sb.append(columnValue);
+                        }
+                    }
+                    sb.append('\n');
+                    Files.write(tempCSV, sb.toString().getBytes(StandardCharsets.UTF_8),
+                            StandardOpenOption.APPEND);
+                    //empty StringBuilder
+                    sb.setLength(0);
+
+                }
             }
 
             if (Files.notExists(tempCSV)) {
