@@ -62,11 +62,13 @@ package org.deckfour.xes.extension;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -111,15 +113,7 @@ public class XExtensionParser {
 	 * @return The extension object, as defined in the provided file.
 	 */
 	public XExtension parse(File file) throws IOException, ParserConfigurationException, SAXException {
-		try (BufferedInputStream is = new BufferedInputStream(new FileInputStream(file))) {
-		    // set up a specialized SAX2 handler to fill the container
-		    XExtensionHandler handler = new XExtensionHandler();
-		    // set up SAX parser and parse provided log file into the container
-		    SAXParserFactory parserFactory = SAXParserFactory.newInstance();
-		    SAXParser parser = parserFactory.newSAXParser();
-		    parser.parse(is, handler);
-		    return handler.getExtension();
-		}
+		return parse(new FileInputStream(file));
 	}
 	
 	/**
@@ -130,14 +124,31 @@ public class XExtensionParser {
 	 * the given URI.
 	 */
 	public XExtension parse(URI uri) throws IOException, ParserConfigurationException, SAXException {
-		try (BufferedInputStream is = new BufferedInputStream(uri.toURL().openStream())) {
-		    // set up a specialized SAX2 handler to fill the container
-		    XExtensionHandler handler = new XExtensionHandler();
-		    // set up SAX parser and parse provided log file into the container
-		    SAXParserFactory parserFactory = SAXParserFactory.newInstance();
-		    SAXParser parser = parserFactory.newSAXParser();
-		    parser.parse(is, handler);
-		    return handler.getExtension();
+		return parse(uri.toURL().openStream());
+	}
+
+	/**
+	 * Parses an extension from a stream.
+	 *
+	 * @param file The URI which represents the extension definition file.
+	 * @return The extension object, as defined in the file referenced by
+	 * the given URI.
+	 */
+	public XExtension parse(InputStream inputStream)
+		throws IOException, ParserConfigurationException, SAXException {
+
+		try (BufferedInputStream is = new BufferedInputStream(inputStream)) {
+			// set up a specialized SAX2 handler to fill the container
+			XExtensionHandler handler = new XExtensionHandler();
+			// set up SAX parser and parse provided log file into the container
+			SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+			parserFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+			parserFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+			parserFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+			parserFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+			SAXParser parser = parserFactory.newSAXParser();
+			parser.parse(is, handler);
+			return handler.getExtension();
 		}
 	}
 	

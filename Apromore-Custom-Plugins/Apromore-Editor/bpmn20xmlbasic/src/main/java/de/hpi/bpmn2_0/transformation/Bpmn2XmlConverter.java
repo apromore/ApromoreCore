@@ -61,6 +61,7 @@ import de.hpi.bpmn2_0.model.extension.synergia.ConfigurationAnnotationShape;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
+import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -138,6 +139,8 @@ public class Bpmn2XmlConverter {
         StringWriter writer = new StringWriter();
         StreamResult result = new StreamResult(writer);
         TransformerFactory tf = TransformerFactory.newInstance();
+        tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+        tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
 //		tf.setAttribute("indent-amount", new Integer(4));
         Transformer transformer = tf.newTransformer(styleStream);
         transformer.setOutputProperty(OutputKeys.INDENT, "yes");
@@ -161,8 +164,9 @@ public class Bpmn2XmlConverter {
         marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", nsp);
 
         /* Set Schema validation properties */
-        SchemaFactory sf = SchemaFactory
-                .newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI);
+        SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+        sf.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+        sf.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
 
         Schema schema = sf.newSchema(new File(bpmn20XsdPath));
         marshaller.setSchema(schema);

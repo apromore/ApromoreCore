@@ -66,6 +66,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
@@ -210,15 +211,20 @@ public class XMxmlParser extends XParser {
 	 * @return The parsed list of logs.
 	 */
 	public List<XLog> parse(InputStream is) throws Exception {
-		BufferedInputStream bis = new BufferedInputStream(is);
-		// set up a specialized SAX2 handler to fill the container
-		MxmlHandler handler = new MxmlHandler();
-		// set up SAX parser and parse provided log file into the container
-		SAXParserFactory parserFactory = SAXParserFactory.newInstance();
-		SAXParser parser = parserFactory.newSAXParser();
-		parser.parse(bis, handler);
-		bis.close();
-		return handler.getLogs();
+		try (BufferedInputStream bis = new BufferedInputStream(is)) {
+			// set up a specialized SAX2 handler to fill the container
+			MxmlHandler handler = new MxmlHandler();
+			// set up SAX parser and parse provided log file into the container
+			SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+			parserFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+			parserFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+			parserFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+			parserFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+			SAXParser parser = parserFactory.newSAXParser();
+			parser.parse(bis, handler);
+			bis.close();
+			return handler.getLogs();
+		}
 	}
 	
 	/**

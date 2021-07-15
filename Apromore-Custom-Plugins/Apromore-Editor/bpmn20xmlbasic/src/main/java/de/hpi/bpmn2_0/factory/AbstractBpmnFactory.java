@@ -66,6 +66,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -561,7 +562,12 @@ public abstract class AbstractBpmnFactory {
 			return;
 		
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		factory.setExpandEntityReferences(false);
+		factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+		factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+		factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
 		factory.setNamespaceAware(true);
+		factory.setXIncludeAware(false);
 		DocumentBuilder builder = factory.newDocumentBuilder();
 		InputSource sis = new InputSource(new StringReader(exElXml));
 		Document exDoc = builder.parse(sis);

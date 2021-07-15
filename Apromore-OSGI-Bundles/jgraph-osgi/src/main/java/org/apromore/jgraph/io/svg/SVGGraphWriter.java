@@ -30,6 +30,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerFactory;
@@ -97,7 +98,10 @@ public class SVGGraphWriter {
 			Document document = DocumentBuilderFactory.newInstance()
 					.newDocumentBuilder().newDocument();
 			document.appendChild(createNode(document, title, cache, inset));
-			TransformerFactory.newInstance().newTransformer().transform(
+			TransformerFactory factory = TransformerFactory.newInstance();
+			factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+			factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+			factory.newTransformer().transform(
 					new DOMSource(document), new StreamResult(out));
 		} catch (Exception e) {
 			e.printStackTrace();

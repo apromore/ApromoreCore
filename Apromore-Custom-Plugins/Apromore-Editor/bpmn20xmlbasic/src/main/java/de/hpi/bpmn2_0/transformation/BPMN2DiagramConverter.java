@@ -84,9 +84,17 @@ import org.oryxeditor.server.diagram.StencilSetReference;
 import org.oryxeditor.server.diagram.basic.BasicDiagram;
 import org.oryxeditor.server.diagram.basic.BasicShape;
 
+import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParserFactory;
+import javax.xml.transform.Source;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamSource;
 import java.io.File;
 import java.io.IOException;
@@ -100,6 +108,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
 
 /**
  * Converter that transforms BPMN {@link Definitions} to a native {@link BasicDiagram}
@@ -483,7 +495,7 @@ public class BPMN2DiagramConverter {
     }
 
     public static Definitions parseBPMN(String bpmnString) throws JAXBException {
-        StreamSource source = new StreamSource(new StringReader(bpmnString));
+        Source source = safeSource(bpmnString);
         Unmarshaller unmarshaller = newContext().createUnmarshaller();
         unmarshaller.setProperty(IDResolver.class.getName(), new DefinitionsIDResolver());
         Definitions definitions = unmarshaller.unmarshal(source, Definitions.class).getValue();
@@ -491,11 +503,55 @@ public class BPMN2DiagramConverter {
     }
 
     public static Definitions parseBPMN(String bpmnString, ClassLoader classLoader) throws JAXBException {
-        StreamSource source = new StreamSource(new StringReader(bpmnString));
+        Source source = safeSource(bpmnString);
         Unmarshaller unmarshaller = newContext(classLoader).createUnmarshaller();
         unmarshaller.setProperty(IDResolver.class.getName(), new DefinitionsIDResolver());
         Definitions definitions = unmarshaller.unmarshal(source, Definitions.class).getValue();
         return definitions;
+    }
+
+    /**
+     * Pre-parse XML to avoid XXE vulnerability.
+     *
+     * {@link Unmarshaller#unmarshal} has no protection against XXE vulnerabilities if it's passed
+     * {@link StreamSource}.  This method pre-parses an XML document with a parser configured to
+     * avoid XXE so that {@link Unmarshaller#unmarshal} doesn't try to parse it itself.
+     *
+     * @param xmlString  XML without external DTDs, external entities, or external XML schemas.
+     * @return the <var>xmlString</var> parsed in an XXE-safe manner
+     */
+    private static Source safeSource(String xmlString) {
+        try {
+            /* It would be preferable to use a streaming parser (as in this commented-out block)
+               rather than materializing a DOM tree, but the log animation tests fail.  Leaving
+               this here to encourage someone else to investigate in future.
+
+            SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+            parserFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+            parserFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+            parserFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+            parserFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+            XMLReader reader = parserFactory.newSAXParser().getXMLReader();
+
+            return new SAXSource(reader, new InputSource(new StringReader(xmlString)));
+            */
+
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            factory.setExpandEntityReferences(false);
+            factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+            factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+            factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+            factory.setNamespaceAware(true);
+            factory.setValidating(false);
+            factory.setXIncludeAware(false);
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document document = builder.parse(new InputSource(new StringReader(xmlString)));
+
+            return new DOMSource(document);
+
+        } catch (IOException | ParserConfigurationException | SAXException e) {
+            throw new RuntimeException("Unable to pre-parse XML", e);
+        }
     }
 
     /**
