@@ -3,6 +3,16 @@ version = '1.0'
 description = 'apromore-calendar'
 
 
+sourceSets {
+    test {
+        resources {
+            srcDirs += [
+                project(':Apromore-Database').sourceSets.main.resources
+            ]
+        }
+    }
+}
+
 dependencies {
     implementation project(':Apromore-Database')
     implementation project(':Apromore-Commons') 	

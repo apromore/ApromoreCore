@@ -5,7 +5,15 @@
 group = 'org.apromore'
 version = '1.1'
 description = 'Apromore Manager'
-
+sourceSets {
+    test {
+        resources {
+            srcDirs += [
+                project(':Apromore-Database').sourceSets.main.resources
+            ]
+        }
+    }
+}
 dependencies {
 	
 	api project(':Apromore-Database')
