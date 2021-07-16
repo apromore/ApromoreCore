@@ -40,7 +40,7 @@ Apromore.PATH = Apromore.CONFIG.ROOT_PATH;
 Apromore.CONFIG.SERVER_HANDLER_ROOT = 		Apromore.CONFIG.SERVER_HANDLER_ROOT_PREFIX;
 Apromore.CONFIG.SERVER_EDITOR_HANDLER =		Apromore.CONFIG.SERVER_HANDLER_ROOT + "/editor";
 Apromore.CONFIG.SERVER_MODEL_HANDLER =		Apromore.CONFIG.SERVER_HANDLER_ROOT + "/model";
-Apromore.CONFIG.PLUGINS_CONFIG =			Apromore.CONFIG.SERVER_HANDLER_ROOT + "/bpmneditor_plugins";
+Apromore.CONFIG.PLUGINS_CONFIG =			"/bpmneditor/bpmneditor_plugins";
 Apromore.CONFIG.SYNTAXCHECKER_URL =			Apromore.CONFIG.SERVER_HANDLER_ROOT + "/syntaxchecker";
 
 Apromore.CONFIG.SS_EXTENSIONS_FOLDER =		Apromore.CONFIG.ROOT_PATH + "stencilsets/extensions/";

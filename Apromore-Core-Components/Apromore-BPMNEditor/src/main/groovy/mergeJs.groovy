@@ -18,6 +18,7 @@ def scripts = [
 'scripts/editorapp.js',
 'scripts/logger.js',
 'scripts/server.js',
+'scripts/site.properties.js',
 'scripts/utils.js',
 'scripts/plugins/apromoreSave.js',
 'scripts/plugins/export.js',

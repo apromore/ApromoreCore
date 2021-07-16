@@ -211,7 +211,7 @@ public class UserMenuController extends SelectorComposer<Menubar> {
             if (!config.isUseKeycloakSso()) {
               session.invalidate();
             }
-            Executions.sendRedirect("/j_spring_security_logout");
+            Executions.sendRedirect("/logout");
           }
         }
       });
@@ -224,7 +224,7 @@ public class UserMenuController extends SelectorComposer<Menubar> {
 
               UserType userType = (UserType) Sessions.getCurrent().getAttribute("USER");
               if (session == null || event.getData().equals(userType.getUsername())) {
-                Executions.sendRedirect("/j_spring_security_logout");
+                Executions.sendRedirect("/logout");
               }
             }
           });

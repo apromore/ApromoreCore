@@ -83,7 +83,7 @@ public class SignOutPlugin extends DefaultPortalPlugin {
           public void onEvent(Event evt) throws Exception {
             switch ((Integer) evt.getData()) {
               case Messagebox.YES:
-                EventQueues.lookup("signOutQueue", EventQueues.APPLICATION, true)
+                EventQueues.lookup("signOutQueue", EventQueues.DESKTOP, true)
                     .publish(new Event("onSignout", null, Sessions.getCurrent()));
                 break;
               case Messagebox.NO:
