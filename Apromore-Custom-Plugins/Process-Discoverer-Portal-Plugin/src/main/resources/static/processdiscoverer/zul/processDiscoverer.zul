@@ -22,8 +22,8 @@
 
 
 <?page id="ap-pd2" title="${labels.brand_shortName} - Process Discoverer" contentType="text/html;charset=UTF-8" ?>
-<?component name="pdheader" macroURI="~./processdiscoverer/macros/components/header.zul" ?>
-<?component name="pdtoolbar" macroURI="~./processdiscoverer/macros/components/toolbar.zul" ?>
+<?component name="pdheader" macroURI="~./processdiscoverer/macros/header.zul" ?>
+<?component name="pdtoolbar" macroURI="~./processdiscoverer/macros/toolbar.zul" ?>
 
 <?component name="menuitem" extends="menuitem" autocheck="true" checkmark="true" ?> 
 <?component name="viewSettings" macroURI="~./processdiscoverer/macros/viewSettings.zul" ?>

@@ -64,8 +64,8 @@
         @import url("${arg.editor}/libs/ext-2.0.2/resources/css/xtheme-gray.css");
     </n:style>
 
-    <n:link rel="Stylesheet" media="screen" href="/${arg.editor}/editor/css/theme_norm.css" type="text/css"/>
-    <n:link rel="Stylesheet" media="screen" href="/${arg.editor}/editor/css/theme_ext.css" type="text/css"/>
+    <n:link rel="Stylesheet" media="screen" href="${arg.editor}/editor/css/theme_norm.css" type="text/css"/>
+    <n:link rel="Stylesheet" media="screen" href="${arg.editor}/editor/css/theme_ext.css" type="text/css"/>
 
     <n:script src="js/jquery.js" type="text/javascript"/>
 

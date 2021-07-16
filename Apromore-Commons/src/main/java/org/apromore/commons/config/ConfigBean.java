@@ -24,6 +24,7 @@
 
 package org.apromore.commons.config;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -33,6 +34,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @ConfigurationProperties
+@Qualifier("configBean")
 public class ConfigBean {
   private String logsDir = "../Event-Logs-Repository";
   private String numOfEvent;
@@ -47,6 +49,8 @@ public class ConfigBean {
   private Site site = new Site();
 
   private int maxEventCount = 1000000;
+
+  private String volumeExportDir;
 
   @Data
   public class Site {

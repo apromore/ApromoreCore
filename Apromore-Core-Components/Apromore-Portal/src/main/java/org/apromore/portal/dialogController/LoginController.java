@@ -31,31 +31,37 @@ import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.common.i18n.I18nConfig;
 import org.apromore.portal.common.i18n.I18nSession;
 import org.slf4j.Logger;
-import org.zkoss.spring.SpringUtil;
 import org.zkoss.util.resource.Labels;
+import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.select.annotation.VariableResolver;
+import org.zkoss.zk.ui.select.annotation.WireVariable;
+import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Html;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Window;
 
-public class LoginController extends BaseController {
+@VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
+public class LoginController extends BaseController implements Composer<Component> {
 
   private static final Logger LOGGER = PortalLoggerFactory.getLogger(LoginController.class);
+  private Component loginComponent;
 
-  public LoginController() {
-    super();
-    setupLocale();
-  }
+  @WireVariable
+  I18nConfig i18nConfig;
+
 
   /**
    * onCreate is executed after the main window has been created it is responsible for instantiating
    * all necessary controllers (one for each window defined in the interface) see description in
    * index.zul
    * 
+   * @param comp
+   * 
    * @throws InterruptedException
    */
-  public void onCreate() throws InterruptedException {
-    Window mainW = (Window) this.getFellow("login-main");
+  public void onCreate(Component comp) throws InterruptedException {
+    Window mainW = (Window) comp.getFellow("login-main");
     Div registerBtn = (Div) mainW.getFellow("registerBtn");
     Div agree = (Div) mainW.getFellow("agree");
     Div subscribe = (Div) mainW.getFellow("subscribe");
@@ -97,12 +103,20 @@ public class LoginController extends BaseController {
       src += "-" + "community";
     }
     logoWithTag.setSrc(src + ".svg");
+
+    setupLocale();
   }
 
   private void setupLocale() {
-    I18nConfig config = (I18nConfig) SpringUtil.getBean("i18nConfig");
-    I18nSession i18nSession = new I18nSession(config);
+
+    I18nSession i18nSession = new I18nSession(i18nConfig);
     UserSessionManager.setCurrentI18nSession(i18nSession);
     i18nSession.applyLocaleFromClient();
+  }
+
+  @Override
+  public void doAfterCompose(Component comp) throws Exception {
+    this.loginComponent = comp;
+    onCreate(comp);
   }
 }

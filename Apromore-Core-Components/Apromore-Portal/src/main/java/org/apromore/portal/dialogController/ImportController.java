@@ -144,7 +144,7 @@ public class ImportController extends BaseController {
     };
 
     try {
-      final Window win = (Window) Executions.createComponents("macros/import.zul", null, null);
+      final Window win = (Window) Executions.createComponents("~./macros/import.zul", null, null);
       this.importWindow = (Window) win.getFellow("importWindow");
       Button uploadButton = (Button) this.importWindow.getFellow("uploadButton");
       uploadButton.setClientDataAttribute(MAX_UPLOAD_SIZE, Long.toString(this.maxUploadSize));

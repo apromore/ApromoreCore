@@ -138,8 +138,8 @@ site:
 spring:
   datasource:
     password: Apromore#!dev
-    url: jdbc:h2:mem:Manager-Repository;DATABASE_TO_UPPER=FALSE;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-#    url : jdbc:mysql://localhost:3306/apromore?createDatabaseIfNotExist=true&autoReconnect=true&allowMultiQueries=true&rewriteBatchedStatements=true&characterEncoding=utf-8&serverTimezone=GMT%2B10
+#    url: jdbc:h2:mem:Manager-Repository;DATABASE_TO_UPPER=FALSE;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    url : jdbc:mysql://localhost:3306/apromore?createDatabaseIfNotExist=true&autoReconnect=true&allowMultiQueries=true&rewriteBatchedStatements=true&characterEncoding=utf-8&serverTimezone=GMT%2B10
     username: apromore
   jpa:
     hibernate:
@@ -149,9 +149,9 @@ spring:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
   liquibase:
     change-log: classpath:db/migration/changeLog.yaml
-    contexts: H2
+    contexts: MYSQL
     password: Apromore#!dev
-    user: apromore
+    user: liquibase_user
 
 
 storage:
