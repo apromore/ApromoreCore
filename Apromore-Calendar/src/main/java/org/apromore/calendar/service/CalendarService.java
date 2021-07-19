@@ -36,6 +36,8 @@ public interface CalendarService {
 	public CalendarModel createGenericCalendar(String description, boolean weekendsOff, String zoneId)
 			throws CalendarAlreadyExistsException;
 
+	CalendarModel getGenericCalendar();
+
 	public CalendarModel createBusinessCalendar(String description, boolean weekendsOff, String zoneId)
 			throws CalendarAlreadyExistsException;
 

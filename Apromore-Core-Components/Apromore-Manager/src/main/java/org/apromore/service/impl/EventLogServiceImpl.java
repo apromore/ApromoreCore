@@ -524,9 +524,10 @@ public class EventLogServiceImpl implements EventLogService {
     @Override
     public CalendarModel getCalendarFromLog(Integer logId) {
         CustomCalendar calendar = logRepo.findUniqueByID(logId).getCalendar();
-        return calendar != null ? calendarService.getCalendar(calendar.getId()) : null;
+        return calendar != null ? calendarService.getCalendar(calendar.getId()) : calendarService.getGenericCalendar();
     }
 
+    @Override
     public boolean saveFileToVolume(String filename, String volumePath, String prefix,
                                     ByteArrayOutputStream baos) throws IOException, ObjectCreationException {
 

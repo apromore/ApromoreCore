@@ -21,15 +21,7 @@
  */
 package org.apromore.calendar.service;
 
-import java.time.DayOfWeek;
-import java.time.Instant;
-import java.time.LocalTime;
-import java.time.OffsetTime;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Predicate;
-
+import lombok.Data;
 import org.apromore.calendar.exception.CalendarAlreadyExistsException;
 import org.apromore.calendar.exception.CalendarNotExistsException;
 import org.apromore.calendar.model.CalendarModel;
@@ -40,14 +32,13 @@ import org.apromore.commons.mapper.CustomMapper;
 import org.apromore.dao.CustomCalendarInfoRepository;
 import org.apromore.dao.CustomCalendarRepository;
 import org.apromore.dao.HolidayRepository;
-import org.apromore.dao.model.CustomCalendar;
-import org.apromore.dao.model.CustomCalendarInfo;
-import org.apromore.dao.model.HOLIDAYTYPE;
-import org.apromore.dao.model.Holiday;
-import org.apromore.dao.model.WorkDay;
+import org.apromore.dao.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import lombok.Data;
+import java.time.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Predicate;
 
 @Data
 public class CustomCalendarService implements CalendarService {
@@ -75,6 +66,20 @@ public class CustomCalendarService implements CalendarService {
         CustomCalendar customCalendar = createCalendar(description, weekendsOff, startTime, endTime);
         CalendarModel calendarModel = modelMapper.getMapper().map(customCalendar, CalendarModel.class);
         return calendarModel;
+    }
+
+    @Override
+    public CalendarModel getGenericCalendar() {
+
+        OffsetTime startTime =
+                OffsetTime.of(LocalTime.MIN, ZoneId.of("UTC").getRules().getOffset(Instant.now()));
+
+        OffsetTime endTime =
+                OffsetTime.of(LocalTime.MAX, ZoneId.of("UTC").getRules().getOffset(Instant.now()));
+
+        CustomCalendar customCalendar = createGenericCalendar(startTime, endTime);
+
+        return modelMapper.getMapper().map(customCalendar, CalendarModel.class);
     }
 
     @Override
@@ -126,6 +131,16 @@ public class CustomCalendarService implements CalendarService {
 
     }
 
+    private CustomCalendar createGenericCalendar(OffsetTime start, OffsetTime end) {
+
+        final CustomCalendar calendar = new CustomCalendar("Generic 24/7");
+        for (WorkDay workDay : getWorkDays(start, end, false)) {
+            calendar.addWorkDay(workDay);
+        }
+        return calendar;
+
+    }
+
     private List<WorkDay> getWorkDays(OffsetTime start, OffsetTime end, boolean weekendOff) {
 
         Predicate<DayOfWeek> isWeekendOff = CalendarUtil.getWeekendOffPRedicate(weekendOff);
@@ -146,6 +161,7 @@ public class CustomCalendarService implements CalendarService {
 
     }
 
+    @Override
     public void updateHoliday(Long id, List<HolidayModel> holidayModels) throws CalendarNotExistsException {
         CustomCalendar calendar = getExistingCalendar(id);
 
