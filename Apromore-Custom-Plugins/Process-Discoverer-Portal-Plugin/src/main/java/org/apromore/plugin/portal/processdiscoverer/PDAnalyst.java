@@ -542,6 +542,7 @@ public class PDAnalyst {
         }
         aLog.updateLogStatus(logBitMap);
         attLog.refresh();
+        processDiscoverer.invalidateAbstraction();
 
         //Use for debugging the bitset transfer from PLog to ALog/AttributeLog
         //printPLogBitMap(pLog);
