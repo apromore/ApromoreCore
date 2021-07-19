@@ -146,14 +146,6 @@ public class AttributeLog {
 	    }
 	}
 	
-//	public boolean isDataStatusChanged() {
-//	    return dataStatusChanged;
-//	}
-	
-//	public void resetDataStatus() {
-//	    dataStatusChanged = false;
-//	}
-	
 	public BitSet getOriginalTraceStatus() {
 	    return originalTraceStatus;
 	}
