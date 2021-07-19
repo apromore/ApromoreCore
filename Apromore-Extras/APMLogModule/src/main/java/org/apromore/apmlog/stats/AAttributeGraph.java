@@ -50,6 +50,14 @@ public class AAttributeGraph {
     // =========================================
 
     public static boolean hasSufficientDataPoint(String attribute, String inDegree, String outDegree, APMLog apmLog) {
+
+        // update activity parents
+        for (ATrace aTrace : apmLog.getTraceList()) {
+            for (AActivity activity : aTrace.getActivityList()) {
+                activity.setParentTrace(aTrace);
+            }
+        }
+
         UnifiedMap<String, UnifiedSet<EventAttributeValue>> eavMap = apmLog.getEventAttributeValues();
         if (!eavMap.containsKey(attribute)) return false;
 
