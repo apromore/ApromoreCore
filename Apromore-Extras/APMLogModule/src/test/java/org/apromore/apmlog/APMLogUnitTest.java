@@ -22,8 +22,18 @@
 
 package org.apromore.apmlog;
 
+import org.apromore.apmlog.filter.APMLogFilter;
 import org.apromore.apmlog.filter.PLog;
 import org.apromore.apmlog.filter.PTrace;
+import org.apromore.apmlog.filter.rules.LogFilterRule;
+import org.apromore.apmlog.filter.rules.LogFilterRuleImpl;
+import org.apromore.apmlog.filter.rules.RuleValue;
+import org.apromore.apmlog.filter.types.Choice;
+import org.apromore.apmlog.filter.types.FilterType;
+import org.apromore.apmlog.filter.types.Inclusion;
+import org.apromore.apmlog.filter.types.OperationType;
+import org.apromore.apmlog.filter.types.Section;
+import org.apromore.apmlog.stats.AAttributeGraph;
 import org.apromore.apmlog.stats.EventAttributeValue;
 import org.deckfour.xes.in.XesXmlGZIPParser;
 import org.deckfour.xes.in.XesXmlParser;
@@ -436,6 +446,27 @@ public class APMLogUnitTest {
         for (EventAttributeValue eav : eavSet) {
             assertTrue(eav.getFrequency().equals(expected.get(eav.getValue())));
         }
+    }
+
+    @Test
+    public void testAAttributeGraph1() throws Exception {
+        XLog xLog = getXLog("files/Procure-to-Pay.xes.gz");
+        APMLog apmLog = LogFactory.convertXLog(xLog);
+
+        Set<RuleValue> primaryValues = new HashSet<>();
+        primaryValues.add(new RuleValue(FilterType.EVENT_EVENT_ATTRIBUTE, OperationType.EQUAL,
+                "concept:name", new HashSet<>(Arrays.asList("Create Purchase Requisition", "Deliver Goods Services"))));
+
+        LogFilterRule logFilterRule = new LogFilterRuleImpl(Choice.RETAIN, Inclusion.ANY_VALUE, Section.EVENT,
+                FilterType.EVENT_EVENT_ATTRIBUTE, "concept:name", primaryValues, null);
+
+        List<LogFilterRule> rules = Arrays.asList(logFilterRule);
+
+        APMLogFilter apmLogFilter = new APMLogFilter(apmLog);
+        apmLogFilter.filter(rules);
+
+        assertTrue(AAttributeGraph.hasSufficientDataPoint("concept:name",
+                "Create Purchase Requisition", "Deliver Goods Services", apmLogFilter.getApmLog()));
     }
 
     public void printString(String unicodeMessage) throws UnsupportedEncodingException {
