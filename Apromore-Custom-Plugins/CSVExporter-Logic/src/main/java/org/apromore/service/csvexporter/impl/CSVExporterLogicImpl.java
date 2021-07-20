@@ -133,7 +133,6 @@ public class CSVExporterLogicImpl implements CSVExporterLogic {
             Path tempGZIP = Files.createTempFile(null, ".csv.gz");
             tempCSV.toFile().deleteOnExit();
             tempGZIP.toFile().deleteOnExit();
-            System.out.println(tempCSV);
             LOGGER.debug("Create temp CSV path \"{}\"", tempCSV);
 
 
@@ -218,7 +217,6 @@ public class CSVExporterLogicImpl implements CSVExporterLogic {
             return tempGZIP.toFile();
 
         } catch (IOException e) {
-            e.printStackTrace();
             LOGGER.error("Error occurred while creating temp CSV file: " + e.getMessage(), e);
             return null;
         }

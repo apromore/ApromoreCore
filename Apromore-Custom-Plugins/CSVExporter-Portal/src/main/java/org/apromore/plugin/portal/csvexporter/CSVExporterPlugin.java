@@ -93,16 +93,10 @@ public class CSVExporterPlugin extends DefaultPortalPlugin {
                         public void onEvent(Event event) throws Exception {
                             String filename = logSummary.getName().replace('.','-');
                             XLog xlog = eventLogService.getXLog(logSummary.getId());
-//                            String csvLog = csvExporterLogic.exportCSV(xlog);
-//
-//                            InputStream csvLogStream = new ByteArrayInputStream(csvLog.getBytes(Charset.forName(selectEncoding.getSelectedItem().getValue().toString())));
-//                            Filedownload.save(csvLogStream, "text/csv", filename);
-//
+
                             File file = csvExporterLogic.exportCSV(xlog);
-//                            Filedownload.save(file, "text/csv");
 
                             byte[] finalbytes = Files.readAllBytes(file.toPath());
-//                            Filedownload.save(finalbytes, "text/csv", filename);
                             Filedownload.save(finalbytes, "application/x-gzip", filename + ".csv.gz");
 
                             Files.delete(file.toPath());
