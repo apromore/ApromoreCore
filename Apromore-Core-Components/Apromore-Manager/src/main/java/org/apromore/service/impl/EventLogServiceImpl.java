@@ -94,6 +94,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import lombok.Getter;
 
 
 /**
@@ -116,7 +117,9 @@ public class EventLogServiceImpl implements EventLogService {
   private UsermetadataRepository usermetadataRepo;
   private TemporaryCacheService tempCacheService;
   private StorageManagementFactory<StorageClient> storageFactory;
-  private ConfigBean config;
+
+  @Getter
+  private ConfigBean configBean;
   private EventLogFileService logFileService;
   private StorageRepository storageRepository;
   private CustomCalendarRepository customCalendarRepository;
@@ -156,7 +159,7 @@ public class EventLogServiceImpl implements EventLogService {
     this.usermetadataRepo = usermetadataRepository;
     this.tempCacheService = temporaryCacheService;
     this.storageFactory = storageFactory;
-    this.config = configBean;
+    this.configBean = configBean;
     this.logFileService = logFileService;
     this.storageRepository = storageRepository;
     this.customCalendarRepository = customCalendarRepository;
@@ -388,14 +391,14 @@ public class EventLogServiceImpl implements EventLogService {
       String file_name = log.getFilePath() + "_" + log.getName() + ".xes.gz";
       String new_file_name = log.getFilePath() + "_" + newName + ".xes.gz";
       Storage storage = new Storage();
-      storage.setStoragePath(config.getStoragePath());
+      storage.setStoragePath(configBean.getStoragePath());
       storage.setKey(new_file_name);
       storage.setPrefix("log");
       log.setStorage(storageRepository.saveAndFlush(storage));
 
       StorageClient currentStorage = storageFactory
-          .getStorageClient("FILE" + StorageType.STORAGE_PATH_SEPARATOR + config.getLogsDir());
-      StorageClient newStorage = storageFactory.getStorageClient(config.getStoragePath());
+          .getStorageClient("FILE" + StorageType.STORAGE_PATH_SEPARATOR + configBean.getLogsDir());
+      StorageClient newStorage = storageFactory.getStorageClient(configBean.getStoragePath());
 
       OutputStream outputStream;
 

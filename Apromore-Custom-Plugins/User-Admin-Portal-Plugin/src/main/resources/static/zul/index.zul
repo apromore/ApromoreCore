@@ -35,7 +35,7 @@
   <script type="text/javascript" src="~./user-admin/js/index.js"></script>
   <script type="text/javascript"><![CDATA[
 	]]></script>
-  <style src="/user-admin/css/index.css"/>
+  <style src="~./user-admin/css/index.css"/>
   <vbox vflex="1" hflex="1" spacing="0">
     <tabbox id="tabbox" vflex="1" hflex="1" sclass="ap-usrmgt-tabbox" style="border: none;">
       <tabs id="tabs" vflex="1" hflex="1">

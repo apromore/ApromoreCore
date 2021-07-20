@@ -63,8 +63,7 @@ public class UserAdminPlugin extends DefaultPortalPlugin {
 
   public ResourceBundle getLabels() {
     Locale locale = (Locale) Sessions.getCurrent().getAttribute(Attributes.PREFERRED_LOCALE);
-    return ResourceBundle.getBundle("metainfo.zk-label", locale,
-        UserAdminPlugin.class.getClassLoader());
+    return ResourceBundle.getBundle("useradmin", locale, UserAdminPlugin.class.getClassLoader());
   }
 
   public String getLabel(String key) {

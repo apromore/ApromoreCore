@@ -31,6 +31,7 @@ import java.io.OutputStream;
 import java.util.List;
 import org.apromore.apmlog.APMLog;
 import org.apromore.calendar.model.CalendarModel;
+import org.apromore.commons.config.ConfigBean;
 import org.apromore.dao.model.Log;
 import org.apromore.dao.model.User;
 import org.apromore.exception.ImportException;
@@ -148,5 +149,7 @@ public interface EventLogService {
    * @throws ObjectCreationException
    */
   boolean saveFileToVolume(String filename, String volumePath, String prefix,
-                           ByteArrayOutputStream baos) throws IOException, ObjectCreationException;
+      ByteArrayOutputStream baos) throws IOException, ObjectCreationException;
+
+  ConfigBean getConfigBean();
 }

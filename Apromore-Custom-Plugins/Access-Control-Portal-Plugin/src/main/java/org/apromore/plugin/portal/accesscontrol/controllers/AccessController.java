@@ -208,7 +208,7 @@ public class AccessController extends SelectorComposer<Div> {
   public ResourceBundle getLabels() {
     // Locale locale = Locales.getCurrent()
     Locale locale = (Locale) Sessions.getCurrent().getAttribute(Attributes.PREFERRED_LOCALE);
-    return ResourceBundle.getBundle("metainfo.zk-label", locale,
+    return ResourceBundle.getBundle("access-control", locale,
         AccessController.class.getClassLoader());
   }
 
