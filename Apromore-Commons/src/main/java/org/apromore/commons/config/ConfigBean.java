@@ -34,11 +34,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @ConfigurationProperties
 public class ConfigBean {
-  private String logsDir = "../Event-Logs-Repository";
+
   private String numOfEvent;
   private String numOfTrace;
   // Fallback Storage path
-  private String storagePath = "FILE::../Event-Logs-Repository";
+
 
   private static final long serialVersionUID = 117L;
   private static final String COMMUNITY_TAG = "community";
@@ -46,10 +46,25 @@ public class ConfigBean {
   private boolean sanitizationEnabled = false;
   private Site site = new Site();
   private Keycloak keycloak = new Keycloak();
+  private Logs logs = new Logs();
+  private Storage storage = new Storage();
 
   private int maxEventCount = 1000000;
 
   private String volumeExportDir;
+
+
+  @Data
+  public class Logs {
+    private String dir = "../Event-Logs-Repository";
+
+  }
+
+  @Data
+  public class Storage {
+    private String path = "FILE::../Event-Logs-Repository";
+
+  }
 
   @Data
   public class Site {
@@ -190,5 +205,12 @@ public class ConfigBean {
     return version.getEdition();
   }
 
+  public String getLogsDir() {
+    return logs.getDir();
+  }
+
+  public String getStoragePath() {
+    return storage.getPath();
+  }
 
 }
