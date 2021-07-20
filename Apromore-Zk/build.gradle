@@ -8,7 +8,6 @@ ext {
 
 dependencies {
 
-	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation ('org.zkoss.zkspringboot:zkspringboot-starter:2.3.1')
 	{
 		exclude group: 'org.zkoss.zk', module: 'zkbind'

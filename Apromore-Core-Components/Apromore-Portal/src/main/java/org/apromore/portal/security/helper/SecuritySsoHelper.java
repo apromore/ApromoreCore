@@ -143,7 +143,7 @@ public class SecuritySsoHelper {
 
       session = Sessions.getCurrent();
 
-      if ((config.isUseKeycloakSso()) && (event.getData().equals(session))) {
+      if ((config.getKeycloak().isEnabled()) && (event.getData().equals(session))) {
         kcLogoutSuccess = managerService.logoutUserAllSessions(currentUser.getUsername(),
             config.getSecurityMsHttpLogoutUrl(), config.getSecurityMsHttpsLogoutUrl());
         LOGGER.info("\nkcLogoutSuccess: {}", kcLogoutSuccess);

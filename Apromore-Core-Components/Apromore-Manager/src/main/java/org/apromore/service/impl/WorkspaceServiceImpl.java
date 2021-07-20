@@ -90,7 +90,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service
+@Service("workspaceService")
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true,
     rollbackFor = Exception.class)
 public class WorkspaceServiceImpl implements WorkspaceService {
@@ -161,6 +161,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
   @Override
   public Folder getFolder(Integer folderId) {
+    if (folderId == null || folderId == 0)
+      return null;
     return folderRepo.findById(folderId).orElse(null);
   }
 

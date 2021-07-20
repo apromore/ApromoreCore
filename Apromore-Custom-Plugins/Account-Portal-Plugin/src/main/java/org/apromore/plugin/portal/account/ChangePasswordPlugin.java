@@ -55,7 +55,7 @@ public class ChangePasswordPlugin extends DefaultPortalPlugin {
   @Override
   public Availability getAvailability() {
 
-    boolean isUseKeycloakSso = configBean.isUseKeycloakSso();
+    boolean isUseKeycloakSso = configBean.getKeycloak().isEnabled();
     isUseKeycloakSso = false; // always show change password for now
 
     return isUseKeycloakSso ? Availability.UNAVAILABLE : Availability.AVAILABLE;

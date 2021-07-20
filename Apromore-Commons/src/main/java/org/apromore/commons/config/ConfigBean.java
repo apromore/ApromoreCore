@@ -47,6 +47,7 @@ public class ConfigBean {
 
   private boolean sanitizationEnabled = false;
   private Site site = new Site();
+  private Keycloak keycloak = new Keycloak();
 
   private int maxEventCount = 1000000;
 
@@ -109,8 +110,6 @@ public class ConfigBean {
   // Maximum upload size
   private long maxUploadSize;
 
-  private boolean useKeycloakSso;
-
   // Email for issue reporting
   private String contactEmail;
 
@@ -122,6 +121,13 @@ public class ConfigBean {
     private String number;
     private String edition;
   }
+
+  @Data
+  public class Keycloak {
+    private boolean enabled;
+
+  }
+
 
 
   public boolean isCommunity() {

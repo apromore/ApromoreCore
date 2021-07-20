@@ -208,7 +208,7 @@ public class UserMenuController extends SelectorComposer<Menubar> {
           Session session = Sessions.getCurrent();
 
           if (session != null) {
-            if (!config.isUseKeycloakSso()) {
+            if (!config.getKeycloak().isEnabled()) {
               session.invalidate();
             }
             Executions.sendRedirect("/logout");

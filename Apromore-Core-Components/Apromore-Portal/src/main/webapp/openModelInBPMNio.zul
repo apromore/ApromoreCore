@@ -101,11 +101,11 @@
 
 	    <n:script src="${arg.editor}/libs/prototype-1.7.3.js" type="text/javascript"/>
       <!-- <n:script src="/${arg.editor}/libs/path_parser.js" type="text/javascript"/> -->
-      <n:script src="${arg.editor}/libs/ext-2.0.2/adapter/ext/ext-base.js" type="text/javascript"/>
-      <n:script src="${arg.editor}/libs/ext-2.0.2/ext-all.js" type="text/javascript"/>
-      <n:script src="${arg.editor}/libs/ext-2.0.2/color-field.js" type="text/javascript"/>
-      <n:script src="${arg.editor}/libs/iscroll.js" type="text/javascript"/>
-      <n:script src="${arg.editor}/libs/autolayout.js" type="text/javascript"/>
+      <script src="${arg.editor}/libs/ext-2.0.2/adapter/ext/ext-base.js" type="text/javascript"/>
+      <script src="${arg.editor}/libs/ext-2.0.2/ext-all.js" type="text/javascript"/>
+      <script src="${arg.editor}/libs/ext-2.0.2/color-field.js" type="text/javascript"/>
+      <script src="${arg.editor}/libs/iscroll.js" type="text/javascript"/>
+      <script src="${arg.editor}/libs/autolayout.js" type="text/javascript"/>
 
       <script src="${arg.editor}/editor/i18n/translation_${arg.langTag}.js" type="text/javascript"/>
       <script src="${arg.editor}/editor/apromore-editor.js" type="text/javascript"/>

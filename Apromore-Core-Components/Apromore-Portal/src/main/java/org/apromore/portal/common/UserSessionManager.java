@@ -25,6 +25,7 @@
 package org.apromore.portal.common;
 
 import java.util.Hashtable;
+import java.util.Objects;
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
@@ -44,6 +45,10 @@ import org.apromore.portal.dialogController.dto.ApromoreSession;
 import org.apromore.portal.model.MembershipType;
 import org.apromore.portal.model.UserType;
 import org.apromore.security.ApromoreWebAuthenticationDetails;
+import org.keycloak.KeycloakPrincipal;
+import org.keycloak.KeycloakSecurityContext;
+import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
+import org.keycloak.representations.AccessToken;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -121,7 +126,41 @@ public abstract class UserSessionManager {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     if (authentication != null) {
       Object details = authentication.getDetails();
-      if (details instanceof ApromoreWebAuthenticationDetails) { // LDAP login
+      // KC User
+      // get user from principle.
+      // if username is null set email as username
+      // get user by username or email address
+      // if user exist then set user
+      // else create user and set user
+
+      if (authentication.getClass().equals(KeycloakAuthenticationToken.class)) {
+        KeycloakPrincipal<KeycloakSecurityContext> kcPrincipal =
+            (KeycloakPrincipal<KeycloakSecurityContext>) ((KeycloakAuthenticationToken) authentication)
+                .getPrincipal();
+        String userName = kcPrincipal.getName();
+
+        AccessToken token = kcPrincipal.getKeycloakSecurityContext().getToken();
+        String email = token.getEmail();
+        userName = Objects.requireNonNullElse(userName, email);
+
+        UserType user = manager.readUserByUsername(userName);
+
+        try {
+          user = user == null ? manager.readUserByEmail(email) : user;
+
+          if (user == null) {
+            user = new UserType(userName, email, token.getGivenName(), token.getFamilyName());
+
+            user = manager.writeUser(user);
+
+          }
+          setCurrentUser(user);
+        } catch (Exception e) {
+          LOGGER.debug("No User Found");
+        }
+
+
+      } else if (details instanceof ApromoreWebAuthenticationDetails) { // LDAP login
         String username =
             (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         UserType user = manager.readUserByUsername(username);
@@ -131,7 +170,7 @@ public abstract class UserSessionManager {
             manager.writeUser(user);
 
           } catch (Exception e) {
-            LOGGER.error("Unable to initialize user " + username + " for LDAP login", e);
+            LOGGER.error("Failed login", e);
             return;
           }
         }

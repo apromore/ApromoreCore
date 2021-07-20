@@ -5,5 +5,5 @@ if (!Apromore) {
 if (!Apromore.CONFIG) {
     Apromore.CONFIG = {};
 }
-Apromore.CONFIG.SERVER_HANDLER_ROOT_PREFIX = '/' + 'bpmneditor';
+Apromore.CONFIG.SERVER_HANDLER_ROOT_PREFIX =  '/bpmneditor';
 Apromore.CONFIG.EDITOR_PATH = "/editor";

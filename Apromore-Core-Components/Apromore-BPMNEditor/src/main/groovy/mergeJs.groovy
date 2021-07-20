@@ -12,13 +12,13 @@ def outputFile = destJs + 'apromore-editor.js'
 
 // order matters; popover must come after twipsy
 def scripts = [
+'scripts/site.properties.js',
 'scripts/clazz.js',
 'scripts/config.js',
 'scripts/editor.js',
 'scripts/editorapp.js',
 'scripts/logger.js',
 'scripts/server.js',
-'scripts/site.properties.js',
 'scripts/utils.js',
 'scripts/plugins/apromoreSave.js',
 'scripts/plugins/export.js',

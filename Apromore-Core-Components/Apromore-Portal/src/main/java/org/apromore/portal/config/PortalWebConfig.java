@@ -26,14 +26,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @Configuration
 @PropertySource(value = {"classpath:git.properties"})
 @PropertySource(value = "classpath:i18n.properties", encoding = "UTF-8")
+@EnableWebMvc
+@ComponentScan(basePackages = "org.apromore.portal")
 public class PortalWebConfig {
 
   @Autowired
@@ -86,20 +90,22 @@ public class PortalWebConfig {
   }
 
   @Bean
-  public ServletRegistrationBean exampleServletBean() {
-    ServletRegistrationBean bean =
-        new ServletRegistrationBean(new PortalPluginResourceServlet(), "/portalPluginResource/*");
+  public ServletRegistrationBean<PortalPluginResourceServlet> exampleServletBean() {
+    ServletRegistrationBean<PortalPluginResourceServlet> bean =
+        new ServletRegistrationBean<PortalPluginResourceServlet>(new PortalPluginResourceServlet(),
+            "/portalPluginResource/*");
     bean.setLoadOnStartup(1);
     return bean;
   }
 
   @Bean
-  public ServletRegistrationBean dataChannel() {
-    ServletRegistrationBean bean =
-        new ServletRegistrationBean(new DataChannelServlet(), "/dataRequest/*");
+  public ServletRegistrationBean<DataChannelServlet> dataChannel() {
+    ServletRegistrationBean<DataChannelServlet> bean =
+        new ServletRegistrationBean<DataChannelServlet>(new DataChannelServlet(), "/dataRequest/*");
     bean.setLoadOnStartup(1);
     return bean;
   }
+
 
   // This bean allows spaces which are url encoded
   @Bean
