@@ -22,9 +22,11 @@
 package org.apromore.plugin.portal.file;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Locale;
@@ -134,7 +136,7 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin {
 
   /**
    * Export all selected process versions, each of which in a native format to be chosen by the user
-   * 
+   *
    * @throws InterruptedException
    * @throws SuspendNotAllowedException
    * @throws org.apromore.portal.exception.ExceptionFormats
@@ -223,7 +225,7 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin {
 
   /**
    * Export all selected process versions, each of which in a native format to be chosen by the user
-   * 
+   *
    * @throws InterruptedException
    * @throws SuspendNotAllowedException
    * @throws org.apromore.portal.exception.ExceptionFormats
@@ -239,20 +241,18 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin {
     }
   }
 
-  public void exportCSV(LogSummaryType logSummary) throws Exception {
-    try {
-      String filename = logSummary.getName().replace('.', '-');
-      XLog xlog = eventLogService.getXLog(logSummary.getId());
-      String csvLog = csvExporterLogic.exportCSV(xlog);
-
-      InputStream csvLogStream = new ByteArrayInputStream(csvLog
-          .getBytes(Charset.forName(selectedEncoding.getSelectedItem().getValue().toString())));
-      Filedownload.save(csvLogStream, "text/csv", filename);
-    } catch (RuntimeException e) {
-      LOGGER.error("Unable to export log as CSV", e);
-      Messagebox.show("Unable to export log as CSV.", "Server error", Messagebox.OK,
-          Messagebox.ERROR);
+    public void exportCSV(LogSummaryType logSummary) throws Exception {
+        try {
+            String filename = logSummary.getName().replace('.','-');
+            XLog xlog = eventLogService.getXLog(logSummary.getId());
+            File file = csvExporterLogic.exportCSV(xlog);
+            byte[] finalbytes = Files.readAllBytes(file.toPath());
+            Filedownload.save(finalbytes, "application/x-gzip", filename + ".csv.gz");
+            Files.delete(file.toPath());
+        } catch (RuntimeException e) {
+            LOGGER.error("Unable to export log as CSV", e);
+            Messagebox.show("Unable to export log as CSV.", "Server error", Messagebox.OK, Messagebox.ERROR);
+        }
     }
-  }
 
 }

@@ -25,9 +25,11 @@
 package org.apromore.plugin.portal.csvexporter;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -87,13 +89,18 @@ public class CSVExporterPlugin extends DefaultPortalPlugin {
             Button downloadButton = (Button) window.getFellow("downloadButton");
             Listbox selectEncoding = (Listbox) window.getFellow("selectEncoding");
             downloadButton.addEventListener("onClick", new EventListener<Event>() {
+                        @Override
                         public void onEvent(Event event) throws Exception {
                             String filename = logSummary.getName().replace('.','-');
                             XLog xlog = eventLogService.getXLog(logSummary.getId());
-                            String csvLog = csvExporterLogic.exportCSV(xlog);
 
-                            InputStream csvLogStream = new ByteArrayInputStream(csvLog.getBytes(Charset.forName(selectEncoding.getSelectedItem().getValue().toString())));
-                            Filedownload.save(csvLogStream, "text/csv", filename);
+                            File file = csvExporterLogic.exportCSV(xlog);
+
+                            byte[] finalbytes = Files.readAllBytes(file.toPath());
+                            Filedownload.save(finalbytes, "application/x-gzip", filename + ".csv.gz");
+
+                            Files.delete(file.toPath());
+
                             window.invalidate();
                             window.detach();
                         }
@@ -101,6 +108,7 @@ public class CSVExporterPlugin extends DefaultPortalPlugin {
 
             Button cancelButton = (Button) window.getFellow("cancelButton");
             cancelButton.addEventListener("onClick", new EventListener<Event>() {
+                @Override
                 public void onEvent(Event event) throws Exception {
                     window.invalidate();
                     window.detach();
