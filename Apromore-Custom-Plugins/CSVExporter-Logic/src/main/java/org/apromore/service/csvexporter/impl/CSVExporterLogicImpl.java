@@ -26,9 +26,9 @@ package org.apromore.service.csvexporter.impl;
 
 import org.apromore.service.csvexporter.CSVExporterLogic;
 import org.deckfour.xes.model.*;
-import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -48,26 +48,23 @@ public class CSVExporterLogicImpl implements CSVExporterLogic {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CSVExporterLogicImpl.class);
 
-
     private static String CASEID = "Case ID";
     private static String ACTIVITY = "Activity";
-    private List<String> columnNames;
-
 
     @Override
-    public File exportCSV(XLog myLog) {
-        createModel(myLog);
-        return writeCSVFile(myLog);
+    public File exportCSV(XLog xLog) {
+        return writeCSVFile(xLog, generateColumnNames(xLog));
     }
 
-    private void createModel(List<XTrace> traces) {
+    /**
+     * Generate List of column names based on specified XLog
+     *
+     * @param traces XLog (List of XTraces)
+     * @return
+     */
+    private List<String> generateColumnNames(List<XTrace> traces) {
 
-        HashMap<String, String> attributeList;
-        HashMap<String, String> eventAttributes;
-
-        columnNames = new ArrayList<String>();
-
-
+        List<String> columnNames;
 
         Set<String> listOfAttributes = new LinkedHashSet<String>();
         columnNames = new ArrayList<String>();
@@ -76,7 +73,6 @@ public class CSVExporterLogicImpl implements CSVExporterLogic {
 
         for (XTrace myTrace : traces) {
             listOfAttributes.addAll(myTrace.getAttributes().keySet());
-
 
 
             for (XEvent myEvent : myTrace) {
@@ -89,26 +85,33 @@ public class CSVExporterLogicImpl implements CSVExporterLogic {
         listOfAttributes.remove("concept:name");
         columnNames.addAll(new ArrayList<String>(listOfAttributes));
 
+        return columnNames;
     }
 
-    private String getAttributeValue(XAttribute myAttribute) {
+    /**
+     * Get AttributeValue from XAttribute based on different XAttribute types
+     *
+     * @param xAttribute XAttribute
+     * @return
+     */
+    private String getAttributeValue(XAttribute xAttribute) {
 
-        if (myAttribute instanceof XAttributeLiteral) {
-            String theValue = ((XAttributeLiteral) myAttribute).getValue();
+        if (xAttribute instanceof XAttributeLiteral) {
+            String theValue = ((XAttributeLiteral) xAttribute).getValue();
             if (theValue.contains(",")) {
                 return "\"" + theValue + "\"";
             }
             return theValue;
-        } else if (myAttribute instanceof XAttributeTimestamp) {
+        } else if (xAttribute instanceof XAttributeTimestamp) {
 
             DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-            return df.format(((XAttributeTimestamp) myAttribute).getValue());
-        } else if (myAttribute instanceof XAttributeBoolean) {
-            return String.valueOf(((XAttributeBoolean) myAttribute).getValue());
-        } else if (myAttribute instanceof XAttributeDiscrete) {
-            return String.valueOf(((XAttributeDiscrete) myAttribute).getValue());
-        } else if (myAttribute instanceof XAttributeContinuous) {
-            return String.valueOf(((XAttributeContinuous) myAttribute).getValue());
+            return df.format(((XAttributeTimestamp) xAttribute).getValue());
+        } else if (xAttribute instanceof XAttributeBoolean) {
+            return String.valueOf(((XAttributeBoolean) xAttribute).getValue());
+        } else if (xAttribute instanceof XAttributeDiscrete) {
+            return String.valueOf(((XAttributeDiscrete) xAttribute).getValue());
+        } else if (xAttribute instanceof XAttributeContinuous) {
+            return String.valueOf(((XAttributeContinuous) xAttribute).getValue());
         }
         return "";
 
@@ -117,10 +120,11 @@ public class CSVExporterLogicImpl implements CSVExporterLogic {
     /**
      * Write Log to temp CSV file row by row, and then compress to GZ file.
      *
-     * @param log List of LogModel
-     * @return Path of temp file
+     * @param xLog XLog
+     * @param columnNames List of column names
+     * @return File
      */
-    private File writeCSVFile(XLog xLog) {
+    private File writeCSVFile(XLog xLog, List<String> columnNames) {
 
         try {
 
@@ -152,11 +156,7 @@ public class CSVExporterLogicImpl implements CSVExporterLogic {
             String columnValue;
             HashMap<String, String> attributeList;
             HashMap<String, String> eventAttributes;
-
-            List<LogModel> logData = new ArrayList<LogModel>();
             String attributeValue;
-
-
 
             for (XTrace myTrace : xLog) {
 
@@ -173,8 +173,7 @@ public class CSVExporterLogicImpl implements CSVExporterLogic {
                 }
 
                 for (XEvent myEvent : myTrace) {
-                    eventAttributes = new HashMap<String, String>();
-                    eventAttributes.putAll(attributeList);
+                    eventAttributes = new HashMap<String, String>(attributeList);
 
                     for (Map.Entry<String, XAttribute> eAtt : myEvent.getAttributes().entrySet()) {
 
