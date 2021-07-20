@@ -26,133 +26,221 @@ package org.apromore.service.csvexporter.impl;
 
 import org.apromore.service.csvexporter.CSVExporterLogic;
 import org.deckfour.xes.model.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.zip.GZIPOutputStream;
 
 public class CSVExporterLogicImpl implements CSVExporterLogic {
 
-    private List<String> columnNames;
-
-    public String exportCSV(XLog myLog) {
-        List<LogModel> log = createModel(myLog);
-        return writeCSVFile(log);
-    }
+    private static final Logger LOGGER = LoggerFactory.getLogger(CSVExporterLogicImpl.class);
 
     private static String CASEID = "Case ID";
     private static String ACTIVITY = "Activity";
 
-    private List<LogModel> createModel(List<XTrace> traces){
+    @Override
+    public File exportCSV(XLog xLog) {
+        return writeCSVFile(xLog, generateColumnNames(xLog));
+    }
 
-        HashMap<String, String> attributeList;
-        HashMap<String, String> eventAttributes;
+    /**
+     * Generate List of column names based on specified XLog
+     *
+     * @param traces XLog (List of XTraces)
+     * @return
+     */
+    private List<String> generateColumnNames(List<XTrace> traces) {
 
-        List<LogModel> logData = new ArrayList<LogModel>();
-        String attributeValue;
+        List<String> columnNames;
 
         Set<String> listOfAttributes = new LinkedHashSet<String>();
         columnNames = new ArrayList<String>();
         columnNames.add(CASEID);
         columnNames.add(ACTIVITY);
 
-        for (XTrace myTrace: traces) {
+        for (XTrace myTrace : traces) {
             listOfAttributes.addAll(myTrace.getAttributes().keySet());
 
-            attributeList = new HashMap<String, String>();
 
-            for (Map.Entry<String, XAttribute> tAtt : myTrace.getAttributes().entrySet()){
+            for (XEvent myEvent : myTrace) {
 
-                attributeValue = getAttributeValue(tAtt.getValue());
-                if(tAtt.getKey().equals("concept:name")){
-                    attributeList.put(CASEID, attributeValue);
-                }else{
-                    attributeList.put(tAtt.getKey(), attributeValue);
-                }
-            }
-
-            for (XEvent myEvent: myTrace) {
-                eventAttributes = new HashMap<String, String>();
-                eventAttributes.putAll(attributeList);
                 listOfAttributes.addAll(myEvent.getAttributes().keySet());
 
-                for (Map.Entry<String, XAttribute> eAtt : myEvent.getAttributes().entrySet()){
-
-                    attributeValue = getAttributeValue(eAtt.getValue());
-                    if(eAtt.getKey().equals("concept:name")){
-                        eventAttributes.put(ACTIVITY, attributeValue);
-                    }else{
-                        eventAttributes.put(eAtt.getKey(), attributeValue);
-                    }
-                }
-
-                logData.add(new LogModel(eventAttributes));
             }
         }
 
-        if(listOfAttributes.contains("concept:name")){
-            listOfAttributes.remove("concept:name");
-        }
+        listOfAttributes.remove("concept:name");
         columnNames.addAll(new ArrayList<String>(listOfAttributes));
 
-    return  logData;
+        return columnNames;
     }
 
+    /**
+     * Get AttributeValue from XAttribute based on different XAttribute types
+     *
+     * @param xAttribute XAttribute
+     * @return
+     */
+    private String getAttributeValue(XAttribute xAttribute) {
 
-    private String getAttributeValue(XAttribute myAttribute){
-
-        if(myAttribute instanceof XAttributeLiteral){
-            String theValue = ((XAttributeLiteral)myAttribute).getValue();
-            if(theValue.contains(",")) return "\"" + theValue + "\"";
-            return  theValue;
-        }else if (myAttribute instanceof XAttributeTimestamp){
+        if (xAttribute instanceof XAttributeLiteral) {
+            String theValue = ((XAttributeLiteral) xAttribute).getValue();
+            if (theValue.contains(",")) {
+                return "\"" + theValue + "\"";
+            }
+            return theValue;
+        } else if (xAttribute instanceof XAttributeTimestamp) {
 
             DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-            return df.format(((XAttributeTimestamp)myAttribute).getValue());
-        }
-        else if (myAttribute instanceof XAttributeBoolean){
-            return String.valueOf(((XAttributeBoolean)myAttribute).getValue());
-        }
-        else if (myAttribute instanceof XAttributeDiscrete){
-            return String.valueOf(((XAttributeDiscrete)myAttribute).getValue());
-        }
-        else if (myAttribute instanceof XAttributeContinuous){
-            return  String.valueOf(((XAttributeContinuous)myAttribute).getValue());
+            return df.format(((XAttributeTimestamp) xAttribute).getValue());
+        } else if (xAttribute instanceof XAttributeBoolean) {
+            return String.valueOf(((XAttributeBoolean) xAttribute).getValue());
+        } else if (xAttribute instanceof XAttributeDiscrete) {
+            return String.valueOf(((XAttributeDiscrete) xAttribute).getValue());
+        } else if (xAttribute instanceof XAttributeContinuous) {
+            return String.valueOf(((XAttributeContinuous) xAttribute).getValue());
         }
         return "";
 
     }
 
+    /**
+     * Write Log to temp CSV file row by row, and then compress to GZ file.
+     *
+     * @param xLog XLog
+     * @param columnNames List of column names
+     * @return File
+     */
+    private File writeCSVFile(XLog xLog, List<String> columnNames) {
 
-    private String writeCSVFile(List<LogModel> log){
+        try {
 
-        StringBuilder sb = new StringBuilder();
+            // create a temporary file
+            Path tempCSV = Files.createTempFile(null, ".csv");
+            Path tempGZIP = Files.createTempFile(null, ".csv.gz");
+            tempCSV.toFile().deleteOnExit();
+            tempGZIP.toFile().deleteOnExit();
+            LOGGER.debug("Create temp CSV path \"{}\"", tempCSV);
 
-        String prefix = "";
-        for(String one : columnNames){
-            sb.append(prefix);
-            prefix = ",";
-            sb.append(one);
-        }
-        sb.append('\n');
 
-        String columnValue;
-        for (LogModel row : log) {
-            prefix = "";
-            for(String one : columnNames){
+            StringBuilder sb = new StringBuilder();
+
+            String prefix = "";
+            for (String one : columnNames) {
                 sb.append(prefix);
                 prefix = ",";
-
-                columnValue = row.getAttributeList().get(one);
-                if(columnValue != null && columnValue.trim().length() !=0){
-                    sb.append(columnValue);
-                }else{
-                    sb.append("");
-                }
+                sb.append(one);
             }
             sb.append('\n');
+
+            // write headers
+            Files.write(tempCSV, sb.toString().getBytes(StandardCharsets.UTF_8));
+            //empty StringBuilder
+            sb.setLength(0);
+
+            // write rest columns
+            String columnValue;
+            HashMap<String, String> attributeList;
+            HashMap<String, String> eventAttributes;
+            String attributeValue;
+
+            for (XTrace myTrace : xLog) {
+
+                attributeList = new HashMap<String, String>();
+
+                for (Map.Entry<String, XAttribute> tAtt : myTrace.getAttributes().entrySet()) {
+
+                    attributeValue = getAttributeValue(tAtt.getValue());
+                    if ("concept:name".equals(tAtt.getKey())) {
+                        attributeList.put(CASEID, attributeValue);
+                    } else {
+                        attributeList.put(tAtt.getKey(), attributeValue);
+                    }
+                }
+
+                for (XEvent myEvent : myTrace) {
+                    eventAttributes = new HashMap<String, String>(attributeList);
+
+                    for (Map.Entry<String, XAttribute> eAtt : myEvent.getAttributes().entrySet()) {
+
+                        attributeValue = getAttributeValue(eAtt.getValue());
+                        if ("concept:name".equals(eAtt.getKey())) {
+                            eventAttributes.put(ACTIVITY, attributeValue);
+                        } else {
+                            eventAttributes.put(eAtt.getKey(), attributeValue);
+                        }
+                    }
+
+                    LogModel row = new LogModel(eventAttributes);
+
+                    // start to write row
+                    prefix = "";
+                    for (String one : columnNames) {
+
+                        sb.append(prefix);
+                        prefix = ",";
+
+                        columnValue = row.getAttributeList().get(one);
+                        if (columnValue != null && columnValue.trim().length() != 0) {
+                            sb.append(columnValue);
+                        }
+                    }
+                    sb.append('\n');
+                    Files.write(tempCSV, sb.toString().getBytes(StandardCharsets.UTF_8),
+                            StandardOpenOption.APPEND);
+                    //empty StringBuilder
+                    sb.setLength(0);
+
+                }
+            }
+
+            if (Files.notExists(tempCSV)) {
+                LOGGER.debug("The temp CSV path \"{}\" doesn't exist!", tempCSV);
+                return null;
+            }
+
+            compressGzip(tempCSV, tempGZIP);
+            Files.delete(tempCSV);
+            return tempGZIP.toFile();
+
+        } catch (IOException e) {
+            LOGGER.error("Error occurred while creating temp CSV file: " + e.getMessage(), e);
+            return null;
         }
-        return sb.toString();
+    }
+
+    /**
+     * copy file (FileInputStream) to GZIPOutputStream
+     *
+     * @param source source path
+     * @param target target path
+     * @throws IOException IOException
+     */
+    private void compressGzip(Path source, Path target) throws IOException {
+
+        try (GZIPOutputStream gos = new GZIPOutputStream(new FileOutputStream(target.toFile()));
+             FileInputStream fis = new FileInputStream(source.toFile())) {
+
+            // copy file
+            byte[] buffer = new byte[1024];
+            int len;
+            while ((len = fis.read(buffer)) > 0) {
+                gos.write(buffer, 0, len);
+            }
+
+        }
+
     }
 
 }
