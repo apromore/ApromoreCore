@@ -8,7 +8,7 @@
 if(!Apromore) var Apromore = {};
 if(!Apromore.CONFIG) Apromore.CONFIG = {};
 Apromore.CONFIG.EDITOR_PATH = "/editor";
-Apromore.CONFIG.SERVER_HANDLER_ROOT_PREFIX = '/bpmneditor';
+Apromore.CONFIG.SERVER_HANDLER_ROOT_PREFIX = 'bpmneditor';
 /**
  * Copyright (c) 2006
  * Martin Czuchra, Nicolas Peters, Daniel Polak, Willi Tscheschner
