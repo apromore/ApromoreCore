@@ -2,9 +2,9 @@ server:
  port: 8181
 
 airflow:
-  hostname: 'http://54.206.190.197:8000'
-  password: 'apromore2020!'
-  username: 'admin'
+  hostname: 'http://localhost:8000'
+  password: 'Apromore2021!'
+  username: 'airflow'
 
 apromore:
   tenant: 'ap'
@@ -51,7 +51,7 @@ impala:
       directory: 'apromore/etl/portal/users/'
   jdbc:
     password: 'MAcri'
-    url: 'jdbc:impala://49.192.153.100:21050/'
+    url: 'jdbc:impala://localhost:21050/'
     username: 'apromore'
 
 import:
@@ -141,7 +141,7 @@ site:
 
 spring:
   datasource:
-    password: Apromore#!dev
+    password: MAcri
 #    url: jdbc:h2:mem:Manager-Repository;DATABASE_TO_UPPER=FALSE;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
     url : jdbc:mysql://localhost:3306/apromore?createDatabaseIfNotExist=true&autoReconnect=true&allowMultiQueries=true&rewriteBatchedStatements=true&characterEncoding=utf-8&serverTimezone=GMT%2B10
     username: apromore
@@ -154,7 +154,7 @@ spring:
   liquibase:
     change-log: classpath:db/migration/changeLog.yaml
     contexts: MYSQL
-    password: Apromore#!dev
+    password: 7fHJV41fpJ
     user: liquibase_user
 
 
