@@ -48,7 +48,7 @@ impala:
   etl:
     dataStore: '/etl_data'
     s3:
-      directory: 'apromore/etl/portal/users/'
+      directory: 'apromore/etl/test/users/'
   jdbc:
     password: 'MAcri'
     url: 'jdbc:impala://localhost:21050/'
