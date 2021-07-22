@@ -1,6 +1,9 @@
 server:
  port: 8181
-
+ servlet.session.cookie:
+    http-only: true
+    secure: true
+    cookie.path: /
 airflow:
   hostname: 'http://localhost:8000'
   password: 'Apromore2021!'
@@ -68,7 +71,7 @@ ldap:
 logging:
   level:
     root: INFO
-#    org.springframework: debug
+    #org.springframework: debug
   file:
     name: ${user_home}/.apromore/logs/apromore.log
     max-size: 20MB
@@ -156,7 +159,7 @@ spring:
     contexts: MYSQL
     password: 7fHJV41fpJ
     user: liquibase_user
-
+  webflux.session.cookie.same-site: strict
 
 storage:
   path: FILE::${user_home}/.apromore/Event-Logs-Repository
@@ -175,7 +178,7 @@ numOfTrace : 10000
 aboutMeName : 'Apromore Pty Ltd.'
 
 keycloak:
- enabled: false
+ enabled: true
  realm: Apromore
  auth-server-url: http://localhost:8080/auth
  ssl-required: external
