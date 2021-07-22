@@ -1060,3 +1060,15 @@ databaseChangeLog:
            columnName: schema_info
            newDataType: VARCHAR(5000)
            tableName: static_log
+
+ - changeSet:
+     id: 20212007102000
+     author: micg
+     changes:
+       - addColumn:
+           tableName: group
+           columns:
+             - column:
+                 name: group_from_sso_idp
+                 type: boolean
+                 defaultValue: false
