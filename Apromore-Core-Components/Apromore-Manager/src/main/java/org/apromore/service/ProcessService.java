@@ -157,5 +157,5 @@ public interface ProcessService {
      * @param pmv processSummaryType
      * @return Folder
      */
-    Folder getFolderByPmv(ProcessModelVersion pmv);
+    Folder getFolderByPmv(ProcessModelVersion pmv) throws RepositoryException;
 }

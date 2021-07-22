@@ -24,24 +24,6 @@
  */
 package org.apromore.service.impl;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import javax.activation.DataHandler;
-import javax.inject.Inject;
-import javax.mail.util.ByteArrayDataSource;
-import javax.xml.bind.JAXBException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 import org.apromore.aop.Event;
 import org.apromore.aop.HistoryEnum;
 import org.apromore.common.Constants;
@@ -86,6 +68,25 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.activation.DataHandler;
+import javax.inject.Inject;
+import javax.mail.util.ByteArrayDataSource;
+import javax.xml.bind.JAXBException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Implementation of the ProcessService Contract.
@@ -567,10 +568,18 @@ public class ProcessServiceImpl implements ProcessService {
   }
 
   @Override
-  public Folder getFolderByPmv(ProcessModelVersion pmv) {
+  public Folder getFolderByPmv(ProcessModelVersion pmv) throws RepositoryException {
 
-    Process process = processRepo.findById(pmv.getId()).orElse(null);
-    return process.getFolder();
+    ProcessBranch pb = pmv.getProcessBranch();
+    Folder f;
+    if (pb != null) {
+      f = pb.getProcess().getFolder();
+    } else {
+      LOGGER.error("Failed to retrieve the process!");
+      throw new RepositoryException("Failed to retrieve the process!");
+    }
+
+    return f;
   }
 
   private void deleteProcessModelVersion(List<ProcessModelVersion> pmvs,
