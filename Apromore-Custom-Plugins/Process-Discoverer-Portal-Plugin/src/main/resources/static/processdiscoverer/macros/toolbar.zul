@@ -172,8 +172,6 @@
                 tooltiptext="${arg.pdLabels.saveLog_text}" label="" sclass="ap-icon ap-icon-export-log"/>
         <button ca:data-t="saveBPMN" id="exportBPMN" tooltiptext="${arg.pdLabels.saveBPMN_text}"
                 sclass="ap-icon ap-icon-export-bpmn"/>
-        <button ca:data-t="saveBPMNAnnotated" id="exportBPMNAnnotatedForBIMP" visible="false"
-                tooltiptext="Save as BPMN model annotated for BIMP..." sclass="ap-icon ap-icon-export-bpmn"/>
         <button ca:data-t="downloadPDF" id="downloadPDF" tooltiptext="${arg.pdLabels.downloadPDF_text}"
                 sclass="ap-icon ap-icon-export-pdf"/>
         <button ca:data-t="downloadPNG" id="downloadPNG" tooltiptext="${arg.pdLabels.downloadPNG_text}"
