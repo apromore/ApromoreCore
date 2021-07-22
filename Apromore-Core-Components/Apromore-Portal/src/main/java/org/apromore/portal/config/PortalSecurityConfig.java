@@ -65,9 +65,10 @@ public class PortalSecurityConfig extends WebSecurityConfigurerAdapter {
             + " style-src 'self' 'unsafe-inline' fonts.googleapis.com;"))
         .httpStrictTransportSecurity().includeSubDomains(true).maxAgeInSeconds(63072000);
 
-    http.csrf().ignoringAntMatchers("/zkau", "/login").and().authorizeRequests()
+    http.csrf().ignoringAntMatchers("/zkau", "/zkau/*", "/login").and().authorizeRequests()
         .antMatchers("/zkau/web/login.zul").permitAll().antMatchers("/zkau/web/denied.zul")
-        .permitAll().antMatchers("/zkau").permitAll().antMatchers("/login").permitAll().anyRequest()
+        .permitAll().antMatchers("/zkau").permitAll().antMatchers("/zkau/*").permitAll()
+        .antMatchers("/login").permitAll().antMatchers("/zkau/upload").permitAll().anyRequest()
         .authenticated().and().formLogin().loginPage("/zkau/web/login.zul")
         .loginProcessingUrl("/login").defaultSuccessUrl("/zkau/web/index.zul")
         .failureForwardUrl("/zkau/web/denied.zul").and().logout().logoutUrl("/sso/logout")

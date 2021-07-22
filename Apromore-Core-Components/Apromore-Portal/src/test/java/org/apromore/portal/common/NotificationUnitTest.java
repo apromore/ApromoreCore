@@ -23,7 +23,6 @@
 package org.apromore.portal.common;
 
 import org.apromore.portal.common.notification.Notification;
-import org.apromore.portal.servlet.filter.FilterRegexUtil;
 import org.junit.Test;
 
 /* Test suite for {@link Navigation}. */
@@ -35,13 +34,6 @@ public class NotificationUnitTest {
 
   // Test cases.
 
-  @Test
-  public void test1() {
-
-    String dString = "/dashboard/fonts/icomoon.jpeg";
-    boolean isMathed = FilterRegexUtil.isMatchingFilterRegex(dString);
-    System.out.println(isMathed);
-  }
 
   /**
    * Test {@link Notification#sanitize} method.

@@ -72,9 +72,10 @@ public class PortalKeyCloakSecurity extends KeycloakWebSecurityConfigurerAdapter
 
     http.headers().frameOptions().sameOrigin();
     http.addFilterAfter(new SameSiteFilter(), BasicAuthenticationFilter.class);
-    http.csrf().ignoringAntMatchers("/zkau", "/zkau/**").and().authorizeRequests()
+    http.csrf().ignoringAntMatchers("/zkau", "/zkau/*").and().authorizeRequests()
         // .antMatchers("/**").hasRole("USER")
         .antMatchers("/sso/login").permitAll().antMatchers("/zkau").permitAll()
-        .antMatchers("/zkau/web/bpmneditor/*").permitAll().anyRequest().authenticated();
+        .antMatchers("/zkau/*").permitAll().antMatchers("/zkau/web/bpmneditor/*").permitAll()
+        .anyRequest().authenticated();
   }
 }
