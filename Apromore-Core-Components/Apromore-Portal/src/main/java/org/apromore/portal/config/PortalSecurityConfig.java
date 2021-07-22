@@ -13,6 +13,7 @@
  */
 package org.apromore.portal.config;
 
+import org.apromore.portal.servlet.filter.SameSiteFilter;
 import org.apromore.security.impl.UsernamePasswordAuthenticationProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -21,8 +22,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.header.writers.StaticHeadersWriter;
 
 @Configuration
 @EnableWebSecurity
@@ -39,23 +43,36 @@ public class PortalSecurityConfig extends WebSecurityConfigurerAdapter {
 
   }
 
+
+  @Override
+  public void configure(WebSecurity web) throws Exception {
+
+    web.ignoring().antMatchers("/**/css/*").antMatchers("/**/font/**").antMatchers("/**/img/**")
+        .antMatchers("/**/themes/**").antMatchers("/**/libs/**").antMatchers("/**/js/*")
+        .antMatchers("/robots.txt");
+  }
+
+
   @Override
   protected void configure(final HttpSecurity http) throws Exception {
-    http.headers().frameOptions().sameOrigin();
-    http.csrf().disable().authorizeRequests()
-        // .antMatchers("/**").hasRole("USER")
-        .antMatchers("*/css/**").permitAll().antMatchers("*/font/**").permitAll()
-        .antMatchers("*/img/**").permitAll().antMatchers("*/themes/**").permitAll()
-        .antMatchers("*/libs/**").permitAll().antMatchers("*/js/**").permitAll()
-        .antMatchers("/robots.txt").permitAll().antMatchers("/login").permitAll()
+
+
+    http.addFilterAfter(new SameSiteFilter(), BasicAuthenticationFilter.class);
+    http.headers().frameOptions().sameOrigin().addHeaderWriter(new StaticHeadersWriter(
+        "X-Content-Security-Policy",
+        "default-src 'self'; font-src 'self' data: fonts.googleapis.com fonts.gstatic.com; form-action 'self';"
+            + " frame-ancestors 'self'; img-src 'self' data:; script-src 'self' 'unsafe-eval' 'unsafe-inline';"
+            + " style-src 'self' 'unsafe-inline' fonts.googleapis.com;"))
+        .httpStrictTransportSecurity().includeSubDomains(true).maxAgeInSeconds(63072000);
+
+    http.csrf().ignoringAntMatchers("/zkau", "/login").and().authorizeRequests()
         .antMatchers("/zkau/web/login.zul").permitAll().antMatchers("/zkau/web/denied.zul")
-        .permitAll().antMatchers("/zkau/web/index.zul*").authenticated()
-        .antMatchers("/zkau/web/index.zul*").authenticated().antMatchers("/zkau/**").permitAll()
-        .antMatchers("/zkau").permitAll().and().headers().frameOptions().disable().and().formLogin()
-        .loginPage("/zkau/web/login.zul").loginProcessingUrl("/login")
-        .defaultSuccessUrl("/zkau/web/index.zul").failureForwardUrl("/zkau/web/denied.zul").and()
-        .logout().logoutUrl("/sso/logout").deleteCookies("JSESSIONID", "portalContext")
-        .deleteCookies("Apromore", "pluginSessionId").logoutSuccessUrl("/zkau/web/login.zul");
+        .permitAll().antMatchers("/zkau").permitAll().antMatchers("/login").permitAll().anyRequest()
+        .authenticated().and().formLogin().loginPage("/zkau/web/login.zul")
+        .loginProcessingUrl("/login").defaultSuccessUrl("/zkau/web/index.zul")
+        .failureForwardUrl("/zkau/web/denied.zul").and().logout().logoutUrl("/sso/logout")
+        .deleteCookies("JSESSIONID", "portalContext").deleteCookies("Apromore", "pluginSessionId")
+        .logoutSuccessUrl("/zkau/web/login.zul");
 
   }
 

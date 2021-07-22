@@ -9,6 +9,7 @@
  */
 package org.apromore.portal.config;
 
+import org.apromore.portal.servlet.filter.SameSiteFilter;
 import org.keycloak.adapters.KeycloakConfigResolver;
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
 import org.keycloak.adapters.springsecurity.KeycloakConfiguration;
@@ -19,9 +20,11 @@ import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 @KeycloakConfiguration
@@ -56,16 +59,21 @@ public class PortalKeyCloakSecurity extends KeycloakWebSecurityConfigurerAdapter
   }
 
   @Override
+  public void configure(WebSecurity web) throws Exception {
+    super.configure(web);
+    web.ignoring().antMatchers("/**/css/*").antMatchers("/**/font/**").antMatchers("/**/img/**")
+        .antMatchers("/**/themes/**").antMatchers("/**/libs/**").antMatchers("/**/js/*")
+        .antMatchers("/robots.txt");
+  }
+
+  @Override
   protected void configure(HttpSecurity http) throws Exception {
     super.configure(http);
 
     http.headers().frameOptions().sameOrigin();
+    http.addFilterAfter(new SameSiteFilter(), BasicAuthenticationFilter.class);
     http.csrf().ignoringAntMatchers("/zkau", "/zkau/**").and().authorizeRequests()
         // .antMatchers("/**").hasRole("USER")
-        .antMatchers("*/css/**").permitAll().antMatchers("*/font/**").permitAll()
-        .antMatchers("*/img/**").permitAll().antMatchers("*/themes/**").permitAll()
-        .antMatchers("/**/*\\.svg").permitAll().antMatchers("*/libs/**").permitAll()
-        .antMatchers("*/js/**").permitAll().antMatchers("/robots.txt").permitAll()
         .antMatchers("/sso/login").permitAll().antMatchers("/zkau").permitAll()
         .antMatchers("/zkau/web/bpmneditor/*").permitAll().anyRequest().authenticated();
   }
