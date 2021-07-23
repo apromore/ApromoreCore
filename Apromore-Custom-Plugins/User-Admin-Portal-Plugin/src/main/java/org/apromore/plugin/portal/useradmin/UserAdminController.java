@@ -21,6 +21,8 @@
  */
 package org.apromore.plugin.portal.useradmin;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -56,6 +58,7 @@ import org.slf4j.Logger;
 // import org.zkoss.spring.SpringUtil;
 import org.zkoss.json.JSONObject;
 import org.zkoss.web.Attributes;
+import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
@@ -63,6 +66,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.event.SelectEvent;
+import org.zkoss.zk.ui.metainfo.PageDefinition;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
@@ -918,7 +922,7 @@ public class UserAdminController extends SelectorComposer<Window> {
       arg.put("portalContext", portalContext);
       arg.put("securityService", securityService);
       Window window = (Window) Executions.getCurrent()
-          .createComponents("user-admin/zul/create-user.zul", getSelf(), arg);
+          .createComponents(getPageDefinition("zul/create-user.zul"), getSelf(), arg);
       window.doModal();
 
     } catch (Exception e) {
@@ -959,7 +963,7 @@ public class UserAdminController extends SelectorComposer<Window> {
                     Map arg = new HashMap<>();
                     arg.put("selectedUser", user);
                     Window window = (Window) Executions.getCurrent()
-                        .createComponents("user-admin/zul/delete-user.zul", getSelf(), arg);
+                        .createComponents(getPageDefinition("zul/delete-user.zul"), getSelf(), arg);
                     window.doModal();
                   } catch (Exception ex) {
                     LOGGER.error("Unable to create transfer owner dialog", ex);
@@ -1204,7 +1208,7 @@ public class UserAdminController extends SelectorComposer<Window> {
       arg.put("portalContext", portalContext);
       arg.put("securityService", securityService);
       Window window = (Window) Executions.getCurrent()
-          .createComponents("user-admin/zul/create-group.zul", getSelf(), arg);
+          .createComponents(getPageDefinition("zul/create-group.zul"), getSelf(), arg);
       window.doModal();
 
     } catch (Exception e) {
@@ -1328,5 +1332,12 @@ public class UserAdminController extends SelectorComposer<Window> {
     isGroupDetailDirty = true;
   }
 
+  public PageDefinition getPageDefinition(String uri) throws IOException {
+    String url = "static/" + uri;
+    Execution current = Executions.getCurrent();
+    PageDefinition pageDefinition=current.getPageDefinitionDirectly(new InputStreamReader(
+            getClass().getClassLoader().getResourceAsStream(url)), "zul");
+    return pageDefinition;
+  }
 
 }
