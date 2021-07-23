@@ -280,7 +280,7 @@ public class BPMNExportController extends AbstractController {
                                     now,  // creation timestamp
                                     now,  // last update timestamp
                                     publicModel);
-                            Folder folder = controller.getProcessService().getFolderByPmv(pmv);
+                            Folder folder = pmv.getProcessBranch().getProcess().getFolder();
                             String folderName = folder == null ? HOME_FOLDER_NAME : folder.getName();
                             String notif = MessageFormat.format(
                                 parent.getLabel("successSaveBPMN_message"),
