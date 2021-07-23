@@ -35,6 +35,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -740,7 +741,7 @@ public class MainController extends BaseController
    * @throws ParseException
    */
   public Map<SummaryType, List<VersionSummaryType>> getSelectedElementsAndVersions() {
-    Map<SummaryType, List<VersionSummaryType>> summaryTypes = new HashMap<>();
+    Map<SummaryType, List<VersionSummaryType>> summaryTypes = new LinkedHashMap<>();
 
     if (getBaseListboxController() instanceof ProcessListboxController) {
       ArrayList<VersionSummaryType> versionList;
