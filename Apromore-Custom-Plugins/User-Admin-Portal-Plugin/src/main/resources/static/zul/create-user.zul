@@ -28,7 +28,10 @@
         <rows>
             <row>
                 <label value="${$composer.labels.userName_text}"/>
-                <textbox id="userNameTextbox" value="New_username" constraint="no empty,/^[a-zA-Z0-9 @\\._\-]{4,}$/: {Use only letters, numbers, and @.-_}" placeholder="Username"/>
+                <textbox id="userNameTextbox" value="New_username"
+                         constraint="no empty,/^[a-zA-Z0-9 @\\._\-]{4,}$/:
+                         {Usernames must be at least 4 characters long, and include only letters, numbers, and @.-_}"
+                         placeholder="Username"/>
             </row>
             <row>
                 <label value="First Name"/>
