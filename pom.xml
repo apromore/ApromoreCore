@@ -123,7 +123,6 @@
         <java.target.version>${java.source.version}</java.target.version>
         <maven.compiler.source>${java.source.version}</maven.compiler.source>
         <maven.compiler.target>${java.target.version}</maven.compiler.target>
-        <sonar.language>java</sonar.language>
         <ant.version>1.8.3</ant.version>
 
         <!-- Apromore Dependency Versions -->
@@ -241,6 +240,14 @@
         <maven.war.plugin>3.3.1</maven.war.plugin>
         <maven.version.updater.plugin>1.0</maven.version.updater.plugin>
         <maven.version.range>[3.0.3,)</maven.version.range>
+
+        <!-- SonarCloud, see https://sonarcloud.io/documentation/analysis/scan/sonarscanner-for-maven/ -->
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <sonar.language>java</sonar.language>
+        <sonar.organization>apromore</sonar.organization>
+        <sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
+        <sonar.projectKey>apromore_ApromoreCore</sonar.projectKey>
+
         <!-- Config locations -->
         <checkstyle.ruleset.location>checkstyle.xml</checkstyle.ruleset.location>
 
@@ -1116,6 +1123,11 @@
                     <artifactId>build-helper-maven-plugin</artifactId>
                     <version>3.2.0</version>
                 </plugin>
+                <plugin>
+                    <groupId>org.sonarsource.scanner.maven</groupId>
+                    <artifactId>sonar-maven-plugin</artifactId>
+                    <version>3.9.0.2155</version>
+                </plugin>
             </plugins>
         </pluginManagement>
 
@@ -1156,9 +1168,8 @@
                 <inherited>false</inherited>
             </plugin>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
+                <groupId>org.sonarsource.scanner.maven</groupId>
                 <artifactId>sonar-maven-plugin</artifactId>
-                <version>2.2</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

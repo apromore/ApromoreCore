@@ -2,7 +2,6 @@ name: Build
 on:
   push:
     branches:
-      - master
       - development
   pull_request:
     types: [opened, synchronize, reopened]
@@ -22,6 +21,12 @@ jobs:
         uses: stCarolas/setup-maven@v4
         with:
           maven-version: 3.6.3      
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
       - name: Cache Maven packages
         uses: actions/cache@v1
         with:
@@ -32,4 +37,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn -B verify
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
