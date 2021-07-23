@@ -137,7 +137,7 @@ public interface ProcessService {
      * @param user with write permission
      * @throws UpdateProcessException if the user doesn't have write permission on any of the models
      */
-    void deleteProcessModel(List<ProcessData> models, User user) throws UpdateProcessException;;
+    void deleteProcessModel(List<ProcessData> models, User user) throws UpdateProcessException;
 
 
     /**
@@ -152,10 +152,4 @@ public interface ProcessService {
      */
     String getBPMNRepresentation(final String name, final Integer processId, final String branch, final Version version) throws RepositoryException;
 
-    /**
-     * Get folder that the associated Process is saved in
-     * @param pmv processSummaryType
-     * @return Folder
-     */
-    Folder getFolderByPmv(ProcessModelVersion pmv);
 }

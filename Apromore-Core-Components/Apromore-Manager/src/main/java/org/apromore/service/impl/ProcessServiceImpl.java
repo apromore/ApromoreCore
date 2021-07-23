@@ -510,13 +510,6 @@ public class ProcessServiceImpl implements ProcessService {
         }
     }
 
-    @Override
-    public Folder getFolderByPmv(ProcessModelVersion pmv) {
-
-        Process process = processRepo.findOne(pmv.getId());
-        return process.getFolder();
-    }
-
     private void deleteProcessModelVersion(List<ProcessModelVersion> pmvs, ProcessModelVersion pvidToDelete, ProcessBranch branch) throws ExceptionDao {
         ProcessModelVersion newCurrent = getPreviousVersion(pmvs, pvidToDelete);
         if (newCurrent == null) {
