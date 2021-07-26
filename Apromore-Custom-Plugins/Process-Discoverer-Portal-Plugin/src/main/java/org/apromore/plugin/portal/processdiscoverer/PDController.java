@@ -67,6 +67,7 @@ import org.apromore.portal.model.FolderType;
 import org.apromore.portal.model.LogSummaryType;
 import org.apromore.portal.plugincontrol.PluginExecution;
 import org.apromore.portal.plugincontrol.PluginExecutionManager;
+import org.apromore.service.AuthorizationService;
 import org.apromore.service.DomainService;
 import org.apromore.service.EventLogService;
 import org.apromore.service.ProcessService;
@@ -111,6 +112,7 @@ public class PDController extends BaseController {
     private ProcessService processService;
     private EventLogService eventLogService;
     private LogAnimationService2 logAnimationService;
+    private AuthorizationService authorizationService;
     private LogFilterPlugin logFilterPlugin;
     private PDFactory pdFactory;
     
@@ -201,9 +203,10 @@ public class PDController extends BaseController {
         processService = (ProcessService) Sessions.getCurrent().getAttribute("processService");
         eventLogService = (EventLogService) Sessions.getCurrent().getAttribute("eventLogService");
         logAnimationService = (LogAnimationService2) Sessions.getCurrent().getAttribute("logAnimationService");
+        authorizationService = (AuthorizationService) Sessions.getCurrent().getAttribute("authorizationService");
         logFilterPlugin = (LogFilterPlugin) Sessions.getCurrent().getAttribute("logFilterPlugin"); //beanFactory.getBean("logFilterPlugin");
 
-        if (domainService == null || processService == null || eventLogService == null || logFilterPlugin == null) {
+        if (domainService == null || processService == null || eventLogService == null || logFilterPlugin == null || authorizationService == null) {
             return false;
         }
         return true;
