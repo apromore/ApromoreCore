@@ -558,10 +558,15 @@ public class EventLogServiceImpl implements EventLogService {
     return calendar != null ? calendarService.getCalendar(calendar.getId()) : null;
   }
 
-  public boolean saveFileToVolume(String filename, String volumePath, String prefix,
-      ByteArrayOutputStream baos) throws IOException, ObjectCreationException {
+  @Override
+  public boolean saveFileToVolume(String filename, String prefix,
+                                  ByteArrayOutputStream baos) throws Exception {
 
-    StorageClient newStorage = storageFactory.getStorageClient(volumePath);
+    String ved = configBean.getVolumeExportDir();
+    if (ved == null) {
+      throw new Exception("Can not found VolumeExportDir");
+    }
+    StorageClient newStorage = storageFactory.getStorageClient(ved);
 
     OutputStream outputStream = newStorage.getOutputStream(prefix, filename);
     baos.writeTo(outputStream);
