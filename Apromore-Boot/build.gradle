@@ -50,10 +50,12 @@ processResources {
 	//	into 'metainfo/zk'
 	//}
 
-	from ('../Apromore-Core-Components/Apromore-Portal/src/main/webapp/WEB-INF') {
-		include 'zk-label.properties'
-		into 'metainfo'
-	}
+	//from ('../Apromore-Core-Components/Apromore-Portal/src/main/webapp/WEB-INF') {
+	//	include 'zk-label.properties'
+	//	into 'metainfo'
+	//}
+	
+	
 
 	from '../Apromore-Database/src/main/resources'
 

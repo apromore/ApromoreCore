@@ -21,17 +21,17 @@
   -->
 
 <?page title="${labels.brand_name} - Page not found" contentType="text/html;charset=UTF-8"?>
-<?link rel="stylesheet" type="text/css" href="/themes/${labels.theme}/common/css/index.css" ?>
-<?link rel="stylesheet" type="text/css" href="/themes/ap/common/css/errors.css" ?>
+<?link rel="stylesheet" type="text/css" href="~./themes/${labels.theme}/common/css/index.css" ?>
+<?link rel="stylesheet" type="text/css" href="~./themes/ap/common/css/errors.css" ?>
 <zk>
   <div xmlns="http://www.w3.org/1999/xhtml" class="ap-centered-hv">
     <div class="ap-error-box">
-      <div><img src="/themes/${labels.theme}/common/img/brand/logo-colour.svg"/></div>
+      <div><img src="~./themes/${labels.theme}/common/img/brand/logo-colour.svg"/></div>
       <div class="ap-error-message">
         The resource you have just tried to access might have been removed, had its name changed or is temporarily unavailable.
       </div>
       <div>
-        <a href="/login.zul" >Return to Home</a>
+        <a href="/" >Return to Home</a>
       </div>
     </div>
   </div>

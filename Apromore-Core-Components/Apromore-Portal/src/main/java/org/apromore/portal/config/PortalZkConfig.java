@@ -14,6 +14,7 @@ import org.apromore.portal.LoggingZKListener;
 import org.apromore.zk.ApromoreDesktopInit;
 import org.springframework.context.annotation.Configuration;
 import org.zkoss.lang.Library;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.WebApps;
 import org.zkoss.zk.ui.util.Statistic;
 import org.zkoss.zk.ui.util.URIInfo;
@@ -37,12 +38,18 @@ public class PortalZkConfig {
     Library.setProperty("org.zkoss.web.classWebResource.cache", "false");
     Library.setProperty("org.zkoss.zul.progressbox.position", "center");
     Library.setProperty("org.zkoss.util.label.web.charset", "UTF-8");
+    // Library.setProperty("org.zkoss.util.label.web.location", "./zk-label.properties");
+    Labels.register(new LabelLocatorService(WebApps.getCurrent().getServletContext(), "zk-label"));
+    Labels.register(new LabelLocatorService(WebApps.getCurrent().getServletContext(), "brand"));
+    Labels.register(new LabelLocatorService(WebApps.getCurrent().getServletContext(), "ui"));
 
     WebApps.getCurrent().getConfiguration().setTimeoutURI("ajax", "/", URIInfo.SEND_REDIRECT);
     try {
       WebApps.getCurrent().getConfiguration().addListener(Statistic.class);
       WebApps.getCurrent().getConfiguration().addListener(ApromoreDesktopInit.class);
       WebApps.getCurrent().getConfiguration().addListener(LoggingZKListener.class);
+      WebApps.getCurrent().getConfiguration().addListener(LoggingZKListener.class);
+
 
     } catch (Exception e) {
       // TODO Auto-generated catch block
@@ -54,11 +61,8 @@ public class PortalZkConfig {
     WebApps.getCurrent().getConfiguration().addErrorPage("ajaz", Throwable.class, "/pages/401.zul");
 
 
-    // <error-page>
-    // <exception-type>java.lang.Throwable</exception-type>
-    // <location>/pages/401.zul</location>
-    // </error-page>
-
   }
+
+
 
 }

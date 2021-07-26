@@ -68,12 +68,14 @@ public class PortalSecurityConfig extends WebSecurityConfigurerAdapter {
     http.csrf().ignoringAntMatchers("/zkau", "/zkau/*", "/login").and().authorizeRequests()
         .antMatchers("/zkau/web/login.zul").permitAll().antMatchers("/zkau/web/denied.zul")
         .permitAll().antMatchers("/zkau").permitAll().antMatchers("/zkau/*").permitAll()
-        .antMatchers("/login").permitAll().antMatchers("/zkau/upload").permitAll().anyRequest()
-        .authenticated().and().formLogin().loginPage("/zkau/web/login.zul")
-        .loginProcessingUrl("/login").defaultSuccessUrl("/zkau/web/index.zul")
-        .failureForwardUrl("/zkau/web/denied.zul").and().logout().logoutUrl("/sso/logout")
-        .deleteCookies("JSESSIONID", "portalContext").deleteCookies("Apromore", "pluginSessionId")
-        .logoutSuccessUrl("/zkau/web/login.zul");
+        .antMatchers("/login").permitAll().antMatchers("/logout").permitAll()
+        .antMatchers("/zkau/upload").permitAll().anyRequest().authenticated().and().formLogin()
+        .loginPage("/zkau/web/login.zul").loginProcessingUrl("/login")
+        .defaultSuccessUrl("/zkau/web/index.zul").failureForwardUrl("/zkau/web/denied.zul").and()
+        .logout().logoutUrl("/sso/logout").deleteCookies("JSESSIONID", "portalContext")
+        .deleteCookies("Apromore", "pluginSessionId").logoutSuccessUrl("/zkau/web/login.zul");
+
+    http.exceptionHandling().accessDeniedPage("/zkau/web/401.zul");
 
   }
 

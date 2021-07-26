@@ -972,6 +972,12 @@ public class UserAdminController extends SelectorComposer<Window> {
                 } else {
                   securityService.deleteUser(user);
                   // Force logout the deleted user
+                  Map dataMap = Map.of("type", "DELETE_USER");
+
+                  EventQueues
+                      .lookup(SecurityService.EVENT_TOPIC, getSelf().getDesktop().getWebApp(), true)
+                      .publish(new Event("User Deleted", null, dataMap));
+
                   EventQueues.lookup("forceSignOutQueue", EventQueues.APPLICATION, true)
                       .publish(new Event("onSignout", null, user.getUsername()));
                 }
@@ -1242,6 +1248,10 @@ public class UserAdminController extends SelectorComposer<Window> {
               for (Group group : selectedGroups) {
                 LOGGER.info("Deleting user " + group.getName());
                 securityService.deleteGroup(group);
+                Map dataMap = Map.of("type", "DELETE_GROUP");
+                EventQueues
+                    .lookup(SecurityService.EVENT_TOPIC, getSelf().getDesktop().getWebApp(), true)
+                    .publish(new Event("Group Created", null, dataMap));
               }
               setSelectedGroup(null);
             }
@@ -1335,8 +1345,8 @@ public class UserAdminController extends SelectorComposer<Window> {
   public PageDefinition getPageDefinition(String uri) throws IOException {
     String url = "static/" + uri;
     Execution current = Executions.getCurrent();
-    PageDefinition pageDefinition=current.getPageDefinitionDirectly(new InputStreamReader(
-            getClass().getClassLoader().getResourceAsStream(url)), "zul");
+    PageDefinition pageDefinition = current.getPageDefinitionDirectly(
+        new InputStreamReader(getClass().getClassLoader().getResourceAsStream(url)), "zul");
     return pageDefinition;
   }
 

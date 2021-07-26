@@ -22,6 +22,7 @@
 package org.apromore.plugin.portal.useradmin;
 
 import java.util.Locale;
+import java.util.Map;
 import java.util.ResourceBundle;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
@@ -30,6 +31,8 @@ import org.slf4j.Logger;
 import org.zkoss.web.Attributes;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
@@ -75,7 +78,11 @@ public class CreateGroupController extends SelectorComposer<Window> {
         throw new Exception("Group already exists");
       }
       securityService.createGroup(groupNameTextbox.getValue());
+      Map dataMap = Map.of("type", "CREATE_GROUP");
+      EventQueues.lookup(SecurityService.EVENT_TOPIC, getSelf().getDesktop().getWebApp(), true)
+          .publish(new Event("Group Created", null, dataMap));
       getSelf().detach();
+
 
     } catch (Exception e) {
       LOGGER.error("Unable to create group", e);

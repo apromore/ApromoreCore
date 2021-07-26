@@ -92,7 +92,7 @@ subprojects {
 
 		processResources {
 			dependsOn generateGitProperties
-			filesMatching('**/application*.yml') {
+			filesMatching('**/application*.properties') {
 			expand(user_home: user_home, version_edition : version_edition, project_version : project.version)
 		}
 		 from ('../build/resources/main')
