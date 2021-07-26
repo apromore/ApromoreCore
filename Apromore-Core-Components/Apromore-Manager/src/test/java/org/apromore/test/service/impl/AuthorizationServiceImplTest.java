@@ -28,6 +28,7 @@ import org.apromore.dao.*;
 import org.apromore.dao.model.Process;
 import org.apromore.dao.model.*;
 import org.apromore.service.FolderService;
+import org.apromore.service.UserService;
 import org.apromore.service.WorkspaceService;
 import org.apromore.service.impl.AuthorizationServiceImpl;
 import org.apromore.util.AccessType;
@@ -54,6 +55,7 @@ public class AuthorizationServiceImplTest extends AbstractTest {
     private GroupRepository groupRepository;
     private GroupProcessRepository groupProcessRepository;
     private GroupFolderRepository groupFolderRepository;
+    private UserService userService;
 
     private Group group1;
     private Group group2;
@@ -77,10 +79,12 @@ public class AuthorizationServiceImplTest extends AbstractTest {
         groupRepository = createMock(GroupRepository.class);
         groupProcessRepository = createMock(GroupProcessRepository.class);
         groupFolderRepository = createMock(GroupFolderRepository.class);
+        userService = createMock(UserService.class);
 
         authorizationService = new AuthorizationServiceImpl(groupUsermetadataRepository,
                 usermetadataRepository, logRepository, folderService, processRepository,
-                folderRepository, groupRepository, groupLogRepository, groupProcessRepository, groupFolderRepository);
+                folderRepository, groupRepository, groupLogRepository, groupProcessRepository, groupFolderRepository,
+                userService);
 
         // Set up test data
         group1 = createGroup(1, Group.Type.GROUP);
