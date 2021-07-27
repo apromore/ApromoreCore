@@ -45,9 +45,21 @@ import org.apromore.apmlog.AActivity;
 import org.apromore.apmlog.AEvent;
 import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
-import org.apromore.apmlog.filter.typefilters.*;
+import org.apromore.apmlog.filter.rules.RuleValue;
+import org.apromore.apmlog.filter.typefilters.AttributeArcDurationFilter;
+import org.apromore.apmlog.filter.typefilters.CaseLengthFilter;
+import org.apromore.apmlog.filter.typefilters.CaseSectionAttributeCombinationFilter;
+import org.apromore.apmlog.filter.typefilters.CaseSectionCaseAttributeFilter;
+import org.apromore.apmlog.filter.typefilters.CaseSectionEventAttributeFilter;
+import org.apromore.apmlog.filter.typefilters.CaseTimeFilter;
+import org.apromore.apmlog.filter.typefilters.CaseUtilisationFilter;
+import org.apromore.apmlog.filter.typefilters.DurationFilter;
+import org.apromore.apmlog.filter.typefilters.EventTimeFilter;
+import org.apromore.apmlog.filter.typefilters.PathFilter;
+import org.apromore.apmlog.filter.typefilters.ReworkFilter;
 import org.apromore.apmlog.filter.types.Choice;
 import org.apromore.apmlog.filter.types.FilterType;
+import org.apromore.apmlog.filter.types.Inclusion;
 import org.apromore.apmlog.filter.types.OperationType;
 import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
@@ -252,9 +264,45 @@ public class APMLogFilter {
 
     private List<PTrace> filterByNodeDuration(LogFilterRule rule, List<PTrace> traces) {
 
-        return traces.stream()
-                .filter(x -> EventAttributeDurationFilter.toKeep(x, rule))
-                .collect(Collectors.toList());
+        Inclusion inclusion = rule.getInclusion();
+        Choice choice = rule.getChoice();
+        String attributeKey = rule.getKey();
+        String attributeValue = rule.getPrimaryValues().iterator().next().getKey();
+
+        double durRangeFrom = 0, durRangeTo = 0;
+        for (RuleValue ruleValue : rule.getPrimaryValues()) {
+            OperationType operationType = ruleValue.getOperationType();
+            if (operationType == OperationType.GREATER_EQUAL) durRangeFrom = ruleValue.getDoubleValue();
+            if (operationType == OperationType.LESS_EQUAL) durRangeTo = ruleValue.getDoubleValue();
+        }
+
+        List<PTrace> matchedTraces = new ArrayList<>();
+
+        final double from = durRangeFrom, to = durRangeTo;
+
+        for (PTrace trace : traces) {
+            List<AActivity> matchedActs = trace.getActivityList().stream()
+                    .filter(x -> x.getAttributes().containsKey(attributeKey))
+                    .filter(x->x.getAttributeValue(attributeKey).equals(attributeValue))
+                    .collect(Collectors.toList());
+
+            List<AActivity> timeMatchedActs = matchedActs.stream()
+                    .filter(x -> x.getDuration() >= from && x.getDuration() <= to)
+                    .collect(Collectors.toList());
+
+            if (!matchedActs.isEmpty() && !timeMatchedActs.isEmpty() &&
+                    (inclusion == Inclusion.ALL_VALUES ?
+                            matchedActs.size() == timeMatchedActs.size() : timeMatchedActs.size() > 0)
+            ) {
+                matchedTraces.add(trace);
+            }
+        }
+
+        if (choice == Choice.RETAIN) return matchedTraces;
+
+        // in condition of REMOVE
+        traces.removeAll(matchedTraces);
+        return traces;
 
     }
 

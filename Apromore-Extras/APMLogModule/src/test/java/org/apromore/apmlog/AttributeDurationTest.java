@@ -25,7 +25,12 @@ import org.apromore.apmlog.filter.APMLogFilter;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.LogFilterRuleImpl;
 import org.apromore.apmlog.filter.rules.RuleValue;
-import org.apromore.apmlog.filter.types.*;
+import org.apromore.apmlog.filter.types.Choice;
+import org.apromore.apmlog.filter.types.FilterType;
+import org.apromore.apmlog.filter.types.Inclusion;
+import org.apromore.apmlog.filter.types.OperationType;
+import org.apromore.apmlog.filter.types.Section;
+import static org.junit.Assert.assertTrue;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -39,7 +44,7 @@ public class AttributeDurationTest {
     {
         FilterType filterType = FilterType.EVENT_ATTRIBUTE_DURATION;
         Choice choice =  Choice.RETAIN;
-        Inclusion inclusion = Inclusion.ANY_VALUE;
+        Inclusion inclusion = Inclusion.ALL_VALUES;
 
         double lowBoundVal = 1000 * 60 * 60 * 24d;
         double upBoundVal = 1000 * 60 * 60 * 36d;
@@ -74,21 +79,8 @@ public class AttributeDurationTest {
         apmLogFilter.filter(rules);
 
         List<ATrace> traceList = apmLogFilter.getApmLog().getTraceList();
-        boolean hasC1 = false;
-        boolean hasC2 = false;
-        boolean hasC3 = false;
 
-        for (ATrace trace : traceList) {
-            if (trace.getCaseId().equals("1")) hasC1 = true;
-            if (trace.getCaseId().equals("2")) hasC2 = true;
-            if (trace.getCaseId().equals("3")) hasC3 = true;
-            System.out.println(trace.getCaseId());
-        }
-
-        if (!hasC1 || !hasC2 || hasC3) {
-            throw new AssertionError("TEST FAILED. RESULT TRACE LIST MISMATCH.\n");
-        } else {
-            parent.printString("'Attribute duration (1)' test PASS.\n");
-        }
+        assertTrue(traceList.size() == 1);
+        assertTrue(traceList.get(0).getCaseId().equals("1"));
     }
 }
