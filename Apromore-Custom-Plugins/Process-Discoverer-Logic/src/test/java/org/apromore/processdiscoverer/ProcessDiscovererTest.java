@@ -80,14 +80,14 @@ public class ProcessDiscovererTest extends LogicDataSetup {
             MeasureType secondaryType, MeasureAggregation secondaryAggregate, MeasureRelation secondaryRelation,
             boolean bpmn) throws Exception {
         
-        ProcessDiscoverer pd = new ProcessDiscoverer(attLog);
-        AbstractionParams params = createAbstrationParams(attLog.getAttribute(), 
-                                        nodeSlider, arcSlider, paraSlider, 
-                                        structureType, structureAggregate, structureRelation, 
-                                        primaryType, primaryAggregate, primaryRelation, 
+        ProcessDiscoverer pd = new ProcessDiscoverer();
+        AbstractionParams params = createAbstrationParams(attLog.getAttribute(),
+                                        nodeSlider, arcSlider, paraSlider,
+                                        structureType, structureAggregate, structureRelation,
+                                        primaryType, primaryAggregate, primaryRelation,
                                         secondaryType, secondaryAggregate, secondaryRelation, bpmn);
-        Abstraction dfgAbs = pd.generateDFGAbstraction(params);
-        return (!bpmn ? dfgAbs : pd.generateBPMNAbstraction(params, dfgAbs));
+        Abstraction dfgAbs = pd.generateDFGAbstraction(attLog, params);
+        return (!bpmn ? dfgAbs : pd.generateBPMNAbstraction(attLog, params, dfgAbs));
     }
     
     private Abstraction discoverProcess(XLog xlog, double nodeSlider, double arcSlider, double paraSlider,
@@ -96,21 +96,21 @@ public class ProcessDiscovererTest extends LogicDataSetup {
                         MeasureType secondaryType, MeasureAggregation secondaryAggregate, MeasureRelation secondaryRelation,
                         boolean bpmn) throws Exception {
 
-        return discoverProcess(createAttributeLog(xlog), 
-                        nodeSlider, 
-                        arcSlider, 
-                        paraSlider, 
-                        structureType, 
-                        structureAggregate, 
-                        structureRelation, 
-                        primaryType, 
-                        primaryAggregate, 
-                        primaryRelation, 
-                        secondaryType, 
-                        secondaryAggregate, 
-                        secondaryRelation, 
+        return discoverProcess(createAttributeLog(xlog),
+                        nodeSlider,
+                        arcSlider,
+                        paraSlider,
+                        structureType,
+                        structureAggregate,
+                        structureRelation,
+                        primaryType,
+                        primaryAggregate,
+                        primaryRelation,
+                        secondaryType,
+                        secondaryAggregate,
+                        secondaryRelation,
                         bpmn);
-    }   
+    }
     
     private AttributeLog createAttributeLog(XLog xlog) {
         ALog log = new ALog(xlog);
@@ -123,7 +123,7 @@ public class ProcessDiscovererTest extends LogicDataSetup {
         ALog log = new ALog(xlog);
         IndexableAttribute mainAttribute = log.getAttributeStore().getStandardEventConceptName();
         AttributeLog attLog = new AttributeLog(log, mainAttribute);
-        ProcessDiscoverer pd = new ProcessDiscoverer(attLog);
+        ProcessDiscoverer pd = new ProcessDiscoverer();
         AbstractionParams params = new AbstractionParams(
                                             mainAttribute,
                                             1.0,
@@ -144,7 +144,7 @@ public class ProcessDiscovererTest extends LogicDataSetup {
                                             MeasureRelation.ABSOLUTE,
                                             null,
                                             null);
-        Abstraction traceAbs = pd.generateTraceAbstraction(traceID, params);
+        Abstraction traceAbs = pd.generateTraceAbstraction(attLog, traceID, params);
         return traceAbs;
 }
 
@@ -154,8 +154,8 @@ public class ProcessDiscovererTest extends LogicDataSetup {
     @Test
     public void testDFG_LogWithOneTraceOneEvent_Frequency() {
         try {
-            Abstraction abs = discoverProcess(readLogWithOneTraceOneEvent(), 
-                                                1.0, 1.0, 0.4, 
+            Abstraction abs = discoverProcess(readLogWithOneTraceOneEvent(),
+                                                1.0, 1.0, 0.4,
                                                 MeasureType.FREQUENCY,
                                                 MeasureAggregation.CASES,
                                                 MeasureRelation.ABSOLUTE,
@@ -192,12 +192,12 @@ public class ProcessDiscovererTest extends LogicDataSetup {
                 
                 int edgeCount = 0;
                 for (BPMNEdge<? extends BPMNNode, ? extends BPMNNode> e: abs.getDiagram().getEdges()) {
-                    if (((BPMNNode)e.getSource()).getLabel().equals(Constants.START_NAME) && 
+                    if (((BPMNNode)e.getSource()).getLabel().equals(Constants.START_NAME) &&
                             ((BPMNNode)e.getTarget()).getLabel().equals("a")) {
                         assertEquals(1, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
                     }
-                    else if (((BPMNNode)e.getSource()).getLabel().equals("a") && 
+                    else if (((BPMNNode)e.getSource()).getLabel().equals("a") &&
                             ((BPMNNode)e.getTarget()).getLabel().equals(Constants.END_NAME)) {
                         assertEquals(1, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
@@ -215,8 +215,8 @@ public class ProcessDiscovererTest extends LogicDataSetup {
     @Test
     public void testDFG_LogWithCompleteEventsOnly_Frequency() {
         try {
-            Abstraction abs = discoverProcess(readLogWithCompleteEventsOnly(), 
-                                                1.0, 1.0, 0.4, 
+            Abstraction abs = discoverProcess(readLogWithCompleteEventsOnly(),
+                                                1.0, 1.0, 0.4,
                                                 MeasureType.FREQUENCY,
                                                 MeasureAggregation.CASES,
                                                 MeasureRelation.ABSOLUTE,
@@ -257,7 +257,7 @@ public class ProcessDiscovererTest extends LogicDataSetup {
                     else if (node.getLabel().equalsIgnoreCase("e")) {
                         assertEquals(1, abs.getNodePrimaryWeight(node), 0);
                         nodeCount++;
-                    }                    
+                    }
                     else if (node.getLabel().equalsIgnoreCase(Constants.END_NAME)) {
                         assertEquals(0, abs.getNodePrimaryWeight(node), 0);
                         nodeCount++;
@@ -270,52 +270,52 @@ public class ProcessDiscovererTest extends LogicDataSetup {
                 
                 int edgeCount = 0;
                 for (BPMNEdge<? extends BPMNNode, ? extends BPMNNode> e: abs.getDiagram().getEdges()) {
-                    if (((BPMNNode)e.getSource()).getLabel().equals(Constants.START_NAME) && 
+                    if (((BPMNNode)e.getSource()).getLabel().equals(Constants.START_NAME) &&
                             ((BPMNNode)e.getTarget()).getLabel().equals("a")) {
                         assertEquals(6, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
                     }
-                    else if (((BPMNNode)e.getSource()).getLabel().equals("a") && 
+                    else if (((BPMNNode)e.getSource()).getLabel().equals("a") &&
                             ((BPMNNode)e.getTarget()).getLabel().equals("b")) {
                         assertEquals(3, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
                     }
-                    else if (((BPMNNode)e.getSource()).getLabel().equals("a") && 
+                    else if (((BPMNNode)e.getSource()).getLabel().equals("a") &&
                             ((BPMNNode)e.getTarget()).getLabel().equals("c")) {
                         assertEquals(2, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
                     }
-                    else if (((BPMNNode)e.getSource()).getLabel().equals("a") && 
+                    else if (((BPMNNode)e.getSource()).getLabel().equals("a") &&
                             ((BPMNNode)e.getTarget()).getLabel().equals("e")) {
                         assertEquals(1, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
                     }
-                    else if (((BPMNNode)e.getSource()).getLabel().equals("b") && 
+                    else if (((BPMNNode)e.getSource()).getLabel().equals("b") &&
                             ((BPMNNode)e.getTarget()).getLabel().equals("c")) {
                         assertEquals(3, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
                     }
-                    else if (((BPMNNode)e.getSource()).getLabel().equals("c") && 
+                    else if (((BPMNNode)e.getSource()).getLabel().equals("c") &&
                             ((BPMNNode)e.getTarget()).getLabel().equals("b")) {
                         assertEquals(2, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
                     }
-                    else if (((BPMNNode)e.getSource()).getLabel().equals("b") && 
+                    else if (((BPMNNode)e.getSource()).getLabel().equals("b") &&
                             ((BPMNNode)e.getTarget()).getLabel().equals("d")) {
                         assertEquals(2, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
                     }
-                    else if (((BPMNNode)e.getSource()).getLabel().equals("c") && 
+                    else if (((BPMNNode)e.getSource()).getLabel().equals("c") &&
                             ((BPMNNode)e.getTarget()).getLabel().equals("d")) {
                         assertEquals(3, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
                     }
-                    else if (((BPMNNode)e.getSource()).getLabel().equals("e") && 
+                    else if (((BPMNNode)e.getSource()).getLabel().equals("e") &&
                             ((BPMNNode)e.getTarget()).getLabel().equals("d")) {
                         assertEquals(1, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
                     }
-                    else if (((BPMNNode)e.getSource()).getLabel().equals("d") && 
+                    else if (((BPMNNode)e.getSource()).getLabel().equals("d") &&
                             ((BPMNNode)e.getTarget()).getLabel().equals(Constants.END_NAME)) {
                         assertEquals(6, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
@@ -329,13 +329,13 @@ public class ProcessDiscovererTest extends LogicDataSetup {
         } catch (Exception e) {
             fail("Exception occurred: " + e.getMessage());
         }
-    }    
+    }
     
     @Test
     public void testBPMN_LogWithCompleteEventsOnly_Frequency() {
         try {
-            Abstraction abs = discoverProcess(readLogWithCompleteEventsOnly(), 
-                                                1.0, 1.0, 0.4, 
+            Abstraction abs = discoverProcess(readLogWithCompleteEventsOnly(),
+                                                1.0, 1.0, 0.4,
                                                 MeasureType.FREQUENCY,
                                                 MeasureAggregation.CASES,
                                                 MeasureRelation.ABSOLUTE,
@@ -376,7 +376,7 @@ public class ProcessDiscovererTest extends LogicDataSetup {
                     else if (node.getLabel().equalsIgnoreCase("e")) {
                         assertEquals(1, abs.getNodePrimaryWeight(node), 0);
                         nodeCount++;
-                    }                    
+                    }
                     else if (node.getLabel().equalsIgnoreCase(Constants.END_NAME)) {
                         assertEquals(0, abs.getNodePrimaryWeight(node), 0);
                         nodeCount++;
@@ -389,66 +389,66 @@ public class ProcessDiscovererTest extends LogicDataSetup {
                 
                 int edgeCount = 0;
                 for (BPMNEdge<? extends BPMNNode, ? extends BPMNNode> e: abs.getDiagram().getEdges()) {
-                    if (((BPMNNode)e.getSource()).getLabel().equals(Constants.START_NAME) && 
+                    if (((BPMNNode)e.getSource()).getLabel().equals(Constants.START_NAME) &&
                             ((BPMNNode)e.getTarget()).getLabel().equals("a")) {
                         assertEquals(6, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
                     }
-                    else if (((BPMNNode)e.getSource()).getLabel().equals("a") && 
+                    else if (((BPMNNode)e.getSource()).getLabel().equals("a") &&
                             e.getTarget() instanceof Gateway) {
                         assertEquals(6, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
                     }
-                    else if (e.getSource() instanceof Gateway && 
+                    else if (e.getSource() instanceof Gateway &&
                             ((Gateway)e.getSource()).getGatewayType() == GatewayType.DATABASED &&
-                            e.getTarget() instanceof Gateway && 
+                            e.getTarget() instanceof Gateway &&
                             ((Gateway)e.getTarget()).getGatewayType() == GatewayType.PARALLEL) {
                         assertEquals(5, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
                     }
-                    else if (((BPMNNode)e.getSource()).getLabel().equals("") && 
+                    else if (((BPMNNode)e.getSource()).getLabel().equals("") &&
                             ((BPMNNode)e.getTarget()).getLabel().equals("e")) {
                         assertEquals(1, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
                     }
-                    else if (((BPMNNode)e.getSource()).getLabel().equals("") && 
+                    else if (((BPMNNode)e.getSource()).getLabel().equals("") &&
                             ((BPMNNode)e.getTarget()).getLabel().equals("b")) {
                         assertEquals(5, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
                     }
-                    else if (((BPMNNode)e.getSource()).getLabel().equals("") && 
+                    else if (((BPMNNode)e.getSource()).getLabel().equals("") &&
                             ((BPMNNode)e.getTarget()).getLabel().equals("c")) {
                         assertEquals(5, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
                     }
-                    else if (((BPMNNode)e.getSource()).getLabel().equals("b") && 
+                    else if (((BPMNNode)e.getSource()).getLabel().equals("b") &&
                             ((BPMNNode)e.getTarget()).getLabel().equals("")) {
                         assertEquals(5, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
                     }
-                    else if (((BPMNNode)e.getSource()).getLabel().equals("c") && 
+                    else if (((BPMNNode)e.getSource()).getLabel().equals("c") &&
                             ((BPMNNode)e.getTarget()).getLabel().equals("")) {
                         assertEquals(5, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
                     }
-                    else if (((BPMNNode)e.getSource()).getLabel().equals("e") && 
+                    else if (((BPMNNode)e.getSource()).getLabel().equals("e") &&
                             ((BPMNNode)e.getTarget()).getLabel().equals("")) {
                         assertEquals(1, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
                     }
-                    else if (e.getSource() instanceof Gateway && 
+                    else if (e.getSource() instanceof Gateway &&
                             ((Gateway)e.getSource()).getGatewayType() == GatewayType.PARALLEL &&
-                            e.getTarget() instanceof Gateway && 
+                            e.getTarget() instanceof Gateway &&
                             ((Gateway)e.getTarget()).getGatewayType() == GatewayType.DATABASED) {
                         assertEquals(5, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
                     }
-                    else if (((BPMNNode)e.getSource()).getLabel().equals("") && 
+                    else if (((BPMNNode)e.getSource()).getLabel().equals("") &&
                             ((BPMNNode)e.getTarget()).getLabel().equals("d")) {
                         assertEquals(6, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
-                    }                    
-                    else if (((BPMNNode)e.getSource()).getLabel().equals("d") && 
+                    }
+                    else if (((BPMNNode)e.getSource()).getLabel().equals("d") &&
                             ((BPMNNode)e.getTarget()).getLabel().equals(Constants.END_NAME)) {
                         assertEquals(6, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
@@ -462,7 +462,7 @@ public class ProcessDiscovererTest extends LogicDataSetup {
         } catch (Exception e) {
             fail("Exception occurred: " + e.getMessage());
         }
-    }      
+    }
     
     // Test consistency of BPMN Diagram for different types of measures
     @Test
@@ -470,21 +470,21 @@ public class ProcessDiscovererTest extends LogicDataSetup {
     	 try {
     		 BPMNDiagram sourceDiagram = this.readBPMN_LogWithCompleteEventsOnly();
     		 
-    		 Abstraction absCaseFrequency = discoverProcess(readLogWithCompleteEventsOnly(), 
-                                                1.0, 1.0, 0.4, 
+    		 Abstraction absCaseFrequency = discoverProcess(readLogWithCompleteEventsOnly(),
+                                                1.0, 1.0, 0.4,
                                                 MeasureType.FREQUENCY,
                                                 MeasureAggregation.CASES,
                                                 MeasureRelation.ABSOLUTE,
                                                 MeasureType.FREQUENCY,
                                                 MeasureAggregation.CASES,
-                                                MeasureRelation.ABSOLUTE, //absolute case frequency 
+                                                MeasureRelation.ABSOLUTE, //absolute case frequency
                                                 MeasureType.DURATION,
                                                 MeasureAggregation.MEAN,
                                                 MeasureRelation.ABSOLUTE,
                                                 true);
     		 
-    		 Abstraction absCaseRelativeFrequency = discoverProcess(readLogWithCompleteEventsOnly(), 
-                                                1.0, 1.0, 0.4, 
+    		 Abstraction absCaseRelativeFrequency = discoverProcess(readLogWithCompleteEventsOnly(),
+                                                1.0, 1.0, 0.4,
                                                 MeasureType.FREQUENCY,
                                                 MeasureAggregation.CASES,
                                                 MeasureRelation.ABSOLUTE,
@@ -494,10 +494,10 @@ public class ProcessDiscovererTest extends LogicDataSetup {
                                                 MeasureType.DURATION,
                                                 MeasureAggregation.MEAN,
                                                 MeasureRelation.ABSOLUTE,
-                                                true);    		 
+                                                true);
             
-    		 Abstraction absMinFrequency = discoverProcess(readLogWithCompleteEventsOnly(), 
-                                                1.0, 1.0, 0.4, 
+    		 Abstraction absMinFrequency = discoverProcess(readLogWithCompleteEventsOnly(),
+                                                1.0, 1.0, 0.4,
                                                 MeasureType.FREQUENCY,
                                                 MeasureAggregation.CASES,
                                                 MeasureRelation.ABSOLUTE,
@@ -507,10 +507,10 @@ public class ProcessDiscovererTest extends LogicDataSetup {
                                                 MeasureType.DURATION,
                                                 MeasureAggregation.MEAN,
                                                 MeasureRelation.ABSOLUTE,
-                                                true);   
+                                                true);
     		 
-    		 Abstraction absMaxFrequency = discoverProcess(readLogWithCompleteEventsOnly(), 
-                                                1.0, 1.0, 0.4, 
+    		 Abstraction absMaxFrequency = discoverProcess(readLogWithCompleteEventsOnly(),
+                                                1.0, 1.0, 0.4,
                                                 MeasureType.FREQUENCY,
                                                 MeasureAggregation.CASES,
                                                 MeasureRelation.ABSOLUTE,
@@ -520,10 +520,10 @@ public class ProcessDiscovererTest extends LogicDataSetup {
                                                 MeasureType.DURATION,
                                                 MeasureAggregation.MEAN,
                                                 MeasureRelation.ABSOLUTE,
-                                                true);   
+                                                true);
     		 
-    		 Abstraction absMeanFrequency = discoverProcess(readLogWithCompleteEventsOnly(), 
-                                                1.0, 1.0, 0.4, 
+    		 Abstraction absMeanFrequency = discoverProcess(readLogWithCompleteEventsOnly(),
+                                                1.0, 1.0, 0.4,
                                                 MeasureType.FREQUENCY,
                                                 MeasureAggregation.CASES,
                                                 MeasureRelation.ABSOLUTE,
@@ -533,10 +533,10 @@ public class ProcessDiscovererTest extends LogicDataSetup {
                                                 MeasureType.DURATION,
                                                 MeasureAggregation.MEAN,
                                                 MeasureRelation.ABSOLUTE,
-                                                true);   
+                                                true);
     		 
-    		 Abstraction absMedianFrequency = discoverProcess(readLogWithCompleteEventsOnly(), 
-                                                1.0, 1.0, 0.4, 
+    		 Abstraction absMedianFrequency = discoverProcess(readLogWithCompleteEventsOnly(),
+                                                1.0, 1.0, 0.4,
                                                 MeasureType.FREQUENCY,
                                                 MeasureAggregation.CASES,
                                                 MeasureRelation.ABSOLUTE,
@@ -546,10 +546,10 @@ public class ProcessDiscovererTest extends LogicDataSetup {
                                                 MeasureType.DURATION,
                                                 MeasureAggregation.MEAN,
                                                 MeasureRelation.ABSOLUTE,
-                                                true);     		 
+                                                true);
     		 
-    		 Abstraction absMeanDuration = discoverProcess(readLogWithCompleteEventsOnly(), 
-                                                1.0, 1.0, 0.4, 
+    		 Abstraction absMeanDuration = discoverProcess(readLogWithCompleteEventsOnly(),
+                                                1.0, 1.0, 0.4,
                                                 MeasureType.FREQUENCY,
                                                 MeasureAggregation.CASES,
                                                 MeasureRelation.ABSOLUTE,
@@ -559,10 +559,10 @@ public class ProcessDiscovererTest extends LogicDataSetup {
                                                 MeasureType.DURATION,
                                                 MeasureAggregation.MEAN,
                                                 MeasureRelation.ABSOLUTE,
-                                                true);   
+                                                true);
     		 
-    		 Abstraction absMedianDuration = discoverProcess(readLogWithCompleteEventsOnly(), 
-                                                1.0, 1.0, 0.4, 
+    		 Abstraction absMedianDuration = discoverProcess(readLogWithCompleteEventsOnly(),
+                                                1.0, 1.0, 0.4,
                                                 MeasureType.FREQUENCY,
                                                 MeasureAggregation.CASES,
                                                 MeasureRelation.ABSOLUTE,
@@ -572,10 +572,10 @@ public class ProcessDiscovererTest extends LogicDataSetup {
                                                 MeasureType.DURATION,
                                                 MeasureAggregation.MEAN,
                                                 MeasureRelation.ABSOLUTE,
-                                                true);     		 
+                                                true);
     		 
-    		 Abstraction absMinDuration = discoverProcess(readLogWithCompleteEventsOnly(), 
-                                                1.0, 1.0, 0.4, 
+    		 Abstraction absMinDuration = discoverProcess(readLogWithCompleteEventsOnly(),
+                                                1.0, 1.0, 0.4,
                                                 MeasureType.FREQUENCY,
                                                 MeasureAggregation.CASES,
                                                 MeasureRelation.ABSOLUTE,
@@ -585,10 +585,10 @@ public class ProcessDiscovererTest extends LogicDataSetup {
                                                 MeasureType.DURATION,
                                                 MeasureAggregation.MEAN,
                                                 MeasureRelation.ABSOLUTE,
-                                                true);  
+                                                true);
     		 
-    		 Abstraction absMaxDuration = discoverProcess(readLogWithCompleteEventsOnly(), 
-                                                1.0, 1.0, 0.4, 
+    		 Abstraction absMaxDuration = discoverProcess(readLogWithCompleteEventsOnly(),
+                                                1.0, 1.0, 0.4,
                                                 MeasureType.FREQUENCY,
                                                 MeasureAggregation.CASES,
                                                 MeasureRelation.ABSOLUTE,
@@ -598,7 +598,7 @@ public class ProcessDiscovererTest extends LogicDataSetup {
                                                 MeasureType.DURATION,
                                                 MeasureAggregation.MEAN,
                                                 MeasureRelation.ABSOLUTE,
-                                                true);     		 
+                                                true);
             
             if (!absCaseFrequency.getDiagram().checkSimpleEquality(sourceDiagram)) {
                 fail("BPMN Diagram for Case Frequency meausure is different from the source!");
@@ -606,39 +606,39 @@ public class ProcessDiscovererTest extends LogicDataSetup {
             
             if (!absCaseRelativeFrequency.getDiagram().checkSimpleEquality(sourceDiagram)) {
                 fail("BPMN Diagram for Case Relative Frequency meausure is different from the source!");
-            }      
+            }
             
             if (!absMinFrequency.getDiagram().checkSimpleEquality(sourceDiagram)) {
                 fail("BPMN Diagram for Min Frequency meausure is different from the source!");
-            }      
+            }
             
             if (!absMaxFrequency.getDiagram().checkSimpleEquality(sourceDiagram)) {
                 fail("BPMN Diagram for Max Frequency meausure is different from the source!");
-            }   
+            }
             
             if (!absMeanFrequency.getDiagram().checkSimpleEquality(sourceDiagram)) {
                 fail("BPMN Diagram for Mean Frequency meausure is different from the source!");
-            }             
+            }
             
             if (!absMedianFrequency.getDiagram().checkSimpleEquality(sourceDiagram)) {
                 fail("BPMN Diagram for Median Frequency meausure is different from the source!");
-            }             
+            }
             
             if (!absMeanDuration.getDiagram().checkSimpleEquality(sourceDiagram)) {
                 fail("BPMN Diagram for Mean Duration meausure is different from the source!");
-            }       
+            }
             
             if (!absMinDuration.getDiagram().checkSimpleEquality(sourceDiagram)) {
                 fail("BPMN Diagram for Min Duration meausure is different from the source!");
-            }      
+            }
             
             if (!absMaxDuration.getDiagram().checkSimpleEquality(sourceDiagram)) {
                 fail("BPMN Diagram for Max Duration meausure is different from the source!");
-            }  
+            }
             
             if (!absMedianDuration.getDiagram().checkSimpleEquality(sourceDiagram)) {
                 fail("BPMN Diagram for Median Duration meausure is different from the source!");
-            }            
+            }
         } catch (Exception e) {
             fail("Exception occurred: " + e.getMessage());
         }
@@ -648,8 +648,8 @@ public class ProcessDiscovererTest extends LogicDataSetup {
     @Test
     public void testDFG_LogWithStartCompleteEventsOverlapping_Duration() {
         try {
-            Abstraction abs = discoverProcess(readLogWithStartCompleteEventsOverlapping(), 
-                                                1.0, 1.0, 0.4, 
+            Abstraction abs = discoverProcess(readLogWithStartCompleteEventsOverlapping(),
+                                                1.0, 1.0, 0.4,
                                                 MeasureType.FREQUENCY,
                                                 MeasureAggregation.CASES,
                                                 MeasureRelation.ABSOLUTE,
@@ -690,7 +690,7 @@ public class ProcessDiscovererTest extends LogicDataSetup {
                     else if (node.getLabel().equalsIgnoreCase("e")) {
                         assertEquals(120000, abs.getNodePrimaryWeight(node), 0);
                         nodeCount++;
-                    }                    
+                    }
                     else if (node.getLabel().equalsIgnoreCase(Constants.END_NAME)) {
                         assertEquals(0, abs.getNodePrimaryWeight(node), 0);
                         nodeCount++;
@@ -703,52 +703,52 @@ public class ProcessDiscovererTest extends LogicDataSetup {
                 
                 int edgeCount = 0;
                 for (BPMNEdge<? extends BPMNNode, ? extends BPMNNode> e: abs.getDiagram().getEdges()) {
-                    if (((BPMNNode)e.getSource()).getLabel().equals(Constants.START_NAME) && 
+                    if (((BPMNNode)e.getSource()).getLabel().equals(Constants.START_NAME) &&
                             ((BPMNNode)e.getTarget()).getLabel().equals("a")) {
                         assertEquals(0, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
                     }
-                    else if (((BPMNNode)e.getSource()).getLabel().equals("a") && 
+                    else if (((BPMNNode)e.getSource()).getLabel().equals("a") &&
                             ((BPMNNode)e.getTarget()).getLabel().equals("b")) {
                         assertEquals(20000, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
                     }
-                    else if (((BPMNNode)e.getSource()).getLabel().equals("a") && 
+                    else if (((BPMNNode)e.getSource()).getLabel().equals("a") &&
                             ((BPMNNode)e.getTarget()).getLabel().equals("c")) {
                         assertEquals(30000, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
                     }
-                    else if (((BPMNNode)e.getSource()).getLabel().equals("a") && 
+                    else if (((BPMNNode)e.getSource()).getLabel().equals("a") &&
                             ((BPMNNode)e.getTarget()).getLabel().equals("e")) {
                         assertEquals(0, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
                     }
-                    else if (((BPMNNode)e.getSource()).getLabel().equals("b") && 
+                    else if (((BPMNNode)e.getSource()).getLabel().equals("b") &&
                             ((BPMNNode)e.getTarget()).getLabel().equals("c")) {
                         assertEquals(60000, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
                     }
-                    else if (((BPMNNode)e.getSource()).getLabel().equals("c") && 
+                    else if (((BPMNNode)e.getSource()).getLabel().equals("c") &&
                             ((BPMNNode)e.getTarget()).getLabel().equals("b")) {
                         assertEquals(60000, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
                     }
-                    else if (((BPMNNode)e.getSource()).getLabel().equals("b") && 
+                    else if (((BPMNNode)e.getSource()).getLabel().equals("b") &&
                             ((BPMNNode)e.getTarget()).getLabel().equals("d")) {
                         assertEquals(30000, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
                     }
-                    else if (((BPMNNode)e.getSource()).getLabel().equals("c") && 
+                    else if (((BPMNNode)e.getSource()).getLabel().equals("c") &&
                             ((BPMNNode)e.getTarget()).getLabel().equals("d")) {
                         assertEquals(20000, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
                     }
-                    else if (((BPMNNode)e.getSource()).getLabel().equals("e") && 
+                    else if (((BPMNNode)e.getSource()).getLabel().equals("e") &&
                             ((BPMNNode)e.getTarget()).getLabel().equals("d")) {
                         assertEquals(60000, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
                     }
-                    else if (((BPMNNode)e.getSource()).getLabel().equals("d") && 
+                    else if (((BPMNNode)e.getSource()).getLabel().equals("d") &&
                             ((BPMNNode)e.getTarget()).getLabel().equals(Constants.END_NAME)) {
                         assertEquals(0, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
@@ -762,13 +762,13 @@ public class ProcessDiscovererTest extends LogicDataSetup {
         } catch (Exception e) {
             fail("Exception occurred: " + e.getMessage());
         }
-    }    
+    }
     
     @Test
     public void testBPMN_LogWithStartCompleteEventsOverlaping_Duration() {
         try {
-            Abstraction abs = discoverProcess(readLogWithStartCompleteEventsOverlapping(), 
-                                                1.0, 1.0, 0.4, 
+            Abstraction abs = discoverProcess(readLogWithStartCompleteEventsOverlapping(),
+                                                1.0, 1.0, 0.4,
                                                 MeasureType.FREQUENCY,
                                                 MeasureAggregation.CASES,
                                                 MeasureRelation.ABSOLUTE,
@@ -809,7 +809,7 @@ public class ProcessDiscovererTest extends LogicDataSetup {
                     else if (node.getLabel().equalsIgnoreCase("e")) {
                         assertEquals(120000, abs.getNodePrimaryWeight(node), 0);
                         nodeCount++;
-                    }                    
+                    }
                     else if (node.getLabel().equalsIgnoreCase(Constants.END_NAME)) {
                         assertEquals(0, abs.getNodePrimaryWeight(node), 0);
                         nodeCount++;
@@ -822,66 +822,66 @@ public class ProcessDiscovererTest extends LogicDataSetup {
                 
                 int edgeCount = 0;
                 for (BPMNEdge<? extends BPMNNode, ? extends BPMNNode> e: abs.getDiagram().getEdges()) {
-                    if (e.getSource().getLabel().equals(Constants.START_NAME) && 
+                    if (e.getSource().getLabel().equals(Constants.START_NAME) &&
                             e.getTarget().getLabel().equals("a")) {
                         assertEquals(0, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
                     }
-                    else if (e.getSource().getLabel().equals("a") && 
+                    else if (e.getSource().getLabel().equals("a") &&
                             e.getTarget() instanceof Gateway) {
                         assertEquals(0, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
                     }
-                    else if (e.getSource() instanceof Gateway && 
+                    else if (e.getSource() instanceof Gateway &&
                             ((Gateway)e.getSource()).getGatewayType() == GatewayType.DATABASED &&
-                            e.getTarget() instanceof Gateway && 
+                            e.getTarget() instanceof Gateway &&
                             ((Gateway)e.getTarget()).getGatewayType() == GatewayType.PARALLEL) {
                         assertEquals(0, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
                     }
-                    else if (e.getSource().getLabel().equals("") && 
+                    else if (e.getSource().getLabel().equals("") &&
                             e.getTarget().getLabel().equals("e")) {
                         assertEquals(0, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
                     }
-                    else if (e.getSource().getLabel().equals("") && 
+                    else if (e.getSource().getLabel().equals("") &&
                             e.getTarget().getLabel().equals("b")) {
                         assertEquals(20000, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
                     }
-                    else if (e.getSource().getLabel().equals("") && 
+                    else if (e.getSource().getLabel().equals("") &&
                             e.getTarget().getLabel().equals("c")) {
                         assertEquals(30000, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
                     }
-                    else if (e.getSource().getLabel().equals("b") && 
+                    else if (e.getSource().getLabel().equals("b") &&
                             e.getTarget().getLabel().equals("")) {
                         assertEquals(30000, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
                     }
-                    else if (e.getSource().getLabel().equals("c") && 
+                    else if (e.getSource().getLabel().equals("c") &&
                             e.getTarget().getLabel().equals("")) {
                         assertEquals(20000, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
                     }
-                    else if (e.getSource().getLabel().equals("e") && 
+                    else if (e.getSource().getLabel().equals("e") &&
                             e.getTarget().getLabel().equals("")) {
                         assertEquals(60000, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
                     }
-                    else if (e.getSource() instanceof Gateway && 
+                    else if (e.getSource() instanceof Gateway &&
                             ((Gateway)e.getSource()).getGatewayType() == GatewayType.PARALLEL &&
-                            e.getTarget() instanceof Gateway && 
+                            e.getTarget() instanceof Gateway &&
                             ((Gateway)e.getTarget()).getGatewayType() == GatewayType.DATABASED) {
                         assertEquals(0, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
                     }
-                    else if (e.getSource().getLabel().equals("") && 
+                    else if (e.getSource().getLabel().equals("") &&
                             e.getTarget().getLabel().equals("d")) {
                         assertEquals(0, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
-                    }                    
-                    else if (e.getSource().getLabel().equals("d") && 
+                    }
+                    else if (e.getSource().getLabel().equals("d") &&
                             e.getTarget().getLabel().equals(Constants.END_NAME)) {
                         assertEquals(0, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
@@ -895,13 +895,13 @@ public class ProcessDiscovererTest extends LogicDataSetup {
         } catch (Exception e) {
             fail("Exception occurred: " + e.getMessage());
         }
-    }        
+    }
     
     @Test
     public void testDFG_Sepsis_100_10_GraphStructure() {
         try {
-            Abstraction abs = discoverProcess(read_Sepsis(), 
-                                                1.0, 0.1, 0.4, 
+            Abstraction abs = discoverProcess(read_Sepsis(),
+                                                1.0, 0.1, 0.4,
                                                 MeasureType.FREQUENCY,
                                                 MeasureAggregation.CASES,
                                                 MeasureRelation.ABSOLUTE,
@@ -919,14 +919,14 @@ public class ProcessDiscovererTest extends LogicDataSetup {
         } catch (Exception e) {
             fail("Exception occurred: " + e.getMessage());
         }
-    }      
+    }
     
     @Test
     @Ignore
     public void testBPMN_Sepsis_100_30_DiagramStructure() {
         try {
-            Abstraction abs = discoverProcess(read_Sepsis(), 
-                                                1.0, 0.3, 0.4, 
+            Abstraction abs = discoverProcess(read_Sepsis(),
+                                                1.0, 0.3, 0.4,
                                                 MeasureType.FREQUENCY,
                                                 MeasureAggregation.CASES,
                                                 MeasureRelation.ABSOLUTE,
@@ -944,7 +944,7 @@ public class ProcessDiscovererTest extends LogicDataSetup {
         } catch (Exception e) {
             fail("Exception occurred: " + e.getMessage());
         }
-    }      
+    }
     
     
     @Test
@@ -994,9 +994,9 @@ public class ProcessDiscovererTest extends LogicDataSetup {
     public void testDFG_ApplyThenClearFilterCriteria() {
         try {
             AttributeLog attLog = createAttributeLog(readLogWithCompleteEventsOnly());
-            ProcessDiscoverer pd = new ProcessDiscoverer(attLog);
-            AbstractionParams params = createAbstrationParams(attLog.getAttribute(), 
-                                                1.0, 0.1, 0.4, 
+            ProcessDiscoverer pd = new ProcessDiscoverer();
+            AbstractionParams params = createAbstrationParams(attLog.getAttribute(),
+                                                1.0, 0.1, 0.4,
                                                 MeasureType.FREQUENCY,
                                                 MeasureAggregation.CASES,
                                                 MeasureRelation.ABSOLUTE,
@@ -1009,7 +1009,7 @@ public class ProcessDiscovererTest extends LogicDataSetup {
                                                 false);
             
             // Before filter diagram
-            BPMNDiagram beforeFilterDiagram = pd.generateDFGAbstraction(params).getDiagram();
+            BPMNDiagram beforeFilterDiagram = pd.generateDFGAbstraction(attLog, params).getDiagram();
             if (!beforeFilterDiagram.checkSimpleEquality(readDFG_LogWithCompleteEventsOnly_100_10())) {
                 fail("BPMNDiagram is different");
             }
@@ -1021,12 +1021,13 @@ public class ProcessDiscovererTest extends LogicDataSetup {
             logBitMap.addEventBitSet(LogBitMap.newBitSet(6), 6); // keep all events
             logBitMap.addEventBitSet(LogBitMap.newBitSet(6), 6); // keep all events
             logBitMap.addEventBitSet(LogBitMap.newBitSet(6), 6); // keep all events
-            logBitMap.addEventBitSet(LogBitMap.newBitSet(6), 6); // keep all events    
-            logBitMap.addEventBitSet(LogBitMap.newBitSet(6), 6); // keep all events  
+            logBitMap.addEventBitSet(LogBitMap.newBitSet(6), 6); // keep all events
+            logBitMap.addEventBitSet(LogBitMap.newBitSet(6), 6); // keep all events
             attLog.updateLogStatus(logBitMap);
+            pd.invalidateAbstraction();
             
-            // Generate abstraction and check diagram 
-            BPMNDiagram afterFilterDiagram = pd.generateDFGAbstraction(params).getDiagram();
+            // Generate abstraction and check diagram
+            BPMNDiagram afterFilterDiagram = pd.generateDFGAbstraction(attLog, params).getDiagram();
             if (!afterFilterDiagram.checkSimpleEquality(readDFG_LogWithCompleteEventsOnly_100_10_Filtered())) {
                 fail("BPMNDiagram is different");
             }
@@ -1038,12 +1039,13 @@ public class ProcessDiscovererTest extends LogicDataSetup {
             logBitMapAll.addEventBitSet(LogBitMap.newBitSet(6), 6); // keep all events
             logBitMapAll.addEventBitSet(LogBitMap.newBitSet(6), 6); // keep all events
             logBitMapAll.addEventBitSet(LogBitMap.newBitSet(6), 6); // keep all events
-            logBitMapAll.addEventBitSet(LogBitMap.newBitSet(6), 6); // keep all events    
-            logBitMapAll.addEventBitSet(LogBitMap.newBitSet(6), 6); // keep all events  
+            logBitMapAll.addEventBitSet(LogBitMap.newBitSet(6), 6); // keep all events
+            logBitMapAll.addEventBitSet(LogBitMap.newBitSet(6), 6); // keep all events
             attLog.updateLogStatus(logBitMapAll);
+            pd.invalidateAbstraction();
             
-            // Generate abstraction and check diagram 
-            BPMNDiagram afterClearingFilterDiagram = pd.generateDFGAbstraction(params).getDiagram();
+            // Generate abstraction and check diagram
+            BPMNDiagram afterClearingFilterDiagram = pd.generateDFGAbstraction(attLog, params).getDiagram();
             if (!afterClearingFilterDiagram.checkSimpleEquality(readDFG_LogWithCompleteEventsOnly_100_10())) {
                 fail("BPMNDiagram is different");
             }
@@ -1051,6 +1053,56 @@ public class ProcessDiscovererTest extends LogicDataSetup {
         } catch (Exception e) {
             fail("Exception occurred: " + e.getMessage());
         }
-    } 
+    }
+    
+    @Test
+    public void testBPMN_Before_And_After_FilterCriteria() {
+        try {
+            AttributeLog attLog = createAttributeLog(readLogWithCompleteEventsOnly());
+            ProcessDiscoverer pd = new ProcessDiscoverer();
+            AbstractionParams params = createAbstrationParams(attLog.getAttribute(),
+                                                            1.0, 1.0, 0.4,
+                                                            MeasureType.FREQUENCY,
+                                                            MeasureAggregation.CASES,
+                                                            MeasureRelation.ABSOLUTE,
+                                                            MeasureType.FREQUENCY,
+                                                            MeasureAggregation.CASES,
+                                                            MeasureRelation.ABSOLUTE,
+                                                            MeasureType.DURATION,
+                                                            MeasureAggregation.MEAN,
+                                                            MeasureRelation.ABSOLUTE,
+                                                            true);
+            Abstraction dfgAbs = pd.generateDFGAbstraction(attLog, params);
+            
+            // Before filter diagram
+            BPMNDiagram beforeFilterDiagram = pd.generateBPMNAbstraction(attLog, params, dfgAbs).getDiagram();
+            if (!beforeFilterDiagram.checkSimpleEquality(readBPMN_LogWithCompleteEventsOnly())) {
+                fail("BPMNDiagram is different");
+            }
+            
+            // Apply filter criteria
+            LogBitMap logBitMap = new LogBitMap(attLog.getOriginalTraces().size());
+            logBitMap.setTraceBitSet(LogBitMap.newBitSet(6, 0, 1), 6); // keep the first trace
+            logBitMap.addEventBitSet(LogBitMap.newBitSet(5), 5); // keep all events including start and end events
+            logBitMap.addEventBitSet(LogBitMap.newBitSet(6), 6); // keep all events
+            logBitMap.addEventBitSet(LogBitMap.newBitSet(6), 6); // keep all events
+            logBitMap.addEventBitSet(LogBitMap.newBitSet(6), 6); // keep all events
+            logBitMap.addEventBitSet(LogBitMap.newBitSet(6), 6); // keep all events
+            logBitMap.addEventBitSet(LogBitMap.newBitSet(6), 6); // keep all events
+            attLog.updateLogStatus(logBitMap);
+            pd.invalidateAbstraction();
+            
+            // Generate abstraction after applying filter criteria
+            BPMNDiagram afterFilterDiagram = pd.generateDFGAbstraction(attLog, params).getDiagram();
+            
+            // Check after filter diagram and before filter diagram
+            if (afterFilterDiagram.checkSimpleEquality(beforeFilterDiagram)) {
+                fail("BPMNDiagram after filtering is the same as the diagram before filtering");
+            }
+            
+        } catch (Exception e) {
+            fail("Exception occurred: " + e.getMessage());
+        }
+    }
 
 }

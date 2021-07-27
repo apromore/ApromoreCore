@@ -162,7 +162,7 @@ public class BPMNExportController extends AbstractController {
                     window.detach();
                 }
             });
-            
+
             descriptionLabel = (Label) window.getFellow("description");
             fractionCompleteProgressmeter = (Progressmeter) window.getFellow("fractionComplete");
             window.doModal();

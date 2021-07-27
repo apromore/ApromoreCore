@@ -83,9 +83,23 @@ public class CustomCalendarService implements CalendarService {
     return calendarModel;
   }
 
-  @Override
-  public CalendarModel createBusinessCalendar(String description, boolean weekendsOff,
-      String zoneId) throws CalendarAlreadyExistsException {
+    @Override
+    public CalendarModel getGenericCalendar() {
+
+        OffsetTime startTime =
+                OffsetTime.of(LocalTime.MIN, ZoneId.of("UTC").getRules().getOffset(Instant.now()));
+
+        OffsetTime endTime =
+                OffsetTime.of(LocalTime.MAX, ZoneId.of("UTC").getRules().getOffset(Instant.now()));
+
+        CustomCalendar customCalendar = createGenericCalendar(startTime, endTime);
+
+        return modelMapper.getMapper().map(customCalendar, CalendarModel.class);
+    }
+
+    @Override
+    public CalendarModel createBusinessCalendar(String description, boolean weekendsOff, String zoneId)
+            throws CalendarAlreadyExistsException {
 
     OffsetTime startTime =
         OffsetTime.of(LocalTime.of(9, 0), ZoneId.of(zoneId).getRules().getOffset(Instant.now()));
@@ -134,7 +148,17 @@ public class CustomCalendarService implements CalendarService {
 
   }
 
-  private List<WorkDay> getWorkDays(OffsetTime start, OffsetTime end, boolean weekendOff) {
+    private CustomCalendar createGenericCalendar(OffsetTime start, OffsetTime end) {
+
+        final CustomCalendar calendar = new CustomCalendar("Generic 24/7");
+        for (WorkDay workDay : getWorkDays(start, end, false)) {
+            calendar.addWorkDay(workDay);
+        }
+        return calendar;
+
+    }
+
+    private List<WorkDay> getWorkDays(OffsetTime start, OffsetTime end, boolean weekendOff) {
 
     Predicate<DayOfWeek> isWeekendOff = CalendarUtil.getWeekendOffPRedicate(weekendOff);
     List<WorkDay> workDaysList = new ArrayList<WorkDay>();
@@ -155,9 +179,9 @@ public class CustomCalendarService implements CalendarService {
 
   }
 
-  public void updateHoliday(Long id, List<HolidayModel> holidayModels)
-      throws CalendarNotExistsException {
-    CustomCalendar calendar = getExistingCalendar(id);
+    @Override
+    public void updateHoliday(Long id, List<HolidayModel> holidayModels) throws CalendarNotExistsException {
+        CustomCalendar calendar = getExistingCalendar(id);
 
     List<Holiday> holidays = new ArrayList<Holiday>();
     for (HolidayModel h : holidayModels) {
