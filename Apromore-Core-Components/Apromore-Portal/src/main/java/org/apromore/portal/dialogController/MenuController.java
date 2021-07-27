@@ -64,6 +64,7 @@ public class MenuController extends SelectorComposer<Menubar> {
 
   private Menuitem aboutMenuitem;
   private Menuitem targetMenuitem;
+  private Menuitem etlMenuItem;
 
   @Override
   public void doAfterCompose(Menubar menubar) {
@@ -154,6 +155,9 @@ public class MenuController extends SelectorComposer<Menubar> {
         if ("Create folder".equals(menuitem.getClientDataAttribute("itemCode"))) {
           targetMenuitem = menuitem;
         }
+        if ("Create data pipeline".equals(menuitem.getClientDataAttribute("itemCode"))) {
+          etlMenuItem = menuitem;
+        }
 
         // Insert the menu item into the appropriate position within the menu
         // (As configured in site.properties in the case of the File menu, alphabetically otherwise)
@@ -228,6 +232,10 @@ public class MenuController extends SelectorComposer<Menubar> {
             sep = new Menuseparator();
             fileMenupopup.insertBefore(sep, targetMenuitem);
 
+            if (etlMenuItem != null) {
+              sep = new Menuseparator();
+              fileMenupopup.insertBefore(sep, etlMenuItem);
+            }
           } catch (Exception e) {
             LOGGER.error("Ignored exception during main menu construction", e);
           }

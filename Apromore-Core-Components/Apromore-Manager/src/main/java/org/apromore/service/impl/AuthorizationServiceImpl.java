@@ -48,8 +48,10 @@ import org.apromore.dao.model.Log;
 import org.apromore.dao.model.Process;
 import org.apromore.dao.model.User;
 import org.apromore.dao.model.Usermetadata;
+import org.apromore.exception.UserNotFoundException;
 import org.apromore.service.AuthorizationService;
 import org.apromore.service.FolderService;
+import org.apromore.service.UserService;
 import org.apromore.util.AccessType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -71,6 +73,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
   private GroupLogRepository groupLogRepository;
   private GroupProcessRepository groupProcessRepository;
   private GroupFolderRepository groupFolderRepository;
+  private UserService userService;
 
   @Inject
   public AuthorizationServiceImpl(final GroupUsermetadataRepository groupUsermetadataRepository,
@@ -79,7 +82,8 @@ public class AuthorizationServiceImpl implements AuthorizationService {
       final FolderRepository folderRepository, final GroupRepository groupRepository,
       final GroupLogRepository groupLogRepository,
       final GroupProcessRepository groupProcessRepository,
-      final GroupFolderRepository groupFolderRepository) {
+      final GroupFolderRepository groupFolderRepository,
+      final UserService userService) {
     this.groupUsermetadataRepository = groupUsermetadataRepository;
     this.usermetadataRepository = usermetadataRepository;
     this.logRepository = logRepository;
@@ -90,6 +94,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     this.groupLogRepository = groupLogRepository;
     this.groupProcessRepository = groupProcessRepository;
     this.groupFolderRepository = groupFolderRepository;
+    this.userService = userService;
   }
 
   @Override
@@ -136,6 +141,12 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     }
 
     return getLeastRestrictiveAccessType(accessTypes);
+  }
+
+  @Override
+  public AccessType getLogAccessTypeByUser(Integer logId, String username) throws UserNotFoundException {
+
+    return getLogAccessTypeByUser(logId, userService.findUserByLogin(username));
   }
 
   public AccessType getLogAccessTypeByGroup(Integer logId, Group group) {
