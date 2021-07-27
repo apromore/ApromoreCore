@@ -81,6 +81,7 @@ public class Group implements Serializable {
     private Type type;
     private Set<User> users = new HashSet<>();
     private User user;
+    private boolean groupFromSsoIdp = false;
 
     /**
      * Default Constructor.
@@ -194,6 +195,15 @@ public class Group implements Serializable {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    @Column(name = "group_from_sso_idp", nullable = false)
+    public boolean isGroupFromSsoIdp() {
+        return groupFromSsoIdp;
+    }
+
+    public void setGroupFromSsoIdp(boolean groupFromSsoIdp) {
+        this.groupFromSsoIdp = groupFromSsoIdp;
     }
 
     // Overridden object methods

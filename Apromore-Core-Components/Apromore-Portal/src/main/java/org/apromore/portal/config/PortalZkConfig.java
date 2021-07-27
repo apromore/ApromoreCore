@@ -48,7 +48,6 @@ public class PortalZkConfig {
       WebApps.getCurrent().getConfiguration().addListener(Statistic.class);
       WebApps.getCurrent().getConfiguration().addListener(ApromoreDesktopInit.class);
       WebApps.getCurrent().getConfiguration().addListener(LoggingZKListener.class);
-      WebApps.getCurrent().getConfiguration().addListener(LoggingZKListener.class);
 
 
     } catch (Exception e) {

@@ -30,4 +30,5 @@ task runScript (dependsOn: 'classes', type: JavaExec) {
 	classpath = sourceSets.main.runtimeClasspath
 }
 
-build.finalizedBy(runScript)
+
+// build.finalizedBy(runScript)

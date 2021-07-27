@@ -22,7 +22,7 @@
   -->
 
 <?component name="FolderTree" macroURI="~./macros/folderTree.zul" ?>
-<?component name="AccessControl" macroURI="~./accesscontrol/zul/access.zul" ?>
+<?component name="AccessControl" macroURI="~./macros/accesscontrol/access.zul" ?>
 <?component name="Groups" macroURI="~./macros/groups.zul" ?>
 <window width="1200px" height="90%" closable="true" title="${labels.accessCtrl_title_text}" position="center" id="winSecuritySetup">
 

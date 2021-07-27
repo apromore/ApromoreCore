@@ -1777,8 +1777,9 @@ ValidationErrorHelper.validateGatewayProbabilities = function(bpmnFactory, eleme
         (el.executionProbability === '' || el.executionProbability === undefined || isNaN(el.executionProbability));
     });
 
+    var EPSILON = 0.01;
     if (gateway.$type === 'bpmn:ExclusiveGateway' && nanProbabilityFlows.length === 0 &&
-      (probabilitySum > 100 || probabilitySum + parseFloat(probability) !== 100)) {
+      (probabilitySum - 100 > EPSILON || Math.abs(probabilitySum + parseFloat(probability) - 100) > EPSILON)) {
       errorMessage = translate('probability.invalid.sum');
     }
   }

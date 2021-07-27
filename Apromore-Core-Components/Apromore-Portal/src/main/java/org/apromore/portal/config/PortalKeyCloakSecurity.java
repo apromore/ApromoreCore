@@ -62,8 +62,8 @@ public class PortalKeyCloakSecurity extends KeycloakWebSecurityConfigurerAdapter
   public void configure(WebSecurity web) throws Exception {
     super.configure(web);
     web.ignoring().antMatchers("/**/css/*").antMatchers("/**/font/**").antMatchers("/**/img/**")
-        .antMatchers("/**/themes/**").antMatchers("/**/libs/**").antMatchers("/**/js/*")
-        .antMatchers("/robots.txt");
+        .antMatchers("/**/images/**").antMatchers("/**/themes/**").antMatchers("/**/libs/**")
+        .antMatchers("/**/js/*").antMatchers("/robots.txt");
   }
 
   @Override
@@ -72,7 +72,8 @@ public class PortalKeyCloakSecurity extends KeycloakWebSecurityConfigurerAdapter
 
     http.headers().frameOptions().sameOrigin();
     http.addFilterAfter(new SameSiteFilter(), BasicAuthenticationFilter.class);
-    http.csrf().ignoringAntMatchers("/zkau", "/zkau/*").and().authorizeRequests()
+    http.csrf().ignoringAntMatchers("/zkau", "/zkau/*", "/bpmneditor/editor/*").and()
+        .authorizeRequests()
         // .antMatchers("/**").hasRole("USER")
         .antMatchers("/sso/login").permitAll().antMatchers("/zkau").permitAll()
         .antMatchers("/logout").permitAll().antMatchers("/zkau/*").permitAll()
