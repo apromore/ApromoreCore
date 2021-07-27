@@ -242,11 +242,9 @@
                             <button id="btnPaste" visible="true" sclass="ap-icon ap-icon-paste" ca:data-t="paste" tooltiptext="${labels.common_paste_text}"/>
                             <h:span class="ap-action-sep"></h:span>
                             <button id="btnAddFolder" sclass="ap-icon ap-icon-folder-add" ca:data-t="addFolder" tooltiptext="${labels.portal_addFolder_hint}"/>
-                            <button id="btnAddProcess" visible="false" sclass="ap-icon ap-icon-bpmn-add" ca:data-t="addModel" tooltiptext="${labels.portal_addModel_hint}"/>
                             <button id="btnRenameFolder" sclass="ap-icon ap-icon-rename" ca:data-t="rename" tooltiptext="${labels.portal_rename_hint}" visible="true"/>
                             <button id="btnRemoveFolder" sclass="ap-icon ap-icon-trash" ca:data-t="delete" tooltiptext="${labels.portal_delete_hint}" visible="true" />
                             <h:span class="ap-action-sep"></h:span>
-                            <!--<button id="btnGEDFolder" label="" style="background: transparent; border:none; cursor: pointer;" image="img/rename.png" tooltiptext="GED" visible="true"/>-->
                             <button id="btnUserMgmt" visible="false" sclass="ap-icon ap-icon-users" ca:data-t="userMgmt" tooltiptext="${labels.portal_tbarUsrMgt_hint}"/>
                             <button id="btnSecurity" sclass="ap-icon ap-icon-user-lock" ca:data-t="security" tooltiptext="${labels.portal_tbarAccessCtrl_hint}"/>
                             <button id="btnShare" sclass="ap-icon ap-icon-share" ca:data-t="share" tooltiptext="${labels.portal_tbarShare_hint}"/>
