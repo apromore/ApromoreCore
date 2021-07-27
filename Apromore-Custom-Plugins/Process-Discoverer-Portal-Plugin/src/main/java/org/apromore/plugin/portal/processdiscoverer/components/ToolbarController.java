@@ -21,10 +21,14 @@
  */
 package org.apromore.plugin.portal.processdiscoverer.components;
 
+import org.apromore.exception.UserNotFoundException;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
 import org.apromore.plugin.portal.processdiscoverer.actions.FilterAction;
 import org.apromore.plugin.portal.processdiscoverer.actions.FilterActionOnClearFilter;
+import org.apromore.plugin.portal.processdiscoverer.data.ContextData;
 import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
+import org.apromore.service.AuthorizationService;
+import org.apromore.util.AccessType;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -61,6 +65,8 @@ public class ToolbarController extends AbstractController {
     private Div rightToolbar;
     
     private UserOptionsData userOptions;
+
+    private boolean isReadOnly;
     
     public ToolbarController(PDController parent) {
         super(parent);
@@ -69,6 +75,8 @@ public class ToolbarController extends AbstractController {
     
     @Override
     public void initializeControls(Object data) throws Exception {
+
+        isReadOnly = isReadOnly();
         
         Component toolbar = parent.getFellow("toolbar");
         filter = (Button) toolbar.getFellow("filter");
@@ -81,10 +89,12 @@ public class ToolbarController extends AbstractController {
         share = (Button) toolbar.getFellow("share");
 
         exportFilteredLog = (Button) toolbar.getFellow("exportUnfitted");
+        exportFilteredLog.setVisible(!isReadOnly);
         downloadPDF = (Button) toolbar.getFellow("downloadPDF");
         downloadPNG = (Button) toolbar.getFellow("downloadPNG");
         downloadJSON = (Button) toolbar.getFellow("downloadJSON");
         exportBPMN = (Button) toolbar.getFellow("exportBPMN");
+        exportBPMN.setVisible(!isReadOnly);
 
         layoutHierarchy = (Checkbox) toolbar.getFellow(LAYOUT_HIERARCHY);
         layoutHierarchy.setChecked(userOptions.getLayoutHierarchy());
@@ -228,6 +238,14 @@ public class ToolbarController extends AbstractController {
                 );
             }
         }
+    }
+
+    private boolean isReadOnly() throws UserNotFoundException {
+        ContextData contextData = parent.getContextData();
+        AuthorizationService authorizationService = parent.getAuthorizationService();
+
+        return AccessType.VIEWER == authorizationService.getLogAccessTypeByUser(contextData.getLogId(),
+                contextData.getUsername());
     }
 
 }

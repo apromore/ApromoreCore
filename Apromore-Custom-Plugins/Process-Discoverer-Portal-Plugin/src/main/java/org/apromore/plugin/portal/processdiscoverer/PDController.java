@@ -67,6 +67,7 @@ import org.apromore.portal.model.FolderType;
 import org.apromore.portal.model.LogSummaryType;
 import org.apromore.portal.plugincontrol.PluginExecution;
 import org.apromore.portal.plugincontrol.PluginExecutionManager;
+import org.apromore.service.AuthorizationService;
 import org.apromore.service.DomainService;
 import org.apromore.service.EventLogService;
 import org.apromore.service.ProcessService;
@@ -80,6 +81,7 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zul.Messagebox;
@@ -107,6 +109,7 @@ import org.zkoss.zul.Window;
  * </ul>
  * 
  */
+@VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
 public class PDController extends BaseController implements Composer<Component> {
 
   private static final Logger LOGGER = PortalLoggerFactory.getLogger(PDController.class);
@@ -120,6 +123,8 @@ public class PDController extends BaseController implements Composer<Component> 
   private LogAnimationService2 logAnimationService;
   @WireVariable
   private LogFilterPlugin logFilterPlugin;
+  @WireVariable
+  private AuthorizationService authorizationService;
   private PDFactory pdFactory;
 
   //////////////////// THE MAIN PD Business Analyst //////////////////////////
@@ -241,10 +246,11 @@ public class PDController extends BaseController implements Composer<Component> 
     eventLogService = (EventLogService) Sessions.getCurrent().getAttribute("eventLogService");
     logAnimationService =
         (LogAnimationService2) Sessions.getCurrent().getAttribute("logAnimationService");
+    authorizationService = (AuthorizationService) Sessions.getCurrent().getAttribute("authorizationService");
     logFilterPlugin = (LogFilterPlugin) Sessions.getCurrent().getAttribute("logFilterPlugin"); // beanFactory.getBean("logFilterPlugin");
 
     if (domainService == null || processService == null || eventLogService == null
-        || logFilterPlugin == null) {
+        || logFilterPlugin == null || authorizationService == null) {
       return false;
     }
     return true;
