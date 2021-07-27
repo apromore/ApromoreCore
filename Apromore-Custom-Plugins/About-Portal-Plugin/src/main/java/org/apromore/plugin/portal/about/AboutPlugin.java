@@ -78,6 +78,16 @@ public class AboutPlugin extends DefaultPortalPlugin {
   // PortalPlugin overrides
 
   @Override
+  public String getItemCode(Locale locale) {
+    return "About Apromore";
+  }
+
+  @Override
+  public String getGroup(Locale locale) {
+    return "About";
+  }
+
+  @Override
   public String getLabel(final Locale locale) {
     return Labels.getLabel("brand_about", label);
   }
