@@ -19220,6 +19220,11 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
         return {};
       }
 
+      if (selectedTimetable.get('default') === 'true') {
+        //Add validate method here
+        Ap.common.notify('The default timetable cannot be deleted. It has been reset.', 'error');
+      }
+
       suppressValidationError(bpmnFactory, elementRegistry, { elementId: selectedTimetable.id });
       selectedTimetable.get('rules').values.forEach(function(rule) {
         suppressValidationError(bpmnFactory, elementRegistry, { id: rule.id });
