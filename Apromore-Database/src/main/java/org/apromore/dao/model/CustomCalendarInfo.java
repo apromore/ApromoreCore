@@ -23,31 +23,21 @@ package org.apromore.dao.model;
 
 import java.io.Serializable;
 import java.time.OffsetDateTime;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.List;
-import javax.persistence.CascadeType;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
-import org.eclipse.persistence.annotations.Cache;
-import org.eclipse.persistence.annotations.CacheCoordinationType;
-import org.eclipse.persistence.annotations.ReadOnly;
+
 import org.springframework.beans.factory.annotation.Configurable;
+
 import lombok.NoArgsConstructor;
 
 @Entity
-@ReadOnly
 @Table(name = "custom_calendar", uniqueConstraints = {@UniqueConstraint(columnNames = {"name"})})
 @Configurable("custom_calendar")
-@Cache(expiry = 180000, size = 1000,
-    coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
 @NoArgsConstructor
 public class CustomCalendarInfo implements Serializable {
 

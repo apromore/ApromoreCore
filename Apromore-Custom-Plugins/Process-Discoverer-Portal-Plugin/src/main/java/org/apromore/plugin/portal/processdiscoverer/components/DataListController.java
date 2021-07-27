@@ -25,19 +25,26 @@ package org.apromore.plugin.portal.processdiscoverer.components;
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apromore.plugin.portal.processdiscoverer.PDController;
 import org.zkoss.util.media.AMedia;
+import org.zkoss.zk.ui.Execution;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.metainfo.PageDefinition;
 import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 
-import au.com.bytecode.opencsv.CSVWriter;
+import com.opencsv.CSVWriter;
+
+
 
 /**
  * DataListController is the controller to show a list of data items.
@@ -46,7 +53,7 @@ import au.com.bytecode.opencsv.CSVWriter;
 public abstract class DataListController extends AbstractController {
     protected ArrayList<String []> rows;
     protected ListModelList records;
-
+  
     public DataListController(PDController controller) {
         super(controller);
     }
@@ -94,5 +101,13 @@ public abstract class DataListController extends AbstractController {
     
     @Override
     public abstract void onEvent(Event event) throws Exception;
+    
+    
+    protected PageDefinition getPageDefination(String uri) throws IOException {
+		Execution current = Executions.getCurrent();
+		PageDefinition pageDefinition=current.getPageDefinitionDirectly(new InputStreamReader(
+				getClass().getClassLoader().getResourceAsStream(uri)), "zul");
+		return pageDefinition;
+	}
 
 }

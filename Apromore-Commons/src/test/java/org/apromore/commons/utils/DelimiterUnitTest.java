@@ -39,7 +39,6 @@ public class DelimiterUnitTest {
      * Setup for tests.
      */
     @Before
-
     public void setup() {
         rows = new ArrayList<>();
     }

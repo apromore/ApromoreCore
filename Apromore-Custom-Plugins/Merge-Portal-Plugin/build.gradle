@@ -1,0 +1,16 @@
+group = 'org.apromore.plugin'
+version = '1.1'
+description = 'Merge portal plugin'
+
+dependencies {
+    
+	implementation project(':Apromore-Plugins:plugin-core:core:api')
+	implementation project(':Apromore-Custom-Plugins:Merge-Logic')
+	implementation project(':Apromore-Clients:portal-model')
+	implementation project(':Apromore-Plugins:plugin-core:portal:api')
+	implementation project(':Apromore-Commons')
+	implementation project(':Apromore-Core-Components:Apromore-Manager')
+	implementation project(':Apromore-Zk')
+    
+
+}

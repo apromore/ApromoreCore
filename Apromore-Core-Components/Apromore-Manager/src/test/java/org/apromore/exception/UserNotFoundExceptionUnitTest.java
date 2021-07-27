@@ -24,7 +24,7 @@
 
 package org.apromore.exception;
 
-import org.apromore.test.heuristic.JavaBeanHeuristic;
+
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -33,12 +33,7 @@ import org.junit.Test;
  * Test the User Not Found Exception POJO.
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
-public class UserNotFoundExceptionUnitTest {
-
-    @Test
-    public void testLikeJavaBean() {
-        JavaBeanHeuristic.assertLooksLikeJavaBean(UserNotFoundException.class);
-    }
+public class UserNotFoundExceptionUnitTest {    
 
     @Test
     public void testException() {

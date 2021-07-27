@@ -27,11 +27,9 @@ package org.apromore.plugin;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 import java.util.Properties;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.commons.lang.builder.ToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -190,7 +188,7 @@ public abstract class DefaultPlugin implements Plugin {
      */
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(getName()).append(getVersion()).toHashCode();
+    	return Objects.hash(getName(),getVersion());
     }
 
     /*
@@ -211,8 +209,8 @@ public abstract class DefaultPlugin implements Plugin {
         }
         DefaultPlugin plugin = (DefaultPlugin) obj;
         // We just compare Name and Version, a Plugin is equals to another is Name and Version match
-        return new EqualsBuilder().append(getName(), plugin.getName()).append(getVersion(), plugin.getVersion())
-                .isEquals();
+        return Objects.equals(getName(), plugin.getName()) && Objects.equals(getVersion(), plugin.getVersion());
+        
     }
 
     /*
@@ -222,7 +220,10 @@ public abstract class DefaultPlugin implements Plugin {
      */
     @Override
     public String toString() {
-        return new ToStringBuilder(this).append("type", getType()).append("name", getName()).append("version", getVersion()).toString();
+        return new StringBuffer().append(getClass()
+        		.getSimpleName()).append("type="+getType())
+        		.append("name="+getName())
+        		.append("version="+getVersion()).toString();
     }
 
 }

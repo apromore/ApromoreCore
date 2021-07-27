@@ -29,8 +29,8 @@ import org.apromore.service.HistoryEventService;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.inject.Inject;
 
 /**
  * This Aspect audits methods surrounded by {@link Event}
@@ -79,7 +79,7 @@ import javax.inject.Inject;
 @Aspect
 public class HistoryEventAspect {
 
-    @Inject
+    @Autowired
     private HistoryEventService historyEventService;
 
 

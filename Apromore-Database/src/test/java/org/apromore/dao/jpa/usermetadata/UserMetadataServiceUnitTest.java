@@ -105,7 +105,7 @@ public class UserMetadataServiceUnitTest extends BaseTestClass {
 
 //	        When
         um = usermetadataRepository.saveAndFlush(um);
-        Usermetadata umExpected = usermetadataRepository.findById(um.getId());
+        Usermetadata umExpected = usermetadataRepository.findById(um.getId()).get();
 
 //	        Then
         assertThat(um.getId()).isNotNull();

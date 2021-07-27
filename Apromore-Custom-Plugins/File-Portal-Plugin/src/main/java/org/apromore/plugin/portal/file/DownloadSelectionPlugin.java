@@ -136,7 +136,7 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin {
 
   /**
    * Export all selected process versions, each of which in a native format to be chosen by the user
-   * 
+   *
    * @throws InterruptedException
    * @throws SuspendNotAllowedException
    * @throws org.apromore.portal.exception.ExceptionFormats

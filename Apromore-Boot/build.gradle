@@ -1,0 +1,86 @@
+group = 'org.apromore.plugin'
+version = '7.21-SNAPSHOT'
+apply plugin : "org.springframework.boot"
+apply plugin: "com.gorylenko.gradle-git-properties"
+apply plugin: 'application'
+
+
+dependencies {
+	implementation project(':Apromore-Core-Components:Apromore-Portal')
+	implementation project(':Apromore-Zk')
+	implementation project(':Apromore-Custom-Plugins')
+	implementation project(':Apromore-Plugins:plugin-core:core:api')
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+}
+
+bootJar {
+	mainClassName = 'org.apromore.ApromoreCoreBootApplication'
+	enabled = true
+}
+
+distZip {
+	enabled =false
+}
+
+distTar {
+	enabled =false
+}
+bootRun {
+	mainClass = 'org.apromore.ApromoreCoreBootApplication'
+	enabled = true;
+}
+processResources {
+
+	from ('../Apromore-Core-Components/Apromore-Portal/src/main/webapp') {
+		include '*.zul'
+		into 'web'
+	}
+
+
+	from ('../Apromore-Core-Components/Apromore-Portal/src/main/webapp') {
+		exclude '*.zul'
+		exclude 'WEB-INF/*'
+		into 'web'
+	}
+
+
+
+	//from ('../Apromore-Core-Components/Apromore-Portal/src/main/webapp/WEB-INF') {
+	//	include 'zk.xml'
+	//	into 'metainfo/zk'
+	//}
+
+	//from ('../Apromore-Core-Components/Apromore-Portal/src/main/webapp/WEB-INF') {
+	//	include 'zk-label.properties'
+	//	into 'metainfo'
+	//}
+	
+	
+
+	from '../Apromore-Database/src/main/resources'
+
+
+	from ('../Apromore-Core-Components/Apromore-BPMNEditor/src/main/resources/static') {
+		into 'web'
+	}
+
+
+	//	static files for each plugins
+
+	from ('../Apromore-Custom-Plugins/User-Admin-Portal-Plugin/src/main/resources/static') {
+		into 'web'
+	}
+
+	from ('../Apromore-Custom-Plugins/Log-Animation-Portal-Plugin/src/main/resources/static') {
+		into 'web'
+	}
+
+	from ('../Apromore-Custom-Plugins/Process-Discoverer-Portal-Plugin/src/main/resources/static') {
+		into 'web'
+	}
+
+
+}
+
+processResources.dependsOn (":Apromore-Core-Components:Apromore-BPMNEditor:runScript")
+

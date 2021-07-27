@@ -22,12 +22,16 @@
 
 package org.apromore.plugin.portal.processdiscoverer.utils;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 import org.apromore.commons.item.Constants;
 import org.apromore.commons.item.ItemNameUtils;
-
+import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.metainfo.PageDefinition;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Textbox;
@@ -42,11 +46,12 @@ public class InputDialog {
      * @param initialValue: initial value for the input
      * @param valuePattern: the expression pattern to check validity of the input
      * @param allowedValues: message about valid values allowed  
+     * @throws IOException 
      * @returnValueHander: callback event listener, notified with onOK (containing return value as string) and onCancel event
      */
     public static void showInputDialog(String title, String message, String initialValue, 
-                                EventListener<Event> returnValueHander) {
-        Window win = (Window) Executions.createComponents("inputDialog.zul", null, null);
+                                EventListener<Event> returnValueHander) throws IOException {
+        Window win = (Window) Executions.createComponents(getPageDefination("static/processdiscoverer/zul/inputDialog.zul"), null, null);
         Window dialog = (Window) win.getFellow("inputDialog");
         dialog.setTitle(title);
         Label labelMessage = (Label)dialog.getFellow("labelMessage"); 
@@ -97,4 +102,11 @@ public class InputDialog {
         }
 
     }
+    
+    private static PageDefinition getPageDefination(String uri) throws IOException {
+		Execution current = Executions.getCurrent();
+		PageDefinition pageDefinition=current.getPageDefinitionDirectly(new InputStreamReader(
+				InputDialog.class.getClassLoader().getResourceAsStream(uri)), "zul");
+		return pageDefinition;
+	}
 }

@@ -34,6 +34,7 @@ import org.apromore.dao.FolderRepositoryCustom;
 import org.apromore.dao.model.Folder;
 
 
+
 /**
  * implementation of the org.apromore.dao.ProcessDao interface.
  *
@@ -62,6 +63,7 @@ public class FolderRepositoryCustomImpl implements FolderRepositoryCustom {
 
         return query.getResultList();
     }
+
 
    
 }

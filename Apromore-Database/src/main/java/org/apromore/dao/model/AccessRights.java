@@ -21,10 +21,13 @@
  */
 package org.apromore.dao.model;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
+@Access(AccessType.PROPERTY)
 public class AccessRights {
 
     private boolean readOnly = false;

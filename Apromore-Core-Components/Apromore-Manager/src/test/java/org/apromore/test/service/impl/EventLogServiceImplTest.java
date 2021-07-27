@@ -22,23 +22,23 @@
 
 package org.apromore.test.service.impl;
 
-import static org.easymock.EasyMock.expect;
-import static org.junit.Assert.assertEquals;
-import static org.powermock.api.easymock.PowerMock.*;
-
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.powermock.api.easymock.PowerMock.createMock;
 import java.io.FileInputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Set;
 import java.util.stream.Stream;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-
-import junit.framework.Assert;
-import org.apromore.calendar.model.CalendarModel;
 import org.apromore.calendar.service.CustomCalendarService;
-import org.apromore.common.ConfigBean;
+import org.apromore.commons.config.ConfigBean;
 import org.apromore.dao.CustomCalendarRepository;
 import org.apromore.dao.FolderRepository;
 import org.apromore.dao.GroupLogRepository;
@@ -46,10 +46,6 @@ import org.apromore.dao.GroupRepository;
 import org.apromore.dao.LogRepository;
 import org.apromore.dao.StorageRepository;
 import org.apromore.dao.UsermetadataRepository;
-import org.apromore.dao.model.CustomCalendar;
-import org.apromore.dao.model.Group;
-import org.apromore.dao.model.GroupLog;
-import org.apromore.dao.model.Log;
 import org.apromore.service.AuthorizationService;
 import org.apromore.service.EventLogFileService;
 import org.apromore.service.UserService;
@@ -57,7 +53,6 @@ import org.apromore.service.impl.EventLogServiceImpl;
 import org.apromore.service.impl.TemporaryCacheService;
 import org.apromore.storage.StorageClient;
 import org.apromore.storage.factory.StorageManagementFactory;
-import org.apromore.util.AccessType;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryRegistry;
 import org.deckfour.xes.in.XesXmlParser;
@@ -77,7 +72,6 @@ import org.junit.rules.ExpectedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.google.common.collect.Sets;
-import org.springframework.test.annotation.Rollback;
 
 public class EventLogServiceImplTest {
 
@@ -153,7 +147,8 @@ public class EventLogServiceImplTest {
 
     eventLogService = new EventLogServiceImpl(logRepository, groupRepository, groupLogRepository,
         folderRepo, userSrv, config, userMetadataRepo, temporaryCacheService, storageFactory,
-        logFileService, storageRepository, calendarRepository, calendarService, authorizationService);
+        logFileService, storageRepository, calendarRepository, calendarService,
+        authorizationService);
   }
 
   @Test
@@ -256,104 +251,6 @@ public class EventLogServiceImplTest {
       result = Sets.intersection(result, Sets.newHashSet(numbers));
     }
     return result;
-  }
-
-  @Test
-  public void testGetCalendarIdFromLog() {
-
-    // Set up test data
-    Integer logId = 1;
-    Log log = new Log(logId);
-    CustomCalendar testCalendar = new CustomCalendar("test calendar");
-    testCalendar.setId(1L);
-    log.setCalendar(testCalendar);
-
-    // Mock recording
-    expect(logRepository.findUniqueByID(logId)).andReturn(log);
-    replayAll();
-
-    // Mock call
-    Long result = eventLogService.getCalendarIdFromLog(logId);
-
-    // Verify Mock and result
-    verifyAll();
-    assertEquals(testCalendar.getId(), result);
-
-  }
-
-  @Test
-  public void testGetCalendarIdFromLogAndReturnZero() {
-
-    // Set up test data
-    Integer logId = 1;
-    Log log = new Log(logId);
-    CustomCalendar testCalendar = new CustomCalendar("test calendar");
-    testCalendar.setId(1L);
-    log.setCalendar(null);
-
-    // Mock recording
-    expect(logRepository.findUniqueByID(logId)).andReturn(log);
-    replayAll();
-
-    // Mock call
-    Long result = eventLogService.getCalendarIdFromLog(logId);
-
-    // Verify Mock and result
-    verifyAll();
-    assertEquals(Long.valueOf(0), result);
-
-  }
-
-  @Test
-  public void testGetCalendarFromLog() {
-
-    // Set up test data
-    Integer logId = 1;
-    Log log = new Log(logId);
-    CustomCalendar testCalendar = new CustomCalendar("test calendar");
-    testCalendar.setId(1L);
-    log.setCalendar(testCalendar);
-
-    CalendarModel calendarModel = new CalendarModel();
-
-    // Mock recording
-    expect(logRepository.findUniqueByID(logId)).andReturn(log);
-    expect(calendarService.getCalendar(testCalendar.getId())).andReturn(calendarModel);
-    replayAll();
-
-    // Mock call
-    CalendarModel result =  eventLogService.getCalendarFromLog(logId);
-
-    // Verify Mock and result
-    verifyAll();
-    assertEquals(calendarModel, result);
-
-  }
-
-  @Test
-  public void testGetCalendarFromLogAndReturnGenericCalendar() {
-
-    // Set up test data
-    Integer logId = 1;
-    Log log = new Log(logId);
-    CustomCalendar testCalendar = new CustomCalendar("test calendar");
-    testCalendar.setId(1L);
-    log.setCalendar(null);
-
-    CalendarModel genericCalendarModel = new CalendarModel();
-
-    // Mock recording
-    expect(logRepository.findUniqueByID(logId)).andReturn(log);
-    expect(calendarService.getGenericCalendar()).andReturn(genericCalendarModel);
-    replayAll();
-
-    // Mock call
-    CalendarModel result =  eventLogService.getCalendarFromLog(logId);
-
-    // Verify Mock and result
-    verifyAll();
-    assertEquals(genericCalendarModel, result);
-
   }
 
 }

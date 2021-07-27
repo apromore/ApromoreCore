@@ -23,49 +23,51 @@ package org.apromore.plugin.portal.calendar;
 
 import java.util.Locale;
 import java.util.Map;
-
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.Window;
 
+@Component
 public class CalendarPlugin extends DefaultPortalPlugin {
 
-    private static Logger LOGGER = PortalLoggerFactory.getLogger(CalendarPlugin.class);
+  private static Logger LOGGER = PortalLoggerFactory.getLogger(CalendarPlugin.class);
 
-    private String label = "Manage calendars";
-    private String groupLabel = "Settings";
-    
+  private String label = "Manage calendars";
+  private String groupLabel = "Settings";
 
-    @Override
-    public String getLabel(Locale locale) {
-        return label;
+
+  @Override
+  public String getLabel(Locale locale) {
+    return label;
+  }
+
+  @Override
+  public String getGroupLabel(Locale locale) {
+    return groupLabel;
+  }
+
+  @Override
+  public void execute(PortalContext portalContext) {
+
+    try {
+      // Present the calendar window
+      Map arg = getSimpleParams();
+      Window window = (Window) Executions.getCurrent()
+          .createComponents("calendar/zul/calendars.zul", null, arg);
+      window.doModal();
+
+    } catch (Exception e) {
+      LOGGER.error("Unable to create custom calendar dialog", e);
+
     }
+  }
 
-    @Override
-    public String getGroupLabel(Locale locale) {
-        return groupLabel;
-    }
-
-    @Override
-    public void execute(PortalContext portalContext) {
-
-        try {
-            // Present the calendar window
-	    Map arg = getSimpleParams();
-	    Window window = (Window) Executions.getCurrent().createComponents("calendar/zul/calendars.zul", null, arg);
-            window.doModal();
-
-        } catch(Exception e) {
-            LOGGER.error("Unable to create custom calendar dialog", e);
-           
-        }
-    }
-
-    @Override
-    public Availability getAvailability() {
-        return Availability.AVAILABLE;
-    }
+  @Override
+  public Availability getAvailability() {
+    return Availability.AVAILABLE;
+  }
 }

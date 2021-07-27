@@ -1,0 +1,36 @@
+group = 'org.apromore'
+version = '1.0'
+description = 'user-admin-portal-plugin'
+
+dependencies {
+	
+	implementation project(':Apromore-Core-Components:Apromore-Manager')
+	implementation project(':Apromore-Zk')
+	implementation project(':Apromore-Commons')
+	implementation project(':Apromore-Core-Components:Apromore-Portal')
+	implementation project(':Apromore-Plugins:plugin-core:portal:api')
+
+}
+
+//implementation 'javax.xml.bind:com.springsource.javax.xml.bind:2.2.0'
+	
+
+	/*
+    implementation 'javax.activation:javax.activation-api:1.2.0'
+    implementation 'javax.annotation:javax.annotation-api:1.3.2'
+    implementation 'javax.xml.bind:com.springsource.javax.xml.bind:2.2.0'
+    implementation 'javax.inject:com.springsource.javax.inject:1.0.0'
+    implementation 'org.apromore:apromore-commons:1.0'
+    implementation 'org.apromore:apromore-manager:1.1'
+    implementation 'org.apromore:apromore-portal:1.1'
+    implementation 'org.apromore.plugin:portal-plugin-api:1.1'
+    implementation 'org.zkoss.zk:zk:8.6.0.1'
+    implementation 'org.zkoss.zk:zul:8.6.0.1'
+    implementation 'javax.activation:javax.activation-api:1.2.0'
+    implementation 'javax.annotation:javax.annotation-api:1.3.2'
+    implementation 'javax.xml.bind:com.springsource.javax.xml.bind:2.2.0'
+    testImplementation 'junit:junit:4.13.1'
+    compileOnly 'org.osgi:osgi.cmpn:7.0.0'
+    compileOnly 'org.slf4j:slf4j-api:1.7.5'
+    
+    */

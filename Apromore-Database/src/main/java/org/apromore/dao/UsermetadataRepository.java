@@ -22,16 +22,16 @@
 package org.apromore.dao;
 
 import org.apromore.dao.model.Usermetadata;
-import org.eclipse.persistence.config.PessimisticLock;
-import org.eclipse.persistence.config.QueryHints;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
 
 import javax.persistence.QueryHint;
 
 @Repository
 public interface UsermetadataRepository extends JpaRepository<Usermetadata, Integer> {
 
-    Usermetadata findById(Integer id);
+    Optional<Usermetadata> findById(Integer id);
 }

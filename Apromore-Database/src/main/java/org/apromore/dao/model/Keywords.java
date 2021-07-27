@@ -24,14 +24,13 @@
 
 package org.apromore.dao.model;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.io.Serializable;
 
-import org.eclipse.persistence.annotations.Cache;
-import org.eclipse.persistence.annotations.CacheCoordinationType;
 import org.springframework.beans.factory.annotation.Configurable;
 
 /**
@@ -42,7 +41,6 @@ import org.springframework.beans.factory.annotation.Configurable;
 @Entity
 @Table(name = "keywords")
 @Configurable("keywords")
-@Cache(expiry = 180000, size = 200, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
 public class Keywords implements Serializable {
 
     private String value;
@@ -60,15 +58,15 @@ public class Keywords implements Serializable {
     public String getType() { return this.type; }
     public void setType(final String newType) { this.type = newType; }
 
-    @Column(name = "processId", unique = false, nullable = true)
+    @Column(name = "processid", unique = false, nullable = true)
     public Integer getProcessId() { return this.processId; }
     public void setProcessId(final Integer id) { this.processId = id; }
 
-    @Column(name = "logId", unique = false, nullable = true)
+    @Column(name = "logid", unique = false, nullable = true)
     public Integer getLogId() { return this.logId; }
     public void setLogId(final Integer id) { this.logId = id; }
 
-    @Column(name = "folderId", unique = false, nullable = true)
+    @Column(name = "folderid", unique = false, nullable = true)
     public Integer getFolderId() { return this.folderId; }
     public void setFolderId(final Integer id) { this.folderId = id; }
 }

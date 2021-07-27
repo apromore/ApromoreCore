@@ -28,6 +28,7 @@ import org.apromore.service.csvexporter.CSVExporterLogic;
 import org.deckfour.xes.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -42,6 +43,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.zip.GZIPOutputStream;
 
+@Service
 public class CSVExporterLogicImpl implements CSVExporterLogic {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CSVExporterLogicImpl.class);

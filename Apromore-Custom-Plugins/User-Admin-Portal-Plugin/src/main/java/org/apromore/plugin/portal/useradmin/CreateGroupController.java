@@ -21,6 +21,9 @@
  */
 package org.apromore.plugin.portal.useradmin;
 
+import java.util.Locale;
+import java.util.Map;
+import java.util.ResourceBundle;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.service.SecurityService;
@@ -28,6 +31,8 @@ import org.slf4j.Logger;
 import org.zkoss.web.Attributes;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
@@ -35,55 +40,59 @@ import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
-import java.util.Locale;
-import java.util.ResourceBundle;
-
 public class CreateGroupController extends SelectorComposer<Window> {
 
-    private final static Logger LOGGER = PortalLoggerFactory.getLogger(CreateGroupController.class);
+  private final static Logger LOGGER = PortalLoggerFactory.getLogger(CreateGroupController.class);
 
-    private PortalContext portalContext = (PortalContext) Executions.getCurrent().getArg().get("portalContext");
-    private SecurityService securityService = (SecurityService) /*SpringUtil.getBean("securityService");*/ Executions.getCurrent().getArg().get("securityService");
+  private PortalContext portalContext =
+      (PortalContext) Executions.getCurrent().getArg().get("portalContext");
+  private SecurityService securityService =
+      (SecurityService) /* SpringUtil.getBean("securityService"); */ Executions.getCurrent()
+          .getArg().get("securityService");
 
-    @Wire("#groupNameTextbox") Textbox groupNameTextbox;
+  @Wire("#groupNameTextbox")
+  Textbox groupNameTextbox;
 
-    public ResourceBundle getLabels() {
-        // Locale locale = Locales.getCurrent()
-        Locale locale = (Locale) Sessions.getCurrent().getAttribute(Attributes.PREFERRED_LOCALE);
-        return ResourceBundle.getBundle("metainfo.zk-label",
-            locale,
-            UserAdminController.class.getClassLoader());
+  public ResourceBundle getLabels() {
+    // Locale locale = Locales.getCurrent()
+    Locale locale = (Locale) Sessions.getCurrent().getAttribute(Attributes.PREFERRED_LOCALE);
+    return ResourceBundle.getBundle("useradmin", locale,
+        UserAdminController.class.getClassLoader());
+  }
+
+  public String getLabel(String key) {
+    return getLabels().getString(key);
+  }
+
+  @Listen("onClick = #createBtn")
+  public void onClickCreateButton() {
+    boolean canEditGroups = securityService.hasAccess(portalContext.getCurrentUser().getId(),
+        Permissions.EDIT_GROUPS.getRowGuid());
+    if (!canEditGroups) {
+      Messagebox.show("You do not have privilege to create group.");
+      return;
     }
 
-    public String getLabel(String key) {
-        return getLabels().getString(key);
+    try {
+      if (securityService.getGroupByName(groupNameTextbox.getValue()) != null) {
+        throw new Exception("Group already exists");
+      }
+      securityService.createGroup(groupNameTextbox.getValue());
+      Map dataMap = Map.of("type", "CREATE_GROUP");
+      EventQueues.lookup(SecurityService.EVENT_TOPIC, getSelf().getDesktop().getWebApp(), true)
+          .publish(new Event("Group Created", null, dataMap));
+      getSelf().detach();
+
+
+    } catch (Exception e) {
+      LOGGER.error("Unable to create group", e);
+      Messagebox.show(getLabel("failedCreateGroup_message"));
     }
+    getSelf().detach();
+  }
 
-    @Listen("onClick = #createBtn")
-    public void onClickCreateButton() {
-        boolean canEditGroups = securityService.hasAccess(portalContext.getCurrentUser().getId(), Permissions.EDIT_GROUPS.getRowGuid());
-        if (!canEditGroups) {
-            Messagebox.show("You do not have privilege to create group.");
-            return;
-        }
-
-        try {
-            if(securityService.getGroupByName(groupNameTextbox.getValue())!=null)
-            {
-        	throw new Exception("Group already exists");
-            }
-            securityService.createGroup(groupNameTextbox.getValue());
-            getSelf().detach();
-
-        } catch (Exception e) {
-            LOGGER.error("Unable to create group", e);
-            Messagebox.show(getLabel("failedCreateGroup_message"));
-        }
-        getSelf().detach();
-    }
-
-    @Listen("onClick = #cancelBtn")
-    public void onClickCancelButton() {
-        getSelf().detach();
-    }
+  @Listen("onClick = #cancelBtn")
+  public void onClickCancelButton() {
+    getSelf().detach();
+  }
 }

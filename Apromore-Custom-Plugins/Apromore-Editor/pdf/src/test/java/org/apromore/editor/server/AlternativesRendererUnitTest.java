@@ -65,6 +65,8 @@ public class AlternativesRendererUnitTest extends AlternativesRenderer {
 
   /** Dummy test. */
   @Test public void testMakePDF() throws Exception {
-      AlternativesRenderer.makePDF(new File("src/test/resources/makePDF.svg"), new File("target/makePDF.pdf"));
+	  File t=new File("target");
+	  t.mkdir();
+      AlternativesRenderer.makePDF(new File("src/test/resources/makePDF.svg"), new File(t,"makePDF.pdf"));
   }
 }

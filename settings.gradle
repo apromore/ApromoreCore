@@ -1,0 +1,75 @@
+rootProject.name = 'ApromoreCore'
+
+
+include ':Apromore-Boot'
+
+include ':Apromore-Core-Components:Apromore-Manager'
+include ':Apromore-Core-Components:Apromore-Portal'
+include ':Apromore-Core-Components:Apromore-BPMNEditor'
+include ':Apromore-Commons'
+include ':Apromore-Database'
+include ':Apromore-Cache'
+include ':Apromore-Core-Components:Apromore-Storage'
+include ':Apromore-Calendar'
+include ':Apromore-Zk'
+
+include ':Apromore-Extras:APMLogModule'
+include ':Apromore-Extras:OpenXES'
+include ':Apromore-Extras:Apromore-Chiaroscuro-Theme'
+
+include ':Apromore-Clients:manager-security'
+include ':Apromore-Clients:portal-model'
+include ':Apromore-Clients:manager-client'
+
+
+include ':Apromore-Plugins:plugin-core:core:api'
+include ':Apromore-Plugins:plugin-core:core:provider'
+include ':Apromore-Plugins:plugin-core:editor:api'
+include ':Apromore-Plugins:plugin-core:portal:api'
+include ':Apromore-Plugins:plugin-templates:portal-custom-gui'
+include ':Event-Log-Plugin-API'
+
+
+
+
+include ':Apromore-ProcessMining-Collection'
+include ':Apromore-ProcessMining-Collection:jgraph'
+include ':Apromore-ProcessMining-Collection:prom-models'
+include ':Apromore-ProcessMining-Collection:prom-widgets'
+include ':Apromore-ProcessMining-Collection:prom-bpmn'
+include ':Apromore-ProcessMining-Collection:similaritysearch'
+
+
+
+include ':Apromore-Custom-Plugins'
+include ':Apromore-Custom-Plugins:About-Portal-Plugin'
+include ':Apromore-Custom-Plugins:Account-Portal-Plugin'
+include ':Apromore-Custom-Plugins:Access-Control-Portal-Plugin'
+include ':Apromore-Custom-Plugins:File-Portal-Plugin'
+include ':Apromore-Custom-Plugins:CSVExporter-Logic'
+include ':Apromore-Custom-Plugins:Apromore-Editor:diagramcore'
+include ':Apromore-Custom-Plugins:Apromore-Editor:bpmn20xmlbasic'
+include ':Apromore-Custom-Plugins:Apromore-Editor:pdf'
+include ':Apromore-Custom-Plugins:Calendar-Portal'
+include ':Apromore-Custom-Plugins:CSVImporter-Logic'
+include ':Apromore-Custom-Plugins:CSVImporter-Portal'
+//include ':Apromore-Custom-Plugins:CSVExporter-Portal'
+include ':Apromore-Custom-Plugins:Generic-Portal-Plugin'
+include ':Apromore-Custom-Plugins:Log-Animation-Logic'
+include ':Apromore-Custom-Plugins:Log-Animation-Portal-Plugin'
+include ':Apromore-Custom-Plugins:Log-Animation-Portal-Plugin-API'
+include ':Apromore-Custom-Plugins:User-Admin-Portal-Plugin'
+include ':Apromore-Custom-Plugins:Log-Logic'
+include ':Apromore-Custom-Plugins:SplitMiner-Logic'
+include ':Apromore-Custom-Plugins:Merge-Logic'
+include ':Apromore-Custom-Plugins:Similarity-Search-Logic'
+include ':Apromore-Custom-Plugins:Process-Discoverer-Logic'
+include ':Apromore-Custom-Plugins:Log-Filter-Portal-Plugin-Generic'
+include ':Apromore-Custom-Plugins:Merge-Portal-Plugin'
+include ':Apromore-Custom-Plugins:Similarity-Search-Portal-Plugin'
+include ':Apromore-Custom-Plugins:Process-Discoverer-Portal-Plugin'
+
+
+
+
+

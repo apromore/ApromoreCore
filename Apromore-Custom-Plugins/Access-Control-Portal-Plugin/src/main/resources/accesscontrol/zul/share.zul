@@ -17,7 +17,7 @@
   <http://www.gnu.org/licenses/lgpl-3.0.html>.
   #L%
   -->
-<?component name="AccessControl" macroURI="/accesscontrol/zul/access.zul" ?>
+<?component name="AccessControl" macroURI="~./macros/accesscontrol/access.zul" ?>
 <window
     sclass="ap-share-win"
     width="700px" height="80%" position="center"

@@ -116,15 +116,16 @@
                 <h:h4 class="ap-form-heading">
                   ${labels.brand_login}
                 </h:h4>
-                <h:form method="post" action="j_spring_security_check" name="login_form" data-t="form-login">
+                <h:form method="post" action="/login" name="login_form" data-t="form-login">
                   <h:fieldset>
                     <h:div class="controls">
-                      <h:input type="text" name="j_username" data-t="username"
+                      <h:input type="text" name="username" data-t="username"
                                placeholder="${labels.auth_username_hint}"/>
                     </h:div>
                     <h:div class="controls controls-row">
-                      <h:input type="password" name="j_password" data-t="password"
+                      <h:input type="password" name="password" data-t="password"
                                placeholder="${labels.auth_password_hint}"/>
+
                     </h:div>
                     <h:div class="controls controls-row split">
                       <h:a style="display:none;" class="forgot-link button" href="#forgot" data-toggle="tab">Forgot
@@ -271,7 +272,7 @@
         </h:div>
 
         <h:div class="left-footer">
-          <h:img class="emblem" src="/themes/${labels.theme}/common/img/brand/emblem-white.svg"/>
+          <h:img class="emblem" src="~./themes/${labels.theme}/common/img/brand/emblem-white.svg"/>
           <h:div class="ap-h-links">
             <html id="tcLink">
               <h:a href="${labels.brand_urlTandC}">${labels.brand_textTandC}</h:a>
@@ -288,8 +289,10 @@
 
       <h:div class="ap-right-panel">
         <h:div class="ap-logo ap-centered">
+
           <h:a href="${labels.brand_urlMain}">
-            <image id="logoWithTag" src="/themes/${labels.theme}/common/img/brand/logo-colour-with-tag.svg"/>
+            <image id="logoWithTag" src="~./themes/${labels.theme}/common/img/brand/logo-colour-with-tag.svg"/>
+
           </h:a>
         </h:div>
       </h:div>

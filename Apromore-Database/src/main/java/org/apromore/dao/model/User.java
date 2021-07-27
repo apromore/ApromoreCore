@@ -24,27 +24,6 @@
 
 package org.apromore.dao.model;
 
-import org.eclipse.persistence.annotations.Cache;
-import org.eclipse.persistence.annotations.CacheCoordinationType;
-import org.springframework.beans.factory.annotation.Configurable;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.OrderBy;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.UniqueConstraint;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -52,6 +31,26 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
+
+import org.springframework.beans.factory.annotation.Configurable;
 
 /**
  * Stores the process in apromore.
@@ -67,7 +66,6 @@ import java.util.UUID;
         }
 )
 @Configurable("user")
-@Cache(expiry = 180000, size = 100, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
 public class User implements Serializable {
 
     private Integer id;
@@ -289,7 +287,7 @@ public class User implements Serializable {
      * @return the user's personal access control group
      */
     @OneToOne(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "groupId")
+    @JoinColumn(name = "groupid")
     public Group getGroup() {
         return group;
     }
@@ -304,10 +302,10 @@ public class User implements Serializable {
     /**
      * @return all the access control groups of which this user is a member
      */
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_group",
-            joinColumns = @JoinColumn(name = "userId", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "groupId", referencedColumnName = "id"))
+            joinColumns = @JoinColumn(name = "userid", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "groupid", referencedColumnName = "id"))
     public Set<Group> getGroups() {
         return groups;
     }
@@ -345,8 +343,8 @@ public class User implements Serializable {
      */
     @ManyToMany
     @JoinTable(name = "user_role",
-            joinColumns = @JoinColumn(name = "userId", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "roleId", referencedColumnName = "id"))
+            joinColumns = @JoinColumn(name = "userid", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "roleid", referencedColumnName = "id"))
     public Set<Role> getRoles() {
         return this.roles;
     }

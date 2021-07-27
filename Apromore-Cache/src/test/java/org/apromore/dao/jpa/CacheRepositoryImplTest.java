@@ -36,11 +36,12 @@ import org.springframework.cache.ehcache.EhCacheCacheManager;
 public class CacheRepositoryImplTest {
 
     private static EhCacheCacheManager ehCacheCacheManager = new EhCacheCacheManager();
-    private String cacheName = "test";
+    private String cacheName = "xlog";
     private net.sf.ehcache.CacheManager cacheManager = CacheManager.getInstance();
 
     @Before
     public void setUp() throws Exception {
+    	cacheName = "xlog";
         ehCacheCacheManager.setCacheManager(cacheManager);
 
     }
@@ -69,7 +70,7 @@ public class CacheRepositoryImplTest {
     public void get() {
 
         CacheRepository cacheRepository = new CacheRepositoryImpl();
-        ((CacheRepositoryImpl) cacheRepository).setCacheName(cacheName);
+        ((CacheRepositoryImpl) cacheRepository).setCacheName("xlog");
         ((CacheRepositoryImpl) cacheRepository).setEhCacheCacheManager(ehCacheCacheManager);
 
         String keyPut = "keyGet1";

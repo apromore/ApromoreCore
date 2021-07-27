@@ -70,7 +70,7 @@ import de.hpi.bpmn2_0.model.event.Event;
 import de.hpi.bpmn2_0.transformation.BPMN2DiagramConverter;
 import de.hpi.bpmn2_0.transformation.Diagram2BpmnConverter;
 
-@Service
+@Service("logAnimationService")
 @Deprecated 
 public class LogAnimationServiceImpl extends DefaultParameterAwarePlugin implements LogAnimationService {
 

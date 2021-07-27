@@ -23,20 +23,15 @@ package org.apromore.dao.model;
 
 import java.io.Serializable;
 import java.time.OffsetDateTime;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.eclipse.persistence.annotations.Cache;
-import org.eclipse.persistence.annotations.CacheCoordinationType;
-import org.eclipse.persistence.annotations.ReadOnly;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import lombok.NoArgsConstructor;
@@ -44,7 +39,6 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "storage")
 @Configurable("storage")
-@Cache(expiry = 180000, size = 1000, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
 @NoArgsConstructor
 public class Storage implements Serializable {
 

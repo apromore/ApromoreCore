@@ -19,6 +19,7 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+
 package org.apromore.test.service.impl;
 
 import junit.framework.Assert;
@@ -83,8 +84,7 @@ public class AuthorizationServiceImplTest extends AbstractTest {
 
         authorizationService = new AuthorizationServiceImpl(groupUsermetadataRepository,
                 usermetadataRepository, logRepository, folderService, processRepository,
-                folderRepository, groupRepository, groupLogRepository, groupProcessRepository, groupFolderRepository,
-                userService);
+                folderRepository, groupRepository, groupLogRepository, groupProcessRepository, groupFolderRepository, userService);
 
         // Set up test data
         group1 = createGroup(1, Group.Type.GROUP);

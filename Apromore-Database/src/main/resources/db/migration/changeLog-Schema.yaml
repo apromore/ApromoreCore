@@ -391,8 +391,7 @@ databaseChangeLog:
                 type: VARCHAR(100)
                 remarks: 'updated_by for the work_day'
                 
-      - addUniqueConstraint:  
-         clustered:  true  
+      - addUniqueConstraint:           
          columnNames:  day_of_week,calendar_id,start_time
          constraintName:  work_day_constraint  
          deferrable:  true  
@@ -478,7 +477,7 @@ databaseChangeLog:
                    tableName: group
      changes:
        - addForeignKeyConstraint:
-           baseColumnNames: groupId
+           baseColumnNames: groupid
            baseTableName: user
            constraintName: fk_user_group
            deferrable: false
@@ -575,7 +574,7 @@ databaseChangeLog:
              foreignKeyName: fk_group_log_log
      changes:
        - addForeignKeyConstraint:
-           baseColumnNames: logId
+           baseColumnNames: logid
            baseTableName: group_log
            constraintName: fk_group_log_log
            deferrable: false
@@ -596,7 +595,7 @@ databaseChangeLog:
              foreignKeyName: fk_group_log_group
      changes:
        - addForeignKeyConstraint:
-           baseColumnNames: groupId
+           baseColumnNames: groupid
            baseTableName: group_log
            constraintName: fk_group_log_group
            deferrable: false
@@ -617,7 +616,7 @@ databaseChangeLog:
              foreignKeyName: fk_group_process_process
      changes:
        - addForeignKeyConstraint:
-           baseColumnNames: processId
+           baseColumnNames: processid
            baseTableName: group_process
            constraintName: fk_group_process_process
            deferrable: false
@@ -638,7 +637,7 @@ databaseChangeLog:
              foreignKeyName: fk_group_process_group
      changes:
        - addForeignKeyConstraint:
-           baseColumnNames: groupId
+           baseColumnNames: groupid
            baseTableName: group_process
            constraintName: fk_group_process_group
            deferrable: false
@@ -659,7 +658,7 @@ databaseChangeLog:
              foreignKeyName: fk_group_folder_folder
      changes:
        - addForeignKeyConstraint:
-           baseColumnNames: folderId
+           baseColumnNames: folderid
            baseTableName: group_folder
            constraintName: fk_group_folder_folder
            deferrable: false
@@ -680,7 +679,7 @@ databaseChangeLog:
              foreignKeyName: fk_group_folder_group
      changes:
        - addForeignKeyConstraint:
-           baseColumnNames: groupId
+           baseColumnNames: groupid
            baseTableName: group_folder
            constraintName: fk_group_folder_group
            deferrable: false
@@ -701,7 +700,7 @@ databaseChangeLog:
              foreignKeyName: fk_history_user
      changes:
        - addForeignKeyConstraint:
-           baseColumnNames: userId
+           baseColumnNames: userid
            baseTableName: history_event
            constraintName: fk_history_user
            deferrable: false

@@ -21,14 +21,21 @@
  */
 package org.apromore.config;
 
+import org.apromore.dao.config.DatabaseConfig;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = TestConfig.class)
-public class BaseTestClass {
+@ContextConfiguration(classes = {DatabaseConfig.class})
+@TestPropertySource(value = {
+	    "classpath:application.properties"	    
+	})
+public abstract class BaseTestClass {
 
+	
+	
 	
 	
 }

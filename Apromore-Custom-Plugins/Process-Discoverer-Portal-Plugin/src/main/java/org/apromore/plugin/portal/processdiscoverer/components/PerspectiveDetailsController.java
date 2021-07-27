@@ -76,10 +76,10 @@ public class PerspectiveDetailsController extends DataListController {
 
     @Override
     public void onEvent(Event event) throws Exception {
-    	if (perspectiveDetailsWindow==null) {
+        if (perspectiveDetailsWindow==null) {
             Map<String, Object> arg = new HashMap<>();
             arg.put("pdLabels", parent.getLabels());
-            perspectiveDetailsWindow = (Window) Executions.createComponents("perspectiveDetails.zul", null, arg);
+            perspectiveDetailsWindow = (Window) Executions.createComponents("static/processdiscoverer/zul/perspectiveDetails.zul", null, arg);
             String perspectiveName = parent.getPerspectiveName();
             perspectiveDetailsWindow.setTitle(perspectiveName + " Inspector");
             Listbox listbox = (Listbox) perspectiveDetailsWindow.getFellow("perspectiveDetailsList");
@@ -108,12 +108,12 @@ public class PerspectiveDetailsController extends DataListController {
             perspectiveDetailsWindow.doOverlapped();
             
             perspectiveDetailsWindow.addEventListener("onClose", new EventListener<Event>() {
-    			@Override
-    			public void onEvent(Event event) throws Exception {
-    				perspectiveDetailsWindow = null;				
-    			}
-    		});
-    	}
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    perspectiveDetailsWindow = null;                
+                }
+            });
+        }
     }
 
     public Window getWindow() {

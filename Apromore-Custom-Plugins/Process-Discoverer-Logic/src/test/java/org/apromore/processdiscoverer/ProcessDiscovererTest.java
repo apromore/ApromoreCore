@@ -40,6 +40,7 @@ import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNNode;
 import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Gateway;
 import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Gateway.GatewayType;
 import org.deckfour.xes.model.XLog;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class ProcessDiscovererTest extends LogicDataSetup {
@@ -921,6 +922,7 @@ public class ProcessDiscovererTest extends LogicDataSetup {
     }
     
     @Test
+    @Ignore
     public void testBPMN_Sepsis_100_30_DiagramStructure() {
         try {
             Abstraction abs = discoverProcess(read_Sepsis(),

@@ -1,0 +1,15 @@
+group = 'org.apromore'
+version = '1.0'
+description = 'prom-bpmn-osgi'
+
+dependencies {
+   
+	implementation project(':Apromore-ProcessMining-Collection:prom-models')
+	implementation project(':Apromore-ProcessMining-Collection:prom-widgets')
+	implementation project(':Apromore-ProcessMining-Collection:jgraph')
+
+    implementation 'commons-io:commons-io:2.6'
+    implementation 'org.xpp3:xpp3:1.1.4c'
+
+    
+}

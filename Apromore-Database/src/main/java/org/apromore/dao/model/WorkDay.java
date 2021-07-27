@@ -41,8 +41,6 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
-import org.eclipse.persistence.annotations.Cache;
-import org.eclipse.persistence.annotations.CacheCoordinationType;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import lombok.NoArgsConstructor;
@@ -51,8 +49,6 @@ import lombok.NoArgsConstructor;
 @Table(name = "work_day", uniqueConstraints = {
     @UniqueConstraint(columnNames = {"day_of_week", "calendar_id", "start_time"})})
 @Configurable("work_day")
-@Cache(expiry = 180000, size = 1000,
-    coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
 @NoArgsConstructor
 public class WorkDay {
 

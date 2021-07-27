@@ -24,13 +24,22 @@
 
 package org.apromore.dao.model;
 
-import org.eclipse.persistence.annotations.Cache;
-import org.eclipse.persistence.annotations.CacheCoordinationType;
-import org.springframework.beans.factory.annotation.Configurable;
 
-import javax.persistence.*;
 import java.io.Serializable;
 import java.util.logging.Logger;
+
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.springframework.beans.factory.annotation.Configurable;
 
 /**
  * The access control details corresponding to a particular group and process.
@@ -40,7 +49,6 @@ import java.util.logging.Logger;
 @Entity
 @Table(name = "group_process")
 @Configurable("group_process")
-@Cache(expiry = 180000, size = 100, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
 public class GroupProcess implements Serializable {
 
     private static Logger LOGGER = Logger.getLogger(GroupProcess.class.getCanonicalName());
@@ -103,7 +111,7 @@ public class GroupProcess implements Serializable {
     }
 
     @ManyToOne
-    @JoinColumn(name = "groupId")
+    @JoinColumn(name = "groupid")
     public Group getGroup() {
         return this.group;
     }
@@ -113,7 +121,7 @@ public class GroupProcess implements Serializable {
     }
 
     @ManyToOne
-    @JoinColumn(name = "processId")
+    @JoinColumn(name = "processid")
     public Process getProcess() {
         return this.process;
     }
@@ -122,16 +130,19 @@ public class GroupProcess implements Serializable {
         this.process = process;
     }
 
+    @Transient
     public Boolean getHasRead() {
         // TODO Auto-generated method stub
         return getAccessRights().isReadOnly();
     }
 
+    @Transient
     public Boolean getHasWrite() {
         // TODO Auto-generated method stub
         return getAccessRights().isWriteOnly();
     }
 
+    @Transient
     public Boolean getHasOwnership() {
         // TODO Auto-generated method stub
         return getAccessRights().isOwnerShip();

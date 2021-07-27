@@ -1,0 +1,10 @@
+group = 'org.apromore'
+version = '1.0'
+description = 'Apromore Editor Extension: Diagram Core'
+
+dependencies {
+	implementation group: 'org.json', name: 'json', version: '20201115'
+	
+}
+
+

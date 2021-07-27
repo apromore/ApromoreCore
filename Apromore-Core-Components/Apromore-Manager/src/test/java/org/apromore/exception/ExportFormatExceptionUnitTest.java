@@ -24,7 +24,7 @@
 
 package org.apromore.exception;
 
-import org.apromore.test.heuristic.JavaBeanHeuristic;
+
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -34,11 +34,7 @@ import org.junit.Test;
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 public class ExportFormatExceptionUnitTest {
-
-    @Test
-    public void testLikeJavaBean() {
-        JavaBeanHeuristic.assertLooksLikeJavaBean(ExportFormatException.class);
-    }
+    
 
     @Test
     public void testException() {

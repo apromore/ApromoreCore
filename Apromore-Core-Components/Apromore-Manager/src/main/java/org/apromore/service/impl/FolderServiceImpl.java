@@ -152,7 +152,7 @@ public class FolderServiceImpl implements FolderService {
             folder.setParentFolderChain(folderChain.replaceAll(getEscapedString(oldChain), newFolderChainPrefix));
         }
 
-        folderRepository.save(folders);
+        folderRepository.saveAll(folders);
 
     }
 

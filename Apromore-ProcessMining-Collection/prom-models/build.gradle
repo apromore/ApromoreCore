@@ -1,0 +1,8 @@
+group = 'org.apromore'
+version = '1.0'
+description = 'prom-models'
+
+dependencies {
+    
+	implementation project(':Apromore-ProcessMining-Collection:jgraph')
+}

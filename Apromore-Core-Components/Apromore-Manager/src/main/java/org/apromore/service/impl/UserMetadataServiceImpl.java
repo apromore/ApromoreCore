@@ -43,8 +43,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-@Service
-@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor =
+@Service("userMetadataService")
+@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, rollbackFor =
         Exception.class)
 public class UserMetadataServiceImpl implements UserMetadataService {
 
@@ -116,7 +116,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         }
 
         // Assemble Usermetadata
-        userMetadata.setUsermetadataType(usermetadataTypeRepo.findOne(userMetadataTypeEnum.getUserMetadataTypeId()));
+        userMetadata.setUsermetadataType(usermetadataTypeRepo.findById(userMetadataTypeEnum.getUserMetadataTypeId()).get());
         userMetadata.setIsValid(true);
         userMetadata.setCreatedBy(user.getRowGuid());
         userMetadata.setCreatedTime(dateFormat.format(new Date()));
@@ -344,7 +344,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         User user = userSrv.findUserByLogin(username);
 
         // Optimistic locking version check is not necessary here since consistency should be guaranteed by EventQueue
-        Usermetadata userMetadata = userMetadataRepo.findOne(userMetadataId);
+        Usermetadata userMetadata = userMetadataRepo.findById(userMetadataId).get();
         userMetadata.setName(name);
         userMetadata.setUpdatedBy(user.getRowGuid());
         userMetadata.setUpdatedTime(dateFormat.format(new Date()));
@@ -357,7 +357,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
     @Override
     @Transactional
     public void deleteUserMetadata(Integer usermetadataId, String username) {
-        userMetadataRepo.delete(usermetadataId);
+        userMetadataRepo.deleteById(usermetadataId);
         LOGGER.info("User: {} Delete user metadata ID: {}.", username, usermetadataId);
     }
 
@@ -663,7 +663,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         // Assemble Usermetadata
         userMetadata.setGroupUserMetadata(groupUserMetadataSet);
         userMetadata.setLogs(logs);
-        userMetadata.setUsermetadataType(usermetadataTypeRepo.findOne(userMetadataTypeEnum.getUserMetadataTypeId()));
+        userMetadata.setUsermetadataType(usermetadataTypeRepo.findById(userMetadataTypeEnum.getUserMetadataTypeId()).get());
         userMetadata.setIsValid(true);
         userMetadata.setCreatedBy(user.getRowGuid());
         userMetadata.setCreatedTime(dateFormat.format(new Date()));
@@ -718,7 +718,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
     public void saveUserMetadataAccessRights(Integer userMetadataId, String groupRowGuid, boolean hasRead,
                                              boolean hasWrite, boolean hasOwnership) {
         Group group = groupRepo.findByRowGuid(groupRowGuid);
-        Usermetadata usermetadata = userMetadataRepo.findById(userMetadataId);
+        Usermetadata usermetadata = userMetadataRepo.findById(userMetadataId).get();
         AccessRights accessRights = new AccessRights(hasRead, hasWrite, hasOwnership);
         GroupUsermetadata gu =
                 groupUsermetadataRepo.findByGroupAndUsermetadata(group, usermetadata);
@@ -759,14 +759,14 @@ public class UserMetadataServiceImpl implements UserMetadataService {
     public void removeUserMetadataAccessRights(Integer userMetadataId, String groupRowGuid) {
 
         Group group = groupRepo.findByRowGuid(groupRowGuid);
-        Usermetadata usermetadata = userMetadataRepo.findById(userMetadataId);
+        Usermetadata usermetadata = userMetadataRepo.findById(userMetadataId).get();
 
         groupUsermetadataRepo.delete(groupUsermetadataRepo.findByGroupAndUsermetadata(group, usermetadata));
     }
 
     @Override
     public Usermetadata findById(Integer id) {
-        return userMetadataRepo.findById(id);
+        return userMetadataRepo.findById(id).get();
     }
 
     @Override

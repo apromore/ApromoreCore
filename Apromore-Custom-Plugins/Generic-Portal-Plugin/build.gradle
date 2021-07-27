@@ -1,0 +1,11 @@
+
+group = 'org.apromore.plugin'
+version = '1.0.0'
+description = 'Custom Plugin Framework'
+
+dependencies {
+    
+    implementation project(':Apromore-Plugins:plugin-core:portal:api')
+	implementation project(':Apromore-Plugins:plugin-core:core:api')
+}
+

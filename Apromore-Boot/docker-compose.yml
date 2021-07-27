@@ -1,0 +1,22 @@
+version: "3.9"
+services:
+
+ apromore-ee:
+  container_name: apromore-enterprise-8
+  image: ${APROMORE_IMAGE}
+  environment:
+   JAVA_OPTS: "-server -Xmx128g -Xmn1g"
+   AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+   AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+  env_file:
+   - .env
+  volumes:
+   - ~/.apromore/logs:/opt/logs
+  networks:
+   - apromore-network
+  ports:
+    - 80:8181
+  restart: always
+networks:
+  apromore-network:
+    external: true

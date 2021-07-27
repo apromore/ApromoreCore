@@ -31,7 +31,7 @@ if(!Apromore.CONFIG) Apromore.CONFIG = {};
 Apromore.CONFIG.ROOT_PATH =					(Apromore.CONFIG.SERVER_HANDLER_ROOT_PREFIX) ? Apromore.CONFIG.SERVER_HANDLER_ROOT_PREFIX + "/editor/" : "../editor/"; //TODO: Remove last slash!!
 Apromore.CONFIG.EXPLORER_PATH =				(Apromore.CONFIG.SERVER_HANDLER_ROOT_PREFIX) ? Apromore.CONFIG.SERVER_HANDLER_ROOT_PREFIX + "/explorer/" : "../explorer";
 Apromore.CONFIG.LIBS_PATH =					(Apromore.CONFIG.SERVER_HANDLER_ROOT_PREFIX) ? Apromore.CONFIG.SERVER_HANDLER_ROOT_PREFIX + "/libs/" : "../libs";
-Apromore.PATH = Apromore.CONFIG.ROOT_PATH;
+Apromore.PATH = "."+Apromore.CONFIG.ROOT_PATH;
 
 /**
  * Regular Config

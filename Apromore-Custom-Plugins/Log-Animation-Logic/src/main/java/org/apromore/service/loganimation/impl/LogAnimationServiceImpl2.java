@@ -53,6 +53,7 @@ import org.json.JSONObject;
 //import org.apromore.processmining.plugins.signaturediscovery.encoding.EncodingNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import de.hpi.bpmn2_0.exceptions.BpmnConverterException;
@@ -62,6 +63,7 @@ import de.hpi.bpmn2_0.model.connector.SequenceFlow;
 import de.hpi.bpmn2_0.transformation.BPMN2DiagramConverter;
 
 @Service
+@Qualifier("logAnimationService2")
 public class LogAnimationServiceImpl2 extends DefaultParameterAwarePlugin implements LogAnimationService2 {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(LogAnimationServiceImpl2.class);

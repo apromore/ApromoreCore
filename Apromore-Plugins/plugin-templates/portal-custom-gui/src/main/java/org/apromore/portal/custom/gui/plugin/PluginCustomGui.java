@@ -90,7 +90,7 @@ public abstract class PluginCustomGui extends DefaultPortalPlugin {
         addListheader(listheaders, "Last update",    true, "center", "140px", null);
         addListheader(listheaders, "Owner",             true, "center", null, "1");
 
-        addTab(tabName, "/themes/ap/common/img/icons/bpmn-model.svg", rows, listheaders, new ProcessTabItemExecutor(portalContext.getMainController()), portalContext);
+        addTab(tabName, "~./themes/ap/common/img/icons/bpmn-model.svg", rows, listheaders, new ProcessTabItemExecutor(portalContext.getMainController()), portalContext);
     }
 
     private Listheader addListheader(final List<Listheader> listheaders, String name, boolean visible,

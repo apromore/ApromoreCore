@@ -70,7 +70,7 @@ public class AddFolderController extends BaseController {
             return;
         }
         try {
-            final Window win = (Window) Executions.createComponents("macros/folderCreate.zul", null, null);
+            final Window win = (Window) Executions.createComponents("~./macros/folderCreate.zul", null, null);
             this.folderEditWindow = (Window) win.getFellow("winFolderCreate");
             this.txtName = (Textbox) this.folderEditWindow.getFellow("txtName");
             this.btnSave = (Button) this.folderEditWindow.getFellow("btnSave");

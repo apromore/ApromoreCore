@@ -20,7 +20,7 @@
   <http://www.gnu.org/licenses/lgpl-3.0.html>.
   #L%
   -->
-<?component name="FolderTree" macroURI="/macros/folderTree.zul" ?>
+<?component name="FolderTree" macroURI="~./macros/folderTree.zul" ?>
 
 <window width="780px" closable="false" position="center" title="Search for similar processes" sclass="ap-simsearch">
 	<caption>

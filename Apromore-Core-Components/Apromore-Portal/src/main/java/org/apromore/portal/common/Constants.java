@@ -57,23 +57,23 @@ public abstract class Constants {
     public static final String DEVELOPER_RESOURCES = "http://apromore-build.cis.unimelb.edu.au/";
 
     // public static final String FOLDER_ICON = "/img/icon/svg/folder_icons.svg";
-    public static final String FOLDER_ICON = "/themes/ap/common/img/icons-2/folder-solid.svg";
-    public static final String PROCESS_ICON = "/img/icon/svg/bpmn_model.svg";
-    public static final String CLUSTER_ICON = "/img/icon/cluster-22x22.png";
-    public static final String LOG_ICON = "/img/icon/svg/log_icon.svg";
+    public static final String FOLDER_ICON = "~./themes/ap/common/img/icons-2/folder-solid.svg";
+    public static final String PROCESS_ICON = "~./img/icon/svg/bpmn_model.svg";
+    public static final String CLUSTER_ICON = "~./img/icon/cluster-22x22.png";
+    public static final String LOG_ICON = "~./img/icon/svg/log_icon.svg";
 
     // Icons displayed in the "Ranking" column of the process summary list
-    public static final String STAR_FULL_ICON = "/img/selectAll-12.png";
-    public static final String STAR_BLK_ICON = "/img/unselectAll-12.png";
-    public static final String STAR_MID_ICON = "/img/revertSelection-12.png";
+    public static final String STAR_FULL_ICON = "~./img/selectAll-12.png";
+    public static final String STAR_BLK_ICON = "~./img/unselectAll-12.png";
+    public static final String STAR_MID_ICON = "~./img/revertSelection-12.png";
     public static final String ANNOTATIONS_ONLY = "notationsOnly";
 
     // Icons displayed in the "Queryable?" column of the process summary list
-    public static final String PQL_UNINDEXED_ICON = "/img/add.png";
-    public static final String PQL_INDEXING_ICON = "/img/arrow_refresh.png";
-    public static final String PQL_INDEXED_ICON = "/img/select.png";
-    public static final String PQL_CANNOTINDEX_ICON = "/img/cross.png";
-    public static final String PQL_ERROR_ICON = "/img/alert.png";
+    public static final String PQL_UNINDEXED_ICON = "~./img/add.png";
+    public static final String PQL_INDEXING_ICON = "~./img/arrow_refresh.png";
+    public static final String PQL_INDEXED_ICON = "~./img/select.png";
+    public static final String PQL_CANNOTINDEX_ICON = "~./img/cross.png";
+    public static final String PQL_ERROR_ICON = "~./img/alert.png";
 
     public static final String INITIAL_VERSION = "1.0";
     public static final String dateFormat = "yyyy/MM/dd hh:mm a";

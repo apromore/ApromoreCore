@@ -24,9 +24,7 @@
  */
 package org.apromore.plugin.property;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.commons.lang.builder.ToStringBuilder;
+import java.util.Objects;
 
 /**
  * ParameterType used by a Plugin defining its parameters. It takes care of allowing values of specified Class only. Also two parameters are
@@ -285,7 +283,7 @@ public class PluginParameterType<T> implements ParameterType<T> {
      */
     @Override
     public final int hashCode() {
-        return new HashCodeBuilder().append(getId()).toHashCode();
+    	return Objects.hash(getId());        
     }
 
     /*
@@ -306,7 +304,7 @@ public class PluginParameterType<T> implements ParameterType<T> {
         }
         PluginParameterType<?> prop = (PluginParameterType<?>) obj;
         // We just compare Name and Version, a Plugin is equals to another is Name and Version match
-        return new EqualsBuilder().appendSuper(super.equals(obj)).append(getId(), prop.getId()).isEquals();
+        return Objects.equals(getId(), prop.getId());
     }
 
     /*
@@ -316,8 +314,8 @@ public class PluginParameterType<T> implements ParameterType<T> {
      */
     @Override
     public String toString() {
-        return new ToStringBuilder(this).append("id", getId()).append("name", getName()).append("class", getValueType().getSimpleName())
-                .append("description", getDescription()).append("isMandatory", isMandatory()).toString();
+        return new StringBuffer().append(getClass().getSimpleName()).append("id ="+getId()).append("name ="+getName()).append("class ="+getValueType().getSimpleName())
+                .append("description ="+getDescription()).append("isMandatory ="+isMandatory()).toString();
     }
 
 }

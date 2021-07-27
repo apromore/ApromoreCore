@@ -1,0 +1,12 @@
+group = 'org.apromore'
+version = '1.1'
+description = 'similaritysearch-osgi'
+
+dependencies {
+    
+    implementation project(':Apromore-ProcessMining-Collection:prom-bpmn')
+    implementation project(':Apromore-ProcessMining-Collection:prom-models')
+
+    implementation 'commons-lang:commons-lang:2.6'
+    
+}

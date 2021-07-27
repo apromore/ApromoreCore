@@ -21,11 +21,7 @@
  */
 package org.apromore.dao.model;
 
-import lombok.Setter;
-import org.eclipse.persistence.annotations.Cache;
-import org.eclipse.persistence.annotations.CacheCoordinationType;
-import org.springframework.beans.factory.annotation.Configurable;
-
+import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -35,53 +31,53 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import java.io.Serializable;
+import org.springframework.beans.factory.annotation.Configurable;
+import lombok.Setter;
 
 @Entity
 @Table(name = "dag_connection")
 @Configurable("dag_connection")
-@Cache(expiry = 180000, size = 1000,
-        coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
+
 @Setter
 public class DagConnection implements Serializable {
 
-    private Long id;
-    private String connectionId;
-    private S3Destination s3Destination;
-    private String tableName;
-    private String query;
-    private JobDao job;
+  private Long id;
+  private String connectionId;
+  private S3Destination s3Destination;
+  private String tableName;
+  private String query;
+  private JobDao job;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true, nullable = false)
-    public Long getId() {
-        return id;
-    }
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "id", unique = true, nullable = false)
+  public Long getId() {
+    return id;
+  }
 
-    @Column(name = "connection_id")
-    public String getConnectionId() {
-        return connectionId;
-    }
+  @Column(name = "connection_id")
+  public String getConnectionId() {
+    return connectionId;
+  }
 
-    @Embedded
-    public S3Destination getS3Destination() {
-        return s3Destination;
-    }
+  @Embedded
+  public S3Destination getS3Destination() {
+    return s3Destination;
+  }
 
-    @Column(name = "table_name")
-    public String getTableName() {
-        return tableName;
-    }
+  @Column(name = "table_name")
+  public String getTableName() {
+    return tableName;
+  }
 
-    @Column(name = "query")
-    public String getQuery() {
-        return query;
-    }
+  @Column(name = "query")
+  public String getQuery() {
+    return query;
+  }
 
-    @ManyToOne
-    @JoinColumn(name = "job_id")
-    public JobDao getJob() {
-        return job;
-    }
+  @ManyToOne
+  @JoinColumn(name = "job_id")
+  public JobDao getJob() {
+    return job;
+  }
 }

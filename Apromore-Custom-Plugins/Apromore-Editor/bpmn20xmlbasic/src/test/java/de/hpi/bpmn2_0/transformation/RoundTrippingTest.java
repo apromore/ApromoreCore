@@ -63,6 +63,8 @@ import javax.xml.bind.Unmarshaller;
 
 import com.sun.xml.bind.IDResolver;
 import static org.junit.Assert.assertEquals;
+
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static com.processconfiguration.ConfigurationAlgorithmTest.testsDirectory;
@@ -80,6 +82,7 @@ import org.oryxeditor.server.diagram.basic.BasicDiagramBuilder;
  *
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  */
+@Ignore
 public class RoundTrippingTest {
 
   /**

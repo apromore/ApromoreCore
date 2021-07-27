@@ -1,0 +1,61 @@
+<!--
+  #%L
+  This file is part of "Apromore Core".
+  Copyright (C) 2012 - 2017 Queensland University of Technology.
+  %%
+  Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+  %%
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Lesser General Public License as
+  published by the Free Software Foundation, either version 3 of the
+  License, or (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Lesser Public License for more details.
+  
+  You should have received a copy of the GNU General Lesser Public
+  License along with this program.  If not, see
+  <http://www.gnu.org/licenses/lgpl-3.0.html>.
+  #L%
+  -->
+
+<?component name="FolderTree" macroURI="~./macros/folderTree.zul" ?>
+<?component name="AccessControl" macroURI="~./accesscontrol/zul/access.zul" ?>
+<?component name="Groups" macroURI="~./macros/groups.zul" ?>
+<window width="1200px" height="90%" closable="true" title="Access rights management" position="center" id="winSecuritySetup">
+    <caption>
+        <toolbarbutton iconSclass="ap-icon ap-icon-help" href="https://documentation.apromore.org/gettingstarted/navigatingtheapromoreportal.html#access-rights" target="_blank" />
+    </caption>
+    <style>
+        .z-tree-icon {
+            vertical-align: middle;
+        }
+
+        .ap-security-setup .z-center-header {
+            height: 35px;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+    </style>
+    <borderlayout hflex="1" vflex="1">
+        <west autoscroll="true" sclass="ap-security-setup" title="My Workspace" collapsible="true" splittable="true" vflex="1" width="30%" border="none">
+            <FolderTree id="mainTree"/>
+        </west>
+        <center hflex="1" vflex="1" border="none">
+            <AccessControl vflex="1" hflex="1" id="accessControl"
+                           currentUser="${arg.currentUser}"
+                           selectedItem="${arg.selectedItem}"
+                           autoInherit="${arg.autoInherit}"
+                           enablePublish="${arg.enablePublish}"
+                           securityService="${arg.securityService}"
+                           workspaceService="${arg.workspaceService}"
+                           authorizationService="${arg.authorizationService}"
+                           userMetadataService="${arg.userMetadataService}"
+                           showRelatedArtifacts="${arg.showRelatedArtifacts}"
+            />
+        </center>
+    </borderlayout>
+</window>
