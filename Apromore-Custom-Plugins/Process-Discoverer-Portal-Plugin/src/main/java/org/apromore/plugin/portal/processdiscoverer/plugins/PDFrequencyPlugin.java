@@ -29,6 +29,7 @@ import javax.inject.Inject;
 import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.logfilter.generic.LogFilterPlugin;
+import org.apromore.service.AuthorizationService;
 import org.apromore.service.DomainService;
 import org.apromore.service.EventLogService;
 import org.apromore.service.ProcessService;
@@ -52,6 +53,7 @@ public class PDFrequencyPlugin extends PDAbstractPlugin {
     @Inject ProcessService processService;
     @Inject LogFilterPlugin logFilterPlugin;
     @Inject LogAnimationService2 logAnimationService;
+    @Inject AuthorizationService authorizationService;
 
     @Override
     public String getItemCode(Locale locale) { return "Discover model"; }
@@ -93,6 +95,7 @@ public class PDFrequencyPlugin extends PDAbstractPlugin {
                 Sessions.getCurrent().setAttribute("processService", processService);
                 Sessions.getCurrent().setAttribute("logFilterPlugin", logFilterPlugin);
                 Sessions.getCurrent().setAttribute("logAnimationService", logAnimationService);
+                Sessions.getCurrent().setAttribute("authorizationService", authorizationService);
 
         	if (!prepare) return;
         	Clients.evalJavaScript("window.open('../processdiscoverer/zul/processDiscoverer.zul?id=" + this.getSessionId() + "')");

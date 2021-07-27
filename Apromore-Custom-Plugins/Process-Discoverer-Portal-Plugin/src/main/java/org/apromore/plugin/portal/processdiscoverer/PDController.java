@@ -22,16 +22,6 @@
 
 package org.apromore.plugin.portal.processdiscoverer;
 
-import static org.apromore.logman.attribute.graph.MeasureType.DURATION;
-import static org.apromore.logman.attribute.graph.MeasureType.FREQUENCY;
-
-import java.text.DecimalFormat;
-import java.text.MessageFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-import javax.servlet.http.HttpSession;
-
 import org.apromore.logman.attribute.IndexableAttribute;
 import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.plugin.portal.PortalContext;
@@ -65,20 +55,34 @@ import org.apromore.portal.model.FolderType;
 import org.apromore.portal.model.LogSummaryType;
 import org.apromore.portal.plugincontrol.PluginExecution;
 import org.apromore.portal.plugincontrol.PluginExecutionManager;
+import org.apromore.service.AuthorizationService;
 import org.apromore.service.DomainService;
 import org.apromore.service.EventLogService;
 import org.apromore.service.ProcessService;
 import org.apromore.service.loganimation.LogAnimationService2;
 import org.json.JSONException;
 import org.slf4j.Logger;
-import org.zkoss.util.Locales;
+import org.zkoss.web.Attributes;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
-import org.zkoss.web.Attributes;
+
+import javax.servlet.http.HttpSession;
+import java.text.DecimalFormat;
+import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.ResourceBundle;
+
+import static org.apromore.logman.attribute.graph.MeasureType.DURATION;
+import static org.apromore.logman.attribute.graph.MeasureType.FREQUENCY;
 
 /**
  * PDController is the top-level application object to manage PD plugin as a whole. It
@@ -111,6 +115,7 @@ public class PDController extends BaseController {
     private ProcessService processService;
     private EventLogService eventLogService;
     private LogAnimationService2 logAnimationService;
+    private AuthorizationService authorizationService;
     private LogFilterPlugin logFilterPlugin;
     private PDFactory pdFactory;
     
@@ -224,9 +229,10 @@ public class PDController extends BaseController {
         processService = (ProcessService) Sessions.getCurrent().getAttribute("processService");
         eventLogService = (EventLogService) Sessions.getCurrent().getAttribute("eventLogService");
         logAnimationService = (LogAnimationService2) Sessions.getCurrent().getAttribute("logAnimationService");
+        authorizationService = (AuthorizationService) Sessions.getCurrent().getAttribute("authorizationService");
         logFilterPlugin = (LogFilterPlugin) Sessions.getCurrent().getAttribute("logFilterPlugin"); //beanFactory.getBean("logFilterPlugin");
 
-        if (domainService == null || processService == null || eventLogService == null || logFilterPlugin == null) {
+        if (domainService == null || processService == null || eventLogService == null || logFilterPlugin == null || authorizationService == null) {
             return false;
         }
         return true;
@@ -700,6 +706,10 @@ public class PDController extends BaseController {
     public LogAnimationService2 getLogAnimationService() {
         return logAnimationService;
     }
+
+//    public AuthorizationService getAuthorizationService() {
+//        return authorizationService;
+//    }
 
     public DecimalFormat getDecimalFormatter() {
         return this.decimalFormat;
