@@ -82,4 +82,5 @@ processResources {
 
 }
 
+processResources.dependsOn (":Apromore-Core-Components:Apromore-BPMNEditor:runScript")
 
