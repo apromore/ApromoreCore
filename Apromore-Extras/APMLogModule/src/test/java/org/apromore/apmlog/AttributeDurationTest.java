@@ -44,7 +44,7 @@ public class AttributeDurationTest {
     {
         FilterType filterType = FilterType.EVENT_ATTRIBUTE_DURATION;
         Choice choice =  Choice.RETAIN;
-        Inclusion inclusion = Inclusion.ANY_VALUE;
+        Inclusion inclusion = Inclusion.ALL_VALUES;
 
         double lowBoundVal = 1000 * 60 * 60 * 24d;
         double upBoundVal = 1000 * 60 * 60 * 36d;
