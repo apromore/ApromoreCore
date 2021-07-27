@@ -67,6 +67,16 @@ public interface AuthorizationService {
     AccessType getLogAccessTypeByUser(Integer logId, User user);
 
     /**
+     * Get the least restrictive AccessType the specified username has on the specified log
+     *
+     * @param logId Log Id
+     * @param username Username
+     * @return AccessType
+     * @throws UserNotFoundException Throw exception if User with specified username can not be found
+     */
+    AccessType getLogAccessTypeByUser(Integer logId, String username) throws UserNotFoundException;
+
+    /**
      * Same functionality as getLogAccessTypeByUser(Integer logId, User user) but return Map<Group, AccessType>
      *
      * @param logId Log Id
