@@ -45,6 +45,7 @@ import org.apromore.apmlog.AActivity;
 import org.apromore.apmlog.AEvent;
 import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
+import org.apromore.apmlog.filter.rules.RuleValue;
 import org.apromore.apmlog.filter.typefilters.*;
 import org.apromore.apmlog.filter.types.Choice;
 import org.apromore.apmlog.filter.types.FilterType;
@@ -252,9 +253,33 @@ public class APMLogFilter {
 
     private List<PTrace> filterByNodeDuration(LogFilterRule rule, List<PTrace> traces) {
 
-        return traces.stream()
-                .filter(x -> EventAttributeDurationFilter.toKeep(x, rule))
-                .collect(Collectors.toList());
+        Choice choice = rule.getChoice();
+        String attributeKey = rule.getKey();
+        String attributeValue = rule.getPrimaryValues().iterator().next().getKey();
+
+        double durRangeFrom = 0, durRangeTo = 0;
+        for (RuleValue ruleValue : rule.getPrimaryValues()) {
+            OperationType operationType = ruleValue.getOperationType();
+            if (operationType == OperationType.GREATER_EQUAL) durRangeFrom = ruleValue.getDoubleValue();
+            if (operationType == OperationType.LESS_EQUAL) durRangeTo = ruleValue.getDoubleValue();
+        }
+
+        List<PTrace> matchedTraces = new ArrayList<>();
+
+        for (PTrace trace : traces) {
+            double durSum = trace.getActivityList().stream()
+                    .filter(x -> x.getAllAttributes().containsKey(attributeKey))
+                    .filter(x->x.getAllAttributes().get(attributeKey).equals(attributeValue))
+                    .collect(Collectors.summingDouble(AActivity::getDuration));
+
+            if (durSum >= durRangeFrom && durSum <= durRangeTo) matchedTraces.add(trace);
+        }
+
+        if (choice == Choice.RETAIN) return matchedTraces;
+
+        // in condition of REMOVE
+        traces.removeAll(matchedTraces);
+        return traces;
 
     }
 
