@@ -62,15 +62,15 @@ Apromore.EditorApp = {
         this._loadPlugins();
 
         // Attach the editor must be the LAST THING AFTER ALL HAS BEEN LOADED
-        this.getEditor().attachEditor(new BpmnJS({
-            container: '#' + this.getEditor().rootNode.id,
-            keyboard: {
-                bindTo: window
-            },
-            propertiesPanel: this.useSimulationPanel ? {
-                parent: '#js-properties-panel'
-            } : undefined
-        }));
+        var options = {
+          container: '#' + this.getEditor().rootNode.id,
+        }
+        if (!config.viewOnly) {
+          options.keyboard = { bindTo: window };
+          options.propertiesPanel = this.useSimulationPanel ? { parent: '#js-properties-panel' } : undefined
+        }
+
+        this.getEditor().attachEditor(new BpmnJS(options));
 
         // Wait until the editor is fully loaded to start XML import and then UI init
         var me = this;

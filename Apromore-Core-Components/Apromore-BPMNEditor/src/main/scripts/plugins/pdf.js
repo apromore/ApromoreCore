@@ -53,6 +53,7 @@ Apromore.Plugins.File = Clazz.extend({
         this.facade = facade;
 
         this.facade.offer({
+            'btnId': 'ap-id-editor-export-pdf-btn',
             'name': window.Apromore.I18N.File.pdf,
             'functionality': this.exportPDF.bind(this),
             'group': window.Apromore.I18N.File.group,

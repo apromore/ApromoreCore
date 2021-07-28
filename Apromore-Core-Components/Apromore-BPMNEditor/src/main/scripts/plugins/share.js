@@ -43,6 +43,7 @@ Apromore.Plugins.Share = Clazz.extend({
 
         /* Register share */
         this.facade.offer({
+            'btnId': 'ap-id-editor-share-btn',
             'name': Apromore.I18N.Share.share,
             'functionality': this.share.bind(this),
             'group': Apromore.I18N.Share.group,

@@ -22,6 +22,7 @@ Apromore.Plugins.SimulationPanel = Clazz.extend({
 
         /* Register toggle simulation panel */
         this.facade.offer({
+            'btnId': 'ap-id-editor-simulation-btn',
             'name': window.Apromore.I18N.SimulationPanel.toggleSimulationDrawer,
             'functionality': this.toggleSimulationDrawer.bind(this),
             'group': window.Apromore.I18N.SimulationPanel.group,
