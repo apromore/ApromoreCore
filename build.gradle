@@ -56,6 +56,8 @@ subprojects {
 	dependencies {
 		implementation 'org.springframework.boot:spring-boot-starter'
 		implementation 'org.springframework.boot:spring-boot-starter-security'
+		implementation 'org.springframework.boot:spring-boot-starter-web'
+		implementation group: 'org.keycloak', name: 'keycloak-spring-boot-starter'
 		implementation 'javax.activation:javax.activation-api'
 		implementation 'javax.annotation:javax.annotation-api'
 		implementation 'javax.inject:javax.inject:1'
@@ -83,7 +85,11 @@ subprojects {
 		testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine'
 		testImplementation group: 'org.junit.vintage', name: 'junit-vintage-engine'
 	}
-
+dependencyManagement {
+	imports {
+		mavenBom "org.keycloak.bom:keycloak-adapter-bom:14.0.0"
+	}
+	}
 	project(':Apromore-Boot') {
 
 		bootJar.baseName="Apromore-Core"
