@@ -59,7 +59,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
+@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, rollbackFor = Exception.class)
 public class MergeServiceImpl extends DefaultParameterAwarePlugin implements MergeService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MergeServiceImpl.class);

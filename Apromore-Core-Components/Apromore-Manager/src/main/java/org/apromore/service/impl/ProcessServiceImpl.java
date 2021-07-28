@@ -94,7 +94,7 @@ import java.util.Set;
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 @Service("processService")
-@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true,
+@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT,
     rollbackFor = Exception.class)
 public class ProcessServiceImpl implements ProcessService {
 
