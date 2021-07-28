@@ -109,7 +109,7 @@ public class MenuController extends SelectorComposer<Menubar> {
         String group = plugin.getGroup(Locale.getDefault());
         String menuName = plugin.getGroupLabel(Locale.getDefault());
         String itemCode = plugin.getItemCode(Locale.getDefault());
-        if (group == "Settings") {
+        if ("Settings".equals(group)) {
           continue;
         }
         // Create a new menu if this is the first menu item within it
