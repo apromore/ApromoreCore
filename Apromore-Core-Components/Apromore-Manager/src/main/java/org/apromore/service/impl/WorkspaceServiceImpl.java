@@ -91,7 +91,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service("workspaceService")
-@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true,
+@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT,
     rollbackFor = Exception.class)
 public class WorkspaceServiceImpl implements WorkspaceService {
 
