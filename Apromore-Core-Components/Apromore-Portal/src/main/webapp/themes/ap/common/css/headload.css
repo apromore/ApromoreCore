@@ -70,3 +70,19 @@ body {
 .z-messagebox-error {
     background-image: url(../img/msgbox/stop.svg);
 }
+
+/* Auto-complete */
+input:-internal-autofill-selected,
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  -webkit-text-fill-color: rgb(85, 85, 85) !important;
+  background-color: rgb(255, 255, 200) !important;
+  color: rgb(85, 85, 85) !important;
+}
