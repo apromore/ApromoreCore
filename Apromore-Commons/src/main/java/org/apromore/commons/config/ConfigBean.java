@@ -119,6 +119,8 @@ public class ConfigBean {
   // Switch for custom calendar
   private boolean enableCalendar;
 
+  // Switch for BPMN Diff
+  private boolean bpmndiffEnable;
 
   // Maximum upload size
   private long maxUploadSize;
