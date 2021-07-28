@@ -52,6 +52,7 @@
 	<osgi:reference id="managerClient" interface="org.apromore.manager.client.ManagerService"/>
     <osgi:reference id="portalConfig" interface="org.apromore.portal.ConfigBean"/>
     <osgi:reference id="logAnimationService" interface="org.apromore.service.loganimation.LogAnimationService2"/>
+    <osgi:reference id="authorizationService" interface="org.apromore.service.AuthorizationService"/>
 
     <osgi:reference id="logFilterPlugin" interface="org.apromore.plugin.portal.logfilter.generic.LogFilterPlugin" cardinality="0..1"/>
 
