@@ -49,9 +49,10 @@ Apromore-Assembly/Parquet-Repository
 Apromore-Assembly/virgo-tomcat-server-3.6.4.RELEASE
 
 Event-Logs-Repository/
+
 # Ignore Gradle project-specific cache directory
-.gradle
-
+.gradle/
 # Ignore Gradle build output directory
-build
+**/build/*
 
+application.dev.properties

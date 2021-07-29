@@ -104,8 +104,6 @@ public abstract class BaseListboxController extends BaseController {
   private final Button btnCopy;
   private final Button btnPaste;
   private final Button btnAddFolder;
-  private final Button btnAddProcess;
-  // private final Button btnGEDFolder;
   private final Button btnRenameFolder;
   private final Button btnRemoveFolder;
   private final Button btnListView;
@@ -152,8 +150,6 @@ public abstract class BaseListboxController extends BaseController {
     btnCopy = (Button) mainController.getFellow("btnCopy");
     btnPaste = (Button) mainController.getFellow("btnPaste");
     btnAddFolder = (Button) mainController.getFellow("btnAddFolder");
-    btnAddProcess = (Button) mainController.getFellow("btnAddProcess");
-    // btnGEDFolder = (Button) mainController.getFellow("btnGEDFolder");
     btnRenameFolder = (Button) mainController.getFellow("btnRenameFolder");
     btnRemoveFolder = (Button) mainController.getFellow("btnRemoveFolder");
     btnListView = (Button) mainController.getFellow("btnListView");
@@ -297,18 +293,6 @@ public abstract class BaseListboxController extends BaseController {
         addFolder();
       }
     });
-
-    this.btnAddProcess.addEventListener(ON_CLICK, new EventListener<Event>() {
-      @Override
-      public void onEvent(Event event) throws Exception {
-        mainController.openNewProcess();
-      }
-    });
-
-    /*
-     * this.btnGEDFolder.addEventListener("onClick", new EventListener<Event>() { public void
-     * onEvent(Event event) throws Exception { changeGED(); } });
-     */
 
     this.btnRenameFolder.addEventListener(ON_CLICK, new EventListener<Event>() {
       @Override
