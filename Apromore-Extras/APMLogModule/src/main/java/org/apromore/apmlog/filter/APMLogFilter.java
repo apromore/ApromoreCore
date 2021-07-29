@@ -119,6 +119,9 @@ public class APMLogFilter {
 
         List<PTrace> traces = new ArrayList<>(pLog.getOriginalPTraces());
 
+        for (PTrace trace : traces) {
+            trace.reset();
+        }
 
         if (logFilterRuleList != null && !logFilterRuleList.isEmpty()) {
             for (LogFilterRule rule : logFilterRuleList) {
@@ -144,7 +147,7 @@ public class APMLogFilter {
                         traces = filterByCaseTime(rule, traces);
                         break;
                     case EVENT_ATTRIBUTE_DURATION:
-                        traces = filterByNodeDuration(rule, traces);
+                        traces = NodeDurationFilter.filter(rule, traces);
                         break;
                     case ATTRIBUTE_ARC_DURATION:
                         traces = filterByArcDuration(rule, traces);
@@ -192,8 +195,6 @@ public class APMLogFilter {
         if (updateStats) pLog.setPTraces(traces);
     }
 
-
-
     private List<PTrace> filterByCaseSectionCaseAttribute(LogFilterRule rule, List<PTrace> traces) {
         return traces.stream()
                 .filter(x -> CaseSectionCaseAttributeFilter.toKeep(x, rule))
@@ -218,14 +219,6 @@ public class APMLogFilter {
 
         return traces.stream()
                 .filter(x -> CaseTimeFilter.toKeep(x, rule))
-                .collect(Collectors.toList());
-
-    }
-
-    private List<PTrace> filterByNodeDuration(LogFilterRule rule, List<PTrace> traces) {
-
-        return traces.stream()
-                .filter(x -> EventAttributeDurationFilter.toKeep(x, rule))
                 .collect(Collectors.toList());
 
     }
