@@ -25,17 +25,8 @@ package org.apromore.plugin.portal.csvimporter;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
-import java.util.Set;
+import java.util.*;
+
 import org.apromore.dao.model.Log;
 import org.apromore.dao.model.Usermetadata;
 import org.apromore.exception.UserNotFoundException;
@@ -55,8 +46,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.json.JSONObject;
 import org.zkoss.json.JSONValue;
-import org.zkoss.util.Locales;
 import org.zkoss.util.media.Media;
+import org.zkoss.web.Attributes;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Button;
@@ -100,8 +91,9 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
   }
 
   public ResourceBundle getLabels() {
-    return ResourceBundle.getBundle("WEB-INF.zk-label", Locales.getCurrent(),
-        CSVImporterController.class.getClassLoader());
+    Locale locale = (Locale) Sessions.getCurrent().getAttribute(Attributes.PREFERRED_LOCALE);
+    return ResourceBundle.getBundle(PluginMeta.PLUGIN_ID, locale,
+            CSVImporterController.class.getClassLoader());
   }
 
   // Implementation of FileImporterPlugin
@@ -142,13 +134,13 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
           CSVReader csvReader = csvFileReader.newCSVReader(media, fileEncoding);
           header = Arrays.asList(csvReader.readNext());
         } catch (EmptyHeaderException e) {
-          Messagebox.show(getLabels().getString("headerEmpty_message"));
+          Messagebox.show(getLabels().getString("failedImportHeader"));
           return;
         } catch (UnsupportedSeparatorException e) {
-          Messagebox.show(getLabels().getString("unsupportedSeparator_message"));
+          Messagebox.show(getLabels().getString("unsupportedSeparator"));
           return;
         } catch (IOException e) {
-          Messagebox.show(getLabels().getString("failedImport_message"));
+          Messagebox.show(getLabels().getString("failedImport"));
           LOGGER.error("Unable to read CSV", e);
           return;
         }

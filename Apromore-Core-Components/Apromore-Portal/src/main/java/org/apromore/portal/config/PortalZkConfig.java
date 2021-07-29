@@ -14,10 +14,10 @@ import org.apromore.portal.LoggingZKListener;
 import org.apromore.zk.ApromoreDesktopInit;
 import org.springframework.context.annotation.Configuration;
 import org.zkoss.lang.Library;
-import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.WebApps;
 import org.zkoss.zk.ui.util.Statistic;
 import org.zkoss.zk.ui.util.URIInfo;
+import org.apromore.portal.common.i18n.LabelUtils;
 
 @Configuration
 public class PortalZkConfig {
@@ -26,8 +26,6 @@ public class PortalZkConfig {
   public void initZk() {
     WebApps.getCurrent().setAppName("Apromore");
     WebApps.getCurrent().getConfiguration().setDebugJS(true);
-
-
 
     Library.setProperty("org.zkoss.theme.preferred", "chiaroscuro_c");
     // Library.setProperty("org.zkoss.theme.preferred", "sapphire");
@@ -38,18 +36,13 @@ public class PortalZkConfig {
     Library.setProperty("org.zkoss.web.classWebResource.cache", "false");
     Library.setProperty("org.zkoss.zul.progressbox.position", "center");
     Library.setProperty("org.zkoss.util.label.web.charset", "UTF-8");
-    // Library.setProperty("org.zkoss.util.label.web.location", "./zk-label.properties");
-    Labels.register(new LabelLocatorService(WebApps.getCurrent().getServletContext(), "zk-label"));
-    Labels.register(new LabelLocatorService(WebApps.getCurrent().getServletContext(), "brand"));
-    Labels.register(new LabelLocatorService(WebApps.getCurrent().getServletContext(), "ui"));
+    LabelUtils.reloadLabels();
 
     WebApps.getCurrent().getConfiguration().setTimeoutURI("ajax", "/", URIInfo.SEND_REDIRECT);
     try {
       WebApps.getCurrent().getConfiguration().addListener(Statistic.class);
       WebApps.getCurrent().getConfiguration().addListener(ApromoreDesktopInit.class);
       WebApps.getCurrent().getConfiguration().addListener(LoggingZKListener.class);
-
-
     } catch (Exception e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
@@ -58,10 +51,5 @@ public class PortalZkConfig {
     WebApps.getCurrent().getConfiguration().setClientErrorReload("ajaz", 301, "/", null);
     WebApps.getCurrent().getConfiguration().setClientErrorReload("ajaz", 410, "/", "server-push");
     WebApps.getCurrent().getConfiguration().addErrorPage("ajaz", Throwable.class, "/pages/401.zul");
-
-
   }
-
-
-
 }

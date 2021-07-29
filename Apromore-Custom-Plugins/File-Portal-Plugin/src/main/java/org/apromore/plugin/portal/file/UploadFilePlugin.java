@@ -44,8 +44,6 @@ public class UploadFilePlugin extends DefaultPortalPlugin {
 
   // PortalPlugin overrides
 
-
-
   @Override
   public String getItemCode(Locale locale) {
     return label;

@@ -25,7 +25,7 @@
 
 package org.apromore.portal.dialogController;
 
-
+import org.apromore.portal.common.i18n.LabelUtils;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.common.i18n.I18nConfig;
@@ -49,7 +49,6 @@ public class LoginController extends BaseController implements Composer<Componen
 
   @WireVariable
   I18nConfig i18nConfig;
-
 
   /**
    * onCreate is executed after the main window has been created it is responsible for instantiating
@@ -103,15 +102,14 @@ public class LoginController extends BaseController implements Composer<Componen
       src += "-" + "community";
     }
     logoWithTag.setSrc(src + ".svg");
-
     setupLocale();
   }
 
   private void setupLocale() {
-
     I18nSession i18nSession = new I18nSession(i18nConfig);
     UserSessionManager.setCurrentI18nSession(i18nSession);
     i18nSession.applyLocaleFromClient();
+    LabelUtils.reloadLabels();
   }
 
   @Override
