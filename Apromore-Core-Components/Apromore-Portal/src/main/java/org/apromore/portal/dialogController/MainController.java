@@ -161,7 +161,7 @@ public class MainController extends BaseController
     qe = EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, true);
     portalSession = new PortalSession(this);
 
-    initializeUser(getService(), config, null, null);
+
 
     portalPluginMap = PortalPluginResolver.getPortalPluginMap();
     setupLocale();
@@ -208,6 +208,8 @@ public class MainController extends BaseController
    */
   public void onCreate(Component comp) throws InterruptedException {
     try {
+      init(comp);
+      initializeUser(getManagerService(), getConfig(), null, null);
       loadProperties();
       this.mainComponent = comp;
       Window mainW = (Window) comp.getFellow("mainW");
@@ -218,6 +220,7 @@ public class MainController extends BaseController
       this.tabCrumbs = (Tab) mainW.getFellow("tabCrumbs");
       this.tabBox = (Tabbox) mainW.getFellow("tabbox");
       this.pg = (Paginal) mainW.getFellow("pg");
+
       this.shortmessageC = new ShortMessageController(shortmessageW);
       this.simplesearch = new SimpleSearchController(this, comp);
       this.portalContext = new PluginPortalContext(this);
@@ -349,7 +352,8 @@ public class MainController extends BaseController
     FolderType currentFolder = this.portalSession.getCurrentFolder();
     int currentParentFolderId =
         currentFolder == null || currentFolder.getId() == 0 ? 0 : currentFolder.getId();
-    List<FolderType> folders = this.getService().getSubFolders(userId, currentParentFolderId);
+    List<FolderType> folders =
+        this.getManagerService().getSubFolders(userId, currentParentFolderId);
     if (currentFolder != null) {
       FolderType folder = currentFolder;
       folder.getFolders().clear();
@@ -361,8 +365,8 @@ public class MainController extends BaseController
   }
 
   private void loadTree() {
-    List<FolderType> folders =
-        this.getService().getWorkspaceFolderTree(UserSessionManager.getCurrentUser().getId());
+    List<FolderType> folders = this.getManagerService()
+        .getWorkspaceFolderTree(UserSessionManager.getCurrentUser().getId());
     this.portalSession.setTree(folders);
     this.navigation.loadWorkspace();
   }
@@ -395,7 +399,7 @@ public class MainController extends BaseController
     // TODO switch to process query result view
     switchToProcessSummaryView();
     List<FolderType> subFolders =
-        getService().getSubFolders(UserSessionManager.getCurrentUser().getId(), folderId);
+        getManagerService().getSubFolders(UserSessionManager.getCurrentUser().getId(), folderId);
     this.baseListboxController.displaySummaries(subFolders, processSummaries, isQueryResult);
   }
 
@@ -412,7 +416,7 @@ public class MainController extends BaseController
 
     FolderType currentFolder = this.portalSession.getCurrentFolder();
     List<FolderType> subFolders =
-        getService().getSubFolders(UserSessionManager.getCurrentUser().getId(),
+        getManagerService().getSubFolders(UserSessionManager.getCurrentUser().getId(),
             currentFolder == null ? 0 : currentFolder.getId());
     ProcessListboxController.SummaryListModel model =
         this.baseListboxController.displaySummaries(subFolders, false);
@@ -430,7 +434,7 @@ public class MainController extends BaseController
 
     FolderType currentFolder = this.portalSession.getCurrentFolder();
     List<FolderType> subFolders =
-        getService().getSubFolders(UserSessionManager.getCurrentUser().getId(),
+        getManagerService().getSubFolders(UserSessionManager.getCurrentUser().getId(),
             currentFolder == null ? 0 : currentFolder.getId());
     ProcessListboxController.SummaryListModel model =
         this.baseListboxController.displaySummaries(subFolders, false);
@@ -460,7 +464,8 @@ public class MainController extends BaseController
   public void deleteElements(final Map<SummaryType, List<VersionSummaryType>> elements)
       throws InterruptedException {
     try {
-      getService().deleteElements(elements, UserSessionManager.getCurrentUser().getUsername());
+      getManagerService().deleteElements(elements,
+          UserSessionManager.getCurrentUser().getUsername());
       switchToProcessSummaryView();
       this.baseListboxController.refreshContent();
       String message;
@@ -533,8 +538,8 @@ public class MainController extends BaseController
   }
 
   public void openNewProcess() throws InterruptedException {
-    ProcessSummaryType process =
-        getService().createNewEmptyProcess(UserSessionManager.getCurrentUser().getUsername());
+    ProcessSummaryType process = getManagerService()
+        .createNewEmptyProcess(UserSessionManager.getCurrentUser().getUsername());
     VersionSummaryType version = process.getVersionSummaries().get(0);
     LOGGER.info("Create process model {} version {}", process.getName(),
         version.getVersionNumber());
@@ -615,7 +620,7 @@ public class MainController extends BaseController
 
   public FolderType getBreadcrumFolders(int selectedFolderId) {
     FolderType selectedFolder = null;
-    List<FolderType> breadcrumbFolders = this.getService()
+    List<FolderType> breadcrumbFolders = this.getManagerService()
         .getBreadcrumbs(UserSessionManager.getCurrentUser().getId(), selectedFolderId);
 
     for (FolderType folder : breadcrumbFolders) {
@@ -636,7 +641,7 @@ public class MainController extends BaseController
       selectedFolder.setFolderName("Home");
     }
 
-    List<FolderType> availableFolders = this.getService()
+    List<FolderType> availableFolders = this.getManagerService()
         .getSubFolders(UserSessionManager.getCurrentUser().getId(), selectedFolderId);
 
     if (selectedFolder.getFolders().size() == 0) {
@@ -679,7 +684,7 @@ public class MainController extends BaseController
    */
   public List<String> getDomains() throws ExceptionDomains {
     DomainsType domainsType;
-    domainsType = getService().readDomains();
+    domainsType = getManagerService().readDomains();
     return domainsType.getDomain();
   }
 
@@ -690,7 +695,7 @@ public class MainController extends BaseController
    * @throws org.apromore.portal.exception.ExceptionAllUsers
    */
   public List<String> getUsers() throws ExceptionAllUsers {
-    UsernamesType usernames = getService().readAllUsers();
+    UsernamesType usernames = getManagerService().readAllUsers();
     return usernames.getUsername();
   }
 
@@ -702,7 +707,7 @@ public class MainController extends BaseController
    */
   public HashMap<String, String> getNativeTypes() throws ExceptionFormats {
     HashMap<String, String> formats = new HashMap<>();
-    NativeTypesType nativeTypesDB = getService().readNativeTypes();
+    NativeTypesType nativeTypesDB = getManagerService().readNativeTypes();
     for (int i = 0; i < nativeTypesDB.getNativeType().size(); i++) {
       formats.put(nativeTypesDB.getNativeType().get(i).getExtension(),
           nativeTypesDB.getNativeType().get(i).getFormat());
@@ -861,16 +866,17 @@ public class MainController extends BaseController
   private void loadProperties() throws IOException {
     LOGGER.trace("Loading properties of webapp");
 
-    setHost("http://" + config.getSiteExternalHost() + ":" + config.getSiteExternalPort());
+    setHost(
+        "http://" + getConfig().getSiteExternalHost() + ":" + getConfig().getSiteExternalPort());
 
 
-    setMajorVersionNumber(config.getMajorVersionNumber());
-    setMinorVersionNumber(config.getMinorVersionNumber());
+    setMajorVersionNumber(getConfig().getMajorVersionNumber());
+    setMinorVersionNumber(getConfig().getMinorVersionNumber());
 
   }
 
   public String getContactEmail() {
-    return config.getContactEmail();
+    return getConfig().getContactEmail();
   }
 
   /* From a list of version summary types find the max version number. */
@@ -1022,7 +1028,7 @@ public class MainController extends BaseController
   }
 
   public void setBreadcrumbs(int selectedFolderId) {
-    List<FolderType> breadcrumbFolders = this.getService()
+    List<FolderType> breadcrumbFolders = this.getManagerService()
         .getBreadcrumbs(UserSessionManager.getCurrentUser().getId(), selectedFolderId);
     Collections.reverse(breadcrumbFolders);
     String content = "";

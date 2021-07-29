@@ -21,11 +21,9 @@
  */
 package org.apromore.plugin.portal.file;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.text.ParseException;
 import java.util.List;
@@ -152,7 +150,7 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin {
           (ProcessSummaryType) selectedProcessVersions.keySet().iterator().next();
       VersionSummaryType version = selectedProcessVersions.get(model).get(0);
       try {
-        ExportFormatResultType exportResult = mainC.getService().exportFormat(model.getId(),
+        ExportFormatResultType exportResult = mainC.getManagerService().exportFormat(model.getId(),
             model.getName(), version.getName(), version.getVersionNumber(),
             model.getOriginalNativeType(), UserSessionManager.getCurrentUser().getUsername());
         InputStream nativeStream = exportResult.getNative().getInputStream();
@@ -234,25 +232,26 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin {
       throws Exception {
     String filename = logSummary.getName().replace('.', '-');
     ExportLogResultType exportResult =
-        mainController.getService().exportLog(logSummary.getId(), filename);
+        mainController.getManagerService().exportLog(logSummary.getId(), filename);
     try (InputStream native_is = exportResult.getNative().getInputStream()) {
       mainController.showPluginMessages(exportResult.getMessage());
       Filedownload.save(native_is, "application/x-gzip", filename + ".xes.gz");
     }
   }
 
-    public void exportCSV(LogSummaryType logSummary) throws Exception {
-        try {
-            String filename = logSummary.getName().replace('.','-');
-            XLog xlog = eventLogService.getXLog(logSummary.getId());
-            File file = csvExporterLogic.exportCSV(xlog);
-            byte[] finalbytes = Files.readAllBytes(file.toPath());
-            Filedownload.save(finalbytes, "application/x-gzip", filename + ".csv.gz");
-            Files.delete(file.toPath());
-        } catch (RuntimeException e) {
-            LOGGER.error("Unable to export log as CSV", e);
-            Messagebox.show("Unable to export log as CSV.", "Server error", Messagebox.OK, Messagebox.ERROR);
-        }
+  public void exportCSV(LogSummaryType logSummary) throws Exception {
+    try {
+      String filename = logSummary.getName().replace('.', '-');
+      XLog xlog = eventLogService.getXLog(logSummary.getId());
+      File file = csvExporterLogic.exportCSV(xlog);
+      byte[] finalbytes = Files.readAllBytes(file.toPath());
+      Filedownload.save(finalbytes, "application/x-gzip", filename + ".csv.gz");
+      Files.delete(file.toPath());
+    } catch (RuntimeException e) {
+      LOGGER.error("Unable to export log as CSV", e);
+      Messagebox.show("Unable to export log as CSV.", "Server error", Messagebox.OK,
+          Messagebox.ERROR);
     }
+  }
 
 }

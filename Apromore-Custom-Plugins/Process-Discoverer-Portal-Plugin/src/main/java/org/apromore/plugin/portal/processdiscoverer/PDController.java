@@ -34,8 +34,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import javax.servlet.http.HttpSession;
-
-import lombok.Getter;
 import org.apromore.logman.attribute.IndexableAttribute;
 import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.plugin.portal.PortalContext;
@@ -69,9 +67,7 @@ import org.apromore.portal.model.FolderType;
 import org.apromore.portal.model.LogSummaryType;
 import org.apromore.portal.plugincontrol.PluginExecution;
 import org.apromore.portal.plugincontrol.PluginExecutionManager;
-import org.apromore.service.AuthorizationService;
 import org.apromore.service.DomainService;
-import org.apromore.service.EventLogService;
 import org.apromore.service.ProcessService;
 import org.apromore.service.loganimation.LogAnimationService2;
 import org.json.JSONException;
@@ -83,11 +79,11 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
+import lombok.Getter;
 
 /**
  * PDController is the top-level application object to manage PD plugin as a whole. It
@@ -111,22 +107,24 @@ import org.zkoss.zul.Window;
  * </ul>
  * 
  */
-@VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
+
 public class PDController extends BaseController implements Composer<Component> {
 
   private static final Logger LOGGER = PortalLoggerFactory.getLogger(PDController.class);
 
   //////////////////// SUPPORT SERVICES ///////////////////////////////////
 
+  @WireVariable
   private DomainService domainService;
+  @WireVariable
   private ProcessService processService;
-  @WireVariable
-  private EventLogService eventLogService;
+
+  @WireVariable("logAnimationService2")
   private LogAnimationService2 logAnimationService;
-  @WireVariable
+
+  @WireVariable("logFilter")
   private LogFilterPlugin logFilterPlugin;
-  @WireVariable
-  private AuthorizationService authorizationService;
+
   private PDFactory pdFactory;
 
   //////////////////// THE MAIN PD Business Analyst //////////////////////////
@@ -242,24 +240,6 @@ public class PDController extends BaseController implements Composer<Component> 
     return true;
   }
 
-  // Check infrastructure services to be available. They can become unavailable
-  // because of system crashes or modules crashed/undeployed
-  private boolean prepareSystemServices() {
-    // canoniserService = (CanoniserService) beanFactory.getBean("canoniserService");
-    domainService = (DomainService) Sessions.getCurrent().getAttribute("domainService");
-    processService = (ProcessService) Sessions.getCurrent().getAttribute("processService");
-    eventLogService = (EventLogService) Sessions.getCurrent().getAttribute("eventLogService");
-    logAnimationService =
-        (LogAnimationService2) Sessions.getCurrent().getAttribute("logAnimationService");
-    authorizationService = (AuthorizationService) Sessions.getCurrent().getAttribute("authorizationService");
-    logFilterPlugin = (LogFilterPlugin) Sessions.getCurrent().getAttribute("logFilterPlugin"); // beanFactory.getBean("logFilterPlugin");
-
-    if (domainService == null || processService == null || eventLogService == null
-        || logFilterPlugin == null || authorizationService == null) {
-      return false;
-    }
-    return true;
-  }
 
   // This is to check the availability of system services before executing a related action
   // E.g. before calling export log/model to the portal.
@@ -274,16 +254,14 @@ public class PDController extends BaseController implements Composer<Component> 
       return false;
     }
 
-    if (!prepareSystemServices()) {
-      Messagebox.show(getLabel("servicesUnavailable_message"));
-      return false;
-    }
-
     return true;
   }
 
   public void onCreate(Component comp) throws InterruptedException {
     try {
+
+      init(comp);
+
       if (!preparePluginSessionId()) {
         Messagebox.show(getLabel("sessionNotInitialized_message"));
         return;
@@ -304,7 +282,7 @@ public class PDController extends BaseController implements Composer<Component> 
           portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId(),
           portalContext.getCurrentFolder() == null ? "Home"
               : portalContext.getCurrentFolder().getFolderName());
-      processAnalyst = new PDAnalyst(contextData, configData, eventLogService);
+      processAnalyst = new PDAnalyst(contextData, configData, getEventLogService());
 
       // Check data against the capacity of Process Analyst
       IndexableAttribute mainAttribute =
@@ -345,6 +323,7 @@ public class PDController extends BaseController implements Composer<Component> 
       comp.getDesktop().setAttribute("processAnalyst", processAnalyst);
       comp.getDesktop().setAttribute("pluginSessionId", pluginSessionId);
     } catch (Exception ex) {
+
       Messagebox.show(getLabel("initError_message"));
       LOGGER.error("Error occurred while initializing: " + ex.getMessage(), ex);
     }
@@ -696,9 +675,7 @@ public class PDController extends BaseController implements Composer<Component> 
     return this.configData;
   }
 
-  public EventLogService getEvenLogService() {
-    return eventLogService;
-  }
+
 
   public ProcessService getProcessService() {
     return processService;

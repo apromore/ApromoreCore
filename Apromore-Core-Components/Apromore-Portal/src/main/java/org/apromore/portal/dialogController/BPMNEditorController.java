@@ -119,9 +119,9 @@ public class BPMNEditorController extends BaseController implements Composer<Com
       currentUserAccessType = AccessType.OWNER;
     } else {
       try {
-        User user = getSecurityService().getUserById(currentUserType.getId());
+        User user = mainC.getSecurityService().getUserById(currentUserType.getId());
         currentUserAccessType =
-            getAuthorizationService().getProcessAccessTypeByUser(process.getId(), user);
+            mainC.getAuthorizationService().getProcessAccessTypeByUser(process.getId(), user);
       } catch (Exception e) {
         // currentUserAccessType = AccessType.VIEWER;
         currentUserAccessType = null;
@@ -161,18 +161,18 @@ public class BPMNEditorController extends BaseController implements Composer<Com
           String annotation = (editSession.getAnnotation() == null) ? editSession.getNativeType()
               : editSession.getAnnotation();
 
-          ExportFormatResultType exportResult =
-              getService().exportFormat(editSession.getProcessId(), editSession.getProcessName(),
-                  editSession.getOriginalBranchName(), editSession.getCurrentVersionNumber(),
-                  editSession.getNativeType(), editSession.getUsername());
+          ExportFormatResultType exportResult = mainC.getManagerService().exportFormat(
+              editSession.getProcessId(), editSession.getProcessName(),
+              editSession.getOriginalBranchName(), editSession.getCurrentVersionNumber(),
+              editSession.getNativeType(), editSession.getUsername());
           bpmnXML = StreamUtil.convertStreamToString(exportResult.getNative().getInputStream());
           param.put("doAutoLayout", "false");
         }
 
         param.put(BPMN_XML, escapeXML(bpmnXML));
         param.put("url", getURL(editSession.getNativeType()));
-        param.put("importPath", getImportPath(editSession.getNativeType()));
-        param.put("exportPath", getExportPath(editSession.getNativeType()));
+        param.put("importPath", mainC.getImportPath(editSession.getNativeType()));
+        param.put("exportPath", mainC.getExportPath(editSession.getNativeType()));
         param.put("editor", "bpmneditor");
       } else {
         param.put(BPMN_XML, bpmnXML);
@@ -210,9 +210,9 @@ public class BPMNEditorController extends BaseController implements Composer<Com
           return;
         }
         if (isNewProcess) {
-          new SaveAsDialogController(process, vst, session, false, eventToString(event));
+          new SaveAsDialogController(process, vst, session, false, eventToString(event), mainC);
         } else {
-          new SaveAsDialogController(process, vst, session, true, eventToString(event));
+          new SaveAsDialogController(process, vst, session, true, eventToString(event), mainC);
         }
       }
     });
@@ -224,7 +224,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
           Notification.error(Labels.getLabel("portal_noPrivilegeSaveEdit_message"));
           return;
         }
-        new SaveAsDialogController(process, vst, session, false, eventToString(event));
+        new SaveAsDialogController(process, vst, session, false, eventToString(event), mainC);
       }
     });
 
@@ -251,7 +251,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
             arg.put("currentUser", UserSessionManager.getCurrentUser());
             arg.put("autoInherit", true);
             arg.put("showRelatedArtifacts", true);
-            arg.put("enablePublish", getConfig().isEnablePublish());
+            arg.put("enablePublish", mainC.getConfig().isEnablePublish());
             accessControlPlugin.setSimpleParams(arg);
             accessControlPlugin.execute(portalContext);
           } catch (Exception e) {

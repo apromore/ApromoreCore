@@ -34,27 +34,30 @@ import java.util.Objects;
 import org.apromore.commons.config.ConfigBean;
 // Local classes
 import org.apromore.manager.client.ManagerService;
-
-import org.apromore.portal.common.Constants;
 import org.apromore.service.AuthorizationService;
 import org.apromore.service.EventLogService;
+import org.apromore.service.ProcessService;
 import org.apromore.service.SecurityService;
 import org.apromore.service.UserService;
 import org.apromore.service.WorkspaceService;
-import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
-import org.springframework.web.context.support.WebApplicationContextUtils;
-import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlBasedComponent;
-import org.zkoss.zk.ui.Sessions;
+import org.zkoss.zk.ui.select.Selectors;
+import org.zkoss.zk.ui.select.annotation.VariableResolver;
+import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zul.Window;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Base Controller that all controllers inherit.
  *
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
+@VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
+@Getter
+@Setter
 public class BaseController extends Window {
 
   public static final String XPDL_2_2 = "XPDL 2.2";
@@ -62,78 +65,41 @@ public class BaseController extends Window {
   public static final String PNML_1_3_2 = "PNML 1.3.2";
   public static final String YAWL_2_2 = "YAWL 2.2";
   public static final String EPML_2_0 = "EPML 2.0";
+
+  @WireVariable("managerClient")
   private ManagerService managerService;
+  @WireVariable("eventLogService")
   private EventLogService eventLogService;
+  @WireVariable
   private UserService userService;
+  @WireVariable
   private SecurityService securityService;
+
+  @WireVariable
   private AuthorizationService authorizationService;
+  @WireVariable
   private WorkspaceService workspaceService;
 
-  protected AutowireCapableBeanFactory beanFactory;
-  protected ConfigBean config;
+  @WireVariable
+  private ProcessService processService;
+
 
   protected BaseController() {
-    beanFactory = WebApplicationContextUtils
-        .getWebApplicationContext(Sessions.getCurrent().getWebApp().getServletContext())
-        .getAutowireCapableBeanFactory();
-    config = (ConfigBean) beanFactory.getBean(ConfigBean.class);
+
+  }
+
+  protected void init(Component component) {
+    Selectors.wireVariables(component, this, Selectors.newVariableResolvers(getClass(), null));
   }
 
   /** Unit testing constructor. */
   protected BaseController(ConfigBean configBean) {
-    this.config = configBean;
+
   }
 
-  public ManagerService getService() {
-    if (managerService == null) {
-      managerService = (ManagerService) SpringUtil.getBean(Constants.MANAGER_SERVICE);
-      setManagerService(managerService);
-    }
-    return managerService;
-  }
-
-  public EventLogService getEventLogService() {
-    if (eventLogService == null) {
-      eventLogService = (EventLogService) SpringUtil.getBean(Constants.EVENT_LOG_SERVICE);
-      setEventLogService(eventLogService);
-    }
-    return eventLogService;
-  }
-
-  public UserService getUserService() {
-    if (userService == null) {
-      userService = (UserService) SpringUtil.getBean(Constants.USER_SERVICE);
-      setUserService(userService);
-    }
-    return userService;
-  }
-
-  public SecurityService getSecurityService() {
-    if (securityService == null) {
-      securityService = (SecurityService) SpringUtil.getBean(Constants.SECURITY_SERVICE);
-      setSecurityService(securityService);
-    }
-    return securityService;
-  }
-
-  public AuthorizationService getAuthorizationService() {
-    if (authorizationService == null) {
-      authorizationService = (AuthorizationService) SpringUtil.getBean(Constants.AUTH_SERVICE);
-      setAuthorizationService(authorizationService);
-    }
-    return authorizationService;
-  }
-
-  public WorkspaceService getWorkspaceService() {
-    if (workspaceService == null) {
-      workspaceService = (WorkspaceService) SpringUtil.getBean(Constants.WORKSPACE_SERVICE);
-      setWorkspaceService(workspaceService);
-    }
-    return workspaceService;
-  }
 
   public ConfigBean getConfig() {
-    return config;
+    return eventLogService.getConfigBean();
   }
 
   /**
@@ -182,45 +148,45 @@ public class BaseController extends Window {
   }
 
 
-  protected String getImportPath(final String nativeType) {
+  public String getImportPath(final String nativeType) {
     String importPath = "";
     switch (nativeType) {
       case XPDL_2_2:
-        importPath = "/" + config.getSiteEditor() + "/editor/xpdlimport";
+        importPath = "/" + getConfig().getSiteEditor() + "/editor/xpdlimport";
         break;
       case BPMN_2_0:
-        importPath = "/" + config.getSiteEditor() + "/editor/bpmnimport";
+        importPath = "/" + getConfig().getSiteEditor() + "/editor/bpmnimport";
         break;
       case PNML_1_3_2:
-        importPath = "/" + config.getSiteEditor() + "/editor/pnmlimport";
+        importPath = "/" + getConfig().getSiteEditor() + "/editor/pnmlimport";
         break;
       case YAWL_2_2:
-        importPath = "/" + config.getSiteEditor() + "/editor/yawlimport";
+        importPath = "/" + getConfig().getSiteEditor() + "/editor/yawlimport";
         break;
       case EPML_2_0:
-        importPath = "/" + config.getSiteEditor() + "/editor/epmlimport";
+        importPath = "/" + getConfig().getSiteEditor() + "/editor/epmlimport";
         break;
     }
     return importPath;
   }
 
-  protected String getExportPath(final String nativeType) {
+  public String getExportPath(final String nativeType) {
     String exportPath = "";
     switch (nativeType) {
       case XPDL_2_2:
-        exportPath = "/" + config.getSiteEditor() + "/editor/xpdlexport";
+        exportPath = "/" + getConfig().getSiteEditor() + "/editor/xpdlexport";
         break;
       case BPMN_2_0:
-        exportPath = "/" + config.getSiteEditor() + "/editor/bpmnexport";
+        exportPath = "/" + getConfig().getSiteEditor() + "/editor/bpmnexport";
         break;
       case PNML_1_3_2:
-        exportPath = "/" + config.getSiteEditor() + "/editor/pnmlexport";
+        exportPath = "/" + getConfig().getSiteEditor() + "/editor/pnmlexport";
         break;
       case YAWL_2_2:
-        exportPath = "/" + config.getSiteEditor() + "/editor/yawlexport";
+        exportPath = "/" + getConfig().getSiteEditor() + "/editor/yawlexport";
         break;
       case EPML_2_0:
-        exportPath = "/" + config.getSiteEditor() + "/editor/epmlexport";
+        exportPath = "/" + getConfig().getSiteEditor() + "/editor/epmlexport";
         break;
     }
     return exportPath;
@@ -246,32 +212,9 @@ public class BaseController extends Window {
     comp.setSclass(sclass);
   }
 
-  private void setManagerService(final ManagerService managerService) {
-    this.managerService = managerService;
-  }
-
-  private void setEventLogService(final EventLogService eventLogService) {
-    this.eventLogService = eventLogService;
-  }
-
   public String processRequest(Map<String, String[]> parameterMap) {
     return "";
   }
 
-  private void setUserService(final UserService userService) {
-    this.userService = userService;
-  }
-
-  private void setSecurityService(final SecurityService securityService) {
-    this.securityService = securityService;
-  }
-
-  private void setAuthorizationService(final AuthorizationService authorizationService) {
-    this.authorizationService = authorizationService;
-  }
-
-  private void setWorkspaceService(final WorkspaceService workspaceService) {
-    this.workspaceService = workspaceService;
-  }
 
 }

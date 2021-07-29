@@ -62,7 +62,7 @@ import de.hpi.bpmn2_0.model.FlowNode;
 import de.hpi.bpmn2_0.model.connector.SequenceFlow;
 import de.hpi.bpmn2_0.transformation.BPMN2DiagramConverter;
 
-@Service
+@Service("logAnimationService2")
 @Qualifier("logAnimationService2")
 public class LogAnimationServiceImpl2 extends DefaultParameterAwarePlugin implements LogAnimationService2 {
     

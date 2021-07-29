@@ -30,7 +30,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.apache.commons.io.IOUtils;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.common.UserSessionManager;
@@ -55,133 +54,142 @@ import org.zkoss.zul.Window;
 
 public class ImportOneProcessController extends BaseController {
 
-    private static final String FILENAME_CONSTRAINT = "[a-zA-Z0-9 \\[\\]\\._\\+\\-\\(\\)]+";
-    private static final Logger LOGGER = PortalLoggerFactory.getLogger(ImportOneProcessController.class);
+  private static final String FILENAME_CONSTRAINT = "[a-zA-Z0-9 \\[\\]\\._\\+\\-\\(\\)]+";
+  private static final Logger LOGGER =
+      PortalLoggerFactory.getLogger(ImportOneProcessController.class);
 
-    private final MainController mainC;
-    private final ImportController importProcessesC;
-    private final Window importOneProcessWindow;
-    private final String fileName;
-    private final Textbox processNameTb;
-    private final InputStream nativeProcess; // the input stream read from uploaded file
-    private final String nativeType;
-    private final Button okButton;
-    private final Button cancelButton;
+  private final MainController mainC;
+  private final ImportController importProcessesC;
+  private final Window importOneProcessWindow;
+  private final String fileName;
+  private final Textbox processNameTb;
+  private final InputStream nativeProcess; // the input stream read from uploaded file
+  private final String nativeType;
+  private final Button okButton;
+  private final Button cancelButton;
 
-    private final String username;
-    private boolean isPublic;
+  private final String username;
+  private boolean isPublic;
 
-    public ImportOneProcessController(final MainController mainC, final ImportController importProcessesC, final InputStream xml_is,
-                                      final String processName, final String nativeType, final String fileName, final boolean isPublic) throws SuspendNotAllowedException, InterruptedException,
-            ExceptionDomains, ExceptionAllUsers, IOException {
-        this.importProcessesC = importProcessesC;
-        this.mainC = mainC;
-        this.username = UserSessionManager.getCurrentUser().getUsername();
-        this.fileName = fileName;
-        this.nativeProcess = new ByteArrayInputStream(IOUtils.toByteArray(xml_is));
-        this.nativeType = nativeType;
-        this.isPublic = isPublic;
-        this.importOneProcessWindow = (Window) Executions.createComponents("~./macros/importOneProcess.zul", null, null);
-        Rows rows = (Rows) this.importOneProcessWindow.getFirstChild().getFirstChild().getFirstChild().getNextSibling();
-        Row processNameR = (Row) rows.getChildren().get(0);
-        this.processNameTb = (Textbox) processNameR.getChildren().get(1);
-        this.processNameTb.setValue(normalizeFilename(processName));
+  public ImportOneProcessController(final MainController mainC,
+      final ImportController importProcessesC, final InputStream xml_is, final String processName,
+      final String nativeType, final String fileName, final boolean isPublic)
+      throws SuspendNotAllowedException, InterruptedException, ExceptionDomains, ExceptionAllUsers,
+      IOException {
+    this.importProcessesC = importProcessesC;
+    this.mainC = mainC;
+    this.username = UserSessionManager.getCurrentUser().getUsername();
+    this.fileName = fileName;
+    this.nativeProcess = new ByteArrayInputStream(IOUtils.toByteArray(xml_is));
+    this.nativeType = nativeType;
+    this.isPublic = isPublic;
+    this.importOneProcessWindow =
+        (Window) Executions.createComponents("~./macros/importOneProcess.zul", null, null);
+    Rows rows = (Rows) this.importOneProcessWindow.getFirstChild().getFirstChild().getFirstChild()
+        .getNextSibling();
+    Row processNameR = (Row) rows.getChildren().get(0);
+    this.processNameTb = (Textbox) processNameR.getChildren().get(1);
+    this.processNameTb.setValue(normalizeFilename(processName));
 
-        Div buttonsD = (Div) importOneProcessWindow.getFellow("div");
-        this.okButton = (Button) buttonsD.getFirstChild();
-        this.cancelButton = (Button) buttonsD.getChildren().get(1);
+    Div buttonsD = (Div) importOneProcessWindow.getFellow("div");
+    this.okButton = (Button) buttonsD.getFirstChild();
+    this.cancelButton = (Button) buttonsD.getChildren().get(1);
 
-        this.okButton.addEventListener("onClick", new EventListener<Event>() {
-            @Override
-            public void onEvent(final Event event) throws Exception {
-                importProcess("", username);
-            }
-        });
-        this.importOneProcessWindow.addEventListener("onOK", new EventListener<Event>() {
-            @Override
-            public void onEvent(final Event event) throws Exception {
-                if (processNameTb.getValue().trim().compareTo("") == 0) {
-                    Messagebox.show(Labels.getLabel("portal_enterValueEachField_message"), "Apromore", Messagebox.OK, Messagebox.EXCLAMATION);
-                } else {
-                    importProcess("", username);
-                }
-            }
-        });
-        this.cancelButton.addEventListener("onClick", new EventListener<Event>() {
-            @Override
-            public void onEvent(final Event event) throws Exception {
-                cancel();
-            }
-        });
-        this.importOneProcessWindow.doModal();
-    }
-
-    private String normalizeFilename(String name) {
-        String normalized = "";
-        try {
-            Pattern pattern = Pattern.compile(FILENAME_CONSTRAINT);
-            Matcher matcher = pattern.matcher(name);
-
-            while (matcher.find()) {
-                normalized += matcher.group();
-            }
-        } catch (Exception e) {
-            // ignore exception
-        } finally{
-            if (normalized.length() == 0) {
-                normalized = "Untitled";
-            }
+    this.okButton.addEventListener("onClick", new EventListener<Event>() {
+      @Override
+      public void onEvent(final Event event) throws Exception {
+        importProcess("", username);
+      }
+    });
+    this.importOneProcessWindow.addEventListener("onOK", new EventListener<Event>() {
+      @Override
+      public void onEvent(final Event event) throws Exception {
+        if (processNameTb.getValue().trim().compareTo("") == 0) {
+          Messagebox.show(Labels.getLabel("portal_enterValueEachField_message"), "Apromore",
+              Messagebox.OK, Messagebox.EXCLAMATION);
+        } else {
+          importProcess("", username);
         }
-        return normalized;
+      }
+    });
+    this.cancelButton.addEventListener("onClick", new EventListener<Event>() {
+      @Override
+      public void onEvent(final Event event) throws Exception {
+        cancel();
+      }
+    });
+    this.importOneProcessWindow.doModal();
+  }
+
+  private String normalizeFilename(String name) {
+    String normalized = "";
+    try {
+      Pattern pattern = Pattern.compile(FILENAME_CONSTRAINT);
+      Matcher matcher = pattern.matcher(name);
+
+      while (matcher.find()) {
+        normalized += matcher.group();
+      }
+    } catch (Exception e) {
+      // ignore exception
+    } finally {
+      if (normalized.length() == 0) {
+        normalized = "Untitled";
+      }
     }
+    return normalized;
+  }
 
-    private void cancel() throws InterruptedException, IOException {
-        this.importProcessesC.deleteFromToBeImported(this);
-        closePopup();
+  private void cancel() throws InterruptedException, IOException {
+    this.importProcessesC.deleteFromToBeImported(this);
+    closePopup();
+  }
+
+  private void closePopup() {
+    this.importOneProcessWindow.detach();
+  }
+
+  public void importProcess(final String domain, final String owner)
+      throws InterruptedException, IOException {
+    try {
+      Integer folderId = 0;
+      FolderType currentFolder = this.mainC.getPortalSession().getCurrentFolder();
+      if (currentFolder != null) {
+        folderId = currentFolder.getId();
+      }
+
+      ImportProcessResultType importResult = mainC.getManagerService().importProcess(owner,
+          folderId, this.nativeType, this.processNameTb.getValue(), "1.0", getNativeProcess(),
+          domain, "", Utils.getDateTime(), Utils.getDateTime(), isPublic);
+
+      this.mainC.showPluginMessages(importResult.getMessage());
+      this.importProcessesC.getImportedList().add(this);
+      this.mainC.displayNewProcess(importResult.getProcessSummary());
+      this.importProcessesC.deleteFromToBeImported(this);
+    } catch (Exception e) {
+      LOGGER.error("Import failed!", e);
+      Messagebox.show(Labels.getLabel("portal_failedImport_message"), "Apromore", Messagebox.OK,
+          Messagebox.ERROR);
+    } finally {
+      closePopup();
     }
+  }
 
-    private void closePopup() {
-        this.importOneProcessWindow.detach();
-    }
+  public Window getImportOneProcessWindow() {
+    return importOneProcessWindow;
+  }
 
-    public void importProcess(final String domain, final String owner) throws InterruptedException, IOException {
-        try {
-            Integer folderId = 0;
-            FolderType currentFolder = this.mainC.getPortalSession().getCurrentFolder();
-            if (currentFolder != null) {
-                folderId = currentFolder.getId();
-            }
+  public String getFileName() {
+    return fileName;
+  }
 
-            ImportProcessResultType importResult = getService().importProcess(owner, folderId, this.nativeType, this.processNameTb.getValue(),
-                    "1.0", getNativeProcess(), domain, "", Utils.getDateTime(), Utils.getDateTime(), isPublic);
+  public String getNativeType() {
+    return nativeType;
+  }
 
-            this.mainC.showPluginMessages(importResult.getMessage());
-            this.importProcessesC.getImportedList().add(this);
-            this.mainC.displayNewProcess(importResult.getProcessSummary());
-            this.importProcessesC.deleteFromToBeImported(this);
-        } catch (Exception e) {
-            LOGGER.error("Import failed!", e);
-            Messagebox.show(Labels.getLabel("portal_failedImport_message"), "Apromore", Messagebox.OK, Messagebox.ERROR);
-        } finally {
-            closePopup();
-        }
-    }
-
-    public Window getImportOneProcessWindow() {
-        return importOneProcessWindow;
-    }
-
-    public String getFileName() {
-        return fileName;
-    }
-
-    public String getNativeType() {
-        return nativeType;
-    }
-
-    public InputStream getNativeProcess() throws IOException {
-        return nativeProcess;
-    }
+  public InputStream getNativeProcess() throws IOException {
+    return nativeProcess;
+  }
 
 
 }
