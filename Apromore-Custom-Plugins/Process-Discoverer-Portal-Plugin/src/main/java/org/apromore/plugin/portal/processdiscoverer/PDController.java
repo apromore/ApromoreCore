@@ -34,6 +34,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import javax.servlet.http.HttpSession;
+
+import lombok.Getter;
 import org.apromore.logman.attribute.IndexableAttribute;
 import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.plugin.portal.PortalContext;
@@ -160,8 +162,10 @@ public class PDController extends BaseController implements Composer<Component> 
   private LogSummaryType logSummary;
   private PortalContext portalContext;
 
+  @Getter
+  private String sourceLogName;
   private int sourceLogId; // plugin maintain log ID for Filter; Filter remove value to avoid
-                           // conflic from multiple plugins
+                           // conflicts from multiple plugins
 
   private InteractiveMode mode = InteractiveMode.MODEL_MODE; // initial mode
   private String pluginExecutionId;
@@ -223,6 +227,7 @@ public class PDController extends BaseController implements Composer<Component> 
     logSummary = (LogSummaryType) portalSession.get("selection");
 
     sourceLogId = logSummary.getId();
+    sourceLogName = logSummary.getName();
 
     if (portalContext == null || logSummary == null)
       return false;
