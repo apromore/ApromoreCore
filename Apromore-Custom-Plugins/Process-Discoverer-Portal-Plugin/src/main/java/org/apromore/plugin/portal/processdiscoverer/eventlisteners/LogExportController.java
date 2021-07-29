@@ -22,13 +22,12 @@
 
 package org.apromore.plugin.portal.processdiscoverer.eventlisteners;
 
+import static org.apromore.commons.item.Constants.HOME_FOLDER_NAME;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.text.MessageFormat;
 import java.util.GregorianCalendar;
-
 import javax.xml.datatype.DatatypeFactory;
-
 import org.apromore.dao.model.Log;
 import org.apromore.plugin.portal.processdiscoverer.PDAnalyst;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
@@ -38,67 +37,60 @@ import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
 import org.apromore.plugin.portal.processdiscoverer.utils.InputDialog;
 import org.apromore.portal.common.notification.Notification;
 import org.deckfour.xes.model.XLog;
-import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 
-import static org.apromore.commons.item.Constants.HOME_FOLDER_NAME;
-
 public class LogExportController extends AbstractController {
-    private ContextData contextData;
-    private UserOptionsData userOptions;
-    private PDAnalyst analyst;
-    
-    public LogExportController(PDController controller) {
-        super(controller);
-        contextData = parent.getContextData();
-        userOptions = parent.getUserOptions();
-        analyst = parent.getProcessAnalyst();
-    }
-    
-    @Override
-    public void onEvent(Event event) throws Exception {
-        if (!parent.prepareCriticalServices()) {
-            return;
-        }
-        
-        InputDialog.showInputDialog(
-            // Labels.getLabel("e.pd.saveLogWin.text"), // "Save filtered log",
-            parent.getLabel("saveLogWin_text"),
-            "Enter a log name (no more than 60 characters)",
-            contextData.getLogName() + "_filtered",
-            new EventListener<Event>() {
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    if (event.getName().equals("onOK")) {
-                        String logName = (String)event.getData();
-//                        userOptions.setActivityFilterValue(activities.getCurpos());
-//                        userOptions.setArcFilterValue(arcs.getCurpos());
-                        saveLog(analyst.getXLog(), logName);
-                    }
-                }
-            });
-    }
-    
-    private void saveLog(XLog filtered_log, String logName) {
-        try {
-            final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            parent.getEvenLogService().exportToStream(outputStream, filtered_log);
+  private ContextData contextData;
+  private UserOptionsData userOptions;
+  private PDAnalyst analyst;
 
-            Log log = parent.getEvenLogService().importLog(contextData.getUsername(), contextData.getFolderId(),
-                    logName, new ByteArrayInputStream(outputStream.toByteArray()), "xes.gz",
-                    contextData.getDomain(), DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(),
-                    false);
-            String folderName = log.getFolder() == null ? HOME_FOLDER_NAME : log.getFolder().getName();
-            String notif = MessageFormat.format(
-                parent.getLabel("successSaveLog_message"),
-                "<strong>" + logName + "</strong>",
-                "<strong>" + folderName + "</strong>"
-            );
-            Notification.info(notif);
-            parent.refreshPortal();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+  public LogExportController(PDController controller) {
+    super(controller);
+    contextData = parent.getContextData();
+    userOptions = parent.getUserOptions();
+    analyst = parent.getProcessAnalyst();
+  }
+
+  @Override
+  public void onEvent(Event event) throws Exception {
+    if (!parent.prepareCriticalServices()) {
+      return;
     }
+
+    InputDialog.showInputDialog(
+        // Labels.getLabel("e.pd.saveLogWin.text"), // "Save filtered log",
+        parent.getLabel("saveLogWin_text"), "Enter a log name (no more than 60 characters)",
+        contextData.getLogName() + "_filtered", new EventListener<Event>() {
+          @Override
+          public void onEvent(Event event) throws Exception {
+            if (event.getName().equals("onOK")) {
+              String logName = (String) event.getData();
+              // userOptions.setActivityFilterValue(activities.getCurpos());
+              // userOptions.setArcFilterValue(arcs.getCurpos());
+              saveLog(analyst.getXLog(), logName);
+            }
+          }
+        });
+  }
+
+  private void saveLog(XLog filtered_log, String logName) {
+    try {
+      final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      parent.getEventLogService().exportToStream(outputStream, filtered_log);
+
+      Log log = parent.getEventLogService().importLog(contextData.getUsername(),
+          contextData.getFolderId(), logName, new ByteArrayInputStream(outputStream.toByteArray()),
+          "xes.gz", contextData.getDomain(),
+          DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(),
+          false);
+      String folderName = log.getFolder() == null ? HOME_FOLDER_NAME : log.getFolder().getName();
+      String notif = MessageFormat.format(parent.getLabel("successSaveLog_message"),
+          "<strong>" + logName + "</strong>", "<strong>" + folderName + "</strong>");
+      Notification.info(notif);
+      parent.refreshPortal();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
 }

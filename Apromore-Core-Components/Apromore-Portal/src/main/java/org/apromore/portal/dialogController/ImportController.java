@@ -134,7 +134,7 @@ public class ImportController extends BaseController {
   public ImportController(MainController mainC) throws DialogException {
     this.ignoredFiles = "";
     this.mainC = mainC;
-    this.maxUploadSize = this.mainC.config.getMaxUploadSize();
+    this.maxUploadSize = this.mainC.getConfig().getMaxUploadSize();
     this.fileImporterPlugins = (List<FileImporterPlugin>) SpringUtil.getBean(FILE_IMPORTER_PLUGINS);
     // this.note = (message) -> { Messagebox.show(message); };
     this.note = new NotificationHandler() {
@@ -400,8 +400,8 @@ public class ImportController extends BaseController {
       LOGGER.debug("File name \"{}\", extension \"{}\"", fileName, extension);
       String logFileName = FilenameUtils.removeExtension(fileName);
 
-      getService().importLog(UserSessionManager.getCurrentUser().getUsername(), folderId,
-          logFileName, logMedia.getStreamData(), extension, "",
+      mainC.getManagerService().importLog(UserSessionManager.getCurrentUser().getUsername(),
+          folderId, logFileName, logMedia.getStreamData(), extension, "",
           DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(),
           isPublicCheckbox.isChecked());
 

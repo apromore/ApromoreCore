@@ -32,26 +32,26 @@
           apply="org.apromore.plugin.portal.loganimation.LogAnimationController">
 
     <style media="screen" type="text/css">
-        @import url("/${arg.editor}/libs/ext-2.0.2/resources/css/ext-all.css");
-        @import url("/${arg.editor}/libs/ext-2.0.2/resources/css/file-upload.css");
-        @import url("/${arg.editor}/libs/ext-2.0.2/resources/css/xtheme-gray.css");
+        @import url(".${arg.editor}/libs/ext-2.0.2/resources/css/ext-all.css");
+        @import url("./${arg.editor}/libs/ext-2.0.2/resources/css/file-upload.css");
+        @import url("./${arg.editor}/libs/ext-2.0.2/resources/css/xtheme-gray.css");
     </style>
 
     <!-- STYLESHEET FOR THE WRAPPER EDITOR -->
-    <n:link rel="Stylesheet" media="screen" href="/${arg.editor}/editor/css/theme_norm.css" type="text/css"/>
-    <n:link rel="Stylesheet" media="screen" href="/${arg.editor}/editor/css/theme_ext.css" type="text/css"/>
+    <n:link rel="Stylesheet" media="screen" href="./${arg.editor}/editor/css/theme_norm.css" type="text/css"/>
+    <n:link rel="Stylesheet" media="screen" href="./${arg.editor}/editor/css/theme_ext.css" type="text/css"/>
 
     <!-- STYLESHEET FOR BPMN.IO -->
-    <n:link rel="stylesheet" href="/${arg.editor}/editor/bpmnio/diagram-js.css" type="text/css"/>
-    <n:link rel="stylesheet" href="/${arg.editor}/editor/bpmnio/bpmn.css" type="text/css"/>
-    <n:script src="/${arg.editor}/editor/bpmnio/bpmn-modeler.development.js" type="text/javascript"/>
+    <n:link rel="stylesheet" href="./${arg.editor}/editor/bpmnio/diagram-js.css" type="text/css"/>
+    <n:link rel="stylesheet" href="./${arg.editor}/editor/bpmnio/bpmn.css" type="text/css"/>
+    <n:script src="./${arg.editor}/editor/bpmnio/bpmn-modeler.development.js" type="text/javascript"/>
 
     <!-- STYLESHEET FOR LOG ANIMATION -->
-    <link rel="stylesheet" href="/loganimation/js/jquery-ui.css" type="text/css" />
-    <!-- <link rel="stylesheet" href="loganimation/js/jquery-ui.theme.css" type="text/css"/> -->
+    <link rel="stylesheet" href="../../loganimation/js/jquery-ui.css" type="text/css" />
+    <!-- <link rel="stylesheet" href="../../loganimation/js/jquery-ui.theme.css" type="text/css"/> -->
 
-    <link rel="stylesheet" href="/loganimation/js/jquery-ui-slider-pips.css" type="text/css"/>
-    <link rel="stylesheet" href="/loganimation/css/styles.css" type="text/css"/>
+    <link rel="stylesheet" href="../../loganimation/js/jquery-ui-slider-pips.css" type="text/css"/>
+    <link rel="stylesheet" href="../../loganimation/css/styles.css" type="text/css"/>
 
         <n:link rel="stylesheet" type="text/css" href='../themes/${labels.theme}/common/css/index.css' />
         <!-- local -->
@@ -72,7 +72,7 @@
     <z:menubar sclass="ap-user-menu" id="userMenu" style="position: absolute;" apply="org.apromore.portal.dialogController.UserMenuController" />
 
     <n:div id="editorwrapper" style="display: none">
-        <n:script>
+        <script>
             <![CDATA[
                 if (!Apromore) {
                     var Apromore = {};
@@ -81,28 +81,28 @@
                     Apromore.CONFIG = {};
                 }
                 //Apromore.CONFIG.SERVER_HANDLER_ROOT_PREFIX = '../../' + '${arg.editor}';
-				Apromore.CONFIG.SERVER_HANDLER_ROOT_PREFIX = '~./' + '${arg.editor}';
+				Apromore.CONFIG.SERVER_HANDLER_ROOT_PREFIX = '/' + '${arg.editor}';
             ]]>
-        </n:script>
+        </script>
 
-        <n:script src="/${arg.editor}/libs/prototype-1.7.3.js" type="text/javascript"/>
-        <n:script src="/${arg.editor}/libs/ext-2.0.2/adapter/ext/ext-base.js" type="text/javascript"/>
-        <n:script src="/${arg.editor}/libs/ext-2.0.2/ext-all.js" type="text/javascript"/>
-        <n:script src="/${arg.editor}/libs/ext-2.0.2/color-field.js" type="text/javascript"/>
-        <n:script src="/${arg.editor}/libs/iscroll.js" type="text/javascript"/>
-        <n:script src="/${arg.editor}/editor/i18n/translation_en.js" type="text/javascript"/>
-        <n:script src="/${arg.editor}/editor/apromore-editor.js" type="text/javascript"/>
+        <script src="./${arg.editor}/libs/prototype-1.7.3.js" type="text/javascript"/>
+        <script src="./${arg.editor}/libs/ext-2.0.2/adapter/ext/ext-base.js" type="text/javascript"/>
+        <script src="./${arg.editor}/libs/ext-2.0.2/ext-all.js" type="text/javascript"/>
+        <script src="./${arg.editor}/libs/ext-2.0.2/color-field.js" type="text/javascript"/>
+        <script src="./${arg.editor}/libs/iscroll.js" type="text/javascript"/>
+        <script src="./${arg.editor}/editor/i18n/translation_en.js" type="text/javascript"/>
+        <script src="./${arg.editor}/editor/apromore-editor.js" type="text/javascript"/>
 
-        <n:script src="/loganimation/js/jquery-1.10.2.min.js" type="text/javascript"/>
-        <n:script src="/loganimation/js/jquery-ui.min.js" type="text/javascript"/>
-        <n:script src="/loganimation/js/jquery-ui-slider-pips.js" type="text/javascript"/>
-        <n:script src="/loganimation/js/svgjs/svg.min.js" type="text/javascript"/>
-        <n:script src="../themes/ap/common/js/lodash/lodash.min.js" type="text/javascript"/>
-        <n:script src="../themes/ap/common/js/moment/moment.min.js" type="text/javascript"/>
+        <script src="../../loganimation/js/jquery-1.10.2.min.js" type="text/javascript"/>
+        <script src="../../loganimation/js/jquery-ui.min.js" type="text/javascript"/>
+        <script src="../../loganimation/js/jquery-ui-slider-pips.js" type="text/javascript"/>
+        <script src="../../loganimation/js/svgjs/svg.min.js" type="text/javascript"/>
+        <script src="../themes/ap/common/js/lodash/lodash.min.js" type="text/javascript"/>
+        <script src="../themes/ap/common/js/moment/moment.min.js" type="text/javascript"/>
 
-        <n:script src="/loganimation/js/ap/utils.js" type="text/javascript"/>
-        <n:script src="/loganimation/js/ap/animation.js" type="text/javascript"/>
-        <n:script src="/loganimation/js/ap/trace.js" type="text/javascript"/>
+        <script src="../../loganimation/js/ap/utils.js" type="text/javascript"/>
+        <script src="../../loganimation/js/ap/animation.js" type="text/javascript"/>
+        <script src="../../loganimation/js/ap/trace.js" type="text/javascript"/>
 
         <!-- Include all editor plug-ins -->
         <z:zk forEach="${arg.plugins}">
@@ -110,7 +110,7 @@
         </z:zk>
 
         <n:span id="Apromorestartupcode">
-            <n:script src="/loganimation/js/ap/startup.js" type="text/javascript"/>
+            <n:script src="../../loganimation/js/ap/startup.js" type="text/javascript"/>
             <n:script defer="true">
                 <![CDATA[
                 window.animationData = '${arg.animationData}';

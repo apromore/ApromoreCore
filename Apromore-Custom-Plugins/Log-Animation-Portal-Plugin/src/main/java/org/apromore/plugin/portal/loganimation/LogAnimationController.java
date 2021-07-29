@@ -105,10 +105,10 @@ public class LogAnimationController extends BaseController implements Composer<C
         title = editSession.getProcessName() + " (" + editSession.getNativeType() + ")";
         this.setTitle(title);
 
-        ExportFormatResultType exportResult1 =
-            getService().exportFormat(editSession.getProcessId(), editSession.getProcessName(),
-                editSession.getOriginalBranchName(), editSession.getCurrentVersionNumber(),
-                editSession.getNativeType(), editSession.getUsername());
+        ExportFormatResultType exportResult1 = mainC.getManagerService().exportFormat(
+            editSession.getProcessId(), editSession.getProcessName(),
+            editSession.getOriginalBranchName(), editSession.getCurrentVersionNumber(),
+            editSession.getNativeType(), editSession.getUsername());
 
         title = editSession.getProcessName();
         pluginMessages = exportResult1.getMessage();

@@ -171,7 +171,8 @@ public abstract class BaseListboxController extends BaseController {
     }
 
     try {
-      currentUser = getSecurityService().getUserById(UserSessionManager.getCurrentUser().getId());
+      currentUser = mainController.getSecurityService()
+          .getUserById(UserSessionManager.getCurrentUser().getId());
     } catch (Exception e) {
       Messagebox.show(e.getMessage(), APROMORE, Messagebox.OK, Messagebox.ERROR);
     }
@@ -235,7 +236,7 @@ public abstract class BaseListboxController extends BaseController {
     });
 
     if (portalPluginMap.containsKey(ETL_PLUGIN_LABEL)) {
-      dataPipelinesSection.setVisible(config.isEnableEtl());
+      dataPipelinesSection.setVisible(mainController.getConfig().isEnableEtl());
       this.btnCreateDataPipeline.addEventListener(ON_CLICK, new EventListener<Event>() {
         @Override
         public void onEvent(Event event) throws Exception {
@@ -349,8 +350,8 @@ public abstract class BaseListboxController extends BaseController {
       }
     });
 
-    this.btnCalendarSep.setVisible(config.isEnableCalendar());
-    this.btnCalendar.setVisible(config.isEnableCalendar());
+    this.btnCalendarSep.setVisible(mainController.getConfig().isEnableCalendar());
+    this.btnCalendar.setVisible(mainController.getConfig().isEnableCalendar());
     this.btnCalendar.addEventListener(ON_CLICK, new EventListener<Event>() {
       @Override
       public void onEvent(Event event) throws Exception {
@@ -798,7 +799,7 @@ public abstract class BaseListboxController extends BaseController {
       arg.put("currentUser", UserSessionManager.getCurrentUser()); // UserType
       arg.put("autoInherit", true);
       arg.put("showRelatedArtifacts", true);
-      arg.put("enablePublish", config.isEnablePublish());
+      arg.put("enablePublish", getMainController().getConfig().isEnablePublish());
       accessControlPlugin.setSimpleParams(arg);
       accessControlPlugin.execute(portalContext);
     } catch (Exception e) {
@@ -830,7 +831,7 @@ public abstract class BaseListboxController extends BaseController {
       arg.put("currentUser", UserSessionManager.getCurrentUser()); // UserType
       arg.put("autoInherit", true);
       arg.put("showRelatedArtifacts", true);
-      arg.put("enablePublish", config.isEnablePublish());
+      arg.put("enablePublish", getMainController().getConfig().isEnablePublish());
       accessControlPlugin.setSimpleParams(arg);
       accessControlPlugin.execute(portalContext);
     } catch (Exception e) {
@@ -894,7 +895,7 @@ public abstract class BaseListboxController extends BaseController {
 
     for (FolderType folderId : folders) {
       try {
-        mainController.getService().deleteFolder(folderId.getId(),
+        mainController.getManagerService().deleteFolder(folderId.getId(),
             UserSessionManager.getCurrentUser().getUsername());
       } catch (Exception e) {
         failures += 1;
@@ -976,7 +977,7 @@ public abstract class BaseListboxController extends BaseController {
         UserType user = UserSessionManager.getCurrentUser();
         // FolderType currentFolder = UserSessionManager.getCurrentFolder();
         FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
-        summaries = getService().getProcessSummaries(user.getId(),
+        summaries = mainController.getManagerService().getProcessSummaries(user.getId(),
             currentFolder == null ? 0 : currentFolder.getId(), pageIndex, pageSize);
         currentPageIndex = pageIndex;
       }
@@ -988,7 +989,7 @@ public abstract class BaseListboxController extends BaseController {
         UserType user = UserSessionManager.getCurrentUser();
         // FolderType currentFolder = UserSessionManager.getCurrentFolder();
         FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
-        logSummaries = getService().getLogSummaries(user.getId(),
+        logSummaries = mainController.getManagerService().getLogSummaries(user.getId(),
             currentFolder == null ? 0 : currentFolder.getId(), pageIndex, pageSize);
         currentLogPageIndex = pageIndex;
       }

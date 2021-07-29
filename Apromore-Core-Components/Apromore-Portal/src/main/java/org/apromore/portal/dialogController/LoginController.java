@@ -61,6 +61,8 @@ public class LoginController extends BaseController implements Composer<Componen
    * @throws InterruptedException
    */
   public void onCreate(Component comp) throws InterruptedException {
+
+    init(comp);
     Window mainW = (Window) comp.getFellow("login-main");
     Div registerBtn = (Div) mainW.getFellow("registerBtn");
     Div agree = (Div) mainW.getFellow("agree");
@@ -77,11 +79,11 @@ public class LoginController extends BaseController implements Composer<Componen
     Image logoWithTag = (Image) mainW.getFellow("logoWithTag");
     String src = "~./themes/" + Labels.getLabel("theme") + "/common/img/brand/logo-colour-with-tag";
 
-    boolean enableTC = config.isEnableTC();
-    boolean enablePP = config.isEnablePP();
-    boolean enableUserReg = config.isEnableUserReg();
-    boolean enableFullUserReg = config.isEnableFullUserReg();
-    boolean enableSubscription = config.isEnableSubscription();
+    boolean enableTC = getConfig().isEnableTC();
+    boolean enablePP = getConfig().isEnablePP();
+    boolean enableUserReg = getConfig().isEnableUserReg();
+    boolean enableFullUserReg = getConfig().isEnableFullUserReg();
+    boolean enableSubscription = getConfig().isEnableSubscription();
 
     registerBtn.setVisible(enableUserReg);
     subscribe.setVisible(enableSubscription);
@@ -99,7 +101,7 @@ public class LoginController extends BaseController implements Composer<Componen
       phone.setVisible(true);
     }
 
-    if (config.isCommunity()) {
+    if (getConfig().isCommunity()) {
       src += "-" + "community";
     }
     logoWithTag.setSrc(src + ".svg");

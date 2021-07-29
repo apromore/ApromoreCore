@@ -33,20 +33,18 @@ import java.util.List;
 import java.util.Locale;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import org.apromore.commons.config.ConfigBean;
 import org.apromore.manager.client.ManagerService;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.PortalPlugin;
-import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.LabelConstants;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.context.PortalPluginResolver;
 import org.apromore.portal.model.UserType;
 import org.apromore.portal.util.ExplicitComparator;
+import org.apromore.service.EventLogService;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Executions;
@@ -56,12 +54,15 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.select.SelectorComposer;
+import org.zkoss.zk.ui.select.annotation.VariableResolver;
+import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zul.Menu;
 import org.zkoss.zul.Menubar;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Menupopup;
 import com.google.common.base.Strings;
 
+@VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
 public class UserMenuController extends SelectorComposer<Menubar> {
 
   private static final Logger LOGGER = PortalLoggerFactory.getLogger(UserMenuController.class);
@@ -70,25 +71,20 @@ public class UserMenuController extends SelectorComposer<Menubar> {
 
   private Menuitem aboutMenuitem;
 
+  @WireVariable("managerClient")
   private ManagerService managerService;
 
+  @WireVariable
+  private EventLogService eventLogService;
+
   protected AutowireCapableBeanFactory beanFactory;
-  protected ConfigBean config;
+
 
   public UserMenuController() {
-    beanFactory = WebApplicationContextUtils
-        .getWebApplicationContext(Sessions.getCurrent().getWebApp().getServletContext())
-        .getAutowireCapableBeanFactory();
-    config = (ConfigBean) beanFactory.getBean(ConfigBean.class);
+
   }
 
-  public ManagerService getManagerService() {
-    if (this.managerService == null) {
-      this.managerService = (ManagerService) SpringUtil.getBean(Constants.MANAGER_SERVICE);
-    }
 
-    return managerService;
-  }
 
   public static final String getDisplayName(UserType userType) {
     String displayName = "";
@@ -109,6 +105,7 @@ public class UserMenuController extends SelectorComposer<Menubar> {
   @Override
   public void doAfterCompose(Menubar menubar) {
     // If there are portal plugins, create the menus for launching them
+    UserSessionManager.initializeUser(managerService, eventLogService.getConfigBean(), null, null);;
     if (!PortalPluginResolver.resolve().isEmpty()) {
 
       // If present, this comparator expresses the preferred ordering for menus along the the menu
@@ -208,7 +205,7 @@ public class UserMenuController extends SelectorComposer<Menubar> {
           Session session = Sessions.getCurrent();
 
           if (session != null) {
-            if (!config.getKeycloak().isEnabled()) {
+            if (!eventLogService.getConfigBean().getKeycloak().isEnabled()) {
               session.invalidate();
             }
             Executions.sendRedirect("/logout");
