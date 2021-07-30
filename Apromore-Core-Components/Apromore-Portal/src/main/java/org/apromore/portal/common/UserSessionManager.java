@@ -34,6 +34,7 @@ import javax.naming.directory.Attributes;
 import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apromore.commons.config.ConfigBean;
 import org.apromore.dao.model.User;
 import org.apromore.manager.client.ManagerService;
@@ -156,6 +157,8 @@ public abstract class UserSessionManager {
           }
           setCurrentUser(user);
         } catch (Exception e) {
+
+          LOGGER.error("Exception in init user " + ExceptionUtils.getStackTrace(e));
           LOGGER.debug("No User Found");
         }
 
