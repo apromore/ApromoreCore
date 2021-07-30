@@ -52,7 +52,7 @@ public class ConfigBean {
   private int maxEventCount = 1000000;
 
   private String volumeExportDir;
-
+  private boolean templateEnabled;
 
   @Data
   public class Logs {
