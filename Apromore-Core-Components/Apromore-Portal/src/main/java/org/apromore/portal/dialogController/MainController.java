@@ -25,7 +25,6 @@
 
 package org.apromore.portal.dialogController;
 
-import static org.apromore.portal.common.UserSessionManager.initializeUser;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.text.ParseException;
@@ -209,7 +208,6 @@ public class MainController extends BaseController
   public void onCreate(Component comp) throws InterruptedException {
     try {
       init(comp);
-      initializeUser(getManagerService(), getConfig(), null, null);
       loadProperties();
       this.mainComponent = comp;
       Window mainW = (Window) comp.getFellow("mainW");

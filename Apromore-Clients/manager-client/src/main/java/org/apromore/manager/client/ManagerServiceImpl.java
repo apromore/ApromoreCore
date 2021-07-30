@@ -91,6 +91,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -752,6 +753,7 @@ public class ManagerServiceImpl implements ManagerService {
    * @throws Exception ... change to be something more relevant TODO: Fix Exception
    */
   @Override
+  @Transactional
   public UserType writeUser(UserType user) throws Exception {
     LOGGER.info("Create user {}", user);
     return UserMapper
