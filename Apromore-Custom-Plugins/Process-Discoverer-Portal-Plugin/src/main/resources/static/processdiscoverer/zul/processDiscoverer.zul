@@ -33,7 +33,7 @@
 <?component name="animation" macroURI="~./processdiscoverer/macros/animation.zul" ?>
 
 
-<?link rel="shortcut icon" href="themes/${labels.theme}/common/img/brand/favicon.ico" ?>
+<?link rel="shortcut icon" href="~./themes/${labels.theme}/common/img/brand/favicon.ico" ?>
 <?link rel="stylesheet" href="~./css/chiaroscuro.css" type="text/css" ?>
 <?link rel="stylesheet" href="~./processdiscoverer/js/spectrum/2.0.5/spectrum.css" ?>
 <?link rel="stylesheet" href="~./themes/${labels.theme}/common/css/index.css" type="text/css" ?>
