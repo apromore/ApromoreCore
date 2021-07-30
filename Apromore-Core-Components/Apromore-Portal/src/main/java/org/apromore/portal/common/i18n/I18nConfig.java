@@ -21,7 +21,6 @@
  */
 package org.apromore.portal.common.i18n;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -60,9 +59,6 @@ public class I18nConfig {
     for (int i = 0; i < languageTags.size(); i++) {
       Locale locale = Locale.forLanguageTag(languageTags.get(i));
       String dateTimePattern = dateTimePatterns.get(i);
-      // Fix encoding issue in site.properties
-      dateTimePattern =
-          new String(dateTimePattern.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
       supportedLocales.put(locale, dateTimePattern);
     }
   }

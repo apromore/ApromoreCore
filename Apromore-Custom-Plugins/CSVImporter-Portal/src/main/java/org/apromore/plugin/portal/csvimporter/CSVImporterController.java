@@ -459,9 +459,8 @@ public class CSVImporterController extends SelectorComposer<Window> implements C
 
   public ResourceBundle getLabels() {
 
-    // Locale locale = Locales.getCurrent()
     Locale locale = (Locale) Sessions.getCurrent().getAttribute(Attributes.PREFERRED_LOCALE);
-    return ResourceBundle.getBundle("csvLabel", locale,
+    return ResourceBundle.getBundle(PluginMeta.PLUGIN_ID, locale,
         CSVImporterController.class.getClassLoader());
   }
 
