@@ -381,7 +381,7 @@ public class ImportController extends BaseController {
       importGzip(importedMedia);
     } else if (extension.toLowerCase().equals("bpmn")) {
       importProcess(this.mainC, this, importedMedia.getStreamData(), name.split("\\.")[0],
-          this.nativeType, name);
+              BPMN_2_0, name);
     } else {
       // ignoredFiles += (ignoredFiles.isEmpty() ? "" : " ,") + name;
       note.show("Ignoring file with unknown extension: " + name);
