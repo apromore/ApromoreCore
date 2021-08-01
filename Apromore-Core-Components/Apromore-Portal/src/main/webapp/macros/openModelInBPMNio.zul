@@ -147,7 +147,7 @@
 					  //console.log(editorWrapper.getCanvas()._editor.getDefinitions());
 					//}, 1000);
 
-					document.title = '${labels.brand_shortNawme} - ${labels.bpmnEditor_title_text}';
+					document.title = '${labels.brand_shortName} - ${labels.bpmnEditor_title_text}';
                 ]]>
             </n:script>
         </n:span>
