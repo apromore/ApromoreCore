@@ -55,7 +55,6 @@ import org.apromore.portal.common.notification.Notification;
 import org.apromore.portal.exception.DialogException;
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
-import org.apromore.portal.exception.ExceptionFormats;
 import org.apromore.portal.exception.ExceptionImport;
 import org.apromore.portal.util.StringUtil;
 import org.slf4j.Logger;
@@ -193,7 +192,7 @@ public class ImportController extends BaseController {
       });
       uploadButton.addEventListener("onSizeCheck", new EventListener<Event>() {
         public void onEvent(Event event) throws Exception {
-          uploadSizeExceeded = ((int) event.getData() == 0) ? false : true;
+          uploadSizeExceeded = (int) event.getData() != 0;
         }
       });
       uploadURLButton.addEventListener(ON_CLICK, new EventListener<Event>() {
@@ -464,7 +463,7 @@ public class ImportController extends BaseController {
   /*
    * cancel all remaining imports
    */
-  public void cancelAll() throws InterruptedException {
+  public void cancelAll() {
     for (ImportOneProcessController aToImportList : this.toImportList) {
       if (aToImportList.getImportOneProcessWindow() != null) {
         this.ignoredFiles += ", " + aToImportList.getFileName();
@@ -492,8 +491,7 @@ public class ImportController extends BaseController {
 
   // remove from the list of processes to be imported
   // if the list exhausted, display a message and terminate import
-  public void deleteFromToBeImported(ImportOneProcessController importOneProcess)
-      throws IOException, InterruptedException {
+  public void deleteFromToBeImported(ImportOneProcessController importOneProcess) {
     this.toImportList.remove(importOneProcess);
 
     if (this.toImportList.size() == 0) {
