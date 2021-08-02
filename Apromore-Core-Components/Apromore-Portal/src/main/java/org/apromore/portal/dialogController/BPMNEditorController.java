@@ -74,6 +74,10 @@ import org.zkoss.zul.Messagebox;
 public class BPMNEditorController extends BaseController implements Composer<Component> {
   public static final String EVENT_MESSAGE_SAVE = "SaveEvent";
 
+  private static final boolean USE_BPMNIO_MODELER = true;
+  private static final String BPMNIO_MODELER_JS = "bpmn-modeler.development.js";
+  private static final String BPMNIO_VIEWER_JS = "bpmn-navigated-viewer.development.js";
+
   private static final Logger LOGGER = PortalLoggerFactory.getLogger(BPMNEditorController.class);
   public static final String BPMN_XML = "bpmnXML";
   public static final String BPMN_2_01 = "BPMN 2.0";
@@ -130,8 +134,9 @@ public class BPMNEditorController extends BaseController implements Composer<Com
         throw new AssertionError("No valid access type for the current user");
       }
     }
-    String klass = "access-type-" + currentUserAccessType.getLabel().toLowerCase();
-    Clients.evalJavaScript("Ap.common.injectGlobalClass(\"" + klass + "\")");
+    if (AccessType.VIEWER.equals(currentUserAccessType)) {
+      Clients.evalJavaScript("Ap.common.injectGlobalClass(\"access-type-viewer\")");
+    }
 
     Map<String, Object> param = new HashMap<>();
     try {
@@ -193,6 +198,12 @@ public class BPMNEditorController extends BaseController implements Composer<Com
       List<EditorPlugin> editorPlugins = EditorPluginResolver.resolve("bpmnEditorPlugins");
       param.put("plugins", editorPlugins);
       param.put("langTag", langTag);
+      if (USE_BPMNIO_MODELER) {
+        param.put("bpmnioLib", BPMNIO_MODELER_JS);
+      } else {
+        param.put("bpmnioLib", AccessType.VIEWER.equals(currentUserAccessType) ? BPMNIO_VIEWER_JS : BPMNIO_MODELER_JS);
+      }
+      param.put("viewOnly", AccessType.VIEWER.equals(currentUserAccessType));
       Executions.getCurrent().pushArg(param);
 
     } catch (Exception e) {
