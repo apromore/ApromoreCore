@@ -253,15 +253,6 @@ public class ImportController extends BaseController {
       }
     }
 
-    assert extension != null;
-    if (!extension.equalsIgnoreCase("zip") && !extension.equalsIgnoreCase("gz")
-        && !extension.equalsIgnoreCase("xes") && !extension.equalsIgnoreCase("mxml")) {
-      String fileType = this.mainC.getNativeTypes().get(extension);
-      if (fileType == null) {
-        throw new ExceptionImport("Unsupported extension.");
-      }
-      nativeType = fileType;
-    }
     okButton.setDisabled(uploadSizeExceeded);
   }
 
@@ -333,15 +324,6 @@ public class ImportController extends BaseController {
         }
       }
 
-      assert extension != null;
-      if (!extension.equalsIgnoreCase("zip") && !extension.equalsIgnoreCase("gz")
-          && !extension.equalsIgnoreCase("xes") && !extension.equalsIgnoreCase("mxml")) {
-        String fileType = this.mainC.getNativeTypes().get(extension);
-        if (fileType == null) {
-          throw new ExceptionImport("Unsupported extension.");
-        }
-        nativeType = fileType;
-      }
       okButton_URL.setDisabled(false);
 
     } catch (MalformedURLException e) {
@@ -380,8 +362,7 @@ public class ImportController extends BaseController {
     } else if (extension.toLowerCase().equals("gz")) {
       importGzip(importedMedia);
     } else if (extension.toLowerCase().equals("bpmn")) {
-      importProcess(this.mainC, this, importedMedia.getStreamData(), name.split("\\.")[0],
-              BPMN_2_0, name);
+      importProcess(this.mainC, this, importedMedia.getStreamData(), name.split("\\.")[0], name);
     } else {
       // ignoredFiles += (ignoredFiles.isEmpty() ? "" : " ,") + name;
       note.show("Ignoring file with unknown extension: " + name);
@@ -475,10 +456,10 @@ public class ImportController extends BaseController {
   }
 
   private void importProcess(MainController mainC, ImportController importC, InputStream xml_is,
-      String processName, String nativeType, String filename) throws SuspendNotAllowedException,
-      InterruptedException, JAXBException, IOException, ExceptionDomains, ExceptionAllUsers {
+      String processName, String filename) throws SuspendNotAllowedException,
+      InterruptedException, IOException, ExceptionDomains, ExceptionAllUsers {
     ImportOneProcessController oneImport = new ImportOneProcessController(mainC, importC, xml_is,
-        processName, nativeType, filename, isPublicCheckbox.isChecked());
+        processName, BPMN_2_0, filename, isPublicCheckbox.isChecked());
     this.toImportList.add(oneImport);
   }
 
