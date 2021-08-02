@@ -22,6 +22,8 @@
 
 package org.apromore.plugin.portal.processdiscoverer.components;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,9 +32,11 @@ import org.apromore.logman.attribute.log.AttributeInfo;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
 import org.apromore.plugin.portal.processdiscoverer.data.PerspectiveDetails;
 import org.zkoss.json.JSONObject;
+import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.metainfo.PageDefinition;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
@@ -79,7 +83,7 @@ public class PerspectiveDetailsController extends DataListController {
         if (perspectiveDetailsWindow==null) {
             Map<String, Object> arg = new HashMap<>();
             arg.put("pdLabels", parent.getLabels());
-            perspectiveDetailsWindow = (Window) Executions.createComponents("static/processdiscoverer/zul/perspectiveDetails.zul", null, arg);
+            perspectiveDetailsWindow = (Window) Executions.createComponents(getPageDefinition("processdiscoverer/zul/perspectiveDetails.zul"), null, arg);
             String perspectiveName = parent.getPerspectiveName();
             perspectiveDetailsWindow.setTitle(perspectiveName + " Inspector");
             Listbox listbox = (Listbox) perspectiveDetailsWindow.getFellow("perspectiveDetailsList");
@@ -95,7 +99,7 @@ public class PerspectiveDetailsController extends DataListController {
                 public void onEvent(Event event) throws Exception {
                     exportData();
                 }
-            });
+            }); 
     
             try {
                 org.zkoss.json.JSONObject param = (org.zkoss.json.JSONObject) event.getData();
@@ -119,4 +123,13 @@ public class PerspectiveDetailsController extends DataListController {
     public Window getWindow() {
         return perspectiveDetailsWindow;
     }
+    
+    public PageDefinition getPageDefinition(String uri) throws IOException {
+      String url = "static/" + uri;
+      Execution current = Executions.getCurrent();
+      PageDefinition pageDefinition = current.getPageDefinitionDirectly(
+          new InputStreamReader(getClass().getClassLoader().getResourceAsStream(url)), "zul");
+      return pageDefinition;
+    }
+    
 }

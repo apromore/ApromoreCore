@@ -378,7 +378,7 @@ public class DeleteUserController extends SelectorComposer<Window> {
 
     Map dataMap = Map.of("type", "DELETE_USER");
 
-    EventQueues.lookup(SecurityService.EVENT_TOPIC, getSelf().getDesktop().getWebApp(), true)
+    EventQueues.lookup(SecurityService.EVENT_TOPIC, EventQueues.APPLICATION, true)
         .publish(new Event("User Delete", null, dataMap));
 
   }

@@ -21,7 +21,7 @@
   #L%
   -->
 <?page title="${labels.brand_shortName}" contentType="text/html;charset=UTF-8"?>
-<?link rel="shortcut icon" href="themes/${labels.theme}/common/img/brand/favicon.ico" ?>
+<?link rel="shortcut icon" href="~./themes/${labels.theme}/common/img/brand/favicon.ico" ?>
 <!--<?link rel="stylesheet" type="text/css" href="css/apromore.css" ?>-->
 <!--<?link rel="stylesheet" type="text/css" href="css/login.css" ?>-->
 <?link rel="stylesheet" type="text/css" href="css/bootstrap.css" ?>
@@ -43,7 +43,7 @@
 
 <zk xmlns:h="xhtml" xmlns:n="native" xmlns="http://www.zkoss.org/2005/zul">
   <window id="login-main" border="none" sclass="ap-login ap-font-base"
-          use="org.apromore.portal.dialogController.LoginController">
+          apply="org.apromore.portal.dialogController.LoginController">
     <h:script type="text/javascript">
       if (zk.ie || zk.ie7 || zk.ie8) {
       alert("Sorry, we don't support Internet Explorer! some features might not work correctly.");

@@ -30,7 +30,7 @@ const MAX_AUTOFIT_ZOOM = 1;
 
 let PDp = {};
 
-let SIGNATURE = '/themes/ap/common/img/brand/logo-colour.svg';
+let SIGNATURE = '/zkau/web/themes/ap/common/img/brand/logo-colour.svg';
 
 const layouters = {
     [LAYOUT_MANUAL_BEZIER]: function (cy) {
@@ -244,7 +244,7 @@ PDp.updateActivityToAttributeMap = function (json) {
 
 PDp.init = function() {
     let pd = this;
-    SIGNATURE = `/themes/${Ap.theme}/common/img/brand/logo-colour.svg`;
+    SIGNATURE = `/zkau/web/themes/${Ap.theme}/common/img/brand/logo-colour.svg`;
     container = $j('#' + pd._private.processModelContainerId)[0];
     let cy = this._private.cy = cytoscape(Object.assign(options, {
         container,

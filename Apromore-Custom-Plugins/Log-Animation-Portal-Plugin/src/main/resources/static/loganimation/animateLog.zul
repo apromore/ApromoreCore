@@ -22,7 +22,7 @@
 
 
 <!--<?link rel="shortcut icon" href="favicon.ico" ?>-->
-<?link rel="shortcut icon" href="../themes/${labels.theme}/common/img/brand/favicon.ico" ?>
+<?link rel="shortcut icon" href="~./themes/${labels.theme}/common/img/brand/favicon.ico" ?>
 <?script src="../themes/ap/common/js/index.js"?>
 <z:window id="win"
           xmlns="http://www.zkoss.org/2005/zk/native"
