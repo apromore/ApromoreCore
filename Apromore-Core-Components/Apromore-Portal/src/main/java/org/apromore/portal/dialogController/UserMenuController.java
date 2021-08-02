@@ -26,8 +26,6 @@
 
 package org.apromore.portal.dialogController;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
@@ -139,15 +137,8 @@ public class UserMenuController extends SelectorComposer<Menubar> {
           menuitem.setImage(plugin.getIconPath());
 
         } else if (plugin.getResourceAsStream(plugin.getIconPath()) != null) {
-          try {
-            menuitem.setImage("/portalPluginResource/"
-                + URLEncoder.encode(plugin.getGroup(Locale.getDefault()), "utf-8") + "/"
-                + URLEncoder.encode(plugin.getItemCode(Locale.getDefault()), "utf-8") + "/"
-                + plugin.getIconPath());
+          menuitem.setImage("/portalPluginResource/" + plugin.getIconPath());
 
-          } catch (UnsupportedEncodingException e) {
-            throw new Error("Hardcoded UTF-8 encoding failed", e);
-          }
         } else {
           menuitem.setImageContent(plugin.getIcon());
         }
