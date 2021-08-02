@@ -236,7 +236,7 @@ public class ImportController extends BaseController {
     }
   }
 
-  private void uploadFile(UploadEvent event) throws ExceptionFormats, ExceptionImport, IOException {
+  private void uploadFile(UploadEvent event) throws IOException {
     media = event.getMedia();
     fileNameLabel.setStyle("color: blue");
     fileNameLabel.setValue(media.getName());
@@ -260,9 +260,8 @@ public class ImportController extends BaseController {
    * 
    * @param fileUrl - URL string user inputted
    * @throws ExceptionImport if IOException, URISyntaxException, MalformedURLException happens
-   * @throws ExceptionFormats
    */
-  private void uploadFileFromURL(String fileUrl) throws ExceptionImport, ExceptionFormats {
+  private void uploadFileFromURL(String fileUrl) throws ExceptionImport {
 
     URL url;
     String filename;
@@ -465,7 +464,7 @@ public class ImportController extends BaseController {
   /*
    * cancel all remaining imports
    */
-  public void cancelAll() throws InterruptedException, IOException {
+  public void cancelAll() throws InterruptedException {
     for (ImportOneProcessController aToImportList : this.toImportList) {
       if (aToImportList.getImportOneProcessWindow() != null) {
         this.ignoredFiles += ", " + aToImportList.getFileName();
@@ -503,7 +502,7 @@ public class ImportController extends BaseController {
     }
   }
 
-  public void reportImport() throws InterruptedException {
+  public void reportImport() {
     String report = "Import of " + this.importedList.size();
     if (this.importedList.size() == 0) {
       report += " process.";
@@ -523,7 +522,7 @@ public class ImportController extends BaseController {
    * Import all remaining files. Called from ImportOneProcessController after user clicked "OK all"
    * Apply default values to all file still to be imported: - version name - domain
    */
-  public void importAllProcess(String domain) throws InterruptedException, IOException {
+  public void importAllProcess(String domain) throws InterruptedException {
     List<ImportOneProcessController> importAll = new ArrayList<>();
     importAll.addAll(this.toImportList);
     for (ImportOneProcessController importOneProcess : importAll) {
