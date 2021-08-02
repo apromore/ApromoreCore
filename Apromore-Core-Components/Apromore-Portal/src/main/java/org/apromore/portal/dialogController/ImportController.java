@@ -55,7 +55,6 @@ import org.apromore.portal.common.notification.Notification;
 import org.apromore.portal.exception.DialogException;
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
-import org.apromore.portal.exception.ExceptionFormats;
 import org.apromore.portal.exception.ExceptionImport;
 import org.apromore.portal.util.StringUtil;
 import org.slf4j.Logger;
@@ -97,7 +96,6 @@ public class ImportController extends BaseController {
   private MainController mainC;
   private Window importWindow;
 
-  private String nativeType;
   private String ignoredFiles;
 
   private Media media = null;
@@ -194,7 +192,7 @@ public class ImportController extends BaseController {
       });
       uploadButton.addEventListener("onSizeCheck", new EventListener<Event>() {
         public void onEvent(Event event) throws Exception {
-          uploadSizeExceeded = ((int) event.getData() == 0) ? false : true;
+          uploadSizeExceeded = (int) event.getData() != 0;
         }
       });
       uploadURLButton.addEventListener(ON_CLICK, new EventListener<Event>() {
@@ -237,7 +235,7 @@ public class ImportController extends BaseController {
     }
   }
 
-  private void uploadFile(UploadEvent event) throws ExceptionFormats, ExceptionImport, IOException {
+  private void uploadFile(UploadEvent event) throws IOException {
     media = event.getMedia();
     fileNameLabel.setStyle("color: blue");
     fileNameLabel.setValue(media.getName());
@@ -253,15 +251,6 @@ public class ImportController extends BaseController {
       }
     }
 
-    assert extension != null;
-    if (!extension.equalsIgnoreCase("zip") && !extension.equalsIgnoreCase("gz")
-        && !extension.equalsIgnoreCase("xes") && !extension.equalsIgnoreCase("mxml")) {
-      String fileType = this.mainC.getNativeTypes().get(extension);
-      if (fileType == null) {
-        throw new ExceptionImport("Unsupported extension.");
-      }
-      nativeType = fileType;
-    }
     okButton.setDisabled(uploadSizeExceeded);
   }
 
@@ -270,9 +259,8 @@ public class ImportController extends BaseController {
    * 
    * @param fileUrl - URL string user inputted
    * @throws ExceptionImport if IOException, URISyntaxException, MalformedURLException happens
-   * @throws ExceptionFormats
    */
-  private void uploadFileFromURL(String fileUrl) throws ExceptionImport, ExceptionFormats {
+  private void uploadFileFromURL(String fileUrl) throws ExceptionImport {
 
     URL url;
     String filename;
@@ -333,15 +321,6 @@ public class ImportController extends BaseController {
         }
       }
 
-      assert extension != null;
-      if (!extension.equalsIgnoreCase("zip") && !extension.equalsIgnoreCase("gz")
-          && !extension.equalsIgnoreCase("xes") && !extension.equalsIgnoreCase("mxml")) {
-        String fileType = this.mainC.getNativeTypes().get(extension);
-        if (fileType == null) {
-          throw new ExceptionImport("Unsupported extension.");
-        }
-        nativeType = fileType;
-      }
       okButton_URL.setDisabled(false);
 
     } catch (MalformedURLException e) {
@@ -380,8 +359,7 @@ public class ImportController extends BaseController {
     } else if (extension.toLowerCase().equals("gz")) {
       importGzip(importedMedia);
     } else if (extension.toLowerCase().equals("bpmn")) {
-      importProcess(this.mainC, this, importedMedia.getStreamData(), name.split("\\.")[0],
-          this.nativeType, name);
+      importProcess(this.mainC, this, importedMedia.getStreamData(), name.split("\\.")[0], name);
     } else {
       // ignoredFiles += (ignoredFiles.isEmpty() ? "" : " ,") + name;
       note.show("Ignoring file with unknown extension: " + name);
@@ -475,17 +453,17 @@ public class ImportController extends BaseController {
   }
 
   private void importProcess(MainController mainC, ImportController importC, InputStream xml_is,
-      String processName, String nativeType, String filename) throws SuspendNotAllowedException,
-      InterruptedException, JAXBException, IOException, ExceptionDomains, ExceptionAllUsers {
+      String processName, String filename) throws SuspendNotAllowedException,
+      InterruptedException, IOException, ExceptionDomains, ExceptionAllUsers {
     ImportOneProcessController oneImport = new ImportOneProcessController(mainC, importC, xml_is,
-        processName, nativeType, filename, isPublicCheckbox.isChecked());
+        processName, BPMN_2_0, filename, isPublicCheckbox.isChecked());
     this.toImportList.add(oneImport);
   }
 
   /*
    * cancel all remaining imports
    */
-  public void cancelAll() throws InterruptedException, IOException {
+  public void cancelAll() {
     for (ImportOneProcessController aToImportList : this.toImportList) {
       if (aToImportList.getImportOneProcessWindow() != null) {
         this.ignoredFiles += ", " + aToImportList.getFileName();
@@ -513,8 +491,7 @@ public class ImportController extends BaseController {
 
   // remove from the list of processes to be imported
   // if the list exhausted, display a message and terminate import
-  public void deleteFromToBeImported(ImportOneProcessController importOneProcess)
-      throws IOException, InterruptedException {
+  public void deleteFromToBeImported(ImportOneProcessController importOneProcess) {
     this.toImportList.remove(importOneProcess);
 
     if (this.toImportList.size() == 0) {
@@ -523,7 +500,7 @@ public class ImportController extends BaseController {
     }
   }
 
-  public void reportImport() throws InterruptedException {
+  public void reportImport() {
     String report = "Import of " + this.importedList.size();
     if (this.importedList.size() == 0) {
       report += " process.";
@@ -543,7 +520,7 @@ public class ImportController extends BaseController {
    * Import all remaining files. Called from ImportOneProcessController after user clicked "OK all"
    * Apply default values to all file still to be imported: - version name - domain
    */
-  public void importAllProcess(String domain) throws InterruptedException, IOException {
+  public void importAllProcess(String domain) throws InterruptedException {
     List<ImportOneProcessController> importAll = new ArrayList<>();
     importAll.addAll(this.toImportList);
     for (ImportOneProcessController importOneProcess : importAll) {
