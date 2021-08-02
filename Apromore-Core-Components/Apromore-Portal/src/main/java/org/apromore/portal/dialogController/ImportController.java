@@ -97,7 +97,6 @@ public class ImportController extends BaseController {
   private MainController mainC;
   private Window importWindow;
 
-  private String nativeType;
   private String ignoredFiles;
 
   private Media media = null;
