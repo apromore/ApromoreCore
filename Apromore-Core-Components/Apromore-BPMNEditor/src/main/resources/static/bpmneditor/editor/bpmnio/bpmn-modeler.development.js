@@ -1416,7 +1416,7 @@ CmdHelper.setList = function(element, businessObject, listPropertyName, updatedO
 
 var elementHelper = __webpack_require__(10),
     ProcessSimulationHelper = __webpack_require__(9),
-    isDigit = __webpack_require__(23).isDigit;
+    isDigit = __webpack_require__(17).isDigit;
 
 var ValidationErrorHelper = {};
 
@@ -1777,7 +1777,7 @@ ValidationErrorHelper.validateGatewayProbabilities = function(bpmnFactory, eleme
         (el.executionProbability === '' || el.executionProbability === undefined || isNaN(el.executionProbability));
     });
 
-    var EPSILON = 0.01;
+    var EPSILON = 0.001;
     if (gateway.$type === 'bpmn:ExclusiveGateway' && nanProbabilityFlows.length === 0 &&
       (probabilitySum - 100 > EPSILON || Math.abs(probabilitySum + parseFloat(probability) - 100) > EPSILON)) {
       errorMessage = translate('probability.invalid.sum');
@@ -2068,8 +2068,8 @@ module.exports = root;
 
 var elementHelper = __webpack_require__(10),
     extensionElementsHelper = __webpack_require__(231),
-    createUUID = __webpack_require__(23).createUUID,
-    getRoot = __webpack_require__(23).getRoot;
+    createUUID = __webpack_require__(17).createUUID,
+    getRoot = __webpack_require__(17).getRoot;
 
 var ProcessSimulationHelper = {
   prevRoot: undefined
@@ -2641,12 +2641,53 @@ module.exports = isArrayLike;
 /* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
+var is = __webpack_require__(1).is;
+
+var createUUID = function() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+};
+
+var isDigit = function(value) {
+  return /^\d+(\.\d+)?$/.test(value);
+};
+
+function getRoot(elementRegistry) {
+  return elementRegistry.filter(function(element) {
+    return is(element, 'bpmn:Collaboration') || is(element, 'bpmn:Process');
+  })[0].businessObject;
+}
+
+/**
+ * @param {String} value Value to be fixed
+ * @returns {String} Fixed value
+ */
+var fixNumber = function(value) {
+  var dot = value.indexOf('.');
+  return (isNaN(value) || value === '') ? value : (
+    dot >= 0 && dot < value.length - 1 ? (Math.floor(+(value + 'e+2')) / 100).toString() : value
+  );
+};
+
+module.exports = {
+  createUUID: createUUID,
+  fixNumber: fixNumber,
+  isDigit: isDigit,
+  getRoot: getRoot
+};
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports, __webpack_require__) {
+
 module.exports = __webpack_require__(308);
 
 module.exports.Collection = __webpack_require__(120);
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;/*! Hammer.JS - v2.0.7 - 2016-04-22
@@ -5292,7 +5333,7 @@ if (true) {
 
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports) {
 
 /**
@@ -5327,7 +5368,7 @@ module.exports = isObjectLike;
 
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseIsNative = __webpack_require__(156),
@@ -5350,7 +5391,7 @@ module.exports = getNative;
 
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5430,7 +5471,7 @@ function escapeText(text) {
 
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseMatches = __webpack_require__(144),
@@ -5465,35 +5506,6 @@ function baseIteratee(value) {
 
 module.exports = baseIteratee;
 
-
-/***/ }),
-/* 23 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var is = __webpack_require__(1).is;
-
-var createUUID = function() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-    var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
-    return v.toString(16);
-  });
-};
-
-var isDigit = function(value) {
-  return /^\d+(\.\d+)?$/.test(value);
-};
-
-function getRoot(elementRegistry) {
-  return elementRegistry.filter(function(element) {
-    return is(element, 'bpmn:Collaboration') || is(element, 'bpmn:Process');
-  })[0].businessObject;
-}
-
-module.exports = {
-  createUUID: createUUID,
-  isDigit: isDigit,
-  getRoot: getRoot
-};
 
 /***/ }),
 /* 24 */
@@ -5873,7 +5885,7 @@ module.exports = baseEach;
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseIsArguments = __webpack_require__(133),
-    isObjectLike = __webpack_require__(19);
+    isObjectLike = __webpack_require__(20);
 
 /** Used for built-in method references. */
 var objectProto = Object.prototype;
@@ -6167,7 +6179,7 @@ module.exports = eq;
 /* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getNative = __webpack_require__(20);
+var getNative = __webpack_require__(21);
 
 /* Built-in method references that are verified to be native. */
 var nativeCreate = getNative(Object, 'create');
@@ -6204,7 +6216,7 @@ module.exports = getMapData;
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseGetTag = __webpack_require__(24),
-    isObjectLike = __webpack_require__(19);
+    isObjectLike = __webpack_require__(20);
 
 /** `Object#toString` result references. */
 var symbolTag = '[object Symbol]';
@@ -7561,7 +7573,7 @@ module.exports = isFunction;
 /* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getNative = __webpack_require__(20),
+var getNative = __webpack_require__(21),
     root = __webpack_require__(8);
 
 /* Built-in method references that are verified to be native. */
@@ -7958,6 +7970,7 @@ var entryFactory = __webpack_require__(7);
 var cmdHelper = __webpack_require__(4);
 
 var validationHelper = __webpack_require__(5);
+var fixNumber = __webpack_require__(17).fixNumber;
 
 var createDistributionTypeOptions = function(translate) {
   return [{
@@ -8047,6 +8060,10 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
       get: function(_element, _node) {
 
+        if (distribution.rawMean) {
+          return { mean: distribution.rawMean };
+        }
+
         if (distribution.mean === 'NaN') {
           return { mean: '' };
         }
@@ -8059,9 +8076,11 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
       },
 
       set: function(element, values, _node) {
+        var mean = fixNumber(values.mean);
+        distribution.rawMean = mean;
         return cmdHelper.updateBusinessObject(element, distribution, {
           mean: (isNaN(values.mean) || values.mean === '') ? values.mean :
-            (values.mean * timeUnits[distribution.timeUnit].unit).toString()
+            (mean * timeUnits[distribution.timeUnit].unit).toString()
         });
       },
 
@@ -8097,6 +8116,10 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
       get: function(_element, _node) {
 
+        if (distribution.rawArg1) {
+          return { arg1: distribution.rawArg1 };
+        }
+
         if (distribution.arg1 === 'NaN') {
           return { arg1: '' };
         }
@@ -8109,9 +8132,11 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
       },
 
       set: function(element, values, _node) {
+        var arg1 = fixNumber(values.arg1);
+        distribution.rawArg1 = arg1;
         return cmdHelper.updateBusinessObject(element, distribution, {
           arg1: (isNaN(values.arg1) || values.arg1 === '') ? values.arg1 :
-            (values.arg1 * timeUnits[distribution.timeUnit].unit).toString()
+            (arg1 * timeUnits[distribution.timeUnit].unit).toString()
         });
       },
 
@@ -8147,6 +8172,10 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
       get: function(_element, _node) {
 
+        if (distribution.rawArg2) {
+          return { arg2: distribution.rawArg2 };
+        }
+
         if (distribution.arg2 === 'NaN') {
           return { arg2: '' };
         }
@@ -8159,9 +8188,11 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
       },
 
       set: function(element, values, _node) {
+        var arg2 = fixNumber(values.arg2);
+        distribution.rawArg2 = arg2;
         return cmdHelper.updateBusinessObject(element, distribution, {
           arg2: (isNaN(values.arg2) || values.arg2 === '') ? values.arg2 :
-            (values.arg2 * timeUnits[distribution.timeUnit].unit).toString()
+            (arg2 * timeUnits[distribution.timeUnit].unit).toString()
         });
       },
 
@@ -8200,7 +8231,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
     return {
       'fixed': function() {
         distribution.arg1 = getValidModelValue(distribution.arg1);
-        distribution.arg1 = getValidModelValue(distribution.arg2);
+        distribution.arg2 = getValidModelValue(distribution.arg2);
 
         return [meanField({ label: translate('distribution.value') })];
       },
@@ -8321,6 +8352,9 @@ DistributionHelper.getDurationDistribution = function(bpmnFactory, element) {
       mean: 'NaN',
       arg1: 'NaN',
       arg2: 'NaN',
+      rawMean: 'NaN',
+      rawArg1: 'NaN',
+      rawArg2: 'NaN',
       timeUnit: 'seconds'
     }, element, bpmnFactory);
 
@@ -8342,6 +8376,9 @@ DistributionHelper.getArrivalRateDistribution = function(bpmnFactory, elementReg
       mean: 'NaN',
       arg1: 'NaN',
       arg2: 'NaN',
+      rawMean: 'NaN',
+      rawArg1: 'NaN',
+      rawArg2: 'NaN',
       timeUnit: 'seconds'
     }, processSimulationInfo, bpmnFactory);
 
@@ -8885,7 +8922,7 @@ module.exports = toSource;
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseIsEqualDeep = __webpack_require__(172),
-    isObjectLike = __webpack_require__(19);
+    isObjectLike = __webpack_require__(20);
 
 /**
  * The base implementation of `_.isEqual` which supports partial comparisons
@@ -9098,7 +9135,7 @@ module.exports = getTag;
 /* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getNative = __webpack_require__(20),
+var getNative = __webpack_require__(21),
     root = __webpack_require__(8);
 
 /* Built-in method references that are verified to be native. */
@@ -9111,7 +9148,7 @@ module.exports = Set;
 /* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getNative = __webpack_require__(20),
+var getNative = __webpack_require__(21),
     root = __webpack_require__(8);
 
 /* Built-in method references that are verified to be native. */
@@ -9269,7 +9306,7 @@ module.exports = castPath;
 
 var arrayFilter = __webpack_require__(56),
     baseFilter = __webpack_require__(205),
-    baseIteratee = __webpack_require__(22),
+    baseIteratee = __webpack_require__(23),
     isArray = __webpack_require__(6);
 
 /**
@@ -9345,7 +9382,7 @@ module.exports = setToString;
 /* 92 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getNative = __webpack_require__(20);
+var getNative = __webpack_require__(21);
 
 var defineProperty = (function() {
   try {
@@ -9792,7 +9829,8 @@ SequenceFlowHelper.getSequenceFlowById = function(bpmnFactory, elementRegistry, 
       'qbp:SequenceFlow',
       {
         elementId: id,
-        executionProbability: ''
+        executionProbability: '',
+        rawExecutionProbability: ''
       }, sequenceFlows, bpmnFactory
     );
 
@@ -9815,7 +9853,7 @@ var escapeHTML = __webpack_require__(11).escapeHTML;
 
 var domQuery = __webpack_require__(2).query;
 
-var entryFieldDescription = __webpack_require__(21);
+var entryFieldDescription = __webpack_require__(22);
 
 
 var textField = function(options, defaultParameters) {
@@ -9909,7 +9947,7 @@ var domify = __webpack_require__(2).domify;
 
 var forEach = __webpack_require__(12);
 
-var entryFieldDescription = __webpack_require__(21);
+var entryFieldDescription = __webpack_require__(22);
 
 
 var isList = function(list) {
@@ -10537,7 +10575,7 @@ module.exports = setWrapToString;
 
 var elementHelper = __webpack_require__(10),
     ProcessSimulationHelper = __webpack_require__(9),
-    createUUID = __webpack_require__(23).createUUID;
+    createUUID = __webpack_require__(17).createUUID;
 
 var ResourceHelper = {};
 
@@ -10612,7 +10650,7 @@ module.exports = ResourceHelper;
 var elementHelper = __webpack_require__(10),
     ProcessSimulationHelper = __webpack_require__(9),
     RuleHelper = __webpack_require__(118),
-    createUUID = __webpack_require__(23).createUUID;
+    createUUID = __webpack_require__(17).createUUID;
 
 var TimetableHelper = {};
 
@@ -10680,7 +10718,7 @@ module.exports = TimetableHelper;
 /***/ (function(module, exports, __webpack_require__) {
 
 var elementHelper = __webpack_require__(10),
-    createUUID = __webpack_require__(23).createUUID;
+    createUUID = __webpack_require__(17).createUUID;
 
 var RuleHelper = {};
 
@@ -11217,7 +11255,7 @@ module.exports = baseTimes;
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseGetTag = __webpack_require__(24),
-    isObjectLike = __webpack_require__(19);
+    isObjectLike = __webpack_require__(20);
 
 /** `Object#toString` result references. */
 var argsTag = '[object Arguments]';
@@ -11346,7 +11384,7 @@ module.exports = stubFalse;
 
 var baseGetTag = __webpack_require__(24),
     isLength = __webpack_require__(48),
-    isObjectLike = __webpack_require__(19);
+    isObjectLike = __webpack_require__(20);
 
 /** `Object#toString` result references. */
 var argsTag = '[object Arguments]',
@@ -11658,7 +11696,7 @@ UpdateBusinessObjectHandler.prototype.revert = function(context) {
 var arrayEach = __webpack_require__(47),
     baseCreate = __webpack_require__(34),
     baseForOwn = __webpack_require__(70),
-    baseIteratee = __webpack_require__(22),
+    baseIteratee = __webpack_require__(23),
     getPrototype = __webpack_require__(199),
     isArray = __webpack_require__(6),
     isBuffer = __webpack_require__(31),
@@ -13042,7 +13080,7 @@ module.exports = stubArray;
 /* 184 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getNative = __webpack_require__(20),
+var getNative = __webpack_require__(21),
     root = __webpack_require__(8);
 
 /* Built-in method references that are verified to be native. */
@@ -13055,7 +13093,7 @@ module.exports = DataView;
 /* 185 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getNative = __webpack_require__(20),
+var getNative = __webpack_require__(21),
     root = __webpack_require__(8);
 
 /* Built-in method references that are verified to be native. */
@@ -15789,7 +15827,7 @@ module.exports = createSet;
 /***/ (function(module, exports, __webpack_require__) {
 
 var isArrayLike = __webpack_require__(16),
-    isObjectLike = __webpack_require__(19);
+    isObjectLike = __webpack_require__(20);
 
 /**
  * This method is like `_.isArrayLike` except that it also checks if `value`
@@ -16128,7 +16166,7 @@ module.exports = keyBy;
 
 var arrayAggregator = __webpack_require__(225),
     baseAggregator = __webpack_require__(226),
-    baseIteratee = __webpack_require__(22),
+    baseIteratee = __webpack_require__(23),
     isArray = __webpack_require__(6);
 
 /**
@@ -16211,7 +16249,7 @@ module.exports = baseAggregator;
 /***/ (function(module, exports, __webpack_require__) {
 
 var arrayMap = __webpack_require__(58),
-    baseIteratee = __webpack_require__(22),
+    baseIteratee = __webpack_require__(23),
     baseMap = __webpack_require__(228),
     isArray = __webpack_require__(6);
 
@@ -16695,7 +16733,7 @@ var getBusinessObject = __webpack_require__(1).getBusinessObject,
     cmdHelper = __webpack_require__(4),
     escapeHTML = __webpack_require__(11).escapeHTML;
 
-var entryFieldDescription = __webpack_require__(21);
+var entryFieldDescription = __webpack_require__(22);
 
 
 var checkbox = function(options, defaultParameters) {
@@ -16783,7 +16821,7 @@ var domQuery = __webpack_require__(2).query;
 var escapeHTML = __webpack_require__(11).escapeHTML;
 
 var selectEntryFactory = __webpack_require__(102),
-    entryFieldDescription = __webpack_require__(21);
+    entryFieldDescription = __webpack_require__(22);
 
 
 /**
@@ -17134,7 +17172,7 @@ module.exports = find;
 /* 243 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseIteratee = __webpack_require__(22),
+var baseIteratee = __webpack_require__(23),
     isArrayLike = __webpack_require__(16),
     keys = __webpack_require__(15);
 
@@ -17166,7 +17204,7 @@ module.exports = createFind;
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseFindIndex = __webpack_require__(94),
-    baseIteratee = __webpack_require__(22),
+    baseIteratee = __webpack_require__(23),
     toInteger = __webpack_require__(104);
 
 /* Built-in method references for those with the same name as other `lodash` methods. */
@@ -17279,7 +17317,7 @@ module.exports = toFinite;
 
 var escapeHTML = __webpack_require__(11).escapeHTML;
 
-var entryFieldDescription = __webpack_require__(21);
+var entryFieldDescription = __webpack_require__(22);
 
 
 var textBox = function(options, defaultParameters) {
@@ -17403,7 +17441,7 @@ var filter = __webpack_require__(90),
 
 var domify = __webpack_require__(2).domify;
 
-var entryFieldDescription = __webpack_require__(21);
+var entryFieldDescription = __webpack_require__(22);
 
 var updateSelection = __webpack_require__(99);
 
@@ -17781,7 +17819,7 @@ module.exports = label;
 
 var escapeHTML = __webpack_require__(11).escapeHTML;
 
-var entryFieldDescription = __webpack_require__(21);
+var entryFieldDescription = __webpack_require__(22);
 
 var bind = __webpack_require__(251);
 
@@ -18234,7 +18272,7 @@ var LazyWrapper = __webpack_require__(63),
     LodashWrapper = __webpack_require__(112),
     baseLodash = __webpack_require__(64),
     isArray = __webpack_require__(6),
-    isObjectLike = __webpack_require__(19),
+    isObjectLike = __webpack_require__(20),
     wrapperClone = __webpack_require__(260);
 
 /** Used for built-in method references. */
@@ -19219,11 +19257,6 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 
       if (!selectedTimetable) {
         return {};
-      }
-
-      if (selectedTimetable.get('default') === 'true') {
-        //Add validate method here
-        Ap.common.notify('The default timetable cannot be deleted. It has been reset.', 'error');
       }
 
       suppressValidationError(bpmnFactory, elementRegistry, { elementId: selectedTimetable.id });
@@ -20230,6 +20263,7 @@ var getBusinessObject = __webpack_require__(1).getBusinessObject,
     SequenceFlowHelper = __webpack_require__(100);
 
 var validationErrorHelper = __webpack_require__(5);
+var fixNumber = __webpack_require__(17).fixNumber;
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
   var sequenceFlows = SequenceFlowHelper.getSequenceFlows(bpmnFactory, elementRegistry);
@@ -20250,6 +20284,9 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
       modelProperty: 'probability',
 
       get: function(_element, _node) {
+        if (sequenceFlow.rawExecutionProbability) {
+          return { probability : sequenceFlow.rawExecutionProbability };
+        }
         if (isNaN(sequenceFlow.executionProbability) || sequenceFlow.executionProbability === '') {
           return { probability : sequenceFlow.executionProbability };
         }
@@ -20258,9 +20295,11 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
       },
 
       set: function(element, properties, _node) {
+        var probability = fixNumber(properties.probability);
+        sequenceFlow.rawExecutionProbability = probability;
         return cmdHelper.updateBusinessObject(element, sequenceFlow, {
           executionProbability: (isNaN(properties.probability) || properties.probability === '') ? properties.probability :
-            (+(Math.round(properties.probability + 'e+2') + 'e-4')).toString()
+            (+(Math.round(probability + 'e+2') + 'e-4')).toString()
         });
       },
 
@@ -20578,7 +20617,7 @@ function applyToTag(style, options, obj) {
     style.removeAttribute('media');
   }
 
-  if (sourceMap && btoa) {
+  if (sourceMap && typeof btoa !== 'undefined') {
     css += "\n/*# sourceMappingURL=data:application/json;base64,".concat(btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))), " */");
   } // For old IE
 
@@ -24217,7 +24256,7 @@ ElementRegistry.prototype._validateId = function(id) {
 };
 
 // EXTERNAL MODULE: ./node_modules/object-refs/index.js
-var object_refs = __webpack_require__(17);
+var object_refs = __webpack_require__(18);
 var object_refs_default = /*#__PURE__*/__webpack_require__.n(object_refs);
 
 // CONCATENATED MODULE: ./node_modules/diagram-js/lib/model/index.js
@@ -25652,7 +25691,7 @@ var TYPE_CONVERTERS = {
   String: function(s) { return s; },
   Boolean: function(s) { return s === 'true'; },
   Integer: function(s) { return parseInt(s, 10); },
-  Real: function(s) { return parseFloat(s, 10); }
+  Real: function(s) { return parseFloat(s); }
 };
 
 /**
@@ -26390,6 +26429,7 @@ Moddle.prototype.createAny = function(name, nsUri, properties) {
   this.properties.defineDescriptor(element, descriptor);
   this.properties.defineModel(element, this);
   this.properties.define(element, '$parent', { enumerable: false, writable: true });
+  this.properties.define(element, '$instanceOf', { enumerable: false, writable: true });
 
   Object(dist_index_esm["i" /* forEach */])(properties, function(a, key) {
     if (Object(dist_index_esm["q" /* isObject */])(a) && a.value !== undefined) {
@@ -29274,7 +29314,7 @@ function Writer(options) {
 
 
 
-// CONCATENATED MODULE: ./node_modules/bpmn-js/node_modules/bpmn-moddle/dist/index.esm.js
+// CONCATENATED MODULE: ./node_modules/bpmn-moddle/dist/index.esm.js
 
 
 
@@ -40300,7 +40340,9 @@ KeyboardBindings.prototype.registerBindings = function(keyboard, editorActions) 
 
     var event = context.keyEvent;
 
-    if (isKey([ '+', 'Add' ], event) && isCmd(event)) {
+    // quirk: it has to be triggered by `=` as well to work on international keyboard layout
+    // cf: https://github.com/bpmn-io/bpmn-js/issues/1362#issuecomment-722989754
+    if (isKey([ '+', 'Add', '=' ], event) && isCmd(event)) {
       editorActions.trigger('stepZoom', { value: 1 });
 
       return true;
@@ -40981,7 +41023,7 @@ NavigatedViewer.prototype._modules = [].concat(
   NavigatedViewer.prototype._navigationModules
 );
 // EXTERNAL MODULE: ./node_modules/hammerjs/hammer.js
-var hammer = __webpack_require__(18);
+var hammer = __webpack_require__(19);
 var hammer_default = /*#__PURE__*/__webpack_require__.n(hammer);
 
 // CONCATENATED MODULE: ./node_modules/diagram-js/lib/features/touch/TouchInteractionEvents.js
@@ -42840,6 +42882,172 @@ BpmnAutoResizeProvider.prototype.canResize = function(elements, target) {
   bpmnAutoResizeProvider: [ 'type', BpmnAutoResizeProvider ]
 });
 
+// CONCATENATED MODULE: ./node_modules/diagram-js/lib/features/hover-fix/HoverFix.js
+
+
+
+
+var HIGH_PRIORITY = 1500;
+
+
+/**
+ * Browsers may swallow certain events (hover, out ...) if users are to
+ * fast with the mouse.
+ *
+ * @see http://stackoverflow.com/questions/7448468/why-cant-i-reliably-capture-a-mouseout-event
+ *
+ * The fix implemented in this component ensure that we
+ *
+ * 1) have a hover state after a successful drag.move event
+ * 2) have an out event when dragging leaves an element
+ *
+ * @param {ElementRegistry} elementRegistry
+ * @param {EventBus} eventBus
+ * @param {Injector} injector
+ */
+function HoverFix(elementRegistry, eventBus, injector) {
+
+  var self = this;
+
+  var dragging = injector.get('dragging', false);
+
+  /**
+   * Make sure we are god damn hovering!
+   *
+   * @param {Event} dragging event
+   */
+  function ensureHover(event) {
+
+    if (event.hover) {
+      return;
+    }
+
+    var originalEvent = event.originalEvent;
+
+    var gfx = self._findTargetGfx(originalEvent);
+
+    var element = gfx && elementRegistry.get(gfx);
+
+    if (gfx && element) {
+
+      // 1) cancel current mousemove
+      event.stopPropagation();
+
+      // 2) emit fake hover for new target
+      dragging.hover({ element: element, gfx: gfx });
+
+      // 3) re-trigger move event
+      dragging.move(originalEvent);
+    }
+  }
+
+
+  if (dragging) {
+
+    /**
+     * We wait for a specific sequence of events before
+     * emitting a fake drag.hover event.
+     *
+     * Event Sequence:
+     *
+     * drag.start
+     * drag.move >> ensure we are hovering
+     */
+    eventBus.on('drag.start', function(event) {
+
+      eventBus.once('drag.move', HIGH_PRIORITY, function(event) {
+
+        ensureHover(event);
+
+      });
+
+    });
+  }
+
+
+  /**
+   * We make sure that element.out is always fired, even if the
+   * browser swallows an element.out event.
+   *
+   * Event sequence:
+   *
+   * element.hover
+   * (element.out >> sometimes swallowed)
+   * element.hover >> ensure we fired element.out
+   */
+  (function() {
+    var hoverGfx;
+    var hover;
+
+    eventBus.on('element.hover', function(event) {
+
+      // (1) remember current hover element
+      hoverGfx = event.gfx;
+      hover = event.element;
+    });
+
+    eventBus.on('element.hover', HIGH_PRIORITY, function(event) {
+
+      // (3) am I on an element still?
+      if (hover) {
+
+        // (4) that is a problem, gotta "simulate the out"
+        eventBus.fire('element.out', {
+          element: hover,
+          gfx: hoverGfx
+        });
+      }
+
+    });
+
+    eventBus.on('element.out', function() {
+
+      // (2) unset hover state if we correctly outed us *GG*
+      hoverGfx = null;
+      hover = null;
+    });
+
+  })();
+
+  this._findTargetGfx = function(event) {
+    var position,
+        target;
+
+    if (!(event instanceof MouseEvent)) {
+      return;
+    }
+
+    position = toPoint(event);
+
+    // damn expensive operation, ouch!
+    target = document.elementFromPoint(position.x, position.y);
+
+    return HoverFix_getGfx(target);
+  };
+
+}
+
+HoverFix.$inject = [
+  'elementRegistry',
+  'eventBus',
+  'injector'
+];
+
+
+// helpers /////////////////////
+
+function HoverFix_getGfx(target) {
+  return Object(min_dom_dist_index_esm["closest"])(target, 'svg, .djs-element', true);
+}
+// CONCATENATED MODULE: ./node_modules/diagram-js/lib/features/hover-fix/index.js
+
+
+/* harmony default export */ var hover_fix = ({
+  __init__: [
+    'hoverFix'
+  ],
+  hoverFix: [ 'type', HoverFix ],
+});
 // CONCATENATED MODULE: ./node_modules/diagram-js/lib/features/dragging/Dragging.js
 /* global TouchEvent */
 
@@ -43390,183 +43598,19 @@ Dragging.$inject = [
   'elementRegistry'
 ];
 
-// CONCATENATED MODULE: ./node_modules/diagram-js/lib/features/dragging/HoverFix.js
-
-
-
-
-var HIGH_PRIORITY = 1500;
-
-
-/**
- * Browsers may swallow certain events (hover, out ...) if users are to
- * fast with the mouse.
- *
- * @see http://stackoverflow.com/questions/7448468/why-cant-i-reliably-capture-a-mouseout-event
- *
- * The fix implemented in this component ensure that we
- *
- * 1) have a hover state after a successful drag.move event
- * 2) have an out event when dragging leaves an element
- *
- * @param {EventBus} eventBus
- * @param {Dragging} dragging
- * @param {ElementRegistry} elementRegistry
- */
-function HoverFix(eventBus, dragging, elementRegistry) {
-
-  var self = this;
-
-  /**
-   * Make sure we are god damn hovering!
-   *
-   * @param {Event} dragging event
-   */
-  function ensureHover(event) {
-
-    if (event.hover) {
-      return;
-    }
-
-    var originalEvent = event.originalEvent;
-
-    var gfx = self._findTargetGfx(originalEvent);
-
-    var element = gfx && elementRegistry.get(gfx);
-
-    if (gfx && element) {
-
-      // 1) cancel current mousemove
-      event.stopPropagation();
-
-      // 2) emit fake hover for new target
-      dragging.hover({ element: element, gfx: gfx });
-
-      // 3) re-trigger move event
-      dragging.move(originalEvent);
-    }
-  }
-
-  /**
-   * We wait for a specific sequence of events before
-   * emitting a fake drag.hover event.
-   *
-   * Event Sequence:
-   *
-   * drag.start
-   * drag.move >> ensure we are hovering
-   */
-  eventBus.on('drag.start', function(event) {
-
-    eventBus.once('drag.move', HIGH_PRIORITY, function(event) {
-
-      ensureHover(event);
-
-    });
-
-  });
-
-
-  /**
-   * We make sure that drag.out is always fired, even if the
-   * browser swallows an element.out event.
-   *
-   * Event sequence:
-   *
-   * drag.hover
-   * (element.out >> sometimes swallowed)
-   * element.hover >> ensure we fired drag.out
-   */
-  eventBus.on('drag.init', function() {
-
-    var hover, hoverGfx;
-
-    function setDragHover(event) {
-      hover = event.hover;
-      hoverGfx = event.hoverGfx;
-    }
-
-    function unsetHover() {
-      hover = null;
-      hoverGfx = null;
-    }
-
-    function ensureOut() {
-
-      if (!hover) {
-        return;
-      }
-
-      var element = hover,
-          gfx = hoverGfx;
-
-      hover = null;
-      hoverGfx = null;
-
-      // emit synthetic out event
-      dragging.out({
-        element: element,
-        gfx: gfx
-      });
-    }
-
-    eventBus.on('drag.hover', setDragHover);
-    eventBus.on('element.out', unsetHover);
-    eventBus.on('element.hover', HIGH_PRIORITY, ensureOut);
-
-    eventBus.once('drag.cleanup', function() {
-      eventBus.off('drag.hover', setDragHover);
-      eventBus.off('element.out', unsetHover);
-      eventBus.off('element.hover', ensureOut);
-    });
-
-  });
-
-  this._findTargetGfx = function(event) {
-    var position,
-        target;
-
-    if (!(event instanceof MouseEvent)) {
-      return;
-    }
-
-    position = toPoint(event);
-
-    // damn expensive operation, ouch!
-    target = document.elementFromPoint(position.x, position.y);
-
-    return HoverFix_getGfx(target);
-  };
-
-}
-
-HoverFix.$inject = [
-  'eventBus',
-  'dragging',
-  'elementRegistry'
-];
-
-
-// helpers /////////////////////
-
-function HoverFix_getGfx(target) {
-  return Object(min_dom_dist_index_esm["closest"])(target, 'svg, .djs-element', true);
-}
 // CONCATENATED MODULE: ./node_modules/diagram-js/lib/features/dragging/index.js
 
 
 
 
 
+
 /* harmony default export */ var features_dragging = ({
-  __init__: [
-    'hoverFix'
-  ],
   __depends__: [
-    features_selection
+    hover_fix,
+    features_selection,
   ],
   dragging: [ 'type', Dragging ],
-  hoverFix: [ 'type', HoverFix ]
 });
 // CONCATENATED MODULE: ./node_modules/diagram-js/lib/features/auto-scroll/AutoScroll.js
 
@@ -46422,6 +46466,7 @@ TextBox.prototype.handlePaste = function(e) {
 };
 
 TextBox.prototype.insertText = function(text) {
+  text = normalizeEndOfLineSequences(text);
 
   // insertText command not supported by Internet Explorer
   var success = document.execCommand('insertText', false, text);
@@ -46663,6 +46708,11 @@ TextBox.prototype.setSelection = function(container, offset) {
   selection.addRange(range);
 };
 
+// helpers //////////
+
+function normalizeEndOfLineSequences(string) {
+  return string.replace(/\r\n|\r|\n/g, '\n');
+}
 // CONCATENATED MODULE: ./node_modules/diagram-js-direct-editing/lib/DirectEditing.js
 
 
