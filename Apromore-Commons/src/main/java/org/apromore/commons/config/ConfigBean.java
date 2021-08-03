@@ -52,6 +52,7 @@ public class ConfigBean {
   private int maxEventCount = 1000000;
 
   private String volumeExportDir;
+  private String volumeFileDir;
   private boolean templateEnabled;
 
   @Data
