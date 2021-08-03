@@ -275,13 +275,13 @@
           <h:img class="emblem" src="~./themes/${labels.theme}/common/img/brand/emblem-white.svg"/>
           <h:div class="ap-h-links">
             <html id="tcLink">
-              <h:a href="${labels.brand_urlTandC}">${labels.brand_textTandC}</h:a>
+              <h:a href="${labels.brand_urlTandC}" target="_blank">${labels.brand_textTandC}</h:a>
             </html>
             <html id="ppLink">
-              <h:a href="${labels.brand_urlPrivacy}">${labels.brand_textPrivacy}</h:a>
+              <h:a href="${labels.brand_urlPrivacy}" target="_blank">${labels.brand_textPrivacy}</h:a>
             </html>
             <html>
-              <h:a href="${labels.brand_urlContact}">${labels.brand_contact}</h:a>
+              <h:a href="${labels.brand_urlContact}" target="_blank">${labels.brand_contact}</h:a>
             </html>
           </h:div>
         </h:div>
