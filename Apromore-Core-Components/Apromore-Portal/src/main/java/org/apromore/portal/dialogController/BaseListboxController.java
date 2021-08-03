@@ -677,6 +677,7 @@ public abstract class BaseListboxController extends BaseController {
                 break;
               case Messagebox.NO:
                 break;
+              default:
             }
           }
         });
@@ -697,6 +698,7 @@ public abstract class BaseListboxController extends BaseController {
                 break;
               case Messagebox.NO:
                 break;
+              default:
             }
           }
         });
@@ -717,6 +719,7 @@ public abstract class BaseListboxController extends BaseController {
                 break;
               case Messagebox.NO:
                 break;
+              default:
             }
           }
         });
@@ -738,6 +741,7 @@ public abstract class BaseListboxController extends BaseController {
                 break;
               case Messagebox.NO:
                 break;
+              default:
             }
           }
         });
@@ -760,6 +764,7 @@ public abstract class BaseListboxController extends BaseController {
                 break;
               case Messagebox.NO:
                 break;
+              default:
             }
           }
         });
