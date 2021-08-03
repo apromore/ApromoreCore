@@ -894,6 +894,10 @@ tr.z-row-disabled td.z-row-inner .z-slider-area {
     display: none;
 }
 
+.z-timebox-button>a, .z-spinner-button>a, .z-doublespinner-button>a {
+    height: 12px;
+}
+
 /* Make pagination index input wider */
 .z-paging-input {
     width: 60px;
