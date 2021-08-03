@@ -27,10 +27,10 @@
           style="max-width: 1400px;"
           closable="true"
           title="Calendar Management" apply="org.apromore.plugin.portal.calendar.controllers.Calendars">
-    <script type="text/javascript" src="/libs/tippy/6.2.7/popper.min.js"></script>
-    <script type="text/javascript" src="/libs/tippy/6.2.7/tippy-bundle.umd.min.js"></script>
-    <script type="text/javascript" src="/calendar/js/index.js"></script>
-    <style src="/calendar/css/index.css" />
+    <script type="text/javascript" src="./libs/tippy/6.2.7/popper.min.js"></script>
+    <script type="text/javascript" src="./libs/tippy/6.2.7/tippy-bundle.umd.min.js"></script>
+    <script type="text/javascript" src="./calendar/js/index.js"></script>
+    <style src="./calendar/css/index.css" />
     <vbox id="calendarsWrapper" hflex="1" vflex="1" spacing="0">
     <hbox sclass="ap-window-header-actions" hflex="1" align="start" pack="start" spacing="0"
             style="padding: 8px;">

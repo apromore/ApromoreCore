@@ -10,7 +10,6 @@ dependencies {
 	implementation project(':Apromore-Zk')
 	implementation project(':Apromore-Custom-Plugins')
 	implementation project(':Apromore-Plugins:plugin-core:core:api')
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 }
 
 bootJar {
@@ -44,16 +43,6 @@ processResources {
 	}
 
 
-
-	//from ('../Apromore-Core-Components/Apromore-Portal/src/main/webapp/WEB-INF') {
-	//	include 'zk.xml'
-	//	into 'metainfo/zk'
-	//}
-
-	//from ('../Apromore-Core-Components/Apromore-Portal/src/main/webapp/WEB-INF') {
-	//	include 'zk-label.properties'
-	//	into 'metainfo'
-	//}
 	
 	
 
@@ -76,6 +65,10 @@ processResources {
 	}
 
 	from ('../Apromore-Custom-Plugins/Process-Discoverer-Portal-Plugin/src/main/resources/static') {
+		into 'web'
+	}
+	
+	from ('../Apromore-Custom-Plugins/Calendar-Portal/src/main/resources/static') {
 		into 'web'
 	}
 

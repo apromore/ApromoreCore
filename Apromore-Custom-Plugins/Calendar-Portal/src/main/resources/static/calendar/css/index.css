@@ -35,7 +35,7 @@
 
 .ap-calendars-listbox .z-listitem-selected .z-listitem-radio {
     opacity: 1;
-    background-image: url('/themes/ap/common/img/icons/check-circle.svg');
+    background-image: url('/zkau/web/themes/ap/common/img/icons/check-circle.svg');
     background-size: auto 16px !important;
 }
 

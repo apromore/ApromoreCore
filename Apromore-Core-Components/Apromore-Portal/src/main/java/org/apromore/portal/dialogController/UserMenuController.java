@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.SortedMap;
 import java.util.TreeMap;
+
 import org.apromore.manager.client.ManagerService;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
@@ -58,164 +59,163 @@ import org.zkoss.zul.Menu;
 import org.zkoss.zul.Menubar;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Menupopup;
+
 import com.google.common.base.Strings;
 
 @VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
 public class UserMenuController extends SelectorComposer<Menubar> {
 
-  private static final Logger LOGGER = PortalLoggerFactory.getLogger(UserMenuController.class);
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(UserMenuController.class);
 
-  private static final String JWTS_MAP_BY_USER_KEY = TokenHandoffController.JWTS_MAP_BY_USER_KEY;
+    private Menuitem aboutMenuitem;
 
-  private Menuitem aboutMenuitem;
+    @WireVariable("managerClient")
+    private ManagerService managerService;
 
-  @WireVariable("managerClient")
-  private ManagerService managerService;
+    @WireVariable
+    private EventLogService eventLogService;
 
-  @WireVariable
-  private EventLogService eventLogService;
+    protected AutowireCapableBeanFactory beanFactory;
 
-  protected AutowireCapableBeanFactory beanFactory;
+    public UserMenuController() {
 
-
-  public UserMenuController() {
-
-  }
-
-
-
-  public static final String getDisplayName(UserType userType) {
-    String displayName = "";
-    String firstName = userType.getFirstName();
-    String lastName = userType.getLastName();
-
-    if (Strings.isNullOrEmpty(firstName)) {
-      displayName = (Strings.isNullOrEmpty(lastName)) ? userType.getUsername() : lastName;
-    } else {
-      displayName = (Strings.isNullOrEmpty(lastName)) ? firstName : lastName + ", " + firstName;
     }
-    if (LabelConstants.TRUE.equals(Labels.getLabel(LabelConstants.IS_DISPLAYNAME_CAPITALIZED))) {
-      displayName = displayName.toUpperCase();
+
+    public static final String getDisplayName(UserType userType) {
+	String displayName = "";
+	String firstName = userType.getFirstName();
+	String lastName = userType.getLastName();
+
+	if (Strings.isNullOrEmpty(firstName)) {
+	    displayName = (Strings.isNullOrEmpty(lastName)) ? userType.getUsername() : lastName;
+	} else {
+	    displayName = (Strings.isNullOrEmpty(lastName)) ? firstName : lastName + ", " + firstName;
+	}
+	if (LabelConstants.TRUE.equals(Labels.getLabel(LabelConstants.IS_DISPLAYNAME_CAPITALIZED))) {
+	    displayName = displayName.toUpperCase();
+	}
+	return displayName;
     }
-    return displayName;
-  }
 
-  @Override
-  public void doAfterCompose(Menubar menubar) {
-    // If there are portal plugins, create the menus for launching them
-    UserSessionManager.initializeUser(managerService, eventLogService.getConfigBean(), null, null);;
-    if (!PortalPluginResolver.resolve().isEmpty()) {
+    @Override
+    public void doAfterCompose(Menubar menubar) {
+	// If there are portal plugins, create the menus for launching them
+	UserSessionManager.initializeUser(managerService, eventLogService.getConfigBean(), null, null);
+	;
+	if (!PortalPluginResolver.resolve().isEmpty()) {
 
-      // If present, this comparator expresses the preferred ordering for menus along the the menu
-      // bar
-      Comparator<String> ordering = (ExplicitComparator) SpringUtil.getBean("portalMenuOrder");
+	    // If present, this comparator expresses the preferred ordering for menus along
+	    // the the menu
+	    // bar
+	    Comparator<String> ordering = (ExplicitComparator) SpringUtil.getBean("portalMenuOrder");
 
-      SortedMap<String, Menu> menuMap = new TreeMap<>(ordering);
-      for (final PortalPlugin plugin : PortalPluginResolver.resolve()) {
-        PortalPlugin.Availability availability = plugin.getAvailability();
-        if (availability == PortalPlugin.Availability.UNAVAILABLE
-            || availability == PortalPlugin.Availability.HIDDEN) {
-          continue;
-        }
+	    SortedMap<String, Menu> menuMap = new TreeMap<>(ordering);
+	    for (final PortalPlugin plugin : PortalPluginResolver.resolve()) {
+		PortalPlugin.Availability availability = plugin.getAvailability();
+		if (availability == PortalPlugin.Availability.UNAVAILABLE
+		        || availability == PortalPlugin.Availability.HIDDEN) {
+		    continue;
+		}
 
-        String group = plugin.getGroup(Locale.getDefault());
-        String menuName = plugin.getGroupLabel(Locale.getDefault());
-        String label = plugin.getLabel(Locale.getDefault());
+		String group = plugin.getGroup(Locale.getDefault());
+		String menuName = plugin.getGroupLabel(Locale.getDefault());
+		String label = plugin.getLabel(Locale.getDefault());
 
-        // Create a new menu if this is the first menu item within it
-        if (!menuMap.containsKey(group)) {
-          Menu menu = new Menu(menuName);
-          menu.appendChild(new Menupopup());
-          menuMap.put(group, menu);
-        }
-        assert menuMap.containsKey(group);
+		// Create a new menu if this is the first menu item within it
+		if (!menuMap.containsKey(group)) {
+		    Menu menu = new Menu(menuName);
+		    menu.appendChild(new Menupopup());
+		    menuMap.put(group, menu);
+		}
+		assert menuMap.containsKey(group);
 
-        // Create the menu item
-        Menu menu = menuMap.get(group);
-        Menuitem menuitem = new Menuitem();
-        if (plugin.getIconPath().startsWith("/")) {
-          menuitem.setImage(plugin.getIconPath());
+		// Create the menu item
+		Menu menu = menuMap.get(group);
+		Menuitem menuitem = new Menuitem();
+		if (plugin.getIconPath().startsWith("/")) {
+		    menuitem.setImage(plugin.getIconPath());
 
-        } else if (plugin.getResourceAsStream(plugin.getIconPath()) != null) {
-          menuitem.setImage("/portalPluginResource/" + plugin.getIconPath());
+		} else if (plugin.getResourceAsStream(plugin.getIconPath()) != null) {
+		    menuitem.setImage("/portalPluginResource/" + plugin.getIconPath());
 
-        } else {
-          menuitem.setImageContent(plugin.getIcon());
-        }
-        menuitem.setLabel(label);
-        menuitem.setDisabled(plugin.getAvailability() == PortalPlugin.Availability.DISABLED);
-        menuitem.addEventListener("onClick", new EventListener<Event>() {
-          @Override
-          public void onEvent(Event event) throws Exception {
-            PortalContext portalContext =
-                (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
-            plugin.execute(portalContext);
-          }
-        });
+		} else {
+		    menuitem.setImageContent(plugin.getIcon());
+		}
+		menuitem.setLabel(label);
+		menuitem.setDisabled(plugin.getAvailability() == PortalPlugin.Availability.DISABLED);
+		menuitem.addEventListener("onClick", new EventListener<Event>() {
+		    @Override
+		    public void onEvent(Event event) throws Exception {
+			PortalContext portalContext = (PortalContext) Sessions.getCurrent()
+			        .getAttribute("portalContext");
+			plugin.execute(portalContext);
+		    }
+		});
 
-        if ("About".equals(menu.getLabel())) {
-          aboutMenuitem = menuitem;
-          continue;
-        }
+		if ("About".equals(menu.getLabel())) {
+		    aboutMenuitem = menuitem;
+		    continue;
+		}
 
-        // Insert the menu item into alphabetical position within the menu
-        Menuitem precedingMenuitem = null;
-        List<Menuitem> existingMenuitems = menu.getMenupopup().getChildren();
-        for (Menuitem existingMenuitem : existingMenuitems) {
-          int comparison = menuitem.getLabel().compareTo(existingMenuitem.getLabel());
+		// Insert the menu item into alphabetical position within the menu
+		Menuitem precedingMenuitem = null;
+		List<Menuitem> existingMenuitems = menu.getMenupopup().getChildren();
+		for (Menuitem existingMenuitem : existingMenuitems) {
+		    int comparison = menuitem.getLabel().compareTo(existingMenuitem.getLabel());
 
-          if (comparison <= 0) {
-            precedingMenuitem = existingMenuitem;
-            break;
-          }
-        }
-        menu.getMenupopup().insertBefore(menuitem, precedingMenuitem);
+		    if (comparison <= 0) {
+			precedingMenuitem = existingMenuitem;
+			break;
+		    }
+		}
+		menu.getMenupopup().insertBefore(menuitem, precedingMenuitem);
 
-      }
+	    }
 
-      for (final Menu menu : menuMap.values()) {
-        if ("Account".equals(menu.getLabel())) {
-          try {
-            Menupopup userMenupopup = menu.getMenupopup();
-            userMenupopup.insertBefore(aboutMenuitem, userMenupopup.getFirstChild());
-            UserType userType = UserSessionManager.getCurrentUser();
-            if (userType != null) {
-              menu.setLabel(getDisplayName(userType));
-            }
-            menubar.appendChild(menu);
-          } catch (Exception e) {
-            LOGGER.warn("Unable to set Account menu to current user name", e);
-          }
-        }
-      }
+	    for (final Menu menu : menuMap.values()) {
+		if ("Account".equals(menu.getLabel())) {
+		    try {
+			Menupopup userMenupopup = menu.getMenupopup();
+			userMenupopup.insertBefore(aboutMenuitem, userMenupopup.getFirstChild());
+			UserType userType = UserSessionManager.getCurrentUser();
+			if (userType != null) {
+			    menu.setLabel(getDisplayName(userType));
+			}
+			menubar.appendChild(menu);
+		    } catch (Exception e) {
+			LOGGER.warn("Unable to set Account menu to current user name", e);
+		    }
+		}
+	    }
 
-      // The signOutQueue receives events whose data is a ZK session which has signed out
-      // If this desktop is part of a signed-out session, close the browser tab or switch to login
-      EventQueues.lookup("signOutQueue", EventQueues.DESKTOP, true).subscribe(new EventListener() {
-        public void onEvent(Event event) {
-          Session session = Sessions.getCurrent();
+	    // The signOutQueue receives events whose data is a ZK session which has signed
+	    // out
+	    // If this desktop is part of a signed-out session, close the browser tab or
+	    // switch to login
+	    EventQueues.lookup("signOutQueue", EventQueues.DESKTOP, true).subscribe(new EventListener() {
+		public void onEvent(Event event) {
+		    Session session = Sessions.getCurrent();
 
-          if (session != null) {
-            if (!eventLogService.getConfigBean().getKeycloak().isEnabled()) {
-              session.invalidate();
-            }
-            Executions.sendRedirect("/logout");
-          }
-        }
-      });
+		    if (session != null) {
+			if (!eventLogService.getConfigBean().getKeycloak().isEnabled()) {
+			    session.invalidate();
+			}
+			Executions.sendRedirect("/logout");
+		    }
+		}
+	    });
 
-      // Force logout a user that has been deleted by admin
-      EventQueues.lookup("forceSignOutQueue", EventQueues.APPLICATION, true)
-          .subscribe(new EventListener() {
-            public void onEvent(Event event) {
-              Session session = Sessions.getCurrent();
+	    // Force logout a user that has been deleted by admin
+	    EventQueues.lookup("forceSignOutQueue", EventQueues.APPLICATION, true).subscribe(new EventListener() {
+		public void onEvent(Event event) {
+		    Session session = Sessions.getCurrent();
 
-              UserType userType = (UserType) Sessions.getCurrent().getAttribute("USER");
-              if (session == null || event.getData().equals(userType.getUsername())) {
-                Executions.sendRedirect("/logout");
-              }
-            }
-          });
+		    UserType userType = (UserType) Sessions.getCurrent().getAttribute("USER");
+		    if (session == null || event.getData().equals(userType.getUsername())) {
+			Executions.sendRedirect("/logout");
+		    }
+		}
+	    });
+	}
     }
-  }
 }
