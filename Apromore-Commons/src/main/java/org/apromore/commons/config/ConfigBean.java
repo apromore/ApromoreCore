@@ -48,6 +48,7 @@ public class ConfigBean {
     private Keycloak keycloak = new Keycloak();
     private Logs logs = new Logs();
     private Storage storage = new Storage();
+    private Cache cache = new Cache();
 
     private int maxEventCount = 1000000;
 
@@ -58,6 +59,13 @@ public class ConfigBean {
     @Data
     public class Logs {
 	private String dir = "../Event-Logs-Repository";
+
+    }
+
+    @Data
+    public class Cache {
+	private String numOfEvent;
+	private String numOfTrace;
 
     }
 

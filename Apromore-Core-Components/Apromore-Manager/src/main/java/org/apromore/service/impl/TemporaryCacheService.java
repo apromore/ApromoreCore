@@ -115,9 +115,8 @@ public class TemporaryCacheService {
 
     private static final String APMLOG_CACHE_KEY_SUFFIX = "APMLog";
 
-    public Storage storeProcessLog(final Integer folderId, final String logName, XLog log,
-	    final Integer userID,
-	    final String domain, final String created) {
+    public Storage storeProcessLog(final Integer folderId, final String logName, XLog log, final Integer userID,
+            final String domain, final String created) {
 
 	Storage storage = new Storage();
 	LOGGER.debug("Storing Log {} {}", log.size(), logName);
@@ -136,18 +135,21 @@ public class TemporaryCacheService {
 		if (shouldCache(log)) {
 		    // Store corresponding object into cache
 		    cacheRepo.put(name, log);
-			LOGGER.debug("Put XLog [hash: {}] into Cache [{}] using Key [{}].", log.hashCode(), cacheRepo.getCacheName(), logNameId);
+		    LOGGER.debug("Put XLog [hash: {}] into Cache [{}] using Key [{}].", log.hashCode(),
+		            cacheRepo.getCacheName(), logNameId);
 
-			APMLog apmLog = apmLogService.findAPMLogForXLog(log);
+		    APMLog apmLog = apmLogService.findAPMLogForXLog(log);
 		    if (apmLog != null) {
-				cacheRepo.put(name + APMLOG_CACHE_KEY_SUFFIX, apmLog);
-				LOGGER.debug("Put APMLog [hash: {}] into Cache [{}] using Key [{}].", log.hashCode(), cacheRepo.getCacheName(), logNameId + APMLOG_CACHE_KEY_SUFFIX);
-			} else {
-				LOGGER.debug("The APMLog of XLog [hash: {}] is null, skip caching.", log.hashCode());
-			}
+			cacheRepo.put(name + APMLOG_CACHE_KEY_SUFFIX, apmLog);
+			LOGGER.debug("Put APMLog [hash: {}] into Cache [{}] using Key [{}].", log.hashCode(),
+			        cacheRepo.getCacheName(), logNameId + APMLOG_CACHE_KEY_SUFFIX);
+		    } else {
+			LOGGER.debug("The APMLog of XLog [hash: {}] is null, skip caching.", log.hashCode());
+		    }
 
 		    LOGGER.debug("Memory Used: {} MB", getMemoryUsage().getUsed() / 1024 / 1024);
-		    LOGGER.debug("Memory Available: {} MB", (getMemoryUsage().getMax() - getMemoryUsage().getUsed()) / 1024 / 1024);
+		    LOGGER.debug("Memory Available: {} MB",
+		            (getMemoryUsage().getMax() - getMemoryUsage().getUsed()) / 1024 / 1024);
 		    LOGGER.debug("The number of elements in the memory store = {}", cacheRepo.getMemoryStoreSize());
 		} else {
 		    LOGGER.debug("The total number of events in this log exceed cache threshold");
@@ -165,7 +167,7 @@ public class TemporaryCacheService {
     public void deleteProcessLog(Log log) {
 	if (log != null) {
 	    try {
-		String storagePath = "FILE"+StorageType.STORAGE_PATH_SEPARATOR + config.getLogsDir();
+		String storagePath = "FILE" + StorageType.STORAGE_PATH_SEPARATOR + config.getLogsDir();
 		String prefix = null;
 		String key = log.getFilePath() + "_" + log.getName() + ".xes.gz";
 
@@ -209,7 +211,7 @@ public class TemporaryCacheService {
 
 	    String key = log.getFilePath() + "_" + log.getName() + ".xes.gz";
 	    String prefix = null;
-	    String storagePath = "FILE"+StorageType.STORAGE_PATH_SEPARATOR + config.getLogsDir();
+	    String storagePath = "FILE" + StorageType.STORAGE_PATH_SEPARATOR + config.getLogsDir();
 
 	    if (log.getStorage() != null) {
 		key = log.getStorage().getKey();
@@ -228,37 +230,39 @@ public class TemporaryCacheService {
 
 		    XFactory factory = getXFactory(factoryName);
 		    InputStream inputStream = storageClient.getInputStream(prefix, key);
-		    XLog xlog = importFromFile(factory,
-			    inputStream,
-			    key);
+		    XLog xlog = importFromFile(factory, inputStream, key);
 
 		    inputStream.close();
 		    // ******* profiling code start here ********
 		    elapsedNanos = System.nanoTime() - startTime;
-		    LOGGER.debug("Retrieved XES log {} [{}]. Elapsed time: {} ms", key, xlog.hashCode(), elapsedNanos / 1000000);
+		    LOGGER.debug("Retrieved XES log {} [{}]. Elapsed time: {} ms", key, xlog.hashCode(),
+		            elapsedNanos / 1000000);
 		    LOGGER.debug("Memory Used: {} MB", getMemoryUsage().getUsed() / 1024 / 1024);
-		    LOGGER.debug("Memory Available: {} MB", (getMemoryUsage().getMax() - getMemoryUsage().getUsed()) / 1024 / 1024);
+		    LOGGER.debug("Memory Available: {} MB",
+		            (getMemoryUsage().getMax() - getMemoryUsage().getUsed()) / 1024 / 1024);
 		    startTime = System.nanoTime();
 		    // ******* profiling code end here ********
 
 		    if (shouldCache(xlog)) {
 			cacheRepo.put(key, xlog);
 			elapsedNanos = System.nanoTime() - startTime;
-			LOGGER.debug("Cache XLog [KEY:{}" + key + "]. " + "Elapsed time: {} ms.", key, elapsedNanos / 1000000);
+			LOGGER.debug("Cache XLog [KEY:{}" + key + "]. " + "Elapsed time: {} ms.", key,
+			        elapsedNanos / 1000000);
 
 			startTime = System.nanoTime();
 			APMLog apmLog = apmLogService.findAPMLogForXLog(xlog);
 			if (apmLog != null) {
-				cacheRepo.put(key + APMLOG_CACHE_KEY_SUFFIX, apmLog);
-				elapsedNanos = System.nanoTime() - startTime;
-				LOGGER.debug("Construct and cache APMLog [KEY:{}]. Elapsed time: {} ms.", key + APMLOG_CACHE_KEY_SUFFIX,
-						elapsedNanos / 1000000);
+			    cacheRepo.put(key + APMLOG_CACHE_KEY_SUFFIX, apmLog);
+			    elapsedNanos = System.nanoTime() - startTime;
+			    LOGGER.debug("Construct and cache APMLog [KEY:{}]. Elapsed time: {} ms.",
+			            key + APMLOG_CACHE_KEY_SUFFIX, elapsedNanos / 1000000);
 			} else {
-				LOGGER.debug("The APMLog of XLog [hash: {}] is null, skip caching.", xlog.hashCode());
+			    LOGGER.debug("The APMLog of XLog [hash: {}] is null, skip caching.", xlog.hashCode());
 			}
 
 			LOGGER.debug("Memory Used: {} MB", getMemoryUsage().getUsed() / 1024 / 1024);
-			LOGGER.debug("Memory Available: {} MB", (getMemoryUsage().getMax() - getMemoryUsage().getUsed()) / 1024 / 1024);
+			LOGGER.debug("Memory Available: {} MB",
+			        (getMemoryUsage().getMax() - getMemoryUsage().getUsed()) / 1024 / 1024);
 			LOGGER.debug("The number of elements in the memory store = {}", cacheRepo.getMemoryStoreSize());
 		    } else {
 			LOGGER.debug("The total number of events in this log exceed cache threshold");
@@ -271,7 +275,8 @@ public class TemporaryCacheService {
 
 	    } else {
 		// If cache hit
-		LOGGER.debug("Get XLog [HASH:{} KEY:{}] from cache [{}]", element.hashCode(), key, cacheRepo.getCacheName());
+		LOGGER.debug("Get XLog [HASH:{} KEY:{}] from cache [{}]", element.hashCode(), key,
+		        cacheRepo.getCacheName());
 		LOGGER.debug("Memory Used: {} MB", getMemoryUsage().getUsed() / 1024 / 1024);
 		return element;
 	    }
@@ -299,13 +304,13 @@ public class TemporaryCacheService {
 	    // ******* profiling code end here ********
 
 	    String key = log.getFilePath() + APMLOG_CACHE_KEY_SUFFIX;
-		if (log.getStorage() != null) {
-                    key = log.getStorage().getKey() + APMLOG_CACHE_KEY_SUFFIX;
-		}
+	    if (log.getStorage() != null) {
+		key = log.getStorage().getKey() + APMLOG_CACHE_KEY_SUFFIX;
+	    }
 
-		APMLog element = (APMLog) cacheRepo.get(key);
+	    APMLog element = (APMLog) cacheRepo.get(key);
 
-		if (element == null) {
+	    if (element == null) {
 		// If doesn't hit cache
 		LOGGER.debug("Cache for [KEY: {}] is null.", key);
 
@@ -316,7 +321,8 @@ public class TemporaryCacheService {
 		    if (shouldCache(xLog)) {
 			cacheRepo.put(key, apmLog);
 			elapsedNanos = System.nanoTime() - startTime;
-			LOGGER.debug("Put APMLog [KEY:{}] into Cache. Elapsed time: {} ms.", key, elapsedNanos / 1000000);
+			LOGGER.debug("Put APMLog [KEY:{}] into Cache. Elapsed time: {} ms.", key,
+			        elapsedNanos / 1000000);
 			LOGGER.debug("The number of elements in the memory store = {}", cacheRepo.getMemoryStoreSize());
 		    }
 
@@ -328,7 +334,8 @@ public class TemporaryCacheService {
 
 	    } else {
 		// If cache hit
-		LOGGER.debug("Get APMLog [HASH:{} KEY:{}] from cache [{}]", element.hashCode(), key, cacheRepo.getCacheName());
+		LOGGER.debug("Get APMLog [HASH:{} KEY:{}] from cache [{}]", element.hashCode(), key,
+		        cacheRepo.getCacheName());
 		return element;
 	    }
 	}
@@ -357,15 +364,15 @@ public class TemporaryCacheService {
 	}
 
 	try {
-	    numOfEventsLimit = Integer.parseInt(config.getNumOfEvent().replaceAll(",", ""));
-	    numOfTracesLimit = Integer.parseInt(config.getNumOfTrace().replaceAll(",", ""));
+	    numOfEventsLimit = Integer.parseInt(config.getCache().getNumOfEvent().replaceAll(",", ""));
+	    numOfTracesLimit = Integer.parseInt(config.getCache().getNumOfTrace().replaceAll(",", ""));
 
 	} catch (NumberFormatException e) {
 	    LOGGER.error("Cache threshold value is wrong, please check the setting in config file", e);
 	}
 
 	if ((numOfEventsLimit != 0 && numberOfEvents > numOfEventsLimit)
-		|| (numOfTracesLimit != 0 && numberOfTraces > numOfTracesLimit)) {
+	        || (numOfTracesLimit != 0 && numberOfTraces > numOfTracesLimit)) {
 	    return false;
 	}
 
@@ -419,7 +426,7 @@ public class TemporaryCacheService {
 	try {
 	    logs = parser.parse(inputStream);
 	} catch (Exception e) {
-            LOGGER.error("Unable to parse logs from stream", e);
+	    LOGGER.error("Unable to parse logs from stream", e);
 	    logs = null;
 	}
 	if (logs == null) {
@@ -461,12 +468,13 @@ public class TemporaryCacheService {
     public void exportToInputStream(XLog log, String name, XSerializer serializer) {
 
 	try {
-	    OutputStream outputStream = storageFactory.getStorageClient(config.getStoragePath()).getOutputStream("log", name);
+	    OutputStream outputStream = storageFactory.getStorageClient(config.getStoragePath()).getOutputStream("log",
+	            name);
 	    serializer.serialize(log, outputStream);
 	    outputStream.close();
 
 	} catch (Exception e) {
-            LOGGER.error("Unable to export log " + name + " to input stream", e);
+	    LOGGER.error("Unable to export log " + name + " to input stream", e);
 	}
     }
 
