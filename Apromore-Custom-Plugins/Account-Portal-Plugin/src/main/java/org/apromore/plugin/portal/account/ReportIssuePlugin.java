@@ -23,6 +23,7 @@
 package org.apromore.plugin.portal.account;
 
 import java.util.Locale;
+
 import org.apromore.commons.config.ConfigBean;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
@@ -36,44 +37,44 @@ import org.zkoss.zk.ui.util.Clients;
 @Component
 public class ReportIssuePlugin extends DefaultPortalPlugin {
 
-  private static Logger LOGGER = PortalLoggerFactory.getLogger(ReportIssuePlugin.class);
+    private static Logger LOGGER = PortalLoggerFactory.getLogger(ReportIssuePlugin.class);
 
-  private String label = "Report issue";
-  private String groupLabel = "Account";
+    private String label = "Report issue";
+    private String groupLabel = "Account";
 
-  @Autowired
-  ConfigBean config;
+    @Autowired
+    ConfigBean config;
 
-  // PortalPlugin overrides
+    // PortalPlugin overrides
 
-  @Override
-  public Availability getAvailability() {
-    String email = config.getContactEmail();
+    @Override
+    public Availability getAvailability() {
+	String email = config.getSite().getContactEmail();
 
-    return (email == null || email.isEmpty() || email.indexOf("@") < 0) ? Availability.UNAVAILABLE
-        : Availability.AVAILABLE;
-  }
+	return (email == null || email.isEmpty() || email.indexOf("@") < 0) ? Availability.UNAVAILABLE
+	        : Availability.AVAILABLE;
+    }
 
-  @Override
-  public String getLabel(Locale locale) {
-    return label;
-  }
+    @Override
+    public String getLabel(Locale locale) {
+	return label;
+    }
 
-  @Override
-  public String getGroupLabel(Locale locale) {
-    return groupLabel;
-  }
+    @Override
+    public String getGroupLabel(Locale locale) {
+	return groupLabel;
+    }
 
-  @Override
-  public String getIconPath() {
-    return "report-issue.svg";
-  }
+    @Override
+    public String getIconPath() {
+	return "report-issue.svg";
+    }
 
-  @Override
-  public void execute(PortalContext portalContext) {
-    String email = portalContext.getMainController().getContactEmail();
-    String userName = UserSessionManager.getCurrentUser().getUsername();
-    LOGGER.info("launch mail client");
-    Clients.evalJavaScript("Ap.common.reportIssue('" + email + "', '" + userName + "');");
-  }
+    @Override
+    public void execute(PortalContext portalContext) {
+	String email = portalContext.getMainController().getContactEmail();
+	String userName = UserSessionManager.getCurrentUser().getUsername();
+	LOGGER.info("launch mail client");
+	Clients.evalJavaScript("Ap.common.reportIssue('" + email + "', '" + userName + "');");
+    }
 }

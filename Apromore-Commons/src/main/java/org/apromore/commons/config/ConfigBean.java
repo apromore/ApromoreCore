@@ -25,6 +25,7 @@
 package org.apromore.commons.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -35,185 +36,106 @@ import lombok.NoArgsConstructor;
 @ConfigurationProperties
 public class ConfigBean {
 
-  private String numOfEvent;
-  private String numOfTrace;
-  // Fallback Storage path
+    private String numOfEvent;
+    private String numOfTrace;
+    // Fallback Storage path
 
+    private static final long serialVersionUID = 117L;
+    private static final String COMMUNITY_TAG = "community";
 
-  private static final long serialVersionUID = 117L;
-  private static final String COMMUNITY_TAG = "community";
+    private boolean sanitizationEnabled = false;
+    private Site site = new Site();
+    private Keycloak keycloak = new Keycloak();
+    private Logs logs = new Logs();
+    private Storage storage = new Storage();
 
-  private boolean sanitizationEnabled = false;
-  private Site site = new Site();
-  private Keycloak keycloak = new Keycloak();
-  private Logs logs = new Logs();
-  private Storage storage = new Storage();
+    private int maxEventCount = 1000000;
 
-  private int maxEventCount = 1000000;
+    private String volumeExportDir;
+    private String volumeFileDir;
+    private boolean templateEnabled;
 
-  private String volumeExportDir;
-  private String volumeFileDir;
-  private boolean templateEnabled;
+    @Data
+    public class Logs {
+	private String dir = "../Event-Logs-Repository";
 
-  @Data
-  public class Logs {
-    private String dir = "../Event-Logs-Repository";
+    }
 
-  }
+    @Data
+    public class Storage {
+	private String path = "FILE::../Event-Logs-Repository";
 
-  @Data
-  public class Storage {
-    private String path = "FILE::../Event-Logs-Repository";
+    }
 
-  }
+    @Data
+    public class Site {
+	private String editor;
+	private String logvisualizer;
+	private String portal;
+	private String contactEmail;
+	private String aboutMeName;
+    }
 
-  @Data
-  public class Site {
-    private String editor;
-    private String externalHost;
-    private int externalPort;
-    private String filestore;
-    private String fullProtocolHostPortUrl;
-    private String host;
-    private String logvisualizer;
-    private int port;
-    private String pql;
-    private String manager;
-    private String portal;
-    private boolean useKeycloakSso;
-    private SecurityMs securityMs;
+    // Switches to enable features
+    private boolean enablePublish;
+    private boolean enableTC;
+    private boolean enablePP;
+    private boolean enableUserReg;
+    private boolean enableFullUserReg;
+    private boolean enableSubscription;
+    private boolean enableEtl;
 
-  }
+    // Switch for custom calendar
+    private boolean enableCalendar;
 
-  @Data
-  public class SecurityMs {
-    private String host;
-    private String port;
-    private String httpLogoutUrl;
-    private String httpsLogoutUrl;
-  }
+    // Switch for BPMN Diff
+    private boolean bpmndiffEnable;
 
-  // LDAP
+    // Maximum upload size
+    private long maxUploadSize;
 
-  private Ldap ldap = new Ldap();
+    // Email for issue reporting
 
-  @Data
-  public class Ldap {
-    private String providerURL;
-    private String userContext;
-    private String usernameAttribute;
-    private String emailAttribute;
-    private String firstNameAttribute;
-    private String lastNameAttribute;
-  }
+    private Version version = new Version();
 
+    @Data
+    public class Version {
+	private String number;
+	private String edition;
+    }
 
-  // Switches to enable features
-  private boolean enablePublish;
-  private boolean enableTC;
-  private boolean enablePP;
-  private boolean enableUserReg;
-  private boolean enableFullUserReg;
-  private boolean enableSubscription;
-  private boolean enableEtl;
+    @Data
+    public class Keycloak {
+	private boolean enabled;
 
-  // Switch for custom calendar
-  private boolean enableCalendar;
+    }
 
-  // Switch for BPMN Diff
-  private boolean bpmndiffEnable;
+    public boolean isCommunity() {
+	return version.getEdition().toLowerCase().contains(COMMUNITY_TAG);
+    }
 
-  // Maximum upload size
-  private long maxUploadSize;
+    public String getSiteEditor() {
+	return site.getEditor();
+    }
 
-  // Email for issue reporting
-  private String contactEmail;
+    public String getMajorVersionNumber() {
+	return version.getNumber().split("\\.")[0];
+    }
 
+    public String getMinorVersionNumber() {
+	return version.getNumber().split("\\.")[1];
+    }
 
-  private Version version = new Version();
+    public String getVersionEdition() {
+	return version.getEdition();
+    }
 
-  @Data
-  public class Version {
-    private String number;
-    private String edition;
-  }
+    public String getLogsDir() {
+	return logs.getDir();
+    }
 
-  @Data
-  public class Keycloak {
-    private boolean enabled;
-
-  }
-
-
-
-  public boolean isCommunity() {
-    return version.getEdition().toLowerCase().contains(COMMUNITY_TAG);
-  }
-
-  public String getLdapUserContext() {
-    return ldap.getUserContext();
-  }
-
-  public String getLdapLastNameAttribute() {
-    return ldap.getLastNameAttribute();
-  }
-
-  public String getLdapUsernameAttribute() {
-    return ldap.getUsernameAttribute();
-  }
-
-  public String getLdapFirstNameAttribute() {
-    return ldap.getFirstNameAttribute();
-  }
-
-  public String getLdapEmailAttribute() {
-    return ldap.getEmailAttribute();
-  }
-
-  public String getLdapProviderURL() {
-    return ldap.getProviderURL();
-  }
-
-  public String getSecurityMsHttpLogoutUrl() {
-    return site.getSecurityMs().getHttpLogoutUrl();
-  }
-
-  public String getSecurityMsHttpsLogoutUrl() {
-    return site.getSecurityMs().getHttpsLogoutUrl();
-  }
-
-  public String getSiteEditor() {
-    return site.getEditor();
-  }
-
-  public String getSiteExternalHost() {
-    return site.getExternalHost();
-  }
-
-  public int getSiteExternalPort() {
-    return site.getExternalPort();
-  }
-
-  public String getMajorVersionNumber() {
-    return version.getNumber().split("\\.")[0];
-  }
-
-
-  public String getMinorVersionNumber() {
-    return version.getNumber().split("\\.")[1];
-  }
-
-
-  public String getVersionEdition() {
-    return version.getEdition();
-  }
-
-  public String getLogsDir() {
-    return logs.getDir();
-  }
-
-  public String getStoragePath() {
-    return storage.getPath();
-  }
+    public String getStoragePath() {
+	return storage.getPath();
+    }
 
 }

@@ -26,6 +26,7 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+
 import org.apromore.commons.config.ConfigBean;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
@@ -44,96 +45,96 @@ import org.zkoss.zul.Window;
 @Component
 public class AboutPlugin extends DefaultPortalPlugin {
 
-  private static final Logger LOGGER = PortalLoggerFactory.getLogger(AboutPlugin.class);
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(AboutPlugin.class);
 
-  private String label = "About Apromore"; // default label
-  private String groupLabel = "About";
+    private String label = "About Apromore"; // default label
+    private String groupLabel = "About";
 
-  private String commitId;
-  private String buildDate;
-  private String holder;
-  private String detail;
+    private String commitId;
+    private String buildDate;
+    private String holder;
+    private String detail;
 
-  private ConfigBean config;
+    private ConfigBean config;
 
-  public AboutPlugin(@Value("${git.commit.id.abbrev}") final String newCommitId,
-      @Value("${git.commit.time}") final String newBuildDate,
-      @Value("${aboutMeName}") final String newHolder,
-      @Value("${newDetail:#{null}}") final String newDetail, ConfigBean configBean) {
-    this.commitId = newCommitId;
-    this.buildDate = newBuildDate;
-    this.holder = newHolder;
-    this.detail = newDetail;
-    this.config = configBean;
-  }
-
-  public String getCommitId() {
-    return this.commitId;
-  }
-
-  public String getBuildDate() {
-    return this.buildDate;
-  }
-
-  // PortalPlugin overrides
-
-  @Override
-  public String getItemCode(Locale locale) {
-    return "About Apromore";
-  }
-
-  @Override
-  public String getGroup(Locale locale) {
-    return "About";
-  }
-
-  @Override
-  public String getLabel(final Locale locale) {
-    return Labels.getLabel("brand_about", label);
-  }
-
-  @Override
-  public String getGroupLabel(final Locale locale) {
-    return groupLabel;
-  }
-
-  @Override
-  public String getIconPath() {
-    return "about-icon.svg";
-  }
-
-  @Override
-  public void execute(final PortalContext portalContext) {
-    LOGGER.info("Debug");
-
-    try {
-
-      Map args = new HashMap();
-      args.put("community", config.isCommunity());
-      args.put("edition", config.getVersionEdition());
-      args.put("holder", this.holder);
-      args.put("detail", this.detail);
-      args.put("version", config.getMajorVersionNumber() + "." + config.getMinorVersionNumber()
-          + " (commit " + getCommitId() + " built on " + getBuildDate() + ")");
-      final Window pluginWindow =
-          (Window) Executions.getCurrent()
-              .createComponentsDirectly(new InputStreamReader(
-                  getClass().getClassLoader().getResourceAsStream("about/zul/about.zul"), "UTF-8"),
-                  "zul", null, args);
-      pluginWindow.setAttribute("version", "dummy");
-
-      Button buttonOk = (Button) pluginWindow.getFellow("ok");
-      buttonOk.addEventListener("onClick", new EventListener<Event>() {
-        @Override
-        public void onEvent(final Event event) throws Exception {
-          pluginWindow.detach();
-        }
-      });
-      pluginWindow.doModal();
-
-    } catch (Exception e) {
-      Messagebox.show(e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
-      LOGGER.error("Unable to display About dialog", e);
+    public AboutPlugin(@Value("${git.commit.id.abbrev}") final String newCommitId,
+            @Value("${git.commit.time}") final String newBuildDate,
+            @Value("${site.aboutMeName}") final String newHolder, @Value("${newDetail:#{null}}") final String newDetail,
+            ConfigBean configBean) {
+	this.commitId = newCommitId;
+	this.buildDate = newBuildDate;
+	this.holder = newHolder;
+	this.detail = newDetail;
+	this.config = configBean;
     }
-  }
+
+    public String getCommitId() {
+	return this.commitId;
+    }
+
+    public String getBuildDate() {
+	return this.buildDate;
+    }
+
+    // PortalPlugin overrides
+
+    @Override
+    public String getItemCode(Locale locale) {
+	return "About Apromore";
+    }
+
+    @Override
+    public String getGroup(Locale locale) {
+	return "About";
+    }
+
+    @Override
+    public String getLabel(final Locale locale) {
+	return Labels.getLabel("brand_about", label);
+    }
+
+    @Override
+    public String getGroupLabel(final Locale locale) {
+	return groupLabel;
+    }
+
+    @Override
+    public String getIconPath() {
+	return "about-icon.svg";
+    }
+
+    @Override
+    public void execute(final PortalContext portalContext) {
+	LOGGER.info("Debug");
+
+	try {
+
+	    Map args = new HashMap();
+	    args.put("community", config.isCommunity());
+	    args.put("edition", config.getVersionEdition());
+	    args.put("holder", this.holder);
+	    args.put("detail", this.detail);
+	    args.put("version", config.getMajorVersionNumber() + "." + config.getMinorVersionNumber() + " (commit "
+	            + getCommitId() + " built on " + getBuildDate() + ")");
+	    final Window pluginWindow = (Window) Executions.getCurrent()
+	            .createComponentsDirectly(
+	                    new InputStreamReader(
+	                            getClass().getClassLoader().getResourceAsStream("about/zul/about.zul"), "UTF-8"),
+	                    "zul", null, args);
+	    pluginWindow.setAttribute("version", "dummy");
+
+	    Button buttonOk = (Button) pluginWindow.getFellow("ok");
+	    buttonOk.addEventListener("onClick", new EventListener<Event>() {
+		@Override
+		public void onEvent(final Event event) throws Exception {
+		    pluginWindow.detach();
+		}
+	    });
+	    pluginWindow.doModal();
+
+	} catch (Exception e) {
+	    Messagebox.show(e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
+	    LOGGER.error("Unable to display About dialog", e);
+	}
+    }
 }

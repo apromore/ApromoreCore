@@ -33,6 +33,7 @@ import org.apromore.calendar.exception.CalendarNotExistsException;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.calendar.service.CalendarService;
 import org.apromore.plugin.portal.PortalLoggerFactory;
+import org.apromore.plugin.portal.calendar.pageutil.PageUtils;
 import org.slf4j.Logger;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -40,11 +41,11 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Label;
-import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Span;
+import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
 public class CalendarItemRenderer implements ListitemRenderer {
@@ -52,112 +53,112 @@ public class CalendarItemRenderer implements ListitemRenderer {
     private static Logger LOGGER = PortalLoggerFactory.getLogger(CalendarItemRenderer.class);
 
     CalendarService calendarService;
-    
-    
-    public CalendarItemRenderer(CalendarService calendarService) {
-		super();
-		this.calendarService = calendarService;
-	}
 
-	public Listcell renderCell(Listitem listItem, Component comp) {
-        Listcell listCell = new Listcell();
-        listCell.appendChild(comp);
-        listItem.appendChild(listCell);
-        return listCell;
+    public CalendarItemRenderer(CalendarService calendarService) {
+	super();
+	this.calendarService = calendarService;
+    }
+
+    public Listcell renderCell(Listitem listItem, Component comp) {
+	Listcell listCell = new Listcell();
+	listCell.appendChild(comp);
+	listItem.appendChild(listCell);
+	return listCell;
     }
 
     public Listcell renderTextCell(Listitem listItem, String content) {
-        return renderCell(listItem, new Label(content));
+	return renderCell(listItem, new Label(content));
     }
 
     public Listcell renderIconCell(Listitem listItem, String sclass, String tooltip) {
-        Span span = new Span();
-        span.setSclass(sclass);
-        span.setTooltiptext(tooltip);
-        return renderCell(listItem, span);
+	Span span = new Span();
+	span.setSclass(sclass);
+	span.setTooltiptext(tooltip);
+	return renderCell(listItem, span);
     }
 
     public void editCalendar(Long calendarId) {
-        try {
-            Map arg = new HashMap<>();
-            arg.put("calendarId", calendarId);
-            Window window = (Window) Executions.getCurrent().createComponents("/calendar/zul/calendar.zul", null, arg);
-            window.doModal();
-        } catch(Exception e) {
-            LOGGER.error("Unable to create custom calendar dialog", e);
-            // Notification.error("Unable to create custom calendar dialog");
-        }
+	try {
+	    Map arg = new HashMap<>();
+	    arg.put("calendarId", calendarId);
+	    Window window = (Window) Executions.getCurrent()
+	            .createComponents(PageUtils.getPageDefinition("calendar/zul/calendar.zul"), null, arg);
+	    window.doModal();
+	} catch (Exception e) {
+	    LOGGER.error("Unable to create custom calendar dialog", e);
+	    // Notification.error("Unable to create custom calendar dialog");
+	}
     }
-    
+
     public void removeCalendar(Long calendarId) {
-        try {
-            calendarService.deleteCalendar(calendarId);  
-        } catch(Exception e) {
-            LOGGER.error("Unable to create custom calendar dialog", e);
-            // Notification.error("Unable to create custom calendar dialog");
-        }
+	try {
+	    calendarService.deleteCalendar(calendarId);
+	} catch (Exception e) {
+	    LOGGER.error("Unable to create custom calendar dialog", e);
+	    // Notification.error("Unable to create custom calendar dialog");
+	}
     }
 
     public void updateCalendarName(String newName, Long calendarId) {
-    	try {
-			calendarService.updateCalendarName(calendarId, newName);
-		} catch (CalendarNotExistsException e) {
+	try {
+	    calendarService.updateCalendarName(calendarId, newName);
+	} catch (CalendarNotExistsException e) {
 //			Need to handle this via publishing message in event queue
-			LOGGER.error("Unable to update custom calendar dialog", e);
-			e.printStackTrace();
-		}
-        LOGGER.info("Edit name", newName);
+	    LOGGER.error("Unable to update custom calendar dialog", e);
+	    e.printStackTrace();
+	}
+	LOGGER.info("Edit name", newName);
     }
 
     @Override
     public void render(Listitem listItem, Object obj, int index) {
-        CalendarModel calendarItem = (CalendarModel) obj;
+	CalendarModel calendarItem = (CalendarModel) obj;
 
-        Textbox textbox = new Textbox(calendarItem.getName());
-        textbox.setSubmitByEnter(true);
-        textbox.setSclass("ap-inline-textbox");
-        textbox.setHflex("1");
-        Listcell nameCell = renderCell(listItem, textbox);
-        textbox.addEventListener(Events.ON_CHANGE, new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                updateCalendarName(textbox.getValue(), calendarItem.getId());
-            }
-        });
+	Textbox textbox = new Textbox(calendarItem.getName());
+	textbox.setSubmitByEnter(true);
+	textbox.setSclass("ap-inline-textbox");
+	textbox.setHflex("1");
+	Listcell nameCell = renderCell(listItem, textbox);
+	textbox.addEventListener(Events.ON_CHANGE, new EventListener<Event>() {
+	    @Override
+	    public void onEvent(Event event) throws Exception {
+		updateCalendarName(textbox.getValue(), calendarItem.getId());
+	    }
+	});
 
-        OffsetDateTime created = calendarItem.getCreated();
-        renderTextCell(listItem, created.format(DateTimeFormatter.ofPattern("yyyy MMM dd")));
-        Listcell editAction = renderIconCell(listItem, "ap-icon ap-icon-user-edit", "Edit calendar");
-        Listcell removeAction = renderIconCell(listItem, "ap-icon ap-icon-trash", "Delete calendar");
+	OffsetDateTime created = calendarItem.getCreated();
+	renderTextCell(listItem, created.format(DateTimeFormatter.ofPattern("yyyy MMM dd")));
+	Listcell editAction = renderIconCell(listItem, "ap-icon ap-icon-user-edit", "Edit calendar");
+	Listcell removeAction = renderIconCell(listItem, "ap-icon ap-icon-trash", "Delete calendar");
 
-        nameCell.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                textbox.setFocus(true);
-            }
-        });
+	nameCell.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+	    @Override
+	    public void onEvent(Event event) throws Exception {
+		textbox.setFocus(true);
+	    }
+	});
 
-        editAction.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                editCalendar(calendarItem.getId());
-            }
-        });
+	editAction.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+	    @Override
+	    public void onEvent(Event event) throws Exception {
+		editCalendar(calendarItem.getId());
+	    }
+	});
 
-        removeAction.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-              removeCalendar(calendarItem.getId());
-              listItem.detach();
-            }
-        });
+	removeAction.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+	    @Override
+	    public void onEvent(Event event) throws Exception {
+		removeCalendar(calendarItem.getId());
+		listItem.detach();
+	    }
+	});
 
-        listItem.addEventListener(Events.ON_DOUBLE_CLICK, new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-              editCalendar(calendarItem.getId());
-            }
-        });
+	listItem.addEventListener(Events.ON_DOUBLE_CLICK, new EventListener<Event>() {
+	    @Override
+	    public void onEvent(Event event) throws Exception {
+		editCalendar(calendarItem.getId());
+	    }
+	});
     }
 
 }
