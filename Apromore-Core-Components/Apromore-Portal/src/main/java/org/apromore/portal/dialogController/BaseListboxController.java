@@ -63,7 +63,6 @@ import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
-import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listhead;
@@ -95,9 +94,9 @@ public abstract class BaseListboxController extends BaseController {
   private final Button refreshB;
   private final Button btnUpload;
   private final Button btnDownload;
-  private final Hlayout dataPipelinesSection;
   private final Button btnCreateDataPipeline;
   private final Button btnManageDataPipelines;
+  private final Span btnEtlSep;
   private final Button btnSelectAll;
   private final Button btnSelectNone;
   private final Button btnCut;
@@ -141,9 +140,9 @@ public abstract class BaseListboxController extends BaseController {
     refreshB = (Button) mainController.getFellow("refreshB");
     btnUpload = (Button) mainController.getFellow("btnUpload");
     btnDownload = (Button) mainController.getFellow("btnDownload");
-    dataPipelinesSection = (Hlayout) mainController.getFellow("dataPipelinesSection");
     btnCreateDataPipeline = (Button) mainController.getFellow("btnCreateDataPipeline");
     btnManageDataPipelines = (Button) mainController.getFellow("btnManageDataPipelines");
+    btnEtlSep = (Span) mainController.getFellow("btnEtlSep");
     btnSelectAll = (Button) mainController.getFellow("btnSelectAll");
     btnSelectNone = (Button) mainController.getFellow("btnSelectNone");
     btnCut = (Button) mainController.getFellow("btnCut");
@@ -236,7 +235,9 @@ public abstract class BaseListboxController extends BaseController {
     });
 
     if (portalPluginMap.containsKey(ETL_PLUGIN_LABEL)) {
-      dataPipelinesSection.setVisible(mainController.getConfig().isEnableEtl());
+      btnEtlSep.setVisible(mainController.getConfig().isEnableEtl());
+      btnCreateDataPipeline.setVisible(mainController.getConfig().isEnableEtl());
+      btnManageDataPipelines.setVisible(mainController.getConfig().isEnableEtl());
       this.btnCreateDataPipeline.addEventListener(ON_CLICK, new EventListener<Event>() {
         @Override
         public void onEvent(Event event) throws Exception {

@@ -229,11 +229,9 @@
                             <button id="btnDownload" sclass="ap-icon ap-icon-download" ca:data-t="download" tooltiptext="${labels.portal_download_hint}"/>
 
                             <h:span class="ap-action-sep"></h:span>
-                            <hlayout id="dataPipelinesSection" visible="false">
-                                <button id="btnCreateDataPipeline" sclass="ap-icon ap-icon-etl-pipeline" ca:data-t="createDataPipeline" tooltiptext="${labels.portal_createDataPipeline_hint}"/>
-                                <button id="btnManageDataPipelines" sclass="ap-icon ap-icon-clock" ca:data-t="manageDataPipelines" tooltiptext="${labels.portal_manageDataPipelines_hint}"/>
-                                <h:span class="ap-action-sep"></h:span>
-                            </hlayout>
+                            <button id="btnCreateDataPipeline" visible="false" sclass="ap-icon ap-icon-etl-pipeline" ca:data-t="createDataPipeline" tooltiptext="${labels.portal_createDataPipeline_hint}"/>
+                            <button id="btnManageDataPipelines" visible="false" sclass="ap-icon ap-icon-clock" ca:data-t="manageDataPipelines" tooltiptext="${labels.portal_manageDataPipelines_hint}"/>
+                            <span id="btnEtlSep" class="ap-action-sep" visible="false"></span>
                             <button id="btnSelectAll" visible="true" sclass="ap-icon ap-icon-select-all" ca:data-t="selectAll" tooltiptext="${labels.common_selectAll_text}"/>
                             <button id="btnSelectNone" visible="true" sclass="ap-icon ap-icon-select-none" ca:data-t="selectNone" tooltiptext="${labels.common_selectNone_text}"/>
                             <h:span class="ap-action-sep"></h:span>
