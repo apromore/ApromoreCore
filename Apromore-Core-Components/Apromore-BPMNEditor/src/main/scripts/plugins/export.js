@@ -31,6 +31,7 @@ Apromore.Plugins.Export = Clazz.extend({
         this.facade = facade;
 
         this.facade.offer({
+            'btnId': 'ap-id-editor-export-svg-btn',
             'name': window.Apromore.I18N.File.svg,
             'functionality': this.exportSVG.bind(this),
             'group': window.Apromore.I18N.File.group,
@@ -42,6 +43,7 @@ Apromore.Plugins.Export = Clazz.extend({
         });
 
         this.facade.offer({
+            'btnId': 'ap-id-editor-export-bpmn-btn',
             'name': window.Apromore.I18N.File.bpmn,
             'functionality': this.exportBPMN.bind(this),
             'group': window.Apromore.I18N.File.group,

@@ -34,6 +34,7 @@ Apromore.Plugins.ApromoreSave = Clazz.extend({
 
         this.facade.offer({
             'name':window.Apromore.I18N.Save.save,
+            'btnId': 'ap-id-editor-save-btn',
             'functionality':this.save.bind(this, false),
             'group':window.Apromore.I18N.Save.group,
             'icon':Apromore.PATH + "images/ap/save.svg",
@@ -56,6 +57,7 @@ Apromore.Plugins.ApromoreSave = Clazz.extend({
             'group':window.Apromore.I18N.Save.group,
             'icon':Apromore.PATH + "images/ap/save-as.svg",
             'description':window.Apromore.I18N.Save.saveAsDesc,
+            'btnId': 'ap-id-editor-save-as-btn',
             'index':2,
             'minShape':0,
             'maxShape':0

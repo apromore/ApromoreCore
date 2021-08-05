@@ -67,10 +67,15 @@ import org.zkoss.zul.Messagebox;
 public class BPMNEditorController extends BaseController {
     public static final String EVENT_MESSAGE_SAVE = "SaveEvent";
 
-    private static final Logger LOGGER = PortalLoggerFactory.getLogger(BPMNEditorController.class);
-    public static final String BPMN_XML = "bpmnXML";
-    public static final String BPMN_2_01 = "BPMN 2.0";
-    private EventQueue<Event> qeBPMNEditor = EventQueues.lookup(Constants.EVENT_QUEUE_BPMN_EDITOR, EventQueues.SESSION, true);
+  private static final boolean USE_BPMNIO_MODELER = true;
+  private static final String BPMNIO_MODELER_JS = "bpmn-modeler.development.js";
+  private static final String BPMNIO_VIEWER_JS = "bpmn-navigated-viewer.development.js";
+
+  private static final Logger LOGGER = PortalLoggerFactory.getLogger(BPMNEditorController.class);
+  public static final String BPMN_XML = "bpmnXML";
+  public static final String BPMN_2_01 = "BPMN 2.0";
+  private EventQueue<Event> qeBPMNEditor =
+      EventQueues.lookup(Constants.EVENT_QUEUE_BPMN_EDITOR, EventQueues.SESSION, true);
 
     private MainController mainC;
     private ApromoreSession session;
@@ -84,115 +89,125 @@ public class BPMNEditorController extends BaseController {
     @Inject private UserSessionManager userSessionManager;
 
     public BPMNEditorController() {
-        super();
-        currentUserType = userSessionManager.getCurrentUser();
-        if (currentUserType == null) {
-        	throw new AssertionError("Cannot open the editor without any login user!");
-        }
+      super();
+      currentUserType = userSessionManager.getCurrentUser();
+      if (currentUserType == null) {
+        throw new AssertionError("Cannot open the editor without any login user!");
+      }
 
-        String id = Executions.getCurrent().getParameter("id");
-        if (id == null) {
-            throw new AssertionError("No id parameter in URL");
-        }
-        session = userSessionManager.getEditSession(id);
-        if (session == null) {
-            // throw new AssertionError("No edit session associated with id " + id);
-            throw new AssertionError("Your session has expired. Please close this browser tab and refresh the Portal tab");
-        }
-        isNewProcess = Boolean.valueOf(Executions.getCurrent().getParameter("newProcess"));
-        editSession = session.getEditSession();
-        mainC = session.getMainC();
-        process = session.getProcess();
-        vst = session.getVersion();
+      String id = Executions.getCurrent().getParameter("id");
+      if (id == null) {
+        throw new AssertionError("No id parameter in URL");
+      }
+      session = userSessionManager.getEditSession(id);
+      if (session == null) {
+        // throw new AssertionError("No edit session associated with id " + id);
+        throw new AssertionError(
+          "Your session has expired. Please close this browser tab and refresh the Portal tab");
+      }
+      isNewProcess = Boolean.valueOf(Executions.getCurrent().getParameter("newProcess"));
+      editSession = session.getEditSession();
+      mainC = session.getMainC();
+      process = session.getProcess();
+      vst = session.getVersion();
 
-        if (isNewProcess) {
-            currentUserAccessType = AccessType.OWNER;
-        } else {
-            try {
-                User user = getSecurityService().getUserById(currentUserType.getId());
-                currentUserAccessType = getAuthorizationService().getProcessAccessTypeByUser(process.getId(), user);
-            } catch (Exception e) {
-                // currentUserAccessType = AccessType.VIEWER;
-                currentUserAccessType = null;
-            }
-            if (currentUserAccessType == null) {
-                throw new AssertionError("No valid access type for the current user");
-            }
-        }
-        String klass = "access-type-" + currentUserAccessType.getLabel().toLowerCase();
-        Clients.evalJavaScript("Ap.common.injectGlobalClass(\"" + klass + "\")");
-
-        Map<String, Object> param = new HashMap<>();
+      if (isNewProcess) {
+        currentUserAccessType = AccessType.OWNER;
+      } else {
         try {
-            PluginMessages pluginMessages = null;
-            String bpmnXML = (String) session.get(BPMN_XML);
-            
-            if(bpmnXML == null) {
-            	if (isNewProcess) {
-            		bpmnXML = "<?xml version='1.0' encoding='UTF-8'?>" +
-            				  "<bpmn:definitions xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' " +
-            				                    "xmlns:bpmn='http://www.omg.org/spec/BPMN/20100524/MODEL' "  +
-            				                    "xmlns:bpmndi='http://www.omg.org/spec/BPMN/20100524/DI' " +
-            				                    "xmlns:dc='http://www.omg.org/spec/DD/20100524/DC' " +
-            				                    "targetNamespace='http://bpmn.io/schema/bpmn' " +
-            				                    "id='Definitions_1'>" +
-            				    "<bpmn:process id='Process_1' isExecutable='false'>" +
-            				      "<bpmn:startEvent id='StartEvent_1'/>" +
-            				    "</bpmn:process>" +
-            				    "<bpmndi:BPMNDiagram id='BPMNDiagram_1'>" +
-            				      "<bpmndi:BPMNPlane id='BPMNPlane_1' bpmnElement='Process_1'>" +
-            				        "<bpmndi:BPMNShape id='_BPMNShape_StartEvent_2' bpmnElement='StartEvent_1'>" +
-            				          "<dc:Bounds height='36.0' width='36.0' x='173.0' y='102.0'/>" +
-            				        "</bpmndi:BPMNShape>" +
-            				      "</bpmndi:BPMNPlane>" +
-            				    "</bpmndi:BPMNDiagram>" +
-            				  "</bpmn:definitions>";
-            	}
-            	else {
-            		// Note: process models created by merging are not BPMN, cannot use processService.getBPMNRepresentation 
-            		//bpmnXML = processService.getBPMNRepresentation(procName, procID, branch, version);
-            		String annotation = (editSession.getAnnotation() == null) ? editSession.getNativeType() : editSession.getAnnotation();
-            		
-                    ExportFormatResultType exportResult =
-                            getService().exportFormat(editSession.getProcessId(),
-                            		editSession.getProcessName(),
-                            		editSession.getOriginalBranchName(),
-                            		editSession.getCurrentVersionNumber(),
-                            		editSession.getNativeType(),
-                            		editSession.getUsername());
-                    bpmnXML = StreamUtil.convertStreamToString(exportResult.getNative().getInputStream());
-                    param.put("doAutoLayout", "false");
-            	}
-            	
-                param.put(BPMN_XML,       escapeXML(bpmnXML));
-                param.put("url",           getURL(editSession.getNativeType()));
-                param.put("importPath",    getImportPath(editSession.getNativeType()));
-                param.put("exportPath",    getExportPath(editSession.getNativeType()));
-                param.put("editor",        "bpmneditor");
-            } else {
-                param.put(BPMN_XML,       bpmnXML);
-                param.put("url",           getURL(BPMN_2_01));
-                param.put("importPath",    getImportPath(BPMN_2_01));
-                param.put("exportPath",    getExportPath(BPMN_2_01));
-                param.put("editor",        "bpmneditor");
-                param.put("doAutoLayout", "false");
-            }
-            
-            this.setTitle(editSession.getProcessName() + " (" + "v" + editSession.getCurrentVersionNumber() + ")");
-            
-            if (mainC != null) {
-                mainC.showPluginMessages(pluginMessages);
-            }
-            String langTag = mainC.getI18nSession().getPreferredLangTag();
-            List<EditorPlugin> editorPlugins = EditorPluginResolver.resolve("bpmnEditorPlugins");
-            param.put("plugins", editorPlugins);
-            param.put("langTag", langTag);
-            Executions.getCurrent().pushArg(param);
-
+          User user = mainC.getSecurityService().getUserById(currentUserType.getId());
+          currentUserAccessType =
+            mainC.getAuthorizationService().getProcessAccessTypeByUser(process.getId(), user);
         } catch (Exception e) {
-            LOGGER.error("",e);
-            e.printStackTrace();
+          // currentUserAccessType = AccessType.VIEWER;
+          currentUserAccessType = null;
         }
+        if (currentUserAccessType == null) {
+          throw new AssertionError("No valid access type for the current user");
+        }
+      }
+      if (AccessType.VIEWER.equals(currentUserAccessType)) {
+        Clients.evalJavaScript("Ap.common.injectGlobalClass(\"access-type-viewer\")");
+      }
+
+      Map<String, Object> param = new HashMap<>();
+      try {
+        PluginMessages pluginMessages = null;
+        String bpmnXML = (String) session.get(BPMN_XML);
+
+        if(bpmnXML == null) {
+          if (isNewProcess) {
+            bpmnXML = "<?xml version='1.0' encoding='UTF-8'?>" +
+              "<bpmn:definitions xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' " +
+              "xmlns:bpmn='http://www.omg.org/spec/BPMN/20100524/MODEL' "  +
+              "xmlns:bpmndi='http://www.omg.org/spec/BPMN/20100524/DI' " +
+              "xmlns:dc='http://www.omg.org/spec/DD/20100524/DC' " +
+              "targetNamespace='http://bpmn.io/schema/bpmn' " +
+              "id='Definitions_1'>" +
+              "<bpmn:process id='Process_1' isExecutable='false'>" +
+              "<bpmn:startEvent id='StartEvent_1'/>" +
+              "</bpmn:process>" +
+              "<bpmndi:BPMNDiagram id='BPMNDiagram_1'>" +
+              "<bpmndi:BPMNPlane id='BPMNPlane_1' bpmnElement='Process_1'>" +
+              "<bpmndi:BPMNShape id='_BPMNShape_StartEvent_2' bpmnElement='StartEvent_1'>" +
+              "<dc:Bounds height='36.0' width='36.0' x='173.0' y='102.0'/>" +
+              "</bpmndi:BPMNShape>" +
+              "</bpmndi:BPMNPlane>" +
+              "</bpmndi:BPMNDiagram>" +
+              "</bpmn:definitions>";
+          }
+          else {
+            // Note: process models created by merging are not BPMN, cannot use processService.getBPMNRepresentation
+            //bpmnXML = processService.getBPMNRepresentation(procName, procID, branch, version);
+            String annotation = (editSession.getAnnotation() == null) ? editSession.getNativeType() : editSession.getAnnotation();
+
+            ExportFormatResultType exportResult =
+              getService().exportFormat(editSession.getProcessId(),
+                editSession.getProcessName(),
+                editSession.getOriginalBranchName(),
+                editSession.getCurrentVersionNumber(),
+                editSession.getNativeType(),
+                editSession.getUsername());
+            bpmnXML = StreamUtil.convertStreamToString(exportResult.getNative().getInputStream());
+            param.put("doAutoLayout", "false");
+          }
+
+          param.put(BPMN_XML,       escapeXML(bpmnXML));
+          param.put("url",           getURL(editSession.getNativeType()));
+          param.put("importPath",    getImportPath(editSession.getNativeType()));
+          param.put("exportPath",    getExportPath(editSession.getNativeType()));
+          param.put("editor",        "bpmneditor");
+        } else {
+          param.put(BPMN_XML,       bpmnXML);
+          param.put("url",           getURL(BPMN_2_01));
+          param.put("importPath",    getImportPath(BPMN_2_01));
+          param.put("exportPath",    getExportPath(BPMN_2_01));
+          param.put("editor",        "bpmneditor");
+          param.put("doAutoLayout", "false");
+        }
+
+        this.setTitle(
+          editSession.getProcessName() + " (" + "v" + editSession.getCurrentVersionNumber() + ")");
+
+        if (mainC != null) {
+          mainC.showPluginMessages(pluginMessages);
+        }
+        String langTag = mainC.getI18nSession().getPreferredLangTag();
+        List<EditorPlugin> editorPlugins = EditorPluginResolver.resolve("bpmnEditorPlugins");
+        param.put("plugins", editorPlugins);
+        param.put("langTag", langTag);
+        if (USE_BPMNIO_MODELER) {
+          param.put("bpmnioLib", BPMNIO_MODELER_JS);
+        } else {
+          param.put("bpmnioLib", AccessType.VIEWER.equals(currentUserAccessType) ? BPMNIO_VIEWER_JS : BPMNIO_MODELER_JS);
+        }
+        param.put("viewOnly", AccessType.VIEWER.equals(currentUserAccessType));
+        Executions.getCurrent().pushArg(param);
+
+      } catch (Exception e) {
+        LOGGER.error("", e);
+        e.printStackTrace();
+      }
         
         BPMNEditorController editorController = this;
         
@@ -215,7 +230,7 @@ public class BPMNEditorController extends BaseController {
         this.addEventListener("onSaveAs", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws InterruptedException {
-                if (currentUserAccessType == AccessType.VIEWER) {
+                if (AccessType.VIEWER.equals(currentUserAccessType)) {
                     Notification.error(Labels.getLabel("portal_noPrivilegeSaveEdit_message"));
                     return;
                 }
@@ -227,7 +242,7 @@ public class BPMNEditorController extends BaseController {
             @Override
             public void onEvent(final Event event) throws InterruptedException {
                 PortalPlugin accessControlPlugin;
-                if (currentUserAccessType != AccessType.OWNER) {
+                if (!AccessType.OWNER.equals(currentUserAccessType)) {
                     Notification.error(Labels.getLabel("portal_noPrivilegeShare_message"));
                     return;
                 }
