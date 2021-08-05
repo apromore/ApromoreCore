@@ -40,7 +40,6 @@ public class ReportIssuePlugin extends DefaultPortalPlugin {
     private static Logger LOGGER = PortalLoggerFactory.getLogger(ReportIssuePlugin.class);
 
     private String label = "Report issue";
-    private String groupLabel = "Account";
 
     @Autowired
     ConfigBean config;
@@ -58,11 +57,6 @@ public class ReportIssuePlugin extends DefaultPortalPlugin {
     @Override
     public String getLabel(Locale locale) {
 	return label;
-    }
-
-    @Override
-    public String getGroupLabel(Locale locale) {
-	return groupLabel;
     }
 
     @Override

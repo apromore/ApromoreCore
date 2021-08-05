@@ -41,31 +41,13 @@ public class DeleteSelectionPlugin extends DefaultPortalPlugin {
   private static Logger LOGGER = PortalLoggerFactory.getLogger(DeleteSelectionPlugin.class);
 
   private String label = "Delete";
-  private String groupLabel = "File";
-
-  @Override
-  public String getItemCode(Locale locale) {
-    return label;
-  }
 
   // PortalPlugin overrides
-
-
-  @Override
-  public String getGroup(Locale locale) {
-    return "File";
-  }
 
   @Override
   public String getLabel(Locale locale) {
     return Labels.getLabel("plugin_file_delete_text", label);
   }
-
-  @Override
-  public String getGroupLabel(Locale locale) {
-    return Labels.getLabel("plugin_file_title_text", groupLabel);
-  }
-
 
   @Override
   public String getIconPath() {

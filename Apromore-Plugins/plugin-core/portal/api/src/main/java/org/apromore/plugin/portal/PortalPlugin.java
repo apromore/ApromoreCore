@@ -40,7 +40,7 @@ public interface PortalPlugin extends ParameterAwarePlugin {
      *
      * @return
      */
-    String getID();
+    String getId();
 
     /**
      * Label of the plug-in.
@@ -51,8 +51,6 @@ public interface PortalPlugin extends ParameterAwarePlugin {
      * @return
      */
     String getLabel(Locale locale);
-
-    String getItemCode(Locale locale);
 
     /**
      * Icon for the plug-in.
@@ -67,25 +65,6 @@ public interface PortalPlugin extends ParameterAwarePlugin {
      * @return pathname of the icon resource in this bundle
      */
     String getIconPath();
-
-    /**
-     * Label of the group of plug-ins this one belongs to.
-     *
-     * This is used for the menu.
-     *
-     * @param locale (optional locale)
-     * @return
-     */
-    String getGroupLabel(Locale locale);
-
-    /**
-     * Logical group of plug-ins this one belongs to.
-     *
-     * This is used for the menu.
-     *
-     * @return
-     */
-    String getGroup(Locale locale);
 
     void setSimpleParams(Map params);
     Map getSimpleParams();

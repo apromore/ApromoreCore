@@ -93,10 +93,4 @@ public abstract class Constants {
     public static final String SECURITY_SERVICE = "securityService";
     public static final String AUTH_SERVICE = "authorizationService";
     public static final String WORKSPACE_SERVICE = "workspaceService";
-
-    public static final String USER_ADMIN_PLUGIN = "USER_ADMIN_PLUGIN";
-    public static final String ACCESS_CONTROL_PLUGIN = "ACCESS_CONTROL_PLUGIN";
-    public static final String ETL_PLUGIN = "ETL_PLUGIN";
-    public static final String JOB_SCHEDULER_PLUGIN = "JOB_SCHEDULER_PLUGIN";
-
 }

@@ -49,7 +49,6 @@ import org.zkoss.zul.Messagebox;
 public class PDAbstractPlugin extends DefaultPortalPlugin {
 
     private String label = "Discover process map / BPMN model";
-    private String groupLabel = "Discover";
     protected String sessionId = "";
     
     @Override
@@ -61,15 +60,6 @@ public class PDAbstractPlugin extends DefaultPortalPlugin {
         this.label = label;
     }
 
-    @Override
-    public String getGroupLabel(Locale locale) {
-        return groupLabel;
-    }
-
-    public void setGroupLabel(String groupLabel) {
-        this.groupLabel = groupLabel;
-    }
-    
     @Override
     public void execute(PortalContext context) {
     	

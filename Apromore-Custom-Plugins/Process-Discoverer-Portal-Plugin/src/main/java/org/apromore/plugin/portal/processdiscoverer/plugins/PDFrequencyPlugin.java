@@ -40,7 +40,6 @@ import org.zkoss.zk.ui.util.Clients;
 public class PDFrequencyPlugin extends PDAbstractPlugin {
 
     private String label = "Discover model";
-    private String groupLabel = "Discover";
 
     @Inject EventLogService eventLogService;
     @Inject ProcessService processService;
@@ -50,37 +49,18 @@ public class PDFrequencyPlugin extends PDAbstractPlugin {
     @Inject LogAnimationService2 logAnimationService;
 
     @Override
-    public String getItemCode(Locale locale) { return "Discover model"; }
-
-    @Override
     public String getLabel(Locale locale) {
         return Labels.getLabel("plugin_discover_discoverModel_text",label);
     }
-
-    @Override
-    public String getGroupLabel(Locale locale) {
-        return Labels.getLabel("plugin_discover_title_text", groupLabel);
-    }
-
+    
     @Override
     public String getIconPath() {
         return "discover_model.svg";
     }
 
-    
     @Override
 	public void setLabel(String label) {
         this.label = label;
-    }
-
-    @Override
-    public String getGroup(Locale locale) {
-        return "Discover";
-    }
-
-    @Override
-	public void setGroupLabel(String groupLabel) {
-        this.groupLabel = groupLabel;
     }
 
     @Override
