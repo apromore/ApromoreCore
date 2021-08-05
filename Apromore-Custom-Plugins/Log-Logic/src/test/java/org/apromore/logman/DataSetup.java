@@ -23,7 +23,12 @@
 package org.apromore.logman;
 
 import java.io.File;
+import java.time.DayOfWeek;
+import java.time.OffsetTime;
+import java.time.ZoneOffset;
 
+import org.apromore.calendar.builder.CalendarModelBuilder;
+import org.apromore.calendar.model.CalendarModel;
 import org.deckfour.xes.in.XesXmlGZIPParser;
 import org.deckfour.xes.in.XesXmlParser;
 import org.deckfour.xes.model.XLog;
@@ -49,13 +54,68 @@ public class DataSetup {
         }
     }
     
+    public CalendarModel getAllDayAllTimeCalendar() {
+        return new CalendarModelBuilder().withAllDayAllTime().build();
+    }
+    
+    public CalendarModel getFriday_9To10AM_Calendar() {
+        ZoneOffset offset = ZoneOffset.UTC;
+        CalendarModelBuilder builder = new CalendarModelBuilder().withZoneId(offset.getId());
+        
+        builder.withWorkDay(DayOfWeek.MONDAY, OffsetTime.of(0, 0, 0, 0, offset), OffsetTime.of(23, 59, 59, 0, offset), false);
+        builder.withWorkDay(DayOfWeek.TUESDAY, OffsetTime.of(0, 0, 0, 0, offset), OffsetTime.of(23, 59, 59, 0, offset), false);
+        builder.withWorkDay(DayOfWeek.WEDNESDAY, OffsetTime.of(0, 0, 0, 0, offset), OffsetTime.of(23, 59, 59, 0, offset), false);
+        builder.withWorkDay(DayOfWeek.THURSDAY, OffsetTime.of(0, 0, 0, 0, offset), OffsetTime.of(23, 59, 59, 0, offset), false);
+        
+        builder.withWorkDay(DayOfWeek.FRIDAY, OffsetTime.of(9, 0, 0, 0, offset), OffsetTime.of(10, 0, 0, 0, offset), true);
+        
+        builder.withWorkDay(DayOfWeek.SATURDAY, OffsetTime.of(0, 0, 0, 0, offset), OffsetTime.of(23, 59, 59, 0, offset), false);
+        builder.withWorkDay(DayOfWeek.SUNDAY, OffsetTime.of(0, 0, 0, 0, offset), OffsetTime.of(23, 59, 59, 0, offset), false);
+        
+        return builder.build();
+    }
+    
+    public CalendarModel getFriday_10To11AM_Calendar() {
+        ZoneOffset offset = ZoneOffset.UTC;
+        CalendarModelBuilder builder = new CalendarModelBuilder().withZoneId(offset.getId());
+        
+        builder.withWorkDay(DayOfWeek.MONDAY, OffsetTime.of(0, 0, 0, 0, offset), OffsetTime.of(23, 59, 59, 0, offset), false);
+        builder.withWorkDay(DayOfWeek.TUESDAY, OffsetTime.of(0, 0, 0, 0, offset), OffsetTime.of(23, 59, 59, 0, offset), false);
+        builder.withWorkDay(DayOfWeek.WEDNESDAY, OffsetTime.of(0, 0, 0, 0, offset), OffsetTime.of(23, 59, 59, 0, offset), false);
+        builder.withWorkDay(DayOfWeek.THURSDAY, OffsetTime.of(0, 0, 0, 0, offset), OffsetTime.of(23, 59, 59, 0, offset), false);
+        
+        builder.withWorkDay(DayOfWeek.FRIDAY, OffsetTime.of(10, 0, 0, 0, offset), OffsetTime.of(11, 0, 0, 0, offset), true);
+        
+        builder.withWorkDay(DayOfWeek.SATURDAY, OffsetTime.of(0, 0, 0, 0, offset), OffsetTime.of(23, 59, 59, 0, offset), false);
+        builder.withWorkDay(DayOfWeek.SUNDAY, OffsetTime.of(0, 0, 0, 0, offset), OffsetTime.of(23, 59, 59, 0, offset), false);
+        
+        return builder.build();
+    }
+    
+    public CalendarModel getFriday_11To12AM_Calendar() {
+        ZoneOffset offset = ZoneOffset.UTC;
+        CalendarModelBuilder builder = new CalendarModelBuilder().withZoneId(offset.getId());
+        
+        builder.withWorkDay(DayOfWeek.MONDAY, OffsetTime.of(0, 0, 0, 0, offset), OffsetTime.of(23, 59, 59, 0, offset), false);
+        builder.withWorkDay(DayOfWeek.TUESDAY, OffsetTime.of(0, 0, 0, 0, offset), OffsetTime.of(23, 59, 59, 0, offset), false);
+        builder.withWorkDay(DayOfWeek.WEDNESDAY, OffsetTime.of(0, 0, 0, 0, offset), OffsetTime.of(23, 59, 59, 0, offset), false);
+        builder.withWorkDay(DayOfWeek.THURSDAY, OffsetTime.of(0, 0, 0, 0, offset), OffsetTime.of(23, 59, 59, 0, offset), false);
+        
+        builder.withWorkDay(DayOfWeek.FRIDAY, OffsetTime.of(11, 0, 0, 0, offset), OffsetTime.of(12, 0, 0, 0, offset), true);
+        
+        builder.withWorkDay(DayOfWeek.SATURDAY, OffsetTime.of(0, 0, 0, 0, offset), OffsetTime.of(23, 59, 59, 0, offset), false);
+        builder.withWorkDay(DayOfWeek.SUNDAY, OffsetTime.of(0, 0, 0, 0, offset), OffsetTime.of(23, 59, 59, 0, offset), false);
+        
+        return builder.build();
+    }
+    
     public XLog readEmptyLog() {
         return this.readXESFile("src/test/logs/L1_empty_log.xes");
     }
     
     public XLog readLogWithEmptyTrace() {
         return this.readXESFile("src/test/logs/L1_1trace_empty_trace.xes");
-    }    
+    }
     
     public XLog readLogWithOneTraceOneEvent() {
         return this.readXESFile("src/test/logs/L1_1trace_1event.xes");
@@ -67,7 +127,11 @@ public class DataSetup {
     
     public XLog readLogWithOneTrace_StartCompleteEvents_NonOverlapping() {
         return this.readXESFile("src/test/logs/L1_1trace_start_complete_events_non_overlapping.xes");
-    }    
+    }
+    
+    public XLog readLogWithOneTrace_TwoActivities_StartCompleteEvents_Friday() {
+        return this.readXESFile("src/test/logs/L1_1trace_2activity_with_start_complete_events_friday.xes");
+    }
     
     public XLog readLogWithNoLifecycleTransitions() {
         return this.readXESFile("src/test/logs/L1_no_lifecycle_transition.xes");

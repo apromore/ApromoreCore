@@ -30,6 +30,7 @@ import org.apromore.logman.attribute.log.AttributeLog;
 import org.eclipse.collections.impl.factory.primitive.IntLists;
 import org.eclipse.collections.impl.factory.primitive.IntSets;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class AttributeLogGraphTest extends DataSetup {
@@ -37,7 +38,7 @@ public class AttributeLogGraphTest extends DataSetup {
     @Test
     public void test_OneTraceAndCompleteEvents_StructureWithCaseFrequency() throws Exception {
         ALog log = new ALog(readLogWithOneTraceAndCompleteEvents());
-        AttributeLog attLog = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName());
+        AttributeLog attLog = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName(), getAllDayAllTimeCalendar());
         
         AttributeLogGraph graph = attLog.getGraphView();
         graph.sortNodesAndArcs(MeasureType.FREQUENCY, MeasureAggregation.TOTAL);
@@ -63,22 +64,22 @@ public class AttributeLogGraphTest extends DataSetup {
         Assert.assertEquals(IntSets.mutable.empty(), graph.getIncomingArcs(100));
         
         Assert.assertEquals(IntSets.mutable.of(0,1,2), graph.getOutgoingArcs(0)); //a
-        Assert.assertEquals(IntSets.mutable.of(0,12,24), graph.getIncomingArcs(0)); 
+        Assert.assertEquals(IntSets.mutable.of(0,12,24), graph.getIncomingArcs(0));
         
         Assert.assertEquals(IntSets.mutable.of(8), graph.getOutgoingArcs(1)); //b
-        Assert.assertEquals(IntSets.mutable.of(1), graph.getIncomingArcs(1)); 
+        Assert.assertEquals(IntSets.mutable.of(1), graph.getIncomingArcs(1));
         
         Assert.assertEquals(IntSets.mutable.of(12,15,17), graph.getOutgoingArcs(2)); //c
-        Assert.assertEquals(IntSets.mutable.of(2,8,20), graph.getIncomingArcs(2)); 
+        Assert.assertEquals(IntSets.mutable.of(2,8,20), graph.getIncomingArcs(2));
         
         Assert.assertEquals(IntSets.mutable.of(20), graph.getOutgoingArcs(3)); //d
-        Assert.assertEquals(IntSets.mutable.of(15), graph.getIncomingArcs(3)); 
+        Assert.assertEquals(IntSets.mutable.of(15), graph.getIncomingArcs(3));
         
         Assert.assertEquals(IntSets.mutable.of(24), graph.getOutgoingArcs(4)); //source -1
-        Assert.assertEquals(IntSets.mutable.empty(), graph.getIncomingArcs(4)); 
+        Assert.assertEquals(IntSets.mutable.empty(), graph.getIncomingArcs(4));
         
         Assert.assertEquals(IntSets.mutable.empty(), graph.getOutgoingArcs(5)); //sink -2
-        Assert.assertEquals(IntSets.mutable.of(17), graph.getIncomingArcs(5)); 
+        Assert.assertEquals(IntSets.mutable.of(17), graph.getIncomingArcs(5));
         
         Assert.assertEquals(0, graph.getArc(0, 0)); //a->a
         Assert.assertEquals(1, graph.getArc(0, 1)); //a->b
@@ -177,7 +178,7 @@ public class AttributeLogGraphTest extends DataSetup {
         Assert.assertEquals(1, graph.getArcWeight(15, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.RELATIVE),0.0);
         Assert.assertEquals(1, graph.getArcWeight(17, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.RELATIVE),0.0);
         Assert.assertEquals(1, graph.getArcWeight(20, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.RELATIVE),0.0);
-        Assert.assertEquals(1, graph.getArcWeight(24, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.RELATIVE),0.0);        
+        Assert.assertEquals(1, graph.getArcWeight(24, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.RELATIVE),0.0);
         
         Assert.assertEquals(2, graph.getArcWeight(0, MeasureType.FREQUENCY, MeasureAggregation.MIN, MeasureRelation.ABSOLUTE),0.0);
         Assert.assertEquals(1, graph.getArcWeight(1, MeasureType.FREQUENCY, MeasureAggregation.MIN, MeasureRelation.ABSOLUTE),0.0);
@@ -273,7 +274,7 @@ public class AttributeLogGraphTest extends DataSetup {
     @Test
     public void testSubGraphs_OneTraceAndCompleteEvents_StructureWithCaseFrequency() throws Exception {
         ALog log = new ALog(readLogWithOneTraceAndCompleteEvents());
-        AttributeLog attLog = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName());
+        AttributeLog attLog = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName(), getAllDayAllTimeCalendar());
         AttributeLogGraph graph = attLog.getGraphView();
         graph.sortNodesAndArcs(MeasureType.FREQUENCY, MeasureAggregation.TOTAL);
         graph.buildSubGraphs(false);
@@ -282,38 +283,38 @@ public class AttributeLogGraphTest extends DataSetup {
         Assert.assertEquals(IntSets.mutable.of(0, 1, 2, 3, 4, 5), nodeBasedGraph0.getNodes());
         Assert.assertEquals(IntSets.mutable.of(0, 1, 2, 8, 12, 15, 17, 20, 24), nodeBasedGraph0.getArcs());
         Assert.assertEquals(IntSets.mutable.of(0, 1, 2, 3, 4, 5), nodeBasedGraph0.getSubGraphs().get(0).getNodes());
-        Assert.assertEquals(IntSets.mutable.of(0, 1, 2, 8, 12, 15, 17, 20, 24), nodeBasedGraph0.getSubGraphs().get(0).getArcs());  
+        Assert.assertEquals(IntSets.mutable.of(0, 1, 2, 8, 12, 15, 17, 20, 24), nodeBasedGraph0.getSubGraphs().get(0).getArcs());
         Assert.assertEquals(IntSets.mutable.of(0, 1, 2, 3, 4, 5), nodeBasedGraph0.getSubGraphs().get(1).getNodes());
-        Assert.assertEquals(IntSets.mutable.of(0, 1, 8, 12, 15, 17, 20, 24), nodeBasedGraph0.getSubGraphs().get(1).getArcs());     
+        Assert.assertEquals(IntSets.mutable.of(0, 1, 8, 12, 15, 17, 20, 24), nodeBasedGraph0.getSubGraphs().get(1).getArcs());
         Assert.assertEquals(IntSets.mutable.of(0, 1, 2, 3, 4, 5), nodeBasedGraph0.getSubGraphs().get(2).getNodes());
-        Assert.assertEquals(IntSets.mutable.of(0, 1, 8, 15, 17, 20, 24), nodeBasedGraph0.getSubGraphs().get(2).getArcs());           
+        Assert.assertEquals(IntSets.mutable.of(0, 1, 8, 15, 17, 20, 24), nodeBasedGraph0.getSubGraphs().get(2).getArcs());
         Assert.assertEquals(IntSets.mutable.of(0, 1, 2, 3, 4, 5), nodeBasedGraph0.getSubGraphs().get(3).getNodes());
-        Assert.assertEquals(IntSets.mutable.of(1, 8, 15, 17, 20, 24), nodeBasedGraph0.getSubGraphs().get(3).getArcs());          
+        Assert.assertEquals(IntSets.mutable.of(1, 8, 15, 17, 20, 24), nodeBasedGraph0.getSubGraphs().get(3).getArcs());
         
         FilteredGraph nodeBasedGraph1 = graph.getSubGraphs().get(1);
         Assert.assertEquals(IntSets.mutable.of(0, 2, 3, 4, 5), nodeBasedGraph1.getNodes());
-        Assert.assertEquals(IntSets.mutable.of(0, 2, 12, 15, 17, 20, 24), nodeBasedGraph1.getArcs());        
+        Assert.assertEquals(IntSets.mutable.of(0, 2, 12, 15, 17, 20, 24), nodeBasedGraph1.getArcs());
         Assert.assertEquals(IntSets.mutable.of(0, 2, 3, 4, 5), nodeBasedGraph1.getSubGraphs().get(0).getNodes());
         Assert.assertEquals(IntSets.mutable.of(0, 2, 12, 15, 17, 20, 24), nodeBasedGraph1.getSubGraphs().get(0).getArcs());
         Assert.assertEquals(IntSets.mutable.of(0, 2, 3, 4, 5), nodeBasedGraph1.getSubGraphs().get(1).getNodes());
         Assert.assertEquals(IntSets.mutable.of(0, 2, 15, 17, 20, 24), nodeBasedGraph1.getSubGraphs().get(1).getArcs());
         Assert.assertEquals(IntSets.mutable.of(0, 2, 3, 4, 5), nodeBasedGraph1.getSubGraphs().get(2).getNodes());
-        Assert.assertEquals(IntSets.mutable.of(2, 15, 17, 20, 24), nodeBasedGraph1.getSubGraphs().get(2).getArcs());  
+        Assert.assertEquals(IntSets.mutable.of(2, 15, 17, 20, 24), nodeBasedGraph1.getSubGraphs().get(2).getArcs());
         
         FilteredGraph nodeBasedGraph2 = graph.getSubGraphs().get(2);
         Assert.assertEquals(IntSets.mutable.of(0, 2, 4, 5), nodeBasedGraph2.getNodes());
-        Assert.assertEquals(IntSets.mutable.of(0, 2, 12, 17, 24), nodeBasedGraph2.getArcs());        
+        Assert.assertEquals(IntSets.mutable.of(0, 2, 12, 17, 24), nodeBasedGraph2.getArcs());
         Assert.assertEquals(IntSets.mutable.of(0, 2, 4, 5), nodeBasedGraph2.getSubGraphs().get(0).getNodes());
         Assert.assertEquals(IntSets.mutable.of(0, 2, 12, 17, 24), nodeBasedGraph2.getSubGraphs().get(0).getArcs());
         Assert.assertEquals(IntSets.mutable.of(0, 2, 4, 5), nodeBasedGraph2.getSubGraphs().get(1).getNodes());
         Assert.assertEquals(IntSets.mutable.of(0, 2, 17, 24), nodeBasedGraph2.getSubGraphs().get(1).getArcs());
         Assert.assertEquals(IntSets.mutable.of(0, 2, 4, 5), nodeBasedGraph2.getSubGraphs().get(2).getNodes());
-        Assert.assertEquals(IntSets.mutable.of(2, 17, 24), nodeBasedGraph2.getSubGraphs().get(2).getArcs()); 
+        Assert.assertEquals(IntSets.mutable.of(2, 17, 24), nodeBasedGraph2.getSubGraphs().get(2).getArcs());
     }
     
     public void testSubGraphs_OneTraceAndCompleteEvents_StructureWithMeanDuration() throws Exception {
         ALog log = new ALog(readLogWithStartCompleteEventsOverlapping());
-        AttributeLog attLog = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName());
+        AttributeLog attLog = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName(), getAllDayAllTimeCalendar());
         AttributeLogGraph graph = attLog.getGraphView();
         graph.sortNodesAndArcs(MeasureType.DURATION, MeasureAggregation.MEAN);
         graph.buildSubGraphs(false);
@@ -322,40 +323,40 @@ public class AttributeLogGraphTest extends DataSetup {
         Assert.assertEquals(IntSets.mutable.of(0, 1, 2, 3, 4, 5), nodeBasedGraph0.getNodes());
         Assert.assertEquals(IntSets.mutable.of(0, 1, 2, 8, 12, 15, 17, 20, 24), nodeBasedGraph0.getArcs());
         Assert.assertEquals(IntSets.mutable.of(0, 1, 2, 3, 4, 5), nodeBasedGraph0.getSubGraphs().get(0).getNodes());
-        Assert.assertEquals(IntSets.mutable.of(0, 1, 2, 8, 12, 15, 17, 20, 24), nodeBasedGraph0.getSubGraphs().get(0).getArcs());  
+        Assert.assertEquals(IntSets.mutable.of(0, 1, 2, 8, 12, 15, 17, 20, 24), nodeBasedGraph0.getSubGraphs().get(0).getArcs());
         Assert.assertEquals(IntSets.mutable.of(0, 1, 2, 3, 4, 5), nodeBasedGraph0.getSubGraphs().get(1).getNodes());
-        Assert.assertEquals(IntSets.mutable.of(0, 1, 8, 12, 15, 17, 20, 24), nodeBasedGraph0.getSubGraphs().get(1).getArcs());     
+        Assert.assertEquals(IntSets.mutable.of(0, 1, 8, 12, 15, 17, 20, 24), nodeBasedGraph0.getSubGraphs().get(1).getArcs());
         Assert.assertEquals(IntSets.mutable.of(0, 1, 2, 3, 4, 5), nodeBasedGraph0.getSubGraphs().get(2).getNodes());
-        Assert.assertEquals(IntSets.mutable.of(0, 1, 8, 15, 17, 20, 24), nodeBasedGraph0.getSubGraphs().get(2).getArcs());           
+        Assert.assertEquals(IntSets.mutable.of(0, 1, 8, 15, 17, 20, 24), nodeBasedGraph0.getSubGraphs().get(2).getArcs());
         Assert.assertEquals(IntSets.mutable.of(0, 1, 2, 3, 4, 5), nodeBasedGraph0.getSubGraphs().get(3).getNodes());
-        Assert.assertEquals(IntSets.mutable.of(1, 8, 15, 17, 20, 24), nodeBasedGraph0.getSubGraphs().get(3).getArcs());          
+        Assert.assertEquals(IntSets.mutable.of(1, 8, 15, 17, 20, 24), nodeBasedGraph0.getSubGraphs().get(3).getArcs());
         
         FilteredGraph nodeBasedGraph1 = graph.getSubGraphs().get(1);
         Assert.assertEquals(IntSets.mutable.of(0, 2, 3, 4, 5), nodeBasedGraph1.getNodes());
-        Assert.assertEquals(IntSets.mutable.of(0, 2, 12, 15, 17, 20, 24), nodeBasedGraph1.getArcs());        
+        Assert.assertEquals(IntSets.mutable.of(0, 2, 12, 15, 17, 20, 24), nodeBasedGraph1.getArcs());
         Assert.assertEquals(IntSets.mutable.of(0, 2, 3, 4, 5), nodeBasedGraph1.getSubGraphs().get(0).getNodes());
         Assert.assertEquals(IntSets.mutable.of(0, 2, 12, 15, 17, 20, 24), nodeBasedGraph1.getSubGraphs().get(0).getArcs());
         Assert.assertEquals(IntSets.mutable.of(0, 2, 3, 4, 5), nodeBasedGraph1.getSubGraphs().get(1).getNodes());
         Assert.assertEquals(IntSets.mutable.of(0, 2, 15, 17, 20, 24), nodeBasedGraph1.getSubGraphs().get(1).getArcs());
         Assert.assertEquals(IntSets.mutable.of(0, 2, 3, 4, 5), nodeBasedGraph1.getSubGraphs().get(2).getNodes());
-        Assert.assertEquals(IntSets.mutable.of(2, 15, 17, 20, 24), nodeBasedGraph1.getSubGraphs().get(2).getArcs());  
+        Assert.assertEquals(IntSets.mutable.of(2, 15, 17, 20, 24), nodeBasedGraph1.getSubGraphs().get(2).getArcs());
         
         FilteredGraph nodeBasedGraph2 = graph.getSubGraphs().get(2);
         Assert.assertEquals(IntSets.mutable.of(0, 2, 4, 5), nodeBasedGraph2.getNodes());
-        Assert.assertEquals(IntSets.mutable.of(0, 2, 12, 17, 24), nodeBasedGraph2.getArcs());        
+        Assert.assertEquals(IntSets.mutable.of(0, 2, 12, 17, 24), nodeBasedGraph2.getArcs());
         Assert.assertEquals(IntSets.mutable.of(0, 2, 4, 5), nodeBasedGraph2.getSubGraphs().get(0).getNodes());
         Assert.assertEquals(IntSets.mutable.of(0, 2, 12, 17, 24), nodeBasedGraph2.getSubGraphs().get(0).getArcs());
         Assert.assertEquals(IntSets.mutable.of(0, 2, 4, 5), nodeBasedGraph2.getSubGraphs().get(1).getNodes());
         Assert.assertEquals(IntSets.mutable.of(0, 2, 17, 24), nodeBasedGraph2.getSubGraphs().get(1).getArcs());
         Assert.assertEquals(IntSets.mutable.of(0, 2, 4, 5), nodeBasedGraph2.getSubGraphs().get(2).getNodes());
-        Assert.assertEquals(IntSets.mutable.of(2, 17, 24), nodeBasedGraph2.getSubGraphs().get(2).getArcs());  
+        Assert.assertEquals(IntSets.mutable.of(2, 17, 24), nodeBasedGraph2.getSubGraphs().get(2).getArcs());
     }
     
     
-    @Test 
+    @Test
     public void test_Exception() {
         ALog log = new ALog(readLogWithOneTraceAndCompleteEvents());
-        AttributeLog attLog = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName());
+        AttributeLog attLog = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName(), getAllDayAllTimeCalendar());
         AttributeLogGraph graph = attLog.getGraphView();
         graph.sortNodesAndArcs(MeasureType.FREQUENCY, MeasureAggregation.TOTAL);
         graph.buildSubGraphs(false);
@@ -378,7 +379,7 @@ public class AttributeLogGraphTest extends DataSetup {
     @Test
     public void test_LogWithCompleteEventsOnly() {
         ALog log = new ALog(readLogWithCompleteEventsOnly());
-        AttributeLog attLog = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName());
+        AttributeLog attLog = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName(), getAllDayAllTimeCalendar());
         
         AttributeLogGraph graph = attLog.getGraphView();
         graph.sortNodesAndArcs(MeasureType.FREQUENCY, MeasureAggregation.TOTAL);
@@ -405,24 +406,24 @@ public class AttributeLogGraphTest extends DataSetup {
         Assert.assertEquals(IntSets.mutable.empty(), graph.getIncomingArcs(100));
         
         Assert.assertEquals(IntSets.mutable.of(1,3,4), graph.getOutgoingArcs(0)); //a
-        Assert.assertEquals(IntSets.mutable.of(35), graph.getIncomingArcs(0)); 
+        Assert.assertEquals(IntSets.mutable.of(35), graph.getIncomingArcs(0));
         
         Assert.assertEquals(IntSets.mutable.of(9), graph.getOutgoingArcs(1)); //b
-        Assert.assertEquals(IntSets.mutable.of(1), graph.getIncomingArcs(1)); 
+        Assert.assertEquals(IntSets.mutable.of(1), graph.getIncomingArcs(1));
         
         Assert.assertEquals(IntSets.mutable.of(20), graph.getOutgoingArcs(2)); //c
-        Assert.assertEquals(IntSets.mutable.of(9,23,30), graph.getIncomingArcs(2)); 
+        Assert.assertEquals(IntSets.mutable.of(9,23,30), graph.getIncomingArcs(2));
         
         Assert.assertEquals(IntSets.mutable.of(23,25), graph.getOutgoingArcs(3)); //d
-        Assert.assertEquals(IntSets.mutable.of(3,31), graph.getIncomingArcs(3)); 
+        Assert.assertEquals(IntSets.mutable.of(3,31), graph.getIncomingArcs(3));
         
-        Assert.assertEquals(IntSets.mutable.of(30,31), graph.getOutgoingArcs(4)); 
-        Assert.assertEquals(IntSets.mutable.of(4,25), graph.getIncomingArcs(4)); 
+        Assert.assertEquals(IntSets.mutable.of(30,31), graph.getOutgoingArcs(4));
+        Assert.assertEquals(IntSets.mutable.of(4,25), graph.getIncomingArcs(4));
         
-        Assert.assertEquals(IntSets.mutable.of(35), graph.getOutgoingArcs(5)); 
-        Assert.assertEquals(IntSets.mutable.empty(), graph.getIncomingArcs(5)); 
+        Assert.assertEquals(IntSets.mutable.of(35), graph.getOutgoingArcs(5));
+        Assert.assertEquals(IntSets.mutable.empty(), graph.getIncomingArcs(5));
         
-        Assert.assertEquals(IntSets.mutable.empty(), graph.getOutgoingArcs(6)); 
+        Assert.assertEquals(IntSets.mutable.empty(), graph.getOutgoingArcs(6));
         Assert.assertEquals(IntSets.mutable.of(20), graph.getIncomingArcs(6));
         
         Assert.assertEquals(1, graph.getArc(0, 1)); //a->a
@@ -459,7 +460,7 @@ public class AttributeLogGraphTest extends DataSetup {
         Assert.assertEquals(0.83333, graph.getNodeWeight(3, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.RELATIVE),0.001);
         Assert.assertEquals(0.83333, graph.getNodeWeight(4, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.RELATIVE),0.001);
         Assert.assertEquals(1, graph.getNodeWeight(5, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.RELATIVE),0.001);
-        Assert.assertEquals(1, graph.getNodeWeight(6, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.RELATIVE),0.001);        
+        Assert.assertEquals(1, graph.getNodeWeight(6, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.RELATIVE),0.001);
         
         Assert.assertEquals(1, graph.getNodeWeight(0, MeasureType.FREQUENCY, MeasureAggregation.MIN, MeasureRelation.ABSOLUTE),0.0);
         Assert.assertEquals(0, graph.getNodeWeight(1, MeasureType.FREQUENCY, MeasureAggregation.MIN, MeasureRelation.ABSOLUTE),0.0);
@@ -527,7 +528,7 @@ public class AttributeLogGraphTest extends DataSetup {
         Assert.assertEquals(2, graph.getArcWeight(25, MeasureType.FREQUENCY, MeasureAggregation.TOTAL, MeasureRelation.ABSOLUTE),0.0);
         Assert.assertEquals(2, graph.getArcWeight(30, MeasureType.FREQUENCY, MeasureAggregation.TOTAL, MeasureRelation.ABSOLUTE),0.0);
         Assert.assertEquals(3, graph.getArcWeight(31, MeasureType.FREQUENCY, MeasureAggregation.TOTAL, MeasureRelation.ABSOLUTE),0.0);
-        Assert.assertEquals(6, graph.getArcWeight(35, MeasureType.FREQUENCY, MeasureAggregation.TOTAL, MeasureRelation.ABSOLUTE),0.0);     
+        Assert.assertEquals(6, graph.getArcWeight(35, MeasureType.FREQUENCY, MeasureAggregation.TOTAL, MeasureRelation.ABSOLUTE),0.0);
         
         Assert.assertEquals(IntLists.mutable.of(1,9,3,25,30,4,23,31,20,35), graph.getSortedArcs());
 
@@ -540,7 +541,7 @@ public class AttributeLogGraphTest extends DataSetup {
         Assert.assertEquals(2, graph.getArcWeight(25, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.ABSOLUTE),0.0);
         Assert.assertEquals(2, graph.getArcWeight(30, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.ABSOLUTE),0.0);
         Assert.assertEquals(3, graph.getArcWeight(31, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.ABSOLUTE),0.0);
-        Assert.assertEquals(6, graph.getArcWeight(35, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.ABSOLUTE),0.0); 
+        Assert.assertEquals(6, graph.getArcWeight(35, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.ABSOLUTE),0.0);
         
         Assert.assertEquals(0.16667, graph.getArcWeight(1, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.RELATIVE),0.001);
         Assert.assertEquals(0.33333, graph.getArcWeight(3, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.RELATIVE),0.001);
@@ -551,7 +552,7 @@ public class AttributeLogGraphTest extends DataSetup {
         Assert.assertEquals(0.33333, graph.getArcWeight(25, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.RELATIVE),0.001);
         Assert.assertEquals(0.33333, graph.getArcWeight(30, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.RELATIVE),0.001);
         Assert.assertEquals(0.5, graph.getArcWeight(31, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.RELATIVE),0.001);
-        Assert.assertEquals(1, graph.getArcWeight(35, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.RELATIVE),0.001); 
+        Assert.assertEquals(1, graph.getArcWeight(35, MeasureType.FREQUENCY, MeasureAggregation.CASES, MeasureRelation.RELATIVE),0.001);
         
         Assert.assertEquals(0, graph.getArcWeight(1, MeasureType.FREQUENCY, MeasureAggregation.MIN, MeasureRelation.ABSOLUTE),0.0);
         Assert.assertEquals(0, graph.getArcWeight(3, MeasureType.FREQUENCY, MeasureAggregation.MIN, MeasureRelation.ABSOLUTE),0.0);
@@ -562,7 +563,7 @@ public class AttributeLogGraphTest extends DataSetup {
         Assert.assertEquals(0, graph.getArcWeight(25, MeasureType.FREQUENCY, MeasureAggregation.MIN, MeasureRelation.ABSOLUTE),0.0);
         Assert.assertEquals(0, graph.getArcWeight(30, MeasureType.FREQUENCY, MeasureAggregation.MIN, MeasureRelation.ABSOLUTE),0.0);
         Assert.assertEquals(0, graph.getArcWeight(31, MeasureType.FREQUENCY, MeasureAggregation.MIN, MeasureRelation.ABSOLUTE),0.0);
-        Assert.assertEquals(1, graph.getArcWeight(35, MeasureType.FREQUENCY, MeasureAggregation.MIN, MeasureRelation.ABSOLUTE),0.0);  
+        Assert.assertEquals(1, graph.getArcWeight(35, MeasureType.FREQUENCY, MeasureAggregation.MIN, MeasureRelation.ABSOLUTE),0.0);
         
         Assert.assertEquals(1, graph.getArcWeight(1, MeasureType.FREQUENCY, MeasureAggregation.MAX, MeasureRelation.ABSOLUTE),0.0);
         Assert.assertEquals(1, graph.getArcWeight(3, MeasureType.FREQUENCY, MeasureAggregation.MAX, MeasureRelation.ABSOLUTE),0.0);
@@ -656,7 +657,7 @@ public class AttributeLogGraphTest extends DataSetup {
     @Test
     public void test_LogWithStartAndCompleteEvents() {
         ALog log = new ALog(readLogWithStartCompleteEventsNonOverlappingRepeats());
-        AttributeLog attLog = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName());
+        AttributeLog attLog = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName(), getAllDayAllTimeCalendar());
         AttributeLogGraph graph = attLog.getGraphView();
         
         Assert.assertEquals(IntSets.mutable.of(0,1,2,3), graph.getNodes());
@@ -666,7 +667,7 @@ public class AttributeLogGraphTest extends DataSetup {
         Assert.assertEquals("|>", graph.getNodeName(2));
         Assert.assertEquals("[]", graph.getNodeName(3));
         Assert.assertEquals(2, graph.getSourceNode());
-        Assert.assertEquals(3, graph.getSinkNode());        
+        Assert.assertEquals(3, graph.getSinkNode());
         Assert.assertEquals(Constants.START_NAME, graph.getNodeName(2));
         Assert.assertEquals(Constants.END_NAME, graph.getNodeName(3));
         
@@ -712,7 +713,7 @@ public class AttributeLogGraphTest extends DataSetup {
         Assert.assertEquals(0, graph.getArcMedianDuration(3), 0.0);
         Assert.assertEquals(0, graph.getArcMedianDuration(5), 0.0);
         Assert.assertEquals(0, graph.getArcMedianDuration(7), 0.0);
-        Assert.assertEquals(0, graph.getArcMedianDuration(8), 0.0);      
+        Assert.assertEquals(0, graph.getArcMedianDuration(8), 0.0);
     }
     
     @Test
@@ -720,7 +721,7 @@ public class AttributeLogGraphTest extends DataSetup {
     // No arcs between activity nodes.
     public void test_readLogWithTraceWithOneSingleUniqueEvent() {
         ALog log = new ALog(readLogWithTraceWithOneSingleUniqueEvent());
-        AttributeLog attLog = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName());
+        AttributeLog attLog = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName(), getAllDayAllTimeCalendar());
         AttributeLogGraph graph = attLog.getGraphView();
         
         Assert.assertEquals(IntSets.mutable.of(0,1,2,3,4), graph.getNodes());
@@ -729,7 +730,7 @@ public class AttributeLogGraphTest extends DataSetup {
         Assert.assertEquals("b", graph.getNodeName(1));
         Assert.assertEquals("c", graph.getNodeName(2));
         Assert.assertEquals(Constants.START_NAME, graph.getNodeName(3));
-        Assert.assertEquals(Constants.END_NAME, graph.getNodeName(4));  
+        Assert.assertEquals(Constants.END_NAME, graph.getNodeName(4));
         
         graph.buildSubGraphs(false);
         
@@ -738,19 +739,53 @@ public class AttributeLogGraphTest extends DataSetup {
         Assert.assertEquals(1, graph.getSubGraphs().get(1).getSubGraphs().size());
         Assert.assertEquals(1, graph.getSubGraphs().get(2).getSubGraphs().size());
         
-        Assert.assertEquals(graph.getSubGraphs().get(0).getNodes(), 
+        Assert.assertEquals(graph.getSubGraphs().get(0).getNodes(),
                                 graph.getSubGraphs().get(0).getSubGraphs().get(0).getNodes());
-        Assert.assertEquals(graph.getSubGraphs().get(0).getArcs(), 
+        Assert.assertEquals(graph.getSubGraphs().get(0).getArcs(),
                                 graph.getSubGraphs().get(0).getSubGraphs().get(0).getArcs());
         
-        Assert.assertEquals(graph.getSubGraphs().get(1).getNodes(), 
+        Assert.assertEquals(graph.getSubGraphs().get(1).getNodes(),
                 graph.getSubGraphs().get(1).getSubGraphs().get(0).getNodes());
-        Assert.assertEquals(graph.getSubGraphs().get(1).getArcs(), 
+        Assert.assertEquals(graph.getSubGraphs().get(1).getArcs(),
                 graph.getSubGraphs().get(1).getSubGraphs().get(0).getArcs());
         
-        Assert.assertEquals(graph.getSubGraphs().get(2).getNodes(), 
+        Assert.assertEquals(graph.getSubGraphs().get(2).getNodes(),
                 graph.getSubGraphs().get(2).getSubGraphs().get(0).getNodes());
-        Assert.assertEquals(graph.getSubGraphs().get(2).getArcs(), 
-                graph.getSubGraphs().get(2).getSubGraphs().get(0).getArcs());  
+        Assert.assertEquals(graph.getSubGraphs().get(2).getArcs(),
+                graph.getSubGraphs().get(2).getSubGraphs().get(0).getArcs());
+    }
+    
+    @Ignore
+    @Test
+    public void testDurationWithSpecialCalendars() {
+        ALog log = new ALog(readLogWithOneTrace_TwoActivities_StartCompleteEvents_Friday());
+        
+        AttributeLog attLog0 = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName(), getAllDayAllTimeCalendar());
+        AttributeLogGraph graph0 = attLog0.getGraphView();
+        
+        AttributeLog attLog1 = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName(), getFriday_9To10AM_Calendar());
+        AttributeLogGraph graph1 = attLog1.getGraphView();
+    
+        AttributeLog attLog2 = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName(), getFriday_10To11AM_Calendar());
+        AttributeLogGraph graph2 = attLog2.getGraphView();
+        
+        AttributeLog attLog3 = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName(), getFriday_11To12AM_Calendar());
+        AttributeLogGraph graph3 = attLog3.getGraphView();
+        
+        Assert.assertEquals(3600000, graph0.getNodeWeight("a", MeasureType.DURATION, MeasureAggregation.MEAN, MeasureRelation.ABSOLUTE),0);
+        Assert.assertEquals(3600000, graph0.getNodeWeight("b", MeasureType.DURATION, MeasureAggregation.MEAN, MeasureRelation.ABSOLUTE),0);
+        Assert.assertEquals(3600000, graph0.getArcWeight("a", "b", MeasureType.DURATION, MeasureAggregation.MEAN, MeasureRelation.ABSOLUTE),0);
+        
+        Assert.assertEquals(3600000, graph1.getNodeWeight("a", MeasureType.DURATION, MeasureAggregation.MEAN, MeasureRelation.ABSOLUTE),0.0);
+        Assert.assertEquals(0, graph1.getNodeWeight("b", MeasureType.DURATION, MeasureAggregation.MEAN, MeasureRelation.ABSOLUTE),0.0);
+        Assert.assertEquals(0, graph1.getArcWeight("a", "b", MeasureType.DURATION, MeasureAggregation.MEAN, MeasureRelation.ABSOLUTE),0.0);
+        
+        Assert.assertEquals(0, graph2.getNodeWeight("a", MeasureType.DURATION, MeasureAggregation.MEAN, MeasureRelation.ABSOLUTE),0.0);
+        Assert.assertEquals(3600000, graph2.getNodeWeight("b", MeasureType.DURATION, MeasureAggregation.MEAN, MeasureRelation.ABSOLUTE),0.0);
+        Assert.assertEquals(0, graph2.getArcWeight("a", "b", MeasureType.DURATION, MeasureAggregation.MEAN, MeasureRelation.ABSOLUTE),0.0);
+        
+        Assert.assertEquals(0, graph3.getNodeWeight("a", MeasureType.DURATION, MeasureAggregation.MEAN, MeasureRelation.ABSOLUTE),0.0);
+        Assert.assertEquals(0, graph3.getNodeWeight("b", MeasureType.DURATION, MeasureAggregation.MEAN, MeasureRelation.ABSOLUTE),0.0);
+        Assert.assertEquals(3600000, graph3.getArcWeight("a", "b", MeasureType.DURATION, MeasureAggregation.MEAN, MeasureRelation.ABSOLUTE),0.0);
     }
 }

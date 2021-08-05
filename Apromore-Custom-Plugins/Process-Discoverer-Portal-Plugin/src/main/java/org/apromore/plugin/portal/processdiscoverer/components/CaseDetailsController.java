@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.apromore.logman.attribute.log.AttributeLog;
 import org.apromore.logman.attribute.log.AttributeTrace;
 import org.apromore.plugin.portal.processdiscoverer.InteractiveMode;
@@ -199,7 +200,7 @@ public class CaseDetailsController extends DataListController {
     this.disabled = disabled;
   }
 
-  public PageDefinition getPageDefinition(String uri) throws IOException {
+  private PageDefinition getPageDefinition(String uri) throws IOException {
     String url = "static/" + uri;
     Execution current = Executions.getCurrent();
     PageDefinition pageDefinition = current.getPageDefinitionDirectly(
