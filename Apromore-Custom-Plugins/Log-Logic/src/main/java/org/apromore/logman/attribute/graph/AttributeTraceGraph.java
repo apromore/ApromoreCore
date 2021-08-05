@@ -114,151 +114,122 @@ public class AttributeTraceGraph extends WeightedAttributeGraph {
         return arcIntervals.getIfAbsent(arc, Lists.mutable::empty).toImmutable();
     }
     
-    public double getNodeFrequencyWeight(int node, MeasureAggregation aggregation, MeasureRelation relation) {
-        switch (aggregation) {
-        case TOTAL:
-            return nodeTotalFreqs.get(node);
-        case CASES:
-            return (nodeTotalFreqs.get(node) > 0 ? 1 : 0);
-        case MEAN:
-            return (nodeTotalFreqs.get(node) > 0 ? 1 : 0);
-        case MIN:
-            return (nodeTotalFreqs.get(node) > 0 ? 1 : 0);
-        case MAX:
-            return (nodeTotalFreqs.get(node) > 0 ? 1 : 0);
-        case MEDIAN:
-            return (nodeTotalFreqs.get(node) > 0 ? 1 : 0);
-        default:
-            return (nodeTotalFreqs.get(node) > 0 ? 1 : 0);
+    private double getTotalWeight(MeasureType type, MeasureAggregation aggregation) {
+        if (type == MeasureType.FREQUENCY) {
+            switch (aggregation) {
+            case TOTAL:
+                return 1;
+            case CASES:
+                return this.attTrace.getValueTrace().size();
+            case MEAN:
+                return 1;
+            case MIN:
+                return 1;
+            case MAX:
+                return 1;
+            case MEDIAN:
+                return 1;
+            default:
+                return 1;
+            }
         }
-    }
-    
-    public double getNodeDurationWeight(int node, MeasureAggregation aggregation, MeasureRelation relation, CalendarModel calendarModel) {
-        switch (aggregation) {
-        case TOTAL:
-            return nodeDurs.get(node).isEmpty() ? 0 : nodeDurs.get(node).sum();
-        case MEAN:
-            return nodeDurs.get(node).isEmpty() ? 0 : nodeDurs.get(node).average();
-        case MIN:
-            return nodeDurs.get(node).isEmpty() ? 0 : nodeDurs.get(node).min();
-        case MAX:
-            return nodeDurs.get(node).isEmpty() ? 0 : nodeDurs.get(node).max();
-        case MEDIAN:
-            return nodeDurs.get(node).isEmpty() ? 0 : nodeDurs.get(node).median();
-        default:
-            return nodeDurs.get(node).isEmpty() ? 0 : nodeDurs.get(node).average();
-        }
-    }
-    
-    public double getArcFrequencyWeight(int node, MeasureAggregation aggregation, MeasureRelation relation) {
-        switch (aggregation) {
-        case TOTAL:
-            return arcTotalFreqs.get(node);
-        case CASES:
-            return (arcTotalFreqs.get(node) > 0 ? 1 : 0);
-        case MEAN:
-            return (arcTotalFreqs.get(node) > 0 ? 1 : 0);
-        case MIN:
-            return (arcTotalFreqs.get(node) > 0 ? 1 : 0);
-        case MAX:
-            return (arcTotalFreqs.get(node) > 0 ? 1 : 0);
-        case MEDIAN:
-            return (arcTotalFreqs.get(node) > 0 ? 1 : 0);
-        default:
-            return (arcTotalFreqs.get(node) > 0 ? 1 : 0);
-        }
-    }
-    
-    public double getArcDurationWeight(int node, MeasureAggregation aggregation, MeasureRelation relation, CalendarModel calendarModel) {
-        switch (aggregation) {
-        case TOTAL:
-            return arcDurs.get(node).isEmpty() ? 0 : nodeDurs.get(node).sum();
-        case MEAN:
-            return arcDurs.get(node).isEmpty() ? 0 : nodeDurs.get(node).average();
-        case MIN:
-            return arcDurs.get(node).isEmpty() ? 0 : nodeDurs.get(node).min();
-        case MAX:
-            return arcDurs.get(node).isEmpty() ? 0 : nodeDurs.get(node).max();
-        case MEDIAN:
-            return arcDurs.get(node).isEmpty() ? 0 : nodeDurs.get(node).median();
-        default:
-            return arcDurs.get(node).isEmpty() ? 0 : nodeDurs.get(node).average();
+        else {
+            switch (aggregation) {
+            case TOTAL:
+                return 1;
+            case MEAN:
+                return 1;
+            case MIN:
+                return 1;
+            case MAX:
+                return 1;
+            case MEDIAN:
+                return 1;
+            default:
+                return 1;
+            }
         }
     }
 
 
     @Override
     public double getNodeWeight(int node, MeasureType type, MeasureAggregation aggregation, MeasureRelation relation) {
+    	double totalWeight = (relation == MeasureRelation.ABSOLUTE) ? 1 : getTotalWeight(type, aggregation);
+    	if (totalWeight == 0d) totalWeight = 1;
+    	
         if (type == MeasureType.FREQUENCY) {
             switch (aggregation) {
             case TOTAL:
-                return nodeTotalFreqs.get(node);
+                return nodeTotalFreqs.get(node)/totalWeight;
             case CASES:
-                return (nodeTotalFreqs.get(node) > 0 ? 1 : 0);
+                return (nodeTotalFreqs.get(node) > 0 ? 1 : 0)/totalWeight;
             case MEAN:
-                return (nodeTotalFreqs.get(node) > 0 ? 1 : 0);
+                return (nodeTotalFreqs.get(node) > 0 ? 1 : 0)/totalWeight;
             case MIN:
-                return (nodeTotalFreqs.get(node) > 0 ? 1 : 0);
+                return (nodeTotalFreqs.get(node) > 0 ? 1 : 0)/totalWeight;
             case MAX:
-                return (nodeTotalFreqs.get(node) > 0 ? 1 : 0);
+                return (nodeTotalFreqs.get(node) > 0 ? 1 : 0)/totalWeight;
             case MEDIAN:
-                return (nodeTotalFreqs.get(node) > 0 ? 1 : 0);
+                return (nodeTotalFreqs.get(node) > 0 ? 1 : 0)/totalWeight;
             default:
-                return (nodeTotalFreqs.get(node) > 0 ? 1 : 0);
+                return (nodeTotalFreqs.get(node) > 0 ? 1 : 0)/totalWeight;
             }
         }
         else {
             switch (aggregation) {
             case TOTAL:
-                return nodeDurs.get(node).isEmpty() ? 0 : nodeDurs.get(node).sum();
+                return nodeDurs.get(node).isEmpty() ? 0 : nodeDurs.get(node).sum()/totalWeight;
             case MEAN:
-                return nodeDurs.get(node).isEmpty() ? 0 : nodeDurs.get(node).average();
+                return nodeDurs.get(node).isEmpty() ? 0 : nodeDurs.get(node).average()/totalWeight;
             case MIN:
-                return nodeDurs.get(node).isEmpty() ? 0 : nodeDurs.get(node).min();
+                return nodeDurs.get(node).isEmpty() ? 0 : nodeDurs.get(node).min()/totalWeight;
             case MAX:
-                return nodeDurs.get(node).isEmpty() ? 0 : nodeDurs.get(node).max();
+                return nodeDurs.get(node).isEmpty() ? 0 : nodeDurs.get(node).max()/totalWeight;
             case MEDIAN:
-                return nodeDurs.get(node).isEmpty() ? 0 : nodeDurs.get(node).median();
+                return nodeDurs.get(node).isEmpty() ? 0 : nodeDurs.get(node).median()/totalWeight;
             default:
-                return nodeDurs.get(node).isEmpty() ? 0 : nodeDurs.get(node).average();
+                return nodeDurs.get(node).isEmpty() ? 0 : nodeDurs.get(node).average()/totalWeight;
             }
         }
     }
 
     @Override
     public double getArcWeight(int arc, MeasureType type, MeasureAggregation aggregation, MeasureRelation relation) {
+    	double totalWeight = (relation == MeasureRelation.ABSOLUTE) ? 1 : getTotalWeight(type, aggregation);
+    	if (totalWeight == 0d) totalWeight = 1;
+    	
         if (type == MeasureType.FREQUENCY) {
             switch (aggregation) {
             case TOTAL:
-                return arcTotalFreqs.get(arc);
+                return arcTotalFreqs.get(arc)/totalWeight;
             case CASES:
-                return (arcTotalFreqs.get(arc) > 0 ? 1 : 0);
+                return (arcTotalFreqs.get(arc) > 0 ? 1 : 0)/totalWeight;
             case MEAN:
-                return (arcTotalFreqs.get(arc) > 0 ? 1 : 0);
+                return (arcTotalFreqs.get(arc) > 0 ? 1 : 0)/totalWeight;
             case MIN:
-                return (arcTotalFreqs.get(arc) > 0 ? 1 : 0);
+                return (arcTotalFreqs.get(arc) > 0 ? 1 : 0)/totalWeight;
             case MAX:
-                return (arcTotalFreqs.get(arc) > 0 ? 1 : 0);
+                return (arcTotalFreqs.get(arc) > 0 ? 1 : 0)/totalWeight;
             case MEDIAN:
-                return (arcTotalFreqs.get(arc) > 0 ? 1 : 0);
+                return (arcTotalFreqs.get(arc) > 0 ? 1 : 0)/totalWeight;
             default:
-                return (arcTotalFreqs.get(arc) > 0 ? 1 : 0);
+                return (arcTotalFreqs.get(arc) > 0 ? 1 : 0)/totalWeight;
             }
         }
         else {
             switch (aggregation) {
             case TOTAL:
-                return arcDurs.get(arc).isEmpty() ? 0 : arcDurs.get(arc).sum();
+                return arcDurs.get(arc).isEmpty() ? 0 : arcDurs.get(arc).sum()/totalWeight;
             case MEAN:
-                return arcDurs.get(arc).isEmpty() ? 0 : arcDurs.get(arc).average();
+                return arcDurs.get(arc).isEmpty() ? 0 : arcDurs.get(arc).average()/totalWeight;
             case MIN:
-                return arcDurs.get(arc).isEmpty() ? 0 : arcDurs.get(arc).min();
+                return arcDurs.get(arc).isEmpty() ? 0 : arcDurs.get(arc).min()/totalWeight;
             case MAX:
-                return arcDurs.get(arc).isEmpty() ? 0 : arcDurs.get(arc).max();
+                return arcDurs.get(arc).isEmpty() ? 0 : arcDurs.get(arc).max()/totalWeight;
             case MEDIAN:
-                return arcDurs.get(arc).isEmpty() ? 0 : arcDurs.get(arc).median();
+                return arcDurs.get(arc).isEmpty() ? 0 : arcDurs.get(arc).median()/totalWeight;
             default:
-                return arcDurs.get(arc).isEmpty() ? 0 : arcDurs.get(arc).average();
+                return arcDurs.get(arc).isEmpty() ? 0 : arcDurs.get(arc).average()/totalWeight;
             }
         }
     }
