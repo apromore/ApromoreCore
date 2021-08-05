@@ -233,6 +233,11 @@
     width: 27.7578125px !important;
 }
 
+.ap-icon-etl-pipeline-manage {
+    background-image: url('etl-pipeline-manage.svg') !important;
+    width: 27.7578125px !important;
+}
+
 .ap-icon-export-bpmn {
     background-image: url('export-bpmn.svg') !important;
     width: 26.1953125px !important;

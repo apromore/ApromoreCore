@@ -83,7 +83,7 @@ public class CaseAttributeValue implements AttributeValue, Serializable {
 
 
     public long getCases() {
-        return getOccurCasesIndexSet().size();
+        return occurCaseIndexes.size();
     }
 
     public String getFrequency() {
