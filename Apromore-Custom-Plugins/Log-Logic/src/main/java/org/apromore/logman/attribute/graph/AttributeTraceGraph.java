@@ -21,7 +21,6 @@
  */
 package org.apromore.logman.attribute.graph;
 
-import org.apromore.calendar.model.CalendarModel;
 import org.apromore.logman.attribute.log.AttributeTrace;
 import org.eclipse.collections.api.list.ListIterable;
 import org.eclipse.collections.api.list.MutableList;

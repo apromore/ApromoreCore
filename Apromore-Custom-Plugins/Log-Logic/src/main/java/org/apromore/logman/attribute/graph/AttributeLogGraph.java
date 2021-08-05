@@ -227,9 +227,7 @@ public class AttributeLogGraph extends WeightedAttributeGraph {
         
         // Release data structures storing median values
         nodeFreqs.clear();
-//        nodeDurations.clear();
         arcFreqs.clear();
-//        arcDurations.clear();
         nodeIntervals.clear();
         arcIntervals.clear();
     }
