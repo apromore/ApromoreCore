@@ -71,7 +71,7 @@ Apromore.Editor = {
                 redo.addClass('disabled');
             }
         } catch(e) {
-            console.log('Unexpected error occurred when update button status', e);
+            console.log('Unexpected error occurred when update button status');
         }
     },
 
@@ -164,14 +164,19 @@ Apromore.Editor = {
         }
 
         var eventBus = editor.get('eventBus');
-        var connectionDocking = editor.get('connectionDocking');
         var elementRegistry = editor.get('elementRegistry');
         var connections = elementRegistry.filter(function(e) {
           return e.waypoints;
         });
-        connections.forEach(function(connection) {
-          connection.waypoints = connectionDocking.getCroppedWaypoints(connection);
-        });
+        try {
+          var connectionDocking = editor.get('connectionDocking');
+          connections.forEach(function(connection) {
+            connection.waypoints = connectionDocking.getCroppedWaypoints(connection);
+          });
+        } catch (e) {
+          console.log('skip connectionDocking error');
+          // pass
+        }
         eventBus.fire('elements.changed', { elements: connections });
         callback();
         var me = this; // delay the fit until the properties panel fully collapsed
@@ -207,16 +212,27 @@ Apromore.Editor = {
     },
 
     zoomIn: function() {
-        this.actualEditor.get('editorActions').trigger('stepZoom', { value: 1 });
+        // this.actualEditor.get('editorActions').trigger('stepZoom', { value: 1 });
+        if (this.actualEditor) {
+            var canvas = this.actualEditor.get('canvas');
+            canvas.zoom(canvas.zoom() * 1.1);
+        }
     },
 
-
     zoomOut: function() {
-        this.actualEditor.get('editorActions').trigger('stepZoom', { value: -1 });
+        // this.actualEditor.get('editorActions').trigger('stepZoom', { value: -1 });
+        if (this.actualEditor) {
+            var canvas = this.actualEditor.get('canvas');
+            canvas.zoom(canvas.zoom() * 0.9);
+        }
     },
 
     zoomDefault: function() {
-        editorActions.trigger('zoom', { value: 1 });
+        // editorActions.trigger('zoom', { value: 1 });
+        if (this.actualEditor) {
+            var canvas = this.actualEditor.get('canvas');
+            canvas.zoom(1);
+        }
     },
 
     createShape: function(type, x, y, w, h) {

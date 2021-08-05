@@ -89,7 +89,36 @@
     bottom: 0;
 }
 
-.access-type-viewer button[title^="Save"]{
+/* Viewer only overrides */
+
+.access-type-viewer #ap-id-editor-save-btn,
+.access-type-viewer #ap-id-editor-save-as-btn,
+.access-type-viewer #ap-id-editor-share-btn,
+.access-type-viewer #ap-id-editor-undo-btn,
+.access-type-viewer #ap-id-editor-redo-btn,
+.access-type-viewer #ap-id-editor-simulation-btn,
+.access-type-viewer #ap-id-editor-export-bpmn-btn,
+.access-type-viewer #ap-id-editor-export-pdf-btn,
+.access-type-viewer #ap-id-editor-export-svg-btn,
+.access-type-viewer .x-layout-collapsed-east,
+.access-type-viewer .ytb-sep {
+    /* For disable mode styling */
+    /*
     opacity: 0.5;
     pointer-events: none;
+    */
+    display: none !important;
+}
+
+.access-type-viewer.x-border-layout-ct {
+    background-color: white !important
+}
+
+.access-type-viewer .bjs-container .djs-shape .djs-hit,
+.access-type-viewer .bjs-container .djs-connection .djs-hit {
+    pointer-events: none !important;
+}
+
+.access-type-viewer .bjs-container .djs-palette {
+    display: none !important;
 }
