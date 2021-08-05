@@ -75,9 +75,6 @@ public abstract class BaseListboxController extends BaseController {
   private static final long serialVersionUID = -4693075788311730404L;
   private static final Logger LOGGER = PortalLoggerFactory.getLogger(BaseListboxController.class);
 
-  private static final String ETL_PLUGIN_LABEL = "Create data pipeline";
-  private static final String MANAGE_PIPELINES_LABEL = "Manage data pipelines";
-
   private static final String TILE_VIEW = "tile";
   private static final String LIST_VIEW = "list";
   public static final String APROMORE = "Apromore";
@@ -234,7 +231,7 @@ public abstract class BaseListboxController extends BaseController {
       }
     });
 
-    if (portalPluginMap.containsKey(ETL_PLUGIN_LABEL)) {
+    if (portalPluginMap.containsKey(Constants.ETL_PLUGIN)) {
       btnEtlSep.setVisible(mainController.getConfig().isEnableEtl());
       btnCreateDataPipeline.setVisible(mainController.getConfig().isEnableEtl());
       btnManageDataPipelines.setVisible(mainController.getConfig().isEnableEtl());
@@ -460,7 +457,7 @@ public abstract class BaseListboxController extends BaseController {
     PortalPlugin etlPlugin;
 
     try {
-      etlPlugin = portalPluginMap.get(ETL_PLUGIN_LABEL);
+      etlPlugin = portalPluginMap.get(Constants.ETL_PLUGIN);
       etlPlugin.execute(portalContext);
     } catch (Exception e) {
       Messagebox.show(e.getMessage(), APROMORE, Messagebox.OK, Messagebox.ERROR);
@@ -471,10 +468,10 @@ public abstract class BaseListboxController extends BaseController {
     PortalPlugin pipelineManager;
 
     try {
-      pipelineManager = portalPluginMap.get(MANAGE_PIPELINES_LABEL);
+      pipelineManager = portalPluginMap.get(Constants.JOB_SCHEDULER_PLUGIN);
       pipelineManager.execute(portalContext);
     } catch (Exception e) {
-      Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
+      Messagebox.show(e.getMessage(), APROMORE, Messagebox.OK, Messagebox.ERROR);
     }
   }
 
