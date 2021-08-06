@@ -28,8 +28,6 @@ package org.apromore.portal.dialogController;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.apache.commons.io.IOUtils;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.common.UserSessionManager;
