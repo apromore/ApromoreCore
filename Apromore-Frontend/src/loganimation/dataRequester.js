@@ -15,7 +15,7 @@ export default class DataRequester {
         this._hasDataRequestError = false;
         this._pluginExecutionId = pluginExecutionId;
 
-        this._workerProxy = new Worker("../" + 'loganimation2' + "/js/ap/dataRequestWorker.js");
+        this._workerProxy = new Worker("/zkau/web/" + 'loganimation2' + "/js/ap/dataRequestWorker.js");
         let self = this;
         this._workerProxy.onmessage = function(e) {
             console.log('DataRequester - response received: requestToken=' + e.data.requestToken);

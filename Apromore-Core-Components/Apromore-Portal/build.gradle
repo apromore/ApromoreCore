@@ -2,11 +2,6 @@ group = 'org.apromore'
 version = '1.1'
 description = 'Apromore Portal'
 
-repositories {
-	maven {
-		url "http://mavensync.zkoss.org/maven2"
-	}
-}
 dependencies {
 	
 	implementation project(':Apromore-Core-Components:Apromore-Manager')
