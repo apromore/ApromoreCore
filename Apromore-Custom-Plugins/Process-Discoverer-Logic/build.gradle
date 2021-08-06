@@ -2,13 +2,11 @@ group = 'org.apromore'
 version = '2.0.0'
 description = 'Process Discoverer Logic'
 
-
 dependencies {
-	
-	
 	implementation project(':Apromore-Extras:OpenXES')
 	implementation project(':Apromore-ProcessMining-Collection')
 	implementation project(':Apromore-Custom-Plugins:SplitMiner-Logic')
 	implementation project(':Apromore-Custom-Plugins:Log-Logic')
-    
+	implementation project(':Apromore-Custom-Plugins:Log-Logic')
+	testImplementation project(':Apromore-Calendar')
 }

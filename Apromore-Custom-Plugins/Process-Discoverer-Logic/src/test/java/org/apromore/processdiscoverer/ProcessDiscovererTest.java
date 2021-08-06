@@ -40,7 +40,6 @@ import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNNode;
 import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Gateway;
 import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Gateway.GatewayType;
 import org.deckfour.xes.model.XLog;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class ProcessDiscovererTest extends LogicDataSetup {
@@ -70,7 +69,6 @@ public class ProcessDiscovererTest extends LogicDataSetup {
                 secondaryType,
                 secondaryAggregate,
                 secondaryRelation,
-                null,
                 null);
     }
     
@@ -115,14 +113,14 @@ public class ProcessDiscovererTest extends LogicDataSetup {
     private AttributeLog createAttributeLog(XLog xlog) {
         ALog log = new ALog(xlog);
         IndexableAttribute mainAttribute = log.getAttributeStore().getStandardEventConceptName();
-        AttributeLog attLog = new AttributeLog(log, mainAttribute);
+        AttributeLog attLog = new AttributeLog(log, mainAttribute, getAllDayAllTimeCalendar());
         return attLog;
     }
     
     private Abstraction discoverTraceAbstraction(XLog xlog, String traceID) throws Exception {
         ALog log = new ALog(xlog);
         IndexableAttribute mainAttribute = log.getAttributeStore().getStandardEventConceptName();
-        AttributeLog attLog = new AttributeLog(log, mainAttribute);
+        AttributeLog attLog = new AttributeLog(log, mainAttribute, getAllDayAllTimeCalendar());
         ProcessDiscoverer pd = new ProcessDiscoverer();
         AbstractionParams params = new AbstractionParams(
                                             mainAttribute,
@@ -142,7 +140,6 @@ public class ProcessDiscovererTest extends LogicDataSetup {
                                             MeasureType.DURATION,
                                             MeasureAggregation.MEAN,
                                             MeasureRelation.ABSOLUTE,
-                                            null,
                                             null);
         Abstraction traceAbs = pd.generateTraceAbstraction(attLog, traceID, params);
         return traceAbs;
@@ -922,7 +919,6 @@ public class ProcessDiscovererTest extends LogicDataSetup {
     }
     
     @Test
-    @Ignore
     public void testBPMN_Sepsis_100_30_DiagramStructure() {
         try {
             Abstraction abs = discoverProcess(read_Sepsis(),

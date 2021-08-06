@@ -164,12 +164,12 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
     }
 
     private LogFilterRequest getRequestWithOption(EditorOption option) {
-        return new LogFilterRequest(this, parent.getSourceLogId(), parent.getSourceLogName(),
+        return new LogFilterRequest(this, parent.getSourceLogId(), parent.getTitle(),
                 analyst.getOriginalAPMLog(), (List<LogFilterRule>) analyst.getCurrentFilterCriteria(), option);
     }
 
     private LogFilterRequest getDefaultRequest() {
-        return new LogFilterRequest(this, parent.getSourceLogId(), parent.getSourceLogName(),
+        return new LogFilterRequest(this, parent.getSourceLogId(), parent.getTitle(),
                 analyst.getOriginalAPMLog(), (List<LogFilterRule>) analyst.getCurrentFilterCriteria());
     }
 

@@ -26,6 +26,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
+import org.apromore.calendar.builder.CalendarModelBuilder;
+import org.apromore.calendar.model.CalendarModel;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.apromore.processmining.plugins.bpmn.plugins.BpmnImportPlugin;
 import org.deckfour.xes.in.XesXmlGZIPParser;
@@ -53,11 +55,15 @@ public class LogicDataSetup {
             e.printStackTrace();
             return null;
         }
-    }  
+    }
     
     
     private BPMNDiagram readBPMNDiagram(String fullFilePath) throws FileNotFoundException, Exception {
         return bpmnImport.importFromStreamToDiagram(new FileInputStream(new File(fullFilePath)), fullFilePath);
+    }
+    
+    public CalendarModel getAllDayAllTimeCalendar() {
+        return new CalendarModelBuilder().withAllDayAllTime().build();
     }
     
     // ----------------------------------------------------

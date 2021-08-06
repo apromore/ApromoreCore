@@ -23,8 +23,8 @@
 package org.apromore.plugin.portal.processdiscoverer.impl.json;
 
 import org.apromore.plugin.portal.processdiscoverer.impl.layout.JGraphLayouter;
-import org.apromore.plugin.portal.processdiscoverer.vis.Layouter;
 import org.apromore.plugin.portal.processdiscoverer.vis.InvalidOutputException;
+import org.apromore.plugin.portal.processdiscoverer.vis.Layouter;
 import org.apromore.plugin.portal.processdiscoverer.vis.ProcessVisualizer;
 import org.apromore.plugin.portal.processdiscoverer.vis.UnsupportedElementException;
 import org.apromore.plugin.portal.processdiscoverer.vis.VisualContext;
@@ -50,7 +50,7 @@ public class ProcessJSONVisualizer implements ProcessVisualizer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ProcessJSONVisualizer.class);
 
 	private VisualToolkit visToolkit = new VisualToolkit();
-	private Layouter layouter = new JGraphLayouter(); 
+	private Layouter layouter = new JGraphLayouter();
 	
     @Override
     public String generateVisualizationText(Abstraction abs) throws Exception {
@@ -62,11 +62,13 @@ public class ProcessJSONVisualizer implements ProcessVisualizer {
         layouter.layout(abs);
         LOGGER.debug("Layout BPMNDiagram: {} ms.", System.currentTimeMillis() - timer1);
         
+        timer1 = System.currentTimeMillis();
         JSONArray json = generateJSON(abs, visContext, visSettings);
+        LOGGER.debug("Generate JSON data from BPMNDiagram: {} ms.", System.currentTimeMillis() - timer1);
         return json.toString().replaceAll("'", "\\\\\'");
     }
     
-	private JSONArray generateJSON(Abstraction abs, VisualContext visContext, 
+	private JSONArray generateJSON(Abstraction abs, VisualContext visContext,
 	        VisualSettings visSettings) throws UnsupportedElementException, JSONException, InvalidOutputException {
 		JSONArray jsonProcess = new JSONArray();
 		

@@ -26,7 +26,6 @@ import org.apromore.logman.attribute.IndexableAttribute;
 import org.apromore.logman.attribute.graph.MeasureAggregation;
 import org.apromore.logman.attribute.graph.MeasureRelation;
 import org.apromore.logman.attribute.graph.MeasureType;
-import org.apromore.logman.attribute.log.relation.RelationReader;
 
 /**
  * Parameters used to generate different abstractions for a log.
@@ -57,16 +56,14 @@ public class AbstractionParams {
 	private MeasureAggregation secondaryAggregation;
 	private MeasureRelation secondaryRelation;
 	
-	private Abstraction correspondingDFG; 
-	private RelationReader relationReader;
+	private Abstraction correspondingDFG;
 	
-	public AbstractionParams(IndexableAttribute IndexableAttribute, double nodeSelectThreshold, double arcSelectThreshold, double parallelism, 
-							boolean prioritizeParallelism, boolean preserve_connectivity, 
-							boolean inverted_nodes, boolean inverted_arcs, boolean secondary, 
-							MeasureType fixedType, MeasureAggregation fixedAggregation, MeasureRelation fixedRelation, 
-							MeasureType primaryType, MeasureAggregation primaryAggregation, MeasureRelation primaryRelation,  
+	public AbstractionParams(IndexableAttribute IndexableAttribute, double nodeSelectThreshold, double arcSelectThreshold, double parallelism,
+							boolean prioritizeParallelism, boolean preserve_connectivity,
+							boolean inverted_nodes, boolean inverted_arcs, boolean secondary,
+							MeasureType fixedType, MeasureAggregation fixedAggregation, MeasureRelation fixedRelation,
+							MeasureType primaryType, MeasureAggregation primaryAggregation, MeasureRelation primaryRelation,
 							MeasureType secondaryType, MeasureAggregation secondaryAggregation, MeasureRelation secondaryRelation,
-							RelationReader relationReader,
 							Abstraction correspondingDFG) {
 		this.IndexableAttribute = IndexableAttribute;
 		this.nodeSelectThreshold = nodeSelectThreshold;
@@ -91,7 +88,6 @@ public class AbstractionParams {
 		this.secondaryRelation = secondaryRelation;
 		
 		this.correspondingDFG = correspondingDFG;
-		this.relationReader = relationReader;
 	}
 	
 	public IndexableAttribute getAttribute() {
@@ -144,7 +140,7 @@ public class AbstractionParams {
 	
     public MeasureRelation getFixedRelation() {
         return this.fixedRelation;
-    } 
+    }
 	
 	public MeasureType getPrimaryType() {
 		return this.primaryType;
@@ -156,7 +152,7 @@ public class AbstractionParams {
 	
     public MeasureRelation getPrimaryRelation() {
         return this.primaryRelation;
-    }	
+    }
     
     public void setPrimaryMeasure(MeasureType type, MeasureAggregation aggregation, MeasureRelation relation) {
     	primaryType = type;
@@ -174,7 +170,7 @@ public class AbstractionParams {
 
     public MeasureRelation getSecondaryRelation() {
         return this.secondaryRelation;
-    }   
+    }
 	
 	public boolean getSecondary() {
 		return this.secondary;
@@ -195,36 +191,31 @@ public class AbstractionParams {
 	    this.correspondingDFG = correspondingDFG;
 	}
 	
-	public RelationReader getRelationReader() {
-	    return this.relationReader;
-	}
-	
 	@Override
     public AbstractionParams clone() {
 	    return new AbstractionParams(
-	            this.getAttribute(), 
-	            this.getNodeSelectThreshold(), 
-	            this.getArcSelectThreshold(), 
-	            this.getParallelismLevel(), 
-	            this.prioritizeParallelism(), 
-	            this.preserveConnectivity(), 
-	            this.invertedNodes(), 
-	            this.invertedArcs(), 
-	            this.getSecondary(), 
+	            this.getAttribute(),
+	            this.getNodeSelectThreshold(),
+	            this.getArcSelectThreshold(),
+	            this.getParallelismLevel(),
+	            this.prioritizeParallelism(),
+	            this.preserveConnectivity(),
+	            this.invertedNodes(),
+	            this.invertedArcs(),
+	            this.getSecondary(),
 	            
-	            this.getFixedType(), 
+	            this.getFixedType(),
 	            this.getFixedAggregation(),
 	            this.getFixedRelation(),
 	            
-	            this.getPrimaryType(), 
+	            this.getPrimaryType(),
 	            this.getPrimaryAggregation(),
 	            this.getPrimaryRelation(),
 	            
-	            this.getSecondaryType(), 
+	            this.getSecondaryType(),
 	            this.getSecondaryAggregation(),
 	            this.getSecondaryRelation(),
 	            
-	            this.getRelationReader(), 
 	            this.getCorrepondingDFG());
 	}
 }

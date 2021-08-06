@@ -80,7 +80,7 @@ public class ProcessJSONVisualizerTest extends TestDataSetup {
         userOptions.setIncludeSecondary(useSecondary);
         userOptions.setBPMNMode(bpmn);
         
-        PDAnalyst analyst = PDAnalyst.newInstanceWithoutFilter(log, configData);
+        PDAnalyst analyst = PDAnalyst.newInstanceWithoutFilter(log, configData, getAllDayAllTimeCalendar());
         return analyst.discoverProcess(userOptions).get();
     }
     
