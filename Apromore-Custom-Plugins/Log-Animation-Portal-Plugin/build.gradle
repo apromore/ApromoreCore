@@ -18,3 +18,8 @@ dependencies {
 
 
 }
+
+jar {
+   
+    archiveBaseName='log-animation-ce'
+}
