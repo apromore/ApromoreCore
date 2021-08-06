@@ -37,17 +37,12 @@ public class ApromoreErrorController implements ErrorController {
         return "pages/404";
       } else if (statusCode == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
         return "pages/500";
-      } else if (statusCode == HttpStatus.UNAUTHORIZED.value()) {
+      } else if (statusCode == HttpStatus.UNAUTHORIZED.value() 
+    		  || statusCode == HttpStatus.FORBIDDEN.value()) {
         return "pages/401";
       }
     }
     return "pages/500";
-  }
-
-  @Override
-  public String getErrorPath() {
-    // TODO Auto-generated method stub
-    return "/error";
   }
 
 }
