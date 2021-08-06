@@ -13,8 +13,9 @@ public class StringUtilUnitTest {
         String fileName_2 = "abc*abcdzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz_______________more_than_60_characters";
         String fileName_3 = "?";
 
-        assertEquals(StringUtil.normalizeFilename(fileName_1), "abcd.");
-        assertEquals(StringUtil.normalizeFilename(fileName_2), "abcabcdzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz_______________");
-        assertEquals(StringUtil.normalizeFilename(fileName_3), "Untitled");
+        assertEquals("abcd.", StringUtil.normalizeFilename(fileName_1));
+        assertEquals("abcabcdzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz_______________",
+                StringUtil.normalizeFilename(fileName_2));
+        assertEquals("Untitled", StringUtil.normalizeFilename(fileName_3));
     }
 }

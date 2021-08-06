@@ -7,6 +7,10 @@ public class StringUtil {
 
     private static final String FILENAME_CONSTRAINT = "[a-zA-Z0-9 \\[\\]._+\\-()]+";
 
+    private StringUtil() {
+        throw new IllegalStateException("String Utility class");
+    }
+
     public static String normalizeFilename(String name) {
         StringBuilder normalized = new StringBuilder();
         try {
