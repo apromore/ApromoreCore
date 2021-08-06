@@ -32,6 +32,9 @@ import java.util.List;
 
 public enum UserMetadataTypeEnum {
 
+    /**
+     * Types of user metadata
+     */
     FILTER(1),
     DASHBOARD(2),
     CSV_IMPORTER(3),

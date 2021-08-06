@@ -35,10 +35,15 @@ import java.util.Arrays;
  * | Viewer     | 1        | 0         | 0             |
  * | Editor     | 1        | 1         | 0             |
  * | Owner      | 1        | 1         | 1             |
+ *
+ * @author frankma
  */
 @Getter
 public enum AccessType {
 
+    /**
+     * Access types
+     */
     RESTRICTED(false, false, false, "Viewer (restricted)"),
     VIEWER(true, false, false, "Viewer (full)"),
     EDITOR(true, true, false, "Editor"),
@@ -67,14 +72,14 @@ public enum AccessType {
      * @return the AccessType object
      */
     public static AccessType getAccessType(String label) {
-        return Arrays.asList(AccessType.values()).stream()
+        return Arrays.stream(AccessType.values())
                 .filter(accessType -> accessType.label.equals(label))
                 .findFirst()
                 .orElse(AccessType.RESTRICTED);
     }
 
     public static AccessType getAccessType(boolean isRead, boolean isWrite, boolean isOwner) {
-        return Arrays.asList(AccessType.values()).stream().filter(accessType -> accessType.isRead == isRead &&
+        return Arrays.stream(AccessType.values()).filter(accessType -> accessType.isRead == isRead &&
                 accessType.isWrite == isWrite &&
                 accessType.isOwner == isOwner).findFirst().orElse(AccessType.RESTRICTED);
     }
