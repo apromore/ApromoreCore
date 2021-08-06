@@ -62,6 +62,7 @@ import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.service.model.ProcessData;
 import org.apromore.util.AccessType;
 import org.apromore.util.StreamUtil;
+import org.apromore.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -648,7 +649,7 @@ public class ProcessServiceImpl implements ProcessService {
     Process process = new Process();
 
     try {
-      process.setName(processName);
+      process.setName(StringUtil.normalizeFilename(processName));
       process.setUser(user);
       process.setDomain(domain);
       process.setNativeType(nativeType);

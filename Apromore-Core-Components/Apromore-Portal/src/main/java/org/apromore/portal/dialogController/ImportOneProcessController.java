@@ -38,6 +38,7 @@ import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.model.FolderType;
 import org.apromore.portal.model.ImportProcessResultType;
+import org.apromore.util.StringUtil;
 import org.slf4j.Logger;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Executions;
@@ -54,7 +55,6 @@ import org.zkoss.zul.Window;
 
 public class ImportOneProcessController extends BaseController {
 
-  private static final String FILENAME_CONSTRAINT = "[a-zA-Z0-9 \\[\\]\\._\\+\\-\\(\\)]+";
   private static final Logger LOGGER =
       PortalLoggerFactory.getLogger(ImportOneProcessController.class);
 
@@ -89,7 +89,7 @@ public class ImportOneProcessController extends BaseController {
         .getNextSibling();
     Row processNameR = (Row) rows.getChildren().get(0);
     this.processNameTb = (Textbox) processNameR.getChildren().get(1);
-    this.processNameTb.setValue(normalizeFilename(processName));
+    this.processNameTb.setValue(StringUtil.normalizeFilename(processName));
 
     Div buttonsD = (Div) importOneProcessWindow.getFellow("div");
     this.okButton = (Button) buttonsD.getFirstChild();
@@ -119,25 +119,6 @@ public class ImportOneProcessController extends BaseController {
       }
     });
     this.importOneProcessWindow.doModal();
-  }
-
-  private String normalizeFilename(String name) {
-    String normalized = "";
-    try {
-      Pattern pattern = Pattern.compile(FILENAME_CONSTRAINT);
-      Matcher matcher = pattern.matcher(name);
-
-      while (matcher.find()) {
-        normalized += matcher.group();
-      }
-    } catch (Exception e) {
-      // ignore exception
-    } finally {
-      if (normalized.length() == 0) {
-        normalized = "Untitled";
-      }
-    }
-    return normalized;
   }
 
   private void cancel() throws InterruptedException, IOException {

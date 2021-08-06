@@ -23,22 +23,7 @@
  */
 package org.apromore.service.impl;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-
-import javax.activation.DataHandler;
-import javax.inject.Inject;
-import javax.mail.util.ByteArrayDataSource;
-
+import lombok.Getter;
 import org.apromore.apmlog.APMLog;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.calendar.service.CalendarService;
@@ -73,6 +58,7 @@ import org.apromore.storage.StorageClient;
 import org.apromore.storage.StorageType;
 import org.apromore.storage.factory.StorageManagementFactory;
 import org.apromore.util.AccessType;
+import org.apromore.util.StringUtil;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryRegistry;
@@ -95,7 +81,22 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import lombok.Getter;
+import javax.activation.DataHandler;
+import javax.inject.Inject;
+import javax.mail.util.ByteArrayDataSource;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Implementation of the ProcessService Contract.
@@ -402,7 +403,7 @@ public class EventLogServiceImpl implements EventLogService {
 	    logFileService.copyFile(inputStream, outputStream);
 
 	}
-	log.setName(newName);
+		log.setName(StringUtil.normalizeFilename(newName));
 
     }
 
