@@ -111,7 +111,6 @@ public class LoginController extends BaseController implements Composer<Componen
     I18nSession i18nSession = new I18nSession(i18nConfig);
     UserSessionManager.setCurrentI18nSession(i18nSession);
     i18nSession.applyLocaleFromClient();
-    LabelUtils.reloadLabels();
   }
 
   @Override

@@ -25,6 +25,7 @@ package org.apromore.logman.attribute.log;
 import java.util.BitSet;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
+import org.apromore.calendar.model.CalendarModel;
 import org.apromore.logman.ALog;
 import org.apromore.logman.ATrace;
 import org.apromore.logman.Constants;
@@ -32,7 +33,6 @@ import org.apromore.logman.LogBitMap;
 import org.apromore.logman.attribute.IndexableAttribute;
 import org.apromore.logman.attribute.exception.InvalidAttributeLogStatusUpdateException;
 import org.apromore.logman.attribute.graph.AttributeLogGraph;
-import org.apromore.logman.attribute.log.variants.AttributeTraceVariants;
 import org.eclipse.collections.api.list.ListIterable;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.list.primitive.IntList;
@@ -73,6 +73,9 @@ public class AttributeLog {
     // Main perspective attribute. AttributeLog is able to change the perspective attribute
     private IndexableAttribute attribute;
     
+    // Calendar model used for this log
+    private CalendarModel calendarModel;
+    
     // Original log data
     private MutableList<AttributeTrace> originalTraces = Lists.mutable.empty();
     private MutableMap<String, AttributeTrace> originalTraceIdMap = Maps.mutable.empty();
@@ -81,15 +84,18 @@ public class AttributeLog {
     private BitSet originalTraceStatus;
     private MutableList<AttributeTrace> activeTraces = Lists.mutable.empty();
     
+    private boolean dataStatusChanged = false; // true if this log has been changed (filtered) but not visualized
+    
     // Sequence view of the log
     private AttributeLogVariantView variantView;
     
     // Graph view of the log
     private AttributeLogGraph graphView;
     
-	public AttributeLog(ALog log, IndexableAttribute attribute) {
+	public AttributeLog(ALog log, IndexableAttribute attribute, CalendarModel calendarModel) {
 	    this.fullLog = log;
 	    this.attribute = attribute;
+	    this.calendarModel = calendarModel;
 	    this.originalTraceStatus = fullLog.getOriginalTraceStatus();
 	    if (log.getOriginalTraces().size()==0 || attribute == null) return;
 	    
@@ -113,13 +119,12 @@ public class AttributeLog {
         graphView.finalUpdate();
 	}
 	
-	public void clear() {
-	    variantView.reset();
-	    graphView.clear();
-	}
-	
     public IndexableAttribute getAttribute() {
         return this.attribute;
+    }
+    
+    public CalendarModel getCalendarModel() {
+        return this.calendarModel;
     }
 	
     // Change the perspective attribute of this log without having to recreate a new AttributeLog
@@ -143,7 +148,16 @@ public class AttributeLog {
     	    
     	    variantView.finalUpdate();
     	    graphView.finalUpdate();
+    	    dataStatusChanged = true;
 	    }
+	}
+	
+	public boolean isDataStatusChanged() {
+	    return dataStatusChanged;
+	}
+	
+	public void resetDataStatus() {
+	    dataStatusChanged = false;
 	}
 	
 	public BitSet getOriginalTraceStatus() {
@@ -173,6 +187,7 @@ public class AttributeLog {
             
             if (!logBitMap.getTraceBitSet().equals(this.getOriginalTraceStatus())) {
                 originalTraceStatus = logBitMap.getTraceBitSet();
+                dataStatusChanged = true;
             }
             
             for (int i=0;i<getOriginalTraces().size();i++) {
@@ -180,6 +195,7 @@ public class AttributeLog {
                 if (logBitMap.getEventBitSetSizeAtIndex(i) == trace.getOriginalValueTrace().size()) {
                     if (!logBitMap.getEventBitSetAtIndex(i).equals(trace.getOriginalEventStatus())) {
                         trace.updateOriginalEventStatus(logBitMap.getEventBitSetAtIndex(i));
+                        dataStatusChanged = true;
                     }
                     if (originalTraceStatus.get(i) && !trace.isEmpty()) {
                         activeTraces.add(trace);
@@ -295,10 +311,6 @@ public class AttributeLog {
         return originalTraceIdMap.get(traceId);
     }
     
-    
-    private AttributeTraceVariants getVariants() {
-        return variantView.getActiveVariants();
-    }
     
     private IntList getVariantFromTraceIndex(int traceIndex) {
         return activeTraces.get(traceIndex).getValueTrace();

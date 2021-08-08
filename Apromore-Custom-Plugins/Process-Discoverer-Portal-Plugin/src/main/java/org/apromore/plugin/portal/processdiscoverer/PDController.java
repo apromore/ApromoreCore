@@ -24,6 +24,7 @@ package org.apromore.plugin.portal.processdiscoverer;
 
 import static org.apromore.logman.attribute.graph.MeasureType.DURATION;
 import static org.apromore.logman.attribute.graph.MeasureType.FREQUENCY;
+
 import java.text.DecimalFormat;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
@@ -33,7 +34,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
+
 import javax.servlet.http.HttpSession;
+
 import org.apromore.logman.attribute.IndexableAttribute;
 import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.plugin.portal.PortalContext;
@@ -83,6 +86,7 @@ import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
+
 import lombok.Getter;
 
 /**
@@ -323,8 +327,7 @@ public class PDController extends BaseController implements Composer<Component> 
       comp.getDesktop().setAttribute("processAnalyst", processAnalyst);
       comp.getDesktop().setAttribute("pluginSessionId", pluginSessionId);
     } catch (Exception ex) {
-
-      Messagebox.show(getLabel("initError_message"));
+      Messagebox.show(getLabel("initError_message") + ". Error message: " + ex.getMessage());
       LOGGER.error("Error occurred while initializing: " + ex.getMessage(), ex);
     }
   }
@@ -677,7 +680,8 @@ public class PDController extends BaseController implements Composer<Component> 
 
 
 
-  public ProcessService getProcessService() {
+  @Override
+public ProcessService getProcessService() {
     return processService;
   }
 

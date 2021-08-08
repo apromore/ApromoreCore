@@ -188,7 +188,7 @@ public class CSVImporterFileImporterPlugin implements FileImporterPlugin {
                 arg2.put("labels", getLabels());
                 Window matchedMappingPopUp =
                     (Window) portalContext.getUI().createComponent(getClass().getClassLoader(),
-                        "zul" + "zul/matchedMapping.zul", null, arg2);
+                        "zul/matchedMapping.zul", null, arg2);
                 matchedMappingPopUp.doModal();
 
                 Date date = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss")

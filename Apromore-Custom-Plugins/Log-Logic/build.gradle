@@ -5,7 +5,7 @@ description = 'Log Processing Logic'
 dependencies {
    
 	implementation project(':Apromore-Extras:OpenXES')
-//    implementation 'commons-lang:commons-lang:2.6'
+	implementation project(':Apromore-Calendar')
     implementation 'org.apache.commons:commons-lang3'
     implementation 'org.apache.commons:commons-math3:3.6.1'
 //    

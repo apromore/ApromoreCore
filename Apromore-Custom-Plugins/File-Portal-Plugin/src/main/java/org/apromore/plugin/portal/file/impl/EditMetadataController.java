@@ -271,7 +271,7 @@ public class EditMetadataController extends BaseController {
   }
 
   protected void resetProcess() {
-    this.nameT.setValue(this.process.getName());
+    this.nameT.setValue(this.process.getName().length() > 60 ? this.process.getName().substring(0, 59) : this.process.getName());
     this.versionNumberT.setValue(this.preVersion.getVersionNumber());
     this.domainCB.setValue(this.process.getDomain());
     this.ownerCB.setValue(UserSessionManager.getCurrentUser().getUsername());
@@ -297,7 +297,7 @@ public class EditMetadataController extends BaseController {
   }
 
   private void resetLog() {
-    nameT.setValue(log.getName());
+    nameT.setValue(log.getName().length() > 60 ? log.getName().substring(0, 59) : log.getName());
     EventLogService eventLogService = (EventLogService) SpringUtil.getBean("eventLogService");
     makePublicCb.setChecked(eventLogService.isPublicLog(log.getId()));
   }
