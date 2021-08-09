@@ -38,7 +38,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 /**
  * Test suite for {@link PortalPluginResourceServlet}.
  */
-public class PortalPluginResourceServletUnitTest {
+class PortalPluginResourceServletUnitTest {
 
     /**
      * Instance under test.
@@ -70,9 +70,9 @@ public class PortalPluginResourceServletUnitTest {
     @CsvSource({"/test-icon.svg,             FAKE SVG CONTENT,   image/svg+xml",
                 "/test-icon.png,             FAKE PNG CONTENT,   image/png",
                 "/test-folder/test-icon.svg, FOLDER SVG CONTENT, image/svg+xml"})
-    public void testDoGet_ok(final String pathInfo,
-                             final String expectedContent,
-                             final String expectedContentType) throws Exception {
+    void testDoGet_ok(final String pathInfo,
+                      final String expectedContent,
+                      final String expectedContentType) throws Exception {
 
         final int expectedContentLength = expectedContent.getBytes(UTF_8).length;
         final Capture<byte[]> responseContent = newCapture();
@@ -107,8 +107,8 @@ public class PortalPluginResourceServletUnitTest {
                 "/nonexistent.svg,     Unable to find resource for /nonexistent.svg",
                 "/unsupported.ext,     Unsupported resource extension \"ext\" for /unsupported.ext",
                 "/test-icon.svg.gz,    Unsupported resource extension \"gz\" for /test-icon.svg.gz"})
-    public void testDoGet_forbidden(final String pathInfo,
-                                  final String expectedErrorMessage) throws Exception {
+    void testDoGet_forbidden(final String pathInfo,
+                             final String expectedErrorMessage) throws Exception {
 
         // Record the expected interactions with the mock objects
         expect(request.getPathInfo()).andReturn(pathInfo);
