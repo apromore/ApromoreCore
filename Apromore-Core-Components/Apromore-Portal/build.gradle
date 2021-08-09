@@ -17,9 +17,6 @@ dependencies {
 	compileOnly 'javax.servlet:javax.servlet-api'
 	implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '9.7'
 	
+	testImplementation 'org.easymock:easymock:4.3'
 	//testImplementation group: 'org.junit.contrib', name: 'junit-theories', version: '4.12'
-	
-	
-	
-	
 }
