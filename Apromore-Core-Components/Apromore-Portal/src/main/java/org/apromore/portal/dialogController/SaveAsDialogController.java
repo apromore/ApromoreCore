@@ -72,7 +72,7 @@ public class SaveAsDialogController extends BaseController {
   private transient EventQueue<Event> qePortal =
       EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, true);
   private transient EventQueue<Event> qeBPMNEditor =
-      EventQueues.lookup(Constants.EVENT_QUEUE_BPMN_EDITOR, EventQueues.SESSION, true);
+      EventQueues.lookup(Constants.EVENT_QUEUE_BPMN_EDITOR, EventQueues.DESKTOP, true);
 
   private Window saveAsW;
   private Textbox modelName;
@@ -89,12 +89,11 @@ public class SaveAsDialogController extends BaseController {
   MainController mainController;
 
   public SaveAsDialogController(ProcessSummaryType process, VersionSummaryType version,
-      ApromoreSession session, Boolean isUpdate, String data, Window window,
-      MainController mainController) {
+      ApromoreSession session, Boolean isUpdate, String data, MainController mainController) {
     this.session = session;
     this.editSession = session.getEditSession();
     this.isSaveCurrent = isUpdate;
-    this.saveAsW = window;
+    this.saveAsW = (Window) Executions.createComponents("~./macros/saveAsDialog.zul", null, null);
     this.modelData = data;
     this.mainController = mainController;
     processService = mainController.getProcessService();
@@ -138,13 +137,6 @@ public class SaveAsDialogController extends BaseController {
     });
 
     this.saveAsW.doModal();
-  }
-
-  public SaveAsDialogController(ProcessSummaryType process, VersionSummaryType version,
-      ApromoreSession session, Boolean isUpdate, String data, MainController mainController) {
-    this(process, version, session, isUpdate, data,
-        (Window) Executions.createComponents("~./macros/saveAsDialog.zul", null, null),
-        mainController);
   }
 
   protected void cancel() throws Exception {
