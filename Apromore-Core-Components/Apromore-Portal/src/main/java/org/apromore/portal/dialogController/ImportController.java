@@ -267,15 +267,17 @@ public class ImportController extends BaseController {
 
     try {
       if (!StringUtil.isValidCloudStorageURL(fileUrl)) {
-        throw new ExceptionImport(
-            "URL link is not from supported cloud storage or not using valid protocol.");
+//        throw new ExceptionImport(
+//            "URL link is not from supported cloud storage or not using valid protocol.");
+        note.show("URL link is not from supported cloud storage or not using valid protocol.");
       }
 
       fileUrl = StringUtil.parseFileURL(fileUrl);
 
 
       if ("".equals(fileUrl)) {
-        throw new ExceptionImport("URL link is empty or not correct.");
+        note.show("URL link is empty or not correct.");
+//        throw new ExceptionImport("URL link is empty or not correct.");
       }
 
 
@@ -290,7 +292,7 @@ public class ImportController extends BaseController {
 
       if (filename == null) {
         note.show("Couldn't find supported file. ");
-        throw new ExceptionImport("Unsupported file.");
+//        throw new ExceptionImport("Unsupported file.");
       }
 
       fileNameLabelURL.setStyle("color: blue");
@@ -325,11 +327,13 @@ public class ImportController extends BaseController {
 
     } catch (MalformedURLException e) {
       okButton_URL.setDisabled(true);
-      throw new ExceptionImport("URL link is empty or not correct.");
+//      throw new ExceptionImport("URL link is empty or not correct.");
+      note.show("URL link is empty or not correct.");
     } catch (IOException | NullPointerException e) {
       okButton_URL.setDisabled(true);
-      throw new ExceptionImport(
-          "Couldn't find supported file. Please check the URL and try again. ");
+//      throw new ExceptionImport(
+//          "Couldn't find supported file. Please check the URL and try again. ");
+      note.show("Couldn't find supported file. Please check the URL and try again. ");
     }
   }
 
@@ -341,7 +345,6 @@ public class ImportController extends BaseController {
     // Check whether any of the pluggable file importers can handle this file
     for (FileImporterPlugin fileImporterPlugin : fileImporterPlugins) {
       if (fileImporterPlugin.getFileExtensions().contains(extension)) {
-        // TODO isMatchedMapping NOT HERE, separate concern
         fileImporterPlugin.importFile(importedMedia, isPublicCheckbox.isChecked());
         return;
       }
@@ -362,7 +365,7 @@ public class ImportController extends BaseController {
       importProcess(this.mainC, this, importedMedia.getStreamData(), name.split("\\.")[0], name);
     } else {
       // ignoredFiles += (ignoredFiles.isEmpty() ? "" : " ,") + name;
-      note.show("Ignoring file with unknown extension: " + name);
+      note.show("Ignoring file with unsupported extension: " + name);
     }
   }
 
