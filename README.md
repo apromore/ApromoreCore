@@ -1,4 +1,4 @@
-![apromore](http://apromore.org/wp-content/uploads/2019/11/Apromore-banner_narrow.png "apromore")
+![apromore](https://apromore.org/wp-content/uploads/2021/08/Apromore-banner_red.png "apromore")
 
 # Apromore Core
 
@@ -113,7 +113,7 @@ mysql --max_allowed_packet=1G --user=root -p -h localhost apromore < backup.sql
 ### KeyCloak setup
 
 * Apromore supports keycloak as authentication broker which acts as IDP provider.
-* You can configure your own keycloak instance with SAML,IDP,LDAP authentication.
+* You can configure your own keycloak instance with SAML, OAuth2, LDAP authentication.
 * Once done edit the application.properties with relevant information (keycloak. prefix) that you get from keycloak.
 * Apromore will use keycloak for authentication.
 
