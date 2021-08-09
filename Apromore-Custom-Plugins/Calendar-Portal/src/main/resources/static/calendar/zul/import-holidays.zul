@@ -25,13 +25,13 @@
             sclass="ap-holidays-win"
             xmlns:ca="client/attribute"
             xmlns:n="native">
-        <n:script type="text/javascript" src="~./libs/date-holidays/1.8.1/umd.min.js"></n:script>
-        <n:script type="text/javascript" src="~./libs/jquery/1.12.4/jquery-1.12.4.min.js"></n:script>
-        <n:script type="text/javascript" src="~./libs/jquery-ui/1.12.1/jquery-ui.min.js"></n:script>
-        <n:script type="text/javascript" src="~./calendar/libs/selectize/0.13.0/selectize.js"></n:script>
-        <n:script type="text/javascript" src="~./calendar/js/holidays.js"></n:script>
-        <style src="~./calendar/libs/selectize/0.13.0/selectize.css"/>
-        <style src="~./calendar/libs/selectize/0.13.0/selectize.ap.css"/>
+        <n:script type="text/javascript" src="./libs/date-holidays/1.8.1/umd.min.js"></n:script>
+        <n:script type="text/javascript" src="./libs/jquery/1.12.4/jquery-1.12.4.min.js"></n:script>
+        <n:script type="text/javascript" src="./libs/jquery-ui/1.12.1/jquery-ui.min.js"></n:script>
+        <n:script type="text/javascript" src="./calendar/libs/selectize/0.13.0/selectize.js"></n:script>
+        <n:script type="text/javascript" src="./calendar/js/holidays.js"></n:script>
+        <style src="./calendar/libs/selectize/0.13.0/selectize.css"/>
+        <style src="./calendar/libs/selectize/0.13.0/selectize.ap.css"/>
         <grid sclass="ap-grid ap-form">
             <columns>
                 <column hflex="1"/>
