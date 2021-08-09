@@ -55,7 +55,6 @@ import org.apromore.portal.common.notification.Notification;
 import org.apromore.portal.exception.DialogException;
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
-import org.apromore.portal.exception.ExceptionImport;
 import org.apromore.portal.util.StringUtil;
 import org.slf4j.Logger;
 import org.zkoss.spring.SpringUtil;
@@ -122,8 +121,7 @@ public class ImportController extends BaseController {
 
   /** Unit testing constructor. */
   public ImportController(MainController mainC, ConfigBean configBean,
-      List<FileImporterPlugin> fileImporterPlugins, NotificationHandler note)
-      throws DialogException {
+      List<FileImporterPlugin> fileImporterPlugins, NotificationHandler note) {
     super(configBean);
     this.fileImporterPlugins = fileImporterPlugins;
     this.note = note;
@@ -136,6 +134,7 @@ public class ImportController extends BaseController {
     this.fileImporterPlugins = (List<FileImporterPlugin>) SpringUtil.getBean(FILE_IMPORTER_PLUGINS);
     // this.note = (message) -> { Messagebox.show(message); };
     this.note = new NotificationHandler() {
+      @Override
       public void show(String message) {
         Messagebox.show(message);
       }
@@ -181,26 +180,31 @@ public class ImportController extends BaseController {
       supportedExtURL.setValue(supportedExtS);
 
       uploadButton.addEventListener(ON_CLICK, new EventListener<Event>() {
+        @Override
         public void onEvent(Event event) throws Exception {
           okButton.setDisabled(true);
         }
       });
       uploadButton.addEventListener("onUpload", new EventListener<Event>() {
+        @Override
         public void onEvent(Event event) throws Exception {
           uploadFile((UploadEvent) event);
         }
       });
       uploadButton.addEventListener("onSizeCheck", new EventListener<Event>() {
+        @Override
         public void onEvent(Event event) throws Exception {
           uploadSizeExceeded = (int) event.getData() != 0;
         }
       });
       uploadURLButton.addEventListener(ON_CLICK, new EventListener<Event>() {
+        @Override
         public void onEvent(Event event) throws Exception {
           uploadFileFromURL(fileUrl.getValue());
         }
       });
       okButton.addEventListener(ON_CLICK, new EventListener<MouseEvent>() {
+        @Override
         public void onEvent(MouseEvent event) throws Exception {
           importWindow.detach();
           Sessions.getCurrent().setAttribute("fileimportertarget",
@@ -209,6 +213,7 @@ public class ImportController extends BaseController {
         }
       });
       okButton_URL.addEventListener(ON_CLICK, new EventListener<MouseEvent>() {
+        @Override
         public void onEvent(MouseEvent event) throws Exception {
           importWindow.detach();
           Sessions.getCurrent().setAttribute("fileimportertarget",
@@ -218,11 +223,13 @@ public class ImportController extends BaseController {
         }
       });
       cancelButton.addEventListener(ON_CLICK, new EventListener<Event>() {
+        @Override
         public void onEvent(Event event) throws Exception {
           importWindow.detach();
         }
       });
       cancelButtonURL.addEventListener(ON_CLICK, new EventListener<Event>() {
+        @Override
         public void onEvent(Event event) throws Exception {
           importWindow.detach();
         }
@@ -258,18 +265,16 @@ public class ImportController extends BaseController {
    * Controller for uploading file from URL
    * 
    * @param fileUrl - URL string user inputted
-   * @throws ExceptionImport if IOException, URISyntaxException, MalformedURLException happens
    */
-  private void uploadFileFromURL(String fileUrl) throws ExceptionImport {
+  private void uploadFileFromURL(String fileUrl) {
 
     URL url;
     String filename;
 
     try {
       if (!StringUtil.isValidCloudStorageURL(fileUrl)) {
-//        throw new ExceptionImport(
-//            "URL link is not from supported cloud storage or not using valid protocol.");
         note.show("URL link is not from supported cloud storage or not using valid protocol.");
+        return;
       }
 
       fileUrl = StringUtil.parseFileURL(fileUrl);
@@ -277,7 +282,7 @@ public class ImportController extends BaseController {
 
       if ("".equals(fileUrl)) {
         note.show("URL link is empty or not correct.");
-//        throw new ExceptionImport("URL link is empty or not correct.");
+        return;
       }
 
 
@@ -292,7 +297,7 @@ public class ImportController extends BaseController {
 
       if (filename == null) {
         note.show("Couldn't find supported file. ");
-//        throw new ExceptionImport("Unsupported file.");
+        return;
       }
 
       fileNameLabelURL.setStyle("color: blue");
@@ -327,12 +332,9 @@ public class ImportController extends BaseController {
 
     } catch (MalformedURLException e) {
       okButton_URL.setDisabled(true);
-//      throw new ExceptionImport("URL link is empty or not correct.");
       note.show("URL link is empty or not correct.");
     } catch (IOException | NullPointerException e) {
       okButton_URL.setDisabled(true);
-//      throw new ExceptionImport(
-//          "Couldn't find supported file. Please check the URL and try again. ");
       note.show("Couldn't find supported file. Please check the URL and try again. ");
     }
   }
