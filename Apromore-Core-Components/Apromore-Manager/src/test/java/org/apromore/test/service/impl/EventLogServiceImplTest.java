@@ -22,7 +22,7 @@
 
 package org.apromore.test.service.impl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.Assert.assertEquals;
 import static org.powermock.api.easymock.PowerMock.createMock;
 
 import java.io.File;
@@ -41,7 +41,6 @@ import java.util.stream.Stream;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import junit.framework.Assert;
 import org.apromore.calendar.service.CustomCalendarService;
 import org.apromore.commons.config.ConfigBean;
 import org.apromore.dao.CustomCalendarRepository;
