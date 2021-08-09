@@ -24,7 +24,10 @@ package org.apromore.test.service.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.powermock.api.easymock.PowerMock.createMock;
+
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -191,9 +194,8 @@ public class EventLogServiceImplTest {
 
   @Test
   public void eventLogValidationTest() {
-    Path name = Paths
-        .get(ClassLoader.getSystemResource("XES_logs/A1_overlap_no_waiting_time.xes").getPath());
-    XLog xLog = fetchXlog(name);
+    InputStream is = getClass().getClassLoader().getResourceAsStream("XES_logs/A1_overlap_no_waiting_time.xes");
+    XLog xLog = fetchXlog(is);
 
     assert xLog != null;
     EventLogServiceImpl.validateLog(xLog);
@@ -210,12 +212,12 @@ public class EventLogServiceImplTest {
     assertEquals(5, uniqueActs.size());
   }
 
-  private XLog fetchXlog(Path path) {
+  private XLog fetchXlog(InputStream is) {
     List<XLog> parsedLog;
     XFactory factory = XFactoryRegistry.instance().currentDefault();
     XesXmlParser parser = new XesXmlParser(factory);
     try {
-      parsedLog = parser.parse(new FileInputStream(path.toFile()));
+      parsedLog = parser.parse(is);
       return parsedLog.iterator().next();
     } catch (Exception e) {
       e.printStackTrace();
@@ -253,6 +255,11 @@ public class EventLogServiceImplTest {
       result = Sets.intersection(result, Sets.newHashSet(numbers));
     }
     return result;
+  }
+
+  private XLog readXESFile(String fullFilePath) throws Exception {
+    XesXmlParser parser = new XesXmlParser();
+    return parser.parse(new File(fullFilePath)).get(0);
   }
 
 }
