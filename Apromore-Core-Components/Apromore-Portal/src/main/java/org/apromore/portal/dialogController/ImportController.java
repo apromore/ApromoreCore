@@ -98,7 +98,7 @@ public class ImportController extends BaseController {
 
   private String ignoredFiles;
 
-  private Media media = null;
+  private transient Media media = null;
   private Label fileNameLabel;
   private Checkbox isPublicCheckbox;
 
@@ -111,14 +111,14 @@ public class ImportController extends BaseController {
 
   private List<ImportOneProcessController> toImportList = new ArrayList<>();
   private List<ImportOneProcessController> importedList = new ArrayList<>();
-  private List<FileImporterPlugin> fileImporterPlugins;
+  private transient List<FileImporterPlugin> fileImporterPlugins;
 
   @FunctionalInterface
   public interface NotificationHandler {
     public void show(String string);
   }
 
-  private NotificationHandler note;
+  private transient NotificationHandler note;
 
   /** Unit testing constructor. */
   public ImportController(MainController mainC, ConfigBean configBean,
@@ -419,18 +419,19 @@ public class ImportController extends BaseController {
    */
   private void importZip(Media zippedMedia) throws InterruptedException {
     try {
-      ZipInputStream in = zippedMedia instanceof MediaImpl
-          ? new ZipInputStream(new FileInputStream(((MediaImpl) zippedMedia).getTempFile()))
-          : new ZipInputStream(zippedMedia.getStreamData());
-      ZipEntry entry;
-      while ((entry = in.getNextEntry()) != null) {
-        try {
-          importFile(new MediaImpl(entry.getName(), in, StandardCharsets.UTF_8,
-              ItemNameUtils.findExtension(entry.getName())));
-          break;
+      try (ZipInputStream in = zippedMedia instanceof MediaImpl
+              ? new ZipInputStream(new FileInputStream(((MediaImpl) zippedMedia).getTempFile()))
+              : new ZipInputStream(zippedMedia.getStreamData())) {
+        ZipEntry entry;
+        while ((entry = in.getNextEntry()) != null) {
+          try {
+            importFile(new MediaImpl(entry.getName(), in, StandardCharsets.UTF_8,
+                    ItemNameUtils.findExtension(entry.getName())));
+            break;
 
-        } catch (ExceptionAllUsers | ExceptionDomains e) {
-          note.show("Zip component couldn't be loaded: " + e);
+          } catch (ExceptionAllUsers | ExceptionDomains e) {
+            note.show("Zip component couldn't be loaded: " + e);
+          }
         }
       }
     } catch (IOException | JAXBException e) {

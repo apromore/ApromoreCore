@@ -59,6 +59,7 @@ public class MenuController extends SelectorComposer<Menubar> {
   private static final Logger LOGGER = PortalLoggerFactory.getLogger(MenuController.class);
   public static final String GROUP = "group";
   public static final String ON_CLICK = "onClick";
+  public static final String ITEM_CODE = "itemCode";
 
   private Menuitem aboutMenuitem;
   private Menuitem targetMenuitem;
@@ -123,7 +124,7 @@ public class MenuController extends SelectorComposer<Menubar> {
         Menu menu = menuMap.get(group);
         Menuitem menuitem = new Menuitem();
         if (plugin.getResourceAsStream(plugin.getIconPath()) != null) {
-          menuitem.setClientDataAttribute("itemCode", itemCode);
+          menuitem.setClientDataAttribute(ITEM_CODE, itemCode);
           menuitem.setImage("/portalPluginResource/" + plugin.getIconPath());
 
         } else {
@@ -145,10 +146,10 @@ public class MenuController extends SelectorComposer<Menubar> {
           aboutMenuitem = menuitem;
           continue;
         }
-        if ("Create folder".equals(menuitem.getClientDataAttribute("itemCode"))) {
+        if ("Create folder".equals(menuitem.getClientDataAttribute(ITEM_CODE))) {
           targetMenuitem = menuitem;
         }
-        if ("Create data pipeline".equals(menuitem.getClientDataAttribute("itemCode"))) {
+        if ("Create data pipeline".equals(menuitem.getClientDataAttribute(ITEM_CODE))) {
           etlMenuItem = menuitem;
         }
 

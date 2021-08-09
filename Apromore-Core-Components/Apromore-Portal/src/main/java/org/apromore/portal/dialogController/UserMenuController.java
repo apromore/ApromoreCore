@@ -69,13 +69,13 @@ public class UserMenuController extends SelectorComposer<Menubar> {
 
     private Menuitem aboutMenuitem;
 
-    @WireVariable("managerClient")
-    private ManagerService managerService;
+  @WireVariable("managerClient")
+  private transient ManagerService managerService;
 
-    @WireVariable
-    private EventLogService eventLogService;
+  @WireVariable
+  private transient EventLogService eventLogService;
 
-    protected AutowireCapableBeanFactory beanFactory;
+  protected transient AutowireCapableBeanFactory beanFactory;
 
     public UserMenuController() {
 

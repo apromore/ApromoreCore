@@ -81,16 +81,16 @@ public class BPMNEditorController extends BaseController implements Composer<Com
   private static final Logger LOGGER = PortalLoggerFactory.getLogger(BPMNEditorController.class);
   public static final String BPMN_XML = "bpmnXML";
   public static final String BPMN_2_01 = "BPMN 2.0";
-  private EventQueue<Event> qeBPMNEditor =
+  private transient EventQueue<Event> qeBPMNEditor =
       EventQueues.lookup(Constants.EVENT_QUEUE_BPMN_EDITOR, EventQueues.SESSION, true);
 
   private MainController mainC;
   private ApromoreSession session;
-  private EditSessionType editSession;
-  private ProcessSummaryType process;
-  private VersionSummaryType vst;
+  private transient EditSessionType editSession;
+  private transient ProcessSummaryType process;
+  private transient VersionSummaryType vst;
   boolean isNewProcess = false;
-  private UserType currentUserType;
+  private transient UserType currentUserType;
   private AccessType currentUserAccessType;
 
   @Inject

@@ -67,21 +67,21 @@ public class BaseController extends Window {
   public static final String EPML_2_0 = "EPML 2.0";
 
   @WireVariable("managerClient")
-  private ManagerService managerService;
+  private transient ManagerService managerService;
   @WireVariable("eventLogService")
-  private EventLogService eventLogService;
+  private transient EventLogService eventLogService;
   @WireVariable
-  private UserService userService;
+  private transient UserService userService;
   @WireVariable
-  private SecurityService securityService;
+  private transient SecurityService securityService;
 
   @WireVariable
-  private AuthorizationService authorizationService;
+  private transient AuthorizationService authorizationService;
   @WireVariable
-  private WorkspaceService workspaceService;
+  private transient WorkspaceService workspaceService;
 
   @WireVariable
-  private ProcessService processService;
+  private transient ProcessService processService;
 
 
   protected BaseController() {
@@ -143,6 +143,7 @@ public class BaseController extends Window {
       case EPML_2_0:
         url = "http://b3mn.org/stencilset/epc#";
         break;
+      default:
     }
     return url;
   }
@@ -166,6 +167,7 @@ public class BaseController extends Window {
       case EPML_2_0:
         importPath = "/" + getConfig().getSiteEditor() + "/editor/epmlimport";
         break;
+      default:
     }
     return importPath;
   }
@@ -188,6 +190,7 @@ public class BaseController extends Window {
       case EPML_2_0:
         exportPath = "/" + getConfig().getSiteEditor() + "/editor/epmlexport";
         break;
+      default:
     }
     return exportPath;
   }

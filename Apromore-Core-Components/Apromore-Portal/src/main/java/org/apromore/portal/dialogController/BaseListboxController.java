@@ -112,11 +112,11 @@ public abstract class BaseListboxController extends BaseController {
 
   private User currentUser;
 
-  private PortalContext portalContext;
-  private Map<String, PortalPlugin> portalPluginMap;
-  private ArrayList<LogSummaryType> sourceLogs = new ArrayList<>();
-  private ArrayList<FolderType> sourceFolders = new ArrayList<>();
-  private ArrayList<ProcessSummaryType> sourceProcesses = new ArrayList<>();
+  private transient PortalContext portalContext;
+  private transient Map<String, PortalPlugin> portalPluginMap;
+  private transient ArrayList<LogSummaryType> sourceLogs = new ArrayList<>();
+  private transient ArrayList<FolderType> sourceFolders = new ArrayList<>();
+  private transient ArrayList<ProcessSummaryType> sourceProcesses = new ArrayList<>();
 
   private CopyAndPasteController copyAndPasteController;
 
@@ -677,6 +677,7 @@ public abstract class BaseListboxController extends BaseController {
                 break;
               case Messagebox.NO:
                 break;
+              default:
             }
           }
         });
@@ -697,6 +698,7 @@ public abstract class BaseListboxController extends BaseController {
                 break;
               case Messagebox.NO:
                 break;
+              default:
             }
           }
         });
@@ -717,6 +719,7 @@ public abstract class BaseListboxController extends BaseController {
                 break;
               case Messagebox.NO:
                 break;
+              default:
             }
           }
         });
@@ -738,6 +741,7 @@ public abstract class BaseListboxController extends BaseController {
                 break;
               case Messagebox.NO:
                 break;
+              default:
             }
           }
         });
@@ -760,6 +764,7 @@ public abstract class BaseListboxController extends BaseController {
                 break;
               case Messagebox.NO:
                 break;
+              default:
             }
           }
         });
@@ -926,9 +931,9 @@ public abstract class BaseListboxController extends BaseController {
   public class SummaryListModel extends ListModelList {
     final int pageSize = 1000; // TODO: ought to be externally configurable
 
-    private SummariesType summaries, logSummaries;
+    private transient SummariesType summaries, logSummaries;
     private int currentPageIndex = 0, currentLogPageIndex = 0;
-    private List<FolderType> subFolders;
+    private transient List<FolderType> subFolders;
 
     /**
      * Constructor.

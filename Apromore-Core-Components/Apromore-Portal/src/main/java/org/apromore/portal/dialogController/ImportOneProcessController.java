@@ -61,7 +61,7 @@ public class ImportOneProcessController extends BaseController {
   private final Window importOneProcessWindow;
   private final String fileName;
   private final Textbox processNameTb;
-  private final InputStream nativeProcess; // the input stream read from uploaded file
+  private final transient InputStream nativeProcess; // the input stream read from uploaded file
   private final String nativeType;
   private final Button okButton;
   private final Button cancelButton;
