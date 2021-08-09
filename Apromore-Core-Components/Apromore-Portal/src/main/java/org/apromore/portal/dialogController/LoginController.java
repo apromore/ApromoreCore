@@ -48,7 +48,7 @@ public class LoginController extends BaseController implements Composer<Componen
   private Component loginComponent;
 
   @WireVariable
-  transient I18nConfig i18nConfig;
+  I18nConfig i18nConfig;
 
   /**
    * onCreate is executed after the main window has been created it is responsible for instantiating
