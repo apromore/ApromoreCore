@@ -32,6 +32,7 @@ import org.apromore.plugin.portal.logfilter.generic.LogFilterPlugin;
 import org.apromore.service.EventLogService;
 import org.apromore.service.ProcessService;
 import org.apromore.service.loganimation.LogAnimationService2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Sessions;
@@ -45,7 +46,9 @@ public class PDFrequencyPlugin extends PDAbstractPlugin {
 
     @Inject EventLogService eventLogService;
     @Inject ProcessService processService;
-    @Inject LogFilterPlugin logFilterPlugin;
+    
+    @Autowired(required=false)
+    LogFilterPlugin logFilterPlugin;
     @Inject LogAnimationService2 logAnimationService;
 
     @Override

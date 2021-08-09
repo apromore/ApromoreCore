@@ -25,6 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -84,7 +85,7 @@ public class DurationCalculationUnixTsLoadUnitTest {
   @Test
   public void testCalculateDuration8HoursDifferentDay() {
 
-    CalendarModel calendarModel = calendarModelBuilder.with7DayWorking().withZoneId("UTC").build();
+    CalendarModel calendarModel = calendarModelBuilder.with7DayWorking().withZoneId(ZoneOffset.UTC.getId()).build();
 
     Container container=params();
     // When

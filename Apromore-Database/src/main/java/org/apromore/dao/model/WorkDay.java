@@ -76,6 +76,7 @@ public class WorkDay {
     this.startTime = startTime.toString();
     this.endTime = endTime.toString();
     this.isWorkingDay = isWorkingDay;
+    this.duration = Duration.between(getOffsetStartTime(), getOffsetEndTime());
   }
   
   public WorkDay(Long id,DayOfWeek dayOfWeek, OffsetTime startTime, OffsetTime endTime,

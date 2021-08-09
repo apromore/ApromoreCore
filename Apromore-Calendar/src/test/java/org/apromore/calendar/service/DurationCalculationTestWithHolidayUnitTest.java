@@ -75,7 +75,7 @@ public class DurationCalculationTestWithHolidayUnitTest {
   @Test
   public void testCalculateDuration8HoursDifferentDay() {
    
-    CalendarModel calendarModel = calendarModelBuilder.with5DayWorking().withZoneId("UTC").build();
+    CalendarModel calendarModel = calendarModelBuilder.with5DayWorking().withZoneId(ZoneOffset.UTC.getId()).build();
 
     // When
     DurationModel durationModel = calendarModel.getDuration(startDateTime, endDateTime);  
