@@ -73,9 +73,9 @@ public class PortalPluginResourceServlet extends HttpServlet {
 
     @Override
     public void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
-        Pattern p = Pattern.compile("/(?<resource>[^\\.]*\\.(?<extension>[^/\\.]*))");
+        Pattern p = Pattern.compile("/(?<resource>.*\\.(?<extension>[^/\\.]*))");
         Matcher m = p.matcher(req.getPathInfo());
-        if (!m.find()) {
+        if (!m.matches()) {
             resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Unable to parse path " + req.getPathInfo());
             return;
         }
