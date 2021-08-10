@@ -34,7 +34,6 @@ import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.dialogController.dto.ApromoreSession;
-import org.apromore.portal.helper.Version;
 import org.apromore.portal.model.EditSessionType;
 import org.apromore.portal.model.ImportProcessResultType;
 import org.apromore.portal.model.ProcessSummaryType;
@@ -72,7 +71,7 @@ public class SaveAsDialogController extends BaseController {
   private EventQueue<Event> qePortal =
       EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, true);
   private EventQueue<Event> qeBPMNEditor =
-      EventQueues.lookup(Constants.EVENT_QUEUE_BPMN_EDITOR, EventQueues.SESSION, true);
+      EventQueues.lookup(Constants.EVENT_QUEUE_BPMN_EDITOR, EventQueues.DESKTOP, true);
 
   private Window saveAsW;
   private Textbox modelName;
@@ -89,12 +88,11 @@ public class SaveAsDialogController extends BaseController {
   MainController mainController;
 
   public SaveAsDialogController(ProcessSummaryType process, VersionSummaryType version,
-      ApromoreSession session, Boolean isUpdate, String data, Window window,
-      MainController mainController) {
+      ApromoreSession session, Boolean isUpdate, String data, MainController mainController) {
     this.session = session;
     this.editSession = session.getEditSession();
     this.isSaveCurrent = isUpdate;
-    this.saveAsW = window;
+    this.saveAsW = (Window) Executions.createComponents("~./macros/saveAsDialog.zul", null, null);
     this.modelData = data;
     this.mainController = mainController;
     processService = mainController.getProcessService();
@@ -138,13 +136,6 @@ public class SaveAsDialogController extends BaseController {
     });
 
     this.saveAsW.doModal();
-  }
-
-  public SaveAsDialogController(ProcessSummaryType process, VersionSummaryType version,
-      ApromoreSession session, Boolean isUpdate, String data, MainController mainController) {
-    this(process, version, session, isUpdate, data,
-        (Window) Executions.createComponents("~./macros/saveAsDialog.zul", null, null),
-        mainController);
   }
 
   protected void cancel() throws Exception {
@@ -284,8 +275,6 @@ public class SaveAsDialogController extends BaseController {
     String message = "";
     String title = "Missing Fields";
 
-    Version newVersion = new Version(versionNumber.getText());
-    Version curVersion = new Version(editSession.getCurrentVersionNumber());
     try {
       if (!this.isSaveCurrent) {
         if (this.modelName.getText() == null || this.modelName.getText().trim().equals("")) {
