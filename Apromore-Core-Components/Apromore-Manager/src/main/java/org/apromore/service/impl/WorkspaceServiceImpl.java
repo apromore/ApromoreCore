@@ -211,7 +211,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
       }
     }
 
-    Workspace workspace = workspaceRepo.findById(1).get();
+    Workspace workspace = workspaceRepo.findById(1).orElse(null);
     folder.setWorkspace(workspace);
     folder.setCreatedBy(user);
     folder.setModifiedBy(user);
