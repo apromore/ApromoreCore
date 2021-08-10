@@ -81,24 +81,21 @@ public class BPMNEditorController extends BaseController implements Composer<Com
   private static final Logger LOGGER = PortalLoggerFactory.getLogger(BPMNEditorController.class);
   public static final String BPMN_XML = "bpmnXML";
   public static final String BPMN_2_01 = "BPMN 2.0";
-  private EventQueue<Event> qeBPMNEditor =
-      EventQueues.lookup(Constants.EVENT_QUEUE_BPMN_EDITOR, EventQueues.SESSION, true);
+  private transient EventQueue<Event> qeBPMNEditor =
+      EventQueues.lookup(Constants.EVENT_QUEUE_BPMN_EDITOR, EventQueues.DESKTOP, true);
 
   private MainController mainC;
   private ApromoreSession session;
-  private EditSessionType editSession;
-  private ProcessSummaryType process;
-  private VersionSummaryType vst;
+  private transient EditSessionType editSession;
+  private transient ProcessSummaryType process;
+  private transient VersionSummaryType vst;
   boolean isNewProcess = false;
-  private UserType currentUserType;
+  private transient UserType currentUserType;
   private AccessType currentUserAccessType;
-
-  @Inject
-  private UserSessionManager userSessionManager;
 
   public BPMNEditorController() {
     super();
-    currentUserType = userSessionManager.getCurrentUser();
+    currentUserType = UserSessionManager.getCurrentUser();
     if (currentUserType == null) {
       throw new AssertionError("Cannot open the editor without any login user!");
     }
@@ -107,7 +104,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
     if (id == null) {
       throw new AssertionError("No id parameter in URL");
     }
-    session = userSessionManager.getEditSession(id);
+    session = UserSessionManager.getEditSession(id);
     if (session == null) {
       // throw new AssertionError("No edit session associated with id " + id);
       throw new AssertionError(
@@ -159,13 +156,10 @@ public class BPMNEditorController extends BaseController implements Composer<Com
               + "<dc:Bounds height='36.0' width='36.0' x='173.0' y='102.0'/>"
               + "</bpmndi:BPMNShape>" + "</bpmndi:BPMNPlane>" + "</bpmndi:BPMNDiagram>"
               + "</bpmn:definitions>";
-        } else {
+        } 
+        else {
           // Note: process models created by merging are not BPMN, cannot use
           // processService.getBPMNRepresentation
-          // bpmnXML = processService.getBPMNRepresentation(procName, procID, branch, version);
-          String annotation = (editSession.getAnnotation() == null) ? editSession.getNativeType()
-              : editSession.getAnnotation();
-
           ExportFormatResultType exportResult = mainC.getManagerService().exportFormat(
               editSession.getProcessId(), editSession.getProcessName(),
               editSession.getOriginalBranchName(), editSession.getCurrentVersionNumber(),
@@ -210,8 +204,6 @@ public class BPMNEditorController extends BaseController implements Composer<Com
       LOGGER.error("", e);
       e.printStackTrace();
     }
-
-    BPMNEditorController editorController = this;
 
     this.addEventListener("onSave", new EventListener<Event>() {
       @Override
@@ -272,6 +264,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
       }
     });
 
+    BPMNEditorController editorController = this;
     qeBPMNEditor.subscribe(new EventListener<Event>() {
       @Override
       public void onEvent(Event event) throws Exception {
@@ -317,11 +310,10 @@ public class BPMNEditorController extends BaseController implements Composer<Com
     throw new RuntimeException("Unsupported class of event data: " + event.getData());
   }
 
-  @Override
-  public void doAfterCompose(Component comp) throws Exception {
-    // TODO Auto-generated method stub
-
-  }
-
+@Override
+public void doAfterCompose(Component comp) throws Exception {
+	// TODO Auto-generated method stub
+	
+}
 
 }
