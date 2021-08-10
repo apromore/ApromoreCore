@@ -27,7 +27,6 @@ package org.apromore.portal.dialogController;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.inject.Inject;
 import org.apromore.dao.model.User;
 import org.apromore.plugin.editor.EditorPlugin;
 import org.apromore.plugin.portal.PortalContext;
