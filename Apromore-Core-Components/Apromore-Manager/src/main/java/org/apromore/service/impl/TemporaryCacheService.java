@@ -213,11 +213,11 @@ public class TemporaryCacheService {
 	    String prefix = null;
 	    String storagePath = "FILE" + StorageType.STORAGE_PATH_SEPARATOR + config.getLogsDir();
 
-	    if (log.getStorage() != null) {
-			key = log.getStorage().getKey();
-			prefix = log.getStorage().getPrefix();
-			storagePath = log.getStorage().getStoragePath();
-			LOGGER.debug("Read log file {} at storage path {} on environment prefix {}", key, storagePath, prefix);
+	    if (log.getStorage() != null) { 
+            key = log.getStorage().getKey();
+            prefix = log.getStorage().getPrefix();
+            storagePath = log.getStorage().getStoragePath();
+            LOGGER.debug("Read log file {} at storage path {} on environment prefix {}", key, storagePath, prefix);
 	    }
 
 	    XLog element = (XLog) cacheRepo.get(key);
