@@ -213,10 +213,11 @@ public class TemporaryCacheService {
 	    String prefix = null;
 	    String storagePath = "FILE" + StorageType.STORAGE_PATH_SEPARATOR + config.getLogsDir();
 
-	    if (log.getStorage() != null) {
-		key = log.getStorage().getKey();
-		prefix = log.getStorage().getPrefix();
-		storagePath = log.getStorage().getStoragePath();
+	    if (log.getStorage() != null) { 
+            key = log.getStorage().getKey();
+            prefix = log.getStorage().getPrefix();
+            storagePath = log.getStorage().getStoragePath();
+            LOGGER.debug("Read log file {} at storage path {} on environment prefix {}", key, storagePath, prefix);
 	    }
 
 	    XLog element = (XLog) cacheRepo.get(key);
@@ -270,6 +271,7 @@ public class TemporaryCacheService {
 
 		    return xlog;
 		} catch (Exception e) {
+			LOGGER.error("Read log file {} at storage path {} on environment prefix {}", key, storagePath, prefix);
 		    LOGGER.error("Unable to get process log", e);
 		}
 
