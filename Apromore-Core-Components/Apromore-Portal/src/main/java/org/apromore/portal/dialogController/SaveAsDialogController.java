@@ -69,23 +69,23 @@ import org.zkoss.zul.Window;
  */
 public class SaveAsDialogController extends BaseController {
 
-  private transient EventQueue<Event> qePortal =
+  private EventQueue<Event> qePortal =
       EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, true);
-  private transient EventQueue<Event> qeBPMNEditor =
-      EventQueues.lookup(Constants.EVENT_QUEUE_BPMN_EDITOR, EventQueues.DESKTOP, true);
+  private EventQueue<Event> qeBPMNEditor =
+      EventQueues.lookup(Constants.EVENT_QUEUE_BPMN_EDITOR, EventQueues.SESSION, true);
 
   private Window saveAsW;
   private Textbox modelName;
   private Textbox versionNumber;
 
-  private transient EditSessionType editSession;
+  private EditSessionType editSession;
   private ApromoreSession session;
   private Boolean isSaveCurrent; // null: save first time for new model, true: save existing model,
                                  // false: save as
   private String modelData;
 
-  transient ProcessService processService;
-  transient WorkspaceService workspaceService;
+  ProcessService processService;
+  WorkspaceService workspaceService;
   MainController mainController;
 
   public SaveAsDialogController(ProcessSummaryType process, VersionSummaryType version,

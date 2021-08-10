@@ -145,5 +145,9 @@ sonarqube {
     property "sonar.projectKey", "apromore_ApromoreCore"
     property "sonar.organization", "apromore"
     property "sonar.host.url", "https://sonarcloud.io"
+    property "sonar.issue.ignore.multicriteria", "S1948"
+    property "sonar.issue.ignore.multicriteria.S1948.ruleKey", "java:S1948"
+    property "sonar.issue.ignore.multicriteria.S1948.resourceKey", "src/main/java/org/apromore/**/*.java"
+
   }
 }

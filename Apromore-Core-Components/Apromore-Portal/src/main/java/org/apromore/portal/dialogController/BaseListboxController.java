@@ -112,11 +112,11 @@ public abstract class BaseListboxController extends BaseController {
 
   private User currentUser;
 
-  private transient PortalContext portalContext;
-  private transient Map<String, PortalPlugin> portalPluginMap;
-  private transient ArrayList<LogSummaryType> sourceLogs = new ArrayList<>();
-  private transient ArrayList<FolderType> sourceFolders = new ArrayList<>();
-  private transient ArrayList<ProcessSummaryType> sourceProcesses = new ArrayList<>();
+  private PortalContext portalContext;
+  private Map<String, PortalPlugin> portalPluginMap;
+  private ArrayList<LogSummaryType> sourceLogs = new ArrayList<>();
+  private ArrayList<FolderType> sourceFolders = new ArrayList<>();
+  private ArrayList<ProcessSummaryType> sourceProcesses = new ArrayList<>();
 
   private CopyAndPasteController copyAndPasteController;
 
