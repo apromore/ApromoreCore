@@ -67,21 +67,21 @@ public class BaseController extends Window {
   public static final String EPML_2_0 = "EPML 2.0";
 
   @WireVariable("managerClient")
-  private transient ManagerService managerService;
+  private ManagerService managerService;
   @WireVariable("eventLogService")
-  private transient EventLogService eventLogService;
+  private EventLogService eventLogService;
   @WireVariable
-  private transient UserService userService;
+  private UserService userService;
   @WireVariable
-  private transient SecurityService securityService;
+  private SecurityService securityService;
 
   @WireVariable
-  private transient AuthorizationService authorizationService;
+  private AuthorizationService authorizationService;
   @WireVariable
-  private transient WorkspaceService workspaceService;
+  private WorkspaceService workspaceService;
 
   @WireVariable
-  private transient ProcessService processService;
+  private ProcessService processService;
 
 
   protected BaseController() {

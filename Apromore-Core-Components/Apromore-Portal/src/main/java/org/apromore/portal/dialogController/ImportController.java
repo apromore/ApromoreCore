@@ -97,7 +97,7 @@ public class ImportController extends BaseController {
 
   private String ignoredFiles;
 
-  private transient Media media = null;
+  private Media media = null;
   private Label fileNameLabel;
   private Checkbox isPublicCheckbox;
 
@@ -110,14 +110,14 @@ public class ImportController extends BaseController {
 
   private List<ImportOneProcessController> toImportList = new ArrayList<>();
   private List<ImportOneProcessController> importedList = new ArrayList<>();
-  private transient List<FileImporterPlugin> fileImporterPlugins;
+  private List<FileImporterPlugin> fileImporterPlugins;
 
   @FunctionalInterface
   public interface NotificationHandler {
     public void show(String string);
   }
 
-  private transient NotificationHandler note;
+  private NotificationHandler note;
 
   /** Unit testing constructor. */
   public ImportController(MainController mainC, ConfigBean configBean,
