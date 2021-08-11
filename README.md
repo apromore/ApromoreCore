@@ -57,7 +57,7 @@ CREATE USER 'liquibase_user'@'%' IDENTIFIED BY 'choose another password';
 GRANT ALL PRIVILEGES ON apromore.* TO 'liquibase_user'@'%';
 ```
 
-* Set the environment variables `APROMORE_DATASOURCE_PASSWORD` and `APROMORE_LIQUIBASE_PASSWORD` to the passwords of the `apromore` and `liquibase_user` accounts respectively.
+* Set the environment variables `SPRING_DATASOURCE_PASSWORD` and `SPRING_LIQUIBASE_PASSWORD` to the passwords of the `apromore` and `liquibase_user` accounts respectively.
   Alternatively, set them as the `spring.datasource.password` and `spring.liquibase.password` properties in the configuration file 'ApromoreCore/Apromore-Boot/src/main/resources/application.properties'
 
 * Execute `./gradlew bu bR` to compile the source code and run the project using MySQL database.
