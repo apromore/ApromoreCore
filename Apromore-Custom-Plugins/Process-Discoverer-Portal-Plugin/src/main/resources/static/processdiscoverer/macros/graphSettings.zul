@@ -45,7 +45,7 @@
           <label style="padding: 5px 5px 0 0;">${arg.pdLabels.graphSettingAbstractBy_text}</label>
           <combobox id="metricSelector"
                     readonly="true"
-                    width="110px"
+                    width="123px"
                     sclass="ap-pd-metric-selector"
                     value="${arg.pdLabels.metricCaseFreq_text}">
             <comboitem value="metricCaseFreq"
