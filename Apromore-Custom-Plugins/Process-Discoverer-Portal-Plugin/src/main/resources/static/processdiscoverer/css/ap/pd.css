@@ -682,7 +682,7 @@ div.ap-pd-drawer-splitter:hover {
 
 .ap-pd-logstats-header .title,
 .ap-pd-timestats-header .title {
-    width: 120px;
+    display: block;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -917,8 +917,6 @@ div.ap-pd-drawer-splitter:hover {
 }
 
 .ap-pd-logstats-header span {
-    max-width: 105px;
-    width: 105px;
     white-space: nowrap;
     overflow: visible;
     text-overflow: ellipsis;
