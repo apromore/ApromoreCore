@@ -1,0 +1,19 @@
+group = 'org.apromore'
+version = '1.0'
+description = 'CSVImporter Portal'
+
+dependencies {
+   
+	implementation project(':Apromore-Zk')
+	implementation project(':Apromore-Extras:OpenXES')
+	implementation project(':Apromore-Core-Components:Apromore-Manager')
+	implementation project(':Apromore-Core-Components:Apromore-Portal')
+	implementation project(':Apromore-Plugins:plugin-core:portal:api')
+	implementation project(':Apromore-Custom-Plugins:Log-Importer-Logic')
+	
+	implementation "com.opencsv:opencsv:${opencsvVersion}"
+	
+    implementation 'com.fasterxml.jackson.core:jackson-core'
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    
+}

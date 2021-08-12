@@ -1,0 +1,5 @@
+case id,activity,start date,completion time, process type
+case2,activity1,2019-09-23T15:13:05.071,2019-09-23T15:13:05.132,1
+case1,activity1,2019-09-23T15:13:05.114,2019-09-23T15:13:05.132,1
+case1,activity1,2019-09-23T16:13:05.114,2019-09-24T15:13:05.132,1
+case2,activity2,2019-09-23T15:13:05.133,not a timestamp,1
