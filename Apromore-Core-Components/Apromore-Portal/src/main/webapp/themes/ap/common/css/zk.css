@@ -899,3 +899,7 @@ tr.z-row-disabled td.z-row-inner .z-slider-area {
     width: 60px;
     text-align: right;
 }
+
+.z-timebox-button>a, .z-spinner-button>a, .z-doublespinner-button>a {
+    height: 12px;
+}
