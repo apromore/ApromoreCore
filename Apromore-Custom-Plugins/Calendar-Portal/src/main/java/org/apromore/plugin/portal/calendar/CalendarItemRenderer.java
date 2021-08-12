@@ -127,7 +127,7 @@ public class CalendarItemRenderer implements ListitemRenderer {
 	});
 
 	OffsetDateTime created = calendarItem.getCreated();
-	renderTextCell(listItem, created.format(DateTimeFormatter.ofPattern("yyyy MMM dd")));
+	renderTextCell(listItem, created.format(DateTimeFormatter.ofPattern("dd MMM yy")));
 	Listcell editAction = renderIconCell(listItem, "ap-icon ap-icon-user-edit", "Edit calendar");
 	Listcell removeAction = renderIconCell(listItem, "ap-icon ap-icon-trash", "Delete calendar");
 
