@@ -63,6 +63,7 @@ import org.apromore.service.logimporter.services.ParquetImporter;
 import org.apromore.service.logimporter.services.ParquetImporterFactory;
 import org.apromore.service.logimporter.services.legacy.LogImporter;
 import org.apromore.service.logimporter.services.legacy.LogImporterProvider;
+import org.apromore.service.logimporter.utilities.FileUtils;
 import org.apromore.util.UserMetadataTypeEnum;
 import org.slf4j.Logger;
 import org.zkoss.json.JSONObject;
@@ -1159,7 +1160,7 @@ public class LogImporterController extends SelectorComposer<Window> implements C
       Messagebox.show(getLabel("failed_to_download_error_log") + e.getMessage(), "Error",
           Messagebox.OK, Messagebox.ERROR);
     } finally {
-      tempFile.delete();
+      FileUtils.deleteFile(tempFile);
 
     }
   }

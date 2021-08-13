@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -39,6 +39,17 @@ public class MetaDataServiceXLSXImpl implements MetaDataService {
     private final int BUFFER_SIZE = 2048;
     private final int DEFAULT_NUMBER_OF_ROWS = 10;
 
+    private List<String> getHeader(Sheet sheet) throws Exception {
+        List<String> header = new ArrayList<>();
+        for (Cell c : sheet.getRow(0)) {
+            if (c.getStringCellValue() == null || c.getStringCellValue().isEmpty()) {
+                throw new Exception("header must have non-empty value!");
+            }
+            header.add(c.getStringCellValue().trim());
+        }
+        return header;
+    }
+
     @Override
     public void validateLog(InputStream in, String charset) throws Exception {
 
@@ -48,16 +59,10 @@ public class MetaDataServiceXLSXImpl implements MetaDataService {
             Sheet sheet = workbook.getSheetAt(0);
 
             //Get the header
-            for (Row r : sheet) {
-                for (Cell c : r) {
-                    if (c.getStringCellValue() == null || c.getStringCellValue().isEmpty())
-                        throw new Exception("header must have non-empty value!");
-                    header.add(c.getStringCellValue());
-                }
-                break;
-            }
-            if (header == null || header.isEmpty())
+            header = getHeader(sheet);
+            if (header.isEmpty()) {
                 throw new Exception("header must have non-empty value!");
+            }
 
             workbook.close();
             in.close();
@@ -65,8 +70,9 @@ public class MetaDataServiceXLSXImpl implements MetaDataService {
         } catch (Exception e) {
             throw new Exception("Unable to import file");
         } finally {
-            if (in != null)
+            if (in != null) {
                 in.close();
+            }
         }
     }
 
@@ -76,26 +82,19 @@ public class MetaDataServiceXLSXImpl implements MetaDataService {
         try (Workbook workbook = new XLSReader().readXLS(in, 10, BUFFER_SIZE)) {
             List<String> header = new ArrayList<>();
 
-            if (workbook == null)
+            if (workbook == null) {
                 return null;
+            }
 
             Sheet sheet = workbook.getSheetAt(0);
             //Get the header
-            if (sheet != null) {
-                for (Row r : sheet) {
-                    for (Cell c : r) {
-                        if (c.getStringCellValue() == null || c.getStringCellValue().isEmpty())
-                            throw new Exception("header must have non-empty value!");
-                        header.add(c.getStringCellValue().trim());
-                    }
-                    break;
-                }
-            }
+            header = getHeader(sheet);
             return new LogMetaData(header);
 
         } finally {
-            if (in != null)
+            if (in != null) {
                 in.close();
+            }
         }
     }
 
@@ -107,21 +106,16 @@ public class MetaDataServiceXLSXImpl implements MetaDataService {
             List<List<String>> lines = new ArrayList<>();
             String[] line;
 
-            if (workbook == null)
+            if (workbook == null) {
                 return null;
+            }
 
             Sheet sheet = workbook.getSheetAt(0);
 
             //Get the header
             if (sheet != null) {
-                for (Row r : sheet) {
-                    for (Cell c : r) {
-                        if (c.getStringCellValue() == null || c.getStringCellValue().isEmpty())
-                            throw new Exception("header must have non-empty value!");
-                        header.add(c.getStringCellValue().trim());
-                    }
-                    break;
-                }
+
+                header = getHeader(sheet);
 
                 //Get the rows
                 for (Row r : sheet) {
@@ -133,12 +127,13 @@ public class MetaDataServiceXLSXImpl implements MetaDataService {
                         line[c.getColumnIndex()] = c.getStringCellValue();
                     }
                     Arrays.asList(line).replaceAll(
-                        //val -> val == null ? "" : val  // Java 8
-                        new java.util.function.UnaryOperator<String>() {
-                            public String apply(String val) {
-                                return val == null ? "" : val;
+                            //val -> val == null ? "" : val  // Java 8
+                            new java.util.function.UnaryOperator<String>() {
+                                @Override
+                                public String apply(String val) {
+                                    return val == null ? "" : val;
+                                }
                             }
-                        }
                     );
                     lines.add(Arrays.asList(line));
                 }
@@ -146,8 +141,9 @@ public class MetaDataServiceXLSXImpl implements MetaDataService {
             return lines;
 
         } finally {
-            if (in != null)
+            if (in != null) {
                 in.close();
+            }
         }
     }
 }

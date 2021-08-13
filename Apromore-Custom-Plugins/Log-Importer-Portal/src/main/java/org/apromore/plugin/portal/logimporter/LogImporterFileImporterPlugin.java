@@ -109,7 +109,7 @@ public class LogImporterFileImporterPlugin implements FileImporterPlugin {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackFor = Exception.class)
   public void importFile(Media media, boolean isLogPublic) {
 
     // Configure the arguments to pass to the CSV importer view
@@ -130,8 +130,7 @@ public class LogImporterFileImporterPlugin implements FileImporterPlugin {
         List<String> header = new ArrayList<>();
         String fileEncoding = "UTF-8";
         CSVFileReader csvFileReader = new CSVFileReader();
-        try {
-          CSVReader csvReader = csvFileReader.newCSVReader(media, fileEncoding);
+        try (CSVReader csvReader = csvFileReader.newCSVReader(media, fileEncoding)) {
           header = Arrays.asList(csvReader.readNext());
         } catch (EmptyHeaderException e) {
           Messagebox.show(getLabels().getString("failedImportHeader"));
@@ -162,7 +161,7 @@ public class LogImporterFileImporterPlugin implements FileImporterPlugin {
           mappingJSONList = new ArrayList<>();
 
         // Sort by Usermetadata object Id, since a new csv schema mapping is created each time.
-        Collections.sort(mappingJSONList, Comparator.comparing(Usermetadata::getId));
+        mappingJSONList.sort(Comparator.comparing(Usermetadata::getId));
 
         if (mappingJSONList.size() != 0) {
 
