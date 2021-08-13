@@ -26,6 +26,8 @@ import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.slf4j.Logger;
 import org.zkoss.zk.ui.HtmlBasedComponent;
 
+import java.util.Objects;
+
 public final class ComponentUtils {
     private static final String SCLASS_OFF = "ap-state-off";
     private static final String SCLASS_ON = "ap-state-on";
@@ -37,13 +39,10 @@ public final class ComponentUtils {
         if (sclass == null) {
             sclass = "";
         }
-        if (newState) {
-            sclass = sclass.replace(sclassOff, "");
-            sclass = sclass + " " + sclassOn;
-        } else {
-            sclass = sclass.replace(sclassOn, "");
-            sclass = sclass + " " + sclassOff;
-        }
+        String oldClass = (newState) ? sclassOff : sclassOn;
+        String newClass = (newState) ? sclassOn : sclassOff;
+        sclass = sclass.replaceAll(oldClass, "");
+        sclass = sclass + " " + newClass;
         comp.setSclass(sclass);
     }
 
