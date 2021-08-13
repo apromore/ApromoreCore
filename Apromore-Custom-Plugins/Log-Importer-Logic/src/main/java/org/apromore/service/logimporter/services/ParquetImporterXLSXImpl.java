@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -29,7 +29,13 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apromore.service.logimporter.io.ParquetFileWriter;
 import org.apromore.service.logimporter.io.XLSReader;
-import org.apromore.service.logimporter.model.*;
+import org.apromore.service.logimporter.model.LogErrorReport;
+import org.apromore.service.logimporter.model.LogErrorReportImpl;
+import org.apromore.service.logimporter.model.LogMetaData;
+import org.apromore.service.logimporter.model.LogModel;
+import org.apromore.service.logimporter.model.LogModelImpl;
+import org.apromore.service.logimporter.model.ParquetEventLogModel;
+import org.apromore.service.logimporter.utilities.FileUtils;
 
 import java.io.File;
 import java.io.InputStream;
@@ -40,18 +46,20 @@ import static org.apromore.service.logimporter.utilities.ParquetUtilities.create
 
 public class ParquetImporterXLSXImpl implements ParquetImporter {
 
-    private List<LogErrorReport> logErrorReport;
     private final int BUFFER_SIZE = 2048;
     private final int DEFAULT_NUMBER_OF_ROWS = 100;
+    private List<LogErrorReport> logErrorReport;
     private LogProcessorParquet logProcessorParquet;
     private ParquetFileWriter writer;
 
     @Override
-    public LogModel importParqeuetFile(InputStream in, LogMetaData logMetaData, String charset, File outputParquet, boolean skipInvalidRow) throws Exception {
+    public LogModel importParqeuetFile(InputStream in, LogMetaData logMetaData, String charset, File outputParquet,
+                                       boolean skipInvalidRow) throws Exception {
 
-        //If file exist, delete it
-        if (outputParquet.exists())
-            outputParquet.delete();
+        // If file exist, delete it
+        if (outputParquet.exists()) {
+            FileUtils.deleteFile(outputParquet);
+        }
 
         try (Workbook workbook = new XLSReader().readXLS(in, DEFAULT_NUMBER_OF_ROWS, BUFFER_SIZE)) {
 
@@ -69,7 +77,8 @@ public class ParquetImporterXLSXImpl implements ParquetImporter {
             String[] header = logMetaData.getHeader().toArray(new String[0]);
 
             MessageType parquetSchema = createParquetSchema(header);
-            // Classpath manipulation so that ServiceLoader in parquet-osgi reads its own META-INF/services rather than the servlet context bundle's (i.e. the portal)
+            // Classpath manipulation so that ServiceLoader in parquet-osgi reads its own META-INF/services rather
+            // than the servlet context bundle's (i.e. the portal)
             Thread thread = Thread.currentThread();
             synchronized (thread) {
                 ClassLoader originalContextClassLoader = thread.getContextClassLoader();
@@ -103,7 +112,8 @@ public class ParquetImporterXLSXImpl implements ParquetImporter {
 
                 //Validate num of column
                 if (r.getPhysicalNumberOfCells() > header.length) {
-                    logErrorReport.add(new LogErrorReportImpl(lineIndex, 0, null, "Number of columns does not match the number of headers. Number of headers: (" + header.length + "). Number of columns: (" + r.getPhysicalNumberOfCells() + ")"));
+                    logErrorReport.add(new LogErrorReportImpl(lineIndex, 0, null, "Number of columns does not match " +
+                            "the number of headers. Number of headers: (" + header.length + "). Number of columns: (" + r.getPhysicalNumberOfCells() + ")"));
                     continue;
                 }
 
@@ -119,7 +129,8 @@ public class ParquetImporterXLSXImpl implements ParquetImporter {
                     continue;
 
                 //Construct an event
-                parquetEventLogModel = logProcessorParquet.processLog(line, header, logMetaData, lineIndex, logErrorReport);
+                parquetEventLogModel = logProcessorParquet.processLog(line, header, logMetaData, lineIndex,
+                        logErrorReport);
 
                 // If row is invalid, continue to next row.
                 if (!parquetEventLogModel.isValid()) {
@@ -135,7 +146,8 @@ public class ParquetImporterXLSXImpl implements ParquetImporter {
             }
             //If file empty, delete it
             if (numOfValidEvents == 0)
-                outputParquet.delete();
+                FileUtils.deleteFile(outputParquet);
+
 
             if (!isValidLineCount(lineIndex - 1))
                 rowLimitExceeded = true;

@@ -29,6 +29,7 @@ import org.apromore.service.logimporter.io.ParquetFileWriter;
 import org.apromore.service.logimporter.io.ParquetLocalFileReader;
 import org.apromore.service.logimporter.io.ParquetLocalFileWriter;
 import org.apromore.service.logimporter.model.*;
+import org.apromore.service.logimporter.utilities.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -54,8 +55,9 @@ class ParquetImporterParquetImpl implements ParquetImporter {
             parquetLogSample.validateSample();
 
             //If file exist, delete it
-            if (outputParquet.exists())
-                outputParquet.delete();
+            if (outputParquet.exists()) {
+                FileUtils.deleteFile(outputParquet);
+            }
 
             File tempFile = parquetLogSample.getParquetTempFile();
             if (tempFile == null)
@@ -122,8 +124,9 @@ class ParquetImporterParquetImpl implements ParquetImporter {
             }
 
             //If file empty, delete it
-            if (numOfValidEvents == 0)
-                outputParquet.delete();
+            if (numOfValidEvents == 0) {
+                FileUtils.deleteFile(outputParquet);
+            }
 
             if (!isValidLineCount(lineIndex))
                 rowLimitExceeded = true;

@@ -30,6 +30,7 @@ import org.apache.parquet.schema.MessageType;
 import org.apromore.service.logimporter.io.CSVFileReader;
 import org.apromore.service.logimporter.io.ParquetFileWriter;
 import org.apromore.service.logimporter.model.*;
+import org.apromore.service.logimporter.utilities.FileUtils;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -57,7 +58,7 @@ class ParquetImporterCSVImpl implements ParquetImporter {
             logMetaData.validateSample();
             //If file exist, delete it
             if (outputParquet.exists())
-                outputParquet.delete();
+            FileUtils.deleteFile(outputParquet);
 
             readerin = new InputStreamReader(in, Charset.forName(charset));
             brReader = new BufferedReader(readerin);
@@ -125,7 +126,7 @@ class ParquetImporterCSVImpl implements ParquetImporter {
 
             //If file empty, delete it
             if (numOfValidEvents == 0)
-                outputParquet.delete();
+                FileUtils.deleteFile(outputParquet);
 
             if (!isValidLineCount(lineIndex - 1))
                 rowLimitExceeded = true;

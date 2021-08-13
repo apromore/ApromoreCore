@@ -21,6 +21,19 @@
  */
 package org.apromore.service.logimporter.services;
 
+import org.apromore.service.logimporter.model.CaseAttributesDiscovery;
+import org.apromore.service.logimporter.model.LogMetaData;
+import org.apromore.service.logimporter.utilities.NameComparator;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
 import static org.apromore.service.logimporter.constants.Constants.possibleActivity;
 import static org.apromore.service.logimporter.constants.Constants.possibleCaseId;
 import static org.apromore.service.logimporter.constants.Constants.possibleEndTimestamp;
@@ -30,15 +43,6 @@ import static org.apromore.service.logimporter.constants.Constants.possibleStart
 import static org.apromore.service.logimporter.constants.Constants.timestampPattern;
 import static org.apromore.service.logimporter.dateparser.DateUtil.determineDateFormat;
 import static org.apromore.service.logimporter.dateparser.DateUtil.parseToTimestamp;
-
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
-import org.apromore.service.logimporter.model.CaseAttributesDiscovery;
-import org.apromore.service.logimporter.model.LogMetaData;
-import org.apromore.service.logimporter.utilities.NameComparator;
 
 public class MetaDataUtilitiesImpl implements MetaDataUtilities {
     private List<List<String>> lines;
@@ -122,25 +126,27 @@ public class MetaDataUtilitiesImpl implements MetaDataUtilities {
 
         List<String> dateTimeFormatCollections = new ArrayList<>();
         for (List<String> myLine : lines) {
-            if (determineDateFormat(myLine.get(pos)) != null)
+            if (determineDateFormat(myLine.get(pos)) != null) {
                 dateTimeFormatCollections.add(determineDateFormat(myLine.get(pos)));
+            }
         }
         // Get the most common date format
         if (dateTimeFormatCollections.size() > 0) {
-	    return dateTimeFormatCollections.parallelStream()
+            return dateTimeFormatCollections.parallelStream()
                     .collect(Collectors.groupingBy(java.util.function.Function.identity(), Collectors.counting()))
                     .entrySet()
                     .stream()
                     .max(Comparator.comparing(
-                        //Map.Entry::getValue  // Java 8
-                        new java.util.function.Function<Map.Entry<String, Long>, Long>() {
-                            public Long apply(Map.Entry<String, Long> entry) {
-                                return entry.getValue();
+                            //Map.Entry::getValue  // Java 8
+                            new java.util.function.Function<Map.Entry<String, Long>, Long>() {
+                                @Override
+                                public Long apply(Map.Entry<String, Long> entry) {
+                                    return entry.getValue();
+                                }
                             }
-                        }
                     ))
-                    .get()
-                    .getKey();
+                    .map(Map.Entry::getKey)
+                    .orElse(null);
         } else {
             return null;
         }
@@ -186,7 +192,7 @@ public class MetaDataUtilitiesImpl implements MetaDataUtilities {
     // If only one timestamp found then set it as endTimestamp
     private void onlyOnetimestampFound() {
         if (logMetaData.getEndTimestampPos() == -1 && logMetaData.getStartTimestampPos() == -1 && logMetaData.getOtherTimestamps().size() > 0) {
-            logMetaData.setEndTimestampPos(logMetaData.getOtherTimestamps().keySet().stream().findFirst().get());
+            logMetaData.getOtherTimestamps().keySet().stream().findFirst().ifPresent(integer -> logMetaData.setEndTimestampPos(integer));
             logMetaData.getOtherTimestamps().remove(logMetaData.getEndTimestampPos());
             logMetaData.setEndTimestampFormat(detectDateTimeFormat(logMetaData.getEndTimestampPos()));
 

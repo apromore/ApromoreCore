@@ -24,7 +24,10 @@ package org.apromore.service.logimporter.services;
 import static org.apromore.service.logimporter.utilities.ParquetUtilities.getHeaderFromParquet;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -37,8 +40,14 @@ import org.apromore.service.logimporter.io.FileWriter;
 import org.apromore.service.logimporter.io.ParquetLocalFileReader;
 import org.apromore.service.logimporter.model.LogMetaData;
 import org.apromore.service.logimporter.model.ParquetLogMetaData;
+import org.apromore.service.logimporter.utilities.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class MetaDataServiceParquetImpl implements MetaDataService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MetaDataServiceParquetImpl.class);
+
     private ParquetReader<Group> reader;
 
     @Override
@@ -51,10 +60,11 @@ class MetaDataServiceParquetImpl implements MetaDataService {
             ParquetLocalFileReader parquetLocalFileReader = new ParquetLocalFileReader(new Configuration(true), tempFile);
             MessageType schema = parquetLocalFileReader.getSchema();
 
-            if (schema == null || schema.getColumns().size() <= 0)
+            if (schema == null || schema.getColumns().size() <= 0) {
                 throw new Exception("Unable to import file. Schema is missing.");
+            }
 
-	    tempFile.delete();
+            FileUtils.deleteFile(tempFile);
         } catch (Exception e) {
             throw new Exception("Unable to import file", e);
         } finally {
@@ -99,7 +109,7 @@ class MetaDataServiceParquetImpl implements MetaDataService {
                 lines.add(Arrays.asList(myLine));
                 lineIndex++;
             }
-	    tempFile.delete();
+            FileUtils.deleteFile(tempFile);
             return lines;
 
         } finally {

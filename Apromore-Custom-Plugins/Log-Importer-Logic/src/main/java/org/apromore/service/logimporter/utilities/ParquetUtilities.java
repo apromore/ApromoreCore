@@ -33,8 +33,9 @@ public class ParquetUtilities {
         MessageType schema;
         StringBuilder sb = new StringBuilder();
         sb.append("message EventLog {\n");
-        for (int i = 0; i < header.length; i++)
-            sb.append("optional binary " + formatColumn(header[i]) + ";\n");
+        for (String s : header) {
+            sb.append("optional binary ").append(formatColumn(s)).append(";\n");
+        }
         sb.append("}");
         schema = MessageTypeParser.parseMessageType(sb.toString());
         return schema;
