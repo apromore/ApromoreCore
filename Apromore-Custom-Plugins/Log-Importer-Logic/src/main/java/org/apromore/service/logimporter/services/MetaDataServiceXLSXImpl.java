@@ -41,11 +41,14 @@ public class MetaDataServiceXLSXImpl implements MetaDataService {
 
     private List<String> getHeader(Sheet sheet) throws Exception {
         List<String> header = new ArrayList<>();
-        for (Cell c : sheet.getRow(0)) {
-            if (c.getStringCellValue() == null || c.getStringCellValue().isEmpty()) {
-                throw new Exception("header must have non-empty value!");
+        for (Row row : sheet) {
+            for (Cell c : row) {
+                if (c.getStringCellValue() == null || c.getStringCellValue().isEmpty()) {
+                    throw new Exception("header must have non-empty value!");
+                }
+                header.add(c.getStringCellValue().trim());
             }
-            header.add(c.getStringCellValue().trim());
+            break;
         }
         return header;
     }
