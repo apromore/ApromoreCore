@@ -511,17 +511,19 @@ public class AccessController extends SelectorComposer<Div> {
       if (selectedItem instanceof FolderType) {
         authorizationService.saveFolderAccessType(selectedItemId, rowGuid, accessType);
 
-        FolderType folder = (FolderType) selectedItem;
-        LOGGER.info("User \"{}\" granted {} access to group \"{}\" (id {}) for folder {} (id {})",
-          userName, accessType, group.getName(), group.getId(), formatPath(folder, folder.getFolderName()), folder.getId());
-
+        if (LOGGER.isInfoEnabled()) {
+          FolderType folder = (FolderType) selectedItem;
+          LOGGER.info("User \"{}\" granted {} access to group \"{}\" (id {}) for folder {} (id {})",
+            userName, accessType, group.getName(), group.getId(), formatPath(folder, folder.getFolderName()), folder.getId());
+        }
       } else if (selectedItem instanceof ProcessSummaryType) {
         authorizationService.saveProcessAccessType(selectedItemId, rowGuid, accessType);
 
-        ProcessSummaryType process = (ProcessSummaryType) selectedItem;
-        LOGGER.info("User \"{}\" granted {} access to group \"{}\" (id {}) for process model {} (id {})",
-          userName, accessType, group.getName(), group.getId(), formatPath(process.getFolder(), process.getName()), process.getId());
-
+        if (LOGGER.isInfoEnabled()) {
+          ProcessSummaryType process = (ProcessSummaryType) selectedItem;
+          LOGGER.info("User \"{}\" granted {} access to group \"{}\" (id {}) for process model {} (id {})",
+            userName, accessType, group.getName(), group.getId(), formatPath(process.getFolder(), process.getName()), process.getId());
+        }
       } else if (selectedItem instanceof LogSummaryType) {
         authorizationService.saveLogAccessType(selectedItemId, rowGuid, accessType,
             shareUserMetadata);
@@ -545,10 +547,11 @@ public class AccessController extends SelectorComposer<Div> {
         // } else if (selectedItem instanceof UserMetadataSummaryType) {
         // authorizationService.saveUserMetadataAccessType(selectedItemId, rowGuid, accessType);
 
-        LogSummaryType log = (LogSummaryType) selectedItem;
-        LOGGER.info("User \"{}\" granted {} access to group \"{}\" (id {}) for event log {} (id {})",
-          userName, accessType, group.getName(), group.getId(), formatPath(log.getFolder(), log.getName()), log.getId());
-
+        if (LOGGER.isInfoEnabled()) {
+          LogSummaryType log = (LogSummaryType) selectedItem;
+          LOGGER.info("User \"{}\" granted {} access to group \"{}\" (id {}) for event log {} (id {})",
+            userName, accessType, group.getName(), group.getId(), formatPath(log.getFolder(), log.getName()), log.getId());
+        }
       } else {
         LOGGER.error("Unknown item type {}", selectedItem);
       }
