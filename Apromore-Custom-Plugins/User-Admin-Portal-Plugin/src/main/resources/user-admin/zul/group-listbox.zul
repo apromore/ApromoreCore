@@ -29,6 +29,7 @@
         />
       </div>
     </listheader>
+    <listheader align="center" label="SSO" width="50px" sort="auto(groupFromSsoIdp)"/>
     <listheader align="center" visible="false" label="" width="40px" style="cursor:pointer;"/>
   </listhead>
   <auxhead sclass="ap-auxhead" visible="false">
@@ -54,6 +55,7 @@
   <template name="model">
     <listitem ca:onClick="Ap.userAdmin.toggleGroupClick(${each.id}, event)">
       <listcell label="${each.name}"/>
+      <listcell label="${each.groupFromSsoIdp ? '✓' : ''}"/>
       <!--
       <listcell>
         <textbox width="80%" id="${each.rowGuid}" value="${each.name}" submitByEnter="true"

@@ -78,8 +78,8 @@
       <hbox vflex="1" hflex="1" spacing="0">
         <assignedUserListboxComp id="nonAssignedUserListbox" vflex="1"  />
         <vbox pack="center" align="center" vflex="1">
-          <button id="assignUser" iconSclass="z-icon-chevron-right"></button>
-          <button id="retractUser" iconSclass="z-icon-chevron-left"></button>
+          <button id="assignUserBtn" iconSclass="z-icon-chevron-right"></button>
+          <button id="retractUserBtn" iconSclass="z-icon-chevron-left"></button>
         </vbox>
         <assignedUserListboxComp id="assignedUserListbox" vflex="1" />
       </hbox>
