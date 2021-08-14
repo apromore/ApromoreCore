@@ -37,6 +37,7 @@ if (!Apromore) {
 Apromore.Editor = {
     construct: function(options) {
         this.actualEditor = undefined;
+        this.preventFitDelay = options.preventFitDelay;
 
         if (!(options && options.width && options.height)) {
             Apromore.Log.fatal("The editor is missing mandatory parameters options.width and options.height.");
@@ -145,6 +146,8 @@ Apromore.Editor = {
      * This method takes time depending on the complexity of the model
      * @param {String} xml: the BPMN XML
      * @param {Function} callback: callback function to call after the import finishes
+     *
+     * @todo: Avoid seperate conditional for loganimation and bpmneditor
      */
     importXML: function(xml, callback) {
       // this.editor.importXML(xml, function(err) {
@@ -178,11 +181,17 @@ Apromore.Editor = {
           // pass
         }
         eventBus.fire('elements.changed', { elements: connections });
-        callback();
-        var me = this; // delay the fit until the properties panel fully collapsed
-        setTimeout(function () {
-            me.zoomFitToModel();
-        }, 500)
+        // @todo: Avoid this conditional
+        if (this.preventFitDelay) { // this is for loganimation
+            this.zoomFitToModel();
+            callback();
+        } else { // this is for BPMN editor
+            callback();
+            var me = this; // delay the fit until the properties panel fully collapsed
+            setTimeout(function () {
+                me.zoomFitToModel();
+            }, 500);
+        }
       }.bind(this));
     },
 
@@ -206,8 +215,7 @@ Apromore.Editor = {
         if (this.actualEditor) {
             var canvas = this.actualEditor.get('canvas');
             canvas.viewbox(false); // trigger recalculate the viewbox
-            // zoom to fit full viewport
-            canvas.zoom('fit-viewport', 'auto');
+            canvas.zoom('fit-viewport', 'auto'); // zoom to fit full viewport
         }
     },
 
