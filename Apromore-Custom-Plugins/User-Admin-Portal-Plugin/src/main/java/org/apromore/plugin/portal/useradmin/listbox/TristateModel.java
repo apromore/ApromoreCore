@@ -32,13 +32,19 @@ public class TristateModel {
     private Integer state;
     private Object obj;
     private boolean twoStateOnly;
+    private boolean disabled;
 
-    public TristateModel(String label, String key, Object obj, Integer state) {
+    public TristateModel(String label, String key, Object obj, Integer state, boolean disabled) {
         this.label = label;
         this.key = key;
         this.obj = obj;
         this.state = state;
         this.twoStateOnly = false;
+        this.disabled = disabled;
+    }
+
+    public boolean isDisabled() {
+        return disabled;
     }
 
     public String getLabel() {

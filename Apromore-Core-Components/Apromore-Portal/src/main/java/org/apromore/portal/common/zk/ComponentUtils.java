@@ -22,28 +22,29 @@
 
 package org.apromore.portal.common.zk;
 
-import org.apromore.plugin.portal.PortalLoggerFactory;
-import org.slf4j.Logger;
+import java.util.Arrays;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.function.Predicate;
 import org.zkoss.zk.ui.HtmlBasedComponent;
 
 public final class ComponentUtils {
     private static final String SCLASS_OFF = "ap-state-off";
     private static final String SCLASS_ON = "ap-state-on";
 
-    private static final Logger LOGGER = PortalLoggerFactory.getLogger(ComponentUtils.class);
-
     public static void toggleSclass(HtmlBasedComponent comp, boolean newState, String sclassOff, String sclassOn) {
         String sclass = comp.getSclass();
+        String oldClass = (newState) ? sclassOff : sclassOn;
+        String newClass = (newState) ? sclassOn : sclassOff;
         if (sclass == null) {
             sclass = "";
         }
-        if (newState) {
-            sclass = sclass.replace(sclassOff, "");
-            sclass = sclass + " " + sclassOn;
-        } else {
-            sclass = sclass.replace(sclassOn, "");
-            sclass = sclass + " " + sclassOff;
-        }
+        sclass = Stream.concat(
+                Arrays.stream(sclass.split("\\s+")).filter(s -> !s.equals(oldClass)),
+                Stream.of(newClass)
+            )
+            .distinct()
+            .collect(Collectors.joining(" "));
         comp.setSclass(sclass);
     }
 
