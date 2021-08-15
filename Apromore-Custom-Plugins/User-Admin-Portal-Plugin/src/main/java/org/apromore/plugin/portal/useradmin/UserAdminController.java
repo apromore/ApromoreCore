@@ -241,6 +241,11 @@ public class UserAdminController extends SelectorComposer<Window> {
     @Wire("#groupSaveBtn")
     Button groupSaveBtn;
 
+    @Wire("#assignUserBtn")
+    Button assignUserBtn;
+    @Wire("#retractUserBtn")
+    Button retractUserBtn;
+
     /**
      * Test whether the current user has a permission.
      *
@@ -577,7 +582,7 @@ public class UserAdminController extends SelectorComposer<Window> {
         for (int i = 0; i < roles.size(); i++) {
             Role role = roles.get(i);
             String roleName = role.getName();
-            assignedRoleModel.add(new TristateModel(roleMap.get(roleName), roleName, role, TristateModel.UNCHECKED));
+            assignedRoleModel.add(new TristateModel(roleMap.get(roleName), roleName, role, TristateModel.UNCHECKED, false));
         }
         assignedRoleModel.setMultiple(true);
         assignedRoleListbox.setModel(assignedRoleModel);
@@ -603,7 +608,7 @@ public class UserAdminController extends SelectorComposer<Window> {
         for (int i = 0; i < groups.size(); i++) {
             Group group = groups.get(i);
             String groupName = group.getName();
-            assignedGroupModel.add(new TristateModel(groupName, groupName, group, TristateModel.UNCHECKED));
+            assignedGroupModel.add(new TristateModel(groupName, groupName, group, TristateModel.UNCHECKED, group.isGroupFromSsoIdp()));
         }
         assignedGroupModel.setMultiple(true);
         assignedGroupListbox.setModel(assignedGroupModel);
@@ -782,6 +787,14 @@ public class UserAdminController extends SelectorComposer<Window> {
         isUserDetailDirty = false; // ensure dirty is not set by field's setValue
     }
 
+    private void setGroupDetailReadOnly(boolean readOnly) {
+        groupNameTextbox.setDisabled(readOnly);
+        groupSaveBtn.setDisabled(readOnly);
+        ComponentUtils.toggleSclass(groupDetailContainer, !readOnly);
+        assignUserBtn.setDisabled(readOnly);
+        retractUserBtn.setDisabled(readOnly);
+    }
+
     private Group setSelectedGroup(Group group) {
         assignedUserAddView.setVisible(false);
 
@@ -790,8 +803,7 @@ public class UserAdminController extends SelectorComposer<Window> {
             groupDetail.setValue("No group is selected");
             assignedUserModel = new ListModelList<>();
             nonAssignedUserModel = new ListModelList<>();
-            groupSaveBtn.setDisabled(true);
-            ComponentUtils.toggleSclass(groupDetailContainer, false);
+            setGroupDetailReadOnly(true);
         } else {
             groupNameTextbox.setValue(group.getName());
             groupDetail.setValue("Group: " + group.getName());
@@ -802,8 +814,7 @@ public class UserAdminController extends SelectorComposer<Window> {
             Collections.sort(nonAssignedUsers, nameComparator);
             assignedUserModel = new ListModelList<User>(assignedUsers, false);
             nonAssignedUserModel = new ListModelList<User>(nonAssignedUsers, false);
-            groupSaveBtn.setDisabled(false);
-            ComponentUtils.toggleSclass(groupDetailContainer, true);
+            setGroupDetailReadOnly(group.isGroupFromSsoIdp());
         }
         assignedUserModel.setMultiple(true);
         assignedUserList = new AssignedUserListbox(assignedUserListbox, assignedUserModel, getLabel("assignedUsers_text"));
@@ -883,6 +894,9 @@ public class UserAdminController extends SelectorComposer<Window> {
                             }
                             if (select != null) {
                                 selectBulk(userList, select);
+                                if (!select) {
+                                    setSelectedUsers(null);
+                                }
                             }
                             if (newUsers != null) {
                                 updateUserDetail(newUsers);
@@ -896,6 +910,9 @@ public class UserAdminController extends SelectorComposer<Window> {
         } else {
             if (select != null) {
                 selectBulk(userList, select);
+                if (!select) {
+                    setSelectedUsers(null);
+                }
             }
             if (newUsers != null) {
                 updateUserDetail(newUsers);
@@ -1099,6 +1116,9 @@ public class UserAdminController extends SelectorComposer<Window> {
                             }
                             if (select != null) {
                                 selectBulk(groupList, select);
+                                if (!select) {
+                                    setSelectedGroup(null);
+                                }
                             }
                             if (newGroups != null) {
                                 updateGroupDetail(newGroups);
@@ -1112,6 +1132,9 @@ public class UserAdminController extends SelectorComposer<Window> {
         } else {
             if (select != null) {
                 selectBulk(groupList, select);
+                if (!select) {
+                    setSelectedGroup(null);
+                }
             }
             if (newGroups != null) {
                 updateGroupDetail(newGroups);
@@ -1183,7 +1206,7 @@ public class UserAdminController extends SelectorComposer<Window> {
         }
     }
 
-    @Listen("onClick = #retractUser")
+    @Listen("onClick = #retractUserBtn")
     public void onClickRetractUser() {
         if (selectedGroup == null) {
             return;
@@ -1204,7 +1227,7 @@ public class UserAdminController extends SelectorComposer<Window> {
         }
     }
 
-    @Listen("onClick = #assignUser")
+    @Listen("onClick = #assignUserBtn")
     public void onClickAssignUser() {
         if (selectedGroup == null) {
             return;
