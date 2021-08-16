@@ -89,7 +89,7 @@ public class AlternativesRenderer extends HttpServlet {
             os.write(pdfByteArray);
             os.close();
 
-        } catch (TranscoderException e) {
+        } catch (TranscoderException | IOException e) {
             throw new ServletException("Unable to convert SVG to PDF", e);
         }
     }
