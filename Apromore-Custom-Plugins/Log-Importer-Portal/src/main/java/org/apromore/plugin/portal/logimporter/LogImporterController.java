@@ -1137,7 +1137,8 @@ public class LogImporterController extends SelectorComposer<Window> implements C
 
   private void downloadErrorLog(List<LogErrorReport> errorReport) throws Exception {
 
-    File tempFile = File.createTempFile("ErrorReport", ".csv");
+    File tempFile = File.createTempFile("ErrorReport", ".csv", new File(System.getProperty("user.home") +
+            "/.apromore"));
     try (FileWriter writer = new FileWriter(tempFile);
 
         CSVWriter csvWriter =
