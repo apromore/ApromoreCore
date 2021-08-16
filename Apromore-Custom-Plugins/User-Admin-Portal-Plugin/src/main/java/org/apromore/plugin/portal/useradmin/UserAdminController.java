@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -246,6 +246,10 @@ public class UserAdminController extends SelectorComposer<Window> {
   @Wire("#groupSaveBtn")
   Button groupSaveBtn;
 
+  @Wire("#assignUserBtn")
+  Button assignUserBtn;
+  @Wire("#retractUserBtn")
+  Button retractUserBtn;
   /**
    * Test whether the current user has a permission.
    *
@@ -400,19 +404,19 @@ public class UserAdminController extends SelectorComposer<Window> {
 
     /*
      * // Park this for now in case in-cell editing is required later
-     * 
+     *
      * groupEditBtn.addEventListener("onExecute", new EventListener() {
-     * 
+     *
      * @Override public void onEvent(Event event) throws Exception { String groupName =
      * event.getData().toString(); setSelectedGroup(securityService.getGroupByName(groupName)); }
      * }); groupEditBtn.addEventListener("onChangeNameCancel", new EventListener() {
-     * 
+     *
      * @Override public void onEvent(Event event) throws Exception { JSONObject param = (JSONObject)
      * event.getData(); String groupName = (String)param.get("groupName"); String rowGuid =
      * (String)param.get("rowGuid"); Group group = securityService.getGroupByName(groupName);
      * Textbox textbox = (Textbox)mainWindow.getFellow(rowGuid); textbox.setValue(groupName); } });
      * groupEditBtn.addEventListener("onChangeNameOK", new EventListener() {
-     * 
+     *
      * @Override public void onEvent(Event event) throws Exception { if
      * (!hasPermission(Permissions.EDIT_GROUPS)) {
      * Messagebox.show("You do not have permission to edit group", "Apromore", Messagebox.OK,
@@ -542,7 +546,7 @@ public class UserAdminController extends SelectorComposer<Window> {
       Role role = roles.get(i);
       String roleName = role.getName();
       assignedRoleModel
-          .add(new TristateModel(roleMap.get(roleName), roleName, role, TristateModel.UNCHECKED));
+          .add(new TristateModel(roleMap.get(roleName), roleName, role, TristateModel.UNCHECKED, false));
     }
     assignedRoleModel.setMultiple(true);
     assignedRoleListbox.setModel(assignedRoleModel);
@@ -570,7 +574,7 @@ public class UserAdminController extends SelectorComposer<Window> {
       Group group = groups.get(i);
       String groupName = group.getName();
       assignedGroupModel
-          .add(new TristateModel(groupName, groupName, group, TristateModel.UNCHECKED));
+          .add(new TristateModel(groupName, groupName, group, TristateModel.UNCHECKED, group.isGroupFromSsoIdp()));
     }
     assignedGroupModel.setMultiple(true);
     assignedGroupListbox.setModel(assignedGroupModel);
@@ -751,6 +755,14 @@ public class UserAdminController extends SelectorComposer<Window> {
     isUserDetailDirty = false; // ensure dirty is not set by field's setValue
   }
 
+  private void setGroupDetailReadOnly(boolean readOnly) {
+    groupNameTextbox.setDisabled(readOnly);
+    groupSaveBtn.setDisabled(readOnly);
+    ComponentUtils.toggleSclass(groupDetailContainer, !readOnly);
+    assignUserBtn.setDisabled(readOnly);
+    retractUserBtn.setDisabled(readOnly);
+  }
+
   private Group setSelectedGroup(Group group) {
     assignedUserAddView.setVisible(false);
 
@@ -759,8 +771,7 @@ public class UserAdminController extends SelectorComposer<Window> {
       groupDetail.setValue("No group is selected");
       assignedUserModel = new ListModelList<>();
       nonAssignedUserModel = new ListModelList<>();
-      groupSaveBtn.setDisabled(true);
-      ComponentUtils.toggleSclass(groupDetailContainer, false);
+      setGroupDetailReadOnly(true);
     } else {
       groupNameTextbox.setValue(group.getName());
       groupDetail.setValue("Group: " + group.getName());
@@ -771,8 +782,7 @@ public class UserAdminController extends SelectorComposer<Window> {
       Collections.sort(nonAssignedUsers, nameComparator);
       assignedUserModel = new ListModelList<User>(assignedUsers, false);
       nonAssignedUserModel = new ListModelList<User>(nonAssignedUsers, false);
-      groupSaveBtn.setDisabled(false);
-      ComponentUtils.toggleSclass(groupDetailContainer, true);
+      setGroupDetailReadOnly(group.isGroupFromSsoIdp());
     }
     assignedUserModel.setMultiple(true);
     assignedUserList = new AssignedUserListbox(assignedUserListbox, assignedUserModel,
@@ -853,6 +863,9 @@ public class UserAdminController extends SelectorComposer<Window> {
               }
               if (select != null) {
                 selectBulk(userList, select);
+                if (!select) {
+                  setSelectedUsers(null);
+                }
               }
               if (newUsers != null) {
                 updateUserDetail(newUsers);
@@ -865,6 +878,9 @@ public class UserAdminController extends SelectorComposer<Window> {
     } else {
       if (select != null) {
         selectBulk(userList, select);
+        if (!select) {
+          setSelectedUsers(null);
+        }
       }
       if (newUsers != null) {
         updateUserDetail(newUsers);
@@ -1077,6 +1093,9 @@ public class UserAdminController extends SelectorComposer<Window> {
               }
               if (select != null) {
                 selectBulk(groupList, select);
+                if (!select) {
+                  setSelectedGroup(null);
+                }
               }
               if (newGroups != null) {
                 updateGroupDetail(newGroups);
@@ -1089,6 +1108,9 @@ public class UserAdminController extends SelectorComposer<Window> {
     } else {
       if (select != null) {
         selectBulk(groupList, select);
+        if (!select) {
+          setSelectedGroup(null);
+        }
       }
       if (newGroups != null) {
         updateGroupDetail(newGroups);
@@ -1160,7 +1182,7 @@ public class UserAdminController extends SelectorComposer<Window> {
     }
   }
 
-  @Listen("onClick = #retractUser")
+  @Listen("onClick = #retractUserBtn")
   public void onClickRetractUser() {
     if (selectedGroup == null) {
       return;
@@ -1181,7 +1203,7 @@ public class UserAdminController extends SelectorComposer<Window> {
     }
   }
 
-  @Listen("onClick = #assignUser")
+  @Listen("onClick = #assignUserBtn")
   public void onClickAssignUser() {
     if (selectedGroup == null) {
       return;

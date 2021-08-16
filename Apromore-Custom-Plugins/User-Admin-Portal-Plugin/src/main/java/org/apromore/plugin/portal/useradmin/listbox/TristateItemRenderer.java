@@ -64,12 +64,14 @@ public class TristateItemRenderer implements ListitemRenderer {
 
         Checkbox checkbox = new Checkbox();
         checkbox.setValue(model);
+        checkbox.setDisabled(model.isDisabled());
 
         updateCheckbox(checkbox);
         Listcell cbCell = new Listcell();
         cbCell.appendChild(checkbox);
         listItem.appendChild(cbCell);
         listItem.appendChild(new Listcell(model.getLabel()));
+        listItem.setDisabled(model.isDisabled());
 
         checkbox.addEventListener(Events.ON_CHECK, new EventListener<Event>() {
             @Override
@@ -79,14 +81,16 @@ public class TristateItemRenderer implements ListitemRenderer {
             }
         });
 
-        listItem.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                Listitem listitem = (Listitem)event.getTarget();
-                Checkbox checkbox = (Checkbox)listitem.getChildren().get(0).getFirstChild();
-                rotateState(checkbox);
-            }
-        });
+        if (!model.isDisabled()) {
+            listItem.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    Listitem listitem = (Listitem)event.getTarget();
+                    Checkbox checkbox = (Checkbox)listitem.getChildren().get(0).getFirstChild();
+                    rotateState(checkbox);
+                }
+            });
+        }
     }
 
     public void updateCheckbox(Checkbox checkbox) {
