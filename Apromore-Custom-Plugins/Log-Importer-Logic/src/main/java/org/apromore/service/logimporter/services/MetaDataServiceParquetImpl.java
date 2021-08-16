@@ -43,8 +43,6 @@ import static org.apromore.service.logimporter.utilities.ParquetUtilities.getHea
 
 class MetaDataServiceParquetImpl implements MetaDataService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MetaDataServiceParquetImpl.class);
-
     private ParquetReader<Group> reader;
 
     @Override
@@ -60,7 +58,6 @@ class MetaDataServiceParquetImpl implements MetaDataService {
             MessageType schema = parquetLocalFileReader.getSchema();
 
             if (schema == null || schema.getColumns().size() <= 0) {
-                LOGGER.error("Unable to import file. Schema is missing.");
                 throw new Exception("Unable to import file. Schema is missing.");
             }
 
