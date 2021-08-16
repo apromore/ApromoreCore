@@ -42,12 +42,6 @@ class DatePatterns {
     private static final String YEAR_TWO_DIGIT = "([0-9]{2})";
     //Year digit 1000-2999
     private static final String YEAR_DIGIT = "([12][0-9]{3})";
-    //Week day first letter e.g. T, M
-    private static final String WEEK_DAY_NAME_FIRST_LETTER = "(m|tu|w|th|f|sa|su)";
-    //Week day short name e.g. Tus
-    private static final String WEEK_DAY_NAME_SHORT = "(mon|tue|wed|thu|fri|sat|sun)";
-    //Week day long name e.g. Tus
-    private static final String WEEK_DAY_NAME_LONG = "(monday|tuesday|wednesday|thursday|friday|saturday|sunday)";
     //Month short name e.g. Feb
     private static final String MONTH_NAME_SHORT = "(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)";
     //Month long name e.g. February

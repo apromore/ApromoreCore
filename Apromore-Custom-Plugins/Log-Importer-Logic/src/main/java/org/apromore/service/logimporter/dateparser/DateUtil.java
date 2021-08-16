@@ -174,18 +174,6 @@ public class DateUtil extends DatePatterns {
      */
     public static String determineDateFormat(String dateString) {
 
-//        if(dateString.matches("^(\\d{10})$"))
-//            return "unixtime";
-//
-//        if(dateString.matches("^(\\d{13})$"))
-//            return "millisecond";
-//
-//        if(dateString.matches("^(\\d{16})$"))
-//            return "microsecond";
-//
-//        if(dateString.matches("^(\\d{19})$"))
-//            return "nanosecond";
-
         String dateFormat = findMatchDateFormat(removeUnwantedChartsFromDate(dateString));
 
         if (dateFormat == null)
@@ -204,8 +192,8 @@ public class DateUtil extends DatePatterns {
     }
 
     private static String removeUnwantedChartsFromDate(String str) {
-        //Remove timezone: (?:Z|[+-](?:2[0-3]|[01][0-9]):[0-5][0-9])
-        //Remove 1st, 2nd, ect: (?<=\d)(st|nd|rd|th)
+        // Remove timezone: (?:Z|[+-](?:2[0-3]|[01][0-9]):[0-5][0-9])
+        // Remove 1st, 2nd, ect: (?<=\d)(st|nd|rd|th)
         return str.replaceAll("(?:Z|[+-](?:2[0-3]|[01][0-9]):[0-5][0-9])", "").replaceAll("(?<=\\d)(st|nd|rd|th)", "").toLowerCase();
     }
 }

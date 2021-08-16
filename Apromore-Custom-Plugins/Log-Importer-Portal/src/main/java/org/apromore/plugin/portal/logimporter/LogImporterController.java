@@ -423,7 +423,7 @@ public class LogImporterController extends SelectorComposer<Window> implements C
     return logModel;
   }
 
-  private void storeMappingAsJSON(Media media, LogMetaData logMetaData, Log log)
+  private void storeMappingAsJSON(LogMetaData logMetaData, Log log)
       throws UserNotFoundException {
 
     String username = portalContext.getCurrentUser().getUsername();
@@ -1182,7 +1182,7 @@ public class LogImporterController extends SelectorComposer<Window> implements C
         portalContext.refreshContent();
 
       } else {
-        storeMappingAsJSON(media, logMetaData, logModel.getImportLog());
+        storeMappingAsJSON(logMetaData, logModel.getImportLog());
         String successMessage;
         if (logModel.isRowLimitExceeded()) {
           successMessage = MessageFormat.format(getLabel("limit_reached"), logModel.getRowsCount());

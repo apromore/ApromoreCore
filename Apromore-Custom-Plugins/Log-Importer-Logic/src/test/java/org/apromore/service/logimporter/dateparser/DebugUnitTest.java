@@ -62,6 +62,7 @@ public class DebugUnitTest {
     }
 
     @Test
+    @Ignore
     public void test_debug() throws Exception {
 
         System.out.println("\n************************************\ntest");

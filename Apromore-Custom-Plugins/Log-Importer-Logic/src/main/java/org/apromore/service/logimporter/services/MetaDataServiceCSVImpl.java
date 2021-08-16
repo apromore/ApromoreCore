@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -28,9 +28,16 @@ import org.apromore.commons.utils.Delimiter;
 import org.apromore.service.logimporter.io.CSVFileReader;
 import org.apromore.service.logimporter.model.LogMetaData;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 class MetaDataServiceCSVImpl implements MetaDataService {
 
@@ -60,8 +67,7 @@ class MetaDataServiceCSVImpl implements MetaDataService {
                 throw new Exception("header must have non-empty value!");
             }
 
-            String separator = Delimiter.findDelimiter(sampleRows);
-            this.separator = separator;
+            this.separator = Delimiter.findDelimiter(sampleRows);
             this.headers = Splitter.on(separator).splitToList(firstLine);
 
         } catch (IOException e) {
@@ -84,11 +90,10 @@ class MetaDataServiceCSVImpl implements MetaDataService {
             List<String> sampleRows = getSampleRows(brReader);
 
             String firstLine = sampleRows.get(0);
-            String separator = Delimiter.findDelimiter(sampleRows);
+            this.separator = Delimiter.findDelimiter(sampleRows);
+            this.headers = Splitter.on(separator).splitToList(firstLine);
 
-            List<String> header = Splitter.on(separator).splitToList(firstLine);
-
-            return new LogMetaData(header);
+            return new LogMetaData(headers);
 
         } finally {
             closeQuietly(in);
@@ -107,7 +112,7 @@ class MetaDataServiceCSVImpl implements MetaDataService {
             String firstLine = sampleRows.get(0);
 
             String separator = !Objects.equals(this.separator, "") ? this.separator :
-					Delimiter.findDelimiter(sampleRows);
+                    Delimiter.findDelimiter(sampleRows);
 
             List<String> header = !headers.isEmpty() ? headers
                     : Splitter.on(separator).splitToList(firstLine);

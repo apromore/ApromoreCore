@@ -43,7 +43,6 @@ public class LogProcessorImpl implements LogProcessor {
     private HashMap<String, String> caseAttributes;
     private HashMap<String, String> eventAttributes;
     private HashMap<String, Timestamp> otherTimestamps;
-    private final String errorMessage = "Field is empty or has a null value!";
     private boolean validRow;
 
     @Override

@@ -172,9 +172,6 @@ public class XLSX2CSV {
         }
     }
 
-
-    ///////////////////////////////////////
-
     /**
      * Uses the XSSF Event SAX helpers to do most of the work
      * of parsing the Sheet XML, and outputs the contents
@@ -248,25 +245,9 @@ public class XLSX2CSV {
                 output.append(formattedValue);
                 line.add(formattedValue);
             } catch (Exception e) {
-//                output.append('"');
                 output.append(formattedValue);
-//                output.append('"');
-
                 line.add(formattedValue);
             }
         }
     }
 }
-
-//        List<List<String>> lines = new ArrayList<>();
-//
-//
-//        try (OPCPackage p = OPCPackage.open(new File(file), PackageAccess.READ)) {
-//            XLSX2CSV xlsx2csv = new XLSX2CSV(p, System.out, 5);
-//            lines =  xlsx2csv.process();
-//        }
-//
-//
-//        for(List<String> line: lines){
-//            System.out.println(line);
-//        }
