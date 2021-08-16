@@ -108,26 +108,29 @@ Apromore.Plugins.File = Clazz.extend({
         }
 
         // Send the svg to the server.
-        new Ajax.Request(Apromore.CONFIG.PDF_EXPORT_URL, {
-            method: 'POST',
-            parameters: {
-                resource: resource,
-                data: svgClone,
-                format: "pdf"
-            },
-            onSuccess: (function(request){
+        var xhr = new XMLHttpRequest();
+        var params = "resource=" + resource + "&data=" + svgClone + "&format=pdf";
+
+        xhr.open("POST", Apromore.CONFIG.PDF_EXPORT_URL);
+        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        xhr.responseType = 'blob';
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                // Download pdf from blob
                 myMask.hide();
-                // Because the pdf may be opened in the same window as the
-                // process, yet the process may not have been saved, we're
-                // opening every other representation in a new window.
-                // location.href = request.responseText
-                window.open(request.responseText);
-            }).bind(this),
-            onFailure: (function(){
-                myMask.hide();
-                Ext.Msg.alert(window.Apromore.I18N.Apromore.title, window.Apromore.I18N.File.genPDFFailed);
-            }).bind(this)
-        });
+                var hiddenElement = document.createElement('a');
+                hiddenElement.href = window.URL.createObjectURL(xhr.response);
+                hiddenElement.target = '_blank';
+                hiddenElement.download = 'diagram.pdf';
+                hiddenElement.click();
+                window.URL.revokeObjectURL(hiddenElement.href);
+            }
+        };
+        xhr.onerror = function () {
+            myMask.hide();
+            Ext.Msg.alert(window.Apromore.I18N.Apromore.title, window.Apromore.I18N.File.genPDFFailed);
+        };
+        xhr.send(params);
     }
 
 });
