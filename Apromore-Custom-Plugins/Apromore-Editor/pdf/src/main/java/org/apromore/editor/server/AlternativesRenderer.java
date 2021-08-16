@@ -53,12 +53,12 @@ package org.apromore.editor.server;
  * DEALINGS IN THE SOFTWARE.
  **/
 
-import java.io.BufferedWriter;
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -81,28 +81,27 @@ public class AlternativesRenderer extends HttpServlet {
     protected void doPost(final HttpServletRequest req, final HttpServletResponse res)
         throws IOException, ServletException {
 
-        // create tmp folder
-        File tmpFolder = new File(System.getProperty("java.io.tmpdir"));
-
-        if (!tmpFolder.exists()) {
-            tmpFolder.mkdirs();
-        }
-
-        String baseFilename = String.valueOf(System.currentTimeMillis());
-        File inFile = new File(tmpFolder, baseFilename + ".svg");
-        File outFile = new File(tmpFolder, baseFilename + ".pdf");
-
-        try (BufferedWriter out = new BufferedWriter(new FileWriter(inFile))) {
-            out.write(req.getParameter("data"));
-        }
-
         try {
-            makePDF(inFile, outFile);
-            res.getOutputStream().print(req.getContextPath() + "/tmp/" + baseFilename + ".pdf");
+            String svgContent = req.getParameter("data");
+            byte[] pdfByteArray = convertSVGtoPDF(svgContent);
+
+            OutputStream os = res.getOutputStream();
+            os.write(pdfByteArray);
+            os.close();
 
         } catch (TranscoderException e) {
             throw new ServletException("Unable to convert SVG to PDF", e);
         }
+    }
+
+    private static byte[] convertSVGtoPDF(String svgContent) throws TranscoderException {
+        TranscoderInput transcoderInput = new TranscoderInput(new ByteArrayInputStream(svgContent.getBytes()));
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        TranscoderOutput transcoderOutput = new TranscoderOutput(outputStream);
+
+        PDFTranscoder transcoder = new PDFTranscoder();
+        transcoder.transcode(transcoderInput, transcoderOutput);
+        return outputStream.toByteArray();
     }
 
     protected static void makePDF(final File inFile, final File outFile) throws TranscoderException, IOException {
