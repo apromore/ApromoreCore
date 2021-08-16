@@ -389,6 +389,7 @@ public class PDController extends BaseController implements Composer<Component> 
                 putWindowAtTop(perspectiveDetailsController.getWindow());
             });
             mainWindow.addEventListener("onCaseDetails", event -> caseDetailsController.onEvent(event));
+            mainWindow.addEventListener("onCaseVariantDetails", event -> caseDetailsController.onEvent(event));
             mainWindow.addEventListener("onPerspectiveDetails", event -> perspectiveDetailsController.onEvent(event));
         } catch (Exception ex) {
             Messagebox.show(getLabel("initEventHandlerError_message"));
