@@ -25,9 +25,9 @@ package org.apromore.plugin.portal.logimporter;
 
 interface Constants {
 
-    char[] supportedSeparators = {',','|',';','\t'};
+    char[] SUPPORTED_SEPARATORS = {',','|',';','\t'};
 
-    String[] fileEncoding = {"UTF-8",
+    String[] FILE_ENCODING = {"UTF-8",
                 "UTF-16",
                 "windows-1250 (Eastern European)",
                 "windows-1251 (Cyrillic)",
@@ -43,55 +43,45 @@ interface Constants {
                 "ISO-8859-2 (Latin Alphabet No.2)"
     };
 
-    int logSampleSize = 100;
+    int LOG_SAMPLE_SIZE = 100;
 
-    int columnWidth = 200;
-    int indexColumnWidth = 50;
+    int COLUMN_WIDTH = 200;
+    int INDEX_COLUMN_WIDTH = 50;
 
-    String caseIdLabel = "caseId";
-    String activityLabel = "activity";
-    String endTimestampLabel = "endTimestamp";
-    String startTimestampLabel = "startTimestamp";
-    String otherTimestampLabel = "otherTimestamp";
-    String resourceLabel = "resource";
-    String eventAttributeLabel = "eventAttribute";
-    String caseAttributeLabel = "caseAttribute";
-    String ignoreLabel = "ignoreAttribute";
+    String CASE_ID_LABEL = "caseId";
+    String ACTIVITY_LABEL = "activity";
+    String END_TIMESTAMP_LABEL = "endTimestamp";
+    String START_TIMESTAMP_LABEL = "startTimestamp";
+    String OTHER_TIMESTAMP_LABEL = "otherTimestamp";
+    String RESOURCE_LABEL = "resource";
+    String EVENT_ATTRIBUTE_LABEL = "eventAttribute";
+    String CASE_ATTRIBUTE_LABEL = "caseAttribute";
+    String IGNORE_LABEL = "ignoreAttribute";
 
-    String redLabelCSS = "redLabel";
-    String greenLabelCSS = "greenLabel";
-    String couldNotParseMessage = "Could not parse as timestamp!";
-    String parsedMessage = "Parsed correctly!";
-    String parsedAutoMessage = "Timestamp format\nautomatically detected. Override?";
+    String RED_LABEL_CSS = "redLabel";
+    String GREEN_LABEL_CSS = "greenLabel";
 
     // UI ids
-    String setEncodingId = "setEncoding";
-    String myGridId = "myGrid";
-    String setTimeZoneId = "setTimeZone";
+    String SET_ENCODING_ID = "setEncoding";
+    String MY_GRID_ID = "myGrid";
+    String SET_TIME_ZONE_ID = "setTimeZone";
 
-    String ignoreToEventBtnId = "setOtherAll";
-    String eventToIgnoreBtnId = "setIgnoreAll";
-    String toXESBtnId = "toXESButton";
-    String cancelBtnId = "cancelButton";
+    String POP_UP_DIV_ID = "popUPBox";
+    String POP_UP_HELP_ID = "popUpHelp";
+    String POP_UP_FORMAT_WINDOW_ID = "pop_";
+    String POP_UP_TEXT_BOX_ID = "txt_";
+    String POP_UP_LABEL_ID = "lbl_";
 
-    String popUpDivId = "popUPBox";
-    String popUpHelpId = "popUpHelp";
-    String popUpFormatWindowId = "pop_";
-    String popUpTextBoxId = "txt_";
-    String popUpLabelId = "lbl_";
+    String ERROR_COUNT_LBL_ID = "count";
+    String INVALID_COLUMNS_LIST_LBL_ID = "invalidColumnsList";
+    String IGNORED_COLUMNS_LIST_LBL_ID = "ignoredColumnsList";
+    String DOWNLOAD_REPORT_BTN_ID = "downloadErrorLog";
+    String SKIP_ROWS_BTN_ID = "skipInvalidRows";
+    String SKIP_COLUMNS_BTN_ID = "skipInvalidColumns";
+    String HANDLE_CANCEL_BTN_ID = "cancelImport";
+    String IGNORE_COL_LBL_ID = "ignoreCol";
 
-    String errorCountLblId = "count";
-    String invalidColumnsListLblId = "invalidColumnsList";
-    String ignoredColumnsListLblId = "ignoredColumnsList";
-    String downloadReportBtnId = "downloadErrorLog";
-    String skipRowsBtnId = "skipInvalidRows";
-    String skipColumnsBtnId = "skipInvalidColumns";
-    String handleCancelBtnId = "cancelImport";
-    String ignoreColLblId = "ignoreCol";
-
-    String autoParsed = "autoParsed";
-    String manualParsed = "manualParsed";
-    String errorParsing = "errorParsing";
-
-    String specifyTimestampformat= "Specify timestamp format";
+    String AUTO_PARSED = "autoParsed";
+    String MANUAL_PARSED = "manualParsed";
+    String ERROR_PARSING = "errorParsing";
 }
