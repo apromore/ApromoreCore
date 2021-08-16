@@ -62,6 +62,7 @@ import org.apromore.logman.attribute.log.AttributeInfo;
 import org.apromore.logman.attribute.log.AttributeLog;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.processdiscoverer.data.CaseDetails;
+import org.apromore.plugin.portal.processdiscoverer.data.CaseVariantDetails;
 import org.apromore.plugin.portal.processdiscoverer.data.ConfigData;
 import org.apromore.plugin.portal.processdiscoverer.data.ContextData;
 import org.apromore.plugin.portal.processdiscoverer.data.InvalidDataException;
@@ -476,6 +477,26 @@ public class PDAnalyst {
             CaseDetails caseDetails = CaseDetails.valueOf(caseId, aTrace.getCaseIdDigit(), caseEvents, caseVariantId, caseVariantFreq);
             listResult.add(caseDetails);
         }
+        return listResult;
+    }
+
+    public List<CaseVariantDetails> getCaseVariantDetails() {
+        Map<Integer, List<ATrace>> caseVariantGroups =
+                LogStatsAnalyzer.getCaseVariantGroupMap(filteredAPMLog.getTraces());
+
+        for (Integer caseVariantId : caseVariantGroups.keySet()) {
+            List<ATrace> traces = caseVariantGroups.get(caseVariantId);
+            //Dummy data for now - testing display
+            long activities = 0;
+            long numCases = traces.size();
+            String duration = "Test string";
+            double frequency = 0;
+
+            CaseVariantDetails caseVariantDetails =
+                    CaseVariantDetails.valueOf(caseVariantId, activities, numCases, duration, frequency);
+        }
+
+        List<CaseVariantDetails> listResult = new ArrayList<>();
         return listResult;
     }
 

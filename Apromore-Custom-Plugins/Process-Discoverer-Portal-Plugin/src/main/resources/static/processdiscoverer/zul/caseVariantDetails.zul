@@ -1,0 +1,48 @@
+<!--
+  #%L
+  This file is part of "Apromore Core".
+  %%
+  Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+  %%
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Lesser General Public License as
+  published by the Free Software Foundation, either version 3 of the
+  License, or (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Lesser Public License for more details.
+
+  You should have received a copy of the GNU General Lesser Public
+  License along with this program.  If not, see
+  <http://www.gnu.org/licenses/lgpl-3.0.html>.
+  #L%
+  -->
+
+
+<window id="caseVariantDetailsWindow" width="700px" sizable="true" maximizable="true" closable="true" position="center"
+        contentStyle="overflow:auto">
+    <listbox id="caseVariantDetailsList" vflex="1" rows="10" mold="paging" pageSize="100">
+        <listhead sizable="true">
+            <listheader label="${arg.pdLabels.detailsCaseVariantID_text}" sort="auto(caseVariantId)" onCreate="self.sort(true);"/>
+            <listheader label="${arg.pdLabels.detailsActivityInstances_text}" sort="auto(activityInstances)"/>
+            <listheader label="${arg.pdLabels.metricAvgDuration_text}" sort="auto(avgDurationStr)"/>
+            <listheader label="${arg.pdLabels.logStatCases_text}" sort="auto(numCases)"/>
+            <listheader label="${arg.pdLabels.viewSettingFrequency_text}" sort="auto(freq)"/>
+        </listhead>
+        <template name="model">
+            <listitem>
+                <listcell label="${each.caseVariantId}" />
+                <listcell label="${each.activityInstances}"/>
+                <listcell label="${each.avgDurationStr}"/>
+                <listcell label="${each.numCases}" />
+                <listcell label="${each.freqStr}" />
+            </listitem>
+        </template>
+    </listbox>
+    <div sclass="ap-window-footer-actions">
+        <label id="lblClickACase" style="float:left; padding: 5px 0 0 5px;">Click on a case variant to inspect it</label>
+        <button id="downloadCSV" label="Download"/>
+    </div>
+</window>
