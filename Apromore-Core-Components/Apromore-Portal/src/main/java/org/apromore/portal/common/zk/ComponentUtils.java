@@ -25,7 +25,6 @@ package org.apromore.portal.common.zk;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import java.util.function.Predicate;
 import org.zkoss.zk.ui.HtmlBasedComponent;
 
 public final class ComponentUtils {
