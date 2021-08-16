@@ -113,17 +113,13 @@ Apromore.Plugins.File = Clazz.extend({
 
         xhr.open("POST", Apromore.CONFIG.PDF_EXPORT_URL);
         xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-        xhr.responseType = 'arraybuffer';
+        xhr.responseType = 'blob';
         xhr.onreadystatechange = function() {
             if (xhr.readyState == 4 && xhr.status == 200) {
                 // Download pdf from blob
                 myMask.hide();
-                var resultByte = xhr.response;
-                var bytes = new Uint8Array(resultByte); // convert to byte array
-                var blob = new Blob([bytes], {type: "application/pdf"});// convert to a blob
-
                 var hiddenElement = document.createElement('a');
-                hiddenElement.href = window.URL.createObjectURL(blob);
+                hiddenElement.href = window.URL.createObjectURL(xhr.response);
                 hiddenElement.target = '_blank';
                 hiddenElement.download = 'diagram.pdf';
                 hiddenElement.click();
