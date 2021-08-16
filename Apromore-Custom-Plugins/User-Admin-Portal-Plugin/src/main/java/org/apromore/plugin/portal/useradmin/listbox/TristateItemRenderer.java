@@ -71,6 +71,7 @@ public class TristateItemRenderer implements ListitemRenderer {
         cbCell.appendChild(checkbox);
         listItem.appendChild(cbCell);
         listItem.appendChild(new Listcell(model.getLabel()));
+        listItem.setDisabled(model.isDisabled());
 
         checkbox.addEventListener(Events.ON_CHECK, new EventListener<Event>() {
             @Override
