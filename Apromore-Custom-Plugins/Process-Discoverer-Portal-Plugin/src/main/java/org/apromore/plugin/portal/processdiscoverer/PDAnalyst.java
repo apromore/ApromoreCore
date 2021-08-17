@@ -484,6 +484,7 @@ public class PDAnalyst {
         Map<Integer, List<ATrace>> caseVariantGroups =
                 LogStatsAnalyzer.getCaseVariantGroupMap(filteredAPMLog.getTraces());
 
+        List<CaseVariantDetails> listResult = new ArrayList<>();
         for (Integer caseVariantId : caseVariantGroups.keySet()) {
             List<ATrace> traces = caseVariantGroups.get(caseVariantId);
             //Dummy data for now - testing display
@@ -494,9 +495,8 @@ public class PDAnalyst {
 
             CaseVariantDetails caseVariantDetails =
                     CaseVariantDetails.valueOf(caseVariantId, activities, numCases, duration, frequency);
+            listResult.add(caseVariantDetails);
         }
-
-        List<CaseVariantDetails> listResult = new ArrayList<>();
         return listResult;
     }
 

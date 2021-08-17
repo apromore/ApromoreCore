@@ -63,149 +63,149 @@ public class CaseVariantDetailsController extends DataListController {
         super(controller);
         attStandardizer = AttributesStandardizer.SIMPLE;
     }
-//
-//    private void generateData() {
-//        List<CaseVariantDetails> caseVariantDetails = parent.getProcessAnalyst().getCaseVariantDetails();
-//        records = new ListModelList();
-//        rows = new ArrayList<>();
-//        for (CaseVariantDetails c : caseVariantDetails) {
-//            records.add(c);
-//            rows.add(new String[] {Integer.toString(c.getCaseVariantId()), Long.toString(c.getActivityInstances()),
-//                    c.getAvgDurationStr(), Long.toString(c.getNumCases()), c.getFreqStr()});
-//        }
-//    }
-//
-//    private void populateCasesBasedOnActivities(Listbox listbox) {
-//        generateData();
-//        listbox.setModel(records);
-//    }
-//
-//    @Override
-//    public String[] getDataHeaders() {
-//        return new String[] {"Case variant ID", "Activity instances", "Avg. duration", "Cases", "Frequency"};
-//    }
-//
-//    @Override
-//    public String getExportFilename() {
-//        return parent.getContextData().getLogName() + ".csv";
-//    }
-//
-//    /**
-//     * Update Activity <-> Attributes Map for quick lookup
-//     **/
-//    private void updateActivityToAttributeMap(String caseId, TraceBPMNDiagram diagram) {
-//        activityToAttributeMap.clear();
-//        AttributeLog attLog = parent.getProcessAnalyst().getAttributeLog();
-//        AttributeTrace attTrace = attLog.getTraceFromTraceId(caseId);
-//        if (attTrace != null) {
-//            BPMNNode node = diagram.getStartNode();
-//            for (int index = 0; index < attTrace.getValueTrace().size(); index++) {
-//                activityToAttributeMap.put(node.getId().toString(),
-//                        attStandardizer.standardizedAttributeMap(attTrace.getAttributeMapAtIndex(index)));
-//                if (!diagram.getOutEdges(node).isEmpty())
-//                    node = diagram.getOutEdges(node).iterator().next().getTarget();
-//            }
-//            updateActivityToAttributeMapClient();
-//        }
-//    }
-//
-//    /**
-//     * Serialize Activity <-> Attributes Map and sent it to client-side JS for fast tooltip
-//     */
-//    private void updateActivityToAttributeMapClient() {
-//        JSONObject json = new JSONObject();
-//        for (String nodeId : activityToAttributeMap.keySet()) {
-//            json.put(nodeId, makeJSONArray(activityToAttributeMap.get(nodeId)));
-//        }
-//        Clients.evalJavaScript("Ap.pd.updateActivityToAttributeMap(" + json.toString() + ")");
-//    }
-//
-//    private JSONArray makeJSONArray(Map<String, String> attributeMap) {
-//        JSONArray array = new JSONArray();
-//        for (Map.Entry<String, String> entry : attributeMap.entrySet()) {
-//            array.put((new JSONObject()).put("name", entry.getKey()).put("value", entry.getValue()));
-//        }
-//        return array;
-//    }
-//
+
+    private void generateData() {
+        List<CaseVariantDetails> caseVariantDetails = parent.getProcessAnalyst().getCaseVariantDetails();
+        records = new ListModelList();
+        rows = new ArrayList<>();
+        for (CaseVariantDetails c : caseVariantDetails) {
+            records.add(c);
+            rows.add(new String[] {Integer.toString(c.getCaseVariantId()), Long.toString(c.getActivityInstances()),
+                    c.getAvgDurationStr(), Long.toString(c.getNumCases()), c.getFreqStr()});
+        }
+    }
+
+    private void populateCasesBasedOnActivities(Listbox listbox) {
+        generateData();
+        listbox.setModel(records);
+    }
+
+    @Override
+    public String[] getDataHeaders() {
+        return new String[] {"Case variant ID", "Activity instances", "Avg. duration", "Cases", "Frequency"};
+    }
+
+    @Override
+    public String getExportFilename() {
+        return parent.getContextData().getLogName() + ".csv";
+    }
+
+    /**
+     * Update Activity <-> Attributes Map for quick lookup
+     **/
+    private void updateActivityToAttributeMap(String caseId, TraceBPMNDiagram diagram) {
+        activityToAttributeMap.clear();
+        AttributeLog attLog = parent.getProcessAnalyst().getAttributeLog();
+        AttributeTrace attTrace = attLog.getTraceFromTraceId(caseId);
+        if (attTrace != null) {
+            BPMNNode node = diagram.getStartNode();
+            for (int index = 0; index < attTrace.getValueTrace().size(); index++) {
+                activityToAttributeMap.put(node.getId().toString(),
+                        attStandardizer.standardizedAttributeMap(attTrace.getAttributeMapAtIndex(index)));
+                if (!diagram.getOutEdges(node).isEmpty())
+                    node = diagram.getOutEdges(node).iterator().next().getTarget();
+            }
+            updateActivityToAttributeMapClient();
+        }
+    }
+
+    /**
+     * Serialize Activity <-> Attributes Map and sent it to client-side JS for fast tooltip
+     */
+    private void updateActivityToAttributeMapClient() {
+        JSONObject json = new JSONObject();
+        for (String nodeId : activityToAttributeMap.keySet()) {
+            json.put(nodeId, makeJSONArray(activityToAttributeMap.get(nodeId)));
+        }
+        Clients.evalJavaScript("Ap.pd.updateActivityToAttributeMap(" + json.toString() + ")");
+    }
+
+    private JSONArray makeJSONArray(Map<String, String> attributeMap) {
+        JSONArray array = new JSONArray();
+        for (Map.Entry<String, String> entry : attributeMap.entrySet()) {
+            array.put((new JSONObject()).put("name", entry.getKey()).put("value", entry.getValue()));
+        }
+        return array;
+    }
+
     @Override
     public void onEvent(Event event) throws Exception {
-//        if (caseVariantDetailsWindow == null) {
-//            Map<String, Object> arg = new HashMap<>();
-//            arg.put("pdLabels", parent.getLabels());
-//            caseVariantDetailsWindow = (Window) Executions
-//                    .createComponents(getPageDefinition("processdiscoverer/zul/caseVariantDetails.zul"), null, arg);
-//            caseVariantDetailsWindow.setTitle("Case Variant Inspector");
-//            caseVariantDetailsWindow.getFellow("lblClickACase").setVisible(!this.disabled);
-//
-//            caseVariantDetailsWindow.addEventListener("onClose", new EventListener<Event>() {
-//                @Override
-//                public void onEvent(Event event) throws Exception {
-//                    caseVariantDetailsWindow = null;
-//                    if (parent.getInteractiveMode() == InteractiveMode.TRACE_MODE) {
-//                        parent.restoreModelView();
-//                        Clients.evalJavaScript("Ap.pd.updateActivityToAttributeMap()"); // reset
-//                    }
-//                }
-//            });
-//
-//            Listbox listbox = (Listbox) caseVariantDetailsWindow.getFellow("caseVariantDetailsList");
-//            populateCasesBasedOnActivities(listbox);
-//
-//            listbox.addEventListener("onSelect", new EventListener<Event>() {
-//                @Override
-//                public void onEvent(Event event) throws Exception {
-//                    if (disabled)
-//                        return;
-//                    try {
-//                        String traceID =
-//                                ((Listcell) (listbox.getSelectedItem()).getChildren().get(0)).getLabel();
-//                        OutputData result =
-//                                parent.getProcessAnalyst().discoverTrace(traceID, parent.getUserOptions());
-//                        updateActivityToAttributeMap(traceID,
-//                                (TraceBPMNDiagram) result.getAbstraction().getDiagram());
-//                        parent.showTrace(result.getVisualizedText());
-//                    } catch (Exception e) {
-//                        // LOGGER.error(e.getMessage());
-//                        Messagebox.show("Fail to show trace detail for the selected case");
-//                    }
-//                }
-//            });
-//
-//            Button save = (Button) caseVariantDetailsWindow.getFellow("downloadCSV");
-//            save.addEventListener("onClick", new EventListener<Event>() {
-//                @Override
-//                public void onEvent(Event event) throws Exception {
-//                    exportData();
-//                }
-//            });
-//            try {
-//                org.zkoss.json.JSONObject param = (org.zkoss.json.JSONObject) event.getData();
-//                caseVariantDetailsWindow.setPosition("nocenter");
-//                caseVariantDetailsWindow.setLeft((String) param.get("left"));
-//                caseVariantDetailsWindow.setTop((String) param.get("top"));
-//            } catch (Exception e) {
-//                // ignore the exception and proceed with default centered window
-//            }
-//            caseVariantDetailsWindow.doOverlapped();
-//        }
+        if (caseVariantDetailsWindow == null) {
+            Map<String, Object> arg = new HashMap<>();
+            arg.put("pdLabels", parent.getLabels());
+            caseVariantDetailsWindow = (Window) Executions
+                    .createComponents(getPageDefinition("processdiscoverer/zul/caseVariantDetails.zul"), null, arg);
+            caseVariantDetailsWindow.setTitle("Case Variant Inspector");
+            caseVariantDetailsWindow.getFellow("lblClickACase").setVisible(!this.disabled);
+
+            caseVariantDetailsWindow.addEventListener("onClose", new EventListener<Event>() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    caseVariantDetailsWindow = null;
+                    if (parent.getInteractiveMode() == InteractiveMode.TRACE_MODE) {
+                        parent.restoreModelView();
+                        Clients.evalJavaScript("Ap.pd.updateActivityToAttributeMap()"); // reset
+                    }
+                }
+            });
+
+            Listbox listbox = (Listbox) caseVariantDetailsWindow.getFellow("caseVariantDetailsList");
+            populateCasesBasedOnActivities(listbox);
+
+            listbox.addEventListener("onSelect", new EventListener<Event>() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    if (disabled)
+                        return;
+                    try {
+                        String traceID =
+                                ((Listcell) (listbox.getSelectedItem()).getChildren().get(0)).getLabel();
+                        OutputData result =
+                                parent.getProcessAnalyst().discoverTrace(traceID, parent.getUserOptions());
+                        updateActivityToAttributeMap(traceID,
+                                (TraceBPMNDiagram) result.getAbstraction().getDiagram());
+                        parent.showTrace(result.getVisualizedText());
+                    } catch (Exception e) {
+                        // LOGGER.error(e.getMessage());
+                        Messagebox.show("Fail to show trace detail for the selected case variant");
+                    }
+                }
+            });
+
+            Button save = (Button) caseVariantDetailsWindow.getFellow("downloadCSV");
+            save.addEventListener("onClick", new EventListener<Event>() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    exportData();
+                }
+            });
+            try {
+                org.zkoss.json.JSONObject param = (org.zkoss.json.JSONObject) event.getData();
+                caseVariantDetailsWindow.setPosition("nocenter");
+                caseVariantDetailsWindow.setLeft((String) param.get("left"));
+                caseVariantDetailsWindow.setTop((String) param.get("top"));
+            } catch (Exception e) {
+                // ignore the exception and proceed with default centered window
+            }
+            caseVariantDetailsWindow.doOverlapped();
+        }
     }
-//
-//    public Window getWindow() {
-//        return caseVariantDetailsWindow;
-//    }
-//
-//    @Override
-//    public void setDisabled(boolean disabled) {
-//        this.disabled = disabled;
-//    }
-//
-//    private PageDefinition getPageDefinition(String uri) throws IOException {
-//        String url = "static/" + uri;
-//        Execution current = Executions.getCurrent();
-//        PageDefinition pageDefinition = current.getPageDefinitionDirectly(
-//                new InputStreamReader(getClass().getClassLoader().getResourceAsStream(url)), "zul");
-//        return pageDefinition;
-//    }
+
+    public Window getWindow() {
+        return caseVariantDetailsWindow;
+    }
+
+    @Override
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
+    }
+
+    private PageDefinition getPageDefinition(String uri) throws IOException {
+        String url = "static/" + uri;
+        Execution current = Executions.getCurrent();
+        PageDefinition pageDefinition = current.getPageDefinitionDirectly(
+                new InputStreamReader(getClass().getClassLoader().getResourceAsStream(url)), "zul");
+        return pageDefinition;
+    }
 
 }
