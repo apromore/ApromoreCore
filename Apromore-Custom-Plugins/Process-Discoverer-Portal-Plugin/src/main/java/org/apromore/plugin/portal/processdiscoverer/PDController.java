@@ -630,7 +630,7 @@ public class PDController extends BaseController implements Composer<Component> 
             toolbarController.setDisabledAnimation(false);
             toolbarController.toogleAnimateBtn(false);
             caseDetailsController.setDisabled(false);
-            caseVariantDetailsController.setDisabled(false);
+            caseVariantDetailsController.setDisabled(true);
         } else if (newMode == InteractiveMode.TRACE_MODE) {
             if (this.mode == InteractiveMode.ANIMATION_MODE)
                 return false; // invalid move

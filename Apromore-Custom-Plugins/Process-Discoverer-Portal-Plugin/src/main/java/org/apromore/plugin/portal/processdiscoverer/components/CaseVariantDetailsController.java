@@ -75,7 +75,7 @@ public class CaseVariantDetailsController extends DataListController {
         }
     }
 
-    private void populateCasesBasedOnActivities(Listbox listbox) {
+    private void populateCaseVariantTable(Listbox listbox) {
         generateData();
         listbox.setModel(records);
     }
@@ -150,7 +150,7 @@ public class CaseVariantDetailsController extends DataListController {
             });
 
             Listbox listbox = (Listbox) caseVariantDetailsWindow.getFellow("caseVariantDetailsList");
-            populateCasesBasedOnActivities(listbox);
+            populateCaseVariantTable(listbox);
 
             listbox.addEventListener("onSelect", new EventListener<Event>() {
                 @Override

@@ -16,7 +16,7 @@ public class CaseVariantDetails {
     private final double freq;
     private final String freqStr;
 
-    private final DecimalFormat decimalFormat = new DecimalFormat("##############0.##%");
+    private final DecimalFormat decimalFormat = new DecimalFormat("##############0.##");
 
     private CaseVariantDetails(final int caseVariantId, final long occurrences, final long numCases,
                                final double duration, final double frequency) {
@@ -26,7 +26,7 @@ public class CaseVariantDetails {
         this.avgDuration = duration;
         this.avgDurationStr = DurationUtils.humanize(duration, true);
         this.freq = frequency;
-        this.freqStr = decimalFormat.format(100 * freq);
+        this.freqStr = decimalFormat.format(100 * freq) + "%";
     }
 
     public static CaseVariantDetails valueOf(final int caseVariantId, final long occurrences, final long numCases,
