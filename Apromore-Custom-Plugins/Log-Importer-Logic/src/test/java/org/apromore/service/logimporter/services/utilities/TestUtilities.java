@@ -81,13 +81,15 @@ public class TestUtilities {
         // regex for the timezone used in the test data  e.g. +03:00
 //        Pattern p = Pattern.compile("([\\+-]\\d{2}:\\d{2})|Z");
         Pattern p = Pattern.compile("(.000)?(?:Z|[+-](?:2[0-3]|[01][0-9]):[0-5][0-9])");
-        return logString.replaceAll(p.pattern(), "");
+        // Remove all line separators to avoid test failing on Windows
+        return logString.replaceAll(p.pattern(), "").replaceAll(p.pattern(), "");
     }
 
     public String xlogToString(XLog xlog) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         (new XesXmlSerializer()).serialize(xlog, baos);
-        return baos.toString();
+        // Remove all line separators to avoid test failing on Windows
+        return baos.toString().replaceAll("\r", "");
     }
 
     /**

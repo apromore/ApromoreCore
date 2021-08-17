@@ -30,8 +30,6 @@ import org.apromore.service.logimporter.io.ParquetLocalFileReader;
 import org.apromore.service.logimporter.model.LogMetaData;
 import org.apromore.service.logimporter.model.ParquetLogMetaData;
 import org.apromore.service.logimporter.utilities.FileUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.InputStream;
