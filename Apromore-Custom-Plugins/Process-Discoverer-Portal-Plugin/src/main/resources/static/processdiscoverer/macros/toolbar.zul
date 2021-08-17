@@ -179,10 +179,10 @@
         <button ca:data-t="downloadJSON" id="downloadJSON" tooltiptext="${arg.pdLabels.downloadJSON_text}"
                 sclass="ap-icon ap-icon-export-json"/>
         <n:span class="ap-action-sep"></n:span>
-        <checkbox sclass="ap-stateful-button" id="layoutHierarchy"
-                  tooltiptext="${arg.pdLabels.layoutLR_text}" iconSclass="ap-icon ap-icon-dir-lr"/>
-        <checkbox sclass="ap-stateful-button" id="layoutDagreTopBottom"
-                  tooltiptext="${arg.pdLabels.layoutTB_text}" iconSclass="ap-icon ap-icon-dir-tb"/>
+        <button sclass="ap-stateful-button ap-icon ap-icon-dir-lr" id="layoutHierarchy"
+                tooltiptext="${arg.pdLabels.layoutLR_text}"/>
+        <button sclass="ap-stateful-button ap-icon ap-icon-dir-tb" id="layoutDagreTopBottom"
+                tooltiptext="${arg.pdLabels.layoutTB_text}"/>
         <button tooltiptext="${arg.pdLabels.zoomIn_text}" sclass="ap-icon ap-icon-zoom-in" w:onClick="Ap.pd.zoomIn()"/>
         <button tooltiptext="${arg.pdLabels.zoomOut_text}" sclass="ap-icon ap-icon-zoom-out" w:onClick="Ap.pd.zoomOut()"/>
         <button id="fitScreen" tooltiptext="${arg.pdLabels.fitScreen_text}" sclass="ap-icon ap-icon-zoom-to-fit"/>
