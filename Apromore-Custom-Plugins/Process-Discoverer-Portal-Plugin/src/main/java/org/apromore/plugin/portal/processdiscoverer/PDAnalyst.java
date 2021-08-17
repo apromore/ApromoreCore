@@ -25,6 +25,7 @@ package org.apromore.plugin.portal.processdiscoverer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -504,7 +505,9 @@ public class PDAnalyst {
                     CaseVariantDetails.valueOf(caseVariantId, activities, numCases, duration, percent);
             listResult.add(caseVariantDetails);
         }
-        return listResult;
+        return listResult.stream()
+                .sorted(Comparator.comparingInt(CaseVariantDetails::getCaseVariantId))
+                .collect(Collectors.toList());
     }
 
     public List<PerspectiveDetails> getActivityDetails() {
