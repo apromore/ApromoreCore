@@ -47,8 +47,7 @@ class MetaDataServiceParquetImpl implements MetaDataService {
     public void validateLog(InputStream in, String charset) throws Exception {
         try (in) {
             //Write InputStream to a file
-            File tempFile = File.createTempFile("samplelog", "parquet", new File(System.getProperty("user.home") +
-                    "/.apromore"));
+            File tempFile = File.createTempFile("samplelog", "parquet");
             new FileWriter(in, tempFile).writeToFile();
             //Read Parquet file
             ParquetLocalFileReader parquetLocalFileReader = new ParquetLocalFileReader(new Configuration(true),
@@ -69,8 +68,7 @@ class MetaDataServiceParquetImpl implements MetaDataService {
     public LogMetaData extractMetadata(InputStream in, String charset) throws Exception {
         try (in) {
             //Write InputStream to a file
-            File tempFile = File.createTempFile("samplelog", "parquet", new File(System.getProperty("user.home") +
-                    "/.apromore"));
+            File tempFile = File.createTempFile("samplelog", "parquet");
             new FileWriter(in, tempFile).writeToFile();
             //Read Parquet file
             ParquetLocalFileReader parquetLocalFileReader = new ParquetLocalFileReader(new Configuration(true),
@@ -86,8 +84,7 @@ class MetaDataServiceParquetImpl implements MetaDataService {
 
         try (in) {
             //Write InputStream to a file
-            File tempFile = File.createTempFile("samplelog", "parquet", new File(System.getProperty("user.home") +
-                    "/.apromore"));
+            File tempFile = File.createTempFile("samplelog", "parquet");
             new FileWriter(in, tempFile).writeToFile();
 
             //Read Parquet file
