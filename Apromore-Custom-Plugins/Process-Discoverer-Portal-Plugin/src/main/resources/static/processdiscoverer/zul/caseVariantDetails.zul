@@ -27,7 +27,7 @@
         <listhead sizable="true">
             <listheader label="${arg.pdLabels.detailsCaseVariantID_text}" sort="auto(caseVariantId)" onCreate="self.sort(true);"/>
             <listheader label="${arg.pdLabels.detailsActivityInstances_text}" sort="auto(activityInstances)"/>
-            <listheader label="${arg.pdLabels.metricAvgDuration_text}" sort="auto(avgDurationStr)"/>
+            <listheader label="${arg.pdLabels.metricAvgDuration_text}" sort="auto(avgDuration)"/>
             <listheader label="${arg.pdLabels.logStatCases_text}" sort="auto(numCases)"/>
             <listheader label="${arg.pdLabels.viewSettingFrequency_text}" sort="auto(freq)"/>
         </listhead>

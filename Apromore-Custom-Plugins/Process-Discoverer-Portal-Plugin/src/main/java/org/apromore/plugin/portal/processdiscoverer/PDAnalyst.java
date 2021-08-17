@@ -79,7 +79,9 @@ import org.apromore.service.EventLogService;
 import org.deckfour.xes.model.XLog;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.ListIterable;
+import org.eclipse.collections.impl.list.mutable.primitive.LongArrayList;
 import org.slf4j.Logger;
+import org.zkoss.zul.ListModelList;
 
 /**
  * PDAnalyst represents a process analyst who will performs log analysis in the form of graphs and BPMN diagrams
@@ -484,17 +486,22 @@ public class PDAnalyst {
         Map<Integer, List<ATrace>> caseVariantGroups =
                 LogStatsAnalyzer.getCaseVariantGroupMap(filteredAPMLog.getTraces());
 
+        long[] array = caseVariantGroups.values().stream().mapToLong(x -> x.size()).toArray();
+        LongArrayList lal = new LongArrayList(array);
+        long totalCases = lal.sum();
+
         List<CaseVariantDetails> listResult = new ArrayList<>();
-        for (Integer caseVariantId : caseVariantGroups.keySet()) {
-            List<ATrace> traces = caseVariantGroups.get(caseVariantId);
-            //Dummy data for now - testing display
-            long activities = 0;
-            long numCases = traces.size();
-            String duration = "Test string";
-            double frequency = 0;
+        for (Map.Entry<Integer, List<ATrace>> entry : caseVariantGroups.entrySet()) {
+            List<ATrace> cases = entry.getValue();
+
+            int caseVariantId = entry.getKey();
+            long activities = cases.stream().map(c -> c.getActivityInstances().size()).reduce(0, Integer::sum);
+            long numCases = cases.size();
+            double duration = TimeStatsProcessor.getCaseDurations(cases).average();
+            double percent = (double) numCases / totalCases;
 
             CaseVariantDetails caseVariantDetails =
-                    CaseVariantDetails.valueOf(caseVariantId, activities, numCases, duration, frequency);
+                    CaseVariantDetails.valueOf(caseVariantId, activities, numCases, duration, percent);
             listResult.add(caseVariantDetails);
         }
         return listResult;
