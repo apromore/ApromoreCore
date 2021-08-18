@@ -261,6 +261,7 @@ public class Calendar extends SelectorComposer<Window> {
 	}
 	zoneModel.addToSelection(selectedZone);
 	zoneModel.setMultiple(false);
+	zoneModel.sort(Comparator.comparing(Zone::getZoneDisplayName));
 	ListModel listSubModel = ListModels.toListSubModel(zoneModel, zoneComparator, zoneIds.size());
 	zoneCombobox.setModel(listSubModel);
     }

@@ -81,8 +81,7 @@ public class Calendars extends SelectorComposer<Window> {
     public void initialize() {
 
 	Integer logId = (Integer) Executions.getCurrent().getArg().get("logId");
-	calendarEventQueue = EventQueues.lookup(CalendarService.EVENT_TOPIC, false);
-
+	calendarEventQueue = EventQueues.lookup(CalendarService.EVENT_TOPIC, false);	
 	CalendarItemRenderer itemRenderer = new CalendarItemRenderer(calendarService);
 	calendarListbox.setItemRenderer(itemRenderer);
 	calendarListModel = new ListModelList<CalendarModel>();

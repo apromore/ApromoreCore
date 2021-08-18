@@ -1083,3 +1083,20 @@ databaseChangeLog:
            columnName: bucket_name
            newDataType: VARCHAR(63)
            tableName: dag_connection
+
+ - changeSet:
+    id: 20211708040900
+    author: nolantellis
+    changes:
+     - dropForeignKeyConstraint:
+        baseTableName:  log
+        constraintName:  fk_log_calendar
+
+     - addForeignKeyConstraint:
+        baseColumnNames: calendar_id
+        baseTableName: log
+        constraintName: fk_log_calendar
+        onDelete:  SET NULL
+        onUpdate:  CASCADE
+        referencedColumnNames: id
+        referencedTableName: custom_calendar

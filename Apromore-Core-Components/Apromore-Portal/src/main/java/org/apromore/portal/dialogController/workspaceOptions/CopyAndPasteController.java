@@ -157,7 +157,7 @@ public class CopyAndPasteController extends BaseController {
       LOGGER.error("No log or target folder is defined");
       return;
     }
-    getWorkspaceService().copyLog(log.getId(), targetFolderId, userName, false);
+    mainController.getWorkspaceService().copyLog(log.getId(), targetFolderId, userName, false);
   }
 
   private void cloneProcess(ProcessSummaryType model, Integer targetFolderId) throws Exception {
@@ -165,11 +165,11 @@ public class CopyAndPasteController extends BaseController {
       LOGGER.error("No process or target folder is defined");
       return;
     }
-    getWorkspaceService().copyProcess(model.getId(), targetFolderId, userName, false);
+    mainController.getWorkspaceService().copyProcess(model.getId(), targetFolderId, userName, false);
   }
 
   private void moveFolder(FolderType folder, Integer targetFolderId, int level) throws Exception {
-    getWorkspaceService().moveFolder(folder.getId(), targetFolderId);
+	  mainController.getWorkspaceService().moveFolder(folder.getId(), targetFolderId);
   }
 
   private void moveLog(LogSummaryType log, Integer targetFolderId) throws Exception {
@@ -177,7 +177,7 @@ public class CopyAndPasteController extends BaseController {
       LOGGER.error("No log or target folder is defined");
       return;
     }
-    getWorkspaceService().moveLog(log.getId(), targetFolderId);
+    mainController.getWorkspaceService().moveLog(log.getId(), targetFolderId);
   }
 
   private void moveProcess(ProcessSummaryType model, Integer targetFolderId) throws Exception {
@@ -185,7 +185,7 @@ public class CopyAndPasteController extends BaseController {
       LOGGER.error("No process or target folder is defined");
       return;
     }
-    getWorkspaceService().moveProcess(model.getId(), targetFolderId);
+    mainController.getWorkspaceService().moveProcess(model.getId(), targetFolderId);
   }
 
   public void clearSelectedItems() {
