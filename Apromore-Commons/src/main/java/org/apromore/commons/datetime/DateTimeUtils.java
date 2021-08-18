@@ -132,4 +132,8 @@ public final class DateTimeUtils {
   public static String humanize(long milliseconds) {
     return format(milliseconds, Constants.DATE_TIME_FORMAT_HUMANIZED);
   }
+
+  public static String humanize(LocalDateTime localDateTime) {
+    return localDateTime.format(Constants.DATE_TIME_FORMATTER_HUMANIZED);
+  }
 }
