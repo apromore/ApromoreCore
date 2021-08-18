@@ -846,7 +846,7 @@ public abstract class BaseListboxController extends BaseController {
     PortalPlugin calendarPlugin;
     getMainController().eraseMessage();
 
-    EventQueue<Event> queue = EventQueues.lookup("org/apromore/service/CALENDAR", true);
+   final EventQueue<Event> queue = EventQueues.lookup("org/apromore/service/CALENDAR", true);
 
     Long calendarId = getMainController().getEventLogService().getCalendarIdFromLog(logId);
 
@@ -855,8 +855,9 @@ public abstract class BaseListboxController extends BaseController {
       public void onEvent(Event event) {
         Long data = (Long) event.getData();
         getMainController().getEventLogService().updateCalendarForLog(logId, data);
-
+        queue.unsubscribe(this);     
       }
+      
     });
 
     try {
