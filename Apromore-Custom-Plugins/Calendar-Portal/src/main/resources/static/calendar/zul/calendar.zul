@@ -49,7 +49,7 @@
             <label style="padding-right: 5px">Time zone</label>
             <combobox id="zoneCombobox" placeholder="Select a time zone" width="270px">
               <template name="model">
-                <comboitem label="${each.displayName}" />
+                <comboitem label="${each.zoneDisplayName}" />
               </template>
             </combobox>
           </hbox>

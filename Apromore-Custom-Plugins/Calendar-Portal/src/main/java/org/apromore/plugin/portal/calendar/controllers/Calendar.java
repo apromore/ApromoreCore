@@ -24,11 +24,13 @@ package org.apromore.plugin.portal.calendar.controllers;
 import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.TextStyle;
+import java.time.zone.ZoneRules;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
@@ -37,6 +39,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.TimeZone;
 
 import org.apromore.calendar.exception.CalendarNotExistsException;
 import org.apromore.calendar.model.CalendarModel;
@@ -53,6 +56,7 @@ import org.slf4j.Logger;
 import org.zkoss.json.JSONArray;
 import org.zkoss.json.JSONObject;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.event.ClientInfoEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.ForwardEvent;
@@ -98,7 +102,7 @@ public class Calendar extends SelectorComposer<Window> {
 	public int compare(Object o1, Object o2) {
 	    String input = (String) o1;
 	    Zone zone = (Zone) o2;
-	    return zone.getDisplayName().toLowerCase().contains(input.toLowerCase()) ? 0 : 1;
+	    return zone.getZoneDisplayName().toLowerCase().contains(input.toLowerCase()) ? 0 : 1;
 	}
     };
 
@@ -154,7 +158,8 @@ public class Calendar extends SelectorComposer<Window> {
 	populateTimeZone();
 	initialize();
 	win.setTitle("Custom Calendar - " + calendarModel.getName());
-
+	
+	
 	actionBridge.addEventListener("onLoaded", new EventListener<Event>() {
 	    @Override
 	    public void onEvent(Event event) throws Exception {
@@ -228,8 +233,9 @@ public class Calendar extends SelectorComposer<Window> {
 			endMin = 59;
 		    }
 		}
-		dowItem.setStartTime(OffsetTime.from(OffsetTime.of(LocalTime.of(startHour, startMin), ZoneOffset.UTC)));
-		dowItem.setEndTime(OffsetTime.from(OffsetTime.of(LocalTime.of(endHour, endMin), ZoneOffset.UTC)));
+		OffsetTime previousStarTime=dowItem.getStartTime();
+		dowItem.setStartTime(OffsetTime.from(OffsetTime.of(LocalTime.of(startHour, startMin), previousStarTime.getOffset())));
+		dowItem.setEndTime(OffsetTime.from(OffsetTime.of(LocalTime.of(endHour, endMin), previousStarTime.getOffset())));
 		refresh(dowItem);
 		Clients.evalJavaScript("Ap.calendar.buildRow(" + dowIndex + ")");
 	    }
@@ -238,24 +244,37 @@ public class Calendar extends SelectorComposer<Window> {
 
     public void populateTimeZone() {
 	zoneModel = new ListModelList<Zone>();
+	
 	Set<String> zoneIds = ZoneId.getAvailableZoneIds();
+	
 
 	Zone selectedZone = null;
 	for (String id : zoneIds) {
 	    ZoneId zoneId = ZoneId.of(id);
-	    Zone currentZone = new Zone(zoneId.getId(), zoneId.getDisplayName(TextStyle.FULL, Locale.US));
+	    Zone currentZone = new Zone(zoneId.getId(), getZoneDisplayDescription(zoneId));
+	   
 	    zoneModel.add(currentZone);
 	    if (zoneId.equals(ZoneId.of(calendarModel.getZoneId()))
 	            || (selectedZone == null && zoneId.equals(ZoneId.systemDefault()))) {
 		selectedZone = currentZone;
 	    }
-
 	}
 	zoneModel.addToSelection(selectedZone);
 	zoneModel.setMultiple(false);
+	zoneModel.sort(Comparator.comparing(Zone::getZoneDisplayName));
 	ListModel listSubModel = ListModels.toListSubModel(zoneModel, zoneComparator, zoneIds.size());
 	zoneCombobox.setModel(listSubModel);
     }
+
+
+
+	private String getZoneDisplayDescription(ZoneId zoneId) {
+		StringBuffer buffer=new StringBuffer();
+		buffer.append(zoneId.getId()).append(" ");
+		buffer.append("(GMT "+zoneId.getRules().getOffset(LocalDateTime.now())+")");
+		
+		return buffer.toString();
+	}
 
     public WorkDayModel getDayOfWeekItem(int dowIndex) {
 	return (WorkDayModel) dayOfWeekListbox.getModel().getElementAt(dowIndex - 1);
