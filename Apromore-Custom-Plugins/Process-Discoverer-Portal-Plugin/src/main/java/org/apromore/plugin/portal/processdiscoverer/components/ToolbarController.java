@@ -34,7 +34,6 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Button;
-import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
@@ -42,8 +41,8 @@ import org.zkoss.zul.Textbox;
 public class ToolbarController extends AbstractController {
     private final String LAYOUT_HIERARCHY = "layoutHierarchy";
     private final String LAYOUT_DAGRE_TB = "layoutDagreTopBottom";
-    private Checkbox layoutHierarchy;
-    private Checkbox layoutDagreTopBottom;
+    private Button layoutHierarchy;
+    private Button layoutDagreTopBottom;
 
     private Button filter;
     private Button filterClear;
@@ -96,10 +95,8 @@ public class ToolbarController extends AbstractController {
         exportBPMN = (Button) toolbar.getFellow("exportBPMN");
         exportBPMN.setVisible(!isReadOnly);
 
-        layoutHierarchy = (Checkbox) toolbar.getFellow(LAYOUT_HIERARCHY);
-        layoutHierarchy.setChecked(userOptions.getLayoutHierarchy());
-        layoutDagreTopBottom = (Checkbox) toolbar.getFellow(LAYOUT_DAGRE_TB);
-        layoutDagreTopBottom.setChecked(userOptions.getLayoutDagre());
+        layoutHierarchy = (Button) toolbar.getFellow(LAYOUT_HIERARCHY);
+        layoutDagreTopBottom = (Button) toolbar.getFellow(LAYOUT_DAGRE_TB);
 
         searchText = (Textbox) toolbar.getFellow("searchText");
         searchNode = (Div) toolbar.getFellow("searchNode");
@@ -115,26 +112,8 @@ public class ToolbarController extends AbstractController {
     @Override
     public void initializeEventListeners(Object data) throws Exception {
         // Layout
-        EventListener<Event> layoutListener = new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                String compId = ((Checkbox) event.getTarget()).getId();
-                switch (compId) {
-                case LAYOUT_HIERARCHY:
-                    userOptions.setLayoutHierarchy(true);
-                    userOptions.setLayoutDagre(false);
-                    break;
-                case LAYOUT_DAGRE_TB:
-                    userOptions.setLayoutHierarchy(false);
-                    userOptions.setLayoutDagre(true);
-                    break;
-                }
-                parent.changeLayout();
-            }
-        };
-        
-        layoutHierarchy.addEventListener(Events.ON_CLICK, layoutListener);
-        layoutDagreTopBottom.addEventListener(Events.ON_CLICK, layoutListener);
+        layoutHierarchy.addEventListener(Events.ON_CLICK, e -> changeLayout(LAYOUT_HIERARCHY));
+        layoutDagreTopBottom.addEventListener(Events.ON_CLICK, e -> changeLayout(LAYOUT_DAGRE_TB));
 
         fitScreen.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
             @Override
@@ -212,6 +191,20 @@ public class ToolbarController extends AbstractController {
     @Override
     public void updateUI(Object data) throws Exception {
         //
+    }
+
+    private void changeLayout(final String compId) throws Exception {
+        switch (compId) {
+            case LAYOUT_HIERARCHY:
+                userOptions.setLayoutHierarchy(true);
+                userOptions.setLayoutDagre(false);
+                break;
+            case LAYOUT_DAGRE_TB:
+                userOptions.setLayoutHierarchy(false);
+                userOptions.setLayoutDagre(true);
+                break;
+        }
+        parent.changeLayout();
     }
     
     private void onClearFilter() {
