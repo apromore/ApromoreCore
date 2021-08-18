@@ -784,9 +784,8 @@ div.ap-pd-drawer-splitter:hover {
     --ap-pd-size-gutter: 10px;
 }
 
-
 .ap-pd-drawer {
-    padding: 10px 8px 10px 12px;
+    padding: 10px 8px 10px 5px;
     background-color: white;
     box-shadow: var(--ap-box-shadow);
 }
