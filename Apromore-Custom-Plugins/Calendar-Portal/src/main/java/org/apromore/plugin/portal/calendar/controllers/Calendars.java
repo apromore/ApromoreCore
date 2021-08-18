@@ -36,6 +36,7 @@ import org.apromore.plugin.portal.calendar.pageutil.PageUtils;
 import org.slf4j.Logger;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.select.SelectorComposer;
@@ -76,6 +77,13 @@ public class Calendars extends SelectorComposer<Window> {
     public void doAfterCompose(Window win) throws Exception {
 	super.doAfterCompose(win);
 	initialize();
+	win.addEventListener("onClose", new EventListener<Event>() {
+
+		@Override
+		public void onEvent(Event event) throws Exception {
+			 EventQueues.remove(CalendarService.EVENT_TOPIC);	
+		}
+	});
     }
 
     public void initialize() {
@@ -106,6 +114,7 @@ public class Calendars extends SelectorComposer<Window> {
 
     @Listen("onClick = #okBtn")
     public void onClickOkBtn() {
+    EventQueues.remove(CalendarService.EVENT_TOPIC);
 	getSelf().detach();
     }
 
