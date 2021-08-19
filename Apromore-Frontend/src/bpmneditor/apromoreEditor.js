@@ -1,3 +1,9 @@
+/*
+* Steps to convert this bundled javascript source to be used for log animation
+* 1. Add the global namespaces Apromore.xxx at the header
+* 2. Add export {Apromore} as the last line
+* 3. In Apromore.EditorApp constructor: remove window.setTimeout for loading XML
+ */
 /* Previously copied from the top-level site.properties file at compile time (which is bad idea since site.properties can change at runtime); now a constant */
 if (!Apromore) {
     var Apromore = {};
@@ -68,20 +74,20 @@ Clazz.extend = function(def) {
     var classDef = function() {
         if (arguments[0] !== Clazz) { this.construct.apply(this, arguments); }
     };
-    
+
     var proto = new this(Clazz);
     var superClass = this.prototype;
-    
+
     for (var n in def) {
-        var item = def[n];                        
+        var item = def[n];
         if (item instanceof Function) item.$ = superClass;
         proto[n] = item;
     }
 
     classDef.prototype = proto;
-    
-    //Give this new class the same static extend method    
-    classDef.extend = this.extend;        
+
+    //Give this new class the same static extend method
+    classDef.extend = this.extend;
     return classDef;
 };/**
  * Copyright (c) 2008
@@ -597,6 +603,7 @@ if (!Apromore) {
  * to the wrapped BPMN.io editor.
  * Its behavior is divided into public and private methods (starting with underscore).
  * @todo: the namespace Apromore should be changed to Apromore throughout in one pass
+ * @todo: window.setTimeout here has time sensitivity that should be avoided in the future
  */
 Apromore.EditorApp = {
     construct: function (config) {
@@ -618,7 +625,7 @@ Apromore.EditorApp = {
         this.enabledPlugins = config.enabledPlugins; // undefined means all plugins are enabled
 
         // CREATES the editor
-        this._createEditor();
+        this._createEditor(config.preventFitDelay || false);
 
         // GENERATES the main UI regions
         this._generateGUI();
@@ -638,6 +645,7 @@ Apromore.EditorApp = {
         this.getEditor().attachEditor(new BpmnJS(options));
 
         // Wait until the editor is fully loaded to start XML import and then UI init
+        // @todo: Avoid time sensitivity
         var me = this;
         window.setTimeout(function() {
             if (config && config.xml) {
@@ -937,12 +945,13 @@ Apromore.EditorApp = {
         return document.getElementById(this.id);
     },
 
-    _createEditor: function () {
+    _createEditor: function (preventFitDelay) {
         this.editor = new Apromore.Editor({
             width: Apromore.CONFIG.CANVAS_WIDTH,
             height: Apromore.CONFIG.CANVAS_HEIGHT,
             id: Apromore.Utils.provideId(),
-            parentNode: this._getContainer()
+            parentNode: this._getContainer(),
+            preventFitDelay: preventFitDelay
         });
     },
 
@@ -1228,6 +1237,7 @@ if (!Apromore) {
 Apromore.Editor = {
     construct: function(options) {
         this.actualEditor = undefined;
+        this.preventFitDelay = options.preventFitDelay;
 
         if (!(options && options.width && options.height)) {
             Apromore.Log.fatal("The editor is missing mandatory parameters options.width and options.height.");
@@ -1336,6 +1346,8 @@ Apromore.Editor = {
      * This method takes time depending on the complexity of the model
      * @param {String} xml: the BPMN XML
      * @param {Function} callback: callback function to call after the import finishes
+     *
+     * @todo: Avoid seperate conditional for loganimation and bpmneditor
      */
     importXML: function(xml, callback) {
       // this.editor.importXML(xml, function(err) {
@@ -1369,11 +1381,17 @@ Apromore.Editor = {
           // pass
         }
         eventBus.fire('elements.changed', { elements: connections });
-        callback();
-        var me = this; // delay the fit until the properties panel fully collapsed
-        setTimeout(function () {
-            me.zoomFitToModel();
-        }, 500)
+        // @todo: Avoid this conditional
+        if (this.preventFitDelay) { // this is for loganimation
+            this.zoomFitToModel();
+            callback();
+        } else { // this is for BPMN editor
+            callback();
+            var me = this; // delay the fit until the properties panel fully collapsed
+            setTimeout(function () {
+                me.zoomFitToModel();
+            }, 500);
+        }
       }.bind(this));
     },
 
@@ -1397,8 +1415,7 @@ Apromore.Editor = {
         if (this.actualEditor) {
             var canvas = this.actualEditor.get('canvas');
             canvas.viewbox(false); // trigger recalculate the viewbox
-            // zoom to fit full viewport
-            canvas.zoom('fit-viewport', 'auto');
+            canvas.zoom('fit-viewport', 'auto'); // zoom to fit full viewport
         }
     },
 
