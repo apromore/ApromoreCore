@@ -126,8 +126,8 @@ public class ToolbarController extends AbstractController {
         filter.addEventListener("onInvokeExt", e -> parent.openLogFilter(e));
         filter.addEventListener(Events.ON_CLICK, e -> parent.openLogFilter(e));
         filterClear.addEventListener(Events.ON_CLICK, e -> onClearFilter());
-        filterUndo.addEventListener(Events.ON_CLICK, e -> parent.undoAction());
-        filterRedo.addEventListener(Events.ON_CLICK, e -> parent.redoAction());
+        filterUndo.addEventListener(Events.ON_CLICK, e -> parent.getActionManager().undoAction());
+        filterRedo.addEventListener(Events.ON_CLICK, e -> parent.getActionManager().redoAction());
         
         animate.addEventListener(Events.ON_CLICK, e -> parent.openAnimation(e));
         exportFilteredLog.addEventListener("onExport", e -> parent.openLogExport(e));
@@ -222,7 +222,7 @@ public class ToolbarController extends AbstractController {
             try {
                 FilterAction action = new FilterActionOnClearFilter(parent, parent.getProcessAnalyst());
                 action.setPreActionFilterCriteria(parent.getProcessAnalyst().copyCurrentFilterCriteria());
-                parent.executeAction(action);
+                parent.getActionManager().executeAction(action);
             } catch (Exception e) {
                 Messagebox.show(
                     parent.getLabel("filterError_message"),

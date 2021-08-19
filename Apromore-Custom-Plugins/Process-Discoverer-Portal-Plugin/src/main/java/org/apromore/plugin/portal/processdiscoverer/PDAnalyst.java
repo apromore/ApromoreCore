@@ -266,7 +266,7 @@ public class PDAnalyst {
     }
     
     public IndexableAttribute getAttribute(String key) {
-        return (IndexableAttribute)indexableAttributes.select(att -> att.getKey().equals(key)).get(0);
+        return (IndexableAttribute)indexableAttributes.select(att -> att.getKey().equals(key)).getFirst();
     }
     
     public void setMainAttribute(String key) throws NotFoundAttributeException  {
@@ -347,7 +347,7 @@ public class PDAnalyst {
     }
 
     // Apply a filter criterion on top of the current filter criteria
-    public boolean filterAdditive(LogFilterRule filterCriterion) throws Exception {
+    private boolean filterAdditive(LogFilterRule filterCriterion) throws Exception {
         List<LogFilterRule> criteria = (List<LogFilterRule>)currentFilterCriteria;
         criteria.add(filterCriterion.clone());
         this.apmLogFilter.filter(criteria);
@@ -422,15 +422,15 @@ public class PDAnalyst {
                 getEventAttributeRuleValue(value, attKey, FilterType.CASE_EVENT_ATTRIBUTE)));
     }
 
-    public boolean filter_RemoveTracesAllValueOfEventAttribute(String value, String attKey) throws Exception {
-        return filterAdditive(getEventAttributeFilterRule(attKey, Choice.REMOVE, Section.CASE, Inclusion.ALL_VALUES,
-                getEventAttributeRuleValue(value, attKey, FilterType.CASE_EVENT_ATTRIBUTE)));
-    }
+//    public boolean filter_RemoveTracesAllValueOfEventAttribute(String value, String attKey) throws Exception {
+//        return filterAdditive(getEventAttributeFilterRule(attKey, Choice.REMOVE, Section.CASE, Inclusion.ALL_VALUES,
+//                getEventAttributeRuleValue(value, attKey, FilterType.CASE_EVENT_ATTRIBUTE)));
+//    }
 
-    public boolean filter_RetainTracesAllValueOfEventAttribute(String value, String attKey) throws Exception {
-        return filterAdditive(getEventAttributeFilterRule(attKey, Choice.RETAIN, Section.CASE, Inclusion.ALL_VALUES,
-                getEventAttributeRuleValue(value, attKey, FilterType.CASE_EVENT_ATTRIBUTE)));
-    }
+//    public boolean filter_RetainTracesAllValueOfEventAttribute(String value, String attKey) throws Exception {
+//        return filterAdditive(getEventAttributeFilterRule(attKey, Choice.RETAIN, Section.CASE, Inclusion.ALL_VALUES,
+//                getEventAttributeRuleValue(value, attKey, FilterType.CASE_EVENT_ATTRIBUTE)));
+//    }
     
     public boolean filter_RemoveEventsAnyValueOfEventAttribute(String value, String attKey) throws Exception {
         return filterAdditive(getEventAttributeFilterRule(attKey, Choice.REMOVE, Section.EVENT, Inclusion.ANY_VALUE,

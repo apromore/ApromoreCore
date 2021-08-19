@@ -36,6 +36,7 @@ import org.json.JSONException;
 import org.json.JSONTokener;
 
 public class TestDataSetup {
+    
     private XLog readXESFile(String fullFilePath) {
         XesXmlParser parser = new XesXmlParser();
         try {
@@ -60,38 +61,12 @@ public class TestDataSetup {
         return new CalendarModelBuilder().withAllDayAllTime().build();
     }
     
-    public XLog readEmptyLog() {
-        return this.readXESFile("src/test/logs/L1_empty_log.xes");
-    }
-    
-    public XLog readLogWithEmptyTrace() {
-        return this.readXESFile("src/test/logs/L1_1trace_empty_trace.xes");
-    }
-    
     public XLog readLogWithOneTraceOneEvent() {
         return this.readXESFile("src/test/logs/L1_1trace_1event.xes");
     }
     
-    public XLog readLogWithOneTraceAndCompleteEvents() {
-        return this.readXESFile("src/test/logs/L1_1trace_complete_events_only.xes");
-    }
-    
-    public XLog readLogWithOneTrace_StartCompleteEvents_NonOverlapping() {
-        return this.readXESFile("src/test/logs/L1_1trace_start_complete_events_non_overlapping.xes");
-    }
-    
-    public XLog readLogWithNoLifecycleTransitions() {
-        return this.readXESFile("src/test/logs/L1_no_lifecycle_transition.xes");
-    }
-    
-    public XLog readLogWithCompleteEventsOnly() {
-        return this.readXESFile("src/test/logs/L1_complete_events_only_with_resources.xes");
-        
-    }
-    
-    //@Todo: prepare data
-    public XLog readLogWithStartEventsOnly() {
-        return this.readXESFile("src/test/logs/L1_complete_events_only_with_resources.xes");
+    public XLog readLogWithTwoTraceEachTwoEvents() {
+        return this.readXESFile("src/test/logs/L1_2traces_each_1event.xes");
     }
     
     public XLog readLogWithStartCompleteEventsNonOverlapping() {

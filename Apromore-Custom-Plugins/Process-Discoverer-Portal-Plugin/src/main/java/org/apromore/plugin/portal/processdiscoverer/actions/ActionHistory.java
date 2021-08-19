@@ -35,12 +35,12 @@ public class ActionHistory {
         redoStack = new Stack<Action>();
     }
     
-    public boolean canUndo() {
-        return !undoStack.isEmpty();
+    public boolean isUndoEmpty() {
+        return undoStack.isEmpty();
     }
 
-    public boolean canRedo() {
-        return !redoStack.isEmpty();
+    public boolean isRedoEmpty() {
+        return redoStack.isEmpty();
     }
 
     public void undoPush(Action action) {
