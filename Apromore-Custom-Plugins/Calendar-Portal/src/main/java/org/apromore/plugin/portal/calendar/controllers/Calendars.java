@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -30,6 +30,7 @@ import java.util.Map;
 import org.apromore.calendar.exception.CalendarAlreadyExistsException;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.calendar.service.CalendarService;
+import org.apromore.commons.datetime.DateTimeUtils;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.calendar.CalendarItemRenderer;
 import org.apromore.plugin.portal.calendar.pageutil.PageUtils;
@@ -75,79 +76,77 @@ public class Calendars extends SelectorComposer<Window> {
 
     @Override
     public void doAfterCompose(Window win) throws Exception {
-	super.doAfterCompose(win);
-	initialize();
-	win.addEventListener("onClose", new EventListener<Event>() {
+        super.doAfterCompose(win);
+        initialize();
+        win.addEventListener("onClose", new EventListener<Event>() {
 
-		@Override
-		public void onEvent(Event event) throws Exception {
-			 EventQueues.remove(CalendarService.EVENT_TOPIC);	
-		}
-	});
+            @Override
+            public void onEvent(Event event) throws Exception {
+                 EventQueues.remove(CalendarService.EVENT_TOPIC);
+            }
+        });
     }
 
     public void initialize() {
+        Integer logId = (Integer) Executions.getCurrent().getArg().get("logId");
+        calendarEventQueue = EventQueues.lookup(CalendarService.EVENT_TOPIC, false);
 
-	Integer logId = (Integer) Executions.getCurrent().getArg().get("logId");
-	calendarEventQueue = EventQueues.lookup(CalendarService.EVENT_TOPIC, false);	
-	CalendarItemRenderer itemRenderer = new CalendarItemRenderer(calendarService);
-	calendarListbox.setItemRenderer(itemRenderer);
-	calendarListModel = new ListModelList<CalendarModel>();
-	calendarListModel.setMultiple(false);
-	populateCalendarList();
-
+        CalendarItemRenderer itemRenderer = new CalendarItemRenderer(calendarService);
+        calendarListbox.setItemRenderer(itemRenderer);
+        calendarListModel = new ListModelList<CalendarModel>();
+        calendarListModel.setMultiple(false);
+        populateCalendarList();
     }
 
     public void populateCalendarList() {
-	List<CalendarModel> models = calendarService.getCalendars();
-	calendarListModel.clear();
-	Long selectedCalendarId = (Long) Executions.getCurrent().getArg().get("calendarId");
-	for (CalendarModel model : models) {
-	    calendarListModel.add(model);
-	    if (model.getId().equals(selectedCalendarId)) {
-		calendarListModel.addToSelection(model);
-	    }
+        List<CalendarModel> models = calendarService.getCalendars();
+        calendarListModel.clear();
+        Long selectedCalendarId = (Long) Executions.getCurrent().getArg().get("calendarId");
+        for (CalendarModel model : models) {
+            calendarListModel.add(model);
+            if (model.getId().equals(selectedCalendarId)) {
+                calendarListModel.addToSelection(model);
+            }
 
-	}
-	calendarListbox.setModel(calendarListModel);
+        }
+        calendarListbox.setModel(calendarListModel);
     }
 
     @Listen("onClick = #okBtn")
     public void onClickOkBtn() {
-    EventQueues.remove(CalendarService.EVENT_TOPIC);
-	getSelf().detach();
+        EventQueues.remove(CalendarService.EVENT_TOPIC);
+	    getSelf().detach();
     }
 
     @Listen("onClick = #selectBtn")
     public void onClickPublishBtn() {
-	calendarEventQueue.publish(new Event("onCalendarPublish", null,
-	        ((CalendarModel) calendarListModel.getSelection().iterator().next()).getId()));
-	getSelf().detach();
+        calendarEventQueue.publish(new Event("onCalendarPublish", null,
+                ((CalendarModel) calendarListModel.getSelection().iterator().next()).getId()));
+        getSelf().detach();
     }
 
     @Listen("onClick = #addNewCalendarBtn")
     public void onClickAddNewCalendar() {
-	CalendarModel model;
-	try {
-	    String calendarName = "Generic Calender 9 to 5 created on " + LocalDateTime.now();
-	    model = calendarService.createBusinessCalendar(calendarName, true, ZoneId.systemDefault().toString());
-	    populateCalendarList();
-	    Long calendarId = model.getId();
-	    try {
-		Map arg = new HashMap<>();
-		arg.put("calendarId", calendarId);
-		Window window = (Window) Executions.getCurrent()
-		        .createComponents(PageUtils.getPageDefinition("calendar/zul/calendar.zul"), null, arg);
-		window.doModal();
-	    } catch (Exception e) {
-		LOGGER.error("Unable to create custom calendar dialog", e);
-		// Notification.error("Unable to create custom calendar dialog");
-	    }
-	} catch (CalendarAlreadyExistsException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	}
-
+        CalendarModel model;
+        try {
+            String calendarName = "Business Calendar 9-to-5 created on " + DateTimeUtils.humanize(LocalDateTime.now());
+            model = calendarService.createBusinessCalendar(calendarName, true, ZoneId.systemDefault().toString());
+            populateCalendarList();
+            Long calendarId = model.getId();
+            try {
+                Map arg = new HashMap<>();
+                arg.put("calendarId", calendarId);
+                Window window = (Window) Executions.getCurrent()
+                        .createComponents(PageUtils.getPageDefinition("calendar/zul/calendar.zul"), null, arg);
+                window.doModal();
+            } catch (Exception e) {
+                LOGGER.error("Unable to create custom calendar dialog", e);
+                // Notification.error("Unable to create custom calendar dialog");
+            }
+        } catch (CalendarAlreadyExistsException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
 }
