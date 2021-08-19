@@ -85,7 +85,6 @@ public class PortalSecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/zkau/*").permitAll()
             .antMatchers("/login").permitAll()
             .antMatchers("/logout").permitAll()
-            .antMatchers("/zkau/upload").permitAll()
             .anyRequest().authenticated()
         .and()
         .formLogin()
