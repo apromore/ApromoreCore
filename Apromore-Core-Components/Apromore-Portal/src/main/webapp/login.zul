@@ -279,7 +279,9 @@
             <html id="ppLink">
               <h:a href="${labels.brand_urlPrivacy}">${labels.brand_textPrivacy}</h:a>
             </html>
-            <html>${labels.brand_contact}</html>
+            <html>
+              <h:a href="${labels.brand_urlContact}" target="_blank">${labels.brand_contact}</h:a>
+            </html>
           </h:div>
         </h:div>
         <h:div class="slant-separator">

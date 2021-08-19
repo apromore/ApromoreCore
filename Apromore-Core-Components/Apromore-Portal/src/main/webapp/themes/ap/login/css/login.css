@@ -434,7 +434,7 @@ body > * {
 }
 
 .ap-h-links span:last-child:after {
-    margin-left: 0;
+    margin: 0;
     content: '';
 }
 
