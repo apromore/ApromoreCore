@@ -154,6 +154,7 @@ public class Calendars extends SelectorComposer<Window> {
             try {
                 Map arg = new HashMap<>();
                 arg.put("calendarId", calendarId);
+                arg.put("parentController", this);
                 Window window = (Window) Executions.getCurrent()
                         .createComponents(PageUtils.getPageDefinition("calendar/zul/calendar.zul"), null, arg);
                 window.doModal();
@@ -169,7 +170,7 @@ public class Calendars extends SelectorComposer<Window> {
 
     @Listen("onSelect = #calendarListbox")
     public void onSelectCalendarItem() {
-        applyCalendarBtn.setDisabled(false);
+        updateApplyCalendarButton();
     }
 
     @Listen("onClick = #restoreBtn")
@@ -179,6 +180,14 @@ public class Calendars extends SelectorComposer<Window> {
         String logName = selectedLog.getValue();
         String infoText = String.format("Log %s's original calendar has been restored", logName);
         Notification.info(infoText);
+    }
+
+    private void updateApplyCalendarButton() {
+        if (calendarListbox.getSelectedCount() > 0) {
+            applyCalendarBtn.setDisabled(false);
+        } else {
+            applyCalendarBtn.setDisabled(true);
+        }
     }
 
 }
