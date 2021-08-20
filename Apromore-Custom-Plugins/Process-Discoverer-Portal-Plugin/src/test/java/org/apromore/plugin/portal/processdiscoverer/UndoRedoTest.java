@@ -336,6 +336,54 @@ public class UndoRedoTest extends TestDataSetup {
         assertEquals("c", attLog.getStringFromValue(attLog.getTraces().get(1).getValueTrace().get(1)));
     }
     
+    @Test
+    public void test_Do_Do_Undo_Undo_Then_Redo() throws Exception {
+        PDAnalyst analyst = createPDAnalyst(readLogWithTwoTraceEachTwoEvents());
+        AttributeLog attLog = analyst.getAttributeLog();
+        assertEquals(2, attLog.getTraces().size());
+        assertEquals(3, attLog.getTraces().get(0).getValueTrace().size()); //added artificial start and end events
+        assertEquals(4, attLog.getTraces().get(1).getValueTrace().size()); //added artificial start and end events
+        
+        // Do #1
+        FilterActionOnElementFilter removeNodeFilterAction = new FilterActionOnNodeRemoveEvent(pdController, analyst);
+        removeNodeFilterAction.setElement("b", "concept:name");
+        actionManager.executeAction(removeNodeFilterAction);    
+        assertEquals(2, attLog.getTraces().size());
+        assertEquals(3, attLog.getTraces().get(0).getValueTrace().size());
+        assertEquals(3, attLog.getTraces().get(1).getValueTrace().size());
+        assertEquals("a", attLog.getStringFromValue(attLog.getTraces().get(0).getValueTrace().get(1)));
+        assertEquals("c", attLog.getStringFromValue(attLog.getTraces().get(1).getValueTrace().get(1)));
+        
+        // Do #2
+        FilterActionOnElementFilter removeNodeFilterAction2 = new FilterActionOnNodeRemoveEvent(pdController, analyst);
+        removeNodeFilterAction2.setElement("c", "concept:name");
+        actionManager.executeAction(removeNodeFilterAction2);    
+        assertEquals(1, attLog.getTraces().size());
+        assertEquals(3, attLog.getTraces().get(0).getValueTrace().size());
+        assertEquals("a", attLog.getStringFromValue(attLog.getTraces().get(0).getValueTrace().get(1)));
+        
+        // Undo #1: undo removeNodeFilterAction2
+        actionManager.undoAction();
+        assertEquals(2, attLog.getTraces().size());
+        assertEquals(3, attLog.getTraces().get(0).getValueTrace().size());
+        assertEquals(3, attLog.getTraces().get(1).getValueTrace().size());
+        assertEquals("a", attLog.getStringFromValue(attLog.getTraces().get(0).getValueTrace().get(1)));
+        assertEquals("c", attLog.getStringFromValue(attLog.getTraces().get(1).getValueTrace().get(1)));
+        
+        // Undo #2: undo removeNodeFilterAction1
+        actionManager.undoAction();
+        assertEquals(2, attLog.getTraces().size());
+        assertEquals(3, attLog.getTraces().get(0).getValueTrace().size()); 
+        assertEquals(4, attLog.getTraces().get(1).getValueTrace().size()); 
+        
+        // Now, Redo: redo removeNodeFilterAction1
+        actionManager.redoAction(); //  
+        assertEquals(2, attLog.getTraces().size());
+        assertEquals(3, attLog.getTraces().get(0).getValueTrace().size());
+        assertEquals(3, attLog.getTraces().get(1).getValueTrace().size());
+        assertEquals("a", attLog.getStringFromValue(attLog.getTraces().get(0).getValueTrace().get(1)));
+        assertEquals("c", attLog.getStringFromValue(attLog.getTraces().get(1).getValueTrace().get(1)));
+    }
 
 
 }
