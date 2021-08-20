@@ -28,12 +28,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.List;
-
 import org.apromore.calendar.exception.CalendarAlreadyExistsException;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.commons.mapper.CustomMapper;
@@ -58,36 +56,36 @@ public class CalendarServiceUnitTest {
 
   @Spy
   CustomMapper mapper;
-  
+
   @InjectMocks
   CustomCalendarService calendarService;
 
   @Before
-  public void Before()
-  {
-      List<String> mapperList = Arrays.asList("mappers/calendar.xml");
-      mapper = new CustomMapper(mapperList);
-      mapper.init();
-      calendarService.setModelMapper(mapper);
+  public void Before() {
+    List<String> mapperList = Arrays.asList("mappers/calendar.xml");
+    mapper = new CustomMapper(mapperList);
+    mapper.init();
+    calendarService.setModelMapper(mapper);
   }
- 
+
   @Test
   public void testCreateCalendar() throws CalendarAlreadyExistsException {
     // Given
 
-    CustomCalendar calendar = new CustomCalendar("Test Desc",ZoneId.of("UTC"));
+    CustomCalendar calendar = new CustomCalendar("Test Desc", ZoneId.of("UTC"));
     calendar.setId(1l);
     when(calendarRepository.findByName(calendar.getName())).thenReturn(null);
     when(calendarRepository.saveAndFlush(any(CustomCalendar.class))).thenReturn(calendar);
 
     // When
-    CalendarModel calendarSaved = calendarService.createGenericCalendar(calendar.getName(), true,ZoneId.systemDefault().toString());
+    CalendarModel calendarSaved = calendarService.createGenericCalendar(calendar.getName(), true,
+        ZoneId.systemDefault().toString());
 
     // Then
     assertThat(calendarSaved.getId()).isEqualTo(calendar.getId());
-    verify(calendarRepository,times(1)).findByName(calendar.getName());
-    verify(calendarRepository,times(1)).saveAndFlush(any(CustomCalendar.class));
-    
+    verify(calendarRepository, times(1)).findByName(calendar.getName());
+    verify(calendarRepository, times(1)).saveAndFlush(any(CustomCalendar.class));
+
   }
 
 
@@ -97,40 +95,69 @@ public class CalendarServiceUnitTest {
     CustomCalendar calendar = new CustomCalendar("Test Desc");
     calendar.setId(1l);
     when(calendarRepository.findByName(calendar.getName())).thenReturn(calendar);
-  
-    
+
+
     // When
-    CalendarModel calendarSaved = calendarService.createGenericCalendar(calendar.getName(), true,ZoneId.systemDefault().toString());
+    CalendarModel calendarSaved = calendarService.createGenericCalendar(calendar.getName(), true,
+        ZoneId.systemDefault().toString());
 
     // Then
-//    exception thrown
-    
+    // exception thrown
+
   }
-  
-  
+
+
   @Test
   public void testCreateCalendarWithHoliday() throws CalendarAlreadyExistsException {
     // Given
-    CustomCalendar calendar = new CustomCalendar("Test Desc",ZoneId.of("UTC"));
+    CustomCalendar calendar = new CustomCalendar("Test Desc", ZoneId.of("UTC"));
     calendar.setId(1l);
     Holiday holiday = new Holiday("test", "test holiday", LocalDate.of(2020, 02, 02));
     calendar.setHolidays(Arrays.asList(holiday));
-    
+
     when(calendarRepository.findByName(calendar.getName())).thenReturn(null);
     when(calendarRepository.saveAndFlush(any(CustomCalendar.class))).thenReturn(calendar);
 
     // When
-    CalendarModel calendarSaved = calendarService.createGenericCalendar(calendar.getName(), true,ZoneId.systemDefault().toString());
-    
+    CalendarModel calendarSaved = calendarService.createGenericCalendar(calendar.getName(), true,
+        ZoneId.systemDefault().toString());
+
     // Then
     assertThat(calendarSaved.getId()).isEqualTo(calendar.getId());
     assertThat(calendarSaved.getHolidays()).hasSize(1);
-    assertThat(calendarSaved.getHolidays().get(0).getDescription()).isEqualTo(holiday.getDescription());
-    verify(calendarRepository,times(1)).findByName(calendar.getName());
-    verify(calendarRepository,times(1)).saveAndFlush(any(CustomCalendar.class));
-    
+    assertThat(calendarSaved.getHolidays().get(0).getDescription())
+        .isEqualTo(holiday.getDescription());
+    verify(calendarRepository, times(1)).findByName(calendar.getName());
+    verify(calendarRepository, times(1)).saveAndFlush(any(CustomCalendar.class));
+
   }
 
+  @Test
+  public void testCreateCalendarWithDuplicateHoliday() throws CalendarAlreadyExistsException {
+    // Given
+    CustomCalendar calendar = new CustomCalendar("Test Desc1", ZoneId.of("UTC"));
+    calendar.setId(1l);
+    Holiday holiday = new Holiday("test", "test holiday", LocalDate.of(2020, 02, 02));
+    Holiday holiday1 = new Holiday("test1", "test holiday1", LocalDate.of(2020, 02, 02));
+    calendar.setHolidays(Arrays.asList(holiday, holiday));
+
+    when(calendarRepository.findByName(calendar.getName())).thenReturn(null);
+    when(calendarRepository.saveAndFlush(any(CustomCalendar.class))).thenReturn(calendar);
+
+    // When
+    CalendarModel calendarSaved = calendarService.createGenericCalendar(calendar.getName(), true,
+        ZoneId.systemDefault().toString());
+    calendarSaved.populateHolidayMap();
+
+    // Then
+    assertThat(calendarSaved.getId()).isEqualTo(calendar.getId());
+    assertThat(calendarSaved.getHolidays()).hasSize(2);
+    assertThat(calendarSaved.getHolidayLocalDateMap()).hasSize(1);
+
+    verify(calendarRepository, times(1)).findByName(calendar.getName());
+    verify(calendarRepository, times(1)).saveAndFlush(any(CustomCalendar.class));
+
+  }
 
 
 }
