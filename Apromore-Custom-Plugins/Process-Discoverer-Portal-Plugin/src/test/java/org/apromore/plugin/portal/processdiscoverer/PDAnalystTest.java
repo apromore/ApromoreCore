@@ -22,26 +22,19 @@ import static org.junit.Assert.assertEquals;
 import java.util.List;
 import java.util.Objects;
 
-import org.apromore.apmlog.xes.XLogToImmutableLog;
 import org.apromore.commons.datetime.DateTimeUtils;
 import org.apromore.logman.attribute.AttributeLevel;
 import org.apromore.logman.attribute.AttributeType;
 import org.apromore.logman.attribute.log.AttributeInfo;
 import org.apromore.logman.attribute.log.AttributeLog;
 import org.apromore.plugin.portal.processdiscoverer.data.CaseDetails;
-import org.apromore.plugin.portal.processdiscoverer.data.ConfigData;
-import org.apromore.plugin.portal.processdiscoverer.data.ContextData;
 import org.apromore.plugin.portal.processdiscoverer.data.PerspectiveDetails;
-import org.apromore.service.EventLogService;
+import org.deckfour.xes.model.XAttributeTimestamp;
 import org.deckfour.xes.model.XLog;
 import org.eclipse.collections.api.list.ListIterable;
 import org.joda.time.DateTime;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -128,7 +121,8 @@ public class PDAnalystTest extends TestDataSetup {
         assertEquals(1, xlog.get(0).size());
         assertEquals(3, xlog.get(0).get(0).getAttributes().size());
         assertEquals("a", xlog.get(0).get(0).getAttributes().get("concept:name").toString());
-        assertEquals("2010-10-27T22:31:19.495+10:00", xlog.get(0).get(0).getAttributes().get("time:timestamp").toString());
+        assertEquals(DateTime.parse("2010-10-27T22:31:19.495+10:00").getMillis(), 
+                ((XAttributeTimestamp)xlog.get(0).get(0).getAttributes().get("time:timestamp")).getValueMillis());
         assertEquals("complete", xlog.get(0).get(0).getAttributes().get("lifecycle:transition").toString());
     }
     
