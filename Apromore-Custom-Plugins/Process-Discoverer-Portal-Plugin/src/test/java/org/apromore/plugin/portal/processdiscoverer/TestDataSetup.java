@@ -26,16 +26,42 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 
+import org.apromore.apmlog.xes.XLogToImmutableLog;
 import org.apromore.calendar.builder.CalendarModelBuilder;
 import org.apromore.calendar.model.CalendarModel;
+import org.apromore.plugin.portal.processdiscoverer.data.ConfigData;
+import org.apromore.plugin.portal.processdiscoverer.data.ContextData;
+import org.apromore.service.EventLogService;
 import org.deckfour.xes.in.XesXmlGZIPParser;
 import org.deckfour.xes.in.XesXmlParser;
 import org.deckfour.xes.model.XLog;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONTokener;
+import org.junit.Before;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
 public class TestDataSetup {
+    @Mock
+    private EventLogService eventLogService;
+    
+    public PDAnalyst createPDAnalyst(XLog xlog) throws Exception {
+        ContextData contextData = ContextData.valueOf("domain1", "username1", 0, "logName", 0, "folderName");
+        Mockito.when(eventLogService.getXLog(contextData.getLogId())).thenReturn(xlog);
+        Mockito.when(eventLogService.getAggregatedLog(contextData.getLogId())).thenReturn(
+                XLogToImmutableLog.convertXLog("ProcessLog", xlog));
+        Mockito.when(eventLogService.getCalendarFromLog(contextData.getLogId())).thenReturn(getAllDayAllTimeCalendar());
+        ConfigData configData = ConfigData.DEFAULT;
+        PDAnalyst analyst = new PDAnalyst(contextData, configData, eventLogService);
+        return analyst;
+    }
+    
+    @Before
+    public void init() {
+        MockitoAnnotations.openMocks(this);
+    }
     
     private XLog readXESFile(String fullFilePath) {
         XesXmlParser parser = new XesXmlParser();

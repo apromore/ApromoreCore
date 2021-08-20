@@ -1,3 +1,20 @@
+/**
+ * #%L
+ * This file is part of "Apromore Enterprise Edition".
+ * %%
+ * Copyright (C) 2019 - 2021 Apromore Pty Ltd. All Rights Reserved.
+ * %%
+ * NOTICE:  All information contained herein is, and remains the
+ * property of Apromore Pty Ltd and its suppliers, if any.
+ * The intellectual and technical concepts contained herein are
+ * proprietary to Apromore Pty Ltd and its suppliers and may
+ * be covered by U.S. and Foreign Patents, patents in process,
+ * and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this
+ * material is strictly forbidden unless prior written permission
+ * is obtained from Apromore Pty Ltd.
+ * #L%
+ */
 package org.apromore.plugin.portal.processdiscoverer;
 
 import static org.junit.Assert.assertEquals;
@@ -29,24 +46,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PDAnalystTest extends TestDataSetup {
-    @Mock
-    private EventLogService eventLogService;
-    
-    private PDAnalyst createPDAnalyst(XLog xlog) throws Exception {
-        ContextData contextData = ContextData.valueOf("domain1", "username1", 0, "logName", 0, "folderName");
-        Mockito.when(eventLogService.getXLog(contextData.getLogId())).thenReturn(xlog);
-        Mockito.when(eventLogService.getAggregatedLog(contextData.getLogId())).thenReturn(
-                XLogToImmutableLog.convertXLog("ProcessLog", xlog));
-        Mockito.when(eventLogService.getCalendarFromLog(contextData.getLogId())).thenReturn(getAllDayAllTimeCalendar());
-        ConfigData configData = ConfigData.DEFAULT;
-        PDAnalyst analyst = new PDAnalyst(contextData, configData, eventLogService);
-        return analyst;
-    }
-    
-    @Before
-    public void init() {
-        MockitoAnnotations.openMocks(this);
-    }
     
     @Test
     public void test_AnalystConstructor() throws Exception {
@@ -68,7 +67,7 @@ public class PDAnalystTest extends TestDataSetup {
         
         AttributeLog attLog = analyst.getAttributeLog();
         assertEquals(1, attLog.getTraces().size());
-        assertEquals(1, attLog.getTraces().get(0).getValueTrace().size());
+        assertEquals(3, attLog.getTraces().get(0).getValueTrace().size());
     }
     
     @Test
