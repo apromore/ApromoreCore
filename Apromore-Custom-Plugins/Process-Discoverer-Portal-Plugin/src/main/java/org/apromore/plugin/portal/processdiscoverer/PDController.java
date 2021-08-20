@@ -43,9 +43,7 @@ import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.plugin.portal.logfilter.generic.LogFilterPlugin;
-import org.apromore.plugin.portal.processdiscoverer.actions.Action;
-import org.apromore.plugin.portal.processdiscoverer.actions.ActionHistory;
-import org.apromore.plugin.portal.processdiscoverer.actions.FilterAction;
+import org.apromore.plugin.portal.processdiscoverer.actions.ActionManager;
 import org.apromore.plugin.portal.processdiscoverer.components.CaseDetailsController;
 import org.apromore.plugin.portal.processdiscoverer.components.GraphSettingsController;
 import org.apromore.plugin.portal.processdiscoverer.components.GraphVisController;
@@ -141,7 +139,7 @@ public class PDController extends BaseController implements Composer<Component> 
     //////////////////// THE MAIN PD Business Analyst //////////////////////////
 
     private PDAnalyst processAnalyst;
-    private ActionHistory actionHistory = new ActionHistory();
+    private ActionManager actionManager;
 
     //////////////////// UI COMPONENTS ///////////////////////////////////
 
@@ -191,6 +189,7 @@ public class PDController extends BaseController implements Composer<Component> 
         pageParams.put("pluginExecutionId", pluginExecutionId);
         pageParams.put("pdLabels", getLabels());
         Executions.getCurrent().pushArg(pageParams);
+        actionManager = new ActionManager(this);
     }
 
     public ResourceBundle getLabels() {
@@ -499,7 +498,7 @@ public class PDController extends BaseController implements Composer<Component> 
             if (!reset)
                 graphVisController.centerToWindow();
             toolbarController.setDisabledFilterClear(this.getProcessAnalyst().isCurrentFilterCriteriaEmpty());
-            toolbarController.updateUndoRedoButtons(actionHistory.canUndo(), actionHistory.canRedo());
+            toolbarController.updateUndoRedoButtons(actionManager.canUndo(), actionManager.canRedo());
         } catch (Exception ex) {
             Messagebox.show(getLabel("failedUpdateUI_message"));
             LOGGER.error("Errors occured while updating UI: " + ex.getMessage());
@@ -738,64 +737,9 @@ public class PDController extends BaseController implements Composer<Component> 
     private String escapeQuotedJavascript(String json) {
         return json.replace("\n", " ").replace("'", "\\u0027").trim();
     }
-
-    //////////////////////// ACTION MANAGEMENT /////////////////////////
-
-    /** For real action that perform changes */
-    public void executeAction(Action action) {
-        if (action.execute()) {
-            actionHistory.undoPush(action);
-            // Redo actions are those actions that have been undoed.
-            // When an action is redoed (re-executed), it assumes that the undo stack is the
-            // same as
-            // before it is pushed to undo
-            // Thus, whenever a NEW action is pushed to the undo stack, all current redoable
-            // actions must
-            // be clear to ensure consistent state.
-            actionHistory.clearRedo();
-            if (action instanceof FilterAction)
-                this.updateUI(false);
-        }
-    }
-
-    /**
-     * For actions that don't change anything but need to be bundled for undo/redo
-     * Some actions fall into this category, such as do filtering via opening a
-     * LogFilter window These actions can't be executed directly via executeAction()
-     * method, but they can be stored to support undo/redo
-     */
-    public void storeAction(Action action) {
-        actionHistory.undoPush(action);
-        if (action instanceof FilterAction)
-            this.updateUI(false);
-    }
-
-    public void undoAction() {
-        Action action = actionHistory.undoPop();
-        if (action != null) {
-            try {
-                action.undo();
-            } catch (Exception e) {
-                // LOGGER.error("Error when undoing filter action. Error message: " +
-                // e.getMessage());
-                Messagebox.show(getLabel("undoError_message"));
-            }
-            actionHistory.redoPush(action);
-            if (action instanceof FilterAction)
-                this.updateUI(false);
-        }
-    }
-
-    // Re-execute
-    public void redoAction() {
-        Action action = actionHistory.redoPop();
-        if (action != null) {
-            if (action.execute()) {
-                actionHistory.undoPush(action);
-                if (action instanceof FilterAction)
-                    this.updateUI(false);
-            }
-        }
+    
+    public ActionManager getActionManager() {
+        return this.actionManager;
     }
 
     @Override

@@ -41,16 +41,9 @@ import org.junit.Test;
 
 public class ProcessJSONVisualizerTest extends TestDataSetup {
     private String NODE_KEY = "shape";
-//    private String[] nodeCompareKeys = new String[] {"shape", "color", "borderwidth",
-//                                                    "name", "oriname",
-//                                                    "textsize", "textwidth", "textcolor",
-//                                                    "width", "height"};
-//    private String[] edgeCompareKeys = new String[] {"strength", "color", "edge-style",
-//                                                    "style", "label"};
     private String[] nodeCompareKeys = new String[] {"name", "oriname"};
     private String[] edgeCompareKeys = new String[] {"style", "label"};
 
-    
     private OutputData discoverProcess(XLog xlog, double nodeSlider, double arcSlider, double paraSlider,
                         MeasureType structureType, MeasureAggregation structureAggregate, MeasureRelation structureRelation,
                         MeasureType primaryType, MeasureAggregation primaryAggregate, MeasureRelation primaryRelation,
@@ -58,8 +51,8 @@ public class ProcessJSONVisualizerTest extends TestDataSetup {
                         boolean useSecondary,
                         boolean bpmn) throws Exception {
         ALog log = new ALog(xlog);
-        ConfigData configData = ConfigData.DEFAULT;
-        UserOptionsData userOptions = UserOptionsData.DEFAULT(configData);
+        //ConfigData configData = ConfigData.DEFAULT;
+        UserOptionsData userOptions = UserOptionsData.DEFAULT(ConfigData.DEFAULT);
         
         userOptions.setNodeFilterValue(nodeSlider);
         userOptions.setArcFilterValue(arcSlider);
@@ -80,7 +73,8 @@ public class ProcessJSONVisualizerTest extends TestDataSetup {
         userOptions.setIncludeSecondary(useSecondary);
         userOptions.setBPMNMode(bpmn);
         
-        PDAnalyst analyst = PDAnalyst.newInstanceWithoutFilter(log, configData, getAllDayAllTimeCalendar());
+        //PDAnalyst analyst = PDAnalyst.newInstanceWithoutFilter(log, configData, getAllDayAllTimeCalendar());
+        PDAnalyst analyst = createPDAnalyst(xlog);
         return analyst.discoverProcess(userOptions).get();
     }
     
