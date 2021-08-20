@@ -150,21 +150,6 @@ public class PDAnalyst {
         this.processVisualizer = new ProcessJSONVisualizer();
     }
     
-    // Without filter, for testing only
-    private PDAnalyst(ALog aLog, ConfigData configData, CalendarModel calendarModel) throws Exception {
-        this.aLog = aLog;
-        this.calendarModel = calendarModel;
-        indexableAttributes = aLog.getAttributeStore().getPerspectiveEventAttributes(
-                configData.getMaxNumberOfUniqueValues(), AttributeType.BOOLEAN);
-        this.setMainAttribute(configData.getDefaultAttribute());
-        this.processDiscoverer = new ProcessDiscoverer();
-        this.processVisualizer = new ProcessJSONVisualizer();
-    }
-    
-    public static PDAnalyst newInstanceWithoutFilter(ALog aLog, ConfigData configData, CalendarModel calendarModel) throws Exception {
-        return new PDAnalyst(aLog, configData, calendarModel);
-    }
-    
     public void cleanUp() {
         processDiscoverer.cleanUp();
         processVisualizer.cleanUp();
@@ -422,16 +407,6 @@ public class PDAnalyst {
                 getEventAttributeRuleValue(value, attKey, FilterType.CASE_EVENT_ATTRIBUTE)));
     }
 
-//    public boolean filter_RemoveTracesAllValueOfEventAttribute(String value, String attKey) throws Exception {
-//        return filterAdditive(getEventAttributeFilterRule(attKey, Choice.REMOVE, Section.CASE, Inclusion.ALL_VALUES,
-//                getEventAttributeRuleValue(value, attKey, FilterType.CASE_EVENT_ATTRIBUTE)));
-//    }
-
-//    public boolean filter_RetainTracesAllValueOfEventAttribute(String value, String attKey) throws Exception {
-//        return filterAdditive(getEventAttributeFilterRule(attKey, Choice.RETAIN, Section.CASE, Inclusion.ALL_VALUES,
-//                getEventAttributeRuleValue(value, attKey, FilterType.CASE_EVENT_ATTRIBUTE)));
-//    }
-    
     public boolean filter_RemoveEventsAnyValueOfEventAttribute(String value, String attKey) throws Exception {
         return filterAdditive(getEventAttributeFilterRule(attKey, Choice.REMOVE, Section.EVENT, Inclusion.ANY_VALUE,
                 getEventAttributeRuleValue(value, attKey, FilterType.EVENT_EVENT_ATTRIBUTE)));

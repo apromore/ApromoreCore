@@ -24,6 +24,10 @@ package org.apromore.plugin.portal.processdiscoverer.actions;
 import org.apromore.plugin.portal.processdiscoverer.PDAnalyst;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
 
+/**
+ * Attribute key is the one used for the node
+ * Attribute value for an edge is in the format "a => b", where a and b are node values.
+ */
 public class FilterActionOnEdgeRemoveTrace extends FilterActionOnElementFilter {
 
     public FilterActionOnEdgeRemoveTrace(PDController appController, PDAnalyst analyst) {
