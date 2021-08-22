@@ -20,7 +20,7 @@
               "id": "org.apromore.etlplugin.portal.etlPortal.ETLPluginPortal"
             },
             {
-              "id": "org.apromore.jobScheduler.portal.portalService.JobSchedulerPortalImp"
+              "id": "org.apromore.etlplugin.portal.etlPortal.JobSchedulerPortalImp"
             },
             {
               "id": "SEPARATOR"

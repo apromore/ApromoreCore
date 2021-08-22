@@ -109,6 +109,7 @@ public class BaseMenuController extends SelectorComposer<Menubar> {
         String itemId = menuItem.getId();
         PortalPlugin plugin = portalPluginMap.get(itemId);
         if (plugin == null) {
+            LOGGER.warn("Missing menu item or plugin " + itemId);
             return;
         }
         PortalPlugin.Availability availability = plugin.getAvailability();

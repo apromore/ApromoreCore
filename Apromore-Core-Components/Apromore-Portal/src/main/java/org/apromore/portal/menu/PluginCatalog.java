@@ -38,7 +38,7 @@ public abstract class PluginCatalog {
     public static final String PLUGIN_USER_ADMIN = "org.apromore.plugin.portal.useradmin.UserAdminPlugin";
     public static final String PLUGIN_ACCESS_CONTROL = "org.apromore.plugin.portal.accesscontrol.AccessControlPlugin";
     public static final String PLUGIN_ETL = "org.apromore.etlplugin.portal.etlPortal.ETLPluginPortal";
-    public static final String PLUGIN_JOB_SCHEDULER = "org.apromore.jobScheduler.portal.portalService.JobSchedulerPortalImp";
+    public static final String PLUGIN_JOB_SCHEDULER = "org.apromore.etlplugin.portal.etlPortal.JobSchedulerPortalImp";
     public static final String PLUGIN_CALENDAR = "org.apromore.plugin.portal.calendar.CalendarPlugin";
 
     public static final String PLUGIN_UPLOAD = "org.apromore.plugin.portal.file.UploadFilePlugin";
