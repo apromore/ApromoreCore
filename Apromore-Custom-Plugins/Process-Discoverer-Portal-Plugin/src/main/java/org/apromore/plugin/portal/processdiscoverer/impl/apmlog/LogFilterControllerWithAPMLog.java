@@ -297,7 +297,7 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
                 analyst.updateLog(pLog, logFilterResponse.getApmLog());
                 parent.updateUI(true);
                 compositeFilterAction.setPostActionFilterCriteria(analyst.copyCurrentFilterCriteria());
-                parent.storeAction(compositeFilterAction);
+                parent.getActionManager().storeAction(compositeFilterAction);
             } catch (Exception e) {
                 e.printStackTrace();
                 Messagebox.show("Filter Response Error", "Error",

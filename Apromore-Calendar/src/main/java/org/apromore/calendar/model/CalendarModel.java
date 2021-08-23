@@ -21,11 +21,11 @@
  */
 /*
  * 
- * This is the calendar model, used for getting duration based on start and end time.
- * The start time can be a ZonedDateTime, or Unix timestamp.
- * This model is thread safe.
- * This is a model created from Calendar which is in the db layer.
- * The duration calculation is based on number of working days and holidays associated to the calendar
+ * This is the calendar model, used for getting duration based on start and end time. The start time
+ * can be a ZonedDateTime, or Unix timestamp. This model is thread safe. This is a model created
+ * from Calendar which is in the db layer. The duration calculation is based on number of working
+ * days and holidays associated to the calendar
+ * 
  * @see CalendarService.getCalendar(id) for details
  * 
  */
@@ -50,7 +50,7 @@ import java.util.Random;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
+import org.apache.commons.collections.map.HashedMap;
 import lombok.Data;
 
 
@@ -67,11 +67,14 @@ public class CalendarModel {
   private List<WorkDayModel> workDays = new ArrayList<WorkDayModel>();
   private List<HolidayModel> holidays = new ArrayList<HolidayModel>();
 
+  Map<DayOfWeek, WorkDayModel> dayOfWeekWorkDayMap = new HashedMap();
+  Map<LocalDate, HolidayModel> holidayLocalDateMap = new HashedMap();
+
   public DurationModel getDuration(ZonedDateTime starDateTime, ZonedDateTime endDateTime) {
 
-    Map<DayOfWeek, WorkDayModel> dayOfWeekWorkDayMap = getWorkDayMap();
+    populateWorkDayMap();
 
-    Map<LocalDate, HolidayModel> holidayLocalDateMap = getHolidayMap();
+    populateHolidayMap();
 
     DurationModel durationModel = new DurationModel();
 
@@ -86,13 +89,8 @@ public class CalendarModel {
       WorkDayModel workDayModel = dayOfWeekWorkDayMap.get(starDateTime.getDayOfWeek());
 
       if (workDayModel.isWorkingDay() && holidayLocalDateMap.get(localStartDate) == null) {
-        durationForSameDay = getDurationForSameDay(starDateTime
-            .toOffsetDateTime()
-            .toOffsetTime(),
-            endDateTime
-                .toOffsetDateTime()
-                .toOffsetTime(),
-            workDayModel);
+        durationForSameDay = getDurationForSameDay(starDateTime.toOffsetDateTime().toOffsetTime(),
+            endDateTime.toOffsetDateTime().toOffsetTime(), workDayModel);
       }
       durationModel.setAll(durationForSameDay);
       return durationModel;
@@ -109,15 +107,14 @@ public class CalendarModel {
       WorkDayModel workDay = dayOfWeekWorkDayMap.get(currentDayOfWeek);
 
       Duration calculatedDuration = workDay.getDuration();
-      if (!workDay.isWorkingDay() ||
-          holidayLocalDateMap.get(localStartDate) != null) {
+      if (!workDay.isWorkingDay() || holidayLocalDateMap.get(localStartDate) != null) {
 
         calculatedDuration = Duration.ZERO;
 
       } else if (isStartDay(starDateTime, dayDateTime)) {
 
-        calculatedDuration = workDay
-            .getSameDayDurationByStartTime(starDateTime.toOffsetDateTime().toOffsetTime());
+        calculatedDuration =
+            workDay.getSameDayDurationByStartTime(starDateTime.toOffsetDateTime().toOffsetTime());
 
       } else if (isEndDay(endDateTime, dayDateTime)) {
         calculatedDuration =
@@ -169,39 +166,45 @@ public class CalendarModel {
 
     return resultList;
   }
-  
+
   public long[] getDuration(long[] starDateTimeUnixTs, long[] endDateTimeunixTs) {
-      if (starDateTimeUnixTs == null || starDateTimeUnixTs.length == 0 ||
-          endDateTimeunixTs == null || endDateTimeunixTs.length == 0) return new long[] {};
-        
-      long[] resultList = new long[starDateTimeUnixTs.length];
+    if (starDateTimeUnixTs == null || starDateTimeUnixTs.length == 0 || endDateTimeunixTs == null
+        || endDateTimeunixTs.length == 0)
+      return new long[] {};
 
-      ZoneId zone = ZoneId.of(zoneId);
+    long[] resultList = new long[starDateTimeUnixTs.length];
 
-      IntStream.range(0, starDateTimeUnixTs.length).parallel().forEach(i -> {
+    ZoneId zone = ZoneId.of(zoneId);
 
-        ZonedDateTime zonedStartDateTime =
-            ZonedDateTime.ofInstant(Instant.ofEpochMilli(starDateTimeUnixTs[i]), zone);
-        ZonedDateTime zonedEndDateTime =
-            ZonedDateTime.ofInstant(Instant.ofEpochMilli(endDateTimeunixTs[i]), zone);
-        resultList[i] = getDuration(zonedStartDateTime, zonedEndDateTime).getDuration().toMillis();
+    IntStream.range(0, starDateTimeUnixTs.length).parallel().forEach(i -> {
 
-      });
+      ZonedDateTime zonedStartDateTime =
+          ZonedDateTime.ofInstant(Instant.ofEpochMilli(starDateTimeUnixTs[i]), zone);
+      ZonedDateTime zonedEndDateTime =
+          ZonedDateTime.ofInstant(Instant.ofEpochMilli(endDateTimeunixTs[i]), zone);
+      resultList[i] = getDuration(zonedStartDateTime, zonedEndDateTime).getDuration().toMillis();
 
-      return resultList;
-    }
+    });
 
-
-
-  private Map<LocalDate, HolidayModel> getHolidayMap() {
-    return holidays.parallelStream()
-        .collect(Collectors.toMap(HolidayModel::getHolidayDate, Function.identity()));
+    return resultList;
   }
 
 
-  private Map<DayOfWeek, WorkDayModel> getWorkDayMap() {
-    return workDays.parallelStream()
-        .collect(Collectors.toMap(WorkDayModel::getDayOfWeek, Function.identity()));
+
+  public void populateHolidayMap() {
+    if (holidayLocalDateMap.isEmpty()) {
+      holidayLocalDateMap = holidays.parallelStream().collect(
+          Collectors.toMap(HolidayModel::getHolidayDate, Function.identity(), (e1, e2) -> e1));
+    }
+  }
+
+
+
+  private void populateWorkDayMap() {
+    if (dayOfWeekWorkDayMap.isEmpty()) {
+      dayOfWeekWorkDayMap = workDays.parallelStream()
+          .collect(Collectors.toMap(WorkDayModel::getDayOfWeek, Function.identity()));
+    }
   }
 
 
@@ -220,8 +223,7 @@ public class CalendarModel {
   }
 
 
-  private Duration getDurationForSameDay(OffsetTime startTime,
-      OffsetTime endTime,
+  private Duration getDurationForSameDay(OffsetTime startTime, OffsetTime endTime,
       WorkDayModel workDayModel) {
     DurationModel durationModel = new DurationModel();
 
@@ -231,11 +233,10 @@ public class CalendarModel {
     return duration.isNegative() ? Duration.ZERO : duration;
 
   }
-  
-  public List<WorkDayModel> getOrderedWorkDay()
-  {
-	  workDays.sort(Comparator.comparing(WorkDayModel::getDayOfWeek));
-	  return workDays;
+
+  public List<WorkDayModel> getOrderedWorkDay() {
+    workDays.sort(Comparator.comparing(WorkDayModel::getDayOfWeek));
+    return workDays;
   }
 
 

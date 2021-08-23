@@ -167,16 +167,16 @@ public abstract class UserSessionManager {
 
 		if (userType != null) { // e.g. SSO SAML
 		    setCurrentUser(userType);
-		    LOGGER.info("User \"{}\" login via SSO SAML account", userType.getUsername());
+		    LOGGER.debug("User \"{}\" login via SSO SAML account", userType.getUsername());
 		}
 	    } else if (details instanceof UserType) { // Locally created user (via password)
 		UserType user = (UserType) details;
 		setCurrentUser(user);
-		LOGGER.info("User \"{}\" login via local account", user.getUsername());
+		LOGGER.debug("User \"{}\" login via local account", user.getUsername());
 
 	    } else if (userType != null) { // e.g. SSO SAML
 		setCurrentUser(userType);
-		LOGGER.info("User \"{}\" login via SSO SAML account", userType.getUsername(), details);
+		LOGGER.debug("User \"{}\" login via SSO SAML account", userType.getUsername());
 
 	    } else if (details != null) {
 		LOGGER.warn("Unsupported details class " + details.getClass());

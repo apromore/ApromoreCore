@@ -22,7 +22,6 @@
 
 package org.apromore.plugin.portal.processdiscoverer;
 
-import org.apromore.logman.ALog;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.processdiscoverer.data.ConfigData;
 import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
@@ -31,17 +30,16 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 
-@Ignore
+@Ignore //Not to use in build
 public class PerformanceTest extends TestDataSetup {
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(PerformanceTest.class);
     
     private void discoverProcessFromXLog(XLog xlog) {
         try {
             long timer = System.currentTimeMillis();
-            ALog aLog = new ALog(xlog);
             LOGGER.debug("Create ALog: " + (System.currentTimeMillis() - timer) + " ms.");
             ConfigData configData = ConfigData.DEFAULT;
-            PDAnalyst analyst = PDAnalyst.newInstanceWithoutFilter(aLog, configData, getAllDayAllTimeCalendar());
+            PDAnalyst analyst = createPDAnalyst(xlog);
             analyst.discoverProcess(UserOptionsData.DEFAULT(configData));
             LOGGER.debug("Total PD: " + (System.currentTimeMillis() - timer) + " ms.");
         }
