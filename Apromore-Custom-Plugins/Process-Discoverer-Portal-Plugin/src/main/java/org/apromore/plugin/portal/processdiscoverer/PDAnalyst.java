@@ -82,9 +82,7 @@ import org.apromore.service.EventLogService;
 import org.deckfour.xes.model.XLog;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.ListIterable;
-import org.eclipse.collections.impl.list.mutable.primitive.LongArrayList;
 import org.slf4j.Logger;
-import org.zkoss.zul.ListModelList;
 
 /**
  * PDAnalyst represents a process analyst who will performs log analysis in the form of graphs and BPMN diagrams
@@ -246,7 +244,7 @@ public class PDAnalyst {
 
     public OutputData discoverTraceVariant(int traceVariantID, UserOptionsData userOptions) throws Exception {
         List<ATrace> traces = caseVariantGroupMap.get(traceVariantID);
-        List<String> traceIDs = traces.stream().map(t -> t.getCaseId()).collect(Collectors.toList());
+        List<String> traceIDs = traces.stream().map(ATrace::getCaseId).collect(Collectors.toList());
 
         AbstractionParams params = genAbstractionParamsForTrace(userOptions);
         Abstraction traceAbs = processDiscoverer.generateTraceVariantAbstraction(attLog, traceIDs, params);
@@ -475,10 +473,11 @@ public class PDAnalyst {
         long totalCases = filteredAPMLog.getTraces().size();
 
         List<CaseVariantDetails> listResult = new ArrayList<>();
-        for (int caseVariantId : caseVariantGroupMap.keySet()) {
-            List<ATrace> cases = caseVariantGroupMap.get(caseVariantId);
+        for (Map.Entry<Integer, List<ATrace>> entry : caseVariantGroupMap.entrySet()) {
+            List<ATrace> cases = entry.getValue();
 
             //All cases in a case variant group should have the same number of activities
+            int caseVariantId = entry.getKey();
             long activities = cases.get(0).getActivityInstances().size();
             long numCases = cases.size();
             double duration = TimeStatsProcessor.getCaseDurations(cases).average();
@@ -520,8 +519,9 @@ public class PDAnalyst {
 
         Map<String, String> firstMap = caseAttMaps.get(0);
         Map<String, String> avgAttributeMap = new HashMap<>();
-        for (String key : firstMap.keySet()) {
-            String firstValue = firstMap.get(key);
+        for (Map.Entry<String, String> entry : firstMap.entrySet()) {
+            String key = entry.getKey();
+            String firstValue = entry.getValue();
             //Keep any attributes that match in all cases (should include activity and resource).
             if (caseAttMaps.stream().allMatch(m -> m.get(key).equals(firstValue))) {
                 avgAttributeMap.put(key, firstMap.get(key));

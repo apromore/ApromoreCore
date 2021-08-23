@@ -11,7 +11,6 @@ import org.eclipse.collections.impl.factory.primitive.ObjectLongMaps;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class TraceVariantBPMNDiagram extends SimpleBPMNDiagram {
@@ -39,7 +38,8 @@ public class TraceVariantBPMNDiagram extends SimpleBPMNDiagram {
             int node1Value = valueTrace.get(node1Index);
             int node2Index = i;
             int node2Value = valueTrace.get(node2Index);
-            BPMNNode node1=null, node2=null;
+            BPMNNode node1 = null;
+            BPMNNode node2 = null;
             if (!createdNodes.containsKey(node1Index)) {
                 node1 = this.addNode(node1Value);
                 nodeDurationMap.put(node1, (long) avgDurationTraces[node1Index]);

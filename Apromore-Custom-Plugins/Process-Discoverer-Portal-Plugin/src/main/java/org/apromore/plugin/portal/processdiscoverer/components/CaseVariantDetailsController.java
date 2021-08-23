@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.apromore.apmlog.ATrace;
 import org.apromore.logman.attribute.log.AttributeLog;
 import org.apromore.logman.attribute.log.AttributeTrace;
 import org.apromore.plugin.portal.processdiscoverer.InteractiveMode;
@@ -98,7 +99,7 @@ public class CaseVariantDetailsController extends DataListController {
         activityToAttributeMap.clear();
         AttributeLog attLog = parent.getProcessAnalyst().getAttributeLog();
         List<String> caseIds = parent.getProcessAnalyst().getCaseVariantGroupMap().get(caseVariantId)
-                .stream().map(t -> t.getCaseId()).collect(Collectors.toList());
+                .stream().map(ATrace::getCaseId).collect(Collectors.toList());
 
         //Use first case to get number of activities (they should all have the same number of activities).
         AttributeTrace firstAttTrace = attLog.getTraceFromTraceId(caseIds.get(0));
@@ -124,8 +125,8 @@ public class CaseVariantDetailsController extends DataListController {
      */
     private void updateActivityToAttributeMapClient() {
         JSONObject json = new JSONObject();
-        for (String nodeId : activityToAttributeMap.keySet()) {
-            json.put(nodeId, makeJSONArray(activityToAttributeMap.get(nodeId)));
+        for (Map.Entry<String, Map<String, String>> entry : activityToAttributeMap.entrySet()) {
+            json.put(entry.getKey(), makeJSONArray(entry.getValue()));
         }
         Clients.evalJavaScript("Ap.pd.updateActivityToAttributeMap(" + json.toString() + ")");
     }
@@ -176,7 +177,6 @@ public class CaseVariantDetailsController extends DataListController {
                         //Disables buttons in PD and updates canvas
                         parent.showTrace(result.getVisualizedText());
                     } catch (Exception e) {
-                        // LOGGER.error(e.getMessage());
                         Messagebox.show("Fail to show trace variant details for the selected case variant");
                     }
                 }
@@ -213,9 +213,8 @@ public class CaseVariantDetailsController extends DataListController {
     private PageDefinition getPageDefinition(String uri) throws IOException {
         String url = "static/" + uri;
         Execution current = Executions.getCurrent();
-        PageDefinition pageDefinition = current.getPageDefinitionDirectly(
+        return current.getPageDefinitionDirectly(
                 new InputStreamReader(getClass().getClassLoader().getResourceAsStream(url)), "zul");
-        return pageDefinition;
     }
 
 }

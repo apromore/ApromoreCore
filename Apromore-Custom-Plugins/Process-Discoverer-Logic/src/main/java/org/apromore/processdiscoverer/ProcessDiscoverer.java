@@ -132,8 +132,8 @@ public class ProcessDiscoverer {
     }
 
     // This method is one-off to view a trace variant
-    public Abstraction generateTraceVariantAbstraction(@NonNull AttributeLog log, @NonNull List<String> traceIDs, @NonNull AbstractionParams params) throws Exception {
-        List<AttributeTrace> attTraces = traceIDs.stream().map(id -> log.getTraceFromTraceId(id))
+    public Abstraction generateTraceVariantAbstraction(@NonNull AttributeLog log, @NonNull List<String> traceIDs, @NonNull AbstractionParams params) {
+        List<AttributeTrace> attTraces = traceIDs.stream().map(log::getTraceFromTraceId)
                 .filter(Objects::nonNull).collect(Collectors.toList());
         return new TraceVariantAbstraction(attTraces, log, params);
     }

@@ -20,12 +20,12 @@ public class TraceVariantAbstraction  extends AbstractAbstraction {
 
     @Override
     protected void updateNodeWeights(AbstractionParams params) {
-        // TODO Auto-generated method stub
+        //Do nothing
     }
 
     @Override
     protected void updateArcWeights(AbstractionParams params) {
-        // TODO Auto-generated method stub
+        //Do nothing
     }
 
     @Override
