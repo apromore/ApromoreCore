@@ -129,7 +129,7 @@ public class Calendars extends SelectorComposer<Window> {
     public void onClickAddNewCalendar() {
         CalendarModel model;
         try {
-            String calendarName = "Business Calendar 9-to-5 created on " + DateTimeUtils.humanize(LocalDateTime.now());
+            String calendarName = "Business Calendar 9 to 5 created on " + DateTimeUtils.humanize(LocalDateTime.now());
             model = calendarService.createBusinessCalendar(calendarName, true, ZoneId.systemDefault().toString());
             populateCalendarList();
             Long calendarId = model.getId();
