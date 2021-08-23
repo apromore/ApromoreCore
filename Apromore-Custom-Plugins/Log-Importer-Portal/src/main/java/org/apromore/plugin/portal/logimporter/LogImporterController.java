@@ -525,7 +525,8 @@ public class LogImporterController extends SelectorComposer<Window> implements C
             maskBtn.setId(MASK_CHECKBOX_ID + pos);
             maskBtn.setTooltiptext(getLabels().getString("Anonymize"));
             maskBtn.setMold("switch");
-            maskBtn.setIconSclass("ap-icon-anonymous");
+            // maskBtn.setIconSclass("ap-icon-anonymous");
+            maskBtn.setSclass("ap-iconized-checkbox");
 
             Button formatBtn = new Button();
             Span parsedIcon = new Span();
