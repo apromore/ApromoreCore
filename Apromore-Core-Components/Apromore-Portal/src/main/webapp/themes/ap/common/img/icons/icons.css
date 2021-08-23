@@ -73,6 +73,11 @@
     width: 26px !important;
 }
 
+.ap-icon-anonymous {
+    background-image: url('anonymous.svg') !important;
+    width: 27.7578125px !important;
+}
+
 .ap-icon-arrow-down {
     background-image: url('arrow-down.svg') !important;
     width: 26px !important;
