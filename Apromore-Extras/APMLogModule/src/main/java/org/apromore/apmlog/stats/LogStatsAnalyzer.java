@@ -130,8 +130,16 @@ public class LogStatsAnalyzer {
     }
 
     public static Map<Integer, List<ATrace>> getCaseVariantGroupMap(List<ATrace> traces) {
+        Map<Integer, List<ATrace>> groupByExistingId = traces.parallelStream()
+                .collect(Collectors.groupingByConcurrent(x -> x.getCaseVariantId()));
+
         Map<String, List<ATrace>> groups = traces.parallelStream()
                 .collect(Collectors.groupingByConcurrent(x -> x.getCaseVariantIndicator()));
+
+        //Use existing case variant ids if they have been generated.
+        if (groupByExistingId.size() == groups.size()) {
+            return groupByExistingId;
+        }
 
         List<Map.Entry<String, List<ATrace>>> sorted = groups.entrySet().stream()
                 .sorted( (f1, f2) -> Long.compare(f2.getValue().size(), f1.getValue().size()) )
