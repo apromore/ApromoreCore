@@ -41,7 +41,6 @@ import lombok.Setter;
 @Entity
 @Table(name = "job", uniqueConstraints = {@UniqueConstraint(columnNames = {"dag_id"})})
 @Configurable("job")
-
 @Setter
 public class JobDao implements Serializable {
 
