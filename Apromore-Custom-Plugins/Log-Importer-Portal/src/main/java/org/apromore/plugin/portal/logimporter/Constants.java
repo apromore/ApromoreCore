@@ -84,4 +84,7 @@ interface Constants {
     String AUTO_PARSED = "autoParsed";
     String MANUAL_PARSED = "manualParsed";
     String ERROR_PARSING = "errorParsing";
+
+    String HEADER_COLUMN_ID = "headerColumn_";
+    String MASK_CHECKBOX_ID = "maskCheckbox_";
 }
