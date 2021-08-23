@@ -20,6 +20,7 @@ package org.apromore.plugin.portal.processdiscoverer;
 import static org.junit.Assert.assertEquals;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import org.apromore.commons.datetime.DateTimeUtils;
@@ -28,6 +29,7 @@ import org.apromore.logman.attribute.AttributeType;
 import org.apromore.logman.attribute.log.AttributeInfo;
 import org.apromore.logman.attribute.log.AttributeLog;
 import org.apromore.plugin.portal.processdiscoverer.data.CaseDetails;
+import org.apromore.plugin.portal.processdiscoverer.data.CaseVariantDetails;
 import org.apromore.plugin.portal.processdiscoverer.data.PerspectiveDetails;
 import org.deckfour.xes.model.XAttributeTimestamp;
 import org.deckfour.xes.model.XLog;
@@ -75,7 +77,20 @@ public class PDAnalystTest extends TestDataSetup {
         assertEquals(1, caseDetails.get(0).getCaseVariantId());
         assertEquals(1, caseDetails.get(0).getCaseEvents());
     }
-    
+
+    @Test
+    public void test_getCaseVariantDetails() throws Exception {
+        PDAnalyst analyst = createPDAnalyst(readLogWithOneTraceOneEvent());
+        List<CaseVariantDetails> caseVariantDetails = analyst.getCaseVariantDetails();
+        assertEquals(1, caseVariantDetails.size());
+        assertEquals(1, caseVariantDetails.get(0).getCaseVariantId());
+        assertEquals(1, caseVariantDetails.get(0).getActivityInstances());
+        assertEquals(0, caseVariantDetails.get(0).getAvgDuration(), 0);
+        assertEquals("instant", caseVariantDetails.get(0).getAvgDurationStr());
+        assertEquals(1, caseVariantDetails.get(0).getFreq(), 0);
+        assertEquals("100%", caseVariantDetails.get(0).getFreqStr());
+    }
+
     @Test
     public void test_getActivityDetails() throws Exception {
         PDAnalyst analyst = createPDAnalyst(readLogWithOneTraceOneEvent());
@@ -252,6 +267,20 @@ public class PDAnalystTest extends TestDataSetup {
         assertEquals(3, attLog.getTraces().get(0).getValueTrace().size());
         assertEquals(4, attLog.getTraces().get(1).getValueTrace().size());
 
+    }
+
+    @Test
+    public void test_getActivityAttributeAverageMap() throws Exception {
+        PDAnalyst analyst = createPDAnalyst(readLogWithTwoTraceOneVariant());
+        Map<String, String> activityAverages = analyst.getActivityAttributeAverageMap(1, 1);
+
+        Map<String, String> expectedMap = Map.of(
+                "concept:name", "a",
+                "lifecycle:transition", "complete",
+                "riskLevelNumber", "3.0"
+        );
+
+        assertEquals(expectedMap, activityAverages);
     }
     
 }

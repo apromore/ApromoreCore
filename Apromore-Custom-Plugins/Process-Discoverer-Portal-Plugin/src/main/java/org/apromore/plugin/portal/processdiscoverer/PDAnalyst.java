@@ -25,7 +25,6 @@ package org.apromore.plugin.portal.processdiscoverer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -514,16 +513,13 @@ public class PDAnalyst {
      * @param index the index of the activity in the cases of this case variant.
      * @return
      */
-    public Map<String, String> getCaseVariantActivityAttributeAverages(int caseVariantID, int index) {
-        Map<String, String> avgAttributeMap = new HashMap<>();
-        List<String> caseIds = caseVariantGroupMap.get(caseVariantID).stream()
-                .map(t -> t.getCaseId()).collect(Collectors.toList());
-        List<Map<String, String>> caseAttMaps = caseIds.stream()
-                .map(id -> attLog.getTraceFromTraceId(id).getAttributeMapAtIndex(index))
+    public Map<String, String> getActivityAttributeAverageMap(int caseVariantID, int index) {
+        List<Map<String, String>> caseAttMaps = caseVariantGroupMap.get(caseVariantID).stream()
+                .map(t -> attLog.getTraceFromTraceId(t.getCaseId()).getAttributeMapAtIndex(index))
                 .collect(Collectors.toList());
 
         Map<String, String> firstMap = caseAttMaps.get(0);
-
+        Map<String, String> avgAttributeMap = new HashMap<>();
         for (String key : firstMap.keySet()) {
             String firstValue = firstMap.get(key);
             //Keep any attributes that match in all cases (should include activity and resource).
@@ -532,7 +528,8 @@ public class PDAnalyst {
             } else {
                 try {
                     //Get average of any numerical attributes
-                    double average = caseAttMaps.stream().mapToDouble(m -> Double.parseDouble(m.get(key)))
+                    double average = caseAttMaps.stream()
+                            .mapToDouble(m -> Double.parseDouble(m.get(key)))
                             .average().orElseThrow();
 
                     avgAttributeMap.put(key, String.valueOf(average));

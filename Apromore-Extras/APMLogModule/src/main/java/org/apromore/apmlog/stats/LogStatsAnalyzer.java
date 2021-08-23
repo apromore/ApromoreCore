@@ -30,6 +30,7 @@ import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.BitSet;
@@ -137,7 +138,7 @@ public class LogStatsAnalyzer {
                 .collect(Collectors.groupingByConcurrent(x -> x.getCaseVariantIndicator()));
 
         //Use existing case variant ids if they have been generated.
-        if (groupByExistingId.size() == groups.size()) {
+        if (!traces.stream().anyMatch(t -> t.getCaseVariantId() == 0)) {
             return groupByExistingId;
         }
 

@@ -11,6 +11,7 @@ import org.eclipse.collections.impl.factory.primitive.ObjectLongMaps;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class TraceVariantBPMNDiagram extends SimpleBPMNDiagram {
@@ -27,8 +28,10 @@ public class TraceVariantBPMNDiagram extends SimpleBPMNDiagram {
 
         //Get average durationTrace
         double[] avgDurationTraces = IntStream.range(0, numDurTraces).boxed()
-                .mapToDouble(i -> attTraces.stream().mapToLong(t -> t.getDurationTrace().get(i)).sum() /
-                        Double.valueOf(numDurTraces)).toArray();
+                .mapToDouble(i -> IntStream.range(0, attTraces.size())
+                        .mapToDouble(attIndex -> attTraces.get(attIndex).getDurationTrace().get(i))
+                        .sum() / Double.valueOf(attTraces.size()))
+                .toArray();
 
         Map<Integer, BPMNNode> createdNodes = new HashMap<>();
         for(int i=1; i<valueTrace.size(); i++) {

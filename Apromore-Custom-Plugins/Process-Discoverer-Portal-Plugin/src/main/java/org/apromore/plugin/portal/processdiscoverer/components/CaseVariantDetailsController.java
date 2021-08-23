@@ -109,7 +109,7 @@ public class CaseVariantDetailsController extends DataListController {
 
                 //Get map with activity attribute averages of cases in the case variant.
                 Map<String, String> nonStandardisedMap = parent.getProcessAnalyst()
-                        .getCaseVariantActivityAttributeAverages(caseVariantId, index);
+                        .getActivityAttributeAverageMap(caseVariantId, index);
                 activityToAttributeMap.put(node.getId().toString(),
                         attStandardizer.standardizedAttributeMap(nonStandardisedMap));
                 if (!diagram.getOutEdges(node).isEmpty())
