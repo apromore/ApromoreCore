@@ -35,6 +35,7 @@ export default class BPMNModelWrapper {
             callBack: callBack,
             id: editorContainerId,
             fullscreen: true,
+            preventFitDelay: true,
             enabledPlugins: [window.Apromore.I18N.View.zoomIn,
                             window.Apromore.I18N.View.zoomOut,
                             window.Apromore.I18N.View.zoomFitToModel]
