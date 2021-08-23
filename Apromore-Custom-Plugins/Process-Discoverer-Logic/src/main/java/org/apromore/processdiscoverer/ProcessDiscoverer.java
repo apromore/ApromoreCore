@@ -28,10 +28,15 @@ import org.apromore.logman.attribute.log.AttributeTrace;
 import org.apromore.processdiscoverer.abstraction.BPMNAbstraction;
 import org.apromore.processdiscoverer.abstraction.DFGAbstraction;
 import org.apromore.processdiscoverer.abstraction.TraceAbstraction;
+import org.apromore.processdiscoverer.abstraction.TraceVariantAbstraction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import lombok.NonNull;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * ProcessDiscoverer is in charge of creating graph and BPMN abstractions from logs.
@@ -124,6 +129,13 @@ public class ProcessDiscoverer {
         }
        
         return new TraceAbstraction(attTrace, log, params);
+    }
+
+    // This method is one-off to view a trace variant
+    public Abstraction generateTraceVariantAbstraction(@NonNull AttributeLog log, @NonNull List<String> traceIDs, @NonNull AbstractionParams params) throws Exception {
+        List<AttributeTrace> attTraces = traceIDs.stream().map(id -> log.getTraceFromTraceId(id))
+                .filter(Objects::nonNull).collect(Collectors.toList());
+        return new TraceVariantAbstraction(attTraces, log, params);
     }
     
     // A door to clean up memory as PD logic is memory-intensive

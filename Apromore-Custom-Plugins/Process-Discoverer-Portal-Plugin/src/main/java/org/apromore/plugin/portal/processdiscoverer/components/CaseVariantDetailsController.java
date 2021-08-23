@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apromore.logman.attribute.log.AttributeLog;
 import org.apromore.logman.attribute.log.AttributeTrace;
@@ -36,7 +37,7 @@ import org.apromore.plugin.portal.processdiscoverer.PDController;
 import org.apromore.plugin.portal.processdiscoverer.data.CaseVariantDetails;
 import org.apromore.plugin.portal.processdiscoverer.data.OutputData;
 import org.apromore.plugin.portal.processdiscoverer.utils.AttributesStandardizer;
-import org.apromore.processdiscoverer.bpmn.TraceBPMNDiagram;
+import org.apromore.processdiscoverer.bpmn.TraceVariantBPMNDiagram;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNNode;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -93,15 +94,24 @@ public class CaseVariantDetailsController extends DataListController {
     /**
      * Update Activity <-> Attributes Map for quick lookup
      **/
-    private void updateActivityToAttributeMap(String caseId, TraceBPMNDiagram diagram) {
+    private void updateActivityToAttributeMap(int caseVariantId, TraceVariantBPMNDiagram diagram) {
         activityToAttributeMap.clear();
         AttributeLog attLog = parent.getProcessAnalyst().getAttributeLog();
-        AttributeTrace attTrace = attLog.getTraceFromTraceId(caseId);
-        if (attTrace != null) {
+        List<String> caseIds = parent.getProcessAnalyst().getCaseVariantGroupMap().get(caseVariantId)
+                .stream().map(t -> t.getCaseId()).collect(Collectors.toList());
+
+        //Use first case to get number of activities (they should all have the same number of activities).
+        AttributeTrace firstAttTrace = attLog.getTraceFromTraceId(caseIds.get(0));
+
+        if (firstAttTrace != null) {
             BPMNNode node = diagram.getStartNode();
-            for (int index = 0; index < attTrace.getValueTrace().size(); index++) {
+            for (int index = 0; index < firstAttTrace.getValueTrace().size(); index++) {
+
+                //Get map with activity attribute averages of cases in the case variant.
+                Map<String, String> nonStandardisedMap = parent.getProcessAnalyst()
+                        .getCaseVariantActivityAttributeAverages(caseVariantId, index);
                 activityToAttributeMap.put(node.getId().toString(),
-                        attStandardizer.standardizedAttributeMap(attTrace.getAttributeMapAtIndex(index)));
+                        attStandardizer.standardizedAttributeMap(nonStandardisedMap));
                 if (!diagram.getOutEdges(node).isEmpty())
                     node = diagram.getOutEdges(node).iterator().next().getTarget();
             }
@@ -158,16 +168,16 @@ public class CaseVariantDetailsController extends DataListController {
                     if (disabled)
                         return;
                     try {
-                        String traceID =
-                                ((Listcell) (listbox.getSelectedItem()).getChildren().get(0)).getLabel();
-                        OutputData result =
-                                parent.getProcessAnalyst().discoverTrace(traceID, parent.getUserOptions());
-                        updateActivityToAttributeMap(traceID,
-                                (TraceBPMNDiagram) result.getAbstraction().getDiagram());
+                        String caseVariantIDLabel = ((Listcell) (listbox.getSelectedItem()).getChildren().get(0)).getLabel();
+                        int caseVariantID = Integer.parseInt(caseVariantIDLabel);
+                        OutputData result = parent.getProcessAnalyst().discoverTraceVariant(caseVariantID, parent.getUserOptions());
+                        //Update map used for node tooltips
+                        updateActivityToAttributeMap(caseVariantID, (TraceVariantBPMNDiagram) result.getAbstraction().getDiagram());
+                        //Disables buttons in PD and updates canvas
                         parent.showTrace(result.getVisualizedText());
                     } catch (Exception e) {
                         // LOGGER.error(e.getMessage());
-                        Messagebox.show("Fail to show trace detail for the selected case variant");
+                        Messagebox.show("Fail to show trace variant details for the selected case variant");
                     }
                 }
             });
