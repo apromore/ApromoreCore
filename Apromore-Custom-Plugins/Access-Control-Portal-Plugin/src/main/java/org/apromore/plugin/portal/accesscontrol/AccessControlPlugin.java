@@ -36,9 +36,9 @@ import org.apromore.plugin.portal.accesscontrol.controllers.SecuritySetupControl
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.ItemHelpers;
 import org.apromore.portal.common.UserSessionManager;
-import org.apromore.portal.common.notification.Notification;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.service.SecurityService;
+import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import org.zkoss.web.Attributes;

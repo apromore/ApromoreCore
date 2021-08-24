@@ -42,6 +42,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
@@ -150,7 +151,10 @@ public class CalendarItemRenderer implements ListitemRenderer {
             @Override
             public void onEvent(Event event) throws Exception {
                 removeCalendar(calendarItem.getId());
+                //Update listbox. onSelect is sent when an item is selected or deselected.
+                Listbox listbox = listItem.getListbox();
                 listItem.detach();
+                Events.sendEvent(Events.ON_SELECT, listbox, null);
             }
         });
 
