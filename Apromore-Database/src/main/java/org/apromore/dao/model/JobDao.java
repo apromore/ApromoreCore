@@ -53,6 +53,7 @@ public class JobDao implements Serializable {
   private String schedule;
   private String username;
   private String pipelineName;
+  private boolean error;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -94,6 +95,11 @@ public class JobDao implements Serializable {
   @Column(name = "pipeline_name")
   public String getPipelineName() {
     return pipelineName;
+  }
+
+  @Column(name = "error")
+  public boolean getError() {
+    return error;
   }
 
   @Embedded

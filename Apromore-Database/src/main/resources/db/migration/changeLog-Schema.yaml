@@ -1142,3 +1142,15 @@ databaseChangeLog:
                  name: port
                  type: VARCHAR(5)
 
+
+ - changeSet:
+     id: 20212408060250
+     author: mtomar
+     changes:
+       - addColumn:
+           tableName: job
+           columns:
+             - column:
+                 name: error
+                 type: boolean
+                 defaultValue: false
