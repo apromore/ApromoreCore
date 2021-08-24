@@ -196,7 +196,7 @@ public class LogImporterController extends SelectorComposer<Window> implements C
                     Messagebox.show(getLabel("failedImportEncoding"), getLabel("error"), Messagebox.OK,
                             Messagebox.ERROR);
                 } finally {
-                    if (logMetaData != null && sampleLog.size() > 0) {
+                    if (logMetaData != null && sampleLog.isEmpty()) {
                         setUpUI();
                     }
                 }
@@ -209,7 +209,7 @@ public class LogImporterController extends SelectorComposer<Window> implements C
             int offset = timeZone.getRawOffset() / 1000;
             int hour = offset / 3600;
             int minutes = (offset % 3600) / 60;
-            ListModelList model = getTimeZoneList();
+            ListModelList<String> model = getTimeZoneList();
             String defaultValue = String.format("(GMT%+d:%02d) %s", hour, minutes, timeZone.getID());
 
             model.addToSelection(defaultValue);
@@ -543,12 +543,8 @@ public class LogImporterController extends SelectorComposer<Window> implements C
             formatBtn.setIconSclass("z-icon-wrench");
 
             final int fi = pos;
-            formatBtn.addEventListener(Events.ON_CLICK, event -> {
-                openPopUpBox(fi);
-            });
-            maskBtn.addEventListener(Events.ON_CHECK, event -> {
-                applyMask(fi);
-            });
+            formatBtn.addEventListener(Events.ON_CLICK, event -> openPopUpBox(fi));
+            maskBtn.addEventListener(Events.ON_CHECK, event -> applyMask(fi));
             formatBtns[pos] = formatBtn;
             parsedIcons[pos] = parsedIcon;
 
@@ -1100,9 +1096,7 @@ public class LogImporterController extends SelectorComposer<Window> implements C
         }
 
         Button downloadBtn = (Button) errorPopUp.getFellow(DOWNLOAD_REPORT_BTN_ID);
-        downloadBtn.addEventListener(Events.ON_CLICK, event -> {
-            downloadErrorLog(errorReport);
-        });
+        downloadBtn.addEventListener(Events.ON_CLICK, event -> downloadErrorLog(errorReport));
 
         Button skipRows = (Button) errorPopUp.getFellow(SKIP_ROWS_BTN_ID);
         skipRows.addEventListener(Events.ON_CLICK, event -> {

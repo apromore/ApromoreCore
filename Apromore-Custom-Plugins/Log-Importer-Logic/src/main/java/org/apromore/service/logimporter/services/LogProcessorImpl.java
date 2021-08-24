@@ -40,7 +40,7 @@ import static org.apromore.service.logimporter.dateparser.DateUtil.parseToTimest
  */
 public class LogProcessorImpl implements LogProcessor {
 
-    public List<Integer> maskPos;
+    private List<Integer> maskPos;
 
     @Override
     public LogEventModelExt processLog(List<String> line, List<String> header, LogMetaData logMetaData, int lineIndex,
@@ -157,7 +157,7 @@ public class LogProcessorImpl implements LogProcessor {
         if (maskPos == null) {
             return false;
         } else {
-            return maskPos.contains((Integer) pos);
+            return maskPos.contains(pos);
         }
     }
 }
