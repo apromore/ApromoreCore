@@ -102,6 +102,7 @@ public class Calendars extends SelectorComposer<Window> {
         Integer logId = (Integer) Executions.getCurrent().getArg().get("logId");
         applyCalendarBtn.setDisabled(true);
         restoreBtn.setDisabled(true);
+        restoreBtn.setVisible(false); //Remove this line once the restore feature is implemented. Hide button for now.
         calendarEventQueue = EventQueues.lookup(CalendarService.EVENT_TOPIC, false);
 
         CalendarItemRenderer itemRenderer = new CalendarItemRenderer(calendarService);
@@ -175,7 +176,7 @@ public class Calendars extends SelectorComposer<Window> {
 
     @Listen("onClick = #restoreBtn")
     public void onClickRestoreBtn() {
-        //Add restore feature here
+        //TODO: Add restore feature here
         getSelf().detach();
         String logName = selectedLog.getValue();
         String infoText = String.format("Log %s's original calendar has been restored", logName);
