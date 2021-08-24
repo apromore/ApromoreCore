@@ -130,7 +130,7 @@ public class CalendarItemRenderer implements ListitemRenderer {
 
         OffsetDateTime created = calendarItem.getCreated();
 		renderTextCell(listItem, DateTimeUtils.humanize(created));
-        Listcell editAction = renderIconCell(listItem, "ap-icon ap-icon-user-edit", "Edit calendar");
+        Listcell editAction = renderIconCell(listItem, "ap-icon ap-icon-calendar-edit", "Edit calendar");
         Listcell removeAction = renderIconCell(listItem, "ap-icon ap-icon-trash", "Delete calendar");
 
         nameCell.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
