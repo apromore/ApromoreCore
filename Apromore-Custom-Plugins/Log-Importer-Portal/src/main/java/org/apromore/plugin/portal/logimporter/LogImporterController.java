@@ -525,7 +525,6 @@ public class LogImporterController extends SelectorComposer<Window> implements C
             maskBtn.setId(MASK_CHECKBOX_ID + pos);
             maskBtn.setTooltiptext(getLabels().getString("Anonymize"));
             maskBtn.setMold("switch");
-            // maskBtn.setIconSclass("ap-icon-anonymous");
             maskBtn.setSclass("ap-iconized-checkbox");
 
             Button formatBtn = new Button();
@@ -899,6 +898,8 @@ public class LogImporterController extends SelectorComposer<Window> implements C
             case OTHER_TIMESTAMP_LABEL:
                 logMetaData.getOtherTimestamps().put(pos, format);
                 break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + timestampLabel);
         }
     }
 
@@ -920,7 +921,6 @@ public class LogImporterController extends SelectorComposer<Window> implements C
               maskPos.remove((Integer) pos);
             }
         }
-        System.out.println(logMetaData.getMaskPos());
     }
 
     private void closePopUpBox(int pos) {
