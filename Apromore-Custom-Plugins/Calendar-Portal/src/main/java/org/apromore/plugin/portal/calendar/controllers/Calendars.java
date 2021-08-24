@@ -184,11 +184,7 @@ public class Calendars extends SelectorComposer<Window> {
     }
 
     private void updateApplyCalendarButton() {
-        if (calendarListbox.getSelectedCount() > 0) {
-            applyCalendarBtn.setDisabled(false);
-        } else {
-            applyCalendarBtn.setDisabled(true);
-        }
+        applyCalendarBtn.setDisabled(calendarListbox.getSelectedCount() <= 0);
     }
 
 }
