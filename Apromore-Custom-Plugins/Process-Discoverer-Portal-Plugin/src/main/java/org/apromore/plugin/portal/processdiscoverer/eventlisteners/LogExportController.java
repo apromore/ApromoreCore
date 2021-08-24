@@ -35,7 +35,7 @@ import org.apromore.plugin.portal.processdiscoverer.components.AbstractControlle
 import org.apromore.plugin.portal.processdiscoverer.data.ContextData;
 import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
 import org.apromore.plugin.portal.processdiscoverer.utils.InputDialog;
-import org.apromore.portal.common.notification.Notification;
+import org.apromore.zk.notification.Notification;
 import org.deckfour.xes.model.XLog;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;

@@ -23,9 +23,7 @@
 package org.apromore.plugin.portal.processdiscoverer.plugins;
 
 import java.util.Locale;
-
 import javax.inject.Inject;
-
 import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.logfilter.generic.LogFilterPlugin;
@@ -64,6 +62,12 @@ public class PDFrequencyPlugin extends PDAbstractPlugin {
         return Labels.getLabel("plugin_discover_title_text", groupLabel);
     }
 
+    @Override
+    public String getIconPath() {
+        return "discover_model.svg";
+    }
+
+    
     @Override
 	public void setLabel(String label) {
         this.label = label;

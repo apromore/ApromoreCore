@@ -26,15 +26,14 @@ import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apromore.calendar.exception.CalendarAlreadyExistsException;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.calendar.service.CalendarService;
 import org.apromore.commons.datetime.DateTimeUtils;
-import org.apromore.portal.common.notification.Notification;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.calendar.CalendarItemRenderer;
 import org.apromore.plugin.portal.calendar.pageutil.PageUtils;
+import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
@@ -101,8 +100,7 @@ public class Calendars extends SelectorComposer<Window> {
     public void initialize() {
         Integer logId = (Integer) Executions.getCurrent().getArg().get("logId");
         applyCalendarBtn.setDisabled(true);
-        restoreBtn.setDisabled(true);
-        restoreBtn.setVisible(false); //Remove this line once the restore feature is implemented. Hide button for now.
+        restoreBtn.setDisabled(true);       
         calendarEventQueue = EventQueues.lookup(CalendarService.EVENT_TOPIC, false);
 
         CalendarItemRenderer itemRenderer = new CalendarItemRenderer(calendarService);
@@ -136,12 +134,13 @@ public class Calendars extends SelectorComposer<Window> {
 
     @Listen("onClick = #selectBtn")
     public void onClickPublishBtn() {
+      String logName = selectedLog.getValue();
+      String infoText = String.format("Custom calendar applied to log %s", logName);
+      Notification.info(infoText);
         calendarEventQueue.publish(new Event("onCalendarPublish", null,
                 ((CalendarModel) calendarListModel.getSelection().iterator().next()).getId()));
         getSelf().detach();
-        String logName = selectedLog.getValue();
-        String infoText = String.format("Custom calendar applied to log %s", logName);
-        Notification.info(infoText);
+       
     }
 
     @Listen("onClick = #addNewCalendarBtn")
@@ -176,7 +175,7 @@ public class Calendars extends SelectorComposer<Window> {
 
     @Listen("onClick = #restoreBtn")
     public void onClickRestoreBtn() {
-        //TODO: Add restore feature here
+      calendarEventQueue.publish(new Event("onCalendarPublish", null,null));
         getSelf().detach();
         String logName = selectedLog.getValue();
         String infoText = String.format("Log %s's original calendar has been restored", logName);

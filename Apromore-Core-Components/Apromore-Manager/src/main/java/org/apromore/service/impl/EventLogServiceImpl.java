@@ -23,7 +23,20 @@
  */
 package org.apromore.service.impl;
 
-import lombok.Getter;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import javax.activation.DataHandler;
+import javax.inject.Inject;
+import javax.mail.util.ByteArrayDataSource;
 import org.apromore.apmlog.APMLog;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.calendar.service.CalendarService;
@@ -80,23 +93,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.activation.DataHandler;
-import javax.inject.Inject;
-import javax.mail.util.ByteArrayDataSource;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import lombok.Getter;
 
 /**
  * Implementation of the ProcessService Contract.
@@ -531,9 +528,10 @@ public class EventLogServiceImpl implements EventLogService {
 
     @Override
     public void updateCalendarForLog(Integer logId, Long calenderId) {
-
-	Log log = logRepo.findUniqueByID(logId);
-	CustomCalendar calendar = customCalendarRepository.findById(calenderId).get();
+     
+    calenderId=(Long) Objects.requireNonNullElse(calenderId, 0L);
+    Log log = logRepo.findUniqueByID(logId);
+	CustomCalendar calendar = customCalendarRepository.findById(calenderId).orElse(null);
 	log.setCalendar(calendar);
 	logRepo.saveAndFlush(log);
 
