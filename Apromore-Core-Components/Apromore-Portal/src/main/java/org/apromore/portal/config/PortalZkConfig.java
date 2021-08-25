@@ -27,8 +27,7 @@ public class PortalZkConfig {
     WebApps.getCurrent().setAppName("Apromore");
     WebApps.getCurrent().getConfiguration().setDebugJS(true);
 
-    Library.setProperty("org.zkoss.theme.preferred", "chiaroscuro_c");
-    // Library.setProperty("org.zkoss.theme.preferred", "sapphire");
+    Library.setProperty("org.zkoss.theme.preferred", "iceblue_c");
     Library.setProperty("org.zkoss.theme.atlantic.useGoogleFont.disabled", "true");
     Library.setProperty("org.zkoss.zk.ui.WebApp.name", "Apromore");
     Library.setProperty("org.zkoss.zul.grid.rod", "true");
