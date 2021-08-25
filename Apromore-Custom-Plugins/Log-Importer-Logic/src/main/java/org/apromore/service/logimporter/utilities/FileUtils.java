@@ -21,14 +21,17 @@
  */
 package org.apromore.service.logimporter.utilities;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 
+/**
+ * @author frankma
+ */
 public class FileUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FileUtils.class);
@@ -44,5 +47,9 @@ public class FileUtils {
             LOGGER.error("Temp file \"{}\" is scheduled for deletion as previous attempt was failed: {}", file,
                     e.getMessage());
         }
+    }
+
+    public static String sha256Hashing (String originalString) {
+        return DigestUtils.sha256Hex(originalString);
     }
 }
