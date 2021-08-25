@@ -99,7 +99,6 @@ public class Calendars extends SelectorComposer<Window> {
 
     public void initialize() {
         Integer logId = (Integer) Executions.getCurrent().getArg().get("logId");
-        applyCalendarBtn.setDisabled(true);
         restoreBtn.setDisabled(true);       
         calendarEventQueue = EventQueues.lookup(CalendarService.EVENT_TOPIC, false);
 
@@ -118,12 +117,12 @@ public class Calendars extends SelectorComposer<Window> {
             calendarListModel.add(model);
             if (model.getId().equals(selectedCalendarId)) {
                 calendarListModel.addToSelection(model);
-                applyCalendarBtn.setDisabled(false);
                 restoreBtn.setDisabled(false);
             }
 
         }
         calendarListbox.setModel(calendarListModel);
+        updateApplyCalendarButton();
     }
 
     @Listen("onClick = #cancelBtn")

@@ -45,6 +45,7 @@
 
 .ap-calendar-log-detail > span {
     vertical-align: middle;
+    font-weight: 700;
 }
 
 .ap-period-picker-wrapper {
@@ -232,7 +233,7 @@
     background: transparent !important;
 }
 
-.ap-inline-textbox.z-textbox {
+.ap-inline-textbox.z-textbox, .ap-inline-textbox.z-textbox[readonly]:focus {
     border: none;
     background: transparent;
 }
