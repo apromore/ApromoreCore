@@ -19,10 +19,9 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.portal.common.notification;
+package org.apromore.zk.notification;
 
 import org.zkoss.zk.ui.util.Clients;
-import org.apromore.portal.common.notification.NotificationType;
 
 /**
  * Utilities to abstract notification
