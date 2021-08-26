@@ -72,7 +72,7 @@ public class LogProcessorImpl implements LogProcessor {
                     header.get(logMetaData.getActivityPos()), "Activity is empty or has a null value!"));
             validRow = false;
         } else if (applyMask(logMetaData.getActivityPos())) {
-            activity = FileUtils.sha256Hashing(caseId);
+            activity = FileUtils.sha256Hashing(activity);
         }
 
         // End Timestamp
@@ -117,7 +117,7 @@ public class LogProcessorImpl implements LogProcessor {
                         header.get(logMetaData.getResourcePos()), "Resource is empty or has a null value!"));
                 validRow = false;
             } else if (applyMask(logMetaData.getResourcePos())) {
-                resource = FileUtils.sha256Hashing(caseId);
+                resource = FileUtils.sha256Hashing(resource);
             }
         }
 
