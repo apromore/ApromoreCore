@@ -564,3 +564,44 @@ div.ap-window-footer-actions {
 .ap-user-menu .z-icon-caret-down:before {
     display: none;
 }
+
+/* Checkbox with icon */
+
+.z-checkbox-switch.ap-iconized-checkbox {
+    width: 42px;
+    height: 24px;
+    line-height: 28px !important;
+}
+
+.z-checkbox-switch.ap-iconized-checkbox .z-checkbox-mold {
+    width: 36px;
+    height: 22px;
+    background-color: #60707a;
+}
+
+.z-checkbox-switch-on.ap-iconized-checkbox .z-checkbox-mold {
+    background-color: var(--ap-c-oceanic-light-1) !important;
+}
+
+.z-checkbox-switch.ap-iconized-checkbox .z-checkbox-mold:before {
+    width: 18px;
+    height: 18px;
+    left: 2px;
+    top: 2px;
+    color: white;
+    background-color: white;
+    background-image: url(../../common/img/icons/anonymous.svg) !important;
+    background-repeat: no-repeat;
+    background-size: 14px 14px !important;
+    background-position: center;
+    opacity: 0.5;
+}
+
+.z-checkbox-switch-on.ap-iconized-checkbox .z-checkbox-mold:before {
+    opacity: 1;
+    -webkit-transform: translateX(14px);
+    -moz-transform: translateX(14px);
+    -o-transform: translateX(14px);
+    -ms-transform: translateX(14px);
+    transform: translateX(14px);
+}

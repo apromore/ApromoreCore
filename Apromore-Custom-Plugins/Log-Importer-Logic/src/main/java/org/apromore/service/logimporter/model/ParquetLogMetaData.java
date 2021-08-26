@@ -21,12 +21,14 @@
  */
 package org.apromore.service.logimporter.model;
 
+import lombok.EqualsAndHashCode;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import lombok.Data;
 
 import java.io.File;
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class ParquetLogMetaData extends LogMetaData {
     @JsonIgnore
