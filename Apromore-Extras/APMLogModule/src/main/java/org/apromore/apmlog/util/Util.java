@@ -43,8 +43,8 @@ public class Util {
     public static final DecimalFormat df2 = new DecimalFormat("###############.##");
     public static final DecimalFormat df0 = new DecimalFormat("###############");
 
-    private static final double year = 1000.0D * 60 * 60 * 24 * 365;
-    private static final double month = 1000.0D * 60 * 60 * 24 * 30.4166666667;
+    private static final double year = 1000.0D * 60 * 60 * 24 * 365.25;
+    private static final double month = 1000.0D * 60 * 60 * 24 * (365.25 / 12);
     private static final double week = 1000.0D * 60 * 60 * 24 * 7;
     private static final double day = 1000.0D * 60 * 60 * 24;
     private static final double hour = 1000.0D *  60 * 60;
