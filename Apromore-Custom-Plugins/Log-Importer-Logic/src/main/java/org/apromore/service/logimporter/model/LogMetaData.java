@@ -49,11 +49,16 @@ public class LogMetaData {
     private int resourcePos = HEADER_ABSENT;
     private List<Integer> caseAttributesPos;
     private List<Integer> eventAttributesPos;
-    private HashMap<Integer, String> otherTimestamps; // store position as key and format as value
+    /**
+     * store position as key and format as value
+     */
+    private HashMap<Integer, String> otherTimestamps;
     private List<Integer> ignoredPos;
     private String endTimestampFormat;
     private String startTimestampFormat;
     private String timeZone;
+    private String encoding;
+    private List<Integer> maskPos;
 
     public LogMetaData(List<String> header) {
         this.header = header;
@@ -63,6 +68,8 @@ public class LogMetaData {
         otherTimestamps = new HashMap<>();
         endTimestampFormat = null;
         startTimestampFormat = null;
+        encoding = null;
+        maskPos = new ArrayList<>();
     }
 
     public void validateSample() throws Exception {
