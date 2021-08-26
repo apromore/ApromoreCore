@@ -50,6 +50,6 @@ public class FileUtils {
     }
 
     public static String sha256Hashing (String originalString) {
-        return DigestUtils.sha256Hex(originalString);
+        return DigestUtils.sha256Hex(originalString.trim());
     }
 }
