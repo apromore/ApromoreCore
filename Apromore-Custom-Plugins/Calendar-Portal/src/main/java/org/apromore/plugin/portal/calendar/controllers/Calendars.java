@@ -102,7 +102,8 @@ public class Calendars extends SelectorComposer<Window> {
         restoreBtn.setDisabled(true);       
         calendarEventQueue = EventQueues.lookup(CalendarService.EVENT_TOPIC, false);
 
-        CalendarItemRenderer itemRenderer = new CalendarItemRenderer(calendarService);
+        Long appliedCalendarId = (Long) Executions.getCurrent().getArg().get("calendarId");
+        CalendarItemRenderer itemRenderer = new CalendarItemRenderer(calendarService, appliedCalendarId);
         calendarListbox.setItemRenderer(itemRenderer);
         calendarListModel = new ListModelList<CalendarModel>();
         calendarListModel.setMultiple(false);
@@ -133,9 +134,9 @@ public class Calendars extends SelectorComposer<Window> {
 
     @Listen("onClick = #selectBtn")
     public void onClickPublishBtn() {
-      String logName = selectedLog.getValue();
-      String infoText = String.format("Custom calendar applied to log %s", logName);
-      Notification.info(infoText);
+        String logName = selectedLog.getValue();
+        String infoText = String.format("Custom calendar applied to log %s", logName);
+        Notification.info(infoText);
         calendarEventQueue.publish(new Event("onCalendarPublish", null,
                 ((CalendarModel) calendarListModel.getSelection().iterator().next()).getId()));
         getSelf().detach();
@@ -182,7 +183,7 @@ public class Calendars extends SelectorComposer<Window> {
     }
 
     private void updateApplyCalendarButton() {
-        applyCalendarBtn.setDisabled(calendarListbox.getSelectedCount() <= 0);
+        applyCalendarBtn.setDisabled(calendarListModel.getSelection().size() <= 0);
     }
 
 }

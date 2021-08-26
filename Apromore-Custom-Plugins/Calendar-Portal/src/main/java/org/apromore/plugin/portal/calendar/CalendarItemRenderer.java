@@ -43,6 +43,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
@@ -56,10 +57,12 @@ public class CalendarItemRenderer implements ListitemRenderer {
     private static Logger LOGGER = PortalLoggerFactory.getLogger(CalendarItemRenderer.class);
 
     CalendarService calendarService;
+    long appliedCalendarId;
 
-    public CalendarItemRenderer(CalendarService calendarService) {
+    public CalendarItemRenderer(CalendarService calendarService, long appliedCalendarId) {
         super();
         this.calendarService = calendarService;
+        this.appliedCalendarId = appliedCalendarId;
     }
 
     public Listcell renderCell(Listitem listItem, Component comp) {
@@ -125,12 +128,9 @@ public class CalendarItemRenderer implements ListitemRenderer {
     public void render(Listitem listItem, Object obj, int index) {
         CalendarModel calendarItem = (CalendarModel) obj;
 
-        Long selectedCalendarId = (Long) Executions.getCurrent().getArg().get("calendarId");
-        if (calendarItem.getId().equals(selectedCalendarId)) {
-            //Add apply icon
-            Listcell applyIcon = renderIconCell(listItem, "ap-icon ap-icon-check-circle", "");
+        if (calendarItem.getId().equals(appliedCalendarId)) {
+            Listcell applyIcon = renderIconCell(listItem, "ap-icon ap-icon-static ap-icon-check-circle", "Applied calendar");
         } else {
-            //render blank cell
             Listcell blankCell = renderTextCell(listItem, "");
         }
 
@@ -151,7 +151,6 @@ public class CalendarItemRenderer implements ListitemRenderer {
         textbox.addEventListener(Events.ON_OK, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
-                updateCalendarName(textbox.getValue(), calendarItem.getId());
                 textbox.setReadonly(true);
             }
         });
@@ -170,6 +169,14 @@ public class CalendarItemRenderer implements ListitemRenderer {
         Span editAction = renderIcon(actionBar, "ap-icon ap-icon-calendar-edit", "Edit");
         Span removeAction = renderIcon(actionBar, "ap-icon ap-icon-trash", "Remove");
         Listcell actionCell = renderCell(listItem, actionBar);
+
+        nameCell.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                ((ListModelList) listItem.getListbox().getModel()).addToSelection(obj);
+                Events.sendEvent(Events.ON_SELECT, listItem.getListbox(), null);
+            }
+        });
 
         renameAction.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
             @Override
