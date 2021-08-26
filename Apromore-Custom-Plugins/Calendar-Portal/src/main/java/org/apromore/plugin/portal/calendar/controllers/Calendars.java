@@ -81,6 +81,8 @@ public class Calendars extends SelectorComposer<Window> {
 
     private ListModelList<CalendarModel> calendarListModel;
 
+    private Long appliedCalendarId;
+
     public Calendars() throws Exception {
     }
 
@@ -99,10 +101,11 @@ public class Calendars extends SelectorComposer<Window> {
 
     public void initialize() {
         Integer logId = (Integer) Executions.getCurrent().getArg().get("logId");
-        restoreBtn.setDisabled(true);       
+        applyCalendarBtn.setDisabled(true);
+        restoreBtn.setDisabled(true);
         calendarEventQueue = EventQueues.lookup(CalendarService.EVENT_TOPIC, false);
 
-        Long appliedCalendarId = (Long) Executions.getCurrent().getArg().get("calendarId");
+        appliedCalendarId = (Long) Executions.getCurrent().getArg().get("calendarId");
         CalendarItemRenderer itemRenderer = new CalendarItemRenderer(calendarService, appliedCalendarId);
         calendarListbox.setItemRenderer(itemRenderer);
         calendarListModel = new ListModelList<CalendarModel>();
@@ -113,17 +116,16 @@ public class Calendars extends SelectorComposer<Window> {
     public void populateCalendarList() {
         List<CalendarModel> models = calendarService.getCalendars();
         calendarListModel.clear();
-        Long selectedCalendarId = (Long) Executions.getCurrent().getArg().get("calendarId");
         for (CalendarModel model : models) {
             calendarListModel.add(model);
-            if (model.getId().equals(selectedCalendarId)) {
+            if (model.getId().equals(appliedCalendarId)) {
                 calendarListModel.addToSelection(model);
+                applyCalendarBtn.setDisabled(false);
                 restoreBtn.setDisabled(false);
             }
 
         }
         calendarListbox.setModel(calendarListModel);
-        updateApplyCalendarButton();
     }
 
     @Listen("onClick = #cancelBtn")
@@ -150,6 +152,7 @@ public class Calendars extends SelectorComposer<Window> {
             String calendarName = "Business Calendar 9 to 5 created on " + DateTimeUtils.humanize(LocalDateTime.now());
             model = calendarService.createBusinessCalendar(calendarName, true, ZoneId.systemDefault().toString());
             populateCalendarList();
+            updateApplyCalendarButton();
             Long calendarId = model.getId();
             try {
                 Map arg = new HashMap<>();
@@ -173,6 +176,12 @@ public class Calendars extends SelectorComposer<Window> {
         updateApplyCalendarButton();
     }
 
+    @Listen("onDeleteCalendar = #calendarListbox")
+    public void onDeleteCalendarItem() {
+        updateApplyCalendarButton();
+        restoreBtn.setDisabled(calendarService.getCalendars().stream().noneMatch(c -> c.getId().equals(appliedCalendarId)));
+    }
+
     @Listen("onClick = #restoreBtn")
     public void onClickRestoreBtn() {
       calendarEventQueue.publish(new Event("onCalendarPublish", null,null));
@@ -183,7 +192,7 @@ public class Calendars extends SelectorComposer<Window> {
     }
 
     private void updateApplyCalendarButton() {
-        applyCalendarBtn.setDisabled(calendarListModel.getSelection().size() <= 0);
+        applyCalendarBtn.setDisabled(calendarListbox.getSelectedCount() <= 0);
     }
 
 }

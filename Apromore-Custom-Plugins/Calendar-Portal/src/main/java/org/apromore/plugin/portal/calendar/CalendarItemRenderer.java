@@ -174,6 +174,7 @@ public class CalendarItemRenderer implements ListitemRenderer {
             @Override
             public void onEvent(Event event) throws Exception {
                 ((ListModelList) listItem.getListbox().getModel()).addToSelection(obj);
+                listItem.setSelected(true);
                 Events.sendEvent(Events.ON_SELECT, listItem.getListbox(), null);
             }
         });
@@ -200,7 +201,7 @@ public class CalendarItemRenderer implements ListitemRenderer {
                 //Update listbox. onSelect is sent when an item is selected or deselected.
                 Listbox listbox = listItem.getListbox();
                 listItem.detach();
-                Events.sendEvent(Events.ON_SELECT, listbox, null);
+                Events.sendEvent("onDeleteCalendar", listbox, null);
             }
         });
 
