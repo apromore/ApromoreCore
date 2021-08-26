@@ -129,9 +129,9 @@ public class CalendarItemRenderer implements ListitemRenderer {
         CalendarModel calendarItem = (CalendarModel) obj;
 
         if (calendarItem.getId().equals(appliedCalendarId)) {
-            Listcell applyIcon = renderIconCell(listItem, "ap-icon ap-icon-static ap-icon-check-circle", "Applied calendar");
+            renderIconCell(listItem, "ap-icon ap-icon-static ap-icon-check-circle", "Applied calendar");
         } else {
-            Listcell blankCell = renderTextCell(listItem, "");
+            renderTextCell(listItem, "");
         }
 
         Textbox textbox = new Textbox(calendarItem.getName());
@@ -168,7 +168,7 @@ public class CalendarItemRenderer implements ListitemRenderer {
         Span renameAction = renderIcon(actionBar, "ap-icon ap-icon-rename", "Rename");
         Span editAction = renderIcon(actionBar, "ap-icon ap-icon-calendar-edit", "Edit");
         Span removeAction = renderIcon(actionBar, "ap-icon ap-icon-trash", "Remove");
-        Listcell actionCell = renderCell(listItem, actionBar);
+        renderCell(listItem, actionBar);
 
         nameCell.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
             @Override
