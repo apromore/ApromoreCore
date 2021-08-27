@@ -314,9 +314,9 @@ public class PDAnalystTest extends TestDataSetup {
     }
 
     @Test
-    public void test_discoverTraceVariant_bad_variant_ID() {
+    public void test_discoverTraceVariant_bad_variant_ID() throws Exception {
+        PDAnalyst analyst = createPDAnalyst(readLogWithOneTraceOneEvent());
         try {
-            PDAnalyst analyst = createPDAnalyst(readLogWithOneTraceOneEvent());
             analyst.discoverTraceVariant(100, null);
             fail("No exception found");
         } catch (Exception e) {
