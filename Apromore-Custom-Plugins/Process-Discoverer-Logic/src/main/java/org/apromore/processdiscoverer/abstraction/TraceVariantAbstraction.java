@@ -22,7 +22,7 @@ public class TraceVariantAbstraction  extends AbstractAbstraction {
      * @param params parameters used to generate different abstractions for a log.
      */
     public TraceVariantAbstraction(List<AttributeTrace> attTraces, AttributeLog log, AbstractionParams params)
-            throws Exception
+            throws IllegalArgumentException
     {
         super(log, params);
         this.diagram = new TraceVariantBPMNDiagram(attTraces, log);

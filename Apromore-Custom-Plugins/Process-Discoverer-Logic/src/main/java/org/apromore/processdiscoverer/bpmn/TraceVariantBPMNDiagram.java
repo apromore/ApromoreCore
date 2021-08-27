@@ -27,12 +27,12 @@ public class TraceVariantBPMNDiagram extends SimpleBPMNDiagram {
      * @param attTraces a list of traces of the same variant.
      * @param log a view of ALog based on an attribute.
      */
-    public TraceVariantBPMNDiagram(List<AttributeTrace> attTraces, AttributeLog log) throws Exception {
+    public TraceVariantBPMNDiagram(List<AttributeTrace> attTraces, AttributeLog log) throws IllegalArgumentException {
         super(log);
         //All activity labels should be the same for each trace
         IntList valueTrace = attTraces.get(0).getValueTrace();
         if (!attTraces.stream().allMatch(t -> t.getValueTrace().equals(valueTrace))) {
-            throw new Exception("All traces must be of the same variant");
+            throw new IllegalArgumentException("All traces must be of the same variant");
         }
 
         int numDurTraces = attTraces.get(0).getDurationTrace().size();

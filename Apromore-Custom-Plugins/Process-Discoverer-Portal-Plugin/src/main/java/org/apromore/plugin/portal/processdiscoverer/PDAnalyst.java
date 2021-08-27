@@ -247,9 +247,9 @@ public class PDAnalyst {
     public OutputData discoverTraceVariant(int traceVariantID, UserOptionsData userOptions) throws Exception {
         List<ATrace> traces = caseVariantGroupMap.get(traceVariantID);
         if (CollectionUtils.isEmpty(traces)) {
-            throw new Exception("No traces were found for trace variant id = " + traceVariantID);
+            throw new IllegalArgumentException("No traces were found for trace variant id = " + traceVariantID);
         } else if (traces.stream().anyMatch(t -> StringUtils.isEmpty(t.getCaseId()))) {
-            throw new Exception("At least one trace id is empty or null");
+            throw new IllegalArgumentException("At least one trace id is empty or null");
         }
 
         List<String> traceIDs = traces.stream().map(ATrace::getCaseId).collect(Collectors.toList());

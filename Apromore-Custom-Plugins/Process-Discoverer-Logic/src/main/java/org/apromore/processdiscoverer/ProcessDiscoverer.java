@@ -37,7 +37,6 @@ import lombok.NonNull;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -143,17 +142,17 @@ public class ProcessDiscoverer {
      */
     public Abstraction generateTraceVariantAbstraction(@NonNull AttributeLog log, @NonNull List<String> traceIDs, @NonNull AbstractionParams params)  throws Exception {
         if (CollectionUtils.isEmpty(traceIDs)) {
-            throw new Exception("A trace variant must contain at least one trace");
-        } else if (traceIDs.stream().anyMatch(id -> StringUtils.isEmpty(id))) {
-            throw new Exception("At least one trace id is empty or null");
+            throw new IllegalArgumentException("A trace variant must contain at least one trace");
+        } else if (traceIDs.stream().anyMatch(StringUtils::isEmpty)) {
+            throw new IllegalArgumentException("At least one trace id is empty or null");
         } else if (traceIDs.stream().anyMatch(id -> log.getTraceFromTraceId(id) == null)) {
             String traceID = traceIDs.stream().filter(id -> log.getTraceFromTraceId(id) == null).findFirst().orElse(null);
-            throw new Exception("The trace with ID = " + traceID + " is not in the current log (may have been filtered out)!");
+            throw new IllegalArgumentException("The trace with ID = " + traceID + " is not in the current log (may have been filtered out)!");
         }
 
         List<AttributeTrace> attTraces = traceIDs.stream().map(log::getTraceFromTraceId).collect(Collectors.toList());
         if (!attTraces.stream().allMatch(t -> t.getValueTrace().equals(attTraces.get(0).getValueTrace()))) {
-            throw new Exception("All traces must be of the same variant");
+            throw new IllegalArgumentException("All traces must be of the same variant");
         }
 
         return new TraceVariantAbstraction(attTraces, log, params);
