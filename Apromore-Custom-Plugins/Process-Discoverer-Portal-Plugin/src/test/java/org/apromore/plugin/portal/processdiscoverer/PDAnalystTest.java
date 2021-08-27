@@ -80,11 +80,25 @@ public class PDAnalystTest extends TestDataSetup {
 
     @Test
     public void test_getCaseVariantDetails() throws Exception {
-        PDAnalyst analyst = createPDAnalyst(readLogWithOneTraceOneEvent());
+        PDAnalyst analyst = createPDAnalyst(readLogWithTwoTraceEachTwoEvents());
         List<CaseVariantDetails> caseVariantDetails = analyst.getCaseVariantDetails();
-        assertEquals(1, caseVariantDetails.size());
+        assertEquals(2, caseVariantDetails.size());
         assertEquals(1, caseVariantDetails.get(0).getCaseVariantId());
         assertEquals(1, caseVariantDetails.get(0).getActivityInstances());
+        assertEquals(0, caseVariantDetails.get(0).getAvgDuration(), 0);
+        assertEquals("instant", caseVariantDetails.get(0).getAvgDurationStr());
+        assertEquals(0.5, caseVariantDetails.get(0).getFreq(), 0);
+        assertEquals("50%", caseVariantDetails.get(0).getFreqStr());
+    }
+
+    @Test
+    public void test_filtered_getCaseVariantDetails() throws Exception {
+        PDAnalyst analyst = createPDAnalyst(readLogWithTwoTraceEachTwoEvents());
+        analyst.filter_RemoveEventsAnyValueOfEventAttribute("a", "concept:name");
+        List<CaseVariantDetails> caseVariantDetails = analyst.getCaseVariantDetails();
+        assertEquals(1, caseVariantDetails.size());
+        assertEquals(2, caseVariantDetails.get(0).getCaseVariantId());
+        assertEquals(2, caseVariantDetails.get(0).getActivityInstances());
         assertEquals(0, caseVariantDetails.get(0).getAvgDuration(), 0);
         assertEquals("instant", caseVariantDetails.get(0).getAvgDurationStr());
         assertEquals(1, caseVariantDetails.get(0).getFreq(), 0);
@@ -271,13 +285,28 @@ public class PDAnalystTest extends TestDataSetup {
 
     @Test
     public void test_getActivityAttributeAverageMap() throws Exception {
-        PDAnalyst analyst = createPDAnalyst(readLogWithTwoTraceOneVariant());
+        PDAnalyst analyst = createPDAnalyst(readLogWithThreeTraceOneVariant());
         Map<String, String> activityAverages = analyst.getActivityAttributeAverageMap(1, 1);
 
         Map<String, String> expectedMap = Map.of(
                 "concept:name", "a",
                 "lifecycle:transition", "complete",
                 "riskLevelNumber", "3.0"
+        );
+
+        assertEquals(expectedMap, activityAverages);
+    }
+
+    @Test
+    public void test_filtered_getActivityAttributeAverageMap() throws Exception {
+        PDAnalyst analyst = createPDAnalyst(readLogWithThreeTraceOneVariant());
+        analyst.filter_RemoveTracesAnyValueOfEventAttribute("low", "riskLevelString");
+        Map<String, String> activityAverages = analyst.getActivityAttributeAverageMap(1, 1);
+
+        Map<String, String> expectedMap = Map.of(
+                "concept:name", "a",
+                "lifecycle:transition", "complete",
+                "riskLevelNumber", "3.5"
         );
 
         assertEquals(expectedMap, activityAverages);

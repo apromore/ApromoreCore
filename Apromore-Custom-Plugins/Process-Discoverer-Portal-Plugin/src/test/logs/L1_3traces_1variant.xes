@@ -39,6 +39,17 @@
     <trace>
         <string key="concept:name" value="Case2"/>
         <event>
+            <date key="time:timestamp" value="2010-10-27T20:32:19.495+10:00"/>
+            <string key="concept:name" value="a"/>
+            <string key="lifecycle:transition" value="complete"/>
+            <string key="riskLevelNumber" value="3"/>
+            <string key="riskLevelString" value="medium"/>
+        </event>
+    </trace>
+
+    <trace>
+        <string key="concept:name" value="Case3"/>
+        <event>
             <date key="time:timestamp" value="2010-10-27T22:33:19.495+10:00"/>
             <string key="concept:name" value="a"/>
             <string key="lifecycle:transition" value="complete"/>

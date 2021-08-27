@@ -13,16 +13,28 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
 
+/**
+ * A representation of a BPMN diagram which shows the average durations between traces of a trace variant.
+ */
 public class TraceVariantBPMNDiagram extends SimpleBPMNDiagram {
     private MutableObjectLongMap<BPMNNode> nodeDurationMap = ObjectLongMaps.mutable.empty();
     private MutableObjectLongMap<BPMNEdge<BPMNNode, BPMNNode>> arcDurationMap = ObjectLongMaps.mutable.empty();
     private BPMNNode startNode;
     private BPMNNode endNode;
 
-    public TraceVariantBPMNDiagram(List<AttributeTrace> attTraces, AttributeLog log) {
+    /**
+     * Constructor for creating a trace variant BPMN diagram.
+     * @param attTraces a list of traces of the same variant.
+     * @param log a view of ALog based on an attribute.
+     */
+    public TraceVariantBPMNDiagram(List<AttributeTrace> attTraces, AttributeLog log) throws Exception {
         super(log);
         //All activity labels should be the same for each trace
         IntList valueTrace = attTraces.get(0).getValueTrace();
+        if (!attTraces.stream().allMatch(t -> t.getValueTrace().equals(valueTrace))) {
+            throw new Exception("All traces must be of the same variant");
+        }
+
         int numDurTraces = attTraces.get(0).getDurationTrace().size();
 
         //Get average durationTrace

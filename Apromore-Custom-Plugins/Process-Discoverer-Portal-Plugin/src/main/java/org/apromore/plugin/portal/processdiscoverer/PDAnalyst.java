@@ -35,6 +35,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
 import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.ATrace;
 import org.apromore.apmlog.filter.APMLogFilter;
@@ -83,6 +84,7 @@ import org.deckfour.xes.model.XLog;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.ListIterable;
 import org.slf4j.Logger;
+import org.springframework.util.CollectionUtils;
 
 /**
  * PDAnalyst represents a process analyst who will performs log analysis in the form of graphs and BPMN diagrams
@@ -244,6 +246,12 @@ public class PDAnalyst {
 
     public OutputData discoverTraceVariant(int traceVariantID, UserOptionsData userOptions) throws Exception {
         List<ATrace> traces = caseVariantGroupMap.get(traceVariantID);
+        if (CollectionUtils.isEmpty(traces)) {
+            throw new Exception("No traces were found for trace variant id = " + traceVariantID);
+        } else if (traces.stream().anyMatch(t -> StringUtils.isEmpty(t.getCaseId()))) {
+            throw new Exception("At least one trace id is empty or null");
+        }
+
         List<String> traceIDs = traces.stream().map(ATrace::getCaseId).collect(Collectors.toList());
 
         AbstractionParams params = genAbstractionParamsForTrace(userOptions);
@@ -510,7 +518,8 @@ public class PDAnalyst {
      * The sequence of activities should be the same for each case of the same case variant.
      * @param caseVariantID the id of the case variant.
      * @param index the index of the activity in the cases of this case variant.
-     * @return
+     * @return a map of keys which are identical to the keys of any case attribute map of the variant
+     * to the average value of that attribute over all the cases in the variant.
      */
     public Map<String, String> getActivityAttributeAverageMap(int caseVariantID, int index) {
         List<Map<String, String>> caseAttMaps = caseVariantGroupMap.get(caseVariantID).stream()

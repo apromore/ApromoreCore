@@ -995,7 +995,7 @@ public class ProcessDiscovererTest extends LogicDataSetup {
         }
         
     }
-    
+
     @Test
     public void testTraceAbstraction_NodeDuration() {
         try {
@@ -1015,7 +1015,7 @@ public class ProcessDiscovererTest extends LogicDataSetup {
         } catch (Exception e) {
             fail("Exception occurred: " + e.getMessage());
         }
-        
+
     }
 
     @Test
@@ -1059,6 +1059,71 @@ public class ProcessDiscovererTest extends LogicDataSetup {
             }
         } catch (Exception e) {
             fail("Exception occurred: " + e.getMessage());
+        }
+    }
+
+    @Test
+    public void testTraceVariantAbstraction_NodeDuration_no_IDs() {
+        try {
+            String traceIDs[] = {};
+            Abstraction abs = discoverTraceVariantAbstraction(readLogWithStartCompleteEventsOverlapping(),
+                    new ArrayList<>(Arrays.asList(traceIDs)));
+            fail("No exception occurred");
+        } catch (Exception e) {
+            String noIDErrorMessage = "A trace variant must contain at least one trace";
+            assertEquals(noIDErrorMessage, e.getMessage());
+        }
+    }
+
+    @Test
+    public void testTraceVariantAbstraction_NodeDuration_empty_ID() {
+        try {
+            String traceIDs[] = {"Case3.0", ""};
+            Abstraction abs = discoverTraceVariantAbstraction(readLogWithStartCompleteEventsOverlapping(),
+                    new ArrayList<>(Arrays.asList(traceIDs)));
+            fail("No exception occurred");
+        } catch (Exception e) {
+            String noIDErrorMessage = "At least one trace id is empty or null";
+            assertEquals(noIDErrorMessage, e.getMessage());
+        }
+    }
+
+    @Test
+    public void testTraceVariantAbstraction_NodeDuration_null_ID() {
+        try {
+            String traceIDs[] = {"Case3.0", null};
+            Abstraction abs = discoverTraceVariantAbstraction(readLogWithStartCompleteEventsOverlapping(),
+                    new ArrayList<>(Arrays.asList(traceIDs)));
+            fail("No exception occurred");
+        } catch (Exception e) {
+            String noIDErrorMessage = "At least one trace id is empty or null";
+            assertEquals(noIDErrorMessage, e.getMessage());
+        }
+    }
+
+    @Test
+    public void testTraceVariantAbstraction_NodeDuration_ID_not_in_log() {
+        try {
+            String traceIDs[] = {"not a trace in log"};
+            Abstraction abs = discoverTraceVariantAbstraction(readLogWithStartCompleteEventsOverlapping(),
+                    new ArrayList<>(Arrays.asList(traceIDs)));
+            fail("No exception occurred");
+        } catch (Exception e) {
+            String noIDErrorMessage = "The trace with ID = not a trace in log is not in the current log (may have been filtered out)!";
+            assertEquals(noIDErrorMessage, e.getMessage());
+        }
+    }
+
+    @Test
+    public void testTraceVariantAbstraction_NodeDuration_IDs_diff_variant() {
+        try {
+            String traceIDs[] = {"Case2.0", "Case3.0"};
+            Abstraction abs = discoverTraceVariantAbstraction(readLogWithStartCompleteEventsOverlapping(),
+                    new ArrayList<>(Arrays.asList(traceIDs)));
+            fail("No exception occurred");
+        } catch (Exception e) {
+            String noIDErrorMessage = "All traces must be of the same variant";
+            assertEquals(noIDErrorMessage, e.getMessage());
         }
     }
 

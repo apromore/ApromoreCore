@@ -22,6 +22,7 @@
 
 package org.apromore.processdiscoverer;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apromore.logman.attribute.graph.filtering.FilteredGraph;
 import org.apromore.logman.attribute.log.AttributeLog;
 import org.apromore.logman.attribute.log.AttributeTrace;
@@ -33,6 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import lombok.NonNull;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Objects;
@@ -131,10 +133,29 @@ public class ProcessDiscoverer {
         return new TraceAbstraction(attTrace, log, params);
     }
 
-    // This method is one-off to view a trace variant
-    public Abstraction generateTraceVariantAbstraction(@NonNull AttributeLog log, @NonNull List<String> traceIDs, @NonNull AbstractionParams params) {
-        List<AttributeTrace> attTraces = traceIDs.stream().map(log::getTraceFromTraceId)
-                .filter(Objects::nonNull).collect(Collectors.toList());
+    /**
+     * This method is one-off to view a trace variant
+     * Create a trace variant abstraction.
+     * @param log a view of ALog based on an attribute.
+     * @param traceIDs a list of traces IDs of the same variant.
+     * @param params parameters used to generate different abstractions for a log.
+     * @return a trace variant abstraction.
+     */
+    public Abstraction generateTraceVariantAbstraction(@NonNull AttributeLog log, @NonNull List<String> traceIDs, @NonNull AbstractionParams params)  throws Exception {
+        if (CollectionUtils.isEmpty(traceIDs)) {
+            throw new Exception("A trace variant must contain at least one trace");
+        } else if (traceIDs.stream().anyMatch(id -> StringUtils.isEmpty(id))) {
+            throw new Exception("At least one trace id is empty or null");
+        } else if (traceIDs.stream().anyMatch(id -> log.getTraceFromTraceId(id) == null)) {
+            String traceID = traceIDs.stream().filter(id -> log.getTraceFromTraceId(id) == null).findFirst().orElse(null);
+            throw new Exception("The trace with ID = " + traceID + " is not in the current log (may have been filtered out)!");
+        }
+
+        List<AttributeTrace> attTraces = traceIDs.stream().map(log::getTraceFromTraceId).collect(Collectors.toList());
+        if (!attTraces.stream().allMatch(t -> t.getValueTrace().equals(attTraces.get(0).getValueTrace()))) {
+            throw new Exception("All traces must be of the same variant");
+        }
+
         return new TraceVariantAbstraction(attTraces, log, params);
     }
     

@@ -11,8 +11,19 @@ import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNNode;
 
 import java.util.List;
 
+/**
+ * Abstraction of trace variant
+ */
 public class TraceVariantAbstraction  extends AbstractAbstraction {
-    public TraceVariantAbstraction(List<AttributeTrace> attTraces, AttributeLog log, AbstractionParams params) {
+    /**
+     * A constructor to create a trace variant abstraction.
+     * @param attTraces a list of traces of the same variant.
+     * @param log a view of ALog based on an attribute.
+     * @param params parameters used to generate different abstractions for a log.
+     */
+    public TraceVariantAbstraction(List<AttributeTrace> attTraces, AttributeLog log, AbstractionParams params)
+            throws Exception
+    {
         super(log, params);
         this.diagram = new TraceVariantBPMNDiagram(attTraces, log);
         this.updateWeights(params);
