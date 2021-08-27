@@ -20,23 +20,8 @@
  * #L%
  */
 
-.ap-calendars-listbox .z-listitem-radio {
-    width: 16px;
-    height: 16px;
-    opacity: 0;
-    border: none !important;
-    background-color: transparent !important;
-    margin-right: 6px !important;
-}
-
 .ap-calendars-listbox .ap-icon {
     display: inline-block;
-}
-
-.ap-calendars-listbox .z-listitem-selected .z-listitem-radio {
-    opacity: 1;
-    background-image: url('/zkau/web/themes/ap/common/img/icons/check-circle.svg');
-    background-size: auto 16px !important;
 }
 
 .ap-calendars-listbox .z-listitem-radio .z-listitem-icon {
@@ -45,6 +30,7 @@
 
 .ap-calendar-log-detail > span {
     vertical-align: middle;
+    font-weight: 700;
 }
 
 .ap-period-picker-wrapper {
@@ -232,7 +218,7 @@
     background: transparent !important;
 }
 
-.ap-inline-textbox.z-textbox {
+.ap-inline-textbox.z-textbox, .ap-inline-textbox.z-textbox[readonly]:focus {
     border: none;
     background: transparent;
 }
@@ -240,4 +226,9 @@
 .ap-inline-textbox.z-textbox:focus {
     border: 1px solid grey;
     background: white;
+}
+
+.ap-calendars-win .z-listcell .z-listcell-content {
+    display: flex;
+    justify-content: center;
 }

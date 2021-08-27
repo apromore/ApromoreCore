@@ -81,6 +81,8 @@ public class Calendars extends SelectorComposer<Window> {
 
     private ListModelList<CalendarModel> calendarListModel;
 
+    private Long appliedCalendarId;
+
     public Calendars() throws Exception {
     }
 
@@ -100,10 +102,11 @@ public class Calendars extends SelectorComposer<Window> {
     public void initialize() {
         Integer logId = (Integer) Executions.getCurrent().getArg().get("logId");
         applyCalendarBtn.setDisabled(true);
-        restoreBtn.setDisabled(true);       
+        restoreBtn.setDisabled(true);
         calendarEventQueue = EventQueues.lookup(CalendarService.EVENT_TOPIC, false);
 
-        CalendarItemRenderer itemRenderer = new CalendarItemRenderer(calendarService);
+        appliedCalendarId = (Long) Executions.getCurrent().getArg().get("calendarId");
+        CalendarItemRenderer itemRenderer = new CalendarItemRenderer(calendarService, appliedCalendarId);
         calendarListbox.setItemRenderer(itemRenderer);
         calendarListModel = new ListModelList<CalendarModel>();
         calendarListModel.setMultiple(false);
@@ -113,10 +116,9 @@ public class Calendars extends SelectorComposer<Window> {
     public void populateCalendarList() {
         List<CalendarModel> models = calendarService.getCalendars();
         calendarListModel.clear();
-        Long selectedCalendarId = (Long) Executions.getCurrent().getArg().get("calendarId");
         for (CalendarModel model : models) {
             calendarListModel.add(model);
-            if (model.getId().equals(selectedCalendarId)) {
+            if (model.getId().equals(appliedCalendarId)) {
                 calendarListModel.addToSelection(model);
                 applyCalendarBtn.setDisabled(false);
                 restoreBtn.setDisabled(false);
@@ -134,9 +136,9 @@ public class Calendars extends SelectorComposer<Window> {
 
     @Listen("onClick = #selectBtn")
     public void onClickPublishBtn() {
-      String logName = selectedLog.getValue();
-      String infoText = String.format("Custom calendar applied to log %s", logName);
-      Notification.info(infoText);
+        String logName = selectedLog.getValue();
+        String infoText = String.format("Custom calendar applied to log %s", logName);
+        Notification.info(infoText);
         calendarEventQueue.publish(new Event("onCalendarPublish", null,
                 ((CalendarModel) calendarListModel.getSelection().iterator().next()).getId()));
         getSelf().detach();
@@ -150,6 +152,7 @@ public class Calendars extends SelectorComposer<Window> {
             String calendarName = "Business Calendar 9 to 5 created on " + DateTimeUtils.humanize(LocalDateTime.now());
             model = calendarService.createBusinessCalendar(calendarName, true, ZoneId.systemDefault().toString());
             populateCalendarList();
+            updateApplyCalendarButton();
             Long calendarId = model.getId();
             try {
                 Map arg = new HashMap<>();
@@ -171,6 +174,12 @@ public class Calendars extends SelectorComposer<Window> {
     @Listen("onSelect = #calendarListbox")
     public void onSelectCalendarItem() {
         updateApplyCalendarButton();
+    }
+
+    @Listen("onDeleteCalendar = #calendarListbox")
+    public void onDeleteCalendarItem() {
+        updateApplyCalendarButton();
+        restoreBtn.setDisabled(calendarService.getCalendars().stream().noneMatch(c -> c.getId().equals(appliedCalendarId)));
     }
 
     @Listen("onClick = #restoreBtn")
