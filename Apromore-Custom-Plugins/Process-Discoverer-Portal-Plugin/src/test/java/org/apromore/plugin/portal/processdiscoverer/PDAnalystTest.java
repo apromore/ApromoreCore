@@ -18,6 +18,7 @@
 package org.apromore.plugin.portal.processdiscoverer;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.util.List;
 import java.util.Map;
@@ -310,6 +311,18 @@ public class PDAnalystTest extends TestDataSetup {
         );
 
         assertEquals(expectedMap, activityAverages);
+    }
+
+    @Test
+    public void test_discoverTraceVariant_bad_variant_ID() {
+        try {
+            PDAnalyst analyst = createPDAnalyst(readLogWithOneTraceOneEvent());
+            analyst.discoverTraceVariant(100, null);
+            fail("No exception found");
+        } catch (Exception e) {
+            String badVariantIDMsg = "No traces were found for trace variant id = 100";
+            assertEquals(badVariantIDMsg, e.getMessage());
+        }
     }
     
 }
