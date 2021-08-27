@@ -24,7 +24,7 @@ If you are looking for the commercial edition (Apromore Enterprise Edition), che
 
 * Check out the source code using git: `git clone https://github.com/apromore/ApromoreCore.git`
 * Switch to the ApromoreCore directory: `cd ApromoreCore`
-* Check out the desired branch or tag: `git checkout development`
+* Check out the desired branch or tag: `git checkout release/v7.21`
 * Execute `mvn clean install` to compile the source code into executable bundles.
 * Execute `core-assemblies/apromore-core/target/assembly/bin/karaf` to start the server.
   <b>Note:</b> If you deploy to port 80 (or another port below 1024), you will need to run the previous command as sudo.
