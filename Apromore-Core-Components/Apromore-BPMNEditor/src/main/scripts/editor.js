@@ -142,6 +142,25 @@ Apromore.Editor = {
     },
 
     /**
+     * Any clean up needs to be done on the raw XML
+     *
+     * @todo: There might be a structured way to do this (e.g. XML parser),
+     * but this should be the fastest fix for now
+     */
+    sanitizeXML: function (xml) {
+        var REMOVE_LIST = [
+            // Empty label element breaks label editing in bpmn.io
+            /<bpmndi:BPMNLabel\s*\/>/ig,
+            /<bpmndi:BPMNLabel\s*>\s*<\/bpmndi:BPMNLabel\s*>/ig
+        ];
+
+        REMOVE_LIST.forEach(function(regex) {
+            xml = xml.replaceAll(regex, '');
+        })
+        return xml;
+    },
+
+    /**
      * Import XML into the editor.
      * This method takes time depending on the complexity of the model
      * @param {String} xml: the BPMN XML
@@ -156,6 +175,13 @@ Apromore.Editor = {
       //   }
       //   this.zoomFitToModel();
       // }.bind(this));
+
+      try {
+        xml = this.sanitizeXML(xml);
+      } catch(e) {
+        console.log('Failed to sanitize');
+        // pass
+      }
 
       //EXPERIMENTING WITH THE BELOW TO FIX ARROWS NOT SNAP TO EDGES WHEN OPENING MODELS
       //Some BPMN files are not compatible with bpmn.io
