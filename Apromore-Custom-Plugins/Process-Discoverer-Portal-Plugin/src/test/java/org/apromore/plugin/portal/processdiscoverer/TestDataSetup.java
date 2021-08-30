@@ -94,6 +94,10 @@ public class TestDataSetup {
     public XLog readLogWithTwoTraceEachTwoEvents() {
         return this.readXESFile("src/test/logs/L1_2traces_each_1event.xes");
     }
+
+    public XLog readLogWithThreeTraceOneVariant() {
+        return this.readXESFile("src/test/logs/L1_3traces_1variant.xes");
+    }
     
     public XLog readLogWithStartCompleteEventsNonOverlapping() {
         return this.readXESFile("src/test/logs/L1_start_complete_no_overlapping.xes");

@@ -45,6 +45,7 @@ import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.plugin.portal.logfilter.generic.LogFilterPlugin;
 import org.apromore.plugin.portal.processdiscoverer.actions.ActionManager;
 import org.apromore.plugin.portal.processdiscoverer.components.CaseDetailsController;
+import org.apromore.plugin.portal.processdiscoverer.components.CaseVariantDetailsController;
 import org.apromore.plugin.portal.processdiscoverer.components.GraphSettingsController;
 import org.apromore.plugin.portal.processdiscoverer.components.GraphVisController;
 import org.apromore.plugin.portal.processdiscoverer.components.LogStatsController;
@@ -147,6 +148,7 @@ public class PDController extends BaseController implements Composer<Component> 
     private final DecimalFormat decimalFormat = new DecimalFormat("##############0.##");
     private GraphVisController graphVisController;
     private CaseDetailsController caseDetailsController;
+    private CaseVariantDetailsController caseVariantDetailsController;
     private PerspectiveDetailsController perspectiveDetailsController;
     private ViewSettingsController viewSettingsController;
     private GraphSettingsController graphSettingsController;
@@ -313,6 +315,7 @@ public class PDController extends BaseController implements Composer<Component> 
             // Set up UI components
             graphVisController = pdFactory.createGraphVisController(this);
             caseDetailsController = pdFactory.createCaseDetailsController(this);
+            caseVariantDetailsController = pdFactory.createCaseVariantDetailsController(this);
             perspectiveDetailsController = pdFactory.createPerspectiveDetailsController(this);
             viewSettingsController = pdFactory.createViewSettingsController(this);
             graphSettingsController = pdFactory.createGraphSettingsController(this);
@@ -385,9 +388,11 @@ public class PDController extends BaseController implements Composer<Component> 
             mainWindow.addEventListener("onOpen", windowListener);
             mainWindow.addEventListener("onZIndex", event -> {
                 putWindowAtTop(caseDetailsController.getWindow());
+                putWindowAtTop(caseVariantDetailsController.getWindow());
                 putWindowAtTop(perspectiveDetailsController.getWindow());
             });
             mainWindow.addEventListener("onCaseDetails", event -> caseDetailsController.onEvent(event));
+            mainWindow.addEventListener("onCaseVariantDetails", event -> caseVariantDetailsController.onEvent(event));
             mainWindow.addEventListener("onPerspectiveDetails", event -> perspectiveDetailsController.onEvent(event));
         } catch (Exception ex) {
             Messagebox.show(getLabel("initEventHandlerError_message"));
@@ -613,6 +618,7 @@ public class PDController extends BaseController implements Composer<Component> 
             toolbarController.setDisabledSearch(true);
             toolbarController.toogleAnimateBtn(true);
             caseDetailsController.setDisabled(true);
+            caseVariantDetailsController.setDisabled(true);
         } else if (newMode == InteractiveMode.MODEL_MODE) {
             viewSettingsController.setDisabled(false);
             graphSettingsController.setDisabled(false);
@@ -623,6 +629,7 @@ public class PDController extends BaseController implements Composer<Component> 
             toolbarController.setDisabledAnimation(false);
             toolbarController.toogleAnimateBtn(false);
             caseDetailsController.setDisabled(false);
+            caseVariantDetailsController.setDisabled(false);
         } else if (newMode == InteractiveMode.TRACE_MODE) {
             if (this.mode == InteractiveMode.ANIMATION_MODE)
                 return false; // invalid move

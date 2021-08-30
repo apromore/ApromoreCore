@@ -23,6 +23,7 @@ package org.apromore.plugin.portal.processdiscoverer.impl.factory;
 
 import org.apromore.plugin.portal.processdiscoverer.PDController;
 import org.apromore.plugin.portal.processdiscoverer.components.CaseDetailsController;
+import org.apromore.plugin.portal.processdiscoverer.components.CaseVariantDetailsController;
 import org.apromore.plugin.portal.processdiscoverer.components.GraphSettingsController;
 import org.apromore.plugin.portal.processdiscoverer.components.GraphVisController;
 import org.apromore.plugin.portal.processdiscoverer.components.LogStatsController;
@@ -64,6 +65,11 @@ public class PDStandardFactory implements PDFactory {
     @Override
     public CaseDetailsController createCaseDetailsController(PDController pdController) throws Exception {
         return new CaseDetailsController(pdController);
+    }
+
+    @Override
+    public CaseVariantDetailsController createCaseVariantDetailsController(PDController pdController) throws Exception {
+        return new CaseVariantDetailsController(pdController);
     }
 
     @Override

@@ -636,6 +636,12 @@ PDp.showCaseDetails = function() {
     this.zkSendEvent('$win', 'onCaseDetails', {top: top + 'px', left: left + 'px'});
 }
 
+PDp.showCaseVariantDetails = function() {
+    let {left, top} = $('.ap-pd-logstats').offset();
+    left -= 700; // width of caseDetail window
+    this.zkSendEvent('$win', 'onCaseVariantDetails', {top: top + 'px', left: left + 'px'});
+}
+
 PDp.showPerspectiveDetails = function() {
     let {left, top} = $('.ap-pd-logstats').offset();
     left -= 700; // width of perspectiveDetail window

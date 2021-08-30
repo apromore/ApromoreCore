@@ -22,16 +22,22 @@
 
 package org.apromore.processdiscoverer;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apromore.logman.attribute.graph.filtering.FilteredGraph;
 import org.apromore.logman.attribute.log.AttributeLog;
 import org.apromore.logman.attribute.log.AttributeTrace;
 import org.apromore.processdiscoverer.abstraction.BPMNAbstraction;
 import org.apromore.processdiscoverer.abstraction.DFGAbstraction;
 import org.apromore.processdiscoverer.abstraction.TraceAbstraction;
+import org.apromore.processdiscoverer.abstraction.TraceVariantAbstraction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import lombok.NonNull;
+import org.springframework.util.CollectionUtils;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * ProcessDiscoverer is in charge of creating graph and BPMN abstractions from logs.
@@ -124,6 +130,32 @@ public class ProcessDiscoverer {
         }
        
         return new TraceAbstraction(attTrace, log, params);
+    }
+
+    /**
+     * This method is one-off to view a trace variant
+     * Create a trace variant abstraction.
+     * @param log a view of ALog based on an attribute.
+     * @param traceIDs a list of traces IDs of the same variant.
+     * @param params parameters used to generate different abstractions for a log.
+     * @return a trace variant abstraction.
+     */
+    public Abstraction generateTraceVariantAbstraction(@NonNull AttributeLog log, @NonNull List<String> traceIDs, @NonNull AbstractionParams params)  throws Exception {
+        if (CollectionUtils.isEmpty(traceIDs)) {
+            throw new IllegalArgumentException("A trace variant must contain at least one trace");
+        } else if (traceIDs.stream().anyMatch(StringUtils::isEmpty)) {
+            throw new IllegalArgumentException("At least one trace id is empty or null");
+        } else if (traceIDs.stream().anyMatch(id -> log.getTraceFromTraceId(id) == null)) {
+            String traceID = traceIDs.stream().filter(id -> log.getTraceFromTraceId(id) == null).findFirst().orElse(null);
+            throw new IllegalArgumentException("The trace with ID = " + traceID + " is not in the current log (may have been filtered out)!");
+        }
+
+        List<AttributeTrace> attTraces = traceIDs.stream().map(log::getTraceFromTraceId).collect(Collectors.toList());
+        if (!attTraces.stream().allMatch(t -> t.getValueTrace().equals(attTraces.get(0).getValueTrace()))) {
+            throw new IllegalArgumentException("All traces must be of the same variant");
+        }
+
+        return new TraceVariantAbstraction(attTraces, log, params);
     }
     
     // A door to clean up memory as PD logic is memory-intensive
