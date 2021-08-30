@@ -47,6 +47,10 @@
 .z-icon-caret-left:before  { content: "\f0d9"; }
 .z-icon-caret-right:before { content: "\f0da"; }
 
+.z-toolbarbutton[disabled] {
+  background-color: inherit;
+}
+
 /* Chiaroscuro ZK theme, light palette (Iceblue) */
 :root {
   color-scheme: light dark;
