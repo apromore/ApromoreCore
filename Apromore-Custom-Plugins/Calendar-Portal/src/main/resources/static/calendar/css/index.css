@@ -232,3 +232,13 @@
     display: flex;
     justify-content: center;
 }
+
+.ap-holiday-group-title {
+    padding: 7px 10px;
+    background-color: #b0b0b0;
+    color: white;
+}
+
+.ap-holiday-group-title .z-label {
+    font-weight: bold !important;
+}

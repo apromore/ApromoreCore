@@ -46,7 +46,7 @@ public class HolidayModel implements Serializable {
 	@EqualsAndHashCode.Exclude
 	private Long referenceId;
 
-	private String holidayType = "PUBLIC";
+	private HolidayType holidayType = HolidayType.PUBLIC;
 
 	private String name;
 	private String description;
@@ -57,9 +57,16 @@ public class HolidayModel implements Serializable {
 
 	@EqualsAndHashCode.Exclude
 	private String updatedBy;
-
 	
-	public HolidayModel(String holidayType, String name, String description, LocalDate holidayDate) {
+	public HolidayModel(String holidayTypeLabel, String name, String description, LocalDate holidayDate) {
+		super();
+		this.holidayType = HolidayType.valueOf(holidayTypeLabel);
+		this.name = name;
+		this.description = description;
+		this.holidayDate = holidayDate;
+	}
+
+	public HolidayModel(HolidayType holidayType, String name, String description, LocalDate holidayDate) {
 		super();
 		this.holidayType = holidayType;
 		this.name = name;
@@ -67,6 +74,9 @@ public class HolidayModel implements Serializable {
 		this.holidayDate = holidayDate;
 	}
 
+	public boolean isPublic() {
+		return HolidayType.PUBLIC.equals(holidayType);
+	}
 
 	public HolidayModel() {
 		super();
