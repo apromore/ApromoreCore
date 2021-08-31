@@ -54,6 +54,8 @@ public class JobDao implements Serializable {
   private String username;
   private String pipelineName;
   private boolean error;
+  private int scheduleVersionNumber;
+  private boolean paused;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -100,6 +102,16 @@ public class JobDao implements Serializable {
   @Column(name = "error")
   public boolean getError() {
     return error;
+  }
+
+  @Column(name = "schedule_version_number")
+  public int getScheduleVersionNumber() {
+    return scheduleVersionNumber;
+  }
+
+  @Column(name = "paused")
+  public boolean getPaused() {
+    return paused;
   }
 
   @Embedded

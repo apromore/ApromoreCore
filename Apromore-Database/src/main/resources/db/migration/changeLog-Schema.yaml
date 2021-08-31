@@ -1142,7 +1142,6 @@ databaseChangeLog:
                  name: port
                  type: VARCHAR(5)
 
-
  - changeSet:
      id: 20212408060250
      author: mtomar
@@ -1152,5 +1151,12 @@ databaseChangeLog:
            columns:
              - column:
                  name: error
-                 type: boolean
+                 type: BOOLEAN
                  defaultValue: false
+             - column:
+                 name: schedule_version_number
+                 type: INT
+                 defaultValue: 0
+             - column:
+                 name: paused
+                 type: BOOLEAN
