@@ -21,6 +21,7 @@
  */
 package org.apromore.apmlog.logobjects;
 
+import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.ATrace;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
@@ -35,8 +36,9 @@ public class ImmutableTrace extends AbstractTraceImpl implements Serializable {
                           String caseId,
                           List<ImmutableEvent> immutableEvents,
                           List<ActivityInstance> activityInstances,
-                          UnifiedMap<String, String> attributes) {
-        super(immutableIndex, caseId, immutableEvents, activityInstances, attributes);
+                          UnifiedMap<String, String> attributes,
+                          APMLog sourceLog) {
+        super(immutableIndex, caseId, immutableEvents, activityInstances, attributes, sourceLog);
         updateTimeStats();
     }
 
@@ -53,6 +55,7 @@ public class ImmutableTrace extends AbstractTraceImpl implements Serializable {
         return new ImmutableTrace(immutableIndex, caseId,
                 new ArrayList<>(immutableEvents),
                 activityInstanceClone,
-                new UnifiedMap<>(attributes));
+                new UnifiedMap<>(attributes),
+                sourceLog);
     }
 }

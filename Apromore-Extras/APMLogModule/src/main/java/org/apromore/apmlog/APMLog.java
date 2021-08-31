@@ -26,6 +26,7 @@ import org.apromore.apmlog.exceptions.CaseIdNotFoundException;
 import org.apromore.apmlog.exceptions.EmptyInputException;
 import org.apromore.apmlog.stats.CaseAttributeValue;
 import org.apromore.apmlog.stats.EventAttributeValue;
+import org.apromore.calendar.model.CalendarModel;
 import org.deckfour.xes.model.XLog;
 import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
 import org.eclipse.collections.impl.map.immutable.ImmutableUnifiedMap;
@@ -136,6 +137,14 @@ public interface APMLog {
      * @return
      */
     long getDuration();
+
+    /**
+     *
+     * @return CalendarModel if exist
+     */
+    CalendarModel getCalendarModel();
+
+    void setCalendarModel(CalendarModel calendarModel);
 
     APMLog deepClone() throws EmptyInputException;
 

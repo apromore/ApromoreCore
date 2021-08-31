@@ -25,11 +25,13 @@ import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.ATrace;
 import org.apromore.apmlog.exceptions.CaseIdNotFoundException;
 import org.apromore.apmlog.exceptions.EmptyInputException;
+import org.apromore.apmlog.filter.PTrace;
 import org.apromore.apmlog.stats.CaseAttributeValue;
 import org.apromore.apmlog.stats.EventAttributeValue;
 import org.apromore.apmlog.xes.APMLogToXLog;
 import org.apromore.apmlog.stats.LogStatsAnalyzer;
 import org.apromore.apmlog.stats.TimeStatsProcessor;
+import org.apromore.calendar.model.CalendarModel;
 import org.deckfour.xes.model.XLog;
 import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
 import org.eclipse.collections.impl.map.immutable.ImmutableUnifiedMap;
@@ -54,6 +56,8 @@ public class ImmutableLog extends AbstractLogImpl implements APMLog, Serializabl
     // ------------------------------------------------------------
     protected Map<Integer, List<ATrace>> caseVariantGroupMap;
 
+    public ImmutableLog() {}
+
     public ImmutableLog(String logName,
                         List<ATrace> traces,
                         HashBiMap<String, Integer> activityNameIndicatorMap) throws EmptyInputException {
@@ -61,6 +65,24 @@ public class ImmutableLog extends AbstractLogImpl implements APMLog, Serializabl
         setLogName(logName);
         setActivityNameIndicatorMap(activityNameIndicatorMap);
         setTraces(traces);
+    }
+
+    public void init(String logName,
+                     List<ATrace> traces,
+                     HashBiMap<String, Integer> activityNameIndicatorMap) throws EmptyInputException {
+
+        setLogName(logName);
+        setActivityNameIndicatorMap(activityNameIndicatorMap);
+        setTraces(traces);
+    }
+
+    @Override
+    public void setCalendarModel(CalendarModel calendarModel) {
+        super.setCalendarModel(calendarModel);
+
+        for (ATrace trace : traces) {
+            trace.updateTimeStats();
+        }
     }
 
     // ===============================================================================================================

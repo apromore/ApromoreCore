@@ -25,6 +25,7 @@ import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.ATrace;
 import org.apromore.apmlog.logobjects.ActivityInstance;
 import org.apromore.apmlog.filter.PLog;
+import org.apromore.calendar.model.CalendarModel;
 import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 import org.eclipse.collections.impl.list.mutable.primitive.LongArrayList;
 
@@ -32,9 +33,13 @@ import java.util.List;
 
 public class TimeStatsProcessor {
 
+    private TimeStatsProcessor() {
+        throw new IllegalStateException("Utility class");
+    }
+
     public static long getStartTime(List<ActivityInstance> activityInstances) {
         long[] allST = activityInstances.stream()
-                .mapToLong(x -> x.getStartTime())
+                .mapToLong(ActivityInstance::getStartTime)
                 .toArray();
 
         LongArrayList dalST = new LongArrayList(allST);
@@ -43,7 +48,7 @@ public class TimeStatsProcessor {
 
     public static long getEndTime(List<ActivityInstance> activityInstances) {
         long[] allET = activityInstances.stream()
-                .mapToLong(x -> x.getEndTime())
+                .mapToLong(ActivityInstance::getEndTime)
                 .toArray();
 
         LongArrayList dalET = new LongArrayList(allET);
@@ -53,24 +58,31 @@ public class TimeStatsProcessor {
     public static long getPLogDuration(PLog log) {
         long st = log.getStartTime();
         long et = log.getEndTime();
-        return et > st ? et - st : 0;
+        return log.getCalendarModel() != null ?
+                log.getCalendarModel().getDuration(new long[]{st}, new long[]{et})[0] : et > st ? et - st : 0;
     }
 
     public static long getAPMLogDuration(APMLog log) {
         long et = log.getStartTime();
         long st = log.getEndTime();
-        return et > st ? et - st : 0;
+        return log.getCalendarModel() != null ?
+                log.getCalendarModel().getDuration(new long[]{st}, new long[]{et})[0] : et > st ? et - st : 0;
     }
 
     public static DoubleArrayList getCaseDurations(List<ATrace> traces) {
-        double[] array = traces.stream().mapToDouble(x -> x.getDuration()).toArray();
+        double[] array = traces.stream().mapToDouble(ATrace::getDuration).toArray();
         return new DoubleArrayList(array);
     }
 
     public static double getCaseDuration(ATrace aTrace) {
+        CalendarModel calendarModel = aTrace.getCalendarModel();
+
         try {
             long st = aTrace.getActivityInstances().get(0).getStartTime();
             long et = aTrace.getActivityInstances().get(aTrace.getActivityInstances().size() - 1).getEndTime();
+            if (calendarModel != null)
+                return Long.valueOf(calendarModel.getDuration(new long[]{st}, new long[]{et})[0]).doubleValue();
+
             return et > st ? et - st : 0;
         } catch (Exception e) {
             return 0;
@@ -87,10 +99,8 @@ public class TimeStatsProcessor {
         double dur = activityInstances.get(activityInstances.size() - 1).getEndTime() -
                 activityInstances.get(0).getStartTime();
 
-        double utilization = ttlPT > 0 && ttlWT > 0 ? ttlPT / (ttlPT + ttlWT) :
+        return ttlPT > 0 && ttlWT > 0 ? ttlPT / (ttlPT + ttlWT) :
                 (ttlPT > 0 && ttlPT < dur ? ttlPT / dur : 1.0);
-
-        return utilization;
     }
 
     public static double getCaseUtilization(List<ActivityInstance> activityInstances) {
@@ -99,14 +109,12 @@ public class TimeStatsProcessor {
         double dur = activityInstances.get(activityInstances.size() - 1).getEndTime() -
                 activityInstances.get(0).getStartTime();
 
-        double utilization = ttlPT > 0 && ttlWT > 0 ? ttlPT / (ttlPT + ttlWT) :
+        return ttlPT > 0 && ttlWT > 0 ? ttlPT / (ttlPT + ttlWT) :
                 (ttlPT > 0 && ttlPT < dur ? ttlPT / dur : 1.0);
-
-        return utilization;
     }
 
     public static DoubleArrayList getProcessingTimes(List<ActivityInstance> activityInstances) {
-        double[] allProcTimeArray = activityInstances.stream().mapToDouble(x -> x.getDuration()).toArray();
+        double[] allProcTimeArray = activityInstances.stream().mapToDouble(ActivityInstance::getDuration).toArray();
         return new DoubleArrayList(allProcTimeArray);
     }
 
@@ -115,19 +123,28 @@ public class TimeStatsProcessor {
                 .filter(x -> x != activityInstances.get(activityInstances.size() - 1))
                 .mapToDouble(x -> getDurationBetween(x, activityInstances.get(activityInstances.indexOf(x) + 1)))
                 .toArray();
-        DoubleArrayList wtDal = new DoubleArrayList(waitTimesArray);
-        return wtDal;
+        return new DoubleArrayList(waitTimesArray);
     }
 
     private static double getDurationBetween(ActivityInstance fromNode, ActivityInstance toNode) {
-        return fromNode.getEndTime() < toNode.getStartTime() ? toNode.getStartTime() - fromNode.getEndTime() : 0;
+        long fromET = fromNode.getEndTime();
+        long toST = toNode.getStartTime();
+
+        CalendarModel calendarModel = fromNode.getCalendarModel();
+        if (calendarModel != null)
+            return Long.valueOf(calendarModel.getDuration(new long[]{fromET}, new long[]{toST})[0]).doubleValue();
+
+        return fromET < toST ? toST - fromET : 0;
     }
 
     public static double getActivityInstanceDuration(ActivityInstance activityInstance) {
-        long startTime = activityInstance.getStartTime();
-        long endTime = activityInstance.getEndTime();
-        return endTime > startTime && endTime > 0 && startTime > 0 ? endTime - startTime : 0;
-    }
+        long st = activityInstance.getStartTime();
+        long et = activityInstance.getEndTime();
+        CalendarModel calendarModel = activityInstance.getCalendarModel();
+        if (calendarModel != null)
+            return Long.valueOf(calendarModel.getDuration(new long[]{st}, new long[]{et})[0]).doubleValue();
 
+        return et > st && et > 0 && st > 0 ? et - st : 0;
+    }
 
 }
