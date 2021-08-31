@@ -52,7 +52,7 @@ public class PortalPluginResolver {
         Object portalPlugins = SpringUtil.getBean("portalPlugins");
         if (portalPlugins != null) {
             for (PortalPlugin plugin :  (List<PortalPlugin>) portalPlugins) {
-                String key = Optional.ofNullable(plugin.getID()).orElse(plugin.getLabel(Locale.getDefault()));
+                String key = Optional.ofNullable(plugin.getId()).orElse(plugin.getLabel(Locale.getDefault()));
                 portalPluginMap.put(key, plugin);
             }
             return portalPluginMap;

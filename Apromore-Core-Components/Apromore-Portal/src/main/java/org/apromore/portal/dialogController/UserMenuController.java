@@ -26,48 +26,22 @@
 
 package org.apromore.portal.dialogController;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Locale;
-import java.util.SortedMap;
-import java.util.TreeMap;
-
 import org.apromore.manager.client.ManagerService;
-import org.apromore.plugin.portal.PortalContext;
-import org.apromore.plugin.portal.PortalLoggerFactory;
-import org.apromore.plugin.portal.PortalPlugin;
-import org.apromore.portal.common.LabelConstants;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.context.PortalPluginResolver;
 import org.apromore.portal.model.UserType;
-import org.apromore.portal.util.ExplicitComparator;
 import org.apromore.service.EventLogService;
-import org.slf4j.Logger;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
-import org.zkoss.spring.SpringUtil;
-import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.Sessions;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueues;
-import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
-import org.zkoss.zul.Menu;
 import org.zkoss.zul.Menubar;
-import org.zkoss.zul.Menuitem;
-import org.zkoss.zul.Menupopup;
-
-import com.google.common.base.Strings;
 
 @VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
-public class UserMenuController extends SelectorComposer<Menubar> {
-
-    private static final Logger LOGGER = PortalLoggerFactory.getLogger(UserMenuController.class);
-
-    private Menuitem aboutMenuitem;
+public class UserMenuController extends BaseMenuController {
 
   @WireVariable("managerClient")
   private ManagerService managerService;
@@ -77,145 +51,38 @@ public class UserMenuController extends SelectorComposer<Menubar> {
 
   protected AutowireCapableBeanFactory beanFactory;
 
-    public UserMenuController() {
-
-    }
-
-    public static final String getDisplayName(UserType userType) {
-	String displayName = "";
-	String firstName = userType.getFirstName();
-	String lastName = userType.getLastName();
-
-	if (Strings.isNullOrEmpty(firstName)) {
-	    displayName = (Strings.isNullOrEmpty(lastName)) ? userType.getUsername() : lastName;
-	} else {
-	    displayName = (Strings.isNullOrEmpty(lastName)) ? firstName : lastName + ", " + firstName;
-	}
-	if (LabelConstants.TRUE.equals(Labels.getLabel(LabelConstants.IS_DISPLAYNAME_CAPITALIZED))) {
-	    displayName = displayName.toUpperCase();
-	}
-	return displayName;
-    }
-
     @Override
     public void doAfterCompose(Menubar menubar) {
-	// If there are portal plugins, create the menus for launching them
-	UserSessionManager.initializeUser(managerService, eventLogService.getConfigBean(), null, null);
-	;
-	if (!PortalPluginResolver.resolve().isEmpty()) {
+        // If there are portal plugins, create the menus for launching them
+        UserSessionManager.initializeUser(managerService, eventLogService.getConfigBean(), null, null);
 
-	    // If present, this comparator expresses the preferred ordering for menus along
-	    // the the menu
-	    // bar
-	    Comparator<String> ordering = (ExplicitComparator) SpringUtil.getBean("portalMenuOrder");
+        if (!PortalPluginResolver.resolve().isEmpty()) {
+            loadMenu(menubar, "user-menu");
 
-	    SortedMap<String, Menu> menuMap = new TreeMap<>(ordering);
-	    for (final PortalPlugin plugin : PortalPluginResolver.resolve()) {
-		PortalPlugin.Availability availability = plugin.getAvailability();
-		if (availability == PortalPlugin.Availability.UNAVAILABLE
-		        || availability == PortalPlugin.Availability.HIDDEN) {
-		    continue;
-		}
+            // The signOutQueue receives events whose data is a ZK session which has signed out
+            // If this desktop is part of a signed-out session, close the browser tab or switch to login
+            EventQueues.lookup("signOutQueue", EventQueues.DESKTOP, true)
+                    .subscribe(event -> {
+                        Session session = Sessions.getCurrent();
 
-		String group = plugin.getGroup(Locale.getDefault());
-		String menuName = plugin.getGroupLabel(Locale.getDefault());
-		String label = plugin.getLabel(Locale.getDefault());
+                        if (session != null) {
+                            if (!eventLogService.getConfigBean().getKeycloak().isEnabled()) {
+                                session.invalidate();
+                            }
+                            Executions.sendRedirect("/logout");
+                        }
+                    });
 
-		// Create a new menu if this is the first menu item within it
-		if (!menuMap.containsKey(group)) {
-		    Menu menu = new Menu(menuName);
-		    menu.appendChild(new Menupopup());
-		    menuMap.put(group, menu);
-		}
-		assert menuMap.containsKey(group);
+            // Force logout a user that has been deleted by admin
+            EventQueues.lookup("forceSignOutQueue", EventQueues.APPLICATION, true)
+                    .subscribe(event -> {
+                        Session session = Sessions.getCurrent();
 
-		// Create the menu item
-		Menu menu = menuMap.get(group);
-		Menuitem menuitem = new Menuitem();
-		if (plugin.getIconPath().startsWith("/")) {
-		    menuitem.setImage(plugin.getIconPath());
-
-		} else if (plugin.getResourceAsStream(plugin.getIconPath()) != null) {
-		    menuitem.setImage("/portalPluginResource/" + plugin.getIconPath());
-
-		} else {
-		    menuitem.setImageContent(plugin.getIcon());
-		}
-		menuitem.setLabel(label);
-		menuitem.setDisabled(plugin.getAvailability() == PortalPlugin.Availability.DISABLED);
-		menuitem.addEventListener("onClick", new EventListener<Event>() {
-		    @Override
-		    public void onEvent(Event event) throws Exception {
-			PortalContext portalContext = (PortalContext) Sessions.getCurrent()
-			        .getAttribute("portalContext");
-			plugin.execute(portalContext);
-		    }
-		});
-
-		if ("About".equals(menu.getLabel())) {
-		    aboutMenuitem = menuitem;
-		    continue;
-		}
-
-		// Insert the menu item into alphabetical position within the menu
-		Menuitem precedingMenuitem = null;
-		List<Menuitem> existingMenuitems = menu.getMenupopup().getChildren();
-		for (Menuitem existingMenuitem : existingMenuitems) {
-		    int comparison = menuitem.getLabel().compareTo(existingMenuitem.getLabel());
-
-		    if (comparison <= 0) {
-			precedingMenuitem = existingMenuitem;
-			break;
-		    }
-		}
-		menu.getMenupopup().insertBefore(menuitem, precedingMenuitem);
-
-	    }
-
-	    for (final Menu menu : menuMap.values()) {
-		if ("Account".equals(menu.getLabel())) {
-		    try {
-			Menupopup userMenupopup = menu.getMenupopup();
-			userMenupopup.insertBefore(aboutMenuitem, userMenupopup.getFirstChild());
-			UserType userType = UserSessionManager.getCurrentUser();
-			if (userType != null) {
-			    menu.setLabel(getDisplayName(userType));
-			}
-			menubar.appendChild(menu);
-		    } catch (Exception e) {
-			LOGGER.warn("Unable to set Account menu to current user name", e);
-		    }
-		}
-	    }
-
-	    // The signOutQueue receives events whose data is a ZK session which has signed
-	    // out
-	    // If this desktop is part of a signed-out session, close the browser tab or
-	    // switch to login
-	    EventQueues.lookup("signOutQueue", EventQueues.DESKTOP, true).subscribe(new EventListener() {
-		public void onEvent(Event event) {
-		    Session session = Sessions.getCurrent();
-
-		    if (session != null) {
-			if (!eventLogService.getConfigBean().getKeycloak().isEnabled()) {
-			    session.invalidate();
-			}
-			Executions.sendRedirect("/logout");
-		    }
-		}
-	    });
-
-	    // Force logout a user that has been deleted by admin
-	    EventQueues.lookup("forceSignOutQueue", EventQueues.APPLICATION, true).subscribe(new EventListener() {
-		public void onEvent(Event event) {
-		    Session session = Sessions.getCurrent();
-
-		    UserType userType = (UserType) Sessions.getCurrent().getAttribute("USER");
-		    if (session == null || event.getData().equals(userType.getUsername())) {
-			Executions.sendRedirect("/logout");
-		    }
-		}
-	    });
-	}
+                        UserType userType = (UserType) Sessions.getCurrent().getAttribute("USER");
+                        if (session == null || event.getData().equals(userType.getUsername())) {
+                            Executions.sendRedirect("/logout");
+                        }
+                    });
+        }
     }
 }

@@ -76,11 +76,6 @@ public class CSVExporterPlugin extends DefaultPortalPlugin {
     }
 
     @Override
-    public String getGroupLabel(Locale locale) {
-        return groupLabel;
-    }
-
-    @Override
     public void execute(PortalContext portalContext) {
         try {
             LogSummaryType logSummary = findSelectedLog(portalContext);

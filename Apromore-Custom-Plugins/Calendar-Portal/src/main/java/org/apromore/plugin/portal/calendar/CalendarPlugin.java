@@ -39,16 +39,10 @@ public class CalendarPlugin extends DefaultPortalPlugin {
     private static Logger LOGGER = PortalLoggerFactory.getLogger(CalendarPlugin.class);
 
     private String label = "Manage calendars";
-    private String groupLabel = "Settings";
 
     @Override
     public String getLabel(Locale locale) {
 	return label;
-    }
-
-    @Override
-    public String getGroupLabel(Locale locale) {
-	return groupLabel;
     }
 
     @Override
