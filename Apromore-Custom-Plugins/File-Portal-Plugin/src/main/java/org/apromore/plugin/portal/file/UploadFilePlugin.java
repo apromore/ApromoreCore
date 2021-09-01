@@ -39,20 +39,8 @@ public class UploadFilePlugin extends DefaultPortalPlugin {
   private static Logger LOGGER = PortalLoggerFactory.getLogger(UploadFilePlugin.class);
 
   private String label = "Upload";
-  private String groupLabel = "File";
-  private MainController mainC;
 
   // PortalPlugin overrides
-
-  @Override
-  public String getItemCode(Locale locale) {
-    return label;
-  }
-
-  @Override
-  public String getGroup(Locale locale) {
-    return "File";
-  }
 
   @Override
   public String getLabel(Locale locale) {
@@ -60,17 +48,9 @@ public class UploadFilePlugin extends DefaultPortalPlugin {
   }
 
   @Override
-  public String getGroupLabel(Locale locale) {
-    return Labels.getLabel("plugin_file_title_text", groupLabel);
-  }
-
-
-  @Override
   public String getIconPath() {
     return "upload.svg";
   }
-
-
 
   @Override
   public void execute(PortalContext portalContext) {

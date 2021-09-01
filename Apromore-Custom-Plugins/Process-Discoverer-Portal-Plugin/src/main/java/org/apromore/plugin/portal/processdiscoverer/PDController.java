@@ -65,6 +65,7 @@ import org.apromore.plugin.portal.processdiscoverer.impl.factory.PDFactory;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.BaseController;
 import org.apromore.portal.dialogController.dto.ApromoreSession;
+import org.apromore.portal.menu.PluginCatalog;
 import org.apromore.portal.model.FolderType;
 import org.apromore.portal.model.LogSummaryType;
 import org.apromore.portal.plugincontrol.PluginExecution;
@@ -434,7 +435,7 @@ public class PDController extends BaseController implements Composer<Component> 
         try {
             Map<String, PortalPlugin> portalPluginMap = portalContext.getPortalPluginMap();
             Object selectedItem = logSummary;
-            accessControlPlugin = portalPluginMap.get("ACCESS_CONTROL_PLUGIN");
+            accessControlPlugin = portalPluginMap.get(PluginCatalog.PLUGIN_ACCESS_CONTROL);
             Map arg = new HashMap<>();
             arg.put("withFolderTree", false);
             arg.put("selectedItem", selectedItem);

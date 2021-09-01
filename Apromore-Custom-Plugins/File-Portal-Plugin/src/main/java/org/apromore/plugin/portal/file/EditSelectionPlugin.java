@@ -42,29 +42,12 @@ public class EditSelectionPlugin extends DefaultPortalPlugin {
   private static Logger LOGGER = PortalLoggerFactory.getLogger(EditSelectionPlugin.class);
 
   private String label = "Edit model";
-  private String groupLabel = "Discover";
-
-  @Override
-  public String getGroup(Locale locale) {
-    return "Discover";
-  }
-
-  @Override
-  public String getItemCode(Locale locale) {
-    return "Edit model";
-  }
 
   // PortalPlugin overrides
-
 
   @Override
   public String getLabel(Locale locale) {
     return Labels.getLabel("plugin_discover_editModel_text", label);
-  }
-
-  @Override
-  public String getGroupLabel(Locale locale) {
-    return Labels.getLabel("plugin_discover_title_text", groupLabel);
   }
 
   @Override

@@ -1,0 +1,125 @@
+{
+  "configs": [
+    {
+      "id": "main-menu",
+      "groups": [
+        {
+          "id": "FILE",
+          "labelKey": "plugin_file_title_text",
+          "items": [
+            {
+              "idx": "org.apromore.plugin.portal.file.UploadFilePlugin"
+            },
+            {
+              "id": "org.apromore.plugin.portal.file.DownloadSelectionPlugin"
+            },
+            {
+              "id": "SEPARATOR"
+            },
+            {
+              "id": "org.apromore.etlplugin.portal.etlPortal.ETLPluginPortal"
+            },
+            {
+              "id": "org.apromore.jobScheduler.portal.portalService.JobSchedulerPortalImp"
+            },
+            {
+              "id": "SEPARATOR"
+            },
+            {
+              "id": "CUT"
+            },
+            {
+              "id": "COPY"
+            },
+            {
+              "id": "PASTE"
+            },
+            {
+              "id": "SEPARATOR"
+            },
+            {
+              "id": "org.apromore.plugin.portal.file.CreateFolderPlugin"
+            },
+            {
+              "id": "org.apromore.plugin.portal.file.EditSelectionMetadataPlugin"
+            },
+            {
+              "id": "org.apromore.plugin.portal.file.DeleteSelectionPlugin"
+            }
+          ]
+        },
+        {
+          "id": "DISCOVER",
+          "labelKey": "plugin_discover_title_text",
+          "items": [
+            {
+              "id": "org.apromore.plugin.portal.file.CreateProcessPlugin"
+            },
+            {
+              "id": "org.apromore.plugin.portal.processdiscoverer.plugins.PDFrequencyPlugin"
+            },
+            {
+              "id": "org.apromore.plugin.portal.file.EditSelectionPlugin"
+            },
+            {
+              "id": "org.apromore.plugin.portal.logfilteree.LogFilterEEPlugin"
+            }
+          ]
+        },
+        {
+          "id": "ANALYZE",
+          "labelKey": "plugin_analyze_title_text",
+          "items": [
+            {
+              "id": "org.apromore.plugin.portal.loganimation2.LogAnimationPlugin"
+            },
+            {
+              "id": "org.apromore.plugin.portal.bpmndiff.BPMNDiffPlugin"
+            },
+            {
+              "id": "org.apromore.plugin.portal.bimp.BIMPPortalPlugin"
+            },
+            {
+              "id": "dashboard.portal.DashboardPlugin"
+            }
+          ]
+        },
+        {
+          "id": "REDESIGN",
+          "labelKey": "plugin_redesign_title_text",
+          "items": [
+            {
+              "id": "org.apromore.plugin.merge.portal.MergePlugin"
+            },
+            {
+              "id": "org.apromore.plugin.similaritysearch.portal.SimilaritySearchPlugin"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "user-menu",
+      "groups": [
+        {
+          "id": "ACCOUNT",
+          "labelExp": "displayName",
+          "items": [
+            {
+              "id": "org.apromore.plugin.portal.aboutee.AboutEEPlugin"
+            },
+            {
+              "id": "org.apromore.plugin.portal.account.ChangePasswordPlugin"
+            },
+            {
+              "id": "org.apromore.plugin.portal.account.ReportIssuePlugin"
+            },
+            {
+              "id": "org.apromore.plugin.portal.account.SignOutPlugin"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

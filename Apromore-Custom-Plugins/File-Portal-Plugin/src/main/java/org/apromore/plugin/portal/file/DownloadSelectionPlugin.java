@@ -66,7 +66,6 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin {
   private static Logger LOGGER = PortalLoggerFactory.getLogger(DownloadSelectionPlugin.class);
 
   private String label = "Download";
-  private String groupLabel = "File";
   @Inject
   EventLogService eventLogService;
   @Inject
@@ -86,25 +85,9 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin {
   // PortalPlugin overrides
 
   @Override
-  public String getItemCode(Locale locale) {
-    return label;
-  }
-
-  @Override
-  public String getGroup(Locale locale) {
-    return "File";
-  }
-
-  @Override
   public String getLabel(Locale locale) {
     return Labels.getLabel("plugin_file_download_text", label);
   }
-
-  @Override
-  public String getGroupLabel(Locale locale) {
-    return Labels.getLabel("plugin_file_title_text", groupLabel);
-  }
-
 
   @Override
   public String getIconPath() {
