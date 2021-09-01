@@ -31,6 +31,7 @@ import org.apromore.apmlog.filter.types.OperationType;
 import org.apromore.calendar.model.CalendarModel;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Set;
 
