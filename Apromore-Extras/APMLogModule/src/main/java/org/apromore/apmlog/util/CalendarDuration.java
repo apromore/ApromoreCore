@@ -25,6 +25,6 @@ public class CalendarDuration {
     public static long getDuration(CalendarModel calendarModel, long start, long end) {
         return calendarModel != null ?
                 calendarModel.getDuration(start, end).getDuration().toMillis():
-                end > start ? (end - start) : 0;
+                start > 0 && end > start ? (end - start) : 0;
     }
 }

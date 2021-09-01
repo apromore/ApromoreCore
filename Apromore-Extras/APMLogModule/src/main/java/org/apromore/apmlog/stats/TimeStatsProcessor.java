@@ -25,6 +25,7 @@ import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.ATrace;
 import org.apromore.apmlog.logobjects.ActivityInstance;
 import org.apromore.apmlog.filter.PLog;
+import org.apromore.apmlog.util.CalendarDuration;
 import org.apromore.calendar.model.CalendarModel;
 import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 import org.eclipse.collections.impl.list.mutable.primitive.LongArrayList;
@@ -58,15 +59,13 @@ public class TimeStatsProcessor {
     public static long getPLogDuration(PLog log) {
         long st = log.getStartTime();
         long et = log.getEndTime();
-        return log.getCalendarModel() != null ?
-                log.getCalendarModel().getDuration(new long[]{st}, new long[]{et})[0] : et > st ? et - st : 0;
+        return CalendarDuration.getDuration(log.getCalendarModel(), st, et);
     }
 
     public static long getAPMLogDuration(APMLog log) {
         long et = log.getStartTime();
         long st = log.getEndTime();
-        return log.getCalendarModel() != null ?
-                log.getCalendarModel().getDuration(new long[]{st}, new long[]{et})[0] : et > st ? et - st : 0;
+        return CalendarDuration.getDuration(log.getCalendarModel(), st, et);
     }
 
     public static DoubleArrayList getCaseDurations(List<ATrace> traces) {
@@ -80,10 +79,7 @@ public class TimeStatsProcessor {
         try {
             long st = aTrace.getActivityInstances().get(0).getStartTime();
             long et = aTrace.getActivityInstances().get(aTrace.getActivityInstances().size() - 1).getEndTime();
-            if (calendarModel != null)
-                return Long.valueOf(calendarModel.getDuration(new long[]{st}, new long[]{et})[0]).doubleValue();
-
-            return et > st ? et - st : 0;
+            return CalendarDuration.getDuration(calendarModel, st, et);
         } catch (Exception e) {
             return 0;
         }
@@ -129,22 +125,15 @@ public class TimeStatsProcessor {
     private static double getDurationBetween(ActivityInstance fromNode, ActivityInstance toNode) {
         long fromET = fromNode.getEndTime();
         long toST = toNode.getStartTime();
-
         CalendarModel calendarModel = fromNode.getCalendarModel();
-        if (calendarModel != null)
-            return Long.valueOf(calendarModel.getDuration(new long[]{fromET}, new long[]{toST})[0]).doubleValue();
-
-        return fromET < toST ? toST - fromET : 0;
+        return CalendarDuration.getDuration(calendarModel, fromET, toST);
     }
 
     public static double getActivityInstanceDuration(ActivityInstance activityInstance) {
         long st = activityInstance.getStartTime();
         long et = activityInstance.getEndTime();
         CalendarModel calendarModel = activityInstance.getCalendarModel();
-        if (calendarModel != null)
-            return Long.valueOf(calendarModel.getDuration(new long[]{st}, new long[]{et})[0]).doubleValue();
-
-        return et > st && et > 0 && st > 0 ? et - st : 0;
+        return CalendarDuration.getDuration(calendarModel, st, et);
     }
 
 }
