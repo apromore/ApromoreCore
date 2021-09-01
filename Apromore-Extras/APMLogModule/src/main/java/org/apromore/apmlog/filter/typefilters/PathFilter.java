@@ -28,6 +28,7 @@ import org.apromore.apmlog.filter.rules.RuleValue;
 import org.apromore.apmlog.filter.types.Choice;
 import org.apromore.apmlog.filter.types.FilterType;
 import org.apromore.apmlog.filter.types.OperationType;
+import org.apromore.apmlog.util.CalendarDuration;
 import org.apromore.calendar.model.CalendarModel;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
@@ -309,9 +310,7 @@ public class PathFilter {
         } else {
             long st = act1.getStartTime();
             long et = act2.getEndTime();
-            duration = calendarModel != null ?
-                    Long.valueOf(calendarModel.getDuration(new long[]{st}, new long[]{et})[0]).doubleValue() :
-                    et > st ? et - st : 0;
+            duration = CalendarDuration.getDuration(calendarModel, st, et);
         }
 
         switch (operationType) {
