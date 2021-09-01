@@ -31,7 +31,6 @@ import org.apromore.apmlog.filter.types.OperationType;
 import org.apromore.calendar.model.CalendarModel;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Set;
 
@@ -311,7 +310,7 @@ public class PathFilter {
             long st = act1.getStartTime();
             long et = act2.getEndTime();
             duration = calendarModel != null ?
-                    Long.valueOf(calendarModel.getDuration(st, et).getDuration().get(ChronoUnit.MILLIS)).doubleValue() :
+                    Long.valueOf(calendarModel.getDuration(new long[]{st}, new long[]{et})[0]).doubleValue() :
                     et > st ? et - st : 0;
         }
 
