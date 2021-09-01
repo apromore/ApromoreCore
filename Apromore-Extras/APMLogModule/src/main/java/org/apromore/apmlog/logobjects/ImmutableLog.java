@@ -25,12 +25,12 @@ import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.ATrace;
 import org.apromore.apmlog.exceptions.CaseIdNotFoundException;
 import org.apromore.apmlog.exceptions.EmptyInputException;
-import org.apromore.apmlog.filter.PTrace;
 import org.apromore.apmlog.stats.CaseAttributeValue;
 import org.apromore.apmlog.stats.EventAttributeValue;
 import org.apromore.apmlog.xes.APMLogToXLog;
 import org.apromore.apmlog.stats.LogStatsAnalyzer;
 import org.apromore.apmlog.stats.TimeStatsProcessor;
+import org.apromore.calendar.builder.CalendarModelBuilder;
 import org.apromore.calendar.model.CalendarModel;
 import org.deckfour.xes.model.XLog;
 import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
@@ -62,9 +62,7 @@ public class ImmutableLog extends AbstractLogImpl implements APMLog, Serializabl
                         List<ATrace> traces,
                         HashBiMap<String, Integer> activityNameIndicatorMap) throws EmptyInputException {
 
-        setLogName(logName);
-        setActivityNameIndicatorMap(activityNameIndicatorMap);
-        setTraces(traces);
+        init(logName, traces, activityNameIndicatorMap);
     }
 
     public void init(String logName,
@@ -74,6 +72,7 @@ public class ImmutableLog extends AbstractLogImpl implements APMLog, Serializabl
         setLogName(logName);
         setActivityNameIndicatorMap(activityNameIndicatorMap);
         setTraces(traces);
+        initDefaultCalendarModel();
     }
 
     @Override

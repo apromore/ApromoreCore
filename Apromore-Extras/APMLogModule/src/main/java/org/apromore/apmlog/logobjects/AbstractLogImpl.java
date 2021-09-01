@@ -22,6 +22,7 @@
 package org.apromore.apmlog.logobjects;
 
 import org.apromore.apmlog.stats.TimeStatsProcessor;
+import org.apromore.calendar.builder.CalendarModelBuilder;
 import org.apromore.calendar.model.CalendarModel;
 import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
 
@@ -43,6 +44,7 @@ public abstract class AbstractLogImpl implements Serializable {
     protected long startTime;
     protected long endTime;
     protected CalendarModel calendarModel;
+    protected boolean assignedCustomCalendar = false;
 
     // ===============================================================================================================
     // Protected methods
@@ -54,6 +56,11 @@ public abstract class AbstractLogImpl implements Serializable {
 
     protected void setActivityNameIndicatorMap(HashBiMap<String, Integer> activityNameIndicatorMap) {
         this.activityNameIndicatorMap = activityNameIndicatorMap;
+    }
+
+    protected void initDefaultCalendarModel() {
+        CalendarModelBuilder caleBuilder = new CalendarModelBuilder();
+        calendarModel = caleBuilder.withAllDayAllTime().build();
     }
 
     // ===============================================================================================================
@@ -85,7 +92,14 @@ public abstract class AbstractLogImpl implements Serializable {
     }
 
     public CalendarModel getCalendarModel() {
+        if (calendarModel == null)
+            initDefaultCalendarModel();
+
         return calendarModel;
+    }
+
+    public boolean hasCustomCalendar() {
+        return assignedCustomCalendar;
     }
 
     // ===============================================================================================================
@@ -108,5 +122,6 @@ public abstract class AbstractLogImpl implements Serializable {
 
     public void setCalendarModel(@NotNull CalendarModel calendarModel) {
         this.calendarModel = calendarModel;
+        assignedCustomCalendar = true;
     }
 }

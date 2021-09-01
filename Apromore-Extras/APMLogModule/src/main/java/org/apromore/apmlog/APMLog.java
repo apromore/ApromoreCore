@@ -146,6 +146,12 @@ public interface APMLog {
 
     void setCalendarModel(CalendarModel calendarModel);
 
+    /**
+     * When setCalendarModel() being used to assign calendarModel, hasCustomCalendar will return true
+     * @return
+     */
+    boolean hasCustomCalendar();
+
     APMLog deepClone() throws EmptyInputException;
 
     /**
