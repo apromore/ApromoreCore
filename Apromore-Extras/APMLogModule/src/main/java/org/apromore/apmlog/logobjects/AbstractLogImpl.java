@@ -105,7 +105,7 @@ public abstract class AbstractLogImpl implements Serializable {
         this.timeZone = timeZone;
     }
 
-    public void setCalendarModel(CalendarModel calendarModel) {
+    public void setCalendarModel(@NotNull CalendarModel calendarModel) {
         this.calendarModel = calendarModel;
     }
 }

@@ -310,7 +310,7 @@ public class PathFilter {
             long st = act1.getStartTime();
             long et = act2.getEndTime();
             duration = calendarModel != null ?
-                    Long.valueOf(calendarModel.getDuration(new long[]{st}, new long[]{et})[0]).doubleValue() :
+                    Long.valueOf(calendarModel.getDuration(st, et).getDuration().get(ChronoUnit.MILLIS)).doubleValue() :
                     et > st ? et - st : 0;
         }
 
