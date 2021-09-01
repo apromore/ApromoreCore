@@ -72,7 +72,6 @@ public class ImmutableLog extends AbstractLogImpl implements APMLog, Serializabl
         setLogName(logName);
         setActivityNameIndicatorMap(activityNameIndicatorMap);
         setTraces(traces);
-        initDefaultCalendarModel();
     }
 
     @Override

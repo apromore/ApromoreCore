@@ -58,11 +58,6 @@ public abstract class AbstractLogImpl implements Serializable {
         this.activityNameIndicatorMap = activityNameIndicatorMap;
     }
 
-    protected void initDefaultCalendarModel() {
-        CalendarModelBuilder caleBuilder = new CalendarModelBuilder();
-        calendarModel = caleBuilder.withAllDayAllTime().build();
-    }
-
     // ===============================================================================================================
     // GET methods
     // ===============================================================================================================
@@ -92,8 +87,10 @@ public abstract class AbstractLogImpl implements Serializable {
     }
 
     public CalendarModel getCalendarModel() {
-        if (calendarModel == null)
-            initDefaultCalendarModel();
+        if (calendarModel == null) {
+            CalendarModelBuilder caleBuilder = new CalendarModelBuilder();
+            return caleBuilder.withAllDayAllTime().build();
+        }
 
         return calendarModel;
     }
