@@ -87,11 +87,6 @@ public abstract class AbstractLogImpl implements Serializable {
     }
 
     public CalendarModel getCalendarModel() {
-        if (calendarModel == null) {
-            CalendarModelBuilder caleBuilder = new CalendarModelBuilder();
-            return caleBuilder.withAllDayAllTime().build();
-        }
-
         return calendarModel;
     }
 
