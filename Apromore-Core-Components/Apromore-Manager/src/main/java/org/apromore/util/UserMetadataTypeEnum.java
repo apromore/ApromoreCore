@@ -28,6 +28,7 @@ import java.util.List;
  *
  * {@link org.apromore.service.impl.UserMetadataServiceImpl#saveUserMetadata(String, String, UserMetadataTypeEnum, String, List)}.
  * These user metadata type must be a subset of the ones in the database.
+ * @author frankm
  */
 
 public enum UserMetadataTypeEnum {
@@ -40,7 +41,9 @@ public enum UserMetadataTypeEnum {
     CSV_IMPORTER(3),
     LOG_ANIMATION(4),
     DASH_TEMPLATE(5),
-    SIMULATOR(6);
+    SIMULATOR(6),
+    FILTER_TEMPLATE(7),
+    PERSPECTIVE_TAG(8);
 
     private final Integer userMetadataTypeId;
 

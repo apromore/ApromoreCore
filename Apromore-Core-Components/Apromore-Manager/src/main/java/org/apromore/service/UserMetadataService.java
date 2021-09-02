@@ -203,6 +203,13 @@ public interface UserMetadataService {
     Set<Usermetadata> getUserMetadataByLog(Integer logId, UserMetadataTypeEnum userMetadataTypeEnum);
 
     /**
+     * Find perspective tag that are linked to specified Log
+     * @param logId Log Id
+     * @return Perspective tags
+     */
+    Usermetadata getPerspectiveTagByLog(Integer logId);
+
+    /**
      * Find a set of user metadata that are linked to specified User, Log and type
      *
      * @param username             Name of User
