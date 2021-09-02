@@ -43,7 +43,7 @@ public abstract class AbstractLogImpl implements Serializable {
     protected String timeZone;
     protected long startTime;
     protected long endTime;
-    protected CalendarModel calendarModel;
+    protected CalendarModel calendarModel = CalendarModel.ABSOLUTE_CALENDAR;
     protected boolean assignedCustomCalendar = false;
 
     // ===============================================================================================================
