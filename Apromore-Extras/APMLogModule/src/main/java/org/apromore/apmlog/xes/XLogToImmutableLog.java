@@ -21,6 +21,7 @@
  */
 package org.apromore.apmlog.xes;
 
+import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.ATrace;
 import org.apromore.apmlog.logobjects.ActivityInstance;
 import org.apromore.apmlog.logobjects.ImmutableEvent;
@@ -48,6 +49,10 @@ import java.util.stream.Collectors;
 
 public class XLogToImmutableLog {
 
+    private XLogToImmutableLog() {
+        throw new IllegalStateException("Utility class");
+    }
+
     public static ImmutableLog convertXLog(String logName, XLog xLog) throws EmptyInputException {
 
         validateXLog(xLog);
@@ -57,6 +62,8 @@ public class XLogToImmutableLog {
         HashBiMap<String, Integer> activityNameIndicatorMap = getActivityNameIndicatorMap(xLog);
 
         List<ATrace> traces = new ArrayList<>(xLog.size());
+
+        ImmutableLog immutableLog = new ImmutableLog();
 
         int traceIndex = 0;
         for (XTrace xTrace : xLog) {
@@ -76,7 +83,8 @@ public class XLogToImmutableLog {
                     try {
                         int actNameIndicator = activityNameIndicatorMap.get(getConceptName(xEvent));
                         ActivityInstance instance = getActivityInstance(actIndex, actNameIndicator,
-                                eventIndex, traceIndex, getConceptName(xTrace), xTrace, markedEventIndexes);
+                                eventIndex, traceIndex, getConceptName(xTrace), xTrace, markedEventIndexes,
+                                immutableLog);
 
                         activityInstances.add(instance);
                         actIndex += 1;
@@ -94,13 +102,15 @@ public class XLogToImmutableLog {
             }
 
             ImmutableTrace iTrace = new ImmutableTrace(traceIndex, getConceptName(xTrace), immutableEvents,
-                    activityInstances, caseAttributes);
+                    activityInstances, caseAttributes, immutableLog);
 
             traces.add(iTrace);
             traceIndex += 1;
         }
 
-        return new ImmutableLog(logName, traces, activityNameIndicatorMap);
+        immutableLog.init(logName, traces, activityNameIndicatorMap);
+
+        return immutableLog;
     }
 
     private static String getConceptName(XAttributable xAttributable) {
@@ -202,7 +212,8 @@ public class XLogToImmutableLog {
                                                         int traceIndex,
                                                         String traceId,
                                                         XTrace xTrace,
-                                                        List<Integer> markedEventIndexes) {
+                                                        List<Integer> markedEventIndexes,
+                                                        APMLog apmLog) {
         List<Integer> actEventIndexList = new ArrayList<>();
         boolean proceed = true;
 
@@ -274,7 +285,7 @@ public class XLogToImmutableLog {
         UnifiedMap<String, String> attributes = getAttributes(startEvent);
 
         ActivityInstance activityInstance = new ActivityInstance(actIndex, actEventIndexList, traceIndex,
-                traceId, actNameIndicator, startTime, endTime, attributes);
+                traceId, actNameIndicator, startTime, endTime, attributes, apmLog);
 
         return activityInstance;
     }

@@ -58,7 +58,6 @@ import org.zkoss.zul.Messagebox;
 
 public class LogAnimationPlugin extends DefaultPortalPlugin implements LogAnimationPluginInterface {
     private String label = ""; //initialized in Spring beans
-    private String groupLabel = ""; //initialized in Spring beans
 
     @Inject private EventLogService eventLogService;
     @Inject private LogAnimationService logAnimationService;
@@ -70,15 +69,6 @@ public class LogAnimationPlugin extends DefaultPortalPlugin implements LogAnimat
 
     public void setLabel(String label) {
         this.label = label;
-    }
-
-    @Override
-    public String getGroupLabel(Locale locale) {
-        return groupLabel;
-    }
-
-    public void setGroupLabel(String groupLabel) {
-        this.groupLabel = groupLabel;
     }
 
     @Override

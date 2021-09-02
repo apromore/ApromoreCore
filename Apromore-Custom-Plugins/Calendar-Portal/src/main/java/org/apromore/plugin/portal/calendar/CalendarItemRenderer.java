@@ -41,7 +41,9 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
@@ -55,10 +57,12 @@ public class CalendarItemRenderer implements ListitemRenderer {
     private static Logger LOGGER = PortalLoggerFactory.getLogger(CalendarItemRenderer.class);
 
     CalendarService calendarService;
+    long appliedCalendarId;
 
-    public CalendarItemRenderer(CalendarService calendarService) {
+    public CalendarItemRenderer(CalendarService calendarService, long appliedCalendarId) {
         super();
         this.calendarService = calendarService;
+        this.appliedCalendarId = appliedCalendarId;
     }
 
     public Listcell renderCell(Listitem listItem, Component comp) {
@@ -77,6 +81,14 @@ public class CalendarItemRenderer implements ListitemRenderer {
         span.setSclass(sclass);
         span.setTooltiptext(tooltip);
         return renderCell(listItem, span);
+    }
+
+    public Span renderIcon(Component parent, String sclass, String tooltip) {
+        Span span = new Span();
+        span.setSclass(sclass);
+        span.setTooltiptext(tooltip);
+        span.setParent(parent);
+        return span;
     }
 
     public void editCalendar(Long calendarId) {
@@ -116,27 +128,62 @@ public class CalendarItemRenderer implements ListitemRenderer {
     public void render(Listitem listItem, Object obj, int index) {
         CalendarModel calendarItem = (CalendarModel) obj;
 
+        if (calendarItem.getId().equals(appliedCalendarId)) {
+            renderIconCell(listItem, "ap-icon ap-icon-static ap-icon-check-circle", "Applied calendar");
+        } else {
+            renderTextCell(listItem, "");
+        }
+
         Textbox textbox = new Textbox(calendarItem.getName());
         textbox.setSubmitByEnter(true);
         textbox.setSclass("ap-inline-textbox");
         textbox.setHflex("1");
+        textbox.setReadonly(true);
         Listcell nameCell = renderCell(listItem, textbox);
         textbox.addEventListener(Events.ON_CHANGE, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
                 updateCalendarName(textbox.getValue(), calendarItem.getId());
+                textbox.setReadonly(true);
+            }
+        });
+
+        textbox.addEventListener(Events.ON_OK, new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                textbox.setReadonly(true);
+            }
+        });
+
+        textbox.addEventListener(Events.ON_BLUR, new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                textbox.setReadonly(true);
             }
         });
 
         OffsetDateTime created = calendarItem.getCreated();
 		renderTextCell(listItem, DateTimeUtils.humanize(created));
-        Listcell editAction = renderIconCell(listItem, "ap-icon ap-icon-calendar-edit", "Edit calendar");
-        Listcell removeAction = renderIconCell(listItem, "ap-icon ap-icon-trash", "Delete calendar");
+        Hlayout actionBar = new Hlayout();
+        Span renameAction = renderIcon(actionBar, "ap-icon ap-icon-rename", "Rename");
+        Span editAction = renderIcon(actionBar, "ap-icon ap-icon-calendar-edit", "Edit");
+        Span removeAction = renderIcon(actionBar, "ap-icon ap-icon-trash", "Remove");
+        renderCell(listItem, actionBar);
 
         nameCell.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
+                ((ListModelList) listItem.getListbox().getModel()).addToSelection(obj);
+                listItem.setSelected(true);
+                Events.sendEvent(Events.ON_SELECT, listItem.getListbox(), null);
+            }
+        });
+
+        renameAction.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
                 textbox.setFocus(true);
+                textbox.setReadonly(false);
             }
         });
 
@@ -154,7 +201,7 @@ public class CalendarItemRenderer implements ListitemRenderer {
                 //Update listbox. onSelect is sent when an item is selected or deselected.
                 Listbox listbox = listItem.getListbox();
                 listItem.detach();
-                Events.sendEvent(Events.ON_SELECT, listbox, null);
+                Events.sendEvent("onDeleteCalendar", listbox, null);
             }
         });
 

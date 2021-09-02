@@ -34,18 +34,12 @@ public class DebugPlugin extends DefaultPortalPlugin {
     private static Logger LOGGER = PortalLoggerFactory.getLogger(DebugPlugin.class);
 
     private String label = "Debug";
-    private String groupLabel = "Account";
 
     // PortalPlugin overrides
 
     @Override
     public String getLabel(Locale locale) {
         return label;
-    }
-
-    @Override
-    public String getGroupLabel(Locale locale) {
-        return groupLabel;
     }
 
     @Override

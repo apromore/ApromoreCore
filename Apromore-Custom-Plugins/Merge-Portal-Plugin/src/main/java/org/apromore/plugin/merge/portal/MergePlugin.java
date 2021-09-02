@@ -102,9 +102,6 @@ public class MergePlugin extends DefaultPortalPlugin {
     // DefaultPortalPlugin overrides
 
     @Override
-    public String getItemCode(Locale locale) { return "Merge models"; }
-
-    @Override
     public String getLabel(Locale locale) {
         return Labels.getLabel("plugin_redesign_mergeModels_text","Merge models");
     }
@@ -113,27 +110,6 @@ public class MergePlugin extends DefaultPortalPlugin {
     public String getIconPath() {
         return "merge_model.svg";
     }
-
-    @Override
-    public String getGroupLabel(Locale locale) {
-        return Labels.getLabel("plugin_redesign_title_text","Redesign");
-    }
-
-    @Override
-    public String getGroup(Locale locale) {
-        return "Redesign";
-    }
-
-
-//    @Override
-//    public String getLabel(Locale locale) {
-//        return "Merge models";
-//    }
-//
-//    @Override
-//    public String getGroupLabel(Locale locale) {
-//        return "Redesign";
-//    }
 
     @Override
     public void execute(PortalContext context) {

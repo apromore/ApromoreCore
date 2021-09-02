@@ -50,17 +50,17 @@
             style="padding:10px 0px 5px 10px;">
         <label value="Available custom calendars:"/>
       </hbox>
-      <listbox checkmark="true" multiple="false" sclass="ap-calendars-listbox" id="calendarListbox" vflex="1" hflex="1" nonselectableTags="input">
+      <listbox multiple="false" sclass="ap-calendars-listbox" id="calendarListbox" vflex="1" hflex="1" nonselectableTags="input">
         <listhead>
+          <listheader align="left" label="Used" width="48px"/>
           <listheader align="left" label="Name" hflex="1" />
           <listheader align="left" label="Created on" width="120px" />
-          <listheader align="center" label="" width="36px" /><!-- icon -->
-          <listheader align="center" label="" width="36px" /><!-- icon -->
+          <listheader align="center" label="Actions" width="108px"/><!-- icons -->
         </listhead>
       </listbox>
       <div sclass="ap-window-footer-actions" height="42px">
-        <button id="selectBtn" label="Apply calendar" iconSclass="z-icon-check-circle"
-                tooltiptext="Apply selected custom calendar to log"/>
+        <button id="selectBtn" label="${$composer.labels.apply_cal_text}" iconSclass="z-icon-check-circle"
+                tooltiptext="${$composer.labels.apply_cal_hint}"/>
         <button id="restoreBtn" label="Restore" iconSclass="z-icon-check-circle"
                 tooltiptext="Restore original calendar"/>
         <button id="cancelBtn" label="Cancel" iconSclass="z-icon-times-circle" />

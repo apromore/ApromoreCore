@@ -43,7 +43,8 @@ public class DateTimeUtilsUnitTest {
                 Arguments.of("2020-05-25T10:36:54.336Z", "25 May 20, 10:36"),
                 Arguments.of("May 25, 2020", "25 May 20, 00:00"),
                 Arguments.of("21-05-2020 05:33:32", "21 May 20, 05:33"),
-                Arguments.of("2020-05-21T05-33-32", "21 May 20, 05:33")
+                Arguments.of("2020-05-21T05-33-32", "21 May 20, 05:33"),
+                Arguments.of("30 Aug 21, 10:39", "30 Aug 21, 10:39")
         );
     }
 

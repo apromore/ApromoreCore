@@ -25,13 +25,17 @@ package org.apromore.plugin.portal.processdiscoverer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
 import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.ATrace;
 import org.apromore.apmlog.filter.APMLogFilter;
@@ -62,6 +66,7 @@ import org.apromore.logman.attribute.log.AttributeInfo;
 import org.apromore.logman.attribute.log.AttributeLog;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.processdiscoverer.data.CaseDetails;
+import org.apromore.plugin.portal.processdiscoverer.data.CaseVariantDetails;
 import org.apromore.plugin.portal.processdiscoverer.data.ConfigData;
 import org.apromore.plugin.portal.processdiscoverer.data.ContextData;
 import org.apromore.plugin.portal.processdiscoverer.data.InvalidDataException;
@@ -79,6 +84,7 @@ import org.deckfour.xes.model.XLog;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.ListIterable;
 import org.slf4j.Logger;
+import org.springframework.util.CollectionUtils;
 
 /**
  * PDAnalyst represents a process analyst who will performs log analysis in the form of graphs and BPMN diagrams
@@ -117,7 +123,10 @@ public class PDAnalyst {
     private APMLogFilter apmLogFilter;
     
     private int sourceLogId; // plugin maintain log ID for Filter; Filter remove value to avoid conflic from multiple plugins
-    
+
+    @Getter
+    Map<Integer, List<ATrace>> caseVariantGroupMap;
+
     // Calendar management
     CalendarModel calendarModel;
     
@@ -140,10 +149,13 @@ public class PDAnalyst {
         this.filteredAPMLog = apmLog;
         this.filteredPLog = new PLog(apmLog);
         apmLogFilter = new APMLogFilter(apmLog);
+        caseVariantGroupMap = LogStatsAnalyzer.getCaseVariantGroupMap(filteredAPMLog.getTraces());
         
         // ProcessDiscoverer logic with default attribute
         this.calendarModel = eventLogService.getCalendarFromLog(contextData.getLogId());
         if (calendarModel == null) throw new Exception("The open log doesn't have an associated calendar.");
+
+        this.originalAPMLog.setCalendarModel(this.calendarModel);
         
         this.setMainAttribute(configData.getDefaultAttribute());
         this.processDiscoverer = new ProcessDiscoverer();
@@ -230,6 +242,22 @@ public class PDAnalyst {
     public OutputData discoverTrace(String traceID, UserOptionsData userOptions) throws Exception {
         AbstractionParams params = genAbstractionParamsForTrace(userOptions);
         Abstraction traceAbs = processDiscoverer.generateTraceAbstraction(attLog, traceID, params);
+        String traceVisualization = processVisualizer.generateVisualizationText(traceAbs);
+        return new OutputData(traceAbs, traceVisualization);
+    }
+
+    public OutputData discoverTraceVariant(int traceVariantID, UserOptionsData userOptions) throws Exception {
+        List<ATrace> traces = caseVariantGroupMap.get(traceVariantID);
+        if (CollectionUtils.isEmpty(traces)) {
+            throw new IllegalArgumentException("No traces were found for trace variant id = " + traceVariantID);
+        } else if (traces.stream().anyMatch(t -> StringUtils.isEmpty(t.getCaseId()))) {
+            throw new IllegalArgumentException("At least one trace id is empty or null");
+        }
+
+        List<String> traceIDs = traces.stream().map(ATrace::getCaseId).collect(Collectors.toList());
+
+        AbstractionParams params = genAbstractionParamsForTrace(userOptions);
+        Abstraction traceAbs = processDiscoverer.generateTraceVariantAbstraction(attLog, traceIDs, params);
         String traceVisualization = processVisualizer.generateVisualizationText(traceAbs);
         return new OutputData(traceAbs, traceVisualization);
     }
@@ -438,18 +466,36 @@ public class PDAnalyst {
     public List<CaseDetails> getCaseDetails() {
         List<ATrace> traceList = filteredAPMLog.getTraces();
 
-        Map<Integer, List<ATrace>> caseVariantGroups =
-                LogStatsAnalyzer.getCaseVariantGroupMap(filteredAPMLog.getTraces());
-
-        List<CaseDetails> listResult = new ArrayList<CaseDetails>();
+        List<CaseDetails> listResult = new ArrayList<>();
         for (ATrace aTrace : traceList) {
             String caseId = aTrace.getCaseId();
             int caseEvents = aTrace.getActivityInstances().size();
             int caseVariantId = aTrace.getCaseVariantId();
-            int caseSize = caseVariantGroups.get(caseVariantId).size();
+            int caseSize = caseVariantGroupMap.get(caseVariantId).size();
             double caseVariantFreq = (double) caseSize / traceList.size();
             CaseDetails caseDetails = CaseDetails.valueOf(caseId, aTrace.getCaseIdDigit(), caseEvents, caseVariantId, caseVariantFreq);
             listResult.add(caseDetails);
+        }
+        return listResult;
+    }
+
+    public List<CaseVariantDetails> getCaseVariantDetails() {
+        long totalCases = filteredAPMLog.getTraces().size();
+
+        List<CaseVariantDetails> listResult = new ArrayList<>();
+        for (Map.Entry<Integer, List<ATrace>> entry : caseVariantGroupMap.entrySet()) {
+            List<ATrace> cases = entry.getValue();
+
+            //All cases in a case variant group should have the same number of activities
+            int caseVariantId = entry.getKey();
+            long activities = cases.get(0).getActivityInstances().size();
+            long numCases = cases.size();
+            double duration = TimeStatsProcessor.getCaseDurations(cases).average();
+            double caseVariantFreq = (double) numCases / totalCases;
+
+            CaseVariantDetails caseVariantDetails =
+                    CaseVariantDetails.valueOf(caseVariantId, activities, numCases, duration, caseVariantFreq);
+            listResult.add(caseVariantDetails);
         }
         return listResult;
     }
@@ -467,6 +513,44 @@ public class PDAnalyst {
             listResult.add(perspectiveDetails);
         }
         return listResult;
+    }
+
+    /**
+     * Create a map with the averages of attributes for the activity at the given index of a case variant.
+     * The sequence of activities should be the same for each case of the same case variant.
+     * @param caseVariantID the id of the case variant.
+     * @param index the index of the activity in the cases of this case variant.
+     * @return a map of keys which are identical to the keys of any case attribute map of the variant
+     * to the average value of that attribute over all the cases in the variant.
+     */
+    public Map<String, String> getActivityAttributeAverageMap(int caseVariantID, int index) {
+        List<Map<String, String>> caseAttMaps = caseVariantGroupMap.get(caseVariantID).stream()
+                .map(t -> attLog.getTraceFromTraceId(t.getCaseId()).getAttributeMapAtIndex(index))
+                .collect(Collectors.toList());
+
+        Map<String, String> firstMap = caseAttMaps.get(0);
+        Map<String, String> avgAttributeMap = new HashMap<>();
+        for (Map.Entry<String, String> entry : firstMap.entrySet()) {
+            String key = entry.getKey();
+            String firstValue = entry.getValue();
+            //Keep any attributes that match in all cases (should include activity and resource).
+            if (caseAttMaps.stream().allMatch(m -> m.get(key).equals(firstValue))) {
+                avgAttributeMap.put(key, firstMap.get(key));
+            } else {
+                try {
+                    //Get average of any numerical attributes
+                    double average = caseAttMaps.stream()
+                            .mapToDouble(m -> Double.parseDouble(m.get(key)))
+                            .average().orElseThrow();
+
+                    avgAttributeMap.put(key, String.valueOf(average));
+                } catch (NumberFormatException | NoSuchElementException e) {
+                    //Don't add it - it's not a number or we can't get an average!
+                }
+            }
+        }
+
+        return  avgAttributeMap;
     }
 
     public String getFilteredStartTime() {
@@ -512,6 +596,7 @@ public class PDAnalyst {
     public void updateLog(PLog pLog, APMLog apmLog) throws Exception {
         this.filteredAPMLog = apmLog;
         this.filteredPLog = pLog;
+        this.caseVariantGroupMap = LogStatsAnalyzer.getCaseVariantGroupMap(filteredAPMLog.getTraces());
         List<PTrace> pTraces = pLog.getCustomPTraceList();
         
         LogBitMap logBitMap = new LogBitMap(aLog.getOriginalTraces().size());

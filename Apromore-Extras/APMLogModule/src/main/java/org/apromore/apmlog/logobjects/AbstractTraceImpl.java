@@ -21,9 +21,11 @@
  */
 package org.apromore.apmlog.logobjects;
 
+import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.ATrace;
 import org.apromore.apmlog.stats.TimeStatsProcessor;
 import org.apromore.apmlog.util.Util;
+import org.apromore.calendar.model.CalendarModel;
 import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
@@ -34,6 +36,7 @@ import java.util.stream.Collectors;
 
 public abstract class AbstractTraceImpl implements ATrace, Serializable {
 
+    protected APMLog sourceLog;
     protected int immutableIndex;
     protected String caseId;
     protected int caseVariantId;
@@ -53,12 +56,14 @@ public abstract class AbstractTraceImpl implements ATrace, Serializable {
                              String caseId,
                              List<ImmutableEvent> immutableEvents,
                              List<ActivityInstance> activityInstances,
-                             UnifiedMap<String, String> attributes) {
+                             UnifiedMap<String, String> attributes,
+                             APMLog apmLog) {
         this.immutableIndex = immutableIndex;
         this.caseId = caseId;
         this.immutableEvents = immutableEvents;
         setActivityInstances(activityInstances);
         this.attributes = attributes;
+        this.sourceLog = apmLog;
     }
 
     // ========================================================
@@ -159,6 +164,16 @@ public abstract class AbstractTraceImpl implements ATrace, Serializable {
         return activityInstances.get(activityInstances.indexOf(activityInstance) - 1);
     }
 
+    @Override
+    public APMLog getSourceLog() {
+        return sourceLog;
+    }
+
+    @Override
+    public CalendarModel getCalendarModel() {
+        return sourceLog.getCalendarModel();
+    }
+
     // ========================================================
     // SET methods
     // ========================================================
@@ -177,7 +192,7 @@ public abstract class AbstractTraceImpl implements ATrace, Serializable {
     // ===============================================================================================================
     // Operation methods
     // ===============================================================================================================
-    protected void updateTimeStats() {
+    public void updateTimeStats() {
         processingTimes.clear();
         waitingTimes.clear();
         startTime = 0;

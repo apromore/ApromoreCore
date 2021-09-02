@@ -63,7 +63,7 @@ public final class DateTimeUtils {
             .parseDefaulting(ChronoField.HOUR_OF_DAY, 0)
             .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0)
             .parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
-            .toFormatter();
+            .toFormatter(Locale.ENGLISH);
 
     /**
      * Parse a date string in various predefined formats to a LocalDateTime
@@ -114,7 +114,7 @@ public final class DateTimeUtils {
     }
 
     public static String format(ZonedDateTime zonedDateTime, String format) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format, Locale.ENGLISH);
         return zonedDateTime.format(formatter);
     }
 

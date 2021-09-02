@@ -61,7 +61,7 @@
         <n:div id="ap-pd-chart-variant" class="ap-pd-chart" />
         <label id="lblVariantPercent"
                value="${arg.pdLabels.caseVariantsPercent_text}"/>
-        <div>
+        <div sclass="ap-link" w:onClick="Ap.pd.showCaseVariantDetails()">
           <label id="lblVariantNumberFiltered"
                  value="${arg.pdLabels.caseVariantsNumber_text}"
                  sclass="ap-variant-filtered"/>

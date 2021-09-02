@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apromore.calendar.model.HolidayModel;
+import org.apromore.calendar.model.HolidayType;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.slf4j.Logger;
 import org.zkoss.json.JSONObject;
@@ -60,7 +61,7 @@ public class ImportHolidays extends SelectorComposer<Window> {
                     JSONObject item = (JSONObject) param;
                     String name = (String) item.get("name");
                     String date = (String) item.get("date");
-                    holidays.add(new HolidayModel("PUBLIC",name,name,LocalDate.parse(date)));
+                    holidays.add(new HolidayModel(HolidayType.PUBLIC, name, name, LocalDate.parse(date)));
                 }
                 if (holidays.size() == 0) {
                     return;
