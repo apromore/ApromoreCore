@@ -182,7 +182,7 @@ public class CustomCalendarService implements CalendarService {
 	List<Holiday> holidays = new ArrayList<Holiday>();
 	for (HolidayModel h : holidayModels) {
 	    holidays.add(new Holiday(h.getId(), h.getName(), h.getDescription(), h.getHolidayDate(),
-	            HOLIDAYTYPE.valueOf(h.getHolidayType())));
+	            HOLIDAYTYPE.valueOf(h.getHolidayType().getLabel())));
 	}
 
 	calendar.getHolidays().clear();

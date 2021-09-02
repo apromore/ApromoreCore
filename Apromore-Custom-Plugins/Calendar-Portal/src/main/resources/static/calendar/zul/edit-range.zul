@@ -37,8 +37,8 @@
         </rows>
     </grid>
     <div sclass="ap-window-footer-actions">
-        <button id="deleteBtn" label="Delete" iconSclass="z-icon-trash" />
         <button id="saveBtn" label="Update" iconSclass="z-icon-check-circle" />
+        <button id="deleteBtn" label="Delete" iconSclass="z-icon-trash" />
         <button id="cancelBtn" label="Cancel" iconSclass="z-icon-times-circle" />
     </div>
 </window>
