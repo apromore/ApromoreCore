@@ -43,6 +43,7 @@ package org.apromore.apmlog;
 
 import org.apromore.apmlog.logobjects.ActivityInstance;
 import org.apromore.apmlog.logobjects.ImmutableEvent;
+import org.apromore.calendar.model.CalendarModel;
 import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
@@ -167,6 +168,18 @@ public interface ATrace {
      */
     ActivityInstance getPreviousOf(ActivityInstance activityInstance);
 
+    /**
+     *
+     * @return the original log this Trace belongs
+     */
+    APMLog getSourceLog();
+
+    /**
+     *
+     * @return Calendar model of the source log
+     */
+    CalendarModel getCalendarModel();
+
     // ========================================================
     // SET methods
     // ========================================================
@@ -177,6 +190,11 @@ public interface ATrace {
      * @param caseVariantId
      */
     void setCaseVariantId(int caseVariantId);
+
+    /**
+     * request the trace object to update its time/duration-related stats values
+     */
+    void updateTimeStats();
 
     // ========================================================
     // Operation methods

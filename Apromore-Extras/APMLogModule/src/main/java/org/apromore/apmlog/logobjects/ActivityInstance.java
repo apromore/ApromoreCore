@@ -21,8 +21,10 @@
  */
 package org.apromore.apmlog.logobjects;
 
+import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.stats.TimeStatsProcessor;
 import org.apromore.apmlog.util.AttributeCodes;
+import org.apromore.calendar.model.CalendarModel;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
 import java.io.Serializable;
@@ -37,6 +39,9 @@ import java.util.List;
  * which is needed for identifying the case variant of the trace at runtime
  * with less memory usage
  *
+ * The sourceLog allows this class to access the public methods of the source Log
+ * (the original log object this activity instance belongs). The source log is immutable.
+ *
  * @author Chii Chang (created: 06/05/2021)
  */
 public class ActivityInstance implements Serializable {
@@ -50,6 +55,7 @@ public class ActivityInstance implements Serializable {
     private long startTime;
     private long endTime;
     private UnifiedMap<String, String> attributes;
+    private APMLog sourceLog;
 
     public ActivityInstance(int immutableIndex,
                             List<Integer> immutableEventIndexes,
@@ -58,7 +64,8 @@ public class ActivityInstance implements Serializable {
                             int nameIndicator,
                             long startTime,
                             long endTime,
-                            UnifiedMap<String, String> attributes) {
+                            UnifiedMap<String, String> attributes,
+                            APMLog sourceLog) {
         this.immutableIndex = immutableIndex;
         this.immutableEventIndexes = immutableEventIndexes;
         this.immutableTraceIndex = immutableTraceIndex;
@@ -68,6 +75,7 @@ public class ActivityInstance implements Serializable {
         this.startTime = startTime;
         this.endTime = endTime;
         this.attributes = attributes;
+        this.sourceLog = sourceLog;
     }
 
     // ========================================================
@@ -154,6 +162,14 @@ public class ActivityInstance implements Serializable {
         return immutableEventIndexes.get(0);
     }
 
+    public APMLog getSourceLog() {
+        return sourceLog;
+    }
+
+    public CalendarModel getCalendarModel() {
+        return sourceLog.getCalendarModel();
+    }
+
     // ========================================================
     // Operation methods
     // ========================================================
@@ -166,7 +182,8 @@ public class ActivityInstance implements Serializable {
                 nameIndicator,
                 startTime,
                 endTime,
-                new UnifiedMap<>(attributes));
+                new UnifiedMap<>(attributes),
+                sourceLog);
     }
 
     public ActivityInstance clone(int immutableIndex) {
@@ -177,6 +194,7 @@ public class ActivityInstance implements Serializable {
                 nameIndicator,
                 startTime,
                 endTime,
-                new UnifiedMap<>(attributes));
+                new UnifiedMap<>(attributes),
+                sourceLog);
     }
 }

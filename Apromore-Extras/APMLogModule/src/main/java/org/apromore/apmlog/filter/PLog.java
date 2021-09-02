@@ -31,6 +31,7 @@ import org.apromore.apmlog.stats.CaseAttributeValue;
 import org.apromore.apmlog.stats.EventAttributeValue;
 import org.apromore.apmlog.stats.LogStatsAnalyzer;
 import org.apromore.apmlog.stats.TimeStatsProcessor;
+import org.apromore.calendar.model.CalendarModel;
 import org.eclipse.collections.impl.map.immutable.ImmutableUnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
@@ -135,6 +136,15 @@ public class PLog extends AbstractLogImpl implements Serializable {
         setPTraces(originalPTraces);
         for (PTrace pTrace : pTraces) {
             pTrace.resetIndex();
+        }
+    }
+
+    @Override
+    public void setCalendarModel(CalendarModel calendarModel) {
+        super.setCalendarModel(calendarModel);
+
+        for (PTrace trace : pTraces) {
+            trace.updateTimeStats();
         }
     }
 
