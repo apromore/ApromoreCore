@@ -16,18 +16,11 @@ dependencies {
 	api "org.zkoss.common:zel:${zkVersion}"
 	api "org.zkoss.common:zcommon:${zkVersion}"
 	api "org.zkoss.common:zweb:${zkVersion}"
-	api "org.zkoss.theme:atlantic:${zkVersion}"
-	api "org.zkoss.theme:breeze:${zkVersion}"
 	api "org.zkoss.theme:iceblue_c:${zkVersion}"
-	api "org.zkoss.theme:sapphire:${zkVersion}"
-	api "org.zkoss.theme:silvertail:${zkVersion}"
 	api "org.zkoss.zk:zhtml:${zkVersion}"
 	api "org.zkoss.zk:zkbind:${zkVersion}"
 	api "org.zkoss.zk:zk:${zkVersion}"
 	api "org.zkoss.zk:zkplus:${zkVersion}"
 	api 'org.zkoss.zk:zkspring-core:3.0'
 	api "org.zkoss.zk:zul:${zkVersion}"
-	
-//	Adding theme here.
-	implementation files('lib/chiaroscuro_c.jar')
 }

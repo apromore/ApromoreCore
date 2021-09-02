@@ -15,7 +15,6 @@ include ':Apromore-Zk'
 
 include ':Apromore-Extras:APMLogModule'
 include ':Apromore-Extras:OpenXES'
-include ':Apromore-Extras:Apromore-Chiaroscuro-Theme'
 
 include ':Apromore-Clients:manager-security'
 include ':Apromore-Clients:portal-model'
