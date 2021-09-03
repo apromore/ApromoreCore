@@ -79,7 +79,6 @@
     <feature>apromore-common</feature>
     <feature>apromore-csv-importer</feature>
     <bundle>mvn:org.apromore.plugin/about-core-portal-plugin/1.0</bundle>
-    <bundle>mvn:org.apromore.plugin/log-animation-portal-plugin/1.0</bundle>
   </feature>
 
   <feature name="apromore-csv-importer" version="${project.version}" description="Apromore CSV importer">
