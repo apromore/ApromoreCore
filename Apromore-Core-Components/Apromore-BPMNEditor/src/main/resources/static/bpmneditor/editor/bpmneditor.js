@@ -12113,6 +12113,7 @@ class EditorApp {
         // Attach the editor must be the LAST THING AFTER ALL HAS BEEN LOADED
         var options = {
           container: '#' + this.getEditor().rootNode.id,
+          langTag: config.langTag
         }
         if (!config.viewOnly) {
           options.keyboard = { bindTo: window };

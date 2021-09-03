@@ -28,6 +28,8 @@ import org.apromore.apmlog.filter.rules.RuleValue;
 import org.apromore.apmlog.filter.types.Choice;
 import org.apromore.apmlog.filter.types.FilterType;
 import org.apromore.apmlog.filter.types.OperationType;
+import org.apromore.apmlog.util.CalendarDuration;
+import org.apromore.calendar.model.CalendarModel;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 import java.util.List;
@@ -299,6 +301,8 @@ public class PathFilter {
     private static boolean confirmInterval(OperationType operationType, ActivityInstance act1, ActivityInstance act2,
                                            double interval) {
 
+        CalendarModel calendarModel = act1.getCalendarModel();
+
         double duration = 0;
 
         if (act2 == null) {
@@ -306,7 +310,7 @@ public class PathFilter {
         } else {
             long st = act1.getStartTime();
             long et = act2.getEndTime();
-            duration = et > st ? et - st : 0;
+            duration = CalendarDuration.getDuration(calendarModel, st, et);
         }
 
         switch (operationType) {

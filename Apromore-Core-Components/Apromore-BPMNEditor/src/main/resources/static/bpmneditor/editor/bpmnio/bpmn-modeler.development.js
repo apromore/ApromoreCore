@@ -2742,7 +2742,7 @@ module.exports = {
 /* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(311);
+module.exports = __webpack_require__(312);
 
 module.exports.Collection = __webpack_require__(120);
 
@@ -5655,27 +5655,27 @@ var hat = module.exports = function (bits, base) {
     if (!base) base = 16;
     if (bits === undefined) bits = 128;
     if (bits <= 0) return '0';
-
+    
     var digits = Math.log(Math.pow(2, bits)) / Math.log(base);
     for (var i = 2; digits === Infinity; i *= 2) {
         digits = Math.log(Math.pow(2, bits / i)) / Math.log(base) * i;
     }
-
+    
     var rem = digits - Math.floor(digits);
-
+    
     var res = '';
-
+    
     for (var i = 0; i < Math.floor(digits); i++) {
         var x = Math.floor(Math.random() * base).toString(base);
         res = x + res;
     }
-
+    
     if (rem) {
         var b = Math.pow(base, rem);
         var x = Math.floor(Math.random() * b).toString(base);
         res = x + res;
     }
-
+    
     var parsed = parseInt(res, base);
     if (parsed !== Infinity && parsed >= Math.pow(2, bits)) {
         return hat(bits, base)
@@ -5691,24 +5691,24 @@ hat.rack = function (bits, base, expandBy) {
                 if (expandBy) bits += expandBy;
                 else throw new Error('too many ID collisions, use more bits')
             }
-
+            
             var id = hat(bits, base);
         } while (Object.hasOwnProperty.call(hats, id));
-
+        
         hats[id] = data;
         return id;
     };
     var hats = fn.hats = {};
-
+    
     fn.get = function (id) {
         return fn.hats[id];
     };
-
+    
     fn.set = function (id, value) {
         fn.hats[id] = value;
         return fn;
     };
-
+    
     fn.bits = bits || 128;
     fn.base = base || 16;
     return fn;
@@ -11114,18 +11114,30 @@ function toComment(sourceMap) {
 /* 125 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var translations = __webpack_require__(310);
+// var translations = require('./translations');
+var translationsEn = __webpack_require__(310);
+var translationsJa = __webpack_require__(311);
+var translationMap = {
+  'en': translationsEn,
+  'ja': translationsJa,
+};
+var currentLangTag = 'en';
 
-module.exports = function(template, replacements) {
-  replacements = replacements || {};
+module.exports = function(langTag) {
+  currentLangTag = langTag;
+  return function(template, replacements) {
+    replacements = replacements || {};
 
-  // Translate
-  template = translations[template] || template;
+    // Translate
+    template = (translationMap[currentLangTag] && translationMap[currentLangTag][template]) ||
+      translationsEn[template] ||
+      template;
 
-  // Replace
-  return template.replace(/{([^}]+)}/g, function(_, key) {
-    return replacements[key] || '{' + key + '}';
-  });
+    // Replace
+    return template.replace(/{([^}]+)}/g, function(_, key) {
+      return replacements[key] || '{' + key + '}';
+    });
+  };
 };
 
 /***/ }),
@@ -11229,7 +11241,7 @@ function getAllDataObjectReferences(dataObject, elementRegistry) {
 /* 127 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(312);
+module.exports = __webpack_require__(313);
 
 
 /***/ }),
@@ -14166,7 +14178,7 @@ var forEach = __webpack_require__(12),
 
 var updateSelection = __webpack_require__(99);
 
-var scrollTabs = __webpack_require__(313).default;
+var scrollTabs = __webpack_require__(314).default;
 
 var getBusinessObject = __webpack_require__(1).getBusinessObject;
 
@@ -21047,6 +21059,105 @@ module.exports = {
 
 /***/ }),
 /* 311 */
+/***/ (function(module, exports) {
+
+module.exports = {
+  'simulationTab.label':	'一般',
+  'taskTab.label':	'タスク',
+  'timetableTab.label':	'タイムテーブル',
+  'resourceTab.label':	'リソース',
+  'gatewayTab.label':	'ゲートウェイ',
+
+  'scenarioGroup.label':	'シナリオ仕様',
+  'scenarioGroup.distribution.label':	'相互到着時間',
+  'scenarioGroup.processInstances.label':	'総ケース数',
+  'scenarioGroup.startDate.label':	'シナリオ開始日',
+  'scenarioGroup.startTime.label':	'シナリオ開始時刻',
+  'scenarioGroup.startExclude.label':	'% 開始時に統計から除外される割合',
+  'scenarioGroup.endExclude.label':	'% 終了時に統計から除外される割合',
+  'scenarioGroup.currency.label':	'通貨',
+
+  'timetableEntry.label':	'タイムテーブル',
+  'arrivalTimetable.name':	'到着時刻表',
+  'timetable':	'時刻表',
+  'timetable.name':	'時刻表名',
+  'timetable.details':	'時刻表の詳細',
+
+  'timeslotEntry.label':	'タイムスロット',
+  'timeslot.name':	'タイムスロット名',
+  'timeslot.beginDay':	'開始日',
+  'timeslot.beginTime':	'開始時刻',
+  'timeslot.endDay':	'終了日',
+  'timeslot.endTime':	'終了時刻',
+  'timeslot.details':	'タイムスロットの詳細',
+
+  'resources.label':	'リソース',
+  'defaultResource.name':	'デフォルトのリソース',
+  'resource':	'リソース',
+  'resource.timetable':	'リソースのタイムテーブル',
+  'resource.name':	'リソース名',
+  'resource.totalAmount':	'リソースの数',
+  'resource.costPerHour':	'1時間あたりのコスト',
+
+  'task.distribution':	'時間配分',
+
+  'gateway.exclusive':	'排他的(XOR)',
+  'gateway.inclusive':	'包括的(OR)',
+  'gateway.probability':	'確率',
+
+  'intermediateAndBoundaryEventsTab.label':	'中間キャッチと境界線のイベント',
+
+  'distribution.mean':	'平均値',
+  'distribution.arg1':	'変数1',
+  'distribution.arg2':	'変数2',
+  'distribution.value':	'値',
+  'distribution.stdDeviation':	'標準偏差',
+  'distribution.min':	'最小値',
+  'distribution.max':	'最大値',
+  'distribution.mode':	'モード',
+  'distribution.variance':	'分散',
+  'distribution.fixed':	'固定',
+  'distribution.normal':	'正規分布',
+  'distribution.exponential':	'指数分布',
+  'distribution.uniform':	'一様分布',
+  'distribution.triangular':	'三角分布',
+  'distribution.logNormal':	'対数正規分布',
+  'distribution.gamma':	'ガンマ分布',
+
+  'timeUnit':	'時間単位',
+  'seconds':	'秒',
+  'minutes':	'分',
+  'hours':	'時間',
+  'days':	'日',
+  'monday':	'月曜日',
+  'tuesday':	'火曜日',
+  'wednesday':	'水曜日',
+  'thursday':	'木曜日',
+  'friday':	'金曜日',
+  'saturday':	'土曜日',
+  'sunday':	'日曜日',
+
+  'invalid.empty {element}':	'{element}は空であってはならない',
+  'invalid.notDigit {element}':	'{element}は有効な正の数でなければなりません。',
+  'invalid.notInteger {element}':	'{element}は正の整数でなければなりません。',
+  'invalid.exceed100% {element}':	'{element}は100%を超えてはいけません',
+  'startExclude.invalid.message':	'統計から除外する割合は0～40でなければなりません。',
+  'endExclude.invalid.message':	'統計から除外する割合は0～40でなければなりません。',
+  'distribution.invalid.greaterMin {element}':	'{element}は最小値以上でなければなりません。',
+  'distribution.invalid.lessMax {element}':	'{element}は最大値以下でなければなりません。',
+  'distribution.invalid.lessMode {element}':	'{element}はモード値以下でなければならない。',
+  'distribution.invalid.greaterMode {element}':	'{element}はモード値以上でなければならない。',
+  'probability.invalid.sum':	'排他的ゲートウェイ確率の合計は100％でなければなりません。',
+  'invalid.endWeekDay {beginDay}':	'無効な終了日：{beginDay}またはそれ以降の日を選択してください。',
+  'invalid.fromTime {endTime}':	'開始時刻が無効：{endTime}より前の時刻を選択してください。',
+  'invalid.endTime {beginTime}':	'無効な終了時間：{beginTime}以降の時間を選択してください。',
+
+  'details':	'詳細',
+  'N/A':	'該当なし'
+};
+
+/***/ }),
+/* 312 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21254,7 +21365,7 @@ module.exports = Refs;
  */
 
 /***/ }),
-/* 312 */
+/* 313 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -75034,19 +75145,25 @@ var customTranslate_default = /*#__PURE__*/__webpack_require__.n(customTranslate
 
 
 function CustomModeler(options) {
+  var customTranslateModule = {
+    translate: [ 'value', customTranslate_default()(options.langTag) ]
+  };
+  options.additionalModules = options.additionalModules || [];
+  options.additionalModules.push(customTranslateModule);
   Modeler.call(this, options);
 }
 
 inherits_browser_default()(CustomModeler, Modeler);
 
-var customTranslateModule = {
-  translate: [ 'value', customTranslate_default.a ]
-};
+// var customTranslateModule = {
+//   translate: [ 'value', customTranslate('ja') ]
+// };
 
 CustomModeler.prototype._customModules = [
   bpmn_js_properties_panel_default.a,
-  provider_default.a,
-  customTranslateModule
+  provider_default.a
+  // ,
+  // customTranslateModule
 ];
 
 CustomModeler.prototype._modules = [].concat(
@@ -75059,7 +75176,7 @@ CustomModeler.prototype._moddleExtensions = {
 };
 
 /***/ }),
-/* 313 */
+/* 314 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -75076,20 +75193,20 @@ var index_esm = __webpack_require__(2);
 var dist_index_esm = __webpack_require__(0);
 
 // CONCATENATED MODULE: ./node_modules/mitt/dist/mitt.es.js
-//
+//      
 // An event handler can take an optional event argument
 // and should not return a value
-
-
+                                          
+                                                               
 
 // An array of all currently registered event handlers for a type
-
-
+                                            
+                                                            
 // A map of event types and their corresponding event handlers.
-
-
-
-
+                        
+                                 
+                                   
+  
 
 /** Mitt: Tiny (~200b) functional event emitter / pubsub.
  *  @name mitt
