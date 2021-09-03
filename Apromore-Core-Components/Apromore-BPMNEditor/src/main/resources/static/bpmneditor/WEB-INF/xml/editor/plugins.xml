@@ -27,14 +27,14 @@
 
 	<plugins>
 		<!-- following plugins require Ext -->		
-		<plugin source="toolbar.js" name="Apromore.Plugins.Toolbar" />
-		<plugin source="undo.js" name="Apromore.Plugins.Undo" />
-		<plugin source="apromoreSave.js" name="Apromore.Plugins.ApromoreSave"/>
-        <plugin source="export.js" name="Apromore.Plugins.Export"/>
-		<plugin source="pdf.js" name="Apromore.Plugins.File"/>
-		<plugin source="view.js" name="Apromore.Plugins.View"/>
-		<plugin source="share.js" name="Apromore.Plugins.Share"/>
-		<plugin source="simulationPanel.js" name="Apromore.Plugins.SimulationPanel"/>
+		<plugin source="toolbar.js" name="Apromore.BPMNEditor.Plugins.Toolbar" />
+		<plugin source="undo.js" name="Apromore.BPMNEditor.Plugins.Undo" />
+		<plugin source="apromoreSave.js" name="Apromore.BPMNEditor.Plugins.ApromoreSave"/>
+        <plugin source="export.js" name="Apromore.BPMNEditor.Plugins.Export"/>
+		<plugin source="pdf.js" name="Apromore.BPMNEditor.Plugins.File"/>
+		<plugin source="view.js" name="Apromore.BPMNEditor.Plugins.View"/>
+		<plugin source="share.js" name="Apromore.BPMNEditor.Plugins.Share"/>
+		<plugin source="simulationPanel.js" name="Apromore.BPMNEditor.Plugins.SimulationPanel"/>
 
 		<!-- Added to dynamically include Apromore plug-ins -->
 		<?EDITOR-PLUGINS?>

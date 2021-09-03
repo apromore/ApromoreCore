@@ -37,6 +37,7 @@
     <n:link rel="stylesheet" href="https://unpkg.com/bpmn-js@3.0.1/dist/assets/bpmn-font/css/bpmn.css" type="text/css"/>
     <n:script src="/${arg.editor}/editor/bpmnio/bpmn-modeler.development.js" type="text/javascript"/>
 
+    Hello!
 	
 	<n:div id="editorwrapper" style="display: none">
         <n:script>
@@ -59,7 +60,7 @@
         <n:script src="/${arg.editor}/libs/ext-2.0.2/color-field.js" type="text/javascript"/>
         <n:script src="/${arg.editor}/libs/iscroll.js" type="text/javascript"/>
         <n:script src="/${arg.editor}/editor/i18n/translation_en.js" type="text/javascript"/>
-        <n:script src="/${arg.editor}/editor/apromore-editor.js" type="text/javascript"/>
+        <n:script src="/${arg.editor}/editor/bpmneditor.js" type="text/javascript"/>
 		
 		<n:script>console.log('${arg.plugins}')</n:script>
 
@@ -72,7 +73,7 @@
             <n:script>
                 <![CDATA[
 					//$.noConflict();
-                    var editorWrapper = new Apromore.Editor ({
+                    var editorWrapper = new Apromore.BPMNEditor.Editor ({
 							xml: '${arg.bpmnXML}',
                             model : {
                                 id : 'editorcanvas',
@@ -84,12 +85,12 @@
                             fullscreen : true
                         });
 
-                     Apromore.Plugins.ApromoreSave.apromoreSaveAs = function(xml, svg) {
+                     Apromore.BPMNEditor.Plugins.ApromoreSave.apromoreSaveAs = function(xml, svg) {
                     	 console.log(xml);
                     	 zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSaveAs', xml));
                      };
                      
-                     Apromore.Plugins.ApromoreSave.apromoreSave = function(xml, svg) {
+                     Apromore.BPMNEditor.Plugins.ApromoreSave.apromoreSave = function(xml, svg) {
                     	 console.log(xml);
 						 console.log(svg);
                          zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSave', xml));

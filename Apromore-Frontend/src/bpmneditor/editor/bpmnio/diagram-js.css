@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2020 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,6 +18,9 @@
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
+ */
+/**
+ * outline styles
  */
 /**
  * outline styles
@@ -86,6 +89,12 @@ svg.new-parent {
   stroke: rgba(255, 116, 0, 0.7) !important;
 }
 
+.djs-frame.connect-not-ok .djs-visual > :nth-child(1),
+.djs-frame.drop-not-ok .djs-visual > :nth-child(1) {
+  stroke-width: 3px !important;
+  stroke: #E56283 /* light-red */ !important;
+  fill: none !important;
+}
 
 /**
 * Selection box style
@@ -122,9 +131,24 @@ svg.new-parent {
 .djs-resizer-visual {
   fill: white;
   stroke-width: 1px;
-  stroke: black;
-  shape-rendering: crispEdges;
-  stroke-opacity: 0.2;
+  stroke: #BBB;
+  shape-rendering: geometricprecision;
+}
+
+.djs-resizer:hover .djs-resizer-visual {
+  stroke: #555;
+}
+
+.djs-cursor-resize-ns,
+.djs-resizer-n,
+.djs-resizer-s {
+  cursor: ns-resize;
+}
+
+.djs-cursor-resize-ew,
+.djs-resizer-e,
+.djs-resizer-w {
+  cursor: ew-resize;
 }
 
 .djs-cursor-resize-nwse,
@@ -154,12 +178,28 @@ svg.new-parent {
 /**
  * drag styles
  */
-.djs-dragger .djs-visual circle,
-.djs-dragger .djs-visual path,
-.djs-dragger .djs-visual polygon,
-.djs-dragger .djs-visual polyline,
-.djs-dragger .djs-visual rect,
-.djs-dragger .djs-visual text {
+.djs-dragger * {
+  fill: none !important;
+  stroke: rgb(255, 116, 0) !important;
+}
+
+.djs-dragger tspan,
+.djs-dragger text {
+  fill: rgb(255, 116, 0) !important;
+  stroke: none !important;
+}
+
+marker.djs-dragger circle,
+marker.djs-dragger path,
+marker.djs-dragger polygon,
+marker.djs-dragger polyline,
+marker.djs-dragger rect {
+  fill: rgb(255, 116, 0) !important;
+  stroke: none !important;
+}
+
+marker.djs-dragger text,
+marker.djs-dragger tspan {
   fill: none !important;
   stroke: rgb(255, 116, 0) !important;
 }
@@ -186,15 +226,27 @@ svg.new-parent {
   pointer-events: none;
 }
 
+.djs-element.attach-ok .djs-hit {
+  stroke-width: 60px !important;
+}
+
 /**
  * all pointer events for hit shape
  */
-.djs-shape .djs-hit {
+.djs-element > .djs-hit-all {
   pointer-events: all;
 }
 
-.djs-connection .djs-hit {
+.djs-element > .djs-hit-stroke,
+.djs-element > .djs-hit-click-stroke {
   pointer-events: stroke;
+}
+
+/**
+ * all pointer events for hit shape
+ */
+.djs-drag-active .djs-element > .djs-hit-click-stroke {
+  pointer-events: all;
 }
 
 /**
@@ -281,7 +333,7 @@ svg.new-parent {
 }
 
 .djs-palette .entry:before {
-  vertical-align: middle;
+  vertical-align: text-bottom;
 }
 
 .djs-palette .djs-palette-toggle {

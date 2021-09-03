@@ -108,7 +108,7 @@
       <script src="${arg.editor}/libs/autolayout.js" type="text/javascript"/>
 
       <script src="${arg.editor}/editor/i18n/translation_${arg.langTag}.js" type="text/javascript"/>
-      <script src="${arg.editor}/editor/apromore-editor.js" type="text/javascript"/>
+      <script src="${arg.editor}/editor/bpmneditor.js" type="text/javascript"/>
 
 
         <z:zk forEach="${arg.plugins}">
@@ -121,7 +121,7 @@
                 <![CDATA[
                     var editorWrapper;
                     createEditor = function (bpmnXML) {
-                      editorWrapper = new Apromore.EditorApp ({
+                      editorWrapper = new Apromore.BPMNEditor.EditorApp ({
                         xml: bpmnXML,
                         id : 'editorcanvas',
                         fullscreen : true,
@@ -132,16 +132,16 @@
 					//console.log('${arg.bpmnXML}');
                     createEditor('${arg.bpmnXML}');
                     window.Ap = window.Ap || {};
-                    Apromore.Plugins.Share.shareExt = function() {
+                    Apromore.BPMNEditor.Plugins.Share.shareExt = function() {
                       zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onShare'));
                     };
 
-                    Apromore.Plugins.ApromoreSave.apromoreSaveAs = function(xml, svg) {
+                    Apromore.BPMNEditor.Plugins.ApromoreSave.apromoreSaveAs = function(xml, svg) {
                       //console.log(xml);
                       zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSaveAs', xml));
                     };
 
-                    Apromore.Plugins.ApromoreSave.apromoreSave = function(xml, svg) {
+                    Apromore.BPMNEditor.Plugins.ApromoreSave.apromoreSave = function(xml, svg) {
                       //console.log(xml);
                       //console.log(svg);
                       zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSave', xml));
