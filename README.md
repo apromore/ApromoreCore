@@ -17,7 +17,7 @@ If you are looking for the commercial edition (Apromore Enterprise Edition), che
   Note that newer versions, including Java SE 11, are currently not supported
 * [Apache Maven](https://maven.apache.org/download.cgi) 3.5.2 or newer, and internet access for it to download this project's dependencies.
 * [Lessc](http://lesscss.org/usage/) 3.9.0 or newer
-* (optional) [MySQL server](https://dev.mysql.com/downloads/mysql/) 8.0.
+* [MySQL server](https://dev.mysql.com/downloads/mysql/) 8.0.  (It is possible to use H2 instead, see below)
 * <b>Note:</b> These instructions are tested with Linux Ubuntu 20.04. With minor adaptations, these instructions may be used for Windows 10/WS20016/WS2019 and macOS 10.8 or newer.
 
 ## Installation Instructions
