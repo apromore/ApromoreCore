@@ -126,7 +126,8 @@
                         id : 'editorcanvas',
                         fullscreen : true,
                         useSimulationPanel: true,
-                        viewOnly: ${arg.viewOnly}
+                        viewOnly: ${arg.viewOnly},
+                        langTag: '${arg.langTag}'
                       });
                     }
 					//console.log('${arg.bpmnXML}');

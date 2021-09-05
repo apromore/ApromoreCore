@@ -71,7 +71,6 @@ public class EditRange extends SelectorComposer<Window> {
 
     @Listen("onClick = #deleteBtn")
     public void onClickDeleteButton() throws Exception {
-
         try {
             parentController.deleteRange(dowIndex, index);
             getSelf().detach();
@@ -92,11 +91,11 @@ public class EditRange extends SelectorComposer<Window> {
             int endHour = endTime.getHour();
             int endMin = endTime.getMinute();
             parentController.updateRange(dowIndex, index, startHour, startMin, endHour, endMin);
-            getSelf().detach();
         } catch (Exception e) {
             LOGGER.error("Unable to create user", e);
             Messagebox.show("Unable to create user: " + e.getMessage());
         }
+        getSelf().detach();
     }
 
     @Listen("onClick = #cancelBtn")

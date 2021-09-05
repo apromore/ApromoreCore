@@ -154,6 +154,8 @@ public class PDAnalyst {
         // ProcessDiscoverer logic with default attribute
         this.calendarModel = eventLogService.getCalendarFromLog(contextData.getLogId());
         if (calendarModel == null) throw new Exception("The open log doesn't have an associated calendar.");
+
+        this.originalAPMLog.setCalendarModel(this.calendarModel);
         
         this.setMainAttribute(configData.getDefaultAttribute());
         this.processDiscoverer = new ProcessDiscoverer();

@@ -42,11 +42,7 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -69,6 +65,8 @@ public class CalendarModel {
 
   Map<DayOfWeek, WorkDayModel> dayOfWeekWorkDayMap = new HashedMap();
   Map<LocalDate, HolidayModel> holidayLocalDateMap = new HashedMap();
+
+  public static CalendarModel ABSOLUTE_CALENDAR = new AbsoluteCalendarModel();
 
   public DurationModel getDuration(ZonedDateTime starDateTime, ZonedDateTime endDateTime) {
 
@@ -238,6 +236,5 @@ public class CalendarModel {
     workDays.sort(Comparator.comparing(WorkDayModel::getDayOfWeek));
     return workDays;
   }
-
 
 }

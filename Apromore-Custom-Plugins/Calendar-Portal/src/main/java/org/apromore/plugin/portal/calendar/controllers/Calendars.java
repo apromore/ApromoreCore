@@ -23,9 +23,8 @@ package org.apromore.plugin.portal.calendar.controllers;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 import org.apromore.calendar.exception.CalendarAlreadyExistsException;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.calendar.service.CalendarService;
@@ -35,7 +34,9 @@ import org.apromore.plugin.portal.calendar.CalendarItemRenderer;
 import org.apromore.plugin.portal.calendar.pageutil.PageUtils;
 import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
+import org.zkoss.web.Attributes;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
@@ -111,6 +112,12 @@ public class Calendars extends SelectorComposer<Window> {
         calendarListModel = new ListModelList<CalendarModel>();
         calendarListModel.setMultiple(false);
         populateCalendarList();
+    }
+
+    public ResourceBundle getLabels() {
+        Locale locale = (Locale) Sessions.getCurrent().getAttribute(Attributes.PREFERRED_LOCALE);
+        return ResourceBundle.getBundle("calendar", locale,
+                Calendars.class.getClassLoader());
     }
 
     public void populateCalendarList() {
