@@ -11611,85 +11611,58 @@ class Editor {
      *
      * @todo: Avoid seperate conditional for loganimation and bpmneditor
      */
-    importXML(xml, callback) {
-      // this.editor.importXML(xml, function(err) {
-      //   if (err) {
-      //     return console.error('could not import BPMN 2.0 diagram', err);
-      //   }
-      //   this.zoomFitToModel();
-      // }.bind(this));
+    async importXML(xml, callback) {
+//        this.editor.importXML(xml, function(err) {
+//            if (err) {
+//                return console.error('could not import BPMN 2.0 diagram', err);
+//            }
+//            this.zoomFitToModel();
+//        }.bind(this));
 
-      try {
-        xml = this.sanitizeXML(xml);
-      } catch(e) {
-        console.log('Failed to sanitize');
-        // pass
-      }
-
-      //EXPERIMENTING WITH THE BELOW TO FIX ARROWS NOT SNAP TO EDGES WHEN OPENING MODELS
-      //Some BPMN files are not compatible with bpmn.io
-      // BEFORE (for reference)
-      //  const modeler = new BpmnJS();
-      //
-      //  modeler.importXML(xml, (err, warnings) => {
-      //    // ...
-      //  });
-
-      //AFTER (for reference)
-      //const modeler = new BpmnJS();
-      //
-      //try {
-      //  const result = await modeler.importXML(xml);
-      //  const { warnings } = result;
-      //  console.log(warnings);
-      //} catch (err) {
-      //  console.log(err.message, err.warnings);
-      //}
-      var editor = this.actualEditor;
-      //Converting to promise
-//      try {
-//        const result = await editor.importXML(xml);
-//
-//      } catch (err) {
-//        window.alert("Failed to import BPMN diagram. Please make sure it's a valid BPMN 2.0 diagram.");
-//        return;
-//      }
-      //
-      //Note: callbacks currently still work for importXML() as of 7.5.0 but is deprecated
-      //and will be removed in a future release.
-      this.actualEditor.importXML(xml, function(err) {
-        if (err) {
-          window.alert("Failed to import BPMN diagram. Please make sure it's a valid BPMN 2.0 diagram.");
-          return;
-        }
-
-        var eventBus = editor.get('eventBus');
-        var elementRegistry = editor.get('elementRegistry');
-        var connections = elementRegistry.filter(function(e) {
-          return e.waypoints;
-        });
         try {
-          var connectionDocking = editor.get('connectionDocking');
-          connections.forEach(function(connection) {
-            connection.waypoints = connectionDocking.getCroppedWaypoints(connection);
-          });
-        } catch (e) {
-          console.log('skip connectionDocking error');
-          // pass
+            xml = this.sanitizeXML(xml);
+        } catch(e) {
+            console.log('Failed to sanitize');
+            // pass
         }
-        eventBus.fire('elements.changed', { elements: connections });
-        // @todo: Avoid this conditional
-        if (this.preventFitDelay) { // this is for loganimation
-            this.zoomFitToModel();
-            callback();
-        } else { // this is for BPMN editor
-            callback();
-            var me = this; // delay the fit until the properties panel fully collapsed
-            setTimeout(function () {
-                me.zoomFitToModel();
-            }, 500);
+
+        //EXPERIMENTING WITH THE BELOW TO FIX ARROWS NOT SNAP TO EDGES WHEN OPENING MODELS
+        //Some BPMN files are not compatible with bpmn.io
+        var editor = this.actualEditor;
+        //Converting to promise
+        try {
+            const result = await editor.importXML(xml);
+            var eventBus = editor.get('eventBus');
+            var elementRegistry = editor.get('elementRegistry');
+            var connections = elementRegistry.filter(function(e) {
+                return e.waypoints;
+            });
+            try {
+                var connectionDocking = editor.get('connectionDocking');
+                connections.forEach(function(connection) {
+                    connection.waypoints = connectionDocking.getCroppedWaypoints(connection);
+                });
+            } catch (e) {
+                console.log('skip connectionDocking error');
+                // pass
+            }
+            eventBus.fire('elements.changed', { elements: connections });
+            // @todo: Avoid this conditional
+            if (this.preventFitDelay) { // this is for loganimation
+                this.zoomFitToModel();
+                callback();
+            } else { // this is for BPMN editor
+                callback();
+                var me = this; // delay the fit until the properties panel fully collapsed
+                setTimeout(function () {
+                    me.zoomFitToModel();
+                }, 500);
+            }
+
+        } catch (err) {
+            window.alert("Failed to import BPMN diagram. Please make sure it's a valid BPMN 2.0 diagram.");
+            return;
         }
-      }.bind(this));
     }
 
     async getXML() {
