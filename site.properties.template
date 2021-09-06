@@ -36,8 +36,8 @@ mail.password = password
 
 # Select the minified version of the editor javascript for production, the unmodified version for development/debugging
 
-editor.js = apromore-editor-min.js
-#editor.js = apromore-editor.js
+editor.js = bpmneditor-min.js
+#editor.js = bpmneditor.js
 
 
 # A writable directory for Apromore-Editor to use.  If this isn't correctly set,

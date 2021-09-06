@@ -488,7 +488,7 @@ function sortBy(collection, extractor) {
  *
  * const matcher = matchPattern({ id: 1 });
  *
- * var element = find(elements, matcher);
+ * let element = find(elements, matcher);
  *
  * @param  {Object} pattern
  *
@@ -524,8 +524,11 @@ function toNum(arg) {
 }
 
 /**
- * Debounce fn, calling it only once if
- * the given time elapsed between calls.
+ * Debounce fn, calling it only once if the given time
+ * elapsed between calls.
+ *
+ * Lodash-style the function exposes methods to `#clear`
+ * and `#flush` to control internal behavior.
  *
  * @param  {Function} fn
  * @param  {Number} timeout
@@ -538,23 +541,39 @@ function debounce(fn, timeout) {
   var lastThis;
   var lastNow;
 
-  function fire() {
+  function fire(force) {
     var now = Date.now();
-    var scheduledDiff = lastNow + timeout - now;
+    var scheduledDiff = force ? 0 : lastNow + timeout - now;
 
     if (scheduledDiff > 0) {
       return schedule(scheduledDiff);
     }
 
     fn.apply(lastThis, lastArgs);
-    timer = lastNow = lastArgs = lastThis = undefined;
+    clear();
   }
 
   function schedule(timeout) {
     timer = setTimeout(fire, timeout);
   }
 
-  return function () {
+  function clear() {
+    if (timer) {
+      clearTimeout(timer);
+    }
+
+    timer = lastNow = lastArgs = lastThis = undefined;
+  }
+
+  function flush() {
+    if (timer) {
+      fire(true);
+    }
+
+    clear();
+  }
+
+  function callback() {
     lastNow = Date.now();
 
     for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
@@ -567,7 +586,11 @@ function debounce(fn, timeout) {
     if (!timer) {
       schedule(timeout);
     }
-  };
+  }
+
+  callback.flush = flush;
+  callback.cancel = clear;
+  return callback;
 }
 /**
  * Throttle fn, calling at most once
@@ -1414,13 +1437,14 @@ CmdHelper.updateBusinessObject = function(element, businessObject, newProperties
   };
 };
 
-CmdHelper.addElementsTolist = function(element, businessObject, listPropertyName, objectsToAdd) {
+CmdHelper.addElementsTolist = function(element, businessObject, listPropertyName, objectsToAdd, objectsToPrepend) {
   return {
     cmd: 'properties-panel.update-businessobject-list',
     context: {
       element: element,
       currentObject: businessObject,
       propertyName: listPropertyName,
+      objectsToPrepend: objectsToPrepend,
       objectsToAdd: objectsToAdd
     }
   };
@@ -1472,10 +1496,42 @@ CmdHelper.setList = function(element, businessObject, listPropertyName, updatedO
 
 /***/ }),
 /* 5 */
+/***/ (function(module, exports) {
+
+/**
+ * Checks if `value` is classified as an `Array` object.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an array, else `false`.
+ * @example
+ *
+ * _.isArray([1, 2, 3]);
+ * // => true
+ *
+ * _.isArray(document.body.children);
+ * // => false
+ *
+ * _.isArray('abc');
+ * // => false
+ *
+ * _.isArray(_.noop);
+ * // => false
+ */
+var isArray = Array.isArray;
+
+module.exports = isArray;
+
+
+/***/ }),
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var elementHelper = __webpack_require__(10),
-    ProcessSimulationHelper = __webpack_require__(9),
+var elementHelper = __webpack_require__(11),
+    ProcessSimulationHelper = __webpack_require__(10),
     isDigit = __webpack_require__(17).isDigit;
 
 var ValidationErrorHelper = {};
@@ -1906,38 +1962,6 @@ ValidationErrorHelper.validateToTime = function(bpmnFactory, elementRegistry, tr
 module.exports = ValidationErrorHelper;
 
 /***/ }),
-/* 6 */
-/***/ (function(module, exports) {
-
-/**
- * Checks if `value` is classified as an `Array` object.
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is an array, else `false`.
- * @example
- *
- * _.isArray([1, 2, 3]);
- * // => true
- *
- * _.isArray(document.body.children);
- * // => false
- *
- * _.isArray('abc');
- * // => false
- *
- * _.isArray(_.noop);
- * // => false
- */
-var isArray = Array.isArray;
-
-module.exports = isArray;
-
-
-/***/ }),
 /* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1948,14 +1972,16 @@ var getBusinessObject = __webpack_require__(1).getBusinessObject;
 
 // input entities
 var textInputField = __webpack_require__(101),
-    checkboxField = __webpack_require__(239),
+    checkboxField = __webpack_require__(242),
     selectBoxField = __webpack_require__(102),
-    comboBoxField = __webpack_require__(240),
-    textBoxField = __webpack_require__(249),
-    validationAwareTextInputField = __webpack_require__(250),
-    tableField = __webpack_require__(251),
-    labelEntry = __webpack_require__(252),
-    link = __webpack_require__(253);
+    comboBoxField = __webpack_require__(243),
+    textBoxField = __webpack_require__(252),
+    validationAwareTextInputField = __webpack_require__(253),
+    tableField = __webpack_require__(254),
+    labelEntry = __webpack_require__(255),
+    link = __webpack_require__(256),
+    autoSuggestTextBoxField = __webpack_require__(273),
+    collapsible = __webpack_require__(274);
 
 var cmdHelper = __webpack_require__(4);
 
@@ -2104,6 +2130,14 @@ EntryFactory.link = function(options) {
   return link(options);
 };
 
+EntryFactory.autoSuggest = function(options) {
+  return autoSuggestTextBoxField(options, setDefaultParameters(options));
+};
+
+EntryFactory.collapsible = function(options) {
+  return collapsible(options);
+};
+
 module.exports = EntryFactory;
 
 
@@ -2126,136 +2160,16 @@ module.exports = root;
 /* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var elementHelper = __webpack_require__(10),
-    extensionElementsHelper = __webpack_require__(234),
-    createUUID = __webpack_require__(17).createUUID,
-    getRoot = __webpack_require__(17).getRoot;
-
-var ProcessSimulationHelper = {
-  prevRoot: undefined
-};
-
-ProcessSimulationHelper.getProcessSimulationInfo = function(bpmnFactory, elementRegistry) {
-  var root = getRoot(elementRegistry);
-
-  if (this.prevRoot === undefined) {
-    this.prevRoot = root;
-  }
-
-  if (this.prevRoot.id !== root.id) {
-    root.extensionElements = this.prevRoot.extensionElements;
-    this.prevRoot.extensionElements = undefined;
-    this.prevRoot = root;
-  }
-
-  var extensionElements = root.extensionElements;
-
-  if (!extensionElements) {
-    extensionElements = elementHelper.createElement('bpmn:ExtensionElements',
-      { values: [] }, root, bpmnFactory);
-
-    root.extensionElements = extensionElements;
-  }
-
-  var processSimulationInfo = (extensionElementsHelper.getExtensionElements(root,
-    'qbp:ProcessSimulationInfo') || [])[0];
-
-  if (!processSimulationInfo) {
-    processSimulationInfo = createProcessSimulationInfo(root, bpmnFactory);
-    extensionElements.values.push(processSimulationInfo);
-  }
-
-  return processSimulationInfo;
-};
-
-ProcessSimulationHelper.getStatsOptions = function(bpmnFactory, elementRegistry) {
-  var processSimulationInfo = ProcessSimulationHelper.getProcessSimulationInfo(bpmnFactory, elementRegistry);
-
-  var statsOptions = processSimulationInfo.statsOptions;
-
-  if (!statsOptions) {
-    statsOptions = elementHelper.createElement('qbp:StatsOptions',
-      {}, processSimulationInfo, bpmnFactory);
-
-    processSimulationInfo.statsOptions = statsOptions;
-  }
-
-  return statsOptions;
-};
-
-
-function createProcessSimulationInfo(root, bpmnFactory) {
-  var todayDate = new Date();
-  todayDate.setUTCHours(9, 0, 0, 0);
-
-  var processSimulationInfo = elementHelper.createElement('qbp:ProcessSimulationInfo',
-    {
-      processInstances: '',
-      id: 'qbp_' + createUUID(),
-      startDateTime: todayDate.toISOString(),
-      currency: 'EUR',
-    }, root, bpmnFactory);
-
-  processSimulationInfo.timetables = elementHelper.createElement('qbp:Timetables',
-    { values: [] }, processSimulationInfo, bpmnFactory);
-
-  processSimulationInfo.resources = elementHelper.createElement('qbp:Resources',
-    { values: [] }, processSimulationInfo, bpmnFactory);
-
-  var defaultSequenceFlow = elementHelper.createElement('qbp:SequenceFlow',
-    {}, null, bpmnFactory);
-
-  processSimulationInfo.sequenceFlows = elementHelper.createElement('qbp:SequenceFlows',
-    { values: [defaultSequenceFlow] }, processSimulationInfo, bpmnFactory);
-
-  return processSimulationInfo;
-}
-
-module.exports = ProcessSimulationHelper;
-
-/***/ }),
-/* 10 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var ElementHelper = {};
-module.exports = ElementHelper;
-
-/**
- * Creates a new element and set the parent to it
- *
- * @method ElementHelper#createElement
- *
- * @param {String} elementType of the new element
- * @param {Object} properties of the new element in key-value pairs
- * @param {moddle.object} parent of the new element
- * @param {BpmnFactory} factory which creates the new element
- *
- * @returns {djs.model.Base} element which is created
- */
-ElementHelper.createElement = function(elementType, properties, parent, factory) {
-  var element = factory.create(elementType, properties);
-  element.$parent = parent;
-
-  return element;
-};
-
-
-/***/ }),
-/* 11 */
-/***/ (function(module, exports, __webpack_require__) {
-
 "use strict";
 
 
 var domQuery = __webpack_require__(2).query,
     domClear = __webpack_require__(2).clear,
+    domClasses = __webpack_require__(2).classes,
     is = __webpack_require__(1).is,
     forEach = __webpack_require__(12),
     domify = __webpack_require__(2).domify,
-    Ids = __webpack_require__(27).default;
+    Ids = __webpack_require__(28).default;
 
 var SPACE_REGEX = /\s/;
 
@@ -2488,15 +2402,201 @@ function escapeHTML(str) {
 
 module.exports.escapeHTML = escapeHTML;
 
+function createDropdown(dropdown) {
+  var menu = dropdown.menu;
+
+  var dropdownNode = domify(
+    '<div class="group__dropdown">' +
+      '<button class="group__dropdown-button">' +
+      '<svg width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 512"><path fill="currentColor" d="M96 184c39.8 0 72 32.2 72 72s-32.2 72-72 72-72-32.2-72-72 32.2-72 72-72zM24 80c0 39.8 32.2 72 72 72s72-32.2 72-72S135.8 8 96 8 24 40.2 24 80zm0 352c0 39.8 32.2 72 72 72s72-32.2 72-72-32.2-72-72-72-72 32.2-72 72z"></path></svg>' +
+      '</button>' +
+      '<div class="group__dropdown-menu"></div>' +
+    '</div>'
+  );
+
+  var buttonNode = domQuery('.group__dropdown-button', dropdownNode),
+      menuNode = domQuery('.group__dropdown-menu', dropdownNode);
+
+  buttonNode.addEventListener('click', function(event) {
+    domClasses(dropdownNode).toggle('group__dropdown--open');
+
+    createOnGlobalClick(event);
+  });
+
+  forEach(menu, function(menuItem) {
+    var menuItemNode = domify('<div class="group__dropdown-menu-item" data-dropdown-action="' +
+      menuItem.id +
+      '">' + escapeHTML(menuItem.label) + '</div>');
+
+    menuItemNode.addEventListener('click', function() {
+      menuItem.onClick();
+
+      domClasses(dropdownNode).remove('group__dropdown--open');
+    });
+
+    menuNode.appendChild(menuItemNode);
+  });
+
+  var _onGlobalClick;
+
+  function createOnGlobalClick(_event) {
+    function onGlobalClick(event) {
+      if (event === _event) {
+        return;
+      }
+
+      var target = event.target;
+
+      if (menuNode !== target && !menuNode.contains(target)) {
+        domClasses(dropdownNode).remove('group__dropdown--open');
+
+        document.removeEventListener('click', onGlobalClick);
+      }
+    }
+
+    if (_onGlobalClick) {
+      document.removeEventListener('click', _onGlobalClick);
+    }
+
+    document.addEventListener('click', onGlobalClick);
+
+    _onGlobalClick = onGlobalClick;
+  }
+
+  return dropdownNode;
+}
+
+module.exports.createDropdown = createDropdown;
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var elementHelper = __webpack_require__(11),
+    extensionElementsHelper = __webpack_require__(237),
+    createUUID = __webpack_require__(17).createUUID,
+    getRoot = __webpack_require__(17).getRoot;
+
+var ProcessSimulationHelper = {
+  prevRoot: undefined
+};
+
+ProcessSimulationHelper.getProcessSimulationInfo = function(bpmnFactory, elementRegistry) {
+  var root = getRoot(elementRegistry);
+
+  if (this.prevRoot === undefined) {
+    this.prevRoot = root;
+  }
+
+  if (this.prevRoot.id !== root.id) {
+    root.extensionElements = this.prevRoot.extensionElements;
+    this.prevRoot.extensionElements = undefined;
+    this.prevRoot = root;
+  }
+
+  var extensionElements = root.extensionElements;
+
+  if (!extensionElements) {
+    extensionElements = elementHelper.createElement('bpmn:ExtensionElements',
+      { values: [] }, root, bpmnFactory);
+
+    root.extensionElements = extensionElements;
+  }
+
+  var processSimulationInfo = (extensionElementsHelper.getExtensionElements(root,
+    'qbp:ProcessSimulationInfo') || [])[0];
+
+  if (!processSimulationInfo) {
+    processSimulationInfo = createProcessSimulationInfo(root, bpmnFactory);
+    extensionElements.values.push(processSimulationInfo);
+  }
+
+  return processSimulationInfo;
+};
+
+ProcessSimulationHelper.getStatsOptions = function(bpmnFactory, elementRegistry) {
+  var processSimulationInfo = ProcessSimulationHelper.getProcessSimulationInfo(bpmnFactory, elementRegistry);
+
+  var statsOptions = processSimulationInfo.statsOptions;
+
+  if (!statsOptions) {
+    statsOptions = elementHelper.createElement('qbp:StatsOptions',
+      {}, processSimulationInfo, bpmnFactory);
+
+    processSimulationInfo.statsOptions = statsOptions;
+  }
+
+  return statsOptions;
+};
+
+
+function createProcessSimulationInfo(root, bpmnFactory) {
+  var todayDate = new Date();
+  todayDate.setUTCHours(9, 0, 0, 0);
+
+  var processSimulationInfo = elementHelper.createElement('qbp:ProcessSimulationInfo',
+    {
+      processInstances: '',
+      id: 'qbp_' + createUUID(),
+      startDateTime: todayDate.toISOString(),
+      currency: 'EUR',
+    }, root, bpmnFactory);
+
+  processSimulationInfo.timetables = elementHelper.createElement('qbp:Timetables',
+    { values: [] }, processSimulationInfo, bpmnFactory);
+
+  processSimulationInfo.resources = elementHelper.createElement('qbp:Resources',
+    { values: [] }, processSimulationInfo, bpmnFactory);
+
+  var defaultSequenceFlow = elementHelper.createElement('qbp:SequenceFlow',
+    {}, null, bpmnFactory);
+
+  processSimulationInfo.sequenceFlows = elementHelper.createElement('qbp:SequenceFlows',
+    { values: [defaultSequenceFlow] }, processSimulationInfo, bpmnFactory);
+
+  return processSimulationInfo;
+}
+
+module.exports = ProcessSimulationHelper;
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var ElementHelper = {};
+module.exports = ElementHelper;
+
+/**
+ * Creates a new element and set the parent to it
+ *
+ * @method ElementHelper#createElement
+ *
+ * @param {String} elementType of the new element
+ * @param {Object} properties of the new element in key-value pairs
+ * @param {moddle.object} parent of the new element
+ * @param {BpmnFactory} factory which creates the new element
+ *
+ * @returns {djs.model.Base} element which is created
+ */
+ElementHelper.createElement = function(elementType, properties, parent, factory) {
+  var element = factory.create(elementType, properties);
+  element.$parent = parent;
+
+  return element;
+};
+
 
 /***/ }),
 /* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var arrayEach = __webpack_require__(47),
-    baseEach = __webpack_require__(29),
+var arrayEach = __webpack_require__(48),
+    baseEach = __webpack_require__(24),
     castFunction = __webpack_require__(142),
-    isArray = __webpack_require__(6);
+    isArray = __webpack_require__(5);
 
 /**
  * Iterates over elements of `collection` and invokes `iteratee` for each element.
@@ -2662,8 +2762,8 @@ module.exports = keys;
 /* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isFunction = __webpack_require__(50),
-    isLength = __webpack_require__(48);
+var isFunction = __webpack_require__(34),
+    isLength = __webpack_require__(49);
 
 /**
  * Checks if `value` is array-like. A value is considered array-like if it's
@@ -2742,12 +2842,98 @@ module.exports = {
 /* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(312);
+"use strict";
+
+
+var escapeHTML = __webpack_require__(9).escapeHTML;
+
+/**
+ * Create a linkified and HTML escaped entry field description.
+ *
+ * As a special feature, this description may contain both markdown,
+ * plain <a href> links and <br />
+ *
+ * @param {string} description
+ * @param {object} [options]
+ * @param {string} [options.show] - name of callback to determine whether description is shown
+ */
+module.exports = function entryFieldDescription(description, options) {
+  var show = options && options.show;
+
+  // we tokenize the description to extract text, HTML and markdown links
+  // text, links and new lines are handled seperately
+
+  var escaped = [];
+
+  // match markdown [{TEXT}]({URL}) and HTML links <a href="{URL}">{TEXT}</a>
+  var pattern = /(?:\[([^\]]+)\]\((https?:\/\/[^)]+)\))|(?:<a href="(https?:\/\/[^"]+)">(.+?(?=<\/))<\/a>)/gi;
+
+  var index = 0;
+  var match;
+  var link, text;
+
+  while ((match = pattern.exec(description))) {
+
+    // escape + insert text before match
+    if (match.index > index) {
+      escaped.push(escapeText(description.substring(index, match.index)));
+    }
+
+    link = match[2] && encodeURI(match[2]) || match[3];
+    text = match[1] || match[4];
+
+    // insert safe link
+    escaped.push('<a href="' + link + '" target="_blank">' + escapeText(text) + '</a>');
+
+    index = match.index + match[0].length;
+  }
+
+  // escape and insert text after last match
+  if (index < description.length) {
+    escaped.push(escapeText(description.substring(index)));
+  }
+
+  return (
+    '<div class="bpp-field-description"' + (show ? 'data-show="' + show + '">' : '>') +
+      escaped.join('') +
+    '</div>');
+};
+
+function escapeText(text) {
+  var match, index = 0, escaped = [];
+
+  // match new line <br/> <br /> <br.... /> etc.
+  var pattern = /<br\s*\/?>/gi;
+
+  while ((match = pattern.exec(text))) {
+
+    if (match.index > index) {
+      escaped.push(escapeHTML(text.substring(index, match.index)));
+    }
+
+    escaped.push('<br />');
+
+    index = match.index + match[0].length;
+  }
+
+  if (index < text.length) {
+    escaped.push(escapeHTML(text.substring(index)));
+  }
+
+  return escaped.join('');
+}
+
+
+/***/ }),
+/* 19 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(317);
 
 module.exports.Collection = __webpack_require__(120);
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;/*! Hammer.JS - v2.0.7 - 2016-04-22
@@ -5393,7 +5579,7 @@ if (true) {
 
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports) {
 
 /**
@@ -5428,116 +5614,13 @@ module.exports = isObjectLike;
 
 
 /***/ }),
-/* 21 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var baseIsNative = __webpack_require__(157),
-    getValue = __webpack_require__(160);
-
-/**
- * Gets the native function at `key` of `object`.
- *
- * @private
- * @param {Object} object The object to query.
- * @param {string} key The key of the method to get.
- * @returns {*} Returns the function if it's native, else `undefined`.
- */
-function getNative(object, key) {
-  var value = getValue(object, key);
-  return baseIsNative(value) ? value : undefined;
-}
-
-module.exports = getNative;
-
-
-/***/ }),
 /* 22 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var escapeHTML = __webpack_require__(11).escapeHTML;
-
-/**
- * Create a linkified and HTML escaped entry field description.
- *
- * As a special feature, this description may contain both markdown,
- * plain <a href> links and <br />
- *
- * @param {String} description
- */
-module.exports = function entryFieldDescription(description) {
-
-  // we tokenize the description to extract text, HTML and markdown links
-  // text, links and new lines are handled seperately
-
-  var escaped = [];
-
-  // match markdown [{TEXT}]({URL}) and HTML links <a href="{URL}">{TEXT}</a>
-  var pattern = /(?:\[([^\]]+)\]\((https?:\/\/[^)]+)\))|(?:<a href="(https?:\/\/[^"]+)">(.+?(?=<\/))<\/a>)/gi;
-
-  var index = 0;
-  var match;
-  var link, text;
-
-  while ((match = pattern.exec(description))) {
-
-    // escape + insert text before match
-    if (match.index > index) {
-      escaped.push(escapeText(description.substring(index, match.index)));
-    }
-
-    link = match[2] && encodeURI(match[2]) || match[3];
-    text = match[1] || match[4];
-
-    // insert safe link
-    escaped.push('<a href="' + link + '" target="_blank">' + escapeText(text) + '</a>');
-
-    index = match.index + match[0].length;
-  }
-
-  // escape and insert text after last match
-  if (index < description.length) {
-    escaped.push(escapeText(description.substring(index)));
-  }
-
-  return '<div class="bpp-field-description">' + escaped.join('') + '</div>';
-};
-
-function escapeText(text) {
-  var match, index = 0, escaped = [];
-
-  // match new line <br/> <br /> <br.... /> etc.
-  var pattern = /<br\s*\/?>/gi;
-
-  while ((match = pattern.exec(text))) {
-
-    if (match.index > index) {
-      escaped.push(escapeHTML(text.substring(index, match.index)));
-    }
-
-    escaped.push('<br />');
-
-    index = match.index + match[0].length;
-  }
-
-  if (index < text.length) {
-    escaped.push(escapeHTML(text.substring(index)));
-  }
-
-  return escaped.join('');
-}
-
-
-/***/ }),
-/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseMatches = __webpack_require__(145),
     baseMatchesProperty = __webpack_require__(188),
-    identity = __webpack_require__(26),
-    isArray = __webpack_require__(6),
+    identity = __webpack_require__(27),
+    isArray = __webpack_require__(5),
     property = __webpack_require__(197);
 
 /**
@@ -5568,10 +5651,53 @@ module.exports = baseIteratee;
 
 
 /***/ }),
+/* 23 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var baseIsNative = __webpack_require__(157),
+    getValue = __webpack_require__(160);
+
+/**
+ * Gets the native function at `key` of `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @param {string} key The key of the method to get.
+ * @returns {*} Returns the function if it's native, else `undefined`.
+ */
+function getNative(object, key) {
+  var value = getValue(object, key);
+  return baseIsNative(value) ? value : undefined;
+}
+
+module.exports = getNative;
+
+
+/***/ }),
 /* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Symbol = __webpack_require__(25),
+var baseForOwn = __webpack_require__(70),
+    createBaseEach = __webpack_require__(141);
+
+/**
+ * The base implementation of `_.forEach` without support for iteratee shorthands.
+ *
+ * @private
+ * @param {Array|Object} collection The collection to iterate over.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @returns {Array|Object} Returns `collection`.
+ */
+var baseEach = createBaseEach(baseForOwn);
+
+module.exports = baseEach;
+
+
+/***/ }),
+/* 25 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Symbol = __webpack_require__(26),
     getRawTag = __webpack_require__(135),
     objectToString = __webpack_require__(136);
 
@@ -5602,7 +5728,7 @@ module.exports = baseGetTag;
 
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var root = __webpack_require__(8);
@@ -5614,7 +5740,7 @@ module.exports = Symbol;
 
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports) {
 
 /**
@@ -5641,7 +5767,7 @@ module.exports = identity;
 
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5814,7 +5940,7 @@ Ids.prototype.clear = function () {
 
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/*! https://mths.be/cssescape v1.5.1 by @mathias | MIT license */
@@ -5921,31 +6047,11 @@ Ids.prototype.clear = function () {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(72)))
 
 /***/ }),
-/* 29 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var baseForOwn = __webpack_require__(70),
-    createBaseEach = __webpack_require__(141);
-
-/**
- * The base implementation of `_.forEach` without support for iteratee shorthands.
- *
- * @private
- * @param {Array|Object} collection The collection to iterate over.
- * @param {Function} iteratee The function invoked per iteration.
- * @returns {Array|Object} Returns `collection`.
- */
-var baseEach = createBaseEach(baseForOwn);
-
-module.exports = baseEach;
-
-
-/***/ }),
 /* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseIsArguments = __webpack_require__(134),
-    isObjectLike = __webpack_require__(20);
+    isObjectLike = __webpack_require__(21);
 
 /** Used for built-in method references. */
 var objectProto = Object.prototype;
@@ -6095,6 +6201,49 @@ module.exports = isTypedArray;
 /* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
+var baseGetTag = __webpack_require__(25),
+    isObject = __webpack_require__(13);
+
+/** `Object#toString` result references. */
+var asyncTag = '[object AsyncFunction]',
+    funcTag = '[object Function]',
+    genTag = '[object GeneratorFunction]',
+    proxyTag = '[object Proxy]';
+
+/**
+ * Checks if `value` is classified as a `Function` object.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a function, else `false`.
+ * @example
+ *
+ * _.isFunction(_);
+ * // => true
+ *
+ * _.isFunction(/abc/);
+ * // => false
+ */
+function isFunction(value) {
+  if (!isObject(value)) {
+    return false;
+  }
+  // The use of `Object#toString` avoids issues with the `typeof` operator
+  // in Safari 9 which returns 'object' for typed arrays and other constructors.
+  var tag = baseGetTag(value);
+  return tag == funcTag || tag == genTag || tag == asyncTag || tag == proxyTag;
+}
+
+module.exports = isFunction;
+
+
+/***/ }),
+/* 35 */
+/***/ (function(module, exports, __webpack_require__) {
+
 var isObject = __webpack_require__(13);
 
 /** Built-in value references. */
@@ -6128,7 +6277,7 @@ module.exports = baseCreate;
 
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var listCacheClear = __webpack_require__(147),
@@ -6166,10 +6315,10 @@ module.exports = ListCache;
 
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var eq = __webpack_require__(37);
+var eq = __webpack_require__(38);
 
 /**
  * Gets the index at which the `key` is found in `array` of key-value pairs.
@@ -6193,7 +6342,7 @@ module.exports = assocIndexOf;
 
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports) {
 
 /**
@@ -6236,10 +6385,10 @@ module.exports = eq;
 
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getNative = __webpack_require__(21);
+var getNative = __webpack_require__(23);
 
 /* Built-in method references that are verified to be native. */
 var nativeCreate = getNative(Object, 'create');
@@ -6248,7 +6397,7 @@ module.exports = nativeCreate;
 
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var isKeyable = __webpack_require__(169);
@@ -6272,11 +6421,11 @@ module.exports = getMapData;
 
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseGetTag = __webpack_require__(24),
-    isObjectLike = __webpack_require__(20);
+var baseGetTag = __webpack_require__(25),
+    isObjectLike = __webpack_require__(21);
 
 /** `Object#toString` result references. */
 var symbolTag = '[object Symbol]';
@@ -6307,10 +6456,10 @@ module.exports = isSymbol;
 
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isSymbol = __webpack_require__(40);
+var isSymbol = __webpack_require__(41);
 
 /** Used as references for various `Number` constants. */
 var INFINITY = 1 / 0;
@@ -6334,12 +6483,12 @@ module.exports = toKey;
 
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var elementHelper = __webpack_require__(10),
-    ProcessSimulationHelper = __webpack_require__(9),
-    ValidationErrorHelper = __webpack_require__(5),
+var elementHelper = __webpack_require__(11),
+    ProcessSimulationHelper = __webpack_require__(10),
+    ValidationErrorHelper = __webpack_require__(6),
     is = __webpack_require__(1).is;
 
 var ElementHelper = {};
@@ -6414,10 +6563,10 @@ function isQBPElement(element) {
 module.exports = ElementHelper;
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseCreate = __webpack_require__(34),
+var baseCreate = __webpack_require__(35),
     isObject = __webpack_require__(13);
 
 /**
@@ -6457,7 +6606,7 @@ module.exports = createCtor;
 
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports) {
 
 /** Used as the internal argument placeholder. */
@@ -6492,14 +6641,14 @@ module.exports = replaceHolders;
 
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var getBusinessObject = __webpack_require__(1).getBusinessObject;
 
 var cmdHelper = __webpack_require__(4);
 
-var escapeHTML = __webpack_require__(11).escapeHTML;
+var escapeHTML = __webpack_require__(9).escapeHTML;
 
 function ensureNotNull(prop) {
   if (!prop) {
@@ -6568,7 +6717,7 @@ module.exports = function(options) {
 
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7502,7 +7651,7 @@ module.exports = findPathIntersections;
 
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports) {
 
 /**
@@ -7530,7 +7679,7 @@ module.exports = arrayEach;
 
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports) {
 
 /** Used as references for various `Number` constants. */
@@ -7571,7 +7720,7 @@ module.exports = isLength;
 
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports) {
 
 /** Used for built-in method references. */
@@ -7595,53 +7744,10 @@ module.exports = isPrototype;
 
 
 /***/ }),
-/* 50 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var baseGetTag = __webpack_require__(24),
-    isObject = __webpack_require__(13);
-
-/** `Object#toString` result references. */
-var asyncTag = '[object AsyncFunction]',
-    funcTag = '[object Function]',
-    genTag = '[object GeneratorFunction]',
-    proxyTag = '[object Proxy]';
-
-/**
- * Checks if `value` is classified as a `Function` object.
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a function, else `false`.
- * @example
- *
- * _.isFunction(_);
- * // => true
- *
- * _.isFunction(/abc/);
- * // => false
- */
-function isFunction(value) {
-  if (!isObject(value)) {
-    return false;
-  }
-  // The use of `Object#toString` avoids issues with the `typeof` operator
-  // in Safari 9 which returns 'object' for typed arrays and other constructors.
-  var tag = baseGetTag(value);
-  return tag == funcTag || tag == genTag || tag == asyncTag || tag == proxyTag;
-}
-
-module.exports = isFunction;
-
-
-/***/ }),
 /* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getNative = __webpack_require__(21),
+var getNative = __webpack_require__(23),
     root = __webpack_require__(8);
 
 /* Built-in method references that are verified to be native. */
@@ -7799,8 +7905,8 @@ module.exports = arrayFilter;
 /* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isArray = __webpack_require__(6),
-    isSymbol = __webpack_require__(40);
+var isArray = __webpack_require__(5),
+    isSymbol = __webpack_require__(41);
 
 /** Used to match property names within property paths. */
 var reIsDeepProp = /\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\\]|\\.)*?\1)\]/,
@@ -7861,7 +7967,7 @@ module.exports = arrayMap;
 /* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var identity = __webpack_require__(26),
+var identity = __webpack_require__(27),
     overRest = __webpack_require__(209),
     setToString = __webpack_require__(91);
 
@@ -7965,7 +8071,7 @@ module.exports = baseAssignValue;
 /* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseCreate = __webpack_require__(34),
+var baseCreate = __webpack_require__(35),
     baseLodash = __webpack_require__(64);
 
 /** Used as references for the maximum length and index of an array. */
@@ -8037,7 +8143,7 @@ module.exports = getHolder;
 var entryFactory = __webpack_require__(7);
 var cmdHelper = __webpack_require__(4);
 
-var validationHelper = __webpack_require__(5);
+var validationHelper = __webpack_require__(6);
 var fixNumber = __webpack_require__(17).fixNumber;
 
 var createDistributionTypeOptions = function(translate) {
@@ -8405,8 +8511,8 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 /* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var elementHelper = __webpack_require__(10),
-    ProcessSimulationHelper = __webpack_require__(9);
+var elementHelper = __webpack_require__(11),
+    ProcessSimulationHelper = __webpack_require__(10);
 
 var DistributionHelper = {};
 
@@ -8528,9 +8634,9 @@ var domQuery = __webpack_require__(2).query,
     domify = __webpack_require__(2).domify,
     forEach = __webpack_require__(12);
 
-var elementHelper = __webpack_require__(10),
+var elementHelper = __webpack_require__(11),
     cmdHelper = __webpack_require__(4),
-    utils = __webpack_require__(11),
+    utils = __webpack_require__(9),
     escapeHTML = utils.escapeHTML;
 
 function getSelectBox(node, id) {
@@ -8613,12 +8719,12 @@ module.exports = function(element, bpmnFactory, options, translate) {
                       'data-list-entry-container ' +
                       'data-on-change="selectElement">' +
               '</select>' +
-              (canCreate ? '<button class="add" ' +
+              (canCreate ? '<button class="action-button add" ' +
                                    'id="cam-extensionElements-create-' + escapeHTML(id) + '" ' +
                                    'data-action="createElement">' +
                              '<span>+</span>' +
                            '</button>' : '') +
-              (canRemove ? '<button class="clear" ' +
+              (canRemove ? '<button class="action-button clear" ' +
                                    'id="cam-extensionElements-remove-' + escapeHTML(id) + '" ' +
                                    'data-action="removeElement" ' +
                                    'data-disable="disableRemove">' +
@@ -8867,7 +8973,7 @@ module.exports = baseUnary;
 /* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isPrototype = __webpack_require__(49),
+var isPrototype = __webpack_require__(50),
     nativeKeys = __webpack_require__(140);
 
 /** Used for built-in method references. */
@@ -8924,7 +9030,7 @@ module.exports = overArg;
 /* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var ListCache = __webpack_require__(35),
+var ListCache = __webpack_require__(36),
     stackClear = __webpack_require__(152),
     stackDelete = __webpack_require__(153),
     stackGet = __webpack_require__(154),
@@ -8990,7 +9096,7 @@ module.exports = toSource;
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseIsEqualDeep = __webpack_require__(173),
-    isObjectLike = __webpack_require__(20);
+    isObjectLike = __webpack_require__(21);
 
 /**
  * The base implementation of `_.isEqual` which supports partial comparisons
@@ -9144,7 +9250,7 @@ var DataView = __webpack_require__(185),
     Promise = __webpack_require__(186),
     Set = __webpack_require__(83),
     WeakMap = __webpack_require__(84),
-    baseGetTag = __webpack_require__(24),
+    baseGetTag = __webpack_require__(25),
     toSource = __webpack_require__(78);
 
 /** `Object#toString` result references. */
@@ -9203,7 +9309,7 @@ module.exports = getTag;
 /* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getNative = __webpack_require__(21),
+var getNative = __webpack_require__(23),
     root = __webpack_require__(8);
 
 /* Built-in method references that are verified to be native. */
@@ -9216,7 +9322,7 @@ module.exports = Set;
 /* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getNative = __webpack_require__(21),
+var getNative = __webpack_require__(23),
     root = __webpack_require__(8);
 
 /* Built-in method references that are verified to be native. */
@@ -9316,7 +9422,7 @@ module.exports = get;
 /***/ (function(module, exports, __webpack_require__) {
 
 var castPath = __webpack_require__(89),
-    toKey = __webpack_require__(41);
+    toKey = __webpack_require__(42);
 
 /**
  * The base implementation of `_.get` without support for default values.
@@ -9345,7 +9451,7 @@ module.exports = baseGet;
 /* 89 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isArray = __webpack_require__(6),
+var isArray = __webpack_require__(5),
     isKey = __webpack_require__(57),
     stringToPath = __webpack_require__(189),
     toString = __webpack_require__(192);
@@ -9374,8 +9480,8 @@ module.exports = castPath;
 
 var arrayFilter = __webpack_require__(56),
     baseFilter = __webpack_require__(206),
-    baseIteratee = __webpack_require__(23),
-    isArray = __webpack_require__(6);
+    baseIteratee = __webpack_require__(22),
+    isArray = __webpack_require__(5);
 
 /**
  * Iterates over elements of `collection`, returning an array of all elements
@@ -9450,7 +9556,7 @@ module.exports = setToString;
 /* 92 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getNative = __webpack_require__(21);
+var getNative = __webpack_require__(23);
 
 var defineProperty = (function() {
   try {
@@ -9637,7 +9743,7 @@ module.exports = noop;
 
 var baseTrim = __webpack_require__(223),
     isObject = __webpack_require__(13),
-    isSymbol = __webpack_require__(40);
+    isSymbol = __webpack_require__(41);
 
 /** Used as references for various `Number` constants. */
 var NAN = 0 / 0;
@@ -9862,8 +9968,8 @@ function splitStr(str, position) {
 /* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var elementHelper = __webpack_require__(10),
-    ProcessSimulationHelper = __webpack_require__(9);
+var elementHelper = __webpack_require__(11),
+    ProcessSimulationHelper = __webpack_require__(10);
 
 var SequenceFlowHelper = {};
 
@@ -9915,11 +10021,11 @@ module.exports = SequenceFlowHelper;
 "use strict";
 
 
-var escapeHTML = __webpack_require__(11).escapeHTML;
+var escapeHTML = __webpack_require__(9).escapeHTML;
 
 var domQuery = __webpack_require__(2).query;
 
-var entryFieldDescription = __webpack_require__(22);
+var entryFieldDescription = __webpack_require__(18);
 
 
 var textField = function(options, defaultParameters) {
@@ -9965,7 +10071,7 @@ var textField = function(options, defaultParameters) {
         (canBeDisabled ? 'data-disable="isDisabled"' : '') +
         (canBeHidden ? 'data-show="isHidden"' : '') +
         ' />' +
-      '<button class="' + escapeHTML(actionName) + '" data-action="' + escapeHTML(actionName) + '" data-show="' + escapeHTML(showName) + '" ' +
+      '<button class="action-button ' + escapeHTML(actionName) + '" data-action="' + escapeHTML(actionName) + '" data-show="' + escapeHTML(showName) + '" ' +
         (canBeDisabled ? 'data-disable="isDisabled"' : '') +
         (canBeHidden ? ' data-show="isHidden"' : '') + '>' +
         '<span>' + escapeHTML(buttonLabel) + '</span>' +
@@ -9974,7 +10080,7 @@ var textField = function(options, defaultParameters) {
 
   // add description below text input entry field
   if (description) {
-    resource.html += entryFieldDescription(description);
+    resource.html += entryFieldDescription(description, { show: canBeHidden && 'isHidden' });
   }
 
   resource[actionName] = actionMethod;
@@ -10007,13 +10113,13 @@ module.exports = textField;
 "use strict";
 
 
-var escapeHTML = __webpack_require__(11).escapeHTML;
+var escapeHTML = __webpack_require__(9).escapeHTML;
 
 var domify = __webpack_require__(2).domify;
 
 var forEach = __webpack_require__(12);
 
-var entryFieldDescription = __webpack_require__(22);
+var entryFieldDescription = __webpack_require__(18);
 
 
 var isList = function(list) {
@@ -10079,7 +10185,7 @@ var selectbox = function(options, defaultParameters) {
 
   // add description below select box entry field
   if (description && typeof options.showCustomInput !== 'function') {
-    resource.html += entryFieldDescription(description);
+    resource.html += entryFieldDescription(description, { show: canBeHidden && 'isHidden' });
   }
 
   /**
@@ -10149,7 +10255,7 @@ module.exports = selectbox;
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseAssignValue = __webpack_require__(62),
-    eq = __webpack_require__(37);
+    eq = __webpack_require__(38);
 
 /** Used for built-in method references. */
 var objectProto = Object.prototype;
@@ -10182,7 +10288,7 @@ module.exports = assignValue;
 /* 104 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var toFinite = __webpack_require__(248);
+var toFinite = __webpack_require__(251);
 
 /**
  * Converts `value` to an integer.
@@ -10224,7 +10330,7 @@ module.exports = toInteger;
 /* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var identity = __webpack_require__(26),
+var identity = __webpack_require__(27),
     metaMap = __webpack_require__(106);
 
 /**
@@ -10261,12 +10367,12 @@ module.exports = metaMap;
 
 var composeArgs = __webpack_require__(108),
     composeArgsRight = __webpack_require__(109),
-    countHolders = __webpack_require__(258),
-    createCtor = __webpack_require__(43),
+    countHolders = __webpack_require__(261),
+    createCtor = __webpack_require__(44),
     createRecurry = __webpack_require__(110),
     getHolder = __webpack_require__(65),
-    reorder = __webpack_require__(267),
-    replaceHolders = __webpack_require__(44),
+    reorder = __webpack_require__(270),
+    replaceHolders = __webpack_require__(45),
     root = __webpack_require__(8);
 
 /** Used to compose bitmasks for function metadata. */
@@ -10449,7 +10555,7 @@ module.exports = composeArgsRight;
 /* 110 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isLaziable = __webpack_require__(259),
+var isLaziable = __webpack_require__(262),
     setData = __webpack_require__(114),
     setWrapToString = __webpack_require__(115);
 
@@ -10532,7 +10638,7 @@ module.exports = getData;
 /* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseCreate = __webpack_require__(34),
+var baseCreate = __webpack_require__(35),
     baseLodash = __webpack_require__(64);
 
 /**
@@ -10612,10 +10718,10 @@ module.exports = setData;
 /* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getWrapDetails = __webpack_require__(264),
-    insertWrapDetails = __webpack_require__(265),
+var getWrapDetails = __webpack_require__(267),
+    insertWrapDetails = __webpack_require__(268),
     setToString = __webpack_require__(91),
-    updateWrapDetails = __webpack_require__(266);
+    updateWrapDetails = __webpack_require__(269);
 
 /**
  * Sets the `toString` method of `wrapper` to mimic the source of `reference`
@@ -10639,8 +10745,8 @@ module.exports = setWrapToString;
 /* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var elementHelper = __webpack_require__(10),
-    ProcessSimulationHelper = __webpack_require__(9),
+var elementHelper = __webpack_require__(11),
+    ProcessSimulationHelper = __webpack_require__(10),
     createUUID = __webpack_require__(17).createUUID;
 
 var ResourceHelper = {};
@@ -10713,8 +10819,8 @@ module.exports = ResourceHelper;
 /* 117 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var elementHelper = __webpack_require__(10),
-    ProcessSimulationHelper = __webpack_require__(9),
+var elementHelper = __webpack_require__(11),
+    ProcessSimulationHelper = __webpack_require__(10),
     RuleHelper = __webpack_require__(118),
     createUUID = __webpack_require__(17).createUUID;
 
@@ -10783,7 +10889,7 @@ module.exports = TimetableHelper;
 /* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var elementHelper = __webpack_require__(10),
+var elementHelper = __webpack_require__(11),
     createUUID = __webpack_require__(17).createUUID;
 
 var RuleHelper = {};
@@ -11001,7 +11107,7 @@ module.exports = __webpack_require__(128);
 
 module.exports = {
   __init__: [ 'propertiesProvider' ],
-  propertiesProvider: [ 'type', __webpack_require__(232) ]
+  propertiesProvider: [ 'type', __webpack_require__(235) ]
 };
 
 /***/ }),
@@ -11115,8 +11221,8 @@ function toComment(sourceMap) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // var translations = require('./translations');
-var translationsEn = __webpack_require__(310);
-var translationsJa = __webpack_require__(311);
+var translationsEn = __webpack_require__(315);
+var translationsJa = __webpack_require__(316);
 var translationMap = {
   'en': translationsEn,
   'ja': translationsJa,
@@ -11241,7 +11347,7 @@ function getAllDataObjectReferences(dataObject, elementRegistry) {
 /* 127 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(313);
+module.exports = __webpack_require__(318);
 
 
 /***/ }),
@@ -11350,7 +11456,7 @@ module.exports = createBaseFor;
 
 var baseTimes = __webpack_require__(133),
     isArguments = __webpack_require__(30),
-    isArray = __webpack_require__(6),
+    isArray = __webpack_require__(5),
     isBuffer = __webpack_require__(31),
     isIndex = __webpack_require__(32),
     isTypedArray = __webpack_require__(33);
@@ -11429,8 +11535,8 @@ module.exports = baseTimes;
 /* 134 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseGetTag = __webpack_require__(24),
-    isObjectLike = __webpack_require__(20);
+var baseGetTag = __webpack_require__(25),
+    isObjectLike = __webpack_require__(21);
 
 /** `Object#toString` result references. */
 var argsTag = '[object Arguments]';
@@ -11453,7 +11559,7 @@ module.exports = baseIsArguments;
 /* 135 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Symbol = __webpack_require__(25);
+var Symbol = __webpack_require__(26);
 
 /** Used for built-in method references. */
 var objectProto = Object.prototype;
@@ -11557,9 +11663,9 @@ module.exports = stubFalse;
 /* 138 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseGetTag = __webpack_require__(24),
-    isLength = __webpack_require__(48),
-    isObjectLike = __webpack_require__(20);
+var baseGetTag = __webpack_require__(25),
+    isLength = __webpack_require__(49),
+    isObjectLike = __webpack_require__(21);
 
 /** `Object#toString` result references. */
 var argsTag = '[object Arguments]',
@@ -11710,7 +11816,7 @@ module.exports = createBaseEach;
 /* 142 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var identity = __webpack_require__(26);
+var identity = __webpack_require__(27);
 
 /**
  * Casts `value` to `identity` if it's not a function.
@@ -11868,14 +11974,14 @@ UpdateBusinessObjectHandler.prototype.revert = function(context) {
 /* 144 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var arrayEach = __webpack_require__(47),
-    baseCreate = __webpack_require__(34),
+var arrayEach = __webpack_require__(48),
+    baseCreate = __webpack_require__(35),
     baseForOwn = __webpack_require__(70),
-    baseIteratee = __webpack_require__(23),
+    baseIteratee = __webpack_require__(22),
     getPrototype = __webpack_require__(200),
-    isArray = __webpack_require__(6),
+    isArray = __webpack_require__(5),
     isBuffer = __webpack_require__(31),
-    isFunction = __webpack_require__(50),
+    isFunction = __webpack_require__(34),
     isObject = __webpack_require__(13),
     isTypedArray = __webpack_require__(33);
 
@@ -12054,7 +12160,7 @@ module.exports = listCacheClear;
 /* 148 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var assocIndexOf = __webpack_require__(36);
+var assocIndexOf = __webpack_require__(37);
 
 /** Used for built-in method references. */
 var arrayProto = Array.prototype;
@@ -12095,7 +12201,7 @@ module.exports = listCacheDelete;
 /* 149 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var assocIndexOf = __webpack_require__(36);
+var assocIndexOf = __webpack_require__(37);
 
 /**
  * Gets the list cache value for `key`.
@@ -12120,7 +12226,7 @@ module.exports = listCacheGet;
 /* 150 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var assocIndexOf = __webpack_require__(36);
+var assocIndexOf = __webpack_require__(37);
 
 /**
  * Checks if a list cache value for `key` exists.
@@ -12142,7 +12248,7 @@ module.exports = listCacheHas;
 /* 151 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var assocIndexOf = __webpack_require__(36);
+var assocIndexOf = __webpack_require__(37);
 
 /**
  * Sets the list cache `key` to `value`.
@@ -12174,7 +12280,7 @@ module.exports = listCacheSet;
 /* 152 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var ListCache = __webpack_require__(35);
+var ListCache = __webpack_require__(36);
 
 /**
  * Removes all key-value entries from the stack.
@@ -12259,7 +12365,7 @@ module.exports = stackHas;
 /* 156 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var ListCache = __webpack_require__(35),
+var ListCache = __webpack_require__(36),
     Map = __webpack_require__(51),
     MapCache = __webpack_require__(52);
 
@@ -12299,7 +12405,7 @@ module.exports = stackSet;
 /* 157 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isFunction = __webpack_require__(50),
+var isFunction = __webpack_require__(34),
     isMasked = __webpack_require__(158),
     isObject = __webpack_require__(13),
     toSource = __webpack_require__(78);
@@ -12410,7 +12516,7 @@ module.exports = getValue;
 /***/ (function(module, exports, __webpack_require__) {
 
 var Hash = __webpack_require__(162),
-    ListCache = __webpack_require__(35),
+    ListCache = __webpack_require__(36),
     Map = __webpack_require__(51);
 
 /**
@@ -12474,7 +12580,7 @@ module.exports = Hash;
 /* 163 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var nativeCreate = __webpack_require__(38);
+var nativeCreate = __webpack_require__(39);
 
 /**
  * Removes all key-value entries from the hash.
@@ -12518,7 +12624,7 @@ module.exports = hashDelete;
 /* 165 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var nativeCreate = __webpack_require__(38);
+var nativeCreate = __webpack_require__(39);
 
 /** Used to stand-in for `undefined` hash values. */
 var HASH_UNDEFINED = '__lodash_hash_undefined__';
@@ -12554,7 +12660,7 @@ module.exports = hashGet;
 /* 166 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var nativeCreate = __webpack_require__(38);
+var nativeCreate = __webpack_require__(39);
 
 /** Used for built-in method references. */
 var objectProto = Object.prototype;
@@ -12583,7 +12689,7 @@ module.exports = hashHas;
 /* 167 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var nativeCreate = __webpack_require__(38);
+var nativeCreate = __webpack_require__(39);
 
 /** Used to stand-in for `undefined` hash values. */
 var HASH_UNDEFINED = '__lodash_hash_undefined__';
@@ -12612,7 +12718,7 @@ module.exports = hashSet;
 /* 168 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getMapData = __webpack_require__(39);
+var getMapData = __webpack_require__(40);
 
 /**
  * Removes `key` and its value from the map.
@@ -12657,7 +12763,7 @@ module.exports = isKeyable;
 /* 170 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getMapData = __webpack_require__(39);
+var getMapData = __webpack_require__(40);
 
 /**
  * Gets the map value for `key`.
@@ -12679,7 +12785,7 @@ module.exports = mapCacheGet;
 /* 171 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getMapData = __webpack_require__(39);
+var getMapData = __webpack_require__(40);
 
 /**
  * Checks if a map value for `key` exists.
@@ -12701,7 +12807,7 @@ module.exports = mapCacheHas;
 /* 172 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getMapData = __webpack_require__(39);
+var getMapData = __webpack_require__(40);
 
 /**
  * Sets the map `key` to `value`.
@@ -12734,7 +12840,7 @@ var Stack = __webpack_require__(77),
     equalByTag = __webpack_require__(177),
     equalObjects = __webpack_require__(180),
     getTag = __webpack_require__(82),
-    isArray = __webpack_require__(6),
+    isArray = __webpack_require__(5),
     isBuffer = __webpack_require__(31),
     isTypedArray = __webpack_require__(33);
 
@@ -12892,9 +12998,9 @@ module.exports = arraySome;
 /* 177 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Symbol = __webpack_require__(25),
+var Symbol = __webpack_require__(26),
     Uint8Array = __webpack_require__(178),
-    eq = __webpack_require__(37),
+    eq = __webpack_require__(38),
     equalArrays = __webpack_require__(80),
     mapToArray = __webpack_require__(179),
     setToArray = __webpack_require__(55);
@@ -13165,7 +13271,7 @@ module.exports = getAllKeys;
 /***/ (function(module, exports, __webpack_require__) {
 
 var arrayPush = __webpack_require__(81),
-    isArray = __webpack_require__(6);
+    isArray = __webpack_require__(5);
 
 /**
  * The base implementation of `getAllKeys` and `getAllKeysIn` which uses
@@ -13255,7 +13361,7 @@ module.exports = stubArray;
 /* 185 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getNative = __webpack_require__(21),
+var getNative = __webpack_require__(23),
     root = __webpack_require__(8);
 
 /* Built-in method references that are verified to be native. */
@@ -13268,7 +13374,7 @@ module.exports = DataView;
 /* 186 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getNative = __webpack_require__(21),
+var getNative = __webpack_require__(23),
     root = __webpack_require__(8);
 
 /* Built-in method references that are verified to be native. */
@@ -13317,7 +13423,7 @@ var baseIsEqual = __webpack_require__(79),
     isKey = __webpack_require__(57),
     isStrictComparable = __webpack_require__(85),
     matchesStrictComparable = __webpack_require__(86),
-    toKey = __webpack_require__(41);
+    toKey = __webpack_require__(42);
 
 /** Used to compose bitmasks for value comparisons. */
 var COMPARE_PARTIAL_FLAG = 1,
@@ -13528,10 +13634,10 @@ module.exports = toString;
 /* 193 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Symbol = __webpack_require__(25),
+var Symbol = __webpack_require__(26),
     arrayMap = __webpack_require__(58),
-    isArray = __webpack_require__(6),
-    isSymbol = __webpack_require__(40);
+    isArray = __webpack_require__(5),
+    isSymbol = __webpack_require__(41);
 
 /** Used as references for various `Number` constants. */
 var INFINITY = 1 / 0;
@@ -13632,10 +13738,10 @@ module.exports = baseHasIn;
 
 var castPath = __webpack_require__(89),
     isArguments = __webpack_require__(30),
-    isArray = __webpack_require__(6),
+    isArray = __webpack_require__(5),
     isIndex = __webpack_require__(32),
-    isLength = __webpack_require__(48),
-    toKey = __webpack_require__(41);
+    isLength = __webpack_require__(49),
+    toKey = __webpack_require__(42);
 
 /**
  * Checks if `path` exists on `object`.
@@ -13678,7 +13784,7 @@ module.exports = hasPath;
 var baseProperty = __webpack_require__(198),
     basePropertyDeep = __webpack_require__(199),
     isKey = __webpack_require__(57),
-    toKey = __webpack_require__(41);
+    toKey = __webpack_require__(42);
 
 /**
  * Creates a function that returns the value at `path` of a given object.
@@ -13770,7 +13876,7 @@ module.exports = getPrototype;
 "use strict";
 
 
-var elementHelper = __webpack_require__(10);
+var elementHelper = __webpack_require__(11);
 
 /**
  * A handler capable of creating a new element under a provided parent
@@ -13880,7 +13986,7 @@ function ensureNotNull(prop, name) {
 
 var forEach = __webpack_require__(12);
 
-var elementHelper = __webpack_require__(10);
+var elementHelper = __webpack_require__(11);
 
 /**
  * A handler that implements a BPMN 2.0 property update
@@ -14040,6 +14146,7 @@ UpdateBusinessObjectListHandler.prototype.execute = function(context) {
       updatedObjectList = context.updatedObjectList,
       objectsToRemove = context.objectsToRemove || [],
       objectsToAdd = context.objectsToAdd || [],
+      objectsToPrepend = context.objectsToPrepend || [],
       changed = [ context.element], // this will not change any diagram-js elements
       referencePropertyName;
 
@@ -14054,7 +14161,10 @@ UpdateBusinessObjectListHandler.prototype.execute = function(context) {
   if (updatedObjectList) {
     currentObject[propertyName] = updatedObjectList;
   } else {
-    var listCopy = [];
+
+    // start with objects to prepend
+    var listCopy = objectsToPrepend.slice();
+
     // remove all objects which should be removed
     forEach(objectList, function(object) {
       if (objectsToRemove.indexOf(object) == -1) {
@@ -14155,7 +14265,8 @@ MultiCommandHandler.prototype.preExecute = function(context) {
 "use strict";
 
 
-var escapeHTML = __webpack_require__(11).escapeHTML;
+var createDropdown = __webpack_require__(9).createDropdown,
+    escapeHTML = __webpack_require__(9).escapeHTML;
 
 var domify = __webpack_require__(2).domify,
     domQuery = __webpack_require__(2).query,
@@ -14172,13 +14283,19 @@ var forEach = __webpack_require__(12),
     get = __webpack_require__(87),
     keys = __webpack_require__(15),
     isEmpty = __webpack_require__(207),
-    isArray = __webpack_require__(6),
+    isArray = __webpack_require__(5),
+    isFunction = __webpack_require__(34),
+    isObject = __webpack_require__(13),
     xor = __webpack_require__(208),
-    debounce = __webpack_require__(221);
+    debounce = __webpack_require__(221),
+    flattenDeep = __webpack_require__(225),
+    keyBy = __webpack_require__(226),
+    map = __webpack_require__(230),
+    reduce = __webpack_require__(232);
 
 var updateSelection = __webpack_require__(99);
 
-var scrollTabs = __webpack_require__(314).default;
+var scrollTabs = __webpack_require__(319).default;
 
 var getBusinessObject = __webpack_require__(1).getBusinessObject;
 
@@ -14552,87 +14669,108 @@ PropertiesPanel.prototype.detach = function() {
 
 
 /**
- * Select the given tab within the properties panel.
+ * Activate tab. Fall back to first visible tab.
  *
- * @param {Object|String} tab
+ * @param {Object|string} tabId
  */
-PropertiesPanel.prototype.activateTab = function(tab) {
+PropertiesPanel.prototype.activateTab = function(tabId) {
+  if (isObject(tabId)) {
+    tabId = tabId.id;
+  }
 
-  var tabId = typeof tab === 'string' ? tab : tab.id;
+  var tabs = domQueryAll('.bpp-properties-tab', this._current.panel),
+      tabLinks = domQueryAll('.bpp-properties-tab-link', this._current.panel);
 
-  var current = this._current;
-
-  var panelNode = current.panel;
-
-  var allTabNodes = domQueryAll('.bpp-properties-tab', panelNode),
-      allTabLinkNodes = domQueryAll('.bpp-properties-tab-link', panelNode);
-
-  forEach(allTabNodes, function(tabNode) {
-
-    var currentTabId = domAttr(tabNode, 'data-tab');
-
-    domClasses(tabNode).toggle('bpp-active', tabId === currentTabId);
+  // (1) Deactivate all tabs
+  forEach(tabs, function(tab) {
+    domClasses(tab).remove('bpp-active');
   });
 
-  forEach(allTabLinkNodes, function(tabLinkNode) {
-
-    var tabLink = domQuery('[data-tab-target]', tabLinkNode),
-        currentTabId = domAttr(tabLink, 'data-tab-target');
-
-    domClasses(tabLinkNode).toggle('bpp-active', tabId === currentTabId);
+  forEach(tabLinks, function(tabLink) {
+    domClasses(tabLink).remove('bpp-active');
   });
+
+  // (2) Activate tab, fall back to first visible tab
+  var visibleTabs = filter(tabs, function(tab) {
+    return !domClasses(tab).has(HIDE_CLASS);
+  });
+
+  var activeTab = reduce(visibleTabs, function(activeTab, tab) {
+    if (domAttr(tab, 'data-tab') === tabId) {
+      return tab;
+    }
+
+    return activeTab;
+  }, visibleTabs[ 0 ]);
+
+  if (activeTab) {
+    domClasses(activeTab).add('bpp-active');
+  }
+
+  var visibleTabLinks = filter(tabLinks, function(tabLink) {
+    return !domClasses(tabLink).has(HIDE_CLASS);
+  });
+
+  var activeTabLink = reduce(visibleTabLinks, function(activeTabLink, tabLink) {
+    if (domAttr(domQuery('a[data-tab-target]', tabLink), 'data-tab-target') === tabId) {
+      return tabLink;
+    }
+
+    return activeTabLink;
+  }, visibleTabLinks[ 0 ]);
+
+  if (activeTabLink) {
+    domClasses(activeTabLink).add('bpp-active');
+  }
 };
 
 /**
- * Update the DOM representation of the properties panel
+ * Update properties panel to show properties of element. Create new properties panel if no previous
+ * properties panel, element has changed or element has not changed but entries have.
+ *
+ * @param {ModdleElement|undefined} element
  */
 PropertiesPanel.prototype.update = function(element) {
-  var current = this._current;
 
-  // no actual selection change
-  var needsCreate = true;
-
-  if (typeof element === 'undefined') {
-
-    // use RootElement of BPMN diagram to generate properties panel if no element is selected
+  // (1) Fall back to root element
+  if (!element) {
     element = this._canvas.getRootElement();
   }
 
-  var newTabs = this._propertiesProvider.getTabs(element);
+  // (2) Get tabs
+  var tabs = this._propertiesProvider.getTabs(element);
 
-  if (current && current.element === element) {
-    // see if we can reuse the existing panel
-
-    needsCreate = this._entriesChanged(current, newTabs);
-  }
-
-  if (needsCreate) {
-
-    if (current) {
-
-      // get active tab from the existing panel before remove it
-      var activeTabNode = domQuery('.bpp-properties-tab.bpp-active', current.panel);
-
-      var activeTabId;
-      if (activeTabNode) {
-        activeTabId = domAttr(activeTabNode, 'data-tab');
-      }
-
-      // remove old panel
-      domRemove(current.panel);
-    }
-
-    this._current = this._create(element, newTabs);
-
-    // activate the saved active tab from the remove panel or the first tab
-    (activeTabId) ? this.activateTab(activeTabId) : this.activateTab(this._current.tabs[0]);
-
-  }
+  var activeTabId,
+      activeTabNode;
 
   if (this._current) {
-    // make sure correct tab contents are visible
-    this._updateActivation(this._current);
+    activeTabNode = domQuery('.bpp-properties-tab.bpp-active', this._current.panel);
 
+    if (activeTabNode) {
+      activeTabId = domAttr(activeTabNode, 'data-tab');
+    }
+  }
+
+  // (3) Create new properties panel if necessary
+  if (!this._current
+    || this._current.element !== element
+    || this._entriesChanged(this._current.entries, extractEntries(tabs))) {
+
+    if (this._current) {
+      domRemove(this._current.panel);
+    }
+
+    this._current = this._create(element, tabs);
+  }
+
+  // (4) Update visibility of tabs, groups and entries
+  this._updateActivation(this._current);
+
+  // (5) Update active tab
+  if (activeTabId) {
+    this.activateTab(activeTabId);
+  } else {
+    this.activateTab(this._current.tabs[ 0 ]);
   }
 
   this._emit('changed');
@@ -14640,18 +14778,18 @@ PropertiesPanel.prototype.update = function(element) {
 
 
 /**
- * Returns true if one of two groups has different entries than the other.
+ * Check whether entries have changes.
  *
- * @param  {Object} current
- * @param  {Object} newTabs
- * @return {Boolean}
+ * @param  {Array} prevEntries
+ * @param  {Array} entries
+ *
+ * @returns {Boolean}
  */
-PropertiesPanel.prototype._entriesChanged = function(current, newTabs) {
+PropertiesPanel.prototype._entriesChanged = function(prevEntries, entries) {
+  var prevEntryIds = keys(prevEntries),
+      entryIds = keys(entries);
 
-  var oldEntryIds = keys(current.entries),
-      newEntryIds = keys(extractEntries(newTabs));
-
-  return !isEmpty(xor(oldEntryIds, newEntryIds));
+  return !isEmpty(xor(prevEntryIds, entryIds));
 };
 
 PropertiesPanel.prototype._emit = function(event) {
@@ -14727,6 +14865,28 @@ PropertiesPanel.prototype._bindListeners = function(container) {
     }
   });
 
+  function handleSuggestItems(event) {
+
+    // triggers on all inputs
+    var inputNode = event.delegateTarget;
+
+    var entryNode = domClosest(inputNode, '[data-entry]');
+
+    // only work on data entries
+    if (!entryNode) {
+      return;
+    }
+
+    var action = domAttr(inputNode, 'data-auto-suggest'),
+        entryId = domAttr(entryNode, 'data-entry');
+
+    var entry = self.getEntry(entryId);
+
+    self.executeAction(entry, entryNode, action, event);
+  }
+
+  domDelegate.bind(container, '[data-auto-suggest]', 'input', handleSuggestItems, true);
+
   domDelegate.bind(container, '[data-action]', 'click', function onClick(event) {
 
     // triggers on all inputs
@@ -14740,12 +14900,13 @@ PropertiesPanel.prototype._bindListeners = function(container) {
 
     var isEntryDirty = self.executeAction(entry, entryNode, actionId, event);
 
-    if (isEntryDirty) {
-      var values = getFormControlValues(entryNode);
-
-      self.applyChanges(entry, values, entryNode);
+    if (!isEntryDirty) {
+      return self.update(self._current.element);
     }
 
+    var values = getFormControlValues(entryNode);
+
+    self.applyChanges(entry, values, entryNode);
     self.updateState(entry, entryNode);
   });
 
@@ -14987,10 +15148,6 @@ PropertiesPanel.prototype.getEntry = function(id) {
   return this._current && this._current.entries[id];
 };
 
-var flattenDeep = __webpack_require__(225),
-    keyBy = __webpack_require__(226),
-    map = __webpack_require__(230);
-
 PropertiesPanel.prototype._create = function(element, tabs) {
 
   if (!element) {
@@ -15091,15 +15248,17 @@ PropertiesPanel.prototype._updateActivation = function(current) {
 
   var element = current.element;
 
-  function isEntryVisible(entry) {
+  function isEntryVisible(entry, group, tab) {
     return eventBus.fire('propertiesPanel.isEntryVisible', {
+      element: element,
       entry: entry,
-      element: element
+      group: group,
+      tab: tab
     });
   }
 
   function isGroupVisible(group, element, groupNode) {
-    if (typeof group.enabled === 'function') {
+    if (isFunction(group.enabled)) {
       return group.enabled(element, groupNode);
     } else {
       return true;
@@ -15107,7 +15266,7 @@ PropertiesPanel.prototype._updateActivation = function(current) {
   }
 
   function isTabVisible(tab, element) {
-    if (typeof tab.enabled === 'function') {
+    if (isFunction(tab.enabled)) {
       return tab.enabled(element);
     } else {
       return true;
@@ -15116,15 +15275,6 @@ PropertiesPanel.prototype._updateActivation = function(current) {
 
   function toggleVisible(node, visible) {
     domClasses(node).toggle(HIDE_CLASS, !visible);
-  }
-
-  // check whether the active tab is visible
-  // if not: set the first tab as active tab
-  function checkActiveTabVisibility(node, visible) {
-    var isActive = domClasses(node).has('bpp-active');
-    if (!visible && isActive) {
-      self.activateTab(current.tabs[0]);
-    }
   }
 
   function updateLabel(element, selector, text) {
@@ -15156,7 +15306,7 @@ PropertiesPanel.prototype._updateActivation = function(current) {
 
         var entryNode = domQuery('[data-entry="' + entry.id + '"]', groupNode);
 
-        var entryVisible = isEntryVisible(entry);
+        var entryVisible = isEntryVisible(entry, group, tab);
 
         groupVisible = groupVisible || entryVisible;
 
@@ -15214,8 +15364,6 @@ PropertiesPanel.prototype._updateActivation = function(current) {
 
     toggleVisible(tabNode, tabVisible);
     toggleVisible(tabLinkNode, tabVisible);
-
-    checkActiveTabVisibility(tabNode, tabVisible);
   });
 
   // inject elements id into header
@@ -15228,10 +15376,6 @@ PropertiesPanel.prototype._createPanel = function(element, tabs) {
   var panelNode = domify('<div class="bpp-properties"></div>'),
       headerNode = domify('<div class="bpp-properties-header">' +
         '<div class="label" data-label-id></div>' +
-        '<div class="search">' +
-          '<input type="search" placeholder="Search for property" />' +
-          '<button><span>Search</span></button>' +
-        '</div>' +
       '</div>'),
       tabBarNode = domify('<div class="bpp-properties-tab-bar"></div>'),
       tabLinksNode = domify('<ul class="bpp-properties-tabs-links"></ul>'),
@@ -15260,8 +15404,14 @@ PropertiesPanel.prototype._createPanel = function(element, tabs) {
 
       var groupNode = domify('<div class="bpp-properties-group" data-group="' + escapeHTML(group.id) + '">' +
           '<span class="group-toggle"></span>' +
-          '<span class="group-label">' + escapeHTML(group.label) + '</span>' +
+          '<div class="group-header">' +
+            '<span class="group-label">' + escapeHTML(group.label) + '</span>' +
+          '</div>' +
         '</div>');
+
+      if (group.dropdown) {
+        domQuery('.group-header', groupNode).appendChild(createDropdown(group.dropdown));
+      }
 
       // TODO(nre): use event delegation to handle that...
       groupNode.querySelector('.group-toggle').addEventListener('click', function(evt) {
@@ -15433,12 +15583,11 @@ function isImplicitRoot(element) {
   return element.id === '__implicitroot';
 }
 
-
 /***/ }),
 /* 206 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseEach = __webpack_require__(29);
+var baseEach = __webpack_require__(24);
 
 /**
  * The base implementation of `_.filter` without support for iteratee shorthands.
@@ -15468,10 +15617,10 @@ module.exports = baseFilter;
 var baseKeys = __webpack_require__(75),
     getTag = __webpack_require__(82),
     isArguments = __webpack_require__(30),
-    isArray = __webpack_require__(6),
+    isArray = __webpack_require__(5),
     isArrayLike = __webpack_require__(16),
     isBuffer = __webpack_require__(31),
-    isPrototype = __webpack_require__(49),
+    isPrototype = __webpack_require__(50),
     isTypedArray = __webpack_require__(33);
 
 /** `Object#toString` result references. */
@@ -15626,7 +15775,7 @@ module.exports = overRest;
 
 var constant = __webpack_require__(211),
     defineProperty = __webpack_require__(92),
-    identity = __webpack_require__(26);
+    identity = __webpack_require__(27);
 
 /**
  * The base implementation of `setToString` without support for hot loop shorting.
@@ -15872,9 +16021,9 @@ module.exports = strictIndexOf;
 /* 217 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Symbol = __webpack_require__(25),
+var Symbol = __webpack_require__(26),
     isArguments = __webpack_require__(30),
-    isArray = __webpack_require__(6);
+    isArray = __webpack_require__(5);
 
 /** Built-in value references. */
 var spreadableSymbol = Symbol ? Symbol.isConcatSpreadable : undefined;
@@ -16002,7 +16151,7 @@ module.exports = createSet;
 /***/ (function(module, exports, __webpack_require__) {
 
 var isArrayLike = __webpack_require__(16),
-    isObjectLike = __webpack_require__(20);
+    isObjectLike = __webpack_require__(21);
 
 /**
  * This method is like `_.isArrayLike` except that it also checks if `value`
@@ -16391,8 +16540,8 @@ module.exports = keyBy;
 
 var arrayAggregator = __webpack_require__(228),
     baseAggregator = __webpack_require__(229),
-    baseIteratee = __webpack_require__(23),
-    isArray = __webpack_require__(6);
+    baseIteratee = __webpack_require__(22),
+    isArray = __webpack_require__(5);
 
 /**
  * Creates a function like `_.groupBy`.
@@ -16446,7 +16595,7 @@ module.exports = arrayAggregator;
 /* 229 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseEach = __webpack_require__(29);
+var baseEach = __webpack_require__(24);
 
 /**
  * Aggregates elements of `collection` on `accumulator` with keys transformed
@@ -16474,9 +16623,9 @@ module.exports = baseAggregator;
 /***/ (function(module, exports, __webpack_require__) {
 
 var arrayMap = __webpack_require__(58),
-    baseIteratee = __webpack_require__(23),
+    baseIteratee = __webpack_require__(22),
     baseMap = __webpack_require__(231),
-    isArray = __webpack_require__(6);
+    isArray = __webpack_require__(5);
 
 /**
  * Creates an array of values by running each element in `collection` thru
@@ -16532,7 +16681,7 @@ module.exports = map;
 /* 231 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseEach = __webpack_require__(29),
+var baseEach = __webpack_require__(24),
     isArrayLike = __webpack_require__(16);
 
 /**
@@ -16560,23 +16709,141 @@ module.exports = baseMap;
 /* 232 */
 /***/ (function(module, exports, __webpack_require__) {
 
+var arrayReduce = __webpack_require__(233),
+    baseEach = __webpack_require__(24),
+    baseIteratee = __webpack_require__(22),
+    baseReduce = __webpack_require__(234),
+    isArray = __webpack_require__(5);
+
+/**
+ * Reduces `collection` to a value which is the accumulated result of running
+ * each element in `collection` thru `iteratee`, where each successive
+ * invocation is supplied the return value of the previous. If `accumulator`
+ * is not given, the first element of `collection` is used as the initial
+ * value. The iteratee is invoked with four arguments:
+ * (accumulator, value, index|key, collection).
+ *
+ * Many lodash methods are guarded to work as iteratees for methods like
+ * `_.reduce`, `_.reduceRight`, and `_.transform`.
+ *
+ * The guarded methods are:
+ * `assign`, `defaults`, `defaultsDeep`, `includes`, `merge`, `orderBy`,
+ * and `sortBy`
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Collection
+ * @param {Array|Object} collection The collection to iterate over.
+ * @param {Function} [iteratee=_.identity] The function invoked per iteration.
+ * @param {*} [accumulator] The initial value.
+ * @returns {*} Returns the accumulated value.
+ * @see _.reduceRight
+ * @example
+ *
+ * _.reduce([1, 2], function(sum, n) {
+ *   return sum + n;
+ * }, 0);
+ * // => 3
+ *
+ * _.reduce({ 'a': 1, 'b': 2, 'c': 1 }, function(result, value, key) {
+ *   (result[value] || (result[value] = [])).push(key);
+ *   return result;
+ * }, {});
+ * // => { '1': ['a', 'c'], '2': ['b'] } (iteration order is not guaranteed)
+ */
+function reduce(collection, iteratee, accumulator) {
+  var func = isArray(collection) ? arrayReduce : baseReduce,
+      initAccum = arguments.length < 3;
+
+  return func(collection, baseIteratee(iteratee, 4), accumulator, initAccum, baseEach);
+}
+
+module.exports = reduce;
+
+
+/***/ }),
+/* 233 */
+/***/ (function(module, exports) {
+
+/**
+ * A specialized version of `_.reduce` for arrays without support for
+ * iteratee shorthands.
+ *
+ * @private
+ * @param {Array} [array] The array to iterate over.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @param {*} [accumulator] The initial value.
+ * @param {boolean} [initAccum] Specify using the first element of `array` as
+ *  the initial value.
+ * @returns {*} Returns the accumulated value.
+ */
+function arrayReduce(array, iteratee, accumulator, initAccum) {
+  var index = -1,
+      length = array == null ? 0 : array.length;
+
+  if (initAccum && length) {
+    accumulator = array[++index];
+  }
+  while (++index < length) {
+    accumulator = iteratee(accumulator, array[index], index, array);
+  }
+  return accumulator;
+}
+
+module.exports = arrayReduce;
+
+
+/***/ }),
+/* 234 */
+/***/ (function(module, exports) {
+
+/**
+ * The base implementation of `_.reduce` and `_.reduceRight`, without support
+ * for iteratee shorthands, which iterates over `collection` using `eachFunc`.
+ *
+ * @private
+ * @param {Array|Object} collection The collection to iterate over.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @param {*} accumulator The initial value.
+ * @param {boolean} initAccum Specify using the first or last element of
+ *  `collection` as the initial value.
+ * @param {Function} eachFunc The function to iterate over `collection`.
+ * @returns {*} Returns the accumulated value.
+ */
+function baseReduce(collection, iteratee, accumulator, initAccum, eachFunc) {
+  eachFunc(collection, function(value, index, collection) {
+    accumulator = initAccum
+      ? (initAccum = false, value)
+      : iteratee(accumulator, value, index, collection);
+  });
+  return accumulator;
+}
+
+module.exports = baseReduce;
+
+
+/***/ }),
+/* 235 */
+/***/ (function(module, exports, __webpack_require__) {
+
 var inherits = __webpack_require__(3);
 
-var PropertiesActivator = __webpack_require__(233);
+var PropertiesActivator = __webpack_require__(236);
 
 var getBusinessObject = __webpack_require__(1).getBusinessObject,
     is = __webpack_require__(1).is;
 
-var ElementHelper = __webpack_require__(42),
+var ElementHelper = __webpack_require__(43),
     SequenceFlowHelper = __webpack_require__(100),
-    suppressValidationError = __webpack_require__(5).suppressValidationError;
+    suppressValidationError = __webpack_require__(6).suppressValidationError;
 
-var createSimulationParametersTab = __webpack_require__(235),
-    createTaskTab = __webpack_require__(276),
-    createTimetableTab = __webpack_require__(281),
-    createResourceTab = __webpack_require__(293),
-    createGatewayTab = __webpack_require__(301),
-    createIntermediateAndBoundaryEventsTab = __webpack_require__(304);
+var createSimulationParametersTab = __webpack_require__(238),
+    createTaskTab = __webpack_require__(281),
+    createTimetableTab = __webpack_require__(286),
+    createResourceTab = __webpack_require__(298),
+    createGatewayTab = __webpack_require__(306),
+    createIntermediateAndBoundaryEventsTab = __webpack_require__(309);
 
 function removeTasks(element, bpmnFactory, elementRegistry) {
   var elements = ElementHelper.getElements(bpmnFactory, elementRegistry);
@@ -16688,7 +16955,7 @@ inherits(SimulationPropertiesProvider, PropertiesActivator);
 module.exports = SimulationPropertiesProvider;
 
 /***/ }),
-/* 233 */
+/* 236 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16717,12 +16984,23 @@ function PropertiesActivator(eventBus, priority) {
 
   priority = priority || DEFAULT_PRIORITY;
 
-  eventBus.on('propertiesPanel.isEntryVisible', priority, function(e) {
-    return self.isEntryVisible(e.entry, e.element);
+  eventBus.on('propertiesPanel.isEntryVisible', priority, function(context) {
+    var element = context.element,
+        entry = context.entry,
+        group = context.group,
+        tab = context.tab;
+
+    return self.isEntryVisible(element, entry, group, tab);
   });
 
-  eventBus.on('propertiesPanel.isPropertyEditable', priority, function(e) {
-    return self.isPropertyEditable(e.entry, e.propertyName, e.element);
+  eventBus.on('propertiesPanel.isPropertyEditable', priority, function(context) {
+    var element = context.element,
+        entry = context.entry,
+        group = context.group,
+        propertyName = context.propertyName,
+        tab = context.tab;
+
+    return self.isPropertyEditable(propertyName, element, entry, group, tab);
   });
 }
 
@@ -16736,12 +17014,14 @@ module.exports = PropertiesActivator;
  *
  * @method  PropertiesActivator#isEntryVisible
  *
- * @param {EntryDescriptor} entry
  * @param {ModdleElement} element
+ * @param {Object} entry
+ * @param {Object} group
+ * @param {Object} tab
  *
- * @returns {Boolean}
+ * @returns {boolean}
  */
-PropertiesActivator.prototype.isEntryVisible = function(entry, element) {
+PropertiesActivator.prototype.isEntryVisible = function(element, entry, group, tab) {
   return true;
 };
 
@@ -16750,25 +17030,27 @@ PropertiesActivator.prototype.isEntryVisible = function(entry, element) {
  *
  * @method  PropertiesActivator#isPropertyEditable
  *
- * @param {EntryDescriptor} entry
- * @param {String} propertyName
+ * @param {string} propertyName
  * @param {ModdleElement} element
+ * @param {Object} entry
+ * @param {Object} group
+ * @param {Object} tab
  *
- * @returns {Boolean}
+ * @returns {boolean}
  */
-PropertiesActivator.prototype.isPropertyEditable = function(entry, propertyName, element) {
+PropertiesActivator.prototype.isPropertyEditable = function(propertyName, element, entry, group, tab) {
   return true;
 };
 
 /***/ }),
-/* 234 */
+/* 237 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var cmdHelper = __webpack_require__(4),
-    elementHelper = __webpack_require__(10);
+    elementHelper = __webpack_require__(11);
 
 var is = __webpack_require__(1).is;
 
@@ -16823,11 +17105,11 @@ module.exports = ExtensionElementsHelper;
 
 
 /***/ }),
-/* 235 */
+/* 238 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var is = __webpack_require__(1).is,
-    scenarioSpecificationGroups = __webpack_require__(236);
+    scenarioSpecificationGroups = __webpack_require__(239);
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 
@@ -16847,10 +17129,10 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 236 */
+/* 239 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var simulationParametersEntries = __webpack_require__(237);
+var simulationParametersEntries = __webpack_require__(240);
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate, shown) {
 
@@ -16869,16 +17151,16 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, show
 };
 
 /***/ }),
-/* 237 */
+/* 240 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var ProcessInstancesField = __webpack_require__(238),
-    StartTimeField = __webpack_require__(270),
-    StartDateField = __webpack_require__(271),
-    TrimStartField = __webpack_require__(272),
-    TrimEndField = __webpack_require__(273),
-    DistributionFields = __webpack_require__(274),
-    CurrencySelectBox = __webpack_require__(275);
+var ProcessInstancesField = __webpack_require__(241),
+    StartTimeField = __webpack_require__(275),
+    StartDateField = __webpack_require__(276),
+    TrimStartField = __webpack_require__(277),
+    TrimEndField = __webpack_require__(278),
+    DistributionFields = __webpack_require__(279),
+    CurrencySelectBox = __webpack_require__(280);
 
 module.exports = function(bpmnFactory, elementRegistry, translate) {
 
@@ -16899,14 +17181,14 @@ module.exports = function(bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 238 */
+/* 241 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var entryFactory = __webpack_require__(7),
     cmdHelper = __webpack_require__(4);
 
-var ProcessSimulationHelper = __webpack_require__(9),
-    validationHelper = __webpack_require__(5);
+var ProcessSimulationHelper = __webpack_require__(10),
+    validationHelper = __webpack_require__(6);
 
 module.exports = function(bpmnFactory, elementRegistry, translate) {
 
@@ -16948,7 +17230,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 239 */
+/* 242 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16956,9 +17238,9 @@ module.exports = function(bpmnFactory, elementRegistry, translate) {
 
 var getBusinessObject = __webpack_require__(1).getBusinessObject,
     cmdHelper = __webpack_require__(4),
-    escapeHTML = __webpack_require__(11).escapeHTML;
+    escapeHTML = __webpack_require__(9).escapeHTML;
 
-var entryFieldDescription = __webpack_require__(22);
+var entryFieldDescription = __webpack_require__(18);
 
 
 var checkbox = function(options, defaultParameters) {
@@ -16983,7 +17265,7 @@ var checkbox = function(options, defaultParameters) {
 
   // add description below checkbox entry field
   if (description) {
-    resource.html += entryFieldDescription(description);
+    resource.html += entryFieldDescription(description, { show: canBeHidden && 'isHidden' });
   }
 
   resource.get = function(element) {
@@ -17032,21 +17314,21 @@ module.exports = checkbox;
 
 
 /***/ }),
-/* 240 */
+/* 243 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var assign = __webpack_require__(241),
-    find = __webpack_require__(245);
+var assign = __webpack_require__(244),
+    find = __webpack_require__(248);
 
 var domQuery = __webpack_require__(2).query;
 
-var escapeHTML = __webpack_require__(11).escapeHTML;
+var escapeHTML = __webpack_require__(9).escapeHTML;
 
 var selectEntryFactory = __webpack_require__(102),
-    entryFieldDescription = __webpack_require__(22);
+    entryFieldDescription = __webpack_require__(18);
 
 
 /**
@@ -17147,7 +17429,7 @@ var comboBox = function(options) {
 
   // add description below combo box entry field
   if (description) {
-    comboBoxEntry.html += entryFieldDescription(description);
+    comboBoxEntry.html += entryFieldDescription(description, { show: 'showCustomInput' });
   }
 
   return comboBoxEntry;
@@ -17157,14 +17439,14 @@ module.exports = comboBox;
 
 
 /***/ }),
-/* 241 */
+/* 244 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var assignValue = __webpack_require__(103),
-    copyObject = __webpack_require__(242),
-    createAssigner = __webpack_require__(243),
+    copyObject = __webpack_require__(245),
+    createAssigner = __webpack_require__(246),
     isArrayLike = __webpack_require__(16),
-    isPrototype = __webpack_require__(49),
+    isPrototype = __webpack_require__(50),
     keys = __webpack_require__(15);
 
 /** Used for built-in method references. */
@@ -17221,7 +17503,7 @@ module.exports = assign;
 
 
 /***/ }),
-/* 242 */
+/* 245 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var assignValue = __webpack_require__(103),
@@ -17267,11 +17549,11 @@ module.exports = copyObject;
 
 
 /***/ }),
-/* 243 */
+/* 246 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseRest = __webpack_require__(59),
-    isIterateeCall = __webpack_require__(244);
+    isIterateeCall = __webpack_require__(247);
 
 /**
  * Creates a function like `_.assign`.
@@ -17310,10 +17592,10 @@ module.exports = createAssigner;
 
 
 /***/ }),
-/* 244 */
+/* 247 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var eq = __webpack_require__(37),
+var eq = __webpack_require__(38),
     isArrayLike = __webpack_require__(16),
     isIndex = __webpack_require__(32),
     isObject = __webpack_require__(13);
@@ -17346,11 +17628,11 @@ module.exports = isIterateeCall;
 
 
 /***/ }),
-/* 245 */
+/* 248 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var createFind = __webpack_require__(246),
-    findIndex = __webpack_require__(247);
+var createFind = __webpack_require__(249),
+    findIndex = __webpack_require__(250);
 
 /**
  * Iterates over elements of `collection`, returning the first element
@@ -17394,10 +17676,10 @@ module.exports = find;
 
 
 /***/ }),
-/* 246 */
+/* 249 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseIteratee = __webpack_require__(23),
+var baseIteratee = __webpack_require__(22),
     isArrayLike = __webpack_require__(16),
     keys = __webpack_require__(15);
 
@@ -17425,11 +17707,11 @@ module.exports = createFind;
 
 
 /***/ }),
-/* 247 */
+/* 250 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseFindIndex = __webpack_require__(94),
-    baseIteratee = __webpack_require__(23),
+    baseIteratee = __webpack_require__(22),
     toInteger = __webpack_require__(104);
 
 /* Built-in method references for those with the same name as other `lodash` methods. */
@@ -17486,7 +17768,7 @@ module.exports = findIndex;
 
 
 /***/ }),
-/* 248 */
+/* 251 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var toNumber = __webpack_require__(98);
@@ -17534,15 +17816,15 @@ module.exports = toFinite;
 
 
 /***/ }),
-/* 249 */
+/* 252 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var escapeHTML = __webpack_require__(11).escapeHTML;
+var escapeHTML = __webpack_require__(9).escapeHTML;
 
-var entryFieldDescription = __webpack_require__(22);
+var entryFieldDescription = __webpack_require__(18);
 
 
 var textBox = function(options, defaultParameters) {
@@ -17565,7 +17847,7 @@ var textBox = function(options, defaultParameters) {
 
   // add description below text box entry field
   if (description) {
-    resource.html += entryFieldDescription(description);
+    resource.html += entryFieldDescription(description, { show: canBeShown && 'isShown' });
   }
 
   if (canBeShown) {
@@ -17583,7 +17865,7 @@ module.exports = textBox;
 
 
 /***/ }),
-/* 250 */
+/* 253 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17646,13 +17928,13 @@ module.exports = validationAwareTextField;
 
 
 /***/ }),
-/* 251 */
+/* 254 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var escapeHTML = __webpack_require__(11).escapeHTML;
+var escapeHTML = __webpack_require__(9).escapeHTML;
 
 var cmdHelper = __webpack_require__(4);
 
@@ -17666,12 +17948,12 @@ var filter = __webpack_require__(90),
 
 var domify = __webpack_require__(2).domify;
 
-var entryFieldDescription = __webpack_require__(22);
+var entryFieldDescription = __webpack_require__(18);
 
 var updateSelection = __webpack_require__(99);
 
 var TABLE_ROW_DIV_SNIPPET = '<div class="bpp-field-wrapper bpp-table-row">';
-var DELETE_ROW_BUTTON_SNIPPET = '<button class="clear" data-action="deleteElement">' +
+var DELETE_ROW_BUTTON_SNIPPET = '<button class="action-button clear" data-action="deleteElement">' +
                                   '<span>X</span>' +
                                 '</button>';
 
@@ -17815,7 +18097,7 @@ module.exports = function(options) {
     html: (canAdd ?
       '<div class="bpp-table-add-row" ' + (canBeShown ? 'data-show="show"' : '') + '>' +
             '<label>' + escapeHTML(addLabel) + '</label>' +
-            '<button class="add" data-action="addElement"><span>+</span></button>' +
+            '<button class="action-button add" data-action="addElement"><span>+</span></button>' +
           '</div>' : '') +
           '<div class="bpp-table" data-show="showTable">' +
             '<div class="bpp-field-wrapper bpp-table-row">' +
@@ -17826,7 +18108,7 @@ module.exports = function(options) {
           '</div>' +
 
           // add description below table entry field
-          (description ? entryFieldDescription(description) : ''),
+          (description ? entryFieldDescription(description, { show: 'showTable' }) : ''),
 
     get: function(element, node) {
       var boElements = elements(element, node, this.__invalidValues);
@@ -17991,7 +18273,7 @@ module.exports = function(options) {
 
 
 /***/ }),
-/* 252 */
+/* 255 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18036,17 +18318,17 @@ module.exports = label;
 
 
 /***/ }),
-/* 253 */
+/* 256 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var escapeHTML = __webpack_require__(11).escapeHTML;
+var escapeHTML = __webpack_require__(9).escapeHTML;
 
-var entryFieldDescription = __webpack_require__(22);
+var entryFieldDescription = __webpack_require__(18);
 
-var bind = __webpack_require__(254);
+var bind = __webpack_require__(257);
 
 /**
  * An entry that renders a clickable link.
@@ -18059,7 +18341,7 @@ var bind = __webpack_require__(254);
  *
  * @param {Object} options
  * @param {String} options.id
- * @param {String} [options.label]
+ * @param {String} [options.buttonLabel]
  * @param {Function} options.handleClick
  * @param {Function} [options.showLink] returning false to hide link
  * @param {String} [options.description]
@@ -18078,10 +18360,11 @@ var bind = __webpack_require__(254);
 function link(options) {
 
   var id = options.id,
-      label = options.label || id,
+      buttonLabel = options.buttonLabel || id,
       showLink = options.showLink,
       handleClick = options.handleClick,
-      description = options.description;
+      description = options.description,
+      label = options.label;
 
   if (showLink && typeof showLink !== 'function') {
     throw new Error('options.showLink must be a function');
@@ -18092,18 +18375,26 @@ function link(options) {
   }
 
   var resource = {
-    id: id
+    id: id,
+    html: ''
   };
 
-  resource.html =
+  if (label) {
+    resource.html = '<label for="camunda-' + escapeHTML(id) + '" ' +
+      (showLink ? 'data-show="showLink" ' : '') +
+      '>'+ escapeHTML(label) +'</label>';
+  }
+
+  resource.html = resource.html +
+    '<div class="bpp-field-wrapper">' +
     '<a data-action="handleClick" ' +
     (showLink ? 'data-show="showLink" ' : '') +
     'class="bpp-entry-link' + (options.cssClasses ? ' ' + escapeHTML(options.cssClasses) : '') +
-    '">' + escapeHTML(label) + '</a>';
+    '">' + escapeHTML(buttonLabel) + '</a></div>';
 
   // add description below link entry field
   if (description) {
-    resource.html += entryFieldDescription(description);
+    resource.html += entryFieldDescription(description, { show: 'showLink' });
   }
 
   resource.handleClick = bind(handleClick, resource);
@@ -18121,13 +18412,13 @@ module.exports = link;
 
 
 /***/ }),
-/* 254 */
+/* 257 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseRest = __webpack_require__(59),
-    createWrap = __webpack_require__(255),
+    createWrap = __webpack_require__(258),
     getHolder = __webpack_require__(65),
-    replaceHolders = __webpack_require__(44);
+    replaceHolders = __webpack_require__(45);
 
 /** Used to compose bitmasks for function metadata. */
 var WRAP_BIND_FLAG = 1,
@@ -18184,16 +18475,16 @@ module.exports = bind;
 
 
 /***/ }),
-/* 255 */
+/* 258 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseSetData = __webpack_require__(105),
-    createBind = __webpack_require__(256),
-    createCurry = __webpack_require__(257),
+    createBind = __webpack_require__(259),
+    createCurry = __webpack_require__(260),
     createHybrid = __webpack_require__(107),
-    createPartial = __webpack_require__(268),
+    createPartial = __webpack_require__(271),
     getData = __webpack_require__(111),
-    mergeData = __webpack_require__(269),
+    mergeData = __webpack_require__(272),
     setData = __webpack_require__(114),
     setWrapToString = __webpack_require__(115),
     toInteger = __webpack_require__(104);
@@ -18296,10 +18587,10 @@ module.exports = createWrap;
 
 
 /***/ }),
-/* 256 */
+/* 259 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var createCtor = __webpack_require__(43),
+var createCtor = __webpack_require__(44),
     root = __webpack_require__(8);
 
 /** Used to compose bitmasks for function metadata. */
@@ -18330,15 +18621,15 @@ module.exports = createBind;
 
 
 /***/ }),
-/* 257 */
+/* 260 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var apply = __webpack_require__(60),
-    createCtor = __webpack_require__(43),
+    createCtor = __webpack_require__(44),
     createHybrid = __webpack_require__(107),
     createRecurry = __webpack_require__(110),
     getHolder = __webpack_require__(65),
-    replaceHolders = __webpack_require__(44),
+    replaceHolders = __webpack_require__(45),
     root = __webpack_require__(8);
 
 /**
@@ -18382,7 +18673,7 @@ module.exports = createCurry;
 
 
 /***/ }),
-/* 258 */
+/* 261 */
 /***/ (function(module, exports) {
 
 /**
@@ -18409,13 +18700,13 @@ module.exports = countHolders;
 
 
 /***/ }),
-/* 259 */
+/* 262 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var LazyWrapper = __webpack_require__(63),
     getData = __webpack_require__(111),
-    getFuncName = __webpack_require__(260),
-    lodash = __webpack_require__(262);
+    getFuncName = __webpack_require__(263),
+    lodash = __webpack_require__(265);
 
 /**
  * Checks if `func` has a lazy counterpart.
@@ -18443,10 +18734,10 @@ module.exports = isLaziable;
 
 
 /***/ }),
-/* 260 */
+/* 263 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var realNames = __webpack_require__(261);
+var realNames = __webpack_require__(264);
 
 /** Used for built-in method references. */
 var objectProto = Object.prototype;
@@ -18480,7 +18771,7 @@ module.exports = getFuncName;
 
 
 /***/ }),
-/* 261 */
+/* 264 */
 /***/ (function(module, exports) {
 
 /** Used to lookup unminified function names. */
@@ -18490,15 +18781,15 @@ module.exports = realNames;
 
 
 /***/ }),
-/* 262 */
+/* 265 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var LazyWrapper = __webpack_require__(63),
     LodashWrapper = __webpack_require__(112),
     baseLodash = __webpack_require__(64),
-    isArray = __webpack_require__(6),
-    isObjectLike = __webpack_require__(20),
-    wrapperClone = __webpack_require__(263);
+    isArray = __webpack_require__(5),
+    isObjectLike = __webpack_require__(21),
+    wrapperClone = __webpack_require__(266);
 
 /** Used for built-in method references. */
 var objectProto = Object.prototype;
@@ -18643,7 +18934,7 @@ module.exports = lodash;
 
 
 /***/ }),
-/* 263 */
+/* 266 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var LazyWrapper = __webpack_require__(63),
@@ -18672,7 +18963,7 @@ module.exports = wrapperClone;
 
 
 /***/ }),
-/* 264 */
+/* 267 */
 /***/ (function(module, exports) {
 
 /** Used to match wrap detail comments. */
@@ -18695,7 +18986,7 @@ module.exports = getWrapDetails;
 
 
 /***/ }),
-/* 265 */
+/* 268 */
 /***/ (function(module, exports) {
 
 /** Used to match wrap detail comments. */
@@ -18724,10 +19015,10 @@ module.exports = insertWrapDetails;
 
 
 /***/ }),
-/* 266 */
+/* 269 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var arrayEach = __webpack_require__(47),
+var arrayEach = __webpack_require__(48),
     arrayIncludes = __webpack_require__(61);
 
 /** Used to compose bitmasks for function metadata. */
@@ -18776,7 +19067,7 @@ module.exports = updateWrapDetails;
 
 
 /***/ }),
-/* 267 */
+/* 270 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var copyArray = __webpack_require__(113),
@@ -18811,11 +19102,11 @@ module.exports = reorder;
 
 
 /***/ }),
-/* 268 */
+/* 271 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var apply = __webpack_require__(60),
-    createCtor = __webpack_require__(43),
+    createCtor = __webpack_require__(44),
     root = __webpack_require__(8);
 
 /** Used to compose bitmasks for function metadata. */
@@ -18860,12 +19151,12 @@ module.exports = createPartial;
 
 
 /***/ }),
-/* 269 */
+/* 272 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var composeArgs = __webpack_require__(108),
     composeArgsRight = __webpack_require__(109),
-    replaceHolders = __webpack_require__(44);
+    replaceHolders = __webpack_require__(45);
 
 /** Used as the internal argument placeholder. */
 var PLACEHOLDER = '__lodash_placeholder__';
@@ -18956,12 +19247,450 @@ module.exports = mergeData;
 
 
 /***/ }),
-/* 270 */
+/* 273 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var domClasses = __webpack_require__(2).classes,
+    domify = __webpack_require__(2).domify,
+    domQuery = __webpack_require__(2).query;
+
+var assign = __webpack_require__(0).assign,
+    find = __webpack_require__(0).find,
+    forEach = __webpack_require__(0).forEach,
+    debounce = __webpack_require__(0).debounce;
+
+var escapeHTML = __webpack_require__(9).escapeHTML;
+
+var entryFieldDescription = __webpack_require__(18);
+
+var CLASS_ACTIVE = 'active';
+
+var FOCUS_LEAVE_DELAY = '150';
+
+var TEXT_NODE_NAME = '#text';
+
+var SUGGESTION_LIST_BOX_THRESHOLD = 15;
+
+var noop = function() {};
+
+
+var autoSuggestTextBox = function(options, defaultParameters) {
+
+  var resource = defaultParameters,
+      label = options.label || resource.id,
+      canBeShown = !!options.show && typeof options.show === 'function',
+      description = options.description;
+
+  resource.html =
+    '<label ' +
+      'for="camunda-' + escapeHTML(resource.id) + '" ' +
+      (canBeShown ? 'data-show="isShown"' : '') +
+      '>' + label + '</label>' +
+    '<div class="bpp-field-wrapper" ' +
+      (canBeShown ? 'data-show="isShown"' : '') +
+    '>' +
+      '<div ' +
+        'contenteditable="true"' +
+        'id="camunda-' + escapeHTML(resource.id) + '" ' +
+        'name="' + escapeHTML(options.modelProperty) + '" ' +
+        'data-auto-suggest="suggestItems"' +
+        'data-blur="handleFocusLeave"' +
+      '></div>' +
+      '<div class="bpp-autosuggest-list"></div>' +
+      (description ? entryFieldDescription(description) : '') +
+    '</div>';
+
+  if (canBeShown) {
+    resource.isShown = function() {
+      return options.show.apply(resource, arguments);
+    };
+  }
+
+  /**
+   * Ensure selected item got recognized before list got hidden
+   */
+  resource.handleFocusLeave = debounce(function(element, entryNode) {
+    clearSuggestionList(entryNode);
+    hideSuggestionList(entryNode);
+  }, FOCUS_LEAVE_DELAY);
+
+  /**
+   * Fill the suggestion list relative to the current word under the cursor.
+   *
+   * @param {djs.model.Base} element
+   * @param {HTMLElement} entryNode
+   * @param {Event} event
+   */
+  resource.suggestItems = function(element, entryNode, event) {
+    var editorNode = event.delegateTarget,
+        range = getSelectionRange(),
+        focusNode = range.focusNode,
+        caretPosition = getCaretPosition(range.range),
+        canSuggest = options.canSuggest || noop,
+        getItems = options.getItems;
+
+    function updateSuggestionList(items) {
+      var listNode = domQuery('.bpp-autosuggest-list', entryNode);
+
+      // (1) clear list before
+      clearSuggestionList(entryNode);
+
+      // (2) keep list invisible if no items
+      if (!items.length) {
+        return;
+      }
+
+      domClasses(listNode).add(CLASS_ACTIVE);
+
+      // (3) create new items
+      forEach(items, function(item) {
+        createSuggestionItem(listNode, item);
+      });
+
+      // (4) place list relative to cursor
+      var position = getSuggestionListPosition(listNode, document.body).position;
+      setPosition(listNode, position.x, position.y);
+    }
+
+    function createSuggestionItem(parentNode, value) {
+      var itemNode = domify('<div class="bpp-autosuggest-item"></div>');
+      itemNode.innerText = escapeHTML(value);
+
+      parentNode.appendChild(itemNode);
+
+      itemNode.addEventListener('click', handleItemClick);
+    }
+
+    function handleItemClick(event) {
+      var value = event.target.innerText,
+          wordIndex = currentWord.index,
+          start = wordIndex,
+          end = wordIndex + currentWord[0].length;
+
+      selectRange(focusNode, start, end);
+
+      document.execCommand('insertText', false, value);
+
+      clearSuggestionList(entryNode);
+      hideSuggestionList(entryNode);
+    }
+
+    hideSuggestionList(entryNode);
+
+    var currentWord = (getWordUnderCursor(focusNode, caretPosition) || []);
+
+    if (currentWord && canSuggest(currentWord, editorNode, focusNode)) {
+      var items = getItems(element, entryNode),
+          results = [],
+          value = currentWord[0];
+
+      // sort matches by
+      // (1) item starts with value (case insensitive)
+      // (2) value is inside suggested item (case insensitive)
+      forEach(items, function(item) {
+        var itemLowerCase = item.toLowerCase(),
+            valueLowerCase = value && value.toLowerCase();
+
+        if (itemLowerCase.indexOf(valueLowerCase) === 0) {
+          results.push(item);
+        }
+      });
+
+      forEach(items, function(item) {
+        var itemLowerCase = item.toLowerCase(item),
+            valueLowerCase = value && value.toLowerCase();
+
+        if (itemLowerCase.indexOf(valueLowerCase) >= 1) {
+          results.push(item);
+        }
+      });
+
+      updateSuggestionList(results);
+    }
+  };
+
+  /**
+  * Calculates the position coordinates of the suggestion list,
+  * dependant on position of cursor
+  *
+  * @return {Object} coordinates
+  */
+  function getSuggestionListPosition(listNode, container) {
+    var range = getSelectionRange().range,
+        cursorBounds = range.getBoundingClientRect(),
+        clientBounds = container.getBoundingClientRect(),
+        listBounds = listNode.getBoundingClientRect();
+
+    var coordinates = {
+      'top-left': {
+        x: cursorBounds.right - listBounds.width,
+        y: cursorBounds.top - listBounds.height
+      },
+      'top-right': {
+        x: cursorBounds.right,
+        y: cursorBounds.top - listBounds.height
+      },
+      'bottom-left': {
+        x: cursorBounds.right - listBounds.width,
+        y: cursorBounds.top + SUGGESTION_LIST_BOX_THRESHOLD
+      },
+      'bottom-right': {
+        x: cursorBounds.right,
+        y: cursorBounds.top + SUGGESTION_LIST_BOX_THRESHOLD
+      }
+    };
+
+    var orientation = '';
+
+    if (cursorBounds.top + SUGGESTION_LIST_BOX_THRESHOLD + listBounds.height > (clientBounds.height + clientBounds.top)) {
+      orientation = 'top-';
+    } else {
+      orientation = 'bottom-';
+    }
+
+    if (cursorBounds.right + listBounds.width > (clientBounds.width + clientBounds.left)) {
+      orientation += 'left';
+    } else {
+      orientation += 'right';
+    }
+
+    return { orientation: orientation, position: coordinates[orientation] };
+  }
+
+  resource.getSuggestionListPosition = getSuggestionListPosition;
+
+
+  resource.cssClasses = ['bpp-autosuggest-textbox'];
+
+  return resource;
+};
+
+module.exports = autoSuggestTextBox;
+
+
+// helpers /////////////////////////////
+
+function getSelectionRange() {
+  var selection = document.getSelection();
+
+  return {
+    range: selection.getRangeAt(0),
+    focusNode: selection.focusNode
+  };
+}
+
+function getCaretPosition(range) {
+  return range.startOffset;
+}
+
+function selectRange(focusNode, start, end) {
+  var range = document.createRange(),
+      selection = window.getSelection();
+
+  range.setStart(focusNode, start);
+  range.setEnd(focusNode, end);
+
+  selection.removeAllRanges();
+
+  selection.addRange(range);
+}
+
+function hideSuggestionList(entryNode) {
+  var listNode = domQuery('.bpp-autosuggest-list', entryNode);
+  domClasses(listNode).remove(CLASS_ACTIVE);
+}
+
+function clearSuggestionList(entryNode) {
+  var listNode = domQuery('.bpp-autosuggest-list', entryNode);
+  while (listNode.firstChild) {
+    listNode.removeChild(listNode.firstChild);
+  }
+}
+
+function getWordUnderCursor(node, currentCursorPositon) {
+  var value = node.nodeName === TEXT_NODE_NAME ? node.wholeText : node.innerText,
+      allWords = findWords(value);
+
+  return find(allWords, function(word) {
+    var matchValue = word[0],
+        wordStart = word.index,
+        wordEnd = wordStart + matchValue.length - 1;
+
+    return (
+      wordStart <= (currentCursorPositon - 1) &&
+      wordEnd >= (currentCursorPositon - 1)
+    );
+  });
+}
+
+/**
+ * Retrieves all words inside a text (also inside clauses and after operators)
+ *
+ * @param {string} value
+ *
+ * @return {Array<Object>}
+ */
+function findWords(value) {
+
+  // eslint-disable-next-line no-useless-escape
+  return matchAll(value, /[^\s\r\(\)\,\+\-\*\/\{\}]+/g);
+}
+
+function matchAll(value, regex) {
+  var regexp = RegExp(regex),
+      match,
+      matches = [];
+
+  while ((match = regexp.exec(value)) !== null) {
+    matches.push(match);
+  }
+
+  return matches;
+}
+
+function setPosition(el, x, y) {
+  assign(el.style, { left: x + 'px', top: y + 'px' });
+}
+
+
+/***/ }),
+/* 274 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var escapeHTML = __webpack_require__(9).escapeHTML;
+var domQuery = __webpack_require__(2).query;
+
+
+/**
+ * @param  {object} options
+ * @param  {string} options.id
+ * @param  {string} [options.title='']
+ * @param  {string} [options.description='']
+ * @param  {boolean} [options.open=false]
+ * @param  {Function} [options.onToggle]
+ * @param  {Function} [options.onRemove]
+ *
+ * @return {object}
+ */
+function Collapsible(options) {
+
+  var id = options.id,
+      title = options.title || '',
+      description = options.description || '',
+      open = !!options.open || false,
+      onToggle = options.onToggle || noop,
+      onRemove = options.onRemove,
+      cssClasses = options.cssClasses || [];
+
+
+  var collapsibleEntry = {
+    id: id,
+    toggle: toggle,
+    isOpen: isOpen,
+    set: set,
+    setOpen: setOpen,
+    get: get
+  };
+
+  if (typeof onRemove === 'function') {
+    collapsibleEntry.onRemove = function(entry, entryNode, actionId, event) {
+      var commands = onRemove(entry, entryNode, actionId, event);
+
+      if (commands) {
+        scheduleCommands(commands, entryNode);
+        return true;
+      }
+    };
+  }
+
+  function get(element, entryNode) {
+    if (options.get) {
+      return options.get(element, entryNode);
+    }
+
+    return {
+      title: title || '',
+      description: description || ''
+    };
+  }
+
+  function set() {
+    var commands = this._commands;
+
+    if (commands) {
+      delete this._commands;
+      return commands;
+    }
+  }
+
+  function toggle(element, entryNode, event, scope) {
+    var value = !open;
+
+    setOpen(value, entryNode);
+    onToggle(value, entryNode);
+  }
+
+  /**
+   * Set entry's open state.
+   *
+   * @param {boolean} value
+   * @param {HTMLElement} entryNode
+   */
+  function setOpen(value, entryNode) {
+    open = value;
+    entryNode.classList.toggle('bpp-collapsible--collapsed', !value);
+  }
+
+  function isOpen() {
+    return open;
+  }
+
+  /**
+   * Schedule commands to be run with next `set` method call.
+   *
+   * @param {Array<any>} commands
+   * @param {HTMLElement} entryNode
+   */
+  function scheduleCommands(commands, entryNode) {
+    collapsibleEntry._commands = commands;
+
+    // @barmac: hack to make properties panel call `set`
+    var input = domQuery('input[type="hidden"]', entryNode);
+    input.value = 1;
+  }
+
+  collapsibleEntry.html = '<div class="bpp-field-wrapper" data-action="toggle"><input name="hidden" type="hidden">' +
+    '<span class="bpp-collapsible__icon"></span>' +
+    '<label class="bpp-collapsible__title" data-value="title">' + escapeHTML(title) + '</label>' +
+    '<label class="bpp-collapsible__description" data-value="description">' + escapeHTML(description) + '</label>' +
+    (onRemove ? '<button class="bpp-collapsible__remove action-button clear" data-action="onRemove"></button>' : '') +
+  '</div>';
+
+  collapsibleEntry.cssClasses = cssClasses.concat(open ?
+    [ 'bpp-collapsible' ] : [ 'bpp-collapsible', 'bpp-collapsible--collapsed' ]
+  );
+
+  return collapsibleEntry;
+}
+
+module.exports = Collapsible;
+
+function noop() {}
+
+
+/***/ }),
+/* 275 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var cmdHelper = __webpack_require__(4),
-    dateTimeField = __webpack_require__(45),
-    ProcessSimulationHelper = __webpack_require__(9);
+    dateTimeField = __webpack_require__(46),
+    ProcessSimulationHelper = __webpack_require__(10);
 
 module.exports = function(bpmnFactory, elementRegistry, translate) {
 
@@ -19002,12 +19731,12 @@ module.exports = function(bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 271 */
+/* 276 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var cmdHelper = __webpack_require__(4),
-    dateTimeField = __webpack_require__(45),
-    ProcessSimulationHelper = __webpack_require__(9);
+    dateTimeField = __webpack_require__(46),
+    ProcessSimulationHelper = __webpack_require__(10);
 
 module.exports = function(bpmnFactory, elementRegistry, translate) {
 
@@ -19043,13 +19772,13 @@ module.exports = function(bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 272 */
+/* 277 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var entryFactory = __webpack_require__(7),
     cmdHelper = __webpack_require__(4),
-    validationHelper = __webpack_require__(5),
-    ProcessSimulationHelper = __webpack_require__(9);
+    validationHelper = __webpack_require__(6),
+    ProcessSimulationHelper = __webpack_require__(10);
 
 module.exports = function(bpmnFactory, elementRegistry, translate) {
 
@@ -19091,13 +19820,13 @@ module.exports = function(bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 273 */
+/* 278 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var entryFactory = __webpack_require__(7),
     cmdHelper = __webpack_require__(4),
-    validationHelper = __webpack_require__(5),
-    ProcessSimulationHelper = __webpack_require__(9);
+    validationHelper = __webpack_require__(6),
+    ProcessSimulationHelper = __webpack_require__(10);
 
 module.exports = function(bpmnFactory, elementRegistry, translate) {
 
@@ -19139,11 +19868,11 @@ module.exports = function(bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 274 */
+/* 279 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var distributionEntries = __webpack_require__(66),
-    ProcessSimulationHelper = __webpack_require__(9),
+    ProcessSimulationHelper = __webpack_require__(10),
     DistributionHelper = __webpack_require__(67);
 
 module.exports = function(bpmnFactory, elementRegistry, translate) {
@@ -19160,12 +19889,12 @@ module.exports = function(bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 275 */
+/* 280 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var entryFactory = __webpack_require__(7),
     cmdHelper = __webpack_require__(4),
-    ProcessSimulationHelper = __webpack_require__(9);
+    ProcessSimulationHelper = __webpack_require__(10);
 
 module.exports = function(bpmnFactory, elementRegistry, translate) {
 
@@ -19211,11 +19940,11 @@ function createCurrencyOptions() {
 }
 
 /***/ }),
-/* 276 */
+/* 281 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var is = __webpack_require__(1).is,
-    createTaskGroups = __webpack_require__(277);
+    createTaskGroups = __webpack_require__(282);
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 
@@ -19235,12 +19964,12 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 277 */
+/* 282 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var getBusinessObject = __webpack_require__(1).getBusinessObject,
     getFlowElementsByType = __webpack_require__(68),
-    createTaskEntries = __webpack_require__(278);
+    createTaskEntries = __webpack_require__(283);
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 
@@ -19270,11 +19999,11 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 278 */
+/* 283 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var TaskResourceSelectBox = __webpack_require__(279),
-    DistributionFields = __webpack_require__(280);
+var TaskResourceSelectBox = __webpack_require__(284),
+    DistributionFields = __webpack_require__(285);
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
   var id = options.task.id;
@@ -19290,13 +20019,13 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
 
 /***/ }),
-/* 279 */
+/* 284 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var entryFactory = __webpack_require__(7),
     cmdHelper = __webpack_require__(4),
     ResourceHelper = __webpack_require__(116),
-    ElementHelper = __webpack_require__(42);
+    ElementHelper = __webpack_require__(43);
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
@@ -19341,11 +20070,11 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 };
 
 /***/ }),
-/* 280 */
+/* 285 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var distributionEntries = __webpack_require__(66),
-    ElementHelper = __webpack_require__(42),
+    ElementHelper = __webpack_require__(43),
     DistributionHelper = __webpack_require__(67);
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
@@ -19365,11 +20094,11 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 };
 
 /***/ }),
-/* 281 */
+/* 286 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var is = __webpack_require__(1).is,
-    createTimetableGroups = __webpack_require__(282);
+    createTimetableGroups = __webpack_require__(287);
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 
@@ -19389,12 +20118,12 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 282 */
+/* 287 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var createTimetableEntry = __webpack_require__(283),
-    createTimetableDetailEntries = __webpack_require__(284),
-    createTimeslotDetailEntries = __webpack_require__(287);
+var createTimetableEntry = __webpack_require__(288),
+    createTimetableDetailEntries = __webpack_require__(289),
+    createTimeslotDetailEntries = __webpack_require__(292);
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 
@@ -19445,13 +20174,13 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 283 */
+/* 288 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var cmdHelper = __webpack_require__(4),
     extensionElementsEntry = __webpack_require__(69);
 
-var suppressValidationError = __webpack_require__(5).suppressValidationError;
+var suppressValidationError = __webpack_require__(6).suppressValidationError;
 
 var TimetableHelper = __webpack_require__(117);
 
@@ -19536,11 +20265,11 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 284 */
+/* 289 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var TimetableNameField = __webpack_require__(285),
-    createTimeslotEntry = __webpack_require__(286);
+var TimetableNameField = __webpack_require__(290),
+    createTimeslotEntry = __webpack_require__(291);
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate, options) {
 
@@ -19564,12 +20293,12 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, opti
 
 
 /***/ }),
-/* 285 */
+/* 290 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var entryFactory = __webpack_require__(7),
     cmdHelper = __webpack_require__(4),
-    validationErrorHelper = __webpack_require__(5);
+    validationErrorHelper = __webpack_require__(6);
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
@@ -19617,13 +20346,13 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 };
 
 /***/ }),
-/* 286 */
+/* 291 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var cmdHelper = __webpack_require__(4),
     extensionElementsEntry = __webpack_require__(69),
     RuleHelper = __webpack_require__(118),
-    suppressValidationError = __webpack_require__(5).suppressValidationError;
+    suppressValidationError = __webpack_require__(6).suppressValidationError;
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate, options) {
 
@@ -19690,14 +20419,14 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, opti
 };
 
 /***/ }),
-/* 287 */
+/* 292 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var TimeslotNameField = __webpack_require__(288),
-    FromWeekDaySelectBox = __webpack_require__(289),
-    ToWeekDaySelectBox = __webpack_require__(290),
-    FromTimeField = __webpack_require__(291),
-    ToTimeField = __webpack_require__(292);
+var TimeslotNameField = __webpack_require__(293),
+    FromWeekDaySelectBox = __webpack_require__(294),
+    ToWeekDaySelectBox = __webpack_require__(295),
+    FromTimeField = __webpack_require__(296),
+    ToTimeField = __webpack_require__(297);
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
@@ -19736,12 +20465,12 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 };
 
 /***/ }),
-/* 288 */
+/* 293 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var entryFactory = __webpack_require__(7),
     cmdHelper = __webpack_require__(4),
-    validationErrorHelper = __webpack_require__(5);
+    validationErrorHelper = __webpack_require__(6);
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
@@ -19794,13 +20523,13 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 };
 
 /***/ }),
-/* 289 */
+/* 294 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var entryFactory = __webpack_require__(7),
     cmdHelper = __webpack_require__(4),
     getWeekDays = __webpack_require__(119),
-    validationErrorHelper = __webpack_require__(5);
+    validationErrorHelper = __webpack_require__(6);
 
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
@@ -19853,13 +20582,13 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 };
 
 /***/ }),
-/* 290 */
+/* 295 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var entryFactory = __webpack_require__(7),
     cmdHelper = __webpack_require__(4),
     getWeekDays = __webpack_require__(119),
-    validationErrorHelper = __webpack_require__(5);
+    validationErrorHelper = __webpack_require__(6);
 
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
@@ -19924,11 +20653,11 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 };
 
 /***/ }),
-/* 291 */
+/* 296 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var cmdHelper = __webpack_require__(4),
-    dateTimeField = __webpack_require__(45);
+    dateTimeField = __webpack_require__(46);
 
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
@@ -19963,12 +20692,12 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 };
 
 /***/ }),
-/* 292 */
+/* 297 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var cmdHelper = __webpack_require__(4),
-    dateTimeField = __webpack_require__(45),
-    validationErrorHelper = __webpack_require__(5);
+    dateTimeField = __webpack_require__(46),
+    validationErrorHelper = __webpack_require__(6);
 
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
@@ -20022,11 +20751,11 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 };
 
 /***/ }),
-/* 293 */
+/* 298 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var is = __webpack_require__(1).is,
-    createResourceGroups = __webpack_require__(294);
+    createResourceGroups = __webpack_require__(299);
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 
@@ -20046,11 +20775,11 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 294 */
+/* 299 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var createResourceEntry = __webpack_require__(295),
-    createResourceDetailEntries = __webpack_require__(296);
+var createResourceEntry = __webpack_require__(300),
+    createResourceDetailEntries = __webpack_require__(301);
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 
@@ -20083,13 +20812,13 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 295 */
+/* 300 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var cmdHelper = __webpack_require__(4),
     extensionElementsEntry = __webpack_require__(69),
     ResourceHelper = __webpack_require__(116),
-    suppressValidationError = __webpack_require__(5).suppressValidationError;
+    suppressValidationError = __webpack_require__(6).suppressValidationError;
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 
@@ -20158,13 +20887,13 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 296 */
+/* 301 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var ResourceTimetableSelectBox = __webpack_require__(297),
-    ResourceNameField = __webpack_require__(298),
-    ResourceAmountField = __webpack_require__(299),
-    ResourceCostField = __webpack_require__(300);
+var ResourceTimetableSelectBox = __webpack_require__(302),
+    ResourceNameField = __webpack_require__(303),
+    ResourceAmountField = __webpack_require__(304),
+    ResourceCostField = __webpack_require__(305);
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
@@ -20188,7 +20917,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 };
 
 /***/ }),
-/* 297 */
+/* 302 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var entryFactory = __webpack_require__(7),
@@ -20241,12 +20970,12 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 };
 
 /***/ }),
-/* 298 */
+/* 303 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var entryFactory = __webpack_require__(7),
     cmdHelper = __webpack_require__(4),
-    validationErrorHelper = __webpack_require__(5);
+    validationErrorHelper = __webpack_require__(6);
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
@@ -20300,12 +21029,12 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 };
 
 /***/ }),
-/* 299 */
+/* 304 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var entryFactory = __webpack_require__(7),
     cmdHelper = __webpack_require__(4),
-    validationErrorHelper = __webpack_require__(5);
+    validationErrorHelper = __webpack_require__(6);
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
@@ -20358,12 +21087,12 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 };
 
 /***/ }),
-/* 300 */
+/* 305 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var entryFactory = __webpack_require__(7),
     cmdHelper = __webpack_require__(4),
-    validationErrorHelper = __webpack_require__(5);
+    validationErrorHelper = __webpack_require__(6);
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
@@ -20418,11 +21147,11 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 };
 
 /***/ }),
-/* 301 */
+/* 306 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var is = __webpack_require__(1).is,
-    createGatewayGroups = __webpack_require__(302);
+    createGatewayGroups = __webpack_require__(307);
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 
@@ -20443,13 +21172,13 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 302 */
+/* 307 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var getBusinessObject = __webpack_require__(1).getBusinessObject,
     is = __webpack_require__(1).is,
     getFlowElementsByType = __webpack_require__(68),
-    createGatewayEntries = __webpack_require__(303);
+    createGatewayEntries = __webpack_require__(308);
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 
@@ -20483,7 +21212,7 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 303 */
+/* 308 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var getBusinessObject = __webpack_require__(1).getBusinessObject,
@@ -20491,7 +21220,7 @@ var getBusinessObject = __webpack_require__(1).getBusinessObject,
     cmdHelper = __webpack_require__(4),
     SequenceFlowHelper = __webpack_require__(100);
 
-var validationErrorHelper = __webpack_require__(5);
+var validationErrorHelper = __webpack_require__(6);
 var fixNumber = __webpack_require__(17).fixNumber;
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
@@ -20557,11 +21286,11 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 };
 
 /***/ }),
-/* 304 */
+/* 309 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var is = __webpack_require__(1).is,
-    intermediateAndBoundaryEventGroups = __webpack_require__(305);
+    intermediateAndBoundaryEventGroups = __webpack_require__(310);
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate) {
   return {
@@ -20577,12 +21306,12 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 305 */
+/* 310 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var getBusinessObject = __webpack_require__(1).getBusinessObject,
     getFlowElementsByType = __webpack_require__(68),
-    intermediateAndBoundaryEventEntries = __webpack_require__(306);
+    intermediateAndBoundaryEventEntries = __webpack_require__(311);
 
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate) {
@@ -20616,10 +21345,10 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 306 */
+/* 311 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var ElementHelper = __webpack_require__(42),
+var ElementHelper = __webpack_require__(43),
     DistributionHelper = __webpack_require__(67),
     distributionEntries = __webpack_require__(66);
 
@@ -20643,11 +21372,11 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 };
 
 /***/ }),
-/* 307 */
+/* 312 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var api = __webpack_require__(308);
-            var content = __webpack_require__(309);
+var api = __webpack_require__(313);
+            var content = __webpack_require__(314);
 
             content = content.__esModule ? content.default : content;
 
@@ -20667,7 +21396,7 @@ var update = api(content, options);
 module.exports = content.locals || {};
 
 /***/ }),
-/* 308 */
+/* 313 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20942,7 +21671,7 @@ module.exports = function (list, options) {
 };
 
 /***/ }),
-/* 309 */
+/* 314 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -20953,13 +21682,13 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(false);
 // Module
-___CSS_LOADER_EXPORT___.push([module.i, "#js-properties-panel {\n  position: absolute;\n  top: 0;\n  bottom: 0;\n  right: 0;\n  width: 450px;\n  z-index: 10;\n  border-left: 1px solid #ccc;\n  background: #f8f8f8;\n  overflow: auto;\n}\n#js-properties-panel:empty {\n  display: none;\n}\n#js-properties-panel > .djs-properties-panel {\n  padding-bottom: 70px;\n  min-height: 100%;\n}\n.bpp-properties-header > .label {\n  display: none;\n}\n.bpp-properties-panel input {\n  max-width: -moz-available;\n  /* WebKit-based browsers will ignore this. */\n  max-width: -webkit-fill-available;\n  /* Mozilla-based browsers will ignore this. */\n  max-width: fill-available;\n}\n@font-face {\n  font-family: 'bpmn-js-pp';\n  src: url(\"data:;base64,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\");\n  src: url(\"data:;base64,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\") format('embedded-opentype'), url(\"data:application/font-woff;base64,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\") format('woff'), url(\"data:application/x-font-ttf;base64,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IDxZIyAuRrACJUZQWCA8WS6xKwEUKy2wPiywNSsjIC5GsAIlRlJYIDxZLrErARQrLbA/LLA2K4ogIDywBCNCijgjIC5GsAIlRlJYIDxZLrErARQrsARDLrArKy2wQCywABawBCWwBCYgLkcjRyNhsAlDKyMgPCAuIzixKwEUKy2wQSyxCAQlQrAAFrAEJbAEJSAuRyNHI2EgsAQjQrAJQysgsGBQWCCwQFFYswIgAyAbswImAxpZQkIjIEewBEOwAmIgsABQWLBAYFlmsAFjYCCwASsgiophILACQ2BkI7ADQ2FkUFiwAkNhG7ADQ2BZsAMlsAJiILAAUFiwQGBZZrABY2GwAiVGYTgjIDwjOBshICBGI0ewASsjYTghWbErARQrLbBCLLA1Ky6xKwEUKy2wQyywNishIyAgPLAEI0IjOLErARQrsARDLrArKy2wRCywABUgR7AAI0KyAAEBFRQTLrAxKi2wRSywABUgR7AAI0KyAAEBFRQTLrAxKi2wRiyxAAEUE7AyKi2wRyywNCotsEgssAAWRSMgLiBGiiNhOLErARQrLbBJLLAII0KwSCstsEossgAAQSstsEsssgABQSstsEwssgEAQSstsE0ssgEBQSstsE4ssgAAQistsE8ssgABQistsFAssgEAQistsFEssgEBQistsFIssgAAPistsFMssgABPistsFQssgEAPistsFUssgEBPistsFYssgAAQCstsFcssgABQCstsFgssgEAQCstsFkssgEBQCstsFossgAAQystsFsssgABQystsFwssgEAQystsF0ssgEBQystsF4ssgAAPystsF8ssgABPystsGAssgEAPystsGEssgEBPystsGIssDcrLrErARQrLbBjLLA3K7A7Ky2wZCywNyuwPCstsGUssAAWsDcrsD0rLbBmLLA4Ky6xKwEUKy2wZyywOCuwOystsGgssDgrsDwrLbBpLLA4K7A9Ky2waiywOSsusSsBFCstsGsssDkrsDsrLbBsLLA5K7A8Ky2wbSywOSuwPSstsG4ssDorLrErARQrLbBvLLA6K7A7Ky2wcCywOiuwPCstsHEssDorsD0rLbByLLMJBAIDRVghGyMhWUIrsAhlsAMkUHiwARUwLQBLuADIUlixAQGOWbABuQgACABjcLEABUKxAAAqsQAFQrEACCqxAAVCsQAIKrEABUK5AAAACSqxAAVCuQAAAAkqsQMARLEkAYhRWLBAiFixA2REsSYBiFFYugiAAAEEQIhjVFixAwBEWVlZWbEADCq4Af+FsASNsQIARAA=\") format('truetype'), url(\"data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/Pgo8IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxtZXRhZGF0YT5Db3B5cmlnaHQgKEMpIDIwMTYgYnkgb3JpZ2luYWwgYXV0aG9ycyBAIGZvbnRlbGxvLmNvbTwvbWV0YWRhdGE+CjxkZWZzPgo8Zm9udCBpZD0iYnBtbi1pby1wcCIgaG9yaXotYWR2LXg9IjEwMDAiID4KPGZvbnQtZmFjZSBmb250LWZhbWlseT0iYnBtbi1pby1wcCIgZm9udC13ZWlnaHQ9IjQwMCIgZm9udC1zdHJldGNoPSJub3JtYWwiIHVuaXRzLXBlci1lbT0iMTAwMCIgYXNjZW50PSI4NTAiIGRlc2NlbnQ9Ii0xNTAiIC8+CjxtaXNzaW5nLWdseXBoIGhvcml6LWFkdi14PSIxMDAwIiAvPgo8Z2x5cGggZ2x5cGgtbmFtZT0iY2xlYXIiIHVuaWNvZGU9IiYjeGU4MDI7IiBkPSJNNDUyIDE5NHExOC0xOCAxOC00M3QtMTgtNDNxLTE4LTE2LTQzLTE2dC00MyAxNmwtMTMyIDE1Mi0xMzItMTUycS0xOC0xNi00My0xNnQtNDMgMTZxLTE2IDE4LTE2IDQzdDE2IDQzbDEzOCAxNTYtMTM4IDE1OHEtMTYgMTgtMTYgNDN0MTYgNDNxMTggMTYgNDMgMTZ0NDMtMTZsMTMyLTE1MiAxMzIgMTUycTE4IDE2IDQzIDE2dDQzLTE2cTE4LTE4IDE4LTQzdC0xOC00M2wtMTM4LTE1OHoiIGhvcml6LWFkdi14PSI0NzAiIC8+CjxnbHlwaCBnbHlwaC1uYW1lPSJhZGQiIHVuaWNvZGU9IiYjeGU4MDM7IiBkPSJNNTUwIDQwMHEzMCAwIDMwLTUwdC0zMC01MGwtMjEwIDAgMC0yMTBxMC0zMC01MC0zMHQtNTAgMzBsMCAyMTAtMjEwIDBxLTMwIDAtMzAgNTB0MzAgNTBsMjEwIDAgMCAyMTBxMCAzMCA1MCAzMHQ1MC0zMGwwLTIxMCAyMTAgMHoiIGhvcml6LWFkdi14PSI1ODAiIC8+CjxnbHlwaCBnbHlwaC1uYW1lPSJzZWFyY2giIHVuaWNvZGU9IiYjeGU4MDU7IiBkPSJNNzcyIDc4cTMwLTM0IDYtNjJsLTQ2LTQ2cS0zNi0zMi02OCAwbC0xOTAgMTkwcS03NC00Mi0xNTYtNDItMTI4IDAtMjIzIDk1dC05NSAyMjMgOTAgMjE5IDIxOCA5MSAyMjQtOTUgOTYtMjIzcTAtODgtNDYtMTYyeiBtLTY3OCAzNThxMC04OCA2OC0xNTZ0MTU2LTY4IDE1MSA2MyA2MyAxNTNxMCA4OC02OCAxNTV0LTE1NiA2Ny0xNTEtNjMtNjMtMTUxeiIgaG9yaXotYWR2LXg9Ijc4OSIgLz4KPGdseXBoIGdseXBoLW5hbWU9ImF0dGVudGlvbiIgdW5pY29kZT0iJiN4ZTgwNjsiIGQ9Ik05NTctMjRxMTAtMTYgMC0zNC0xMC0xNi0zMC0xNmwtODkyIDBxLTE4IDAtMjggMTYtMTMgMTgtMiAzNGw0NDYgNzgycTggMTggMzAgMTh0MzAtMTh6IG0tNDIwIDUwbDAgMTAwLTExMCAwIDAtMTAwIDExMCAweiBtMCAxNzRsMCAzMDAtMTEwIDAgMC0zMDAgMTEwIDB6IiBob3Jpei1hZHYteD0iOTYyIiAvPgo8Z2x5cGggZ2x5cGgtbmFtZT0iY2xlYXItY2lyY2xlZCIgdW5pY29kZT0iJiN4ZTkwMjsiIGQ9Ik00MjAgNzcwcTE3NCAwIDI5Ny0xMjN0MTIzLTI5Ny0xMjMtMjk3LTI5Ny0xMjMtMjk3IDEyMy0xMjMgMjk3IDEyMyAyOTcgMjk3IDEyM3ogbTg2LTQyMGwxNTQgMTU0LTg2IDg2LTE1NC0xNTItMTUyIDE1Mi04OC04NiAxNTQtMTU0LTE1NC0xNTIgODgtODYgMTUyIDE1MiAxNTQtMTUyIDg2IDg2eiIgaG9yaXotYWR2LXg9Ijg0MCIgLz4KPGdseXBoIGdseXBoLW5hbWU9ImFkZC1jaXJjbGVkIiB1bmljb2RlPSImI3hlOTAzOyIgZD0iTTQyMCA3NzBxMTc0IDAgMjk3LTEyM3QxMjMtMjk3LTEyMy0yOTctMjk3LTEyMy0yOTcgMTIzLTEyMyAyOTcgMTIzIDI5NyAyOTcgMTIzeiBtNTItNDcwbDIwMCAwIDAgMTAyLTIwMCAwIDAgMjAyLTEwMiAwIDAtMjAyLTIwMiAwIDAtMTAyIDIwMiAwIDAtMjAyIDEwMiAwIDAgMjAyeiIgaG9yaXotYWR2LXg9Ijg0MCIgLz4KPC9mb250Pgo8L2RlZnM+Cjwvc3ZnPg==\") format('svg');\n  font-weight: normal;\n  font-style: normal;\n}\n.bpp-properties-panel {\n  background-color: #f8f8f8;\n  position: relative;\n}\n.bpp-properties-panel:empty {\n  display: none;\n}\n.bpp-properties-panel label,\n.bpp-properties-panel input {\n  vertical-align: middle;\n}\n.bpp-properties-panel button,\n.bpp-properties-panel input,\n.bpp-properties-panel select,\n.bpp-properties-panel textarea,\n.bpp-properties-panel [contenteditable] {\n  font-size: 14px;\n  padding: 3px 6px;\n  border: 1px solid #cccccc;\n}\n.bpp-properties-panel button:focus,\n.bpp-properties-panel input:focus,\n.bpp-properties-panel select:focus,\n.bpp-properties-panel textarea:focus,\n.bpp-properties-panel [contenteditable]:focus {\n  outline: none;\n  border-color: #1a70ff;\n  box-shadow: 0 0 0 2px #a2c5ff, 0 0 0 1px #cdcdcd inset;\n}\n.bpp-properties-panel button.invalid,\n.bpp-properties-panel input.invalid,\n.bpp-properties-panel select.invalid,\n.bpp-properties-panel textarea.invalid,\n.bpp-properties-panel [contenteditable].invalid {\n  border-color: #ff3d3d;\n}\n.bpp-properties-panel button.invalid:focus,\n.bpp-properties-panel input.invalid:focus,\n.bpp-properties-panel select.invalid:focus,\n.bpp-properties-panel textarea.invalid:focus,\n.bpp-properties-panel [contenteditable].invalid:focus {\n  box-shadow: 0 0 0 2px #ffb3b3, 0 0 0 1px #cdcdcd inset;\n}\n.bpp-properties-panel [type=text],\n.bpp-properties-panel [contenteditable],\n.bpp-properties-panel textarea,\n.bpp-properties-panel select {\n  width: 100%;\n}\n.bpp-properties-panel [contenteditable],\n.bpp-properties-panel textarea {\n  resize: vertical;\n}\n.bpp-properties-panel [contenteditable] {\n  outline: 0px solid transparent;\n  background-color: #ffffff;\n  overflow-y: auto;\n  white-space: pre-wrap;\n  /* css-3 */\n  white-space: -moz-pre-wrap;\n  /* Mozilla, since 1999 */\n  white-space: -pre-wrap;\n  /* Opera 4-6 */\n  white-space: -o-pre-wrap;\n  /* Opera 7 */\n  word-wrap: break-word;\n  /* Internet Explorer 5.5+ */\n}\n.bpp-properties-panel [contenteditable]:before {\n  content: \"\\feff\";\n}\n.bpp-properties-panel [disabled] {\n  color: #808080;\n}\n.bpp-properties-panel label {\n  font-weight: bolder;\n  display: inline-block;\n  vertical-align: middle;\n  color: #666666;\n  margin-bottom: 3px;\n}\n.bpp-properties-panel label.bpp-hidden {\n  display: none;\n}\n.bpp-properties-panel .entry-label {\n  font-weight: bolder;\n  display: inline-block;\n  vertical-align: middle;\n  color: #666666;\n  font-size: 16px;\n  margin-top: 5px;\n  margin-bottom: 10px;\n}\n.bpp-properties-panel .entry-label.bpp-hidden {\n  display: none;\n}\n.bpp-properties-panel .entry-label.divider {\n  border-top: 1px dotted #cccccc;\n  padding-top: 8px;\n  margin-top: 16px;\n  width: 100%;\n}\n.bpp-properties-panel button {\n  position: absolute;\n  top: 0;\n  height: 23px;\n  width: 24px;\n  overflow: hidden;\n  background-color: #f8f8f8;\n  border: 1px solid #cccccc;\n}\n.bpp-properties-panel button > span {\n  display: none;\n}\n.bpp-properties-panel button:before {\n  font-family: \"bpmn-js-pp\";\n  font-style: normal;\n  font-weight: normal;\n  speak: none;\n  display: inline-block;\n  text-decoration: inherit;\n  text-align: center;\n  font-variant: normal;\n  text-transform: none;\n  line-height: 1em;\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-font-smoothing: grayscale;\n  position: relative;\n}\n.bpp-properties-panel button.add:before {\n  content: '\\E803';\n}\n.bpp-properties-panel button.clear:before {\n  content: '\\E802';\n}\n.bpp-properties-panel button:hover {\n  color: #005df7;\n}\n.bpp-error-message,\n.bpp-error-message.bpp-entry-link {\n  margin-top: 5px;\n  color: #ff3d3d;\n}\n.bpp-row {\n  margin-top: 10px;\n  margin-bottom: 10px;\n}\n.bpp-row:first-of-type {\n  margin-top: 0;\n}\n.bpp-row:last-of-type {\n  margin-bottom: 0;\n}\n.bpp-textfield,\n.bpp-textbox {\n  margin-bottom: 3px;\n}\n.bpp-radios-group {\n  list-style: none;\n  padding: 0;\n  margin: 0 0 9px 0;\n}\n.bpp-radios-group .bpp-radio-wrapper {\n  margin: 6px 0;\n}\n.bpp-radios-group input,\n.bpp-radios-group label {\n  vertical-align: middle;\n}\n.bpp-radios-group input {\n  margin-top: 0;\n  margin-left: 0;\n}\n.bpp-radios-group input,\n.bpp-checkbox input {\n  margin-left: 0;\n}\n.bpp-radios-group label:after,\n.bpp-checkbox label:after {\n  display: none;\n}\n.bpp-textfield input {\n  padding-right: 28px;\n}\n.bpp-textfield .clear {\n  background: transparent;\n  border: none;\n  top: 0;\n  right: 0;\n}\n.bpp-combo-input {\n  margin-top: 7px;\n}\n.bpp-select select {\n  height: 23px;\n}\n.bpp-select button.add {\n  top: -22px;\n  right: 0;\n}\n.bpp-select button.add,\n.bpp-element-list button.add,\n.bpp-select button.clear,\n.bpp-element-list button.clear {\n  top: -23px;\n  border-bottom: none;\n}\n.bpp-select button.add,\n.bpp-element-list button.add {\n  right: 0px;\n}\n.bpp-select button.clear,\n.bpp-element-list button.clear {\n  right: 23px;\n}\n.bpp-properties-entry {\n  margin-bottom: 9px;\n}\n.bpp-properties-entry .bpp-field-wrapper {\n  position: relative;\n}\n.bpp-properties-entry .bpp-field-wrapper input[readonly] + .clear {\n  display: none;\n}\n.bpp-properties-entry .bpp-field-wrapper select {\n  resize: vertical;\n}\n.bpp-hidden {\n  display: none;\n}\nlabel.bpp-hidden {\n  display: none;\n}\n.bpp-table-add-row > button {\n  position: relative;\n  margin-left: 10px;\n}\n.bpp-table {\n  margin-top: 10px;\n}\n.bpp-table-row {\n  margin-bottom: 2px;\n  overflow: hidden;\n}\n.bpp-table-row > input,\n.bpp-table-row > button {\n  float: left;\n}\n.bpp-table-row > label {\n  padding-left: 5px;\n}\n.bpp-table-row > label.bpp-table-row-columns-1,\n.bpp-table-row > input.bpp-table-row-columns-1 {\n  width: 100%;\n}\n.bpp-table-row > label.bpp-table-row-columns-1.bpp-table-row-removable,\n.bpp-table-row > input.bpp-table-row-columns-1.bpp-table-row-removable {\n  width: calc(100% - 24px);\n}\n.bpp-table-row > label.bpp-table-row-columns-2,\n.bpp-table-row > input.bpp-table-row-columns-2 {\n  width: 50%;\n  box-sizing: border-box;\n}\n.bpp-table-row > label.bpp-table-row-columns-2.bpp-table-row-removable,\n.bpp-table-row > input.bpp-table-row-columns-2.bpp-table-row-removable {\n  width: calc(50% - 12px);\n}\n.bpp-table-row > label.bpp-table-row-columns-2:nth-child(2),\n.bpp-table-row > input.bpp-table-row-columns-2:nth-child(2) {\n  border-left: none;\n}\n.bpp-table-row > button {\n  border-left: none;\n  position: static;\n}\n.bpp-properties-static {\n  margin-bottom: 0;\n  margin-top: 0;\n  border: 1px solid #cccccc;\n  background-color: #ffffff;\n  padding: 3px 6px;\n  font: 13.3333px Arial;\n  width: 100%;\n}\n.bpp-entry-link {\n  color: #1a70ff;\n}\n.bpp-icon-warning:before {\n  font-family: \"bpmn-js-pp\";\n  font-style: normal;\n  font-weight: normal;\n  speak: none;\n  display: inline-block;\n  text-decoration: inherit;\n  text-align: center;\n  font-variant: normal;\n  text-transform: none;\n  line-height: 1em;\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-font-smoothing: grayscale;\n  content: '\\E806';\n}\n.bpp-field-description {\n  margin-top: 5px;\n  color: #999999;\n}\n.bpp-field-description a {\n  color: #0056e6;\n  text-decoration: none;\n}\n.bpp-field-description a:hover {\n  color: #1a70ff;\n}\n.bpp-properties-header {\n  padding: 15px;\n  padding-bottom: 5px;\n}\n.bpp-properties-header > .label {\n  font-size: 16px;\n  font-weight: bolder;\n}\n.bpp-properties-header > .search {\n  display: none;\n  margin-top: 5px;\n  position: relative;\n}\n.bpp-properties-header > .search input {\n  position: relative;\n  border-radius: 15px;\n  width: 100%;\n  z-index: 1;\n}\n.bpp-properties-header > .search button {\n  position: absolute;\n  top: 0;\n  bottom: 0;\n  right: 0;\n  border: none;\n  background-color: transparent;\n  z-index: 2;\n}\n.bpp-properties-header > .search button:before {\n  content: '\\E805';\n}\n.bpp-properties-group {\n  padding: 6px 15px 6px 15px;\n  position: relative;\n  overflow: hidden;\n}\n.bpp-properties-group:empty {\n  display: none;\n}\n.bpp-properties-group > .group-toggle {\n  position: absolute;\n  top: 0;\n  left: 0;\n  bottom: 0;\n  width: 4px;\n}\n.bpp-properties-group > .group-toggle:hover {\n  background-color: #4d90ff;\n}\n.bpp-properties-group > .group-label {\n  font-weight: bolder;\n  display: inline-block;\n  vertical-align: middle;\n  color: #666666;\n  margin-top: 5px;\n  margin-bottom: 10px;\n  font-size: 16px;\n}\n.bpp-properties-group > .group-label.bpp-hidden {\n  display: none;\n}\n.bpp-properties-group:hover > .group-toggle {\n  background-color: #cccccc;\n}\n.bpp-properties-group:hover > .group-toggle:hover {\n  background-color: #4d90ff;\n}\n.bpp-properties-group.group-closed {\n  border-top: none;\n}\n.bpp-properties-group.group-closed > .group-toggle {\n  background-color: #cccccc;\n}\n.bpp-properties-group.group-closed:hover > .group-toggle {\n  background-color: #4d90ff;\n}\n.bpp-properties-group.group-closed > div {\n  display: none;\n}\n.bpp-properties-group.group-closed > .group-label {\n  margin-bottom: 5px;\n}\n.bpp-properties-group + .bpp-properties-group {\n  border-top: 1px solid #eeeeee;\n}\n.bpp-properties-group:last-child {\n  padding-bottom: 9px;\n}\n.cam-add-listener > button {\n  position: relative;\n  margin-left: 10px;\n}\n[data-list-entry-container] > .bpp-listener-area {\n  border: 1px solid #cccccc;\n  margin: 10px 1px;\n  padding: 10px;\n}\n.bpp-listener-area {\n  position: relative;\n}\n.bpp-listener-area > button {\n  position: absolute;\n  right: 0;\n  top: 0;\n  border: none;\n  background: none;\n}\n.bpp-listener-area + .bpp-listener-area {\n  margin-top: 20px;\n}\n.bpp-properties-tab-bar {\n  border-bottom: 1px solid #cccccc;\n  padding: 0 15px;\n}\n.bpp-properties-tab-bar .scroll-tabs-button {\n  font-size: 16px;\n  padding: 3px 4px 3px 4px;\n  color: #666666;\n}\n.bpp-properties-tab-bar .scroll-tabs-button:hover {\n  font-weight: bold;\n}\n.bpp-properties-tab-bar .scroll-tabs-button.scroll-tabs-left {\n  float: left;\n  margin-left: -15px;\n}\n.bpp-properties-tab-bar .scroll-tabs-button.scroll-tabs-right {\n  float: right;\n  margin-right: -15px;\n}\n.bpp-properties-tab-bar:not(.scroll-tabs-overflow) .scroll-tabs-button {\n  display: none;\n}\nul.bpp-properties-tabs-links {\n  margin: 5px 0 -1px 0;\n  padding: 0;\n  white-space: nowrap;\n  overflow: hidden;\n}\nul.bpp-properties-tabs-links > li {\n  display: inline-block;\n  margin: 0;\n}\nul.bpp-properties-tabs-links > li.bpp-hidden {\n  display: none;\n}\nul.bpp-properties-tabs-links > li > a {\n  display: inline-block;\n  font-size: 12px;\n  padding: 4px 7px;\n  border: 1px solid #cccccc;\n  border-radius: 3px 3px 0 0;\n  border-bottom: transparent;\n  background-color: #f8f8f8;\n  color: #666666;\n  text-decoration: none;\n  cursor: default;\n}\nul.bpp-properties-tabs-links > li > a:hover {\n  color: #4d4d4d;\n}\nul.bpp-properties-tabs-links > li + li {\n  margin-left: 4px;\n}\nul.bpp-properties-tabs-links > li.bpp-active a {\n  padding-bottom: 5px;\n  border-top: 3px solid #4d90ff;\n  border-bottom: none;\n}\n.bpp-properties-tab,\n.bpp-properties-tab.bpp-hidden {\n  display: none;\n}\n.bpp-properties-tab.bpp-active {\n  display: block;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.i, "#js-properties-panel {\n  position: absolute;\n  top: 0;\n  bottom: 0;\n  right: 0;\n  width: 450px;\n  z-index: 10;\n  border-left: 1px solid #ccc;\n  background: #f8f8f8;\n  overflow: auto;\n}\n#js-properties-panel:empty {\n  display: none;\n}\n#js-properties-panel > .djs-properties-panel {\n  padding-bottom: 70px;\n  min-height: 100%;\n}\n.bpp-properties-header > .label {\n  display: none;\n}\n.bpp-properties-panel input {\n  max-width: -moz-available;\n  /* WebKit-based browsers will ignore this. */\n  max-width: -webkit-fill-available;\n  /* Mozilla-based browsers will ignore this. */\n  max-width: fill-available;\n}\n@font-face {\n  font-family: 'bpmn-js-pp';\n  src: url(\"data:;base64,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\");\n  src: url(\"data:;base64,GBYAAGgVAAABAAIAAAAAAAIABQMAAAAAAAABAJABAAAAAExQAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAcCEPZQAAAAAAAAAAAAAAAAAAAAAAABQAYgBwAG0AbgAtAGkAbwAtAHAAcAAAAA4AUgBlAGcAdQBsAGEAcgAAABYAVgBlAHIAcwBpAG8AbgAgADEALgAwAAAAFABiAHAAbQBuAC0AaQBvAC0AcABwAAAAAAAAAQAAAA8AgAADAHBHU1VCsP6z7QAAAPwAAABCT1MvMj4iSaEAAAFAAAAAVmNtYXCd2b4sAAABmAAAAcZjdnQgAAAAAAAACXAAAAAKZnBnbYiQkFkAAAl8AAALcGdhc3AAAAAQAAAJaAAAAAhnbHlmhlzkXAAAA2AAAAIOaGVhZAjiposAAAVwAAAANmhoZWEHkQNNAAAFqAAAACRobXR4FWn/+gAABcwAAAAcbG9jYQGaAg0AAAXoAAAAEG1heHAAmgugAAAF+AAAACBuYW1lD9cCaQAABhgAAALlcG9zdPp/FpwAAAkAAAAAaHByZXDdawOFAAAU7AAAAHsAAQAAAAoAHgAsAAFERkxUAAgABAAAAAAAAAABAAAAAWxpZ2EACAAAAAEAAAABAAQABAAAAAEACAABAAYAAAABAAAAAAABAw8BkAAFAAACegK8AAAAjAJ6ArwAAAHgADEBAgAAAgAFAwAAAAAAAAAAAAAAAAAAAAAAAAAAAABQZkVkAEDoAukDA1L/agBaA1IAlgAAAAEAAAAAAAAAAAAFAAAAAwAAACwAAAAEAAABbgABAAAAAABoAAMAAQAAACwAAwAKAAABbgAEADwAAAAIAAgAAgAA6APoBukD//8AAOgC6AXpAv//AAAAAAAAAAEACAAKAAwAAAABAAIAAwAEAAUABgAAAQYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAAAAAAAWAAAAAAAAAAGAADoAgAA6AIAAAABAADoAwAA6AMAAAACAADoBQAA6AUAAAADAADoBgAA6AYAAAAEAADpAgAA6QIAAAAFAADpAwAA6QMAAAAGAAAAAQAAAAAB1gJiAB0ABrMTAwEtKyUWFAYiLwEHBiInJjQ/AScmNDc2Mh8BNzYyFhQPAQHEEiQyEoSEEjISEBCKihAQEjIShIQSMiQSisISMiIQmJgQEBIyEpyeEjISEBCYmBAiMhKeAAABAAAAAAJEAoAAEwAGsxAGAS0rATIUKwEVFCI9ASMiNDsBNTQyHQECJh4e0mTSHh7SZAGQZNIeHtJk0h4e0gAAAgAA/8IDIgLqABEAGgAItRgUDAQCLSslFg8BBi8BBiMiJhA2IBYVFAclFBYyNjQmIgYDBB4YLiQgvkpSgL60AQDALv4YiLB+iLB+TiIcLiAgviq+AQC2voBYSqpYiH6yhn4AAAP/+v+2A8cDCAAMABAAFAAKtxIRDg0KAgMtKwUWBiMhIicmNwE2MhcTNSMVNxEjEQO9ChQU/IQSCg0LAb4ILAgabm5uGBAiEBIQAw4SEv0kZGSuASz+1AACAAD/ugNIAwIACAAUAAi1EQsEAAItKwEyFhAGICYQNgE3JwcnBxcHFzcXNwGkrvb2/qT29gEEmlaamFiamliYmlYDAvb+pPb2AVz2/lyaVpiYVpqYVpiYVgAAAAIAAP+6A0gDAgAIABQACLUTDQQAAi0rATIWEAYgJhA2EzM1IzUjFSMVMxUzAaSu9vb+pPb24sjIZsrKZgMC9v6k9vYBXPb+KmbKymbKAAAAAQAAAAEAAGUPIXBfDzz1AAsD6AAAAADS8LF0AAAAANLwsXT/+v+2A+gDCAAAAAgAAgAAAAAAAAABAAADUv9qAFoD6P/6//MD6AABAAAAAAAAAAAAAAAAAAAABwPoAAAB1gAAAkQAAAMVAAADwv/6A0gAAANIAAAAAAAAADQAVACGALIA4AEHAAEAAAAHAB4AAwAAAAAAAgAAABAAcwAAABwLcAAAAAAAAAASAN4AAQAAAAAAAAA1AAAAAQAAAAAAAQAKADUAAQAAAAAAAgAHAD8AAQAAAAAAAwAKAEYAAQAAAAAABAAKAFAAAQAAAAAABQALAFoAAQAAAAAABgAKAGUAAQAAAAAACgArAG8AAQAAAAAACwATAJoAAwABBAkAAABqAK0AAwABBAkAAQAUARcAAwABBAkAAgAOASsAAwABBAkAAwAUATkAAwABBAkABAAUAU0AAwABBAkABQAWAWEAAwABBAkABgAUAXcAAwABBAkACgBWAYsAAwABBAkACwAmAeFDb3B5cmlnaHQgKEMpIDIwMTYgYnkgb3JpZ2luYWwgYXV0aG9ycyBAIGZvbnRlbGxvLmNvbWJwbW4taW8tcHBSZWd1bGFyYnBtbi1pby1wcGJwbW4taW8tcHBWZXJzaW9uIDEuMGJwbW4taW8tcHBHZW5lcmF0ZWQgYnkgc3ZnMnR0ZiBmcm9tIEZvbnRlbGxvIHByb2plY3QuaHR0cDovL2ZvbnRlbGxvLmNvbQBDAG8AcAB5AHIAaQBnAGgAdAAgACgAQwApACAAMgAwADEANgAgAGIAeQAgAG8AcgBpAGcAaQBuAGEAbAAgAGEAdQB0AGgAbwByAHMAIABAACAAZgBvAG4AdABlAGwAbABvAC4AYwBvAG0AYgBwAG0AbgAtAGkAbwAtAHAAcABSAGUAZwB1AGwAYQByAGIAcABtAG4ALQBpAG8ALQBwAHAAYgBwAG0AbgAtAGkAbwAtAHAAcABWAGUAcgBzAGkAbwBuACAAMQAuADAAYgBwAG0AbgAtAGkAbwAtAHAAcABHAGUAbgBlAHIAYQB0AGUAZAAgAGIAeQAgAHMAdgBnADIAdAB0AGYAIABmAHIAbwBtACAARgBvAG4AdABlAGwAbABvACAAcAByAG8AagBlAGMAdAAuAGgAdAB0AHAAOgAvAC8AZgBvAG4AdABlAGwAbABvAC4AYwBvAG0AAAAAAgAAAAAAAAAKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHAQIBAwEEAQUBBgEHAQgABWNsZWFyA2FkZAZzZWFyY2gJYXR0ZW50aW9uDWNsZWFyLWNpcmNsZWQLYWRkLWNpcmNsZWQAAAABAAH//wAPAAAAAAAAAAAAAAAAsAAsILAAVVhFWSAgS7gADlFLsAZTWliwNBuwKFlgZiCKVViwAiVhuQgACABjYyNiGyEhsABZsABDI0SyAAEAQ2BCLbABLLAgYGYtsAIsIGQgsMBQsAQmWrIoAQpDRWNFUltYISMhG4pYILBQUFghsEBZGyCwOFBYIbA4WVkgsQEKQ0VjRWFksChQWCGxAQpDRWNFILAwUFghsDBZGyCwwFBYIGYgiophILAKUFhgGyCwIFBYIbAKYBsgsDZQWCGwNmAbYFlZWRuwAStZWSOwAFBYZVlZLbADLCBFILAEJWFkILAFQ1BYsAUjQrAGI0IbISFZsAFgLbAELCMhIyEgZLEFYkIgsAYjQrEBCkNFY7EBCkOwAGBFY7ADKiEgsAZDIIogirABK7EwBSWwBCZRWGBQG2FSWVgjWSEgsEBTWLABKxshsEBZI7AAUFhlWS2wBSywB0MrsgACAENgQi2wBiywByNCIyCwACNCYbACYmawAWOwAWCwBSotsAcsICBFILALQ2O4BABiILAAUFiwQGBZZrABY2BEsAFgLbAILLIHCwBDRUIqIbIAAQBDYEItsAkssABDI0SyAAEAQ2BCLbAKLCAgRSCwASsjsABDsAQlYCBFiiNhIGQgsCBQWCGwABuwMFBYsCAbsEBZWSOwAFBYZVmwAyUjYUREsAFgLbALLCAgRSCwASsjsABDsAQlYCBFiiNhIGSwJFBYsAAbsEBZI7AAUFhlWbADJSNhRESwAWAtsAwsILAAI0KyCwoDRVghGyMhWSohLbANLLECAkWwZGFELbAOLLABYCAgsAxDSrAAUFggsAwjQlmwDUNKsABSWCCwDSNCWS2wDywgsBBiZrABYyC4BABjiiNhsA5DYCCKYCCwDiNCIy2wECxLVFixBGREWSSwDWUjeC2wESxLUVhLU1ixBGREWRshWSSwE2UjeC2wEiyxAA9DVVixDw9DsAFhQrAPK1mwAEOwAiVCsQwCJUKxDQIlQrABFiMgsAMlUFixAQBDYLAEJUKKiiCKI2GwDiohI7ABYSCKI2GwDiohG7EBAENgsAIlQrACJWGwDiohWbAMQ0ewDUNHYLACYiCwAFBYsEBgWWawAWMgsAtDY7gEAGIgsABQWLBAYFlmsAFjYLEAABMjRLABQ7AAPrIBAQFDYEItsBMsALEAAkVUWLAPI0IgRbALI0KwCiOwAGBCIGCwAWG1EBABAA4AQkKKYLESBiuwcisbIlktsBQssQATKy2wFSyxARMrLbAWLLECEystsBcssQMTKy2wGCyxBBMrLbAZLLEFEystsBossQYTKy2wGyyxBxMrLbAcLLEIEystsB0ssQkTKy2wHiwAsA0rsQACRVRYsA8jQiBFsAsjQrAKI7AAYEIgYLABYbUQEAEADgBCQopgsRIGK7ByKxsiWS2wHyyxAB4rLbAgLLEBHistsCEssQIeKy2wIiyxAx4rLbAjLLEEHistsCQssQUeKy2wJSyxBh4rLbAmLLEHHistsCcssQgeKy2wKCyxCR4rLbApLCA8sAFgLbAqLCBgsBBgIEMjsAFgQ7ACJWGwAWCwKSohLbArLLAqK7AqKi2wLCwgIEcgILALQ2O4BABiILAAUFiwQGBZZrABY2AjYTgjIIpVWCBHICCwC0NjuAQAYiCwAFBYsEBgWWawAWNgI2E4GyFZLbAtLACxAAJFVFiwARawLCqwARUwGyJZLbAuLACwDSuxAAJFVFiwARawLCqwARUwGyJZLbAvLCA1sAFgLbAwLACwAUVjuAQAYiCwAFBYsEBgWWawAWOwASuwC0NjuAQAYiCwAFBYsEBgWWawAWOwASuwABa0AAAAAABEPiM4sS8BFSotsDEsIDwgRyCwC0NjuAQAYiCwAFBYsEBgWWawAWNgsABDYTgtsDIsLhc8LbAzLCA8IEcgsAtDY7gEAGIgsABQWLBAYFlmsAFjYLAAQ2GwAUNjOC2wNCyxAgAWJSAuIEewACNCsAIlSYqKRyNHI2EgWGIbIVmwASNCsjMBARUUKi2wNSywABawBCWwBCVHI0cjYbAJQytlii4jICA8ijgtsDYssAAWsAQlsAQlIC5HI0cjYSCwBCNCsAlDKyCwYFBYILBAUVizAiADIBuzAiYDGllCQiMgsAhDIIojRyNHI2EjRmCwBEOwAmIgsABQWLBAYFlmsAFjYCCwASsgiophILACQ2BkI7ADQ2FkUFiwAkNhG7ADQ2BZsAMlsAJiILAAUFiwQGBZZrABY2EjICCwBCYjRmE4GyOwCENGsAIlsAhDRyNHI2FgILAEQ7ACYiCwAFBYsEBgWWawAWNgIyCwASsjsARDYLABK7AFJWGwBSWwAmIgsABQWLBAYFlmsAFjsAQmYSCwBCVgZCOwAyVgZFBYIRsjIVkjICCwBCYjRmE4WS2wNyywABYgICCwBSYgLkcjRyNhIzw4LbA4LLAAFiCwCCNCICAgRiNHsAErI2E4LbA5LLAAFrADJbACJUcjRyNhsABUWC4gPCMhG7ACJbACJUcjRyNhILAFJbAEJUcjRyNhsAYlsAUlSbACJWG5CAAIAGNjIyBYYhshWWO4BABiILAAUFiwQGBZZrABY2AjLiMgIDyKOCMhWS2wOiywABYgsAhDIC5HI0cjYSBgsCBgZrACYiCwAFBYsEBgWWawAWMjICA8ijgtsDssIyAuRrACJUZSWCA8WS6xKwEUKy2wPCwjIC5GsAIlRlBYIDxZLrErARQrLbA9LCMgLkawAiVGUlggPFkjIC5GsAIlRlBYIDxZLrErARQrLbA+LLA1KyMgLkawAiVGUlggPFkusSsBFCstsD8ssDYriiAgPLAEI0KKOCMgLkawAiVGUlggPFkusSsBFCuwBEMusCsrLbBALLAAFrAEJbAEJiAuRyNHI2GwCUMrIyA8IC4jOLErARQrLbBBLLEIBCVCsAAWsAQlsAQlIC5HI0cjYSCwBCNCsAlDKyCwYFBYILBAUVizAiADIBuzAiYDGllCQiMgR7AEQ7ACYiCwAFBYsEBgWWawAWNgILABKyCKimEgsAJDYGQjsANDYWRQWLACQ2EbsANDYFmwAyWwAmIgsABQWLBAYFlmsAFjYbACJUZhOCMgPCM4GyEgIEYjR7ABKyNhOCFZsSsBFCstsEIssDUrLrErARQrLbBDLLA2KyEjICA8sAQjQiM4sSsBFCuwBEMusCsrLbBELLAAFSBHsAAjQrIAAQEVFBMusDEqLbBFLLAAFSBHsAAjQrIAAQEVFBMusDEqLbBGLLEAARQTsDIqLbBHLLA0Ki2wSCywABZFIyAuIEaKI2E4sSsBFCstsEkssAgjQrBIKy2wSiyyAABBKy2wSyyyAAFBKy2wTCyyAQBBKy2wTSyyAQFBKy2wTiyyAABCKy2wTyyyAAFCKy2wUCyyAQBCKy2wUSyyAQFCKy2wUiyyAAA+Ky2wUyyyAAE+Ky2wVCyyAQA+Ky2wVSyyAQE+Ky2wViyyAABAKy2wVyyyAAFAKy2wWCyyAQBAKy2wWSyyAQFAKy2wWiyyAABDKy2wWyyyAAFDKy2wXCyyAQBDKy2wXSyyAQFDKy2wXiyyAAA/Ky2wXyyyAAE/Ky2wYCyyAQA/Ky2wYSyyAQE/Ky2wYiywNysusSsBFCstsGMssDcrsDsrLbBkLLA3K7A8Ky2wZSywABawNyuwPSstsGYssDgrLrErARQrLbBnLLA4K7A7Ky2waCywOCuwPCstsGkssDgrsD0rLbBqLLA5Ky6xKwEUKy2wayywOSuwOystsGwssDkrsDwrLbBtLLA5K7A9Ky2wbiywOisusSsBFCstsG8ssDorsDsrLbBwLLA6K7A8Ky2wcSywOiuwPSstsHIsswkEAgNFWCEbIyFZQiuwCGWwAyRQeLABFTAtAEu4AMhSWLEBAY5ZsAG5CAAIAGNwsQAFQrEAACqxAAVCsQAIKrEABUKxAAgqsQAFQrkAAAAJKrEABUK5AAAACSqxAwBEsSQBiFFYsECIWLEDZESxJgGIUVi6CIAAAQRAiGNUWLEDAERZWVlZsQAMKrgB/4WwBI2xAgBEAA==\") format('embedded-opentype'), url(\"data:application/font-woff;base64,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\") format('woff'), url(\"data:application/x-font-ttf;base64,AAEAAAAPAIAAAwBwR1NVQrD+s+0AAAD8AAAAQk9TLzI+IkmhAAABQAAAAFZjbWFwndm+LAAAAZgAAAHGY3Z0IAAAAAAAAAlwAAAACmZwZ22IkJBZAAAJfAAAC3BnYXNwAAAAEAAACWgAAAAIZ2x5ZoZc5FwAAANgAAACDmhlYWQI4qaLAAAFcAAAADZoaGVhB5EDTQAABagAAAAkaG10eBVp//oAAAXMAAAAHGxvY2EBmgINAAAF6AAAABBtYXhwAJoLoAAABfgAAAAgbmFtZQ/XAmkAAAYYAAAC5XBvc3T6fxacAAAJAAAAAGhwcmVw3WsDhQAAFOwAAAB7AAEAAAAKAB4ALAABREZMVAAIAAQAAAAAAAAAAQAAAAFsaWdhAAgAAAABAAAAAQAEAAQAAAABAAgAAQAGAAAAAQAAAAAAAQMPAZAABQAAAnoCvAAAAIwCegK8AAAB4AAxAQIAAAIABQMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUGZFZABA6ALpAwNS/2oAWgNSAJYAAAABAAAAAAAAAAAABQAAAAMAAAAsAAAABAAAAW4AAQAAAAAAaAADAAEAAAAsAAMACgAAAW4ABAA8AAAACAAIAAIAAOgD6AbpA///AADoAugF6QL//wAAAAAAAAABAAgACgAMAAAAAQACAAMABAAFAAYAAAEGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAAAAFgAAAAAAAAABgAA6AIAAOgCAAAAAQAA6AMAAOgDAAAAAgAA6AUAAOgFAAAAAwAA6AYAAOgGAAAABAAA6QIAAOkCAAAABQAA6QMAAOkDAAAABgAAAAEAAAAAAdYCYgAdAAazEwMBLSslFhQGIi8BBwYiJyY0PwEnJjQ3NjIfATc2MhYUDwEBxBIkMhKEhBIyEhAQiooQEBIyEoSEEjIkEorCEjIiEJiYEBASMhKcnhIyEhAQmJgQIjISngAAAQAAAAACRAKAABMABrMQBgEtKwEyFCsBFRQiPQEjIjQ7ATU0Mh0BAiYeHtJk0h4e0mQBkGTSHh7SZNIeHtIAAAIAAP/CAyIC6gARABoACLUYFAwEAi0rJRYPAQYvAQYjIiYQNiAWFRQHJRQWMjY0JiIGAwQeGC4kIL5KUoC+tAEAwC7+GIiwfoiwfk4iHC4gIL4qvgEAtr6AWEqqWIh+soZ+AAAD//r/tgPHAwgADAAQABQACrcSEQ4NCgIDLSsFFgYjISInJjcBNjIXEzUjFTcRIxEDvQoUFPyEEgoNCwG+CCwIGm5ubhgQIhASEAMOEhL9JGRkrgEs/tQAAgAA/7oDSAMCAAgAFAAItRELBAACLSsBMhYQBiAmEDYBNycHJwcXBxc3FzcBpK729v6k9vYBBJpWmphYmppYmJpWAwL2/qT29gFc9v5cmlaYmFaamFaYmFYAAAACAAD/ugNIAwIACAAUAAi1Ew0EAAItKwEyFhAGICYQNhMzNSM1IxUjFTMVMwGkrvb2/qT29uLIyGbKymYDAvb+pPb2AVz2/ipmyspmygAAAAEAAAABAABlDyFwXw889QALA+gAAAAA0vCxdAAAAADS8LF0//r/tgPoAwgAAAAIAAIAAAAAAAAAAQAAA1L/agBaA+j/+v/zA+gAAQAAAAAAAAAAAAAAAAAAAAcD6AAAAdYAAAJEAAADFQAAA8L/+gNIAAADSAAAAAAAAAA0AFQAhgCyAOABBwABAAAABwAeAAMAAAAAAAIAAAAQAHMAAAAcC3AAAAAAAAAAEgDeAAEAAAAAAAAANQAAAAEAAAAAAAEACgA1AAEAAAAAAAIABwA/AAEAAAAAAAMACgBGAAEAAAAAAAQACgBQAAEAAAAAAAUACwBaAAEAAAAAAAYACgBlAAEAAAAAAAoAKwBvAAEAAAAAAAsAEwCaAAMAAQQJAAAAagCtAAMAAQQJAAEAFAEXAAMAAQQJAAIADgErAAMAAQQJAAMAFAE5AAMAAQQJAAQAFAFNAAMAAQQJAAUAFgFhAAMAAQQJAAYAFAF3AAMAAQQJAAoAVgGLAAMAAQQJAAsAJgHhQ29weXJpZ2h0IChDKSAyMDE2IGJ5IG9yaWdpbmFsIGF1dGhvcnMgQCBmb250ZWxsby5jb21icG1uLWlvLXBwUmVndWxhcmJwbW4taW8tcHBicG1uLWlvLXBwVmVyc2lvbiAxLjBicG1uLWlvLXBwR2VuZXJhdGVkIGJ5IHN2ZzJ0dGYgZnJvbSBGb250ZWxsbyBwcm9qZWN0Lmh0dHA6Ly9mb250ZWxsby5jb20AQwBvAHAAeQByAGkAZwBoAHQAIAAoAEMAKQAgADIAMAAxADYAIABiAHkAIABvAHIAaQBnAGkAbgBhAGwAIABhAHUAdABoAG8AcgBzACAAQAAgAGYAbwBuAHQAZQBsAGwAbwAuAGMAbwBtAGIAcABtAG4ALQBpAG8ALQBwAHAAUgBlAGcAdQBsAGEAcgBiAHAAbQBuAC0AaQBvAC0AcABwAGIAcABtAG4ALQBpAG8ALQBwAHAAVgBlAHIAcwBpAG8AbgAgADEALgAwAGIAcABtAG4ALQBpAG8ALQBwAHAARwBlAG4AZQByAGEAdABlAGQAIABiAHkAIABzAHYAZwAyAHQAdABmACAAZgByAG8AbQAgAEYAbwBuAHQAZQBsAGwAbwAgAHAAcgBvAGoAZQBjAHQALgBoAHQAdABwADoALwAvAGYAbwBuAHQAZQBsAGwAbwAuAGMAbwBtAAAAAAIAAAAAAAAACgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABwECAQMBBAEFAQYBBwEIAAVjbGVhcgNhZGQGc2VhcmNoCWF0dGVudGlvbg1jbGVhci1jaXJjbGVkC2FkZC1jaXJjbGVkAAAAAQAB//8ADwAAAAAAAAAAAAAAALAALCCwAFVYRVkgIEu4AA5RS7AGU1pYsDQbsChZYGYgilVYsAIlYbkIAAgAY2MjYhshIbAAWbAAQyNEsgABAENgQi2wASywIGBmLbACLCBkILDAULAEJlqyKAEKQ0VjRVJbWCEjIRuKWCCwUFBYIbBAWRsgsDhQWCGwOFlZILEBCkNFY0VhZLAoUFghsQEKQ0VjRSCwMFBYIbAwWRsgsMBQWCBmIIqKYSCwClBYYBsgsCBQWCGwCmAbILA2UFghsDZgG2BZWVkbsAErWVkjsABQWGVZWS2wAywgRSCwBCVhZCCwBUNQWLAFI0KwBiNCGyEhWbABYC2wBCwjISMhIGSxBWJCILAGI0KxAQpDRWOxAQpDsABgRWOwAyohILAGQyCKIIqwASuxMAUlsAQmUVhgUBthUllYI1khILBAU1iwASsbIbBAWSOwAFBYZVktsAUssAdDK7IAAgBDYEItsAYssAcjQiMgsAAjQmGwAmJmsAFjsAFgsAUqLbAHLCAgRSCwC0NjuAQAYiCwAFBYsEBgWWawAWNgRLABYC2wCCyyBwsAQ0VCKiGyAAEAQ2BCLbAJLLAAQyNEsgABAENgQi2wCiwgIEUgsAErI7AAQ7AEJWAgRYojYSBkILAgUFghsAAbsDBQWLAgG7BAWVkjsABQWGVZsAMlI2FERLABYC2wCywgIEUgsAErI7AAQ7AEJWAgRYojYSBksCRQWLAAG7BAWSOwAFBYZVmwAyUjYUREsAFgLbAMLCCwACNCsgsKA0VYIRsjIVkqIS2wDSyxAgJFsGRhRC2wDiywAWAgILAMQ0qwAFBYILAMI0JZsA1DSrAAUlggsA0jQlktsA8sILAQYmawAWMguAQAY4ojYbAOQ2AgimAgsA4jQiMtsBAsS1RYsQRkRFkksA1lI3gtsBEsS1FYS1NYsQRkRFkbIVkksBNlI3gtsBIssQAPQ1VYsQ8PQ7ABYUKwDytZsABDsAIlQrEMAiVCsQ0CJUKwARYjILADJVBYsQEAQ2CwBCVCioogiiNhsA4qISOwAWEgiiNhsA4qIRuxAQBDYLACJUKwAiVhsA4qIVmwDENHsA1DR2CwAmIgsABQWLBAYFlmsAFjILALQ2O4BABiILAAUFiwQGBZZrABY2CxAAATI0SwAUOwAD6yAQEBQ2BCLbATLACxAAJFVFiwDyNCIEWwCyNCsAojsABgQiBgsAFhtRAQAQAOAEJCimCxEgYrsHIrGyJZLbAULLEAEystsBUssQETKy2wFiyxAhMrLbAXLLEDEystsBgssQQTKy2wGSyxBRMrLbAaLLEGEystsBsssQcTKy2wHCyxCBMrLbAdLLEJEystsB4sALANK7EAAkVUWLAPI0IgRbALI0KwCiOwAGBCIGCwAWG1EBABAA4AQkKKYLESBiuwcisbIlktsB8ssQAeKy2wICyxAR4rLbAhLLECHistsCIssQMeKy2wIyyxBB4rLbAkLLEFHistsCUssQYeKy2wJiyxBx4rLbAnLLEIHistsCgssQkeKy2wKSwgPLABYC2wKiwgYLAQYCBDI7ABYEOwAiVhsAFgsCkqIS2wKyywKiuwKiotsCwsICBHICCwC0NjuAQAYiCwAFBYsEBgWWawAWNgI2E4IyCKVVggRyAgsAtDY7gEAGIgsABQWLBAYFlmsAFjYCNhOBshWS2wLSwAsQACRVRYsAEWsCwqsAEVMBsiWS2wLiwAsA0rsQACRVRYsAEWsCwqsAEVMBsiWS2wLywgNbABYC2wMCwAsAFFY7gEAGIgsABQWLBAYFlmsAFjsAErsAtDY7gEAGIgsABQWLBAYFlmsAFjsAErsAAWtAAAAAAARD4jOLEvARUqLbAxLCA8IEcgsAtDY7gEAGIgsABQWLBAYFlmsAFjYLAAQ2E4LbAyLC4XPC2wMywgPCBHILALQ2O4BABiILAAUFiwQGBZZrABY2CwAENhsAFDYzgtsDQssQIAFiUgLiBHsAAjQrACJUmKikcjRyNhIFhiGyFZsAEjQrIzAQEVFCotsDUssAAWsAQlsAQlRyNHI2GwCUMrZYouIyAgPIo4LbA2LLAAFrAEJbAEJSAuRyNHI2EgsAQjQrAJQysgsGBQWCCwQFFYswIgAyAbswImAxpZQkIjILAIQyCKI0cjRyNhI0ZgsARDsAJiILAAUFiwQGBZZrABY2AgsAErIIqKYSCwAkNgZCOwA0NhZFBYsAJDYRuwA0NgWbADJbACYiCwAFBYsEBgWWawAWNhIyAgsAQmI0ZhOBsjsAhDRrACJbAIQ0cjRyNhYCCwBEOwAmIgsABQWLBAYFlmsAFjYCMgsAErI7AEQ2CwASuwBSVhsAUlsAJiILAAUFiwQGBZZrABY7AEJmEgsAQlYGQjsAMlYGRQWCEbIyFZIyAgsAQmI0ZhOFktsDcssAAWICAgsAUmIC5HI0cjYSM8OC2wOCywABYgsAgjQiAgIEYjR7ABKyNhOC2wOSywABawAyWwAiVHI0cjYbAAVFguIDwjIRuwAiWwAiVHI0cjYSCwBSWwBCVHI0cjYbAGJbAFJUmwAiVhuQgACABjYyMgWGIbIVljuAQAYiCwAFBYsEBgWWawAWNgIy4jICA8ijgjIVktsDossAAWILAIQyAuRyNHI2EgYLAgYGawAmIgsABQWLBAYFlmsAFjIyAgPIo4LbA7LCMgLkawAiVGUlggPFkusSsBFCstsDwsIyAuRrACJUZQWCA8WS6xKwEUKy2wPSwjIC5GsAIlRlJYIDxZIyAuRrACJUZQWCA8WS6xKwEUKy2wPiywNSsjIC5GsAIlRlJYIDxZLrErARQrLbA/LLA2K4ogIDywBCNCijgjIC5GsAIlRlJYIDxZLrErARQrsARDLrArKy2wQCywABawBCWwBCYgLkcjRyNhsAlDKyMgPCAuIzixKwEUKy2wQSyxCAQlQrAAFrAEJbAEJSAuRyNHI2EgsAQjQrAJQysgsGBQWCCwQFFYswIgAyAbswImAxpZQkIjIEewBEOwAmIgsABQWLBAYFlmsAFjYCCwASsgiophILACQ2BkI7ADQ2FkUFiwAkNhG7ADQ2BZsAMlsAJiILAAUFiwQGBZZrABY2GwAiVGYTgjIDwjOBshICBGI0ewASsjYTghWbErARQrLbBCLLA1Ky6xKwEUKy2wQyywNishIyAgPLAEI0IjOLErARQrsARDLrArKy2wRCywABUgR7AAI0KyAAEBFRQTLrAxKi2wRSywABUgR7AAI0KyAAEBFRQTLrAxKi2wRiyxAAEUE7AyKi2wRyywNCotsEgssAAWRSMgLiBGiiNhOLErARQrLbBJLLAII0KwSCstsEossgAAQSstsEsssgABQSstsEwssgEAQSstsE0ssgEBQSstsE4ssgAAQistsE8ssgABQistsFAssgEAQistsFEssgEBQistsFIssgAAPistsFMssgABPistsFQssgEAPistsFUssgEBPistsFYssgAAQCstsFcssgABQCstsFgssgEAQCstsFkssgEBQCstsFossgAAQystsFsssgABQystsFwssgEAQystsF0ssgEBQystsF4ssgAAPystsF8ssgABPystsGAssgEAPystsGEssgEBPystsGIssDcrLrErARQrLbBjLLA3K7A7Ky2wZCywNyuwPCstsGUssAAWsDcrsD0rLbBmLLA4Ky6xKwEUKy2wZyywOCuwOystsGgssDgrsDwrLbBpLLA4K7A9Ky2waiywOSsusSsBFCstsGsssDkrsDsrLbBsLLA5K7A8Ky2wbSywOSuwPSstsG4ssDorLrErARQrLbBvLLA6K7A7Ky2wcCywOiuwPCstsHEssDorsD0rLbByLLMJBAIDRVghGyMhWUIrsAhlsAMkUHiwARUwLQBLuADIUlixAQGOWbABuQgACABjcLEABUKxAAAqsQAFQrEACCqxAAVCsQAIKrEABUK5AAAACSqxAAVCuQAAAAkqsQMARLEkAYhRWLBAiFixA2REsSYBiFFYugiAAAEEQIhjVFixAwBEWVlZWbEADCq4Af+FsASNsQIARAA=\") format('truetype'), url(\"data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/Pgo8IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxtZXRhZGF0YT5Db3B5cmlnaHQgKEMpIDIwMTYgYnkgb3JpZ2luYWwgYXV0aG9ycyBAIGZvbnRlbGxvLmNvbTwvbWV0YWRhdGE+CjxkZWZzPgo8Zm9udCBpZD0iYnBtbi1pby1wcCIgaG9yaXotYWR2LXg9IjEwMDAiID4KPGZvbnQtZmFjZSBmb250LWZhbWlseT0iYnBtbi1pby1wcCIgZm9udC13ZWlnaHQ9IjQwMCIgZm9udC1zdHJldGNoPSJub3JtYWwiIHVuaXRzLXBlci1lbT0iMTAwMCIgYXNjZW50PSI4NTAiIGRlc2NlbnQ9Ii0xNTAiIC8+CjxtaXNzaW5nLWdseXBoIGhvcml6LWFkdi14PSIxMDAwIiAvPgo8Z2x5cGggZ2x5cGgtbmFtZT0iY2xlYXIiIHVuaWNvZGU9IiYjeGU4MDI7IiBkPSJNNDUyIDE5NHExOC0xOCAxOC00M3QtMTgtNDNxLTE4LTE2LTQzLTE2dC00MyAxNmwtMTMyIDE1Mi0xMzItMTUycS0xOC0xNi00My0xNnQtNDMgMTZxLTE2IDE4LTE2IDQzdDE2IDQzbDEzOCAxNTYtMTM4IDE1OHEtMTYgMTgtMTYgNDN0MTYgNDNxMTggMTYgNDMgMTZ0NDMtMTZsMTMyLTE1MiAxMzIgMTUycTE4IDE2IDQzIDE2dDQzLTE2cTE4LTE4IDE4LTQzdC0xOC00M2wtMTM4LTE1OHoiIGhvcml6LWFkdi14PSI0NzAiIC8+CjxnbHlwaCBnbHlwaC1uYW1lPSJhZGQiIHVuaWNvZGU9IiYjeGU4MDM7IiBkPSJNNTUwIDQwMHEzMCAwIDMwLTUwdC0zMC01MGwtMjEwIDAgMC0yMTBxMC0zMC01MC0zMHQtNTAgMzBsMCAyMTAtMjEwIDBxLTMwIDAtMzAgNTB0MzAgNTBsMjEwIDAgMCAyMTBxMCAzMCA1MCAzMHQ1MC0zMGwwLTIxMCAyMTAgMHoiIGhvcml6LWFkdi14PSI1ODAiIC8+CjxnbHlwaCBnbHlwaC1uYW1lPSJzZWFyY2giIHVuaWNvZGU9IiYjeGU4MDU7IiBkPSJNNzcyIDc4cTMwLTM0IDYtNjJsLTQ2LTQ2cS0zNi0zMi02OCAwbC0xOTAgMTkwcS03NC00Mi0xNTYtNDItMTI4IDAtMjIzIDk1dC05NSAyMjMgOTAgMjE5IDIxOCA5MSAyMjQtOTUgOTYtMjIzcTAtODgtNDYtMTYyeiBtLTY3OCAzNThxMC04OCA2OC0xNTZ0MTU2LTY4IDE1MSA2MyA2MyAxNTNxMCA4OC02OCAxNTV0LTE1NiA2Ny0xNTEtNjMtNjMtMTUxeiIgaG9yaXotYWR2LXg9Ijc4OSIgLz4KPGdseXBoIGdseXBoLW5hbWU9ImF0dGVudGlvbiIgdW5pY29kZT0iJiN4ZTgwNjsiIGQ9Ik05NTctMjRxMTAtMTYgMC0zNC0xMC0xNi0zMC0xNmwtODkyIDBxLTE4IDAtMjggMTYtMTMgMTgtMiAzNGw0NDYgNzgycTggMTggMzAgMTh0MzAtMTh6IG0tNDIwIDUwbDAgMTAwLTExMCAwIDAtMTAwIDExMCAweiBtMCAxNzRsMCAzMDAtMTEwIDAgMC0zMDAgMTEwIDB6IiBob3Jpei1hZHYteD0iOTYyIiAvPgo8Z2x5cGggZ2x5cGgtbmFtZT0iY2xlYXItY2lyY2xlZCIgdW5pY29kZT0iJiN4ZTkwMjsiIGQ9Ik00MjAgNzcwcTE3NCAwIDI5Ny0xMjN0MTIzLTI5Ny0xMjMtMjk3LTI5Ny0xMjMtMjk3IDEyMy0xMjMgMjk3IDEyMyAyOTcgMjk3IDEyM3ogbTg2LTQyMGwxNTQgMTU0LTg2IDg2LTE1NC0xNTItMTUyIDE1Mi04OC04NiAxNTQtMTU0LTE1NC0xNTIgODgtODYgMTUyIDE1MiAxNTQtMTUyIDg2IDg2eiIgaG9yaXotYWR2LXg9Ijg0MCIgLz4KPGdseXBoIGdseXBoLW5hbWU9ImFkZC1jaXJjbGVkIiB1bmljb2RlPSImI3hlOTAzOyIgZD0iTTQyMCA3NzBxMTc0IDAgMjk3LTEyM3QxMjMtMjk3LTEyMy0yOTctMjk3LTEyMy0yOTcgMTIzLTEyMyAyOTcgMTIzIDI5NyAyOTcgMTIzeiBtNTItNDcwbDIwMCAwIDAgMTAyLTIwMCAwIDAgMjAyLTEwMiAwIDAtMjAyLTIwMiAwIDAtMTAyIDIwMiAwIDAtMjAyIDEwMiAwIDAgMjAyeiIgaG9yaXotYWR2LXg9Ijg0MCIgLz4KPC9mb250Pgo8L2RlZnM+Cjwvc3ZnPg==\") format('svg');\n  font-weight: normal;\n  font-style: normal;\n}\n.bpp-properties-panel {\n  background-color: #f8f8f8;\n  position: relative;\n}\n.bpp-properties-panel:empty {\n  display: none;\n}\n.bpp-properties-panel label,\n.bpp-properties-panel input {\n  vertical-align: middle;\n}\n.bpp-properties-panel button,\n.bpp-properties-panel input,\n.bpp-properties-panel select,\n.bpp-properties-panel textarea,\n.bpp-properties-panel [contenteditable] {\n  font-size: 14px;\n  padding: 3px 6px;\n  border: 1px solid #cccccc;\n}\n.bpp-properties-panel button:focus,\n.bpp-properties-panel input:focus,\n.bpp-properties-panel select:focus,\n.bpp-properties-panel textarea:focus,\n.bpp-properties-panel [contenteditable]:focus {\n  outline: none;\n  border-color: #1a70ff;\n  box-shadow: 0 0 0 2px #a2c5ff, 0 0 0 1px #cdcdcd inset;\n}\n.bpp-properties-panel button.invalid,\n.bpp-properties-panel input.invalid,\n.bpp-properties-panel select.invalid,\n.bpp-properties-panel textarea.invalid,\n.bpp-properties-panel [contenteditable].invalid {\n  border-color: #ff3d3d;\n}\n.bpp-properties-panel button.invalid:focus,\n.bpp-properties-panel input.invalid:focus,\n.bpp-properties-panel select.invalid:focus,\n.bpp-properties-panel textarea.invalid:focus,\n.bpp-properties-panel [contenteditable].invalid:focus {\n  box-shadow: 0 0 0 2px #ffb3b3, 0 0 0 1px #cdcdcd inset;\n}\n.bpp-properties-panel [type=text],\n.bpp-properties-panel [contenteditable],\n.bpp-properties-panel textarea,\n.bpp-properties-panel select {\n  width: 100%;\n}\n.bpp-properties-panel [contenteditable],\n.bpp-properties-panel textarea {\n  resize: vertical;\n}\n.bpp-properties-panel [contenteditable] {\n  min-height: 24px;\n  outline: 0px solid transparent;\n  background-color: #ffffff;\n  overflow-y: auto;\n  white-space: pre-wrap;\n  /* css-3 */\n  white-space: -moz-pre-wrap;\n  /* Mozilla, since 1999 */\n  white-space: -pre-wrap;\n  /* Opera 4-6 */\n  white-space: -o-pre-wrap;\n  /* Opera 7 */\n  word-wrap: break-word;\n  /* Internet Explorer 5.5+ */\n}\n.bpp-properties-panel [contenteditable]:before {\n  content: \"\\feff\";\n}\n.bpp-properties-panel [disabled] {\n  color: #808080;\n}\n.bpp-properties-panel label {\n  font-weight: bolder;\n  display: inline-block;\n  vertical-align: middle;\n  color: #666666;\n  margin-bottom: 3px;\n}\n.bpp-properties-panel label.bpp-hidden {\n  display: none;\n}\n.bpp-properties-panel .entry-label {\n  font-weight: bolder;\n  display: inline-block;\n  vertical-align: middle;\n  color: #666666;\n  font-size: 16px;\n  margin-top: 5px;\n  margin-bottom: 10px;\n}\n.bpp-properties-panel .entry-label.bpp-hidden {\n  display: none;\n}\n.bpp-properties-panel .entry-label.divider {\n  border-top: 1px dotted #cccccc;\n  padding-top: 8px;\n  margin-top: 16px;\n  width: 100%;\n}\n.bpp-properties-panel .action-button {\n  position: absolute;\n  top: 0;\n  height: 23px;\n  width: 24px;\n  overflow: hidden;\n  background-color: #f8f8f8;\n  border: 1px solid #cccccc;\n}\n.bpp-properties-panel .action-button > span {\n  display: none;\n}\n.bpp-properties-panel .action-button:before {\n  font-family: \"bpmn-js-pp\";\n  font-style: normal;\n  font-weight: normal;\n  speak: none;\n  display: inline-block;\n  text-decoration: inherit;\n  text-align: center;\n  font-variant: normal;\n  text-transform: none;\n  line-height: 1em;\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-font-smoothing: grayscale;\n  position: relative;\n}\n.bpp-properties-panel .action-button.add:before {\n  content: '\\E803';\n}\n.bpp-properties-panel .action-button.clear:before {\n  content: '\\E802';\n}\n.bpp-properties-panel .action-button:hover {\n  color: #005df7;\n}\n.bpp-error-message,\n.bpp-error-message.bpp-entry-link {\n  margin-top: 5px;\n  color: #ff3d3d;\n}\n.bpp-row {\n  margin-top: 10px;\n  margin-bottom: 10px;\n}\n.bpp-row:first-of-type {\n  margin-top: 0;\n}\n.bpp-row:last-of-type {\n  margin-bottom: 0;\n}\n.bpp-textfield,\n.bpp-textbox,\n.bpp-autosuggest-textbox {\n  margin-bottom: 3px;\n}\n.bpp-autosuggest-list {\n  position: fixed;\n  min-width: 100px;\n  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);\n  border: solid 1px #c9c9c9;\n  background-color: #ffffff;\n  z-index: 1;\n  display: none;\n  overflow-y: auto;\n  max-height: 200px;\n}\n.bpp-autosuggest-list.active {\n  display: block;\n}\n.bpp-autosuggest-item {\n  padding: 6px 3px;\n}\n.bpp-autosuggest-item:hover {\n  background: #4d90ff;\n  color: #ffffff;\n}\n.bpp-radios-group {\n  list-style: none;\n  padding: 0;\n  margin: 0 0 9px 0;\n}\n.bpp-radios-group .bpp-radio-wrapper {\n  margin: 6px 0;\n}\n.bpp-radios-group input,\n.bpp-radios-group label {\n  vertical-align: middle;\n}\n.bpp-radios-group input {\n  margin-top: 0;\n  margin-left: 0;\n}\n.bpp-radios-group input,\n.bpp-checkbox input {\n  margin-left: 0;\n}\n.bpp-radios-group label:after,\n.bpp-checkbox label:after {\n  display: none;\n}\n.bpp-textfield input {\n  padding-right: 28px;\n}\n.bpp-textfield .clear {\n  background: transparent;\n  border: none;\n  top: 0;\n  right: 0;\n}\n.bpp-combo-input {\n  margin-top: 7px;\n}\n.bpp-select select {\n  height: 23px;\n}\n.bpp-select .action-button.add {\n  top: -22px;\n  right: 0;\n}\n.bpp-select .action-button.add,\n.bpp-element-list .action-button.add,\n.bpp-select .action-button.clear,\n.bpp-element-list .action-button.clear {\n  top: -23px;\n  border-bottom: none;\n}\n.bpp-select .action-button.add,\n.bpp-element-list .action-button.add {\n  right: 0px;\n}\n.bpp-select .action-button.clear,\n.bpp-element-list .action-button.clear {\n  right: 23px;\n}\n.bpp-properties-entry {\n  margin-bottom: 9px;\n}\n.bpp-properties-entry .bpp-field-wrapper {\n  position: relative;\n}\n.bpp-properties-entry .bpp-field-wrapper input[readonly] + .clear {\n  display: none;\n}\n.bpp-properties-entry .bpp-field-wrapper select {\n  resize: vertical;\n}\n.bpp-properties-entry.bpp-entry--warning {\n  background-color: #fffadb;\n  border-top: solid 1px #e8e3c7;\n  border-bottom: solid 1px #e8e3c7;\n}\n.bpp-hidden {\n  display: none;\n}\nlabel.bpp-hidden {\n  display: none;\n}\n.bpp-table-add-row > .action-button {\n  position: relative;\n  margin-left: 10px;\n}\n.bpp-table {\n  margin-top: 10px;\n}\n.bpp-table-row {\n  margin-bottom: 2px;\n  overflow: hidden;\n}\n.bpp-table-row > input,\n.bpp-table-row > .action-button {\n  float: left;\n}\n.bpp-table-row > label {\n  padding-left: 5px;\n}\n.bpp-table-row > label.bpp-table-row-columns-1,\n.bpp-table-row > input.bpp-table-row-columns-1 {\n  width: 100%;\n}\n.bpp-table-row > label.bpp-table-row-columns-1.bpp-table-row-removable,\n.bpp-table-row > input.bpp-table-row-columns-1.bpp-table-row-removable {\n  width: calc(100% - 24px);\n}\n.bpp-table-row > label.bpp-table-row-columns-2,\n.bpp-table-row > input.bpp-table-row-columns-2 {\n  width: 50%;\n  box-sizing: border-box;\n}\n.bpp-table-row > label.bpp-table-row-columns-2.bpp-table-row-removable,\n.bpp-table-row > input.bpp-table-row-columns-2.bpp-table-row-removable {\n  width: calc(50% - 12px);\n}\n.bpp-table-row > label.bpp-table-row-columns-2:nth-child(2),\n.bpp-table-row > input.bpp-table-row-columns-2:nth-child(2) {\n  border-left: none;\n}\n.bpp-table-row > label.bpp-table-row-columns-3,\n.bpp-table-row > input.bpp-table-row-columns-3 {\n  width: 33%;\n  box-sizing: border-box;\n}\n.bpp-table-row > label.bpp-table-row-columns-3.bpp-table-row-removable,\n.bpp-table-row > input.bpp-table-row-columns-3.bpp-table-row-removable {\n  width: calc(33% - 8px);\n}\n.bpp-table-row > label.bpp-table-row-columns-3:not(:first-child),\n.bpp-table-row > input.bpp-table-row-columns-3:not(:first-child) {\n  border-left: none;\n}\n.bpp-table-row > .action-button {\n  border-left: none;\n  position: static;\n}\n.bpp-properties-static {\n  margin-bottom: 0;\n  margin-top: 0;\n  border: 1px solid #cccccc;\n  background-color: #ffffff;\n  padding: 3px 6px;\n  font: 13.3333px Arial;\n  width: 100%;\n}\n.bpp-entry-link {\n  color: #1a70ff;\n  text-decoration: underline;\n}\n.bpp-entry-link.bpp-entry-link-button {\n  display: inline-block;\n  padding: 3px 13px;\n  background: #4d90ff;\n  color: #ffffff;\n  border: solid 1px #3c85ff;\n  border-radius: 100px;\n  text-decoration: none;\n}\n.bpp-icon-warning:before {\n  font-family: \"bpmn-js-pp\";\n  font-style: normal;\n  font-weight: normal;\n  speak: none;\n  display: inline-block;\n  text-decoration: inherit;\n  text-align: center;\n  font-variant: normal;\n  text-transform: none;\n  line-height: 1em;\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-font-smoothing: grayscale;\n  content: '\\E806';\n}\n.bpp-field-description {\n  margin-top: 5px;\n  color: #999999;\n}\n.bpp-field-description a {\n  color: #0056e6;\n  text-decoration: none;\n}\n.bpp-field-description a:hover {\n  color: #1a70ff;\n}\n.bpp-description {\n  color: #999999;\n}\n.bpp-collapsible {\n  height: 19px;\n}\n.bpp-collapsible .bpp-field-wrapper {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n}\n.bpp-collapsible .bpp-collapsible__icon {\n  display: block;\n  padding-right: 2px;\n}\n.bpp-collapsible .bpp-collapsible__icon:before {\n  display: block;\n  height: 16px;\n  width: 16px;\n  content: url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpolygon fill='%23666666' fill-rule='evenodd' points='5 4.414 6.414 3 11.364 7.95 6.414 12.899 5 11.485 8.534 7.95'/%3E%3C/svg%3E%0A\");\n  transform: rotate(90deg);\n}\n.bpp-collapsible.bpp-collapsible--collapsed .bpp-collapsible__icon:before {\n  transform: none;\n}\n.bpp-collapsible .bpp-collapsible__title {\n  display: block;\n  margin: 0;\n  padding-right: 6px;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.bpp-collapsible:not(.bpp-collapsible--collapsed) .bpp-collapsible__title {\n  padding-right: 0;\n}\n.bpp-collapsible:not(.bpp-collapsible--collapsed) .bpp-collapsible__title:nth-last-child(3) {\n  padding-right: 24px;\n}\n.bpp-collapsible .bpp-collapsible__description {\n  display: none;\n  margin: 0;\n  white-space: nowrap;\n  color: #909090;\n  font-weight: normal;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.bpp-collapsible .bpp-collapsible__description {\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.bpp-collapsible.bpp-collapsible--collapsed .bpp-collapsible__description {\n  display: block;\n}\n.bpp-collapsible .bpp-collapsible__remove {\n  height: 24px;\n  top: -4px;\n  right: 0;\n}\n.bpp-collapsible.bpp-collapsible--collapsed .bpp-collapsible__remove {\n  display: none;\n}\n.bpp-collapsible ~ .bpp-properties-entry:not(.bpp-collapsible):not(.bpp-collapsible-break) {\n  margin-left: 18px;\n}\n.bpp-process-variables.bpp-process-variables__description {\n  margin-bottom: 16px;\n}\n.bpp-process-variables.bpp-process-variables__scope-title {\n  font-size: 13px;\n  font-weight: 600;\n  color: #666666;\n  margin-bottom: 16px;\n}\n.bpp-process-variables.bpp-process-variables__created-in .bpp-process-variables__created-in-item {\n  margin-bottom: 4px;\n  margin-top: 4px;\n}\n.bpp-collapsible ~ .bpp-properties-entry.bpp-input-output {\n  margin-left: 0;\n}\n.bpp-collapsible--with-mapping .bpp-collapsible__description:not(:empty) {\n  position: relative;\n  text-indent: 24px;\n  padding-right: 24px;\n}\n.bpp-collapsible--with-mapping .bpp-collapsible__description:not(:empty):before {\n  position: absolute;\n  top: -1px;\n  left: -24px;\n  display: block;\n  width: 16px;\n  height: 16px;\n  content: url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpolygon fill='%23909090' fill-rule='evenodd' points='8 3 8 7 15 7 15 9 8 9 8 13 2 8'/%3E%3C/svg%3E\");\n  opacity: 0.7;\n}\n.bpp-input-output .bpp-input-output__add {\n  top: -28px;\n  right: 0;\n}\n.bpp-input-output-placeholder {\n  padding-bottom: 3px;\n  font-size: 14px;\n}\n.bpp-collapsible--with-template-out .bpp-collapsible__description:not(:empty):before {\n  content: url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpolygon fill='%23909090' fill-rule='evenodd' points='15 8 9 13 9 9 2 9 2 7 9 7 9 3'/%3E%3C/svg%3E\");\n}\n.bpp-properties-header {\n  padding: 15px;\n  padding-bottom: 5px;\n}\n.bpp-properties-header > .label {\n  font-size: 16px;\n  font-weight: bolder;\n}\n.bpp-properties-group {\n  position: relative;\n}\n.bpp-properties-group .group-header {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: space-between;\n  padding: 10px 15px;\n}\n.bpp-properties-group .group-header .group-label {\n  font-weight: bolder;\n  display: inline-block;\n  vertical-align: middle;\n  color: #666666;\n  font-size: 16px;\n}\n.bpp-properties-group .group-header .group-label.bpp-hidden {\n  display: none;\n}\n.bpp-properties-group > .bpp-properties-entry {\n  padding-left: 15px;\n  padding-right: 15px;\n}\n.bpp-properties-group > .bpp-properties-entry:last-child {\n  margin-bottom: 6px;\n}\n.bpp-properties-group:empty {\n  display: none;\n}\n.bpp-properties-group > .group-toggle {\n  position: absolute;\n  top: 0;\n  left: 0;\n  bottom: 0;\n  width: 4px;\n}\n.bpp-properties-group > .group-toggle:hover {\n  background-color: #4d90ff;\n}\n.bpp-properties-group:hover > .group-toggle {\n  background-color: #cccccc;\n}\n.bpp-properties-group:hover > .group-toggle:hover {\n  background-color: #4d90ff;\n}\n.bpp-properties-group.group-closed {\n  border-top: none;\n}\n.bpp-properties-group.group-closed > .group-toggle {\n  background-color: #cccccc;\n}\n.bpp-properties-group.group-closed:hover > .group-toggle {\n  background-color: #4d90ff;\n}\n.bpp-properties-group.group-closed > div {\n  display: none;\n}\n.bpp-properties-group.group-closed .group-label {\n  margin-bottom: 5px;\n}\n.bpp-properties-group + .bpp-properties-group {\n  border-top: 1px solid #eeeeee;\n}\n.bpp-properties-group:last-child {\n  padding-bottom: 9px;\n}\n.bpp-properties-group .group__dropdown {\n  position: relative;\n  justify-self: flex-end;\n}\n.bpp-properties-group .group__dropdown-button {\n  width: 26px;\n  height: 26px;\n  text-align: center;\n  border: none;\n  background-color: transparent;\n  color: #666666;\n  outline: none;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n.bpp-properties-group .group__dropdown--open .group__dropdown-button,\n.bpp-properties-group .group__dropdown-button:hover {\n  background-color: #cdcdcd;\n}\n.bpp-properties-group .group__dropdown-menu {\n  position: absolute;\n  top: 30px;\n  right: 0;\n  z-index: 10000;\n}\n.bpp-properties-group .group__dropdown:not(.group__dropdown--open) .group__dropdown-menu {\n  display: none;\n}\n.bpp-properties-group .group__dropdown-button {\n  border-radius: 100%;\n}\n.bpp-properties-group .group__dropdown-menu {\n  background-color: #ffffff;\n  border: solid 1px #cdcdcd;\n  border-radius: 3px;\n  padding: 4px 0 4px 0;\n  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.1);\n}\n.bpp-properties-group .group__dropdown-menu-item {\n  padding: 8px 16px;\n}\n.bpp-properties-group .group__dropdown-menu-item:hover {\n  background-color: #cdcdcd;\n}\n.cam-add-listener > .action-button {\n  position: relative;\n  margin-left: 10px;\n}\n[data-list-entry-container] > .bpp-listener-area {\n  border: 1px solid #cccccc;\n  margin: 10px 1px;\n  padding: 10px;\n}\n.bpp-listener-area {\n  position: relative;\n}\n.bpp-listener-area > .action-button {\n  position: absolute;\n  right: 0;\n  top: 0;\n  border: none;\n  background: none;\n}\n.bpp-listener-area + .bpp-listener-area {\n  margin-top: 20px;\n}\n.bpp-properties-tab-bar {\n  border-bottom: 1px solid #cccccc;\n  padding: 0 15px;\n}\n.bpp-properties-tab-bar .scroll-tabs-button {\n  font-size: 16px;\n  padding: 3px 4px 3px 4px;\n  color: #666666;\n}\n.bpp-properties-tab-bar .scroll-tabs-button:hover {\n  font-weight: bold;\n}\n.bpp-properties-tab-bar .scroll-tabs-button.scroll-tabs-left {\n  float: left;\n  margin-left: -15px;\n}\n.bpp-properties-tab-bar .scroll-tabs-button.scroll-tabs-right {\n  float: right;\n  margin-right: -15px;\n}\n.bpp-properties-tab-bar:not(.scroll-tabs-overflow) .scroll-tabs-button {\n  display: none;\n}\nul.bpp-properties-tabs-links {\n  margin: 5px 0 -1px 0;\n  padding: 0;\n  white-space: nowrap;\n  overflow: hidden;\n}\nul.bpp-properties-tabs-links > li {\n  display: inline-block;\n  margin: 0;\n}\nul.bpp-properties-tabs-links > li.bpp-hidden {\n  display: none;\n}\nul.bpp-properties-tabs-links > li > a {\n  display: inline-block;\n  font-size: 12px;\n  padding: 4px 7px;\n  border: 1px solid #cccccc;\n  border-radius: 3px 3px 0 0;\n  border-bottom: transparent;\n  background-color: #f8f8f8;\n  color: #666666;\n  text-decoration: none;\n  cursor: default;\n}\nul.bpp-properties-tabs-links > li > a:hover {\n  color: #4d4d4d;\n}\nul.bpp-properties-tabs-links > li + li {\n  margin-left: 4px;\n}\nul.bpp-properties-tabs-links > li.bpp-active a {\n  padding-bottom: 5px;\n  border-top: 3px solid #4d90ff;\n  border-bottom: none;\n}\n.bpp-properties-tab,\n.bpp-properties-tab.bpp-hidden {\n  display: none;\n}\n.bpp-properties-tab.bpp-active {\n  display: block;\n}\n", ""]);
 // Exports
 /* harmony default export */ __webpack_exports__["default"] = (___CSS_LOADER_EXPORT___);
 
 
 /***/ }),
-/* 310 */
+/* 315 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -21058,7 +21787,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 311 */
+/* 316 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -21157,7 +21886,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 312 */
+/* 317 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21365,7 +22094,7 @@ module.exports = Refs;
  */
 
 /***/ }),
-/* 313 */
+/* 318 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -21380,7 +22109,7 @@ var inherits_browser = __webpack_require__(3);
 var inherits_browser_default = /*#__PURE__*/__webpack_require__.n(inherits_browser);
 
 // EXTERNAL MODULE: ./node_modules/ids/dist/index.esm.js
-var index_esm = __webpack_require__(27);
+var index_esm = __webpack_require__(28);
 
 // EXTERNAL MODULE: ./node_modules/min-dash/dist/index.esm.js
 var dist_index_esm = __webpack_require__(0);
@@ -24584,7 +25313,7 @@ ElementRegistry.prototype._validateId = function(id) {
 };
 
 // EXTERNAL MODULE: ./node_modules/object-refs/index.js
-var object_refs = __webpack_require__(18);
+var object_refs = __webpack_require__(19);
 var object_refs_default = /*#__PURE__*/__webpack_require__.n(object_refs);
 
 // CONCATENATED MODULE: ./node_modules/diagram-js/lib/model/index.js
@@ -38387,7 +39116,7 @@ function getMidPoint(p, q) {
 }
 
 // EXTERNAL MODULE: ./node_modules/path-intersection/intersect.js
-var intersect = __webpack_require__(46);
+var intersect = __webpack_require__(47);
 var intersect_default = /*#__PURE__*/__webpack_require__.n(intersect);
 
 // CONCATENATED MODULE: ./node_modules/diagram-js/lib/layout/LayoutUtil.js
@@ -41686,7 +42415,7 @@ NavigatedViewer.prototype._modules = [].concat(
   NavigatedViewer.prototype._navigationModules
 );
 // EXTERNAL MODULE: ./node_modules/hammerjs/hammer.js
-var hammer = __webpack_require__(19);
+var hammer = __webpack_require__(20);
 var hammer_default = /*#__PURE__*/__webpack_require__.n(hammer);
 
 // CONCATENATED MODULE: ./node_modules/diagram-js/lib/features/touch/TouchInteractionEvents.js
@@ -44755,7 +45484,7 @@ function calculateHitWidth(segmentStart, segmentEnd, alignment) {
 }
 
 // EXTERNAL MODULE: ./node_modules/css.escape/css.escape.js
-var css_escape = __webpack_require__(28);
+var css_escape = __webpack_require__(29);
 var css_escape_default = /*#__PURE__*/__webpack_require__.n(css_escape);
 
 // CONCATENATED MODULE: ./node_modules/diagram-js/lib/features/bendpoints/Bendpoints.js
@@ -75126,7 +75855,7 @@ var provider_default = /*#__PURE__*/__webpack_require__.n(app_provider);
 var simulation = __webpack_require__(123);
 
 // EXTERNAL MODULE: ./styles/customModeler.less
-var customModeler = __webpack_require__(307);
+var customModeler = __webpack_require__(312);
 
 // EXTERNAL MODULE: ./app/translate/customTranslate.js
 var customTranslate = __webpack_require__(125);
@@ -75176,7 +75905,7 @@ CustomModeler.prototype._moddleExtensions = {
 };
 
 /***/ }),
-/* 314 */
+/* 319 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

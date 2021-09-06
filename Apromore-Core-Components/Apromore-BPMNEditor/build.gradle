@@ -2,11 +2,6 @@
 group = 'org.apromore.plugin'
 version = '1.1'
 description = 'Apromore BPMN Editor'
-apply plugin: 'groovy'
-
-configurations {
-	ivy
-}
 
 dependencies {
    
@@ -15,20 +10,5 @@ dependencies {
     implementation project(':Apromore-Plugins:plugin-core:portal:api')
     implementation project(':Apromore-Plugins:plugin-core:editor:api')
     implementation project(':Apromore-Custom-Plugins:Apromore-Editor:pdf')
-    
-	ivy 'org.apache.ivy:ivy:2.4.0'
-	implementation 'com.yahoo.platform.yui:yuicompressor:2.4.6'
+
 }
-
-
-tasks.withType(GroovyCompile) {
-	groovyClasspath += configurations.ivy
-}
-
-task runScript (dependsOn: 'classes', type: JavaExec) {
-	main = 'mergeJs'
-	classpath = sourceSets.main.runtimeClasspath
-}
-
-
-// build.finalizedBy(runScript)

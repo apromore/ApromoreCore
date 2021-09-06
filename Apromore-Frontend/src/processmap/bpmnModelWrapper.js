@@ -1,4 +1,4 @@
-import {Apromore} from "../bpmneditor/apromoreEditor";
+import bpmnEditor from "../bpmneditor/index";
 import * as utils from "../loganimation/utils";
 import {AnimationEvent, AnimationEventType} from "../loganimation/animationEvents";
 
@@ -30,7 +30,10 @@ export default class BPMNModelWrapper {
      * @param {String} xmlString: XML content of the BPMN map/model
      */
     loadProcessModel(editorContainerId, bpmnXML, callBack) {
-        this._editorApp = new Apromore.EditorApp({
+        if (!Apromore.BPMNEditor) {
+            Apromore.BPMNEditor = bpmnEditor;
+        }
+        this._editorApp = new Apromore.BPMNEditor.EditorApp({
             xml: bpmnXML,
             callBack: callBack,
             id: editorContainerId,
