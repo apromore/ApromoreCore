@@ -11184,8 +11184,6 @@ __webpack_require__.r(__webpack_exports__);
  * DEALINGS IN THE SOFTWARE.
  **/
 
-//if(!Apromore) var Apromore = {};
-
 let CONFIG = {};
 
 /**
@@ -11463,13 +11461,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
-/**
- * Init namespaces
- */
-//if (!Apromore) {
-//    var Apromore = {};
-//}
 
 /**
  * Editor is actually a wrapper around the true editor (e.g. BPMN.io)
@@ -12040,10 +12031,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
-//if (!Apromore) {
-//    var Apromore = {};
-//}
 
 /**
  * The EditorApp class represents the BPMN Editor. It calls to a BPMN.io editor internally while provides
@@ -12682,10 +12669,8 @@ __webpack_require__.r(__webpack_exports__);
  * DEALINGS IN THE SOFTWARE.
  **/
 
-//if(!Apromore) var Apromore = {};
-
 /**
- * The Apromore.Log logger.
+ * The BPMNEditor.Log logger.
  */
 let Log = {
     // Apromore constants.
@@ -12778,9 +12763,6 @@ __webpack_require__.r(__webpack_exports__);
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  **/
-
-//if(!Apromore){ var Apromore = {} }
-//if(!Apromore.Plugins){ Apromore.Plugins = {} }
 
 
 
@@ -12898,9 +12880,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-//if (!Apromore.Plugins)
-//    Apromore.Plugins = new Object();
-
 class Export {
 
     constructor(facade) {
@@ -12990,10 +12969,6 @@ __webpack_require__.r(__webpack_exports__);
  **/
 
 
-
-//if (!Apromore.Plugins) {
-//    Apromore.Plugins = new Object();
-//}
 
 // Logo's viewBox is "0 0 629.8 126.7"
 const logo = '<g transform="translate(${xx yy}) scale(0.2 0.2)">' +
@@ -13186,18 +13161,9 @@ __webpack_require__.r(__webpack_exports__);
 
 
 /**
- * @namespace Apromore name space for plugins
- * @name Apromore.Plugins
- */
-//if (!Apromore.Plugins) {
-//    Apromore.Plugins = new Object();
-//}
-
-/**
  * The share plugin provide share functionality
  *
- * @class Apromore.Plugins.Share
- * @extends Clazz
+ * @class Share
  * @param {Object} facade The editor facade for plugins.
  */
 class Share {
@@ -13244,18 +13210,10 @@ __webpack_require__.r(__webpack_exports__);
 
 
 /**
- * @namespace Apromore name space for plugins
- * @name Apromore.Plugins
- */
-//if (!Apromore.Plugins)
-//    Apromore.Plugins = new Object();
-
-/**
  * The simulation panel plugin offers functionality to change model simulation parameters over the
  * simulation parameters panel.
  *
- * @class Apromore.Plugins.SimulationPanel
- * @extends Clazz
+ * @class SimulationPanel
  * @param {Object} facade The editor facade for plugins.
  */
 class SimulationPanel {
@@ -13326,10 +13284,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
-//if(!Apromore.Plugins) {
-//  Apromore.Plugins = new Object();
-//}
 
 class Toolbar {
     constructor(facade, ownPluginData) {
@@ -13615,7 +13569,7 @@ Ext.ux.SlicedToolbar = Ext.extend(Ext.Toolbar, {
 
         var button = new Ext.Toolbar.Button({
             cls: "x-btn-icon",
-            icon: _config__WEBPACK_IMPORTED_MODULE_0__["default"].PATH + "images/toolbar_"+type+".png",
+            icon: _config__WEBPACK_IMPORTED_MODULE_0__["default"].ROOT_PATH + "images/toolbar_"+type+".png",
             handler: (type === "next") ? nextHandler : prevHandler
         });
 
@@ -13672,7 +13626,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 /**
- * This plugin offer the functionality of undo/redo
+ * This plugin offers the functionality of undo/redo
  * Therewith the command pattern is used.
  *
  * A Plugin which want that the changes could get undo/redo has
@@ -13683,12 +13637,6 @@ __webpack_require__.r(__webpack_exports__);
  **/
 
 
-
-//import Clazz from './../clazz';
-//import Apromore from './toolbar';
-//
-//if (!Apromore.Plugins)
-//    Apromore.Plugins = new Object();
 
 class Undo {
 
@@ -13810,18 +13758,10 @@ __webpack_require__.r(__webpack_exports__);
 
 
 /**
- * @namespace Apromore name space for plugins
- * @name Apromore.Plugins
- */
-//if (!Apromore.Plugins)
-//    Apromore.Plugins = new Object();
-
-/**
  * The view plugin offers all of zooming functionality accessible over the
  * tool bar. This are zoom in, zoom out, zoom to standard, zoom fit to model.
  *
- * @class Apromore.Plugins.View
- * @extends Clazz
+ * @class View
  * @param {Object} facade The editor facade for plugins.
  */
 class View {
@@ -13919,13 +13859,9 @@ __webpack_require__.r(__webpack_exports__);
  * DEALINGS IN THE SOFTWARE.
  **/
 
-//if (!Apromore) {
-//  var Apromore = {};
-//}
-
 /**
- * @namespace Apromore name space for different utility methods
- * @name Apromore.Utils
+ * @namespace BPMNEditor name space for different utility methods
+ * @name BPMNEditor.Utils
 */
 let Utils = {
     // TODO Implement namespace awareness on attribute level.
