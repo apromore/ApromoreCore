@@ -22,6 +22,7 @@
 
 package org.apromore.apmlog;
 
+import org.apromore.apmlog.customcalendartests.CusCalArcDurFIlterTest;
 import org.apromore.apmlog.customcalendartests.CusCalCaseDurationFilterTest;
 import org.apromore.apmlog.customcalendartests.CusCalPathFilterTest;
 import org.apromore.apmlog.customcalendartests.CusCalTest;
@@ -464,6 +465,7 @@ public class APMLogUnitTest {
     public void testCustomCalendar01() throws Exception {
         APMLog apmLog = getImmutableLog("2Traces", "files/2Traces-calendar-test01.xes");
         CusCalTest.run(apmLog);
+        CusCalArcDurFIlterTest.run(apmLog);
     }
 
     private ImmutableLog getImmutableLog(String logName, String path) throws Exception {

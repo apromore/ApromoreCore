@@ -22,6 +22,8 @@
 package org.apromore.apmlog.stats;
 
 import org.apromore.apmlog.logobjects.ActivityInstance;
+import org.apromore.apmlog.util.CalendarDuration;
+import org.apromore.calendar.model.CalendarModel;
 
 public class CustomTriple {
     ActivityInstance activity1, activity2;
@@ -45,8 +47,8 @@ public class CustomTriple {
     }
 
     public double getDuration() {
-        return activity2.getStartTime() > activity1.getEndTime() ?
-                activity2.getStartTime() - activity1.getEndTime() : 0;
+        CalendarModel calendarModel = activity1.getCalendarModel();
+        return CalendarDuration.getDuration(calendarModel, activity1.getEndTime(), activity2.getStartTime());
     }
 
     public int getCaseIndex() {
