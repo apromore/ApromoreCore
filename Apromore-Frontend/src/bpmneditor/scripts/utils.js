@@ -21,13 +21,9 @@
  * DEALINGS IN THE SOFTWARE.
  **/
 
-//if (!Apromore) {
-//  var Apromore = {};
-//}
-
 /**
- * @namespace Apromore name space for different utility methods
- * @name Apromore.Utils
+ * @namespace BPMNEditor name space for different utility methods
+ * @name BPMNEditor.Utils
 */
 let Utils = {
     // TODO Implement namespace awareness on attribute level.

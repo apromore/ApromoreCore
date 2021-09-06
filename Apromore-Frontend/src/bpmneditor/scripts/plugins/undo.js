@@ -23,7 +23,7 @@
 
 
 /**
- * This plugin offer the functionality of undo/redo
+ * This plugin offers the functionality of undo/redo
  * Therewith the command pattern is used.
  *
  * A Plugin which want that the changes could get undo/redo has
@@ -34,12 +34,6 @@
  **/
 
 import CONFIG from './../config';
-
-//import Clazz from './../clazz';
-//import Apromore from './toolbar';
-//
-//if (!Apromore.Plugins)
-//    Apromore.Plugins = new Object();
 
 export default class Undo {
 

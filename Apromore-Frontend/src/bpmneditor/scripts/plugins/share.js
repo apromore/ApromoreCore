@@ -23,18 +23,9 @@
 import CONFIG from './../config';
 
 /**
- * @namespace Apromore name space for plugins
- * @name Apromore.Plugins
- */
-//if (!Apromore.Plugins) {
-//    Apromore.Plugins = new Object();
-//}
-
-/**
  * The share plugin provide share functionality
  *
- * @class Apromore.Plugins.Share
- * @extends Clazz
+ * @class Share
  * @param {Object} facade The editor facade for plugins.
  */
 export default class Share {

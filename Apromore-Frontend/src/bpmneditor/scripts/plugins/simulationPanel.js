@@ -1,18 +1,10 @@
 import CONFIG from './../config';
 
 /**
- * @namespace Apromore name space for plugins
- * @name Apromore.Plugins
- */
-//if (!Apromore.Plugins)
-//    Apromore.Plugins = new Object();
-
-/**
  * The simulation panel plugin offers functionality to change model simulation parameters over the
  * simulation parameters panel.
  *
- * @class Apromore.Plugins.SimulationPanel
- * @extends Clazz
+ * @class SimulationPanel
  * @param {Object} facade The editor facade for plugins.
  */
 export default class SimulationPanel {

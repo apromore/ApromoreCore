@@ -26,10 +26,6 @@ import Editor from './editor';
 import Log from './logger';
 import Utils from './utils';
 
-//if (!Apromore) {
-//    var Apromore = {};
-//}
-
 /**
  * The EditorApp class represents the BPMN Editor. It calls to a BPMN.io editor internally while provides
  * other UI layout components (east, west, north, south) for property panel, navigation pane, etc.

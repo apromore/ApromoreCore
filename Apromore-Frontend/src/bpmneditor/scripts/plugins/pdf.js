@@ -23,10 +23,6 @@
 
 import CONFIG from './../config';
 
-//if (!Apromore.Plugins) {
-//    Apromore.Plugins = new Object();
-//}
-
 // Logo's viewBox is "0 0 629.8 126.7"
 const logo = '<g transform="translate(${xx yy}) scale(0.2 0.2)">' +
   '<path fill="#4E4E4F" d="M206.5,36.4v52.9h-11.4v-7.6c-4,5.6-10.3,9-18.5,9c-14.4,0-26.3-12.2-26.3-27.8S162.2,35,176.6,35 c8.3,0,14.5,3.4,18.5,8.9v-7.5H206.5z M195.1,62.8c0-9.8-7.2-16.9-16.7-16.9s-16.7,7.1-16.7,16.9s7.2,16.9,16.7,16.9 S195.1,72.7,195.1,62.8z"/>' +

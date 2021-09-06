@@ -25,18 +25,10 @@
 import CONFIG from './../config';
 
 /**
- * @namespace Apromore name space for plugins
- * @name Apromore.Plugins
- */
-//if (!Apromore.Plugins)
-//    Apromore.Plugins = new Object();
-
-/**
  * The view plugin offers all of zooming functionality accessible over the
  * tool bar. This are zoom in, zoom out, zoom to standard, zoom fit to model.
  *
- * @class Apromore.Plugins.View
- * @extends Clazz
+ * @class View
  * @param {Object} facade The editor facade for plugins.
  */
 export default class View {

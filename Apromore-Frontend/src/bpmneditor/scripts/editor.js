@@ -25,13 +25,6 @@ import Log from './logger';
 import Utils from './utils';
 
 /**
- * Init namespaces
- */
-//if (!Apromore) {
-//    var Apromore = {};
-//}
-
-/**
  * Editor is actually a wrapper around the true editor (e.g. BPMN.io)
  * It provides BPMN editing features while hiding the actual editor implementation provider.
  * The aim is to minimize the impact of the implementation changes with changes minimized to this

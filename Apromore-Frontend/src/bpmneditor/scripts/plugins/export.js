@@ -23,9 +23,6 @@
 
 import CONFIG from './../config';
 
-//if (!Apromore.Plugins)
-//    Apromore.Plugins = new Object();
-
 export default class Export {
 
     constructor(facade) {

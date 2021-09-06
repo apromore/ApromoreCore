@@ -21,9 +21,6 @@
  * DEALINGS IN THE SOFTWARE.
  **/
 
-//if(!Apromore){ var Apromore = {} }
-//if(!Apromore.Plugins){ Apromore.Plugins = {} }
-
 import CONFIG from './../config';
 
 export default class ApromoreSave {

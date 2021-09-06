@@ -21,10 +21,8 @@
  * DEALINGS IN THE SOFTWARE.
  **/
 
-//if(!Apromore) var Apromore = {};
-
 /**
- * The Apromore.Log logger.
+ * The BPMNEditor.Log logger.
  */
 let Log = {
     // Apromore constants.

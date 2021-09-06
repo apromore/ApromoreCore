@@ -21,8 +21,6 @@
  * DEALINGS IN THE SOFTWARE.
  **/
 
-//if(!Apromore) var Apromore = {};
-
 let CONFIG = {};
 
 /**

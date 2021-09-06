@@ -24,10 +24,6 @@
 import CONFIG from './../config';
 import Log from './../logger';
 
-//if(!Apromore.Plugins) {
-//  Apromore.Plugins = new Object();
-//}
-
 export default class Toolbar {
     constructor(facade, ownPluginData) {
         this.plugs = [];
