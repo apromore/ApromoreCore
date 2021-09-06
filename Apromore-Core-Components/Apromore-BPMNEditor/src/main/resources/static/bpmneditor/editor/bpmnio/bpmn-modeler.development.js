@@ -1433,6 +1433,32 @@ ValidationErrorHelper.getErrors = function(bpmnFactory, elementRegistry) {
     processSimulationInfo.validationErrors = validationErrors;
   }
 
+  // Left-over gateway error fixer
+  // Since validation is done as needed during user input,
+  // it fails to remove flow error when element is deleted
+  try {
+    var flows = processSimulationInfo.sequenceFlows.values;
+    var flowMap = {};
+    flows.forEach(function(f) {
+      flowMap[f.elementId] = true;
+    });
+    var toCull = {};
+    validationErrors.errors.forEach(function(error) {
+      if (error.id.startsWith('probability-field-')) {
+        var flowId = error.id.substr(18);
+        if (!(flowId in flowMap)) { // missing flow, deleted earlier
+          toCull[error.id] = true;
+        }
+      }
+    });
+
+    validationErrors.errors = (validationErrors.errors || []).filter(function(error) {
+      return !(error.id in toCull);
+    });
+  } catch (e) {
+    // pass
+  }
+
   return validationErrors;
 };
 
