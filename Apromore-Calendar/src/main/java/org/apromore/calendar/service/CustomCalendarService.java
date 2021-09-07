@@ -263,16 +263,16 @@ public class CustomCalendarService implements CalendarService {
         int duplicates = 0;
 
         while (calendarRepo.findByName(uniqueName) != null) {
-		    if (duplicates == maxDuplicates) {
-		        //Prevent endless loop if too many calendars are created with the same name
+            if (duplicates == maxDuplicates) {
+                //Prevent endless loop if too many calendars are created with the same name
                 throw new CalendarAlreadyExistsException("Calendar already exists");
             }
             uniqueName = String.format(duplicateNameFormat, name, ++duplicates);
-		}
+        }
 
         return uniqueName;
 
-	}
+    }
 
 }
 // public WorkDay(Long id,DayOfWeek dayOfWeek, OffsetTime startTime, OffsetTime endTime,
