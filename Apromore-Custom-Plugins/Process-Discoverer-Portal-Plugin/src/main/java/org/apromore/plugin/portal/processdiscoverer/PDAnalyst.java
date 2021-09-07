@@ -55,6 +55,7 @@ import org.apromore.calendar.model.CalendarModel;
 import org.apromore.commons.datetime.DateTimeUtils;
 import org.apromore.commons.datetime.DurationUtils;
 import org.apromore.logman.ALog;
+import org.apromore.logman.Constants;
 import org.apromore.logman.LogBitMap;
 import org.apromore.logman.attribute.AbstractAttribute;
 import org.apromore.logman.attribute.AttributeType;
@@ -533,9 +534,9 @@ public class PDAnalyst {
         for (Map.Entry<String, String> entry : firstMap.entrySet()) {
             String key = entry.getKey();
             String firstValue = entry.getValue();
-            //Keep any attributes that match in all cases (should include activity and resource).
-            if (caseAttMaps.stream().allMatch(m -> m.get(key).equals(firstValue))) {
-                avgAttributeMap.put(key, firstMap.get(key));
+            //Keep activity and resource.
+            if (Constants.ATT_KEY_CONCEPT_NAME.equals(key) || Constants.ATT_KEY_RESOURCE.equals(key)) {
+                avgAttributeMap.put(key, firstValue);
             } else {
                 try {
                     //Get average of any numerical attributes
@@ -543,7 +544,7 @@ public class PDAnalyst {
                             .mapToDouble(m -> Double.parseDouble(m.get(key)))
                             .average().orElseThrow();
 
-                    avgAttributeMap.put(key, String.valueOf(average));
+                    avgAttributeMap.put("Average " + key, String.valueOf(average));
                 } catch (NumberFormatException | NoSuchElementException e) {
                     //Don't add it - it's not a number or we can't get an average!
                 }
