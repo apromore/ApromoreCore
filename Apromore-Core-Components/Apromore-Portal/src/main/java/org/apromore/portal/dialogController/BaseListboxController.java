@@ -841,12 +841,9 @@ public abstract class BaseListboxController extends BaseController {
     }
   }
 
-  protected void launchCalendar(String artifactName, Integer logId) {
+  public void launchCalendar(String artifactName, Integer logId) {
     PortalPlugin calendarPlugin;
-    getMainController().eraseMessage();
-
-   final EventQueue<Event> queue = EventQueues.lookup("org/apromore/service/CALENDAR", true);
-
+    final EventQueue<Event> queue = EventQueues.lookup("org/apromore/service/CALENDAR", true);
     Long calendarId = getMainController().getEventLogService().getCalendarIdFromLog(logId);
 
     queue.subscribe(new EventListener<Event>() {
@@ -869,7 +866,6 @@ public abstract class BaseListboxController extends BaseController {
       calendarPlugin = portalPluginMap.get(PluginCatalog.PLUGIN_CALENDAR);
       calendarPlugin.setSimpleParams(attrMap);
       calendarPlugin.execute(portalContext);
-
     } catch (Exception e) {
       LOGGER.error(Labels.getLabel("portal_failedLaunchCustomCalendar_message"), e);
       Messagebox.show(Labels.getLabel("portal_failedLaunchCustomCalendar_message"));

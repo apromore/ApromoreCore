@@ -23,6 +23,18 @@
 package org.apromore.plugin.portal.processdiscoverer;
 
 import lombok.Getter;
+import static org.apromore.logman.attribute.graph.MeasureType.DURATION;
+import static org.apromore.logman.attribute.graph.MeasureType.FREQUENCY;
+
+import java.text.DecimalFormat;
+import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+import javax.servlet.http.HttpSession;
+
+import org.apromore.commons.config.ConfigBean;
+import org.apromore.logman.attribute.IndexableAttribute;
 import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
@@ -38,6 +50,7 @@ import org.apromore.plugin.portal.processdiscoverer.eventlisteners.LogFilterCont
 import org.apromore.plugin.portal.processdiscoverer.impl.factory.PDFactory;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.BaseController;
+import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.dialogController.dto.ApromoreSession;
 import org.apromore.portal.menu.PluginCatalog;
 import org.apromore.portal.model.FolderType;
@@ -59,14 +72,6 @@ import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
-
-import javax.servlet.http.HttpSession;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-import static org.apromore.logman.attribute.graph.MeasureType.DURATION;
-import static org.apromore.logman.attribute.graph.MeasureType.FREQUENCY;
 
 /**
  * PDController is the top-level application object to manage PD plugin as a
@@ -153,7 +158,11 @@ public class PDController extends BaseController implements Composer<Component> 
 
     private InteractiveMode mode = InteractiveMode.MODEL_MODE; // initial mode
 
+    @Getter
+    private ConfigBean portalConfig;
     private Component pdComponent;
+
+    private MainController mainController;
 
     /////////////////////////////////////////////////////////////////////////
 
@@ -218,6 +227,8 @@ public class PDController extends BaseController implements Composer<Component> 
             return false;
         try {
             FolderType currentFolder = portalContext.getCurrentFolder();
+            mainController = (MainController) portalContext.getMainController();
+            portalConfig = mainController.getConfig();
             if (currentFolder == null) {
                 return false;
             }
@@ -419,6 +430,10 @@ public class PDController extends BaseController implements Composer<Component> 
                     Messagebox.ERROR);
             LOGGER.error(e.getMessage(), e);
         }
+    }
+
+    public void openCalendar() {
+        mainController.getBaseListboxController().launchCalendar(sourceLogName, sourceLogId);
     }
 
     public void openAnimation(Event e) {
