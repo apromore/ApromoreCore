@@ -22,8 +22,7 @@
 
 package org.apromore.apmlog;
 
-import org.apromore.apmlog.customcalendartests.CusCalCaseDurationFilterTest;
-import org.apromore.apmlog.customcalendartests.CusCalPathFilterTest;
+import org.apromore.apmlog.customcalendartests.CusCalArcDurFilterTestSupport;
 import org.apromore.apmlog.customcalendartests.CusCalTest;
 import org.apromore.apmlog.filter.APMLogFilter;
 import org.apromore.apmlog.filter.PLog;
@@ -41,16 +40,12 @@ import org.apromore.apmlog.stats.EventAttributeValue;
 import org.apromore.apmlog.stats.LogStatsAnalyzer;
 import org.apromore.apmlog.util.Util;
 import org.apromore.apmlog.xes.XLogToImmutableLog;
-import org.apromore.calendar.builder.CalendarModelBuilder;
-import org.apromore.calendar.model.CalendarModel;
 import org.deckfour.xes.in.XesXmlGZIPParser;
 import org.deckfour.xes.in.XesXmlParser;
 import org.deckfour.xes.model.XLog;
 import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -464,6 +459,7 @@ public class APMLogUnitTest {
     public void testCustomCalendar01() throws Exception {
         APMLog apmLog = getImmutableLog("2Traces", "files/2Traces-calendar-test01.xes");
         CusCalTest.run(apmLog);
+        CusCalArcDurFilterTestSupport.run(apmLog);
     }
 
     private ImmutableLog getImmutableLog(String logName, String path) throws Exception {

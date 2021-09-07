@@ -27,6 +27,8 @@ import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.RuleValue;
 import org.apromore.apmlog.filter.types.Choice;
 import org.apromore.apmlog.filter.types.OperationType;
+import org.apromore.apmlog.util.CalendarDuration;
+import org.apromore.calendar.model.CalendarModel;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
 import java.util.ArrayList;
@@ -77,6 +79,9 @@ public class AttributeArcDurationFilter extends AbstractAttributeDurationFilter 
     private static List<Double> getAttributeToAttributeDurationList(List<ActivityInstance> activityList, String attributeKey,
                                                                     String value1, String value2,
                                                                     double lowBoundVal, double upBoundVal) {
+
+        CalendarModel calendarModel = activityList.get(0).getCalendarModel();
+
         List<Double> durList= new ArrayList<>();
 
         for (int i = 0; i < activityList.size(); i++) {
@@ -91,12 +96,12 @@ public class AttributeArcDurationFilter extends AbstractAttributeDurationFilter 
                     String actVal1 = attrMap1.get(attributeKey);
                     String actVal2 = attrMap2.get(attributeKey);
                     if (actVal1.equals(value1) && actVal2.equals(value2)) {
-                        double act1EndTime = activity1.getEndTime();
-                        double act2StartTime = activity2.getStartTime();
-                        double duration = act2StartTime > act1EndTime ? act2StartTime - act1EndTime : 0;
-                        if (duration >= lowBoundVal && duration <= upBoundVal) {
+                        long act1EndTime = activity1.getEndTime();
+                        long act2StartTime = activity2.getStartTime();
+                        double duration = CalendarDuration.getDuration(calendarModel, act1EndTime, act2StartTime);
+                        if (duration >= lowBoundVal && duration <= upBoundVal)
                             durList.add(duration);
-                        }
+
                     }
                 }
             }
