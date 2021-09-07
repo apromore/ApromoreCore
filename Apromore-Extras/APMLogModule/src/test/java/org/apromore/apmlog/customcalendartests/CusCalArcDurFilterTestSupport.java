@@ -38,7 +38,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class CusCalArcDurFIlterTest {
+public class CusCalArcDurFilterTestSupport {
 
     public static void run(APMLog apmLog) throws Exception {
 
