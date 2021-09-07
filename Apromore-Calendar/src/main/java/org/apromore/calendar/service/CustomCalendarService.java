@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -134,14 +134,14 @@ public class CustomCalendarService implements CalendarService {
     private CustomCalendar createCalendar(String description, boolean weekendsOff, OffsetTime start, OffsetTime end)
             throws CalendarAlreadyExistsException {
 
-	validateCalendarExists(calendarRepo.findByName(description));
+        String name = getUniqueCalendarName(description);
 
-	final CustomCalendar calendar = new CustomCalendar(description);
-	for (WorkDay workDay : getWorkDays(start, end, weekendsOff)) {
-	    calendar.addWorkDay(workDay);
-	}
-	CustomCalendar newcalendar = calendarRepo.saveAndFlush(calendar);
-	return newcalendar;
+        final CustomCalendar calendar = new CustomCalendar(name);
+        for (WorkDay workDay : getWorkDays(start, end, weekendsOff)) {
+            calendar.addWorkDay(workDay);
+        }
+        CustomCalendar newcalendar = calendarRepo.saveAndFlush(calendar);
+        return newcalendar;
 
     }
 
@@ -254,6 +254,25 @@ public class CustomCalendarService implements CalendarService {
 	calendar.setZoneId(zoneId);
 	calendarRepo.save(calendar);
     }
+
+    private String getUniqueCalendarName(String name) throws CalendarAlreadyExistsException {
+        int maxDuplicates = 1000;
+        String duplicateNameFormat = "%s (%d)";
+
+        String uniqueName = name;
+        int duplicates = 0;
+
+        while (calendarRepo.findByName(uniqueName) != null) {
+		    if (duplicates == maxDuplicates) {
+		        //Prevent endless loop if too many calendars are created with the same name
+                throw new CalendarAlreadyExistsException("Calendar already exists");
+            }
+            uniqueName = String.format(duplicateNameFormat, name, ++duplicates);
+		}
+
+        return uniqueName;
+
+	}
 
 }
 // public WorkDay(Long id,DayOfWeek dayOfWeek, OffsetTime startTime, OffsetTime endTime,
