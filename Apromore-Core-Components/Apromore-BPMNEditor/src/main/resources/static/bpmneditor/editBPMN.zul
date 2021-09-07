@@ -37,7 +37,6 @@
     <n:link rel="stylesheet" href="https://unpkg.com/bpmn-js@3.0.1/dist/assets/bpmn-font/css/bpmn.css" type="text/css"/>
     <n:script src="/${arg.editor}/editor/bpmnio/bpmn-modeler.development.js" type="text/javascript"/>
 
-    Hello!
 	
 	<n:div id="editorwrapper" style="display: none">
         <n:script>
