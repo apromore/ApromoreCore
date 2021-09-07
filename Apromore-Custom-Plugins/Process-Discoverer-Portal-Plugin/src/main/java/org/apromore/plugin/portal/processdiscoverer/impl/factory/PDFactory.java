@@ -23,6 +23,7 @@ package org.apromore.plugin.portal.processdiscoverer.impl.factory;
 
 import org.apromore.plugin.portal.processdiscoverer.PDController;
 import org.apromore.plugin.portal.processdiscoverer.components.CaseDetailsController;
+import org.apromore.plugin.portal.processdiscoverer.components.CaseVariantDetailsController;
 import org.apromore.plugin.portal.processdiscoverer.components.GraphSettingsController;
 import org.apromore.plugin.portal.processdiscoverer.components.GraphVisController;
 import org.apromore.plugin.portal.processdiscoverer.components.LogStatsController;
@@ -42,6 +43,7 @@ public interface PDFactory {
     LogStatsController createLogStatsController(PDController pdController) throws Exception;
     TimeStatsController createTimeStatsController(PDController pdController) throws Exception;
     CaseDetailsController createCaseDetailsController(PDController pdController) throws Exception;
+    CaseVariantDetailsController createCaseVariantDetailsController(PDController pdController) throws Exception;
     PerspectiveDetailsController createPerspectiveDetailsController(PDController pdController) throws Exception;
     LogFilterController createLogFilterController(PDController pdController) throws Exception;
     AnimationController createAnimationController(PDController pdController) throws Exception;

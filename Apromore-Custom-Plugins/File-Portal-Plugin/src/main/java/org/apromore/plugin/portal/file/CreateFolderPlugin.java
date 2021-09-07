@@ -40,30 +40,13 @@ public class CreateFolderPlugin extends DefaultPortalPlugin {
   private static Logger LOGGER = PortalLoggerFactory.getLogger(CreateFolderPlugin.class);
 
   private String label = "Create folder";
-  private String groupLabel = "File";
 
   // PortalPlugin overrides
-
-  @Override
-  public String getItemCode(Locale locale) {
-    return label;
-  }
-
-  @Override
-  public String getGroup(Locale locale) {
-    return "File";
-  }
 
   @Override
   public String getLabel(Locale locale) {
     return Labels.getLabel("plugin_file_createFolder_text", label);
   }
-
-  @Override
-  public String getGroupLabel(Locale locale) {
-    return Labels.getLabel("plugin_file_title_text", groupLabel);
-  }
-
 
   @Override
   public String getIconPath() {

@@ -100,25 +100,25 @@ public class GraphVisController extends VisualController {
         vizBridge.addEventListener("onNodeRemovedTrace", event -> {
             FilterActionOnElementFilter action = new FilterActionOnNodeRemoveTrace(parent, parent.getProcessAnalyst());
             action.setElement(event.getData().toString(), parent.getUserOptions().getMainAttributeKey());
-            parent.executeAction(action);
+            parent.getActionManager().executeAction(action);
         });
         
         vizBridge.addEventListener("onNodeRetainedTrace", event -> {
             FilterActionOnElementFilter action = new FilterActionOnNodeRetainTrace(parent, parent.getProcessAnalyst());
             action.setElement(event.getData().toString(), parent.getUserOptions().getMainAttributeKey());
-            parent.executeAction(action);
+            parent.getActionManager().executeAction(action);
         });
         
         vizBridge.addEventListener("onNodeRemovedEvent", event -> {
             FilterActionOnElementFilter action = new FilterActionOnNodeRemoveEvent(parent, parent.getProcessAnalyst());
             action.setElement(event.getData().toString(), parent.getUserOptions().getMainAttributeKey());
-            parent.executeAction(action);
+            parent.getActionManager().executeAction(action);
         });
         
         vizBridge.addEventListener("onNodeRetainedEvent", event -> {
             FilterActionOnElementFilter action = new FilterActionOnNodeRetainEvent(parent, parent.getProcessAnalyst());
             action.setElement(event.getData().toString(), parent.getUserOptions().getMainAttributeKey());
-            parent.executeAction(action);
+            parent.getActionManager().executeAction(action);
         });
         
         vizBridge.addEventListener("onEdgeRemoved", event -> {
@@ -127,7 +127,7 @@ public class GraphVisController extends VisualController {
             if (isStartOrEndEdge(edge)) edge = convertStartOrEndEdge(edge);
             FilterActionOnElementFilter action = new FilterActionOnEdgeRemoveTrace(parent, parent.getProcessAnalyst());
             action.setElement(edge, parent.getUserOptions().getMainAttributeKey());
-            parent.executeAction(action);
+            parent.getActionManager().executeAction(action);
         });
         
         vizBridge.addEventListener("onEdgeRetained", event -> {
@@ -136,7 +136,7 @@ public class GraphVisController extends VisualController {
             if (isStartOrEndEdge(edge)) edge = convertStartOrEndEdge(edge);
             FilterActionOnElementFilter action = new FilterActionOnEdgeRetainTrace(parent, parent.getProcessAnalyst());
             action.setElement(edge, parent.getUserOptions().getMainAttributeKey());
-            parent.executeAction(action);
+            parent.getActionManager().executeAction(action);
         });
     }
 

@@ -22,8 +22,11 @@
 package org.apromore.apmlog.logobjects;
 
 import org.apromore.apmlog.stats.TimeStatsProcessor;
+import org.apromore.calendar.builder.CalendarModelBuilder;
+import org.apromore.calendar.model.CalendarModel;
 import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,13 +39,12 @@ public abstract class AbstractLogImpl implements Serializable {
     protected String logName;
 
     protected HashBiMap<String, Integer> activityNameIndicatorMap;
-
     protected final List<ActivityInstance> activityInstances = new ArrayList<>();
-
     protected String timeZone;
-
     protected long startTime;
     protected long endTime;
+    protected CalendarModel calendarModel = CalendarModel.ABSOLUTE_CALENDAR;
+    protected boolean assignedCustomCalendar = false;
 
     // ===============================================================================================================
     // Protected methods
@@ -84,6 +86,14 @@ public abstract class AbstractLogImpl implements Serializable {
         return endTime;
     }
 
+    public CalendarModel getCalendarModel() {
+        return calendarModel;
+    }
+
+    public boolean hasCustomCalendar() {
+        return assignedCustomCalendar;
+    }
+
     // ===============================================================================================================
     // SET methods
     // ===============================================================================================================
@@ -100,5 +110,10 @@ public abstract class AbstractLogImpl implements Serializable {
 
     public void setTimeZone(String timeZone) {
         this.timeZone = timeZone;
+    }
+
+    public void setCalendarModel(@NotNull CalendarModel calendarModel) {
+        this.calendarModel = calendarModel;
+        assignedCustomCalendar = true;
     }
 }

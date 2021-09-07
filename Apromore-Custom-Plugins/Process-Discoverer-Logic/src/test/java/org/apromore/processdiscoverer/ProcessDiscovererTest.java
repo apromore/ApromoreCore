@@ -34,6 +34,7 @@ import org.apromore.logman.attribute.graph.MeasureRelation;
 import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.logman.attribute.log.AttributeLog;
 import org.apromore.processdiscoverer.bpmn.TraceBPMNDiagram;
+import org.apromore.processdiscoverer.bpmn.TraceVariantBPMNDiagram;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNEdge;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNNode;
@@ -41,6 +42,10 @@ import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Gatew
 import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Gateway.GatewayType;
 import org.deckfour.xes.model.XLog;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class ProcessDiscovererTest extends LogicDataSetup {
     
@@ -143,8 +148,35 @@ public class ProcessDiscovererTest extends LogicDataSetup {
                                             null);
         Abstraction traceAbs = pd.generateTraceAbstraction(attLog, traceID, params);
         return traceAbs;
-}
+    }
 
+    private Abstraction discoverTraceVariantAbstraction(XLog xlog, List<String> traceIDs) throws Exception {
+        ALog log = new ALog(xlog);
+        IndexableAttribute mainAttribute = log.getAttributeStore().getStandardEventConceptName();
+        AttributeLog attLog = new AttributeLog(log, mainAttribute, getAllDayAllTimeCalendar());
+        ProcessDiscoverer pd = new ProcessDiscoverer();
+        AbstractionParams params = new AbstractionParams(
+                mainAttribute,
+                1.0,
+                1.0,
+                0.4,
+                true, true,
+                false,
+                false,
+                false,
+                MeasureType.FREQUENCY,
+                MeasureAggregation.CASES,
+                MeasureRelation.ABSOLUTE,
+                MeasureType.FREQUENCY,
+                MeasureAggregation.CASES,
+                MeasureRelation.ABSOLUTE,
+                MeasureType.DURATION,
+                MeasureAggregation.MEAN,
+                MeasureRelation.ABSOLUTE,
+                null);
+        Abstraction traceAbs = pd.generateTraceVariantAbstraction(attLog, traceIDs, params);
+        return traceAbs;
+    }
 
     
     
@@ -963,7 +995,7 @@ public class ProcessDiscovererTest extends LogicDataSetup {
         }
         
     }
-    
+
     @Test
     public void testTraceAbstraction_NodeDuration() {
         try {
@@ -983,7 +1015,139 @@ public class ProcessDiscovererTest extends LogicDataSetup {
         } catch (Exception e) {
             fail("Exception occurred: " + e.getMessage());
         }
-        
+
+    }
+
+    @Test
+    public void testTraceVariantAbstraction_Sepsis() {
+        try {
+            String traceIDs[] = {"B"};
+            Abstraction abs = discoverTraceVariantAbstraction(read_Sepsis(), new ArrayList<>(Arrays.asList(traceIDs)));
+            BPMNDiagram d = abs.getDiagram();
+            BPMNNode startNode = ((TraceVariantBPMNDiagram)abs.getDiagram()).getStartNode();
+            BPMNNode node = startNode;
+            int i = 0;
+            double[] expected = new double[] {0, 775000, 1121000, 0, 0, 2385000, 1083000, 7000, 2593000, 240172000, 194400000, 14400000, 0};
+            while (!d.getOutEdges(node).isEmpty()) {
+                assertEquals(0, abs.getNodePrimaryWeight(node), 0);
+                assertEquals(expected[i], abs.getArcPrimaryWeight(d.getOutEdges(node).iterator().next()), 0);
+                node = d.getOutEdges(node).iterator().next().getTarget();
+                i++;
+            }
+        } catch (Exception e) {
+            fail("Exception occurred: " + e.getMessage());
+        }
+    }
+
+    @Test
+    public void testTraceVariantAbstraction_NodeDuration() {
+        try {
+            String traceIDs[] = {"Case3.0"};
+            Abstraction abs = discoverTraceVariantAbstraction(readLogWithStartCompleteEventsOverlapping(),
+                    new ArrayList<>(Arrays.asList(traceIDs)));
+            BPMNDiagram d = abs.getDiagram();
+            BPMNNode startNode = ((TraceVariantBPMNDiagram)abs.getDiagram()).getStartNode();
+            BPMNNode node = startNode;
+            int i = 0;
+            double[] node_expected = new double[] {0, 120000, 120000, 60000, 0};
+            double[] edge_expected = new double[] {0, 0, 60000, 0};
+            while (!d.getOutEdges(node).isEmpty()) {
+                assertEquals(node_expected[i], abs.getNodePrimaryWeight(node), 0);
+                assertEquals(edge_expected[i], abs.getArcPrimaryWeight(d.getOutEdges(node).iterator().next()), 0);
+                node = d.getOutEdges(node).iterator().next().getTarget();
+                i++;
+            }
+        } catch (Exception e) {
+            fail("Exception occurred: " + e.getMessage());
+        }
+    }
+
+    @Test
+    public void testTraceVariantAbstraction_NodeDuration_no_IDs() {
+        try {
+            String traceIDs[] = {};
+            Abstraction abs = discoverTraceVariantAbstraction(readLogWithStartCompleteEventsOverlapping(),
+                    new ArrayList<>(Arrays.asList(traceIDs)));
+            fail("No exception occurred");
+        } catch (Exception e) {
+            String noIDErrorMessage = "A trace variant must contain at least one trace";
+            assertEquals(noIDErrorMessage, e.getMessage());
+        }
+    }
+
+    @Test
+    public void testTraceVariantAbstraction_NodeDuration_empty_ID() {
+        try {
+            String traceIDs[] = {"Case3.0", ""};
+            Abstraction abs = discoverTraceVariantAbstraction(readLogWithStartCompleteEventsOverlapping(),
+                    new ArrayList<>(Arrays.asList(traceIDs)));
+            fail("No exception occurred");
+        } catch (Exception e) {
+            String noIDErrorMessage = "At least one trace id is empty or null";
+            assertEquals(noIDErrorMessage, e.getMessage());
+        }
+    }
+
+    @Test
+    public void testTraceVariantAbstraction_NodeDuration_null_ID() {
+        try {
+            String traceIDs[] = {"Case3.0", null};
+            Abstraction abs = discoverTraceVariantAbstraction(readLogWithStartCompleteEventsOverlapping(),
+                    new ArrayList<>(Arrays.asList(traceIDs)));
+            fail("No exception occurred");
+        } catch (Exception e) {
+            String noIDErrorMessage = "At least one trace id is empty or null";
+            assertEquals(noIDErrorMessage, e.getMessage());
+        }
+    }
+
+    @Test
+    public void testTraceVariantAbstraction_NodeDuration_ID_not_in_log() {
+        try {
+            String traceIDs[] = {"not a trace in log"};
+            Abstraction abs = discoverTraceVariantAbstraction(readLogWithStartCompleteEventsOverlapping(),
+                    new ArrayList<>(Arrays.asList(traceIDs)));
+            fail("No exception occurred");
+        } catch (Exception e) {
+            String noIDErrorMessage = "The trace with ID = not a trace in log is not in the current log (may have been filtered out)!";
+            assertEquals(noIDErrorMessage, e.getMessage());
+        }
+    }
+
+    @Test
+    public void testTraceVariantAbstraction_NodeDuration_IDs_diff_variant() {
+        try {
+            String traceIDs[] = {"Case2.0", "Case3.0"};
+            Abstraction abs = discoverTraceVariantAbstraction(readLogWithStartCompleteEventsOverlapping(),
+                    new ArrayList<>(Arrays.asList(traceIDs)));
+            fail("No exception occurred");
+        } catch (Exception e) {
+            String noIDErrorMessage = "All traces must be of the same variant";
+            assertEquals(noIDErrorMessage, e.getMessage());
+        }
+    }
+
+    @Test
+    public void testTraceVariantAbstraction_NodeDuration_Multiple_Cases() {
+        try {
+            String traceIDs[] = {"Case2.0", "Case2.1"};
+            Abstraction abs = discoverTraceVariantAbstraction(readLogWithStartCompleteEventsOverlapping(),
+                    new ArrayList<>(Arrays.asList(traceIDs)));
+            BPMNDiagram d = abs.getDiagram();
+            BPMNNode startNode = ((TraceVariantBPMNDiagram)abs.getDiagram()).getStartNode();
+            BPMNNode node = startNode;
+            int i = 0;
+            double[] node_expected = new double[] {0, 90000, 90000, 90000, 90000, 0};
+            double[] edge_expected = new double[] {0, 30000, 60000, 30000, 0};
+            while (!d.getOutEdges(node).isEmpty()) {
+                assertEquals(node_expected[i], abs.getNodePrimaryWeight(node), 0);
+                assertEquals(edge_expected[i], abs.getArcPrimaryWeight(d.getOutEdges(node).iterator().next()), 0);
+                node = d.getOutEdges(node).iterator().next().getTarget();
+                i++;
+            }
+        } catch (Exception e) {
+            fail("Exception occurred: " + e.getMessage());
+        }
     }
     
     @Test

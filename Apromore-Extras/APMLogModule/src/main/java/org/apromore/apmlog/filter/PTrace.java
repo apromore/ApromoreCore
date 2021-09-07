@@ -46,7 +46,8 @@ public class PTrace extends AbstractTraceImpl implements Comparable<PTrace>, Ser
                 immutableTrace.getCaseId(),
                 immutableTrace.getImmutableEvents(),
                 immutableTrace.getActivityInstances(),
-                immutableTrace.getAttributes());
+                immutableTrace.getAttributes(),
+                immutableTrace.getSourceLog());
 
         originalActivityInstances = new ArrayList<>(immutableTrace.getActivityInstances());
 
@@ -69,7 +70,8 @@ public class PTrace extends AbstractTraceImpl implements Comparable<PTrace>, Ser
                 immutableTrace.getCaseId(),
                 immutableTrace.getImmutableEvents(),
                 immutableTrace.getActivityInstances(),
-                immutableTrace.getAttributes());
+                immutableTrace.getAttributes(),
+                immutableTrace.getSourceLog());
 
         originalActivityInstances = new ArrayList<>(immutableTrace.getActivityInstances());
 
@@ -163,7 +165,7 @@ public class PTrace extends AbstractTraceImpl implements Comparable<PTrace>, Ser
     }
 
     public ImmutableTrace toImmutableTrace() {
-        return new ImmutableTrace(immutableIndex, caseId, immutableEvents, activityInstances, attributes);
+        return new ImmutableTrace(immutableIndex, caseId, immutableEvents, activityInstances, attributes, sourceLog);
     }
 
     @Override

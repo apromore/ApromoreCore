@@ -22,7 +22,7 @@
 
 package org.apromore.portal.common;
 
-import org.apromore.portal.common.notification.Notification;
+import org.apromore.zk.notification.Notification;
 import org.junit.Test;
 
 /* Test suite for {@link Navigation}. */
