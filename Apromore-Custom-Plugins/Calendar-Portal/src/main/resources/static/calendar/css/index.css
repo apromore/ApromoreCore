@@ -31,6 +31,8 @@
 .ap-calendar-log-detail > span {
     vertical-align: middle;
     font-weight: 700;
+    font-size: 16px;
+    color: black;
 }
 
 .ap-period-picker-wrapper {
@@ -241,4 +243,8 @@
 
 .ap-holiday-group-title .z-label {
     font-weight: bold !important;
+}
+
+.ap-calendars-win .ap-icon-log {
+    filter: none;
 }
