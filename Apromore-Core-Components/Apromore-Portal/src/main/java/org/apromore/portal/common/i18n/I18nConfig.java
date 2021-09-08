@@ -26,59 +26,63 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import lombok.Getter;
+import org.apromore.commons.i18n.I18Utils;
 
 @Component("i18nConfig")
 public class I18nConfig {
 
-  @Getter
-  private Map<Locale, String> supportedLocales;
-  @Getter
-  private boolean enabled;
+    @Getter
+    private Map<Locale, String> supportedLocales;
+    @Getter
+    private boolean enabled;
 
-  /**
-   * Constructor
-   *
-   * @param languageTagList Vertically-separated list of string languageTags
-   * @param dateTimePatternList Vertically-separated list of string Date Time patterns
-   */
+    /**
+     * Constructor
+     *
+     * @param languageTagList     Vertically-separated list of string languageTags
+     * @param dateTimePatternList Vertically-separated list of string Date Time patterns
+     */
 
-  public I18nConfig(@Value("${i18n.enable}") boolean enabled,
-      @Value("${i18n.languagetags}") String languageTagList,
-      @Value("${i18n.datetimepatterns}") String dateTimePatternList) {
+    public I18nConfig(@Value("${i18n.enable}") boolean enabled,
+                      @Value("${i18n.languagetags}") String languageTagList,
+                      @Value("${i18n.datetimepatterns}") String dateTimePatternList) {
 
-    this.enabled = enabled;
-    supportedLocales = new LinkedHashMap<>();
-    List<String> languageTags = Arrays.asList(languageTagList.split("\\|"));
-    List<String> dateTimePatterns = Arrays.asList(dateTimePatternList.split("\\|"));
-    if (languageTags.size() == 0 || languageTags.size() != dateTimePatterns.size()) {
-      return;
+        this.enabled = enabled;
+        supportedLocales = new LinkedHashMap<>();
+        List<String> languageTags = Arrays.asList(languageTagList.split("\\|"));
+        List<String> dateTimePatterns = Arrays.asList(dateTimePatternList.split("\\|"));
+        if (languageTags.size() == 0 || languageTags.size() != dateTimePatterns.size()) {
+            return;
+        }
+        for (int i = 0; i < languageTags.size(); i++) {
+            Locale locale = Locale.forLanguageTag(languageTags.get(i));
+            String dateTimePattern = dateTimePatterns.get(i);
+            supportedLocales.put(locale, dateTimePattern);
+        }
     }
-    for (int i = 0; i < languageTags.size(); i++) {
-      Locale locale = Locale.forLanguageTag(languageTags.get(i));
-      String dateTimePattern = dateTimePatterns.get(i);
-      supportedLocales.put(locale, dateTimePattern);
+
+    public boolean isSupported(Locale locale) {
+        return supportedLocales.containsKey(locale);
     }
-  }
 
-  public boolean isSupported(Locale locale) {
-    return supportedLocales.containsKey(locale);
-  }
-
-  public String getDateTimePattern(Locale locale) {
-    return supportedLocales.get(locale);
-  }
-
-  public LinkedHashMap<String, String> getSelectionSet() {
-    LinkedHashMap<String, String> selectionSet = new LinkedHashMap<>();
-    for (Map.Entry<Locale, String> entry : supportedLocales.entrySet()) {
-      Locale locale = entry.getKey();
-      selectionSet.put(locale.toLanguageTag(),
-          locale.getDisplayName(locale) + " (" + locale.getDisplayName() + ")");
+    public String getDateTimePattern(Locale locale) {
+        return supportedLocales.get(locale);
     }
-    return selectionSet;
-  }
+
+    public LinkedHashMap<String, String> getSelectionSet() {
+        LinkedHashMap<String, String> selectionSet = new LinkedHashMap<>();
+        for (Map.Entry<Locale, String> entry : supportedLocales.entrySet()) {
+            Locale locale = entry.getKey();
+            selectionSet.put(locale.toLanguageTag(),
+                    I18Utils.langTagToFlag(locale.toLanguageTag()) + " " +
+                    locale.getDisplayName(locale) + " (" + locale.getDisplayName() + ")"
+            );
+        }
+        return selectionSet;
+    }
 
 }
