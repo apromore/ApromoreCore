@@ -22,6 +22,7 @@
 package org.apromore.portal.common.i18n;
 
 import java.time.format.DateTimeFormatter;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -82,8 +83,9 @@ public class I18nSession {
       Clients.evalJavaScript("Ap.common.removeCookie('" + COOKIE_LANG_TAG + "')");
     }
     if (preferredDateTimePattern != null) {
+      // spring rejects raw Unicode cookie value, Base64 is used instead
       Clients.evalJavaScript("Ap.common.setCookie('" + COOKIE_DATE_TIME_PATTERN_TAG + "','"
-          + preferredDateTimePattern + "')");
+          + Base64.getEncoder().encodeToString(preferredDateTimePattern.getBytes()) + "')");
     } else {
       Clients.evalJavaScript("Ap.common.removeCookie('" + COOKIE_DATE_TIME_PATTERN_TAG + "')");
     }
@@ -102,6 +104,11 @@ public class I18nSession {
           persistedLangTag = value;
           clientPreferred.put(COOKIE_LANG_TAG, value);
         } else if (COOKIE_DATE_TIME_PATTERN_TAG.equals(name)) {
+          try {
+            value = new String(Base64.getDecoder().decode(value));
+          } catch (Exception e) {
+            // Let it pass for older value
+          }
           clientPreferred.put(COOKIE_DATE_TIME_PATTERN_TAG, value);
         }
       }
@@ -110,8 +117,7 @@ public class I18nSession {
     if (!clientPreferred.containsKey(COOKIE_LANG_TAG)) {
       // Just emulate what ZK does to have more control, get it from servlet request
       Locale browserLocale = request.getLocale();
-      clientPreferred.put(COOKIE_LANG_TAG, browserLocale.getLanguage()); // only save the 'en' or
-                                                                         // 'ja'
+      clientPreferred.put(COOKIE_LANG_TAG, browserLocale.getLanguage()); // only save the 'en' or 'ja'
     }
     return clientPreferred;
   }

@@ -43,10 +43,9 @@ import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.plugin.portal.logfilter.generic.LogFilterPlugin;
-import org.apromore.plugin.portal.processdiscoverer.actions.Action;
-import org.apromore.plugin.portal.processdiscoverer.actions.ActionHistory;
-import org.apromore.plugin.portal.processdiscoverer.actions.FilterAction;
+import org.apromore.plugin.portal.processdiscoverer.actions.ActionManager;
 import org.apromore.plugin.portal.processdiscoverer.components.CaseDetailsController;
+import org.apromore.plugin.portal.processdiscoverer.components.CaseVariantDetailsController;
 import org.apromore.plugin.portal.processdiscoverer.components.GraphSettingsController;
 import org.apromore.plugin.portal.processdiscoverer.components.GraphVisController;
 import org.apromore.plugin.portal.processdiscoverer.components.LogStatsController;
@@ -66,6 +65,7 @@ import org.apromore.plugin.portal.processdiscoverer.impl.factory.PDFactory;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.BaseController;
 import org.apromore.portal.dialogController.dto.ApromoreSession;
+import org.apromore.portal.menu.PluginCatalog;
 import org.apromore.portal.model.FolderType;
 import org.apromore.portal.model.LogSummaryType;
 import org.apromore.portal.plugincontrol.PluginExecution;
@@ -141,7 +141,7 @@ public class PDController extends BaseController implements Composer<Component> 
     //////////////////// THE MAIN PD Business Analyst //////////////////////////
 
     private PDAnalyst processAnalyst;
-    private ActionHistory actionHistory = new ActionHistory();
+    private ActionManager actionManager;
 
     //////////////////// UI COMPONENTS ///////////////////////////////////
 
@@ -149,6 +149,7 @@ public class PDController extends BaseController implements Composer<Component> 
     private final DecimalFormat decimalFormat = new DecimalFormat("##############0.##");
     private GraphVisController graphVisController;
     private CaseDetailsController caseDetailsController;
+    private CaseVariantDetailsController caseVariantDetailsController;
     private PerspectiveDetailsController perspectiveDetailsController;
     private ViewSettingsController viewSettingsController;
     private GraphSettingsController graphSettingsController;
@@ -191,6 +192,7 @@ public class PDController extends BaseController implements Composer<Component> 
         pageParams.put("pluginExecutionId", pluginExecutionId);
         pageParams.put("pdLabels", getLabels());
         Executions.getCurrent().pushArg(pageParams);
+        actionManager = new ActionManager(this);
     }
 
     public ResourceBundle getLabels() {
@@ -314,6 +316,7 @@ public class PDController extends BaseController implements Composer<Component> 
             // Set up UI components
             graphVisController = pdFactory.createGraphVisController(this);
             caseDetailsController = pdFactory.createCaseDetailsController(this);
+            caseVariantDetailsController = pdFactory.createCaseVariantDetailsController(this);
             perspectiveDetailsController = pdFactory.createPerspectiveDetailsController(this);
             viewSettingsController = pdFactory.createViewSettingsController(this);
             graphSettingsController = pdFactory.createGraphSettingsController(this);
@@ -386,9 +389,11 @@ public class PDController extends BaseController implements Composer<Component> 
             mainWindow.addEventListener("onOpen", windowListener);
             mainWindow.addEventListener("onZIndex", event -> {
                 putWindowAtTop(caseDetailsController.getWindow());
+                putWindowAtTop(caseVariantDetailsController.getWindow());
                 putWindowAtTop(perspectiveDetailsController.getWindow());
             });
             mainWindow.addEventListener("onCaseDetails", event -> caseDetailsController.onEvent(event));
+            mainWindow.addEventListener("onCaseVariantDetails", event -> caseVariantDetailsController.onEvent(event));
             mainWindow.addEventListener("onPerspectiveDetails", event -> perspectiveDetailsController.onEvent(event));
         } catch (Exception ex) {
             Messagebox.show(getLabel("initEventHandlerError_message"));
@@ -430,7 +435,7 @@ public class PDController extends BaseController implements Composer<Component> 
         try {
             Map<String, PortalPlugin> portalPluginMap = portalContext.getPortalPluginMap();
             Object selectedItem = logSummary;
-            accessControlPlugin = portalPluginMap.get("ACCESS_CONTROL_PLUGIN");
+            accessControlPlugin = portalPluginMap.get(PluginCatalog.PLUGIN_ACCESS_CONTROL);
             Map arg = new HashMap<>();
             arg.put("withFolderTree", false);
             arg.put("selectedItem", selectedItem);
@@ -499,7 +504,7 @@ public class PDController extends BaseController implements Composer<Component> 
             if (!reset)
                 graphVisController.centerToWindow();
             toolbarController.setDisabledFilterClear(this.getProcessAnalyst().isCurrentFilterCriteriaEmpty());
-            toolbarController.updateUndoRedoButtons(actionHistory.canUndo(), actionHistory.canRedo());
+            toolbarController.updateUndoRedoButtons(actionManager.canUndo(), actionManager.canRedo());
         } catch (Exception ex) {
             Messagebox.show(getLabel("failedUpdateUI_message"));
             LOGGER.error("Errors occured while updating UI: " + ex.getMessage());
@@ -614,6 +619,7 @@ public class PDController extends BaseController implements Composer<Component> 
             toolbarController.setDisabledSearch(true);
             toolbarController.toogleAnimateBtn(true);
             caseDetailsController.setDisabled(true);
+            caseVariantDetailsController.setDisabled(true);
         } else if (newMode == InteractiveMode.MODEL_MODE) {
             viewSettingsController.setDisabled(false);
             graphSettingsController.setDisabled(false);
@@ -624,6 +630,7 @@ public class PDController extends BaseController implements Composer<Component> 
             toolbarController.setDisabledAnimation(false);
             toolbarController.toogleAnimateBtn(false);
             caseDetailsController.setDisabled(false);
+            caseVariantDetailsController.setDisabled(false);
         } else if (newMode == InteractiveMode.TRACE_MODE) {
             if (this.mode == InteractiveMode.ANIMATION_MODE)
                 return false; // invalid move
@@ -738,64 +745,9 @@ public class PDController extends BaseController implements Composer<Component> 
     private String escapeQuotedJavascript(String json) {
         return json.replace("\n", " ").replace("'", "\\u0027").trim();
     }
-
-    //////////////////////// ACTION MANAGEMENT /////////////////////////
-
-    /** For real action that perform changes */
-    public void executeAction(Action action) {
-        if (action.execute()) {
-            actionHistory.undoPush(action);
-            // Redo actions are those actions that have been undoed.
-            // When an action is redoed (re-executed), it assumes that the undo stack is the
-            // same as
-            // before it is pushed to undo
-            // Thus, whenever a NEW action is pushed to the undo stack, all current redoable
-            // actions must
-            // be clear to ensure consistent state.
-            actionHistory.clearRedo();
-            if (action instanceof FilterAction)
-                this.updateUI(false);
-        }
-    }
-
-    /**
-     * For actions that don't change anything but need to be bundled for undo/redo
-     * Some actions fall into this category, such as do filtering via opening a
-     * LogFilter window These actions can't be executed directly via executeAction()
-     * method, but they can be stored to support undo/redo
-     */
-    public void storeAction(Action action) {
-        actionHistory.undoPush(action);
-        if (action instanceof FilterAction)
-            this.updateUI(false);
-    }
-
-    public void undoAction() {
-        Action action = actionHistory.undoPop();
-        if (action != null) {
-            try {
-                action.undo();
-            } catch (Exception e) {
-                // LOGGER.error("Error when undoing filter action. Error message: " +
-                // e.getMessage());
-                Messagebox.show(getLabel("undoError_message"));
-            }
-            actionHistory.redoPush(action);
-            if (action instanceof FilterAction)
-                this.updateUI(false);
-        }
-    }
-
-    // Re-execute
-    public void redoAction() {
-        Action action = actionHistory.redoPop();
-        if (action != null) {
-            if (action.execute()) {
-                actionHistory.undoPush(action);
-                if (action instanceof FilterAction)
-                    this.updateUI(false);
-            }
-        }
+    
+    public ActionManager getActionManager() {
+        return this.actionManager;
     }
 
     @Override

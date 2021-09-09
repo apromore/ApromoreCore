@@ -30,6 +30,7 @@ import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.BitSet;
@@ -130,8 +131,16 @@ public class LogStatsAnalyzer {
     }
 
     public static Map<Integer, List<ATrace>> getCaseVariantGroupMap(List<ATrace> traces) {
+        Map<Integer, List<ATrace>> groupByExistingId = traces.parallelStream()
+                .collect(Collectors.groupingByConcurrent(ATrace::getCaseVariantId));
+
         Map<String, List<ATrace>> groups = traces.parallelStream()
-                .collect(Collectors.groupingByConcurrent(x -> x.getCaseVariantIndicator()));
+                .collect(Collectors.groupingByConcurrent(ATrace::getCaseVariantIndicator));
+
+        //Use existing case variant ids if they have been generated.
+        if (traces.stream().noneMatch(t -> t.getCaseVariantId() == 0) && !CollectionUtils.isEmpty(traces)) {
+            return groupByExistingId;
+        }
 
         List<Map.Entry<String, List<ATrace>>> sorted = groups.entrySet().stream()
                 .sorted( (f1, f2) -> Long.compare(f2.getValue().size(), f1.getValue().size()) )

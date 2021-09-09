@@ -42,19 +42,24 @@
         <label></label>
         <label></label>
         <div width="100%" sclass="ap-pd-metric-container" align="center">
-          <label style="padding: 5px 5px 0 0;">${arg.pdLabels.graphSettingAbstractBy_text}</label>
-          <combobox id="metricSelector"
-                    readonly="true"
-                    width="110px"
-                    sclass="ap-pd-metric-selector"
-                    value="${arg.pdLabels.metricCaseFreq_text}">
-            <comboitem value="metricCaseFreq"
-                       iconSclass="ap-icon ap-icon-tally"
-                       label="${arg.pdLabels.metricCaseFreq_text}"/>
-            <comboitem value="metricAvgDuration"
-                       iconSclass="ap-icon ap-icon-duration-avg"
-                       label="${arg.pdLabels.metricAvgDuration_text}"/>
-          </combobox>
+          <hlayout spacing="0">
+            <div hflex="93" align="right">
+              <label width="92px" style="padding: 5px 5px 0 0;">${arg.pdLabels.graphSettingAbstractBy_text}</label>
+            </div>
+            <div hflex="127" align="left">
+              <combobox width="100%" style="max-width: 220px" id="metricSelector"
+                        readonly="true"
+                        sclass="ap-pd-metric-selector"
+                        value="${arg.pdLabels.metricCaseFreq_text}">
+                <comboitem value="metricCaseFreq"
+                           iconSclass="ap-icon ap-icon-tally"
+                           label="${arg.pdLabels.metricCaseFreq_text}"/>
+                <comboitem value="metricAvgDuration"
+                           iconSclass="ap-icon ap-icon-duration-avg"
+                           label="${arg.pdLabels.metricAvgDuration_text}"/>
+              </combobox>
+            </div>
+          </hlayout>
         </div>
         <span></span>
       </row>

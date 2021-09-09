@@ -14,12 +14,12 @@ def outputFile = destJs + 'apromore-editor.js'
 def scripts = [
 'scripts/site.properties.js',
 'scripts/clazz.js',
-'scripts/config.js',
-'scripts/editor.js',
-'scripts/editorapp.js',
+'scripts/utils.js',
 'scripts/logger.js',
 'scripts/server.js',
-'scripts/utils.js',
+'scripts/config.js',
+'scripts/editorapp.js',
+'scripts/editor.js',
 'scripts/plugins/apromoreSave.js',
 'scripts/plugins/export.js',
 'scripts/plugins/pdf.js',
@@ -39,7 +39,7 @@ def compressor = new JavaScriptCompressor( new StringReader(scriptText.toString(
 def compressedText = new StringWriter()
 
 //// Params: Writer, --line-break, --nomunge, --verbose, --preserve-semi, --disable-optimizations
-compressor.compress(compressedText, -1, false, false, false, false)
+compressor.compress(compressedText, 1, false, false, false, false)
 //
 new File(outputFile).write( compressedText.toString() )
 

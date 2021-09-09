@@ -37,6 +37,7 @@ if (!Apromore) {
 Apromore.Editor = {
     construct: function(options) {
         this.actualEditor = undefined;
+        this.preventFitDelay = options.preventFitDelay;
 
         if (!(options && options.width && options.height)) {
             Apromore.Log.fatal("The editor is missing mandatory parameters options.width and options.height.");
@@ -141,10 +142,31 @@ Apromore.Editor = {
     },
 
     /**
+     * Any clean up needs to be done on the raw XML
+     *
+     * @todo: There might be a structured way to do this (e.g. XML parser),
+     * but this should be the fastest fix for now
+     */
+    sanitizeXML: function (xml) {
+        var REMOVE_LIST = [
+            // Empty label element breaks label editing in bpmn.io
+            /<bpmndi:BPMNLabel\s*\/>/ig,
+            /<bpmndi:BPMNLabel\s*>\s*<\/bpmndi:BPMNLabel\s*>/ig
+        ];
+
+        REMOVE_LIST.forEach(function(regex) {
+            xml = xml.replaceAll(regex, '');
+        })
+        return xml;
+    },
+
+    /**
      * Import XML into the editor.
      * This method takes time depending on the complexity of the model
      * @param {String} xml: the BPMN XML
      * @param {Function} callback: callback function to call after the import finishes
+     *
+     * @todo: Avoid seperate conditional for loganimation and bpmneditor
      */
     importXML: function(xml, callback) {
       // this.editor.importXML(xml, function(err) {
@@ -153,6 +175,13 @@ Apromore.Editor = {
       //   }
       //   this.zoomFitToModel();
       // }.bind(this));
+
+      try {
+        xml = this.sanitizeXML(xml);
+      } catch(e) {
+        console.log('Failed to sanitize');
+        // pass
+      }
 
       //EXPERIMENTING WITH THE BELOW TO FIX ARROWS NOT SNAP TO EDGES WHEN OPENING MODELS
       //Some BPMN files are not compatible with bpmn.io
@@ -178,11 +207,17 @@ Apromore.Editor = {
           // pass
         }
         eventBus.fire('elements.changed', { elements: connections });
-        callback();
-        var me = this; // delay the fit until the properties panel fully collapsed
-        setTimeout(function () {
-            me.zoomFitToModel();
-        }, 500)
+        // @todo: Avoid this conditional
+        if (this.preventFitDelay) { // this is for loganimation
+            this.zoomFitToModel();
+            callback();
+        } else { // this is for BPMN editor
+            callback();
+            var me = this; // delay the fit until the properties panel fully collapsed
+            setTimeout(function () {
+                me.zoomFitToModel();
+            }, 500);
+        }
       }.bind(this));
     },
 
@@ -206,8 +241,7 @@ Apromore.Editor = {
         if (this.actualEditor) {
             var canvas = this.actualEditor.get('canvas');
             canvas.viewbox(false); // trigger recalculate the viewbox
-            // zoom to fit full viewport
-            canvas.zoom('fit-viewport', 'auto');
+            canvas.zoom('fit-viewport', 'auto'); // zoom to fit full viewport
         }
     },
 

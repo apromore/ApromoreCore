@@ -33,7 +33,6 @@ public class LogAnimationConfig {
     @ConditionalOnMissingBean(name = "logAnimationPlugin")
     public LogAnimationPlugin logAnimationPlugin() {
 	LogAnimationPlugin lgPlugin = new LogAnimationPlugin();
-	lgPlugin.setGroupLabel("Analyze");
 	lgPlugin.setLabel("Animate logs CE");
 	return lgPlugin;
     }

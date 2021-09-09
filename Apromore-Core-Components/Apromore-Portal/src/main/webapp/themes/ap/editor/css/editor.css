@@ -89,6 +89,14 @@
     bottom: 0;
 }
 
+.djs-direct-editing-content {
+    color: black;
+}
+
+.djs-context-pad .entry {
+    color: #101010;
+}
+
 /* Viewer only overrides */
 
 .access-type-viewer #ap-id-editor-save-btn,

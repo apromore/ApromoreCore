@@ -22,8 +22,12 @@
 
 package org.apromore.plugin.portal.processdiscoverer.plugins;
 
-import java.util.*;
-
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.UUID;
 import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
@@ -45,7 +49,6 @@ import org.zkoss.zul.Messagebox;
 public class PDAbstractPlugin extends DefaultPortalPlugin {
 
     private String label = "Discover process map / BPMN model";
-    private String groupLabel = "Discover";
     protected String sessionId = "";
     
     @Override
@@ -58,21 +61,17 @@ public class PDAbstractPlugin extends DefaultPortalPlugin {
     }
 
     @Override
-    public String getGroupLabel(Locale locale) {
-        return groupLabel;
-    }
-
-    public void setGroupLabel(String groupLabel) {
-        this.groupLabel = groupLabel;
-    }
-    
-    @Override
     public void execute(PortalContext context) {
     	
     }
+    
+    @Override
+    public String getIconPath() {
+        return "discover_model.svg";
+    }
 
     public ResourceBundle getLabels() {
-        return ResourceBundle.getBundle("metainfo.zk-label",
+        return ResourceBundle.getBundle("pd",
             (Locale) Sessions.getCurrent().getAttribute(Attributes.PREFERRED_LOCALE),
             PDController.class.getClassLoader());
     }

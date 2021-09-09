@@ -6,5 +6,5 @@ description = 'The APMLogModule Project'
 dependencies {    
    
 	api project(':Apromore-Extras:OpenXES')
-    
+	implementation project(':Apromore-Calendar')
 }

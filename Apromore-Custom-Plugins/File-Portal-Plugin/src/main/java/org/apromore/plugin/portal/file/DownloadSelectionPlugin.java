@@ -34,7 +34,6 @@ import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.common.UserSessionManager;
-import org.apromore.portal.common.notification.Notification;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.exception.ExceptionFormats;
 import org.apromore.portal.model.ExportFormatResultType;
@@ -45,6 +44,7 @@ import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.service.EventLogService;
 import org.apromore.service.csvexporter.CSVExporterLogic;
+import org.apromore.zk.notification.Notification;
 import org.deckfour.xes.model.XLog;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
@@ -66,7 +66,6 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin {
   private static Logger LOGGER = PortalLoggerFactory.getLogger(DownloadSelectionPlugin.class);
 
   private String label = "Download";
-  private String groupLabel = "File";
   @Inject
   EventLogService eventLogService;
   @Inject
@@ -86,25 +85,9 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin {
   // PortalPlugin overrides
 
   @Override
-  public String getItemCode(Locale locale) {
-    return label;
-  }
-
-  @Override
-  public String getGroup(Locale locale) {
-    return "File";
-  }
-
-  @Override
   public String getLabel(Locale locale) {
     return Labels.getLabel("plugin_file_download_text", label);
   }
-
-  @Override
-  public String getGroupLabel(Locale locale) {
-    return Labels.getLabel("plugin_file_title_text", groupLabel);
-  }
-
 
   @Override
   public String getIconPath() {

@@ -1,0 +1,28 @@
+
+group = 'org.apromore'
+version = '1.0'
+description = 'Log-Importer-Logic'
+
+dependencies {
+        
+	implementation project(':Apromore-Zk')
+	implementation project(':Apromore-Extras:OpenXES')
+	implementation project(':Apromore-Core-Components:Apromore-Manager')
+	
+    implementation "com.opencsv:opencsv:${opencsvVersion}"
+	
+    implementation "org.apache.hadoop:hadoop-common:${hadoopCommonsVersion}"
+	
+    implementation "org.apache.parquet:parquet-common:${parquetVersion}"
+    implementation "org.apache.parquet:parquet-hadoop:${parquetVersion}"
+    
+    implementation 'org.apache.hadoop:hadoop-mapreduce-client-core:3.2.1'
+    implementation "org.apache.poi:poi:${poiVersion}"
+    implementation "org.apache.poi:poi-ooxml:${poiVersion}"
+    implementation 'com.monitorjbl:xlsx-streamer:2.1.0'    
+	implementation "com.github.sisyphsu:retree:1.0.4"
+	
+    
+}
+
+

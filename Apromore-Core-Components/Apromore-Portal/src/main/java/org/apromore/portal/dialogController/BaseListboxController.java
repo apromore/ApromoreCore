@@ -36,10 +36,9 @@ import org.apromore.dao.model.User;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.PortalPlugin;
-import org.apromore.portal.common.Constants;
+import org.apromore.portal.menu.PluginCatalog;
 import org.apromore.portal.common.ItemHelpers;
 import org.apromore.portal.common.UserSessionManager;
-import org.apromore.portal.common.notification.Notification;
 import org.apromore.portal.context.PluginPortalContext;
 import org.apromore.portal.context.PortalPluginResolver;
 import org.apromore.portal.dialogController.workspaceOptions.AddFolderController;
@@ -53,6 +52,7 @@ import org.apromore.portal.model.SummariesType;
 import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.UserType;
 import org.apromore.portal.model.VersionSummaryType;
+import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Executions;
@@ -231,7 +231,7 @@ public abstract class BaseListboxController extends BaseController {
       }
     });
 
-    if (portalPluginMap.containsKey(Constants.ETL_PLUGIN)) {
+    if (portalPluginMap.containsKey(PluginCatalog.PLUGIN_ETL)) {
       btnEtlSep.setVisible(mainController.getConfig().isEnableEtl());
       btnCreateDataPipeline.setVisible(mainController.getConfig().isEnableEtl());
       btnManageDataPipelines.setVisible(mainController.getConfig().isEnableEtl());
@@ -446,7 +446,7 @@ public abstract class BaseListboxController extends BaseController {
     PortalPlugin downloadPlugin;
 
     try {
-      downloadPlugin = portalPluginMap.get("Download");
+      downloadPlugin = portalPluginMap.get(PluginCatalog.PLUGIN_DOWNLOAD);
       downloadPlugin.execute(portalContext);
     } catch (Exception e) {
       Messagebox.show(e.getMessage(), APROMORE, Messagebox.OK, Messagebox.ERROR);
@@ -457,7 +457,7 @@ public abstract class BaseListboxController extends BaseController {
     PortalPlugin etlPlugin;
 
     try {
-      etlPlugin = portalPluginMap.get(Constants.ETL_PLUGIN);
+      etlPlugin = portalPluginMap.get(PluginCatalog.PLUGIN_ETL);
       etlPlugin.execute(portalContext);
     } catch (Exception e) {
       Messagebox.show(e.getMessage(), APROMORE, Messagebox.OK, Messagebox.ERROR);
@@ -468,7 +468,7 @@ public abstract class BaseListboxController extends BaseController {
     PortalPlugin pipelineManager;
 
     try {
-      pipelineManager = portalPluginMap.get(Constants.JOB_SCHEDULER_PLUGIN);
+      pipelineManager = portalPluginMap.get(PluginCatalog.PLUGIN_JOB_SCHEDULER);
       pipelineManager.execute(portalContext);
     } catch (Exception e) {
       Messagebox.show(e.getMessage(), APROMORE, Messagebox.OK, Messagebox.ERROR);
@@ -519,7 +519,7 @@ public abstract class BaseListboxController extends BaseController {
 
     getMainController().eraseMessage();
     try {
-      editSelectionMetadataPlugin = portalPluginMap.get("Rename");
+      editSelectionMetadataPlugin = portalPluginMap.get(PluginCatalog.PLUGIN_RENAME);
       editSelectionMetadataPlugin.execute(portalContext);
     } catch (Exception e) {
       Messagebox.show(e.getMessage(), APROMORE, Messagebox.OK, Messagebox.ERROR);
@@ -775,7 +775,7 @@ public abstract class BaseListboxController extends BaseController {
 
     getMainController().eraseMessage();
     try {
-      userMgmtPlugin = portalPluginMap.get(Constants.USER_ADMIN_PLUGIN);
+      userMgmtPlugin = portalPluginMap.get(PluginCatalog.PLUGIN_USER_ADMIN);
       userMgmtPlugin.execute(portalContext);
     } catch (Exception e) {
       LOGGER.error(Labels.getLabel("portal_failedLaunchUserAdmin_message"), e);
@@ -795,7 +795,7 @@ public abstract class BaseListboxController extends BaseController {
       } else {
         selectedItem = getSelection().iterator().next();
       }
-      accessControlPlugin = portalPluginMap.get(Constants.ACCESS_CONTROL_PLUGIN);
+      accessControlPlugin = portalPluginMap.get(PluginCatalog.PLUGIN_ACCESS_CONTROL);
       Map arg = new HashMap<>();
       arg.put("withFolderTree", true);
       arg.put("selectedItem", selectedItem);
@@ -827,7 +827,7 @@ public abstract class BaseListboxController extends BaseController {
         return;
       }
       Object selectedItem = getSelection().iterator().next();
-      accessControlPlugin = portalPluginMap.get("ACCESS_CONTROL_PLUGIN");
+      accessControlPlugin = portalPluginMap.get(PluginCatalog.PLUGIN_ACCESS_CONTROL);
       Map arg = new HashMap<>();
       arg.put("withFolderTree", false);
       arg.put("selectedItem", selectedItem);
@@ -846,7 +846,7 @@ public abstract class BaseListboxController extends BaseController {
     PortalPlugin calendarPlugin;
     getMainController().eraseMessage();
 
-    EventQueue<Event> queue = EventQueues.lookup("org/apromore/service/CALENDAR", true);
+   final EventQueue<Event> queue = EventQueues.lookup("org/apromore/service/CALENDAR", true);
 
     Long calendarId = getMainController().getEventLogService().getCalendarIdFromLog(logId);
 
@@ -855,8 +855,9 @@ public abstract class BaseListboxController extends BaseController {
       public void onEvent(Event event) {
         Long data = (Long) event.getData();
         getMainController().getEventLogService().updateCalendarForLog(logId, data);
-
+        queue.unsubscribe(this);     
       }
+      
     });
 
     try {
@@ -864,7 +865,7 @@ public abstract class BaseListboxController extends BaseController {
       attrMap.put("portalContext", portalContext);
       attrMap.put("artifactName", artifactName);
       attrMap.put("calendarId", calendarId);
-      calendarPlugin = portalPluginMap.get("Manage calendars");
+      calendarPlugin = portalPluginMap.get(PluginCatalog.PLUGIN_CALENDAR);
       calendarPlugin.setSimpleParams(attrMap);
       calendarPlugin.execute(portalContext);
 

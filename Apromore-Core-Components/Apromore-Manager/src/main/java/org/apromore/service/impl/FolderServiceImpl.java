@@ -39,7 +39,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Service
+@Service("folderService")
 @Getter
 @Setter
 public class FolderServiceImpl implements FolderService {

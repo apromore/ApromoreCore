@@ -45,18 +45,12 @@ public class SignOutPlugin extends DefaultPortalPlugin {
   private static Logger LOGGER = LoggerFactory.getLogger(SignOutPlugin.class);
 
   private String label = "Sign out";
-  private String groupLabel = "Account";
 
   // PortalPlugin overrides
 
   @Override
   public String getLabel(Locale locale) {
     return label;
-  }
-
-  @Override
-  public String getGroupLabel(Locale locale) {
-    return groupLabel;
   }
 
   @Override

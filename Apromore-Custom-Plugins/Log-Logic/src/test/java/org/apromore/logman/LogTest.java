@@ -699,6 +699,28 @@ public class LogTest extends DataSetup {
     }
     
     @Test
+    public void test_Resource_Attribute_EventMerging_Exclude_Resource() {
+        ALog log = new ALog(readLogWithOneTrace_StartCompleteEvents_EventMerging_Exclude_R1());
+        
+        // Activity perspective
+        IndexableAttribute actAtt = log.getAttributeStore().getStandardEventConceptName();
+        AttributeLog attLog = new AttributeLog(log, actAtt, getAllDayAllTimeCalendar());
+        
+        Assert.assertEquals(3, actAtt.getValueIndexes().length); // a, b, c
+        Assert.assertEquals(5, attLog.getOriginalAttributeValues().size()); // a, b, c, start, end
+        Assert.assertEquals(5, attLog.getAttributeValues().size()); // a, b, c, start, end
+        
+        // Change the perspective attribute to resource
+        IndexableAttribute resAtt = log.getAttributeStore().getStandardEventResource();
+        attLog.setAttribute(resAtt);
+        
+        Assert.assertEquals(4, resAtt.getValueSize()); // R1, R2, R3, R4
+        Assert.assertEquals(5, attLog.getOriginalAttributeValues().size()); //R2, R3, R4, start, end - R1 was excluded because of event merging
+        Assert.assertEquals(5, attLog.getAttributeValues().size()); // R2, R3, R4, start, end
+    }
+    
+    
+    @Test
     public void test_LogSummary_AfterChanging_Attribute() {
         ALog log = new ALog(readLogWithCompleteEventsOnly());
         AttributeLog attLog = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName(), getAllDayAllTimeCalendar());

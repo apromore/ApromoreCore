@@ -34,9 +34,9 @@ import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.UserSessionManager;
-import org.apromore.portal.common.notification.Notification;
 import org.apromore.portal.context.EditorPluginResolver;
 import org.apromore.portal.dialogController.dto.ApromoreSession;
+import org.apromore.portal.menu.PluginCatalog;
 import org.apromore.portal.model.EditSessionType;
 import org.apromore.portal.model.ExportFormatResultType;
 import org.apromore.portal.model.PluginMessages;
@@ -45,6 +45,7 @@ import org.apromore.portal.model.UserType;
 import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.portal.util.StreamUtil;
 import org.apromore.util.AccessType;
+import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
@@ -246,7 +247,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
           try {
             Map<String, PortalPlugin> portalPluginMap = portalContext.getPortalPluginMap();
             Object selectedItem = process;
-            accessControlPlugin = portalPluginMap.get("ACCESS_CONTROL_PLUGIN");
+            accessControlPlugin = portalPluginMap.get(PluginCatalog.PLUGIN_ACCESS_CONTROL);
             Map arg = new HashMap<>();
             arg.put("withFolderTree", false);
             arg.put("selectedItem", selectedItem);

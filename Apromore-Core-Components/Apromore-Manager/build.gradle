@@ -32,6 +32,7 @@ dependencies {
 	api 'javax.mail:javax.mail-api'
 	api 'org.springframework.boot:spring-boot-starter-mail'	  	
 	
+	testImplementation 'net.sf.ehcache:ehcache'
 	testImplementation 'org.easymock:easymock:4.2'
 	testImplementation 'org.powermock:powermock-core:2.0.9'
 	testImplementation 'org.powermock:powermock-api-easymock:2.0.9'

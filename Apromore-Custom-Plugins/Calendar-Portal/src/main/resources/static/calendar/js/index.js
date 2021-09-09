@@ -84,7 +84,7 @@ zk.afterMount(function() {
 
   Ap.calendar.deleteRange = function (dow, index) {
     let ranges = dayOfWeek[dow].ranges;
-    ranges = ranges.splice(index, 1);
+    ranges.splice(index, 1);
     ranges.forEach((range, index) => { range.index = index; });
     dayOfWeek[dow].ranges = ranges;
     updateRow(dow);
@@ -372,7 +372,6 @@ zk.afterMount(function() {
     const icon = $(`.ap-calendar-row[data-dow='${dow}'] .ap-icon`);
     let ranges = dayOfWeek[dow].ranges;
     let workday = dayOfWeek[dow].workday;
-    console.log(">>>", dayOfWeek[dow]);
     if (!workday) {
       ranges = dayOfWeek[dow].ranges = [];
       wrapper.removeClass('workday').addClass('offday');

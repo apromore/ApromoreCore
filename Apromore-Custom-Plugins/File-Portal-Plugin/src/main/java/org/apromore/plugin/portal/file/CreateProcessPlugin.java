@@ -37,20 +37,8 @@ public class CreateProcessPlugin extends DefaultPortalPlugin {
   private static Logger LOGGER = PortalLoggerFactory.getLogger(CreateProcessPlugin.class);
 
   private String label = "Create model";
-  private String groupLabel = "Discover";
-
-  @Override
-  public String getItemCode(Locale locale) {
-    return label;
-  }
-
-  @Override
-  public String getGroup(Locale locale) {
-    return "Discover";
-  }
 
   // PortalPlugin overrides
-
 
   @Override
   public String getLabel(Locale locale) {
@@ -58,18 +46,9 @@ public class CreateProcessPlugin extends DefaultPortalPlugin {
   }
 
   @Override
-  public String getGroupLabel(Locale locale) {
-    return Labels.getLabel("plugin_discover_title_text", groupLabel);
-  }
-
-
-
-  @Override
   public String getIconPath() {
     return "bpmn-add.svg";
   }
-
-
 
   @Override
   public void execute(PortalContext portalContext) {

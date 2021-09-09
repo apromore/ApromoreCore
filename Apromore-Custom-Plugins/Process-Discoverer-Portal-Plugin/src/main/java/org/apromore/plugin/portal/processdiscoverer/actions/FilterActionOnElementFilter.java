@@ -28,6 +28,7 @@ import org.zkoss.zhtml.Messagebox;
 /**
  * This abstract action is used for filtering on one single element (node or arc, one at a time).
  * It is implemented by different types of actions: retain or remove trace or events
+ * The element to be filtered is set via an attribute key, e.g. "concept:name" and attribute value.
  */
 public abstract class FilterActionOnElementFilter extends FilterAction {
     protected String elementValue;

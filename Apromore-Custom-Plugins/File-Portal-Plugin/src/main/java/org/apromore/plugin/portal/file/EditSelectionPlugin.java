@@ -27,11 +27,11 @@ import java.util.Map;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
-import org.apromore.portal.common.notification.Notification;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.VersionSummaryType;
+import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import org.zkoss.util.resource.Labels;
@@ -42,29 +42,12 @@ public class EditSelectionPlugin extends DefaultPortalPlugin {
   private static Logger LOGGER = PortalLoggerFactory.getLogger(EditSelectionPlugin.class);
 
   private String label = "Edit model";
-  private String groupLabel = "Discover";
-
-  @Override
-  public String getGroup(Locale locale) {
-    return "Discover";
-  }
-
-  @Override
-  public String getItemCode(Locale locale) {
-    return "Edit model";
-  }
 
   // PortalPlugin overrides
-
 
   @Override
   public String getLabel(Locale locale) {
     return Labels.getLabel("plugin_discover_editModel_text", label);
-  }
-
-  @Override
-  public String getGroupLabel(Locale locale) {
-    return Labels.getLabel("plugin_discover_title_text", groupLabel);
   }
 
   @Override

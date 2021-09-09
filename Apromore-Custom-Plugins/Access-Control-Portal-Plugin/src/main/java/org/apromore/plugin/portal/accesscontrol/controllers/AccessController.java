@@ -32,6 +32,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.Group;
 import org.apromore.dao.model.Group.Type;
 import org.apromore.dao.model.Usermetadata;
@@ -42,7 +45,6 @@ import org.apromore.plugin.portal.accesscontrol.model.Artifact;
 import org.apromore.plugin.portal.accesscontrol.model.Assignee;
 import org.apromore.plugin.portal.accesscontrol.model.Assignment;
 import org.apromore.portal.common.UserSessionManager;
-import org.apromore.portal.common.notification.Notification;
 import org.apromore.portal.model.FolderType;
 import org.apromore.portal.model.LogSummaryType;
 import org.apromore.portal.model.ProcessSummaryType;
@@ -50,10 +52,12 @@ import org.apromore.portal.model.UserMetadataSummaryType;
 import org.apromore.portal.model.UserType;
 import org.apromore.portal.types.EventQueueTypes;
 import org.apromore.service.AuthorizationService;
+import org.apromore.service.FolderService;
 import org.apromore.service.SecurityService;
 import org.apromore.service.UserMetadataService;
 import org.apromore.util.AccessType;
 import org.apromore.util.UserMetadataTypeEnum;
+import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
 import org.zkoss.json.JSONObject;
 import org.zkoss.web.Attributes;
@@ -97,6 +101,9 @@ public class AccessController extends SelectorComposer<Div> {
 
   @WireVariable("securityService")
   private SecurityService securityService;
+
+  @WireVariable("folderService")
+  private FolderService folderService;
 
   @WireVariable("authorizationService")
   private AuthorizationService authorizationService;
@@ -465,6 +472,20 @@ public class AccessController extends SelectorComposer<Div> {
   }
 
   /**
+   * Format a folder, event log, or process model as an absolute path.
+   *
+   * @param folder  the parent folder containing the artifact, <code>null</code> for a top-level artifact
+   * @param name  the name of the artifact within the <var>folder</var>
+   * @return full path of the artifact, including the folder path, e.g. <code>Folder1/Process1.bpmn</code>
+   */
+  private String formatPath(FolderType folder, String name) {
+    return (folder == null) ? name :
+      Stream.concat(folderService.getParentFolders(folder.getId()).stream().map(Folder::getName),
+                    Stream.of(name))
+            .collect(Collectors.joining("/"));
+  }
+
+  /**
    * Apply the changes in the access control by comparing assignment listbox with previous access
    * control list
    */
@@ -489,8 +510,20 @@ public class AccessController extends SelectorComposer<Div> {
       }
       if (selectedItem instanceof FolderType) {
         authorizationService.saveFolderAccessType(selectedItemId, rowGuid, accessType);
+
+        if (LOGGER.isInfoEnabled()) {
+          FolderType folder = (FolderType) selectedItem;
+          LOGGER.info("User \"{}\" granted {} access to group \"{}\" (id {}) for folder {} (id {})",
+            userName, accessType, group.getName(), group.getId(), formatPath(folder, folder.getFolderName()), folder.getId());
+        }
       } else if (selectedItem instanceof ProcessSummaryType) {
         authorizationService.saveProcessAccessType(selectedItemId, rowGuid, accessType);
+
+        if (LOGGER.isInfoEnabled()) {
+          ProcessSummaryType process = (ProcessSummaryType) selectedItem;
+          LOGGER.info("User \"{}\" granted {} access to group \"{}\" (id {}) for process model {} (id {})",
+            userName, accessType, group.getName(), group.getId(), formatPath(process.getFolder(), process.getName()), process.getId());
+        }
       } else if (selectedItem instanceof LogSummaryType) {
         authorizationService.saveLogAccessType(selectedItemId, rowGuid, accessType,
             shareUserMetadata);
@@ -513,8 +546,14 @@ public class AccessController extends SelectorComposer<Div> {
         }
         // } else if (selectedItem instanceof UserMetadataSummaryType) {
         // authorizationService.saveUserMetadataAccessType(selectedItemId, rowGuid, accessType);
+
+        if (LOGGER.isInfoEnabled()) {
+          LogSummaryType log = (LogSummaryType) selectedItem;
+          LOGGER.info("User \"{}\" granted {} access to group \"{}\" (id {}) for event log {} (id {})",
+            userName, accessType, group.getName(), group.getId(), formatPath(log.getFolder(), log.getName()), log.getId());
+        }
       } else {
-        LOGGER.error("Unknown item type.");
+        LOGGER.error("Unknown item type {}", selectedItem);
       }
     }
 

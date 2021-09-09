@@ -22,8 +22,8 @@
 <window width="300px" position="center" title="Edit time range" apply="org.apromore.plugin.portal.calendar.controllers.EditRange">
     <grid sclass="ap-grid ap-form">
         <columns>
-                <column hflex="1"/>
-                <column hflex="2"/>
+            <column hflex="1"/>
+            <column hflex="2"/>
         </columns>
         <rows>
             <row>

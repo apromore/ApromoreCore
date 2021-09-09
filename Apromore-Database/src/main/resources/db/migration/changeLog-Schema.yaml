@@ -1071,3 +1071,92 @@ databaseChangeLog:
                  name: group_from_sso_idp
                  type: boolean
                  defaultValue: false
+ - changeSet:
+     id: 20211108094500
+     author: janeh
+     changes:
+       - modifyDataType:
+           columnName: bucket_name
+           newDataType: VARCHAR(63)
+           tableName: job
+       - modifyDataType:
+           columnName: bucket_name
+           newDataType: VARCHAR(63)
+           tableName: dag_connection
+
+ - changeSet:
+    id: 20211708040900
+    author: nolantellis
+    changes:
+     - dropForeignKeyConstraint:
+        baseTableName:  log
+        constraintName:  fk_log_calendar
+
+     - addForeignKeyConstraint:
+        baseColumnNames: calendar_id
+        baseTableName: log
+        constraintName: fk_log_calendar
+        onDelete:  SET NULL
+        onUpdate:  CASCADE
+        referencedColumnNames: id
+        referencedTableName: custom_calendar
+
+ - changeSet:
+     id: 20212308030600
+     author: mtomar
+     changes:
+       - createTable:
+           tableName: db_connector
+           columns:
+             - column:
+                 name: id
+                 type: BIGINT
+                 autoIncrement: true
+                 constraints:
+                   nullable: false
+                   primaryKey: true
+                   primaryKeyName: pk_db_conn_id
+             - column:
+                 constraints:
+                   nullable: false
+                   unique: true
+                 name: connection_key
+                 type: VARCHAR(100)
+                 remarks: 'Connection key of db'
+             - column:
+                 name: created
+                 type: BOOLEAN
+             - column:
+                 name: username
+                 type: VARCHAR(64)
+             - column:
+                 name: password
+                 type: VARCHAR(64)
+             - column:
+                 name: url
+                 type: VARCHAR(200)
+             - column:
+                 name: database_schema
+                 type: VARCHAR(64)
+             - column:
+                 name: port
+                 type: VARCHAR(5)
+
+ - changeSet:
+     id: 20212408060250
+     author: mtomar
+     changes:
+       - addColumn:
+           tableName: job
+           columns:
+             - column:
+                 name: error
+                 type: BOOLEAN
+                 defaultValue: false
+             - column:
+                 name: schedule_version_number
+                 type: INT
+                 defaultValue: 0
+             - column:
+                 name: paused
+                 type: BOOLEAN
