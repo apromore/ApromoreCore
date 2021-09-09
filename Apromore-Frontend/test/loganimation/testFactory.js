@@ -3,6 +3,7 @@ import {AnimationContext} from "../../src/loganimation/animationContextState";
 import FrameBuffer from "../../src/loganimation/frameBuffer";
 import {Apromore} from "../../src/bpmneditor/apromoreEditor";
 import BPMNModelWrapper from "../../src/processmap/bpmnModelWrapper";
+import CONFIG from "../../src/bpmneditor/scripts/config";
 
 /**
  * @returns {LogAnimation}
@@ -14,7 +15,7 @@ export function createSimpleLogAnimation() {
     let setupData = require('./fixtures/setupData.txt');
 
     //Turn off loading plugins as not in scope of testing
-    Apromore.CONFIG.PLUGINS_ENABLED = false;
+    CONFIG.PLUGINS_ENABLED = false;
     let processMapController = new BPMNModelWrapper();
     console.log('BPMN', bpmn.default);
     processMapController.loadProcessModel('editorcanvas', bpmn.default, function() {});

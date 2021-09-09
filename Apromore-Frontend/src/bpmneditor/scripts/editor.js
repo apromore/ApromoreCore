@@ -165,13 +165,6 @@ export default class Editor {
      * @todo: Avoid seperate conditional for loganimation and bpmneditor
      */
     async importXML(xml, callback) {
-//        this.editor.importXML(xml, function(err) {
-//            if (err) {
-//                return console.error('could not import BPMN 2.0 diagram', err);
-//            }
-//            this.zoomFitToModel();
-//        }.bind(this));
-
         try {
             xml = this.sanitizeXML(xml);
         } catch(e) {

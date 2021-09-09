@@ -44,6 +44,7 @@ export default class EditorApp {
         this.pluginsData = [];      // plugin dynamic properties provided by a plugin object when it is created
         this.layout_regions = undefined;
         this.layout = undefined;
+        this.xml = config.xml;
 
         this.id = config.id;
         if (!this.id) {
@@ -78,18 +79,18 @@ export default class EditorApp {
 
         // Wait until the editor is fully loaded to start XML import and then UI init
         // @todo: Avoid time sensitivity
-        var me = this;
-        window.setTimeout(function() {
-            if (config && config.xml) {
-                me.importXML(config.xml, me._initUI.bind(me));
-            }
-            else {
-                me._initUI();
-            }
-        }, 100);
+        // var me = this;
+        // window.setTimeout(function() {
+        //     if (config && config.xml) {
+        //         me.importXML(config.xml, me._initUI.bind(me));
+        //     }
+        //     else {
+        //         me._initUI();
+        //     }
+        // }, 100);
     }
 
-    _initUI() {
+    collapsePanels() {
         // Fixed the problem that the viewport can not
         // start with collapsed panels correctly
         if (CONFIG.PANEL_RIGHT_COLLAPSED === true) {
