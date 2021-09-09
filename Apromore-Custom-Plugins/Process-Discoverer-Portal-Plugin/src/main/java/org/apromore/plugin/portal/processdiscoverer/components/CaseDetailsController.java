@@ -180,10 +180,11 @@ public class CaseDetailsController extends DataListController {
         }
       });
       try {
-        org.zkoss.json.JSONObject param = (org.zkoss.json.JSONObject) event.getData();
+        // @todo Incorrect coordinate returned by ZK 9
+        // org.zkoss.json.JSONObject param = (org.zkoss.json.JSONObject) event.getData();
         caseDetailsWindow.setPosition("nocenter");
-        caseDetailsWindow.setLeft((String) param.get("left"));
-        caseDetailsWindow.setTop((String) param.get("top"));
+        caseDetailsWindow.setLeft("10px");
+        caseDetailsWindow.setTop("76px");
       } catch (Exception e) {
         // ignore the exception and proceed with default centered window
       }

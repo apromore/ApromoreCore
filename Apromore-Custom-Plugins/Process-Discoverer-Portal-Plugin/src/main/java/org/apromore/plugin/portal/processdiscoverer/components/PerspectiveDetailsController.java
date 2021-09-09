@@ -102,10 +102,13 @@ public class PerspectiveDetailsController extends DataListController {
             }); 
     
             try {
-                org.zkoss.json.JSONObject param = (org.zkoss.json.JSONObject) event.getData();
+                // @todo Incorrect coordinate returned by ZK 9
+                // org.zkoss.json.JSONObject param = (org.zkoss.json.JSONObject) event.getData();
+                // perspectiveDetailsWindow.setLeft((String)param.get("left"));
+                // perspectiveDetailsWindow.setTop((String)param.get("top"));
                 perspectiveDetailsWindow.setPosition("nocenter");
-                perspectiveDetailsWindow.setLeft((String)param.get("left"));
-                perspectiveDetailsWindow.setTop((String)param.get("top"));
+                perspectiveDetailsWindow.setLeft("10px");
+                perspectiveDetailsWindow.setTop("76px");
             } catch (Exception e) {
                 // ignore the exception and proceed with default centered window
             }

@@ -21,9 +21,9 @@
   -->
 
 
-<window id="caseDetailsWindow" width="700px" sizable="true" maximizable="true" closable="true" position="center"
+<window id="caseDetailsWindow" width="700px" mode="overlapped" sizable="true" maximizable="true" closable="true" position="center"
         contentStyle="overflow:auto">
-  <listbox id="caseDetailsList" vflex="1" rows="10" mold="paging" pageSize="100">
+  <listbox id="caseDetailsList" rows="10" mold="paging" pageSize="100">
     <listhead sizable="true">
       <listheader label="${arg.pdLabels.detailsCaseID_text}" sort="auto(caseIdDigit, caseId)" onCreate="self.sort(true);"/>
       <listheader label="${arg.pdLabels.detailsActivityInstances_text}" sort="auto(caseEvents)"/>
