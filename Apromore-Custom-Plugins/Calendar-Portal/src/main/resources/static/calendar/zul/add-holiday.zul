@@ -20,7 +20,7 @@
   #L%
   -->
 <window width="300px" position="center" apply="org.apromore.plugin.portal.calendar.controllers.AddHoliday"
-        title="Add custom holiday"
+        title="Add holiday"
         sclass="ap-add-holiday-win"
         xmlns:ca="client/attribute"
         xmlns:n="native">
@@ -41,8 +41,8 @@
             <row>
                 <label value="Type"/>
                 <radiogroup id="holidayType">
-                    <radio label="PUBLIC" selected="true" radiogroup="holidayType"/>
-                    <radio label="CUSTOM" radiogroup="holidayType"/>
+                    <radio label="CUSTOM" selected="true" radiogroup="holidayType"/>
+                    <radio label="PUBLIC" radiogroup="holidayType"/>
                 </radiogroup>
             </row>
         </rows>

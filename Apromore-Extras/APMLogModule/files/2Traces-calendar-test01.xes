@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- This file has been generated with the OpenXES library. It conforms -->
+<!-- to the XML serialization of the XES standard for log storage and -->
+<!-- management. -->
+<!-- XES standard version: 1.0 -->
+<!-- OpenXES library version: 1.0RC7 -->
+<!-- OpenXES is available from http://www.openxes.org/ -->
+<log xes.version="1.0" xes.features="nested-attributes" openxes.version="1.0RC7">
+	<string key="concept:name" value="Anonymous log imported from"/>
+	<trace>
+		<string key="concept:name" value="C1"/>
+		<event>
+			<string key="org:resource" value="R1"/>
+			<string key="lifecycle:transition" value="start"/>
+			<string key="concept:name" value="A"/>
+			<date key="time:timestamp" value="2021-08-01T00:00:00.000+11:00"/>
+		</event>
+		<event>
+			<string key="org:resource" value="R1"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="concept:name" value="A"/>
+			<date key="time:timestamp" value="2021-08-08T00:00:00.000+11:00"/>
+		</event>
+		<event>
+			<string key="org:resource" value="R2"/>
+			<string key="lifecycle:transition" value="start"/>
+			<string key="concept:name" value="B"/>
+			<date key="time:timestamp" value="2021-08-08T00:00:00.000+11:00"/>
+		</event>
+		<event>
+			<string key="org:resource" value="R2"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="concept:name" value="B"/>
+			<date key="time:timestamp" value="2021-08-15T00:00:00.000+11:00"/>
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="C2"/>
+		<event>
+			<string key="org:resource" value="R1"/>
+			<string key="lifecycle:transition" value="start"/>
+			<string key="concept:name" value="A"/>
+			<date key="time:timestamp" value="2021-08-13T00:00:00.000+11:00"/>
+		</event>
+		<event>
+			<string key="org:resource" value="R1"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="concept:name" value="A"/>
+			<date key="time:timestamp" value="2021-08-17T00:00:00.000+11:00"/>
+		</event>
+		<event>
+			<string key="org:resource" value="R2"/>
+			<string key="lifecycle:transition" value="start"/>
+			<string key="concept:name" value="B"/>
+			<date key="time:timestamp" value="2021-08-20T00:00:00.000+11:00"/>
+		</event>
+		<event>
+			<string key="org:resource" value="R2"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="concept:name" value="B"/>
+			<date key="time:timestamp" value="2021-08-24T00:00:00.000+11:00"/>
+		</event>
+	</trace>
+</log>

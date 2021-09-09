@@ -48,7 +48,6 @@ public class AboutPlugin extends DefaultPortalPlugin {
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(AboutPlugin.class);
 
     private String label = "About Apromore"; // default label
-    private String groupLabel = "About";
 
     private String commitId;
     private String buildDate;
@@ -79,23 +78,8 @@ public class AboutPlugin extends DefaultPortalPlugin {
     // PortalPlugin overrides
 
     @Override
-    public String getItemCode(Locale locale) {
-	return "About Apromore";
-    }
-
-    @Override
-    public String getGroup(Locale locale) {
-	return "About";
-    }
-
-    @Override
     public String getLabel(final Locale locale) {
 	return Labels.getLabel("brand_about", label);
-    }
-
-    @Override
-    public String getGroupLabel(final Locale locale) {
-	return groupLabel;
     }
 
     @Override

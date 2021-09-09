@@ -22,15 +22,21 @@
 
 package org.apromore.plugin.portal.calendar;
 
+import java.util.Objects;
+
 import lombok.Getter;
 import lombok.Setter;
-
-public class Zone {
+import lombok.ToString;
+@ToString
+public class Zone  {
     @Getter @Setter private String id;
-    @Getter @Setter private String displayName;
+    @Getter @Setter private String zoneDisplayName;
+    
 
     public Zone(String id, String displayName) {
         this.id = id;
-        this.displayName = displayName;
+        this.zoneDisplayName = displayName;
+        
     }
+    
 }

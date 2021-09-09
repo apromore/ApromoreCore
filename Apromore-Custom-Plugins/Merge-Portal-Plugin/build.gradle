@@ -10,6 +10,7 @@ dependencies {
 	implementation project(':Apromore-Plugins:plugin-core:portal:api')
 	implementation project(':Apromore-Commons')
 	implementation project(':Apromore-Core-Components:Apromore-Manager')
+	implementation project(':Apromore-Core-Components:Apromore-Portal')
 	implementation project(':Apromore-Zk')
     
 

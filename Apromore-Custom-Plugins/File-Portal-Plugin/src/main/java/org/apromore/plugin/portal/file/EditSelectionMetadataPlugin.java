@@ -28,10 +28,10 @@ import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.file.impl.EditListMetadataController;
-import org.apromore.portal.common.notification.Notification;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.VersionSummaryType;
+import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import org.zkoss.util.resource.Labels;
@@ -43,21 +43,8 @@ public class EditSelectionMetadataPlugin extends DefaultPortalPlugin {
   private static Logger LOGGER = PortalLoggerFactory.getLogger(EditSelectionMetadataPlugin.class);
 
   private String label = "Rename"; // "Edit metadata"
-  private String groupLabel = "File";
 
   // PortalPlugin overrides
-
-
-
-  @Override
-  public String getItemCode(Locale locale) {
-    return label;
-  }
-
-  @Override
-  public String getGroup(Locale locale) {
-    return "File";
-  }
 
   @Override
   public String getLabel(Locale locale) {
@@ -65,17 +52,9 @@ public class EditSelectionMetadataPlugin extends DefaultPortalPlugin {
   }
 
   @Override
-  public String getGroupLabel(Locale locale) {
-    return Labels.getLabel("plugin_file_title_text", groupLabel);
-  }
-
-
-  @Override
   public String getIconPath() {
     return "rename.svg"; // "meta-edit.svg"
   }
-
-
 
   @Override
   public void execute(PortalContext portalContext) {

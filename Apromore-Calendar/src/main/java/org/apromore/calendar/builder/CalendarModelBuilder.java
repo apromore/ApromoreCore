@@ -54,7 +54,7 @@ public class CalendarModelBuilder {
   public CalendarModelBuilder withAllDayAllTime() {
       for (DayOfWeek dayOfWeek : DayOfWeek.values()) {
           withWorkDay(dayOfWeek, OffsetTime.of(0, 0, 0, 0, ZoneOffset.of(model.getZoneId())),
-                  OffsetTime.of(23, 59, 59, 0, ZoneOffset.of(model.getZoneId())), true);
+                  OffsetTime.of(23, 59, 59, 999999999, ZoneOffset.of(model.getZoneId())), true);
       }
       return this;
   }

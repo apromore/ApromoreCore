@@ -34,8 +34,7 @@ import org.apromore.dao.model.User;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
-import org.apromore.portal.common.Constants;
-import org.apromore.portal.common.notification.Notification;
+import org.apromore.zk.notification.Notification;
 import org.apromore.service.SecurityService;
 import org.apromore.service.WorkspaceService;
 import org.slf4j.Logger;
@@ -52,9 +51,7 @@ public class UserAdminPlugin extends DefaultPortalPlugin {
 
   private static Logger LOGGER = PortalLoggerFactory.getLogger(UserAdminPlugin.class);
 
-  private String ID = Constants.USER_ADMIN_PLUGIN;
   private String label = "Manage user permissions";
-  private String groupLabel = "Settings";
 
   @Inject
   private SecurityService securityService;
@@ -70,21 +67,9 @@ public class UserAdminPlugin extends DefaultPortalPlugin {
     return getLabels().getString(key);
   }
 
-  // PortalPlugin overrides
-
-  @Override
-  public String getID() {
-    return ID;
-  }
-
   @Override
   public String getLabel(Locale locale) {
     return label;
-  }
-
-  @Override
-  public String getGroupLabel(Locale locale) {
-    return groupLabel;
   }
 
   @Override

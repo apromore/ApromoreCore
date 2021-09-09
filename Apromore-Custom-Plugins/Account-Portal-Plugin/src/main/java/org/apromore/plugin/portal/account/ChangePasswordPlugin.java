@@ -39,7 +39,6 @@ public class ChangePasswordPlugin extends DefaultPortalPlugin {
   private static Logger LOGGER = PortalLoggerFactory.getLogger(ChangePasswordPlugin.class);
 
   private String label = "Change password";
-  private String groupLabel = "Account";
 
   private SecurityService securityService;
 
@@ -64,11 +63,6 @@ public class ChangePasswordPlugin extends DefaultPortalPlugin {
   @Override
   public String getLabel(Locale locale) {
     return label;
-  }
-
-  @Override
-  public String getGroupLabel(Locale locale) {
-    return groupLabel;
   }
 
   @Override

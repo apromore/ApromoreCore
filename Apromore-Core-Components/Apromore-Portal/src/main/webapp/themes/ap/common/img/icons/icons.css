@@ -73,6 +73,11 @@
     width: 26px !important;
 }
 
+.ap-icon-anonymous {
+    background-image: url('anonymous.svg') !important;
+    width: 27.7578125px !important;
+}
+
 .ap-icon-arrow-down {
     background-image: url('arrow-down.svg') !important;
     width: 26px !important;
@@ -121,6 +126,11 @@
 .ap-icon-calendar {
     background-image: url('calendar.svg') !important;
     width: 26px !important;
+}
+
+.ap-icon-calendar-edit {
+    background-image: url('calendar-edit.svg') !important;
+    width: 28.5px !important;
 }
 
 .ap-icon-caret-down {

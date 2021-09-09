@@ -129,6 +129,10 @@ public class DataSetup {
         return this.readXESFile("src/test/logs/L1_1trace_start_complete_events_non_overlapping.xes");
     }
     
+    public XLog readLogWithOneTrace_StartCompleteEvents_EventMerging_Exclude_R1() {
+        return this.readXESFile("src/test/logs/L1_1trace_start_complete_events_event_merging_exclude_R1.xes");
+    }
+    
     public XLog readLogWithOneTrace_TwoActivities_StartCompleteEvents_Friday() {
         return this.readXESFile("src/test/logs/L1_1trace_2activity_with_start_complete_events_friday.xes");
     }

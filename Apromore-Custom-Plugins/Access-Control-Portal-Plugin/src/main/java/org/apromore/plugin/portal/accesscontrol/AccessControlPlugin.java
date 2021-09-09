@@ -33,12 +33,11 @@ import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.accesscontrol.controllers.SecuritySetupController;
-import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.ItemHelpers;
 import org.apromore.portal.common.UserSessionManager;
-import org.apromore.portal.common.notification.Notification;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.service.SecurityService;
+import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import org.zkoss.web.Attributes;
@@ -54,26 +53,14 @@ public class AccessControlPlugin extends DefaultPortalPlugin {
 
   private static final Logger LOGGER = PortalLoggerFactory.getLogger(AccessControlPlugin.class);
 
-  private String ID = Constants.ACCESS_CONTROL_PLUGIN;
   private String label = "Manage access control";
-  private String groupLabel = "Security";
 
   @Inject
   private SecurityService securityService;
 
   @Override
-  public String getID() {
-    return ID;
-  }
-
-  @Override
   public String getLabel(final Locale locale) {
     return label;
-  }
-
-  @Override
-  public String getGroupLabel(final Locale locale) {
-    return groupLabel;
   }
 
   @Override

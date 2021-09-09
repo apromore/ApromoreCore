@@ -18,6 +18,7 @@
   #L%
   -->
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<?component name="holidayListboxComp" macroURI="~./calendar/macros/holidays.zul" inline="true" ?>
 <zk>
   <window xmlns:ca="client/attribute"
           xmlns:client="client"
@@ -49,7 +50,7 @@
             <label style="padding-right: 5px">Time zone</label>
             <combobox id="zoneCombobox" placeholder="Select a time zone" width="270px">
               <template name="model">
-                <comboitem label="${each.displayName}" />
+                <comboitem label="${each.zoneDisplayName}" />
               </template>
             </combobox>
           </hbox>
@@ -88,48 +89,19 @@
         <vbox id="holidaysWrapper" sclass="ap-holidays" width="500px" vflex="1" spacing="0">
           <hbox sclass="ap-window-header-actions" hflex="1" align="start" pack="start" spacing="0"
                 style="padding: 8px;">
-            <button id="importHolidaysBtn">Add public holidays</button>
-            <button id="addHolidayBtn">Add a custom holiday</button>
+            <button id="importHolidaysBtn">${$composer.labels.add_public_holidays_text}</button>
+            <button id="addHolidayBtn">${$composer.labels.add_custom_holiday_text}</button>
+            <button id="deleteHolidaysBtn">${$composer.labels.delete_holidays_text}</button>
           </hbox>
-          <listbox id="holidayListbox" vflex="1" hflex="1" nonselectableTags="*" mold="default">
-            <listhead>
-              <listheader align="center" label="" width="36px" /><!-- icon -->
-              <listheader align="center" label="" width="120px" sort="auto(date)" />
-              <listheader align="center" label="" hflex="1" sort="auto(description)" />
-              <listheader align="center" label="" width="36px" style="cursor:pointer;" /><!-- delete/add icon -->
-            </listhead>
-            <template name="model">
-              <listitem>
-                <listcell>
-                  <span sclass="ap-icon ap-icon-holiday ${c:toLowerCase(each.holidayType)}"
-                        style="display: inline-block; cursor: default;"
-                  />
-                </listcell>
-                <listcell>
-                  <datebox hflex="1"
-                           format="yyyy MMM dd"
-                           value="${each.getDate()}"
-                           forward="onChanging=holidayListbox.onUpdateHolidayDate, onChange=holidayListbox.onUpdateHolidayDate"
-                  />
-                </listcell>
-                <listcell>
-                  <textbox hflex="1" value="${each.description}"
-                           forward="onChanging=holidayListbox.onUpdateHolidayDescription, onChange=holidayListbox.onUpdateHolidayDescription"
-                  ></textbox>
-                </listcell>
-                <listcell>
-                  <button sclass="ap-icon ap-icon-trash"
-                          tooltiptext="Remove"
-                          forward="onClick=holidayListbox.onRemoveHoliday(${each})"/>
-                </listcell>
-              </listitem>
-            </template>
-          </listbox>
+          <div height="32px" sclass="ap-holiday-group-title" hflex="1">Public Holidays</div>
+          <holidayListboxComp id="holidayListbox" vflex="2" />
+          <div height="32px" sclass="ap-holiday-group-title" hflex="1">Custom Holidays</div>
+          <holidayListboxComp id="holidayCustomListbox" vflex="1" />
         </vbox>
       </hbox>
       <div sclass="ap-window-footer-actions" height="42px">
-        <button id="applyBtn" label="Apply Changes" iconSclass="z-icon-check-circle" />
-        <button id="cancelBtn" label="Cancel" iconSclass="z-icon-times-circle"></button>
+        <button id="applyBtn" label="${$composer.labels.apply_text}" iconSclass="z-icon-check-circle" />
+        <button id="cancelBtn" label="${$composer.labels.cancel_text}" iconSclass="z-icon-times-circle"></button>
       </div>
     </vbox>
   </window>

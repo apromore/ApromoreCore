@@ -32,6 +32,7 @@ if (!Apromore) {
  * to the wrapped BPMN.io editor.
  * Its behavior is divided into public and private methods (starting with underscore).
  * @todo: the namespace Apromore should be changed to Apromore throughout in one pass
+ * @todo: window.setTimeout here has time sensitivity that should be avoided in the future
  */
 Apromore.EditorApp = {
     construct: function (config) {
@@ -53,7 +54,7 @@ Apromore.EditorApp = {
         this.enabledPlugins = config.enabledPlugins; // undefined means all plugins are enabled
 
         // CREATES the editor
-        this._createEditor();
+        this._createEditor(config.preventFitDelay || false);
 
         // GENERATES the main UI regions
         this._generateGUI();
@@ -64,6 +65,7 @@ Apromore.EditorApp = {
         // Attach the editor must be the LAST THING AFTER ALL HAS BEEN LOADED
         var options = {
           container: '#' + this.getEditor().rootNode.id,
+          langTag: config.langTag
         }
         if (!config.viewOnly) {
           options.keyboard = { bindTo: window };
@@ -73,6 +75,7 @@ Apromore.EditorApp = {
         this.getEditor().attachEditor(new BpmnJS(options));
 
         // Wait until the editor is fully loaded to start XML import and then UI init
+        // @todo: Avoid time sensitivity
         var me = this;
         window.setTimeout(function() {
             if (config && config.xml) {
@@ -372,12 +375,13 @@ Apromore.EditorApp = {
         return document.getElementById(this.id);
     },
 
-    _createEditor: function () {
+    _createEditor: function (preventFitDelay) {
         this.editor = new Apromore.Editor({
             width: Apromore.CONFIG.CANVAS_WIDTH,
             height: Apromore.CONFIG.CANVAS_HEIGHT,
             id: Apromore.Utils.provideId(),
-            parentNode: this._getContainer()
+            parentNode: this._getContainer(),
+            preventFitDelay: preventFitDelay
         });
     },
 

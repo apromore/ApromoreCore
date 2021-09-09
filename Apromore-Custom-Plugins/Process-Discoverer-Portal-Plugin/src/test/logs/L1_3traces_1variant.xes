@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+
+<!-- This file has been generated with the OpenXES library. It conforms -->
+<!-- to the XML serialization of the XES standard for log storage and -->
+<!-- management. -->
+<!-- XES standard version: 1.0 -->
+<!-- OpenXES library version: 1.0RC7 -->
+<!-- OpenXES is available from http://www.openxes.org/ -->
+<log xes.version="1.0" xes.features="nested-attributes" openxes.version="1.0RC7" xmlns="http://www.xes-standard.org/">
+    <extension name="Lifecycle" prefix="lifecycle" uri="http://www.xes-standard.org/lifecycle.xesext"/>
+    <extension name="Organizational" prefix="org" uri="http://www.xes-standard.org/org.xesext"/>
+    <extension name="Time" prefix="time" uri="http://www.xes-standard.org/time.xesext"/>
+    <extension name="Concept" prefix="concept" uri="http://www.xes-standard.org/concept.xesext"/>
+    <extension name="Semantic" prefix="semantic" uri="http://www.xes-standard.org/semantic.xesext"/>
+    <global scope="trace">
+        <string key="concept:name" value="__INVALID__"/>
+    </global>
+    <global scope="event">
+        <string key="concept:name" value="__INVALID__"/>
+        <string key="lifecycle:transition" value="complete"/>
+    </global>
+    <classifier name="MXML Legacy Classifier" keys="concept:name lifecycle:transition"/>
+    <classifier name="Event Name" keys="concept:name"/>
+    <classifier name="Resource" keys="org:resource"/>
+    <string key="concept:name" value="L1"/>
+
+    <trace>
+        <string key="concept:name" value="Case1"/>
+        <event>
+            <date key="time:timestamp" value="2010-10-27T22:31:19.495+10:00"/>
+            <string key="concept:name" value="a"/>
+            <string key="lifecycle:transition" value="complete"/>
+            <string key="riskLevelNumber" value="2"/>
+            <string key="riskLevelString" value="low"/>
+        </event>
+    </trace>
+
+    <trace>
+        <string key="concept:name" value="Case2"/>
+        <event>
+            <date key="time:timestamp" value="2010-10-27T20:32:19.495+10:00"/>
+            <string key="concept:name" value="a"/>
+            <string key="lifecycle:transition" value="complete"/>
+            <string key="riskLevelNumber" value="3"/>
+            <string key="riskLevelString" value="medium"/>
+        </event>
+    </trace>
+
+    <trace>
+        <string key="concept:name" value="Case3"/>
+        <event>
+            <date key="time:timestamp" value="2010-10-27T22:33:19.495+10:00"/>
+            <string key="concept:name" value="a"/>
+            <string key="lifecycle:transition" value="complete"/>
+            <string key="riskLevelNumber" value="4"/>
+            <string key="riskLevelString" value="high"/>
+        </event>
+    </trace>
+</log>

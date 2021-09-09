@@ -22,6 +22,8 @@
 
 package org.apromore.apmlog;
 
+import org.apromore.apmlog.customcalendartests.CusCalArcDurFilterTestSupport;
+import org.apromore.apmlog.customcalendartests.CusCalTest;
 import org.apromore.apmlog.filter.APMLogFilter;
 import org.apromore.apmlog.filter.PLog;
 import org.apromore.apmlog.filter.PTrace;
@@ -451,6 +453,13 @@ public class APMLogUnitTest {
                 new UnifiedSet<>(apmLog.getActivityInstances()));
         String displayVal = Util.durationStringOf(dal.average());
         assertTrue(displayVal.equalsIgnoreCase("18.09 hrs"));
+    }
+
+    @Test
+    public void testCustomCalendar01() throws Exception {
+        APMLog apmLog = getImmutableLog("2Traces", "files/2Traces-calendar-test01.xes");
+        CusCalTest.run(apmLog);
+        CusCalArcDurFilterTestSupport.run(apmLog);
     }
 
     private ImmutableLog getImmutableLog(String logName, String path) throws Exception {

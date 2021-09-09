@@ -21,8 +21,8 @@
  */
 package org.apromore.storage;
 
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import org.apromore.storage.exception.ObjectCreationException;
@@ -56,5 +56,20 @@ public interface StorageClient {
     }
     sourceFile.close();
     targetFile.close();
+    }
+
+    default String readInputStream(InputStream inputStream) throws IOException {
+        String serialStr = "";
+        try (InputStreamReader inputStreamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
+             BufferedReader br = new BufferedReader(inputStreamReader)) {
+            String st;
+            while ((st = br.readLine()) != null) {
+                serialStr += st;
+            }
+            return serialStr;
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new IOException(e.getMessage(),e);
+        }
     }
 }

@@ -1,0 +1,34 @@
+<listbox id="${arg.id}" vflex="${arg.vflex}" hflex="1" nonselectableTags="*" mold="default">
+  <listhead>
+    <listheader align="center" label="" width="36px" /><!-- icon -->
+    <listheader align="center" label="" width="120px" sort="auto(date)" />
+    <listheader align="center" label="" hflex="1" sort="auto(description)" />
+    <listheader align="center" label="" width="36px" style="cursor:pointer;" /><!-- delete/add icon -->
+  </listhead>
+  <template name="model">
+    <listitem>
+      <listcell>
+        <span sclass="ap-icon ap-icon-holiday ${c:toLowerCase(each.holidayType.label)}"
+              style="display: inline-block; cursor: default;"
+        />
+      </listcell>
+      <listcell>
+        <datebox hflex="1"
+                 format="yyyy MMM dd"
+                 value="${each.getDate()}"
+                 forward="onChanging=holidayListbox.onUpdateHolidayDate, onChange=holidayListbox.onUpdateHolidayDate"
+        />
+      </listcell>
+      <listcell>
+        <textbox hflex="1" value="${each.description}"
+                 forward="onChanging=holidayListbox.onUpdateHolidayDescription, onChange=holidayListbox.onUpdateHolidayDescription"
+        ></textbox>
+      </listcell>
+      <listcell>
+        <button sclass="ap-icon ap-icon-trash"
+                tooltiptext="Remove"
+                forward="onClick=holidayListbox.onRemoveHoliday(${each})"/>
+      </listcell>
+    </listitem>
+  </template>
+</listbox>

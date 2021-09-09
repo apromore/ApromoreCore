@@ -11,15 +11,15 @@ dependencies {
 
 	runtimeOnly project(':Apromore-Custom-Plugins:Apromore-Editor')
 	runtimeOnly project(':Apromore-Custom-Plugins:Calendar-Portal')
-	runtimeOnly project(':Apromore-Custom-Plugins:CSVImporter-Logic')
-	runtimeOnly project(':Apromore-Custom-Plugins:CSVImporter-Portal')
+	runtimeOnly project(':Apromore-Custom-Plugins:Log-Importer-Logic')
+	runtimeOnly project(':Apromore-Custom-Plugins:Log-Importer-Portal')
 //	runtime project(':Apromore-Custom-Plugins:CSVExporter-Portal')
 	runtimeOnly project(':Apromore-Custom-Plugins:User-Admin-Portal-Plugin')
 	runtimeOnly project(':Apromore-Custom-Plugins:SplitMiner-Logic')
 
 //	runtime project(':Apromore-Custom-Plugins:Generic-Portal-Plugin')
 	runtimeOnly project(':Apromore-Custom-Plugins:Log-Animation-Logic')
-	runtimeOnly project(':Apromore-Custom-Plugins:Log-Animation-Portal-Plugin')
+//	runtimeOnly project(':Apromore-Custom-Plugins:Log-Animation-Portal-Plugin')
 	runtimeOnly project(':Apromore-Custom-Plugins:Log-Animation-Portal-Plugin-API')
 	runtimeOnly project(':Apromore-Custom-Plugins:Log-Logic')
 	runtimeOnly project(':Apromore-Core-Components:Apromore-BPMNEditor')

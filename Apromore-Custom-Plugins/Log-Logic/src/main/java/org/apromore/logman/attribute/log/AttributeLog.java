@@ -234,10 +234,11 @@ public class AttributeLog {
         return activeTraces.sumOfLong(trace -> trace.getValueTrace().size()-2);
     }
     
+    // Do not get from the original number of values because of activity merging effect
+    // Need to get from the value trace after merging activities
     public IntSet getOriginalAttributeValues() {
-        MutableIntSet values = IntSets.mutable.of(attribute.getValueIndexes());
-        values.add(attribute.getArtificialStartIndex());
-        values.add(attribute.getArtificialEndIndex());
+        MutableIntSet values = IntSets.mutable.empty();
+        getOriginalTraces().forEach(trace -> values.addAll(trace.getOriginalValueTrace()));
         return values.toImmutable();
     }
 	
