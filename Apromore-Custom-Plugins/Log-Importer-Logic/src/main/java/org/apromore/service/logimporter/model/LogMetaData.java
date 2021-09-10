@@ -59,6 +59,7 @@ public class LogMetaData {
     private String timeZone;
     private String encoding;
     private List<Integer> maskPos;
+    private List<Integer> perspectivePos;
 
     public LogMetaData(List<String> header) {
         this.header = header;
@@ -70,6 +71,7 @@ public class LogMetaData {
         startTimestampFormat = null;
         encoding = null;
         maskPos = new ArrayList<>();
+        perspectivePos = new ArrayList<>();
     }
 
     public void validateSample() throws Exception {

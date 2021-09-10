@@ -24,11 +24,13 @@
 
 package org.apromore.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apromore.apmlog.APMLog;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.commons.config.ConfigBean;
 import org.apromore.dao.model.Log;
 import org.apromore.dao.model.User;
+import org.apromore.dao.model.Usermetadata;
 import org.apromore.exception.ImportException;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.portal.model.ExportLogResultType;
@@ -152,4 +154,12 @@ public interface EventLogService {
                            ByteArrayOutputStream baos) throws Exception;
 
   ConfigBean getConfigBean();
+
+
+  /**
+   * Find perspective tag that are linked to specified Log
+   * @param logId Log Id
+   * @return Perspective tags
+   */
+  List<String> getPerspectiveTagByLog(Integer logId) throws JsonProcessingException;
 }

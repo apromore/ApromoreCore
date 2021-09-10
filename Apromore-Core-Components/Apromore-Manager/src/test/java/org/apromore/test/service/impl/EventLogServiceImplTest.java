@@ -22,8 +22,8 @@
 
 package org.apromore.test.service.impl;
 
+import static org.easymock.EasyMock.expect;
 import static org.junit.Assert.assertEquals;
-import static org.powermock.api.easymock.PowerMock.createMock;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -41,6 +41,8 @@ import java.util.stream.Stream;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import org.apromore.AbstractTest;
 import org.apromore.calendar.service.CustomCalendarService;
 import org.apromore.commons.config.ConfigBean;
 import org.apromore.dao.CustomCalendarRepository;
@@ -49,14 +51,22 @@ import org.apromore.dao.GroupLogRepository;
 import org.apromore.dao.GroupRepository;
 import org.apromore.dao.LogRepository;
 import org.apromore.dao.StorageRepository;
-import org.apromore.dao.UsermetadataRepository;
+import org.apromore.dao.model.Group;
+import org.apromore.dao.model.Log;
+import org.apromore.dao.model.NativeType;
+import org.apromore.dao.model.Role;
+import org.apromore.dao.model.User;
+import org.apromore.dao.model.Usermetadata;
+import org.apromore.dao.model.Workspace;
 import org.apromore.service.AuthorizationService;
 import org.apromore.service.EventLogFileService;
+import org.apromore.service.UserMetadataService;
 import org.apromore.service.UserService;
 import org.apromore.service.impl.EventLogServiceImpl;
 import org.apromore.service.impl.TemporaryCacheService;
 import org.apromore.storage.StorageClient;
 import org.apromore.storage.factory.StorageManagementFactory;
+import org.apromore.util.UserMetadataTypeEnum;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryRegistry;
 import org.deckfour.xes.in.XesXmlParser;
@@ -77,7 +87,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.google.common.collect.Sets;
 
-public class EventLogServiceImplTest {
+public class EventLogServiceImplTest extends AbstractTest {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(EventLogServiceImplTest.class);
   // inject EntityManager for simple test
@@ -90,7 +100,7 @@ public class EventLogServiceImplTest {
   private FolderRepository folderRepo;
   private UserService userSrv;
   private EventLogServiceImpl eventLogService;
-  private UsermetadataRepository userMetadataRepo;
+  private UserMetadataService userMetadataService;
   private TemporaryCacheService temporaryCacheService;
   private StorageManagementFactory<StorageClient> storageFactory;
   private EventLogFileService logFileService;
@@ -99,6 +109,16 @@ public class EventLogServiceImplTest {
   private CustomCalendarService calendarService;
   private AuthorizationService authorizationService;
 
+  public ExpectedException exceptionRule = ExpectedException.none();
+
+  private Group group1;
+  private Group group2;
+  private Group group3;
+  private Group group4;
+  private Role role;
+  private User user;
+  private Workspace wp;
+  private NativeType nativeType;
 
   private static void walkLog(XLog log) {
     walkAttributes(log);
@@ -139,7 +159,7 @@ public class EventLogServiceImplTest {
     groupLogRepository = createMock(GroupLogRepository.class);
     folderRepo = createMock(FolderRepository.class);
     userSrv = createMock(UserService.class);
-    userMetadataRepo = createMock(UsermetadataRepository.class);
+    userMetadataService = createMock(UserMetadataService.class);
     temporaryCacheService = createMock(TemporaryCacheService.class);
     storageFactory = createMock(StorageManagementFactory.class);
     logFileService = createMock(EventLogFileService.class);
@@ -150,9 +170,22 @@ public class EventLogServiceImplTest {
     ConfigBean config = new ConfigBean();
 
     eventLogService = new EventLogServiceImpl(logRepository, groupRepository, groupLogRepository,
-        folderRepo, userSrv, config, userMetadataRepo, temporaryCacheService, storageFactory,
+        folderRepo, userSrv, config, userMetadataService, temporaryCacheService, storageFactory,
         logFileService, storageRepository, calendarRepository, calendarService,
         authorizationService);
+
+    // Set up test data
+    group1 = createGroup(1, Group.Type.GROUP);
+    group2 = createGroup(2, Group.Type.GROUP);
+    group3 = createGroup(3, Group.Type.USER);
+    group4 = createGroup(4, Group.Type.USER);
+
+    role = createRole(createSet(createPermission()));
+    user = createUser("userName1", group1, createSet(group1, group3), createSet(role));
+
+    wp = createWorkspace(user);
+
+    nativeType = createNativeType();
   }
 
   @Test
@@ -259,6 +292,88 @@ public class EventLogServiceImplTest {
   private XLog readXESFile(String fullFilePath) throws Exception {
     XesXmlParser parser = new XesXmlParser();
     return parser.parse(new File(fullFilePath)).get(0);
+  }
+
+  @Test
+  public void testGetPerspectiveTagByLog() {
+
+    // Set up test data
+    Integer logId = 1;
+    Log log = createLogWithId(logId, user, createFolder("testFolder", null, wp));
+    Set<Log> logs = new HashSet<>();
+    logs.add(log);
+
+    Usermetadata perspective = createUserMetadata(1, "[\"concept:name\",\"org:resource\",\"lifecycle:transition\"]", logs);
+    Set<Usermetadata> usermetadataSet = new HashSet<>();
+    usermetadataSet.add(perspective);
+
+    // Mock recording
+    expect(userMetadataService.getUserMetadataByLog(logId,
+            UserMetadataTypeEnum.PERSPECTIVE_TAG)).andReturn(usermetadataSet);
+    replayAll();
+
+    // Mock call
+    List<String> perspectives = eventLogService.getPerspectiveTagByLog(logId);
+
+    List<String> result = new ArrayList<>();
+    result.add("concept:name");
+    result.add("org:resource");
+    result.add("lifecycle:transition");
+
+    assertEquals(perspectives, result);
+  }
+
+  @Test
+  public void testGetPerspectiveTagByLog_WithoutMetadata() {
+
+    // Set up test data
+    Integer logId = 1;
+    Log log = createLogWithId(logId, user, createFolder("testFolder", null, wp));
+    Set<Log> logs = new HashSet<>();
+    logs.add(log);
+
+    Usermetadata perspective = createUserMetadata(1, "[\"concept:name\",\"org:resource\",\"lifecycle:transition\"]", logs);
+    Set<Usermetadata> usermetadataSet = new HashSet<>();
+
+    // Mock recording
+    expect(userMetadataService.getUserMetadataByLog(logId,
+            UserMetadataTypeEnum.PERSPECTIVE_TAG)).andReturn(usermetadataSet);
+    replayAll();
+
+    // Mock call
+    List<String> perspectives = eventLogService.getPerspectiveTagByLog(logId);
+
+    List<String> result = new ArrayList<>();
+
+    assertEquals(perspectives, result);
+  }
+
+  @Test
+  public void testGetPerspectiveTagByLog_InvalidJson() {
+
+    // Set up test data
+    Integer logId = 1;
+    Log log = createLogWithId(logId, user, createFolder("testFolder", null, wp));
+    Set<Log> logs = new HashSet<>();
+    logs.add(log);
+    String invalidJSONString = "[concept:name\",\"org:resource\",\"lifecycle:transition\"]";
+    Usermetadata perspective = createUserMetadata(1, invalidJSONString, logs);
+    Set<Usermetadata> usermetadataSet = new HashSet<>();
+    usermetadataSet.add(perspective);
+
+    // Mock recording
+    expect(userMetadataService.getUserMetadataByLog(logId,
+            UserMetadataTypeEnum.PERSPECTIVE_TAG)).andReturn(usermetadataSet);
+    replayAll();
+
+    // Mock call
+    List<String> perspectives = eventLogService.getPerspectiveTagByLog(logId);
+
+    List<String> result = new ArrayList<>();
+
+    exceptionRule.expect(JsonProcessingException.class);
+    exceptionRule.expectMessage("Could not deserialize JSON content from given JSON content String: " + invalidJSONString);
+    assertEquals(perspectives, result);
   }
 
 }

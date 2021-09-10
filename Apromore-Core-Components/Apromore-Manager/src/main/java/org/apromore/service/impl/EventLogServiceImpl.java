@@ -23,20 +23,10 @@
  */
 package org.apromore.service.impl;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import javax.activation.DataHandler;
-import javax.inject.Inject;
-import javax.mail.util.ByteArrayDataSource;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Getter;
 import org.apromore.apmlog.APMLog;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.calendar.service.CalendarService;
@@ -48,7 +38,6 @@ import org.apromore.dao.GroupLogRepository;
 import org.apromore.dao.GroupRepository;
 import org.apromore.dao.LogRepository;
 import org.apromore.dao.StorageRepository;
-import org.apromore.dao.UsermetadataRepository;
 import org.apromore.dao.model.CustomCalendar;
 import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.Group;
@@ -66,12 +55,14 @@ import org.apromore.portal.model.SummariesType;
 import org.apromore.service.AuthorizationService;
 import org.apromore.service.EventLogFileService;
 import org.apromore.service.EventLogService;
+import org.apromore.service.UserMetadataService;
 import org.apromore.service.UserService;
 import org.apromore.storage.StorageClient;
 import org.apromore.storage.StorageType;
 import org.apromore.storage.factory.StorageManagementFactory;
 import org.apromore.util.AccessType;
 import org.apromore.util.StringUtil;
+import org.apromore.util.UserMetadataTypeEnum;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryRegistry;
@@ -93,7 +84,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import lombok.Getter;
+
+import javax.activation.DataHandler;
+import javax.inject.Inject;
+import javax.mail.util.ByteArrayDataSource;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * Implementation of the ProcessService Contract.
@@ -111,7 +116,7 @@ public class EventLogServiceImpl implements EventLogService {
     private GroupLogRepository groupLogRepo;
     private FolderRepository folderRepo;
     private UserService userSrv;
-    private UsermetadataRepository usermetadataRepo;
+    private UserMetadataService userMetadataService;
     private TemporaryCacheService tempCacheService;
     private StorageManagementFactory<StorageClient> storageFactory;
 
@@ -123,25 +128,28 @@ public class EventLogServiceImpl implements EventLogService {
     private CalendarService calendarService;
     private AuthorizationService authorizationService;
 
-    /**
-     * Default Constructor allowing Spring to Autowire for testing and normal use.
-     *
-     * @param logRepository          LogRepository
-     * @param groupRepository        GroupRepository
-     * @param groupLogRepository     GroupLogRepository
-     * @param folderRepo             FolderRepository
-     * @param userSrv                UserService
-     * @param configBean             ConfigBean
-     * @param usermetadataRepository UsermetadataRepository
-     * @param temporaryCacheService  TemporaryCacheService
-     * @param storageFactory         StorageManagementFactory
-     * @param logFileService         EventLogFileService
-     * @param storageRepository      StorageRepository
-     */
+	/**
+	 * Default Constructor allowing Spring to Autowire for testing and normal use.
+	 *
+	 * @param logRepository            LogRepository
+	 * @param groupRepository          GroupRepository
+	 * @param groupLogRepository       GroupLogRepository
+	 * @param folderRepo               FolderRepository
+	 * @param userSrv                  UserService
+	 * @param configBean               ConfigBean
+	 * @param userMetadataSrv          UserMetadataService
+	 * @param temporaryCacheService    TemporaryCacheService
+	 * @param storageFactory           StorageManagementFactory
+	 * @param logFileService           EventLogFileService
+	 * @param storageRepository        StorageRepository
+	 * @param customCalendarRepository CustomCalendarRepository
+	 * @param calendarService          CalendarService
+	 * @param authorizationService     AuthorizationService
+	 */
     @Inject
     public EventLogServiceImpl(final LogRepository logRepository, final GroupRepository groupRepository,
             final GroupLogRepository groupLogRepository, final FolderRepository folderRepo, final UserService userSrv,
-            final ConfigBean configBean, final UsermetadataRepository usermetadataRepository,
+            final ConfigBean configBean, final UserMetadataService userMetadataSrv,
             final TemporaryCacheService temporaryCacheService, final StorageManagementFactory storageFactory,
             final EventLogFileService logFileService, final StorageRepository storageRepository,
             final CustomCalendarRepository customCalendarRepository, final CalendarService calendarService,
@@ -151,7 +159,7 @@ public class EventLogServiceImpl implements EventLogService {
 	this.groupLogRepo = groupLogRepository;
 	this.folderRepo = folderRepo;
 	this.userSrv = userSrv;
-	this.usermetadataRepo = usermetadataRepository;
+	this.userMetadataService = userMetadataSrv;
 	this.tempCacheService = temporaryCacheService;
 	this.storageFactory = storageFactory;
 	this.configBean = configBean;
@@ -475,7 +483,7 @@ public class EventLogServiceImpl implements EventLogService {
     }
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, rollbackFor = Exception.class)
     public void deleteLogs(List<Log> logs, User user) throws NotAuthorizedException, UserNotFoundException {
 	for (Log log : logs) {
 	    if (!canUserWriteLog(user.getUsername(), log.getId())) {
@@ -488,7 +496,7 @@ public class EventLogServiceImpl implements EventLogService {
 
 	    // delete associated user metadata
 	    for (Usermetadata u : usermetadataSet) {
-		usermetadataRepo.deleteById(u.getId());
+		userMetadataService.deleteUserMetadata(u.getId(), user.getUsername());
 		LOGGER.info("User: {} Delete user metadata ID: {}.", user.getUsername(), u.getId());
 	    }
 
@@ -528,7 +536,7 @@ public class EventLogServiceImpl implements EventLogService {
 
     @Override
     public void updateCalendarForLog(Integer logId, Long calenderId) {
-     
+
     calenderId=(Long) Objects.requireNonNullElse(calenderId, 0L);
     Log log = logRepo.findUniqueByID(logId);
 	CustomCalendar calendar = customCalendarRepository.findById(calenderId).orElse(null);
@@ -565,4 +573,30 @@ public class EventLogServiceImpl implements EventLogService {
 	return true;
     }
 
+	@Override
+	public List<String> getPerspectiveTagByLog(Integer logId) {
+
+		List<String> perspectiveList = new ArrayList<>();
+
+		Set<Usermetadata> usermetadataSet = userMetadataService.getUserMetadataByLog(logId,
+				UserMetadataTypeEnum.PERSPECTIVE_TAG);
+
+		if (usermetadataSet.isEmpty()) {
+			LOGGER.info("Log (ID: {}) doesn't have associated perspectives stored in DB.", logId);
+			return perspectiveList;
+		}
+
+		String JSONString = usermetadataSet.iterator().next().getContent();
+		ObjectMapper objectMapper = new ObjectMapper();
+
+		try {
+			perspectiveList = objectMapper.readValue(JSONString, new TypeReference<>() {
+			});
+		} catch (JsonProcessingException e) {
+			LOGGER.error("Could not deserialize JSON content from given JSON content String: " + JSONString, e);
+		}
+
+		LOGGER.debug("Get perspective list for log (ID: {}): " + perspectiveList, logId);
+		return perspectiveList;
+	}
 }

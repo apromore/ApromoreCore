@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apromore.dao.model.User;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.common.ItemHelpers;
@@ -207,6 +209,11 @@ public class CopyAndPasteController extends BaseController {
         selectedItems.add((FolderType) obj);
       } else if (obj instanceof LogSummaryType) {
         selectedItems.add((LogSummaryType) obj);
+        try {
+          mainController.getEventLogService().getPerspectiveTagByLog(((LogSummaryType) obj).getId());
+        } catch (JsonProcessingException e) {
+          e.printStackTrace();
+        }
       } else if (obj instanceof ProcessSummaryType) {
         selectedItems.add((ProcessSummaryType) obj);
       }

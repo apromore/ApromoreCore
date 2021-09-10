@@ -30,6 +30,7 @@ import org.apromore.service.UserMetadataService;
 import org.apromore.service.UserService;
 import org.apromore.util.AccessType;
 import org.apromore.util.UserMetadataTypeEnum;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.orm.jpa.JpaOptimisticLockingFailureException;
@@ -542,12 +543,6 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         }
 
         return umSet;
-    }
-
-    @Override
-    public Usermetadata getPerspectiveTagByLog(Integer logId) {
-
-        return getUserMetadataByLog(logId, UserMetadataTypeEnum.PERSPECTIVE_TAG).iterator().next();
     }
 
     @Override

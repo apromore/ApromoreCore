@@ -176,3 +176,38 @@ databaseChangeLog:
               - column:
                   name: description
                   value: "Allowed access to all log management endpoints"
+
+  - changeSet:
+      id:  20210907091000
+      author:  frankma
+      changes:
+        - insert:
+            tableName: usermetadata_type
+            columns:
+              - column:
+                  name: id
+                  value: "7"
+              - column:
+                  name: type
+                  value: "FILTER_TEMPLATE"
+              - column:
+                  name: version
+                  value: "1"
+              - column:
+                  name: is_valid
+                  value: "1"
+        - insert:
+            tableName: usermetadata_type
+            columns:
+              - column:
+                  name: id
+                  value: "8"
+              - column:
+                  name: type
+                  value: "PERSPECTIVE_TAG"
+              - column:
+                  name: version
+                  value: "1"
+              - column:
+                  name: is_valid
+                  value: "1"
