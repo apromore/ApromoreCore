@@ -42,7 +42,11 @@ import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.plugin.portal.logfilter.generic.LogFilterPlugin;
 import org.apromore.plugin.portal.processdiscoverer.actions.ActionManager;
 import org.apromore.plugin.portal.processdiscoverer.components.*;
-import org.apromore.plugin.portal.processdiscoverer.data.*;
+import org.apromore.plugin.portal.processdiscoverer.data.InvalidDataException;
+import org.apromore.plugin.portal.processdiscoverer.data.ConfigData;
+import org.apromore.plugin.portal.processdiscoverer.data.ContextData;
+import org.apromore.plugin.portal.processdiscoverer.data.OutputData;
+import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
 import org.apromore.plugin.portal.processdiscoverer.eventlisteners.AnimationController;
 import org.apromore.plugin.portal.processdiscoverer.eventlisteners.BPMNExportController;
 import org.apromore.plugin.portal.processdiscoverer.eventlisteners.LogExportController;
@@ -158,11 +162,7 @@ public class PDController extends BaseController implements Composer<Component> 
 
     private InteractiveMode mode = InteractiveMode.MODEL_MODE; // initial mode
 
-    @Getter
-    private ConfigBean portalConfig;
     private Component pdComponent;
-
-    private MainController mainController;
 
     /////////////////////////////////////////////////////////////////////////
 
@@ -227,8 +227,6 @@ public class PDController extends BaseController implements Composer<Component> 
             return false;
         try {
             FolderType currentFolder = portalContext.getCurrentFolder();
-            mainController = (MainController) portalContext.getMainController();
-            portalConfig = mainController.getConfig();
             if (currentFolder == null) {
                 return false;
             }
@@ -282,7 +280,8 @@ public class PDController extends BaseController implements Composer<Component> 
                     logSummary.getName(),
                     portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId(),
                     portalContext.getCurrentFolder() == null ? "Home"
-                            : portalContext.getCurrentFolder().getFolderName());
+                            : portalContext.getCurrentFolder().getFolderName(),
+                    ((MainController)portalContext.getMainController()).getConfig().isEnableCalendar());
             processAnalyst = new PDAnalyst(contextData, configData, getEventLogService());
             userOptions = UserOptionsData.DEFAULT(configData);
 
@@ -433,7 +432,7 @@ public class PDController extends BaseController implements Composer<Component> 
     }
 
     public void openCalendar() {
-        mainController.getBaseListboxController().launchCalendar(sourceLogName, sourceLogId);
+        ((MainController)portalContext.getMainController()).getBaseListboxController().launchCalendar(sourceLogName, sourceLogId);
     }
 
     public void openAnimation(Event e) {

@@ -91,8 +91,8 @@ public class ToolbarController extends AbstractController {
 
         Span calendarSep = (Span) toolbar.getFellow("calendarSep");
         calendar = (Button) toolbar.getFellow("calendar");
-        calendarSep.setVisible(parent.getPortalConfig().isEnableCalendar());
-        calendar.setVisible(parent.getPortalConfig().isEnableCalendar());
+        calendarSep.setVisible(parent.getContextData().isCalendarEnabled());
+        calendar.setVisible(parent.getContextData().isCalendarEnabled());
 
         exportFilteredLog = (Button) toolbar.getFellow("exportUnfitted");
         exportFilteredLog.setVisible(!isReadOnly);
