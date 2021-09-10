@@ -108,7 +108,7 @@
       <script src="${arg.editor}/libs/autolayout.js" type="text/javascript"/>
 
       <script src="${arg.editor}/editor/i18n/translation_${arg.langTag}.js" type="text/javascript"/>
-      <script src="${arg.editor}/editor/apromore-editor.js" type="text/javascript"/>
+      <script src="${arg.editor}/editor/bpmneditor.js" type="text/javascript"/>
 
 
         <z:zk forEach="${arg.plugins}">
@@ -120,40 +120,44 @@
             <n:script>
                 <![CDATA[
                     var editorWrapper;
-                    createEditor = function (bpmnXML) {
-                      editorWrapper = new Apromore.EditorApp ({
-                        xml: bpmnXML,
-                        id : 'editorcanvas',
-                        fullscreen : true,
-                        useSimulationPanel: true,
-                        viewOnly: ${arg.viewOnly},
-                        langTag: '${arg.langTag}'
-                      });
+                    createEditor = async function (bpmnXML) {
+                      var config = {
+                          xml: bpmnXML,
+                          id : 'editorcanvas',
+                          fullscreen : true,
+                          useSimulationPanel: true,
+                          viewOnly: ${arg.viewOnly},
+                          langTag: '${arg.langTag}'
+                        };
+                      editorWrapper = new Apromore.BPMNEditor.EditorApp (config);
+                      await editorWrapper.init(config);
                     }
 					//console.log('${arg.bpmnXML}');
-                    createEditor('${arg.bpmnXML}');
-                    window.Ap = window.Ap || {};
-                    Apromore.Plugins.Share.shareExt = function() {
-                      zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onShare'));
-                    };
+                    createEditor('${arg.bpmnXML}').then(() => {
+                        window.Ap = window.Ap || {};
+                        Apromore.BPMNEditor.Plugins.Share.shareExt = function() {
+                          zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onShare'));
+                        };
 
-                    Apromore.Plugins.ApromoreSave.apromoreSaveAs = function(xml, svg) {
-                      //console.log(xml);
-                      zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSaveAs', xml));
-                    };
+                        Apromore.BPMNEditor.Plugins.ApromoreSave.apromoreSaveAs = function(xml, svg) {
+                          //console.log(xml);
+                          zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSaveAs', xml));
+                        };
 
-                    Apromore.Plugins.ApromoreSave.apromoreSave = function(xml, svg) {
-                      //console.log(xml);
-                      //console.log(svg);
-                      zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSave', xml));
-                    };
+                        Apromore.BPMNEditor.Plugins.ApromoreSave.apromoreSave = function(xml, svg) {
+                          //console.log(xml);
+                          //console.log(svg);
+                          zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSave', xml));
+                        };
 
-					//window.setTimeout(function() {
-					  //console.log($$("div.Apromore_Editor div.bjs-container div.djs-container svg g.viewport")[0]);
-					  //console.log(editorWrapper.getCanvas()._editor.getDefinitions());
-					//}, 1000);
+                        //window.setTimeout(function() {
+                          //console.log($$("div.Apromore_Editor div.bjs-container div.djs-container svg g.viewport")[0]);
+                          //console.log(editorWrapper.getCanvas()._editor.getDefinitions());
+                        //}, 1000);
 
-					document.title = '${labels.brand_shortName} - ${labels.bpmnEditor_title_text}';
+                        document.title = '${labels.brand_shortName} - ${labels.bpmnEditor_title_text}';
+                    });
+
                 ]]>
             </n:script>
         </n:span>

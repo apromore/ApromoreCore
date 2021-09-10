@@ -21,12 +21,8 @@
  * DEALINGS IN THE SOFTWARE.
  **/
 
-/**
- * Init namespaces
- */
-if (!Apromore) {
-    var Apromore = {};
-}
+import Log from './logger';
+import Utils from './utils';
 
 /**
  * Editor is actually a wrapper around the true editor (e.g. BPMN.io)
@@ -34,30 +30,30 @@ if (!Apromore) {
  * The aim is to minimize the impact of the implementation changes with changes minimized to this
  * class only while the editor used in Apromore codebase is unchanged as they only access this Editor class.
  */
-Apromore.Editor = {
-    construct: function(options) {
+export default class Editor {
+    constructor(options) {
         this.actualEditor = undefined;
         this.preventFitDelay = options.preventFitDelay;
 
         if (!(options && options.width && options.height)) {
-            Apromore.Log.fatal("The editor is missing mandatory parameters options.width and options.height.");
+            Log.fatal("The editor is missing mandatory parameters options.width and options.height.");
             return;
         }
 
         this.className = "Apromore_Editor";
-        this.rootNode = Apromore.Utils.graft("http://www.w3.org/1999/xhtml", options.parentNode,
+        this.rootNode = Utils.graft("http://www.w3.org/1999/xhtml", options.parentNode,
             ['div', {id: options.id, width: options.width, height: options.height}
             ]);
         //this.rootNode.addClassName(this.className);
         this.rootNode.classList.add(this.className);
-    },
+    }
 
-    getScrollNode: function () {
+    getScrollNode() {
         "use strict";
         return Ext.get(this.rootNode).parent("div{overflow=auto}", true);
-    },
+    }
 
-    updateUndoRedo: function () {
+    updateUndoRedo() {
         try {
             var undo = jq('#ap-id-editor-undo-btn');
             var redo = jq('#ap-id-editor-redo-btn');
@@ -74,26 +70,26 @@ Apromore.Editor = {
         } catch(e) {
             console.log('Unexpected error occurred when update button status');
         }
-    },
+    }
 
-    attachEditor: function (editor) {
+    attachEditor(editor) {
         var me = this;
-        this.actualEditor = editor;
+        this.actualEditor = editor; //This is a BPMNJS object
         this.updateUndoRedo();
         this.addCommandStackChangeListener(function () {
             me.updateUndoRedo();
         });
-    },
+    }
 
-    getSVGContainer: function() {
+    getSVGContainer() {
         return $("div.Apromore_Editor div.bjs-container div.djs-container svg")[0];
-    },
+    }
 
-    getSVGViewport: function() {
+    getSVGViewport() {
         return $("div.Apromore_Editor div.bjs-container div.djs-container svg g.viewport")[0];
-    },
+    }
 
-    getSourceNodeId: function (sequenceFlowId) {
+    getSourceNodeId(sequenceFlowId) {
         var foundId;
         var elements = this.actualEditor.getDefinitions().rootElements[0].flowElements;
         elements.forEach(function(element) {
@@ -102,9 +98,9 @@ Apromore.Editor = {
             }
         });
         return foundId;
-    },
+    }
 
-    getTargetNodeId: function (sequenceFlowId) {
+    getTargetNodeId(sequenceFlowId) {
         var foundId;
         var flowElements = this.actualEditor.getDefinitions().rootElements[0].flowElements;
         flowElements.forEach(function(element) {
@@ -113,9 +109,9 @@ Apromore.Editor = {
             }
         });
         return foundId;
-    },
+    }
 
-    getIncomingFlowId: function (nodeId) {
+    getIncomingFlowId(nodeId) {
         var foundId;
         var flowElements = this.actualEditor.getDefinitions().rootElements[0].flowElements;
         flowElements.forEach(function(element) {
@@ -124,9 +120,9 @@ Apromore.Editor = {
             }
         });
         return foundId;
-    },
+    }
 
-    getOutgoingFlowId: function (nodeId) {
+    getOutgoingFlowId(nodeId) {
         var foundId;
         var elements = this.actualEditor.getDefinitions().rootElements[0].flowElements;
         elements.forEach(function(element) {
@@ -135,11 +131,11 @@ Apromore.Editor = {
             }
         });
         return foundId;
-    },
+    }
 
-    toString: function () {
+    toString() {
         return "EditorWrapper " + this.id;
-    },
+    }
 
     /**
      * Any clean up needs to be done on the raw XML
@@ -147,7 +143,7 @@ Apromore.Editor = {
      * @todo: There might be a structured way to do this (e.g. XML parser),
      * but this should be the fastest fix for now
      */
-    sanitizeXML: function (xml) {
+    sanitizeXML(xml) {
         var REMOVE_LIST = [
             // Empty label element breaks label editing in bpmn.io
             /<bpmndi:BPMNLabel\s*\/>/ig,
@@ -158,7 +154,7 @@ Apromore.Editor = {
             xml = xml.replaceAll(regex, '');
         })
         return xml;
-    },
+    }
 
     /**
      * Import XML into the editor.
@@ -168,123 +164,127 @@ Apromore.Editor = {
      *
      * @todo: Avoid seperate conditional for loganimation and bpmneditor
      */
-    importXML: function(xml, callback) {
-      // this.editor.importXML(xml, function(err) {
-      //   if (err) {
-      //     return console.error('could not import BPMN 2.0 diagram', err);
-      //   }
-      //   this.zoomFitToModel();
-      // }.bind(this));
-
-      try {
-        xml = this.sanitizeXML(xml);
-      } catch(e) {
-        console.log('Failed to sanitize');
-        // pass
-      }
-
-      //EXPERIMENTING WITH THE BELOW TO FIX ARROWS NOT SNAP TO EDGES WHEN OPENING MODELS
-      //Some BPMN files are not compatible with bpmn.io
-      var editor = this.actualEditor;
-      this.actualEditor.importXML(xml, function(err) {
-        if (err) {
-          window.alert("Failed to import BPMN diagram. Please make sure it's a valid BPMN 2.0 diagram.");
-          return;
-        }
-
-        var eventBus = editor.get('eventBus');
-        var elementRegistry = editor.get('elementRegistry');
-        var connections = elementRegistry.filter(function(e) {
-          return e.waypoints;
-        });
+    async importXML(xml, callback) {
         try {
-          var connectionDocking = editor.get('connectionDocking');
-          connections.forEach(function(connection) {
-            connection.waypoints = connectionDocking.getCroppedWaypoints(connection);
-          });
-        } catch (e) {
-          console.log('skip connectionDocking error');
-          // pass
+            xml = this.sanitizeXML(xml);
+        } catch(e) {
+            console.log('Failed to sanitize');
+            // pass
         }
-        eventBus.fire('elements.changed', { elements: connections });
-        // @todo: Avoid this conditional
-        if (this.preventFitDelay) { // this is for loganimation
-            this.zoomFitToModel();
-            callback();
-        } else { // this is for BPMN editor
-            callback();
-            var me = this; // delay the fit until the properties panel fully collapsed
-            setTimeout(function () {
-                me.zoomFitToModel();
-            }, 500);
-        }
-      }.bind(this));
-    },
 
-    getXML: function() {
+        //EXPERIMENTING WITH THE BELOW TO FIX ARROWS NOT SNAP TO EDGES WHEN OPENING MODELS
+        //Some BPMN files are not compatible with bpmn.io
+        var editor = this.actualEditor;
+        //Converting to promise
+        try {
+            const result = await editor.importXML(xml);
+            var eventBus = editor.get('eventBus');
+            var elementRegistry = editor.get('elementRegistry');
+            var connections = elementRegistry.filter(function(e) {
+                return e.waypoints;
+            });
+            try {
+                var connectionDocking = editor.get('connectionDocking');
+                connections.forEach(function(connection) {
+                    connection.waypoints = connectionDocking.getCroppedWaypoints(connection);
+                });
+            } catch (e) {
+                console.log('skip connectionDocking error');
+                // pass
+            }
+            eventBus.fire('elements.changed', { elements: connections });
+            // @todo: Avoid this conditional
+            if (this.preventFitDelay) { // this is for loganimation
+                this.zoomFitToModel();
+                callback();
+            } else { // this is for BPMN editor
+                callback();
+                var me = this; // delay the fit until the properties panel fully collapsed
+                setTimeout(function () {
+                    me.zoomFitToModel();
+                }, 500);
+            }
+
+        } catch (err) {
+            window.alert("Failed to import BPMN diagram. Please make sure it's a valid BPMN 2.0 diagram.");
+            return;
+        }
+    }
+
+    async getXML() {
         var bpmnXML;
-        this.actualEditor.saveXML({ format: true }, function(err, xml) {
-            bpmnXML = xml;
-        });
+
+        try {
+          const result = await this.actualEditor.saveXML({ format: true });
+          const { xml } = result;
+          bpmnXML = xml;
+        } catch (err) {
+          console.log(err);
+        }
         return bpmnXML;
-    },
+    }
 
-    getSVG: function() {
+    async getSVG() {
         var bpmnSVG;
-        this.actualEditor.saveSVG(function(err, svg) {
-            bpmnSVG = svg;
-        });
-        return bpmnSVG;
-    },
 
-    zoomFitToModel: function() {
+        try {
+          const result = await this.actualEditor.saveSVG();
+          const { svg } = result;
+          bpmnSVG = svg;
+        } catch (err) {
+          console.log(err);
+        }
+        return bpmnSVG;
+    }
+
+    zoomFitToModel() {
         if (this.actualEditor) {
             var canvas = this.actualEditor.get('canvas');
             canvas.viewbox(false); // trigger recalculate the viewbox
             canvas.zoom('fit-viewport', 'auto'); // zoom to fit full viewport
         }
-    },
+    }
 
-    zoomIn: function() {
+    zoomIn() {
         // this.actualEditor.get('editorActions').trigger('stepZoom', { value: 1 });
         if (this.actualEditor) {
             var canvas = this.actualEditor.get('canvas');
             canvas.zoom(canvas.zoom() * 1.1);
         }
-    },
+    }
 
-    zoomOut: function() {
+    zoomOut() {
         // this.actualEditor.get('editorActions').trigger('stepZoom', { value: -1 });
         if (this.actualEditor) {
             var canvas = this.actualEditor.get('canvas');
             canvas.zoom(canvas.zoom() * 0.9);
         }
-    },
+    }
 
-    zoomDefault: function() {
+    zoomDefault() {
         // editorActions.trigger('zoom', { value: 1 });
         if (this.actualEditor) {
             var canvas = this.actualEditor.get('canvas');
             canvas.zoom(1);
         }
-    },
+    }
 
-    createShape: function(type, x, y, w, h) {
+    createShape(type, x, y, w, h) {
         var modelling = this.actualEditor.get('modeling');
         var parent = this.actualEditor.get('canvas').getRootElement();
         //console.log('parent', parent);
         var shape = modelling.createShape({type:type, width:w, height:h}, {x:x, y:y}, parent);
         return shape.id;
-    },
+    }
 
-    updateProperties: function(elementId, properties) {
+    updateProperties(elementId, properties) {
         var modelling = this.actualEditor.get('modeling');
         var registry = this.actualEditor.get('elementRegistry');
         modelling.updateProperties(registry.get(elementId), properties);
-    },
+    }
 
 
-    createSequenceFlow: function (source, target, attrs) {
+    createSequenceFlow (source, target, attrs) {
         var attrs2 = {};
         Object.assign(attrs2,{type:'bpmn:SequenceFlow'});
         if (attrs.waypoints) {
@@ -295,9 +295,9 @@ Apromore.Editor = {
         var flow = modelling.connect(registry.get(source), registry.get(target), attrs2);
         //console.log(flow);
         return flow.id;
-    },
+    }
 
-    createAssociation: function (source, target, attrs) {
+    createAssociation(source, target, attrs) {
         var attrs2 = {};
         Object.assign(attrs2,{type:'bpmn:Association'});
         if (attrs.waypoints) {
@@ -307,18 +307,18 @@ Apromore.Editor = {
         var registry = this.actualEditor.get('elementRegistry');
         var assoc = Object.assign(assoc, modelling.connect(registry.get(source), registry.get(target), attrs2));
         return assoc.id;
-    },
+    }
 
-    highlight: function (elementId) {
+    highlight(elementId) {
         //console.log("Highlighting elementId: " + elementId);
         var self = this;
         var element = self.actualEditor.get('elementRegistry').get(elementId);
         var modelling = self.actualEditor.get('modeling');
         //console.log(element);
         modelling.setColor([element],{stroke:'red'});
-    },
+    }
 
-    colorElements: function (elementIds, color) {
+    colorElements(elementIds, color) {
         var elements = [];
         var registry = this.actualEditor.get('elementRegistry');
         elementIds.forEach(function(elementId) {
@@ -326,21 +326,21 @@ Apromore.Editor = {
         });
         var modelling = this.actualEditor.get('modeling');
         modelling.setColor(elements, {stroke:color});
-    },
+    }
 
-    colorElement: function (elementId, color) {
+    colorElement(elementId, color) {
         var modelling = this.actualEditor.get('modeling');
         var element = this.actualEditor.get('elementRegistry').get(elementId);
         modelling.setColor([element],{stroke:color});
-    },
+    }
 
-    fillColor: function (elementId, color) {
+    fillColor(elementId, color) {
         var modelling = this.actualEditor.get('modeling');
         var element = this.actualEditor.get('elementRegistry').get(elementId);
         modelling.setColor([element],{fill:color});
-    },
+    }
 
-    greyOut: function(elementIds) {
+    greyOut(elementIds) {
         var elementRegistry = this.actualEditor.get('elementRegistry');
         var self = this;
         elementIds.forEach(function(id) {
@@ -350,15 +350,15 @@ Apromore.Editor = {
             visual.setAttributeNS(null, "style", "opacity: 0.25");
         });
 
-    },
+    }
 
-    normalizeAll: function() {
+    normalizeAll() {
         var registry = this.actualEditor.get('elementRegistry');
         var modelling = this.actualEditor.get('modeling');
         modelling.setColor(registry.getAll(), {stroke:'black'});
-    },
+    }
 
-    removeShapes: function(shapeIds) {
+    removeShapes(shapeIds) {
         var registry = this.actualEditor.get('elementRegistry');
         var modelling = this.actualEditor.get('modeling');
         console.log(shapeIds);
@@ -367,18 +367,18 @@ Apromore.Editor = {
             shapes.push(registry.get(shapeId));
         });
         modelling.removeElements(shapes);
-    },
+    }
 
-    getAllElementIds: function() {
+    getAllElementIds() {
         var ids = [];
         var elementRegistry = this.actualEditor.get('elementRegistry');
         elementRegistry.getAll().forEach(function(element) {
             ids.push(element.id);
         });
         return ids;
-    },
+    }
 
-    shapeCenter: function (shapeId) {
+    shapeCenter(shapeId) {
         var position = {};
         var registry = this.actualEditor.get('elementRegistry');
         var shape = registry.get(shapeId);
@@ -388,33 +388,33 @@ Apromore.Editor = {
         position.x = (shape.x + shape.width/2);
         position.y = (shape.y + shape.height/2);
         return position;
-    },
+    }
 
-    clear: function() {
+    clear() {
         this.actualEditor.clear();
-    },
+    }
 
-    registerActionHandler: function(handlerName, handler) {
+    registerActionHandler(handlerName, handler) {
         var commandStack = this.actualEditor.get('commandStack');
         commandStack.registerHandler(handlerName, handler);
-    },
+    }
 
-    executeActionHandler: function(handlerName, context) {
+    executeActionHandler(handlerName, context) {
         var commandStack = this.actualEditor.get('commandStack');
         commandStack.execute(handlerName, context);
-    },
+    }
 
-    getCenter: function (shapeId) {
+    getCenter(shapeId) {
         var shape = this.actualEditor.get('elementRegistry').get(shapeId);
         return {
             x: shape.x + (shape.width || 0) / 2,
             y: shape.y + (shape.height || 0) / 2
         }
-    },
+    }
 
     // Center viewbox to an element
     // From https://forum.bpmn.io/t/centering-zooming-view-to-a-specific-element/1536/6
-    centerElement: function(elementId) {
+    centerElement(elementId) {
         // assuming we center on a shape.
         // for connections we must compute the bounding box
         // based on the connection's waypoints
@@ -433,19 +433,19 @@ Apromore.Editor = {
           width: currentViewbox.width,
           height: currentViewbox.height
         });
-    },
+    }
 
-  _getActionStack: function() {
+  _getActionStack() {
     return this.actualEditor.get('commandStack')._stack;
-  },
+  }
 
-  _getCurrentStackIndex: function() {
+  _getCurrentStackIndex() {
     return this.actualEditor.get('commandStack')._stackIdx;
-  },
+  }
 
   // Get all base action indexes backward from the current command stack index
   // The first element in the result is the earliest base action and so on
-  _getBaseActions: function() {
+  _getBaseActions() {
     var actions = this._getActionStack();
     var stackIndex = this._getCurrentStackIndex();
     var baseActionIndexes = [];
@@ -455,16 +455,16 @@ Apromore.Editor = {
       }
     }
     return baseActionIndexes;
-  },
+  }
 
-  undo: function() {
+  undo() {
     this.actualEditor.get('commandStack').undo();
-  },
+  }
 
   // Undo to the point before an action (actionName is the input)
   // Nothing happens if the action is not found
   // The number of undo times is the number of base actions from the current stack index
-  undoSeriesUntil: function(actionName) {
+  undoSeriesUntil(actionName) {
     var actions = this._getActionStack();
     var baseActions = this._getBaseActions();
     var baseActionNum = 0;
@@ -481,31 +481,31 @@ Apromore.Editor = {
       this.undo();
       baseActionNum--;
     }
-  },
+  }
 
-  canUndo: function() {
+  canUndo() {
     if (!this.actualEditor) {
       return false;
     }
     else {
       return this.actualEditor.get('commandStack').canUndo();
     }
-  },
+  }
 
-  redo: function() {
+  redo() {
     this.actualEditor.get('commandStack').redo();
-  },
+  }
 
-  canRedo: function() {
+  canRedo() {
     if (!this.actualEditor) {
       return false;
     }
     else {
       return this.actualEditor.get('commandStack').canRedo();
     }
-  },
+  }
 
-  getLastBaseAction: function() {
+  getLastBaseAction() {
     var actions = this._getActionStack();
     var baseActions = this._getBaseActions();
     if (baseActions.length > 0) {
@@ -514,11 +514,11 @@ Apromore.Editor = {
     else {
       return '';
     }
-  },
+  }
 
   // Get the next latest base action in the command stack
   // that is not in the excluding list
-  getNextBaseActionExcluding: function(excludingActions) {
+  getNextBaseActionExcluding(excludingActions) {
     var actions = this._getActionStack();
     var baseActionIndexes = this._getBaseActions();
     if (baseActionIndexes.length >= 2) {
@@ -529,17 +529,14 @@ Apromore.Editor = {
       }
     }
     return '';
-  },
+  }
 
-  addCommandStackChangeListener: function(callback) {
+  addCommandStackChangeListener(callback) {
     this.actualEditor.on('commandStack.changed', callback);
-  },
+  }
 
-  addEventBusListener: function(eventCode, callback) {
+  addEventBusListener(eventCode, callback) {
     this.actualEditor.get('eventBus').on(eventCode, callback);
   }
 
 };
-
-Apromore.Editor = Clazz.extend(Apromore.Editor);
-

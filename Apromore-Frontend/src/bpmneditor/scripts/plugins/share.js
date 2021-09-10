@@ -20,25 +20,17 @@
  * #L%
  */
 
-/**
- * @namespace Apromore name space for plugins
- * @name Apromore.Plugins
- */
-if (!Apromore.Plugins) {
-    Apromore.Plugins = new Object();
-}
+import CONFIG from './../config';
 
 /**
  * The share plugin provide share functionality
  *
- * @class Apromore.Plugins.Share
- * @extends Clazz
+ * @class Share
  * @param {Object} facade The editor facade for plugins.
  */
-Apromore.Plugins.Share = Clazz.extend({
-    facade: undefined,
+export default class Share {
 
-    construct: function (facade) {
+    constructor (facade) {
         this.facade = facade;
 
         /* Register share */
@@ -47,20 +39,18 @@ Apromore.Plugins.Share = Clazz.extend({
             'name': Apromore.I18N.Share.share,
             'functionality': this.share.bind(this),
             'group': Apromore.I18N.Share.group,
-            'icon': Apromore.PATH + "images/ap/share.svg",
+            'icon': CONFIG.PATH + "images/ap/share.svg",
             'description': Apromore.I18N.Share.shareDesc,
             'index': 1,
             'minShape': 0,
             'maxShape': 0});
 
-    },
+    }
 
-    share: function (factor) {
-            if (Apromore.Plugins.Share.shareExt) {
-                Apromore.Plugins.Share.shareExt();
+    share(factor) {
+            if (Apromore.BPMNEditor.Plugins.Share.shareExt) {
+                Apromore.BPMNEditor.Plugins.Share.shareExt();
             }
-    },
+    }
 
-});
-
-
+};

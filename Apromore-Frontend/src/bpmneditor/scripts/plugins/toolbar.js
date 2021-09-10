@@ -21,30 +21,25 @@
  * DEALINGS IN THE SOFTWARE.
  **/
 
+import CONFIG from './../config';
+import Log from './../logger';
 
-if(!Apromore.Plugins) {
-	Apromore.Plugins = new Object();
-}
+export default class Toolbar {
+    constructor(facade, ownPluginData) {
+        this.plugs = [];
+        this.facade = facade;
 
-Apromore.Plugins.Toolbar = Clazz.extend({
+        this.groupIndex = new Hash();
+        ownPluginData.properties.each((function(value){
+            if(value.group && value.index != undefined) {
+                this.groupIndex[value.group] = value.index
+            }
+        }).bind(this));
 
-	facade: undefined,
-	plugs:	[],
+        Ext.QuickTips.init();
 
-	construct: function(facade, ownPluginData) {
-		this.facade = facade;
-
-		this.groupIndex = new Hash();
-		ownPluginData.properties.each((function(value){
-			if(value.group && value.index != undefined) {
-				this.groupIndex[value.group] = value.index
-			}
-		}).bind(this));
-
-		Ext.QuickTips.init();
-
-		this.buttons = [];
-	},
+        this.buttons = [];
+    }
 
     /**
      * Can be used to manipulate the state of a button.
@@ -56,7 +51,7 @@ Apromore.Plugins.Toolbar = Clazz.extend({
      * });
      * @param {Object} event
      */
-    onButtonUpdate: function(event){
+    onButtonUpdate(event) {
         var button = this.buttons.find(function(button){
             return button.id === event.id;
         });
@@ -64,44 +59,45 @@ Apromore.Plugins.Toolbar = Clazz.extend({
         if(event.pressed !== undefined){
             button.buttonInstance.toggle(event.pressed);
         }
-    },
+    }
 
-	registryChanged: function(pluginsData) {
+    registryChanged(pluginsData) {
         // Sort plugins by group and index
-		var newPlugs =  pluginsData.sortBy((function(value) {
-			return ((this.groupIndex[value.group] != undefined ? this.groupIndex[value.group] : "" ) + value.group + "" + value.index).toLowerCase();
-		}).bind(this));
+        //TODO: Update this to look through the plugins list
+        var newPlugs =  pluginsData.sortBy((function(value) {
+            return ((this.groupIndex[value.group] != undefined ? this.groupIndex[value.group] : "" ) + value.group + "" + value.index).toLowerCase();
+        }).bind(this));
 
-		// Search all plugins that are defined as plugin toolbar buttons or undefined target (meaning for all)
-		var plugs = $A(newPlugs).findAll(function(plugin){
-										return !this.plugs.include(plugin) && (!plugin.target || plugin.target === Apromore.Plugins.Toolbar)
-									}.bind(this));
-		if(plugs.length<1) return;
+        // Search all plugins that are defined as plugin toolbar buttons or undefined target (meaning for all)
+        var plugs = $A(newPlugs).findAll(function(plugin){
+                                        return !this.plugs.include(plugin) && (!plugin.target || plugin.target === Apromore.Plugins.Toolbar)
+                                    }.bind(this));
+        if(plugs.length<1) return;
 
-		this.buttons = [];
+        this.buttons = [];
 
-		Apromore.Log.trace("Creating a toolbar.")
+        Log.trace("Creating a toolbar.");
 
         if(!this.toolbar){
-			this.toolbar = new Ext.ux.SlicedToolbar({height: 24});
-			var region = this.facade.addToRegion("north", this.toolbar, "Toolbar");
-		}
+            this.toolbar = new Ext.ux.SlicedToolbar({height: 24});
+            var region = this.facade.addToRegion("north", this.toolbar, "Toolbar");
+        }
 
-		var currentGroupsName = this.plugs.last() ? this.plugs.last().group: plugs[0].group;
+        var currentGroupsName = this.plugs.last() ? this.plugs.last().group: plugs[0].group;
 
         // Map used to store all drop down buttons of current group
         var currentGroupsDropDownButton = {};
 
-		plugs.each((function(plugin) {
-			if(!plugin.name) {return}
-			this.plugs.push(plugin);
+        plugs.each((function(plugin) {
+            if(!plugin.name) {return}
+            this.plugs.push(plugin);
 
-            // Add seperator if new group begins
-			if(currentGroupsName != plugin.group) {
-			    this.toolbar.add('-');
-				currentGroupsName = plugin.group;
+            // Add separator if new group begins
+            if(currentGroupsName != plugin.group) {
+                this.toolbar.add('-');
+                currentGroupsName = plugin.group;
                 currentGroupsDropDownButton = {};
-			}
+            }
 
             // If an drop down group icon is provided, a split button should be used
             // This is unused at this stage as all toolbar buttons are simple
@@ -161,8 +157,8 @@ Apromore.Plugins.Toolbar = Clazz.extend({
 
                 splitButton.menu.add(button);
 
-			} else { // create normal, simple button
-			    var options = {
+            } else { // create normal, simple button
+                var options = {
                     icon:           plugin.icon,         // icons can also be specified inline
                     cls:            'x-btn-icon',       // Class who shows only the icon
                     itemId:         plugin.id,
@@ -182,42 +178,42 @@ Apromore.Plugins.Toolbar = Clazz.extend({
                 button.getEl().onclick = function() {this.blur()}
             }
 
-			plugin['buttonInstance'] = button;
-			this.buttons.push(plugin);
+            plugin['buttonInstance'] = button;
+            this.buttons.push(plugin);
 
-		}).bind(this));
+        }).bind(this));
 
-		this.enableButtons([]);
+        this.enableButtons([]);
 
         // This is unused at this stage as all toolbar buttons are simple
         this.toolbar.calcSlices();
-		window.addEventListener("resize", function(event){this.toolbar.calcSlices()}.bind(this), false);
-		window.addEventListener("onresize", function(event){this.toolbar.calcSlices()}.bind(this), false);
+        window.addEventListener("resize", function(event){this.toolbar.calcSlices()}.bind(this), false);
+        window.addEventListener("onresize", function(event){this.toolbar.calcSlices()}.bind(this), false);
 
-	},
+    }
 
-	onSelectionChanged: function(event) {
-		this.enableButtons(event.elements);
-	},
+    onSelectionChanged(event) {
+        this.enableButtons(event.elements);
+    }
 
-	enableButtons: function(elements) {
-		// Show the Buttons
-		this.buttons.each((function(pluginButton){
-			pluginButton.buttonInstance.enable();
+    enableButtons(elements) {
+        // Show the Buttons
+        this.buttons.each((function(pluginButton){
+            pluginButton.buttonInstance.enable();
 
-			// If there is less elements than minShapes
-			if(pluginButton.minShape && pluginButton.minShape > elements.length)
-				pluginButton.buttonInstance.disable();
-			// If there is more elements than minShapes
-			if(pluginButton.maxShape && pluginButton.maxShape < elements.length)
-				pluginButton.buttonInstance.disable();
-			// If the plugin button is not enabled
-			if(pluginButton.isEnabled && !pluginButton.isEnabled(pluginButton.buttonInstance))
-				pluginButton.buttonInstance.disable();
+            // If there is less elements than minShapes
+            if(pluginButton.minShape && pluginButton.minShape > elements.length)
+                pluginButton.buttonInstance.disable();
+            // If there is more elements than minShapes
+            if(pluginButton.maxShape && pluginButton.maxShape < elements.length)
+                pluginButton.buttonInstance.disable();
+            // If the plugin button is not enabled
+            if(pluginButton.isEnabled && !pluginButton.isEnabled(pluginButton.buttonInstance))
+                pluginButton.buttonInstance.disable();
 
-		}).bind(this));
-	}
-});
+        }).bind(this));
+    }
+};
 
 Ext.ns("Ext.ux");
 Ext.ux.SlicedToolbar = Ext.extend(Ext.Toolbar, {
@@ -312,7 +308,7 @@ Ext.ux.SlicedToolbar = Ext.extend(Ext.Toolbar, {
 
         var button = new Ext.Toolbar.Button({
             cls: "x-btn-icon",
-            icon: Apromore.CONFIG.ROOT_PATH + "images/toolbar_"+type+".png",
+            icon: CONFIG.ROOT_PATH + "images/toolbar_"+type+".png",
             handler: (type === "next") ? nextHandler : prevHandler
         });
 

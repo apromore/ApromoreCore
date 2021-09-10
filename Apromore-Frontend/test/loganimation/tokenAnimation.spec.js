@@ -11,13 +11,10 @@ describe('Test Token Animation', function () {
     let animationContext;
     /** @type FrameBuffer */
     let buffer;
-    beforeEach(function() {
-        jasmine.clock().install();
-        let animation = testFactory.createFullDataLogAnimation();
-        jasmine.clock().tick(1000);
-        jasmine.clock().uninstall();
+    beforeEach(async function() {
+        let animation = await testFactory.createFullDataLogAnimation();
         tokenAnimation = animation.getTokenAnimation();
-        buffer = createFullDataFrameBuffer();
+        buffer = await createFullDataFrameBuffer();
         tokenAnimation.setFrameBuffer(buffer);
         animationContext = animation.getAnimationContext();
     });

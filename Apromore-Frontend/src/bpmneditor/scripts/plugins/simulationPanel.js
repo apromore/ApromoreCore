@@ -1,23 +1,15 @@
-/**
- * @namespace Apromore name space for plugins
- * @name Apromore.Plugins
- */
-if (!Apromore.Plugins)
-    Apromore.Plugins = new Object();
+import CONFIG from './../config';
 
 /**
  * The simulation panel plugin offers functionality to change model simulation parameters over the
  * simulation parameters panel.
  *
- * @class Apromore.Plugins.SimulationPanel
- * @extends Clazz
+ * @class SimulationPanel
  * @param {Object} facade The editor facade for plugins.
  */
-Apromore.Plugins.SimulationPanel = Clazz.extend({
-    /** @lends Apromore.Plugins.SimulationPanel.prototype */
-    facade: undefined,
+export default class SimulationPanel {
 
-    construct: function (facade) {
+    constructor(facade) {
         this.facade = facade;
 
         /* Register toggle simulation panel */
@@ -30,15 +22,15 @@ Apromore.Plugins.SimulationPanel = Clazz.extend({
             'index': 1,
             'minShape': 0,
             'maxShape': 0,
-            'icon': Apromore.PATH + "images/ap/simulate-model.svg",
+            'icon': CONFIG.PATH + "images/ap/simulate-model.svg",
             isEnabled : function(){ return facade.useSimulationPanel}.bind(this),
         });
-    },
+    };
 
     /**
      * Shortcut for performing an expand or collapse based on the current state of the panel.
      */
-    toggleSimulationDrawer: function () {
+    toggleSimulationDrawer() {
         this.facade.getSimulationDrawer().toggleCollapse(true);
     }
-});
+};

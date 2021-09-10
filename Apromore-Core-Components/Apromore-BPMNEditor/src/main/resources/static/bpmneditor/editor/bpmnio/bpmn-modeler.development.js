@@ -99,41 +99,44 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "h", function() { return flatten; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return find; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "g", function() { return findIndex; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return filter; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "i", function() { return forEach; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "F", function() { return without; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "y", function() { return reduce; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return every; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "A", function() { return some; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "u", function() { return map; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "t", function() { return keys; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "z", function() { return size; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "E", function() { return values; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "j", function() { return groupBy; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "D", function() { return uniqueBy; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "C", function() { return unionBy; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "B", function() { return sortBy; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "v", function() { return matchPattern; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return debounce; });
-/* unused harmony export throttle */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return bind; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "s", function() { return isUndefined; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "m", function() { return isDefined; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "o", function() { return isNil; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "l", function() { return isArray; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "q", function() { return isObject; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "p", function() { return isNumber; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "n", function() { return isFunction; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "r", function() { return isString; });
-/* unused harmony export ensureArray */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "k", function() { return has; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return assign; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "x", function() { return pick; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "w", function() { return omit; });
-/* unused harmony export merge */
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "assign", function() { return assign; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "bind", function() { return bind; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "debounce", function() { return debounce; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ensureArray", function() { return ensureArray; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "every", function() { return every; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "filter", function() { return filter; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "find", function() { return find; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "findIndex", function() { return findIndex; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "flatten", function() { return flatten; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "forEach", function() { return forEach; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "get", function() { return get; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "groupBy", function() { return groupBy; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "has", function() { return has; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isArray", function() { return isArray; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isDefined", function() { return isDefined; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isFunction", function() { return isFunction; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isNil", function() { return isNil; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isNumber", function() { return isNumber; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isObject", function() { return isObject; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isString", function() { return isString; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isUndefined", function() { return isUndefined; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "keys", function() { return keys; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "map", function() { return map; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "matchPattern", function() { return matchPattern; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "merge", function() { return merge; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "omit", function() { return omit; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "pick", function() { return pick; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "reduce", function() { return reduce; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "set", function() { return set; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "size", function() { return size; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "some", function() { return some; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "sortBy", function() { return sortBy; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "throttle", function() { return throttle; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "unionBy", function() { return unionBy; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "uniqueBy", function() { return uniqueBy; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "values", function() { return values; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "without", function() { return without; });
 /**
  * Flatten array, one level deep.
  *
@@ -485,7 +488,7 @@ function sortBy(collection, extractor) {
  *
  * const matcher = matchPattern({ id: 1 });
  *
- * var element = find(elements, matcher);
+ * let element = find(elements, matcher);
  *
  * @param  {Object} pattern
  *
@@ -521,8 +524,11 @@ function toNum(arg) {
 }
 
 /**
- * Debounce fn, calling it only once if
- * the given time elapsed between calls.
+ * Debounce fn, calling it only once if the given time
+ * elapsed between calls.
+ *
+ * Lodash-style the function exposes methods to `#clear`
+ * and `#flush` to control internal behavior.
  *
  * @param  {Function} fn
  * @param  {Number} timeout
@@ -535,23 +541,39 @@ function debounce(fn, timeout) {
   var lastThis;
   var lastNow;
 
-  function fire() {
+  function fire(force) {
     var now = Date.now();
-    var scheduledDiff = lastNow + timeout - now;
+    var scheduledDiff = force ? 0 : lastNow + timeout - now;
 
     if (scheduledDiff > 0) {
       return schedule(scheduledDiff);
     }
 
     fn.apply(lastThis, lastArgs);
-    timer = lastNow = lastArgs = lastThis = undefined;
+    clear();
   }
 
   function schedule(timeout) {
     timer = setTimeout(fire, timeout);
   }
 
-  return function () {
+  function clear() {
+    if (timer) {
+      clearTimeout(timer);
+    }
+
+    timer = lastNow = lastArgs = lastThis = undefined;
+  }
+
+  function flush() {
+    if (timer) {
+      fire(true);
+    }
+
+    clear();
+  }
+
+  function callback() {
     lastNow = Date.now();
 
     for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
@@ -564,7 +586,11 @@ function debounce(fn, timeout) {
     if (!timer) {
       schedule(timeout);
     }
-  };
+  }
+
+  callback.flush = flush;
+  callback.cancel = clear;
+  return callback;
 }
 /**
  * Throttle fn, calling at most once
@@ -636,6 +662,63 @@ function assign(target) {
   }
 
   return _extends.apply(void 0, [target].concat(others));
+}
+/**
+ * Sets a nested property of a given object to the specified value.
+ *
+ * This mutates the object and returns it.
+ *
+ * @param {Object} target The target of the set operation.
+ * @param {(string|number)[]} path The path to the nested value.
+ * @param {any} value The value to set.
+ */
+
+function set(target, path, value) {
+  var currentTarget = target;
+  forEach(path, function (key, idx) {
+    if (key === '__proto__') {
+      throw new Error('illegal key: __proto__');
+    }
+
+    var nextKey = path[idx + 1];
+    var nextTarget = currentTarget[key];
+
+    if (isDefined(nextKey) && isNil(nextTarget)) {
+      nextTarget = currentTarget[key] = isNaN(+nextKey) ? {} : [];
+    }
+
+    if (isUndefined(nextKey)) {
+      if (isUndefined(value)) {
+        delete currentTarget[key];
+      } else {
+        currentTarget[key] = value;
+      }
+    } else {
+      currentTarget = nextTarget;
+    }
+  });
+  return target;
+}
+/**
+ * Gets a nested property of a given object.
+ *
+ * @param {Object} target The target of the get operation.
+ * @param {(string|number)[]} path The path to the nested value.
+ * @param {any} [defaultValue] The value to return if no value exists.
+ */
+
+function get(target, path, defaultValue) {
+  var currentTarget = target;
+  forEach(path, function (key) {
+    // accessing nil property yields <undefined>
+    if (isNil(currentTarget)) {
+      currentTarget = undefined;
+      return false;
+    }
+
+    currentTarget = currentTarget[key];
+  });
+  return isUndefined(currentTarget) ? defaultValue : currentTarget;
 }
 /**
  * Pick given properties from the target object.
@@ -1354,13 +1437,14 @@ CmdHelper.updateBusinessObject = function(element, businessObject, newProperties
   };
 };
 
-CmdHelper.addElementsTolist = function(element, businessObject, listPropertyName, objectsToAdd) {
+CmdHelper.addElementsTolist = function(element, businessObject, listPropertyName, objectsToAdd, objectsToPrepend) {
   return {
     cmd: 'properties-panel.update-businessobject-list',
     context: {
       element: element,
       currentObject: businessObject,
       propertyName: listPropertyName,
+      objectsToPrepend: objectsToPrepend,
       objectsToAdd: objectsToAdd
     }
   };
@@ -1412,11 +1496,43 @@ CmdHelper.setList = function(element, businessObject, listPropertyName, updatedO
 
 /***/ }),
 /* 5 */
+/***/ (function(module, exports) {
+
+/**
+ * Checks if `value` is classified as an `Array` object.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an array, else `false`.
+ * @example
+ *
+ * _.isArray([1, 2, 3]);
+ * // => true
+ *
+ * _.isArray(document.body.children);
+ * // => false
+ *
+ * _.isArray('abc');
+ * // => false
+ *
+ * _.isArray(_.noop);
+ * // => false
+ */
+var isArray = Array.isArray;
+
+module.exports = isArray;
+
+
+/***/ }),
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var elementHelper = __webpack_require__(10),
-    ProcessSimulationHelper = __webpack_require__(9),
-    isDigit = __webpack_require__(17).isDigit;
+var elementHelper = __webpack_require__(11),
+    ProcessSimulationHelper = __webpack_require__(10),
+    isDigit = __webpack_require__(18).isDigit;
 
 var ValidationErrorHelper = {};
 
@@ -1872,345 +1988,7 @@ ValidationErrorHelper.validateToTime = function(bpmnFactory, elementRegistry, tr
 module.exports = ValidationErrorHelper;
 
 /***/ }),
-/* 6 */
-/***/ (function(module, exports) {
-
-/**
- * Checks if `value` is classified as an `Array` object.
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is an array, else `false`.
- * @example
- *
- * _.isArray([1, 2, 3]);
- * // => true
- *
- * _.isArray(document.body.children);
- * // => false
- *
- * _.isArray('abc');
- * // => false
- *
- * _.isArray(_.noop);
- * // => false
- */
-var isArray = Array.isArray;
-
-module.exports = isArray;
-
-
-/***/ }),
 /* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var getBusinessObject = __webpack_require__(1).getBusinessObject;
-
-// input entities
-var textInputField = __webpack_require__(101),
-    checkboxField = __webpack_require__(236),
-    selectBoxField = __webpack_require__(102),
-    comboBoxField = __webpack_require__(237),
-    textBoxField = __webpack_require__(246),
-    validationAwareTextInputField = __webpack_require__(247),
-    tableField = __webpack_require__(248),
-    labelEntry = __webpack_require__(249),
-    link = __webpack_require__(250);
-
-var cmdHelper = __webpack_require__(4);
-
-// helpers ////////////////////////////////////////
-
-function ensureNotNull(prop) {
-  if (!prop) {
-    throw new Error(prop + ' must be set.');
-  }
-
-  return prop;
-}
-
-/**
- * sets the default parameters which are needed to create an entry
- *
- * @param options
- * @returns {{id: *, description: (*|string), get: (*|Function), set: (*|Function),
- *            validate: (*|Function), html: string}}
- */
-var setDefaultParameters = function(options) {
-
-  // default method to fetch the current value of the input field
-  var defaultGet = function(element) {
-    var bo = getBusinessObject(element),
-        res = {},
-        prop = ensureNotNull(options.modelProperty);
-    res[prop] = bo.get(prop);
-
-    return res;
-  };
-
-  // default method to set a new value to the input field
-  var defaultSet = function(element, values) {
-    var res = {},
-        prop = ensureNotNull(options.modelProperty);
-    if (values[prop] !== '') {
-      res[prop] = values[prop];
-    } else {
-      res[prop] = undefined;
-    }
-
-    return cmdHelper.updateProperties(element, res);
-  };
-
-  // default validation method
-  var defaultValidate = function() {
-    return {};
-  };
-
-  return {
-    id : options.id,
-    description : (options.description || ''),
-    get : (options.get || defaultGet),
-    set : (options.set || defaultSet),
-    validate : (options.validate || defaultValidate),
-    html: ''
-  };
-};
-
-function EntryFactory() {
-
-}
-
-/**
- * Generates an text input entry object for a property panel.
- * options are:
- * - id: id of the entry - String
- *
- * - description: description of the property - String
- *
- * - label: label for the input field - String
- *
- * - set: setter method - Function
- *
- * - get: getter method - Function
- *
- * - validate: validation mehtod - Function
- *
- * - modelProperty: name of the model property - String
- *
- * - buttonAction: Object which contains the following properties: - Object
- * ---- name: name of the [data-action] callback - String
- * ---- method: callback function for [data-action] - Function
- *
- * - buttonShow: Object which contains the following properties: - Object
- * ---- name: name of the [data-show] callback - String
- * ---- method: callback function for [data-show] - Function
- *
- * @param options
- * @returns the propertyPanel entry resource object
- */
-EntryFactory.textField = function(options) {
-  return textInputField(options, setDefaultParameters(options));
-};
-
-EntryFactory.validationAwareTextField = function(options) {
-  return validationAwareTextInputField(options, setDefaultParameters(options));
-};
-
-/**
- * Generates a checkbox input entry object for a property panel.
- * options are:
- * - id: id of the entry - String
- *
- * - description: description of the property - String
- *
- * - label: label for the input field - String
- *
- * - set: setter method - Function
- *
- * - get: getter method - Function
- *
- * - validate: validation method - Function
- *
- * - modelProperty: name of the model property - String
- *
- * @param options
- * @returns the propertyPanel entry resource object
- */
-EntryFactory.checkbox = function(options) {
-  return checkboxField(options, setDefaultParameters(options));
-};
-
-EntryFactory.textBox = function(options) {
-  return textBoxField(options, setDefaultParameters(options));
-};
-
-EntryFactory.selectBox = function(options) {
-  return selectBoxField(options, setDefaultParameters(options));
-};
-
-EntryFactory.comboBox = function(options) {
-  return comboBoxField(options);
-};
-
-EntryFactory.table = function(options) {
-  return tableField(options);
-};
-
-EntryFactory.label = function(options) {
-  return labelEntry(options);
-};
-
-EntryFactory.link = function(options) {
-  return link(options);
-};
-
-module.exports = EntryFactory;
-
-
-/***/ }),
-/* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var freeGlobal = __webpack_require__(71);
-
-/** Detect free variable `self`. */
-var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
-
-/** Used as a reference to the global object. */
-var root = freeGlobal || freeSelf || Function('return this')();
-
-module.exports = root;
-
-
-/***/ }),
-/* 9 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var elementHelper = __webpack_require__(10),
-    extensionElementsHelper = __webpack_require__(231),
-    createUUID = __webpack_require__(17).createUUID,
-    getRoot = __webpack_require__(17).getRoot;
-
-var ProcessSimulationHelper = {
-  prevRoot: undefined
-};
-
-ProcessSimulationHelper.getProcessSimulationInfo = function(bpmnFactory, elementRegistry) {
-  var root = getRoot(elementRegistry);
-
-  if (this.prevRoot === undefined) {
-    this.prevRoot = root;
-  }
-
-  if (this.prevRoot.id !== root.id) {
-    root.extensionElements = this.prevRoot.extensionElements;
-    this.prevRoot.extensionElements = undefined;
-    this.prevRoot = root;
-  }
-
-  var extensionElements = root.extensionElements;
-
-  if (!extensionElements) {
-    extensionElements = elementHelper.createElement('bpmn:ExtensionElements',
-      { values: [] }, root, bpmnFactory);
-
-    root.extensionElements = extensionElements;
-  }
-
-  var processSimulationInfo = (extensionElementsHelper.getExtensionElements(root,
-    'qbp:ProcessSimulationInfo') || [])[0];
-
-  if (!processSimulationInfo) {
-    processSimulationInfo = createProcessSimulationInfo(root, bpmnFactory);
-    extensionElements.values.push(processSimulationInfo);
-  }
-
-  return processSimulationInfo;
-};
-
-ProcessSimulationHelper.getStatsOptions = function(bpmnFactory, elementRegistry) {
-  var processSimulationInfo = ProcessSimulationHelper.getProcessSimulationInfo(bpmnFactory, elementRegistry);
-
-  var statsOptions = processSimulationInfo.statsOptions;
-
-  if (!statsOptions) {
-    statsOptions = elementHelper.createElement('qbp:StatsOptions',
-      {}, processSimulationInfo, bpmnFactory);
-
-    processSimulationInfo.statsOptions = statsOptions;
-  }
-
-  return statsOptions;
-};
-
-
-function createProcessSimulationInfo(root, bpmnFactory) {
-  var todayDate = new Date();
-  todayDate.setUTCHours(9, 0, 0, 0);
-
-  var processSimulationInfo = elementHelper.createElement('qbp:ProcessSimulationInfo',
-    {
-      processInstances: '',
-      id: 'qbp_' + createUUID(),
-      startDateTime: todayDate.toISOString(),
-      currency: 'EUR',
-    }, root, bpmnFactory);
-
-  processSimulationInfo.timetables = elementHelper.createElement('qbp:Timetables',
-    { values: [] }, processSimulationInfo, bpmnFactory);
-
-  processSimulationInfo.resources = elementHelper.createElement('qbp:Resources',
-    { values: [] }, processSimulationInfo, bpmnFactory);
-
-  var defaultSequenceFlow = elementHelper.createElement('qbp:SequenceFlow',
-    {}, null, bpmnFactory);
-
-  processSimulationInfo.sequenceFlows = elementHelper.createElement('qbp:SequenceFlows',
-    { values: [defaultSequenceFlow] }, processSimulationInfo, bpmnFactory);
-
-  return processSimulationInfo;
-}
-
-module.exports = ProcessSimulationHelper;
-
-/***/ }),
-/* 10 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var ElementHelper = {};
-module.exports = ElementHelper;
-
-/**
- * Creates a new element and set the parent to it
- *
- * @method ElementHelper#createElement
- *
- * @param {String} elementType of the new element
- * @param {Object} properties of the new element in key-value pairs
- * @param {moddle.object} parent of the new element
- * @param {BpmnFactory} factory which creates the new element
- *
- * @returns {djs.model.Base} element which is created
- */
-ElementHelper.createElement = function(elementType, properties, parent, factory) {
-  var element = factory.create(elementType, properties);
-  element.$parent = parent;
-
-  return element;
-};
-
-
-/***/ }),
-/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2218,10 +1996,11 @@ ElementHelper.createElement = function(elementType, properties, parent, factory)
 
 var domQuery = __webpack_require__(2).query,
     domClear = __webpack_require__(2).clear,
+    domClasses = __webpack_require__(2).classes,
     is = __webpack_require__(1).is,
     forEach = __webpack_require__(12),
     domify = __webpack_require__(2).domify,
-    Ids = __webpack_require__(27).default;
+    Ids = __webpack_require__(28).default;
 
 var SPACE_REGEX = /\s/;
 
@@ -2320,6 +2099,20 @@ module.exports.addEmptyParameter = addEmptyParameter;
 
 
 /**
+ * returns a dropdown option label depending on the defined event attributes
+ */
+function getOptionLabel(obj) {
+  var label = obj.name || '';
+
+  if (obj.errorCode)
+    label += ' (code=' + obj.errorCode + ')';
+  if (obj.escalationCode)
+    label += ' (code=' + obj.escalationCode + ')';
+
+  return label;
+}
+
+/**
  * returns a list with all root elements for the given parameter 'referencedType'
  */
 function refreshOptionsModel(businessObject, referencedType) {
@@ -2327,7 +2120,7 @@ function refreshOptionsModel(businessObject, referencedType) {
   var referableObjects = findRootElementsByType(businessObject, referencedType);
   forEach(referableObjects, function(obj) {
     model.push({
-      label: (obj.name || '') + ' (id='+obj.id+')',
+      label: getOptionLabel(obj),
       value: obj.id,
       name: obj.name
     });
@@ -2424,9 +2217,11 @@ function triggerClickEvent(element) {
 
   if (document.createEvent) {
     try {
+
       // Chrome, Safari, Firefox
       evt = new MouseEvent((eventType), { view: window, bubbles: true, cancelable: true });
     } catch (e) {
+
       // IE 11, PhantomJS (wat!)
       evt = document.createEvent('MouseEvent');
 
@@ -2434,6 +2229,7 @@ function triggerClickEvent(element) {
     }
     return element.dispatchEvent(evt);
   } else {
+
     // Welcome IE
     evt = document.createEventObject();
 
@@ -2454,15 +2250,401 @@ function escapeHTML(str) {
 
 module.exports.escapeHTML = escapeHTML;
 
+function createDropdown(dropdown) {
+  var menu = dropdown.menu;
+
+  var dropdownNode = domify(
+    '<div class="group__dropdown">' +
+      '<button class="group__dropdown-button">' +
+      '<svg width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 512"><path fill="currentColor" d="M96 184c39.8 0 72 32.2 72 72s-32.2 72-72 72-72-32.2-72-72 32.2-72 72-72zM24 80c0 39.8 32.2 72 72 72s72-32.2 72-72S135.8 8 96 8 24 40.2 24 80zm0 352c0 39.8 32.2 72 72 72s72-32.2 72-72-32.2-72-72-72-72 32.2-72 72z"></path></svg>' +
+      '</button>' +
+      '<div class="group__dropdown-menu"></div>' +
+    '</div>'
+  );
+
+  var buttonNode = domQuery('.group__dropdown-button', dropdownNode),
+      menuNode = domQuery('.group__dropdown-menu', dropdownNode);
+
+  buttonNode.addEventListener('click', function(event) {
+    domClasses(dropdownNode).toggle('group__dropdown--open');
+
+    createOnGlobalClick(event);
+  });
+
+  forEach(menu, function(menuItem) {
+    var menuItemNode = domify('<div class="group__dropdown-menu-item" data-dropdown-action="' +
+      menuItem.id +
+      '">' + escapeHTML(menuItem.label) + '</div>');
+
+    menuItemNode.addEventListener('click', function() {
+      menuItem.onClick();
+
+      domClasses(dropdownNode).remove('group__dropdown--open');
+    });
+
+    menuNode.appendChild(menuItemNode);
+  });
+
+  var _onGlobalClick;
+
+  function createOnGlobalClick(_event) {
+    function onGlobalClick(event) {
+      if (event === _event) {
+        return;
+      }
+
+      var target = event.target;
+
+      if (menuNode !== target && !menuNode.contains(target)) {
+        domClasses(dropdownNode).remove('group__dropdown--open');
+
+        document.removeEventListener('click', onGlobalClick);
+      }
+    }
+
+    if (_onGlobalClick) {
+      document.removeEventListener('click', _onGlobalClick);
+    }
+
+    document.addEventListener('click', onGlobalClick);
+
+    _onGlobalClick = onGlobalClick;
+  }
+
+  return dropdownNode;
+}
+
+module.exports.createDropdown = createDropdown;
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var getBusinessObject = __webpack_require__(1).getBusinessObject;
+
+// input entities
+var textInputField = __webpack_require__(101),
+    checkboxField = __webpack_require__(241),
+    selectBoxField = __webpack_require__(102),
+    comboBoxField = __webpack_require__(242),
+    textBoxField = __webpack_require__(251),
+    validationAwareTextInputField = __webpack_require__(252),
+    tableField = __webpack_require__(253),
+    labelEntry = __webpack_require__(254),
+    link = __webpack_require__(255),
+    autoSuggestTextBoxField = __webpack_require__(272),
+    collapsible = __webpack_require__(273),
+    toggleSwitch = __webpack_require__(274);
+
+var cmdHelper = __webpack_require__(4);
+
+// helpers ////////////////////////////////////////
+
+function ensureNotNull(prop) {
+  if (!prop) {
+    throw new Error(prop + ' must be set.');
+  }
+
+  return prop;
+}
+
+/**
+ * sets the default parameters which are needed to create an entry
+ *
+ * @param options
+ * @returns {{id: *, description: (*|string), get: (*|Function), set: (*|Function),
+ *            validate: (*|Function), html: string}}
+ */
+var setDefaultParameters = function(options) {
+
+  // default method to fetch the current value of the input field
+  var defaultGet = function(element) {
+    var bo = getBusinessObject(element),
+        res = {},
+        prop = ensureNotNull(options.modelProperty);
+    res[prop] = bo.get(prop);
+
+    return res;
+  };
+
+  // default method to set a new value to the input field
+  var defaultSet = function(element, values) {
+    var res = {},
+        prop = ensureNotNull(options.modelProperty);
+    if (values[prop] !== '') {
+      res[prop] = values[prop];
+    } else {
+      res[prop] = undefined;
+    }
+
+    return cmdHelper.updateProperties(element, res);
+  };
+
+  // default validation method
+  var defaultValidate = function() {
+    return {};
+  };
+
+  return {
+    id : options.id,
+    description : (options.description || ''),
+    get : (options.get || defaultGet),
+    set : (options.set || defaultSet),
+    validate : (options.validate || defaultValidate),
+    html: ''
+  };
+};
+
+function EntryFactory() {
+
+}
+
+/**
+ * Generates an text input entry object for a property panel.
+ * options are:
+ * - id: id of the entry - String
+ *
+ * - description: description of the property - String
+ *
+ * - label: label for the input field - String
+ *
+ * - set: setter method - Function
+ *
+ * - get: getter method - Function
+ *
+ * - validate: validation mehtod - Function
+ *
+ * - modelProperty: name of the model property - String
+ *
+ * - buttonAction: Object which contains the following properties: - Object
+ * ---- name: name of the [data-action] callback - String
+ * ---- method: callback function for [data-action] - Function
+ *
+ * - buttonShow: Object which contains the following properties: - Object
+ * ---- name: name of the [data-show] callback - String
+ * ---- method: callback function for [data-show] - Function
+ *
+ * @param options
+ * @returns the propertyPanel entry resource object
+ */
+EntryFactory.textField = function(translate, options) {
+  return textInputField(translate, options, setDefaultParameters(options));
+};
+
+EntryFactory.validationAwareTextField = function(translate, options) {
+  return validationAwareTextInputField(translate, options, setDefaultParameters(options));
+};
+
+/**
+ * Generates a checkbox input entry object for a property panel.
+ * options are:
+ * - id: id of the entry - String
+ *
+ * - description: description of the property - String
+ *
+ * - label: label for the input field - String
+ *
+ * - set: setter method - Function
+ *
+ * - get: getter method - Function
+ *
+ * - validate: validation method - Function
+ *
+ * - modelProperty: name of the model property - String
+ *
+ * @param options
+ * @returns the propertyPanel entry resource object
+ */
+EntryFactory.checkbox = function(translate, options) {
+  return checkboxField(translate, options, setDefaultParameters(options));
+};
+
+EntryFactory.textBox = function(translate, options) {
+  return textBoxField(translate, options, setDefaultParameters(options));
+};
+
+EntryFactory.selectBox = function(translate, options) {
+  return selectBoxField(translate, options, setDefaultParameters(options));
+};
+
+EntryFactory.comboBox = function(translate, options) {
+  return comboBoxField(translate, options);
+};
+
+EntryFactory.table = function(translate, options) {
+  return tableField(translate, options);
+};
+
+EntryFactory.label = function(options) {
+  return labelEntry(options);
+};
+
+EntryFactory.link = function(translate, options) {
+  return link(translate, options);
+};
+
+EntryFactory.autoSuggest = function(translate, options) {
+  return autoSuggestTextBoxField(translate, options, setDefaultParameters(options));
+};
+
+EntryFactory.collapsible = function(options) {
+  return collapsible(options);
+};
+
+EntryFactory.toggleSwitch = function(translate, options) {
+  return toggleSwitch(translate, options, setDefaultParameters(options));
+};
+
+module.exports = EntryFactory;
+
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var freeGlobal = __webpack_require__(71);
+
+/** Detect free variable `self`. */
+var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
+
+/** Used as a reference to the global object. */
+var root = freeGlobal || freeSelf || Function('return this')();
+
+module.exports = root;
+
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var elementHelper = __webpack_require__(11),
+    extensionElementsHelper = __webpack_require__(236),
+    createUUID = __webpack_require__(18).createUUID,
+    getRoot = __webpack_require__(18).getRoot;
+
+var ProcessSimulationHelper = {
+  prevRoot: undefined
+};
+
+ProcessSimulationHelper.getProcessSimulationInfo = function(bpmnFactory, elementRegistry) {
+  var root = getRoot(elementRegistry);
+
+  if (this.prevRoot === undefined) {
+    this.prevRoot = root;
+  }
+
+  if (this.prevRoot.id !== root.id) {
+    root.extensionElements = this.prevRoot.extensionElements;
+    this.prevRoot.extensionElements = undefined;
+    this.prevRoot = root;
+  }
+
+  var extensionElements = root.extensionElements;
+
+  if (!extensionElements) {
+    extensionElements = elementHelper.createElement('bpmn:ExtensionElements',
+      { values: [] }, root, bpmnFactory);
+
+    root.extensionElements = extensionElements;
+  }
+
+  var processSimulationInfo = (extensionElementsHelper.getExtensionElements(root,
+    'qbp:ProcessSimulationInfo') || [])[0];
+
+  if (!processSimulationInfo) {
+    processSimulationInfo = createProcessSimulationInfo(root, bpmnFactory);
+    extensionElements.values.push(processSimulationInfo);
+  }
+
+  return processSimulationInfo;
+};
+
+ProcessSimulationHelper.getStatsOptions = function(bpmnFactory, elementRegistry) {
+  var processSimulationInfo = ProcessSimulationHelper.getProcessSimulationInfo(bpmnFactory, elementRegistry);
+
+  var statsOptions = processSimulationInfo.statsOptions;
+
+  if (!statsOptions) {
+    statsOptions = elementHelper.createElement('qbp:StatsOptions',
+      {}, processSimulationInfo, bpmnFactory);
+
+    processSimulationInfo.statsOptions = statsOptions;
+  }
+
+  return statsOptions;
+};
+
+
+function createProcessSimulationInfo(root, bpmnFactory) {
+  var todayDate = new Date();
+  todayDate.setUTCHours(9, 0, 0, 0);
+
+  var processSimulationInfo = elementHelper.createElement('qbp:ProcessSimulationInfo',
+    {
+      processInstances: '',
+      id: 'qbp_' + createUUID(),
+      startDateTime: todayDate.toISOString(),
+      currency: 'EUR',
+    }, root, bpmnFactory);
+
+  processSimulationInfo.timetables = elementHelper.createElement('qbp:Timetables',
+    { values: [] }, processSimulationInfo, bpmnFactory);
+
+  processSimulationInfo.resources = elementHelper.createElement('qbp:Resources',
+    { values: [] }, processSimulationInfo, bpmnFactory);
+
+  var defaultSequenceFlow = elementHelper.createElement('qbp:SequenceFlow',
+    {}, null, bpmnFactory);
+
+  processSimulationInfo.sequenceFlows = elementHelper.createElement('qbp:SequenceFlows',
+    { values: [defaultSequenceFlow] }, processSimulationInfo, bpmnFactory);
+
+  return processSimulationInfo;
+}
+
+module.exports = ProcessSimulationHelper;
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var ElementHelper = {};
+module.exports = ElementHelper;
+
+/**
+ * Creates a new element and set the parent to it
+ *
+ * @method ElementHelper#createElement
+ *
+ * @param {String} elementType of the new element
+ * @param {Object} properties of the new element in key-value pairs
+ * @param {moddle.object} parent of the new element
+ * @param {BpmnFactory} factory which creates the new element
+ *
+ * @returns {djs.model.Base} element which is created
+ */
+ElementHelper.createElement = function(elementType, properties, parent, factory) {
+  var element = factory.create(elementType, properties);
+  element.$parent = parent;
+
+  return element;
+};
+
 
 /***/ }),
 /* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var arrayEach = __webpack_require__(47),
-    baseEach = __webpack_require__(29),
+var arrayEach = __webpack_require__(48),
+    baseEach = __webpack_require__(24),
     castFunction = __webpack_require__(141),
-    isArray = __webpack_require__(6);
+    isArray = __webpack_require__(5);
 
 /**
  * Iterates over elements of `collection` and invokes `iteratee` for each element.
@@ -2541,6 +2723,146 @@ module.exports = isObject;
 
 /***/ }),
 /* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var domify = __webpack_require__(2).domify,
+    domClasses = __webpack_require__(2).classes,
+    domEvent = __webpack_require__(2).event;
+
+var escapeHTML = __webpack_require__(7).escapeHTML;
+
+var MAX_DESCRIPTION_LENGTH = 200;
+
+/**
+ * Create a linkified and HTML escaped entry field description.
+ *
+ * As a special feature, this description may contain both markdown,
+ * plain <a href> links and <br />
+ *
+ * @param {string} description
+ * @param {object} [options]
+ * @param {string} [options.show] - name of callback to determine whether description is shown
+ */
+module.exports = function entryFieldDescription(translate, description, options) {
+  var show = options && options.show;
+
+  // we tokenize the description to extract text, HTML and markdown links
+  // text, links and new lines are handled seperately
+
+  var escaped = [];
+
+  // match markdown [{TEXT}]({URL}) and HTML links <a href="{URL}">{TEXT}</a>
+  var pattern = /(?:\[([^\]]+)\]\((https?:\/\/[^)]+)\))|(?:<a href="(https?:\/\/[^"]+)">(.+?(?=<\/))<\/a>)/gi;
+
+  var index = 0;
+  var match;
+  var link, text;
+
+  while ((match = pattern.exec(description))) {
+
+    // escape + insert text before match
+    if (match.index > index) {
+      escaped.push(escapeText(description.substring(index, match.index)));
+    }
+
+    link = match[2] && encodeURI(match[2]) || match[3];
+    text = match[1] || match[4];
+
+    // insert safe link
+    escaped.push('<a href="' + link + '" target="_blank">' + escapeText(text) + '</a>');
+
+    index = match.index + match[0].length;
+  }
+
+  // escape and insert text after last match
+  if (index < description.length) {
+    escaped.push(escapeText(description.substring(index)));
+  }
+
+  description = escaped.join('');
+
+  var html = domify(
+    '<div class="bpp-field-description description description--expanded"' +
+    (show ? 'data-show="' + show + '">' : '>') +
+    '</div>'
+  );
+
+  var descriptionText = domify('<span class="description__text">' + description + '</span>');
+
+  html.appendChild(descriptionText);
+
+  function toggleExpanded(expanded) {
+    if (expanded) {
+      domClasses(html).add('description--expanded');
+
+      descriptionText.textContent = description + ' ';
+
+      expand.textContent = translate('Less');
+    } else {
+      domClasses(html).remove('description--expanded');
+
+      descriptionText.textContent = descriptionShortened + ' ... ';
+
+      expand.textContent = translate('More');
+    }
+  }
+
+  var descriptionShortened,
+      expand,
+      expanded = false;
+
+  if (description.length > MAX_DESCRIPTION_LENGTH) {
+    descriptionShortened = description.slice(0, MAX_DESCRIPTION_LENGTH);
+
+    expand = domify(
+      '<span class="bpp-entry-link description__expand">' +
+        translate('More') +
+      '</span>'
+    );
+
+    domEvent.bind(expand, 'click', function() {
+      expanded = !expanded;
+
+      toggleExpanded(expanded);
+    });
+
+    html.appendChild(expand);
+
+    toggleExpanded(expanded);
+  }
+
+  return html;
+};
+
+function escapeText(text) {
+  var match, index = 0, escaped = [];
+
+  // match new line <br/> <br /> <br.... /> etc.
+  var pattern = /<br\s*\/?>/gi;
+
+  while ((match = pattern.exec(text))) {
+
+    if (match.index > index) {
+      escaped.push(escapeHTML(text.substring(index, match.index)));
+    }
+
+    escaped.push('<br />');
+
+    index = match.index + match[0].length;
+  }
+
+  if (index < text.length) {
+    escaped.push(escapeHTML(text.substring(index)));
+  }
+
+  return escaped.join('');
+}
+
+/***/ }),
+/* 15 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2582,12 +2904,12 @@ function translate(template, replacements) {
 });
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var arrayLikeKeys = __webpack_require__(131),
     baseKeys = __webpack_require__(75),
-    isArrayLike = __webpack_require__(16);
+    isArrayLike = __webpack_require__(17);
 
 /**
  * Creates an array of the own enumerable property names of `object`.
@@ -2625,11 +2947,11 @@ module.exports = keys;
 
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isFunction = __webpack_require__(50),
-    isLength = __webpack_require__(48);
+var isFunction = __webpack_require__(34),
+    isLength = __webpack_require__(49);
 
 /**
  * Checks if `value` is array-like. A value is considered array-like if it's
@@ -2664,7 +2986,7 @@ module.exports = isArrayLike;
 
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var is = __webpack_require__(1).is;
@@ -2705,15 +3027,15 @@ module.exports = {
 };
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(309);
+module.exports = __webpack_require__(317);
 
 module.exports.Collection = __webpack_require__(120);
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;/*! Hammer.JS - v2.0.7 - 2016-04-22
@@ -5359,7 +5681,7 @@ if (true) {
 
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports) {
 
 /**
@@ -5394,116 +5716,13 @@ module.exports = isObjectLike;
 
 
 /***/ }),
-/* 21 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var baseIsNative = __webpack_require__(156),
-    getValue = __webpack_require__(159);
-
-/**
- * Gets the native function at `key` of `object`.
- *
- * @private
- * @param {Object} object The object to query.
- * @param {string} key The key of the method to get.
- * @returns {*} Returns the function if it's native, else `undefined`.
- */
-function getNative(object, key) {
-  var value = getValue(object, key);
-  return baseIsNative(value) ? value : undefined;
-}
-
-module.exports = getNative;
-
-
-/***/ }),
 /* 22 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var escapeHTML = __webpack_require__(11).escapeHTML;
-
-/**
- * Create a linkified and HTML escaped entry field description.
- *
- * As a special feature, this description may contain both markdown,
- * plain <a href> links and <br />
- *
- * @param {String} description
- */
-module.exports = function entryFieldDescription(description) {
-
-  // we tokenize the description to extract text, HTML and markdown links
-  // text, links and new lines are handled seperately
-
-  var escaped = [];
-
-  // match markdown [{TEXT}]({URL}) and HTML links <a href="{URL}">{TEXT}</a>
-  var pattern = /(?:\[([^\]]+)\]\((https?:\/\/[^)]+)\))|(?:<a href="(https?:\/\/[^"]+)">(.+?(?=<\/))<\/a>)/gi;
-
-  var index = 0;
-  var match;
-  var link, text;
-
-  while ((match = pattern.exec(description))) {
-
-    // escape + insert text before match
-    if (match.index > index) {
-      escaped.push(escapeText(description.substring(index, match.index)));
-    }
-
-    link = match[2] && encodeURI(match[2]) || match[3];
-    text = match[1] || match[4];
-
-    // insert safe link
-    escaped.push('<a href="' + link + '" target="_blank">' + escapeText(text) + '</a>');
-
-    index = match.index + match[0].length;
-  }
-
-  // escape and insert text after last match
-  if (index < description.length) {
-    escaped.push(escapeText(description.substring(index)));
-  }
-
-  return '<div class="bpp-field-description">' + escaped.join('') + '</div>';
-};
-
-function escapeText(text) {
-  var match, index = 0, escaped = [];
-
-  // match new line <br/> <br /> <br.... /> etc.
-  var pattern = /<br\s*\/?>/gi;
-
-  while ((match = pattern.exec(text))) {
-
-    if (match.index > index) {
-      escaped.push(escapeHTML(text.substring(index, match.index)));
-    }
-
-    escaped.push('<br />');
-
-    index = match.index + match[0].length;
-  }
-
-  if (index < text.length) {
-    escaped.push(escapeHTML(text.substring(index)));
-  }
-
-  return escaped.join('');
-}
-
-
-/***/ }),
-/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseMatches = __webpack_require__(144),
     baseMatchesProperty = __webpack_require__(187),
-    identity = __webpack_require__(26),
-    isArray = __webpack_require__(6),
+    identity = __webpack_require__(27),
+    isArray = __webpack_require__(5),
     property = __webpack_require__(196);
 
 /**
@@ -5534,10 +5753,53 @@ module.exports = baseIteratee;
 
 
 /***/ }),
+/* 23 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var baseIsNative = __webpack_require__(156),
+    getValue = __webpack_require__(159);
+
+/**
+ * Gets the native function at `key` of `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @param {string} key The key of the method to get.
+ * @returns {*} Returns the function if it's native, else `undefined`.
+ */
+function getNative(object, key) {
+  var value = getValue(object, key);
+  return baseIsNative(value) ? value : undefined;
+}
+
+module.exports = getNative;
+
+
+/***/ }),
 /* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Symbol = __webpack_require__(25),
+var baseForOwn = __webpack_require__(70),
+    createBaseEach = __webpack_require__(140);
+
+/**
+ * The base implementation of `_.forEach` without support for iteratee shorthands.
+ *
+ * @private
+ * @param {Array|Object} collection The collection to iterate over.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @returns {Array|Object} Returns `collection`.
+ */
+var baseEach = createBaseEach(baseForOwn);
+
+module.exports = baseEach;
+
+
+/***/ }),
+/* 25 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Symbol = __webpack_require__(26),
     getRawTag = __webpack_require__(134),
     objectToString = __webpack_require__(135);
 
@@ -5568,10 +5830,10 @@ module.exports = baseGetTag;
 
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var root = __webpack_require__(8);
+var root = __webpack_require__(9);
 
 /** Built-in value references. */
 var Symbol = root.Symbol;
@@ -5580,7 +5842,7 @@ module.exports = Symbol;
 
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports) {
 
 /**
@@ -5607,7 +5869,7 @@ module.exports = identity;
 
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5780,7 +6042,7 @@ Ids.prototype.clear = function () {
 
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/*! https://mths.be/cssescape v1.5.1 by @mathias | MIT license */
@@ -5887,31 +6149,11 @@ Ids.prototype.clear = function () {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(72)))
 
 /***/ }),
-/* 29 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var baseForOwn = __webpack_require__(70),
-    createBaseEach = __webpack_require__(140);
-
-/**
- * The base implementation of `_.forEach` without support for iteratee shorthands.
- *
- * @private
- * @param {Array|Object} collection The collection to iterate over.
- * @param {Function} iteratee The function invoked per iteration.
- * @returns {Array|Object} Returns `collection`.
- */
-var baseEach = createBaseEach(baseForOwn);
-
-module.exports = baseEach;
-
-
-/***/ }),
 /* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseIsArguments = __webpack_require__(133),
-    isObjectLike = __webpack_require__(20);
+    isObjectLike = __webpack_require__(21);
 
 /** Used for built-in method references. */
 var objectProto = Object.prototype;
@@ -5952,7 +6194,7 @@ module.exports = isArguments;
 /* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(module) {var root = __webpack_require__(8),
+/* WEBPACK VAR INJECTION */(function(module) {var root = __webpack_require__(9),
     stubFalse = __webpack_require__(136);
 
 /** Detect free variable `exports`. */
@@ -6061,6 +6303,49 @@ module.exports = isTypedArray;
 /* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
+var baseGetTag = __webpack_require__(25),
+    isObject = __webpack_require__(13);
+
+/** `Object#toString` result references. */
+var asyncTag = '[object AsyncFunction]',
+    funcTag = '[object Function]',
+    genTag = '[object GeneratorFunction]',
+    proxyTag = '[object Proxy]';
+
+/**
+ * Checks if `value` is classified as a `Function` object.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a function, else `false`.
+ * @example
+ *
+ * _.isFunction(_);
+ * // => true
+ *
+ * _.isFunction(/abc/);
+ * // => false
+ */
+function isFunction(value) {
+  if (!isObject(value)) {
+    return false;
+  }
+  // The use of `Object#toString` avoids issues with the `typeof` operator
+  // in Safari 9 which returns 'object' for typed arrays and other constructors.
+  var tag = baseGetTag(value);
+  return tag == funcTag || tag == genTag || tag == asyncTag || tag == proxyTag;
+}
+
+module.exports = isFunction;
+
+
+/***/ }),
+/* 35 */
+/***/ (function(module, exports, __webpack_require__) {
+
 var isObject = __webpack_require__(13);
 
 /** Built-in value references. */
@@ -6094,7 +6379,7 @@ module.exports = baseCreate;
 
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var listCacheClear = __webpack_require__(146),
@@ -6132,10 +6417,10 @@ module.exports = ListCache;
 
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var eq = __webpack_require__(37);
+var eq = __webpack_require__(38);
 
 /**
  * Gets the index at which the `key` is found in `array` of key-value pairs.
@@ -6159,7 +6444,7 @@ module.exports = assocIndexOf;
 
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports) {
 
 /**
@@ -6202,10 +6487,10 @@ module.exports = eq;
 
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getNative = __webpack_require__(21);
+var getNative = __webpack_require__(23);
 
 /* Built-in method references that are verified to be native. */
 var nativeCreate = getNative(Object, 'create');
@@ -6214,7 +6499,7 @@ module.exports = nativeCreate;
 
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var isKeyable = __webpack_require__(168);
@@ -6238,11 +6523,11 @@ module.exports = getMapData;
 
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseGetTag = __webpack_require__(24),
-    isObjectLike = __webpack_require__(20);
+var baseGetTag = __webpack_require__(25),
+    isObjectLike = __webpack_require__(21);
 
 /** `Object#toString` result references. */
 var symbolTag = '[object Symbol]';
@@ -6273,10 +6558,10 @@ module.exports = isSymbol;
 
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isSymbol = __webpack_require__(40);
+var isSymbol = __webpack_require__(41);
 
 /** Used as references for various `Number` constants. */
 var INFINITY = 1 / 0;
@@ -6300,12 +6585,12 @@ module.exports = toKey;
 
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var elementHelper = __webpack_require__(10),
-    ProcessSimulationHelper = __webpack_require__(9),
-    ValidationErrorHelper = __webpack_require__(5),
+var elementHelper = __webpack_require__(11),
+    ProcessSimulationHelper = __webpack_require__(10),
+    ValidationErrorHelper = __webpack_require__(6),
     is = __webpack_require__(1).is;
 
 var ElementHelper = {};
@@ -6380,10 +6665,10 @@ function isQBPElement(element) {
 module.exports = ElementHelper;
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseCreate = __webpack_require__(34),
+var baseCreate = __webpack_require__(35),
     isObject = __webpack_require__(13);
 
 /**
@@ -6423,7 +6708,7 @@ module.exports = createCtor;
 
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports) {
 
 /** Used as the internal argument placeholder. */
@@ -6458,14 +6743,14 @@ module.exports = replaceHolders;
 
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var getBusinessObject = __webpack_require__(1).getBusinessObject;
 
 var cmdHelper = __webpack_require__(4);
 
-var escapeHTML = __webpack_require__(11).escapeHTML;
+var escapeHTML = __webpack_require__(7).escapeHTML;
 
 function ensureNotNull(prop) {
   if (!prop) {
@@ -6534,7 +6819,7 @@ module.exports = function(options) {
 
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6557,7 +6842,7 @@ var p2s = /,?([a-z]),?/gi,
     pow = math.pow,
     abs = math.abs,
     pathCommand = /([a-z])[\s,]*((-?\d*\.?\d*(?:e[-+]?\d+)?[\s]*,?[\s]*)+)/ig,
-    pathValues = /(-?\d*\.?\d*(?:e[-+]?\\d+)?)[\s]*,?[\s]*/ig;
+    pathValues = /(-?\d*\.?\d*(?:e[-+]?\d+)?)[\s]*,?[\s]*/ig;
 
 var isArray = Array.isArray || function(o) { return o instanceof Array; };
 
@@ -7355,13 +7640,17 @@ function pathToCurve(path) {
           break;
         case 'S':
           if (pathCommand == 'C' || pathCommand == 'S') {
+
             // In 'S' case we have to take into account, if the previous command is C/S.
             nx = d.x * 2 - d.bx;
+
             // And reflect the previous
             ny = d.y * 2 - d.by;
+
             // command's control point relative to the current point.
           }
           else {
+
             // or some else or nothing
             nx = d.x;
             ny = d.y;
@@ -7370,13 +7659,17 @@ function pathToCurve(path) {
           break;
         case 'T':
           if (pathCommand == 'Q' || pathCommand == 'T') {
+
             // In 'T' case we have to take into account, if the previous command is Q/T.
             d.qx = d.x * 2 - d.qx;
+
             // And make a reflection similar
             d.qy = d.y * 2 - d.qy;
+
             // to case 'S'.
           }
           else {
+
             // or something else or nothing
             d.qx = d.x;
             d.qy = d.y;
@@ -7460,7 +7753,7 @@ module.exports = findPathIntersections;
 
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports) {
 
 /**
@@ -7488,7 +7781,7 @@ module.exports = arrayEach;
 
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports) {
 
 /** Used as references for various `Number` constants. */
@@ -7529,7 +7822,7 @@ module.exports = isLength;
 
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports) {
 
 /** Used for built-in method references. */
@@ -7553,54 +7846,11 @@ module.exports = isPrototype;
 
 
 /***/ }),
-/* 50 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var baseGetTag = __webpack_require__(24),
-    isObject = __webpack_require__(13);
-
-/** `Object#toString` result references. */
-var asyncTag = '[object AsyncFunction]',
-    funcTag = '[object Function]',
-    genTag = '[object GeneratorFunction]',
-    proxyTag = '[object Proxy]';
-
-/**
- * Checks if `value` is classified as a `Function` object.
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a function, else `false`.
- * @example
- *
- * _.isFunction(_);
- * // => true
- *
- * _.isFunction(/abc/);
- * // => false
- */
-function isFunction(value) {
-  if (!isObject(value)) {
-    return false;
-  }
-  // The use of `Object#toString` avoids issues with the `typeof` operator
-  // in Safari 9 which returns 'object' for typed arrays and other constructors.
-  var tag = baseGetTag(value);
-  return tag == funcTag || tag == genTag || tag == asyncTag || tag == proxyTag;
-}
-
-module.exports = isFunction;
-
-
-/***/ }),
 /* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getNative = __webpack_require__(21),
-    root = __webpack_require__(8);
+var getNative = __webpack_require__(23),
+    root = __webpack_require__(9);
 
 /* Built-in method references that are verified to be native. */
 var Map = getNative(root, 'Map');
@@ -7757,8 +8007,8 @@ module.exports = arrayFilter;
 /* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isArray = __webpack_require__(6),
-    isSymbol = __webpack_require__(40);
+var isArray = __webpack_require__(5),
+    isSymbol = __webpack_require__(41);
 
 /** Used to match property names within property paths. */
 var reIsDeepProp = /\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\\]|\\.)*?\1)\]/,
@@ -7819,7 +8069,7 @@ module.exports = arrayMap;
 /* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var identity = __webpack_require__(26),
+var identity = __webpack_require__(27),
     overRest = __webpack_require__(208),
     setToString = __webpack_require__(91);
 
@@ -7923,7 +8173,7 @@ module.exports = baseAssignValue;
 /* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseCreate = __webpack_require__(34),
+var baseCreate = __webpack_require__(35),
     baseLodash = __webpack_require__(64);
 
 /** Used as references for the maximum length and index of an array. */
@@ -7992,11 +8242,11 @@ module.exports = getHolder;
 /* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var entryFactory = __webpack_require__(7);
+var entryFactory = __webpack_require__(8);
 var cmdHelper = __webpack_require__(4);
 
-var validationHelper = __webpack_require__(5);
-var fixNumber = __webpack_require__(17).fixNumber;
+var validationHelper = __webpack_require__(6);
+var fixNumber = __webpack_require__(18).fixNumber;
 
 var createDistributionTypeOptions = function(translate) {
   return [{
@@ -8079,7 +8329,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
   function meanField(options) {
     var meanLabel = options && options.label || translate('distribution.mean');
 
-    return entryFactory.textField({
+    return entryFactory.textField(translate, {
       id: (id || '') + distribution.type + '-mean',
       label: meanLabel,
       modelProperty: 'mean',
@@ -8135,7 +8385,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
   function arg1Field(options) {
     var arg1Label = options && options.label || translate('distribution.arg1');
 
-    return entryFactory.textField({
+    return entryFactory.textField(translate, {
       id: (id || '') + distribution.type + '-arg1',
       label: arg1Label,
       modelProperty: 'arg1',
@@ -8191,7 +8441,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
   function arg2Field(options) {
     var arg2Label = options && options.label || translate('distribution.arg2');
 
-    return entryFactory.textField({
+    return entryFactory.textField(translate, {
       id: (id || '') + distribution.type + '-arg2',
       label: arg2Label,
       modelProperty: 'arg2',
@@ -8310,7 +8560,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
     };
   };
 
-  entries.push(entryFactory.selectBox({
+  entries.push(entryFactory.selectBox(translate, {
     id: id + 'distribution-type',
     label: label,
     modelProperty: 'type',
@@ -8333,7 +8583,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
   var distributionEntries = (fields[distribution.type.toLowerCase()] || fields['default'])();
   entries = entries.concat(distributionEntries);
 
-  entries.push(entryFactory.selectBox({
+  entries.push(entryFactory.selectBox(translate, {
     id: id + 'time-unit',
     label: translate('timeUnit'),
     modelProperty: 'timeUnit',
@@ -8363,8 +8613,8 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 /* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var elementHelper = __webpack_require__(10),
-    ProcessSimulationHelper = __webpack_require__(9);
+var elementHelper = __webpack_require__(11),
+    ProcessSimulationHelper = __webpack_require__(10);
 
 var DistributionHelper = {};
 
@@ -8486,9 +8736,9 @@ var domQuery = __webpack_require__(2).query,
     domify = __webpack_require__(2).domify,
     forEach = __webpack_require__(12);
 
-var elementHelper = __webpack_require__(10),
+var elementHelper = __webpack_require__(11),
     cmdHelper = __webpack_require__(4),
-    utils = __webpack_require__(11),
+    utils = __webpack_require__(7),
     escapeHTML = utils.escapeHTML;
 
 function getSelectBox(node, id) {
@@ -8571,12 +8821,12 @@ module.exports = function(element, bpmnFactory, options, translate) {
                       'data-list-entry-container ' +
                       'data-on-change="selectElement">' +
               '</select>' +
-              (canCreate ? '<button class="add" ' +
+              (canCreate ? '<button class="action-button add" ' +
                                    'id="cam-extensionElements-create-' + escapeHTML(id) + '" ' +
                                    'data-action="createElement">' +
                              '<span>+</span>' +
                            '</button>' : '') +
-              (canRemove ? '<button class="clear" ' +
+              (canRemove ? '<button class="action-button clear" ' +
                                    'id="cam-extensionElements-remove-' + escapeHTML(id) + '" ' +
                                    'data-action="removeElement" ' +
                                    'data-disable="disableRemove">' +
@@ -8655,6 +8905,7 @@ module.exports = function(element, bpmnFactory, options, translate) {
     },
 
     createElement: function(element, node) {
+
       // create option template
       var generatedId;
       if (idGeneration) {
@@ -8719,7 +8970,7 @@ module.exports = function(element, bpmnFactory, options, translate) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseFor = __webpack_require__(129),
-    keys = __webpack_require__(15);
+    keys = __webpack_require__(16);
 
 /**
  * The base implementation of `_.forOwn` without support for iteratee shorthands.
@@ -8825,7 +9076,7 @@ module.exports = baseUnary;
 /* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isPrototype = __webpack_require__(49),
+var isPrototype = __webpack_require__(50),
     nativeKeys = __webpack_require__(139);
 
 /** Used for built-in method references. */
@@ -8882,7 +9133,7 @@ module.exports = overArg;
 /* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var ListCache = __webpack_require__(35),
+var ListCache = __webpack_require__(36),
     stackClear = __webpack_require__(151),
     stackDelete = __webpack_require__(152),
     stackGet = __webpack_require__(153),
@@ -8948,7 +9199,7 @@ module.exports = toSource;
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseIsEqualDeep = __webpack_require__(172),
-    isObjectLike = __webpack_require__(20);
+    isObjectLike = __webpack_require__(21);
 
 /**
  * The base implementation of `_.isEqual` which supports partial comparisons
@@ -9102,7 +9353,7 @@ var DataView = __webpack_require__(184),
     Promise = __webpack_require__(185),
     Set = __webpack_require__(83),
     WeakMap = __webpack_require__(84),
-    baseGetTag = __webpack_require__(24),
+    baseGetTag = __webpack_require__(25),
     toSource = __webpack_require__(78);
 
 /** `Object#toString` result references. */
@@ -9161,8 +9412,8 @@ module.exports = getTag;
 /* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getNative = __webpack_require__(21),
-    root = __webpack_require__(8);
+var getNative = __webpack_require__(23),
+    root = __webpack_require__(9);
 
 /* Built-in method references that are verified to be native. */
 var Set = getNative(root, 'Set');
@@ -9174,8 +9425,8 @@ module.exports = Set;
 /* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getNative = __webpack_require__(21),
-    root = __webpack_require__(8);
+var getNative = __webpack_require__(23),
+    root = __webpack_require__(9);
 
 /* Built-in method references that are verified to be native. */
 var WeakMap = getNative(root, 'WeakMap');
@@ -9274,7 +9525,7 @@ module.exports = get;
 /***/ (function(module, exports, __webpack_require__) {
 
 var castPath = __webpack_require__(89),
-    toKey = __webpack_require__(41);
+    toKey = __webpack_require__(42);
 
 /**
  * The base implementation of `_.get` without support for default values.
@@ -9303,7 +9554,7 @@ module.exports = baseGet;
 /* 89 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isArray = __webpack_require__(6),
+var isArray = __webpack_require__(5),
     isKey = __webpack_require__(57),
     stringToPath = __webpack_require__(188),
     toString = __webpack_require__(191);
@@ -9332,8 +9583,8 @@ module.exports = castPath;
 
 var arrayFilter = __webpack_require__(56),
     baseFilter = __webpack_require__(205),
-    baseIteratee = __webpack_require__(23),
-    isArray = __webpack_require__(6);
+    baseIteratee = __webpack_require__(22),
+    isArray = __webpack_require__(5);
 
 /**
  * Iterates over elements of `collection`, returning an array of all elements
@@ -9408,7 +9659,7 @@ module.exports = setToString;
 /* 92 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getNative = __webpack_require__(21);
+var getNative = __webpack_require__(23);
 
 var defineProperty = (function() {
   try {
@@ -9593,14 +9844,12 @@ module.exports = noop;
 /* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isObject = __webpack_require__(13),
-    isSymbol = __webpack_require__(40);
+var baseTrim = __webpack_require__(222),
+    isObject = __webpack_require__(13),
+    isSymbol = __webpack_require__(41);
 
 /** Used as references for various `Number` constants. */
 var NAN = 0 / 0;
-
-/** Used to match leading and trailing whitespace. */
-var reTrim = /^\s+|\s+$/g;
 
 /** Used to detect bad signed hexadecimal string values. */
 var reIsBadHex = /^[-+]0x[0-9a-f]+$/i;
@@ -9651,7 +9900,7 @@ function toNumber(value) {
   if (typeof value != 'string') {
     return value === 0 ? value : +value;
   }
-  value = value.replace(reTrim, '');
+  value = baseTrim(value);
   var isBinary = reIsBinary.test(value);
   return (isBinary || reIsOctal.test(value))
     ? freeParseInt(value.slice(2), isBinary ? 2 : 8)
@@ -9822,8 +10071,8 @@ function splitStr(str, position) {
 /* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var elementHelper = __webpack_require__(10),
-    ProcessSimulationHelper = __webpack_require__(9);
+var elementHelper = __webpack_require__(11),
+    ProcessSimulationHelper = __webpack_require__(10);
 
 var SequenceFlowHelper = {};
 
@@ -9875,14 +10124,15 @@ module.exports = SequenceFlowHelper;
 "use strict";
 
 
-var escapeHTML = __webpack_require__(11).escapeHTML;
+var escapeHTML = __webpack_require__(7).escapeHTML;
 
-var domQuery = __webpack_require__(2).query;
+var domify = __webpack_require__(2).domify,
+    domQuery = __webpack_require__(2).query;
 
-var entryFieldDescription = __webpack_require__(22);
+var entryFieldDescription = __webpack_require__(14);
 
 
-var textField = function(options, defaultParameters) {
+var textField = function(translate, options, defaultParameters) {
 
   // Default action for the button next to the input-field
   var defaultButtonAction = function(element, inputNode) {
@@ -9913,7 +10163,7 @@ var textField = function(options, defaultParameters) {
       description = options.description;
 
   resource.html =
-    '<label for="camunda-' + escapeHTML(resource.id) + '" ' +
+    domify('<label for="camunda-' + escapeHTML(resource.id) + '" ' +
       (canBeDisabled ? 'data-disable="isDisabled" ' : '') +
       (canBeHidden ? 'data-show="isHidden" ' : '') +
       (dataValueLabel ? 'data-value="' + escapeHTML(dataValueLabel) + '"' : '') + '>'+ escapeHTML(label) +'</label>' +
@@ -9925,16 +10175,16 @@ var textField = function(options, defaultParameters) {
         (canBeDisabled ? 'data-disable="isDisabled"' : '') +
         (canBeHidden ? 'data-show="isHidden"' : '') +
         ' />' +
-      '<button class="' + escapeHTML(actionName) + '" data-action="' + escapeHTML(actionName) + '" data-show="' + escapeHTML(showName) + '" ' +
+      '<button class="action-button ' + escapeHTML(actionName) + '" data-action="' + escapeHTML(actionName) + '" data-show="' + escapeHTML(showName) + '" ' +
         (canBeDisabled ? 'data-disable="isDisabled"' : '') +
         (canBeHidden ? ' data-show="isHidden"' : '') + '>' +
         '<span>' + escapeHTML(buttonLabel) + '</span>' +
       '</button>' +
-    '</div>';
+    '</div>');
 
   // add description below text input entry field
   if (description) {
-    resource.html += entryFieldDescription(description);
+    resource.html.appendChild(entryFieldDescription(translate, description, { show: canBeHidden && 'isHidden' }));
   }
 
   resource[actionName] = actionMethod;
@@ -9967,13 +10217,14 @@ module.exports = textField;
 "use strict";
 
 
-var escapeHTML = __webpack_require__(11).escapeHTML;
+var escapeHTML = __webpack_require__(7).escapeHTML;
 
-var domify = __webpack_require__(2).domify;
+var domify = __webpack_require__(2).domify,
+    domQuery = __webpack_require__(2).query;
 
 var forEach = __webpack_require__(12);
 
-var entryFieldDescription = __webpack_require__(22);
+var entryFieldDescription = __webpack_require__(14);
 
 
 var isList = function(list) {
@@ -10001,7 +10252,7 @@ var createOption = function(option) {
  *
  * @return {Object}
  */
-var selectbox = function(options, defaultParameters) {
+var selectbox = function(translate, options, defaultParameters) {
   var resource = defaultParameters,
       label = options.label || resource.id,
       selectOptions = options.selectOptions || [ { name: '', value: '' } ],
@@ -10018,7 +10269,7 @@ var selectbox = function(options, defaultParameters) {
 
 
   resource.html =
-    '<label for="camunda-' + escapeHTML(resource.id) + '"' +
+    domify('<label for="camunda-' + escapeHTML(resource.id) + '"' +
     (canBeDisabled ? 'data-disable="isDisabled" ' : '') +
     (canBeHidden ? 'data-show="isHidden" ' : '') +
     '>' + escapeHTML(label) + '</label>' +
@@ -10026,20 +10277,27 @@ var selectbox = function(options, defaultParameters) {
     escapeHTML(modelProperty) + '"' +
     (canBeDisabled ? 'data-disable="isDisabled" ' : '') +
     (canBeHidden ? 'data-show="isHidden" ' : '') +
-    ' data-value>';
+    ' data-value></select>');
+
+  var select = domQuery('select', resource.html);
 
   if (isList(selectOptions)) {
     forEach(selectOptions, function(option) {
-      resource.html += '<option value="' + escapeHTML(option.value) + (option.title ? '" title="' + escapeHTML(option.title) : '') + '">' +
-      (option.name ? escapeHTML(option.name) : '') + '</option>';
+      select.appendChild(
+        domify(
+          '<option value="' + escapeHTML(option.value) +
+          (option.title ? '" title="' + escapeHTML(option.title) : '') +
+          '">' +
+          (option.name ? escapeHTML(option.name) : '') +
+          '</option>'
+        )
+      );
     });
   }
 
-  resource.html += '</select>';
-
   // add description below select box entry field
   if (description && typeof options.showCustomInput !== 'function') {
-    resource.html += entryFieldDescription(description);
+    resource.html.appendChild(entryFieldDescription(translate, description, { show: canBeHidden && 'isHidden' }));
   }
 
   /**
@@ -10109,7 +10367,7 @@ module.exports = selectbox;
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseAssignValue = __webpack_require__(62),
-    eq = __webpack_require__(37);
+    eq = __webpack_require__(38);
 
 /** Used for built-in method references. */
 var objectProto = Object.prototype;
@@ -10142,7 +10400,7 @@ module.exports = assignValue;
 /* 104 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var toFinite = __webpack_require__(245);
+var toFinite = __webpack_require__(250);
 
 /**
  * Converts `value` to an integer.
@@ -10184,7 +10442,7 @@ module.exports = toInteger;
 /* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var identity = __webpack_require__(26),
+var identity = __webpack_require__(27),
     metaMap = __webpack_require__(106);
 
 /**
@@ -10221,13 +10479,13 @@ module.exports = metaMap;
 
 var composeArgs = __webpack_require__(108),
     composeArgsRight = __webpack_require__(109),
-    countHolders = __webpack_require__(255),
-    createCtor = __webpack_require__(43),
+    countHolders = __webpack_require__(260),
+    createCtor = __webpack_require__(44),
     createRecurry = __webpack_require__(110),
     getHolder = __webpack_require__(65),
-    reorder = __webpack_require__(264),
-    replaceHolders = __webpack_require__(44),
-    root = __webpack_require__(8);
+    reorder = __webpack_require__(269),
+    replaceHolders = __webpack_require__(45),
+    root = __webpack_require__(9);
 
 /** Used to compose bitmasks for function metadata. */
 var WRAP_BIND_FLAG = 1,
@@ -10409,7 +10667,7 @@ module.exports = composeArgsRight;
 /* 110 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isLaziable = __webpack_require__(256),
+var isLaziable = __webpack_require__(261),
     setData = __webpack_require__(114),
     setWrapToString = __webpack_require__(115);
 
@@ -10492,7 +10750,7 @@ module.exports = getData;
 /* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseCreate = __webpack_require__(34),
+var baseCreate = __webpack_require__(35),
     baseLodash = __webpack_require__(64);
 
 /**
@@ -10572,10 +10830,10 @@ module.exports = setData;
 /* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getWrapDetails = __webpack_require__(261),
-    insertWrapDetails = __webpack_require__(262),
+var getWrapDetails = __webpack_require__(266),
+    insertWrapDetails = __webpack_require__(267),
     setToString = __webpack_require__(91),
-    updateWrapDetails = __webpack_require__(263);
+    updateWrapDetails = __webpack_require__(268);
 
 /**
  * Sets the `toString` method of `wrapper` to mimic the source of `reference`
@@ -10599,9 +10857,9 @@ module.exports = setWrapToString;
 /* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var elementHelper = __webpack_require__(10),
-    ProcessSimulationHelper = __webpack_require__(9),
-    createUUID = __webpack_require__(17).createUUID;
+var elementHelper = __webpack_require__(11),
+    ProcessSimulationHelper = __webpack_require__(10),
+    createUUID = __webpack_require__(18).createUUID;
 
 var ResourceHelper = {};
 
@@ -10673,10 +10931,10 @@ module.exports = ResourceHelper;
 /* 117 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var elementHelper = __webpack_require__(10),
-    ProcessSimulationHelper = __webpack_require__(9),
+var elementHelper = __webpack_require__(11),
+    ProcessSimulationHelper = __webpack_require__(10),
     RuleHelper = __webpack_require__(118),
-    createUUID = __webpack_require__(17).createUUID;
+    createUUID = __webpack_require__(18).createUUID;
 
 var TimetableHelper = {};
 
@@ -10743,8 +11001,8 @@ module.exports = TimetableHelper;
 /* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var elementHelper = __webpack_require__(10),
-    createUUID = __webpack_require__(17).createUUID;
+var elementHelper = __webpack_require__(11),
+    createUUID = __webpack_require__(18).createUUID;
 
 var RuleHelper = {};
 
@@ -10961,7 +11219,7 @@ module.exports = __webpack_require__(127);
 
 module.exports = {
   __init__: [ 'propertiesProvider' ],
-  propertiesProvider: [ 'type', __webpack_require__(229) ]
+  propertiesProvider: [ 'type', __webpack_require__(234) ]
 };
 
 /***/ }),
@@ -11075,8 +11333,8 @@ function toComment(sourceMap) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // var translations = require('./translations');
-var translationsEn = __webpack_require__(307);
-var translationsJa = __webpack_require__(308);
+var translationsEn = __webpack_require__(315);
+var translationsJa = __webpack_require__(316);
 var translationMap = {
   'en': translationsEn,
   'ja': translationsJa,
@@ -11104,7 +11362,7 @@ module.exports = function(langTag) {
 /* 126 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(310);
+module.exports = __webpack_require__(318);
 
 
 /***/ }),
@@ -11114,7 +11372,7 @@ module.exports = __webpack_require__(310);
 module.exports = {
   __depends__: [
     __webpack_require__(128),
-    __webpack_require__(14).default
+    __webpack_require__(15).default
   ],
   __init__: [ 'propertiesPanel' ],
   propertiesPanel: [ 'type', __webpack_require__(204) ]
@@ -11213,7 +11471,7 @@ module.exports = createBaseFor;
 
 var baseTimes = __webpack_require__(132),
     isArguments = __webpack_require__(30),
-    isArray = __webpack_require__(6),
+    isArray = __webpack_require__(5),
     isBuffer = __webpack_require__(31),
     isIndex = __webpack_require__(32),
     isTypedArray = __webpack_require__(33);
@@ -11292,8 +11550,8 @@ module.exports = baseTimes;
 /* 133 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseGetTag = __webpack_require__(24),
-    isObjectLike = __webpack_require__(20);
+var baseGetTag = __webpack_require__(25),
+    isObjectLike = __webpack_require__(21);
 
 /** `Object#toString` result references. */
 var argsTag = '[object Arguments]';
@@ -11316,7 +11574,7 @@ module.exports = baseIsArguments;
 /* 134 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Symbol = __webpack_require__(25);
+var Symbol = __webpack_require__(26);
 
 /** Used for built-in method references. */
 var objectProto = Object.prototype;
@@ -11420,9 +11678,9 @@ module.exports = stubFalse;
 /* 137 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseGetTag = __webpack_require__(24),
-    isLength = __webpack_require__(48),
-    isObjectLike = __webpack_require__(20);
+var baseGetTag = __webpack_require__(25),
+    isLength = __webpack_require__(49),
+    isObjectLike = __webpack_require__(21);
 
 /** `Object#toString` result references. */
 var argsTag = '[object Arguments]',
@@ -11535,7 +11793,7 @@ module.exports = nativeKeys;
 /* 140 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isArrayLike = __webpack_require__(16);
+var isArrayLike = __webpack_require__(17);
 
 /**
  * Creates a `baseEach` or `baseEachRight` function.
@@ -11573,7 +11831,7 @@ module.exports = createBaseEach;
 /* 141 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var identity = __webpack_require__(26);
+var identity = __webpack_require__(27);
 
 /**
  * Casts `value` to `identity` if it's not a function.
@@ -11598,7 +11856,7 @@ module.exports = castFunction;
 
 var reduce = __webpack_require__(143),
     is = __webpack_require__(1).is,
-    keys = __webpack_require__(15),
+    keys = __webpack_require__(16),
     forEach = __webpack_require__(12);
 
 /**
@@ -11731,14 +11989,14 @@ UpdateBusinessObjectHandler.prototype.revert = function(context) {
 /* 143 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var arrayEach = __webpack_require__(47),
-    baseCreate = __webpack_require__(34),
+var arrayEach = __webpack_require__(48),
+    baseCreate = __webpack_require__(35),
     baseForOwn = __webpack_require__(70),
-    baseIteratee = __webpack_require__(23),
+    baseIteratee = __webpack_require__(22),
     getPrototype = __webpack_require__(199),
-    isArray = __webpack_require__(6),
+    isArray = __webpack_require__(5),
     isBuffer = __webpack_require__(31),
-    isFunction = __webpack_require__(50),
+    isFunction = __webpack_require__(34),
     isObject = __webpack_require__(13),
     isTypedArray = __webpack_require__(33);
 
@@ -11917,7 +12175,7 @@ module.exports = listCacheClear;
 /* 147 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var assocIndexOf = __webpack_require__(36);
+var assocIndexOf = __webpack_require__(37);
 
 /** Used for built-in method references. */
 var arrayProto = Array.prototype;
@@ -11958,7 +12216,7 @@ module.exports = listCacheDelete;
 /* 148 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var assocIndexOf = __webpack_require__(36);
+var assocIndexOf = __webpack_require__(37);
 
 /**
  * Gets the list cache value for `key`.
@@ -11983,7 +12241,7 @@ module.exports = listCacheGet;
 /* 149 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var assocIndexOf = __webpack_require__(36);
+var assocIndexOf = __webpack_require__(37);
 
 /**
  * Checks if a list cache value for `key` exists.
@@ -12005,7 +12263,7 @@ module.exports = listCacheHas;
 /* 150 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var assocIndexOf = __webpack_require__(36);
+var assocIndexOf = __webpack_require__(37);
 
 /**
  * Sets the list cache `key` to `value`.
@@ -12037,7 +12295,7 @@ module.exports = listCacheSet;
 /* 151 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var ListCache = __webpack_require__(35);
+var ListCache = __webpack_require__(36);
 
 /**
  * Removes all key-value entries from the stack.
@@ -12122,7 +12380,7 @@ module.exports = stackHas;
 /* 155 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var ListCache = __webpack_require__(35),
+var ListCache = __webpack_require__(36),
     Map = __webpack_require__(51),
     MapCache = __webpack_require__(52);
 
@@ -12162,7 +12420,7 @@ module.exports = stackSet;
 /* 156 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isFunction = __webpack_require__(50),
+var isFunction = __webpack_require__(34),
     isMasked = __webpack_require__(157),
     isObject = __webpack_require__(13),
     toSource = __webpack_require__(78);
@@ -12241,7 +12499,7 @@ module.exports = isMasked;
 /* 158 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var root = __webpack_require__(8);
+var root = __webpack_require__(9);
 
 /** Used to detect overreaching core-js shims. */
 var coreJsData = root['__core-js_shared__'];
@@ -12273,7 +12531,7 @@ module.exports = getValue;
 /***/ (function(module, exports, __webpack_require__) {
 
 var Hash = __webpack_require__(161),
-    ListCache = __webpack_require__(35),
+    ListCache = __webpack_require__(36),
     Map = __webpack_require__(51);
 
 /**
@@ -12337,7 +12595,7 @@ module.exports = Hash;
 /* 162 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var nativeCreate = __webpack_require__(38);
+var nativeCreate = __webpack_require__(39);
 
 /**
  * Removes all key-value entries from the hash.
@@ -12381,7 +12639,7 @@ module.exports = hashDelete;
 /* 164 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var nativeCreate = __webpack_require__(38);
+var nativeCreate = __webpack_require__(39);
 
 /** Used to stand-in for `undefined` hash values. */
 var HASH_UNDEFINED = '__lodash_hash_undefined__';
@@ -12417,7 +12675,7 @@ module.exports = hashGet;
 /* 165 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var nativeCreate = __webpack_require__(38);
+var nativeCreate = __webpack_require__(39);
 
 /** Used for built-in method references. */
 var objectProto = Object.prototype;
@@ -12446,7 +12704,7 @@ module.exports = hashHas;
 /* 166 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var nativeCreate = __webpack_require__(38);
+var nativeCreate = __webpack_require__(39);
 
 /** Used to stand-in for `undefined` hash values. */
 var HASH_UNDEFINED = '__lodash_hash_undefined__';
@@ -12475,7 +12733,7 @@ module.exports = hashSet;
 /* 167 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getMapData = __webpack_require__(39);
+var getMapData = __webpack_require__(40);
 
 /**
  * Removes `key` and its value from the map.
@@ -12520,7 +12778,7 @@ module.exports = isKeyable;
 /* 169 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getMapData = __webpack_require__(39);
+var getMapData = __webpack_require__(40);
 
 /**
  * Gets the map value for `key`.
@@ -12542,7 +12800,7 @@ module.exports = mapCacheGet;
 /* 170 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getMapData = __webpack_require__(39);
+var getMapData = __webpack_require__(40);
 
 /**
  * Checks if a map value for `key` exists.
@@ -12564,7 +12822,7 @@ module.exports = mapCacheHas;
 /* 171 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getMapData = __webpack_require__(39);
+var getMapData = __webpack_require__(40);
 
 /**
  * Sets the map `key` to `value`.
@@ -12597,7 +12855,7 @@ var Stack = __webpack_require__(77),
     equalByTag = __webpack_require__(176),
     equalObjects = __webpack_require__(179),
     getTag = __webpack_require__(82),
-    isArray = __webpack_require__(6),
+    isArray = __webpack_require__(5),
     isBuffer = __webpack_require__(31),
     isTypedArray = __webpack_require__(33);
 
@@ -12755,9 +13013,9 @@ module.exports = arraySome;
 /* 176 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Symbol = __webpack_require__(25),
+var Symbol = __webpack_require__(26),
     Uint8Array = __webpack_require__(177),
-    eq = __webpack_require__(37),
+    eq = __webpack_require__(38),
     equalArrays = __webpack_require__(80),
     mapToArray = __webpack_require__(178),
     setToArray = __webpack_require__(55);
@@ -12873,7 +13131,7 @@ module.exports = equalByTag;
 /* 177 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var root = __webpack_require__(8);
+var root = __webpack_require__(9);
 
 /** Built-in value references. */
 var Uint8Array = root.Uint8Array;
@@ -13007,7 +13265,7 @@ module.exports = equalObjects;
 
 var baseGetAllKeys = __webpack_require__(181),
     getSymbols = __webpack_require__(182),
-    keys = __webpack_require__(15);
+    keys = __webpack_require__(16);
 
 /**
  * Creates an array of own enumerable property names and symbols of `object`.
@@ -13028,7 +13286,7 @@ module.exports = getAllKeys;
 /***/ (function(module, exports, __webpack_require__) {
 
 var arrayPush = __webpack_require__(81),
-    isArray = __webpack_require__(6);
+    isArray = __webpack_require__(5);
 
 /**
  * The base implementation of `getAllKeys` and `getAllKeysIn` which uses
@@ -13118,8 +13376,8 @@ module.exports = stubArray;
 /* 184 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getNative = __webpack_require__(21),
-    root = __webpack_require__(8);
+var getNative = __webpack_require__(23),
+    root = __webpack_require__(9);
 
 /* Built-in method references that are verified to be native. */
 var DataView = getNative(root, 'DataView');
@@ -13131,8 +13389,8 @@ module.exports = DataView;
 /* 185 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getNative = __webpack_require__(21),
-    root = __webpack_require__(8);
+var getNative = __webpack_require__(23),
+    root = __webpack_require__(9);
 
 /* Built-in method references that are verified to be native. */
 var Promise = getNative(root, 'Promise');
@@ -13145,7 +13403,7 @@ module.exports = Promise;
 /***/ (function(module, exports, __webpack_require__) {
 
 var isStrictComparable = __webpack_require__(85),
-    keys = __webpack_require__(15);
+    keys = __webpack_require__(16);
 
 /**
  * Gets the property names, values, and compare flags of `object`.
@@ -13180,7 +13438,7 @@ var baseIsEqual = __webpack_require__(79),
     isKey = __webpack_require__(57),
     isStrictComparable = __webpack_require__(85),
     matchesStrictComparable = __webpack_require__(86),
-    toKey = __webpack_require__(41);
+    toKey = __webpack_require__(42);
 
 /** Used to compose bitmasks for value comparisons. */
 var COMPARE_PARTIAL_FLAG = 1,
@@ -13391,10 +13649,10 @@ module.exports = toString;
 /* 192 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Symbol = __webpack_require__(25),
+var Symbol = __webpack_require__(26),
     arrayMap = __webpack_require__(58),
-    isArray = __webpack_require__(6),
-    isSymbol = __webpack_require__(40);
+    isArray = __webpack_require__(5),
+    isSymbol = __webpack_require__(41);
 
 /** Used as references for various `Number` constants. */
 var INFINITY = 1 / 0;
@@ -13495,10 +13753,10 @@ module.exports = baseHasIn;
 
 var castPath = __webpack_require__(89),
     isArguments = __webpack_require__(30),
-    isArray = __webpack_require__(6),
+    isArray = __webpack_require__(5),
     isIndex = __webpack_require__(32),
-    isLength = __webpack_require__(48),
-    toKey = __webpack_require__(41);
+    isLength = __webpack_require__(49),
+    toKey = __webpack_require__(42);
 
 /**
  * Checks if `path` exists on `object`.
@@ -13541,7 +13799,7 @@ module.exports = hasPath;
 var baseProperty = __webpack_require__(197),
     basePropertyDeep = __webpack_require__(198),
     isKey = __webpack_require__(57),
-    toKey = __webpack_require__(41);
+    toKey = __webpack_require__(42);
 
 /**
  * Creates a function that returns the value at `path` of a given object.
@@ -13633,7 +13891,7 @@ module.exports = getPrototype;
 "use strict";
 
 
-var elementHelper = __webpack_require__(10);
+var elementHelper = __webpack_require__(11);
 
 /**
  * A handler capable of creating a new element under a provided parent
@@ -13743,7 +14001,7 @@ function ensureNotNull(prop, name) {
 
 var forEach = __webpack_require__(12);
 
-var elementHelper = __webpack_require__(10);
+var elementHelper = __webpack_require__(11);
 
 /**
  * A handler that implements a BPMN 2.0 property update
@@ -13903,6 +14161,7 @@ UpdateBusinessObjectListHandler.prototype.execute = function(context) {
       updatedObjectList = context.updatedObjectList,
       objectsToRemove = context.objectsToRemove || [],
       objectsToAdd = context.objectsToAdd || [],
+      objectsToPrepend = context.objectsToPrepend || [],
       changed = [ context.element], // this will not change any diagram-js elements
       referencePropertyName;
 
@@ -13911,19 +14170,24 @@ UpdateBusinessObjectListHandler.prototype.execute = function(context) {
   }
 
   var objectList = currentObject[propertyName];
+
   // adjust array reference in the parent business object
   context.previousList = currentObject[propertyName];
 
   if (updatedObjectList) {
     currentObject[propertyName] = updatedObjectList;
   } else {
-    var listCopy = [];
+
+    // start with objects to prepend
+    var listCopy = objectsToPrepend.slice();
+
     // remove all objects which should be removed
     forEach(objectList, function(object) {
       if (objectsToRemove.indexOf(object) == -1) {
         listCopy.push(object);
       }
     });
+
     // add all objects which should be added
     listCopy = listCopy.concat(objectsToAdd);
 
@@ -14018,7 +14282,8 @@ MultiCommandHandler.prototype.preExecute = function(context) {
 "use strict";
 
 
-var escapeHTML = __webpack_require__(11).escapeHTML;
+var createDropdown = __webpack_require__(7).createDropdown,
+    escapeHTML = __webpack_require__(7).escapeHTML;
 
 var domify = __webpack_require__(2).domify,
     domQuery = __webpack_require__(2).query,
@@ -14033,21 +14298,28 @@ var domify = __webpack_require__(2).domify,
 var forEach = __webpack_require__(12),
     filter = __webpack_require__(90),
     get = __webpack_require__(87),
-    keys = __webpack_require__(15),
+    keys = __webpack_require__(16),
     isEmpty = __webpack_require__(206),
-    isArray = __webpack_require__(6),
+    isArray = __webpack_require__(5),
+    isFunction = __webpack_require__(34),
+    isObject = __webpack_require__(13),
     xor = __webpack_require__(207),
-    debounce = __webpack_require__(220);
+    debounce = __webpack_require__(220),
+    flattenDeep = __webpack_require__(224),
+    keyBy = __webpack_require__(225),
+    map = __webpack_require__(229),
+    reduce = __webpack_require__(231);
 
 var updateSelection = __webpack_require__(99);
 
-var scrollTabs = __webpack_require__(311).default;
+var scrollTabs = __webpack_require__(319).default;
 
 var getBusinessObject = __webpack_require__(1).getBusinessObject;
 
 var HIDE_CLASS = 'bpp-hidden';
 var DEBOUNCE_DELAY = 300;
 
+var DEFAULT_PRIORITY = 1000;
 
 function isToggle(node) {
   return node.type === 'checkbox' || node.type === 'radio';
@@ -14120,6 +14392,7 @@ function getFormControlValuesInScope(entryNode) {
     }
 
     if (value !== null) {
+
       // return the actual value
       // handle serialization in entry provider
       // (ie. if empty string should be serialized or not)
@@ -14233,34 +14506,56 @@ function extractGroups(tabs) {
  * @constructor
  *
  * @param {Object} config
+ * @param {didi.Injector} injector
  * @param {EventBus} eventBus
  * @param {Modeling} modeling
- * @param {PropertiesProvider} propertiesProvider
  * @param {Canvas} canvas
  * @param {CommandStack} commandStack
  */
-function PropertiesPanel(config, eventBus, modeling, propertiesProvider, commandStack, canvas) {
+function PropertiesPanel(config, injector, eventBus, modeling, commandStack, canvas) {
 
   this._eventBus = eventBus;
   this._modeling = modeling;
   this._commandStack = commandStack;
   this._canvas = canvas;
-  this._propertiesProvider = propertiesProvider;
+
+  var propertiesProvider = injector.get('propertiesProvider', false);
+
+  if (propertiesProvider) {
+    this.registerProvider(propertiesProvider);
+  }
 
   this._init(config);
 }
 
 PropertiesPanel.$inject = [
   'config.propertiesPanel',
+  'injector',
   'eventBus',
   'modeling',
-  'propertiesProvider',
   'commandStack',
   'canvas'
 ];
 
 module.exports = PropertiesPanel;
 
+/**
+ * @param {number} [priority]
+ * @param { { getTabs: any[] | (any) => (any[]) => any[]) } } provider
+ */
+PropertiesPanel.prototype.registerProvider = function(priority, provider) {
+
+  if (!provider) {
+    provider = priority;
+    priority = DEFAULT_PRIORITY;
+  }
+
+  this._eventBus.on('propertiesPanel.getProviders', priority, function(event) {
+    event.providers.push(provider);
+  });
+
+  this._eventBus.fire('propertiesPanel.providersChanged');
+};
 
 PropertiesPanel.prototype._init = function(config) {
 
@@ -14350,7 +14645,10 @@ PropertiesPanel.prototype._init = function(config) {
     }
   });
 
-  eventBus.on('elementTemplates.changed', function() {
+  eventBus.on([
+    'elementTemplates.changed',
+    'propertiesPanel.providersChanged'
+  ], function() {
     var current = self._current;
     var element = current && current.element;
 
@@ -14415,87 +14713,136 @@ PropertiesPanel.prototype.detach = function() {
 
 
 /**
- * Select the given tab within the properties panel.
+ * Activate tab. Fall back to first visible tab.
  *
- * @param {Object|String} tab
+ * @param {Object|string} tabId
  */
-PropertiesPanel.prototype.activateTab = function(tab) {
+PropertiesPanel.prototype.activateTab = function(tabId) {
+  if (isObject(tabId)) {
+    tabId = tabId.id;
+  }
 
-  var tabId = typeof tab === 'string' ? tab : tab.id;
+  var tabs = domQueryAll('.bpp-properties-tab', this._current.panel),
+      tabLinks = domQueryAll('.bpp-properties-tab-link', this._current.panel);
 
-  var current = this._current;
-
-  var panelNode = current.panel;
-
-  var allTabNodes = domQueryAll('.bpp-properties-tab', panelNode),
-      allTabLinkNodes = domQueryAll('.bpp-properties-tab-link', panelNode);
-
-  forEach(allTabNodes, function(tabNode) {
-
-    var currentTabId = domAttr(tabNode, 'data-tab');
-
-    domClasses(tabNode).toggle('bpp-active', tabId === currentTabId);
+  // (1) Deactivate all tabs
+  forEach(tabs, function(tab) {
+    domClasses(tab).remove('bpp-active');
   });
 
-  forEach(allTabLinkNodes, function(tabLinkNode) {
-
-    var tabLink = domQuery('[data-tab-target]', tabLinkNode),
-        currentTabId = domAttr(tabLink, 'data-tab-target');
-
-    domClasses(tabLinkNode).toggle('bpp-active', tabId === currentTabId);
+  forEach(tabLinks, function(tabLink) {
+    domClasses(tabLink).remove('bpp-active');
   });
+
+  // (2) Activate tab, fall back to first visible tab
+  var visibleTabs = filter(tabs, function(tab) {
+    return !domClasses(tab).has(HIDE_CLASS);
+  });
+
+  var activeTab = reduce(visibleTabs, function(activeTab, tab) {
+    if (domAttr(tab, 'data-tab') === tabId) {
+      return tab;
+    }
+
+    return activeTab;
+  }, visibleTabs[ 0 ]);
+
+  if (activeTab) {
+    domClasses(activeTab).add('bpp-active');
+  }
+
+  var visibleTabLinks = filter(tabLinks, function(tabLink) {
+    return !domClasses(tabLink).has(HIDE_CLASS);
+  });
+
+  var activeTabLink = reduce(visibleTabLinks, function(activeTabLink, tabLink) {
+    if (domAttr(domQuery('a[data-tab-target]', tabLink), 'data-tab-target') === tabId) {
+      return tabLink;
+    }
+
+    return activeTabLink;
+  }, visibleTabLinks[ 0 ]);
+
+  if (activeTabLink) {
+    domClasses(activeTabLink).add('bpp-active');
+  }
+};
+
+PropertiesPanel.prototype._getProviders = function() {
+
+  var event = this._eventBus.createEvent({
+    type: 'propertiesPanel.getProviders',
+    providers: []
+  });
+
+  this._eventBus.fire(event);
+
+  return event.providers;
+};
+
+PropertiesPanel.prototype._getTabs = function(element) {
+  var providers = this._getProviders();
+
+  // loop through all providers and their entries.
+  // group entries by id so that overriding an entry is possible
+  return reduce(providers, function(tabs, provider) {
+    var tabsOrUpdater = provider.getTabs(element);
+
+    if (isFunction(tabsOrUpdater)) {
+      return tabsOrUpdater(tabs);
+    } else {
+      return tabsOrUpdater;
+    }
+  }, []);
 };
 
 /**
- * Update the DOM representation of the properties panel
+ * Update properties panel to show properties of element. Create new properties panel if no previous
+ * properties panel, element has changed or element has not changed but entries have.
+ *
+ * @param {ModdleElement|undefined} element
  */
 PropertiesPanel.prototype.update = function(element) {
-  var current = this._current;
 
-  // no actual selection change
-  var needsCreate = true;
-
-  if (typeof element === 'undefined') {
-
-    // use RootElement of BPMN diagram to generate properties panel if no element is selected
+  // (1) Fall back to root element
+  if (!element) {
     element = this._canvas.getRootElement();
   }
 
-  var newTabs = this._propertiesProvider.getTabs(element);
+  // (2) Get tabs
+  var tabs = this._getTabs(element);
 
-  if (current && current.element === element) {
-    // see if we can reuse the existing panel
-
-    needsCreate = this._entriesChanged(current, newTabs);
-  }
-
-  if (needsCreate) {
-
-    if (current) {
-
-      // get active tab from the existing panel before remove it
-      var activeTabNode = domQuery('.bpp-properties-tab.bpp-active', current.panel);
-
-      var activeTabId;
-      if (activeTabNode) {
-        activeTabId = domAttr(activeTabNode, 'data-tab');
-      }
-
-      // remove old panel
-      domRemove(current.panel);
-    }
-
-    this._current = this._create(element, newTabs);
-
-    // activate the saved active tab from the remove panel or the first tab
-    (activeTabId) ? this.activateTab(activeTabId) : this.activateTab(this._current.tabs[0]);
-
-  }
+  var activeTabId,
+      activeTabNode;
 
   if (this._current) {
-    // make sure correct tab contents are visible
-    this._updateActivation(this._current);
+    activeTabNode = domQuery('.bpp-properties-tab.bpp-active', this._current.panel);
 
+    if (activeTabNode) {
+      activeTabId = domAttr(activeTabNode, 'data-tab');
+    }
+  }
+
+  // (3) Create new properties panel if necessary
+  if (!this._current
+    || this._current.element !== element
+    || this._entriesChanged(this._current.entries, extractEntries(tabs))) {
+
+    if (this._current) {
+      domRemove(this._current.panel);
+    }
+
+    this._current = this._create(element, tabs);
+  }
+
+  // (4) Update visibility of tabs, groups and entries
+  this._updateActivation(this._current);
+
+  // (5) Update active tab
+  if (activeTabId) {
+    this.activateTab(activeTabId);
+  } else {
+    this.activateTab(this._current.tabs[ 0 ]);
   }
 
   this._emit('changed');
@@ -14503,18 +14850,18 @@ PropertiesPanel.prototype.update = function(element) {
 
 
 /**
- * Returns true if one of two groups has different entries than the other.
+ * Check whether entries have changes.
  *
- * @param  {Object} current
- * @param  {Object} newTabs
- * @return {Boolean}
+ * @param  {Array} prevEntries
+ * @param  {Array} entries
+ *
+ * @returns {Boolean}
  */
-PropertiesPanel.prototype._entriesChanged = function(current, newTabs) {
+PropertiesPanel.prototype._entriesChanged = function(prevEntries, entries) {
+  var prevEntryIds = keys(prevEntries),
+      entryIds = keys(entries);
 
-  var oldEntryIds = keys(current.entries),
-      newEntryIds = keys(extractEntries(newTabs));
-
-  return !isEmpty(xor(oldEntryIds, newEntryIds));
+  return !isEmpty(xor(prevEntryIds, entryIds));
 };
 
 PropertiesPanel.prototype._emit = function(event) {
@@ -14575,6 +14922,9 @@ PropertiesPanel.prototype._bindListeners = function(container) {
 
   function handlePaste(event) {
     var text = (event.clipboardData || window.clipboardData).getData('text');
+
+    text = normalizeEndOfLineSequences(text);
+
     document.execCommand('insertText', false, text);
 
     event.preventDefault();
@@ -14590,6 +14940,28 @@ PropertiesPanel.prototype._bindListeners = function(container) {
     }
   });
 
+  function handleSuggestItems(event) {
+
+    // triggers on all inputs
+    var inputNode = event.delegateTarget;
+
+    var entryNode = domClosest(inputNode, '[data-entry]');
+
+    // only work on data entries
+    if (!entryNode) {
+      return;
+    }
+
+    var action = domAttr(inputNode, 'data-auto-suggest'),
+        entryId = domAttr(entryNode, 'data-entry');
+
+    var entry = self.getEntry(entryId);
+
+    self.executeAction(entry, entryNode, action, event);
+  }
+
+  domDelegate.bind(container, '[data-auto-suggest]', 'input', handleSuggestItems, true);
+
   domDelegate.bind(container, '[data-action]', 'click', function onClick(event) {
 
     // triggers on all inputs
@@ -14603,16 +14975,18 @@ PropertiesPanel.prototype._bindListeners = function(container) {
 
     var isEntryDirty = self.executeAction(entry, entryNode, actionId, event);
 
-    if (isEntryDirty) {
-      var values = getFormControlValues(entryNode);
-
-      self.applyChanges(entry, values, entryNode);
+    if (!isEntryDirty) {
+      return self.update(self._current.element);
     }
 
+    var values = getFormControlValues(entryNode);
+
+    self.applyChanges(entry, values, entryNode);
     self.updateState(entry, entryNode);
   });
 
   function handleInput(event, element) {
+
     // triggers on all inputs
     var inputNode = event.delegateTarget;
 
@@ -14850,10 +15224,6 @@ PropertiesPanel.prototype.getEntry = function(id) {
   return this._current && this._current.entries[id];
 };
 
-var flattenDeep = __webpack_require__(222),
-    keyBy = __webpack_require__(223),
-    map = __webpack_require__(227);
-
 PropertiesPanel.prototype._create = function(element, tabs) {
 
   if (!element) {
@@ -14954,15 +15324,17 @@ PropertiesPanel.prototype._updateActivation = function(current) {
 
   var element = current.element;
 
-  function isEntryVisible(entry) {
+  function isEntryVisible(entry, group, tab) {
     return eventBus.fire('propertiesPanel.isEntryVisible', {
+      element: element,
       entry: entry,
-      element: element
+      group: group,
+      tab: tab
     });
   }
 
   function isGroupVisible(group, element, groupNode) {
-    if (typeof group.enabled === 'function') {
+    if (isFunction(group.enabled)) {
       return group.enabled(element, groupNode);
     } else {
       return true;
@@ -14970,7 +15342,7 @@ PropertiesPanel.prototype._updateActivation = function(current) {
   }
 
   function isTabVisible(tab, element) {
-    if (typeof tab.enabled === 'function') {
+    if (isFunction(tab.enabled)) {
       return tab.enabled(element);
     } else {
       return true;
@@ -14979,15 +15351,6 @@ PropertiesPanel.prototype._updateActivation = function(current) {
 
   function toggleVisible(node, visible) {
     domClasses(node).toggle(HIDE_CLASS, !visible);
-  }
-
-  // check whether the active tab is visible
-  // if not: set the first tab as active tab
-  function checkActiveTabVisibility(node, visible) {
-    var isActive = domClasses(node).has('bpp-active');
-    if (!visible && isActive) {
-      self.activateTab(current.tabs[0]);
-    }
   }
 
   function updateLabel(element, selector, text) {
@@ -15019,7 +15382,7 @@ PropertiesPanel.prototype._updateActivation = function(current) {
 
         var entryNode = domQuery('[data-entry="' + entry.id + '"]', groupNode);
 
-        var entryVisible = isEntryVisible(entry);
+        var entryVisible = isEntryVisible(entry, group, tab);
 
         groupVisible = groupVisible || entryVisible;
 
@@ -15046,6 +15409,7 @@ PropertiesPanel.prototype._updateActivation = function(current) {
           var entriesToRemove = existingElements.length - values.length;
 
           for (var j = 0; j < entriesToRemove; j++) {
+
             // remove orphaned element
             listEntryContainer.removeChild(listEntryContainer.lastChild);
           }
@@ -15077,8 +15441,6 @@ PropertiesPanel.prototype._updateActivation = function(current) {
 
     toggleVisible(tabNode, tabVisible);
     toggleVisible(tabLinkNode, tabVisible);
-
-    checkActiveTabVisibility(tabNode, tabVisible);
   });
 
   // inject elements id into header
@@ -15091,10 +15453,6 @@ PropertiesPanel.prototype._createPanel = function(element, tabs) {
   var panelNode = domify('<div class="bpp-properties"></div>'),
       headerNode = domify('<div class="bpp-properties-header">' +
         '<div class="label" data-label-id></div>' +
-        '<div class="search">' +
-          '<input type="search" placeholder="Search for property" />' +
-          '<button><span>Search</span></button>' +
-        '</div>' +
       '</div>'),
       tabBarNode = domify('<div class="bpp-properties-tab-bar"></div>'),
       tabLinksNode = domify('<ul class="bpp-properties-tabs-links"></ul>'),
@@ -15123,8 +15481,14 @@ PropertiesPanel.prototype._createPanel = function(element, tabs) {
 
       var groupNode = domify('<div class="bpp-properties-group" data-group="' + escapeHTML(group.id) + '">' +
           '<span class="group-toggle"></span>' +
-          '<span class="group-label">' + escapeHTML(group.label) + '</span>' +
+          '<div class="group-header">' +
+            '<span class="group-label">' + escapeHTML(group.label) + '</span>' +
+          '</div>' +
         '</div>');
+
+      if (group.dropdown) {
+        domQuery('.group-header', groupNode).appendChild(createDropdown(group.dropdown));
+      }
 
       // TODO(nre): use event delegation to handle that...
       groupNode.querySelector('.group-toggle').addEventListener('click', function(evt) {
@@ -15296,12 +15660,15 @@ function isImplicitRoot(element) {
   return element.id === '__implicitroot';
 }
 
+function normalizeEndOfLineSequences(string) {
+  return string.replace(/\r\n|\r|\n/g, '\n');
+}
 
 /***/ }),
 /* 205 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseEach = __webpack_require__(29);
+var baseEach = __webpack_require__(24);
 
 /**
  * The base implementation of `_.filter` without support for iteratee shorthands.
@@ -15331,10 +15698,10 @@ module.exports = baseFilter;
 var baseKeys = __webpack_require__(75),
     getTag = __webpack_require__(82),
     isArguments = __webpack_require__(30),
-    isArray = __webpack_require__(6),
-    isArrayLike = __webpack_require__(16),
+    isArray = __webpack_require__(5),
+    isArrayLike = __webpack_require__(17),
     isBuffer = __webpack_require__(31),
-    isPrototype = __webpack_require__(49),
+    isPrototype = __webpack_require__(50),
     isTypedArray = __webpack_require__(33);
 
 /** `Object#toString` result references. */
@@ -15489,7 +15856,7 @@ module.exports = overRest;
 
 var constant = __webpack_require__(210),
     defineProperty = __webpack_require__(92),
-    identity = __webpack_require__(26);
+    identity = __webpack_require__(27);
 
 /**
  * The base implementation of `setToString` without support for hot loop shorting.
@@ -15735,9 +16102,9 @@ module.exports = strictIndexOf;
 /* 216 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Symbol = __webpack_require__(25),
+var Symbol = __webpack_require__(26),
     isArguments = __webpack_require__(30),
-    isArray = __webpack_require__(6);
+    isArray = __webpack_require__(5);
 
 /** Built-in value references. */
 var spreadableSymbol = Symbol ? Symbol.isConcatSpreadable : undefined;
@@ -15864,8 +16231,8 @@ module.exports = createSet;
 /* 219 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isArrayLike = __webpack_require__(16),
-    isObjectLike = __webpack_require__(20);
+var isArrayLike = __webpack_require__(17),
+    isObjectLike = __webpack_require__(21);
 
 /**
  * This method is like `_.isArrayLike` except that it also checks if `value`
@@ -16100,7 +16467,7 @@ module.exports = debounce;
 /* 221 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var root = __webpack_require__(8);
+var root = __webpack_require__(9);
 
 /**
  * Gets the timestamp of the number of milliseconds that have elapsed since
@@ -16127,6 +16494,56 @@ module.exports = now;
 
 /***/ }),
 /* 222 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var trimmedEndIndex = __webpack_require__(223);
+
+/** Used to match leading whitespace. */
+var reTrimStart = /^\s+/;
+
+/**
+ * The base implementation of `_.trim`.
+ *
+ * @private
+ * @param {string} string The string to trim.
+ * @returns {string} Returns the trimmed string.
+ */
+function baseTrim(string) {
+  return string
+    ? string.slice(0, trimmedEndIndex(string) + 1).replace(reTrimStart, '')
+    : string;
+}
+
+module.exports = baseTrim;
+
+
+/***/ }),
+/* 223 */
+/***/ (function(module, exports) {
+
+/** Used to match a single whitespace character. */
+var reWhitespace = /\s/;
+
+/**
+ * Used by `_.trim` and `_.trimEnd` to get the index of the last non-whitespace
+ * character of `string`.
+ *
+ * @private
+ * @param {string} string The string to inspect.
+ * @returns {number} Returns the index of the last non-whitespace character.
+ */
+function trimmedEndIndex(string) {
+  var index = string.length;
+
+  while (index-- && reWhitespace.test(string.charAt(index))) {}
+  return index;
+}
+
+module.exports = trimmedEndIndex;
+
+
+/***/ }),
+/* 224 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseFlatten = __webpack_require__(96);
@@ -16157,11 +16574,11 @@ module.exports = flattenDeep;
 
 
 /***/ }),
-/* 223 */
+/* 225 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseAssignValue = __webpack_require__(62),
-    createAggregator = __webpack_require__(224);
+    createAggregator = __webpack_require__(226);
 
 /**
  * Creates an object composed of keys generated from the results of running
@@ -16199,13 +16616,13 @@ module.exports = keyBy;
 
 
 /***/ }),
-/* 224 */
+/* 226 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var arrayAggregator = __webpack_require__(225),
-    baseAggregator = __webpack_require__(226),
-    baseIteratee = __webpack_require__(23),
-    isArray = __webpack_require__(6);
+var arrayAggregator = __webpack_require__(227),
+    baseAggregator = __webpack_require__(228),
+    baseIteratee = __webpack_require__(22),
+    isArray = __webpack_require__(5);
 
 /**
  * Creates a function like `_.groupBy`.
@@ -16228,7 +16645,7 @@ module.exports = createAggregator;
 
 
 /***/ }),
-/* 225 */
+/* 227 */
 /***/ (function(module, exports) {
 
 /**
@@ -16256,10 +16673,10 @@ module.exports = arrayAggregator;
 
 
 /***/ }),
-/* 226 */
+/* 228 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseEach = __webpack_require__(29);
+var baseEach = __webpack_require__(24);
 
 /**
  * Aggregates elements of `collection` on `accumulator` with keys transformed
@@ -16283,13 +16700,13 @@ module.exports = baseAggregator;
 
 
 /***/ }),
-/* 227 */
+/* 229 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var arrayMap = __webpack_require__(58),
-    baseIteratee = __webpack_require__(23),
-    baseMap = __webpack_require__(228),
-    isArray = __webpack_require__(6);
+    baseIteratee = __webpack_require__(22),
+    baseMap = __webpack_require__(230),
+    isArray = __webpack_require__(5);
 
 /**
  * Creates an array of values by running each element in `collection` thru
@@ -16342,11 +16759,11 @@ module.exports = map;
 
 
 /***/ }),
-/* 228 */
+/* 230 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseEach = __webpack_require__(29),
-    isArrayLike = __webpack_require__(16);
+var baseEach = __webpack_require__(24),
+    isArrayLike = __webpack_require__(17);
 
 /**
  * The base implementation of `_.map` without support for iteratee shorthands.
@@ -16370,26 +16787,144 @@ module.exports = baseMap;
 
 
 /***/ }),
-/* 229 */
+/* 231 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var arrayReduce = __webpack_require__(232),
+    baseEach = __webpack_require__(24),
+    baseIteratee = __webpack_require__(22),
+    baseReduce = __webpack_require__(233),
+    isArray = __webpack_require__(5);
+
+/**
+ * Reduces `collection` to a value which is the accumulated result of running
+ * each element in `collection` thru `iteratee`, where each successive
+ * invocation is supplied the return value of the previous. If `accumulator`
+ * is not given, the first element of `collection` is used as the initial
+ * value. The iteratee is invoked with four arguments:
+ * (accumulator, value, index|key, collection).
+ *
+ * Many lodash methods are guarded to work as iteratees for methods like
+ * `_.reduce`, `_.reduceRight`, and `_.transform`.
+ *
+ * The guarded methods are:
+ * `assign`, `defaults`, `defaultsDeep`, `includes`, `merge`, `orderBy`,
+ * and `sortBy`
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Collection
+ * @param {Array|Object} collection The collection to iterate over.
+ * @param {Function} [iteratee=_.identity] The function invoked per iteration.
+ * @param {*} [accumulator] The initial value.
+ * @returns {*} Returns the accumulated value.
+ * @see _.reduceRight
+ * @example
+ *
+ * _.reduce([1, 2], function(sum, n) {
+ *   return sum + n;
+ * }, 0);
+ * // => 3
+ *
+ * _.reduce({ 'a': 1, 'b': 2, 'c': 1 }, function(result, value, key) {
+ *   (result[value] || (result[value] = [])).push(key);
+ *   return result;
+ * }, {});
+ * // => { '1': ['a', 'c'], '2': ['b'] } (iteration order is not guaranteed)
+ */
+function reduce(collection, iteratee, accumulator) {
+  var func = isArray(collection) ? arrayReduce : baseReduce,
+      initAccum = arguments.length < 3;
+
+  return func(collection, baseIteratee(iteratee, 4), accumulator, initAccum, baseEach);
+}
+
+module.exports = reduce;
+
+
+/***/ }),
+/* 232 */
+/***/ (function(module, exports) {
+
+/**
+ * A specialized version of `_.reduce` for arrays without support for
+ * iteratee shorthands.
+ *
+ * @private
+ * @param {Array} [array] The array to iterate over.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @param {*} [accumulator] The initial value.
+ * @param {boolean} [initAccum] Specify using the first element of `array` as
+ *  the initial value.
+ * @returns {*} Returns the accumulated value.
+ */
+function arrayReduce(array, iteratee, accumulator, initAccum) {
+  var index = -1,
+      length = array == null ? 0 : array.length;
+
+  if (initAccum && length) {
+    accumulator = array[++index];
+  }
+  while (++index < length) {
+    accumulator = iteratee(accumulator, array[index], index, array);
+  }
+  return accumulator;
+}
+
+module.exports = arrayReduce;
+
+
+/***/ }),
+/* 233 */
+/***/ (function(module, exports) {
+
+/**
+ * The base implementation of `_.reduce` and `_.reduceRight`, without support
+ * for iteratee shorthands, which iterates over `collection` using `eachFunc`.
+ *
+ * @private
+ * @param {Array|Object} collection The collection to iterate over.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @param {*} accumulator The initial value.
+ * @param {boolean} initAccum Specify using the first or last element of
+ *  `collection` as the initial value.
+ * @param {Function} eachFunc The function to iterate over `collection`.
+ * @returns {*} Returns the accumulated value.
+ */
+function baseReduce(collection, iteratee, accumulator, initAccum, eachFunc) {
+  eachFunc(collection, function(value, index, collection) {
+    accumulator = initAccum
+      ? (initAccum = false, value)
+      : iteratee(accumulator, value, index, collection);
+  });
+  return accumulator;
+}
+
+module.exports = baseReduce;
+
+
+/***/ }),
+/* 234 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var inherits = __webpack_require__(3);
 
-var PropertiesActivator = __webpack_require__(230);
+var PropertiesActivator = __webpack_require__(235);
 
 var getBusinessObject = __webpack_require__(1).getBusinessObject,
     is = __webpack_require__(1).is;
 
-var ElementHelper = __webpack_require__(42),
+var ElementHelper = __webpack_require__(43),
     SequenceFlowHelper = __webpack_require__(100),
-    suppressValidationError = __webpack_require__(5).suppressValidationError;
+    suppressValidationError = __webpack_require__(6).suppressValidationError;
 
-var createSimulationParametersTab = __webpack_require__(232),
-    createTaskTab = __webpack_require__(273),
-    createTimetableTab = __webpack_require__(278),
-    createResourceTab = __webpack_require__(290),
-    createGatewayTab = __webpack_require__(298),
-    createIntermediateAndBoundaryEventsTab = __webpack_require__(301);
+var createSimulationParametersTab = __webpack_require__(237),
+    createTaskTab = __webpack_require__(281),
+    createTimetableTab = __webpack_require__(286),
+    createResourceTab = __webpack_require__(298),
+    createGatewayTab = __webpack_require__(306),
+    createIntermediateAndBoundaryEventsTab = __webpack_require__(309);
 
 function removeTasks(element, bpmnFactory, elementRegistry) {
   var elements = ElementHelper.getElements(bpmnFactory, elementRegistry);
@@ -16501,7 +17036,7 @@ inherits(SimulationPropertiesProvider, PropertiesActivator);
 module.exports = SimulationPropertiesProvider;
 
 /***/ }),
-/* 230 */
+/* 235 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16530,12 +17065,23 @@ function PropertiesActivator(eventBus, priority) {
 
   priority = priority || DEFAULT_PRIORITY;
 
-  eventBus.on('propertiesPanel.isEntryVisible', priority, function(e) {
-    return self.isEntryVisible(e.entry, e.element);
+  eventBus.on('propertiesPanel.isEntryVisible', priority, function(context) {
+    var element = context.element,
+        entry = context.entry,
+        group = context.group,
+        tab = context.tab;
+
+    return self.isEntryVisible(element, entry, group, tab);
   });
 
-  eventBus.on('propertiesPanel.isPropertyEditable', priority, function(e) {
-    return self.isPropertyEditable(e.entry, e.propertyName, e.element);
+  eventBus.on('propertiesPanel.isPropertyEditable', priority, function(context) {
+    var element = context.element,
+        entry = context.entry,
+        group = context.group,
+        propertyName = context.propertyName,
+        tab = context.tab;
+
+    return self.isPropertyEditable(propertyName, element, entry, group, tab);
   });
 }
 
@@ -16549,12 +17095,14 @@ module.exports = PropertiesActivator;
  *
  * @method  PropertiesActivator#isEntryVisible
  *
- * @param {EntryDescriptor} entry
  * @param {ModdleElement} element
+ * @param {Object} entry
+ * @param {Object} group
+ * @param {Object} tab
  *
- * @returns {Boolean}
+ * @returns {boolean}
  */
-PropertiesActivator.prototype.isEntryVisible = function(entry, element) {
+PropertiesActivator.prototype.isEntryVisible = function(element, entry, group, tab) {
   return true;
 };
 
@@ -16563,47 +17111,46 @@ PropertiesActivator.prototype.isEntryVisible = function(entry, element) {
  *
  * @method  PropertiesActivator#isPropertyEditable
  *
- * @param {EntryDescriptor} entry
- * @param {String} propertyName
+ * @param {string} propertyName
  * @param {ModdleElement} element
+ * @param {Object} entry
+ * @param {Object} group
+ * @param {Object} tab
  *
- * @returns {Boolean}
+ * @returns {boolean}
  */
-PropertiesActivator.prototype.isPropertyEditable = function(entry, propertyName, element) {
+PropertiesActivator.prototype.isPropertyEditable = function(propertyName, element, entry, group, tab) {
   return true;
 };
 
 /***/ }),
-/* 231 */
+/* 236 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var cmdHelper = __webpack_require__(4),
-    elementHelper = __webpack_require__(10);
+    elementHelper = __webpack_require__(11);
 
 var is = __webpack_require__(1).is;
 
 var ExtensionElementsHelper = {};
 
-var getExtensionElements = function(bo) {
-  return bo.get('extensionElements');
-};
-
 ExtensionElementsHelper.getExtensionElements = function(bo, type) {
-  var extensionElements = getExtensionElements(bo);
+  var elements = [];
+  var extensionElements = bo.get('extensionElements');
+
   if (typeof extensionElements !== 'undefined') {
     var extensionValues = extensionElements.get('values');
     if (typeof extensionValues !== 'undefined') {
-      var elements = extensionValues.filter(function(value) {
+      elements = extensionValues.filter(function(value) {
         return is(value, type);
       });
-      if (elements.length) {
-        return elements;
-      }
     }
   }
+
+  return elements;
 };
 
 ExtensionElementsHelper.addEntry = function(bo, element, entry, bpmnFactory) {
@@ -16611,10 +17158,12 @@ ExtensionElementsHelper.addEntry = function(bo, element, entry, bpmnFactory) {
 
   // if there is no extensionElements list, create one
   if (!extensionElements) {
+
     // TODO: Ask Daniel which operation costs more
     extensionElements = elementHelper.createElement('bpmn:ExtensionElements', { values: [entry] }, bo, bpmnFactory);
     return { extensionElements : extensionElements };
   } else {
+
     // add new failedJobRetryExtensionElement to existing extensionElements list
     return cmdHelper.addElementsTolist(element, extensionElements, 'values', [entry]);
   }
@@ -16636,11 +17185,11 @@ module.exports = ExtensionElementsHelper;
 
 
 /***/ }),
-/* 232 */
+/* 237 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var is = __webpack_require__(1).is,
-    scenarioSpecificationGroups = __webpack_require__(233);
+    scenarioSpecificationGroups = __webpack_require__(238);
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 
@@ -16660,10 +17209,10 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 233 */
+/* 238 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var simulationParametersEntries = __webpack_require__(234);
+var simulationParametersEntries = __webpack_require__(239);
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate, shown) {
 
@@ -16682,16 +17231,16 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, show
 };
 
 /***/ }),
-/* 234 */
+/* 239 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var ProcessInstancesField = __webpack_require__(235),
-    StartTimeField = __webpack_require__(267),
-    StartDateField = __webpack_require__(268),
-    TrimStartField = __webpack_require__(269),
-    TrimEndField = __webpack_require__(270),
-    DistributionFields = __webpack_require__(271),
-    CurrencySelectBox = __webpack_require__(272);
+var ProcessInstancesField = __webpack_require__(240),
+    StartTimeField = __webpack_require__(275),
+    StartDateField = __webpack_require__(276),
+    TrimStartField = __webpack_require__(277),
+    TrimEndField = __webpack_require__(278),
+    DistributionFields = __webpack_require__(279),
+    CurrencySelectBox = __webpack_require__(280);
 
 module.exports = function(bpmnFactory, elementRegistry, translate) {
 
@@ -16712,14 +17261,14 @@ module.exports = function(bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 235 */
+/* 240 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var entryFactory = __webpack_require__(7),
+var entryFactory = __webpack_require__(8),
     cmdHelper = __webpack_require__(4);
 
-var ProcessSimulationHelper = __webpack_require__(9),
-    validationHelper = __webpack_require__(5);
+var ProcessSimulationHelper = __webpack_require__(10),
+    validationHelper = __webpack_require__(6);
 
 module.exports = function(bpmnFactory, elementRegistry, translate) {
 
@@ -16727,7 +17276,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate) {
 
   var label = translate('scenarioGroup.processInstances.label');
 
-  return entryFactory.textField({
+  return entryFactory.textField(translate, {
     id: 'processInstances',
     label: label,
     modelProperty: 'processInstances',
@@ -16761,20 +17310,22 @@ module.exports = function(bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 236 */
+/* 241 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
+var domify = __webpack_require__(2).domify;
+
 var getBusinessObject = __webpack_require__(1).getBusinessObject,
     cmdHelper = __webpack_require__(4),
-    escapeHTML = __webpack_require__(11).escapeHTML;
+    escapeHTML = __webpack_require__(7).escapeHTML;
 
-var entryFieldDescription = __webpack_require__(22);
+var entryFieldDescription = __webpack_require__(14);
 
 
-var checkbox = function(options, defaultParameters) {
+var checkbox = function(translate, options, defaultParameters) {
   var resource = defaultParameters,
       id = resource.id,
       label = options.label || id,
@@ -16783,7 +17334,7 @@ var checkbox = function(options, defaultParameters) {
       description = options.description;
 
   resource.html =
-    '<input id="camunda-' + escapeHTML(id) + '" ' +
+    domify('<input id="camunda-' + escapeHTML(id) + '" ' +
          'type="checkbox" ' +
          'name="' + escapeHTML(options.modelProperty) + '" ' +
          (canBeDisabled ? 'data-disable="isDisabled"' : '') +
@@ -16792,11 +17343,11 @@ var checkbox = function(options, defaultParameters) {
     '<label for="camunda-' + escapeHTML(id) + '" ' +
          (canBeDisabled ? 'data-disable="isDisabled"' : '') +
          (canBeHidden ? 'data-show="isHidden"' : '') +
-         '>' + escapeHTML(label) + '</label>';
+         '>' + escapeHTML(label) + '</label>');
 
   // add description below checkbox entry field
   if (description) {
-    resource.html += entryFieldDescription(description);
+    resource.html.appendChild(entryFieldDescription(translate, description, { show: canBeHidden && 'isHidden' }));
   }
 
   resource.get = function(element) {
@@ -16845,21 +17396,22 @@ module.exports = checkbox;
 
 
 /***/ }),
-/* 237 */
+/* 242 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var assign = __webpack_require__(238),
-    find = __webpack_require__(242);
+var assign = __webpack_require__(243),
+    find = __webpack_require__(247);
 
-var domQuery = __webpack_require__(2).query;
+var domify = __webpack_require__(2).domify,
+    domQuery = __webpack_require__(2).query;
 
-var escapeHTML = __webpack_require__(11).escapeHTML;
+var escapeHTML = __webpack_require__(7).escapeHTML;
 
 var selectEntryFactory = __webpack_require__(102),
-    entryFieldDescription = __webpack_require__(22);
+    entryFieldDescription = __webpack_require__(14);
 
 
 /**
@@ -16879,7 +17431,7 @@ var selectEntryFactory = __webpack_require__(102),
  *
  * @return {Object}
  */
-var comboBox = function(options) {
+var comboBox = function(translate, options) {
 
   var selectOptions = options.selectOptions,
       modelProperty = options.modelProperty,
@@ -16948,19 +17500,25 @@ var comboBox = function(options) {
 
   comboOptions.selectOptions.push({ name: customName, value: customValue });
 
-  var comboBoxEntry = assign({}, selectEntryFactory(comboOptions, comboOptions));
+  var comboBoxEntry = assign({}, selectEntryFactory(translate, comboOptions, comboOptions));
 
-  comboBoxEntry.html += '<div class="bpp-field-wrapper bpp-combo-input" ' +
+  var fragment = document.createDocumentFragment();
+
+  fragment.appendChild(comboBoxEntry.html);
+
+  comboBoxEntry.html = fragment;
+
+  comboBoxEntry.html.appendChild(domify('<div class="bpp-field-wrapper bpp-combo-input" ' +
     'data-show="showCustomInput"' +
     '>' +
     '<input id="camunda-' + escapeHTML(options.id) + '-input" type="text" name="custom-' +
       escapeHTML(modelProperty) + '" ' +
     ' />' +
-  '</div>';
+  '</div>'));
 
   // add description below combo box entry field
   if (description) {
-    comboBoxEntry.html += entryFieldDescription(description);
+    comboBoxEntry.html.appendChild(entryFieldDescription(translate, description, { show: 'showCustomInput' }));
   }
 
   return comboBoxEntry;
@@ -16970,15 +17528,15 @@ module.exports = comboBox;
 
 
 /***/ }),
-/* 238 */
+/* 243 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var assignValue = __webpack_require__(103),
-    copyObject = __webpack_require__(239),
-    createAssigner = __webpack_require__(240),
-    isArrayLike = __webpack_require__(16),
-    isPrototype = __webpack_require__(49),
-    keys = __webpack_require__(15);
+    copyObject = __webpack_require__(244),
+    createAssigner = __webpack_require__(245),
+    isArrayLike = __webpack_require__(17),
+    isPrototype = __webpack_require__(50),
+    keys = __webpack_require__(16);
 
 /** Used for built-in method references. */
 var objectProto = Object.prototype;
@@ -17034,7 +17592,7 @@ module.exports = assign;
 
 
 /***/ }),
-/* 239 */
+/* 244 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var assignValue = __webpack_require__(103),
@@ -17080,11 +17638,11 @@ module.exports = copyObject;
 
 
 /***/ }),
-/* 240 */
+/* 245 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseRest = __webpack_require__(59),
-    isIterateeCall = __webpack_require__(241);
+    isIterateeCall = __webpack_require__(246);
 
 /**
  * Creates a function like `_.assign`.
@@ -17123,11 +17681,11 @@ module.exports = createAssigner;
 
 
 /***/ }),
-/* 241 */
+/* 246 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var eq = __webpack_require__(37),
-    isArrayLike = __webpack_require__(16),
+var eq = __webpack_require__(38),
+    isArrayLike = __webpack_require__(17),
     isIndex = __webpack_require__(32),
     isObject = __webpack_require__(13);
 
@@ -17159,11 +17717,11 @@ module.exports = isIterateeCall;
 
 
 /***/ }),
-/* 242 */
+/* 247 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var createFind = __webpack_require__(243),
-    findIndex = __webpack_require__(244);
+var createFind = __webpack_require__(248),
+    findIndex = __webpack_require__(249);
 
 /**
  * Iterates over elements of `collection`, returning the first element
@@ -17207,12 +17765,12 @@ module.exports = find;
 
 
 /***/ }),
-/* 243 */
+/* 248 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseIteratee = __webpack_require__(23),
-    isArrayLike = __webpack_require__(16),
-    keys = __webpack_require__(15);
+var baseIteratee = __webpack_require__(22),
+    isArrayLike = __webpack_require__(17),
+    keys = __webpack_require__(16);
 
 /**
  * Creates a `_.find` or `_.findLast` function.
@@ -17238,11 +17796,11 @@ module.exports = createFind;
 
 
 /***/ }),
-/* 244 */
+/* 249 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseFindIndex = __webpack_require__(94),
-    baseIteratee = __webpack_require__(23),
+    baseIteratee = __webpack_require__(22),
     toInteger = __webpack_require__(104);
 
 /* Built-in method references for those with the same name as other `lodash` methods. */
@@ -17299,7 +17857,7 @@ module.exports = findIndex;
 
 
 /***/ }),
-/* 245 */
+/* 250 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var toNumber = __webpack_require__(98);
@@ -17347,18 +17905,20 @@ module.exports = toFinite;
 
 
 /***/ }),
-/* 246 */
+/* 251 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var escapeHTML = __webpack_require__(11).escapeHTML;
+var domify = __webpack_require__(2).domify;
 
-var entryFieldDescription = __webpack_require__(22);
+var escapeHTML = __webpack_require__(7).escapeHTML;
+
+var entryFieldDescription = __webpack_require__(14);
 
 
-var textBox = function(options, defaultParameters) {
+var textBox = function(translate, options, defaultParameters) {
 
   var resource = defaultParameters,
       label = options.label || resource.id,
@@ -17366,7 +17926,7 @@ var textBox = function(options, defaultParameters) {
       description = options.description;
 
   resource.html =
-    '<label for="camunda-' + escapeHTML(resource.id) + '" ' +
+    domify('<label for="camunda-' + escapeHTML(resource.id) + '" ' +
     (canBeShown ? 'data-show="isShown"' : '') +
     '>' + label + '</label>' +
     '<div class="bpp-field-wrapper" ' +
@@ -17374,11 +17934,11 @@ var textBox = function(options, defaultParameters) {
     '>' +
       '<div contenteditable="true" id="camunda-' + escapeHTML(resource.id) + '" ' +
             'name="' + escapeHTML(options.modelProperty) + '" />' +
-    '</div>';
+    '</div>');
 
   // add description below text box entry field
   if (description) {
-    resource.html += entryFieldDescription(description);
+    resource.html.appendChild(entryFieldDescription(translate, description, { show: canBeShown && 'isShown' }));
   }
 
   if (canBeShown) {
@@ -17396,7 +17956,7 @@ module.exports = textBox;
 
 
 /***/ }),
-/* 247 */
+/* 252 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17409,7 +17969,7 @@ var textField = __webpack_require__(101);
  * It adds functionality to cache an invalid value entered in the
  * text input, instead of setting it on the business object.
  */
-var validationAwareTextField = function(options, defaultParameters) {
+var validationAwareTextField = function(translate, options, defaultParameters) {
 
   var modelProperty = options.modelProperty;
 
@@ -17452,20 +18012,20 @@ var validationAwareTextField = function(options, defaultParameters) {
     return options.validate(element, property, node);
   };
 
-  return textField(options, defaultParameters);
+  return textField(translate, options, defaultParameters);
 };
 
 module.exports = validationAwareTextField;
 
 
 /***/ }),
-/* 248 */
+/* 253 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var escapeHTML = __webpack_require__(11).escapeHTML;
+var escapeHTML = __webpack_require__(7).escapeHTML;
 
 var cmdHelper = __webpack_require__(4);
 
@@ -17475,16 +18035,16 @@ var domQuery = __webpack_require__(2).query,
 
 var filter = __webpack_require__(90),
     forEach = __webpack_require__(12),
-    keys = __webpack_require__(15);
+    keys = __webpack_require__(16);
 
 var domify = __webpack_require__(2).domify;
 
-var entryFieldDescription = __webpack_require__(22);
+var entryFieldDescription = __webpack_require__(14);
 
 var updateSelection = __webpack_require__(99);
 
 var TABLE_ROW_DIV_SNIPPET = '<div class="bpp-field-wrapper bpp-table-row">';
-var DELETE_ROW_BUTTON_SNIPPET = '<button class="clear" data-action="deleteElement">' +
+var DELETE_ROW_BUTTON_SNIPPET = '<button class="action-button clear" data-action="deleteElement">' +
                                   '<span>X</span>' +
                                 '</button>';
 
@@ -17500,10 +18060,10 @@ function createInputRowTemplate(properties, canRemove) {
 function createInputTemplate(properties, canRemove) {
   var columns = properties.length;
   var template = '';
-  forEach(properties, function(prop) {
+  forEach(properties, function(prop, idx) {
     template += '<input class="bpp-table-row-columns-' + columns + ' ' +
                                (canRemove ? 'bpp-table-row-removable' : '') + '" ' +
-                       'id="camunda-table-row-cell-input-value" ' +
+                       'id="camunda-table-row-cell-input-value-' + idx + '"' +
                        'type="text" ' +
                        'name="' + escapeHTML(prop) + '" />';
   });
@@ -17592,7 +18152,7 @@ function setSelection(node, selection) {
  *
  * @return {Object}
  */
-module.exports = function(options) {
+module.exports = function(translate, options) {
 
   var id = options.id,
       modelProperties = options.modelProperties,
@@ -17623,23 +18183,26 @@ module.exports = function(options) {
     return pick(getElements(element, node), modelProperties);
   };
 
+  var html = domify((canAdd ?
+    '<div class="bpp-table-add-row" ' + (canBeShown ? 'data-show="show"' : '') + '>' +
+          '<label>' + escapeHTML(addLabel) + '</label>' +
+          '<button class="action-button add" data-action="addElement"><span>+</span></button>' +
+        '</div>' : '') +
+        '<div class="bpp-table" data-show="showTable">' +
+          '<div class="bpp-field-wrapper bpp-table-row">' +
+             labelRow +
+          '</div>' +
+          '<div data-list-entry-container>' +
+          '</div>' +
+        '</div>');
+
+  if (description) {
+    html.appendChild(entryFieldDescription(translate, description, { show: 'showTable' }));
+  }
+
   var factory = {
     id: id,
-    html: (canAdd ?
-      '<div class="bpp-table-add-row" ' + (canBeShown ? 'data-show="show"' : '') + '>' +
-            '<label>' + escapeHTML(addLabel) + '</label>' +
-            '<button class="add" data-action="addElement"><span>+</span></button>' +
-          '</div>' : '') +
-          '<div class="bpp-table" data-show="showTable">' +
-            '<div class="bpp-field-wrapper bpp-table-row">' +
-               labelRow +
-            '</div>' +
-            '<div data-list-entry-container>' +
-            '</div>' +
-          '</div>' +
-
-          // add description below table entry field
-          (description ? entryFieldDescription(description) : ''),
+    html: html,
 
     get: function(element, node) {
       var boElements = elements(element, node, this.__invalidValues);
@@ -17694,6 +18257,7 @@ module.exports = function(options) {
               commands.push(cmd);
             }
           } else {
+
             // cache invalid value in an object by index as key
             self.__invalidValues = self.__invalidValues || {};
             self.__invalidValues[idx] = value;
@@ -17804,7 +18368,7 @@ module.exports = function(options) {
 
 
 /***/ }),
-/* 249 */
+/* 254 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17849,17 +18413,19 @@ module.exports = label;
 
 
 /***/ }),
-/* 250 */
+/* 255 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var escapeHTML = __webpack_require__(11).escapeHTML;
+var domify = __webpack_require__(2).domify;
 
-var entryFieldDescription = __webpack_require__(22);
+var escapeHTML = __webpack_require__(7).escapeHTML;
 
-var bind = __webpack_require__(251);
+var entryFieldDescription = __webpack_require__(14);
+
+var bind = __webpack_require__(256);
 
 /**
  * An entry that renders a clickable link.
@@ -17872,7 +18438,7 @@ var bind = __webpack_require__(251);
  *
  * @param {Object} options
  * @param {String} options.id
- * @param {String} [options.label]
+ * @param {String} [options.buttonLabel]
  * @param {Function} options.handleClick
  * @param {Function} [options.showLink] returning false to hide link
  * @param {String} [options.description]
@@ -17888,13 +18454,14 @@ var bind = __webpack_require__(251);
  *
  * @return {Entry} the newly created entry
  */
-function link(options) {
+function link(translate, options) {
 
   var id = options.id,
-      label = options.label || id,
+      buttonLabel = options.buttonLabel || id,
       showLink = options.showLink,
       handleClick = options.handleClick,
-      description = options.description;
+      description = options.description,
+      label = options.label;
 
   if (showLink && typeof showLink !== 'function') {
     throw new Error('options.showLink must be a function');
@@ -17905,18 +18472,26 @@ function link(options) {
   }
 
   var resource = {
-    id: id
+    id: id,
+    html: document.createDocumentFragment()
   };
 
-  resource.html =
+  if (label) {
+    resource.html.appendChild(domify('<label for="camunda-' + escapeHTML(id) + '" ' +
+      (showLink ? 'data-show="showLink" ' : '') +
+      '>'+ escapeHTML(label) +'</label>'));
+  }
+
+  resource.html.appendChild(domify('<div class="bpp-field-wrapper">' +
     '<a data-action="handleClick" ' +
     (showLink ? 'data-show="showLink" ' : '') +
     'class="bpp-entry-link' + (options.cssClasses ? ' ' + escapeHTML(options.cssClasses) : '') +
-    '">' + escapeHTML(label) + '</a>';
+    '">' + escapeHTML(buttonLabel) + '</a></div>'));
+
 
   // add description below link entry field
   if (description) {
-    resource.html += entryFieldDescription(description);
+    resource.html.appendChild(entryFieldDescription(translate, description, { show: 'showLink' }));
   }
 
   resource.handleClick = bind(handleClick, resource);
@@ -17934,13 +18509,13 @@ module.exports = link;
 
 
 /***/ }),
-/* 251 */
+/* 256 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseRest = __webpack_require__(59),
-    createWrap = __webpack_require__(252),
+    createWrap = __webpack_require__(257),
     getHolder = __webpack_require__(65),
-    replaceHolders = __webpack_require__(44);
+    replaceHolders = __webpack_require__(45);
 
 /** Used to compose bitmasks for function metadata. */
 var WRAP_BIND_FLAG = 1,
@@ -17997,16 +18572,16 @@ module.exports = bind;
 
 
 /***/ }),
-/* 252 */
+/* 257 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseSetData = __webpack_require__(105),
-    createBind = __webpack_require__(253),
-    createCurry = __webpack_require__(254),
+    createBind = __webpack_require__(258),
+    createCurry = __webpack_require__(259),
     createHybrid = __webpack_require__(107),
-    createPartial = __webpack_require__(265),
+    createPartial = __webpack_require__(270),
     getData = __webpack_require__(111),
-    mergeData = __webpack_require__(266),
+    mergeData = __webpack_require__(271),
     setData = __webpack_require__(114),
     setWrapToString = __webpack_require__(115),
     toInteger = __webpack_require__(104);
@@ -18109,11 +18684,11 @@ module.exports = createWrap;
 
 
 /***/ }),
-/* 253 */
+/* 258 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var createCtor = __webpack_require__(43),
-    root = __webpack_require__(8);
+var createCtor = __webpack_require__(44),
+    root = __webpack_require__(9);
 
 /** Used to compose bitmasks for function metadata. */
 var WRAP_BIND_FLAG = 1;
@@ -18143,16 +18718,16 @@ module.exports = createBind;
 
 
 /***/ }),
-/* 254 */
+/* 259 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var apply = __webpack_require__(60),
-    createCtor = __webpack_require__(43),
+    createCtor = __webpack_require__(44),
     createHybrid = __webpack_require__(107),
     createRecurry = __webpack_require__(110),
     getHolder = __webpack_require__(65),
-    replaceHolders = __webpack_require__(44),
-    root = __webpack_require__(8);
+    replaceHolders = __webpack_require__(45),
+    root = __webpack_require__(9);
 
 /**
  * Creates a function that wraps `func` to enable currying.
@@ -18195,7 +18770,7 @@ module.exports = createCurry;
 
 
 /***/ }),
-/* 255 */
+/* 260 */
 /***/ (function(module, exports) {
 
 /**
@@ -18222,13 +18797,13 @@ module.exports = countHolders;
 
 
 /***/ }),
-/* 256 */
+/* 261 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var LazyWrapper = __webpack_require__(63),
     getData = __webpack_require__(111),
-    getFuncName = __webpack_require__(257),
-    lodash = __webpack_require__(259);
+    getFuncName = __webpack_require__(262),
+    lodash = __webpack_require__(264);
 
 /**
  * Checks if `func` has a lazy counterpart.
@@ -18256,10 +18831,10 @@ module.exports = isLaziable;
 
 
 /***/ }),
-/* 257 */
+/* 262 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var realNames = __webpack_require__(258);
+var realNames = __webpack_require__(263);
 
 /** Used for built-in method references. */
 var objectProto = Object.prototype;
@@ -18293,7 +18868,7 @@ module.exports = getFuncName;
 
 
 /***/ }),
-/* 258 */
+/* 263 */
 /***/ (function(module, exports) {
 
 /** Used to lookup unminified function names. */
@@ -18303,15 +18878,15 @@ module.exports = realNames;
 
 
 /***/ }),
-/* 259 */
+/* 264 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var LazyWrapper = __webpack_require__(63),
     LodashWrapper = __webpack_require__(112),
     baseLodash = __webpack_require__(64),
-    isArray = __webpack_require__(6),
-    isObjectLike = __webpack_require__(20),
-    wrapperClone = __webpack_require__(260);
+    isArray = __webpack_require__(5),
+    isObjectLike = __webpack_require__(21),
+    wrapperClone = __webpack_require__(265);
 
 /** Used for built-in method references. */
 var objectProto = Object.prototype;
@@ -18456,7 +19031,7 @@ module.exports = lodash;
 
 
 /***/ }),
-/* 260 */
+/* 265 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var LazyWrapper = __webpack_require__(63),
@@ -18485,7 +19060,7 @@ module.exports = wrapperClone;
 
 
 /***/ }),
-/* 261 */
+/* 266 */
 /***/ (function(module, exports) {
 
 /** Used to match wrap detail comments. */
@@ -18508,7 +19083,7 @@ module.exports = getWrapDetails;
 
 
 /***/ }),
-/* 262 */
+/* 267 */
 /***/ (function(module, exports) {
 
 /** Used to match wrap detail comments. */
@@ -18537,10 +19112,10 @@ module.exports = insertWrapDetails;
 
 
 /***/ }),
-/* 263 */
+/* 268 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var arrayEach = __webpack_require__(47),
+var arrayEach = __webpack_require__(48),
     arrayIncludes = __webpack_require__(61);
 
 /** Used to compose bitmasks for function metadata. */
@@ -18589,7 +19164,7 @@ module.exports = updateWrapDetails;
 
 
 /***/ }),
-/* 264 */
+/* 269 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var copyArray = __webpack_require__(113),
@@ -18624,12 +19199,12 @@ module.exports = reorder;
 
 
 /***/ }),
-/* 265 */
+/* 270 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var apply = __webpack_require__(60),
-    createCtor = __webpack_require__(43),
-    root = __webpack_require__(8);
+    createCtor = __webpack_require__(44),
+    root = __webpack_require__(9);
 
 /** Used to compose bitmasks for function metadata. */
 var WRAP_BIND_FLAG = 1;
@@ -18673,12 +19248,12 @@ module.exports = createPartial;
 
 
 /***/ }),
-/* 266 */
+/* 271 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var composeArgs = __webpack_require__(108),
     composeArgsRight = __webpack_require__(109),
-    replaceHolders = __webpack_require__(44);
+    replaceHolders = __webpack_require__(45);
 
 /** Used as the internal argument placeholder. */
 var PLACEHOLDER = '__lodash_placeholder__';
@@ -18769,12 +19344,564 @@ module.exports = mergeData;
 
 
 /***/ }),
-/* 267 */
+/* 272 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var domClasses = __webpack_require__(2).classes,
+    domify = __webpack_require__(2).domify,
+    domQuery = __webpack_require__(2).query;
+
+var assign = __webpack_require__(0).assign,
+    find = __webpack_require__(0).find,
+    forEach = __webpack_require__(0).forEach,
+    debounce = __webpack_require__(0).debounce;
+
+var escapeHTML = __webpack_require__(7).escapeHTML;
+
+var entryFieldDescription = __webpack_require__(14);
+
+var CLASS_ACTIVE = 'active';
+
+var FOCUS_LEAVE_DELAY = '150';
+
+var TEXT_NODE_NAME = '#text';
+
+var SUGGESTION_LIST_BOX_THRESHOLD = 15;
+
+var noop = function() {};
+
+
+var autoSuggestTextBox = function(translate, options, defaultParameters) {
+
+  var resource = defaultParameters,
+      label = options.label || resource.id,
+      canBeShown = !!options.show && typeof options.show === 'function',
+      description = options.description;
+
+  resource.html =
+    domify('<label ' +
+      'for="camunda-' + escapeHTML(resource.id) + '" ' +
+      (canBeShown ? 'data-show="isShown"' : '') +
+      '>' + label + '</label>' +
+    '<div class="bpp-field-wrapper" ' +
+      (canBeShown ? 'data-show="isShown"' : '') +
+    '>' +
+      '<div ' +
+        'contenteditable="true"' +
+        'id="camunda-' + escapeHTML(resource.id) + '" ' +
+        'name="' + escapeHTML(options.modelProperty) + '" ' +
+        'data-auto-suggest="suggestItems"' +
+        'data-blur="handleFocusLeave"' +
+      '></div>' +
+      '<div class="bpp-autosuggest-list"></div>' +
+    '</div>');
+
+  if (description) {
+    domQuery('.bpp-field-wrapper', resource.html).appendChild(entryFieldDescription(translate, description));
+  }
+
+  if (canBeShown) {
+    resource.isShown = function() {
+      return options.show.apply(resource, arguments);
+    };
+  }
+
+  /**
+   * Ensure selected item got recognized before list got hidden
+   */
+  resource.handleFocusLeave = debounce(function(element, entryNode) {
+    clearSuggestionList(entryNode);
+    hideSuggestionList(entryNode);
+  }, FOCUS_LEAVE_DELAY);
+
+  /**
+   * Fill the suggestion list relative to the current word under the cursor.
+   *
+   * @param {djs.model.Base} element
+   * @param {HTMLElement} entryNode
+   * @param {Event} event
+   */
+  resource.suggestItems = function(element, entryNode, event) {
+    var editorNode = event.delegateTarget,
+        range = getSelectionRange(),
+        focusNode = range.focusNode,
+        caretPosition = getCaretPosition(range.range),
+        canSuggest = options.canSuggest || noop,
+        getItems = options.getItems;
+
+    function updateSuggestionList(items) {
+      var listNode = domQuery('.bpp-autosuggest-list', entryNode);
+
+      // (1) clear list before
+      clearSuggestionList(entryNode);
+
+      // (2) keep list invisible if no items
+      if (!items.length) {
+        return;
+      }
+
+      domClasses(listNode).add(CLASS_ACTIVE);
+
+      // (3) create new items
+      forEach(items, function(item) {
+        createSuggestionItem(listNode, item);
+      });
+
+      // (4) place list relative to cursor
+      var position = getSuggestionListPosition(listNode, document.body).position;
+      setPosition(listNode, position.x, position.y);
+    }
+
+    function createSuggestionItem(parentNode, value) {
+      var itemNode = domify('<div class="bpp-autosuggest-item"></div>');
+      itemNode.innerText = escapeHTML(value);
+
+      parentNode.appendChild(itemNode);
+
+      itemNode.addEventListener('click', handleItemClick);
+    }
+
+    function handleItemClick(event) {
+      var value = event.target.innerText,
+          wordIndex = currentWord.index,
+          start = wordIndex,
+          end = wordIndex + currentWord[0].length;
+
+      selectRange(focusNode, start, end);
+
+      document.execCommand('insertText', false, value);
+
+      clearSuggestionList(entryNode);
+      hideSuggestionList(entryNode);
+    }
+
+    hideSuggestionList(entryNode);
+
+    var currentWord = (getWordUnderCursor(focusNode, caretPosition) || []);
+
+    if (currentWord && canSuggest(currentWord, editorNode, focusNode)) {
+      var items = getItems(element, entryNode),
+          results = [],
+          value = currentWord[0];
+
+      // sort matches by
+      // (1) item starts with value (case insensitive)
+      // (2) value is inside suggested item (case insensitive)
+      forEach(items, function(item) {
+        var itemLowerCase = item.toLowerCase(),
+            valueLowerCase = value && value.toLowerCase();
+
+        if (itemLowerCase.indexOf(valueLowerCase) === 0) {
+          results.push(item);
+        }
+      });
+
+      forEach(items, function(item) {
+        var itemLowerCase = item.toLowerCase(item),
+            valueLowerCase = value && value.toLowerCase();
+
+        if (itemLowerCase.indexOf(valueLowerCase) >= 1) {
+          results.push(item);
+        }
+      });
+
+      updateSuggestionList(results);
+    }
+  };
+
+  /**
+  * Calculates the position coordinates of the suggestion list,
+  * dependant on position of cursor
+  *
+  * @return {Object} coordinates
+  */
+  function getSuggestionListPosition(listNode, container) {
+    var range = getSelectionRange().range,
+        cursorBounds = range.getBoundingClientRect(),
+        clientBounds = container.getBoundingClientRect(),
+        listBounds = listNode.getBoundingClientRect();
+
+    var coordinates = {
+      'top-left': {
+        x: cursorBounds.right - listBounds.width,
+        y: cursorBounds.top - listBounds.height
+      },
+      'top-right': {
+        x: cursorBounds.right,
+        y: cursorBounds.top - listBounds.height
+      },
+      'bottom-left': {
+        x: cursorBounds.right - listBounds.width,
+        y: cursorBounds.top + SUGGESTION_LIST_BOX_THRESHOLD
+      },
+      'bottom-right': {
+        x: cursorBounds.right,
+        y: cursorBounds.top + SUGGESTION_LIST_BOX_THRESHOLD
+      }
+    };
+
+    var orientation = '';
+
+    if (cursorBounds.top + SUGGESTION_LIST_BOX_THRESHOLD + listBounds.height > (clientBounds.height + clientBounds.top)) {
+      orientation = 'top-';
+    } else {
+      orientation = 'bottom-';
+    }
+
+    if (cursorBounds.right + listBounds.width > (clientBounds.width + clientBounds.left)) {
+      orientation += 'left';
+    } else {
+      orientation += 'right';
+    }
+
+    return { orientation: orientation, position: coordinates[orientation] };
+  }
+
+  resource.getSuggestionListPosition = getSuggestionListPosition;
+
+
+  resource.cssClasses = ['bpp-autosuggest-textbox'];
+
+  return resource;
+};
+
+module.exports = autoSuggestTextBox;
+
+
+// helpers /////////////////////////////
+
+function getSelectionRange() {
+  var selection = document.getSelection();
+
+  return {
+    range: selection.getRangeAt(0),
+    focusNode: selection.focusNode
+  };
+}
+
+function getCaretPosition(range) {
+  return range.startOffset;
+}
+
+function selectRange(focusNode, start, end) {
+  var range = document.createRange(),
+      selection = window.getSelection();
+
+  range.setStart(focusNode, start);
+  range.setEnd(focusNode, end);
+
+  selection.removeAllRanges();
+
+  selection.addRange(range);
+}
+
+function hideSuggestionList(entryNode) {
+  var listNode = domQuery('.bpp-autosuggest-list', entryNode);
+  domClasses(listNode).remove(CLASS_ACTIVE);
+}
+
+function clearSuggestionList(entryNode) {
+  var listNode = domQuery('.bpp-autosuggest-list', entryNode);
+  while (listNode.firstChild) {
+    listNode.removeChild(listNode.firstChild);
+  }
+}
+
+function getWordUnderCursor(node, currentCursorPositon) {
+  var value = node.nodeName === TEXT_NODE_NAME ? node.wholeText : node.innerText,
+      allWords = findWords(value);
+
+  return find(allWords, function(word) {
+    var matchValue = word[0],
+        wordStart = word.index,
+        wordEnd = wordStart + matchValue.length - 1;
+
+    return (
+      wordStart <= (currentCursorPositon - 1) &&
+      wordEnd >= (currentCursorPositon - 1)
+    );
+  });
+}
+
+/**
+ * Retrieves all words inside a text (also inside clauses and after operators)
+ *
+ * @param {string} value
+ *
+ * @return {Array<Object>}
+ */
+function findWords(value) {
+
+  // eslint-disable-next-line no-useless-escape
+  return matchAll(value, /[^\s\r\(\)\,\+\-\*\/\{\}]+/g);
+}
+
+function matchAll(value, regex) {
+  var regexp = RegExp(regex),
+      match,
+      matches = [];
+
+  while ((match = regexp.exec(value)) !== null) {
+    matches.push(match);
+  }
+
+  return matches;
+}
+
+function setPosition(el, x, y) {
+  assign(el.style, { left: x + 'px', top: y + 'px' });
+}
+
+
+/***/ }),
+/* 273 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var escapeHTML = __webpack_require__(7).escapeHTML;
+var domQuery = __webpack_require__(2).query;
+
+
+/**
+ * @param  {object} options
+ * @param  {string} options.id
+ * @param  {string} [options.title='']
+ * @param  {string} [options.description='']
+ * @param  {boolean} [options.open=false]
+ * @param  {Function} [options.onToggle]
+ * @param  {Function} [options.onRemove]
+ *
+ * @return {object}
+ */
+function Collapsible(options) {
+
+  var id = options.id,
+      title = options.title || '',
+      description = options.description || '',
+      open = !!options.open || false,
+      onToggle = options.onToggle || noop,
+      onRemove = options.onRemove,
+      cssClasses = options.cssClasses || [];
+
+
+  var collapsibleEntry = {
+    id: id,
+    toggle: toggle,
+    isOpen: isOpen,
+    set: set,
+    setOpen: setOpen,
+    get: get
+  };
+
+  if (typeof onRemove === 'function') {
+    collapsibleEntry.onRemove = function(entry, entryNode, actionId, event) {
+      var commands = onRemove(entry, entryNode, actionId, event);
+
+      if (commands) {
+        scheduleCommands(commands, entryNode);
+        return true;
+      }
+    };
+  }
+
+  function get(element, entryNode) {
+    if (options.get) {
+      return options.get(element, entryNode);
+    }
+
+    return {
+      title: title || '',
+      description: description || ''
+    };
+  }
+
+  function set() {
+    var commands = this._commands;
+
+    if (commands) {
+      delete this._commands;
+      return commands;
+    }
+  }
+
+  function toggle(element, entryNode, event, scope) {
+    var value = !open;
+
+    setOpen(value, entryNode);
+    onToggle(value, entryNode);
+  }
+
+  /**
+   * Set entry's open state.
+   *
+   * @param {boolean} value
+   * @param {HTMLElement} entryNode
+   */
+  function setOpen(value, entryNode) {
+    open = value;
+    entryNode.classList.toggle('bpp-collapsible--collapsed', !value);
+  }
+
+  function isOpen() {
+    return open;
+  }
+
+  /**
+   * Schedule commands to be run with next `set` method call.
+   *
+   * @param {Array<any>} commands
+   * @param {HTMLElement} entryNode
+   */
+  function scheduleCommands(commands, entryNode) {
+    collapsibleEntry._commands = commands;
+
+    // @barmac: hack to make properties panel call `set`
+    var input = domQuery('input[type="hidden"]', entryNode);
+    input.value = 1;
+  }
+
+  collapsibleEntry.html = '<div class="bpp-field-wrapper" data-action="toggle"><input name="hidden" type="hidden">' +
+    '<span class="bpp-collapsible__icon"></span>' +
+    '<label class="bpp-collapsible__title" data-value="title">' + escapeHTML(title) + '</label>' +
+    '<label class="bpp-collapsible__description" data-value="description">' + escapeHTML(description) + '</label>' +
+    (onRemove ? '<button class="bpp-collapsible__remove action-button clear" data-action="onRemove"></button>' : '') +
+  '</div>';
+
+  collapsibleEntry.cssClasses = cssClasses.concat(open ?
+    [ 'bpp-collapsible' ] : [ 'bpp-collapsible', 'bpp-collapsible--collapsed' ]
+  );
+
+  return collapsibleEntry;
+}
+
+module.exports = Collapsible;
+
+function noop() {}
+
+
+/***/ }),
+/* 274 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var getBusinessObject = __webpack_require__(1).getBusinessObject,
+    cmdHelper = __webpack_require__(4),
+    escapeHTML = __webpack_require__(7).escapeHTML;
+
+var entryFieldDescription = __webpack_require__(14);
+
+var domify = __webpack_require__(2).domify;
+
+var toggleSwitch = function(translate, options, defaultParameters) {
+  var resource = defaultParameters,
+      id = resource.id,
+      label = options.label || id,
+      canBeHidden = !!options.hidden && typeof options.hidden === 'function',
+      isOn = options.isOn,
+      descriptionOn = options.descriptionOn,
+      descriptionOff = options.descriptionOff,
+      labelOn = options.labelOn,
+      labelOff = options.labelOff;
+
+  resource.html = document.createDocumentFragment();
+
+  resource.html.appendChild(domify('<label for="' + escapeHTML(id) + '" ' +
+      (canBeHidden ? 'data-show="shouldShow"' : '') +
+      '>' + escapeHTML(label) + '</label>' +
+    '<div class="bpp-field-wrapper"' +
+    (canBeHidden ? 'data-show="shouldShow"' : '') +
+    '>' +
+      '<label class="bpp-toggle-switch__switcher">' +
+        '<input id="' + escapeHTML(id) + '" ' +
+            'type="checkbox" ' +
+            'name="' + escapeHTML(options.modelProperty) + '" />' +
+        '<span class="bpp-toggle-switch__slider"></span>' +
+      '</label>' +
+      '<p class="bpp-toggle-switch__label" data-show="isOn">' +
+        escapeHTML(labelOn) +
+      '</p>' +
+      '<p class="bpp-toggle-switch__label" data-show="isOff">' +
+        escapeHTML(labelOff) +
+      '</p>' +
+    '</div>'));
+
+  if (descriptionOn) {
+    resource.html.appendChild(entryFieldDescription(translate, descriptionOn, { show: 'isOn' }));
+  }
+
+  if (descriptionOff) {
+    resource.html.appendChild(entryFieldDescription(translate, descriptionOff, { show: 'isOff' }));
+  }
+
+  resource.get = function(element) {
+    var bo = getBusinessObject(element),
+        res = {};
+
+    res[options.modelProperty] = bo.get(options.modelProperty);
+
+    return res;
+  };
+
+  resource.set = function(element, values) {
+    var res = {};
+
+    res[options.modelProperty] = !!values[options.modelProperty];
+
+    return cmdHelper.updateProperties(element, res);
+  };
+
+  if (typeof options.set === 'function') {
+    resource.set = options.set;
+  }
+
+  if (typeof options.get === 'function') {
+    resource.get = options.get;
+  }
+
+  if (canBeHidden) {
+    resource.shouldShow = function() {
+      return !options.hidden.apply(resource, arguments);
+    };
+  }
+
+  resource.isOn = function() {
+    if (canBeHidden && !resource.shouldShow()) {
+      return false;
+    }
+
+    return isOn.apply(resource, arguments);
+  };
+
+  resource.isOff = function() {
+    if (canBeHidden && !resource.shouldShow()) {
+      return false;
+    }
+
+    return !resource.isOn();
+  };
+
+  resource.cssClasses = ['bpp-toggle-switch'];
+
+  return resource;
+};
+
+module.exports = toggleSwitch;
+
+
+/***/ }),
+/* 275 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var cmdHelper = __webpack_require__(4),
-    dateTimeField = __webpack_require__(45),
-    ProcessSimulationHelper = __webpack_require__(9);
+    dateTimeField = __webpack_require__(46),
+    ProcessSimulationHelper = __webpack_require__(10);
 
 module.exports = function(bpmnFactory, elementRegistry, translate) {
 
@@ -18815,12 +19942,12 @@ module.exports = function(bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 268 */
+/* 276 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var cmdHelper = __webpack_require__(4),
-    dateTimeField = __webpack_require__(45),
-    ProcessSimulationHelper = __webpack_require__(9);
+    dateTimeField = __webpack_require__(46),
+    ProcessSimulationHelper = __webpack_require__(10);
 
 module.exports = function(bpmnFactory, elementRegistry, translate) {
 
@@ -18856,13 +19983,13 @@ module.exports = function(bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 269 */
+/* 277 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var entryFactory = __webpack_require__(7),
+var entryFactory = __webpack_require__(8),
     cmdHelper = __webpack_require__(4),
-    validationHelper = __webpack_require__(5),
-    ProcessSimulationHelper = __webpack_require__(9);
+    validationHelper = __webpack_require__(6),
+    ProcessSimulationHelper = __webpack_require__(10);
 
 module.exports = function(bpmnFactory, elementRegistry, translate) {
 
@@ -18870,7 +19997,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate) {
 
   var label = translate('scenarioGroup.startExclude.label');
 
-  return entryFactory.textField({
+  return entryFactory.textField(translate, {
     id: 'trimStartProcessInstances',
     label: label,
     modelProperty: 'trimStartProcessInstances',
@@ -18904,13 +20031,13 @@ module.exports = function(bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 270 */
+/* 278 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var entryFactory = __webpack_require__(7),
+var entryFactory = __webpack_require__(8),
     cmdHelper = __webpack_require__(4),
-    validationHelper = __webpack_require__(5),
-    ProcessSimulationHelper = __webpack_require__(9);
+    validationHelper = __webpack_require__(6),
+    ProcessSimulationHelper = __webpack_require__(10);
 
 module.exports = function(bpmnFactory, elementRegistry, translate) {
 
@@ -18918,7 +20045,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate) {
 
   var label = translate('scenarioGroup.endExclude.label');
 
-  return entryFactory.textField({
+  return entryFactory.textField(translate, {
     id: 'trimEndProcessInstances',
     label: label,
     modelProperty: 'trimEndProcessInstances',
@@ -18952,11 +20079,11 @@ module.exports = function(bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 271 */
+/* 279 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var distributionEntries = __webpack_require__(66),
-    ProcessSimulationHelper = __webpack_require__(9),
+    ProcessSimulationHelper = __webpack_require__(10),
     DistributionHelper = __webpack_require__(67);
 
 module.exports = function(bpmnFactory, elementRegistry, translate) {
@@ -18973,18 +20100,18 @@ module.exports = function(bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 272 */
+/* 280 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var entryFactory = __webpack_require__(7),
+var entryFactory = __webpack_require__(8),
     cmdHelper = __webpack_require__(4),
-    ProcessSimulationHelper = __webpack_require__(9);
+    ProcessSimulationHelper = __webpack_require__(10);
 
 module.exports = function(bpmnFactory, elementRegistry, translate) {
 
   var processSimulationInfo = ProcessSimulationHelper.getProcessSimulationInfo(bpmnFactory, elementRegistry);
 
-  return entryFactory.selectBox({
+  return entryFactory.selectBox(translate, {
     id: 'currency',
     label: translate('scenarioGroup.currency.label'),
     modelProperty: 'currency',
@@ -19024,11 +20151,11 @@ function createCurrencyOptions() {
 }
 
 /***/ }),
-/* 273 */
+/* 281 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var is = __webpack_require__(1).is,
-    createTaskGroups = __webpack_require__(274);
+    createTaskGroups = __webpack_require__(282);
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 
@@ -19048,12 +20175,12 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 274 */
+/* 282 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var getBusinessObject = __webpack_require__(1).getBusinessObject,
     getFlowElementsByType = __webpack_require__(68),
-    createTaskEntries = __webpack_require__(275);
+    createTaskEntries = __webpack_require__(283);
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 
@@ -19083,11 +20210,11 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 275 */
+/* 283 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var TaskResourceSelectBox = __webpack_require__(276),
-    DistributionFields = __webpack_require__(277);
+var TaskResourceSelectBox = __webpack_require__(284),
+    DistributionFields = __webpack_require__(285);
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
   var id = options.task.id;
@@ -19103,13 +20230,13 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
 
 /***/ }),
-/* 276 */
+/* 284 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var entryFactory = __webpack_require__(7),
+var entryFactory = __webpack_require__(8),
     cmdHelper = __webpack_require__(4),
     ResourceHelper = __webpack_require__(116),
-    ElementHelper = __webpack_require__(42);
+    ElementHelper = __webpack_require__(43);
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
@@ -19135,7 +20262,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
   var taskElement = ElementHelper.getElementById(bpmnFactory, elementRegistry, taskId),
       resourceIds = ResourceHelper.getResourceIds(bpmnFactory, taskElement);
 
-  return entryFactory.selectBox({
+  return entryFactory.selectBox(translate, {
     id: selectBoxId,
     label: translate('resource'),
     modelProperty: 'resourceId',
@@ -19154,11 +20281,11 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 };
 
 /***/ }),
-/* 277 */
+/* 285 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var distributionEntries = __webpack_require__(66),
-    ElementHelper = __webpack_require__(42),
+    ElementHelper = __webpack_require__(43),
     DistributionHelper = __webpack_require__(67);
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
@@ -19178,11 +20305,11 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 };
 
 /***/ }),
-/* 278 */
+/* 286 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var is = __webpack_require__(1).is,
-    createTimetableGroups = __webpack_require__(279);
+    createTimetableGroups = __webpack_require__(287);
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 
@@ -19202,12 +20329,12 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 279 */
+/* 287 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var createTimetableEntry = __webpack_require__(280),
-    createTimetableDetailEntries = __webpack_require__(281),
-    createTimeslotDetailEntries = __webpack_require__(284);
+var createTimetableEntry = __webpack_require__(288),
+    createTimetableDetailEntries = __webpack_require__(289),
+    createTimeslotDetailEntries = __webpack_require__(292);
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 
@@ -19258,13 +20385,13 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 280 */
+/* 288 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var cmdHelper = __webpack_require__(4),
     extensionElementsEntry = __webpack_require__(69);
 
-var suppressValidationError = __webpack_require__(5).suppressValidationError;
+var suppressValidationError = __webpack_require__(6).suppressValidationError;
 
 var TimetableHelper = __webpack_require__(117);
 
@@ -19349,11 +20476,11 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 281 */
+/* 289 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var TimetableNameField = __webpack_require__(282),
-    createTimeslotEntry = __webpack_require__(283);
+var TimetableNameField = __webpack_require__(290),
+    createTimeslotEntry = __webpack_require__(291);
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate, options) {
 
@@ -19377,18 +20504,18 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, opti
 
 
 /***/ }),
-/* 282 */
+/* 290 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var entryFactory = __webpack_require__(7),
+var entryFactory = __webpack_require__(8),
     cmdHelper = __webpack_require__(4),
-    validationErrorHelper = __webpack_require__(5);
+    validationErrorHelper = __webpack_require__(6);
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
   var getSelectedTimetable = options.getSelectedTimetable;
 
-  return entryFactory.textField({
+  return entryFactory.textField(translate, {
     id: 'timetable-name',
     label: translate('timetable.name'),
     modelProperty: 'name',
@@ -19430,13 +20557,13 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 };
 
 /***/ }),
-/* 283 */
+/* 291 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var cmdHelper = __webpack_require__(4),
     extensionElementsEntry = __webpack_require__(69),
     RuleHelper = __webpack_require__(118),
-    suppressValidationError = __webpack_require__(5).suppressValidationError;
+    suppressValidationError = __webpack_require__(6).suppressValidationError;
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate, options) {
 
@@ -19503,14 +20630,14 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, opti
 };
 
 /***/ }),
-/* 284 */
+/* 292 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var TimeslotNameField = __webpack_require__(285),
-    FromWeekDaySelectBox = __webpack_require__(286),
-    ToWeekDaySelectBox = __webpack_require__(287),
-    FromTimeField = __webpack_require__(288),
-    ToTimeField = __webpack_require__(289);
+var TimeslotNameField = __webpack_require__(293),
+    FromWeekDaySelectBox = __webpack_require__(294),
+    ToWeekDaySelectBox = __webpack_require__(295),
+    FromTimeField = __webpack_require__(296),
+    ToTimeField = __webpack_require__(297);
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
@@ -19549,19 +20676,19 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 };
 
 /***/ }),
-/* 285 */
+/* 293 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var entryFactory = __webpack_require__(7),
+var entryFactory = __webpack_require__(8),
     cmdHelper = __webpack_require__(4),
-    validationErrorHelper = __webpack_require__(5);
+    validationErrorHelper = __webpack_require__(6);
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
   var getSelectedTimetable = options.getSelectedTimetable;
   var getSelectedTimeslot = options.getSelectedTimeslot;
 
-  return entryFactory.textField({
+  return entryFactory.textField(translate, {
     id: 'timeslot-name',
     label: translate('timeslot.name'),
     modelProperty: 'name',
@@ -19607,13 +20734,13 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 };
 
 /***/ }),
-/* 286 */
+/* 294 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var entryFactory = __webpack_require__(7),
+var entryFactory = __webpack_require__(8),
     cmdHelper = __webpack_require__(4),
     getWeekDays = __webpack_require__(119),
-    validationErrorHelper = __webpack_require__(5);
+    validationErrorHelper = __webpack_require__(6);
 
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
@@ -19623,7 +20750,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
   var weekDays = getWeekDays(translate);
 
-  return entryFactory.selectBox({
+  return entryFactory.selectBox(translate, {
     id: 'timeslot-fromWeekDay',
     label: translate('timeslot.beginDay'),
     modelProperty: 'fromWeekDay',
@@ -19666,13 +20793,13 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 };
 
 /***/ }),
-/* 287 */
+/* 295 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var entryFactory = __webpack_require__(7),
+var entryFactory = __webpack_require__(8),
     cmdHelper = __webpack_require__(4),
     getWeekDays = __webpack_require__(119),
-    validationErrorHelper = __webpack_require__(5);
+    validationErrorHelper = __webpack_require__(6);
 
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
@@ -19682,7 +20809,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
   var weekDays = getWeekDays(translate);
 
-  return entryFactory.selectBox({
+  return entryFactory.selectBox(translate, {
     id: 'timeslot-toWeekDay',
     label: translate('timeslot.endDay'),
     modelProperty: 'toWeekDay',
@@ -19737,11 +20864,11 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 };
 
 /***/ }),
-/* 288 */
+/* 296 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var cmdHelper = __webpack_require__(4),
-    dateTimeField = __webpack_require__(45);
+    dateTimeField = __webpack_require__(46);
 
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
@@ -19776,12 +20903,12 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 };
 
 /***/ }),
-/* 289 */
+/* 297 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var cmdHelper = __webpack_require__(4),
-    dateTimeField = __webpack_require__(45),
-    validationErrorHelper = __webpack_require__(5);
+    dateTimeField = __webpack_require__(46),
+    validationErrorHelper = __webpack_require__(6);
 
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
@@ -19835,11 +20962,11 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 };
 
 /***/ }),
-/* 290 */
+/* 298 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var is = __webpack_require__(1).is,
-    createResourceGroups = __webpack_require__(291);
+    createResourceGroups = __webpack_require__(299);
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 
@@ -19859,11 +20986,11 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 291 */
+/* 299 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var createResourceEntry = __webpack_require__(292),
-    createResourceDetailEntries = __webpack_require__(293);
+var createResourceEntry = __webpack_require__(300),
+    createResourceDetailEntries = __webpack_require__(301);
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 
@@ -19896,13 +21023,13 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 292 */
+/* 300 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var cmdHelper = __webpack_require__(4),
     extensionElementsEntry = __webpack_require__(69),
     ResourceHelper = __webpack_require__(116),
-    suppressValidationError = __webpack_require__(5).suppressValidationError;
+    suppressValidationError = __webpack_require__(6).suppressValidationError;
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 
@@ -19971,13 +21098,13 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 293 */
+/* 301 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var ResourceTimetableSelectBox = __webpack_require__(294),
-    ResourceNameField = __webpack_require__(295),
-    ResourceAmountField = __webpack_require__(296),
-    ResourceCostField = __webpack_require__(297);
+var ResourceTimetableSelectBox = __webpack_require__(302),
+    ResourceNameField = __webpack_require__(303),
+    ResourceAmountField = __webpack_require__(304),
+    ResourceCostField = __webpack_require__(305);
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
@@ -20001,10 +21128,10 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 };
 
 /***/ }),
-/* 294 */
+/* 302 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var entryFactory = __webpack_require__(7),
+var entryFactory = __webpack_require__(8),
     cmdHelper = __webpack_require__(4),
     TimetableHelper = __webpack_require__(117);
 
@@ -20012,7 +21139,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
   var getSelectedResource = options.getSelectedResource;
 
-  return entryFactory.selectBox({
+  return entryFactory.selectBox(translate, {
     id: 'resource-timetable',
     label: translate('resource.timetable'),
     modelProperty: 'timetableId',
@@ -20054,12 +21181,12 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 };
 
 /***/ }),
-/* 295 */
+/* 303 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var entryFactory = __webpack_require__(7),
+var entryFactory = __webpack_require__(8),
     cmdHelper = __webpack_require__(4),
-    validationErrorHelper = __webpack_require__(5);
+    validationErrorHelper = __webpack_require__(6);
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
@@ -20067,7 +21194,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
   var label = translate('resource.name');
 
-  return entryFactory.textField({
+  return entryFactory.textField(translate, {
     id: 'resource-name',
     label: label,
     modelProperty: 'name',
@@ -20113,12 +21240,12 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 };
 
 /***/ }),
-/* 296 */
+/* 304 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var entryFactory = __webpack_require__(7),
+var entryFactory = __webpack_require__(8),
     cmdHelper = __webpack_require__(4),
-    validationErrorHelper = __webpack_require__(5);
+    validationErrorHelper = __webpack_require__(6);
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
@@ -20126,7 +21253,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
   var label = translate('resource.totalAmount');
 
-  return entryFactory.textField({
+  return entryFactory.textField(translate, {
     id: 'resource-amount',
     label: label,
     modelProperty: 'totalAmount',
@@ -20171,12 +21298,12 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 };
 
 /***/ }),
-/* 297 */
+/* 305 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var entryFactory = __webpack_require__(7),
+var entryFactory = __webpack_require__(8),
     cmdHelper = __webpack_require__(4),
-    validationErrorHelper = __webpack_require__(5);
+    validationErrorHelper = __webpack_require__(6);
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
@@ -20184,7 +21311,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
   var label = translate('resource.costPerHour');
 
-  return entryFactory.textField({
+  return entryFactory.textField(translate, {
     id: 'resource-cost',
     label: label,
     modelProperty: 'costPerHour',
@@ -20231,11 +21358,11 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 };
 
 /***/ }),
-/* 298 */
+/* 306 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var is = __webpack_require__(1).is,
-    createGatewayGroups = __webpack_require__(299);
+    createGatewayGroups = __webpack_require__(307);
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 
@@ -20256,13 +21383,13 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 299 */
+/* 307 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var getBusinessObject = __webpack_require__(1).getBusinessObject,
     is = __webpack_require__(1).is,
     getFlowElementsByType = __webpack_require__(68),
-    createGatewayEntries = __webpack_require__(300);
+    createGatewayEntries = __webpack_require__(308);
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 
@@ -20296,16 +21423,16 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 300 */
+/* 308 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var getBusinessObject = __webpack_require__(1).getBusinessObject,
-    entryFactory = __webpack_require__(7),
+    entryFactory = __webpack_require__(8),
     cmdHelper = __webpack_require__(4),
     SequenceFlowHelper = __webpack_require__(100);
 
-var validationErrorHelper = __webpack_require__(5);
-var fixNumber = __webpack_require__(17).fixNumber;
+var validationErrorHelper = __webpack_require__(6);
+var fixNumber = __webpack_require__(18).fixNumber;
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
   var sequenceFlows = SequenceFlowHelper.getSequenceFlows(bpmnFactory, elementRegistry);
@@ -20315,7 +21442,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
   options.gateway && options.gateway.outgoing && options.gateway.outgoing.forEach(function(outgoingElement) {
     var sequenceFlow = SequenceFlowHelper.getSequenceFlowById(bpmnFactory, elementRegistry, outgoingElement.id);
 
-    entries.push(entryFactory.textField({
+    entries.push(entryFactory.textField(translate, {
       id: 'probability-field-' + outgoingElement.id,
 
       label: outgoingElement.targetRef.name ? outgoingElement.targetRef.name :
@@ -20370,11 +21497,11 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 };
 
 /***/ }),
-/* 301 */
+/* 309 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var is = __webpack_require__(1).is,
-    intermediateAndBoundaryEventGroups = __webpack_require__(302);
+    intermediateAndBoundaryEventGroups = __webpack_require__(310);
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate) {
   return {
@@ -20390,12 +21517,12 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 302 */
+/* 310 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var getBusinessObject = __webpack_require__(1).getBusinessObject,
     getFlowElementsByType = __webpack_require__(68),
-    intermediateAndBoundaryEventEntries = __webpack_require__(303);
+    intermediateAndBoundaryEventEntries = __webpack_require__(311);
 
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate) {
@@ -20429,10 +21556,10 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 303 */
+/* 311 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var ElementHelper = __webpack_require__(42),
+var ElementHelper = __webpack_require__(43),
     DistributionHelper = __webpack_require__(67),
     distributionEntries = __webpack_require__(66);
 
@@ -20456,11 +21583,11 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 };
 
 /***/ }),
-/* 304 */
+/* 312 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var api = __webpack_require__(305);
-            var content = __webpack_require__(306);
+var api = __webpack_require__(313);
+            var content = __webpack_require__(314);
 
             content = content.__esModule ? content.default : content;
 
@@ -20480,7 +21607,7 @@ var update = api(content, options);
 module.exports = content.locals || {};
 
 /***/ }),
-/* 305 */
+/* 313 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20755,7 +21882,7 @@ module.exports = function (list, options) {
 };
 
 /***/ }),
-/* 306 */
+/* 314 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -20766,13 +21893,13 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(false);
 // Module
-___CSS_LOADER_EXPORT___.push([module.i, "#js-properties-panel {\n  position: absolute;\n  top: 0;\n  bottom: 0;\n  right: 0;\n  width: 450px;\n  z-index: 10;\n  border-left: 1px solid #ccc;\n  background: #f8f8f8;\n  overflow: auto;\n}\n#js-properties-panel:empty {\n  display: none;\n}\n#js-properties-panel > .djs-properties-panel {\n  padding-bottom: 70px;\n  min-height: 100%;\n}\n.bpp-properties-header > .label {\n  display: none;\n}\n.bpp-properties-panel input {\n  max-width: -moz-available;\n  /* WebKit-based browsers will ignore this. */\n  max-width: -webkit-fill-available;\n  /* Mozilla-based browsers will ignore this. */\n  max-width: fill-available;\n}\n@font-face {\n  font-family: 'bpmn-js-pp';\n  src: url(\"data:;base64,GBYAAGgVAAABAAIAAAAAAAIABQMAAAAAAAABAJABAAAAAExQAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAcCEPZQAAAAAAAAAAAAAAAAAAAAAAABQAYgBwAG0AbgAtAGkAbwAtAHAAcAAAAA4AUgBlAGcAdQBsAGEAcgAAABYAVgBlAHIAcwBpAG8AbgAgADEALgAwAAAAFABiAHAAbQBuAC0AaQBvAC0AcABwAAAAAAAAAQAAAA8AgAADAHBHU1VCsP6z7QAAAPwAAABCT1MvMj4iSaEAAAFAAAAAVmNtYXCd2b4sAAABmAAAAcZjdnQgAAAAAAAACXAAAAAKZnBnbYiQkFkAAAl8AAALcGdhc3AAAAAQAAAJaAAAAAhnbHlmhlzkXAAAA2AAAAIOaGVhZAjiposAAAVwAAAANmhoZWEHkQNNAAAFqAAAACRobXR4FWn/+gAABcwAAAAcbG9jYQGaAg0AAAXoAAAAEG1heHAAmgugAAAF+AAAACBuYW1lD9cCaQAABhgAAALlcG9zdPp/FpwAAAkAAAAAaHByZXDdawOFAAAU7AAAAHsAAQAAAAoAHgAsAAFERkxUAAgABAAAAAAAAAABAAAAAWxpZ2EACAAAAAEAAAABAAQABAAAAAEACAABAAYAAAABAAAAAAABAw8BkAAFAAACegK8AAAAjAJ6ArwAAAHgADEBAgAAAgAFAwAAAAAAAAAAAAAAAAAAAAAAAAAAAABQZkVkAEDoAukDA1L/agBaA1IAlgAAAAEAAAAAAAAAAAAFAAAAAwAAACwAAAAEAAABbgABAAAAAABoAAMAAQAAACwAAwAKAAABbgAEADwAAAAIAAgAAgAA6APoBukD//8AAOgC6AXpAv//AAAAAAAAAAEACAAKAAwAAAABAAIAAwAEAAUABgAAAQYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAAAAAAAWAAAAAAAAAAGAADoAgAA6AIAAAABAADoAwAA6AMAAAACAADoBQAA6AUAAAADAADoBgAA6AYAAAAEAADpAgAA6QIAAAAFAADpAwAA6QMAAAAGAAAAAQAAAAAB1gJiAB0ABrMTAwEtKyUWFAYiLwEHBiInJjQ/AScmNDc2Mh8BNzYyFhQPAQHEEiQyEoSEEjISEBCKihAQEjIShIQSMiQSisISMiIQmJgQEBIyEpyeEjISEBCYmBAiMhKeAAABAAAAAAJEAoAAEwAGsxAGAS0rATIUKwEVFCI9ASMiNDsBNTQyHQECJh4e0mTSHh7SZAGQZNIeHtJk0h4e0gAAAgAA/8IDIgLqABEAGgAItRgUDAQCLSslFg8BBi8BBiMiJhA2IBYVFAclFBYyNjQmIgYDBB4YLiQgvkpSgL60AQDALv4YiLB+iLB+TiIcLiAgviq+AQC2voBYSqpYiH6yhn4AAAP/+v+2A8cDCAAMABAAFAAKtxIRDg0KAgMtKwUWBiMhIicmNwE2MhcTNSMVNxEjEQO9ChQU/IQSCg0LAb4ILAgabm5uGBAiEBIQAw4SEv0kZGSuASz+1AACAAD/ugNIAwIACAAUAAi1EQsEAAItKwEyFhAGICYQNgE3JwcnBxcHFzcXNwGkrvb2/qT29gEEmlaamFiamliYmlYDAvb+pPb2AVz2/lyaVpiYVpqYVpiYVgAAAAIAAP+6A0gDAgAIABQACLUTDQQAAi0rATIWEAYgJhA2EzM1IzUjFSMVMxUzAaSu9vb+pPb24sjIZsrKZgMC9v6k9vYBXPb+KmbKymbKAAAAAQAAAAEAAGUPIXBfDzz1AAsD6AAAAADS8LF0AAAAANLwsXT/+v+2A+gDCAAAAAgAAgAAAAAAAAABAAADUv9qAFoD6P/6//MD6AABAAAAAAAAAAAAAAAAAAAABwPoAAAB1gAAAkQAAAMVAAADwv/6A0gAAANIAAAAAAAAADQAVACGALIA4AEHAAEAAAAHAB4AAwAAAAAAAgAAABAAcwAAABwLcAAAAAAAAAASAN4AAQAAAAAAAAA1AAAAAQAAAAAAAQAKADUAAQAAAAAAAgAHAD8AAQAAAAAAAwAKAEYAAQAAAAAABAAKAFAAAQAAAAAABQALAFoAAQAAAAAABgAKAGUAAQAAAAAACgArAG8AAQAAAAAACwATAJoAAwABBAkAAABqAK0AAwABBAkAAQAUARcAAwABBAkAAgAOASsAAwABBAkAAwAUATkAAwABBAkABAAUAU0AAwABBAkABQAWAWEAAwABBAkABgAUAXcAAwABBAkACgBWAYsAAwABBAkACwAmAeFDb3B5cmlnaHQgKEMpIDIwMTYgYnkgb3JpZ2luYWwgYXV0aG9ycyBAIGZvbnRlbGxvLmNvbWJwbW4taW8tcHBSZWd1bGFyYnBtbi1pby1wcGJwbW4taW8tcHBWZXJzaW9uIDEuMGJwbW4taW8tcHBHZW5lcmF0ZWQgYnkgc3ZnMnR0ZiBmcm9tIEZvbnRlbGxvIHByb2plY3QuaHR0cDovL2ZvbnRlbGxvLmNvbQBDAG8AcAB5AHIAaQBnAGgAdAAgACgAQwApACAAMgAwADEANgAgAGIAeQAgAG8AcgBpAGcAaQBuAGEAbAAgAGEAdQB0AGgAbwByAHMAIABAACAAZgBvAG4AdABlAGwAbABvAC4AYwBvAG0AYgBwAG0AbgAtAGkAbwAtAHAAcABSAGUAZwB1AGwAYQByAGIAcABtAG4ALQBpAG8ALQBwAHAAYgBwAG0AbgAtAGkAbwAtAHAAcABWAGUAcgBzAGkAbwBuACAAMQAuADAAYgBwAG0AbgAtAGkAbwAtAHAAcABHAGUAbgBlAHIAYQB0AGUAZAAgAGIAeQAgAHMAdgBnADIAdAB0AGYAIABmAHIAbwBtACAARgBvAG4AdABlAGwAbABvACAAcAByAG8AagBlAGMAdAAuAGgAdAB0AHAAOgAvAC8AZgBvAG4AdABlAGwAbABvAC4AYwBvAG0AAAAAAgAAAAAAAAAKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHAQIBAwEEAQUBBgEHAQgABWNsZWFyA2FkZAZzZWFyY2gJYXR0ZW50aW9uDWNsZWFyLWNpcmNsZWQLYWRkLWNpcmNsZWQAAAABAAH//wAPAAAAAAAAAAAAAAAAsAAsILAAVVhFWSAgS7gADlFLsAZTWliwNBuwKFlgZiCKVViwAiVhuQgACABjYyNiGyEhsABZsABDI0SyAAEAQ2BCLbABLLAgYGYtsAIsIGQgsMBQsAQmWrIoAQpDRWNFUltYISMhG4pYILBQUFghsEBZGyCwOFBYIbA4WVkgsQEKQ0VjRWFksChQWCGxAQpDRWNFILAwUFghsDBZGyCwwFBYIGYgiophILAKUFhgGyCwIFBYIbAKYBsgsDZQWCGwNmAbYFlZWRuwAStZWSOwAFBYZVlZLbADLCBFILAEJWFkILAFQ1BYsAUjQrAGI0IbISFZsAFgLbAELCMhIyEgZLEFYkIgsAYjQrEBCkNFY7EBCkOwAGBFY7ADKiEgsAZDIIogirABK7EwBSWwBCZRWGBQG2FSWVgjWSEgsEBTWLABKxshsEBZI7AAUFhlWS2wBSywB0MrsgACAENgQi2wBiywByNCIyCwACNCYbACYmawAWOwAWCwBSotsAcsICBFILALQ2O4BABiILAAUFiwQGBZZrABY2BEsAFgLbAILLIHCwBDRUIqIbIAAQBDYEItsAkssABDI0SyAAEAQ2BCLbAKLCAgRSCwASsjsABDsAQlYCBFiiNhIGQgsCBQWCGwABuwMFBYsCAbsEBZWSOwAFBYZVmwAyUjYUREsAFgLbALLCAgRSCwASsjsABDsAQlYCBFiiNhIGSwJFBYsAAbsEBZI7AAUFhlWbADJSNhRESwAWAtsAwsILAAI0KyCwoDRVghGyMhWSohLbANLLECAkWwZGFELbAOLLABYCAgsAxDSrAAUFggsAwjQlmwDUNKsABSWCCwDSNCWS2wDywgsBBiZrABYyC4BABjiiNhsA5DYCCKYCCwDiNCIy2wECxLVFixBGREWSSwDWUjeC2wESxLUVhLU1ixBGREWRshWSSwE2UjeC2wEiyxAA9DVVixDw9DsAFhQrAPK1mwAEOwAiVCsQwCJUKxDQIlQrABFiMgsAMlUFixAQBDYLAEJUKKiiCKI2GwDiohI7ABYSCKI2GwDiohG7EBAENgsAIlQrACJWGwDiohWbAMQ0ewDUNHYLACYiCwAFBYsEBgWWawAWMgsAtDY7gEAGIgsABQWLBAYFlmsAFjYLEAABMjRLABQ7AAPrIBAQFDYEItsBMsALEAAkVUWLAPI0IgRbALI0KwCiOwAGBCIGCwAWG1EBABAA4AQkKKYLESBiuwcisbIlktsBQssQATKy2wFSyxARMrLbAWLLECEystsBcssQMTKy2wGCyxBBMrLbAZLLEFEystsBossQYTKy2wGyyxBxMrLbAcLLEIEystsB0ssQkTKy2wHiwAsA0rsQACRVRYsA8jQiBFsAsjQrAKI7AAYEIgYLABYbUQEAEADgBCQopgsRIGK7ByKxsiWS2wHyyxAB4rLbAgLLEBHistsCEssQIeKy2wIiyxAx4rLbAjLLEEHistsCQssQUeKy2wJSyxBh4rLbAmLLEHHistsCcssQgeKy2wKCyxCR4rLbApLCA8sAFgLbAqLCBgsBBgIEMjsAFgQ7ACJWGwAWCwKSohLbArLLAqK7AqKi2wLCwgIEcgILALQ2O4BABiILAAUFiwQGBZZrABY2AjYTgjIIpVWCBHICCwC0NjuAQAYiCwAFBYsEBgWWawAWNgI2E4GyFZLbAtLACxAAJFVFiwARawLCqwARUwGyJZLbAuLACwDSuxAAJFVFiwARawLCqwARUwGyJZLbAvLCA1sAFgLbAwLACwAUVjuAQAYiCwAFBYsEBgWWawAWOwASuwC0NjuAQAYiCwAFBYsEBgWWawAWOwASuwABa0AAAAAABEPiM4sS8BFSotsDEsIDwgRyCwC0NjuAQAYiCwAFBYsEBgWWawAWNgsABDYTgtsDIsLhc8LbAzLCA8IEcgsAtDY7gEAGIgsABQWLBAYFlmsAFjYLAAQ2GwAUNjOC2wNCyxAgAWJSAuIEewACNCsAIlSYqKRyNHI2EgWGIbIVmwASNCsjMBARUUKi2wNSywABawBCWwBCVHI0cjYbAJQytlii4jICA8ijgtsDYssAAWsAQlsAQlIC5HI0cjYSCwBCNCsAlDKyCwYFBYILBAUVizAiADIBuzAiYDGllCQiMgsAhDIIojRyNHI2EjRmCwBEOwAmIgsABQWLBAYFlmsAFjYCCwASsgiophILACQ2BkI7ADQ2FkUFiwAkNhG7ADQ2BZsAMlsAJiILAAUFiwQGBZZrABY2EjICCwBCYjRmE4GyOwCENGsAIlsAhDRyNHI2FgILAEQ7ACYiCwAFBYsEBgWWawAWNgIyCwASsjsARDYLABK7AFJWGwBSWwAmIgsABQWLBAYFlmsAFjsAQmYSCwBCVgZCOwAyVgZFBYIRsjIVkjICCwBCYjRmE4WS2wNyywABYgICCwBSYgLkcjRyNhIzw4LbA4LLAAFiCwCCNCICAgRiNHsAErI2E4LbA5LLAAFrADJbACJUcjRyNhsABUWC4gPCMhG7ACJbACJUcjRyNhILAFJbAEJUcjRyNhsAYlsAUlSbACJWG5CAAIAGNjIyBYYhshWWO4BABiILAAUFiwQGBZZrABY2AjLiMgIDyKOCMhWS2wOiywABYgsAhDIC5HI0cjYSBgsCBgZrACYiCwAFBYsEBgWWawAWMjICA8ijgtsDssIyAuRrACJUZSWCA8WS6xKwEUKy2wPCwjIC5GsAIlRlBYIDxZLrErARQrLbA9LCMgLkawAiVGUlggPFkjIC5GsAIlRlBYIDxZLrErARQrLbA+LLA1KyMgLkawAiVGUlggPFkusSsBFCstsD8ssDYriiAgPLAEI0KKOCMgLkawAiVGUlggPFkusSsBFCuwBEMusCsrLbBALLAAFrAEJbAEJiAuRyNHI2GwCUMrIyA8IC4jOLErARQrLbBBLLEIBCVCsAAWsAQlsAQlIC5HI0cjYSCwBCNCsAlDKyCwYFBYILBAUVizAiADIBuzAiYDGllCQiMgR7AEQ7ACYiCwAFBYsEBgWWawAWNgILABKyCKimEgsAJDYGQjsANDYWRQWLACQ2EbsANDYFmwAyWwAmIgsABQWLBAYFlmsAFjYbACJUZhOCMgPCM4GyEgIEYjR7ABKyNhOCFZsSsBFCstsEIssDUrLrErARQrLbBDLLA2KyEjICA8sAQjQiM4sSsBFCuwBEMusCsrLbBELLAAFSBHsAAjQrIAAQEVFBMusDEqLbBFLLAAFSBHsAAjQrIAAQEVFBMusDEqLbBGLLEAARQTsDIqLbBHLLA0Ki2wSCywABZFIyAuIEaKI2E4sSsBFCstsEkssAgjQrBIKy2wSiyyAABBKy2wSyyyAAFBKy2wTCyyAQBBKy2wTSyyAQFBKy2wTiyyAABCKy2wTyyyAAFCKy2wUCyyAQBCKy2wUSyyAQFCKy2wUiyyAAA+Ky2wUyyyAAE+Ky2wVCyyAQA+Ky2wVSyyAQE+Ky2wViyyAABAKy2wVyyyAAFAKy2wWCyyAQBAKy2wWSyyAQFAKy2wWiyyAABDKy2wWyyyAAFDKy2wXCyyAQBDKy2wXSyyAQFDKy2wXiyyAAA/Ky2wXyyyAAE/Ky2wYCyyAQA/Ky2wYSyyAQE/Ky2wYiywNysusSsBFCstsGMssDcrsDsrLbBkLLA3K7A8Ky2wZSywABawNyuwPSstsGYssDgrLrErARQrLbBnLLA4K7A7Ky2waCywOCuwPCstsGkssDgrsD0rLbBqLLA5Ky6xKwEUKy2wayywOSuwOystsGwssDkrsDwrLbBtLLA5K7A9Ky2wbiywOisusSsBFCstsG8ssDorsDsrLbBwLLA6K7A8Ky2wcSywOiuwPSstsHIsswkEAgNFWCEbIyFZQiuwCGWwAyRQeLABFTAtAEu4AMhSWLEBAY5ZsAG5CAAIAGNwsQAFQrEAACqxAAVCsQAIKrEABUKxAAgqsQAFQrkAAAAJKrEABUK5AAAACSqxAwBEsSQBiFFYsECIWLEDZESxJgGIUVi6CIAAAQRAiGNUWLEDAERZWVlZsQAMKrgB/4WwBI2xAgBEAA==\");\n  src: url(\"data:;base64,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\") format('embedded-opentype'), url(\"data:application/font-woff;base64,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\") format('woff'), url(\"data:application/x-font-ttf;base64,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IDxZIyAuRrACJUZQWCA8WS6xKwEUKy2wPiywNSsjIC5GsAIlRlJYIDxZLrErARQrLbA/LLA2K4ogIDywBCNCijgjIC5GsAIlRlJYIDxZLrErARQrsARDLrArKy2wQCywABawBCWwBCYgLkcjRyNhsAlDKyMgPCAuIzixKwEUKy2wQSyxCAQlQrAAFrAEJbAEJSAuRyNHI2EgsAQjQrAJQysgsGBQWCCwQFFYswIgAyAbswImAxpZQkIjIEewBEOwAmIgsABQWLBAYFlmsAFjYCCwASsgiophILACQ2BkI7ADQ2FkUFiwAkNhG7ADQ2BZsAMlsAJiILAAUFiwQGBZZrABY2GwAiVGYTgjIDwjOBshICBGI0ewASsjYTghWbErARQrLbBCLLA1Ky6xKwEUKy2wQyywNishIyAgPLAEI0IjOLErARQrsARDLrArKy2wRCywABUgR7AAI0KyAAEBFRQTLrAxKi2wRSywABUgR7AAI0KyAAEBFRQTLrAxKi2wRiyxAAEUE7AyKi2wRyywNCotsEgssAAWRSMgLiBGiiNhOLErARQrLbBJLLAII0KwSCstsEossgAAQSstsEsssgABQSstsEwssgEAQSstsE0ssgEBQSstsE4ssgAAQistsE8ssgABQistsFAssgEAQistsFEssgEBQistsFIssgAAPistsFMssgABPistsFQssgEAPistsFUssgEBPistsFYssgAAQCstsFcssgABQCstsFgssgEAQCstsFkssgEBQCstsFossgAAQystsFsssgABQystsFwssgEAQystsF0ssgEBQystsF4ssgAAPystsF8ssgABPystsGAssgEAPystsGEssgEBPystsGIssDcrLrErARQrLbBjLLA3K7A7Ky2wZCywNyuwPCstsGUssAAWsDcrsD0rLbBmLLA4Ky6xKwEUKy2wZyywOCuwOystsGgssDgrsDwrLbBpLLA4K7A9Ky2waiywOSsusSsBFCstsGsssDkrsDsrLbBsLLA5K7A8Ky2wbSywOSuwPSstsG4ssDorLrErARQrLbBvLLA6K7A7Ky2wcCywOiuwPCstsHEssDorsD0rLbByLLMJBAIDRVghGyMhWUIrsAhlsAMkUHiwARUwLQBLuADIUlixAQGOWbABuQgACABjcLEABUKxAAAqsQAFQrEACCqxAAVCsQAIKrEABUK5AAAACSqxAAVCuQAAAAkqsQMARLEkAYhRWLBAiFixA2REsSYBiFFYugiAAAEEQIhjVFixAwBEWVlZWbEADCq4Af+FsASNsQIARAA=\") format('truetype'), url(\"data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/Pgo8IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxtZXRhZGF0YT5Db3B5cmlnaHQgKEMpIDIwMTYgYnkgb3JpZ2luYWwgYXV0aG9ycyBAIGZvbnRlbGxvLmNvbTwvbWV0YWRhdGE+CjxkZWZzPgo8Zm9udCBpZD0iYnBtbi1pby1wcCIgaG9yaXotYWR2LXg9IjEwMDAiID4KPGZvbnQtZmFjZSBmb250LWZhbWlseT0iYnBtbi1pby1wcCIgZm9udC13ZWlnaHQ9IjQwMCIgZm9udC1zdHJldGNoPSJub3JtYWwiIHVuaXRzLXBlci1lbT0iMTAwMCIgYXNjZW50PSI4NTAiIGRlc2NlbnQ9Ii0xNTAiIC8+CjxtaXNzaW5nLWdseXBoIGhvcml6LWFkdi14PSIxMDAwIiAvPgo8Z2x5cGggZ2x5cGgtbmFtZT0iY2xlYXIiIHVuaWNvZGU9IiYjeGU4MDI7IiBkPSJNNDUyIDE5NHExOC0xOCAxOC00M3QtMTgtNDNxLTE4LTE2LTQzLTE2dC00MyAxNmwtMTMyIDE1Mi0xMzItMTUycS0xOC0xNi00My0xNnQtNDMgMTZxLTE2IDE4LTE2IDQzdDE2IDQzbDEzOCAxNTYtMTM4IDE1OHEtMTYgMTgtMTYgNDN0MTYgNDNxMTggMTYgNDMgMTZ0NDMtMTZsMTMyLTE1MiAxMzIgMTUycTE4IDE2IDQzIDE2dDQzLTE2cTE4LTE4IDE4LTQzdC0xOC00M2wtMTM4LTE1OHoiIGhvcml6LWFkdi14PSI0NzAiIC8+CjxnbHlwaCBnbHlwaC1uYW1lPSJhZGQiIHVuaWNvZGU9IiYjeGU4MDM7IiBkPSJNNTUwIDQwMHEzMCAwIDMwLTUwdC0zMC01MGwtMjEwIDAgMC0yMTBxMC0zMC01MC0zMHQtNTAgMzBsMCAyMTAtMjEwIDBxLTMwIDAtMzAgNTB0MzAgNTBsMjEwIDAgMCAyMTBxMCAzMCA1MCAzMHQ1MC0zMGwwLTIxMCAyMTAgMHoiIGhvcml6LWFkdi14PSI1ODAiIC8+CjxnbHlwaCBnbHlwaC1uYW1lPSJzZWFyY2giIHVuaWNvZGU9IiYjeGU4MDU7IiBkPSJNNzcyIDc4cTMwLTM0IDYtNjJsLTQ2LTQ2cS0zNi0zMi02OCAwbC0xOTAgMTkwcS03NC00Mi0xNTYtNDItMTI4IDAtMjIzIDk1dC05NSAyMjMgOTAgMjE5IDIxOCA5MSAyMjQtOTUgOTYtMjIzcTAtODgtNDYtMTYyeiBtLTY3OCAzNThxMC04OCA2OC0xNTZ0MTU2LTY4IDE1MSA2MyA2MyAxNTNxMCA4OC02OCAxNTV0LTE1NiA2Ny0xNTEtNjMtNjMtMTUxeiIgaG9yaXotYWR2LXg9Ijc4OSIgLz4KPGdseXBoIGdseXBoLW5hbWU9ImF0dGVudGlvbiIgdW5pY29kZT0iJiN4ZTgwNjsiIGQ9Ik05NTctMjRxMTAtMTYgMC0zNC0xMC0xNi0zMC0xNmwtODkyIDBxLTE4IDAtMjggMTYtMTMgMTgtMiAzNGw0NDYgNzgycTggMTggMzAgMTh0MzAtMTh6IG0tNDIwIDUwbDAgMTAwLTExMCAwIDAtMTAwIDExMCAweiBtMCAxNzRsMCAzMDAtMTEwIDAgMC0zMDAgMTEwIDB6IiBob3Jpei1hZHYteD0iOTYyIiAvPgo8Z2x5cGggZ2x5cGgtbmFtZT0iY2xlYXItY2lyY2xlZCIgdW5pY29kZT0iJiN4ZTkwMjsiIGQ9Ik00MjAgNzcwcTE3NCAwIDI5Ny0xMjN0MTIzLTI5Ny0xMjMtMjk3LTI5Ny0xMjMtMjk3IDEyMy0xMjMgMjk3IDEyMyAyOTcgMjk3IDEyM3ogbTg2LTQyMGwxNTQgMTU0LTg2IDg2LTE1NC0xNTItMTUyIDE1Mi04OC04NiAxNTQtMTU0LTE1NC0xNTIgODgtODYgMTUyIDE1MiAxNTQtMTUyIDg2IDg2eiIgaG9yaXotYWR2LXg9Ijg0MCIgLz4KPGdseXBoIGdseXBoLW5hbWU9ImFkZC1jaXJjbGVkIiB1bmljb2RlPSImI3hlOTAzOyIgZD0iTTQyMCA3NzBxMTc0IDAgMjk3LTEyM3QxMjMtMjk3LTEyMy0yOTctMjk3LTEyMy0yOTcgMTIzLTEyMyAyOTcgMTIzIDI5NyAyOTcgMTIzeiBtNTItNDcwbDIwMCAwIDAgMTAyLTIwMCAwIDAgMjAyLTEwMiAwIDAtMjAyLTIwMiAwIDAtMTAyIDIwMiAwIDAtMjAyIDEwMiAwIDAgMjAyeiIgaG9yaXotYWR2LXg9Ijg0MCIgLz4KPC9mb250Pgo8L2RlZnM+Cjwvc3ZnPg==\") format('svg');\n  font-weight: normal;\n  font-style: normal;\n}\n.bpp-properties-panel {\n  background-color: #f8f8f8;\n  position: relative;\n}\n.bpp-properties-panel:empty {\n  display: none;\n}\n.bpp-properties-panel label,\n.bpp-properties-panel input {\n  vertical-align: middle;\n}\n.bpp-properties-panel button,\n.bpp-properties-panel input,\n.bpp-properties-panel select,\n.bpp-properties-panel textarea,\n.bpp-properties-panel [contenteditable] {\n  font-size: 14px;\n  padding: 3px 6px;\n  border: 1px solid #cccccc;\n}\n.bpp-properties-panel button:focus,\n.bpp-properties-panel input:focus,\n.bpp-properties-panel select:focus,\n.bpp-properties-panel textarea:focus,\n.bpp-properties-panel [contenteditable]:focus {\n  outline: none;\n  border-color: #1a70ff;\n  box-shadow: 0 0 0 2px #a2c5ff, 0 0 0 1px #cdcdcd inset;\n}\n.bpp-properties-panel button.invalid,\n.bpp-properties-panel input.invalid,\n.bpp-properties-panel select.invalid,\n.bpp-properties-panel textarea.invalid,\n.bpp-properties-panel [contenteditable].invalid {\n  border-color: #ff3d3d;\n}\n.bpp-properties-panel button.invalid:focus,\n.bpp-properties-panel input.invalid:focus,\n.bpp-properties-panel select.invalid:focus,\n.bpp-properties-panel textarea.invalid:focus,\n.bpp-properties-panel [contenteditable].invalid:focus {\n  box-shadow: 0 0 0 2px #ffb3b3, 0 0 0 1px #cdcdcd inset;\n}\n.bpp-properties-panel [type=text],\n.bpp-properties-panel [contenteditable],\n.bpp-properties-panel textarea,\n.bpp-properties-panel select {\n  width: 100%;\n}\n.bpp-properties-panel [contenteditable],\n.bpp-properties-panel textarea {\n  resize: vertical;\n}\n.bpp-properties-panel [contenteditable] {\n  outline: 0px solid transparent;\n  background-color: #ffffff;\n  overflow-y: auto;\n  white-space: pre-wrap;\n  /* css-3 */\n  white-space: -moz-pre-wrap;\n  /* Mozilla, since 1999 */\n  white-space: -pre-wrap;\n  /* Opera 4-6 */\n  white-space: -o-pre-wrap;\n  /* Opera 7 */\n  word-wrap: break-word;\n  /* Internet Explorer 5.5+ */\n}\n.bpp-properties-panel [contenteditable]:before {\n  content: \"\\feff\";\n}\n.bpp-properties-panel [disabled] {\n  color: #808080;\n}\n.bpp-properties-panel label {\n  font-weight: bolder;\n  display: inline-block;\n  vertical-align: middle;\n  color: #666666;\n  margin-bottom: 3px;\n}\n.bpp-properties-panel label.bpp-hidden {\n  display: none;\n}\n.bpp-properties-panel .entry-label {\n  font-weight: bolder;\n  display: inline-block;\n  vertical-align: middle;\n  color: #666666;\n  font-size: 16px;\n  margin-top: 5px;\n  margin-bottom: 10px;\n}\n.bpp-properties-panel .entry-label.bpp-hidden {\n  display: none;\n}\n.bpp-properties-panel .entry-label.divider {\n  border-top: 1px dotted #cccccc;\n  padding-top: 8px;\n  margin-top: 16px;\n  width: 100%;\n}\n.bpp-properties-panel button {\n  position: absolute;\n  top: 0;\n  height: 23px;\n  width: 24px;\n  overflow: hidden;\n  background-color: #f8f8f8;\n  border: 1px solid #cccccc;\n}\n.bpp-properties-panel button > span {\n  display: none;\n}\n.bpp-properties-panel button:before {\n  font-family: \"bpmn-js-pp\";\n  font-style: normal;\n  font-weight: normal;\n  speak: none;\n  display: inline-block;\n  text-decoration: inherit;\n  text-align: center;\n  font-variant: normal;\n  text-transform: none;\n  line-height: 1em;\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-font-smoothing: grayscale;\n  position: relative;\n}\n.bpp-properties-panel button.add:before {\n  content: '\\E803';\n}\n.bpp-properties-panel button.clear:before {\n  content: '\\E802';\n}\n.bpp-properties-panel button:hover {\n  color: #005df7;\n}\n.bpp-error-message,\n.bpp-error-message.bpp-entry-link {\n  margin-top: 5px;\n  color: #ff3d3d;\n}\n.bpp-row {\n  margin-top: 10px;\n  margin-bottom: 10px;\n}\n.bpp-row:first-of-type {\n  margin-top: 0;\n}\n.bpp-row:last-of-type {\n  margin-bottom: 0;\n}\n.bpp-textfield,\n.bpp-textbox {\n  margin-bottom: 3px;\n}\n.bpp-radios-group {\n  list-style: none;\n  padding: 0;\n  margin: 0 0 9px 0;\n}\n.bpp-radios-group .bpp-radio-wrapper {\n  margin: 6px 0;\n}\n.bpp-radios-group input,\n.bpp-radios-group label {\n  vertical-align: middle;\n}\n.bpp-radios-group input {\n  margin-top: 0;\n  margin-left: 0;\n}\n.bpp-radios-group input,\n.bpp-checkbox input {\n  margin-left: 0;\n}\n.bpp-radios-group label:after,\n.bpp-checkbox label:after {\n  display: none;\n}\n.bpp-textfield input {\n  padding-right: 28px;\n}\n.bpp-textfield .clear {\n  background: transparent;\n  border: none;\n  top: 0;\n  right: 0;\n}\n.bpp-combo-input {\n  margin-top: 7px;\n}\n.bpp-select select {\n  height: 23px;\n}\n.bpp-select button.add {\n  top: -22px;\n  right: 0;\n}\n.bpp-select button.add,\n.bpp-element-list button.add,\n.bpp-select button.clear,\n.bpp-element-list button.clear {\n  top: -23px;\n  border-bottom: none;\n}\n.bpp-select button.add,\n.bpp-element-list button.add {\n  right: 0px;\n}\n.bpp-select button.clear,\n.bpp-element-list button.clear {\n  right: 23px;\n}\n.bpp-properties-entry {\n  margin-bottom: 9px;\n}\n.bpp-properties-entry .bpp-field-wrapper {\n  position: relative;\n}\n.bpp-properties-entry .bpp-field-wrapper input[readonly] + .clear {\n  display: none;\n}\n.bpp-properties-entry .bpp-field-wrapper select {\n  resize: vertical;\n}\n.bpp-hidden {\n  display: none;\n}\nlabel.bpp-hidden {\n  display: none;\n}\n.bpp-table-add-row > button {\n  position: relative;\n  margin-left: 10px;\n}\n.bpp-table {\n  margin-top: 10px;\n}\n.bpp-table-row {\n  margin-bottom: 2px;\n  overflow: hidden;\n}\n.bpp-table-row > input,\n.bpp-table-row > button {\n  float: left;\n}\n.bpp-table-row > label {\n  padding-left: 5px;\n}\n.bpp-table-row > label.bpp-table-row-columns-1,\n.bpp-table-row > input.bpp-table-row-columns-1 {\n  width: 100%;\n}\n.bpp-table-row > label.bpp-table-row-columns-1.bpp-table-row-removable,\n.bpp-table-row > input.bpp-table-row-columns-1.bpp-table-row-removable {\n  width: calc(100% - 24px);\n}\n.bpp-table-row > label.bpp-table-row-columns-2,\n.bpp-table-row > input.bpp-table-row-columns-2 {\n  width: 50%;\n  box-sizing: border-box;\n}\n.bpp-table-row > label.bpp-table-row-columns-2.bpp-table-row-removable,\n.bpp-table-row > input.bpp-table-row-columns-2.bpp-table-row-removable {\n  width: calc(50% - 12px);\n}\n.bpp-table-row > label.bpp-table-row-columns-2:nth-child(2),\n.bpp-table-row > input.bpp-table-row-columns-2:nth-child(2) {\n  border-left: none;\n}\n.bpp-table-row > button {\n  border-left: none;\n  position: static;\n}\n.bpp-properties-static {\n  margin-bottom: 0;\n  margin-top: 0;\n  border: 1px solid #cccccc;\n  background-color: #ffffff;\n  padding: 3px 6px;\n  font: 13.3333px Arial;\n  width: 100%;\n}\n.bpp-entry-link {\n  color: #1a70ff;\n}\n.bpp-icon-warning:before {\n  font-family: \"bpmn-js-pp\";\n  font-style: normal;\n  font-weight: normal;\n  speak: none;\n  display: inline-block;\n  text-decoration: inherit;\n  text-align: center;\n  font-variant: normal;\n  text-transform: none;\n  line-height: 1em;\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-font-smoothing: grayscale;\n  content: '\\E806';\n}\n.bpp-field-description {\n  margin-top: 5px;\n  color: #999999;\n}\n.bpp-field-description a {\n  color: #0056e6;\n  text-decoration: none;\n}\n.bpp-field-description a:hover {\n  color: #1a70ff;\n}\n.bpp-properties-header {\n  padding: 15px;\n  padding-bottom: 5px;\n}\n.bpp-properties-header > .label {\n  font-size: 16px;\n  font-weight: bolder;\n}\n.bpp-properties-header > .search {\n  display: none;\n  margin-top: 5px;\n  position: relative;\n}\n.bpp-properties-header > .search input {\n  position: relative;\n  border-radius: 15px;\n  width: 100%;\n  z-index: 1;\n}\n.bpp-properties-header > .search button {\n  position: absolute;\n  top: 0;\n  bottom: 0;\n  right: 0;\n  border: none;\n  background-color: transparent;\n  z-index: 2;\n}\n.bpp-properties-header > .search button:before {\n  content: '\\E805';\n}\n.bpp-properties-group {\n  padding: 6px 15px 6px 15px;\n  position: relative;\n  overflow: hidden;\n}\n.bpp-properties-group:empty {\n  display: none;\n}\n.bpp-properties-group > .group-toggle {\n  position: absolute;\n  top: 0;\n  left: 0;\n  bottom: 0;\n  width: 4px;\n}\n.bpp-properties-group > .group-toggle:hover {\n  background-color: #4d90ff;\n}\n.bpp-properties-group > .group-label {\n  font-weight: bolder;\n  display: inline-block;\n  vertical-align: middle;\n  color: #666666;\n  margin-top: 5px;\n  margin-bottom: 10px;\n  font-size: 16px;\n}\n.bpp-properties-group > .group-label.bpp-hidden {\n  display: none;\n}\n.bpp-properties-group:hover > .group-toggle {\n  background-color: #cccccc;\n}\n.bpp-properties-group:hover > .group-toggle:hover {\n  background-color: #4d90ff;\n}\n.bpp-properties-group.group-closed {\n  border-top: none;\n}\n.bpp-properties-group.group-closed > .group-toggle {\n  background-color: #cccccc;\n}\n.bpp-properties-group.group-closed:hover > .group-toggle {\n  background-color: #4d90ff;\n}\n.bpp-properties-group.group-closed > div {\n  display: none;\n}\n.bpp-properties-group.group-closed > .group-label {\n  margin-bottom: 5px;\n}\n.bpp-properties-group + .bpp-properties-group {\n  border-top: 1px solid #eeeeee;\n}\n.bpp-properties-group:last-child {\n  padding-bottom: 9px;\n}\n.cam-add-listener > button {\n  position: relative;\n  margin-left: 10px;\n}\n[data-list-entry-container] > .bpp-listener-area {\n  border: 1px solid #cccccc;\n  margin: 10px 1px;\n  padding: 10px;\n}\n.bpp-listener-area {\n  position: relative;\n}\n.bpp-listener-area > button {\n  position: absolute;\n  right: 0;\n  top: 0;\n  border: none;\n  background: none;\n}\n.bpp-listener-area + .bpp-listener-area {\n  margin-top: 20px;\n}\n.bpp-properties-tab-bar {\n  border-bottom: 1px solid #cccccc;\n  padding: 0 15px;\n}\n.bpp-properties-tab-bar .scroll-tabs-button {\n  font-size: 16px;\n  padding: 3px 4px 3px 4px;\n  color: #666666;\n}\n.bpp-properties-tab-bar .scroll-tabs-button:hover {\n  font-weight: bold;\n}\n.bpp-properties-tab-bar .scroll-tabs-button.scroll-tabs-left {\n  float: left;\n  margin-left: -15px;\n}\n.bpp-properties-tab-bar .scroll-tabs-button.scroll-tabs-right {\n  float: right;\n  margin-right: -15px;\n}\n.bpp-properties-tab-bar:not(.scroll-tabs-overflow) .scroll-tabs-button {\n  display: none;\n}\nul.bpp-properties-tabs-links {\n  margin: 5px 0 -1px 0;\n  padding: 0;\n  white-space: nowrap;\n  overflow: hidden;\n}\nul.bpp-properties-tabs-links > li {\n  display: inline-block;\n  margin: 0;\n}\nul.bpp-properties-tabs-links > li.bpp-hidden {\n  display: none;\n}\nul.bpp-properties-tabs-links > li > a {\n  display: inline-block;\n  font-size: 12px;\n  padding: 4px 7px;\n  border: 1px solid #cccccc;\n  border-radius: 3px 3px 0 0;\n  border-bottom: transparent;\n  background-color: #f8f8f8;\n  color: #666666;\n  text-decoration: none;\n  cursor: default;\n}\nul.bpp-properties-tabs-links > li > a:hover {\n  color: #4d4d4d;\n}\nul.bpp-properties-tabs-links > li + li {\n  margin-left: 4px;\n}\nul.bpp-properties-tabs-links > li.bpp-active a {\n  padding-bottom: 5px;\n  border-top: 3px solid #4d90ff;\n  border-bottom: none;\n}\n.bpp-properties-tab,\n.bpp-properties-tab.bpp-hidden {\n  display: none;\n}\n.bpp-properties-tab.bpp-active {\n  display: block;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.i, "#js-properties-panel {\n  position: absolute;\n  top: 0;\n  bottom: 0;\n  right: 0;\n  width: 450px;\n  z-index: 10;\n  border-left: 1px solid #ccc;\n  background: #f8f8f8;\n  overflow: auto;\n}\n#js-properties-panel:empty {\n  display: none;\n}\n#js-properties-panel > .djs-properties-panel {\n  padding-bottom: 70px;\n  min-height: 100%;\n}\n.bpp-properties-header > .label {\n  display: none;\n}\n.bpp-properties-panel input {\n  max-width: -moz-available;\n  /* WebKit-based browsers will ignore this. */\n  max-width: -webkit-fill-available;\n  /* Mozilla-based browsers will ignore this. */\n  max-width: fill-available;\n}\n@font-face {\n  font-family: 'bpmn-js-pp';\n  src: url(\"data:;base64,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\");\n  src: url(\"data:;base64,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\") format('embedded-opentype'), url(\"data:application/font-woff;base64,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\") format('woff'), url(\"data:application/x-font-ttf;base64,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IDxZIyAuRrACJUZQWCA8WS6xKwEUKy2wPiywNSsjIC5GsAIlRlJYIDxZLrErARQrLbA/LLA2K4ogIDywBCNCijgjIC5GsAIlRlJYIDxZLrErARQrsARDLrArKy2wQCywABawBCWwBCYgLkcjRyNhsAlDKyMgPCAuIzixKwEUKy2wQSyxCAQlQrAAFrAEJbAEJSAuRyNHI2EgsAQjQrAJQysgsGBQWCCwQFFYswIgAyAbswImAxpZQkIjIEewBEOwAmIgsABQWLBAYFlmsAFjYCCwASsgiophILACQ2BkI7ADQ2FkUFiwAkNhG7ADQ2BZsAMlsAJiILAAUFiwQGBZZrABY2GwAiVGYTgjIDwjOBshICBGI0ewASsjYTghWbErARQrLbBCLLA1Ky6xKwEUKy2wQyywNishIyAgPLAEI0IjOLErARQrsARDLrArKy2wRCywABUgR7AAI0KyAAEBFRQTLrAxKi2wRSywABUgR7AAI0KyAAEBFRQTLrAxKi2wRiyxAAEUE7AyKi2wRyywNCotsEgssAAWRSMgLiBGiiNhOLErARQrLbBJLLAII0KwSCstsEossgAAQSstsEsssgABQSstsEwssgEAQSstsE0ssgEBQSstsE4ssgAAQistsE8ssgABQistsFAssgEAQistsFEssgEBQistsFIssgAAPistsFMssgABPistsFQssgEAPistsFUssgEBPistsFYssgAAQCstsFcssgABQCstsFgssgEAQCstsFkssgEBQCstsFossgAAQystsFsssgABQystsFwssgEAQystsF0ssgEBQystsF4ssgAAPystsF8ssgABPystsGAssgEAPystsGEssgEBPystsGIssDcrLrErARQrLbBjLLA3K7A7Ky2wZCywNyuwPCstsGUssAAWsDcrsD0rLbBmLLA4Ky6xKwEUKy2wZyywOCuwOystsGgssDgrsDwrLbBpLLA4K7A9Ky2waiywOSsusSsBFCstsGsssDkrsDsrLbBsLLA5K7A8Ky2wbSywOSuwPSstsG4ssDorLrErARQrLbBvLLA6K7A7Ky2wcCywOiuwPCstsHEssDorsD0rLbByLLMJBAIDRVghGyMhWUIrsAhlsAMkUHiwARUwLQBLuADIUlixAQGOWbABuQgACABjcLEABUKxAAAqsQAFQrEACCqxAAVCsQAIKrEABUK5AAAACSqxAAVCuQAAAAkqsQMARLEkAYhRWLBAiFixA2REsSYBiFFYugiAAAEEQIhjVFixAwBEWVlZWbEADCq4Af+FsASNsQIARAA=\") format('truetype'), url(\"data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/Pgo8IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxtZXRhZGF0YT5Db3B5cmlnaHQgKEMpIDIwMTYgYnkgb3JpZ2luYWwgYXV0aG9ycyBAIGZvbnRlbGxvLmNvbTwvbWV0YWRhdGE+CjxkZWZzPgo8Zm9udCBpZD0iYnBtbi1pby1wcCIgaG9yaXotYWR2LXg9IjEwMDAiID4KPGZvbnQtZmFjZSBmb250LWZhbWlseT0iYnBtbi1pby1wcCIgZm9udC13ZWlnaHQ9IjQwMCIgZm9udC1zdHJldGNoPSJub3JtYWwiIHVuaXRzLXBlci1lbT0iMTAwMCIgYXNjZW50PSI4NTAiIGRlc2NlbnQ9Ii0xNTAiIC8+CjxtaXNzaW5nLWdseXBoIGhvcml6LWFkdi14PSIxMDAwIiAvPgo8Z2x5cGggZ2x5cGgtbmFtZT0iY2xlYXIiIHVuaWNvZGU9IiYjeGU4MDI7IiBkPSJNNDUyIDE5NHExOC0xOCAxOC00M3QtMTgtNDNxLTE4LTE2LTQzLTE2dC00MyAxNmwtMTMyIDE1Mi0xMzItMTUycS0xOC0xNi00My0xNnQtNDMgMTZxLTE2IDE4LTE2IDQzdDE2IDQzbDEzOCAxNTYtMTM4IDE1OHEtMTYgMTgtMTYgNDN0MTYgNDNxMTggMTYgNDMgMTZ0NDMtMTZsMTMyLTE1MiAxMzIgMTUycTE4IDE2IDQzIDE2dDQzLTE2cTE4LTE4IDE4LTQzdC0xOC00M2wtMTM4LTE1OHoiIGhvcml6LWFkdi14PSI0NzAiIC8+CjxnbHlwaCBnbHlwaC1uYW1lPSJhZGQiIHVuaWNvZGU9IiYjeGU4MDM7IiBkPSJNNTUwIDQwMHEzMCAwIDMwLTUwdC0zMC01MGwtMjEwIDAgMC0yMTBxMC0zMC01MC0zMHQtNTAgMzBsMCAyMTAtMjEwIDBxLTMwIDAtMzAgNTB0MzAgNTBsMjEwIDAgMCAyMTBxMCAzMCA1MCAzMHQ1MC0zMGwwLTIxMCAyMTAgMHoiIGhvcml6LWFkdi14PSI1ODAiIC8+CjxnbHlwaCBnbHlwaC1uYW1lPSJzZWFyY2giIHVuaWNvZGU9IiYjeGU4MDU7IiBkPSJNNzcyIDc4cTMwLTM0IDYtNjJsLTQ2LTQ2cS0zNi0zMi02OCAwbC0xOTAgMTkwcS03NC00Mi0xNTYtNDItMTI4IDAtMjIzIDk1dC05NSAyMjMgOTAgMjE5IDIxOCA5MSAyMjQtOTUgOTYtMjIzcTAtODgtNDYtMTYyeiBtLTY3OCAzNThxMC04OCA2OC0xNTZ0MTU2LTY4IDE1MSA2MyA2MyAxNTNxMCA4OC02OCAxNTV0LTE1NiA2Ny0xNTEtNjMtNjMtMTUxeiIgaG9yaXotYWR2LXg9Ijc4OSIgLz4KPGdseXBoIGdseXBoLW5hbWU9ImF0dGVudGlvbiIgdW5pY29kZT0iJiN4ZTgwNjsiIGQ9Ik05NTctMjRxMTAtMTYgMC0zNC0xMC0xNi0zMC0xNmwtODkyIDBxLTE4IDAtMjggMTYtMTMgMTgtMiAzNGw0NDYgNzgycTggMTggMzAgMTh0MzAtMTh6IG0tNDIwIDUwbDAgMTAwLTExMCAwIDAtMTAwIDExMCAweiBtMCAxNzRsMCAzMDAtMTEwIDAgMC0zMDAgMTEwIDB6IiBob3Jpei1hZHYteD0iOTYyIiAvPgo8Z2x5cGggZ2x5cGgtbmFtZT0iY2xlYXItY2lyY2xlZCIgdW5pY29kZT0iJiN4ZTkwMjsiIGQ9Ik00MjAgNzcwcTE3NCAwIDI5Ny0xMjN0MTIzLTI5Ny0xMjMtMjk3LTI5Ny0xMjMtMjk3IDEyMy0xMjMgMjk3IDEyMyAyOTcgMjk3IDEyM3ogbTg2LTQyMGwxNTQgMTU0LTg2IDg2LTE1NC0xNTItMTUyIDE1Mi04OC04NiAxNTQtMTU0LTE1NC0xNTIgODgtODYgMTUyIDE1MiAxNTQtMTUyIDg2IDg2eiIgaG9yaXotYWR2LXg9Ijg0MCIgLz4KPGdseXBoIGdseXBoLW5hbWU9ImFkZC1jaXJjbGVkIiB1bmljb2RlPSImI3hlOTAzOyIgZD0iTTQyMCA3NzBxMTc0IDAgMjk3LTEyM3QxMjMtMjk3LTEyMy0yOTctMjk3LTEyMy0yOTcgMTIzLTEyMyAyOTcgMTIzIDI5NyAyOTcgMTIzeiBtNTItNDcwbDIwMCAwIDAgMTAyLTIwMCAwIDAgMjAyLTEwMiAwIDAtMjAyLTIwMiAwIDAtMTAyIDIwMiAwIDAtMjAyIDEwMiAwIDAgMjAyeiIgaG9yaXotYWR2LXg9Ijg0MCIgLz4KPC9mb250Pgo8L2RlZnM+Cjwvc3ZnPg==\") format('svg');\n  font-weight: normal;\n  font-style: normal;\n}\n.bpp-properties-panel {\n  background-color: #f8f8f8;\n  position: relative;\n}\n.bpp-properties-panel:empty {\n  display: none;\n}\n.bpp-properties-panel label,\n.bpp-properties-panel input {\n  vertical-align: middle;\n}\n.bpp-properties-panel button,\n.bpp-properties-panel input,\n.bpp-properties-panel select,\n.bpp-properties-panel textarea,\n.bpp-properties-panel [contenteditable] {\n  font-size: 14px;\n  padding: 3px 6px;\n  border: 1px solid #cccccc;\n}\n.bpp-properties-panel button:focus,\n.bpp-properties-panel input:focus,\n.bpp-properties-panel select:focus,\n.bpp-properties-panel textarea:focus,\n.bpp-properties-panel [contenteditable]:focus {\n  outline: none;\n  border-color: #1a70ff;\n  box-shadow: 0 0 0 2px #a2c5ff, 0 0 0 1px #cdcdcd inset;\n}\n.bpp-properties-panel button.invalid,\n.bpp-properties-panel input.invalid,\n.bpp-properties-panel select.invalid,\n.bpp-properties-panel textarea.invalid,\n.bpp-properties-panel [contenteditable].invalid {\n  border-color: #ff3d3d;\n}\n.bpp-properties-panel button.invalid:focus,\n.bpp-properties-panel input.invalid:focus,\n.bpp-properties-panel select.invalid:focus,\n.bpp-properties-panel textarea.invalid:focus,\n.bpp-properties-panel [contenteditable].invalid:focus {\n  box-shadow: 0 0 0 2px #ffb3b3, 0 0 0 1px #cdcdcd inset;\n}\n.bpp-properties-panel [type=text],\n.bpp-properties-panel [contenteditable],\n.bpp-properties-panel textarea,\n.bpp-properties-panel select {\n  width: 100%;\n}\n.bpp-properties-panel [contenteditable],\n.bpp-properties-panel textarea {\n  resize: vertical;\n}\n.bpp-properties-panel [contenteditable] {\n  min-height: 24px;\n  outline: 0px solid transparent;\n  background-color: #ffffff;\n  overflow-y: auto;\n  white-space: pre-wrap;\n  /* css-3 */\n  white-space: -moz-pre-wrap;\n  /* Mozilla, since 1999 */\n  white-space: -pre-wrap;\n  /* Opera 4-6 */\n  white-space: -o-pre-wrap;\n  /* Opera 7 */\n  word-wrap: break-word;\n  /* Internet Explorer 5.5+ */\n}\n.bpp-properties-panel [contenteditable]:before {\n  content: \"\\feff\";\n}\n.bpp-properties-panel [disabled] {\n  color: #808080;\n}\n.bpp-properties-panel label {\n  font-weight: bolder;\n  display: inline-block;\n  vertical-align: middle;\n  color: #666666;\n  margin-bottom: 3px;\n}\n.bpp-properties-panel label.bpp-hidden {\n  display: none;\n}\n.bpp-properties-panel .entry-label {\n  font-weight: bolder;\n  display: inline-block;\n  vertical-align: middle;\n  color: #666666;\n  font-size: 16px;\n  margin-top: 5px;\n  margin-bottom: 10px;\n}\n.bpp-properties-panel .entry-label.bpp-hidden {\n  display: none;\n}\n.bpp-properties-panel .entry-label.divider {\n  border-top: 1px dotted #cccccc;\n  padding-top: 8px;\n  margin-top: 16px;\n  width: 100%;\n}\n.bpp-properties-panel .action-button {\n  position: absolute;\n  top: 0;\n  height: 23px;\n  width: 24px;\n  overflow: hidden;\n  background-color: #f8f8f8;\n  border: 1px solid #cccccc;\n}\n.bpp-properties-panel .action-button > span {\n  display: none;\n}\n.bpp-properties-panel .action-button:before {\n  font-family: \"bpmn-js-pp\";\n  font-style: normal;\n  font-weight: normal;\n  speak: none;\n  display: inline-block;\n  text-decoration: inherit;\n  text-align: center;\n  font-variant: normal;\n  text-transform: none;\n  line-height: 1em;\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-font-smoothing: grayscale;\n  position: relative;\n}\n.bpp-properties-panel .action-button.add:before {\n  content: '\\E803';\n}\n.bpp-properties-panel .action-button.clear:before {\n  content: '\\E802';\n}\n.bpp-properties-panel .action-button:hover {\n  color: #005df7;\n}\n.bpp-properties-panel .bpp-checkbox {\n  display: flex;\n  flex-wrap: wrap;\n  flex-direction: row;\n  align-items: center;\n}\n.bpp-properties-panel .bpp-checkbox > .bpp-error-message {\n  order: 1;\n  width: 100%;\n}\n.bpp-error-message,\n.bpp-error-message.bpp-entry-link {\n  margin-top: 5px;\n  color: #ff3d3d;\n}\n.bpp-row {\n  margin-top: 10px;\n  margin-bottom: 10px;\n}\n.bpp-row:first-of-type {\n  margin-top: 0;\n}\n.bpp-row:last-of-type {\n  margin-bottom: 0;\n}\n.bpp-textfield,\n.bpp-textbox,\n.bpp-autosuggest-textbox {\n  margin-bottom: 3px;\n}\n.bpp-autosuggest-list {\n  position: fixed;\n  min-width: 100px;\n  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);\n  border: solid 1px #c9c9c9;\n  background-color: #ffffff;\n  z-index: 1;\n  display: none;\n  overflow-y: auto;\n  max-height: 200px;\n}\n.bpp-autosuggest-list.active {\n  display: block;\n}\n.bpp-autosuggest-item {\n  padding: 6px 3px;\n}\n.bpp-autosuggest-item:hover {\n  background: #4d90ff;\n  color: #ffffff;\n}\n.bpp-radios-group {\n  list-style: none;\n  padding: 0;\n  margin: 0 0 9px 0;\n}\n.bpp-radios-group .bpp-radio-wrapper {\n  margin: 6px 0;\n}\n.bpp-radios-group input,\n.bpp-radios-group label {\n  vertical-align: middle;\n}\n.bpp-radios-group input {\n  margin-top: 0;\n  margin-left: 0;\n}\n.bpp-radios-group input,\n.bpp-checkbox input {\n  margin-left: 0;\n}\n.bpp-radios-group label:after,\n.bpp-checkbox label:after {\n  display: none;\n}\n.bpp-textfield input {\n  padding-right: 28px;\n}\n.bpp-textfield .clear {\n  background: transparent;\n  border: none;\n  top: 0;\n  right: 0;\n}\n.bpp-combo-input {\n  margin-top: 7px;\n}\n.bpp-select select {\n  height: 23px;\n}\n.bpp-select .action-button.add {\n  top: -22px;\n  right: 0;\n}\n.bpp-select .action-button.add,\n.bpp-element-list .action-button.add,\n.bpp-select .action-button.clear,\n.bpp-element-list .action-button.clear {\n  top: -23px;\n  border-bottom: none;\n}\n.bpp-select .action-button.add,\n.bpp-element-list .action-button.add {\n  right: 0px;\n}\n.bpp-select .action-button.clear,\n.bpp-element-list .action-button.clear {\n  right: 23px;\n}\n.bpp-properties-entry {\n  margin-bottom: 9px;\n}\n.bpp-properties-entry .bpp-field-wrapper {\n  position: relative;\n}\n.bpp-properties-entry .bpp-field-wrapper input[readonly] + .clear {\n  display: none;\n}\n.bpp-properties-entry .bpp-field-wrapper select {\n  resize: vertical;\n}\n.bpp-properties-entry.bpp-entry--warning {\n  background-color: #fffadb;\n  border-top: solid 1px #e8e3c7;\n  border-bottom: solid 1px #e8e3c7;\n}\n.bpp-hidden {\n  display: none;\n}\nlabel.bpp-hidden {\n  display: none;\n}\n.bpp-table-add-row > .action-button {\n  position: relative;\n  margin-left: 10px;\n}\n.bpp-table {\n  margin-top: 10px;\n}\n.bpp-table-row {\n  margin-bottom: 2px;\n  overflow: hidden;\n}\n.bpp-table-row > input,\n.bpp-table-row > .action-button {\n  float: left;\n}\n.bpp-table-row > label {\n  padding-left: 5px;\n}\n.bpp-table-row > label.bpp-table-row-columns-1,\n.bpp-table-row > input.bpp-table-row-columns-1 {\n  width: 100%;\n}\n.bpp-table-row > label.bpp-table-row-columns-1.bpp-table-row-removable,\n.bpp-table-row > input.bpp-table-row-columns-1.bpp-table-row-removable {\n  width: calc(100% - 24px);\n}\n.bpp-table-row > label.bpp-table-row-columns-2,\n.bpp-table-row > input.bpp-table-row-columns-2 {\n  width: 50%;\n  box-sizing: border-box;\n}\n.bpp-table-row > label.bpp-table-row-columns-2.bpp-table-row-removable,\n.bpp-table-row > input.bpp-table-row-columns-2.bpp-table-row-removable {\n  width: calc(50% - 12px);\n}\n.bpp-table-row > label.bpp-table-row-columns-2:nth-child(2),\n.bpp-table-row > input.bpp-table-row-columns-2:nth-child(2) {\n  border-left: none;\n}\n.bpp-table-row > label.bpp-table-row-columns-3,\n.bpp-table-row > input.bpp-table-row-columns-3 {\n  width: 33%;\n  box-sizing: border-box;\n}\n.bpp-table-row > label.bpp-table-row-columns-3.bpp-table-row-removable,\n.bpp-table-row > input.bpp-table-row-columns-3.bpp-table-row-removable {\n  width: calc(33% - 8px);\n}\n.bpp-table-row > label.bpp-table-row-columns-3:not(:first-child),\n.bpp-table-row > input.bpp-table-row-columns-3:not(:first-child) {\n  border-left: none;\n}\n.bpp-table-row > .action-button {\n  border-left: none;\n  position: static;\n}\n.bpp-properties-static {\n  margin-bottom: 0;\n  margin-top: 0;\n  border: 1px solid #cccccc;\n  background-color: #ffffff;\n  padding: 3px 6px;\n  font: 13.3333px Arial;\n  width: 100%;\n}\n.bpp-entry-link {\n  color: #1a70ff;\n  text-decoration: underline;\n}\n.bpp-entry-link.bpp-entry-link-button {\n  display: inline-block;\n  padding: 3px 13px;\n  background: #4d90ff;\n  color: #ffffff;\n  border: solid 1px #3c85ff;\n  border-radius: 100px;\n  text-decoration: none;\n}\n.bpp-icon-warning:before {\n  font-family: \"bpmn-js-pp\";\n  font-style: normal;\n  font-weight: normal;\n  speak: none;\n  display: inline-block;\n  text-decoration: inherit;\n  text-align: center;\n  font-variant: normal;\n  text-transform: none;\n  line-height: 1em;\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-font-smoothing: grayscale;\n  content: '\\E806';\n}\n.bpp-field-description {\n  margin-top: 5px;\n  color: #999999;\n}\n.bpp-field-description a {\n  color: #0056e6;\n  text-decoration: none;\n}\n.bpp-field-description a:hover {\n  color: #1a70ff;\n}\n.bpp-description {\n  color: #999999;\n}\n.bpp-collapsible {\n  height: 19px;\n}\n.bpp-collapsible .bpp-field-wrapper {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n}\n.bpp-collapsible .bpp-collapsible__icon {\n  display: block;\n  padding-right: 2px;\n}\n.bpp-collapsible .bpp-collapsible__icon:before {\n  display: block;\n  height: 16px;\n  width: 16px;\n  content: url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpolygon fill='%23666666' fill-rule='evenodd' points='5 4.414 6.414 3 11.364 7.95 6.414 12.899 5 11.485 8.534 7.95'/%3E%3C/svg%3E%0A\");\n  transform: rotate(90deg);\n}\n.bpp-collapsible.bpp-collapsible--collapsed .bpp-collapsible__icon:before {\n  transform: none;\n}\n.bpp-collapsible .bpp-collapsible__title {\n  display: block;\n  flex: 1 0;\n  max-width: min-content;\n  margin: 0;\n  padding-right: 6px;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.bpp-collapsible:not(.bpp-collapsible--collapsed) .bpp-collapsible__title {\n  padding-right: 0;\n}\n.bpp-collapsible:not(.bpp-collapsible--collapsed) .bpp-collapsible__title:nth-last-child(3) {\n  padding-right: 24px;\n}\n.bpp-collapsible .bpp-collapsible__description {\n  display: none;\n  flex: 1 1;\n  max-width: min-content;\n  margin: 0;\n  white-space: nowrap;\n  color: #909090;\n  font-weight: normal;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.bpp-collapsible.bpp-collapsible--collapsed .bpp-collapsible__description {\n  display: block;\n}\n.bpp-collapsible .bpp-collapsible__remove {\n  height: 24px;\n  top: -4px;\n  right: 0;\n}\n.bpp-collapsible.bpp-collapsible--collapsed .bpp-collapsible__remove {\n  display: none;\n}\n.bpp-collapsible ~ .bpp-properties-entry:not(.bpp-collapsible):not(.bpp-collapsible-break) {\n  margin-left: 18px;\n}\n.bpp-process-variables.bpp-process-variables__description {\n  margin-bottom: 16px;\n}\n.bpp-process-variables.bpp-process-variables__scope-title {\n  font-size: 13px;\n  font-weight: 600;\n  color: #666666;\n  margin-bottom: 16px;\n}\n.bpp-process-variables.bpp-process-variables__created-in .bpp-process-variables__created-in-item {\n  margin-bottom: 4px;\n  margin-top: 4px;\n}\n.bpp-collapsible ~ .bpp-properties-entry.bpp-input-output {\n  margin-left: 0;\n}\n.bpp-collapsible ~ .bpp-properties-entry.bpp-error {\n  margin-left: 0;\n}\n.bpp-collapsible--with-mapping .bpp-collapsible__description:not(:empty) {\n  position: relative;\n  text-indent: 24px;\n  padding-right: 24px;\n}\n.bpp-collapsible--with-mapping .bpp-collapsible__description:not(:empty):before {\n  position: absolute;\n  top: -1px;\n  left: -24px;\n  display: block;\n  width: 16px;\n  height: 16px;\n  content: url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpolygon fill='%23909090' fill-rule='evenodd' points='8 3 8 7 15 7 15 9 8 9 8 13 2 8'/%3E%3C/svg%3E\");\n  opacity: 0.7;\n}\n.bpp-collapsible-error .bpp-collapsible__description:not(:empty) {\n  position: relative;\n  text-indent: 24px;\n  padding-right: 24px;\n}\n.bpp-collapsible-error .bpp-collapsible__description:not(:empty):before {\n  position: absolute;\n  top: -1px;\n  left: -24px;\n  display: block;\n  width: 16px;\n  height: 16px;\n  content: url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpolygon fill='%23909090' fill-rule='evenodd' points='8 3 8 7 15 7 15 9 8 9 8 13 2 8'/%3E%3C/svg%3E\");\n  opacity: 0.7;\n}\n.bpp-input-output .bpp-input-output__add {\n  top: -28px;\n  right: 0;\n}\n.bpp-error .bpp-error__add {\n  top: -28px;\n  right: 0;\n}\n.bpp-input-output-placeholder {\n  padding-bottom: 3px;\n  font-size: 14px;\n}\n.bpp-error-placeholder {\n  padding-bottom: 3px;\n  font-size: 14px;\n}\n.bpp-collapsible--with-template-out .bpp-collapsible__description:not(:empty):before {\n  content: url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpolygon fill='%23909090' fill-rule='evenodd' points='15 8 9 13 9 9 2 9 2 7 9 7 9 3'/%3E%3C/svg%3E\");\n}\n.bpp-toggle-switch .bpp-field-wrapper {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n}\n.bpp-toggle-switch .bpp-field-wrapper.bpp-hidden {\n  display: none;\n}\n.bpp-toggle-switch .bpp-toggle-switch__label {\n  margin: 0;\n  margin-left: 6px;\n}\n.bpp-toggle-switch .bpp-toggle-switch__switcher {\n  position: relative;\n  width: 48px;\n  height: 20px;\n}\n.bpp-toggle-switch .bpp-toggle-switch__switcher input[type='checkbox'] {\n  opacity: 0;\n  width: 0;\n  height: 0;\n}\n.bpp-toggle-switch .bpp-toggle-switch__switcher .bpp-toggle-switch__slider {\n  position: absolute;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  background-color: #cdcdcd;\n  -webkit-transition: 0.4s;\n  transition: 0.4s;\n  border-radius: 34px;\n}\n.bpp-toggle-switch .bpp-toggle-switch__switcher .bpp-toggle-switch__slider:before {\n  position: absolute;\n  content: \"\";\n  height: 16px;\n  width: 16px;\n  left: 2px;\n  bottom: 2px;\n  background-color: white;\n  -webkit-transition: 0.4s;\n  transition: 0.4s;\n  border-radius: 50%;\n}\n.bpp-toggle-switch .bpp-toggle-switch__switcher input[type='checkbox']:checked + .bpp-toggle-switch__slider {\n  background-color: #4d90ff;\n  box-shadow: 0 0 1px #4d90ff;\n}\n.bpp-toggle-switch .bpp-toggle-switch__switcher input[type='checkbox']:checked + .bpp-toggle-switch__slider:before {\n  -webkit-transform: translateX(28px);\n  -ms-transform: translateX(28px);\n  transform: translateX(28px);\n}\n.bpp-properties-header {\n  padding: 15px;\n  padding-bottom: 5px;\n}\n.bpp-properties-header > .label {\n  font-size: 16px;\n  font-weight: bolder;\n}\n.bpp-properties-group {\n  position: relative;\n}\n.bpp-properties-group .group-header {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: space-between;\n  padding: 10px 15px;\n}\n.bpp-properties-group .group-header .group-label {\n  font-weight: bolder;\n  display: inline-block;\n  vertical-align: middle;\n  color: #666666;\n  font-size: 16px;\n}\n.bpp-properties-group .group-header .group-label.bpp-hidden {\n  display: none;\n}\n.bpp-properties-group > .bpp-properties-entry {\n  padding-left: 15px;\n  padding-right: 15px;\n}\n.bpp-properties-group > .bpp-properties-entry:last-child {\n  margin-bottom: 6px;\n}\n.bpp-properties-group:empty {\n  display: none;\n}\n.bpp-properties-group > .group-toggle {\n  position: absolute;\n  top: 0;\n  left: 0;\n  bottom: 0;\n  width: 4px;\n}\n.bpp-properties-group > .group-toggle:hover {\n  background-color: #4d90ff;\n}\n.bpp-properties-group:hover > .group-toggle {\n  background-color: #cccccc;\n}\n.bpp-properties-group:hover > .group-toggle:hover {\n  background-color: #4d90ff;\n}\n.bpp-properties-group.group-closed {\n  border-top: none;\n}\n.bpp-properties-group.group-closed > .group-toggle {\n  background-color: #cccccc;\n}\n.bpp-properties-group.group-closed:hover > .group-toggle {\n  background-color: #4d90ff;\n}\n.bpp-properties-group.group-closed > div:not(.group-header) {\n  display: none;\n}\n.bpp-properties-group.group-closed .group-label {\n  margin-bottom: 5px;\n}\n.bpp-properties-group + .bpp-properties-group {\n  border-top: 1px solid #eeeeee;\n}\n.bpp-properties-group:last-child {\n  padding-bottom: 9px;\n}\n.bpp-properties-group .group__dropdown {\n  position: relative;\n  justify-self: flex-end;\n}\n.bpp-properties-group .group__dropdown-button {\n  width: 26px;\n  height: 26px;\n  text-align: center;\n  border: none;\n  background-color: transparent;\n  color: #666666;\n  outline: none;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n.bpp-properties-group .group__dropdown--open .group__dropdown-button,\n.bpp-properties-group .group__dropdown-button:hover {\n  background-color: #cdcdcd;\n}\n.bpp-properties-group .group__dropdown-menu {\n  position: absolute;\n  top: 30px;\n  right: 0;\n  z-index: 10000;\n}\n.bpp-properties-group .group__dropdown:not(.group__dropdown--open) .group__dropdown-menu {\n  display: none;\n}\n.bpp-properties-group .group__dropdown-button {\n  border-radius: 100%;\n}\n.bpp-properties-group .group__dropdown-menu {\n  background-color: #ffffff;\n  border: solid 1px #cdcdcd;\n  border-radius: 3px;\n  padding: 4px 0 4px 0;\n  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.1);\n}\n.bpp-properties-group .group__dropdown-menu-item {\n  padding: 8px 16px;\n}\n.bpp-properties-group .group__dropdown-menu-item:hover {\n  background-color: #cdcdcd;\n}\n.cam-add-listener > .action-button {\n  position: relative;\n  margin-left: 10px;\n}\n[data-list-entry-container] > .bpp-listener-area {\n  border: 1px solid #cccccc;\n  margin: 10px 1px;\n  padding: 10px;\n}\n.bpp-listener-area {\n  position: relative;\n}\n.bpp-listener-area > .action-button {\n  position: absolute;\n  right: 0;\n  top: 0;\n  border: none;\n  background: none;\n}\n.bpp-listener-area + .bpp-listener-area {\n  margin-top: 20px;\n}\n.bpp-properties-tab-bar {\n  border-bottom: 1px solid #cccccc;\n  padding: 0 15px;\n}\n.bpp-properties-tab-bar .scroll-tabs-button {\n  font-size: 16px;\n  padding: 3px 4px 3px 4px;\n  color: #666666;\n}\n.bpp-properties-tab-bar .scroll-tabs-button:hover {\n  font-weight: bold;\n}\n.bpp-properties-tab-bar .scroll-tabs-button.scroll-tabs-left {\n  float: left;\n  margin-left: -15px;\n}\n.bpp-properties-tab-bar .scroll-tabs-button.scroll-tabs-right {\n  float: right;\n  margin-right: -15px;\n}\n.bpp-properties-tab-bar:not(.scroll-tabs-overflow) .scroll-tabs-button {\n  display: none;\n}\nul.bpp-properties-tabs-links {\n  margin: 5px 0 -1px 0;\n  padding: 0;\n  white-space: nowrap;\n  overflow: hidden;\n}\nul.bpp-properties-tabs-links > li {\n  display: inline-block;\n  margin: 0;\n}\nul.bpp-properties-tabs-links > li.bpp-hidden {\n  display: none;\n}\nul.bpp-properties-tabs-links > li > a {\n  display: inline-block;\n  font-size: 12px;\n  padding: 4px 7px;\n  border: 1px solid #cccccc;\n  border-radius: 3px 3px 0 0;\n  border-bottom: transparent;\n  background-color: #f8f8f8;\n  color: #666666;\n  text-decoration: none;\n  cursor: default;\n}\nul.bpp-properties-tabs-links > li > a:hover {\n  color: #4d4d4d;\n}\nul.bpp-properties-tabs-links > li + li {\n  margin-left: 4px;\n}\nul.bpp-properties-tabs-links > li.bpp-active a {\n  padding-bottom: 5px;\n  border-top: 3px solid #4d90ff;\n  border-bottom: none;\n}\n.bpp-properties-tab,\n.bpp-properties-tab.bpp-hidden {\n  display: none;\n}\n.bpp-properties-tab.bpp-active {\n  display: block;\n}\n", ""]);
 // Exports
 /* harmony default export */ __webpack_exports__["default"] = (___CSS_LOADER_EXPORT___);
 
 
 /***/ }),
-/* 307 */
+/* 315 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -20871,7 +21998,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 308 */
+/* 316 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -20970,7 +22097,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 309 */
+/* 317 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21178,7 +22305,7 @@ module.exports = Refs;
  */
 
 /***/ }),
-/* 310 */
+/* 318 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -21193,7 +22320,7 @@ var inherits_browser = __webpack_require__(3);
 var inherits_browser_default = /*#__PURE__*/__webpack_require__.n(inherits_browser);
 
 // EXTERNAL MODULE: ./node_modules/ids/dist/index.esm.js
-var index_esm = __webpack_require__(27);
+var index_esm = __webpack_require__(28);
 
 // EXTERNAL MODULE: ./node_modules/min-dash/dist/index.esm.js
 var dist_index_esm = __webpack_require__(0);
@@ -22045,6 +23172,10 @@ function isArray(obj) {
   return Object.prototype.toString.call(obj) === '[object Array]';
 }
 
+function hasOwnProp(obj, prop) {
+  return Object.prototype.hasOwnProperty.call(obj, prop);
+}
+
 function annotate() {
   var args = Array.prototype.slice.call(arguments);
 
@@ -22058,6 +23189,7 @@ function annotate() {
 
   return fn;
 }
+
 
 // Current limitations:
 // - can't put into "function arg" comments
@@ -22073,10 +23205,10 @@ function annotate() {
 // of a nested class, too.
 
 var CONSTRUCTOR_ARGS = /constructor\s*[^(]*\(\s*([^)]*)\)/m;
-var FN_ARGS = /^function\s*[^(]*\(\s*([^)]*)\)/m;
+var FN_ARGS = /^(?:async )?(?:function\s*)?[^(]*\(\s*([^)]*)\)/m;
 var FN_ARG = /\/\*([^*]*)\*\//m;
 
-function index_esm_parse(fn) {
+function parseAnnotations(fn) {
 
   if (typeof fn !== 'function') {
     throw new Error('Cannot annotate "' + fn + '". Expected a function!');
@@ -22089,7 +23221,7 @@ function index_esm_parse(fn) {
     return [];
   }
 
-  return match[1] && match[1].split(',').map(function (arg) {
+  return match[1] && match[1].split(',').map(function(arg) {
     match = arg.match(FN_ARG);
     return match ? match[1].trim() : arg.trim();
   }) || [];
@@ -22098,33 +23230,30 @@ function index_esm_parse(fn) {
 function Module() {
   var providers = [];
 
-  this.factory = function (name, factory) {
+  this.factory = function(name, factory) {
     providers.push([name, 'factory', factory]);
     return this;
   };
 
-  this.value = function (name, value) {
+  this.value = function(name, value) {
     providers.push([name, 'value', value]);
     return this;
   };
 
-  this.type = function (name, type) {
+  this.type = function(name, type) {
     providers.push([name, 'type', type]);
     return this;
   };
 
-  this.forEach = function (iterator) {
+  this.forEach = function(iterator) {
     providers.forEach(iterator);
   };
+
 }
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 function Injector(modules, parent) {
   parent = parent || {
-    get: function get(name, strict) {
+    get: function(name, strict) {
       currentlyResolving.push(name);
 
       if (strict === false) {
@@ -22141,7 +23270,7 @@ function Injector(modules, parent) {
 
   var self = instances.injector = this;
 
-  var error = function error(msg) {
+  var error = function(msg) {
     var stack = currentlyResolving.join(' -> ');
     currentlyResolving.length = 0;
     return new Error(stack ? msg + ' (Resolving: ' + stack + ')' : msg);
@@ -22155,7 +23284,7 @@ function Injector(modules, parent) {
    *
    * @return {Object}
    */
-  var get = function get(name, strict) {
+  var get = function(name, strict) {
     if (!providers[name] && name.indexOf('.') !== -1) {
       var parts = name.split('.');
       var pivot = get(parts.shift());
@@ -22167,11 +23296,11 @@ function Injector(modules, parent) {
       return pivot;
     }
 
-    if (hasProp(instances, name)) {
+    if (hasOwnProp(instances, name)) {
       return instances[name];
     }
 
-    if (hasProp(providers, name)) {
+    if (hasOwnProp(providers, name)) {
       if (currentlyResolving.indexOf(name) !== -1) {
         currentlyResolving.push(name);
         throw error('Cannot resolve circular dependency!');
@@ -22187,8 +23316,11 @@ function Injector(modules, parent) {
     return parent.get(name, strict);
   };
 
-  var fnDef = function fnDef(fn) {
-    var locals = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  var fnDef = function(fn, locals) {
+
+    if (typeof locals === 'undefined') {
+      locals = {};
+    }
 
     if (typeof fn !== 'function') {
       if (isArray(fn)) {
@@ -22198,9 +23330,9 @@ function Injector(modules, parent) {
       }
     }
 
-    var inject = fn.$inject || index_esm_parse(fn);
-    var dependencies = inject.map(function (dep) {
-      if (hasProp(locals, dep)) {
+    var inject = fn.$inject || parseAnnotations(fn);
+    var dependencies = inject.map(function(dep) {
+      if (hasOwnProp(locals, dep)) {
         return locals[dep];
       } else {
         return get(dep);
@@ -22213,29 +23345,35 @@ function Injector(modules, parent) {
     };
   };
 
-  var instantiate = function instantiate(Type) {
-    var _fnDef = fnDef(Type),
-        dependencies = _fnDef.dependencies,
-        fn = _fnDef.fn;
+  var instantiate = function(Type) {
+    var def = fnDef(Type);
 
-    return new (Function.prototype.bind.apply(fn, [null].concat(_toConsumableArray(dependencies))))();
+    var fn = def.fn,
+        dependencies = def.dependencies;
+
+    // instantiate var args constructor
+    var Constructor = Function.prototype.bind.apply(fn, [ null ].concat(dependencies));
+
+    return new Constructor();
   };
 
-  var invoke = function invoke(func, context, locals) {
-    var _fnDef2 = fnDef(func, locals),
-        dependencies = _fnDef2.dependencies,
-        fn = _fnDef2.fn;
+  var invoke = function(func, context, locals) {
+    var def = fnDef(func, locals);
 
-    return fn.call.apply(fn, [context].concat(_toConsumableArray(dependencies)));
+    var fn = def.fn,
+        dependencies = def.dependencies;
+
+    return fn.apply(context, dependencies);
   };
 
-  var createPrivateInjectorFactory = function createPrivateInjectorFactory(privateChildInjector) {
-    return annotate(function (key) {
+
+  var createPrivateInjectorFactory = function(privateChildInjector) {
+    return annotate(function(key) {
       return privateChildInjector.get(key);
     });
   };
 
-  var createChild = function createChild(modules, forceNewInstances) {
+  var createChild = function(modules, forceNewInstances) {
     if (forceNewInstances && forceNewInstances.length) {
       var fromParentModule = Object.create(null);
       var matchedScopes = Object.create(null);
@@ -22272,7 +23410,7 @@ function Injector(modules, parent) {
 
         if ((provider[2] === 'factory' || provider[2] === 'type') && provider[1].$scope) {
           /* jshint -W083 */
-          forceNewInstances.forEach(function (scope) {
+          forceNewInstances.forEach(function(scope) {
             if (provider[1].$scope.indexOf(scope) !== -1) {
               fromParentModule[name] = [provider[2], provider[1]];
               matchedScopes[scope] = true;
@@ -22281,7 +23419,7 @@ function Injector(modules, parent) {
         }
       }
 
-      forceNewInstances.forEach(function (scope) {
+      forceNewInstances.forEach(function(scope) {
         if (!matchedScopes[scope]) {
           throw new Error('No provider for "' + scope + '". Cannot use provider from the parent!');
         }
@@ -22296,12 +23434,12 @@ function Injector(modules, parent) {
   var factoryMap = {
     factory: invoke,
     type: instantiate,
-    value: function value(_value) {
-      return _value;
+    value: function(value) {
+      return value;
     }
   };
 
-  modules.forEach(function (module) {
+  modules.forEach(function(module) {
 
     function arrayUnwrap(type, value) {
       if (type !== 'value' && isArray(value)) {
@@ -22313,16 +23451,16 @@ function Injector(modules, parent) {
 
     // TODO(vojta): handle wrong inputs (modules)
     if (module instanceof Module) {
-      module.forEach(function (provider) {
+      module.forEach(function(provider) {
         var name = provider[0];
         var type = provider[1];
         var value = provider[2];
 
         providers[name] = [factoryMap[type], arrayUnwrap(type, value), type];
       });
-    } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object') {
+    } else if (typeof module === 'object') {
       if (module.__exports__) {
-        var clonedModule = Object.keys(module).reduce(function (m, key) {
+        var clonedModule = Object.keys(module).reduce(function(m, key) {
           if (key.substring(0, 2) !== '__') {
             m[key] = module[key];
           }
@@ -22330,14 +23468,14 @@ function Injector(modules, parent) {
         }, Object.create(null));
 
         var privateInjector = new Injector((module.__modules__ || []).concat([clonedModule]), self);
-        var getFromPrivateInjector = annotate(function (key) {
+        var getFromPrivateInjector = annotate(function(key) {
           return privateInjector.get(key);
         });
-        module.__exports__.forEach(function (key) {
+        module.__exports__.forEach(function(key) {
           providers[key] = [getFromPrivateInjector, key, 'private', privateInjector];
         });
       } else {
-        Object.keys(module).forEach(function (name) {
+        Object.keys(module).forEach(function(name) {
           if (module[name][2] === 'private') {
             providers[name] = module[name];
             return;
@@ -22357,12 +23495,6 @@ function Injector(modules, parent) {
   this.invoke = invoke;
   this.instantiate = instantiate;
   this.createChild = createChild;
-}
-
-// helpers /////////////////
-
-function hasProp(obj, prop) {
-  return Object.hasOwnProperty.call(obj, prop);
 }
 
 
@@ -22504,8 +23636,8 @@ function updateLine(gfx, points) {
 function getParents(elements) {
 
   // find elements that are not children of any other elements
-  return Object(dist_index_esm["e" /* filter */])(elements, function(element) {
-    return !Object(dist_index_esm["f" /* find */])(elements, function(e) {
+  return Object(dist_index_esm["filter"])(elements, function(element) {
+    return !Object(dist_index_esm["find"])(elements, function(e) {
       return e !== element && getParent(element, e);
     });
   });
@@ -22562,14 +23694,14 @@ function eachElement(elements, fn, depth) {
 
   depth = depth || 0;
 
-  if (!Object(dist_index_esm["l" /* isArray */])(elements)) {
+  if (!Object(dist_index_esm["isArray"])(elements)) {
     elements = [ elements ];
   }
 
-  Object(dist_index_esm["i" /* forEach */])(elements, function(s, i) {
+  Object(dist_index_esm["forEach"])(elements, function(s, i) {
     var filter = fn(s, i, depth);
 
-    if (Object(dist_index_esm["l" /* isArray */])(filter) && filter.length) {
+    if (Object(dist_index_esm["isArray"])(filter) && filter.length) {
       eachElement(filter, fn, depth + 1);
     }
   });
@@ -22645,11 +23777,11 @@ function selfAndAllChildren(elements, allowDuplicates) {
  */
 function getClosure(elements, isTopLevel, closure) {
 
-  if (Object(dist_index_esm["s" /* isUndefined */])(isTopLevel)) {
+  if (Object(dist_index_esm["isUndefined"])(isTopLevel)) {
     isTopLevel = true;
   }
 
-  if (Object(dist_index_esm["q" /* isObject */])(isTopLevel)) {
+  if (Object(dist_index_esm["isObject"])(isTopLevel)) {
     closure = isTopLevel;
     isTopLevel = true;
   }
@@ -22664,7 +23796,7 @@ function getClosure(elements, isTopLevel, closure) {
 
   var topLevel = copyObject(
     closure.topLevel,
-    isTopLevel && Object(dist_index_esm["j" /* groupBy */])(elements, function(e) { return e.id; })
+    isTopLevel && Object(dist_index_esm["groupBy"])(elements, function(e) { return e.id; })
   );
 
 
@@ -22696,9 +23828,9 @@ function getClosure(elements, isTopLevel, closure) {
       allShapes[element.id] = element;
 
       // remember all connections
-      Object(dist_index_esm["i" /* forEach */])(element.incoming, handleConnection);
+      Object(dist_index_esm["forEach"])(element.incoming, handleConnection);
 
-      Object(dist_index_esm["i" /* forEach */])(element.outgoing, handleConnection);
+      Object(dist_index_esm["forEach"])(element.outgoing, handleConnection);
 
       // recurse into children
       return element.children;
@@ -22726,7 +23858,7 @@ function getClosure(elements, isTopLevel, closure) {
 function getBBox(elements, stopRecursion) {
 
   stopRecursion = !!stopRecursion;
-  if (!Object(dist_index_esm["l" /* isArray */])(elements)) {
+  if (!Object(dist_index_esm["isArray"])(elements)) {
     elements = [elements];
   }
 
@@ -22735,7 +23867,7 @@ function getBBox(elements, stopRecursion) {
       maxX,
       maxY;
 
-  Object(dist_index_esm["i" /* forEach */])(elements, function(element) {
+  Object(dist_index_esm["forEach"])(elements, function(element) {
 
     // If element is a connection the bbox must be computed first
     var bbox = element;
@@ -22789,7 +23921,7 @@ function getEnclosedElements(elements, bbox) {
 
   var filteredElements = {};
 
-  Object(dist_index_esm["i" /* forEach */])(elements, function(element) {
+  Object(dist_index_esm["forEach"])(elements, function(element) {
 
     var e = element;
 
@@ -22797,19 +23929,19 @@ function getEnclosedElements(elements, bbox) {
       e = getBBox(e);
     }
 
-    if (!Object(dist_index_esm["p" /* isNumber */])(bbox.y) && (e.x > bbox.x)) {
+    if (!Object(dist_index_esm["isNumber"])(bbox.y) && (e.x > bbox.x)) {
       filteredElements[element.id] = element;
     }
-    if (!Object(dist_index_esm["p" /* isNumber */])(bbox.x) && (e.y > bbox.y)) {
+    if (!Object(dist_index_esm["isNumber"])(bbox.x) && (e.y > bbox.y)) {
       filteredElements[element.id] = element;
     }
     if (e.x > bbox.x && e.y > bbox.y) {
-      if (Object(dist_index_esm["p" /* isNumber */])(bbox.width) && Object(dist_index_esm["p" /* isNumber */])(bbox.height) &&
+      if (Object(dist_index_esm["isNumber"])(bbox.width) && Object(dist_index_esm["isNumber"])(bbox.height) &&
           e.width + e.x < bbox.width + bbox.x &&
           e.height + e.y < bbox.height + bbox.y) {
 
         filteredElements[element.id] = element;
-      } else if (!Object(dist_index_esm["p" /* isNumber */])(bbox.width) || !Object(dist_index_esm["p" /* isNumber */])(bbox.height)) {
+      } else if (!Object(dist_index_esm["isNumber"])(bbox.width) || !Object(dist_index_esm["isNumber"])(bbox.height)) {
         filteredElements[element.id] = element;
       }
     }
@@ -22840,7 +23972,7 @@ function isFrameElement(element) {
 // helpers ///////////////////////////////
 
 function copyObject(src1, src2) {
-  return Object(dist_index_esm["a" /* assign */])({}, src1 || {}, src2 || {});
+  return Object(dist_index_esm["assign"])({}, src1 || {}, src2 || {});
 }
 // CONCATENATED MODULE: ./node_modules/diagram-js/lib/draw/DefaultRenderer.js
 
@@ -22983,7 +24115,7 @@ function Styles() {
   this.cls = function(className, traits, additionalAttrs) {
     var attrs = this.style(traits, additionalAttrs);
 
-    return Object(dist_index_esm["a" /* assign */])(attrs, { 'class': className });
+    return Object(dist_index_esm["assign"])(attrs, { 'class': className });
   };
 
   /**
@@ -22996,25 +24128,25 @@ function Styles() {
    */
   this.style = function(traits, additionalAttrs) {
 
-    if (!Object(dist_index_esm["l" /* isArray */])(traits) && !additionalAttrs) {
+    if (!Object(dist_index_esm["isArray"])(traits) && !additionalAttrs) {
       additionalAttrs = traits;
       traits = [];
     }
 
-    var attrs = Object(dist_index_esm["y" /* reduce */])(traits, function(attrs, t) {
-      return Object(dist_index_esm["a" /* assign */])(attrs, defaultTraits[t] || {});
+    var attrs = Object(dist_index_esm["reduce"])(traits, function(attrs, t) {
+      return Object(dist_index_esm["assign"])(attrs, defaultTraits[t] || {});
     }, {});
 
-    return additionalAttrs ? Object(dist_index_esm["a" /* assign */])(attrs, additionalAttrs) : attrs;
+    return additionalAttrs ? Object(dist_index_esm["assign"])(attrs, additionalAttrs) : attrs;
   };
 
   this.computeStyle = function(custom, traits, defaultStyles) {
-    if (!Object(dist_index_esm["l" /* isArray */])(traits)) {
+    if (!Object(dist_index_esm["isArray"])(traits)) {
       defaultStyles = traits;
       traits = [];
     }
 
-    return self.style(traits || [], Object(dist_index_esm["a" /* assign */])({}, defaultStyles, custom || {}));
+    return self.style(traits || [], Object(dist_index_esm["assign"])({}, defaultStyles, custom || {}));
   };
 }
 
@@ -23122,7 +24254,364 @@ function indexOf(collection, element) {
   return collection.indexOf(element);
 }
 
+// CONCATENATED MODULE: ./node_modules/diagram-js/lib/util/Geometry.js
+
+
+/**
+ * Computes the distance between two points
+ *
+ * @param  {Point}  p
+ * @param  {Point}  q
+ *
+ * @return {number}  distance
+ */
+function pointDistance(a, b) {
+  if (!a || !b) {
+    return -1;
+  }
+
+  return Math.sqrt(
+    Math.pow(a.x - b.x, 2) +
+    Math.pow(a.y - b.y, 2)
+  );
+}
+
+
+/**
+ * Returns true if the point r is on the line between p and q
+ *
+ * @param  {Point}  p
+ * @param  {Point}  q
+ * @param  {Point}  r
+ * @param  {number} [accuracy=5] accuracy for points on line check (lower is better)
+ *
+ * @return {boolean}
+ */
+function pointsOnLine(p, q, r, accuracy) {
+
+  if (typeof accuracy === 'undefined') {
+    accuracy = 5;
+  }
+
+  if (!p || !q || !r) {
+    return false;
+  }
+
+  var val = (q.x - p.x) * (r.y - p.y) - (q.y - p.y) * (r.x - p.x),
+      dist = pointDistance(p, q);
+
+  // @see http://stackoverflow.com/a/907491/412190
+  return Math.abs(val / dist) <= accuracy;
+}
+
+
+var ALIGNED_THRESHOLD = 2;
+
+/**
+ * Check whether two points are horizontally or vertically aligned.
+ *
+ * @param {Array<Point>|Point}
+ * @param {Point}
+ *
+ * @return {string|boolean}
+ */
+function pointsAligned(a, b) {
+  var points;
+
+  if (Object(dist_index_esm["isArray"])(a)) {
+    points = a;
+  } else {
+    points = [ a, b ];
+  }
+
+  if (pointsAlignedHorizontally(points)) {
+    return 'h';
+  }
+
+  if (pointsAlignedVertically(points)) {
+    return 'v';
+  }
+
+  return false;
+}
+
+function pointsAlignedHorizontally(a, b) {
+  var points;
+
+  if (Object(dist_index_esm["isArray"])(a)) {
+    points = a;
+  } else {
+    points = [ a, b ];
+  }
+
+  var firstPoint = points.slice().shift();
+
+  return Object(dist_index_esm["every"])(points, function(point) {
+    return Math.abs(firstPoint.y - point.y) <= ALIGNED_THRESHOLD;
+  });
+}
+
+function pointsAlignedVertically(a, b) {
+  var points;
+
+  if (Object(dist_index_esm["isArray"])(a)) {
+    points = a;
+  } else {
+    points = [ a, b ];
+  }
+
+  var firstPoint = points.slice().shift();
+
+  return Object(dist_index_esm["every"])(points, function(point) {
+    return Math.abs(firstPoint.x - point.x) <= ALIGNED_THRESHOLD;
+  });
+}
+
+
+
+/**
+ * Returns true if the point p is inside the rectangle rect
+ *
+ * @param  {Point}  p
+ * @param  {Rect} rect
+ * @param  {number} tolerance
+ *
+ * @return {boolean}
+ */
+function pointInRect(p, rect, tolerance) {
+  tolerance = tolerance || 0;
+
+  return p.x > rect.x - tolerance &&
+         p.y > rect.y - tolerance &&
+         p.x < rect.x + rect.width + tolerance &&
+         p.y < rect.y + rect.height + tolerance;
+}
+
+/**
+ * Returns a point in the middle of points p and q
+ *
+ * @param  {Point}  p
+ * @param  {Point}  q
+ *
+ * @return {Point} middle point
+ */
+function getMidPoint(p, q) {
+  return {
+    x: Math.round(p.x + ((q.x - p.x) / 2.0)),
+    y: Math.round(p.y + ((q.y - p.y) / 2.0))
+  };
+}
+
+// EXTERNAL MODULE: ./node_modules/path-intersection/intersect.js
+var intersect = __webpack_require__(47);
+var intersect_default = /*#__PURE__*/__webpack_require__.n(intersect);
+
+// CONCATENATED MODULE: ./node_modules/diagram-js/lib/layout/LayoutUtil.js
+
+
+
+
+
+
+
+function roundBounds(bounds) {
+  return {
+    x: Math.round(bounds.x),
+    y: Math.round(bounds.y),
+    width: Math.round(bounds.width),
+    height: Math.round(bounds.height)
+  };
+}
+
+
+function roundPoint(point) {
+
+  return {
+    x: Math.round(point.x),
+    y: Math.round(point.y)
+  };
+}
+
+
+/**
+ * Convert the given bounds to a { top, left, bottom, right } descriptor.
+ *
+ * @param {Bounds|Point} bounds
+ *
+ * @return {Object}
+ */
+function asTRBL(bounds) {
+  return {
+    top: bounds.y,
+    right: bounds.x + (bounds.width || 0),
+    bottom: bounds.y + (bounds.height || 0),
+    left: bounds.x
+  };
+}
+
+
+/**
+ * Convert a { top, left, bottom, right } to an objects bounds.
+ *
+ * @param {Object} trbl
+ *
+ * @return {Bounds}
+ */
+function asBounds(trbl) {
+  return {
+    x: trbl.left,
+    y: trbl.top,
+    width: trbl.right - trbl.left,
+    height: trbl.bottom - trbl.top
+  };
+}
+
+
+/**
+ * Get the mid of the given bounds or point.
+ *
+ * @param {Bounds|Point} bounds
+ *
+ * @return {Point}
+ */
+function getMid(bounds) {
+  return roundPoint({
+    x: bounds.x + (bounds.width || 0) / 2,
+    y: bounds.y + (bounds.height || 0) / 2
+  });
+}
+
+
+// orientation utils //////////////////////
+
+/**
+ * Get orientation of the given rectangle with respect to
+ * the reference rectangle.
+ *
+ * A padding (positive or negative) may be passed to influence
+ * horizontal / vertical orientation and intersection.
+ *
+ * @param {Bounds} rect
+ * @param {Bounds} reference
+ * @param {Point|number} padding
+ *
+ * @return {string} the orientation; one of top, top-left, left, ..., bottom, right or intersect.
+ */
+function getOrientation(rect, reference, padding) {
+
+  padding = padding || 0;
+
+  // make sure we can use an object, too
+  // for individual { x, y } padding
+  if (!Object(dist_index_esm["isObject"])(padding)) {
+    padding = { x: padding, y: padding };
+  }
+
+
+  var rectOrientation = asTRBL(rect),
+      referenceOrientation = asTRBL(reference);
+
+  var top = rectOrientation.bottom + padding.y <= referenceOrientation.top,
+      right = rectOrientation.left - padding.x >= referenceOrientation.right,
+      bottom = rectOrientation.top - padding.y >= referenceOrientation.bottom,
+      left = rectOrientation.right + padding.x <= referenceOrientation.left;
+
+  var vertical = top ? 'top' : (bottom ? 'bottom' : null),
+      horizontal = left ? 'left' : (right ? 'right' : null);
+
+  if (horizontal && vertical) {
+    return vertical + '-' + horizontal;
+  } else {
+    return horizontal || vertical || 'intersect';
+  }
+}
+
+
+// intersection utils //////////////////////
+
+/**
+ * Get intersection between an element and a line path.
+ *
+ * @param {PathDef} elementPath
+ * @param {PathDef} linePath
+ * @param {boolean} cropStart crop from start or end
+ *
+ * @return {Point}
+ */
+function getElementLineIntersection(elementPath, linePath, cropStart) {
+
+  var intersections = getIntersections(elementPath, linePath);
+
+  // recognize intersections
+  // only one -> choose
+  // two close together -> choose first
+  // two or more distinct -> pull out appropriate one
+  // none -> ok (fallback to point itself)
+  if (intersections.length === 1) {
+    return roundPoint(intersections[0]);
+  } else if (intersections.length === 2 && pointDistance(intersections[0], intersections[1]) < 1) {
+    return roundPoint(intersections[0]);
+  } else if (intersections.length > 1) {
+
+    // sort by intersections based on connection segment +
+    // distance from start
+    intersections = Object(dist_index_esm["sortBy"])(intersections, function(i) {
+      var distance = Math.floor(i.t2 * 100) || 1;
+
+      distance = 100 - distance;
+
+      distance = (distance < 10 ? '0' : '') + distance;
+
+      // create a sort string that makes sure we sort
+      // line segment ASC + line segment position DESC (for cropStart)
+      // line segment ASC + line segment position ASC (for cropEnd)
+      return i.segment2 + '#' + distance;
+    });
+
+    return roundPoint(intersections[cropStart ? 0 : intersections.length - 1]);
+  }
+
+  return null;
+}
+
+
+function getIntersections(a, b) {
+  return intersect_default()(a, b);
+}
+
+
+function LayoutUtil_filterRedundantWaypoints(waypoints) {
+
+  // alter copy of waypoints, not original
+  waypoints = waypoints.slice();
+
+  var idx = 0,
+      point,
+      previousPoint,
+      nextPoint;
+
+  while (waypoints[idx]) {
+    point = waypoints[idx];
+    previousPoint = waypoints[idx - 1];
+    nextPoint = waypoints[idx + 1];
+
+    if (pointDistance(point, nextPoint) === 0 ||
+        pointsOnLine(previousPoint, nextPoint, point)) {
+
+      // remove point, if overlapping with {nextPoint}
+      // or on line with {previousPoint} -> {point} -> {nextPoint}
+      waypoints.splice(idx, 1);
+    } else {
+      idx++;
+    }
+  }
+
+  return waypoints;
+}
+
 // CONCATENATED MODULE: ./node_modules/diagram-js/lib/core/Canvas.js
+
+
 
 
 
@@ -23139,7 +24628,7 @@ function round(number, resolution) {
 }
 
 function ensurePx(number) {
-  return Object(dist_index_esm["p" /* isNumber */])(number) ? number + 'px' : number;
+  return Object(dist_index_esm["isNumber"])(number) ? number + 'px' : number;
 }
 
 /**
@@ -23151,7 +24640,7 @@ function ensurePx(number) {
  */
 function createContainer(options) {
 
-  options = Object(dist_index_esm["a" /* assign */])({}, { width: '100%', height: '100%' }, options);
+  options = Object(dist_index_esm["assign"])({}, { width: '100%', height: '100%' }, options);
 
   var container = options.container || document.body;
 
@@ -23161,7 +24650,7 @@ function createContainer(options) {
   var parent = document.createElement('div');
   parent.setAttribute('class', 'djs-container');
 
-  Object(dist_index_esm["a" /* assign */])(parent.style, {
+  Object(dist_index_esm["assign"])(parent.style, {
     position: 'relative',
     overflow: 'hidden',
     width: ensurePx(options.width),
@@ -23255,7 +24744,7 @@ Canvas.prototype._init = function(config) {
   // debounce canvas.viewbox.changed events
   // for smoother diagram interaction
   if (config.deferUpdate !== false) {
-    this._viewboxChanged = Object(dist_index_esm["c" /* debounce */])(Object(dist_index_esm["b" /* bind */])(this._viewboxChanged, this), 300);
+    this._viewboxChanged = Object(dist_index_esm["debounce"])(Object(dist_index_esm["bind"])(this._viewboxChanged, this), 300);
   }
 
   eventBus.on('diagram.init', function() {
@@ -23394,7 +24883,7 @@ Canvas.prototype._createLayer = function(name, index) {
     index = 0;
   }
 
-  var childIndex = Object(dist_index_esm["y" /* reduce */])(this._layers, function(childIndex, layer) {
+  var childIndex = Object(dist_index_esm["reduce"])(this._layers, function(childIndex, layer) {
     if (index >= layer.index) {
       childIndex++;
     }
@@ -23436,7 +24925,7 @@ Canvas.prototype._updateMarker = function(element, marker, add) {
     return;
   }
 
-  Object(dist_index_esm["i" /* forEach */])([ container.gfx, container.secondaryGfx ], function(gfx) {
+  Object(dist_index_esm["forEach"])([ container.gfx, container.secondaryGfx ], function(gfx) {
     if (gfx) {
 
       // invoke either addClass or removeClass based on mode
@@ -23603,7 +25092,7 @@ Canvas.prototype._ensureValid = function(type, element) {
 
   var requiredAttrs = REQUIRED_MODEL_ATTRS[type];
 
-  var valid = Object(dist_index_esm["d" /* every */])(requiredAttrs, function(attr) {
+  var valid = Object(dist_index_esm["every"])(requiredAttrs, function(attr) {
     return typeof element[attr] !== 'undefined';
   });
 
@@ -23954,7 +25443,7 @@ Canvas.prototype.scroll = function(delta) {
 
   if (delta) {
     this._changeViewbox(function() {
-      delta = Object(dist_index_esm["a" /* assign */])({ dx: 0, dy: 0 }, delta || {});
+      delta = Object(dist_index_esm["assign"])({ dx: 0, dy: 0 }, delta || {});
 
       matrix = this._svg.createSVGMatrix().translate(delta.dx, delta.dy).multiply(matrix);
 
@@ -23965,6 +25454,66 @@ Canvas.prototype.scroll = function(delta) {
   return { x: matrix.e, y: matrix.f };
 };
 
+/**
+ * Scrolls the viewbox to contain the given element.
+ * Optionally specify a padding to be applied to the edges.
+ *
+ * @param {Object} [element] the element to scroll to.
+ * @param {Object|Number} [padding=100] the padding to be applied. Can also specify top, bottom, left and right.
+ *
+ */
+Canvas.prototype.scrollToElement = function(element, padding) {
+  var defaultPadding = 100;
+  if (!padding) {
+    padding = {};
+  }
+  if (typeof padding === 'number') {
+    defaultPadding = padding;
+  }
+
+  padding = {
+    top: padding.top || defaultPadding,
+    right: padding.right || defaultPadding,
+    bottom: padding.bottom || defaultPadding,
+    left: padding.left || defaultPadding
+  };
+
+  var elementBounds = getBBox(element),
+      elementTrbl = asTRBL(elementBounds),
+      viewboxBounds = this.viewbox(),
+      zoom = this.zoom(),
+      dx, dy;
+
+  // Shrink viewboxBounds with padding
+  viewboxBounds.y += padding.top / zoom;
+  viewboxBounds.x += padding.left / zoom;
+  viewboxBounds.width -= (padding.right + padding.left) / zoom;
+  viewboxBounds.height -= (padding.bottom + padding.top) / zoom;
+
+  var viewboxTrbl = asTRBL(viewboxBounds);
+
+  var canFit = elementBounds.width < viewboxBounds.width && elementBounds.height < viewboxBounds.height;
+
+  if (!canFit) {
+
+    // top-left when element can't fit
+    dx = elementBounds.x - viewboxBounds.x;
+    dy = elementBounds.y - viewboxBounds.y;
+
+  } else {
+
+    var dRight = Math.max(0, elementTrbl.right - viewboxTrbl.right),
+        dLeft = Math.min(0, elementTrbl.left - viewboxTrbl.left),
+        dBottom = Math.max(0, elementTrbl.bottom - viewboxTrbl.bottom),
+        dTop = Math.min(0, elementTrbl.top - viewboxTrbl.top);
+
+    dx = dRight || dLeft;
+    dy = dBottom || dTop;
+
+  }
+
+  this.scroll({ dx: -dx * zoom, dy: -dy * zoom });
+};
 
 /**
  * Gets or sets the current zoom of the canvas, optionally zooming
@@ -24077,7 +25626,7 @@ Canvas.prototype._setZoom = function(scale, center) {
   var currentScale = currentMatrix.a;
 
   if (center) {
-    centerPoint = Object(dist_index_esm["a" /* assign */])(point, center);
+    centerPoint = Object(dist_index_esm["assign"])(point, center);
 
     // revert applied viewport transformations
     originalPoint = centerPoint.matrixTransform(currentMatrix.inverse());
@@ -24397,7 +25946,7 @@ ElementRegistry.prototype._validateId = function(id) {
 };
 
 // EXTERNAL MODULE: ./node_modules/object-refs/index.js
-var object_refs = __webpack_require__(18);
+var object_refs = __webpack_require__(19);
 var object_refs_default = /*#__PURE__*/__webpack_require__.n(object_refs);
 
 // CONCATENATED MODULE: ./node_modules/diagram-js/lib/model/index.js
@@ -24637,7 +26186,7 @@ function model_create(type, attrs) {
   if (!Type) {
     throw new Error('unknown type: <' + type + '>');
   }
-  return Object(dist_index_esm["a" /* assign */])(new Type(), attrs);
+  return Object(dist_index_esm["assign"])(new Type(), attrs);
 }
 // CONCATENATED MODULE: ./node_modules/diagram-js/lib/core/ElementFactory.js
 
@@ -24678,7 +26227,7 @@ ElementFactory.prototype.createConnection = function(attrs) {
  */
 ElementFactory.prototype.create = function(type, attrs) {
 
-  attrs = Object(dist_index_esm["a" /* assign */])({}, attrs || {});
+  attrs = Object(dist_index_esm["assign"])({}, attrs || {});
 
   if (!attrs.id) {
     attrs.id = type + '_' + (this._uid++);
@@ -24806,22 +26355,22 @@ function EventBus() {
  */
 EventBus.prototype.on = function(events, priority, callback, that) {
 
-  events = Object(dist_index_esm["l" /* isArray */])(events) ? events : [ events ];
+  events = Object(dist_index_esm["isArray"])(events) ? events : [ events ];
 
-  if (Object(dist_index_esm["n" /* isFunction */])(priority)) {
+  if (Object(dist_index_esm["isFunction"])(priority)) {
     that = callback;
     callback = priority;
     priority = DEFAULT_PRIORITY;
   }
 
-  if (!Object(dist_index_esm["p" /* isNumber */])(priority)) {
+  if (!Object(dist_index_esm["isNumber"])(priority)) {
     throw new Error('priority must be a number');
   }
 
   var actualCallback = callback;
 
   if (that) {
-    actualCallback = Object(dist_index_esm["b" /* bind */])(callback, that);
+    actualCallback = Object(dist_index_esm["bind"])(callback, that);
 
     // make sure we remember and are able to remove
     // bound callbacks via {@link #off} using the original
@@ -24852,17 +26401,19 @@ EventBus.prototype.on = function(events, priority, callback, that) {
 EventBus.prototype.once = function(event, priority, callback, that) {
   var self = this;
 
-  if (Object(dist_index_esm["n" /* isFunction */])(priority)) {
+  if (Object(dist_index_esm["isFunction"])(priority)) {
     that = callback;
     callback = priority;
     priority = DEFAULT_PRIORITY;
   }
 
-  if (!Object(dist_index_esm["p" /* isNumber */])(priority)) {
+  if (!Object(dist_index_esm["isNumber"])(priority)) {
     throw new Error('priority must be a number');
   }
 
   function wrappedCallback() {
+    wrappedCallback.__isTomb = true;
+
     var result = callback.apply(that, arguments);
 
     self.off(event, wrappedCallback);
@@ -24889,7 +26440,7 @@ EventBus.prototype.once = function(event, priority, callback, that) {
  */
 EventBus.prototype.off = function(events, callback) {
 
-  events = Object(dist_index_esm["l" /* isArray */])(events) ? events : [ events ];
+  events = Object(dist_index_esm["isArray"])(events) ? events : [ events ];
 
   var self = this;
 
@@ -25042,6 +26593,10 @@ EventBus.prototype._invokeListener = function(event, args, listener) {
 
   var returnValue;
 
+  if (listener.callback.__isTomb) {
+    return returnValue;
+  }
+
   try {
 
     // returning false prevents the default action
@@ -25057,12 +26612,11 @@ EventBus.prototype._invokeListener = function(event, args, listener) {
     if (returnValue === false) {
       event.preventDefault();
     }
-  } catch (e) {
-    if (!this.handleError(e)) {
-      console.error('unhandled error in event listener');
-      console.error(e.stack);
+  } catch (error) {
+    if (!this.handleError(error)) {
+      console.error('unhandled error in event listener', error);
 
-      throw e;
+      throw error;
     }
   }
 
@@ -25181,7 +26735,7 @@ InternalEvent.prototype.preventDefault = function() {
 };
 
 InternalEvent.prototype.init = function(data) {
-  Object(dist_index_esm["a" /* assign */])(this, data || {});
+  Object(dist_index_esm["assign"])(this, data || {});
 };
 
 
@@ -25416,7 +26970,7 @@ GraphicsFactory.prototype.updateContainments = function(elements) {
       elementRegistry = this._elementRegistry,
       parents;
 
-  parents = Object(dist_index_esm["y" /* reduce */])(elements, function(map, e) {
+  parents = Object(dist_index_esm["reduce"])(elements, function(map, e) {
 
     if (e.parent) {
       map[e.parent.id] = e.parent;
@@ -25427,7 +26981,7 @@ GraphicsFactory.prototype.updateContainments = function(elements) {
 
   // update all parents of changed and reorganized their children
   // in the correct order (as indicated in our model)
-  Object(dist_index_esm["i" /* forEach */])(parents, function(parent) {
+  Object(dist_index_esm["forEach"])(parents, function(parent) {
 
     var children = parent.children;
 
@@ -25437,7 +26991,7 @@ GraphicsFactory.prototype.updateContainments = function(elements) {
 
     var childrenGfx = self._getChildrenContainer(parent);
 
-    Object(dist_index_esm["i" /* forEach */])(children.slice().reverse(), function(child) {
+    Object(dist_index_esm["forEach"])(children.slice().reverse(), function(child) {
       var childGfx = elementRegistry.getGraphics(child);
 
       GraphicsFactory_prependTo(childGfx.parentNode, childrenGfx);
@@ -25779,7 +27333,7 @@ Factory.prototype.createType = function(descriptor) {
       prototype = Object.create(index_esm_Base.prototype);
 
   // initialize default values
-  Object(dist_index_esm["i" /* forEach */])(descriptor.properties, function(p) {
+  Object(dist_index_esm["forEach"])(descriptor.properties, function(p) {
     if (!p.isMany && p.default !== undefined) {
       prototype[p.name] = p.default;
     }
@@ -25798,7 +27352,7 @@ Factory.prototype.createType = function(descriptor) {
     props.define(this, '$attrs', { value: {} });
     props.define(this, '$parent', { writable: true });
 
-    Object(dist_index_esm["i" /* forEach */])(attrs, Object(dist_index_esm["b" /* bind */])(function(val, key) {
+    Object(dist_index_esm["forEach"])(attrs, Object(dist_index_esm["bind"])(function(val, key) {
       this.set(key, val);
     }, this));
   }
@@ -25912,7 +27466,7 @@ function DescriptorBuilder(nameNs) {
 
 
 DescriptorBuilder.prototype.build = function() {
-  return Object(dist_index_esm["x" /* pick */])(this, [
+  return Object(dist_index_esm["pick"])(this, [
     'ns',
     'name',
     'allTypes',
@@ -26087,10 +27641,10 @@ DescriptorBuilder.prototype.addTrait = function(t, inherited) {
     return;
   }
 
-  Object(dist_index_esm["i" /* forEach */])(t.properties, Object(dist_index_esm["b" /* bind */])(function(p) {
+  Object(dist_index_esm["forEach"])(t.properties, Object(dist_index_esm["bind"])(function(p) {
 
     // clone property to allow extensions
-    p = Object(dist_index_esm["a" /* assign */])({}, p, {
+    p = Object(dist_index_esm["assign"])({}, p, {
       name: p.ns.localName,
       inherited: inherited
     });
@@ -26134,7 +27688,7 @@ function Registry(packages, properties) {
 
   this.properties = properties;
 
-  Object(dist_index_esm["i" /* forEach */])(packages, Object(dist_index_esm["b" /* bind */])(this.registerPackage, this));
+  Object(dist_index_esm["forEach"])(packages, Object(dist_index_esm["bind"])(this.registerPackage, this));
 }
 
 
@@ -26150,7 +27704,7 @@ Registry.prototype.getPackages = function() {
 Registry.prototype.registerPackage = function(pkg) {
 
   // copy package
-  pkg = Object(dist_index_esm["a" /* assign */])({}, pkg);
+  pkg = Object(dist_index_esm["assign"])({}, pkg);
 
   var pkgMap = this.packageMap;
 
@@ -26158,7 +27712,7 @@ Registry.prototype.registerPackage = function(pkg) {
   ensureAvailable(pkgMap, pkg, 'uri');
 
   // register types
-  Object(dist_index_esm["i" /* forEach */])(pkg.types, Object(dist_index_esm["b" /* bind */])(function(descriptor) {
+  Object(dist_index_esm["forEach"])(pkg.types, Object(dist_index_esm["bind"])(function(descriptor) {
     this.registerType(descriptor, pkg);
   }, this));
 
@@ -26172,11 +27726,11 @@ Registry.prototype.registerPackage = function(pkg) {
  */
 Registry.prototype.registerType = function(type, pkg) {
 
-  type = Object(dist_index_esm["a" /* assign */])({}, type, {
+  type = Object(dist_index_esm["assign"])({}, type, {
     superClass: (type.superClass || []).slice(),
     extends: (type.extends || []).slice(),
     properties: (type.properties || []).slice(),
-    meta: Object(dist_index_esm["a" /* assign */])((type.meta || {}))
+    meta: Object(dist_index_esm["assign"])((type.meta || {}))
   });
 
   var ns = parseName(type.name, pkg.prefix),
@@ -26184,7 +27738,7 @@ Registry.prototype.registerType = function(type, pkg) {
       propertiesByName = {};
 
   // parse properties
-  Object(dist_index_esm["i" /* forEach */])(type.properties, Object(dist_index_esm["b" /* bind */])(function(p) {
+  Object(dist_index_esm["forEach"])(type.properties, Object(dist_index_esm["bind"])(function(p) {
 
     // namespace property names
     var propertyNs = parseName(p.name, ns.prefix),
@@ -26195,7 +27749,7 @@ Registry.prototype.registerType = function(type, pkg) {
       p.type = parseName(p.type, propertyNs.prefix).name;
     }
 
-    Object(dist_index_esm["a" /* assign */])(p, {
+    Object(dist_index_esm["assign"])(p, {
       ns: propertyNs,
       name: propertyName
     });
@@ -26204,13 +27758,13 @@ Registry.prototype.registerType = function(type, pkg) {
   }, this));
 
   // update ns + name
-  Object(dist_index_esm["a" /* assign */])(type, {
+  Object(dist_index_esm["assign"])(type, {
     ns: ns,
     name: name,
     propertiesByName: propertiesByName
   });
 
-  Object(dist_index_esm["i" /* forEach */])(type.extends, Object(dist_index_esm["b" /* bind */])(function(extendsName) {
+  Object(dist_index_esm["forEach"])(type.extends, Object(dist_index_esm["bind"])(function(extendsName) {
     var extended = this.typeMap[extendsName];
 
     extended.traits = extended.traits || [];
@@ -26264,12 +27818,12 @@ Registry.prototype.mapTypes = function(nsName, iterator, trait) {
     throw new Error('unknown type <' + nsName.name + '>');
   }
 
-  Object(dist_index_esm["i" /* forEach */])(type.superClass, trait ? traverseTrait : traverseSuper);
+  Object(dist_index_esm["forEach"])(type.superClass, trait ? traverseTrait : traverseSuper);
 
   // call iterator with (type, inherited=!trait)
   iterator(type, !trait);
 
-  Object(dist_index_esm["i" /* forEach */])(type.traits, traverseTrait);
+  Object(dist_index_esm["forEach"])(type.traits, traverseTrait);
 };
 
 
@@ -26506,7 +28060,7 @@ Moddle.prototype.getType = function(descriptor) {
 
   var cache = this.typeCache;
 
-  var name = Object(dist_index_esm["r" /* isString */])(descriptor) ? descriptor : descriptor.ns.name;
+  var name = Object(dist_index_esm["isString"])(descriptor) ? descriptor : descriptor.ns.name;
 
   var type = cache[name];
 
@@ -26572,8 +28126,8 @@ Moddle.prototype.createAny = function(name, nsUri, properties) {
   this.properties.define(element, '$parent', { enumerable: false, writable: true });
   this.properties.define(element, '$instanceOf', { enumerable: false, writable: true });
 
-  Object(dist_index_esm["i" /* forEach */])(properties, function(a, key) {
-    if (Object(dist_index_esm["q" /* isObject */])(a) && a.value !== undefined) {
+  Object(dist_index_esm["forEach"])(properties, function(a, key) {
+    if (Object(dist_index_esm["isObject"])(a) && a.value !== undefined) {
       element[a.name] = a.value;
     } else {
       element[key] = a;
@@ -27803,9 +29357,6 @@ function getModdleDescriptor(element) {
   return element.$descriptor;
 }
 
-function defer(fn) {
-  setTimeout(fn, 0);
-}
 
 /**
  * A parse context.
@@ -27826,7 +29377,7 @@ function Context(options) {
    * @property {Boolean} lax
    */
 
-  Object(dist_index_esm["a" /* assign */])(this, options);
+  Object(dist_index_esm["assign"])(this, options);
 
   this.elementsById = {};
   this.references = [];
@@ -27863,6 +29414,7 @@ function Context(options) {
       id = element.get(idProperty.name);
 
       if (id) {
+
         // for QName validation as per http://www.w3.org/TR/REC-xml/#NT-NameChar
         if (!/^([a-z][\w-.]*:)?[a-z_][\w-.]*$/i.test(id)) {
           throw new Error('illegal ID <' + id + '>');
@@ -28046,7 +29598,7 @@ ElementHandler.prototype.createElement = function(node) {
       model = this.model,
       propNameNs;
 
-  Object(dist_index_esm["i" /* forEach */])(attributes, function(value, name) {
+  Object(dist_index_esm["forEach"])(attributes, function(value, name) {
 
     var prop = descriptor.propertiesByName[name],
         values;
@@ -28060,10 +29612,11 @@ ElementHandler.prototype.createElement = function(node) {
           id: value
         });
       } else {
+
         // IDREFS: parse references as whitespace-separated list
         values = value.split(' ');
 
-        Object(dist_index_esm["i" /* forEach */])(values, function(v) {
+        Object(dist_index_esm["forEach"])(values, function(v) {
           context.addReference({
             element: instance,
             property: prop.ns.name,
@@ -28130,7 +29683,7 @@ ElementHandler.prototype.getPropertyForNode = function(node) {
 
         elementType = model.getType(elementTypeName);
 
-        return Object(dist_index_esm["a" /* assign */])({}, property, {
+        return Object(dist_index_esm["assign"])({}, property, {
           effectiveType: getModdleDescriptor(elementType).name
         });
       }
@@ -28147,18 +29700,19 @@ ElementHandler.prototype.getPropertyForNode = function(node) {
     elementType = model.getType(elementTypeName);
 
     // search for collection members later
-    property = Object(dist_index_esm["f" /* find */])(descriptor.properties, function(p) {
+    property = Object(dist_index_esm["find"])(descriptor.properties, function(p) {
       return !p.isVirtual && !p.isReference && !p.isAttribute && elementType.hasType(p.type);
     });
 
     if (property) {
-      return Object(dist_index_esm["a" /* assign */])({}, property, {
+      return Object(dist_index_esm["assign"])({}, property, {
         effectiveType: getModdleDescriptor(elementType).name
       });
     }
   } else {
+
     // parse unknown element (maybe extension)
-    property = Object(dist_index_esm["f" /* find */])(descriptor.properties, function(p) {
+    property = Object(dist_index_esm["find"])(descriptor.properties, function(p) {
       return !p.isReference && !p.isAttribute && p.type === 'Element';
     });
 
@@ -28226,12 +29780,13 @@ ElementHandler.prototype.handleChild = function(node) {
     }
 
     if (propertyDesc.isReference) {
-      Object(dist_index_esm["a" /* assign */])(newElement, {
+      Object(dist_index_esm["assign"])(newElement, {
         element: element
       });
 
       this.context.addReference(newElement);
     } else {
+
       // establish child -> parent relationship
       newElement.$parent = element;
     }
@@ -28334,31 +29889,53 @@ function Reader(options) {
     };
   }
 
-  Object(dist_index_esm["a" /* assign */])(this, { lax: false }, options);
+  Object(dist_index_esm["assign"])(this, { lax: false }, options);
 }
 
+/**
+ * The fromXML result.
+ *
+ * @typedef {Object} ParseResult
+ *
+ * @property {ModdleElement} rootElement
+ * @property {Array<Object>} references
+ * @property {Array<Error>} warnings
+ * @property {Object} elementsById - a mapping containing each ID -> ModdleElement
+ */
+
+/**
+ * The fromXML result.
+ *
+ * @typedef {Error} ParseError
+ *
+ * @property {Array<Error>} warnings
+ */
 
 /**
  * Parse the given XML into a moddle document tree.
  *
  * @param {String} xml
  * @param {ElementHandler|Object} options or rootHandler
- * @param  {Function} done
+ *
+ * @returns {Promise<ParseResult, ParseError>}
  */
 Reader.prototype.fromXML = function(xml, options, done) {
 
   var rootHandler = options.rootHandler;
 
   if (options instanceof ElementHandler) {
+
     // root handler passed via (xml, { rootHandler: ElementHandler }, ...)
     rootHandler = options;
     options = {};
   } else {
     if (typeof options === 'string') {
+
       // rootHandler passed via (xml, 'someString', ...)
       rootHandler = this.handler(options);
       options = {};
     } else if (typeof rootHandler === 'string') {
+
       // rootHandler passed via (xml, { rootHandler: 'someString' }, ...)
       rootHandler = this.handler(rootHandler);
     }
@@ -28367,7 +29944,7 @@ Reader.prototype.fromXML = function(xml, options, done) {
   var model = this.model,
       lax = this.lax;
 
-  var context = new Context(Object(dist_index_esm["a" /* assign */])({}, options, { rootHandler: rootHandler })),
+  var context = new Context(Object(dist_index_esm["assign"])({}, options, { rootHandler: rootHandler })),
       parser = new Parser({ proxy: true }),
       stack = createStack();
 
@@ -28420,6 +29997,7 @@ Reader.prototype.fromXML = function(xml, options, done) {
   }
 
   function handleWarning(err, getContext) {
+
     // just like handling errors in <lax=true> mode
     return handleError(err, getContext, true);
   }
@@ -28459,9 +30037,11 @@ Reader.prototype.fromXML = function(xml, options, done) {
         }
 
         if (!reference) {
+
           // remove unresolvable reference
           collection.splice(idx, 1);
         } else {
+
           // add or update reference in collection
           collection[idx] = reference;
         }
@@ -28524,11 +30104,11 @@ Reader.prototype.fromXML = function(xml, options, done) {
   }
 
   function handleText(text, getContext) {
+
     // strip whitespace only nodes, i.e. before
     // <!CDATA[ ... ]> sections and in between tags
-    text = text.trim();
 
-    if (!text) {
+    if (!text.trim()) {
       return;
     }
 
@@ -28575,11 +30155,11 @@ Reader.prototype.fromXML = function(xml, options, done) {
     .on('error', handleError)
     .on('warn', handleWarning);
 
-  // deferred parse XML to make loading really ascnchronous
-  // this ensures the execution environment (node or browser)
-  // is kept responsive and that certain optimization strategies
-  // can kick in
-  defer(function() {
+  // async XML parsing to make sure the execution environment
+  // (node or brower) is kept responsive and that certain optimization
+  // strategies can kick in.
+  return new Promise(function(resolve, reject) {
+
     var err;
 
     try {
@@ -28590,15 +30170,28 @@ Reader.prototype.fromXML = function(xml, options, done) {
       err = e;
     }
 
-    var element = rootHandler.element;
+    var rootElement = rootHandler.element;
 
-    // handle the situation that we could not extract
-    // the desired root element from the document
-    if (!err && !element) {
+    if (!err && !rootElement) {
       err = dist_index_esm_error('failed to parse document as <' + rootHandler.type.$descriptor.name + '>');
     }
 
-    done(err, err ? undefined : element, context);
+    var warnings = context.warnings;
+    var references = context.references;
+    var elementsById = context.elementsById;
+
+    if (err) {
+      err.warnings = warnings;
+
+      return reject(err);
+    } else {
+      return resolve({
+        rootElement: rootElement,
+        elementsById: elementsById,
+        references: references,
+        warnings: warnings
+      });
+    }
   });
 };
 
@@ -28724,7 +30317,7 @@ function inherits(ctor, superCtor) {
 }
 
 function index_esm_nsName(ns) {
-  if (Object(dist_index_esm["r" /* isString */])(ns)) {
+  if (Object(dist_index_esm["isString"])(ns)) {
     return ns;
   } else {
     return (ns.prefix ? ns.prefix + ':' : '') + ns.localName;
@@ -28733,7 +30326,11 @@ function index_esm_nsName(ns) {
 
 function getNsAttrs(namespaces) {
 
-  return Object(dist_index_esm["u" /* map */])(namespaces.getUsed(), function(ns) {
+  return namespaces.getUsed().filter(function(ns) {
+
+    // do not serialize built in <xml> namespace
+    return ns.prefix !== 'xml';
+  }).map(function(ns) {
     var name = 'xmlns' + (ns.prefix ? ':' + ns.prefix : '');
     return { name: name, value: ns.uri };
   });
@@ -28742,20 +30339,20 @@ function getNsAttrs(namespaces) {
 
 function getElementNs(ns, descriptor) {
   if (descriptor.isGeneric) {
-    return Object(dist_index_esm["a" /* assign */])({ localName: descriptor.ns.localName }, ns);
+    return Object(dist_index_esm["assign"])({ localName: descriptor.ns.localName }, ns);
   } else {
-    return Object(dist_index_esm["a" /* assign */])({ localName: nameToAlias(descriptor.ns.localName, descriptor.$pkg) }, ns);
+    return Object(dist_index_esm["assign"])({ localName: nameToAlias(descriptor.ns.localName, descriptor.$pkg) }, ns);
   }
 }
 
 function getPropertyNs(ns, descriptor) {
-  return Object(dist_index_esm["a" /* assign */])({ localName: descriptor.ns.localName }, ns);
+  return Object(dist_index_esm["assign"])({ localName: descriptor.ns.localName }, ns);
 }
 
 function getSerializableProperties(element) {
   var descriptor = element.$descriptor;
 
-  return Object(dist_index_esm["e" /* filter */])(descriptor.properties, function(p) {
+  return Object(dist_index_esm["filter"])(descriptor.properties, function(p) {
     var name = p.name;
 
     if (p.isVirtual) {
@@ -28763,7 +30360,7 @@ function getSerializableProperties(element) {
     }
 
     // do not serialize defaults
-    if (!element.hasOwnProperty(name)) {
+    if (!Object(dist_index_esm["has"])(element, name)) {
       return false;
     }
 
@@ -28802,7 +30399,7 @@ var ESCAPE_MAP = {
 function dist_index_esm_escape(str, charPattern, replaceMap) {
 
   // ensure we are handling strings here
-  str = Object(dist_index_esm["r" /* isString */])(str) ? str : '' + str;
+  str = Object(dist_index_esm["isString"])(str) ? str : '' + str;
 
   return str.replace(charPattern, function(s) {
     return '&' + replaceMap[s] + ';';
@@ -28824,11 +30421,11 @@ function escapeBody(str) {
 }
 
 function filterAttributes(props) {
-  return Object(dist_index_esm["e" /* filter */])(props, function(p) { return p.isAttr; });
+  return Object(dist_index_esm["filter"])(props, function(p) { return p.isAttr; });
 }
 
 function filterContained(props) {
-  return Object(dist_index_esm["e" /* filter */])(props, function(p) { return !p.isAttr; });
+  return Object(dist_index_esm["filter"])(props, function(p) { return !p.isAttr; });
 }
 
 
@@ -28960,7 +30557,7 @@ ElementSerializer.prototype.nsAttributeName = function(element) {
 
   var ns;
 
-  if (Object(dist_index_esm["r" /* isString */])(element)) {
+  if (Object(dist_index_esm["isString"])(element)) {
     ns = parseName(element);
   } else {
     ns = element.ns;
@@ -28981,7 +30578,7 @@ ElementSerializer.prototype.nsAttributeName = function(element) {
   if (this.isLocalNs(effectiveNs)) {
     return { localName: ns.localName };
   } else {
-    return Object(dist_index_esm["a" /* assign */])({ localName: ns.localName }, effectiveNs);
+    return Object(dist_index_esm["assign"])({ localName: ns.localName }, effectiveNs);
   }
 };
 
@@ -28992,7 +30589,7 @@ ElementSerializer.prototype.parseGeneric = function(element) {
 
   var attributes = [];
 
-  Object(dist_index_esm["i" /* forEach */])(element, function(val, key) {
+  Object(dist_index_esm["forEach"])(element, function(val, key) {
 
     var nonNsAttr;
 
@@ -29000,7 +30597,7 @@ ElementSerializer.prototype.parseGeneric = function(element) {
       body.push(new BodySerializer().build({ type: 'String' }, val));
     } else
     if (key === '$children') {
-      Object(dist_index_esm["i" /* forEach */])(val, function(child) {
+      Object(dist_index_esm["forEach"])(val, function(child) {
         body.push(new ElementSerializer(self).build(child));
       });
     } else
@@ -29041,9 +30638,11 @@ ElementSerializer.prototype.parseNsAttribute = function(element, name, value) {
   }
 
   if (model && model.getPackage(value)) {
+
     // register well known namespace
     this.logNamespace(ns, true, true);
   } else {
+
     // log custom namespace directly as used
     var actualNs = this.logNamespaceUsed(ns, true);
 
@@ -29068,7 +30667,7 @@ ElementSerializer.prototype.parseNsAttributes = function(element, attrs) {
   // parse namespace attributes first
   // and log them. push non namespace attributes to a list
   // and process them later
-  Object(dist_index_esm["i" /* forEach */])(genericAttrs, function(value, name) {
+  Object(dist_index_esm["forEach"])(genericAttrs, function(value, name) {
 
     var nonNsAttr = self.parseNsAttribute(element, name, value);
 
@@ -29084,7 +30683,7 @@ ElementSerializer.prototype.parseGenericAttributes = function(element, attribute
 
   var self = this;
 
-  Object(dist_index_esm["i" /* forEach */])(attributes, function(attr) {
+  Object(dist_index_esm["forEach"])(attributes, function(attr) {
 
     // do not serialize xsi:type attribute
     // it is set manually based on the actual implementation type
@@ -29109,7 +30708,7 @@ ElementSerializer.prototype.parseContainments = function(properties) {
       body = this.body,
       element = this.element;
 
-  Object(dist_index_esm["i" /* forEach */])(properties, function(p) {
+  Object(dist_index_esm["forEach"])(properties, function(p) {
     var value = element.get(p.name),
         isReference = p.isReference,
         isMany = p.isMany;
@@ -29122,21 +30721,22 @@ ElementSerializer.prototype.parseContainments = function(properties) {
       body.push(new BodySerializer().build(p, value[0]));
     } else
     if (isSimple(p.type)) {
-      Object(dist_index_esm["i" /* forEach */])(value, function(v) {
+      Object(dist_index_esm["forEach"])(value, function(v) {
         body.push(new ValueSerializer(self.addTagName(self.nsPropertyTagName(p))).build(p, v));
       });
     } else
     if (isReference) {
-      Object(dist_index_esm["i" /* forEach */])(value, function(v) {
+      Object(dist_index_esm["forEach"])(value, function(v) {
         body.push(new ReferenceSerializer(self.addTagName(self.nsPropertyTagName(p))).build(v));
       });
     } else {
+
       // allow serialization via type
       // rather than element name
       var asType = serializeAsType(p),
           asProperty = serializeAsProperty(p);
 
-      Object(dist_index_esm["i" /* forEach */])(value, function(v) {
+      Object(dist_index_esm["forEach"])(value, function(v) {
         var serializer;
 
         if (asType) {
@@ -29181,7 +30781,7 @@ ElementSerializer.prototype.logNamespace = function(ns, wellknown, local) {
 
   var existing = namespaces.byUri(nsUri);
 
-  if (nsPrefix !== 'xml' && (!existing || local)) {
+  if (!existing || local) {
     namespaces.add(ns, wellknown);
   }
 
@@ -29244,7 +30844,7 @@ ElementSerializer.prototype.parseAttributes = function(properties) {
   var self = this,
       element = this.element;
 
-  Object(dist_index_esm["i" /* forEach */])(properties, function(p) {
+  Object(dist_index_esm["forEach"])(properties, function(p) {
 
     var value = element.get(p.name);
 
@@ -29255,9 +30855,10 @@ ElementSerializer.prototype.parseAttributes = function(properties) {
       }
       else {
         var values = [];
-        Object(dist_index_esm["i" /* forEach */])(value, function(v) {
+        Object(dist_index_esm["forEach"])(value, function(v) {
           values.push(v.id);
         });
+
         // IDREFS is a whitespace-separated list of references.
         value = values.join(' ');
       }
@@ -29279,7 +30880,7 @@ ElementSerializer.prototype.addTagName = function(nsTagName) {
 ElementSerializer.prototype.addAttribute = function(name, value) {
   var attrs = this.attrs;
 
-  if (Object(dist_index_esm["r" /* isString */])(value)) {
+  if (Object(dist_index_esm["isString"])(value)) {
     value = escapeAttr(value);
   }
 
@@ -29294,7 +30895,7 @@ ElementSerializer.prototype.serializeAttributes = function(writer) {
     attrs = getNsAttrs(namespaces).concat(attrs);
   }
 
-  Object(dist_index_esm["i" /* forEach */])(attrs, function(a) {
+  Object(dist_index_esm["forEach"])(attrs, function(a) {
     writer
       .append(' ')
       .append(index_esm_nsName(a.name)).append('="').append(a.value).append('"');
@@ -29321,7 +30922,7 @@ ElementSerializer.prototype.serializeTo = function(writer) {
         .indent();
     }
 
-    Object(dist_index_esm["i" /* forEach */])(this.body, function(b) {
+    Object(dist_index_esm["forEach"])(this.body, function(b) {
       b.serializeTo(writer);
     });
 
@@ -29431,7 +31032,7 @@ function FormatingWriter(out, format) {
  */
 function Writer(options) {
 
-  options = Object(dist_index_esm["a" /* assign */])({ format: false, preamble: true }, options || {});
+  options = Object(dist_index_esm["assign"])({ format: false, preamble: true }, options || {});
 
   function toXML(tree, writer) {
     var internalWriter = writer || new SavingWriter();
@@ -29475,6 +31076,24 @@ function BpmnModdle(packages, options) {
 
 BpmnModdle.prototype = Object.create(Moddle.prototype);
 
+/**
+ * The fromXML result.
+ *
+ * @typedef {Object} ParseResult
+ *
+ * @property {ModdleElement} rootElement
+ * @property {Array<Object>} references
+ * @property {Array<Error>} warnings
+ * @property {Object} elementsById - a mapping containing each ID -> ModdleElement
+ */
+
+/**
+ * The fromXML error.
+ *
+ * @typedef {Error} ParseError
+ *
+ * @property {Array<Error>} warnings
+ */
 
 /**
  * Instantiates a BPMN model tree from a given xml string.
@@ -29482,55 +31101,54 @@ BpmnModdle.prototype = Object.create(Moddle.prototype);
  * @param {String}   xmlStr
  * @param {String}   [typeName='bpmn:Definitions'] name of the root element
  * @param {Object}   [options]  options to pass to the underlying reader
- * @param {Function} done       callback that is invoked with (err, result, parseContext)
- *                              once the import completes
+ *
+ * @returns {Promise<ParseResult, ParseError>}
  */
-BpmnModdle.prototype.fromXML = function(xmlStr, typeName, options, done) {
+BpmnModdle.prototype.fromXML = function(xmlStr, typeName, options) {
 
-  if (!Object(dist_index_esm["r" /* isString */])(typeName)) {
-    done = options;
+  if (!Object(dist_index_esm["isString"])(typeName)) {
     options = typeName;
     typeName = 'bpmn:Definitions';
   }
 
-  if (Object(dist_index_esm["n" /* isFunction */])(options)) {
-    done = options;
-    options = {};
-  }
-
-  var reader = new Reader(Object(dist_index_esm["a" /* assign */])({ model: this, lax: true }, options));
+  var reader = new Reader(Object(dist_index_esm["assign"])({ model: this, lax: true }, options));
   var rootHandler = reader.handler(typeName);
 
-  reader.fromXML(xmlStr, rootHandler, done);
+  return reader.fromXML(xmlStr, rootHandler);
 };
 
+
+/**
+ * The toXML result.
+ *
+ * @typedef {Object} SerializationResult
+ *
+ * @property {String} xml
+ */
 
 /**
  * Serializes a BPMN 2.0 object tree to XML.
  *
  * @param {String}   element    the root element, typically an instance of `bpmn:Definitions`
  * @param {Object}   [options]  to pass to the underlying writer
- * @param {Function} done       callback invoked with (err, xmlStr) once the import completes
+ *
+ * @returns {Promise<SerializationResult, Error>}
  */
-BpmnModdle.prototype.toXML = function(element, options, done) {
-
-  if (Object(dist_index_esm["n" /* isFunction */])(options)) {
-    done = options;
-    options = {};
-  }
+BpmnModdle.prototype.toXML = function(element, options) {
 
   var writer = new Writer(options);
 
-  var result;
-  var err;
+  return new Promise(function(resolve, reject) {
+    try {
+      var result = writer.toXML(element);
 
-  try {
-    result = writer.toXML(element);
-  } catch (e) {
-    err = e;
-  }
-
-  return done(err, result);
+      return resolve({
+        xml: result
+      });
+    } catch (err) {
+      return reject(err);
+    }
+  });
 };
 
 var index_esm_name = "BPMN20";
@@ -32012,7 +33630,8 @@ var index_esm_types = [
 	{
 		name: "CallActivity",
 		superClass: [
-			"Activity"
+			"Activity",
+			"InteractionNode"
 		],
 		properties: [
 			{
@@ -33107,16 +34726,79 @@ var BiocPackage = {
 	associations: associations$4
 };
 
+var name$5 = "BPMN in Color";
+var uri$5 = "http://www.omg.org/spec/BPMN/non-normative/color/1.0";
+var prefix$5 = "color";
+var types$5 = [
+	{
+		name: "ColoredLabel",
+		"extends": [
+			"bpmndi:BPMNLabel"
+		],
+		properties: [
+			{
+				name: "color",
+				isAttr: true,
+				type: "String"
+			}
+		]
+	},
+	{
+		name: "ColoredShape",
+		"extends": [
+			"bpmndi:BPMNShape"
+		],
+		properties: [
+			{
+				name: "background-color",
+				isAttr: true,
+				type: "String"
+			},
+			{
+				name: "border-color",
+				isAttr: true,
+				type: "String"
+			}
+		]
+	},
+	{
+		name: "ColoredEdge",
+		"extends": [
+			"bpmndi:BPMNEdge"
+		],
+		properties: [
+			{
+				name: "border-color",
+				isAttr: true,
+				type: "String"
+			}
+		]
+	}
+];
+var enumerations$3 = [
+];
+var associations$5 = [
+];
+var BpmnInColorPackage = {
+	name: name$5,
+	uri: uri$5,
+	prefix: prefix$5,
+	types: types$5,
+	enumerations: enumerations$3,
+	associations: associations$5
+};
+
 var index_esm_packages = {
   bpmn: BpmnPackage,
   bpmndi: BpmnDiPackage,
   dc: DcPackage,
   di: DiPackage,
-  bioc: BiocPackage
+  bioc: BiocPackage,
+  color: BpmnInColorPackage
 };
 
 function simple(additionalPackages, options) {
-  var pks = Object(dist_index_esm["a" /* assign */])({}, index_esm_packages, additionalPackages);
+  var pks = Object(dist_index_esm["assign"])({}, index_esm_packages, additionalPackages);
 
   return new BpmnModdle(pks, options);
 }
@@ -33161,7 +34843,7 @@ function is(element, type) {
  * correctly specify one.
  */
 function findDisplayCandidate(definitions) {
-  return Object(dist_index_esm["f" /* find */])(definitions.rootElements, function(e) {
+  return Object(dist_index_esm["find"])(definitions.rootElements, function(e) {
     return is(e, 'bpmn:Process') || is(e, 'bpmn:Collaboration');
   });
 }
@@ -33265,7 +34947,7 @@ function BpmnTreeWalker(handler, translate) {
   function handlePlane(plane) {
     registerDi(plane);
 
-    Object(dist_index_esm["i" /* forEach */])(plane.planeElement, handlePlaneElement);
+    Object(dist_index_esm["forEach"])(plane.planeElement, handlePlaneElement);
   }
 
   function handlePlaneElement(planeElement) {
@@ -33389,7 +35071,7 @@ function BpmnTreeWalker(handler, translate) {
     // walk through all processes that have not yet been drawn and draw them
     // if they contain lanes with DI information.
     // we do this to pass the free-floating lane test cases in the MIWG test suite
-    var processes = Object(dist_index_esm["e" /* filter */])(rootElements, function(e) {
+    var processes = Object(dist_index_esm["filter"])(rootElements, function(e) {
       return !isHandled(e) && is(e, 'bpmn:Process') && e.laneSets;
     });
 
@@ -33401,7 +35083,7 @@ function BpmnTreeWalker(handler, translate) {
   }
 
   function handleMessageFlows(messageFlows, context) {
-    Object(dist_index_esm["i" /* forEach */])(messageFlows, contextual(handleMessageFlow, context));
+    Object(dist_index_esm["forEach"])(messageFlows, contextual(handleMessageFlow, context));
   }
 
   function handleDataAssociation(association, context) {
@@ -33427,7 +35109,7 @@ function BpmnTreeWalker(handler, translate) {
 
   function handleArtifacts(artifacts, context) {
 
-    Object(dist_index_esm["i" /* forEach */])(artifacts, function(e) {
+    Object(dist_index_esm["forEach"])(artifacts, function(e) {
       if (is(e, 'bpmn:Association')) {
         deferred.push(function() {
           handleArtifact(e, context);
@@ -33444,8 +35126,8 @@ function BpmnTreeWalker(handler, translate) {
       return;
     }
 
-    Object(dist_index_esm["i" /* forEach */])(ioSpecification.dataInputs, contextual(handleDataInput, context));
-    Object(dist_index_esm["i" /* forEach */])(ioSpecification.dataOutputs, contextual(handleDataOutput, context));
+    Object(dist_index_esm["forEach"])(ioSpecification.dataInputs, contextual(handleDataInput, context));
+    Object(dist_index_esm["forEach"])(ioSpecification.dataOutputs, contextual(handleDataOutput, context));
   }
 
   function handleSubProcess(subProcess, context) {
@@ -33472,8 +35154,8 @@ function BpmnTreeWalker(handler, translate) {
     //   * bpmn:CatchEvent
     //
     deferred.push(function() {
-      Object(dist_index_esm["i" /* forEach */])(flowNode.dataInputAssociations, contextual(handleDataAssociation, context));
-      Object(dist_index_esm["i" /* forEach */])(flowNode.dataOutputAssociations, contextual(handleDataAssociation, context));
+      Object(dist_index_esm["forEach"])(flowNode.dataInputAssociations, contextual(handleDataAssociation, context));
+      Object(dist_index_esm["forEach"])(flowNode.dataOutputAssociations, contextual(handleDataAssociation, context));
     });
   }
 
@@ -33500,11 +35182,11 @@ function BpmnTreeWalker(handler, translate) {
   }
 
   function handleLaneSet(laneSet, context) {
-    Object(dist_index_esm["i" /* forEach */])(laneSet.lanes, contextual(handleLane, context));
+    Object(dist_index_esm["forEach"])(laneSet.lanes, contextual(handleLane, context));
   }
 
   function handleLaneSets(laneSets, context) {
-    Object(dist_index_esm["i" /* forEach */])(laneSets, contextual(handleLaneSet, context));
+    Object(dist_index_esm["forEach"])(laneSets, contextual(handleLaneSet, context));
   }
 
   function handleFlowElementsContainer(container, context) {
@@ -33516,7 +35198,7 @@ function BpmnTreeWalker(handler, translate) {
   }
 
   function handleFlowElements(flowElements, context) {
-    Object(dist_index_esm["i" /* forEach */])(flowElements, function(e) {
+    Object(dist_index_esm["forEach"])(flowElements, function(e) {
       if (is(e, 'bpmn:SequenceFlow')) {
         deferred.push(function() {
           handleSequenceFlow(e, context);
@@ -33557,7 +35239,7 @@ function BpmnTreeWalker(handler, translate) {
 
   function handleCollaboration(collaboration) {
 
-    Object(dist_index_esm["i" /* forEach */])(collaboration.participants, contextual(handleParticipant));
+    Object(dist_index_esm["forEach"])(collaboration.participants, contextual(handleParticipant));
 
     handleArtifacts(collaboration.artifacts);
 
@@ -33571,7 +35253,7 @@ function BpmnTreeWalker(handler, translate) {
   function wireFlowNodeRefs(lane) {
 
     // wire the virtual flowNodeRefs <-> relationship
-    Object(dist_index_esm["i" /* forEach */])(lane.flowNodeRef, function(flowNode) {
+    Object(dist_index_esm["forEach"])(lane.flowNodeRef, function(flowNode) {
       var lanes = flowNode.get('lanes');
 
       if (lanes) {
@@ -33593,6 +35275,21 @@ function BpmnTreeWalker(handler, translate) {
 
 
 
+/**
+ * The importBpmnDiagram result.
+ *
+ * @typedef {Object} ImportBPMNDiagramResult
+ *
+ * @property {Array<string>} warnings
+ */
+
+/**
+* The importBpmnDiagram error.
+*
+* @typedef {Error} ImportBPMNDiagramError
+*
+* @property {Array<string>} warnings
+*/
 
 /**
  * Import the definitions into a diagram.
@@ -33603,14 +35300,10 @@ function BpmnTreeWalker(handler, translate) {
  * @param  {ModdleElement<Definitions>} definitions
  * @param  {ModdleElement<BPMNDiagram>} [bpmnDiagram] the diagram to be rendered
  * (if not provided, the first one will be rendered)
- * @param  {Function} done the callback, invoked with (err, [ warning ]) once the import is done
+ *
+ * Returns {Promise<ImportBPMNDiagramResult, ImportBPMNDiagramError>}
  */
-function importBpmnDiagram(diagram, definitions, bpmnDiagram, done) {
-
-  if (Object(dist_index_esm["n" /* isFunction */])(bpmnDiagram)) {
-    done = bpmnDiagram;
-    bpmnDiagram = null;
-  }
+function importBpmnDiagram(diagram, definitions, bpmnDiagram) {
 
   var importer,
       eventBus,
@@ -33650,25 +35343,85 @@ function importBpmnDiagram(diagram, definitions, bpmnDiagram, done) {
     walker.handleDefinitions(definitions, bpmnDiagram);
   }
 
-  try {
-    importer = diagram.get('bpmnImporter');
-    eventBus = diagram.get('eventBus');
-    translate = diagram.get('translate');
+  return new Promise(function(resolve, reject) {
+    try {
+      importer = diagram.get('bpmnImporter');
+      eventBus = diagram.get('eventBus');
+      translate = diagram.get('translate');
 
-    eventBus.fire('import.render.start', { definitions: definitions });
+      eventBus.fire('import.render.start', { definitions: definitions });
 
-    render(definitions, bpmnDiagram);
+      render(definitions, bpmnDiagram);
 
-    eventBus.fire('import.render.complete', {
-      error: error,
-      warnings: warnings
-    });
-  } catch (e) {
-    error = e;
-  }
+      eventBus.fire('import.render.complete', {
+        error: error,
+        warnings: warnings
+      });
 
-  done(error, warnings);
+      return resolve({ warnings: warnings });
+    } catch (e) {
+
+      e.warnings = warnings;
+      return reject(e);
+    }
+  });
 }
+
+// CONCATENATED MODULE: ./node_modules/bpmn-js/lib/util/CompatibilityUtil.js
+
+
+// TODO(nikku): remove with future bpmn-js version
+
+/**
+ * Wraps APIs to check:
+ *
+ * 1) If a callback is passed -> Warn users about callback deprecation.
+ * 2) If Promise class is implemented in current environment.
+ *
+ * @private
+ */
+function wrapForCompatibility(api) {
+
+  return function() {
+
+    if (!window.Promise) {
+      throw new Error('Promises is not supported in this environment. Please polyfill Promise.');
+    }
+
+    var argLen = arguments.length;
+    if (argLen >= 1 && Object(dist_index_esm["isFunction"])(arguments[argLen - 1])) {
+
+      var callback = arguments[argLen - 1];
+
+      console.warn(new Error(
+        'Passing callbacks to ' + api.name + ' is deprecated and will be removed in a future major release. ' +
+        'Please switch to promises: https://bpmn.io/l/moving-to-promises.html'
+      ));
+
+      var argsWithoutCallback = Array.prototype.slice.call(arguments, 0, -1);
+
+      api.apply(this, argsWithoutCallback).then(function(result) {
+
+        var firstKey = Object.keys(result)[0];
+
+        // The APIs we are wrapping all resolve a single item depending on the API.
+        // For instance, importXML resolves { warnings } and saveXML returns { xml }.
+        // That's why we can call the callback with the first item of result.
+        return callback(null, result[firstKey]);
+
+        // Passing a second paramter instead of catch because we don't want to
+        // catch errors thrown by callback().
+      }, function(err) {
+
+        return callback(err, err.warnings);
+      });
+    } else {
+
+      return api.apply(this, arguments);
+    }
+  };
+}
+
 // CONCATENATED MODULE: ./node_modules/bpmn-js/lib/util/PoweredByUtil.js
 /**
  * This file must not be changed or exchanged.
@@ -33680,15 +35433,17 @@ function importBpmnDiagram(diagram, definitions, bpmnDiagram, done) {
 
 
 // inlined ../../resources/logo.svg
-var BPMNIO_LOGO_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 960"><path fill="#fff" d="M960 60v839c0 33-27 61-60 61H60c-33 0-60-27-60-60V60C0 27 27 0 60 0h839c34 0 61 27 61 60z"/><path fill="#52b415" d="M217 548a205 205 0 0 0-144 58 202 202 0 0 0-4 286 202 202 0 0 0 285 3 200 200 0 0 0 48-219 203 203 0 0 0-185-128zM752 6a206 206 0 0 0-192 285 206 206 0 0 0 269 111 207 207 0 0 0 111-260A204 204 0 0 0 752 6zM62 0A62 62 0 0 0 0 62v398l60 46a259 259 0 0 1 89-36c5-28 10-57 14-85l99 2 12 85a246 246 0 0 1 88 38l70-52 69 71-52 68c17 30 29 58 35 90l86 14-2 100-86 12a240 240 0 0 1-38 89l43 58h413c37 0 60-27 60-61V407a220 220 0 0 1-44 40l21 85-93 39-45-76a258 258 0 0 1-98 1l-45 76-94-39 22-85a298 298 0 0 1-70-69l-86 22-38-94 76-45a258 258 0 0 1-1-98l-76-45 40-94 85 22a271 271 0 0 1 41-47z"/></svg>';
+var BPMNIO_LOGO_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14.02 5.57" width="53" height="21" style="vertical-align:middle"><path fill="currentColor" d="M1.88.92v.14c0 .41-.13.68-.4.8.33.14.46.44.46.86v.33c0 .61-.33.95-.95.95H0V0h.95c.65 0 .93.3.93.92zM.63.57v1.06h.24c.24 0 .38-.1.38-.43V.98c0-.28-.1-.4-.32-.4zm0 1.63v1.22h.36c.2 0 .32-.1.32-.39v-.35c0-.37-.12-.48-.4-.48H.63zM4.18.99v.52c0 .64-.31.98-.94.98h-.3V4h-.62V0h.92c.63 0 .94.35.94.99zM2.94.57v1.35h.3c.2 0 .3-.09.3-.37v-.6c0-.29-.1-.38-.3-.38h-.3zm2.89 2.27L6.25 0h.88v4h-.6V1.12L6.1 3.99h-.6l-.46-2.82v2.82h-.55V0h.87zM8.14 1.1V4h-.56V0h.79L9 2.4V0h.56v4h-.64zm2.49 2.29v.6h-.6v-.6zM12.12 1c0-.63.33-1 .95-1 .61 0 .95.37.95 1v2.04c0 .64-.34 1-.95 1-.62 0-.95-.37-.95-1zm.62 2.08c0 .28.13.39.33.39s.32-.1.32-.4V.98c0-.29-.12-.4-.32-.4s-.33.11-.33.4z"/><path fill="currentColor" d="M0 4.53h14.02v1.04H0zM11.08 0h.63v.62h-.63zm.63 4V1h-.63v2.98z"/></svg>';
 
-var BPMNIO_LOGO_URL = 'data:image/svg+xml,' + encodeURIComponent(BPMNIO_LOGO_SVG);
-
-var BPMNIO_IMG = '<img width="52" height="52" src="' + BPMNIO_LOGO_URL + '" />';
+var BPMNIO_IMG = BPMNIO_LOGO_SVG;
 
 function css(attrs) {
   return attrs.join(';');
 }
+
+var LINK_STYLES = css([
+  'color: #404040'
+]);
 
 var LIGHTBOX_STYLES = css([
   'z-index: 1001',
@@ -33702,33 +35457,35 @@ var LIGHTBOX_STYLES = css([
 var BACKDROP_STYLES = css([
   'width: 100%',
   'height: 100%',
-  'background: rgba(0,0,0,0.2)'
+  'background: rgba(40,40,40,0.2)'
 ]);
 
 var NOTICE_STYLES = css([
   'position: absolute',
   'left: 50%',
   'top: 40%',
-  'margin: 0 -130px',
+  'transform: translate(-50%)',
   'width: 260px',
   'padding: 10px',
   'background: white',
-  'border: solid 1px #AAA',
-  'border-radius: 3px',
+  'box-shadow: 0 1px 4px rgba(0,0,0,0.3)',
   'font-family: Helvetica, Arial, sans-serif',
   'font-size: 14px',
-  'line-height: 1.2em'
+  'display: flex',
+  'line-height: 1.3'
 ]);
 
 var LIGHTBOX_MARKUP =
   '<div class="bjs-powered-by-lightbox" style="' + LIGHTBOX_STYLES + '">' +
     '<div class="backdrop" style="' + BACKDROP_STYLES + '"></div>' +
     '<div class="notice" style="' + NOTICE_STYLES + '">' +
-      '<a href="http://bpmn.io" target="_blank" style="float: left; margin-right: 10px">' +
+      '<a href="https://bpmn.io" target="_blank" rel="noopener" style="margin: 15px 20px 15px 10px; align-self: center;' + LINK_STYLES + '">' +
         BPMNIO_IMG +
       '</a>' +
-      'Web-based tooling for BPMN, DMN and CMMN diagrams ' +
-      'powered by <a href="http://bpmn.io" target="_blank">bpmn.io</a>.' +
+      '<span>' +
+        'Web-based tooling for BPMN, DMN and CMMN diagrams ' +
+        'powered by <a href="https://bpmn.io" target="_blank" rel="noopener">bpmn.io</a>.' +
+      '</span>' +
     '</div>' +
   '</div>';
 
@@ -33747,6 +35504,7 @@ function PoweredByUtil_open() {
 
   document.body.appendChild(lightbox);
 }
+
 // CONCATENATED MODULE: ./node_modules/bpmn-js/lib/BaseViewer.js
 /**
  * The code in the <project-logo></project-logo> area
@@ -33754,6 +35512,7 @@ function PoweredByUtil_open() {
  *
  * @see http://bpmn.io/license for more information.
  */
+
 
 
 
@@ -33784,7 +35543,7 @@ function PoweredByUtil_open() {
  */
 function BaseViewer(options) {
 
-  options = Object(dist_index_esm["a" /* assign */])({}, DEFAULT_OPTIONS, options);
+  options = Object(dist_index_esm["assign"])({}, DEFAULT_OPTIONS, options);
 
   this._moddle = this._createModdle(options);
 
@@ -33801,6 +35560,21 @@ function BaseViewer(options) {
 
 inherits_browser_default()(BaseViewer, Diagram);
 
+/**
+* The importXML result.
+*
+* @typedef {Object} ImportXMLResult
+*
+* @property {Array<string>} warnings
+*/
+
+/**
+* The importXML error.
+*
+* @typedef {Error} ImportXMLError
+*
+* @property {Array<string>} warnings
+*/
 
 /**
  * Parse and render a BPMN 2.0 diagram.
@@ -33822,53 +35596,103 @@ inherits_browser_default()(BaseViewer, Diagram);
  *
  * @param {string} xml the BPMN 2.0 xml
  * @param {ModdleElement<BPMNDiagram>|string} [bpmnDiagram] BPMN diagram or id of diagram to render (if not provided, the first one will be rendered)
- * @param {Function} [done] invoked with (err, warnings=[])
+ *
+ * Returns {Promise<ImportXMLResult, ImportXMLError>}
  */
-BaseViewer.prototype.importXML = function(xml, bpmnDiagram, done) {
-
-  if (Object(dist_index_esm["n" /* isFunction */])(bpmnDiagram)) {
-    done = bpmnDiagram;
-    bpmnDiagram = null;
-  }
-
-  // done is optional
-  done = done || function() {};
+BaseViewer.prototype.importXML = wrapForCompatibility(function importXML(xml, bpmnDiagram) {
 
   var self = this;
 
-  // hook in pre-parse listeners +
-  // allow xml manipulation
-  xml = this._emit('import.parse.start', { xml: xml }) || xml;
+  function ParseCompleteEvent(data) {
 
-  this._moddle.fromXML(xml, 'bpmn:Definitions', function(err, definitions, context) {
+    var event = self.get('eventBus').createEvent(data);
 
-    // hook in post parse listeners +
-    // allow definitions manipulation
-    definitions = self._emit('import.parse.complete', {
-      error: err,
-      definitions: definitions,
-      context: context
-    }) || definitions;
+    // TODO(nikku): remove with future bpmn-js version
+    Object.defineProperty(event, 'context', {
+      enumerable: true,
+      get: function() {
 
-    var parseWarnings = context.warnings;
+        console.warn(new Error(
+          'import.parse.complete <context> is deprecated ' +
+          'and will be removed in future library versions'
+        ));
 
-    if (err) {
+        return {
+          warnings: data.warnings,
+          references: data.references,
+          elementsById: data.elementsById
+        };
+      }
+    });
+
+    return event;
+  }
+
+  return new Promise(function(resolve, reject) {
+
+    // hook in pre-parse listeners +
+    // allow xml manipulation
+    xml = self._emit('import.parse.start', { xml: xml }) || xml;
+
+    self._moddle.fromXML(xml, 'bpmn:Definitions').then(function(result) {
+      var definitions = result.rootElement;
+      var references = result.references;
+      var parseWarnings = result.warnings;
+      var elementsById = result.elementsById;
+
+      // hook in post parse listeners +
+      // allow definitions manipulation
+      definitions = self._emit('import.parse.complete', ParseCompleteEvent({
+        error: null,
+        definitions: definitions,
+        elementsById: elementsById,
+        references: references,
+        warnings: parseWarnings
+      })) || definitions;
+
+      self.importDefinitions(definitions, bpmnDiagram).then(function(result) {
+        var allWarnings = [].concat(parseWarnings, result.warnings || []);
+
+        self._emit('import.done', { error: null, warnings: allWarnings });
+
+        return resolve({ warnings: allWarnings });
+      }).catch(function(err) {
+        var allWarnings = [].concat(parseWarnings, err.warnings || []);
+
+        self._emit('import.done', { error: err, warnings: allWarnings });
+
+        return reject(addWarningsToError(err, allWarnings));
+      });
+    }).catch(function(err) {
+
+      self._emit('import.parse.complete', {
+        error: err
+      });
+
       err = checkValidationError(err);
 
-      self._emit('import.done', { error: err, warnings: parseWarnings });
+      self._emit('import.done', { error: err, warnings: err.warnings });
 
-      return done(err, parseWarnings);
-    }
-
-    self.importDefinitions(definitions, bpmnDiagram, function(err, importWarnings) {
-      var allWarnings = [].concat(parseWarnings, importWarnings || []);
-
-      self._emit('import.done', { error: err, warnings: allWarnings });
-
-      done(err, allWarnings);
+      return reject(err);
     });
   });
-};
+});
+
+/**
+* The importDefinitions result.
+*
+* @typedef {Object} ImportDefinitionsResult
+*
+* @property {Array<string>} warnings
+*/
+
+/**
+* The importDefinitions error.
+*
+* @typedef {Error} ImportDefinitionsError
+*
+* @property {Array<string>} warnings
+*/
 
 /**
  * Import parsed definitions and render a BPMN 2.0 diagram.
@@ -33887,22 +35711,44 @@ BaseViewer.prototype.importXML = function(xml, bpmnDiagram, done) {
  *
  * @param {ModdleElement<Definitions>} definitions parsed BPMN 2.0 definitions
  * @param {ModdleElement<BPMNDiagram>|string} [bpmnDiagram] BPMN diagram or id of diagram to render (if not provided, the first one will be rendered)
- * @param {Function} [done] invoked with (err, warnings=[])
+ *
+ * Returns {Promise<ImportDefinitionsResult, ImportDefinitionsError>}
  */
-BaseViewer.prototype.importDefinitions = function(definitions, bpmnDiagram, done) {
+BaseViewer.prototype.importDefinitions = wrapForCompatibility(function importDefinitions(definitions, bpmnDiagram) {
 
-  if (Object(dist_index_esm["n" /* isFunction */])(bpmnDiagram)) {
-    done = bpmnDiagram;
-    bpmnDiagram = null;
-  }
+  var self = this;
 
-  // done is optional
-  done = done || function() {};
+  return new Promise(function(resolve, reject) {
 
-  this._setDefinitions(definitions);
+    self._setDefinitions(definitions);
 
-  return this.open(bpmnDiagram, done);
-};
+    self.open(bpmnDiagram).then(function(result) {
+
+      var warnings = result.warnings;
+
+      return resolve({ warnings: warnings });
+    }).catch(function(err) {
+
+      return reject(err);
+    });
+  });
+});
+
+/**
+ * The open result.
+ *
+ * @typedef {Object} OpenResult
+ *
+ * @property {Array<string>} warnings
+ */
+
+/**
+* The open error.
+*
+* @typedef {Error} OpenError
+*
+* @property {Array<string>} warnings
+*/
 
 /**
  * Open diagram of previously imported XML.
@@ -33920,44 +35766,62 @@ BaseViewer.prototype.importDefinitions = function(definitions, bpmnDiagram, done
  * You can use these events to hook into the life-cycle.
  *
  * @param {string|ModdleElement<BPMNDiagram>} [bpmnDiagramOrId] id or the diagram to open
- * @param {Function} [done] invoked with (err, warnings=[])
+ *
+ * Returns {Promise<OpenResult, OpenError>}
  */
-BaseViewer.prototype.open = function(bpmnDiagramOrId, done) {
-
-  if (Object(dist_index_esm["n" /* isFunction */])(bpmnDiagramOrId)) {
-    done = bpmnDiagramOrId;
-    bpmnDiagramOrId = null;
-  }
+BaseViewer.prototype.open = wrapForCompatibility(function open(bpmnDiagramOrId) {
 
   var definitions = this._definitions;
   var bpmnDiagram = bpmnDiagramOrId;
 
-  // done is optional
-  done = done || function() {};
+  var self = this;
 
-  if (!definitions) {
-    return done(new Error('no XML imported'));
-  }
+  return new Promise(function(resolve, reject) {
+    if (!definitions) {
+      var err1 = new Error('no XML imported');
 
-  if (typeof bpmnDiagramOrId === 'string') {
-    bpmnDiagram = findBPMNDiagram(definitions, bpmnDiagramOrId);
-
-    if (!bpmnDiagram) {
-      return done(new Error('BPMNDiagram <' + bpmnDiagramOrId + '> not found'));
+      return reject(addWarningsToError(err1, []));
     }
-  }
 
-  // clear existing rendered diagram
-  // catch synchronous exceptions during #clear()
-  try {
-    this.clear();
-  } catch (error) {
-    return done(error);
-  }
+    if (typeof bpmnDiagramOrId === 'string') {
+      bpmnDiagram = findBPMNDiagram(definitions, bpmnDiagramOrId);
 
-  // perform graphical import
-  return importBpmnDiagram(this, definitions, bpmnDiagram, done);
-};
+      if (!bpmnDiagram) {
+        var err2 = new Error('BPMNDiagram <' + bpmnDiagramOrId + '> not found');
+
+        return reject(addWarningsToError(err2, []));
+      }
+    }
+
+    // clear existing rendered diagram
+    // catch synchronous exceptions during #clear()
+    try {
+      self.clear();
+    } catch (error) {
+
+      return reject(addWarningsToError(error, []));
+    }
+
+    // perform graphical import
+    importBpmnDiagram(self, definitions, bpmnDiagram).then(function(result) {
+
+      var warnings = result.warnings;
+
+      return resolve({ warnings: warnings });
+    }).catch(function(err) {
+
+      return reject(err);
+    });
+  });
+});
+
+/**
+ * The saveXML result.
+ *
+ * @typedef {Object} SaveXMLResult
+ *
+ * @property {string} xml
+ */
 
 /**
  * Export the currently displayed BPMN 2.0 diagram as
@@ -33977,47 +35841,64 @@ BaseViewer.prototype.open = function(bpmnDiagramOrId, done) {
  * @param {boolean} [options.format=false] output formatted XML
  * @param {boolean} [options.preamble=true] output preamble
  *
- * @param {Function} done invoked with (err, xml)
+ * Returns {Promise<SaveXMLResult, Error>}
  */
-BaseViewer.prototype.saveXML = function(options, done) {
+BaseViewer.prototype.saveXML = wrapForCompatibility(function saveXML(options) {
 
-  if (!done) {
-    done = options;
-    options = {};
-  }
+  options = options || {};
 
   var self = this;
 
   var definitions = this._definitions;
 
-  if (!definitions) {
-    return done(new Error('no definitions loaded'));
-  }
+  return new Promise(function(resolve) {
 
-  // allow to fiddle around with definitions
-  definitions = this._emit('saveXML.start', {
-    definitions: definitions
-  }) || definitions;
+    if (!definitions) {
+      return resolve({
+        error: new Error('no definitions loaded')
+      });
+    }
 
-  this._moddle.toXML(definitions, options, function(err, xml) {
+    // allow to fiddle around with definitions
+    definitions = self._emit('saveXML.start', {
+      definitions: definitions
+    }) || definitions;
 
-    try {
+    self._moddle.toXML(definitions, options).then(function(result) {
+
+      var xml = result.xml;
+
       xml = self._emit('saveXML.serialized', {
-        error: err,
         xml: xml
       }) || xml;
 
-      self._emit('saveXML.done', {
-        error: err,
+      return resolve({
         xml: xml
       });
-    } catch (e) {
-      console.error('error in saveXML life-cycle listener', e);
+    });
+  }).catch(function(error) {
+    return { error: error };
+  }).then(function(result) {
+
+    self._emit('saveXML.done', result);
+
+    var error = result.error;
+
+    if (error) {
+      return Promise.reject(error);
     }
 
-    done(err, xml);
+    return result;
   });
-};
+});
+
+/**
+ * The saveSVG result.
+ *
+ * @typedef {Object} SaveSVGResult
+ *
+ * @property {string} svg
+ */
 
 /**
  * Export the currently displayed BPMN 2.0 diagram as
@@ -34033,50 +35914,57 @@ BaseViewer.prototype.saveXML = function(options, done) {
  * You can use these events to hook into the life-cycle.
  *
  * @param {Object} [options]
- * @param {Function} done invoked with (err, svgStr)
+ *
+ * Returns {Promise<SaveSVGResult, Error>}
  */
-BaseViewer.prototype.saveSVG = function(options, done) {
+BaseViewer.prototype.saveSVG = wrapForCompatibility(function saveSVG(options) {
 
-  if (!done) {
-    done = options;
-    options = {};
-  }
+  options = options || {};
 
-  this._emit('saveSVG.start');
+  var self = this;
 
-  var svg, err;
+  return new Promise(function(resolve, reject) {
 
-  try {
-    var canvas = this.get('canvas');
+    self._emit('saveSVG.start');
 
-    var contentNode = canvas.getDefaultLayer(),
-        defsNode = Object(min_dom_dist_index_esm["query"])('defs', canvas._svg);
+    var svg, err;
 
-    var contents = innerSVG(contentNode),
-        defs = defsNode ? '<defs>' + innerSVG(defsNode) + '</defs>' : '';
+    try {
+      var canvas = self.get('canvas');
 
-    var bbox = contentNode.getBBox();
+      var contentNode = canvas.getDefaultLayer(),
+          defsNode = Object(min_dom_dist_index_esm["query"])('defs', canvas._svg);
 
-    svg =
-      '<?xml version="1.0" encoding="utf-8"?>\n' +
-      '<!-- created with bpmn-js / http://bpmn.io -->\n' +
-      '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">\n' +
-      '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" ' +
-           'width="' + bbox.width + '" height="' + bbox.height + '" ' +
-           'viewBox="' + bbox.x + ' ' + bbox.y + ' ' + bbox.width + ' ' + bbox.height + '" version="1.1">' +
-        defs + contents +
-      '</svg>';
-  } catch (e) {
-    err = e;
-  }
+      var contents = innerSVG(contentNode),
+          defs = defsNode ? '<defs>' + innerSVG(defsNode) + '</defs>' : '';
 
-  this._emit('saveSVG.done', {
-    error: err,
-    svg: svg
+      var bbox = contentNode.getBBox();
+
+      svg =
+        '<?xml version="1.0" encoding="utf-8"?>\n' +
+        '<!-- created with bpmn-js / http://bpmn.io -->\n' +
+        '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">\n' +
+        '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" ' +
+             'width="' + bbox.width + '" height="' + bbox.height + '" ' +
+             'viewBox="' + bbox.x + ' ' + bbox.y + ' ' + bbox.width + ' ' + bbox.height + '" version="1.1">' +
+          defs + contents +
+        '</svg>';
+    } catch (e) {
+      err = e;
+    }
+
+    self._emit('saveSVG.done', {
+      error: err,
+      svg: svg
+    });
+
+    if (!err) {
+      return resolve({ svg: svg });
+    }
+
+    return reject(err);
   });
-
-  done(err, svg);
-};
+});
 
 /**
  * Get a named diagram service.
@@ -34244,8 +36132,8 @@ BaseViewer.prototype._init = function(container, moddle, options) {
 
   var diagramModules = [].concat(staticModules, baseModules, additionalModules);
 
-  var diagramOptions = Object(dist_index_esm["a" /* assign */])(Object(dist_index_esm["w" /* omit */])(options, [ 'additionalModules' ]), {
-    canvas: Object(dist_index_esm["a" /* assign */])({}, options.canvas, { container: container }),
+  var diagramOptions = Object(dist_index_esm["assign"])(Object(dist_index_esm["omit"])(options, [ 'additionalModules' ]), {
+    canvas: Object(dist_index_esm["assign"])({}, options.canvas, { container: container }),
     modules: diagramModules
   });
 
@@ -34273,7 +36161,7 @@ BaseViewer.prototype._createContainer = function(options) {
 
   var container = Object(min_dom_dist_index_esm["domify"])('<div class="bjs-container"></div>');
 
-  Object(dist_index_esm["a" /* assign */])(container.style, {
+  Object(dist_index_esm["assign"])(container.style, {
     width: ensureUnit(options.width),
     height: ensureUnit(options.height),
     position: options.position
@@ -34283,15 +36171,19 @@ BaseViewer.prototype._createContainer = function(options) {
 };
 
 BaseViewer.prototype._createModdle = function(options) {
-  var moddleOptions = Object(dist_index_esm["a" /* assign */])({}, this._moddleExtensions, options.moddleExtensions);
+  var moddleOptions = Object(dist_index_esm["assign"])({}, this._moddleExtensions, options.moddleExtensions);
 
   return new bpmn_moddle_dist_index_esm(moddleOptions);
 };
 
 BaseViewer.prototype._modules = [];
 
-
 // helpers ///////////////
+
+function addWarningsToError(err, warningsAry) {
+  err.warnings = warningsAry;
+  return err;
+}
 
 function checkValidationError(err) {
 
@@ -34321,7 +36213,7 @@ var DEFAULT_OPTIONS = {
  * Ensure the passed argument is a proper unit (defaulting to px)
  */
 function ensureUnit(val) {
-  return val + (Object(dist_index_esm["p" /* isNumber */])(val) ? 'px' : '');
+  return val + (Object(dist_index_esm["isNumber"])(val) ? 'px' : '');
 }
 
 
@@ -34338,7 +36230,7 @@ function findBPMNDiagram(definitions, diagramId) {
     return null;
   }
 
-  return Object(dist_index_esm["f" /* find */])(definitions.diagrams, function(element) {
+  return Object(dist_index_esm["find"])(definitions.diagrams, function(element) {
     return element.id === diagramId;
   }) || null;
 }
@@ -34366,7 +36258,7 @@ function addProjectLogo(container) {
        'target="_blank" ' +
        'class="bjs-powered-by" ' +
        'title="Powered by bpmn.io" ' +
-       'style="position: absolute; bottom: 15px; right: 15px; z-index: 100">' +
+       'style="position: absolute; bottom: 15px; right: 15px; z-index: 100; ' + LINK_STYLES + '">' +
       img +
     '</a>';
 
@@ -34382,6 +36274,7 @@ function addProjectLogo(container) {
 }
 
 /* </project-logo> */
+
 // CONCATENATED MODULE: ./node_modules/bpmn-js/lib/BaseModeler.js
 
 
@@ -34409,7 +36302,7 @@ function BaseModeler(options) {
   // hook ID collection into the modeler
   this.on('import.parse.complete', function(event) {
     if (!event.error) {
-      this._collectIds(event.definitions, event.context);
+      this._collectIds(event.definitions, event.elementsById);
     }
   }, this);
 
@@ -34444,7 +36337,7 @@ BaseModeler.prototype._createModdle = function(options) {
  * @param {ModdleElement} definitions
  * @param {Context} context
  */
-BaseModeler.prototype._collectIds = function(definitions, context) {
+BaseModeler.prototype._collectIds = function(definitions, elementsById) {
 
   var moddle = definitions.$model,
       ids = moddle.ids,
@@ -34453,10 +36346,11 @@ BaseModeler.prototype._collectIds = function(definitions, context) {
   // remove references from previous import
   ids.clear();
 
-  for (id in context.elementsById) {
-    ids.claim(id, context.elementsById[id]);
+  for (id in elementsById) {
+    ids.claim(id, elementsById[id]);
   }
 };
+
 // EXTERNAL MODULE: ./node_modules/bpmn-js/lib/util/ModelUtil.js
 var ModelUtil = __webpack_require__(1);
 
@@ -34473,7 +36367,7 @@ function isExpanded(element) {
   }
 
   if (Object(ModelUtil["is"])(element, 'bpmn:SubProcess')) {
-    return !!Object(ModelUtil["getBusinessObject"])(element).di.isExpanded;
+    return Object(ModelUtil["getBusinessObject"])(element).di && !!Object(ModelUtil["getBusinessObject"])(element).di.isExpanded;
   }
 
   if (Object(ModelUtil["is"])(element, 'bpmn:Participant')) {
@@ -34496,7 +36390,7 @@ function DiUtil_hasEventDefinition(element, eventType) {
       hasEventDefinition = false;
 
   if (bo.eventDefinitions) {
-    Object(dist_index_esm["i" /* forEach */])(bo.eventDefinitions, function(event) {
+    Object(dist_index_esm["forEach"])(bo.eventDefinitions, function(event) {
       if (Object(ModelUtil["is"])(event, eventType)) {
         hasEventDefinition = true;
       }
@@ -34602,7 +36496,7 @@ function setLabel(element, text, isExternal) {
 function isTypedEvent(event, eventDefinitionType, filter) {
 
   function matches(definition, filter) {
-    return Object(dist_index_esm["d" /* every */])(filter, function(val, key) {
+    return Object(dist_index_esm["every"])(filter, function(val, key) {
 
       // we want a == conversion here, to be able to catch
       // undefined == false and friends
@@ -34611,7 +36505,7 @@ function isTypedEvent(event, eventDefinitionType, filter) {
     });
   }
 
-  return Object(dist_index_esm["A" /* some */])(event.eventDefinitions, function(definition) {
+  return Object(dist_index_esm["some"])(event.eventDefinitions, function(definition) {
     return definition.$type === eventDefinitionType && matches(event, filter);
   });
 }
@@ -34638,13 +36532,24 @@ function getSemantic(element) {
 // color access //////////////////////
 
 function getFillColor(element, defaultColor) {
-  return getDi(element).get('bioc:fill') || defaultColor || 'white';
+  var di = getDi(element);
+
+  return di.get('color:background-color') || di.get('bioc:fill') || defaultColor || 'white';
 }
 
 function getStrokeColor(element, defaultColor) {
-  return getDi(element).get('bioc:stroke') || defaultColor || 'black';
+  var di = getDi(element);
+
+  return di.get('color:border-color') || di.get('bioc:stroke') || defaultColor || 'black';
 }
 
+function getLabelColor(element, defaultColor, defaultStrokeColor) {
+  var di = getDi(element),
+      label = di.get('label');
+
+  return label && label.get('color:color') || defaultColor ||
+    getStrokeColor(element, defaultStrokeColor);
+}
 
 // cropping path customizations //////////////////////
 
@@ -34757,6 +36662,7 @@ var INNER_OUTER_DIST = 3;
 var DEFAULT_FILL_OPACITY = .95,
     HIGH_FILL_OPACITY = .35;
 
+var ELEMENT_LABEL_DISTANCE = 10;
 
 function BpmnRenderer(
     config, eventBus, styles, pathMap,
@@ -34765,7 +36671,8 @@ function BpmnRenderer(
   BaseRenderer.call(this, eventBus, priority);
 
   var defaultFillColor = config && config.defaultFillColor,
-      defaultStrokeColor = config && config.defaultStrokeColor;
+      defaultStrokeColor = config && config.defaultStrokeColor,
+      defaultLabelColor = config && config.defaultLabelColor;
 
   var rendererId = RENDERER_IDS.next();
 
@@ -34774,7 +36681,7 @@ function BpmnRenderer(
   var computeStyle = styles.computeStyle;
 
   function addMarker(id, options) {
-    var attrs = Object(dist_index_esm["a" /* assign */])({
+    var attrs = Object(dist_index_esm["assign"])({
       fill: 'black',
       strokeWidth: 1,
       strokeLinecap: 'round',
@@ -34946,7 +36853,7 @@ function BpmnRenderer(
 
   function drawCircle(parentGfx, width, height, offset, attrs) {
 
-    if (Object(dist_index_esm["q" /* isObject */])(offset)) {
+    if (Object(dist_index_esm["isObject"])(offset)) {
       attrs = offset;
       offset = 0;
     }
@@ -34981,7 +36888,7 @@ function BpmnRenderer(
 
   function drawRect(parentGfx, width, height, r, offset, attrs) {
 
-    if (Object(dist_index_esm["q" /* isObject */])(offset)) {
+    if (Object(dist_index_esm["isObject"])(offset)) {
       attrs = offset;
       offset = 0;
     }
@@ -35069,7 +36976,7 @@ function BpmnRenderer(
   }
 
   function drawMarker(type, parentGfx, path, attrs) {
-    return drawPath(parentGfx, path, Object(dist_index_esm["a" /* assign */])({ 'data-marker': type }, attrs));
+    return drawPath(parentGfx, path, Object(dist_index_esm["assign"])({ 'data-marker': type }, attrs));
   }
 
   function as(type) {
@@ -35141,7 +37048,7 @@ function BpmnRenderer(
 
   function renderLabel(parentGfx, label, options) {
 
-    options = Object(dist_index_esm["a" /* assign */])({
+    options = Object(dist_index_esm["assign"])({
       size: {
         width: 100
       }
@@ -35164,7 +37071,7 @@ function BpmnRenderer(
       align: align,
       padding: 5,
       style: {
-        fill: getStrokeColor(element, defaultStrokeColor)
+        fill: getLabelColor(element, defaultLabelColor, defaultStrokeColor)
       }
     });
   }
@@ -35181,11 +37088,11 @@ function BpmnRenderer(
     return renderLabel(parentGfx, getLabel(element), {
       box: box,
       fitBox: true,
-      style: Object(dist_index_esm["a" /* assign */])(
+      style: Object(dist_index_esm["assign"])(
         {},
         textRenderer.getExternalStyle(),
         {
-          fill: getStrokeColor(element, defaultStrokeColor)
+          fill: getLabelColor(element, defaultLabelColor, defaultStrokeColor)
         }
       )
     });
@@ -35199,7 +37106,7 @@ function BpmnRenderer(
       },
       align: 'center-middle',
       style: {
-        fill: getStrokeColor(element, defaultStrokeColor)
+        fill: getLabelColor(element, defaultLabelColor, defaultStrokeColor)
       }
     });
 
@@ -35783,7 +37690,7 @@ function BpmnRenderer(
       return task;
     },
     'bpmn:SubProcess': function(parentGfx, element, attrs) {
-      attrs = Object(dist_index_esm["a" /* assign */])({
+      attrs = Object(dist_index_esm["assign"])({
         fill: getFillColor(element, defaultFillColor),
         stroke: getStrokeColor(element, defaultStrokeColor)
       }, attrs);
@@ -35855,7 +37762,7 @@ function BpmnRenderer(
         renderLabel(parentGfx, text2, {
           box: element, align: 'center-middle',
           style: {
-            fill: getStrokeColor(element, defaultStrokeColor)
+            fill: getLabelColor(element, defaultLabelColor, defaultStrokeColor)
           }
         });
       }
@@ -35869,7 +37776,7 @@ function BpmnRenderer(
       return lane;
     },
     'bpmn:Lane': function(parentGfx, element, attrs) {
-      var rect = drawRect(parentGfx, element.width, element.height, 0, Object(dist_index_esm["a" /* assign */])({
+      var rect = drawRect(parentGfx, element.width, element.height, 0, Object(dist_index_esm["assign"])({
         fill: getFillColor(element, defaultFillColor),
         fillOpacity: HIGH_FILL_OPACITY,
         stroke: getStrokeColor(element, defaultStrokeColor)
@@ -36091,7 +37998,7 @@ function BpmnRenderer(
       var fill = getFillColor(element, defaultFillColor),
           stroke = getStrokeColor(element, defaultStrokeColor);
 
-      attrs = Object(dist_index_esm["a" /* assign */])({
+      attrs = Object(dist_index_esm["assign"])({
         strokeDasharray: '0.5, 5',
         strokeLinecap: 'round',
         strokeLinejoin: 'round',
@@ -36167,7 +38074,25 @@ function BpmnRenderer(
           messageAttrs.stroke = 'white';
         }
 
-        drawPath(parentGfx, markerPathData, messageAttrs);
+        var message = drawPath(parentGfx, markerPathData, messageAttrs);
+
+        var labelText = semantic.messageRef.name;
+        var label = renderLabel(parentGfx, labelText, {
+          align: 'center-top',
+          fitBox: true,
+          style: {
+            fill: getStrokeColor(element, defaultLabelColor, defaultStrokeColor)
+          }
+        });
+
+        var messageBounds = message.getBBox(),
+            labelBounds = label.getBBox();
+
+        var translateX = midPoint.x - labelBounds.width / 2,
+            translateY = midPoint.y + messageBounds.height / 2 + ELEMENT_LABEL_DISTANCE;
+
+        SvgTransformUtil_transform(label, translateX, translateY, 0);
+
       }
 
       return path;
@@ -36261,12 +38186,12 @@ function BpmnRenderer(
       }
 
       // apply fillOpacity
-      var outerAttrs = Object(dist_index_esm["a" /* assign */])({}, attrs, {
+      var outerAttrs = Object(dist_index_esm["assign"])({}, attrs, {
         fillOpacity: 1
       });
 
       // apply no-fill
-      var innerAttrs = Object(dist_index_esm["a" /* assign */])({}, attrs, {
+      var innerAttrs = Object(dist_index_esm["assign"])({}, attrs, {
         fill: 'none'
       });
 
@@ -36322,7 +38247,7 @@ function BpmnRenderer(
         align: 'left-top',
         padding: 5,
         style: {
-          fill: getStrokeColor(element, defaultStrokeColor)
+          fill: getLabelColor(element, defaultLabelColor, defaultStrokeColor)
         }
       });
 
@@ -36341,7 +38266,7 @@ function BpmnRenderer(
       });
 
       drawMarker('participant-multiplicity', parentGfx, markerPath, {
-        strokeWidth: 1,
+        strokeWidth: 2,
         fill: getFillColor(element, defaultFillColor),
         stroke: getStrokeColor(element, defaultStrokeColor)
       });
@@ -36489,7 +38414,7 @@ function BpmnRenderer(
       };
     }
 
-    Object(dist_index_esm["i" /* forEach */])(taskMarkers, function(marker) {
+    Object(dist_index_esm["forEach"])(taskMarkers, function(marker) {
       renderer(marker)(parentGfx, element, position);
     });
 
@@ -36522,7 +38447,7 @@ function BpmnRenderer(
 
   function renderDataItemCollection(parentGfx, element) {
 
-    var yPosition = (element.height - 16) / element.height;
+    var yPosition = (element.height - 18) / element.height;
 
     var pathData = pathMap.getScaledPath('DATA_OBJECT_COLLECTION_PATH', {
       xScaleFactor: 1,
@@ -36530,7 +38455,7 @@ function BpmnRenderer(
       containerWidth: element.width,
       containerHeight: element.height,
       position: {
-        mx: 0.451,
+        mx: 0.33,
         my: yPosition
       }
     });
@@ -36621,8 +38546,8 @@ function parseAlign(align) {
 
 function parsePadding(padding) {
 
-  if (Object(dist_index_esm["q" /* isObject */])(padding)) {
-    return Object(dist_index_esm["a" /* assign */])({ top: 0, left: 0, right: 0, bottom: 0 }, padding);
+  if (Object(dist_index_esm["isObject"])(padding)) {
+    return Object(dist_index_esm["assign"])({ top: 0, left: 0, right: 0, bottom: 0 }, padding);
   } else {
     return {
       top: padding,
@@ -36712,6 +38637,8 @@ function fit(lines, fitLine, originalLine, textBBox) {
   };
 }
 
+var SOFT_BREAK = '\u00AD';
+
 
 /**
  * Shortens a line based on spacing and hyphens.
@@ -36722,13 +38649,15 @@ function fit(lines, fitLine, originalLine, textBBox) {
  * @return {string} the shortened string
  */
 function semanticShorten(line, maxLength) {
-  var parts = line.split(/(\s|-)/g),
+
+  var parts = line.split(/(\s|-|\u00AD)/g),
       part,
       shortenedParts = [],
       length = 0;
 
-  // try to shorten via spaces + hyphens
+  // try to shorten via break chars
   if (parts.length > 1) {
+
     while ((part = parts.shift())) {
       if (part.length + length < maxLength) {
         shortenedParts.push(part);
@@ -36736,13 +38665,20 @@ function semanticShorten(line, maxLength) {
       } else {
 
         // remove previous part, too if hyphen does not fit anymore
-        if (part === '-') {
+        if (part === '-' || part === SOFT_BREAK) {
           shortenedParts.pop();
         }
 
         break;
       }
     }
+  }
+
+  var last = shortenedParts[shortenedParts.length - 1];
+
+  // translate trailing soft break to actual hyphen
+  if (last && last === SOFT_BREAK) {
+    shortenedParts[shortenedParts.length - 1] = '-';
   }
 
   return shortenedParts.join('');
@@ -36796,7 +38732,7 @@ function getHelperSvg() {
  */
 function Text(config) {
 
-  this._config = Object(dist_index_esm["a" /* assign */])({}, {
+  this._config = Object(dist_index_esm["assign"])({}, {
     size: DEFAULT_LABEL_SIZE,
     padding: DEFAULT_BOX_PADDING,
     style: {},
@@ -36845,15 +38781,17 @@ Text.prototype.getDimensions = function(text, options) {
  * @return {Object} { element, dimensions }
  */
 Text.prototype.layoutText = function(text, options) {
-  var box = Object(dist_index_esm["a" /* assign */])({}, this._config.size, options.box),
-      style = Object(dist_index_esm["a" /* assign */])({}, this._config.style, options.style),
+  var box = Object(dist_index_esm["assign"])({}, this._config.size, options.box),
+      style = Object(dist_index_esm["assign"])({}, this._config.style, options.style),
       align = parseAlign(options.align || this._config.align),
       padding = parsePadding(options.padding !== undefined ? options.padding : this._config.padding),
       fitBox = options.fitBox || false;
 
   var lineHeight = getLineHeight(style);
 
-  var lines = text.split(/\r?\n/g),
+  // we split text by lines and normalize
+  // {soft break} + {line break} => { line break }
+  var lines = text.split(/\u00AD?\r?\n/),
       layouted = [];
 
   var maxWidth = box.width - padding.left - padding.right;
@@ -36875,11 +38813,11 @@ Text.prototype.layoutText = function(text, options) {
     padding.top = padding.bottom = 0;
   }
 
-  var totalHeight = Object(dist_index_esm["y" /* reduce */])(layouted, function(sum, line, idx) {
+  var totalHeight = Object(dist_index_esm["reduce"])(layouted, function(sum, line, idx) {
     return sum + (lineHeight || line.height);
   }, 0) + padding.top + padding.bottom;
 
-  var maxLineWidth = Object(dist_index_esm["y" /* reduce */])(layouted, function(sum, line, idx) {
+  var maxLineWidth = Object(dist_index_esm["reduce"])(layouted, function(sum, line, idx) {
     return line.width > sum ? line.width : sum;
   }, 0);
 
@@ -36900,7 +38838,7 @@ Text.prototype.layoutText = function(text, options) {
 
   // layout each line taking into account that parent
   // shape might resize to fit text size
-  Object(dist_index_esm["i" /* forEach */])(layouted, function(line) {
+  Object(dist_index_esm["forEach"])(layouted, function(line) {
 
     var x;
 
@@ -36963,7 +38901,7 @@ var MIN_TEXT_ANNOTATION_HEIGHT = 30;
 
 function TextRenderer(config) {
 
-  var defaultStyle = Object(dist_index_esm["a" /* assign */])({
+  var defaultStyle = Object(dist_index_esm["assign"])({
     fontFamily: 'Arial, sans-serif',
     fontSize: DEFAULT_FONT_SIZE,
     fontWeight: 'normal',
@@ -36972,7 +38910,7 @@ function TextRenderer(config) {
 
   var fontSize = parseInt(defaultStyle.fontSize, 10) - 1;
 
-  var externalStyle = Object(dist_index_esm["a" /* assign */])({}, defaultStyle, {
+  var externalStyle = Object(dist_index_esm["assign"])({}, defaultStyle, {
     fontSize: fontSize
   }, config && config.externalStyle || {});
 
@@ -37241,14 +39179,11 @@ function PathMap() {
       widthElements: [10, 40, 50, 60]
     },
     'DATA_OBJECT_COLLECTION_PATH': {
-      d:'m {mx}, {my} ' +
-        'm  0 15  l 0 -15 ' +
-        'm  4 15  l 0 -15 ' +
-        'm  4 15  l 0 -15 ',
-      height: 61,
-      width:  51,
-      heightElements: [12],
-      widthElements: [1, 6, 12, 15]
+      d: 'm{mx},{my} m 3,2 l 0,10 m 3,-10 l 0,10 m 3,-10 l 0,10',
+      height: 10,
+      width: 10,
+      heightElements: [],
+      widthElements: []
     },
     'DATA_ARROW': {
       d:'m 5,9 9,0 0,-3 5,5 -5,5 0,-3 -9,0 z',
@@ -37557,7 +39492,7 @@ function format(str, obj) {
 });
 
 // EXTERNAL MODULE: ./node_modules/diagram-js/lib/i18n/translate/index.js + 1 modules
-var i18n_translate = __webpack_require__(14);
+var i18n_translate = __webpack_require__(15);
 
 // CONCATENATED MODULE: ./node_modules/bpmn-js/lib/util/LabelUtil.js
 
@@ -37706,7 +39641,7 @@ function getExternalLabelBounds(semantic, element) {
     size = LabelUtil_DEFAULT_LABEL_SIZE;
   }
 
-  return Object(dist_index_esm["a" /* assign */])({
+  return Object(dist_index_esm["assign"])({
     x: mid.x - size.width / 2,
     y: mid.y - size.height / 2
   }, size);
@@ -37714,361 +39649,6 @@ function getExternalLabelBounds(semantic, element) {
 
 function isLabel(element) {
   return element && !!element.labelTarget;
-}
-
-// CONCATENATED MODULE: ./node_modules/diagram-js/lib/util/Geometry.js
-
-
-/**
- * Computes the distance between two points
- *
- * @param  {Point}  p
- * @param  {Point}  q
- *
- * @return {number}  distance
- */
-function pointDistance(a, b) {
-  if (!a || !b) {
-    return -1;
-  }
-
-  return Math.sqrt(
-    Math.pow(a.x - b.x, 2) +
-    Math.pow(a.y - b.y, 2)
-  );
-}
-
-
-/**
- * Returns true if the point r is on the line between p and q
- *
- * @param  {Point}  p
- * @param  {Point}  q
- * @param  {Point}  r
- * @param  {number} [accuracy=5] accuracy for points on line check (lower is better)
- *
- * @return {boolean}
- */
-function pointsOnLine(p, q, r, accuracy) {
-
-  if (typeof accuracy === 'undefined') {
-    accuracy = 5;
-  }
-
-  if (!p || !q || !r) {
-    return false;
-  }
-
-  var val = (q.x - p.x) * (r.y - p.y) - (q.y - p.y) * (r.x - p.x),
-      dist = pointDistance(p, q);
-
-  // @see http://stackoverflow.com/a/907491/412190
-  return Math.abs(val / dist) <= accuracy;
-}
-
-
-var ALIGNED_THRESHOLD = 2;
-
-/**
- * Check whether two points are horizontally or vertically aligned.
- *
- * @param {Array<Point>|Point}
- * @param {Point}
- *
- * @return {string|boolean}
- */
-function pointsAligned(a, b) {
-  var points;
-
-  if (Object(dist_index_esm["l" /* isArray */])(a)) {
-    points = a;
-  } else {
-    points = [ a, b ];
-  }
-
-  if (pointsAlignedHorizontally(points)) {
-    return 'h';
-  }
-
-  if (pointsAlignedVertically(points)) {
-    return 'v';
-  }
-
-  return false;
-}
-
-function pointsAlignedHorizontally(a, b) {
-  var points;
-
-  if (Object(dist_index_esm["l" /* isArray */])(a)) {
-    points = a;
-  } else {
-    points = [ a, b ];
-  }
-
-  var firstPoint = points.slice().shift();
-
-  return Object(dist_index_esm["d" /* every */])(points, function(point) {
-    return Math.abs(firstPoint.y - point.y) <= ALIGNED_THRESHOLD;
-  });
-}
-
-function pointsAlignedVertically(a, b) {
-  var points;
-
-  if (Object(dist_index_esm["l" /* isArray */])(a)) {
-    points = a;
-  } else {
-    points = [ a, b ];
-  }
-
-  var firstPoint = points.slice().shift();
-
-  return Object(dist_index_esm["d" /* every */])(points, function(point) {
-    return Math.abs(firstPoint.x - point.x) <= ALIGNED_THRESHOLD;
-  });
-}
-
-
-
-/**
- * Returns true if the point p is inside the rectangle rect
- *
- * @param  {Point}  p
- * @param  {Rect} rect
- * @param  {number} tolerance
- *
- * @return {boolean}
- */
-function pointInRect(p, rect, tolerance) {
-  tolerance = tolerance || 0;
-
-  return p.x > rect.x - tolerance &&
-         p.y > rect.y - tolerance &&
-         p.x < rect.x + rect.width + tolerance &&
-         p.y < rect.y + rect.height + tolerance;
-}
-
-/**
- * Returns a point in the middle of points p and q
- *
- * @param  {Point}  p
- * @param  {Point}  q
- *
- * @return {Point} middle point
- */
-function getMidPoint(p, q) {
-  return {
-    x: Math.round(p.x + ((q.x - p.x) / 2.0)),
-    y: Math.round(p.y + ((q.y - p.y) / 2.0))
-  };
-}
-
-// EXTERNAL MODULE: ./node_modules/path-intersection/intersect.js
-var intersect = __webpack_require__(46);
-var intersect_default = /*#__PURE__*/__webpack_require__.n(intersect);
-
-// CONCATENATED MODULE: ./node_modules/diagram-js/lib/layout/LayoutUtil.js
-
-
-
-
-
-
-
-function roundBounds(bounds) {
-  return {
-    x: Math.round(bounds.x),
-    y: Math.round(bounds.y),
-    width: Math.round(bounds.width),
-    height: Math.round(bounds.height)
-  };
-}
-
-
-function roundPoint(point) {
-
-  return {
-    x: Math.round(point.x),
-    y: Math.round(point.y)
-  };
-}
-
-
-/**
- * Convert the given bounds to a { top, left, bottom, right } descriptor.
- *
- * @param {Bounds|Point} bounds
- *
- * @return {Object}
- */
-function asTRBL(bounds) {
-  return {
-    top: bounds.y,
-    right: bounds.x + (bounds.width || 0),
-    bottom: bounds.y + (bounds.height || 0),
-    left: bounds.x
-  };
-}
-
-
-/**
- * Convert a { top, left, bottom, right } to an objects bounds.
- *
- * @param {Object} trbl
- *
- * @return {Bounds}
- */
-function asBounds(trbl) {
-  return {
-    x: trbl.left,
-    y: trbl.top,
-    width: trbl.right - trbl.left,
-    height: trbl.bottom - trbl.top
-  };
-}
-
-
-/**
- * Get the mid of the given bounds or point.
- *
- * @param {Bounds|Point} bounds
- *
- * @return {Point}
- */
-function getMid(bounds) {
-  return roundPoint({
-    x: bounds.x + (bounds.width || 0) / 2,
-    y: bounds.y + (bounds.height || 0) / 2
-  });
-}
-
-
-// orientation utils //////////////////////
-
-/**
- * Get orientation of the given rectangle with respect to
- * the reference rectangle.
- *
- * A padding (positive or negative) may be passed to influence
- * horizontal / vertical orientation and intersection.
- *
- * @param {Bounds} rect
- * @param {Bounds} reference
- * @param {Point|number} padding
- *
- * @return {string} the orientation; one of top, top-left, left, ..., bottom, right or intersect.
- */
-function getOrientation(rect, reference, padding) {
-
-  padding = padding || 0;
-
-  // make sure we can use an object, too
-  // for individual { x, y } padding
-  if (!Object(dist_index_esm["q" /* isObject */])(padding)) {
-    padding = { x: padding, y: padding };
-  }
-
-
-  var rectOrientation = asTRBL(rect),
-      referenceOrientation = asTRBL(reference);
-
-  var top = rectOrientation.bottom + padding.y <= referenceOrientation.top,
-      right = rectOrientation.left - padding.x >= referenceOrientation.right,
-      bottom = rectOrientation.top - padding.y >= referenceOrientation.bottom,
-      left = rectOrientation.right + padding.x <= referenceOrientation.left;
-
-  var vertical = top ? 'top' : (bottom ? 'bottom' : null),
-      horizontal = left ? 'left' : (right ? 'right' : null);
-
-  if (horizontal && vertical) {
-    return vertical + '-' + horizontal;
-  } else {
-    return horizontal || vertical || 'intersect';
-  }
-}
-
-
-// intersection utils //////////////////////
-
-/**
- * Get intersection between an element and a line path.
- *
- * @param {PathDef} elementPath
- * @param {PathDef} linePath
- * @param {boolean} cropStart crop from start or end
- *
- * @return {Point}
- */
-function getElementLineIntersection(elementPath, linePath, cropStart) {
-
-  var intersections = getIntersections(elementPath, linePath);
-
-  // recognize intersections
-  // only one -> choose
-  // two close together -> choose first
-  // two or more distinct -> pull out appropriate one
-  // none -> ok (fallback to point itself)
-  if (intersections.length === 1) {
-    return roundPoint(intersections[0]);
-  } else if (intersections.length === 2 && pointDistance(intersections[0], intersections[1]) < 1) {
-    return roundPoint(intersections[0]);
-  } else if (intersections.length > 1) {
-
-    // sort by intersections based on connection segment +
-    // distance from start
-    intersections = Object(dist_index_esm["B" /* sortBy */])(intersections, function(i) {
-      var distance = Math.floor(i.t2 * 100) || 1;
-
-      distance = 100 - distance;
-
-      distance = (distance < 10 ? '0' : '') + distance;
-
-      // create a sort string that makes sure we sort
-      // line segment ASC + line segment position DESC (for cropStart)
-      // line segment ASC + line segment position ASC (for cropEnd)
-      return i.segment2 + '#' + distance;
-    });
-
-    return roundPoint(intersections[cropStart ? 0 : intersections.length - 1]);
-  }
-
-  return null;
-}
-
-
-function getIntersections(a, b) {
-  return intersect_default()(a, b);
-}
-
-
-function LayoutUtil_filterRedundantWaypoints(waypoints) {
-
-  // alter copy of waypoints, not original
-  waypoints = waypoints.slice();
-
-  var idx = 0,
-      point,
-      previousPoint,
-      nextPoint;
-
-  while (waypoints[idx]) {
-    point = waypoints[idx];
-    previousPoint = waypoints[idx - 1];
-    nextPoint = waypoints[idx + 1];
-
-    if (pointDistance(point, nextPoint) === 0 ||
-        pointsOnLine(previousPoint, nextPoint, point)) {
-
-      // remove point, if overlapping with {nextPoint}
-      // or on line with {previousPoint} -> {point} -> {nextPoint}
-      waypoints.splice(idx, 1);
-    } else {
-      idx++;
-    }
-  }
-
-  return waypoints;
 }
 
 // CONCATENATED MODULE: ./node_modules/bpmn-js/lib/import/BpmnImporter.js
@@ -38088,7 +39668,7 @@ function LayoutUtil_filterRedundantWaypoints(waypoints) {
 
 
 function elementData(semantic, attrs) {
-  return Object(dist_index_esm["a" /* assign */])({
+  return Object(dist_index_esm["assign"])({
     id: semantic.id,
     type: semantic.$type,
     businessObject: semantic
@@ -38468,11 +40048,26 @@ function isMac() {
 
 
 
+function isButton(event, button) {
+  return (getOriginal(event) || event).button === button;
+}
 
 function isPrimaryButton(event) {
 
   // button === 0 -> left áka primary mouse button
-  return !(getOriginal(event) || event).button;
+  return isButton(event, 0);
+}
+
+function isAuxiliaryButton(event) {
+
+  // button === 1 -> auxiliary áka wheel button
+  return isButton(event, 1);
+}
+
+function isSecondaryButton(event) {
+
+  // button === 2 -> right áka secondary button
+  return isButton(event, 2);
 }
 
 function hasPrimaryModifier(event) {
@@ -38482,7 +40077,7 @@ function hasPrimaryModifier(event) {
     return false;
   }
 
-  // Use alt as primary modifier key for mac OS
+  // Use cmd as primary modifier key for mac OS
   if (isMac()) {
     return originalEvent.metaKey;
   } else {
@@ -38496,6 +40091,7 @@ function hasSecondaryModifier(event) {
 
   return isPrimaryButton(event) && originalEvent.shiftKey;
 }
+
 // CONCATENATED MODULE: ./node_modules/diagram-js/lib/features/interaction-events/InteractionEvents.js
 
 
@@ -38507,7 +40103,11 @@ function hasSecondaryModifier(event) {
 
 
 
-function allowAll(e) { return true; }
+function allowAll(event) { return true; }
+
+function allowPrimaryAndAuxiliary(event) {
+  return isPrimaryButton(event) || isAuxiliaryButton(event);
+}
 
 var LOW_PRIORITY = 500;
 
@@ -38609,7 +40209,11 @@ function InteractionEvents(eventBus, elementRegistry, styles) {
   };
 
   var ignoredFilters = {
-    'element.contextmenu': allowAll
+    'element.contextmenu': allowAll,
+    'element.mousedown': allowPrimaryAndAuxiliary,
+    'element.mouseup': allowPrimaryAndAuxiliary,
+    'element.click': allowPrimaryAndAuxiliary,
+    'element.dblclick': allowPrimaryAndAuxiliary
   };
 
 
@@ -38665,13 +40269,13 @@ function InteractionEvents(eventBus, elementRegistry, styles) {
   }
 
   function registerEvents(svg) {
-    Object(dist_index_esm["i" /* forEach */])(bindings, function(val, key) {
+    Object(dist_index_esm["forEach"])(bindings, function(val, key) {
       registerEvent(svg, key, val);
     });
   }
 
   function unregisterEvents(svg) {
-    Object(dist_index_esm["i" /* forEach */])(bindings, function(val, key) {
+    Object(dist_index_esm["forEach"])(bindings, function(val, key) {
       unregisterEvent(svg, key, val);
     });
   }
@@ -38739,7 +40343,7 @@ function InteractionEvents(eventBus, elementRegistry, styles) {
 
   function createHitStyle(classNames, attrs) {
 
-    attrs = Object(dist_index_esm["a" /* assign */])({
+    attrs = Object(dist_index_esm["assign"])({
       stroke: 'white',
       strokeWidth: 15
     }, attrs || {});
@@ -38778,7 +40382,7 @@ function InteractionEvents(eventBus, elementRegistry, styles) {
   this.removeHits = function(gfx) {
     var hits = Object(min_dom_dist_index_esm["queryAll"])('.djs-hit', gfx);
 
-    Object(dist_index_esm["i" /* forEach */])(hits, index_esm_remove);
+    Object(dist_index_esm["forEach"])(hits, index_esm_remove);
   };
 
   /**
@@ -38837,7 +40441,7 @@ function InteractionEvents(eventBus, elementRegistry, styles) {
    */
   this.createBoxHit = function(gfx, type, attrs) {
 
-    attrs = Object(dist_index_esm["a" /* assign */])({
+    attrs = Object(dist_index_esm["assign"])({
       x: 0,
       y: 0
     }, attrs);
@@ -39016,7 +40620,7 @@ function Outline(eventBus, styles, elementRegistry) {
   function createOutline(gfx, bounds) {
     var outline = index_esm_create('rect');
 
-    index_esm_attr(outline, Object(dist_index_esm["a" /* assign */])({
+    index_esm_attr(outline, Object(dist_index_esm["assign"])({
       x: 10,
       y: 10,
       width: 100,
@@ -39178,14 +40782,14 @@ Selection.prototype.select = function(elements, add) {
   var selectedElements = this._selectedElements,
       oldSelection = selectedElements.slice();
 
-  if (!Object(dist_index_esm["l" /* isArray */])(elements)) {
+  if (!Object(dist_index_esm["isArray"])(elements)) {
     elements = elements ? [ elements ] : [];
   }
 
   // selection may be cleared by passing an empty array or null
   // to the method
   if (add) {
-    Object(dist_index_esm["i" /* forEach */])(elements, function(element) {
+    Object(dist_index_esm["forEach"])(elements, function(element) {
       if (selectedElements.indexOf(element) !== -1) {
 
         // already selected
@@ -39253,13 +40857,13 @@ function SelectionVisuals(events, canvas, selection, styles) {
     var oldSelection = event.oldSelection,
         newSelection = event.newSelection;
 
-    Object(dist_index_esm["i" /* forEach */])(oldSelection, function(e) {
+    Object(dist_index_esm["forEach"])(oldSelection, function(e) {
       if (newSelection.indexOf(e) === -1) {
         deselect(e);
       }
     });
 
-    Object(dist_index_esm["i" /* forEach */])(newSelection, function(e) {
+    Object(dist_index_esm["forEach"])(newSelection, function(e) {
       if (oldSelection.indexOf(e) === -1) {
         select(e);
       }
@@ -39296,7 +40900,7 @@ function SelectionBehavior(eventBus, selection, canvas, elementRegistry) {
         return;
       }
 
-      if (Object(dist_index_esm["l" /* isArray */])(autoSelect)) {
+      if (Object(dist_index_esm["isArray"])(autoSelect)) {
         selection.select(autoSelect);
       } else {
 
@@ -39324,7 +40928,7 @@ function SelectionBehavior(eventBus, selection, canvas, elementRegistry) {
     var shape = elementRegistry.get(event.context.shape.id);
 
     // Always select main shape on move
-    var isSelected = Object(dist_index_esm["f" /* find */])(previousSelection, function(selectedShape) {
+    var isSelected = Object(dist_index_esm["find"])(previousSelection, function(selectedShape) {
       return shape.id === selectedShape.id;
     });
 
@@ -39335,6 +40939,11 @@ function SelectionBehavior(eventBus, selection, canvas, elementRegistry) {
 
   // Select elements on click
   eventBus.on('element.click', function(event) {
+
+    if (!isPrimaryButton(event)) {
+      return;
+    }
+
     var element = event.element;
 
     if (element === canvas.getRootElement()) {
@@ -39517,7 +41126,7 @@ function Overlays(config, eventBus, canvas, elementRegistry) {
 
   this._ids = Overlays_ids;
 
-  this._overlayDefaults = Object(dist_index_esm["a" /* assign */])({
+  this._overlayDefaults = Object(dist_index_esm["assign"])({
 
     // no show constraints
     show: null,
@@ -39579,11 +41188,11 @@ Overlays.$inject = [
  */
 Overlays.prototype.get = function(search) {
 
-  if (Object(dist_index_esm["r" /* isString */])(search)) {
+  if (Object(dist_index_esm["isString"])(search)) {
     search = { id: search };
   }
 
-  if (Object(dist_index_esm["r" /* isString */])(search.element)) {
+  if (Object(dist_index_esm["isString"])(search.element)) {
     search.element = this._elementRegistry.get(search.element);
   }
 
@@ -39592,13 +41201,13 @@ Overlays.prototype.get = function(search) {
 
     // return a list of overlays when searching by element (+type)
     if (container) {
-      return search.type ? Object(dist_index_esm["e" /* filter */])(container.overlays, Object(dist_index_esm["v" /* matchPattern */])({ type: search.type })) : container.overlays.slice();
+      return search.type ? Object(dist_index_esm["filter"])(container.overlays, Object(dist_index_esm["matchPattern"])({ type: search.type })) : container.overlays.slice();
     } else {
       return [];
     }
   } else
   if (search.type) {
-    return Object(dist_index_esm["e" /* filter */])(this._overlays, Object(dist_index_esm["v" /* matchPattern */])({ type: search.type }));
+    return Object(dist_index_esm["filter"])(this._overlays, Object(dist_index_esm["matchPattern"])({ type: search.type }));
   } else {
 
     // return single element when searching by id
@@ -39631,7 +41240,7 @@ Overlays.prototype.get = function(search) {
  */
 Overlays.prototype.add = function(element, type, overlay) {
 
-  if (Object(dist_index_esm["q" /* isObject */])(type)) {
+  if (Object(dist_index_esm["isObject"])(type)) {
     overlay = type;
     type = null;
   }
@@ -39654,7 +41263,7 @@ Overlays.prototype.add = function(element, type, overlay) {
 
   var id = this._ids.next();
 
-  overlay = Object(dist_index_esm["a" /* assign */])({}, this._overlayDefaults, overlay, {
+  overlay = Object(dist_index_esm["assign"])({}, this._overlayDefaults, overlay, {
     id: id,
     type: type,
     element: element,
@@ -39679,13 +41288,13 @@ Overlays.prototype.remove = function(filter) {
 
   var overlays = this.get(filter) || [];
 
-  if (!Object(dist_index_esm["l" /* isArray */])(overlays)) {
+  if (!Object(dist_index_esm["isArray"])(overlays)) {
     overlays = [ overlays ];
   }
 
   var self = this;
 
-  Object(dist_index_esm["i" /* forEach */])(overlays, function(overlay) {
+  Object(dist_index_esm["forEach"])(overlays, function(overlay) {
 
     var container = self._getOverlayContainer(overlay.element, true);
 
@@ -39830,7 +41439,7 @@ Overlays.prototype._updateRoot = function(viewbox) {
 
 
 Overlays.prototype._getOverlayContainer = function(element, raw) {
-  var container = Object(dist_index_esm["f" /* find */])(this._overlayContainers, function(c) {
+  var container = Object(dist_index_esm["find"])(this._overlayContainers, function(c) {
     return c.element === element;
   });
 
@@ -39858,7 +41467,7 @@ Overlays.prototype._addOverlay = function(overlay) {
 
   // create proper html elements from
   // overlay HTML strings
-  if (Object(dist_index_esm["r" /* isString */])(html)) {
+  if (Object(dist_index_esm["isString"])(html)) {
     html = Object(min_dom_dist_index_esm["domify"])(html);
   }
 
@@ -39893,8 +41502,8 @@ Overlays.prototype._updateOverlayVisibilty = function(overlay, viewbox) {
 
   if (show) {
     if (
-      (Object(dist_index_esm["m" /* isDefined */])(minZoom) && minZoom > viewbox.scale) ||
-      (Object(dist_index_esm["m" /* isDefined */])(maxZoom) && maxZoom < viewbox.scale)
+      (Object(dist_index_esm["isDefined"])(minZoom) && minZoom > viewbox.scale) ||
+      (Object(dist_index_esm["isDefined"])(maxZoom) && maxZoom < viewbox.scale)
     ) {
       visible = false;
     }
@@ -39924,16 +41533,16 @@ Overlays.prototype._updateOverlayScale = function(overlay, viewbox) {
       maxScale = shouldScale.max;
     }
 
-    if (Object(dist_index_esm["m" /* isDefined */])(minScale) && viewbox.scale < minScale) {
+    if (Object(dist_index_esm["isDefined"])(minScale) && viewbox.scale < minScale) {
       scale = (1 / viewbox.scale || 1) * minScale;
     }
 
-    if (Object(dist_index_esm["m" /* isDefined */])(maxScale) && viewbox.scale > maxScale) {
+    if (Object(dist_index_esm["isDefined"])(maxScale) && viewbox.scale > maxScale) {
       scale = (1 / viewbox.scale || 1) * maxScale;
     }
   }
 
-  if (Object(dist_index_esm["m" /* isDefined */])(scale)) {
+  if (Object(dist_index_esm["isDefined"])(scale)) {
     transform = 'scale(' + scale + ',' + scale + ')';
   }
 
@@ -39945,7 +41554,7 @@ Overlays.prototype._updateOverlaysVisibilty = function(viewbox) {
 
   var self = this;
 
-  Object(dist_index_esm["i" /* forEach */])(this._overlays, function(overlay) {
+  Object(dist_index_esm["forEach"])(this._overlays, function(overlay) {
     self._updateOverlayVisibilty(overlay, viewbox);
   });
 };
@@ -39982,7 +41591,7 @@ Overlays.prototype._init = function() {
     var element = e.element;
     var overlays = self.get({ element: element });
 
-    Object(dist_index_esm["i" /* forEach */])(overlays, function(o) {
+    Object(dist_index_esm["forEach"])(overlays, function(o) {
       self.remove(o.id);
     });
 
@@ -40006,7 +41615,7 @@ Overlays.prototype._init = function() {
     var container = self._getOverlayContainer(element, true);
 
     if (container) {
-      Object(dist_index_esm["i" /* forEach */])(container.overlays, function(overlay) {
+      Object(dist_index_esm["forEach"])(container.overlays, function(overlay) {
         self._updateOverlay(overlay);
       });
 
@@ -40045,7 +41654,7 @@ function createRoot(parentNode) {
 }
 
 function setPosition(el, x, y) {
-  Object(dist_index_esm["a" /* assign */])(el.style, { left: x + 'px', top: y + 'px' });
+  Object(dist_index_esm["assign"])(el.style, { left: x + 'px', top: y + 'px' });
 }
 
 function setVisible(el, visible) {
@@ -40173,7 +41782,7 @@ function isCmd(event) {
  * @param {KeyboardEvent} event
  */
 function isKey(keys, event) {
-  keys = Object(dist_index_esm["l" /* isArray */])(keys) ? keys : [ keys ];
+  keys = Object(dist_index_esm["isArray"])(keys) ? keys : [ keys ];
 
   return keys.indexOf(event.key) !== -1 || keys.indexOf(event.keyCode) !== -1;
 }
@@ -40195,7 +41804,6 @@ var KEYDOWN_EVENT = 'keyboard.keydown',
     KEYUP_EVENT = 'keyboard.keyup';
 
 var Keyboard_DEFAULT_PRIORITY = 1000;
-
 
 /**
  * A keyboard abstraction that may be activated and
@@ -40266,10 +41874,9 @@ Keyboard.prototype._keyupHandler = function(event) {
 };
 
 Keyboard.prototype._keyHandler = function(event, type) {
-  var target = event.target,
-      eventBusResult;
+  var eventBusResult;
 
-  if (isInput(target)) {
+  if (this._isEventIgnored(event)) {
     return;
   }
 
@@ -40282,6 +41889,10 @@ Keyboard.prototype._keyHandler = function(event, type) {
   if (eventBusResult) {
     event.preventDefault();
   }
+};
+
+Keyboard.prototype._isEventIgnored = function(event) {
+  return isInput(event.target) && !isCmd(event);
 };
 
 Keyboard.prototype.bind = function(node) {
@@ -40330,7 +41941,7 @@ Keyboard.prototype._fire = function(event) {
  * @param {string} type
  */
 Keyboard.prototype.addListener = function(priority, listener, type) {
-  if (Object(dist_index_esm["n" /* isFunction */])(priority)) {
+  if (Object(dist_index_esm["isFunction"])(priority)) {
     type = listener;
     listener = priority;
     priority = Keyboard_DEFAULT_PRIORITY;
@@ -40566,7 +42177,7 @@ function KeyboardMove(
 
   var self = this;
 
-  this._config = Object(dist_index_esm["a" /* assign */])({}, DEFAULT_CONFIG, config || {});
+  this._config = Object(dist_index_esm["assign"])({}, DEFAULT_CONFIG, config || {});
 
   keyboard.addListener(arrowsListener);
 
@@ -40774,13 +42385,16 @@ function MoveCanvas(eventBus, canvas) {
   function handleMove(event) {
 
     var start = context.start,
+        button = context.button,
         position = toPoint(event),
         delta = PositionUtil_delta(position, start);
 
     if (!context.dragging && MoveCanvas_length(delta) > THRESHOLD) {
       context.dragging = true;
 
-      install(eventBus);
+      if (button === 0) {
+        install(eventBus);
+      }
 
       Cursor_set('grab');
     }
@@ -40820,13 +42434,15 @@ function MoveCanvas(eventBus, canvas) {
       return;
     }
 
+    var button = event.button;
 
-    // reject non-left left mouse button or modifier key
-    if (event.button || event.ctrlKey || event.shiftKey || event.altKey) {
+    // reject right mouse button or modifier key
+    if (button >= 2 || event.ctrlKey || event.shiftKey || event.altKey) {
       return;
     }
 
     context = {
+      button: button,
       start: toPoint(event)
     };
 
@@ -40836,6 +42452,11 @@ function MoveCanvas(eventBus, canvas) {
     // we've handled the event
     return true;
   }
+
+  this.isActive = function() {
+    return !!context;
+  };
+
 }
 
 
@@ -40936,7 +42557,7 @@ function ZoomScroll(config, eventBus, canvas) {
   this._canvas = canvas;
   this._container = canvas._container;
 
-  this._handleWheel = Object(dist_index_esm["b" /* bind */])(this._handleWheel, this);
+  this._handleWheel = Object(dist_index_esm["bind"])(this._handleWheel, this);
 
   this._totalDelta = 0;
   this._scale = config.scale || DEFAULT_SCALE;
@@ -41164,7 +42785,7 @@ NavigatedViewer.prototype._modules = [].concat(
   NavigatedViewer.prototype._navigationModules
 );
 // EXTERNAL MODULE: ./node_modules/hammerjs/hammer.js
-var hammer = __webpack_require__(19);
+var hammer = __webpack_require__(20);
 var hammer_default = /*#__PURE__*/__webpack_require__.n(hammer);
 
 // CONCATENATED MODULE: ./node_modules/diagram-js/lib/features/touch/TouchInteractionEvents.js
@@ -41219,14 +42840,14 @@ function createTouchRecognizer(node) {
 
   function stopMouse(event) {
 
-    Object(dist_index_esm["i" /* forEach */])(mouseEvents, function(e) {
+    Object(dist_index_esm["forEach"])(mouseEvents, function(e) {
       min_dom_dist_index_esm["event"].bind(node, e, stopEvent, true);
     });
   }
 
   function allowMouse(event) {
     setTimeout(function() {
-      Object(dist_index_esm["i" /* forEach */])(mouseEvents, function(e) {
+      Object(dist_index_esm["forEach"])(mouseEvents, function(e) {
         min_dom_dist_index_esm["event"].unbind(node, e, stopEvent, true);
       });
     }, 500);
@@ -41692,7 +43313,7 @@ AlignElements.prototype._alignmentPosition = function(type, sortedElements) {
 
     // check if there is a center shared by more than one shape
     // if not, just take the middle of the range
-    Object(dist_index_esm["i" /* forEach */])(sortedElements, function(element) {
+    Object(dist_index_esm["forEach"])(sortedElements, function(element) {
       var center = element[axis] + Math.round(element[dimension] / 2);
 
       if (centers[center]) {
@@ -41705,7 +43326,7 @@ AlignElements.prototype._alignmentPosition = function(type, sortedElements) {
       }
     });
 
-    centeredElements = Object(dist_index_esm["B" /* sortBy */])(centers, function(center) {
+    centeredElements = Object(dist_index_esm["sortBy"])(centers, function(center) {
       if (center.elements.length > 1) {
         hasSharedCenters = true;
       }
@@ -41721,7 +43342,7 @@ AlignElements.prototype._alignmentPosition = function(type, sortedElements) {
 
     firstElement = sortedElements[0];
 
-    sortedElements = Object(dist_index_esm["B" /* sortBy */])(sortedElements, function(element) {
+    sortedElements = Object(dist_index_esm["sortBy"])(sortedElements, function(element) {
       return element[axis] + element[dimension];
     });
 
@@ -41736,19 +43357,23 @@ AlignElements.prototype._alignmentPosition = function(type, sortedElements) {
 /**
  * Executes the alignment of a selection of elements
  *
- * @param  {Array} elements [description]
+ * @param  {Array} elements
  * @param  {string} type left|right|center|top|bottom|middle
  */
 AlignElements.prototype.trigger = function(elements, type) {
   var modeling = this._modeling;
 
-  var filteredElements = Object(dist_index_esm["e" /* filter */])(elements, function(element) {
+  var filteredElements = Object(dist_index_esm["filter"])(elements, function(element) {
     return !(element.waypoints || element.host || element.labelTarget);
   });
 
+  if (filteredElements.length < 2) {
+    return;
+  }
+
   var sortFn = ALIGNMENT_SORTING[type];
 
-  var sortedElements = Object(dist_index_esm["B" /* sortBy */])(filteredElements, sortFn);
+  var sortedElements = Object(dist_index_esm["sortBy"])(filteredElements, sortFn);
 
   var alignment = this._alignmentPosition(type, sortedElements);
 
@@ -41859,7 +43484,7 @@ function getConnectedAtPosition(source, position, element) {
 
   var closure = getAutoPlaceClosure(source, element);
 
-  return Object(dist_index_esm["f" /* find */])(closure, function(target) {
+  return Object(dist_index_esm["find"])(closure, function(target) {
 
     if (target === element) {
       return false;
@@ -41981,7 +43606,7 @@ function getConnectedDistance(source, hints) {
     return accumulator;
   }, {});
 
-  var distancesGrouped = Object(dist_index_esm["y" /* reduce */])(distances, function(accumulator, currentValue) {
+  var distancesGrouped = Object(dist_index_esm["reduce"])(distances, function(accumulator, currentValue) {
     var distance = currentValue.distance,
         weight = currentValue.weight;
 
@@ -42070,13 +43695,17 @@ var AutoPlace_LOW_PRIORITY = 100;
  * @param {EventBus} eventBus
  * @param {Modeling} modeling
  */
-function AutoPlace(eventBus, modeling) {
+function AutoPlace(eventBus, modeling, canvas) {
 
   eventBus.on('autoPlace', AutoPlace_LOW_PRIORITY, function(context) {
     var shape = context.shape,
         source = context.source;
 
     return getNewShapePosition(source, shape);
+  });
+
+  eventBus.on('autoPlace.end', function(event) {
+    canvas.scrollToElement(event.shape);
   });
 
   /**
@@ -42114,7 +43743,8 @@ function AutoPlace(eventBus, modeling) {
 
 AutoPlace.$inject = [
   'eventBus',
-  'modeling'
+  'modeling',
+  'canvas'
 ];
 
 // helpers //////////
@@ -42189,7 +43819,7 @@ AutoPlaceSelectionBehavior.$inject = [
  * @return {boolean}
  */
 function isAny(element, types) {
-  return Object(dist_index_esm["A" /* some */])(types, function(t) {
+  return Object(dist_index_esm["some"])(types, function(t) {
     return Object(ModelUtil["is"])(element, t);
   });
 }
@@ -42431,7 +44061,7 @@ function unwrapEvent(fn, that) {
  */
 CommandInterceptor.prototype.on = function(events, hook, priority, handlerFn, unwrap, that) {
 
-  if (Object(dist_index_esm["n" /* isFunction */])(hook) || Object(dist_index_esm["p" /* isNumber */])(hook)) {
+  if (Object(dist_index_esm["isFunction"])(hook) || Object(dist_index_esm["isNumber"])(hook)) {
     that = unwrap;
     unwrap = handlerFn;
     handlerFn = priority;
@@ -42439,29 +44069,29 @@ CommandInterceptor.prototype.on = function(events, hook, priority, handlerFn, un
     hook = null;
   }
 
-  if (Object(dist_index_esm["n" /* isFunction */])(priority)) {
+  if (Object(dist_index_esm["isFunction"])(priority)) {
     that = unwrap;
     unwrap = handlerFn;
     handlerFn = priority;
     priority = CommandInterceptor_DEFAULT_PRIORITY;
   }
 
-  if (Object(dist_index_esm["q" /* isObject */])(unwrap)) {
+  if (Object(dist_index_esm["isObject"])(unwrap)) {
     that = unwrap;
     unwrap = false;
   }
 
-  if (!Object(dist_index_esm["n" /* isFunction */])(handlerFn)) {
+  if (!Object(dist_index_esm["isFunction"])(handlerFn)) {
     throw new Error('handlerFn must be a function');
   }
 
-  if (!Object(dist_index_esm["l" /* isArray */])(events)) {
+  if (!Object(dist_index_esm["isArray"])(events)) {
     events = [ events ];
   }
 
   var eventBus = this._eventBus;
 
-  Object(dist_index_esm["i" /* forEach */])(events, function(event) {
+  Object(dist_index_esm["forEach"])(events, function(event) {
 
     // concat commandStack(.event)?(.hook)?
     var fullEvent = [ 'commandStack', event, hook ].filter(function(e) { return e; }).join('.');
@@ -42489,7 +44119,7 @@ var hooks = [
  * This will generate the CommandInterceptor#(preExecute|...|reverted) methods
  * which will in term forward to CommandInterceptor#on.
  */
-Object(dist_index_esm["i" /* forEach */])(hooks, function(hook) {
+Object(dist_index_esm["forEach"])(hooks, function(hook) {
 
   /**
    * {canExecute|preExecute|preExecuted|execute|executed|postExecute|postExecuted|revert|reverted}
@@ -42505,7 +44135,7 @@ Object(dist_index_esm["i" /* forEach */])(hooks, function(hook) {
    */
   CommandInterceptor.prototype[hook] = function(events, priority, handlerFn, unwrap, that) {
 
-    if (Object(dist_index_esm["n" /* isFunction */])(events) || Object(dist_index_esm["p" /* isNumber */])(events)) {
+    if (Object(dist_index_esm["isFunction"])(events) || Object(dist_index_esm["isNumber"])(events)) {
       that = unwrap;
       unwrap = handlerFn;
       handlerFn = priority;
@@ -42563,7 +44193,7 @@ function AutoResize(eventBus, elementRegistry, modeling, rules) {
 
   this.postExecuted([ 'elements.move' ], function(event) {
     var context = event.context,
-        elements = Object(dist_index_esm["h" /* flatten */])(Object(dist_index_esm["E" /* values */])(context.closure.topLevel)),
+        elements = Object(dist_index_esm["flatten"])(Object(dist_index_esm["values"])(context.closure.topLevel)),
         hints = context.hints;
 
     var autoResize = hints ? hints.autoResize : true;
@@ -42572,16 +44202,16 @@ function AutoResize(eventBus, elementRegistry, modeling, rules) {
       return;
     }
 
-    var expandings = Object(dist_index_esm["j" /* groupBy */])(elements, function(element) {
+    var expandings = Object(dist_index_esm["groupBy"])(elements, function(element) {
       return element.parent.id;
     });
 
-    Object(dist_index_esm["i" /* forEach */])(expandings, function(elements, parentId) {
+    Object(dist_index_esm["forEach"])(expandings, function(elements, parentId) {
 
       // optionally filter elements to be considered when resizing
-      if (Object(dist_index_esm["l" /* isArray */])(autoResize)) {
+      if (Object(dist_index_esm["isArray"])(autoResize)) {
         elements = elements.filter(function(element) {
-          return Object(dist_index_esm["f" /* find */])(autoResize, Object(dist_index_esm["v" /* matchPattern */])({ id: element.id }));
+          return Object(dist_index_esm["find"])(autoResize, Object(dist_index_esm["matchPattern"])({ id: element.id }));
         });
       }
 
@@ -42668,7 +44298,7 @@ AutoResize.prototype._getOptimalBounds = function(elements, target) {
     newTrbl.bottom = elementsTrbl.bottom + offset.bottom;
   }
 
-  return asBounds(Object(dist_index_esm["a" /* assign */])({}, targetTrbl, newTrbl));
+  return asBounds(Object(dist_index_esm["assign"])({}, targetTrbl, newTrbl));
 };
 
 
@@ -42700,7 +44330,7 @@ AutoResize.prototype._expand = function(elements, target) {
     return;
   }
 
-  var resizeDirections = getResizeDirections(Object(dist_index_esm["x" /* pick */])(target, [ 'x', 'y', 'width', 'height' ]), newBounds);
+  var resizeDirections = getResizeDirections(Object(dist_index_esm["pick"])(target, [ 'x', 'y', 'width', 'height' ]), newBounds);
 
   // resize the parent shape
   this.resize(target, newBounds, {
@@ -42998,7 +44628,7 @@ BpmnAutoResizeProvider.prototype.canResize = function(elements, target) {
 
   var canResize = true;
 
-  Object(dist_index_esm["i" /* forEach */])(elements, function(element) {
+  Object(dist_index_esm["forEach"])(elements, function(element) {
 
     if (Object(ModelUtil["is"])(element, 'bpmn:Lane') || element.labelTarget) {
       canResize = false;
@@ -43190,8 +44820,6 @@ function HoverFix_getGfx(target) {
   hoverFix: [ 'type', HoverFix ],
 });
 // CONCATENATED MODULE: ./node_modules/diagram-js/lib/features/dragging/Dragging.js
-/* global TouchEvent */
-
 var Dragging_round = Math.round;
 
 
@@ -43334,7 +44962,7 @@ function Dragging(eventBus, canvas, selection, elementRegistry) {
     dragContext = dragContext || context;
 
     var event = eventBus.createEvent(
-      Object(dist_index_esm["a" /* assign */])(
+      Object(dist_index_esm["assign"])(
         {},
         dragContext.payload,
         dragContext.data,
@@ -43379,7 +45007,7 @@ function Dragging(eventBus, canvas, selection, elementRegistry) {
       // fire start event with original
       // starting coordinates
 
-      Object(dist_index_esm["a" /* assign */])(payload, {
+      Object(dist_index_esm["assign"])(payload, {
         x: Dragging_round(localStart.x + displacement.x),
         y: Dragging_round(localStart.y + displacement.y),
         dx: 0,
@@ -43414,7 +45042,7 @@ function Dragging(eventBus, canvas, selection, elementRegistry) {
     if (context.active) {
 
       // update payload with actual coordinates
-      Object(dist_index_esm["a" /* assign */])(payload, {
+      Object(dist_index_esm["assign"])(payload, {
         x: Dragging_round(localCurrent.x + displacement.x),
         y: Dragging_round(localCurrent.y + displacement.y),
         dx: Dragging_round(localDelta.x),
@@ -43622,7 +45250,7 @@ function Dragging(eventBus, canvas, selection, elementRegistry) {
       relativeTo = null;
     }
 
-    options = Object(dist_index_esm["a" /* assign */])({}, defaultOptions, options || {});
+    options = Object(dist_index_esm["assign"])({}, defaultOptions, options || {});
 
     var data = options.data || {},
         originalEvent,
@@ -43660,7 +45288,7 @@ function Dragging(eventBus, canvas, selection, elementRegistry) {
 
     isTouch = isTouchEvent(originalEvent);
 
-    context = Object(dist_index_esm["a" /* assign */])({
+    context = Object(dist_index_esm["assign"])({
       prefix: prefix,
       data: data,
       payload: {},
@@ -43728,7 +45356,7 @@ function Dragging(eventBus, canvas, selection, elementRegistry) {
   };
 
   this.setOptions = function(options) {
-    Object(dist_index_esm["a" /* assign */])(defaultOptions, options);
+    Object(dist_index_esm["assign"])(defaultOptions, options);
   };
 }
 
@@ -43777,7 +45405,7 @@ function AutoScroll(config, eventBus, canvas) {
 
   this._canvas = canvas;
 
-  this._opts = Object(dist_index_esm["a" /* assign */])({
+  this._opts = Object(dist_index_esm["assign"])({
     scrollThresholdIn: [ 20, 20, 20, 20 ],
     scrollThresholdOut: [ 0, 0, 0, 0 ],
     scrollRepeatTimeout: 15,
@@ -43876,7 +45504,7 @@ AutoScroll.prototype.stopScroll = function() {
  * @param  {Object} options
  */
 AutoScroll.prototype.setOptions = function(options) {
-  this._opts = Object(dist_index_esm["a" /* assign */])({}, this._opts, options);
+  this._opts = Object(dist_index_esm["assign"])({}, this._opts, options);
 };
 
 
@@ -44233,10 +45861,12 @@ function calculateHitWidth(segmentStart, segmentEnd, alignment) {
 }
 
 // EXTERNAL MODULE: ./node_modules/css.escape/css.escape.js
-var css_escape = __webpack_require__(28);
+var css_escape = __webpack_require__(29);
 var css_escape_default = /*#__PURE__*/__webpack_require__.n(css_escape);
 
 // CONCATENATED MODULE: ./node_modules/diagram-js/lib/features/bendpoints/Bendpoints.js
+
+
 
 
 
@@ -44410,13 +46040,13 @@ function Bendpoints(
   }
 
   function clearBendpoints(gfx) {
-    Object(dist_index_esm["i" /* forEach */])(Object(min_dom_dist_index_esm["queryAll"])('.' + BENDPOINT_CLS, gfx), function(node) {
+    Object(dist_index_esm["forEach"])(Object(min_dom_dist_index_esm["queryAll"])('.' + BENDPOINT_CLS, gfx), function(node) {
       index_esm_remove(node);
     });
   }
 
   function clearSegmentDraggers(gfx) {
-    Object(dist_index_esm["i" /* forEach */])(Object(min_dom_dist_index_esm["queryAll"])('.' + SEGMENT_DRAGGER_CLS, gfx), function(node) {
+    Object(dist_index_esm["forEach"])(Object(min_dom_dist_index_esm["queryAll"])('.' + SEGMENT_DRAGGER_CLS, gfx), function(node) {
       index_esm_remove(node);
     });
   }
@@ -44548,6 +46178,10 @@ function Bendpoints(
   });
 
   eventBus.on('element.mousedown', function(event) {
+
+    if (!isPrimaryButton(event)) {
+      return;
+    }
 
     var originalEvent = event.originalEvent,
         element = event.element;
@@ -44734,13 +46368,16 @@ function BendpointMove(injector, eventBus, canvas, dragging, rules, modeling) {
   });
 
   eventBus.on([ 'bendpoint.move.out', 'bendpoint.move.cleanup' ], function(event) {
-    var context = event.context;
+    var context = event.context,
+        type = context.type;
 
     context.hover = null;
     context.source = null;
     context.target = null;
 
-    context.allowed = false;
+    if (type !== UPDATE_WAYPOINTS) {
+      context.allowed = false;
+    }
   });
 
   eventBus.on('bendpoint.move.end', function(event) {
@@ -45631,7 +47268,7 @@ function BendpointSnapping(eventBus) {
 
   function snapTo(values, value) {
 
-    if (Object(dist_index_esm["l" /* isArray */])(values)) {
+    if (Object(dist_index_esm["isArray"])(values)) {
       var i = values.length;
 
       while (i--) if (BendpointSnapping_abs(values[i] - value) <= TOLERANCE) {
@@ -45696,7 +47333,7 @@ function BendpointSnapping(eventBus) {
 
     context.snapPoints = snapPoints = { horizontal: [] , vertical: [] };
 
-    Object(dist_index_esm["i" /* forEach */])(referenceWaypoints, function(p) {
+    Object(dist_index_esm["forEach"])(referenceWaypoints, function(p) {
 
       // we snap on existing bendpoints only,
       // not placeholders that are inserted during add
@@ -45737,7 +47374,7 @@ function BendpointSnapping(eventBus) {
         cy = (y - sy);
 
     // update delta
-    Object(dist_index_esm["a" /* assign */])(event, {
+    Object(dist_index_esm["assign"])(event, {
       dx: event.dx - cx,
       dy: event.dy - cy,
       x: sx,
@@ -45771,7 +47408,7 @@ function BendpointSnapping(eventBus) {
 
     context.snapPoints = snapPoints = { horizontal: [] , vertical: [] };
 
-    Object(dist_index_esm["i" /* forEach */])(referenceWaypoints, function(p) {
+    Object(dist_index_esm["forEach"])(referenceWaypoints, function(p) {
 
       // we snap on existing bendpoints only,
       // not placeholders that are inserted during add
@@ -45810,7 +47447,7 @@ function BendpointSnapping(eventBus) {
         cy = (y - sy);
 
     // update delta
-    Object(dist_index_esm["a" /* assign */])(event, {
+    Object(dist_index_esm["assign"])(event, {
       dx: event.dx - cx,
       dy: event.dy - cy,
       x: event.x - cx,
@@ -45890,7 +47527,7 @@ function Connect(eventBus, dragging, modeling, rules) {
     canExecute = context.canExecute = canConnect(start, hover);
 
     // ignore hover
-    if (Object(dist_index_esm["o" /* isNil */])(canExecute)) {
+    if (Object(dist_index_esm["isNil"])(canExecute)) {
       return;
     }
 
@@ -45904,7 +47541,7 @@ function Connect(eventBus, dragging, modeling, rules) {
     canExecute = context.canExecute = canConnectReverse(start, hover);
 
     // ignore hover
-    if (Object(dist_index_esm["o" /* isNil */])(canExecute)) {
+    if (Object(dist_index_esm["isNil"])(canExecute)) {
       return;
     }
 
@@ -45945,7 +47582,7 @@ function Connect(eventBus, dragging, modeling, rules) {
           connectionEnd: Connect_isReverse(context) ? connectionStart : connectionEnd
         };
 
-    if (Object(dist_index_esm["q" /* isObject */])(canExecute)) {
+    if (Object(dist_index_esm["isObject"])(canExecute)) {
       attrs = canExecute;
     }
 
@@ -45964,7 +47601,7 @@ function Connect(eventBus, dragging, modeling, rules) {
    * @param {boolean} [autoActivate=false]
    */
   this.start = function(event, start, connectionStart, autoActivate) {
-    if (!Object(dist_index_esm["q" /* isObject */])(connectionStart)) {
+    if (!Object(dist_index_esm["isObject"])(connectionStart)) {
       autoActivate = connectionStart;
       connectionStart = getMid(start);
     }
@@ -46025,29 +47662,25 @@ function ConnectPreview(injector, eventBus, canvas) {
         source = context.source,
         start = context.start,
         startPosition = context.startPosition,
-        connectionStart = context.connectionStart,
-        connectionEnd = context.connectionEnd,
-        target = context.target;
+        target = context.target,
+        connectionStart = context.connectionStart || startPosition,
+        connectionEnd = context.connectionEnd || {
+          x: event.x,
+          y: event.y
+        },
+        previewStart = connectionStart,
+        previewEnd = connectionEnd;
 
-    if (!connectionStart) {
-      connectionStart = Connect_isReverse(context) ? {
-        x: event.x,
-        y: event.y
-      } : startPosition;
-    }
-
-    if (!connectionEnd) {
-      connectionEnd = Connect_isReverse(context) ? startPosition : {
-        x: event.x,
-        y: event.y
-      };
+    if (Connect_isReverse(context)) {
+      previewStart = connectionEnd;
+      previewEnd = connectionStart;
     }
 
     connectionPreview.drawPreview(context, canConnect, {
       source: source || start,
       target: target || hover,
-      connectionStart: connectionStart,
-      connectionEnd: connectionEnd
+      connectionStart: previewStart,
+      connectionEnd: previewEnd
     });
   });
 
@@ -46386,7 +48019,7 @@ function cacheReturnValues(fn) {
  * @returns {Object}
  */
 function ensureConnectionAttrs(canConnect) {
-  if (Object(dist_index_esm["q" /* isObject */])(canConnect)) {
+  if (Object(dist_index_esm["isObject"])(canConnect)) {
     return canConnect;
   } else {
     return {};
@@ -46454,8 +48087,8 @@ function TextBox(options) {
   this.keyHandler = options.keyHandler || function() {};
   this.resizeHandler = options.resizeHandler || function() {};
 
-  this.autoResize = Object(dist_index_esm["b" /* bind */])(this.autoResize, this);
-  this.handlePaste = Object(dist_index_esm["b" /* bind */])(this.handlePaste, this);
+  this.autoResize = Object(dist_index_esm["bind"])(this.autoResize, this);
+  this.handlePaste = Object(dist_index_esm["bind"])(this.handlePaste, this);
 }
 
 
@@ -46487,7 +48120,7 @@ TextBox.prototype.create = function(bounds, style, value, options) {
 
   style = this.style = style || {};
 
-  var parentStyle = Object(dist_index_esm["x" /* pick */])(style, [
+  var parentStyle = Object(dist_index_esm["pick"])(style, [
     'width',
     'height',
     'maxWidth',
@@ -46506,7 +48139,7 @@ TextBox.prototype.create = function(bounds, style, value, options) {
     'transform'
   ]);
 
-  Object(dist_index_esm["a" /* assign */])(parent.style, {
+  Object(dist_index_esm["assign"])(parent.style, {
     width: bounds.width + 'px',
     height: bounds.height + 'px',
     maxWidth: bounds.maxWidth + 'px',
@@ -46525,7 +48158,7 @@ TextBox.prototype.create = function(bounds, style, value, options) {
     outline: 'none'
   }, parentStyle);
 
-  var contentStyle = Object(dist_index_esm["x" /* pick */])(style, [
+  var contentStyle = Object(dist_index_esm["pick"])(style, [
     'fontFamily',
     'fontSize',
     'fontWeight',
@@ -46537,7 +48170,7 @@ TextBox.prototype.create = function(bounds, style, value, options) {
     'paddingLeft'
   ]);
 
-  Object(dist_index_esm["a" /* assign */])(content.style, {
+  Object(dist_index_esm["assign"])(content.style, {
     boxSizing: 'border-box',
     width: '100%',
     outline: 'none',
@@ -46545,7 +48178,7 @@ TextBox.prototype.create = function(bounds, style, value, options) {
   }, contentStyle);
 
   if (options.centerVertically) {
-    Object(dist_index_esm["a" /* assign */])(content.style, {
+    Object(dist_index_esm["assign"])(content.style, {
       position: 'absolute',
       top: '50%',
       transform: 'translate(0, -50%)'
@@ -46772,7 +48405,7 @@ TextBox.prototype.resizable = function() {
     min_dom_dist_index_esm["event"].bind(resizeHandle, 'mousedown', onMouseDown);
   }
 
-  Object(dist_index_esm["a" /* assign */])(resizeHandle.style, {
+  Object(dist_index_esm["assign"])(resizeHandle.style, {
     position: 'absolute',
     bottom: '0px',
     right: '0px',
@@ -46873,8 +48506,8 @@ function DirectEditing(eventBus, canvas) {
   this._providers = [];
   this._textbox = new TextBox({
     container: canvas.getContainer(),
-    keyHandler: Object(dist_index_esm["b" /* bind */])(this._handleKey, this),
-    resizeHandler: Object(dist_index_esm["b" /* bind */])(this._handleResize, this)
+    keyHandler: Object(dist_index_esm["bind"])(this._handleKey, this),
+    resizeHandler: Object(dist_index_esm["bind"])(this._handleResize, this)
   });
 }
 
@@ -47013,7 +48646,7 @@ DirectEditing.prototype.activate = function(element) {
   // the direct editing context
   var context;
 
-  var provider = Object(dist_index_esm["f" /* find */])(this._providers, function(p) {
+  var provider = Object(dist_index_esm["find"])(this._providers, function(p) {
     return (context = p.activate(element)) ? p : null;
   });
 
@@ -47080,7 +48713,7 @@ function ContextPad(config, eventBus, overlays) {
   this._eventBus = eventBus;
   this._overlays = overlays;
 
-  var scale = Object(dist_index_esm["m" /* isDefined */])(config && config.scale) ? config.scale : {
+  var scale = Object(dist_index_esm["isDefined"])(config && config.scale) ? config.scale : {
     min: 1,
     max: 1.5
   };
@@ -47128,7 +48761,7 @@ ContextPad.prototype._init = function() {
   eventBus.on('elements.delete', function(event) {
     var elements = event.elements;
 
-    Object(dist_index_esm["i" /* forEach */])(elements, function(e) {
+    Object(dist_index_esm["forEach"])(elements, function(e) {
       if (self.isOpen(e)) {
         self.close();
       }
@@ -47196,13 +48829,13 @@ ContextPad.prototype.getEntries = function(element) {
 
   // loop through all providers and their entries.
   // group entries by id so that overriding an entry is possible
-  Object(dist_index_esm["i" /* forEach */])(providers, function(provider) {
+  Object(dist_index_esm["forEach"])(providers, function(provider) {
     var entriesOrUpdater = provider.getContextPadEntries(element);
 
-    if (Object(dist_index_esm["n" /* isFunction */])(entriesOrUpdater)) {
+    if (Object(dist_index_esm["isFunction"])(entriesOrUpdater)) {
       entries = entriesOrUpdater(entries);
     } else {
-      Object(dist_index_esm["i" /* forEach */])(entriesOrUpdater, function(entry, id) {
+      Object(dist_index_esm["forEach"])(entriesOrUpdater, function(entry, id) {
         entries[id] = entry;
       });
     }
@@ -47238,7 +48871,7 @@ ContextPad.prototype.trigger = function(action, event, autoActivate) {
   originalEvent = event.originalEvent || event;
 
   // simple action (via callback function)
-  if (Object(dist_index_esm["n" /* isFunction */])(handler)) {
+  if (Object(dist_index_esm["isFunction"])(handler)) {
     if (action === 'click') {
       return handler(originalEvent, element, autoActivate);
     }
@@ -47268,7 +48901,7 @@ ContextPad.prototype.open = function(element, force) {
   this._updateAndOpen(element);
 };
 
-ContextPad.prototype._getProviders = function(id) {
+ContextPad.prototype._getProviders = function() {
 
   var event = this._eventBus.createEvent({
     type: 'contextPad.getProviders',
@@ -47286,7 +48919,7 @@ ContextPad.prototype._updateAndOpen = function(element) {
       pad = this.getPad(element),
       html = pad.html;
 
-  Object(dist_index_esm["i" /* forEach */])(entries, function(entry, id) {
+  Object(dist_index_esm["forEach"])(entries, function(entry, id) {
     var grouping = entry.group || 'default',
         control = Object(min_dom_dist_index_esm["domify"])(entry.html || '<div class="entry" draggable="true"></div>'),
         container;
@@ -47337,7 +48970,7 @@ ContextPad.prototype.getPad = function(element) {
 
   var html = Object(min_dom_dist_index_esm["domify"])('<div class="djs-context-pad"></div>');
 
-  var overlaysConfig = Object(dist_index_esm["a" /* assign */])({
+  var overlaysConfig = Object(dist_index_esm["assign"])({
     html: html
   }, this._overlaysConfig);
 
@@ -47401,7 +49034,7 @@ function addClasses(element, classNames) {
 
   var classes = Object(min_dom_dist_index_esm["classes"])(element);
 
-  var actualClassNames = Object(dist_index_esm["l" /* isArray */])(classNames) ? classNames : classNames.split(/\s+/g);
+  var actualClassNames = Object(dist_index_esm["isArray"])(classNames) ? classNames : classNames.split(/\s+/g);
   actualClassNames.forEach(function(cls) {
     classes.add(cls);
   });
@@ -47459,7 +49092,7 @@ function PreviewSupport(elementRegistry, eventBus, canvas, styles) {
   var self = this;
 
   eventBus.on('drag.cleanup', function() {
-    Object(dist_index_esm["i" /* forEach */])(self._clonedMarkers, function(clonedMarker) {
+    Object(dist_index_esm["forEach"])(self._clonedMarkers, function(clonedMarker) {
       index_esm_remove(clonedMarker);
     });
 
@@ -47716,13 +49349,13 @@ function Create(
     }
 
     // ignore child elements and external labels
-    elements = Object(dist_index_esm["e" /* filter */])(elements, function(element) {
+    elements = Object(dist_index_esm["filter"])(elements, function(element) {
       var labelTarget = element.labelTarget;
 
       return !element.parent && !(Create_isLabel(element) && elements.indexOf(labelTarget) !== -1);
     });
 
-    var shape = Object(dist_index_esm["f" /* find */])(elements, function(element) {
+    var shape = Object(dist_index_esm["find"])(elements, function(element) {
       return !isConnection(element);
     });
 
@@ -47872,23 +49505,23 @@ function Create(
         connectionTarget: hints.connectionTarget
       });
     } else {
-      elements = modeling.createElements(elements, position, target, Object(dist_index_esm["a" /* assign */])({}, hints, {
+      elements = modeling.createElements(elements, position, target, Object(dist_index_esm["assign"])({}, hints, {
         attach: attach
       }));
 
       // update shape
-      shape = Object(dist_index_esm["f" /* find */])(elements, function(element) {
+      shape = Object(dist_index_esm["find"])(elements, function(element) {
         return !isConnection(element);
       });
     }
 
     // update elements and shape
-    Object(dist_index_esm["a" /* assign */])(context, {
+    Object(dist_index_esm["assign"])(context, {
       elements: elements,
       shape: shape
     });
 
-    Object(dist_index_esm["a" /* assign */])(event, {
+    Object(dist_index_esm["assign"])(event, {
       elements: elements,
       shape: shape
     });
@@ -47914,11 +49547,11 @@ function Create(
   // API //////////
 
   this.start = function(event, elements, context) {
-    if (!Object(dist_index_esm["l" /* isArray */])(elements)) {
+    if (!Object(dist_index_esm["isArray"])(elements)) {
       elements = [ elements ];
     }
 
-    var shape = Object(dist_index_esm["f" /* find */])(elements, function(element) {
+    var shape = Object(dist_index_esm["find"])(elements, function(element) {
       return !isConnection(element);
     });
 
@@ -47928,19 +49561,19 @@ function Create(
       return;
     }
 
-    context = Object(dist_index_esm["a" /* assign */])({
+    context = Object(dist_index_esm["assign"])({
       elements: elements,
       hints: {},
       shape: shape
     }, context || {});
 
     // make sure each element has x and y
-    Object(dist_index_esm["i" /* forEach */])(elements, function(element) {
-      if (!Object(dist_index_esm["p" /* isNumber */])(element.x)) {
+    Object(dist_index_esm["forEach"])(elements, function(element) {
+      if (!Object(dist_index_esm["isNumber"])(element.x)) {
         element.x = 0;
       }
 
-      if (!Object(dist_index_esm["p" /* isNumber */])(element.y)) {
+      if (!Object(dist_index_esm["isNumber"])(element.y)) {
         element.y = 0;
       }
     });
@@ -47948,9 +49581,9 @@ function Create(
     var bbox = getBBox(elements);
 
     // center elements around cursor
-    Object(dist_index_esm["i" /* forEach */])(elements, function(element) {
+    Object(dist_index_esm["forEach"])(elements, function(element) {
       if (isConnection(element)) {
-        element.waypoints = Object(dist_index_esm["u" /* map */])(element.waypoints, function(waypoint) {
+        element.waypoints = Object(dist_index_esm["map"])(element.waypoints, function(waypoint) {
           return {
             x: waypoint.x - bbox.x - bbox.width / 2,
             y: waypoint.y - bbox.y - bbox.height / 2
@@ -47958,7 +49591,7 @@ function Create(
         });
       }
 
-      Object(dist_index_esm["a" /* assign */])(element, {
+      Object(dist_index_esm["assign"])(element, {
         x: element.x - bbox.x - bbox.width / 2,
         y: element.y - bbox.y - bbox.height / 2
       });
@@ -48176,7 +49809,7 @@ var PopupMenu_DEFAULT_PRIORITY = 1000;
  */
 function PopupMenu(config, eventBus, canvas) {
 
-  var scale = Object(dist_index_esm["m" /* isDefined */])(config && config.scale) ? config.scale : {
+  var scale = Object(dist_index_esm["isDefined"])(config && config.scale) ? config.scale : {
     min: 1,
     max: 1.5
   };
@@ -48252,8 +49885,8 @@ PopupMenu.prototype.isEmpty = function(element, providerId) {
   var entries = this._getEntries(element, providers),
       headerEntries = this._getHeaderEntries(element, providers);
 
-  var hasEntries = Object(dist_index_esm["z" /* size */])(entries) > 0,
-      hasHeaderEntries = headerEntries && Object(dist_index_esm["z" /* size */])(headerEntries) > 0;
+  var hasEntries = Object(dist_index_esm["size"])(entries) > 0,
+      hasHeaderEntries = headerEntries && Object(dist_index_esm["size"])(headerEntries) > 0;
 
   return !hasEntries && !hasHeaderEntries;
 };
@@ -48299,17 +49932,17 @@ PopupMenu.prototype.open = function(element, id, position) {
   var entries = this._getEntries(element, providers),
       headerEntries = this._getHeaderEntries(element, providers);
 
-  current.entries = Object(dist_index_esm["a" /* assign */])({}, entries, headerEntries);
+  current.entries = Object(dist_index_esm["assign"])({}, entries, headerEntries);
 
   current.container = this._createContainer();
 
-  if (Object(dist_index_esm["z" /* size */])(headerEntries)) {
+  if (Object(dist_index_esm["size"])(headerEntries)) {
     current.container.appendChild(
       this._createEntries(headerEntries, 'djs-popup-header')
     );
   }
 
-  if (Object(dist_index_esm["z" /* size */])(entries)) {
+  if (Object(dist_index_esm["size"])(entries)) {
     current.container.appendChild(
       this._createEntries(entries, 'djs-popup-body')
     );
@@ -48388,18 +50021,18 @@ PopupMenu.prototype._getEntries = function(element, providers) {
 
   var entries = {};
 
-  Object(dist_index_esm["i" /* forEach */])(providers, function(provider) {
+  Object(dist_index_esm["forEach"])(providers, function(provider) {
 
     // handle legacy method
     if (!provider.getPopupMenuEntries) {
-      Object(dist_index_esm["i" /* forEach */])(provider.getEntries(element), function(entry) {
+      Object(dist_index_esm["forEach"])(provider.getEntries(element), function(entry) {
         var id = entry.id;
 
         if (!id) {
           throw new Error('every entry must have the id property set');
         }
 
-        entries[id] = Object(dist_index_esm["w" /* omit */])(entry, [ 'id' ]);
+        entries[id] = Object(dist_index_esm["omit"])(entry, [ 'id' ]);
       });
 
       return;
@@ -48407,10 +50040,10 @@ PopupMenu.prototype._getEntries = function(element, providers) {
 
     var entriesOrUpdater = provider.getPopupMenuEntries(element);
 
-    if (Object(dist_index_esm["n" /* isFunction */])(entriesOrUpdater)) {
+    if (Object(dist_index_esm["isFunction"])(entriesOrUpdater)) {
       entries = entriesOrUpdater(entries);
     } else {
-      Object(dist_index_esm["i" /* forEach */])(entriesOrUpdater, function(entry, id) {
+      Object(dist_index_esm["forEach"])(entriesOrUpdater, function(entry, id) {
         entries[id] = entry;
       });
     }
@@ -48423,7 +50056,7 @@ PopupMenu.prototype._getHeaderEntries = function(element, providers) {
 
   var entries = {};
 
-  Object(dist_index_esm["i" /* forEach */])(providers, function(provider) {
+  Object(dist_index_esm["forEach"])(providers, function(provider) {
 
     // handle legacy method
     if (!provider.getPopupMenuHeaderEntries) {
@@ -48431,14 +50064,14 @@ PopupMenu.prototype._getHeaderEntries = function(element, providers) {
         return;
       }
 
-      Object(dist_index_esm["i" /* forEach */])(provider.getHeaderEntries(element), function(entry) {
+      Object(dist_index_esm["forEach"])(provider.getHeaderEntries(element), function(entry) {
         var id = entry.id;
 
         if (!id) {
           throw new Error('every entry must have the id property set');
         }
 
-        entries[id] = Object(dist_index_esm["w" /* omit */])(entry, [ 'id' ]);
+        entries[id] = Object(dist_index_esm["omit"])(entry, [ 'id' ]);
       });
 
       return;
@@ -48446,10 +50079,10 @@ PopupMenu.prototype._getHeaderEntries = function(element, providers) {
 
     var entriesOrUpdater = provider.getPopupMenuHeaderEntries(element);
 
-    if (Object(dist_index_esm["n" /* isFunction */])(entriesOrUpdater)) {
+    if (Object(dist_index_esm["isFunction"])(entriesOrUpdater)) {
       entries = entriesOrUpdater(entries);
     } else {
-      Object(dist_index_esm["i" /* forEach */])(entriesOrUpdater, function(entry, id) {
+      Object(dist_index_esm["forEach"])(entriesOrUpdater, function(entry, id) {
         entries[id] = entry;
       });
     }
@@ -48492,7 +50125,7 @@ PopupMenu.prototype._createContainer = function() {
       position = this._current.position,
       className = this._current.className;
 
-  Object(dist_index_esm["a" /* assign */])(container.style, {
+  Object(dist_index_esm["assign"])(container.style, {
     position: 'absolute',
     left: position.x + 'px',
     top: position.y + 'px',
@@ -48555,11 +50188,11 @@ PopupMenu.prototype._updateScale = function(container) {
       maxScale = scaleConfig.max;
     }
 
-    if (Object(dist_index_esm["m" /* isDefined */])(minScale) && zoom < minScale) {
+    if (Object(dist_index_esm["isDefined"])(minScale) && zoom < minScale) {
       scale = minScale;
     }
 
-    if (Object(dist_index_esm["m" /* isDefined */])(maxScale) && zoom > maxScale) {
+    if (Object(dist_index_esm["isDefined"])(maxScale) && zoom > maxScale) {
       scale = maxScale;
     }
 
@@ -48615,7 +50248,7 @@ PopupMenu.prototype._assureIsInbounds = function(container, cursor) {
     top = cursorPosition.y - containerHeight + 'px';
   }
 
-  Object(dist_index_esm["a" /* assign */])(container.style, { left: left, top: top }, { visibility: 'visible', 'z-index': 1000 });
+  Object(dist_index_esm["assign"])(container.style, { left: left, top: top }, { visibility: 'visible', 'z-index': 1000 });
 };
 
 
@@ -48634,7 +50267,7 @@ PopupMenu.prototype._createEntries = function(entries, className) {
 
   Object(min_dom_dist_index_esm["classes"])(entriesContainer).add(className);
 
-  Object(dist_index_esm["i" /* forEach */])(entries, function(entry, id) {
+  Object(dist_index_esm["forEach"])(entries, function(entry, id) {
     var entryContainer = self._createEntry(entry, id);
     entriesContainer.appendChild(entryContainer);
   });
@@ -48918,7 +50551,7 @@ function CopyPaste(
 
     descriptor.id = element.id;
 
-    var parentCopied = Object(dist_index_esm["f" /* find */])(elements, function(e) {
+    var parentCopied = Object(dist_index_esm["find"])(elements, function(e) {
       return e === element.parent;
     });
 
@@ -48951,8 +50584,8 @@ function CopyPaste(
       descriptor.labelTarget = element.labelTarget.id;
     }
 
-    Object(dist_index_esm["i" /* forEach */])([ 'x', 'y', 'width', 'height' ], function(property) {
-      if (Object(dist_index_esm["p" /* isNumber */])(element[ property ])) {
+    Object(dist_index_esm["forEach"])([ 'x', 'y', 'width', 'height' ], function(property) {
+      if (Object(dist_index_esm["isNumber"])(element[ property ])) {
         descriptor[ property ] = element[ property ];
       }
     });
@@ -48965,7 +50598,7 @@ function CopyPaste(
   eventBus.on('copyPaste.pasteElements', function(context) {
     var hints = context.hints;
 
-    Object(dist_index_esm["a" /* assign */])(hints, {
+    Object(dist_index_esm["assign"])(hints, {
       createElementsBehavior: false
     });
   });
@@ -48994,7 +50627,7 @@ CopyPaste.prototype.copy = function(elements) {
   var allowed,
       tree;
 
-  if (!Object(dist_index_esm["l" /* isArray */])(elements)) {
+  if (!Object(dist_index_esm["isArray"])(elements)) {
     elements = elements ? [ elements ] : [];
   }
 
@@ -49005,7 +50638,7 @@ CopyPaste.prototype.copy = function(elements) {
   if (allowed === false) {
     tree = {};
   } else {
-    tree = this.createTree(Object(dist_index_esm["l" /* isArray */])(allowed) ? allowed : elements);
+    tree = this.createTree(Object(dist_index_esm["isArray"])(allowed) ? allowed : elements);
   }
 
   // we set an empty tree, selection of elements
@@ -49064,12 +50697,12 @@ CopyPaste.prototype.paste = function(context) {
 CopyPaste.prototype._paste = function(elements, target, position, hints) {
 
   // make sure each element has x and y
-  Object(dist_index_esm["i" /* forEach */])(elements, function(element) {
-    if (!Object(dist_index_esm["p" /* isNumber */])(element.x)) {
+  Object(dist_index_esm["forEach"])(elements, function(element) {
+    if (!Object(dist_index_esm["isNumber"])(element.x)) {
       element.x = 0;
     }
 
-    if (!Object(dist_index_esm["p" /* isNumber */])(element.y)) {
+    if (!Object(dist_index_esm["isNumber"])(element.y)) {
       element.y = 0;
     }
   });
@@ -49077,9 +50710,9 @@ CopyPaste.prototype._paste = function(elements, target, position, hints) {
   var bbox = getBBox(elements);
 
   // center elements around cursor
-  Object(dist_index_esm["i" /* forEach */])(elements, function(element) {
+  Object(dist_index_esm["forEach"])(elements, function(element) {
     if (CopyPaste_isConnection(element)) {
-      element.waypoints = Object(dist_index_esm["u" /* map */])(element.waypoints, function(waypoint) {
+      element.waypoints = Object(dist_index_esm["map"])(element.waypoints, function(waypoint) {
         return {
           x: waypoint.x - bbox.x - bbox.width / 2,
           y: waypoint.y - bbox.y - bbox.height / 2
@@ -49087,13 +50720,13 @@ CopyPaste.prototype._paste = function(elements, target, position, hints) {
       });
     }
 
-    Object(dist_index_esm["a" /* assign */])(element, {
+    Object(dist_index_esm["assign"])(element, {
       x: element.x - bbox.x - bbox.width / 2,
       y: element.y - bbox.y - bbox.height / 2
     });
   });
 
-  return this._modeling.createElements(elements, position, target, Object(dist_index_esm["a" /* assign */])({}, hints));
+  return this._modeling.createElements(elements, position, target, Object(dist_index_esm["assign"])({}, hints));
 };
 
 /**
@@ -49108,17 +50741,17 @@ CopyPaste.prototype._createElements = function(tree) {
 
   var elements = [];
 
-  Object(dist_index_esm["i" /* forEach */])(tree, function(branch, depth) {
+  Object(dist_index_esm["forEach"])(tree, function(branch, depth) {
 
     depth = parseInt(depth, 10);
 
     // sort by priority
-    branch = Object(dist_index_esm["B" /* sortBy */])(branch, 'priority');
+    branch = Object(dist_index_esm["sortBy"])(branch, 'priority');
 
-    Object(dist_index_esm["i" /* forEach */])(branch, function(descriptor) {
+    Object(dist_index_esm["forEach"])(branch, function(descriptor) {
 
       // remove priority
-      var attrs = Object(dist_index_esm["a" /* assign */])({}, Object(dist_index_esm["w" /* omit */])(descriptor, [ 'priority' ]));
+      var attrs = Object(dist_index_esm["assign"])({}, Object(dist_index_esm["omit"])(descriptor, [ 'priority' ]));
 
       if (cache[ descriptor.parent ]) {
         attrs.parent = cache[ descriptor.parent ];
@@ -49169,19 +50802,19 @@ CopyPaste.prototype._createElements = function(tree) {
 };
 
 CopyPaste.prototype.createConnection = function(attrs) {
-  var connection = this._elementFactory.createConnection(Object(dist_index_esm["w" /* omit */])(attrs, [ 'id' ]));
+  var connection = this._elementFactory.createConnection(Object(dist_index_esm["omit"])(attrs, [ 'id' ]));
 
   return connection;
 };
 
 CopyPaste.prototype.createLabel = function(attrs) {
-  var label = this._elementFactory.createLabel(Object(dist_index_esm["w" /* omit */])(attrs, [ 'id' ]));
+  var label = this._elementFactory.createLabel(Object(dist_index_esm["omit"])(attrs, [ 'id' ]));
 
   return label;
 };
 
 CopyPaste.prototype.createShape = function(attrs) {
-  var shape = this._elementFactory.createShape(Object(dist_index_esm["w" /* omit */])(attrs, [ 'id' ]));
+  var shape = this._elementFactory.createShape(Object(dist_index_esm["omit"])(attrs, [ 'id' ]));
 
   return shape;
 };
@@ -49200,8 +50833,8 @@ CopyPaste.prototype.hasRelations = function(element, elements) {
       target;
 
   if (CopyPaste_isConnection(element)) {
-    source = Object(dist_index_esm["f" /* find */])(elements, Object(dist_index_esm["v" /* matchPattern */])({ id: element.source.id }));
-    target = Object(dist_index_esm["f" /* find */])(elements, Object(dist_index_esm["v" /* matchPattern */])({ id: element.target.id }));
+    source = Object(dist_index_esm["find"])(elements, Object(dist_index_esm["matchPattern"])({ id: element.source.id }));
+    target = Object(dist_index_esm["find"])(elements, Object(dist_index_esm["matchPattern"])({ id: element.target.id }));
 
     if (!source || !target) {
       return false;
@@ -49209,7 +50842,7 @@ CopyPaste.prototype.hasRelations = function(element, elements) {
   }
 
   if (CopyPaste_isLabel(element)) {
-    labelTarget = Object(dist_index_esm["f" /* find */])(elements, Object(dist_index_esm["v" /* matchPattern */])({ id: element.labelTarget.id }));
+    labelTarget = Object(dist_index_esm["find"])(elements, Object(dist_index_esm["matchPattern"])({ id: element.labelTarget.id }));
 
     if (!labelTarget) {
       return false;
@@ -49259,7 +50892,7 @@ CopyPaste.prototype.createTree = function(elements) {
   function addElementData(element, depth) {
 
     // (1) check wether element has already been added
-    var foundElementData = Object(dist_index_esm["f" /* find */])(elementsData, function(elementsData) {
+    var foundElementData = Object(dist_index_esm["find"])(elementsData, function(elementsData) {
       return element === elementsData.element;
     });
 
@@ -49303,15 +50936,15 @@ CopyPaste.prototype.createTree = function(elements) {
     }
 
     // always copy external labels
-    Object(dist_index_esm["i" /* forEach */])(element.labels, function(label) {
+    Object(dist_index_esm["forEach"])(element.labels, function(label) {
       addElementData(label, depth);
     });
 
     function addRelatedElements(elements) {
-      elements && elements.length && Object(dist_index_esm["i" /* forEach */])(elements, function(element) {
+      elements && elements.length && Object(dist_index_esm["forEach"])(elements, function(element) {
 
         // add external labels
-        Object(dist_index_esm["i" /* forEach */])(element.labels, function(label) {
+        Object(dist_index_esm["forEach"])(element.labels, function(label) {
           addElementData(label, depth);
         });
 
@@ -49319,19 +50952,19 @@ CopyPaste.prototype.createTree = function(elements) {
       });
     }
 
-    Object(dist_index_esm["i" /* forEach */])([ element.attachers, element.incoming, element.outgoing ], addRelatedElements);
+    Object(dist_index_esm["forEach"])([ element.attachers, element.incoming, element.outgoing ], addRelatedElements);
 
     addElementData(element, depth);
 
     return element.children;
   });
 
-  elements = Object(dist_index_esm["u" /* map */])(elementsData, function(elementData) {
+  elements = Object(dist_index_esm["map"])(elementsData, function(elementData) {
     return elementData.element;
   });
 
   // (2) copy elements
-  elementsData = Object(dist_index_esm["u" /* map */])(elementsData, function(elementData) {
+  elementsData = Object(dist_index_esm["map"])(elementsData, function(elementData) {
     elementData.descriptor = {};
 
     self._eventBus.fire('copyPaste.copyElement', {
@@ -49344,16 +50977,16 @@ CopyPaste.prototype.createTree = function(elements) {
   });
 
   // (3) sort elements by priority
-  elementsData = Object(dist_index_esm["B" /* sortBy */])(elementsData, function(elementData) {
+  elementsData = Object(dist_index_esm["sortBy"])(elementsData, function(elementData) {
     return elementData.descriptor.priority;
   });
 
-  elements = Object(dist_index_esm["u" /* map */])(elementsData, function(elementData) {
+  elements = Object(dist_index_esm["map"])(elementsData, function(elementData) {
     return elementData.element;
   });
 
   // (4) create tree
-  Object(dist_index_esm["i" /* forEach */])(elementsData, function(elementData) {
+  Object(dist_index_esm["forEach"])(elementsData, function(elementData) {
     var depth = elementData.depth;
 
     if (!self.hasRelations(elementData.element, elements)) {
@@ -49393,7 +51026,7 @@ function CopyPaste_isLabel(element) {
 }
 
 function copyWaypoints(element) {
-  return Object(dist_index_esm["u" /* map */])(element.waypoints, function(waypoint) {
+  return Object(dist_index_esm["map"])(element.waypoints, function(waypoint) {
 
     waypoint = copyWaypoint(waypoint);
 
@@ -49406,7 +51039,7 @@ function copyWaypoints(element) {
 }
 
 function copyWaypoint(waypoint) {
-  return Object(dist_index_esm["a" /* assign */])({}, waypoint);
+  return Object(dist_index_esm["assign"])({}, waypoint);
 }
 
 function CopyPaste_removeElement(element, elements) {
@@ -49445,23 +51078,23 @@ function CopyPaste_removeElement(element, elements) {
 
 
 function copyProperties(source, target, properties) {
-  if (!Object(dist_index_esm["l" /* isArray */])(properties)) {
+  if (!Object(dist_index_esm["isArray"])(properties)) {
     properties = [ properties ];
   }
 
-  Object(dist_index_esm["i" /* forEach */])(properties, function(property) {
-    if (!Object(dist_index_esm["s" /* isUndefined */])(source[property])) {
+  Object(dist_index_esm["forEach"])(properties, function(property) {
+    if (!Object(dist_index_esm["isUndefined"])(source[property])) {
       target[property] = source[property];
     }
   });
 }
 
 function removeProperties(element, properties) {
-  if (!Object(dist_index_esm["l" /* isArray */])(properties)) {
+  if (!Object(dist_index_esm["isArray"])(properties)) {
     properties = [ properties ];
   }
 
-  Object(dist_index_esm["i" /* forEach */])(properties, function(property) {
+  Object(dist_index_esm["forEach"])(properties, function(property) {
     if (element[property]) {
       delete element[property];
     }
@@ -49485,10 +51118,13 @@ function BpmnCopyPaste(bpmnFactory, eventBus, moddleCopy) {
 
     descriptor.di = {};
 
-    // fill and stroke will be set to DI
+    // colors will be set to DI
     copyProperties(businessObject.di, descriptor.di, [
       'fill',
-      'stroke'
+      'stroke',
+      'background-color',
+      'border-color',
+      'color'
     ]);
 
     copyProperties(businessObject.di, descriptor, 'isExpanded');
@@ -49543,7 +51179,7 @@ function BpmnCopyPaste(bpmnFactory, eventBus, moddleCopy) {
       Object(ModelUtil["getBusinessObject"])(descriptor).attachedToRef = Object(ModelUtil["getBusinessObject"])(cache[ descriptor.host ]);
     }
 
-    references = Object(dist_index_esm["w" /* omit */])(references, Object(dist_index_esm["y" /* reduce */])(references, function(array, reference, key) {
+    references = Object(dist_index_esm["omit"])(references, Object(dist_index_esm["reduce"])(references, function(array, reference, key) {
       var element = reference.element,
           property = reference.property;
 
@@ -49677,7 +51313,7 @@ function ModdleCopy(eventBus, bpmnFactory, moddle) {
       return;
     }
 
-    return Object(dist_index_esm["B" /* sortBy */])(propertyNames, function(propertyName) {
+    return Object(dist_index_esm["sortBy"])(propertyNames, function(propertyName) {
       return propertyName === 'extensionElements';
     });
   });
@@ -49685,7 +51321,7 @@ function ModdleCopy(eventBus, bpmnFactory, moddle) {
   // default check whether property can be copied
   eventBus.on('moddleCopy.canCopyProperty', function(context) {
     var parent = context.parent,
-        parentDescriptor = Object(dist_index_esm["q" /* isObject */])(parent) && parent.$descriptor,
+        parentDescriptor = Object(dist_index_esm["isObject"])(parent) && parent.$descriptor,
         propertyName = context.propertyName;
 
     if (propertyName && DISALLOWED_PROPERTIES.indexOf(propertyName) !== -1) {
@@ -49696,7 +51332,7 @@ function ModdleCopy(eventBus, bpmnFactory, moddle) {
 
     if (propertyName &&
       parentDescriptor &&
-      !Object(dist_index_esm["f" /* find */])(parentDescriptor.properties, Object(dist_index_esm["v" /* matchPattern */])({ name: propertyName }))) {
+      !Object(dist_index_esm["find"])(parentDescriptor.properties, Object(dist_index_esm["matchPattern"])({ name: propertyName }))) {
 
       // disallow copying property
       return false;
@@ -49733,7 +51369,7 @@ ModdleCopy.$inject = [
 ModdleCopy.prototype.copyElement = function(sourceElement, targetElement, propertyNames) {
   var self = this;
 
-  if (propertyNames && !Object(dist_index_esm["l" /* isArray */])(propertyNames)) {
+  if (propertyNames && !Object(dist_index_esm["isArray"])(propertyNames)) {
     propertyNames = [ propertyNames ];
   }
 
@@ -49749,15 +51385,15 @@ ModdleCopy.prototype.copyElement = function(sourceElement, targetElement, proper
     return targetElement;
   }
 
-  if (Object(dist_index_esm["l" /* isArray */])(canCopyProperties)) {
+  if (Object(dist_index_esm["isArray"])(canCopyProperties)) {
     propertyNames = canCopyProperties;
   }
 
   // copy properties
-  Object(dist_index_esm["i" /* forEach */])(propertyNames, function(propertyName) {
+  Object(dist_index_esm["forEach"])(propertyNames, function(propertyName) {
     var sourceProperty;
 
-    if (Object(dist_index_esm["k" /* has */])(sourceElement, propertyName)) {
+    if (Object(dist_index_esm["has"])(sourceElement, propertyName)) {
       sourceProperty = sourceElement.get(propertyName);
     }
 
@@ -49773,7 +51409,7 @@ ModdleCopy.prototype.copyElement = function(sourceElement, targetElement, proper
       return;
     }
 
-    if (Object(dist_index_esm["m" /* isDefined */])(copiedProperty)) {
+    if (Object(dist_index_esm["isDefined"])(copiedProperty)) {
       targetElement.set(propertyName, copiedProperty);
     }
   });
@@ -49806,7 +51442,7 @@ ModdleCopy.prototype.copyProperty = function(property, parent, propertyName) {
   }
 
   if (copiedProperty) {
-    if (Object(dist_index_esm["q" /* isObject */])(copiedProperty) && copiedProperty.$type && !copiedProperty.$parent) {
+    if (Object(dist_index_esm["isObject"])(copiedProperty) && copiedProperty.$type && !copiedProperty.$parent) {
       copiedProperty.$parent = parent;
     }
 
@@ -49821,8 +51457,8 @@ ModdleCopy.prototype.copyProperty = function(property, parent, propertyName) {
   }
 
   // copy arrays
-  if (Object(dist_index_esm["l" /* isArray */])(property)) {
-    return Object(dist_index_esm["y" /* reduce */])(property, function(childProperties, childProperty) {
+  if (Object(dist_index_esm["isArray"])(property)) {
+    return Object(dist_index_esm["reduce"])(property, function(childProperties, childProperty) {
 
       // recursion
       copiedProperty = self.copyProperty(childProperty, parent, propertyName);
@@ -49839,7 +51475,7 @@ ModdleCopy.prototype.copyProperty = function(property, parent, propertyName) {
   }
 
   // copy model elements
-  if (Object(dist_index_esm["q" /* isObject */])(property) && property.$type) {
+  if (Object(dist_index_esm["isObject"])(property) && property.$type) {
     if (this._moddle.getElementDescriptor(property).isGeneric) {
       return;
     }
@@ -49861,7 +51497,7 @@ ModdleCopy.prototype.copyProperty = function(property, parent, propertyName) {
 // helpers //////////
 
 function getPropertyNames(descriptor, keepDefaultProperties) {
-  return Object(dist_index_esm["y" /* reduce */])(descriptor.properties, function(properties, property) {
+  return Object(dist_index_esm["reduce"])(descriptor.properties, function(properties, property) {
 
     if (keepDefaultProperties && property.default) {
       return properties;
@@ -49935,7 +51571,7 @@ Replace.prototype.replaceElement = function(oldElement, newElementData, options)
 
   return modeling.replaceShape(
     oldElement,
-    Object(dist_index_esm["a" /* assign */])(
+    Object(dist_index_esm["assign"])(
       {},
       newElementData,
       {
@@ -49968,12 +51604,12 @@ Replace.prototype.replaceElement = function(oldElement, newElementData, options)
 
 
 function BpmnReplace_copyProperties(source, target, properties) {
-  if (!Object(dist_index_esm["l" /* isArray */])(properties)) {
+  if (!Object(dist_index_esm["isArray"])(properties)) {
     properties = [ properties ];
   }
 
-  Object(dist_index_esm["i" /* forEach */])(properties, function(property) {
-    if (!Object(dist_index_esm["s" /* isUndefined */])(source[property])) {
+  Object(dist_index_esm["forEach"])(properties, function(property) {
+    if (!Object(dist_index_esm["isUndefined"])(source[property])) {
       target[property] = source[property];
     }
   });
@@ -49991,16 +51627,16 @@ var CUSTOM_PROPERTIES = [
 function toggeling(element, target) {
 
   var oldCollapsed = (
-    element && Object(dist_index_esm["k" /* has */])(element, 'collapsed') ? element.collapsed : !isExpanded(element)
+    element && Object(dist_index_esm["has"])(element, 'collapsed') ? element.collapsed : !isExpanded(element)
   );
 
   var targetCollapsed;
 
-  if (target && (Object(dist_index_esm["k" /* has */])(target, 'collapsed') || Object(dist_index_esm["k" /* has */])(target, 'isExpanded'))) {
+  if (target && (Object(dist_index_esm["has"])(target, 'collapsed') || Object(dist_index_esm["has"])(target, 'isExpanded'))) {
 
     // property is explicitly set so use it
     targetCollapsed = (
-      Object(dist_index_esm["k" /* has */])(target, 'collapsed') ? target.collapsed : !target.isExpanded
+      Object(dist_index_esm["has"])(target, 'collapsed') ? target.collapsed : !target.isExpanded
     );
   } else {
 
@@ -50027,6 +51663,7 @@ function BpmnReplace(
     moddleCopy,
     modeling,
     replace,
+    rules,
     selection
 ) {
 
@@ -50071,9 +51708,9 @@ function BpmnReplace(
         copyProps = BpmnReplace_intersection(elementProps, newElementProps);
 
     // initialize special properties defined in target definition
-    Object(dist_index_esm["a" /* assign */])(newBusinessObject, Object(dist_index_esm["x" /* pick */])(target, CUSTOM_PROPERTIES));
+    Object(dist_index_esm["assign"])(newBusinessObject, Object(dist_index_esm["pick"])(target, CUSTOM_PROPERTIES));
 
-    var properties = Object(dist_index_esm["e" /* filter */])(copyProps, function(propertyName) {
+    var properties = Object(dist_index_esm["filter"])(copyProps, function(propertyName) {
 
       // copying event definitions, unless we replace
       if (propertyName === 'eventDefinitions') {
@@ -50087,7 +51724,7 @@ function BpmnReplace(
       }
 
       // so the applied properties from 'target' don't get lost
-      if (newBusinessObject.hasOwnProperty(propertyName)) {
+      if (Object(dist_index_esm["has"])(newBusinessObject, propertyName)) {
         return false;
       }
 
@@ -50129,7 +51766,7 @@ function BpmnReplace(
       }
 
       // else if property is explicitly set, use it
-      else if (target && Object(dist_index_esm["k" /* has */])(target, 'isExpanded')) {
+      else if (target && Object(dist_index_esm["has"])(target, 'isExpanded')) {
         newElement.isExpanded = target.isExpanded;
       }
 
@@ -50164,6 +51801,11 @@ function BpmnReplace(
       newElement.height = elementFactory._getDefaultSize(newBusinessObject).height;
     }
 
+    if (!rules.allowed('shape.resize', { shape: newBusinessObject })) {
+      newElement.height = elementFactory._getDefaultSize(newBusinessObject).height;
+      newElement.width = elementFactory._getDefaultSize(newBusinessObject).width;
+    }
+
     newBusinessObject.name = oldBusinessObject.name;
 
     // retain default flow's reference between inclusive <-> exclusive gateways and activities
@@ -50190,12 +51832,24 @@ function BpmnReplace(
       newElement.host = target.host;
     }
 
+    // The DataStoreReference element is 14px wider than the DataObjectReference element
+    // This ensures that they stay centered on the x axis when replaced
+    if (
+      newElement.type === 'bpmn:DataStoreReference' ||
+      newElement.type === 'bpmn:DataObjectReference'
+    ) {
+      newElement.x = element.x + (element.width - newElement.width) / 2;
+    }
+
     newElement.di = {};
 
-    // fill and stroke will be set to DI
+    // colors will be set to DI
     BpmnReplace_copyProperties(oldBusinessObject.di, newElement.di, [
       'fill',
-      'stroke'
+      'stroke',
+      'background-color',
+      'border-color',
+      'color'
     ]);
 
     newElement = replace.replaceElement(element, newElement, hints);
@@ -50216,6 +51870,7 @@ BpmnReplace.$inject = [
   'moddleCopy',
   'modeling',
   'replace',
+  'rules',
   'selection'
 ];
 
@@ -50359,6 +52014,33 @@ var START_EVENT = [
     target: {
       type: 'bpmn:StartEvent',
       eventDefinitionType: 'bpmn:SignalEventDefinition'
+    }
+  }
+];
+
+var START_EVENT_SUB_PROCESS = [
+  {
+    label: 'Start Event',
+    actionName: 'replace-with-none-start',
+    className: 'bpmn-icon-start-event-none',
+    target: {
+      type: 'bpmn:StartEvent'
+    }
+  },
+  {
+    label: 'Intermediate Throw Event',
+    actionName: 'replace-with-none-intermediate-throwing',
+    className: 'bpmn-icon-intermediate-event-none',
+    target: {
+      type: 'bpmn:IntermediateThrowEvent'
+    }
+  },
+  {
+    label: 'End Event',
+    actionName: 'replace-with-none-end',
+    className: 'bpmn-icon-end-event-none',
+    target: {
+      type: 'bpmn:EndEvent'
     }
   }
 ];
@@ -50812,6 +52494,28 @@ var TASK = [
   }
 ];
 
+var DATA_OBJECT_REFERENCE = [
+  {
+    label: 'Data Store Reference',
+    actionName: 'replace-with-data-store-reference',
+    className: 'bpmn-icon-data-store',
+    target: {
+      type: 'bpmn:DataStoreReference'
+    }
+  }
+];
+
+var DATA_STORE_REFERENCE = [
+  {
+    label: 'Data Object Reference',
+    actionName: 'replace-with-data-object-reference',
+    className: 'bpmn-icon-data-object',
+    target: {
+      type: 'bpmn:DataObjectReference'
+    }
+  }
+];
+
 var BOUNDARY_EVENT = [
   {
     label: 'Message Boundary Event',
@@ -51082,7 +52786,15 @@ var PARTICIPANT = [
     }
   },
   {
-    label: 'Collapsed Pool',
+    label: function(element) {
+      var label = 'Empty Pool';
+
+      if (element.children && element.children.length) {
+        label += ' (removes content)';
+      }
+
+      return label;
+    },
     actionName: 'replace-with-collapsed-pool',
 
     // TODO(@janstuemmel): maybe design new icon
@@ -51110,9 +52822,10 @@ var PARTICIPANT = [
  * This module is an element agnostic replace menu provider for the popup menu.
  */
 function ReplaceMenuProvider(
-    popupMenu, modeling, moddle,
+    bpmnFactory, popupMenu, modeling, moddle,
     bpmnReplace, rules, translate) {
 
+  this._bpmnFactory = bpmnFactory;
   this._popupMenu = popupMenu;
   this._modeling = modeling;
   this._moddle = moddle;
@@ -51124,6 +52837,7 @@ function ReplaceMenuProvider(
 }
 
 ReplaceMenuProvider.$inject = [
+  'bpmnFactory',
   'popupMenu',
   'modeling',
   'moddle',
@@ -51163,10 +52877,18 @@ ReplaceMenuProvider.prototype.getEntries = function(element) {
 
   var differentType = isDifferentType(element);
 
-  // start events outside event sub processes
-  if (Object(ModelUtil["is"])(businessObject, 'bpmn:StartEvent') && !isEventSubProcess(businessObject.$parent)) {
+  if (Object(ModelUtil["is"])(businessObject, 'bpmn:DataObjectReference')) {
+    return this._createEntries(element, DATA_OBJECT_REFERENCE);
+  }
 
-    entries = Object(dist_index_esm["e" /* filter */])(START_EVENT, differentType);
+  if (Object(ModelUtil["is"])(businessObject, 'bpmn:DataStoreReference')) {
+    return this._createEntries(element, DATA_STORE_REFERENCE);
+  }
+
+  // start events outside sub processes
+  if (Object(ModelUtil["is"])(businessObject, 'bpmn:StartEvent') && !Object(ModelUtil["is"])(businessObject.$parent, 'bpmn:SubProcess')) {
+
+    entries = Object(dist_index_esm["filter"])(START_EVENT, differentType);
 
     return this._createEntries(element, entries);
   }
@@ -51174,7 +52896,7 @@ ReplaceMenuProvider.prototype.getEntries = function(element) {
   // expanded/collapsed pools
   if (Object(ModelUtil["is"])(businessObject, 'bpmn:Participant')) {
 
-    entries = Object(dist_index_esm["e" /* filter */])(PARTICIPANT, function(entry) {
+    entries = Object(dist_index_esm["filter"])(PARTICIPANT, function(entry) {
       return isExpanded(businessObject) !== entry.target.isExpanded;
     });
 
@@ -51183,8 +52905,7 @@ ReplaceMenuProvider.prototype.getEntries = function(element) {
 
   // start events inside event sub processes
   if (Object(ModelUtil["is"])(businessObject, 'bpmn:StartEvent') && isEventSubProcess(businessObject.$parent)) {
-
-    entries = Object(dist_index_esm["e" /* filter */])(EVENT_SUB_PROCESS_START_EVENT, function(entry) {
+    entries = Object(dist_index_esm["filter"])(EVENT_SUB_PROCESS_START_EVENT, function(entry) {
 
       var target = entry.target;
 
@@ -51200,10 +52921,18 @@ ReplaceMenuProvider.prototype.getEntries = function(element) {
     return this._createEntries(element, entries);
   }
 
+  // start events inside sub processes
+  if (Object(ModelUtil["is"])(businessObject, 'bpmn:StartEvent') && !isEventSubProcess(businessObject.$parent)
+      && Object(ModelUtil["is"])(businessObject.$parent, 'bpmn:SubProcess')) {
+    entries = Object(dist_index_esm["filter"])(START_EVENT_SUB_PROCESS, differentType);
+
+    return this._createEntries(element, entries);
+  }
+
   // end events
   if (Object(ModelUtil["is"])(businessObject, 'bpmn:EndEvent')) {
 
-    entries = Object(dist_index_esm["e" /* filter */])(END_EVENT, function(entry) {
+    entries = Object(dist_index_esm["filter"])(END_EVENT, function(entry) {
       var target = entry.target;
 
       // hide cancel end events outside transactions
@@ -51220,11 +52949,11 @@ ReplaceMenuProvider.prototype.getEntries = function(element) {
   // boundary events
   if (Object(ModelUtil["is"])(businessObject, 'bpmn:BoundaryEvent')) {
 
-    entries = Object(dist_index_esm["e" /* filter */])(BOUNDARY_EVENT, function(entry) {
+    entries = Object(dist_index_esm["filter"])(BOUNDARY_EVENT, function(entry) {
 
       var target = entry.target;
 
-      if (target.eventDefinition == 'bpmn:CancelEventDefinition' &&
+      if (target.eventDefinitionType == 'bpmn:CancelEventDefinition' &&
          !Object(ModelUtil["is"])(businessObject.attachedToRef, 'bpmn:Transaction')) {
         return false;
       }
@@ -51242,7 +52971,7 @@ ReplaceMenuProvider.prototype.getEntries = function(element) {
   if (Object(ModelUtil["is"])(businessObject, 'bpmn:IntermediateCatchEvent') ||
       Object(ModelUtil["is"])(businessObject, 'bpmn:IntermediateThrowEvent')) {
 
-    entries = Object(dist_index_esm["e" /* filter */])(INTERMEDIATE_EVENT, differentType);
+    entries = Object(dist_index_esm["filter"])(INTERMEDIATE_EVENT, differentType);
 
     return this._createEntries(element, entries);
   }
@@ -51250,7 +52979,7 @@ ReplaceMenuProvider.prototype.getEntries = function(element) {
   // gateways
   if (Object(ModelUtil["is"])(businessObject, 'bpmn:Gateway')) {
 
-    entries = Object(dist_index_esm["e" /* filter */])(GATEWAY, differentType);
+    entries = Object(dist_index_esm["filter"])(GATEWAY, differentType);
 
     return this._createEntries(element, entries);
   }
@@ -51258,7 +52987,7 @@ ReplaceMenuProvider.prototype.getEntries = function(element) {
   // transactions
   if (Object(ModelUtil["is"])(businessObject, 'bpmn:Transaction')) {
 
-    entries = Object(dist_index_esm["e" /* filter */])(TRANSACTION, differentType);
+    entries = Object(dist_index_esm["filter"])(TRANSACTION, differentType);
 
     return this._createEntries(element, entries);
   }
@@ -51266,7 +52995,7 @@ ReplaceMenuProvider.prototype.getEntries = function(element) {
   // expanded event sub processes
   if (isEventSubProcess(businessObject) && isExpanded(businessObject)) {
 
-    entries = Object(dist_index_esm["e" /* filter */])(EVENT_SUB_PROCESS, differentType);
+    entries = Object(dist_index_esm["filter"])(EVENT_SUB_PROCESS, differentType);
 
     return this._createEntries(element, entries);
   }
@@ -51274,7 +53003,7 @@ ReplaceMenuProvider.prototype.getEntries = function(element) {
   // expanded sub processes
   if (Object(ModelUtil["is"])(businessObject, 'bpmn:SubProcess') && isExpanded(businessObject)) {
 
-    entries = Object(dist_index_esm["e" /* filter */])(SUBPROCESS_EXPANDED, differentType);
+    entries = Object(dist_index_esm["filter"])(SUBPROCESS_EXPANDED, differentType);
 
     return this._createEntries(element, entries);
   }
@@ -51282,7 +53011,7 @@ ReplaceMenuProvider.prototype.getEntries = function(element) {
   // collapsed ad hoc sub processes
   if (Object(ModelUtil["is"])(businessObject, 'bpmn:AdHocSubProcess') && !isExpanded(businessObject)) {
 
-    entries = Object(dist_index_esm["e" /* filter */])(TASK, function(entry) {
+    entries = Object(dist_index_esm["filter"])(TASK, function(entry) {
 
       var target = entry.target;
 
@@ -51303,11 +53032,11 @@ ReplaceMenuProvider.prototype.getEntries = function(element) {
 
   // flow nodes
   if (Object(ModelUtil["is"])(businessObject, 'bpmn:FlowNode')) {
-    entries = Object(dist_index_esm["e" /* filter */])(TASK, differentType);
+    entries = Object(dist_index_esm["filter"])(TASK, differentType);
 
     // collapsed SubProcess can not be replaced with itself
     if (Object(ModelUtil["is"])(businessObject, 'bpmn:SubProcess') && !isExpanded(businessObject)) {
-      entries = Object(dist_index_esm["e" /* filter */])(entries, function(entry) {
+      entries = Object(dist_index_esm["filter"])(entries, function(entry) {
         return entry.label !== 'Sub Process (collapsed)';
       });
     }
@@ -51335,6 +53064,14 @@ ReplaceMenuProvider.prototype.getHeaderEntries = function(element) {
     headerEntries = headerEntries.concat(this._getLoopEntries(element));
   }
 
+  if (Object(ModelUtil["is"])(element, 'bpmn:DataObjectReference')) {
+    headerEntries = headerEntries.concat(this._getDataObjectIsCollection(element));
+  }
+
+  if (Object(ModelUtil["is"])(element, 'bpmn:Participant')) {
+    headerEntries = headerEntries.concat(this._getParticipantMultiplicity(element));
+  }
+
   if (Object(ModelUtil["is"])(element, 'bpmn:SubProcess') &&
       !Object(ModelUtil["is"])(element, 'bpmn:Transaction') &&
       !isEventSubProcess(element)) {
@@ -51359,7 +53096,7 @@ ReplaceMenuProvider.prototype._createEntries = function(element, replaceOptions)
 
   var self = this;
 
-  Object(dist_index_esm["i" /* forEach */])(replaceOptions, function(definition) {
+  Object(dist_index_esm["forEach"])(replaceOptions, function(definition) {
     var entry = self._createMenuEntry(definition, element);
 
     menuEntries.push(entry);
@@ -51387,7 +53124,7 @@ ReplaceMenuProvider.prototype._createSequenceFlowEntries = function(element, rep
 
   var self = this;
 
-  Object(dist_index_esm["i" /* forEach */])(replaceOptions, function(entry) {
+  Object(dist_index_esm["forEach"])(replaceOptions, function(entry) {
 
     switch (entry.actionName) {
     case 'replace-with-default-flow':
@@ -51457,10 +53194,15 @@ ReplaceMenuProvider.prototype._createMenuEntry = function(definition, element, a
     return replaceElement(element, definition.target);
   };
 
+  var label = definition.label;
+  if (label && typeof label === 'function') {
+    label = label(element);
+  }
+
   action = action || replaceAction;
 
   var menuEntry = {
-    label: translate(definition.label),
+    label: translate(label),
     className: definition.className,
     id: definition.actionName,
     action: action
@@ -51545,6 +53287,80 @@ ReplaceMenuProvider.prototype._getLoopEntries = function(element) {
     }
   ];
   return loopEntries;
+};
+
+/**
+ * Get a list of menu items containing a button for the collection marker
+ *
+ * @param  {djs.model.Base} element
+ *
+ * @return {Array<Object>} a list of menu items
+ */
+ReplaceMenuProvider.prototype._getDataObjectIsCollection = function(element) {
+
+  var self = this;
+  var translate = this._translate;
+
+  function toggleIsCollection(event, entry) {
+    self._modeling.updateModdleProperties(
+      element,
+      dataObject,
+      { isCollection: !entry.active });
+  }
+
+  var dataObject = element.businessObject.dataObjectRef,
+      isCollection = dataObject.isCollection;
+
+  var dataObjectEntries = [
+    {
+      id: 'toggle-is-collection',
+      className: 'bpmn-icon-parallel-mi-marker',
+      title: translate('Collection'),
+      active: isCollection,
+      action: toggleIsCollection,
+    }
+  ];
+  return dataObjectEntries;
+};
+
+/**
+ * Get a list of menu items containing a button for the participant multiplicity marker
+ *
+ * @param  {djs.model.Base} element
+ *
+ * @return {Array<Object>} a list of menu items
+ */
+ReplaceMenuProvider.prototype._getParticipantMultiplicity = function(element) {
+
+  var self = this;
+  var bpmnFactory = this._bpmnFactory;
+  var translate = this._translate;
+
+  function toggleParticipantMultiplicity(event, entry) {
+    var isActive = entry.active;
+    var participantMultiplicity;
+
+    if (!isActive) {
+      participantMultiplicity = bpmnFactory.create('bpmn:ParticipantMultiplicity');
+    }
+
+    self._modeling.updateProperties(
+      element,
+      { participantMultiplicity: participantMultiplicity });
+  }
+
+  var participantMultiplicity = element.businessObject.participantMultiplicity;
+
+  var participantEntries = [
+    {
+      id: 'toggle-participant-multiplicity',
+      className: 'bpmn-icon-parallel-mi-marker',
+      title: translate('Participant Multiplicity'),
+      active: !!participantMultiplicity,
+      action: toggleParticipantMultiplicity,
+    }
+  ];
+  return participantEntries;
 };
 
 
@@ -51706,11 +53522,11 @@ function applyConstraints(attr, trbl, resizeConstraints) {
       minValue = resizeConstraints.min && resizeConstraints.min[attr],
       maxValue = resizeConstraints.max && resizeConstraints.max[attr];
 
-  if (Object(dist_index_esm["p" /* isNumber */])(minValue)) {
+  if (Object(dist_index_esm["isNumber"])(minValue)) {
     value = (/top|left/.test(attr) ? ResizeUtil_min : ResizeUtil_max)(value, minValue);
   }
 
-  if (Object(dist_index_esm["p" /* isNumber */])(maxValue)) {
+  if (Object(dist_index_esm["isNumber"])(maxValue)) {
     value = (/top|left/.test(attr) ? ResizeUtil_max : ResizeUtil_min)(value, maxValue);
   }
 
@@ -51828,7 +53644,7 @@ function computeChildrenBBox(shapeOrChildren, padding) {
 
     // grab all the children that are part of the
     // parents children box
-    elements = Object(dist_index_esm["e" /* filter */])(shapeOrChildren.children, isBBoxChild);
+    elements = Object(dist_index_esm["filter"])(shapeOrChildren.children, isBBoxChild);
 
   } else {
     elements = shapeOrChildren;
@@ -52133,7 +53949,7 @@ ContextPadProvider.prototype.getContextPadEntries = function(element) {
 
     function appendStart(event, element) {
 
-      var shape = elementFactory.createShape(Object(dist_index_esm["a" /* assign */])({ type: type }, options));
+      var shape = elementFactory.createShape(Object(dist_index_esm["assign"])({ type: type }, options));
       create.start(event, shape, {
         source: element
       });
@@ -52141,7 +53957,7 @@ ContextPadProvider.prototype.getContextPadEntries = function(element) {
 
 
     var append = autoPlace ? function(event, element) {
-      var shape = elementFactory.createShape(Object(dist_index_esm["a" /* assign */])({ type: type }, options));
+      var shape = elementFactory.createShape(Object(dist_index_esm["assign"])({ type: type }, options));
 
       autoPlace.append(element, shape);
     } : appendStart;
@@ -52176,7 +53992,7 @@ ContextPadProvider.prototype.getContextPadEntries = function(element) {
 
     var childLanes = getChildLanes(element);
 
-    Object(dist_index_esm["a" /* assign */])(actions, {
+    Object(dist_index_esm["assign"])(actions, {
       'lane-insert-above': {
         group: 'lane-insert-above',
         className: 'bpmn-icon-lane-insert-above',
@@ -52192,7 +54008,7 @@ ContextPadProvider.prototype.getContextPadEntries = function(element) {
     if (childLanes.length < 2) {
 
       if (element.height >= 120) {
-        Object(dist_index_esm["a" /* assign */])(actions, {
+        Object(dist_index_esm["assign"])(actions, {
           'lane-divide-two': {
             group: 'lane-divide',
             className: 'bpmn-icon-lane-divide-two',
@@ -52205,7 +54021,7 @@ ContextPadProvider.prototype.getContextPadEntries = function(element) {
       }
 
       if (element.height >= 180) {
-        Object(dist_index_esm["a" /* assign */])(actions, {
+        Object(dist_index_esm["assign"])(actions, {
           'lane-divide-three': {
             group: 'lane-divide',
             className: 'bpmn-icon-lane-divide-three',
@@ -52218,7 +54034,7 @@ ContextPadProvider.prototype.getContextPadEntries = function(element) {
       }
     }
 
-    Object(dist_index_esm["a" /* assign */])(actions, {
+    Object(dist_index_esm["assign"])(actions, {
       'lane-insert-below': {
         group: 'lane-insert-below',
         className: 'bpmn-icon-lane-insert-below',
@@ -52237,7 +54053,7 @@ ContextPadProvider.prototype.getContextPadEntries = function(element) {
 
     if (Object(ModelUtil["is"])(businessObject, 'bpmn:EventBasedGateway')) {
 
-      Object(dist_index_esm["a" /* assign */])(actions, {
+      Object(dist_index_esm["assign"])(actions, {
         'append.receive-task': appendAction(
           'bpmn:ReceiveTask',
           'bpmn-icon-receive-task',
@@ -52272,7 +54088,7 @@ ContextPadProvider.prototype.getContextPadEntries = function(element) {
 
     if (isEventType(businessObject, 'bpmn:BoundaryEvent', 'bpmn:CompensateEventDefinition')) {
 
-      Object(dist_index_esm["a" /* assign */])(actions, {
+      Object(dist_index_esm["assign"])(actions, {
         'append.compensation-activity':
             appendAction(
               'bpmn:Task',
@@ -52290,7 +54106,7 @@ ContextPadProvider.prototype.getContextPadEntries = function(element) {
         !isEventType(businessObject, 'bpmn:IntermediateThrowEvent', 'bpmn:LinkEventDefinition') &&
         !isEventSubProcess(businessObject)) {
 
-      Object(dist_index_esm["a" /* assign */])(actions, {
+      Object(dist_index_esm["assign"])(actions, {
         'append.end-event': appendAction(
           'bpmn:EndEvent',
           'bpmn-icon-end-event-none',
@@ -52318,7 +54134,7 @@ ContextPadProvider.prototype.getContextPadEntries = function(element) {
   if (!popupMenu.isEmpty(element, 'bpmn-replace')) {
 
     // Replace menu entry
-    Object(dist_index_esm["a" /* assign */])(actions, {
+    Object(dist_index_esm["assign"])(actions, {
       'replace': {
         group: 'edit',
         className: 'bpmn-icon-screw-wrench',
@@ -52326,7 +54142,7 @@ ContextPadProvider.prototype.getContextPadEntries = function(element) {
         action: {
           click: function(event, element) {
 
-            var position = Object(dist_index_esm["a" /* assign */])(getReplaceMenuPosition(element), {
+            var position = Object(dist_index_esm["assign"])(getReplaceMenuPosition(element), {
               cursor: { x: event.x, y: event.y }
             });
 
@@ -52337,32 +54153,54 @@ ContextPadProvider.prototype.getContextPadEntries = function(element) {
     });
   }
 
-  if (isAny(businessObject, [
-    'bpmn:FlowNode',
-    'bpmn:InteractionNode',
-    'bpmn:DataObjectReference',
-    'bpmn:DataStoreReference'
-  ])) {
-
-    Object(dist_index_esm["a" /* assign */])(actions, {
-      'append.text-annotation': appendAction('bpmn:TextAnnotation', 'bpmn-icon-text-annotation'),
+  if (
+    isAny(businessObject, [
+      'bpmn:FlowNode',
+      'bpmn:InteractionNode',
+      'bpmn:DataObjectReference',
+      'bpmn:DataStoreReference',
+    ])
+  ) {
+    Object(dist_index_esm["assign"])(actions, {
+      'append.text-annotation': appendAction(
+        'bpmn:TextAnnotation',
+        'bpmn-icon-text-annotation'
+      ),
 
       'connect': {
         group: 'connect',
         className: 'bpmn-icon-connection-multi',
-        title: translate('Connect using ' +
-                  (businessObject.isForCompensation ? '' : 'Sequence/MessageFlow or ') +
-                  'Association'),
+        title: translate(
+          'Connect using ' +
+            (businessObject.isForCompensation
+              ? ''
+              : 'Sequence/MessageFlow or ') +
+            'Association'
+        ),
         action: {
           click: startConnect,
-          dragstart: startConnect
-        }
-      }
+          dragstart: startConnect,
+        },
+      },
+    });
+  }
+
+  if (Object(ModelUtil["is"])(businessObject, 'bpmn:TextAnnotation')) {
+    Object(dist_index_esm["assign"])(actions, {
+      'connect': {
+        group: 'connect',
+        className: 'bpmn-icon-connection-multi',
+        title: translate('Connect using Association'),
+        action: {
+          click: startConnect,
+          dragstart: startConnect,
+        },
+      },
     });
   }
 
   if (isAny(businessObject, [ 'bpmn:DataObjectReference', 'bpmn:DataStoreReference' ])) {
-    Object(dist_index_esm["a" /* assign */])(actions, {
+    Object(dist_index_esm["assign"])(actions, {
       'connect': {
         group: 'connect',
         className: 'bpmn-icon-connection-multi',
@@ -52375,17 +54213,23 @@ ContextPadProvider.prototype.getContextPadEntries = function(element) {
     });
   }
 
+  if (Object(ModelUtil["is"])(businessObject, 'bpmn:Group')) {
+    Object(dist_index_esm["assign"])(actions, {
+      'append.text-annotation': appendAction('bpmn:TextAnnotation', 'bpmn-icon-text-annotation')
+    });
+  }
+
   // delete element entry, only show if allowed by rules
   var deleteAllowed = rules.allowed('elements.delete', { elements: [ element ] });
 
-  if (Object(dist_index_esm["l" /* isArray */])(deleteAllowed)) {
+  if (Object(dist_index_esm["isArray"])(deleteAllowed)) {
 
     // was the element returned as a deletion candidate?
     deleteAllowed = deleteAllowed[0] === element;
   }
 
   if (deleteAllowed) {
-    Object(dist_index_esm["a" /* assign */])(actions, {
+    Object(dist_index_esm["assign"])(actions, {
       'delete': {
         group: 'edit',
         className: 'bpmn-icon-trash',
@@ -52409,7 +54253,7 @@ function isEventType(eventBo, type, definition) {
   var isDefinition = false;
 
   var definitions = eventBo.eventDefinitions || [];
-  Object(dist_index_esm["i" /* forEach */])(definitions, function(def) {
+  Object(dist_index_esm["forEach"])(definitions, function(def) {
     if (def.$type === definition) {
       isDefinition = true;
     }
@@ -52465,7 +54309,7 @@ function DistributeElements(modeling) {
         numOfShapes = 0,
         avgDimension;
 
-    Object(dist_index_esm["i" /* forEach */])(elements, function(element) {
+    Object(dist_index_esm["forEach"])(elements, function(element) {
       if (element.waypoints || element.labelTarget) {
         return;
       }
@@ -52477,7 +54321,7 @@ function DistributeElements(modeling) {
 
     avgDimension = Math.round(elementsSize / numOfShapes);
 
-    return Object(dist_index_esm["e" /* filter */])(elements, function(element) {
+    return Object(dist_index_esm["filter"])(elements, function(element) {
       return element[dimension] < (avgDimension + 50);
     });
   });
@@ -52504,8 +54348,8 @@ DistributeElements.prototype.registerFilter = function(filterFn) {
 /**
  * Distributes the elements with a given orientation
  *
- * @param  {Array} elements    [description]
- * @param  {string} orientation [description]
+ * @param  {Array} elements
+ * @param  {string} orientation
  */
 DistributeElements.prototype.trigger = function(elements, orientation) {
   var modeling = this._modeling;
@@ -52550,7 +54394,7 @@ DistributeElements.prototype._filterElements = function(elements) {
     return elements;
   }
 
-  Object(dist_index_esm["i" /* forEach */])(filters, function(filterFn) {
+  Object(dist_index_esm["forEach"])(filters, function(filterFn) {
     distributableElements = filterFn(distributableElements, axis, dimension);
   });
 
@@ -52588,9 +54432,9 @@ DistributeElements.prototype._createGroups = function(elements) {
   }
 
   // sort by 'left->right' or 'top->bottom'
-  var sortedElements = Object(dist_index_esm["B" /* sortBy */])(elements, axis);
+  var sortedElements = Object(dist_index_esm["sortBy"])(elements, axis);
 
-  Object(dist_index_esm["i" /* forEach */])(sortedElements, function(element, idx) {
+  Object(dist_index_esm["forEach"])(sortedElements, function(element, idx) {
     var elementRange = self._findRange(element, axis, dimension),
         range;
 
@@ -52639,11 +54483,11 @@ DistributeElements.prototype._hasIntersection = function(rangeA, rangeB) {
 /**
  * Returns the min and max values for an element
  *
- * @param  {[type]} element   [description]
- * @param  {[type]} axis      [description]
- * @param  {[type]} dimension [description]
+ * @param  {Bounds} element
+ * @param  {string} axis
+ * @param  {string} dimension
  *
- * @return {[type]}           [description]
+ * @return {{ min: number, max: number }}
  */
 DistributeElements.prototype._findRange = function(element) {
   var axis = element[this._axis],
@@ -52676,7 +54520,7 @@ DistributeElements.prototype._findRange = function(element) {
 function BpmnDistributeElements(distributeElements) {
 
   distributeElements.registerFilter(function(elements) {
-    return Object(dist_index_esm["e" /* filter */])(elements, function(element) {
+    return Object(dist_index_esm["filter"])(elements, function(element) {
       var cannotDistribute = isAny(element, [
         'bpmn:Association',
         'bpmn:BoundaryEvent',
@@ -52835,7 +54679,7 @@ EditorActions.prototype._registerDefaultActions = function(injector) {
       if (allowed === false) {
         return;
       }
-      else if (Object(dist_index_esm["l" /* isArray */])(allowed)) {
+      else if (Object(dist_index_esm["isArray"])(allowed)) {
         removableElements = allowed;
       }
       else {
@@ -52909,7 +54753,7 @@ EditorActions.prototype.register = function(actions, listener) {
     return this._registerAction(actions, listener);
   }
 
-  Object(dist_index_esm["i" /* forEach */])(actions, function(listener, action) {
+  Object(dist_index_esm["forEach"])(actions, function(listener, action) {
     self._registerAction(action, listener);
   });
 };
@@ -53088,7 +54932,7 @@ BpmnEditorActions.prototype._registerDefaultActions = function(injector) {
           type = opts.type;
 
       if (currentSelection.length) {
-        aligneableElements = Object(dist_index_esm["e" /* filter */])(currentSelection, function(element) {
+        aligneableElements = Object(dist_index_esm["filter"])(currentSelection, function(element) {
           return !Object(ModelUtil["is"])(element, 'bpmn:Lane');
         });
 
@@ -53267,7 +55111,7 @@ function GridSnapping(elementRegistry, eventBus, config) {
       var snapConstraints = getSnapConstraints(event, axis);
 
       if (snapConstraints) {
-        Object(dist_index_esm["a" /* assign */])(options, snapConstraints);
+        Object(dist_index_esm["assign"])(options, snapConstraints);
       }
 
       if (!isSnapped(event, axis)) {
@@ -53326,7 +55170,7 @@ GridSnapping.prototype.snapValue = function(value, options) {
   if (options && options.min) {
     min = options.min;
 
-    if (Object(dist_index_esm["p" /* isNumber */])(min)) {
+    if (Object(dist_index_esm["isNumber"])(min)) {
       min = quantize(min + offset, SPACING, 'ceil');
 
       value = Math.max(value, min);
@@ -53336,7 +55180,7 @@ GridSnapping.prototype.snapValue = function(value, options) {
   if (options && options.max) {
     max = options.max;
 
-    if (Object(dist_index_esm["p" /* isNumber */])(max)) {
+    if (Object(dist_index_esm["isNumber"])(max)) {
       max = quantize(max + offset, SPACING, 'floor');
 
       value = Math.min(value, max);
@@ -53478,7 +55322,7 @@ function getSnapOffset(event, axis, elementRegistry) {
       snapOffset = gridSnappingContext.snapOffset;
 
   // cache snap offset
-  if (snapOffset && Object(dist_index_esm["p" /* isNumber */])(snapOffset[ axis ])) {
+  if (snapOffset && Object(dist_index_esm["isNumber"])(snapOffset[ axis ])) {
     return snapOffset[ axis ];
   }
 
@@ -53486,7 +55330,7 @@ function getSnapOffset(event, axis, elementRegistry) {
     snapOffset = gridSnappingContext.snapOffset = {};
   }
 
-  if (!Object(dist_index_esm["p" /* isNumber */])(snapOffset[ axis ])) {
+  if (!Object(dist_index_esm["isNumber"])(snapOffset[ axis ])) {
     snapOffset[ axis ] = 0;
   }
 
@@ -53565,7 +55409,7 @@ function ResizeBehavior(eventBus, gridSnapping) {
     var shape = context.shape,
         newBounds = context.newBounds;
 
-    if (Object(dist_index_esm["r" /* isString */])(autoResize)) {
+    if (Object(dist_index_esm["isString"])(autoResize)) {
       context.newBounds = self.snapComplex(newBounds, autoResize);
     } else {
       context.newBounds = self.snapSimple(shape, newBounds);
@@ -53665,7 +55509,7 @@ ResizeBehavior.prototype.snapHorizontally = function(newBounds, directions) {
   }
 
   // assign snapped x and width
-  Object(dist_index_esm["a" /* assign */])(newBounds, snappedNewBounds);
+  Object(dist_index_esm["assign"])(newBounds, snappedNewBounds);
 
   return newBounds;
 };
@@ -53709,7 +55553,7 @@ ResizeBehavior.prototype.snapVertically = function(newBounds, directions) {
   }
 
   // assign snapped y and height
-  Object(dist_index_esm["a" /* assign */])(newBounds, snappedNewBounds);
+  Object(dist_index_esm["assign"])(newBounds, snappedNewBounds);
 
   return newBounds;
 };
@@ -54012,8 +55856,8 @@ function snapSegment(gridSnapping, segmentStart, segmentEnd) {
   }
 
   if ('x' in snapped || 'y' in snapped) {
-    segmentStart = Object(dist_index_esm["a" /* assign */])({}, segmentStart, snapped);
-    segmentEnd = Object(dist_index_esm["a" /* assign */])({}, segmentEnd, snapped);
+    segmentStart = Object(dist_index_esm["assign"])({}, segmentStart, snapped);
+    segmentEnd = Object(dist_index_esm["assign"])({}, segmentEnd, snapped);
   }
 
   return [ segmentStart, segmentEnd ];
@@ -54410,7 +56254,7 @@ function KeyboardMoveSelection(
 
   var self = this;
 
-  this._config = Object(dist_index_esm["a" /* assign */])({}, KeyboardMoveSelection_DEFAULT_CONFIG, config || {});
+  this._config = Object(dist_index_esm["assign"])({}, KeyboardMoveSelection_DEFAULT_CONFIG, config || {});
 
   keyboard.addListener(KeyboardMoveSelection_HIGHER_PRIORITY, function(event) {
 
@@ -54720,7 +56564,7 @@ function Resize(eventBus, rules, modeling, dragging) {
 Resize.prototype.canResize = function(context) {
   var rules = this._rules;
 
-  var ctx = Object(dist_index_esm["x" /* pick */])(context, [ 'newBounds', 'shape', 'delta', 'direction' ]);
+  var ctx = Object(dist_index_esm["pick"])(context, [ 'newBounds', 'shape', 'delta', 'direction' ]);
 
   return rules.allowed('shape.resize', ctx);
 };
@@ -54746,7 +56590,7 @@ Resize.prototype.activate = function(event, shape, contextOrDirection) {
     };
   }
 
-  context = Object(dist_index_esm["a" /* assign */])({ shape: shape }, contextOrDirection);
+  context = Object(dist_index_esm["assign"])({ shape: shape }, contextOrDirection);
 
   direction = context.direction;
 
@@ -54965,7 +56809,7 @@ function ResizeHandles(eventBus, canvas, selection, resize) {
 
     // add new selection markers ONLY if single selection
     if (newSelection.length === 1) {
-      Object(dist_index_esm["i" /* forEach */])(newSelection, Object(dist_index_esm["b" /* bind */])(self.addResizer, self));
+      Object(dist_index_esm["forEach"])(newSelection, Object(dist_index_esm["bind"])(self.addResizer, self));
     }
   });
 
@@ -55065,7 +56909,7 @@ ResizeHandles.prototype.addResizer = function(shape) {
     return;
   }
 
-  Object(dist_index_esm["i" /* forEach */])(ResizeHandles_directions, function(direction) {
+  Object(dist_index_esm["forEach"])(ResizeHandles_directions, function(direction) {
     self.createResizer(shape, direction);
   });
 };
@@ -55301,7 +57145,7 @@ LabelEditingProvider.prototype.activate = function(element) {
   // bounds
   var bounds = this.getEditingBBox(element);
 
-  Object(dist_index_esm["a" /* assign */])(context, bounds);
+  Object(dist_index_esm["assign"])(context, bounds);
 
   var options = {};
 
@@ -55315,27 +57159,27 @@ LabelEditingProvider.prototype.activate = function(element) {
     ]) ||
     isCollapsedSubProcess(element)
   ) {
-    Object(dist_index_esm["a" /* assign */])(options, {
+    Object(dist_index_esm["assign"])(options, {
       centerVertically: true
     });
   }
 
   // external labels
   if (isLabelExternal(element)) {
-    Object(dist_index_esm["a" /* assign */])(options, {
+    Object(dist_index_esm["assign"])(options, {
       autoResize: true
     });
   }
 
   // text annotations
   if (Object(ModelUtil["is"])(element, 'bpmn:TextAnnotation')) {
-    Object(dist_index_esm["a" /* assign */])(options, {
+    Object(dist_index_esm["assign"])(options, {
       resizable: true,
       autoResize: true
     });
   }
 
-  Object(dist_index_esm["a" /* assign */])(context, {
+  Object(dist_index_esm["assign"])(context, {
     options: options
   });
 
@@ -55385,14 +57229,14 @@ LabelEditingProvider.prototype.getEditingBBox = function(element) {
   // adjust for expanded pools AND lanes
   if (Object(ModelUtil["is"])(element, 'bpmn:Lane') || isExpandedPool(element)) {
 
-    Object(dist_index_esm["a" /* assign */])(bounds, {
+    Object(dist_index_esm["assign"])(bounds, {
       width: bbox.height,
       height: 30 * zoom,
       x: bbox.x - bbox.height / 2 + (15 * zoom),
       y: mid.y - (30 * zoom) / 2
     });
 
-    Object(dist_index_esm["a" /* assign */])(style, {
+    Object(dist_index_esm["assign"])(style, {
       fontSize: defaultFontSize + 'px',
       lineHeight: defaultLineHeight,
       paddingTop: (7 * zoom) + 'px',
@@ -55410,12 +57254,12 @@ LabelEditingProvider.prototype.getEditingBBox = function(element) {
       isCollapsedPool(element) ||
       isCollapsedSubProcess(element)) {
 
-    Object(dist_index_esm["a" /* assign */])(bounds, {
+    Object(dist_index_esm["assign"])(bounds, {
       width: bbox.width,
       height: bbox.height
     });
 
-    Object(dist_index_esm["a" /* assign */])(style, {
+    Object(dist_index_esm["assign"])(style, {
       fontSize: defaultFontSize + 'px',
       lineHeight: defaultLineHeight,
       paddingTop: (7 * zoom) + 'px',
@@ -55428,12 +57272,12 @@ LabelEditingProvider.prototype.getEditingBBox = function(element) {
 
   // internal labels for expanded sub processes
   if (isExpandedSubProcess(element)) {
-    Object(dist_index_esm["a" /* assign */])(bounds, {
+    Object(dist_index_esm["assign"])(bounds, {
       width: bbox.width,
       x: bbox.x
     });
 
-    Object(dist_index_esm["a" /* assign */])(style, {
+    Object(dist_index_esm["assign"])(style, {
       fontSize: defaultFontSize + 'px',
       lineHeight: defaultLineHeight,
       paddingTop: (7 * zoom) + 'px',
@@ -55449,14 +57293,14 @@ LabelEditingProvider.prototype.getEditingBBox = function(element) {
 
   // external labels for events, data elements, gateways, groups and connections
   if (target.labelTarget) {
-    Object(dist_index_esm["a" /* assign */])(bounds, {
+    Object(dist_index_esm["assign"])(bounds, {
       width: width,
       height: bbox.height + paddingTop + paddingBottom,
       x: mid.x - width / 2,
       y: bbox.y - paddingTop
     });
 
-    Object(dist_index_esm["a" /* assign */])(style, {
+    Object(dist_index_esm["assign"])(style, {
       fontSize: externalFontSize + 'px',
       lineHeight: externalLineHeight,
       paddingTop: paddingTop + 'px',
@@ -55480,14 +57324,14 @@ LabelEditingProvider.prototype.getEditingBBox = function(element) {
 
     var height = externalFontSize + paddingTop + paddingBottom;
 
-    Object(dist_index_esm["a" /* assign */])(bounds, {
+    Object(dist_index_esm["assign"])(bounds, {
       width: width,
       height: height,
       x: absoluteBBox.x - width / 2,
       y: absoluteBBox.y - height / 2
     });
 
-    Object(dist_index_esm["a" /* assign */])(style, {
+    Object(dist_index_esm["assign"])(style, {
       fontSize: externalFontSize + 'px',
       lineHeight: externalLineHeight,
       paddingTop: paddingTop + 'px',
@@ -55497,14 +57341,14 @@ LabelEditingProvider.prototype.getEditingBBox = function(element) {
 
   // text annotations
   if (Object(ModelUtil["is"])(element, 'bpmn:TextAnnotation')) {
-    Object(dist_index_esm["a" /* assign */])(bounds, {
+    Object(dist_index_esm["assign"])(bounds, {
       width: bbox.width,
       height: bbox.height,
       minWidth: 30 * zoom,
       minHeight: 10 * zoom
     });
 
-    Object(dist_index_esm["a" /* assign */])(style, {
+    Object(dist_index_esm["assign"])(style, {
       textAlign: 'left',
       paddingTop: (5 * zoom) + 'px',
       paddingBottom: (7 * zoom) + 'px',
@@ -55755,7 +57599,7 @@ var ALIGNMENTS = [
   'right'
 ];
 
-var ELEMENT_LABEL_DISTANCE = 10;
+var AdaptiveLabelPositioningBehavior_ELEMENT_LABEL_DISTANCE = 10;
 
 /**
  * A component that makes sure that external labels are added
@@ -55850,7 +57694,7 @@ function AdaptiveLabelPositioningBehavior(eventBus, modeling) {
     case 'top':
       newLabelMid = {
         x: elementMid.x,
-        y: elementTrbl.top - ELEMENT_LABEL_DISTANCE - label.height / 2
+        y: elementTrbl.top - AdaptiveLabelPositioningBehavior_ELEMENT_LABEL_DISTANCE - label.height / 2
       };
 
       break;
@@ -55858,7 +57702,7 @@ function AdaptiveLabelPositioningBehavior(eventBus, modeling) {
     case 'left':
 
       newLabelMid = {
-        x: elementTrbl.left - ELEMENT_LABEL_DISTANCE - label.width / 2,
+        x: elementTrbl.left - AdaptiveLabelPositioningBehavior_ELEMENT_LABEL_DISTANCE - label.width / 2,
         y: elementMid.y
       };
 
@@ -55868,7 +57712,7 @@ function AdaptiveLabelPositioningBehavior(eventBus, modeling) {
 
       newLabelMid = {
         x: elementMid.x,
-        y: elementTrbl.bottom + ELEMENT_LABEL_DISTANCE + label.height / 2
+        y: elementTrbl.bottom + AdaptiveLabelPositioningBehavior_ELEMENT_LABEL_DISTANCE + label.height / 2
       };
 
       break;
@@ -55876,7 +57720,7 @@ function AdaptiveLabelPositioningBehavior(eventBus, modeling) {
     case 'right':
 
       newLabelMid = {
-        x: elementTrbl.right + ELEMENT_LABEL_DISTANCE + label.width / 2,
+        x: elementTrbl.right + AdaptiveLabelPositioningBehavior_ELEMENT_LABEL_DISTANCE + label.width / 2,
         y: elementMid.y
       };
 
@@ -56065,11 +57909,11 @@ function AssociationBehavior(injector, modeling) {
     var newParent = context.newParent,
         shape = context.shape;
 
-    var associations = Object(dist_index_esm["e" /* filter */])(shape.incoming.concat(shape.outgoing), function(connection) {
+    var associations = Object(dist_index_esm["filter"])(shape.incoming.concat(shape.outgoing), function(connection) {
       return Object(ModelUtil["is"])(connection, 'bpmn:Association');
     });
 
-    Object(dist_index_esm["i" /* forEach */])(associations, function(association) {
+    Object(dist_index_esm["forEach"])(associations, function(association) {
       modeling.moveConnection(association, { x: 0, y: 0 }, newParent);
     });
   }, true);
@@ -56190,16 +58034,18 @@ function shouldReplace(shape, host) {
 
 
 
+var BoundaryEventBehavior_HIGH_PRIORITY = 2000;
+
 
 /**
  * BPMN specific boundary event behavior
  */
-function BoundaryEventBehavior(eventBus, modeling) {
+function BoundaryEventBehavior(eventBus, moddle, modeling) {
 
   CommandInterceptor.call(this, eventBus);
 
   function getBoundaryEvents(element) {
-    return Object(dist_index_esm["e" /* filter */])(element.attachers, function(attacher) {
+    return Object(dist_index_esm["filter"])(element.attachers, function(attacher) {
       return Object(ModelUtil["is"])(attacher, 'bpmn:BoundaryEvent');
     });
   }
@@ -56227,7 +58073,7 @@ function BoundaryEventBehavior(eventBus, modeling) {
 
     if (Object(ModelUtil["is"])(oldSource, 'bpmn:Gateway') &&
         Object(ModelUtil["is"])(newSource, 'bpmn:EventBasedGateway')) {
-      Object(dist_index_esm["i" /* forEach */])(newSource.outgoing, function(connection) {
+      Object(dist_index_esm["forEach"])(newSource.outgoing, function(connection) {
         var target = connection.target,
             attachedboundaryEvents = getBoundaryEvents(target);
 
@@ -56238,15 +58084,28 @@ function BoundaryEventBehavior(eventBus, modeling) {
       });
     }
   });
+
+  // copy reference to root element on replace
+  eventBus.on('moddleCopy.canCopyProperty', BoundaryEventBehavior_HIGH_PRIORITY, function(context) {
+    var parent = context.parent,
+        property = context.property,
+        propertyName = context.propertyName;
+
+    var propertyDescriptor = moddle.getPropertyDescriptor(parent, propertyName);
+
+    if (propertyDescriptor && propertyDescriptor.isReference && Object(ModelUtil["is"])(property, 'bpmn:RootElement')) {
+      parent.set(propertyName, property);
+    }
+  });
 }
 
 BoundaryEventBehavior.$inject = [
   'eventBus',
+  'moddle',
   'modeling'
 ];
 
 inherits_browser_default()(BoundaryEventBehavior, CommandInterceptor);
-
 // CONCATENATED MODULE: ./node_modules/bpmn-js/lib/features/modeling/behavior/RootElementReferenceBehavior.js
 
 
@@ -56288,7 +58147,7 @@ function RootElementReferenceBehavior(
     var definitions = bpmnjs.getDefinitions(),
         rootElements = definitions.get('rootElements');
 
-    return !!Object(dist_index_esm["f" /* find */])(rootElements, Object(dist_index_esm["v" /* matchPattern */])({ id: rootElement.id }));
+    return !!Object(dist_index_esm["find"])(rootElements, Object(dist_index_esm["matchPattern"])({ id: rootElement.id }));
   }
 
   function getRootElementReferencePropertyName(eventDefinition) {
@@ -56414,11 +58273,11 @@ inherits_browser_default()(RootElementReferenceBehavior, CommandInterceptor);
 // helpers //////////
 
 function hasAnyEventDefinition(element, types) {
-  if (!Object(dist_index_esm["l" /* isArray */])(types)) {
+  if (!Object(dist_index_esm["isArray"])(types)) {
     types = [ types ];
   }
 
-  return Object(dist_index_esm["A" /* some */])(types, function(type) {
+  return Object(dist_index_esm["some"])(types, function(type) {
     return DiUtil_hasEventDefinition(element, type);
   });
 }
@@ -56474,9 +58333,11 @@ function FixHoverBehavior(elementRegistry, eventBus, canvas) {
   eventBus.on([
     'create.hover',
     'create.move',
+    'create.out',
     'create.end',
     'shape.move.hover',
     'shape.move.move',
+    'shape.move.out',
     'shape.move.end'
   ], FixHoverBehavior_HIGH_PRIORITY, function(event) {
     var context = event.context,
@@ -56499,7 +58360,6 @@ function FixHoverBehavior(elementRegistry, eventBus, canvas) {
       event.hoverGfx = elementRegistry.getGraphics(event.hover);
     }
   });
-
 
   eventBus.on([
     'connect.hover',
@@ -56668,7 +58528,7 @@ function CreateParticipantBehavior_CreateParticipantBehavior(canvas, eventBus, m
     var participantBounds = getParticipantBounds(shape, childrenBBox);
 
     // assign width and height
-    Object(dist_index_esm["a" /* assign */])(shape, participantBounds);
+    Object(dist_index_esm["assign"])(shape, participantBounds);
 
     // assign create constraints
     context.createConstraints = getParticipantCreateConstraints(shape, childrenBBox);
@@ -56856,7 +58716,7 @@ function CreateParticipantBehavior_isConnection(element) {
 }
 
 function findParticipant(elements) {
-  return Object(dist_index_esm["f" /* find */])(elements, function(element) {
+  return Object(dist_index_esm["find"])(elements, function(element) {
     return Object(ModelUtil["is"])(element, 'bpmn:Participant');
   });
 }
@@ -56910,7 +58770,7 @@ function DataInputAssociationBehavior(eventBus, bpmnFactory) {
 
     var inputAssociations = element.get('dataInputAssociations');
 
-    return Object(dist_index_esm["f" /* find */])(inputAssociations, function(association) {
+    return Object(dist_index_esm["find"])(inputAssociations, function(association) {
       return association !== removedConnection &&
              association.targetRef === targetRef;
     });
@@ -56920,7 +58780,7 @@ function DataInputAssociationBehavior(eventBus, bpmnFactory) {
 
     var properties = element.get('properties');
 
-    var targetRefProp = Object(dist_index_esm["f" /* find */])(properties, function(p) {
+    var targetRefProp = Object(dist_index_esm["find"])(properties, function(p) {
       return p.name === TARGET_REF_PLACEHOLDER_NAME;
     });
 
@@ -57071,9 +58931,9 @@ function DataStoreBehavior(
 
   commandStack.registerHandler('dataStore.updateContainment', UpdateSemanticParentHandler);
 
-  function getFirstParticipant() {
+  function getFirstParticipantWithProcessRef() {
     return elementRegistry.filter(function(element) {
-      return Object(ModelUtil["is"])(element, 'bpmn:Participant');
+      return Object(ModelUtil["is"])(element, 'bpmn:Participant') && Object(ModelUtil["getBusinessObject"])(element).processRef;
     })[0];
   }
 
@@ -57086,7 +58946,7 @@ function DataStoreBehavior(
   function updateDataStoreParent(dataStore, newDataStoreParent) {
     var dataStoreBo = dataStore.businessObject || dataStore;
 
-    newDataStoreParent = newDataStoreParent || getFirstParticipant();
+    newDataStoreParent = newDataStoreParent || getFirstParticipantWithProcessRef();
 
     if (newDataStoreParent) {
       var newDataStoreParentBo = newDataStoreParent.businessObject || newDataStoreParent;
@@ -57492,7 +59352,7 @@ function DropOnFlowBehavior(eventBus, bpmnRules, modeling) {
 
     var mid;
 
-    if (Object(dist_index_esm["p" /* isNumber */])(positionOrBounds.width)) {
+    if (Object(dist_index_esm["isNumber"])(positionOrBounds.width)) {
       mid = getMid(positionOrBounds);
     } else {
       mid = positionOrBounds;
@@ -57550,11 +59410,11 @@ function DropOnFlowBehavior(eventBus, bpmnRules, modeling) {
 
     var duplicateConnections = [].concat(
 
-      incomingConnection && Object(dist_index_esm["e" /* filter */])(oldIncoming, function(connection) {
+      incomingConnection && Object(dist_index_esm["filter"])(oldIncoming, function(connection) {
         return connection.source === incomingConnection.source;
       }) || [],
 
-      outgoingConnection && Object(dist_index_esm["e" /* filter */])(oldOutgoing, function(connection) {
+      outgoingConnection && Object(dist_index_esm["filter"])(oldOutgoing, function(connection) {
         return connection.target === outgoingConnection.target;
       }) || []
     );
@@ -57589,7 +59449,7 @@ function DropOnFlowBehavior(eventBus, bpmnRules, modeling) {
 
     // find a connection which intersects with the
     // element's mid point
-    var connection = Object(dist_index_esm["f" /* find */])(newParent.children, function(element) {
+    var connection = Object(dist_index_esm["find"])(newParent.children, function(element) {
       var canInsert = bpmnRules.canInsert(shapes, element);
 
       return canInsert && getApproxIntersection(element.waypoints, newShapeMid);
@@ -57659,7 +59519,7 @@ function DropOnFlowBehavior_isPointInsideBBox(bbox, point) {
 }
 
 function copy(obj) {
-  return Object(dist_index_esm["a" /* assign */])({}, obj);
+  return Object(dist_index_esm["assign"])({}, obj);
 }
 
 
@@ -58970,7 +60830,7 @@ function LabelBehavior(
       });
     }
 
-    Object(dist_index_esm["a" /* assign */])(di.label.bounds, {
+    Object(dist_index_esm["assign"])(di.label.bounds, {
       x: element.x,
       y: element.y,
       width: element.width,
@@ -58983,7 +60843,7 @@ function LabelBehavior(
     var context = event.context,
         connection = context.connection,
         label = connection.label,
-        hints = Object(dist_index_esm["a" /* assign */])({}, context.hints),
+        hints = Object(dist_index_esm["assign"])({}, context.hints),
         newWaypoints = context.newWaypoints || connection.waypoints,
         oldWaypoints = context.oldWaypoints;
 
@@ -59190,17 +61050,212 @@ function getNearestLine(point, lines) {
     };
   });
 
-  var sorted = Object(dist_index_esm["B" /* sortBy */])(distances, 'distance');
+  var sorted = Object(dist_index_esm["sortBy"])(distances, 'distance');
 
   return sorted[0].line;
 }
 
+// CONCATENATED MODULE: ./node_modules/diagram-js/lib/features/modeling/cmd/helper/AnchorsHelper.js
+
+
+
+
+
+
+
+function getResizedSourceAnchor(connection, shape, oldBounds) {
+
+  var waypoints = safeGetWaypoints(connection),
+      waypointsInsideNewBounds = getWaypointsInsideBounds(waypoints, shape),
+      oldAnchor = waypoints[0];
+
+  // new anchor is the last waypoint enclosed be resized source
+  if (waypointsInsideNewBounds.length) {
+    return waypointsInsideNewBounds[ waypointsInsideNewBounds.length - 1 ];
+  }
+
+  return getNewAttachPoint(oldAnchor.original || oldAnchor, oldBounds, shape);
+}
+
+
+function getResizedTargetAnchor(connection, shape, oldBounds) {
+
+  var waypoints = safeGetWaypoints(connection),
+      waypointsInsideNewBounds = getWaypointsInsideBounds(waypoints, shape),
+      oldAnchor = waypoints[waypoints.length - 1];
+
+  // new anchor is the first waypoint enclosed be resized target
+  if (waypointsInsideNewBounds.length) {
+    return waypointsInsideNewBounds[ 0 ];
+  }
+
+  return getNewAttachPoint(oldAnchor.original || oldAnchor, oldBounds, shape);
+}
+
+
+function getMovedSourceAnchor(connection, source, moveDelta) {
+
+  var waypoints = safeGetWaypoints(connection),
+      oldBounds = subtract(source, moveDelta),
+      oldAnchor = waypoints[ 0 ];
+
+  return getNewAttachPoint(oldAnchor.original || oldAnchor, oldBounds, source);
+}
+
+
+function getMovedTargetAnchor(connection, target, moveDelta) {
+
+  var waypoints = safeGetWaypoints(connection),
+      oldBounds = subtract(target, moveDelta),
+      oldAnchor = waypoints[ waypoints.length - 1 ];
+
+  return getNewAttachPoint(oldAnchor.original || oldAnchor, oldBounds, target);
+}
+
+
+// helpers //////////////////////
+
+function subtract(bounds, delta) {
+  return {
+    x: bounds.x - delta.x,
+    y: bounds.y - delta.y,
+    width: bounds.width,
+    height: bounds.height
+  };
+}
+
+
+/**
+ * Return waypoints of given connection; throw if non exists (should not happen!!).
+ *
+ * @param {Connection} connection
+ *
+ * @return {Array<Point>}
+ */
+function safeGetWaypoints(connection) {
+
+  var waypoints = connection.waypoints;
+
+  if (!waypoints.length) {
+    throw new Error('connection#' + connection.id + ': no waypoints');
+  }
+
+  return waypoints;
+}
+
+function getWaypointsInsideBounds(waypoints, bounds) {
+  var originalWaypoints = Object(dist_index_esm["map"])(waypoints, AnchorsHelper_getOriginal);
+
+  return Object(dist_index_esm["filter"])(originalWaypoints, function(waypoint) {
+    return isInsideBounds(waypoint, bounds);
+  });
+}
+
+/**
+ * Checks if point is inside bounds, incl. edges.
+ *
+ * @param {Point} point
+ * @param {Bounds} bounds
+ */
+function isInsideBounds(point, bounds) {
+  return getOrientation(bounds, point, 1) === 'intersect';
+}
+
+function AnchorsHelper_getOriginal(point) {
+  return point.original || point;
+}
+
+// CONCATENATED MODULE: ./node_modules/bpmn-js/lib/features/modeling/behavior/MessageFlowBehavior.js
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * BPMN-specific message flow behavior.
+ */
+function MessageFlowBehavior(eventBus, modeling) {
+
+  CommandInterceptor.call(this, eventBus);
+
+  this.postExecute('shape.replace', function(context) {
+    var oldShape = context.oldShape,
+        newShape = context.newShape;
+
+    if (!isParticipantCollapse(oldShape, newShape)) {
+      return;
+    }
+
+    var messageFlows = getMessageFlows(oldShape);
+
+    messageFlows.incoming.forEach(function(incoming) {
+      var anchor = getResizedTargetAnchor(incoming, newShape, oldShape);
+
+      modeling.reconnectEnd(incoming, newShape, anchor);
+    });
+
+    messageFlows.outgoing.forEach(function(outgoing) {
+      var anchor = getResizedSourceAnchor(outgoing, newShape, oldShape);
+
+      modeling.reconnectStart(outgoing, newShape, anchor);
+    });
+  }, true);
+
+}
+
+MessageFlowBehavior.$inject = [ 'eventBus', 'modeling' ];
+
+inherits_browser_default()(MessageFlowBehavior, CommandInterceptor);
+
+// helpers //////////
+
+function isParticipantCollapse(oldShape, newShape) {
+  return Object(ModelUtil["is"])(oldShape, 'bpmn:Participant')
+    && isExpanded(oldShape)
+    && Object(ModelUtil["is"])(newShape, 'bpmn:Participant')
+    && !isExpanded(newShape);
+}
+
+function getMessageFlows(parent) {
+  var elements = selfAndAllChildren([ parent ], false);
+
+  var incoming = [],
+      outgoing = [];
+
+  elements.forEach(function(element) {
+    if (element === parent) {
+      return;
+    }
+
+    element.incoming.forEach(function(connection) {
+      if (Object(ModelUtil["is"])(connection, 'bpmn:MessageFlow')) {
+        incoming.push(connection);
+      }
+    });
+
+    element.outgoing.forEach(function(connection) {
+      if (Object(ModelUtil["is"])(connection, 'bpmn:MessageFlow')) {
+        outgoing.push(connection);
+      }
+    });
+  }, []);
+
+  return {
+    incoming: incoming,
+    outgoing: outgoing
+  };
+}
 // CONCATENATED MODULE: ./node_modules/bpmn-js/lib/features/modeling/behavior/ModelingFeedback.js
 
 
-var COLLAB_ERR_MSG = 'flow elements must be children of pools/participants',
-    PROCESS_ERR_MSG = 'participants cannot be pasted onto a non-empty process diagram';
-
+var COLLAB_ERR_MSG = 'flow elements must be children of pools/participants';
 
 function ModelingFeedback(eventBus, tooltips, translate) {
 
@@ -59226,19 +61281,6 @@ function ModelingFeedback(eventBus, tooltips, translate) {
     }
   });
 
-  eventBus.on([ 'elements.paste.rejected' ], function(event) {
-    var context = event.context,
-        position = context.position,
-        target = context.target;
-
-    if (Object(ModelUtil["is"])(target, 'bpmn:Collaboration')) {
-      showError(position, translate(COLLAB_ERR_MSG));
-    }
-
-    if (Object(ModelUtil["is"])(target, 'bpmn:Process')) {
-      showError(position, translate(PROCESS_ERR_MSG), 3000);
-    }
-  });
 }
 
 ModelingFeedback.$inject = [
@@ -59389,7 +61431,7 @@ function ReplaceConnectionBehavior(eventBus, modeling, bpmnRules, injector) {
     var closure = context.closure,
         allConnections = closure.allConnections;
 
-    Object(dist_index_esm["i" /* forEach */])(allConnections, fixConnection);
+    Object(dist_index_esm["forEach"])(allConnections, fixConnection);
   }, true);
 
   this.preExecute('connection.reconnect', replaceReconnectedConnection);
@@ -59403,9 +61445,9 @@ function ReplaceConnectionBehavior(eventBus, modeling, bpmnRules, injector) {
 
     // remove condition on change to default
     if (properties.default) {
-      connection = Object(dist_index_esm["f" /* find */])(
+      connection = Object(dist_index_esm["find"])(
         element.outgoing,
-        Object(dist_index_esm["v" /* matchPattern */])({ id: element.businessObject.default.id })
+        Object(dist_index_esm["matchPattern"])({ id: element.businessObject.default.id })
       );
 
       if (connection) {
@@ -59505,6 +61547,19 @@ function ReplaceElementBehaviour(
   this._elementRegistry = elementRegistry;
   this._selection = selection;
 
+  // replace elements on create, e.g. during copy-paste
+  this.postExecuted([ 'elements.create' ], 500, function(event) {
+    var context = event.context,
+        target = context.parent,
+        elements = context.elements;
+
+    var canReplace = bpmnRules.canReplace(elements, target);
+
+    if (canReplace) {
+      this.replaceElements(elements, canReplace.replacements);
+    }
+  }, this);
+
   // replace elements on move
   this.postExecuted([ 'elements.move' ], 500, function(event) {
     var context = event.context,
@@ -59512,7 +61567,7 @@ function ReplaceElementBehaviour(
         newHost = context.newHost,
         elements = [];
 
-    Object(dist_index_esm["i" /* forEach */])(context.closure.topLevel, function(topLevelElements) {
+    Object(dist_index_esm["forEach"])(context.closure.topLevel, function(topLevelElements) {
       if (isEventSubProcess(topLevelElements)) {
         elements = elements.concat(topLevelElements.children);
       } else {
@@ -59566,7 +61621,7 @@ ReplaceElementBehaviour.prototype.replaceElements = function(elements, newElemen
       bpmnReplace = this._bpmnReplace,
       selection = this._selection;
 
-  Object(dist_index_esm["i" /* forEach */])(newElements, function(replacement) {
+  Object(dist_index_esm["forEach"])(newElements, function(replacement) {
     var newElement = {
       type: replacement.newElementType
     };
@@ -59934,7 +61989,7 @@ function SpaceToolBehavior_SpaceToolBehavior(eventBus) {
         start = context.start,
         minDimensions = {};
 
-    Object(dist_index_esm["i" /* forEach */])(shapes, function(shape) {
+    Object(dist_index_esm["forEach"])(shapes, function(shape) {
       var id = shape.id;
 
       if (Object(ModelUtil["is"])(shape, 'bpmn:Participant')) {
@@ -60534,6 +62589,7 @@ function isDefaultFlow(connection, source) {
 
 
 
+
 /* harmony default export */ var modeling_behavior = ({
   __init__: [
     'adaptiveLabelPositioningBehavior',
@@ -60556,6 +62612,7 @@ function isDefaultFlow(connection, source) {
     'importDockingFix',
     'isHorizontalFix',
     'labelBehavior',
+    'messageFlowBehavior',
     'modelingFeedback',
     'removeElementBehavior',
     'removeParticipantBehavior',
@@ -60590,6 +62647,7 @@ function isDefaultFlow(connection, source) {
   importDockingFix: [ 'type', ImportDockingFix ],
   isHorizontalFix: [ 'type', IsHorizontalFix ],
   labelBehavior: [ 'type', LabelBehavior ],
+  messageFlowBehavior: [ 'type', MessageFlowBehavior ],
   modelingFeedback: [ 'type', ModelingFeedback ],
   replaceConnectionBehavior: [ 'type', ReplaceConnectionBehavior ],
   removeParticipantBehavior: [ 'type', RemoveParticipantBehavior ],
@@ -60714,7 +62772,11 @@ BpmnRules.prototype.init = function() {
         position = context.position,
         target = context.target;
 
-    return Object(dist_index_esm["d" /* every */])(elements, function(element) {
+    if (BpmnRules_isConnection(target) && !BpmnRules_canInsert(elements, target, position)) {
+      return false;
+    }
+
+    return Object(dist_index_esm["every"])(elements, function(element) {
       if (BpmnRules_isConnection(element)) {
         return BpmnRules_canConnect(element.source, element.target, element);
       }
@@ -60811,7 +62873,9 @@ function canStartConnection(element) {
     'bpmn:FlowNode',
     'bpmn:InteractionNode',
     'bpmn:DataObjectReference',
-    'bpmn:DataStoreReference'
+    'bpmn:DataStoreReference',
+    'bpmn:Group',
+    'bpmn:TextAnnotation'
   ]);
 }
 
@@ -60866,7 +62930,8 @@ function isSameOrganization(a, b) {
 
 function isMessageFlowSource(element) {
   return (
-    Object(ModelUtil["is"])(element, 'bpmn:InteractionNode') && (
+    Object(ModelUtil["is"])(element, 'bpmn:InteractionNode') &&
+    !Object(ModelUtil["is"])(element, 'bpmn:BoundaryEvent') && (
       !Object(ModelUtil["is"])(element, 'bpmn:Event') || (
         Object(ModelUtil["is"])(element, 'bpmn:ThrowEvent') &&
         hasEventDefinitionOrNone(element, 'bpmn:MessageEventDefinition')
@@ -60883,6 +62948,9 @@ function isMessageFlowTarget(element) {
         Object(ModelUtil["is"])(element, 'bpmn:CatchEvent') &&
         hasEventDefinitionOrNone(element, 'bpmn:MessageEventDefinition')
       )
+    ) && !(
+      Object(ModelUtil["is"])(element, 'bpmn:BoundaryEvent') &&
+      !BpmnRules_hasEventDefinition(element, 'bpmn:MessageEventDefinition')
     )
   );
 }
@@ -60915,7 +62983,7 @@ function isSameScope(a, b) {
 function BpmnRules_hasEventDefinition(element, eventDefinition) {
   var bo = Object(ModelUtil["getBusinessObject"])(element);
 
-  return !!Object(dist_index_esm["f" /* find */])(bo.eventDefinitions || [], function(definition) {
+  return !!Object(dist_index_esm["find"])(bo.eventDefinitions || [], function(definition) {
     return Object(ModelUtil["is"])(definition, eventDefinition);
   });
 }
@@ -61083,6 +63151,13 @@ function canDrop(element, target, position) {
     return isAny(target, [ 'bpmn:Participant', 'bpmn:Lane' ]);
   }
 
+  // disallow dropping data store reference if there is no process to append to
+  if (Object(ModelUtil["is"])(element, 'bpmn:DataStoreReference') && Object(ModelUtil["is"])(target, 'bpmn:Collaboration')) {
+    return Object(dist_index_esm["some"])(Object(ModelUtil["getBusinessObject"])(target).get('participants'), function(participant) {
+      return !!participant.get('processRef');
+    });
+  }
+
   // account for the fact that data associations are always
   // rendered and moved to top (Process or Collaboration level)
   //
@@ -61162,7 +63237,7 @@ function hasOneOfEventDefinitions(element, eventDefinitions) {
 function isReceiveTaskAfterEventBasedGateway(element) {
   return (
     Object(ModelUtil["is"])(element, 'bpmn:ReceiveTask') &&
-    Object(dist_index_esm["f" /* find */])(element.incoming, function(incoming) {
+    Object(dist_index_esm["find"])(element.incoming, function(incoming) {
       return Object(ModelUtil["is"])(incoming.source, 'bpmn:EventBasedGateway');
     })
   );
@@ -61245,7 +63320,7 @@ function BpmnRules_canReplace(elements, target, position) {
     replacements: []
   };
 
-  Object(dist_index_esm["i" /* forEach */])(elements, function(element) {
+  Object(dist_index_esm["forEach"])(elements, function(element) {
 
     if (!isEventSubProcess(target)) {
 
@@ -61267,6 +63342,22 @@ function BpmnRules_canReplace(elements, target, position) {
         if (hasErrorEventDefinition(element) ||
             hasEscalationEventDefinition(element) ||
             hasCompensateEventDefinition(element)) {
+          canExecute.replacements.push({
+            oldElementId: element.id,
+            newElementType: 'bpmn:StartEvent'
+          });
+        }
+
+        // replace a typed start event by a blank interrupting start event
+        // when the target is a sub process but not an event sub process
+        if (hasOneOfEventDefinitions(element,
+          [
+            'bpmn:MessageEventDefinition',
+            'bpmn:TimerEventDefinition',
+            'bpmn:SignalEventDefinition',
+            'bpmn:ConditionalEventDefinition'
+          ]) &&
+            Object(ModelUtil["is"])(target, 'bpmn:SubProcess')) {
           canExecute.replacements.push({
             oldElementId: element.id,
             newElementType: 'bpmn:StartEvent'
@@ -61302,7 +63393,7 @@ function BpmnRules_canReplace(elements, target, position) {
 function BpmnRules_canMove(elements, target) {
 
   // do not move selection containing lanes
-  if (Object(dist_index_esm["A" /* some */])(elements, isLane)) {
+  if (Object(dist_index_esm["some"])(elements, isLane)) {
     return false;
   }
 
@@ -61561,11 +63652,11 @@ function BpmnDiOrdering(eventBus, canvas) {
     elements = selfAndAllChildren([ root ], false);
 
     // only bpmndi:Shape and bpmndi:Edge can be direct children of bpmndi:Plane
-    elements = Object(dist_index_esm["e" /* filter */])(elements, function(element) {
+    elements = Object(dist_index_esm["filter"])(elements, function(element) {
       return element !== root && !element.labelTarget;
     });
 
-    diElements = Object(dist_index_esm["u" /* map */])(elements, getDi);
+    diElements = Object(dist_index_esm["map"])(elements, getDi);
 
     rootDi.set('planeElement', diElements);
   }
@@ -61760,7 +63851,7 @@ function BpmnOrderingProvider(eventBus, canvas, translate) {
       return { level: 10 };
     }
 
-    var entry = Object(dist_index_esm["f" /* find */])(orders, function(o) {
+    var entry = Object(dist_index_esm["find"])(orders, function(o) {
       return isAny(element, [ o.type ]);
     });
 
@@ -61773,6 +63864,10 @@ function BpmnOrderingProvider(eventBus, canvas, translate) {
 
     if (!order) {
       element.order = order = computeOrder(element);
+    }
+
+    if (!order) {
+      throw new Error('no order for <' + element.id + '>');
     }
 
     return order;
@@ -61792,10 +63887,7 @@ function BpmnOrderingProvider(eventBus, canvas, translate) {
     }
 
     if (!actualParent) {
-      throw new Error(translate('no parent for {element} in {parent}', {
-        element: element.id,
-        parent: newParent.id
-      }));
+      throw new Error('no parent for <' + element.id + '> in <' + (newParent && newParent.id) + '>');
     }
 
     return actualParent;
@@ -61813,15 +63905,13 @@ function BpmnOrderingProvider(eventBus, canvas, translate) {
 
     var elementOrder = getOrder(element);
 
-
     if (elementOrder.containers) {
       newParent = findActualParent(element, newParent, elementOrder.containers);
     }
 
-
     var currentIndex = newParent.children.indexOf(element);
 
-    var insertIndex = Object(dist_index_esm["g" /* findIndex */])(newParent.children, function(child) {
+    var insertIndex = Object(dist_index_esm["findIndex"])(newParent.children, function(child) {
 
       // do not compare with labels, they are created
       // in the wrong order (right after elements) during import and
@@ -61973,10 +64063,14 @@ function CommandStack(eventBus, injector) {
    * Current active commandStack execution
    *
    * @type {Object}
+   * @property {Object[]} actions
+   * @property {Object[]} dirty
+   * @property { 'undo' | 'redo' | 'clear' | 'execute' | null } trigger the cause of the current excecution
    */
   this._currentExecution = {
     actions: [],
-    dirty: []
+    dirty: [],
+    trigger: null
   };
 
 
@@ -62006,6 +64100,8 @@ CommandStack.prototype.execute = function(command, context) {
   if (!command) {
     throw new Error('command required');
   }
+
+  this._currentExecution.trigger = 'execute';
 
   var action = { command: command, context: context };
 
@@ -62067,7 +64163,7 @@ CommandStack.prototype.clear = function(emit) {
   this._stackIdx = -1;
 
   if (emit !== false) {
-    this._fire('changed');
+    this._fire('changed', { trigger: 'clear' });
   }
 };
 
@@ -62080,6 +64176,8 @@ CommandStack.prototype.undo = function() {
       next;
 
   if (action) {
+    this._currentExecution.trigger = 'undo';
+
     this._pushAction(action);
 
     while (action) {
@@ -62106,6 +64204,8 @@ CommandStack.prototype.redo = function() {
       next;
 
   if (action) {
+    this._currentExecution.trigger = 'redo';
+
     this._pushAction(action);
 
     while (action) {
@@ -62312,17 +64412,20 @@ CommandStack.prototype._pushAction = function(action) {
 
 CommandStack.prototype._popAction = function() {
   var execution = this._currentExecution,
+      trigger = execution.trigger,
       actions = execution.actions,
       dirty = execution.dirty;
 
   actions.pop();
 
   if (!actions.length) {
-    this._eventBus.fire('elements.changed', { elements: Object(dist_index_esm["D" /* uniqueBy */])('id', dirty.reverse()) });
+    this._eventBus.fire('elements.changed', { elements: Object(dist_index_esm["uniqueBy"])('id', dirty.reverse()) });
 
     dirty.length = 0;
 
-    this._fire('changed');
+    this._fire('changed', { trigger: trigger });
+
+    execution.trigger = null;
   }
 };
 
@@ -62334,7 +64437,7 @@ CommandStack.prototype._markDirty = function(elements) {
     return;
   }
 
-  elements = Object(dist_index_esm["l" /* isArray */])(elements) ? elements : [ elements ];
+  elements = Object(dist_index_esm["isArray"])(elements) ? elements : [ elements ];
 
   execution.dirty = execution.dirty.concat(elements);
 };
@@ -62400,7 +64503,7 @@ function Tooltips_createRoot(parentNode) {
 
 
 function Tooltips_setPosition(el, x, y) {
-  Object(dist_index_esm["a" /* assign */])(el.style, { left: x + 'px', top: y + 'px' });
+  Object(dist_index_esm["assign"])(el.style, { left: x + 'px', top: y + 'px' });
 }
 
 function Tooltips_setVisible(el, visible) {
@@ -62522,7 +64625,7 @@ Tooltips.prototype.add = function(tooltip) {
 
   var id = this._ids.next();
 
-  tooltip = Object(dist_index_esm["a" /* assign */])({}, this._tooltipDefaults, tooltip, {
+  tooltip = Object(dist_index_esm["assign"])({}, this._tooltipDefaults, tooltip, {
     id: id
   });
 
@@ -62660,7 +64763,7 @@ Tooltips.prototype._addTooltip = function(tooltip) {
 
   // create proper html elements from
   // tooltip HTML strings
-  if (Object(dist_index_esm["r" /* isString */])(html)) {
+  if (Object(dist_index_esm["isString"])(html)) {
     html = Object(min_dom_dist_index_esm["domify"])(html);
   }
 
@@ -62699,7 +64802,7 @@ Tooltips.prototype._updateTooltip = function(tooltip) {
 
 Tooltips.prototype._updateTooltipVisibilty = function(viewbox) {
 
-  Object(dist_index_esm["i" /* forEach */])(this._tooltips, function(tooltip) {
+  Object(dist_index_esm["forEach"])(this._tooltips, function(tooltip) {
     var show = tooltip.show,
         htmlContainer = tooltip.htmlContainer,
         visible = true;
@@ -62829,9 +64932,9 @@ function LabelSupport(injector, eventBus, modeling) {
 
     var labels = [];
 
-    Object(dist_index_esm["i" /* forEach */])(shapes, function(element) {
+    Object(dist_index_esm["forEach"])(shapes, function(element) {
 
-      Object(dist_index_esm["i" /* forEach */])(element.labels, function(label) {
+      Object(dist_index_esm["forEach"])(element.labels, function(label) {
 
         if (!label.hidden && context.shapes.indexOf(label) === -1) {
           labels.push(label);
@@ -62843,7 +64946,7 @@ function LabelSupport(injector, eventBus, modeling) {
       });
     });
 
-    Object(dist_index_esm["i" /* forEach */])(labels, function(label) {
+    Object(dist_index_esm["forEach"])(labels, function(label) {
       movePreview.makeDraggable(context, label, true);
     });
 
@@ -62859,8 +64962,8 @@ function LabelSupport(injector, eventBus, modeling) {
 
     // find labels that are not part of
     // move closure yet and add them
-    Object(dist_index_esm["i" /* forEach */])(enclosedElements, function(element) {
-      Object(dist_index_esm["i" /* forEach */])(element.labels, function(label) {
+    Object(dist_index_esm["forEach"])(enclosedElements, function(element) {
+      Object(dist_index_esm["forEach"])(element.labels, function(label) {
 
         if (!enclosedElements[label.id]) {
           enclosedLabels.push(label);
@@ -62938,7 +65041,7 @@ LabelSupport.$inject = [
  */
 function removeLabels(elements) {
 
-  return Object(dist_index_esm["e" /* filter */])(elements, function(element) {
+  return Object(dist_index_esm["filter"])(elements, function(element) {
 
     // filter out labels that are move together
     // with their label targets
@@ -63013,10 +65116,10 @@ function AttachSupport(injector, eventBus, canvas, rules, modeling) {
         shapes = context.shapes,
         attachers = getAttachers(shapes);
 
-    Object(dist_index_esm["i" /* forEach */])(attachers, function(attacher) {
+    Object(dist_index_esm["forEach"])(attachers, function(attacher) {
       movePreview.makeDraggable(context, attacher, true);
 
-      Object(dist_index_esm["i" /* forEach */])(attacher.labels, function(label) {
+      Object(dist_index_esm["forEach"])(attacher.labels, function(label) {
         movePreview.makeDraggable(context, label, true);
       });
     });
@@ -63054,7 +65157,7 @@ function AttachSupport(injector, eventBus, canvas, rules, modeling) {
         shapes = context.shapes,
         attachers = getAttachers(shapes);
 
-    Object(dist_index_esm["i" /* forEach */])(attachers, function(attacher) {
+    Object(dist_index_esm["forEach"])(attachers, function(attacher) {
       closure.add(attacher, closure.topLevel[attacher.host.id]);
     });
   });
@@ -63078,14 +65181,14 @@ function AttachSupport(injector, eventBus, canvas, rules, modeling) {
     } else {
 
       // find attachers moved without host
-      attachers = Object(dist_index_esm["e" /* filter */])(shapes, function(shape) {
+      attachers = Object(dist_index_esm["filter"])(shapes, function(shape) {
         var host = shape.host;
 
         return AttachSupport_isAttacher(shape) && !AttachSupport_includes(shapes, host);
       });
     }
 
-    Object(dist_index_esm["i" /* forEach */])(attachers, function(attacher) {
+    Object(dist_index_esm["forEach"])(attachers, function(attacher) {
       modeling.updateAttachment(attacher, newHost);
     });
   });
@@ -63095,12 +65198,12 @@ function AttachSupport(injector, eventBus, canvas, rules, modeling) {
 
     var shapes = e.context.shapes;
 
-    Object(dist_index_esm["i" /* forEach */])(shapes, function(shape) {
+    Object(dist_index_esm["forEach"])(shapes, function(shape) {
 
-      Object(dist_index_esm["i" /* forEach */])(shape.attachers, function(attacher) {
+      Object(dist_index_esm["forEach"])(shape.attachers, function(attacher) {
 
         // remove invalid outgoing connections
-        Object(dist_index_esm["i" /* forEach */])(attacher.outgoing.slice(), function(connection) {
+        Object(dist_index_esm["forEach"])(attacher.outgoing.slice(), function(connection) {
           var allowed = rules.allowed('connection.reconnect', {
             connection: connection,
             source: connection.source,
@@ -63113,7 +65216,7 @@ function AttachSupport(injector, eventBus, canvas, rules, modeling) {
         });
 
         // remove invalid incoming connections
-        Object(dist_index_esm["i" /* forEach */])(attacher.incoming.slice(), function(connection) {
+        Object(dist_index_esm["forEach"])(attacher.incoming.slice(), function(connection) {
           var allowed = rules.allowed('connection.reconnect', {
             connection: connection,
             source: connection.source,
@@ -63162,7 +65265,7 @@ function AttachSupport(injector, eventBus, canvas, rules, modeling) {
     // move attachers if new host has different size
     if (newShape.attachers.length) {
 
-      Object(dist_index_esm["i" /* forEach */])(newShape.attachers, function(attacher) {
+      Object(dist_index_esm["forEach"])(newShape.attachers, function(attacher) {
         var delta = getNewAttachShapeDelta(attacher, oldShape, newShape);
         modeling.moveShape(attacher, delta, attacher.parent);
       });
@@ -63183,12 +65286,12 @@ function AttachSupport(injector, eventBus, canvas, rules, modeling) {
       return;
     }
 
-    Object(dist_index_esm["i" /* forEach */])(attachers, function(attacher) {
+    Object(dist_index_esm["forEach"])(attachers, function(attacher) {
       var delta = getNewAttachShapeDelta(attacher, oldBounds, newBounds);
 
       modeling.moveShape(attacher, delta, attacher.parent);
 
-      Object(dist_index_esm["i" /* forEach */])(attacher.labels, function(label) {
+      Object(dist_index_esm["forEach"])(attacher.labels, function(label) {
         modeling.moveShape(label, delta, label.parent);
       });
     });
@@ -63227,7 +65330,7 @@ AttachSupport.$inject = [
  * @return {Array<djs.model.Base>}
  */
 function getAttachers(shapes) {
-  return Object(dist_index_esm["h" /* flatten */])(Object(dist_index_esm["u" /* map */])(shapes, function(s) {
+  return Object(dist_index_esm["flatten"])(Object(dist_index_esm["map"])(shapes, function(s) {
     return s.attachers || [];
   }));
 }
@@ -63242,7 +65345,7 @@ function getAttachers(shapes) {
 function addAttached(elements) {
   var attachers = getAttachers(elements);
 
-  return Object(dist_index_esm["C" /* unionBy */])('id', elements, attachers);
+  return Object(dist_index_esm["unionBy"])('id', elements, attachers);
 }
 
 /**
@@ -63256,9 +65359,9 @@ function addAttached(elements) {
  */
 function removeAttached(elements) {
 
-  var ids = Object(dist_index_esm["j" /* groupBy */])(elements, 'id');
+  var ids = Object(dist_index_esm["groupBy"])(elements, 'id');
 
-  return Object(dist_index_esm["e" /* filter */])(elements, function(element) {
+  return Object(dist_index_esm["filter"])(elements, function(element) {
     while (element) {
 
       // host in selection
@@ -63369,13 +65472,12 @@ ToolManager.prototype.bindEvents = function(name, events) {
   }, this);
 
   // Todo[ricardo]: add test cases
-  Object(dist_index_esm["i" /* forEach */])(events, function(event) {
+  Object(dist_index_esm["forEach"])(events, function(event) {
     eventsToRegister.push(event + '.ended');
     eventsToRegister.push(event + '.canceled');
   });
 
   eventBus.on(eventsToRegister, ToolManager_LOW_PRIORITY, function(event) {
-    var originalEvent = event.originalEvent;
 
     // We defer the de-activation of the tool to the .activate phase,
     // so we're able to check if we want to toggle off the current
@@ -63384,14 +65486,30 @@ ToolManager.prototype.bindEvents = function(name, events) {
       return;
     }
 
-    if (originalEvent && Object(min_dom_dist_index_esm["closest"])(originalEvent.target, '.group[data-group="tools"]')) {
+    if (isPaletteClick(event)) {
       return;
     }
 
     this.setActive(null);
   }, this);
+
 };
 
+
+// helpers ///////////////
+
+/**
+ * Check if a given event is a palette click event.
+ *
+ * @param {EventBus.Event} event
+ *
+ * @return {boolean}
+ */
+function isPaletteClick(event) {
+  var target = event.originalEvent && event.originalEvent.target;
+
+  return target && Object(min_dom_dist_index_esm["closest"])(target, '.group[data-group="tools"]');
+}
 // CONCATENATED MODULE: ./node_modules/diagram-js/lib/features/tool-manager/index.js
 
 
@@ -63453,11 +65571,11 @@ function getDirection(axis, delta) {
 function getWaypointsUpdatingConnections(movingShapes, resizingShapes) {
   var waypointsUpdatingConnections = [];
 
-  Object(dist_index_esm["i" /* forEach */])(movingShapes.concat(resizingShapes), function(shape) {
+  Object(dist_index_esm["forEach"])(movingShapes.concat(resizingShapes), function(shape) {
     var incoming = shape.incoming,
         outgoing = shape.outgoing;
 
-    Object(dist_index_esm["i" /* forEach */])(incoming.concat(outgoing), function(connection) {
+    Object(dist_index_esm["forEach"])(incoming.concat(outgoing), function(connection) {
       var source = connection.source,
           target = connection.target;
 
@@ -63588,15 +65706,21 @@ var PADDING = 20;
  * @param {EventBus} eventBus
  * @param {Modeling} modeling
  * @param {Rules} rules
- * @param {toolManager} toolManager
+ * @param {ToolManager} toolManager
+ * @param {Mouse} mouse
  */
-function SpaceTool(canvas, dragging, eventBus, modeling, rules, toolManager) {
+function SpaceTool(
+    canvas, dragging, eventBus,
+    modeling, rules, toolManager,
+    mouse) {
+
   this._canvas = canvas;
   this._dragging = dragging;
   this._eventBus = eventBus;
   this._modeling = modeling;
   this._rules = rules;
   this._toolManager = toolManager;
+  this._mouse = mouse;
 
   var self = this;
 
@@ -63661,7 +65785,8 @@ SpaceTool.$inject = [
   'eventBus',
   'modeling',
   'rules',
-  'toolManager'
+  'toolManager',
+  'mouse'
 ];
 
 /**
@@ -63757,7 +65882,7 @@ SpaceTool.prototype.init = function(event, context) {
 
   var spaceToolConstraints = getSpaceToolConstraints(elements, axis, direction, start, minDimensions);
 
-  Object(dist_index_esm["a" /* assign */])(
+  Object(dist_index_esm["assign"])(
     context,
     elements,
     {
@@ -63789,7 +65914,7 @@ SpaceTool.prototype.calculateAdjustments = function(elements, axis, delta, start
   var movingShapes = [],
       resizingShapes = [];
 
-  Object(dist_index_esm["i" /* forEach */])(elements, function(element) {
+  Object(dist_index_esm["forEach"])(elements, function(element) {
     if (!element.parent || SpaceTool_isConnection(element)) {
       return;
     }
@@ -63819,11 +65944,14 @@ SpaceTool.prototype.calculateAdjustments = function(elements, axis, delta, start
 };
 
 SpaceTool.prototype.toggle = function() {
+
   if (this.isActive()) {
-    this._dragging.cancel();
-  } else {
-    this.activateSelection();
+    return this._dragging.cancel();
   }
+
+  var mouseEvent = this._mouse.getLastMoveEvent();
+
+  this.activateSelection(mouseEvent, !!mouseEvent);
 };
 
 SpaceTool.prototype.isActive = function() {
@@ -63853,28 +65981,28 @@ function SpaceTool_ensureConstraints(event) {
 
   var x, y;
 
-  if (Object(dist_index_esm["p" /* isNumber */])(spaceToolConstraints.left)) {
+  if (Object(dist_index_esm["isNumber"])(spaceToolConstraints.left)) {
     x = Math.max(event.x, spaceToolConstraints.left);
 
     event.dx = event.dx + x - event.x;
     event.x = x;
   }
 
-  if (Object(dist_index_esm["p" /* isNumber */])(spaceToolConstraints.right)) {
+  if (Object(dist_index_esm["isNumber"])(spaceToolConstraints.right)) {
     x = Math.min(event.x, spaceToolConstraints.right);
 
     event.dx = event.dx + x - event.x;
     event.x = x;
   }
 
-  if (Object(dist_index_esm["p" /* isNumber */])(spaceToolConstraints.top)) {
+  if (Object(dist_index_esm["isNumber"])(spaceToolConstraints.top)) {
     y = Math.max(event.y, spaceToolConstraints.top);
 
     event.dy = event.dy + y - event.y;
     event.y = y;
   }
 
-  if (Object(dist_index_esm["p" /* isNumber */])(spaceToolConstraints.bottom)) {
+  if (Object(dist_index_esm["isNumber"])(spaceToolConstraints.bottom)) {
     y = Math.min(event.y, spaceToolConstraints.bottom);
 
     event.dy = event.dy + y - event.y;
@@ -63894,11 +66022,11 @@ function getSpaceToolConstraints(elements, axis, direction, start, minDimensions
       min,
       max;
 
-  Object(dist_index_esm["i" /* forEach */])(resizingShapes, function(resizingShape) {
+  Object(dist_index_esm["forEach"])(resizingShapes, function(resizingShape) {
     var resizingShapeBBox = asTRBL(resizingShape);
 
     // find children that are not moving or resizing
-    var nonMovingResizingChildren = Object(dist_index_esm["e" /* filter */])(resizingShape.children, function(child) {
+    var nonMovingResizingChildren = Object(dist_index_esm["filter"])(resizingShape.children, function(child) {
       return !SpaceTool_isConnection(child) &&
         !SpaceTool_isLabel(child) &&
         !SpaceTool_includes(movingShapes, child) &&
@@ -63906,7 +66034,7 @@ function getSpaceToolConstraints(elements, axis, direction, start, minDimensions
     });
 
     // find children that are moving
-    var movingChildren = Object(dist_index_esm["e" /* filter */])(resizingShape.children, function(child) {
+    var movingChildren = Object(dist_index_esm["filter"])(resizingShape.children, function(child) {
       return !SpaceTool_isConnection(child) && !SpaceTool_isLabel(child) && SpaceTool_includes(movingShapes, child);
     });
 
@@ -63922,13 +66050,13 @@ function getSpaceToolConstraints(elements, axis, direction, start, minDimensions
         nonMovingResizingChildrenBBox[ DIRECTION_TO_TRBL[ direction ] ];
 
       if (direction === 'n') {
-        spaceToolConstraints.bottom = max = Object(dist_index_esm["p" /* isNumber */])(max) ? Math.min(max, minOrMax) : minOrMax;
+        spaceToolConstraints.bottom = max = Object(dist_index_esm["isNumber"])(max) ? Math.min(max, minOrMax) : minOrMax;
       } else if (direction === 'w') {
-        spaceToolConstraints.right = max = Object(dist_index_esm["p" /* isNumber */])(max) ? Math.min(max, minOrMax) : minOrMax;
+        spaceToolConstraints.right = max = Object(dist_index_esm["isNumber"])(max) ? Math.min(max, minOrMax) : minOrMax;
       } else if (direction === 's') {
-        spaceToolConstraints.top = min = Object(dist_index_esm["p" /* isNumber */])(min) ? Math.max(min, minOrMax) : minOrMax;
+        spaceToolConstraints.top = min = Object(dist_index_esm["isNumber"])(min) ? Math.max(min, minOrMax) : minOrMax;
       } else if (direction === 'e') {
-        spaceToolConstraints.left = min = Object(dist_index_esm["p" /* isNumber */])(min) ? Math.max(min, minOrMax) : minOrMax;
+        spaceToolConstraints.left = min = Object(dist_index_esm["isNumber"])(min) ? Math.max(min, minOrMax) : minOrMax;
       }
     }
 
@@ -63940,13 +66068,13 @@ function getSpaceToolConstraints(elements, axis, direction, start, minDimensions
         resizingShapeBBox[ DIRECTION_TO_TRBL[ DIRECTION_TO_OPPOSITE[ direction ] ] ];
 
       if (direction === 'n') {
-        spaceToolConstraints.bottom = max = Object(dist_index_esm["p" /* isNumber */])(max) ? Math.min(max, minOrMax) : minOrMax;
+        spaceToolConstraints.bottom = max = Object(dist_index_esm["isNumber"])(max) ? Math.min(max, minOrMax) : minOrMax;
       } else if (direction === 'w') {
-        spaceToolConstraints.right = max = Object(dist_index_esm["p" /* isNumber */])(max) ? Math.min(max, minOrMax) : minOrMax;
+        spaceToolConstraints.right = max = Object(dist_index_esm["isNumber"])(max) ? Math.min(max, minOrMax) : minOrMax;
       } else if (direction === 's') {
-        spaceToolConstraints.top = min = Object(dist_index_esm["p" /* isNumber */])(min) ? Math.max(min, minOrMax) : minOrMax;
+        spaceToolConstraints.top = min = Object(dist_index_esm["isNumber"])(min) ? Math.max(min, minOrMax) : minOrMax;
       } else if (direction === 'e') {
-        spaceToolConstraints.left = min = Object(dist_index_esm["p" /* isNumber */])(min) ? Math.max(min, minOrMax) : minOrMax;
+        spaceToolConstraints.left = min = Object(dist_index_esm["isNumber"])(min) ? Math.max(min, minOrMax) : minOrMax;
       }
     }
 
@@ -63958,25 +66086,25 @@ function getSpaceToolConstraints(elements, axis, direction, start, minDimensions
           resizingShape[ AXIS_TO_DIMENSION [ axis ] ] -
           resizingShapeMinDimensions[ AXIS_TO_DIMENSION[ axis ] ];
 
-        spaceToolConstraints.bottom = max = Object(dist_index_esm["p" /* isNumber */])(max) ? Math.min(max, minOrMax) : minOrMax;
+        spaceToolConstraints.bottom = max = Object(dist_index_esm["isNumber"])(max) ? Math.min(max, minOrMax) : minOrMax;
       } else if (direction === 'w') {
         minOrMax = start +
           resizingShape[ AXIS_TO_DIMENSION [ axis ] ] -
           resizingShapeMinDimensions[ AXIS_TO_DIMENSION[ axis ] ];
 
-        spaceToolConstraints.right = max = Object(dist_index_esm["p" /* isNumber */])(max) ? Math.min(max, minOrMax) : minOrMax;
+        spaceToolConstraints.right = max = Object(dist_index_esm["isNumber"])(max) ? Math.min(max, minOrMax) : minOrMax;
       } else if (direction === 's') {
         minOrMax = start -
           resizingShape[ AXIS_TO_DIMENSION [ axis ] ] +
           resizingShapeMinDimensions[ AXIS_TO_DIMENSION[ axis ] ];
 
-        spaceToolConstraints.top = min = Object(dist_index_esm["p" /* isNumber */])(min) ? Math.max(min, minOrMax) : minOrMax;
+        spaceToolConstraints.top = min = Object(dist_index_esm["isNumber"])(min) ? Math.max(min, minOrMax) : minOrMax;
       } else if (direction === 'e') {
         minOrMax = start -
           resizingShape[ AXIS_TO_DIMENSION [ axis ] ] +
           resizingShapeMinDimensions[ AXIS_TO_DIMENSION[ axis ] ];
 
-        spaceToolConstraints.left = min = Object(dist_index_esm["p" /* isNumber */])(min) ? Math.max(min, minOrMax) : minOrMax;
+        spaceToolConstraints.left = min = Object(dist_index_esm["isNumber"])(min) ? Math.max(min, minOrMax) : minOrMax;
       }
     }
   });
@@ -64023,7 +66151,7 @@ function SpaceToolPreview(
     styles, previewSupport) {
 
   function addPreviewGfx(collection, dragGroup) {
-    Object(dist_index_esm["i" /* forEach */])(collection, function(element) {
+    Object(dist_index_esm["forEach"])(collection, function(element) {
       previewSupport.addDragger(element, dragGroup);
 
       canvas.addMarker(element, MARKER_DRAGGING);
@@ -64115,8 +66243,8 @@ function SpaceToolPreview(
       var movingConnections = context.movingConnections = elementRegistry.filter(function(element) {
         var sourceIsMoving = false;
 
-        Object(dist_index_esm["i" /* forEach */])(movingShapes, function(shape) {
-          Object(dist_index_esm["i" /* forEach */])(shape.outgoing, function(connection) {
+        Object(dist_index_esm["forEach"])(movingShapes, function(shape) {
+          Object(dist_index_esm["forEach"])(shape.outgoing, function(connection) {
             if (element === connection) {
               sourceIsMoving = true;
             }
@@ -64125,8 +66253,8 @@ function SpaceToolPreview(
 
         var targetIsMoving = false;
 
-        Object(dist_index_esm["i" /* forEach */])(movingShapes, function(shape) {
-          Object(dist_index_esm["i" /* forEach */])(shape.incoming, function(connection) {
+        Object(dist_index_esm["forEach"])(movingShapes, function(shape) {
+          Object(dist_index_esm["forEach"])(shape.incoming, function(connection) {
             if (element === connection) {
               targetIsMoving = true;
             }
@@ -64135,8 +66263,8 @@ function SpaceToolPreview(
 
         var sourceIsResizing = false;
 
-        Object(dist_index_esm["i" /* forEach */])(resizingShapes, function(shape) {
-          Object(dist_index_esm["i" /* forEach */])(shape.outgoing, function(connection) {
+        Object(dist_index_esm["forEach"])(resizingShapes, function(shape) {
+          Object(dist_index_esm["forEach"])(shape.outgoing, function(connection) {
             if (element === connection) {
               sourceIsResizing = true;
             }
@@ -64145,8 +66273,8 @@ function SpaceToolPreview(
 
         var targetIsResizing = false;
 
-        Object(dist_index_esm["i" /* forEach */])(resizingShapes, function(shape) {
-          Object(dist_index_esm["i" /* forEach */])(shape.incoming, function(connection) {
+        Object(dist_index_esm["forEach"])(resizingShapes, function(shape) {
+          Object(dist_index_esm["forEach"])(shape.incoming, function(connection) {
             if (element === connection) {
               targetIsResizing = true;
             }
@@ -64172,7 +66300,7 @@ function SpaceToolPreview(
 
       var frames = [];
 
-      Object(dist_index_esm["i" /* forEach */])(resizingShapes, function(shape) {
+      Object(dist_index_esm["forEach"])(resizingShapes, function(shape) {
         var frame = previewSupport.addFrame(shape, frameGroup);
 
         var initialBounds = frame.getBBox();
@@ -64204,7 +66332,7 @@ function SpaceToolPreview(
     SvgTransformUtil_translate(context.dragGroup, delta.x, delta.y);
 
     // update resize previews
-    Object(dist_index_esm["i" /* forEach */])(context.frames, function(frame) {
+    Object(dist_index_esm["forEach"])(context.frames, function(frame) {
       var element = frame.element,
           initialBounds = frame.initialBounds,
           width,
@@ -64251,12 +66379,12 @@ function SpaceToolPreview(
         frameGroup = context.frameGroup;
 
     // moving shapes
-    Object(dist_index_esm["i" /* forEach */])(movingShapes, function(shape) {
+    Object(dist_index_esm["forEach"])(movingShapes, function(shape) {
       canvas.removeMarker(shape, MARKER_DRAGGING);
     });
 
     // moving connections
-    Object(dist_index_esm["i" /* forEach */])(movingConnections, function(connection) {
+    Object(dist_index_esm["forEach"])(movingConnections, function(connection) {
       canvas.removeMarker(connection, MARKER_DRAGGING);
     });
 
@@ -64265,7 +66393,7 @@ function SpaceToolPreview(
       index_esm_remove(dragGroup);
     }
 
-    Object(dist_index_esm["i" /* forEach */])(resizingShapes, function(shape) {
+    Object(dist_index_esm["forEach"])(resizingShapes, function(shape) {
       canvas.removeMarker(shape, SpaceToolPreview_MARKER_RESIZING);
     });
 
@@ -64302,13 +66430,15 @@ function SpaceToolPreview_isConnection(element) {
 
 
 
+
 /* harmony default export */ var space_tool = ({
   __init__: ['spaceToolPreview'],
   __depends__: [
     features_dragging,
     features_rules,
     tool_manager,
-    preview_support
+    preview_support,
+    features_mouse
   ],
   spaceTool: ['type', SpaceTool ],
   spaceToolPreview: ['type', SpaceToolPreview ]
@@ -64394,7 +66524,7 @@ BpmnFactory.prototype.createDiLabel = function() {
 
 BpmnFactory.prototype.createDiShape = function(semantic, bounds, attrs) {
 
-  return this.create('bpmndi:BPMNShape', Object(dist_index_esm["a" /* assign */])({
+  return this.create('bpmndi:BPMNShape', Object(dist_index_esm["assign"])({
     bpmnElement: semantic,
     bounds: this.createDiBounds(bounds)
   }, attrs));
@@ -64409,18 +66539,18 @@ BpmnFactory.prototype.createDiBounds = function(bounds) {
 BpmnFactory.prototype.createDiWaypoints = function(waypoints) {
   var self = this;
 
-  return Object(dist_index_esm["u" /* map */])(waypoints, function(pos) {
+  return Object(dist_index_esm["map"])(waypoints, function(pos) {
     return self.createDiWaypoint(pos);
   });
 };
 
 BpmnFactory.prototype.createDiWaypoint = function(point) {
-  return this.create('dc:Point', Object(dist_index_esm["x" /* pick */])(point, [ 'x', 'y' ]));
+  return this.create('dc:Point', Object(dist_index_esm["pick"])(point, [ 'x', 'y' ]));
 };
 
 
 BpmnFactory.prototype.createDiEdge = function(semantic, waypoints, attrs) {
-  return this.create('bpmndi:BPMNEdge', Object(dist_index_esm["a" /* assign */])({
+  return this.create('bpmndi:BPMNEdge', Object(dist_index_esm["assign"])({
     bpmnElement: semantic
   }, attrs));
 };
@@ -64540,7 +66670,7 @@ function BpmnUpdater(
         oldRoot = context.oldRoot,
         children = oldRoot.children;
 
-    Object(dist_index_esm["i" /* forEach */])(children, function(child) {
+    Object(dist_index_esm["forEach"])(children, function(child) {
       if (Object(ModelUtil["is"])(child, 'bpmn:BaseElement')) {
         self.updateParent(child);
       }
@@ -64773,7 +66903,7 @@ BpmnUpdater.prototype.updateBounds = function(shape) {
     target.set('bounds', bounds);
   }
 
-  Object(dist_index_esm["a" /* assign */])(bounds, {
+  Object(dist_index_esm["assign"])(bounds, {
     x: shape.x,
     y: shape.y,
     width: shape.width,
@@ -65172,7 +67302,7 @@ ElementFactory_ElementFactory.prototype.create = function(elementType, attrs) {
   // we assume their businessObjects have already been created
   // and wired via attrs
   if (elementType === 'label') {
-    return this.baseCreate(elementType, Object(dist_index_esm["a" /* assign */])({ type: 'label' }, LabelUtil_DEFAULT_LABEL_SIZE, attrs));
+    return this.baseCreate(elementType, Object(dist_index_esm["assign"])({ type: 'label' }, LabelUtil_DEFAULT_LABEL_SIZE, attrs));
   }
 
   return this.createBpmnElement(elementType, attrs);
@@ -65212,13 +67342,13 @@ ElementFactory_ElementFactory.prototype.createBpmnElement = function(elementType
   }
 
   if (Object(ModelUtil["is"])(businessObject, 'bpmn:Group')) {
-    attrs = Object(dist_index_esm["a" /* assign */])({
+    attrs = Object(dist_index_esm["assign"])({
       isFrame: true
     }, attrs);
   }
 
   if (attrs.di) {
-    Object(dist_index_esm["a" /* assign */])(businessObject.di, attrs.di);
+    Object(dist_index_esm["assign"])(businessObject.di, attrs.di);
 
     delete attrs.di;
   }
@@ -65259,7 +67389,7 @@ ElementFactory_ElementFactory.prototype.createBpmnElement = function(elementType
 
   size = this._getDefaultSize(businessObject);
 
-  attrs = Object(dist_index_esm["a" /* assign */])({
+  attrs = Object(dist_index_esm["assign"])({
     businessObject: businessObject,
     id: businessObject.id
   }, size, attrs);
@@ -65332,11 +67462,11 @@ ElementFactory_ElementFactory.prototype._getDefaultSize = function(semantic) {
  */
 ElementFactory_ElementFactory.prototype.createParticipantShape = function(attrs) {
 
-  if (!Object(dist_index_esm["q" /* isObject */])(attrs)) {
+  if (!Object(dist_index_esm["isObject"])(attrs)) {
     attrs = { isExpanded: attrs };
   }
 
-  attrs = Object(dist_index_esm["a" /* assign */])({ type: 'bpmn:Participant' }, attrs || {});
+  attrs = Object(dist_index_esm["assign"])({ type: 'bpmn:Participant' }, attrs || {});
 
   // participants are expanded by default
   if (attrs.isExpanded !== false) {
@@ -65359,7 +67489,7 @@ ElementFactory_ElementFactory.prototype.createParticipantShape = function(attrs)
  */
 function applyAttributes(element, attrs, attributeNames) {
 
-  Object(dist_index_esm["i" /* forEach */])(attributeNames, function(property) {
+  Object(dist_index_esm["forEach"])(attributeNames, function(property) {
     if (attrs[property] !== undefined) {
       applyAttribute(element, attrs, property);
     }
@@ -65401,7 +67531,7 @@ AlignElementsHandler_AlignElements.prototype.preExecute = function(context) {
       alignment = context.alignment;
 
 
-  Object(dist_index_esm["i" /* forEach */])(elements, function(element) {
+  Object(dist_index_esm["forEach"])(elements, function(element) {
     var delta = {
       x: 0,
       y: 0
@@ -65502,7 +67632,7 @@ AppendShapeHandler.prototype.postExecute = function(context) {
 
 
 function existsConnection(source, target) {
-  return Object(dist_index_esm["A" /* some */])(source.outgoing, function(c) {
+  return Object(dist_index_esm["some"])(source.outgoing, function(c) {
     return c.target === target;
   });
 }
@@ -65591,12 +67721,12 @@ CreateElementsHandler.prototype.preExecute = function(context) {
   var modeling = this._modeling;
 
   // make sure each element has x and y
-  Object(dist_index_esm["i" /* forEach */])(elements, function(element) {
-    if (!Object(dist_index_esm["p" /* isNumber */])(element.x)) {
+  Object(dist_index_esm["forEach"])(elements, function(element) {
+    if (!Object(dist_index_esm["isNumber"])(element.x)) {
       element.x = 0;
     }
 
-    if (!Object(dist_index_esm["p" /* isNumber */])(element.y)) {
+    if (!Object(dist_index_esm["isNumber"])(element.y)) {
       element.y = 0;
     }
   });
@@ -65604,9 +67734,9 @@ CreateElementsHandler.prototype.preExecute = function(context) {
   var bbox = getBBox(elements);
 
   // center elements around position
-  Object(dist_index_esm["i" /* forEach */])(elements, function(element) {
+  Object(dist_index_esm["forEach"])(elements, function(element) {
     if (CreateElementsHandler_isConnection(element)) {
-      element.waypoints = Object(dist_index_esm["u" /* map */])(element.waypoints, function(waypoint) {
+      element.waypoints = Object(dist_index_esm["map"])(element.waypoints, function(waypoint) {
         return {
           x: CreateElementsHandler_round(waypoint.x - bbox.x - bbox.width / 2 + position.x),
           y: CreateElementsHandler_round(waypoint.y - bbox.y - bbox.height / 2 + position.y)
@@ -65614,7 +67744,7 @@ CreateElementsHandler.prototype.preExecute = function(context) {
       });
     }
 
-    Object(dist_index_esm["a" /* assign */])(element, {
+    Object(dist_index_esm["assign"])(element, {
       x: CreateElementsHandler_round(element.x - bbox.x - bbox.width / 2 + position.x),
       y: CreateElementsHandler_round(element.y - bbox.y - bbox.height / 2 + position.y)
     });
@@ -65624,9 +67754,9 @@ CreateElementsHandler.prototype.preExecute = function(context) {
 
   var cache = {};
 
-  Object(dist_index_esm["i" /* forEach */])(elements, function(element) {
+  Object(dist_index_esm["forEach"])(elements, function(element) {
     if (CreateElementsHandler_isConnection(element)) {
-      cache[ element.id ] = Object(dist_index_esm["p" /* isNumber */])(parentIndex) ?
+      cache[ element.id ] = Object(dist_index_esm["isNumber"])(parentIndex) ?
         modeling.createConnection(
           cache[ element.source.id ],
           cache[ element.target.id ],
@@ -65646,29 +67776,29 @@ CreateElementsHandler.prototype.preExecute = function(context) {
       return;
     }
 
-    var createShapeHints = Object(dist_index_esm["a" /* assign */])({}, hints);
+    var createShapeHints = Object(dist_index_esm["assign"])({}, hints);
 
     if (parents.indexOf(element) === -1) {
       createShapeHints.autoResize = false;
     }
 
-    cache[ element.id ] = Object(dist_index_esm["p" /* isNumber */])(parentIndex) ?
+    cache[ element.id ] = Object(dist_index_esm["isNumber"])(parentIndex) ?
       modeling.createShape(
         element,
-        Object(dist_index_esm["x" /* pick */])(element, [ 'x', 'y', 'width', 'height' ]),
+        Object(dist_index_esm["pick"])(element, [ 'x', 'y', 'width', 'height' ]),
         element.parent || parent,
         parentIndex,
         createShapeHints
       ) :
       modeling.createShape(
         element,
-        Object(dist_index_esm["x" /* pick */])(element, [ 'x', 'y', 'width', 'height' ]),
+        Object(dist_index_esm["pick"])(element, [ 'x', 'y', 'width', 'height' ]),
         element.parent || parent,
         createShapeHints
       );
   });
 
-  context.elements = Object(dist_index_esm["E" /* values */])(cache);
+  context.elements = Object(dist_index_esm["values"])(cache);
 };
 
 // helpers //////////
@@ -65721,9 +67851,9 @@ CreateShapeHandler.prototype.execute = function(context) {
 
   // (1) add at event center position _or_ at given bounds
   if (positionOrBounds.width !== undefined) {
-    Object(dist_index_esm["a" /* assign */])(shape, positionOrBounds);
+    Object(dist_index_esm["assign"])(shape, positionOrBounds);
   } else {
-    Object(dist_index_esm["a" /* assign */])(shape, {
+    Object(dist_index_esm["assign"])(shape, {
       x: positionOrBounds.x - CreateShapeHandler_round(shape.width / 2),
       y: positionOrBounds.y - CreateShapeHandler_round(shape.height / 2)
     });
@@ -65897,7 +68027,7 @@ DeleteElementsHandler.prototype.postExecute = function(context) {
       elementRegistry = this._elementRegistry,
       elements = context.elements;
 
-  Object(dist_index_esm["i" /* forEach */])(elements, function(element) {
+  Object(dist_index_esm["forEach"])(elements, function(element) {
 
     // element may have been removed with previous
     // remove operations already (e.g. in case of nesting)
@@ -66069,7 +68199,7 @@ DistributeElementsHandler_DistributeElements.prototype.preExecute = function(con
       spaceInBetween,
       groupsSize = 0; // the size of each range
 
-  Object(dist_index_esm["i" /* forEach */])(groups, function(group, idx) {
+  Object(dist_index_esm["forEach"])(groups, function(group, idx) {
     var sortedElements,
         refElem,
         refCenter;
@@ -66083,7 +68213,7 @@ DistributeElementsHandler_DistributeElements.prototype.preExecute = function(con
       return;
     }
 
-    sortedElements = Object(dist_index_esm["B" /* sortBy */])(group.elements, axis);
+    sortedElements = Object(dist_index_esm["sortBy"])(group.elements, axis);
 
     refElem = sortedElements[0];
 
@@ -66096,7 +68226,7 @@ DistributeElementsHandler_DistributeElements.prototype.preExecute = function(con
     // wanna update the ranges after the shapes have been centered
     group.range = null;
 
-    Object(dist_index_esm["i" /* forEach */])(sortedElements, function(element) {
+    Object(dist_index_esm["forEach"])(sortedElements, function(element) {
 
       centerElement(refCenter, element);
 
@@ -66126,7 +68256,7 @@ DistributeElementsHandler_DistributeElements.prototype.preExecute = function(con
     return;
   }
 
-  Object(dist_index_esm["i" /* forEach */])(groups, function(group, groupIdx) {
+  Object(dist_index_esm["forEach"])(groups, function(group, groupIdx) {
     var delta = {},
         prevGroup;
 
@@ -66138,7 +68268,7 @@ DistributeElementsHandler_DistributeElements.prototype.preExecute = function(con
 
     group.range.max = 0;
 
-    Object(dist_index_esm["i" /* forEach */])(group.elements, function(element, idx) {
+    Object(dist_index_esm["forEach"])(group.elements, function(element, idx) {
       delta[OFF_AXIS[axis]] = 0;
       delta[axis] = (prevGroup.range.max - element[axis]) + margin;
 
@@ -66179,7 +68309,7 @@ LayoutConnectionHandler.prototype.execute = function(context) {
 
   var oldWaypoints = connection.waypoints;
 
-  Object(dist_index_esm["a" /* assign */])(context, {
+  Object(dist_index_esm["assign"])(context, {
     oldWaypoints: oldWaypoints
   });
 
@@ -66233,7 +68363,7 @@ MoveConnectionHandler.prototype.execute = function(context) {
   connection.parent = newParent;
 
   // update waypoint positions
-  Object(dist_index_esm["i" /* forEach */])(connection.waypoints, function(p) {
+  Object(dist_index_esm["forEach"])(connection.waypoints, function(p) {
     p.x += delta.x;
     p.y += delta.y;
 
@@ -66264,7 +68394,7 @@ MoveConnectionHandler.prototype.revert = function(context) {
   connection.parent = oldParent;
 
   // revert to old waypoint positions
-  Object(dist_index_esm["i" /* forEach */])(connection.waypoints, function(p) {
+  Object(dist_index_esm["forEach"])(connection.waypoints, function(p) {
     p.x -= delta.x;
     p.y -= delta.y;
 
@@ -66276,116 +68406,6 @@ MoveConnectionHandler.prototype.revert = function(context) {
 
   return connection;
 };
-// CONCATENATED MODULE: ./node_modules/diagram-js/lib/features/modeling/cmd/helper/AnchorsHelper.js
-
-
-
-
-
-
-
-function getResizedSourceAnchor(connection, shape, oldBounds) {
-
-  var waypoints = safeGetWaypoints(connection),
-      waypointsInsideNewBounds = getWaypointsInsideBounds(waypoints, shape),
-      oldAnchor = waypoints[0];
-
-  // new anchor is the last waypoint enclosed be resized source
-  if (waypointsInsideNewBounds.length) {
-    return waypointsInsideNewBounds[ waypointsInsideNewBounds.length - 1 ];
-  }
-
-  return getNewAttachPoint(oldAnchor.original || oldAnchor, oldBounds, shape);
-}
-
-
-function getResizedTargetAnchor(connection, shape, oldBounds) {
-
-  var waypoints = safeGetWaypoints(connection),
-      waypointsInsideNewBounds = getWaypointsInsideBounds(waypoints, shape),
-      oldAnchor = waypoints[waypoints.length - 1];
-
-  // new anchor is the first waypoint enclosed be resized target
-  if (waypointsInsideNewBounds.length) {
-    return waypointsInsideNewBounds[ 0 ];
-  }
-
-  return getNewAttachPoint(oldAnchor.original || oldAnchor, oldBounds, shape);
-}
-
-
-function getMovedSourceAnchor(connection, source, moveDelta) {
-
-  var waypoints = safeGetWaypoints(connection),
-      oldBounds = subtract(source, moveDelta),
-      oldAnchor = waypoints[ 0 ];
-
-  return getNewAttachPoint(oldAnchor.original || oldAnchor, oldBounds, source);
-}
-
-
-function getMovedTargetAnchor(connection, target, moveDelta) {
-
-  var waypoints = safeGetWaypoints(connection),
-      oldBounds = subtract(target, moveDelta),
-      oldAnchor = waypoints[ waypoints.length - 1 ];
-
-  return getNewAttachPoint(oldAnchor.original || oldAnchor, oldBounds, target);
-}
-
-
-// helpers //////////////////////
-
-function subtract(bounds, delta) {
-  return {
-    x: bounds.x - delta.x,
-    y: bounds.y - delta.y,
-    width: bounds.width,
-    height: bounds.height
-  };
-}
-
-
-/**
- * Return waypoints of given connection; throw if non exists (should not happen!!).
- *
- * @param {Connection} connection
- *
- * @return {Array<Point>}
- */
-function safeGetWaypoints(connection) {
-
-  var waypoints = connection.waypoints;
-
-  if (!waypoints.length) {
-    throw new Error('connection#' + connection.id + ': no waypoints');
-  }
-
-  return waypoints;
-}
-
-function getWaypointsInsideBounds(waypoints, bounds) {
-  var originalWaypoints = Object(dist_index_esm["u" /* map */])(waypoints, AnchorsHelper_getOriginal);
-
-  return Object(dist_index_esm["e" /* filter */])(originalWaypoints, function(waypoint) {
-    return isInsideBounds(waypoint, bounds);
-  });
-}
-
-/**
- * Checks if point is inside bounds, incl. edges.
- *
- * @param {Point} point
- * @param {Bounds} bounds
- */
-function isInsideBounds(point, bounds) {
-  return getOrientation(bounds, point, 1) === 'intersect';
-}
-
-function AnchorsHelper_getOriginal(point) {
-  return point.original || point;
-}
-
 // CONCATENATED MODULE: ./node_modules/diagram-js/lib/features/modeling/cmd/helper/MoveClosure.js
 
 
@@ -66413,7 +68433,7 @@ MoveClosure.prototype.addAll = function(elements, isTopLevel) {
 
   var newClosure = getClosure(elements, !!isTopLevel, this);
 
-  Object(dist_index_esm["a" /* assign */])(this, newClosure);
+  Object(dist_index_esm["assign"])(this, newClosure);
 
   return this;
 };
@@ -66477,7 +68497,7 @@ MoveHelper.prototype.moveClosure = function(closure, delta, newParent, newHost, 
   }
 
   // move all shapes
-  Object(dist_index_esm["i" /* forEach */])(allShapes, function(shape) {
+  Object(dist_index_esm["forEach"])(allShapes, function(shape) {
 
     // move the element according to the given delta
     modeling.moveShape(shape, delta, topLevel[shape.id] && !keepParent && newParent, {
@@ -66487,7 +68507,7 @@ MoveHelper.prototype.moveClosure = function(closure, delta, newParent, newHost, 
   });
 
   // move all child connections / layout external connections
-  Object(dist_index_esm["i" /* forEach */])(allConnections, function(c) {
+  Object(dist_index_esm["forEach"])(allConnections, function(c) {
 
     var sourceMoved = !!allShapes[c.source.id],
         targetMoved = !!allShapes[c.target.id];
@@ -66577,7 +68597,7 @@ MoveShapeHandler.prototype.execute = function(context) {
       newParentIndex = context.newParentIndex,
       oldParent = shape.parent;
 
-  context.oldBounds = Object(dist_index_esm["x" /* pick */])(shape, [ 'x', 'y', 'width', 'height']);
+  context.oldBounds = Object(dist_index_esm["pick"])(shape, [ 'x', 'y', 'width', 'height']);
 
   // save old parent in context
   context.oldParent = oldParent;
@@ -66587,7 +68607,7 @@ MoveShapeHandler.prototype.execute = function(context) {
   Collections_add(newParent.children, shape, newParentIndex);
 
   // update shape parent + position
-  Object(dist_index_esm["a" /* assign */])(shape, {
+  Object(dist_index_esm["assign"])(shape, {
     parent: newParent,
     x: shape.x + delta.x,
     y: shape.y + delta.y
@@ -66606,13 +68626,13 @@ MoveShapeHandler.prototype.postExecute = function(context) {
 
   if (hints.layout !== false) {
 
-    Object(dist_index_esm["i" /* forEach */])(shape.incoming, function(c) {
+    Object(dist_index_esm["forEach"])(shape.incoming, function(c) {
       modeling.layoutConnection(c, {
         connectionEnd: getMovedTargetAnchor(c, shape, delta)
       });
     });
 
-    Object(dist_index_esm["i" /* forEach */])(shape.outgoing, function(c) {
+    Object(dist_index_esm["forEach"])(shape.outgoing, function(c) {
       modeling.layoutConnection(c, {
         connectionStart: getMovedSourceAnchor(c, shape, delta)
       });
@@ -66635,7 +68655,7 @@ MoveShapeHandler.prototype.revert = function(context) {
   Collections_add(oldParent.children, shape, oldParentIndex);
 
   // revert to old position and parent
-  Object(dist_index_esm["a" /* assign */])(shape, {
+  Object(dist_index_esm["assign"])(shape, {
     parent: oldParent,
     x: shape.x - delta.x,
     y: shape.y - delta.y
@@ -66679,7 +68699,7 @@ ReconnectConnectionHandler.prototype.execute = function(context) {
     throw new Error('newSource or newTarget required');
   }
 
-  if (Object(dist_index_esm["l" /* isArray */])(dockingOrPoints)) {
+  if (Object(dist_index_esm["isArray"])(dockingOrPoints)) {
     context.oldWaypoints = connection.waypoints;
     connection.waypoints = dockingOrPoints;
   }
@@ -66720,12 +68740,12 @@ ReconnectConnectionHandler.prototype.postExecute = function(context) {
 
   if (newSource && (!newTarget || hints.docking === 'source')) {
     layoutConnectionHints.connectionStart = layoutConnectionHints.connectionStart
-      || ReconnectConnectionHandler_getDocking(Object(dist_index_esm["l" /* isArray */])(dockingOrPoints) ? dockingOrPoints[ 0 ] : dockingOrPoints);
+      || ReconnectConnectionHandler_getDocking(Object(dist_index_esm["isArray"])(dockingOrPoints) ? dockingOrPoints[ 0 ] : dockingOrPoints);
   }
 
   if (newTarget && (!newSource || hints.docking === 'target')) {
     layoutConnectionHints.connectionEnd = layoutConnectionHints.connectionEnd
-      || ReconnectConnectionHandler_getDocking(Object(dist_index_esm["l" /* isArray */])(dockingOrPoints) ? dockingOrPoints[ dockingOrPoints.length - 1 ] : dockingOrPoints);
+      || ReconnectConnectionHandler_getDocking(Object(dist_index_esm["isArray"])(dockingOrPoints) ? dockingOrPoints[ dockingOrPoints.length - 1 ] : dockingOrPoints);
   }
 
   if (hints.newWaypoints) {
@@ -66850,7 +68870,7 @@ ReplaceShapeHandler.prototype.preExecute = function(context) {
   var incoming = oldShape.incoming.slice(),
       outgoing = oldShape.outgoing.slice();
 
-  Object(dist_index_esm["i" /* forEach */])(incoming, function(connection) {
+  Object(dist_index_esm["forEach"])(incoming, function(connection) {
     var source = connection.source,
         allowed = canReconnect(source, newShape, connection);
 
@@ -66863,7 +68883,7 @@ ReplaceShapeHandler.prototype.preExecute = function(context) {
     }
   });
 
-  Object(dist_index_esm["i" /* forEach */])(outgoing, function(connection) {
+  Object(dist_index_esm["forEach"])(outgoing, function(connection) {
     var target = connection.target,
         allowed = canReconnect(newShape, target, connection);
 
@@ -66964,7 +68984,7 @@ ResizeShapeHandler.prototype.execute = function(context) {
   };
 
   // update shape
-  Object(dist_index_esm["a" /* assign */])(shape, {
+  Object(dist_index_esm["assign"])(shape, {
     width:  newBounds.width,
     height: newBounds.height,
     x:      newBounds.x,
@@ -66985,13 +69005,13 @@ ResizeShapeHandler.prototype.postExecute = function(context) {
     return;
   }
 
-  Object(dist_index_esm["i" /* forEach */])(shape.incoming, function(c) {
+  Object(dist_index_esm["forEach"])(shape.incoming, function(c) {
     modeling.layoutConnection(c, {
       connectionEnd: getResizedTargetAnchor(c, shape, oldBounds)
     });
   });
 
-  Object(dist_index_esm["i" /* forEach */])(shape.outgoing, function(c) {
+  Object(dist_index_esm["forEach"])(shape.outgoing, function(c) {
     modeling.layoutConnection(c, {
       connectionStart: getResizedSourceAnchor(c, shape, oldBounds)
     });
@@ -67005,7 +69025,7 @@ ResizeShapeHandler.prototype.revert = function(context) {
       oldBounds = context.oldBounds;
 
   // restore previous bbox
-  Object(dist_index_esm["a" /* assign */])(shape, {
+  Object(dist_index_esm["assign"])(shape, {
     width:  oldBounds.width,
     height: oldBounds.height,
     x:      oldBounds.x,
@@ -67044,7 +69064,7 @@ SpaceToolHandler.prototype.preExecute = function(context) {
   this.moveShapes(movingShapes, delta);
 
   // (2a) save old bounds of resized shapes
-  Object(dist_index_esm["i" /* forEach */])(resizingShapes, function(shape) {
+  Object(dist_index_esm["forEach"])(resizingShapes, function(shape) {
     oldBounds[shape.id] = getBounds(shape);
   });
 
@@ -67069,7 +69089,7 @@ SpaceToolHandler.prototype.revert = function() {};
 SpaceToolHandler.prototype.moveShapes = function(shapes, delta) {
   var self = this;
 
-  Object(dist_index_esm["i" /* forEach */])(shapes, function(element) {
+  Object(dist_index_esm["forEach"])(shapes, function(element) {
     self._modeling.moveShape(element, delta, null, {
       autoResize: false,
       layout: false,
@@ -67081,7 +69101,7 @@ SpaceToolHandler.prototype.moveShapes = function(shapes, delta) {
 SpaceToolHandler.prototype.resizeShapes = function(shapes, delta, direction) {
   var self = this;
 
-  Object(dist_index_esm["i" /* forEach */])(shapes, function(shape) {
+  Object(dist_index_esm["forEach"])(shapes, function(shape) {
     var newBounds = SpaceUtil_resizeBounds(shape, direction, delta);
 
     self._modeling.resizeShape(shape, newBounds, null, {
@@ -67109,7 +69129,7 @@ SpaceToolHandler.prototype.updateConnectionWaypoints = function(
   var self = this,
       affectedShapes = movingShapes.concat(resizingShapes);
 
-  Object(dist_index_esm["i" /* forEach */])(connections, function(connection) {
+  Object(dist_index_esm["forEach"])(connections, function(connection) {
     var source = connection.source,
         target = connection.target,
         waypoints = SpaceToolHandler_copyWaypoints(connection),
@@ -67121,7 +69141,7 @@ SpaceToolHandler.prototype.updateConnectionWaypoints = function(
     if (SpaceToolHandler_includes(affectedShapes, source) && SpaceToolHandler_includes(affectedShapes, target)) {
 
       // move waypoints
-      waypoints = Object(dist_index_esm["u" /* map */])(waypoints, function(waypoint) {
+      waypoints = Object(dist_index_esm["map"])(waypoints, function(waypoint) {
         if (shouldMoveWaypoint(waypoint, start, direction)) {
 
           // move waypoint
@@ -67166,11 +69186,11 @@ SpaceToolHandler.prototype.updateConnectionWaypoints = function(
 // helpers //////////
 
 function SpaceToolHandler_copyWaypoint(waypoint) {
-  return Object(dist_index_esm["a" /* assign */])({}, waypoint);
+  return Object(dist_index_esm["assign"])({}, waypoint);
 }
 
 function SpaceToolHandler_copyWaypoints(connection) {
-  return Object(dist_index_esm["u" /* map */])(connection.waypoints, function(waypoint) {
+  return Object(dist_index_esm["map"])(connection.waypoints, function(waypoint) {
 
     waypoint = SpaceToolHandler_copyWaypoint(waypoint);
 
@@ -67282,11 +69302,11 @@ function getElementsVisibilityRecursive(elements) {
 
   var result = {};
 
-  Object(dist_index_esm["i" /* forEach */])(elements, function(element) {
+  Object(dist_index_esm["forEach"])(elements, function(element) {
     result[element.id] = element.hidden;
 
     if (element.children) {
-      result = Object(dist_index_esm["a" /* assign */])({}, result, getElementsVisibilityRecursive(element.children));
+      result = Object(dist_index_esm["assign"])({}, result, getElementsVisibilityRecursive(element.children));
     }
   });
 
@@ -67296,7 +69316,7 @@ function getElementsVisibilityRecursive(elements) {
 
 function setHiddenRecursive(elements, newHidden) {
   var result = [];
-  Object(dist_index_esm["i" /* forEach */])(elements, function(element) {
+  Object(dist_index_esm["forEach"])(elements, function(element) {
     element.hidden = newHidden;
 
     result = result.concat(element);
@@ -67311,7 +69331,7 @@ function setHiddenRecursive(elements, newHidden) {
 
 function restoreVisibilityRecursive(elements, lastState) {
   var result = [];
-  Object(dist_index_esm["i" /* forEach */])(elements, function(element) {
+  Object(dist_index_esm["forEach"])(elements, function(element) {
     element.hidden = lastState[element.id];
 
     result = result.concat(element);
@@ -67511,7 +69531,7 @@ Modeling.prototype.getHandlers = function() {
  * @param {CommandStack} commandStack
  */
 Modeling.prototype.registerHandlers = function(commandStack) {
-  Object(dist_index_esm["i" /* forEach */])(this.getHandlers(), function(handler, id) {
+  Object(dist_index_esm["forEach"])(this.getHandlers(), function(handler, id) {
     commandStack.registerHandler(id, handler);
   });
 };
@@ -67711,7 +69731,7 @@ Modeling.prototype.createShape = function(shape, position, target, parentIndex, 
 
 
 Modeling.prototype.createElements = function(elements, position, parent, parentIndex, hints) {
-  if (!Object(dist_index_esm["l" /* isArray */])(elements)) {
+  if (!Object(dist_index_esm["isArray"])(elements)) {
     elements = [ elements ];
   }
 
@@ -67900,7 +69920,7 @@ Modeling.prototype.reconnectStart = function(connection, newSource, dockingOrPoi
     hints = {};
   }
 
-  this.reconnect(connection, newSource, connection.target, dockingOrPoints, Object(dist_index_esm["a" /* assign */])(hints, {
+  this.reconnect(connection, newSource, connection.target, dockingOrPoints, Object(dist_index_esm["assign"])(hints, {
     docking: 'source'
   }));
 };
@@ -67910,7 +69930,7 @@ Modeling.prototype.reconnectEnd = function(connection, newTarget, dockingOrPoint
     hints = {};
   }
 
-  this.reconnect(connection, connection.source, newTarget, dockingOrPoints, Object(dist_index_esm["a" /* assign */])(hints, {
+  this.reconnect(connection, connection.source, newTarget, dockingOrPoints, Object(dist_index_esm["assign"])(hints, {
     docking: 'target'
   }));
 };
@@ -67935,6 +69955,91 @@ Modeling.prototype.toggleCollapse = function(shape, hints) {
 
   this._commandStack.execute('shape.toggleCollapse', context);
 };
+
+// CONCATENATED MODULE: ./node_modules/bpmn-js/lib/features/modeling/cmd/UpdateModdlePropertiesHandler.js
+
+
+
+
+function UpdateModdlePropertiesHandler(elementRegistry) {
+  this._elementRegistry = elementRegistry;
+}
+
+UpdateModdlePropertiesHandler.$inject = ['elementRegistry'];
+
+UpdateModdlePropertiesHandler.prototype.execute = function(context) {
+
+  var element = context.element,
+      moddleElement = context.moddleElement,
+      properties = context.properties;
+
+  if (!moddleElement) {
+    throw new Error('<moddleElement> required');
+  }
+
+  var changed = context.changed || this.getVisualReferences(moddleElement).concat(element);
+  var oldProperties = context.oldProperties || getModdleProperties(moddleElement, Object(dist_index_esm["keys"])(properties));
+
+  setModdleProperties(moddleElement, properties);
+
+  context.oldProperties = oldProperties;
+  context.changed = changed;
+
+  return changed;
+};
+
+UpdateModdlePropertiesHandler.prototype.revert = function(context) {
+  var oldProperties = context.oldProperties,
+      moddleElement = context.moddleElement,
+      changed = context.changed;
+
+  setModdleProperties(moddleElement, oldProperties);
+
+  return changed;
+};
+
+/**
+ * Return visual references of given moddle element within the diagram.
+ *
+ * @param {ModdleElement} moddleElement
+ *
+ * @return {Array<djs.model.Element>}
+ */
+UpdateModdlePropertiesHandler.prototype.getVisualReferences = function(moddleElement) {
+
+  var elementRegistry = this._elementRegistry;
+
+  if (Object(ModelUtil["is"])(moddleElement, 'bpmn:DataObject')) {
+    return getAllDataObjectReferences(moddleElement, elementRegistry);
+  }
+
+  return [];
+};
+
+
+// helpers /////////////////
+
+function getModdleProperties(moddleElement, propertyNames) {
+  return Object(dist_index_esm["reduce"])(propertyNames, function(result, key) {
+    result[key] = moddleElement.get(key);
+    return result;
+  }, {});
+}
+
+function setModdleProperties(moddleElement, properties) {
+  Object(dist_index_esm["forEach"])(properties, function(value, key) {
+    moddleElement.set(key, value);
+  });
+}
+
+function getAllDataObjectReferences(dataObject, elementRegistry) {
+  return elementRegistry.filter(function(element) {
+    return (
+      Object(ModelUtil["is"])(element, 'bpmn:DataObjectReference') &&
+          Object(ModelUtil["getBusinessObject"])(element).dataObjectRef === dataObject
+    );
+  });
+}
 
 // CONCATENATED MODULE: ./node_modules/bpmn-js/lib/features/modeling/cmd/UpdatePropertiesHandler.js
 
@@ -68094,15 +70199,15 @@ function isIdChange(properties, businessObject) {
 
 
 function getProperties(businessObject, properties) {
-  var propertyNames = Object(dist_index_esm["t" /* keys */])(properties);
+  var propertyNames = Object(dist_index_esm["keys"])(properties);
 
-  return Object(dist_index_esm["y" /* reduce */])(propertyNames, function(result, key) {
+  return Object(dist_index_esm["reduce"])(propertyNames, function(result, key) {
 
     // handle DI separately
     if (key !== DI) {
       result[key] = businessObject.get(key);
     } else {
-      result[key] = getDiProperties(businessObject.di, Object(dist_index_esm["t" /* keys */])(properties.di));
+      result[key] = getDiProperties(businessObject.di, Object(dist_index_esm["keys"])(properties.di));
     }
 
     return result;
@@ -68111,7 +70216,7 @@ function getProperties(businessObject, properties) {
 
 
 function getDiProperties(di, propertyNames) {
-  return Object(dist_index_esm["y" /* reduce */])(propertyNames, function(result, key) {
+  return Object(dist_index_esm["reduce"])(propertyNames, function(result, key) {
     result[key] = di.get(key);
 
     return result;
@@ -68120,7 +70225,7 @@ function getDiProperties(di, propertyNames) {
 
 
 function setProperties(businessObject, properties) {
-  Object(dist_index_esm["i" /* forEach */])(properties, function(value, key) {
+  Object(dist_index_esm["forEach"])(properties, function(value, key) {
 
     if (key !== DI) {
       businessObject.set(key, value);
@@ -68136,7 +70241,7 @@ function setProperties(businessObject, properties) {
 
 
 function setDiProperties(di, properties) {
-  Object(dist_index_esm["i" /* forEach */])(properties, function(value, key) {
+  Object(dist_index_esm["forEach"])(properties, function(value, key) {
     di.set(key, value);
   });
 }
@@ -68155,7 +70260,7 @@ var referencePropertyNames = [ 'default' ];
  */
 function unwrapBusinessObjects(properties) {
 
-  var unwrappedProps = Object(dist_index_esm["a" /* assign */])({}, properties);
+  var unwrappedProps = Object(dist_index_esm["assign"])({}, properties);
 
   referencePropertyNames.forEach(function(name) {
     if (name in properties) {
@@ -68310,7 +70415,7 @@ AddLaneHandler.prototype.preExecute = function(context) {
       return [];
     }
 
-    return Object(dist_index_esm["e" /* filter */])(element.children, function(c) {
+    return Object(dist_index_esm["filter"])(element.children, function(c) {
       return c !== shape;
     });
   });
@@ -68784,6 +70889,24 @@ var DEFAULT_COLORS = {
 
 function SetColorHandler(commandStack) {
   this._commandStack = commandStack;
+
+  this._normalizeColor = function(color) {
+
+    // Remove color for falsy values.
+    if (!color) {
+      return undefined;
+    }
+
+    if (Object(dist_index_esm["isString"])(color)) {
+      var hexColor = colorToHex(color);
+
+      if (hexColor) {
+        return hexColor;
+      }
+    }
+
+    throw new Error('invalid color value: ' + color);
+  };
 }
 
 SetColorHandler.$inject = [
@@ -68800,24 +70923,80 @@ SetColorHandler.prototype.postExecute = function(context) {
   var di = {};
 
   if ('fill' in colors) {
-    Object(dist_index_esm["a" /* assign */])(di, { fill: colors.fill });
+    Object(dist_index_esm["assign"])(di, {
+      'background-color': this._normalizeColor(colors.fill) });
   }
 
   if ('stroke' in colors) {
-    Object(dist_index_esm["a" /* assign */])(di, { stroke: colors.stroke });
+    Object(dist_index_esm["assign"])(di, {
+      'border-color': this._normalizeColor(colors.stroke) });
   }
 
-  Object(dist_index_esm["i" /* forEach */])(elements, function(element) {
+  Object(dist_index_esm["forEach"])(elements, function(element) {
+    var assignedDi = SetColorHandler_isConnection(element) ? Object(dist_index_esm["pick"])(di, [ 'border-color' ]) : di;
+
+    // TODO @barmac: remove once we drop bpmn.io properties
+    ensureLegacySupport(assignedDi);
 
     self._commandStack.execute('element.updateProperties', {
       element: element,
       properties: {
-        di: di
+        di: assignedDi
       }
     });
   });
 
 };
+
+/**
+ * Convert color from rgb(a)/hsl to hex. Returns `null` for unknown color names and for colors
+ * with alpha less than 1.0. This depends on `<canvas>` serialization of the `context.fillStyle`.
+ * Cf. https://html.spec.whatwg.org/multipage/canvas.html#dom-context-2d-fillstyle
+ *
+ * @example
+ * ```js
+ * var color = 'fuchsia';
+ * console.log(colorToHex(color));
+ * // "#ff00ff"
+ * color = 'rgba(1,2,3,0.4)';
+ * console.log(colorToHex(color));
+ * // null
+ * ```
+ *
+ * @param {string} color
+ * @returns {string|null}
+ */
+function colorToHex(color) {
+  var context = document.createElement('canvas').getContext('2d');
+
+  // (0) Start with transparent to account for browser default values.
+  context.fillStyle = 'transparent';
+
+  // (1) Assign color so that it's serialized.
+  context.fillStyle = color;
+
+  // (2) Return null for non-hex serialization result.
+  return /^#[0-9a-fA-F]{6}$/.test(context.fillStyle) ? context.fillStyle : null;
+}
+
+function SetColorHandler_isConnection(element) {
+  return !!element.waypoints;
+}
+
+/**
+ * Add legacy properties if required.
+ * @param {{ 'border-color': string?, 'background-color': string? }} di
+ */
+function ensureLegacySupport(di) {
+  if ('border-color' in di) {
+    di.stroke = di['border-color'];
+  }
+
+  if ('background-color' in di) {
+    di.fill = di['background-color'];
+  }
+}
+
 // CONCATENATED MODULE: ./node_modules/bpmn-js/lib/features/label-editing/cmd/UpdateLabelHandler.js
 
 
@@ -68963,6 +71142,7 @@ function UpdateLabelHandler_isEmptyText(label) {
 
 
 
+
 /**
  * BPMN 2.0 modeling features activator
  *
@@ -68993,6 +71173,7 @@ Modeling_Modeling.$inject = [
 Modeling_Modeling.prototype.getHandlers = function() {
   var handlers = Modeling.prototype.getHandlers.call(this);
 
+  handlers['element.updateModdleProperties'] = UpdateModdlePropertiesHandler;
   handlers['element.updateProperties'] = UpdatePropertiesHandler;
   handlers['canvas.updateRoot'] = UpdateCanvasRootHandler;
   handlers['lane.add'] = AddLaneHandler;
@@ -69032,6 +71213,14 @@ Modeling_Modeling.prototype.connect = function(source, target, attrs, hints) {
   return this.createConnection(source, target, attrs, source.parent, hints);
 };
 
+
+Modeling_Modeling.prototype.updateModdleProperties = function(element, moddleElement, properties) {
+  this._commandStack.execute('element.updateModdleProperties', {
+    element: element,
+    moddleElement: moddleElement,
+    properties: properties
+  });
+};
 
 Modeling_Modeling.prototype.updateProperties = function(element, properties) {
   this._commandStack.execute('element.updateProperties', {
@@ -69459,7 +71648,7 @@ function connectRectangles(source, target, start, end, hints) {
 
   var preferredLayouts = hints && hints.preferredLayouts || [];
 
-  var preferredLayout = Object(dist_index_esm["F" /* without */])(preferredLayouts, 'straight')[0] || 'h:h';
+  var preferredLayout = Object(dist_index_esm["without"])(preferredLayouts, 'straight')[0] || 'h:h';
 
   var threshold = ORIENTATION_THRESHOLD[preferredLayout] || 0;
 
@@ -69499,7 +71688,7 @@ function connectRectangles(source, target, start, end, hints) {
  */
 function repairConnection(source, target, start, end, waypoints, hints) {
 
-  if (Object(dist_index_esm["l" /* isArray */])(start)) {
+  if (Object(dist_index_esm["isArray"])(start)) {
     waypoints = start;
     hints = end;
 
@@ -69507,7 +71696,7 @@ function repairConnection(source, target, start, end, waypoints, hints) {
     end = getMid(target);
   }
 
-  hints = Object(dist_index_esm["a" /* assign */])({ preferredLayouts: [] }, hints);
+  hints = Object(dist_index_esm["assign"])({ preferredLayouts: [] }, hints);
   waypoints = waypoints || [];
 
   var preferredLayouts = hints.preferredLayouts,
@@ -69697,7 +71886,7 @@ function _tryRepairConnectionSide(moved, other, newDocking, points) {
 
     // relayout if two points overlap
     // this is most likely due to
-    return !!Object(dist_index_esm["f" /* find */])(points, function(p, idx) {
+    return !!Object(dist_index_esm["find"])(points, function(p, idx) {
       var q = points[idx - 1];
 
       return q && pointDistance(p, q) < 3;
@@ -70022,7 +72211,7 @@ BpmnLayouter.prototype.layoutConnection = function(connection, hints) {
   }
 
   if (manhattanOptions) {
-    manhattanOptions = Object(dist_index_esm["a" /* assign */])(manhattanOptions, hints);
+    manhattanOptions = Object(dist_index_esm["assign"])(manhattanOptions, hints);
 
     updatedWaypoints = withoutRedundantPoints(repairConnection(
       source,
@@ -70314,7 +72503,7 @@ function dockingToPoint(docking) {
 
   // use the dockings actual point and
   // retain the original docking
-  return Object(dist_index_esm["a" /* assign */])({ original: docking.point.original || docking.point }, docking.actual);
+  return Object(dist_index_esm["assign"])({ original: docking.point.original || docking.point }, docking.actual);
 }
 
 
@@ -70456,6 +72645,8 @@ var Move_LOW_PRIORITY = 500,
 
 
 
+
+
 var Move_round = Math.round;
 
 function Move_mid(element) {
@@ -70521,7 +72712,7 @@ function MoveEvents(
     shapes = removeNested(shapes);
 
     // attach shapes to drag context
-    Object(dist_index_esm["a" /* assign */])(context, {
+    Object(dist_index_esm["assign"])(context, {
       shapes: shapes,
       validatedShapes: shapes,
       shape: shape
@@ -70611,6 +72802,10 @@ function MoveEvents(
 
   eventBus.on('element.mousedown', function(event) {
 
+    if (!isPrimaryButton(event)) {
+      return;
+    }
+
     var originalEvent = getOriginal(event);
 
     if (!originalEvent) {
@@ -70629,7 +72824,7 @@ function MoveEvents(
    * @param {Object} [context]
    */
   function start(event, element, activate, context) {
-    if (Object(dist_index_esm["q" /* isObject */])(activate)) {
+    if (Object(dist_index_esm["isObject"])(activate)) {
       context = activate;
       activate = false;
     }
@@ -70678,9 +72873,9 @@ MoveEvents.$inject = [
  */
 function removeNested(elements) {
 
-  var ids = Object(dist_index_esm["j" /* groupBy */])(elements, 'id');
+  var ids = Object(dist_index_esm["groupBy"])(elements, 'id');
 
-  return Object(dist_index_esm["e" /* filter */])(elements, function(element) {
+  return Object(dist_index_esm["filter"])(elements, function(element) {
     while ((element = element.parent)) {
 
       // parent in selection
@@ -70733,11 +72928,11 @@ function MovePreview(
   function getAllDraggedElements(shapes) {
     var allShapes = selfAndAllChildren(shapes, true);
 
-    var allConnections = Object(dist_index_esm["u" /* map */])(allShapes, function(shape) {
+    var allConnections = Object(dist_index_esm["map"])(allShapes, function(shape) {
       return (shape.incoming || []).concat(shape.outgoing || []);
     });
 
-    return Object(dist_index_esm["h" /* flatten */])(allShapes.concat(allConnections));
+    return Object(dist_index_esm["flatten"])(allShapes.concat(allConnections));
   }
 
   /**
@@ -70809,14 +73004,14 @@ function MovePreview(
     if (!allDraggedElements) {
       allDraggedElements = getAllDraggedElements(dragShapes);
     } else {
-      allDraggedElements = Object(dist_index_esm["h" /* flatten */])([
+      allDraggedElements = Object(dist_index_esm["flatten"])([
         allDraggedElements,
         getAllDraggedElements(dragShapes)
       ]);
     }
 
     // add dragging marker
-    Object(dist_index_esm["i" /* forEach */])(allDraggedElements, function(e) {
+    Object(dist_index_esm["forEach"])(allDraggedElements, function(e) {
       canvas.addMarker(e, MovePreview_MARKER_DRAGGING);
     });
 
@@ -70866,7 +73061,7 @@ function MovePreview(
 
 
     // remove dragging marker
-    Object(dist_index_esm["i" /* forEach */])(allDraggedElements, function(e) {
+    Object(dist_index_esm["forEach"])(allDraggedElements, function(e) {
       canvas.removeMarker(e, MovePreview_MARKER_DRAGGING);
     });
 
@@ -70904,15 +73099,15 @@ MovePreview.$inject = [
  */
 function removeEdges(elements) {
 
-  var filteredElements = Object(dist_index_esm["e" /* filter */])(elements, function(element) {
+  var filteredElements = Object(dist_index_esm["filter"])(elements, function(element) {
 
     if (!MovePreview_isConnection(element)) {
       return true;
     } else {
 
       return (
-        Object(dist_index_esm["f" /* find */])(elements, Object(dist_index_esm["v" /* matchPattern */])({ id: element.source.id })) &&
-        Object(dist_index_esm["f" /* find */])(elements, Object(dist_index_esm["v" /* matchPattern */])({ id: element.target.id }))
+        Object(dist_index_esm["find"])(elements, Object(dist_index_esm["matchPattern"])({ id: element.source.id })) &&
+        Object(dist_index_esm["find"])(elements, Object(dist_index_esm["matchPattern"])({ id: element.target.id }))
       );
     }
   });
@@ -70921,7 +73116,7 @@ function removeEdges(elements) {
 }
 
 function haveDifferentParents(elements) {
-  return Object(dist_index_esm["z" /* size */])(Object(dist_index_esm["j" /* groupBy */])(elements, function(e) { return e.parent && e.parent.id; })) !== 1;
+  return Object(dist_index_esm["size"])(Object(dist_index_esm["groupBy"])(elements, function(e) { return e.parent && e.parent.id; })) !== 1;
 }
 
 /**
@@ -71172,7 +73367,7 @@ Palette.prototype._update = function() {
 
   Object(min_dom_dist_index_esm["clear"])(entriesContainer);
 
-  Object(dist_index_esm["i" /* forEach */])(entries, function(entry, id) {
+  Object(dist_index_esm["forEach"])(entries, function(entry, id) {
 
     var grouping = entry.group || 'default';
 
@@ -71242,7 +73437,7 @@ Palette.prototype.trigger = function(action, event, autoActivate) {
   originalEvent = event.originalEvent || event;
 
   // simple action (via callback function)
-  if (Object(dist_index_esm["n" /* isFunction */])(handler)) {
+  if (Object(dist_index_esm["isFunction"])(handler)) {
     if (action === 'click') {
       handler(originalEvent, autoActivate);
     }
@@ -71324,7 +73519,7 @@ Palette.prototype.updateToolHighlight = function(name) {
 
   toolsContainer = this._toolsContainer;
 
-  Object(dist_index_esm["i" /* forEach */])(toolsContainer.children, function(tool) {
+  Object(dist_index_esm["forEach"])(toolsContainer.children, function(tool) {
     var actionName = tool.getAttribute('data-action');
 
     if (!actionName) {
@@ -71386,7 +73581,7 @@ function Palette_addClasses(element, classNames) {
 
   var classes = Object(min_dom_dist_index_esm["classes"])(element);
 
-  var actualClassNames = Object(dist_index_esm["l" /* isArray */])(classNames) ? classNames : classNames.split(/\s+/g);
+  var actualClassNames = Object(dist_index_esm["isArray"])(classNames) ? classNames : classNames.split(/\s+/g);
   actualClassNames.forEach(function(cls) {
     classes.add(cls);
   });
@@ -71396,11 +73591,11 @@ function addPaletteEntries(entries, provider) {
 
   var entriesOrUpdater = provider.getPaletteEntries();
 
-  if (Object(dist_index_esm["n" /* isFunction */])(entriesOrUpdater)) {
+  if (Object(dist_index_esm["isFunction"])(entriesOrUpdater)) {
     return entriesOrUpdater(entries);
   }
 
-  Object(dist_index_esm["i" /* forEach */])(entriesOrUpdater, function(entry, id) {
+  Object(dist_index_esm["forEach"])(entriesOrUpdater, function(entry, id) {
     entries[id] = entry;
   });
 
@@ -71428,10 +73623,12 @@ var LASSO_TOOL_CURSOR = 'crosshair';
 
 function LassoTool(
     eventBus, canvas, dragging,
-    elementRegistry, selection, toolManager) {
+    elementRegistry, selection, toolManager,
+    mouse) {
 
   this._selection = selection;
   this._dragging = dragging;
+  this._mouse = mouse;
 
   var self = this;
 
@@ -71538,12 +73735,14 @@ function LassoTool(
 
   eventBus.on('element.mousedown', 1500, function(event) {
 
-    if (hasSecondaryModifier(event)) {
-      self.activateLasso(event.originalEvent);
-
-      // we've handled the event
-      return true;
+    if (!hasSecondaryModifier(event)) {
+      return;
     }
+
+    self.activateLasso(event.originalEvent);
+
+    // we've handled the event
+    return true;
   });
 }
 
@@ -71553,7 +73752,8 @@ LassoTool.$inject = [
   'dragging',
   'elementRegistry',
   'selection',
-  'toolManager'
+  'toolManager',
+  'mouse'
 ];
 
 
@@ -71568,10 +73768,11 @@ LassoTool.prototype.activateLasso = function(event, autoActivate) {
   });
 };
 
-LassoTool.prototype.activateSelection = function(event) {
+LassoTool.prototype.activateSelection = function(event, autoActivate) {
 
   this._dragging.init(event, 'lasso.selection', {
     trapClick: false,
+    autoActivate: autoActivate,
     cursor: LASSO_TOOL_CURSOR,
     data: {
       context: {}
@@ -71582,15 +73783,17 @@ LassoTool.prototype.activateSelection = function(event) {
 LassoTool.prototype.select = function(elements, bbox) {
   var selectedElements = getEnclosedElements(elements, bbox);
 
-  this._selection.select(Object(dist_index_esm["E" /* values */])(selectedElements));
+  this._selection.select(Object(dist_index_esm["values"])(selectedElements));
 };
 
 LassoTool.prototype.toggle = function() {
   if (this.isActive()) {
-    this._dragging.cancel();
-  } else {
-    this.activateSelection();
+    return this._dragging.cancel();
   }
+
+  var mouseEvent = this._mouse.getLastMoveEvent();
+
+  this.activateSelection(mouseEvent, !!mouseEvent);
 };
 
 LassoTool.prototype.isActive = function() {
@@ -71669,9 +73872,11 @@ function toBBox(event) {
 
 
 
+
 /* harmony default export */ var lasso_tool = ({
   __depends__: [
-    tool_manager
+    tool_manager,
+    features_mouse
   ],
   __init__: [ 'lassoTool' ],
   lassoTool: [ 'type', LassoTool ]
@@ -71686,8 +73891,12 @@ var HandTool_HIGH_PRIORITY = 1500;
 var HAND_CURSOR = 'grab';
 
 
-function HandTool(eventBus, canvas, dragging, injector, toolManager) {
+function HandTool(
+    eventBus, canvas, dragging,
+    injector, toolManager, mouse) {
+
   this._dragging = dragging;
+  this._mouse = mouse;
 
   var self = this,
       keyboard = injector.get('keyboard', false);
@@ -71698,44 +73907,33 @@ function HandTool(eventBus, canvas, dragging, injector, toolManager) {
   });
 
   eventBus.on('element.mousedown', HandTool_HIGH_PRIORITY, function(event) {
-    if (hasPrimaryModifier(event)) {
-      this.activateMove(event.originalEvent);
 
-      return false;
+    if (!hasPrimaryModifier(event)) {
+      return;
     }
-  }, this);
+
+    self.activateMove(event.originalEvent, true);
+
+    return false;
+  });
 
   keyboard && keyboard.addListener(HandTool_HIGH_PRIORITY, function(e) {
-    if (!isSpace(e.keyEvent)) {
+    if (!isSpace(e.keyEvent) || self.isActive()) {
       return;
     }
 
-    if (self.isActive()) {
-      return;
-    }
+    var mouseEvent = self._mouse.getLastMoveEvent();
 
-    function activateMove(event) {
-      self.activateMove(event);
-
-      window.removeEventListener('mousemove', activateMove);
-    }
-
-    window.addEventListener('mousemove', activateMove);
-
-    function deactivateMove(e) {
-      if (!isSpace(e.keyEvent)) {
-        return;
-      }
-
-      window.removeEventListener('mousemove', activateMove);
-
-      keyboard.removeListener(deactivateMove, 'keyboard.keyup');
-
-      dragging.cancel();
-    }
-
-    keyboard.addListener(HandTool_HIGH_PRIORITY, deactivateMove, 'keyboard.keyup');
+    self.activateMove(mouseEvent, !!mouseEvent);
   }, 'keyboard.keydown');
+
+  keyboard && keyboard.addListener(HandTool_HIGH_PRIORITY, function(e) {
+    if (!isSpace(e.keyEvent) || !self.isActive()) {
+      return;
+    }
+
+    self.toggle();
+  }, 'keyboard.keyup');
 
   eventBus.on('hand.end', function(event) {
     var target = event.originalEvent.target;
@@ -71747,11 +73945,10 @@ function HandTool(eventBus, canvas, dragging, injector, toolManager) {
     }
 
     eventBus.once('hand.ended', function() {
-      this.activateMove(event.originalEvent, { reactivate: true });
-    }, this);
+      self.activateMove(event.originalEvent, { reactivate: true });
+    });
 
-  }, this);
-
+  });
 
   eventBus.on('hand.move.move', function(event) {
     var scale = canvas.viewbox().scale;
@@ -71770,13 +73967,13 @@ function HandTool(eventBus, canvas, dragging, injector, toolManager) {
     if (!hasPrimaryModifier(event) && reactivate) {
 
       eventBus.once('hand.move.ended', function(event) {
-        this.activateHand(event.originalEvent, true, true);
-      }, this);
+        self.activateHand(event.originalEvent, true, true);
+      });
 
     }
 
     return false;
-  }, this);
+  });
 
 }
 
@@ -71785,7 +73982,8 @@ HandTool.$inject = [
   'canvas',
   'dragging',
   'injector',
-  'toolManager'
+  'toolManager',
+  'mouse'
 ];
 
 
@@ -71819,10 +74017,12 @@ HandTool.prototype.activateHand = function(event, autoActivate, reactivate) {
 
 HandTool.prototype.toggle = function() {
   if (this.isActive()) {
-    this._dragging.cancel();
-  } else {
-    this.activateHand();
+    return this._dragging.cancel();
   }
+
+  var mouseEvent = this._mouse.getLastMoveEvent();
+
+  this.activateHand(mouseEvent, !!mouseEvent);
 };
 
 HandTool.prototype.isActive = function() {
@@ -71845,9 +74045,11 @@ function isSpace(keyEvent) {
 
 
 
+
 /* harmony default export */ var hand_tool = ({
   __depends__: [
-    tool_manager
+    tool_manager,
+    features_mouse
   ],
   __init__: [ 'handTool' ],
   handTool: [ 'type', HandTool ]
@@ -71867,15 +74069,18 @@ var GlobalConnect_MARKER_OK = 'connect-ok',
  * @param {Canvas} canvas
  * @param {ToolManager} toolManager
  * @param {Rules} rules
+ * @param {Mouse} mouse
  */
 function GlobalConnect(
     eventBus, dragging, connect,
-    canvas, toolManager, rules) {
+    canvas, toolManager, rules,
+    mouse) {
 
   var self = this;
 
   this._dragging = dragging;
   this._rules = rules;
+  this._mouse = mouse;
 
   toolManager.registerTool('global-connect', {
     tool: 'global-connect',
@@ -71941,14 +74146,16 @@ GlobalConnect.$inject = [
   'connect',
   'canvas',
   'toolManager',
-  'rules'
+  'rules',
+  'mouse'
 ];
 
 /**
  * Initiates tool activity.
  */
-GlobalConnect.prototype.start = function(event) {
+GlobalConnect.prototype.start = function(event, autoActivate) {
   this._dragging.init(event, 'global-connect', {
+    autoActivate: autoActivate,
     trapClick: false,
     data: {
       context: {}
@@ -71957,11 +74164,14 @@ GlobalConnect.prototype.start = function(event) {
 };
 
 GlobalConnect.prototype.toggle = function() {
+
   if (this.isActive()) {
-    this._dragging.cancel();
-  } else {
-    this.start();
+    return this._dragging.cancel();
   }
+
+  var mouseEvent = this._mouse.getLastMoveEvent();
+
+  return this.start(mouseEvent, !!mouseEvent);
 };
 
 GlobalConnect.prototype.isActive = function() {
@@ -71988,12 +74198,14 @@ GlobalConnect.prototype.canStartConnect = function(startTarget) {
 
 
 
+
 /* harmony default export */ var global_connect = ({
   __depends__: [
     features_connect,
     features_rules,
     features_dragging,
-    tool_manager
+    tool_manager,
+    features_mouse
   ],
   globalConnect: [ 'type', GlobalConnect ]
 });
@@ -72048,7 +74260,7 @@ PaletteProvider.prototype.getPaletteEntries = function(element) {
   function createAction(type, group, className, title, options) {
 
     function createListener(event) {
-      var shape = elementFactory.createShape(Object(dist_index_esm["a" /* assign */])({ type: type }, options));
+      var shape = elementFactory.createShape(Object(dist_index_esm["assign"])({ type: type }, options));
 
       if (options) {
         shape.businessObject.di.isExpanded = options.isExpanded;
@@ -72096,7 +74308,7 @@ PaletteProvider.prototype.getPaletteEntries = function(element) {
     create.start(event, elementFactory.createParticipantShape());
   }
 
-  Object(dist_index_esm["a" /* assign */])(actions, {
+  Object(dist_index_esm["assign"])(actions, {
     'hand-tool': {
       group: 'tools',
       className: 'bpmn-icon-hand-tool',
@@ -72133,7 +74345,7 @@ PaletteProvider.prototype.getPaletteEntries = function(element) {
       title: translate('Activate the global connect tool'),
       action: {
         click: function(event) {
-          globalConnect.toggle(event);
+          globalConnect.start(event);
         }
       }
     },
@@ -72252,7 +74464,7 @@ function BpmnReplacePreview(
 
     var replacements = context.canExecute.replacements;
 
-    Object(dist_index_esm["i" /* forEach */])(replacements, function(replacement) {
+    Object(dist_index_esm["forEach"])(replacements, function(replacement) {
 
       var id = replacement.oldElementId;
 
@@ -72267,7 +74479,7 @@ function BpmnReplacePreview(
 
       var element = elementRegistry.get(id);
 
-      Object(dist_index_esm["a" /* assign */])(newElement, { x: element.x, y: element.y });
+      Object(dist_index_esm["assign"])(newElement, { x: element.x, y: element.y });
 
       // create a temporary shape
       var tempShape = elementFactory.createShape(newElement);
@@ -72299,7 +74511,7 @@ function BpmnReplacePreview(
 
     var visualReplacements = context.visualReplacements;
 
-    Object(dist_index_esm["i" /* forEach */])(visualReplacements, function(dragger, id) {
+    Object(dist_index_esm["forEach"])(visualReplacements, function(dragger, id) {
 
       var originalGfx = Object(min_dom_dist_index_esm["query"])('[data-element-id="' + css_escape_default()(id) + '"]', context.dragGroup);
 
@@ -72534,7 +74746,7 @@ function BpmnConnectSnapping_isType(attrs, type) {
 }
 
 function isAnyType(attrs, types) {
-  return Object(dist_index_esm["A" /* some */])(types, function(type) {
+  return Object(dist_index_esm["some"])(types, function(type) {
     return BpmnConnectSnapping_isType(attrs, type);
   });
 }
@@ -72723,8 +74935,8 @@ SnapPoints.prototype.initDefaults = function(defaultSnaps) {
 
   var self = this;
 
-  Object(dist_index_esm["i" /* forEach */])(defaultSnaps || {}, function(snapPoints, snapLocation) {
-    Object(dist_index_esm["i" /* forEach */])(snapPoints, function(point) {
+  Object(dist_index_esm["forEach"])(defaultSnaps || {}, function(snapPoints, snapLocation) {
+    Object(dist_index_esm["forEach"])(snapPoints, function(point) {
       self.add(snapLocation, point);
     });
   });
@@ -72865,7 +75077,7 @@ CreateMoveSnapping.prototype.initSnap = function(event) {
 CreateMoveSnapping.prototype.addSnapTargetPoints = function(snapPoints, shape, target) {
   var snapTargets = this.getSnapTargets(shape, target);
 
-  Object(dist_index_esm["i" /* forEach */])(snapTargets, function(snapTarget) {
+  Object(dist_index_esm["forEach"])(snapTargets, function(snapTarget) {
 
     // handle labels
     if (CreateMoveSnapping_isLabel(snapTarget)) {
@@ -72888,7 +75100,7 @@ CreateMoveSnapping.prototype.addSnapTargetPoints = function(snapPoints, shape, t
       // ignore first and last waypoint
       var waypoints = snapTarget.waypoints.slice(1, -1);
 
-      Object(dist_index_esm["i" /* forEach */])(waypoints, function(waypoint) {
+      Object(dist_index_esm["forEach"])(waypoints, function(waypoint) {
         snapPoints.add('mid', waypoint);
       });
 
@@ -72899,7 +75111,7 @@ CreateMoveSnapping.prototype.addSnapTargetPoints = function(snapPoints, shape, t
     snapPoints.add('mid', SnapUtil_mid(snapTarget));
   });
 
-  if (!Object(dist_index_esm["p" /* isNumber */])(shape.x) || !Object(dist_index_esm["p" /* isNumber */])(shape.y)) {
+  if (!Object(dist_index_esm["isNumber"])(shape.x) || !Object(dist_index_esm["isNumber"])(shape.y)) {
     return snapPoints;
   }
 
@@ -72996,7 +75208,7 @@ BpmnCreateMoveSnapping.prototype.initSnap = function(event) {
   var isMove = !!this._elementRegistry.get(shape.id);
 
   // snap to docking points
-  Object(dist_index_esm["i" /* forEach */])(shape.outgoing, function(connection) {
+  Object(dist_index_esm["forEach"])(shape.outgoing, function(connection) {
     var docking = connection.waypoints[0];
 
     docking = docking.original || docking;
@@ -73004,7 +75216,7 @@ BpmnCreateMoveSnapping.prototype.initSnap = function(event) {
     snapContext.setSnapOrigin(connection.id + '-docking', getDockingSnapOrigin(docking, isMove, event));
   });
 
-  Object(dist_index_esm["i" /* forEach */])(shape.incoming, function(connection) {
+  Object(dist_index_esm["forEach"])(shape.incoming, function(connection) {
     var docking = connection.waypoints[connection.waypoints.length - 1];
 
     docking = docking.original || docking;
@@ -73026,7 +75238,7 @@ BpmnCreateMoveSnapping.prototype.addSnapTargetPoints = function(snapPoints, shap
 
   var snapTargets = this.getSnapTargets(shape, target);
 
-  Object(dist_index_esm["i" /* forEach */])(snapTargets, function(snapTarget) {
+  Object(dist_index_esm["forEach"])(snapTargets, function(snapTarget) {
 
     // handle TRBL alignment
     //
@@ -73041,7 +75253,7 @@ BpmnCreateMoveSnapping.prototype.addSnapTargetPoints = function(snapPoints, shap
   var elementRegistry = this._elementRegistry;
 
   // snap to docking points if not create mode
-  Object(dist_index_esm["i" /* forEach */])(shape.incoming, function(connection) {
+  Object(dist_index_esm["forEach"])(shape.incoming, function(connection) {
     if (elementRegistry.get(shape.id)) {
 
       if (!BpmnCreateMoveSnapping_includes(snapTargets, connection.source)) {
@@ -73053,7 +75265,7 @@ BpmnCreateMoveSnapping.prototype.addSnapTargetPoints = function(snapPoints, shap
     }
   });
 
-  Object(dist_index_esm["i" /* forEach */])(shape.outgoing, function(connection) {
+  Object(dist_index_esm["forEach"])(shape.outgoing, function(connection) {
     if (elementRegistry.get(shape.id)) {
 
       if (!BpmnCreateMoveSnapping_includes(snapTargets, connection.target)) {
@@ -73259,7 +75471,7 @@ ResizeSnapping.prototype.initSnap = function(event) {
 ResizeSnapping.prototype.addSnapTargetPoints = function(snapPoints, shape, target, direction) {
   var snapTargets = this.getSnapTargets(shape, target);
 
-  Object(dist_index_esm["i" /* forEach */])(snapTargets, function(snapTarget) {
+  Object(dist_index_esm["forEach"])(snapTargets, function(snapTarget) {
     snapPoints.add('corner', bottomRight(snapTarget));
     snapPoints.add('corner', topLeft(snapTarget));
   });
@@ -73354,7 +75566,7 @@ function Snapping(canvas) {
   this._canvas = canvas;
 
   // delay hide by 1000 seconds since last snap
-  this._asyncHide = Object(dist_index_esm["c" /* debounce */])(Object(dist_index_esm["b" /* bind */])(this.hide, this), SNAP_LINE_HIDE_DELAY);
+  this._asyncHide = Object(dist_index_esm["debounce"])(Object(dist_index_esm["bind"])(this.hide, this), SNAP_LINE_HIDE_DELAY);
 }
 
 Snapping.$inject = [ 'canvas' ];
@@ -73375,7 +75587,7 @@ Snapping.prototype.snap = function(event, snapPoints) {
     y: isSnapped(event, 'y')
   };
 
-  Object(dist_index_esm["i" /* forEach */])(snapLocations, function(location) {
+  Object(dist_index_esm["forEach"])(snapLocations, function(location) {
     var snapOrigin = snapContext.getSnapOrigin(location);
 
     var snapCurrent = {
@@ -73384,7 +75596,7 @@ Snapping.prototype.snap = function(event, snapPoints) {
     };
 
     // snap both axis if not snapped already
-    Object(dist_index_esm["i" /* forEach */])([ 'x', 'y' ], function(axis) {
+    Object(dist_index_esm["forEach"])([ 'x', 'y' ], function(axis) {
       var locationSnapping;
 
       if (!snapping[axis]) {
@@ -73410,10 +75622,10 @@ Snapping.prototype.snap = function(event, snapPoints) {
   this.showSnapLine('horizontal', snapping.y && snapping.y.value);
 
   // snap event
-  Object(dist_index_esm["i" /* forEach */])([ 'x', 'y' ], function(axis) {
+  Object(dist_index_esm["forEach"])([ 'x', 'y' ], function(axis) {
     var axisSnapping = snapping[axis];
 
-    if (Object(dist_index_esm["q" /* isObject */])(axisSnapping)) {
+    if (Object(dist_index_esm["isObject"])(axisSnapping)) {
       setSnapped(event, axis, axisSnapping.originValue);
     }
   });
@@ -73433,7 +75645,7 @@ Snapping.prototype._createLine = function(orientation) {
   return {
     update: function(position) {
 
-      if (!Object(dist_index_esm["p" /* isNumber */])(position)) {
+      if (!Object(dist_index_esm["isNumber"])(position)) {
         index_esm_attr(line, { display: 'none' });
       } else {
         if (orientation === 'horizontal') {
@@ -73479,7 +75691,7 @@ Snapping.prototype.getSnapLine = function(orientation) {
 };
 
 Snapping.prototype.hide = function() {
-  Object(dist_index_esm["i" /* forEach */])(this._snapLines, function(snapLine) {
+  Object(dist_index_esm["forEach"])(this._snapLines, function(snapLine) {
     snapLine.update();
   });
 };
@@ -73911,7 +76123,7 @@ SearchPad.prototype._preselect = function(node) {
 
   this._resetOverlay(element);
 
-  this._centerViewbox(element);
+  this._canvas.scrollToElement(element, { top: 400 });
 
   this._selection.select(element);
 
@@ -73932,34 +76144,11 @@ SearchPad.prototype._select = function(node) {
 
   this._resetOverlay();
 
-  this._centerViewbox(element);
+  this._canvas.scrollToElement(element, { top: 400 });
 
   this._selection.select(element);
 
   this._eventBus.fire('searchPad.selected', element);
-};
-
-
-/**
- * Center viewbox on the element middle point.
- *
- * @param  {Element} element
- */
-SearchPad.prototype._centerViewbox = function(element) {
-  var viewbox = this._canvas.viewbox();
-
-  var box = getBBox(element);
-
-  var newViewbox = {
-    x: (box.x + box.width/2) - viewbox.outer.width/2,
-    y: (box.y + box.height/2) - viewbox.outer.height/2,
-    width: viewbox.outer.width,
-    height: viewbox.outer.height
-  };
-
-  this._canvas.viewbox(newViewbox);
-
-  this._canvas.zoom(viewbox.scale);
 };
 
 
@@ -74143,11 +76332,11 @@ BpmnSearchProvider.prototype.find = function(pattern) {
   });
 
   // do not include root element
-  elements = Object(dist_index_esm["e" /* filter */])(elements, function(element) {
+  elements = Object(dist_index_esm["filter"])(elements, function(element) {
     return element !== rootElement;
   });
 
-  elements = Object(dist_index_esm["u" /* map */])(elements, function(element) {
+  elements = Object(dist_index_esm["map"])(elements, function(element) {
     return {
       primaryTokens: matchAndSplit(getLabel(element), pattern),
       secondaryTokens: matchAndSplit(element.id, pattern),
@@ -74156,11 +76345,11 @@ BpmnSearchProvider.prototype.find = function(pattern) {
   });
 
   // exclude non-matched elements
-  elements = Object(dist_index_esm["e" /* filter */])(elements, function(element) {
+  elements = Object(dist_index_esm["filter"])(elements, function(element) {
     return hasMatched(element.primaryTokens) || hasMatched(element.secondaryTokens);
   });
 
-  elements = Object(dist_index_esm["B" /* sortBy */])(elements, function(element) {
+  elements = Object(dist_index_esm["sortBy"])(elements, function(element) {
     return getLabel(element.element) + element.element.id;
   });
 
@@ -74169,7 +76358,7 @@ BpmnSearchProvider.prototype.find = function(pattern) {
 
 
 function hasMatched(tokens) {
-  var matched = Object(dist_index_esm["e" /* filter */])(tokens, function(t) {
+  var matched = Object(dist_index_esm["filter"])(tokens, function(t) {
     return !!t.matched;
   });
 
@@ -74229,6 +76418,7 @@ function matchAndSplit(text, pattern) {
 });
 
 // CONCATENATED MODULE: ./node_modules/bpmn-js/lib/Modeler.js
+
 
 
 
@@ -74371,13 +76561,29 @@ Modeler.Viewer = Viewer;
 Modeler.NavigatedViewer = NavigatedViewer;
 
 /**
+* The createDiagram result.
+*
+* @typedef {Object} CreateDiagramResult
+*
+* @property {Array<string>} warnings
+*/
+
+/**
+* The createDiagram error.
+*
+* @typedef {Error} CreateDiagramError
+*
+* @property {Array<string>} warnings
+*/
+
+/**
  * Create a new diagram to start modeling.
  *
- * @param {Function} [done]
+ * Returns {Promise<CreateDiagramResult, CreateDiagramError>}
  */
-Modeler.prototype.createDiagram = function(done) {
-  return this.importXML(initialDiagram, done);
-};
+Modeler.prototype.createDiagram = wrapForCompatibility(function createDiagram() {
+  return this.importXML(initialDiagram);
+});
 
 
 Modeler.prototype._interactionModules = [
@@ -74443,7 +76649,7 @@ var provider_default = /*#__PURE__*/__webpack_require__.n(app_provider);
 var simulation = __webpack_require__(123);
 
 // EXTERNAL MODULE: ./styles/customModeler.less
-var customModeler = __webpack_require__(304);
+var customModeler = __webpack_require__(312);
 
 // EXTERNAL MODULE: ./app/translate/customTranslate.js
 var customTranslate = __webpack_require__(125);
@@ -74493,7 +76699,7 @@ CustomModeler.prototype._moddleExtensions = {
 };
 
 /***/ }),
-/* 311 */
+/* 319 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -74656,9 +76862,9 @@ var DEFAULT_OPTIONS = {
 function ScrollTabs($el, options) {
 
   // we are an event emitter
-  Object(dist_index_esm["a" /* assign */])(this, mitt_es());
+  Object(dist_index_esm["assign"])(this, mitt_es());
 
-  this.options = options = Object(dist_index_esm["a" /* assign */])({}, DEFAULT_OPTIONS, options);
+  this.options = options = Object(dist_index_esm["assign"])({}, DEFAULT_OPTIONS, options);
   this.container = $el;
 
   this._createScrollButtons($el, options);
@@ -74763,7 +76969,7 @@ ScrollTabs.prototype.getVisibleTabs = function() {
 
   var ignore = this.options.selectors.ignore;
 
-  return Object(dist_index_esm["e" /* filter */])(allTabs, function(tabNode) {
+  return Object(dist_index_esm["filter"])(allTabs, function(tabNode) {
     return !Object(index_esm["matches"])(tabNode, ignore);
   });
 };

@@ -21,9 +21,10 @@
  * DEALINGS IN THE SOFTWARE.
  **/
 
-if (!Apromore) {
-    var Apromore = {};
-}
+import CONFIG from './config';
+import Editor from './editor';
+import Log from './logger';
+import Utils from './utils';
 
 /**
  * The EditorApp class represents the BPMN Editor. It calls to a BPMN.io editor internally while provides
@@ -34,8 +35,8 @@ if (!Apromore) {
  * @todo: the namespace Apromore should be changed to Apromore throughout in one pass
  * @todo: window.setTimeout here has time sensitivity that should be avoided in the future
  */
-Apromore.EditorApp = {
-    construct: function (config) {
+export default class EditorApp {
+    constructor (config) {
         "use strict";
         this.editor = undefined;
         this.availablePlugins = []; // plugin config data read from plugin configuration files
@@ -46,71 +47,48 @@ Apromore.EditorApp = {
 
         this.id = config.id;
         if (!this.id) {
-            Apromore.Log.fatal('Missing the container HTML element for the editor');
+            Log.fatal('Missing the container HTML element for the editor');
             return;
         }
         this.fullscreen = config.fullscreen !== false;
         this.useSimulationPanel = config.useSimulationPanel || false;
         this.enabledPlugins = config.enabledPlugins; // undefined means all plugins are enabled
+    }
 
-        // CREATES the editor
+    async init(config) {
         this._createEditor(config.preventFitDelay || false);
 
         // GENERATES the main UI regions
         this._generateGUI();
 
-        // LOAD the plugins
-        this._loadPlugins();
+        // LOAD the plugins and editor
+        await this._load(config);
+    }
 
-        // Attach the editor must be the LAST THING AFTER ALL HAS BEEN LOADED
-        var options = {
-          container: '#' + this.getEditor().rootNode.id,
-          langTag: config.langTag
-        }
-        if (!config.viewOnly) {
-          options.keyboard = { bindTo: window };
-          options.propertiesPanel = this.useSimulationPanel ? { parent: '#js-properties-panel' } : undefined
-        }
-
-        this.getEditor().attachEditor(new BpmnJS(options));
-
-        // Wait until the editor is fully loaded to start XML import and then UI init
-        // @todo: Avoid time sensitivity
-        var me = this;
-        window.setTimeout(function() {
-            if (config && config.xml) {
-                me.importXML(config.xml, me._initUI.bind(me));
-            }
-            else {
-                me._initUI();
-            }
-        }, 100);
-    },
-
-    _initUI: function () {
+    _initUI() {
         // Fixed the problem that the viewport can not
         // start with collapsed panels correctly
-        if (Apromore.CONFIG.PANEL_RIGHT_COLLAPSED === true) {
+        if (CONFIG.PANEL_RIGHT_COLLAPSED === true) {
             this.layout_regions.east.collapse();
         }
-        if (Apromore.CONFIG.PANEL_LEFT_COLLAPSED === true) {
+        if (CONFIG.PANEL_LEFT_COLLAPSED === true) {
             this.layout_regions.west.collapse();
         }
-    },
+    }
 
-    zoomFitToModel: function () {
+    zoomFitToModel() {
         this.getEditor().zoomFitToModel();
-    },
+    }
 
     /**
      * Generate the whole UI components for the editor
      * It is based on Ext Sencha regions: east, west, south and north
      */
-    _generateGUI: function () {
+    _generateGUI() {
         "use strict";
 
         // Defines the layout height if it's NOT fullscreen
-        var layoutHeight = Apromore.CONFIG.WINDOW_HEIGHT;
+        var layoutHeight = CONFIG.WINDOW_HEIGHT;
 
         // DEFINITION OF THE VIEWPORT AREAS
         this.layout_regions = {
@@ -162,7 +140,7 @@ Apromore.EditorApp = {
                 collapsible: true,
                 titleCollapse: true,
                 collapseTitle: window.Apromore.I18N.View.West,
-                width: Apromore.CONFIG.PANEL_LEFT_WIDTH || 10,
+                width: CONFIG.PANEL_LEFT_WIDTH || 10,
                 autoScroll: Ext.isIPad ? false : true,
                 cmargins: {left: 0, right: 0},
                 floatable: false,
@@ -259,7 +237,7 @@ Apromore.EditorApp = {
         this._getContainer().setAttributeNS(null, 'align', 'left');
         this.getEditor().rootNode.setAttributeNS(null, 'align', 'left');
 
-    },
+    }
 
     /**
      * Adds a component to the specified UI region on the editor
@@ -269,21 +247,21 @@ Apromore.EditorApp = {
      * @param {String} title, optional
      * @return {Ext.Component} dom reference to the current region or null if specified region is unknown
      */
-    addToRegion: function (region, component, title) {
+    addToRegion(region, component, title) {
         if (region.toLowerCase && this.layout_regions[region.toLowerCase()]) {
             var current_region = this.layout_regions[region.toLowerCase()];
 
             current_region.add(component);
 
-            Apromore.Log.debug("original dimensions of region %0: %1 x %2", current_region.region, current_region.width, current_region.height);
+            Log.debug("original dimensions of region %0: %1 x %2", current_region.region, current_region.width, current_region.height);
 
             // update dimensions of region if required.
             if (!current_region.width && component.initialConfig && component.initialConfig.width) {
-                Apromore.Log.debug("resizing width of region %0: %1", current_region.region, component.initialConfig.width);
+                Log.debug("resizing width of region %0: %1", current_region.region, component.initialConfig.width);
                 current_region.setWidth(component.initialConfig.width)
             }
             if (component.initialConfig && component.initialConfig.height) {
-                Apromore.Log.debug("resizing height of region %0: %1", current_region.region, component.initialConfig.height);
+                Log.debug("resizing height of region %0: %1", current_region.region, component.initialConfig.height);
                 var current_height = current_region.height || 0;
                 current_region.height = component.initialConfig.height + current_height;
                 current_region.setHeight(component.initialConfig.height + current_height)
@@ -306,10 +284,10 @@ Apromore.EditorApp = {
         }
 
         return null;
-    },
+    }
 
     // Get plugins that have been activated successfully (i.e. those plugin objects)
-    getAvailablePlugins: function () {
+    getAvailablePlugins() {
         var curAvailablePlugins = this.availablePlugins.clone();
         curAvailablePlugins.each(function (plugin) {
             if (this.activatedPlugins.find(function (loadedPlugin) {
@@ -321,7 +299,7 @@ Apromore.EditorApp = {
             }
         }.bind(this));
         return curAvailablePlugins;
-    },
+    }
 
     /**
      *  Make plugin object
@@ -334,7 +312,7 @@ Apromore.EditorApp = {
      *      }
      *  ]
      */
-    _activatePlugins: function () {
+    _activatePlugins() {
         var me = this;
         var newPlugins = [];
         var facade = this._getPluginFacade();
@@ -342,7 +320,7 @@ Apromore.EditorApp = {
         // Instantiate plugin class
         // this.pluginData is filled in
         this.availablePlugins.each(function (value) {
-            Apromore.Log.debug("Initializing plugin '%0'", value.name);
+            Log.debug("Initializing plugin '%0'", value.name);
             try {
                 var className = eval(value.name);
                 if (className) {
@@ -352,15 +330,16 @@ Apromore.EditorApp = {
                     newPlugins.push(plugin);
                 }
             } catch (e) {
-                Apromore.Log.warn("Plugin %0 is not available", value.name);
-                Apromore.Log.error("Error: " + e.message);
+                Log.warn("Plugin %0 is not available", value.name);
+                Log.error("Error: " + e.message);
             }
         });
 
         newPlugins.each(function (value) {
             // For plugins that need to work on other plugins such as the toolbar
-            if (value.registryChanged)
+            if (value.registryChanged) {
                 value.registryChanged(me.pluginsData);
+            }
         });
 
         this.activatedPlugins = newPlugins;
@@ -369,35 +348,35 @@ Apromore.EditorApp = {
         if (Ext.isMac) {
             this.resizeFix();
         }
-    },
+    }
 
-    _getContainer: function () {
+    _getContainer() {
         return document.getElementById(this.id);
-    },
+    }
 
-    _createEditor: function (preventFitDelay) {
-        this.editor = new Apromore.Editor({
-            width: Apromore.CONFIG.CANVAS_WIDTH,
-            height: Apromore.CONFIG.CANVAS_HEIGHT,
-            id: Apromore.Utils.provideId(),
+    _createEditor(preventFitDelay) {
+        this.editor = new Editor({
+            width: CONFIG.CANVAS_WIDTH,
+            height: CONFIG.CANVAS_HEIGHT,
+            id: Utils.provideId(),
             parentNode: this._getContainer(),
             preventFitDelay: preventFitDelay
         });
-    },
+    }
 
-    getEditor: function() {
+    getEditor() {
         return this.editor;
-    },
+    }
 
-    getSimulationDrawer: function() {
+    getSimulationDrawer() {
         return this.layout_regions.east;
-    },
+    }
 
     /**
      * Facade object representing the editor to be used by plugins instead of
      * passing the whole editor object
      */
-    _getPluginFacade: function () {
+    _getPluginFacade() {
         if (!(this._pluginFacade)) {
             this._pluginFacade = (function () {
                 return {
@@ -413,28 +392,28 @@ Apromore.EditorApp = {
             }.bind(this)())
         }
         return this._pluginFacade;
-    },
+    }
 
-    getXML: function() {
+    getXML() {
         return this.getEditor().getXML();
-    },
+    }
 
-    getSVG: function() {
+    getSVG() {
         return this.getEditor().getSVG();
-    },
+    }
 
-    importXML: function(xml, callback) {
-        this.getEditor().importXML(xml, callback);
-    },
+    async importXML(xml, callback) {
+        await this.getEditor().importXML(xml, callback);
+    }
 
-    offer: function (pluginData) {
+    offer(pluginData) {
         if (!(this.pluginsData.findIndex(function(plugin) {return plugin.name === pluginData.name;}) >=0)) {
             if (this.enabledPlugins && !this.enabledPlugins.includes(pluginData.name)) {
                 pluginData.isEnabled = function(){ return false};
             }
             this.pluginsData.push(pluginData);
         }
-    },
+    }
 
     /**
      * When working with Ext, conditionally the window needs to be resized. To do
@@ -442,29 +421,51 @@ Apromore.EditorApp = {
      * resizeBugFix calls are ignored until the initially requested resize is
      * performed.
      */
-    resizeFix: function () {
+    resizeFix() {
         if (!this._resizeFixTimeout) {
-            this._resizeFixTimeout = window.setTimeout(function () {
-                window.resizeBy(1, 1);
-                window.resizeBy(-1, -1);
-                this._resizefixTimeout = null;
-            }, 100);
+            window.resizeBy(1, 1);
+            window.resizeBy(-1, -1);
+            this._resizefixTimeout = null;
         }
-    },
+    }
 
     /**
-     * Load a list of predefined plugins from the server
+     * Load the editor and a list of predefined plugins from the server
      */
-    _loadPlugins: function() {
-        if(Apromore.CONFIG.PLUGINS_ENABLED) {
-            this._loadPluginData();
-            this._activatePlugins();
+    async _load(config) {
+        if(CONFIG.PLUGINS_ENABLED) {
+            //editor will be loaded after plugins are loaded from the server
+            await this._loadPluginData(config);
         }
         else {
-            Apromore.Log.warn("Ignoring plugins, loading Core only.");
+            Log.warn("Ignoring plugins, loading Core only.");
+            await this._loadEditor(config);
         }
-    },
+    }
 
+    // Attach the editor must be the LAST THING AFTER ALL HAS BEEN LOADED
+    async _loadEditor(config) {
+        var me = this;
+        var options = {
+          container: '#' + me.getEditor().rootNode.id,
+          langTag: config.langTag
+        }
+        if (!config.viewOnly) {
+          options.keyboard = { bindTo: window };
+          options.propertiesPanel = me.useSimulationPanel ? { parent: '#js-properties-panel' } : undefined
+        }
+
+        await me.getEditor().attachEditor(new BpmnJS(options));
+
+        // Wait until the editor is fully loaded to start XML import and then UI init
+        if (config && config.xml) {
+            await me.importXML(config.xml, me._initUI.bind(me));
+        }
+        else {
+            me._initUI();
+        }
+
+    }
 
     // Available plugins structure: array of plugin structures
     // [
@@ -481,16 +482,17 @@ Apromore.EditorApp = {
     //          notUsesIn: namespaces:[list of javascript libraries]
     //      }
     // ]
-    _loadPluginData: function() {
+    async _loadPluginData(config) {
         var me = this;
-        var source = Apromore.CONFIG.PLUGINS_CONFIG;
+        var source = CONFIG.PLUGINS_CONFIG;
 
-        Apromore.Log.debug("Loading plugin configuration from '%0'.", source);
-        new Ajax.Request(source, {
-            asynchronous: false,
+        //TODO: await Ajax response
+        Log.debug("Loading plugin configuration from '%0'.", source);
+        await new Ajax.Request(source, {
+            asynchronous: true,
             method: 'get',
-            onSuccess: function(result) {
-                Apromore.Log.info("Plugin configuration file loaded.");
+            onSuccess: async function(result) {
+                Log.info("Plugin configuration file loaded.");
 
                 // get plugins.xml content
                 var resultXml = result.responseXML;
@@ -510,7 +512,9 @@ Apromore.EditorApp = {
                         var property = new Hash(); // Hash is provided by Prototype library
                         // get all attributes from the node and set to global properties
                         var attributes = $A(prop.attributes)
-                        attributes.each(function(attr){property[attr.nodeName] = attr.nodeValue});
+                        attributes.each(function(attr){
+                            property[attr.nodeName] = attr.nodeValue
+                        });
                         if(attributes.length > 0) { globalProperties.push(property) };
                     });
                 });
@@ -532,13 +536,13 @@ Apromore.EditorApp = {
 
                     // ensure there's a name attribute.
                     if(!pluginData['name']) {
-                        Apromore.Log.error("A plugin is not providing a name. Ignoring this plugin.");
+                        Log.error("A plugin is not providing a name. Ignoring this plugin.");
                         return;
                     }
 
                     // ensure there's a source attribute.
                     if(!pluginData['source']) {
-                        Apromore.Log.error("Plugin with name '%0' doesn't provide a source attribute.", pluginData['name']);
+                        Log.error("Plugin with name '%0' doesn't provide a source attribute.", pluginData['name']);
                         return;
                     }
 
@@ -561,7 +565,7 @@ Apromore.EditorApp = {
                     // Set Properties to Plugin-Data
                     pluginData['properties'] = properties;
 
-                    // Get the RequieredNodes
+                    // Get the RequiredNodes
                     var requireNodes = node.getElementsByTagName("requires");
                     var requires;
                     $A(requireNodes).each(function(req) {
@@ -579,7 +583,7 @@ Apromore.EditorApp = {
                         pluginData['requires'] = requires;
                     }
 
-                    // Get the RequieredNodes
+                    // Get the RequiredNodes
                     var notUsesInNodes = node.getElementsByTagName("notUsesIn");
                     var notUsesIn;
                     $A(notUsesInNodes).each(function(not) {
@@ -598,21 +602,24 @@ Apromore.EditorApp = {
                         pluginData['notUsesIn'] = notUsesIn;
                     }
 
-                    var url = Apromore.PATH + Apromore.CONFIG.PLUGINS_FOLDER + pluginData['source'];
-                    Apromore.Log.debug("Requiring '%0'", url);
-                    Apromore.Log.info("Plugin '%0' successfully loaded.", pluginData['name']);
+                    var url = CONFIG.PATH + CONFIG.PLUGINS_FOLDER + pluginData['source'];
+                    Log.debug("Requiring '%0'", url);
+                    Log.info("Plugin '%0' successfully loaded.", pluginData['name']);
                     me.availablePlugins.push(pluginData);
                 });
-
+                me._activatePlugins();
+                //editor must be attached after the plugins are loaded
+                await me._loadEditor(config);
             },
-            onFailure: function () {
-                Apromore.Log.error("Plugin configuration file not available.");
+            onFailure: async function () {
+                Log.error("Plugin configuration file not available.");
+                await me._loadEditor(config);
             }
         });
 
-    },
+    }
 
-    toggleFullScreen: function () {
+    toggleFullScreen() {
         if (!document.fullscreenElement) {
             document.documentElement.requestFullscreen();
         } else {
@@ -622,9 +629,3 @@ Apromore.EditorApp = {
         }
     }
 };
-
-Apromore.EditorApp = Clazz.extend(Apromore.EditorApp);
-
-
-
-

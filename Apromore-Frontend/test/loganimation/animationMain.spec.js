@@ -2,12 +2,8 @@ import * as testFactory from "./testFactory";
 
 describe('Test Simple Animation Controller', function () {
     let animation;
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 999999;
-    beforeEach(function() {
-        jasmine.clock().install();
-        animation = testFactory.createSimpleLogAnimation();
-        jasmine.clock().tick(1000);
-        jasmine.clock().uninstall();
+    beforeEach(async function() {
+        animation = await testFactory.createSimpleLogAnimation();
     });
 
     it('It loads data successfully and in the pause state', function() {

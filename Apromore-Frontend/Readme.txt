@@ -1,7 +1,7 @@
 This module contains javascript in Node.js project for the following components:
     - Process Discoverer
     - Log Animation
-    - BPMN Editor (only the bundle is placed here, the BPMN Editor itself is not yet a Node project)
+    - BPMN Editor
 
 Folder structure:
 
@@ -21,6 +21,7 @@ npm run test: to run unit tests.
 npm run build: to build distribution bundles
     - processdiscoverer.js bundle: used for Process Discoverer
     - loganimationbpmn.js: used for Log Animation calling from the Portal.
+    - bpmneditor.js: used for BPMN Editor.
 
 To deploy Javascript bundles to Apromore plugins:
 
@@ -30,4 +31,5 @@ To deploy Javascript bundles to Apromore plugins:
 - Build and deploy PD or Log Animation plugins
 - Login Apromore portal, run the plugin to view the new deployment.
 
+- For BPMNEditor: drop the file dist/bpmneditor.js into ApromoreCore\Apromore-Core-Components\Apromore-BPMNEditor\src\main\resources\static\bpmneditor\editor (Overwrite any existing file)
 
