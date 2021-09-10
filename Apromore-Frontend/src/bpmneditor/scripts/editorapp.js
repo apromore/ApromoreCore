@@ -53,16 +53,16 @@ export default class EditorApp {
         this.fullscreen = config.fullscreen !== false;
         this.useSimulationPanel = config.useSimulationPanel || false;
         this.enabledPlugins = config.enabledPlugins; // undefined means all plugins are enabled
+    }
 
-        //TODO: Update this constructor to force functions to execute in order
-        // CREATES the editor
+    async init(config) {
         this._createEditor(config.preventFitDelay || false);
 
         // GENERATES the main UI regions
         this._generateGUI();
 
         // LOAD the plugins and editor
-        this._load(config);
+        await this._load(config);
     }
 
     _initUI() {
@@ -402,8 +402,8 @@ export default class EditorApp {
         return this.getEditor().getSVG();
     }
 
-    importXML(xml, callback) {
-        this.getEditor().importXML(xml, callback);
+    async importXML(xml, callback) {
+        await this.getEditor().importXML(xml, callback);
     }
 
     offer(pluginData) {
@@ -423,30 +423,28 @@ export default class EditorApp {
      */
     resizeFix() {
         if (!this._resizeFixTimeout) {
-            this._resizeFixTimeout = window.setTimeout(function () {
-                window.resizeBy(1, 1);
-                window.resizeBy(-1, -1);
-                this._resizefixTimeout = null;
-            }, 100);
+            window.resizeBy(1, 1);
+            window.resizeBy(-1, -1);
+            this._resizefixTimeout = null;
         }
     }
 
     /**
      * Load the editor and a list of predefined plugins from the server
      */
-    _load(config) {
+    async _load(config) {
         if(CONFIG.PLUGINS_ENABLED) {
             //editor will be loaded after plugins are loaded from the server
-            this._loadPluginData(config);
+            await this._loadPluginData(config);
         }
         else {
             Log.warn("Ignoring plugins, loading Core only.");
-            this._loadEditor(config);
+            await this._loadEditor(config);
         }
     }
 
     // Attach the editor must be the LAST THING AFTER ALL HAS BEEN LOADED
-    _loadEditor(config) {
+    async _loadEditor(config) {
         var me = this;
         var options = {
           container: '#' + me.getEditor().rootNode.id,
@@ -457,18 +455,16 @@ export default class EditorApp {
           options.propertiesPanel = me.useSimulationPanel ? { parent: '#js-properties-panel' } : undefined
         }
 
-        me.getEditor().attachEditor(new BpmnJS(options));
+        await me.getEditor().attachEditor(new BpmnJS(options));
 
         // Wait until the editor is fully loaded to start XML import and then UI init
-        // @todo: Avoid time sensitivity
-        window.setTimeout(function() {
-            if (config && config.xml) {
-                me.importXML(config.xml, me._initUI.bind(me));
-            }
-            else {
-                me._initUI();
-            }
-        }, 100);
+        if (config && config.xml) {
+            await me.importXML(config.xml, me._initUI.bind(me));
+        }
+        else {
+            me._initUI();
+        }
+
     }
 
     // Available plugins structure: array of plugin structures
@@ -486,16 +482,16 @@ export default class EditorApp {
     //          notUsesIn: namespaces:[list of javascript libraries]
     //      }
     // ]
-    _loadPluginData(config) {
+    async _loadPluginData(config) {
         var me = this;
         var source = CONFIG.PLUGINS_CONFIG;
 
-        //TODO: Find what values are being set in pluginData
+        //TODO: await Ajax response
         Log.debug("Loading plugin configuration from '%0'.", source);
-        new Ajax.Request(source, {
+        await new Ajax.Request(source, {
             asynchronous: true,
             method: 'get',
-            onSuccess: function(result) {
+            onSuccess: async function(result) {
                 Log.info("Plugin configuration file loaded.");
 
                 // get plugins.xml content
@@ -613,13 +609,14 @@ export default class EditorApp {
                 });
                 me._activatePlugins();
                 //editor must be attached after the plugins are loaded
-                me._loadEditor(config);
+                await me._loadEditor(config);
             },
-            onFailure: function () {
+            onFailure: async function () {
                 Log.error("Plugin configuration file not available.");
-                me._loadEditor(config);
+                await me._loadEditor(config);
             }
         });
+
     }
 
     toggleFullScreen() {

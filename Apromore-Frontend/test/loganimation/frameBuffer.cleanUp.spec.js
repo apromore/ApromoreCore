@@ -7,6 +7,7 @@ describe('After writing frames to a Buffer', function () {
 
     beforeEach(function() {
         frameBuffer = testFactory.createEmptyFrameBuffer();
+        jasmine.clock().uninstall();
         jasmine.clock().install();
     });
 
