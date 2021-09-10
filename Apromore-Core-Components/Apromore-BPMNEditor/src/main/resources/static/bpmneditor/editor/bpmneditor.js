@@ -12067,32 +12067,8 @@ class EditorApp {
         // GENERATES the main UI regions
         this._generateGUI();
 
-        // LOAD the plugins
-        this._loadPlugins();
-
-        // Attach the editor must be the LAST THING AFTER ALL HAS BEEN LOADED
-        var options = {
-          container: '#' + this.getEditor().rootNode.id,
-          langTag: config.langTag
-        }
-        if (!config.viewOnly) {
-          options.keyboard = { bindTo: window };
-          options.propertiesPanel = this.useSimulationPanel ? { parent: '#js-properties-panel' } : undefined
-        }
-
-        this.getEditor().attachEditor(new BpmnJS(options));
-
-        // Wait until the editor is fully loaded to start XML import and then UI init
-        // @todo: Avoid time sensitivity
-        var me = this;
-        window.setTimeout(function() {
-            if (config && config.xml) {
-                me.importXML(config.xml, me._initUI.bind(me));
-            }
-            else {
-                me._initUI();
-            }
-        }, 100);
+        // LOAD the plugins and editor
+        this._load(config);
     }
 
     _initUI() {
@@ -12462,18 +12438,44 @@ class EditorApp {
     }
 
     /**
-     * Load a list of predefined plugins from the server
+     * Load the editor and a list of predefined plugins from the server
      */
-    _loadPlugins() {
+    _load(config) {
         if(_config__WEBPACK_IMPORTED_MODULE_0__["default"].PLUGINS_ENABLED) {
-            this._loadPluginData();
-//            this._activatePlugins(); //<-- Calling this in the success of _loadPluginData
+            //editor will be loaded after plugins are loaded from the server
+            this._loadPluginData(config);
         }
         else {
             _logger__WEBPACK_IMPORTED_MODULE_2__["default"].warn("Ignoring plugins, loading Core only.");
+            this._loadEditor(config);
         }
     }
 
+    // Attach the editor must be the LAST THING AFTER ALL HAS BEEN LOADED
+    _loadEditor(config) {
+        var me = this;
+        var options = {
+          container: '#' + me.getEditor().rootNode.id,
+          langTag: config.langTag
+        }
+        if (!config.viewOnly) {
+          options.keyboard = { bindTo: window };
+          options.propertiesPanel = me.useSimulationPanel ? { parent: '#js-properties-panel' } : undefined
+        }
+
+        me.getEditor().attachEditor(new BpmnJS(options));
+
+        // Wait until the editor is fully loaded to start XML import and then UI init
+        // @todo: Avoid time sensitivity
+        window.setTimeout(function() {
+            if (config && config.xml) {
+                me.importXML(config.xml, me._initUI.bind(me));
+            }
+            else {
+                me._initUI();
+            }
+        }, 100);
+    }
 
     // Available plugins structure: array of plugin structures
     // [
@@ -12490,7 +12492,7 @@ class EditorApp {
     //          notUsesIn: namespaces:[list of javascript libraries]
     //      }
     // ]
-    _loadPluginData() {
+    _loadPluginData(config) {
         var me = this;
         var source = _config__WEBPACK_IMPORTED_MODULE_0__["default"].PLUGINS_CONFIG;
 
@@ -12616,9 +12618,12 @@ class EditorApp {
                     me.availablePlugins.push(pluginData);
                 });
                 me._activatePlugins();
+                //editor must be attached after the plugins are loaded
+                me._loadEditor(config);
             },
             onFailure: function () {
                 _logger__WEBPACK_IMPORTED_MODULE_2__["default"].error("Plugin configuration file not available.");
+                me._loadEditor(config);
             }
         });
     }
