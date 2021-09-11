@@ -217,6 +217,7 @@
                         autodrop="true"
                         mold="rounded"
                         width="150px"
+                        popupWidth="150px"
                         buttonVisible="true"
                     />
                     <hbox id="pagingandbuttons" sclass="ap-portal-menu-actions" height="32px" width="100%" spacing="0"  >
