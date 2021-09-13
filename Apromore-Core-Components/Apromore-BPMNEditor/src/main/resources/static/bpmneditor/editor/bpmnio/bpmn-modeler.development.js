@@ -20425,7 +20425,8 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
       }
 
       if (selectedTimetable.get('default') === 'true') {
-        Ap.common.notify('The default timetable cannot be deleted. It has been reset.', 'error');
+        Ap.common.notify('The default timetable cannot be deleted.', 'error');
+        return cmdHelper.removeElementsFromList(element, timetables, 'values', null, []);
       }
 
       suppressValidationError(bpmnFactory, elementRegistry, { elementId: selectedTimetable.id });
