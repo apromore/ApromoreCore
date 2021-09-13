@@ -183,6 +183,9 @@ public class APMLogFilter {
                     default:
                         break;
                 }
+
+                if (rule.getFilterType() == FilterType.CASE_VARIANT)
+                    LogStatsAnalyzer.updateCaseVariants(new ArrayList<>(traces));
             }
         }
 
