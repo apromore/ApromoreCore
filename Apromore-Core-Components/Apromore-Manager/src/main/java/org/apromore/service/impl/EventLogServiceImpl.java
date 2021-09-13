@@ -586,17 +586,17 @@ public class EventLogServiceImpl implements EventLogService {
 			return perspectiveList;
 		}
 
-		String JSONString = usermetadataSet.iterator().next().getContent();
+		String jsonString = usermetadataSet.iterator().next().getContent();
 		ObjectMapper objectMapper = new ObjectMapper();
 
 		try {
-			perspectiveList = objectMapper.readValue(JSONString, new TypeReference<>() {
+			perspectiveList = objectMapper.readValue(jsonString, new TypeReference<>() {
 			});
 		} catch (JsonProcessingException e) {
-			LOGGER.error("Could not deserialize JSON content from given JSON content String: " + JSONString, e);
+			LOGGER.error("Could not deserialize JSON content from given JSON content String: " + jsonString, e);
 		}
 
-		LOGGER.debug("Get perspective list for log (ID: {}): " + perspectiveList, logId);
+		LOGGER.debug("Get perspective list for log (ID: {}): {}", logId, perspectiveList);
 		return perspectiveList;
 	}
 }

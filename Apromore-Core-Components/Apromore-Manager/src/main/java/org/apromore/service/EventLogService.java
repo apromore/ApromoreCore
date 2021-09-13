@@ -30,7 +30,6 @@ import org.apromore.calendar.model.CalendarModel;
 import org.apromore.commons.config.ConfigBean;
 import org.apromore.dao.model.Log;
 import org.apromore.dao.model.User;
-import org.apromore.dao.model.Usermetadata;
 import org.apromore.exception.ImportException;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.portal.model.ExportLogResultType;

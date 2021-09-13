@@ -371,9 +371,9 @@ public class EventLogServiceImplTest extends AbstractTest {
 
     List<String> result = new ArrayList<>();
 
-    exceptionRule.expect(JsonProcessingException.class);
-    exceptionRule.expectMessage("Could not deserialize JSON content from given JSON content String: " + invalidJSONString);
     assertEquals(perspectives, result);
+    exceptionRule.expectMessage("Could not deserialize JSON content from given JSON content String: " + invalidJSONString);
+    exceptionRule.expect(JsonProcessingException.class);
   }
 
 }
