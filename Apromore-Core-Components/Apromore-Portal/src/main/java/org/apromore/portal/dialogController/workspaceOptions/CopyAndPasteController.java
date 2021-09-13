@@ -209,11 +209,6 @@ public class CopyAndPasteController extends BaseController {
         selectedItems.add((FolderType) obj);
       } else if (obj instanceof LogSummaryType) {
         selectedItems.add((LogSummaryType) obj);
-        try {
-          mainController.getEventLogService().getPerspectiveTagByLog(((LogSummaryType) obj).getId());
-        } catch (JsonProcessingException e) {
-          e.printStackTrace();
-        }
       } else if (obj instanceof ProcessSummaryType) {
         selectedItems.add((ProcessSummaryType) obj);
       }
