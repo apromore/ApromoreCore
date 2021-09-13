@@ -19,7 +19,7 @@
 			<string key="org:resource" value="R1"/>
 			<string key="lifecycle:transition" value="complete"/>
 			<string key="concept:name" value="A"/>
-			<date key="time:timestamp" value="2021-08-07T23:59:59.999+11:00"/>
+			<date key="time:timestamp" value="2021-08-08T00:00:00.000+11:00"/>
 		</event>
 		<event>
 			<string key="org:resource" value="R2"/>
@@ -31,7 +31,7 @@
 			<string key="org:resource" value="R2"/>
 			<string key="lifecycle:transition" value="complete"/>
 			<string key="concept:name" value="B"/>
-			<date key="time:timestamp" value="2021-08-14T23:59:59.999+11:00"/>
+			<date key="time:timestamp" value="2021-08-15T00:00:00.000+11:00"/>
 		</event>
 	</trace>
 	<trace>
@@ -46,7 +46,7 @@
 			<string key="org:resource" value="R1"/>
 			<string key="lifecycle:transition" value="complete"/>
 			<string key="concept:name" value="A"/>
-			<date key="time:timestamp" value="2021-08-16T23:59:59.999+11:00"/>
+			<date key="time:timestamp" value="2021-08-17T00:00:00.000+11:00"/>
 		</event>
 		<event>
 			<string key="org:resource" value="R2"/>
@@ -58,7 +58,7 @@
 			<string key="org:resource" value="R2"/>
 			<string key="lifecycle:transition" value="complete"/>
 			<string key="concept:name" value="B"/>
-			<date key="time:timestamp" value="2021-08-23T23:59:59.999+11:00"/>
+			<date key="time:timestamp" value="2021-08-24T00:00:00.000+11:00"/>
 		</event>
 	</trace>
 </log>

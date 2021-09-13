@@ -291,8 +291,7 @@ public class PDAnalystTest extends TestDataSetup {
 
         Map<String, String> expectedMap = Map.of(
                 "concept:name", "a",
-                "lifecycle:transition", "complete",
-                "riskLevelNumber", "3.0"
+                "Average riskLevelNumber", "3.0"
         );
 
         assertEquals(expectedMap, activityAverages);
@@ -306,8 +305,7 @@ public class PDAnalystTest extends TestDataSetup {
 
         Map<String, String> expectedMap = Map.of(
                 "concept:name", "a",
-                "lifecycle:transition", "complete",
-                "riskLevelNumber", "3.5"
+                "Average riskLevelNumber", "3.5"
         );
 
         assertEquals(expectedMap, activityAverages);

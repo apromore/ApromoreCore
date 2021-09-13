@@ -6,6 +6,7 @@ describe('After writing frames to a Buffer', function () {
     let frameBuffer;
 
     beforeEach(function() {
+        jasmine.clock().uninstall();
         jasmine.clock().install();
     });
 
