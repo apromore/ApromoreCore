@@ -43,12 +43,24 @@ package org.apromore.apmlog.filter;
 
 import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.filter.rules.RuleValue;
+import org.apromore.apmlog.filter.typefilters.AttributeArcDurationFilter;
+import org.apromore.apmlog.filter.typefilters.CaseLengthFilter;
+import org.apromore.apmlog.filter.typefilters.CaseSectionAttributeCombinationFilter;
+import org.apromore.apmlog.filter.typefilters.CaseSectionCaseAttributeFilter;
+import org.apromore.apmlog.filter.typefilters.CaseSectionEventAttributeFilter;
+import org.apromore.apmlog.filter.typefilters.CaseTimeFilter;
+import org.apromore.apmlog.filter.typefilters.CaseUtilisationFilter;
+import org.apromore.apmlog.filter.typefilters.DurationFilter;
+import org.apromore.apmlog.filter.typefilters.EventAttributeDurationFilter;
+import org.apromore.apmlog.filter.typefilters.EventTimeFilter;
+import org.apromore.apmlog.filter.typefilters.NodeDurationFilter;
+import org.apromore.apmlog.filter.typefilters.PathFilter;
+import org.apromore.apmlog.filter.typefilters.ReworkFilter;
 import org.apromore.apmlog.filter.types.OperationType;
 import org.apromore.apmlog.histogram.TimeHistogram;
 import org.apromore.apmlog.logobjects.ActivityInstance;
 import org.apromore.apmlog.exceptions.EmptyInputException;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
-import org.apromore.apmlog.filter.typefilters.*;
 import org.apromore.apmlog.filter.types.Choice;
 import org.apromore.apmlog.filter.types.FilterType;
 import org.apromore.apmlog.stats.LogStatsAnalyzer;
@@ -77,6 +89,7 @@ import java.util.stream.Collectors;
  * Modified: Chii Chang (26/01/2020)
  * Modified: Chii Chang (16/03/2021) - Replaced with new code
  * Modified: Chii Chang (22/06/2021)
+ * Modified: Chii Chang (13/09/2021) - Case variants must be updated after filtering by case variant
  */
 public class APMLogFilter {
 
@@ -182,6 +195,9 @@ public class APMLogFilter {
                     default:
                         break;
                 }
+
+                if (rule.getFilterType() == FilterType.CASE_VARIANT)
+                    LogStatsAnalyzer.updateCaseVariants(new ArrayList<>(traces));
             }
         }
 
