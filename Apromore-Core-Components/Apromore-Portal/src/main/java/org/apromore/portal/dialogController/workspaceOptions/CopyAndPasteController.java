@@ -28,7 +28,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apromore.dao.model.User;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.common.ItemHelpers;
