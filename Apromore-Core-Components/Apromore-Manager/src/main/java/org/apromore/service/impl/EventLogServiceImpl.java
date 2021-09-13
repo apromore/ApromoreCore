@@ -548,6 +548,14 @@ public class EventLogServiceImpl implements EventLogService {
 	CustomCalendar calendar = logRepo.findUniqueByID(logId).getCalendar();
 	return calendar != null ? calendarService.getCalendar(calendar.getId()) : calendarService.getGenericCalendar();
     }
+    
+    
+    @Override
+    public List<Log> getLogListFromCalendarId(Long calendarId) {    
+      return logRepo.findByCalendarId(calendarId);      
+    }
+    
+    
 
     @Override
     public boolean saveFileToVolume(String filename, String prefix, ByteArrayOutputStream baos) throws Exception {

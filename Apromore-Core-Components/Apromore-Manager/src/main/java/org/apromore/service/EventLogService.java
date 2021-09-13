@@ -24,6 +24,11 @@
 
 package org.apromore.service;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.List;
 import org.apromore.apmlog.APMLog;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.commons.config.ConfigBean;
@@ -35,12 +40,6 @@ import org.apromore.portal.model.ExportLogResultType;
 import org.apromore.portal.model.SummariesType;
 import org.apromore.storage.exception.ObjectCreationException;
 import org.deckfour.xes.model.XLog;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.List;
 
 /**
  * Interface for the Process Service. Defines all the methods that will do the majority of the work
@@ -152,4 +151,6 @@ public interface EventLogService {
                            ByteArrayOutputStream baos) throws Exception;
 
   ConfigBean getConfigBean();
+
+  List<Log> getLogListFromCalendarId(Long calendarId);
 }
