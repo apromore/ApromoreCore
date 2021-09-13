@@ -275,31 +275,28 @@ public class LogImporterController extends SelectorComposer<Window> implements C
         try {
             storedSchemaMapping = objectMapper.readValue(mappingJSON.toJSONString(), LogMetaData.class);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            LOGGER.error("Could not deserialize JSON content from given JSON content String: " + mappingJSON.toJSONString(), e);
         }
 
-        tempLogMetaData.setCaseIdPos(storedSchemaMapping.getCaseIdPos());
-        tempLogMetaData.setActivityPos(storedSchemaMapping.getActivityPos());
-        tempLogMetaData.setEndTimestampFormat(storedSchemaMapping.getEndTimestampFormat());
-        tempLogMetaData.setEndTimestampPos(storedSchemaMapping.getEndTimestampPos());
-        tempLogMetaData.setStartTimestampFormat(storedSchemaMapping.getStartTimestampFormat());
-        tempLogMetaData.setStartTimestampPos(storedSchemaMapping.getStartTimestampPos());
-        tempLogMetaData.setResourcePos(storedSchemaMapping.getResourcePos());
-        tempLogMetaData.getEventAttributesPos().clear();
-        tempLogMetaData.getEventAttributesPos().addAll(storedSchemaMapping.getEventAttributesPos());
-        tempLogMetaData.getCaseAttributesPos().clear();
-        tempLogMetaData.getCaseAttributesPos().addAll(storedSchemaMapping.getCaseAttributesPos());
-        tempLogMetaData.getIgnoredPos().clear();
-        tempLogMetaData.getIgnoredPos().addAll(storedSchemaMapping.getIgnoredPos());
-        tempLogMetaData.getPerspectivePos().clear();
-        tempLogMetaData.getPerspectivePos().addAll(storedSchemaMapping.getPerspectivePos());
-
-//        HashMap<Integer, String> otherTimestampsMap = storedSchemaMapping.getOtherTimestamps();
-//        HashMap<Integer, String> deepCopyOtherTimestampsMap = SerializationUtils.clone(otherTimestampsMap);
-
-        tempLogMetaData.getOtherTimestamps().clear();
-        tempLogMetaData.getOtherTimestamps().putAll(storedSchemaMapping.getOtherTimestamps());
-
+        if (storedSchemaMapping != null) {
+            tempLogMetaData.setCaseIdPos(storedSchemaMapping.getCaseIdPos());
+            tempLogMetaData.setActivityPos(storedSchemaMapping.getActivityPos());
+            tempLogMetaData.setEndTimestampFormat(storedSchemaMapping.getEndTimestampFormat());
+            tempLogMetaData.setEndTimestampPos(storedSchemaMapping.getEndTimestampPos());
+            tempLogMetaData.setStartTimestampFormat(storedSchemaMapping.getStartTimestampFormat());
+            tempLogMetaData.setStartTimestampPos(storedSchemaMapping.getStartTimestampPos());
+            tempLogMetaData.setResourcePos(storedSchemaMapping.getResourcePos());
+            tempLogMetaData.getEventAttributesPos().clear();
+            tempLogMetaData.getEventAttributesPos().addAll(storedSchemaMapping.getEventAttributesPos());
+            tempLogMetaData.getCaseAttributesPos().clear();
+            tempLogMetaData.getCaseAttributesPos().addAll(storedSchemaMapping.getCaseAttributesPos());
+            tempLogMetaData.getIgnoredPos().clear();
+            tempLogMetaData.getIgnoredPos().addAll(storedSchemaMapping.getIgnoredPos());
+            tempLogMetaData.getPerspectivePos().clear();
+            tempLogMetaData.getPerspectivePos().addAll(storedSchemaMapping.getPerspectivePos());
+            tempLogMetaData.getOtherTimestamps().clear();
+            tempLogMetaData.getOtherTimestamps().putAll(storedSchemaMapping.getOtherTimestamps());
+        }
     }
 
     // Create a dialog to ask for user option regarding matched schema mapping
