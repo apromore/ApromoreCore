@@ -548,10 +548,10 @@ input[type="radio"]:checked:before {
 .z-window-modal .z-window-header .ap-icon,
 .z-window-overlapped .z-window-header .ap-icon {
     position: relative;
-    top: -5px;
+    top: -4px;
     filter: var(--ap-filter-ico-grey-minor);
     background-size: auto 18px !important;
-
+    background-color: transparent;
 }
 
 .z-window-header .ap-icon:hover {
@@ -560,8 +560,14 @@ input[type="radio"]:checked:before {
 }
 
 .z-window-header .z-toolbarbutton:hover,
-.z-window-header .z-toolbarbutton:hover .z-toolbarbutton-content {
+.z-window-header .z-toolbarbutton:hover .z-toolbarbutton-content,
+.z-window-header .z-toolbarbutton:focus,
+.z-window-header .z-toolbarbutton:active {
     background-color: transparent;
+}
+
+.z-window-header .z-toolbarbutton:focus-visible {
+    outline: none;
 }
 
 /* Window action icons */
