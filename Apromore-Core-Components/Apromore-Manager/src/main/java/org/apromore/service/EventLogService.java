@@ -155,11 +155,11 @@ public interface EventLogService {
 
   List<Log> getLogListFromCalendarId(Long calendarId);
 
-
   /**
-   * Find perspective tag that are linked to specified Log
+   * Find perspective tag that are linked to the specified Log
    * @param logId Log Id
    * @return Perspective tags
+   * @throws UserMetadataException when perspective tag is not found or is not valid
    */
   List<String> getPerspectiveTagByLog(Integer logId) throws UserMetadataException;
 }
