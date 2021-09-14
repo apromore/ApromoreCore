@@ -1433,6 +1433,32 @@ ValidationErrorHelper.getErrors = function(bpmnFactory, elementRegistry) {
     processSimulationInfo.validationErrors = validationErrors;
   }
 
+  try {
+      var flows = processSimulationInfo.sequenceFlows.values;
+      var flowMap = {};
+      flows.forEach(function (f) {
+        flowMap[f.elementId] = true;
+      });
+      var toCull = {};
+      validationErrors.errors.forEach(function(error) {
+        if (error.id.startsWith('probability-field-')) {
+            var flowId = error.id.substr(18);
+            if (!(flowId in flowMap)) {
+                toCull[error.id] = true;
+            }
+        }
+      });
+
+      validationErrors.errors = (validationErrors.errors || []).filter(function(error) {
+        if (error.id in toCull) {
+            return false;
+        }
+        return true;
+      });
+  } catch (e) {
+  	// pass
+  }
+
   return validationErrors;
 };
 
