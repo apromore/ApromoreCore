@@ -1,7 +1,7 @@
 package org.apromore.exception;
 
 /**
- * Exception for when a user isn't found.
+ * Exception for when a user metadata isn't found or is not valid.
  *
  * @author frankm
  */
