@@ -566,7 +566,9 @@ input[type="radio"]:checked:before {
     background-color: transparent;
 }
 
-.z-window-header .z-toolbarbutton:focus-visible {
+.z-window-header .z-toolbarbutton:focus-visible,
+.z-window-header .z-toolbarbutton .z-toolbarbutton-content:focus-visible,
+.z-window-header .z-toolbarbutton .ap-icon:focus-visible {
     outline: none;
 }
 
