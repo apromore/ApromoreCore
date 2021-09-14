@@ -436,6 +436,7 @@ body > * {
 .ap-h-links span:last-child:after {
     margin-left: 0;
     content: '';
+    display: none;
 }
 
 .ap-h-links li a {

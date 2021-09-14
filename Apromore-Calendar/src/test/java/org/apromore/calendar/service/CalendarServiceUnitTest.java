@@ -25,6 +25,7 @@ package org.apromore.calendar.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -94,7 +95,7 @@ public class CalendarServiceUnitTest {
     // Given
     CustomCalendar calendar = new CustomCalendar("Test Desc");
     calendar.setId(1l);
-    when(calendarRepository.findByName(calendar.getName())).thenReturn(calendar);
+    when(calendarRepository.findByName(anyString())).thenReturn(calendar);
 
 
     // When
@@ -103,6 +104,34 @@ public class CalendarServiceUnitTest {
 
     // Then
     // exception thrown
+
+  }
+
+  @Test
+  public void testCreateCalendarDuplicateName() throws CalendarAlreadyExistsException {
+    // Given
+    String originalDescription = "Test Desc";
+    String duplicate1Name = "Test Desc (1)";
+    String expectedName = "Test Desc (2)";
+
+    CustomCalendar calendar = new CustomCalendar(expectedName);
+    calendar.setId(1l);
+    when(calendarRepository.findByName(originalDescription)).thenReturn(calendar);
+    when(calendarRepository.findByName(duplicate1Name)).thenReturn(calendar);
+    when(calendarRepository.findByName(expectedName)).thenReturn(null);
+    when(calendarRepository.saveAndFlush(any(CustomCalendar.class))).thenReturn(calendar);
+
+
+    // When
+    CalendarModel calendarSaved = calendarService.createGenericCalendar(originalDescription, true,
+            ZoneId.systemDefault().toString());
+
+    // Then
+    assertThat(calendarSaved.getName()).isEqualTo(expectedName);
+    verify(calendarRepository, times(1)).findByName(originalDescription);
+    verify(calendarRepository, times(1)).findByName(duplicate1Name);
+    verify(calendarRepository, times(1)).findByName(expectedName);
+    verify(calendarRepository, times(1)).saveAndFlush(any(CustomCalendar.class));
 
   }
 

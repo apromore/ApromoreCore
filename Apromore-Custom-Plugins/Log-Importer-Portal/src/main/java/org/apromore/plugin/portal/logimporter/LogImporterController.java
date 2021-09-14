@@ -132,6 +132,8 @@ public class LogImporterController extends SelectorComposer<Window> implements C
     private @Wire("#matchedMapping")
     Button matchedMapping;
     private boolean useParquet;
+    // Be default, enable Anonymize toggle in Log Importer
+    private boolean enableAnonymize = false;
     private File parquetFile;
 
     private LogMetaData logMetaData;
@@ -573,6 +575,10 @@ public class LogImporterController extends SelectorComposer<Window> implements C
                 hideFormatBtn(formatBtn);
             }
 
+            if (!enableAnonymize) {
+                hideCheckbox(maskBtn);
+            }
+
             formatBtn.setIconSclass("z-icon-wrench");
 
             final int fi = pos;
@@ -1005,6 +1011,10 @@ public class LogImporterController extends SelectorComposer<Window> implements C
 
     private void hideCheckbox(Checkbox checkbox) {
         checkbox.setSclass("ap-csv-importer-format-icon ap-hidden");
+    }
+
+    protected void enableAnonymizeToggle(boolean isEnable) {
+        enableAnonymize = isEnable;
     }
 
     private void showAutoParsedGreenIcon(Span parsedIcon) {
