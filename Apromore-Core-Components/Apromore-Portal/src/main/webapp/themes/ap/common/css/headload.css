@@ -82,7 +82,9 @@ textarea:-webkit-autofill:focus,
 select:-webkit-autofill,
 select:-webkit-autofill:hover,
 select:-webkit-autofill:focus {
-  -webkit-text-fill-color: rgb(85, 85, 85) !important;
-  background-color: rgb(255, 255, 200) !important;
-  color: rgb(85, 85, 85) !important;
+    -webkit-box-shadow:0 0 0 50px white inset;
+    -webkit-text-fill-color: rgba(85, 85, 85, 1) !important;
+    background-color: rgba(255, 255, 255, 1) !important;
+    color: rgba(85, 85, 85, 1) !important;
+    transition: background-color 600000s 0s, color 600000s 0s;
 }
