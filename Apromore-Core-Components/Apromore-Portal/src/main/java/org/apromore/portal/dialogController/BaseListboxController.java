@@ -853,11 +853,12 @@ public abstract class BaseListboxController extends BaseController {
     queue.subscribe(new EventListener<Event>() {
       @Override
       public void onEvent(Event event) {
-        Long data = (Long) event.getData();
-        getMainController().getEventLogService().updateCalendarForLog(logId, data);
-        queue.unsubscribe(this);     
+        if ("onCalendarPublish".equals(event.getName())) {
+          Long data = (Long) event.getData();
+          getMainController().getEventLogService().updateCalendarForLog(logId, data);
+        }
+        queue.unsubscribe(this);
       }
-      
     });
 
     try {

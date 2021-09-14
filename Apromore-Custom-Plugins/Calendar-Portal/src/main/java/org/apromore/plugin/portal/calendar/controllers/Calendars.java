@@ -52,6 +52,7 @@ import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Window;
 
+import org.apromore.plugin.portal.calendar.CalendarEvents;
 /**
  * Controller for handling calendar interface Corresponds to calendars.zul
  */
@@ -112,6 +113,15 @@ public class Calendars extends SelectorComposer<Window> {
         calendarListModel = new ListModelList<CalendarModel>();
         calendarListModel.setMultiple(false);
         populateCalendarList();
+
+        calendarEventQueue.subscribe((Event event) -> {
+            // Abandon newly created calendar
+            if (CalendarEvents.ON_CALENDAR_ABANDON.equals(event.getName())) {
+                Long calendarId = (Long) event.getData();
+                calendarService.deleteCalendar(calendarId);
+                populateCalendarList();
+            }
+        });
     }
 
     public ResourceBundle getLabels() {
@@ -146,7 +156,7 @@ public class Calendars extends SelectorComposer<Window> {
         String logName = selectedLog.getValue();
         String infoText = String.format("Custom calendar applied to log %s", logName);
         Notification.info(infoText);
-        calendarEventQueue.publish(new Event("onCalendarPublish", null,
+        calendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_PUBLISH, null,
                 ((CalendarModel) calendarListModel.getSelection().iterator().next()).getId()));
         getSelf().detach();
        
@@ -165,6 +175,7 @@ public class Calendars extends SelectorComposer<Window> {
                 Map arg = new HashMap<>();
                 arg.put("calendarId", calendarId);
                 arg.put("parentController", this);
+                arg.put("isNew", true);
                 Window window = (Window) Executions.getCurrent()
                         .createComponents(PageUtils.getPageDefinition("calendar/zul/calendar.zul"), null, arg);
                 window.doModal();
@@ -191,7 +202,7 @@ public class Calendars extends SelectorComposer<Window> {
 
     @Listen("onClick = #restoreBtn")
     public void onClickRestoreBtn() {
-      calendarEventQueue.publish(new Event("onCalendarPublish", null,null));
+      calendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_PUBLISH, null,null));
         getSelf().detach();
         String logName = selectedLog.getValue();
         String infoText = String.format("Log %s's original calendar has been restored", logName);

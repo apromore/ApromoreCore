@@ -36,6 +36,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Window;
 
@@ -51,6 +52,7 @@ public class ImportHolidays extends SelectorComposer<Window> {
     @Override
     public void doAfterCompose(Window win) throws Exception {
         super.doAfterCompose(win);
+        Clients.clearBusy();
 
         saveBtn.addEventListener("onSubmit", new EventListener<Event>() {
             @Override

@@ -95,6 +95,7 @@ public class CalendarItemRenderer implements ListitemRenderer {
         try {
             Map arg = new HashMap<>();
             arg.put("calendarId", calendarId);
+            arg.put("isNew", false);
             Window window = (Window) Executions.getCurrent()
                     .createComponents(PageUtils.getPageDefinition("calendar/zul/calendar.zul"), null, arg);
             window.doModal();
