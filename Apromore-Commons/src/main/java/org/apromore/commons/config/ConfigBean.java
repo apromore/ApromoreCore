@@ -99,6 +99,9 @@ public class ConfigBean {
     // Switch for BPMN Diff
     private boolean bpmndiffEnable;
 
+    // Switch for conformance checking
+    private boolean enableConformanceCheck;
+
     // Maximum upload size
     private long maxUploadSize;
 
