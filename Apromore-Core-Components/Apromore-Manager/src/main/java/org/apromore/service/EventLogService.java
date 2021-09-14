@@ -31,6 +31,7 @@ import org.apromore.commons.config.ConfigBean;
 import org.apromore.dao.model.Log;
 import org.apromore.dao.model.User;
 import org.apromore.exception.ImportException;
+import org.apromore.exception.UserMetadataException;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.portal.model.ExportLogResultType;
 import org.apromore.portal.model.SummariesType;
@@ -160,5 +161,5 @@ public interface EventLogService {
    * @param logId Log Id
    * @return Perspective tags
    */
-  List<String> getPerspectiveTagByLog(Integer logId) throws JsonProcessingException;
+  List<String> getPerspectiveTagByLog(Integer logId) throws UserMetadataException;
 }

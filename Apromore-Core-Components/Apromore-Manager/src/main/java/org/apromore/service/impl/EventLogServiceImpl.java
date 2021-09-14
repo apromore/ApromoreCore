@@ -48,6 +48,7 @@ import org.apromore.dao.model.Storage;
 import org.apromore.dao.model.User;
 import org.apromore.dao.model.Usermetadata;
 import org.apromore.exception.NotAuthorizedException;
+import org.apromore.exception.UserMetadataException;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.portal.model.ExportLogResultType;
 import org.apromore.portal.model.PluginMessages;
@@ -574,7 +575,7 @@ public class EventLogServiceImpl implements EventLogService {
     }
 
 	@Override
-	public List<String> getPerspectiveTagByLog(Integer logId) {
+	public List<String> getPerspectiveTagByLog(Integer logId) throws UserMetadataException {
 
 		List<String> perspectiveList = new ArrayList<>();
 
@@ -593,7 +594,7 @@ public class EventLogServiceImpl implements EventLogService {
 			perspectiveList = objectMapper.readValue(jsonString, new TypeReference<>() {
 			});
 		} catch (JsonProcessingException e) {
-			LOGGER.error("Could not deserialize JSON content from given JSON content String: " + jsonString, e);
+			throw new UserMetadataException("Could not deserialize JSON content from given JSON content String: " + jsonString, e);
 		}
 
 		LOGGER.debug("Get perspective list for log (ID: {}): {}", logId, perspectiveList);

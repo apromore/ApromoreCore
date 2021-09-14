@@ -58,6 +58,7 @@ import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
 import org.apromore.dao.model.Usermetadata;
 import org.apromore.dao.model.Workspace;
+import org.apromore.exception.UserMetadataException;
 import org.apromore.service.AuthorizationService;
 import org.apromore.service.EventLogFileService;
 import org.apromore.service.UserMetadataService;
@@ -108,8 +109,6 @@ public class EventLogServiceImplTest extends AbstractTest {
   private CustomCalendarRepository calendarRepository;
   private CustomCalendarService calendarService;
   private AuthorizationService authorizationService;
-
-  public ExpectedException exceptionRule = ExpectedException.none();
 
   private Group group1;
   private Group group2;
@@ -295,7 +294,7 @@ public class EventLogServiceImplTest extends AbstractTest {
   }
 
   @Test
-  public void testGetPerspectiveTagByLog() {
+  public void testGetPerspectiveTagByLog() throws UserMetadataException {
 
     // Set up test data
     Integer logId = 1;
@@ -324,7 +323,7 @@ public class EventLogServiceImplTest extends AbstractTest {
   }
 
   @Test
-  public void testGetPerspectiveTagByLog_WithoutMetadata() {
+  public void testGetPerspectiveTagByLog_WithoutMetadata() throws UserMetadataException {
 
     // Set up test data
     Integer logId = 1;
@@ -348,8 +347,8 @@ public class EventLogServiceImplTest extends AbstractTest {
     assertEquals(perspectives, result);
   }
 
-  @Test
-  public void testGetPerspectiveTagByLog_InvalidJson() {
+  @Test(expected = UserMetadataException.class)
+  public void testGetPerspectiveTagByLog_InvalidJson() throws UserMetadataException {
 
     // Set up test data
     Integer logId = 1;
@@ -369,11 +368,7 @@ public class EventLogServiceImplTest extends AbstractTest {
     // Mock call
     List<String> perspectives = eventLogService.getPerspectiveTagByLog(logId);
 
-    List<String> result = new ArrayList<>();
-
-    assertEquals(perspectives, result);
-    exceptionRule.expectMessage("Could not deserialize JSON content from given JSON content String: " + invalidJSONString);
-    exceptionRule.expect(JsonProcessingException.class);
+    // Then throw UserMetadataException
   }
 
 }
