@@ -24,6 +24,7 @@
 package org.apromore.security.impl;
 
 import org.apromore.dao.UserRepository;
+import org.apromore.dao.model.Membership;
 import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
 import org.apromore.mapper.UserMapper;
@@ -31,7 +32,9 @@ import org.apromore.security.util.SecurityUtil;
 import org.apromore.service.SecurityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -45,6 +48,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
+import javax.persistence.NoResultException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -60,26 +64,121 @@ import java.util.Set;
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, rollbackFor = Exception.class)
 public class UsernamePasswordAuthenticationProvider implements AuthenticationProvider {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(UsernamePasswordAuthenticationProvider.class);
+
     @Inject
     private UserRepository userRepository;
 
     @Inject
     private SecurityService securityService;
 
+    @Value("${enableSaltingPasswords}")
+    private boolean enableSaltingPasswords;
 
+    @Value("${enableUnsaltedPasswords}")
+    private boolean enableUnsaltedPasswords;
+
+    @Value("${saltLength}")
+    private int saltLength;
+
+    /**
+     * Authentication policy for accounts stored in the local database.
+     *
+     * Prior to version 8.0 (~2021-09) passwords were not salted before hashing.
+     * The password_salt field had an unused value (generally the string "username").
+     * If the feature flag <code>enableUnsaltedPasswords</code> is set, this implementation
+     * allows login with a password matching the unsalted hash.
+     * If the feature flag <code>enableSaltingPasswords</code> is set, this implementation
+     * will transparently upgrade unsalted password hashes to salted ones, or hashes with
+     * salt less than the required length of <code>saltLength</code>.
+     *
+     * @param authentication  must be a {@link UsernamePasswordAuthenticationToken}
+     * @throws UsernameNotFoundException if the <var>authentication</var>'s name isn't
+     *   either an existing username or email address
+     * @throws BadCredentialsException if the <var>authentication</var>'s credentials
+     *   aren't the correct password
+     */
     @Transactional
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+
         UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) authentication;
-        if (token.getName() == null || token.getName().length() == 0) {
-            throw new UsernameNotFoundException("Username and/or password sent were empty! Not authenticating.");
+        User user = findUser(token.getName());
+        Membership membership = user.getMembership();
+        String password = (String) token.getCredentials();
+
+        if (enableUnsaltedPasswords && passwordMatches(membership, password)) {  // Check for unsalted password
+            LOGGER.info("User \"{}\" has an unsalted password.", user.getUsername());
+            resalt(user, password);
+
+        } else if (!passwordMatches(membership, password + membership.getSalt())) {
+            throw new BadCredentialsException("Incorrect password");
+        }
+
+        if (membership.getSalt().length() < saltLength) {
+            // The current salt is below the configured size, so upgrade it
+            LOGGER.info("User \"{}\" has an password with {} characters of salt, less than the configured threshold of {}.",
+                user.getUsername(), membership.getSalt().length(), saltLength);
+            resalt(user, password);
+        }
+
+        return authenticatedToken(user, authentication);
+    }
+
+    /**
+     * Find an account by name.
+     *
+     * If the name provided in the login credentials does not match any username, we will fall back to matching
+     * it against email addresses.
+     *
+     * @param name  either a username or an email address identifying a local user account, never <code>null</code>
+     *     or empty
+     * @return the user, never <code>null</code>
+     * @throws UsernameNotFoundException if <var>name</var> is <code>null</code>, empty, or doesn't match any
+     *     existing username or email address
+     */
+    private User findUser(final String name) throws UsernameNotFoundException {
+        if (name == null || name.isEmpty()) {
+            throw new UsernameNotFoundException("Empty username");
         }
 
         try {
-            User account = userRepository.login(token.getName(), SecurityUtil.hashPassword((String) token.getCredentials()));
+            return userRepository.findByUsername(name);
 
-            return authenticatedToken(account, authentication);
-        } catch (Exception e) {
-            throw new UsernameNotFoundException("Failed to find the user or the password was incorrect!");
+        } catch (NoResultException e) {
+            User user = userRepository.findUserByEmail(name);
+            if (user == null) {
+                throw new UsernameNotFoundException("Neither a username nor email of any existing user: " + name);
+            }
+            return user;
+        }
+    }
+
+    /**
+     * Does a candidate password match a user account?
+     *
+     * @param membership  corresponding to the user
+     * @param password  the unhashed password with salt appended
+     * @return whether  the hash of <var>password</var> matches the on stored for <var>membership</var>
+     */
+    private static boolean passwordMatches(final Membership membership, final String password) {
+        return membership.getPassword().trim().equals(SecurityUtil.hashPassword(password).trim());
+    }
+
+    /**
+     * This method retains the user's existing password, but may upgrade its salt and hash depending on configuration.
+     *
+     * No change will occur if {@link #enableSaltingPasswords} is not true.
+     *
+     * @param user  whose password to resalt
+     * @param password  the current cleartext password for the <var>user</var>
+     */
+    private void resalt(final User user, final String password) {
+        if (!enableSaltingPasswords) {
+            LOGGER.debug("Retaining the existing password hash because salting passwords is not enabled.");
+        } else if (securityService.changeUserPassword(user.getUsername(), password, password)) {
+            LOGGER.info("Resalted password for user {}", user.getUsername());
+        } else {
+            LOGGER.warn("Failed to resalt password for user {}", user.getUsername());
         }
     }
 

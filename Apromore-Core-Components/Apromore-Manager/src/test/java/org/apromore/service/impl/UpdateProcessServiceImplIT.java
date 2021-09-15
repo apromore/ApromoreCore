@@ -22,7 +22,7 @@
  * #L%
  */
 
-package org.apromore.test.service.impl;
+package org.apromore.service.impl;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;

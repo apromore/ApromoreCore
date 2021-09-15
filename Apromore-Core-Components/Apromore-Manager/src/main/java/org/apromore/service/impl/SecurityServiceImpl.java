@@ -34,6 +34,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.inject.Inject;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apromore.dao.GroupRepository;
 import org.apromore.dao.MembershipRepository;
 import org.apromore.dao.PermissionRepository;
@@ -49,6 +50,7 @@ import org.apromore.security.util.SecurityUtil;
 import org.apromore.service.SecurityService;
 import org.apromore.service.WorkspaceService;
 import org.hibernate.Hibernate;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
@@ -76,6 +78,14 @@ public class SecurityServiceImpl implements SecurityService {
   private static final String EMAIL_START = "Hi, Here is your newly requested password: ";
   private static final String EMAIL_END = "\nPlease try to login again!";
 
+  @Value("${enableSaltingPasswords}")
+  boolean enableSaltingPasswords;
+
+  @Value("${enableUnsaltedPasswords}")
+  boolean enableUnsaltedPasswords;
+
+  @Value("${saltLength}")
+  int saltLength;
 
   private UserRepository userRepo;
   private GroupRepository groupRepo;
@@ -390,22 +400,44 @@ public class SecurityServiceImpl implements SecurityService {
     User user = userRepo.findByUsername(username);
     Membership membership = user.getMembership();
 
-    if (!membership.getPassword().equals(SecurityUtil.hashPassword(oldPassword))) {
-      LOGGER.warning("Failed attempt to change password for user " + membership.getEmail());
+    if (!validPassword(membership, oldPassword)) {
+      LOGGER.log(Level.WARNING, "Failed attempt to change password for user {}", membership.getEmail());
       return false;
     }
 
     try {
       // Change the password in the database
-      membership.setPassword(SecurityUtil.hashPassword(newPassword));
+      if (enableSaltingPasswords) {
+        membership.setSalt(RandomStringUtils.randomAlphanumeric(saltLength));
+        membership.setPassword(SecurityUtil.hashPassword(newPassword + membership.getSalt()));
+      } else {
+        membership.setPassword(SecurityUtil.hashPassword(newPassword));
+      }
       membership = membershipRepo.save(membership);
 
-      return membership.getPassword().equals(SecurityUtil.hashPassword(newPassword));
+      return true;
 
     } catch (Exception e) {
       LOGGER.log(Level.WARNING, "Unable to change password for user " + membership.getEmail(), e);
       return false;
     }
+  }
+
+  private boolean validPassword(final Membership membership, final String password) {
+
+    // Valid if the salted password's hash matches
+    if (membership.getPassword().equals(SecurityUtil.hashPassword(password + membership.getSalt()))) {
+      return true;
+    }
+
+    // Valid if the unsalted password's hash matches and the ${enableUnsaltedPasswords} feature is enabled
+    // This is only allowed for back-compatibility to the original system, where salting hadn't been implemented
+    if (enableUnsaltedPasswords && membership.getPassword().equals(SecurityUtil.hashPassword(password))) {
+      return true;
+    }
+
+    // Otherwise, this isn't a password we accept
+    return false;
   }
 
   /** Email the User's Password to them. */
