@@ -3,12 +3,8 @@ import {createFullDataFrameBuffer} from "./testFactory";
 
 describe('Test while the animation is running', function () {
     let animation, tokenAnimation, buffer;
-    beforeEach(function(done) {
-        jasmine.DEFAULT_TIMEOUT_INTERVAL = 999999;
-        jasmine.clock().install();
-        animation = testFactory.createFullDataLogAnimation();
-        jasmine.clock().tick(1000);
-        jasmine.clock().uninstall();
+    beforeEach(async function(done) {
+        animation = await testFactory.createFullDataLogAnimation();
         buffer = createFullDataFrameBuffer();
         spyOn(buffer, '_loopRequestData').and.stub(); // turn off
         spyOn(buffer, '_loopCleanup').and.stub(); // turn off

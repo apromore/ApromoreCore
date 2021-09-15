@@ -853,11 +853,12 @@ public abstract class BaseListboxController extends BaseController {
     queue.subscribe(new EventListener<Event>() {
       @Override
       public void onEvent(Event event) {
-        Long data = (Long) event.getData();
-        getMainController().getEventLogService().updateCalendarForLog(logId, data);
-        queue.unsubscribe(this);     
+        if ("onCalendarPublish".equals(event.getName())) {
+          Long data = (Long) event.getData();
+          getMainController().getEventLogService().updateCalendarForLog(logId, data);
+        }
+        queue.unsubscribe(this);
       }
-      
     });
 
     try {
@@ -930,7 +931,9 @@ public abstract class BaseListboxController extends BaseController {
   }
 
   public class SummaryListModel extends ListModelList {
-    final int pageSize = 1000; // TODO: ought to be externally configurable
+    // @todo: ought to be externally configurable
+    // Need refactoring, for now assume paging is not used and items < 10000 per view
+    static final int pageSize = 10000;
 
     private transient SummariesType summaries, logSummaries;
     private int currentPageIndex = 0, currentLogPageIndex = 0;

@@ -19,7 +19,6 @@ export default class LogAnimationBpmn extends LogAnimation {
                   playClassName,
                   pauseClassName) {
         let processMapController = new BPMNModelWrapper();
-        processMapController.loadProcessModel(animationModelContainerId, bpmnXML, function() {});
         super(pluginExecutionId,
             processMapController,
             animationModelContainerId,
@@ -31,6 +30,12 @@ export default class LogAnimationBpmn extends LogAnimation {
             buttonsContainerId,
             playClassName,
             pauseClassName);
+    }
+
+    async init(bpmnXML, setupDataJSON, animationModelContainerId) {
+        await this.processMapController.loadProcessModel(animationModelContainerId, bpmnXML, function() {});
+        //Leaving timeout to wait for Ajax response from loading plugins
+        //TODO: await the Ajax response instead of setting a timer
         let me = this;
         setTimeout(function() {
            me.initialize(setupDataJSON);

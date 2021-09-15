@@ -462,7 +462,7 @@ public class APMLogUnitTest {
         CusCalArcDurFilterTestSupport.run(apmLog);
     }
 
-    private ImmutableLog getImmutableLog(String logName, String path) throws Exception {
+    public static ImmutableLog getImmutableLog(String logName, String path) throws Exception {
         XLog xLog = getXLog(path);
         ImmutableLog immutableLog = XLogToImmutableLog.convertXLog(logName, xLog);
         return immutableLog;
@@ -473,7 +473,7 @@ public class APMLogUnitTest {
         out.println(unicodeMessage);
     }
 
-    public XLog getXLog(String filepath) throws Exception {
+    public static XLog getXLog(String filepath) throws Exception {
         String path = filepath;
         File xLogFile = new File(path);
         String fileName = xLogFile.getName();

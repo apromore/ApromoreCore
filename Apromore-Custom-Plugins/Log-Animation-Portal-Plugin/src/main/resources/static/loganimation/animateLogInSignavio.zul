@@ -56,11 +56,11 @@
                 if (!Apromore) {
                     var Apromore = {};
                 }
-                if (!Apromore.CONFIG) {
-                    Apromore.CONFIG = {};
+                if (!Apromore.BPMNEditor.CONFIG) {
+                    Apromore.BPMNEditor.CONFIG = {};
                 }
-                //Apromore.CONFIG.SERVER_HANDLER_ROOT_PREFIX = '../../' + '${arg.editor}';
-				Apromore.CONFIG.SERVER_HANDLER_ROOT_PREFIX = '/' + '${arg.editor}';
+                //Apromore.BPMNEditor.CONFIG.SERVER_HANDLER_ROOT_PREFIX = '../../' + '${arg.editor}';
+				Apromore.BPMNEditor.CONFIG.SERVER_HANDLER_ROOT_PREFIX = '/' + '${arg.editor}';
             ]]>
         </n:script>
 
@@ -70,7 +70,7 @@
         <n:script src="/${arg.editor}/libs/ext-2.0.2/color-field.js" type="text/javascript"/>
         <n:script src="/${arg.editor}/libs/iscroll.js" type="text/javascript"/>
         <n:script src="/${arg.editor}/editor/i18n/translation_en.js" type="text/javascript"/>
-        <n:script src="/${arg.editor}/editor/apromore-editor.js" type="text/javascript"/>
+        <n:script src="/${arg.editor}/editor/bpmneditor.js" type="text/javascript"/>
 
         <script src="/loganimation/js/jquery-1.10.2.min.js" type="text/javascript"/>
         <script src="/loganimation/js/jquery-ui.min.js" type="text/javascript"/>
@@ -89,7 +89,7 @@
 	        <n:script>
 	            <![CDATA[
 					//$.noConflict();
-                    var editorWrapper = new Apromore.Editor ({
+                    var editorWrapper = new Apromore.BPMNEditor.Editor ({
 							xml: '${arg.bpmnXML}',
                             model : {
                                 id : 'editorcanvas',
@@ -101,12 +101,12 @@
                             fullscreen : false
                         });
 
-	                Apromore.Plugins.ApromoreSave.apromoreSaveAs = function(xml, svg) {
+	                Apromore.BPMNEditor.Plugins.ApromoreSave.apromoreSaveAs = function(xml, svg) {
 	                	 //console.log(xml);
 	                	 zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSaveAs', xml));
 	                 };
 
-	                Apromore.Plugins.ApromoreSave.apromoreSave = function(xml, svg) {
+	                Apromore.BPMNEditor.Plugins.ApromoreSave.apromoreSave = function(xml, svg) {
 	                	    //console.log(xml);
                        console.log('test');
 	                     zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSave', xml));

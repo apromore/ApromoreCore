@@ -5,7 +5,8 @@ const LowerCaseNamePlugin = require('webpack-lowercase-name');
 module.exports = {
     entry: {
         LogAnimationBpmn: './src/loganimation/logAnimationBpmn.js',
-        ProcessDiscoverer: './src/processdiscoverer/index.js'
+        ProcessDiscoverer: './src/processdiscoverer/index.js',
+        BPMNEditor: './src/bpmneditor/index.js'
     },
     output: {
         filename: '[lc-name].js',

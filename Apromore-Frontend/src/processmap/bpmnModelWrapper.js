@@ -1,4 +1,4 @@
-import {Apromore} from "../bpmneditor/apromoreEditor";
+import bpmnEditor from "../bpmneditor/index";
 import * as utils from "../loganimation/utils";
 import {AnimationEvent, AnimationEventType} from "../loganimation/animationEvents";
 
@@ -29,16 +29,21 @@ export default class BPMNModelWrapper {
      * @param {String} editorContainerId: id of the div element hosting the editor
      * @param {String} xmlString: XML content of the BPMN map/model
      */
-    loadProcessModel(editorContainerId, bpmnXML, callBack) {
-        this._editorApp = new Apromore.EditorApp({
-            xml: bpmnXML,
-            callBack: callBack,
+    async loadProcessModel(editorContainerId, bpmnXML, callBack) {
+        if (!Apromore.BPMNEditor) {
+            Apromore.BPMNEditor = bpmnEditor;
+        }
+        this._editorApp = new Apromore.BPMNEditor.EditorApp({
             id: editorContainerId,
             fullscreen: true,
-            preventFitDelay: true,
             enabledPlugins: [window.Apromore.I18N.View.zoomIn,
                             window.Apromore.I18N.View.zoomOut,
                             window.Apromore.I18N.View.zoomFitToModel]
+        });
+        await this._editorApp.init({
+             xml: bpmnXML,
+             callBack: callBack,
+             preventFitDelay: true
         });
         this._editor = this._editorApp.getEditor();
     }

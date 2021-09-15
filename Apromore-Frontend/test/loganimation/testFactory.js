@@ -1,23 +1,26 @@
 import LogAnimation from '../../src/loganimation/logAnimation';
 import {AnimationContext} from "../../src/loganimation/animationContextState";
 import FrameBuffer from "../../src/loganimation/frameBuffer";
-import {Apromore} from "../../src/bpmneditor/apromoreEditor";
+import bpmnEditor from "../../src/bpmneditor/index";
 import BPMNModelWrapper from "../../src/processmap/bpmnModelWrapper";
 
 /**
  * @returns {LogAnimation}
  */
-export function createSimpleLogAnimation() {
+export async function createSimpleLogAnimation() {
     jasmine.getFixtures().fixturesPath = 'base/test/loganimation/fixtures';
     loadFixtures('logAnimationUI.html');
     let bpmn = require('./fixtures/simpleMap.bpmn');
     let setupData = require('./fixtures/setupData.txt');
 
     //Turn off loading plugins as not in scope of testing
-    Apromore.CONFIG.PLUGINS_ENABLED = false;
+    if (!Apromore.BPMNEditor) {
+        Apromore.BPMNEditor = bpmnEditor;
+    }
+    Apromore.BPMNEditor.CONFIG.PLUGINS_ENABLED = false;
     let processMapController = new BPMNModelWrapper();
     console.log('BPMN', bpmn.default);
-    processMapController.loadProcessModel('editorcanvas', bpmn.default, function() {});
+    await processMapController.loadProcessModel('editorcanvas', bpmn.default, function() {});
     let logAnimation = new LogAnimation(
         '101',
         processMapController,
@@ -30,25 +33,26 @@ export function createSimpleLogAnimation() {
         'ap-la-buttons',
         'ap-mc-icon-play',
         'ap-mc-icon-pause');
-    window.setTimeout(function() {
-        logAnimation.initialize(setupData.default);
-        console.log(setupData.default);
-        spyOn(logAnimation.getTokenAnimation(), '_loopDraw').and.stub();
-        spyOn(logAnimation.getTokenAnimation(), '_loopBufferRead').and.stub();
-    }, 1000);
+    logAnimation.initialize(setupData.default);
+    console.log(setupData.default);
+    spyOn(logAnimation.getTokenAnimation(), '_loopDraw').and.stub();
+    spyOn(logAnimation.getTokenAnimation(), '_loopBufferRead').and.stub();
     return logAnimation;
 }
 
-export function createFullDataLogAnimation() {
+export async function createFullDataLogAnimation() {
     jasmine.getFixtures().fixturesPath = 'base/test/loganimation/fixtures';
     loadFixtures('logAnimationUI.html');
     let bpmn = require('./fixtures/simpleMap.bpmn');
     let setupData = require('./fixtures/setupData.txt');
 
     //Turn off loading plugins as not in scope of testing
-    Apromore.CONFIG.PLUGINS_ENABLED = false;
+    if (!Apromore.BPMNEditor) {
+        Apromore.BPMNEditor = bpmnEditor;
+    }
+    Apromore.BPMNEditor.CONFIG.PLUGINS_ENABLED = false;
     let processMapController = new BPMNModelWrapper();
-    processMapController.loadProcessModel('editorcanvas', bpmn.default, function() {});
+    await processMapController.loadProcessModel('editorcanvas', bpmn.default, function() {});
     let logAnimation = new LogAnimation(
         '101',
         processMapController,
@@ -61,9 +65,7 @@ export function createFullDataLogAnimation() {
         'ap-la-buttons',
         'ap-mc-icon-play',
         'ap-mc-icon-pause');
-    window.setTimeout(function() {
-        logAnimation.initialize(setupData.default);
-    }, 1000);
+    logAnimation.initialize(setupData.default);
     return logAnimation;
 }
 

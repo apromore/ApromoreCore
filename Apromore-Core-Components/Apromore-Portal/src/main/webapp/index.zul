@@ -95,7 +95,6 @@
         font-style: normal;
         color: unset;
         background-color: transparent;
-        border: 2px solid transparent;
         -webkit-border-radius: 4px;
         -moz-border-radius: 4px;
         -o-border-radius: 4px;
@@ -217,6 +216,7 @@
                         autodrop="true"
                         mold="rounded"
                         width="150px"
+                        popupWidth="150px"
                         buttonVisible="true"
                     />
                     <hbox id="pagingandbuttons" sclass="ap-portal-menu-actions" height="32px" width="100%" spacing="0"  >
