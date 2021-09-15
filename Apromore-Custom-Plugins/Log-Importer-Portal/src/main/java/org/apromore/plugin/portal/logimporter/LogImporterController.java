@@ -88,8 +88,6 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.TimeZone;
 
-import static org.apromore.service.logimporter.model.LogMetaData.HEADER_ABSENT;
-
 /**
  * Controller for <code>csvimporter.zul</code>.
  */
