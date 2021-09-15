@@ -34,6 +34,7 @@ import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.service.EventLogService;
 import org.apromore.service.UserMetadataService;
+import org.apromore.service.logimporter.exception.InvalidLogMetadataException;
 import org.apromore.service.logimporter.model.LogErrorReport;
 import org.apromore.service.logimporter.model.LogMetaData;
 import org.apromore.service.logimporter.model.LogModel;
@@ -47,8 +48,6 @@ import org.apromore.service.logimporter.services.legacy.LogImporterProvider;
 import org.apromore.service.logimporter.utilities.FileUtils;
 import org.apromore.util.UserMetadataTypeEnum;
 import org.apromore.zk.notification.Notification;
-import org.deckfour.xes.extension.std.XConceptExtension;
-import org.deckfour.xes.extension.std.XOrganizationalExtension;
 import org.slf4j.Logger;
 import org.zkoss.json.JSONObject;
 import org.zkoss.util.media.Media;
@@ -295,7 +294,9 @@ public class LogImporterController extends SelectorComposer<Window> implements C
             tempLogMetaData.getIgnoredPos().clear();
             tempLogMetaData.getIgnoredPos().addAll(storedSchemaMapping.getIgnoredPos());
             tempLogMetaData.getPerspectivePos().clear();
-            tempLogMetaData.getPerspectivePos().addAll(storedSchemaMapping.getPerspectivePos());
+            if (storedSchemaMapping.getPerspectivePos() != null) {
+                tempLogMetaData.getPerspectivePos().addAll(storedSchemaMapping.getPerspectivePos());
+            }
             tempLogMetaData.getOtherTimestamps().clear();
             tempLogMetaData.getOtherTimestamps().putAll(storedSchemaMapping.getOtherTimestamps());
         }
@@ -410,44 +411,23 @@ public class LogImporterController extends SelectorComposer<Window> implements C
             throws UserNotFoundException {
 
         String username = portalContext.getCurrentUser().getUsername();
-        String logMetadataJsonStr = "";
-        String perspectiveJsonStr = "";
+        String logMetadataJsonStr;
+        String perspectiveJsonStr;
 
         // Creating Object of ObjectMapper define in Jakson Api
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             logMetadataJsonStr = objectMapper.writeValueAsString(logMetaData);
-            perspectiveJsonStr = objectMapper.writeValueAsString(getPerspectiveFromLogMetadata(logMetaData));
-        } catch (IOException e) {
-            LOGGER.error("Unable to convert log metadata into JSON; will store an empty string instead",
-                    e);
+            perspectiveJsonStr = objectMapper.writeValueAsString(logMetaData.getPerspectives());
+
+            userMetadataService.saveUserMetadata("Default CSV schema mapping name", logMetadataJsonStr,
+                    UserMetadataTypeEnum.CSV_IMPORTER, username, log.getId());
+            userMetadataService.saveUserMetadata(UserMetadataTypeEnum.PERSPECTIVE_TAG.toString(), perspectiveJsonStr,
+                    UserMetadataTypeEnum.PERSPECTIVE_TAG, username, log.getId());
+        } catch (JsonProcessingException | InvalidLogMetadataException e) {
+            LOGGER.error("Unable to convert Log Metadata into JSON or Invalid Log Metadata, give up storing them into" +
+                    " DB for Log ({}). ", log.getName(), e);
         }
-
-        userMetadataService.saveUserMetadata("Default CSV schema mapping name", logMetadataJsonStr,
-                UserMetadataTypeEnum.CSV_IMPORTER, username, log.getId());
-        userMetadataService.saveUserMetadata(UserMetadataTypeEnum.PERSPECTIVE_TAG.toString(), perspectiveJsonStr,
-                UserMetadataTypeEnum.PERSPECTIVE_TAG, username, log.getId());
-    }
-
-    public List<String> getPerspectiveFromLogMetadata(LogMetaData logMetaData) {
-
-        List<String> result = new ArrayList<>();
-        List<Integer> perspectivePos = logMetaData.getPerspectivePos();
-        List<String> headers = logMetaData.getHeader();
-
-        if (logMetaData.getActivityPos() != HEADER_ABSENT) {
-            result.add(XConceptExtension.KEY_NAME);
-        }
-
-        if (logMetaData.getResourcePos() != HEADER_ABSENT) {
-            result.add(XOrganizationalExtension.KEY_RESOURCE);
-        }
-
-        for (Integer i : perspectivePos) {
-            result.add(headers.get(i));
-        }
-
-        return result;
     }
 
     protected String getLogTag() {

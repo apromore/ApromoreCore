@@ -19,19 +19,19 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.exception;
+package org.apromore.service.logimporter.exception;
 
 /**
- * Exception for when a user metadata isn't found or is not valid.
+ * Exception for when a log metadata isn't found or is not valid.
  *
  * @author frankm
  */
-public class UserMetadataException extends Exception {
+public class InvalidLogMetadataException extends Exception {
 
     /**
      * Default Constructor.
      */
-    public UserMetadataException() {
+    public InvalidLogMetadataException() {
     }
 
     /**
@@ -39,7 +39,7 @@ public class UserMetadataException extends Exception {
      *
      * @param message the message to put with the exception.
      */
-    public UserMetadataException(String message) {
+    public InvalidLogMetadataException(String message) {
         super(message);
     }
 
@@ -48,7 +48,7 @@ public class UserMetadataException extends Exception {
      *
      * @param cause The exception that caused this exception to be thrown.
      */
-    public UserMetadataException(Throwable cause) {
+    public InvalidLogMetadataException(Throwable cause) {
         super(cause);
     }
 
@@ -58,7 +58,7 @@ public class UserMetadataException extends Exception {
      * @param message the message to put with the exception.
      * @param cause   The exception that caused this exception to be thrown.
      */
-    public UserMetadataException(String message, Throwable cause) {
+    public InvalidLogMetadataException(String message, Throwable cause) {
         super(message, cause);
     }
 }
