@@ -30,7 +30,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import lombok.Getter;
-import org.apromore.commons.i18n.I18Utils;
 
 @Component("i18nConfig")
 public class I18nConfig {
@@ -78,7 +77,6 @@ public class I18nConfig {
         for (Map.Entry<Locale, String> entry : supportedLocales.entrySet()) {
             Locale locale = entry.getKey();
             selectionSet.put(locale.toLanguageTag(),
-                    I18Utils.langTagToFlag(locale.toLanguageTag()) + " " +
                     locale.getDisplayName(locale) + " (" + locale.getDisplayName() + ")"
             );
         }

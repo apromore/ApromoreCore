@@ -146,12 +146,6 @@
         .ap-portal-menu-buttons button img {
         visibility: hidden;
         }
-        .ap-lang-chooser {
-            position: fixed;
-            top: 37px;
-            right: 5px;
-            font-size: 12px;
-        }
     </style>
 
     <script type="text/javascript">
