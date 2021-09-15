@@ -19,7 +19,7 @@ import static org.powermock.api.easymock.PowerMock.verify;
 /**
  * Test suite for {@link SecurityServiceImpl}.
  */
-public class SecurityServiceImplUnitTest {
+class SecurityServiceImplUnitTest {
 
     private MembershipRepository membershipRepository;
     private SecurityServiceImpl securityService;
@@ -57,12 +57,12 @@ public class SecurityServiceImplUnitTest {
                 "true,  true,  10, 5f4dcc3b5aa765d61d8327deb882cf99, salt, true",
                 "true,  false, 10, 5f4dcc3b5aa765d61d8327deb882cf99, salt, false",
                 "true,  false, 10, b305cadbb3bce54f3aa59c64fec00dea, salt, true"})
-    public void testChangeUserPassword(boolean enableSaltingPasswords,
-                                       boolean enableUnsaltedPasswords,
-                                       int     saltLength,
-                                       String  hashedPassword,
-                                       String  salt,
-                                       boolean expectChanged) {
+    void testChangeUserPassword(boolean enableSaltingPasswords,
+                                boolean enableUnsaltedPasswords,
+                                int     saltLength,
+                                String  hashedPassword,
+                                String  salt,
+                                boolean expectChanged) {
 
         securityService.enableSaltingPasswords = enableSaltingPasswords;
         securityService.enableUnsaltedPasswords = enableUnsaltedPasswords;

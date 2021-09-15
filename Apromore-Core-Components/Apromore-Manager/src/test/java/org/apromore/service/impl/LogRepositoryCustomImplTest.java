@@ -129,14 +129,8 @@ public class LogRepositoryCustomImplTest {
             for (XEvent event : trace) {
                 for (XAttribute attr : event.getAttributes().values()) {
                     assertNotNull(attr.getKey());
-                    if (attr instanceof XAttributeBoolean) {
-                        assertNotNull(((XAttributeBoolean) attr).getValue());
-                    } else if (attr instanceof XAttributeLiteral) {
+                    if (attr instanceof XAttributeLiteral) {
                         assertNotNull(((XAttributeLiteral) attr).getValue());
-                    } else if (attr instanceof XAttributeContinuous) {
-                        assertNotNull(((XAttributeContinuous) attr).getValue());
-                    } else if (attr instanceof XAttributeDiscrete) {
-                        assertNotNull(((XAttributeDiscrete) attr).getValue());
                     } else if (attr instanceof XAttributeTimestamp) {
                         assertNotNull(((XAttributeTimestamp) attr).getValue());
                     }
@@ -172,14 +166,8 @@ public class LogRepositoryCustomImplTest {
                 for (String key : event.getAttributes().keySet()) {
                     XAttribute attr = event.getAttributes().get(key);
                     assertNotNull(attr);
-                    if (attr instanceof XAttributeBoolean) {
-                        assertNotNull(((XAttributeBoolean) attr).getValue());
-                    } else if (attr instanceof XAttributeLiteral) {
+                    if (attr instanceof XAttributeLiteral) {
                         assertNotNull(((XAttributeLiteral) attr).getValue());
-                    } else if (attr instanceof XAttributeContinuous) {
-                        assertNotNull(((XAttributeContinuous) attr).getValue());
-                    } else if (attr instanceof XAttributeDiscrete) {
-                        assertNotNull(((XAttributeDiscrete) attr).getValue());
                     }
                     attributeCounter++;
                 }

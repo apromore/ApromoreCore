@@ -401,7 +401,7 @@ public class SecurityServiceImpl implements SecurityService {
     Membership membership = user.getMembership();
 
     if (!validPassword(membership, oldPassword)) {
-      LOGGER.log(Level.WARNING, "Failed attempt to change password for user {}", membership.getEmail());
+      LOGGER.warning("Failed attempt to change password for user " + membership.getEmail());
       return false;
     }
 
