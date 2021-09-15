@@ -118,7 +118,11 @@ public class Calendars extends SelectorComposer<Window> {
             // Abandon newly created calendar
             if (CalendarEvents.ON_CALENDAR_ABANDON.equals(event.getName())) {
                 Long calendarId = (Long) event.getData();
-                calendarService.deleteCalendar(calendarId);
+                try {
+                    calendarService.deleteCalendar(calendarId);
+                } catch (Exception e) {
+                    LOGGER.warn("Double deletion might have occurred");
+                }
                 populateCalendarList();
             }
         });
