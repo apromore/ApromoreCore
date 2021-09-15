@@ -63,26 +63,30 @@
     color: rgba(255, 255, 255, 0.6);
     border: 0;
     position: absolute;
-    width: 28px;
+    width: 24px;
     height: 24px;
     border-radius: 8px;
     padding: 0;
     top: 3px;
-    right: 2px;
+    right: 0;
+    margin-right: 2px;
 }
 
+.ap-csv-importer-parsed-icon:active {
+    background-color: transparent !important;
+}
 
 .ap-csv-importer-parsed-icon {
     background-color: transparent;
     color: rgba(144, 198, 149, 1);
     border: 0;
     position: absolute;
-    width: 28px;
+    width: 24px;
     height: 24px;
     border-radius: 8px;
     padding: 0;
-    top: 2px;
-    right: 23px;
+    top: 7px;
+    right: 24px;
     font-size: 1.11em;
 }
 
