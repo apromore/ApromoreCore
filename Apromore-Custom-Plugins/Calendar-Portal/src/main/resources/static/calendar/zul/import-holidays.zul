@@ -21,6 +21,7 @@
   -->
 <zk>
     <window width="400px" position="center" apply="org.apromore.plugin.portal.calendar.controllers.ImportHolidays"
+            id="importHolidaysWin"
             title="Add Holidays from a country"
             sclass="ap-holidays-win"
             xmlns:ca="client/attribute"

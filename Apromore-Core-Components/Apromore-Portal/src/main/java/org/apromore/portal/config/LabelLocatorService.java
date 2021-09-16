@@ -26,7 +26,6 @@ public class LabelLocatorService implements org.zkoss.util.resource.LabelLocator
   private ServletContext _svlctx;
   private String _name;
 
-
   public LabelLocatorService(ServletContext svlctx, String name) {
     _svlctx = svlctx;
     _name = name;

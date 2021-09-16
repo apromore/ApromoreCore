@@ -26,6 +26,9 @@ package org.apromore.service.logimporter.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apromore.service.logimporter.exception.InvalidLogMetadataException;
+import org.deckfour.xes.extension.std.XConceptExtension;
+import org.deckfour.xes.extension.std.XOrganizationalExtension;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -59,6 +62,7 @@ public class LogMetaData {
     private String timeZone;
     private String encoding;
     private List<Integer> maskPos;
+    private List<Integer> perspectivePos;
 
     public LogMetaData(List<String> header) {
         this.header = header;
@@ -70,6 +74,7 @@ public class LogMetaData {
         startTimestampFormat = null;
         encoding = null;
         maskPos = new ArrayList<>();
+        perspectivePos = new ArrayList<>();
     }
 
     public void validateSample() throws Exception {
@@ -86,8 +91,34 @@ public class LogMetaData {
         count += ignoredPos.size();
 
         if (header.size() != count) {
-            throw new Exception("Failed to construct valid log sample!  Only specified " + count + " of " +
+            throw new InvalidLogMetadataException("Failed to construct valid log sample!  Only specified " + count + " of " +
                 header.size() + " headers: " + header);
         }
+    }
+
+    public List<String> getPerspectives() throws InvalidLogMetadataException {
+
+        List<String> result = new ArrayList<>();
+
+        if (activityPos != HEADER_ABSENT) {
+            result.add(XConceptExtension.KEY_NAME);
+        } else {
+            throw new InvalidLogMetadataException("Found invalid Log Metadata that missing activityPos");
+        }
+        if (resourcePos != HEADER_ABSENT) {
+            result.add(XOrganizationalExtension.KEY_RESOURCE);
+        }
+        if (perspectivePos != null && !perspectivePos.isEmpty()) {
+            for (Integer i : perspectivePos) {
+                if (eventAttributesPos.contains(i)) {
+                    result.add(header.get(i));
+                } else {
+                    throw new InvalidLogMetadataException("Found invalid Log Metadata that eventAttributesPos doesn't" +
+                            " match with perspectivePos");
+                }
+            }
+        }
+
+        return result;
     }
 }

@@ -57,6 +57,7 @@ interface Constants {
     String EVENT_ATTRIBUTE_LABEL = "eventAttribute";
     String CASE_ATTRIBUTE_LABEL = "caseAttribute";
     String IGNORE_LABEL = "ignoreAttribute";
+    String PERSPECTIVE_LABEL = "perspective";
 
     String RED_LABEL_CSS = "redLabel";
     String GREEN_LABEL_CSS = "greenLabel";

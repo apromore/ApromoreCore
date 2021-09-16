@@ -43,6 +43,7 @@ import org.apromore.dao.model.ProcessBranch;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
+import org.apromore.dao.model.Usermetadata;
 import org.apromore.dao.model.Workspace;
 import org.apromore.portal.helper.Version;
 import org.easymock.EasyMockSupport;
@@ -226,5 +227,24 @@ public class AbstractTest extends EasyMockSupport {
         wp.setName("Workspace1");
         wp.setDescription("Description");
         return wp;
+    }
+
+    public Usermetadata createUserMetadata(Integer id, String content, Set<Log> logs) {
+        Usermetadata usermetadata = new Usermetadata();
+        usermetadata.setContent(content);
+
+        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        String now = dateFormat.format(new Date());
+        usermetadata.setCreatedTime(now);
+        usermetadata.setUpdatedTime(now);
+
+        usermetadata.setCreatedBy("admin");
+        usermetadata.setUpdatedBy("admin");
+
+        usermetadata.setId(id);
+        usermetadata.setName("Test User Metadata");
+        usermetadata.setLogs(logs);
+
+        return usermetadata;
     }
 }

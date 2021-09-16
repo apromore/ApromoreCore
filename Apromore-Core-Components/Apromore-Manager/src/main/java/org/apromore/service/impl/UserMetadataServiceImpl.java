@@ -284,7 +284,9 @@ public class UserMetadataServiceImpl implements UserMetadataService {
                             at = AccessType.VIEWER;
                         } else if (accessTypes.contains(AccessType.EDITOR)) {
                             at = AccessType.EDITOR;
-                        } else at = AccessType.OWNER;
+                        } else {
+                            at = AccessType.OWNER;
+                        }
                     }
 
                     GroupUsermetadata gu = groupUsermetadataRepo.findByGroupAndUsermetadata(group, u);
@@ -438,7 +440,9 @@ public class UserMetadataServiceImpl implements UserMetadataService {
             if (accessType == AccessType.RESTRICTED) {
                 lists.add(getUserMetadataWithRestrictedViewer(user, logId, userMetadataTypeEnum));
 
-            } else lists.add(getUserMetadataByLog(logId, userMetadataTypeEnum));
+            } else {
+                lists.add(getUserMetadataByLog(logId, userMetadataTypeEnum));
+            }
         }
         // Find intersection of user metadata lists that get from specified logIds
         for (Set<Usermetadata> umSet : lists) {
@@ -540,8 +544,9 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         return umSet;
     }
 
+    @Override
     public Set<Usermetadata> getUserMetadataByUserAndLog(String username, Integer logId,
-                                             UserMetadataTypeEnum userMetadataTypeEnum) throws UserNotFoundException {
+                                                         UserMetadataTypeEnum userMetadataTypeEnum) throws UserNotFoundException {
 
         return getUserMetadata(username, Collections.singletonList(logId), userMetadataTypeEnum);
     }
@@ -595,7 +600,9 @@ public class UserMetadataServiceImpl implements UserMetadataService {
             return AccessType.EDITOR;
         } else if (accessTypes.contains(AccessType.VIEWER)) {
             return AccessType.VIEWER;
-        } else return AccessType.RESTRICTED;
+        } else {
+            return AccessType.RESTRICTED;
+        }
     }
 
     private AccessType getMostRestrictiveAccessType(Set<Log> logs, Group group) {
@@ -616,7 +623,9 @@ public class UserMetadataServiceImpl implements UserMetadataService {
             at = AccessType.VIEWER;
         } else if (accessTypes.contains(AccessType.EDITOR)) {
             at = AccessType.EDITOR;
-        } else at = AccessType.OWNER;
+        } else {
+            at = AccessType.OWNER;
+        }
 
         return at;
     }
