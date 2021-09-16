@@ -35,6 +35,7 @@ import org.apromore.commons.config.ConfigBean;
 import org.apromore.dao.model.Log;
 import org.apromore.dao.model.User;
 import org.apromore.exception.ImportException;
+import org.apromore.exception.UserMetadataException;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.portal.model.ExportLogResultType;
 import org.apromore.portal.model.SummariesType;
@@ -153,4 +154,12 @@ public interface EventLogService {
   ConfigBean getConfigBean();
 
   List<Log> getLogListFromCalendarId(Long calendarId);
+
+  /**
+   * Find perspective tag that are linked to the specified Log
+   * @param logId Log Id
+   * @return Perspective tags
+   * @throws UserMetadataException when perspective tag is not found or is not valid
+   */
+  List<String> getPerspectiveTagByLog(Integer logId) throws UserMetadataException;
 }

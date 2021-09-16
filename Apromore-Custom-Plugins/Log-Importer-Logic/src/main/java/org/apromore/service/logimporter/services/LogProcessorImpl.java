@@ -140,6 +140,19 @@ public class LogProcessorImpl implements LogProcessor {
 
         }
 
+        // Perspective
+        if (validRow && logMetaData.getPerspectivePos() != null && !logMetaData.getPerspectivePos().isEmpty()) {
+            for (int columnPos : logMetaData.getPerspectivePos()) {
+                String perspective = line.get(columnPos);
+                if (perspective == null || perspective.isEmpty()) {
+                    logErrorReport.add(new LogErrorReportImpl(lineIndex, columnPos,
+                            header.get(columnPos), "Perspective is empty or has a null value!"));
+                    validRow = false;
+                }
+            }
+
+        }
+
         return new LogEventModelExt(caseId, activity, endTimestamp, startTimestamp, otherTimestamps, resource,
                 eventAttributes, caseAttributes, validRow);
     }
