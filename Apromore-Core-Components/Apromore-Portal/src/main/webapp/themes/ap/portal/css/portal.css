@@ -280,8 +280,8 @@
 
 .ap-container-search .z-combobox-input::-moz-selection,
 .ap-container-search .z-combobox-input::selection {
-    color: white;
-    background-color: #a0a0a0;
+    color: white !important;
+    background-color: #a0a0a0 !important;
 }
 
 /*
@@ -335,7 +335,7 @@
   top: 1px;
   z-index: var(--ap-z-user-menu);
   background-color: transparent;
-  width: 200px;
+  width: 152px;
   border: none;
   height: 30px;
 }
@@ -767,7 +767,7 @@ img[src="img/icon/bpmn-22x22.png"] {
 .ap-lang-chooser {
     position: fixed;
     top: 37px;
-    right: 5px;
+    right: 2px;
     font-size: 12px;
 }
 

@@ -50,7 +50,7 @@
     xmlns:x="xhtml" xmlns:zk="zk">
 
     <style src="~./css/cytoscape-context-menus.css"/>
-    <script type="text/javascript" src="~./js/jquery.js"></script>
+    <script type="text/javascript" src="~./libs/jquery/3.5.1/jquery-3.5.1.min.js"></script>
     <style src="~./css/chiaroscuro.css"></style>
     <style>
         /* must be embedded here */
@@ -202,10 +202,10 @@
             </west>
             <center id="mainPanel" sclass="ap-portal-right-section" vflex="1" border="0">
                 <vlayout vflex="1" sclass="ap-portal-right-content" spacing="0">
-
                     <menubar id="menucomp" sclass="ap-portal-menu" height="32px" width="100%" apply="org.apromore.portal.dialogController.MenuController" />
                     <combobox
                         sclass="ap-lang-chooser"
+                        style="font-size: 12px"
                         id="langChooser"
                         autodrop="true"
                         mold="rounded"
@@ -244,7 +244,7 @@
                             <button id="btnCalendar" sclass="ap-icon ap-icon-calendar" ca:data-t="calendar" tooltiptext="${labels.portal_tbarCalendar_hint}"/>
                         </hbox>
                         <div hflex="1"></div>
-                        <SimpleSearch id="simplesearchcomp" border="0" width="400px" />
+                        <SimpleSearch id="simplesearchcomp" border="0" width="250px" />
                         <hbox sclass="ap-portal-action-buttons" align="start" pack="end" width="70px" spacing="0" style="margin-right: 5px;" >
                             <h:span class="ap-action-sep"></h:span>
                             <button id="btnTileView" sclass="ap-icon ap-icon-tiles" ca:data-t="tileView" tooltiptext="${labels.portal_viewTile_hint}"/>
