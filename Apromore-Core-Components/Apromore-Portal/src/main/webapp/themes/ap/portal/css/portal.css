@@ -762,3 +762,26 @@ img[src="img/icon/bpmn-22x22.png"] {
   content: '/';
   color: var(--ap-c-text-light) !important;
 }*/
+
+/* lang chooser */
+.ap-lang-chooser {
+    position: fixed;
+    top: 37px;
+    right: 5px;
+    font-size: 12px;
+}
+
+.ap-lang-chooser .z-comboitem-image {
+    vertical-align: bottom;
+    line-height: 14px;
+    margin-top: 0px;
+}
+
+.ap-lang-chooser .z-comboitem-image img {
+    width: 15px;
+    border: 1px solid #e0e0e0;
+}
+
+.ap-lang-chooser .z-comboitem-text {
+    vertical-align: bottom;
+}
