@@ -919,3 +919,15 @@ tr.z-row-disabled td.z-row-inner .z-slider-area {
     width: 60px;
     text-align: right;
 }
+
+.z-messagebox .z-label {
+    padding: 2px 2px 12px 12px;
+}
+
+.z-messagebox-viewport {
+    overflow-x: hidden;
+}
+
+.z-messagebox-viewport .z-messagebox-icon {
+    margin-left: 12px;
+}
