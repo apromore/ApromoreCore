@@ -402,11 +402,23 @@
   filter: var(--ap-filter-ico-normal-light);
 }
 
-
 .ap-user-menu:hover .z-menu-icon {
   background-color: transparent !important;
   filter: var(--ap-filter-ico-white) !important;
 }
+
+.ap-user-menu .z-menu-content:hover,
+.ap-user-menu .z-menu-content:active,
+.ap-user-menu .z-menu-content:focus,
+.ap-user-menu .z-menu-hover .z-menu-content {
+    background-color: transparent;
+}
+
+.ap-user-menu .z-icon-caret-down:before {
+    display: none;
+}
+
+/* Misc */
 
 .ap-portal-right-section .z-menubar .z-menuseparator {
   display: none;

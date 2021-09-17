@@ -561,15 +561,6 @@ div.ap-window-footer-actions {
     cursor: pointer;
 }
 
-/* user menu */
-.ap-user-menu .z-menu-hover .z-menu-content {
-    background-color: transparent;
-}
-
-.ap-user-menu .z-icon-caret-down:before {
-    display: none;
-}
-
 /* Checkbox with icon */
 
 .z-checkbox-switch.ap-iconized-checkbox {
