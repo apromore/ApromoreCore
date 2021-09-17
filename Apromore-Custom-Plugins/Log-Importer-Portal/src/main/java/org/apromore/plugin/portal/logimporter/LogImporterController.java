@@ -130,7 +130,7 @@ public class LogImporterController extends SelectorComposer<Window> implements C
     Button matchedMapping;
     private boolean useParquet;
     // Be default, enable Anonymize toggle in Log Importer
-    private boolean enableAnonymize = false;
+    private boolean enableAnonymize = true;
     private File parquetFile;
 
     private LogMetaData logMetaData;
@@ -714,8 +714,8 @@ public class LogImporterController extends SelectorComposer<Window> implements C
         menuItems.put(RESOURCE_LABEL, getLabel("resource"));
         menuItems.put(CASE_ATTRIBUTE_LABEL, getLabel("case_attribute"));
         menuItems.put(EVENT_ATTRIBUTE_LABEL, getLabel("event_attribute"));
-        menuItems.put(IGNORE_LABEL, getLabel("ignore_attribute"));
         menuItems.put(PERSPECTIVE_LABEL, getLabel("perspective"));
+        menuItems.put(IGNORE_LABEL, getLabel("ignore_attribute"));
 
         for (int pos = 0; pos < logMetaData.getHeader().size(); pos++) {
             String head = logMetaData.getHeader().get(pos);
@@ -724,7 +724,7 @@ public class LogImporterController extends SelectorComposer<Window> implements C
             box.setMold("select");
             // set id of list as column position
             box.setId(String.valueOf(pos));
-            box.setWidth(COLUMN_WIDTH - 20 + "px");
+            box.setWidth(COLUMN_WIDTH - 12 + "px");
 
             for (Map.Entry<String, String> myItem : menuItems.entrySet()) {
                 Listitem item = new Listitem();
