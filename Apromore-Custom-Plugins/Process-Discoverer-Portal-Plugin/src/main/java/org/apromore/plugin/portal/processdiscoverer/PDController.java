@@ -70,9 +70,13 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.ComponentNotFoundException;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
+import org.zkoss.zul.Messagebox.ClickEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.EventQueue;
+import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
@@ -432,6 +436,26 @@ public class PDController extends BaseController implements Composer<Component> 
     }
 
     public void openCalendar() {
+        final EventQueue<Event> sessionQueue = EventQueues.lookup("org/apromore/service/CALENDAR", EventQueues.SESSION,true);
+        sessionQueue.subscribe(new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) {
+                if ("onCalendarChanged".equals(event.getName())) {
+                    int logId = (int) event.getData();
+                    if (logId == sourceLogId) {
+                        Messagebox.show("Custom calendar for this process log is updated. You need to reload the page. Continue?",
+                            new Messagebox.Button[] {Messagebox.Button.OK, Messagebox.Button.CANCEL},
+                            (ClickEvent e) -> {
+                                if (Messagebox.ON_OK.equals(e.getName())) {
+                                    Clients.evalJavaScript("window.location.reload()");
+                                }
+                            }
+                        );
+                    }
+                    sessionQueue.unsubscribe(this);
+                }
+            }
+        });
         ((MainController)portalContext.getMainController()).getBaseListboxController().launchCalendar(sourceLogName, sourceLogId);
     }
 

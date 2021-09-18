@@ -522,8 +522,8 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
     @Listen("onClick = #cancelBtn")
     public void onClickCancelBtn() {
         if (isNew) {
-            EventQueue<Event> calendarEventQueue = EventQueues.lookup(CalendarService.EVENT_TOPIC, EventQueues.DESKTOP,true);
-            calendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_ABANDON, null, calendarId));
+            EventQueue<Event> localCalendarEventQueue = EventQueues.lookup(CalendarService.EVENT_TOPIC + "LOCAL", EventQueues.DESKTOP,true);
+            localCalendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_ABANDON, null, calendarId));
         }
         getSelf().detach();
     }
