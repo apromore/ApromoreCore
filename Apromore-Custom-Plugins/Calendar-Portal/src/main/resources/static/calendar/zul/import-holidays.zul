@@ -22,7 +22,7 @@
 <zk>
     <window width="400px" position="center" apply="org.apromore.plugin.portal.calendar.controllers.ImportHolidays"
             id="importHolidaysWin"
-            title="Add Holidays from a country"
+            title="${$composer.labels.add_public_holidays_title_text}"
             sclass="ap-holidays-win"
             xmlns:ca="client/attribute"
             xmlns:n="native">
@@ -41,19 +41,19 @@
                 <row>
                     <div sclass="ap-holidays-selections" >
                         <n:div id="ap-holidays-year-wrapper" class="ap-holidays-wrapper" style="display:none">
-                            <n:div class="label">Year</n:div>
+                            <n:div class="label">${$composer.labels.year_text}</n:div>
                             <n:select class="ap-holidays-selector" id="year"></n:select>
                         </n:div>
                         <n:div id="ap-holidays-country-wrapper" class="ap-holidays-wrapper" style="display:none">
-                            <n:div class="label">Country</n:div>
+                            <n:div class="label">${$composer.labels.country_text}</n:div>
                             <n:select class="ap-holidays-selector" id="country"></n:select>
                         </n:div>
                         <n:div id="ap-holidays-state-wrapper" class="ap-holidays-wrapper" style="display:none">
-                            <n:div class="label">State</n:div>
+                            <n:div class="label">${$composer.labels.state_text}</n:div>
                             <n:select class="ap-holidays-selector" id="state"></n:select>
                         </n:div>
                         <n:div id="ap-holidays-region-wrapper" class="ap-holidays-wrapper" style="display:none">
-                            <n:div class="label">Region</n:div>
+                            <n:div class="label">${$composer.labels.region_text}</n:div>
                             <n:select class="ap-holidays-selector" id="region"></n:select>
                         </n:div>
                     </div>
@@ -61,8 +61,8 @@
             </rows>
         </grid>
         <div sclass="ap-window-footer-actions">
-            <button id="saveBtn" label="Create" iconSclass="z-icon-check-circle" ca:onClick="Ap.calendar.submitHolidays()" />
-            <button id="cancelBtn" label="Cancel" iconSclass="z-icon-times-circle" />
+            <button id="saveBtn" label="${$composer.labels.create_text}" iconSclass="z-icon-check-circle" ca:onClick="Ap.calendar.submitHolidays()" />
+            <button id="cancelBtn" label="${$composer.labels.cancel_text}" iconSclass="z-icon-times-circle" />
         </div>
     </window>
 </zk>
