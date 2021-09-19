@@ -67,7 +67,7 @@
     <n:link rel="Stylesheet" media="screen" href="${arg.editor}/editor/css/theme_norm.css" type="text/css"/>
     <n:link rel="Stylesheet" media="screen" href="${arg.editor}/editor/css/theme_ext.css" type="text/css"/>
 
-    <n:script src="js/jquery.js" type="text/javascript"/>
+    <n:script src="libs/jquery/3.5.1/jquery-3.5.1.min.js" type="text/javascript"/>
 
 
     <!-- STYLESHEET FOR BPMN.IO -->

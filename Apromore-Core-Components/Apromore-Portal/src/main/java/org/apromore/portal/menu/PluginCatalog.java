@@ -57,6 +57,7 @@ public abstract class PluginCatalog {
 
     public static final String PLUGIN_ANIMATE_LOG = "org.apromore.plugin.portal.loganimation2.LogAnimationPlugin";
     public static final String PLUGIN_COMPARE_MODELS = "org.apromore.plugin.portal.bpmndiff.BPMNDiffPlugin";
+    public static final String PLUGIN_CHECK_CONFORMANCE = "org.apromore.plugin.portal.conformancechecking.ConformanceCheckingPlugin";
     public static final String PLUGIN_SIMULATE_MODEL = "org.apromore.plugin.portal.bimp.BIMPPortalPlugin";
     public static final String PLUGIN_DASHBOARD = "dashboard.portal.DashboardPlugin";
 

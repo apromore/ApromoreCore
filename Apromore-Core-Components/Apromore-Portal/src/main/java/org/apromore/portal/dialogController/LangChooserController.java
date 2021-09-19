@@ -21,9 +21,7 @@
  */
 package org.apromore.portal.dialogController;
 
-import org.apromore.plugin.portal.PortalLoggerFactory;
-import org.apromore.portal.common.i18n.I18nConfig;
-import org.apromore.portal.common.i18n.I18nSession;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Executions;
@@ -34,8 +32,10 @@ import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Messagebox;
 
-import java.util.Locale;
-import java.util.Map;
+import org.apromore.commons.i18n.I18Utils;
+import org.apromore.plugin.portal.PortalLoggerFactory;
+import org.apromore.portal.common.i18n.I18nConfig;
+import org.apromore.portal.common.i18n.I18nSession;
 
 public class LangChooserController {
 
@@ -95,6 +95,8 @@ public class LangChooserController {
             String label = entry.getValue();
             comboitem = combobox.appendItem(label);
             comboitem.setValue(langTag);
+            // https://github.com/lipis/flag-icon-css
+            comboitem.setImage("libs/flag-icon-css/flags/4x3/" + I18Utils.langTagToCountryCode(langTag) + ".svg");
             if (langTag.equals(persistedLangTag)) {
                 selIndex = i;
             }
