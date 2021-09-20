@@ -27,7 +27,6 @@ import java.util.ResourceBundle;
 import org.apromore.dao.model.User;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
-import org.apromore.security.util.SecurityUtil;
 import org.apromore.service.SecurityService;
 import org.slf4j.Logger;
 import org.zkoss.web.Attributes;

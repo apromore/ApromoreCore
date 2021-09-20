@@ -50,7 +50,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
-import static java.nio.charset.StandardCharsets.UTF_8;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;

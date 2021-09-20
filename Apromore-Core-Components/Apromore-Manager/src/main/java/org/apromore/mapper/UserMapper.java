@@ -24,6 +24,7 @@
 
 package org.apromore.mapper;
 
+import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -178,8 +179,8 @@ public class UserMapper {
                     membership.setHashingAlgorithm("SHA-256");
                     membership.setPassword(SecurityUtil.hash(userType.getMembership().getPassword() + membership.getSalt(),
                         membership.getHashingAlgorithm()));
-                } catch (Exception e) {
-                    throw new RuntimeException("Unable to hash password for " + userType.getUsername(), e);
+                } catch (NoSuchAlgorithmException e) {
+                    throw new IllegalArgumentException("Unable to hash password for " + userType.getUsername(), e);
                 }
             } else {
                 membership.setPassword("");

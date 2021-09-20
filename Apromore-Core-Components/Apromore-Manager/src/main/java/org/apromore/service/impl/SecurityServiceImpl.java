@@ -389,7 +389,7 @@ public class SecurityServiceImpl implements SecurityService {
       return true;
 
     } catch (Exception e) {
-      LOGGER.log(Level.WARNING, "Unable to reset password for user " + membership.getEmail(), e);
+      LOGGER.log(Level.WARNING, e, () -> "Unable to reset password for user " + membership.getEmail());
       return false;
     }
   }
