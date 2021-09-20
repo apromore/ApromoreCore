@@ -435,7 +435,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
 
         // Verify mock and result
         verifyAll();
-        Assert.assertEquals(result, Arrays.asList());
+        Assert.assertEquals(Arrays.asList(), result);
 
     }
 
@@ -502,7 +502,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
 
         // Verify mock and result
         verifyAll();
-        Assert.assertEquals(result, Arrays.asList());
+        Assert.assertEquals(Arrays.asList(), result);
 
     }
 
@@ -575,7 +575,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
 
         // Verify mock and result
         verifyAll();
-        Assert.assertEquals(result, Arrays.asList());
+        Assert.assertEquals(Arrays.asList(), result);
 
     }
 

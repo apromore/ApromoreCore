@@ -53,7 +53,7 @@ public class Membership implements Serializable {
      * Special value for {@link #hashingAlgorithm} property, indicating an MD5 password
      * hash that ignores the content of the {@link #salt} property.
      */
-    public final static String MD5_UNSALTED = "MD5 UNSALTED";
+    public static final String MD5_UNSALTED = "MD5 UNSALTED";
 
     private Integer id;
     private String password;

@@ -422,7 +422,7 @@ public class SecurityServiceImpl implements SecurityService {
       return true;
 
     } catch (Exception e) {
-      LOGGER.log(Level.WARNING, "Unable to change password for user \"" + user.getUsername() + "\"", e);
+      LOGGER.log(Level.WARNING, e, () -> "Unable to change password for user \"" + user.getUsername() + "\"");
       return false;
     }
   }

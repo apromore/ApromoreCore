@@ -90,13 +90,11 @@ public class UsernamePasswordAuthenticationProvider implements AuthenticationPro
     /**
      * Authentication policy for accounts stored in the local database.
      *
-     * Prior to version 8.0 (~2021-09) passwords were not salted before hashing.
-     * The password_salt field had an unused value (generally the string "username").
-     * If the feature flag <code>enableUnsaltedPasswords</code> is set, this implementation
-     * allows login with a password matching the unsalted hash.
-     * If the feature flag <code>enableSaltingPasswords</code> is set, this implementation
-     * will transparently upgrade unsalted password hashes to salted ones, or hashes with
-     * salt less than the required length of <code>saltLength</code>.
+     * The {@link #allowedPasswordHashingAlgorithms} configuration lists the hashing
+     * algorithms which can be used to authenticate.
+     * If the {@link #upgradePasswords} configuration is set, this implementation
+     * will transparently upgrade password hashes to {@link #passwordHashingAlgorithm}
+     * or hashes with salt less than the required length of {@link #saltLength}.
      *
      * @param authentication  must be a {@link UsernamePasswordAuthenticationToken}
      * @throws UsernameNotFoundException if the <var>authentication</var>'s name isn't

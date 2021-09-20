@@ -50,7 +50,6 @@ import org.apromore.plugin.portal.useradmin.listbox.UserListbox;
 import org.apromore.portal.common.zk.ComponentUtils;
 import org.apromore.portal.types.EventQueueEvents;
 import org.apromore.portal.types.EventQueueTypes;
-import org.apromore.security.util.SecurityUtil;
 import org.apromore.service.SecurityService;
 import org.apromore.service.WorkspaceService;
 import org.apromore.zk.notification.Notification;
