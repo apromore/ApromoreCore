@@ -23,6 +23,7 @@
 
 import Log from './logger';
 import Utils from './utils';
+import {reject} from "ramda";
 
 /**
  * Editor is actually a wrapper around the true editor (e.g. BPMN.io)
@@ -48,32 +49,32 @@ export default class Editor {
         this.rootNode.classList.add(this.className);
     }
 
-    updateUndoRedo() {
-        try {
-            var undo = jq('#ap-id-editor-undo-btn');
-            var redo = jq('#ap-id-editor-redo-btn');
-            if (this.canUndo()) {
-                undo.removeClass('disabled');
-            } else {
-                undo.addClass('disabled');
-            }
-            if (this.canRedo()) {
-                redo.removeClass('disabled');
-            } else {
-                redo.addClass('disabled');
-            }
-        } catch(e) {
-            console.log('Unexpected error occurred when update button status');
-        }
-    }
-
     attachEditor(editor) {
-        var me = this;
+        let me = this;
         this.actualEditor = editor; //This is a BPMNJS object
-        this.updateUndoRedo();
+        updateUndoRedo();
         this.addCommandStackChangeListener(function () {
-            me.updateUndoRedo();
+            updateUndoRedo();
         });
+        function updateUndoRedo() {
+            try {
+                var undo = $('#ap-id-editor-undo-btn');
+                var redo = $('#ap-id-editor-redo-btn');
+                if (!undo || !redo) return;
+                if (me.canUndo()) {
+                    undo.removeClass('disabled');
+                } else {
+                    undo.addClass('disabled');
+                }
+                if (me.canRedo()) {
+                    redo.removeClass('disabled');
+                } else {
+                    redo.addClass('disabled');
+                }
+            } catch(e) {
+                console.log('Unexpected error occurred when update button status.', e.message);
+            }
+        }
     }
 
     getSVGContainer() {
@@ -85,6 +86,7 @@ export default class Editor {
     }
 
     getIncomingFlowId(nodeId) {
+        if (!this.actualEditor || !this.actualEditor.getDefinitions()) return false;
         var foundId;
         var flowElements = this.actualEditor.getDefinitions().rootElements[0].flowElements;
         flowElements.forEach(function(element) {
@@ -96,6 +98,7 @@ export default class Editor {
     }
 
     getOutgoingFlowId(nodeId) {
+        if (!this.actualEditor || !this.actualEditor.getDefinitions()) return false;
         var foundId;
         var elements = this.actualEditor.getDefinitions().rootElements[0].flowElements;
         elements.forEach(function(element) {
@@ -111,25 +114,6 @@ export default class Editor {
     }
 
     /**
-     * Any clean up needs to be done on the raw XML
-     *
-     * @todo: There might be a structured way to do this (e.g. XML parser),
-     * but this should be the fastest fix for now
-     */
-    sanitizeXML(xml) {
-        var REMOVE_LIST = [
-            // Empty label element breaks label editing in bpmn.io
-            /<bpmndi:BPMNLabel\s*\/>/ig,
-            /<bpmndi:BPMNLabel\s*>\s*<\/bpmndi:BPMNLabel\s*>/ig
-        ];
-
-        REMOVE_LIST.forEach(function(regex) {
-            xml = xml.replaceAll(regex, '');
-        })
-        return xml;
-    }
-
-    /**
      * Import XML into the editor.
      * This method takes time depending on the complexity of the model
      * @param {String} xml: the BPMN XML
@@ -138,112 +122,109 @@ export default class Editor {
      * @todo: Avoid seperate conditional for loganimation and bpmneditor
      */
     async importXML(xml, callback) {
-        try {
-            xml = this.sanitizeXML(xml);
-        } catch(e) {
-            console.log('Failed to sanitize');
-            // pass
-        }
+        if (!this.actualEditor) return false;
+        xml = sanitizeXML(xml);
 
         //EXPERIMENTING WITH THE BELOW TO FIX ARROWS NOT SNAP TO EDGES WHEN OPENING MODELS
         //Some BPMN files are not compatible with bpmn.io
         var editor = this.actualEditor;
-        //Converting to promise
-        try {
-            const result = await editor.importXML(xml);
-            var eventBus = editor.get('eventBus');
-            var elementRegistry = editor.get('elementRegistry');
-            var connections = elementRegistry.filter(function(e) {
-                return e.waypoints;
-            });
-            try {
-                var connectionDocking = editor.get('connectionDocking');
-                connections.forEach(function(connection) {
-                    connection.waypoints = connectionDocking.getCroppedWaypoints(connection);
-                });
-            } catch (e) {
-                console.log('skip connectionDocking error');
-                // pass
-            }
-            eventBus.fire('elements.changed', { elements: connections });
-            // @todo: Avoid this conditional
-            if (this.preventFitDelay) { // this is for loganimation
-                this.zoomFitToModel();
-                callback();
-            } else { // this is for BPMN editor
-                callback();
-                var me = this; // delay the fit until the properties panel fully collapsed
-                setTimeout(function () {
-                    me.zoomFitToModel();
-                }, 500);
-            }
 
-        } catch (err) {
-            window.alert("Failed to import BPMN diagram. Please make sure it's a valid BPMN 2.0 diagram.");
-            return;
+        const result = await editor.importXML(xml).catch(err => {throw err;});
+        var eventBus = editor.get('eventBus');
+        var elementRegistry = editor.get('elementRegistry');
+        var connections = elementRegistry.filter(function(e) {
+            return e.waypoints;
+        });
+        try {
+            var connectionDocking = editor.get('connectionDocking');
+            connections.forEach(function(connection) {
+                connection.waypoints = connectionDocking.getCroppedWaypoints(connection);
+            });
+        } catch (e) {
+            console.log('skip connectionDocking error');
+            // pass
+        }
+        eventBus.fire('elements.changed', { elements: connections });
+        // @todo: Avoid this conditional
+        if (this.preventFitDelay) { // this is for loganimation
+            this.zoomFitToModel();
+            callback();
+        } else { // this is for BPMN editor
+            callback();
+            var me = this; // delay the fit until the properties panel fully collapsed
+            setTimeout(function () {
+                me.zoomFitToModel();
+            }, 500);
+        }
+
+
+        /**
+         * Any clean up needs to be done on the raw XML
+         *
+         * @todo: There might be a structured way to do this (e.g. XML parser),
+         * but this should be the fastest fix for now
+         */
+        function sanitizeXML(xml) {
+            var REMOVE_LIST = [
+                // Empty label element breaks label editing in bpmn.io
+                /<bpmndi:BPMNLabel\s*\/>/ig,
+                /<bpmndi:BPMNLabel\s*>\s*<\/bpmndi:BPMNLabel\s*>/ig
+            ];
+
+            REMOVE_LIST.forEach(function(regex) {
+                xml = xml.replaceAll(regex, '');
+            })
+            return xml;
         }
     }
 
     async getXML() {
-        var bpmnXML;
-
-        try {
-          const result = await this.actualEditor.saveXML({ format: true });
-          const { xml } = result;
-          bpmnXML = xml;
-        } catch (err) {
-          console.log(err);
-        }
-        return bpmnXML;
+        if (!this.actualEditor) return false;
+        const result = await this.actualEditor.saveXML({ format: true }).catch(err => {throw err;});
+        const {xml} = result;
+        return xml;
     }
 
     async getSVG() {
-        var bpmnSVG;
-
-        try {
-          const result = await this.actualEditor.saveSVG();
-          const { svg } = result;
-          bpmnSVG = svg;
-        } catch (err) {
-          console.log(err);
-        }
-        return bpmnSVG;
+        if (!this.actualEditor) return false;
+        const result = await this.actualEditor.saveSVG({ format: true }).catch(err => {throw err;});
+        const {svg} = result;
+        return svg;
     }
 
     zoomFitToModel() {
-        if (this.actualEditor) {
-            var canvas = this.actualEditor.get('canvas');
-            canvas.viewbox(false); // trigger recalculate the viewbox
-            canvas.zoom('fit-viewport', 'auto'); // zoom to fit full viewport
-        }
+        if (!this.actualEditor) return false;
+        var canvas = this.actualEditor.get('canvas');
+        canvas.viewbox(false); // trigger recalculate the viewbox
+        canvas.zoom('fit-viewport', 'auto'); // zoom to fit full viewport
+        return true;
     }
 
     zoomIn() {
-        // this.actualEditor.get('editorActions').trigger('stepZoom', { value: 1 });
-        if (this.actualEditor) {
-            var canvas = this.actualEditor.get('canvas');
-            canvas.zoom(canvas.zoom() * 1.1);
-        }
+        if (!this.actualEditor) return false;
+        var canvas = this.actualEditor.get('canvas');
+        canvas.zoom(canvas.zoom() * 1.1);
+        return true;
     }
 
     zoomOut() {
-        // this.actualEditor.get('editorActions').trigger('stepZoom', { value: -1 });
-        if (this.actualEditor) {
-            var canvas = this.actualEditor.get('canvas');
-            canvas.zoom(canvas.zoom() * 0.9);
-        }
+        if (!this.actualEditor) return false;
+        var canvas = this.actualEditor.get('canvas');
+        canvas.zoom(canvas.zoom() * 0.9);
+        return true;
     }
 
     zoomDefault() {
-        // editorActions.trigger('zoom', { value: 1 });
-        if (this.actualEditor) {
-            var canvas = this.actualEditor.get('canvas');
-            canvas.zoom(1);
-        }
+        if (!this.actualEditor) return false;
+        var canvas = this.actualEditor.get('canvas');
+        canvas.zoom(1);
+        return true;
     }
 
     undo() {
+        if (!this.actualEditor) return false;
         this.actualEditor.get('commandStack').undo();
+        return true;
     }
 
     canUndo() {
@@ -255,7 +236,9 @@ export default class Editor {
     }
 
     redo() {
+        if (!this.actualEditor) return false;
         this.actualEditor.get('commandStack').redo();
+        return true;
     }
 
     canRedo() {
@@ -267,11 +250,15 @@ export default class Editor {
     }
 
     addCommandStackChangeListener(callback) {
+        if (!this.actualEditor) return false;
         this.actualEditor.on('commandStack.changed', callback);
+        return true;
     }
 
     addEventBusListener(eventCode, callback) {
+        if (!this.actualEditor) return false;
         this.actualEditor.get('eventBus').on(eventCode, callback);
+        return true;
     }
 
 };

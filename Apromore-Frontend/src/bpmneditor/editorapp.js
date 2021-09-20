@@ -25,6 +25,7 @@ import CONFIG from './config';
 import Editor from './editor';
 import Log from './logger';
 import Utils from './utils';
+import BpmnJS from './editor/bpmnio/bpmn-modeler.development';
 
 /**
  * The EditorApp class represents the BPMN Editor. It calls to a BPMN.io editor internally while provides
@@ -227,11 +228,6 @@ export default class EditorApp {
 
         this.layout_regions.west.hide();
         this.layout_regions.info.hide();
-        if (Ext.isIPad && "undefined" != typeof iScroll) {
-            this.getEditor().iscroll = new iScroll(this.layout_regions.center.body.dom.firstChild, {
-                touchCount: 2
-            })
-        }
 
         // Set the editor to the center, and refresh the size
         this._getContainer().setAttributeNS(null, 'align', 'left');
@@ -276,9 +272,9 @@ export default class EditorApp {
             current_region.ownerCt.doLayout();
             current_region.show();
 
-            if (Ext.isMac) {
-                this.resizeFix();
-            }
+            // if (Ext.isMac) {
+            //     this.resizeFix();
+            // }
 
             return current_region;
         }
@@ -345,9 +341,9 @@ export default class EditorApp {
         this.activatedPlugins = newPlugins;
 
         // Hack for the Scrollbars
-        if (Ext.isMac) {
-            this.resizeFix();
-        }
+        // if (Ext.isMac) {
+        //     this.resizeFix();
+        // }
     }
 
     _getContainer() {
@@ -421,13 +417,13 @@ export default class EditorApp {
      * resizeBugFix calls are ignored until the initially requested resize is
      * performed.
      */
-    resizeFix() {
-        if (!this._resizeFixTimeout) {
-            window.resizeBy(1, 1);
-            window.resizeBy(-1, -1);
-            this._resizefixTimeout = null;
-        }
-    }
+    // resizeFix() {
+    //     if (!this._resizeFixTimeout) {
+    //         window.resizeBy(1, 1);
+    //         window.resizeBy(-1, -1);
+    //         this._resizefixTimeout = null;
+    //     }
+    // }
 
     /**
      * Load the editor and a list of predefined plugins from the server
