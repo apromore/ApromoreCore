@@ -49,8 +49,15 @@ import org.springframework.beans.factory.annotation.Configurable;
 @Configurable("membership")
 public class Membership implements Serializable {
 
+    /**
+     * Special value for {@link #hashingAlgorithm} property, indicating an MD5 password
+     * hash that ignores the content of the {@link #salt} property.
+     */
+    public final static String MD5_UNSALTED = "MD5 UNSALTED";
+
     private Integer id;
     private String password;
+    private String hashingAlgorithm;
     private String salt;
     private String mobilePin;
     private String email;
@@ -93,8 +100,7 @@ public class Membership implements Serializable {
 
 
     /**
-     * Get the password for the Object.
-     * @return Returns the password.
+     * @return the password hash expressed as non-zero-extended hexadecimal text
      */
     @Column(name = "password")
     public String getPassword() {
@@ -102,11 +108,34 @@ public class Membership implements Serializable {
     }
 
     /**
-     * Set the password for the Object.
-     * @param newPassword The password to set.
+     * @param newPassword  non-zero-extended hexadecimal text
      */
     public void setPassword(final String newPassword) {
         this.password = newPassword;
+    }
+
+    /**
+     * @return the password hashing algorithm, which should be the name of a {@link java.security.MessageDigest}
+     *     algorithm; {@link MD5_UNSALTED} has the special meaning that the password field is an unsalted
+     *     MD5 hash and is for back-compatibility with pre-2021 behavior
+     *
+     * @see <a href="https://docs.oracle.com/en/java/javase/11/docs/specs/security/standard-names.html#messagedigest-algorithms">Message
+     *     digest algorithms</a>
+     */
+    @Column(name = "password_hashing_algorithm")
+    public String getHashingAlgorithm() {
+        return hashingAlgorithm;
+    }
+
+    /**
+     * @param newHashingAlgorithm  desired password hashing algorithm, which should be the name of a
+     *     {@link java.security.MessageDigest} algorithm or {@link MD5_UNSALTED}
+     *
+     * @see <a href="https://docs.oracle.com/en/java/javase/11/docs/specs/security/standard-names.html#messagedigest-algorithms">Message
+     *     digest algorithms</a>
+     */
+    public void setHashingAlgorithm(final String newHashingAlgorithm) {
+        this.hashingAlgorithm = newHashingAlgorithm;
     }
 
     /**

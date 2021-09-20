@@ -174,7 +174,13 @@ public class UserMapper {
             membership.setDateCreated(new Date());
             membership.setEmail(userType.getMembership().getEmail());
             if (userType.getMembership().getPassword() != null) {
-                membership.setPassword(SecurityUtil.hashPassword(userType.getMembership().getPassword()));
+                try {
+                    membership.setHashingAlgorithm("SHA-256");
+                    membership.setPassword(SecurityUtil.hash(userType.getMembership().getPassword() + membership.getSalt(),
+                        membership.getHashingAlgorithm()));
+                } catch (Exception e) {
+                    throw new RuntimeException("Unable to hash password for " + userType.getUsername(), e);
+                }
             } else {
                 membership.setPassword("");
             }

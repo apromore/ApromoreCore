@@ -24,6 +24,8 @@
 
 package org.apromore.service.impl;
 
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -33,6 +35,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.inject.Inject;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apromore.dao.GroupRepository;
@@ -78,14 +81,17 @@ public class SecurityServiceImpl implements SecurityService {
   private static final String EMAIL_START = "Hi, Here is your newly requested password: ";
   private static final String EMAIL_END = "\nPlease try to login again!";
 
-  @Value("${enableSaltingPasswords}")
-  boolean enableSaltingPasswords;
+  @Value("${allowedPasswordHashingAlgorithms}")
+  String allowedPasswordHashingAlgorithms;
 
-  @Value("${enableUnsaltedPasswords}")
-  boolean enableUnsaltedPasswords;
+  @Value("${passwordHashingAlgorithm}")
+  String passwordHashingAlgorithm;
 
   @Value("${saltLength}")
   int saltLength;
+
+  @Value("${upgradePasswords}")
+  boolean upgradePasswords;
 
   private UserRepository userRepo;
   private GroupRepository groupRepo;
@@ -378,10 +384,9 @@ public class SecurityServiceImpl implements SecurityService {
       emailUserPassword(membership, newPassword);
 
       // Change the password in the database
-      membership.setPassword(SecurityUtil.hashPassword(newPassword));
-      membership = membershipRepo.save(membership);
+      updatePassword(membership, newPassword);
 
-      return membership.getPassword().equals(SecurityUtil.hashPassword(newPassword));
+      return true;
 
     } catch (Exception e) {
       LOGGER.log(Level.WARNING, "Unable to reset password for user " + membership.getEmail(), e);
@@ -400,53 +405,51 @@ public class SecurityServiceImpl implements SecurityService {
     User user = userRepo.findByUsername(username);
     Membership membership = user.getMembership();
 
-    if (!validPassword(membership, oldPassword)) {
-      LOGGER.warning("Failed attempt to change password for user " + membership.getEmail());
-      return false;
+    // Check that the password hashing algorithm is one we accept
+    if (!Arrays.asList(allowedPasswordHashingAlgorithms.split(",")).contains(membership.getHashingAlgorithm())) {
+        return false;
     }
 
     try {
-      // Change the password in the database
-      if (enableSaltingPasswords) {
-        membership.setSalt(RandomStringUtils.randomAlphanumeric(saltLength));
-        membership.setPassword(SecurityUtil.hashPassword(newPassword + membership.getSalt()));
-      } else {
-        membership.setPassword(SecurityUtil.hashPassword(newPassword));
+      // Authenticate
+      if (!SecurityUtil.authenticate(membership, oldPassword)) {
+          return false;
       }
-      membership = membershipRepo.save(membership);
+
+      // Update database with the new password
+      updatePassword(membership, newPassword);
 
       return true;
 
     } catch (Exception e) {
-      LOGGER.log(Level.WARNING, "Unable to change password for user " + membership.getEmail(), e);
+      LOGGER.log(Level.WARNING, "Unable to change password for user \"" + user.getUsername() + "\"", e);
       return false;
     }
   }
 
-  private boolean validPassword(final Membership membership, final String password) {
-
-    // Valid if the salted password's hash matches
-    if (membership.getPassword().equals(SecurityUtil.hashPassword(password + membership.getSalt()))) {
-      return true;
-    }
-
-    // Valid if the unsalted password's hash matches and the ${enableUnsaltedPasswords} feature is enabled
-    // This is only allowed for back-compatibility to the original system, where salting hadn't been implemented
-    if (enableUnsaltedPasswords && membership.getPassword().equals(SecurityUtil.hashPassword(password))) {
-      return true;
-    }
-
-    // Otherwise, this isn't a password we accept
-    return false;
-  }
-
   /** Email the User's Password to them. */
-  private void emailUserPassword(Membership membership, String newPswd) throws MailException {
+  private void emailUserPassword(Membership membership, String newPassword) throws MailException {
     SimpleMailMessage message = new SimpleMailMessage();
     message.setTo(membership.getEmail());
     message.setSubject(EMAIL_SUBJECT);
-    message.setText(EMAIL_START + newPswd + EMAIL_END);
+    message.setText(EMAIL_START + newPassword + EMAIL_END);
     mailSender.send(message);
+  }
+
+  @Transactional(readOnly = false)
+  public void updatePassword(Membership membership, final String newPassword) throws NoSuchAlgorithmException {
+    if (upgradePasswords) {
+      membership.setHashingAlgorithm(passwordHashingAlgorithm);
+    }
+
+    if (Membership.MD5_UNSALTED.equals(membership.getHashingAlgorithm())) {
+      membership.setPassword(SecurityUtil.hash(newPassword, "MD5"));
+    } else {
+      membership.setSalt(RandomStringUtils.randomAlphanumeric(saltLength));
+      membership.setPassword(SecurityUtil.hash(newPassword + membership.getSalt(), membership.getHashingAlgorithm()));
+    }
+
+    membershipRepo.save(membership);
   }
 
   /**

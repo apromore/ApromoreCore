@@ -1160,3 +1160,15 @@ databaseChangeLog:
              - column:
                  name: paused
                  type: BOOLEAN
+
+ - changeSet:
+     id: 20210917130000
+     author: raboczi
+     changes:
+       - addColumn:
+           tableName: membership
+           columns:
+             - column:
+                 name: password_hashing_algorithm
+                 type: VARCHAR(20)
+                 defaultValue: "MD5 UNSALTED"

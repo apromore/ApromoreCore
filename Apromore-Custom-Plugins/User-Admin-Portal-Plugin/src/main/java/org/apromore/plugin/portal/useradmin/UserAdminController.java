@@ -1031,13 +1031,20 @@ public class UserAdminController extends SelectorComposer<Window> {
       saveAssignedGroup(selectedUsers, false);
       saveAssignedRole(selectedUsers, false);
       selectedUser.getMembership().setEmail(emailTextbox.getValue());
-      if (passwordDirty) {
-        selectedUser.getMembership()
-            .setPassword(SecurityUtil.hashPassword(passwordTextbox.getValue()));
-        selectedUser.getMembership().setSalt("username");
-      }
       selectedUser.getMembership().setUser(selectedUser);
       securityService.updateUser(selectedUser);
+
+      if (passwordDirty) {
+        try {
+          securityService.updatePassword(selectedUser.getMembership(), passwordTextbox.getValue());
+
+        } catch (Exception e) {
+          LOGGER.error("Unable to update password", e);
+          Messagebox.show(getLabel("passwordNotUpdated_message"), null, Messagebox.OK,
+              Messagebox.ERROR);
+        }
+      }
+
       Notification
           .info(MessageFormat.format(getLabel("userUpdated_message"), selectedUser.getUsername()));
     } else {

@@ -35,6 +35,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -49,7 +50,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -72,14 +76,17 @@ public class UsernamePasswordAuthenticationProvider implements AuthenticationPro
     @Inject
     private SecurityService securityService;
 
-    @Value("${enableSaltingPasswords}")
-    private boolean enableSaltingPasswords;
+    @Value("${allowedPasswordHashingAlgorithms}")
+    private String allowedPasswordHashingAlgorithms;
 
-    @Value("${enableUnsaltedPasswords}")
-    private boolean enableUnsaltedPasswords;
+    @Value("${passwordHashingAlgorithm}")
+    private String passwordHashingAlgorithm;
 
     @Value("${saltLength}")
     private int saltLength;
+
+    @Value("${upgradePasswords}")
+    private boolean upgradePasswords;
 
     /**
      * Authentication policy for accounts stored in the local database.
@@ -97,6 +104,8 @@ public class UsernamePasswordAuthenticationProvider implements AuthenticationPro
      *   either an existing username or email address
      * @throws BadCredentialsException if the <var>authentication</var>'s credentials
      *   aren't the correct password
+     * @throws InternalAuthenticationServiceException if the password hash stored in the
+     *   database isn't a valid hexadecimal string
      */
     @Transactional
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -106,22 +115,42 @@ public class UsernamePasswordAuthenticationProvider implements AuthenticationPro
         Membership membership = user.getMembership();
         String password = (String) token.getCredentials();
 
-        if (enableUnsaltedPasswords && passwordMatches(membership, password)) {  // Check for unsalted password
-            LOGGER.info("User \"{}\" has an unsalted password.", user.getUsername());
-            resalt(user, password);
-
-        } else if (!passwordMatches(membership, password + membership.getSalt())) {
-            throw new BadCredentialsException("Incorrect password");
+        // Check that the password hashing algorithm is one we accept
+        if (!Arrays.asList(allowedPasswordHashingAlgorithms.split(",")).contains(membership.getHashingAlgorithm())) {
+            throw new InternalAuthenticationServiceException("Unacceptable legacy password hash " +
+                membership.getHashingAlgorithm() + " for user " + user.getUsername());
         }
 
-        if (membership.getSalt().length() < saltLength) {
-            // The current salt is below the configured size, so upgrade it
-            LOGGER.info("User \"{}\" has an password with {} characters of salt, less than the configured threshold of {}.",
-                user.getUsername(), membership.getSalt().length(), saltLength);
-            resalt(user, password);
-        }
+        // Parse the password field from the membership
+        try {
+            // Authenticate
+            if (!SecurityUtil.authenticate(membership, password)) {
+                throw new BadCredentialsException("Incorrect password");
+            }
 
-        return authenticatedToken(user, authentication);
+            // Although we've accepted these credentials now, we may tighten our criteria in the future.
+            // Since this is the only time we know the cleartext password, it's our opportunity to
+            // transparently upgrade the hashing scheme.  Otherwise we have to wait until the next login.
+
+            if (!membership.getHashingAlgorithm().equals(passwordHashingAlgorithm)) {
+                // Rehash because the current hash doesn't use our preferred algorithm
+                LOGGER.info("User \"{}\" authenticated with {} instead of {}", user.getUsername(),
+                    membership.getHashingAlgorithm(), passwordHashingAlgorithm);
+                rehash(user, password);
+
+            } else if (membership.getSalt().length() < saltLength) {
+                // Rehash because the current salt is below the configured size
+                LOGGER.info("User \"{}\" has a password with {} characters of salt, less than the configured threshold of {}.",
+                    user.getUsername(), membership.getSalt().length(), saltLength);
+                rehash(user, password);
+            }
+
+            return authenticatedToken(user, authentication);
+
+        } catch (NoSuchAlgorithmException e) {
+            throw new InternalAuthenticationServiceException("Unsupported algorithm " + membership.getHashingAlgorithm() +
+                " for password hash for user " + user.getUsername(), e);
+        }
     }
 
     /**
@@ -154,17 +183,6 @@ public class UsernamePasswordAuthenticationProvider implements AuthenticationPro
     }
 
     /**
-     * Does a candidate password match a user account?
-     *
-     * @param membership  corresponding to the user
-     * @param password  the unhashed password with salt appended
-     * @return whether  the hash of <var>password</var> matches the on stored for <var>membership</var>
-     */
-    private static boolean passwordMatches(final Membership membership, final String password) {
-        return membership.getPassword().trim().equals(SecurityUtil.hashPassword(password).trim());
-    }
-
-    /**
      * This method retains the user's existing password, but may upgrade its salt and hash depending on configuration.
      *
      * No change will occur if {@link #enableSaltingPasswords} is not true.
@@ -172,13 +190,13 @@ public class UsernamePasswordAuthenticationProvider implements AuthenticationPro
      * @param user  whose password to resalt
      * @param password  the current cleartext password for the <var>user</var>
      */
-    private void resalt(final User user, final String password) {
-        if (!enableSaltingPasswords) {
-            LOGGER.debug("Retaining the existing password hash because salting passwords is not enabled.");
+    private void rehash(final User user, final String password) {
+        if (!upgradePasswords) {
+            LOGGER.debug("Retaining the existing password hash because upgrading is not enabled.");
         } else if (securityService.changeUserPassword(user.getUsername(), password, password)) {
-            LOGGER.info("Resalted password for user {}", user.getUsername());
+            LOGGER.info("Rehashed password for user {}", user.getUsername());
         } else {
-            LOGGER.warn("Failed to resalt password for user {}", user.getUsername());
+            LOGGER.warn("Failed to rehash password for user {}", user.getUsername());
         }
     }
 

@@ -24,9 +24,11 @@
 
 package org.apromore.service;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Set;
 import org.apromore.dao.model.Group;
+import org.apromore.dao.model.Membership;
 import org.apromore.dao.model.Permission;
 import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
@@ -209,4 +211,6 @@ public interface SecurityService {
      * @return if success or not.
      */
     boolean changeUserPassword(String username, String oldPassword, String newPassword);
+
+    void updatePassword(Membership membership, final String newPassword) throws NoSuchAlgorithmException;
 }
