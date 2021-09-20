@@ -52,7 +52,7 @@
       </hbox>
       <listbox multiple="false" sclass="ap-calendars-listbox" id="calendarListbox" vflex="1" hflex="1" nonselectableTags="input">
         <listhead>
-          <listheader align="left" label="${$composer.labels.applied_text}" width="48px"/>
+          <listheader align="left" label="${$composer.labels.applied_text}" width="60px"/>
           <listheader align="left" label="${$composer.labels.name_text}" hflex="1" />
           <listheader align="left" label="${$composer.labels.created_text} on" width="120px" />
           <listheader align="center" label="${$composer.labels.action_text}" width="108px"/><!-- icons -->
