@@ -171,25 +171,24 @@ public class UserMapper {
         
         Membership membership = new Membership();
         if (userType.getMembership() != null) {
-            membership.setSalt("username");
             membership.setDateCreated(new Date());
             membership.setEmail(userType.getMembership().getEmail());
+            membership.setQuestion(userType.getMembership().getPasswordQuestion());
+            membership.setAnswer(userType.getMembership().getPasswordAnswer());
+            membership.setFailedPasswordAttempts(0);
+            membership.setFailedAnswerAttempts(0);
+            membership.setUser(user);
+
             if (userType.getMembership().getPassword() != null) {
                 try {
-                    membership.setHashingAlgorithm("SHA-256");
-                    membership.setPassword(SecurityUtil.hash(userType.getMembership().getPassword() + membership.getSalt(),
-                        membership.getHashingAlgorithm()));
+                    securityService.updatePassword(membership, userType.getMembership().getPassword());
+
                 } catch (NoSuchAlgorithmException e) {
                     throw new IllegalArgumentException("Unable to hash password for " + userType.getUsername(), e);
                 }
             } else {
                 membership.setPassword("");
             }
-            membership.setQuestion(userType.getMembership().getPasswordQuestion());
-            membership.setAnswer(userType.getMembership().getPasswordAnswer());
-            membership.setFailedPasswordAttempts(0);
-            membership.setFailedAnswerAttempts(0);
-            membership.setUser(user);
 
             user.setMembership(membership);
         }
