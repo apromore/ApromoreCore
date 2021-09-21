@@ -179,6 +179,15 @@ public interface SecurityService {
     User createUser(User user);
 
     /**
+     * @param user  a populated user, except for the id
+     * @param password  the user's password (cleartext)
+     * @return the created user with id assigned
+     * @throws NoSuchAlgorithmException if the configured <code>passwordHashingAlgorithm</code>
+     *     is not supported
+     */
+    User createUser(User user, String password) throws NoSuchAlgorithmException;
+
+    /**
      * @param user  an existing user, with modifications
      * @return the updated user
      */
@@ -212,5 +221,10 @@ public interface SecurityService {
      */
     boolean changeUserPassword(String username, String oldPassword, String newPassword);
 
+    /**
+     * @param membership  user account details to be modified and persisted
+     * @throws NoSuchAlgorithmException if the configured <code>passwordHashingAlgorithm</code>
+     *     is not supported
+     */
     void updatePassword(Membership membership, final String newPassword) throws NoSuchAlgorithmException;
 }

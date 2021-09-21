@@ -346,6 +346,18 @@ public class SecurityServiceImpl implements SecurityService {
     return user;
   }
 
+  /**
+   * @see org.apromore.service.SecurityService#createUser(org.apromore.dao.model.User, String) {@inheritDoc}
+   */
+  @Override
+  @Transactional(readOnly = false)
+  public User createUser(User user, String password) throws NoSuchAlgorithmException {
+
+      hashPassword(user.getMembership(), password);
+
+      return createUser(user);
+  }
+
   @Override
   @Transactional(readOnly = false)
   public User updateUser(User user) {
@@ -438,18 +450,32 @@ public class SecurityServiceImpl implements SecurityService {
 
   @Transactional(readOnly = false)
   public void updatePassword(Membership membership, final String newPassword) throws NoSuchAlgorithmException {
-    if (upgradePasswords) {
+    hashPassword(membership, newPassword);
+    membershipRepo.save(membership);
+  }
+
+  /**
+   * @param membership  will be modified to have a new password hash; if the hashing algorithm is <code>null</code>
+   *     it will be initialized to <code>passwordHashingAlgorithm</code>; if the salt is <code>null</code> it will
+   *     be set to a new random value (or the empty for <code>MD5 UNSALTED</code>)
+   * @param newPassword  cleartext password
+   * @throws NoSuchAlgorithmException if the configured <code>passwordHashingAlgorithm</code> is not supported
+   */
+  private void hashPassword(Membership membership, final String newPassword) throws NoSuchAlgorithmException {
+    if (upgradePasswords || membership.getHashingAlgorithm() == null) {
       membership.setHashingAlgorithm(passwordHashingAlgorithm);
     }
 
     if (Membership.MD5_UNSALTED.equals(membership.getHashingAlgorithm())) {
+      if (membership.getSalt() == null) {
+        membership.setSalt("");
+      }
       membership.setPassword(SecurityUtil.hash(newPassword, "MD5"));
+
     } else {
       membership.setSalt(RandomStringUtils.randomAlphanumeric(saltLength));
       membership.setPassword(SecurityUtil.hash(newPassword + membership.getSalt(), membership.getHashingAlgorithm()));
     }
-
-    membershipRepo.save(membership);
   }
 
   /**

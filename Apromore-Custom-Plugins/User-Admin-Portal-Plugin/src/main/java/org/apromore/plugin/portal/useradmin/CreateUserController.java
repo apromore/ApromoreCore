@@ -90,8 +90,7 @@ public class CreateUserController extends SelectorComposer<Window> {
 
       user.getMembership().setEmail(emailTextbox.getValue());
       user.getMembership().setUser(user);
-      securityService.updatePassword(user.getMembership(), passwordTextbox.getValue());
-      securityService.createUser(user);
+      securityService.createUser(user, passwordTextbox.getValue());
 
       Map dataMap = Map.of("type", "CREATE_USER");
 

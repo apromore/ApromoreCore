@@ -182,7 +182,7 @@ public class UsernamePasswordAuthenticationProvider implements AuthenticationPro
     /**
      * This method retains the user's existing password, but may upgrade its salt and hash depending on configuration.
      *
-     * No change will occur if {@link #enableSaltingPasswords} is not true.
+     * No change will occur if {@link #upgradePasswords} is not true.
      *
      * @param user  whose password to resalt
      * @param password  the current cleartext password for the <var>user</var>
