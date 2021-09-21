@@ -22,13 +22,14 @@
 package org.apromore.plugin.portal.calendar.controllers;
 
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.Map;
-import java.util.TimeZone;
+import java.util.*;
+
 import org.apromore.commons.datetime.TimeUtils;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.slf4j.Logger;
+import org.zkoss.web.Attributes;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
@@ -69,14 +70,21 @@ public class EditRange extends SelectorComposer<Window> {
         endTimebox.setValue(end);
     }
 
+    public ResourceBundle getLabels() {
+        Locale locale = (Locale) Sessions.getCurrent().getAttribute(Attributes.PREFERRED_LOCALE);
+        return ResourceBundle.getBundle("calendar", locale,
+                Calendars.class.getClassLoader());
+    }
+
     @Listen("onClick = #deleteBtn")
     public void onClickDeleteButton() throws Exception {
         try {
             parentController.deleteRange(dowIndex, index);
             getSelf().detach();
         } catch (Exception e) {
-            LOGGER.error("Unable to create user", e);
-            Messagebox.show("Unable to create user: " + e.getMessage());
+            String msg = getLabels().getString("failed_delete_range_message");
+            LOGGER.error(msg, e);
+            Messagebox.show(msg);
         }
     }
 
@@ -92,8 +100,9 @@ public class EditRange extends SelectorComposer<Window> {
             int endMin = endTime.getMinute();
             parentController.updateRange(dowIndex, index, startHour, startMin, endHour, endMin);
         } catch (Exception e) {
-            LOGGER.error("Unable to create user", e);
-            Messagebox.show("Unable to create user: " + e.getMessage());
+            String msg = getLabels().getString("failed_save_range_message");
+            LOGGER.error(msg, e);
+            Messagebox.show(msg);
         }
         getSelf().detach();
     }

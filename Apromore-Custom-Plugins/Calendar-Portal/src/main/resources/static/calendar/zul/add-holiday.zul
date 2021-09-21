@@ -20,7 +20,7 @@
   #L%
   -->
 <window width="300px" position="center" apply="org.apromore.plugin.portal.calendar.controllers.AddHoliday"
-        title="Add holiday"
+        title="${$composer.labels.add_holiday_title_text}"
         sclass="ap-add-holiday-win"
         xmlns:ca="client/attribute"
         xmlns:n="native">
@@ -31,15 +31,15 @@
         </columns>
         <rows>
             <row>
-                <label value="Date"/>
+                <label value="${$composer.labels.date_text}"/>
                 <datebox id="holidayDate" format="yyyy MMM dd" constraint="no empty"></datebox>
             </row>
             <row>
-                <label value="Description"/>
+                <label value="${$composer.labels.desc_text}"/>
                 <textbox id="holidayDescription" hflex="1" constraint="no empty"></textbox>
             </row>
             <row>
-                <label value="Type"/>
+                <label value="${$composer.labels.type_text}"/>
                 <radiogroup id="holidayType">
                     <radio label="CUSTOM" selected="true" radiogroup="holidayType"/>
                     <radio label="PUBLIC" radiogroup="holidayType"/>
@@ -48,7 +48,7 @@
         </rows>
     </grid>
     <div sclass="ap-window-footer-actions">
-        <button id="saveBtn" label="Create" iconSclass="z-icon-check-circle" />
-        <button id="cancelBtn" label="Cancel" iconSclass="z-icon-times-circle" />
+        <button id="saveBtn" label="${$composer.labels.create_text}" iconSclass="z-icon-check-circle" />
+        <button id="cancelBtn" label="${$composer.labels.cancel_text}" iconSclass="z-icon-times-circle" />
     </div>
 </window>

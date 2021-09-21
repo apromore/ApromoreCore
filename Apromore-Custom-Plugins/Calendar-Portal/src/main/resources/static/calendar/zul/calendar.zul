@@ -37,18 +37,18 @@
                 style="padding: 8px;">
             <button id="template9To5Btn"
                     ca:onClick="Ap.calendar.applyTemplate('5d_9to5')">
-              9AM-5PM 5 Business Days
+              ${$composer.labels.model_9to5_5days_text}
             </button>
             <button id="template24hBtn"
                     ca:onClick="Ap.calendar.applyTemplate('5d_24h')">
-              24hr 5 Business Days
+              ${$composer.labels.model_24h_5days_text}
             </button>
             <button id="template24x7Btn"
                     ca:onClick="Ap.calendar.applyTemplate('7d_24h')">
-              24hr 7 Days
+              ${$composer.labels.model_24h_7days_text}
             </button>
-            <label style="padding-right: 5px">Time zone</label>
-            <combobox id="zoneCombobox" placeholder="Select a time zone" width="270px">
+            <label style="padding-right: 5px">${$composer.labels.time_zone_text}</label>
+            <combobox id="zoneCombobox" placeholder="${$composer.labels.time_zone_hint}" width="270px">
               <template name="model">
                 <comboitem label="${each.zoneDisplayName}" />
               </template>
@@ -56,7 +56,7 @@
           </hbox>
           <div style="padding: 8px">
             <label style="font-size: 12px">
-              Click and drag on each row to create a new time range. Click on an existing time range to edit.
+              ${$composer.labels.range_help_text}
             </label>
           </div>
           <listbox id="dayOfWeekListbox" vflex="1" hflex="1" nonselectableTags="*">
@@ -93,9 +93,13 @@
             <button id="addHolidayBtn">${$composer.labels.add_custom_holiday_text}</button>
             <button id="deleteHolidaysBtn">${$composer.labels.delete_holidays_text}</button>
           </hbox>
-          <div height="32px" sclass="ap-holiday-group-title" hflex="1">Public Holidays</div>
+          <div height="32px" sclass="ap-holiday-group-title" hflex="1">
+            ${$composer.labels.public_holidays_text}
+          </div>
           <holidayListboxComp id="holidayListbox" vflex="2" />
-          <div height="32px" sclass="ap-holiday-group-title" hflex="1">Custom Holidays</div>
+          <div height="32px" sclass="ap-holiday-group-title" hflex="1">
+            ${$composer.labels.custom_holidays_text}
+          </div>
           <holidayListboxComp id="holidayCustomListbox" vflex="1" />
         </vbox>
       </hbox>

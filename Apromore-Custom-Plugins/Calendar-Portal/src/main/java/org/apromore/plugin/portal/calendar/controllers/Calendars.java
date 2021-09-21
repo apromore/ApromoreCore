@@ -158,7 +158,8 @@ public class Calendars extends SelectorComposer<Window> {
     @Listen("onClick = #selectBtn")
     public void onClickPublishBtn() {
         String logName = selectedLog.getValue();
-        String infoText = String.format("Custom calendar applied to log %s", logName);
+        String msg = getLabels().getString("success_apply_message");
+        String infoText = String.format(msg, logName);
         Notification.info(infoText);
         calendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_PUBLISH, null,
                 ((CalendarModel) calendarListModel.getSelection().iterator().next()).getId()));
@@ -170,7 +171,8 @@ public class Calendars extends SelectorComposer<Window> {
     public void onClickAddNewCalendar() {
         CalendarModel model;
         try {
-            String calendarName = "Business Calendar 9 to 5 created on " + DateTimeUtils.humanize(LocalDateTime.now());
+            String msg = getLabels().getString("created_default_cal_message");
+            String calendarName = msg + " " + DateTimeUtils.humanize(LocalDateTime.now());
             model = calendarService.createBusinessCalendar(calendarName, true, ZoneId.systemDefault().toString());
             populateCalendarList();
             updateApplyCalendarButton();
@@ -184,8 +186,9 @@ public class Calendars extends SelectorComposer<Window> {
                         .createComponents(PageUtils.getPageDefinition("calendar/zul/calendar.zul"), null, arg);
                 window.doModal();
             } catch (Exception e) {
-                LOGGER.error("Unable to create custom calendar dialog", e);
-                // Notification.error("Unable to create custom calendar dialog");
+                msg = getLabels().getString("failed_create_message");
+                LOGGER.error(msg, e);
+                Notification.error(msg);
             }
         } catch (CalendarAlreadyExistsException e) {
             // TODO Auto-generated catch block
@@ -209,7 +212,8 @@ public class Calendars extends SelectorComposer<Window> {
       calendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_PUBLISH, null,null));
         getSelf().detach();
         String logName = selectedLog.getValue();
-        String infoText = String.format("Log %s's original calendar has been restored", logName);
+        String msg = getLabels().getString("success_restore_message");
+        String infoText = String.format(msg, logName);
         Notification.info(infoText);
     }
 

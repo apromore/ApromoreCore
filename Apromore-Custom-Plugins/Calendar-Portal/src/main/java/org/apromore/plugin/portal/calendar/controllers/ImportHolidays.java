@@ -24,13 +24,17 @@ package org.apromore.plugin.portal.calendar.controllers;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 import org.apromore.calendar.model.HolidayModel;
 import org.apromore.calendar.model.HolidayType;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.slf4j.Logger;
 import org.zkoss.json.JSONObject;
+import org.zkoss.web.Attributes;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.select.SelectorComposer;
@@ -76,6 +80,12 @@ public class ImportHolidays extends SelectorComposer<Window> {
                 }
             }
         });
+    }
+
+    public ResourceBundle getLabels() {
+        Locale locale = (Locale) Sessions.getCurrent().getAttribute(Attributes.PREFERRED_LOCALE);
+        return ResourceBundle.getBundle("calendar", locale,
+                Calendars.class.getClassLoader());
     }
 
     @Listen("onClick = #cancelBtn")
