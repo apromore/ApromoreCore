@@ -280,8 +280,8 @@
 
 .ap-container-search .z-combobox-input::-moz-selection,
 .ap-container-search .z-combobox-input::selection {
-    color: white;
-    background-color: #a0a0a0;
+    color: white !important;
+    background-color: #a0a0a0 !important;
 }
 
 /*
@@ -335,7 +335,7 @@
   top: 1px;
   z-index: var(--ap-z-user-menu);
   background-color: transparent;
-  width: 200px;
+  width: 152px;
   border: none;
   height: 30px;
 }
@@ -402,11 +402,23 @@
   filter: var(--ap-filter-ico-normal-light);
 }
 
-
 .ap-user-menu:hover .z-menu-icon {
   background-color: transparent !important;
   filter: var(--ap-filter-ico-white) !important;
 }
+
+.ap-user-menu .z-menu-content:hover,
+.ap-user-menu .z-menu-content:active,
+.ap-user-menu .z-menu-content:focus,
+.ap-user-menu .z-menu-hover .z-menu-content {
+    background-color: transparent;
+}
+
+.ap-user-menu .z-icon-caret-down:before {
+    display: none;
+}
+
+/* Misc */
 
 .ap-portal-right-section .z-menubar .z-menuseparator {
   display: none;
@@ -762,3 +774,26 @@ img[src="img/icon/bpmn-22x22.png"] {
   content: '/';
   color: var(--ap-c-text-light) !important;
 }*/
+
+/* lang chooser */
+.ap-lang-chooser {
+    position: fixed;
+    top: 37px;
+    right: 2px;
+    font-size: 12px;
+}
+
+.ap-lang-chooser .z-comboitem-image {
+    vertical-align: bottom;
+    line-height: 14px;
+    margin-top: 0px;
+}
+
+.ap-lang-chooser .z-comboitem-image img {
+    width: 15px;
+    border: 1px solid #e0e0e0;
+}
+
+.ap-lang-chooser .z-comboitem-text {
+    vertical-align: bottom;
+}

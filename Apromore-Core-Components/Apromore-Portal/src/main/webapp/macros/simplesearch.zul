@@ -35,7 +35,7 @@
     }
   </style>
   <hbox id="previoussearcheshbox"
-        style="float:right"
+        width="100%"
         sclass="ap-search-combo"
         spacing="0">
     <span sclass="ap-search-part-icon" width="24px" id="doSearch">
@@ -45,7 +45,8 @@
         id="previoussearchescombobox"
         autodrop="true"
         mold="rounded"
-        width="300px"
+        width="202px"
+        popupWidth="202px"
         buttonVisible="true"
         tooltip="${labels.portal_search_hint}"
         placeholder="${labels.portal_search_text}"

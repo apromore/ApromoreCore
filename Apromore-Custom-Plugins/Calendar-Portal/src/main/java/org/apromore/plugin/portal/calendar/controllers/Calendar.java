@@ -230,17 +230,26 @@ public class Calendar extends SelectorComposer<Window> {
                 selectedZone = currentZone;
             }
         }
-        zoneModel.addToSelection(selectedZone);
+        if (selectedZone != null) {
+            zoneModel.addToSelection(selectedZone);
+        }
         zoneModel.setMultiple(false);
         zoneModel.sort(Comparator.comparing(Zone::getZoneDisplayName));
         ListModel listSubModel = ListModels.toListSubModel(zoneModel, zoneComparator, zoneIds.size());
         zoneCombobox.setModel(listSubModel);
-    }
-
-    public ResourceBundle getLabels() {
-        Locale locale = (Locale) Sessions.getCurrent().getAttribute(Attributes.PREFERRED_LOCALE);
-        return ResourceBundle.getBundle("calendar", locale,
-                Calendars.class.getClassLoader());
+        zoneCombobox.addEventListener("onClientTimeZone", (Event event) -> {
+            if (zoneModel.getSelection().isEmpty()) {
+                return;
+            }
+            String zoneId = (String) event.getData();
+            int zoneIdx = zoneModel.indexOf(new Zone(zoneId, getZoneDisplayDescription(ZoneId.of(zoneId))));
+            if (zoneIdx != -1) {
+                zoneModel.clearSelection();
+                Zone newSelection = zoneModel.get(zoneIdx);
+                zoneModel.addToSelection(newSelection);
+            }
+        });
+        Clients.evalJavaScript("Ap.common.getClientTimeZone('$zoneCombobox', 'onClientTimeZone')");
     }
 
     private String getZoneDisplayDescription(ZoneId zoneId) {
@@ -249,6 +258,12 @@ public class Calendar extends SelectorComposer<Window> {
         buffer.append("(GMT " + zoneId.getRules().getOffset(LocalDateTime.now()) + ")");
 
         return buffer.toString();
+    }
+
+    public ResourceBundle getLabels() {
+        Locale locale = (Locale) Sessions.getCurrent().getAttribute(Attributes.PREFERRED_LOCALE);
+        return ResourceBundle.getBundle("calendar", locale,
+                Calendars.class.getClassLoader());
     }
 
     public WorkDayModel getDayOfWeekItem(int dowIndex) {

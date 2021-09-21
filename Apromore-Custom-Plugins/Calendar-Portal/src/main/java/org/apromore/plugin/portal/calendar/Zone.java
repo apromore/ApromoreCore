@@ -27,16 +27,16 @@ import java.util.Objects;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.EqualsAndHashCode;
+
+@EqualsAndHashCode
 @ToString
 public class Zone  {
     @Getter @Setter private String id;
-    @Getter @Setter private String zoneDisplayName;
-    
+    @EqualsAndHashCode.Exclude @Getter @Setter private String zoneDisplayName;
 
     public Zone(String id, String displayName) {
         this.id = id;
         this.zoneDisplayName = displayName;
-        
     }
-    
 }

@@ -77,6 +77,9 @@
               "id": "org.apromore.plugin.portal.bpmndiff.BPMNDiffPlugin"
             },
             {
+              "id": "org.apromore.plugin.portal.conformancechecking.ConformanceCheckingPlugin"
+            },
+            {
               "id": "org.apromore.plugin.portal.bimp.BIMPPortalPlugin"
             },
             {
