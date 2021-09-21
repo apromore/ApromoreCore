@@ -58,8 +58,9 @@ public interface UserMetadataService {
      * @param username             username
      * @param logId                logId
      * @throws UserNotFoundException Can't find a user with specified username
+     * @return Usermetadata
      */
-    void saveUserMetadata(String userMetadataName, String userMetadataContent,
+    Usermetadata saveUserMetadata(String userMetadataName, String userMetadataContent,
                                         UserMetadataTypeEnum userMetadataTypeEnum,
                                         String username,
                                         Integer logId) throws UserNotFoundException;
