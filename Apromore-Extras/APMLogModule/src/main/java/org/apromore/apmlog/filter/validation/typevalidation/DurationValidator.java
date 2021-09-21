@@ -68,6 +68,8 @@ public class DurationValidator extends AbstractLogFilterRuleValidator {
             case MAX_WAITING_TIME:
                 array = apmLog.getTraces().stream().mapToDouble(x -> x.getWaitingTimes().max()).toArray();
                 break;
+            default:
+                break;
         }
 
         if (array == null)
