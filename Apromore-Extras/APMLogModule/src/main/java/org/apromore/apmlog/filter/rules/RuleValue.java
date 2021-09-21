@@ -89,7 +89,7 @@ public class RuleValue implements Comparable<RuleValue>, Serializable {
         this.operationType = operationType;
         this.key = key;
         this.longVal = longVal;
-        this.intVal = Long.valueOf(longVal).intValue();
+        this.intVal = longVal <= Integer.MAX_VALUE ? (int) longVal : 0;
         this.stringVal = longVal + "";
     }
 
@@ -250,9 +250,6 @@ public class RuleValue implements Comparable<RuleValue>, Serializable {
 
     @Override
     public int compareTo(@NotNull RuleValue ruleValue) {
-        if (ruleValue == null)
-            return 0;
-
         if (this.intVal != 0 && ruleValue.getIntValue() != 0) {
             return Integer.compare(this.intVal, ruleValue.getIntValue());
         } else if (this.doubleVal != 0 && ruleValue.getDoubleValue() != 0) {
