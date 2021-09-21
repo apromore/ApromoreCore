@@ -24,24 +24,30 @@ package org.apromore.apmlog.filter.rules;
 import org.apromore.apmlog.filter.types.FilterType;
 import org.apromore.apmlog.filter.types.OperationType;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.Arrays;
+import java.util.BitSet;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class RuleValue implements Comparable<RuleValue>, Serializable {
 
-    private FilterType filterType;
-    private OperationType operationType;
-    private String key;
+    private final FilterType filterType;
+    private final OperationType operationType;
+    private final String key;
     private String stringVal = "";
     private long longVal = 0;
     private double doubleVal = 0;
     private int intVal = 0;
     private Object objectVal;
+    private BitSet bitSetValue;
+    private final Set<String> stringSetValue = new UnifiedSet<>();
 
     private final Map<String, String> customAttributes = new UnifiedMap<>();
 
@@ -49,8 +55,26 @@ public class RuleValue implements Comparable<RuleValue>, Serializable {
         this.filterType = filterType;
         this.operationType = operationType;
         this.key = key;
-        this.objectVal = objectVal;
+        setObjectVal(objectVal);
         this.stringVal = objectVal.toString();
+    }
+
+    public RuleValue(FilterType filterType, OperationType operationType, String key, BitSet bitSetValue) {
+        this.filterType = filterType;
+        this.operationType = operationType;
+        this.key = key;
+        this.objectVal = bitSetValue;
+        this.stringVal = objectVal.toString();
+        this.bitSetValue = bitSetValue;
+    }
+
+    public RuleValue(FilterType filterType, OperationType operationType, String key, Set<String> stringSetValue) {
+        this.filterType = filterType;
+        this.operationType = operationType;
+        this.key = key;
+        this.objectVal = stringSetValue;
+        this.stringVal = objectVal.toString();
+        setStringSetValue(stringSetValue);
     }
 
     public RuleValue(FilterType filterType, OperationType operationType, String key, String stringVal) {
@@ -65,6 +89,7 @@ public class RuleValue implements Comparable<RuleValue>, Serializable {
         this.operationType = operationType;
         this.key = key;
         this.longVal = longVal;
+        this.intVal = Long.valueOf(longVal).intValue();
         this.stringVal = longVal + "";
     }
 
@@ -81,7 +106,13 @@ public class RuleValue implements Comparable<RuleValue>, Serializable {
         this.operationType = operationType;
         this.key = key;
         this.intVal = intVal;
+        this.longVal = intVal;
         this.stringVal = intVal + "";
+    }
+
+    private void setStringSetValue(Set<String> strings) {
+        stringSetValue.clear();
+        stringSetValue.addAll(strings);
     }
 
     public Map<String, String> getCustomAttributes() {
@@ -145,33 +176,70 @@ public class RuleValue implements Comparable<RuleValue>, Serializable {
         return intVal;
     }
 
+    private Set<String> getSingleValSet() {
+        return new HashSet<>(List.of(stringVal));
+    }
+
     public Object getObjectVal() {
-        /** to be compliant to the old methods **/
+        // to be compliant to the old methods
         if (objectVal == null && stringVal != null) {
-            return new HashSet<>(Arrays.asList(stringVal));
+            return getSingleValSet();
         }
         return objectVal;
+    }
+
+    public Set<String> getStringSetValue() {
+        if (!stringSetValue.isEmpty())
+            return stringSetValue;
+
+        if (objectVal != null && objectVal instanceof Set) {
+            Set<Object> objSet = (Set<Object>) objectVal;
+            setStringSetValue(objSet.stream().map(Object::toString).collect(Collectors.toSet()));
+        }
+
+        if (stringVal != null)
+            setStringSetValue(getSingleValSet());
+
+        return stringSetValue;
+    }
+
+    public BitSet getBitSetValue() {
+        return bitSetValue;
+    }
+
+    public void setObjectVal(Object obj) {
+        this.objectVal = obj;
+
+        if (obj instanceof Set)
+            setStringSetValue(((Set<Object>) obj).stream().map(Object::toString).collect(Collectors.toSet()));
+
+        if (obj instanceof BitSet)
+            bitSetValue = (BitSet) obj;
+
+        if (filterType == FilterType.CASE_SECTION_ATTRIBUTE_COMBINATION) {
+            this.stringVal = stringSetValue.iterator().next();
+        }
     }
 
     public RuleValue clone() {
 
         Map<String, String> customAttrCopy = null;
 
-        if (customAttributes != null) {
-            if (customAttributes.size() > 0) {
-                customAttrCopy = new HashMap<>();
-                for (String key : customAttributes.keySet()) {
-                    customAttrCopy.put(key, customAttributes.get(key));
-                }
+        if (customAttributes.size() > 0) {
+            customAttrCopy = new HashMap<>();
+            for (String key : customAttributes.keySet()) {
+                customAttrCopy.put(key, customAttributes.get(key));
             }
         }
 
         RuleValue rv = null;
 
-        if (objectVal != null) rv = new RuleValue(filterType, operationType, key, objectVal);
-        else if (longVal != 0) rv = new RuleValue(filterType, operationType, key, longVal );
+        if (longVal != 0) rv = new RuleValue(filterType, operationType, key, longVal );
         else if (doubleVal != 0) rv = new RuleValue(filterType, operationType, key, doubleVal );
         else if (intVal != 0) rv = new RuleValue(filterType, operationType, key, intVal );
+        else if (!stringSetValue.isEmpty()) rv = new RuleValue(filterType, operationType, key, stringSetValue);
+        else if (bitSetValue != null) rv = new RuleValue(filterType, operationType, key, bitSetValue);
+        else if (objectVal != null) rv = new RuleValue(filterType, operationType, key, objectVal);
         else rv = new  RuleValue(filterType, operationType, key, stringVal );
 
         if (customAttrCopy != null) rv.setCustomAttributes(customAttrCopy);
@@ -181,28 +249,19 @@ public class RuleValue implements Comparable<RuleValue>, Serializable {
 
 
     @Override
-    public int compareTo(RuleValue o) {
-        if (this.intVal != 0 && o.getIntValue() != 0) {
-            if (this.intVal > o.getIntValue()) return 1;
-            else if (this.intVal < o.getIntValue()) return -1;
-            else return 0;
-        } else if (this.doubleVal != 0 && o.getDoubleValue() != 0) {
-            if (this.doubleVal > o.getDoubleValue()) return 1;
-            else if (this.doubleVal < o.getDoubleValue()) return -1;
-            else return 0;
-        } else if (this.longVal != 0 && o.getLongValue() != 0) {
-            if (this.longVal > o.getLongValue()) return 1;
-            else if (this.longVal < o.getLongValue()) return -1;
-            else return 0;
+    public int compareTo(@NotNull RuleValue ruleValue) {
+        if (ruleValue == null)
+            return 0;
+
+        if (this.intVal != 0 && ruleValue.getIntValue() != 0) {
+            return Integer.compare(this.intVal, ruleValue.getIntValue());
+        } else if (this.doubleVal != 0 && ruleValue.getDoubleValue() != 0) {
+            return Double.compare(this.doubleVal, ruleValue.getDoubleValue());
+        } else if (this.longVal != 0 && ruleValue.getLongValue() != 0) {
+            return Long.compare(this.longVal, ruleValue.getLongValue());
         } else {
-            return this.stringVal.compareTo(o.getStringValue());
+            return this.stringVal.compareTo(ruleValue.getStringValue());
         }
     }
 
-    public void setObjectVal(Object obj) {
-        this.objectVal = obj;
-        if (filterType == FilterType.CASE_SECTION_ATTRIBUTE_COMBINATION) {
-            this.stringVal = ((Set<String>) obj).iterator().next();
-        }
-    }
 }
