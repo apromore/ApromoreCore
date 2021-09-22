@@ -42,25 +42,10 @@ export default class Toolbar {
     }
 
     /**
-     * Can be used to manipulate the state of a button.
-     * @example
-     * this.facade.raiseEvent({
-     *   type: Apromore.CONFIG.EVENT_BUTTON_UPDATE,
-     *   id: this.buttonId, // have to be generated before and set in the offer method
-     *   pressed: true
-     * });
-     * @param {Object} event
+     * Callback from EditorApp to register pluginsData
+     * Provide an oppertunity for a plugin to work on other plugins, like this Toolbar
+     * @param pluginsData: array of plugin data which is provided from each plugin
      */
-    onButtonUpdate(event) {
-        var button = this.buttons.find(function(button){
-            return button.id === event.id;
-        });
-
-        if(event.pressed !== undefined){
-            button.buttonInstance.toggle(event.pressed);
-        }
-    }
-
     registryChanged(pluginsData) {
         // Sort plugins by group and index
         //TODO: Update this to look through the plugins list
@@ -189,11 +174,6 @@ export default class Toolbar {
         this.toolbar.calcSlices();
         window.addEventListener("resize", function(event){this.toolbar.calcSlices()}.bind(this), false);
         window.addEventListener("onresize", function(event){this.toolbar.calcSlices()}.bind(this), false);
-
-    }
-
-    onSelectionChanged(event) {
-        this.enableButtons(event.elements);
     }
 
     enableButtons(elements) {
@@ -201,16 +181,39 @@ export default class Toolbar {
         this.buttons.each((function(pluginButton){
             pluginButton.buttonInstance.enable();
 
-            // If there is less elements than minShapes
-            if(pluginButton.minShape && pluginButton.minShape > elements.length)
-                pluginButton.buttonInstance.disable();
-            // If there is more elements than minShapes
-            if(pluginButton.maxShape && pluginButton.maxShape < elements.length)
-                pluginButton.buttonInstance.disable();
-            // If the plugin button is not enabled
-            if(pluginButton.isEnabled && !pluginButton.isEnabled(pluginButton.buttonInstance))
-                pluginButton.buttonInstance.disable();
+            // // If there is less elements than minShapes
+            // if(pluginButton.minShape && pluginButton.minShape > elements.length)
+            //     pluginButton.buttonInstance.disable();
+            // // If there is more elements than minShapes
+            // if(pluginButton.maxShape && pluginButton.maxShape < elements.length)
+            //     pluginButton.buttonInstance.disable();
 
+            // If the plugin button is not enabled
+            if(pluginButton.isEnabled && !pluginButton.isEnabled(pluginButton.buttonInstance)) {
+                pluginButton.buttonInstance.disable();
+            }
+
+            // Initial state for Undo/Redo buttons
+            if (['ap-id-editor-undo-btn', 'ap-id-editor-redo-btn'].includes(pluginButton.btnId)) {
+                pluginButton.buttonInstance.disable();
+            }
+
+        }).bind(this));
+    }
+
+    /**
+     * Notified by the EditorApp about the changes in the command stack of the editor
+     * Allow toolbar to change its button status accordingly with the changes in the editor
+     * @param canUndo: true if the editor has undo actions, canRedo: true if the editor has redo actions
+     */
+    editorCommandStackChanged(canUndo, canRedo) {
+        this.buttons.each((function(pluginButton){
+            if (pluginButton.btnId === 'ap-id-editor-undo-btn') {
+                canUndo ? pluginButton.buttonInstance.enable() : pluginButton.buttonInstance.disable();
+            }
+            if (pluginButton.btnId === 'ap-id-editor-redo-btn') {
+                canRedo ? pluginButton.buttonInstance.enable() : pluginButton.buttonInstance.disable();
+            }
         }).bind(this));
     }
 };
