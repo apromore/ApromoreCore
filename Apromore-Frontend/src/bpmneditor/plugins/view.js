@@ -71,11 +71,11 @@ export default class View {
     }
 
     zoomIn(factor) {
-        this.facade.getEditor().zoomIn();
+        this.facade.zoomIn();
     }
 
     zoomOut(factor) {
-        this.facade.getEditor().zoomOut();
+        this.facade.zoomOut();
     }
 
 
@@ -87,6 +87,6 @@ export default class View {
      *
      */
     zoomFitToModel() {
-        this.facade.getEditor().zoomFitToModel();
+        this.facade.zoomFitToModel();
     }
 };

@@ -69,7 +69,7 @@ export default class File {
         var resource = location.href;
 
         // Get the serialized svg image source
-        var svgClone = await this.facade.getEditor().getSVG();
+        var svgClone = await this.facade.getSVG();
         //var svgDOM = DataManager.serialize(svgClone);
 
         // Expand margin and insert a logo

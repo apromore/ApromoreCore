@@ -36,13 +36,7 @@
 import CONFIG from './../config';
 
 export default class Undo {
-
-    // Constructor
     constructor(facade){
-        // Defines the undo/redo Stack
-        this.undoStack = [];
-        this.redoStack = [];
-
         // Defines the facade
         this.facade = facade;
 
@@ -66,7 +60,7 @@ export default class Undo {
 
           // Offers the functionality of redo
         this.facade.offer({
-               name         : window.Apromore.I18N.Undo.redo,
+            name         : window.Apromore.I18N.Undo.redo,
             description     : window.Apromore.I18N.Undo.redoDesc,
             icon            : CONFIG.PATH + "images/ap/redo.svg",
             btnId           : 'ap-id-editor-redo-btn',
@@ -81,9 +75,6 @@ export default class Undo {
             isEnabled       : function(){ return true}.bind(this),
             index           : 1
         });
-
-        // Register on event for executing commands --> store all commands in a stack
-        //this.facade.registerOnEvent(Apromore.CONFIG.EVENT_EXECUTE_COMMANDS, this.handleExecuteCommands.bind(this) );
 
     }
 
@@ -101,7 +92,7 @@ export default class Undo {
      *
      */
     doUndo(){
-        this.facade.getEditor().undo();
+        this.facade.undo();
     }
 
     /**
@@ -109,7 +100,7 @@ export default class Undo {
      *
      */
     doRedo(){
-        this.facade.getEditor().redo();
+        this.facade.redo();
     }
 
 };
