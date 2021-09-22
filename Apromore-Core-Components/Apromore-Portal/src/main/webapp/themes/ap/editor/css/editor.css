@@ -89,6 +89,7 @@
     bottom: 0;
 }
 
+.djs-popup, .djs-palette,
 .djs-direct-editing-content {
     color: black;
 }

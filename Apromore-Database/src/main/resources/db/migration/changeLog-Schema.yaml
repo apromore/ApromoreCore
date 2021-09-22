@@ -1162,6 +1162,22 @@ databaseChangeLog:
                  type: BOOLEAN
 
  - changeSet:
+     id: 20211709060393
+     author: mtomar
+     changes:
+       -  dropColumn:
+            tableName:  job
+            columns:
+              - column:
+                  name: final_transform_query
+       - dropTable:
+           cascadeConstraints: true
+           tableName: dag_connection
+       - dropTable:
+           cascadeConstraints: true
+           tableName: static_log
+
+ - changeSet:
      id: 20210917130000
      author: raboczi
      changes:

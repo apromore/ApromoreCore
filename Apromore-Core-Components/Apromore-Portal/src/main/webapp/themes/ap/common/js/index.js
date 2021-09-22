@@ -89,6 +89,9 @@ Ap.common.removeCookie = (name) => {
   document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 };
 
+/*
+ * @todo: offset should be decoupled from timezone
+ */
 Ap.common.pullClientTimeZone = function () {
   const pad = (num) => ('0' + num).slice(-2);
 
@@ -108,6 +111,22 @@ Ap.common.pullClientTimeZone = function () {
   setTimeout(function () {
     zAu.send(new zk.Event(zk.Widget.$('$setTimeZone'), 'onClientUpdate', { offset, tz } ));
   }, 200);
+}
+
+/*
+ * Get client timezone and the trigger event
+ * elId: component bridge (e.g. '$elTimeZone')
+ * event: event string (e.g. 'onClientTimeZone')
+ */
+Ap.common.getClientTimeZone = function (elId, event) {
+  try {
+    let tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    setTimeout(function () {
+      zAu.send(new zk.Event(zk.Widget.$(elId), event, tz));
+    }, 200);
+  } catch (e) {
+    // pass
+  }
 }
 
 /**
