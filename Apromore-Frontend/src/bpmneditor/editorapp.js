@@ -26,14 +26,17 @@ import Editor from './editor';
 import Log from './logger';
 import Utils from './utils';
 import BpmnJS from './editor/bpmnio/bpmn-modeler.development';
+import Plugins from './plugins/plugins';
 
 /**
  * The EditorApp class represents the BPMN Editor. It calls to a BPMN.io editor internally while provides
  * other UI layout components (east, west, north, south) for property panel, navigation pane, etc.
  * and access to pluggable functions via buttons (called plugins). These editor features will call
  * to the wrapped BPMN.io editor.
- * Its behavior is divided into public and private methods (starting with underscore).
- * @todo: the namespace Apromore should be changed to Apromore throughout in one pass
+ * Currently, the EditorApp can only open one BPMN model after it is initialized. It is not possible to
+ * import new BPMN model after it has been created because other features like Simulation which depend on the EditorApp
+ * may install listeners to changes on bpmn.io, likely these modules will be broken if the EditorApp imports a new BPMN
+ * model after creation.
  * @todo: window.setTimeout here has time sensitivity that should be avoided in the future
  */
 export default class EditorApp {
@@ -54,16 +57,21 @@ export default class EditorApp {
         this.fullscreen = config.fullscreen !== false;
         this.useSimulationPanel = config.useSimulationPanel || false;
         this.enabledPlugins = config.enabledPlugins; // undefined means all plugins are enabled
+
+        this.editorCommandStackListeners = [];
     }
 
+    /**
+     * Initialize the Editor App
+     * @param config: config and model data to be initialized
+     * @returns {Promise<void>}
+     */
     async init(config) {
         this._createEditor(config.preventFitDelay || false);
 
-        // GENERATES the main UI regions
         this._generateGUI();
 
-        // LOAD the plugins and editor
-        await this._load(config);
+        await this._loadData(config).catch(err => {throw err});
     }
 
     _initUI() {
@@ -78,7 +86,7 @@ export default class EditorApp {
     }
 
     zoomFitToModel() {
-        this.getEditor().zoomFitToModel();
+        if (this.editor) this.editor.zoomFitToModel();
     }
 
     /**
@@ -158,7 +166,7 @@ export default class EditorApp {
                 items: {
                     layout: "fit",
                     autoHeight: true,
-                    el: this.getEditor().rootNode
+                    el: this.editor.rootNode
                 }
             }),
 
@@ -231,7 +239,7 @@ export default class EditorApp {
 
         // Set the editor to the center, and refresh the size
         this._getContainer().setAttributeNS(null, 'align', 'left');
-        this.getEditor().rootNode.setAttributeNS(null, 'align', 'left');
+        this.editor.rootNode.setAttributeNS(null, 'align', 'left');
 
     }
 
@@ -282,21 +290,6 @@ export default class EditorApp {
         return null;
     }
 
-    // Get plugins that have been activated successfully (i.e. those plugin objects)
-    getAvailablePlugins() {
-        var curAvailablePlugins = this.availablePlugins.clone();
-        curAvailablePlugins.each(function (plugin) {
-            if (this.activatedPlugins.find(function (loadedPlugin) {
-                return loadedPlugin.type == this.name;
-            }.bind(plugin))) {
-                plugin.engaged = true;
-            } else {
-                plugin.engaged = false;
-            }
-        }.bind(this));
-        return curAvailablePlugins;
-    }
-
     /**
      *  Make plugin object
      *  Activated plugins: array of plugin objects
@@ -315,15 +308,21 @@ export default class EditorApp {
 
         // Instantiate plugin class
         // this.pluginData is filled in
+        console.log('Plugins', Plugins);
+        let plugins = Plugins;
         this.availablePlugins.each(function (value) {
             Log.debug("Initializing plugin '%0'", value.name);
             try {
-                var className = eval(value.name);
+                var className = eval('plugins.' + value.name);
                 if (className) {
                     var plugin = new className(facade, value);
                     plugin.type = value.name;
                     plugin.engaged = true;
                     newPlugins.push(plugin);
+
+                    if (plugin.editorCommandStackChanged) {
+                        this.editorCommandStackListeners.push(plugin);
+                    }
                 }
             } catch (e) {
                 Log.warn("Plugin %0 is not available", value.name);
@@ -346,6 +345,10 @@ export default class EditorApp {
         // }
     }
 
+    getActivatedPlugins() {
+        return this.activatedPlugins;
+    }
+
     _getContainer() {
         return document.getElementById(this.id);
     }
@@ -360,12 +363,8 @@ export default class EditorApp {
         });
     }
 
-    getEditor() {
-        return this.editor;
-    }
-
-    getSimulationDrawer() {
-        return this.layout_regions.east;
+    getEastRegion() {
+        if (this.layout_regions && this.layout_regions.east) return this.layout_regions.east;
     }
 
     /**
@@ -376,32 +375,43 @@ export default class EditorApp {
         if (!(this._pluginFacade)) {
             this._pluginFacade = (function () {
                 return {
-                    getAvailablePlugins: this.getAvailablePlugins.bind(this),
                     offer: this.offer.bind(this),
-                    getEditor: this.getEditor.bind(this),
-                    getSimulationDrawer: this.getSimulationDrawer.bind(this),
+                    getEastRegion: this.getEastRegion.bind(this),
                     useSimulationPanel: this.useSimulationPanel,
                     getXML: this.getXML.bind(this),
                     getSVG: this.getSVG.bind(this),
-                    addToRegion: this.addToRegion.bind(this)
+                    addToRegion: this.addToRegion.bind(this),
+                    undo: this.editor.undo(),
+                    redo: this.editor.redo(),
+                    zoomIn: this.editor.zoomIn(),
+                    zoomOut: this.editor.zoomOut(),
+                    zoomFitToModel: this.editor.zoomFitToModel()
                 }
             }.bind(this)())
         }
         return this._pluginFacade;
     }
 
-    getXML() {
-        return this.getEditor().getXML();
+    async getXML() {
+        if (!this.editor) return Promise.reject(new Error('The Editor was not created'));
+        return await this.editor.getXML();
     }
 
-    getSVG() {
-        return this.getEditor().getSVG();
+    async getSVG() {
+        if (!this.editor) return Promise.reject(new Error('The Editor was not created'));
+        return await this.editor.getSVG();
     }
 
-    async importXML(xml, callback) {
-        await this.getEditor().importXML(xml, callback);
-    }
+    // Remove this method because it is not able to handle dependencies
+    // from the Simulatio module that listens to changes to model elements
+    // async importXML(xml, callback) {
+    //     await this.editor.importXML(xml, callback);
+    // }
 
+    /**
+     * A door for plugin to register its data with the editor app.
+     * @param pluginData: plugin data
+     */
     offer(pluginData) {
         if (!(this.pluginsData.findIndex(function(plugin) {return plugin.name === pluginData.name;}) >=0)) {
             if (this.enabledPlugins && !this.enabledPlugins.includes(pluginData.name)) {
@@ -427,23 +437,29 @@ export default class EditorApp {
 
     /**
      * Load the editor and a list of predefined plugins from the server
+     * @param config
+     * @returns {Promise<void>}
+     * @private
      */
-    async _load(config) {
+    async _loadData(config) {
+        await this._loadEditor(config).catch(err => {throw err});
         if(CONFIG.PLUGINS_ENABLED) {
-            //editor will be loaded after plugins are loaded from the server
-            await this._loadPluginData(config);
-        }
-        else {
-            Log.warn("Ignoring plugins, loading Core only.");
-            await this._loadEditor(config);
+            await this._loadPluginData().catch(err => Log.warn("Error in loading plugins. Error: " + err.message));
         }
     }
 
-    // Attach the editor must be the LAST THING AFTER ALL HAS BEEN LOADED
+    /**
+     * Load the real editor with a process model
+     * @param config: the editor config and process model to be loaded
+     * @returns {Promise<void>}
+     * @private
+     */
     async _loadEditor(config) {
-        var me = this;
-        var options = {
-          container: '#' + me.getEditor().rootNode.id,
+        if (!this.editor) return Promise.reject(new Error('The Editor was not created'));
+
+        let me = this;
+        let options = {
+          container: '#' + me.editor.rootNode.id,
           langTag: config.langTag
         }
         if (!config.viewOnly) {
@@ -451,177 +467,203 @@ export default class EditorApp {
           options.propertiesPanel = me.useSimulationPanel ? { parent: '#js-properties-panel' } : undefined
         }
 
-        await me.getEditor().attachEditor(new BpmnJS(options));
+        await me.editor.attachEditor(new BpmnJS(options));
 
         // Wait until the editor is fully loaded to start XML import and then UI init
         if (config && config.xml) {
-            await me.importXML(config.xml, me._initUI.bind(me));
+            await this.editor.importXML(config.xml, me._initUI.bind(me))
+                .catch(error => {
+                    throw err
+                });
+            this.editor.addCommandStackChangeListener(this._handleEditorCommandStackChanges);
         }
         else {
-            me._initUI();
+            throw new Error('Missing XML for the BPMN model in the editor loading');
         }
 
     }
 
-    // Available plugins structure: array of plugin structures
-    // [
-    //      {
-    //          name: plugin name,
-    //          source: plugin javascript source filename,
-    //          properties (both plugin and global properties):
-    //          [
-    //              {attributeName1 -> attributeValue1, attributeName2 -> attributeValue2,...}
-    //              {attributeName1 -> attributeValue1, attributeName2 -> attributeValue2,...}
-    //              {attributeName1 -> attributeValue1, attributeName2 -> attributeValue2,...}
-    //          ],
-    //          requires: namespaces:[list of javascript libraries],
-    //          notUsesIn: namespaces:[list of javascript libraries]
-    //      }
-    // ]
-    async _loadPluginData(config) {
-        var me = this;
-        var source = CONFIG.PLUGINS_CONFIG;
+    _handleEditorCommandStackChanges() {
+        this.editorCommandStackListeners.forEach(listener =>
+            listener.editorCommandStackChanged(this.editor.canUndo(), this.editor.canRedo()))
+    }
 
+    /**
+     * Load plugins with an Ajax request for the plugin configuration file
+     *     Available plugins structure: array of plugin structures
+     * [
+     * {
+     *        name: plugin name,
+     *        source: plugin javascript source filename,
+     *        properties (both plugin and global properties):
+     *        [
+     *            {attributeName1 -> attributeValue1, attributeName2 -> attributeValue2,...}
+     *            {attributeName1 -> attributeValue1, attributeName2 -> attributeValue2,...}
+     *            {attributeName1 -> attributeValue1, attributeName2 -> attributeValue2,...}
+     *        ],
+     *        requires: namespaces:[list of javascript libraries],
+     *        notUsesIn: namespaces:[list of javascript libraries]
+     *    }
+     * ]
+     * @returns {Promise<unknown>}: return a custom Promise to control this async action.
+     * @private
+     */
+    _loadPluginData() {
+        let me = this;
+        let source = CONFIG.PLUGINS_CONFIG;
         //TODO: await Ajax response
         Log.debug("Loading plugin configuration from '%0'.", source);
-        await new Ajax.Request(source, {
-            asynchronous: true,
-            method: 'get',
-            onSuccess: async function(result) {
-                Log.info("Plugin configuration file loaded.");
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url: source,
+                type: 'get',
+                async: true,
+                success: function (result, status, xhr) {
+                    try {
+                        Log.info("Plugin configuration file loaded.");
 
-                // get plugins.xml content
-                var resultXml = result.responseXML;
-                console.log('Plugin list:', resultXml);
+                        // get plugins.xml content
+                        let resultXml = result;
+                        console.log(resultXml);
 
-                // Global properties XML:
-                // <properties>
-                //      <property attributeName1="attributeValue1" attributeName2="attributeValue2" />
-                //      <property attributeName1="attributeValue1" attributeName2="attributeValue2" />
-                //      ...
-                // </properties>
-                var globalProperties = [];
-                var preferences = $A(resultXml.getElementsByTagName("properties"));
-                preferences.each( function(p) {
-                    var props = $A(p.childNodes);
-                    props.each( function(prop) {
-                        var property = new Hash(); // Hash is provided by Prototype library
-                        // get all attributes from the node and set to global properties
-                        var attributes = $A(prop.attributes)
-                        attributes.each(function(attr){
-                            property[attr.nodeName] = attr.nodeValue
+                        // Global properties XML:
+                        // <properties>
+                        //      <property attributeName1="attributeValue1" attributeName2="attributeValue2" />
+                        //      <property attributeName1="attributeValue1" attributeName2="attributeValue2" />
+                        //      ...
+                        // </properties>
+                        let globalProperties = [];
+
+                        let preferences = $A(resultXml.getElementsByTagName("properties"));
+                        preferences.each(function (p) {
+                            let props = $A(p.childNodes);
+                            props.each(function (prop) {
+                                let property = new Hash(); // Hash is provided by Prototype library
+                                // get all attributes from the node and set to global properties
+                                let attributes = $A(prop.attributes)
+                                attributes.each(function (attr) {
+                                    property[attr.nodeName] = attr.nodeValue
+                                });
+                                if (attributes.length > 0) {
+                                    globalProperties.push(property)
+                                }
+                            });
                         });
-                        if(attributes.length > 0) { globalProperties.push(property) };
-                    });
-                });
 
-                // Plugin XML:
-                //  <plugins>
-                //      <plugin source="javascript filename.js" name="Javascript class name" property="" requires="" notUsesIn="" />
-                //      <plugin source="javascript filename.js" name="Javascript class name" property="" requires="" notUsesIn="" />
-                //  </plugins>
-                var plugin = resultXml.getElementsByTagName("plugin");
-                $A(plugin).each( function(node) {
-                    var pluginData = new Hash();
+                        // Plugin XML:
+                        //  <plugins>
+                        //      <plugin source="javascript filename.js" name="Javascript class name" property="" requires="" notUsesIn="" />
+                        //      <plugin source="javascript filename.js" name="Javascript class name" property="" requires="" notUsesIn="" />
+                        //  </plugins>
+                        let plugin = resultXml.getElementsByTagName("plugin");
+                        $A(plugin).each(function (node) {
+                            let pluginData = new Hash();
 
-                    //pluginData: for one plugin
-                    //.source: source javascript
-                    //.name: name
-                    $A(node.attributes).each( function(attr){
-                        pluginData[attr.nodeName] = attr.nodeValue});
+                            //pluginData: for one plugin
+                            //.source: source javascript
+                            //.name: name
+                            $A(node.attributes).each(function (attr) {
+                                pluginData[attr.nodeName] = attr.nodeValue
+                            });
 
-                    // ensure there's a name attribute.
-                    if(!pluginData['name']) {
-                        Log.error("A plugin is not providing a name. Ignoring this plugin.");
-                        return;
-                    }
-
-                    // ensure there's a source attribute.
-                    if(!pluginData['source']) {
-                        Log.error("Plugin with name '%0' doesn't provide a source attribute.", pluginData['name']);
-                        return;
-                    }
-
-                    // Get all plugin properties
-                    var propertyNodes = node.getElementsByTagName("property");
-                    var properties = [];
-                    $A(propertyNodes).each(function(prop) {
-                        var property = new Hash();
-
-                        // Get all Attributes from the Node
-                        var attributes = $A(prop.attributes)
-                        attributes.each(function(attr){property[attr.nodeName] = attr.nodeValue});
-                        if(attributes.length > 0) { properties.push(property) };
-
-                    });
-
-                    // Set all Global-Properties to the Properties
-                    properties = properties.concat(globalProperties);
-
-                    // Set Properties to Plugin-Data
-                    pluginData['properties'] = properties;
-
-                    // Get the RequiredNodes
-                    var requireNodes = node.getElementsByTagName("requires");
-                    var requires;
-                    $A(requireNodes).each(function(req) {
-                        var namespace = $A(req.attributes).find(function(attr){ return attr.name == "namespace"})
-                        if( namespace && namespace.nodeValue ){
-                            if( !requires ){
-                                requires = {namespaces:[]}
-                            }
-                            requires.namespaces.push(namespace.nodeValue)
-                        }
-                    });
-
-                    // Set Requires to the Plugin-Data, if there is one
-                    if( requires ){
-                        pluginData['requires'] = requires;
-                    }
-
-                    // Get the RequiredNodes
-                    var notUsesInNodes = node.getElementsByTagName("notUsesIn");
-                    var notUsesIn;
-                    $A(notUsesInNodes).each(function(not) {
-                        var namespace = $A(not.attributes).find(function(attr){ return attr.name == "namespace"})
-                        if( namespace && namespace.nodeValue ){
-                            if( !notUsesIn ){
-                                notUsesIn = {namespaces:[]}
+                            // ensure there's a name attribute.
+                            if (!pluginData['name']) {
+                                Log.error("A plugin is not providing a name. Ignoring this plugin.");
+                                return;
                             }
 
-                            notUsesIn.namespaces.push(namespace.nodeValue)
-                        }
-                    });
+                            // ensure there's a source attribute.
+                            if (!pluginData['source']) {
+                                Log.error("Plugin with name '%0' doesn't provide a source attribute.", pluginData['name']);
+                                return;
+                            }
 
-                    // Set Requires to the Plugin-Data, if there is one
-                    if( notUsesIn ){
-                        pluginData['notUsesIn'] = notUsesIn;
+                            // Get all plugin properties
+                            let propertyNodes = node.getElementsByTagName("property");
+                            let properties = [];
+                            $A(propertyNodes).each(function (prop) {
+                                let property = new Hash();
+
+                                // Get all Attributes from the Node
+                                let attributes = $A(prop.attributes)
+                                attributes.each(function (attr) {
+                                    property[attr.nodeName] = attr.nodeValue
+                                });
+                                if (attributes.length > 0) {
+                                    properties.push(property)
+                                }
+                            });
+
+                            // Set all Global-Properties to the Properties
+                            properties = properties.concat(globalProperties);
+
+                            // Set Properties to Plugin-Data
+                            pluginData['properties'] = properties;
+
+                            // Get the RequiredNodes
+                            let requireNodes = node.getElementsByTagName("requires");
+                            let requires;
+                            $A(requireNodes).each(function (req) {
+                                let namespace = $A(req.attributes).find(function (attr) {
+                                    return attr.name == "namespace"
+                                })
+                                if (namespace && namespace.nodeValue) {
+                                    if (!requires) {
+                                        requires = {namespaces: []}
+                                    }
+                                    requires.namespaces.push(namespace.nodeValue)
+                                }
+                            });
+
+                            // Set Requires to the Plugin-Data, if there is one
+                            if (requires) {
+                                pluginData['requires'] = requires;
+                            }
+
+                            // Get the RequiredNodes
+                            let notUsesInNodes = node.getElementsByTagName("notUsesIn");
+                            let notUsesIn;
+                            $A(notUsesInNodes).each(function (not) {
+                                let namespace = $A(not.attributes).find(function (attr) {
+                                    return attr.name == "namespace"
+                                })
+                                if (namespace && namespace.nodeValue) {
+                                    if (!notUsesIn) {
+                                        notUsesIn = {namespaces: []}
+                                    }
+
+                                    notUsesIn.namespaces.push(namespace.nodeValue)
+                                }
+                            });
+
+                            // Set Requires to the Plugin-Data, if there is one
+                            if (notUsesIn) {
+                                pluginData['notUsesIn'] = notUsesIn;
+                            }
+
+                            let url = CONFIG.PATH + CONFIG.PLUGINS_FOLDER + pluginData['source'];
+                            Log.debug("Requiring '%0'", url);
+                            Log.info("Plugin '%0' successfully loaded.", pluginData['name']);
+                            me.availablePlugins.push(pluginData);
+                        });
+                        me._activatePlugins();
+                        //editor must be attached after the plugins are loaded
+                        //await me._loadEditor(config);
+
+                        resolve();
                     }
+                    catch (err) {
+                        Log.error(err.message);
+                        reject(err);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    Log.error("Plugin configuration file not available.");
+                    //await me._loadEditor(config);
+                    reject(new Error('An error returned from the Ajax request. Error code: ' + status));
+                }
+            });
+        })
 
-                    var url = CONFIG.PATH + CONFIG.PLUGINS_FOLDER + pluginData['source'];
-                    Log.debug("Requiring '%0'", url);
-                    Log.info("Plugin '%0' successfully loaded.", pluginData['name']);
-                    me.availablePlugins.push(pluginData);
-                });
-                me._activatePlugins();
-                //editor must be attached after the plugins are loaded
-                await me._loadEditor(config);
-            },
-            onFailure: async function () {
-                Log.error("Plugin configuration file not available.");
-                await me._loadEditor(config);
-            }
-        });
-
-    }
-
-    toggleFullScreen() {
-        if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen();
-        } else {
-            if (document.exitFullscreen) {
-                document.exitFullscreen();
-            }
-        }
     }
 };
