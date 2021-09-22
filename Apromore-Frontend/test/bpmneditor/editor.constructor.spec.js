@@ -2,7 +2,7 @@ import Editor from "../../src/bpmneditor/editor";
 import CONFIG from "../../src/bpmneditor/config";
 import Utils from "../../src/bpmneditor/utils";
 
-describe('Test Editor after creation', function () {
+describe('After the Editor has been created', function () {
     let editor;
 
     beforeEach(async function() {
@@ -20,13 +20,13 @@ describe('Test Editor after creation', function () {
         });
     });
 
-    it('It is constructed properly', function() {
+    it('It has set up initial data correctly', function() {
         expect(editor).not.toBeUndefined();
         editor.getXML().then(function (result) {
-            expect(result).toBeFalse();
+            expect(result).toBeFalsy();
         });
         editor.getSVG().then(function (result) {
-            expect(result).toBeFalse();
+            expect(result).toBeFalsy();
         });
         console.log(editor.getSVGContainer());
         expect(editor.getSVGContainer()).toBeUndefined();

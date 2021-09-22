@@ -3,7 +3,7 @@ import CONFIG from "../../src/bpmneditor/config";
 import Utils from "../../src/bpmneditor/utils";
 import BpmnJS from "../../src/bpmneditor/editor/bpmnio/bpmn-modeler.development";
 
-describe('Test Editor after importing BPMN models', function () {
+describe('After the Editor has loaded successfully a BPMN model', function () {
     let editor;
 
     beforeEach(async function() {
@@ -32,17 +32,17 @@ describe('Test Editor after importing BPMN models', function () {
 
     });
 
-    it('Get XML is OK', async function() {
+    it('It can get the XML representation of the model', async function() {
         let xml = await editor.getXML().catch(err => fail(err));
         expect(xml).toContain('<?xml');
     });
 
-    it('Get SVG is OK', async function() {
+    it('It can get the SVG representation of the model', async function() {
         let svg = await editor.getSVG().catch(err => fail(err));
         expect(svg).toContain('<svg');
     });
 
-    it('getIncomingFlowId of Node is OK', async function() {
+    it('It can get the incoming flow ID of a node', async function() {
         let edgeId = editor.getIncomingFlowId('node_68572fd8-d526-4d0d-bb50-836d33826255');
         expect(edgeId).not.toBeFalsy();
 
@@ -50,7 +50,7 @@ describe('Test Editor after importing BPMN models', function () {
         expect(edgeId).toBeUndefined();
     });
 
-    it('getOutgoingFlowId of Node is OK', async function() {
+    it('It can get the outgoing flow ID of a node', async function() {
         let edgeId = editor.getOutgoingFlowId('node_68572fd8-d526-4d0d-bb50-836d33826255');
         expect(edgeId).not.toBeFalsy();
 

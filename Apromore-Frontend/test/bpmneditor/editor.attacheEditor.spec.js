@@ -3,7 +3,7 @@ import CONFIG from "../../src/bpmneditor/config";
 import Utils from "../../src/bpmneditor/utils";
 import BpmnJS from "../../src/bpmneditor/editor/bpmnio/bpmn-modeler.development";
 
-describe('Test Editor after attaching bpmn.io', function () {
+describe('After the Editor has attached an instance of bpmn.io', function () {
     let editor;
 
     beforeEach(async function() {
@@ -29,7 +29,7 @@ describe('Test Editor after attaching bpmn.io', function () {
 
     });
 
-    it('Methods after attaching editor are OK', async function() {
+    it('It has set up initial data correctly', async function() {
         expect(editor).not.toBeUndefined();
         expect(editor.getSVGContainer()).not.toBeUndefined();
         expect(editor.getSVGViewport()).not.toBeUndefined();
