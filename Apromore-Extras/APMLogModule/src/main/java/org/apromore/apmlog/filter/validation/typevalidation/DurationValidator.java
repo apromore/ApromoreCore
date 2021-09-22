@@ -84,9 +84,9 @@ public class DurationValidator extends AbstractLogFilterRuleValidator {
 
         validatedRule.setPrimaryValues(priVals);
 
-        Set<Double> originalDoubles = originalRule.getPrimaryValues().stream()
-                .map(RuleValue::getDoubleValue).collect(Collectors.toSet());
-        Set<Double> validatedDoubles = priVals.stream().map(RuleValue::getDoubleValue).collect(Collectors.toSet());
+        Set<Long> originalDoubles =
+                originalRule.getPrimaryValues().stream().map(RuleValue::getLongValue).collect(Collectors.toSet());
+        Set<Long> validatedDoubles = priVals.stream().map(RuleValue::getLongValue).collect(Collectors.toSet());
         boolean substituted = originalDoubles.stream()
                 .distinct().filter(validatedDoubles::contains).count() != originalDoubles.size();
 
@@ -174,10 +174,10 @@ public class DurationValidator extends AbstractLogFilterRuleValidator {
 
         validatedRule.setSecondaryValues(secoVals);
 
-        Set<Double> originalSecoDurVals = originalRule.getSecondaryValues().stream()
-                .map(RuleValue::getDoubleValue).collect(Collectors.toSet());
-        Set<Double> validatedSecoDurVals = secoVals.stream()
-                .map(RuleValue::getDoubleValue).collect(Collectors.toSet());
+        Set<Long> originalSecoDurVals = originalRule.getSecondaryValues().stream()
+                .map(RuleValue::getLongValue).collect(Collectors.toSet());
+        Set<Long> validatedSecoDurVals = secoVals.stream()
+                .map(RuleValue::getLongValue).collect(Collectors.toSet());
         boolean substituted = originalSecoDurVals.stream()
                 .distinct().filter(validatedSecoDurVals::contains).count() != originalSecoDurVals.size();
 
