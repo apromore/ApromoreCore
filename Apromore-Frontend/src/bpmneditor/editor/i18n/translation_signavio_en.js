@@ -1,5 +1,3 @@
-Apromore.I18N.PropertyWindow.dateFormat = "d/m/y";
-
 Apromore.I18N.View.East = "Simulation parameters";
 Apromore.I18N.View.West = "Modeling Elements";
 
@@ -22,42 +20,3 @@ Apromore.I18N.Save.comFailed = "The communication with the Apromore. server fail
 Apromore.I18N.Save.failed = "Something went wrong when trying to save your diagram. Please try again. If the problem resides, please contact the Apromore. Support via the envelope symbol in the toolbar.";
 Apromore.I18N.Save.exception = "Some exceptions are raised while trying to save your diagram. Please try again. If the problem resides, please contact the Apromore. Support via the envelope symbol in the toolbar.";
 Apromore.I18N.Save.retrieveData = "Please wait, data is retrieving.";
-
-/** New Language Properties: 10.6.09*/
-if(!Apromore.I18N.ShapeMenuPlugin) Apromore.I18N.ShapeMenuPlugin = {};
-Apromore.I18N.ShapeMenuPlugin.morphMsg = "Transform shape";
-Apromore.I18N.ShapeMenuPlugin.morphWarningTitleMsg = "Transform shape";
-Apromore.I18N.ShapeMenuPlugin.morphWarningMsg = "There are child shape which can not be contained in the transformed element.<br/>Do you want to transform anyway?";
-
-/** New Language Properties: 08.09.2009*/
-if(!Apromore.I18N.PropertyWindow) Apromore.I18N.PropertyWindow = {};
-Apromore.I18N.PropertyWindow.oftenUsed = "Main properties";
-Apromore.I18N.PropertyWindow.moreProps = "More properties";
-
-Apromore.I18N.PropertyWindow.btnOpen = "Open";
-Apromore.I18N.PropertyWindow.btnRemove = "Remove";
-Apromore.I18N.PropertyWindow.btnEdit = "Edit";
-Apromore.I18N.PropertyWindow.btnUp = "Move up";
-Apromore.I18N.PropertyWindow.btnDown = "Move down";
-Apromore.I18N.PropertyWindow.createNew = "Create new";
-
-if(!Apromore.I18N.PropertyWindow) Apromore.I18N.PropertyWindow = {};
-Apromore.I18N.PropertyWindow.oftenUsed = "Main attributes";
-Apromore.I18N.PropertyWindow.moreProps = "More attributes";
-Apromore.I18N.PropertyWindow.characteristicNr = "Cost &amp; Resource Analysis";
-Apromore.I18N.PropertyWindow.meta = "Custom attributes";
-
-if(!Apromore.I18N.PropertyWindow.Category){Apromore.I18N.PropertyWindow.Category = {}}
-Apromore.I18N.PropertyWindow.Category.popular = "Main Attributes";
-Apromore.I18N.PropertyWindow.Category.characteristicnr = "Cost &amp; Resource Analysis";
-Apromore.I18N.PropertyWindow.Category.others = "More Attributes";
-Apromore.I18N.PropertyWindow.Category.meta = "Custom Attributes";
-
-if(!Apromore.I18N.PropertyWindow.ListView) Apromore.I18N.PropertyWindow.ListView = {};
-Apromore.I18N.PropertyWindow.ListView.title = "Edit: ";
-Apromore.I18N.PropertyWindow.ListView.dataViewLabel = "Already existing entries.";
-Apromore.I18N.PropertyWindow.ListView.dataViewEmptyText = "No list entries.";
-Apromore.I18N.PropertyWindow.ListView.addEntryLabel = "Add a new entry";
-Apromore.I18N.PropertyWindow.ListView.buttonAdd = "Add";
-Apromore.I18N.PropertyWindow.ListView.save = "Save";
-Apromore.I18N.PropertyWindow.ListView.cancel = "Cancel";

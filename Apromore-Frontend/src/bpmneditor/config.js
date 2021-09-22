@@ -88,7 +88,7 @@ CONFIG.PREVENT_LOADINGMASK_AT_READY =       true;
 
 /* Plugins */
 CONFIG.PLUGINS_ENABLED =                    true;
-CONFIG.PLUGINS_FOLDER =                     "Plugins/";
+CONFIG.PLUGINS_FOLDER =                     "plugins/";
 CONFIG.BPMN20_SCHEMA_VALIDATION_ON =        true;
 
 /* Namespaces */
