@@ -52,29 +52,29 @@ export default class Editor {
     attachEditor(editor) {
         let me = this;
         this.actualEditor = editor; //This is a BPMNJS object
-        updateUndoRedo();
-        this.addCommandStackChangeListener(function () {
-            updateUndoRedo();
-        });
-        function updateUndoRedo() {
-            try {
-                var undo = $('#ap-id-editor-undo-btn');
-                var redo = $('#ap-id-editor-redo-btn');
-                if (!undo || !redo) return;
-                if (me.canUndo()) {
-                    undo.removeClass('disabled');
-                } else {
-                    undo.addClass('disabled');
-                }
-                if (me.canRedo()) {
-                    redo.removeClass('disabled');
-                } else {
-                    redo.addClass('disabled');
-                }
-            } catch(e) {
-                console.log('Unexpected error occurred when update button status.', e.message);
-            }
-        }
+        // updateUndoRedo();
+        // this.addCommandStackChangeListener(function () {
+        //     updateUndoRedo();
+        // });
+        // function updateUndoRedo() {
+        //     try {
+        //         var undo = $('#ap-id-editor-undo-btn');
+        //         var redo = $('#ap-id-editor-redo-btn');
+        //         if (!undo || !redo) return;
+        //         if (me.canUndo()) {
+        //             undo.removeClass('disabled');
+        //         } else {
+        //             undo.addClass('disabled');
+        //         }
+        //         if (me.canRedo()) {
+        //             redo.removeClass('disabled');
+        //         } else {
+        //             redo.addClass('disabled');
+        //         }
+        //     } catch(e) {
+        //         console.log('Unexpected error occurred when update button status.', e.message);
+        //     }
+        // }
     }
 
     getSVGContainer() {
@@ -123,6 +123,7 @@ export default class Editor {
      */
     async importXML(xml, callback) {
         if (!this.actualEditor) return false;
+        if (!(typeof xml === 'string')) throw new Error("Invalid XML input");
         xml = sanitizeXML(xml);
 
         //EXPERIMENTING WITH THE BELOW TO FIX ARROWS NOT SNAP TO EDGES WHEN OPENING MODELS
@@ -141,8 +142,8 @@ export default class Editor {
                 connection.waypoints = connectionDocking.getCroppedWaypoints(connection);
             });
         } catch (e) {
-            console.log('skip connectionDocking error');
-            // pass
+            Log.error('Skip connectionDocking error');
+            throw e;
         }
         eventBus.fire('elements.changed', { elements: connections });
         // @todo: Avoid this conditional
@@ -165,6 +166,7 @@ export default class Editor {
          * but this should be the fastest fix for now
          */
         function sanitizeXML(xml) {
+            if (!(typeof xml === 'string')) return;
             var REMOVE_LIST = [
                 // Empty label element breaks label editing in bpmn.io
                 /<bpmndi:BPMNLabel\s*\/>/ig,
@@ -179,14 +181,14 @@ export default class Editor {
     }
 
     async getXML() {
-        if (!this.actualEditor) return false;
+        if (!this.actualEditor) return '';
         const result = await this.actualEditor.saveXML({ format: true }).catch(err => {throw err;});
         const {xml} = result;
         return xml;
     }
 
     async getSVG() {
-        if (!this.actualEditor) return false;
+        if (!this.actualEditor) return '';
         const result = await this.actualEditor.saveSVG({ format: true }).catch(err => {throw err;});
         const {svg} = result;
         return svg;
