@@ -31,6 +31,6 @@ export default class SimulationPanel {
      * Shortcut for performing an expand or collapse based on the current state of the panel.
      */
     toggleSimulationDrawer() {
-        this.facade.getSimulationDrawer().toggleCollapse(true);
+        this.facade.getEastRegion().toggleCollapse(true);
     }
 };
