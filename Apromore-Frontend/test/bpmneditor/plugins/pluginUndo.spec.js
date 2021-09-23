@@ -7,9 +7,9 @@ describe('After the EditorApp has been initialized with a BPMN model with Undo p
     let editor;
 
     beforeEach(async function() {
-        spyOn(Editor.prototype, 'undo');
         editorApp = await testFactory.createEditorAppWithModelAndPlugins();
         editor = editorApp.getEditor();
+
     });
 
     it('The Undo plugin has been loaded', async function() {
@@ -17,12 +17,18 @@ describe('After the EditorApp has been initialized with a BPMN model with Undo p
         expect(plugins[1]).toBeInstanceOf(Undo);
     });
 
-    it('The Undo button works OK if pressed', async function() {
-        let pluginUndo = editorApp.getActivatedPlugins()[1];
+    it('Clicking on the Undo button can activate the Undo action in the editor', async function() {
+        spyOn(editor, 'undo');
         let element = Ext.getCmp("ap-id-editor-undo-btn");
-        console.log('element', element);
         element.handler.call(element.scope);
         expect(editor.undo).toHaveBeenCalled();
+    });
+
+    it('Clicking on the Undo button can activate the Undo action in the editor', async function() {
+        spyOn(editor, 'redo');
+        let element = Ext.getCmp("ap-id-editor-redo-btn");
+        element.handler.call(element.scope);
+        expect(editor.redo).toHaveBeenCalled();
     });
 
 });

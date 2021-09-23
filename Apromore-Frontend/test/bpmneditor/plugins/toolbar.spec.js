@@ -8,7 +8,7 @@ describe('After the EditorApp has been initialized with a BPMN model with Toolba
         editorApp = await testFactory.createEditorAppWithModelAndPlugins();
     });
 
-    it('The toolbar plugin has been loaded', async function() {
+    it('The Toolbar plugin has been loaded', async function() {
         let plugins = editorApp.getActivatedPlugins();
         expect(plugins[0]).toBeInstanceOf(Toolbar);
     });
