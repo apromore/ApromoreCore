@@ -45,7 +45,7 @@ export default class EditorApp {
         this.editor = undefined;
         this.availablePlugins = []; // plugin config data read from plugin configuration files
         this.activatedPlugins = []; // available plugin objects created from plugin javascript source files
-        this.pluginsData = [];      // plugin dynamic properties provided by a plugin object when it is created
+        this.buttonsData = [];      // plugin dynamic properties provided by a plugin object when it is created
         this.layout_regions = undefined;
         this.layout = undefined;
 
@@ -321,19 +321,19 @@ export default class EditorApp {
                     newPlugins.push(plugin);
 
                     if (plugin.editorCommandStackChanged) {
-                        this.editorCommandStackListeners.push(plugin);
+                        me.editorCommandStackListeners.push(plugin);
                     }
                 }
             } catch (e) {
                 Log.warn("Plugin %0 is not available", value.name);
-                Log.error("Error: " + e.message);
+                Log.error(`EditorApp._activatePlugins's error : ${e.message}`);
             }
         });
 
         newPlugins.each(function (value) {
             // For plugins that need to work on other plugins such as the toolbar
             if (value.registryChanged) {
-                value.registryChanged(me.pluginsData);
+                value.registryChanged(me.buttonsData);
             }
         });
 
@@ -381,11 +381,11 @@ export default class EditorApp {
                     getXML: this.getXML.bind(this),
                     getSVG: this.getSVG.bind(this),
                     addToRegion: this.addToRegion.bind(this),
-                    undo: this.editor.undo(),
-                    redo: this.editor.redo(),
-                    zoomIn: this.editor.zoomIn(),
-                    zoomOut: this.editor.zoomOut(),
-                    zoomFitToModel: this.editor.zoomFitToModel()
+                    undo: this.editor.undo.bind(this),
+                    redo: this.editor.redo.bind(this),
+                    zoomIn: this.editor.zoomIn.bind(this),
+                    zoomOut: this.editor.zoomOut.bind(this),
+                    zoomFitToModel: this.editor.zoomFitToModel.bind(this)
                 }
             }.bind(this)())
         }
@@ -393,12 +393,12 @@ export default class EditorApp {
     }
 
     async getXML() {
-        if (!this.editor) return Promise.reject(new Error('The Editor was not created'));
+        if (!this.editor) return Promise.reject(new Error('The Editor was not created (EditorApp.getXML)'));
         return await this.editor.getXML();
     }
 
     async getSVG() {
-        if (!this.editor) return Promise.reject(new Error('The Editor was not created'));
+        if (!this.editor) return Promise.reject(new Error('The Editor was not created (EditorApp.getSVG)'));
         return await this.editor.getSVG();
     }
 
@@ -412,13 +412,17 @@ export default class EditorApp {
      * A door for plugin to register its data with the editor app.
      * @param pluginData: plugin data
      */
-    offer(pluginData) {
-        if (!(this.pluginsData.findIndex(function(plugin) {return plugin.name === pluginData.name;}) >=0)) {
-            if (this.enabledPlugins && !this.enabledPlugins.includes(pluginData.name)) {
-                pluginData.isEnabled = function(){ return false};
+    offer(buttonData) {
+        if (!(this.buttonsData.findIndex(function(plugin) {return plugin.name === buttonData.name;}) >=0)) {
+            if (this.enabledPlugins && !this.enabledPlugins.includes(buttonData.name)) {
+                buttonData.isEnabled = function(){ return false};
             }
-            this.pluginsData.push(pluginData);
+            this.buttonsData.push(buttonData);
         }
+    }
+
+    getEditor() {
+        return this.editor;
     }
 
     /**
@@ -455,7 +459,7 @@ export default class EditorApp {
      * @private
      */
     async _loadEditor(config) {
-        if (!this.editor) return Promise.reject(new Error('The Editor was not created'));
+        if (!this.editor) return Promise.reject(new Error('The Editor was not created (EditorApp._loadEditor)'));
 
         let me = this;
         let options = {
@@ -478,7 +482,7 @@ export default class EditorApp {
             this.editor.addCommandStackChangeListener(this._handleEditorCommandStackChanges);
         }
         else {
-            throw new Error('Missing XML for the BPMN model in the editor loading');
+            throw new Error('Missing XML for the BPMN model in the editor loading (EditorApp._loadEditor)');
         }
 
     }
@@ -653,14 +657,14 @@ export default class EditorApp {
                         resolve();
                     }
                     catch (err) {
-                        Log.error(err.message);
+                        Log.error(`(EditorApp._loadPluginData). Error message: ${err.message}`);
                         reject(err);
                     }
                 },
                 error: function (xhr, status, error) {
                     Log.error("Plugin configuration file not available.");
                     //await me._loadEditor(config);
-                    reject(new Error('An error returned from the Ajax request. Error code: ' + status));
+                    reject(new Error(`EditorApp._loadPluginData: an error returned from the Ajax request. Error code: ${status}`));
                 }
             });
         })
