@@ -22,6 +22,7 @@
  **/
 
 import CONFIG from './../config';
+import Log from "../logger";
 
 export default class ApromoreSave {
 
@@ -61,10 +62,6 @@ export default class ApromoreSave {
         });
     }
 
-    updateTitle() {}
-
-    onUnLoad() {}
-
     /**
      * Saves the current process to the server.
      */
@@ -75,21 +72,28 @@ export default class ApromoreSave {
 
         this.saving = true;
 
-        var xml = await this.facade.getXML();
-        var svg = await this.facade.getSVG();
+        let xml = await this.facade.getXML().catch(err => {Log.error(err.message)});
 
-        if (forceNew) {
-            if (Apromore.BPMNEditor.Plugins.ApromoreSave.apromoreSaveAs) {
-                Apromore.BPMNEditor.Plugins.ApromoreSave.apromoreSaveAs(xml, svg);
+        let svg = await this.facade.getSVG().catch(err => {Log.error(err.message)});
+
+        try {
+            if (forceNew) {
+                if (Apromore.BPMNEditor.Plugins.ApromoreSave.apromoreSaveAs) {
+                    Apromore.BPMNEditor.Plugins.ApromoreSave.apromoreSaveAs(xml, svg);
+                } else {
+                    alert("Apromore Save As method is missing!");
+                }
             } else {
-                alert("Apromore Save As method is missing!");
+                if (Apromore.BPMNEditor.Plugins.ApromoreSave.apromoreSave) {
+                    Apromore.BPMNEditor.Plugins.ApromoreSave.apromoreSave(xml, svg);
+                } else {
+                    alert("Apromore Save method is missing!");
+                }
             }
-        } else {
-            if (Apromore.BPMNEditor.Plugins.ApromoreSave.apromoreSave) {
-                Apromore.BPMNEditor.Plugins.ApromoreSave.apromoreSave(xml, svg);
-            } else {
-                alert("Apromore Save method is missing!");
-            }
+        }
+        catch (err) {
+            Log.error(`Error in calling method of Apromore.BPMNEditor.Plugins.ApromoreSave. Error: ${err.message}`);
+            throw err;
         }
 
         this.saving = false;
