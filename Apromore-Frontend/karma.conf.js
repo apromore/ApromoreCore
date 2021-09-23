@@ -33,6 +33,7 @@ module.exports = function (config) {
             // {pattern: 'test/loganimation/fixtures/*.bpmn', watched: false, served: true, included: false},
 
             {pattern: 'test/bpmneditor/*.spec.js', watched: false},
+            {pattern: 'test/bpmneditor/plugins/*.spec.js', watched: false},
             {pattern: 'test/bpmneditor/fixtures/*.html', watched: false, served: true, included: false},
             {pattern: 'test/bpmneditor/fixtures/*.bpmn', watched: false, served: true, included: false},
             {pattern: 'test/bpmneditor/fixtures/*.xml', watched: false, served: true, included: false}
@@ -40,7 +41,8 @@ module.exports = function (config) {
 
         preprocessors: {
             './test/loganimation/*.spec.js': ['webpack'],
-            './test/bpmneditor/*.spec.js': ['webpack']
+            './test/bpmneditor/*.spec.js': ['webpack'],
+            './test/bpmneditor/plugins/*.spec.js': ['webpack']
         },
         webpack: webpackConfig,
         webpackMiddleware: {

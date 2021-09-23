@@ -2,7 +2,7 @@ import EditorApp from "../../src/bpmneditor/editorapp";
 import CONFIG from "../../src/bpmneditor/config";
 import Utils from "../../src/bpmneditor/utils";
 
-describe('After the EditorApp has been initialized with a BPMN model', function () {
+describe('After the EditorApp has been initialized with a BPMN model without any plugins', function () {
     let editorApp;
 
     beforeEach(async function() {
