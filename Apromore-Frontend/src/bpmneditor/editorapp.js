@@ -373,6 +373,7 @@ export default class EditorApp {
      */
     _getPluginFacade() {
         if (!(this._pluginFacade)) {
+            let me = this;
             this._pluginFacade = (function () {
                 return {
                     offer: this.offer.bind(this),
@@ -381,11 +382,11 @@ export default class EditorApp {
                     getXML: this.getXML.bind(this),
                     getSVG: this.getSVG.bind(this),
                     addToRegion: this.addToRegion.bind(this),
-                    undo: this.editor.undo.bind(this),
-                    redo: this.editor.redo.bind(this),
-                    zoomIn: this.editor.zoomIn.bind(this),
-                    zoomOut: this.editor.zoomOut.bind(this),
-                    zoomFitToModel: this.editor.zoomFitToModel.bind(this)
+                    undo: () => me.editor.undo(),
+                    redo: () => me.editor.redo(),
+                    zoomIn: () => me.editor.zoomIn(),
+                    zoomOut: () => me.editor.zoomOut(),
+                    zoomFitToModel: () => me.editor.zoomFitToModel()
                 }
             }.bind(this)())
         }
