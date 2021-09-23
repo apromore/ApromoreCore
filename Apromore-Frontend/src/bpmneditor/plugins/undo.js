@@ -79,19 +79,10 @@ export default class Undo {
     }
 
     /**
-     * Stores all executed commands in a stack
-     *
-     * @param {Object} evt
-     */
-    handleExecuteCommands( evt ){
-
-    }
-
-    /**
      * Does the undo
      *
      */
-    doUndo(){
+    doUndo() {
         this.facade.undo();
     }
 
