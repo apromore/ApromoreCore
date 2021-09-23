@@ -1177,4 +1177,14 @@ databaseChangeLog:
            cascadeConstraints: true
            tableName: static_log
 
+ - changeSet:
+     id: 20212309015793
+     author: mtomar
+     changes:
+       - addColumn:
+           tableName: job
+           columns:
+             - column:
+                 name: time_zone_id
+                 type: VARCHAR(40)
 
