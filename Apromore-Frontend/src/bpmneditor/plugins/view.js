@@ -39,6 +39,7 @@ export default class View {
         /* Register zoom in */
         this.facade.offer({
             'name': window.Apromore.I18N.View.zoomIn,
+            'btnId': 'ap-id-editor-zoomIn-btn',
             'functionality': this.zoomIn.bind(this),
             'group': window.Apromore.I18N.View.group,
             'icon': CONFIG.PATH + "images/ap/zoom-in.svg",
@@ -50,6 +51,7 @@ export default class View {
         /* Register zoom out */
         this.facade.offer({
             'name': window.Apromore.I18N.View.zoomOut,
+            'btnId': 'ap-id-editor-zoomOut-btn',
             'functionality': this.zoomOut.bind(this),
             'group': window.Apromore.I18N.View.group,
             'icon': CONFIG.PATH + "images/ap/zoom-out.svg",
@@ -61,6 +63,7 @@ export default class View {
         /* Register zoom fit to model */
         this.facade.offer({
             'name': window.Apromore.I18N.View.zoomFitToModel,
+            'btnId': 'ap-id-editor-zoomFit-btn',
             'functionality': this.zoomFitToModel.bind(this),
             'group': window.Apromore.I18N.View.group,
             'icon': CONFIG.PATH + "images/ap/zoom-to-fit.svg",
