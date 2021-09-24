@@ -22,7 +22,7 @@
  * #L%
  */
 
-package org.apromore.test.service.impl;
+package org.apromore.service.impl;
 
 import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.expect;

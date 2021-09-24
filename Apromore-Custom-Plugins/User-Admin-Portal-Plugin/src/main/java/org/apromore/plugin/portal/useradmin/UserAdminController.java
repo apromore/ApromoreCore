@@ -50,7 +50,6 @@ import org.apromore.plugin.portal.useradmin.listbox.UserListbox;
 import org.apromore.portal.common.zk.ComponentUtils;
 import org.apromore.portal.types.EventQueueEvents;
 import org.apromore.portal.types.EventQueueTypes;
-import org.apromore.security.util.SecurityUtil;
 import org.apromore.service.SecurityService;
 import org.apromore.service.WorkspaceService;
 import org.apromore.zk.notification.Notification;
@@ -1031,13 +1030,20 @@ public class UserAdminController extends SelectorComposer<Window> {
       saveAssignedGroup(selectedUsers, false);
       saveAssignedRole(selectedUsers, false);
       selectedUser.getMembership().setEmail(emailTextbox.getValue());
-      if (passwordDirty) {
-        selectedUser.getMembership()
-            .setPassword(SecurityUtil.hashPassword(passwordTextbox.getValue()));
-        selectedUser.getMembership().setSalt("username");
-      }
       selectedUser.getMembership().setUser(selectedUser);
       securityService.updateUser(selectedUser);
+
+      if (passwordDirty) {
+        try {
+          securityService.updatePassword(selectedUser.getMembership(), passwordTextbox.getValue());
+
+        } catch (Exception e) {
+          LOGGER.error("Unable to update password", e);
+          Messagebox.show(getLabel("passwordNotUpdated_message"), null, Messagebox.OK,
+              Messagebox.ERROR);
+        }
+      }
+
       Notification
           .info(MessageFormat.format(getLabel("userUpdated_message"), selectedUser.getUsername()));
     } else {
