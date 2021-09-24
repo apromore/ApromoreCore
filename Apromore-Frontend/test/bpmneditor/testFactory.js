@@ -1,20 +1,30 @@
 import EditorApp from "../../src/bpmneditor/editorapp";
+let pluginsConfig = require('./fixtures/plugins.xml');
+let pluginsConfigSimple = require('./fixtures/pluginsSimple.xml');
+let bpmnSimple = require('./fixtures/simpleMap.bpmn');
 
 export async function createEditorAppWithModelAndPlugins() {
-    $(window.document.body).empty();
+    return await createEditorApp(pluginsConfig.default, bpmnSimple.default);
+}
+
+export async function createEditorAppWithModelAndSimplePlugins() {
+    return await createEditorApp(pluginsConfigSimple.default, bpmnSimple.default);
+}
+
+async function createEditorApp(pluginsConfigXML, bpmnXML) {
+    $(window.document.body).empty(); // Clear the HTML document to avoid conflicts with the content loaded in other tests
     $(window.document.body).append($('<div id="editorAppContainer"></div>')[0]);
+
     let editorApp = new EditorApp({
         id: 'editorAppContainer',
         fullscreen: true
     });
 
-    let pluginsConfig = require('./fixtures/plugins.xml').default;
-    let parsedPlugins = new DOMParser().parseFromString(pluginsConfig, "text/xml");
+    let parsedPlugins = new DOMParser().parseFromString(pluginsConfigXML, "text/xml");
     spyOn($, 'ajax').and.callFake(ajax_response(parsedPlugins, true));
 
-    let bpmnXML = require('./fixtures/simpleMap.bpmn');
     await editorApp.init({
-        xml: bpmnXML.default,
+        xml: bpmnXML,
         callBack: () => {},
         preventFitDelay: true
     }).catch(err => {
@@ -23,6 +33,7 @@ export async function createEditorAppWithModelAndPlugins() {
 
     return editorApp;
 }
+
 
 // A simple way of mocking Ajax response for testing
 // To be more sophisticated, can use jasmine-ajax extension per need basis
@@ -33,5 +44,5 @@ function ajax_response(response, success) {
         } else {
             params.error(response);
         }
-    };
+    }
 }

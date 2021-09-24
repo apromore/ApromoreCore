@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <config>
+    <!-- List of plugins. One plugin is one class. -->
+    <!-- Each plugin class can register one or more toolbar buttons. The button group must belong to one of the groups below -->
 	<plugins>
-		<!-- following plugins require Ext -->
 		<plugin source="toolbar.js" name="Toolbar" />
 		<plugin source="undo.js" name="Undo" />
 		<plugin source="apromoreSave.js" name="ApromoreSave"/>
@@ -12,15 +13,13 @@
 		<plugin source="simulationPanel.js" name="SimulationPanel"/>
 	</plugins>
 
+    <!-- Order of button groups on the toolbar -->
 	<properties>
 		<property group="File" index="1" />
 		<property group="View" index="2" />
 		<property group="Undo" index="3" />
 		<property group="Zoom" index="4" />
-		<property group="Alignment" index="5" />
-		<property group="Group" index="6" />
-		<property group="Z-Order" index="7" />
-		<property group="Docker" index="8" />
-		<property group="Simulation" index="9" />
+		<property group="Simulation" index="5" />
+        <property group="Share" index="6" />
 	</properties>
 </config>
