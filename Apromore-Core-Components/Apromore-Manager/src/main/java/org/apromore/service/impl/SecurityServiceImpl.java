@@ -24,6 +24,7 @@
 
 package org.apromore.service.impl;
 
+import java.nio.charset.Charset;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -418,7 +419,7 @@ public class SecurityServiceImpl implements SecurityService {
     Membership membership = user.getMembership();
 
     // Check that the password hashing algorithm is one we accept
-    if (!Arrays.asList(allowedPasswordHashingAlgorithms.split(",")).contains(membership.getHashingAlgorithm())) {
+    if (!Arrays.asList(allowedPasswordHashingAlgorithms.split("\\s+")).contains(membership.getHashingAlgorithm())) {
         return false;
     }
 
@@ -457,7 +458,7 @@ public class SecurityServiceImpl implements SecurityService {
   /**
    * @param membership  will be modified to have a new password hash; if the hashing algorithm is <code>null</code>
    *     it will be initialized to <code>passwordHashingAlgorithm</code>; if the salt is <code>null</code> it will
-   *     be set to a new random value (or the empty for <code>MD5 UNSALTED</code>)
+   *     be set to a new random value (or the empty string for <code>MD5-UNSALTED</code>)
    * @param newPassword  cleartext password
    * @throws NoSuchAlgorithmException if the configured <code>passwordHashingAlgorithm</code> is not supported
    */
@@ -470,7 +471,7 @@ public class SecurityServiceImpl implements SecurityService {
       if (membership.getSalt() == null) {
         membership.setSalt("");
       }
-      membership.setPassword(SecurityUtil.hash(newPassword, "MD5"));
+      membership.setPassword(SecurityUtil.hash(newPassword, "MD5", Charset.defaultCharset()));
 
     } else {
       membership.setSalt(RandomStringUtils.randomAlphanumeric(saltLength));

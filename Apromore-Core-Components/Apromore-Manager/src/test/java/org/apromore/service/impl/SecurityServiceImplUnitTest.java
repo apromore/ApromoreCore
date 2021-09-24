@@ -59,27 +59,26 @@ class SecurityServiceImplUnitTest {
      * @param expectChanged  do we expect the password change to be permitted?
      */
     @ParameterizedTest
-    @CsvSource(delimiter=';', value = {
-                // change an unsalted password (salt ignored)
-                "MD5 UNSALTED;     MD5 UNSALTED; 3; false; MD5 UNSALTED; 5f4dcc3b5aa765d61d8327deb882cf99; NaCl; password; true",
-                "MD5 UNSALTED;     MD5 UNSALTED; 3; false; MD5 UNSALTED; 5f4dcc3b5aa765d61d8327deb882cf99; KCl;  password; true",
+    @CsvSource({ // change an unsalted password (salt ignored)
+                "MD5-UNSALTED,     MD5-UNSALTED, 3, false, MD5-UNSALTED, 5f4dcc3b5aa765d61d8327deb882cf99, NaCl, password, true",
+                "MD5-UNSALTED,     MD5-UNSALTED, 3, false, MD5-UNSALTED, 5f4dcc3b5aa765d61d8327deb882cf99, KCl,  password, true",
 
                 // change a salted password
-                "MD5;              MD5;          3; false; MD5;          f25b019a9470318d44d60e1416631f34; NaCl; password; true",
-                "SHA-1;            SHA-1;        3; false; SHA-1;        40274892d2fe01a6ab1e0fbde5c22b8312d10780; NaCl; password; true",
-                "SHA-256;          SHA-256;      3; false; SHA-256;       28480971104b37691f41c430e59e07fd4c5ae0f53317b2aa2e06cf8ddbbfe10; NaCl; password; true",
+                "MD5,              MD5,          3, false, MD5,          f25b019a9470318d44d60e1416631f34, NaCl, password, true",
+                "SHA-1,            SHA-1,        3, false, SHA-1,        40274892d2fe01a6ab1e0fbde5c22b8312d10780, NaCl, password, true",
+                "SHA-256,          SHA-256,      3, false, SHA-256,       28480971104b37691f41c430e59e07fd4c5ae0f53317b2aa2e06cf8ddbbfe10, NaCl, password, true",
 
                 // change a password and upgrade its algorithm
-                "MD5 UNSALTED,MD5; MD5;          3; true;  MD5 UNSALTED; 5f4dcc3b5aa765d61d8327deb882cf99; NaCl; password; true",
-                "MD5,SHA-256;      SHA-256;      3; true;  MD5;          f25b019a9470318d44d60e1416631f34; NaCl; password; true",
+                "MD5-UNSALTED MD5, MD5,          3, true,  MD5-UNSALTED, 5f4dcc3b5aa765d61d8327deb882cf99, NaCl, password, true",
+                "MD5 SHA-256,      SHA-256,      3, true,  MD5,          f25b019a9470318d44d60e1416631f34, NaCl, password, true",
 
                 // can't change because current algorithm isn't allowed for authentication
-                "MD5;              MD5;          3; false; MD5 UNSALTED; 5f4dcc3b5aa765d61d8327deb882cf99; NaCl; password; false",
-                "MD5;              MD5;          3; true;  MD5 UNSALTED; 5f4dcc3b5aa765d61d8327deb882cf99; NaCl; password; false",
+                "MD5,              MD5,          3, false, MD5-UNSALTED, 5f4dcc3b5aa765d61d8327deb882cf99, NaCl, password, false",
+                "MD5,              MD5,          3, true,  MD5-UNSALTED, 5f4dcc3b5aa765d61d8327deb882cf99, NaCl, password, false",
 
                 // can't change because the password is wrong
-                "MD5;              MD5;          3; false; MD5;          f25b019a9470318d44d60e1416631f34; NaCl; badpass; false",
-                "MD5;              MD5;          3; true;  MD5;          f25b019a9470318d44d60e1416631f34; NaCl; badpass; false"})
+                "MD5,              MD5,          3, false, MD5,          f25b019a9470318d44d60e1416631f34, NaCl, badpass, false",
+                "MD5,              MD5,          3, true,  MD5,          f25b019a9470318d44d60e1416631f34, NaCl, badpass, false"})
     void testChangeUserPassword(String  allowedPasswordHashingAlgorithms,
                                 String  passwordHashingAlgorithm,
                                 int     saltLength,

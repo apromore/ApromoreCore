@@ -113,9 +113,9 @@ public class UsernamePasswordAuthenticationProvider implements AuthenticationPro
         String password = (String) token.getCredentials();
 
         // Check that the password hashing algorithm is one we accept
-        if (!Arrays.asList(allowedPasswordHashingAlgorithms.split(",")).contains(membership.getHashingAlgorithm())) {
-            throw new InternalAuthenticationServiceException("Unacceptable legacy password hash " +
-                membership.getHashingAlgorithm() + " for user " + user.getUsername());
+        if (!Arrays.asList(allowedPasswordHashingAlgorithms.split("\\s+")).contains(membership.getHashingAlgorithm())) {
+            throw new InternalAuthenticationServiceException("Unacceptable legacy password hashing algorithm \"" +
+                membership.getHashingAlgorithm() + "\" for user \"" + user.getUsername() + "\"");
         }
 
         // Parse the password field from the membership
@@ -124,30 +124,29 @@ public class UsernamePasswordAuthenticationProvider implements AuthenticationPro
             if (!SecurityUtil.authenticate(membership, password)) {
                 throw new BadCredentialsException("Incorrect password");
             }
-
-            // Although we've accepted these credentials now, we may tighten our criteria in the future.
-            // Since this is the only time we know the cleartext password, it's our opportunity to
-            // transparently upgrade the hashing scheme.  Otherwise we have to wait until the next login.
-
-            if (!membership.getHashingAlgorithm().equals(passwordHashingAlgorithm)) {
-                // Rehash because the current hash doesn't use our preferred algorithm
-                LOGGER.info("User \"{}\" authenticated with {} instead of {}", user.getUsername(),
-                    membership.getHashingAlgorithm(), passwordHashingAlgorithm);
-                rehash(user, password);
-
-            } else if (membership.getSalt().length() < saltLength) {
-                // Rehash because the current salt is below the configured size
-                LOGGER.info("User \"{}\" has a password with {} characters of salt, less than the configured threshold of {}.",
-                    user.getUsername(), membership.getSalt().length(), saltLength);
-                rehash(user, password);
-            }
-
-            return authenticatedToken(user, authentication);
-
         } catch (NoSuchAlgorithmException e) {
             throw new InternalAuthenticationServiceException("Unsupported algorithm " + membership.getHashingAlgorithm() +
                 " for password hash for user " + user.getUsername(), e);
         }
+
+        // Although we've accepted these credentials now, we may tighten our criteria in the future.
+        // Since this is the only time we know the cleartext password, it's our opportunity to
+        // transparently upgrade the hashing scheme.  Otherwise we have to wait until the next login.
+
+        if (!membership.getHashingAlgorithm().equals(passwordHashingAlgorithm)) {
+            // Rehash because the current hash doesn't use our preferred algorithm
+            LOGGER.info("User \"{}\" authenticated with {} instead of {}", user.getUsername(),
+                membership.getHashingAlgorithm(), passwordHashingAlgorithm);
+            rehash(user, password);
+
+        } else if (membership.getSalt().length() < saltLength) {
+            // Rehash because the current salt is below the configured size
+            LOGGER.info("User \"{}\" has a password with {} characters of salt, less than the configured threshold of {}.",
+                user.getUsername(), membership.getSalt().length(), saltLength);
+            rehash(user, password);
+        }
+
+        return authenticatedToken(user, authentication);
     }
 
     /**
@@ -173,7 +172,8 @@ public class UsernamePasswordAuthenticationProvider implements AuthenticationPro
         } catch (NoResultException e) {
             User user = userRepository.findUserByEmail(name);
             if (user == null) {
-                throw new UsernameNotFoundException("Neither a username nor email of any existing user: " + name);
+                throw new UsernameNotFoundException(
+                    "Neither a username nor email of any existing user: \"" + name + "\"");
             }
             return user;
         }
@@ -182,18 +182,27 @@ public class UsernamePasswordAuthenticationProvider implements AuthenticationPro
     /**
      * This method retains the user's existing password, but may upgrade its salt and hash depending on configuration.
      *
-     * No change will occur if {@link #upgradePasswords} is not true.
+     * No change will occur if {@link #upgradePasswords} is not true or if {@link #passwordHashingAlgorithm}
+     * isn't in {@link #allowedPasswordHashingAlgorithms}.
      *
-     * @param user  whose password to resalt
+     * @param user  whose password to rehash
      * @param password  the current cleartext password for the <var>user</var>
      */
+    @Transactional(readOnly = false)
     private void rehash(final User user, final String password) {
         if (!upgradePasswords) {
             LOGGER.debug("Retaining the existing password hash because upgrading is not enabled.");
+
+        } else if (!Arrays.asList(allowedPasswordHashingAlgorithms.split("\\s+")).contains(passwordHashingAlgorithm)) {
+            LOGGER.warn("Retaining the existing password hash because upgrading would prevent \"{}\" from logging in; " +
+                "configure allowedPasswordHashingAlgorithms to include {} to enable upgrades",
+                user.getUsername(), passwordHashingAlgorithm);
+
         } else if (securityService.changeUserPassword(user.getUsername(), password, password)) {
-            LOGGER.info("Rehashed password for user {}", user.getUsername());
+            LOGGER.info("Rehashed password for user \"{}\"", user.getUsername());
+
         } else {
-            LOGGER.warn("Failed to rehash password for user {}", user.getUsername());
+            LOGGER.warn("Failed to rehash password for user \"{}\"", user.getUsername());
         }
     }
 
