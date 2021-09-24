@@ -21,7 +21,6 @@
  * DEALINGS IN THE SOFTWARE.
  **/
 
-import CONFIG from './../config';
 import Log from './../logger';
 
 export default class Toolbar {
@@ -71,7 +70,6 @@ export default class Toolbar {
      */
     registryChanged(pluginsData) {
         // Sort plugins by group and index
-        //TODO: Update this to look through the plugins list
         var newPlugs =  pluginsData.sortBy((function(value) {
             // groupIndex + groupName + buttonIndex, e.g. 1undo1, 1undo2, 1undo3, 2zoom1, 2zoom2
             let compareKey = ((this.groupIndex[value.group] != undefined ? this.groupIndex[value.group] : "" ) + value.group + "" + value.index).toLowerCase();
@@ -133,9 +131,7 @@ export default class Toolbar {
      * @returns button data or undefined
      */
     getButtonByIndex(buttonIndex) {
-        if (buttonIndex >=0 && buttonIndex < this.buttons.length) {
-            return this.buttons[buttonIndex];
-        }
+        return (buttonIndex >=0 && buttonIndex < this.buttons.length) ? this.buttons[buttonIndex] : undefined;
     }
 
     /**
@@ -144,11 +140,7 @@ export default class Toolbar {
      * @returns button data or undefined
      */
     getButtonById(buttonId) {
-        this.buttons.each(function(pluginButton) {
-            if (pluginButton.btnId && pluginButton.btnId === buttonId) {
-                return pluginButton;
-            }
-        });
+        return this.buttons.find(pluginButton => {return pluginButton.btnId && pluginButton.btnId === buttonId});
     }
 
     getNumberOfButtons() {
