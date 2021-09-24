@@ -35,5 +35,6 @@ describe('After the EditorApp has been initialized with a BPMN model with Toolba
         expect(toolbarPlugin.getButtonByIndex(0).buttonInstance).toBeInstanceOf(Ext.Button);
         expect(toolbarPlugin.getButtonByIndex(11).btnId).toEqual('ap-id-editor-share-btn');
         expect(toolbarPlugin.getButtonByIndex(11).buttonInstance).toBeInstanceOf(Ext.Button);
+        expect(toolbarPlugin.getButtonById('ap-id-editor-undo-btn').buttonInstance).toBeInstanceOf(Ext.Button);
     });
 });
