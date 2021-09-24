@@ -25,11 +25,21 @@ import CONFIG from './../config';
 import Log from './../logger';
 
 export default class Toolbar {
+    /**
+     *
+     * @param facade: EditorApp facade
+     * @param ownPluginData
+     *  {
+     *      source: 'source file',
+     *      name: 'plugin name',
+     *      properties: [{group: 'groupName', index: 'groupOrderNumber'}, {...}] // this is all groups from the configuration file
+     *  }
+     */
     constructor(facade, ownPluginData) {
         this.plugs = [];
         this.facade = facade;
 
-        this.groupIndex = new Hash();
+        this.groupIndex = new Hash(); // key-value pairs
         ownPluginData.properties.each((function(value){
             if(value.group && value.index != undefined) {
                 this.groupIndex[value.group] = value.index
@@ -45,12 +55,27 @@ export default class Toolbar {
      * Callback from EditorApp to register pluginsData
      * Provide an oppertunity for a plugin to work on other plugins, like this Toolbar
      * @param pluginsData: array of plugin data which is provided from each plugin
+     *
+         // [
+         //     {   (Toolbar) object
+         //                 type: 'plugin name',
+         //                 engage: true
+         //                 },
+         //
+         //     {  (Undo) object
+         //                 type: 'plugin name',
+         //                 engage: true
+         //                 },
+         //     ...
+         // ]
      */
     registryChanged(pluginsData) {
         // Sort plugins by group and index
         //TODO: Update this to look through the plugins list
         var newPlugs =  pluginsData.sortBy((function(value) {
-            return ((this.groupIndex[value.group] != undefined ? this.groupIndex[value.group] : "" ) + value.group + "" + value.index).toLowerCase();
+            // groupIndex + groupName + buttonIndex, e.g. 1undo1, 1undo2, 1undo3, 2zoom1, 2zoom2
+            let compareKey = ((this.groupIndex[value.group] != undefined ? this.groupIndex[value.group] : "" ) + value.group + "" + value.index).toLowerCase();
+            return compareKey;
         }).bind(this));
 
         // Search all plugins that are defined as plugin toolbar buttons or undefined target (meaning for all)
@@ -168,7 +193,7 @@ export default class Toolbar {
 
         }).bind(this));
 
-        this.enableButtons([]);
+        this.enableButtons();
 
         // This is unused at this stage as all toolbar buttons are simple
         this.toolbar.calcSlices();
@@ -176,7 +201,35 @@ export default class Toolbar {
         window.addEventListener("onresize", function(event){this.toolbar.calcSlices()}.bind(this), false);
     }
 
-    enableButtons(elements) {
+    /**
+     * Get toolbar button from the button ordered index on the toolbar
+     * @param buttonIndex
+     * @returns button data or undefined
+     */
+    getButtonByIndex(buttonIndex) {
+        if (buttonIndex >=0 && buttonIndex < this.buttons.length) {
+            return this.buttons[buttonIndex];
+        }
+    }
+
+    /**
+     * Get button from button ID
+     * @param buttonId
+     * @returns button data or undefined
+     */
+    getButtonById(buttonId) {
+        this.buttons.each(function(pluginButton) {
+            if (pluginButton.btnId && pluginButton.btnId === buttonId) {
+                return pluginButton;
+            }
+        });
+    }
+
+    getNumberOfButtons() {
+        return this.buttons.length;
+    }
+
+    enableButtons() {
         // Show the Buttons
         this.buttons.each((function(pluginButton){
             pluginButton.buttonInstance.enable();

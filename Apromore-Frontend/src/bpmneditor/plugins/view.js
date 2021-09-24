@@ -68,7 +68,7 @@ export default class View {
             'group': window.Apromore.I18N.View.group,
             'icon': CONFIG.PATH + "images/ap/zoom-to-fit.svg",
             'description': window.Apromore.I18N.View.zoomFitToModelDesc,
-            'index': 4,
+            'index': 3,
             'minShape': 0,
             'maxShape': 0 });
     }

@@ -135,3 +135,4 @@ Apromore.I18N.Perspective.noTip = "Unload the current perspective"
 if(!Apromore.I18N.Share) Apromore.I18N.Share = {};
 Apromore.I18N.Share.share = "Share";
 Apromore.I18N.Share.shareDesc = "Share";
+Apromore.I18N.Share.group = "Share";

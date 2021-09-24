@@ -43,13 +43,62 @@ export default class EditorApp {
     constructor (config) {
         "use strict";
         this.editor = undefined;
-        this.availablePlugins = []; // plugin config data read from plugin configuration files
-        this.activatedPlugins = []; // available plugin objects created from plugin javascript source files
-        this.buttonsData = [];      // plugin dynamic properties provided by a plugin object when it is created
+
+        /*
+        Plugin config data read from the plugin configuration file
+        [
+            {   source: 'source file',
+                name: 'plugin name',
+                properties: [{group: 'groupName', index: 'groupOrderNumber'}, {...}]
+             }
+            ...
+        ]
+        */
+        this.availablePlugins = [];
+
+        /*
+        Plugin data after instantiating each plugin from its class
+        [
+            {(Toolbar) object
+             type: 'plugin name',
+             engage: true
+             },
+
+            {(Undo) object
+             type: 'plugin name',
+             engage: true
+             },
+            ...
+        ]
+        */
+        this.activatedPlugins = [];
+
+        /*
+        Button data registered by a plugin with EditorApp, one plugin can regiter multiple buttons.
+        [
+            {
+                'name': window.Apromore.I18N.View.zoomFitToModel,
+                'btnId': 'ap-id-editor-zoomFit-btn',
+                'functionality': this.zoomFitToModel.bind(this),
+                'group': window.Apromore.I18N.View.group, // this value must be one of the group names under properties in availablePlugins.
+                'icon': CONFIG.PATH + "images/ap/zoom-to-fit.svg",
+                'description': window.Apromore.I18N.View.zoomFitToModelDesc,
+                'index': 4,
+                'minShape': 0,
+                'maxShape': 0,
+                isEnabled: function()
+             }
+             ...
+          ]
+         */
+        this.buttonsData = [];
+
         this.layout_regions = undefined;
+
         this.layout = undefined;
 
         this.id = config.id;
+
         if (!this.id) {
             Log.fatal('Missing the container HTML element for the editor');
             return;
@@ -291,15 +340,7 @@ export default class EditorApp {
     }
 
     /**
-     *  Make plugin object
-     *  Activated plugins: array of plugin objects
-     *  [
-     *      {
-     *          <plugin attributes>,
-     *          type: name of the plugin,
-     *          engaged: true
-     *      }
-     *  ]
+     *  Instantiate plugin object from plugin class
      */
     _activatePlugins() {
         var me = this;
@@ -310,6 +351,14 @@ export default class EditorApp {
         // this.pluginData is filled in
         console.log('Plugins', Plugins);
         let plugins = Plugins;
+
+        // Available plugins:
+        // [{   source: 'source file',
+        //      name: 'plugin name',
+        //      properties: [{group: 'groupName', index: 'groupOrderNumber'}, {...}] // this is all groups from the configuration file
+        //   }
+        //  {...}
+        // ]
         this.availablePlugins.each(function (value) {
             Log.debug("Initializing plugin '%0'", value.name);
             try {
@@ -330,6 +379,21 @@ export default class EditorApp {
             }
         });
 
+        // newPlugins
+        /*
+        [
+            {   (Toolbar) object
+                 type: 'plugin name',
+                 engage: true
+                 },
+
+             {  (Undo) object
+                 type: 'plugin name',
+                 engage: true
+                 },
+            ...
+        ]
+         */
         newPlugins.each(function (value) {
             // For plugins that need to work on other plugins such as the toolbar
             if (value.registryChanged) {
@@ -410,8 +474,19 @@ export default class EditorApp {
     // }
 
     /**
-     * A door for plugin to register its data with the editor app.
-     * @param pluginData: plugin data
+     * A door for plugin to register buttons with the EditorApp
+     * buttonData {
+        //     'btnId': 'ap-id-editor-export-pdf-btn',
+        //     'name': window.Apromore.I18N.File.pdf,
+        //     'functionality': this.exportPDF.bind(this),
+        //     'group': window.Apromore.I18N.File.group,
+        //     'icon': CONFIG.PATH + "images/ap/export-pdf.svg",
+        //     'description': window.Apromore.I18N.File.pdfDesc,
+        //     'index': 5,
+        //     'minShape': 0,
+        //     'maxShape': 0
+        // }
+     * @param buttonData: button data
      */
     offer(buttonData) {
         if (!(this.buttonsData.findIndex(function(plugin) {return plugin.name === buttonData.name;}) >=0)) {
@@ -449,7 +524,7 @@ export default class EditorApp {
     async _loadData(config) {
         await this._loadEditor(config).catch(err => {throw err});
         if(CONFIG.PLUGINS_ENABLED) {
-            await this._loadPluginData().catch(err => Log.warn("Error in loading plugins. Error: " + err.message));
+            await this._loadAvailablePluginData().catch(err => Log.warn("Error in loading plugins. Error: " + err.message));
         }
     }
 
@@ -513,7 +588,7 @@ export default class EditorApp {
      * @returns {Promise<unknown>}: return a custom Promise to control this async action.
      * @private
      */
-    _loadPluginData() {
+    _loadAvailablePluginData() {
         let me = this;
         let source = CONFIG.PLUGINS_CONFIG;
         //TODO: await Ajax response
@@ -531,34 +606,32 @@ export default class EditorApp {
                         let resultXml = result;
                         console.log(resultXml);
 
-                        // Global properties XML:
+                        // Read properties tag
                         // <properties>
-                        //      <property attributeName1="attributeValue1" attributeName2="attributeValue2" />
-                        //      <property attributeName1="attributeValue1" attributeName2="attributeValue2" />
-                        //      ...
+                        //     <property group="File" index="1" />
+                        //     <property group="View" index="2" />
                         // </properties>
-                        let globalProperties = [];
-
+                        let properties = [];
                         let preferences = $A(resultXml.getElementsByTagName("properties"));
                         preferences.each(function (p) {
-                            let props = $A(p.childNodes);
+                            let props = $A(p.childNodes); // props = [<property group='File' index='1' />, <property />]
                             props.each(function (prop) {
                                 let property = new Hash(); // Hash is provided by Prototype library
                                 // get all attributes from the node and set to global properties
-                                let attributes = $A(prop.attributes)
+                                let attributes = $A(prop.attributes) // attributes = [{nodeName: 'group', nodeValue: 'File'}, {nodeName: 'index', nodeValue: '1'}]
                                 attributes.each(function (attr) {
-                                    property[attr.nodeName] = attr.nodeValue
+                                    property[attr.nodeName] = attr.nodeValue // each property is a set of key-value pairs: {'group' => 'File', 'index' => '1'}
                                 });
                                 if (attributes.length > 0) {
-                                    globalProperties.push(property)
+                                    properties.push(property) // array [{'group' => 'File', 'index' => '1'}, ...]
                                 }
                             });
                         });
 
                         // Plugin XML:
                         //  <plugins>
-                        //      <plugin source="javascript filename.js" name="Javascript class name" property="" requires="" notUsesIn="" />
-                        //      <plugin source="javascript filename.js" name="Javascript class name" property="" requires="" notUsesIn="" />
+                        //      <plugin source="javascript filename.js" name="Javascript class name" />
+                        //      <plugin source="javascript filename.js" name="Javascript class name" />
                         //  </plugins>
                         let plugin = resultXml.getElementsByTagName("plugin");
                         $A(plugin).each(function (node) {
@@ -583,74 +656,18 @@ export default class EditorApp {
                                 return;
                             }
 
-                            // Get all plugin properties
-                            let propertyNodes = node.getElementsByTagName("property");
-                            let properties = [];
-                            $A(propertyNodes).each(function (prop) {
-                                let property = new Hash();
-
-                                // Get all Attributes from the Node
-                                let attributes = $A(prop.attributes)
-                                attributes.each(function (attr) {
-                                    property[attr.nodeName] = attr.nodeValue
-                                });
-                                if (attributes.length > 0) {
-                                    properties.push(property)
-                                }
-                            });
-
-                            // Set all Global-Properties to the Properties
-                            properties = properties.concat(globalProperties);
-
-                            // Set Properties to Plugin-Data
                             pluginData['properties'] = properties;
 
-                            // Get the RequiredNodes
-                            let requireNodes = node.getElementsByTagName("requires");
-                            let requires;
-                            $A(requireNodes).each(function (req) {
-                                let namespace = $A(req.attributes).find(function (attr) {
-                                    return attr.name == "namespace"
-                                })
-                                if (namespace && namespace.nodeValue) {
-                                    if (!requires) {
-                                        requires = {namespaces: []}
-                                    }
-                                    requires.namespaces.push(namespace.nodeValue)
-                                }
-                            });
+                            // pluginData
+                            // {source: 'source file', name: 'plugin name', properties: [{group: 'groupName', index: 'groupOrderNumber'}, {...}]}
 
-                            // Set Requires to the Plugin-Data, if there is one
-                            if (requires) {
-                                pluginData['requires'] = requires;
-                            }
-
-                            // Get the RequiredNodes
-                            let notUsesInNodes = node.getElementsByTagName("notUsesIn");
-                            let notUsesIn;
-                            $A(notUsesInNodes).each(function (not) {
-                                let namespace = $A(not.attributes).find(function (attr) {
-                                    return attr.name == "namespace"
-                                })
-                                if (namespace && namespace.nodeValue) {
-                                    if (!notUsesIn) {
-                                        notUsesIn = {namespaces: []}
-                                    }
-
-                                    notUsesIn.namespaces.push(namespace.nodeValue)
-                                }
-                            });
-
-                            // Set Requires to the Plugin-Data, if there is one
-                            if (notUsesIn) {
-                                pluginData['notUsesIn'] = notUsesIn;
-                            }
-
+                            console.log('pluginData', pluginData);
                             let url = CONFIG.PATH + CONFIG.PLUGINS_FOLDER + pluginData['source'];
                             Log.debug("Requiring '%0'", url);
                             Log.info("Plugin '%0' successfully loaded.", pluginData['name']);
                             me.availablePlugins.push(pluginData);
                         });
+
                         me._activatePlugins();
                         //editor must be attached after the plugins are loaded
                         //await me._loadEditor(config);
