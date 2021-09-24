@@ -188,7 +188,6 @@ public class UsernamePasswordAuthenticationProvider implements AuthenticationPro
      * @param user  whose password to rehash
      * @param password  the current cleartext password for the <var>user</var>
      */
-    @Transactional(readOnly = false)
     private void rehash(final User user, final String password) {
         if (!upgradePasswords) {
             LOGGER.debug("Retaining the existing password hash because upgrading is not enabled.");
