@@ -90,13 +90,10 @@ export default class Toolbar {
 
         if(!this.toolbar){
             this.toolbar = new Ext.ux.SlicedToolbar({height: 24});
-            var region = this.facade.addToRegion("north", this.toolbar, "Toolbar");
+            this.facade.addToRegion("north", this.toolbar, "Toolbar");
         }
 
         var currentGroupsName = this.plugs.last() ? this.plugs.last().group: plugs[0].group;
-
-        // Map used to store all drop down buttons of current group
-        var currentGroupsDropDownButton = {};
 
         plugs.each((function(plugin) {
             if(!plugin.name) {return}
@@ -106,99 +103,28 @@ export default class Toolbar {
             if(currentGroupsName != plugin.group) {
                 this.toolbar.add('-');
                 currentGroupsName = plugin.group;
-                currentGroupsDropDownButton = {};
             }
 
-            // If an drop down group icon is provided, a split button should be used
-            // This is unused at this stage as all toolbar buttons are simple
-            if(plugin.dropDownGroupIcon){
-                var splitButton = currentGroupsDropDownButton[plugin.dropDownGroupIcon];
-
-                // Create a new split button if this is the first plugin using it
-                if(splitButton === undefined){
-                    splitButton = currentGroupsDropDownButton[plugin.dropDownGroupIcon] = new Ext.Toolbar.SplitButton({
-                        cls: "x-btn-icon", //show icon only
-                        icon: plugin.dropDownGroupIcon,
-                        menu: new Ext.menu.Menu({
-                            items: [] // items are added later on
-                        }),
-                        listeners: {
-                          click: function(button, event){
-                            // The "normal" button should behave like the arrow button
-                            if(!button.menu.isVisible() && !button.ignoreNextClick){
-                                button.showMenu();
-                            } else {
-                                button.hideMenu();
-                            }
-                          }
-                        }
-                    });
-
-                    this.toolbar.add(splitButton);
-                }
-
-                // General config button which will be used either to create a normal button
-                // or a check button (if toggling is enabled)
-                var buttonCfg = {
-                    icon: plugin.icon,
-                    text: plugin.name,
-                    itemId: plugin.id,
-                    handler: plugin.toggle ? undefined : plugin.functionality,
-                    checkHandler: plugin.toggle ? plugin.functionality : undefined,
-                    listeners: {
-                        render: function(item){
-                            // After rendering, a tool tip should be added to component
-                            if (plugin.description) {
-                                new Ext.ToolTip({
-                                    target: item.getEl(),
-                                    title: plugin.description
-                                })
-                            }
-                        }
-                    }
-                }
-
-                // Create buttons depending on toggle
-                if(plugin.toggle) {
-                    var button = new Ext.menu.CheckItem(buttonCfg);
-                } else {
-                    var button = new Ext.menu.Item(buttonCfg);
-                }
-
-                splitButton.menu.add(button);
-
-            } else { // create normal, simple button
-                var options = {
-                    icon:           plugin.icon,         // icons can also be specified inline
-                    cls:            'x-btn-icon',       // Class who shows only the icon
-                    itemId:         plugin.id,
-                    tooltip:        plugin.description,  // Set the tooltip
-                    tooltipType:    'title',            // Tooltip will be shown as in the html-title attribute
-                    handler:        plugin.toggle ? null : plugin.functionality,  // Handler for mouse click
-                    enableToggle:   plugin.toggle, // Option for enabling toggling
-                    toggleHandler:  plugin.toggle ? plugin.functionality : null // Handler for toggle (Parameters: button, active)
-                }
-                if (plugin.btnId) {
-                    options.id = plugin.btnId
-                }
-                var button = new Ext.Toolbar.Button(options);
-
-                this.toolbar.add(button);
-
-                button.getEl().onclick = function() {this.blur()}
+            var options = {
+                icon:           plugin.icon,         // icons can also be specified inline
+                cls:            'x-btn-icon',       // Class who shows only the icon
+                itemId:         plugin.id,
+                tooltip:        plugin.description,  // Set the tooltip
+                tooltipType:    'title',            // Tooltip will be shown as in the html-title attribute
+                handler:        plugin.toggle ? null : plugin.functionality,  // Handler for mouse click
+                enableToggle:   plugin.toggle, // Option for enabling toggling
+                toggleHandler:  plugin.toggle ? plugin.functionality : null // Handler for toggle (Parameters: button, active)
             }
 
+            if (plugin.btnId) options.id = plugin.btnId
+            var button = new Ext.Toolbar.Button(options);
+            this.toolbar.add(button);
+            button.getEl().onclick = function() {this.blur()}
             plugin['buttonInstance'] = button;
             this.buttons.push(plugin);
-
         }).bind(this));
 
         this.enableButtons();
-
-        // This is unused at this stage as all toolbar buttons are simple
-        this.toolbar.calcSlices();
-        window.addEventListener("resize", function(event){this.toolbar.calcSlices()}.bind(this), false);
-        window.addEventListener("onresize", function(event){this.toolbar.calcSlices()}.bind(this), false);
     }
 
     /**
@@ -292,92 +218,4 @@ Ext.ux.SlicedToolbar = Ext.extend(Ext.Toolbar, {
         Ext.ux.SlicedToolbar.superclass.onResize.apply(this, arguments);
     },
 
-    // This is unused at this stage as all toolbar buttons are simple
-    calcSlices: function(){
-        var slice = 0;
-        this.sliceMap = {};
-        var sliceWidth = 0;
-        var toolbarWidth = this.getEl().getWidth();
-
-        this.items.getRange().each(function(item, index){
-            //Remove all next and prev buttons
-            if (item.helperItem) {
-                item.destroy();
-                return;
-            }
-
-            var itemWidth = item.getEl().getWidth();
-
-            if(sliceWidth + itemWidth + 5 * this.iconStandardWidth > toolbarWidth){
-                var itemIndex = this.items.indexOf(item);
-
-                this.insertSlicingButton("next", slice, itemIndex);
-
-                if (slice !== 0) {
-                    this.insertSlicingButton("prev", slice, itemIndex);
-                }
-
-                this.insertSlicingSeperator(slice, itemIndex);
-
-                slice += 1;
-                sliceWidth = 0;
-            }
-
-            this.sliceMap[item.id] = slice;
-            sliceWidth += itemWidth;
-        }.bind(this));
-
-        // Add prev button at the end
-        if(slice > 0){
-            this.insertSlicingSeperator(slice, this.items.getCount()+1);
-            this.insertSlicingButton("prev", slice, this.items.getCount()+1);
-            var spacer = new Ext.Toolbar.Spacer();
-            this.insertSlicedHelperButton(spacer, slice, this.items.getCount()+1);
-            Ext.get(spacer.id).setWidth(this.iconStandardWidth);
-        }
-
-        this.maxSlice = slice;
-
-        // Update view
-        this.setCurrentSlice(this.currentSlice);
-    },
-
-    insertSlicedButton: function(button, slice, index){
-        this.insertButton(index, button);
-        this.sliceMap[button.id] = slice;
-    },
-
-    insertSlicedHelperButton: function(button, slice, index){
-        button.helperItem = true;
-        this.insertSlicedButton(button, slice, index);
-    },
-
-    insertSlicingSeperator: function(slice, index){
-        // Align right
-        this.insertSlicedHelperButton(new Ext.Toolbar.Fill(), slice, index);
-    },
-
-    // type => next or prev
-    insertSlicingButton: function(type, slice, index){
-        var nextHandler = function(){this.setCurrentSlice(this.currentSlice+1)}.bind(this);
-        var prevHandler = function(){this.setCurrentSlice(this.currentSlice-1)}.bind(this);
-
-        var button = new Ext.Toolbar.Button({
-            cls: "x-btn-icon",
-            icon: CONFIG.ROOT_PATH + "images/toolbar_"+type+".png",
-            handler: (type === "next") ? nextHandler : prevHandler
-        });
-
-        this.insertSlicedHelperButton(button, slice, index);
-    },
-
-    setCurrentSlice: function(slice){
-        if(slice > this.maxSlice || slice < 0) return;
-
-        this.currentSlice = slice;
-
-        this.items.getRange().each(function(item){
-            item.setVisible(slice === this.sliceMap[item.id]);
-        }.bind(this));
-    }
 });
