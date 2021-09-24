@@ -553,9 +553,9 @@ export default class EditorApp {
         if (config && config.xml) {
             await this.editor.importXML(config.xml, me._initUI.bind(me))
                 .catch(error => {
-                    throw err
+                    throw err;
                 });
-            this.editor.addCommandStackChangeListener(this._handleEditorCommandStackChanges);
+            this.editor.addCommandStackChangeListener(this._handleEditorCommandStackChanges.bind(this));
         }
         else {
             throw new Error('Missing XML for the BPMN model in the editor loading (EditorApp._loadEditor)');
@@ -564,8 +564,9 @@ export default class EditorApp {
     }
 
     _handleEditorCommandStackChanges() {
+        let me = this;
         this.editorCommandStackListeners.forEach(listener =>
-            listener.editorCommandStackChanged(this.editor.canUndo(), this.editor.canRedo()))
+            listener.editorCommandStackChanged(me.editor.canUndo(), me.editor.canRedo()))
     }
 
     /**
