@@ -1,10 +1,27 @@
 import EditorApp from "../../src/bpmneditor/editorapp";
+import Editor from "../../src/bpmneditor/editor";
+import CONFIG from "../../src/bpmneditor/config";
+import Utils from "../../src/bpmneditor/utils";
+import BpmnJS from "../../src/bpmneditor/editor/bpmnio/bpmn-modeler.development";
 let pluginsConfig = require('./fixtures/plugins.xml');
 let pluginsConfigSimple = require('./fixtures/pluginsSimple.xml');
 let bpmnSimple = require('./fixtures/simpleMap.bpmn');
 
 export async function createEditorAppWithModelAndPlugins() {
     return await createEditorApp(pluginsConfig.default, bpmnSimple.default);
+}
+
+export function createEmptyEditorApp() {
+    $(window.document.body).empty();
+    let editorAppContainer = $('<div id="editorAppContainer"></div>');
+    $(window.document.body).append(editorAppContainer[0]);
+
+    let editorApp = new EditorApp({
+        id: 'editorAppContainer',
+        fullscreen: true
+    });
+
+    return editorApp;
 }
 
 export async function createEditorAppWithModelAndSimplePlugins() {
@@ -36,10 +53,71 @@ async function createEditorApp(pluginsConfigXML, bpmnXML) {
     return editorApp;
 }
 
-export async function clickButton(buttonId, callBack) {
-    let element = Ext.getCmp(buttonId);
-    element.handler.call(element.scope);
-    // element.fireEvent('click', element);
+export function createEmptyEditor() {
+    $(window.document.body).empty();
+    let editorContainer = $('<div id="editorContainer"></div>');
+    $(window.document.body).append(editorContainer[0]);
+
+    let editor =  new Editor({
+        width: CONFIG.CANVAS_WIDTH,
+        height: CONFIG.CANVAS_HEIGHT,
+        id: Utils.provideId(),
+        parentNode: editorContainer[0],
+        preventFitDelay: true
+    });
+
+    return editor;
+}
+
+export async function createEditorWithBPMNIO() {
+    $(window.document.body).empty();
+    let editorContainer = $('<div id="editorContainer"></div>');
+    let propertiesPanelContainer = $('<div id="js-properties-panel"></div>');
+    $(window.document.body).append(editorContainer[0]);
+    $(window.document.body).append(propertiesPanelContainer[0]);
+
+    let editor =  new Editor({
+        width: CONFIG.CANVAS_WIDTH,
+        height: CONFIG.CANVAS_HEIGHT,
+        id: Utils.provideId(),
+        parentNode: editorContainer[0],
+        preventFitDelay: true
+    });
+
+    await editor.attachEditor(new BpmnJS({
+        container: '#' + editor.rootNode.id,
+        langTag: 'en',
+        propertiesPanel: { parent: '#js-properties-panel' }
+    }));
+
+    return editor;
+}
+
+export async function createEditorWithSimpleMap() {
+    $(window.document.body).empty();
+    let editorContainer = $('<div id="editorContainer"></div>');
+    let propertiesPanelContainer = $('<div id="js-properties-panel"></div>');
+    $(window.document.body).append(editorContainer[0]);
+    $(window.document.body).append(propertiesPanelContainer[0]);
+
+    let editor =  new Editor({
+        width: CONFIG.CANVAS_WIDTH,
+        height: CONFIG.CANVAS_HEIGHT,
+        id: Utils.provideId(),
+        parentNode: editorContainer[0],
+        preventFitDelay: true
+    });
+
+    await editor.attachEditor(new BpmnJS({
+        container: '#' + editor.rootNode.id,
+        langTag: 'en',
+        propertiesPanel: { parent: '#js-properties-panel' }
+    }));
+
+    let bpmn = require('./fixtures/simpleMap.bpmn');
+    await editor.importXML(bpmn.default, () => {}).catch(err => fail(err));
+
+    return editor;
 }
 
 

@@ -1,23 +1,10 @@
-import Editor from "../../src/bpmneditor/editor";
-import CONFIG from "../../src/bpmneditor/config";
-import Utils from "../../src/bpmneditor/utils";
+import * as testFactory from './testFactory';
 
 describe('After the Editor has been created', function () {
     let editor;
 
     beforeEach(async function() {
-        //window.document.body.innerHTML = ''; // make sure other loaded fixtures in the document don't affect this test
-        $(window.document.body).empty();
-        let editorContainer = $('<div id="editorContainer"></div>');
-        $(window.document.body).append(editorContainer[0]);
-
-        editor =  new Editor({
-            width: CONFIG.CANVAS_WIDTH,
-            height: CONFIG.CANVAS_HEIGHT,
-            id: Utils.provideId(),
-            parentNode: editorContainer[0],
-            preventFitDelay: true
-        });
+        editor = testFactory.createEmptyEditor();
     });
 
     it('It has set up initial data correctly', function() {

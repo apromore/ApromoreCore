@@ -1,4 +1,5 @@
 import * as testFactory from "../testFactory";
+import * as testSupport from "../testSupport";
 import SimulationPanel from "../../../src/bpmneditor/plugins/simulationPanel";
 
 describe('After the EditorApp has been initialized with a BPMN model with SimulationPanel plugin', function () {
@@ -19,12 +20,12 @@ describe('After the EditorApp has been initialized with a BPMN model with Simula
         let spy = spyOn(simulationPanel, 'toggleCollapse');
 
         // 1st click on the Simulation toggle button
-        await testFactory.clickButton("ap-id-editor-simulation-btn");
+        await testSupport.clickButton("ap-id-editor-simulation-btn");
         expect(simulationPanel.toggleCollapse).toHaveBeenCalled();
 
         // 2nd click
         spy.calls.reset(); //reset the previous spy action to prepare for the new one below.
-        await testFactory.clickButton("ap-id-editor-simulation-btn");
+        await testSupport.clickButton("ap-id-editor-simulation-btn");
         expect(simulationPanel.toggleCollapse).toHaveBeenCalled();
     });
 });

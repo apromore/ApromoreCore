@@ -1,6 +1,6 @@
 import * as testFactory from "../testFactory";
 import View from "../../../src/bpmneditor/plugins/view";
-import Editor from "../../../src/bpmneditor/editor";
+import * as testSupport from "../testSupport";
 
 describe('After the EditorApp has been initialized with a BPMN model with View plugin', function () {
     let editorApp;
@@ -18,22 +18,19 @@ describe('After the EditorApp has been initialized with a BPMN model with View p
 
     it('Clicking on the ZoomIn button can activate Zoom In action in the editor', async function() {
         spyOn(editor, 'zoomIn');
-        let element = Ext.getCmp("ap-id-editor-zoomIn-btn");
-        element.handler.call(element.scope);
+        await testSupport.clickButton("ap-id-editor-zoomIn-btn");
         expect(editor.zoomIn).toHaveBeenCalled();
     });
 
     it('Clicking on the ZoomOut button can activate zoom fit action in the editor', async function() {
         spyOn(editor, 'zoomOut');
-        let element = Ext.getCmp("ap-id-editor-zoomOut-btn");
-        element.handler.call(element.scope);
+        await testSupport.clickButton("ap-id-editor-zoomOut-btn");
         expect(editor.zoomOut).toHaveBeenCalled();
     });
 
     it('Clicking on the ZoomFit button can activate zoom fit action in the editor', async function() {
         spyOn(editor, 'zoomFitToModel');
-        let element = Ext.getCmp("ap-id-editor-zoomFit-btn");
-        element.handler.call(element.scope);
+        await testSupport.clickButton("ap-id-editor-zoomFit-btn");
         expect(editor.zoomFitToModel).toHaveBeenCalled();
     });
 });

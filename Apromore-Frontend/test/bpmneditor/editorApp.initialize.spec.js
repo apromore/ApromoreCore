@@ -1,19 +1,11 @@
-import EditorApp from "../../src/bpmneditor/editorapp";
 import Log from '../../src/bpmneditor/logger';
+import * as testFactory from "./testFactory";
 
 describe('After the EditorApp has been created', function () {
     let editorApp;
 
     beforeEach(async function () {
-        $(window.document.body).empty();
-        let editorAppContainer = $('<div id="editorAppContainer"></div>');
-        $(window.document.body).append(editorAppContainer[0]);
-
-        editorApp = new EditorApp({
-            id: 'editorAppContainer',
-            fullscreen: true
-        });
-
+        editorApp = testFactory.createEmptyEditorApp();
     });
 
     it('It can initialize successfully with plugins', async function () {
