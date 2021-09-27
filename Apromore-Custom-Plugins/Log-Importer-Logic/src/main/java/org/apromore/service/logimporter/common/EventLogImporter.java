@@ -60,7 +60,8 @@ public class EventLogImporter {
                 XES_EXTENSION,
                 "",  // domain
                 DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(),
-                false  // public
+                false, // public
+                false // perspective
         );
     }
 }
