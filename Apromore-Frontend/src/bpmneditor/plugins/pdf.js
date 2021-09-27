@@ -22,6 +22,7 @@
  **/
 
 import CONFIG from './../config';
+import Log from "../logger";
 
 // Logo's viewBox is "0 0 629.8 126.7"
 const logo = '<g transform="translate(${xx yy}) scale(0.2 0.2)">' +
@@ -70,7 +71,6 @@ export default class File {
 
         // Get the serialized svg image source
         var svgClone = await this.facade.getSVG();
-        //var svgDOM = DataManager.serialize(svgClone);
 
         // Expand margin and insert a logo
         var xy = null, width, height;
@@ -100,33 +100,46 @@ export default class File {
                     logo.replace('${xx yy}', (xy[0]) + " " + (xy[1] - 20)) + '</svg>'
                 );
             }
-        } catch (e) {
-            // pass
+        }
+        catch (e) {
+            throw new Error ('SVG to PDF error. Error message: ' + e.message);
         }
 
         // Send the svg to the server.
         var xhr = new XMLHttpRequest();
         var params = "resource=" + resource + "&data=" + svgClone + "&format=pdf";
-
         xhr.open("POST", CONFIG.PDF_EXPORT_URL);
         xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         xhr.responseType = 'blob';
+
+        // Use manual Promise handling as this is an Ajax call with XMLHttpRequest object
         xhr.onreadystatechange = function() {
-            if (xhr.readyState == 4 && xhr.status == 200) {
-                // Download pdf from blob
-                myMask.hide();
-                var hiddenElement = document.createElement('a');
-                hiddenElement.href = window.URL.createObjectURL(xhr.response);
-                hiddenElement.target = '_blank';
-                hiddenElement.download = 'diagram.pdf';
-                hiddenElement.click();
-                window.URL.revokeObjectURL(hiddenElement.href);
+            if (xhr.readyState == 4) {
+                if (xhr.status == 200) {
+                    console.log('test', xhr.response);
+                    // Download pdf from blob
+                    myMask.hide();
+                    var hiddenElement = document.createElement('a');
+                    hiddenElement.href = window.URL.createObjectURL(xhr.response);
+                    hiddenElement.target = '_blank';
+                    hiddenElement.download = 'diagram.pdf';
+                    hiddenElement.click();
+                    window.URL.revokeObjectURL(hiddenElement.href);
+                }
+                else {
+                    Log.error('The server responds with an error status code = ' + xhr.status);
+                    return Promise.reject(new Error('The server responds with an error status code = ' + xhr.status));
+                }
             }
         };
+
         xhr.onerror = function () {
+            Log.error('Request failed due to networking issues');
             myMask.hide();
             Ext.Msg.alert(window.Apromore.I18N.Apromore.title, window.Apromore.I18N.File.genPDFFailed);
+            return Promise.reject(new Error('There was no server response due to a networking issue'));
         };
+
         xhr.send(params);
     }
 
