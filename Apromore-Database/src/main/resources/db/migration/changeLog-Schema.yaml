@@ -1160,3 +1160,35 @@ databaseChangeLog:
              - column:
                  name: paused
                  type: BOOLEAN
+
+ - changeSet:
+     id: 20211709060393
+     author: mtomar
+     changes:
+       -  dropColumn:
+            tableName:  job
+            columns:
+              - column:
+                  name: final_transform_query
+       - dropTable:
+           cascadeConstraints: true
+           tableName: dag_connection
+       - dropTable:
+           cascadeConstraints: true
+           tableName: static_log
+
+ - changeSet:
+     id: 20210917130000
+     author: raboczi
+     changes:
+       - addColumn:
+           tableName: membership
+           columns:
+             - column:
+                 name: password_hashing_algorithm
+                 type: VARCHAR(20)
+                 defaultValue: "MD5-UNSALTED"
+       - modifyDataType:
+           tableName: membership
+           columnName: password
+           newDataType: VARCHAR(128)

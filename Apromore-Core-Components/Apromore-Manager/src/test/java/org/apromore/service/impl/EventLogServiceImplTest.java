@@ -20,28 +20,11 @@
  * #L%
  */
 
-package org.apromore.test.service.impl;
-
-import static org.easymock.EasyMock.expect;
-import static org.junit.Assert.assertEquals;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Set;
-import java.util.stream.Stream;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
+package org.apromore.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Sets;
 import org.apromore.AbstractTest;
 import org.apromore.calendar.service.CustomCalendarService;
 import org.apromore.commons.config.ConfigBean;
@@ -58,7 +41,9 @@ import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
 import org.apromore.dao.model.Usermetadata;
 import org.apromore.dao.model.Workspace;
+import org.apromore.exception.EventLogException;
 import org.apromore.exception.UserMetadataException;
+import org.apromore.exception.UserNotFoundException;
 import org.apromore.service.AuthorizationService;
 import org.apromore.service.EventLogFileService;
 import org.apromore.service.UserMetadataService;
@@ -69,6 +54,7 @@ import org.apromore.storage.StorageClient;
 import org.apromore.storage.factory.StorageManagementFactory;
 import org.apromore.util.UserMetadataTypeEnum;
 import org.deckfour.xes.factory.XFactory;
+import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.factory.XFactoryRegistry;
 import org.deckfour.xes.in.XesXmlParser;
 import org.deckfour.xes.model.XAttributable;
@@ -77,16 +63,35 @@ import org.deckfour.xes.model.XAttributeMap;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
+import org.deckfour.xes.model.impl.XLogImpl;
 import org.deckfour.xes.util.XRuntimeUtils;
 import org.deckfour.xes.util.XTimer;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.google.common.collect.Sets;
+
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Set;
+import java.util.stream.Stream;
+
+import static org.easymock.EasyMock.expect;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class EventLogServiceImplTest extends AbstractTest {
 
@@ -188,11 +193,10 @@ public class EventLogServiceImplTest extends AbstractTest {
   }
 
   @Test
-  @Ignore
-  public void getOpenXesVersion() {
-    System.out.println("OPENXES_VERSION: " + XRuntimeUtils.OPENXES_VERSION);
-    // XFactoryNaiveImpl xFactoryNaive = new XFactoryNaiveImpl();
-    // System.out.println(xFactoryNaive.isUseInterner());
+  public void testOpenXesVersion() {
+    XFactoryNaiveImpl xFactoryNaive = new XFactoryNaiveImpl();
+    assertEquals("2.27", XRuntimeUtils.OPENXES_VERSION);
+    assertTrue(xFactoryNaive.isUseInterner());
   }
 
   @Test
@@ -371,4 +375,188 @@ public class EventLogServiceImplTest extends AbstractTest {
     // Then throw UserMetadataException
   }
 
+  @Test
+  public void testsavePerspectiveByLog() throws UserMetadataException, UserNotFoundException {
+
+    // Set up test data
+    List<String> perspectives = new ArrayList<>();
+    perspectives.add("concept:name");
+    perspectives.add("org:resource");
+
+    ObjectMapper objectMapper = new ObjectMapper();
+    String perspectivesJsonStr = null;
+    try {
+      perspectivesJsonStr = objectMapper.writeValueAsString(perspectives);
+    } catch (JsonProcessingException e) {
+      e.printStackTrace();
+    }
+
+    Integer logId = 1;
+    Log log = createLogWithId(logId, user, createFolder("testFolder", null, wp));
+    Set<Log> logs = new HashSet<>();
+    logs.add(log);
+
+    Usermetadata usermetadata = createUserMetadata(1, "[\"concept:name\",\"org:resource\",\"lifecycle:transition\"]", logs);
+
+    // Mock recording
+    expect(userMetadataService.saveUserMetadata("Default Perspective Tag", perspectivesJsonStr,
+            UserMetadataTypeEnum.PERSPECTIVE_TAG, "admin", logId)).andReturn(usermetadata);
+    replayAll();
+
+    // Mock call
+    Usermetadata result = eventLogService.savePerspectiveByLog(perspectives, logId, "admin");
+
+    assertEquals(usermetadata, result);
+  }
+
+  @Test(expected = UserNotFoundException.class)
+  public void testSavePerspectiveByLog_InvalidUsername() throws UserMetadataException, UserNotFoundException {
+
+    // Set up test data
+    List<String> perspectives = new ArrayList<>();
+    perspectives.add("concept:name");
+    perspectives.add("org:resource");
+
+    ObjectMapper objectMapper = new ObjectMapper();
+    String perspectivesJsonStr = null;
+    try {
+      perspectivesJsonStr = objectMapper.writeValueAsString(perspectives);
+    } catch (JsonProcessingException e) {
+      e.printStackTrace();
+    }
+
+    Integer logId = 1;
+    Log log = createLogWithId(logId, user, createFolder("testFolder", null, wp));
+    Set<Log> logs = new HashSet<>();
+    logs.add(log);
+
+    Usermetadata usermetadata = createUserMetadata(1, "[\"concept:name\",\"org:resource\",\"lifecycle:transition\"]", logs);
+
+    // Mock recording
+    expect(userMetadataService.saveUserMetadata("Default Perspective Tag", perspectivesJsonStr,
+            UserMetadataTypeEnum.PERSPECTIVE_TAG, "admin", logId)).andThrow(new UserNotFoundException());
+    replayAll();
+
+    // Mock call
+    Usermetadata result = eventLogService.savePerspectiveByLog(perspectives, logId, "admin");
+  }
+
+  @Test
+  public void testGetDefaultPerspectiveFromLog() throws EventLogException {
+
+    // Set up test data
+    Integer logId = 1;
+    Log log = createLogWithId(logId, user, createFolder("testFolder", null, wp));
+
+    XLog xLog = fetchXlog(getClass().getClassLoader().getResourceAsStream("XES_logs/P1_perspective_default.xes"));
+
+    // Mock recording
+    expect(logRepository.findUniqueByID(1)).andReturn(log);
+    expect(temporaryCacheService.getProcessLog(log, null)).andReturn(xLog);
+    expect(userMetadataService.getUserMetadataByLog(logId, UserMetadataTypeEnum.PERSPECTIVE_TAG)).andReturn(new HashSet<>());
+    replayAll();
+
+    // Mock call
+    List<String> perspectives = eventLogService.getDefaultPerspectiveFromLog(logId);
+
+    List<String> result = new ArrayList<>();
+    result.add("concept:name");
+    result.add("org:resource");
+
+    assertEquals(perspectives, result);
+  }
+
+  @Test
+  public void testGetDefaultPerspectiveFromLog_NoResource() throws EventLogException {
+
+    // Set up test data
+    Integer logId = 1;
+    Log log = createLogWithId(logId, user, createFolder("testFolder", null, wp));
+
+    XLog xLog = fetchXlog(getClass().getClassLoader().getResourceAsStream("XES_logs/P1_perspective_no_Resource.xes"));
+
+    // Mock recording
+    expect(logRepository.findUniqueByID(1)).andReturn(log);
+    expect(temporaryCacheService.getProcessLog(log, null)).andReturn(xLog);
+    expect(userMetadataService.getUserMetadataByLog(logId, UserMetadataTypeEnum.PERSPECTIVE_TAG)).andReturn(new HashSet<>());
+    replayAll();
+
+    // Mock call
+    List<String> perspectives = eventLogService.getDefaultPerspectiveFromLog(logId);
+
+    List<String> result = new ArrayList<>();
+    result.add("concept:name");
+
+    assertEquals(perspectives, result);
+  }
+
+  @Test
+  public void testGetDefaultPerspectiveFromLog_AlreadyHasPerspective() throws EventLogException {
+
+    // Set up test data
+    Integer logId = 1;
+    Log log = createLogWithId(logId, user, createFolder("testFolder", null, wp));
+
+    XLog xLog = fetchXlog(getClass().getClassLoader().getResourceAsStream("XES_logs/P1_perspective_default.xes"));
+
+    Set<Usermetadata> usermetadataSet = new HashSet<>();
+    usermetadataSet.add(new Usermetadata());
+
+    exception.expect(EventLogException.class);
+    exception.expectMessage("Found existing perspective list for event log with Id: " + logId);
+
+    // Mock recording
+    expect(logRepository.findUniqueByID(1)).andReturn(log);
+    expect(temporaryCacheService.getProcessLog(log, null)).andReturn(xLog);
+    expect(userMetadataService.getUserMetadataByLog(logId, UserMetadataTypeEnum.PERSPECTIVE_TAG)).andReturn(usermetadataSet);
+    replayAll();
+
+    // Mock call
+    List<String> perspectives = eventLogService.getDefaultPerspectiveFromLog(logId);
+
+  }
+
+  @Test
+  public void testGetDefaultPerspectiveFromLog_NullXLog() throws EventLogException {
+
+    // Set up test data
+    Integer logId = 1;
+    Log log = createLogWithId(logId, user, createFolder("testFolder", null, wp));
+
+    XLog xLog = null;
+    exception.expect(EventLogException.class);
+    exception.expectMessage("Failed to get event log with Id: " + logId);
+
+    // Mock recording
+    expect(logRepository.findUniqueByID(1)).andReturn(log);
+    expect(temporaryCacheService.getProcessLog(log, null)).andReturn(xLog);
+    expect(userMetadataService.getUserMetadataByLog(logId, UserMetadataTypeEnum.PERSPECTIVE_TAG)).andReturn(new HashSet<>());
+    replayAll();
+
+    // Mock call
+    List<String> perspectives = eventLogService.getDefaultPerspectiveFromLog(logId);
+
+  }
+
+  @Test
+  public void testGetDefaultPerspectiveFromLog_EmptyXLog() throws EventLogException {
+
+    // Set up test data
+    Integer logId = 1;
+    Log log = createLogWithId(logId, user, createFolder("testFolder", null, wp));
+
+    XLog xLog = new XLogImpl();
+    exception.expect(EventLogException.class);
+    exception.expectMessage("Found empty event log with Id: " + logId);
+
+    // Mock recording
+    expect(logRepository.findUniqueByID(1)).andReturn(log);
+    expect(temporaryCacheService.getProcessLog(log, null)).andReturn(xLog);
+    expect(userMetadataService.getUserMetadataByLog(logId, UserMetadataTypeEnum.PERSPECTIVE_TAG)).andReturn(new HashSet<>());
+    replayAll();
+
+    // Mock call
+    List<String> perspectives = eventLogService.getDefaultPerspectiveFromLog(logId);
+
+  }
 }

@@ -720,7 +720,7 @@ input[type="radio"]:checked:before {
 
 button > [class^="z-icon-"],
 button > [class*=" z-icon-"] {
-    font-family: FontAwesome, ZK85Icons;
+    font-family: ZK85Icons, FontAwesome;
     font-size: 14px;
     line-height: 1;
     margin: 2px 2px 2px 0;
@@ -930,4 +930,30 @@ tr.z-row-disabled td.z-row-inner .z-slider-area {
 
 .z-messagebox-viewport .z-messagebox-icon {
     margin-left: 12px;
+}
+
+/* Text color fixer for ZK 9.6 */
+.z-menupopup .z-menu-content,.z-menupopup .z-menuitem-content,
+.z-menupopup .z-menu-content:hover,.z-menupopup .z-menuitem-content:hover,
+.z-menupopup .z-menu-content:focus,.z-menupopup .z-menuitem-content:focus,
+.z-menupopup .z-menu-hover>.z-menu-content,.z-menupopup .z-menuitem-hover>.z-menuitem-content,
+.z-menubar-icon,
+.z-panel-header,
+.z-panel-icon,
+.z-tabbox-icon,
+.z-tab-text,
+.z-tab-button,
+.z-toolbarbutton,
+.z-window-header,
+.z-window-icon {
+    color: #4d4d4d;
+}
+
+.z-progressmeter-image {
+    background-color: var(--ap-c-oceanic-dark-1);
+}
+
+.z-window-icon {
+    width: 24px;
+    margin: -7px -4px 0 6px;
 }

@@ -83,7 +83,7 @@ public class LogExportController extends AbstractController {
           contextData.getFolderId(), logName, new ByteArrayInputStream(outputStream.toByteArray()),
           "xes.gz", contextData.getDomain(),
           DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(),
-          false);
+          false, true);
       String folderName = log.getFolder() == null ? HOME_FOLDER_NAME : log.getFolder().getName();
       String notif = MessageFormat.format(parent.getLabel("successSaveLog_message"),
           "<strong>" + logName + "</strong>", "<strong>" + folderName + "</strong>");

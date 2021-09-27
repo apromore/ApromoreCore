@@ -24,23 +24,25 @@
 
 package org.apromore.service;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.List;
 import org.apromore.apmlog.APMLog;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.commons.config.ConfigBean;
 import org.apromore.dao.model.Log;
 import org.apromore.dao.model.User;
-import org.apromore.exception.ImportException;
+import org.apromore.dao.model.Usermetadata;
+import org.apromore.exception.EventLogException;
 import org.apromore.exception.UserMetadataException;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.portal.model.ExportLogResultType;
 import org.apromore.portal.model.SummariesType;
 import org.apromore.storage.exception.ObjectCreationException;
 import org.deckfour.xes.model.XLog;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.List;
 
 /**
  * Interface for the Process Service. Defines all the methods that will do the majority of the work
@@ -63,17 +65,20 @@ public interface EventLogService {
   /**
    * Import a Process.
    *
-   * @param username The user doing the importing.
-   * @param folderId The folder we are saving the process in.
-   * @param logName the name of the process being imported.
-   * @param domain the domain of the model
-   * @param created the time created
+   * @param username    The user doing the importing.
+   * @param folderId    The folder we are saving the process in.
+   * @param logName     the name of the process being imported.
+   * @param log         InputStream of event log.
+   * @param extension   the extension of stored log.
+   * @param domain      the domain of the model
+   * @param created     the time created
    * @param publicModel is this a public model?
+   * @param perspective whether generate default perspective for this log
    * @return the processSummaryType
-   * @throws ImportException if the import process failed for any reason.
+   * @throws Exception if the import process failed for any reason.
    */
   Log importLog(String username, Integer folderId, String logName, InputStream log,
-      String extension, String domain, String created, boolean publicModel) throws Exception;
+      String extension, String domain, String created, boolean publicModel, boolean perspective) throws Exception;
 
 
   Log importLog(Integer folderId, String logName, String domain, String created,
@@ -162,4 +167,27 @@ public interface EventLogService {
    * @throws UserMetadataException when perspective tag is not found or is not valid
    */
   List<String> getPerspectiveTagByLog(Integer logId) throws UserMetadataException;
+
+  /**
+   * Save Perspective as user metadata that's associated with specified Log
+   *
+   * @param perspectives Perspective List
+   * @param logId        logId
+   * @param username     username
+   * @return Perspective user metadata
+   * @throws UserMetadataException if could not serialize given perspective list
+   * @throws UserNotFoundException if could not find specified username
+   */
+  Usermetadata savePerspectiveByLog(List<String> perspectives, Integer logId, String username) throws UserMetadataException,
+          UserNotFoundException;
+
+  /**
+   * Get perspective tag from specified event log.
+   * Add default perspectives (concept:name, and org:resource if any) for existing logs
+   *
+   * @param logId logId
+   * @return A list of perspectives
+   * @throws EventLogException
+   */
+  List<String> getDefaultPerspectiveFromLog(Integer logId) throws EventLogException;
 }

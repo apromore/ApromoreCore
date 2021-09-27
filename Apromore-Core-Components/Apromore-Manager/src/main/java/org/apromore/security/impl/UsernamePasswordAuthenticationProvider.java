@@ -24,6 +24,7 @@
 package org.apromore.security.impl;
 
 import org.apromore.dao.UserRepository;
+import org.apromore.dao.model.Membership;
 import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
 import org.apromore.mapper.UserMapper;
@@ -31,7 +32,10 @@ import org.apromore.security.util.SecurityUtil;
 import org.apromore.service.SecurityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -45,7 +49,10 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
+import javax.persistence.NoResultException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -60,26 +67,141 @@ import java.util.Set;
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, rollbackFor = Exception.class)
 public class UsernamePasswordAuthenticationProvider implements AuthenticationProvider {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(UsernamePasswordAuthenticationProvider.class);
+
     @Inject
     private UserRepository userRepository;
 
     @Inject
     private SecurityService securityService;
 
+    @Value("${allowedPasswordHashingAlgorithms}")
+    private String allowedPasswordHashingAlgorithms;
 
+    @Value("${passwordHashingAlgorithm}")
+    private String passwordHashingAlgorithm;
+
+    @Value("${saltLength}")
+    private int saltLength;
+
+    @Value("${upgradePasswords}")
+    private boolean upgradePasswords;
+
+    /**
+     * Authentication policy for accounts stored in the local database.
+     *
+     * The {@link #allowedPasswordHashingAlgorithms} configuration lists the hashing
+     * algorithms which can be used to authenticate.
+     * If the {@link #upgradePasswords} configuration is set, this implementation
+     * will transparently upgrade password hashes to {@link #passwordHashingAlgorithm}
+     * or hashes with salt less than the required length of {@link #saltLength}.
+     *
+     * @param authentication  must be a {@link UsernamePasswordAuthenticationToken}
+     * @throws UsernameNotFoundException if the <var>authentication</var>'s name isn't
+     *   either an existing username or email address
+     * @throws BadCredentialsException if the <var>authentication</var>'s credentials
+     *   aren't the correct password
+     * @throws InternalAuthenticationServiceException if the password hash stored in the
+     *   database isn't a valid hexadecimal string
+     */
     @Transactional
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+
         UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) authentication;
-        if (token.getName() == null || token.getName().length() == 0) {
-            throw new UsernameNotFoundException("Username and/or password sent were empty! Not authenticating.");
+        User user = findUser(token.getName());
+        Membership membership = user.getMembership();
+        String password = (String) token.getCredentials();
+
+        // Check that the password hashing algorithm is one we accept
+        if (!Arrays.asList(allowedPasswordHashingAlgorithms.split("\\s+")).contains(membership.getHashingAlgorithm())) {
+            throw new InternalAuthenticationServiceException("Unacceptable legacy password hashing algorithm \"" +
+                membership.getHashingAlgorithm() + "\" for user \"" + user.getUsername() + "\"");
+        }
+
+        // Parse the password field from the membership
+        try {
+            // Authenticate
+            if (!SecurityUtil.authenticate(membership, password)) {
+                throw new BadCredentialsException("Incorrect password");
+            }
+        } catch (NoSuchAlgorithmException e) {
+            throw new InternalAuthenticationServiceException("Unsupported algorithm " + membership.getHashingAlgorithm() +
+                " for password hash for user " + user.getUsername(), e);
+        }
+
+        // Although we've accepted these credentials now, we may tighten our criteria in the future.
+        // Since this is the only time we know the cleartext password, it's our opportunity to
+        // transparently upgrade the hashing scheme.  Otherwise we have to wait until the next login.
+
+        if (!membership.getHashingAlgorithm().equals(passwordHashingAlgorithm)) {
+            // Rehash because the current hash doesn't use our preferred algorithm
+            LOGGER.info("User \"{}\" authenticated with {} instead of {}", user.getUsername(),
+                membership.getHashingAlgorithm(), passwordHashingAlgorithm);
+            rehash(user, password);
+
+        } else if (membership.getSalt().length() < saltLength) {
+            // Rehash because the current salt is below the configured size
+            LOGGER.info("User \"{}\" has a password with {} characters of salt, less than the configured threshold of {}.",
+                user.getUsername(), membership.getSalt().length(), saltLength);
+            rehash(user, password);
+        }
+
+        return authenticatedToken(user, authentication);
+    }
+
+    /**
+     * Find an account by name.
+     *
+     * If the name provided in the login credentials does not match any username, we will fall back to matching
+     * it against email addresses.
+     *
+     * @param name  either a username or an email address identifying a local user account, never <code>null</code>
+     *     or empty
+     * @return the user, never <code>null</code>
+     * @throws UsernameNotFoundException if <var>name</var> is <code>null</code>, empty, or doesn't match any
+     *     existing username or email address
+     */
+    private User findUser(final String name) throws UsernameNotFoundException {
+        if (name == null || name.isEmpty()) {
+            throw new UsernameNotFoundException("Empty username");
         }
 
         try {
-            User account = userRepository.login(token.getName(), SecurityUtil.hashPassword((String) token.getCredentials()));
+            return userRepository.findByUsername(name);
 
-            return authenticatedToken(account, authentication);
-        } catch (Exception e) {
-            throw new UsernameNotFoundException("Failed to find the user or the password was incorrect!");
+        } catch (NoResultException e) {
+            User user = userRepository.findUserByEmail(name);
+            if (user == null) {
+                throw new UsernameNotFoundException(
+                    "Neither a username nor email of any existing user: \"" + name + "\"");
+            }
+            return user;
+        }
+    }
+
+    /**
+     * This method retains the user's existing password, but may upgrade its salt and hash depending on configuration.
+     *
+     * No change will occur if {@link #upgradePasswords} is not true or if {@link #passwordHashingAlgorithm}
+     * isn't in {@link #allowedPasswordHashingAlgorithms}.
+     *
+     * @param user  whose password to rehash
+     * @param password  the current cleartext password for the <var>user</var>
+     */
+    private void rehash(final User user, final String password) {
+        if (!upgradePasswords) {
+            LOGGER.debug("Retaining the existing password hash because upgrading is not enabled.");
+
+        } else if (!Arrays.asList(allowedPasswordHashingAlgorithms.split("\\s+")).contains(passwordHashingAlgorithm)) {
+            LOGGER.warn("Retaining the existing password hash because upgrading would prevent \"{}\" from logging in; " +
+                "configure allowedPasswordHashingAlgorithms to include {} to enable upgrades",
+                user.getUsername(), passwordHashingAlgorithm);
+
+        } else if (securityService.changeUserPassword(user.getUsername(), password, password)) {
+            LOGGER.info("Rehashed password for user \"{}\"", user.getUsername());
+
+        } else {
+            LOGGER.warn("Failed to rehash password for user \"{}\"", user.getUsername());
         }
     }
 

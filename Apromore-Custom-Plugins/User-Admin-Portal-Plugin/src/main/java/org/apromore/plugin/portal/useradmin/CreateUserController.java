@@ -27,7 +27,6 @@ import java.util.ResourceBundle;
 import org.apromore.dao.model.User;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
-import org.apromore.security.util.SecurityUtil;
 import org.apromore.service.SecurityService;
 import org.slf4j.Logger;
 import org.zkoss.web.Attributes;
@@ -90,10 +89,8 @@ public class CreateUserController extends SelectorComposer<Window> {
       user.setLastName(lastNameTextbox.getValue());
 
       user.getMembership().setEmail(emailTextbox.getValue());
-      user.getMembership().setPassword(SecurityUtil.hashPassword(passwordTextbox.getValue()));
-      user.getMembership().setSalt("username");
       user.getMembership().setUser(user);
-      securityService.createUser(user);
+      securityService.createUser(user, passwordTextbox.getValue());
 
       Map dataMap = Map.of("type", "CREATE_USER");
 
