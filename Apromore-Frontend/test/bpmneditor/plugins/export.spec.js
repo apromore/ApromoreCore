@@ -16,16 +16,39 @@ describe('After the EditorApp has been initialized with a BPMN model with Export
     });
 
     it('Clicking on the Export XML button can export XML from the Editor', async function() {
-        spyOn(editor, 'getXML');
+        const link = {
+            click: () => {},
+        };
+        spyOn(document, 'createElement').and.callFake(() => {return link});
+        spyOn(link, 'click');
+
+        let exportXML = await editorApp.getXML();
+
         let pluginExport = editorApp.getActivatedPlugins()[3];
         await pluginExport.exportBPMN();
-        expect(editor.getXML).toHaveBeenCalled();
+
+        expect(link.target).toEqual('_blank');
+        expect(link.download).toEqual('diagram.bpmn');
+        expect(link.href).toEqual('data:application/bpmn20-xml;charset=UTF-8,' + encodeURIComponent(exportXML));
+        expect(link.click).toHaveBeenCalledTimes(1);
     });
 
     it('Clicking on the Export SVG button can export SVG from the Editor', async function() {
-        spyOn(editor, 'getSVG');
+        const link = {
+            click: () => {
+            },
+        };
+        spyOn(document, 'createElement').and.callFake(() => {return link});
+        spyOn(link, 'click');
+
+        let exportSVG = await editorApp.getSVG();
+
         let pluginExport = editorApp.getActivatedPlugins()[3];
         await pluginExport.exportSVG();
-        expect(editor.getSVG).toHaveBeenCalled();
+
+        expect(link.target).toEqual('_blank');
+        expect(link.download).toEqual('diagram.svg');
+        expect(link.href).toEqual('data:application/bpmn20-xml;charset=UTF-8,' + encodeURIComponent(exportSVG));
+        expect(link.click).toHaveBeenCalledTimes(1);
     });
 });

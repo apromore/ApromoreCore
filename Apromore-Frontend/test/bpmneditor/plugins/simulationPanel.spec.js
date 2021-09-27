@@ -18,17 +18,13 @@ describe('After the EditorApp has been initialized with a BPMN model with Simula
         let simulationPanel = editorApp.getEastRegion();
         let spy = spyOn(simulationPanel, 'toggleCollapse');
 
-        let element = Ext.getCmp("ap-id-editor-simulation-btn");
-
-        // 1st click
-        element.handler.call(element.scope);
+        // 1st click on the Simulation toggle button
+        await testFactory.clickButton("ap-id-editor-simulation-btn");
         expect(simulationPanel.toggleCollapse).toHaveBeenCalled();
-        //let plugin = editorApp.getActivatedPlugins()[7];
-        //expect(simulationRegion.getEl().hasClass('x-panel-collapsed')).toBeTrue();
 
         // 2nd click
         spy.calls.reset(); //reset the previous spy action to prepare for the new one below.
-        element.handler.call(element.scope);
+        await testFactory.clickButton("ap-id-editor-simulation-btn");
         expect(simulationPanel.toggleCollapse).toHaveBeenCalled();
     });
 });

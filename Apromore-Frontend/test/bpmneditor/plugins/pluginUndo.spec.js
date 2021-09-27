@@ -1,3 +1,4 @@
+import * as testSupport from "../testSupport";
 import * as testFactory from "../testFactory";
 import Undo from "../../../src/bpmneditor/plugins/undo";
 import Editor from "../../../src/bpmneditor/editor";
@@ -19,15 +20,13 @@ describe('After the EditorApp has been initialized with a BPMN model with Undo p
 
     it('Clicking on the Undo button can activate the Undo action in the editor', async function() {
         spyOn(editor, 'undo');
-        let element = Ext.getCmp("ap-id-editor-undo-btn");
-        element.handler.call(element.scope);
+        await testSupport.clickButton('ap-id-editor-undo-btn');
         expect(editor.undo).toHaveBeenCalled();
     });
 
-    it('Clicking on the Undo button can activate the Undo action in the editor', async function() {
+    it('Clicking on the Redo button can activate the Redo action in the editor', async function() {
         spyOn(editor, 'redo');
-        let element = Ext.getCmp("ap-id-editor-redo-btn");
-        element.handler.call(element.scope);
+        await testSupport.clickButton("ap-id-editor-redo-btn");
         expect(editor.redo).toHaveBeenCalled();
     });
 

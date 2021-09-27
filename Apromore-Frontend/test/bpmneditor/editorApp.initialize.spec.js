@@ -33,7 +33,7 @@ describe('After the EditorApp has been created', function () {
         expect(editorApp.getActivatedPlugins().length).toEqual(8);
     });
 
-    it('It can initialize successfully despite errors in Ajax request for plugin configuration', async function () {
+    it('It can initialize in case of errors in Ajax request for plugin configuration', async function () {
         let parsedPlugins = new DOMParser().parseFromString('Error', "text/xml");
         spyOn($, 'ajax').and.callFake(ajax_response(parsedPlugins, false));
         let logErrorSpy = spyOn(Log, 'warn');
@@ -51,7 +51,7 @@ describe('After the EditorApp has been created', function () {
         expect(editorApp.getActivatedPlugins().length).toEqual(0);
     });
 
-    it('It can initialize successfully despite errors in loading plugins from the plugin configuration', async function () {
+    it('It can initialize successfully in case of errors during the plugin loading process', async function () {
         spyOn($, 'ajax').and.callFake(ajax_response('', true));
         let logErrorSpy = spyOn(Log, 'warn');
 

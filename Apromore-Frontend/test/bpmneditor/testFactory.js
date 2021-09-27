@@ -21,7 +21,7 @@ async function createEditorApp(pluginsConfigXML, bpmnXML) {
     });
 
     let parsedPlugins = new DOMParser().parseFromString(pluginsConfigXML, "text/xml");
-    spyOn($, 'ajax').and.callFake(ajax_response(parsedPlugins, true));
+    let spy = spyOn($, 'ajax').and.callFake(ajax_response(parsedPlugins, true));
 
     await editorApp.init({
         xml: bpmnXML,
@@ -31,12 +31,20 @@ async function createEditorApp(pluginsConfigXML, bpmnXML) {
         fail('Error in initializing EditorApp. Error: ' + err.message);
     });
 
+    spy.calls.reset();
+
     return editorApp;
+}
+
+export async function clickButton(buttonId, callBack) {
+    let element = Ext.getCmp(buttonId);
+    element.handler.call(element.scope);
+    // element.fireEvent('click', element);
 }
 
 
 // A simple way of mocking Ajax response for testing
-// To be more sophisticated, can use jasmine-ajax extension per need basis
+// To be more sophisticated, can use jasmine-ajax
 function ajax_response(response, success) {
     return function (params) {
         if (success) {

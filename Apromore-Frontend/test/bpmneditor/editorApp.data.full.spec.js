@@ -33,11 +33,10 @@ describe('After the EditorApp has been initialized with full BPMN model and plug
         let editor = editorApp.getEditor();
         var modelling = editor.actualEditor.get('modeling');
         var parent = editor.actualEditor.get('canvas').getRootElement();
-        //console.log('parent', parent);
         var shape = modelling.createShape({type:'bpmn:Task', width:10, height:10}, {x:0, y:0}, parent);
         expect(undoButton.buttonInstance.enable).toHaveBeenCalled();
 
-        // Click the Undo button, the Redo button is expected to be enabled.
+        // Click on the Undo button, the Redo button is expected to be enabled.
         let element = Ext.getCmp("ap-id-editor-undo-btn");
         element.handler.call(element.scope);
         expect(redoButton.buttonInstance.enable).toHaveBeenCalled();
