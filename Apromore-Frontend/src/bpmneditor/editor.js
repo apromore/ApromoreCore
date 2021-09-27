@@ -78,11 +78,13 @@ export default class Editor {
     }
 
     getSVGContainer() {
-        return $("div.Apromore_Editor div.bjs-container div.djs-container svg")[0];
+        //return $("div.Apromore_Editor div.bjs-container div.djs-container svg")[0];
+        return $('#' + this.rootNode.id + " div.bjs-container div.djs-container svg")[0];
     }
 
     getSVGViewport() {
-        return $("div.Apromore_Editor div.bjs-container div.djs-container svg g.viewport")[0];
+        //return $("div.Apromore_Editor div.bjs-container div.djs-container svg g.viewport")[0];
+        return $('#' + this.rootNode.id + " div.bjs-container div.djs-container svg g.viewport")[0];
     }
 
     getIncomingFlowId(nodeId) {
