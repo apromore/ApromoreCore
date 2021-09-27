@@ -13,9 +13,6 @@ export async function createEditorAppWithModelAndPlugins() {
 }
 
 export function createEmptyEditorApp() {
-    // $(window.document.body).empty();
-    // let editorAppContainer = $('<div id="editorAppContainer"></div>');
-    // $(window.document.body).append(editorAppContainer[0]);
     jasmine.getFixtures().fixturesPath = 'base/test/bpmneditor/fixtures';
     loadFixtures('editorAppFixture.html');
 
@@ -32,8 +29,6 @@ export async function createEditorAppWithModelAndSimplePlugins() {
 }
 
 async function createEditorApp(pluginsConfigXML, bpmnXML) {
-    // $(window.document.body).empty(); // Clear the HTML document to avoid conflicts with the content loaded in other tests
-    // $(window.document.body).append($('<div id="editorAppContainer"></div>')[0]);
     jasmine.getFixtures().fixturesPath = 'base/test/bpmneditor/fixtures';
     loadFixtures('editorAppFixture.html');
 
@@ -59,9 +54,6 @@ async function createEditorApp(pluginsConfigXML, bpmnXML) {
 }
 
 export function createEmptyEditor() {
-    // $(window.document.body).empty();
-    // let editorContainer = $('<div id="editorContainer"></div>');
-    // $(window.document.body).append(editorContainer[0]);
     jasmine.getFixtures().fixturesPath = 'base/test/bpmneditor/fixtures';
     loadFixtures('editorFixture.html');
 
@@ -77,11 +69,6 @@ export function createEmptyEditor() {
 }
 
 export async function createEditorWithBPMNIO() {
-    // $(window.document.body).empty();
-    // let editorContainer = $('<div id="editorContainer"></div>');
-    // let propertiesPanelContainer = $('<div id="js-properties-panel"></div>');
-    // $(window.document.body).append(editorContainer[0]);
-    // $(window.document.body).append(propertiesPanelContainer[0]);
     jasmine.getFixtures().fixturesPath = 'base/test/bpmneditor/fixtures';
     loadFixtures('editorFixture.html');
 
@@ -103,11 +90,6 @@ export async function createEditorWithBPMNIO() {
 }
 
 export async function createEditorWithSimpleMap() {
-    // $(window.document.body).empty();
-    // let editorContainer = $('<div id="editorContainer"></div>');
-    // let propertiesPanelContainer = $('<div id="js-properties-panel"></div>');
-    // $(window.document.body).append(editorContainer[0]);
-    // $(window.document.body).append(propertiesPanelContainer[0]);
     jasmine.getFixtures().fixturesPath = 'base/test/bpmneditor/fixtures';
     loadFixtures('editorFixture.html');
 

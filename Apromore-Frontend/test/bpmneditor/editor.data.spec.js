@@ -7,6 +7,14 @@ describe('After the Editor has loaded successfully a BPMN model', function () {
         editor = await testFactory.createEditorWithSimpleMap();
     });
 
+    it('It has set up initial data correctly', async function() {
+        expect(editor).not.toBeUndefined();
+        expect(editor.getSVGContainer()).not.toBeUndefined();
+        expect(editor.getSVGViewport()).not.toBeUndefined();
+        expect(editor.canUndo()).toBeFalse();
+        expect(editor.canRedo()).toBeFalse();
+    });
+
     it('It can get the XML representation of the model', async function() {
         let xml = await editor.getXML().catch(err => fail(err));
         expect(xml).toContain('<?xml');
