@@ -4,7 +4,7 @@ describe('After the EditorApp has been initialized with simple BPMN model and pl
     let editorApp;
 
     beforeEach(async function() {
-        editorApp = await testFactory.createEditorAppWithModelAndSimplePlugins();
+        editorApp = await testFactory.createEditorAppWithModelAndSimplePlugins().catch(err => fail(err));
     });
 
     it('It can get the XML representation of the model', async function() {

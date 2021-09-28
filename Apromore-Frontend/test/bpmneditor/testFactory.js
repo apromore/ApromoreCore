@@ -8,20 +8,23 @@ let pluginsConfig = require('./fixtures/plugins.xml');
 let pluginsConfigSimple = require('./fixtures/pluginsSimple.xml');
 let bpmnSimple = require('./fixtures/simpleMap.bpmn');
 
-export async function createEditorAppWithModelAndPlugins() {
-    return await createEditorApp(pluginsConfig.default, bpmnSimple.default);
-}
-
 export function createEmptyEditorApp() {
     jasmine.getFixtures().fixturesPath = 'base/test/bpmneditor/fixtures';
     loadFixtures('editorAppFixture.html');
 
     let editorApp = new EditorApp({
         id: 'editorAppContainer',
-        fullscreen: true
+        fullscreen: true,
+        useSimulationPanel: true,
+        viewOnly: false,
+        langTag: 'en'
     });
 
     return editorApp;
+}
+
+export async function createEditorAppWithModelAndPlugins() {
+    return await createEditorApp(pluginsConfig.default, bpmnSimple.default);
 }
 
 export async function createEditorAppWithModelAndSimplePlugins() {
@@ -34,7 +37,10 @@ async function createEditorApp(pluginsConfigXML, bpmnXML) {
 
     let editorApp = new EditorApp({
         id: 'editorAppContainer',
-        fullscreen: true
+        fullscreen: true,
+        useSimulationPanel: true,
+        viewOnly: false,
+        langTag: 'en'
     });
 
     let parsedPlugins = new DOMParser().parseFromString(pluginsConfigXML, "text/xml");
@@ -42,13 +48,8 @@ async function createEditorApp(pluginsConfigXML, bpmnXML) {
 
     await editorApp.init({
         xml: bpmnXML,
-        callBack: () => {},
         preventFitDelay: true
-    }).catch(err => {
-        fail('Error in initializing EditorApp. Error: ' + err.message);
-    });
-
-    spy.calls.reset();
+    })
 
     return editorApp;
 }
@@ -108,7 +109,7 @@ export async function createEditorWithSimpleMap() {
     }));
 
     let bpmn = require('./fixtures/simpleMap.bpmn');
-    await editor.importXML(bpmn.default, () => {}).catch(err => fail(err));
+    await editor.importXML(bpmn.default).catch(err => fail(err));
 
     return editor;
 }

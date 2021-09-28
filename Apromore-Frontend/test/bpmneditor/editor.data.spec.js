@@ -7,10 +7,10 @@ describe('After the Editor has loaded successfully a BPMN model', function () {
         editor = await testFactory.createEditorWithSimpleMap();
     });
 
-    it('It has set up initial data correctly', async function() {
+    it('It can set up initial UI correctly', async function() {
         expect(editor).not.toBeUndefined();
-        expect(editor.getSVGContainer()).not.toBeUndefined();
-        expect(editor.getSVGViewport()).not.toBeUndefined();
+        expect(editor.getSVGContainer()).toBeTruthy();
+        expect(editor.getSVGViewport()).toBeTruthy();
         expect(editor.canUndo()).toBeFalse();
         expect(editor.canRedo()).toBeFalse();
     });

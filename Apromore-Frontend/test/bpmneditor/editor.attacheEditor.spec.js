@@ -4,7 +4,7 @@ describe('After the Editor has attached an instance of bpmn.io', function () {
     let editor;
 
     beforeEach(async function() {
-        editor = await testFactory.createEditorWithBPMNIO();
+        editor = await testFactory.createEditorWithBPMNIO().catch(err => fail(err));
     });
 
     it('It has set up initial data correctly', async function() {

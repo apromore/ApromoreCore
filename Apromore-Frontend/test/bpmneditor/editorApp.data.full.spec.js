@@ -4,7 +4,12 @@ describe('After the EditorApp has been initialized with full BPMN model and plug
     let editorApp;
 
     beforeEach(async function() {
-        editorApp = await testFactory.createEditorAppWithModelAndPlugins();
+        editorApp = await testFactory.createEditorAppWithModelAndPlugins().catch(err => fail(err));
+    });
+
+    it('It can load all the plugins', async function() {
+        let plugins = editorApp.getActivatedPlugins();
+        expect(plugins.length).toEqual(8);
     });
 
     it('It can get the XML representation of the model', async function() {
@@ -15,11 +20,6 @@ describe('After the EditorApp has been initialized with full BPMN model and plug
     it('It can get the SVG representation of the model', async function() {
         let svg = await editorApp.getSVG().catch(err => fail(err));
         expect(svg).toContain('<svg');
-    });
-
-    it('It can load all the plugins', async function() {
-        let plugins = editorApp.getActivatedPlugins();
-        expect(plugins.length).toEqual(8);
     });
 
     it('It can communicate editor command stack changes to other parts', async function() {

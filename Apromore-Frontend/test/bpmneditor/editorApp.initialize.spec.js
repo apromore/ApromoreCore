@@ -28,7 +28,6 @@ describe('After the EditorApp has been created', function () {
     it('It can initialize in case of errors in Ajax request for plugin configuration', async function () {
         let parsedPlugins = new DOMParser().parseFromString('Error', "text/xml");
         spyOn($, 'ajax').and.callFake(ajax_response(parsedPlugins, false));
-        let logErrorSpy = spyOn(Log, 'warn');
 
         let bpmnXML = require('./fixtures/simpleMap.bpmn');
         await editorApp.init({
@@ -39,7 +38,6 @@ describe('After the EditorApp has been created', function () {
             fail('Error in initializing EditorApp. Error: ' + err);
         });
 
-        expect(logErrorSpy).toHaveBeenCalled();
         expect(editorApp.getActivatedPlugins().length).toEqual(0);
     });
 
