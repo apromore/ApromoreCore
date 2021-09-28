@@ -56,6 +56,7 @@ import org.apromore.portal.exception.DialogException;
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.util.StringUtil;
+import org.apromore.zk.dialog.InputDialog;
 import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
 import org.zkoss.spring.SpringUtil;
@@ -374,22 +375,33 @@ public class ImportController extends BaseController {
 
   private void importLog(Media logMedia) {
     try {
-      Integer folderId = 0;
-      if (this.mainC.getPortalSession().getCurrentFolder() != null) {
-        folderId = this.mainC.getPortalSession().getCurrentFolder().getId();
-      }
+      final Integer folderId = (this.mainC.getPortalSession().getCurrentFolder() != null) ?
+        this.mainC.getPortalSession().getCurrentFolder().getId() :
+        0;
 
       String fileName = logMedia.getName();
       String extension = discoverExtension(fileName);
       LOGGER.debug("File name \"{}\", extension \"{}\"", fileName, extension);
       String logFileName = FilenameUtils.removeExtension(fileName);
 
-      mainC.getManagerService().importLog(UserSessionManager.getCurrentUser().getUsername(),
-          folderId, logFileName, logMedia.getStreamData(), extension, "",
-          DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(),
-          isPublicCheckbox.isChecked());
+      InputDialog.showInputDialog(
+              Labels.getLabel("common_saveLog_text"),
+              Labels.getLabel("common_saveLog_hint"),
+              logFileName,
+              Labels.getLabel("common_validNameRegex_text"),
+              Labels.getLabel("common_validNameRegex_hint"),
+              (Event e) -> {
+                if (e.getName().equals("onOK")) {
+                  String newName = (String)e.getData();
+                  mainC.getManagerService().importLog(UserSessionManager.getCurrentUser().getUsername(),
+                          folderId, newName, logMedia.getStreamData(), extension, "",
+                          DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(),
+                          isPublicCheckbox.isChecked());
+                  mainC.refresh();
+                }
+              }
+      );
 
-      mainC.refresh();
     } catch (Exception e) {
       LOGGER.warn("Import failed for " + logMedia.getName(), e);
       Messagebox.show(Labels.getLabel(PORTAL_FAILED_IMPORT_MESSAGE), APROMORE, Messagebox.OK,
