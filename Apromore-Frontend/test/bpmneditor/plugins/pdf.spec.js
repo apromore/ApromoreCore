@@ -58,10 +58,6 @@ describe('After the EditorApp has been initialized with a BPMN model with PDF pl
         expect(request.responseType).toBe('blob');
     }
 
-    // afterEach(function() {
-    //     jasmine.Ajax.uninstall();
-    // })
-
     it('On server response with success, the PDF plugin receives Ajax response', async function() {
         jasmine.Ajax.install();
 

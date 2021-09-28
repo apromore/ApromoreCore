@@ -23,7 +23,6 @@
 
 import Log from './logger';
 import Utils from './utils';
-import {reject} from "ramda";
 
 /**
  * Editor is actually a wrapper around the true editor (e.g. BPMN.io)
@@ -52,29 +51,6 @@ export default class Editor {
     attachEditor(editor) {
         let me = this;
         this.actualEditor = editor; //This is a BPMNJS object
-        // updateUndoRedo();
-        // this.addCommandStackChangeListener(function () {
-        //     updateUndoRedo();
-        // });
-        // function updateUndoRedo() {
-        //     try {
-        //         var undo = $('#ap-id-editor-undo-btn');
-        //         var redo = $('#ap-id-editor-redo-btn');
-        //         if (!undo || !redo) return;
-        //         if (me.canUndo()) {
-        //             undo.removeClass('disabled');
-        //         } else {
-        //             undo.addClass('disabled');
-        //         }
-        //         if (me.canRedo()) {
-        //             redo.removeClass('disabled');
-        //         } else {
-        //             redo.addClass('disabled');
-        //         }
-        //     } catch(e) {
-        //         console.log('Unexpected error occurred when update button status.', e.message);
-        //     }
-        // }
     }
 
     getSVGContainer() {
@@ -120,8 +96,6 @@ export default class Editor {
      * This method takes time depending on the complexity of the model
      * @param {String} xml: the BPMN XML
      * @param {Function} callback: callback function to call after the import finishes
-     *
-     * @todo: Avoid seperate conditional for loganimation and bpmneditor
      */
     async importXML(xml) {
         if (!this.actualEditor) return false;
@@ -141,17 +115,6 @@ export default class Editor {
             connection.waypoints = connectionDocking.getCroppedWaypoints(connection);
         });
         eventBus.fire('elements.changed', { elements: connections });
-
-        // // @todo: Avoid this conditional
-        // if (this.preventFitDelay) { // this is for loganimation
-        //     this.zoomFitToModel();
-        // } else { // this is for BPMN editor
-        //     var me = this; // delay the fit until the properties panel fully collapsed
-        //     setTimeout(function () {
-        //         me.zoomFitToModel();
-        //     }, 500);
-        // }
-
 
         /**
          * Any clean up needs to be done on the raw XML
@@ -191,7 +154,7 @@ export default class Editor {
     zoomFitToModel() {
         if (!this.actualEditor) return false;
         var canvas = this.actualEditor.get('canvas');
-        //canvas.viewbox(false); // trigger recalculate the viewbox
+        canvas.viewbox(false); // trigger recalculate the viewbox
         canvas.zoom('fit-viewport', 'auto'); // zoom to fit full viewport
         return true;
     }

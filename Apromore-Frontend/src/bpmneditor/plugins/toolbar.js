@@ -149,24 +149,18 @@ export default class Toolbar {
 
     enableButtons() {
         // Show the Buttons
+        let plugin = this;
         this.buttons.each((function(pluginButton){
             pluginButton.buttonInstance.enable();
 
-            // // If there is less elements than minShapes
-            // if(pluginButton.minShape && pluginButton.minShape > elements.length)
-            //     pluginButton.buttonInstance.disable();
-            // // If there is more elements than minShapes
-            // if(pluginButton.maxShape && pluginButton.maxShape < elements.length)
-            //     pluginButton.buttonInstance.disable();
-
             // If the plugin button is not enabled
             if(pluginButton.isEnabled && !pluginButton.isEnabled(pluginButton.buttonInstance)) {
-                pluginButton.buttonInstance.disable();
+                plugin._enable(pluginButton);
             }
 
             // Initial state for Undo/Redo buttons
             if (['ap-id-editor-undo-btn', 'ap-id-editor-redo-btn'].includes(pluginButton.btnId)) {
-                pluginButton.buttonInstance.disable();
+                plugin._disable(pluginButton);
             }
 
         }).bind(this));
@@ -178,14 +172,26 @@ export default class Toolbar {
      * @param canUndo: true if the editor has undo actions, canRedo: true if the editor has redo actions
      */
     editorCommandStackChanged(canUndo, canRedo) {
+        let plugin = this;
         this.buttons.each((function(pluginButton){
             if (pluginButton.btnId === 'ap-id-editor-undo-btn') {
-                canUndo ? pluginButton.buttonInstance.enable() : pluginButton.buttonInstance.disable();
+                canUndo ? plugin._enable(pluginButton) : plugin._disable(pluginButton);
             }
+
             if (pluginButton.btnId === 'ap-id-editor-redo-btn') {
-                canRedo ? pluginButton.buttonInstance.enable() : pluginButton.buttonInstance.disable();
+                canRedo ? plugin._enable(pluginButton) : plugin._disable(pluginButton);
             }
         }).bind(this));
+    }
+
+    _disable(button) {
+        button.buttonInstance.disable();
+        $('#' + button.btnId).addClass('disabled')
+    }
+
+    _enable(button) {
+        button.buttonInstance.enable();
+        $('#' + button.btnId).removeClass('disabled')
     }
 };
 

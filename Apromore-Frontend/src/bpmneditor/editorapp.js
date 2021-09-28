@@ -143,7 +143,7 @@ export default class EditorApp {
                 setTimeout(function () { // push this to the end of the event loop after panels have collapsed.
                     me.zoomFitToModel();
                     resolve('zoomFitToModel');
-                }, 0);
+                }, 1000);
             }
             else {
                 me.zoomFitToModel();
@@ -351,10 +351,6 @@ export default class EditorApp {
             current_region.ownerCt.doLayout();
             current_region.show();
 
-            // if (Ext.isMac) {
-            //     this.resizeFix();
-            // }
-
             return current_region;
         }
 
@@ -424,11 +420,6 @@ export default class EditorApp {
         });
 
         this.activatedPlugins = newPlugins;
-
-        // Hack for the Scrollbars
-        // if (Ext.isMac) {
-        //     this.resizeFix();
-        // }
     }
 
     getActivatedPlugins() {

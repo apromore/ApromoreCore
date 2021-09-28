@@ -21,18 +21,6 @@
  * DEALINGS IN THE SOFTWARE.
  **/
 
-
-/**
- * This plugin offers the functionality of undo/redo
- * Therewith the command pattern is used.
- *
- * A Plugin which want that the changes could get undo/redo has
- * to implement a command-class (which implements the method .execute(), .rollback()).
- * Those instance of class must be execute thru the facade.executeCommands(). If so,
- * those command get stored here in the undo/redo stack and can get reset/restore.
- *
- **/
-
 import CONFIG from './../config';
 
 export default class Undo {
