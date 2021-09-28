@@ -154,6 +154,8 @@ public class Calendar extends SelectorComposer<Window> {
         initialize();
         win.setTitle("Custom Calendar - " + calendarModel.getName());
 
+        win.addEventListener("onClose", (Event event) -> onClickCancelBtn());
+
         actionBridge.addEventListener("onLoaded", (Event event) -> rebuild());
         actionBridge.addEventListener("onSyncRows", (Event event) -> syncRows());
         actionBridge.addEventListener("onEditRange", (Event event) -> {

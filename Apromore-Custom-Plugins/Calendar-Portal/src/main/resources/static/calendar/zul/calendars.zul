@@ -25,7 +25,7 @@
           sclass="ap-calendars-win"
           width="800px" height="80%" position="center"
           style="max-width: 1400px;"
-          title="${$composer.labels.title_text}" apply="org.apromore.plugin.portal.calendar.controllers.Calendars">
+          apply="org.apromore.plugin.portal.calendar.controllers.Calendars">
     <script type="text/javascript" src="./libs/tippy/6.2.7/popper.min.js"></script>
     <script type="text/javascript" src="./libs/tippy/6.2.7/tippy-bundle.umd.min.js"></script>
     <script type="text/javascript" src="./calendar/js/index.js"></script>
