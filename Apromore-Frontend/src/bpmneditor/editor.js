@@ -34,7 +34,7 @@ import {reject} from "ramda";
 export default class Editor {
     constructor(options) {
         this.actualEditor = undefined;
-        this.preventFitDelay = options.preventFitDelay;
+        // this.preventFitDelay = options.preventFitDelay;
 
         if (!(options && options.width && options.height)) {
             Log.fatal("The editor is missing mandatory parameters options.width and options.height.");
@@ -123,42 +123,34 @@ export default class Editor {
      *
      * @todo: Avoid seperate conditional for loganimation and bpmneditor
      */
-    async importXML(xml, callback) {
+    async importXML(xml) {
         if (!this.actualEditor) return false;
         if (!(typeof xml === 'string')) throw new Error("Invalid XML input");
         xml = sanitizeXML(xml);
 
+        await this.actualEditor.importXML(xml);
+
         //EXPERIMENTING WITH THE BELOW TO FIX ARROWS NOT SNAP TO EDGES WHEN OPENING MODELS
         //Some BPMN files are not compatible with bpmn.io
         var editor = this.actualEditor;
-
-        const result = await editor.importXML(xml).catch(err => {throw err;});
         var eventBus = editor.get('eventBus');
         var elementRegistry = editor.get('elementRegistry');
-        var connections = elementRegistry.filter(function(e) {
-            return e.waypoints;
+        var connections = elementRegistry.filter(function(e) {return e.waypoints;});
+        var connectionDocking = editor.get('connectionDocking');
+        connections.forEach(function(connection) {
+            connection.waypoints = connectionDocking.getCroppedWaypoints(connection);
         });
-        try {
-            var connectionDocking = editor.get('connectionDocking');
-            connections.forEach(function(connection) {
-                connection.waypoints = connectionDocking.getCroppedWaypoints(connection);
-            });
-        } catch (e) {
-            Log.error('Skip connectionDocking error');
-            throw e;
-        }
         eventBus.fire('elements.changed', { elements: connections });
-        // @todo: Avoid this conditional
-        if (this.preventFitDelay) { // this is for loganimation
-            this.zoomFitToModel();
-            callback();
-        } else { // this is for BPMN editor
-            callback();
-            var me = this; // delay the fit until the properties panel fully collapsed
-            setTimeout(function () {
-                me.zoomFitToModel();
-            }, 500);
-        }
+
+        // // @todo: Avoid this conditional
+        // if (this.preventFitDelay) { // this is for loganimation
+        //     this.zoomFitToModel();
+        // } else { // this is for BPMN editor
+        //     var me = this; // delay the fit until the properties panel fully collapsed
+        //     setTimeout(function () {
+        //         me.zoomFitToModel();
+        //     }, 500);
+        // }
 
 
         /**
@@ -199,7 +191,7 @@ export default class Editor {
     zoomFitToModel() {
         if (!this.actualEditor) return false;
         var canvas = this.actualEditor.get('canvas');
-        canvas.viewbox(false); // trigger recalculate the viewbox
+        //canvas.viewbox(false); // trigger recalculate the viewbox
         canvas.zoom('fit-viewport', 'auto'); // zoom to fit full viewport
         return true;
     }

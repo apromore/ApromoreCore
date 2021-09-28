@@ -116,22 +116,44 @@ export default class EditorApp {
      * @returns {Promise<void>}
      */
     async init(config) {
-        this._createEditor(config.preventFitDelay || false);
+        this._createEditor();
 
         this._generateGUI();
 
-        await this._loadData(config).catch(err => {throw err});
+        await this._loadData(config);
+
+        await this._initUI();
     }
 
-    _initUI() {
-        // Fixed the problem that the viewport can not
-        // start with collapsed panels correctly
-        if (CONFIG.PANEL_RIGHT_COLLAPSED === true) {
-            this.layout_regions.east.collapse();
-        }
-        if (CONFIG.PANEL_LEFT_COLLAPSED === true) {
-            this.layout_regions.west.collapse();
-        }
+    /**
+     * Initialize starting UI
+     * Zoom to fit model can only be called after all UI panels have been set up.
+     * Use Promise to make this asynchronous code to be synchronous (force the caller to wait)
+     * This is because other code (like LogAnimation) can asynchronously respond to viewbox changing events
+     * (caused by zoom actions) and they could get null transform matrix if they don't wait for zoomFitToModel to finish.
+     *
+     * @returns {Promise<void>}
+     * @private
+     */
+    async _initUI() {
+        let me = this;
+        return new Promise((resolve, reject) => {
+            if (this.useSimulationPanel) {
+                this._collapsePanels();
+                setTimeout(function () { // push this to the end of the event loop after panels have collapsed.
+                    me.zoomFitToModel();
+                    resolve('zoomFitToModel');
+                }, 0);
+            }
+            else {
+                me.zoomFitToModel();
+                resolve('zoomFitToModel');
+            }
+        })
+    }
+
+    _collapsePanels() {
+        if (CONFIG.PANEL_RIGHT_COLLAPSED === true) this.layout_regions.east.collapse();
     }
 
     zoomFitToModel() {
@@ -417,18 +439,37 @@ export default class EditorApp {
         return document.getElementById(this.id);
     }
 
-    _createEditor(preventFitDelay) {
+    _createEditor() {
         this.editor = new Editor({
             width: CONFIG.CANVAS_WIDTH,
             height: CONFIG.CANVAS_HEIGHT,
             id: Utils.provideId(),
-            parentNode: this._getContainer(),
-            preventFitDelay: preventFitDelay
+            parentNode: this._getContainer()
         });
     }
 
-    getEastRegion() {
+    getEastPanel() {
         if (this.layout_regions && this.layout_regions.east) return this.layout_regions.east;
+    }
+
+    getWestPanel() {
+        if (this.layout_regions && this.layout_regions.west) return this.layout_regions.west;
+    }
+
+    getSouthPanel() {
+        if (this.layout_regions && this.layout_regions.south) return this.layout_regions.south;
+    }
+
+    getNorthPanel() {
+        if (this.layout_regions && this.layout_regions.north) return this.layout_regions.north;
+    }
+
+    getCenterPanel() {
+        if (this.layout_regions && this.layout_regions.center) return this.layout_regions.center;
+    }
+
+    getInfoPanel() {
+        if (this.layout_regions && this.layout_regions.info) return this.layout_regions.info;
     }
 
     /**
@@ -441,7 +482,7 @@ export default class EditorApp {
             this._pluginFacade = (function () {
                 return {
                     offer: this.offer.bind(this),
-                    getEastRegion: this.getEastRegion.bind(this),
+                    getEastPanel: this.getEastPanel.bind(this),
                     useSimulationPanel: this.useSimulationPanel,
                     getXML: this.getXML.bind(this),
                     getSVG: this.getSVG.bind(this),
@@ -516,26 +557,25 @@ export default class EditorApp {
     // }
 
     /**
-     * Load the editor and a list of predefined plugins from the server
+     * Load proces model and a list of predefined plugins from the server
      * @param config
      * @returns {Promise<void>}
      * @private
      */
     async _loadData(config) {
-        await this._loadEditor(config).catch(err => {throw err});
-        if(CONFIG.PLUGINS_ENABLED) {
-            await this._loadAvailablePluginData().catch(err => Log.warn("Error in loading plugins. Error: " + err.message));
-        }
+        await this._loadModel(config);
+        // Loading plugins must proceed in case of errors after logging the error.
+        if (CONFIG.PLUGINS_ENABLED) await this._loadAvailablePluginData().catch(err => Log.warn(err.message));
     }
 
     /**
-     * Load the real editor with a process model
+     * Create the real editor with a process model
      * @param config: the editor config and process model to be loaded
      * @returns {Promise<void>}
      * @private
      */
-    async _loadEditor(config) {
-        if (!this.editor) return Promise.reject(new Error('The Editor was not created (EditorApp._loadEditor)'));
+    async _loadModel(config) {
+        if (!this.editor) throw new Error('The Editor was not created (EditorApp._loadEditor)');
 
         let me = this;
         let options = {
@@ -549,12 +589,8 @@ export default class EditorApp {
 
         await me.editor.attachEditor(new BpmnJS(options));
 
-        // Wait until the editor is fully loaded to start XML import and then UI init
         if (config && config.xml) {
-            await this.editor.importXML(config.xml, me._initUI.bind(me))
-                .catch(error => {
-                    throw err;
-                });
+            await this.editor.importXML(config.xml);
             this.editor.addCommandStackChangeListener(this._handleEditorCommandStackChanges.bind(this));
         }
         else {

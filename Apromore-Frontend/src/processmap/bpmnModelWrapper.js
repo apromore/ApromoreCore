@@ -41,9 +41,8 @@ export default class BPMNModelWrapper {
                             window.Apromore.I18N.View.zoomFitToModel]
         });
         await this._editorApp.init({
-             xml: bpmnXML,
-             callBack: callBack,
-             preventFitDelay: true
+            xml: bpmnXML,
+            preventFitDelay: false
         });
         this._editor = this._editorApp.getEditor();
     }
@@ -125,7 +124,8 @@ export default class BPMNModelWrapper {
      * @returns {DOMMatrix}
      */
     getTransformMatrix() {
-        return this._svgViewport.transform.baseVal.consolidate().matrix;
+        let viewBox = this._svgViewport.transform.baseVal.consolidate();
+        return viewBox ? viewBox.matrix : undefined;
     }
 
     isBPMNEditor() {
