@@ -47,6 +47,7 @@
     /* A fix for simulation panel title */
     .x-layout-collapsed-east:after {
       content: "Simulation parameters";
+      letter-spacing: 1px;
       color: black;
       font-weight: 700;
       transform: rotate(90deg) translate(192px, 196px);
