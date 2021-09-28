@@ -35,12 +35,13 @@ public class TimeframeValidator extends AbstractLogFilterRuleValidator {
         LongLongPair valPair = getFromAndToLongValues(logFilterRule);
 
         if (valPair.getOne() > apmLog.getEndTime() || valPair.getTwo() < apmLog.getStartTime())
-            return null;
+            return createInvalidFilterRuleResult(originalRule);
 
         long validFrom = Math.max(valPair.getOne(), apmLog.getStartTime());
         long validTo = Math.min(valPair.getTwo(), apmLog.getEndTime());
 
-        if (validFrom == apmLog.getStartTime() && validTo == apmLog.getEndTime()) return null;
+        if (validFrom == apmLog.getStartTime() && validTo == apmLog.getEndTime())
+            return createInvalidFilterRuleResult(originalRule);
 
         return replaceLongValues(logFilterRule, validFrom, validTo);
     }
