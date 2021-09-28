@@ -53,6 +53,7 @@ public class JobDao implements Serializable {
     private boolean error;
     private int scheduleVersionNumber;
     private boolean paused;
+    private String timeZoneId;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -94,6 +95,11 @@ public class JobDao implements Serializable {
     @Column(name = "paused")
     public boolean getPaused() {
         return paused;
+    }
+
+    @Column(name = "time_zone_id")
+    public String getTimeZoneId() {
+        return timeZoneId;
     }
 
     @Embedded
