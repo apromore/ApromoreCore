@@ -140,6 +140,7 @@ public class LogImporterController extends SelectorComposer<Window> implements C
     private Div popUpBox;
     private Button[] formatBtns;
     private Span[] parsedIcons;
+    private Set<Checkbox> maskBtns;
     private List<Listbox> dropDownLists;
 
     private ParquetImporterFactory parquetImporterFactory;
@@ -520,6 +521,7 @@ public class LogImporterController extends SelectorComposer<Window> implements C
         // set columns
         Button[] formatBtns = new Button[logMetaData.getHeader().size()];
         Span[] parsedIcons = new Span[logMetaData.getHeader().size()];
+        Set<Checkbox> maskBtns = new HashSet<>();
         for (int pos = 0; pos < logMetaData.getHeader().size(); pos++) {
             Column newColumn = new Column();
             newColumn.setId(HEADER_COLUMN_ID + pos);
@@ -553,10 +555,6 @@ public class LogImporterController extends SelectorComposer<Window> implements C
                 hideFormatBtn(formatBtn);
             }
 
-            if (!enableAnonymize) {
-                hideCheckbox(maskBtn);
-            }
-
             formatBtn.setIconSclass("z-icon-wrench");
 
             final int fi = pos;
@@ -564,6 +562,7 @@ public class LogImporterController extends SelectorComposer<Window> implements C
             maskBtn.addEventListener(Events.ON_CHECK, event -> applyMask(fi));
             formatBtns[pos] = formatBtn;
             parsedIcons[pos] = parsedIcon;
+            maskBtns.add(maskBtn);
 
             newColumn.appendChild(parsedIcon);
             newColumn.appendChild(formatBtn);
@@ -575,6 +574,7 @@ public class LogImporterController extends SelectorComposer<Window> implements C
 
         this.formatBtns = formatBtns;
         this.parsedIcons = parsedIcons;
+        this.maskBtns = maskBtns;
     }
 
     private void renderGridContent() {
@@ -992,7 +992,9 @@ public class LogImporterController extends SelectorComposer<Window> implements C
     }
 
     protected void enableAnonymizeToggle(boolean isEnable) {
-        enableAnonymize = isEnable;
+        for (Checkbox maskBtn : maskBtns) {
+            maskBtn.setVisible(isEnable);
+        }
     }
 
     private void showAutoParsedGreenIcon(Span parsedIcon) {

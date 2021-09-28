@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.slf4j.Logger;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -53,7 +54,9 @@ public class AuthenticationHandler implements AuthenticationFailureHandler, Auth
                                         HttpServletResponse     response,
                                         AuthenticationException exception) throws IOException {
 
-        if (exception instanceof UsernameNotFoundException) {
+        if (exception instanceof BadCredentialsException ||
+            exception instanceof UsernameNotFoundException) {
+
             LOGGER.warn("Failed login attempt from {}, user agent {}", request.getRemoteHost(), request.getHeader("user-agent"));
             response.sendRedirect("/zkau/web/login.zul?error=1");  // display auth_credInvalid_message
 

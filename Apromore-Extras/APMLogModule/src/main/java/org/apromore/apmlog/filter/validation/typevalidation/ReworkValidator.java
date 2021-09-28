@@ -42,7 +42,8 @@ public class ReworkValidator extends AbstractLogFilterRuleValidator {
         UnifiedSet<EventAttributeValue> eavSet =
                 apmLog.getImmutableEventAttributeValues().getOrDefault(attrKey, null);
 
-        if (eavSet == null) return null;
+        if (eavSet == null)
+            return createInvalidFilterRuleResult(originalRule);
 
         Set<String> validVals = eavSet.stream().map(EventAttributeValue::getValue).collect(Collectors.toSet());
 
@@ -50,7 +51,8 @@ public class ReworkValidator extends AbstractLogFilterRuleValidator {
                 .filter(x -> validVals.contains(x.getKey()))
                 .collect(Collectors.toSet());
 
-        if (validValues.isEmpty()) return null;
+        if (validValues.isEmpty())
+            return createInvalidFilterRuleResult(originalRule);
 
         validatedRule.setPrimaryValues(validValues);
 

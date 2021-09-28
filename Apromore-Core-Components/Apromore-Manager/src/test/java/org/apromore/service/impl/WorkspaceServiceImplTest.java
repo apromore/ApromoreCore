@@ -20,7 +20,7 @@
  * #L%
  */
 
-package org.apromore.test.service.impl;
+package org.apromore.service.impl;
 
 import static org.easymock.EasyMock.expect;
 
@@ -435,7 +435,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
 
         // Verify mock and result
         verifyAll();
-        Assert.assertEquals(result, Arrays.asList());
+        Assert.assertEquals(Arrays.asList(), result);
 
     }
 
@@ -502,7 +502,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
 
         // Verify mock and result
         verifyAll();
-        Assert.assertEquals(result, Arrays.asList());
+        Assert.assertEquals(Arrays.asList(), result);
 
     }
 
@@ -575,7 +575,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
 
         // Verify mock and result
         verifyAll();
-        Assert.assertEquals(result, Arrays.asList());
+        Assert.assertEquals(Arrays.asList(), result);
 
     }
 

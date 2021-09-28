@@ -31,7 +31,6 @@ import org.apromore.dao.model.Log;
 import org.apromore.dao.model.User;
 import org.apromore.dao.model.Usermetadata;
 import org.apromore.exception.EventLogException;
-import org.apromore.exception.ImportException;
 import org.apromore.exception.UserMetadataException;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.portal.model.ExportLogResultType;
@@ -66,17 +65,20 @@ public interface EventLogService {
   /**
    * Import a Process.
    *
-   * @param username The user doing the importing.
-   * @param folderId The folder we are saving the process in.
-   * @param logName the name of the process being imported.
-   * @param domain the domain of the model
-   * @param created the time created
+   * @param username    The user doing the importing.
+   * @param folderId    The folder we are saving the process in.
+   * @param logName     the name of the process being imported.
+   * @param log         InputStream of event log.
+   * @param extension   the extension of stored log.
+   * @param domain      the domain of the model
+   * @param created     the time created
    * @param publicModel is this a public model?
+   * @param perspective whether generate default perspective for this log
    * @return the processSummaryType
-   * @throws ImportException if the import process failed for any reason.
+   * @throws Exception if the import process failed for any reason.
    */
   Log importLog(String username, Integer folderId, String logName, InputStream log,
-      String extension, String domain, String created, boolean publicModel) throws Exception;
+      String extension, String domain, String created, boolean publicModel, boolean perspective) throws Exception;
 
 
   Log importLog(Integer folderId, String logName, String domain, String created,

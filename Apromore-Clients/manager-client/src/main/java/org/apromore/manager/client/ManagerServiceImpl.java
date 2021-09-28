@@ -329,7 +329,7 @@ public class ManagerServiceImpl implements ManagerService {
       throws Exception {
     LOGGER.info("User \"{}\" importing log \"{}\" into folder id {}", username, logName, folderId);
     LogSummaryType logSummary = (LogSummaryType) uiHelper.buildLogSummary(
-        logSrv.importLog(username, folderId, logName, log, extension, domain, created, makePublic));
+        logSrv.importLog(username, folderId, logName, log, extension, domain, created, makePublic, true));
     ImportLogResultType importResult = new ImportLogResultType();
     importResult.setLogSummary(logSummary);
 

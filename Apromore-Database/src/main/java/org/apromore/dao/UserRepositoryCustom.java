@@ -38,14 +38,6 @@ public interface UserRepositoryCustom {
     /* ************************** JPA Methods here ******************************* */
 
     /**
-     * Attempts to find the User and check their login details.
-     * @param username the username.
-     * @param password the password.
-     * @return The user if found with a correct password or null.
-     */
-    User login(final String username, final String password);
-
-    /**
      * Attempts to find the User with the passed in email.
      * @param email the email of the user.
      * @return The user if found with a correct password or null.

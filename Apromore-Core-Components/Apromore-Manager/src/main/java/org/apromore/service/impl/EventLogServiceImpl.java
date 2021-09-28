@@ -282,6 +282,7 @@ public class EventLogServiceImpl implements EventLogService {
      * @param domain         the domain of the model
      * @param created        the time created
      * @param publicModel    is this a public model?
+     * @param perspective    whether generate default perspective for this log
      * @return Log
      * @throws UserNotFoundException when a particular user is not found using
      *                               specified username
@@ -289,13 +290,20 @@ public class EventLogServiceImpl implements EventLogService {
      */
     @Override
     public Log importLog(String username, Integer folderId, String logName, InputStream inputStreamLog,
-            String extension, String domain, String created, boolean publicModel) throws Exception {
+            String extension, String domain, String created, boolean publicModel, boolean perspective) throws Exception {
 	User user = userSrv.findUserByLogin(username);
 
 	XFactory factory = XFactoryRegistry.instance().currentDefault();
 	LOGGER.info("Import XES log " + logName + " using " + factory.getClass());
 	XLog xLog = importFromStream(factory, inputStreamLog, extension);
-	return importLog(folderId, logName, domain, created, publicModel, user, xLog);
+	Log log = importLog(folderId, logName, domain, created, publicModel, user, xLog);
+
+	// Generate default perspective list when import from XES
+	if (perspective) {
+		savePerspectiveByLog(getDefaultPerspectiveFromLog(log.getId()), log.getId(), username);
+	}
+
+	return log;
     }
 
     @Override
@@ -561,14 +569,14 @@ public class EventLogServiceImpl implements EventLogService {
 	CustomCalendar calendar = logRepo.findUniqueByID(logId).getCalendar();
 	return calendar != null ? calendarService.getCalendar(calendar.getId()) : calendarService.getGenericCalendar();
     }
-    
-    
+
+
     @Override
-    public List<Log> getLogListFromCalendarId(Long calendarId) {    
-      return logRepo.findByCalendarId(calendarId);      
+    public List<Log> getLogListFromCalendarId(Long calendarId) {
+      return logRepo.findByCalendarId(calendarId);
     }
-    
-    
+
+
 
     @Override
     public boolean saveFileToVolume(String filename, String prefix, ByteArrayOutputStream baos) throws Exception {
