@@ -28,36 +28,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.opencsv.CSVWriter;
 import org.apache.commons.lang3.StringUtils;
-import org.apromore.dao.model.Log;
-import org.apromore.exception.UserNotFoundException;
-import org.apromore.plugin.portal.PortalContext;
-import org.apromore.plugin.portal.PortalLoggerFactory;
-import org.apromore.service.EventLogService;
-import org.apromore.service.UserMetadataService;
-import org.apromore.service.logimporter.exception.InvalidLogMetadataException;
-import org.apromore.service.logimporter.model.LogErrorReport;
-import org.apromore.service.logimporter.model.LogMetaData;
-import org.apromore.service.logimporter.model.LogModel;
-import org.apromore.service.logimporter.services.MetaDataService;
-import org.apromore.service.logimporter.services.MetaDataUtilities;
-import org.apromore.service.logimporter.services.ParquetFactoryProvider;
-import org.apromore.service.logimporter.services.ParquetImporter;
-import org.apromore.service.logimporter.services.ParquetImporterFactory;
-import org.apromore.service.logimporter.services.legacy.LogImporter;
-import org.apromore.service.logimporter.services.legacy.LogImporterProvider;
-import org.apromore.service.logimporter.utilities.FileUtils;
-import org.apromore.util.UserMetadataTypeEnum;
-import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
 import org.zkoss.json.JSONObject;
 import org.zkoss.util.media.Media;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.web.Attributes;
 import org.zkoss.zk.ui.Sessions;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.event.InputEvent;
-import org.zkoss.zk.ui.event.MouseEvent;
+import org.zkoss.zk.ui.event.*;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
@@ -88,6 +65,28 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.TimeZone;
 
+import org.apromore.dao.model.Log;
+import org.apromore.exception.UserNotFoundException;
+import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.PortalLoggerFactory;
+import org.apromore.service.EventLogService;
+import org.apromore.service.UserMetadataService;
+import org.apromore.service.logimporter.exception.InvalidLogMetadataException;
+import org.apromore.service.logimporter.model.LogErrorReport;
+import org.apromore.service.logimporter.model.LogMetaData;
+import org.apromore.service.logimporter.model.LogModel;
+import org.apromore.service.logimporter.services.MetaDataService;
+import org.apromore.service.logimporter.services.MetaDataUtilities;
+import org.apromore.service.logimporter.services.ParquetFactoryProvider;
+import org.apromore.service.logimporter.services.ParquetImporter;
+import org.apromore.service.logimporter.services.ParquetImporterFactory;
+import org.apromore.service.logimporter.services.legacy.LogImporter;
+import org.apromore.service.logimporter.services.legacy.LogImporterProvider;
+import org.apromore.service.logimporter.utilities.FileUtils;
+import org.apromore.util.UserMetadataTypeEnum;
+import org.apromore.zk.notification.Notification;
+import org.apromore.zk.dialog.InputDialog;
+
 /**
  * Controller for <code>csvimporter.zul</code>.
  */
@@ -100,6 +99,8 @@ public class LogImporterController extends SelectorComposer<Window> implements C
     public static final String SESSION_ATTRIBUTE_KEY = "csvimport";
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(LogImporterController.class);
     private static final int ROW_INDEX_START_FROM = 1;
+    public static final String NAME_SANITIZER = "[.][^.]+$";
+
     // Get Data layer config
     private final String propertyFile = "datalayer.config";
     protected boolean isModal = true;
@@ -351,19 +352,40 @@ public class LogImporterController extends SelectorComposer<Window> implements C
 
     @Listen("onClick = #toXESButton; onClick = #toPublicXESButton")
     public void convertToXes(MouseEvent event) {
+        boolean isLogPublic = "toPublicXESButton".equals(event.getTarget().getId());
+        String name = "untitled";
+        if (!useParquet) {
+            name = media.getName().replaceFirst(NAME_SANITIZER, "");
+            InputDialog.showInputDialog(
+                    Labels.getLabel("common_saveLog_text"),
+                    Labels.getLabel("common_saveLog_hint"),
+                    name,
+                    Labels.getLabel("common_validNameRegex_text"),
+                    Labels.getLabel("common_validNameRegex_hint"),
+                    (Event e) -> {
+                        if (e.getName().equals("onOK")) {
+                            String newName = (String)e.getData();
+                            toXES(newName, isLogPublic);
+                        }
+                    }
+            );
+        } else {
+            toXES(name, isLogPublic);
+        }
+    }
+
+    public void toXES(String name, boolean isLogPublic) {
         try {
-            LogModel logModel = getLogModel();
+            LogModel logModel = getLogModel(name);
             if (logModel != null) {
                 List<LogErrorReport> errorReport = logModel.getLogErrorReport();
-                boolean isLogPublic = "toPublicXESButton".equals(event.getTarget().getId());
 
                 if (errorReport.isEmpty()) {
                     saveXLog(logModel, isLogPublic);
                 } else {
-                    handleInvalidData(logModel, isLogPublic);
+                    handleInvalidData(logModel, isLogPublic, name);
                 }
             }
-
         } catch (MissingHeaderFieldsException e) {
             Messagebox.show(getLabel("missing_fields"), getLabel("error"), Messagebox.OK,
                     Messagebox.ERROR);
@@ -389,7 +411,7 @@ public class LogImporterController extends SelectorComposer<Window> implements C
      * @throws MissingHeaderFieldsException if {@link #validateUniqueAttributes} doesn't pass
      * @throws Exception                    if the log can't be obtained otherwise
      */
-    protected LogModel getLogModel() throws Exception {
+    protected LogModel getLogModel(String name) throws Exception {
         validateHeaderFields();
 
         LogModel logModel;
@@ -400,7 +422,7 @@ public class LogImporterController extends SelectorComposer<Window> implements C
             logModel = logImporter.importLog(getInputSream(media), logMetaData, getFileEncoding(), false,
                     portalContext.getCurrentUser().getUsername(),
                     portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId(),
-                    media.getName().replaceFirst("[.][^.]+$", ""));
+                    name);
         }
 
         return logModel;
@@ -1061,7 +1083,7 @@ public class LogImporterController extends SelectorComposer<Window> implements C
         return importMessage;
     }
 
-    private void handleInvalidData(LogModel logModel, boolean isPublic) throws IOException {
+    private void handleInvalidData(LogModel logModel, boolean isPublic, String name) throws IOException {
 
         Window errorPopUp =
                 (Window) portalContext.getUI().createComponent(LogImporterController.class.getClassLoader(),
@@ -1118,16 +1140,15 @@ public class LogImporterController extends SelectorComposer<Window> implements C
                 } else {
                     logModelSkippedCol = logImporter.importLog(getInputSream(media), logMetaData,
                             getFileEncoding(), true, portalContext.getCurrentUser().getUsername(),
-                            portalContext.getCurrentFolder() == null ? 0
-                                    : portalContext.getCurrentFolder().getId(),
-                            media.getName().replaceFirst("[.][^.]+$", ""));
+                            portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId(),
+                            name);
                 }
 
                 if (logModelSkippedCol != null) {
                     if (logModelSkippedCol.getLogErrorReport().isEmpty()) {
                         saveXLog(logModelSkippedCol, isPublic);
                     } else {
-                        handleInvalidData(logModelSkippedCol, isPublic);
+                        handleInvalidData(logModelSkippedCol, isPublic, name);
                     }
                 }
             });
@@ -1151,7 +1172,7 @@ public class LogImporterController extends SelectorComposer<Window> implements C
                 logModelSkippedRow = logImporter.importLog(getInputSream(media), logMetaData,
                         getFileEncoding(), true, portalContext.getCurrentUser().getUsername(),
                         portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId(),
-                        media.getName().replaceFirst("[.][^.]+$", ""));
+                        name);
             }
 
             if (logModelSkippedRow != null) {

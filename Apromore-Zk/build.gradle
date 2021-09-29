@@ -12,6 +12,7 @@ dependencies {
 	{
 		exclude group: 'org.zkoss.zk', module: 'zkbind'
 	}
+	implementation project(':Apromore-Commons')
 
 	api "org.zkoss.common:zel:${zkVersion}"
 	api "org.zkoss.common:zcommon:${zkVersion}"
