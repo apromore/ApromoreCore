@@ -42,11 +42,13 @@ import javax.inject.Inject;
 import java.io.IOException;
 import java.util.*;
 
+import org.apromore.zk.label.LabelSupplier;
+
 /**
  * An example Portal Plugin, which display an Hello World dialog
  */
 @Component
-public class SimilaritySearchPlugin extends PluginCustomGui {
+public class SimilaritySearchPlugin extends PluginCustomGui implements  LabelSupplier {
 
     @Inject
     private SimilarityService similarityService;
@@ -72,6 +74,11 @@ public class SimilaritySearchPlugin extends PluginCustomGui {
     @Override
     public String getLabel(Locale locale) {
         return Labels.getLabel("plugin_redesign_searchModels_text","Search similar models");
+    }
+
+    @Override
+    public String getBundleName() {
+        return "simsearch";
     }
 
     @Override
@@ -101,7 +108,7 @@ public class SimilaritySearchPlugin extends PluginCustomGui {
 
 
         } catch (Exception e) {
-            Messagebox.show("Unable to perform search: " + e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
+            Messagebox.show(getLabel("failed_search_message"), "Error", Messagebox.OK, Messagebox.ERROR);
             LOGGER.error("Unable to perform search", e);
         }
     }
@@ -112,9 +119,11 @@ public class SimilaritySearchPlugin extends PluginCustomGui {
         Map.Entry<ProcessSummaryType, List<VersionSummaryType>> entry = selectedProcessVersions.entrySet().iterator().next();
         this.process = entry.getKey();
         this.version = entry.getValue().iterator().next();
+        Map<String, Object> args = new HashMap<>();
 
         try {
-            this.similaritySearchW = (Window) context.getUI().createComponent(getClass().getClassLoader(), "zul/similaritysearch.zul", null, null);
+            args.put("labels", getLabels());
+            this.similaritySearchW = (Window) context.getUI().createComponent(getClass().getClassLoader(), "zul/similaritysearch.zul", null, args);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -207,11 +216,11 @@ public class SimilaritySearchPlugin extends PluginCustomGui {
                     latestVersions, folderId, context.getCurrentUser().getId(),
                     this.algosLB.getSelectedItem().getLabel(), parametersType);
 
-            message = "Search returned " + result.getSummary().size();
+            message = getLabel("search_result_text") + " " + result.getSummary().size() + " ";
             if (result.getSummary().size() > 1) {
-                message += " processes.";
+                message += getLabel("processes_text");
             } else {
-                message += " process.";
+                message += getLabel("process_text");
             }
 
             if (result.getSummary() != null && result.getSummary().size() > 1) {
@@ -231,7 +240,7 @@ public class SimilaritySearchPlugin extends PluginCustomGui {
             LOGGER.error("Unable to perform similarity search", e);
             // message = "Search failed (" + sb.toString() + ")";
             // message = "The Apromore Repository has changed between versions. Please export and re-import this database to Apromore for additional support”;
-            message = "Search may fail if you have process models in your folder generated with the older version of this software. Please try to export and re-import the model";
+            message = getLabel("failed_compat_message");
             Messagebox.show(message, "Apromore", Messagebox.OK, Messagebox.ERROR);
         } finally {
             this.similaritySearchW.detach();
