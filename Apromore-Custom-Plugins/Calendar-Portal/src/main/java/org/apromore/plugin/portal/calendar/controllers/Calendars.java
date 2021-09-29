@@ -92,6 +92,7 @@ public class Calendars extends SelectorComposer<Window> {
     public void doAfterCompose(Window win) throws Exception {
         super.doAfterCompose(win);
         initialize();
+        win.setTitle(getLabels().getString("title_text"));
         win.addEventListener("onClose", new EventListener<Event>() {
 
             @Override
