@@ -720,7 +720,7 @@ input[type="radio"]:checked:before {
 
 button > [class^="z-icon-"],
 button > [class*=" z-icon-"] {
-    font-family: ZK85Icons, FontAwesome;
+    font-family: FontAwesome, ZK85Icons;
     font-size: 14px;
     line-height: 1;
     margin: 2px 2px 2px 0;
@@ -955,5 +955,10 @@ tr.z-row-disabled td.z-row-inner .z-slider-area {
 
 .z-window-icon {
     width: 24px;
-    margin: -7px -4px 0 6px;
+    margin: -1px -4px 0 5px;
+}
+
+button.z-window-icon > [class^="z-icon-"],
+button.z-window-icon > [class*=" z-icon-"] {
+    font-family: ZK85Icons, FontAwesome;
 }
