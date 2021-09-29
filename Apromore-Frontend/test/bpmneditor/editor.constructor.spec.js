@@ -3,7 +3,7 @@ import * as testFactory from './testFactory';
 describe('After the Editor has been created', function () {
     let editor;
 
-    beforeEach(async function() {
+    beforeEach(function() {
         editor = testFactory.createEmptyEditor();
     });
 

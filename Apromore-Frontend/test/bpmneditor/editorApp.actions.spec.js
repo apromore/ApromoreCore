@@ -1,6 +1,6 @@
 import * as testFactory from "./testFactory";
 
-describe('After the EditorApp has been initialized with full BPMN model and plugins', function () {
+describe('After the EditorApp has been created with a BPMN model and plugins', function () {
     let editorApp;
 
     beforeEach(async function() {

@@ -4,7 +4,7 @@ describe('After the Editor has loaded successfully a BPMN model', function () {
     let editor;
 
     beforeEach(async function() {
-        editor = await testFactory.createEditorWithSimpleMap();
+        editor = await testFactory.createEditorWithData();
     });
 
     it('It can set up initial UI correctly', async function() {

@@ -3,11 +3,11 @@ import * as testFactory from './testFactory';
 describe('After the Editor has attached an instance of bpmn.io', function () {
     let editor;
 
-    beforeEach(async function() {
-        editor = await testFactory.createEditorWithBPMNIO().catch(err => fail(err));
+    beforeEach(function() {
+        editor = testFactory.createEditorWithoutData();
     });
 
-    it('It has set up initial data correctly', async function() {
+    it('It has set up initial data correctly', function() {
         expect(editor).not.toBeUndefined();
         expect(editor.getSVGContainer()).not.toBeUndefined();
         expect(editor.getSVGViewport()).not.toBeUndefined();

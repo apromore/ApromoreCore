@@ -3,55 +3,88 @@ import Editor from "../../src/bpmneditor/editor";
 import CONFIG from "../../src/bpmneditor/config";
 import Utils from "../../src/bpmneditor/utils";
 import BpmnJS from "../../src/bpmneditor/editor/bpmnio/bpmn-modeler.development";
+import * as testSupport from "./testSupport"
 
-let pluginsConfig = require('./fixtures/plugins.xml');
-let pluginsConfigSimple = require('./fixtures/pluginsSimple.xml');
-let bpmnSimple = require('./fixtures/simpleMap.bpmn');
-
-export function createEmptyEditorApp() {
-    jasmine.getFixtures().fixturesPath = 'base/test/bpmneditor/fixtures';
-    loadFixtures('editorAppFixture.html');
-
-    let editorApp = new EditorApp({
-        id: 'editorAppContainer',
-        fullscreen: true,
-        useSimulationPanel: true,
-        viewOnly: false,
-        langTag: 'en'
-    });
-
-    return editorApp;
-}
+export let pluginsConfigXML = require('./fixtures/plugins.xml').default;
+export let pluginsConfigSimpleXML = require('./fixtures/pluginsSimple.xml').default;
+export let bpmnSimpleXML = require('./fixtures/simpleMap.bpmn').default;
 
 export async function createEditorAppWithModelAndPlugins() {
-    return await createEditorApp(pluginsConfig.default, bpmnSimple.default);
+    let editorApp = createEditorAppWithSimulationPanel();
+    await initEditorApp(editorApp, bpmnSimpleXML, pluginsConfigXML, true);
+    return editorApp;
 }
 
 export async function createEditorAppWithModelAndSimplePlugins() {
-    return await createEditorApp(pluginsConfigSimple.default, bpmnSimple.default);
+    let editorApp = createEditorAppWithSimulationPanel();
+    await initEditorApp(editorApp, bpmnSimpleXML, pluginsConfigSimpleXML, true);
+    return editorApp;
 }
 
-async function createEditorApp(pluginsConfigXML, bpmnXML) {
-    jasmine.getFixtures().fixturesPath = 'base/test/bpmneditor/fixtures';
-    loadFixtures('editorAppFixture.html');
+export async function createEditorAppWithDataAndCustomButtons() {
+    let editorApp = createEditorAppWithCustomToolbarButtons();
+    await initEditorApp(editorApp, bpmnSimpleXML, pluginsConfigXML, true);
+    return editorApp;
+}
 
-    let editorApp = new EditorApp({
+export async function initEditorApp(editorApp, bpmnXML, pluginsConfigXML, pluginSuccess) {
+    if (!editorApp) fail('EditorApp must be created first');
+
+    let parsedPlugins = new DOMParser().parseFromString(pluginsConfigXML, "text/xml");
+    let spy = spyOn($, 'ajax').and.callFake(testSupport.createMockAjaxResponseFunction(parsedPlugins, pluginSuccess));
+
+    await editorApp.init({
+        xml: bpmnXML
+    }).catch(err => {
+        fail('Error in initializing EditorApp. Error: ' + err.message);
+    });
+}
+
+export function createEditorAppWithCustomToolbarButtons() {
+    return createEditorApp({
+        id: 'editorAppContainer',
+        fullscreen: true,
+        useSimulationPanel: true,
+        viewOnly: false,
+        langTag: 'en',
+        disabledButtons: [
+            window.Apromore.I18N.Save.save,
+            window.Apromore.I18N.Save.saveAs,
+            window.Apromore.I18N.File.svg,
+            window.Apromore.I18N.File.bpmn,
+            window.Apromore.I18N.File.pdf,
+            window.Apromore.I18N.Undo.undo,
+            window.Apromore.I18N.Undo.redo,
+            window.Apromore.I18N.Share.share,
+            window.Apromore.I18N.SimulationPanel.toggleSimulationDrawer
+        ]
+    });
+}
+
+export function createEditorAppWithoutSimulationPanel() {
+    return createEditorApp({
+        id: 'editorAppContainer',
+        fullscreen: true,
+        useSimulationPanel: false,
+        viewOnly: false,
+        langTag: 'en'
+    });
+}
+
+export function createEditorAppWithSimulationPanel() {
+    return createEditorApp({
         id: 'editorAppContainer',
         fullscreen: true,
         useSimulationPanel: true,
         viewOnly: false,
         langTag: 'en'
     });
+}
 
-    let parsedPlugins = new DOMParser().parseFromString(pluginsConfigXML, "text/xml");
-    let spy = spyOn($, 'ajax').and.callFake(ajax_response(parsedPlugins, true));
-
-    await editorApp.init({
-        xml: bpmnXML,
-        preventFitDelay: true
-    })
-
-    return editorApp;
+function createEditorApp(config) {
+    jasmine.getFixtures().fixturesPath = 'base/test/bpmneditor/fixtures';
+    loadFixtures('editorAppFixture.html');
+    return new EditorApp(config);
 }
 
 export function createEmptyEditor() {
@@ -69,7 +102,7 @@ export function createEmptyEditor() {
     return editor;
 }
 
-export async function createEditorWithBPMNIO() {
+export function createEditorWithoutData() {
     jasmine.getFixtures().fixturesPath = 'base/test/bpmneditor/fixtures';
     loadFixtures('editorFixture.html');
 
@@ -77,11 +110,10 @@ export async function createEditorWithBPMNIO() {
         width: CONFIG.CANVAS_WIDTH,
         height: CONFIG.CANVAS_HEIGHT,
         id: Utils.provideId(),
-        parentNode: $('#editorContainer')[0],
-        preventFitDelay: true
+        parentNode: $('#editorContainer')[0]
     });
 
-    await editor.attachEditor(new BpmnJS({
+    editor.attachEditor(new BpmnJS({
         container: '#' + editor.rootNode.id,
         langTag: 'en',
         propertiesPanel: { parent: '#js-properties-panel' }
@@ -90,7 +122,7 @@ export async function createEditorWithBPMNIO() {
     return editor;
 }
 
-export async function createEditorWithSimpleMap() {
+export async function createEditorWithData() {
     jasmine.getFixtures().fixturesPath = 'base/test/bpmneditor/fixtures';
     loadFixtures('editorFixture.html');
 
@@ -98,31 +130,16 @@ export async function createEditorWithSimpleMap() {
         width: CONFIG.CANVAS_WIDTH,
         height: CONFIG.CANVAS_HEIGHT,
         id: Utils.provideId(),
-        parentNode: $('#editorContainer')[0],
-        preventFitDelay: true
+        parentNode: $('#editorContainer')[0]
     });
 
-    await editor.attachEditor(new BpmnJS({
+    editor.attachEditor(new BpmnJS({
         container: '#' + editor.rootNode.id,
         langTag: 'en',
         propertiesPanel: { parent: '#js-properties-panel' }
     }));
 
-    let bpmn = require('./fixtures/simpleMap.bpmn');
-    await editor.importXML(bpmn.default).catch(err => fail(err));
+    await editor.importXML(bpmnSimpleXML).catch(err => fail(err));
 
     return editor;
-}
-
-
-// A simple way of mocking Ajax response for testing
-// To be more sophisticated, can use jasmine-ajax
-function ajax_response(response, success) {
-    return function (params) {
-        if (success) {
-            params.success(response);
-        } else {
-            params.error(response);
-        }
-    }
 }
