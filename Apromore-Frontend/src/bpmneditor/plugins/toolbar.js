@@ -148,22 +148,19 @@ export default class Toolbar {
     }
 
     enableButtons() {
-        // Show the Buttons
         let plugin = this;
-        this.buttons.each((function(pluginButton){
-            pluginButton.buttonInstance.enable();
+        this.buttons.each(function(pluginButton) {
+            plugin._enable(pluginButton);
 
-            // If the plugin button is not enabled
-            if(pluginButton.isEnabled && !pluginButton.isEnabled(pluginButton.buttonInstance)) {
-                plugin._enable(pluginButton);
-            }
-
-            // Initial state for Undo/Redo buttons
-            if (['ap-id-editor-undo-btn', 'ap-id-editor-redo-btn'].includes(pluginButton.btnId)) {
+            if (pluginButton.isDisabled && pluginButton.isDisabled()) {
                 plugin._disable(pluginButton);
             }
 
-        }).bind(this));
+            // Initial state for Undo/Redo buttons is disabled
+            if (['ap-id-editor-undo-btn', 'ap-id-editor-redo-btn'].includes(pluginButton.btnId)) {
+                plugin._disable(pluginButton);
+            }
+        });
     }
 
     /**

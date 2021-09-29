@@ -36,9 +36,17 @@ export default class BPMNModelWrapper {
         this._editorApp = new Apromore.BPMNEditor.EditorApp({
             id: editorContainerId,
             fullscreen: true,
-            enabledPlugins: [window.Apromore.I18N.View.zoomIn,
-                            window.Apromore.I18N.View.zoomOut,
-                            window.Apromore.I18N.View.zoomFitToModel]
+            disabledButtons: [
+                window.Apromore.I18N.Save.save,
+                window.Apromore.I18N.Save.saveAs,
+                window.Apromore.I18N.File.svg,
+                window.Apromore.I18N.File.bpmn,
+                window.Apromore.I18N.File.pdf,
+                window.Apromore.I18N.Undo.undo,
+                window.Apromore.I18N.Undo.redo,
+                window.Apromore.I18N.Share.share,
+                window.Apromore.I18N.SimulationPanel.toggleSimulationDrawer
+            ]
         });
         await this._editorApp.init({
             xml: bpmnXML,

@@ -86,7 +86,7 @@ export default class EditorApp {
                 'index': 4,
                 'minShape': 0,
                 'maxShape': 0,
-                isEnabled: function()
+                isDisabled: function()
              }
              ...
           ]
@@ -105,7 +105,7 @@ export default class EditorApp {
         }
         this.fullscreen = config.fullscreen !== false;
         this.useSimulationPanel = config.useSimulationPanel || false;
-        this.enabledPlugins = config.enabledPlugins; // undefined means all plugins are enabled
+        this.disabledButtons = config.disabledButtons; // undefined means all plugins are enabled
 
         this.editorCommandStackListeners = [];
     }
@@ -521,12 +521,10 @@ export default class EditorApp {
      * @param buttonData: button data
      */
     offer(buttonData) {
-        if (!(this.buttonsData.findIndex(function(plugin) {return plugin.name === buttonData.name;}) >=0)) {
-            if (this.enabledPlugins && !this.enabledPlugins.includes(buttonData.name)) {
-                buttonData.isEnabled = function(){ return false};
-            }
-            this.buttonsData.push(buttonData);
+        if (this.disabledButtons && this.disabledButtons.includes(buttonData.name)) {
+            buttonData.isDisabled = function(){ return true};
         }
+        this.buttonsData.push(buttonData);
     }
 
     getEditor() {
