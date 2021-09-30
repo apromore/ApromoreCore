@@ -45,30 +45,14 @@ public abstract class BpmnAbstractGateway extends BpmnIncomingOutgoing {
 	}
 	
 	public void marshall(BPMNDiagram diagram, Gateway gateway){
-		super.marshall(gateway);
-		int incoming = 0;
-		int outgoing = 0;
-		for(BPMNEdge<? extends BPMNNode, ? extends BPMNNode> e: diagram.getEdges()){
-			if(e.getTarget().equals(gateway)){
-				BpmnIncoming in = new BpmnIncoming("incoming");
-				in.setText(e.getEdgeID().toString().replace(" ", "_"));
-				incomings.add(in);
-				incoming++;
-			}
-			if(e.getSource().equals(gateway)){
-				BpmnOutgoing out = new BpmnOutgoing("outgoing");
-				out.setText(e.getEdgeID().toString().replace(" ", "_"));
-				outgoings.add(out);
-				outgoing++;
-			}
-		}
-		if(incoming > 1 && outgoing > 1){
+		super.marshall(diagram, gateway);
+		if(incomings.size() > 1 && outgoings.size() > 1){
 			gatewayDirection = "Mixed";
 		}
-		else if(incoming == 1 && outgoing > 1){
+		else if(incomings.size()  == 1 && outgoings.size()  > 1){
 			gatewayDirection = "Diverging";
 		}
-		else if(incoming > 1 && outgoing == 1){
+		else if(incomings.size()  > 1 && outgoings.size()  == 1){
 			gatewayDirection = "Converging";
 		}
 		else{

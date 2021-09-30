@@ -665,7 +665,7 @@ public class BpmnSubProcess extends BpmnIncomingOutgoing {
 	}
 
 	public void marshall(SubProcess subProcess, BPMNDiagram diagram) {
-		super.marshall(subProcess);
+		super.marshall(diagram, subProcess);
 		triggeredByEvent = new Boolean(subProcess.getTriggeredByEvent()).toString();
 		if(subProcess.isBMultiinstance()) {
 			multiInstanceLoopCharacteristics = 

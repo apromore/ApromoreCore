@@ -209,7 +209,7 @@ public class BpmnCallActivity extends BpmnIncomingOutgoing{
     }
 
     public void marshall(CallActivity activity, BPMNDiagram diagram) {
-        super.marshall(activity);
+        super.marshall(diagram, activity);
 
         for (DataAssociation inputDataAssociation : retriveIncomingDataAssociations(activity, diagram)) {
             if (ioSpecification == null) {

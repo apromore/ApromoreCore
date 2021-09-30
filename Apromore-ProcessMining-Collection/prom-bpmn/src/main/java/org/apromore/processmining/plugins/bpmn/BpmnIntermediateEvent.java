@@ -124,8 +124,8 @@ public class BpmnIntermediateEvent extends BpmnEvent {
 		}
 	}
 	
-	public void marshall(Event bpmnEvent) {
-		super.marshall(bpmnEvent);
+	public void marshall(BPMNDiagram diagram, Event bpmnEvent) {
+		super.marshall(diagram, bpmnEvent);
 		if(bpmnEvent.getBoundingNode() != null) {
 			attachedToRef = bpmnEvent.getBoundingNode().getId().toString().replace(' ', '_');
 		}

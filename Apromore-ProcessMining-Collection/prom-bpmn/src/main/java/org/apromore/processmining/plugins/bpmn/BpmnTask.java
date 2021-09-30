@@ -296,7 +296,7 @@ public class BpmnTask extends BpmnIncomingOutgoing {
 	}
 	
 	public void marshall(Activity activity, BPMNDiagram diagram) {
-		super.marshall(activity);
+		super.marshall(diagram, activity);
 		if(activity.isBMultiinstance()) {
 			multiInstanceLoopCharacteristics = 
 					new BpmnMultiInstanceLoopCharacteristics("multiInstanceLoopCharacteristics");
