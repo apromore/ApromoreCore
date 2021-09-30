@@ -153,9 +153,16 @@ export default class Editor {
 
     zoomFitToModel() {
         if (!this.actualEditor) return false;
-        var canvas = this.actualEditor.get('canvas');
+        let canvas = this.actualEditor.get('canvas');
         canvas.viewbox(false); // trigger recalculate the viewbox
         canvas.zoom('fit-viewport', 'auto'); // zoom to fit full viewport
+        if (!this.originViewbox) this.originViewbox = canvas.viewbox();
+        return true;
+    }
+
+    zoomFitOriginal() {
+        if (!this.actualEditor || !this.originViewbox) return false;
+        this.actualEditor.get('canvas').viewbox(this.originViewbox);
         return true;
     }
 
