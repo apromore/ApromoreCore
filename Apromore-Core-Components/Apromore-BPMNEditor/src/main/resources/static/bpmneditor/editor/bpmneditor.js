@@ -11555,9 +11555,16 @@ class Editor {
 
     zoomFitToModel() {
         if (!this.actualEditor) return false;
-        var canvas = this.actualEditor.get('canvas');
+        let canvas = this.actualEditor.get('canvas');
         canvas.viewbox(false); // trigger recalculate the viewbox
         canvas.zoom('fit-viewport', 'auto'); // zoom to fit full viewport
+        if (!this.originViewbox) this.originViewbox = canvas.viewbox();
+        return true;
+    }
+
+    zoomFitOriginal() {
+        if (!this.actualEditor || !this.originViewbox) return false;
+        this.actualEditor.get('canvas').viewbox(this.originViewbox);
         return true;
     }
 
@@ -87447,21 +87454,16 @@ class EditorApp {
     async _collapsePanels() {
         let me = this;
         return new Promise(async (resolve, reject) => {
-            if (this.useSimulationPanel) {
-                if (_config__WEBPACK_IMPORTED_MODULE_0__["default"].PANEL_RIGHT_COLLAPSED === true) {
-                    await _utils__WEBPACK_IMPORTED_MODULE_3__["default"].delay(200);
-                    me.layout_regions.east.collapse();
-                    resolve('PanelCollapsedCompleted');
-                }
-            }
-            resolve();
+            await _utils__WEBPACK_IMPORTED_MODULE_3__["default"].delay(200);
+            this.useSimulationPanel ? me.layout_regions.east.collapse() : me.layout_regions.east.hide();
+            me.layout_regions.west.hide();
+            resolve('PanelCollapsedCompleted');
         });
 
     }
 
     zoomFitToModel() {
         if (this.editor) this.editor.zoomFitToModel();
-        console.log('zoomFitToModel');
     }
 
     /**
@@ -87501,7 +87503,7 @@ class EditorApp {
                 floatable: false,
                 expandTriggerAll: true,
                 collapsible: true,
-                width: 450,
+                width: this.useSimulationPanel ? 450 : 0,
                 split: true,
                 title: "Simulation parameters",
                 items: {
@@ -87554,10 +87556,12 @@ class EditorApp {
 
         let me = this;
 
-        this.layout_regions.center.addListener('resize', function() {
-            console.log('Center Panel resize resize');
-            me.zoomFitToModel();
-        });
+        if (this.useSimulationPanel) {
+            this.layout_regions.center.addListener('resize', function () {
+                console.log('Center Panel resize resize');
+                me.zoomFitToModel();
+            });
+        }
 
         return new Promise(function (resolve, reject) {
             // Config for the Ext.Viewport
@@ -87758,7 +87762,7 @@ class EditorApp {
                     redo: () => me.editor.redo(),
                     zoomIn: () => me.editor.zoomIn(),
                     zoomOut: () => me.editor.zoomOut(),
-                    zoomFitToModel: () => me.editor.zoomFitToModel()
+                    zoomFitToModel: () => me.useSimulationPanel ? me.editor.zoomFitToModel() : me.editor.zoomFitOriginal()
                 }
             }.bind(this)())
         }
