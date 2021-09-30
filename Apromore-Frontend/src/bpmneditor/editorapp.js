@@ -118,7 +118,7 @@ export default class EditorApp {
     async init(config) {
         this._createEditor();
 
-        this._generateGUI();
+        await this._generateGUI();
 
         await this._loadData(config);
 
@@ -135,37 +135,47 @@ export default class EditorApp {
      * @returns {Promise<void>}
      * @private
      */
+
     async _initUI() {
+        await this._collapsePanels();
         let me = this;
-        return new Promise((resolve, reject) => {
-            if (this.useSimulationPanel) {
-                this._collapsePanels();
-                setTimeout(function () { // push this to the end of the event loop after panels have collapsed.
-                    me.zoomFitToModel();
-                    resolve('zoomFitToModel');
-                }, 1000);
-            }
-            else {
-                me.zoomFitToModel();
-                resolve('zoomFitToModel');
-            }
+        return new Promise(async (resolve, reject) => {
+            await Utils.delay(200);
+            me.zoomFitToModel();
+            resolve('initUI - zoomFitToModel');
         })
     }
 
-    _collapsePanels() {
-        if (CONFIG.PANEL_RIGHT_COLLAPSED === true) this.layout_regions.east.collapse();
+    async _collapsePanels() {
+        let me = this;
+        return new Promise(async (resolve, reject) => {
+            if (this.useSimulationPanel) {
+                if (CONFIG.PANEL_RIGHT_COLLAPSED === true) {
+                    await Utils.delay(200);
+                    me.layout_regions.east.collapse();
+                    resolve('PanelCollapsedCompleted');
+                }
+            }
+            resolve();
+        });
+
     }
 
     zoomFitToModel() {
         if (this.editor) this.editor.zoomFitToModel();
+        console.log('zoomFitToModel');
     }
 
     /**
      * Generate the whole UI components for the editor
      * It is based on Ext Sencha regions: east, west, south and north
      */
-    _generateGUI() {
+    async _generateGUI() {
         "use strict";
+
+        // Set the editor to the center, and refresh the size
+        this._getContainer().setAttributeNS(null, 'align', 'left');
+        this.editor.rootNode.setAttributeNS(null, 'align', 'left');
 
         // Defines the layout height if it's NOT fullscreen
         var layoutHeight = CONFIG.WINDOW_HEIGHT;
@@ -217,11 +227,11 @@ export default class EditorApp {
                 layout: 'anchor',
                 autoEl: 'div',
                 cls: 'x-panel-editor-west',
-                collapsible: true,
-                titleCollapse: true,
+                collapsible: false,
+                titleCollapse: false,
                 collapseTitle: window.Apromore.I18N.View.West,
-                width: CONFIG.PANEL_LEFT_WIDTH || 10,
-                autoScroll: Ext.isIPad ? false : true,
+                width: 0,
+                autoScroll: false,
                 cmargins: {left: 0, right: 0},
                 floatable: false,
                 expandTriggerAll: true,
@@ -237,81 +247,49 @@ export default class EditorApp {
                 items: {
                     layout: "fit",
                     autoHeight: true,
+                    autoWidth: true,
+                    width: 'auto',
                     el: this.editor.rootNode
                 }
-            }),
-
-            info: new Ext.Panel({
-                region: "south",
-                cls: "x-panel-editor-info",
-                autoEl: "div",
-                border: false,
-                layout: "fit",
-                cmargins: {
-                    top: 0,
-                    bottom: 0,
-                    left: 0,
-                    right: 0
-                },
-                collapseTitle: "Information",
-                floatable: false,
-                titleCollapse: false,
-                expandTriggerAll: true,
-                collapsible: true,
-                split: true,
-                title: "Information",
-                height: 100,
-                tools: [
-                    {
-                        id: "close",
-                        handler: function (g, f, e) {
-                            e.hide();
-                            e.ownerCt.layout.layout()
-                        }
-                    }
-                ]
             })
         };
 
-        // Config for the Ext.Viewport
-        var layout_config = {
-            layout: "border",
-            items: [
-                this.layout_regions.north,
-                this.layout_regions.east,
-                this.layout_regions.south,
-                this.layout_regions.west,
-                new Ext.Panel({ //combine center and info into one panel
-                    layout: "border",
-                    region: "center",
-                    height: 500,
-                    border: false,
-                    items: [this.layout_regions.center, this.layout_regions.info]
-            })]
-        };
+        let me = this;
 
-        // IF Fullscreen, use a viewport
-        if (this.fullscreen) {
-            this.layout = new Ext.Viewport(layout_config);
-            // IF NOT, use a panel and render it to the given id
-        } else {
-            layout_config.renderTo = this.id;
-            //layout_config.height = layoutHeight;
-            layout_config.height = this._getContainer().clientHeight; // the panel and the containing div should be of the same height
-            this.layout = new Ext.Panel(layout_config)
-        }
+        this.layout_regions.center.addListener('resize', function() {
+            console.log('Center Panel resize resize');
+            me.zoomFitToModel();
+        });
 
-        if (!this.useSimulationPanel) {
-            this.layout_regions.east.hide();
-        }
+        return new Promise(function (resolve, reject) {
+            // Config for the Ext.Viewport
+            let layout_config = {
+                layout: "border",
+                items: [
+                    me.layout_regions.north,
+                    me.layout_regions.east,
+                    me.layout_regions.south,
+                    me.layout_regions.west,
+                    me.layout_regions.center
+                ],
+                listeners: {
+                    render: function() {
+                        console.log('UI Viewport finished');
+                        resolve('UI Viewport finished');
+                    }
+                }
+            };
 
-        this.layout_regions.west.hide();
-        this.layout_regions.info.hide();
-
-        // Set the editor to the center, and refresh the size
-        this._getContainer().setAttributeNS(null, 'align', 'left');
-        this.editor.rootNode.setAttributeNS(null, 'align', 'left');
-
+            // IF Fullscreen, use a viewport, or use a panel and render it to the given id
+            if (me.fullscreen) {
+                me.layout = new Ext.Viewport(layout_config);
+            } else {
+                layout_config.renderTo = this.id;
+                //layout_config.height = layoutHeight;
+                layout_config.height = me._getContainer().clientHeight; // the panel and the containing div should be of the same height
+                me.layout = new Ext.Panel(layout_config);
+            }
+        });
     }
 
     /**
@@ -328,18 +306,18 @@ export default class EditorApp {
 
             current_region.add(component);
 
-            Log.debug("original dimensions of region %0: %1 x %2", current_region.region, current_region.width, current_region.height);
+            //Log.debug("original dimensions of region %0: %1 x %2", current_region.region, current_region.width, current_region.height);
 
             // update dimensions of region if required.
             if (!current_region.width && component.initialConfig && component.initialConfig.width) {
-                Log.debug("resizing width of region %0: %1", current_region.region, component.initialConfig.width);
-                current_region.setWidth(component.initialConfig.width)
+                // Log.debug("resizing width of region %0: %1", current_region.region, component.initialConfig.width);
+                // current_region.setWidth(component.initialConfig.width)
             }
             if (component.initialConfig && component.initialConfig.height) {
-                Log.debug("resizing height of region %0: %1", current_region.region, component.initialConfig.height);
-                var current_height = current_region.height || 0;
-                current_region.height = component.initialConfig.height + current_height;
-                current_region.setHeight(component.initialConfig.height + current_height)
+                // Log.debug("resizing height of region %0: %1", current_region.region, component.initialConfig.height);
+                // var current_height = current_region.height || 0;
+                // current_region.height = component.initialConfig.height + current_height;
+                // current_region.setHeight(component.initialConfig.height + current_height)
             }
 
             // set title if provided as parameter.
@@ -499,12 +477,6 @@ export default class EditorApp {
         return await this.editor.getSVG();
     }
 
-    // Remove this method because it is not able to handle dependencies
-    // from the Simulatio module that listens to changes to model elements
-    // async importXML(xml, callback) {
-    //     await this.editor.importXML(xml, callback);
-    // }
-
     /**
      * A door for plugin to register buttons with the EditorApp
      * buttonData {
@@ -530,20 +502,6 @@ export default class EditorApp {
     getEditor() {
         return this.editor;
     }
-
-    /**
-     * When working with Ext, conditionally the window needs to be resized. To do
-     * so, use this class method. Resize is deferred until 100ms, and all subsequent
-     * resizeBugFix calls are ignored until the initially requested resize is
-     * performed.
-     */
-    // resizeFix() {
-    //     if (!this._resizeFixTimeout) {
-    //         window.resizeBy(1, 1);
-    //         window.resizeBy(-1, -1);
-    //         this._resizefixTimeout = null;
-    //     }
-    // }
 
     /**
      * Load proces model and a list of predefined plugins from the server
