@@ -11629,6 +11629,67 @@ class Editor {
         return true;
     }
 
+
+    ////////////////////// Modelling Elements Editing Methods /////////////////////////////////
+
+    createShape(type, x, y, w, h) {
+        var modelling = this.actualEditor.get('modeling');
+        var parent = this.actualEditor.get('canvas').getRootElement();
+        var shape = modelling.createShape({type:type, width:w, height:h}, {x:x, y:y}, parent);
+        return shape.id;
+    }
+
+    createSequenceFlow(source, target, attrs) {
+        var attrs2 = {};
+        Object.assign(attrs2,{type:'bpmn:SequenceFlow'});
+        if (attrs.waypoints) {
+            Object.assign(attrs2,{waypoints: attrs.waypoints});
+        }
+        var modelling = this.actualEditor.get('modeling');
+        var registry = this.actualEditor.get('elementRegistry');
+        var flow = modelling.connect(registry.get(source), registry.get(target), attrs2);
+        return flow.id;
+    }
+
+    removeShapes(shapeIds) {
+        var registry = this.actualEditor.get('elementRegistry');
+        var modelling = this.actualEditor.get('modeling');
+        var shapes = [];
+        shapeIds.forEach(function(shapeId) {
+            shapes.push(registry.get(shapeId));
+        });
+        modelling.removeElements(shapes);
+    }
+
+    updateProperties(elementId, properties) {
+        var modelling = this.actualEditor.get('modeling');
+        var registry = this.actualEditor.get('elementRegistry');
+        modelling.updateProperties(registry.get(elementId), properties);
+    }
+
+    colorElements(elementIds, color) {
+        var elements = [];
+        var registry = this.actualEditor.get('elementRegistry');
+        elementIds.forEach(function(elementId) {
+            elements.push(registry.get(elementId));
+        });
+        var modelling = this.actualEditor.get('modeling');
+        modelling.setColor(elements, {stroke:color});
+    }
+
+    normalizeAll() {
+        var registry = this.actualEditor.get('elementRegistry');
+        var modelling = this.actualEditor.get('modeling');
+        modelling.setColor(registry.getAll(), {stroke:'black'});
+    }
+
+    getCenter(shapeId) {
+        var shape = this.actualEditor.get('elementRegistry').get(shapeId);
+        return {
+            x: shape.x + (shape.width || 0) / 2,
+            y: shape.y + (shape.height || 0) / 2
+        }
+    }
 };
 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js")))
