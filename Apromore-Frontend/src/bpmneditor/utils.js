@@ -110,6 +110,10 @@ let Utils = {
         res[8] = res[13] = res[18] = res[23] = '-';
 
         return "Apromore_" + res.join('');
+    },
+
+    delay : async function (ms) {
+        return new Promise((resolve, reject) => setTimeout(resolve, ms));
     }
 };
 
