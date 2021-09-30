@@ -34,3 +34,20 @@ describe('After the EditorApp has been initialized with a BPMN model with View p
         expect(editor.zoomFitToModel).toHaveBeenCalled();
     });
 });
+
+
+describe('After the EditorApp has been initialized for animation', function () {
+    let editorApp;
+    let editor;
+
+    beforeEach(async function() {
+        editorApp = await testFactory.createEditorAppForAnimation();
+        editor = editorApp.getEditor();
+    });
+
+    it('Clicking on the ZoomFit button can activate the zoom to the original view in the editor', async function() {
+        spyOn(editor, 'zoomFitOriginal');
+        await testSupport.clickButton("ap-id-editor-zoomFit-btn");
+        expect(editor.zoomFitOriginal).toHaveBeenCalledTimes(1);
+    });
+});

@@ -27,6 +27,12 @@ export async function createEditorAppWithDataAndCustomButtons() {
     return editorApp;
 }
 
+export async function createEditorAppForAnimation() {
+    let editorApp = createEditorAppWithoutSimulationPanel();
+    await initEditorApp(editorApp, bpmnSimpleXML, pluginsConfigXML, true);
+    return editorApp;
+}
+
 export async function initEditorApp(editorApp, bpmnXML, pluginsConfigXML, pluginSuccess) {
     if (!editorApp) fail('EditorApp must be created first');
 
