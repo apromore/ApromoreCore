@@ -39,10 +39,6 @@ public class BetweenFilterTest {
     }
 
     @Test
-    public void filter() {
-    }
-
-    @Test
     public void testNoMatchKeep() throws Exception {
         PLog log = get5casesEF2Log();
         LogFilterRule rule = BetweenFilterSupport.createRule(Choice.RETAIN, "concept:name",

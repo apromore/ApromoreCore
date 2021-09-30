@@ -31,7 +31,6 @@ import static org.apromore.apmlog.filter.typefilters.between.BetweenFilterSuppor
 import static org.apromore.apmlog.filter.typefilters.between.BetweenFilterSupport.INCLUDE_SELECTION;
 import static org.apromore.apmlog.filter.typefilters.between.BetweenFilterSupport.START;
 import org.apromore.apmlog.filter.types.Choice;
-import org.apromore.apmlog.filter.types.OperationType;
 import org.apromore.apmlog.logobjects.ActivityInstance;
 
 import java.util.ArrayList;
@@ -54,48 +53,72 @@ public class BetweenFilter {
     }
 
     private static PTrace filterTrace(PTrace trace, LogFilterRule logFilterRule) {
-        Choice choice = logFilterRule.getChoice();
-        String attribute = logFilterRule.getKey();
-        RuleValue rvFrom = BetweenFilterSupport.findValue(OperationType.FROM, logFilterRule);
-        RuleValue rvTo = BetweenFilterSupport.findValue(OperationType.TO, logFilterRule);
 
-        if (rvFrom == null || rvTo == null || isMissingCustomValue(rvFrom, rvTo))
+        BetweenFilterRuleAlt rule = new BetweenFilterRuleAlt(logFilterRule);
+
+        if (rule.getSourceRuleValue() == null || rule.getTargetRuleValue() == null ||
+                isMissingCustomValue(rule.getSourceRuleValue(), rule.getTargetRuleValue()))
             return trace;
 
-        boolean sourceFirstOccur = Boolean.parseBoolean(rvFrom.getCustomAttributes().get(FIRST_OCCURRENCE));
-        boolean targetFirstOccur = Boolean.parseBoolean(rvTo.getCustomAttributes().get(FIRST_OCCURRENCE));
-        boolean includeFrom = Boolean.parseBoolean(rvFrom.getCustomAttributes().get(INCLUDE_SELECTION));
-        boolean includeTo = Boolean.parseBoolean(rvTo.getCustomAttributes().get(INCLUDE_SELECTION));
-
-        String source = rvFrom.getStringValue();
-        String target = rvTo.getStringValue();
-
         List<ActivityInstance> activityInstanceList = new ArrayList<>(trace.getActivityInstances());
+        Pair<Integer, Integer> fromToPair = getFromToPair(activityInstanceList, rule);
+
+        if (rule.getChoice() == Choice.RETAIN && fromToPair.getLeft() == -1 && fromToPair.getRight() == -1)
+            return null;
+
+        BitSet bitSet = getUpdatedBitSet(rule.getChoice(), fromToPair, trace, activityInstanceList);
+        trace.setValidEventIndexBS(bitSet);
+
+        return trace;
+    }
+
+    private static Pair<Integer, Integer> getFromToPair(List<ActivityInstance> activityInstanceList,
+                                                        BetweenFilterRuleAlt rule) {
 
         Pair<Integer, Integer> fromToPair = Pair.of(-1, -1);
 
-        if (source.equals(START) && !target.equals(END)) {
-            int index = getIndexOf(attribute, target, targetFirstOccur, activityInstanceList);
-            if (!includeTo)
-                index -= 1;
+        if (rule.getSource().equals(START) && !rule.getTarget().equals(END))
+            fromToPair = updateByStartToTarget(fromToPair, rule, activityInstanceList);
+        else if (!rule.getSource().equals(START) && rule.getTarget().equals(END))
+            fromToPair = updateBySourceToEnd(fromToPair, rule, activityInstanceList);
+        else
+            fromToPair = getFromSourceToTarget(rule, activityInstanceList);
 
-            if (index >= 0)
-                fromToPair = Pair.of(0, index);
+        return fromToPair;
+    }
 
-        } else if (!source.equals(START) && target.equals(END)) {
-            int index = getIndexOf(attribute, source, sourceFirstOccur, activityInstanceList);
-            if (!includeFrom)
-                index += 1;
+    private static Pair<Integer, Integer> updateByStartToTarget(Pair<Integer, Integer> fromToPair,
+                                                                BetweenFilterRuleAlt rule,
+                                                                List<ActivityInstance> activityInstanceList) {
 
-            if (index >= 0)
-                fromToPair = Pair.of(index, activityInstanceList.size() - 1);
+        int index = getIndexOf(rule.getAttribute(), rule.getTarget(), rule.isTargetFirstOccur(), activityInstanceList);
+        if (!rule.isIncludeTo())
+            index -= 1;
 
-        } else
-            fromToPair = getFromSourceToTarget(attribute, source, target, sourceFirstOccur, targetFirstOccur,
-                    includeFrom, includeTo, activityInstanceList);
+        if (index >= 0)
+            fromToPair = Pair.of(0, index);
 
-        if (choice == Choice.RETAIN && fromToPair.getLeft() == -1 && fromToPair.getRight() == -1)
-            return null;
+        return fromToPair;
+    }
+
+    private static Pair<Integer, Integer> updateBySourceToEnd(Pair<Integer, Integer> fromToPair,
+                                                              BetweenFilterRuleAlt rule,
+                                                              List<ActivityInstance> activityInstanceList) {
+
+        int index = getIndexOf(rule.getAttribute(), rule.getSource(), rule.isSourceFirstOccur(), activityInstanceList);
+        if (!rule.isIncludeFrom())
+            index += 1;
+
+        if (index >= 0)
+            fromToPair = Pair.of(index, activityInstanceList.size() - 1);
+
+        return fromToPair;
+    }
+
+    private static BitSet getUpdatedBitSet(Choice choice,
+                                           Pair<Integer, Integer> fromToPair,
+                                           PTrace trace,
+                                           List<ActivityInstance> activityInstanceList) {
 
         List<ActivityInstance> selected = activityInstanceList.subList(fromToPair.getLeft(), fromToPair.getRight() + 1);
 
@@ -115,10 +138,7 @@ public class BetweenFilter {
                 bitSet.set(index, false);
             }
         }
-
-        trace.setValidEventIndexBS(bitSet);
-
-        return trace;
+        return bitSet;
     }
 
     private static boolean isMissingCustomValue(RuleValue rvFrom, RuleValue rvTo) {
@@ -128,19 +148,15 @@ public class BetweenFilter {
                 !rvTo.getCustomAttributes().containsKey(FIRST_OCCURRENCE);
     }
 
-    private static Pair<Integer, Integer> getFromSourceToTarget(String key,
-                                                                String source,
-                                                                String target,
-                                                                boolean sourceFirstOccurrence,
-                                                                boolean targetFirstOccurrence,
-                                                                boolean includeSource,
-                                                                boolean includeTarget,
+    private static Pair<Integer, Integer> getFromSourceToTarget(BetweenFilterRuleAlt rule,
                                                                 List<ActivityInstance> activityInstances) {
 
-        int sourceIndex = sourceFirstOccurrence ? getFirstIndexOf(key, source, activityInstances) :
-                getLastIndexOf(key, source, activityInstances);
-        int targetIndex = targetFirstOccurrence ? getFirstIndexOf(key, target, activityInstances) :
-                getLastIndexOf(key, target, activityInstances);
+        int sourceIndex = rule.isSourceFirstOccur() ?
+                getFirstIndexOf(rule.getAttribute(), rule.getSource(), activityInstances) :
+                getLastIndexOf(rule.getAttribute(), rule.getSource(), activityInstances);
+        int targetIndex = rule.isTargetFirstOccur() ?
+                getFirstIndexOf(rule.getAttribute(), rule.getTarget(), activityInstances) :
+                getLastIndexOf(rule.getAttribute(), rule.getTarget(), activityInstances);
 
         // =================================================================================
         // Requirements:
@@ -160,8 +176,8 @@ public class BetweenFilter {
         if (sourceIndex == -1 || targetIndex == -1)
             return Pair.of(0, activityInstances.size() -1);
 
-        int from = includeSource ? sourceIndex : sourceIndex + 1;
-        int to = includeTarget ? targetIndex : targetIndex - 1;
+        int from = rule.isIncludeFrom() ? sourceIndex : sourceIndex + 1;
+        int to = rule.isIncludeTo() ? targetIndex : targetIndex - 1;
 
         if (from > to || from < 0 || to > activityInstances.size() - 1)
             return Pair.of(-1, -1);
