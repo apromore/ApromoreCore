@@ -49,8 +49,7 @@ export default class BPMNModelWrapper {
             ]
         });
         await this._editorApp.init({
-            xml: bpmnXML,
-            preventFitDelay: false
+            xml: bpmnXML
         });
         this._editor = this._editorApp.getEditor();
     }
