@@ -149,21 +149,16 @@ export default class EditorApp {
     async _collapsePanels() {
         let me = this;
         return new Promise(async (resolve, reject) => {
-            if (this.useSimulationPanel) {
-                if (CONFIG.PANEL_RIGHT_COLLAPSED === true) {
-                    await Utils.delay(200);
-                    me.layout_regions.east.collapse();
-                    resolve('PanelCollapsedCompleted');
-                }
-            }
-            resolve();
+            await Utils.delay(200);
+            this.useSimulationPanel ? me.layout_regions.east.collapse() : me.layout_regions.east.hide();
+            me.layout_regions.west.hide();
+            resolve('PanelCollapsedCompleted');
         });
 
     }
 
     zoomFitToModel() {
         if (this.editor) this.editor.zoomFitToModel();
-        console.log('zoomFitToModel');
     }
 
     /**
@@ -203,7 +198,7 @@ export default class EditorApp {
                 floatable: false,
                 expandTriggerAll: true,
                 collapsible: true,
-                width: 450,
+                width: this.useSimulationPanel ? 450 : 0,
                 split: true,
                 title: "Simulation parameters",
                 items: {
@@ -256,10 +251,12 @@ export default class EditorApp {
 
         let me = this;
 
-        this.layout_regions.center.addListener('resize', function() {
-            console.log('Center Panel resize resize');
-            me.zoomFitToModel();
-        });
+        if (this.useSimulationPanel) {
+            this.layout_regions.center.addListener('resize', function () {
+                console.log('Center Panel resize resize');
+                me.zoomFitToModel();
+            });
+        }
 
         return new Promise(function (resolve, reject) {
             // Config for the Ext.Viewport
@@ -460,7 +457,7 @@ export default class EditorApp {
                     redo: () => me.editor.redo(),
                     zoomIn: () => me.editor.zoomIn(),
                     zoomOut: () => me.editor.zoomOut(),
-                    zoomFitToModel: () => me.editor.zoomFitToModel()
+                    zoomFitToModel: () => me.useSimulationPanel ? me.editor.zoomFitToModel() : me.editor.zoomFitOriginal()
                 }
             }.bind(this)())
         }
