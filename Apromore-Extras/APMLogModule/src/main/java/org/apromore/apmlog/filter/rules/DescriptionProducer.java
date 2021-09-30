@@ -22,6 +22,7 @@
 package org.apromore.apmlog.filter.rules;
 
 import org.apromore.apmlog.filter.rules.desc.AttributeArcDurationDesc;
+import org.apromore.apmlog.filter.rules.desc.BetweenDesc;
 import org.apromore.apmlog.filter.rules.desc.CaseIDDesc;
 import org.apromore.apmlog.filter.rules.desc.CaseLengthDesc;
 import org.apromore.apmlog.filter.rules.desc.CaseSectionCaseAttributeDesc;
@@ -80,6 +81,8 @@ public class DescriptionProducer {
                 return AttributeArcDurationDesc.getDescription(logFilterRule);
             case CASE_LENGTH:
                 return CaseLengthDesc.getDescription(logFilterRule);
+            case BETWEEN:
+                return BetweenDesc.getDescription(logFilterRule);
             default:
                 break;
         }

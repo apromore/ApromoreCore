@@ -61,6 +61,9 @@ public enum FilterType {
     DIRECT_FOLLOW("DIRECT_FOLLOW"),
     EVENTUAL_FOLLOW("EVENTUAL_FOLLOW"),
 
+    // between
+    BETWEEN("BETWEEN"),
+
     // others
     UNKNOWN("UNKNOWN");
 
@@ -92,6 +95,7 @@ public enum FilterType {
             case ATTRIBUTE_ARC_DURATION: return "Arc duration";
             case CASE_LENGTH: return "Case length";
             case CASE_VARIANT: return "Case variant";
+            case BETWEEN: return "Between";
             default: return "Unknown";
         }
     }

@@ -56,6 +56,7 @@ import org.apromore.apmlog.filter.typefilters.EventTimeFilter;
 import org.apromore.apmlog.filter.typefilters.NodeDurationFilter;
 import org.apromore.apmlog.filter.typefilters.PathFilter;
 import org.apromore.apmlog.filter.typefilters.ReworkFilter;
+import org.apromore.apmlog.filter.typefilters.between.BetweenFilter;
 import org.apromore.apmlog.filter.types.OperationType;
 import org.apromore.apmlog.histogram.TimeHistogram;
 import org.apromore.apmlog.logobjects.ActivityInstance;
@@ -191,6 +192,9 @@ public class APMLogFilter {
                         break;
                     case EVENT_TIME:
                         traces = filterByEventSectTime(rule, traces);
+                        break;
+                    case BETWEEN:
+                        traces = BetweenFilter.filter(traces, rule);
                         break;
                     default:
                         break;
