@@ -1204,3 +1204,25 @@ databaseChangeLog:
                  name: time_zone_id
                  type: VARCHAR(40)
 
+ - changeSet:
+     id: 20210922110000
+     author: raboczi
+     changes:
+       - addColumn:
+           tableName: process_model_version
+           columns:
+             - column:
+                 name: storage_id
+                 type: BIGINT
+                 constraints:
+                     nullable: true
+                 defaultValue: null
+       - addForeignKeyConstraint:
+           baseColumnNames: storage_id
+           baseTableName: process_model_version
+           constraintName: fk_process_model_version_storage
+           deferrable: false
+           initiallyDeferred: false
+           referencedColumnNames: id
+           referencedTableName: storage
+           validate: true
