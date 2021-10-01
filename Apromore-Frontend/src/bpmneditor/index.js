@@ -1,16 +1,10 @@
-import config from './scripts/config';
-import utils from './scripts/utils';
-import log from './scripts/logger';
-import plugins from './scripts/plugins/plugins';
-import editor from './scripts/editor';
-import editorApp from './scripts/editorapp';
+import config from './config';
+import editorApp from './editorapp';
+import plugins from './plugins/plugins';
 
 let BPMNEditor = {
     CONFIG: config,
-    Utils: utils,
-    Log: log,
     Plugins: plugins,
-    Editor: editor,
     EditorApp: editorApp
 };
 

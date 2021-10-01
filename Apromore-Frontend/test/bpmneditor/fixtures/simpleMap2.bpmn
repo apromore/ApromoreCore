@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:qbp="http://www.qbp-simulator.com/Schema201212" targetNamespace="http://www.omg.org/bpmn20" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
+  <process id="proc_1749469095">
+    <extensionElements>
+      <qbp:processSimulationInfo id="qbp_9b324f8b-a269-476a-a757-0d9665b802c3" processInstances="" currency="EUR" startDateTime="2021-05-19T09:00:00.000Z">
+        <qbp:errors>
+          <qbp:error id="qbp_9b324f8b-a269-476a-a757-0d9665b802c3FIXED-mean" elementId="Inter arrival time" message="Value must not be empty" />
+          <qbp:error id="processInstances" elementId="Total number of process instances" message="Total number of process instances must not be empty" />
+          <qbp:error id="node-bf5d57f9-2fd1-478d-9bbe-8bfbffda7e36FIXED-mean" elementId="node-bf5d57f9-2fd1-478d-9bbe-8bfbffda7e36" message="Value must not be empty" />
+          <qbp:error id="node-4e695279-b553-4255-bc4c-2a9517fb732fFIXED-mean" elementId="node-4e695279-b553-4255-bc4c-2a9517fb732f" message="Value must not be empty" />
+          <qbp:error id="node-a7e179c7-a105-4bc4-a252-72c38b922420FIXED-mean" elementId="node-a7e179c7-a105-4bc4-a252-72c38b922420" message="Value must not be empty" />
+          <qbp:error id="node-aec2ec8b-2262-4e66-8d54-94b98f5b81b3FIXED-mean" elementId="node-aec2ec8b-2262-4e66-8d54-94b98f5b81b3" message="Value must not be empty" />
+          <qbp:error id="node-5499567c-446d-4273-91d6-d0e21cf987b0FIXED-mean" elementId="node-5499567c-446d-4273-91d6-d0e21cf987b0" message="Value must not be empty" />
+          <qbp:error id="probability-field-edge-79fed783-7809-41cd-a2a3-4a1b6fec87aa" elementId="node-4a7551ac-7d3a-4ef3-afcb-d569b05daa45" message="Probability must not be empty" />
+          <qbp:error id="probability-field-edge-89fe5de1-60e8-4019-823a-8f791e20ef5c" elementId="node-4a7551ac-7d3a-4ef3-afcb-d569b05daa45" message="Probability must not be empty" />
+        </qbp:errors>
+        <qbp:arrivalRateDistribution type="FIXED" mean="NaN" arg1="NaN" arg2="NaN">
+          <qbp:timeUnit>seconds</qbp:timeUnit>
+        </qbp:arrivalRateDistribution>
+        <qbp:statsOptions />
+        <qbp:timetables>
+          <qbp:timetable id="DEFAULT_TIMETABLE" default="true" name="Arrival timetable">
+            <qbp:rules>
+              <qbp:rule id="e36b5525-7c0e-42c4-ae71-6606c8a19fd9" name="Timeslot" fromTime="09:00:00.000+00:00" toTime="17:00:00.000+00:00" fromWeekDay="MONDAY" toWeekDay="FRIDAY" />
+            </qbp:rules>
+          </qbp:timetable>
+        </qbp:timetables>
+        <qbp:resources>
+          <qbp:resource id="QBP_DEFAULT_RESOURCE" name="Default resource" totalAmount="1" timetableId="DEFAULT_TIMETABLE" />
+        </qbp:resources>
+        <qbp:elements>
+          <qbp:element elementId="node-bf5d57f9-2fd1-478d-9bbe-8bfbffda7e36">
+            <qbp:durationDistribution type="FIXED" mean="NaN" arg1="NaN" arg2="NaN">
+              <qbp:timeUnit>seconds</qbp:timeUnit>
+            </qbp:durationDistribution>
+            <qbp:resourceIds>
+              <qbp:resourceId>QBP_DEFAULT_RESOURCE</qbp:resourceId>
+            </qbp:resourceIds>
+          </qbp:element>
+          <qbp:element elementId="node-4e695279-b553-4255-bc4c-2a9517fb732f">
+            <qbp:durationDistribution type="FIXED" mean="NaN" arg1="NaN" arg2="NaN">
+              <qbp:timeUnit>seconds</qbp:timeUnit>
+            </qbp:durationDistribution>
+            <qbp:resourceIds>
+              <qbp:resourceId>QBP_DEFAULT_RESOURCE</qbp:resourceId>
+            </qbp:resourceIds>
+          </qbp:element>
+          <qbp:element elementId="node-a7e179c7-a105-4bc4-a252-72c38b922420">
+            <qbp:durationDistribution type="FIXED" mean="NaN" arg1="NaN" arg2="NaN">
+              <qbp:timeUnit>seconds</qbp:timeUnit>
+            </qbp:durationDistribution>
+            <qbp:resourceIds>
+              <qbp:resourceId>QBP_DEFAULT_RESOURCE</qbp:resourceId>
+            </qbp:resourceIds>
+          </qbp:element>
+          <qbp:element elementId="node-aec2ec8b-2262-4e66-8d54-94b98f5b81b3">
+            <qbp:durationDistribution type="FIXED" mean="NaN" arg1="NaN" arg2="NaN">
+              <qbp:timeUnit>seconds</qbp:timeUnit>
+            </qbp:durationDistribution>
+            <qbp:resourceIds>
+              <qbp:resourceId>QBP_DEFAULT_RESOURCE</qbp:resourceId>
+            </qbp:resourceIds>
+          </qbp:element>
+          <qbp:element elementId="node-5499567c-446d-4273-91d6-d0e21cf987b0">
+            <qbp:durationDistribution type="FIXED" mean="NaN" arg1="NaN" arg2="NaN">
+              <qbp:timeUnit>seconds</qbp:timeUnit>
+            </qbp:durationDistribution>
+            <qbp:resourceIds>
+              <qbp:resourceId>QBP_DEFAULT_RESOURCE</qbp:resourceId>
+            </qbp:resourceIds>
+          </qbp:element>
+        </qbp:elements>
+        <qbp:sequenceFlows>
+          <qbp:sequenceFlow />
+          <qbp:sequenceFlow elementId="edge-79fed783-7809-41cd-a2a3-4a1b6fec87aa" executionProbability="" />
+          <qbp:sequenceFlow elementId="edge-89fe5de1-60e8-4019-823a-8f791e20ef5c" executionProbability="" />
+        </qbp:sequenceFlows>
+      </qbp:processSimulationInfo>
+    </extensionElements>
+    <startEvent id="node-660be166-dd58-4131-9b8d-a797c3454068" name="" />
+    <endEvent id="node-d57c08da-1c02-46c8-9498-c6ff9c00fd0c" name="" />
+    <task id="node-bf5d57f9-2fd1-478d-9bbe-8bfbffda7e36" name="c" />
+    <task id="node-4e695279-b553-4255-bc4c-2a9517fb732f" name="e" />
+    <task id="node-a7e179c7-a105-4bc4-a252-72c38b922420" name="b" />
+    <task id="node-aec2ec8b-2262-4e66-8d54-94b98f5b81b3" name="d" />
+    <task id="node-5499567c-446d-4273-91d6-d0e21cf987b0" name="a" />
+    <exclusiveGateway id="node-5bababa0-4d67-405b-b979-c68d1ddd942f" name="" gatewayDirection="Converging">
+      <incoming>edge-5ab5fd0e-5e28-4264-b825-04ee7a95647c</incoming>
+      <incoming>edge-f87be81a-71ce-45b8-88b0-8e8417d43218</incoming>
+      <outgoing>edge-cc4076e9-e165-4f45-ba31-adc296b36c8a</outgoing>
+    </exclusiveGateway>
+    <exclusiveGateway id="node-4a7551ac-7d3a-4ef3-afcb-d569b05daa45" name="" gatewayDirection="Diverging">
+      <incoming>edge-1bad0ed5-eaa4-4a7e-868c-dbf09872a081</incoming>
+      <outgoing>edge-79fed783-7809-41cd-a2a3-4a1b6fec87aa</outgoing>
+      <outgoing>edge-89fe5de1-60e8-4019-823a-8f791e20ef5c</outgoing>
+    </exclusiveGateway>
+    <parallelGateway id="node-1a95179a-d38b-4f1d-9b4d-6ba9045efce5" name="" gatewayDirection="Diverging">
+      <incoming>edge-79fed783-7809-41cd-a2a3-4a1b6fec87aa</incoming>
+      <outgoing>edge-f29983ec-0418-43ae-804f-c929344a1423</outgoing>
+      <outgoing>edge-ebcc69d6-51de-40f4-91ed-4c5d5666d48b</outgoing>
+    </parallelGateway>
+    <parallelGateway id="node-efcaa991-9ded-4d00-b294-df4118782bcf" name="" gatewayDirection="Converging">
+      <incoming>edge-63666175-e610-4b04-87d1-980c0abb5610</incoming>
+      <incoming>edge-bc64bdec-3775-4c81-a1a4-c34cf0f0b71f</incoming>
+      <outgoing>edge-5ab5fd0e-5e28-4264-b825-04ee7a95647c</outgoing>
+    </parallelGateway>
+    <sequenceFlow id="edge-b35f45b8-cbdd-4604-82ba-5128b49ee492" name="" sourceRef="node-aec2ec8b-2262-4e66-8d54-94b98f5b81b3" targetRef="node-d57c08da-1c02-46c8-9498-c6ff9c00fd0c" />
+    <sequenceFlow id="edge-4f134928-2966-40cb-9b1e-937ca3f6f58d" name="" sourceRef="node-660be166-dd58-4131-9b8d-a797c3454068" targetRef="node-5499567c-446d-4273-91d6-d0e21cf987b0" />
+    <sequenceFlow id="edge-1bad0ed5-eaa4-4a7e-868c-dbf09872a081" name="" sourceRef="node-5499567c-446d-4273-91d6-d0e21cf987b0" targetRef="node-4a7551ac-7d3a-4ef3-afcb-d569b05daa45" />
+    <sequenceFlow id="edge-89fe5de1-60e8-4019-823a-8f791e20ef5c" name="" sourceRef="node-4a7551ac-7d3a-4ef3-afcb-d569b05daa45" targetRef="node-4e695279-b553-4255-bc4c-2a9517fb732f" />
+    <sequenceFlow id="edge-79fed783-7809-41cd-a2a3-4a1b6fec87aa" name="" sourceRef="node-4a7551ac-7d3a-4ef3-afcb-d569b05daa45" targetRef="node-1a95179a-d38b-4f1d-9b4d-6ba9045efce5" />
+    <sequenceFlow id="edge-ebcc69d6-51de-40f4-91ed-4c5d5666d48b" name="" sourceRef="node-1a95179a-d38b-4f1d-9b4d-6ba9045efce5" targetRef="node-bf5d57f9-2fd1-478d-9bbe-8bfbffda7e36" />
+    <sequenceFlow id="edge-f29983ec-0418-43ae-804f-c929344a1423" name="" sourceRef="node-1a95179a-d38b-4f1d-9b4d-6ba9045efce5" targetRef="node-a7e179c7-a105-4bc4-a252-72c38b922420" />
+    <sequenceFlow id="edge-63666175-e610-4b04-87d1-980c0abb5610" name="" sourceRef="node-a7e179c7-a105-4bc4-a252-72c38b922420" targetRef="node-efcaa991-9ded-4d00-b294-df4118782bcf" />
+    <sequenceFlow id="edge-bc64bdec-3775-4c81-a1a4-c34cf0f0b71f" name="" sourceRef="node-bf5d57f9-2fd1-478d-9bbe-8bfbffda7e36" targetRef="node-efcaa991-9ded-4d00-b294-df4118782bcf" />
+    <sequenceFlow id="edge-cc4076e9-e165-4f45-ba31-adc296b36c8a" name="" sourceRef="node-5bababa0-4d67-405b-b979-c68d1ddd942f" targetRef="node-aec2ec8b-2262-4e66-8d54-94b98f5b81b3" />
+    <sequenceFlow id="edge-f87be81a-71ce-45b8-88b0-8e8417d43218" name="" sourceRef="node-4e695279-b553-4255-bc4c-2a9517fb732f" targetRef="node-5bababa0-4d67-405b-b979-c68d1ddd942f" />
+    <sequenceFlow id="edge-5ab5fd0e-5e28-4264-b825-04ee7a95647c" name="" sourceRef="node-efcaa991-9ded-4d00-b294-df4118782bcf" targetRef="node-5bababa0-4d67-405b-b979-c68d1ddd942f" />
+  </process>
+  <bpmndi:BPMNDiagram id="id_1541706443">
+    <bpmndi:BPMNPlane bpmnElement="proc_1749469095">
+      <bpmndi:BPMNEdge bpmnElement="edge-5ab5fd0e-5e28-4264-b825-04ee7a95647c">
+        <di:waypoint x="1081" y="210" />
+        <di:waypoint x="1231" y="244" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="edge-f87be81a-71ce-45b8-88b0-8e8417d43218">
+        <di:waypoint x="616" y="282" />
+        <di:waypoint x="876" y="341" />
+        <di:waypoint x="1081" y="341" />
+        <di:waypoint x="1231" y="244" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="edge-cc4076e9-e165-4f45-ba31-adc296b36c8a">
+        <di:waypoint x="1231" y="244" />
+        <di:waypoint x="1436" y="241" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="edge-bc64bdec-3775-4c81-a1a4-c34cf0f0b71f">
+        <di:waypoint x="876" y="256" />
+        <di:waypoint x="1081" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="edge-63666175-e610-4b04-87d1-980c0abb5610">
+        <di:waypoint x="876" y="136" />
+        <di:waypoint x="1081" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="edge-f29983ec-0418-43ae-804f-c929344a1423">
+        <di:waypoint x="616" y="172" />
+        <di:waypoint x="876" y="136" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="edge-ebcc69d6-51de-40f4-91ed-4c5d5666d48b">
+        <di:waypoint x="616" y="172" />
+        <di:waypoint x="876" y="256" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="edge-79fed783-7809-41cd-a2a3-4a1b6fec87aa">
+        <di:waypoint x="411" y="225" />
+        <di:waypoint x="616" y="172" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="edge-89fe5de1-60e8-4019-823a-8f791e20ef5c">
+        <di:waypoint x="411" y="225" />
+        <di:waypoint x="616" y="282" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="edge-1bad0ed5-eaa4-4a7e-868c-dbf09872a081">
+        <di:waypoint x="206" y="223" />
+        <di:waypoint x="411" y="225" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="edge-4f134928-2966-40cb-9b1e-937ca3f6f58d">
+        <di:waypoint x="13.5" y="223" />
+        <di:waypoint x="206" y="223" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="edge-b35f45b8-cbdd-4604-82ba-5128b49ee492">
+        <di:waypoint x="1436" y="241" />
+        <di:waypoint x="1628.5" y="241" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape bpmnElement="node-660be166-dd58-4131-9b8d-a797c3454068">
+        <dc:Bounds x="1" y="210.5" width="25" height="25" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="node-d57c08da-1c02-46c8-9498-c6ff9c00fd0c">
+        <dc:Bounds x="1616" y="228.5" width="25" height="25" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="node-bf5d57f9-2fd1-478d-9bbe-8bfbffda7e36">
+        <dc:Bounds x="796" y="221" width="160" height="70" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="node-4e695279-b553-4255-bc4c-2a9517fb732f">
+        <dc:Bounds x="536" y="247" width="160" height="70" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="node-a7e179c7-a105-4bc4-a252-72c38b922420">
+        <dc:Bounds x="796" y="101" width="160" height="70" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="node-aec2ec8b-2262-4e66-8d54-94b98f5b81b3">
+        <dc:Bounds x="1356" y="206" width="160" height="70" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="node-5499567c-446d-4273-91d6-d0e21cf987b0">
+        <dc:Bounds x="126" y="188" width="160" height="70" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="node-5bababa0-4d67-405b-b979-c68d1ddd942f" isMarkerVisible="true">
+        <dc:Bounds x="1206" y="219" width="50" height="50" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="node-4a7551ac-7d3a-4ef3-afcb-d569b05daa45" isMarkerVisible="true">
+        <dc:Bounds x="386" y="200" width="50" height="50" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="node-1a95179a-d38b-4f1d-9b4d-6ba9045efce5">
+        <dc:Bounds x="591" y="147" width="50" height="50" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="node-efcaa991-9ded-4d00-b294-df4118782bcf">
+        <dc:Bounds x="1056" y="185" width="50" height="50" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

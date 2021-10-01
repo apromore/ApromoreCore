@@ -74,7 +74,7 @@
     <!-- STYLESHEET FOR BPMN.IO -->
     <n:link rel="stylesheet" href="${arg.editor}/editor/bpmnio/bpmn.css" type="text/css"/>
     <n:link rel="stylesheet" href="${arg.editor}/editor/bpmnio/diagram-js.css" type="text/css"/>
-    <n:script src="${arg.editor}/editor/bpmnio/${arg.bpmnioLib}" type="text/javascript"/>
+    <!--<n:script src="${arg.editor}/editor/bpmnio/${arg.bpmnioLib}" type="text/javascript"/>-->
 
     <custom-attributes theme="${labels.theme}"/>
 <!--    <custom-attributes theme="ap"/>-->

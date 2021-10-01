@@ -20,7 +20,7 @@ module.exports = {
     devtool: 'source-map',
     module: {
         rules: [
-            {test: /\.css|\.bpmn|\.txt$/, use: 'raw-loader'}
+            {test: /\.css|\.bpmn|\.xml|\.txt$/, use: 'raw-loader'}
         ]
     },
     resolve: {
