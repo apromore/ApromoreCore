@@ -87647,7 +87647,7 @@ class EditorApp {
             if (me.fullscreen) {
                 me.layout = new Ext.Viewport(layout_config);
             } else {
-                layout_config.renderTo = this.id;
+                layout_config.renderTo = me.id;
                 //layout_config.height = layoutHeight;
                 layout_config.height = me._getContainer().clientHeight; // the panel and the containing div should be of the same height
                 me.layout = new Ext.Panel(layout_config);
