@@ -88210,6 +88210,7 @@ class ApromoreSave {
             'btnId': 'ap-id-editor-save-btn',
             'functionality':this.save.bind(this, false),
             'group':window.Apromore.I18N.Save.group,
+            "groupOrder": 0,
             'icon':_config__WEBPACK_IMPORTED_MODULE_0__["default"].PATH + "images/ap/save.svg",
             'description':window.Apromore.I18N.Save.saveDesc,
             'index':1,
@@ -88231,6 +88232,7 @@ class ApromoreSave {
             'icon':_config__WEBPACK_IMPORTED_MODULE_0__["default"].PATH + "images/ap/save-as.svg",
             'description':window.Apromore.I18N.Save.saveAsDesc,
             'btnId': 'ap-id-editor-save-as-btn',
+            "groupOrder": 0,
             'index':2,
             'minShape':0,
             'maxShape':0
@@ -88328,6 +88330,7 @@ class Export {
             'group': window.Apromore.I18N.File.group,
             'icon': _config__WEBPACK_IMPORTED_MODULE_0__["default"].PATH + "images/ap/export-svg.svg",
             'description': window.Apromore.I18N.File.svgDesc,
+            "groupOrder": 0,
             'index': 3,
             'minShape': 0,
             'maxShape': 0
@@ -88340,6 +88343,7 @@ class Export {
             'group': window.Apromore.I18N.File.group,
             'icon': _config__WEBPACK_IMPORTED_MODULE_0__["default"].PATH + "images/ap/export-bpmn.svg",
             'description': window.Apromore.I18N.File.bpmnDesc,
+            "groupOrder": 0,
             'index': 4,
             'minShape': 0,
             'maxShape': 0
@@ -88441,6 +88445,7 @@ class File {
             'group': window.Apromore.I18N.File.group,
             'icon': _config__WEBPACK_IMPORTED_MODULE_0__["default"].PATH + "images/ap/export-pdf.svg",
             'description': window.Apromore.I18N.File.pdfDesc,
+            "groupOrder": 0,
             'index': 5,
             'minShape': 0,
             'maxShape': 0
@@ -88630,6 +88635,7 @@ class Share {
             'icon': _config__WEBPACK_IMPORTED_MODULE_0__["default"].PATH + "images/ap/share.svg",
             'description': Apromore.I18N.Share.shareDesc,
             'index': 1,
+            'groupOrder': 4,
             'minShape': 0,
             'maxShape': 0});
 
@@ -88679,6 +88685,7 @@ class SimulationPanel {
             'group': window.Apromore.I18N.SimulationPanel.group,
             'description': window.Apromore.I18N.SimulationPanel.toggleSimulationDrawerDesc,
             'index': 1,
+            'groupOrder': 3,
             'minShape': 0,
             'maxShape': 0,
             'icon': _config__WEBPACK_IMPORTED_MODULE_0__["default"].PATH + "images/ap/simulate-model.svg",
@@ -88782,7 +88789,8 @@ class Toolbar {
         // Sort plugins by group and index
         var newPlugs =  pluginsData.sortBy((function(value) {
             // groupIndex + groupName + buttonIndex, e.g. 1undo1, 1undo2, 1undo3, 2zoom1, 2zoom2
-            let compareKey = ((this.groupIndex[value.group] != undefined ? this.groupIndex[value.group] : "" ) + value.group + "" + value.index).toLowerCase();
+            // let compareKey = ((this.groupIndex[value.group] != undefined ? this.groupIndex[value.group] : "" ) + value.group + "" + value.index).toLowerCase();
+            let compareKey = value.groupOrder * 100 + value.index;
             return compareKey;
         }).bind(this));
 
@@ -88985,7 +88993,8 @@ class Undo {
             functionality   : this.doUndo.bind(this),
             group           : window.Apromore.I18N.Undo.group,
             isEnabled       : function(){ return true }.bind(this),
-            index            : 0
+            index            : 0,
+            groupOrder: 1
           });
 
           // Offers the functionality of redo
@@ -89003,7 +89012,8 @@ class Undo {
             functionality   : this.doRedo.bind(this),
             group           : window.Apromore.I18N.Undo.group,
             isEnabled       : function(){ return true}.bind(this),
-            index           : 1
+            index           : 1,
+            groupOrder: 1
         });
 
     }
@@ -89087,6 +89097,7 @@ class View {
             'icon': _config__WEBPACK_IMPORTED_MODULE_0__["default"].PATH + "images/ap/zoom-in.svg",
             'description': window.Apromore.I18N.View.zoomInDesc,
             'index': 1,
+            'groupOder': 2,
             'minShape': 0,
             'maxShape': 0});
 
@@ -89099,6 +89110,7 @@ class View {
             'icon': _config__WEBPACK_IMPORTED_MODULE_0__["default"].PATH + "images/ap/zoom-out.svg",
             'description': window.Apromore.I18N.View.zoomOutDesc,
             'index': 2,
+            'groupOrder': 2,
             'minShape': 0,
             'maxShape': 0});
 
@@ -89111,6 +89123,7 @@ class View {
             'icon': _config__WEBPACK_IMPORTED_MODULE_0__["default"].PATH + "images/ap/zoom-to-fit.svg",
             'description': window.Apromore.I18N.View.zoomFitToModelDesc,
             'index': 3,
+            'groupOrder': 2,
             'minShape': 0,
             'maxShape': 0 });
     }

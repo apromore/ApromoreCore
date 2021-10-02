@@ -72,7 +72,8 @@ export default class Toolbar {
         // Sort plugins by group and index
         var newPlugs =  pluginsData.sortBy((function(value) {
             // groupIndex + groupName + buttonIndex, e.g. 1undo1, 1undo2, 1undo3, 2zoom1, 2zoom2
-            let compareKey = ((this.groupIndex[value.group] != undefined ? this.groupIndex[value.group] : "" ) + value.group + "" + value.index).toLowerCase();
+            // let compareKey = ((this.groupIndex[value.group] != undefined ? this.groupIndex[value.group] : "" ) + value.group + "" + value.index).toLowerCase();
+            let compareKey = value.groupOrder * 100 + value.index;
             return compareKey;
         }).bind(this));
 

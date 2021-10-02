@@ -20,6 +20,7 @@ export default class SimulationPanel {
             'group': window.Apromore.I18N.SimulationPanel.group,
             'description': window.Apromore.I18N.SimulationPanel.toggleSimulationDrawerDesc,
             'index': 1,
+            'groupOrder': 3,
             'minShape': 0,
             'maxShape': 0,
             'icon': CONFIG.PATH + "images/ap/simulate-model.svg",

@@ -42,6 +42,7 @@ export default class Share {
             'icon': CONFIG.PATH + "images/ap/share.svg",
             'description': Apromore.I18N.Share.shareDesc,
             'index': 1,
+            'groupOrder': 4,
             'minShape': 0,
             'maxShape': 0});
 

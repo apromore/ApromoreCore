@@ -35,6 +35,7 @@ export default class Export {
             'group': window.Apromore.I18N.File.group,
             'icon': CONFIG.PATH + "images/ap/export-svg.svg",
             'description': window.Apromore.I18N.File.svgDesc,
+            "groupOrder": 0,
             'index': 3,
             'minShape': 0,
             'maxShape': 0
@@ -47,6 +48,7 @@ export default class Export {
             'group': window.Apromore.I18N.File.group,
             'icon': CONFIG.PATH + "images/ap/export-bpmn.svg",
             'description': window.Apromore.I18N.File.bpmnDesc,
+            "groupOrder": 0,
             'index': 4,
             'minShape': 0,
             'maxShape': 0

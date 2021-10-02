@@ -35,6 +35,7 @@ export default class ApromoreSave {
             'btnId': 'ap-id-editor-save-btn',
             'functionality':this.save.bind(this, false),
             'group':window.Apromore.I18N.Save.group,
+            "groupOrder": 0,
             'icon':CONFIG.PATH + "images/ap/save.svg",
             'description':window.Apromore.I18N.Save.saveDesc,
             'index':1,
@@ -56,6 +57,7 @@ export default class ApromoreSave {
             'icon':CONFIG.PATH + "images/ap/save-as.svg",
             'description':window.Apromore.I18N.Save.saveAsDesc,
             'btnId': 'ap-id-editor-save-as-btn',
+            "groupOrder": 0,
             'index':2,
             'minShape':0,
             'maxShape':0

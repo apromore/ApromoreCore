@@ -45,6 +45,7 @@ export default class View {
             'icon': CONFIG.PATH + "images/ap/zoom-in.svg",
             'description': window.Apromore.I18N.View.zoomInDesc,
             'index': 1,
+            'groupOder': 2,
             'minShape': 0,
             'maxShape': 0});
 
@@ -57,6 +58,7 @@ export default class View {
             'icon': CONFIG.PATH + "images/ap/zoom-out.svg",
             'description': window.Apromore.I18N.View.zoomOutDesc,
             'index': 2,
+            'groupOrder': 2,
             'minShape': 0,
             'maxShape': 0});
 
@@ -69,6 +71,7 @@ export default class View {
             'icon': CONFIG.PATH + "images/ap/zoom-to-fit.svg",
             'description': window.Apromore.I18N.View.zoomFitToModelDesc,
             'index': 3,
+            'groupOrder': 2,
             'minShape': 0,
             'maxShape': 0 });
     }

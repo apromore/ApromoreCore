@@ -57,6 +57,7 @@ export default class File {
             'group': window.Apromore.I18N.File.group,
             'icon': CONFIG.PATH + "images/ap/export-pdf.svg",
             'description': window.Apromore.I18N.File.pdfDesc,
+            "groupOrder": 0,
             'index': 5,
             'minShape': 0,
             'maxShape': 0
