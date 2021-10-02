@@ -566,13 +566,15 @@ div.ap-window-footer-actions {
 .z-checkbox-switch.ap-iconized-checkbox {
     width: 42px;
     height: 24px;
-    line-height: 28px !important;
+    line-height: 24px !important;
 }
 
 .z-checkbox-switch.ap-iconized-checkbox .z-checkbox-mold {
     width: 36px;
     height: 22px;
     background-color: #60707a;
+    margin: 0 3px !important;
+    border-radius: 14px;
 }
 
 .z-checkbox-switch-on.ap-iconized-checkbox .z-checkbox-mold {
