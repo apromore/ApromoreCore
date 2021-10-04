@@ -35,6 +35,7 @@ import org.apromore.dao.NativeRepository;
 import org.apromore.dao.ProcessBranchRepository;
 import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.dao.ProcessRepository;
+import org.apromore.dao.StorageRepository;
 import org.apromore.dao.model.AccessRights;
 import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.Group;
@@ -44,6 +45,7 @@ import org.apromore.dao.model.NativeType;
 import org.apromore.dao.model.Process;
 import org.apromore.dao.model.ProcessBranch;
 import org.apromore.dao.model.ProcessModelVersion;
+import org.apromore.dao.model.Storage;
 import org.apromore.dao.model.User;
 import org.apromore.exception.ExceptionDao;
 import org.apromore.exception.ExportFormatException;
@@ -60,17 +62,22 @@ import org.apromore.service.UserService;
 import org.apromore.service.WorkspaceService;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.service.model.ProcessData;
+import org.apromore.storage.StorageClient;
+import org.apromore.storage.exception.ObjectCreationException;
+import org.apromore.storage.factory.StorageManagementFactory;
 import org.apromore.util.AccessType;
 import org.apromore.util.StreamUtil;
 import org.apromore.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.activation.DataHandler;
+import javax.annotation.Resource;
 import javax.inject.Inject;
 import javax.mail.util.ByteArrayDataSource;
 import javax.xml.bind.JAXBException;
@@ -81,6 +88,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
@@ -101,6 +109,10 @@ public class ProcessServiceImpl implements ProcessService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ProcessServiceImpl.class);
 
+  /** Feature flag, enabling BPMN storage using storage service instead of native service. */
+  @Value("${enableStorageServiceForProcessModels}")
+  private boolean enableStorageService;
+
   private GroupRepository groupRepo;
   private NativeRepository nativeRepo;
   private ProcessBranchRepository processBranchRepo;
@@ -113,8 +125,13 @@ public class ProcessServiceImpl implements ProcessService {
   private WorkspaceService workspaceSrv;
   private AuthorizationService authorizationService;
   private FolderRepository folderRepository;
+  private StorageRepository storageRepository;
+  private String storagePath;
 
   private boolean sanitizationEnabled;
+
+  @Resource
+  private StorageManagementFactory<StorageClient> storageFactory;
 
   /**
    *
@@ -132,6 +149,7 @@ public class ProcessServiceImpl implements ProcessService {
    * @param authorizationService Authorization Service
    * @param folderRepository Folder Repository
    * @param config Config
+   * @param storageRepository Storage Repository
    */
   @Inject
   public ProcessServiceImpl(final NativeRepository nativeRepo, final GroupRepository groupRepo,
@@ -140,7 +158,8 @@ public class ProcessServiceImpl implements ProcessService {
       final GroupProcessRepository groupProcessRepo, final LockService lService,
       final UserService userSrv, final FormatService formatSrv, final UserInterfaceHelper ui,
       final WorkspaceService workspaceService, final AuthorizationService authorizationService,
-      final FolderRepository folderRepository, final ConfigBean config) {
+      final FolderRepository folderRepository, final ConfigBean config,
+      final StorageRepository storageRepo) {
     this.groupRepo = groupRepo;
     this.nativeRepo = nativeRepo;
     this.processBranchRepo = processBranchRepo;
@@ -153,8 +172,10 @@ public class ProcessServiceImpl implements ProcessService {
     this.workspaceSrv = workspaceService;
     this.authorizationService = authorizationService;
     this.folderRepository = folderRepository;
+    this.storageRepository = storageRepo;
 
     this.sanitizationEnabled = config.isSanitizationEnabled();
+    this.storagePath = config.getStoragePath();
   }
 
 
@@ -176,7 +197,6 @@ public class ProcessServiceImpl implements ProcessService {
       throw new ImportException("Process " + processName + " failed to import correctly.");
     }
 
-    ProcessModelVersion pmv;
     try {
       User user = userSrv.findUserByLogin(username);
       NativeType nativeType = formatSrv.findNativeType(natType);
@@ -205,28 +225,54 @@ public class ProcessServiceImpl implements ProcessService {
             + "\", but JPA repository assigned a primary key ID of " + process.getId());
       }
 
-      Native nat = formatSrv.storeNative(processName, created, lastUpdate, user, nativeType,
-          Constants.INITIAL_ANNOTATION, sanitizedStream);
-      pmv = addProcessModelVersion(process, processName, version, Constants.TRUNK_NAME, created,
-          lastUpdate, nativeType, nat);
+      ProcessBranch branch = insertProcessBranch(process, created, lastUpdate, Constants.TRUNK_NAME);
+      ProcessModelVersion pmv = insertProcessModelVersion(processName, branch, version, nativeType,
+          sanitizedStream, lastUpdate);
+
       LOGGER.debug("Process model version: {}", pmv);
 
       workspaceSrv.addProcessToFolder(user, process.getId(), actualFolderId);
-      LOGGER.info("Import process model \"{}\" (id {})", processName, process.getId());// call when
-                                                                                       // net is
-                                                                                       // change and
-                                                                                       // then save
+      LOGGER.info("Import process model \"{}\" (id {})", processName, process.getId());
+
+      return pmv;
 
     } catch (ImportException e) {
       throw e;
 
     } catch (Exception e) {
-      LOGGER.error("Failed to import process \"{}\" (native type {})", processName, natType);
-      LOGGER.error("Original exception was: ", e);
+      LOGGER.error("Failed to import process \"{}\" (native type {})", processName, natType, e);
       throw new ImportException(e);
     }
+  }
 
-    return pmv;
+  private ProcessModelVersion insertProcessModelVersion(final String processName,
+    final ProcessBranch branch, final Version version, final NativeType nativeType,
+    final InputStream sanitizedStream, final String lastUpdate)
+    throws IOException, JAXBException, ObjectCreationException {
+
+    if (enableStorageService) {
+      DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+      String now = dateFormat.format(new Date());
+
+      Storage storage = new Storage();
+      final String name = now + "_" + processName + "_" + version + "." + nativeType.getExtension();
+      storage.setKey(name);
+      storage.setPrefix("model");
+      storage.setStoragePath(storagePath);
+      try (OutputStream outputStream = storageFactory.getStorageClient(storagePath)
+                                                     .getOutputStream("model", name)) {
+        sanitizedStream.transferTo(outputStream);
+      }
+      storageRepository.save(storage);
+
+      return createProcessModelVersion(branch, version, nativeType, null, null, storage);
+
+    } else {
+      Native nat = formatSrv.storeNative(processName, null, lastUpdate, null, nativeType,
+          Constants.INITIAL_ANNOTATION, sanitizedStream);
+
+      return createProcessModelVersion(branch, version, nativeType, null, nat, null);
+    }
   }
 
   private InputStream sanitize(InputStream in, NativeType nativeType) throws Exception {
@@ -329,42 +375,45 @@ public class ProcessServiceImpl implements ProcessService {
     try {
       if (user == null) {
         throw new ImportException("Permission to change this model denied.  No user specified.");
-      } else if (!canUserWriteProcess(user, processId)) {
+      }
+
+      if (!canUserWriteProcess(user, processId)) {
         throw new ImportException("Permission to change this model denied.");
       }
+
       if (lockStatus == null || Constants.UNLOCKED.equals(lockStatus)) {
         throw new RepositoryException(
             "Process model " + processName + " is not locked for the updating session.");
-      } else {
-        ProcessModelVersion currentVersion = processModelVersionRepo
-            .getProcessModelVersion(processId, branchName, originalVersion.toString());
-        if (currentVersion != null) {
-          if (newVersion.toString().equals(currentVersion.getVersionNumber())) {
-            String message = "CONFLICT! The process model " + processName + " - " + branchName
-                + " has been updated by another user." + "\nThis process model version number: "
-                + newVersion + "\nCurrent process model version number: "
-                + currentVersion.getVersionNumber();
-            LOGGER.error(message);
-            throw new RepositoryException(message);
-          } else {
-            Native nat = formatSrv.storeNative(processName, now, now, user, nativeType,
-                newVersion.toString(), nativeStream);
-            pmv = createProcessModelVersion(currentVersion.getProcessBranch(), newVersion,
-                nativeType, null, nat);
-            LOGGER.info("Updated existing process model \"{}\"", processName);
-            return pmv;
-          }
-
-        } else {
-          LOGGER.error(
-              "Unable to find the Process Model to update. Id={}, name={}, branch={}, current version={}",
-              processId, processName, branchName, originalVersion);
-          throw new RepositoryException("Unable to find the Process Model to update. Id="
-              + processId + ", name=" + processName + ", branch=" + branchName
-              + ", current version=" + originalVersion.toString());
-        }
       }
-    } catch (RepositoryException | JAXBException | IOException e) {
+
+      ProcessModelVersion currentVersion = processModelVersionRepo
+          .getProcessModelVersion(processId, branchName, originalVersion.toString());
+
+      if (currentVersion == null) {
+        LOGGER.error(
+            "Unable to find the Process Model to update. Id={}, name={}, branch={}, current version={}",
+            processId, processName, branchName, originalVersion);
+        throw new RepositoryException("Unable to find the Process Model to update. Id="
+            + processId + ", name=" + processName + ", branch=" + branchName
+            + ", current version=" + originalVersion.toString());
+      }
+
+      if (newVersion.toString().equals(currentVersion.getVersionNumber())) {
+        String message = "CONFLICT! The process model " + processName + " - " + branchName
+            + " has been updated by another user." + "\nThis process model version number: "
+            + newVersion + "\nCurrent process model version number: "
+            + currentVersion.getVersionNumber();
+        LOGGER.error(message);
+        throw new RepositoryException(message);
+      }
+
+      pmv = insertProcessModelVersion(processName, currentVersion.getProcessBranch(), newVersion,
+          nativeType, nativeStream, now);
+      LOGGER.info("Updated existing process model \"{}\"", processName);
+
+      return pmv;
+
+    } catch (RepositoryException | JAXBException | IOException | ObjectCreationException e) {
       LOGGER.error("Failed to update process {}", processName);
       LOGGER.error("Original exception was: ", e);
       throw new RepositoryException("Failed to Update process model.", e);
@@ -399,9 +448,21 @@ public class ProcessServiceImpl implements ProcessService {
       ExportFormatResultType exportResult = new ExportFormatResultType();
 
       if (isRequestForNativeFormat(processId, branch, version, format)) {
-        exportResult.setNative(new DataHandler(new ByteArrayDataSource(
-            nativeRepo.getNative(processId, branch, version.toString(), format).getContent(),
-            "text/xml")));
+        Storage storage = processModelVersionRepo
+            .getProcessModelVersion(processId, branch, version.toString())
+            .getStorage();
+        if (storage != null) {
+          try (InputStream in = storageFactory
+              .getStorageClient(storage.getStoragePath())
+              .getInputStream(storage.getPrefix(), storage.getKey())) {
+
+            exportResult.setNative(new DataHandler(new ByteArrayDataSource(in, "text/xml")));
+          }
+        } else {  // null storage indicates we're using the legacy native repository
+          exportResult.setNative(new DataHandler(new ByteArrayDataSource(
+              nativeRepo.getNative(processId, branch, version.toString(), format).getContent(),
+              "text/xml")));
+        }
       } else {
         LOGGER.error("Unsupported: export process {} to format {}", name, format);
         throw new ExportFormatException("Unsupported export format.");
@@ -521,11 +582,12 @@ public class ProcessServiceImpl implements ProcessService {
 
         try {
           // Delete the process and branch if there's only one model version
-          if (pvid.getProcessBranch().getProcessModelVersions().size() > 1) {
-            ProcessBranch branch = pvid.getProcessBranch();
-            List<ProcessModelVersion> pmvs = pvid.getProcessBranch().getProcessModelVersions();
-            deleteProcessModelVersion(pmvs, pvid, branch);
-          } else {
+          ProcessBranch branch = pvid.getProcessBranch();
+          List<ProcessModelVersion> pmvs = pvid.getProcessBranch().getProcessModelVersions();
+          deleteProcessModelVersion(pmvs, pvid, branch);
+          LOGGER.debug("Branch has {} versions", pvid.getProcessBranch().getProcessModelVersions().size());
+          if (pvid.getProcessBranch().getProcessModelVersions().isEmpty()) {
+            LOGGER.debug("Deleting entire process");
             processRepo.delete(process);
           }
         } catch (ExceptionDao e) {
@@ -616,23 +678,22 @@ public class ProcessServiceImpl implements ProcessService {
   }
 
 
-  /* Does the processing of ImportProcess. */
-  @Transactional(readOnly = false)
-  private ProcessModelVersion addProcessModelVersion(final Process process,
-      final String processName, final Version version, final String branchName,
-      final String created, final String lastUpdated, NativeType nativeType, Native nat)
-      throws ImportException {
-    ProcessModelVersion pmv;
-    ProcessBranch branch = insertProcessBranch(process, created, lastUpdated, branchName);
-    pmv = createProcessModelVersion(branch, version, nativeType, null, nat);
-    return pmv;
-  }
-
 
   @Transactional(readOnly = false)
   private void deleteProcessModelVersion(final ProcessModelVersion pmv) throws ExceptionDao {
+    LOGGER.debug("Deleting process model version {}", pmv);
     try {
       processModelVersionRepo.delete(pmv);
+
+      Storage storage = pmv.getStorage();
+      if (storage != null) {
+        if (processModelVersionRepo.countByStorageId(storage.getId()) == 0) {
+          storageFactory.getStorageClient(storage.getStoragePath())
+                        .delete(storage.getPrefix(), storage.getKey());
+          storageRepository.deleteById(storage.getId());
+        }
+      }
+
     } catch (Exception e) {
       String msg = "Failed to delete the process model version " + pmv.getId();
       LOGGER.error(msg, e);
@@ -716,7 +777,9 @@ public class ProcessServiceImpl implements ProcessService {
   }
 
   private ProcessModelVersion createProcessModelVersion(final ProcessBranch branch,
-      final Version version, NativeType nativeType, final String netId, Native nat) {
+      final Version version, NativeType nativeType, final String netId, Native nat,
+      Storage storage) {
+
     String now = new SimpleDateFormat(Constants.DATE_FORMAT).format(new Date());
     ProcessModelVersion processModel = new ProcessModelVersion();
 
@@ -730,6 +793,7 @@ public class ProcessServiceImpl implements ProcessService {
     processModel.setLastUpdateDate(now);
     processModel.setNativeType(nativeType);
     processModel.setNativeDocument(nat);
+    processModel.setStorage(storage);
     branch.setCurrentProcessModelVersion(processModel);
     branch.getProcessModelVersions().add(processModel);
 

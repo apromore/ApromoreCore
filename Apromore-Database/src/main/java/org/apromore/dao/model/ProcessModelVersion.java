@@ -66,6 +66,7 @@ public class ProcessModelVersion implements Serializable {
     private Integer numVertices;
     private Integer numEdges;
 
+    private Storage storage;
     private Native nativeDocument;
     private ProcessBranch processBranch;
     private NativeType nativeType;
@@ -169,6 +170,15 @@ public class ProcessModelVersion implements Serializable {
     }
 
 
+    @ManyToOne
+    @JoinColumn(name = "storage_id", nullable = true)
+    public Storage getStorage() {
+        return storage;
+    }
+
+    public void setStorage(Storage storage) {
+        this.storage = storage;
+    }
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "nativeid", referencedColumnName = "id")
