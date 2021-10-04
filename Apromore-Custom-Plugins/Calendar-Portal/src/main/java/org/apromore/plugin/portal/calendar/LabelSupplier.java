@@ -19,15 +19,18 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-
 package org.apromore.plugin.portal.calendar;
 
-public abstract class CalendarEvents {
+import java.util.Locale;
+import java.util.ResourceBundle;
+import org.zkoss.web.Attributes;
+import org.zkoss.zk.ui.Sessions;
 
-    private CalendarEvents () {}
+import org.apromore.plugin.portal.calendar.controllers.Calendars;
 
-    public static final String ON_CALENDAR_PUBLISH = "onCalendarPublish";
-    public static final String ON_CALENDAR_ABANDON = "onCalendarAbandon";
-    public static final String ON_CALENDAR_BEFORE_REMOVE = "onCalendarBeforeRemove";
-    public static final String ON_CALENDAR_REMOVE = "onCalendarRemove";
+public interface LabelSupplier {
+    default ResourceBundle getLabels() {
+        Locale locale = (Locale) Sessions.getCurrent().getAttribute(Attributes.PREFERRED_LOCALE);
+        return ResourceBundle.getBundle("calendar", locale, Calendars.class.getClassLoader());
+    }
 }

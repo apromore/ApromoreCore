@@ -29,7 +29,13 @@ import java.time.LocalTime;
 import java.time.OffsetTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
-import java.util.*;
+import java.util.Map;
+import java.util.List;
+import java.util.HashMap;
+import java.util.Date;
+import java.util.Comparator;
+import java.util.Set;
+import java.util.ArrayList;
 
 import org.apromore.calendar.exception.CalendarNotExistsException;
 import org.apromore.calendar.model.CalendarModel;
@@ -46,9 +52,7 @@ import org.apromore.plugin.portal.calendar.pageutil.PageUtils;
 import org.slf4j.Logger;
 import org.zkoss.json.JSONArray;
 import org.zkoss.json.JSONObject;
-import org.zkoss.web.Attributes;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.EventQueue;
@@ -75,11 +79,13 @@ import org.zkoss.zul.Window;
 import lombok.Getter;
 import lombok.Setter;
 
+import org.apromore.plugin.portal.calendar.LabelSupplier;
+
 /**
  * Controller for handling calendar interface Corresponds to calendar.zul
  */
 @VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
-public class Calendar extends SelectorComposer<Window> {
+public class Calendar extends SelectorComposer<Window> implements LabelSupplier {
 
     @WireVariable("calendarService")
     CalendarService calendarService;
@@ -260,12 +266,6 @@ public class Calendar extends SelectorComposer<Window> {
         buffer.append("(GMT " + zoneId.getRules().getOffset(LocalDateTime.now()) + ")");
 
         return buffer.toString();
-    }
-
-    public ResourceBundle getLabels() {
-        Locale locale = (Locale) Sessions.getCurrent().getAttribute(Attributes.PREFERRED_LOCALE);
-        return ResourceBundle.getBundle("calendar", locale,
-                Calendars.class.getClassLoader());
     }
 
     public WorkDayModel getDayOfWeekItem(int dowIndex) {

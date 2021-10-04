@@ -25,26 +25,16 @@
 package org.apromore.plugin.portal.calendar;
 
 import java.time.OffsetDateTime;
-// import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
-import org.apromore.calendar.exception.CalendarNotExistsException;
-import org.apromore.calendar.model.CalendarModel;
-import org.apromore.calendar.service.CalendarService;
-import org.apromore.commons.datetime.DateTimeUtils;
-import org.apromore.plugin.portal.PortalLoggerFactory;
-import org.apromore.plugin.portal.calendar.pageutil.PageUtils;
 import org.slf4j.Logger;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.*;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.ListModelList;
-import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
@@ -52,12 +42,19 @@ import org.zkoss.zul.Span;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
-public class CalendarItemRenderer implements ListitemRenderer {
+import org.apromore.calendar.exception.CalendarNotExistsException;
+import org.apromore.calendar.model.CalendarModel;
+import org.apromore.calendar.service.CalendarService;
+import org.apromore.commons.datetime.DateTimeUtils;
+import org.apromore.plugin.portal.PortalLoggerFactory;
+import org.apromore.plugin.portal.calendar.pageutil.PageUtils;
+
+public class CalendarItemRenderer implements ListitemRenderer<CalendarModel>, LabelSupplier {
 
     private static Logger LOGGER = PortalLoggerFactory.getLogger(CalendarItemRenderer.class);
 
-    CalendarService calendarService;
-    long appliedCalendarId;
+    private CalendarService calendarService;
+    private long appliedCalendarId;
 
     public CalendarItemRenderer(CalendarService calendarService, long appliedCalendarId) {
         super();
@@ -118,7 +115,7 @@ public class CalendarItemRenderer implements ListitemRenderer {
         try {
             calendarService.updateCalendarName(calendarId, newName);
         } catch (CalendarNotExistsException e) {
-//			Need to handle this via publishing message in event queue
+            // Need to handle this via publishing message in event queue
             LOGGER.error("Unable to update custom calendar dialog", e);
             e.printStackTrace();
         }
@@ -126,9 +123,7 @@ public class CalendarItemRenderer implements ListitemRenderer {
     }
 
     @Override
-    public void render(Listitem listItem, Object obj, int index) {
-        CalendarModel calendarItem = (CalendarModel) obj;
-
+    public void render(Listitem listItem, CalendarModel calendarItem, int index) {
         if (calendarItem.getId().equals(appliedCalendarId)) {
             renderIconCell(listItem, "ap-icon ap-icon-static ap-icon-check-circle", "Applied calendar");
         } else {
@@ -174,7 +169,7 @@ public class CalendarItemRenderer implements ListitemRenderer {
         nameCell.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
-                ((ListModelList) listItem.getListbox().getModel()).addToSelection(obj);
+                ((ListModelList) listItem.getListbox().getModel()).addToSelection(calendarItem);
                 listItem.setSelected(true);
                 Events.sendEvent(Events.ON_SELECT, listItem.getListbox(), null);
             }
@@ -198,11 +193,8 @@ public class CalendarItemRenderer implements ListitemRenderer {
         removeAction.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
-                removeCalendar(calendarItem.getId());
-                //Update listbox. onSelect is sent when an item is selected or deselected.
-                Listbox listbox = listItem.getListbox();
-                listItem.detach();
-                Events.sendEvent("onDeleteCalendar", listbox, null);
+                EventQueue<Event> calendarEventQueue = EventQueues.lookup(CalendarService.EVENT_TOPIC, EventQueues.DESKTOP,true);
+                calendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_BEFORE_REMOVE, null, calendarItem));
             }
         });
 

@@ -6,10 +6,13 @@ dependencies {
    
 	
 	implementation project(':Apromore-Zk')
-	implementation project(':Apromore-Commons')	
+	implementation project(':Apromore-Database')
+	implementation project(':Apromore-Commons')
+	implementation project(':Apromore-Core-Components:Apromore-Manager')
 	implementation project(':Apromore-Plugins:plugin-core:portal:api')    
 	implementation project(':Apromore-Plugins:plugin-core:core:api')
 	implementation project(':Apromore-Core-Components:Apromore-Portal')
-    implementation project(':Apromore-Calendar')    
+    implementation project(':Apromore-Calendar')
+	implementation project(':Apromore-Clients:manager-client')
     
 }
