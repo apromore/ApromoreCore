@@ -106,6 +106,13 @@ input {
     line-height: 16px;
 }
 
+.z-combobox-popup,
+.z-bandbox-popup,
+.z-datebox-popup,
+.z-timebox-popup {
+    border-color: var(--ap-input-outline-hover);
+}
+
 .z-label {
     line-height: 15px;
 }
@@ -214,6 +221,10 @@ input {
     border-radius: 0px;
 }
 
+.z-comboitem-selected {
+    color: var(--ap-c-oceanic-dark-3);
+}
+
 .z-combobox-icon {
     line-height: 18px;
 }
@@ -300,7 +311,8 @@ input {
 .z-radio input[type="radio"]:hover,
 .z-combobox-input:hover,
 .z-combobox-input:hover + .z-combobox-button,
-.z-combobox:hover .z-combobox-input {
+.z-combobox:hover .z-combobox-input,
+.z-combobox-button:hover {
     border-color: var(--ap-input-outline-hover);
 }
 
