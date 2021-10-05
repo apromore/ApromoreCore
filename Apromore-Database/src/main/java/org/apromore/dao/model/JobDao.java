@@ -54,6 +54,7 @@ public class JobDao implements Serializable {
     private int scheduleVersionNumber;
     private boolean paused;
     private String timeZoneId;
+    private boolean isDraft;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -100,6 +101,11 @@ public class JobDao implements Serializable {
     @Column(name = "time_zone_id")
     public String getTimeZoneId() {
         return timeZoneId;
+    }
+
+    @Column(name = "is_draft")
+    public boolean isDraft() {
+        return isDraft;
     }
 
     @Embedded
