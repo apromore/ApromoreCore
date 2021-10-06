@@ -2,7 +2,7 @@
   <listhead>
     <listheader align="center" label="" width="36px" /><!-- icon -->
     <listheader align="center" label="" width="120px" sort="auto(date)" />
-    <listheader align="center" label="" hflex="1" sort="auto(description)" />
+    <listheader align="center" label="" width="280px" sort="auto(description)" />
     <listheader align="center" label="" width="36px" style="cursor:pointer;" /><!-- delete/add icon -->
   </listhead>
   <template name="model">
