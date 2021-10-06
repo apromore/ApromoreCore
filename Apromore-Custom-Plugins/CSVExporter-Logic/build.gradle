@@ -6,6 +6,7 @@ description = 'CSVExporter-Logic'
 dependencies {
     
 	implementation project(':Apromore-Extras:OpenXES')
+    implementation project(':Apromore-Extras:APMLogModule')
     implementation project(':Apromore-Zk')
     implementation "com.opencsv:opencsv:${opencsvVersion}"
     

@@ -24,9 +24,11 @@
 
 package org.apromore.service.csvexporter;
 
+import org.apromore.apmlog.APMLog;
 import org.deckfour.xes.model.XLog;
 
 import java.io.File;
+import java.nio.file.Path;
 
 public interface CSVExporterLogic {
 
@@ -36,5 +38,5 @@ public interface CSVExporterLogic {
      * @param myLog XLog
      * @return CSV File
      */
-    File exportCSV(XLog myLog);
+    Path exportCSV(APMLog myLog, String encoding);
 }

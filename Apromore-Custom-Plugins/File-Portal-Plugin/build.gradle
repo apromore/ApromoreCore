@@ -8,6 +8,7 @@ dependencies {
 	implementation project(':Apromore-Custom-Plugins:CSVExporter-Logic')
 	implementation project(':Apromore-Plugins:plugin-core:portal:api')
 	implementation project(':Apromore-Extras:OpenXES')
+	implementation project(':Apromore-Extras:APMLogModule')
 	implementation project(':Apromore-Core-Components:Apromore-Portal')
 	implementation project(':Apromore-Core-Components:Apromore-Manager')
 	implementation project(':Apromore-Clients:manager-client')

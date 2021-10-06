@@ -64,6 +64,12 @@ public class TimeUtil {
         ZonedDateTime z = ZonedDateTime.ofInstant(i, ZoneId.systemDefault());
         return z;
     }
+
+    public static String millisecondToLocalDateTime(long millisecond) {
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+        return millisecondToZonedDateTime(millisecond).format(formatter);
+    }
+
     public static ZonedDateTime zonedDateTimeOf(XEvent xEvent) {
         String timestamp = xEvent.getAttributes().get(XTimeExtension.KEY_TIMESTAMP).toString();
         ZonedDateTime z = ZonedDateTime.parse(timestamp);

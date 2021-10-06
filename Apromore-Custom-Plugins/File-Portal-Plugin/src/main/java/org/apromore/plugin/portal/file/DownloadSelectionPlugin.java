@@ -24,12 +24,16 @@ package org.apromore.plugin.portal.file;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import javax.inject.Inject;
+
+import org.apromore.apmlog.APMLog;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
@@ -177,7 +181,7 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin {
         @Override
         public void onEvent(Event event) throws Exception {
           if (format.getSelectedItem().getLabel().equals("CSV")) {
-            exportCSV(logSummary);
+            exportCSV(logSummary, selectedEncoding.getSelectedItem().getValue());
           } else {
             exportXES(logSummary, mainC);
           }
@@ -222,14 +226,15 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin {
     }
   }
 
-  public void exportCSV(LogSummaryType logSummary) throws Exception {
+  public void exportCSV(LogSummaryType logSummary, String encoding) throws Exception {
     try {
       String filename = logSummary.getName().replace('.', '-');
-      XLog xlog = eventLogService.getXLog(logSummary.getId());
-      File file = csvExporterLogic.exportCSV(xlog);
-      byte[] finalbytes = Files.readAllBytes(file.toPath());
+      APMLog apmLog = eventLogService.getAggregatedLog(logSummary.getId());
+      Path path = csvExporterLogic.exportCSV(apmLog, encoding);
+      LOGGER.info("Export log {} as CSV using {} to {}", filename, encoding, path.toString());
+      byte[] finalbytes = Files.readAllBytes(path);
       Filedownload.save(finalbytes, "application/x-gzip", filename + ".csv.gz");
-      Files.delete(file.toPath());
+      Files.delete(path);
     } catch (RuntimeException e) {
       LOGGER.error("Unable to export log as CSV", e);
       Messagebox.show("Unable to export log as CSV.", "Server error", Messagebox.OK,
