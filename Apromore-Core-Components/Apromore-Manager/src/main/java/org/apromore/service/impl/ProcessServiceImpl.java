@@ -89,6 +89,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
@@ -149,7 +150,7 @@ public class ProcessServiceImpl implements ProcessService {
    * @param authorizationService Authorization Service
    * @param folderRepository Folder Repository
    * @param config Config
-   * @param storageRepository Storage Repository
+   * @param storageRepo Storage Repository
    */
   @Inject
   public ProcessServiceImpl(final NativeRepository nativeRepo, final GroupRepository groupRepo,
@@ -446,28 +447,8 @@ public class ProcessServiceImpl implements ProcessService {
       throws ExportFormatException {
     try {
       ExportFormatResultType exportResult = new ExportFormatResultType();
-
-      if (isRequestForNativeFormat(processId, branch, version, format)) {
-        Storage storage = processModelVersionRepo
-            .getProcessModelVersion(processId, branch, version.toString())
-            .getStorage();
-        if (storage != null) {
-          try (InputStream in = storageFactory
-              .getStorageClient(storage.getStoragePath())
-              .getInputStream(storage.getPrefix(), storage.getKey())) {
-
-            exportResult.setNative(new DataHandler(new ByteArrayDataSource(in, "text/xml")));
-          }
-        } else {  // null storage indicates we're using the legacy native repository
-          exportResult.setNative(new DataHandler(new ByteArrayDataSource(
-              nativeRepo.getNative(processId, branch, version.toString(), format).getContent(),
-              "text/xml")));
-        }
-      } else {
-        LOGGER.error("Unsupported: export process {} to format {}", name, format);
-        throw new ExportFormatException("Unsupported export format.");
-      }
-
+      String xmlProcess = getBPMNRepresentation(name, processId, branch, version);
+      exportResult.setNative(new DataHandler(new ByteArrayDataSource(xmlProcess, "text/xml")));
       return exportResult;
     } catch (Exception e) {
       LOGGER.error("Failed to export process model {} to format {}", name, format);
@@ -475,7 +456,6 @@ public class ProcessServiceImpl implements ProcessService {
       throw new ExportFormatException(e);
     }
   }
-
 
   /**
    * @see org.apromore.service.ProcessService#updateProcessMetaData(Integer, String, String, String,
@@ -612,17 +592,23 @@ public class ProcessServiceImpl implements ProcessService {
     try {
       // Work out if we are looking at the original format or native format for this model.
       if (isRequestForNativeFormat(processId, branch, version, format)) {
-        xmlBPMNProcess =
-            nativeRepo.getNative(processId, branch, version.toString(), format).getContent();
-        LOGGER.debug("native");
+        Storage storage = processModelVersionRepo
+              .getProcessModelVersion(processId, branch, version.toString())
+              .getStorage();
+        if (storage != null) {
+          try (InputStream in = storageFactory
+                .getStorageClient(storage.getStoragePath())
+                .getInputStream(storage.getPrefix(), storage.getKey())) {
+            xmlBPMNProcess = new String(in.readAllBytes(), StandardCharsets.UTF_8);
+          }
+        } else {  // null storage indicates we're using the legacy native repository
+          xmlBPMNProcess = nativeRepo.getNative(processId, branch, version.toString(), format).getContent();
+        }
+        return xmlBPMNProcess;
       } else {
         LOGGER.error("Not supported to retrieve the canonical format");
         throw new RepositoryException("Not supported to retrieve the canonical format");
       }
-
-      // LOGGER.debug("[new method] PROCESS:\n" + xmlBPMNProcess);
-      return xmlBPMNProcess;
-
     } catch (Exception e) {
       LOGGER.error("Failed to retrieve the process!");
       LOGGER.error("Original exception was: ", e);
