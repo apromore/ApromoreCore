@@ -19,7 +19,6 @@ export async function createSimpleLogAnimation() {
     }
     Apromore.BPMNEditor.CONFIG.PLUGINS_ENABLED = false;
     let processMapController = new BPMNModelWrapper();
-    console.log('BPMN', bpmn.default);
     await processMapController.loadProcessModel('editorcanvas', bpmn.default, function() {});
     let logAnimation = new LogAnimation(
         '101',

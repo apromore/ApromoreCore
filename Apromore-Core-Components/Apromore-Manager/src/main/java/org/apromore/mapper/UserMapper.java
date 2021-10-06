@@ -24,6 +24,7 @@
 
 package org.apromore.mapper;
 
+import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -36,7 +37,6 @@ import org.apromore.dao.model.Role;
 import org.apromore.dao.model.SearchHistory;
 import org.apromore.dao.model.User;
 import org.apromore.portal.model.*;
-import org.apromore.security.util.SecurityUtil;
 import org.apromore.service.SecurityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -170,19 +170,24 @@ public class UserMapper {
         
         Membership membership = new Membership();
         if (userType.getMembership() != null) {
-            membership.setSalt("username");
             membership.setDateCreated(new Date());
             membership.setEmail(userType.getMembership().getEmail());
-            if (userType.getMembership().getPassword() != null) {
-                membership.setPassword(SecurityUtil.hashPassword(userType.getMembership().getPassword()));
-            } else {
-                membership.setPassword("");
-            }
             membership.setQuestion(userType.getMembership().getPasswordQuestion());
             membership.setAnswer(userType.getMembership().getPasswordAnswer());
             membership.setFailedPasswordAttempts(0);
             membership.setFailedAnswerAttempts(0);
             membership.setUser(user);
+
+            if (userType.getMembership().getPassword() != null) {
+                try {
+                    securityService.updatePassword(membership, userType.getMembership().getPassword());
+
+                } catch (NoSuchAlgorithmException e) {
+                    throw new IllegalArgumentException("Unable to hash password for " + userType.getUsername(), e);
+                }
+            } else {
+                membership.setPassword("");
+            }
 
             user.setMembership(membership);
         }

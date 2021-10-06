@@ -29,7 +29,13 @@ import java.time.LocalTime;
 import java.time.OffsetTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
-import java.util.*;
+import java.util.Map;
+import java.util.List;
+import java.util.HashMap;
+import java.util.Date;
+import java.util.Comparator;
+import java.util.Set;
+import java.util.ArrayList;
 
 import org.apromore.calendar.exception.CalendarNotExistsException;
 import org.apromore.calendar.model.CalendarModel;
@@ -46,9 +52,7 @@ import org.apromore.plugin.portal.calendar.pageutil.PageUtils;
 import org.slf4j.Logger;
 import org.zkoss.json.JSONArray;
 import org.zkoss.json.JSONObject;
-import org.zkoss.web.Attributes;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.EventQueue;
@@ -75,11 +79,13 @@ import org.zkoss.zul.Window;
 import lombok.Getter;
 import lombok.Setter;
 
+import org.apromore.plugin.portal.calendar.LabelSupplier;
+
 /**
  * Controller for handling calendar interface Corresponds to calendar.zul
  */
 @VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
-public class Calendar extends SelectorComposer<Window> {
+public class Calendar extends SelectorComposer<Window> implements LabelSupplier {
 
     @WireVariable("calendarService")
     CalendarService calendarService;
@@ -153,6 +159,8 @@ public class Calendar extends SelectorComposer<Window> {
         populateTimeZone();
         initialize();
         win.setTitle("Custom Calendar - " + calendarModel.getName());
+
+        win.addEventListener("onClose", (Event event) -> onClickCancelBtn());
 
         actionBridge.addEventListener("onLoaded", (Event event) -> rebuild());
         actionBridge.addEventListener("onSyncRows", (Event event) -> syncRows());
@@ -230,17 +238,26 @@ public class Calendar extends SelectorComposer<Window> {
                 selectedZone = currentZone;
             }
         }
-        zoneModel.addToSelection(selectedZone);
+        if (selectedZone != null) {
+            zoneModel.addToSelection(selectedZone);
+        }
         zoneModel.setMultiple(false);
         zoneModel.sort(Comparator.comparing(Zone::getZoneDisplayName));
         ListModel listSubModel = ListModels.toListSubModel(zoneModel, zoneComparator, zoneIds.size());
         zoneCombobox.setModel(listSubModel);
-    }
-
-    public ResourceBundle getLabels() {
-        Locale locale = (Locale) Sessions.getCurrent().getAttribute(Attributes.PREFERRED_LOCALE);
-        return ResourceBundle.getBundle("calendar", locale,
-                Calendars.class.getClassLoader());
+        zoneCombobox.addEventListener("onClientTimeZone", (Event event) -> {
+            if (zoneModel.getSelection().isEmpty()) {
+                return;
+            }
+            String zoneId = (String) event.getData();
+            int zoneIdx = zoneModel.indexOf(new Zone(zoneId, getZoneDisplayDescription(ZoneId.of(zoneId))));
+            if (zoneIdx != -1) {
+                zoneModel.clearSelection();
+                Zone newSelection = zoneModel.get(zoneIdx);
+                zoneModel.addToSelection(newSelection);
+            }
+        });
+        Clients.evalJavaScript("Ap.common.getClientTimeZone('$zoneCombobox', 'onClientTimeZone')");
     }
 
     private String getZoneDisplayDescription(ZoneId zoneId) {

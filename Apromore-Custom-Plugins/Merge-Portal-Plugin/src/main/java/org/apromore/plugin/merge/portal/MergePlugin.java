@@ -48,6 +48,7 @@ import org.apromore.portal.model.ProcessVersionIdsType;
 import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.service.DomainService;
+import org.apromore.zk.label.LabelSupplier;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import org.zkoss.util.resource.Labels;
@@ -66,7 +67,7 @@ import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
 @Component
-public class MergePlugin extends DefaultPortalPlugin {
+public class MergePlugin extends DefaultPortalPlugin implements LabelSupplier {
 
     @Inject
     private MergeService mergeService;
@@ -109,6 +110,11 @@ public class MergePlugin extends DefaultPortalPlugin {
     @Override
     public String getIconPath() {
         return "merge_model.svg";
+    }
+
+    @Override
+    public String getBundleName() {
+        return "processmerge";
     }
 
     @Override
@@ -158,8 +164,10 @@ public class MergePlugin extends DefaultPortalPlugin {
     {
         this.context = context;
 
-        this.processMergeW = (Window) context.getUI().createComponent(getClass().getClassLoader(), "zul/processmerge.zul", null, null);
-        this.processMergeW.setTitle(Labels.getLabel("merge_title_text", "Process merging"));
+        Map<String, Object> args = new HashMap<>();
+        args.put("labels", getLabels());
+        this.processMergeW = (Window) context.getUI().createComponent(getClass().getClassLoader(), "zul/processmerge.zul", null, args);
+        this.processMergeW.setTitle(getLabel("title_text"));
 
         Row processNameR = (Row) this.processMergeW.getFellow("mergednamep");
         this.processNameT = (Textbox) processNameR.getFirstChild().getNextSibling();

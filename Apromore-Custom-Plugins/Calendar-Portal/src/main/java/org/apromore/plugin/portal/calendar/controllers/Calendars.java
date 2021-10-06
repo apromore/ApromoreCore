@@ -25,18 +25,18 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
 
+import org.apromore.dao.model.Log;
 import org.apromore.calendar.exception.CalendarAlreadyExistsException;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.calendar.service.CalendarService;
+import org.apromore.service.EventLogService;
 import org.apromore.commons.datetime.DateTimeUtils;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.calendar.CalendarItemRenderer;
 import org.apromore.plugin.portal.calendar.pageutil.PageUtils;
 import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
-import org.zkoss.web.Attributes;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
@@ -53,11 +53,13 @@ import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Window;
 
 import org.apromore.plugin.portal.calendar.CalendarEvents;
+import org.apromore.plugin.portal.calendar.LabelSupplier;
+
 /**
  * Controller for handling calendar interface Corresponds to calendars.zul
  */
 @VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
-public class Calendars extends SelectorComposer<Window> {
+public class Calendars extends SelectorComposer<Window> implements LabelSupplier {
 
     private static Logger LOGGER = PortalLoggerFactory.getLogger(Calendars.class);
 
@@ -79,6 +81,9 @@ public class Calendars extends SelectorComposer<Window> {
     @WireVariable("calendarService")
     CalendarService calendarService;
 
+    @WireVariable("eventLogService")
+    private EventLogService eventLogService;
+
     private EventQueue calendarEventQueue;
 
     private ListModelList<CalendarModel> calendarListModel;
@@ -92,6 +97,7 @@ public class Calendars extends SelectorComposer<Window> {
     public void doAfterCompose(Window win) throws Exception {
         super.doAfterCompose(win);
         initialize();
+        win.setTitle(getLabels().getString("title_text"));
         win.addEventListener("onClose", new EventListener<Event>() {
 
             @Override
@@ -105,7 +111,7 @@ public class Calendars extends SelectorComposer<Window> {
         Integer logId = (Integer) Executions.getCurrent().getArg().get("logId");
         applyCalendarBtn.setDisabled(true);
         restoreBtn.setDisabled(true);
-        calendarEventQueue = EventQueues.lookup(CalendarService.EVENT_TOPIC, false);
+        calendarEventQueue = EventQueues.lookup(CalendarService.EVENT_TOPIC, EventQueues.DESKTOP,true);
 
         appliedCalendarId = (Long) Executions.getCurrent().getArg().get("calendarId");
         CalendarItemRenderer itemRenderer = new CalendarItemRenderer(calendarService, appliedCalendarId);
@@ -124,14 +130,14 @@ public class Calendars extends SelectorComposer<Window> {
                     LOGGER.warn("Double deletion might have occurred");
                 }
                 populateCalendarList();
+            } else if (CalendarEvents.ON_CALENDAR_BEFORE_REMOVE.equals(event.getName())) {
+                CalendarModel calendarItem = (CalendarModel) event.getData();
+                beforeRemoveCalendar(calendarItem);
+            } else if (CalendarEvents.ON_CALENDAR_REMOVE.equals(event.getName())) {
+                CalendarModel calendarItem = (CalendarModel) event.getData();
+                removeCalendar(calendarItem);
             }
         });
-    }
-
-    public ResourceBundle getLabels() {
-        Locale locale = (Locale) Sessions.getCurrent().getAttribute(Attributes.PREFERRED_LOCALE);
-        return ResourceBundle.getBundle("calendar", locale,
-                Calendars.class.getClassLoader());
     }
 
     public void populateCalendarList() {
@@ -144,9 +150,42 @@ public class Calendars extends SelectorComposer<Window> {
                 applyCalendarBtn.setDisabled(false);
                 restoreBtn.setDisabled(false);
             }
-
         }
         calendarListbox.setModel(calendarListModel);
+    }
+
+    public void beforeRemoveCalendar(CalendarModel calendarItem) {
+        List<Log> relatedLogList = eventLogService.getLogListFromCalendarId(calendarItem.getId());
+        if (relatedLogList == null || relatedLogList.isEmpty()) {
+            calendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_REMOVE, null, calendarItem));
+        } else {
+            try {
+                Map<String, Object> arg = new HashMap<>();
+                arg.put("calendarItem", calendarItem);
+                Window window = (Window) Executions.getCurrent()
+                        .createComponents(PageUtils.getPageDefinition("calendar/zul/delete-confirm.zul"), null, arg);
+                window.doModal();
+            } catch (Exception e) {
+                String msg = getLabels().getString("failed_remove_cal_message");
+                LOGGER.error(msg, e);
+                Notification.error(msg);
+            }
+        }
+    }
+
+    public void removeCalendar(CalendarModel calendarItem) {
+        try {
+            // Update listbox. onSelect is sent when an item is selected or deselected.
+            calendarListModel.remove(calendarItem);
+            calendarService.deleteCalendar(calendarItem.getId());
+            updateApplyCalendarButton();
+            restoreBtn.setDisabled(calendarService.getCalendars().stream().noneMatch(c -> c.getId().equals(appliedCalendarId)));
+        } catch (Exception e) {
+            String msg = getLabels().getString("failed_remove_cal_message");
+            LOGGER.error(msg, e);
+            Notification.error(msg);
+        }
+        populateCalendarList();
     }
 
     @Listen("onClick = #cancelBtn")
@@ -158,7 +197,8 @@ public class Calendars extends SelectorComposer<Window> {
     @Listen("onClick = #selectBtn")
     public void onClickPublishBtn() {
         String logName = selectedLog.getValue();
-        String infoText = String.format("Custom calendar applied to log %s", logName);
+        String msg = getLabels().getString("success_apply_message");
+        String infoText = String.format(msg, logName);
         Notification.info(infoText);
         calendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_PUBLISH, null,
                 ((CalendarModel) calendarListModel.getSelection().iterator().next()).getId()));
@@ -170,7 +210,8 @@ public class Calendars extends SelectorComposer<Window> {
     public void onClickAddNewCalendar() {
         CalendarModel model;
         try {
-            String calendarName = "Business Calendar 9 to 5 created on " + DateTimeUtils.humanize(LocalDateTime.now());
+            String msg = getLabels().getString("created_default_cal_message");
+            String calendarName = msg + " " + DateTimeUtils.humanize(LocalDateTime.now());
             model = calendarService.createBusinessCalendar(calendarName, true, ZoneId.systemDefault().toString());
             populateCalendarList();
             updateApplyCalendarButton();
@@ -184,8 +225,9 @@ public class Calendars extends SelectorComposer<Window> {
                         .createComponents(PageUtils.getPageDefinition("calendar/zul/calendar.zul"), null, arg);
                 window.doModal();
             } catch (Exception e) {
-                LOGGER.error("Unable to create custom calendar dialog", e);
-                // Notification.error("Unable to create custom calendar dialog");
+                msg = getLabels().getString("failed_create_message");
+                LOGGER.error(msg, e);
+                Notification.error(msg);
             }
         } catch (CalendarAlreadyExistsException e) {
             // TODO Auto-generated catch block
@@ -198,18 +240,13 @@ public class Calendars extends SelectorComposer<Window> {
         updateApplyCalendarButton();
     }
 
-    @Listen("onDeleteCalendar = #calendarListbox")
-    public void onDeleteCalendarItem() {
-        updateApplyCalendarButton();
-        restoreBtn.setDisabled(calendarService.getCalendars().stream().noneMatch(c -> c.getId().equals(appliedCalendarId)));
-    }
-
     @Listen("onClick = #restoreBtn")
     public void onClickRestoreBtn() {
-      calendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_PUBLISH, null,null));
+        calendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_PUBLISH, null,null));
         getSelf().detach();
         String logName = selectedLog.getValue();
-        String infoText = String.format("Log %s's original calendar has been restored", logName);
+        String msg = getLabels().getString("success_restore_message");
+        String infoText = String.format(msg, logName);
         Notification.info(infoText);
     }
 

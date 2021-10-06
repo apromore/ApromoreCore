@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- This file has been generated with the OpenXES library. It conforms -->
+<!-- to the XML serialization of the XES standard for log storage and -->
+<!-- management. -->
+<!-- XES standard version: 2.0 -->
+<!-- OpenXES library version: 2.27 -->
+<!-- OpenXES is available from http://www.openxes.org/ -->
+<log xes.version="2.0" xes.features="nested-attributes" openxes.version="2.27">
+	<extension name="Lifecycle" prefix="lifecycle" uri="http://www.xes-standard.org/lifecycle.xesext"/>
+	<extension name="Organizational" prefix="org" uri="http://www.xes-standard.org/org.xesext"/>
+	<extension name="Time" prefix="time" uri="http://www.xes-standard.org/time.xesext"/>
+	<extension name="Concept" prefix="concept" uri="http://www.xes-standard.org/concept.xesext"/>
+	<string key="concept:name" value="Anonymous log imported from"/>
+	<string key="lifecycle:model" value="standard"/>
+	<trace>
+		<string key="concept:name" value="339"/>
+		<event>
+			<string key="org:resource" value="Requester"/>
+			<string key="concept:name" value="Nico Ojenbeer"/>
+			<string key="lifecycle:transition" value="start"/>
+			<date key="time:timestamp" value="2011-02-16T14:31:00+11:00"/>
+		</event>
+		<event>
+			<string key="org:resource" value="Requester"/>
+			<string key="concept:name" value="Nico Ojenbeer"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2011-02-16T15:23:00+11:00"/>
+		</event>
+		<event>
+			<string key="org:resource" value="Requester Manager"/>
+			<string key="concept:name" value="Maris Freeman"/>
+			<string key="lifecycle:transition" value="start"/>
+			<date key="time:timestamp" value="2011-02-17T09:34:00+11:00"/>
+		</event>
+		<event>
+			<string key="org:resource" value="Requester Manager"/>
+			<string key="concept:name" value="Maris Freeman"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2011-02-17T09:40:00+11:00"/>
+		</event>
+		<event>
+			<string key="org:resource" value="Requester"/>
+			<string key="concept:name" value="Elvira Lores"/>
+			<string key="lifecycle:transition" value="start"/>
+			<date key="time:timestamp" value="2011-02-17T21:29:00+11:00"/>
+		</event>
+		<event>
+			<string key="org:resource" value="Requester"/>
+			<string key="concept:name" value="Elvira Lores"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2011-02-17T21:52:00+11:00"/>
+		</event>
+		<event>
+			<string key="org:resource" value="Requester Manager"/>
+			<string key="concept:name" value="Heinz Gutschmidt"/>
+			<string key="lifecycle:transition" value="start"/>
+			<date key="time:timestamp" value="2011-02-18T17:24:00+11:00"/>
+		</event>
+		<event>
+			<string key="org:resource" value="Requester Manager"/>
+			<string key="concept:name" value="Heinz Gutschmidt"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2011-02-18T17:30:00+11:00"/>
+		</event>
+		<event>
+			<string key="org:resource" value="Requester Manager"/>
+			<string key="concept:name" value="Francis Odell"/>
+			<string key="lifecycle:transition" value="start"/>
+			<date key="time:timestamp" value="2011-02-18T17:36:00+11:00"/>
+		</event>
+		<event>
+			<string key="org:resource" value="Requester Manager"/>
+			<string key="concept:name" value="Francis Odell"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2011-02-18T17:38:00+11:00"/>
+		</event>
+		<event>
+			<string key="org:resource" value="Purchasing Agent"/>
+			<string key="concept:name" value="Magdalena Predutta"/>
+			<string key="lifecycle:transition" value="start"/>
+			<date key="time:timestamp" value="2011-02-22T09:34:00+11:00"/>
+		</event>
+		<event>
+			<string key="org:resource" value="Purchasing Agent"/>
+			<string key="concept:name" value="Magdalena Predutta"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2011-02-22T09:58:00+11:00"/>
+		</event>
+		<event>
+			<string key="org:resource" value="Requester Manager"/>
+			<string key="concept:name" value="Penn Osterwalder"/>
+			<string key="lifecycle:transition" value="start"/>
+			<date key="time:timestamp" value="2011-02-22T10:50:00+11:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Penn Osterwalder"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<date key="time:timestamp" value="2011-02-22T11:03:00+11:00"/>
+		</event>
+	</trace>
+</log>

@@ -28,4 +28,6 @@ public abstract class CalendarEvents {
 
     public static final String ON_CALENDAR_PUBLISH = "onCalendarPublish";
     public static final String ON_CALENDAR_ABANDON = "onCalendarAbandon";
+    public static final String ON_CALENDAR_BEFORE_REMOVE = "onCalendarBeforeRemove";
+    public static final String ON_CALENDAR_REMOVE = "onCalendarRemove";
 }

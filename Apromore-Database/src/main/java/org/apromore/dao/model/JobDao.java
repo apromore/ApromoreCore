@@ -46,16 +46,14 @@ public class JobDao implements Serializable {
 
     private Long id;
     private String dagId;
-    private List<DagConnection> connections = new ArrayList<>();
-    private List<StaticLog> staticLogs = new ArrayList<>();
     private OutputLogInfo logInfo;
-    private String finalTransformQuery;
     private String schedule;
     private String username;
     private String pipelineName;
     private boolean error;
     private int scheduleVersionNumber;
     private boolean paused;
+    private String timeZoneId;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -64,24 +62,9 @@ public class JobDao implements Serializable {
         return id;
     }
 
-    @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, orphanRemoval = true)
-    public List<DagConnection> getConnections() {
-        return connections;
-    }
-
-    @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, orphanRemoval = true)
-    public List<StaticLog> getStaticLogs() {
-        return staticLogs;
-    }
-
     @Column(name = "dag_id")
     public String getDagId() {
         return dagId;
-    }
-
-    @Column(name = "final_transform_query")
-    public String getFinalTransformQuery() {
-        return finalTransformQuery;
     }
 
     @Column(name = "schedule")
@@ -114,17 +97,13 @@ public class JobDao implements Serializable {
         return paused;
     }
 
+    @Column(name = "time_zone_id")
+    public String getTimeZoneId() {
+        return timeZoneId;
+    }
+
     @Embedded
     public OutputLogInfo getLogInfo() {
         return logInfo;
-    }
-
-    public void synchronizedMetaData() {
-        for (DagConnection connection : connections) {
-            connection.setJob(this);
-        }
-        for (StaticLog staticLog : staticLogs) {
-            staticLog.setJob(this);
-        }
     }
 }

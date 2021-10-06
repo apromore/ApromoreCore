@@ -93,13 +93,13 @@ public class UserMetadataServiceImpl implements UserMetadataService {
 
     @Override
     @Transactional
-    public void saveUserMetadata(String userMetadataName, String userMetadataContent, UserMetadataTypeEnum userMetadataTypeEnum,
+    public Usermetadata saveUserMetadata(String userMetadataName, String userMetadataContent, UserMetadataTypeEnum userMetadataTypeEnum,
                                                String username,
                                                Integer logId) throws UserNotFoundException {
 
         ArrayList<Integer> logIds = new ArrayList<>(Collections.singletonList(logId));
 
-        saveUserMetadata(userMetadataName, userMetadataContent, userMetadataTypeEnum, username, logIds);
+        return saveUserMetadata(userMetadataName, userMetadataContent, userMetadataTypeEnum, username, logIds);
     }
 
     @Override

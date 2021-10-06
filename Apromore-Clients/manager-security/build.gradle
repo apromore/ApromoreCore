@@ -5,5 +5,6 @@ description = 'Apromore Manager Security Handler'
 
 dependencies {
     implementation project(':Apromore-Clients:portal-model')
+    api project(':Apromore-Database')
     compileOnly 'javax.servlet:javax.servlet-api'    
 }

@@ -1,0 +1,51 @@
+<window id="relatedLogsWin"
+        title="Related logs"
+        width="720px"
+        height="400px"
+        apply="org.apromore.plugin.portal.calendar.controllers.DeleteConfirm"
+        position="center,center"
+        closable="true">
+  <vbox hflex="1"
+        vflex="1"
+        spacing="0">
+    <div vflex="min" style="padding: 10px">
+      The logs associated with this calendar you are about to delete will be restored to use the default calendar.
+    </div>
+    <listbox id="relatedLogListbox"
+             vflex="1"
+             hflex="1"
+             nonselectableTags="*"
+             mold="default">
+      <listhead>
+        <listheader align="left"
+                    label="Name"
+                    hflex="1"
+                    sort="auto(name)"/>
+        <listheader align="center"
+                    label="Created on"
+                    width="150px"
+                    sort="auto(date)"/>
+      </listhead>
+      <template name="model">
+        <listitem>
+          <listcell>
+            ${each.name}
+          </listcell>
+          <listcell>
+            ${each.date}
+          </listcell>
+        </listitem>
+      </template>
+    </listbox>
+    <div sclass="ap-window-footer-actions"
+         height="42px">
+      <button id="continueBtn"
+              label="${$composer.labels.continue_text}"
+              iconSclass="z-icon-check-circle"
+              tooltiptext="${$composer.labels.continue_hint}"/>
+      <button id="cancelBtn"
+              label="${$composer.labels.cancel_text}"
+              iconSclass="z-icon-times-circle"/>
+    </div>
+  </vbox>
+</window>

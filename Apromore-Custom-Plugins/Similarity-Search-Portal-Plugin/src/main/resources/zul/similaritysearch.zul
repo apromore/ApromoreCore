@@ -22,14 +22,14 @@
   -->
 <?component name="FolderTree" macroURI="~./macros/folderTree.zul" ?>
 
-<window width="780px" closable="false" position="center" title="Search for similar processes" sclass="ap-simsearch">
+<window width="780px" closable="false" position="center" title="${arg.labels.title_text}" sclass="ap-simsearch">
 	<caption>
         <toolbarbutton iconSclass="ap-icon ap-icon-help" href="https://documentation.apromore.org/redesign/searchsimilarmodels.html" target="_blank" />
     </caption>
     <vlayout width="100%" spacing="0">
         <hbox width="100%" widths="40%,60%" vflex="1" spacing="0">
             <borderlayout vflex="true" width="100%">
-                <center title="Select Folder" hflex="1" vflex="1" style="border: none">
+                <center title="${arg.labels.select_folder_text}" hflex="1" vflex="1" style="border: none">
                     <FolderTree id="mainTree" hflex="1" vflex="1" />
                 </center>
             </borderlayout>
@@ -42,42 +42,42 @@
                     </columns>
                     <rows>
                         <row id="similaritySearchAlgoChoice">
-                            <label value="Algorithm (please choose one)" width="100%" />
+                            <label value="${arg.labels.choose_algo_text}" width="100%" />
                             <listbox width="100%" />
                         </row>
                         <row id="modelthreshold" visible="false">
-                            <label value="Model sim. threshold" width="100%" />
+                            <label value="${arg.labels.model_treshold_text}" width="100%" />
                             <doublebox value="0.6" width="100%" />
                         </row>
                         <row id="labelthreshold" visible="false">
-                            <label value="Label sim. threshold" width="100%" />
+                            <label value="${arg.labels.label_treshold_text}" width="100%" />
                             <doublebox value="0.6" width="100%" />
                         </row>
                         <row id="contextthreshold" visible="false">
-                            <label value="Context sim. threshold" width="100%" />
+                            <label value="${arg.labels.context_treshold_text}" width="100%" />
                             <doublebox value="0.75" width="100%" />
                         </row>
                         <row id="skipeweight" visible="false">
-                            <label value="Skip-e weight" width="100%" />
+                            <label value="${arg.labels.skip_e_weight_text}" width="100%" />
                             <doublebox value="1" width="100%" />
                         </row>
                         <row id="subeweight" visible="false">
-                            <label value="Sub-e weight" width="100%" />
+                            <label value="${arg.labels.sub_e_weight_text}" width="100%" />
                             <doublebox value="1" width="100%" />
                         </row>
                         <row id="skipnweight" visible="false">
-                            <label value="Skip-n weight" width="100%" />
+                            <label value="${arg.labels.skip_n_weight_text}" width="100%" />
                             <doublebox value="1" width="100%" />
                         </row>
                         <row id="subnweight" visible="false">
-                            <label value="Sub-n weight" width="100%" />
+                            <label value="${arg.labels.sub_n_weight_text}" width="100%" />
                             <doublebox value="1" width="100%" />
                         </row>
                         <row spans="2">
                             <hbox width="100%">
                                 <radiogroup id="allVersionsChoiceRG" >
-                                    <radio id="latestVersions" label="Search latest versions only" checked="true" />
-                                    <radio id="allVersions" label="Search all versions" />
+                                    <radio id="latestVersions" label="${arg.labels.search_latest_text}" checked="true" />
+                                    <radio id="allVersions" label="${arg.labels.search_all_text}" />
                                 </radiogroup>
                             </hbox>
                         </row>
@@ -97,9 +97,9 @@
             <rows>
                 <row id="similaritySearchButtons" sclass="ap-window-footer-actions">
                     <div align="right">
-                        <button id="similaritySearchOKbutton" label="OK" iconSclass="z-icon-check-circle" disabled="true">
+                        <button id="similaritySearchOKbutton" label="${arg.labels.ok_text}" iconSclass="z-icon-check-circle" disabled="true">
                         </button>
-                        <button id="similaritySearchCancelbutton" label="Cancel" iconSclass="z-icon-times-circle">
+                        <button id="similaritySearchCancelbutton" label="${arg.labels.cancel_text}" iconSclass="z-icon-times-circle">
                         </button>
                     </div>
                 </row>

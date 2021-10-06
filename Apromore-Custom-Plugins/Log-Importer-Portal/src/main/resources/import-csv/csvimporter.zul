@@ -36,7 +36,7 @@
         <caption>
             <toolbarbutton iconSclass="ap-icon ap-icon-help" href="https://documentation.apromore.org/theapromoreportal/uploadafile.html" target="_blank" />
         </caption>
-        <popup id="popUpHelp" style="padding:0px;">
+        <popup id="popUpHelp" style="padding:0px; line-height: 18px;">
             <vbox>
                 <html>
                     <ul style= "margin: 0px;

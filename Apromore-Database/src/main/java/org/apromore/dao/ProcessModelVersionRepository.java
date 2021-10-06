@@ -126,4 +126,5 @@ public interface ProcessModelVersionRepository extends JpaRepository<ProcessMode
     }, forCounting = false)
     List<ProcessModelVersion> getLatestProcessModelVersionsByUser(final String userId);
 
+    Long countByStorageId(Long storageId);
 }

@@ -78,7 +78,6 @@ zk.afterMount(function() {
     newRanges.forEach((range, index) => { range.index = index; });
     dayOfWeek[dow].ranges = newRanges;
     dayOfWeek[dow].workday = workday;
-    console.log(dow, newRanges, workday);
     updateRow(dow);
   };
 
@@ -132,7 +131,6 @@ zk.afterMount(function() {
             dayOfWeek[dow].workday = false;
         }
         sendCalendarEvent('onUpdateRanges', { dow, ranges: dayOfWeek[dow].ranges, workday: dayOfWeek[dow].workday });
-        console.log(dow, dayOfWeek[dow].ranges, dayOfWeek[dow].workday);
       }
     }
   };
@@ -155,7 +153,6 @@ zk.afterMount(function() {
   };
 
   Ap.calendar.syncRows = function() {
-    console.log('syncRows requested');
     setTimeout(
         () => { sendCalendarEvent('onSyncRows', {}); },
         600
@@ -307,7 +304,6 @@ zk.afterMount(function() {
   function rangeTip(dow, hour, min) {
     let range = findRange(dow, hour, min);
     if (range) {
-      console.log(JSON.stringify(range, null, 2));
       let { startHour, startMin, endHour, endMin } = range;
       const tip = digit2(startHour) + ":" + digit2(startMin) + " - " + digit2(endHour) + ":" + digit2(endMin);
       return tip;

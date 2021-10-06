@@ -106,6 +106,13 @@ input {
     line-height: 16px;
 }
 
+.z-combobox-popup,
+.z-bandbox-popup,
+.z-datebox-popup,
+.z-timebox-popup {
+    border-color: var(--ap-input-outline-hover);
+}
+
 .z-label {
     line-height: 15px;
 }
@@ -214,6 +221,10 @@ input {
     border-radius: 0px;
 }
 
+.z-comboitem-selected {
+    color: var(--ap-c-oceanic-dark-3);
+}
+
 .z-combobox-icon {
     line-height: 18px;
 }
@@ -300,7 +311,8 @@ input {
 .z-radio input[type="radio"]:hover,
 .z-combobox-input:hover,
 .z-combobox-input:hover + .z-combobox-button,
-.z-combobox:hover .z-combobox-input {
+.z-combobox:hover .z-combobox-input,
+.z-combobox-button:hover {
     border-color: var(--ap-input-outline-hover);
 }
 
@@ -930,4 +942,35 @@ tr.z-row-disabled td.z-row-inner .z-slider-area {
 
 .z-messagebox-viewport .z-messagebox-icon {
     margin-left: 12px;
+}
+
+/* Text color fixer for ZK 9.6 */
+.z-menupopup .z-menu-content,.z-menupopup .z-menuitem-content,
+.z-menupopup .z-menu-content:hover,.z-menupopup .z-menuitem-content:hover,
+.z-menupopup .z-menu-content:focus,.z-menupopup .z-menuitem-content:focus,
+.z-menupopup .z-menu-hover>.z-menu-content,.z-menupopup .z-menuitem-hover>.z-menuitem-content,
+.z-menubar-icon,
+.z-panel-header,
+.z-panel-icon,
+.z-tabbox-icon,
+.z-tab-text,
+.z-tab-button,
+.z-toolbarbutton,
+.z-window-header,
+.z-window-icon {
+    color: #4d4d4d;
+}
+
+.z-progressmeter-image {
+    background-color: var(--ap-c-oceanic-dark-1);
+}
+
+.z-window-icon {
+    width: 24px;
+    margin: -1px -4px 0 5px;
+}
+
+button.z-window-icon > [class^="z-icon-"],
+button.z-window-icon > [class*=" z-icon-"] {
+    font-family: ZK85Icons, FontAwesome;
 }

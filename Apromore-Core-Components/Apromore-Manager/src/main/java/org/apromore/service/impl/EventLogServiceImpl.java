@@ -47,6 +47,7 @@ import org.apromore.dao.model.Log;
 import org.apromore.dao.model.Storage;
 import org.apromore.dao.model.User;
 import org.apromore.dao.model.Usermetadata;
+import org.apromore.exception.EventLogException;
 import org.apromore.exception.NotAuthorizedException;
 import org.apromore.exception.UserMetadataException;
 import org.apromore.exception.UserNotFoundException;
@@ -65,6 +66,7 @@ import org.apromore.util.AccessType;
 import org.apromore.util.StringUtil;
 import org.apromore.util.UserMetadataTypeEnum;
 import org.deckfour.xes.extension.std.XConceptExtension;
+import org.deckfour.xes.extension.std.XOrganizationalExtension;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryRegistry;
 import org.deckfour.xes.in.XMxmlGZIPParser;
@@ -73,6 +75,7 @@ import org.deckfour.xes.in.XParser;
 import org.deckfour.xes.in.XParserRegistry;
 import org.deckfour.xes.in.XesXmlGZIPParser;
 import org.deckfour.xes.in.XesXmlParser;
+import org.deckfour.xes.model.XAttributeMap;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
@@ -94,6 +97,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -278,6 +282,7 @@ public class EventLogServiceImpl implements EventLogService {
      * @param domain         the domain of the model
      * @param created        the time created
      * @param publicModel    is this a public model?
+     * @param perspective    whether generate default perspective for this log
      * @return Log
      * @throws UserNotFoundException when a particular user is not found using
      *                               specified username
@@ -285,13 +290,20 @@ public class EventLogServiceImpl implements EventLogService {
      */
     @Override
     public Log importLog(String username, Integer folderId, String logName, InputStream inputStreamLog,
-            String extension, String domain, String created, boolean publicModel) throws Exception {
+            String extension, String domain, String created, boolean publicModel, boolean perspective) throws Exception {
 	User user = userSrv.findUserByLogin(username);
 
 	XFactory factory = XFactoryRegistry.instance().currentDefault();
 	LOGGER.info("Import XES log " + logName + " using " + factory.getClass());
 	XLog xLog = importFromStream(factory, inputStreamLog, extension);
-	return importLog(folderId, logName, domain, created, publicModel, user, xLog);
+	Log log = importLog(folderId, logName, domain, created, publicModel, user, xLog);
+
+	// Generate default perspective list when import from XES
+	if (perspective) {
+		savePerspectiveByLog(getDefaultPerspectiveFromLog(log.getId()), log.getId(), username);
+	}
+
+	return log;
     }
 
     @Override
@@ -479,7 +491,7 @@ public class EventLogServiceImpl implements EventLogService {
     public XLog getXLog(Integer logId, String factoryName) {
 	Log log = logRepo.findUniqueByID(logId);
 	XLog xLog = tempCacheService.getProcessLog(log, factoryName);
-	LOGGER.info("[--IMPORTANT--] Plugin take over control ");
+	LOGGER.info("Read XLog Id = {}", logId);
 	return xLog;
     }
 
@@ -557,14 +569,14 @@ public class EventLogServiceImpl implements EventLogService {
 	CustomCalendar calendar = logRepo.findUniqueByID(logId).getCalendar();
 	return calendar != null ? calendarService.getCalendar(calendar.getId()) : calendarService.getGenericCalendar();
     }
-    
-    
+
+
     @Override
-    public List<Log> getLogListFromCalendarId(Long calendarId) {    
-      return logRepo.findByCalendarId(calendarId);      
+    public List<Log> getLogListFromCalendarId(Long calendarId) {
+      return logRepo.findByCalendarId(calendarId);
     }
-    
-    
+
+
 
     @Override
     public boolean saveFileToVolume(String filename, String prefix, ByteArrayOutputStream baos) throws Exception {
@@ -605,7 +617,59 @@ public class EventLogServiceImpl implements EventLogService {
 			throw new UserMetadataException("Could not deserialize JSON content from given JSON content String: " + jsonString, e);
 		}
 
-		LOGGER.debug("Get perspective list for log (ID: {}): {}", logId, perspectiveList);
+		LOGGER.info("Get perspective list for log (ID: {}): {}", logId, perspectiveList);
 		return perspectiveList;
+	}
+
+	@Override
+	public Usermetadata savePerspectiveByLog(List<String> perspectives, Integer logId, String username) throws UserMetadataException, UserNotFoundException {
+
+		String perspectivesJsonStr;
+		ObjectMapper objectMapper = new ObjectMapper();
+		try {
+			perspectivesJsonStr = objectMapper.writeValueAsString(perspectives);
+			return userMetadataService.saveUserMetadata("Default Perspective Tag", perspectivesJsonStr,
+					UserMetadataTypeEnum.PERSPECTIVE_TAG, username, logId);
+		} catch (JsonProcessingException e) {
+			throw new UserMetadataException("Could not serialize given perspective list: " + perspectives.toString(), e);
+		}
+	}
+
+	@Override
+	public List<String> getDefaultPerspectiveFromLog(Integer logId) throws EventLogException {
+
+		List<String> perspectives;
+		boolean hasResource = true;
+		XLog xLog = getXLog(logId);
+
+		if (userMetadataService.getUserMetadataByLog(logId, UserMetadataTypeEnum.PERSPECTIVE_TAG).size() != 0) {
+			throw new EventLogException("Found existing perspective list for event log with Id: " + logId);
+		}
+
+		if (xLog == null) {
+			throw new EventLogException("Failed to get event log with Id: " + logId);
+		}
+
+		if (xLog.size() != 0) {
+			xLog:
+			for(XTrace trace : xLog) {
+				for(XEvent event : trace) {
+					XAttributeMap attributeMap = event.getAttributes();
+					if (!attributeMap.containsKey(XOrganizationalExtension.KEY_RESOURCE)) {
+						hasResource = false;
+						break xLog;
+					}
+				}
+			}
+		} else {
+			throw new EventLogException("Found empty event log with Id: " + logId);
+		}
+
+		perspectives =  hasResource ? Arrays.asList(XConceptExtension.KEY_NAME,
+				XOrganizationalExtension.KEY_RESOURCE) :
+				List.of(XConceptExtension.KEY_NAME);
+
+		return perspectives;
+
 	}
 }

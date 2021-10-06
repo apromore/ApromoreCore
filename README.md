@@ -42,23 +42,25 @@ By default, Apromore Core uses MySQL database. For casual evaluation, Apromore c
 
 * Ensure MySQL is configured to accept local TCP connections on port 3306 in its .cnf file; "skip-networking" should not be present.
 
-* Create a database named 'apromore' in your MySQL server. Also create 2 user accounts which use the Apromore application.
-* You will be prompted to enter the root password of MySQL
+* Create a database named `apromore` and two user accounts `apromore` and `liquibase_user` as per the sample commands below.
+  Choose passwords for the user accounts.
+  You will be prompted to enter the root password of MySQL.
 
 ```bash
 mysql -u root -p
 CREATE DATABASE apromore CHARACTER SET utf8 COLLATE utf8_general_ci;
 
-CREATE USER 'apromore'@'%' IDENTIFIED BY 'Apromore#!dev';
+CREATE USER 'apromore'@'%' IDENTIFIED BY 'choose a password';
 GRANT SELECT, INSERT, UPDATE, DELETE, LOCK TABLES, EXECUTE, SHOW VIEW ON apromore.* TO 'apromore'@'%';
 
-CREATE USER 'liquibase_user'@'%' IDENTIFIED BY 'Apromore#!dev';
+CREATE USER 'liquibase_user'@'%' IDENTIFIED BY 'choose another password';
 GRANT ALL PRIVILEGES ON apromore.* TO 'liquibase_user'@'%';
-	
 ```
 
-* Verify the database configuration in application.poperties file in directory 'ApromoreCore/Apromore-Boot/src/main/resources/application.properties'
-* Execute `./gradlew bu bR` to compile the source code and run the project using MYSQL database.
+* Set the environment variables `SPRING_DATASOURCE_PASSWORD` and `SPRING_LIQUIBASE_PASSWORD` to the passwords of the `apromore` and `liquibase_user` accounts respectively.
+  Alternatively, set them as the `spring.datasource.password` and `spring.liquibase.password` properties in the configuration file 'ApromoreCore/Apromore-Boot/src/main/resources/application.properties'
+
+* Execute `./gradlew bu bR` to compile the source code and run the project using MySQL database.
 
 
 ### Heap size

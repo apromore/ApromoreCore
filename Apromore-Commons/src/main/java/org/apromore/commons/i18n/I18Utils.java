@@ -52,4 +52,14 @@ public final class I18Utils {
             .map(i -> new String(Character.toChars(Character.codePointAt(countryCode, i) + 0x1F1A5)))
             .collect(Collectors.joining(""));
     }
+
+    /**
+     * Return the country code of a langTag
+     *
+     * @param langTag
+     * @return country code
+     */
+    public static final String langTagToCountryCode(String langTag) {
+        return flagMap.getOrDefault(langTag, DEFAULT_COUNTRY_CODE).toLowerCase();
+    }
 }
