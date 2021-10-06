@@ -344,7 +344,8 @@ public class UIHelper implements UserInterfaceHelper {
         logSummaryType.setName(log.getName());
         logSummaryType.setDomain(log.getDomain());
         logSummaryType.setRanking(log.getRanking());
-	logSummaryType.setCalendarId(log.getCalendar() != null ? log.getCalendar().getId() : 0);
+        logSummaryType.setCreateDate(log.getCreateDate());
+	    logSummaryType.setCalendarId(log.getCalendar() != null ? log.getCalendar().getId() : 0);
 
         if (log.getUser() != null) {
         	logSummaryType.setOwner(log.getUser().getUsername());
