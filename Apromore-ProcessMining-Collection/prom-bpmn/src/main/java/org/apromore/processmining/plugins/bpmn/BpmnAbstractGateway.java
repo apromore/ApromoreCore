@@ -80,9 +80,11 @@ public abstract class BpmnAbstractGateway extends BpmnIncomingOutgoing {
 	 */
 	protected String exportAttributes() {
 		String s = super.exportAttributes();
+		/* Bruce 7 Oct 2021: this attribute is not used in bpmn.io
 		if (gatewayDirection != null) {
 			s += exportAttribute("gatewayDirection", gatewayDirection);
 		}
+		*/
 		if(defaultFlow != null){
 			s += exportAttribute("default", defaultFlow);
 		}

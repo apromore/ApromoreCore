@@ -23,6 +23,7 @@ package org.apromore.processmining.plugins.bpmn;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.stream.Collectors;
 
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNEdge;
@@ -87,10 +88,14 @@ public class BpmnIncomingOutgoing extends BpmnIdName {
 		 * Export node child elements.
 		 */
 		String s = super.exportElements();
-		for (BpmnIncoming incoming : incomings) {
+		for (BpmnIncoming incoming : incomings.stream()
+										.sorted((o1, o2) -> o1.getText().compareTo(o2.getText()))
+										.collect(Collectors.toList())) {
 			s += incoming.exportElement();
 		}
-		for (BpmnOutgoing outgoing : outgoings) {
+		for (BpmnOutgoing outgoing : outgoings.stream()
+										.sorted((o1, o2) -> o1.getText().compareTo(o2.getText()))
+										.collect(Collectors.toList())) {
 			s += outgoing.exportElement();
 		}
 		return s;
