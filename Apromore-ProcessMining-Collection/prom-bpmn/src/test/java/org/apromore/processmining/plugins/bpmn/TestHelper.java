@@ -26,12 +26,6 @@ import org.apromore.processmining.plugins.bpmn.plugins.BpmnImportPlugin;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 public class TestHelper {
     public static BPMNDiagram readBPMNDiagram(String fullFilePath) throws Exception {
