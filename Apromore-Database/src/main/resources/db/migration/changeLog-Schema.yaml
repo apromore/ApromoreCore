@@ -1226,3 +1226,16 @@ databaseChangeLog:
            referencedColumnNames: id
            referencedTableName: storage
            validate: true
+
+
+ - changeSet:
+     id: 20211005014993
+     author: mtomar
+     changes:
+       - addColumn:
+           tableName: job
+           columns:
+             - column:
+                 name: is_draft
+                 type: BOOLEAN
+                 defaultValue: false
