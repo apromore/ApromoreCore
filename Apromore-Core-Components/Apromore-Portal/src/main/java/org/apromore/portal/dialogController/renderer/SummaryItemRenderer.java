@@ -144,7 +144,7 @@ public class SummaryItemRenderer implements ListitemRenderer {
         listItem.appendChild(renderDomain(log));
         listItem.appendChild(renderNA());
         listItem.appendChild(renderNA());
-        listItem.appendChild(renderNA());
+        listItem.appendChild(renderLogLastUpdate(log));
         listItem.appendChild(renderOwner(log));
 
         // Append columns for any log attributes supplied via plugins
@@ -159,6 +159,19 @@ public class SummaryItemRenderer implements ListitemRenderer {
                 mainController.visualizeLog();
             }
         });
+    }
+
+    protected Listcell renderLogLastUpdate(final LogSummaryType log) {
+        String lastUpdate = log.getCreateDate();
+
+        if (lastUpdate != null) {
+            if (dateTimeFormatter != null) {
+                lastUpdate = DateTimeUtils.normalize(lastUpdate, dateTimeFormatter);
+            } else {
+                lastUpdate = DateTimeUtils.normalize(lastUpdate);
+            }
+        }
+        return wrapIntoListCell(new Label(lastUpdate));
     }
 
     private void renderFolderSummary(final Listitem listitem, final FolderSummaryType folder, final List<PortalProcessAttributePlugin> plugins) {

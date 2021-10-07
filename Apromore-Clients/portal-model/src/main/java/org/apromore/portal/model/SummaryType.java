@@ -41,6 +41,7 @@ public class SummaryType {
     protected Boolean hasRead;
     protected Boolean hasWrite;
     protected Boolean hasOwnership;
+    protected String createDate;
 
     /**
      * Gets the value of the folder property.
@@ -292,6 +293,14 @@ public class SummaryType {
 
     public void setCalendarId(Long calendarId) {
 	this.calendarId = calendarId;
+    }
+
+    public String getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(String createDate) {
+        this.createDate = createDate;
     }
 
 }
