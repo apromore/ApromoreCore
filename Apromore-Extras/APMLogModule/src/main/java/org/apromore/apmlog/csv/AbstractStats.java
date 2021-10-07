@@ -23,19 +23,23 @@ import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
+/**
+ * @author Chii
+ */
 public class AbstractStats {
 
-    private AbstractStats() {
+    public AbstractStats() {
         throw new IllegalStateException("Utility class");
     }
 
     public static List<String> getCaseAttrNames(PLog log) {
-        List<String> originalAttrNames = log.getImmutableCaseAttributeValues().keySet().stream().collect(Collectors.toList());
+        List<String> originalAttrNames = new ArrayList<>(log.getImmutableCaseAttributeValues().keySet());
         List<String> caseAttrNames = new ArrayList<>();
         for (String s : originalAttrNames) {
-            if (!s.equals("case:variant")) caseAttrNames.add(s);
+            if (!"case:variant".equals(s)) {
+                caseAttrNames.add(s);
+            }
         }
         return caseAttrNames;
     }
@@ -44,13 +48,12 @@ public class AbstractStats {
         UnifiedMap<String, String> caseAttributes = trace.getAttributes();
 
         StringBuilder caseAttrsString = new StringBuilder();
-        for (int j = 0; j < caseAttrNames.size(); j++) {
-            String attrKey = caseAttrNames.get(j);
+        for (String attrKey : caseAttrNames) {
             String val = "";
             if (caseAttributes.containsKey(attrKey)) {
-                val= caseAttributes.get(attrKey);
+                val = caseAttributes.get(attrKey);
             }
-            caseAttrsString.append(val + ", ");
+            caseAttrsString.append(val).append(", ");
         }
         return caseAttrsString.toString();
     }
