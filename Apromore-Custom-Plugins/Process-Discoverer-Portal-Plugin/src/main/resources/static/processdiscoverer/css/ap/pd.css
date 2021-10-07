@@ -234,6 +234,11 @@ div.ap-pd-drawer-splitter:hover {
     padding: 0 5px;
 }
 
+.ap-pd-graph-settings .z-row-content,
+.ap-pd-graph-settings .z-slider {
+    overflow: visible;
+}
+
 .ap-pd-graph-settings .z-row-inner:first-child {
     /* border-right: 1px solid var(--ap-c-line-sep) !important; */
 }
