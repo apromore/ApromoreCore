@@ -87414,8 +87414,7 @@ class EditorApp {
         Plugin config data read from the plugin configuration file
         [
             {   source: 'source file',
-                name: 'plugin name',
-                properties: [{group: 'groupName', index: 'groupOrderNumber'}, {...}]
+                name: 'plugin name'
              }
             ...
         ]
@@ -87446,12 +87445,10 @@ class EditorApp {
                 'name': window.Apromore.I18N.View.zoomFitToModel,
                 'btnId': 'ap-id-editor-zoomFit-btn',
                 'functionality': this.zoomFitToModel.bind(this),
-                'group': window.Apromore.I18N.View.group, // this value must be one of the group names under properties in availablePlugins.
                 'icon': CONFIG.PATH + "images/ap/zoom-to-fit.svg",
                 'description': window.Apromore.I18N.View.zoomFitToModelDesc,
                 'index': 4,
-                'minShape': 0,
-                'maxShape': 0,
+                'groupOrder': the index of the group this button belongs to
                 isDisabled: function()
              }
              ...
@@ -87713,8 +87710,7 @@ class EditorApp {
 
         // Available plugins:
         // [{   source: 'source file',
-        //      name: 'plugin name',
-        //      properties: [{group: 'groupName', index: 'groupOrderNumber'}, {...}] // this is all groups from the configuration file
+        //      name: 'plugin name'
         //   }
         //  {...}
         // ]
@@ -87846,12 +87842,10 @@ class EditorApp {
         //     'btnId': 'ap-id-editor-export-pdf-btn',
         //     'name': window.Apromore.I18N.File.pdf,
         //     'functionality': this.exportPDF.bind(this),
-        //     'group': window.Apromore.I18N.File.group,
         //     'icon': CONFIG.PATH + "images/ap/export-pdf.svg",
         //     'description': window.Apromore.I18N.File.pdfDesc,
         //     'index': 5,
-        //     'minShape': 0,
-        //     'maxShape': 0
+        //     'groupOrder': 0
         // }
      * @param buttonData: button data
      */
@@ -87919,18 +87913,11 @@ class EditorApp {
      * Load plugins with an Ajax request for the plugin configuration file
      *     Available plugins structure: array of plugin structures
      * [
-     * {
+     *      {
      *        name: plugin name,
-     *        source: plugin javascript source filename,
-     *        properties (both plugin and global properties):
-     *        [
-     *            {attributeName1 -> attributeValue1, attributeName2 -> attributeValue2,...}
-     *            {attributeName1 -> attributeValue1, attributeName2 -> attributeValue2,...}
-     *            {attributeName1 -> attributeValue1, attributeName2 -> attributeValue2,...}
-     *        ],
-     *        requires: namespaces:[list of javascript libraries],
-     *        notUsesIn: namespaces:[list of javascript libraries]
+     *        source: plugin javascript source filename
      *    }
+     *    ...
      * ]
      * @returns {Promise<unknown>}: return a custom Promise to control this async action.
      * @private
@@ -87948,32 +87935,7 @@ class EditorApp {
                 success: function (result, status, xhr) {
                     try {
                         _logger__WEBPACK_IMPORTED_MODULE_2__["default"].info("Plugin configuration file loaded.");
-
-                        // get plugins.xml content
                         let resultXml = result;
-                        console.log(resultXml);
-
-                        // Read properties tag
-                        // <properties>
-                        //     <property group="File" index="1" />
-                        //     <property group="View" index="2" />
-                        // </properties>
-                        let properties = [];
-                        let preferences = $A(resultXml.getElementsByTagName("properties"));
-                        preferences.each(function (p) {
-                            let props = $A(p.childNodes); // props = [<property group='File' index='1' />, <property />]
-                            props.each(function (prop) {
-                                let property = new Hash(); // Hash is provided by Prototype library
-                                // get all attributes from the node and set to global properties
-                                let attributes = $A(prop.attributes) // attributes = [{nodeName: 'group', nodeValue: 'File'}, {nodeName: 'index', nodeValue: '1'}]
-                                attributes.each(function (attr) {
-                                    property[attr.nodeName] = attr.nodeValue // each property is a set of key-value pairs: {'group' => 'File', 'index' => '1'}
-                                });
-                                if (attributes.length > 0) {
-                                    properties.push(property) // array [{'group' => 'File', 'index' => '1'}, ...]
-                                }
-                            });
-                        });
 
                         // Plugin XML:
                         //  <plugins>
@@ -88003,10 +87965,8 @@ class EditorApp {
                                 return;
                             }
 
-                            pluginData['properties'] = properties;
-
                             // pluginData
-                            // {source: 'source file', name: 'plugin name', properties: [{group: 'groupName', index: 'groupOrderNumber'}, {...}]}
+                            // {source: 'source file', name: 'plugin name'}
 
                             console.log('pluginData', pluginData);
                             let url = _config__WEBPACK_IMPORTED_MODULE_0__["default"].PATH + _config__WEBPACK_IMPORTED_MODULE_0__["default"].PLUGINS_FOLDER + pluginData['source'];
@@ -88209,13 +88169,10 @@ class ApromoreSave {
             'name':window.Apromore.I18N.Save.save,
             'btnId': 'ap-id-editor-save-btn',
             'functionality':this.save.bind(this, false),
-            'group':window.Apromore.I18N.Save.group,
             "groupOrder": 0,
             'icon':_config__WEBPACK_IMPORTED_MODULE_0__["default"].PATH + "images/ap/save.svg",
             'description':window.Apromore.I18N.Save.saveDesc,
             'index':1,
-            'minShape':0,
-            'maxShape':0,
             keyCodes:[
                 {
                     metaKeys:[_config__WEBPACK_IMPORTED_MODULE_0__["default"].META_KEY_META_CTRL],
@@ -88228,14 +88185,11 @@ class ApromoreSave {
         this.facade.offer({
             'name':window.Apromore.I18N.Save.saveAs,
             'functionality':this.save.bind(this, true),
-            'group':window.Apromore.I18N.Save.group,
             'icon':_config__WEBPACK_IMPORTED_MODULE_0__["default"].PATH + "images/ap/save-as.svg",
             'description':window.Apromore.I18N.Save.saveAsDesc,
             'btnId': 'ap-id-editor-save-as-btn',
             "groupOrder": 0,
-            'index':2,
-            'minShape':0,
-            'maxShape':0
+            'index':2
         });
     }
 
@@ -88327,26 +88281,20 @@ class Export {
             'btnId': 'ap-id-editor-export-svg-btn',
             'name': window.Apromore.I18N.File.svg,
             'functionality': this.exportSVG.bind(this),
-            'group': window.Apromore.I18N.File.group,
             'icon': _config__WEBPACK_IMPORTED_MODULE_0__["default"].PATH + "images/ap/export-svg.svg",
             'description': window.Apromore.I18N.File.svgDesc,
             "groupOrder": 0,
-            'index': 3,
-            'minShape': 0,
-            'maxShape': 0
+            'index': 3
         });
 
         this.facade.offer({
             'btnId': 'ap-id-editor-export-bpmn-btn',
             'name': window.Apromore.I18N.File.bpmn,
             'functionality': this.exportBPMN.bind(this),
-            'group': window.Apromore.I18N.File.group,
             'icon': _config__WEBPACK_IMPORTED_MODULE_0__["default"].PATH + "images/ap/export-bpmn.svg",
             'description': window.Apromore.I18N.File.bpmnDesc,
             "groupOrder": 0,
-            'index': 4,
-            'minShape': 0,
-            'maxShape': 0
+            'index': 4
         });
 
     }
@@ -88442,13 +88390,10 @@ class File {
             'btnId': 'ap-id-editor-export-pdf-btn',
             'name': window.Apromore.I18N.File.pdf,
             'functionality': this.exportPDF.bind(this),
-            'group': window.Apromore.I18N.File.group,
             'icon': _config__WEBPACK_IMPORTED_MODULE_0__["default"].PATH + "images/ap/export-pdf.svg",
             'description': window.Apromore.I18N.File.pdfDesc,
             "groupOrder": 0,
-            'index': 5,
-            'minShape': 0,
-            'maxShape': 0
+            'index': 5
         });
     }
 
@@ -88631,13 +88576,11 @@ class Share {
             'btnId': 'ap-id-editor-share-btn',
             'name': Apromore.I18N.Share.share,
             'functionality': this.share.bind(this),
-            'group': Apromore.I18N.Share.group,
             'icon': _config__WEBPACK_IMPORTED_MODULE_0__["default"].PATH + "images/ap/share.svg",
             'description': Apromore.I18N.Share.shareDesc,
             'index': 1,
-            'groupOrder': 4,
-            'minShape': 0,
-            'maxShape': 0});
+            'groupOrder': 4
+        });
 
     }
 
@@ -88686,8 +88629,6 @@ class SimulationPanel {
             'description': window.Apromore.I18N.SimulationPanel.toggleSimulationDrawerDesc,
             'index': 1,
             'groupOrder': 3,
-            'minShape': 0,
-            'maxShape': 0,
             'icon': _config__WEBPACK_IMPORTED_MODULE_0__["default"].PATH + "images/ap/simulate-model.svg",
             isEnabled : function(){ return facade.useSimulationPanel}.bind(this),
         });
@@ -88747,20 +88688,12 @@ class Toolbar {
      * @param ownPluginData
      *  {
      *      source: 'source file',
-     *      name: 'plugin name',
-     *      properties: [{group: 'groupName', index: 'groupOrderNumber'}, {...}] // this is all groups from the configuration file
+     *      name: 'plugin name'
      *  }
      */
     constructor(facade, ownPluginData) {
         this.plugs = [];
         this.facade = facade;
-
-        this.groupIndex = new Hash(); // key-value pairs
-        ownPluginData.properties.each((function(value){
-            if(value.group && value.index != undefined) {
-                this.groupIndex[value.group] = value.index
-            }
-        }).bind(this));
 
         Ext.QuickTips.init();
 
@@ -88772,32 +88705,26 @@ class Toolbar {
      * Provide an oppertunity for a plugin to work on other plugins, like this Toolbar
      * @param pluginsData: array of plugin data which is provided from each plugin
      *
-         // [
-         //     {   (Toolbar) object
-         //                 type: 'plugin name',
-         //                 engage: true
-         //                 },
-         //
-         //     {  (Undo) object
-         //                 type: 'plugin name',
-         //                 engage: true
-         //                 },
-         //     ...
-         // ]
+     [
+            {
+                'name': window.Apromore.I18N.View.zoomFitToModel,
+                'btnId': 'ap-id-editor-zoomFit-btn',
+                'functionality': this.zoomFitToModel.bind(this),
+                'icon': CONFIG.PATH + "images/ap/zoom-to-fit.svg",
+                'description': window.Apromore.I18N.View.zoomFitToModelDesc,
+                'index': 4,
+                'groupOrder': the index of the group this button belongs to
+                isDisabled: function()
+             }
+             ...
+     ]
      */
     registryChanged(pluginsData) {
         // Sort plugins by group and index
-        var newPlugs =  pluginsData.sortBy((function(value) {
-            // groupIndex + groupName + buttonIndex, e.g. 1undo1, 1undo2, 1undo3, 2zoom1, 2zoom2
-            // let compareKey = ((this.groupIndex[value.group] != undefined ? this.groupIndex[value.group] : "" ) + value.group + "" + value.index).toLowerCase();
+        var plugs =  pluginsData.sortBy((function(value) {
             let compareKey = value.groupOrder * 100 + value.index;
             return compareKey;
         }).bind(this));
-
-        // Search all plugins that are defined as plugin toolbar buttons or undefined target (meaning for all)
-        var plugs = $A(newPlugs).findAll(function(plugin){
-                                        return !this.plugs.include(plugin) && (!plugin.target || plugin.target === Apromore.Plugins.Toolbar)
-                                    }.bind(this));
         if(plugs.length<1) return;
 
         this.buttons = [];
@@ -88809,16 +88736,16 @@ class Toolbar {
             this.facade.addToRegion("north", this.toolbar, "Toolbar");
         }
 
-        var currentGroupsName = this.plugs.last() ? this.plugs.last().group: plugs[0].group;
+        var currentGroupsOrder = this.plugs.last() ? this.plugs.last().group: plugs[0].groupOrder;
 
         plugs.each((function(plugin) {
             if(!plugin.name) {return}
             this.plugs.push(plugin);
 
             // Add separator if new group begins
-            if(currentGroupsName != plugin.group) {
+            if(currentGroupsOrder != plugin.groupOrder) {
                 this.toolbar.add('-');
-                currentGroupsName = plugin.group;
+                currentGroupsOrder = plugin.groupOrder;
             }
 
             var options = {
@@ -88991,7 +88918,6 @@ class Undo {
                 }
             ],
             functionality   : this.doUndo.bind(this),
-            group           : window.Apromore.I18N.Undo.group,
             isEnabled       : function(){ return true }.bind(this),
             index            : 0,
             groupOrder: 1
@@ -89010,7 +88936,6 @@ class Undo {
                 }
             ],
             functionality   : this.doRedo.bind(this),
-            group           : window.Apromore.I18N.Undo.group,
             isEnabled       : function(){ return true}.bind(this),
             index           : 1,
             groupOrder: 1
@@ -89093,39 +89018,33 @@ class View {
             'name': window.Apromore.I18N.View.zoomIn,
             'btnId': 'ap-id-editor-zoomIn-btn',
             'functionality': this.zoomIn.bind(this),
-            'group': window.Apromore.I18N.View.group,
             'icon': _config__WEBPACK_IMPORTED_MODULE_0__["default"].PATH + "images/ap/zoom-in.svg",
             'description': window.Apromore.I18N.View.zoomInDesc,
             'index': 1,
-            'groupOder': 2,
-            'minShape': 0,
-            'maxShape': 0});
+            'groupOder': 2
+        });
 
         /* Register zoom out */
         this.facade.offer({
             'name': window.Apromore.I18N.View.zoomOut,
             'btnId': 'ap-id-editor-zoomOut-btn',
             'functionality': this.zoomOut.bind(this),
-            'group': window.Apromore.I18N.View.group,
             'icon': _config__WEBPACK_IMPORTED_MODULE_0__["default"].PATH + "images/ap/zoom-out.svg",
             'description': window.Apromore.I18N.View.zoomOutDesc,
             'index': 2,
-            'groupOrder': 2,
-            'minShape': 0,
-            'maxShape': 0});
+            'groupOrder': 2
+        });
 
         /* Register zoom fit to model */
         this.facade.offer({
             'name': window.Apromore.I18N.View.zoomFitToModel,
             'btnId': 'ap-id-editor-zoomFit-btn',
             'functionality': this.zoomFitToModel.bind(this),
-            'group': window.Apromore.I18N.View.group,
             'icon': _config__WEBPACK_IMPORTED_MODULE_0__["default"].PATH + "images/ap/zoom-to-fit.svg",
             'description': window.Apromore.I18N.View.zoomFitToModelDesc,
             'index': 3,
-            'groupOrder': 2,
-            'minShape': 0,
-            'maxShape': 0 });
+            'groupOrder': 2
+        });
     }
 
     zoomIn(factor) {
