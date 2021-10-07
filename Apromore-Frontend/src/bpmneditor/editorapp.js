@@ -48,8 +48,7 @@ export default class EditorApp {
         Plugin config data read from the plugin configuration file
         [
             {   source: 'source file',
-                name: 'plugin name',
-                properties: [{group: 'groupName', index: 'groupOrderNumber'}, {...}]
+                name: 'plugin name'
              }
             ...
         ]
@@ -80,12 +79,10 @@ export default class EditorApp {
                 'name': window.Apromore.I18N.View.zoomFitToModel,
                 'btnId': 'ap-id-editor-zoomFit-btn',
                 'functionality': this.zoomFitToModel.bind(this),
-                'group': window.Apromore.I18N.View.group, // this value must be one of the group names under properties in availablePlugins.
                 'icon': CONFIG.PATH + "images/ap/zoom-to-fit.svg",
                 'description': window.Apromore.I18N.View.zoomFitToModelDesc,
                 'index': 4,
-                'minShape': 0,
-                'maxShape': 0,
+                'groupOrder': the index of the group this button belongs to
                 isDisabled: function()
              }
              ...
@@ -347,8 +344,7 @@ export default class EditorApp {
 
         // Available plugins:
         // [{   source: 'source file',
-        //      name: 'plugin name',
-        //      properties: [{group: 'groupName', index: 'groupOrderNumber'}, {...}] // this is all groups from the configuration file
+        //      name: 'plugin name'
         //   }
         //  {...}
         // ]
@@ -480,12 +476,10 @@ export default class EditorApp {
         //     'btnId': 'ap-id-editor-export-pdf-btn',
         //     'name': window.Apromore.I18N.File.pdf,
         //     'functionality': this.exportPDF.bind(this),
-        //     'group': window.Apromore.I18N.File.group,
         //     'icon': CONFIG.PATH + "images/ap/export-pdf.svg",
         //     'description': window.Apromore.I18N.File.pdfDesc,
         //     'index': 5,
-        //     'minShape': 0,
-        //     'maxShape': 0
+        //     'groupOrder': 0
         // }
      * @param buttonData: button data
      */
@@ -553,18 +547,11 @@ export default class EditorApp {
      * Load plugins with an Ajax request for the plugin configuration file
      *     Available plugins structure: array of plugin structures
      * [
-     * {
+     *      {
      *        name: plugin name,
-     *        source: plugin javascript source filename,
-     *        properties (both plugin and global properties):
-     *        [
-     *            {attributeName1 -> attributeValue1, attributeName2 -> attributeValue2,...}
-     *            {attributeName1 -> attributeValue1, attributeName2 -> attributeValue2,...}
-     *            {attributeName1 -> attributeValue1, attributeName2 -> attributeValue2,...}
-     *        ],
-     *        requires: namespaces:[list of javascript libraries],
-     *        notUsesIn: namespaces:[list of javascript libraries]
+     *        source: plugin javascript source filename
      *    }
+     *    ...
      * ]
      * @returns {Promise<unknown>}: return a custom Promise to control this async action.
      * @private
@@ -582,32 +569,7 @@ export default class EditorApp {
                 success: function (result, status, xhr) {
                     try {
                         Log.info("Plugin configuration file loaded.");
-
-                        // get plugins.xml content
                         let resultXml = result;
-                        console.log(resultXml);
-
-                        // Read properties tag
-                        // <properties>
-                        //     <property group="File" index="1" />
-                        //     <property group="View" index="2" />
-                        // </properties>
-                        let properties = [];
-                        let preferences = $A(resultXml.getElementsByTagName("properties"));
-                        preferences.each(function (p) {
-                            let props = $A(p.childNodes); // props = [<property group='File' index='1' />, <property />]
-                            props.each(function (prop) {
-                                let property = new Hash(); // Hash is provided by Prototype library
-                                // get all attributes from the node and set to global properties
-                                let attributes = $A(prop.attributes) // attributes = [{nodeName: 'group', nodeValue: 'File'}, {nodeName: 'index', nodeValue: '1'}]
-                                attributes.each(function (attr) {
-                                    property[attr.nodeName] = attr.nodeValue // each property is a set of key-value pairs: {'group' => 'File', 'index' => '1'}
-                                });
-                                if (attributes.length > 0) {
-                                    properties.push(property) // array [{'group' => 'File', 'index' => '1'}, ...]
-                                }
-                            });
-                        });
 
                         // Plugin XML:
                         //  <plugins>
@@ -637,10 +599,8 @@ export default class EditorApp {
                                 return;
                             }
 
-                            pluginData['properties'] = properties;
-
                             // pluginData
-                            // {source: 'source file', name: 'plugin name', properties: [{group: 'groupName', index: 'groupOrderNumber'}, {...}]}
+                            // {source: 'source file', name: 'plugin name'}
 
                             console.log('pluginData', pluginData);
                             let url = CONFIG.PATH + CONFIG.PLUGINS_FOLDER + pluginData['source'];

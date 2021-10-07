@@ -41,36 +41,33 @@ export default class View {
             'name': window.Apromore.I18N.View.zoomIn,
             'btnId': 'ap-id-editor-zoomIn-btn',
             'functionality': this.zoomIn.bind(this),
-            'group': window.Apromore.I18N.View.group,
             'icon': CONFIG.PATH + "images/ap/zoom-in.svg",
             'description': window.Apromore.I18N.View.zoomInDesc,
             'index': 1,
-            'minShape': 0,
-            'maxShape': 0});
+            'groupOder': 2
+        });
 
         /* Register zoom out */
         this.facade.offer({
             'name': window.Apromore.I18N.View.zoomOut,
             'btnId': 'ap-id-editor-zoomOut-btn',
             'functionality': this.zoomOut.bind(this),
-            'group': window.Apromore.I18N.View.group,
             'icon': CONFIG.PATH + "images/ap/zoom-out.svg",
             'description': window.Apromore.I18N.View.zoomOutDesc,
             'index': 2,
-            'minShape': 0,
-            'maxShape': 0});
+            'groupOrder': 2
+        });
 
         /* Register zoom fit to model */
         this.facade.offer({
             'name': window.Apromore.I18N.View.zoomFitToModel,
             'btnId': 'ap-id-editor-zoomFit-btn',
             'functionality': this.zoomFitToModel.bind(this),
-            'group': window.Apromore.I18N.View.group,
             'icon': CONFIG.PATH + "images/ap/zoom-to-fit.svg",
             'description': window.Apromore.I18N.View.zoomFitToModelDesc,
             'index': 3,
-            'minShape': 0,
-            'maxShape': 0 });
+            'groupOrder': 2
+        });
     }
 
     zoomIn(factor) {

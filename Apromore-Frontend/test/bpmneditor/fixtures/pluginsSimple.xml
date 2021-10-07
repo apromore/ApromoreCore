@@ -4,16 +4,4 @@
 		<plugin source="toolbar.js" name="Toolbar" />
 		<plugin source="undo.js" name="Undo" />
 	</plugins>
-
-	<properties>
-		<property group="File" index="1" />
-		<property group="View" index="2" />
-		<property group="Undo" index="3" />
-		<property group="Zoom" index="4" />
-		<property group="Alignment" index="5" />
-		<property group="Group" index="6" />
-		<property group="Z-Order" index="7" />
-		<property group="Docker" index="8" />
-		<property group="Simulation" index="9" />
-	</properties>
 </config>

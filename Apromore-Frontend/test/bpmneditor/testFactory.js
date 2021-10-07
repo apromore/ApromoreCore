@@ -87,6 +87,16 @@ export function createEditorAppWithSimulationPanel() {
     });
 }
 
+export function createEditorAppWithoutFullscreenMode() {
+    return createEditorApp({
+        id: 'editorAppContainer',
+        fullscreen: false,
+        useSimulationPanel: true,
+        viewOnly: false,
+        langTag: 'en'
+    });
+}
+
 function createEditorApp(config) {
     jasmine.getFixtures().fixturesPath = 'base/test/bpmneditor/fixtures';
     loadFixtures('editorAppFixture.html');

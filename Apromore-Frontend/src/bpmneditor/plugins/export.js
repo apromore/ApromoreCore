@@ -32,24 +32,20 @@ export default class Export {
             'btnId': 'ap-id-editor-export-svg-btn',
             'name': window.Apromore.I18N.File.svg,
             'functionality': this.exportSVG.bind(this),
-            'group': window.Apromore.I18N.File.group,
             'icon': CONFIG.PATH + "images/ap/export-svg.svg",
             'description': window.Apromore.I18N.File.svgDesc,
-            'index': 3,
-            'minShape': 0,
-            'maxShape': 0
+            "groupOrder": 0,
+            'index': 3
         });
 
         this.facade.offer({
             'btnId': 'ap-id-editor-export-bpmn-btn',
             'name': window.Apromore.I18N.File.bpmn,
             'functionality': this.exportBPMN.bind(this),
-            'group': window.Apromore.I18N.File.group,
             'icon': CONFIG.PATH + "images/ap/export-bpmn.svg",
             'description': window.Apromore.I18N.File.bpmnDesc,
-            'index': 4,
-            'minShape': 0,
-            'maxShape': 0
+            "groupOrder": 0,
+            'index': 4
         });
 
     }

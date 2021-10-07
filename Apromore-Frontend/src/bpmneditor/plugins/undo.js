@@ -41,9 +41,9 @@ export default class Undo {
                 }
             ],
             functionality   : this.doUndo.bind(this),
-            group           : window.Apromore.I18N.Undo.group,
             isEnabled       : function(){ return true }.bind(this),
-            index            : 0
+            index            : 0,
+            groupOrder: 1
           });
 
           // Offers the functionality of redo
@@ -59,9 +59,9 @@ export default class Undo {
                 }
             ],
             functionality   : this.doRedo.bind(this),
-            group           : window.Apromore.I18N.Undo.group,
             isEnabled       : function(){ return true}.bind(this),
-            index           : 1
+            index           : 1,
+            groupOrder: 1
         });
 
     }
