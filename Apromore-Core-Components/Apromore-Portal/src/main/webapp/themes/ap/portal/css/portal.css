@@ -133,6 +133,17 @@
   padding-left: 8px;
 }
 
+/* Hack for main menu due to ZK 9.6 hover bug */
+
+.ap-portal-menu .z-menu-hover .z-menu-content,
+.ap-portal-menu .z-menu-content:focus {
+    background-color: transparent;
+}
+
+.ap-portal-menu .z-menu:hover .z-menu-content {
+    background-color: var(--ap-c-menu-bg-hover);
+}
+
 /*
 .ap-portal-menu .z-menubar > ul {
   display: flex;
