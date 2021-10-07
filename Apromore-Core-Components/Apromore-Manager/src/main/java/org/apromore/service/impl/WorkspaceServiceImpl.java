@@ -269,16 +269,18 @@ public class WorkspaceServiceImpl implements WorkspaceService {
           "User " + user.getUsername() + " is not permitted to delete folder with id " + folderId);
     }
     Folder folder = folderRepo.findById(folderId).orElse(null);
-    if (folderName != null && !folderName.isEmpty()) {
-      folder.setName(folderName);
-    }
-    if (isGEDMatrixReady != null) {
-      folder.setGEDMatrixReady(isGEDMatrixReady);
-      for (Folder subfolder : folder.getSubFolders()) {
-        updateFolder(subfolder.getId(), null, isGEDMatrixReady, user);
+    if (folder != null) {
+      if (folderName != null && !folderName.isEmpty()) {
+        folder.setName(folderName);
       }
+      if (isGEDMatrixReady != null) {
+        folder.setGEDMatrixReady(isGEDMatrixReady);
+        for (Folder subfolder : folder.getSubFolders()) {
+          updateFolder(subfolder.getId(), null, isGEDMatrixReady, user);
+        }
+      }
+      folderRepo.save(folder);
     }
-    folderRepo.save(folder);
   }
 
   /**
@@ -636,11 +638,15 @@ public class WorkspaceServiceImpl implements WorkspaceService {
       if (pmvVersions.contains(pmv.getVersionNumber())) {
         ProcessModelVersion newPMV = pmv.clone();
         newPMV.setProcessBranch(newBranch);
-        newPMV.setNativeDocument(pmv.getNativeDocument().clone());
-        newPMV.getProcessModelAttributes().clear();
-        for (ProcessModelAttribute pma : pmv.getProcessModelAttributes()) {
-          newPMV.getProcessModelAttributes().add(pma.clone());
+        if (pmv.getNativeDocument() != null) {
+          newPMV.setNativeDocument(pmv.getNativeDocument().clone());
         }
+        if (pmv.getStorage() != null) {
+          newPMV.setStorage(new Storage(pmv.getStorage()));
+        }
+
+        newPMV.getProcessModelAttributes().clear();
+        newPMV.setProcessModelAttributes(new HashSet<>(pmv.getProcessModelAttributes()));
         pmvs.add(newPMV);
       }
     }

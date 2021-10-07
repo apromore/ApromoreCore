@@ -54,6 +54,15 @@ public class Storage implements Serializable {
     // This will change when we upgrade Spring and jpa
     private String updated = OffsetDateTime.now().toString();
 
+    public Storage(Storage storage) {
+        this.id = storage.id;
+        this.storagePath = storage.storagePath;
+        this.prefix = storage.prefix;
+        this.key = storage.key;
+        this.created = storage.created;
+        this.updated = storage.updated;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
