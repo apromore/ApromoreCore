@@ -20,4 +20,10 @@ describe('After the EditorApp has been created with a custom configuration', fun
         expect(plugins.length).toEqual(2);
     });
 
+    it('It can initialize without fullscreen', async function () {
+        let editorApp = testFactory.createEditorAppWithoutFullscreenMode()
+        await testFactory.initEditorApp(editorApp, testFactory.bpmnSimpleXML, testFactory.pluginsConfigXML, true);
+        expect(editorApp.getActivatedPlugins().length).toEqual(8);
+    });
+
 });
