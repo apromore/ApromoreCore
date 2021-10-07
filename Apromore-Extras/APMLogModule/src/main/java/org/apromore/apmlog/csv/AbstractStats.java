@@ -29,10 +29,6 @@ import java.util.List;
  */
 public class AbstractStats {
 
-    public AbstractStats() {
-        throw new IllegalStateException("Utility class");
-    }
-
     public static List<String> getCaseAttrNames(PLog log) {
         List<String> originalAttrNames = new ArrayList<>(log.getImmutableCaseAttributeValues().keySet());
         List<String> caseAttrNames = new ArrayList<>();
