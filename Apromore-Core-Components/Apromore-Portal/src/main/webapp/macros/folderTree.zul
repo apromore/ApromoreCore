@@ -31,6 +31,9 @@
             .z-hlayout, .z-vlayout {
             overflow: unset;
             }
+            .z-panel-drag-button {
+                display: none;
+            }
         </style>
         <tree id="folderTree" vflex="true" width="100%" style="border-width: 0px;" sclass="ap-folder-tree">
             <treecols sizable="true">

@@ -43,7 +43,7 @@
     </style>
     <borderlayout hflex="1" vflex="1">
         <west autoscroll="true" sclass="ap-security-setup" title="${labels.portal_workspace_text}" collapsible="true" splittable="true" vflex="1" width="30%" border="none">
-            <FolderTree id="mainTree"/>
+            <FolderTree id="mainTree" vflex="1"/>
         </west>
         <center hflex="1" vflex="1" border="none">
             <AccessControl vflex="1" hflex="1" id="accessControl"
