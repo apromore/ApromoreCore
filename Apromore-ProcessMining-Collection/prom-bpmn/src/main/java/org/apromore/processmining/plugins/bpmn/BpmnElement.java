@@ -172,7 +172,7 @@ public class BpmnElement {
 				/*
 				 * Child elements, use separated start and end tags.
 				 */
-				s += ">\n" + t + "</" + tag + ">\n";
+				s += ">" + t + "</" + tag + ">\n"; //Bruce 29.09.21: remove the new line after the opening tag
 			}
 		} else {
 			if (t.equals("")) {

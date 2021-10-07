@@ -478,11 +478,11 @@ public class BpmnProcess extends BpmnIdName {
 			if (event.getAncestorSubProcess() == null) {
 				if (event.getEventType() == EventType.START) {
 					BpmnStartEvent startEvent = new BpmnStartEvent("startEvent");
-					startEvent.marshall(event);
+					startEvent.marshall(diagram, event);
 					startEvents.add(startEvent);
 				} else if (event.getEventType() == EventType.END) {
 					BpmnEndEvent endEvent = new BpmnEndEvent("endEvent");
-					endEvent.marshall(event);
+					endEvent.marshall(diagram, event);
 					endEvents.add(endEvent);
 				} else if (event.getEventType() == EventType.INTERMEDIATE) {
 					BpmnIntermediateEvent intermediateEvent = null;
@@ -495,7 +495,7 @@ public class BpmnProcess extends BpmnIdName {
 					} else {
 						intermediateEvent = new BpmnIntermediateEvent("intermediateThrowEvent", EventUse.THROW);
 					}
-					intermediateEvent.marshall(event);
+					intermediateEvent.marshall(diagram, event);
 					intermediateEvents.add(intermediateEvent);
 				}
 			}

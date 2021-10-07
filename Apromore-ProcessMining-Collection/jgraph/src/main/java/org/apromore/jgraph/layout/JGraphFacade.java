@@ -2754,6 +2754,8 @@ public class JGraphFacade {
          */
         @Override
         public int compare(Object c1, Object c2) {
+        	if (model.getValue(c1) == null || model.getValue(c2) == null) return 0;
+
             String value1 = model.getValue(c1).toString();
             String value2 = model.getValue(c2).toString();
             

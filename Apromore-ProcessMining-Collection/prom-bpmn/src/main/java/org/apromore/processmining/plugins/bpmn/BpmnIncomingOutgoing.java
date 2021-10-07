@@ -23,7 +23,12 @@ package org.apromore.processmining.plugins.bpmn;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.stream.Collectors;
 
+import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
+import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNEdge;
+import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNNode;
+import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Gateway;
 import org.xmlpull.v1.XmlPullParser;
 
 public class BpmnIncomingOutgoing extends BpmnIdName {
@@ -36,6 +41,22 @@ public class BpmnIncomingOutgoing extends BpmnIdName {
 		
 		incomings = new HashSet<BpmnIncoming>();
 		outgoings = new HashSet<BpmnOutgoing>();
+	}
+
+	protected void marshall(BPMNDiagram diagram, BPMNNode node) {
+		super.marshall(node);
+		for(BPMNEdge<? extends BPMNNode, ? extends BPMNNode> e: diagram.getEdges()) {
+			if(e.getTarget().equals(node)){
+				BpmnIncoming in = new BpmnIncoming("incoming");
+				in.setText(e.getEdgeID().toString().replace(" ", "_"));
+				incomings.add(in);
+			}
+			if(e.getSource().equals(node)){
+				BpmnOutgoing out = new BpmnOutgoing("outgoing");
+				out.setText(e.getEdgeID().toString().replace(" ", "_"));
+				outgoings.add(out);
+			}
+		}
 	}
 
 	protected boolean importElements(XmlPullParser xpp, Bpmn bpmn) {
@@ -67,10 +88,14 @@ public class BpmnIncomingOutgoing extends BpmnIdName {
 		 * Export node child elements.
 		 */
 		String s = super.exportElements();
-		for (BpmnIncoming incoming : incomings) {
+		for (BpmnIncoming incoming : incomings.stream()
+										.sorted((o1, o2) -> o1.getText().compareTo(o2.getText()))
+										.collect(Collectors.toList())) {
 			s += incoming.exportElement();
 		}
-		for (BpmnOutgoing outgoing : outgoings) {
+		for (BpmnOutgoing outgoing : outgoings.stream()
+										.sorted((o1, o2) -> o1.getText().compareTo(o2.getText()))
+										.collect(Collectors.toList())) {
 			s += outgoing.exportElement();
 		}
 		return s;
