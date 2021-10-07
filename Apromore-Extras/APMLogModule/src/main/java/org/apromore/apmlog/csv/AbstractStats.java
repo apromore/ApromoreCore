@@ -27,6 +27,10 @@ import java.util.stream.Collectors;
 
 public class AbstractStats {
 
+    private AbstractStats() {
+        throw new IllegalStateException("Utility class");
+    }
+
     public static List<String> getCaseAttrNames(PLog log) {
         List<String> originalAttrNames = log.getImmutableCaseAttributeValues().keySet().stream().collect(Collectors.toList());
         List<String> caseAttrNames = new ArrayList<>();

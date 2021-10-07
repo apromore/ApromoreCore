@@ -21,10 +21,8 @@
  */
 package org.apromore.plugin.portal.file;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.ParseException;
@@ -49,7 +47,6 @@ import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.service.EventLogService;
 import org.apromore.service.csvexporter.CSVExporterLogic;
 import org.apromore.zk.notification.Notification;
-import org.deckfour.xes.model.XLog;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import org.zkoss.util.resource.Labels;
@@ -231,7 +228,7 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin {
       String filename = logSummary.getName().replace('.', '-');
       APMLog apmLog = eventLogService.getAggregatedLog(logSummary.getId());
       Path path = csvExporterLogic.exportCSV(apmLog, encoding);
-      LOGGER.info("Export log {} as CSV using {} to {}", filename, encoding, path.toString());
+      LOGGER.info("Export log {} as CSV using {} to {}", filename, encoding, path);
       byte[] finalbytes = Files.readAllBytes(path);
       Filedownload.save(finalbytes, "application/x-gzip", filename + ".csv.gz");
       Files.delete(path);

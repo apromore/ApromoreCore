@@ -23,6 +23,11 @@ package org.apromore.apmlog.csv;
  * @since v8.0
  */
 public class ContentLabels {
+
+    private ContentLabels() {
+        throw new IllegalStateException("Utility class");
+    }
+
     public static final String CASE = "Case";
     public static final String EVENT = "Event";
 

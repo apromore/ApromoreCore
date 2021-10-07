@@ -19,12 +19,16 @@ package org.apromore.apmlog.csv;
 
 public class StringValidation {
 
+    private StringValidation() {
+        throw new IllegalStateException("Utility class");
+    }
+
     public static String getValidString(String val) {
-        val = val.replaceAll(",", "_");
-        val = val.replaceAll(" ", "_");
-        val = val.replaceAll("'", "");
-        val = val.replaceAll(":", "_");
-        val = val.replaceAll("-", "_");
+        val = val.replace(",", "_");
+        val = val.replace(" ", "_");
+        val = val.replace("'", "");
+        val = val.replace(":", "_");
+        val = val.replace("-", "_");
         return val;
     }
 }

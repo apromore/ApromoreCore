@@ -25,6 +25,11 @@ package org.apromore.apmlog.csv;
  * @since v8.0
  */
 public class HeaderLabels {
+
+    private HeaderLabels() {
+        throw new IllegalStateException("Utility class");
+    }
+
     public static final String HEADER = "header";
 
     public static final String TIMESTAMP = "timestamp";
