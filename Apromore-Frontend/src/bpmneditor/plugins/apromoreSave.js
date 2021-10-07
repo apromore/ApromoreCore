@@ -34,13 +34,10 @@ export default class ApromoreSave {
             'name':window.Apromore.I18N.Save.save,
             'btnId': 'ap-id-editor-save-btn',
             'functionality':this.save.bind(this, false),
-            'group':window.Apromore.I18N.Save.group,
             "groupOrder": 0,
             'icon':CONFIG.PATH + "images/ap/save.svg",
             'description':window.Apromore.I18N.Save.saveDesc,
             'index':1,
-            'minShape':0,
-            'maxShape':0,
             keyCodes:[
                 {
                     metaKeys:[CONFIG.META_KEY_META_CTRL],
@@ -53,14 +50,11 @@ export default class ApromoreSave {
         this.facade.offer({
             'name':window.Apromore.I18N.Save.saveAs,
             'functionality':this.save.bind(this, true),
-            'group':window.Apromore.I18N.Save.group,
             'icon':CONFIG.PATH + "images/ap/save-as.svg",
             'description':window.Apromore.I18N.Save.saveAsDesc,
             'btnId': 'ap-id-editor-save-as-btn',
             "groupOrder": 0,
-            'index':2,
-            'minShape':0,
-            'maxShape':0
+            'index':2
         });
     }
 

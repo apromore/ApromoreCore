@@ -38,13 +38,11 @@ export default class Share {
             'btnId': 'ap-id-editor-share-btn',
             'name': Apromore.I18N.Share.share,
             'functionality': this.share.bind(this),
-            'group': Apromore.I18N.Share.group,
             'icon': CONFIG.PATH + "images/ap/share.svg",
             'description': Apromore.I18N.Share.shareDesc,
             'index': 1,
-            'groupOrder': 4,
-            'minShape': 0,
-            'maxShape': 0});
+            'groupOrder': 4
+        });
 
     }
 

@@ -54,13 +54,10 @@ export default class File {
             'btnId': 'ap-id-editor-export-pdf-btn',
             'name': window.Apromore.I18N.File.pdf,
             'functionality': this.exportPDF.bind(this),
-            'group': window.Apromore.I18N.File.group,
             'icon': CONFIG.PATH + "images/ap/export-pdf.svg",
             'description': window.Apromore.I18N.File.pdfDesc,
             "groupOrder": 0,
-            'index': 5,
-            'minShape': 0,
-            'maxShape': 0
+            'index': 5
         });
     }
 

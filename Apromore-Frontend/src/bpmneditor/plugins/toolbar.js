@@ -30,20 +30,12 @@ export default class Toolbar {
      * @param ownPluginData
      *  {
      *      source: 'source file',
-     *      name: 'plugin name',
-     *      properties: [{group: 'groupName', index: 'groupOrderNumber'}, {...}] // this is all groups from the configuration file
+     *      name: 'plugin name'
      *  }
      */
     constructor(facade, ownPluginData) {
         this.plugs = [];
         this.facade = facade;
-
-        this.groupIndex = new Hash(); // key-value pairs
-        ownPluginData.properties.each((function(value){
-            if(value.group && value.index != undefined) {
-                this.groupIndex[value.group] = value.index
-            }
-        }).bind(this));
 
         Ext.QuickTips.init();
 
@@ -55,32 +47,26 @@ export default class Toolbar {
      * Provide an oppertunity for a plugin to work on other plugins, like this Toolbar
      * @param pluginsData: array of plugin data which is provided from each plugin
      *
-         // [
-         //     {   (Toolbar) object
-         //                 type: 'plugin name',
-         //                 engage: true
-         //                 },
-         //
-         //     {  (Undo) object
-         //                 type: 'plugin name',
-         //                 engage: true
-         //                 },
-         //     ...
-         // ]
+     [
+            {
+                'name': window.Apromore.I18N.View.zoomFitToModel,
+                'btnId': 'ap-id-editor-zoomFit-btn',
+                'functionality': this.zoomFitToModel.bind(this),
+                'icon': CONFIG.PATH + "images/ap/zoom-to-fit.svg",
+                'description': window.Apromore.I18N.View.zoomFitToModelDesc,
+                'index': 4,
+                'groupOrder': the index of the group this button belongs to
+                isDisabled: function()
+             }
+             ...
+     ]
      */
     registryChanged(pluginsData) {
         // Sort plugins by group and index
-        var newPlugs =  pluginsData.sortBy((function(value) {
-            // groupIndex + groupName + buttonIndex, e.g. 1undo1, 1undo2, 1undo3, 2zoom1, 2zoom2
-            // let compareKey = ((this.groupIndex[value.group] != undefined ? this.groupIndex[value.group] : "" ) + value.group + "" + value.index).toLowerCase();
+        var plugs =  pluginsData.sortBy((function(value) {
             let compareKey = value.groupOrder * 100 + value.index;
             return compareKey;
         }).bind(this));
-
-        // Search all plugins that are defined as plugin toolbar buttons or undefined target (meaning for all)
-        var plugs = $A(newPlugs).findAll(function(plugin){
-                                        return !this.plugs.include(plugin) && (!plugin.target || plugin.target === Apromore.Plugins.Toolbar)
-                                    }.bind(this));
         if(plugs.length<1) return;
 
         this.buttons = [];
@@ -92,16 +78,16 @@ export default class Toolbar {
             this.facade.addToRegion("north", this.toolbar, "Toolbar");
         }
 
-        var currentGroupsName = this.plugs.last() ? this.plugs.last().group: plugs[0].group;
+        var currentGroupsOrder = this.plugs.last() ? this.plugs.last().group: plugs[0].groupOrder;
 
         plugs.each((function(plugin) {
             if(!plugin.name) {return}
             this.plugs.push(plugin);
 
             // Add separator if new group begins
-            if(currentGroupsName != plugin.group) {
+            if(currentGroupsOrder != plugin.groupOrder) {
                 this.toolbar.add('-');
-                currentGroupsName = plugin.group;
+                currentGroupsOrder = plugin.groupOrder;
             }
 
             var options = {
