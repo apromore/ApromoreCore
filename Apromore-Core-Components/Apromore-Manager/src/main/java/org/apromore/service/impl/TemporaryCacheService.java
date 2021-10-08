@@ -62,6 +62,7 @@ import org.deckfour.xes.out.XesXmlGZIPSerializer;
 import org.deckfour.xes.out.XesXmlSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 
 public class TemporaryCacheService {
 
@@ -80,6 +81,9 @@ public class TemporaryCacheService {
 
     @Resource
     private StorageManagementFactory<StorageClient> storageFactory;
+
+    @Value("${storage.logPrefix}")
+    private String logPrefix;
 
     public CacheRepository getCacheRepo() {
 	return cacheRepo;
@@ -127,7 +131,7 @@ public class TemporaryCacheService {
 		final String name = logNameId + "_" + logName + ".xes.gz";
 		exportToStorage(name, log);
 		storage.setKey(name);
-		storage.setPrefix("log");
+		storage.setPrefix(logPrefix);
 		storage.setStoragePath(config.getStoragePath());
 
 		LOGGER.debug("Memory Used: {} MB", getMemoryUsage().getUsed() / 1024 / 1024);
@@ -469,14 +473,12 @@ public class TemporaryCacheService {
 
     public void exportToInputStream(XLog log, String name, XSerializer serializer) {
 
-	try {
-	    OutputStream outputStream = storageFactory.getStorageClient(config.getStoragePath()).getOutputStream("log",
-	            name);
+        try (OutputStream outputStream = storageFactory.getStorageClient(config.getStoragePath())
+                                                       .getOutputStream(logPrefix, name)) {
 	    serializer.serialize(log, outputStream);
-	    outputStream.close();
 
 	} catch (Exception e) {
-	    LOGGER.error("Unable to export log " + name + " to input stream", e);
+	    LOGGER.error("Unable to export log {} to input stream", name, e);
 	}
     }
 

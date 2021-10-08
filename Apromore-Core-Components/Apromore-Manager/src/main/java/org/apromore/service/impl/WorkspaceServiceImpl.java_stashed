@@ -372,7 +372,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
   @Override
   @Transactional(readOnly = false)
-  public Process addProcessToFolder(User user, Integer processId, Integer folderId) {
+  public void addProcessToFolder(User user, Integer processId, Integer folderId) {
     if (folderId != null && processId != null) {
       Process process = processRepo.findById(processId).get();
       Folder folder = folderRepo.findById(folderId).orElse(null);
@@ -395,11 +395,10 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         }
         process.setGroupProcesses(groupProcesses);
       }
-      return processRepo.save(process);
+      processRepo.save(process);
 
     } else {
       LOGGER.warn("Missing folderID " + folderId + " Missing processID " + processId);
-      return null;
     }
   }
 
@@ -486,6 +485,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     // Copy file
     final String currentFileFullName =  // For backward compatibility
         currentLog.getFilePath() + "_" + currentLog.getName() + ".xes.gz";
+
     if (currentLog.getStorage() == null) {
       try (InputStream inputStream = storageFactory
           .getStorageClient("FILE" + StorageType.STORAGE_PATH_SEPARATOR + config.getLogsDir())

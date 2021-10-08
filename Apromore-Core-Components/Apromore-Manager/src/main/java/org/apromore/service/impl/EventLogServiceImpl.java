@@ -84,6 +84,7 @@ import org.deckfour.xes.out.XSerializer;
 import org.deckfour.xes.out.XesXmlGZIPSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -132,6 +133,9 @@ public class EventLogServiceImpl implements EventLogService {
     private CustomCalendarRepository customCalendarRepository;
     private CalendarService calendarService;
     private AuthorizationService authorizationService;
+
+    @Value("${storage.logPrefix}")
+    private String logPrefix;
 
 	/**
 	 * Default Constructor allowing Spring to Autowire for testing and normal use.
@@ -402,27 +406,27 @@ public class EventLogServiceImpl implements EventLogService {
 
 	if (log.getStorage() == null) {
 	    // put extensions in constants
-	    String file_name = log.getFilePath() + "_" + log.getName() + ".xes.gz";
-	    String new_file_name = log.getFilePath() + "_" + newName + ".xes.gz";
-	    Storage storage = new Storage();
-	    storage.setStoragePath(configBean.getStoragePath());
-	    storage.setKey(new_file_name);
-	    storage.setPrefix("log");
-	    log.setStorage(storageRepository.saveAndFlush(storage));
+	    try (InputStream inputStream = storageFactory
+                .getStorageClient("FILE" + StorageType.STORAGE_PATH_SEPARATOR + configBean.getLogsDir())
+                .getInputStream(null, log.getFilePath() + "_" + log.getName() + ".xes.gz")) {
 
-	    StorageClient currentStorage = storageFactory
-	            .getStorageClient("FILE" + StorageType.STORAGE_PATH_SEPARATOR + configBean.getLogsDir());
-	    StorageClient newStorage = storageFactory.getStorageClient(configBean.getStoragePath());
+	        Storage storage = new Storage();
+	        storage.setStoragePath(configBean.getStoragePath());
+	        storage.setKey(log.getFilePath() + "_" + newName + ".xes.gz");
+	        storage.setPrefix(logPrefix);
 
-	    OutputStream outputStream;
+	        try (OutputStream outputStream = storageFactory
+                    .getStorageClient(storage.getStoragePath())
+                    .getOutputStream(storage.getPrefix(), storage.getKey())) {
 
-	    outputStream = newStorage.getOutputStream("log", new_file_name);
-	    InputStream inputStream = currentStorage.getInputStream(null, file_name);
-	    logFileService.copyFile(inputStream, outputStream);
+                    logFileService.copyFile(inputStream, outputStream);
+                }
 
+                log.setStorage(storageRepository.saveAndFlush(storage));
+            }
 	}
-		log.setName(StringUtil.normalizeFilename(newName));
 
+        log.setName(StringUtil.normalizeFilename(newName));
     }
 
     @Override
