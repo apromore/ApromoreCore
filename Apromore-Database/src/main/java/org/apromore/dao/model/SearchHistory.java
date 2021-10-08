@@ -100,7 +100,6 @@ public class SearchHistory implements Serializable {
         this.search = newSearch;
     }
 
-
     @ManyToOne
     @JoinColumn(name = "userid")
     public User getUser() {
@@ -111,4 +110,19 @@ public class SearchHistory implements Serializable {
         this.user = newUser;
     }
 
+    @Override
+    public boolean equals(java.lang.Object other) {
+        if (other == null || !SearchHistory.class.equals(other.getClass())) {
+            return false;
+        }
+        return (other instanceof SearchHistory) && id.equals(((SearchHistory) other).id);
+    }
+
+    @Override
+    public int hashCode() {
+        if (id == null) {
+            return 0;
+        }
+        return id.hashCode();
+    }
 }

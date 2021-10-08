@@ -137,12 +137,12 @@ public class UserServiceImpl implements UserService {
         user.setSearchHistories(history);
 
         // Delete existing search history
-        dbUser.setSearchHistories(Collections.emptyList());
+        dbUser.getSearchHistories().clear();
         userRepo.saveAndFlush(dbUser);
 
         // Replace with updated search history
-        dbUser.setSearchHistories(history);
-        userRepo.save(dbUser);
+        dbUser.getSearchHistories().addAll(history);
+        userRepo.saveAndFlush(dbUser);
     }
 
     @Override
