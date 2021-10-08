@@ -368,7 +368,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
   @Override
   @Transactional(readOnly = false)
-  public void addProcessToFolder(User user, Integer processId, Integer folderId) {
+  public Process addProcessToFolder(User user, Integer processId, Integer folderId) {
     if (folderId != null && processId != null) {
       Process process = processRepo.findById(processId).get();
       Folder folder = folderRepo.findById(folderId).orElse(null);
@@ -391,10 +391,11 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         }
         process.setGroupProcesses(groupProcesses);
       }
-      processRepo.save(process);
+      return processRepo.save(process);
 
     } else {
       LOGGER.warn("Missing folderID " + folderId + " Missing processID " + processId);
+      return null;
     }
   }
 
