@@ -60,15 +60,15 @@ import org.eclipse.collections.impl.factory.Lists;
  */
 public class ALog extends XLogImpl {
     // Original data
-	private XLog rawLog;
-	private MutableList<ATrace> originalTraces = Lists.mutable.empty();
+	private final XLog rawLog;
+	private final MutableList<ATrace> originalTraces = Lists.mutable.empty();
 	
 	// Metadata of all attributes
-	private AttributeStore originalAttributeStore;
+	private final AttributeStore originalAttributeStore;
 	
 	// Filtered data
 	private BitSet originalTraceStatus;
-	private MutableList<ATrace> activeTraces = Lists.mutable.empty();
+	private final MutableList<ATrace> activeTraces = Lists.mutable.empty();
     
 	public ALog(XLog log) {
 	    super(log.getAttributes());
