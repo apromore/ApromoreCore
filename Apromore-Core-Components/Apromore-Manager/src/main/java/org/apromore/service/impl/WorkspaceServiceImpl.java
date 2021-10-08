@@ -42,7 +42,6 @@ import java.util.Set;
 import java.util.TreeMap;
 import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.tomcat.jni.Proc;
 import org.apromore.commons.config.ConfigBean;
 import org.apromore.dao.FolderRepository;
 import org.apromore.dao.GroupFolderRepository;
