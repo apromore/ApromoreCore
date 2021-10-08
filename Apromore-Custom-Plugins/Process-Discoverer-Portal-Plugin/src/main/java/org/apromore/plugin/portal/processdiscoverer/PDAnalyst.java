@@ -22,18 +22,6 @@
 
 package org.apromore.plugin.portal.processdiscoverer;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.BitSet;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.apromore.apmlog.APMLog;
@@ -44,11 +32,7 @@ import org.apromore.apmlog.filter.PTrace;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.LogFilterRuleImpl;
 import org.apromore.apmlog.filter.rules.RuleValue;
-import org.apromore.apmlog.filter.types.Choice;
-import org.apromore.apmlog.filter.types.FilterType;
-import org.apromore.apmlog.filter.types.Inclusion;
-import org.apromore.apmlog.filter.types.OperationType;
-import org.apromore.apmlog.filter.types.Section;
+import org.apromore.apmlog.filter.types.*;
 import org.apromore.apmlog.stats.LogStatsAnalyzer;
 import org.apromore.apmlog.stats.TimeStatsProcessor;
 import org.apromore.calendar.model.CalendarModel;
@@ -58,7 +42,6 @@ import org.apromore.logman.ALog;
 import org.apromore.logman.Constants;
 import org.apromore.logman.LogBitMap;
 import org.apromore.logman.attribute.AbstractAttribute;
-import org.apromore.logman.attribute.AttributeType;
 import org.apromore.logman.attribute.IndexableAttribute;
 import org.apromore.logman.attribute.graph.MeasureAggregation;
 import org.apromore.logman.attribute.graph.MeasureRelation;
@@ -66,15 +49,7 @@ import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.logman.attribute.log.AttributeInfo;
 import org.apromore.logman.attribute.log.AttributeLog;
 import org.apromore.plugin.portal.PortalLoggerFactory;
-import org.apromore.plugin.portal.processdiscoverer.data.CaseDetails;
-import org.apromore.plugin.portal.processdiscoverer.data.CaseVariantDetails;
-import org.apromore.plugin.portal.processdiscoverer.data.ConfigData;
-import org.apromore.plugin.portal.processdiscoverer.data.ContextData;
-import org.apromore.plugin.portal.processdiscoverer.data.InvalidDataException;
-import org.apromore.plugin.portal.processdiscoverer.data.NotFoundAttributeException;
-import org.apromore.plugin.portal.processdiscoverer.data.OutputData;
-import org.apromore.plugin.portal.processdiscoverer.data.PerspectiveDetails;
-import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
+import org.apromore.plugin.portal.processdiscoverer.data.*;
 import org.apromore.plugin.portal.processdiscoverer.impl.json.ProcessJSONVisualizer;
 import org.apromore.plugin.portal.processdiscoverer.vis.ProcessVisualizer;
 import org.apromore.processdiscoverer.Abstraction;
@@ -87,13 +62,16 @@ import org.eclipse.collections.api.list.ListIterable;
 import org.slf4j.Logger;
 import org.springframework.util.CollectionUtils;
 
+import java.util.*;
+import java.util.stream.Collectors;
+
 /**
  * PDAnalyst represents a process analyst who will performs log analysis in the form of graphs and BPMN diagrams
  * PDAnalyst has a number of tools to do its job:
  * <p><ul>
  * <li>It uses {@link ProcessDiscoverer} which provides the graph and BPMN diagram logic
  * <li>It uses {@link ProcessVisualizer} to serialize the analysis result in a form suitable for visualization
- * <li>It uses {@link LogAPMLogFilter} to do log filtering
+ * <li>It uses {@link APMLogFilter} to do log filtering
  * </ul>
  * @author Bruce Nguyen
  */
@@ -101,30 +79,28 @@ public class PDAnalyst {
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(PDAnalyst.class);
 
     // Graph/BPMN analysis tool
-    private ProcessDiscoverer processDiscoverer;
+    private final ProcessDiscoverer processDiscoverer;
     
     // Visualization tool
-    private ProcessVisualizer processVisualizer;
+    private final ProcessVisualizer processVisualizer;
     
     // Log management tool
-    private ALog aLog;
+    private final ALog aLog;
     private AttributeLog attLog;
     private Object currentFilterCriteria = new ArrayList<LogFilterRule>(); // list of log filter criteria
     private IndexableAttribute mainAttribute;
-    private ImmutableList<AbstractAttribute> indexableAttributes;
+    private final ImmutableList<AbstractAttribute> indexableAttributes;
     
     // Log filtering tool
-    private APMLog originalAPMLog;
+    private final APMLog originalAPMLog;
     private APMLog filteredAPMLog;
     // ==========================================
     // use PLog mainly for indexing purpose only.
     // use filteredAPMLog for the updated stats
     // ==========================================
     private PLog filteredPLog;
-    private APMLogFilter apmLogFilter;
+    private final APMLogFilter apmLogFilter;
     
-    private int sourceLogId; // plugin maintain log ID for Filter; Filter remove value to avoid conflic from multiple plugins
-
     @Getter
     Map<Integer, List<ATrace>> caseVariantGroupMap;
 
@@ -134,17 +110,29 @@ public class PDAnalyst {
     public PDAnalyst(ContextData contextData, ConfigData configData, EventLogService eventLogService) throws Exception {
         XLog xlog = eventLogService.getXLog(contextData.getLogId());
         APMLog apmLog = eventLogService.getAggregatedLog(contextData.getLogId());
+        Collection<String> perspectiveAttKeys = eventLogService.getPerspectiveTagByLog(contextData.getLogId());
+
         if (xlog == null) {
             throw new InvalidDataException("XLog data of this log is missing");
         }
-        if (apmLog == null) {
+        else if (apmLog == null) {
             throw new InvalidDataException("APMLog data of this log is missing");
         }
+        else if (perspectiveAttKeys == null || perspectiveAttKeys.isEmpty()) {
+            throw new InvalidDataException("The log has no perspective attributes");
+        }
+        else if (!perspectiveAttKeys.contains(configData.getDefaultAttribute())) {
+            throw new InvalidDataException("The log has no activity attribute (concept:name) as required");
+        }
+
         long timer = System.currentTimeMillis();
         this.aLog = new ALog(xlog);
         LOGGER.debug("ALog.constructor: {} ms.", System.currentTimeMillis() - timer);
-        indexableAttributes = aLog.getAttributeStore().getPerspectiveEventAttributes(
-                configData.getMaxNumberOfUniqueValues(), AttributeType.BOOLEAN);
+        indexableAttributes = aLog.getAttributeStore().getPerspectiveEventAttributes(configData.getMaxNumberOfUniqueValues(), perspectiveAttKeys);
+        if (indexableAttributes == null || indexableAttributes.isEmpty()) {
+            throw new InvalidDataException("No perspective attributes could be found in the log with key in " + perspectiveAttKeys.toString() +
+                    " and number of distinct values is less than or equal to " + configData.getMaxNumberOfUniqueValues());
+        }
         
         this.originalAPMLog = apmLog;
         this.filteredAPMLog = apmLog;
@@ -263,10 +251,6 @@ public class PDAnalyst {
         return new OutputData(traceAbs, traceVisualization);
     }
 
-    public int getSourceLogId() {
-        return sourceLogId;
-    }
-    
     public AttributeLog getAttributeLog() {
         return this.attLog;
     }
@@ -284,18 +268,17 @@ public class PDAnalyst {
     }
     
     public void setMainAttribute(String key) throws NotFoundAttributeException  {
-        long timer = 0;
         IndexableAttribute newAttribute = getAttribute(key);
         if (newAttribute != null) {
             if (mainAttribute != newAttribute) {
                 mainAttribute = newAttribute;
                 if (attLog == null) {
-                    timer = System.currentTimeMillis();
+                    long timer = System.currentTimeMillis();
                     attLog = new AttributeLog(aLog, mainAttribute, this.calendarModel);
                     LOGGER.debug("Create AttributeLog for the perspective attribute: {} ms.", System.currentTimeMillis() - timer);
                 }
                 else {
-                    timer = System.currentTimeMillis();
+                    long timer = System.currentTimeMillis();
                     attLog.setAttribute(mainAttribute);
                     LOGGER.debug("Update AttributeLog to the new perspective attribute: {} ms.", System.currentTimeMillis() - timer);
                 }
@@ -331,16 +314,13 @@ public class PDAnalyst {
 
     public boolean isCurrentFilterCriteriaEmpty() {
         ArrayList<LogFilterRule> filterCriteria = (ArrayList<LogFilterRule>)this.currentFilterCriteria;
-        if (filterCriteria != null && filterCriteria.size() > 0) {
-            return false;
-        }
-        return true;
+        return (filterCriteria != null && filterCriteria.size() > 0) ? false: true;
     }
     
     private List<LogFilterRule> copyFilterCriteria(List<LogFilterRule> criteria) {
         return criteria
                 .stream()
-                .map((c) -> c.clone())
+                .map(LogFilterRule::clone)
                 .collect(Collectors.toList());
     }
     
@@ -504,8 +484,6 @@ public class PDAnalyst {
     public List<PerspectiveDetails> getActivityDetails() {
         List<PerspectiveDetails> listResult = new ArrayList<PerspectiveDetails>();
         for (AttributeInfo info : this.getAttributeInfoList()) {
-            ArrayList<String> cells = new ArrayList<>();
-
             String value = info.getAttributeValue();
             long occurrences = info.getAttributeOccurrenceCount();
             double freq = info.getAttributeOccurrenceFrequency();

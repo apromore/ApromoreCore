@@ -25,6 +25,7 @@ package org.apromore.plugin.portal.processdiscoverer;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.Arrays;
 
 import org.apromore.apmlog.xes.XLogToImmutableLog;
 import org.apromore.calendar.builder.CalendarModelBuilder;
@@ -45,14 +46,17 @@ import org.mockito.MockitoAnnotations;
 
 public class TestDataSetup {
     @Mock
-    private EventLogService eventLogService;
+    protected EventLogService eventLogService;
     
     public PDAnalyst createPDAnalyst(XLog xlog) throws Exception {
-        ContextData contextData = ContextData.valueOf("domain1", "username1", 0, "logName", 0, "folderName");
+        ContextData contextData = ContextData.valueOf("domain1", "username1", 0,
+                            "logName", 0, "folderName");
         Mockito.when(eventLogService.getXLog(contextData.getLogId())).thenReturn(xlog);
         Mockito.when(eventLogService.getAggregatedLog(contextData.getLogId())).thenReturn(
                 XLogToImmutableLog.convertXLog("ProcessLog", xlog));
         Mockito.when(eventLogService.getCalendarFromLog(contextData.getLogId())).thenReturn(getAllDayAllTimeCalendar());
+        Mockito.when(eventLogService.getPerspectiveTagByLog(contextData.getLogId())).thenReturn(
+                Arrays.asList(new String[] {"concept:name", "lifecycle:transition"}));
         ConfigData configData = ConfigData.DEFAULT;
         PDAnalyst analyst = new PDAnalyst(contextData, configData, eventLogService);
         return analyst;
@@ -89,6 +93,10 @@ public class TestDataSetup {
     
     public XLog readLogWithOneTraceOneEvent() {
         return this.readXESFile("src/test/logs/L1_1trace_1event.xes");
+    }
+
+    public XLog readLogWithOneTraceOneEvent_NoConceptName() {
+        return this.readXESFile("src/test/logs/L1_1trace_1event_no_concept_name.xes");
     }
     
     public XLog readLogWithTwoTraceEachTwoEvents() {
