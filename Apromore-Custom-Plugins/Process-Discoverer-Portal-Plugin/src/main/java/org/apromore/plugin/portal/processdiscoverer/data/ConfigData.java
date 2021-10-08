@@ -43,7 +43,7 @@ public class ConfigData {
 
     public static ConfigData DEFAULT = new ConfigData("concept:name", 500);
     
-    private ConfigData(String selector, int maxNumberOfUniqueValues) {
+    public ConfigData(String selector, int maxNumberOfUniqueValues) {
         DEFAULT_SELECTOR = selector;
         NUMBER_OF_UNIQUE_VALUES_MAX_SELECT = maxNumberOfUniqueValues;
     }
