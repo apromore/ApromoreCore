@@ -32,6 +32,8 @@ jobs:
           restore-keys: ${{ runner.os }}-gradle
       - name: Build and analyze
         env:
+          APROMORE_DEV_USERNAME: ${{ secrets.APROMORE_DEV_USERNAME }}  # https://nexus.apromore.org
+          APROMORE_DEV_PASSWORD: ${{ secrets.APROMORE_DEV_PASSWORD }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: ./gradlew build sonarqube --info -Dorg.gradle.jvmargs=-Xmx2g
