@@ -22,41 +22,15 @@
 
 package org.apromore.plugin.portal.processdiscoverer;
 
-import static org.apromore.logman.attribute.graph.MeasureType.DURATION;
-import static org.apromore.logman.attribute.graph.MeasureType.FREQUENCY;
-
-import java.text.DecimalFormat;
-import java.text.MessageFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
-import java.util.ResourceBundle;
-
-import javax.servlet.http.HttpSession;
-
-import org.apromore.logman.attribute.IndexableAttribute;
+import lombok.Getter;
 import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.plugin.portal.logfilter.generic.LogFilterPlugin;
 import org.apromore.plugin.portal.processdiscoverer.actions.ActionManager;
-import org.apromore.plugin.portal.processdiscoverer.components.CaseDetailsController;
-import org.apromore.plugin.portal.processdiscoverer.components.CaseVariantDetailsController;
-import org.apromore.plugin.portal.processdiscoverer.components.GraphSettingsController;
-import org.apromore.plugin.portal.processdiscoverer.components.GraphVisController;
-import org.apromore.plugin.portal.processdiscoverer.components.LogStatsController;
-import org.apromore.plugin.portal.processdiscoverer.components.PerspectiveDetailsController;
-import org.apromore.plugin.portal.processdiscoverer.components.TimeStatsController;
-import org.apromore.plugin.portal.processdiscoverer.components.ToolbarController;
-import org.apromore.plugin.portal.processdiscoverer.components.ViewSettingsController;
-import org.apromore.plugin.portal.processdiscoverer.data.ConfigData;
-import org.apromore.plugin.portal.processdiscoverer.data.ContextData;
-import org.apromore.plugin.portal.processdiscoverer.data.OutputData;
-import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
+import org.apromore.plugin.portal.processdiscoverer.components.*;
+import org.apromore.plugin.portal.processdiscoverer.data.*;
 import org.apromore.plugin.portal.processdiscoverer.eventlisteners.AnimationController;
 import org.apromore.plugin.portal.processdiscoverer.eventlisteners.BPMNExportController;
 import org.apromore.plugin.portal.processdiscoverer.eventlisteners.LogExportController;
@@ -70,7 +44,6 @@ import org.apromore.portal.model.FolderType;
 import org.apromore.portal.model.LogSummaryType;
 import org.apromore.portal.plugincontrol.PluginExecution;
 import org.apromore.portal.plugincontrol.PluginExecutionManager;
-import org.apromore.service.DomainService;
 import org.apromore.service.ProcessService;
 import org.apromore.service.loganimation.LogAnimationService2;
 import org.json.JSONException;
@@ -87,7 +60,13 @@ import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
-import lombok.Getter;
+import javax.servlet.http.HttpSession;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+import static org.apromore.logman.attribute.graph.MeasureType.DURATION;
+import static org.apromore.logman.attribute.graph.MeasureType.FREQUENCY;
 
 /**
  * PDController is the top-level application object to manage PD plugin as a
@@ -126,8 +105,6 @@ public class PDController extends BaseController implements Composer<Component> 
     //////////////////// SUPPORT SERVICES ///////////////////////////////////
 
     @WireVariable
-    private DomainService domainService;
-    @WireVariable
     private ProcessService processService;
 
     @WireVariable("logAnimationService2")
@@ -136,12 +113,10 @@ public class PDController extends BaseController implements Composer<Component> 
     @WireVariable("logFilter")
     private LogFilterPlugin logFilterPlugin;
 
-    private PDFactory pdFactory;
-
     //////////////////// THE MAIN PD Business Analyst //////////////////////////
 
     private PDAnalyst processAnalyst;
-    private ActionManager actionManager;
+    private final ActionManager actionManager;
 
     //////////////////// UI COMPONENTS ///////////////////////////////////
 
@@ -164,7 +139,6 @@ public class PDController extends BaseController implements Composer<Component> 
     //////////////////// DATA ///////////////////////////////////
 
     private String pluginSessionId; // the session ID of this plugin
-    private ApromoreSession portalSession;
     private ConfigData configData;
     private ContextData contextData;
     private UserOptionsData userOptions;
@@ -178,7 +152,6 @@ public class PDController extends BaseController implements Composer<Component> 
                              // conflicts from multiple plugins
 
     private InteractiveMode mode = InteractiveMode.MODEL_MODE; // initial mode
-    private String pluginExecutionId;
 
     private Component pdComponent;
 
@@ -187,7 +160,7 @@ public class PDController extends BaseController implements Composer<Component> 
     public PDController() throws Exception {
         super();
         Map<String, Object> pageParams = new HashMap<>();
-        pluginExecutionId = PluginExecutionManager.registerPluginExecution(new PluginExecution(this),
+        String pluginExecutionId = PluginExecutionManager.registerPluginExecution(new PluginExecution(this),
                 Sessions.getCurrent());
         pageParams.put("pluginExecutionId", pluginExecutionId);
         pageParams.put("pdLabels", getLabels());
@@ -232,7 +205,7 @@ public class PDController extends BaseController implements Composer<Component> 
     // or
     // or something has made it crashed
     private boolean preparePortalSession(String pluginSessionId) {
-        portalSession = UserSessionManager.getEditSession(pluginSessionId);
+        ApromoreSession portalSession = UserSessionManager.getEditSession(pluginSessionId);
         if (portalSession == null)
             return false;
         portalContext = (PortalContext) portalSession.get("context");
@@ -245,8 +218,9 @@ public class PDController extends BaseController implements Composer<Component> 
             return false;
         try {
             FolderType currentFolder = portalContext.getCurrentFolder();
-            if (currentFolder == null)
+            if (currentFolder == null) {
                 return false;
+            }
         } catch (Exception ex) {
             return false;
         }
@@ -289,28 +263,16 @@ public class PDController extends BaseController implements Composer<Component> 
             ApromoreSession session = UserSessionManager.getEditSession(pluginSessionId);
             PortalContext portalContext = (PortalContext) session.get("context");
             LogSummaryType logSummary = (LogSummaryType) session.get("selection");
-            pdFactory = (PDFactory) session.get("pdFactory");
+            PDFactory pdFactory = (PDFactory) session.get("pdFactory");
             configData = ConfigData.DEFAULT;
-            contextData = ContextData.valueOf(logSummary.getDomain(), portalContext.getCurrentUser().getUsername(),
-                    logSummary.getId(), logSummary.getName(),
+            contextData = ContextData.valueOf(
+                    logSummary.getDomain(), portalContext.getCurrentUser().getUsername(),
+                    logSummary.getId(),
+                    logSummary.getName(),
                     portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId(),
                     portalContext.getCurrentFolder() == null ? "Home"
                             : portalContext.getCurrentFolder().getFolderName());
             processAnalyst = new PDAnalyst(contextData, configData, getEventLogService());
-
-            // Check data against the capacity of Process Analyst
-            IndexableAttribute mainAttribute = processAnalyst.getAttribute(configData.getDefaultAttribute());
-            if (mainAttribute == null) {
-                Messagebox.show(getLabel("missingActivity_message"), getLabel("missingActivity_title"), Messagebox.OK,
-                        Messagebox.INFORMATION);
-                return;
-            } else if (mainAttribute.getValueSize() > configData.getMaxNumberOfUniqueValues()) {
-                Messagebox.show(
-                        MessageFormat.format(getLabel("tooManyActivities_message"),
-                                configData.getMaxNumberOfUniqueValues()),
-                        getLabel("tooManyActivities_title"), Messagebox.OK, Messagebox.INFORMATION);
-                return;
-            }
             userOptions = UserOptionsData.DEFAULT(configData);
 
             // Set up UI components
@@ -335,7 +297,15 @@ public class PDController extends BaseController implements Composer<Component> 
             // Finally, store objects to be cleaned up when the session timeouts
             comp.getDesktop().setAttribute("processAnalyst", processAnalyst);
             comp.getDesktop().setAttribute("pluginSessionId", pluginSessionId);
-        } catch (Exception ex) {
+        }
+        catch (InvalidDataException ex) {
+            String errorMsg = "Missing log data, " +
+                            getLabel("missingActivity_title") + ", or " +
+                            getLabel("tooManyActivities_title");
+            Messagebox.show(getLabel("initError_message") + ".\n Possible cause: " + errorMsg);
+            LOGGER.error("Error occurred while initializing. Error message: " + ex.getMessage(), ex);
+        }
+        catch (Exception ex) {
             Messagebox.show(getLabel("initError_message") + ".\n Error message: "
                     + (ex.getMessage() == null ? "Internal errors occurred." : ex.getMessage()));
             LOGGER.error("Error occurred while initializing: " + ex.getMessage(), ex);
@@ -710,16 +680,8 @@ public class PDController extends BaseController implements Composer<Component> 
         return sourceLogId;
     }
 
-    public PortalContext getPortalContext() {
-        return this.portalContext;
-    }
-
     public void refreshPortal() {
         this.portalContext.refreshContent();
-    }
-
-    public String getPluginExecutionId() {
-        return this.pluginExecutionId;
     }
 
     @Override
