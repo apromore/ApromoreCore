@@ -136,7 +136,7 @@ public class UserServiceImplUnitTest {
 
         expect(usrRepo.findByUsername(username)).andReturn(usr);
         expect(usrRepo.saveAndFlush((User) anyObject())).andReturn(usr);
-        expect(usrRepo.save((User) anyObject())).andReturn(usr);
+        expect(usrRepo.saveAndFlush((User) anyObject())).andReturn(usr);
         replay(usrRepo);
 
         usrServiceImpl.updateUserSearchHistory(usr, histories);
