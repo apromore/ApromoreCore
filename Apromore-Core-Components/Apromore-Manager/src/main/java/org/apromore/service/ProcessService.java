@@ -25,6 +25,7 @@
 
 package org.apromore.service;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
@@ -39,6 +40,7 @@ import org.apromore.exception.UpdateProcessException;
 import org.apromore.portal.helper.Version;
 import org.apromore.portal.model.ExportFormatResultType;
 import org.apromore.service.model.ProcessData;
+import org.apromore.storage.exception.ObjectCreationException;
 
 /**
  * Interface for the Process Service. Defines all the methods that will do the majority of the work for
@@ -129,7 +131,7 @@ public interface ProcessService {
      */
     ProcessModelVersion updateProcessModelVersion(final Integer processId, final String branchName, final Version version, 
             final User user, final String lockStatus,
-            final NativeType nativeType, final InputStream nativeStream) throws ImportException, RepositoryException;
+            final NativeType nativeType, final InputStream nativeStream) throws ImportException, UpdateProcessException;
     
      /**
      * Deletes the current process model version of the given branch.

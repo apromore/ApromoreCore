@@ -128,11 +128,9 @@ public class ProcessServiceImpl implements ProcessService {
   private FolderRepository folderRepository;
   private StorageRepository storageRepository;
   private String storagePath;
+  private StorageManagementFactory<StorageClient> storageFactory;
 
   private boolean sanitizationEnabled;
-
-  @Resource
-  private StorageManagementFactory<StorageClient> storageFactory;
 
   /**
    *
@@ -160,7 +158,7 @@ public class ProcessServiceImpl implements ProcessService {
       final UserService userSrv, final FormatService formatSrv, final UserInterfaceHelper ui,
       final WorkspaceService workspaceService, final AuthorizationService authorizationService,
       final FolderRepository folderRepository, final ConfigBean config,
-      final StorageRepository storageRepo) {
+      final StorageRepository storageRepo, final StorageManagementFactory storageFactory) {
     this.groupRepo = groupRepo;
     this.nativeRepo = nativeRepo;
     this.processBranchRepo = processBranchRepo;
@@ -177,6 +175,7 @@ public class ProcessServiceImpl implements ProcessService {
 
     this.sanitizationEnabled = config.isSanitizationEnabled();
     this.storagePath = config.getStoragePath();
+    this.storageFactory = storageFactory;
   }
 
 
@@ -260,10 +259,8 @@ public class ProcessServiceImpl implements ProcessService {
       storage.setKey(name);
       storage.setPrefix("model");
       storage.setStoragePath(storagePath);
-      try (OutputStream outputStream = storageFactory.getStorageClient(storagePath)
-                                                     .getOutputStream("model", name)) {
-        sanitizedStream.transferTo(outputStream);
-      }
+
+      writeInputStreamToStorage(sanitizedStream, storagePath, name);
       storageRepository.save(storage);
 
       return createProcessModelVersion(branch, version, nativeType, null, null, storage);
@@ -319,7 +316,7 @@ public class ProcessServiceImpl implements ProcessService {
   public ProcessModelVersion updateProcessModelVersion(final Integer processId,
       final String branchName, final Version version, final User user, final String lockStatus,
       final NativeType nativeType, final InputStream nativeStream)
-      throws ImportException, RepositoryException {
+          throws ImportException, UpdateProcessException {
     DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
     String now = dateFormat.format(new Date());
     Process process = processRepo.findById(processId).get();
@@ -335,26 +332,41 @@ public class ProcessServiceImpl implements ProcessService {
             branchName, version.toString());
         if (pmv != null) {
           pmv.setLastUpdateDate(now);
-          pmv.getNativeDocument().setContent(StreamUtil.inputStream2String(nativeStream).trim());
-          pmv.getNativeDocument().setLastUpdateDate(now);
+          if (pmv.getNativeDocument() != null) {
+            pmv.getNativeDocument().setContent(StreamUtil.inputStream2String(nativeStream).trim());
+            pmv.getNativeDocument().setLastUpdateDate(now);
+          } else if (pmv.getStorage() != null) {
+            writeInputStreamToStorage(nativeStream, pmv.getStorage().getStoragePath(), pmv.getStorage().getKey());
+            pmv.getStorage().setUpdated(now);
+          } else {
+            throw new RepositoryException("Failed to update process " + processName + ". Unable to get storage " +
+                    "information of this process.");
+          }
           processModelVersionRepo.save(pmv);
           LOGGER.info("Updated existing process model \"{}\"", processName);
           return pmv;
 
         } else {
           LOGGER.error("Unable to find the Process Model to update. Id=" + processId + ", name="
-              + processName + ", branch=" + branchName + ", current version=" + version.toString());
+              + processName + ", branch=" + branchName + ", current version=" + version);
           throw new RepositoryException("Unable to find the Process Model to update. Id="
               + processId + ", name=" + processName + ", branch=" + branchName
-              + ", current version=" + version.toString());
+              + ", current version=" + version);
         }
       }
-    } catch (RepositoryException e) {
+    } catch (RepositoryException | ObjectCreationException | IOException e) {
       LOGGER.error("Failed to update process {}", processName);
       LOGGER.error("Original exception was: ", e);
-      throw new RepositoryException("Failed to Update process model.", e);
+      throw new UpdateProcessException("Failed to Update process model.", e);
     }
 
+  }
+
+  private void writeInputStreamToStorage(InputStream inputStream, String storagePath, String storageKey) throws ObjectCreationException, IOException {
+    try (OutputStream outputStream = storageFactory.getStorageClient(storagePath)
+            .getOutputStream("model", storageKey)) {
+      inputStream.transferTo(outputStream);
+    }
   }
 
   /**
