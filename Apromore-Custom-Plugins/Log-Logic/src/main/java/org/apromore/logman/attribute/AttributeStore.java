@@ -22,25 +22,10 @@
 
 package org.apromore.logman.attribute;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.apromore.logman.ALog;
 import org.apromore.logman.ATrace;
 import org.apromore.logman.Constants;
-import org.deckfour.xes.extension.std.XConceptExtension;
-import org.deckfour.xes.extension.std.XOrganizationalExtension;
-import org.deckfour.xes.model.XAttribute;
-import org.deckfour.xes.model.XAttributeBoolean;
-import org.deckfour.xes.model.XAttributeContinuous;
-import org.deckfour.xes.model.XAttributeDiscrete;
-import org.deckfour.xes.model.XAttributeLiteral;
-import org.deckfour.xes.model.XAttributeMap;
-import org.deckfour.xes.model.XAttributeTimestamp;
-import org.deckfour.xes.model.XElement;
-import org.deckfour.xes.model.XEvent;
-import org.deckfour.xes.model.XLog;
-import org.deckfour.xes.model.XTrace;
+import org.deckfour.xes.model.*;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.map.MutableMap;
@@ -52,6 +37,9 @@ import org.eclipse.collections.impl.factory.Maps;
 import org.eclipse.collections.impl.factory.Sets;
 import org.eclipse.collections.impl.factory.primitive.ObjectIntMaps;
 import org.eclipse.collections.impl.list.primitive.IntInterval;
+
+import java.util.Arrays;
+import java.util.Collection;
 
 /**
  * This class is used to manage all attributes in a log. For example, how many LiteralAttribute,
@@ -85,35 +73,17 @@ public class AttributeStore {
 	protected MutableObjectIntMap<AbstractAttribute> indexMap = ObjectIntMaps.mutable.empty(); //fasten attribute index retrieval
 	protected MutableMap<String, AbstractAttribute> keyLevelMap = Maps.mutable.empty(); //fasten attribute retrieval based on level+key
 	protected final String KEY_SEPARATOR = "@";
-	
-	// These attributes are assumed to be present in every event after importing with data quality checks
-	private final List<String> standardAttributeKeys = Arrays.asList(
-	                            XConceptExtension.KEY_NAME,
-	                            XOrganizationalExtension.KEY_RESOURCE,
-	                            XOrganizationalExtension.KEY_ROLE,
-	                            XOrganizationalExtension.KEY_GROUP);
 
-	// Event perspective attributes must occur in every event
-	// Standard attributes are assumed to occur in every event if data quality is observed
-	private MutableSet<AbstractAttribute> perspectiveEventAttributes = Sets.mutable.empty();
-	
 	public AttributeStore(ALog log) {
         registerXAttributes(log.getAttributes(), AttributeLevel.LOG);
         for (ATrace trace: log.getTraces()) {
             registerXAttributes(trace.getAttributes(), AttributeLevel.TRACE);
             for (XEvent event : trace.getEvents()) {
-                ImmutableSet<AbstractAttribute> atts = registerXAttributes(event.getAttributes(), AttributeLevel.EVENT);
-                if (trace == log.getTraces().get(0) && event == trace.get(0)) { // first event
-                    perspectiveEventAttributes.addAllIterable(atts);
-                }
-                else {
-                    perspectiveEventAttributes.removeIf(a -> !atts.contains(a) && !standardAttributeKeys.contains(a.getKey()));
-                    perspectiveEventAttributes.addAllIterable(atts.select(a -> standardAttributeKeys.contains(a.getKey())));
-                }
+                registerXAttributes(event.getAttributes(), AttributeLevel.EVENT);
             }
         }
 	}
-	
+
 	protected String getLevelKey(String key, AttributeLevel level) {
 		return level.name() + KEY_SEPARATOR + key;
 	}
@@ -239,18 +209,16 @@ public class AttributeStore {
                 a.getType() != AttributeType.BOOLEAN).toImmutable();
     }
     
-    public ImmutableList<AbstractAttribute> getIndexableEventAttributeWithLimits(int valueSize, AttributeType...excludedTypes) {
-        List<AttributeType> excludedTypeList = Arrays.asList(excludedTypes);
+    public ImmutableList<AbstractAttribute> getIndexableEventAttributeWithLimits(int valueSize, Collection<String> keys) {
         return attributes.select(a -> a instanceof IndexableAttribute &&
-                a.getLevel() == AttributeLevel.EVENT &&
-                !excludedTypeList.contains(a.getType()) &&
-                (((IndexableAttribute)a).getValueSize() <= valueSize ||
-                a.getKey() == Constants.ATT_KEY_CONCEPT_NAME)).toImmutable();
+					a.getLevel() == AttributeLevel.EVENT &&
+					((IndexableAttribute)a).getValueSize() <= valueSize &&
+					keys.contains(a.getKey()))
+				.toImmutable();
     }
     
-    public ImmutableList<AbstractAttribute> getPerspectiveEventAttributes(int valueSize, AttributeType...excludedTypes) {
-        ImmutableList<AbstractAttribute> indexableAttributes = getIndexableEventAttributeWithLimits(valueSize, excludedTypes);
-        return indexableAttributes.select(a -> perspectiveEventAttributes.contains(a)).toImmutable();
+    public ImmutableList<AbstractAttribute> getPerspectiveEventAttributes(int valueSize, Collection<String> keys) {
+        return getIndexableEventAttributeWithLimits(valueSize, keys);
     }
 	
 	public ImmutableList<AbstractAttribute> getLiteralAttributes() {

@@ -30,10 +30,17 @@ import org.deckfour.xes.model.XAttributeMap;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.ListIterable;
 import org.eclipse.collections.impl.factory.Lists;
 import org.joda.time.DateTime;
 import org.junit.Assert;
+import static org.junit.Assert.*;
 import org.junit.Test;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 public class AttributeStoreTest {
 	public static long datetime1 = DateTime.now().getMillis();
@@ -359,5 +366,38 @@ public class AttributeStoreTest {
 		Assert.assertEquals(1, store3.getTimestampAttributes().size());	
 	}
 
+	@Test
+	public void testGetPerspectiveEventAttributes() {
+		// Empty log
+		AttributeStore store1 = this.createStoreFromEmptyLog();
+		assertEquals(0, store1.getPerspectiveEventAttributes(100, Arrays.asList(new String[] {"concept:name"})).size());
+
+		AttributeStore store2 = this.createStoreFromLogWithOneTracesTwoEventsStandardAttributes();
+		assertEquals(0, store2.getPerspectiveEventAttributes(100, Arrays.asList(new String[] {"resource"})).size());
+
+		// Single valid perspective
+		ListIterable<AbstractAttribute> atts1 = store2.getPerspectiveEventAttributes(100, Arrays.asList(new String[] {"concept:name"}));
+		assertEquals(1, atts1.size());
+		assertEquals("concept:name", atts1.get(0).getKey());
+		assertEquals(AttributeLevel.EVENT, atts1.get(0).getLevel());
+		assertTrue(atts1.get(0) instanceof IndexableAttribute);
+		assertEquals(Lists.immutable.of("conceptname1", "conceptname2"), ((IndexableAttribute)atts1.get(0)).getValues());
+
+		// Two valid perspectives
+		ListIterable<AbstractAttribute> atts2 = store2.getPerspectiveEventAttributes(100,
+													Arrays.asList(new String[] {"concept:name", "org:resource"}));
+		atts2 = atts2.toSortedListBy(AbstractAttribute::getKey);
+		assertEquals(2, atts2.size());
+		assertEquals("concept:name", atts2.get(0).getKey());
+		assertEquals("org:resource", atts2.get(1).getKey());
+		assertEquals(AttributeLevel.EVENT, atts2.get(1).getLevel());
+		assertTrue(atts2.get(1) instanceof IndexableAttribute);
+		assertEquals(Lists.immutable.of("resource1", "resource2"), ((IndexableAttribute)atts2.get(1)).getValues());
+
+		// Max number of values
+		ListIterable<AbstractAttribute> atts3 = store2.getPerspectiveEventAttributes(1,
+													Arrays.asList(new String[] {"concept:name", "org:resource"}));
+		assertEquals(0, atts3.size());
+	}
 
 }
