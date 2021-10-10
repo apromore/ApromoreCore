@@ -112,6 +112,10 @@ body {
     box-shadow: none;
 }
 
+.ap-pd .z-button.ap-icon {
+    background-color: transparent;
+}
+
 .ap-pd-action-buttons .ap-icon-dir-lr input {
     display: none;
 }
