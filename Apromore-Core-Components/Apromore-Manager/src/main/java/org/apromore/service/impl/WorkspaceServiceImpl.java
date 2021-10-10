@@ -83,6 +83,7 @@ import org.apromore.storage.StorageType;
 import org.apromore.storage.factory.StorageManagementFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -117,6 +118,9 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
   private StorageManagementFactory<StorageClient> storageFactory;
   private ConfigBean config;
+
+  @Value("${storage.logPrefix}")
+  private String logPrefix;
 
   /**
    * Default Constructor allowing Spring to Autowire for testing and normal use.
@@ -480,23 +484,27 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
 
     // Copy file
-    StorageClient storageClient = storageFactory.getStorageClient(config.getStoragePath());
-    // For backward compatible
-    final String currentFileFullName =
+    final String currentFileFullName =  // For backward compatibility
         currentLog.getFilePath() + "_" + currentLog.getName() + ".xes.gz";
     if (currentLog.getStorage() == null) {
-      // change spelling of factory
-      StorageClient storageClientOldFile = storageFactory
-          .getStorageClient("FILE" + StorageType.STORAGE_PATH_SEPARATOR + config.getLogsDir());
+      try (InputStream inputStream = storageFactory
+          .getStorageClient("FILE" + StorageType.STORAGE_PATH_SEPARATOR + config.getLogsDir())
+          .getInputStream(null, currentFileFullName)) {
 
-      OutputStream outputStream = storageClient.getOutputStream("log", currentFileFullName);
-      InputStream inputStream = storageClientOldFile.getInputStream(null, currentFileFullName);
-      logFileService.copyFile(inputStream, outputStream);
-      Storage storage = new Storage();
-      storage.setKey(currentFileFullName);
-      storage.setPrefix("log");
-      storage.setStoragePath(config.getStoragePath());
-      newLog.setStorage(storageRepository.saveAndFlush(storage));
+        Storage storage = new Storage();
+        storage.setKey(currentFileFullName);
+        storage.setPrefix(logPrefix);
+        storage.setStoragePath(config.getStoragePath());
+
+        try (OutputStream outputStream = storageFactory
+            .getStorageClient("FILE" + StorageType.STORAGE_PATH_SEPARATOR + config.getLogsDir())
+            .getOutputStream(storage.getPrefix(), storage.getKey())) {
+
+          logFileService.copyFile(inputStream, outputStream);
+        }
+
+        newLog.setStorage(storageRepository.saveAndFlush(storage));
+      }
     }
 
     // Persist
@@ -504,7 +512,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
       logRepo.save(newLog);
     } catch (Exception e) {
       // log something
-      storageClient.delete("log", currentFileFullName);
+      storageFactory.getStorageClient(config.getStoragePath())
+                    .delete(logPrefix, currentFileFullName);
     }
 
     return newLog;

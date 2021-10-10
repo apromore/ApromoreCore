@@ -114,6 +114,10 @@ public class ProcessServiceImpl implements ProcessService {
   @Value("${enableStorageServiceForProcessModels}")
   private boolean enableStorageService;
 
+  /** Prefix (subfolder) to use with the Storage Service when storing new BPMN documents. */
+  @Value("${storage.processModelPrefix}")
+  private String processModelPrefix;
+
   private GroupRepository groupRepo;
   private NativeRepository nativeRepo;
   private ProcessBranchRepository processBranchRepo;
@@ -257,10 +261,10 @@ public class ProcessServiceImpl implements ProcessService {
       Storage storage = new Storage();
       final String name = now + "_" + processName + "_" + version + "." + nativeType.getExtension();
       storage.setKey(name);
-      storage.setPrefix("model");
+      storage.setPrefix(processModelPrefix);
       storage.setStoragePath(storagePath);
 
-      writeInputStreamToStorage(sanitizedStream, storagePath, name);
+      writeInputStreamToStorage(sanitizedStream, storage);
       storageRepository.save(storage);
 
       return createProcessModelVersion(branch, version, nativeType, null, null, storage);
@@ -336,7 +340,7 @@ public class ProcessServiceImpl implements ProcessService {
             pmv.getNativeDocument().setContent(StreamUtil.inputStream2String(nativeStream).trim());
             pmv.getNativeDocument().setLastUpdateDate(now);
           } else if (pmv.getStorage() != null) {
-            writeInputStreamToStorage(nativeStream, pmv.getStorage().getStoragePath(), pmv.getStorage().getKey());
+            writeInputStreamToStorage(nativeStream, pmv.getStorage());
             pmv.getStorage().setUpdated(now);
           } else {
             throw new RepositoryException("Failed to update process " + processName + ". Unable to get storage " +
@@ -362,9 +366,11 @@ public class ProcessServiceImpl implements ProcessService {
 
   }
 
-  private void writeInputStreamToStorage(InputStream inputStream, String storagePath, String storageKey) throws ObjectCreationException, IOException {
-    try (OutputStream outputStream = storageFactory.getStorageClient(storagePath)
-            .getOutputStream("model", storageKey)) {
+  private void writeInputStreamToStorage(InputStream inputStream, Storage storage)
+    throws ObjectCreationException, IOException {
+
+    try (OutputStream outputStream = storageFactory.getStorageClient(storage.getStoragePath())
+            .getOutputStream(storage.getPrefix(), storage.getKey())) {
       inputStream.transferTo(outputStream);
     }
   }
