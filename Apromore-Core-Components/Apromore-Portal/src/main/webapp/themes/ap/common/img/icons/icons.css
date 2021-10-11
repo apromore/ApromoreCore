@@ -393,6 +393,11 @@
     width: 28.5px !important;
 }
 
+.ap-icon-info {
+    background-image: url('info.svg') !important;
+    width: 26px !important;
+}
+
 .ap-icon-key {
     background-image: url('key.svg') !important;
     width: 26px !important;
