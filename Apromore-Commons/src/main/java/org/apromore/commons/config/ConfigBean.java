@@ -92,6 +92,7 @@ public class ConfigBean {
     private boolean enableFullUserReg;
     private boolean enableSubscription;
     private boolean enableEtl;
+    private boolean enableSimilaritySearch;
 
     // Switch for custom calendar
     private boolean enableCalendar;
