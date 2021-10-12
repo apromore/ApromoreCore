@@ -24,6 +24,7 @@
 
 package org.apromore.plugin.similaritysearch.portal;
 
+import org.apromore.commons.config.ConfigBean;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.portal.context.PluginPortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
@@ -32,6 +33,7 @@ import org.apromore.portal.custom.gui.plugin.PluginCustomGui;
 import org.apromore.portal.dialogController.FolderTreeController;
 import org.apromore.portal.exception.DialogException;
 import org.apromore.portal.model.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.slf4j.Logger;
 import org.zkoss.util.resource.Labels;
@@ -55,6 +57,9 @@ public class SimilaritySearchPlugin extends PluginCustomGui implements  LabelSup
 
     private final String GREEDY_ALGORITHM = "Greedy";
     private final static Logger LOGGER = PortalLoggerFactory.getLogger(SimilaritySearchPlugin.class);
+
+    @Autowired
+    private ConfigBean configBean;
 
     private PortalContext context;
     private Window similaritySearchW;
@@ -84,6 +89,11 @@ public class SimilaritySearchPlugin extends PluginCustomGui implements  LabelSup
     @Override
     public String getIconPath() {
         return "search_similar_model.svg";
+    }
+
+    @Override
+    public Availability getAvailability() {
+        return configBean.isEnableSimilaritySearch() ? Availability.AVAILABLE : Availability.UNAVAILABLE;
     }
 
     @Override
