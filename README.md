@@ -17,7 +17,7 @@ If you are looking for the commercial edition (Apromore Enterprise Edition), che
   Note that newer versions, including Java SE 11, are currently not supported
 * [Apache Maven](https://maven.apache.org/download.cgi) 3.5.2 or newer, and internet access for it to download this project's dependencies.
 * [Lessc](http://lesscss.org/usage/) 3.9.0 or newer
-* [MySQL server](https://dev.mysql.com/downloads/mysql/) 8.0.  (It is possible to use H2 instead, see below)
+* [MySQL server](https://dev.mysql.com/downloads/mysql/) 8.0.
 * <b>Note:</b> These instructions are tested with Linux Ubuntu 20.04. With minor adaptations, these instructions may be used for Windows 10/WS20016/WS2019 and macOS 10.8 or newer.
 
 ## Installation Instructions
@@ -116,7 +116,7 @@ mysql --max_allowed_packet=1G --user=root -p -h localhost apromore < backup.sql
 * For the event logs directory, it is recommended to zip the directory before copying it across
 
 
-### LDAP setup
+### LDAP setup (optional)
 
 As distributed, Apromore maintains its own catalogue of users and passwords.
 It can be configured to instead allow login based on an external LDAP directory.
