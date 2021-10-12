@@ -70,6 +70,8 @@ import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Span;
 
+import org.apromore.zk.event.CalendarEvents;
+
 public abstract class BaseListboxController extends BaseController {
 
   private static final long serialVersionUID = -4693075788311730404L;
@@ -843,20 +845,7 @@ public abstract class BaseListboxController extends BaseController {
 
   public void launchCalendar(String artifactName, Integer logId) {
     PortalPlugin calendarPlugin;
-    final EventQueue<Event> sessionQueue = EventQueues.lookup("org/apromore/service/CALENDAR", EventQueues.SESSION,true);
     Long calendarId = getMainController().getEventLogService().getCalendarIdFromLog(logId);
-
-    sessionQueue.subscribe(new EventListener<Event>() {
-      @Override
-      public void onEvent(Event event) {
-        if ("onCalendarPublish".equals(event.getName())) {
-          Long data = (Long) event.getData();
-          getMainController().getEventLogService().updateCalendarForLog(logId, data);
-          sessionQueue.publish(new Event("onCalendarChanged", null, logId));
-        }
-        sessionQueue.unsubscribe(this);
-      }
-    });
 
     try {
       Map<String, Object> attrMap = new HashMap<String, Object>();

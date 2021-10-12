@@ -48,6 +48,7 @@ import org.apromore.calendar.service.CalendarService;
 import org.apromore.commons.datetime.DateTimeUtils;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.calendar.pageutil.PageUtils;
+import org.apromore.zk.event.CalendarEvents;
 
 public class CalendarItemRenderer implements ListitemRenderer<CalendarModel>, LabelSupplier {
 
@@ -195,7 +196,7 @@ public class CalendarItemRenderer implements ListitemRenderer<CalendarModel>, La
         removeAction.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
-                EventQueue<Event> calendarEventQueue = EventQueues.lookup(CalendarService.EVENT_TOPIC, EventQueues.DESKTOP,true);
+                EventQueue<Event> calendarEventQueue = EventQueues.lookup(CalendarEvents.TOPIC, EventQueues.DESKTOP,true);
                 calendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_BEFORE_REMOVE, null, calendarItem));
             }
         });

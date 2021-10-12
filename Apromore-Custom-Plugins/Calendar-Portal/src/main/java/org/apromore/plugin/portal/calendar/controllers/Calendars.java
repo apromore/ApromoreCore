@@ -38,6 +38,7 @@ import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.select.SelectorComposer;
@@ -51,7 +52,7 @@ import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Window;
 
-import org.apromore.plugin.portal.calendar.CalendarEvents;
+import org.apromore.zk.event.CalendarEvents;
 import org.apromore.plugin.portal.calendar.LabelSupplier;
 
 /**
@@ -89,6 +90,7 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
 
     private Long appliedCalendarId;
     private boolean canEdit;
+    private Integer logId;
 
     public Calendars() throws Exception {
     }
@@ -98,18 +100,18 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
         super.doAfterCompose(win);
         initialize();
         win.setTitle(getLabels().getString("title_text"));
-        win.addEventListener("onClose", (Event event) -> EventQueues.remove(CalendarService.EVENT_TOPIC));
+        win.addEventListener("onClose", (Event event) -> EventQueues.remove(CalendarEvents.TOPIC));
     }
 
     public void initialize() {
         appliedCalendarId = (Long) Executions.getCurrent().getArg().get("calendarId");
-        Integer logId = (Integer) Executions.getCurrent().getArg().get("logId");
+        logId = (Integer) Executions.getCurrent().getArg().get("logId");
         canEdit = (boolean) Executions.getCurrent().getArg().get("canEdit");
         applyCalendarBtn.setDisabled(!canEdit);
         restoreBtn.setDisabled(!canEdit);
         addNewCalendar.setDisabled(!canEdit);
-        EventQueue<Event> localCalendarEventQueue = EventQueues.lookup(CalendarService.EVENT_TOPIC + "LOCAL", EventQueues.DESKTOP,true);
-        sessionCalendarEventQueue = EventQueues.lookup(CalendarService.EVENT_TOPIC, EventQueues.SESSION,true);
+        EventQueue<Event> localCalendarEventQueue = EventQueues.lookup(CalendarEvents.TOPIC + "LOCAL", EventQueues.DESKTOP,true);
+        sessionCalendarEventQueue = EventQueues.lookup(CalendarEvents.TOPIC, EventQueues.SESSION,true);
 
         CalendarItemRenderer itemRenderer = new CalendarItemRenderer(calendarService, appliedCalendarId, canEdit);
         calendarListbox.setItemRenderer(itemRenderer);
@@ -149,6 +151,11 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
             }
         }
         calendarListbox.setModel(calendarListModel);
+    }
+
+    public void applyCalendarForLog(Integer logId, Long calendarId) {
+        eventLogService.updateCalendarForLog(logId, calendarId);
+        sessionCalendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_CHANGED, null, logId));
     }
 
     public void beforeRemoveCalendar(CalendarModel calendarItem) {
@@ -198,8 +205,7 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
         String msg = getLabels().getString("success_apply_message");
         String infoText = String.format(msg, logName);
         Notification.info(infoText);
-        sessionCalendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_PUBLISH, null,
-                ((CalendarModel) calendarListModel.getSelection().iterator().next()).getId()));
+        applyCalendarForLog(logId, (calendarListModel.getSelection().iterator().next()).getId());
         getSelf().detach();
        
     }
@@ -240,7 +246,7 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
 
     @Listen("onClick = #restoreBtn")
     public void onClickRestoreBtn() {
-        sessionCalendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_PUBLISH, null,null));
+        applyCalendarForLog(logId, null);
         getSelf().detach();
         String logName = selectedLog.getValue();
         String msg = getLabels().getString("success_restore_message");

@@ -81,6 +81,8 @@ import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
+import org.apromore.zk.event.CalendarEvents;
+
 /**
  * PDController is the top-level application object to manage PD plugin as a
  * whole. It
@@ -167,6 +169,7 @@ public class PDController extends BaseController implements Composer<Component> 
     private InteractiveMode mode = InteractiveMode.MODEL_MODE; // initial mode
 
     private Component pdComponent;
+    private EventQueue<Event> sessionQueue;
 
     /////////////////////////////////////////////////////////////////////////
 
@@ -329,6 +332,7 @@ public class PDController extends BaseController implements Composer<Component> 
     // All data and controllers must be already available
     private void initialize() {
         try {
+            initializeCalendar();
             initializeControls();
             timeStatsController.updateUI(contextData);
             viewSettingsController.updateUI(null);
@@ -338,6 +342,28 @@ public class PDController extends BaseController implements Composer<Component> 
             Messagebox.show(getLabel("initError_message"), getLabel("initError_title"), Messagebox.OK,
                     Messagebox.ERROR);
         }
+    }
+
+    public void initializeCalendar() {
+        sessionQueue = EventQueues.lookup(CalendarEvents.TOPIC, EventQueues.SESSION,true);
+        sessionQueue.subscribe(new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) {
+                if (CalendarEvents.ON_CALENDAR_CHANGED.equals(event.getName())) {
+                    int logId = (int) event.getData();
+                    if (logId == sourceLogId) {
+                        Messagebox.show("Custom calendar for this process log is updated. You need to reload the page. Continue?",
+                                new Messagebox.Button[] {Messagebox.Button.OK, Messagebox.Button.CANCEL},
+                                (ClickEvent e) -> {
+                                    if (Messagebox.ON_OK.equals(e.getName())) {
+                                        Clients.evalJavaScript("window.location.reload()");
+                                    }
+                                }
+                        );
+                    }
+                }
+            }
+        });
     }
 
     private void initializeControls() {
@@ -436,26 +462,6 @@ public class PDController extends BaseController implements Composer<Component> 
     }
 
     public void openCalendar() {
-        final EventQueue<Event> sessionQueue = EventQueues.lookup("org/apromore/service/CALENDAR", EventQueues.SESSION,true);
-        sessionQueue.subscribe(new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) {
-                if ("onCalendarChanged".equals(event.getName())) {
-                    int logId = (int) event.getData();
-                    if (logId == sourceLogId) {
-                        Messagebox.show("Custom calendar for this process log is updated. You need to reload the page. Continue?",
-                            new Messagebox.Button[] {Messagebox.Button.OK, Messagebox.Button.CANCEL},
-                            (ClickEvent e) -> {
-                                if (Messagebox.ON_OK.equals(e.getName())) {
-                                    Clients.evalJavaScript("window.location.reload()");
-                                }
-                            }
-                        );
-                    }
-                    sessionQueue.unsubscribe(this);
-                }
-            }
-        });
         ((MainController)portalContext.getMainController()).getBaseListboxController().launchCalendar(sourceLogName, sourceLogId);
     }
 

@@ -44,11 +44,11 @@ import org.apromore.calendar.model.WorkDayModel;
 import org.apromore.calendar.service.CalendarService;
 import org.apromore.commons.datetime.TimeUtils;
 import org.apromore.plugin.portal.PortalLoggerFactory;
-import org.apromore.plugin.portal.calendar.CalendarEvents;
 import org.apromore.plugin.portal.calendar.Constants;
 import org.apromore.plugin.portal.calendar.TimeRange;
 import org.apromore.plugin.portal.calendar.Zone;
 import org.apromore.plugin.portal.calendar.pageutil.PageUtils;
+import org.apromore.zk.event.CalendarEvents;
 import org.slf4j.Logger;
 import org.zkoss.json.JSONArray;
 import org.zkoss.json.JSONObject;
@@ -522,7 +522,7 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
     @Listen("onClick = #cancelBtn")
     public void onClickCancelBtn() {
         if (isNew) {
-            EventQueue<Event> localCalendarEventQueue = EventQueues.lookup(CalendarService.EVENT_TOPIC + "LOCAL", EventQueues.DESKTOP,true);
+            EventQueue<Event> localCalendarEventQueue = EventQueues.lookup(CalendarEvents.TOPIC + "LOCAL", EventQueues.DESKTOP,true);
             localCalendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_ABANDON, null, calendarId));
         }
         getSelf().detach();
