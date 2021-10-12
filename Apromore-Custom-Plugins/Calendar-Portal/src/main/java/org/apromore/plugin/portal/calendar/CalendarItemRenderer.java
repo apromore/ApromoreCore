@@ -55,11 +55,13 @@ public class CalendarItemRenderer implements ListitemRenderer<CalendarModel>, La
 
     private CalendarService calendarService;
     private long appliedCalendarId;
+    private boolean canEdit;
 
-    public CalendarItemRenderer(CalendarService calendarService, long appliedCalendarId) {
+    public CalendarItemRenderer(CalendarService calendarService, long appliedCalendarId, boolean canEdit) {
         super();
         this.calendarService = calendarService;
         this.appliedCalendarId = appliedCalendarId;
+        this.canEdit = canEdit;
     }
 
     public Listcell renderCell(Listitem listItem, Component comp) {
@@ -80,9 +82,9 @@ public class CalendarItemRenderer implements ListitemRenderer<CalendarModel>, La
         return renderCell(listItem, span);
     }
 
-    public Span renderIcon(Component parent, String sclass, String tooltip) {
+    public Span renderIcon(Component parent, String sclass, String tooltip, boolean disabled) {
         Span span = new Span();
-        span.setSclass(sclass);
+        span.setSclass(sclass + (disabled ? " ap-icon-disabled" : ""));
         span.setTooltiptext(tooltip);
         span.setParent(parent);
         return span;
@@ -161,9 +163,9 @@ public class CalendarItemRenderer implements ListitemRenderer<CalendarModel>, La
         OffsetDateTime created = calendarItem.getCreated();
 		renderTextCell(listItem, DateTimeUtils.humanize(created));
         Hlayout actionBar = new Hlayout();
-        Span renameAction = renderIcon(actionBar, "ap-icon ap-icon-rename", "Rename");
-        Span editAction = renderIcon(actionBar, "ap-icon ap-icon-calendar-edit", "Edit");
-        Span removeAction = renderIcon(actionBar, "ap-icon ap-icon-trash", "Remove");
+        Span renameAction = renderIcon(actionBar, "ap-icon ap-icon-rename", "Rename", !canEdit);
+        Span editAction = renderIcon(actionBar, "ap-icon ap-icon-calendar-edit", "Edit", !canEdit);
+        Span removeAction = renderIcon(actionBar, "ap-icon ap-icon-trash", "Remove", !canEdit);
         renderCell(listItem, actionBar);
 
         nameCell.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
