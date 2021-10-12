@@ -121,7 +121,12 @@ public class MergeServiceImpl extends DefaultParameterAwarePlugin implements Mer
     private ToolboxData convertModelsToMergeData(List<ProcessModelVersion> models) throws Exception {
         ToolboxData data = new ToolboxData();
         for (ProcessModelVersion pmv : models) {
-            data.addModel(pmv, BPMNDiagramFactory.newDiagramFromProcessText(pmv.getNativeDocument().getContent()));
+            data.addModel(pmv, BPMNDiagramFactory.newDiagramFromProcessText(processSrv.getBPMNRepresentation(
+                pmv.getProcessBranch().getProcess().getName(),
+                pmv.getProcessBranch().getProcess().getId(),
+                pmv.getProcessBranch().getBranchName(),
+                new Version(pmv.getVersionNumber())
+            )));
         }
         return data;
     }
