@@ -93,9 +93,18 @@ public final class ItemHelpers {
         return accessType;
     }
 
+    private static final AccessType getLogEffectiveAccessType(Integer logId, User user) {
+        return authorizationService.getLogAccessTypeByUser(logId, user);
+    }
+
     public static final boolean isOwner(User user, Object item) throws Exception {
         AccessType accessType = ItemHelpers.getEffectiveAccessType(item, user);
         return AccessType.OWNER.equals(accessType);
+    }
+
+    public static final boolean canModifyCalendar(User user, Integer logId) {
+        AccessType accessType = ItemHelpers.getLogEffectiveAccessType(logId, user);
+        return AccessType.OWNER.equals(accessType) || AccessType.EDITOR.equals(accessType);
     }
 
     public static final boolean canModify(User user, Object item) throws Exception {
