@@ -86,18 +86,6 @@
               "id": "dashboard.portal.DashboardPlugin"
             }
           ]
-        },
-        {
-          "id": "REDESIGN",
-          "labelKey": "plugin_redesign_title_text",
-          "items": [
-            {
-              "id": "org.apromore.plugin.merge.portal.MergePlugin"
-            },
-            {
-              "id": "org.apromore.plugin.similaritysearch.portal.SimilaritySearchPlugin"
-            }
-          ]
         }
       ]
     },
