@@ -28,8 +28,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import javax.xml.bind.JAXBException;
-
 import org.apromore.dao.model.Native;
 import org.apromore.dao.model.NativeType;
 import org.apromore.dao.model.ProcessModelVersion;
