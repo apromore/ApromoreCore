@@ -808,3 +808,7 @@ img[src="img/icon/bpmn-22x22.png"] {
 .ap-lang-chooser .z-comboitem-text {
     vertical-align: bottom;
 }
+
+.ap-portal .z-button.ap-icon {
+    background-color: transparent;
+}
