@@ -80,7 +80,6 @@ import javax.activation.DataHandler;
 import javax.annotation.Resource;
 import javax.inject.Inject;
 import javax.mail.util.ByteArrayDataSource;
-import javax.xml.bind.JAXBException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
@@ -252,7 +251,7 @@ public class ProcessServiceImpl implements ProcessService {
   private ProcessModelVersion insertProcessModelVersion(final String processName,
     final ProcessBranch branch, final Version version, final NativeType nativeType,
     final InputStream sanitizedStream, final String lastUpdate)
-    throws IOException, JAXBException, ObjectCreationException {
+    throws IOException, ObjectCreationException {
 
     if (enableStorageService) {
       Storage storage = createStorage(processName, version, nativeType, sanitizedStream);
@@ -338,55 +337,61 @@ public class ProcessServiceImpl implements ProcessService {
     try {
       if (user == null) {
         throw new ImportException("Permission to change this model denied.  No user specified.");
-      } else if (!canUserWriteProcess(user, processId)) {
+      }
+
+      if (!canUserWriteProcess(user, processId)) {
         throw new ImportException("Permission to change this model denied.");
-      } else {
-        ProcessModelVersion pmv = processModelVersionRepo.getProcessModelVersion(processId,
-            branchName, version.toString());
-        if (pmv != null) {
-          pmv.setLastUpdateDate(now);
-          if (pmv.getNativeDocument() != null) {
-            pmv.getNativeDocument().setContent(StreamUtil.inputStream2String(nativeStream).trim());
-            pmv.getNativeDocument().setLastUpdateDate(now);
+      }
 
-          } else if (pmv.getStorage() != null) {
-            if (processModelVersionRepo.countByStorageId(pmv.getStorage().getId()) > 1) {
-              // Copy on write, since we were sharing this storage reference
-              if (enableStorageService) {
-                pmv.setNativeDocument(null);
-                pmv.setStorage(createStorage(processName, version, nativeType, nativeStream));
+      ProcessModelVersion pmv = processModelVersionRepo.getProcessModelVersion(processId,
+          branchName, version.toString());
 
-              } else {
-                pmv.setNativeDocument(formatSrv.storeNative(processName, null, now, null, nativeType,
-                  Constants.INITIAL_ANNOTATION, nativeStream));
-                pmv.setStorage(null);
-              }
-            } else {  // nobody else shares this storage reference, so it's safe to mutate
-              writeInputStreamToStorage(nativeStream, pmv.getStorage());
-              pmv.getStorage().setUpdated(now);
-            }
-          } else {
-            throw new RepositoryException("Failed to update process " + processName + ". Unable to get storage " +
-                    "information of this process.");
-          }
-          processModelVersionRepo.save(pmv);
-          LOGGER.info("Updated existing process model \"{}\"", processName);
-          return pmv;
+      if (pmv == null) {
+          throw new RepositoryException("Failed to update process " + processName + ". Unable to get storage " +
+              "information of this process.");
+      }
+
+      pmv.setLastUpdateDate(now);
+
+      if (pmv.getNativeDocument() != null) {
+        pmv.getNativeDocument().setContent(StreamUtil.inputStream2String(nativeStream).trim());
+        pmv.getNativeDocument().setLastUpdateDate(now);
+
+      } else if (pmv.getStorage() != null) {
+        if (processModelVersionRepo.countByStorageId(pmv.getStorage().getId()) < 2) {
+          // Nobody else shares this storage reference, so it's safe to overwrite instead of copy
+          writeInputStreamToStorage(nativeStream, pmv.getStorage());
+          pmv.getStorage().setUpdated(now);
+
+        } else if (enableStorageService) {
+          // Copy on write, copying into the storage service
+          pmv.setNativeDocument(null);
+          pmv.setStorage(createStorage(processName, version, nativeType, nativeStream));
 
         } else {
-          LOGGER.error("Unable to find the Process Model to update. Id=" + processId + ", name="
-              + processName + ", branch=" + branchName + ", current version=" + version);
-          throw new RepositoryException("Unable to find the Process Model to update. Id="
-              + processId + ", name=" + processName + ", branch=" + branchName
-              + ", current version=" + version);
+          // Copy on write, copying into a native document
+          pmv.setNativeDocument(formatSrv.storeNative(processName, null, now, null, nativeType,
+            Constants.INITIAL_ANNOTATION, nativeStream));
+          pmv.setStorage(null);
         }
+
+      } else {
+        LOGGER.error("Unable to find the Process Model to update. Id=" + processId + ", name="
+            + processName + ", branch=" + branchName + ", current version=" + version);
+        throw new RepositoryException("Unable to find the Process Model to update. Id="
+            + processId + ", name=" + processName + ", branch=" + branchName
+            + ", current version=" + version);
       }
+
+      processModelVersionRepo.save(pmv);
+      LOGGER.info("Updated existing process model \"{}\"", processName);
+      return pmv;
+
     } catch (RepositoryException | ObjectCreationException | IOException e) {
       LOGGER.error("Failed to update process {}", processName);
       LOGGER.error("Original exception was: ", e);
       throw new UpdateProcessException("Failed to Update process model.", e);
     }
-
   }
 
   private void writeInputStreamToStorage(InputStream inputStream, Storage storage)
@@ -455,7 +460,7 @@ public class ProcessServiceImpl implements ProcessService {
 
       return pmv;
 
-    } catch (RepositoryException | JAXBException | IOException | ObjectCreationException e) {
+    } catch (RepositoryException | IOException | ObjectCreationException e) {
       LOGGER.error("Failed to update process {}", processName);
       LOGGER.error("Original exception was: ", e);
       throw new RepositoryException("Failed to Update process model.", e);
