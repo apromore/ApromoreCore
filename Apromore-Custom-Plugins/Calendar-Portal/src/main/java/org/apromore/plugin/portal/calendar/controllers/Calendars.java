@@ -89,6 +89,7 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
     private ListModelList<CalendarModel> calendarListModel;
 
     private Long appliedCalendarId;
+    private boolean canEdit;
 
     public Calendars() throws Exception {
     }
@@ -108,13 +109,14 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
     }
 
     public void initialize() {
-        Integer logId = (Integer) Executions.getCurrent().getArg().get("logId");
-        applyCalendarBtn.setDisabled(true);
-        restoreBtn.setDisabled(true);
+        appliedCalendarId = (Long) Executions.getCurrent().getArg().get("calendarId");
+        canEdit = (boolean) Executions.getCurrent().getArg().get("canEdit");
+        applyCalendarBtn.setDisabled(!canEdit);
+        restoreBtn.setDisabled(!canEdit);
+        addNewCalendar.setDisabled(!canEdit);
         calendarEventQueue = EventQueues.lookup(CalendarService.EVENT_TOPIC, EventQueues.DESKTOP,true);
 
-        appliedCalendarId = (Long) Executions.getCurrent().getArg().get("calendarId");
-        CalendarItemRenderer itemRenderer = new CalendarItemRenderer(calendarService, appliedCalendarId);
+        CalendarItemRenderer itemRenderer = new CalendarItemRenderer(calendarService, appliedCalendarId, canEdit);
         calendarListbox.setItemRenderer(itemRenderer);
         calendarListModel = new ListModelList<CalendarModel>();
         calendarListModel.setMultiple(false);
@@ -147,8 +149,8 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
             calendarListModel.add(model);
             if (model.getId().equals(appliedCalendarId)) {
                 calendarListModel.addToSelection(model);
-                applyCalendarBtn.setDisabled(false);
-                restoreBtn.setDisabled(false);
+                applyCalendarBtn.setDisabled(!canEdit);
+                restoreBtn.setDisabled(!canEdit);
             }
         }
         calendarListbox.setModel(calendarListModel);
@@ -179,7 +181,9 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
             calendarListModel.remove(calendarItem);
             calendarService.deleteCalendar(calendarItem.getId());
             updateApplyCalendarButton();
-            restoreBtn.setDisabled(calendarService.getCalendars().stream().noneMatch(c -> c.getId().equals(appliedCalendarId)));
+            restoreBtn.setDisabled(
+                   !canEdit || calendarService.getCalendars().stream().noneMatch(c -> c.getId().equals(appliedCalendarId))
+            );
         } catch (Exception e) {
             String msg = getLabels().getString("failed_remove_cal_message");
             LOGGER.error(msg, e);
@@ -251,7 +255,7 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
     }
 
     private void updateApplyCalendarButton() {
-        applyCalendarBtn.setDisabled(calendarListbox.getSelectedCount() <= 0);
+        applyCalendarBtn.setDisabled(calendarListbox.getSelectedCount() <= 0 || !canEdit);
     }
 
 }

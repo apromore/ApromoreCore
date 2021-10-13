@@ -364,7 +364,6 @@ public abstract class BaseListboxController extends BaseController {
 
         LogSummaryType selectedItem = (LogSummaryType) selections.iterator().next();
         launchCalendar(selectedItem.getName(), selectedItem.getId());
-
       }
     });
   }
@@ -865,6 +864,7 @@ public abstract class BaseListboxController extends BaseController {
       Map<String, Object> attrMap = new HashMap<String, Object>();
       attrMap.put("portalContext", portalContext);
       attrMap.put("artifactName", artifactName);
+      attrMap.put("logId", logId);
       attrMap.put("calendarId", calendarId);
       calendarPlugin = portalPluginMap.get(PluginCatalog.PLUGIN_CALENDAR);
       calendarPlugin.setSimpleParams(attrMap);
