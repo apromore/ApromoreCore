@@ -41,7 +41,7 @@ public class BetweenDesc {
     public static String getDescription(LogFilterRule logFilterRule) {
 
         Choice choice = logFilterRule.getChoice();
-        String attribute = XESAttributeCodes.getDisplayLabelForMultiple(logFilterRule.getKey());
+        String attribute = XESAttributeCodes.getDisplayLabelForSingle(logFilterRule.getKey());
         RuleValue rvFrom = BetweenFilterSupport.findValue(OperationType.FROM, logFilterRule);
         RuleValue rvTo = BetweenFilterSupport.findValue(OperationType.TO, logFilterRule);
         boolean sourceFirstOccur = Boolean.parseBoolean(rvFrom.getCustomAttributes().get(FIRST_OCCURRENCE));
@@ -50,30 +50,29 @@ public class BetweenDesc {
         boolean includeTo = Boolean.parseBoolean(rvTo.getCustomAttributes().get(INCLUDE_SELECTION));
 
         StringBuilder sb = new StringBuilder();
-        sb.append(choice == Choice.RETAIN ? "Retain " : "Remove ");
-        sb.append(attribute);
-
-        sb.append(buildDescription(rvFrom.getStringValue(), rvTo.getStringValue(),
+        sb.append(choice == Choice.RETAIN ? "Retain " : "Remove ").append("all activity instances ");
+        sb.append(buildDescription(attribute, rvFrom.getStringValue(), rvTo.getStringValue(),
                 sourceFirstOccur, targetFirstOccur, includeFrom, includeTo));
 
         return sb.toString();
     }
 
-    private static String buildDescription(String source, String target,
+    private static String buildDescription(String attribute, String source, String target,
                                            boolean sourceFirstOccur, boolean targetFirstOccur,
                                            boolean includeFrom, boolean includeTo) {
         return  " between " +
-                getValueString(source, sourceFirstOccur, includeFrom) +
+                getValueString(attribute, source, sourceFirstOccur, includeFrom) +
                 " and " +
-                getValueString(target, targetFirstOccur, includeTo);
+                getValueString(attribute, target, targetFirstOccur, includeTo);
     }
 
-    private static String getValueString(String value, boolean firstOccur, boolean include) {
+    private static String getValueString(String attribute, String value, boolean firstOccur, boolean include) {
         if (value.equals(START) || value.equals(END))
             return value;
 
-        return String.format("the %s occurrence of [%s (%s)]",
+        return String.format("the %s occurrence of %s [%s (%s)]",
                 firstOccur ? "first" : "last",
+                attribute,
                 value,
                 include ? "included" : "excluded");
     }
