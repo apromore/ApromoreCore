@@ -90,7 +90,7 @@
           <hbox sclass="ap-window-header-actions" hflex="1" align="start" pack="start" spacing="0"
                 style="padding: 8px;">
             <button id="importHolidaysBtn">${$composer.labels.add_public_holidays_text}</button>
-            <button id="addHolidayBtn">${$composer.labels.add_custom_holiday_text}</button>
+            <button id="addHolidayBtn">${$composer.labels.add_holiday_title_text}</button>
             <button id="deleteHolidaysBtn">${$composer.labels.delete_holidays_text}</button>
           </hbox>
           <div height="32px" sclass="ap-holiday-group-title" hflex="1">
