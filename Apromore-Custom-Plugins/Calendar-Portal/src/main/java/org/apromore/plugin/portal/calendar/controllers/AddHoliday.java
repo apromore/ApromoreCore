@@ -67,7 +67,7 @@ public class AddHoliday extends SelectorComposer<Window> {
                 Date date = holidayDate.getValue();
                 LocalDate localDate = TimeUtils.dateToLocalDate(date);
                 String description = holidayDescription.getValue();
-                String type = holidayType.getSelectedItem().getLabel();
+                String type = holidayType.getSelectedItem().getValue();
                 HolidayModel holiday = new HolidayModel(type, description, description, localDate);
                 try {
                     parentController.addHoliday(holiday);
