@@ -28,8 +28,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import javax.xml.bind.JAXBException;
-
 import org.apromore.dao.model.Native;
 import org.apromore.dao.model.NativeType;
 import org.apromore.dao.model.ProcessModelVersion;
@@ -67,13 +65,12 @@ public interface FormatService {
      * @param lastUpdate the time last updated
      * @param user       the user doing the updates
      * @param nativeType the native Type
-     * @param AnnotationVerion the Annotations identifier name
+     * @param annotationVersion the Annotations identifier name
      * @param cp the canonical process format, cpf and anf.
-     * @throws JAXBException if it fails....
      * @throws IOException is resetting the input streams fails.
      */
     Native storeNative(String procName, String created, String lastUpdate, User user,
-        NativeType nativeType, String AnnotationVerion, InputStream original) throws JAXBException, IOException;
+        NativeType nativeType, String annotationVersion, InputStream original) throws IOException;
     
     void updateNative(Native nativeData);
 }
