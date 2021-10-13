@@ -255,17 +255,7 @@ public class ProcessServiceImpl implements ProcessService {
     throws IOException, JAXBException, ObjectCreationException {
 
     if (enableStorageService) {
-      DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-      String now = dateFormat.format(new Date());
-
-      Storage storage = new Storage();
-      final String name = now + "_" + processName + "_" + version + "." + nativeType.getExtension();
-      storage.setKey(name);
-      storage.setPrefix(processModelPrefix);
-      storage.setStoragePath(storagePath);
-
-      writeInputStreamToStorage(sanitizedStream, storage);
-      storageRepository.save(storage);
+      Storage storage = createStorage(processName, version, nativeType, sanitizedStream);
 
       return createProcessModelVersion(branch, version, nativeType, null, null, storage);
 
@@ -275,6 +265,25 @@ public class ProcessServiceImpl implements ProcessService {
 
       return createProcessModelVersion(branch, version, nativeType, null, nat, null);
     }
+  }
+
+  private Storage createStorage(final String processName, final Version version,
+                                final NativeType nativeType, final InputStream in)
+    throws IOException, ObjectCreationException {
+
+    DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+    String now = dateFormat.format(new Date());
+
+    Storage storage = new Storage();
+    final String name = now + "_" + processName + "_" + version + "." + nativeType.getExtension();
+    storage.setKey(name);
+    storage.setPrefix(processModelPrefix);
+    storage.setStoragePath(storagePath);
+
+    writeInputStreamToStorage(in, storage);
+    storageRepository.save(storage);
+
+    return storage;
   }
 
   private InputStream sanitize(InputStream in, NativeType nativeType) throws Exception {
@@ -340,8 +349,21 @@ public class ProcessServiceImpl implements ProcessService {
             pmv.getNativeDocument().setContent(StreamUtil.inputStream2String(nativeStream).trim());
             pmv.getNativeDocument().setLastUpdateDate(now);
           } else if (pmv.getStorage() != null) {
-            writeInputStreamToStorage(nativeStream, pmv.getStorage());
-            pmv.getStorage().setUpdated(now);
+            if (processModelVersionRepo.countByStorageId(pmv.getStorage().getId()) > 1) {
+              // Copy on write, since we were sharing this storage reference
+              if (enableStorageService) {
+                pmv.setNativeDocument(null);
+                pmv.setStorage(createStorage(processName, version, nativeType, nativeStream));
+
+              } else {
+                pmv.setNativeDocument(formatSrv.storeNative(processName, null, now, null, nativeType,
+                  Constants.INITIAL_ANNOTATION, nativeStream));
+                pmv.setStorage(null);
+              }
+            } else {  // nobody else shares this storage reference, so it's safe to mutate
+              writeInputStreamToStorage(nativeStream, pmv.getStorage());
+              pmv.getStorage().setUpdated(now);
+            }
           } else {
             throw new RepositoryException("Failed to update process " + processName + ". Unable to get storage " +
                     "information of this process.");
