@@ -65,12 +65,12 @@ public interface FormatService {
      * @param lastUpdate the time last updated
      * @param user       the user doing the updates
      * @param nativeType the native Type
-     * @param AnnotationVerion the Annotations identifier name
+     * @param annotationVersion the Annotations identifier name
      * @param cp the canonical process format, cpf and anf.
      * @throws IOException is resetting the input streams fails.
      */
     Native storeNative(String procName, String created, String lastUpdate, User user,
-        NativeType nativeType, String AnnotationVerion, InputStream original) throws IOException;
+        NativeType nativeType, String annotationVersion, InputStream original) throws IOException;
     
     void updateNative(Native nativeData);
 }
