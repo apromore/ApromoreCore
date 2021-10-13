@@ -29,7 +29,6 @@ import java.io.InputStream;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.xml.bind.JAXBException;
 
 import org.apromore.dao.NativeRepository;
 import org.apromore.dao.NativeTypeRepository;
@@ -100,7 +99,7 @@ public class FormatServiceImpl implements FormatService {
     @Override
     @Transactional(readOnly = false)
     public Native storeNative(String procName, String created, String lastUpdate, User user,
-            NativeType nativeType, String annVersion, InputStream original) throws JAXBException, IOException {
+            NativeType nativeType, String annVersion, InputStream original) throws IOException {
         Native nat = null;
 
         if (original != null) {

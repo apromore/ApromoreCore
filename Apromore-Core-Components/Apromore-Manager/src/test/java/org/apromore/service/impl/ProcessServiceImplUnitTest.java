@@ -652,6 +652,8 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
                 .andReturn(List.of(groupProcess));
         expect(processModelVersionRepo.getProcessModelVersion(processId, branchName,
                 existingVersionNumber)).andReturn(existingPMV);
+        expect(processModelVersionRepo.countByStorageId(storage.getId()))
+                .andReturn(0L);
         expect(processModelVersionRepo.save(EasyMock.anyObject()))
                 .andReturn(newPMV);
         expect(storageFactory.getStorageClient(storage.getStoragePath()))

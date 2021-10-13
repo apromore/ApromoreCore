@@ -69,11 +69,10 @@ public interface FormatService {
      * @param nativeType the native Type
      * @param AnnotationVerion the Annotations identifier name
      * @param cp the canonical process format, cpf and anf.
-     * @throws JAXBException if it fails....
      * @throws IOException is resetting the input streams fails.
      */
     Native storeNative(String procName, String created, String lastUpdate, User user,
-        NativeType nativeType, String AnnotationVerion, InputStream original) throws JAXBException, IOException;
+        NativeType nativeType, String AnnotationVerion, InputStream original) throws IOException;
     
     void updateNative(Native nativeData);
 }
