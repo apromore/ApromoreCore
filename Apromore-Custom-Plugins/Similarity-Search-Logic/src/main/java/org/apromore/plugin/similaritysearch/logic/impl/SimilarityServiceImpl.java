@@ -36,6 +36,7 @@ import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.exception.ExceptionSearchForSimilar;
 import org.apromore.plugin.DefaultParameterAwarePlugin;
 import org.apromore.plugin.similaritysearch.logic.SimilarityService;
+import org.apromore.portal.helper.Version;
 import org.apromore.portal.model.ParameterType;
 import org.apromore.portal.model.ParametersType;
 import org.apromore.portal.model.ProcessVersionType;
@@ -44,6 +45,7 @@ import org.apromore.portal.model.SummariesType;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagramFactory;
 import org.apromore.service.FolderService;
+import org.apromore.service.ProcessService;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.similaritysearch.tools.SearchForSimilarProcesses;
 import org.slf4j.Logger;
@@ -57,7 +59,7 @@ public class SimilarityServiceImpl extends DefaultParameterAwarePlugin implement
 
     private ProcessModelVersionRepository processModelVersionRepo;
     private FolderService folderService;
-    //private CanoniserService canoniserSrv;
+    private ProcessService processService;
     private UserInterfaceHelper ui;
 
     /**
@@ -69,9 +71,10 @@ public class SimilarityServiceImpl extends DefaultParameterAwarePlugin implement
      */
     @Inject
     public SimilarityServiceImpl(final ProcessModelVersionRepository processModelVersionRepository, final FolderService folderService,
-                                 final UserInterfaceHelper uiHelper) {
+                                 final ProcessService processService, final UserInterfaceHelper uiHelper) {
         processModelVersionRepo = processModelVersionRepository;
         this.folderService = folderService;
+        this.processService = processService;
         ui = uiHelper;
     }
 
@@ -125,13 +128,22 @@ public class SimilarityServiceImpl extends DefaultParameterAwarePlugin implement
     private ToolboxData convertModelsToSearchData(List<ProcessModelVersion> models, ProcessModelVersion query) throws Exception {
         LOGGER.debug("Loading Data for search!");
         ToolboxData data = new ToolboxData();
-        data.setOrigin(BPMNDiagramFactory.newDiagramFromProcessText(query.getNativeDocument().getContent()));
+        data.setOrigin(bpmnDiagram(query));
         for (ProcessModelVersion pmv : models) {
-            data.addModel(pmv, BPMNDiagramFactory.newDiagramFromProcessText(pmv.getNativeDocument().getContent()));
+            data.addModel(pmv, bpmnDiagram(pmv));
         }
 
         LOGGER.debug("Data Loaded for all models!");
         return data;
+    }
+
+    private BPMNDiagram bpmnDiagram(ProcessModelVersion pmv) throws Exception {
+        return BPMNDiagramFactory.newDiagramFromProcessText(processService.getBPMNRepresentation(
+            pmv.getProcessBranch().getProcess().getName(),
+            pmv.getProcessBranch().getProcess().getId(),
+            pmv.getProcessBranch().getBranchName(),
+            new Version(pmv.getVersionNumber())
+        ));
     }
 
 
