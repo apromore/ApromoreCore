@@ -23,7 +23,7 @@
 
 <listbox id="processVersionsListbox" hflex="true" checkmark="false" span="true" emptyMessage="${labels.portal_detailsTitle_hint}" sclass="ap-process-detail">
     <listhead sizable="true">
-        <listheader hflex="min" label="${labels.portal_detailsVersion_text}" align="center" sort="auto(version.name)"/>
-        <listheader hflex="min" label="${labels.common_lastUpdated_text}" align="center" sort="auto(version.lastUpdate)"/>
+        <listheader width="140px" label="${labels.portal_detailsVersion_text}" align="center" sort="auto(version.name)"/>
+        <listheader hflex="1" label="${labels.common_lastUpdated_text}" align="center" sort="auto(version.lastUpdate)"/>
     </listhead>
 </listbox>
