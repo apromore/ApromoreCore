@@ -331,6 +331,21 @@
 
 .ap-process-detail {
   border-radius: 7px;
+  border: 0;
+}
+
+.ap-process-detail .z-listbox-header {
+  border: 1px solid #D9D9D9;
+  border-bottom: 0;
+  border-top-left-radius: 7px;
+  border-top-right-radius: 7px;
+}
+
+.ap-process-detail .z-listbox-body {
+  border: 1px solid #D9D9D9;
+  border-top: 0;
+  border-bottom-left-radius: 7px;
+  border-bottom-right-radius: 7px;
 }
 
 .ap-portal-right-section .z-menubar ul li.ap-about-menu {
