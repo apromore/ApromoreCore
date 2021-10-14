@@ -596,10 +596,13 @@ public class AccessController extends SelectorComposer<Div> {
       clearAssignments();
       btnApply.setDisabled(true);
       candidateAssigneeAdd.setDisabled(true);
+      candidateAssigneeTextbox.setDisabled(true);
+      selectedName.setValue("");
       return;
     }
     btnApply.setDisabled(false);
     candidateAssigneeAdd.setDisabled(false);
+    candidateAssigneeTextbox.setDisabled(false);
 
     if (selectedItem instanceof FolderType) {
       FolderType folder = (FolderType) selectedItem;
