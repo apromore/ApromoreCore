@@ -51,6 +51,10 @@
     border: none !important;
 }
 
+.ap-icon.ap-icon-disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
     /* Do not set filter as important due to light/dark */
 
 .ap-icon img {
