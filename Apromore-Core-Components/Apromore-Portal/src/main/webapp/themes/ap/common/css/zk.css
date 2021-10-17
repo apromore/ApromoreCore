@@ -674,6 +674,10 @@ input[type="radio"]:checked:before {
     background-color: transparent;
 }
 
+.z-listheader-sort .z-listheader-content:active {
+    background: transparent;
+}
+
 .z-listheader-sort .z-listheader-sorticon {
     position: relative;
     display: inline-block;
