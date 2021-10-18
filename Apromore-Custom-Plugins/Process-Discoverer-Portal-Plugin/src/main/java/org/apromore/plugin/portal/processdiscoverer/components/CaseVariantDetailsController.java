@@ -146,7 +146,7 @@ public class CaseVariantDetailsController extends DataListController {
             arg.put("pdLabels", parent.getLabels());
             caseVariantDetailsWindow = (Window) Executions
                     .createComponents(getPageDefinition("processdiscoverer/zul/caseVariantDetails.zul"), null, arg);
-            caseVariantDetailsWindow.setTitle("Case Variant Inspector");
+            caseVariantDetailsWindow.setTitle("Case variant Inspector");
             caseVariantDetailsWindow.getFellow("lblClickACase").setVisible(!this.disabled);
 
             caseVariantDetailsWindow.addEventListener("onClose", new EventListener<Event>() {
