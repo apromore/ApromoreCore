@@ -18,11 +18,13 @@
 package org.apromore.processmining.plugins.bpmn;
 
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
-import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Event;
+import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagramFactory;
+import org.apromore.processmining.models.graphbased.directed.bpmn.elements.*;
 import org.apromore.processmining.plugins.bpmn.plugins.BpmnImportPlugin;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -39,9 +41,7 @@ public class UnmarshallTest {
         String exportedValue = TestHelper.exportFromDiagram(d);
 
         // Read the exported representation into diagram again and verify
-        BpmnImportPlugin bpmnImport = new BpmnImportPlugin();
-        BPMNDiagram d2 = bpmnImport.importFromStreamToDiagram(new ByteArrayInputStream(exportedValue.getBytes()),
-                                            "all_elements_diagram");
+        BPMNDiagram d2 = BPMNDiagramFactory.newDiagramFromProcessText(exportedValue);
 
         assertElementIDsRetained_all_elements_diagram(d2);
     }
@@ -128,5 +128,46 @@ public class UnmarshallTest {
                 d.getSwimlanes().stream()
                         .filter(a -> a.getLabel() != null && a.getLabel().equals("R1"))
                         .findFirst().get().getId().toString());
+    }
+
+    @Test
+    public void test_Creating_Diagram_Random_IDs_Created() throws Exception {
+        BPMNDiagram d = BPMNDiagramFactory.newBPMNDiagram("");
+
+        Event startEvent = d.addEvent("Start", Event.EventType.START, Event.EventTrigger.NONE, Event.EventUse.THROW, false, null);
+        assertValidUUID(startEvent.getId().toString());
+
+        Event intermediate = d.addEvent("Throw", Event.EventType.INTERMEDIATE, Event.EventTrigger.NONE, Event.EventUse.THROW, false, null);
+        assertValidUUID(intermediate.getId().toString());
+
+        Activity a = d.addActivity("", false, false, false, false, false);
+        assertValidUUID(a.getId().toString());
+
+        Flow flow = d.addFlow(startEvent, a, "");
+        assertValidUUID(flow.getEdgeID().toString());
+
+        DataObject dataObject = d.addDataObject("");
+        assertValidUUID(dataObject.getId().toString());
+
+        DataAssociation dataAsoc = d.addDataAssociation(a, dataObject, "");
+        assertValidUUID(dataAsoc.getEdgeID().toString());
+
+        Swimlane lane = d.addSwimlane("O1", null, SwimlaneType.POOL);
+        assertValidUUID(lane.getId().toString());
+
+        Swimlane subLane = d.addSwimlane("R1", lane, SwimlaneType.LANE);
+        assertValidUUID(subLane.getId().toString());
+
+        MessageFlow msgFlow = d.addMessageFlow(a, lane, "");
+        assertValidUUID(msgFlow.getEdgeID().toString());
+    }
+
+    private boolean assertValidUUID(String id) {
+        try{
+            UUID.fromString(id);
+            return true;
+        } catch (IllegalArgumentException exception){
+            return false;
+        }
     }
 }
