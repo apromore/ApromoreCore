@@ -24,6 +24,10 @@
     display: inline-block;
 }
 
+.ap-calendars-listbox .z-textbox[readonly] {
+  cursor: pointer;
+}
+
 .ap-calendars-listbox .z-listitem-radio .z-listitem-icon {
     visibility: hidden;
 }
