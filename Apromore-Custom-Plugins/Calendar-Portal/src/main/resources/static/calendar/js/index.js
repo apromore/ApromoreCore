@@ -240,13 +240,24 @@ zk.afterMount(function() {
   Select cells based on precise hour and min
   */
   function selectCells(dow, startHour, startMin, toHour, toMin, selected) {
-    for (let hour = startHour; hour <= toHour; hour++) {
-      MINS.forEach(function (min) {
-        let mins = toMins(hour, min);
-        if (mins >= toMins(startHour, startMin) && mins <= toMins(toHour, toMin)) {
-          select(dow, hour, min, selected);
-        }
-      });
+    if (startHour <= toHour) {
+      for (let hour = startHour; hour <= toHour; hour++) {
+        MINS.forEach(function (min) {
+          let mins = toMins(hour, min);
+          if (mins >= toMins(startHour, startMin) && mins <= toMins(toHour, toMin)) {
+            select(dow, hour, min, selected);
+          }
+        });
+      }
+    } else {
+      for (let hour = toHour; hour <= startHour; hour++) {
+        MINS.forEach(function (min) {
+          let mins = toMins(hour, min);
+          if (mins <= toMins(startHour, startMin) && mins >= toMins(toHour, toMin)) {
+            select(dow, hour, min, selected);
+          }
+        });
+      }
     }
   }
 
@@ -427,7 +438,8 @@ zk.afterMount(function() {
                 currentDOW = get(cell, 'dow');
                 startHour = get(cell, 'hour');
                 startMin = get(cell, 'min');
-                startSelected = isSelected(currentDOW, startHour, startMin);
+                // startSelected = isSelected(currentDOW, startHour, startMin);
+                startSelected = false;
                 select(currentDOW, startHour, startMin, !startSelected);
               }, 200);
             });
