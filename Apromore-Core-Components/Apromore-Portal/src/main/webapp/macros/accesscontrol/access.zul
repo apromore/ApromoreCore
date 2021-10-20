@@ -123,7 +123,7 @@
                 <template name="model">
                     <listitem>
                         <listcell>
-                            <span sclass="ap-icon ap-icon-static ${(each.type == 'FILTER') ? 'ap-icon-filter' : 'ap-icon-speed'}"
+                            <span sclass="ap-icon ap-icon-static ${(each.type == 'FILTER') ? 'ap-icon-filter' : 'ap-icon-dashboard'}"
                                   style="display: inline-block; vertical-align: middle"/>
                         </listcell>
                         <listcell label="${each.name}"/>
