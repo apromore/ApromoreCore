@@ -21,6 +21,7 @@
  */
 package org.apromore.processmining.models.graphbased;
 
+import lombok.NonNull;
 import org.apromore.processmining.models.graphbased.directed.AbstractDirectedGraphEdge;
 
 public abstract class AbstractGraphEdge<S, T> extends AbstractGraphElement implements
@@ -31,7 +32,7 @@ public abstract class AbstractGraphEdge<S, T> extends AbstractGraphElement imple
 	protected final S source;
 	protected final T target;
 
-	public AbstractGraphEdge(S source, T target) {
+	public AbstractGraphEdge(@NonNull S source, @NonNull T target) {
 		super();
 		this.id = new EdgeID();
 		this.source = source;
@@ -39,7 +40,7 @@ public abstract class AbstractGraphEdge<S, T> extends AbstractGraphElement imple
 		this.hash = source.hashCode() + 37 * target.hashCode();
 	}
 
-	public AbstractGraphEdge(String id, S source, T target) {
+	public AbstractGraphEdge(@NonNull String id, @NonNull S source, @NonNull T target) {
 		super();
 		this.id = new EdgeID(id);
 		this.source = source;
