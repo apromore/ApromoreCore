@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apromore.processmining.models.graphbased.directed.AbstractDirectedGraph;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagramImpl;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNEdge;
@@ -210,7 +211,7 @@ public class GatewayMap {
 
         exit = exitGate;
 
-        generateFakeEntryAndExit();
+        generateFakeEntryAndExit(diagram);
 
 //        debug("DEBUG - exit gate: " + exit.getLabel() );
 //        debug("DEBUG - gateways: " + gateways.size() );
@@ -322,9 +323,9 @@ public class GatewayMap {
         return true;
     }
 
-    private void generateFakeEntryAndExit(){
-        Gateway entry = new Gateway(null, "", Gateway.GatewayType.DATABASED);
-        Gateway exit = new Gateway(null, "", Gateway.GatewayType.DATABASED);
+    private void generateFakeEntryAndExit(BPMNDiagram diagram){
+        Gateway entry = new Gateway((AbstractDirectedGraph) diagram, "", Gateway.GatewayType.DATABASED);
+        Gateway exit = new Gateway((AbstractDirectedGraph) diagram, "", Gateway.GatewayType.DATABASED);
         this.addGateway(entry);
         this.addGateway(exit);
         this.addFlow(entry, this.entry, null, null);
