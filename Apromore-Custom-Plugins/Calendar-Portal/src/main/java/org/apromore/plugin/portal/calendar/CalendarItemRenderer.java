@@ -92,6 +92,9 @@ public class CalendarItemRenderer implements ListitemRenderer<CalendarModel>, La
     }
 
     public void editCalendar(Long calendarId) {
+        if (!canEdit) {
+            return;
+        }
         try {
             Map arg = new HashMap<>();
             arg.put("calendarId", calendarId);
