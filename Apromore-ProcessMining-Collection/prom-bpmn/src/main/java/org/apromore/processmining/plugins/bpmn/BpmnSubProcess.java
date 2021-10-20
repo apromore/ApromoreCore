@@ -495,6 +495,7 @@ public class BpmnSubProcess extends BpmnIncomingOutgoing {
 		}
 
 		if (elements.contains(id)) {
+			diagram.setNextId(id);
 			if (multiInstanceLoopCharacteristics != null) {
 				subProcess = diagram.addSubProcess(name, false, false, false, true, true, triggerByEvent, parentSubProcess);
 				subProcess.getAttributeMap().put("Original id", id);
@@ -580,6 +581,7 @@ public class BpmnSubProcess extends BpmnIncomingOutgoing {
 		}
 
 		if (elements.contains(id)) {
+			diagram.setNextId(id);
 			if (multiInstanceLoopCharacteristics != null) {
 				subProcess = diagram.addSubProcess(name, false, false, false, true, true, triggerByEvent, lane);
 				subProcess.getAttributeMap().put("Original id", id);

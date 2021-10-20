@@ -78,19 +78,23 @@ public class BpmnEvent extends BpmnIncomingOutgoing {
 	}
 
 	public void unmarshall(BPMNDiagram diagram, Map<String, BPMNNode> id2node, Swimlane lane) {
+		diagram.setNextId(id);
 		id2node.put(id, diagram.addEvent(name, eventType, eventTrigger, eventUse, lane, isInterrupting, null));
 	}
 	
 	public void unmarshall(BPMNDiagram diagram, Map<String, BPMNNode> id2node, SubProcess subProcess) {
+		diagram.setNextId(id);
 		id2node.put(id, diagram.addEvent(name, eventType, eventTrigger, eventUse, subProcess, isInterrupting, null));
 	}
 	
 	public void unmarshall(BPMNDiagram diagram, Map<String, BPMNNode> id2node, Swimlane lane, Activity boundaryNode) {
+		diagram.setNextId(id);
 		id2node.put(id, diagram.addEvent(name, eventType, eventTrigger, eventUse, lane, isInterrupting, boundaryNode));
 	}
 
 	public void unmarshall(BPMNDiagram diagram, Collection<String> elements, Map<String, BPMNNode> id2node, Swimlane lane) {
 		if (elements.contains(id)) {
+			diagram.setNextId(id);
 			Event startEvent = diagram.addEvent(name, eventType, eventTrigger, eventUse, lane, isInterrupting, null);
 			startEvent.getAttributeMap().put("Original id", id);
 			id2node.put(id, startEvent);
@@ -99,6 +103,7 @@ public class BpmnEvent extends BpmnIncomingOutgoing {
 	
 	public void unmarshall(BPMNDiagram diagram, Collection<String> elements, Map<String, BPMNNode> id2node, SubProcess subProcess) {
 		if (elements.contains(id)) {
+			diagram.setNextId(id);
 			Event event = diagram.addEvent(name, eventType, eventTrigger, eventUse, subProcess, isInterrupting, null);
 			event.getAttributeMap().put("Original id", id);
 			id2node.put(id, event);
@@ -107,6 +112,7 @@ public class BpmnEvent extends BpmnIncomingOutgoing {
 	
 	public void unmarshall(BPMNDiagram diagram, Collection<String> elements, Map<String, BPMNNode> id2node, Swimlane lane, Activity boundaryNode) {
 		if (elements.contains(id)) {
+			diagram.setNextId(id);
 			Event event = diagram.addEvent(name, eventType, eventTrigger, eventUse, lane, isInterrupting, boundaryNode);
 			event.getAttributeMap().put("Original id", id);
 			id2node.put(id, event);
