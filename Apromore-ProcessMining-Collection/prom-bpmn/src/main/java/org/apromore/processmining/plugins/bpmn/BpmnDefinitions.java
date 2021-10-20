@@ -53,6 +53,25 @@ import org.apromore.processmining.plugins.bpmn.diagram.BpmnDiWaypoint;
 import org.apromore.processmining.plugins.bpmn.diagram.BpmnDiagram;
 import org.xmlpull.v1.XmlPullParser;
 
+/**
+ * <b>BpmnDefinitions</b> is the root class representing the top <definitions> tag in BPMN 2.0 files.<br>
+ * All contained elements and sub-elements represent other hierarchical elements in the file.<br>
+ * Altogether, they literally represent tags in BPMN 2.0 files after import, i.e. they are not object references<br>
+ * For example, a sequence flow tag only contains attributes, no links to its source and target node objects.<br>
+ *
+ * <b>Key operations:</b><br>
+ * <ul>
+ *     <li>Importing is the process of importing a .bpmn file into a BpmnDefinitions object.</li>
+ *     <li>Exporting is the process of exporting a BpmnDefinitions object to a .bpmn file representation (string)</li>
+ *     <li>Marshalling is the process of converting a BpmnDefinitions to {@link BPMNDiagram} object. Attributes are read and
+ *     objects are linked.</li>
+ *     <li>Unmarshalling is the reverse process of converting from a BPMNDiagram object to BpmnDefinitions.</li>
+ * </ul>
+ *
+ * @author Anna Kalenkova
+ * @author Bruce Nguyen:
+ * 	19 Oct 2021: Add class comments
+ */
 public class BpmnDefinitions extends BpmnElement {
 
 	protected Collection<BpmnResource> resources;
