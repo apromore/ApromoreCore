@@ -23,10 +23,16 @@ package org.apromore.processmining.models.graphbased;
 
 public abstract class AbstractGraphNode extends AbstractGraphElement {
 
-	private final NodeID id = new NodeID();
+	private NodeID id;
 
 	public AbstractGraphNode() {
 		super();
+		this.id = new NodeID();
+	}
+
+	public AbstractGraphNode(String id) {
+		super();
+		this.id = new NodeID(id);
 	}
 
 	public int hashCode() {

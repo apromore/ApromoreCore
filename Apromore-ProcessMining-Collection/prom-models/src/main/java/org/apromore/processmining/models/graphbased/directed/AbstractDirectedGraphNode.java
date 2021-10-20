@@ -29,6 +29,10 @@ public abstract class AbstractDirectedGraphNode extends AbstractGraphNode implem
 		super();
 	}
 
+	public AbstractDirectedGraphNode(String id) {
+		super(id);
+	}
+
 	public abstract AbstractDirectedGraph<?, ?> getGraph();
 
 	public int compareTo(DirectedGraphNode node) {

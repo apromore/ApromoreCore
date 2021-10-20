@@ -34,6 +34,12 @@ public abstract class AbstractDirectedGraphEdge<S extends AbstractDirectedGraphN
 		this.graph = source.getGraph();
 	}
 
+	public AbstractDirectedGraphEdge(String id, S source, T target) {
+		super(id, source, target);
+		assert (source.getGraph() == target.getGraph());
+		this.graph = source.getGraph();
+	}
+
 	public AbstractDirectedGraph<?, ?> getGraph() {
 		return graph;
 	}

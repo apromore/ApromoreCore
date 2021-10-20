@@ -28,7 +28,16 @@ public class EdgeID implements Comparable<EdgeID>, Serializable {
 
 	private static final long serialVersionUID = -6457455085857447745L;
 
-	private final UUID id = UUID.randomUUID();
+	private String id = "";
+
+	public EdgeID() {
+		this.id = UUID.randomUUID().toString();
+	}
+
+	public EdgeID(String id) {
+		if (id == null || id.isEmpty()) throw new IllegalArgumentException("ID can't be null or empty");
+		this.id = id;
+	}
 
 	@Override
     public int compareTo(EdgeID edge) {
@@ -36,7 +45,7 @@ public class EdgeID implements Comparable<EdgeID>, Serializable {
 	}
 	@Override
     public String toString() {
-		return "edge-" + id;
+		return id;
 	}
 
 	@Override
