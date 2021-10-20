@@ -86,7 +86,10 @@ public class BpmnDataAssociation extends BpmnIdName {
 		}
 		return s;
 	}
-	
+
+	/**
+	 * @// TODO: 10/20/2021 Data association could have only sourceRef or targetRef, need to handle it properly
+	 */
 	public void unmarshall(BPMNDiagram diagram, Map<String, BPMNNode> id2node) {
 		if (id2node.containsKey(sourceRef) && id2node.containsKey(targetRef)) {
 			diagram.setNextId(id);
