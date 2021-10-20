@@ -24,15 +24,21 @@ package org.apromore.processmining.plugins.bpmn;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * 
- * @modifier Bruce Nguyen
+ * <b>Bpmn</b> is a {@link BpmnDefinitions} with added error logging capabilities.
+ * @author Anna Kalenkova
+ * @author Bruce Nguyen
  *  - 6 April 2020: Remove XLog: it is used for logging purpose but this is not the right use of XLog.
- *
+ *	- 19 Oct 2021: add class comments
  */
 public class Bpmn extends BpmnDefinitions {
-	boolean hasErrors;
-	boolean hasInfos;
+	private List<String> errorMessages = new ArrayList<>();
+	private List<String> infoMessages = new ArrayList<>();
+	private final int MAX_ERROR_MESSAGES = 20;
+	private final int MAX_INFO_MESSAGES = 20;
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(Bpmn.class);
 
@@ -44,17 +50,18 @@ public class Bpmn extends BpmnDefinitions {
 	 * Adds a log event to the current trace in the log.
 	 * 
 	 * @param context
-	 *            Context of the message, typically the current PNML tag.
+	 *            Context of the message, typically the current BPMN tag.
 	 * @param lineNumber
 	 *            Current line number.
 	 * @param message
 	 *            Error message.
 	 */
 	public void log(String context, int lineNumber, String message) {
-		LOGGER.error("BPMN Import error. Tag: " + context + 
-		                ". Line number: " + lineNumber + 
-		                ". Error: " + message);
-		hasErrors = true;
+		String errorMessage = "Tag: " + context +
+				". Line number: " + lineNumber +
+				". Error: " + message;
+		if (errorMessages.size() < MAX_ERROR_MESSAGES) errorMessages.add(errorMessage);
+		LOGGER.error("BPMN Import error. " + errorMessage);
 	}
 	
 
@@ -62,25 +69,40 @@ public class Bpmn extends BpmnDefinitions {
 	 * Adds a log event to the current trace in the log.
 	 * 
 	 * @param context
-	 *            Context of the message, typically the current PNML tag.
+	 *            Context of the message, typically the current BPMN tag.
 	 * @param lineNumber
 	 *            Current line number.
 	 * @param message
-	 *            Error message.
+	 *            Info message.
 	 */
 	public void logInfo(String context, int lineNumber, String message) {
-	    LOGGER.info("BPMN Import info. Tag: " + context + 
-                ". Line number: " + lineNumber + 
-                ". Error: " + message);
-		hasInfos = true;
+		String infoMessage = "Tag: " + context +
+				". Line number: " + lineNumber +
+				". Info: " + message;
+		if (infoMessages.size() < MAX_INFO_MESSAGES) infoMessages.add(infoMessage);
+	    LOGGER.info("BPMN Import info. " + infoMessage);
 	}
 	
 
 	public boolean hasErrors() {
-		return hasErrors;
+		return errorMessages.size() > 0;
 	}
 
 	public boolean hasInfos() {
-		return hasInfos;
+		return infoMessages.size() > 0;
+	}
+
+	public String getErrorMessages() {
+		return errorMessages.toString()
+				.replace(", \"", "\n\"") // end of a message
+				.replace("[", "")
+				.replace("]", "");
+	}
+
+	public String getInfoMessages() {
+		return infoMessages.toString()
+				.replace(", \"", "\n\"") // end of a message
+				.replace("[", "")
+				.replace("]", "");
 	}
 }
