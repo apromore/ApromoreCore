@@ -593,6 +593,11 @@
     width: 28.5px !important;
 }
 
+.ap-icon-dashboard {
+    background-image: url('dashboard.svg') !important;
+    width: 26px !important;
+}
+
 .ap-icon-stage-discover {
     background-image: url('stage-discover.svg') !important;
     width: 26px !important;
