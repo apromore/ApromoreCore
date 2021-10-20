@@ -170,4 +170,22 @@ public class UnmarshallTest {
             return false;
         }
     }
+
+    @Test
+    public void test_Reading_InvalidDiagram() throws Exception {
+        try {
+            BPMNDiagram d = TestHelper.readBPMNDiagram("src/test/data/d1_invalid.bpmn");
+            fail("Expected exception but no exceptions were thrown from reading an invalid diagram");
+        }
+        catch (Exception ex) {
+            //
+        }
+
+        try {
+            BPMNDiagram d = TestHelper.readBPMNDiagram("src/test/data/d1_valid.bpmn");
+        }
+        catch (Exception ex) {
+            fail("Expected no exception but exceptions were thrown from reading a valid diagram");
+        }
+    }
 }
