@@ -27,10 +27,13 @@ import java.util.Map;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNNode;
 import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Association;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xmlpull.v1.XmlPullParser;
 
 
 public class BpmnAssociation extends BpmnFlow {
+	private static final Logger LOGGER = LoggerFactory.getLogger(BpmnAssociation.class);
 
 	public enum AssociationDirection {NONE, ONE, BOTH};
 	
@@ -41,26 +44,23 @@ public class BpmnAssociation extends BpmnFlow {
 	}
 	
 	public void unmarshall(BPMNDiagram diagram, Map<String, BPMNNode> id2node) {
-		Association association = diagram.addAssociation(id2node.get(sourceRef), id2node.get(targetRef), direction);
-		association.getAttributeMap().put("Original id", id);
-		association.setDirection(direction);
+		if (id2node.containsKey(sourceRef) && id2node.containsKey(targetRef)) {
+			diagram.setNextId(id);
+			diagram.addAssociation(id2node.get(sourceRef), id2node.get(targetRef), direction);
+		}
+		else {
+			if (!id2node.containsKey(sourceRef)) {
+				LOGGER.error("Couldn't match sourceRef {} of association {} with a corresponding node ID", sourceRef, id);
+			}
+			if (!id2node.containsKey(targetRef)) {
+				LOGGER.error("Couldn't match targetRef {} of association {} with a corresponding node ID", targetRef, id);
+			}
+		}
 	}
 
 	public void unmarshall(BPMNDiagram diagram, Collection<String> elements, Map<String, BPMNNode> id2node) {
 		if (elements.contains(sourceRef) && elements.contains(targetRef)) {
-			if (id2node.containsKey(sourceRef) && id2node.containsKey(targetRef)) {
-				Association association = diagram.addAssociation(id2node.get(sourceRef), id2node.get(targetRef), direction);
-				association.getAttributeMap().put("Original id", id);
-				association.setDirection(direction);
-			}
-			else {
-				if (!id2node.containsKey(sourceRef)) {
-					System.out.println("org.processmining.plugins.bpmn.BpmnAssociation.unmarshall(BPMNDiagram, Collection<String>, Map<String, BPMNNode>) element with sourceRef="+sourceRef+" not existing in id2node");
-				}
-				if (!id2node.containsKey(targetRef)) {
-					System.out.println("org.processmining.plugins.bpmn.BpmnAssociation.unmarshall(BPMNDiagram, Collection<String>, Map<String, BPMNNode>) element with targetRef="+targetRef+" not existing in id2node");
-				}
-			}
+			this.unmarshall(diagram, id2node);
 		}
 	}
 	

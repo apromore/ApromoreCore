@@ -27,22 +27,33 @@ import java.util.Map;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNNode;
 import org.apromore.processmining.models.graphbased.directed.bpmn.elements.MessageFlow;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BpmnMessageFlow extends BpmnFlow {
-
+	private static final Logger LOGGER = LoggerFactory.getLogger(BpmnMessageFlow.class);
 	public BpmnMessageFlow(String tag) {
 		super(tag);
 	}
 
 	public void unmarshall(BPMNDiagram diagram, Map<String, BPMNNode> id2node) {
-		MessageFlow flow = diagram.addMessageFlow(id2node.get(sourceRef), id2node.get(targetRef), name);
-		flow.getAttributeMap().put("Original id", id);
+		if (id2node.containsKey(sourceRef) && id2node.containsKey(targetRef)) {
+			diagram.setNextId(id);
+			diagram.addMessageFlow(id2node.get(sourceRef), id2node.get(targetRef), name);
+		}
+		else {
+			if (!id2node.containsKey(sourceRef)) {
+				LOGGER.error("Couldn't match sourceRef {} of message flow {} with a corresponding node ID", sourceRef, id);
+			}
+			if (!id2node.containsKey(targetRef)) {
+				LOGGER.error("Couldn't match targetRef {} of message flow {} with a corresponding node ID", targetRef, id);
+			}
+		}
 	}
 
 	public void unmarshall(BPMNDiagram diagram, Collection<String> elements, Map<String, BPMNNode> id2node) {
 		if (elements.contains(sourceRef) && elements.contains(targetRef)) {
-			MessageFlow flow = diagram.addMessageFlow(id2node.get(sourceRef), id2node.get(targetRef), name);
-			flow.getAttributeMap().put("Original id", id);
+			this.unmarshall(diagram, id2node);
 		}
 	}
 	
