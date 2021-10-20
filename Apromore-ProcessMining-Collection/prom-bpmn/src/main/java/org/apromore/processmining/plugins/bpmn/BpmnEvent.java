@@ -96,7 +96,6 @@ public class BpmnEvent extends BpmnIncomingOutgoing {
 		if (elements.contains(id)) {
 			diagram.setNextId(id);
 			Event startEvent = diagram.addEvent(name, eventType, eventTrigger, eventUse, lane, isInterrupting, null);
-			startEvent.getAttributeMap().put("Original id", id);
 			id2node.put(id, startEvent);
 		}
 	}
@@ -105,7 +104,6 @@ public class BpmnEvent extends BpmnIncomingOutgoing {
 		if (elements.contains(id)) {
 			diagram.setNextId(id);
 			Event event = diagram.addEvent(name, eventType, eventTrigger, eventUse, subProcess, isInterrupting, null);
-			event.getAttributeMap().put("Original id", id);
 			id2node.put(id, event);
 		}
 	}
@@ -114,7 +112,6 @@ public class BpmnEvent extends BpmnIncomingOutgoing {
 		if (elements.contains(id)) {
 			diagram.setNextId(id);
 			Event event = diagram.addEvent(name, eventType, eventTrigger, eventUse, lane, isInterrupting, boundaryNode);
-			event.getAttributeMap().put("Original id", id);
 			id2node.put(id, event);
 		}
 	}

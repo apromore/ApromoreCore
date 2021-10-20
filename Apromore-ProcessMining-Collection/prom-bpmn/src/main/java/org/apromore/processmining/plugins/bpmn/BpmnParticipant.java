@@ -63,7 +63,6 @@ public class BpmnParticipant extends BpmnIdName {
 		if (name != null) {
 			diagram.setNextId(id);
 			Swimlane lane = diagram.addSwimlane(name, null, SwimlaneType.POOL);
-			lane.getAttributeMap().put("Original id", id);
             id2node.put(id, lane);
 			id2lane.put(processRef, lane);
 		}
@@ -73,7 +72,6 @@ public class BpmnParticipant extends BpmnIdName {
 		if (name != null) {
 			diagram.setNextId(id);
 			Swimlane lane = diagram.addSwimlane(name, null, SwimlaneType.POOL);
-			lane.getAttributeMap().put("Original id", id);
             id2node.put(id, lane);
 			id2lane.put(processRef, lane);
 		}

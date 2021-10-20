@@ -43,7 +43,6 @@ public class BpmnEventBasedGateway extends BpmnAbstractGateway{
     public void unmarshall(BPMNDiagram diagram, Map<String, BPMNNode> id2node, Swimlane lane) {
         diagram.setNextId(id);
         Gateway gateway = diagram.addGateway(name, Gateway.GatewayType.EVENTBASED, lane);
-        gateway.getAttributeMap().put("Original id", id);
         id2node.put(id, gateway);
     }
 
@@ -52,7 +51,6 @@ public class BpmnEventBasedGateway extends BpmnAbstractGateway{
         if (elements.contains(id)) {
             diagram.setNextId(id);
             Gateway gateway = diagram.addGateway(name, Gateway.GatewayType.EVENTBASED, lane);
-            gateway.getAttributeMap().put("Original id", id);
             id2node.put(id, gateway);
         }
     }
@@ -60,7 +58,6 @@ public class BpmnEventBasedGateway extends BpmnAbstractGateway{
     public void unmarshall(BPMNDiagram diagram, Map<String, BPMNNode> id2node, SubProcess subProcess) {
         diagram.setNextId(id);
         Gateway gateway = diagram.addGateway(name, Gateway.GatewayType.EVENTBASED, subProcess);
-        gateway.getAttributeMap().put("Original id", id);
         id2node.put(id, gateway);
     }
 
@@ -69,7 +66,6 @@ public class BpmnEventBasedGateway extends BpmnAbstractGateway{
         if (elements.contains(id)) {
             diagram.setNextId(id);
             Gateway gateway = diagram.addGateway(name, Gateway.GatewayType.EVENTBASED, subProcess);
-            gateway.getAttributeMap().put("Original id", id);
             id2node.put(id, gateway);
         }
     }

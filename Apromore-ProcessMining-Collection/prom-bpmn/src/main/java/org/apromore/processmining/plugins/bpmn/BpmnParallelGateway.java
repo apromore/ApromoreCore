@@ -40,7 +40,6 @@ public class BpmnParallelGateway extends BpmnAbstractGateway {
 	public void unmarshall(BPMNDiagram diagram, Map<String, BPMNNode> id2node, Swimlane lane) {
 		diagram.setNextId(id);
 		Gateway gateway = diagram.addGateway(name, GatewayType.PARALLEL, lane);
-		gateway.getAttributeMap().put("Original id", id);
 		id2node.put(id, gateway);
 	}
 
@@ -48,7 +47,6 @@ public class BpmnParallelGateway extends BpmnAbstractGateway {
 		if (elements.contains(id)) {
 			diagram.setNextId(id);
 			Gateway gateway = diagram.addGateway(name, GatewayType.PARALLEL, lane);
-			gateway.getAttributeMap().put("Original id", id);
 			id2node.put(id, gateway);
 		}
 	}
@@ -56,7 +54,6 @@ public class BpmnParallelGateway extends BpmnAbstractGateway {
 	public void unmarshall(BPMNDiagram diagram, Map<String, BPMNNode> id2node, SubProcess subProcess) {
 		diagram.setNextId(id);
 		Gateway gateway = diagram.addGateway(name, GatewayType.PARALLEL, subProcess);
-		gateway.getAttributeMap().put("Original id", id);
 		id2node.put(id, gateway);
 	}
 
@@ -64,7 +61,6 @@ public class BpmnParallelGateway extends BpmnAbstractGateway {
 		if (elements.contains(id)) {
 			diagram.setNextId(id);
 			Gateway gateway = diagram.addGateway(name, GatewayType.PARALLEL, subProcess);
-			gateway.getAttributeMap().put("Original id", id);
 			id2node.put(id, gateway);
 		}
 	}

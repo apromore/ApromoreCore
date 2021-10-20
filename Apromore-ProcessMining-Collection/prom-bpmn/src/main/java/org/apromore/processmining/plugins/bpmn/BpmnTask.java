@@ -247,7 +247,6 @@ public class BpmnTask extends BpmnIncomingOutgoing {
 					id2node.put(dataOutgoing.getId(), activity);
 				}
 			}
-			activity.getAttributeMap().put("Original id", id);
 			id2node.put(id, activity);
 		}
 	}
@@ -284,7 +283,6 @@ public class BpmnTask extends BpmnIncomingOutgoing {
 					id2node.put(dataOutgoing.getId(), activity);
 				}
 			}
-			activity.getAttributeMap().put("Original id", id);
 			id2node.put(id, activity);
 		}
 	}
