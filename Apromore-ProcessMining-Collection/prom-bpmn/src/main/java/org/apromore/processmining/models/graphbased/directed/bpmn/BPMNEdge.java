@@ -22,7 +22,6 @@
 package org.apromore.processmining.models.graphbased.directed.bpmn;
 
 import org.apromore.processmining.models.graphbased.AttributeMap;
-import org.apromore.processmining.models.graphbased.EdgeID;
 import org.apromore.processmining.models.graphbased.directed.AbstractDirectedGraphEdge;
 import org.apromore.processmining.models.graphbased.directed.ContainableDirectedGraphElement;
 import org.apromore.processmining.models.graphbased.directed.ContainingDirectedGraphNode;

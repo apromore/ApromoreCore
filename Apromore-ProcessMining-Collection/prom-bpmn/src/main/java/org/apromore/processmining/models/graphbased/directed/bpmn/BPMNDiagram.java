@@ -57,8 +57,9 @@ import org.eclipse.collections.api.map.MutableMap;
 public interface BPMNDiagram extends DirectedGraph<BPMNNode, BPMNEdge<? extends BPMNNode, ? extends BPMNNode>> {
 
 	/**
-	 * Generate the next unique ID used in creating diagram elements
-	 * @return: unique ID used for assigning to new element.
+	 * Generate the next ID used in creating diagram elements
+	 * This method will return any existing IDs added via {@link #addNextId} or it will return a random ID.
+	 * @return: ID used for assigning to new element.
 	 */
 	String getNextId();
 
