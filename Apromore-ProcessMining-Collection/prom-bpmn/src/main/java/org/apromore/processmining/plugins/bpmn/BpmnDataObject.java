@@ -57,7 +57,7 @@ public class BpmnDataObject extends BpmnIdName {
 
     public void unmarshall(BPMNDiagram diagram, Map<String, BPMNNode> id2node) {
         diagram.setNextId(id);
-        DataObject dataObject = diagram.addDataObject(name);
+        diagram.addDataObject(name);
         id2node.put(id, diagram.addDataObject(name));
     }
 

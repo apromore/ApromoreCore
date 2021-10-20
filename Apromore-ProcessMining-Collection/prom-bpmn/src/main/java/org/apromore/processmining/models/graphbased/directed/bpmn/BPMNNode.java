@@ -82,7 +82,7 @@ public abstract class BPMNNode extends AbstractDirectedGraphNode implements Cont
 	}
 
 	public AbstractDirectedGraph<BPMNNode, BPMNEdge<? extends BPMNNode, ? extends BPMNNode>> getGraph() {
-		return (AbstractDirectedGraph) graph;
+		return graph;
 	}
 
 	public ContainingDirectedGraphNode getParent() {

@@ -26,13 +26,12 @@ import java.util.Map;
 
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNNode;
-import org.apromore.processmining.models.graphbased.directed.bpmn.elements.DataAssociation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xmlpull.v1.XmlPullParser;
 
 public class BpmnDataAssociation extends BpmnIdName {
-	private static final Logger LOGGER = LoggerFactory.getLogger(BpmnSequenceFlow.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(BpmnDataAssociation.class);
 	private String sourceRef;
 	private String targetRef;
 	
@@ -88,7 +87,7 @@ public class BpmnDataAssociation extends BpmnIdName {
 	}
 
 	/**
-	 * @// TODO: 10/20/2021 Data association could have only sourceRef or targetRef, need to handle it properly
+	 * @todo: 10/20/2021 Data association could have only sourceRef or targetRef, need to handle it properly
 	 */
 	public void unmarshall(BPMNDiagram diagram, Map<String, BPMNNode> id2node) {
 		if (id2node.containsKey(sourceRef) && id2node.containsKey(targetRef)) {

@@ -35,10 +35,10 @@ import java.util.List;
  *	- 19 Oct 2021: add class comments
  */
 public class Bpmn extends BpmnDefinitions {
-	private List<String> errorMessages = new ArrayList<>();
-	private List<String> infoMessages = new ArrayList<>();
-	private final int MAX_ERROR_MESSAGES = 20;
-	private final int MAX_INFO_MESSAGES = 20;
+	private final List<String> errorMessages = new ArrayList<>();
+	private final List<String> infoMessages = new ArrayList<>();
+	private final static int MAX_ERROR_MESSAGES = 20;
+	private final static int MAX_INFO_MESSAGES = 20;
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(Bpmn.class);
 
@@ -85,11 +85,11 @@ public class Bpmn extends BpmnDefinitions {
 	
 
 	public boolean hasErrors() {
-		return errorMessages.size() > 0;
+		return !errorMessages.isEmpty();
 	}
 
 	public boolean hasInfos() {
-		return infoMessages.size() > 0;
+		return !infoMessages.isEmpty();
 	}
 
 	public String getErrorMessages() {
