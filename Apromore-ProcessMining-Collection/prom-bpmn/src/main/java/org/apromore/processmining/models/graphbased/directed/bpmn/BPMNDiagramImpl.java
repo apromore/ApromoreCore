@@ -74,7 +74,7 @@ public class BPMNDiagramImpl extends AbstractDirectedGraph<BPMNNode, BPMNEdge<? 
 	protected final List<Swimlane> swimlanes;
     protected final Set<CallActivity> callActivities;
 
-    private Queue<String> nextIds = new LinkedList<>();
+    private String nextId = "";
 
 	public BPMNDiagramImpl(String label) {
 		super();
@@ -96,12 +96,14 @@ public class BPMNDiagramImpl extends AbstractDirectedGraph<BPMNNode, BPMNEdge<? 
 
 	@Override
 	public String getNextId() {
-		return nextIds.isEmpty() ? UUID.randomUUID().toString() : nextIds.remove();
+		String id = nextId.isEmpty() ? UUID.randomUUID().toString() : nextId;
+		nextId = "";
+		return id;
 	}
 
 	@Override
-	public void addNextId(String id) {
-		nextIds.add(id);
+	public void setNextId(String id) {
+		nextId = id;
 	}
 
 	@Override
