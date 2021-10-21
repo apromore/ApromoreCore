@@ -28,6 +28,7 @@
         style="margin: 5px 0 0 0;"
         hflex="1"
         xmlns:n="native"
+        xmlns:ca="client/attribute"
 >
   <style>
     .z-button {
@@ -41,6 +42,16 @@
     <span sclass="ap-search-part-icon" width="24px" id="doSearch">
       <n:i class="z-icon-search" />
     </span>
+    <script>
+      <![CDATA[
+        Ap.search = Ap.search || {};
+        Ap.search.onEnter = function (event) {
+          if (event.keyCode === 13) {
+            zAu.send(new zk.Event(zk.Widget.$('$previoussearchescombobox'), 'onEnter'));
+          }
+        }
+      ]]>
+    </script>
     <combobox
         id="previoussearchescombobox"
         autodrop="true"
@@ -51,6 +62,7 @@
         submitByEnter="true"
         tooltip="${labels.portal_search_hint}"
         placeholder="${labels.portal_search_text}"
+        ca:onkeyup="Ap.search.onEnter(event)"
     />
     <span sclass="ap-search-part-clear" id="clearSearch" width="24px">
       <n:i class="z-icon-times-circle" />
