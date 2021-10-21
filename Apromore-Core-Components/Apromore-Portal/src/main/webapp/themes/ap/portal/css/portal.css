@@ -824,6 +824,12 @@ img[src="img/icon/bpmn-22x22.png"] {
     vertical-align: bottom;
 }
 
+.ap-lang-chooser-icon {
+    position: fixed;
+    top: 36px;
+    right: 160px;
+}
+
 .ap-portal .z-button.ap-icon {
     background-color: transparent;
 }
