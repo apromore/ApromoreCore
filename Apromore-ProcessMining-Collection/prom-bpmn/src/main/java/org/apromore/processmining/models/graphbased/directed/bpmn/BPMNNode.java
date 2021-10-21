@@ -59,7 +59,7 @@ public abstract class BPMNNode extends AbstractDirectedGraphNode implements Cont
 	private Swimlane parentSwimlane;
 
 	public BPMNNode(AbstractDirectedGraph<BPMNNode, BPMNEdge<? extends BPMNNode, ? extends BPMNNode>> bpmndiagram) {
-		super(((BPMNDiagram)bpmndiagram).getNextId());
+		super(((BPMNDiagram)bpmndiagram).getNextId(LocalIDGenerator.ID_PREFIX_NODE));
 		graph = bpmndiagram;
 	}
 
