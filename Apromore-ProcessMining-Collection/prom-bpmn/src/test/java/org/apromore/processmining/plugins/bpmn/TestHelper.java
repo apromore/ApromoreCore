@@ -36,7 +36,17 @@ public class TestHelper {
     public static String exportFromDiagram(BPMNDiagram d) {
         BpmnDefinitions.BpmnDefinitionsBuilder definitionsBuilder = new BpmnDefinitions.BpmnDefinitionsBuilder(d); // recreate layout
         BpmnDefinitions definitions = new BpmnDefinitions("definitions", definitionsBuilder);
-        return definitions.exportElements();
+        String model = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<definitions xmlns=\"http://www.omg.org/spec/BPMN/20100524/MODEL\"\n " +
+                "xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\"\n " +
+                "xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\"\n " +
+                "xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\"\n " +
+                "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n " +
+                "targetNamespace=\"http://www.omg.org/bpmn20\"\n " +
+                "xsi:schemaLocation=\"http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd\">" +
+                definitions.exportElements() +
+                "</definitions>";
+        return model;
     }
 
     public static BPMNNode getFirstActivity(BPMNDiagram d, String label) {

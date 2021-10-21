@@ -495,13 +495,12 @@ public class BpmnSubProcess extends BpmnIncomingOutgoing {
 		}
 
 		if (elements.contains(id)) {
+			diagram.setNextId(id);
 			if (multiInstanceLoopCharacteristics != null) {
 				subProcess = diagram.addSubProcess(name, false, false, false, true, true, triggerByEvent, parentSubProcess);
-				subProcess.getAttributeMap().put("Original id", id);
 				id2node.put(id, subProcess);
 			} else {
 				subProcess = diagram.addSubProcess(name, false, false, false, false, false, triggerByEvent, parentSubProcess);
-				subProcess.getAttributeMap().put("Original id", id);
 				id2node.put(id, subProcess);
 			}
 			
@@ -580,13 +579,12 @@ public class BpmnSubProcess extends BpmnIncomingOutgoing {
 		}
 
 		if (elements.contains(id)) {
+			diagram.setNextId(id);
 			if (multiInstanceLoopCharacteristics != null) {
 				subProcess = diagram.addSubProcess(name, false, false, false, true, true, triggerByEvent, lane);
-				subProcess.getAttributeMap().put("Original id", id);
 				id2node.put(id, subProcess);
 			} else {
 				subProcess = diagram.addSubProcess(name, false, false, false, false, false, triggerByEvent, lane);
-				subProcess.getAttributeMap().put("Original id", id);
 				id2node.put(id, subProcess);
 			}
 			

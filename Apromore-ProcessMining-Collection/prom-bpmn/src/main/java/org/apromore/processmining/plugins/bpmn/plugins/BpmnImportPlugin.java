@@ -25,10 +25,6 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.swing.filechooser.FileFilter;
-import javax.swing.filechooser.FileNameExtensionFilter;
-
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagramFactory;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNNode;
@@ -38,29 +34,19 @@ import org.apromore.processmining.plugins.bpmn.parameters.BpmnSelectDiagramParam
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
+/**
+ * @author Bruce Nguyen:
+ * 	- 19 Oct 2021: add comments, clean up code
+ */
 public class BpmnImportPlugin {
 
-	protected FileFilter getFileFilter() {
-		return new FileNameExtensionFilter("BPMN 2.0 files", "bpmn", "xml");
-	}
-	
 	public BPMNDiagram importFromStreamToDiagram(InputStream input, String filename)  throws Exception {
 	    Bpmn bpmnRaw = importFromStream(input, filename);
+	    if (bpmnRaw.hasErrors()) throw new Exception("Errors occurred during import. Error messages: \n" + bpmnRaw.getErrorMessages());
 	    return selectDefault(bpmnRaw);
 	}
-	
-	protected Bpmn importFromStream(InputStream input, String filename) throws Exception {
-		Bpmn bpmn = importBpmnFromStream(input, filename);
-		if (bpmn == null) {
-			/*
-			 * No BPMN found in file. Fail.
-		`	 */
-			return null;
-		}
-		return bpmn;
-	}
 
-	private Bpmn importBpmnFromStream(InputStream input, String filename)
+	private Bpmn importFromStream(InputStream input, String filename)
 			throws Exception {
 		/*
 		 * Get an XML pull parser.
@@ -117,9 +103,20 @@ public class BpmnImportPlugin {
         }
         return selectParameters(bpmn, parameters);
     }
-    
-    // Copied from BpmnSelectDiagramPlugin
-    private BPMNDiagram selectParameters(Bpmn bpmn, BpmnSelectDiagramParameters parameters) {
+
+
+
+	/**
+	 * When the BPMN file contains a drawing section (BPMNDiagram tag), then only select elements
+	 * present in this section to adhere to the file drawing. <br>
+	 * When the file has no drawing section, then select all elements.<br>
+	 * The drawing section is specified in BPMN 2.0 spec for interchangability of BPMN diagrams
+	 * between drawing applications.
+	 * @param bpmn
+	 * @param parameters
+	 * @return
+	 */
+	private BPMNDiagram selectParameters(Bpmn bpmn, BpmnSelectDiagramParameters parameters) {
         BPMNDiagram newDiagram = BPMNDiagramFactory.newBPMNDiagram("");
         Map<String, BPMNNode> id2node = new HashMap<String, BPMNNode>();
         Map<String, Swimlane> id2lane = new HashMap<String, Swimlane>();

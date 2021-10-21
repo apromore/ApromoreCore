@@ -55,15 +55,15 @@ public class BpmnDataObjectReference extends BpmnIdName {
 	}
 	
 	public void unmarshall(BPMNDiagram diagram, Map<String, BPMNNode> id2node) {
+		diagram.setNextId(id);
         DataObject dataObject = diagram.addDataObject(name);
-        dataObject.getAttributeMap().put("Original id", id);
 		id2node.put(id, dataObject);
 	}
 
 	public void unmarshall(BPMNDiagram diagram, Collection<String> elements, Map<String, BPMNNode> id2node, Swimlane lane) {
 		if (elements.contains(id)) {
+			diagram.setNextId(id);
 			DataObject dataObject = diagram.addDataObject(name);
-			dataObject.getAttributeMap().put("Original id", id);
 			id2node.put(id, dataObject);
 		}
 	}

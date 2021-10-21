@@ -26,11 +26,12 @@ import java.util.Map;
 
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNNode;
-import org.apromore.processmining.models.graphbased.directed.bpmn.elements.DataAssociation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xmlpull.v1.XmlPullParser;
 
 public class BpmnDataAssociation extends BpmnIdName {
-	
+	private static final Logger LOGGER = LoggerFactory.getLogger(BpmnDataAssociation.class);
 	private String sourceRef;
 	private String targetRef;
 	
@@ -84,16 +85,28 @@ public class BpmnDataAssociation extends BpmnIdName {
 		}
 		return s;
 	}
-	
+
+	/**
+	 * @todo: 10/20/2021 Data association could have only sourceRef or targetRef, need to handle it properly
+	 */
 	public void unmarshall(BPMNDiagram diagram, Map<String, BPMNNode> id2node) {
-		DataAssociation flow = diagram.addDataAssociation(id2node.get(sourceRef), id2node.get(targetRef), name);
-		flow.getAttributeMap().put("Original id", id);
+		if (id2node.containsKey(sourceRef) && id2node.containsKey(targetRef)) {
+			diagram.setNextId(id);
+			diagram.addDataAssociation(id2node.get(sourceRef), id2node.get(targetRef), name);
+		}
+		else {
+			if (!id2node.containsKey(sourceRef)) {
+				LOGGER.error("Couldn't match sourceRef {} of data association {} with a corresponding element ID", sourceRef, id);
+			}
+			if (!id2node.containsKey(targetRef)) {
+				LOGGER.error("Couldn't match targetRef {} of data association {} with a corresponding element ID", targetRef, id);
+			}
+		}
 	}
 
 	public void unmarshall(BPMNDiagram diagram, Collection<String> elements, Map<String, BPMNNode> id2node) {
 		if (elements.contains(sourceRef) && elements.contains(targetRef)) {
-			DataAssociation flow = diagram.addDataAssociation(id2node.get(sourceRef), id2node.get(targetRef), name);
-			flow.getAttributeMap().put("Original id", id);
+			this.unmarshall(diagram, id2node);
 		}
 	}	
 }

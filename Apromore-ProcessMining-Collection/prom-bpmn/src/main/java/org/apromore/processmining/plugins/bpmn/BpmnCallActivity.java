@@ -127,6 +127,7 @@ public class BpmnCallActivity extends BpmnIncomingOutgoing{
     }
 
     public void unmarshall(BPMNDiagram diagram, Map<String, BPMNNode> id2node, Swimlane lane) {
+        diagram.setNextId(id);
         CallActivity activity = diagram.addCallActivity(name, false, false, false, false, false, lane);
 
         if(ioSpecification != null) {
@@ -144,6 +145,7 @@ public class BpmnCallActivity extends BpmnIncomingOutgoing{
     }
     
     public void unmarshall(BPMNDiagram diagram, Map<String, BPMNNode> id2node, SubProcess subProcess) {
+        diagram.setNextId(id);
         CallActivity activity = diagram.addCallActivity(name, false, false, false, false, false, subProcess);
 
         if(ioSpecification != null) {
@@ -162,6 +164,7 @@ public class BpmnCallActivity extends BpmnIncomingOutgoing{
 
     public void unmarshall(BPMNDiagram diagram, Collection<String> elements, Map<String, BPMNNode> id2node, Swimlane lane) {
         if (elements.contains(id)) {
+            diagram.setNextId(id);
             CallActivity activity = diagram.addCallActivity(name, false, false, false, false, false, lane);
 
             if(ioSpecification != null) {
@@ -174,13 +177,13 @@ public class BpmnCallActivity extends BpmnIncomingOutgoing{
                     id2node.put(dataOutgoing.getId(), activity);
                 }
             }
-            activity.getAttributeMap().put("Original id", id);
             id2node.put(id, activity);
         }
     }
     
     public void unmarshall(BPMNDiagram diagram, Collection<String> elements, Map<String, BPMNNode> id2node, SubProcess subProcess) {
         if (elements.contains(id)) {
+            diagram.setNextId(id);
             CallActivity activity = diagram.addCallActivity(name, false, false, false, false, false, subProcess);
 
             if(ioSpecification != null) {
@@ -193,7 +196,6 @@ public class BpmnCallActivity extends BpmnIncomingOutgoing{
                     id2node.put(dataOutgoing.getId(), activity);
                 }
             }
-            activity.getAttributeMap().put("Original id", id);
             id2node.put(id, activity);
         }
     }

@@ -46,7 +46,30 @@ import org.apromore.processmining.models.graphbased.directed.bpmn.elements.TextA
 import org.apromore.processmining.plugins.bpmn.BpmnAssociation.AssociationDirection;
 import org.eclipse.collections.api.map.MutableMap;
 
+/**
+ * <b>BPMNDiagram</b> is a graph that provides support for BPMN specification
+ * @author Anna Kalenkova
+ * @author Bruce Nguyen
+ * 	- 20 Oct 2021: Add getNextId and addNextId, capability for BPMNDiagram to either create random IDs for elements
+ * 	or reuse existing IDs (e.g. from .bpmn files). Random IDs are needed when new BPMNDiagram is created from code.
+ * 	Reuse existing IDs is when the BPMNDiagram is created from importing .bpmn files or transferred over network.
+ */
 public interface BPMNDiagram extends DirectedGraph<BPMNNode, BPMNEdge<? extends BPMNNode, ? extends BPMNNode>> {
+
+	/**
+	 * Generate the next ID used in creating diagram elements
+	 * This method will return any existing IDs added via {@link #setNextId} or it will return a random ID.
+	 * @return: ID used for assigning to new element.
+	 */
+	String getNextId();
+
+	/**
+	 * 	This method allows this diagram to reuse an existing id, e.g. in case of importing from BPMN files
+	 * 	with element IDs already stored in the file.<br>
+	 * 	Call {@link #getNextId} after this method will return the id added here.
+	 * @param id
+	 */
+	void setNextId(String id);
 
 	@Override
     String getLabel();

@@ -61,8 +61,8 @@ public class BpmnParticipant extends BpmnIdName {
 
 	public void unmarshall(BPMNDiagram diagram, Map<String, BPMNNode> id2node, Map<String, Swimlane> id2lane) {
 		if (name != null) {
+			diagram.setNextId(id);
 			Swimlane lane = diagram.addSwimlane(name, null, SwimlaneType.POOL);
-			lane.getAttributeMap().put("Original id", id);
             id2node.put(id, lane);
 			id2lane.put(processRef, lane);
 		}
@@ -70,8 +70,8 @@ public class BpmnParticipant extends BpmnIdName {
 
 	public void unmarshall(BPMNDiagram diagram, Collection<String> elements, Map<String, BPMNNode> id2node, Map<String, Swimlane> id2lane) {
 		if (name != null) {
+			diagram.setNextId(id);
 			Swimlane lane = diagram.addSwimlane(name, null, SwimlaneType.POOL);
-			lane.getAttributeMap().put("Original id", id);
             id2node.put(id, lane);
 			id2lane.put(processRef, lane);
 		}

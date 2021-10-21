@@ -52,14 +52,14 @@ public abstract class BPMNNode extends AbstractDirectedGraphNode implements Cont
 	public static final Color PRIMITIVEBACKGROUNDCOLOR = new Color(240, 230, 200);
 	public static final Color PRIMITIVEBORDERCOLOR = new Color(20, 20, 20);
 	public static final Color PRIMITIVETEXTCOLOR = new Color(0, 0, 0, 230);
-	
-	
+
+
 	private final AbstractDirectedGraph<BPMNNode, BPMNEdge<? extends BPMNNode, ? extends BPMNNode>> graph;
 	private SubProcess parentSubProcess;
 	private Swimlane parentSwimlane;
 
 	public BPMNNode(AbstractDirectedGraph<BPMNNode, BPMNEdge<? extends BPMNNode, ? extends BPMNNode>> bpmndiagram) {
-		super();
+		super(((BPMNDiagram)bpmndiagram).getNextId());
 		graph = bpmndiagram;
 	}
 

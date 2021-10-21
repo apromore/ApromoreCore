@@ -21,6 +21,7 @@
  */
 package org.apromore.processmining.models.graphbased.directed;
 
+import lombok.NonNull;
 import org.apromore.processmining.models.graphbased.AbstractGraphEdge;
 
 public abstract class AbstractDirectedGraphEdge<S extends AbstractDirectedGraphNode, T extends AbstractDirectedGraphNode>
@@ -28,8 +29,14 @@ public abstract class AbstractDirectedGraphEdge<S extends AbstractDirectedGraphN
 
 	private final AbstractDirectedGraph<?, ?> graph;
 
-	public AbstractDirectedGraphEdge(S source, T target) {
+	public AbstractDirectedGraphEdge(@NonNull S source, @NonNull T target) {
 		super(source, target);
+		assert (source.getGraph() == target.getGraph());
+		this.graph = source.getGraph();
+	}
+
+	public AbstractDirectedGraphEdge(@NonNull String id, @NonNull S source, @NonNull T target) {
+		super(id, source, target);
 		assert (source.getGraph() == target.getGraph());
 		this.graph = source.getGraph();
 	}

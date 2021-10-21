@@ -21,20 +21,35 @@
  */
 package org.apromore.processmining.models.graphbased;
 
+import lombok.NonNull;
 import org.apromore.processmining.models.graphbased.directed.AbstractDirectedGraphEdge;
 
 public abstract class AbstractGraphEdge<S, T> extends AbstractGraphElement implements
 		Comparable<AbstractGraphEdge<S, T>> {
 
+	protected EdgeID id;
 	protected final int hash;
 	protected final S source;
 	protected final T target;
 
-	public AbstractGraphEdge(S source, T target) {
+	public AbstractGraphEdge(@NonNull S source, @NonNull T target) {
 		super();
+		this.id = new EdgeID();
 		this.source = source;
 		this.target = target;
 		this.hash = source.hashCode() + 37 * target.hashCode();
+	}
+
+	public AbstractGraphEdge(@NonNull String id, @NonNull S source, @NonNull T target) {
+		super();
+		this.id = new EdgeID(id);
+		this.source = source;
+		this.target = target;
+		this.hash = source.hashCode() + 37 * target.hashCode();
+	}
+
+	public EdgeID getEdgeID() {
+		return id;
 	}
 
 	@Override

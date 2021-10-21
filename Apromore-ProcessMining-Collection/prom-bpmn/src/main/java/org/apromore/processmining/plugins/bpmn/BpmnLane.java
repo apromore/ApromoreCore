@@ -106,6 +106,7 @@ public class BpmnLane extends BpmnIdName {
 
 	public void unmarshall(BPMNDiagram diagram, Map<String, BPMNNode> id2node,
 			Map<String, Swimlane> id2lane, ContainingDirectedGraphNode parent) {
+		diagram.setNextId(id);
 		Swimlane lane = diagram.addSwimlane(name, parent, SwimlaneType.LANE);
 		lane.setPartitionElement(partitionElement);
 		id2lane.put(id, lane);
@@ -131,6 +132,7 @@ public class BpmnLane extends BpmnIdName {
 
 	public void unmarshall(BPMNDiagram diagram, Collection<String> elements, Map<String, BPMNNode> id2node,
 			Map<String, Swimlane> id2lane, ContainingDirectedGraphNode parent) {
+		diagram.setNextId(id);
 		Swimlane lane = diagram.addSwimlane(name, parent, SwimlaneType.LANE);
 		lane.setPartitionElement(partitionElement);
 		id2lane.put(id, lane);

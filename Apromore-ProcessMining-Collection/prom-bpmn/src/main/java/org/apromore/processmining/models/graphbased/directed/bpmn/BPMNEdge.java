@@ -22,7 +22,6 @@
 package org.apromore.processmining.models.graphbased.directed.bpmn;
 
 import org.apromore.processmining.models.graphbased.AttributeMap;
-import org.apromore.processmining.models.graphbased.EdgeID;
 import org.apromore.processmining.models.graphbased.directed.AbstractDirectedGraphEdge;
 import org.apromore.processmining.models.graphbased.directed.ContainableDirectedGraphElement;
 import org.apromore.processmining.models.graphbased.directed.ContainingDirectedGraphNode;
@@ -32,11 +31,10 @@ public abstract class BPMNEdge<S extends BPMNNode, T extends BPMNNode> extends A
 
 	private static final String NO_LABEL = "no label";
 	
-	private final EdgeID id = new EdgeID();
 	private ContainingDirectedGraphNode parent;
 
 	public BPMNEdge(S source, T target) {
-		super(source, target);
+		super(((BPMNDiagram)source.getGraph()).getNextId(), source, target);
 	}
 
 	public BPMNEdge(S source, T target, ContainingDirectedGraphNode parent) {
@@ -73,10 +71,6 @@ public abstract class BPMNEdge<S extends BPMNNode, T extends BPMNNode> extends A
 	
 	public void setParent(ContainingDirectedGraphNode node) {
 		this.parent=node;
-	}
-	
-	public EdgeID getEdgeID() {
-		return id;
 	}
 	
 	@Override
