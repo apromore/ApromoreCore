@@ -332,6 +332,11 @@
     width: 28.5px !important;
 }
 
+.ap-icon-globe-americas {
+    background-image: url('globe-americas.svg') !important;
+    width: 26px !important;
+}
+
 .ap-icon-holiday {
     background-image: url('holiday.svg') !important;
     width: 23.5px !important;

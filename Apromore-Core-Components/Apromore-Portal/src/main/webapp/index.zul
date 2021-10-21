@@ -203,6 +203,7 @@
             <center id="mainPanel" sclass="ap-portal-right-section" vflex="1" border="0">
                 <vlayout vflex="1" sclass="ap-portal-right-content" spacing="0">
                     <menubar id="menucomp" sclass="ap-portal-menu" height="32px" width="100%" apply="org.apromore.portal.dialogController.MenuController" />
+                    <div sclass="ap-icon ap-icon-static ap-icon-globe-americas ap-lang-chooser-icon"/>
                     <combobox
                         sclass="ap-lang-chooser"
                         style="font-size: 12px"
