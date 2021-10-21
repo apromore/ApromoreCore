@@ -748,6 +748,11 @@ button > [class*=" z-icon-"] {
     background-color: var(--ap-c-widget);
 }
 
+.z-slider-button:active,
+.z-slider-button:hover {
+    background: var(--ap-c-widget-hover);
+}
+
 .z-slider-center {
     background-color: var(--ap-c-grey-light-5);
 }
