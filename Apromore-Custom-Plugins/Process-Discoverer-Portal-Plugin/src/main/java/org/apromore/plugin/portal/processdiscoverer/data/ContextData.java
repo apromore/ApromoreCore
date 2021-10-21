@@ -32,28 +32,31 @@ package org.apromore.plugin.portal.processdiscoverer.data;
 public class ContextData {
     private final String userName;
     private final int containingFolderId;
-    private final String containingFolderName;  
+    private final String containingFolderName;
     private final String domain;
     private final String logName;
     private final int logId;
+    private final boolean isCalendarEnabled;
     
     private ContextData (String domain,
                         String userName,
                         int logId, String logName,
-                        int containingFolderId, String containingFolderName) {
+                        int containingFolderId, String containingFolderName,
+                         boolean isCalendarEnabled) {
         this.userName = userName;
         this.containingFolderId = containingFolderId;
         this.containingFolderName = containingFolderName;
         this.domain = domain;
         this.logId = logId;
         this.logName = logName;
+        this.isCalendarEnabled = isCalendarEnabled;
     }
     
     public static ContextData valueOf (String domain,
                         String userName,
                         int logId, String logName,
-                        int containingFolderId, String containingFolderName) {
-        return new ContextData(domain, userName, logId, logName, containingFolderId, containingFolderName);
+                        int containingFolderId, String containingFolderName, boolean isCalendarEnabled) {
+        return new ContextData(domain, userName, logId, logName, containingFolderId, containingFolderName, isCalendarEnabled);
     }
     
     public String getUsername() {
@@ -78,6 +81,10 @@ public class ContextData {
     
     public String getFolderName() {
         return this.containingFolderName;
+    }
+
+    public boolean isCalendarEnabled() {
+        return this.isCalendarEnabled;
     }
     
 }

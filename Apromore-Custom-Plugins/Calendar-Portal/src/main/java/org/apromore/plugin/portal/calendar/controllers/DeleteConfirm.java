@@ -39,7 +39,7 @@ import org.apromore.calendar.model.CalendarModel;
 import org.apromore.calendar.service.CalendarService;
 import org.apromore.commons.datetime.DateTimeUtils;
 import org.apromore.dao.model.Log;
-import org.apromore.plugin.portal.calendar.CalendarEvents;
+import org.apromore.zk.event.CalendarEvents;
 import org.apromore.plugin.portal.calendar.LabelSupplier;
 import org.apromore.service.EventLogService;
 
@@ -106,7 +106,7 @@ public class DeleteConfirm extends SelectorComposer<Window> implements LabelSupp
 
     @Listen("onClick = #continueBtn")
     public void onClickContinueBtn() {
-        EventQueue<Event> calendarEventQueue = EventQueues.lookup(CalendarService.EVENT_TOPIC, EventQueues.DESKTOP,true);
+        EventQueue<Event> calendarEventQueue = EventQueues.lookup(CalendarEvents.TOPIC, EventQueues.DESKTOP,true);
         calendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_REMOVE, null, calendarItem));
         getSelf().detach();
     }

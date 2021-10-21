@@ -44,11 +44,11 @@ import org.apromore.calendar.model.WorkDayModel;
 import org.apromore.calendar.service.CalendarService;
 import org.apromore.commons.datetime.TimeUtils;
 import org.apromore.plugin.portal.PortalLoggerFactory;
-import org.apromore.plugin.portal.calendar.CalendarEvents;
 import org.apromore.plugin.portal.calendar.Constants;
 import org.apromore.plugin.portal.calendar.TimeRange;
 import org.apromore.plugin.portal.calendar.Zone;
 import org.apromore.plugin.portal.calendar.pageutil.PageUtils;
+import org.apromore.zk.event.CalendarEvents;
 import org.slf4j.Logger;
 import org.zkoss.json.JSONArray;
 import org.zkoss.json.JSONObject;
@@ -279,7 +279,7 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
 
     public void editWorkday(int dowIndex, int index, Date start, Date end) {
         try {
-            Map arg = new HashMap<>();
+            Map<String, Object> arg = new HashMap<>();
             arg.put("parentController", this);
             arg.put("dowIndex", dowIndex);
             arg.put("index", index);
@@ -308,13 +308,7 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
     public void onUpdateHolidayDate(ForwardEvent event) throws Exception {
         InputEvent inputEvent = (InputEvent) event.getOrigin();
         Datebox datebox = (Datebox) inputEvent.getTarget();
-        Object val = inputEvent.getValue();
-        Date date;
-        if (val instanceof Date) {
-            date = (Date) val;
-        } else {
-            date = new SimpleDateFormat("yyyy MMM dd").parse((String) val);
-        }
+        Date date = new SimpleDateFormat("yyyy MMM dd").parse(inputEvent.getValue());
         LocalDate holidayDate = TimeUtils.dateToLocalDate(date);
         Listitem listItem = (Listitem) datebox.getParent().getParent();
         HolidayModel holiday = listItem.getValue();
@@ -350,7 +344,7 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
     @Listen("onDelayedClick = #importHolidaysBtn")
     public void onDelayedClickImportHolidaysBtn() {
         try {
-            Map arg = new HashMap<>();
+            Map<String, Object> arg = new HashMap<>();
             arg.put("country", "Australia");
             arg.put("parentController", this);
             Window window = (Window) Executions.getCurrent()
@@ -365,7 +359,7 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
     @Listen("onClick = #addHolidayBtn")
     public void onClickAddHolidayBtn() {
         try {
-            Map arg = new HashMap<>();
+            Map<String, Object> arg = new HashMap<>();
             arg.put("parentController", this);
             Window window = (Window) Executions.getCurrent()
                     .createComponents(PageUtils.getPageDefinition("calendar/zul/add-holiday.zul"), getSelf(), arg);
@@ -418,7 +412,7 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
 
     public void rebuildRow(int dowIndex, String json, boolean workday) {
         Clients.evalJavaScript("(function () { if (Ap.calendar && Ap.calendar.updateRanges) { Ap.calendar.updateRanges("
-                + Integer.toString(dowIndex) + "," + json + "," + (workday ? "true" : "false") + "); } })()");
+                + dowIndex + "," + json + "," + (workday ? "true" : "false") + "); } })()");
     }
 
     /**
@@ -469,21 +463,22 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
         WorkDayModel dowItem = (WorkDayModel) dayOfWeekListbox.getModel().getElementAt(dowIndex - 1);
 
         json += "{";
-        json += "startHour: " + Integer.toString(dowItem.getStartTime().getHour()) + ",";
-        json += "startMin: " + Integer.toString(dowItem.getStartTime().getMinute()) + ",";
-        Integer endHour = dowItem.getEndTime().getHour();
-        Integer endMin = dowItem.getEndTime().getMinute();
+        json += "startHour: " + dowItem.getStartTime().getHour() + ",";
+        json += "startMin: " + dowItem.getStartTime().getMinute() + ",";
+        int endHour = dowItem.getEndTime().getHour();
+        int endMin = dowItem.getEndTime().getMinute();
         if (endHour == 23 && endMin == 59) {
             endHour = 24;
             endMin = 0;
         }
-        json += "endHour: " + Integer.toString(endHour) + ",";
-        json += "endMin: " + Integer.toString(endMin);
+        json += "endHour: " + endHour + ",";
+        json += "endMin: " + endMin;
         json += "}";
         json += "]";
         return json;
     }
 
+    @SuppressWarnings("unchecked")
     private void toModels() {
         if (calendarExists) {
             try {
@@ -522,8 +517,8 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
     @Listen("onClick = #cancelBtn")
     public void onClickCancelBtn() {
         if (isNew) {
-            EventQueue<Event> calendarEventQueue = EventQueues.lookup(CalendarService.EVENT_TOPIC, EventQueues.DESKTOP,true);
-            calendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_ABANDON, null, calendarId));
+            EventQueue<Event> localCalendarEventQueue = EventQueues.lookup(CalendarEvents.TOPIC + "LOCAL", EventQueues.DESKTOP,true);
+            localCalendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_ABANDON, null, calendarId));
         }
         getSelf().detach();
     }

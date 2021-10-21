@@ -195,6 +195,8 @@
         <button ca:data-t="animate" id="animate" tooltiptext="${arg.pdLabels.animate_text}" sclass="ap-icon ap-icon-play-circle"/>
         <h:span class="ap-action-sep"></h:span>
         <button id="share" sclass="ap-icon ap-icon-share" ca:data-t="share" tooltiptext="${arg.pdLabels.share_text}"/>
+        <span id="calendarSep" class="ap-action-sep"></span>
+        <button ca:data-t="calendar" id="calendar" tooltiptext="${labels.portal_tbarCalendar_hint}" sclass="ap-icon ap-icon-calendar"/>
       </div>
       <div hflex="1" align="right" id="rightToolbar" sclass="ap-pd-toolbar-right">
         <!-- Exact single search -->

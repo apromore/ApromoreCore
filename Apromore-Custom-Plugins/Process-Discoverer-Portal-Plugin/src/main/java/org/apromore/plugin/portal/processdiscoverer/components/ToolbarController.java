@@ -36,6 +36,7 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Span;
 import org.zkoss.zul.Textbox;
 
 public class ToolbarController extends AbstractController {
@@ -51,6 +52,7 @@ public class ToolbarController extends AbstractController {
     private Button animate;
     private Button fitScreen;
     private Button share;
+    private Button calendar;
 
     private Button exportFilteredLog;
     private Button downloadPDF;
@@ -86,6 +88,11 @@ public class ToolbarController extends AbstractController {
         animate = (Button) toolbar.getFellow("animate");
         fitScreen = (Button) toolbar.getFellow("fitScreen");
         share = (Button) toolbar.getFellow("share");
+
+        Span calendarSep = (Span) toolbar.getFellow("calendarSep");
+        calendar = (Button) toolbar.getFellow("calendar");
+        calendarSep.setVisible(parent.getContextData().isCalendarEnabled());
+        calendar.setVisible(parent.getContextData().isCalendarEnabled());
 
         exportFilteredLog = (Button) toolbar.getFellow("exportUnfitted");
         exportFilteredLog.setVisible(!isReadOnly);
@@ -132,6 +139,7 @@ public class ToolbarController extends AbstractController {
         animate.addEventListener(Events.ON_CLICK, e -> parent.openAnimation(e));
         exportFilteredLog.addEventListener("onExport", e -> parent.openLogExport(e));
         exportBPMN.addEventListener(Events.ON_CLICK, e -> parent.openBPMNExport(e));
+        calendar.addEventListener(Events.ON_CLICK, e -> parent.openCalendar());
 
         downloadPDF.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
             @Override

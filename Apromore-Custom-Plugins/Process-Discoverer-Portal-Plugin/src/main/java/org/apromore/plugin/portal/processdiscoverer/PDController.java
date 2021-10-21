@@ -23,6 +23,18 @@
 package org.apromore.plugin.portal.processdiscoverer;
 
 import lombok.Getter;
+import static org.apromore.logman.attribute.graph.MeasureType.DURATION;
+import static org.apromore.logman.attribute.graph.MeasureType.FREQUENCY;
+
+import java.text.DecimalFormat;
+import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+import javax.servlet.http.HttpSession;
+
+import org.apromore.commons.config.ConfigBean;
+import org.apromore.logman.attribute.IndexableAttribute;
 import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
@@ -30,7 +42,11 @@ import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.plugin.portal.logfilter.generic.LogFilterPlugin;
 import org.apromore.plugin.portal.processdiscoverer.actions.ActionManager;
 import org.apromore.plugin.portal.processdiscoverer.components.*;
-import org.apromore.plugin.portal.processdiscoverer.data.*;
+import org.apromore.plugin.portal.processdiscoverer.data.InvalidDataException;
+import org.apromore.plugin.portal.processdiscoverer.data.ConfigData;
+import org.apromore.plugin.portal.processdiscoverer.data.ContextData;
+import org.apromore.plugin.portal.processdiscoverer.data.OutputData;
+import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
 import org.apromore.plugin.portal.processdiscoverer.eventlisteners.AnimationController;
 import org.apromore.plugin.portal.processdiscoverer.eventlisteners.BPMNExportController;
 import org.apromore.plugin.portal.processdiscoverer.eventlisteners.LogExportController;
@@ -38,6 +54,7 @@ import org.apromore.plugin.portal.processdiscoverer.eventlisteners.LogFilterCont
 import org.apromore.plugin.portal.processdiscoverer.impl.factory.PDFactory;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.BaseController;
+import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.dialogController.dto.ApromoreSession;
 import org.apromore.portal.menu.PluginCatalog;
 import org.apromore.portal.model.FolderType;
@@ -53,20 +70,18 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.ComponentNotFoundException;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
+import org.zkoss.zul.Messagebox.ClickEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.EventQueue;
+import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
-import javax.servlet.http.HttpSession;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-import static org.apromore.logman.attribute.graph.MeasureType.DURATION;
-import static org.apromore.logman.attribute.graph.MeasureType.FREQUENCY;
+import org.apromore.zk.event.CalendarEvents;
 
 /**
  * PDController is the top-level application object to manage PD plugin as a
@@ -154,6 +169,7 @@ public class PDController extends BaseController implements Composer<Component> 
     private InteractiveMode mode = InteractiveMode.MODEL_MODE; // initial mode
 
     private Component pdComponent;
+    private EventQueue<Event> sessionQueue;
 
     /////////////////////////////////////////////////////////////////////////
 
@@ -271,7 +287,8 @@ public class PDController extends BaseController implements Composer<Component> 
                     logSummary.getName(),
                     portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId(),
                     portalContext.getCurrentFolder() == null ? "Home"
-                            : portalContext.getCurrentFolder().getFolderName());
+                            : portalContext.getCurrentFolder().getFolderName(),
+                    ((MainController)portalContext.getMainController()).getConfig().isEnableCalendar());
             processAnalyst = new PDAnalyst(contextData, configData, getEventLogService());
             userOptions = UserOptionsData.DEFAULT(configData);
 
@@ -315,6 +332,7 @@ public class PDController extends BaseController implements Composer<Component> 
     // All data and controllers must be already available
     private void initialize() {
         try {
+            initializeCalendar();
             initializeControls();
             timeStatsController.updateUI(contextData);
             viewSettingsController.updateUI(null);
@@ -324,6 +342,28 @@ public class PDController extends BaseController implements Composer<Component> 
             Messagebox.show(getLabel("initError_message"), getLabel("initError_title"), Messagebox.OK,
                     Messagebox.ERROR);
         }
+    }
+
+    public void initializeCalendar() {
+        sessionQueue = EventQueues.lookup(CalendarEvents.TOPIC, EventQueues.SESSION,true);
+        sessionQueue.subscribe(new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) {
+                if (CalendarEvents.ON_CALENDAR_CHANGED.equals(event.getName())) {
+                    int logId = (int) event.getData();
+                    if (logId == sourceLogId) {
+                        Messagebox.show("Custom calendar for this process log is updated. You need to reload the page. Continue?",
+                                new Messagebox.Button[] {Messagebox.Button.OK, Messagebox.Button.CANCEL},
+                                (ClickEvent e) -> {
+                                    if (Messagebox.ON_OK.equals(e.getName())) {
+                                        Clients.evalJavaScript("window.location.reload()");
+                                    }
+                                }
+                        );
+                    }
+                }
+            }
+        });
     }
 
     private void initializeControls() {
@@ -419,6 +459,10 @@ public class PDController extends BaseController implements Composer<Component> 
                     Messagebox.ERROR);
             LOGGER.error(e.getMessage(), e);
         }
+    }
+
+    public void openCalendar() {
+        ((MainController)portalContext.getMainController()).getBaseListboxController().launchCalendar(sourceLogName, sourceLogId);
     }
 
     public void openAnimation(Event e) {
