@@ -165,13 +165,7 @@ public class LogImporterParquetImpl implements LogImporter, Constants {
 
         // If row is invalid, continue to next row.
         if (!logEventModelExt.isValid()) {
-          if (skipInvalidRow) {
-            continue;
-          } else {
-            // Upon migrating to parquet, xlog need to be removed and LogModelImpl need to be
-            // renamed
-            return new LogModelImpl(null, logErrorReport, rowLimitExceeded, numOfValidEvents, null);
-          }
+          continue;
         }
 
         // Construct a Trace if it's not exists
