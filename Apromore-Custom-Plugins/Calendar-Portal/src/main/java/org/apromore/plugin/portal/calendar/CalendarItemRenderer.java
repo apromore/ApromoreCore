@@ -199,7 +199,7 @@ public class CalendarItemRenderer implements ListitemRenderer<CalendarModel>, La
         removeAction.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
-                EventQueue<Event> calendarEventQueue = EventQueues.lookup(CalendarEvents.TOPIC, EventQueues.DESKTOP,true);
+                EventQueue<Event> calendarEventQueue = EventQueues.lookup(CalendarEvents.TOPIC + "LOCAL", EventQueues.DESKTOP,true);
                 calendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_BEFORE_REMOVE, null, calendarItem));
             }
         });
