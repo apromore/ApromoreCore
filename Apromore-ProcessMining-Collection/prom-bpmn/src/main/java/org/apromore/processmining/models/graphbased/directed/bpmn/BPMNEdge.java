@@ -34,7 +34,7 @@ public abstract class BPMNEdge<S extends BPMNNode, T extends BPMNNode> extends A
 	private ContainingDirectedGraphNode parent;
 
 	public BPMNEdge(S source, T target) {
-		super(((BPMNDiagram)source.getGraph()).getNextId(), source, target);
+		super(((BPMNDiagram)source.getGraph()).getNextId(LocalIDGenerator.ID_PREFIX_EDGE), source, target);
 	}
 
 	public BPMNEdge(S source, T target, ContainingDirectedGraphNode parent) {

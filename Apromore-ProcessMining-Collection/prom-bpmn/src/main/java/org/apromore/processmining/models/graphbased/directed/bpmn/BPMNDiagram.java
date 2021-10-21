@@ -59,9 +59,10 @@ public interface BPMNDiagram extends DirectedGraph<BPMNNode, BPMNEdge<? extends 
 	/**
 	 * Generate the next ID used in creating diagram elements
 	 * This method will return any existing IDs added via {@link #setNextId} or it will return a random ID.
-	 * @return: ID used for assigning to new element.
+	 * @param idPrefix prefix to provide some semantics for the ID
+	 * @return ID used for assigning to new element.
 	 */
-	String getNextId();
+	String getNextId(String idPrefix);
 
 	/**
 	 * 	This method allows this diagram to reuse an existing id, e.g. in case of importing from BPMN files
