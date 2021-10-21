@@ -38,7 +38,6 @@ import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.select.SelectorComposer;
@@ -61,7 +60,7 @@ import org.apromore.plugin.portal.calendar.LabelSupplier;
 @VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
 public class Calendars extends SelectorComposer<Window> implements LabelSupplier {
 
-    private static Logger LOGGER = PortalLoggerFactory.getLogger(Calendars.class);
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(Calendars.class);
 
     @Wire("#calendarListbox")
     Listbox calendarListbox;
@@ -92,7 +91,7 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
     private boolean canEdit;
     private Integer logId;
 
-    public Calendars() throws Exception {
+    public Calendars() {
     }
 
     @Override
@@ -115,7 +114,7 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
 
         CalendarItemRenderer itemRenderer = new CalendarItemRenderer(calendarService, appliedCalendarId, canEdit);
         calendarListbox.setItemRenderer(itemRenderer);
-        calendarListModel = new ListModelList<CalendarModel>();
+        calendarListModel = new ListModelList<>();
         calendarListModel.setMultiple(false);
         populateCalendarList();
 
@@ -153,12 +152,12 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
         calendarListbox.setModel(calendarListModel);
     }
 
-    public void applyCalendarForLog(Integer logId, Long calendarId) {
+    private void applyCalendarForLog(Integer logId, Long calendarId) {
         eventLogService.updateCalendarForLog(logId, calendarId);
         sessionCalendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_CHANGED, null, logId));
     }
 
-    public void beforeRemoveCalendar(CalendarModel calendarItem) {
+    private void beforeRemoveCalendar(CalendarModel calendarItem) {
         List<Log> relatedLogList = eventLogService.getLogListFromCalendarId(calendarItem.getId());
         if (relatedLogList == null || relatedLogList.isEmpty()) {
             sessionCalendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_REMOVE, null, calendarItem));
@@ -221,7 +220,7 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
             updateApplyCalendarButton();
             Long calendarId = model.getId();
             try {
-                Map arg = new HashMap<>();
+                Map<String, Object> arg = new HashMap<>();
                 arg.put("calendarId", calendarId);
                 arg.put("parentController", this);
                 arg.put("isNew", true);
