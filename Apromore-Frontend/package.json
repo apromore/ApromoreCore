@@ -8,7 +8,14 @@
     "dev": "webpack",
     "test": "karma start karma.conf.js",
     "build": "webpack",
-    "start": "webpack-serve --mode development --open"
+    "start": "webpack-serve --mode development --open",
+    "preinstall": "npx npm-force-resolutions"
+  },
+  "resolutions": {
+    "path-parse": "^1.0.7",
+    "url-parse": "^1.5.3",
+    "lodash.template": "^4.5.0",
+    "jquery": "3.5.1"
   },
   "author": "brucenguyen",
   "license": "ApromoreCore",

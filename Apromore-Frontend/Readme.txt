@@ -1,3 +1,6 @@
+Apromore Frontend
+=================
+
 This module contains javascript in Node.js project for the following components:
     - Process Discoverer
     - Log Animation
@@ -11,6 +14,11 @@ Folder structure:
 - config: config files
 - scripts: NPM script files, if any.
 - dist: distribution bundles
+
+Important:
+---------
+
+Currently npm version 6 is used for this repo.
 
 Commands:
 
