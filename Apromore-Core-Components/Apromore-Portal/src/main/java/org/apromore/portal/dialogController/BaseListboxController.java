@@ -414,11 +414,15 @@ public abstract class BaseListboxController extends BaseController {
   }
 
   public void unselectAll() {
-    getListBox().clearSelection();
+    getListModel().clearSelection();
   }
 
   public void selectAll() {
-    getListBox().selectAll();
+    ListModelList model = getListModel();
+    for (int i = 0; i < model.getSize(); i++) {
+      Object obj = model.getElementAt(i);
+      getListModel().addToSelection(obj);
+    }
   }
 
   protected void importFile() throws InterruptedException {
