@@ -106,7 +106,7 @@ public class DeleteConfirm extends SelectorComposer<Window> implements LabelSupp
 
     @Listen("onClick = #continueBtn")
     public void onClickContinueBtn() {
-        EventQueue<Event> calendarEventQueue = EventQueues.lookup(CalendarEvents.TOPIC, EventQueues.DESKTOP,true);
+        EventQueue<Event> calendarEventQueue = EventQueues.lookup(Calendars.LOCAL_TOPIC, EventQueues.DESKTOP,true);
         calendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_REMOVE, null, calendarItem));
         getSelf().detach();
     }
