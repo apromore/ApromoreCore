@@ -211,6 +211,7 @@
                         autodrop="true"
                         mold="rounded"
                         width="150px"
+                        readonly="true"
                         popupWidth="150px"
                         buttonVisible="true"
                     />
