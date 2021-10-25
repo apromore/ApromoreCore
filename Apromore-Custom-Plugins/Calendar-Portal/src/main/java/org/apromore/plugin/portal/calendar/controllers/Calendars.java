@@ -29,6 +29,7 @@ import org.apromore.dao.model.Log;
 import org.apromore.calendar.exception.CalendarAlreadyExistsException;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.calendar.service.CalendarService;
+import org.apromore.plugin.portal.calendar.Constants;
 import org.apromore.service.EventLogService;
 import org.apromore.commons.datetime.DateTimeUtils;
 import org.apromore.plugin.portal.PortalLoggerFactory;
@@ -53,7 +54,7 @@ import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Window;
 
 import org.apromore.zk.event.CalendarEvents;
-import org.apromore.plugin.portal.calendar.LabelSupplier;
+import org.apromore.zk.label.LabelSupplier;
 
 /**
  * Controller for handling calendar interface Corresponds to calendars.zul
@@ -95,6 +96,11 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
     private EventListener<Event> eventHandler;
 
     public Calendars() {
+    }
+
+    @Override
+    public String getBundleName() {
+        return Constants.BUNDLE_NAME;
     }
 
     @Override

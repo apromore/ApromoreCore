@@ -26,10 +26,10 @@ import java.util.*;
 
 import org.apromore.commons.datetime.TimeUtils;
 import org.apromore.plugin.portal.PortalLoggerFactory;
+import org.apromore.plugin.portal.calendar.Constants;
 import org.slf4j.Logger;
-import org.zkoss.web.Attributes;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.Sessions;
+
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
@@ -37,8 +37,9 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Timebox;
 import org.zkoss.zul.Window;
+import org.apromore.zk.label.LabelSupplier;
 
-public class EditRange extends SelectorComposer<Window> {
+public class EditRange extends SelectorComposer<Window> implements LabelSupplier {
 
     private final static Logger LOGGER = PortalLoggerFactory.getLogger(EditRange.class);
     private Map argMap = Executions.getCurrent().getArg();
@@ -70,10 +71,9 @@ public class EditRange extends SelectorComposer<Window> {
         endTimebox.setValue(end);
     }
 
-    public ResourceBundle getLabels() {
-        Locale locale = (Locale) Sessions.getCurrent().getAttribute(Attributes.PREFERRED_LOCALE);
-        return ResourceBundle.getBundle("calendar", locale,
-                Calendars.class.getClassLoader());
+    @Override
+    public String getBundleName() {
+        return Constants.BUNDLE_NAME;
     }
 
     @Listen("onClick = #deleteBtn")
