@@ -271,6 +271,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
         if (EVENT_MESSAGE_SAVE.equals(event.getName())) {
           String[] data = (String[]) event.getData();
           setTitle(data[0], data[1]);
+          process = session.getProcess();
           editorController.isNewProcess = false;
         }
       }
