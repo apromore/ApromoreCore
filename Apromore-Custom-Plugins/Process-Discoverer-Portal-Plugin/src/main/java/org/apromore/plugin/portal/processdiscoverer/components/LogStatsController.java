@@ -184,4 +184,8 @@ public class LogStatsController extends AbstractController {
     public void updatePerspectiveHeading(String perspective) throws Exception {
         throw new Exception("Refer to LogStatsControllerWithAPMLog.");
     }
+
+    public void updateVariantInspectorLink(boolean disable) throws Exception {
+        throw new Exception("Refer to LogStatsControllerWithAPMLog.");
+    }
 }

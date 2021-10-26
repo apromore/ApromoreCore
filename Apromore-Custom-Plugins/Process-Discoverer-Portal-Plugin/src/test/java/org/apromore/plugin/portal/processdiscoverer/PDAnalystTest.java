@@ -128,7 +128,7 @@ public class PDAnalystTest extends TestDataSetup {
         assertEquals(0, caseVariantDetails.get(0).getAvgDuration(), 0);
         assertEquals("instant", caseVariantDetails.get(0).getAvgDurationStr());
         assertEquals(0.5, caseVariantDetails.get(0).getFreq(), 0);
-        assertEquals("50%", caseVariantDetails.get(0).getFreqStr());
+        assertEquals("50", caseVariantDetails.get(0).getFreqStr());
     }
 
     @Test
@@ -142,7 +142,7 @@ public class PDAnalystTest extends TestDataSetup {
         assertEquals(0, caseVariantDetails.get(0).getAvgDuration(), 0);
         assertEquals("instant", caseVariantDetails.get(0).getAvgDurationStr());
         assertEquals(1, caseVariantDetails.get(0).getFreq(), 0);
-        assertEquals("100%", caseVariantDetails.get(0).getFreqStr());
+        assertEquals("100", caseVariantDetails.get(0).getFreqStr());
     }
 
     @Test
