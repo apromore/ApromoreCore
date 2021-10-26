@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import lombok.Setter;
 import org.apromore.apmlog.ATrace;
 import org.apromore.logman.attribute.log.AttributeLog;
 import org.apromore.logman.attribute.log.AttributeTrace;
@@ -57,6 +58,8 @@ import org.zkoss.zul.Window;
 
 public class CaseVariantDetailsController extends DataListController {
     private Window caseVariantDetailsWindow;
+    @Setter
+    private boolean disabledInspector = false;
     private boolean disabled = false;
     private Map<String, Map<String, String>> activityToAttributeMap = new HashMap<>();
     private AttributesStandardizer attStandardizer = new AttributesStandardizer();
@@ -141,14 +144,13 @@ public class CaseVariantDetailsController extends DataListController {
 
     @Override
     public void onEvent(Event event) throws Exception {
-        if (caseVariantDetailsWindow == null) {
+        if (caseVariantDetailsWindow == null && !disabledInspector) {
             Map<String, Object> arg = new HashMap<>();
             arg.put("pdLabels", parent.getLabels());
             caseVariantDetailsWindow = (Window) Executions
                     .createComponents(getPageDefinition("processdiscoverer/zul/caseVariantDetails.zul"), null, arg);
             caseVariantDetailsWindow.setTitle("Case variant Inspector");
             caseVariantDetailsWindow.getFellow("lblClickACase").setVisible(!this.disabled);
-
             caseVariantDetailsWindow.addEventListener("onClose", new EventListener<Event>() {
                 @Override
                 public void onEvent(Event event) throws Exception {

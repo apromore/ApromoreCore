@@ -673,12 +673,15 @@ public class PDController extends BaseController implements Composer<Component> 
         if (this.mode != InteractiveMode.MODEL_MODE)
             return;
         if (!value.equals(userOptions.getMainAttributeKey())) {
+            boolean disableVariantInspector = !"concept:name".equals(value);
             toolbarController.setDisabledAnimation(!value.equals(configData.getDefaultAttribute()));
+            caseVariantDetailsController.setDisabledInspector(disableVariantInspector);
             userOptions.setMainAttributeKey(value);
             processAnalyst.setMainAttribute(value);
             timeStatsController.updateUI(contextData);
             logStatsController.updateUI(contextData);
             logStatsController.updatePerspectiveHeading(label);
+            logStatsController.updateVariantInspectorLink(disableVariantInspector);
             generateViz();
         }
     }
