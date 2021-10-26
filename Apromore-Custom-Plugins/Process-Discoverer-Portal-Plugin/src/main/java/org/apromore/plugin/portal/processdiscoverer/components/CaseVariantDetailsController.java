@@ -84,7 +84,7 @@ public class CaseVariantDetailsController extends DataListController {
 
     @Override
     public String[] getDataHeaders() {
-        return new String[] {"Case variant ID", "Activity instances", "Average duration", "Cases", "Frequency"};
+        return new String[] {"Case variant ID", "Activity instances", "Average duration", "Cases", "Percentage (%)"};
     }
 
     @Override
