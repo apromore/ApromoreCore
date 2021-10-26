@@ -55,6 +55,7 @@ public class ConfigBean {
     private String volumeExportDir;
     private String volumeFileDir;
     private boolean templateEnabled;
+    private boolean newdldash;
 
     @Data
     public class Logs {
