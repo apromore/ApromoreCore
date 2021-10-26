@@ -169,7 +169,7 @@ public class CaseVariantDetailsController extends DataListController {
             listbox.addEventListener("onSelect", new EventListener<Event>() {
                 @Override
                 public void onEvent(Event event) throws Exception {
-                    if (disabled)
+                    if (disabled || disabledInspector)
                         return;
                     try {
                         String caseVariantIDLabel = ((Listcell) (listbox.getSelectedItem()).getChildren().get(0)).getLabel();
