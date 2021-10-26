@@ -147,6 +147,7 @@ public class CaseVariantDetailsController extends DataListController {
         if (caseVariantDetailsWindow == null && !disabledInspector) {
             Map<String, Object> arg = new HashMap<>();
             arg.put("pdLabels", parent.getLabels());
+            parent.disableGraphEditButtons();
             caseVariantDetailsWindow = (Window) Executions
                     .createComponents(getPageDefinition("processdiscoverer/zul/caseVariantDetails.zul"), null, arg);
             caseVariantDetailsWindow.setTitle("Case variant Inspector");

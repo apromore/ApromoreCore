@@ -613,6 +613,10 @@ public class PDController extends BaseController implements Composer<Component> 
         }
     }
 
+    public boolean disableGraphEditButtons() {
+        return this.setInteractiveMode(InteractiveMode.TRACE_MODE);
+    }
+
     /**
      * Mode represents an overall state of PD. It is used to set relevant status for
      * UI controls without having to consider state of each control. This method
