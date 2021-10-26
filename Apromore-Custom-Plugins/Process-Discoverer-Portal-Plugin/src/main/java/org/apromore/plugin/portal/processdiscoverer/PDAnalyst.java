@@ -513,8 +513,14 @@ public class PDAnalyst {
             String key = entry.getKey();
             String firstValue = entry.getValue();
             //Keep activity and resource.
-            if (Constants.ATT_KEY_CONCEPT_NAME.equals(key) || Constants.ATT_KEY_RESOURCE.equals(key)) {
+            if (Constants.ATT_KEY_CONCEPT_NAME.equals(key)) {
                 avgAttributeMap.put(key, firstValue);
+            } else if (Constants.ATT_KEY_RESOURCE.equals(key)) {
+                List<String> resources = caseAttMaps.stream()
+                        .map(m -> m.get(key)).distinct().collect(Collectors.toList());
+                String resourcesStr = resources.toString();
+
+                avgAttributeMap.put(key, resourcesStr.substring(1, resourcesStr.length() - 1));
             } else {
                 try {
                     //Get average of any numerical attributes

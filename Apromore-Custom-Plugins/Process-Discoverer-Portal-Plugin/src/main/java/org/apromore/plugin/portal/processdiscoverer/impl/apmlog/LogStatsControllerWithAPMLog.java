@@ -36,6 +36,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.Label;
 
 /**
@@ -66,6 +67,8 @@ public class LogStatsControllerWithAPMLog extends LogStatsController {
     private Label lblCasePercent, lblVariantPercent, lblEventPercent;
     private Label lblCaseNumberFiltered, lblCaseNumberTotal, lblVariantNumberFiltered, lblVariantNumberTotal, lblEventNumberFiltered, lblEventNumberTotal;
     private Label lblNodePercent, lblNodeNumberFiltered, lblNodeNumberTotal;
+
+    private Div divCaseVariantInspectorLink;
 
     // TO DO: Check if total can be persisted during init
     private long totalEventCount;
@@ -113,6 +116,8 @@ public class LogStatsControllerWithAPMLog extends LogStatsController {
         lblEventNumberTotal = (Label) wdLogStats.getFellow("lblEventNumberTotal");
         lblNodeNumberFiltered = (Label) wdLogStats.getFellow("lblNodeNumberFiltered");
         lblNodeNumberTotal = (Label) wdLogStats.getFellow("lblNodeNumberTotal");
+
+        divCaseVariantInspectorLink = (Div) wdLogStats.getFellow("divCaseVariantInspectorLink");
 
         AttributeLogSummary oriLogSummary = parent.getProcessAnalyst().getAttributeLog().getOriginalLogSummary();
         updateFromLogSummary(oriLogSummary, oriLogSummary);
@@ -265,5 +270,11 @@ public class LogStatsControllerWithAPMLog extends LogStatsController {
     @Override
     public void updatePerspectiveHeading(String perspective) {
         lblActivityHeading.setValue(perspective);
+    }
+
+    @Override
+    public void updateVariantInspectorLink(boolean disable) {
+        String linkClass = disable ? "ap-link-disabled" : "ap-link";
+        divCaseVariantInspectorLink.setSclass(linkClass);
     }
 }
