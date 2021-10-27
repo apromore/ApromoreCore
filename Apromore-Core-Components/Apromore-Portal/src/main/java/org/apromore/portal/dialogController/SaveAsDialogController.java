@@ -205,7 +205,8 @@ public class SaveAsDialogController extends BaseController {
           documentation, created, null, publicModel);
 
       // Update process data with the new process to keep a consistent state
-      editSession.setProcessId(importResult.getProcessSummary().getId());
+      Integer processId = importResult.getProcessSummary().getId();
+      editSession.setProcessId(processId);
       editSession.setProcessName(processName);
       editSession.setOriginalVersionNumber(versionNumber);
       editSession.setCurrentVersionNumber(versionNumber);
