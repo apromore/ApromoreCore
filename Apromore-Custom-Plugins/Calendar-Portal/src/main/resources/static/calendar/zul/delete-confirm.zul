@@ -1,5 +1,4 @@
-<window id="relatedLogsWin"
-        title="Related logs"
+<window title="Related logs"
         width="720px"
         height="400px"
         apply="org.apromore.plugin.portal.calendar.controllers.DeleteConfirm"

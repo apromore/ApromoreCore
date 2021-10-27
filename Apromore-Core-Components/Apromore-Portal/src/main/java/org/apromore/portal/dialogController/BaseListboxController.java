@@ -849,20 +849,7 @@ public abstract class BaseListboxController extends BaseController {
     PortalPlugin calendarPlugin;
     getMainController().eraseMessage();
 
-   final EventQueue<Event> queue = EventQueues.lookup("org/apromore/service/CALENDAR", true);
-
     Long calendarId = getMainController().getEventLogService().getCalendarIdFromLog(logId);
-
-    queue.subscribe(new EventListener<Event>() {
-      @Override
-      public void onEvent(Event event) {
-        if ("onCalendarPublish".equals(event.getName())) {
-          Long data = (Long) event.getData();
-          getMainController().getEventLogService().updateCalendarForLog(logId, data);
-        }
-        queue.unsubscribe(this);
-      }
-    });
 
     try {
       Map<String, Object> attrMap = new HashMap<String, Object>();
