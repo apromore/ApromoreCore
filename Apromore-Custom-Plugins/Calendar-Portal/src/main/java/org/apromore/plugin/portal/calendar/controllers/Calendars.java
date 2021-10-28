@@ -90,6 +90,8 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
 
     private Long appliedCalendarId;
     private boolean canEdit;
+    private Integer logId;
+    private EventListener<Event> eventHandler;
 
     public Calendars() throws Exception {
     }
@@ -99,17 +101,17 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
         super.doAfterCompose(win);
         initialize();
         win.setTitle(getLabels().getString("title_text"));
-        win.addEventListener("onClose", new EventListener<Event>() {
+        win.addEventListener("onClose", (Event event) -> cleanup());
+    }
 
-            @Override
-            public void onEvent(Event event) throws Exception {
-                 EventQueues.remove(CalendarService.EVENT_TOPIC);
-            }
-        });
+    public void cleanup() {
+        calendarEventQueue.unsubscribe(eventHandler);
+        EventQueues.remove(CalendarService.EVENT_TOPIC);
     }
 
     public void initialize() {
         appliedCalendarId = (Long) Executions.getCurrent().getArg().get("calendarId");
+        logId = (Integer) Executions.getCurrent().getArg().get("logId");
         canEdit = (boolean) Executions.getCurrent().getArg().get("canEdit");
         applyCalendarBtn.setDisabled(!canEdit);
         restoreBtn.setDisabled(!canEdit);
@@ -122,7 +124,7 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
         calendarListModel.setMultiple(false);
         populateCalendarList();
 
-        calendarEventQueue.subscribe((Event event) -> {
+        eventHandler = (Event event) -> {
             // Abandon newly created calendar
             if (CalendarEvents.ON_CALENDAR_ABANDON.equals(event.getName())) {
                 Long calendarId = (Long) event.getData();
@@ -139,7 +141,9 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
                 CalendarModel calendarItem = (CalendarModel) event.getData();
                 removeCalendar(calendarItem);
             }
-        });
+        };
+
+        calendarEventQueue.subscribe(eventHandler);
     }
 
     public void populateCalendarList() {
@@ -154,6 +158,10 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
             }
         }
         calendarListbox.setModel(calendarListModel);
+    }
+
+    private void applyCalendarForLog(Integer logId, Long calendarId) {
+        eventLogService.updateCalendarForLog(logId, calendarId);
     }
 
     public void beforeRemoveCalendar(CalendarModel calendarItem) {
@@ -195,6 +203,7 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
     @Listen("onClick = #cancelBtn")
     public void onClickCancelBtn() {
         EventQueues.remove(CalendarService.EVENT_TOPIC);
+        cleanup();
 	    getSelf().detach();
     }
 
@@ -204,8 +213,8 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
         String msg = getLabels().getString("success_apply_message");
         String infoText = String.format(msg, logName);
         Notification.info(infoText);
-        calendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_PUBLISH, null,
-                ((CalendarModel) calendarListModel.getSelection().iterator().next()).getId()));
+        applyCalendarForLog(logId, (calendarListModel.getSelection().iterator().next()).getId());
+        cleanup();
         getSelf().detach();
        
     }
@@ -247,6 +256,7 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
     @Listen("onClick = #restoreBtn")
     public void onClickRestoreBtn() {
         calendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_PUBLISH, null,null));
+        cleanup();
         getSelf().detach();
         String logName = selectedLog.getValue();
         String msg = getLabels().getString("success_restore_message");
