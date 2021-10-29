@@ -27,14 +27,11 @@ import static org.apromore.logman.attribute.graph.MeasureType.DURATION;
 import static org.apromore.logman.attribute.graph.MeasureType.FREQUENCY;
 
 import java.text.DecimalFormat;
-import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 import javax.servlet.http.HttpSession;
 
-import org.apromore.commons.config.ConfigBean;
-import org.apromore.logman.attribute.IndexableAttribute;
 import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
@@ -65,7 +62,6 @@ import org.apromore.service.ProcessService;
 import org.apromore.service.loganimation.LogAnimationService2;
 import org.json.JSONException;
 import org.slf4j.Logger;
-import org.zkoss.web.Attributes;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.ComponentNotFoundException;
 import org.zkoss.zk.ui.Executions;
@@ -82,6 +78,7 @@ import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
 import org.apromore.zk.event.CalendarEvents;
+import org.apromore.zk.label.LabelSupplier;
 
 /**
  * PDController is the top-level application object to manage PD plugin as a
@@ -113,7 +110,7 @@ import org.apromore.zk.event.CalendarEvents;
  * 
  */
 
-public class PDController extends BaseController implements Composer<Component> {
+public class PDController extends BaseController implements Composer<Component>, LabelSupplier {
 
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(PDController.class);
 
@@ -184,25 +181,9 @@ public class PDController extends BaseController implements Composer<Component> 
         actionManager = new ActionManager(this);
     }
 
-    public ResourceBundle getLabels() {
-        return ResourceBundle.getBundle("pd", (Locale) Sessions.getCurrent().getAttribute(Attributes.PREFERRED_LOCALE),
-                PDController.class.getClassLoader());
-    }
-
-    public String getLabel(String key) {
-        String label = getLabels().getString(key);
-        if (label == null) {
-            label = "";
-        }
-        return label;
-    }
-
-    public String getLabel(String key, String defaultVal) {
-        String label = getLabels().getString(key);
-        if (label == null) {
-            label = defaultVal;
-        }
-        return label;
+    @Override
+    public String getBundleName() {
+        return "pd";
     }
 
     // Note: this method is only valid inside onCreate() as it calls ZK current

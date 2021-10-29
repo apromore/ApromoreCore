@@ -22,6 +22,8 @@
 package org.apromore.plugin.portal.calendar.controllers;
 
 import java.util.List;
+
+import org.apromore.plugin.portal.calendar.Constants;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventQueue;
@@ -40,7 +42,7 @@ import org.apromore.calendar.service.CalendarService;
 import org.apromore.commons.datetime.DateTimeUtils;
 import org.apromore.dao.model.Log;
 import org.apromore.zk.event.CalendarEvents;
-import org.apromore.plugin.portal.calendar.LabelSupplier;
+import org.apromore.zk.label.LabelSupplier;
 import org.apromore.service.EventLogService;
 
 @VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
@@ -80,6 +82,11 @@ public class DeleteConfirm extends SelectorComposer<Window> implements LabelSupp
             if (obj == null || !RelatedLog.class.equals(obj.getClass())) { return false; }
             return (obj instanceof RelatedLog) && id.equals(((RelatedLog) obj).id);
         }
+    }
+
+    @Override
+    public String getBundleName() {
+        return Constants.BUNDLE_NAME;
     }
 
     @Override

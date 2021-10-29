@@ -49,6 +49,7 @@ import org.apromore.commons.datetime.DateTimeUtils;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.calendar.pageutil.PageUtils;
 import org.apromore.zk.event.CalendarEvents;
+import org.apromore.zk.label.LabelSupplier;
 
 public class CalendarItemRenderer implements ListitemRenderer<CalendarModel>, LabelSupplier {
 

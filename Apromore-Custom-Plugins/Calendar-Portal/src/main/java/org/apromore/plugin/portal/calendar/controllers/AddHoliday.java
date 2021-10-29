@@ -23,16 +23,13 @@ package org.apromore.plugin.portal.calendar.controllers;
 
 import java.time.LocalDate;
 import java.util.Date;
-import java.util.Locale;
-import java.util.ResourceBundle;
 
 import org.apromore.calendar.model.HolidayModel;
 import org.apromore.commons.datetime.TimeUtils;
 import org.apromore.plugin.portal.PortalLoggerFactory;
+import org.apromore.plugin.portal.calendar.Constants;
 import org.slf4j.Logger;
-import org.zkoss.web.Attributes;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.select.SelectorComposer;
@@ -43,8 +40,9 @@ import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Radiogroup;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
+import org.apromore.zk.label.LabelSupplier;
 
-public class AddHoliday extends SelectorComposer<Window> {
+public class AddHoliday extends SelectorComposer<Window> implements LabelSupplier {
 
     private final static Logger LOGGER = PortalLoggerFactory.getLogger(AddHoliday.class);
 
@@ -56,6 +54,11 @@ public class AddHoliday extends SelectorComposer<Window> {
 
     @Wire("#saveBtn") Button saveBtn;
     @Wire("#cancelBtn") Button cancelBtn;
+
+    @Override
+    public String getBundleName() {
+        return Constants.BUNDLE_NAME;
+    }
 
     @Override
     public void doAfterCompose(Window win) throws Exception {
@@ -77,12 +80,6 @@ public class AddHoliday extends SelectorComposer<Window> {
                 }
             }
         });
-    }
-
-    public ResourceBundle getLabels() {
-        Locale locale = (Locale) Sessions.getCurrent().getAttribute(Attributes.PREFERRED_LOCALE);
-        return ResourceBundle.getBundle("calendar", locale,
-                Calendars.class.getClassLoader());
     }
 
     @Listen("onClick = #cancelBtn")

@@ -75,11 +75,10 @@ import org.zkoss.zul.ListModels;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
+import org.apromore.zk.label.LabelSupplier;
 
 import lombok.Getter;
 import lombok.Setter;
-
-import org.apromore.plugin.portal.calendar.LabelSupplier;
 
 /**
  * Controller for handling calendar interface Corresponds to calendar.zul
@@ -145,6 +144,11 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
     private ListModelList<HolidayModel> holidayListModel;
     private ListModelList<HolidayModel> holidayCustomListModel;
     private ListModelList<Zone> zoneModel;
+
+    @Override
+    public String getBundleName() {
+        return Constants.BUNDLE_NAME;
+    }
 
     @Override
     public void doAfterCompose(Window win) throws Exception {

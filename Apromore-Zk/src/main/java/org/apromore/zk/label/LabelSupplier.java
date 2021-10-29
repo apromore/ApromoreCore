@@ -24,6 +24,7 @@ package org.apromore.zk.label;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.MissingResourceException;
 import org.zkoss.web.Attributes;
 import org.zkoss.zk.ui.Sessions;
 
@@ -38,6 +39,25 @@ public interface LabelSupplier {
     }
 
     default String getLabel(String key) {
-        return getLabels().getString(key);
+        String label;
+        label = getLabel(key, null);
+        if (label == null) {
+            label = key;
+        }
+        return label;
     }
+
+    default String getLabel(String key, String defaultVal) {
+        String label;
+        try {
+            label = getLabels().getString(key);
+        } catch (MissingResourceException e) {
+            label = null;
+        }
+        if (label == null) {
+            label = defaultVal;
+        }
+        return label;
+    }
+
 }

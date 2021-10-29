@@ -34,4 +34,6 @@ public abstract class Constants {
             .ofEpochMilli( 0L )
             .atOffset(ZoneOffset.UTC)
             .toLocalDate();
+
+    public static final String BUNDLE_NAME = "calendar";
 }
