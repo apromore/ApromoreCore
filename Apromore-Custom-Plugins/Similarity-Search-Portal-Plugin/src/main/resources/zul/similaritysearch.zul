@@ -24,7 +24,7 @@
 
 <window width="780px" closable="false" position="center" title="${arg.labels.title_text}" sclass="ap-simsearch">
 	<caption>
-        <toolbarbutton iconSclass="ap-icon ap-icon-help" href="${labels.help.searchModels}" target="_blank" />
+        <toolbarbutton iconSclass="ap-icon ap-icon-help" href="${labels.help_searchModels}" target="_blank" />
     </caption>
     <vlayout width="100%" spacing="0">
         <hbox width="100%" widths="40%,60%" vflex="1" spacing="0">
