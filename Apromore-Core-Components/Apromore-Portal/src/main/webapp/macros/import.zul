@@ -29,7 +29,7 @@
         xmlns:w="http://www.zkoss.org/2005/zk/client"
         xmlns:h="http://www.w3.org/1999/xhtml">
     <caption>
-        <toolbarbutton iconSclass="ap-icon ap-icon-help" href="https://documentation.apromore.org/theapromoreportal/uploadafile.html" target="_blank" />
+        <toolbarbutton iconSclass="ap-icon ap-icon-help" href="${labels.help_uploadFile}" target="_blank" />
     </caption>
     <tabbox>
         <tabs>
