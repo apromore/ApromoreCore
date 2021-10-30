@@ -174,15 +174,21 @@ public class PDController extends BaseController implements Composer<Component> 
     }
 
     public String getLabel(String key) {
-        String label = getLabels().getString(key);
+        String label;
+        label = getLabel(key, null);
         if (label == null) {
-            label = "";
+            label = key;
         }
         return label;
     }
 
     public String getLabel(String key, String defaultVal) {
-        String label = getLabels().getString(key);
+        String label;
+        try {
+            label = getLabels().getString(key);
+        } catch (MissingResourceException e) {
+            label = null;
+        }
         if (label == null) {
             label = defaultVal;
         }
