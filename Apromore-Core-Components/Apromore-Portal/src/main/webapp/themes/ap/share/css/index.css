@@ -60,6 +60,10 @@
     margin: 7px 0;
 }
 
+.ap-share-associated .z-listitem .z-listcell {
+    cursor: default;
+}
+
 .ap-share-win .z-listitem:not([class*="selected"]):hover > .z-listcell {
     background: transparent !important;
 }
