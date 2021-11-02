@@ -478,7 +478,7 @@ public class TemporaryCacheService {
 	    serializer.serialize(log, outputStream);
 
 	} catch (Exception e) {
-	    LOGGER.error("Unable to export log {} to input stream", name, e);
+	    LOGGER.error("Unable to export log {} to input stream", name);
 	}
     }
 
