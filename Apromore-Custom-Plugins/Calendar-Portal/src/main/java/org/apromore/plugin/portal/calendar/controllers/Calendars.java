@@ -255,7 +255,7 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
 
     @Listen("onClick = #restoreBtn")
     public void onClickRestoreBtn() {
-        calendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_PUBLISH, null,null));
+        applyCalendarForLog(logId, null);
         cleanup();
         getSelf().detach();
         String logName = selectedLog.getValue();
