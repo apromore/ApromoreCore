@@ -174,25 +174,16 @@ public class PDController extends BaseController implements Composer<Component> 
     }
 
     public String getLabel(String key) {
-        String label;
-        label = getLabel(key, null);
-        if (label == null) {
-            label = key;
-        }
-        return label;
+        return getLabel(key, key);
     }
 
     public String getLabel(String key, String defaultVal) {
-        String label;
         try {
-            label = getLabels().getString(key);
-        } catch (MissingResourceException e) {
-            label = null;
+            return getLabels().getString(key);
+        } catch (Exception e) {
+            // pass
         }
-        if (label == null) {
-            label = defaultVal;
-        }
-        return label;
+        return defaultVal;
     }
 
     // Note: this method is only valid inside onCreate() as it calls ZK current
