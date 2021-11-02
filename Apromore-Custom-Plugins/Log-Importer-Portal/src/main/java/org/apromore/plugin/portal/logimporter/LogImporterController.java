@@ -28,13 +28,37 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.opencsv.CSVWriter;
 import org.apache.commons.lang3.StringUtils;
+import org.apromore.dao.model.Log;
+import org.apromore.exception.UserNotFoundException;
+import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.PortalLoggerFactory;
+import org.apromore.service.EventLogService;
+import org.apromore.service.UserMetadataService;
+import org.apromore.service.logimporter.exception.InvalidLogMetadataException;
+import org.apromore.service.logimporter.model.LogErrorReport;
+import org.apromore.service.logimporter.model.LogMetaData;
+import org.apromore.service.logimporter.model.LogModel;
+import org.apromore.service.logimporter.services.MetaDataService;
+import org.apromore.service.logimporter.services.MetaDataUtilities;
+import org.apromore.service.logimporter.services.ParquetFactoryProvider;
+import org.apromore.service.logimporter.services.ParquetImporter;
+import org.apromore.service.logimporter.services.ParquetImporterFactory;
+import org.apromore.service.logimporter.services.legacy.LogImporter;
+import org.apromore.service.logimporter.services.legacy.LogImporterProvider;
+import org.apromore.service.logimporter.utilities.FileUtils;
+import org.apromore.util.UserMetadataTypeEnum;
+import org.apromore.zk.dialog.InputDialog;
+import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
 import org.zkoss.json.JSONObject;
 import org.zkoss.util.media.Media;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.web.Attributes;
 import org.zkoss.zk.ui.Sessions;
-import org.zkoss.zk.ui.event.*;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.InputEvent;
+import org.zkoss.zk.ui.event.MouseEvent;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
@@ -64,28 +88,6 @@ import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.TimeZone;
-
-import org.apromore.dao.model.Log;
-import org.apromore.exception.UserNotFoundException;
-import org.apromore.plugin.portal.PortalContext;
-import org.apromore.plugin.portal.PortalLoggerFactory;
-import org.apromore.service.EventLogService;
-import org.apromore.service.UserMetadataService;
-import org.apromore.service.logimporter.exception.InvalidLogMetadataException;
-import org.apromore.service.logimporter.model.LogErrorReport;
-import org.apromore.service.logimporter.model.LogMetaData;
-import org.apromore.service.logimporter.model.LogModel;
-import org.apromore.service.logimporter.services.MetaDataService;
-import org.apromore.service.logimporter.services.MetaDataUtilities;
-import org.apromore.service.logimporter.services.ParquetFactoryProvider;
-import org.apromore.service.logimporter.services.ParquetImporter;
-import org.apromore.service.logimporter.services.ParquetImporterFactory;
-import org.apromore.service.logimporter.services.legacy.LogImporter;
-import org.apromore.service.logimporter.services.legacy.LogImporterProvider;
-import org.apromore.service.logimporter.utilities.FileUtils;
-import org.apromore.util.UserMetadataTypeEnum;
-import org.apromore.zk.notification.Notification;
-import org.apromore.zk.dialog.InputDialog;
 
 /**
  * Controller for <code>csvimporter.zul</code>.
@@ -387,7 +389,9 @@ public class LogImporterController extends SelectorComposer<Window> implements C
                 }
             }
         } catch (MissingHeaderFieldsException e) {
-            Messagebox.show(getLabel("missing_fields"), getLabel("error"), Messagebox.OK,
+            Messagebox.show(getLabel("missing_fields") + System.lineSeparator() + System.lineSeparator()
+                            + e.getMessage(), getLabel("error"),
+                    Messagebox.OK,
                     Messagebox.ERROR);
         } catch (Exception e) {
             Messagebox.show(getLabel("failedExportXES"), getLabel("error"), Messagebox.OK,
@@ -1061,21 +1065,21 @@ public class LogImporterController extends SelectorComposer<Window> implements C
         String mess = getLabel("no_attribute_has_been_selected_as");
 
         if (logMetaData.getCaseIdPos() == -1) {
-            importMessage.append(mess).append(getLabel("case_id"));
+            importMessage.append(mess).append(" ").append(getLabel("case_id"));
         }
         if (logMetaData.getActivityPos() == -1) {
             if (importMessage.length() == 0) {
-                importMessage.append(mess).append(getLabel("activity"));
+                importMessage.append(mess).append(" ").append(getLabel("activity"));
             } else {
-                importMessage.append(System.lineSeparator()).append(System.lineSeparator()).append(mess)
+                importMessage.append(System.lineSeparator()).append(System.lineSeparator()).append(mess).append(" ")
                         .append(getLabel("activity"));
             }
         }
         if (logMetaData.getEndTimestampPos() == -1) {
             if (importMessage.length() == 0) {
-                importMessage.append(mess).append(getLabel("end_timestamp"));
+                importMessage.append(mess).append(" ").append(getLabel("end_timestamp"));
             } else {
-                importMessage.append(System.lineSeparator()).append(System.lineSeparator()).append(mess)
+                importMessage.append(System.lineSeparator()).append(System.lineSeparator()).append(mess).append(" ")
                         .append(getLabel("end_timestamp"));
             }
         }
