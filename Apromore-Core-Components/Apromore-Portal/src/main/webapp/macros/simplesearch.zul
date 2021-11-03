@@ -56,15 +56,15 @@
         id="previoussearchescombobox"
         autodrop="true"
         mold="rounded"
-        width="202px"
-        popupWidth="202px"
+        width="226px"
+        popupWidth="226px"
         buttonVisible="true"
         submitByEnter="true"
         tooltip="${labels.portal_search_hint}"
         placeholder="${labels.portal_search_text}"
         ca:onkeyup="Ap.search.onEnter(event)"
     />
-    <span sclass="ap-search-part-clear" id="clearSearch" width="24px">
+    <span sclass="ap-search-part-clear" id="clearSearch" width="16px">
       <n:i class="z-icon-times-circle" />
     </span>
     <button id="previoussearchesbutton"
