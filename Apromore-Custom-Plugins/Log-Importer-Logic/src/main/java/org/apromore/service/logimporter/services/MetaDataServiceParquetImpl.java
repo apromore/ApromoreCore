@@ -22,8 +22,10 @@
 package org.apromore.service.logimporter.services;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.parquet.column.ColumnDescriptor;
 import org.apache.parquet.example.data.Group;
 import org.apache.parquet.hadoop.ParquetReader;
+import org.apache.parquet.schema.LogicalTypeAnnotation;
 import org.apache.parquet.schema.MessageType;
 import org.apromore.service.logimporter.io.FileWriter;
 import org.apromore.service.logimporter.io.ParquetLocalFileReader;
@@ -32,22 +34,24 @@ import org.apromore.service.logimporter.model.ParquetLogMetaData;
 import org.apromore.service.logimporter.utilities.FileUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import static org.apromore.service.logimporter.utilities.ParquetUtilities.getHeaderFromParquet;
+import static org.apromore.service.logimporter.utilities.ParquetUtilities.getSchemaMappingFromParquet;
 
-class MetaDataServiceParquetImpl implements MetaDataService {
+public class MetaDataServiceParquetImpl implements MetaDataService {
 
+    public static final String SAMPLELOG = "samplelog";
+    public static final String PARQUET_EXT = "parquet";
     private ParquetReader<Group> reader;
 
     @Override
     public void validateLog(InputStream in, String charset) throws Exception {
         try (in) {
             //Write InputStream to a file
-            File tempFile = File.createTempFile("samplelog", "parquet");
+            File tempFile = File.createTempFile(SAMPLELOG, PARQUET_EXT);
             new FileWriter(in, tempFile).writeToFile();
             //Read Parquet file
             ParquetLocalFileReader parquetLocalFileReader = new ParquetLocalFileReader(new Configuration(true),
@@ -66,17 +70,15 @@ class MetaDataServiceParquetImpl implements MetaDataService {
 
     @Override
     public LogMetaData extractMetadata(InputStream in, String charset) throws Exception {
-        try (in) {
-            //Write InputStream to a file
-            File tempFile = File.createTempFile("samplelog", "parquet");
-            new FileWriter(in, tempFile).writeToFile();
-            //Read Parquet file
-            ParquetLocalFileReader parquetLocalFileReader = new ParquetLocalFileReader(new Configuration(true),
-                    tempFile);
-            MessageType schema = parquetLocalFileReader.getSchema();
-            return new ParquetLogMetaData(getHeaderFromParquet(schema), tempFile);
+        File tempFile = File.createTempFile(SAMPLELOG, PARQUET_EXT);
+        MessageType schema = extractSchema(in, tempFile);
 
+        List<String> header = new ArrayList<>();
+        for (ColumnDescriptor columnDescriptor : schema.getColumns()) {
+            header.add(columnDescriptor.getPath()[0]);
         }
+
+        return new ParquetLogMetaData(getHeaderFromParquet(schema), tempFile);
     }
 
     @Override
@@ -84,7 +86,7 @@ class MetaDataServiceParquetImpl implements MetaDataService {
 
         try (in) {
             //Write InputStream to a file
-            File tempFile = File.createTempFile("samplelog", "parquet");
+            File tempFile = File.createTempFile(SAMPLELOG, PARQUET_EXT);
             new FileWriter(in, tempFile).writeToFile();
 
             //Read Parquet file
@@ -108,6 +110,22 @@ class MetaDataServiceParquetImpl implements MetaDataService {
             reader.close();
         }
 
+    }
+
+    public Map<String, String[]> parseSchemaHeaderType(InputStream in) throws IOException {
+        File tempFile = File.createTempFile(SAMPLELOG, PARQUET_EXT);
+        return getSchemaMappingFromParquet(extractSchema(in, tempFile));
+    }
+
+    private MessageType extractSchema(InputStream in, File tempFile) throws IOException {
+        try (in) {
+            //Write InputStream to a file
+            new FileWriter(in, tempFile).writeToFile();
+            //Read Parquet file
+            ParquetLocalFileReader parquetLocalFileReader = new ParquetLocalFileReader(new Configuration(true),
+                    tempFile);
+            return parquetLocalFileReader.getSchema();
+        }
     }
 
     private String[] readGroup(Group g, MessageType schema) {
