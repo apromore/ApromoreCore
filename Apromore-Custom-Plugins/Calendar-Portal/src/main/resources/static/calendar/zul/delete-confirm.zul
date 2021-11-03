@@ -11,6 +11,7 @@
       The logs associated with this calendar you are about to delete will be restored to use the default calendar.
     </div>
     <listbox id="relatedLogListbox"
+             sclass="ap-calendars-delete-confirm-listbox"
              vflex="1"
              hflex="1"
              nonselectableTags="*"
