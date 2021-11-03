@@ -252,3 +252,8 @@
 .ap-calendars-win .ap-icon-log {
     filter: none;
 }
+
+.ap-calendars-delete-confirm-listbox .z-listitem .z-listcell {
+    cursor: default;
+    background-color: transparent !important;
+}
