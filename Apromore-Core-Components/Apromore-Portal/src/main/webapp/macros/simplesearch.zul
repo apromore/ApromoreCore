@@ -64,7 +64,7 @@
         placeholder="${labels.portal_search_text}"
         ca:onkeyup="Ap.search.onEnter(event)"
     />
-    <span sclass="ap-search-part-clear" id="clearSearch" width="0">
+    <span sclass="ap-search-part-clear" id="clearSearch" width="16px">
       <n:i class="z-icon-times-circle" />
     </span>
     <button id="previoussearchesbutton"
