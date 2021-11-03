@@ -413,6 +413,7 @@ public abstract class BaseListboxController extends BaseController {
 
   public void unselectAll() {
     getListModel().clearSelection();
+    getMainController().clearProcessVersions();
   }
 
   public void selectAll() {
@@ -421,6 +422,7 @@ public abstract class BaseListboxController extends BaseController {
       Object obj = model.getElementAt(i);
       getListModel().addToSelection(obj);
     }
+    getMainController().clearProcessVersions();
   }
 
   protected void importFile() throws InterruptedException {
