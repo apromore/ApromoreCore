@@ -400,7 +400,11 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
     }
 
     public void removeHoliday(HolidayModel holiday) {
-        holidayListModel.remove(holiday);
+        if (holiday.isPublic()) {
+            holidayListModel.remove(holiday);
+        } else {
+            holidayCustomListModel.remove(holiday);
+        }
     }
 
     public void addHolidays(List<HolidayModel> holidays) {
