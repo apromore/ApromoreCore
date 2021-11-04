@@ -25,7 +25,6 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.parquet.column.ColumnDescriptor;
 import org.apache.parquet.example.data.Group;
 import org.apache.parquet.hadoop.ParquetReader;
-import org.apache.parquet.schema.LogicalTypeAnnotation;
 import org.apache.parquet.schema.MessageType;
 import org.apromore.service.logimporter.io.FileWriter;
 import org.apromore.service.logimporter.io.ParquetLocalFileReader;
