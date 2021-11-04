@@ -29,10 +29,14 @@ public class StringUtilUnitTest {
         String fileName_1 = "abc*d?.=";
         String fileName_2 = "abc*abcdzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz_______________more_than_60_characters";
         String fileName_3 = "?";
+        String fileName_4 = "購買プロセス_2.";
+        String fileName_5 = "_تحياتي";
 
-        assertEquals("abcd.", StringUtil.normalizeFilename(fileName_1));
+        assertEquals("abcd_=", StringUtil.normalizeFilename(fileName_1));
         assertEquals("abcabcdzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz_______________",
                 StringUtil.normalizeFilename(fileName_2));
         assertEquals("Untitled", StringUtil.normalizeFilename(fileName_3));
+        assertEquals("購買プロセス_2", StringUtil.normalizeFilename(fileName_4));
+        assertEquals("_تحياتي", StringUtil.normalizeFilename(fileName_5));
     }
 }
