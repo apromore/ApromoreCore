@@ -96,7 +96,7 @@ subprojects {
   project(':Apromore-Boot') {
 
     bootJar.baseName = "Apromore-Core"
-    ext['user_home'] = System.properties['user.home']
+    ext['user_home'] = System.properties['user.home'].replaceAll("\\\\", "/")
     ext['version_edition'] = 'Apromore Community Edition'
 
     processResources {

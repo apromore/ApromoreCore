@@ -30,7 +30,7 @@
         closable="true"
         title="${labels.usrMgt_title_text}" apply="org.apromore.plugin.portal.useradmin.UserAdminController">
   <caption>
-    <toolbarbutton iconSclass="ap-icon ap-icon-help" href="https://documentation.apromore.org/theapromoreportal/manageusersandgroups.html" target="_blank" />
+    <toolbarbutton iconSclass="ap-icon ap-icon-help" href="${labels.help_userManagement}" target="_blank" />
   </caption>
   <script type="text/javascript" src="~./user-admin/js/index.js"></script>
   <script type="text/javascript"><![CDATA[

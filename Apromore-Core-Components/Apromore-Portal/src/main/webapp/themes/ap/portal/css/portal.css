@@ -259,8 +259,13 @@
 }
 
 .ap-container-search .ap-search-combo .ap-search-part-clear {
+  position: relative;
+  top: 0;
+  right: 39px;
+  padding: 1px 0;
   border-radius: 0 3px 3px 0;
   cursor: pointer;
+  overflow: visible;
 }
 
 .ap-container-search .z-combobox-input {
@@ -268,6 +273,7 @@
   color: grey !important;
   font-family: var(--ap-font-base);
   font-size: 14px !important;
+  padding-right: 40px;
 }
 
 .ap-container-search .z-combobox-button {

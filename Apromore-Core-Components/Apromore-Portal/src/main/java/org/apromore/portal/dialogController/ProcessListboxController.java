@@ -85,7 +85,7 @@ public class ProcessListboxController extends BaseListboxController {
         }
 
         // If there's a unique selected process, show its versions
-        if (processSummaryList.size() == 1) {
+        if (processSummaryList.size() == 1 && getListModel().getSelection().size() == 1) {
           getMainController().displayProcessVersions(processSummaryList.get(0));
         } else {
           getMainController().clearProcessVersions();

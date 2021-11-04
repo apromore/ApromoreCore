@@ -88,7 +88,7 @@
         <n:div class="ap-header-title">${labels.bpmnEditor_title_text}</n:div>
 
         <n:div class="ap-header-actions">
-            <n:a href="https://documentation.apromore.org/theapromoreportal/createoreditprocessmodel.html" target="_blank">
+            <n:a href="${labels.help_bpmnEditor}" target="_blank">
               <n:button class="ap-icon ap-icon-help"/>
             </n:a>
         </n:div>

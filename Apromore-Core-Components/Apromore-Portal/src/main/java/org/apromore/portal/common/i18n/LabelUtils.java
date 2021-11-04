@@ -33,6 +33,7 @@ public final class LabelUtils {
         Labels.reset();
         Labels.register(new LabelLocatorService(WebApps.getCurrent().getServletContext(), "zk-label"));
         Labels.register(new LabelLocatorService(WebApps.getCurrent().getServletContext(), "brand"));
+        Labels.register(new LabelLocatorService(WebApps.getCurrent().getServletContext(), "help"));
         Labels.register(new LabelLocatorService(WebApps.getCurrent().getServletContext(), "ui"));
     }
 }
