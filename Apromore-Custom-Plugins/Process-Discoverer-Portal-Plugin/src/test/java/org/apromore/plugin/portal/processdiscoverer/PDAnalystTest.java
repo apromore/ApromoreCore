@@ -111,7 +111,8 @@ public class PDAnalystTest extends TestDataSetup {
         List<CaseDetails> caseDetails = analyst.getCaseDetails();
         assertEquals(1, caseDetails.size());
         assertEquals("Case1", caseDetails.get(0).getCaseId());
-        assertEquals(null, caseDetails.get(0).getCaseIdDigit());
+        assertEquals(1.0, caseDetails.get(0).getCaseIdDigit());
+        assertEquals("Case", caseDetails.get(0).getCaseIdString());
         assertEquals(1d, caseDetails.get(0).getCaseVariantFreq(), 0);
         assertEquals("100", caseDetails.get(0).getCaseVariantFreqStr());
         assertEquals(1, caseDetails.get(0).getCaseVariantId());

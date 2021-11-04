@@ -22,30 +22,38 @@
 
 package org.apromore.plugin.portal.processdiscoverer.data;
 
+import org.apromore.apmlog.util.Util;
+
 import java.text.DecimalFormat;
+import java.util.regex.Pattern;
 
 public class CaseDetails {
 
     private final String caseId;
     private Number caseIdDigit;
+    private final String caseIdString;
     private final int caseEvents;
     private final int caseVariantId;
     private final double caseVariantFreq;
     private final String caseVariantFreqStr;
 
     private final DecimalFormat decimalFormat = new DecimalFormat("##############0.##");
+    private final Pattern nonNumPattern = Pattern.compile("[^0-9.]+");
+    private final Pattern numPattern = Pattern.compile("[0-9.]+");
 
-    private CaseDetails(String caseId, Number caseIdDigit, int caseEvents, int caseVariantId, double caseVariantFreq) {
+    private CaseDetails(String caseId, int caseEvents, int caseVariantId, double caseVariantFreq) {
         this.caseId = caseId;
-        this.caseIdDigit = caseIdDigit;
         this.caseEvents = caseEvents;
         this.caseVariantId = caseVariantId;
         this.caseVariantFreq = caseVariantFreq;
         this.caseVariantFreqStr = decimalFormat.format(100 * caseVariantFreq);
+        this.caseIdString = numPattern.matcher(caseId).replaceAll("");
+        String numberOnly = nonNumPattern.matcher(caseId).replaceAll("");
+        this.caseIdDigit = Util.isNumeric(numberOnly) ? Double.valueOf(numberOnly) : Long.MIN_VALUE;
     }
     
-    public static CaseDetails valueOf(String caseId, Number caseIdDigit, int caseEvents, int caseVariantId, double caseVariantFreq) {
-        return new CaseDetails(caseId, caseIdDigit, caseEvents, caseVariantId, caseVariantFreq);
+    public static CaseDetails valueOf(String caseId, int caseEvents, int caseVariantId, double caseVariantFreq) {
+        return new CaseDetails(caseId, caseEvents, caseVariantId, caseVariantFreq);
     }
 
     public String getCaseId () {
@@ -54,6 +62,10 @@ public class CaseDetails {
 
     public Number getCaseIdDigit() {
         return caseIdDigit;
+    }
+
+    public String getCaseIdString() {
+        return caseIdString;
     }
 
     public int getCaseEvents() {

@@ -25,7 +25,7 @@
         contentStyle="overflow:auto">
   <listbox id="caseDetailsList" rows="10" mold="paging" pageSize="100">
     <listhead sizable="true">
-      <listheader label="${arg.pdLabels.detailsCaseID_text}" sort="auto(caseIdDigit, caseId)" onCreate="self.sort(true);"/>
+      <listheader label="${arg.pdLabels.detailsCaseID_text}" sort="auto(caseIdString, caseIdDigit, caseId)" onCreate="self.sort(true);"/>
       <listheader label="${arg.pdLabels.detailsActivityInstances_text}" sort="auto(caseEvents)"/>
       <listheader label="${arg.pdLabels.detailsCaseVariantID_text}" sort="auto(caseVariantId)"/>
       <listheader label="${arg.pdLabels.detailsPercentage_text}" sort="auto(caseVariantFreq)"/>
