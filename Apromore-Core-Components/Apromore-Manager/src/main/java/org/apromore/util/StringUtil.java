@@ -17,35 +17,42 @@
  */
 package org.apromore.util;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 public class StringUtil {
-
-    private static final String FILENAME_CONSTRAINT = "[a-zA-Z0-9 \\[\\]._+\\-()]+";
 
     private StringUtil() {
         throw new IllegalStateException("String Utility class");
     }
 
+    /**
+     * Removes all illegal filename characters from a given String
+     *
+     * @param name user input filename
+     * @return normalized file name
+     * @see "http://en.wikipedia.org/wiki/Filename#Reserved_characters_and_words"
+     */
     public static String normalizeFilename(String name) {
-        StringBuilder normalized = new StringBuilder();
-        try {
-            Pattern pattern = Pattern.compile(FILENAME_CONSTRAINT);
-            Matcher matcher = pattern.matcher(name);
 
-            while (matcher.find()) {
-                normalized.append(matcher.group());
-            }
-        } catch (Exception e) {
-            // ignore exception
-        } finally {
-            if (normalized.length() == 0) {
-                normalized = new StringBuilder("Untitled");
-            } else if (normalized.length() > 60) {
-                normalized = new StringBuilder(normalized.substring(0, 59));
-            }
+        String normalized = name.trim();
+
+        // remove illegal characters
+        normalized = normalized.replaceAll(
+                "[\\/|\\\\|\\*|\\:|\\||\"|\'|\\<|\\>|\\{|\\}|\\?|\\%|,]",
+                "");
+
+        // replace . dots with _ and remove the _ if at the end
+        normalized = normalized.replaceAll("\\.", "_");
+        if (normalized.endsWith("_")) {
+            normalized = normalized.substring(0, normalized.length() - 1);
         }
-        return normalized.toString();
+
+        // replace whitespace characters with _
+        normalized = normalized.replaceAll("\\s+", "_");
+
+        if (normalized.length() == 0) {
+            normalized = "Untitled";
+        } else if (normalized.length() > 60) {
+            normalized = normalized.substring(0, 59);
+        }
+        return normalized;
     }
 }
