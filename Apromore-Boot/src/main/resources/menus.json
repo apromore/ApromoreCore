@@ -124,5 +124,106 @@
         }
       ]
     }
+    ,
+    {
+      "id": "folder-popup-menu",
+      "groups": [
+        {
+          "id": "FOLDER_POPUP",
+          "items": [
+            {
+              "id": "CUT"
+            },
+            {
+              "id": "COPY"
+            },
+            {
+              "id": "PASTE"
+            },
+            {
+              "id": "SEPARATOR"
+            },
+            {
+              "id": "SHARE"
+            }
+          ]
+        }
+      ]
+    }
+    
+     ,
+    {
+      "id": "log-popup-menu",
+      "groups": [
+        {
+          "id": "LOG_POPUP",
+          "items": [
+            {
+              "id": "org.apromore.plugin.portal.logfilteree.LogFilterEEPlugin"
+            }
+            ,
+            {
+              "id": "org.apromore.plugin.portal.processdiscoverer.plugins.PDFrequencyPlugin"
+            }
+            ,
+            {
+              "id": "SEPARATOR"
+            },
+            {
+              "id": "CUT"
+            },
+            {
+              "id": "COPY"
+            },
+            {
+              "id": "PASTE"
+            },
+            {
+              "id": "SEPARATOR"
+            },
+            {
+              "id": "SHARE"
+            }
+          ]
+        }
+      ]
+    }
+         ,
+    {
+      "id": "process-popup-menu",
+      "groups": [
+        {
+          "id": "PROCESS_POPUP",
+          "items": [
+            {
+              "id": "org.apromore.plugin.portal.file.EditSelectionPlugin"
+            }
+            ,
+            {
+              "id": "org.apromore.plugin.similaritysearch.portal.SimilaritySearchPlugin"
+            }
+            ,
+            {
+              "id": "SEPARATOR"
+            },
+            {
+              "id": "CUT"
+            },
+            {
+              "id": "COPY"
+            },
+            {
+              "id": "PASTE"
+            },
+            {
+              "id": "SEPARATOR"
+            },
+            {
+              "id": "SHARE"
+            }
+          ]
+        }
+      ]
+    }
   ]
 }
