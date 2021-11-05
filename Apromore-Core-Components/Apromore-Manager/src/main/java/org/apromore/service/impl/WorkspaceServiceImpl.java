@@ -71,6 +71,7 @@ import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.dao.model.Storage;
 import org.apromore.dao.model.User;
 import org.apromore.dao.model.Usermetadata;
+import org.apromore.dao.model.UsermetadataLog;
 import org.apromore.dao.model.Workspace;
 import org.apromore.exception.NotAuthorizedException;
 import org.apromore.service.EventLogFileService;
@@ -81,6 +82,7 @@ import org.apromore.service.model.FolderTreeNode;
 import org.apromore.storage.StorageClient;
 import org.apromore.storage.StorageType;
 import org.apromore.storage.factory.StorageManagementFactory;
+import org.apromore.util.UserMetadataTypeEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -506,6 +508,17 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         newLog.setStorage(storageRepository.saveAndFlush(storage));
       }
     }
+
+    // Link old_log's perspective and schema mapping metadata to new log, since they are immutable once created
+    Set<Usermetadata> usermetadataSet = currentLog.getUsermetadataSet();
+    for (Usermetadata u : usermetadataSet) {
+      Set<Usermetadata> us = newLog.getUsermetadataSet();
+      if (UserMetadataTypeEnum.CSV_IMPORTER.getUserMetadataTypeId().equals(u.getUsermetadataType().getId())
+      || UserMetadataTypeEnum.PERSPECTIVE_TAG.getUserMetadataTypeId().equals(u.getUsermetadataType().getId())) {
+        us.add(u);
+      }
+    }
+    usermetadataRepo.saveAll(usermetadataSet);
 
     // Persist
     try {
