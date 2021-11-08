@@ -72,11 +72,6 @@ public class MetaDataServiceParquetImpl implements MetaDataService {
         File tempFile = File.createTempFile(SAMPLELOG, PARQUET_EXT);
         MessageType schema = extractSchema(in, tempFile);
 
-        List<String> header = new ArrayList<>();
-        for (ColumnDescriptor columnDescriptor : schema.getColumns()) {
-            header.add(columnDescriptor.getPath()[0]);
-        }
-
         return new ParquetLogMetaData(getHeaderFromParquet(schema), tempFile);
     }
 
