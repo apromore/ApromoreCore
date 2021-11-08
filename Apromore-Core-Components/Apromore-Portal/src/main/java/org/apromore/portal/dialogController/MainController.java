@@ -91,6 +91,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.Composer;
@@ -127,6 +128,9 @@ public class MainController extends BaseController implements MainControllerInte
     private static final String WELCOME_TEXT = "Welcome %s. Release notes (%s)"; // Welcome %s.
 
     private static final String KEY_ALIAS = "apseckey";
+    private static final int  KEY_COPY= 67;
+    private static final int KEY_PASTE = 86;
+    private static final int KEY_CUT = 88;
 
     private PortalContext portalContext;
     private MenuController menu;
@@ -278,6 +282,25 @@ public class MainController extends BaseController implements MainControllerInte
 	    switchToProcessSummaryView();
 	    UserSessionManager.setMainController(this);
 	    pagingandbuttons.setVisible(true);
+	    
+	    mainW.setCtrlKeys("^c^x^v%c%x%v"); //Accepted Ctrl Key Copy, Cut and Paste (Mac,Windows and Linux)
+	    
+		mainW.addEventListener(Events.ON_CTRL_KEY, new EventListener<KeyEvent>() {
+			@Override
+			public void onEvent(KeyEvent keyEvent) throws Exception {
+				switch (keyEvent.getKeyCode()) {
+				case KEY_COPY:
+					baseListboxController.copy();
+					break;
+				case KEY_PASTE:
+					baseListboxController.paste();
+					break;
+				case KEY_CUT:
+					baseListboxController.cut();
+					break;
+				}
+			}
+		});
 
 	} catch (final Exception e) {
 	    LOGGER.error("Repository NOT available", e);
@@ -436,6 +459,8 @@ public class MainController extends BaseController implements MainControllerInte
 	        + (model.getTotalCount() > 1 ? " elements." : " element."));
 
 	loadWorkspace(false);
+	
+	this.baseListboxController.getListBox().setFocus(true); //To handle event on empty list
     }
 
     /**
