@@ -25,11 +25,10 @@ import org.apache.parquet.column.ColumnDescriptor;
 import org.apache.parquet.schema.LogicalTypeAnnotation;
 import org.apache.parquet.schema.MessageType;
 import org.apache.parquet.schema.MessageTypeParser;
+import org.apromore.service.logimporter.model.ParquetColumnType;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 public class ParquetUtilities {
     public static MessageType createParquetSchema(String[] header) {
@@ -54,20 +53,19 @@ public class ParquetUtilities {
         return header;
     }
 
-    public static Map<String, String[]> getSchemaMappingFromParquet(MessageType schema) {
-        Map<String, String[]> schemaMap = new LinkedHashMap<>();
-
+    public static List<ParquetColumnType> getSchemaMappingFromParquet(MessageType schema) {
+        List<ParquetColumnType> parquetColumnTypes = new ArrayList<>();
         for (ColumnDescriptor columnDescriptor : schema.getColumns()) {
-            String[] columnType = new String[2];
-            columnType[0] = columnDescriptor.getPrimitiveType().getPrimitiveTypeName().toString();
+            ParquetColumnType columnType = new ParquetColumnType(columnDescriptor.getPath()[0]);
+            columnType.setPrimitiveType(columnDescriptor.getPrimitiveType().getPrimitiveTypeName().toString());
             LogicalTypeAnnotation logicalType = columnDescriptor.getPrimitiveType().getLogicalTypeAnnotation();
             if (logicalType != null) {
-                columnType[1] = logicalType.toString();
+                columnType.setLogicalType(logicalType.toString());
             }
-            schemaMap.put(columnDescriptor.getPath()[0], columnType);
+            parquetColumnTypes.add(columnType);
         }
 
-        return schemaMap;
+        return parquetColumnTypes;
     }
 
     private static String formatColumn(String column) {
