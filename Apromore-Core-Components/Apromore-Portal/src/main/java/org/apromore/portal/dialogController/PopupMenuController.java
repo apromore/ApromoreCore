@@ -72,14 +72,12 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 	@Override
 	public void doAfterCompose(Menupopup menuPopup) {
 		try {
-			String popupTYpe = (String) Executions.getCurrent().getArg().get("POPUP_TYPE");
-			if (!PortalPluginResolver.resolve().isEmpty()) {
-				if ("FOLDER".equals(popupTYpe)) {
-					loadPopupMenu(menuPopup, "folder-popup-menu");
-				} else if ("PROCESS".equals(popupTYpe)) {
-					loadPopupMenu(menuPopup, "process-popup-menu");
-				} else if ("LOG".equals(popupTYpe)) {
-					loadPopupMenu(menuPopup, "log-popup-menu");
+			String popupType = (String) Executions.getCurrent().getArg().get("POPUP_TYPE");
+			if (popupType != null && !PortalPluginResolver.resolve().isEmpty()) {
+				switch (popupType) {
+				case "FOLDER":  loadPopupMenu(menuPopup, "folder-popup-menu"); break;
+				case "PROCESS": loadPopupMenu(menuPopup, "process-popup-menu"); break;
+				case "LOG":     loadPopupMenu(menuPopup, "log-popup-menu"); break;
 				}
 			}
 		} catch (Exception ex) {
@@ -88,23 +86,15 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 	}
 
 	private void addMenuitem(Menupopup popup, MenuItem menuItem) {
-		String itemId = menuItem.getId();
-		if (PluginCatalog.PLUGIN_CUT.equals(itemId)) {
-			addCutMenuItem(popup);
-		} else if (PluginCatalog.PLUGIN_COPY.equals(itemId)) {
-			addCopyMenuItem(popup);
-		} else if (PluginCatalog.PLUGIN_PASTE.equals(itemId)) {
-			addPasteMenuItem(popup);
-		} else if (PluginCatalog.PLUGIN_SHARE.equals(itemId)) {
-			addShareMenuItem(popup);
-		} else if (PluginCatalog.ITEM_SEPARATOR.equals(itemId)) {
-			if (!(popup.getLastChild() instanceof Menuseparator)) {
-				Menuseparator separator = new Menuseparator();
-				popup.appendChild(separator);
-			}
-		} else {
-			addPluginMenuitem(popup, menuItem);
-		}
+		switch (menuItem.getId()) {
+		case PluginCatalog.PLUGIN_CUT:     addCutMenuItem(popup); return;
+		case PluginCatalog.PLUGIN_COPY:    addCopyMenuItem(popup); return;
+		case PluginCatalog.PLUGIN_PASTE:   addPasteMenuItem(popup); return;
+		case PluginCatalog.PLUGIN_SHARE:   addShareMenuItem(popup); return;
+		case PluginCatalog.ITEM_SEPARATOR: addMenuSeparator(popup); return;
+                }
+
+		addPluginMenuitem(popup, menuItem);  // handle null or unknown menuitem id
 	}
 
 	private void addPluginMenuitem(Menupopup popup, MenuItem menuItem) {
@@ -165,6 +155,13 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 		item.setImage("~./themes/ap/common/img/icons/share.svg");
 		item.addEventListener(ON_CLICK, event -> getBaseListboxController().share());
 		popup.appendChild(item);
+	}
+
+	private void addMenuSeparator(Menupopup popup) {
+		if (!(popup.getLastChild() instanceof Menuseparator)) {
+			Menuseparator separator = new Menuseparator();
+			popup.appendChild(separator);
+		}
 	}
 
 	public void loadPopupMenu(Menupopup menupop, String menuId) {

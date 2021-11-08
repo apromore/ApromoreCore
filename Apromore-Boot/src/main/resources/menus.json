@@ -123,8 +123,7 @@
           ]
         }
       ]
-    }
-    ,
+    },
     {
       "id": "folder-popup-menu",
       "groups": [
@@ -149,9 +148,7 @@
           ]
         }
       ]
-    }
-    
-     ,
+    },
     {
       "id": "log-popup-menu",
       "groups": [
@@ -160,12 +157,10 @@
           "items": [
             {
               "id": "org.apromore.plugin.portal.logfilteree.LogFilterEEPlugin"
-            }
-            ,
+            },
             {
               "id": "org.apromore.plugin.portal.processdiscoverer.plugins.PDFrequencyPlugin"
-            }
-            ,
+            },
             {
               "id": "SEPARATOR"
             },
@@ -187,8 +182,7 @@
           ]
         }
       ]
-    }
-         ,
+    },
     {
       "id": "process-popup-menu",
       "groups": [
@@ -197,12 +191,10 @@
           "items": [
             {
               "id": "org.apromore.plugin.portal.file.EditSelectionPlugin"
-            }
-            ,
+            },
             {
               "id": "org.apromore.plugin.similaritysearch.portal.SimilaritySearchPlugin"
-            }
-            ,
+            },
             {
               "id": "SEPARATOR"
             },
