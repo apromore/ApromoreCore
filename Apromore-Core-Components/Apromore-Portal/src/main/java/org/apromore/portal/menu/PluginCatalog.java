@@ -46,6 +46,7 @@ public abstract class PluginCatalog {
     public static final String PLUGIN_CUT = "CUT";
     public static final String PLUGIN_COPY = "COPY";
     public static final String PLUGIN_PASTE = "PASTE";
+    public static final String PLUGIN_SHARE = "SHARE";
     public static final String PLUGIN_CREATE_FOLDER = "org.apromore.plugin.portal.file.CreateFolderPlugin";
     public static final String PLUGIN_RENAME = "org.apromore.plugin.portal.file.EditSelectionMetadataPlugin";
     public static final String PLUGIN_DELETE = "org.apromore.plugin.portal.file.DeleteSelectionPlugin";

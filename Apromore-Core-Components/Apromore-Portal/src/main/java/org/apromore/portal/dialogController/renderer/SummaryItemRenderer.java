@@ -25,15 +25,16 @@
 package org.apromore.portal.dialogController.renderer;
 
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
+import java.util.Map;
 
+import org.apromore.commons.datetime.DateTimeUtils;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.PortalProcessAttributePlugin;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.common.Constants;
-import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.model.FolderSummaryType;
 import org.apromore.portal.model.FolderType;
@@ -41,11 +42,10 @@ import org.apromore.portal.model.LogSummaryType;
 import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.VersionSummaryType;
-import org.apromore.commons.datetime.DateTimeUtils;
 import org.slf4j.Logger;
-import org.zkoss.util.resource.Labels;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -56,6 +56,7 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
+import org.zkoss.zul.Menupopup;
 
 
 public class SummaryItemRenderer implements ListitemRenderer {
@@ -132,6 +133,17 @@ public class SummaryItemRenderer implements ListitemRenderer {
                 return nativeType;
             }
         });
+        
+        listItem.addEventListener(Events.ON_RIGHT_CLICK, new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+            	Map args = new HashMap();
+          	    args.put("POPUP_TYPE", "PROCESS");
+            	Menupopup menupopup = (Menupopup)Executions.createComponents("~./macros/popupMenu.zul", null, args);
+            	menupopup.open(event.getTarget(), "at_pointer");
+            }
+
+        });
     }
 
     /* Used to render the process summary information into the list box. */
@@ -158,6 +170,17 @@ public class SummaryItemRenderer implements ListitemRenderer {
                 LOGGER.info("Open log {} (id {})", log.getName(), log.getId());
                 mainController.visualizeLog();
             }
+        });
+        
+        listItem.addEventListener(Events.ON_RIGHT_CLICK, new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+            	Map args = new HashMap();
+          	    args.put("POPUP_TYPE", "LOG");
+            	Menupopup menupopup = (Menupopup)Executions.createComponents("~./macros/popupMenu.zul", null, args);
+            	menupopup.open(event.getTarget(), "at_pointer");
+            }
+
         });
     }
 
@@ -240,6 +263,18 @@ public class SummaryItemRenderer implements ListitemRenderer {
                 mainController.reloadSummaries2();
                 mainController.currentFolderChanged();
             }
+        });
+        
+        listitem.addEventListener(Events.ON_RIGHT_CLICK, new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+            	Map args = new HashMap();
+          	    args.put("POPUP_TYPE", "FOLDER");
+            	Menupopup menupopup = (Menupopup)Executions.createComponents("~./macros/popupMenu.zul", null, args);
+            	menupopup.open(event.getTarget(), "at_pointer");
+                
+            }
+
         });
     }
 
