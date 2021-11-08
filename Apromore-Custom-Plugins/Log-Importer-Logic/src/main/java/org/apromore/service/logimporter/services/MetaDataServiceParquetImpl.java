@@ -29,6 +29,7 @@ import org.apache.parquet.schema.MessageType;
 import org.apromore.service.logimporter.io.FileWriter;
 import org.apromore.service.logimporter.io.ParquetLocalFileReader;
 import org.apromore.service.logimporter.model.LogMetaData;
+import org.apromore.service.logimporter.model.ParquetColumnType;
 import org.apromore.service.logimporter.model.ParquetLogMetaData;
 import org.apromore.service.logimporter.utilities.FileUtils;
 
@@ -108,7 +109,7 @@ public class MetaDataServiceParquetImpl implements MetaDataService {
 
     }
 
-    public Map<String, String[]> parseSchemaHeaderType(InputStream in) throws IOException {
+    public List<ParquetColumnType> parseSchemaHeaderType(InputStream in) throws IOException {
         File tempFile = File.createTempFile(SAMPLELOG, PARQUET_EXT);
         return getSchemaMappingFromParquet(extractSchema(in, tempFile));
     }
