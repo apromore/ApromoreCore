@@ -21,18 +21,6 @@
  */
 package org.apromore.service.impl;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.lang.management.ManagementFactory;
-import java.lang.management.MemoryMXBean;
-import java.lang.management.MemoryUsage;
-import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Objects;
-
-import javax.annotation.Resource;
-
 import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.APMLogService;
 import org.apromore.cache.ehcache.CacheRepository;
@@ -63,6 +51,17 @@ import org.deckfour.xes.out.XesXmlSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+
+import javax.annotation.Resource;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryMXBean;
+import java.lang.management.MemoryUsage;
+import java.text.SimpleDateFormat;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Objects;
 
 public class TemporaryCacheService {
 
@@ -473,13 +472,13 @@ public class TemporaryCacheService {
 
     public void exportToInputStream(XLog log, String name, XSerializer serializer) {
 
-        try (OutputStream outputStream = storageFactory.getStorageClient(config.getStoragePath())
-                                                       .getOutputStream(logPrefix, name)) {
-	    serializer.serialize(log, outputStream);
-
-	} catch (Exception e) {
-	    LOGGER.error("Unable to export log {} to input stream", name);
+		try {
+			OutputStream outputStream =
+					storageFactory.getStorageClient(config.getStoragePath()).getOutputStream(logPrefix, name);
+			serializer.serialize(log, outputStream);
+		} catch (Exception e) {
+			LOGGER.error("Unable to export log {} to input stream", name, e);
+		}
 	}
-    }
 
 }

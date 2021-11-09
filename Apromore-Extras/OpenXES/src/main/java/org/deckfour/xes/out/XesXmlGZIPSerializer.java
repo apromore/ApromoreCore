@@ -59,12 +59,12 @@
  */
 package org.deckfour.xes.out;
 
+import org.deckfour.xes.model.XLog;
+
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.zip.GZIPOutputStream;
-
-import org.deckfour.xes.model.XLog;
 
 /**
  * XES compressed XML serialization for the XES format.
@@ -107,13 +107,11 @@ public class XesXmlGZIPSerializer extends XesXmlSerializer {
 	 */
 	@Override
 	public void serialize(XLog log, OutputStream out) throws IOException {
-		GZIPOutputStream gzos = new GZIPOutputStream(out);
-		BufferedOutputStream bos = new BufferedOutputStream(gzos);
-		super.serialize(log, bos);
-		bos.flush();
-		gzos.flush();
-		bos.close();
-		gzos.close();
+
+		try (GZIPOutputStream gzos = new GZIPOutputStream(out);
+			 BufferedOutputStream bos = new BufferedOutputStream(gzos)) {
+			super.serialize(log, bos);
+		}
 	}
 	
 	/**
