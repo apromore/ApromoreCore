@@ -35,7 +35,7 @@ public class MembershipType {
     protected Boolean locked;
     protected Boolean approved;
     protected String password;
-    protected String passwordSalt;
+    protected String passwordSalt = "";
     protected String passwordQuestion;
     protected String passwordAnswer;
     protected Integer failedLogins;
@@ -165,7 +165,7 @@ public class MembershipType {
      * Gets the value of the passwordSalt property.
      * 
      * @return
-     *     possible object is
+     *     possible object is a non-<code>null</code>
      *     {@link String }
      *     
      */
@@ -178,11 +178,11 @@ public class MembershipType {
      * 
      * @param value
      *     allowed object is
-     *     {@link String }
+     *     {@link String }; passing <code>null</code> treated as the empty string
      *     
      */
     public void setPasswordSalt(String value) {
-        this.passwordSalt = value;
+        this.passwordSalt = value == null ? "" : value;
     }
 
     /**
