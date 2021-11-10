@@ -193,6 +193,8 @@ if(!Apromore.I18N.SimulationPanel) Apromore.I18N.SimulationPanel = {};
 Apromore.I18N.SimulationPanel.group = "シミュレーション";
 Apromore.I18N.SimulationPanel.toggleSimulationDrawer = "シミュレーションパネルの切り替え";
 Apromore.I18N.SimulationPanel.toggleSimulationDrawerDesc = "シミュレーションパラメータパネルの切り替え";
+Apromore.I18N.SimulationPanel.simulateModel = "モデルのシミュレーション";
+Apromore.I18N.SimulationPanel.simulateModelDesc = "モデルのシミュレーション";
 
 /** New Language Properties: 08.12.2008 */
 

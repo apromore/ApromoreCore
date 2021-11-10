@@ -2,6 +2,7 @@ import savePlugin from './apromoreSave';
 import exportPlugin from './export';
 import pdfPlugin from './pdf';
 import sharePlugin from './share';
+import simModelPlugin from './simulateModel';
 import simPanelPlugin from './simulationPanel';
 import toolbarPlugin from './toolbar';
 import undoPlugin from './undo';
@@ -13,6 +14,7 @@ let Plugins = {
     Export: exportPlugin,
     File: pdfPlugin,
     Share: sharePlugin,
+    SimulateModel: simModelPlugin,
     SimulationPanel: simPanelPlugin,
     Toolbar: toolbarPlugin,
     Undo: undoPlugin,
