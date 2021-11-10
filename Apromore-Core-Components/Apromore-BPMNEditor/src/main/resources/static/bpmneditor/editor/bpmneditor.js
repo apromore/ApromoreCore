@@ -90153,7 +90153,7 @@ class SimulationPanel {
             'description': window.Apromore.I18N.SimulationPanel.toggleSimulationDrawerDesc,
             'index': 1,
             'groupOrder': 3,
-            'icon': _config__WEBPACK_IMPORTED_MODULE_0__["default"].PATH + "images/ap/simulate-model.svg",
+            'icon': _config__WEBPACK_IMPORTED_MODULE_0__["default"].PATH + "images/ap/parameters.svg",
             isEnabled : function(){ return facade.useSimulationPanel}.bind(this),
         });
     };
