@@ -42,7 +42,7 @@ public class AttributeLogGraphTest extends DataSetup {
         
         AttributeLogGraph graph = attLog.getGraphView();
         graph.sortNodesAndArcs(MeasureType.FREQUENCY, MeasureAggregation.TOTAL);
-        graph.buildSubGraphs(false);
+        graph.buildSubGraphs(false, Integer.MAX_VALUE, Integer.MAX_VALUE);
         
         Assert.assertEquals(IntSets.mutable.of(0,1,2,3,4,5), graph.getNodes());
         Assert.assertEquals(IntSets.mutable.of(0,1,2,8,12,15,17,20,24), graph.getArcs());
@@ -277,7 +277,7 @@ public class AttributeLogGraphTest extends DataSetup {
         AttributeLog attLog = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName(), getAllDayAllTimeCalendar());
         AttributeLogGraph graph = attLog.getGraphView();
         graph.sortNodesAndArcs(MeasureType.FREQUENCY, MeasureAggregation.TOTAL);
-        graph.buildSubGraphs(false);
+        graph.buildSubGraphs(false, Integer.MAX_VALUE, Integer.MAX_VALUE);
         
         FilteredGraph nodeBasedGraph0 = graph.getSubGraphs().get(0);
         Assert.assertEquals(IntSets.mutable.of(0, 1, 2, 3, 4, 5), nodeBasedGraph0.getNodes());
@@ -317,7 +317,7 @@ public class AttributeLogGraphTest extends DataSetup {
         AttributeLog attLog = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName(), getAllDayAllTimeCalendar());
         AttributeLogGraph graph = attLog.getGraphView();
         graph.sortNodesAndArcs(MeasureType.DURATION, MeasureAggregation.MEAN);
-        graph.buildSubGraphs(false);
+        graph.buildSubGraphs(false, Integer.MAX_VALUE, Integer.MAX_VALUE);
         
         FilteredGraph nodeBasedGraph0 = graph.getSubGraphs().get(0);
         Assert.assertEquals(IntSets.mutable.of(0, 1, 2, 3, 4, 5), nodeBasedGraph0.getNodes());
@@ -359,7 +359,7 @@ public class AttributeLogGraphTest extends DataSetup {
         AttributeLog attLog = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName(), getAllDayAllTimeCalendar());
         AttributeLogGraph graph = attLog.getGraphView();
         graph.sortNodesAndArcs(MeasureType.FREQUENCY, MeasureAggregation.TOTAL);
-        graph.buildSubGraphs(false);
+        graph.buildSubGraphs(false, Integer.MAX_VALUE, Integer.MAX_VALUE);
         
         // Add invalid node: node not exist in the matrix graph
         boolean addResult = graph.addNode(100);
@@ -383,7 +383,7 @@ public class AttributeLogGraphTest extends DataSetup {
         
         AttributeLogGraph graph = attLog.getGraphView();
         graph.sortNodesAndArcs(MeasureType.FREQUENCY, MeasureAggregation.TOTAL);
-        graph.buildSubGraphs(false);
+        graph.buildSubGraphs(false, Integer.MAX_VALUE, Integer.MAX_VALUE);
         
         Assert.assertEquals(IntSets.mutable.of(0,1,2,3,4,5,6), graph.getNodes());
         Assert.assertEquals(IntSets.mutable.of(1,3,4,9,20,23,25,30,31,35), graph.getArcs());
@@ -732,7 +732,7 @@ public class AttributeLogGraphTest extends DataSetup {
         Assert.assertEquals(Constants.START_NAME, graph.getNodeName(3));
         Assert.assertEquals(Constants.END_NAME, graph.getNodeName(4));
         
-        graph.buildSubGraphs(false);
+        graph.buildSubGraphs(false, Integer.MAX_VALUE, Integer.MAX_VALUE);
         
         //Each node-based subgraph has itself as the only subgraph
         Assert.assertEquals(1, graph.getSubGraphs().get(0).getSubGraphs().size());

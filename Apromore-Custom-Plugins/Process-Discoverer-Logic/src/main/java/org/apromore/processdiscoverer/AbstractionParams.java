@@ -55,6 +55,9 @@ public class AbstractionParams {
 	private MeasureType secondaryType;
 	private MeasureAggregation secondaryAggregation;
 	private MeasureRelation secondaryRelation;
+
+	private int maxNumberOfNodes;
+	private int maxNumberOfArcs;
 	
 	private Abstraction correspondingDFG;
 	
@@ -64,6 +67,7 @@ public class AbstractionParams {
 							MeasureType fixedType, MeasureAggregation fixedAggregation, MeasureRelation fixedRelation,
 							MeasureType primaryType, MeasureAggregation primaryAggregation, MeasureRelation primaryRelation,
 							MeasureType secondaryType, MeasureAggregation secondaryAggregation, MeasureRelation secondaryRelation,
+							int maxNumberOfNodes, int maxNumberOfArcs,
 							Abstraction correspondingDFG) {
 		this.IndexableAttribute = IndexableAttribute;
 		this.nodeSelectThreshold = nodeSelectThreshold;
@@ -86,6 +90,9 @@ public class AbstractionParams {
 		this.secondaryType = secondaryType;
 		this.secondaryAggregation= secondaryAggregation;
 		this.secondaryRelation = secondaryRelation;
+
+		this.maxNumberOfNodes = maxNumberOfNodes;
+		this.maxNumberOfArcs = maxNumberOfArcs;
 		
 		this.correspondingDFG = correspondingDFG;
 	}
@@ -179,6 +186,22 @@ public class AbstractionParams {
 	public void setSecondary(boolean hasSecondary) {
 		this.secondary = hasSecondary;
 	}
+
+	public int getMaxNumberOfNodes() {
+		return this.maxNumberOfNodes;
+	}
+
+	public void setMaxNumberOfNodes(int maxNumberOfNodes) {
+		this.maxNumberOfNodes = maxNumberOfNodes;
+	}
+
+	public int getMaxNumberOfArcs() {
+		return this.maxNumberOfArcs;
+	}
+
+	public void setMaxNumberOfArcs(int maxNumberOfArcs) {
+		this.maxNumberOfArcs = maxNumberOfArcs;
+	}
 	
 	// Corresponding DFG is the related one of the to-be DFG
 	// For example: BPMN diagram will be created from a graph, or
@@ -215,6 +238,9 @@ public class AbstractionParams {
 	            this.getSecondaryType(),
 	            this.getSecondaryAggregation(),
 	            this.getSecondaryRelation(),
+
+				this.getMaxNumberOfNodes(),
+				this.getMaxNumberOfArcs(),
 	            
 	            this.getCorrepondingDFG());
 	}

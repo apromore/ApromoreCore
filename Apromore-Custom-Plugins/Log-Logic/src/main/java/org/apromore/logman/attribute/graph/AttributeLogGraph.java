@@ -474,9 +474,11 @@ public class AttributeLogGraph extends WeightedAttributeGraph {
      * Selecting nodes and arcs is done on a sorted list of nodes and arcs ({@link AttributeLogGraph#sortNodesAndArcs})
      * The selection can be made from the start of the list and forward or from the end of the list and backward.
      * 
-     * @param invertedElementSelection: if true, nodes and arcs are selected from the end of the list and backward
+     * @param invertedElementSelection if true, nodes and arcs are selected from the end of the list and backward
+     * @param maxNumberOfNodes maximum number of nodes allowed in each subgraph
+     * @param maxNumberOfArcs maximum number of arcs allowed in each subgraph
      */
-    public void buildSubGraphs(boolean invertedElementSelection) {
+    public void buildSubGraphs(boolean invertedElementSelection, int maxNumberOfNodes, int maxNumberOfArcs) {
         LOGGER.debug("Total Number of nodes: " + this.getNodes().size());
         LOGGER.debug("Total Number of arcs: " + this.getArcs().size());
         
@@ -501,10 +503,8 @@ public class AttributeLogGraph extends WeightedAttributeGraph {
         }
         
         // Build arc-based graphs from the smallest one first
-        NodeBasedGraph preGraph = null;
         for (FilteredGraph nodeGraph: subGraphs.toReversed()) {
-            ((NodeBasedGraph)nodeGraph).buildSubGraphs(preGraph, this.arcInverted);
-            preGraph = (NodeBasedGraph)nodeGraph;
+            ((NodeBasedGraph)nodeGraph).buildSubGraphs(this.arcInverted, maxNumberOfArcs);
         }
         
         LOGGER.debug("Build all graphs: " + (System.currentTimeMillis() - timer) + " ms.");
