@@ -1,5 +1,5 @@
 group = 'org.apromore.plugin'
-version = '7.21-SNAPSHOT'
+version = '8.0'
 apply plugin : "org.springframework.boot"
 apply plugin: "com.gorylenko.gradle-git-properties"
 apply plugin: 'application'
