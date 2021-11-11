@@ -290,17 +290,17 @@ public class SummaryItemRenderer implements ListitemRenderer {
             public void onEvent(DropEvent event) throws Exception {
             	try {
             	Listitem droppedToItem = (Listitem)event.getTarget();
-            	Object dropedObject=null;
+            	Object droppedObject=null;
             	if(event.getDragged() instanceof Listitem) {
             		Listitem draggedItem = (Listitem ) event.getDragged();
-            		dropedObject=draggedItem.getValue();
+            		droppedObject=draggedItem.getValue();
             	}else if(event.getDragged() instanceof Treerow) {
             		FolderTreeNode draggedItem = ((Treeitem) event.getDragged().getParent()).getValue();
-            		dropedObject=draggedItem.getData();
+            		droppedObject=draggedItem.getData();
             	}
             	
-            	if(droppedToItem.getValue()!=null && droppedToItem.getValue() instanceof FolderType && dropedObject!=null) {
-            		mainController.getBaseListboxController().drop(droppedToItem.getValue(), dropedObject, mainController.getPortalSession().getCurrentFolder());
+            	if(droppedToItem.getValue()!=null && droppedToItem.getValue() instanceof FolderType && droppedObject!=null) {
+            		mainController.getBaseListboxController().drop(droppedToItem.getValue(), droppedObject, mainController.getPortalSession().getCurrentFolder());
             	}
             	}catch(Exception e) {
             		LOGGER.error("Error Occured in Drag and Drop",e);

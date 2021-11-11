@@ -622,12 +622,12 @@ public abstract class BaseListboxController extends BaseController {
     refreshContent();
   }
   
-	public void drop(FolderType dropToFolder,Object droppObject, FolderType currentFolder) throws Exception {
-		if (droppObject instanceof FolderType && dropToFolder.getId().equals(((FolderType)droppObject).getId())) {
+	public void drop(FolderType dropToFolder,Object dropObject, FolderType currentFolder) throws Exception {
+		if (dropObject instanceof FolderType && dropToFolder.getId().equals(((FolderType)dropObject).getId())) {
 			Notification.error(Labels.getLabel("portal_source_destination_folder_notsame_message"));
 			return;
 		}
-		copyAndPasteController.drop(Set.of(droppObject), 1, dropToFolder);
+		copyAndPasteController.drop(Set.of(dropObject), 1, dropToFolder);
 		refreshContent();
 	}
 

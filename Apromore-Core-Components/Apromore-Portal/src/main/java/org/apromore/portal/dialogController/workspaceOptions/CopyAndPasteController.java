@@ -369,7 +369,7 @@ public class CopyAndPasteController extends BaseController {
 			} catch (Exception e) {
 				Messagebox.show(Labels.getLabel("portal_failedCut_message"), "Apromore", Messagebox.OK,
 						Messagebox.ERROR);
-				LOGGER.error(e.getMessage());
+				LOGGER.error("Unable to perform Cut", e);
 			}
 		}
 	   
@@ -382,7 +382,7 @@ public class CopyAndPasteController extends BaseController {
 			}
 		} catch (Exception e) {
 			Messagebox.show(Labels.getLabel("portal_failedPaste_message"), "Apromore", Messagebox.OK, Messagebox.ERROR);
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Unable to perform Paste", e);
 		}
 	}
 }
