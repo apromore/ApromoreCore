@@ -845,7 +845,7 @@ public abstract class BaseListboxController extends BaseController {
 	      arg.put("withFolderTree", false);
 	      arg.put("selectedItem", selectedItem);
       }else {
-    	  arg.put("withFolderTree", true);
+    	  arg.put("withFolderTree", false);
           arg.put("selectedItem", currentFolder);
       }
       
