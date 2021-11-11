@@ -256,7 +256,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
         } else {
           Map arg = new HashMap<>();
           arg.put("selectedModel", process);
-          arg.put("selectedModelVersion", vst);
+          arg.put("modelData", eventToString(event));
           simulateModelPlugin.setSimpleParams(arg);
           simulateModelPlugin.execute(portalContext);
         }

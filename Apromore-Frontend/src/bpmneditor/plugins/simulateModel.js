@@ -29,9 +29,11 @@ export default class SimulateModel {
     /**
      * Shortcut for performing an expand or collapse based on the current state of the panel.
      */
-    simulateModel() {
+    async simulateModel() {
+        let xml = await this.facade.getXML().catch(err => {Log.error(err.message)});
+
         if (Apromore.BPMNEditor.Plugins.SimulateModel.apromoreSimulateModel) {
-            Apromore.BPMNEditor.Plugins.SimulateModel.apromoreSimulateModel();
+            Apromore.BPMNEditor.Plugins.SimulateModel.apromoreSimulateModel(xml);
         }
     }
 };
