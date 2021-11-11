@@ -152,6 +152,17 @@
         window.onerror = function myErrorHandler(errorMsg, url, lineNumber) {
             window.location.reload();
         }
+        
+        window.addEventListener('keydown', (evt) => {
+           	   evt = evt||window.event ;
+			   var keyCode = evt.keyCode;
+			   if(evt.ctrlKey||evt.metaKey) {
+				if (keyCode==67 || keyCode==86 || keyCode==88) {
+					zAu.send(new zk.Event(zk.Widget.$(jq("$mainW")), 'onCtrlPress',keyCode));
+				}
+          	 }
+           });
+        
     </script>
 
     <window id="mainW" border="none" height="100%" width="100%" apply="org.apromore.portal.dialogController.MainController" sclass="custom-window ap-portal ap-font-base">

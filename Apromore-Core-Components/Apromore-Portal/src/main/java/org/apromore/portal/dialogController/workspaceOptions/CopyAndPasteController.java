@@ -344,4 +344,45 @@ public class CopyAndPasteController extends BaseController {
       LOGGER.error(e.getMessage());
     }
   }
+  
+  public void drop(Set<Object> selections, int selectionCount, FolderType currentFolder) throws Exception {
+	  
+	   if (currentFolder == null) {
+	      Notification.error(Labels.getLabel("portal_failedFind_message"));
+	      return;
+	    }
+	    if (!ItemHelpers.isOwner(this.currentUser, currentFolder)) {
+	      Notification.error(Labels.getLabel("portal_onlyOwnerCanPasteToCurrent_message"));
+	      return;
+	    }
+	  
+		if (checkContext(selections, selectionCount, currentFolder)) {
+			try {
+				if (!checkImmediateOwnership(selections)) {
+					Notification.error(Labels.getLabel("portal_onlyOwnerCanCutItems}"));
+				} else if (ItemHelpers.isOwner(this.currentUser, currentFolder)) {
+					isCut = true;
+					updateSelectedItems(selections);
+				} else {
+					Notification.error(Labels.getLabel("portal_onlyOwnerCanCutFromCurrent_message"));
+				}
+			} catch (Exception e) {
+				Messagebox.show(Labels.getLabel("portal_failedCut_message"), "Apromore", Messagebox.OK,
+						Messagebox.ERROR);
+				LOGGER.error("Unable to perform Cut", e);
+			}
+		}
+	   
+		try {
+			if (isCut) {
+				selectedTargetFolderId = currentFolder.getId();
+				moveSelectedItems();
+				Notification.info(Labels.getLabel("portal_itemsDropped_message"));
+				clearSelectedItems();
+			}
+		} catch (Exception e) {
+			Messagebox.show(Labels.getLabel("portal_failedPaste_message"), "Apromore", Messagebox.OK, Messagebox.ERROR);
+			LOGGER.error("Unable to perform Paste", e);
+		}
+	}
 }
