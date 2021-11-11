@@ -151,7 +151,7 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 
 	private void addShareMenuItem(Menupopup popup) {
 		Menuitem item = new Menuitem();
-		item.setLabel(Labels.getLabel("portal_tbarShare_hint"));
+		item.setLabel(Labels.getLabel("portal_share_hint"));
 		item.setImage("~./themes/ap/common/img/icons/share.svg");
 		item.addEventListener(ON_CLICK, event -> getBaseListboxController().share());
 		popup.appendChild(item);
