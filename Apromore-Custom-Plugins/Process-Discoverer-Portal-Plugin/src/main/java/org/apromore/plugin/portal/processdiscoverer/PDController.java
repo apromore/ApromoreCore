@@ -62,6 +62,7 @@ import org.apromore.service.ProcessService;
 import org.apromore.service.loganimation.LogAnimationService2;
 import org.json.JSONException;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.ComponentNotFoundException;
 import org.zkoss.zk.ui.Executions;
@@ -151,7 +152,10 @@ public class PDController extends BaseController implements Composer<Component>,
     //////////////////// DATA ///////////////////////////////////
 
     private String pluginSessionId; // the session ID of this plugin
+
+    @WireVariable
     private ConfigData configData;
+
     private ContextData contextData;
     private UserOptionsData userOptions;
     private OutputData outputData;
@@ -261,7 +265,6 @@ public class PDController extends BaseController implements Composer<Component>,
             PortalContext portalContext = (PortalContext) session.get("context");
             LogSummaryType logSummary = (LogSummaryType) session.get("selection");
             PDFactory pdFactory = (PDFactory) session.get("pdFactory");
-            configData = ConfigData.DEFAULT;
             contextData = ContextData.valueOf(
                     logSummary.getDomain(), portalContext.getCurrentUser().getUsername(),
                     logSummary.getId(),
