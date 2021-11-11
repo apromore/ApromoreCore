@@ -90598,7 +90598,7 @@ class View {
             'icon': _config__WEBPACK_IMPORTED_MODULE_0__["default"].PATH + "images/ap/zoom-in.svg",
             'description': window.Apromore.I18N.View.zoomInDesc,
             'index': 1,
-            'groupOder': 2
+            'groupOrder': 2
         });
 
         /* Register zoom out */

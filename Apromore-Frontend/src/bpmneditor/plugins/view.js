@@ -44,7 +44,7 @@ export default class View {
             'icon': CONFIG.PATH + "images/ap/zoom-in.svg",
             'description': window.Apromore.I18N.View.zoomInDesc,
             'index': 1,
-            'groupOder': 2
+            'groupOrder': 2
         });
 
         /* Register zoom out */
