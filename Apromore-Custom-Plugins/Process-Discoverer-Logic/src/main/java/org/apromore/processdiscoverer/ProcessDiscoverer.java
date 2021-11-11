@@ -86,7 +86,7 @@ public class ProcessDiscoverer {
         if (structuralWeightChanged || attributeChanged || !isDFGAbstractionValid) {
             log.getGraphView().sortNodesAndArcs(params.getFixedType(), params.getFixedAggregation());
         }
-        log.getGraphView().buildSubGraphs(params.invertedNodes());
+        log.getGraphView().buildSubGraphs(params.invertedNodes(), params.getMaxNumberOfNodes(), params.getMaxNumberOfArcs());
         long timer = System.currentTimeMillis();
         FilteredGraph filteredGraph = log.getGraphView().filter(params.getNodeSelectThreshold(), params.getArcSelectThreshold());
         this.dfgAbstraction = new DFGAbstraction(log, filteredGraph, params);

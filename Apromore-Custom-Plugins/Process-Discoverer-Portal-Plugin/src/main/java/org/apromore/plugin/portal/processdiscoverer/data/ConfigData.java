@@ -28,7 +28,8 @@ import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
 
 public class ConfigData {
     private final String DEFAULT_SELECTOR;
-    private final int NUMBER_OF_UNIQUE_VALUES_MAX_SELECT;
+    private final int MAX_NUMBER_OF_NODES;
+    private final int MAX_NUMBER_OF_ARCS;
     private final HashBiMap<String,String> displayToOriginKeyMapping = new HashBiMap<>();
     {
         displayToOriginKeyMapping.put("concept:name", "Activity");
@@ -41,19 +42,24 @@ public class ConfigData {
     public static MeasureType DEFAULT_MEASURE_TYPE = MeasureType.FREQUENCY;
     public static MeasureAggregation DEFAULT_MEASURE_AGGREGATE = MeasureAggregation.CASES;
 
-    public static ConfigData DEFAULT = new ConfigData("concept:name", 500);
+    public static ConfigData DEFAULT = new ConfigData("concept:name", 5000, 15000);
     
-    public ConfigData(String selector, int maxNumberOfUniqueValues) {
+    public ConfigData(String selector, int maxNumberOfNodes, int maxNumberOfArcs) {
         DEFAULT_SELECTOR = selector;
-        NUMBER_OF_UNIQUE_VALUES_MAX_SELECT = maxNumberOfUniqueValues;
+        MAX_NUMBER_OF_NODES = maxNumberOfNodes;
+        MAX_NUMBER_OF_ARCS = maxNumberOfArcs;
     }
     
     public String getDefaultAttribute() {
         return DEFAULT_SELECTOR;
     }
     
-    public int getMaxNumberOfUniqueValues() {
-        return NUMBER_OF_UNIQUE_VALUES_MAX_SELECT;
+    public int getMaxNumberOfNodes() {
+        return MAX_NUMBER_OF_NODES;
+    }
+
+    public int getMaxNumberOfArcs() {
+        return MAX_NUMBER_OF_ARCS;
     }
     
     public String getDisplayAttributeName(String attributeName) {
