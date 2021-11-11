@@ -22,19 +22,13 @@
 
 package org.apromore.plugin.portal.processdiscoverer.data;
 
-import org.apromore.commons.config.ConfigBean;
 import org.apromore.logman.Constants;
 import org.apromore.logman.attribute.graph.MeasureAggregation;
 import org.apromore.logman.attribute.graph.MeasureType;
 import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Component;
 
 @Configuration
 @PropertySource("classpath:pd.application.properties")
@@ -57,7 +51,7 @@ public class ConfigData {
     public static MeasureType DEFAULT_MEASURE_TYPE = MeasureType.FREQUENCY;
     public static MeasureAggregation DEFAULT_MEASURE_AGGREGATE = MeasureAggregation.CASES;
 
-    public static ConfigData DEFAULT = new ConfigData("concept:name", 500, 500);
+    public static final ConfigData DEFAULT = new ConfigData("concept:name", 500, 500);
 
     public ConfigData(@Value(Constants.ATT_KEY_CONCEPT_NAME) String attributeName,
                       @Value("${pd.maxNodes}") int maxNumberOfNodes,
