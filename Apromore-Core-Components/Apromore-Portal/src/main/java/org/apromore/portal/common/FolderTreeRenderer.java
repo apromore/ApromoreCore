@@ -30,6 +30,7 @@ import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.model.FolderType;
 import org.slf4j.Logger;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.event.DropEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -37,6 +38,7 @@ import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Html;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Treecell;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.TreeitemRenderer;
@@ -127,7 +129,38 @@ public class FolderTreeRenderer implements TreeitemRenderer {
         }
       }
     });
-  }
+    
+    dataRow.setDraggable("true");
+    dataRow.setDroppable("true");
+	dataRow.addEventListener(Events.ON_DROP, new EventListener<DropEvent>() {
+		@Override
+		public void onEvent(DropEvent event) throws Exception {
+
+			try {
+				FolderTreeNode dropedToItem = ((Treeitem) event.getTarget().getParent()).getValue();
+				FolderType selectedFolder = (FolderType) dropedToItem.getData();
+
+				Object dropedObject = null;
+				if (event.getDragged() instanceof Listitem) {
+					Listitem draggedItem = (Listitem) event.getDragged();
+					dropedObject = draggedItem.getValue();
+				} else if (event.getDragged() instanceof Treerow) {
+					FolderTreeNode draggedItem = ((Treeitem) event.getDragged().getParent()).getValue();
+					dropedObject = draggedItem.getData();
+				}
+
+				if (selectedFolder != null && dropedObject != null) {
+					mainC.getBaseListboxController().drop(selectedFolder, dropedObject,
+							mainC.getPortalSession().getCurrentFolder());
+				}
+			} catch (Exception e) {
+				LOGGER.error("Error Occured in Drag and Drop on Tree", e);
+			}
+
+		}
+	});
+
+}
 
 
   /*

@@ -35,6 +35,7 @@ import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.PortalProcessAttributePlugin;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.common.Constants;
+import org.apromore.portal.common.FolderTreeNode;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.model.FolderSummaryType;
 import org.apromore.portal.model.FolderType;
@@ -46,6 +47,7 @@ import org.slf4j.Logger;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.event.DropEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -57,6 +59,8 @@ import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Menupopup;
+import org.zkoss.zul.Treeitem;
+import org.zkoss.zul.Treerow;
 
 
 public class SummaryItemRenderer implements ListitemRenderer {
@@ -81,6 +85,8 @@ public class SummaryItemRenderer implements ListitemRenderer {
         List<PortalProcessAttributePlugin> plugins = (List<PortalProcessAttributePlugin>) SpringUtil.getBean("portalProcessAttributePlugins");
 
         // listItem.setStyle("height: 25px");
+        listItem.setDraggable("true");
+        listItem.setValue(obj);
         if (obj instanceof ProcessSummaryType) {
             listItem.setSclass(listItem.getSclass() + " ap-item-model");
             renderProcessSummary(listItem, (ProcessSummaryType) obj, plugins);
@@ -90,9 +96,11 @@ public class SummaryItemRenderer implements ListitemRenderer {
         } else if (obj instanceof FolderSummaryType) {
             listItem.setSclass(listItem.getSclass() + " ap-item-folder");
             renderFolderSummary(listItem, (FolderSummaryType) obj, plugins);
+            listItem.setDroppable("true");
         } else if (obj instanceof FolderType) {
             listItem.setSclass(listItem.getSclass() + " ap-item-folder");
             renderFolder(listItem, (FolderType) obj, plugins);
+            listItem.setDroppable("true");
         } else {
             LOGGER.error("Unknown item to render in the process summary list box.");
         }
@@ -275,6 +283,29 @@ public class SummaryItemRenderer implements ListitemRenderer {
                 
             }
 
+        });
+        
+        listitem.addEventListener(Events.ON_DROP, new EventListener<DropEvent>() {
+            @Override
+            public void onEvent(DropEvent event) throws Exception {
+            	try {
+            	Listitem droppedToItem = (Listitem)event.getTarget();
+            	Object dropedObject=null;
+            	if(event.getDragged() instanceof Listitem) {
+            		Listitem draggedItem = (Listitem ) event.getDragged();
+            		dropedObject=draggedItem.getValue();
+            	}else if(event.getDragged() instanceof Treerow) {
+            		FolderTreeNode draggedItem = ((Treeitem) event.getDragged().getParent()).getValue();
+            		dropedObject=draggedItem.getData();
+            	}
+            	
+            	if(droppedToItem.getValue()!=null && droppedToItem.getValue() instanceof FolderType && dropedObject!=null) {
+            		mainController.getBaseListboxController().drop(droppedToItem.getValue(), dropedObject, mainController.getPortalSession().getCurrentFolder());
+            	}
+            	}catch(Exception e) {
+            		LOGGER.error("Error Occured in Drag and Drop",e);
+            	}
+            }
         });
     }
 
