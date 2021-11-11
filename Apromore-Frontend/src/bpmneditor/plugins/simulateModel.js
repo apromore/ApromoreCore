@@ -12,7 +12,7 @@ export default class SimulateModel {
     constructor(facade) {
         this.facade = facade;
 
-        /* Register toggle simulation panel */
+        /* Register simulate model */
         this.facade.offer({
             'btnId': 'ap-id-editor-simulate-model-btn',
             'name': window.Apromore.I18N.SimulationPanel.simulateModel,
@@ -30,6 +30,8 @@ export default class SimulateModel {
      * Shortcut for performing an expand or collapse based on the current state of the panel.
      */
     simulateModel() {
-        this.facade.getEastPanel().toggleCollapse(true);
+        if (Apromore.BPMNEditor.Plugins.SimulateModel.apromoreSimulateModel) {
+            Apromore.BPMNEditor.Plugins.SimulateModel.apromoreSimulateModel();
+        }
     }
 };

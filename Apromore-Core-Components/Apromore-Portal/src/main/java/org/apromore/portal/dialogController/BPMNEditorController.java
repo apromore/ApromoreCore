@@ -231,6 +231,38 @@ public class BPMNEditorController extends BaseController implements Composer<Com
       }
     });
 
+    this.addEventListener("onSimulateModel", new EventListener<Event>() {
+      @Override
+      public void onEvent(final Event event) throws InterruptedException {
+        PortalContext portalContext = mainC.getPortalContext();
+        Map<String, PortalPlugin> portalPluginMap = portalContext.getPortalPluginMap();
+        PortalPlugin simulateModelPlugin = portalPluginMap.get(PluginCatalog.PLUGIN_SIMULATE_MODEL);
+
+        //Since simulate model is an EE feature, it may not be available
+        if (simulateModelPlugin == null) {
+          Messagebox.show("The simulate model feature is only available in ApromoreEE.", "Simulate model unavailable",
+                  Messagebox.OK, Messagebox.INFORMATION);
+          return;
+        }
+
+        if (currentUserAccessType == AccessType.VIEWER) {
+          Notification.error(Labels.getLabel("portal_noPrivilegeSaveEdit_message"));
+          return;
+        }
+
+        //Only allow model to be simulated if it is saved
+        if (isNewProcess || process == null) {
+          Notification.error(Labels.getLabel("portal_saveModelFirst_message"));
+        } else {
+          Map arg = new HashMap<>();
+          arg.put("selectedModel", process);
+          arg.put("selectedModelVersion", vst);
+          simulateModelPlugin.setSimpleParams(arg);
+          simulateModelPlugin.execute(portalContext);
+        }
+      }
+    });
+
     this.addEventListener("onShare", new EventListener<Event>() {
       @Override
       public void onEvent(final Event event) throws InterruptedException {
