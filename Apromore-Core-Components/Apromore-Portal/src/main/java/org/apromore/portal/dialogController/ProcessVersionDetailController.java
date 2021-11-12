@@ -24,22 +24,31 @@
 
 package org.apromore.portal.dialogController;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apromore.commons.datetime.Constants;
+import org.apromore.commons.datetime.DateTimeUtils;
+import org.apromore.dao.model.Folder;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.dialogController.dto.VersionDetailType;
 import org.apromore.portal.dialogController.renderer.VersionSummaryItemRenderer;
+import org.apromore.portal.model.LogSummaryType;
 import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.VersionSummaryType;
-import org.apromore.commons.datetime.DateTimeUtils;
+import org.slf4j.Logger;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
-import org.zkoss.zul.South;
 
 public class ProcessVersionDetailController extends BaseDetailController {
 
     private static final long serialVersionUID = 3661234712204860492L;
+    private static final Logger LOGGER =
+    	      PortalLoggerFactory.getLogger(ProcessVersionDetailController.class);
+
 
     private final Listbox listBox;
 
@@ -55,11 +64,9 @@ public class ProcessVersionDetailController extends BaseDetailController {
         appendChild(listBox);
     }
 
-    @SuppressWarnings("unchecked")
     public void displayProcessVersions(ProcessSummaryType data) {
         getListModel().clearSelection();
         getListModel().clear();
-        List<VersionSummaryType> versionSummaries = data.getVersionSummaries();
         List<VersionDetailType> details = new ArrayList<>();
         for (VersionSummaryType version : data.getVersionSummaries()) {
             String lastUpdate = version.getLastUpdate();
@@ -75,6 +82,39 @@ public class ProcessVersionDetailController extends BaseDetailController {
             getListModel().addToSelection(details.get(details.size() - 1));
         }
     }
+    
+    public void displayLogVersions(LogSummaryType data) {
+		try {
+			getListModel().clearSelection();
+			getListModel().clear();
+			VersionSummaryType versionSummary = new VersionSummaryType();
+			String createdDate = data.getCreateDate();
+            if (createdDate != null) {
+                createdDate = DateTimeUtils.normalize(createdDate);
+            }
+			versionSummary.setCreationDate(createdDate);
+			getListModel().add(new VersionDetailType(null, versionSummary));
+		} catch (Exception ex) {
+			LOGGER.error("Error occured in assigning Log version", ex);
+		}
+    }
+    
+	public void displayFolderVersions(Folder data) {
+		try {
+			getListModel().clearSelection();
+			getListModel().clear();
+			VersionSummaryType versionSummary = new VersionSummaryType();
+			DateFormat dateFormat = new SimpleDateFormat(Constants.DATE_TIME_FORMAT_HUMANIZED);
+			if (data.getDateModified() != null) {
+				versionSummary.setCreationDate(dateFormat.format(data.getDateModified()));
+			} else {
+				versionSummary.setCreationDate(dateFormat.format(data.getDateCreated()));
+			}
+			getListModel().add(new VersionDetailType(null, versionSummary));
+		} catch (Exception ex) {
+			LOGGER.error("Error occured in assigning Folder version", ex);
+		}
+	}
 
     protected ListModelList<VersionDetailType> getListModel() {
         return (ListModelList<VersionDetailType>)(Object) listBox.getListModel();

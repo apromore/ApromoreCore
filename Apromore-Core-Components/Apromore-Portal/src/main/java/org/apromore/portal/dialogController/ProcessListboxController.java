@@ -33,6 +33,7 @@ import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.renderer.SummaryItemRenderer;
 import org.apromore.portal.model.FolderType;
+import org.apromore.portal.model.LogSummaryType;
 import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.SummariesType;
 // import org.apromore.portal.util.SummaryComparator;
@@ -76,18 +77,29 @@ public class ProcessListboxController extends BaseListboxController {
         // List the selected folders and processes
         List<Integer> folderIdList = new ArrayList<>();
         List<ProcessSummaryType> processSummaryList = new ArrayList<>();
+        List<FolderType> selecteFolderList = new ArrayList<>();
+        List<LogSummaryType> logSummaryList = new ArrayList<>();
         for (Object selectedItem : getListModel().getSelection()) {
           if (selectedItem instanceof FolderType) {
             folderIdList.add(((FolderType) selectedItem).getId());
+            selecteFolderList.add((FolderType)selectedItem);
           } else if (selectedItem instanceof ProcessSummaryType) {
             processSummaryList.add((ProcessSummaryType) selectedItem);
-          }
+          } else if (selectedItem instanceof LogSummaryType) {
+              logSummaryList.add((LogSummaryType) selectedItem);
+            }
         }
 
         // If there's a unique selected process, show its versions
-        if (processSummaryList.size() == 1 && getListModel().getSelection().size() == 1) {
-          getMainController().displayProcessVersions(processSummaryList.get(0));
-        } else {
+        if(getListModel().getSelection().size() == 1) {
+			if (processSummaryList.size() == 1) {
+				getMainController().displayProcessVersions(processSummaryList.get(0));
+			} else if (selecteFolderList.size() == 1) {
+				getMainController().displayFolderVersions(selecteFolderList.get(0));
+			} else if (logSummaryList.size() == 1) {
+				getMainController().displayLogVersions(logSummaryList.get(0));
+			}
+        }else {
           getMainController().clearProcessVersions();
         }
 

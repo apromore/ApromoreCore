@@ -54,7 +54,18 @@ public class VersionSummaryItemRenderer implements ListitemRenderer {
      */
     @Override
     public void render(Listitem listItem, Object obj, int index) {
-        renderVersionSummary(listItem, (VersionDetailType) obj);
+    	VersionDetailType versionDetailType=(VersionDetailType) obj;
+    	if(versionDetailType.getProcess()!=null) {
+    		renderVersionSummary(listItem, versionDetailType);
+    	}else {
+		   listItem.appendChild(wrapIntoListCell(new Label("-")));
+		   if(versionDetailType.getVersion().getLastUpdate()!=null && !versionDetailType.getVersion().getLastUpdate().isEmpty()) 
+		   {
+			   listItem.appendChild(wrapIntoListCell(new Label(versionDetailType.getVersion().getLastUpdate())));
+		   }else {
+			   listItem.appendChild(wrapIntoListCell(new Label(versionDetailType.getVersion().getCreationDate())));
+		   }
+    	}
     }
 
     private void renderVersionSummary(final Listitem listItem, final VersionDetailType data) {

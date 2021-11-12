@@ -43,6 +43,7 @@ import java.util.regex.Pattern;
 
 import org.apromore.commons.config.ConfigBean;
 import org.apromore.commons.item.ItemNameUtils;
+import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.Log;
 import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
@@ -91,7 +92,6 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.Composer;
@@ -730,13 +730,20 @@ public class MainController extends BaseController implements MainControllerInte
     }
 
     public void displayProcessVersions(final ProcessSummaryType data) {
-	switchToProcessSummaryView();
-	((ProcessVersionDetailController) this.baseDetailController).displayProcessVersions(data);
+		switchToProcessSummaryView();
+		((ProcessVersionDetailController) this.baseDetailController).displayProcessVersions(data);
     }
 
     public void displayLogVersions(final LogSummaryType data) {
-	// TODO
+    	switchToProcessSummaryView();
+    	((ProcessVersionDetailController) this.baseDetailController).displayLogVersions(data);
     }
+    
+	public void displayFolderVersions(final FolderType data) {
+		Folder folder = this.getWorkspaceService().getFolder(data.getId());
+		switchToProcessSummaryView();
+		((ProcessVersionDetailController) this.baseDetailController).displayFolderVersions(folder);
+	}
 
     public void clearProcessVersions() {
 	switchToProcessSummaryView();
