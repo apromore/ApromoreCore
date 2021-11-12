@@ -51,6 +51,7 @@ import org.zkoss.zk.ui.event.DropEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Image;
@@ -270,6 +271,7 @@ public class SummaryItemRenderer implements ListitemRenderer {
                 mainController.getPortalSession().setCurrentFolder(folder);
                 mainController.reloadSummaries2();
                 mainController.currentFolderChanged();
+                Clients.evalJavaScript("clearSelection('')");
             }
         });
         

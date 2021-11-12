@@ -162,6 +162,19 @@
 				}
           	 }
            });
+           
+          function clearSelection(){
+          	var selectedArea = window.getSelection ? window.getSelection() : document.selection;
+				if (selectedArea) {
+				    if (selectedArea.removeAllRanges) {
+				        selectedArea.removeAllRanges();
+				    } else if (selectedArea.empty) {
+				        selectedArea.empty();
+				    } else if (selectedArea.selection) { 
+					  selectedArea.selection.empty();
+					}
+				}
+          } 
         
     </script>
 
