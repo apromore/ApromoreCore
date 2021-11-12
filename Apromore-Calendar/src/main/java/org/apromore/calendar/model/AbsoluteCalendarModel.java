@@ -67,11 +67,6 @@ public class AbsoluteCalendarModel extends CalendarModel {
     }
 
     @Override
-    public Map<DayOfWeek, WorkDayModel> getDayOfWeekWorkDayMap() {
-        return Collections.unmodifiableMap(Collections.EMPTY_MAP);
-    }
-
-    @Override
     public Map<LocalDate, HolidayModel> getHolidayLocalDateMap() {
         return Collections.unmodifiableMap(Collections.EMPTY_MAP);
     }
