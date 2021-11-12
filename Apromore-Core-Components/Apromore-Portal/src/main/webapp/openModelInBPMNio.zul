@@ -121,6 +121,11 @@
             <n:script>
                 <![CDATA[
                     var editorWrapper;
+                    var disabledPlugins = [];
+                    if (${arg.disableSimulateModel}) {
+                      disabledPlugins.push(Apromore.I18N.SimulationPanel.simulateModel);
+                    }
+
                     createEditor = async function (bpmnXML) {
                       var config = {
                           xml: bpmnXML,
@@ -128,7 +133,8 @@
                           fullscreen : true,
                           useSimulationPanel: true,
                           viewOnly: ${arg.viewOnly},
-                          langTag: '${arg.langTag}'
+                          langTag: '${arg.langTag}',
+                          disabledButtons: disabledPlugins
                         };
                       editorWrapper = new Apromore.BPMNEditor.EditorApp (config);
                       await editorWrapper.init(config);

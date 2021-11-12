@@ -24,6 +24,7 @@
 
 package org.apromore.portal.dialogController;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -198,6 +199,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
         param.put("bpmnioLib", AccessType.VIEWER.equals(currentUserAccessType) ? BPMNIO_VIEWER_JS : BPMNIO_MODELER_JS);
       }
       param.put("viewOnly", AccessType.VIEWER.equals(currentUserAccessType));
+      param.put("disableSimulateModel", mainC.getPortalPluginMap().get(PluginCatalog.PLUGIN_SIMULATE_MODEL) == null);
       Executions.getCurrent().pushArg(param);
 
     } catch (Exception e) {
