@@ -242,7 +242,8 @@ public class BPMNEditorController extends BaseController implements Composer<Com
 
         //Since simulate model is an EE feature, it may not be available
         if (simulateModelPlugin == null) {
-          Messagebox.show("The simulate model feature is only available in ApromoreEE.", "Simulate model unavailable",
+          Messagebox.show(Labels.getLabel("portal_simModelUnavailable_message"),
+                  Labels.getLabel("portal_simModelUnavailable_title"),
                   Messagebox.OK, Messagebox.INFORMATION);
           return;
         }
