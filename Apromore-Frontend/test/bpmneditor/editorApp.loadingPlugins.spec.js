@@ -11,7 +11,7 @@ describe('After the EditorApp has been created with a full configuration', funct
 
     it('It can initialize successfully with plugins', async function () {
         await testFactory.initEditorApp(editorApp, testFactory.bpmnSimpleXML, testFactory.pluginsConfigXML, true);
-        expect(editorApp.getActivatedPlugins().length).toEqual(8);
+        expect(editorApp.getActivatedPlugins().length).toEqual(9);
     });
 
     it('It can initialize in case of errors in Ajax request for plugin configuration', async function () {
