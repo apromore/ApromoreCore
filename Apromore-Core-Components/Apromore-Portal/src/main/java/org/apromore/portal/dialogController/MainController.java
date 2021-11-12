@@ -283,21 +283,24 @@ public class MainController extends BaseController implements MainControllerInte
 	    UserSessionManager.setMainController(this);
 	    pagingandbuttons.setVisible(true);
 	    
-	    mainW.setCtrlKeys("^c^x^v%c%x%v"); //Accepted Ctrl Key Copy, Cut and Paste (Mac,Windows and Linux)
-	    
-		mainW.addEventListener(Events.ON_CTRL_KEY, new EventListener<KeyEvent>() {
+		mainW.addEventListener("onCtrlPress", new EventListener<Event>() {
 			@Override
-			public void onEvent(KeyEvent keyEvent) throws Exception {
-				switch (keyEvent.getKeyCode()) {
-				case KEY_COPY:
-					baseListboxController.copy();
-					break;
-				case KEY_PASTE:
-					baseListboxController.paste();
-					break;
-				case KEY_CUT:
-					baseListboxController.cut();
-					break;
+			public void onEvent(final Event event) throws InterruptedException {
+				try {
+					Integer keycode=(Integer)event.getData();
+					switch (keycode) {
+					case KEY_COPY:
+						baseListboxController.copy();
+						break;
+					case KEY_PASTE:
+						baseListboxController.paste();
+						break;
+					case KEY_CUT:
+						baseListboxController.cut();
+						break;
+					}
+				}catch(Exception e) {
+					LOGGER.error("Wrong Command Key", e);
 				}
 			}
 		});

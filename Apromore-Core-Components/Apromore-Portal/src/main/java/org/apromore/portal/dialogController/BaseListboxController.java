@@ -621,6 +621,15 @@ public abstract class BaseListboxController extends BaseController {
     copyAndPasteController.paste(currentFolder);
     refreshContent();
   }
+  
+	public void drop(FolderType dropToFolder,Object dropObject, FolderType currentFolder) throws Exception {
+		if (dropObject instanceof FolderType && dropToFolder.getId().equals(((FolderType)dropObject).getId())) {
+			Notification.error(Labels.getLabel("portal_source_destination_folder_notsame_message"));
+			return;
+		}
+		copyAndPasteController.drop(Set.of(dropObject), 1, dropToFolder);
+		refreshContent();
+	}
 
   private ArrayList<FolderType> getSelectedFolders() {
     ArrayList<FolderType> folderList = new ArrayList<>();
@@ -845,7 +854,7 @@ public abstract class BaseListboxController extends BaseController {
 	      arg.put("withFolderTree", false);
 	      arg.put("selectedItem", selectedItem);
       }else {
-    	  arg.put("withFolderTree", true);
+    	  arg.put("withFolderTree", false);
           arg.put("selectedItem", currentFolder);
       }
       

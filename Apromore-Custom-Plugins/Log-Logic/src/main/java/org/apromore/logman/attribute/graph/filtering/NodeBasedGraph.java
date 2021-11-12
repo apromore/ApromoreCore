@@ -52,18 +52,17 @@ public class NodeBasedGraph extends AbstractFilteredGraph {
     private GraphTraversedArcs backwardArcs;
     private boolean isStartEndConnected = false;
     private MutableIntList removableArcs = IntLists.mutable.empty();
-    private final int MAX_ALLOWED_NUMBER_ARCS = 500; // limit number of arcs that can be viewable on screen
-    
+
     public NodeBasedGraph(AttributeLogGraph originalGraph, BitSet nodeBitMask, BitSet arcBitMask) {
         super(originalGraph, nodeBitMask, arcBitMask);
     }
     
-    public void buildSubGraphs(NodeBasedGraph preGraph, boolean arcInverted) {
+    public void buildSubGraphs(boolean arcInverted, int maxNumberOfArcs) {
         subGraphs.clear();
         long totalRemainingArcs = getArcs().size();
         
         ArcBasedGraph arcBasedGraph = new ArcBasedGraph(this.originalGraph, this.cloneNodeBitMask(), this.cloneArcBitMask());
-        if (totalRemainingArcs <= MAX_ALLOWED_NUMBER_ARCS) subGraphs.add(arcBasedGraph);
+        if (totalRemainingArcs <= maxNumberOfArcs) subGraphs.add(arcBasedGraph);
         
         if (this.isPerfectSequence()) {
             return;
@@ -86,7 +85,7 @@ public class NodeBasedGraph extends AbstractFilteredGraph {
                         totalRemainingArcs--;
                     }
                 }
-                if (totalRemainingArcs <= MAX_ALLOWED_NUMBER_ARCS) subGraphs.add(arcBasedGraph);
+                if (totalRemainingArcs <= maxNumberOfArcs) subGraphs.add(arcBasedGraph);
                 batchCount += removedBatchSize;
             }
         }

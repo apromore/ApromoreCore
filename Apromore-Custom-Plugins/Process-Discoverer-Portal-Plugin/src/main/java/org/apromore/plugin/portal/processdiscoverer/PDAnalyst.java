@@ -106,6 +106,8 @@ public class PDAnalyst {
 
     // Calendar management
     CalendarModel calendarModel;
+
+    ConfigData configData;
     
     public PDAnalyst(ContextData contextData, ConfigData configData, EventLogService eventLogService) throws Exception {
         XLog xlog = eventLogService.getXLog(contextData.getLogId());
@@ -126,12 +128,13 @@ public class PDAnalyst {
         }
 
         long timer = System.currentTimeMillis();
+        this.configData = configData;
         this.aLog = new ALog(xlog);
         LOGGER.debug("ALog.constructor: {} ms.", System.currentTimeMillis() - timer);
-        indexableAttributes = aLog.getAttributeStore().getPerspectiveEventAttributes(configData.getMaxNumberOfUniqueValues(), perspectiveAttKeys);
+        indexableAttributes = aLog.getAttributeStore().getPerspectiveEventAttributes(configData.getMaxNumberOfNodes(), perspectiveAttKeys);
         if (indexableAttributes == null || indexableAttributes.isEmpty()) {
             throw new InvalidDataException("No perspective attributes could be found in the log with key in " + perspectiveAttKeys.toString() +
-                    " and number of distinct values is less than or equal to " + configData.getMaxNumberOfUniqueValues());
+                    " and number of distinct values is less than or equal to " + configData.getMaxNumberOfNodes());
         }
         
         this.originalAPMLog = apmLog;
@@ -175,6 +178,8 @@ public class PDAnalyst {
                 userOptions.getSecondaryType(),
                 userOptions.getSecondaryAggregation(),
                 userOptions.getSecondaryRelation(),
+                configData.getMaxNumberOfNodes(),
+                configData.getMaxNumberOfArcs(),
                 null);
     }
     
@@ -197,6 +202,8 @@ public class PDAnalyst {
                 MeasureType.FREQUENCY,
                 MeasureAggregation.CASES,
                 MeasureRelation.ABSOLUTE,
+                configData.getMaxNumberOfNodes(),
+                configData.getMaxNumberOfArcs(),
                 null);
     }
     
