@@ -78,6 +78,7 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 				case "FOLDER":  loadPopupMenu(menuPopup, "folder-popup-menu"); break;
 				case "PROCESS": loadPopupMenu(menuPopup, "process-popup-menu"); break;
 				case "LOG":     loadPopupMenu(menuPopup, "log-popup-menu"); break;
+				case "CANVAS":  loadPopupMenu(menuPopup, "canvas-popup-menu"); break;
 				}
 			}
 		} catch (Exception ex) {
@@ -146,6 +147,9 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 		item.setLabel(Labels.getLabel("common_paste_text"));
 		item.setImage("~./themes/ap/common/img/icons/paste.svg");
 		item.addEventListener(ON_CLICK, event -> getBaseListboxController().paste());
+		if(getBaseListboxController().getCopyAndPasteController().getSelectedItemsSize()==0) {
+			item.setDisabled(true);	
+		}
 		popup.appendChild(item);
 	}
 
