@@ -154,9 +154,15 @@
         }
         
         window.addEventListener('keydown', (evt) => {
+           	  
            	   evt = evt||window.event ;
 			   var keyCode = evt.keyCode;
+			   var target = evt.target || evt.srcElement;
+			   
 			   if(evt.ctrlKey||evt.metaKey) {
+			   	
+			   	if (target.tagName.toUpperCase() == 'INPUT') return;
+			   	
 				if (keyCode==67 || keyCode==86 || keyCode==88) {
 					zAu.send(new zk.Event(zk.Widget.$(jq("$mainW")), 'onCtrlPress',keyCode));
 				}
