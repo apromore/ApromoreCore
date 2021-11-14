@@ -30,13 +30,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+
 import org.apromore.dao.model.User;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.PortalPlugin;
-import org.apromore.portal.menu.PluginCatalog;
 import org.apromore.portal.common.ItemHelpers;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.context.PluginPortalContext;
@@ -45,6 +46,7 @@ import org.apromore.portal.dialogController.workspaceOptions.AddFolderController
 import org.apromore.portal.dialogController.workspaceOptions.CopyAndPasteController;
 import org.apromore.portal.dialogController.workspaceOptions.RenameFolderController;
 import org.apromore.portal.exception.DialogException;
+import org.apromore.portal.menu.PluginCatalog;
 import org.apromore.portal.model.FolderType;
 import org.apromore.portal.model.LogSummaryType;
 import org.apromore.portal.model.ProcessSummaryType;
@@ -58,8 +60,7 @@ import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.event.EventQueue;
-import org.zkoss.zk.ui.event.EventQueues;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
@@ -67,10 +68,9 @@ import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listhead;
 import org.zkoss.zul.ListitemRenderer;
+import org.zkoss.zul.Menupopup;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Span;
-
-import org.apromore.zk.event.CalendarEvents;
 
 public abstract class BaseListboxController extends BaseController {
 
@@ -198,6 +198,16 @@ public abstract class BaseListboxController extends BaseController {
   }
 
   protected void attachEvents() {
+	  
+	  this.listBox.addEventListener(Events.ON_RIGHT_CLICK, new EventListener<Event>() {
+	      @Override
+	      public void onEvent(Event event) throws Exception {
+    	 	Map args = new HashMap();
+      	    args.put("POPUP_TYPE", "CANVAS");
+        	Menupopup menupopup = (Menupopup)Executions.createComponents("~./macros/popupMenu.zul", null, args);
+        	menupopup.open(event.getTarget(), "at_pointer");
+	      }
+	    });
 
     this.listBox.addEventListener("onKeyPress", new EventListener<KeyEvent>() {
       @Override
@@ -1015,4 +1025,10 @@ public abstract class BaseListboxController extends BaseController {
       return logSummaries;
     }
   }
+
+	public CopyAndPasteController getCopyAndPasteController() {
+		return copyAndPasteController;
+	}
+  
+  
 }
