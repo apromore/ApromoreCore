@@ -171,9 +171,6 @@
               "id": "COPY"
             },
             {
-              "id": "PASTE"
-            },
-            {
               "id": "SEPARATOR"
             },
             {
@@ -203,9 +200,6 @@
             },
             {
               "id": "COPY"
-            },
-            {
-              "id": "PASTE"
             },
             {
               "id": "SEPARATOR"
