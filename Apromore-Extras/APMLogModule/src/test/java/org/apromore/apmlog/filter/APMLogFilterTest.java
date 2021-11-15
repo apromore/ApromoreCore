@@ -79,7 +79,7 @@ class APMLogFilterTest {
     }
 
     @Test
-    public void getTimeFilteredActivityInstances() throws Exception {
+    void getTimeFilteredActivityInstances() throws Exception {
         ImmutableLog log = APMLogUnitTest.getImmutableLog("p2ps", "files/p2ps.xes.gz");
         PLog pLog = new PLog(log);
 
