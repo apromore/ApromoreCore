@@ -32,7 +32,10 @@
 
 package org.apromore.calendar.model;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import net.time4j.ClockUnit;
 import net.time4j.Moment;
 import net.time4j.range.ChronoInterval;
@@ -68,6 +71,10 @@ public class CalendarModel {
   private List<HolidayModel> holidays = new ArrayList<>();
 
   public static CalendarModel ABSOLUTE_CALENDAR = new AbsoluteCalendarModel();
+
+  @Getter(AccessLevel.NONE)
+  @Setter(AccessLevel.NONE)
+  private List<ChronoInterval<Moment>> holidayIntervals;
 
   public DurationModel getDuration(OffsetDateTime starDateTime, OffsetDateTime endDateTime) {
     DurationModel durationModel = new DurationModel();
@@ -135,9 +142,11 @@ public class CalendarModel {
   }
 
   private List<ChronoInterval<Moment>> getHolidayIntervals() {
-    return holidays.stream()
-            .map(d -> d.getInterval(ZoneId.of(zoneId)))
-            .collect(Collectors.toList());
+    return holidayIntervals != null
+            ? holidayIntervals
+            : (holidayIntervals = holidays.stream()
+                .map(d -> d.getInterval(ZoneId.of(zoneId)))
+                .collect(Collectors.toList()));
   }
 
   public List<WorkDayModel> getOrderedWorkDay() {
