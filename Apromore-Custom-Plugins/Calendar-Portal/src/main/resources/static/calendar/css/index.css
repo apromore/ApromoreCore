@@ -110,6 +110,10 @@
     filter: none !important;
 }
 
+.ap-calendar-win .ap-icon {
+    background-color: transparent !important;
+}
+
 .ap-calendar-win .ap-icon-workday {
     filter: var(--ap-filter-ico-green);
 }
