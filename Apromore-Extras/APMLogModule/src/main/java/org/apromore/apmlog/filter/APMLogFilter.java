@@ -71,6 +71,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -91,6 +92,7 @@ import java.util.stream.Collectors;
  * Modified: Chii Chang (16/03/2021) - Replaced with new code
  * Modified: Chii Chang (22/06/2021)
  * Modified: Chii Chang (13/09/2021) - Case variants must be updated after filtering by case variant
+ * Modified: Chii Chang (16/11/2021) - bug fix: Event timeframe filter
  */
 public class APMLogFilter {
 
@@ -191,7 +193,7 @@ public class APMLogFilter {
                         traces = filterByEventSectAttribute(rule, traces);
                         break;
                     case EVENT_TIME:
-                        traces = filterByEventSectTime(rule, traces);
+                        traces = filterEventsByTimeframe(rule, traces);
                         break;
                     case BETWEEN:
                         traces = BetweenFilter.filter(traces, rule);
@@ -324,14 +326,8 @@ public class APMLogFilter {
                 !activity.getAttributes().containsKey(key) || !values.contains(activity.getAttributes().get(key));
     }
 
-    public List<PTrace> filterByEventSectTime(LogFilterRule rule, List<PTrace> traces) {
-        return traces.stream()
-                .filter(x -> filterActivitiesByTime(rule, x))
-                .collect(Collectors.toList());
-    }
-
-    private boolean filterActivitiesByTime(LogFilterRule rule, PTrace pTrace) {
-
+    public static List<ActivityInstance> getTimeFilteredActivityInstances(LogFilterRule rule, List<PTrace> traces) {
+        boolean retain = rule.getChoice() == Choice.RETAIN;
         long fromTime = 0, toTime = 0;
         for (RuleValue ruleValue : rule.getPrimaryValues()) {
             OperationType operationType = ruleValue.getOperationType();
@@ -339,58 +335,42 @@ public class APMLogFilter {
             if (operationType == OperationType.LESS_EQUAL) toTime = ruleValue.getLongValue();
         }
 
-        long finalFromTime = fromTime;
-        long finalToTime = toTime;
-        List<ActivityInstance> validActs = LogStatsAnalyzer.getValidActivitiesOf(pTrace).stream()
-                .filter(x -> toKeepByEventTime(x, finalFromTime, finalToTime, rule.getChoice() == Choice.RETAIN))
-                .collect(Collectors.toList());
+        long fST = fromTime;
+        long fET = toTime;
+        return traces.stream()
+                .flatMap(x -> x.getActivityInstances().stream().filter(
+                        retain ? y -> TimeHistogram.withinConstraintTime(y.getStartTime(), y.getEndTime(), fST, fET) :
+                                y -> !TimeHistogram.withinConstraintTime(y.getStartTime(), y.getEndTime(), fST, fET)
+                )).collect(Collectors.toList());
+    }
 
-        if (validActs.isEmpty()) {
-            pTrace.setValidEventIndexBS(new BitSet(pTrace.getImmutableEvents().size()));
-            return false;
-        }
+    private static List<PTrace> filterEventsByTimeframe(LogFilterRule rule, List<PTrace> traces) {
 
-        BitSet bitSet = new BitSet(pTrace.getOriginalActivityInstances().size());
+        List<ActivityInstance> matched = getTimeFilteredActivityInstances(rule, traces);
 
-        for (ActivityInstance act : validActs) {
-            for (int index : act.getImmutableEventIndexes()) {
-                bitSet.set(index);
+        Map<Integer, List<ActivityInstance>> groups = matched.stream()
+                .collect(Collectors.groupingBy(ActivityInstance::getImmutableTraceIndex));
+
+        List<PTrace> finalList = new ArrayList<>();
+
+        for (PTrace pTrace : traces) {
+            int key = pTrace.getImmutableIndex();
+            if (groups.containsKey(key)) {
+                List<Integer> eventIndexes = groups.get(key).stream()
+                        .flatMap(x -> x.getImmutableEventIndexes().stream())
+                        .collect(Collectors.toList());
+                BitSet validBS = new BitSet(pTrace.getImmutableEvents().size());
+                for (int eidx : eventIndexes) {
+                    validBS.set(eidx);
+                }
+
+                pTrace.setValidEventIndexBS(validBS);
+
+                finalList.add(pTrace);
             }
         }
 
-        pTrace.setValidEventIndexBS(bitSet);
-
-        return true;
-    }
-
-    private static boolean toKeepByEventTime(ActivityInstance activity, long startTime, long endTime, boolean retain) {
-        return retain ?
-                TimeHistogram.withinTime(activity.getStartTime(), activity.getEndTime(), startTime, endTime)
-                :
-                !TimeHistogram.withinTime(activity.getStartTime(), activity.getEndTime(), startTime, endTime);
-    }
-
-    public static List<PTrace> filterByEventTime(LogFilterRule rule, List<PTrace> traces) {
-        return traces.stream()
-                .filter(x -> filterEventsByTime(rule, x))
-                .collect(Collectors.toList());
-    }
-
-    private static boolean filterEventsByTime(LogFilterRule rule, PTrace pTrace) {
-        List<Integer> validEventIndexList = pTrace.getActivityInstances().stream()
-                .filter(x -> EventTimeFilter.toKeep(x, rule))
-                .flatMap(x -> x.getImmutableEventIndexes().stream())
-                .collect(Collectors.toList());
-
-        BitSet validBS = new BitSet(pTrace.getImmutableEvents().size());
-
-        for (int validIndex : validEventIndexList) {
-            validBS.set(validIndex);
-        }
-
-        pTrace.setValidEventIndexBS(validBS);
-
-        return validEventIndexList == null || validEventIndexList.isEmpty();
+        return finalList;
     }
 
     private List<PTrace> filterByPath(LogFilterRule rule, List<PTrace> traces) {
