@@ -96,36 +96,6 @@ public class WorkDayModel {
   .atOffset(ZoneOffset.UTC)
   .toLocalDate();
 
-  public OffsetTime getAdjustedStartTime(OffsetTime time) {
-    return Duration.between(startTime, time).isNegative() ? startTime : time;
-
-  }
-
-  public OffsetTime getAdjustedEndTime(OffsetTime time) {
-    return Duration.between(time, endTime).isNegative() ? endTime : time;
-  }
-
-  public Duration getSameDayDurationByStartTime(OffsetTime startTime) {
-    Duration duration = Duration.between(getAdjustedStartTime(startTime), endTime);
-    return duration.isNegative() ? Duration.ZERO : duration;
-  }
-  
-  public Duration getSameDayDurationByEndTime(OffsetTime endTime) {
-    Duration duration = Duration.between(startTime,getAdjustedEndTime(endTime));
-    return duration.isNegative() ? Duration.ZERO : duration;
-  }
-
-  
-  public Date getStartTimeInDate()
-  {
-	 return TimeUtils.localDateAndOffsetTimeToDate(refDate, startTime);
-  }
-  
-  public Date getEndTimeInDate()
-  {
-	 return TimeUtils.localDateAndOffsetTimeToDate(refDate, startTime);
-  }
-
   /**
    * Get all real intervals of this work day model within start to end instants in a time zone
    * @param start
@@ -136,7 +106,7 @@ public class WorkDayModel {
   public List<ChronoInterval<Moment>>  getRealIntervals(Instant start, Instant end, ZoneId zoneId) {
     ZonedDateTime startDate = ZonedDateTime.ofInstant(start, zoneId);
     ZonedDateTime endDate = ZonedDateTime.ofInstant(end, zoneId);
-    return  LongStream.range(0, ChronoUnit.DAYS.between(startDate, endDate) + 1)
+    return  LongStream.range(0, ChronoUnit.DAYS.between(startDate.toLocalDate(), endDate.toLocalDate()) + 1)
                   .mapToObj(i -> startDate.plusDays(i))
                   .filter(d -> d.getDayOfWeek().equals(dayOfWeek))
                   .map(d -> getIntervalAtDate(d))
