@@ -50,18 +50,17 @@
  */
 package org.apromore.calendar.model;
 
-import java.time.DayOfWeek;
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.OffsetTime;
-import java.time.ZoneOffset;
-import java.util.Date;
-
-import org.apromore.commons.datetime.TimeUtils;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import net.time4j.Moment;
+import net.time4j.range.ChronoInterval;
+import net.time4j.range.MomentInterval;
+
+import java.time.*;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.LongStream;
 
 @Data
 @EqualsAndHashCode
@@ -92,34 +91,26 @@ public class WorkDayModel {
   .atOffset(ZoneOffset.UTC)
   .toLocalDate();
 
-  public OffsetTime getAdjustedStartTime(OffsetTime time) {
-    return Duration.between(startTime, time).isNegative() ? startTime : time;
-
+  /**
+   * Get all real intervals of this work day model within start to end instants in a time zone
+   * @param start
+   * @param end
+   * @param zoneId
+   * @return list of all real working day intervals within the period
+   */
+  public List<ChronoInterval<Moment>>  getRealIntervals(Instant start, Instant end, ZoneId zoneId) {
+    ZonedDateTime startDate = ZonedDateTime.ofInstant(start, zoneId);
+    ZonedDateTime endDate = ZonedDateTime.ofInstant(end, zoneId);
+    return  LongStream.range(0, ChronoUnit.DAYS.between(startDate.toLocalDate(), endDate.toLocalDate()) + 1)
+                  .mapToObj(startDate::plusDays)
+                  .filter(d -> d.getDayOfWeek().equals(dayOfWeek))
+                  .map(this::getIntervalAtDate)
+                  .collect(Collectors.toList());
   }
 
-  public OffsetTime getAdjustedEndTime(OffsetTime time) {
-    return Duration.between(time, endTime).isNegative() ? endTime : time;
-  }
-
-  public Duration getSameDayDurationByStartTime(OffsetTime startTime) {
-    Duration duration = Duration.between(getAdjustedStartTime(startTime), endTime);
-    return duration.isNegative() ? Duration.ZERO : duration;
-  }
-  
-  public Duration getSameDayDurationByEndTime(OffsetTime endTime) {
-    Duration duration = Duration.between(startTime,getAdjustedEndTime(endTime));
-    return duration.isNegative() ? Duration.ZERO : duration;
-  }
-
-  
-  public Date getStartTimeInDate()
-  {
-	 return TimeUtils.localDateAndOffsetTimeToDate(refDate, startTime);
-  }
-  
-  public Date getEndTimeInDate()
-  {
-	 return TimeUtils.localDateAndOffsetTimeToDate(refDate, startTime);
+  public ChronoInterval<Moment> getIntervalAtDate(ZonedDateTime d) {
+    return MomentInterval.between(startTime.atDate(d.toLocalDate()).toInstant(),
+            endTime.atDate(d.toLocalDate()).toInstant());
   }
 
 }

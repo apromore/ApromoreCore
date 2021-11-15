@@ -32,24 +32,33 @@
 
 package org.apromore.calendar.model;
 
-import java.time.DayOfWeek;
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.time.OffsetTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import net.time4j.ClockUnit;
+import net.time4j.Moment;
+import net.time4j.range.ChronoInterval;
+import net.time4j.range.IntervalCollection;
+import net.time4j.range.MomentInterval;
+import net.time4j.tz.Timezone;
+
+import java.time.*;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Random;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import org.apache.commons.collections.map.HashedMap;
-import lombok.Data;
 
-
+/**
+ * @author Nolan Tellis:
+ *    - Created this module
+ * @author Bruce Nguyen:
+ *    - Add new duration calculation based on intervals
+ */
 @Data
 public class CalendarModel {
 
@@ -60,107 +69,54 @@ public class CalendarModel {
   private String createdBy = "";
   private String updatedBy = "";
   private String zoneId = ZoneOffset.UTC.getId();
-  private List<WorkDayModel> workDays = new ArrayList<WorkDayModel>();
-  private List<HolidayModel> holidays = new ArrayList<HolidayModel>();
-
-  Map<DayOfWeek, WorkDayModel> dayOfWeekWorkDayMap = new HashedMap();
-  Map<LocalDate, HolidayModel> holidayLocalDateMap = new HashedMap();
+  private List<WorkDayModel> workDays = new ArrayList<>();
+  private List<HolidayModel> holidays = new ArrayList<>();
 
   public static CalendarModel ABSOLUTE_CALENDAR = new AbsoluteCalendarModel();
 
-  public DurationModel getDuration(ZonedDateTime starDateTime, ZonedDateTime endDateTime) {
+  @Getter(AccessLevel.NONE)
+  @Setter(AccessLevel.NONE)
+  private List<ChronoInterval<Moment>> holidayIntervals;
 
-    populateWorkDayMap();
-
-    populateHolidayMap();
-
+  public DurationModel getDuration(OffsetDateTime starDateTime, OffsetDateTime endDateTime) {
     DurationModel durationModel = new DurationModel();
-
-    // if startdate and enddate is same
-    LocalDate localStartDate = starDateTime.toLocalDate();
-    LocalDate localEndDate = endDateTime.toLocalDate();
-
-    if (isSameDay(localStartDate, localEndDate)) {
-
-      Duration durationForSameDay = Duration.ZERO;
-
-      WorkDayModel workDayModel = dayOfWeekWorkDayMap.get(starDateTime.getDayOfWeek());
-
-      if (workDayModel.isWorkingDay() && holidayLocalDateMap.get(localStartDate) == null) {
-        durationForSameDay = getDurationForSameDay(starDateTime.toOffsetDateTime().toOffsetTime(),
-            endDateTime.toOffsetDateTime().toOffsetTime(), workDayModel);
-      }
-      durationModel.setAll(durationForSameDay);
-      return durationModel;
-
-    }
-    // if Start Day and end day is not same.
-
-    Duration totalDuration = Duration.ZERO;
-    for (ZonedDateTime dayDateTime = starDateTime; !dayDateTime.toLocalDate()
-        .isAfter(endDateTime.toLocalDate()); dayDateTime = dayDateTime.plus(1, ChronoUnit.DAYS)) {
-
-      DayOfWeek currentDayOfWeek = dayDateTime.getDayOfWeek();
-
-      WorkDayModel workDay = dayOfWeekWorkDayMap.get(currentDayOfWeek);
-
-      Duration calculatedDuration = workDay.getDuration();
-      if (!workDay.isWorkingDay() || holidayLocalDateMap.get(localStartDate) != null) {
-
-        calculatedDuration = Duration.ZERO;
-
-      } else if (isStartDay(starDateTime, dayDateTime)) {
-
-        calculatedDuration =
-            workDay.getSameDayDurationByStartTime(starDateTime.toOffsetDateTime().toOffsetTime());
-
-      } else if (isEndDay(endDateTime, dayDateTime)) {
-        calculatedDuration =
-            workDay.getSameDayDurationByEndTime(endDateTime.toOffsetDateTime().toOffsetTime());
-      }
-
-      totalDuration = totalDuration.plus(calculatedDuration);
-
-    }
-    durationModel.setAll(totalDuration);
-
+    durationModel.setAll(getDuration(starDateTime.toInstant(), endDateTime.toInstant()));
     return durationModel;
   }
 
-  public DurationModel getDuration(OffsetDateTime starDateTime, OffsetDateTime endDateTime) {
-
-    ZonedDateTime zonedStartDateTime =
-        ZonedDateTime.ofInstant(starDateTime.toInstant(), ZoneId.of(zoneId));
-    ZonedDateTime zonedEndDateTime =
-        ZonedDateTime.ofInstant(endDateTime.toInstant(), ZoneId.of(zoneId));
-
-    return getDuration(zonedStartDateTime, zonedEndDateTime);
-  }
-
   public DurationModel getDuration(Long starDateTimeUnixTs, Long endDateTimeunixTs) {
-
-    ZonedDateTime zonedStartDateTime =
-        ZonedDateTime.ofInstant(Instant.ofEpochMilli(starDateTimeUnixTs), ZoneId.of(zoneId));
-    ZonedDateTime zonedEndDateTime =
-        ZonedDateTime.ofInstant(Instant.ofEpochMilli(endDateTimeunixTs), ZoneId.of(zoneId));
-    return getDuration(zonedStartDateTime, zonedEndDateTime);
+      DurationModel durationModel = new DurationModel();
+      durationModel.setAll(getDuration(Instant.ofEpochMilli(starDateTimeUnixTs), Instant.ofEpochMilli(endDateTimeunixTs)));
+      return durationModel;
   }
 
+  public Duration getDuration(Instant start, Instant end) {
+    if (end.isBefore(start) || end.equals(start)) return Duration.ZERO;
+    IntervalCollection<Moment> intervals = IntervalCollection.onMomentAxis();
+    return Duration.from(
+            intervals
+              .plus(getWorkDayIntervals(start, end))
+              .minus(getHolidayIntervals())
+              .withTimeWindow(MomentInterval.between(start, end)).stream()
+              .map(MomentInterval.class::cast)
+              .map(v -> v.getNominalDuration(Timezone.of(zoneId), ClockUnit.MILLIS))
+              .collect(net.time4j.Duration.summingUp())
+              .toTemporalAmount());
+  }
+
+  // This duration is rounded to the nearest milliseconds
+  public long getDurationMillis(Instant start, Instant end) {
+    Duration dur = getDuration(start, end);
+    return dur.getNano() > 500_000
+              ? dur.truncatedTo(ChronoUnit.MILLIS).plusMillis(1).toMillis()
+              : dur.toMillis();
+  }
 
   public Long[] getDuration(Long[] starDateTimeUnixTs, Long[] endDateTimeunixTs) {
     Long[] resultList = new Long[starDateTimeUnixTs.length];
-
-    ZoneId zone = ZoneId.of(zoneId);
-
-    IntStream.range(0, starDateTimeUnixTs.length).parallel().forEach(i -> {
-
-      ZonedDateTime zonedStartDateTime =
-          ZonedDateTime.ofInstant(Instant.ofEpochMilli(starDateTimeUnixTs[i]), zone);
-      ZonedDateTime zonedEndDateTime =
-          ZonedDateTime.ofInstant(Instant.ofEpochMilli(endDateTimeunixTs[i]), zone);
-      resultList[i] = getDuration(zonedStartDateTime, zonedEndDateTime).getDuration().toMillis();
-
-    });
+    IntStream.range(0, starDateTimeUnixTs.length).parallel().forEach(i ->
+      resultList[i] = getDurationMillis(Instant.ofEpochMilli(starDateTimeUnixTs[i]),
+              Instant.ofEpochMilli(endDateTimeunixTs[i])));
 
     return resultList;
   }
@@ -169,67 +125,28 @@ public class CalendarModel {
     if (starDateTimeUnixTs == null || starDateTimeUnixTs.length == 0 || endDateTimeunixTs == null
         || endDateTimeunixTs.length == 0)
       return new long[] {};
-
     long[] resultList = new long[starDateTimeUnixTs.length];
-
-    ZoneId zone = ZoneId.of(zoneId);
-
-    IntStream.range(0, starDateTimeUnixTs.length).parallel().forEach(i -> {
-
-      ZonedDateTime zonedStartDateTime =
-          ZonedDateTime.ofInstant(Instant.ofEpochMilli(starDateTimeUnixTs[i]), zone);
-      ZonedDateTime zonedEndDateTime =
-          ZonedDateTime.ofInstant(Instant.ofEpochMilli(endDateTimeunixTs[i]), zone);
-      resultList[i] = getDuration(zonedStartDateTime, zonedEndDateTime).getDuration().toMillis();
-
-    });
+    IntStream.range(0, starDateTimeUnixTs.length).parallel().forEach(i ->
+      resultList[i] = getDurationMillis(Instant.ofEpochMilli(starDateTimeUnixTs[i]),
+                                  Instant.ofEpochMilli(endDateTimeunixTs[i])));
 
     return resultList;
   }
 
+  private List<ChronoInterval<Moment>> getWorkDayIntervals(Instant start, Instant end) {
+    return workDays.stream()
+            .filter(WorkDayModel::isWorkingDay)
+            .map(workDay -> workDay.getRealIntervals(start, end, ZoneId.of(zoneId)).stream())
+            .flatMap(Function.identity())
+            .collect(Collectors.toList());
+  }
 
-
-  public void populateHolidayMap() {
-    if (holidayLocalDateMap.isEmpty()) {
-      holidayLocalDateMap = holidays.parallelStream().collect(
-          Collectors.toMap(HolidayModel::getHolidayDate, Function.identity(), (e1, e2) -> e1));
+  private List<ChronoInterval<Moment>> getHolidayIntervals() {
+    if (holidayIntervals == null) {
+      holidayIntervals = holidays.stream().map(d -> d.getInterval(ZoneId.of(zoneId)))
+              .collect(Collectors.toList());
     }
-  }
-
-
-
-  private void populateWorkDayMap() {
-    if (dayOfWeekWorkDayMap.isEmpty()) {
-      dayOfWeekWorkDayMap = workDays.parallelStream()
-          .collect(Collectors.toMap(WorkDayModel::getDayOfWeek, Function.identity()));
-    }
-  }
-
-
-  private boolean isEndDay(ZonedDateTime endDateTime, ZonedDateTime dayDateTime) {
-    return dayDateTime.toLocalDate().isEqual(endDateTime.toLocalDate());
-  }
-
-
-  private boolean isStartDay(ZonedDateTime zonedStartDateTime, ZonedDateTime dayDateTime) {
-    return isEndDay(zonedStartDateTime, dayDateTime);
-  }
-
-
-  private boolean isSameDay(LocalDate localStartDate, LocalDate localEndDate) {
-    return localStartDate.equals(localEndDate);
-  }
-
-
-  private Duration getDurationForSameDay(OffsetTime startTime, OffsetTime endTime,
-      WorkDayModel workDayModel) {
-    DurationModel durationModel = new DurationModel();
-
-    Duration duration = Duration.between(workDayModel.getAdjustedStartTime(startTime),
-        workDayModel.getAdjustedEndTime(endTime));
-
-    return duration.isNegative() ? Duration.ZERO : duration;
-
+    return holidayIntervals;
   }
 
   public List<WorkDayModel> getOrderedWorkDay() {

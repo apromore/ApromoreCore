@@ -39,20 +39,20 @@ import java.util.Arrays;
 import java.util.Collection;
 
 @RunWith(Parameterized.class)
-public class DurationCalculationTestWithHolidayUnitTest {
+public class DurationCalculationTestWithMicroDurationUnitTest {
 
   CalendarModelBuilder calendarModelBuilder;
   OffsetDateTime startDateTime;
   OffsetDateTime endDateTime;
   Duration expected;
-  
+
 
   @Before
   public void Setup() {
     calendarModelBuilder = new CalendarModelBuilder();
   }
 
- public DurationCalculationTestWithHolidayUnitTest(OffsetDateTime startDateTime,OffsetDateTime endDateTime,Duration expected)
+ public DurationCalculationTestWithMicroDurationUnitTest(OffsetDateTime startDateTime, OffsetDateTime endDateTime, Duration expected)
  {
    this.startDateTime=startDateTime;
    this.endDateTime=endDateTime;
@@ -63,28 +63,23 @@ public class DurationCalculationTestWithHolidayUnitTest {
  @Parameterized.Parameters
  public static Collection params() {
     return Arrays.asList(new Object[][] {
-        // Within holiday 26/1
-       {   OffsetDateTime.of(2021, 01, 26, 9, 00, 59, 0, ZoneOffset.UTC),
-           OffsetDateTime.of(2021, 01, 26, 10, 00, 00, 0, ZoneOffset.UTC),
-           Duration.of(0, ChronoUnit.HOURS)
-       },
         // Overlapping holiday 26/1
        {
-           OffsetDateTime.of(2021, 01, 25, 23, 00, 00, 0, ZoneOffset.UTC),
+           OffsetDateTime.of(2021, 01, 25, 16, 59, 59, 0, ZoneOffset.UTC),
            OffsetDateTime.of(2021, 01, 26, 9, 00, 00, 0, ZoneOffset.UTC),
-           Duration.of(1, ChronoUnit.HOURS)
+           Duration.of(1, ChronoUnit.SECONDS)
        },
         // Containing holiday 26/1
        {
-           OffsetDateTime.of(2021, 01, 25, 23, 00, 00, 0, ZoneOffset.UTC),
-           OffsetDateTime.of(2021, 01, 27, 01, 00, 00, 0, ZoneOffset.UTC),
-           Duration.of(2, ChronoUnit.HOURS)
+           OffsetDateTime.of(2021, 01, 25, 16, 59, 59, 0, ZoneOffset.UTC),
+           OffsetDateTime.of(2021, 01, 27, 9, 00, 01, 0, ZoneOffset.UTC),
+           Duration.of(2, ChronoUnit.SECONDS)
        },
         // Outside holiday 26/1
        {
            OffsetDateTime.of(2021, 01, 25, 9, 00, 00, 0, ZoneOffset.UTC),
-           OffsetDateTime.of(2021, 01, 25, 10, 00, 00, 0, ZoneOffset.UTC),
-           Duration.of(1, ChronoUnit.HOURS)},
+           OffsetDateTime.of(2021, 01, 25, 9, 00, 01, 0, ZoneOffset.UTC),
+           Duration.of(1, ChronoUnit.SECONDS)},
     });
  }
  
@@ -92,7 +87,7 @@ public class DurationCalculationTestWithHolidayUnitTest {
   @Test
   public void testCalculateDurationWithHoliday() {
    
-    CalendarModel calendarModel = calendarModelBuilder.withAllDayAllTime()
+    CalendarModel calendarModel = calendarModelBuilder.with7DayWorking() // 9 to 5 working time
             .withZoneId(ZoneOffset.UTC.getId())
             .withHoliday(HolidayType.PUBLIC, "Anzac", "Anzac",
                     LocalDate.of(2021, 01, 26))

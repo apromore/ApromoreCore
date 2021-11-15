@@ -28,10 +28,10 @@
 
 package org.apromore.calendar.model;
 
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 import lombok.Data;
 import lombok.ToString;
+
+import java.time.Duration;
 
 @Data
 @ToString
