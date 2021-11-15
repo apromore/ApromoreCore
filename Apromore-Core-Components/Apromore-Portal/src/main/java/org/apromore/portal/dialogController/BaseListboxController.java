@@ -202,6 +202,9 @@ public abstract class BaseListboxController extends BaseController {
 	  this.listBox.addEventListener(Events.ON_RIGHT_CLICK, new EventListener<Event>() {
 	      @Override
 	      public void onEvent(Event event) throws Exception {
+	    	if (listBox.getSelectedCount() > 0) {
+	    	  unselectAll();
+	    	}
     	 	Map args = new HashMap();
       	    args.put("POPUP_TYPE", "CANVAS");
         	Menupopup menupopup = (Menupopup)Executions.createComponents("~./macros/popupMenu.zul", null, args);
