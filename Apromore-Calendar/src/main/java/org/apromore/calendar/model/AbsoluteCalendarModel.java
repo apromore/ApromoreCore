@@ -21,10 +21,11 @@
  */
 package org.apromore.calendar.model;
 
-import java.time.*;
+import java.time.Duration;
+import java.time.OffsetDateTime;
+import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 /**
  * This class represents the absolute 24/7 calendar with every moment is included as working time, no holidays.

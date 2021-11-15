@@ -50,22 +50,17 @@
  */
 package org.apromore.calendar.model;
 
-import java.time.*;
-import java.time.temporal.ChronoUnit;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.LongStream;
-
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import net.time4j.Moment;
 import net.time4j.range.ChronoInterval;
 import net.time4j.range.MomentInterval;
-import org.apromore.commons.datetime.TimeUtils;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import java.time.*;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.LongStream;
 
 @Data
 @EqualsAndHashCode

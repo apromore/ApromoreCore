@@ -28,19 +28,17 @@
 
 package org.apromore.calendar.model;
 
-import java.io.Serializable;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.Date;
-
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import net.time4j.Moment;
 import net.time4j.range.ChronoInterval;
 import net.time4j.range.MomentInterval;
 import org.apromore.commons.datetime.TimeUtils;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 
 /**
  * Represent a holiday<br>

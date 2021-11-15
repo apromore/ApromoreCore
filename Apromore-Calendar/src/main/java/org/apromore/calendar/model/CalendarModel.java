@@ -42,11 +42,13 @@ import net.time4j.range.ChronoInterval;
 import net.time4j.range.IntervalCollection;
 import net.time4j.range.MomentInterval;
 import net.time4j.tz.Timezone;
-import org.apache.commons.collections.map.HashedMap;
 
 import java.time.*;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Random;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
