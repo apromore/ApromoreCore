@@ -21,12 +21,11 @@
  */
 package org.apromore.calendar.builder;
 
-import java.time.DayOfWeek;
-import java.time.Duration;
-import java.time.OffsetTime;
-import java.time.ZoneOffset;
+import java.time.*;
 
 import org.apromore.calendar.model.CalendarModel;
+import org.apromore.calendar.model.HolidayModel;
+import org.apromore.calendar.model.HolidayType;
 import org.apromore.calendar.model.WorkDayModel;
 
 public class CalendarModelBuilder {
@@ -50,7 +49,13 @@ public class CalendarModelBuilder {
     model.getWorkDays().add(workDayModel);
     return this;
   }
-  
+
+  /**
+   * Because of the ending time setting to 23:59:59:999999999, duration calculation based on this calendar will have a
+   * nanosecond imprecision. When comparing a Duration value with a constant, it must be rounded up to a precision level
+   * to be compared, e.g. rounded up to SECONDS or MILLISECONDS.
+   * @return
+   */
   public CalendarModelBuilder withAllDayAllTime() {
       for (DayOfWeek dayOfWeek : DayOfWeek.values()) {
           withWorkDay(dayOfWeek, OffsetTime.of(0, 0, 0, 0, ZoneOffset.of(model.getZoneId())),
@@ -104,6 +109,12 @@ public class CalendarModelBuilder {
           OffsetTime.of(17, 0, 0, 0, ZoneOffset.of(model.getZoneId())), isWorking);
 
     }
+    return this;
+  }
+
+  public CalendarModelBuilder withHoliday(HolidayType holidayType, String name, String description,
+                                           LocalDate holidayDate) {
+    model.getHolidays().add(new HolidayModel(holidayType, name, description, holidayDate));
     return this;
   }
 
