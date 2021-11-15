@@ -98,7 +98,7 @@ public class CalendarModel {
               .plus(getWorkDayIntervals(start, end))
               .minus(getHolidayIntervals())
               .withTimeWindow(MomentInterval.between(start, end)).stream()
-              .map(v -> (MomentInterval)v)
+              .map(MomentInterval.class::cast)
               .map(v -> v.getNominalDuration(Timezone.of(zoneId), ClockUnit.MILLIS))
               .collect(net.time4j.Duration.summingUp())
               .toTemporalAmount());
@@ -107,17 +107,16 @@ public class CalendarModel {
   // This duration is rounded to the nearest milliseconds
   public long getDurationMillis(Instant start, Instant end) {
     Duration dur = getDuration(start, end);
-    return dur.getNano() > 500
+    return dur.getNano() > 500_000
               ? dur.truncatedTo(ChronoUnit.MILLIS).plusMillis(1).toMillis()
               : dur.toMillis();
   }
 
   public Long[] getDuration(Long[] starDateTimeUnixTs, Long[] endDateTimeunixTs) {
     Long[] resultList = new Long[starDateTimeUnixTs.length];
-    IntStream.range(0, starDateTimeUnixTs.length).parallel().forEach(i -> {
+    IntStream.range(0, starDateTimeUnixTs.length).parallel().forEach(i ->
       resultList[i] = getDurationMillis(Instant.ofEpochMilli(starDateTimeUnixTs[i]),
-              Instant.ofEpochMilli(endDateTimeunixTs[i]));
-    });
+              Instant.ofEpochMilli(endDateTimeunixTs[i])));
 
     return resultList;
   }
@@ -127,10 +126,9 @@ public class CalendarModel {
         || endDateTimeunixTs.length == 0)
       return new long[] {};
     long[] resultList = new long[starDateTimeUnixTs.length];
-    IntStream.range(0, starDateTimeUnixTs.length).parallel().forEach(i -> {
+    IntStream.range(0, starDateTimeUnixTs.length).parallel().forEach(i ->
       resultList[i] = getDurationMillis(Instant.ofEpochMilli(starDateTimeUnixTs[i]),
-                                  Instant.ofEpochMilli(endDateTimeunixTs[i]));
-    });
+                                  Instant.ofEpochMilli(endDateTimeunixTs[i])));
 
     return resultList;
   }
@@ -144,11 +142,11 @@ public class CalendarModel {
   }
 
   private List<ChronoInterval<Moment>> getHolidayIntervals() {
-    return holidayIntervals != null
-            ? holidayIntervals
-            : (holidayIntervals = holidays.stream()
-                .map(d -> d.getInterval(ZoneId.of(zoneId)))
-                .collect(Collectors.toList()));
+    if (holidayIntervals == null) {
+      holidayIntervals = holidays.stream().map(d -> d.getInterval(ZoneId.of(zoneId)))
+              .collect(Collectors.toList());
+    }
+    return holidayIntervals;
   }
 
   public List<WorkDayModel> getOrderedWorkDay() {

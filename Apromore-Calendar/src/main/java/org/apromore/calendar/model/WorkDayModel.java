@@ -102,9 +102,9 @@ public class WorkDayModel {
     ZonedDateTime startDate = ZonedDateTime.ofInstant(start, zoneId);
     ZonedDateTime endDate = ZonedDateTime.ofInstant(end, zoneId);
     return  LongStream.range(0, ChronoUnit.DAYS.between(startDate.toLocalDate(), endDate.toLocalDate()) + 1)
-                  .mapToObj(i -> startDate.plusDays(i))
+                  .mapToObj(startDate::plusDays)
                   .filter(d -> d.getDayOfWeek().equals(dayOfWeek))
-                  .map(d -> getIntervalAtDate(d))
+                  .map(this::getIntervalAtDate)
                   .collect(Collectors.toList());
   }
 
