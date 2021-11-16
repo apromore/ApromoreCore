@@ -149,6 +149,7 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 		item.addEventListener(ON_CLICK, event -> getBaseListboxController().paste());
 		if(getBaseListboxController().getCopyAndPasteController().getSelectedItemsSize()==0) {
 			item.setDisabled(true);	
+			item.setStyle("pointer-events:none");
 		}
 		popup.appendChild(item);
 	}
