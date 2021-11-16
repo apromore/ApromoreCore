@@ -9,7 +9,7 @@ describe('After the EditorApp has been created with a BPMN model and plugins', f
 
     it('It can load all the plugins', async function() {
         let plugins = editorApp.getActivatedPlugins();
-        expect(plugins.length).toEqual(9);
+        expect(plugins.length).toEqual(8);
     });
 
     it('It can get the XML representation of the model', async function() {

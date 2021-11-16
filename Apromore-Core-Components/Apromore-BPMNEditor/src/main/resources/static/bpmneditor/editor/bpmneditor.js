@@ -90020,11 +90020,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _pdf__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./pdf */ "./src/bpmneditor/plugins/pdf.js");
 /* harmony import */ var _share__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./share */ "./src/bpmneditor/plugins/share.js");
 /* harmony import */ var _simulateModel__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./simulateModel */ "./src/bpmneditor/plugins/simulateModel.js");
-/* harmony import */ var _simulationPanel__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./simulationPanel */ "./src/bpmneditor/plugins/simulationPanel.js");
-/* harmony import */ var _toolbar__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./toolbar */ "./src/bpmneditor/plugins/toolbar.js");
-/* harmony import */ var _undo__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./undo */ "./src/bpmneditor/plugins/undo.js");
-/* harmony import */ var _view__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./view */ "./src/bpmneditor/plugins/view.js");
-
+/* harmony import */ var _toolbar__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./toolbar */ "./src/bpmneditor/plugins/toolbar.js");
+/* harmony import */ var _undo__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./undo */ "./src/bpmneditor/plugins/undo.js");
+/* harmony import */ var _view__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./view */ "./src/bpmneditor/plugins/view.js");
 
 
 
@@ -90041,10 +90039,9 @@ let Plugins = {
     File: _pdf__WEBPACK_IMPORTED_MODULE_2__["default"],
     Share: _share__WEBPACK_IMPORTED_MODULE_3__["default"],
     SimulateModel: _simulateModel__WEBPACK_IMPORTED_MODULE_4__["default"],
-    SimulationPanel: _simulationPanel__WEBPACK_IMPORTED_MODULE_5__["default"],
-    Toolbar: _toolbar__WEBPACK_IMPORTED_MODULE_6__["default"],
-    Undo: _undo__WEBPACK_IMPORTED_MODULE_7__["default"],
-    View: _view__WEBPACK_IMPORTED_MODULE_8__["default"]
+    Toolbar: _toolbar__WEBPACK_IMPORTED_MODULE_5__["default"],
+    Undo: _undo__WEBPACK_IMPORTED_MODULE_6__["default"],
+    View: _view__WEBPACK_IMPORTED_MODULE_7__["default"]
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (Plugins);
@@ -90154,7 +90151,7 @@ class SimulateModel {
             'functionality': this.simulateModel.bind(this),
             'group': window.Apromore.I18N.SimulationPanel.group,
             'description': window.Apromore.I18N.SimulationPanel.simulateModelDesc,
-            'index': 2,
+            'index': 1,
             'groupOrder': 3,
             'icon': _config__WEBPACK_IMPORTED_MODULE_0__["default"].PATH + "images/ap/simulate-model.svg",
             isEnabled : function(){ return facade.useSimulationPanel}.bind(this),
@@ -90170,56 +90167,6 @@ class SimulateModel {
         if (Apromore.BPMNEditor.Plugins.SimulateModel.apromoreSimulateModel) {
             Apromore.BPMNEditor.Plugins.SimulateModel.apromoreSimulateModel(xml);
         }
-    }
-};
-
-
-/***/ }),
-
-/***/ "./src/bpmneditor/plugins/simulationPanel.js":
-/*!***************************************************!*\
-  !*** ./src/bpmneditor/plugins/simulationPanel.js ***!
-  \***************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return SimulationPanel; });
-/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./../config */ "./src/bpmneditor/config.js");
-
-
-/**
- * The simulation panel plugin offers functionality to change model simulation parameters over the
- * simulation parameters panel.
- *
- * @class SimulationPanel
- * @param {Object} facade The editor facade for plugins.
- */
-class SimulationPanel {
-
-    constructor(facade) {
-        this.facade = facade;
-
-        /* Register toggle simulation panel */
-        this.facade.offer({
-            'btnId': 'ap-id-editor-simulation-btn',
-            'name': window.Apromore.I18N.SimulationPanel.toggleSimulationDrawer,
-            'functionality': this.toggleSimulationDrawer.bind(this),
-            'group': window.Apromore.I18N.SimulationPanel.group,
-            'description': window.Apromore.I18N.SimulationPanel.toggleSimulationDrawerDesc,
-            'index': 1,
-            'groupOrder': 3,
-            'icon': _config__WEBPACK_IMPORTED_MODULE_0__["default"].PATH + "images/ap/parameters.svg",
-            isEnabled : function(){ return facade.useSimulationPanel}.bind(this),
-        });
-    };
-
-    /**
-     * Shortcut for performing an expand or collapse based on the current state of the panel.
-     */
-    toggleSimulationDrawer() {
-        this.facade.getEastPanel().toggleCollapse(true);
     }
 };
 

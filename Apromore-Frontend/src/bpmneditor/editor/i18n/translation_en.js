@@ -116,6 +116,8 @@ if(!Apromore.I18N.SimulationPanel) Apromore.I18N.SimulationPanel = {};
 Apromore.I18N.SimulationPanel.group = "Simulation";
 Apromore.I18N.SimulationPanel.toggleSimulationDrawer = "Toggle simulation panel";
 Apromore.I18N.SimulationPanel.toggleSimulationDrawerDesc = "Toggle simulation parameters panel";
+Apromore.I18N.SimulationPanel.simulateModel = "Simulate model";
+Apromore.I18N.SimulationPanel.simulateModelDesc = "Simulate model";
 
 Apromore.I18N.Save.dialogDesciption = "Please enter a name, a description and a comment.";
 Apromore.I18N.Save.dialogLabelTitle = "Title";

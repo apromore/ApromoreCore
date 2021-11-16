@@ -10,9 +10,9 @@ describe('After the EditorApp has been initialized with a BPMN model with the Si
         editorApp = await testFactory.createEditorAppWithModelAndPlugins();
     });
 
-    it('The Save plugin has been loaded', async function() {
+    it('The Simulate model plugin has been loaded', async function() {
         let plugins = editorApp.getActivatedPlugins();
-        expect(plugins[8]).toBeInstanceOf(SimulateModel);
+        expect(plugins[7]).toBeInstanceOf(SimulateModel);
     });
 
     // Unlike other tests, this test can't start from calling ExtJs button click programmatically
@@ -28,7 +28,7 @@ describe('After the EditorApp has been initialized with a BPMN model with the Si
         window.Apromore.BPMNEditor.Plugins.SimulateModel.apromoreSimulateModel = function (xml) {};
 
         spyOn(window.Apromore.BPMNEditor.Plugins.SimulateModel, 'apromoreSimulateModel');
-        let pluginSimulateModel = editorApp.getActivatedPlugins()[8];
+        let pluginSimulateModel = editorApp.getActivatedPlugins()[7];
         await pluginSimulateModel.simulateModel();
         expect(window.Apromore.BPMNEditor.Plugins.SimulateModel.apromoreSimulateModel).toHaveBeenCalled();
     });

@@ -9,7 +9,6 @@
 		<plugin source="pdf.js" name="File"/>
 		<plugin source="view.js" name="View"/>
 		<plugin source="share.js" name="Share"/>
-		<plugin source="simulationPanel.js" name="SimulationPanel"/>
 		<plugin source="simulateModel.js" name="SimulateModel"/>
 	</plugins>
 </config>

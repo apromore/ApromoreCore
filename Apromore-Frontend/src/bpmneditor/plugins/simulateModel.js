@@ -19,7 +19,7 @@ export default class SimulateModel {
             'functionality': this.simulateModel.bind(this),
             'group': window.Apromore.I18N.SimulationPanel.group,
             'description': window.Apromore.I18N.SimulationPanel.simulateModelDesc,
-            'index': 2,
+            'index': 1,
             'groupOrder': 3,
             'icon': CONFIG.PATH + "images/ap/simulate-model.svg",
             isEnabled : function(){ return facade.useSimulationPanel}.bind(this),

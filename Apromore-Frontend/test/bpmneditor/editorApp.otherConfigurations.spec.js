@@ -5,13 +5,13 @@ describe('After the EditorApp has been created with a custom configuration', fun
     it('It can initialize without a Simulation Panel', async function () {
         let editorApp = testFactory.createEditorAppWithSimulationPanel();
         await testFactory.initEditorApp(editorApp, testFactory.bpmnSimpleXML, testFactory.pluginsConfigXML, true);
-        expect(editorApp.getActivatedPlugins().length).toEqual(9);
+        expect(editorApp.getActivatedPlugins().length).toEqual(8);
     });
 
     it('It can initialize with limited toolbar buttons', async function () {
         let editorApp = testFactory.createEditorAppWithCustomToolbarButtons();
         await testFactory.initEditorApp(editorApp, testFactory.bpmnSimpleXML, testFactory.pluginsConfigXML, true);
-        expect(editorApp.getActivatedPlugins().length).toEqual(9);
+        expect(editorApp.getActivatedPlugins().length).toEqual(8);
     });
 
     it('It can initialize with limited plugins', async function () {
@@ -23,7 +23,7 @@ describe('After the EditorApp has been created with a custom configuration', fun
     it('It can initialize without fullscreen', async function () {
         let editorApp = testFactory.createEditorAppWithoutFullscreenMode()
         await testFactory.initEditorApp(editorApp, testFactory.bpmnSimpleXML, testFactory.pluginsConfigXML, true);
-        expect(editorApp.getActivatedPlugins().length).toEqual(9);
+        expect(editorApp.getActivatedPlugins().length).toEqual(8);
     });
 
 });
