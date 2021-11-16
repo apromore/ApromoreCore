@@ -45,7 +45,6 @@ export default class BPMNModelWrapper {
                 window.Apromore.I18N.Undo.undo,
                 window.Apromore.I18N.Undo.redo,
                 window.Apromore.I18N.Share.share,
-                window.Apromore.I18N.SimulationPanel.toggleSimulationDrawer,
                 window.Apromore.I18N.SimulationPanel.simulateModel
             ]
         });
