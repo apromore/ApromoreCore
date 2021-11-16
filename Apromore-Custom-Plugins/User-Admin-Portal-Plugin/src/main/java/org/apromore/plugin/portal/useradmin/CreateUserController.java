@@ -21,17 +21,13 @@
  */
 package org.apromore.plugin.portal.useradmin;
 
-import java.util.Locale;
 import java.util.Map;
-import java.util.ResourceBundle;
 import org.apromore.dao.model.User;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.service.SecurityService;
 import org.slf4j.Logger;
-import org.zkoss.web.Attributes;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.select.SelectorComposer;
@@ -41,7 +37,9 @@ import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
-public class CreateUserController extends SelectorComposer<Window> {
+import org.apromore.zk.label.LabelSupplier;
+
+public class CreateUserController extends SelectorComposer<Window> implements LabelSupplier {
 
   private final static Logger LOGGER = PortalLoggerFactory.getLogger(CreateUserController.class);
 
@@ -62,15 +60,9 @@ public class CreateUserController extends SelectorComposer<Window> {
   @Wire("#passwordTextbox")
   Textbox passwordTextbox;
 
-  public ResourceBundle getLabels() {
-    // Locale locale = Locales.getCurrent()
-    Locale locale = (Locale) Sessions.getCurrent().getAttribute(Attributes.PREFERRED_LOCALE);
-    return ResourceBundle.getBundle("useradmin", locale,
-        UserAdminController.class.getClassLoader());
-  }
-
-  public String getLabel(String key) {
-    return getLabels().getString(key);
+  @Override
+  public String getBundleName() {
+    return "useradmin";
   }
 
   @Listen("onClick = #createBtn")
@@ -78,7 +70,7 @@ public class CreateUserController extends SelectorComposer<Window> {
     boolean canEditUsers = securityService.hasAccess(portalContext.getCurrentUser().getId(),
         Permissions.EDIT_USERS.getRowGuid());
     if (!canEditUsers) {
-      Messagebox.show("You do not have privilege to create user.");
+      Messagebox.show(getLabel("noPermissionCreateUser_message"));
       return;
     }
 
