@@ -116,6 +116,10 @@ public class TimeHistogram {
                 (ruleTimeFrom >= targetFrom && ruleTimeTo <= targetTo);
     }
 
+    public static boolean withinConstraintTime(long targetFrom, long targetTo, long ruleTimeFrom, long ruleTimeTo) {
+        return targetFrom >= ruleTimeFrom && targetTo <= ruleTimeTo;
+    }
+
     // ===================================================================================================
     // Private methods
     // ===================================================================================================
