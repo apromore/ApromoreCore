@@ -277,7 +277,7 @@ public class CopyAndPasteController extends BaseController {
     if (checkContext(selections, selectionCount, currentFolder)) {
       try {
         if (!checkImmediateOwnership(selections)) {
-          Notification.error(Labels.getLabel("portal_onlyOwnerCanCutItems}"));
+          Notification.error(Labels.getLabel("portal_onlyOwnerCanCutItems"));
         } else if (ItemHelpers.isOwner(this.currentUser, currentFolder)) {
           isCut = true;
           updateSelectedItems(selections);
@@ -359,7 +359,7 @@ public class CopyAndPasteController extends BaseController {
 		if (checkContext(selections, selectionCount, currentFolder)) {
 			try {
 				if (!checkImmediateOwnership(selections)) {
-					Notification.error(Labels.getLabel("portal_onlyOwnerCanCutItems}"));
+					Notification.error(Labels.getLabel("portal_onlyOwnerCanCutItems"));
 				} else if (ItemHelpers.isOwner(this.currentUser, currentFolder)) {
 					isCut = true;
 					updateSelectedItems(selections);

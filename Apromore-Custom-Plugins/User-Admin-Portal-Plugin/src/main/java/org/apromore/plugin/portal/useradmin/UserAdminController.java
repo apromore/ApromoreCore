@@ -30,36 +30,13 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.ResourceBundle;
 import java.util.Set;
-import org.apromore.dao.model.Group;
-import org.apromore.dao.model.Role;
-import org.apromore.dao.model.User;
-import org.apromore.plugin.portal.PortalContext;
-import org.apromore.plugin.portal.PortalLoggerFactory;
-import org.apromore.plugin.portal.useradmin.common.SearchableListbox;
-import org.apromore.plugin.portal.useradmin.listbox.AssignedUserListbox;
-import org.apromore.plugin.portal.useradmin.listbox.GroupListbox;
-import org.apromore.plugin.portal.useradmin.listbox.TristateItemRenderer;
-import org.apromore.plugin.portal.useradmin.listbox.TristateListbox;
-import org.apromore.plugin.portal.useradmin.listbox.TristateModel;
-import org.apromore.plugin.portal.useradmin.listbox.UserListbox;
-import org.apromore.portal.common.zk.ComponentUtils;
-import org.apromore.portal.types.EventQueueEvents;
-import org.apromore.portal.types.EventQueueTypes;
-import org.apromore.service.SecurityService;
-import org.apromore.service.WorkspaceService;
-import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
-// import org.zkoss.spring.SpringUtil;
 import org.zkoss.json.JSONObject;
-import org.zkoss.web.Attributes;
 import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
@@ -85,10 +62,31 @@ import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Vbox;
 import org.zkoss.zul.Window;
 
-public class UserAdminController extends SelectorComposer<Window> {
+import org.apromore.dao.model.Group;
+import org.apromore.dao.model.Role;
+import org.apromore.dao.model.User;
+import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.PortalLoggerFactory;
+import org.apromore.plugin.portal.useradmin.common.SearchableListbox;
+import org.apromore.plugin.portal.useradmin.listbox.AssignedUserListbox;
+import org.apromore.plugin.portal.useradmin.listbox.GroupListbox;
+import org.apromore.plugin.portal.useradmin.listbox.TristateItemRenderer;
+import org.apromore.plugin.portal.useradmin.listbox.TristateListbox;
+import org.apromore.plugin.portal.useradmin.listbox.TristateModel;
+import org.apromore.plugin.portal.useradmin.listbox.UserListbox;
+import org.apromore.portal.common.zk.ComponentUtils;
+import org.apromore.portal.types.EventQueueEvents;
+import org.apromore.portal.types.EventQueueTypes;
+import org.apromore.service.SecurityService;
+import org.apromore.service.WorkspaceService;
+import org.apromore.zk.notification.Notification;
+import org.apromore.zk.label.LabelSupplier;
 
-  private static Logger LOGGER = PortalLoggerFactory.getLogger(UserAdminController.class);
-  private Map<String, String> roleMap = new HashMap<String, String>() {
+public class UserAdminController extends SelectorComposer<Window> implements LabelSupplier {
+
+  private static final String NO_PERMISSION_TO_ALLOCATE_USER = "noPermissionAllocateUserToGroup_message";
+  private static final Logger LOGGER = PortalLoggerFactory.getLogger(UserAdminController.class);
+  private Map<String, String> roleMap = new HashMap<>() {
     {
       put("ROLE_USER", "User");
       put("ROLE_ADMIN", "Administrator");
@@ -260,14 +258,9 @@ public class UserAdminController extends SelectorComposer<Window> {
         permission.getRowGuid());
   }
 
-  public ResourceBundle getLabels() {
-    Locale locale = (Locale) Sessions.getCurrent().getAttribute(Attributes.PREFERRED_LOCALE);
-    return ResourceBundle.getBundle("useradmin", locale,
-        UserAdminController.class.getClassLoader());
-  }
-
-  public String getLabel(String key) {
-    return getLabels().getString(key);
+  @Override
+  public String getBundleName() {
+    return "useradmin";
   }
 
   @Override
@@ -817,7 +810,7 @@ public class UserAdminController extends SelectorComposer<Window> {
   @Listen("onSelect = #userListbox")
   public void onSelectUserListbox(SelectEvent event) throws Exception {
     if (!hasPermission(Permissions.VIEW_USERS)) {
-      Messagebox.show("You do not have privilege to view user.");
+      Messagebox.show(getLabel("noPermissionViewUser_message"));
       return;
     }
     Set<User> prevUsers = event.getPreviousSelectedObjects();
@@ -909,7 +902,7 @@ public class UserAdminController extends SelectorComposer<Window> {
   public void onSelectAssignedGroupsListbox(SelectEvent event) {
     if (!hasPermission(Permissions.EDIT_GROUPS)) {
       groupListbox.setSelectedItems(event.getPreviousSelectedItems());
-      Notification.error("You do not have permission to assign group(s)");
+      Notification.error(getLabel("noPermissionAssignGroups"));
       return;
     }
     isUserDetailDirty = true;
@@ -919,7 +912,7 @@ public class UserAdminController extends SelectorComposer<Window> {
   public void onSelectAssignedRolesListbox(SelectEvent event) {
     if (!hasPermission(Permissions.EDIT_ROLES)) {
       assignedRoleListbox.setSelectedItems(event.getPreviousSelectedItems());
-      Notification.error("You do not have permission to assign roles");
+      Notification.error(getLabel("noPermissionAssignRoles"));
       return;
     }
     isUserDetailDirty = true;
@@ -928,7 +921,7 @@ public class UserAdminController extends SelectorComposer<Window> {
   @Listen("onClick = #userAddBtn")
   public void onClickuserAddBtn() {
     if (!hasPermission(Permissions.EDIT_USERS)) {
-      Notification.error("You do not have permission to add user");
+      Notification.error(getLabel("noPermissionAddUser"));
       return;
     }
 
@@ -1008,7 +1001,7 @@ public class UserAdminController extends SelectorComposer<Window> {
     boolean passwordDirty = false;
 
     if (!hasPermission(Permissions.EDIT_USERS)) {
-      Notification.error("You do not have permission to edit user");
+      Notification.error(getLabel("noPermissionEditUser"));
       return;
     }
     if (selectedUser != null) {
@@ -1059,7 +1052,7 @@ public class UserAdminController extends SelectorComposer<Window> {
   @Listen("onSelect = #groupListbox")
   public void onSelectGroupsListbox(SelectEvent event) {
     if (!hasPermission(Permissions.EDIT_GROUPS)) {
-      Notification.error("You do not have permission to edit group");
+      Notification.error(getLabel("noPermissionEditGroup"));
       return;
     }
     Set<Group> newGroups = event.getSelectedObjects();
@@ -1078,7 +1071,7 @@ public class UserAdminController extends SelectorComposer<Window> {
   public void checkDirtyGroup(Set<Group> prevGroups, Set<Group> newGroups, Boolean select,
       Tab tab) {
     if (isGroupDetailDirty) {
-      Messagebox.show("There is unsaved group detail. Do you want to save the information?",
+      Messagebox.show(getLabel("unsavedGroupDetail_message"),
           "Question",
           new Messagebox.Button[] {Messagebox.Button.YES, Messagebox.Button.NO,
               Messagebox.Button.CANCEL},
@@ -1146,7 +1139,7 @@ public class UserAdminController extends SelectorComposer<Window> {
   @Listen("onClick = #assignedUserAddBtn")
   public void onClickAssignedUserAdd() {
     if (!hasPermission(Permissions.EDIT_GROUPS)) {
-      Notification.error("You do not have permission to allocate users to a group");
+      Notification.error(getLabel(NO_PERMISSION_TO_ALLOCATE_USER));
       return;
     }
     if (assignedUserAddView.isVisible()) {
@@ -1159,7 +1152,7 @@ public class UserAdminController extends SelectorComposer<Window> {
   @Listen("onClick = #assignedUserRemoveBtn")
   public void onClickAssignedUserRemove() {
     if (!hasPermission(Permissions.EDIT_GROUPS)) {
-      Notification.error("You do not have permission to allocate users to a group");
+      Notification.error(getLabel(NO_PERMISSION_TO_ALLOCATE_USER));
       return;
     }
     ListModelList listModel = assignedUserList.getListModel();
@@ -1171,7 +1164,7 @@ public class UserAdminController extends SelectorComposer<Window> {
   @Listen("onClick = #candidateUserAdd")
   public void onClickCandidateUserAdd() {
     if (!hasPermission(Permissions.EDIT_GROUPS)) {
-      Notification.error("You do not have permission to allocate users to a group");
+      Notification.error(getLabel(NO_PERMISSION_TO_ALLOCATE_USER));
       return;
     }
     Set<User> users = candidateUserModel.getSelection();
@@ -1194,7 +1187,7 @@ public class UserAdminController extends SelectorComposer<Window> {
       return;
     }
     if (!hasPermission(Permissions.EDIT_GROUPS)) {
-      Notification.error("You do not have permission to allocate users to a group");
+      Notification.error(getLabel(NO_PERMISSION_TO_ALLOCATE_USER));
       return;
     }
     List<User> users = new ArrayList<User>(assignedUserList.getSelection());
@@ -1215,7 +1208,7 @@ public class UserAdminController extends SelectorComposer<Window> {
       return;
     }
     if (!hasPermission(Permissions.EDIT_GROUPS)) {
-      Notification.error("You do not have permission to allocate users to a group");
+      Notification.error(getLabel(NO_PERMISSION_TO_ALLOCATE_USER));
       return;
     }
     List<User> users = new ArrayList<User>(nonAssignedUserList.getSelection());
@@ -1233,7 +1226,7 @@ public class UserAdminController extends SelectorComposer<Window> {
   @Listen("onClick = #groupAddBtn")
   public void onClickgroupAddBtn() {
     if (!hasPermission(Permissions.EDIT_GROUPS)) {
-      Notification.error("You do not have permission to create group");
+      Notification.error(getLabel("noPermissionCreateGroup_message"));
       return;
     }
 
@@ -1247,14 +1240,14 @@ public class UserAdminController extends SelectorComposer<Window> {
 
     } catch (Exception e) {
       LOGGER.error("Unable to create group creation dialog", e);
-      Messagebox.show("Unable to create group creation dialog");
+      Messagebox.show(getLabel("failedLaunchCreateGroup_message"));
     }
   }
 
   @Listen("onClick = #groupRemoveBtn")
   public void onClickGroupRemoveBtn() {
     if (!hasPermission(Permissions.EDIT_GROUPS)) {
-      Notification.error("You do not have permission to delete group");
+      Notification.error(getLabel("noPermissionEditGroup_message"));
       return;
     }
     Set<Group> selectedGroups = groupList.getSelection();
@@ -1290,7 +1283,7 @@ public class UserAdminController extends SelectorComposer<Window> {
   @Listen("onClick = #groupSaveBtn")
   public void onClickGroupSaveButton() {
     if (!hasPermission(Permissions.EDIT_GROUPS)) {
-      Notification.error("You do not have permission to edit groups");
+      Notification.error(getLabel("noPermissionEditGroup_message"));
       return;
     }
     ListModelList listModel = assignedUserList.getListModel();
