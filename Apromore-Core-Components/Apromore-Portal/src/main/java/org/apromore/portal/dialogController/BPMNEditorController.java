@@ -252,16 +252,11 @@ public class BPMNEditorController extends BaseController implements Composer<Com
           return;
         }
 
-        //Only allow model to be simulated if it is saved
-        if (isNewProcess || process == null) {
-          Notification.error(Labels.getLabel("portal_saveModelFirst_message"));
-        } else {
-          Map arg = new HashMap<>();
-          arg.put("selectedModel", process);
-          arg.put("modelData", eventToString(event));
-          simulateModelPlugin.setSimpleParams(arg);
-          simulateModelPlugin.execute(portalContext);
-        }
+        Map arg = new HashMap<>();
+        arg.put("selectedModel", process);
+        arg.put("modelData", eventToString(event));
+        simulateModelPlugin.setSimpleParams(arg);
+        simulateModelPlugin.execute(portalContext);
       }
     });
 
