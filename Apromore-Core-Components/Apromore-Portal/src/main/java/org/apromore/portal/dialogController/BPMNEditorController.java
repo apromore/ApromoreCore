@@ -67,6 +67,9 @@ import org.zkoss.zul.Messagebox;
  * 
  * @todo there is a duplication between ApromoreSession and EditSessionType, they need to be clean
  *       later.
+ *
+ * @todo avoid thread conflict issues when setting instance data for BIMPPortalPlugin, instead it
+ *       should be passed as a method parameter.
  * 
  * @author Bruce Nguyen
  *
