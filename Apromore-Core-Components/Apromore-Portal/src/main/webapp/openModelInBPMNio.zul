@@ -122,7 +122,7 @@
                 <![CDATA[
                     var editorWrapper;
                     var disabledPlugins = [];
-                    if (${arg.disableSimulateModel}) {
+                    if (!${arg.availableSimulateModelPlugin}) {
                       disabledPlugins.push(Apromore.I18N.SimulationPanel.simulateModel);
                     }
 
