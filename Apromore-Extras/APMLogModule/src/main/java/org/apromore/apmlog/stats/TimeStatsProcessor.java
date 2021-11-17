@@ -39,6 +39,9 @@ public class TimeStatsProcessor {
     }
 
     public static long getStartTime(List<ActivityInstance> activityInstances) {
+        if (activityInstances == null || activityInstances.isEmpty())
+            return 0;
+
         long[] allST = activityInstances.stream()
                 .mapToLong(ActivityInstance::getStartTime)
                 .toArray();
@@ -48,6 +51,9 @@ public class TimeStatsProcessor {
     }
 
     public static long getEndTime(List<ActivityInstance> activityInstances) {
+        if (activityInstances == null || activityInstances.isEmpty())
+            return 0;
+
         long[] allET = activityInstances.stream()
                 .mapToLong(ActivityInstance::getEndTime)
                 .toArray();
@@ -69,11 +75,17 @@ public class TimeStatsProcessor {
     }
 
     public static DoubleArrayList getCaseDurations(List<ATrace> traces) {
+        if (traces == null || traces.isEmpty())
+            return new DoubleArrayList(0.0);
+
         double[] array = traces.stream().mapToDouble(ATrace::getDuration).toArray();
         return new DoubleArrayList(array);
     }
 
     public static double getCaseDuration(ATrace aTrace) {
+        if (aTrace == null || aTrace.getActivityInstances() == null || aTrace.getActivityInstances().isEmpty())
+            return 0;
+
         CalendarModel calendarModel = aTrace.getCalendarModel();
 
         try {
@@ -88,7 +100,8 @@ public class TimeStatsProcessor {
     public static double getCaseUtilization(List<ActivityInstance> activityInstances,
                                             DoubleArrayList procTimes,
                                             DoubleArrayList waitTimes) {
-        if (activityInstances.isEmpty()) return 0;
+        if (activityInstances == null || activityInstances.isEmpty())
+            return 0;
 
         double ttlPT = procTimes.sum();
         double ttlWT = waitTimes.sum();
@@ -100,6 +113,9 @@ public class TimeStatsProcessor {
     }
 
     public static double getCaseUtilization(List<ActivityInstance> activityInstances) {
+        if (activityInstances == null || activityInstances.isEmpty())
+            return 0;
+
         double ttlPT = getProcessingTimes(activityInstances).sum();
         double ttlWT = getWaitingTimes(activityInstances).sum();
         double dur = activityInstances.get(activityInstances.size() - 1).getEndTime() -
@@ -110,11 +126,17 @@ public class TimeStatsProcessor {
     }
 
     public static DoubleArrayList getProcessingTimes(List<ActivityInstance> activityInstances) {
+        if (activityInstances == null || activityInstances.isEmpty())
+            return new DoubleArrayList(0.0);
+
         double[] allProcTimeArray = activityInstances.stream().mapToDouble(ActivityInstance::getDuration).toArray();
         return new DoubleArrayList(allProcTimeArray);
     }
 
     public static DoubleArrayList getWaitingTimes(List<ActivityInstance> activityInstances) {
+        if (activityInstances == null || activityInstances.isEmpty())
+            return new DoubleArrayList(0.0);
+
         double[] waitTimesArray = activityInstances.stream()
                 .filter(x -> x != activityInstances.get(activityInstances.size() - 1))
                 .mapToDouble(x -> getDurationBetween(x, activityInstances.get(activityInstances.indexOf(x) + 1)))
@@ -123,6 +145,9 @@ public class TimeStatsProcessor {
     }
 
     private static double getDurationBetween(ActivityInstance fromNode, ActivityInstance toNode) {
+        if (fromNode == null || toNode == null)
+            return 0;
+
         long fromET = fromNode.getEndTime();
         long toST = toNode.getStartTime();
         CalendarModel calendarModel = fromNode.getCalendarModel();
@@ -130,10 +155,17 @@ public class TimeStatsProcessor {
     }
 
     public static double getActivityInstanceDuration(ActivityInstance activityInstance) {
+        if (activityInstance == null || activityInstance.getImmutableEventIndexes() == null ||
+                activityInstance.getImmutableEventIndexes().isEmpty())
+            return 0;
+
         long st = activityInstance.getStartTime();
         long et = activityInstance.getEndTime();
         CalendarModel calendarModel = activityInstance.getCalendarModel();
-        return CalendarDuration.getDuration(calendarModel, st, et);
+        if (calendarModel == null)
+            return et > st ? (et - st) : 0;
+        else
+            return CalendarDuration.getDuration(calendarModel, st, et);
     }
 
 }
