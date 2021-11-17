@@ -24,43 +24,25 @@
 
 package org.apromore.service.loganimation.impl;
 
-import java.io.IOException;
-// Java 2 Standard Edition
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
-
-import javax.xml.bind.JAXBException;
-
+import de.hpi.bpmn2_0.model.Definitions;
+import de.hpi.bpmn2_0.model.FlowNode;
+import de.hpi.bpmn2_0.model.connector.SequenceFlow;
+import de.hpi.bpmn2_0.transformation.BPMN2DiagramConverter;
 import org.apromore.plugin.DefaultParameterAwarePlugin;
 import org.apromore.service.loganimation.AnimationResult;
 import org.apromore.service.loganimation.LogAnimationService2;
 import org.apromore.service.loganimation.json.AnimationJSONBuilder2;
-import org.apromore.service.loganimation.replay.AnimationLog;
-import org.apromore.service.loganimation.replay.LogUtility;
-import org.apromore.service.loganimation.replay.Optimizer;
-import org.apromore.service.loganimation.replay.ReplayParams;
-import org.apromore.service.loganimation.replay.ReplayTrace;
-import org.apromore.service.loganimation.replay.Replayer;
+import org.apromore.service.loganimation.replay.*;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XTrace;
-import org.json.JSONException;
 import org.json.JSONObject;
-//import org.apromore.processmining.plugins.signaturediscovery.encoding.EncodeTraces;
-//import org.apromore.processmining.plugins.signaturediscovery.encoding.EncodingNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import de.hpi.bpmn2_0.exceptions.BpmnConverterException;
-import de.hpi.bpmn2_0.model.Definitions;
-import de.hpi.bpmn2_0.model.FlowNode;
-import de.hpi.bpmn2_0.model.connector.SequenceFlow;
-import de.hpi.bpmn2_0.transformation.BPMN2DiagramConverter;
+import java.io.InputStream;
+import java.util.*;
 
 @Service("logAnimationService2")
 @Qualifier("logAnimationService2")
@@ -69,10 +51,20 @@ public class LogAnimationServiceImpl2 extends DefaultParameterAwarePlugin implem
     private static final Logger LOGGER = LoggerFactory.getLogger(LogAnimationServiceImpl2.class);
 
     @Override
-    public AnimationResult createAnimation(String bpmn, List<Log> logs)
-            throws BpmnConverterException, IOException, JAXBException, JSONException, AnimationException {
+    public AnimationResult createAnimation(String bpmn, List<Log> logs) throws Exception {
 
+        /*
+         * ------------------------------------------
+         * Check process model validity for animation
+         * ------------------------------------------
+         */
         Definitions bpmnDefinition = BPMN2DiagramConverter.parseBPMN(bpmn, getClass().getClassLoader());
+        BPMNDiagramHelper diagramHelper = new BPMNDiagramHelper();
+        ModelCheckResult checkResult = diagramHelper.checkModel(bpmnDefinition);
+        if (!checkResult.isValid()) {
+            throw new AnimationException("The BPMN diagram is not valid for animation. " +
+                    "Reason: " + checkResult.invalidMessage());
+        }
 
         /*
         * ------------------------------------------
@@ -128,23 +120,17 @@ public class LogAnimationServiceImpl2 extends DefaultParameterAwarePlugin implem
         params.setStartEventToFirstEventDuration(artificalTransitionDur);
         params.setLastEventToEndEventDuration(artificalTransitionDur);
         
-        Replayer replayer = new Replayer(bpmnDefinition, params);
+        Replayer replayer = new Replayer(bpmnDefinition, params, diagramHelper);
         ArrayList<AnimationLog> replayedLogs = new ArrayList<>();
-        if (replayer.isValidProcess()) {
-            for (Log log: logs) {
-                AnimationLog animationLog = replayer.replay(log.xlog, log.color);
-                animationLog.setFileName(log.fileName);
-                
-                if (animationLog !=null && !animationLog.isEmpty()) {
-                    replayedLogs.add(animationLog);
-                }
-            }
+        for (Log log: logs) {
+            AnimationLog animationLog = replayer.replay(log.xlog, log.color);
+            animationLog.setFileName(log.fileName);
 
-        } else {
-            throw new AnimationException("The BPMN diagram is not valid for animation. " +
-                                         "Reason: " + replayer.getProcessCheckingMsg());
+            if (animationLog !=null && !animationLog.isEmpty()) {
+                replayedLogs.add(animationLog);
+            }
         }
-        
+
         for (AnimationLog animationLog : replayedLogs) {
             animationLog.setDiagram(bpmnDefinition);
         }
@@ -161,7 +147,8 @@ public class LogAnimationServiceImpl2 extends DefaultParameterAwarePlugin implem
             return new AnimationResult(replayedLogs, bpmnDefinition, json);
         }
         else {
-            throw new AnimationException("Internal error. No log is replayed successfully.");
+            throw new AnimationException("Unable to animate as no alignment was found between the log and model.\n" +
+                    "Possible cause: the log and model are too different.");
         }
         
     }
@@ -184,11 +171,13 @@ public class LogAnimationServiceImpl2 extends DefaultParameterAwarePlugin implem
      */
     @Override
     public AnimationResult createAnimationWithNoGateways(String bpmnWithGateways, String bpmnNoGateways, List<Log> logs)
-            throws BpmnConverterException, IOException, JAXBException, JSONException, DiagramMappingException, AnimationException {
+            throws Exception {
 
         Definitions bpmnDefWithGateways = BPMN2DiagramConverter.parseBPMN(bpmnWithGateways, getClass().getClassLoader());
         Definitions bpmnDefNoGateways = BPMN2DiagramConverter.parseBPMN(bpmnNoGateways, getClass().getClassLoader());
         ElementIDMapper diagramMapping = new ElementIDMapper(bpmnDefNoGateways);
+        BPMNDiagramHelper diagramHelper = new BPMNDiagramHelper();
+        diagramHelper.checkModel(bpmnDefNoGateways); // only scan, no need to check model validity as this is graph.
 
         /*
         * ------------------------------------------
@@ -238,23 +227,17 @@ public class LogAnimationServiceImpl2 extends DefaultParameterAwarePlugin implem
         params.setStartEventToFirstEventDuration(artificalTransitionDur);
         params.setLastEventToEndEventDuration(artificalTransitionDur);
 
-        Replayer replayer = new Replayer(bpmnDefWithGateways, params);
+        Replayer replayer = new Replayer(bpmnDefWithGateways, params, diagramHelper);
         List<AnimationLog> replayedLogs = new ArrayList<>();
-        if (replayer.isValidProcess()) {
-            for (Log log: logs) {
-                AnimationLog animationLog = replayer.replay(log.xlog, log.color);
-                animationLog.setFileName(log.fileName);
-                
-                if (animationLog !=null && !animationLog.isEmpty()) {
-                    replayedLogs.add(animationLog);
-                }
-            }
+        for (Log log: logs) {
+            AnimationLog animationLog = replayer.replay(log.xlog, log.color);
+            animationLog.setFileName(log.fileName);
 
-        } else {
-            throw new AnimationException("The BPMN diagram is not valid for animation. " +
-                                         "Reason: " + replayer.getProcessCheckingMsg());
+            if (animationLog !=null && !animationLog.isEmpty()) {
+                replayedLogs.add(animationLog);
+            }
         }
-        
+
         /*
          * ------------------------------------------
          * Convert the animation log to the one for graph, i.e. without gateways
@@ -283,7 +266,8 @@ public class LogAnimationServiceImpl2 extends DefaultParameterAwarePlugin implem
             return new AnimationResult(replayedLogs, bpmnDefNoGateways, json);
         }
         else {
-            throw new AnimationException("Internal error. No log is replayed successfully.");
+            throw new AnimationException("Unable to animate as no alignment was found between the log and model.\n" +
+                    "Possible cause: the log and model are too different.");
         }
     }
     
