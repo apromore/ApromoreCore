@@ -1213,9 +1213,7 @@ public class LogImporterController extends SelectorComposer<Window> implements C
         for (String col : list) {
             colList.append("- ").append(col).append(System.getProperty("line.separator"));
         }
-//        if (colList.length() > 0) {
-//            return colList.substring(0, colList.toString().length() - 2);
-//        }
+
         return colList.toString();
     }
 
