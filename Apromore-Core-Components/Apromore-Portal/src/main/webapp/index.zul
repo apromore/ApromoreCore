@@ -51,6 +51,9 @@
 
     <style src="~./css/cytoscape-context-menus.css"/>
     <script type="text/javascript" src="~./libs/jquery/3.5.1/jquery-3.5.1.min.js"></script>
+    <script type="text/javascript" src="~./libs/tippy/6.2.7/popper.min.js"></script>
+    <script type="text/javascript" src="~./libs/tippy/6.2.7/tippy-bundle.umd.min.js"></script>
+    <script type="text/javascript" src="~./calendar/js/index.js"></script>
     <style src="~./css/chiaroscuro.css"></style>
     <style>
         /* must be embedded here */

@@ -65,9 +65,11 @@ import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Div;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListModel;
@@ -92,6 +94,7 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
     private CalendarModel calendarModel;
     private Long calendarId;
     private boolean isNew;
+    private boolean canEdit;
     private boolean calendarExists = false;
 
     /**
@@ -121,6 +124,26 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
 
     @Wire("#zoneCombobox")
     Combobox zoneCombobox;
+
+    @Wire("#applyBtn")
+    Button applyBtn;
+
+    @Wire("#viewerWarning")
+    Label viewerWarning;
+
+    @Wire("#template9To5Btn")
+    Button template9To5Btn;
+    @Wire("#template24hBtn")
+    Button template24hBtn;
+    @Wire("#template24x7Btn")
+    Button template24x7Btn;
+
+    @Wire("#importHolidaysBtn")
+    Button importHolidaysBtn;
+    @Wire("#addHolidayBtn")
+    Button addHolidayBtn;
+    @Wire("#deleteHolidaysBtn")
+    Button deleteHolidaysBtn;
 
     // FIXME:
     // Replace with models from Apromore Calendar
@@ -156,19 +179,23 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
 
         Long calId = (Long) Executions.getCurrent().getArg().get("calendarId");
         isNew = (boolean) Executions.getCurrent().getArg().get("isNew");
+        canEdit = (boolean) Executions.getCurrent().getArg().get("canEdit");
         calendarExists = calId != null;
         calendarModel = !calendarExists ? new CalendarModel() : calendarService.getCalendar(calId);
         calendarId = calendarModel.getId();
 
         populateTimeZone();
         initialize();
-        win.setTitle("Custom Calendar - " + calendarModel.getName());
+        updateWidgets();
 
+        win.setClientDataAttribute("readonly", String.valueOf(!canEdit));
+        win.setTitle("Custom Calendar - " + calendarModel.getName());
         win.addEventListener("onClose", (Event event) -> onClickCancelBtn());
 
         actionBridge.addEventListener("onLoaded", (Event event) -> rebuild());
         actionBridge.addEventListener("onSyncRows", (Event event) -> syncRows());
         actionBridge.addEventListener("onEditRange", (Event event) -> {
+            if (!canEdit) { return; }
             JSONObject params = (JSONObject) event.getData();
             int dowIndex = (Integer) params.get("dow");
             int index = (Integer) params.get("index");
@@ -186,6 +213,7 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
         });
 
         actionBridge.addEventListener("onUpdateWorkday", (Event event) -> {
+            if (!canEdit) { return; }
             JSONObject params = (JSONObject) event.getData();
             int dowIndex = (Integer) params.get("dow");
             Boolean workday = (Boolean) params.get("workday");
@@ -196,6 +224,7 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
         });
 
         actionBridge.addEventListener("onUpdateRanges", (Event event) -> {
+            if (!canEdit) { return; }
             JSONObject params = (JSONObject) event.getData();
             int dowIndex = (Integer) params.get("dow");
             JSONArray rangeArray = (JSONArray) params.get("ranges");
@@ -227,7 +256,19 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
         });
     }
 
-    public void populateTimeZone() {
+    private void updateWidgets() {
+        zoneCombobox.setDisabled(!canEdit);
+        applyBtn.setDisabled(!canEdit);
+        template9To5Btn.setDisabled(!canEdit);
+        template24hBtn.setDisabled(!canEdit);
+        template24x7Btn.setDisabled(!canEdit);
+        importHolidaysBtn.setDisabled(!canEdit);
+        addHolidayBtn.setDisabled(!canEdit);
+        deleteHolidaysBtn.setDisabled(!canEdit);
+        viewerWarning.setVisible(!canEdit);
+    }
+
+    private void populateTimeZone() {
         Set<String> zoneIds = ZoneId.getAvailableZoneIds();
         zoneModel = new ListModelList<>();
 
@@ -282,6 +323,7 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
     }
 
     public void editWorkday(int dowIndex, int index, Date start, Date end) {
+        if (!canEdit) { return; }
         try {
             Map<String, Object> arg = new HashMap<>();
             arg.put("parentController", this);
@@ -300,6 +342,7 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
 
     @Listen("onUpdateHolidayDescription = #holidayListbox")
     public void onUpdateHolidayDescription(ForwardEvent event) throws Exception {
+        if (!canEdit) { return; }
         InputEvent inputEvent = (InputEvent) event.getOrigin();
         Textbox textbox = (Textbox) inputEvent.getTarget();
         String description = inputEvent.getValue();
@@ -310,6 +353,7 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
 
     @Listen("onUpdateHolidayDate = #holidayListbox")
     public void onUpdateHolidayDate(ForwardEvent event) throws Exception {
+        if (!canEdit) { return; }
         InputEvent inputEvent = (InputEvent) event.getOrigin();
         Datebox datebox = (Datebox) inputEvent.getTarget();
         Date date = new SimpleDateFormat("yyyy MMM dd").parse(inputEvent.getValue());
@@ -317,11 +361,11 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
         Listitem listItem = (Listitem) datebox.getParent().getParent();
         HolidayModel holiday = listItem.getValue();
         holiday.setHolidayDate(holidayDate);
-
     }
 
     @Listen("onRemoveHoliday = #holidayListbox")
     public void onRemoveHoliday(final Event event) {
+        if (!canEdit) { return; }
         try {
             HolidayModel holiday = (HolidayModel) event.getData();
             removeHoliday(holiday);
@@ -332,6 +376,7 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
 
     @Listen("onClick = #deleteHolidaysBtn")
     public void onClickDeleteHolidaysBtn() {
+        if (!canEdit) { return; }
         try {
             removeAllHolidays();
         } catch (Exception e) {
@@ -341,12 +386,14 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
 
     @Listen("onClick = #importHolidaysBtn")
     public void onClickImportHolidaysBtn(Event event) {
+        if (!canEdit) { return; }
         Clients.showBusy("Loading ..."); // show a busy message to user
         Events.echoEvent("onDelayedClick", event.getTarget(), null); // echo an event back
     }
 
     @Listen("onDelayedClick = #importHolidaysBtn")
     public void onDelayedClickImportHolidaysBtn() {
+        if (!canEdit) { return; }
         try {
             Map<String, Object> arg = new HashMap<>();
             arg.put("country", "Australia");
@@ -362,6 +409,7 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
 
     @Listen("onClick = #addHolidayBtn")
     public void onClickAddHolidayBtn() {
+        if (!canEdit) { return; }
         try {
             Map<String, Object> arg = new HashMap<>();
             arg.put("parentController", this);
@@ -375,6 +423,7 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
     }
 
     public void updateRange(int dowIndex, int index, int startHour, int startMin, int endHour, int endMin) {
+        if (!canEdit) { return; }
         if (endHour == 23 && endMin == 59) {
             endHour = 24;
             endMin = 0;
@@ -385,6 +434,7 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
     }
 
     public void deleteRange(int dowIndex, int index) {
+        if (!canEdit) { return; }
         String cmd = String.format("Ap.calendar.deleteRange(%d, %d)", dowIndex, index);
         Clients.evalJavaScript(cmd);
     }
@@ -518,6 +568,7 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
 
     @Listen("onClick = #applyBtn")
     public void onClickApplyBtn() {
+        if (!canEdit) { return; }
         toModels();
         getSelf().detach();
     }

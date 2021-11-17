@@ -126,6 +126,16 @@
     border-bottom: 1px solid #d0d0d0;
 }
 
+.ap-calendar-win[data-readonly=true] .ap-calendar-row,
+.ap-calendar-win[data-readonly=true] .ap-cal-x,
+.ap-calendar-win[data-readonly=true] .ap-holiday-listbox .z-listcell-content {
+  pointer-events: none !important;
+}
+
+.ap-calendar-win[data-readonly=true] .ap-holiday-listbox .z-listcell-content {
+  opacity: 0.5 !important;
+}
+
 .ap-window-header-actions {
     background: linear-gradient(var(--ap-c-bg-medium) 0%, var(--ap-c-bg-lighter) 10%) !important;
     padding: 8px;

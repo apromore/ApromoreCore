@@ -100,6 +100,7 @@ public class CalendarItemRenderer implements ListitemRenderer<CalendarModel>, La
             Map arg = new HashMap<>();
             arg.put("calendarId", calendarId);
             arg.put("isNew", false);
+            arg.put("canEdit", true);
             Window window = (Window) Executions.getCurrent()
                     .createComponents(PageUtils.getPageDefinition("calendar/zul/calendar.zul"), null, arg);
             window.doModal();

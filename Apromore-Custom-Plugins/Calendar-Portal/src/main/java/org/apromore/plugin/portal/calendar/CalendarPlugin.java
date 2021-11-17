@@ -25,13 +25,17 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apromore.calendar.model.CalendarModel;
 import org.apromore.dao.model.User;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.calendar.pageutil.PageUtils;
 import org.apromore.portal.common.ItemHelpers;
+import org.apromore.service.EventLogService;
 import org.apromore.service.SecurityService;
+import org.apromore.zk.label.LabelSupplier;
+import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import org.zkoss.zk.ui.Executions;
@@ -40,14 +44,22 @@ import org.zkoss.zul.Window;
 import javax.inject.Inject;
 
 @Component("calendarPlugin")
-public class CalendarPlugin extends DefaultPortalPlugin {
+public class CalendarPlugin extends DefaultPortalPlugin implements LabelSupplier {
 
     private static Logger LOGGER = PortalLoggerFactory.getLogger(CalendarPlugin.class);
+
+    @Inject
+    private EventLogService eventLogService;
 
     @Inject
     private SecurityService securityService;
 
     private String label = "Manage calendars";
+
+    @Override
+    public String getBundleName() {
+        return Constants.BUNDLE_NAME;
+    }
 
     @Override
     public String getLabel(Locale locale) {
@@ -67,14 +79,35 @@ public class CalendarPlugin extends DefaultPortalPlugin {
             }
             arg.put("canEdit", canEdit);
 
-            // Present the calendar window
-            Window window = (Window) Executions.getCurrent()
-                    .createComponents(PageUtils.getPageDefinition("calendar/zul/calendars.zul"), null, arg);
-            window.doModal();
-
+            if (canEdit) {
+                // Present the calendar window
+                Window window = (Window) Executions.getCurrent()
+                        .createComponents(PageUtils.getPageDefinition("calendar/zul/calendars.zul"), null, arg);
+                window.doModal();
+            } else {
+                CalendarModel calendarModel = eventLogService.getCalendarFromLog(logId);
+                if (calendarModel == null || calendarModel.getId() == null) {
+                    Notification.info(getLabel("noAssociatedCalendar_message"));
+                } else {
+                    viewCalendarReadOnly(calendarModel.getId());
+                }
+            }
         } catch (Exception e) {
             LOGGER.error("Unable to create custom calendar dialog", e);
+        }
+    }
 
+    public void viewCalendarReadOnly(Long calendarId) {
+        try {
+            Map arg = new HashMap<>();
+            arg.put("calendarId", calendarId);
+            arg.put("isNew", false);
+            arg.put("canEdit", false);
+            Window window = (Window) Executions.getCurrent()
+                    .createComponents(PageUtils.getPageDefinition("calendar/zul/calendar.zul"), null, arg);
+            window.doModal();
+        } catch (Exception e) {
+            LOGGER.error("Unable to create custom calendar dialog", e);
         }
     }
 

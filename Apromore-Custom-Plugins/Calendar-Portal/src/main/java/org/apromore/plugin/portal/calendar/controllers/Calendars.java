@@ -240,6 +240,7 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
                 arg.put("calendarId", calendarId);
                 arg.put("parentController", this);
                 arg.put("isNew", true);
+                arg.put("canEdit", true);
                 Window window = (Window) Executions.getCurrent()
                         .createComponents(PageUtils.getPageDefinition("calendar/zul/calendar.zul"), null, arg);
                 window.doModal();
