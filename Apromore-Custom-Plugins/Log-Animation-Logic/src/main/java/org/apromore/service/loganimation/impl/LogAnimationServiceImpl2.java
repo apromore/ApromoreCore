@@ -24,13 +24,11 @@
 
 package org.apromore.service.loganimation.impl;
 
-import java.io.IOException;
-// Java 2 Standard Edition
-import java.io.InputStream;
-import java.util.*;
-
-import javax.xml.bind.JAXBException;
-
+import de.hpi.bpmn2_0.exceptions.BpmnConverterException;
+import de.hpi.bpmn2_0.model.Definitions;
+import de.hpi.bpmn2_0.model.FlowNode;
+import de.hpi.bpmn2_0.model.connector.SequenceFlow;
+import de.hpi.bpmn2_0.transformation.BPMN2DiagramConverter;
 import org.apromore.plugin.DefaultParameterAwarePlugin;
 import org.apromore.service.loganimation.AnimationResult;
 import org.apromore.service.loganimation.LogAnimationService2;
@@ -40,18 +38,15 @@ import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XTrace;
 import org.json.JSONException;
 import org.json.JSONObject;
-//import org.apromore.processmining.plugins.signaturediscovery.encoding.EncodeTraces;
-//import org.apromore.processmining.plugins.signaturediscovery.encoding.EncodingNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import de.hpi.bpmn2_0.exceptions.BpmnConverterException;
-import de.hpi.bpmn2_0.model.Definitions;
-import de.hpi.bpmn2_0.model.FlowNode;
-import de.hpi.bpmn2_0.model.connector.SequenceFlow;
-import de.hpi.bpmn2_0.transformation.BPMN2DiagramConverter;
+import javax.xml.bind.JAXBException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
 
 @Service("logAnimationService2")
 @Qualifier("logAnimationService2")
@@ -186,14 +181,8 @@ public class LogAnimationServiceImpl2 extends DefaultParameterAwarePlugin implem
         Definitions bpmnDefWithGateways = BPMN2DiagramConverter.parseBPMN(bpmnWithGateways, getClass().getClassLoader());
         Definitions bpmnDefNoGateways = BPMN2DiagramConverter.parseBPMN(bpmnNoGateways, getClass().getClassLoader());
         ElementIDMapper diagramMapping = new ElementIDMapper(bpmnDefNoGateways);
-
-        /*
-         * ------------------------------------------
-         * Check process model validity for animation
-         * ------------------------------------------
-         */
         BPMNDiagramHelper diagramHelper = new BPMNDiagramHelper();
-        diagramHelper.checkModel(bpmnDefNoGateways); // no need to check result as this is for graph.
+        diagramHelper.checkModel(bpmnDefNoGateways); // only scan, no need to check model validity as this is graph.
 
         /*
         * ------------------------------------------
