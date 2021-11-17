@@ -121,6 +121,11 @@
             <n:script>
                 <![CDATA[
                     var editorWrapper;
+                    var disabledPlugins = [];
+                    if (!${arg.availableSimulateModelPlugin}) {
+                      disabledPlugins.push(Apromore.I18N.SimulationPanel.simulateModel);
+                    }
+
                     createEditor = async function (bpmnXML) {
                       var config = {
                           xml: bpmnXML,
@@ -128,7 +133,8 @@
                           fullscreen : true,
                           useSimulationPanel: true,
                           viewOnly: ${arg.viewOnly},
-                          langTag: '${arg.langTag}'
+                          langTag: '${arg.langTag}',
+                          disabledButtons: disabledPlugins
                         };
                       editorWrapper = new Apromore.BPMNEditor.EditorApp (config);
                       await editorWrapper.init(config);
@@ -149,6 +155,10 @@
                           //console.log(xml);
                           //console.log(svg);
                           zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSave', xml));
+                        };
+
+                        Apromore.BPMNEditor.Plugins.SimulateModel.apromoreSimulateModel = function(xml) {
+                          zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSimulateModel', xml));
                         };
 
                         //window.setTimeout(function() {
