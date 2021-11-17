@@ -76,7 +76,7 @@ public class TimeStatsProcessor {
 
     public static DoubleArrayList getCaseDurations(List<ATrace> traces) {
         if (traces == null || traces.isEmpty())
-            return new DoubleArrayList(new double[]{0});
+            return new DoubleArrayList(0.0);
 
         double[] array = traces.stream().mapToDouble(ATrace::getDuration).toArray();
         return new DoubleArrayList(array);
@@ -127,7 +127,7 @@ public class TimeStatsProcessor {
 
     public static DoubleArrayList getProcessingTimes(List<ActivityInstance> activityInstances) {
         if (activityInstances == null || activityInstances.isEmpty())
-            return new DoubleArrayList(new double[]{0});
+            return new DoubleArrayList(0.0);
 
         double[] allProcTimeArray = activityInstances.stream().mapToDouble(ActivityInstance::getDuration).toArray();
         return new DoubleArrayList(allProcTimeArray);
@@ -135,7 +135,7 @@ public class TimeStatsProcessor {
 
     public static DoubleArrayList getWaitingTimes(List<ActivityInstance> activityInstances) {
         if (activityInstances == null || activityInstances.isEmpty())
-            return new DoubleArrayList(new double[]{0});
+            return new DoubleArrayList(0.0);
 
         double[] waitTimesArray = activityInstances.stream()
                 .filter(x -> x != activityInstances.get(activityInstances.size() - 1))
