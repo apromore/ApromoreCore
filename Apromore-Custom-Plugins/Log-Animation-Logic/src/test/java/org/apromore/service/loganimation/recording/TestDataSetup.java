@@ -125,7 +125,7 @@ public class TestDataSetup {
                                                                 Arrays.asList(new LogAnimationService2.Log[] {serviceLog}));
     }
     
-    private AnimationResult replay(List<XLog> logs, String diagram) throws Exception {
+    protected AnimationResult replay(List<XLog> logs, String diagram) throws Exception {
         List<LogAnimationService2.Log> serviceLogs = Lists.newArrayList();
         logs.forEach(log -> {
             LogAnimationService2.Log serviceLog = new LogAnimationService2.Log();
@@ -178,22 +178,22 @@ public class TestDataSetup {
     private String readBPNDiagram_abc() throws Exception {
         return this.readBPMNDiagramAsString("src/test/logs/abc.bpmn");
     }
-    
-    private XLog readXESFile(String fullFilePath) throws Exception {
+
+    protected XLog readXESFile(String fullFilePath) throws Exception {
         XesXmlParser parser = new XesXmlParser();
         return parser.parse(new File(fullFilePath)).get(0);
     }
-    
-    private XLog readXESCompressedFile(String fullFilePath) throws Exception {
+
+    protected XLog readXESCompressedFile(String fullFilePath) throws Exception {
         XesXmlParser parser = new XesXmlGZIPParser();
         return parser.parse(new File(fullFilePath)).get(0);
     }
     
-    private BPMNDiagram readBPMNDiagram(String fullFilePath) throws FileNotFoundException, Exception {
+    protected BPMNDiagram readBPMNDiagram(String fullFilePath) throws FileNotFoundException, Exception {
         return bpmnImport.importFromStreamToDiagram(new FileInputStream(new File(fullFilePath)), fullFilePath);
     }
-    
-    private String readBPMNDiagramAsString(String fullFilePath) throws FileNotFoundException, Exception {
+
+    protected String readBPMNDiagramAsString(String fullFilePath) throws FileNotFoundException, Exception {
         byte[] encoded = Files.readAllBytes(Paths.get(fullFilePath));
         return new String(encoded, StandardCharsets.UTF_8);
     }

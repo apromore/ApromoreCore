@@ -39,14 +39,6 @@ public class FrameTest extends TestDataSetup {
         return FrameRecorder.record(Arrays.asList(animationIndex), animationContext);
     }
     
-    protected Movie createAnimationMovie_TwoTraceAndCompleteEvents_Graph() throws Exception {
-        AnimationResult result = this.animate_TwoTraceAndCompleteEvents_Graph();
-        AnimationContext animationContext = new AnimationContext(result.getAnimationLogs(), 60, 600);
-        ModelMapping modelMapping = new OldBpmnModelMapping(result.getModel());
-        AnimationIndex animationIndex = new AnimationIndex(result.getAnimationLogs().get(0), modelMapping, animationContext);
-        return FrameRecorder.record(Arrays.asList(animationIndex), animationContext);
-    }
-    
     protected Movie createAnimationMovie_TwoLogs() throws Exception {
         AnimationResult result = this.animate_TwoLogs_With_BPMNDiagram();
         AnimationContext animationContext = new AnimationContext(result.getAnimationLogs(), 60, 600);

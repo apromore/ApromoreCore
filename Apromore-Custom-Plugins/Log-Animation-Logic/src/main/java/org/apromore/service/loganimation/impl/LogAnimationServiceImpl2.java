@@ -24,7 +24,6 @@
 
 package org.apromore.service.loganimation.impl;
 
-import de.hpi.bpmn2_0.exceptions.BpmnConverterException;
 import de.hpi.bpmn2_0.model.Definitions;
 import de.hpi.bpmn2_0.model.FlowNode;
 import de.hpi.bpmn2_0.model.connector.SequenceFlow;
@@ -36,15 +35,12 @@ import org.apromore.service.loganimation.json.AnimationJSONBuilder2;
 import org.apromore.service.loganimation.replay.*;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XTrace;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import javax.xml.bind.JAXBException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
@@ -55,8 +51,7 @@ public class LogAnimationServiceImpl2 extends DefaultParameterAwarePlugin implem
     private static final Logger LOGGER = LoggerFactory.getLogger(LogAnimationServiceImpl2.class);
 
     @Override
-    public AnimationResult createAnimation(String bpmn, List<Log> logs)
-            throws BpmnConverterException, IOException, JAXBException, JSONException, AnimationException {
+    public AnimationResult createAnimation(String bpmn, List<Log> logs) throws Exception {
 
         /*
          * ------------------------------------------
@@ -176,7 +171,7 @@ public class LogAnimationServiceImpl2 extends DefaultParameterAwarePlugin implem
      */
     @Override
     public AnimationResult createAnimationWithNoGateways(String bpmnWithGateways, String bpmnNoGateways, List<Log> logs)
-            throws BpmnConverterException, IOException, JAXBException, JSONException, DiagramMappingException, AnimationException {
+            throws Exception {
 
         Definitions bpmnDefWithGateways = BPMN2DiagramConverter.parseBPMN(bpmnWithGateways, getClass().getClassLoader());
         Definitions bpmnDefNoGateways = BPMN2DiagramConverter.parseBPMN(bpmnNoGateways, getClass().getClassLoader());

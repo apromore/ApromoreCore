@@ -85,31 +85,12 @@ public class BPMNDiagramHelper {
     //key: name of activity, value: activity node
     private Map<String,FlowNode> activities = new HashMap();
     
-    // key and value are reference to node
-    //private Map<FlowNode, Set<FlowNode>> nextActivitiesMap = new HashMap();
-    
     private DijkstraAlgorithm dijkstraAlgo = null;
     private Map<FlowNode,Vertex<FlowNode>> bpmnDijikstraNodeMap = new HashMap();
-    
-//    private ProcessModel jbptProcessModel = null;
-    private Set<Set<FlowNode>> bpmnSCCSet = null;
-//    private BidiMap<FlowNode, org.jbpt.pm.FlowNode> jbptNodeMap = new DualHashBidiMap<>();
-    
+
     private DirectedGraph directedGraph = null;
     private List<List<FlowNode>> bpmnCycles = null;
     private Set<FlowNode> ANDJoinsOnViciousCycles = null;
-
-    private Definitions definitions;
-    private ModelCheckResult modelCheckResult;
-
-    /*
-    public static BPMNDiagramHelper getInstance() {
-      if(instance == null) {
-         instance = new BPMNDiagramHelper();
-      }
-      return instance;
-    }
-    */
 
     /**
      * Check validity of the model used for animation
@@ -144,6 +125,10 @@ public class BPMNDiagramHelper {
             rootElement = processElements.get(0);
             Process process = (Process) rootElement;
             ModelChecker checker = new ModelChecker();
+
+            if (process.getFlowElement().isEmpty()) {
+                return ModelCheckResult.of(false, "The model is empty");
+            }
 
             //Visit every element once, check syntax and collect information
             for (FlowElement element : process.getFlowElement()) {
