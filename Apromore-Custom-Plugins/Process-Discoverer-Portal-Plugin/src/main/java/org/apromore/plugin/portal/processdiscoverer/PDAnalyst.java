@@ -436,14 +436,6 @@ public class PDAnalyst {
                 getDirectFollowRuleValue(value, attKey)));
     }
 
-    public boolean hasSufficientDurationVariant(String attribute, String value) {
-        return LogStatsAnalyzer.getNodeDurationSize(attribute, value, filteredAPMLog) > 1;
-    }
-
-    public boolean hasSufficientDurationVariant(String attribute, String inDegree, String outDegree) {
-        return LogStatsAnalyzer.getArcDurationSize(attribute, inDegree, outDegree, filteredAPMLog) > 1;
-    }
-
     public List<CaseDetails> getCaseDetails() {
         List<ATrace> traceList = filteredAPMLog.getTraces();
 
