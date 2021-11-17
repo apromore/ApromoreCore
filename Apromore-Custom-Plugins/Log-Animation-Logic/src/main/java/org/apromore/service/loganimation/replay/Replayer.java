@@ -56,8 +56,6 @@ import de.hpi.bpmn2_0.model.connector.SequenceFlow;
 public class Replayer {
     private ReplayParams params;
     private BPMNDiagramHelper helper;
-    private boolean isValidProcess = true;
-    private String processCheckMessage = "";
     private String[] colors = {"blue","orange","red","green","margenta"};
     private Map<String, ReplayResult> replayResultMap = new HashMap(); // mapping from trace key to replay result
     private Map<String,Integer> eventNameKeyMap = new HashMap();
@@ -74,31 +72,13 @@ public class Replayer {
     	}
     }
     
-    public Replayer(Definitions bpmnDefinition, ReplayParams params) {
+    public Replayer(Definitions bpmnDefinition, ReplayParams params, BPMNDiagramHelper diagramHelper) {
         this.params = params;
-        this.isValidProcess = true;
-        try {
-            helper = new BPMNDiagramHelper();
-            helper.checkModel(bpmnDefinition);
-            ORJoinEnactmentManager.init(helper);
-        } catch (Exception ex) {
-            isValidProcess = false;
-            processCheckMessage = ex.getMessage();
-            Logger.getLogger(Replayer.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
+        this.helper = diagramHelper;
     }
     
     public ReplayParams getReplayParams() {
         return this.params;
-    }
-    
-    public boolean isValidProcess() {
-        return isValidProcess;
-    }
-    
-    public String getProcessCheckingMsg() {
-        return processCheckMessage;
     }
     
     public AnimationLog replay(XLog log, String color) {

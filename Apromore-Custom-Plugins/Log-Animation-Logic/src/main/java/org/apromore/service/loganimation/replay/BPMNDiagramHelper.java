@@ -24,13 +24,8 @@
 
 package org.apromore.service.loganimation.replay;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import org.apromore.service.loganimation.dijkstra.engine.DijkstraAlgorithm;
 import org.apromore.service.loganimation.dijkstra.model.Edge;
@@ -38,6 +33,7 @@ import org.apromore.service.loganimation.dijkstra.model.Graph;
 import org.apromore.service.loganimation.dijkstra.model.Vertex;
 //import org.jbpt.algo.graph.StronglyConnectedComponents;
 //import org.jbpt.pm.ProcessModel;
+import org.eclipse.collections.impl.factory.primitive.ByteCharMaps;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.alg.cycle.JohnsonSimpleCycles;
 import org.jgrapht.graph.DefaultDirectedGraph;
@@ -120,125 +116,120 @@ public class BPMNDiagramHelper {
       return instance;
     }
     */
-    
-    /*
-    * The helper class also does a preliminary check on the validity of the
-    * BPMN defintion, to make sure it complies with restrictions
-    * for animation.
-    * Set rootElement, startEvent, endEvent.
-    */
-    public void checkModel(Definitions definition) throws Exception {
+
+    /**
+     * Check validity of the model used for animation
+     * @param definition BPMN Definition
+     * @return a pair of check result and error message. The error message is empty if check result is true, or
+     * non-empty if check result is false.
+     */
+    public ModelCheckResult checkModel(Definitions definition) {
         String sourceId;
         String targetId;
         Set<FlowNode> targetSet = null;
         Set<FlowNode> sourceSet = null;
         
-        List<BaseElement> rootElements = definition.getRootElement();
+        List<BaseElement> rootElements = definition.getRootElement().stream()
+                                            .filter(r -> r instanceof Process)
+                                            .collect(Collectors.toList());
         
         //Check model validity for the replay
         if (rootElements.size() == 1) {
             rootElement = rootElements.get(0);
-            
-            if (rootElement instanceof Process) {
-                Process process = (Process)rootElement;
-                ModelChecker checker = new ModelChecker();
-                
-                //Visit every element once, check syntax and collect information
-                for (FlowElement element : process.getFlowElement()) {
-                    element.acceptVisitor(checker);
+            Process process = (Process)rootElement;
+            ModelChecker checker = new ModelChecker();
 
-                    if (element instanceof SequenceFlow) {
-                        sourceId = ((SequenceFlow)element).getSourceRef().getId();
-                        targetId = ((SequenceFlow)element).getTargetRef().getId();
-                        allSequenceFlows.put(sourceId+"-"+targetId, (SequenceFlow)element);
-                    }
-                    else if (element instanceof FlowNode) {
-                        
-                        allNodes.put(element.getId(), (FlowNode)element);
+            //Visit every element once, check syntax and collect information
+            for (FlowElement element : process.getFlowElement()) {
+                element.acceptVisitor(checker);
 
-                        if (element instanceof StartEvent) {
-                            startEvent = (StartEvent)element;
-                        }
-                        if (element instanceof EndEvent) {
-                            endEvent = (EndEvent)element;
-                        }
-                        
-                        targetSet = new HashSet();
-                        
-                        for (SequenceFlow sflow : ((FlowNode)element).getOutgoingSequenceFlows()) {
-                            targetSet.add((FlowNode)sflow.getTargetRef());
-                        }
-                        targets.put((FlowNode)element, targetSet);
-                        
-                        sourceSet = new HashSet();
-                        for (SequenceFlow sflow : ((FlowNode)element).getIncomingSequenceFlows()) {
-                            sourceSet.add((FlowNode)sflow.getSourceRef());
-                        }
-                        sources.put((FlowNode)element, sourceSet);
-                        
-                        if (isDecision((FlowNode)element)) {
-                            decisions.add((FlowNode)element);
-                        }
-                        
-                        if (isMerge((FlowNode)element)) {
-                            merges.add((FlowNode)element);
-                        }
-                        
-                        if (isFork((FlowNode)element)) {
-                            forks.add((FlowNode)element);
-                        }
-                        
-                        if (isJoin((FlowNode)element)) {
-                            joins.add((FlowNode)element);
-                        }
-                        
-                        if (isORSplit((FlowNode)element)) {
-                            ORsplits.add((FlowNode)element);
-                        }
-                        
-                        if (isORJoin((FlowNode)element)) {
-                            ORjoins.add((FlowNode)element);
-                        }
-                        
-                        if (isActivity((FlowNode)element)) {
-                            activities.put(element.getName(), (FlowNode)element);
-                        }
-                        
-                        if (isMixedXOR((FlowNode)element)) {
-                            mixedXORs.add((FlowNode)element);
-                        }
-                        
-                        if (isMixedAND((FlowNode)element)) {
-                            mixedANDs.add((FlowNode)element);
-                        }
-                        
-                        if (isMixedOR((FlowNode)element)) {
-                            mixedORs.add((FlowNode)element);
-                        }
+                if (element instanceof SequenceFlow) {
+                    sourceId = ((SequenceFlow)element).getSourceRef().getId();
+                    targetId = ((SequenceFlow)element).getTargetRef().getId();
+                    allSequenceFlows.put(sourceId+"-"+targetId, (SequenceFlow)element);
+                }
+                else if (element instanceof FlowNode) {
+
+                    allNodes.put(element.getId(), (FlowNode)element);
+
+                    if (element instanceof StartEvent) {
+                        startEvent = (StartEvent)element;
                     }
-                    
+                    if (element instanceof EndEvent) {
+                        endEvent = (EndEvent)element;
+                    }
+
+                    targetSet = new HashSet();
+
+                    for (SequenceFlow sflow : ((FlowNode)element).getOutgoingSequenceFlows()) {
+                        targetSet.add((FlowNode)sflow.getTargetRef());
+                    }
+                    targets.put((FlowNode)element, targetSet);
+
+                    sourceSet = new HashSet();
+                    for (SequenceFlow sflow : ((FlowNode)element).getIncomingSequenceFlows()) {
+                        sourceSet.add((FlowNode)sflow.getSourceRef());
+                    }
+                    sources.put((FlowNode)element, sourceSet);
+
+                    if (isDecision((FlowNode)element)) {
+                        decisions.add((FlowNode)element);
+                    }
+
+                    if (isMerge((FlowNode)element)) {
+                        merges.add((FlowNode)element);
+                    }
+
+                    if (isFork((FlowNode)element)) {
+                        forks.add((FlowNode)element);
+                    }
+
+                    if (isJoin((FlowNode)element)) {
+                        joins.add((FlowNode)element);
+                    }
+
+                    if (isORSplit((FlowNode)element)) {
+                        ORsplits.add((FlowNode)element);
+                    }
+
+                    if (isORJoin((FlowNode)element)) {
+                        ORjoins.add((FlowNode)element);
+                    }
+
+                    if (isActivity((FlowNode)element)) {
+                        activities.put(element.getName(), (FlowNode)element);
+                    }
+
+                    if (isMixedXOR((FlowNode)element)) {
+                        mixedXORs.add((FlowNode)element);
+                    }
+
+                    if (isMixedAND((FlowNode)element)) {
+                        mixedANDs.add((FlowNode)element);
+                    }
+
+                    if (isMixedOR((FlowNode)element)) {
+                        mixedORs.add((FlowNode)element);
+                    }
                 }
-                
-                if (!checker.isValid()) {
-                    throw new Exception(checker.getFaultMessage());
-                }
-                else {
-                    //this.getJoin2ForkMap(); commented out to avoid stack overflow, due to relaxing block-structure
-                    //this.getForkJoinMapORGate();
-                    this.getDijkstraAlgo();
-                    //this.getJBPTProcessModel();
-                    //this.getStronglyConnectedComponents();
-                    this.getANDJoinsOnViciousCycles();
-                }
-                
-            } else {
-                throw new Exception("Root element " + rootElement.getId() + " is not a process");
+
             }
-        } else {
-            throw new Exception("There is more than 1 root elemnent found. IDs = " + rootElements.toString());
+
+            if (!checker.isValid()) {
+                return ModelCheckResult.of(false, checker.getFaultMessage());
+            }
+            else {
+                this.getDijkstraAlgo();
+                this.getANDJoinsOnViciousCycles();
+                return ModelCheckResult.of(true);
+            }
+        } else if (rootElements.size() < 1) {
+            return ModelCheckResult.of(false, "There is no process diagram in the model");
         }
-        
-        
+        else {
+            return ModelCheckResult.of(false, "There are more than one process diagram in the model, " +
+                    "likely in different pools)");
+        }
     }
     
     public FlowNode getStartEvent() {
