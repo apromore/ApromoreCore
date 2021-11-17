@@ -74,6 +74,7 @@ interface Constants {
     String POP_UP_LABEL_ID = "lbl_";
 
     String ERROR_COUNT_LBL_ID = "count";
+    String ERROR_MESSAGE_LBL_ID = "message";
     String INVALID_COLUMNS_LIST_LBL_ID = "invalidColumnsList";
     String IGNORED_COLUMNS_LIST_LBL_ID = "ignoredColumnsList";
     String DOWNLOAD_REPORT_BTN_ID = "downloadErrorLog";
@@ -81,6 +82,8 @@ interface Constants {
     String SKIP_COLUMNS_BTN_ID = "skipInvalidColumns";
     String HANDLE_CANCEL_BTN_ID = "cancelImport";
     String IGNORE_COL_LBL_ID = "ignoreCol";
+    String CAN_SKIP_INVALID_ROWS = "canSkipInvalidRows";
+    String CANT_SKIP_INVALID_ROWS = "canNotSkipInvalidRows";
 
     String AUTO_PARSED = "autoParsed";
     String MANUAL_PARSED = "manualParsed";

@@ -50,14 +50,17 @@
         <center sclass="ap-csv-importer-main">
             <div style="padding: 8px">
                 <label id="count"/>
-                <label value=" invalid cell(s) detected."/>
+                <label id="message"/>
                 <separator/>
-                <label id="invalidColumnsList"/>
+                <label id="invalidColumnsList" multiline="true"/>
                 <separator/>
                 <separator/>
                 <separator/>
 
-                <label value="Select 'Skip Invalid Row(s)' to complete the upload by skipping all rows containing invalid cells."/>
+                <label id="canSkipInvalidRows"
+                       value="Select 'Skip invalid rows' to complete the upload by skipping all rows containing invalid cells."/>
+                <label id="canNotSkipInvalidRows"
+                       value="Unable to proceed as the resulting log will be empty."/>
                 <separator/>
                 <label id="ignoreCol" visible="false" value="Select 'Ignore Invalid Column(s)' to complete the upload by skipping the following column(s): "/>
                 <label id="ignoredColumnsList"/>
@@ -69,10 +72,10 @@
             <div style="padding: 8px">
                 <hbox spacing="0" align="center" pack="center" hflex="1" vflex="1">
                     <div hflex="1" style="text-align: center;">
-                        <button id="downloadErrorLog" label="Download Error Report"
+                        <button id="downloadErrorLog" label="Download error report"
                                 iconSclass="z-icon-arrow-circle-down fa-lg z-icon-fw" style="position:relative;"/>
 
-                        <button id="skipInvalidRows" label="Skip Invalid Row(s)"
+                        <button id="skipInvalidRows" label="Skip invalid rows"
                                 iconSclass="z-icon-check-circle fa-lg z-icon-fw" style="position:relative;"/>
 
                         <button id="skipInvalidColumns" label="Ignore Invalid Column(s)" visible="false"
