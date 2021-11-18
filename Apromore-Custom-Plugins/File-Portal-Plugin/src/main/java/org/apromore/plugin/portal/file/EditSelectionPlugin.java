@@ -31,17 +31,23 @@ import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.VersionSummaryType;
+import org.apromore.zk.label.LabelSupplier;
 import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import org.zkoss.util.resource.Labels;
 
 @Component
-public class EditSelectionPlugin extends DefaultPortalPlugin {
+public class EditSelectionPlugin extends DefaultPortalPlugin implements LabelSupplier {
 
   private static Logger LOGGER = PortalLoggerFactory.getLogger(EditSelectionPlugin.class);
 
   private String label = "Edit model";
+
+  @Override
+  public String getBundleName() {
+    return "file";
+  }
 
   // PortalPlugin overrides
 
@@ -63,17 +69,14 @@ public class EditSelectionPlugin extends DefaultPortalPlugin {
 
       Map<SummaryType, List<VersionSummaryType>> selectedProcesses =
           mainC.getSelectedElementsAndVersions();
-      if (selectedProcesses.isEmpty()) {
-        Notification.info("Please select one process model.");
-        return;
-      } else if (selectedProcesses.size() > 1) {
-        Notification.info("Please select only one process model.");
+      if (selectedProcesses.isEmpty() || selectedProcesses.size() > 1) {
+        Notification.info(getLabel("selectOnlyOneModel"));
         return;
       } else {
         ProcessSummaryType process =
             (ProcessSummaryType) selectedProcesses.keySet().iterator().next();
         if (selectedProcesses.get(process).size() > 1) {
-          Notification.info("Please select only one process model version.");
+          Notification.info(getLabel("selectOnlyOneModelVersion"));
           return;
         } else {
           VersionSummaryType version = selectedProcesses.get(process).get(0);
@@ -82,7 +85,7 @@ public class EditSelectionPlugin extends DefaultPortalPlugin {
       }
     } catch (Exception e) {
       LOGGER.error("Unable to edit selection", e);
-      Notification.error("Unable to edit selection");
+      Notification.error(getLabel("unableEdit"));
     }
   }
 }

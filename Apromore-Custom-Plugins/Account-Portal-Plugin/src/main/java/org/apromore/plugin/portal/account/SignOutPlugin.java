@@ -28,8 +28,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Locale;
 import javax.imageio.ImageIO;
-import org.apromore.plugin.portal.DefaultPortalPlugin;
-import org.apromore.plugin.portal.PortalContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -38,15 +36,23 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Messagebox;
+import org.apromore.plugin.portal.DefaultPortalPlugin;
+import org.apromore.plugin.portal.PortalContext;
+import org.apromore.zk.label.LabelSupplier;
 
 @Component
-public class SignOutPlugin extends DefaultPortalPlugin {
+public class SignOutPlugin extends DefaultPortalPlugin implements LabelSupplier {
 
   private static Logger LOGGER = LoggerFactory.getLogger(SignOutPlugin.class);
 
   private String label = "Sign out";
 
   // PortalPlugin overrides
+
+  @Override
+  public String getBundleName() {
+    return "account";
+  }
 
   @Override
   public String getLabel(Locale locale) {
@@ -72,7 +78,7 @@ public class SignOutPlugin extends DefaultPortalPlugin {
 
   @Override
   public void execute(PortalContext portalContext) {
-    Messagebox.show("Are you sure you want to logout?", "Logout", Messagebox.YES | Messagebox.NO,
+    Messagebox.show(getLabel("warnLogout"), getLabel("titleLogout"), Messagebox.YES | Messagebox.NO,
         Messagebox.QUESTION, new EventListener<Event>() {
           public void onEvent(Event evt) throws Exception {
             switch ((Integer) evt.getData()) {

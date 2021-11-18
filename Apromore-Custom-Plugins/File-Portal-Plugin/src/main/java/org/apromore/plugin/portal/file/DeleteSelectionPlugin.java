@@ -30,17 +30,23 @@ import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.VersionSummaryType;
+import org.apromore.zk.label.LabelSupplier;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zul.Messagebox;
 
 @Component
-public class DeleteSelectionPlugin extends DefaultPortalPlugin {
+public class DeleteSelectionPlugin extends DefaultPortalPlugin implements LabelSupplier {
 
   private static Logger LOGGER = PortalLoggerFactory.getLogger(DeleteSelectionPlugin.class);
 
   private String label = "Delete";
+
+  @Override
+  public String getBundleName() {
+    return "file";
+  }
 
   // PortalPlugin overrides
 
@@ -65,11 +71,11 @@ public class DeleteSelectionPlugin extends DefaultPortalPlugin {
         mainC.deleteElements(elements);
         mainC.clearProcessVersions();
       } else {
-        mainC.displayMessage("No process version selected.");
+        mainC.displayMessage(getLabel("selectOnlyOneModelVersion"));
       }
     } catch (Exception e) {
       LOGGER.error("Unable to delete selection", e);
-      Messagebox.show("Unable to delete selection");
+      Messagebox.show(getLabel("unableDelete"));
     }
   }
 }

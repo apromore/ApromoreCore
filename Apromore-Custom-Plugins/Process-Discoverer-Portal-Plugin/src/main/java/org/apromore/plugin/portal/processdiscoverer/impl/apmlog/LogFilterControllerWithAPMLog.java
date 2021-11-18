@@ -47,6 +47,7 @@ import org.apromore.plugin.portal.processdiscoverer.PDController;
 import org.apromore.plugin.portal.processdiscoverer.actions.FilterAction;
 import org.apromore.plugin.portal.processdiscoverer.actions.FilterActionOnCompositeFilterCriteria;
 import org.apromore.plugin.portal.processdiscoverer.eventlisteners.LogFilterController;
+import org.apromore.zk.label.LabelSupplier;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.zkoss.json.JSONObject;
 import org.zkoss.zk.ui.event.Event;
@@ -59,13 +60,18 @@ import org.zkoss.zul.Messagebox;
  * @author Bruce Nguyen
  *
  */
-public class LogFilterControllerWithAPMLog extends LogFilterController implements LogFilterClient {
+public class LogFilterControllerWithAPMLog extends LogFilterController implements LogFilterClient, LabelSupplier {
     private PDAnalyst analyst;
     private FilterAction compositeFilterAction;
     
     public LogFilterControllerWithAPMLog(PDController controller) throws Exception {
         super(controller);
         analyst = controller.getProcessAnalyst();
+    }
+
+    @Override
+    public String getBundleName() {
+        return "pd";
     }
 
     @Override
@@ -330,7 +336,7 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
                 parent.getActionManager().storeAction(compositeFilterAction);
             } catch (Exception e) {
                 e.printStackTrace();
-                Messagebox.show("Filter Response Error", "Error",
+                Messagebox.show(getLabel("filterResponseError_message"), "Error",
                         Messagebox.OK,
                         Messagebox.ERROR);
             }
