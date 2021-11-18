@@ -71,22 +71,25 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 	private static final String ON_CLICK = "onClick";
 	private boolean popUpOnTree=false;
 	private FolderType selectedFolder=null;
+	private String popupType;
 
 	@Override
 	public void doAfterCompose(Menupopup menuPopup) {
 		try {
-			String popupType = (String) Executions.getCurrent().getArg().get("POPUP_TYPE");
+			popupType = (String) Executions.getCurrent().getArg().get("POPUP_TYPE");
 			if (popupType != null && !PortalPluginResolver.resolve().isEmpty()) {
 				switch (popupType) {
-				case "FOLDER":  loadPopupMenu(menuPopup, "folder-popup-menu"); break;
 				case "PROCESS": loadPopupMenu(menuPopup, "process-popup-menu"); break;
 				case "LOG":     loadPopupMenu(menuPopup, "log-popup-menu"); break;
 				case "CANVAS":  loadPopupMenu(menuPopup, "canvas-popup-menu"); break;
+				case "FOLDER":
+								selectedFolder=(FolderType)Executions.getCurrent().getArg().get("SELECTED_FOLDER");
+						        loadPopupMenu(menuPopup, "folder-popup-menu"); 
+						        break;
 				case "FOLDER_TREE":  
 						        popUpOnTree=true;
 						        selectedFolder=(FolderType)Executions.getCurrent().getArg().get("SELECTED_FOLDER");
 						        loadPopupMenu(menuPopup, "folder-popup-menu"); 
-						        LOGGER.info(selectedFolder.getFolderName());
 						        break;
 				}
 			}
@@ -155,10 +158,14 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 
 	private void addPasteMenuItem(Menupopup popup) {
 		Menuitem item = new Menuitem();
-		item.setLabel(Labels.getLabel("common_paste_text"));
+		if("FOLDER".equals(popupType)) {
+			item.setLabel(Labels.getLabel("common_paste_within_text"));	
+		}else {
+			item.setLabel(Labels.getLabel("common_paste_text"));
+		}
 		item.setImage("~./themes/ap/common/img/icons/paste.svg");
 		item.addEventListener(ON_CLICK,	popUpOnTree ? event -> getNavigationController().paste(selectedFolder)
-													: event -> getBaseListboxController().paste());
+													:(selectedFolder!=null?event -> getBaseListboxController().paste(selectedFolder): event -> getBaseListboxController().paste()));
 		if(getBaseListboxController().getMainController().getCopyPasteController().getSelectedItemsSize()==0) {
 			item.setDisabled(true);	
 			item.setStyle("pointer-events:none");
@@ -170,7 +177,8 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 		Menuitem item = new Menuitem();
 		item.setLabel(Labels.getLabel("portal_share_hint"));
 		item.setImage("~./themes/ap/common/img/icons/share.svg");
-		item.addEventListener(ON_CLICK, event -> getBaseListboxController().share());
+		item.addEventListener(ON_CLICK, popUpOnTree ? event -> getNavigationController().share(selectedFolder)
+											: event -> getBaseListboxController().share());
 		popup.appendChild(item);
 	}
 
