@@ -632,6 +632,11 @@ public abstract class BaseListboxController extends BaseController {
     refreshContent();
   }
   
+  public void paste(FolderType currentFolder) throws Exception {
+	    this.mainController.getCopyPasteController().paste(currentFolder);
+	    refreshContent();
+  }
+  
 	public void drop(FolderType dropToFolder,Object dropObject, FolderType currentFolder) throws Exception {
 		if (dropObject instanceof FolderType && dropToFolder.getId().equals(((FolderType)dropObject).getId())) {
 			Notification.error(Labels.getLabel("portal_source_destination_folder_notsame_message"));

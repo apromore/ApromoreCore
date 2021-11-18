@@ -24,15 +24,22 @@
 
 package org.apromore.portal.dialogController;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
+import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.portal.common.FolderTree;
 import org.apromore.portal.common.FolderTreeModel;
 import org.apromore.portal.common.FolderTreeNode;
 import org.apromore.portal.common.FolderTreeRenderer;
+import org.apromore.portal.common.UserSessionManager;
+import org.apromore.portal.context.PluginPortalContext;
+import org.apromore.portal.context.PortalPluginResolver;
+import org.apromore.portal.menu.PluginCatalog;
 import org.apromore.portal.model.FolderType;
 import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
@@ -42,6 +49,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.Window;
@@ -53,6 +61,10 @@ public class NavigationController extends BaseController {
     private MainController mainC;
     private Component mainComponent;
     private Tree tree;
+    private PortalContext portalContext;
+    private Map<String, PortalPlugin> portalPluginMap;
+    public static final String APROMORE = "Apromore";
+
 
     public NavigationController(MainController newMainC,Component mainComponent) throws Exception {
     	this.mainComponent = mainComponent;
@@ -63,6 +75,8 @@ public class NavigationController extends BaseController {
 
         tree = (Tree) treeW.getFellow("tree");
 //        tree.setStyle("background-image: none; background-color: white");
+        this.portalContext = new PluginPortalContext(this.mainC);
+        this.portalPluginMap = PortalPluginResolver.getPortalPluginMap();
 
         Button expandBtn = (Button) treeW.getFellow("expand");
         Button contractBtn = (Button) treeW.getFellow("contract");
@@ -167,6 +181,30 @@ public class NavigationController extends BaseController {
 			mainC.reloadSummaries();
 		} catch (Exception e) {
 			LOGGER.error("Error in cut/copy folder from tree",e);
+		}
+	}
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	protected void share(FolderType selectedFolder) {
+		PortalPlugin accessControlPlugin;
+		mainC.eraseMessage();
+		// Check for ownership is moved to plugin level
+		try {
+			portalPluginMap = PortalPluginResolver.getPortalPluginMap();
+			accessControlPlugin = portalPluginMap.get(PluginCatalog.PLUGIN_ACCESS_CONTROL);
+
+			Map arg = new HashMap<>();
+			arg.put("withFolderTree", false);
+			arg.put("selectedItem", selectedFolder);
+			arg.put("currentUser", UserSessionManager.getCurrentUser());
+			arg.put("autoInherit", true);
+			arg.put("showRelatedArtifacts", true);
+			arg.put("enablePublish", mainC.getConfig().isEnablePublish());
+
+			accessControlPlugin.setSimpleParams(arg);
+			accessControlPlugin.execute(portalContext);
+		} catch (Exception e) {
+			Messagebox.show(e.getMessage(), APROMORE, Messagebox.OK, Messagebox.ERROR);
 		}
 	}
 }

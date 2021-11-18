@@ -280,6 +280,7 @@ public class SummaryItemRenderer implements ListitemRenderer {
             public void onEvent(Event event) throws Exception {
             	Map args = new HashMap();
           	    args.put("POPUP_TYPE", "FOLDER");
+          	    args.put("SELECTED_FOLDER", ((Listitem)event.getTarget()).getValue());
             	Menupopup menupopup = (Menupopup)Executions.createComponents("~./macros/popupMenu.zul", null, args);
             	menupopup.open(event.getTarget(), "at_pointer");
                 
