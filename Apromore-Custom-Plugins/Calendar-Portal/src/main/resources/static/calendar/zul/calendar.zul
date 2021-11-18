@@ -29,6 +29,7 @@
           closable="true"
           client:onBind="Ap.calendar.syncRows()"
           title="${labels.calendar_title_text}" apply="org.apromore.plugin.portal.calendar.controllers.Calendar">
+    <style src="~./calendar/css/index.css" />
     <div id="actionBridge" visible="false" />
     <vbox vflex="1" hflex="1" spacing="0">
       <hbox hflex="1" vflex="1">
@@ -54,6 +55,11 @@
               </template>
             </combobox>
           </hbox>
+          <div style="padding: 8px 8px 0 8px">
+            <label style="font-size: 12px; font-weight: bold" id="viewerWarning">
+              ${$composer.labels.viewerWarning_message}
+            </label>
+          </div>
           <div style="padding: 8px">
             <label style="font-size: 12px">
               ${$composer.labels.range_help_text}

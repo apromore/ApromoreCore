@@ -1,4 +1,4 @@
-<listbox id="${arg.id}" vflex="${arg.vflex}" hflex="1" nonselectableTags="*" mold="default">
+<listbox id="${arg.id}" vflex="${arg.vflex}" sclass="ap-holiday-listbox" hflex="1" nonselectableTags="*" mold="default">
   <listhead>
     <listheader align="center" label="" width="36px" /><!-- icon -->
     <listheader align="center" label="" width="120px" sort="auto(date)" />
@@ -20,8 +20,7 @@
         />
       </listcell>
       <listcell>
-        <textbox hflex="1" value="${each.description}"
-                 forward="onChanging=holidayListbox.onUpdateHolidayDescription, onChange=holidayListbox.onUpdateHolidayDescription"
+        <textbox hflex="1" value="${each.description}" forward="onChanging=holidayListbox.onUpdateHolidayDescription, onChange=holidayListbox.onUpdateHolidayDescription"
         ></textbox>
       </listcell>
       <listcell>
