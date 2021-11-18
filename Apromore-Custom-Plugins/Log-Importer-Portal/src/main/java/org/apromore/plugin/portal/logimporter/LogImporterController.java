@@ -1098,7 +1098,13 @@ public class LogImporterController extends SelectorComposer<Window> implements C
 
         // Since the log is imported as a stream, errorCount can be predicted at this stage
         Label errorCount = (Label) errorPopUp.getFellow(ERROR_COUNT_LBL_ID);
+        Label errorMessage = (Label) errorPopUp.getFellow(ERROR_MESSAGE_LBL_ID);
         errorCount.setValue(String.valueOf(errorReport.size()));
+        if (errorReport.size() == 1) {
+            errorMessage.setValue(" invalid cell detected.");
+        } else {
+            errorMessage.setValue(" invalid cells detected.");
+        }
 
         Label columnList = (Label) errorPopUp.getFellow(INVALID_COLUMNS_LIST_LBL_ID);
 
@@ -1162,6 +1168,16 @@ public class LogImporterController extends SelectorComposer<Window> implements C
         downloadBtn.addEventListener(Events.ON_CLICK, event -> downloadErrorLog(errorReport));
 
         Button skipRows = (Button) errorPopUp.getFellow(SKIP_ROWS_BTN_ID);
+        Label skipRowsLbl = (Label) errorPopUp.getFellow(CAN_SKIP_INVALID_ROWS);
+        Label notSkipRowsLbl = (Label) errorPopUp.getFellow(CANT_SKIP_INVALID_ROWS);
+        notSkipRowsLbl.setVisible(false);
+
+        if (logModel.getXLog().isEmpty()) {
+            skipRows.setVisible(false);
+            skipRowsLbl.setVisible(false);
+            notSkipRowsLbl.setVisible(true);
+        }
+
         skipRows.addEventListener(Events.ON_CLICK, event -> {
             errorPopUp.invalidate();
             errorPopUp.detach();
@@ -1193,13 +1209,12 @@ public class LogImporterController extends SelectorComposer<Window> implements C
 
     private String columnList(Set<String> list) {
         StringBuilder colList = new StringBuilder();
+        colList.append(System.getProperty("line.separator"));
         for (String col : list) {
-            colList.append(col).append(" | ");
+            colList.append("- ").append(col).append(System.getProperty("line.separator"));
         }
-        if (colList.length() > 0) {
-            return colList.toString().substring(0, colList.toString().length() - 2);
-        }
-        return null;
+
+        return colList.toString();
     }
 
     private void downloadErrorLog(List<LogErrorReport> errorReport) throws Exception {
