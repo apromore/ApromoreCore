@@ -139,11 +139,8 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 		Menuitem item = new Menuitem();
 		item.setLabel(Labels.getLabel("common_cut_text"));
 		item.setImage("~./themes/ap/common/img/icons/cut.svg");
-		if(!popUpOnTree)
-			item.addEventListener(ON_CLICK, event -> getBaseListboxController().cut());
-		else
-			item.addEventListener(ON_CLICK, event -> getNavigationController().cut(selectedFolder));
-
+		item.addEventListener(ON_CLICK, popUpOnTree ? event -> getNavigationController().cut(selectedFolder)
+													: event -> getBaseListboxController().cut());
 		popup.appendChild(item);
 	}
 
@@ -151,11 +148,8 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 		Menuitem item = new Menuitem();
 		item.setLabel(Labels.getLabel("common_copy_text"));
 		item.setImage("~./themes/ap/common/img/icons/copy.svg");
-		if(!popUpOnTree)
-			item.addEventListener(ON_CLICK, event -> getBaseListboxController().copy());
-		else
-			item.addEventListener(ON_CLICK, event -> getNavigationController().copy(selectedFolder));
-
+		item.addEventListener(ON_CLICK, popUpOnTree ? event -> getNavigationController().copy(selectedFolder)
+													: event -> getBaseListboxController().copy());
 		popup.appendChild(item);
 	}
 
@@ -163,11 +157,8 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 		Menuitem item = new Menuitem();
 		item.setLabel(Labels.getLabel("common_paste_text"));
 		item.setImage("~./themes/ap/common/img/icons/paste.svg");
-		if(!popUpOnTree)
-			item.addEventListener(ON_CLICK, event -> getBaseListboxController().paste());
-		else
-			item.addEventListener(ON_CLICK, event -> getNavigationController().paste(selectedFolder));
-
+		item.addEventListener(ON_CLICK,	popUpOnTree ? event -> getNavigationController().paste(selectedFolder)
+													: event -> getBaseListboxController().paste());
 		if(getBaseListboxController().getMainController().getCopyPasteController().getSelectedItemsSize()==0) {
 			item.setDisabled(true);	
 			item.setStyle("pointer-events:none");
@@ -179,10 +170,7 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 		Menuitem item = new Menuitem();
 		item.setLabel(Labels.getLabel("portal_share_hint"));
 		item.setImage("~./themes/ap/common/img/icons/share.svg");
-		if(!popUpOnTree)
-			item.addEventListener(ON_CLICK, event -> getBaseListboxController().share());
-		else
-			item.addEventListener(ON_CLICK, event -> getBaseListboxController().share());
+		item.addEventListener(ON_CLICK, event -> getBaseListboxController().share());
 		popup.appendChild(item);
 	}
 
