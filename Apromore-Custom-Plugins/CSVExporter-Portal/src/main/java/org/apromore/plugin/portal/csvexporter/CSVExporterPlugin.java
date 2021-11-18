@@ -48,9 +48,10 @@ import org.springframework.stereotype.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.*;
+import org.apromore.zk.label.LabelSupplier;
 
 @Component("csvExporterPlugin")
-public class CSVExporterPlugin extends DefaultPortalPlugin {
+public class CSVExporterPlugin extends DefaultPortalPlugin implements LabelSupplier {
 
     private static Logger LOGGER = PortalLoggerFactory.getLogger(CSVExporterPlugin.class);
 
@@ -60,6 +61,10 @@ public class CSVExporterPlugin extends DefaultPortalPlugin {
     @Inject EventLogService eventLogService;
     @Inject private CSVExporterLogic csvExporterLogic;
 
+    @Override
+    public String getBundleName() {
+        return "csvexporter";
+    }
 
     public void setEventLogService(EventLogService eventLogService) {
         this.eventLogService = eventLogService;
@@ -115,14 +120,13 @@ public class CSVExporterPlugin extends DefaultPortalPlugin {
         } catch (IOException e) {
             LOGGER.error("Failed to read");
         }  catch (NoUniqueSelectedLogException e) {
-            Messagebox.show("Please, select exactly one log.", "Wrong Log Selection", Messagebox.OK, Messagebox.INFORMATION);
+            Messagebox.show(getLabel("selectOnlyOneLog"), "Error", Messagebox.OK, Messagebox.INFORMATION);
 
         } catch (RuntimeException e) {
             LOGGER.error("Unable to export log as CSV", e);
-            Messagebox.show("Unable to export log as CSV.", "Server error", Messagebox.OK, Messagebox.ERROR);
+            Messagebox.show(getLabel("unableExportCSV"), "Error", Messagebox.OK, Messagebox.ERROR);
         }
     }
-
 
     // Internal methods
 
@@ -149,9 +153,6 @@ public class CSVExporterPlugin extends DefaultPortalPlugin {
 
         return (LogSummaryType) summary;
     }
-
-
-
 
     /**
      * Used to indicate that a {@link PortalContext} did not have a unique selected log.

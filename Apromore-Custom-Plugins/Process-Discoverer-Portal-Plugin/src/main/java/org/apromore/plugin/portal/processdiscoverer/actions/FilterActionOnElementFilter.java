@@ -23,7 +23,7 @@ package org.apromore.plugin.portal.processdiscoverer.actions;
 
 import org.apromore.plugin.portal.processdiscoverer.PDAnalyst;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
-import org.zkoss.zhtml.Messagebox;
+import org.zkoss.zul.Messagebox;
 
 /**
  * This abstract action is used for filtering on one single element (node or arc, one at a time).
@@ -42,22 +42,21 @@ public abstract class FilterActionOnElementFilter extends FilterAction {
     public boolean execute() {
         try {
             if (elementValue == null || elementValue.isEmpty() || attributeKey == null || attributeKey.isEmpty()) {
-                Messagebox.show("Invalid element filter action: element and attribute key were not set!");
+                Messagebox.show(getLabel("invalidFilterAction_message"));
             }
             setPreActionFilterCriteria(analyst.copyCurrentFilterCriteria());
             if (performFiltering(this.elementValue, this.attributeKey)) {
                 return true;
             }
             else {
-                Messagebox.show("The log is empty after applying all filter criteria! Please use different criteria.",
-                        "Process Discoverer",
+                Messagebox.show(getLabel("logEmptyAfterFilter_message"),
+                        getLabel("title_text"),
                         Messagebox.OK,
                         Messagebox.INFORMATION);
                 return false;
             }
         } catch (Exception e) {
-            // LOGGER.error("Error in filtering. Error message: " + e.getMessage());
-            Messagebox.show("Error in filtering");
+            Messagebox.show(getLabel("filterError2_message"));
             return false;
         }
     }

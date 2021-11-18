@@ -167,7 +167,7 @@ public class CaseDetailsController extends DataListController {
             parent.showTrace(result.getVisualizedText());
           } catch (Exception e) {
             // LOGGER.error(e.getMessage());
-            Messagebox.show("Fail to show trace detail for the selected case");
+            Messagebox.show(getLabel("failedCaseDetails_message"));
           }
         }
       });

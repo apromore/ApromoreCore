@@ -45,6 +45,11 @@ public class EditSelectionMetadataPlugin extends DefaultPortalPlugin implements 
 
   private String label = "Rename"; // "Edit metadata"
 
+  @Override
+  public String getBundleName() {
+    return "file";
+  }
+
   // PortalPlugin overrides
 
   @Override

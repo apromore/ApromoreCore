@@ -27,6 +27,7 @@ import java.util.List;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.plugin.portal.processdiscoverer.PDAnalyst;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
+import org.apromore.zk.label.LabelSupplier;
 import org.zkoss.zul.Messagebox;
 
 /**
@@ -40,11 +41,16 @@ import org.zkoss.zul.Messagebox;
  * <p>
  * For redo, PDAnalyst is called with either post-action filter criteria or additive criteria ({@link PDAnalyst#filterAdditive).
  */
-public abstract class FilterAction implements Action {
+public abstract class FilterAction implements Action, LabelSupplier {
     protected PDController appController;
     protected PDAnalyst analyst;
     protected List<LogFilterRule> preActionFilterCriteria;
     protected List<LogFilterRule> postActionFilterCriteria;
+
+    @Override
+    public String getBundleName() {
+        return "pd";
+    }
 
     public FilterAction(PDController appController, PDAnalyst analyst) {
         this.appController = appController;

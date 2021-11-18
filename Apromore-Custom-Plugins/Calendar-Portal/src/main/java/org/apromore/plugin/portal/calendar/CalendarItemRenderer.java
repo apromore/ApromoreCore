@@ -27,6 +27,7 @@ package org.apromore.plugin.portal.calendar;
 import java.time.OffsetDateTime;
 import java.util.*;
 
+import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -58,12 +59,14 @@ public class CalendarItemRenderer implements ListitemRenderer<CalendarModel>, La
     private CalendarService calendarService;
     private long appliedCalendarId;
     private boolean canEdit;
+    private String failedMessage;
 
     public CalendarItemRenderer(CalendarService calendarService, long appliedCalendarId, boolean canEdit) {
         super();
         this.calendarService = calendarService;
         this.appliedCalendarId = appliedCalendarId;
         this.canEdit = canEdit;
+        this.failedMessage = getLabel("failed_create_message");
     }
 
     public Listcell renderCell(Listitem listItem, Component comp) {
@@ -104,8 +107,8 @@ public class CalendarItemRenderer implements ListitemRenderer<CalendarModel>, La
                     .createComponents(PageUtils.getPageDefinition("calendar/zul/calendar.zul"), null, arg);
             window.doModal();
         } catch (Exception e) {
-            LOGGER.error("Unable to create custom calendar dialog", e);
-            // Notification.error("Unable to create custom calendar dialog");
+            LOGGER.error(failedMessage, e);
+            Notification.error(failedMessage);
         }
     }
 
@@ -113,8 +116,8 @@ public class CalendarItemRenderer implements ListitemRenderer<CalendarModel>, La
         try {
             calendarService.deleteCalendar(calendarId);
         } catch (Exception e) {
-            LOGGER.error("Unable to create custom calendar dialog", e);
-            // Notification.error("Unable to create custom calendar dialog");
+            LOGGER.error(failedMessage, e);
+            Notification.error(failedMessage);
         }
     }
 
@@ -123,7 +126,8 @@ public class CalendarItemRenderer implements ListitemRenderer<CalendarModel>, La
             calendarService.updateCalendarName(calendarId, newName);
         } catch (CalendarNotExistsException e) {
             // Need to handle this via publishing message in event queue
-            LOGGER.error("Unable to update custom calendar dialog", e);
+            LOGGER.error(failedMessage, e);
+            Notification.error(failedMessage);
             e.printStackTrace();
         }
         LOGGER.info("Edit name", newName);

@@ -76,6 +76,11 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin implements Labe
   Listbox selectedEncoding;
   Radiogroup format;
 
+  @Override
+  public String getBundleName() {
+    return "file";
+  }
+
   public void setEventLogService(EventLogService eventLogService) {
     this.eventLogService = eventLogService;
   }

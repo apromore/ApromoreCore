@@ -42,6 +42,11 @@ public class ChangePasswordController implements LabelSupplier {
 
     private static Logger LOGGER = PortalLoggerFactory.getLogger(ChangePasswordController.class);
 
+    @Override
+    public String getBundleName() {
+        return "account";
+    }
+
     public ChangePasswordController(PortalContext portalContext, SecurityService securityService) {
         try {
             Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/changePassword.zul", null, null);

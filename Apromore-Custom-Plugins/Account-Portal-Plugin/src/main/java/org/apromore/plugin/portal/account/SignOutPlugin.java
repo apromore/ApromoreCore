@@ -50,6 +50,11 @@ public class SignOutPlugin extends DefaultPortalPlugin implements LabelSupplier 
   // PortalPlugin overrides
 
   @Override
+  public String getBundleName() {
+    return "account";
+  }
+
+  @Override
   public String getLabel(Locale locale) {
     return label;
   }

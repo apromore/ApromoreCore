@@ -43,6 +43,11 @@ public class DeleteSelectionPlugin extends DefaultPortalPlugin implements LabelS
 
   private String label = "Delete";
 
+  @Override
+  public String getBundleName() {
+    return "file";
+  }
+
   // PortalPlugin overrides
 
   @Override

@@ -44,6 +44,11 @@ public class EditSelectionPlugin extends DefaultPortalPlugin implements LabelSup
 
   private String label = "Edit model";
 
+  @Override
+  public String getBundleName() {
+    return "file";
+  }
+
   // PortalPlugin overrides
 
   @Override
