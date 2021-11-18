@@ -37,6 +37,7 @@ import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.service.EventLogService;
 import org.apromore.service.ProcessService;
+import org.apromore.zk.label.LabelSupplier;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
@@ -52,7 +53,7 @@ import org.zkoss.zul.Rows;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
-public class EditMetadataController extends BaseController {
+public class EditMetadataController extends BaseController implements LabelSupplier {
 
   private Window window;
 
@@ -220,7 +221,7 @@ public class EditMetadataController extends BaseController {
     String logName = this.nameT.getValue();
     boolean isPublic = this.makePublicCb.isChecked();
     if (this.nameT.getValue().compareTo("") == 0) {
-      Messagebox.show("Please enter a value for each mandatory field.", "Apromore", Messagebox.OK,
+      Messagebox.show(getLabel("enterMandatory"), "Apromore", Messagebox.OK,
           Messagebox.ERROR);
     } else {
       mainController.getManagerService().editLogData(logId, logName, "", isPublic);
@@ -245,7 +246,7 @@ public class EditMetadataController extends BaseController {
     }
     if (this.nameT.getValue().compareTo("") == 0
         || this.versionNumberT.getValue().compareTo("") == 0) {
-      Messagebox.show("Please enter a value for each mandatory field.", "Apromore", Messagebox.OK,
+      Messagebox.show(getLabel("enterMandatory"), "Apromore", Messagebox.OK,
           Messagebox.ERROR);
     } else {
       mainController.getManagerService().editProcessData(processId, processName, domain, username,

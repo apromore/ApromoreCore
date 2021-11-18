@@ -31,6 +31,7 @@ import org.apromore.plugin.portal.file.impl.EditListMetadataController;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.VersionSummaryType;
+import org.apromore.zk.label.LabelSupplier;
 import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
@@ -38,7 +39,7 @@ import org.zkoss.util.resource.Labels;
 import org.zkoss.zul.Messagebox;
 
 @Component
-public class EditSelectionMetadataPlugin extends DefaultPortalPlugin {
+public class EditSelectionMetadataPlugin extends DefaultPortalPlugin implements LabelSupplier {
 
   private static Logger LOGGER = PortalLoggerFactory.getLogger(EditSelectionMetadataPlugin.class);
 
@@ -63,7 +64,7 @@ public class EditSelectionMetadataPlugin extends DefaultPortalPlugin {
 
       mainC.eraseMessage();
       if (!mainC.getBaseListboxController().isSingleFileSelected()) {
-        Notification.error("Please select single file or folder to rename");
+        Notification.error(getLabel("selectOnlyOneFileOrFolderRename"));
         return;
       }
       List<Integer> folderIds = mainC.getPortalSession().getSelectedFolderIds();
@@ -77,12 +78,12 @@ public class EditSelectionMetadataPlugin extends DefaultPortalPlugin {
         if (selectedElements.size() > 0) {
           new EditListMetadataController(mainC, selectedElements);
         } else {
-          mainC.displayMessage("No folder, process version or event log is selected.");
+          mainC.displayMessage(getLabel("selectOnlyOneFileOrFolderRename"));
         }
       }
     } catch (Exception e) {
       LOGGER.error("Unable to edit selection metadata", e);
-      Messagebox.show("Unable to edit selection metadata");
+      Messagebox.show(getLabel("unableRename"));
     }
   }
 }
