@@ -24,12 +24,16 @@
 
 package org.apromore.portal.common;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.model.FolderType;
 import org.slf4j.Logger;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.DropEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -39,6 +43,7 @@ import org.zkoss.zul.Html;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listitem;
+import org.zkoss.zul.Menupopup;
 import org.zkoss.zul.Treecell;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.TreeitemRenderer;
@@ -159,6 +164,27 @@ public class FolderTreeRenderer implements TreeitemRenderer {
 
 		}
 	});
+	
+	
+    dataRow.addEventListener(Events.ON_RIGHT_CLICK, new EventListener<Event>() {
+        @SuppressWarnings({ "unchecked", "rawtypes" })
+		@Override
+        public void onEvent(Event event) throws Exception {
+          try {
+        	  FolderTreeNode clickedNodeValue = ((Treeitem) event.getTarget().getParent()).getValue();
+              FolderType selectedFolder = (FolderType) clickedNodeValue.getData();
+              
+              Map args = new HashMap();
+              args.put("POPUP_TYPE", "FOLDER_TREE");
+              args.put("SELECTED_FOLDER", selectedFolder);
+          	  Menupopup menupopup = (Menupopup)Executions.createComponents("~./macros/popupMenu.zul", null, args);
+          	  menupopup.open(event.getTarget(), "at_pointer");
+           
+          } catch (Exception ex) {
+            LOGGER.error("FolderTree failed to show Pop-up menu", ex);
+          }
+        }
+      });
 
 }
 

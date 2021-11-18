@@ -24,14 +24,19 @@
 
 package org.apromore.portal.dialogController;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.common.FolderTree;
 import org.apromore.portal.common.FolderTreeModel;
 import org.apromore.portal.common.FolderTreeNode;
 import org.apromore.portal.common.FolderTreeRenderer;
-import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.model.FolderType;
+import org.apromore.zk.notification.Notification;
+import org.slf4j.Logger;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -42,7 +47,9 @@ import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.Window;
 
 public class NavigationController extends BaseController {
-
+	
+	private static final Logger LOGGER = PortalLoggerFactory.getLogger(BaseListboxController.class);
+	 
     private MainController mainC;
     private Component mainComponent;
     private Tree tree;
@@ -128,4 +135,38 @@ public class NavigationController extends BaseController {
 
         return containsCurrentFolder;
     }
+    
+     public void copy(FolderType selectedFolder) {
+    	 mainC.getCopyPasteController().copy(Collections.singleton(selectedFolder), 1, selectedFolder);
+     }
+     
+     public void cut(FolderType selectedFolder) {
+    	 mainC.getCopyPasteController().cut(Collections.singleton(selectedFolder), 1, selectedFolder);
+      }
+     
+	public void paste(FolderType selectedFolder) {
+		if (selectedFolder == null) {
+			Notification.error(Labels.getLabel("portal_failedFind_message"));
+			return;
+		}
+		if (mainC.getCopyPasteController().getSelectedItems().isEmpty()) {
+			Notification.error(Labels.getLabel("portal_selectOneItemAndCutCopy_message"));
+			return;
+		}
+
+		for(Object item:mainC.getCopyPasteController().getSelectedItems()) {
+			if(item instanceof FolderType) {
+				if (((FolderType)item).getId() == selectedFolder.getId()) {
+					Notification.error(Labels.getLabel("portal_source_destination_folder_notsame_message"));
+					return;
+				}
+			}
+		}
+		try {
+			mainC.getCopyPasteController().paste(selectedFolder);
+			mainC.reloadSummaries();
+		} catch (Exception e) {
+			LOGGER.error("Error in cut/copy folder from tree",e);
+		}
+	}
 }

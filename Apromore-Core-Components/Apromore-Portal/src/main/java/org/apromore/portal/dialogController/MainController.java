@@ -63,6 +63,7 @@ import org.apromore.portal.context.PortalPluginResolver;
 import org.apromore.portal.custom.gui.tab.PortalTab;
 import org.apromore.portal.dialogController.dto.ApromoreSession;
 import org.apromore.portal.dialogController.dto.VersionDetailType;
+import org.apromore.portal.dialogController.workspaceOptions.CopyAndPasteController;
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.exception.ExceptionFormats;
@@ -153,6 +154,8 @@ public class MainController extends BaseController implements MainControllerInte
     private I18nSession i18nSession;
     private LangChooserController langChooserController;
     private Component mainComponent;
+    private CopyAndPasteController copyAndPasteController;
+
 
     public static MainController getController() {
 	return controller;
@@ -224,6 +227,9 @@ public class MainController extends BaseController implements MainControllerInte
 	    this.shortmessageC = new ShortMessageController(shortmessageW);
 	    this.simplesearch = new SimpleSearchController(this, comp);
 	    this.portalContext = new PluginPortalContext(this);
+		this.copyAndPasteController =
+		        new CopyAndPasteController(this, UserSessionManager.getCurrentUser());
+
 	    this.navigation = new NavigationController(this, comp);
 
 	    Combobox langChooser = (Combobox) mainW.getFellow("langChooser");
@@ -1083,6 +1089,14 @@ public class MainController extends BaseController implements MainControllerInte
     @Override
     public Desktop getDesktop() {
 	return mainComponent.getDesktop();
+    }
+    
+    public CopyAndPasteController getCopyPasteController() {
+    	return this.copyAndPasteController;
+    }
+    
+    public NavigationController getNavigationController() {
+    	return this.navigation;
     }
 
 }

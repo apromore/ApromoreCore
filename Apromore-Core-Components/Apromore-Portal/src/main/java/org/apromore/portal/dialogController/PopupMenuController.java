@@ -42,6 +42,7 @@ import org.apromore.portal.menu.MenuConfigLoader;
 import org.apromore.portal.menu.MenuGroup;
 import org.apromore.portal.menu.MenuItem;
 import org.apromore.portal.menu.PluginCatalog;
+import org.apromore.portal.model.FolderType;
 import org.apromore.portal.model.UserType;
 import org.slf4j.Logger;
 import org.zkoss.spring.SpringUtil;
@@ -68,6 +69,8 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 	private static final String DISPLAY_NAME_EXP = "displayName";
 	private static final String GROUP = "group";
 	private static final String ON_CLICK = "onClick";
+	private boolean popUpOnTree=false;
+	private FolderType selectedFolder=null;
 
 	@Override
 	public void doAfterCompose(Menupopup menuPopup) {
@@ -79,6 +82,12 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 				case "PROCESS": loadPopupMenu(menuPopup, "process-popup-menu"); break;
 				case "LOG":     loadPopupMenu(menuPopup, "log-popup-menu"); break;
 				case "CANVAS":  loadPopupMenu(menuPopup, "canvas-popup-menu"); break;
+				case "FOLDER_TREE":  
+						        popUpOnTree=true;
+						        selectedFolder=(FolderType)Executions.getCurrent().getArg().get("SELECTED_FOLDER");
+						        loadPopupMenu(menuPopup, "folder-popup-menu"); 
+						        LOGGER.info(selectedFolder.getFolderName());
+						        break;
 				}
 			}
 		} catch (Exception ex) {
@@ -130,7 +139,8 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 		Menuitem item = new Menuitem();
 		item.setLabel(Labels.getLabel("common_cut_text"));
 		item.setImage("~./themes/ap/common/img/icons/cut.svg");
-		item.addEventListener(ON_CLICK, event -> getBaseListboxController().cut());
+		item.addEventListener(ON_CLICK, popUpOnTree ? event -> getNavigationController().cut(selectedFolder)
+													: event -> getBaseListboxController().cut());
 		popup.appendChild(item);
 	}
 
@@ -138,7 +148,8 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 		Menuitem item = new Menuitem();
 		item.setLabel(Labels.getLabel("common_copy_text"));
 		item.setImage("~./themes/ap/common/img/icons/copy.svg");
-		item.addEventListener(ON_CLICK, event -> getBaseListboxController().copy());
+		item.addEventListener(ON_CLICK, popUpOnTree ? event -> getNavigationController().copy(selectedFolder)
+													: event -> getBaseListboxController().copy());
 		popup.appendChild(item);
 	}
 
@@ -146,8 +157,9 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 		Menuitem item = new Menuitem();
 		item.setLabel(Labels.getLabel("common_paste_text"));
 		item.setImage("~./themes/ap/common/img/icons/paste.svg");
-		item.addEventListener(ON_CLICK, event -> getBaseListboxController().paste());
-		if(getBaseListboxController().getCopyAndPasteController().getSelectedItemsSize()==0) {
+		item.addEventListener(ON_CLICK,	popUpOnTree ? event -> getNavigationController().paste(selectedFolder)
+													: event -> getBaseListboxController().paste());
+		if(getBaseListboxController().getMainController().getCopyPasteController().getSelectedItemsSize()==0) {
 			item.setDisabled(true);	
 			item.setStyle("pointer-events:none");
 		}
@@ -231,5 +243,11 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 		MainController mainController = (MainController) portalContext.getMainController();
 
 		return mainController.getBaseListboxController();
+	}
+	private NavigationController getNavigationController() {
+		PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
+		MainController mainController = (MainController) portalContext.getMainController();
+
+		return mainController.getNavigationController();
 	}
 }

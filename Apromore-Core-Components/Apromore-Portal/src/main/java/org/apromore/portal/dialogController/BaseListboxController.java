@@ -120,7 +120,6 @@ public abstract class BaseListboxController extends BaseController {
   private ArrayList<FolderType> sourceFolders = new ArrayList<>();
   private ArrayList<ProcessSummaryType> sourceProcesses = new ArrayList<>();
 
-  private CopyAndPasteController copyAndPasteController;
 
   public BaseListboxController(MainController mainController, String componentId,
       ListitemRenderer itemRenderer) {
@@ -128,8 +127,6 @@ public abstract class BaseListboxController extends BaseController {
     setHflex("100%");
     setVflex("100%");
 
-    this.copyAndPasteController =
-        new CopyAndPasteController(mainController, UserSessionManager.getCurrentUser());
     this.mainController = mainController;
     this.portalContext = new PluginPortalContext(mainController);
     listBox = createListbox(componentId);
@@ -619,19 +616,19 @@ public abstract class BaseListboxController extends BaseController {
   public void cut() {
     FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
 
-    copyAndPasteController.cut(getSelection(), getSelectionCount(), currentFolder);
+    this.mainController.getCopyPasteController().cut(getSelection(), getSelectionCount(), currentFolder);
   }
 
   public void copy() {
     FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
 
-    copyAndPasteController.copy(getSelection(), getSelectionCount(), currentFolder);
+    this.mainController.getCopyPasteController().copy(getSelection(), getSelectionCount(), currentFolder);
   }
 
   public void paste() throws Exception {
     FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
 
-    copyAndPasteController.paste(currentFolder);
+    this.mainController.getCopyPasteController().paste(currentFolder);
     refreshContent();
   }
   
@@ -640,7 +637,7 @@ public abstract class BaseListboxController extends BaseController {
 			Notification.error(Labels.getLabel("portal_source_destination_folder_notsame_message"));
 			return;
 		}
-		copyAndPasteController.drop(Set.of(dropObject), 1, dropToFolder);
+		this.mainController.getCopyPasteController().drop(Set.of(dropObject), 1, dropToFolder);
 		refreshContent();
 	}
 
@@ -1029,9 +1026,6 @@ public abstract class BaseListboxController extends BaseController {
     }
   }
 
-	public CopyAndPasteController getCopyAndPasteController() {
-		return copyAndPasteController;
-	}
-  
+
   
 }
