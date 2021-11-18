@@ -76,6 +76,9 @@ public class BetweenFilter {
     private static ActivityInstance getSourceNode(PTrace pTrace, LogFilterRule logFilterRule) {
         String attribute = logFilterRule.getKey();
         RuleValue rvFrom = findValue(OperationType.FROM, logFilterRule);
+        if (rvFrom == null)
+            return null;
+
         if (rvFrom.getStringValue().equals(START))
             return pTrace.getFirst();
 
@@ -100,6 +103,8 @@ public class BetweenFilter {
                                                   LogFilterRule logFilterRule) {
         String attribute = logFilterRule.getKey();
         RuleValue rvTo = findValue(OperationType.TO, logFilterRule);
+        if (rvTo == null)
+            return null;
 
         if (rvTo.getStringValue().equals(END))
             return pTrace.getLast();
