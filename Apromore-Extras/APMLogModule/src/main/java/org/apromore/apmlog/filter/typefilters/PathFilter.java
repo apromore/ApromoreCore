@@ -135,7 +135,7 @@ public class PathFilter {
 
             if (val != null && fromValSet.contains(val) && i < activityList.size()-1) {
 
-                List<ActivityInstance> subList = activityList.subList(i, activityList.size());
+                List<ActivityInstance> subList = activityList.subList(i + 1, activityList.size());
 
                 for (ActivityInstance nAct : subList) {
                     String nVal = getAttributeValue(nAct, attributeKey);
