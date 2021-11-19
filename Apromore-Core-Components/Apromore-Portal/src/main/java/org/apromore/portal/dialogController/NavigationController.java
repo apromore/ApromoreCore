@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apromore.dao.model.User;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.PortalPlugin;
@@ -36,9 +37,12 @@ import org.apromore.portal.common.FolderTree;
 import org.apromore.portal.common.FolderTreeModel;
 import org.apromore.portal.common.FolderTreeNode;
 import org.apromore.portal.common.FolderTreeRenderer;
+import org.apromore.portal.common.ItemHelpers;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.context.PluginPortalContext;
 import org.apromore.portal.context.PortalPluginResolver;
+import org.apromore.portal.dialogController.workspaceOptions.RenameFolderController;
+import org.apromore.portal.exception.DialogException;
 import org.apromore.portal.menu.PluginCatalog;
 import org.apromore.portal.model.FolderType;
 import org.apromore.zk.notification.Notification;
@@ -67,6 +71,7 @@ public class NavigationController extends BaseController {
     private PortalContext portalContext;
     private Map<String, PortalPlugin> portalPluginMap;
     public static final String APROMORE = "Apromore";
+    public static final String PORTAL_WARNING_TEXT = "portal_warning_text";
 
 
     public NavigationController(MainController newMainC,Component mainComponent) throws Exception {
@@ -235,5 +240,69 @@ public class NavigationController extends BaseController {
 		} catch (Exception e) {
 			Messagebox.show(e.getMessage(), APROMORE, Messagebox.OK, Messagebox.ERROR);
 		}
+	}
+
+
+	public void rename(FolderType selectedFolder) throws InterruptedException {
+		
+			if (selectedFolder == null) {
+				Notification.error(Labels.getLabel("portal_failedFind_message"));
+				return;
+			}
+		
+		try {
+			boolean canChange = false;
+			try {
+				User currentUser = mainC.getSecurityService().getUserById(UserSessionManager.getCurrentUser().getId());
+				canChange = ItemHelpers.canModify(currentUser, selectedFolder);
+			} catch (Exception e) {
+				Notification.error(e.getMessage());
+				return;
+			}
+
+			if (canChange) {
+				mainC.eraseMessage();
+				new RenameFolderController(mainC, selectedFolder.getId(), selectedFolder.getFolderName());
+			} else {
+				Notification.error(Labels.getLabel("portal_noPrivilegeRename_message"));
+			}
+
+		} catch (DialogException e) {
+			Messagebox.show(e.getMessage(), APROMORE, Messagebox.OK, Messagebox.ERROR);
+		}
+	}
+
+
+	public void removeFolder(FolderType selectedFolder) {
+		
+		if (selectedFolder == null) {
+			Notification.error(Labels.getLabel("portal_failedFind_message"));
+			return;
+		}
+		
+		Messagebox.show(Labels.getLabel("portal_deleteFolderPrompt_message"), Labels.getLabel(PORTAL_WARNING_TEXT),
+				Messagebox.YES | Messagebox.NO, Messagebox.QUESTION, new EventListener<Event>() {
+					@Override
+					public void onEvent(Event evt) throws Exception {
+						switch (((Integer) evt.getData())) {
+						case Messagebox.YES:
+							try {
+								mainC.getManagerService().deleteFolder(selectedFolder.getId(),
+										UserSessionManager.getCurrentUser().getUsername());
+							} catch (Exception e) {
+								LOGGER.error("Failed to delete folder from Tree", e);
+								Messagebox.show(
+										"Could not perform all delete operations. You may not be authorized to delete some of the resources.",
+										APROMORE, Messagebox.OK, Messagebox.ERROR);
+							}
+							mainC.loadWorkspace();
+							mainC.reloadSummaries();
+							break;
+						case Messagebox.NO:
+							break;
+						default:
+						}
+					}
+				});
 	}
 }

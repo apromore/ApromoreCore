@@ -105,6 +105,8 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 		case PluginCatalog.PLUGIN_PASTE:   addPasteMenuItem(popup); return;
 		case PluginCatalog.PLUGIN_SHARE:   addShareMenuItem(popup); return;
 		case PluginCatalog.ITEM_SEPARATOR: addMenuSeparator(popup); return;
+		case PluginCatalog.PLUGIN_DELETE_MENU: addDeleteMenuItem(popup); return;
+		case PluginCatalog.PLUGIN_RENAME_MENU: addRenameMenuItem(popup); return;
                 }
 
 		addPluginMenuitem(popup, menuItem);  // handle null or unknown menuitem id
@@ -135,6 +137,24 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 			PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
 			plugin.execute(portalContext);
 		});
+		popup.appendChild(item);
+	}
+	
+	private void addRenameMenuItem(Menupopup popup) {
+		Menuitem item = new Menuitem();
+		item.setLabel(Labels.getLabel("portal_rename_hint"));
+		item.setImage("~./themes/ap/common/img/icons/rename.svg");
+		item.addEventListener(ON_CLICK, popUpOnTree ? event -> getNavigationController().rename(selectedFolder)
+													: event -> getBaseListboxController().rename());
+		popup.appendChild(item);
+	}
+	
+	private void addDeleteMenuItem(Menupopup popup) {
+		Menuitem item = new Menuitem();
+		item.setLabel(Labels.getLabel("portal_delete_hint"));
+		item.setImage("~./themes/ap/common/img/icons/trash.svg");
+		item.addEventListener(ON_CLICK, popUpOnTree ? event -> getNavigationController().removeFolder(selectedFolder)
+													: event -> getBaseListboxController().removeFolder());
 		popup.appendChild(item);
 	}
 
