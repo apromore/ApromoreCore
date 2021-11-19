@@ -158,7 +158,7 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 
 	private void addPasteMenuItem(Menupopup popup) {
 		Menuitem item = new Menuitem();
-		if("FOLDER".equals(popupType)) {
+		if("FOLDER".equals(popupType) ||"FOLDER_TREE".equals(popupType)) {
 			item.setLabel(Labels.getLabel("common_paste_within_text"));	
 		}else {
 			item.setLabel(Labels.getLabel("common_paste_text"));

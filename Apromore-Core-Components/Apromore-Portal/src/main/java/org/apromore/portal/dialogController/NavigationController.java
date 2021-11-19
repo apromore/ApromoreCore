@@ -45,10 +45,13 @@ import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Center;
+import org.zkoss.zul.Menupopup;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.Treeitem;
@@ -72,6 +75,8 @@ public class NavigationController extends BaseController {
 
         Window treeW = (Window) mainComponent.getFellow("navigationcomp").getFellow("treeW");
 //        treeW.setContentStyle("background-image: none; background-color: white");
+        Center centre = (Center) mainComponent.getFellow("leftInnerCenterPanel");
+        
 
         tree = (Tree) treeW.getFellow("tree");
 //        tree.setStyle("background-image: none; background-color: white");
@@ -92,6 +97,30 @@ public class NavigationController extends BaseController {
                 doCollapseExpandAll(tree, false);
             }
         });
+        
+		centre.addEventListener(Events.ON_RIGHT_CLICK, new EventListener<Event>() {
+			@Override
+			public void onEvent(Event event) throws Exception {
+				FolderType selectedFolder = null;
+				try {
+					if (!tree.getSelectedItems().isEmpty()) {
+						FolderTreeNode treeSelectedNode = tree.getSelectedItems().stream().findFirst().get().getValue();
+						selectedFolder = (FolderType) treeSelectedNode.getData();
+					}
+
+					Map args = new HashMap();
+					args.put("POPUP_TYPE", "FOLDER_TREE");
+					args.put("SELECTED_FOLDER", selectedFolder);
+					Menupopup menupopup = (Menupopup) Executions.createComponents("~./macros/popupMenu.zul", null,
+							args);
+					menupopup.open(event.getTarget(), "at_pointer");
+
+				} catch (Exception ex) {
+					LOGGER.error("FolderTree failed to show Pop-up menu", ex);
+				}
+			}
+		});
+        
     }
 
 
