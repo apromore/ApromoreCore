@@ -43,7 +43,6 @@ import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.context.PluginPortalContext;
 import org.apromore.portal.context.PortalPluginResolver;
 import org.apromore.portal.dialogController.workspaceOptions.AddFolderController;
-import org.apromore.portal.dialogController.workspaceOptions.CopyAndPasteController;
 import org.apromore.portal.dialogController.workspaceOptions.RenameFolderController;
 import org.apromore.portal.exception.DialogException;
 import org.apromore.portal.menu.PluginCatalog;
@@ -67,10 +66,12 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listhead;
+import org.zkoss.zul.Listheader;
 import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Menupopup;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Span;
+import org.zkoss.zul.event.ColSizeEvent;
 
 public abstract class BaseListboxController extends BaseController {
 
@@ -378,6 +379,27 @@ public abstract class BaseListboxController extends BaseController {
         launchCalendar(selectedItem.getName(), selectedItem.getId());
       }
     });
+    
+    this.listBox.getListhead().addEventListener("onColSize", new EventListener<ColSizeEvent>() {
+		@Override
+		public void onEvent(ColSizeEvent event) throws Exception {
+			try {
+				int widthSetByClient = Integer.parseInt((event.getWidth().substring(0,event.getWidth().indexOf("px"))));
+				int newWidth = 0;
+				Listheader listHeader = (Listheader) event.getColumn();
+				if (event.getColIndex() == 0) {
+					newWidth = Math.max(widthSetByClient, 40);
+				} else {
+					newWidth = Math.max(widthSetByClient, 60);
+				}
+				
+				listHeader.setWidth(newWidth + "px");
+			} catch (Exception ex) {
+				LOGGER.error("Error in resize",ex);
+			}
+		}
+    });
+     
   }
 
   public void setTileView(boolean tileOn) {
