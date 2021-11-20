@@ -249,29 +249,21 @@ public class NavigationController extends BaseController {
 				Notification.error(Labels.getLabel("portal_failedFind_message"));
 				return;
 			}
-		
-		try {
-			boolean canChange = false;
 			try {
-				User currentUser = mainC.getSecurityService().getUserById(UserSessionManager.getCurrentUser().getId());
-				canChange = ItemHelpers.canModify(currentUser, selectedFolder);
+				if (ItemHelpers.canModify(mainC.getSecurityService().getUserById(UserSessionManager.getCurrentUser().getId()),
+						selectedFolder)) {
+						mainC.eraseMessage();
+						new RenameFolderController(mainC, selectedFolder.getId(), selectedFolder.getFolderName());
+				} else {
+					   Notification.error(Labels.getLabel("portal_noPrivilegeRename_message"));
+				}
+			} catch (DialogException e) {
+				Messagebox.show(e.getMessage(), APROMORE, Messagebox.OK, Messagebox.ERROR);
 			} catch (Exception e) {
 				Notification.error(e.getMessage());
 				return;
 			}
-
-			if (canChange) {
-				mainC.eraseMessage();
-				new RenameFolderController(mainC, selectedFolder.getId(), selectedFolder.getFolderName());
-			} else {
-				Notification.error(Labels.getLabel("portal_noPrivilegeRename_message"));
-			}
-
-		} catch (DialogException e) {
-			Messagebox.show(e.getMessage(), APROMORE, Messagebox.OK, Messagebox.ERROR);
-		}
 	}
-
 
 	public void removeFolder(FolderType selectedFolder) {
 		
@@ -291,8 +283,7 @@ public class NavigationController extends BaseController {
 										UserSessionManager.getCurrentUser().getUsername());
 							} catch (Exception e) {
 								LOGGER.error("Failed to delete folder from Tree", e);
-								Messagebox.show(
-										"Could not perform all delete operations. You may not be authorized to delete some of the resources.",
+								Messagebox.show(Labels.getLabel("portal_failedDeleteNotAuthorized_message"),
 										APROMORE, Messagebox.OK, Messagebox.ERROR);
 							}
 							mainC.loadWorkspace();

@@ -388,9 +388,9 @@ public abstract class BaseListboxController extends BaseController {
 				int newWidth = 0;
 				Listheader listHeader = (Listheader) event.getColumn();
 				if (event.getColIndex() == 0) {
-					newWidth = widthSetByClient <= 40 ? 40 : widthSetByClient;
+					newWidth = Math.max(widthSetByClient, 40);
 				} else {
-					newWidth = widthSetByClient <= 60 ? 60 : widthSetByClient;
+					newWidth = Math.max(widthSetByClient, 60);
 				}
 				
 				listHeader.setWidth(newWidth + "px");
@@ -399,7 +399,7 @@ public abstract class BaseListboxController extends BaseController {
 			}
 		}
     });
-    
+     
   }
 
   public void setTileView(boolean tileOn) {
