@@ -177,7 +177,7 @@ public class LogAnimationServiceImpl2 extends DefaultParameterAwarePlugin implem
         Definitions bpmnDefNoGateways = BPMN2DiagramConverter.parseBPMN(bpmnNoGateways, getClass().getClassLoader());
         ElementIDMapper diagramMapping = new ElementIDMapper(bpmnDefNoGateways);
         BPMNDiagramHelper diagramHelper = new BPMNDiagramHelper();
-        diagramHelper.checkModel(bpmnDefNoGateways); // only scan, no need to check model validity as this is graph.
+        diagramHelper.checkModel(bpmnDefWithGateways); // only scan, no need to check model validity as this is graph.
 
         /*
         * ------------------------------------------
