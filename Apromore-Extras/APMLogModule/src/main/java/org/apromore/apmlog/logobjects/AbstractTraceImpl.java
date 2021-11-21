@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -31,6 +31,7 @@ import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,6 +49,7 @@ public abstract class AbstractTraceImpl implements ATrace, Serializable {
     protected double caseUtilization;
     protected long startTime;
     protected long endTime;
+    private int[] activityInstancesIndicator;
 
     // ========================================================
     // Initiation method
@@ -64,6 +66,12 @@ public abstract class AbstractTraceImpl implements ATrace, Serializable {
         setActivityInstances(activityInstances);
         this.attributes = attributes;
         this.sourceLog = apmLog;
+    }
+
+    private void initActivityInstanceIndicators() {
+        activityInstancesIndicator = activityInstances.stream()
+                .mapToInt(ActivityInstance::getNameIndicator)
+                .toArray();
     }
 
     // ========================================================
@@ -174,6 +182,22 @@ public abstract class AbstractTraceImpl implements ATrace, Serializable {
         return sourceLog.getCalendarModel();
     }
 
+    @Override
+    public String getActivityInstancesIndicator() {
+        if (activityInstancesIndicator == null)
+            initActivityInstanceIndicators();
+
+        return Arrays.toString(activityInstancesIndicator);
+    }
+
+    @Override
+    public int[] getActivityInstancesIndicatorArray() {
+        if (activityInstancesIndicator == null)
+            initActivityInstanceIndicators();
+
+        return activityInstancesIndicator;
+    }
+
     // ========================================================
     // SET methods
     // ========================================================
@@ -186,7 +210,10 @@ public abstract class AbstractTraceImpl implements ATrace, Serializable {
 
     public void setActivityInstances(List<ActivityInstance> activityInstances) {
         this.activityInstances.clear();
-        if (activityInstances != null) this.activityInstances.addAll(activityInstances);
+        if (activityInstances != null) {
+            this.activityInstances.addAll(activityInstances);
+            initActivityInstanceIndicators();
+        }
     }
 
     // ===============================================================================================================
