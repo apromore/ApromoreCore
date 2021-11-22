@@ -69,6 +69,7 @@ public class SummaryItemRenderer implements ListitemRenderer {
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(SummaryItemRenderer.class.getName());
     private static final String CENTRE_ALIGN = "vertical-align: middle; text-align:center";
     private static final String VERTICAL_ALIGN = "vertical-align: middle;";
+    private static final String LEFT_ALIGN = "text-align:left";
 
     private MainController mainController;
     private DateTimeFormatter dateTimeFormatter;
@@ -330,6 +331,7 @@ public class SummaryItemRenderer implements ListitemRenderer {
         Label name = new Label(folder.getFolderName());
         Listcell lc = new Listcell();
         lc.appendChild(name);
+        lc.setStyle(LEFT_ALIGN);
         return lc;
     }
 
@@ -358,11 +360,12 @@ public class SummaryItemRenderer implements ListitemRenderer {
     }
 
     protected Listcell renderOwner(final SummaryType summaryType) {
-        Boolean isMakePublic = summaryType.isMakePublic();
         String owner = summaryType.getOwnerName();
         Label label = new Label(owner);
         label.setClientAttribute("title", owner);
-        return wrapIntoListCell(label);
+        Listcell lc = wrapIntoListCell(label);
+        lc.setStyle(LEFT_ALIGN);
+        return lc;
     }
 
     protected Listcell renderProcessLastVersion(final ProcessSummaryType process) {
@@ -396,7 +399,9 @@ public class SummaryItemRenderer implements ListitemRenderer {
         String name = summaryType.getName();
         Label label = new Label(name);
         label.setTooltiptext(name);
-        return wrapIntoListCell(label);
+        Listcell lc = wrapIntoListCell(label);
+        lc.setStyle(LEFT_ALIGN);
+        return lc;
     }
 
     private Component renderVersionRanking(final ProcessSummaryType process) {
