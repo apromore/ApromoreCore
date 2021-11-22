@@ -132,7 +132,7 @@ public class ParquetImporterParquetImplUnitTest {
         //logMetaData.setTimeZone("Australia/Melbourne");
         //Export parquet
         LogModel logModel = parquetImporter
-                .importParqeuetFile(
+                .importParquetFile(
                         this.getClass().getResourceAsStream(testFile),
                         logMetaData,
                         "UTF-8",
@@ -180,7 +180,7 @@ public class ParquetImporterParquetImplUnitTest {
 
         //Export parquet
         LogModel logModel = parquetImporter
-                .importParqeuetFile(
+                .importParquetFile(
                         this.getClass().getResourceAsStream(testFile),
                         logMetaData,
                         "UTF-8",
@@ -227,7 +227,7 @@ public class ParquetImporterParquetImplUnitTest {
 
         //Export parquet
         LogModel logModel = parquetImporter
-                .importParqeuetFile(
+                .importParquetFile(
                         this.getClass().getResourceAsStream(testFile),
                         logMetaData,
                         "UTF-8",
@@ -274,7 +274,7 @@ public class ParquetImporterParquetImplUnitTest {
 
         //Export parquet
         LogModel logModel = parquetImporter
-                .importParqeuetFile(
+                .importParquetFile(
                         this.getClass().getResourceAsStream(testFile),
                         logMetaData,
                         "UTF-8",
@@ -318,7 +318,7 @@ public class ParquetImporterParquetImplUnitTest {
 
         //Export parquet
         LogModel logModel = parquetImporter
-                .importParqeuetFile(
+                .importParquetFile(
                         this.getClass().getResourceAsStream(testFile),
                         logMetaData,
                         "UTF-8",
@@ -365,7 +365,7 @@ public class ParquetImporterParquetImplUnitTest {
 
         //Export parquet
         LogModel logModel = parquetImporter
-                .importParqeuetFile(
+                .importParquetFile(
                         this.getClass().getResourceAsStream(testFile),
                         logMetaData,
                         "UTF-8",
@@ -412,7 +412,7 @@ public class ParquetImporterParquetImplUnitTest {
 
         //Export parquet
         LogModel logModel = parquetImporter
-                .importParqeuetFile(
+                .importParquetFile(
                         this.getClass().getResourceAsStream(testFile),
                         logMetaData,
                         "UTF-8",
@@ -462,7 +462,7 @@ public class ParquetImporterParquetImplUnitTest {
 
         //Export parquet
         LogModel logModel = parquetImporter
-                .importParqeuetFile(
+                .importParquetFile(
                         this.getClass().getResourceAsStream(testFile),
                         logMetaData,
                         "windows-1255",

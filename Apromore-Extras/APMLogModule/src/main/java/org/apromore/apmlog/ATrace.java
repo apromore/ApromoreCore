@@ -71,6 +71,7 @@ import java.util.List;
  * Modified: Chii Chang (26/01/2021)
  * Modified: Chii Chang (17/03/2021)
  * Modified: Chii Chang (06/05/2021)
+ * Modified: Chii Chang (21/11/2021)
  *
  * ATrace is the common interface of the trace objects.
  * For immutable trace, implement it with ImmutableTrace.
@@ -173,6 +174,18 @@ public interface ATrace {
      * @return the original log this Trace belongs
      */
     APMLog getSourceLog();
+
+    /**
+     *
+     * @return a String represents the activity instance indicators
+     */
+    String getActivityInstancesIndicator();
+
+    /**
+     *
+     * @return the activity instance indicators in array
+     */
+    int[] getActivityInstancesIndicatorArray();
 
     /**
      *

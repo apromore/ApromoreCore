@@ -53,8 +53,8 @@ public class ParquetImporterXLSXImpl implements ParquetImporter {
     private ParquetFileWriter writer;
 
     @Override
-    public LogModel importParqeuetFile(InputStream in, LogMetaData logMetaData, String charset, File outputParquet,
-                                       boolean skipInvalidRow) throws Exception {
+    public LogModel importParquetFile(InputStream in, LogMetaData logMetaData, String charset, File outputParquet,
+                                      boolean skipInvalidRow) throws Exception {
 
         // If file exist, delete it
         if (outputParquet.exists()) {

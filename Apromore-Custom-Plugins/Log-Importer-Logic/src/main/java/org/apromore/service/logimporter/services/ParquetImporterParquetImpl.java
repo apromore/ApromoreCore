@@ -48,7 +48,7 @@ class ParquetImporterParquetImpl implements ParquetImporter {
     private ParquetFileWriter writer;
 
     @Override
-    public LogModel importParqeuetFile(InputStream in, LogMetaData logMetaData, String charset, File outputParquet, boolean skipInvalidRow) throws Exception {
+    public LogModel importParquetFile(InputStream in, LogMetaData logMetaData, String charset, File outputParquet, boolean skipInvalidRow) throws Exception {
 
         try {
             ParquetLogMetaData parquetLogSample = (ParquetLogMetaData) logMetaData;
