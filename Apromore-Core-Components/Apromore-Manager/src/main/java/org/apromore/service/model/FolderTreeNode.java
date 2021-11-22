@@ -24,10 +24,10 @@
 
 package org.apromore.service.model;
 
-import org.apromore.dao.model.User;
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.ArrayList;
 import java.util.List;
+import org.apromore.dao.model.User;
 
 /**
  * Created by IntelliJ IDEA.
@@ -36,6 +36,7 @@ import java.util.List;
  * Time: 10:29 PM
  * To change this template use File | Settings | File Templates.
  */
+@JsonIgnoreProperties({ "depth", "parent", "hasRead", "hasWrite", "hasOwnership", "user" })
 public class FolderTreeNode {
 
     private Integer id;
