@@ -74,12 +74,13 @@ public class PortalSecurityConfig extends WebSecurityConfigurerAdapter {
                 .maxAgeInSeconds(63072000);
 
     http.csrf()
-            .ignoringAntMatchers("/zkau", "/rest/*", "/rest/**/*", "/zkau/*", "/login", "/bpmneditor/editor/*")
+            .ignoringAntMatchers("/zkau", "/rest", "/rest/*", "/rest/**/*", "/zkau/*", "/login", "/bpmneditor/editor/*")
         .and()
         .authorizeRequests()
             .antMatchers("/zkau/web/login.zul").permitAll()
             .antMatchers("/zkau/web/denied.zul").permitAll()
             .antMatchers("/zkau").permitAll()
+            .antMatchers("/rest").permitAll()
             .antMatchers("/rest/**/*").permitAll()
             .antMatchers("/rest/*").permitAll()
             .antMatchers("/zkau/upload").permitAll()
