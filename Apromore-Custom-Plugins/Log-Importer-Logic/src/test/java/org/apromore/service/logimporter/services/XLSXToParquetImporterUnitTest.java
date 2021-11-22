@@ -138,7 +138,7 @@ public class XLSXToParquetImporterUnitTest {
 
         //Export parquet
         LogModel logModel = parquetImporter
-                .importParqeuetFile(
+                .importParquetFile(
                         this.getClass().getResourceAsStream(testFile),
                         logMetaData,
                         "UTF-8",
@@ -186,7 +186,7 @@ public class XLSXToParquetImporterUnitTest {
 
         //Export parquet
         LogModel logModel = parquetImporter
-                .importParqeuetFile(
+                .importParquetFile(
                         this.getClass().getResourceAsStream(testFile),
                         logMetaData,
                         "UTF-8",
@@ -233,7 +233,7 @@ public class XLSXToParquetImporterUnitTest {
 
         //Export parquet
         LogModel logModel = parquetImporter
-                .importParqeuetFile(
+                .importParquetFile(
                         this.getClass().getResourceAsStream(testFile),
                         logMetaData,
                         "UTF-8",
@@ -280,7 +280,7 @@ public class XLSXToParquetImporterUnitTest {
 
         //Export parquet
         LogModel logModel = parquetImporter
-                .importParqeuetFile(
+                .importParquetFile(
                         this.getClass().getResourceAsStream(testFile),
                         logMetaData,
                         "UTF-8",
@@ -327,7 +327,7 @@ public class XLSXToParquetImporterUnitTest {
 
         //Export parquet
         LogModel logModel = parquetImporter
-                .importParqeuetFile(
+                .importParquetFile(
                         this.getClass().getResourceAsStream(testFile),
                         logMetaData,
                         "UTF-8",
@@ -378,7 +378,7 @@ public class XLSXToParquetImporterUnitTest {
 
         //Export parquet
         LogModel logModel = parquetImporter
-                .importParqeuetFile(
+                .importParquetFile(
                         this.getClass().getResourceAsStream(testFile),
                         logMetaData,
                         "UTF-8",
@@ -421,7 +421,7 @@ public class XLSXToParquetImporterUnitTest {
 
         //Export parquet
         LogModel logModel = parquetImporter
-                .importParqeuetFile(
+                .importParquetFile(
                         this.getClass().getResourceAsStream(testFile),
                         logMetaData,
                         "UTF-8",
@@ -468,7 +468,7 @@ public class XLSXToParquetImporterUnitTest {
 
         //Export parquet
         LogModel logModel = parquetImporter
-                .importParqeuetFile(
+                .importParquetFile(
                         this.getClass().getResourceAsStream(testFile),
                         logMetaData,
                         "UTF-8",
@@ -514,7 +514,7 @@ public class XLSXToParquetImporterUnitTest {
 
         //Export parquet
         LogModel logModel = parquetImporter
-                .importParqeuetFile(
+                .importParquetFile(
                         this.getClass().getResourceAsStream(testFile),
                         logMetaData,
                         "UTF-8",
@@ -566,7 +566,7 @@ public class XLSXToParquetImporterUnitTest {
 
         //Export parquet
         LogModel logModel = parquetImporter
-                .importParqeuetFile(
+                .importParquetFile(
                         this.getClass().getResourceAsStream(testFile),
                         logMetaData,
                         "windows-1255",
