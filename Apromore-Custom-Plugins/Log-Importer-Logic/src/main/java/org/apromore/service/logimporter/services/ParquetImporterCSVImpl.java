@@ -52,7 +52,7 @@ class ParquetImporterCSVImpl implements ParquetImporter {
 
 
     @Override
-    public LogModel importParqeuetFile(InputStream in, LogMetaData logMetaData, String charset, File outputParquet, boolean skipInvalidRow) throws Exception {
+    public LogModel importParquetFile(InputStream in, LogMetaData logMetaData, String charset, File outputParquet, boolean skipInvalidRow) throws Exception {
 
         try {
             logMetaData.validateSample();

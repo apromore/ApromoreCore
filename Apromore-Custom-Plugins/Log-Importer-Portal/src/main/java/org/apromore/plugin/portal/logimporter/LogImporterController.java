@@ -420,7 +420,7 @@ public class LogImporterController extends SelectorComposer<Window> implements C
 
         LogModel logModel;
         if (useParquet) {
-            logModel = parquetImporter.importParqeuetFile(getInputSream(media), logMetaData,
+            logModel = parquetImporter.importParquetFile(getInputSream(media), logMetaData,
                     getFileEncoding(), parquetFile, false);
         } else {
             logModel = logImporter.importLog(getInputSream(media), logMetaData, getFileEncoding(), false,
@@ -1145,7 +1145,7 @@ public class LogImporterController extends SelectorComposer<Window> implements C
 
                 LogModel logModelSkippedCol;
                 if (useParquet) {
-                    logModelSkippedCol = parquetImporter.importParqeuetFile(getInputSream(media), logMetaData,
+                    logModelSkippedCol = parquetImporter.importParquetFile(getInputSream(media), logMetaData,
                             getFileEncoding(), parquetFile, false);
                 } else {
                     logModelSkippedCol = logImporter.importLog(getInputSream(media), logMetaData,
@@ -1185,7 +1185,7 @@ public class LogImporterController extends SelectorComposer<Window> implements C
             LogModel logModelSkippedRow;
 
             if (useParquet) {
-                logModelSkippedRow = parquetImporter.importParqeuetFile(getInputSream(media), logMetaData,
+                logModelSkippedRow = parquetImporter.importParquetFile(getInputSream(media), logMetaData,
                         getFileEncoding(), parquetFile, true);
 
             } else {
