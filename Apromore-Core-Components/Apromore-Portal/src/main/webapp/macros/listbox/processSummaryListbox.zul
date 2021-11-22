@@ -26,13 +26,13 @@
   <listhead hflex="1" sizable="true" sclass="ap-listbox-process-head">
     <listheader width="40px" visible="true"/>
     <listheader label="Score"  visible="false" id="columnScore"/>
-    <listheader label="Name" id="columnName"  align="center" />                   <!-- name -->
+    <listheader label="Name" id="columnName"  sclass="ap-head-left-align"  />                   <!-- name -->
     <listheader label="ID" width="80px" align="center"/> <!-- id -->
     <listheader label="Format" width="80px" align="center" visible="false"/>                 <!-- originalNativeType -->
     <listheader label="Domain"  visible="false"/>                   <!-- domain -->
     <listheader label="Rating" width="90px" align="center" visible="false"/> <!-- ranking -->
     <listheader label="Last version" width="120px" align="center"/> <!-- lastVersion -->
     <listheader label="Last update" width="170px" align="center"  /> <!-- lastVersion -->
-    <listheader label="Owner" />                   <!-- owner -->
+    <listheader label="Owner"   sclass="ap-head-left-align"   />                   <!-- owner -->
   </listhead>
 </listbox>
