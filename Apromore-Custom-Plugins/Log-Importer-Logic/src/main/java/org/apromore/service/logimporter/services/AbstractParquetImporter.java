@@ -1,6 +1,8 @@
 /*-
  * #%L
  * This file is part of "Apromore Core".
+ * 
+ * Copyright (C) 2020 University of Tartu
  * %%
  * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
  * %%
@@ -21,19 +23,23 @@
  */
 package org.apromore.service.logimporter.services;
 
-class ParquetImporterFactoryCSVImpl extends AbstractParquetImporterFactory {
+abstract class AbstractParquetImporter implements ParquetImporter {
 
-    ParquetImporterFactoryCSVImpl(final Integer maxEventCount) {
-        super(maxEventCount);
+    private Integer maxEventCount;
+
+    /**
+     * @param maxEventCount  the maximum number of events this importer considers valid to import;
+     *     <code>null</code> indicates no limit
+     */
+    protected AbstractParquetImporter(final Integer maxEventCount) {
+        this.maxEventCount = maxEventCount;
     }
 
-    @Override
-    public MetaDataService getMetaDataService() {
-        return new MetaDataServiceCSVImpl();
-    }
-
-    @Override
-    public ParquetImporter getParquetImporter() {
-        return new ParquetImporterCSVImpl(maxEventCount);
+    /**
+     * @param lineCount  a count of events
+     * @return whether <var>lineCount</var> is within the configured {@link #maxEventCount}
+     */
+    protected boolean isValidLineCount(int lineCount) {
+        return maxEventCount == null || lineCount <= maxEventCount;
     }
 }
