@@ -28,10 +28,4 @@ abstract class AbstractParquetImporterFactory implements ParquetImporterFactory 
     AbstractParquetImporterFactory(final Integer maxEventCount) {
         this.maxEventCount = maxEventCount;
     }
-
-    @Override
-    public abstract MetaDataService getMetaDataService();
-
-    @Override
-    public abstract ParquetImporter getParquetImporter();
 }

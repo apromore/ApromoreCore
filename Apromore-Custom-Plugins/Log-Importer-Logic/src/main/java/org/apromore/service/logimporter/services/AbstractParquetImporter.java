@@ -40,9 +40,6 @@ abstract class AbstractParquetImporter implements ParquetImporter {
         this.maxEventCount = maxEventCount;
     }
 
-    @Override
-    public abstract LogModel importParquetFile(InputStream in, LogMetaData logMetaData, String charset, File outputParquet, boolean skipInvalidRow) throws Exception;
-
     /**
      * @param lineCount  a count of events
      * @return whether <var>lineCount</var> is within the configured {@link #maxEventCount}
