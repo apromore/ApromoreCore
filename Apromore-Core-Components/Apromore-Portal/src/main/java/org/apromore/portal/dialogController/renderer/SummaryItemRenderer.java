@@ -132,6 +132,7 @@ public class SummaryItemRenderer implements ListitemRenderer {
                 VersionSummaryType version = getLatestVersion(process.getVersionSummaries());
                 LOGGER.info("Open process model {} (id {}) version {}", process.getName(), process.getId(), version.getVersionNumber());
                 mainController.editProcess2(process, version, getNativeType(process.getOriginalNativeType()), new HashSet<RequestParameterType<?>>(), false);
+                Clients.evalJavaScript("clearSelection('')");
             }
 
             /* Sometimes we have merged models with no native type, we should give them a default so they can be edited. */
@@ -179,6 +180,7 @@ public class SummaryItemRenderer implements ListitemRenderer {
             public void onEvent(Event event) throws Exception {
                 LOGGER.info("Open log {} (id {})", log.getName(), log.getId());
                 mainController.visualizeLog();
+                Clients.evalJavaScript("clearSelection('')");
             }
         });
         
@@ -233,6 +235,7 @@ public class SummaryItemRenderer implements ListitemRenderer {
                 mainController.getPortalSession().setCurrentFolder(convertFolderSummaryTypeToFolderType(folder));
                 mainController.reloadSummaries2();
                 mainController.currentFolderChanged();
+                Clients.evalJavaScript("clearSelection('')");
             }
         });
     }
