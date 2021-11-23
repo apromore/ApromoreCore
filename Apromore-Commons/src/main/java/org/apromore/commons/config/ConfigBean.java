@@ -50,7 +50,7 @@ public class ConfigBean {
     private Storage storage = new Storage();
     private Cache cache = new Cache();
 
-    private int maxEventCount = 1000000;
+    private Integer maxEventCount;
 
     private String volumeExportDir;
     private String volumeFileDir;

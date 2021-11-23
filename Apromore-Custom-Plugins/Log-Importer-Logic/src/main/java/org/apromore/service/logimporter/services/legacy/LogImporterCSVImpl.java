@@ -64,7 +64,6 @@ import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
 import org.deckfour.xes.model.impl.XAttributeLiteralImpl;
 import org.deckfour.xes.model.impl.XAttributeTimestampImpl;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.google.common.base.Splitter;
 import com.opencsv.CSVReader;
@@ -82,13 +81,6 @@ public class LogImporterCSVImpl implements LogImporter, Constants {
   private BufferedReader brReader;
   private InputStream in2;
   private CSVReader reader;
-
-  @Value("${isDemoCsv:false}")
-  private boolean isDemoCsv;
-
-  @Value("${csvDemoMaxLineCount:100000}")
-  private long maxCsvLineCountForDemo;
-
 
   @Override
   public LogModel importLog(InputStream in, LogMetaData logMetaData, String charset,
@@ -222,11 +214,7 @@ public class LogImporterCSVImpl implements LogImporter, Constants {
 
   public boolean isValidLineCount(int lineCount) {
 
-    if (!isDemoCsv) {
-      return true;
-    }
-    return lineCount < maxCsvLineCountForDemo;
-
+    return config == null || config.getMaxEventCount() == null || lineCount <= config.getMaxEventCount();
   }
 
   private void assignEventsToTrace(LogEventModel logEventModel, XTrace xTrace) {

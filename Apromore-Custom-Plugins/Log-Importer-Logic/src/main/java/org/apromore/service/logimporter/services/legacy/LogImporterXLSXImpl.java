@@ -205,7 +205,7 @@ public class LogImporterXLSXImpl implements LogImporter, Constants {
   }
 
   public boolean isValidLineCount(int lineCount) {
-    return config == null || lineCount <= config.getMaxEventCount();
+    return config == null || config.getMaxEventCount() == null || lineCount <= config.getMaxEventCount();
   }
 
   private void assignEventsToTrace(LogEventModel logEventModel, XTrace xTrace) {

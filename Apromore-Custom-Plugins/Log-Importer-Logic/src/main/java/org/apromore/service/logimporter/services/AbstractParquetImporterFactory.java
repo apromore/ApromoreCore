@@ -21,19 +21,17 @@
  */
 package org.apromore.service.logimporter.services;
 
-class ParquetImporterFactoryCSVImpl extends AbstractParquetImporterFactory {
+abstract class AbstractParquetImporterFactory implements ParquetImporterFactory {
 
-    ParquetImporterFactoryCSVImpl(final Integer maxEventCount) {
-        super(maxEventCount);
+    protected Integer maxEventCount;
+
+    AbstractParquetImporterFactory(final Integer maxEventCount) {
+        this.maxEventCount = maxEventCount;
     }
 
     @Override
-    public MetaDataService getMetaDataService() {
-        return new MetaDataServiceCSVImpl();
-    }
+    public abstract MetaDataService getMetaDataService();
 
     @Override
-    public ParquetImporter getParquetImporter() {
-        return new ParquetImporterCSVImpl(maxEventCount);
-    }
+    public abstract ParquetImporter getParquetImporter();
 }
