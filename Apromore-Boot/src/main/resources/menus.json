@@ -140,7 +140,13 @@
               "id": "PASTE"
             },
             {
+              "id": "SEPARATOR"
+            },
+            {
               "id": "RENAME"
+            },
+            {
+              "id": "SEPARATOR"
             },
             {
               "id": "DELETE"
@@ -177,7 +183,13 @@
               "id": "COPY"
             },
             {
+              "id": "SEPARATOR"
+            },
+            {
               "id": "RENAME"
+            },
+            {
+              "id": "SEPARATOR"
             },
             {
               "id": "DELETE"
@@ -214,7 +226,13 @@
               "id": "COPY"
             },
             {
+              "id": "SEPARATOR"
+            },
+            {
               "id": "RENAME"
+            },
+            {
+              "id": "SEPARATOR"
             },
             {
               "id": "DELETE"
