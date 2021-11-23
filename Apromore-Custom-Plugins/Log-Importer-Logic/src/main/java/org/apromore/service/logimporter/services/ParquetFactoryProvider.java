@@ -23,6 +23,7 @@ package org.apromore.service.logimporter.services;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import static org.apromore.service.logimporter.constants.Constants.*;
@@ -30,6 +31,9 @@ import static org.apromore.service.logimporter.constants.Constants.*;
 @Service("parquetFactoryProvider")
 public class ParquetFactoryProvider {
     private static final Logger LOGGER = LoggerFactory.getLogger(ParquetFactoryProvider.class);
+
+    @Value("${maxEventCount:#{null}}")
+    private Integer maxEventCount;
 
     /**
      * @param fileExtension  the file extension, which will be treated case-insensitively
@@ -44,18 +48,17 @@ public class ParquetFactoryProvider {
 
         switch (fileExtension.toLowerCase()) {
         case CSV_FILE_EXTENSION:
-            return new ParquetImporterFactoryCSVImpl();
+            return new ParquetImporterFactoryCSVImpl(maxEventCount);
 
         case PARQUET_FILE_EXTENSION:
         case PARQ_FILE_EXTENSION:
-            return new ParquetImporterFactoryParquetImpl();
+            return new ParquetImporterFactoryParquetImpl(maxEventCount);
 
         case XLSX_FILE_EXTENSION:
-            return new ParquetImporterFactoryXLSXImpl();
+            return new ParquetImporterFactoryXLSXImpl(maxEventCount);
 
         default:
             return null;
         }
     }
-
 }

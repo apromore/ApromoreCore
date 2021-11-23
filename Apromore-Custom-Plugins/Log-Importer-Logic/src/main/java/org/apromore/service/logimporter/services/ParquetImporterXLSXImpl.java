@@ -44,13 +44,17 @@ import java.util.List;
 
 import static org.apromore.service.logimporter.utilities.ParquetUtilities.createParquetSchema;
 
-public class ParquetImporterXLSXImpl implements ParquetImporter {
+public class ParquetImporterXLSXImpl extends AbstractParquetImporter {
 
     private final int BUFFER_SIZE = 2048;
     private final int DEFAULT_NUMBER_OF_ROWS = 100;
     private List<LogErrorReport> logErrorReport;
     private LogProcessorParquet logProcessorParquet;
     private ParquetFileWriter writer;
+
+    ParquetImporterXLSXImpl(final Integer maxEventCount) {
+        super(maxEventCount);
+    }
 
     @Override
     public LogModel importParquetFile(InputStream in, LogMetaData logMetaData, String charset, File outputParquet,
@@ -157,9 +161,5 @@ public class ParquetImporterXLSXImpl implements ParquetImporter {
             writer.close();
             in.close();
         }
-    }
-
-    public boolean isValidLineCount(int lineCount) {
-        return true;
     }
 }

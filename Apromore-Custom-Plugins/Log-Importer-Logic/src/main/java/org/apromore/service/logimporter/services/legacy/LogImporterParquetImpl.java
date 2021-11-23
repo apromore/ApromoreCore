@@ -210,7 +210,7 @@ public class LogImporterParquetImpl implements LogImporter, Constants {
   }
 
   private boolean isValidLineCount(int lineCount) {
-    return config == null || lineCount <= config.getMaxEventCount();
+    return config == null || config.getMaxEventCount() == null || lineCount <= config.getMaxEventCount();
   }
 
   private String[] readGroup(Group g, MessageType schema) {
