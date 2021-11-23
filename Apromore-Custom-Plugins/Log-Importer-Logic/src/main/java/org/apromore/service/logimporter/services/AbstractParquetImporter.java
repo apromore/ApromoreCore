@@ -23,11 +23,6 @@
  */
 package org.apromore.service.logimporter.services;
 
-import java.io.File;
-import java.io.InputStream;
-import org.apromore.service.logimporter.model.LogMetaData;
-import org.apromore.service.logimporter.model.LogModel;
-
 abstract class AbstractParquetImporter implements ParquetImporter {
 
     private Integer maxEventCount;
