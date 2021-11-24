@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:qbp="http://www.qbp-simulator.com/Schema201212" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
+  <bpmn2:process id="Process_1" isExecutable="false">
+      <bpmn2:extensionElements>
+        <qbp:processSimulationInfo id="qbp_563607e2-bcb8-449f-8415-eaa7970fb678" processInstances="11" currency="EUR" startDateTime="2020-08-25T09:00:00.000Z">
+          <qbp:arrivalRateDistribution type="FIXED" mean="10" arg1="NaN" arg2="NaN">
+            <qbp:timeUnit>seconds</qbp:timeUnit>
+          </qbp:arrivalRateDistribution>
+          <qbp:statsOptions />
+          <qbp:timetables>
+            <qbp:timetable id="DEFAULT_TIMETABLE" default="true" name="Arrival timetable">
+              <qbp:rules>
+                <qbp:rule fromTime="09:00:00.000+00:00" toTime="17:00:00.000+00:00" fromWeekDay="MONDAY" toWeekDay="FRIDAY" />
+              </qbp:rules>
+            </qbp:timetable>
+          </qbp:timetables>
+          <qbp:resources>
+            <qbp:resource id="qbp_180d89ca-9007-44ca-8058-e0aa5e99acc8" name="R1" totalAmount="10"timetableId="DEFAULT_TIMETABLE" />
+            <qbp:resource id="QBP_DEFAULT_RESOURCE" name="Default Resource" totalAmount="1" costPerHour="10" timetableId="DEFAULT_TIMETABLE" />
+          </qbp:resources>
+          <qbp:elements>
+            <qbp:element elementId="Activity_1qp5gba">
+              <qbp:durationDistribution type="NORMAL" mean="120" arg1="60" arg2="NaN">
+                <qbp:timeUnit>minutes</qbp:timeUnit>
+              </qbp:durationDistribution>
+              <qbp:resourceIds>
+                <qbp:resourceId>QBP_DEFAULT_RESOURCE</qbp:resourceId>
+                <qbp:resourceId>qbp_180d89ca-9007-44ca-8058-e0aa5e99acc8</qbp:resourceId>
+              </qbp:resourceIds>
+            </qbp:element>
+          </qbp:elements>
+          <qbp:sequenceFlows>
+            <qbp:sequenceFlow />
+          </qbp:sequenceFlows>
+        </qbp:processSimulationInfo>
+      </bpmn2:extensionElements>
+    <bpmn2:startEvent id="StartEvent_1">
+      <bpmn2:outgoing>Flow_0fq0u5b</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:task id="Activity_1qp5gba">
+      <bpmn2:incoming>Flow_0fq0u5b</bpmn2:incoming>
+    </bpmn2:task>
+    <bpmn2:sequenceFlow id="Flow_0fq0u5b" sourceRef="StartEvent_1" targetRef="Activity_1qp5gba" />
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
+      <bpmndi:BPMNEdge id="Flow_0fq0u5b_di" bpmnElement="Flow_0fq0u5b">
+        <di:waypoint x="448" y="258" />
+        <di:waypoint x="500" y="258" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="412" y="240" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1qp5gba_di" bpmnElement="Activity_1qp5gba">
+        <dc:Bounds x="500" y="218" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

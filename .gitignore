@@ -9,7 +9,7 @@
 **/dependency-reduced-pom.xml
 **/catalina.home_IS_UNDEFINED
 **/apromore-editor.js
-Apromore-Core-Components/Apromore-BPMNEditor/src/main/resources/static/bpmneditor/editor/apromore-editor.js
+Apromore-Core-Components/Apromore-BPMN-Editor/Apromore-BPMN-Editor-Portal/src/main/resources/static/bpmneditor/editor/apromore-editor.js
 # IntelliJ IDEA artifacts, see https://intellij-support.jetbrains.com/hc/en-us/articles/206544839-How-to-manage-projects-under-Version-Control-Systems
 **/.idea/*
 **/*.iws

@@ -1,0 +1,378 @@
+{
+  "name": "Simulation",
+  "uri": "http://www.qbp-simulator.com/Schema201212",
+  "prefix": "qbp",
+  "xml": {
+    "tagAlias": "lowerCase"
+  },
+  "associations": [],
+  "types": [
+    {
+      "name": "Timetable",
+      "properties": [
+        {
+          "name": "id",
+          "type": "String",
+          "isAttr": true
+        },
+        {
+          "name": "default",
+          "type": "String",
+          "isAttr": true
+        },
+        {
+          "name": "name",
+          "type": "String",
+          "isAttr": true
+        },
+        {
+          "name": "rules",
+          "type": "Rules"
+        }
+      ]
+    },
+    {
+      "name": "Rules",
+      "properties": [
+        {
+          "name": "values",
+          "type": "Rule",
+          "isMany": true
+        }
+      ]
+    },
+    {
+      "name": "Rule",
+      "properties": [
+        {
+          "name": "id",
+          "type": "String",
+          "isAttr": true
+        },
+        {
+          "name": "name",
+          "type": "String",
+          "isAttr": true
+        },
+        {
+          "name": "fromTime",
+          "type": "String",
+          "isAttr": true
+        },
+        {
+          "name": "toTime",
+          "type": "String",
+          "isAttr": true
+        },
+        {
+          "name": "fromWeekDay",
+          "type": "String",
+          "isAttr": true
+        },
+        {
+          "name": "toWeekDay",
+          "type": "String",
+          "isAttr": true
+        }
+      ]
+    },
+    {
+      "name": "Timetables",
+      "superClass": [
+        "Element"
+      ],
+      "properties": [
+        {
+          "name": "values",
+          "type": "Timetable",
+          "isMany": true
+        }
+      ]
+    },
+    {
+      "name": "ResourceIds",
+      "properties": [
+        {
+          "name": "resourceId",
+          "type": "String",
+          "default": ""
+        }
+      ]
+    },
+    {
+      "name": "Element",
+      "superClass": [
+        "Element"
+      ],
+      "properties": [
+        {
+          "name": "elementId",
+          "type": "String",
+          "isAttr": true
+        },
+        {
+          "name": "durationDistribution",
+          "type": "DurationDistribution"
+        },
+        {
+          "name": "resourceIds",
+          "type": "ResourceIds"
+        }
+      ]
+    },
+    {
+      "name": "Elements",
+      "superClass": [
+        "Element"
+      ],
+      "properties": [
+        {
+          "name": "values",
+          "type": "Element",
+          "isMany": true
+        }
+      ]
+    },
+    {
+      "name": "DurationDistribution",
+      "properties": [
+        {
+          "name": "timeUnit",
+          "type": "String"
+        },
+        {
+          "name": "type",
+          "type": "String",
+          "isAttr": true
+        },
+        {
+          "name": "mean",
+          "type": "String",
+          "isAttr": true
+        },
+        {
+          "name": "arg1",
+          "type": "String",
+          "isAttr": true
+        },
+        {
+          "name": "arg2",
+          "type": "String",
+          "isAttr": true
+        }
+      ]
+    },
+    {
+      "name": "ArrivalRateDistribution",
+      "properties": [
+        {
+          "name": "timeUnit",
+          "type": "String"
+        },
+        {
+          "name": "type",
+          "type": "String",
+          "isAttr": true
+        },
+        {
+          "name": "mean",
+          "type": "String",
+          "isAttr": true
+        },
+        {
+          "name": "arg1",
+          "type": "String",
+          "isAttr": true
+        },
+        {
+          "name": "arg2",
+          "type": "String",
+          "isAttr": true
+        }
+      ]
+    },
+    {
+      "name": "Resource",
+      "properties": [
+        {
+          "name": "id",
+          "type": "String",
+          "isAttr": true
+        },
+        {
+          "name": "name",
+          "type": "String",
+          "isAttr": true
+        },
+        {
+          "name": "totalAmount",
+          "type": "String",
+          "isAttr": true
+        },
+        {
+          "name": "costPerHour",
+          "type": "String",
+          "isAttr": true
+        },
+        {
+          "name": "timetableId",
+          "type": "String",
+          "isAttr": true
+        }
+      ]
+    },
+    {
+      "name": "Resources",
+      "superClass": [
+        "Element"
+      ],
+      "properties": [
+        {
+          "name": "values",
+          "type": "Resource",
+          "isMany": true
+        }
+      ]
+    },
+    {
+      "name": "StatsOptions",
+      "superClass": [
+        "Element"
+      ],
+      "properties": [
+        {
+          "name": "trimStartProcessInstances",
+          "type": "String",
+          "isAttr": true
+        },
+        {
+          "name": "trimEndProcessInstances",
+          "type": "String",
+          "isAttr": true
+        }
+      ]
+    },
+    {
+      "name": "ProcessSimulationInfo",
+      "superClass": [
+        "Element"
+      ],
+      "properties": [
+        {
+          "name": "validationErrors",
+          "type": "Errors"
+        },
+        {
+          "name": "id",
+          "type": "String",
+          "isAttr": true
+        },
+        {
+          "name": "arrivalRateDistribution",
+          "type": "ArrivalRateDistribution"
+        },
+        {
+          "name": "processInstances",
+          "type": "String",
+          "isAttr": true
+        },
+        {
+          "name": "currency",
+          "type": "String",
+          "isAttr": true
+        },
+        {
+          "name": "startDateTime",
+          "type": "String",
+          "isAttr": true
+        },
+        {
+          "name": "statsOptions",
+          "type": "StatsOptions"
+        },
+        {
+          "name": "timetables",
+          "type": "Timetables"
+        },
+        {
+          "name": "resources",
+          "type": "Resources"
+        },
+        {
+          "name": "elements",
+          "type": "Elements"
+        },
+        {
+          "name": "sequenceFlows",
+          "type": "SequenceFlows"
+        }
+      ]
+    },
+    {
+      "name": "SequenceFlow",
+      "properties": [
+        {
+          "name": "elementId",
+          "type": "String",
+          "isAttr": true
+        },
+        {
+          "name": "executionProbability",
+          "type": "String",
+          "isAttr": true
+        }
+      ]
+    },
+    {
+      "name": "SequenceFlows",
+      "superClass": [
+        "Element"
+      ],
+      "properties": [
+        {
+          "name": "values",
+          "type": "SequenceFlow",
+          "isMany": true
+        }
+      ]
+    },
+    {
+      "name": "Error",
+      "properties": [
+        {
+          "name": "id",
+          "type": "String",
+          "isAttr": true
+        },
+        {
+          "name": "elementId",
+          "type": "String",
+          "isAttr": true
+        },
+        {
+          "name": "elementName",
+          "type": "String",
+          "isAttr": true
+        },
+        {
+          "name": "message",
+          "type": "String",
+          "isAttr": true
+        }
+      ]
+    },
+    {
+      "name": "Errors",
+      "superClass": [
+        "Element"
+      ],
+      "properties": [
+        {
+          "name": "errors",
+          "type": "Error",
+          "isMany": true
+        }
+      ]
+    }
+  ]
+}
