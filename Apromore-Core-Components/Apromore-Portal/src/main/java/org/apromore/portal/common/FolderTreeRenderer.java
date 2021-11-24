@@ -44,6 +44,7 @@ import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Menupopup;
+import org.zkoss.zul.Tree;
 import org.zkoss.zul.Treecell;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.TreeitemRenderer;
@@ -173,11 +174,16 @@ public class FolderTreeRenderer implements TreeitemRenderer {
 		@Override
         public void onEvent(Event event) throws Exception {
           try {
-        	  FolderTreeNode clickedNodeValue = ((Treeitem) event.getTarget().getParent()).getValue();
+        	  Component targetComponent = event.getTarget().getParent();
+        	  FolderTreeNode clickedNodeValue = ((Treeitem) targetComponent).getValue();
               FolderType selectedFolder = (FolderType) clickedNodeValue.getData();
               
               Map args = new HashMap();
-              args.put("POPUP_TYPE", "FOLDER_TREE");
+              if(targetComponent.getParent()!=null && targetComponent.getParent().getParent()!=null && targetComponent.getParent().getParent() instanceof Tree) {
+               args.put("POPUP_TYPE", "ROOT_FOLDER_TREE");
+              }else {
+               args.put("POPUP_TYPE", "FOLDER_TREE");
+              }
               args.put("SELECTED_FOLDER", selectedFolder);
           	  Menupopup menupopup = (Menupopup)Executions.createComponents("~./macros/popupMenu.zul", null, args);
           	  menupopup.open(event.getTarget(), "at_pointer");

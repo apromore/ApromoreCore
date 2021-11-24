@@ -265,6 +265,31 @@
           ]
         }
       ]
+    },
+    {
+      "id": "root-folder-popup-menu",
+      "groups": [
+        {
+          "id": "FOLDER_POPUP",
+          "items": [
+            {
+              "id": "RENAME"
+            },
+            {
+              "id": "PASTE"
+            },
+            {
+              "id": "DELETE"
+            },
+            {
+              "id": "SEPARATOR"
+            },
+            {
+              "id": "SHARE"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
