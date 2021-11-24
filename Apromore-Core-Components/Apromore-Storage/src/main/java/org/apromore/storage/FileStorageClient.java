@@ -107,7 +107,6 @@ public class FileStorageClient implements StorageClient {
 		for (File file : files) {
 			fileList.add(file.getAbsolutePath());
 		}
-		System.out.println("===> List: " + fileList);
 		return fileList;
 	}
 }
