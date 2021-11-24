@@ -31,6 +31,7 @@ import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 import org.eclipse.collections.impl.list.mutable.primitive.LongArrayList;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TimeStatsProcessor {
 
@@ -86,12 +87,9 @@ public class TimeStatsProcessor {
         if (aTrace == null || aTrace.getActivityInstances() == null || aTrace.getActivityInstances().isEmpty())
             return 0;
 
-        CalendarModel calendarModel = aTrace.getCalendarModel();
-
         try {
-            long st = aTrace.getActivityInstances().get(0).getStartTime();
-            long et = aTrace.getActivityInstances().get(aTrace.getActivityInstances().size() - 1).getEndTime();
-            return CalendarDuration.getDuration(calendarModel, st, et);
+            return aTrace.getActivityInstances().stream()
+                    .collect(Collectors.summarizingDouble(ActivityInstance::getDuration)).getSum();
         } catch (Exception e) {
             return 0;
         }
