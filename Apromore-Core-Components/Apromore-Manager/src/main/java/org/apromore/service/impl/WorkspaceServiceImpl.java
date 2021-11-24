@@ -283,6 +283,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
           updateFolder(subfolder.getId(), null, isGEDMatrixReady, user);
         }
       }
+      folder.setDateModified(Calendar.getInstance().getTime());
+
       folderRepo.save(folder);
     }
   }
@@ -691,6 +693,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     if (newParentFolderId.equals(ROOT_FOLDER_ID)) {
       folderService.updateFolderChainForSubFolders(folderId, ROOT_FOLDER_ID + "_" + folderId);
       folder.setParentFolderChain(newParentFolderId.toString());
+      folder.setDateModified(Calendar.getInstance().getTime());
 
       folderRepo.save(folder);
     } else {
