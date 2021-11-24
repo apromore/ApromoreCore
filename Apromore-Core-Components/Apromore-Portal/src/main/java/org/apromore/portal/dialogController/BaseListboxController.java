@@ -665,7 +665,10 @@ public abstract class BaseListboxController extends BaseController {
 			return;
 		}
 		this.mainController.getCopyPasteController().drop(Set.of(dropObject), 1, dropToFolder);
-		refreshContent();
+		this.mainController.getPortalSession().setCurrentFolder(currentFolder);
+		List<FolderType> subFolders = mainController.getManagerService().getSubFolders(UserSessionManager.getCurrentUser().getId(),
+		        currentFolder == null ? 0 : currentFolder.getId());
+		this.mainController.getBaseListboxController().displaySummaries(subFolders,false);
 	}
 
   private ArrayList<FolderType> getSelectedFolders() {

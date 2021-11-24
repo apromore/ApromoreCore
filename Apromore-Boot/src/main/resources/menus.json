@@ -146,9 +146,6 @@
               "id": "RENAME"
             },
             {
-              "id": "SEPARATOR"
-            },
-            {
               "id": "DELETE"
             },
             {
@@ -189,9 +186,6 @@
               "id": "RENAME"
             },
             {
-              "id": "SEPARATOR"
-            },
-            {
               "id": "DELETE"
             },
             {
@@ -230,9 +224,6 @@
             },
             {
               "id": "RENAME"
-            },
-            {
-              "id": "SEPARATOR"
             },
             {
               "id": "DELETE"
