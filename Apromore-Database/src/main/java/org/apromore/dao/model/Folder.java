@@ -39,8 +39,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
@@ -232,7 +230,6 @@ public class Folder implements Serializable {
      *
      * @return Returns the date created.
      */
-    @Temporal(TemporalType.DATE)
     @Column(name = "date_created")
     public Date getDateCreated() {
         return dateCreated;
@@ -252,7 +249,6 @@ public class Folder implements Serializable {
      *
      * @return Returns the date modified.
      */
-    @Temporal(TemporalType.DATE)
     @Column(name = "date_modified")
     public Date getDateModified() {
         return dateModified;
