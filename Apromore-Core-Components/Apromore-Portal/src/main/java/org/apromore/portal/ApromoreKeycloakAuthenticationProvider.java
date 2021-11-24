@@ -22,6 +22,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * An adaptation of {@link KeycloakAuthenticationProvider} which
+ * performs authentication on a {@link KeycloakAuthenticationToken} and maps
+ * authorities based on the user's roles in Apromore.
+ *
+ * @author Jane Hoh
+ */
 public class ApromoreKeycloakAuthenticationProvider extends KeycloakAuthenticationProvider {
     private GrantedAuthoritiesMapper grantedAuthoritiesMapper;
 
@@ -42,7 +49,7 @@ public class ApromoreKeycloakAuthenticationProvider extends KeycloakAuthenticati
                     (KeycloakPrincipal<KeycloakSecurityContext>) token.getPrincipal();
             UserType user = getUserFromPrincipal(kcPrincipal);
 
-            //First time users have analyst and user role by default
+            //Add Apromore roles as authorities. First time users have analyst and user role by default.
             List<String> roles = user == null ? Arrays.asList("ROLE_ANALYST", "ROLE_USER") :
                     user.getRoles().stream().map(RoleType::getName).collect(Collectors.toList());
 
@@ -62,7 +69,7 @@ public class ApromoreKeycloakAuthenticationProvider extends KeycloakAuthenticati
     }
 
     /**
-     * Get Apromore user from the principal
+     * Get Apromore user from the principal.
      */
     private UserType getUserFromPrincipal(KeycloakPrincipal<KeycloakSecurityContext> kcPrincipal) {
         String userName = kcPrincipal.getName();
