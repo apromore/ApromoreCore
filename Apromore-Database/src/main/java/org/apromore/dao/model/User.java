@@ -46,8 +46,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
 import org.springframework.beans.factory.annotation.Configurable;
@@ -248,7 +246,6 @@ public class User implements Serializable {
      *
      * @return Returns the date created.
      */
-    @Temporal(TemporalType.DATE)
     @Column(name = "date_created")
     public Date getDateCreated() {
         return dateCreated;
@@ -268,7 +265,6 @@ public class User implements Serializable {
      *
      * @return Returns the last activity date.
      */
-    @Temporal(TemporalType.DATE)
     @Column(name = "last_activity_date")
     public Date getLastActivityDate() {
         return lastActivityDate;

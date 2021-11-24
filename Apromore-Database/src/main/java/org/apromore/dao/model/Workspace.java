@@ -38,8 +38,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
 import org.springframework.beans.factory.annotation.Configurable;
@@ -133,7 +131,6 @@ public class Workspace implements Serializable {
      * Get the date created for the Object.
      * @return Returns the date created.
      */
-    @Temporal(TemporalType.DATE)
     @Column(name = "date_created")
     public Date getDateCreated() {
         return dateCreated;
