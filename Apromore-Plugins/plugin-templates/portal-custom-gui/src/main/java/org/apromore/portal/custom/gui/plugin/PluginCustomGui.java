@@ -75,17 +75,8 @@ public abstract class PluginCustomGui extends DefaultPortalPlugin {
         }
 
         List<Listheader> listheaders = new ArrayList<>();
-        if(rows.size() > 0 && rows.get(0).size() > 7) {
-//            Listheader scoreHeader = new Listheader("Score", null);
-//            scoreHeader.setWidth("50px");
-//            scoreHeader.setVisible(true);
-//            listheaders.add(scoreHeader);
-        }
         addListheader(listheaders, "Name",              true, null, null, "4");
         addListheader(listheaders, "ID",                true, "center", "80px", null);
-        addListheader(listheaders, "Original language", false, null, null, null);
-        addListheader(listheaders, "Domain",            false, null, null, null);
-        addListheader(listheaders, "Rating",           false, null, null, null);
         addListheader(listheaders, "Last version",    true, "center", "140px", null);
         addListheader(listheaders, "Last update",    true, "center", "140px", null);
         addListheader(listheaders, "Owner",             true, "center", null, "1");
@@ -131,14 +122,8 @@ public abstract class PluginCustomGui extends DefaultPortalPlugin {
         decimalFormat.setMaximumFractionDigits(3);
 
         ProcessSummaryRowValue processSummaryRowValue = new ProcessSummaryRowValue(processSummaryType, versionSummaryType);
-        if(processSummaryType.getVersionSummaries().get(0).getScore() != null) {
-            processSummaryRowValue.add(Double.parseDouble(decimalFormat.format(processSummaryType.getVersionSummaries().get(0).getScore())));
-        }
         processSummaryRowValue.add(processSummaryType.getName());
         processSummaryRowValue.add(processSummaryType.getId());
-        processSummaryRowValue.add(processSummaryType.getOriginalNativeType());
-        processSummaryRowValue.add(processSummaryType.getDomain());
-        processSummaryRowValue.add(processSummaryType.getRanking());
         processSummaryRowValue.add(processSummaryType.getLastVersion());
         processSummaryRowValue.add(DateTimeUtils.normalize(versionSummaryType.getLastUpdate()));
 
