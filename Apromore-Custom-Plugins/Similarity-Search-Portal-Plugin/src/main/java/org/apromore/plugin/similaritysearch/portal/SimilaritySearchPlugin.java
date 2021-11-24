@@ -110,7 +110,7 @@ public class SimilaritySearchPlugin extends PluginCustomGui implements  LabelSup
 
             // At least 2 process versions must be selected. Not necessarily of different processes
             if (selectedProcessVersions.size() != 1) {
-                Messagebox.show("Select one process model for similarity search.");
+                Messagebox.show(getLabel("selectOnlyOneModel"));
                 return;
             }
 

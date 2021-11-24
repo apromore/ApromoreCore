@@ -176,12 +176,10 @@ public class CalendarServiceUnitTest {
     // When
     CalendarModel calendarSaved = calendarService.createGenericCalendar(calendar.getName(), true,
         ZoneId.systemDefault().toString());
-    calendarSaved.populateHolidayMap();
 
     // Then
     assertThat(calendarSaved.getId()).isEqualTo(calendar.getId());
     assertThat(calendarSaved.getHolidays()).hasSize(2);
-    assertThat(calendarSaved.getHolidayLocalDateMap()).hasSize(1);
 
     verify(calendarRepository, times(1)).findByName(calendar.getName());
     verify(calendarRepository, times(1)).saveAndFlush(any(CustomCalendar.class));

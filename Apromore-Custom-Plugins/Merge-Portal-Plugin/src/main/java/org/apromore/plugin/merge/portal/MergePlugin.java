@@ -137,7 +137,7 @@ public class MergePlugin extends DefaultPortalPlugin implements LabelSupplier {
 
             // At least 2 process versions must be selected. Not necessarily of different processes
             if (selectedProcessVersions.size() == 1 && selectedVersions.next().size() < 2 || selectedProcessVersions.size() < 2) {
-                Messagebox.show("Select at least 2 process models for merge.");
+                Messagebox.show(getLabel("selectTwoModels"));
                 return;
             }
 
@@ -145,14 +145,9 @@ public class MergePlugin extends DefaultPortalPlugin implements LabelSupplier {
             LOGGER.info("Executed");
 
         } catch (Exception e) {
-            LOGGER.info("Unable to perform merge", e);
-            StringBuilder sb = new StringBuilder();
-            e.printStackTrace();
-            for(StackTraceElement element : e.getStackTrace()) {
-                sb.append(element.toString() + "\n");
-            }
-            String message = "Search failed (" + sb.toString() + ")";
-            Messagebox.show(message, "Apromore", Messagebox.OK, Messagebox.ERROR);
+            String msg = getLabel("failedMerge");
+            LOGGER.info(msg, e);
+            Messagebox.show(msg, "Apromore", Messagebox.OK, Messagebox.ERROR);
         }
     }
 
@@ -303,15 +298,13 @@ public class MergePlugin extends DefaultPortalPlugin implements LabelSupplier {
                         processVersionIdsType,
                         this.makePublic.isChecked());
 
-
-
-                message = "Merge built one process.";
-
+                message = getLabel("successMerge");
                 context.displayNewProcess(result);
                 context.refreshContent();
 
             } catch (Exception e) {
-                message = "Merge failed (" + e.getMessage() + ")";
+                message = getLabel("failedMerge");
+                LOGGER.info(message, e);
             }
 
             Messagebox.show(message);

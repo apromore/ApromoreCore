@@ -40,15 +40,19 @@ import java.util.List;
 import static org.apromore.service.logimporter.utilities.ParquetUtilities.createParquetSchema;
 import static org.apromore.service.logimporter.utilities.ParquetUtilities.getHeaderFromParquet;
 
-class ParquetImporterParquetImpl implements ParquetImporter {
+class ParquetImporterParquetImpl extends AbstractParquetImporter {
 
     private List<LogErrorReport> logErrorReport;
     private LogProcessorParquet logProcessorParquet;
     private ParquetReader<Group> reader;
     private ParquetFileWriter writer;
 
+    ParquetImporterParquetImpl(final Integer maxEventCount) {
+        super(maxEventCount);
+    }
+
     @Override
-    public LogModel importParqeuetFile(InputStream in, LogMetaData logMetaData, String charset, File outputParquet, boolean skipInvalidRow) throws Exception {
+    public LogModel importParquetFile(InputStream in, LogMetaData logMetaData, String charset, File outputParquet, boolean skipInvalidRow) throws Exception {
 
         try {
             ParquetLogMetaData parquetLogSample = (ParquetLogMetaData) logMetaData;
@@ -136,10 +140,6 @@ class ParquetImporterParquetImpl implements ParquetImporter {
         } finally {
             closeQuietly(in);
         }
-    }
-
-    private boolean isValidLineCount(int lineCount) {
-        return true;
     }
 
     private String[] readGroup(Group g, MessageType schema) {

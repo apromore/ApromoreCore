@@ -110,6 +110,10 @@
     filter: none !important;
 }
 
+.ap-calendar-win .ap-icon {
+    background-color: transparent !important;
+}
+
 .ap-calendar-win .ap-icon-workday {
     filter: var(--ap-filter-ico-green);
 }
@@ -120,6 +124,16 @@
 
 .ap-calendar-win .z-listcell {
     border-bottom: 1px solid #d0d0d0;
+}
+
+.ap-calendar-win[data-readonly=true] .ap-calendar-row,
+.ap-calendar-win[data-readonly=true] .ap-cal-x,
+.ap-calendar-win[data-readonly=true] .ap-holiday-listbox .z-listcell-content {
+  pointer-events: none !important;
+}
+
+.ap-calendar-win[data-readonly=true] .ap-holiday-listbox .z-listcell-content {
+  opacity: 0.5 !important;
 }
 
 .ap-window-header-actions {
@@ -138,7 +152,7 @@
 }
 
 .ap-period-picker.offday {
-    pointer-events: none;
+    /* pointer-events: none; */
     opacity: 0.4;
 }
 

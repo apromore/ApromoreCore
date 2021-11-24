@@ -53,7 +53,7 @@ public class BetweenFilterTest {
                 .collect(Collectors.toList());
 
         assertEquals(1, containOrderModification.size());
-        assertEquals(4, notContainOrderModification.size());
+        assertEquals(0, notContainOrderModification.size());
     }
 
     private boolean containsActivity(PTrace trace, String name) {
@@ -69,9 +69,11 @@ public class BetweenFilterTest {
                 "Order modification", "Prepare package",
                 true, false, true, false);
         List<PTrace> output = BetweenFilter.filter(log.getPTraces(), rule);
-        assertEquals("Order modification", output.get(4).getActivityInstances().get(0).getName());
-        assertEquals("Warehouse check for the order", output.get(4).getActivityInstances().get(1).getName());
-        assertEquals(2, output.get(4).getActivityInstances().size());
+        assertEquals(1, output.size());
+        PTrace trace = output.get(0);
+        assertEquals(2, trace.getActivityInstances().size());
+        assertEquals("Order modification", trace.getActivityInstances().get(0).getName());
+        assertEquals("Warehouse check for the order", trace.getActivityInstances().get(1).getName());
     }
 
     @Test
@@ -92,8 +94,9 @@ public class BetweenFilterTest {
                 BetweenFilterSupport.START, "Warehouse check for the order",
                 true, false, true, true);
         List<PTrace> output = BetweenFilter.filter(log.getPTraces(), rule);
+        PTrace secondTrace = output.get(1);
         assertEquals("Warehouse check for the order",
-                output.get(2).getActivityInstances().get(output.get(2).getActivityInstances().size()-1).getName());
+                secondTrace.getActivityInstances().get(secondTrace.getActivityInstances().size()-1).getName());
     }
 
     @Test

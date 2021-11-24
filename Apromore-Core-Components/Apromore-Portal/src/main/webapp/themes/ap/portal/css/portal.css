@@ -677,6 +677,7 @@ img[src="img/icon/bpmn-22x22.png"] {
 .ap-listbox-process.ap-tiles-view .z-listbox-body table {
   display: block;
   height: 100%;
+  width:100% !important;
   background-color: #f9f9f9;
 }
 
@@ -838,4 +839,13 @@ img[src="img/icon/bpmn-22x22.png"] {
 
 .ap-portal .z-button.ap-icon {
     background-color: transparent;
+}
+.ap-listbox-process-head .ap-head-left-align > .z-listheader-content {
+	text-align: left !important;
+}
+.ap-disable-selection {
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
 }

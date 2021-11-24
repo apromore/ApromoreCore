@@ -106,6 +106,8 @@ public class PDAnalyst {
 
     // Calendar management
     CalendarModel calendarModel;
+
+    ConfigData configData;
     
     public PDAnalyst(ContextData contextData, ConfigData configData, EventLogService eventLogService) throws Exception {
         XLog xlog = eventLogService.getXLog(contextData.getLogId());
@@ -126,12 +128,13 @@ public class PDAnalyst {
         }
 
         long timer = System.currentTimeMillis();
+        this.configData = configData;
         this.aLog = new ALog(xlog);
         LOGGER.debug("ALog.constructor: {} ms.", System.currentTimeMillis() - timer);
-        indexableAttributes = aLog.getAttributeStore().getPerspectiveEventAttributes(configData.getMaxNumberOfUniqueValues(), perspectiveAttKeys);
+        indexableAttributes = aLog.getAttributeStore().getPerspectiveEventAttributes(configData.getMaxNumberOfNodes(), perspectiveAttKeys);
         if (indexableAttributes == null || indexableAttributes.isEmpty()) {
             throw new InvalidDataException("No perspective attributes could be found in the log with key in " + perspectiveAttKeys.toString() +
-                    " and number of distinct values is less than or equal to " + configData.getMaxNumberOfUniqueValues());
+                    " and number of distinct values is less than or equal to " + configData.getMaxNumberOfNodes());
         }
         
         this.originalAPMLog = apmLog;
@@ -175,6 +178,8 @@ public class PDAnalyst {
                 userOptions.getSecondaryType(),
                 userOptions.getSecondaryAggregation(),
                 userOptions.getSecondaryRelation(),
+                configData.getMaxNumberOfNodes(),
+                configData.getMaxNumberOfArcs(),
                 null);
     }
     
@@ -197,6 +202,8 @@ public class PDAnalyst {
                 MeasureType.FREQUENCY,
                 MeasureAggregation.CASES,
                 MeasureRelation.ABSOLUTE,
+                configData.getMaxNumberOfNodes(),
+                configData.getMaxNumberOfArcs(),
                 null);
     }
     
@@ -434,14 +441,6 @@ public class PDAnalyst {
     public boolean filter_RetainTracesAnyValueOfDirectFollowRelation(String value, String attKey) throws Exception {
         return filterAdditive(getDirectFollowFilterRule(attKey, Choice.RETAIN, Section.CASE, Inclusion.ANY_VALUE,
                 getDirectFollowRuleValue(value, attKey)));
-    }
-
-    public boolean hasSufficientDurationVariant(String attribute, String value) {
-        return LogStatsAnalyzer.getNodeDurationSize(attribute, value, filteredAPMLog) > 1;
-    }
-
-    public boolean hasSufficientDurationVariant(String attribute, String inDegree, String outDegree) {
-        return LogStatsAnalyzer.getArcDurationSize(attribute, inDegree, outDegree, filteredAPMLog) > 1;
     }
 
     public List<CaseDetails> getCaseDetails() {

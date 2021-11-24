@@ -30,21 +30,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+
 import org.apromore.dao.model.User;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.PortalPlugin;
-import org.apromore.portal.menu.PluginCatalog;
 import org.apromore.portal.common.ItemHelpers;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.context.PluginPortalContext;
 import org.apromore.portal.context.PortalPluginResolver;
 import org.apromore.portal.dialogController.workspaceOptions.AddFolderController;
-import org.apromore.portal.dialogController.workspaceOptions.CopyAndPasteController;
 import org.apromore.portal.dialogController.workspaceOptions.RenameFolderController;
 import org.apromore.portal.exception.DialogException;
+import org.apromore.portal.menu.PluginCatalog;
 import org.apromore.portal.model.FolderType;
 import org.apromore.portal.model.LogSummaryType;
 import org.apromore.portal.model.ProcessSummaryType;
@@ -58,19 +59,19 @@ import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.event.EventQueue;
-import org.zkoss.zk.ui.event.EventQueues;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listhead;
+import org.zkoss.zul.Listheader;
 import org.zkoss.zul.ListitemRenderer;
+import org.zkoss.zul.Menupopup;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Span;
-
-import org.apromore.zk.event.CalendarEvents;
+import org.zkoss.zul.event.ColSizeEvent;
 
 public abstract class BaseListboxController extends BaseController {
 
@@ -120,7 +121,6 @@ public abstract class BaseListboxController extends BaseController {
   private ArrayList<FolderType> sourceFolders = new ArrayList<>();
   private ArrayList<ProcessSummaryType> sourceProcesses = new ArrayList<>();
 
-  private CopyAndPasteController copyAndPasteController;
 
   public BaseListboxController(MainController mainController, String componentId,
       ListitemRenderer itemRenderer) {
@@ -128,8 +128,6 @@ public abstract class BaseListboxController extends BaseController {
     setHflex("100%");
     setVflex("100%");
 
-    this.copyAndPasteController =
-        new CopyAndPasteController(mainController, UserSessionManager.getCurrentUser());
     this.mainController = mainController;
     this.portalContext = new PluginPortalContext(mainController);
     listBox = createListbox(componentId);
@@ -198,6 +196,19 @@ public abstract class BaseListboxController extends BaseController {
   }
 
   protected void attachEvents() {
+	  
+	  this.listBox.addEventListener(Events.ON_RIGHT_CLICK, new EventListener<Event>() {
+	      @Override
+	      public void onEvent(Event event) throws Exception {
+	    	if (listBox.getSelectedCount() > 0) {
+	    	  unselectAll();
+	    	}
+    	 	Map args = new HashMap();
+      	    args.put("POPUP_TYPE", "CANVAS");
+        	Menupopup menupopup = (Menupopup)Executions.createComponents("~./macros/popupMenu.zul", null, args);
+        	menupopup.open(event.getTarget(), "at_pointer");
+	      }
+	    });
 
     this.listBox.addEventListener("onKeyPress", new EventListener<KeyEvent>() {
       @Override
@@ -368,6 +379,27 @@ public abstract class BaseListboxController extends BaseController {
         launchCalendar(selectedItem.getName(), selectedItem.getId());
       }
     });
+    
+    this.listBox.getListhead().addEventListener("onColSize", new EventListener<ColSizeEvent>() {
+		@Override
+		public void onEvent(ColSizeEvent event) throws Exception {
+			try {
+				int widthSetByClient = Integer.parseInt((event.getWidth().substring(0,event.getWidth().indexOf("px"))));
+				int newWidth = 0;
+				Listheader listHeader = (Listheader) event.getColumn();
+				if (event.getColIndex() == 0) {
+					newWidth = Math.max(widthSetByClient, 40);
+				} else {
+					newWidth = Math.max(widthSetByClient, 60);
+				}
+				
+				listHeader.setWidth(newWidth + "px");
+			} catch (Exception ex) {
+				LOGGER.error("Error in resize",ex);
+			}
+		}
+    });
+     
   }
 
   public void setTileView(boolean tileOn) {
@@ -606,21 +638,38 @@ public abstract class BaseListboxController extends BaseController {
   public void cut() {
     FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
 
-    copyAndPasteController.cut(getSelection(), getSelectionCount(), currentFolder);
+    this.mainController.getCopyPasteController().cut(getSelection(), getSelectionCount(), currentFolder);
   }
 
   public void copy() {
     FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
 
-    copyAndPasteController.copy(getSelection(), getSelectionCount(), currentFolder);
+    this.mainController.getCopyPasteController().copy(getSelection(), getSelectionCount(), currentFolder);
   }
 
   public void paste() throws Exception {
     FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
 
-    copyAndPasteController.paste(currentFolder);
+    this.mainController.getCopyPasteController().paste(currentFolder);
     refreshContent();
   }
+  
+  public void paste(FolderType currentFolder) throws Exception {
+	    this.mainController.getCopyPasteController().paste(currentFolder);
+	    refreshContent();
+  }
+  
+	public void drop(FolderType dropToFolder,Object dropObject, FolderType currentFolder) throws Exception {
+		if (dropObject instanceof FolderType && dropToFolder.getId().equals(((FolderType)dropObject).getId())) {
+			Notification.error(Labels.getLabel("portal_source_destination_folder_notsame_message"));
+			return;
+		}
+		this.mainController.getCopyPasteController().drop(Set.of(dropObject), 1, dropToFolder);
+		this.mainController.getPortalSession().setCurrentFolder(currentFolder);
+		List<FolderType> subFolders = mainController.getManagerService().getSubFolders(UserSessionManager.getCurrentUser().getId(),
+		        currentFolder == null ? 0 : currentFolder.getId());
+		this.mainController.getBaseListboxController().displaySummaries(subFolders,false);
+	}
 
   private ArrayList<FolderType> getSelectedFolders() {
     ArrayList<FolderType> folderList = new ArrayList<>();
@@ -845,7 +894,7 @@ public abstract class BaseListboxController extends BaseController {
 	      arg.put("withFolderTree", false);
 	      arg.put("selectedItem", selectedItem);
       }else {
-    	  arg.put("withFolderTree", true);
+    	  arg.put("withFolderTree", false);
           arg.put("selectedItem", currentFolder);
       }
       
@@ -1006,4 +1055,7 @@ public abstract class BaseListboxController extends BaseController {
       return logSummaries;
     }
   }
+
+
+  
 }

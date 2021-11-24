@@ -67,6 +67,9 @@ import org.zkoss.zul.Messagebox;
  * 
  * @todo there is a duplication between ApromoreSession and EditSessionType, they need to be clean
  *       later.
+ *
+ * @todo avoid thread conflict issues when setting instance data for BIMPPortalPlugin, instead it
+ *       should be passed as a method parameter.
  * 
  * @author Bruce Nguyen
  *
@@ -198,6 +201,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
         param.put("bpmnioLib", AccessType.VIEWER.equals(currentUserAccessType) ? BPMNIO_VIEWER_JS : BPMNIO_MODELER_JS);
       }
       param.put("viewOnly", AccessType.VIEWER.equals(currentUserAccessType));
+      param.put("availableSimulateModelPlugin", mainC.getPortalPluginMap().get(PluginCatalog.PLUGIN_SIMULATE_MODEL) != null);
       Executions.getCurrent().pushArg(param);
 
     } catch (Exception e) {
@@ -228,6 +232,34 @@ public class BPMNEditorController extends BaseController implements Composer<Com
           return;
         }
         new SaveAsDialogController(process, vst, session, false, eventToString(event), mainC);
+      }
+    });
+
+    this.addEventListener("onSimulateModel", new EventListener<Event>() {
+      @Override
+      public void onEvent(final Event event) throws InterruptedException {
+        PortalContext portalContext = mainC.getPortalContext();
+        Map<String, PortalPlugin> portalPluginMap = portalContext.getPortalPluginMap();
+        PortalPlugin simulateModelPlugin = portalPluginMap.get(PluginCatalog.PLUGIN_SIMULATE_MODEL);
+
+        //Since simulate model is an EE feature, it may not be available
+        if (simulateModelPlugin == null) {
+          Messagebox.show(Labels.getLabel("portal_simModelUnavailable_message"),
+                  Labels.getLabel("portal_simModelUnavailable_title"),
+                  Messagebox.OK, Messagebox.INFORMATION);
+          return;
+        }
+
+        if (currentUserAccessType == AccessType.VIEWER) {
+          Notification.error(Labels.getLabel("portal_noPrivilegeSaveEdit_message"));
+          return;
+        }
+
+        Map arg = new HashMap<>();
+        arg.put("selectedModel", process);
+        arg.put("modelData", eventToString(event));
+        simulateModelPlugin.setSimpleParams(arg);
+        simulateModelPlugin.execute(portalContext);
       }
     });
 

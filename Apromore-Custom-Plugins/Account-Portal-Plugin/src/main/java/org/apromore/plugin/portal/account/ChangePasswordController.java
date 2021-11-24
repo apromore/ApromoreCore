@@ -24,9 +24,6 @@ package org.apromore.plugin.portal.account;
 
 import java.io.IOException;
 import java.util.Objects;
-import org.apromore.plugin.portal.PortalContext;
-import org.apromore.plugin.portal.PortalLoggerFactory;
-import org.apromore.service.SecurityService;
 import org.slf4j.Logger;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -36,9 +33,19 @@ import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
-public class ChangePasswordController {
+import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.PortalLoggerFactory;
+import org.apromore.service.SecurityService;
+import org.apromore.zk.label.LabelSupplier;
+
+public class ChangePasswordController implements LabelSupplier {
 
     private static Logger LOGGER = PortalLoggerFactory.getLogger(ChangePasswordController.class);
+
+    @Override
+    public String getBundleName() {
+        return "account";
+    }
 
     public ChangePasswordController(PortalContext portalContext, SecurityService securityService) {
         try {
@@ -53,14 +60,13 @@ public class ChangePasswordController {
 
             ((Button) window.getFellow("changePasswordButton")).addEventListener("onClick", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
-
                     if (!Objects.equals(newPassword.getValue(), confirmPassword.getValue())) {
-                        Messagebox.show("New password does not match.", null, Messagebox.OK, Messagebox.NONE);
+                        Messagebox.show(getLabel("passwordNotMatch"), null, Messagebox.OK, Messagebox.NONE);
                         return;
                     }
 
                     if (newPassword.getValue() == null || newPassword.getValue().length() < 6) {
-                        Messagebox.show("New password must be at least 6 characters long.", null, Messagebox.OK, Messagebox.NONE);
+                        Messagebox.show(getLabel("passwordTooShort"), null, Messagebox.OK, Messagebox.NONE);
                         return;
                     }
 
@@ -69,7 +75,7 @@ public class ChangePasswordController {
                     if (success) {
                         window.detach();
                     } else {
-                        Messagebox.show("Password was NOT changed.", null, Messagebox.OK, Messagebox.NONE);
+                        Messagebox.show(getLabel("passwordNotChanged"), null, Messagebox.OK, Messagebox.NONE);
                     }
                 }
             });
@@ -84,7 +90,7 @@ public class ChangePasswordController {
 
         } catch (IOException e) {
             LOGGER.warn("Unable to edit account", e);
-            Messagebox.show("Unable to edit account", "Apromore", Messagebox.OK, Messagebox.ERROR);
+            Messagebox.show(getLabel("failedEditAccount"), "Apromore", Messagebox.OK, Messagebox.ERROR);
         }
     }
 }

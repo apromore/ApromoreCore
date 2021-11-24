@@ -27,12 +27,17 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.zkoss.util.resource.Labels;
+import org.zkoss.zul.Messagebox;
 
 import org.apromore.dao.model.User;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.common.ItemHelpers;
 import org.apromore.portal.dialogController.BaseController;
 import org.apromore.portal.dialogController.MainController;
+import org.apromore.portal.exception.RecursiveCopyPasteException;
+import org.apromore.portal.exception.RecursiveMoveException;
 import org.apromore.portal.model.FolderType;
 import org.apromore.portal.model.LogSummaryType;
 import org.apromore.portal.model.ProcessSummaryType;
@@ -40,9 +45,6 @@ import org.apromore.portal.model.SummariesType;
 import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.UserType;
 import org.apromore.zk.notification.Notification;
-import org.slf4j.Logger;
-import org.zkoss.util.resource.Labels;
-import org.zkoss.zul.Messagebox;
 
 public class CopyAndPasteController extends BaseController {
 
@@ -219,7 +221,7 @@ public class CopyAndPasteController extends BaseController {
       if (obj instanceof FolderType) {
         FolderType folder = (FolderType) obj;
         if (isInside(folder.getId(), selectedTargetFolderId, 0)) {
-          Notification.error(Labels.getLabel("portal_noCopyFolderToSub_message"));
+          throw new RecursiveCopyPasteException();
         } else {
           cloneFolder(folder, selectedTargetFolderId, 0);
         }
@@ -236,7 +238,7 @@ public class CopyAndPasteController extends BaseController {
       if (obj instanceof FolderType) {
         FolderType folder = (FolderType) obj;
         if (isInside(folder.getId(), selectedTargetFolderId, 0)) {
-          Notification.error(Labels.getLabel("portal_noMoveFolderToSub_message"));
+          throw new RecursiveMoveException();
         } else {
           moveFolder(folder, selectedTargetFolderId, 0);
         }
@@ -275,7 +277,7 @@ public class CopyAndPasteController extends BaseController {
     if (checkContext(selections, selectionCount, currentFolder)) {
       try {
         if (!checkImmediateOwnership(selections)) {
-          Notification.error(Labels.getLabel("portal_onlyOwnerCanCutItems}"));
+          Notification.error(Labels.getLabel("portal_onlyOwnerCanCutItems"));
         } else if (ItemHelpers.isOwner(this.currentUser, currentFolder)) {
           isCut = true;
           updateSelectedItems(selections);
@@ -330,12 +332,57 @@ public class CopyAndPasteController extends BaseController {
         cloneSelectedItems();
       }
       Notification.info(MessageFormat.format(Labels.getLabel("portal_itemsPasted_message"),
-          getSelectedItemsSize()));
+              getSelectedItemsSize()));
       clearSelectedItems();
+    } catch (RecursiveCopyPasteException e) {
+      Notification.error(Labels.getLabel("portal_noCopyFolderToSub_message"));
+    } catch (RecursiveMoveException e) {
+      Notification.error(Labels.getLabel("portal_noMoveFolderToSub_message"));
     } catch (Exception e) {
       Messagebox.show(Labels.getLabel("portal_failedPaste_message"), "Apromore", Messagebox.OK,
           Messagebox.ERROR);
       LOGGER.error(e.getMessage());
     }
   }
+  
+  public void drop(Set<Object> selections, int selectionCount, FolderType currentFolder) throws Exception {
+	  
+	   if (currentFolder == null) {
+	      Notification.error(Labels.getLabel("portal_failedFind_message"));
+	      return;
+	    }
+	    if (!ItemHelpers.isOwner(this.currentUser, currentFolder)) {
+	      Notification.error(Labels.getLabel("portal_onlyOwnerCanPasteToCurrent_message"));
+	      return;
+	    }
+	  
+		if (checkContext(selections, selectionCount, currentFolder)) {
+			try {
+				if (!checkImmediateOwnership(selections)) {
+					Notification.error(Labels.getLabel("portal_onlyOwnerCanCutItems"));
+				} else if (ItemHelpers.isOwner(this.currentUser, currentFolder)) {
+					isCut = true;
+					updateSelectedItems(selections);
+				} else {
+					Notification.error(Labels.getLabel("portal_onlyOwnerCanCutFromCurrent_message"));
+				}
+			} catch (Exception e) {
+				Messagebox.show(Labels.getLabel("portal_failedCut_message"), "Apromore", Messagebox.OK,
+						Messagebox.ERROR);
+				LOGGER.error("Unable to perform Cut", e);
+			}
+		}
+	   
+		try {
+			if (isCut) {
+				selectedTargetFolderId = currentFolder.getId();
+				moveSelectedItems();
+				Notification.info(Labels.getLabel("portal_itemsDropped_message"));
+				clearSelectedItems();
+			}
+		} catch (Exception e) {
+			Messagebox.show(Labels.getLabel("portal_failedPaste_message"), "Apromore", Messagebox.OK, Messagebox.ERROR);
+			LOGGER.error("Unable to perform Paste", e);
+		}
+	}
 }

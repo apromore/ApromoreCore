@@ -25,14 +25,14 @@
          multiple="true" checkmark="false" sclass="ap-listbox-process ap-forced-scroll">
   <listhead hflex="1" sizable="true" sclass="ap-listbox-process-head">
     <listheader width="40px" visible="true"/>
-    <listheader label="Score" hflex="1" visible="false" id="columnScore"/>
-    <listheader label="Name" id="columnName" hflex="4" />                   <!-- name -->
+    <listheader label="Score"  visible="false" id="columnScore"/>
+    <listheader label="Name" id="columnName"  sclass="ap-head-left-align"  />                   <!-- name -->
     <listheader label="ID" width="80px" align="center"/> <!-- id -->
     <listheader label="Format" width="80px" align="center" visible="false"/>                 <!-- originalNativeType -->
-    <listheader label="Domain" hflex="1" visible="false"/>                   <!-- domain -->
+    <listheader label="Domain"  visible="false"/>                   <!-- domain -->
     <listheader label="Rating" width="90px" align="center" visible="false"/> <!-- ranking -->
-    <listheader label="Last version" width="140px" align="center"/> <!-- lastVersion -->
-    <listheader label="Last update" width="140px" align="center"  /> <!-- lastVersion -->
-    <listheader label="Owner" hflex="1"/>                   <!-- owner -->
+    <listheader label="Last version" width="120px" align="center"/> <!-- lastVersion -->
+    <listheader label="Last update" width="170px" align="center"  /> <!-- lastVersion -->
+    <listheader label="Owner"   sclass="ap-head-left-align"   />                   <!-- owner -->
   </listhead>
 </listbox>

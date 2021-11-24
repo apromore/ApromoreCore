@@ -24,12 +24,17 @@
 
 package org.apromore.portal.common;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.model.FolderType;
 import org.slf4j.Logger;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.event.DropEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -37,6 +42,8 @@ import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Html;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Listitem;
+import org.zkoss.zul.Menupopup;
 import org.zkoss.zul.Treecell;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.TreeitemRenderer;
@@ -127,7 +134,59 @@ public class FolderTreeRenderer implements TreeitemRenderer {
         }
       }
     });
-  }
+    
+    dataRow.setDraggable("true");
+    dataRow.setDroppable("true");
+	dataRow.addEventListener(Events.ON_DROP, new EventListener<DropEvent>() {
+		@Override
+		public void onEvent(DropEvent event) throws Exception {
+
+			try {
+				FolderTreeNode dropTarget = ((Treeitem) event.getTarget().getParent()).getValue();
+				FolderType selectedFolder = (FolderType) dropTarget.getData();
+
+				Object droppedObject = null;
+				if (event.getDragged() instanceof Listitem) {
+					Listitem draggedItem = (Listitem) event.getDragged();
+					droppedObject = draggedItem.getValue();
+				} else if (event.getDragged() instanceof Treerow) {
+					FolderTreeNode draggedItem = ((Treeitem) event.getDragged().getParent()).getValue();
+					droppedObject = draggedItem.getData();
+				}
+
+				if (selectedFolder != null && droppedObject != null) {
+					mainC.getBaseListboxController().drop(selectedFolder, droppedObject,
+							mainC.getPortalSession().getCurrentFolder());
+				}
+			} catch (Exception e) {
+				LOGGER.error("Error occurred in Drag and Drop on Tree", e);
+			}
+
+		}
+	});
+	
+	
+    dataRow.addEventListener(Events.ON_RIGHT_CLICK, new EventListener<Event>() {
+        @SuppressWarnings({ "unchecked", "rawtypes" })
+		@Override
+        public void onEvent(Event event) throws Exception {
+          try {
+        	  FolderTreeNode clickedNodeValue = ((Treeitem) event.getTarget().getParent()).getValue();
+              FolderType selectedFolder = (FolderType) clickedNodeValue.getData();
+              
+              Map args = new HashMap();
+              args.put("POPUP_TYPE", "FOLDER_TREE");
+              args.put("SELECTED_FOLDER", selectedFolder);
+          	  Menupopup menupopup = (Menupopup)Executions.createComponents("~./macros/popupMenu.zul", null, args);
+          	  menupopup.open(event.getTarget(), "at_pointer");
+           
+          } catch (Exception ex) {
+            LOGGER.error("FolderTree failed to show Pop-up menu", ex);
+          }
+        }
+      });
+
+}
 
 
   /*

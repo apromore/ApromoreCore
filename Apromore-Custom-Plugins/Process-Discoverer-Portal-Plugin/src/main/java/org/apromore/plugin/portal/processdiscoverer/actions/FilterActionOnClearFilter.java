@@ -40,8 +40,7 @@ public class FilterActionOnClearFilter extends FilterAction {
             analyst.clearFilter();
             return true;
         } catch (Exception e) {
-            // LOGGER.error("Error in clearing filter. Error message: " + e.getMessage());
-            Messagebox.show("Error in clearing filter");
+            Messagebox.show(getLabel("filterClearError_message"));
             return false;
         }
     }

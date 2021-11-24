@@ -67,7 +67,7 @@ public enum FilterType {
     // others
     UNKNOWN("UNKNOWN");
 
-    private String stringValue;
+    private final String stringValue;
 
     FilterType(String stringValue) {
         this.stringValue = stringValue;
@@ -80,7 +80,10 @@ public enum FilterType {
             case CASE_CASE_ATTRIBUTE: return "Case attribute";
             case CASE_ID: return "Case ID";
             case REWORK_REPETITION: return "Rework";
-            case CASE_TIME: return "Case timeframe";
+            case CASE_TIME:
+            case STARTTIME:
+            case ENDTIME:
+                return "Case timeframe";
             case EVENT_TIME: return "Event timeframe";
             case DURATION: return "Duration";
             case CASE_UTILISATION: return "Case utilization";
@@ -96,7 +99,9 @@ public enum FilterType {
             case CASE_LENGTH: return "Case length";
             case CASE_VARIANT: return "Case variant";
             case BETWEEN: return "Between";
-            default: return "Unknown";
+            case DIRECT_FOLLOW: return "Directly-follows";
+            case EVENTUAL_FOLLOW: return "Eventually-follows";
+            default: return this.stringValue;
         }
     }
 

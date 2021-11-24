@@ -51,6 +51,9 @@
 
     <style src="~./css/cytoscape-context-menus.css"/>
     <script type="text/javascript" src="~./libs/jquery/3.5.1/jquery-3.5.1.min.js"></script>
+    <script type="text/javascript" src="~./libs/tippy/6.2.7/popper.min.js"></script>
+    <script type="text/javascript" src="~./libs/tippy/6.2.7/tippy-bundle.umd.min.js"></script>
+    <script type="text/javascript" src="~./calendar/js/index.js"></script>
     <style src="~./css/chiaroscuro.css"></style>
     <style>
         /* must be embedded here */
@@ -152,6 +155,36 @@
         window.onerror = function myErrorHandler(errorMsg, url, lineNumber) {
             window.location.reload();
         }
+        
+        window.addEventListener('keydown', (evt) => {
+           	  
+           	   evt = evt||window.event ;
+			   var keyCode = evt.keyCode;
+			   var target = evt.target || evt.srcElement;
+			   
+			   if(evt.ctrlKey||evt.metaKey) {
+			   	
+			   	if (target.tagName.toUpperCase() == 'INPUT') return;
+			   	
+				if (keyCode==67 || keyCode==86 || keyCode==88) {
+					zAu.send(new zk.Event(zk.Widget.$(jq("$mainW")), 'onCtrlPress',keyCode));
+				}
+          	 }
+           });
+           
+          function clearSelection(){
+          	var selectedArea = window.getSelection ? window.getSelection() : document.selection;
+				if (selectedArea) {
+				    if (selectedArea.removeAllRanges) {
+				        selectedArea.removeAllRanges();
+				    } else if (selectedArea.empty) {
+				        selectedArea.empty();
+				    } else if (selectedArea.selection) { 
+					  selectedArea.selection.empty();
+					}
+				}
+          } 
+        
     </script>
 
     <window id="mainW" border="none" height="100%" width="100%" apply="org.apromore.portal.dialogController.MainController" sclass="custom-window ap-portal ap-font-base">

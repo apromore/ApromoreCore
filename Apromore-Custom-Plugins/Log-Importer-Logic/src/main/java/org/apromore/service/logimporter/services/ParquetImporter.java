@@ -29,6 +29,6 @@ import java.io.InputStream;
 
 public interface ParquetImporter {
 
-    LogModel importParqeuetFile(InputStream in, LogMetaData sample, String charset, File outputParquet, boolean skipInvalidRow) throws Exception;
+    LogModel importParquetFile(InputStream in, LogMetaData sample, String charset, File outputParquet, boolean skipInvalidRow) throws Exception;
 
 }

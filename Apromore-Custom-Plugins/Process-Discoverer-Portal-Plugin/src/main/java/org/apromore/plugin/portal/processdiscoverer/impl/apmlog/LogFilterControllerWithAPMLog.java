@@ -27,12 +27,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apromore.apmlog.filter.PLog;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.RuleValue;
 import org.apromore.apmlog.filter.types.FilterType;
 import org.apromore.apmlog.filter.types.OperationType;
+import org.apromore.apmlog.logobjects.ActivityInstance;
+import org.apromore.apmlog.util.CalendarDuration;
+import org.apromore.calendar.model.CalendarModel;
 import org.apromore.plugin.portal.logfilter.generic.EditorOption;
 import org.apromore.plugin.portal.logfilter.generic.LogFilterClient;
 import org.apromore.plugin.portal.logfilter.generic.LogFilterOutputResult;
@@ -43,6 +47,7 @@ import org.apromore.plugin.portal.processdiscoverer.PDController;
 import org.apromore.plugin.portal.processdiscoverer.actions.FilterAction;
 import org.apromore.plugin.portal.processdiscoverer.actions.FilterActionOnCompositeFilterCriteria;
 import org.apromore.plugin.portal.processdiscoverer.eventlisteners.LogFilterController;
+import org.apromore.zk.label.LabelSupplier;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.zkoss.json.JSONObject;
 import org.zkoss.zk.ui.event.Event;
@@ -55,13 +60,18 @@ import org.zkoss.zul.Messagebox;
  * @author Bruce Nguyen
  *
  */
-public class LogFilterControllerWithAPMLog extends LogFilterController implements LogFilterClient {
+public class LogFilterControllerWithAPMLog extends LogFilterController implements LogFilterClient, LabelSupplier {
     private PDAnalyst analyst;
     private FilterAction compositeFilterAction;
     
     public LogFilterControllerWithAPMLog(PDController controller) throws Exception {
         super(controller);
         analyst = controller.getProcessAnalyst();
+    }
+
+    @Override
+    public String getBundleName() {
+        return "pd";
     }
 
     @Override
@@ -124,7 +134,7 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
             case EVENT_ATTRIBUTE_DURATION:
                 data = (String) param.get("data");
                 if (filterType == FilterType.EVENT_ATTRIBUTE_DURATION &&
-                        !analyst.hasSufficientDurationVariant(mainAttribute, data)) {
+                        !isValidAttributeDurationPayload(mainAttribute, data)) {
                     Messagebox.show(
                         parent.getLabel("failedFilterNodeDurationSingleValue_message"),
                         parent.getLabel("common_error_text"), Messagebox.OK, Messagebox.ERROR);
@@ -136,7 +146,7 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
             case ATTRIBUTE_ARC_DURATION:
                 source = (String) param.get("source");
                 target = (String) param.get("target");
-                if (!analyst.hasSufficientDurationVariant(mainAttribute, source, target)) {
+                if (!isValidArcDurationPayload(mainAttribute, source, target)) {
                     Messagebox.show(
                         parent.getLabel("failedFilterArcDurationSingleValue_message"),
                         parent.getLabel("common_error_text"), Messagebox.OK, Messagebox.ERROR);
@@ -152,15 +162,41 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
         return parameters;
     }
 
-    private boolean isValidEventAttributeDuration(String mainAttribute, String data) {
-        if (!analyst.hasSufficientDurationVariant(mainAttribute, data)) {
-            Messagebox.show(
-                parent.getLabel("failedFilterNodeDurationSingleValue_message"),
-                parent.getLabel("common_error_text"), Messagebox.OK, Messagebox.ERROR);
-            return false;
-        }
+    private boolean isValidAttributeDurationPayload(String attribute, String value) {
+        PLog log = analyst.getFilteredPLog();
+        List<ActivityInstance> activityInstances = log.getActivityInstances();
+        Set<Double> uniqueDurs = activityInstances.stream()
+                .filter(x -> x.getAttributes().containsKey(attribute))
+                .filter(x -> x.getAttributes().get(attribute).equals(value))
+                .map(ActivityInstance::getDuration)
+                .collect(Collectors.toSet());
 
-        return true;
+        return uniqueDurs.size() > 1;
+    }
+
+    private boolean isValidArcDurationPayload(String attribute, String fromVal, String toVal) {
+        PLog log = analyst.getFilteredPLog();
+        List<ActivityInstance> activityInstances = log.getActivityInstances();
+        Set<Long> uniqueDurs = activityInstances.stream()
+                .filter(x -> x.getAttributes().containsKey(attribute))
+                .filter(x -> x.getAttributes().get(attribute).equals(fromVal))
+                .map(x -> getNextMatchedArcDuration(attribute, toVal, x, log))
+                .collect(Collectors.toSet());
+
+        return uniqueDurs.size() > 1;
+    }
+
+    private long getNextMatchedArcDuration(String attribute,
+                                           String toValue,
+                                           ActivityInstance sourceNode,
+                                           PLog log) {
+        ActivityInstance nextNode = log.get(sourceNode.getMutableTraceIndex()).getNextOf(sourceNode);
+        if (nextNode == null || !nextNode.getAttributes().containsKey(attribute) ||
+                !nextNode.getAttributes().get(attribute).equals(toValue))
+            return 0;
+
+        CalendarModel calendarModel = log.getCalendarModel();
+        return CalendarDuration.getDuration(calendarModel, sourceNode.getEndTime(), nextNode.getStartTime());
     }
 
     private LogFilterRequest getRequestWithOption(EditorOption option) {
@@ -300,7 +336,7 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
                 parent.getActionManager().storeAction(compositeFilterAction);
             } catch (Exception e) {
                 e.printStackTrace();
-                Messagebox.show("Filter Response Error", "Error",
+                Messagebox.show(getLabel("filterResponseError_message"), "Error",
                         Messagebox.OK,
                         Messagebox.ERROR);
             }

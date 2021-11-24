@@ -603,6 +603,16 @@
     width: 28.5px !important;
 }
 
+.ap-icon-splitview-off {
+  background-image: url('splitview-off.svg') !important;
+  width: 26px !important;
+}
+
+.ap-icon-splitview {
+  background-image: url('splitview.svg') !important;
+  width: 26px !important;
+}
+
 .ap-icon-dashboard {
     background-image: url('dashboard.svg') !important;
     width: 26px !important;

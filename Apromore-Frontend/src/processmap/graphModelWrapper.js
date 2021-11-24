@@ -1,4 +1,3 @@
-import PD from '../processdiscoverer';
 import {AnimationEvent, AnimationEventType} from "../loganimation/animationEvents";
 import * as Math from '../utils/math';
 
@@ -150,6 +149,7 @@ export default class GraphModelWrapper {
      * @param distance: from 0 to 1, two decimal points, e.g. 0.01, 0.02, 0.03...
      */
     getPointAtDistance(elementIndex, distance) {
+
         let p = this._elementIndexToPoint.get(elementIndex)[this._getIndexFromDistance(distance)];
         let zoom = this._cy.zoom();
         let pan = this._cy.pan();
@@ -190,6 +190,7 @@ export default class GraphModelWrapper {
         switch (edgeType) {
             case 'bezier':
             case 'multibezier':
+            case 'self':
                 return this._getPointAtDistanceOnBezier(pts, distance);
                 break;
             case 'haystack':

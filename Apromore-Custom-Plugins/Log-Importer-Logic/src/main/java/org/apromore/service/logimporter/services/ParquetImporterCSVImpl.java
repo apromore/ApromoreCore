@@ -40,7 +40,7 @@ import java.util.List;
 import static org.apromore.service.logimporter.utilities.CSVUtilities.getMaxOccurringChar;
 import static org.apromore.service.logimporter.utilities.ParquetUtilities.createParquetSchema;
 
-class ParquetImporterCSVImpl implements ParquetImporter {
+class ParquetImporterCSVImpl extends AbstractParquetImporter {
 
     private List<LogErrorReport> logErrorReport;
     private LogProcessorParquet logProcessorParquet;
@@ -50,9 +50,12 @@ class ParquetImporterCSVImpl implements ParquetImporter {
     private CSVReader reader;
     private ParquetFileWriter writer;
 
+    ParquetImporterCSVImpl(final Integer maxEventCount) {
+        super(maxEventCount);
+    }
 
     @Override
-    public LogModel importParqeuetFile(InputStream in, LogMetaData logMetaData, String charset, File outputParquet, boolean skipInvalidRow) throws Exception {
+    public LogModel importParquetFile(InputStream in, LogMetaData logMetaData, String charset, File outputParquet, boolean skipInvalidRow) throws Exception {
 
         try {
             logMetaData.validateSample();
@@ -136,10 +139,6 @@ class ParquetImporterCSVImpl implements ParquetImporter {
         } finally {
             closeQuietly(in);
         }
-    }
-
-    private boolean isValidLineCount(int lineCount) {
-        return true;
     }
 
     private void closeQuietly(InputStream in) throws IOException {

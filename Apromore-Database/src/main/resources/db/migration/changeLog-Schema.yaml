@@ -1239,3 +1239,13 @@ databaseChangeLog:
                  name: is_draft
                  type: BOOLEAN
                  defaultValue: false
+
+ - changeSet:
+     id: 20211111090900
+     author: frankm
+     changes:
+       - sql:
+           dbms: '!h2, mysql'
+           splitStatements: true
+           sql: ALTER TABLE `storage` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; ALTER TABLE storage MODIFY `key` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+           stripComments: false

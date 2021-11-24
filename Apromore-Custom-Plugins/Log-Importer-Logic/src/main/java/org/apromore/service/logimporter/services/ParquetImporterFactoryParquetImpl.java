@@ -21,7 +21,12 @@
  */
 package org.apromore.service.logimporter.services;
 
-class ParquetImporterFactoryParquetImpl implements ParquetImporterFactory {
+class ParquetImporterFactoryParquetImpl extends AbstractParquetImporterFactory {
+
+    ParquetImporterFactoryParquetImpl(final Integer maxEventCount) {
+        super(maxEventCount);
+    }
+
     @Override
     public MetaDataService getMetaDataService() {
         return new MetaDataServiceParquetImpl();
@@ -29,6 +34,6 @@ class ParquetImporterFactoryParquetImpl implements ParquetImporterFactory {
 
     @Override
     public ParquetImporter getParquetImporter() {
-        return new ParquetImporterParquetImpl();
+        return new ParquetImporterParquetImpl(maxEventCount);
     }
 }

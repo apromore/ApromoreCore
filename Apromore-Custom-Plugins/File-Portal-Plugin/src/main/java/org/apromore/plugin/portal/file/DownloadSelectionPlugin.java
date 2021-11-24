@@ -46,6 +46,7 @@ import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.service.EventLogService;
 import org.apromore.service.csvexporter.CSVExporterLogic;
+import org.apromore.zk.label.LabelSupplier;
 import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
@@ -62,7 +63,7 @@ import org.zkoss.zul.Row;
 import org.zkoss.zul.Window;
 
 @Component
-public class DownloadSelectionPlugin extends DefaultPortalPlugin {
+public class DownloadSelectionPlugin extends DefaultPortalPlugin implements LabelSupplier {
 
   private static Logger LOGGER = PortalLoggerFactory.getLogger(DownloadSelectionPlugin.class);
 
@@ -74,6 +75,11 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin {
 
   Listbox selectedEncoding;
   Radiogroup format;
+
+  @Override
+  public String getBundleName() {
+    return "file";
+  }
 
   public void setEventLogService(EventLogService eventLogService) {
     this.eventLogService = eventLogService;
@@ -108,11 +114,11 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin {
           exportProcessModel(mainController, portalContext);
         }
       } else {
-        Notification.info("Please select exactly one file");
+        Notification.info(getLabel("selectOnlyOneFile"));
       }
     } catch (Exception e) {
       LOGGER.error("Unable to download selection", e);
-      Notification.error("Unable to download selection");
+      Notification.error(getLabel("unableDownload"));
     }
   }
 
@@ -144,7 +150,7 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin {
             version.getName(), version.getVersionNumber());
       } catch (Exception e) {
         LOGGER.error("Export process model failed", e);
-        Messagebox.show("Export failed (" + e.getMessage() + ")", "Attention", Messagebox.OK,
+        Messagebox.show(getLabel("unableDownloadModel"), "Error", Messagebox.OK,
             Messagebox.ERROR);
       }
     } else {
@@ -234,7 +240,7 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin {
       Files.delete(path);
     } catch (RuntimeException e) {
       LOGGER.error("Unable to export log as CSV", e);
-      Messagebox.show("Unable to export log as CSV.", "Server error", Messagebox.OK,
+      Messagebox.show(getLabel("unableExportCSV"), "Server error", Messagebox.OK,
           Messagebox.ERROR);
     }
   }

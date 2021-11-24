@@ -42,6 +42,7 @@ import org.apromore.portal.menu.MenuConfigLoader;
 import org.apromore.portal.menu.MenuGroup;
 import org.apromore.portal.menu.MenuItem;
 import org.apromore.portal.menu.PluginCatalog;
+import org.apromore.portal.model.FolderType;
 import org.apromore.portal.model.UserType;
 import org.slf4j.Logger;
 import org.zkoss.spring.SpringUtil;
@@ -68,16 +69,28 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 	private static final String DISPLAY_NAME_EXP = "displayName";
 	private static final String GROUP = "group";
 	private static final String ON_CLICK = "onClick";
+	private boolean popUpOnTree=false;
+	private FolderType selectedFolder=null;
+	private String popupType;
 
 	@Override
 	public void doAfterCompose(Menupopup menuPopup) {
 		try {
-			String popupType = (String) Executions.getCurrent().getArg().get("POPUP_TYPE");
+			popupType = (String) Executions.getCurrent().getArg().get("POPUP_TYPE");
 			if (popupType != null && !PortalPluginResolver.resolve().isEmpty()) {
 				switch (popupType) {
-				case "FOLDER":  loadPopupMenu(menuPopup, "folder-popup-menu"); break;
 				case "PROCESS": loadPopupMenu(menuPopup, "process-popup-menu"); break;
 				case "LOG":     loadPopupMenu(menuPopup, "log-popup-menu"); break;
+				case "CANVAS":  loadPopupMenu(menuPopup, "canvas-popup-menu"); break;
+				case "FOLDER":
+								selectedFolder=(FolderType)Executions.getCurrent().getArg().get("SELECTED_FOLDER");
+						        loadPopupMenu(menuPopup, "folder-popup-menu"); 
+						        break;
+				case "FOLDER_TREE":  
+						        popUpOnTree=true;
+						        selectedFolder=(FolderType)Executions.getCurrent().getArg().get("SELECTED_FOLDER");
+						        loadPopupMenu(menuPopup, "folder-popup-menu"); 
+						        break;
 				}
 			}
 		} catch (Exception ex) {
@@ -92,6 +105,8 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 		case PluginCatalog.PLUGIN_PASTE:   addPasteMenuItem(popup); return;
 		case PluginCatalog.PLUGIN_SHARE:   addShareMenuItem(popup); return;
 		case PluginCatalog.ITEM_SEPARATOR: addMenuSeparator(popup); return;
+		case PluginCatalog.PLUGIN_DELETE_MENU: addDeleteMenuItem(popup); return;
+		case PluginCatalog.PLUGIN_RENAME_MENU: addRenameMenuItem(popup); return;
                 }
 
 		addPluginMenuitem(popup, menuItem);  // handle null or unknown menuitem id
@@ -124,12 +139,31 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 		});
 		popup.appendChild(item);
 	}
+	
+	private void addRenameMenuItem(Menupopup popup) {
+		Menuitem item = new Menuitem();
+		item.setLabel(Labels.getLabel("portal_rename_hint"));
+		item.setImage("~./themes/ap/common/img/icons/rename.svg");
+		item.addEventListener(ON_CLICK, popUpOnTree ? event -> getNavigationController().rename(selectedFolder)
+													: event -> getBaseListboxController().rename());
+		popup.appendChild(item);
+	}
+	
+	private void addDeleteMenuItem(Menupopup popup) {
+		Menuitem item = new Menuitem();
+		item.setLabel(Labels.getLabel("portal_delete_hint"));
+		item.setImage("~./themes/ap/common/img/icons/trash.svg");
+		item.addEventListener(ON_CLICK, popUpOnTree ? event -> getNavigationController().removeFolder(selectedFolder)
+													: event -> getBaseListboxController().removeFolder());
+		popup.appendChild(item);
+	}
 
 	private void addCutMenuItem(Menupopup popup) {
 		Menuitem item = new Menuitem();
 		item.setLabel(Labels.getLabel("common_cut_text"));
 		item.setImage("~./themes/ap/common/img/icons/cut.svg");
-		item.addEventListener(ON_CLICK, event -> getBaseListboxController().cut());
+		item.addEventListener(ON_CLICK, popUpOnTree ? event -> getNavigationController().cut(selectedFolder)
+													: event -> getBaseListboxController().cut());
 		popup.appendChild(item);
 	}
 
@@ -137,23 +171,34 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 		Menuitem item = new Menuitem();
 		item.setLabel(Labels.getLabel("common_copy_text"));
 		item.setImage("~./themes/ap/common/img/icons/copy.svg");
-		item.addEventListener(ON_CLICK, event -> getBaseListboxController().copy());
+		item.addEventListener(ON_CLICK, popUpOnTree ? event -> getNavigationController().copy(selectedFolder)
+													: event -> getBaseListboxController().copy());
 		popup.appendChild(item);
 	}
 
 	private void addPasteMenuItem(Menupopup popup) {
 		Menuitem item = new Menuitem();
-		item.setLabel(Labels.getLabel("common_paste_text"));
+		if("FOLDER".equals(popupType) ||"FOLDER_TREE".equals(popupType)) {
+			item.setLabel(Labels.getLabel("common_paste_within_text"));	
+		}else {
+			item.setLabel(Labels.getLabel("common_paste_text"));
+		}
 		item.setImage("~./themes/ap/common/img/icons/paste.svg");
-		item.addEventListener(ON_CLICK, event -> getBaseListboxController().paste());
+		item.addEventListener(ON_CLICK,	popUpOnTree ? event -> getNavigationController().paste(selectedFolder)
+													:(selectedFolder!=null?event -> getBaseListboxController().paste(selectedFolder): event -> getBaseListboxController().paste()));
+		if(getBaseListboxController().getMainController().getCopyPasteController().getSelectedItemsSize()==0) {
+			item.setDisabled(true);	
+			item.setStyle("pointer-events:none");
+		}
 		popup.appendChild(item);
 	}
 
 	private void addShareMenuItem(Menupopup popup) {
 		Menuitem item = new Menuitem();
-		item.setLabel(Labels.getLabel("portal_tbarShare_hint"));
+		item.setLabel(Labels.getLabel("portal_share_hint"));
 		item.setImage("~./themes/ap/common/img/icons/share.svg");
-		item.addEventListener(ON_CLICK, event -> getBaseListboxController().share());
+		item.addEventListener(ON_CLICK, popUpOnTree ? event -> getNavigationController().share(selectedFolder)
+											: event -> getBaseListboxController().share());
 		popup.appendChild(item);
 	}
 
@@ -226,5 +271,11 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 		MainController mainController = (MainController) portalContext.getMainController();
 
 		return mainController.getBaseListboxController();
+	}
+	private NavigationController getNavigationController() {
+		PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
+		MainController mainController = (MainController) portalContext.getMainController();
+
+		return mainController.getNavigationController();
 	}
 }

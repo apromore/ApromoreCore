@@ -193,6 +193,8 @@ if(!Apromore.I18N.SimulationPanel) Apromore.I18N.SimulationPanel = {};
 Apromore.I18N.SimulationPanel.group = "Simulation";
 Apromore.I18N.SimulationPanel.toggleSimulationDrawer = "Toggle simulation panel";
 Apromore.I18N.SimulationPanel.toggleSimulationDrawerDesc = "Toggle simulation parameters panel";
+Apromore.I18N.SimulationPanel.simulateModel = "Simulate model";
+Apromore.I18N.SimulationPanel.simulateModelDesc = "Simulate model";
 
 /** New Language Properties: 08.12.2008 */
 

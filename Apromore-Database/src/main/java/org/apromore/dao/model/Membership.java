@@ -58,7 +58,7 @@ public class Membership implements Serializable {
     private Integer id;
     private String password;
     private String hashingAlgorithm;
-    private String salt;
+    private String salt = "";
     private String mobilePin;
     private String email;
     private String question;
@@ -142,7 +142,7 @@ public class Membership implements Serializable {
      * Get the password salt for the Object.
      * @return Returns the password salt.
      */
-    @Column(name = "password_salt")
+    @Column(name = "password_salt", nullable = false)
     public String getSalt() {
         return salt;
     }

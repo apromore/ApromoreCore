@@ -35,6 +35,7 @@ import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.PortalProcessAttributePlugin;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.common.Constants;
+import org.apromore.portal.common.FolderTreeNode;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.model.FolderSummaryType;
 import org.apromore.portal.model.FolderType;
@@ -46,9 +47,11 @@ import org.slf4j.Logger;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.event.DropEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Image;
@@ -57,6 +60,8 @@ import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Menupopup;
+import org.zkoss.zul.Treeitem;
+import org.zkoss.zul.Treerow;
 
 
 public class SummaryItemRenderer implements ListitemRenderer {
@@ -64,6 +69,7 @@ public class SummaryItemRenderer implements ListitemRenderer {
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(SummaryItemRenderer.class.getName());
     private static final String CENTRE_ALIGN = "vertical-align: middle; text-align:center";
     private static final String VERTICAL_ALIGN = "vertical-align: middle;";
+    private static final String LEFT_ALIGN = "text-align:left";
 
     private MainController mainController;
     private DateTimeFormatter dateTimeFormatter;
@@ -81,6 +87,8 @@ public class SummaryItemRenderer implements ListitemRenderer {
         List<PortalProcessAttributePlugin> plugins = (List<PortalProcessAttributePlugin>) SpringUtil.getBean("portalProcessAttributePlugins");
 
         // listItem.setStyle("height: 25px");
+        listItem.setDraggable("true");
+        listItem.setValue(obj);
         if (obj instanceof ProcessSummaryType) {
             listItem.setSclass(listItem.getSclass() + " ap-item-model");
             renderProcessSummary(listItem, (ProcessSummaryType) obj, plugins);
@@ -90,9 +98,11 @@ public class SummaryItemRenderer implements ListitemRenderer {
         } else if (obj instanceof FolderSummaryType) {
             listItem.setSclass(listItem.getSclass() + " ap-item-folder");
             renderFolderSummary(listItem, (FolderSummaryType) obj, plugins);
+            listItem.setDroppable("true");
         } else if (obj instanceof FolderType) {
             listItem.setSclass(listItem.getSclass() + " ap-item-folder");
             renderFolder(listItem, (FolderType) obj, plugins);
+            listItem.setDroppable("true");
         } else {
             LOGGER.error("Unknown item to render in the process summary list box.");
         }
@@ -122,6 +132,7 @@ public class SummaryItemRenderer implements ListitemRenderer {
                 VersionSummaryType version = getLatestVersion(process.getVersionSummaries());
                 LOGGER.info("Open process model {} (id {}) version {}", process.getName(), process.getId(), version.getVersionNumber());
                 mainController.editProcess2(process, version, getNativeType(process.getOriginalNativeType()), new HashSet<RequestParameterType<?>>(), false);
+                Clients.evalJavaScript("clearSelection('')");
             }
 
             /* Sometimes we have merged models with no native type, we should give them a default so they can be edited. */
@@ -169,6 +180,7 @@ public class SummaryItemRenderer implements ListitemRenderer {
             public void onEvent(Event event) throws Exception {
                 LOGGER.info("Open log {} (id {})", log.getName(), log.getId());
                 mainController.visualizeLog();
+                Clients.evalJavaScript("clearSelection('')");
             }
         });
         
@@ -223,6 +235,7 @@ public class SummaryItemRenderer implements ListitemRenderer {
                 mainController.getPortalSession().setCurrentFolder(convertFolderSummaryTypeToFolderType(folder));
                 mainController.reloadSummaries2();
                 mainController.currentFolderChanged();
+                Clients.evalJavaScript("clearSelection('')");
             }
         });
     }
@@ -262,6 +275,7 @@ public class SummaryItemRenderer implements ListitemRenderer {
                 mainController.getPortalSession().setCurrentFolder(folder);
                 mainController.reloadSummaries2();
                 mainController.currentFolderChanged();
+                Clients.evalJavaScript("clearSelection('')");
             }
         });
         
@@ -270,11 +284,35 @@ public class SummaryItemRenderer implements ListitemRenderer {
             public void onEvent(Event event) throws Exception {
             	Map args = new HashMap();
           	    args.put("POPUP_TYPE", "FOLDER");
+          	    args.put("SELECTED_FOLDER", ((Listitem)event.getTarget()).getValue());
             	Menupopup menupopup = (Menupopup)Executions.createComponents("~./macros/popupMenu.zul", null, args);
             	menupopup.open(event.getTarget(), "at_pointer");
                 
             }
 
+        });
+        
+        listitem.addEventListener(Events.ON_DROP, new EventListener<DropEvent>() {
+            @Override
+            public void onEvent(DropEvent event) throws Exception {
+            	try {
+            	Listitem droppedToItem = (Listitem)event.getTarget();
+            	Object droppedObject=null;
+            	if(event.getDragged() instanceof Listitem) {
+            		Listitem draggedItem = (Listitem ) event.getDragged();
+            		droppedObject=draggedItem.getValue();
+            	}else if(event.getDragged() instanceof Treerow) {
+            		FolderTreeNode draggedItem = ((Treeitem) event.getDragged().getParent()).getValue();
+            		droppedObject=draggedItem.getData();
+            	}
+            	
+            	if(droppedToItem.getValue()!=null && droppedToItem.getValue() instanceof FolderType && droppedObject!=null) {
+            		mainController.getBaseListboxController().drop(droppedToItem.getValue(), droppedObject, mainController.getPortalSession().getCurrentFolder());
+            	}
+            	}catch(Exception e) {
+            		LOGGER.error("Error Occured in Drag and Drop",e);
+            	}
+            }
         });
     }
 
@@ -289,13 +327,20 @@ public class SummaryItemRenderer implements ListitemRenderer {
     private Listcell renderFolderId(FolderType folder) {
         Listcell lc = new Listcell();
         lc.appendChild(new Label(folder.getId().toString()));
+        addToDisableSelection(lc);
         return lc;
     }
 
-    private Listcell renderFolderName(FolderType folder) {
+    private void addToDisableSelection(Listcell lc) {
+    	 lc.setSclass("ap-disable-selection");		
+	}
+
+	private Listcell renderFolderName(FolderType folder) {
         Label name = new Label(folder.getFolderName());
         Listcell lc = new Listcell();
         lc.appendChild(name);
+        lc.setStyle(LEFT_ALIGN);
+        addToDisableSelection(lc);
         return lc;
     }
 
@@ -324,11 +369,12 @@ public class SummaryItemRenderer implements ListitemRenderer {
     }
 
     protected Listcell renderOwner(final SummaryType summaryType) {
-        Boolean isMakePublic = summaryType.isMakePublic();
         String owner = summaryType.getOwnerName();
         Label label = new Label(owner);
         label.setClientAttribute("title", owner);
-        return wrapIntoListCell(label);
+        Listcell lc = wrapIntoListCell(label);
+        lc.setStyle(LEFT_ALIGN);
+        return lc;
     }
 
     protected Listcell renderProcessLastVersion(final ProcessSummaryType process) {
@@ -362,7 +408,9 @@ public class SummaryItemRenderer implements ListitemRenderer {
         String name = summaryType.getName();
         Label label = new Label(name);
         label.setTooltiptext(name);
-        return wrapIntoListCell(label);
+        Listcell lc = wrapIntoListCell(label);
+        lc.setStyle(LEFT_ALIGN);
+        return lc;
     }
 
     private Component renderVersionRanking(final ProcessSummaryType process) {
@@ -414,6 +462,7 @@ public class SummaryItemRenderer implements ListitemRenderer {
         } else {
             lc.appendChild(cp);
         }
+        addToDisableSelection(lc);
         return lc;
     }
 

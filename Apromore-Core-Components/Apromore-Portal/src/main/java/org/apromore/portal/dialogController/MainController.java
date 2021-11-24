@@ -43,6 +43,7 @@ import java.util.regex.Pattern;
 
 import org.apromore.commons.config.ConfigBean;
 import org.apromore.commons.item.ItemNameUtils;
+import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.Log;
 import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
@@ -62,6 +63,7 @@ import org.apromore.portal.context.PortalPluginResolver;
 import org.apromore.portal.custom.gui.tab.PortalTab;
 import org.apromore.portal.dialogController.dto.ApromoreSession;
 import org.apromore.portal.dialogController.dto.VersionDetailType;
+import org.apromore.portal.dialogController.workspaceOptions.CopyAndPasteController;
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.exception.ExceptionFormats;
@@ -91,7 +93,6 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.Composer;
@@ -153,6 +154,8 @@ public class MainController extends BaseController implements MainControllerInte
     private I18nSession i18nSession;
     private LangChooserController langChooserController;
     private Component mainComponent;
+    private CopyAndPasteController copyAndPasteController;
+
 
     public static MainController getController() {
 	return controller;
@@ -224,6 +227,9 @@ public class MainController extends BaseController implements MainControllerInte
 	    this.shortmessageC = new ShortMessageController(shortmessageW);
 	    this.simplesearch = new SimpleSearchController(this, comp);
 	    this.portalContext = new PluginPortalContext(this);
+		this.copyAndPasteController =
+		        new CopyAndPasteController(this, UserSessionManager.getCurrentUser());
+
 	    this.navigation = new NavigationController(this, comp);
 
 	    Combobox langChooser = (Combobox) mainW.getFellow("langChooser");
@@ -283,21 +289,24 @@ public class MainController extends BaseController implements MainControllerInte
 	    UserSessionManager.setMainController(this);
 	    pagingandbuttons.setVisible(true);
 	    
-	    mainW.setCtrlKeys("^c^x^v%c%x%v"); //Accepted Ctrl Key Copy, Cut and Paste (Mac,Windows and Linux)
-	    
-		mainW.addEventListener(Events.ON_CTRL_KEY, new EventListener<KeyEvent>() {
+		mainW.addEventListener("onCtrlPress", new EventListener<Event>() {
 			@Override
-			public void onEvent(KeyEvent keyEvent) throws Exception {
-				switch (keyEvent.getKeyCode()) {
-				case KEY_COPY:
-					baseListboxController.copy();
-					break;
-				case KEY_PASTE:
-					baseListboxController.paste();
-					break;
-				case KEY_CUT:
-					baseListboxController.cut();
-					break;
+			public void onEvent(final Event event) throws InterruptedException {
+				try {
+					Integer keycode=(Integer)event.getData();
+					switch (keycode) {
+					case KEY_COPY:
+						baseListboxController.copy();
+						break;
+					case KEY_PASTE:
+						baseListboxController.paste();
+						break;
+					case KEY_CUT:
+						baseListboxController.cut();
+						break;
+					}
+				}catch(Exception e) {
+					LOGGER.error("Wrong Command Key", e);
 				}
 			}
 		});
@@ -727,13 +736,20 @@ public class MainController extends BaseController implements MainControllerInte
     }
 
     public void displayProcessVersions(final ProcessSummaryType data) {
-	switchToProcessSummaryView();
-	((ProcessVersionDetailController) this.baseDetailController).displayProcessVersions(data);
+		switchToProcessSummaryView();
+		((ProcessVersionDetailController) this.baseDetailController).displayProcessVersions(data);
     }
 
     public void displayLogVersions(final LogSummaryType data) {
-	// TODO
+    	switchToProcessSummaryView();
+    	((ProcessVersionDetailController) this.baseDetailController).displayLogVersions(data);
     }
+    
+	public void displayFolderVersions(final FolderType data) {
+		Folder folder = this.getWorkspaceService().getFolder(data.getId());
+		switchToProcessSummaryView();
+		((ProcessVersionDetailController) this.baseDetailController).displayFolderVersions(folder);
+	}
 
     public void clearProcessVersions() {
 	switchToProcessSummaryView();
@@ -1049,7 +1065,7 @@ public class MainController extends BaseController implements MainControllerInte
     }
 
     public String deriveName(ProcessSummaryType processSummaryType, String suffix) {
-	String processName = processSummaryType.getName();
+	String processName = processSummaryType == null ? "untitled" : processSummaryType.getName();
 	List<Log> existingLogs = getWorkspaceService().getLogsByPrefix(processName + suffix);
 	List<String> existingNames = new ArrayList<>();
 	for (Log log : existingLogs) {
@@ -1073,6 +1089,14 @@ public class MainController extends BaseController implements MainControllerInte
     @Override
     public Desktop getDesktop() {
 	return mainComponent.getDesktop();
+    }
+    
+    public CopyAndPasteController getCopyPasteController() {
+    	return this.copyAndPasteController;
+    }
+    
+    public NavigationController getNavigationController() {
+    	return this.navigation;
     }
 
 }

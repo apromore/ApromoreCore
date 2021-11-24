@@ -143,6 +143,15 @@
               "id": "SEPARATOR"
             },
             {
+              "id": "RENAME"
+            },
+            {
+              "id": "DELETE"
+            },
+            {
+              "id": "SEPARATOR"
+            },
+            {
               "id": "SHARE"
             }
           ]
@@ -171,7 +180,13 @@
               "id": "COPY"
             },
             {
-              "id": "PASTE"
+              "id": "SEPARATOR"
+            },
+            {
+              "id": "RENAME"
+            },
+            {
+              "id": "DELETE"
             },
             {
               "id": "SEPARATOR"
@@ -205,13 +220,47 @@
               "id": "COPY"
             },
             {
-              "id": "PASTE"
+              "id": "SEPARATOR"
+            },
+            {
+              "id": "RENAME"
+            },
+            {
+              "id": "DELETE"
             },
             {
               "id": "SEPARATOR"
             },
             {
               "id": "SHARE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "canvas-popup-menu",
+      "groups": [
+        {
+          "id": "CANVAS_POPUP",
+          "items": [
+            {
+              "id": "org.apromore.plugin.portal.file.UploadFilePlugin"
+            },
+            {
+              "id": "SEPARATOR"
+            },
+            {
+              "id": "org.apromore.plugin.portal.file.CreateFolderPlugin"
+            },
+            {
+              "id": "org.apromore.plugin.portal.file.CreateProcessPlugin"
+            },
+            {
+              "id": "SEPARATOR"
+            },
+            {
+              "id": "PASTE"
             }
           ]
         }

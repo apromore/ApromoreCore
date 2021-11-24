@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apromore.plugin.portal.processdiscoverer.PDController;
+import org.apromore.zk.label.LabelSupplier;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
@@ -50,10 +51,15 @@ import com.opencsv.CSVWriter;
  * DataListController is the controller to show a list of data items.
  *
  */
-public abstract class DataListController extends AbstractController {
+public abstract class DataListController extends AbstractController implements LabelSupplier {
     protected ArrayList<String []> rows;
     protected ListModelList records;
-  
+
+    @Override
+    public String getBundleName() {
+        return "pd";
+    }
+
     public DataListController(PDController controller) {
         super(controller);
     }

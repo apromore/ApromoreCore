@@ -472,6 +472,9 @@ zk.afterMount(function() {
               if (currentDOW === null) {
                 return;
               }
+              if (!dayOfWeek[currentDOW].workday) {
+                dayOfWeek[currentDOW].workday = true;
+              }
               let cell = $(event.target);
               let endHour = get(cell, 'hour');
               let endMin = get(cell, 'min');
