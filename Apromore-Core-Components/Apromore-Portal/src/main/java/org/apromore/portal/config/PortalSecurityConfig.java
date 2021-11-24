@@ -87,6 +87,7 @@ public class PortalSecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/zkau/*").permitAll()
             .antMatchers("/login").permitAll()
             .antMatchers("/logout").permitAll()
+            .antMatchers("/zkau/**").hasAnyRole("USER", "ADMIN", "MANAGER", "ANALYST", "OBSERVER", "DESIGNER", "DATA_SCIENTIST", "OPERATIONS")
             .anyRequest().authenticated()
         .and()
         .formLogin()
@@ -103,7 +104,7 @@ public class PortalSecurityConfig extends WebSecurityConfigurerAdapter {
             .logoutSuccessUrl("/zkau/web/login.zul");
 
     http.exceptionHandling()
-            .accessDeniedPage("/zkau/web/401.zul");
+            .accessDeniedPage("/zkau/web/pages/401.zul");
   }
 
   @Bean

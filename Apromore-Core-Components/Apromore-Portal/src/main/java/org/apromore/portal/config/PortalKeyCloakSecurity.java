@@ -9,6 +9,8 @@
  */
 package org.apromore.portal.config;
 
+import org.apromore.manager.client.ManagerService;
+import org.apromore.portal.ApromoreKeycloakAuthenticationProvider;
 import org.apromore.portal.servlet.filter.SameSiteFilter;
 import org.keycloak.adapters.KeycloakConfigResolver;
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
@@ -30,12 +32,15 @@ import org.springframework.security.web.session.HttpSessionEventPublisher;
 @KeycloakConfiguration
 @ConditionalOnProperty(prefix = "keycloak", name = "enabled", havingValue = "true")
 public class PortalKeyCloakSecurity extends KeycloakWebSecurityConfigurerAdapter {
+  @Autowired
+  private ManagerService manager;
+
   /**
    * Registers the KeycloakAuthenticationProvider with the authentication manager.
    */
   @Autowired
   public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-    auth.authenticationProvider(keycloakAuthenticationProvider());
+    auth.authenticationProvider(new ApromoreKeycloakAuthenticationProvider(manager));
   }
 
   /**
@@ -49,8 +54,7 @@ public class PortalKeyCloakSecurity extends KeycloakWebSecurityConfigurerAdapter
 
   @Bean
   public ServletListenerRegistrationBean<HttpSessionEventPublisher> httpSessionEventPublisher() {
-    return new ServletListenerRegistrationBean<HttpSessionEventPublisher>(
-        new HttpSessionEventPublisher());
+    return new ServletListenerRegistrationBean<>(new HttpSessionEventPublisher());
   }
 
   @Bean
@@ -75,10 +79,15 @@ public class PortalKeyCloakSecurity extends KeycloakWebSecurityConfigurerAdapter
     http.csrf().ignoringAntMatchers("/zkau", "/rest", "/rest/*", "/rest/**/*", "/zkau/*", "/bpmneditor/editor/*").and()
         .authorizeRequests()
         // .antMatchers("/**").hasRole("USER")
-        .antMatchers("/sso/login").permitAll().antMatchers("/zkau").permitAll()
-        .antMatchers("/logout").permitAll().antMatchers("/zkau/*").permitAll()
+        .antMatchers("/sso/login").permitAll()
+        .antMatchers("/zkau").permitAll()
+        .antMatchers("/logout").permitAll()
+        .antMatchers("/zkau/*").permitAll()
         .antMatchers("/rest").permitAll()
-        .antMatchers("/rest/**/*").permitAll().antMatchers("/rest/*").permitAll()
-        .antMatchers("/zkau/web/bpmneditor/*").permitAll().anyRequest().authenticated();
+        .antMatchers("/rest/**/*").permitAll()
+        .antMatchers("/rest/*").permitAll()
+        .antMatchers("/zkau/web/bpmneditor/*").permitAll()
+        .antMatchers("/zkau/**").hasAnyRole("USER", "ADMIN", "MANAGER", "ANALYST", "OBSERVER", "DESIGNER", "DATA_SCIENTIST", "OPERATIONS")
+        .anyRequest().authenticated();
   }
 }
