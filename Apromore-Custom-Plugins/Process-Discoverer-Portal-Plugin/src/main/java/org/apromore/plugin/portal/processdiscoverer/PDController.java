@@ -139,7 +139,10 @@ public class PDController extends BaseController implements Composer<Component> 
     //////////////////// DATA ///////////////////////////////////
 
     private String pluginSessionId; // the session ID of this plugin
+
+    @WireVariable
     private ConfigData configData;
+
     private ContextData contextData;
     private UserOptionsData userOptions;
     private OutputData outputData;
@@ -261,7 +264,6 @@ public class PDController extends BaseController implements Composer<Component> 
             PortalContext portalContext = (PortalContext) session.get("context");
             LogSummaryType logSummary = (LogSummaryType) session.get("selection");
             PDFactory pdFactory = (PDFactory) session.get("pdFactory");
-            configData = ConfigData.DEFAULT;
             contextData = ContextData.valueOf(
                     logSummary.getDomain(), portalContext.getCurrentUser().getUsername(),
                     logSummary.getId(),

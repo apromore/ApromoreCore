@@ -101,7 +101,7 @@ public class PDAnalystTest extends TestDataSetup {
         Mockito.when(eventLogService.getAggregatedLog(contextData.getLogId())).thenReturn(
                 XLogToImmutableLog.convertXLog("ProcessLog", validLog));
         Mockito.when(eventLogService.getPerspectiveTagByLog(contextData.getLogId())).thenReturn(Arrays.asList(new String[] {"concept:name"}));
-        ConfigData configData = new ConfigData("concept:name", 1);
+        ConfigData configData = new ConfigData("concept:name", 1, Integer.MAX_VALUE);
         PDAnalyst analyst = new PDAnalyst(contextData, configData, eventLogService);
     }
     

@@ -22,13 +22,23 @@
 
 package org.apromore.plugin.portal.processdiscoverer.data;
 
+import org.apromore.logman.Constants;
 import org.apromore.logman.attribute.graph.MeasureAggregation;
 import org.apromore.logman.attribute.graph.MeasureType;
 import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 
+@Configuration
+@PropertySource("classpath:pd.application.properties")
 public class ConfigData {
     private final String DEFAULT_SELECTOR;
-    private final int NUMBER_OF_UNIQUE_VALUES_MAX_SELECT;
+
+    private final int MAX_NUMBER_OF_NODES;
+
+    private final int MAX_NUMBER_OF_ARCS;
+
     private final HashBiMap<String,String> displayToOriginKeyMapping = new HashBiMap<>();
     {
         displayToOriginKeyMapping.put("concept:name", "Activity");
@@ -41,19 +51,26 @@ public class ConfigData {
     public static MeasureType DEFAULT_MEASURE_TYPE = MeasureType.FREQUENCY;
     public static MeasureAggregation DEFAULT_MEASURE_AGGREGATE = MeasureAggregation.CASES;
 
-    public static ConfigData DEFAULT = new ConfigData("concept:name", 500);
-    
-    public ConfigData(String selector, int maxNumberOfUniqueValues) {
-        DEFAULT_SELECTOR = selector;
-        NUMBER_OF_UNIQUE_VALUES_MAX_SELECT = maxNumberOfUniqueValues;
+    public static final ConfigData DEFAULT = new ConfigData("concept:name", 500, 500);
+
+    public ConfigData(@Value(Constants.ATT_KEY_CONCEPT_NAME) String attributeName,
+                      @Value("${pd.maxNodes}") int maxNumberOfNodes,
+                      @Value("${pd.maxArcs}") int maxNumberOfArcs) {
+        DEFAULT_SELECTOR = attributeName;
+        MAX_NUMBER_OF_NODES = maxNumberOfNodes;
+        MAX_NUMBER_OF_ARCS = maxNumberOfArcs;
     }
     
     public String getDefaultAttribute() {
         return DEFAULT_SELECTOR;
     }
     
-    public int getMaxNumberOfUniqueValues() {
-        return NUMBER_OF_UNIQUE_VALUES_MAX_SELECT;
+    public int getMaxNumberOfNodes() {
+        return MAX_NUMBER_OF_NODES;
+    }
+
+    public int getMaxNumberOfArcs() {
+        return MAX_NUMBER_OF_ARCS;
     }
     
     public String getDisplayAttributeName(String attributeName) {
