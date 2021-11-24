@@ -55,12 +55,12 @@
               </template>
             </combobox>
           </hbox>
-          <div style="padding: 8px 8px 0 8px">
-            <label style="font-size: 12px; font-weight: bold" id="viewerWarning">
+          <div style="padding: 8px" id="viewerWarning">
+            <label style="font-size: 12px; font-weight: bold">
               ${$composer.labels.viewerWarning_message}
             </label>
           </div>
-          <div style="padding: 8px">
+          <div style="padding: 8px" id="editHelp">
             <label style="font-size: 12px">
               ${$composer.labels.range_help_text}
             </label>
