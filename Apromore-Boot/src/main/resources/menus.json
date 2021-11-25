@@ -171,6 +171,9 @@
               "id": "org.apromore.plugin.portal.processdiscoverer.plugins.PDFrequencyPlugin"
             },
             {
+              "id": "dashboard.portal.DashboardPlugin"
+            },
+            {
               "id": "SEPARATOR"
             },
             {
@@ -206,6 +209,9 @@
           "items": [
             {
               "id": "org.apromore.plugin.portal.file.EditSelectionPlugin"
+            },
+            {
+              "id": "org.apromore.plugin.portal.bimp.BIMPPortalPlugin"
             },
             {
               "id": "org.apromore.plugin.similaritysearch.portal.SimilaritySearchPlugin"
