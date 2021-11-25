@@ -451,9 +451,7 @@ public class PDAnalyst {
             String caseId = aTrace.getCaseId();
             int caseEvents = aTrace.getActivityInstances().size();
             int caseVariantId = aTrace.getCaseVariantId();
-            int caseSize = caseVariantGroupMap.get(caseVariantId).size();
-            double caseVariantFreq = (double) caseSize / traceList.size();
-            CaseDetails caseDetails = CaseDetails.valueOf(caseId, caseEvents, caseVariantId, caseVariantFreq);
+            CaseDetails caseDetails = CaseDetails.valueOf(caseId, caseEvents, caseVariantId);
             listResult.add(caseDetails);
         }
         return listResult;
