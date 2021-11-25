@@ -345,7 +345,7 @@ public class CopyAndPasteController extends BaseController {
     }
   }
   
-  public void drop(Set<Object> selections, int selectionCount, FolderType currentFolder) throws Exception {
+  public void drop(Set<Object> selections, int selectionCount, FolderType currentFolder,boolean dragAndDropFromTree) throws Exception {
 	  
 	   if (currentFolder == null) {
 	      Notification.error(Labels.getLabel("portal_failedFind_message"));
@@ -361,7 +361,7 @@ public class CopyAndPasteController extends BaseController {
 				if (!checkImmediateOwnership(selections)) {
 					Notification.error(Labels.getLabel("portal_onlyOwnerCanCutItems"));
 				} else if (ItemHelpers.isOwner(this.currentUser, currentFolder)) {
-					isCut = true;
+					isCut = !dragAndDropFromTree;
 					updateSelectedItems(selections);
 				} else {
 					Notification.error(Labels.getLabel("portal_onlyOwnerCanCutFromCurrent_message"));
@@ -374,12 +374,14 @@ public class CopyAndPasteController extends BaseController {
 		}
 	   
 		try {
-			if (isCut) {
 				selectedTargetFolderId = currentFolder.getId();
-				moveSelectedItems();
+				if (isCut) {
+			        moveSelectedItems();
+			      } else {
+			        cloneSelectedItems();
+			      }
 				Notification.info(Labels.getLabel("portal_itemsDropped_message"));
 				clearSelectedItems();
-			}
 		} catch (Exception e) {
 			Messagebox.show(Labels.getLabel("portal_failedPaste_message"), "Apromore", Messagebox.OK, Messagebox.ERROR);
 			LOGGER.error("Unable to perform Paste", e);

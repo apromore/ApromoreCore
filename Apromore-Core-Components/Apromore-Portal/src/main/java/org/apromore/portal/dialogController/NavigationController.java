@@ -106,23 +106,7 @@ public class NavigationController extends BaseController {
 		centre.addEventListener(Events.ON_RIGHT_CLICK, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
-				FolderType selectedFolder = null;
-				try {
-					if (!tree.getSelectedItems().isEmpty()) {
-						FolderTreeNode treeSelectedNode = tree.getSelectedItems().stream().findFirst().get().getValue();
-						selectedFolder = (FolderType) treeSelectedNode.getData();
-					}
-
-					Map args = new HashMap();
-					args.put("POPUP_TYPE", "FOLDER_TREE");
-					args.put("SELECTED_FOLDER", selectedFolder);
-					Menupopup menupopup = (Menupopup) Executions.createComponents("~./macros/popupMenu.zul", null,
-							args);
-					menupopup.open(event.getTarget(), "at_pointer");
-
-				} catch (Exception ex) {
-					LOGGER.error("FolderTree failed to show Pop-up menu", ex);
-				}
+				//Do nothing. But just to catch the event to avoid browser default right menu
 			}
 		});
         

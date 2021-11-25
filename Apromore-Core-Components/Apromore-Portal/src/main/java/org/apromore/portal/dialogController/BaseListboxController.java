@@ -659,16 +659,14 @@ public abstract class BaseListboxController extends BaseController {
 	    refreshContent();
   }
   
-	public void drop(FolderType dropToFolder,Object dropObject, FolderType currentFolder) throws Exception {
+	public void drop(FolderType dropToFolder,Object dropObject, FolderType currentFolder,boolean dragAndDropFromTree) throws Exception {
 		if (dropObject instanceof FolderType && dropToFolder.getId().equals(((FolderType)dropObject).getId())) {
 			Notification.error(Labels.getLabel("portal_source_destination_folder_notsame_message"));
 			return;
 		}
-		this.mainController.getCopyPasteController().drop(Set.of(dropObject), 1, dropToFolder);
-		this.mainController.getPortalSession().setCurrentFolder(currentFolder);
-		List<FolderType> subFolders = mainController.getManagerService().getSubFolders(UserSessionManager.getCurrentUser().getId(),
-		        currentFolder == null ? 0 : currentFolder.getId());
-		this.mainController.getBaseListboxController().displaySummaries(subFolders,false);
+		this.mainController.getPortalSession().setCurrentFolder(dropToFolder);
+		this.mainController.getCopyPasteController().drop(Set.of(dropObject), 1, dropToFolder,dragAndDropFromTree);
+		refreshContent();
 	}
 
   private ArrayList<FolderType> getSelectedFolders() {
