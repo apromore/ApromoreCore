@@ -361,7 +361,7 @@ public class CopyAndPasteController extends BaseController {
 				if (!checkImmediateOwnership(selections)) {
 					Notification.error(Labels.getLabel("portal_onlyOwnerCanCutItems"));
 				} else if (ItemHelpers.isOwner(this.currentUser, currentFolder)) {
-					isCut = dragAndDropFromTree? false: true;
+					isCut = !dragAndDropFromTree;
 					updateSelectedItems(selections);
 				} else {
 					Notification.error(Labels.getLabel("portal_onlyOwnerCanCutFromCurrent_message"));
