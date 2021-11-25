@@ -74,6 +74,8 @@ public class ProcessDiscovererTest extends LogicDataSetup {
                 secondaryType,
                 secondaryAggregate,
                 secondaryRelation,
+                Integer.MAX_VALUE,
+                Integer.MAX_VALUE,
                 null);
     }
     
@@ -145,6 +147,8 @@ public class ProcessDiscovererTest extends LogicDataSetup {
                                             MeasureType.DURATION,
                                             MeasureAggregation.MEAN,
                                             MeasureRelation.ABSOLUTE,
+                                            Integer.MAX_VALUE,
+                                            Integer.MAX_VALUE,
                                             null);
         Abstraction traceAbs = pd.generateTraceAbstraction(attLog, traceID, params);
         return traceAbs;
@@ -173,6 +177,8 @@ public class ProcessDiscovererTest extends LogicDataSetup {
                 MeasureType.DURATION,
                 MeasureAggregation.MEAN,
                 MeasureRelation.ABSOLUTE,
+                Integer.MAX_VALUE,
+                Integer.MAX_VALUE,
                 null);
         Abstraction traceAbs = pd.generateTraceVariantAbstraction(attLog, traceIDs, params);
         return traceAbs;
