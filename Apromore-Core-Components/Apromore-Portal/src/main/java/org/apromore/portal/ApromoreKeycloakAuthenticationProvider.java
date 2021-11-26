@@ -23,9 +23,8 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
- * An adaptation of {@link KeycloakAuthenticationProvider} which
- * performs authentication on a {@link KeycloakAuthenticationToken} and maps
- * authorities based on the user's roles in Apromore.
+ * An adaptation of {@link KeycloakAuthenticationProvider} which maps
+ * authorities based on a user's roles in Apromore.
  *
  * @author Jane Hoh
  */

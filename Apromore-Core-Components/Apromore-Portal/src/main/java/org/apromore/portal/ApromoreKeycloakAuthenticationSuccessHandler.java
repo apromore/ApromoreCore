@@ -12,6 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
 
+/**
+ * Prevent users without login permissions from logging in.
+ */
 public class ApromoreKeycloakAuthenticationSuccessHandler extends KeycloakAuthenticationSuccessHandler {
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(ApromoreKeycloakAuthenticationSuccessHandler.class);
 
@@ -19,6 +22,12 @@ public class ApromoreKeycloakAuthenticationSuccessHandler extends KeycloakAuthen
         super(fallback);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * This implementation logs out a user if they are authenticated but do not have portal login permissions.
+     * Otherwise, it redirects to <code>index.zul</code>.
+     */
     @Override
     public void onAuthenticationSuccess(
             HttpServletRequest request, HttpServletResponse response, Authentication authentication)
@@ -28,13 +37,15 @@ public class ApromoreKeycloakAuthenticationSuccessHandler extends KeycloakAuthen
                 "ROLE_OBSERVER", "ROLE_DESIGNER", "ROLE_DATA_SCIENTIST", "ROLE_OPERATIONS"};
 
         //Logout if the user does not have a role with login permissions
-        if (authentication.getAuthorities().stream().map(a -> a.getAuthority()).anyMatch(
+        if (authentication.getAuthorities().stream().map(a -> a.getAuthority()).noneMatch(
                 a -> Arrays.asList(loginAuthorizedRoles).contains(a))) {
-            LOGGER.info("User \"{}\" login via keycloak", authentication.getName());
-            super.onAuthenticationSuccess(request, response, authentication);
-        } else {
+
             LOGGER.info("User \"{}\" does not have login permissions", authentication.getName());
             response.sendRedirect("/logout");
+
+        } else {
+            LOGGER.info("User \"{}\" login via keycloak", authentication.getName());
+            super.onAuthenticationSuccess(request, response, authentication);
         }
 
 
