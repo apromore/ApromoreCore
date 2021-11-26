@@ -277,7 +277,7 @@ public class CopyAndPasteController extends BaseController {
     if (checkContext(selections, selectionCount, currentFolder)) {
       try {
         if (!checkImmediateOwnership(selections)) {
-          Notification.error(Labels.getLabel("portal_onlyOwnerCanCutItems"));
+          Notification.error(Labels.getLabel("portal_onlyOwnerCanCutItems_message"));
         } else if (ItemHelpers.isOwner(this.currentUser, currentFolder)) {
           isCut = true;
           updateSelectedItems(selections);
@@ -345,7 +345,7 @@ public class CopyAndPasteController extends BaseController {
     }
   }
   
-  public void drop(Set<Object> selections, int selectionCount, FolderType currentFolder,boolean dragAndDropFromTree) throws Exception {
+  public void drop(Set<Object> selections, int selectionCount, FolderType currentFolder) throws Exception {
 	  
 	   if (currentFolder == null) {
 	      Notification.error(Labels.getLabel("portal_failedFind_message"));
@@ -361,7 +361,7 @@ public class CopyAndPasteController extends BaseController {
 				if (!checkImmediateOwnership(selections)) {
 					Notification.error(Labels.getLabel("portal_onlyOwnerCanCutItems"));
 				} else if (ItemHelpers.isOwner(this.currentUser, currentFolder)) {
-					isCut = !dragAndDropFromTree;
+					isCut = true;
 					updateSelectedItems(selections);
 				} else {
 					Notification.error(Labels.getLabel("portal_onlyOwnerCanCutFromCurrent_message"));
