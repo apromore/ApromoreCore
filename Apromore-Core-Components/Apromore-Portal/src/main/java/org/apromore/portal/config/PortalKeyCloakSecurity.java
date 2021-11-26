@@ -11,11 +11,13 @@ package org.apromore.portal.config;
 
 import org.apromore.manager.client.ManagerService;
 import org.apromore.portal.ApromoreKeycloakAuthenticationProvider;
+import org.apromore.portal.ApromoreKeycloakAuthenticationSuccessHandler;
 import org.apromore.portal.servlet.filter.SameSiteFilter;
 import org.keycloak.adapters.KeycloakConfigResolver;
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
 import org.keycloak.adapters.springsecurity.KeycloakConfiguration;
 import org.keycloak.adapters.springsecurity.config.KeycloakWebSecurityConfigurerAdapter;
+import org.keycloak.adapters.springsecurity.filter.KeycloakAuthenticationProcessingFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
@@ -24,6 +26,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.core.session.SessionRegistryImpl;
+import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
@@ -50,6 +53,14 @@ public class PortalKeyCloakSecurity extends KeycloakWebSecurityConfigurerAdapter
   @Override
   protected SessionAuthenticationStrategy sessionAuthenticationStrategy() {
     return new RegisterSessionAuthenticationStrategy(new SessionRegistryImpl());
+  }
+
+  @Bean
+  @Override
+  protected KeycloakAuthenticationProcessingFilter keycloakAuthenticationProcessingFilter() throws Exception {
+    KeycloakAuthenticationProcessingFilter filter = super.keycloakAuthenticationProcessingFilter();
+    filter.setAuthenticationSuccessHandler(new ApromoreKeycloakAuthenticationSuccessHandler(new SavedRequestAwareAuthenticationSuccessHandler()));
+    return filter;
   }
 
   @Bean
@@ -87,7 +98,6 @@ public class PortalKeyCloakSecurity extends KeycloakWebSecurityConfigurerAdapter
         .antMatchers("/rest/**/*").permitAll()
         .antMatchers("/rest/*").permitAll()
         .antMatchers("/zkau/web/bpmneditor/*").permitAll()
-        .antMatchers("/zkau/**").hasAnyRole("USER", "ADMIN", "MANAGER", "ANALYST", "OBSERVER", "DESIGNER", "DATA_SCIENTIST", "OPERATIONS")
         .anyRequest().authenticated();
   }
 }
