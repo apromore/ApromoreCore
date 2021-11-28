@@ -307,7 +307,7 @@ public class SummaryItemRenderer implements ListitemRenderer {
             	}
             	
             	if(droppedToItem.getValue()!=null && droppedToItem.getValue() instanceof FolderType && droppedObject!=null) {
-            		mainController.getBaseListboxController().drop(droppedToItem.getValue(), droppedObject, mainController.getPortalSession().getCurrentFolder());
+            		mainController.getBaseListboxController().drop(droppedToItem.getValue(), droppedObject);
             	}
             	}catch(Exception e) {
             		LOGGER.error("Error Occured in Drag and Drop",e);
@@ -327,14 +327,20 @@ public class SummaryItemRenderer implements ListitemRenderer {
     private Listcell renderFolderId(FolderType folder) {
         Listcell lc = new Listcell();
         lc.appendChild(new Label(folder.getId().toString()));
+        addToDisableSelection(lc);
         return lc;
     }
 
-    private Listcell renderFolderName(FolderType folder) {
+    private void addToDisableSelection(Listcell lc) {
+    	 lc.setSclass("ap-disable-selection");		
+	}
+
+	private Listcell renderFolderName(FolderType folder) {
         Label name = new Label(folder.getFolderName());
         Listcell lc = new Listcell();
         lc.appendChild(name);
         lc.setStyle(LEFT_ALIGN);
+        addToDisableSelection(lc);
         return lc;
     }
 
@@ -456,6 +462,7 @@ public class SummaryItemRenderer implements ListitemRenderer {
         } else {
             lc.appendChild(cp);
         }
+        addToDisableSelection(lc);
         return lc;
     }
 

@@ -38,6 +38,7 @@ import org.apromore.dao.model.User;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.PortalPlugin;
+import org.apromore.portal.common.FolderTreeNode;
 import org.apromore.portal.common.ItemHelpers;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.context.PluginPortalContext;
@@ -57,6 +58,7 @@ import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.event.DropEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -67,10 +69,13 @@ import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listhead;
 import org.zkoss.zul.Listheader;
+import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Menupopup;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Span;
+import org.zkoss.zul.Treeitem;
+import org.zkoss.zul.Treerow;
 import org.zkoss.zul.event.ColSizeEvent;
 
 public abstract class BaseListboxController extends BaseController {
@@ -209,6 +214,30 @@ public abstract class BaseListboxController extends BaseController {
         	menupopup.open(event.getTarget(), "at_pointer");
 	      }
 	    });
+	  
+	    this.listBox.setDroppable("true");
+		this.listBox.addEventListener(Events.ON_DROP, new EventListener<DropEvent>() {
+			@Override
+			public void onEvent(DropEvent event) throws Exception {
+				try {
+					FolderType currentFolder = mainController.getPortalSession().getCurrentFolder();
+					Object droppedObject = null;
+					if (event.getDragged() instanceof Listitem) {
+						Listitem draggedItem = (Listitem) event.getDragged();
+						droppedObject = draggedItem.getValue();
+					} else if (event.getDragged() instanceof Treerow) {
+						FolderTreeNode draggedItem = ((Treeitem) event.getDragged().getParent()).getValue();
+						droppedObject = draggedItem.getData();
+					}
+
+					if (currentFolder != null && droppedObject != null) {
+						mainController.getBaseListboxController().drop(currentFolder, droppedObject);
+					}
+				} catch (Exception e) {
+					LOGGER.error("Error Occured in Drag and Drop", e);
+				}
+			}
+		});
 
     this.listBox.addEventListener("onKeyPress", new EventListener<KeyEvent>() {
       @Override
@@ -659,11 +688,12 @@ public abstract class BaseListboxController extends BaseController {
 	    refreshContent();
   }
   
-	public void drop(FolderType dropToFolder,Object dropObject, FolderType currentFolder) throws Exception {
+	public void drop(FolderType dropToFolder,Object dropObject) throws Exception {
 		if (dropObject instanceof FolderType && dropToFolder.getId().equals(((FolderType)dropObject).getId())) {
 			Notification.error(Labels.getLabel("portal_source_destination_folder_notsame_message"));
 			return;
 		}
+		this.mainController.getPortalSession().setCurrentFolder(dropToFolder);
 		this.mainController.getCopyPasteController().drop(Set.of(dropObject), 1, dropToFolder);
 		refreshContent();
 	}

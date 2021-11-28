@@ -277,7 +277,7 @@ public class CopyAndPasteController extends BaseController {
     if (checkContext(selections, selectionCount, currentFolder)) {
       try {
         if (!checkImmediateOwnership(selections)) {
-          Notification.error(Labels.getLabel("portal_onlyOwnerCanCutItems"));
+          Notification.error(Labels.getLabel("portal_onlyOwnerCanCutItems_message"));
         } else if (ItemHelpers.isOwner(this.currentUser, currentFolder)) {
           isCut = true;
           updateSelectedItems(selections);
@@ -374,12 +374,14 @@ public class CopyAndPasteController extends BaseController {
 		}
 	   
 		try {
-			if (isCut) {
 				selectedTargetFolderId = currentFolder.getId();
-				moveSelectedItems();
+				if (isCut) {
+			        moveSelectedItems();
+			      } else {
+			        cloneSelectedItems();
+			      }
 				Notification.info(Labels.getLabel("portal_itemsDropped_message"));
 				clearSelectedItems();
-			}
 		} catch (Exception e) {
 			Messagebox.show(Labels.getLabel("portal_failedPaste_message"), "Apromore", Messagebox.OK, Messagebox.ERROR);
 			LOGGER.error("Unable to perform Paste", e);

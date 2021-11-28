@@ -146,9 +146,6 @@
               "id": "RENAME"
             },
             {
-              "id": "SEPARATOR"
-            },
-            {
               "id": "DELETE"
             },
             {
@@ -174,6 +171,9 @@
               "id": "org.apromore.plugin.portal.processdiscoverer.plugins.PDFrequencyPlugin"
             },
             {
+              "id": "dashboard.portal.DashboardPlugin"
+            },
+            {
               "id": "SEPARATOR"
             },
             {
@@ -187,9 +187,6 @@
             },
             {
               "id": "RENAME"
-            },
-            {
-              "id": "SEPARATOR"
             },
             {
               "id": "DELETE"
@@ -214,6 +211,9 @@
               "id": "org.apromore.plugin.portal.file.EditSelectionPlugin"
             },
             {
+              "id": "org.apromore.plugin.portal.bimp.BIMPPortalPlugin"
+            },
+            {
               "id": "org.apromore.plugin.similaritysearch.portal.SimilaritySearchPlugin"
             },
             {
@@ -230,9 +230,6 @@
             },
             {
               "id": "RENAME"
-            },
-            {
-              "id": "SEPARATOR"
             },
             {
               "id": "DELETE"
@@ -268,6 +265,19 @@
             {
               "id": "SEPARATOR"
             },
+            {
+              "id": "PASTE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "root-folder-popup-menu",
+      "groups": [
+        {
+          "id": "FOLDER_POPUP",
+          "items": [
             {
               "id": "PASTE"
             }
