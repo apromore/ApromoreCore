@@ -398,7 +398,7 @@ public class PDAnalystTest extends TestDataSetup {
                         MeasureRelation.ABSOLUTE,
                         false,
                         false)).get().getAbstraction().getLayout();
-        assertTrue(layout1 == layout2);
+        assertSame(layout1, layout2);
 
         // Change primary measure type
         Layout layout3 = analyst.discoverProcess(
@@ -415,7 +415,7 @@ public class PDAnalystTest extends TestDataSetup {
                         MeasureRelation.ABSOLUTE,
                         false,
                         false)).get().getAbstraction().getLayout();
-        assertTrue(layout1 == layout3);
+        assertSame(layout1, layout3);
 
         // Add secondary measure
         Layout layout4 = analyst.discoverProcess(
@@ -432,7 +432,7 @@ public class PDAnalystTest extends TestDataSetup {
                         MeasureRelation.ABSOLUTE,
                         true,            // changed
                         false)).get().getAbstraction().getLayout();
-        assertTrue(layout1 == layout4);
+        assertSame(layout1, layout4);
 
 
         // Change user options, layout is not retained
@@ -452,7 +452,7 @@ public class PDAnalystTest extends TestDataSetup {
                         MeasureRelation.ABSOLUTE,
                         false,
                         false)).get().getAbstraction().getLayout();
-        assertFalse(layout1 == layout5);
+        assertNotSame(layout1, layout5);
 
         // Change perspective attribute
         analyst.setMainAttribute(Constants.ATT_KEY_LIFECYCLE_TRANSITION); // changed
@@ -470,7 +470,7 @@ public class PDAnalystTest extends TestDataSetup {
                         MeasureRelation.ABSOLUTE,
                         false,
                         false)).get().getAbstraction().getLayout();
-        assertFalse(layout1 == layout6);
+        assertNotSame(layout1, layout6);
 
         // Change graph filtering threshold
         Layout layout7 = analyst.discoverProcess(
@@ -487,7 +487,7 @@ public class PDAnalystTest extends TestDataSetup {
                         MeasureRelation.ABSOLUTE,
                         false,
                         false)).get().getAbstraction().getLayout();
-        assertFalse(layout1 == layout7);
+        assertNotSame(layout1, layout7);
 
         // Change the weight ordering of nodes/arcs in the structural measure
         Layout layout8 = analyst.discoverProcess(
@@ -504,7 +504,7 @@ public class PDAnalystTest extends TestDataSetup {
                         MeasureRelation.ABSOLUTE,
                         false,
                         false)).get().getAbstraction().getLayout();
-        assertFalse(layout1 == layout8);
+        assertNotSame(layout1, layout8);
 
         // After applying filter, layout must change
         analyst.filter_RemoveTracesAnyValueOfEventAttribute("b", "concept:name");
@@ -522,7 +522,7 @@ public class PDAnalystTest extends TestDataSetup {
                         MeasureRelation.ABSOLUTE,
                         false,
                         false)).get().getAbstraction().getLayout();
-        assertFalse(layout1 == layout9);
+        assertNotSame(layout1, layout9);
     }
     
 }
