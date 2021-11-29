@@ -40,6 +40,9 @@
             font-size: 16px;
         }
 
+        .ap-security-setup .z-west-body {
+            overflow: hidden !important;
+        }
     </style>
     <borderlayout hflex="1" vflex="1">
         <west autoscroll="true" sclass="ap-security-setup" title="${labels.portal_workspace_text}" collapsible="true" splittable="true" vflex="1" width="30%" border="none">
