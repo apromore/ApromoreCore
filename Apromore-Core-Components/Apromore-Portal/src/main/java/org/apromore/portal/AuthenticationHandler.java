@@ -30,6 +30,7 @@ import org.slf4j.Logger;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -77,11 +78,11 @@ public class AuthenticationHandler implements AuthenticationFailureHandler, Auth
     public void onAuthenticationSuccess(HttpServletRequest  request,
                                         HttpServletResponse response,
                                         Authentication      authentication) throws IOException {
-        String loginAuthorizedRoles[] = {"ROLE_USER", "ROLE_ADMIN", "ROLE_MANAGER", "ROLE_ANALYST",
+        String[] loginAuthorizedRoles = {"ROLE_USER", "ROLE_ADMIN", "ROLE_MANAGER", "ROLE_ANALYST",
                 "ROLE_OBSERVER", "ROLE_DESIGNER", "ROLE_DATA_SCIENTIST", "ROLE_OPERATIONS"};
 
         //Invalidate the session if the user does not have a role with login permissions
-        if (authentication.getAuthorities().stream().map(a -> a.getAuthority()).noneMatch(
+        if (authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).noneMatch(
                 a -> Arrays.asList(loginAuthorizedRoles).contains(a))) {
 
             LOGGER.info("User \"{}\" does not have login permissions", authentication.getName());

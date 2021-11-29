@@ -57,10 +57,10 @@ public class ApromoreKeycloakAuthenticationProvider extends KeycloakAuthenticati
             }
         }
 
-        return new KeycloakAuthenticationToken(token.getAccount(), token.isInteractive(), mapAuthorities(grantedAuthorities));
+        return new KeycloakAuthenticationToken(token.getAccount(), token.isInteractive(), mapGrantedAuthorities(grantedAuthorities));
     }
 
-    private Collection<? extends GrantedAuthority> mapAuthorities(
+    private Collection<? extends GrantedAuthority> mapGrantedAuthorities(
             Collection<? extends GrantedAuthority> authorities) {
         return grantedAuthoritiesMapper != null
                 ? grantedAuthoritiesMapper.mapAuthorities(authorities)
