@@ -211,3 +211,29 @@ databaseChangeLog:
               - column:
                   name: is_valid
                   value: "1"
+
+  - changeSet:
+      id: 20211130103400
+      author: janeh
+      comment: "migrate user role to analyst"
+      changes:
+        - delete:
+            tableName: user_role
+            where: roleid = 2 AND
+              userid IN (
+              SELECT * FROM (
+              SELECT userid
+              FROM `user_role`
+              WHERE roleid=2 OR roleid=4
+              GROUP BY userid
+              HAVING COUNT(roleid) > 1
+              )tblTmp
+              );
+
+        - update:
+            tableName: user_role
+            columns:
+              - column:
+                  name: roleid
+                  value: 4
+            where: roleid = 2
