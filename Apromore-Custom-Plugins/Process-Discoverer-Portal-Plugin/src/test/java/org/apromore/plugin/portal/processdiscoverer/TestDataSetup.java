@@ -30,8 +30,13 @@ import java.util.Arrays;
 import org.apromore.apmlog.xes.XLogToImmutableLog;
 import org.apromore.calendar.builder.CalendarModelBuilder;
 import org.apromore.calendar.model.CalendarModel;
+import org.apromore.logman.attribute.graph.MeasureAggregation;
+import org.apromore.logman.attribute.graph.MeasureRelation;
+import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.plugin.portal.processdiscoverer.data.ConfigData;
 import org.apromore.plugin.portal.processdiscoverer.data.ContextData;
+import org.apromore.plugin.portal.processdiscoverer.data.OutputData;
+import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
 import org.apromore.service.EventLogService;
 import org.deckfour.xes.in.XesXmlGZIPParser;
 import org.deckfour.xes.in.XesXmlParser;
@@ -174,5 +179,69 @@ public class TestDataSetup {
     
     public XLog readRealLog_procmin() {
         return this.readXESCompressedFile("src/test/logs/procmin20180612_F2_5M.xes.gz");
+    }
+
+    protected OutputData discoverProcess(XLog xlog,
+                                         double nodeSlider, double arcSlider, double paraSlider,
+                                         MeasureType structureType,
+                                         MeasureAggregation structureAggregate,
+                                         MeasureRelation structureRelation,
+                                         MeasureType primaryType,
+                                         MeasureAggregation primaryAggregate,
+                                         MeasureRelation primaryRelation,
+                                         MeasureType secondaryType,
+                                         MeasureAggregation secondaryAggregate,
+                                         MeasureRelation secondaryRelation,
+                                         boolean useSecondary,
+                                         boolean bpmn) throws Exception {
+        PDAnalyst analyst = createPDAnalyst(xlog);
+        UserOptionsData userOptions = createUserOptions(nodeSlider, arcSlider, paraSlider,
+                structureType, structureAggregate, structureRelation,
+                false, false,
+                primaryType, primaryAggregate, primaryRelation,
+                secondaryType, secondaryAggregate, secondaryRelation,
+                useSecondary, bpmn);
+        return analyst.discoverProcess(userOptions).get();
+    }
+
+    protected UserOptionsData createUserOptions(double nodeSlider, double arcSlider, double paraSlider,
+                                                MeasureType structureType,
+                                                MeasureAggregation structureAggregate,
+                                                MeasureRelation structureRelation,
+                                                boolean invertedNodes, boolean invertedArcs,
+                                                MeasureType primaryType,
+                                                MeasureAggregation primaryAggregate,
+                                                MeasureRelation primaryRelation,
+                                                MeasureType secondaryType,
+                                                MeasureAggregation secondaryAggregate,
+                                                MeasureRelation secondaryRelation,
+                                                boolean useSecondary,
+                                                boolean bpmn)
+                                                throws Exception {
+        UserOptionsData userOptions = UserOptionsData.DEFAULT(ConfigData.DEFAULT);
+
+        userOptions.setNodeFilterValue(nodeSlider);
+        userOptions.setArcFilterValue(arcSlider);
+        userOptions.setParallelismFilterValue(paraSlider);
+
+        userOptions.setFixedType(structureType);
+        userOptions.setFixedAggregation(structureAggregate);
+        userOptions.setFixedRelation(structureRelation);
+
+        userOptions.setInvertedNodesMode(invertedNodes);
+        userOptions.setInvertedArcsMode(invertedArcs);
+
+        userOptions.setPrimaryType(primaryType);
+        userOptions.setPrimaryAggregation(primaryAggregate);
+        userOptions.setPrimaryRelation(primaryRelation);
+
+        userOptions.setSecondaryType(secondaryType);
+        userOptions.setSecondaryAggregation(secondaryAggregate);
+        userOptions.setSecondaryRelation(secondaryRelation);
+
+        userOptions.setIncludeSecondary(useSecondary);
+        userOptions.setBPMNMode(bpmn);
+
+        return userOptions;
     }
 }
