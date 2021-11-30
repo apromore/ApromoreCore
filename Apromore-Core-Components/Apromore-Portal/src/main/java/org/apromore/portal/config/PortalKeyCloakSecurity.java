@@ -9,11 +9,15 @@
  */
 package org.apromore.portal.config;
 
+import org.apromore.manager.client.ManagerService;
+import org.apromore.portal.ApromoreKeycloakAuthenticationProvider;
+import org.apromore.portal.ApromoreKeycloakAuthenticationSuccessHandler;
 import org.apromore.portal.servlet.filter.SameSiteFilter;
 import org.keycloak.adapters.KeycloakConfigResolver;
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
 import org.keycloak.adapters.springsecurity.KeycloakConfiguration;
 import org.keycloak.adapters.springsecurity.config.KeycloakWebSecurityConfigurerAdapter;
+import org.keycloak.adapters.springsecurity.filter.KeycloakAuthenticationProcessingFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
@@ -22,6 +26,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.core.session.SessionRegistryImpl;
+import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
@@ -30,12 +35,15 @@ import org.springframework.security.web.session.HttpSessionEventPublisher;
 @KeycloakConfiguration
 @ConditionalOnProperty(prefix = "keycloak", name = "enabled", havingValue = "true")
 public class PortalKeyCloakSecurity extends KeycloakWebSecurityConfigurerAdapter {
+  @Autowired
+  private ManagerService manager;
+
   /**
    * Registers the KeycloakAuthenticationProvider with the authentication manager.
    */
   @Autowired
   public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-    auth.authenticationProvider(keycloakAuthenticationProvider());
+    auth.authenticationProvider(new ApromoreKeycloakAuthenticationProvider(manager));
   }
 
   /**
@@ -48,9 +56,16 @@ public class PortalKeyCloakSecurity extends KeycloakWebSecurityConfigurerAdapter
   }
 
   @Bean
+  @Override
+  protected KeycloakAuthenticationProcessingFilter keycloakAuthenticationProcessingFilter() throws Exception {
+    KeycloakAuthenticationProcessingFilter filter = super.keycloakAuthenticationProcessingFilter();
+    filter.setAuthenticationSuccessHandler(new ApromoreKeycloakAuthenticationSuccessHandler(new SavedRequestAwareAuthenticationSuccessHandler()));
+    return filter;
+  }
+
+  @Bean
   public ServletListenerRegistrationBean<HttpSessionEventPublisher> httpSessionEventPublisher() {
-    return new ServletListenerRegistrationBean<HttpSessionEventPublisher>(
-        new HttpSessionEventPublisher());
+    return new ServletListenerRegistrationBean<>(new HttpSessionEventPublisher());
   }
 
   @Bean
@@ -75,10 +90,14 @@ public class PortalKeyCloakSecurity extends KeycloakWebSecurityConfigurerAdapter
     http.csrf().ignoringAntMatchers("/zkau", "/rest", "/rest/*", "/rest/**/*", "/zkau/*", "/bpmneditor/editor/*").and()
         .authorizeRequests()
         // .antMatchers("/**").hasRole("USER")
-        .antMatchers("/sso/login").permitAll().antMatchers("/zkau").permitAll()
-        .antMatchers("/logout").permitAll().antMatchers("/zkau/*").permitAll()
+        .antMatchers("/sso/login").permitAll()
+        .antMatchers("/zkau").permitAll()
+        .antMatchers("/logout").permitAll()
+        .antMatchers("/zkau/*").permitAll()
         .antMatchers("/rest").permitAll()
-        .antMatchers("/rest/**/*").permitAll().antMatchers("/rest/*").permitAll()
-        .antMatchers("/zkau/web/bpmneditor/*").permitAll().anyRequest().authenticated();
+        .antMatchers("/rest/**/*").permitAll()
+        .antMatchers("/rest/*").permitAll()
+        .antMatchers("/zkau/web/bpmneditor/*").permitAll()
+        .anyRequest().authenticated();
   }
 }
