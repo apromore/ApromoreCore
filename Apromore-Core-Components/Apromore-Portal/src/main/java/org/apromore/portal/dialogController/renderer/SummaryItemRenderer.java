@@ -273,7 +273,7 @@ public class SummaryItemRenderer implements ListitemRenderer {
             public void onEvent(Event event) throws Exception {
                 // UserSessionManager.setCurrentFolder(folder);
                 mainController.getPortalSession().setCurrentFolder(folder);
-                mainController.reloadSummaries2();
+                mainController.reloadSummaries();
                 mainController.currentFolderChanged();
                 Clients.evalJavaScript("clearSelection('')");
             }
