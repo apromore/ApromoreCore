@@ -311,7 +311,7 @@ public class SecurityServiceImpl implements SecurityService {
 
     user.getMembership().setDateCreated(user.getDateCreated());
 
-    // A new user is in the USER and ANALYST role
+    // A new user is in the ANALYST role
     Role analystRole = roleRepo.findByName(ROLE_ANALYST);
     Set<Role> roles = new HashSet<>();
     if (analystRole == null) {
