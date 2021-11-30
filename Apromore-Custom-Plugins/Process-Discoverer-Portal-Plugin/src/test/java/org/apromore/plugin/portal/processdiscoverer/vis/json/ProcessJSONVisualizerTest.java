@@ -43,40 +43,6 @@ public class ProcessJSONVisualizerTest extends TestDataSetup {
     private String NODE_KEY = "shape";
     private String[] nodeCompareKeys = new String[] {"name", "oriname"};
     private String[] edgeCompareKeys = new String[] {"style", "label"};
-
-    private OutputData discoverProcess(XLog xlog, double nodeSlider, double arcSlider, double paraSlider,
-                        MeasureType structureType, MeasureAggregation structureAggregate, MeasureRelation structureRelation,
-                        MeasureType primaryType, MeasureAggregation primaryAggregate, MeasureRelation primaryRelation,
-                        MeasureType secondaryType, MeasureAggregation secondaryAggregate, MeasureRelation secondaryRelation,
-                        boolean useSecondary,
-                        boolean bpmn) throws Exception {
-        ALog log = new ALog(xlog);
-        //ConfigData configData = ConfigData.DEFAULT;
-        UserOptionsData userOptions = UserOptionsData.DEFAULT(ConfigData.DEFAULT);
-        
-        userOptions.setNodeFilterValue(nodeSlider);
-        userOptions.setArcFilterValue(arcSlider);
-        userOptions.setParallelismFilterValue(paraSlider);
-        
-        userOptions.setFixedType(structureType);
-        userOptions.setFixedAggregation(structureAggregate);
-        userOptions.setFixedRelation(structureRelation);
-        
-        userOptions.setPrimaryType(primaryType);
-        userOptions.setPrimaryAggregation(primaryAggregate);
-        userOptions.setPrimaryRelation(primaryRelation);
-        
-        userOptions.setSecondaryType(secondaryType);
-        userOptions.setSecondaryAggregation(secondaryAggregate);
-        userOptions.setSecondaryRelation(secondaryRelation);
-        
-        userOptions.setIncludeSecondary(useSecondary);
-        userOptions.setBPMNMode(bpmn);
-        
-        //PDAnalyst analyst = PDAnalyst.newInstanceWithoutFilter(log, configData, getAllDayAllTimeCalendar());
-        PDAnalyst analyst = createPDAnalyst(xlog);
-        return analyst.discoverProcess(userOptions).get();
-    }
     
     public boolean findSimilarNodeObject(JSONObject node, JSONArray array) throws JSONException {
         for (int i=0; i<array.length(); i++) {
