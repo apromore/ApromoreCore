@@ -76,7 +76,6 @@ public class SecurityServiceImpl implements SecurityService {
   private static final Logger LOGGER =
       Logger.getLogger(SecurityServiceImpl.class.getCanonicalName());
 
-  private static final String ROLE_USER = "ROLE_USER";
   private static final String ROLE_ANALYST = "ROLE_ANALYST";
   private static final String EMAIL_SUBJECT = "Reset Password";
   private static final String EMAIL_START = "Hi, Here is your newly requested password: ";
@@ -313,16 +312,12 @@ public class SecurityServiceImpl implements SecurityService {
     user.getMembership().setDateCreated(user.getDateCreated());
 
     // A new user is in the USER and ANALYST role
-    Role existingRole = roleRepo.findByName(ROLE_USER);
     Role analystRole = roleRepo.findByName(ROLE_ANALYST);
-    if (existingRole == null) {
-      throw new RuntimeException("Could not create user because ROLE_USER not present in database");
-    }
     Set<Role> roles = new HashSet<>();
-    roles.add(existingRole);
-    if (analystRole != null) {
-      roles.add(analystRole);
+    if (analystRole == null) {
+      throw new RuntimeException("Could not create user because ROLE_ANALYST not present in database");
     }
+    roles.add(analystRole);
     user.setRoles(roles);
 
     // All users are in the compulsory groups: their personal singleton group, and the public group

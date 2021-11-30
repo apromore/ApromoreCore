@@ -213,7 +213,7 @@ databaseChangeLog:
                   value: "1"
 
   - changeSet:
-      id: 20211130103400
+      id: 20211130111000
       author: janeh
       comment: "migrate user role to analyst"
       changes:
@@ -237,3 +237,7 @@ databaseChangeLog:
                   name: roleid
                   value: 4
             where: roleid = 2
+
+        - delete:
+            tableName: role
+            where: id = 2
