@@ -31,7 +31,7 @@
                 You have just tried to access a resource that you don't have permissions for.
             </div>
             <div>
-                <a href="/login.zul" >Return to Home</a>
+                <a href="/" >Return to Home</a>
             </div>
         </div>
     </div>
