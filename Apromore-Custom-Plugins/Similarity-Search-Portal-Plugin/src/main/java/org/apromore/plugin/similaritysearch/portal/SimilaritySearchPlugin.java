@@ -50,7 +50,7 @@ import org.apromore.zk.label.LabelSupplier;
  * An example Portal Plugin, which display an Hello World dialog
  */
 @Component
-public class SimilaritySearchPlugin extends PluginCustomGui implements  LabelSupplier {
+public class SimilaritySearchPlugin extends PluginCustomGui implements LabelSupplier {
 
     @Inject
     private SimilarityService similarityService;
@@ -240,7 +240,7 @@ public class SimilaritySearchPlugin extends PluginCustomGui implements  LabelSup
             }
 
             if(result.getTotalCount() > 1) {
-                displayProcessSummaries(process.getName() + ": Sim Search", resultToDisplay, context);
+                displayProcessSummaries(getLabel("similarPrefix") + ": " + process.getName(), resultToDisplay, context);
             }
             context.refreshContent();
             LOGGER.info("Similarity search: {}", message);

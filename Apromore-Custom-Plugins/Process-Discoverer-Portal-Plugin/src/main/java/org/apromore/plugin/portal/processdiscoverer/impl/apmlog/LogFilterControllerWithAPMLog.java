@@ -22,13 +22,6 @@
 
 package org.apromore.plugin.portal.processdiscoverer.impl.apmlog;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import org.apromore.apmlog.filter.PLog;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.RuleValue;
@@ -36,7 +29,6 @@ import org.apromore.apmlog.filter.types.FilterType;
 import org.apromore.apmlog.filter.types.OperationType;
 import org.apromore.apmlog.logobjects.ActivityInstance;
 import org.apromore.apmlog.util.CalendarDuration;
-import org.apromore.calendar.model.CalendarModel;
 import org.apromore.plugin.portal.logfilter.generic.EditorOption;
 import org.apromore.plugin.portal.logfilter.generic.LogFilterClient;
 import org.apromore.plugin.portal.logfilter.generic.LogFilterOutputResult;
@@ -54,19 +46,46 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Messagebox;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 /**
  * LogFilterControllerWithAPMLog is {@link LogFilterController} but uses APMLog to do filtering.
  *
  * @author Bruce Nguyen
- *
  */
 public class LogFilterControllerWithAPMLog extends LogFilterController implements LogFilterClient, LabelSupplier {
     private PDAnalyst analyst;
     private FilterAction compositeFilterAction;
-    
+
     public LogFilterControllerWithAPMLog(PDController controller) throws Exception {
         super(controller);
         analyst = controller.getProcessAnalyst();
+    }
+
+    public static JSONObject getDefaultCaseTabAttributePayload(String label) {
+        JSONObject payload = new JSONObject();
+        payload.put("type", "CaseTabAttribute");
+        payload.put("key", convertAttributeKey(label));
+        payload.put("data", "");
+        return payload;
+    }
+
+    private static String convertAttributeKey(String label) {
+        switch (label) {
+            case "Resources":
+                return "org:resource";
+            case "Activities":
+                return "concept:name";
+            case "Groups":
+                return "org:group";
+            default:
+                return label;
+        }
     }
 
     @Override
@@ -80,7 +99,7 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
         // Each time of filtering via LogFilter window must generate a new action object
         compositeFilterAction = new FilterActionOnCompositeFilterCriteria(parent, analyst);
         compositeFilterAction.setPreActionFilterCriteria(analyst.copyCurrentFilterCriteria());
-        
+
         if (event.getData() == null) {
             LogFilterRequest lfr = analyst.getCurrentFilterCriteria() == null ||
                     ((List<LogFilterRule>) analyst.getCurrentFilterCriteria()).isEmpty() ?
@@ -136,8 +155,8 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
                 if (filterType == FilterType.EVENT_ATTRIBUTE_DURATION &&
                         !isValidAttributeDurationPayload(mainAttribute, data)) {
                     Messagebox.show(
-                        parent.getLabel("failedFilterNodeDurationSingleValue_message"),
-                        parent.getLabel("common_error_text"), Messagebox.OK, Messagebox.ERROR);
+                            parent.getLabel("failedFilterNodeDurationSingleValue_message"),
+                            parent.getLabel("common_error_text"), Messagebox.OK, Messagebox.ERROR);
                     return null;
                 }
                 parameters.put("key", mainAttribute);
@@ -148,8 +167,8 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
                 target = (String) param.get("target");
                 if (!isValidArcDurationPayload(mainAttribute, source, target)) {
                     Messagebox.show(
-                        parent.getLabel("failedFilterArcDurationSingleValue_message"),
-                        parent.getLabel("common_error_text"), Messagebox.OK, Messagebox.ERROR);
+                            parent.getLabel("failedFilterArcDurationSingleValue_message"),
+                            parent.getLabel("common_error_text"), Messagebox.OK, Messagebox.ERROR);
                     return null;
                 }
                 parameters.put("key", mainAttribute);
@@ -176,27 +195,18 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
 
     private boolean isValidArcDurationPayload(String attribute, String fromVal, String toVal) {
         PLog log = analyst.getFilteredPLog();
-        List<ActivityInstance> activityInstances = log.getActivityInstances();
-        Set<Long> uniqueDurs = activityInstances.stream()
-                .filter(x -> x.getAttributes().containsKey(attribute))
-                .filter(x -> x.getAttributes().get(attribute).equals(fromVal))
-                .map(x -> getNextMatchedArcDuration(attribute, toVal, x, log))
-                .collect(Collectors.toSet());
+        Set<Long> uniqueDurs = log.getPTraces().stream()
+                .flatMap(trace -> trace.getActivityInstances().stream()
+                        .filter(act -> act.getAttributes().containsKey(attribute))
+                        .filter(act -> act.getAttributes().get(attribute).equals(fromVal))
+                        .filter(act -> trace.getNextOf(act) != null)
+                        .filter(act -> trace.getNextOf(act).getAttributes().containsKey(attribute))
+                        .filter(act -> trace.getNextOf(act).getAttributes().get(attribute).equals(toVal))
+                        .map(act -> CalendarDuration.getDuration(log.getCalendarModel(), act.getEndTime(),
+                                trace.getNextOf(act).getStartTime()))
+                ).collect(Collectors.toSet());
 
         return uniqueDurs.size() > 1;
-    }
-
-    private long getNextMatchedArcDuration(String attribute,
-                                           String toValue,
-                                           ActivityInstance sourceNode,
-                                           PLog log) {
-        ActivityInstance nextNode = log.get(sourceNode.getMutableTraceIndex()).getNextOf(sourceNode);
-        if (nextNode == null || !nextNode.getAttributes().containsKey(attribute) ||
-                !nextNode.getAttributes().get(attribute).equals(toValue))
-            return 0;
-
-        CalendarModel calendarModel = log.getCalendarModel();
-        return CalendarDuration.getDuration(calendarModel, sourceNode.getEndTime(), nextNode.getStartTime());
     }
 
     private LogFilterRequest getRequestWithOption(EditorOption option) {
@@ -211,12 +221,18 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
 
     private FilterType getFilterType(String payload) {
         switch (payload) {
-            case "CaseTabID": return FilterType.CASE_ID;
-            case "CaseTabVariant": return FilterType.CASE_VARIANT;
-            case "EventTabAttribute": return FilterType.EVENT_EVENT_ATTRIBUTE;
-            case "CaseTabAttribute": return FilterType.CASE_EVENT_ATTRIBUTE;
-            case "CaseTabPerformance": return FilterType.DURATION;
-            case "CaseTabTimeframe": return FilterType.CASE_TIME;
+            case "CaseTabID":
+                return FilterType.CASE_ID;
+            case "CaseTabVariant":
+                return FilterType.CASE_VARIANT;
+            case "EventTabAttribute":
+                return FilterType.EVENT_EVENT_ATTRIBUTE;
+            case "CaseTabAttribute":
+                return FilterType.CASE_EVENT_ATTRIBUTE;
+            case "CaseTabPerformance":
+                return FilterType.DURATION;
+            case "CaseTabTimeframe":
+                return FilterType.CASE_TIME;
             default:
                 return FilterType.valueOf(payload);
         }
@@ -300,23 +316,6 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
                 .filter(e -> e.getOperationType() == operationType)
                 .findFirst()
                 .orElse(null);
-    }
-
-    public static JSONObject getDefaultCaseTabAttributePayload(String label) {
-        JSONObject payload = new JSONObject();
-        payload.put("type", "CaseTabAttribute");
-        payload.put("key", convertAttributeKey(label));
-        payload.put("data", "");
-        return payload;
-    }
-
-    private static String convertAttributeKey(String label) {
-        switch (label) {
-            case "Resources": return "org:resource";
-            case "Activities": return "concept:name";
-            case "Groups": return "org:group";
-            default: return label;
-        }
     }
 
     @Override

@@ -273,7 +273,7 @@ public class SummaryItemRenderer implements ListitemRenderer {
             public void onEvent(Event event) throws Exception {
                 // UserSessionManager.setCurrentFolder(folder);
                 mainController.getPortalSession().setCurrentFolder(folder);
-                mainController.reloadSummaries2();
+                mainController.reloadSummaries();
                 mainController.currentFolderChanged();
                 Clients.evalJavaScript("clearSelection('')");
             }
@@ -307,7 +307,7 @@ public class SummaryItemRenderer implements ListitemRenderer {
             	}
             	
             	if(droppedToItem.getValue()!=null && droppedToItem.getValue() instanceof FolderType && droppedObject!=null) {
-            		mainController.getBaseListboxController().drop(droppedToItem.getValue(), droppedObject, mainController.getPortalSession().getCurrentFolder());
+            		mainController.getBaseListboxController().drop(droppedToItem.getValue(), droppedObject);
             	}
             	}catch(Exception e) {
             		LOGGER.error("Error Occured in Drag and Drop",e);

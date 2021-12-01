@@ -91,6 +91,11 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 						        selectedFolder=(FolderType)Executions.getCurrent().getArg().get("SELECTED_FOLDER");
 						        loadPopupMenu(menuPopup, "folder-popup-menu"); 
 						        break;
+				case "ROOT_FOLDER_TREE" :
+					            popUpOnTree=true;
+			                    selectedFolder=(FolderType)Executions.getCurrent().getArg().get("SELECTED_FOLDER");
+			                    loadPopupMenu(menuPopup, "root-folder-popup-menu"); 
+			                    break;
 				}
 			}
 		} catch (Exception ex) {
@@ -178,7 +183,7 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 
 	private void addPasteMenuItem(Menupopup popup) {
 		Menuitem item = new Menuitem();
-		if("FOLDER".equals(popupType) ||"FOLDER_TREE".equals(popupType)) {
+		if("FOLDER".equals(popupType) ||"FOLDER_TREE".equals(popupType)||"ROOT_FOLDER_TREE".equals(popupType)) {
 			item.setLabel(Labels.getLabel("common_paste_within_text"));	
 		}else {
 			item.setLabel(Labels.getLabel("common_paste_text"));

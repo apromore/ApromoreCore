@@ -103,7 +103,7 @@ public class PortalSecurityConfig extends WebSecurityConfigurerAdapter {
             .logoutSuccessUrl("/zkau/web/login.zul");
 
     http.exceptionHandling()
-            .accessDeniedPage("/zkau/web/401.zul");
+            .accessDeniedPage("/zkau/web/pages/401.zul");
   }
 
   @Bean

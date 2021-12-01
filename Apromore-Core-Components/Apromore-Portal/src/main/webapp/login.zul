@@ -80,6 +80,13 @@
               ${labels.auth_alreadyUsed_message}
             </div>
           </div>
+          <div if="${param['error'] == '5'}" xmlns="http://www.w3.org/1999/xhtml">
+            <div class="alert alert-error">
+              <button type="button" class="close" data-dismiss="alert">&#xd7;</button>
+              <i class="icon-remove-circle"></i>
+              ${labels.auth_no_login_permission_message}
+            </div>
+          </div>
           <div if="${param['success'] == '1'}" xmlns="http://www.w3.org/1999/xhtml">
             <div class="alert alert-success">
               <button type="button" class="close" data-dismiss="alert">&#xd7;</button>

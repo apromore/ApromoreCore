@@ -88,7 +88,6 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
   private static final Logger LOGGER = PortalLoggerFactory.getLogger(UserAdminController.class);
   private Map<String, String> roleMap = new HashMap<>() {
     {
-      put("ROLE_USER", "User");
       put("ROLE_ADMIN", "Administrator");
       put("ROLE_MANAGER", "Manager");
       put("ROLE_ANALYST", "Analyst");

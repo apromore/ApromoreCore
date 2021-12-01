@@ -107,6 +107,7 @@ public class JGraphLayouter implements Layouter {
 	
 	@Override
     public void layout(Abstraction abs) {
+		if (abs.getLayout() != null) return;
 	    BPMNDiagram diagram = abs.getDiagram();
 		preLayout(diagram);
 		Layout layout = createLayout(diagram);

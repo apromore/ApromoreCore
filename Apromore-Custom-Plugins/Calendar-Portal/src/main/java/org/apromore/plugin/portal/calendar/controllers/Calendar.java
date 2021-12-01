@@ -129,7 +129,9 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
     Button applyBtn;
 
     @Wire("#viewerWarning")
-    Label viewerWarning;
+    Div viewerWarning;
+    @Wire("#editHelp")
+    Div editHelp;
 
     @Wire("#template9To5Btn")
     Button template9To5Btn;
@@ -266,6 +268,7 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
         addHolidayBtn.setDisabled(!canEdit);
         deleteHolidaysBtn.setDisabled(!canEdit);
         viewerWarning.setVisible(!canEdit);
+        editHelp.setVisible(canEdit);
     }
 
     private void populateTimeZone() {
