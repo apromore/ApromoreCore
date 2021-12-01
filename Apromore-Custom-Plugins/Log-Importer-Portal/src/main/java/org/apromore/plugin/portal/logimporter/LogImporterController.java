@@ -432,7 +432,7 @@ public class LogImporterController extends SelectorComposer<Window> implements C
         return logModel;
     }
 
-    private void storeMetadataAsJSON(LogMetaData logMetaData, Log log)
+    public void storeMetadataAsJSON(LogMetaData logMetaData, Log log)
             throws UserNotFoundException {
 
         String username = portalContext.getCurrentUser().getUsername();
