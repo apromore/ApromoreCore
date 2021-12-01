@@ -31,6 +31,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apromore.dao.model.Membership;
 import org.apromore.dao.model.Permission;
 import org.apromore.dao.model.Role;
@@ -102,7 +103,8 @@ public class UserMapper {
                 permissionType.setId(permission.getRowGuid());
                 permissionType.setName(permission.getName());
                 
-                if (!userType.getPermissions().contains(permissionType)){
+                if (userType.getPermissions().stream().
+                        noneMatch(p -> StringUtils.equals(p.getId(), permissionType.getId()))){
                     userType.getPermissions().add(permissionType);
                 }
             }
