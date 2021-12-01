@@ -213,21 +213,18 @@ databaseChangeLog:
                   value: "1"
 
   - changeSet:
-      id: 20211130111000
+      id: 20211201134000
       author: janeh
       comment: "migrate user role to analyst"
       changes:
         - delete:
             tableName: user_role
-            where: roleid = 2 AND
-              userid IN (
-              SELECT * FROM (
+            where: roleid = 2 AND userid IN (
               SELECT userid
-              FROM `user_role`
-              WHERE roleid=2 OR roleid=4
+              FROM (SELECT * FROM `user_role`) AS user_role_copy
+              WHERE roleid IN (2, 4)
               GROUP BY userid
               HAVING COUNT(roleid) > 1
-              )tblTmp
               );
 
         - update:
