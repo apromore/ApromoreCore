@@ -48,8 +48,8 @@ public class ApromoreKeycloakAuthenticationProvider extends KeycloakAuthenticati
                     (KeycloakPrincipal<KeycloakSecurityContext>) token.getPrincipal();
             UserType user = getUserFromPrincipal(kcPrincipal);
 
-            //Add Apromore roles as authorities. First time users have analyst and user role by default.
-            List<String> roles = user == null ? Arrays.asList("ROLE_ANALYST", "ROLE_USER") :
+            //Add Apromore roles as authorities. First time users have the analyst role by default.
+            List<String> roles = user == null ? Arrays.asList("ROLE_ANALYST") :
                     user.getRoles().stream().map(RoleType::getName).collect(Collectors.toList());
 
             for (String role : roles) {
