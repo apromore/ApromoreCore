@@ -168,6 +168,26 @@ public class NavigationController extends BaseController {
         return containsCurrentFolder;
     }
     
+    public void selectCurrentFolder() {
+        findAndSelectFolder(tree, mainC.getPortalSession().getCurrentFolder());
+    }
+    
+	private static void findAndSelectFolder(Component component, FolderType currentFolder) {
+		for (Component child : component.getChildren()) {
+			findAndSelectFolder(child, currentFolder);
+		}
+
+		if (component instanceof Treeitem) {
+			Treeitem treeitem = (Treeitem) component;
+			Object value = treeitem.getValue();
+			if (value instanceof FolderTreeNode) {
+				FolderType folder = (FolderType) ((FolderTreeNode) value).getData();
+				boolean match = currentFolder.getId() == folder.getId();
+				treeitem.setSelected(match);
+			}
+		}
+	}
+    
      public void copy(FolderType selectedFolder) {
     	 mainC.getCopyPasteController().copy(Collections.singleton(selectedFolder), 1, selectedFolder);
      }

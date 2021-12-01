@@ -673,8 +673,12 @@ public class MainController extends BaseController implements MainControllerInte
 	this.portalSession.setCurrentFolder(selectedFolder);
 
 	this.reloadSummaries2();
-	this.currentFolderChanged();
+	navigation.selectCurrentFolder();
 	this.clearProcessVersions();
+	
+	if(selectedFolder.getId()!=0)
+	this.displayFolderVersions(selectedFolder);
+    
     }
 
     public void visualizeLog() {
