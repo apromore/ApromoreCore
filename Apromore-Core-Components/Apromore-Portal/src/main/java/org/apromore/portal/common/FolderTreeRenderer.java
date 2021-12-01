@@ -136,11 +136,7 @@ public class FolderTreeRenderer implements TreeitemRenderer {
       }
     });
     
-    if (folder.getId() == 0) {
-    	 dataRow.setDraggable("false");
-    }else {
-    	 dataRow.setDraggable("true");
-    }
+    dataRow.setDraggable(folder.getId() == 0 ? "false" : "true");
     dataRow.setDroppable("true");
 	dataRow.addEventListener(Events.ON_DROP, new EventListener<DropEvent>() {
 		@Override
