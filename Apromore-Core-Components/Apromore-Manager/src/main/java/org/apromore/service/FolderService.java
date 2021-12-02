@@ -21,6 +21,7 @@
  */
 package org.apromore.service;
 
+import groovy.util.ResourceException;
 import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.Process;
 import org.apromore.dao.model.ProcessModelVersion;
@@ -43,4 +44,6 @@ public interface FolderService {
 
     List<Folder> getSubFolders(Integer id, boolean includeCurrentFolder);
 
+    int findFolderIdByPath(String path, String userId, WorkspaceService workspaceService)
+        throws ResourceException;
 }

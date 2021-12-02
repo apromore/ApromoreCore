@@ -21,6 +21,7 @@
  */
 package org.apromore.service.impl;
 
+import groovy.util.ResourceException;
 import lombok.Getter;
 import lombok.Setter;
 import org.apromore.dao.FolderRepository;
@@ -29,6 +30,7 @@ import org.apromore.dao.GroupProcessRepository;
 import org.apromore.dao.model.Process;
 import org.apromore.dao.model.*;
 import org.apromore.service.FolderService;
+import org.apromore.service.WorkspaceService;
 import org.apromore.service.model.FolderTreeNode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,10 +48,8 @@ public class FolderServiceImpl implements FolderService {
 
     @Inject
     private GroupFolderRepository groupFolderRepository;
-
     @Inject
     private GroupProcessRepository groupProcessRepository;
-
     @Inject
     private FolderRepository folderRepository;
 
@@ -119,28 +119,6 @@ public class FolderServiceImpl implements FolderService {
         return processes;
     }
 
-    private List<Process> getProcesses(List<GroupProcess> processUsers) {
-        List<Process> processes = new ArrayList<>();
-
-        for (GroupProcess ps : processUsers) {
-            processes.add(ps.getProcess());
-        }
-
-        return processes;
-    }
-
-    private List<ProcessModelVersion> getProcessModelVersions(List<GroupProcess> processUsers) {
-        List<ProcessModelVersion> pmvs = new ArrayList<>();
-
-        for (GroupProcess ps : processUsers) {
-            for (ProcessBranch branch : ps.getProcess().getProcessBranches()) {
-                pmvs.addAll(branch.getProcessModelVersions());
-            }
-        }
-
-        return pmvs;
-    }
-
     @Transactional
     public void updateFolderChainForSubFolders(Integer oldfolderId, String newFolderChainPrefix) {
         Folder oldFolder = folderRepository.findUniqueByID(oldfolderId);
@@ -155,11 +133,6 @@ public class FolderServiceImpl implements FolderService {
         folderRepository.saveAll(folders);
 
     }
-
-    private String getEscapedString(String prefix) {
-        return prefix.replaceAll("\\_", "\\\\_");
-    }
-
 
     /*
      * This method gets a list of Subfolders using parent chain query
@@ -186,6 +159,32 @@ public class FolderServiceImpl implements FolderService {
         return folderRepository.findByIdIn(parentChainIn);
     }
 
+    @Override
+    public int findFolderIdByPath(final String path, final String userId, final WorkspaceService workspaceService) throws ResourceException {
+        int folderId = 0; // the root folder, "Home"
+
+        // Descend into the requested directory
+        List<FolderTreeNode> nodes = workspaceService.getWorkspaceFolderTree(userId);
+        if (!path.isEmpty()) {
+            subfolder: for (String pathElement : path.split("/")) {
+                for (FolderTreeNode node : nodes) {
+                    if (node.getName().equals(pathElement)) {
+                        folderId = node.getId();
+                        nodes = node.getSubFolders();
+                        continue subfolder;
+                    }
+                }
+                throw new ResourceException("Subfolder \"" + pathElement + "\" of \" " + path + "\" does not exist");
+            }
+        }
+
+        return folderId;
+    }
+
+    private String getEscapedString(String prefix) {
+        return prefix.replaceAll("\\_", "\\\\_");
+    }
+
     private List<Integer> getIntListFromStringArray(String[] parentChain) {
         List<Integer> parentChainList = new ArrayList<Integer>();
         for (String parentId : parentChain) {
@@ -194,4 +193,25 @@ public class FolderServiceImpl implements FolderService {
         return parentChainList;
     }
 
+    private List<Process> getProcesses(List<GroupProcess> processUsers) {
+        List<Process> processes = new ArrayList<>();
+
+        for (GroupProcess ps : processUsers) {
+            processes.add(ps.getProcess());
+        }
+
+        return processes;
+    }
+
+    private List<ProcessModelVersion> getProcessModelVersions(List<GroupProcess> processUsers) {
+        List<ProcessModelVersion> pmvs = new ArrayList<>();
+
+        for (GroupProcess ps : processUsers) {
+            for (ProcessBranch branch : ps.getProcess().getProcessBranches()) {
+                pmvs.addAll(branch.getProcessModelVersions());
+            }
+        }
+
+        return pmvs;
+    }
 }

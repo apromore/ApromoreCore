@@ -34,7 +34,7 @@ public class ApromoreKeycloakAuthenticationSuccessHandler extends KeycloakAuthen
             HttpServletRequest request, HttpServletResponse response, Authentication authentication)
             throws IOException, ServletException {
 
-        String[] loginAuthorizedRoles = {"ROLE_USER", "ROLE_ADMIN", "ROLE_MANAGER", "ROLE_ANALYST",
+        String[] loginAuthorizedRoles = {"ROLE_ADMIN", "ROLE_MANAGER", "ROLE_ANALYST",
                 "ROLE_OBSERVER", "ROLE_DESIGNER", "ROLE_DATA_SCIENTIST", "ROLE_OPERATIONS"};
 
         //Logout if the user does not have a role with login permissions
