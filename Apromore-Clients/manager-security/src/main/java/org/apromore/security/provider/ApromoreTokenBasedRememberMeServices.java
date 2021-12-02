@@ -116,7 +116,7 @@ public class ApromoreTokenBasedRememberMeServices extends TokenBasedRememberMeSe
             permissionType.setId(permission.getId());
             permissionType.setName(permission.getName());
 
-            if (!userType.getPermissions().stream().
+            if (userType.getPermissions().stream().
                     noneMatch(p -> StringUtils.equals(p.getId(), permission.getId()))){
                 userType.getPermissions().add(permissionType);
             }
