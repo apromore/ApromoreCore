@@ -191,10 +191,15 @@ public class LogImporterXLSXImpl implements LogImporter, Constants {
             }
           });
 
-      // Import XES
-      if (xLog != null && (username != null && !username.isEmpty()) && folderId != null
-          && (logName != null && !logName.isEmpty()))
+      // Import XES when there is no invalid row
+      if (username != null
+              && !username.isEmpty()
+              && folderId != null
+              && logName != null
+              && !logName.isEmpty()
+              && (logErrorReport.isEmpty() || skipInvalidRow)) {
         log = eventLogImporter.importXesLog(xLog, username, folderId, logName);
+      }
 
       return new LogModelImpl(xLog, logErrorReport, rowLimitExceeded, numOfValidEvents, log);
     } catch (Exception e) {
