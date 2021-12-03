@@ -44,7 +44,7 @@ import org.zkoss.zk.ui.util.Clients;
 @Component("frequencyPlugin")
 public class PDFrequencyPlugin extends PDAbstractPlugin {
 
-    private static Logger LOGGER = PortalLoggerFactory.getLogger(PDFrequencyPlugin.class);
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(PDFrequencyPlugin.class);
     private String label = "Discover model";
 
     @Inject EventLogService eventLogService;
