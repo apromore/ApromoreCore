@@ -33,8 +33,6 @@
 package org.apromore.calendar.model;
 
 import lombok.Data;
-import net.time4j.Moment;
-import net.time4j.range.ChronoInterval;
 
 import java.time.*;
 import java.time.temporal.ChronoUnit;
@@ -62,8 +60,6 @@ public class CalendarModel {
   private List<HolidayModel> holidays = new ArrayList<>();
 
   public static CalendarModel ABSOLUTE_CALENDAR = new AbsoluteCalendarModel();
-
-  private List<ChronoInterval<Moment>> holidayIntervals;
 
   public DurationModel getDuration(OffsetDateTime starDateTime, OffsetDateTime endDateTime) {
     DurationModel durationModel = new DurationModel();
