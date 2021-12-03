@@ -16,8 +16,6 @@ sourceSets {
 dependencies {
     implementation project(':Apromore-Database')
     implementation project(':Apromore-Commons')
-    implementation 'net.time4j:time4j-base:5.8'
-    implementation 'net.time4j:time4j-tzdata:5.0-2021e'
 }
 
 
