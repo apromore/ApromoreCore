@@ -208,7 +208,7 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 	}
 
 	private void addMenuSeparator(Menupopup popup) {
-		if (!(popup.getLastChild() instanceof Menuseparator)) {
+		if (popup.getFirstChild() != null && !(popup.getLastChild() instanceof Menuseparator)) {
 			Menuseparator separator = new Menuseparator();
 			popup.appendChild(separator);
 		}
