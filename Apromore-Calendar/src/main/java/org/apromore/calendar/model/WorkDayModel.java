@@ -52,14 +52,10 @@ package org.apromore.calendar.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import net.time4j.Moment;
-import net.time4j.range.ChronoInterval;
-import net.time4j.range.MomentInterval;
 
 import java.time.*;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Set;
 import java.util.stream.LongStream;
 
 @Data
@@ -91,26 +87,19 @@ public class WorkDayModel {
   .atOffset(ZoneOffset.UTC)
   .toLocalDate();
 
-  /**
-   * Get all real intervals of this work day model within start to end instants in a time zone
-   * @param start
-   * @param end
-   * @param zoneId
-   * @return list of all real working day intervals within the period
-   */
-  public List<ChronoInterval<Moment>>  getRealIntervals(Instant start, Instant end, ZoneId zoneId) {
-    ZonedDateTime startDate = ZonedDateTime.ofInstant(start, zoneId);
-    ZonedDateTime endDate = ZonedDateTime.ofInstant(end, zoneId);
-    return  LongStream.range(0, ChronoUnit.DAYS.between(startDate.toLocalDate(), endDate.toLocalDate()) + 1)
-                  .mapToObj(startDate::plusDays)
-                  .filter(d -> d.getDayOfWeek().equals(dayOfWeek))
-                  .map(this::getIntervalAtDate)
-                  .collect(Collectors.toList());
+  public Duration  getWorkDuration(ZonedDateTime start, ZonedDateTime end, Set<LocalDate> holidays) {
+      return  LongStream.range(0, ChronoUnit.DAYS.between(start.toLocalDate(), end.toLocalDate()) + 1)
+              .mapToObj(start::plusDays)
+              .filter(d -> d.getDayOfWeek().equals(dayOfWeek) && !holidays.contains(d.toLocalDate()))
+              .map(d -> getWorkDurationAtDate(d.toOffsetDateTime(), start.toOffsetDateTime(), end.toOffsetDateTime()))
+              .reduce(Duration.ZERO, (d1, d2) -> d2.plus(d1));
   }
 
-  public ChronoInterval<Moment> getIntervalAtDate(ZonedDateTime d) {
-    return MomentInterval.between(startTime.atDate(d.toLocalDate()).toInstant(),
-            endTime.atDate(d.toLocalDate()).toInstant());
+  public Duration getWorkDurationAtDate(OffsetDateTime d, OffsetDateTime start, OffsetDateTime end) {
+    OffsetDateTime workStart = startTime.atDate(d.toLocalDate());
+    OffsetDateTime workEnd = endTime.atDate(d.toLocalDate());
+    return Duration.between(workStart.isAfter(start) ? workStart : start,
+            workEnd.isBefore(end) ? workEnd : end);
   }
 
 }
