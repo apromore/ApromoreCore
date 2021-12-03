@@ -55,7 +55,7 @@ import lombok.EqualsAndHashCode;
 
 import java.time.*;
 import java.time.temporal.ChronoUnit;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.LongStream;
 
 @Data
@@ -88,16 +88,40 @@ public class WorkDayModel {
   .toLocalDate();
 
   public Duration  getWorkDuration(ZonedDateTime start, ZonedDateTime end, Set<LocalDate> holidays) {
-      return  LongStream.range(0, ChronoUnit.DAYS.between(start.toLocalDate(), end.toLocalDate()) + 1)
-              .mapToObj(start::plusDays)
-              .filter(d -> d.getDayOfWeek().equals(dayOfWeek) && !holidays.contains(d.toLocalDate()))
-              .map(d -> getWorkDurationAtDate(d.toOffsetDateTime(), start.toOffsetDateTime(), end.toOffsetDateTime()))
+    Map<ZonedDateTime, Duration> instances = getWorkdayInstances(start, end);
+    return instances.keySet().stream()
+              .filter(d -> !holidays.contains(d.toLocalDate()))
+              .map(d -> instances.get(d))
               .reduce(Duration.ZERO, (d1, d2) -> d2.plus(d1));
   }
 
-  public Duration getWorkDurationAtDate(OffsetDateTime d, OffsetDateTime start, OffsetDateTime end) {
-    OffsetDateTime workStart = startTime.atDate(d.toLocalDate());
-    OffsetDateTime workEnd = endTime.atDate(d.toLocalDate());
+  /**
+   * Get this workday instances with its duration between two dates
+   * @param start starting date
+   * @param end ending date
+   * @return map from instance to its duration
+   */
+  private Map<ZonedDateTime, Duration> getWorkdayInstances(ZonedDateTime start, ZonedDateTime end) {
+    int daysInWeek = 7;
+    int daysToAdd = (this.dayOfWeek.getValue() - start.getDayOfWeek().getValue() + daysInWeek) % daysInWeek;
+    ZonedDateTime instance = start.plusDays(daysToAdd);
+
+    Map<ZonedDateTime, Duration> result = new HashMap<>();
+    while (!instance.toLocalDate().isAfter(end.toLocalDate())) {
+      result.put(instance,
+              instance.toLocalDate().isEqual(start.toLocalDate()) ||
+              instance.toLocalDate().isEqual(end.toLocalDate())
+              ? getDurationAtDate(instance, start, end)
+              : this.getDuration());
+      instance = instance.plusDays(daysInWeek);
+    }
+
+    return result;
+  }
+
+  private Duration getDurationAtDate(ZonedDateTime d, ZonedDateTime start, ZonedDateTime end) {
+    ZonedDateTime workStart = startTime.atDate(d.toLocalDate()).toZonedDateTime();
+    ZonedDateTime workEnd = endTime.atDate(d.toLocalDate()).toZonedDateTime();
     return Duration.between(workStart.isAfter(start) ? workStart : start,
             workEnd.isBefore(end) ? workEnd : end);
   }
