@@ -29,6 +29,7 @@ package org.apromore.portal.dialogController;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.base.Strings;
+import org.apromore.manager.client.ManagerService;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.PortalPlugin;
@@ -41,11 +42,14 @@ import org.apromore.portal.context.PortalPluginResolver;
 import org.apromore.portal.menu.MenuGroup;
 import org.apromore.portal.menu.MenuItem;
 import org.apromore.portal.model.UserType;
+import org.apromore.service.EventLogService;
 import org.slf4j.Logger;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.select.SelectorComposer;
+import org.zkoss.zk.ui.select.annotation.VariableResolver;
+import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zul.Menubar;
 import org.zkoss.zul.Menupopup;
 import org.zkoss.zul.Menuitem;
@@ -59,6 +63,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+@VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
 public class BaseMenuController extends SelectorComposer<Menubar> {
 
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(BaseMenuController.class);
@@ -68,6 +73,17 @@ public class BaseMenuController extends SelectorComposer<Menubar> {
 
     protected transient MenuConfigLoader menuConfigLoader;
     protected transient Map<String, PortalPlugin> portalPluginMap;
+
+    @WireVariable("managerClient")
+    private ManagerService managerService;
+
+    @WireVariable
+    private EventLogService eventLogService;
+
+    @Override
+    public void doAfterCompose(Menubar menubar) {
+        UserSessionManager.initializeUser(managerService, eventLogService.getConfigBean(), null, null);
+    }
 
     public static String getDisplayName(UserType userType) {
         String displayName;
