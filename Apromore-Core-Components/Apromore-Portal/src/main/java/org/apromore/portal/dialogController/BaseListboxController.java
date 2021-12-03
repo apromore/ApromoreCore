@@ -46,6 +46,7 @@ import org.apromore.portal.context.PortalPluginResolver;
 import org.apromore.portal.dialogController.workspaceOptions.AddFolderController;
 import org.apromore.portal.dialogController.workspaceOptions.RenameFolderController;
 import org.apromore.portal.exception.DialogException;
+import org.apromore.portal.helper.PermissionCatalog;
 import org.apromore.portal.menu.PluginCatalog;
 import org.apromore.portal.model.FolderType;
 import org.apromore.portal.model.LogSummaryType;
@@ -274,9 +275,16 @@ public abstract class BaseListboxController extends BaseController {
     });
 
     if (portalPluginMap.containsKey(PluginCatalog.PLUGIN_ETL)) {
-      btnEtlSep.setVisible(mainController.getConfig().isEnableEtl());
-      btnCreateDataPipeline.setVisible(mainController.getConfig().isEnableEtl());
-      btnManageDataPipelines.setVisible(mainController.getConfig().isEnableEtl());
+      boolean createPipelinePermission = portalContext.getCurrentUser()
+              .hasAnyPermission(PermissionCatalog.PERMISSION_PIPELINE_CREATE);
+      boolean managePipelinesPermission = portalContext.getCurrentUser()
+              .hasAnyPermission(PermissionCatalog.PERMISSION_PIPELINE_MANAGE);
+
+      btnEtlSep.setVisible(mainController.getConfig().isEnableEtl() &&
+              (createPipelinePermission || managePipelinesPermission));
+      btnCreateDataPipeline.setVisible(mainController.getConfig().isEnableEtl() && createPipelinePermission);
+      btnManageDataPipelines.setVisible(mainController.getConfig().isEnableEtl() && managePipelinesPermission);
+
       this.btnCreateDataPipeline.addEventListener(ON_CLICK, new EventListener<Event>() {
         @Override
         public void onEvent(Event event) throws Exception {
@@ -390,8 +398,10 @@ public abstract class BaseListboxController extends BaseController {
       }
     });
 
-    this.btnCalendarSep.setVisible(mainController.getConfig().isEnableCalendar());
-    this.btnCalendar.setVisible(mainController.getConfig().isEnableCalendar());
+    boolean calendarPermission = portalContext.getCurrentUser()
+            .hasAnyPermission(PermissionCatalog.PERMISSION_CALENDAR);
+    this.btnCalendarSep.setVisible(mainController.getConfig().isEnableCalendar() && calendarPermission);
+    this.btnCalendar.setVisible(mainController.getConfig().isEnableCalendar() && calendarPermission);
     this.btnCalendar.addEventListener(ON_CLICK, new EventListener<Event>() {
       @Override
       public void onEvent(Event event) throws Exception {
@@ -941,7 +951,7 @@ public abstract class BaseListboxController extends BaseController {
     Long calendarId = getMainController().getEventLogService().getCalendarIdFromLog(logId);
 
     try {
-      Map<String, Object> attrMap = new HashMap<String, Object>();
+      Map<String, Object> attrMap = new HashMap<>();
       attrMap.put("portalContext", portalContext);
       attrMap.put("artifactName", artifactName);
       attrMap.put("logId", logId);

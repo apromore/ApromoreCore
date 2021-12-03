@@ -109,6 +109,7 @@
 .access-type-viewer #ap-id-editor-export-bpmn-btn,
 .access-type-viewer #ap-id-editor-export-pdf-btn,
 .access-type-viewer #ap-id-editor-export-svg-btn,
+.access-type-viewer #ap-id-editor-simulate-model-btn,
 .access-type-viewer .x-layout-collapsed-east,
 .access-type-viewer .ytb-sep {
     /* For disable mode styling */

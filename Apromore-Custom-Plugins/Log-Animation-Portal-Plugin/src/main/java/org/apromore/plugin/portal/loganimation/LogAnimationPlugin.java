@@ -43,16 +43,19 @@ import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.dialogController.dto.ApromoreSession;
+import org.apromore.portal.helper.PermissionCatalog;
 import org.apromore.portal.helper.Version;
 import org.apromore.portal.model.EditSessionType;
 import org.apromore.portal.model.LogSummaryType;
 import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.SummaryType;
+import org.apromore.portal.model.UserType;
 import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.service.EventLogService;
 import org.apromore.service.loganimation.LogAnimationService;
 import org.deckfour.xes.model.XLog;
 import org.springframework.stereotype.Component;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Messagebox;
 
@@ -75,7 +78,15 @@ public class LogAnimationPlugin extends DefaultPortalPlugin implements LogAnimat
     public String getIconPath() {
         return "static/loganimation/images/icon.svg";
     }
-    
+
+    @Override
+    public Availability getAvailability() {
+        UserType userType = (UserType) Sessions.getCurrent().getAttribute(UserSessionManager.USER);
+
+        return userType.hasAnyPermission(PermissionCatalog.PERMISSION_ANIMATE) ?
+                Availability.AVAILABLE : Availability.UNAVAILABLE;
+    }
+
     @Override
     public void execute(PortalContext portalContext) {
 

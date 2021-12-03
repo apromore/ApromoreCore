@@ -53,6 +53,7 @@ import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.BaseController;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.dialogController.dto.ApromoreSession;
+import org.apromore.portal.helper.PermissionCatalog;
 import org.apromore.portal.menu.PluginCatalog;
 import org.apromore.portal.model.FolderType;
 import org.apromore.portal.model.LogSummaryType;
@@ -265,6 +266,8 @@ public class PDController extends BaseController implements Composer<Component>,
             PortalContext portalContext = (PortalContext) session.get("context");
             LogSummaryType logSummary = (LogSummaryType) session.get("selection");
             PDFactory pdFactory = (PDFactory) session.get("pdFactory");
+            boolean calendarPermission = portalContext.getCurrentUser()
+                    .hasAnyPermission(PermissionCatalog.PERMISSION_CALENDAR);
             contextData = ContextData.valueOf(
                     logSummary.getDomain(), portalContext.getCurrentUser().getUsername(),
                     logSummary.getId(),
@@ -272,7 +275,8 @@ public class PDController extends BaseController implements Composer<Component>,
                     portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId(),
                     portalContext.getCurrentFolder() == null ? "Home"
                             : portalContext.getCurrentFolder().getFolderName(),
-                    ((MainController)portalContext.getMainController()).getConfig().isEnableCalendar());
+                    ((MainController)portalContext.getMainController()).getConfig().isEnableCalendar()
+                            && calendarPermission);
             processAnalyst = new PDAnalyst(contextData, configData, getEventLogService());
             userOptions = UserOptionsData.DEFAULT(configData);
 
