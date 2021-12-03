@@ -197,7 +197,7 @@ public class LogImporterXLSXImpl implements LogImporter, Constants {
               && folderId != null
               && logName != null
               && !logName.isEmpty()
-              && (logErrorReport.size() == 0 || skipInvalidRow)) {
+              && (logErrorReport.isEmpty() || skipInvalidRow)) {
         log = eventLogImporter.importXesLog(xLog, username, folderId, logName);
       }
 
