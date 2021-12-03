@@ -98,18 +98,8 @@ public class WorkDayModel {
   public Duration getWorkDurationAtDate(OffsetDateTime d, OffsetDateTime start, OffsetDateTime end) {
     OffsetDateTime workStart = startTime.atDate(d.toLocalDate());
     OffsetDateTime workEnd = endTime.atDate(d.toLocalDate());
-    if (workStart.isAfter(start) && workEnd.isBefore(end)) {
-      return this.getDuration();
-    }
-    else if (workStart.isBefore(start) && workEnd.isBefore(end)) {
-      return Duration.between(start, workEnd);
-    }
-    else if (workStart.isAfter(start) && workEnd.isAfter(end)) {
-      return Duration.between(workStart, end);
-    }
-    else {
-      return Duration.between(start, end);
-    }
+    return Duration.between(workStart.isAfter(start) ? workStart : start,
+            workEnd.isBefore(end) ? workEnd : end);
   }
 
 }
