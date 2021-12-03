@@ -197,11 +197,9 @@ public class LogImporterCSVImpl implements LogImporter, Constants {
       if (username != null && !username.isEmpty() && folderId != null && logName != null
           && !logName.isEmpty() &&
           // 1. If there is invalid row and skipInvalidRow equals false, then don't import XES and
-          // keep log
-          // null.
+          // keep log  null.
           // 2. If there is invalid row and skipInvalidRow equals true (when user click 'Skip
-          // invalid
-          // row/s'), then import this Log with invalid roll skipped.
+          // invalid row/s'), then import this Log with invalid row skipped.
           (logErrorReport.size() == 0 || skipInvalidRow))
         log = eventLogImporter.importXesLog(xLog, username, folderId, logName);
 
