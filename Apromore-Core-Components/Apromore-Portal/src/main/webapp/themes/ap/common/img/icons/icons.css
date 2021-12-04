@@ -633,6 +633,11 @@
     width: 26px !important;
 }
 
+.ap-icon-swap {
+  background-image: url('swap.svg') !important;
+  width: 26px !important;
+}
+
 .ap-icon-sync {
     background-image: url('sync.svg') !important;
     width: 26px !important;
