@@ -381,7 +381,8 @@ public class CopyAndPasteController extends BaseController {
 			      } else {
 			        cloneSelectedItems();
 			      }
-				Notification.info(Labels.getLabel("portal_itemsDropped_message"));
+				Notification.info(MessageFormat.format(Labels.getLabel("portal_itemsDropped_message"),
+						selections.size()));
 				clearSelectedItems();
 		} catch (Exception e) {
 			Messagebox.show(Labels.getLabel("portal_failedPaste_message"), "Apromore", Messagebox.OK, Messagebox.ERROR);
