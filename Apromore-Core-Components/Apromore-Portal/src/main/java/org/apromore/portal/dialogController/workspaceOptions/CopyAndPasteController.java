@@ -352,23 +352,24 @@ public class CopyAndPasteController extends BaseController {
 	      return;
 	    }
 	    if (!ItemHelpers.isOwner(this.currentUser, currentFolder)) {
-	      Notification.error(Labels.getLabel("portal_onlyOwnerCanPasteToCurrent_message"));
+	      Notification.error(Labels.getLabel("portal_onlyOwnerCanMoveToCurrent_message"));
 	      return;
 	    }
 	  
 		if (checkContext(selections, selectionCount, currentFolder)) {
 			try {
 				if (!checkImmediateOwnership(selections)) {
-					Notification.error(Labels.getLabel("portal_onlyOwnerCanCutItems"));
+					Notification.error(Labels.getLabel("portal_onlyOwnerCanMoveToCurrent_message"));
+					return;
 				} else if (ItemHelpers.isOwner(this.currentUser, currentFolder)) {
 					isCut = true;
 					updateSelectedItems(selections);
 				} else {
 					Notification.error(Labels.getLabel("portal_onlyOwnerCanCutFromCurrent_message"));
+					return;
 				}
 			} catch (Exception e) {
-				Messagebox.show(Labels.getLabel("portal_failedCut_message"), "Apromore", Messagebox.OK,
-						Messagebox.ERROR);
+				Notification.error(Labels.getLabel("portal_failedCut_message"));
 				LOGGER.error("Unable to perform Cut", e);
 			}
 		}

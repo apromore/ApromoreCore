@@ -153,4 +153,6 @@ public interface ProcessService {
      * @throws RepositoryException if for some reason the process model can not be found.
      */
     String getBPMNRepresentation(final String name, final Integer processId, final String branch, final Version version) throws RepositoryException;
+
+	boolean hasWritePermissionOnProcess(User userByName, List<Integer> processIds);
 }

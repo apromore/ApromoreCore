@@ -25,6 +25,7 @@
 package org.apromore.plugin.portal.file.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.BaseController;
@@ -38,7 +39,9 @@ import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.service.EventLogService;
 import org.apromore.service.ProcessService;
 import org.apromore.zk.label.LabelSupplier;
+import org.apromore.zk.notification.Notification;
 import org.zkoss.spring.SpringUtil;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -85,6 +88,13 @@ public class EditMetadataController extends BaseController implements LabelSuppl
 
     this.window = createComponent("zul/editlogdata.zul");
     // this.window.setTitle("Edit log metadata");
+    if(!this.mainController.getEventLogService().hasWritePermissionOnLog(mainController.getSecurityService().getUserByName(UserSessionManager.getCurrentUser().getUsername()), Arrays.asList(this.log.getId())))
+    {
+  	  Notification.error(Labels.getLabel("portal_noPrivilegeRename_message"));
+  	  if(this.window!=null)
+  	  this.window.detach();
+	  return;
+    }
 
     this.nameT = (Textbox) window.getFellow("nameTextbox");
     this.makePublicCb = (Checkbox) window.getFellow("makePublicCheckbox");
@@ -134,6 +144,14 @@ public class EditMetadataController extends BaseController implements LabelSuppl
 
     this.window = createComponent("zul/editprocessdata.zul");
     // this.window.setTitle("Edit process model metadata");
+    
+    if(!this.mainController.getProcessService().hasWritePermissionOnProcess(mainController.getSecurityService().getUserByName(UserSessionManager.getCurrentUser().getUsername()), Arrays.asList(this.process.getId())))
+    {
+  	  Notification.error(Labels.getLabel("portal_noPrivilegeRename_message"));
+  	  if(this.window!=null)
+  	  this.window.detach();
+	  return;
+    }
 
     Rows rows = (Rows) this.window.getFirstChild().getFirstChild().getFirstChild().getNextSibling();
     Row processNameR = (Row) rows.getFirstChild();

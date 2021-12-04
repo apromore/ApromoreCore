@@ -190,4 +190,6 @@ public interface EventLogService {
    * @throws EventLogException
    */
   List<String> getDefaultPerspectiveFromLog(Integer logId) throws EventLogException;
+
+  boolean hasWritePermissionOnLog(User user, List<Integer> logIds);
 }

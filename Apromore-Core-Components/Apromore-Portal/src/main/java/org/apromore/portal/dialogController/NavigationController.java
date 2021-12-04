@@ -24,10 +24,12 @@
 
 package org.apromore.portal.dialogController;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.apromore.dao.model.User;
 import org.apromore.plugin.portal.PortalContext;
@@ -275,6 +277,10 @@ public class NavigationController extends BaseController {
 			Notification.error(Labels.getLabel("portal_failedFind_message"));
 			return;
 		}
+		if( !(mainC.getManagerService().hasWritePermission(UserSessionManager.getCurrentUser().getUsername(),Arrays.asList(selectedFolder)))) {
+			Notification.error(Labels.getLabel("portal_deleteItemRestricted_message"));
+			return;
+		}
 		
 		Messagebox.show(Labels.getLabel("portal_deleteFolderPrompt_message"), Labels.getLabel(PORTAL_WARNING_TEXT),
 				Messagebox.YES | Messagebox.NO, Messagebox.QUESTION, new EventListener<Event>() {
@@ -287,8 +293,7 @@ public class NavigationController extends BaseController {
 										UserSessionManager.getCurrentUser().getUsername());
 							} catch (Exception e) {
 								LOGGER.error("Failed to delete folder from Tree", e);
-								Messagebox.show(Labels.getLabel("portal_failedDeleteNotAuthorized_message"),
-										APROMORE, Messagebox.OK, Messagebox.ERROR);
+								Notification.error(Labels.getLabel("portal_deleteItemRestricted_message"));
 							}
 							mainC.loadWorkspace();
 							mainC.reloadSummaries();

@@ -676,4 +676,18 @@ public class EventLogServiceImpl implements EventLogService {
 		return perspectives;
 
 	}
+
+	@Override
+	public boolean hasWritePermissionOnLog(User user, List<Integer> logIds) {
+		for (Integer logId : logIds) {
+			try {
+				if (!canUserWriteLog(user.getUsername(), logId)) {
+					return false;
+				}
+			} catch (UserNotFoundException e) {
+				return false;
+			}
+		}
+		return true;
+	}
 }

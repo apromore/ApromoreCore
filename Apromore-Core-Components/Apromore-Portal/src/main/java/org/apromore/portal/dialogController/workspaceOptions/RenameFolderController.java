@@ -23,12 +23,15 @@
 package org.apromore.portal.dialogController.workspaceOptions;
 
 import java.io.IOException;
+import java.util.Arrays;
+
 import org.apromore.exception.NotAuthorizedException;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.BaseController;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.exception.DialogException;
+import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Executions;
@@ -57,6 +60,8 @@ public class RenameFolderController extends BaseController {
     this.mainController = mainController;
 
     try {
+    		
+    	
       final Window win =
           (Window) Executions.createComponents("~./macros/folderRename.zul", null, null);
       this.folderEditWindow = (Window) win.getFellow("winFolderRename");
@@ -65,6 +70,13 @@ public class RenameFolderController extends BaseController {
       this.btnSave = (Button) this.folderEditWindow.getFellow("btnSave");
       this.btnCancel = (Button) this.folderEditWindow.getFellow("btnCancel");
       this.folderId = folderId;
+      if(!this.mainController.getWorkspaceService().hasWritePermissionOnFolder(mainController.getSecurityService().getUserByName(UserSessionManager.getCurrentUser().getUsername()), Arrays.asList(this.folderId)))
+      {
+    	  Notification.error(Labels.getLabel("portal_noPrivilegeRename_message"));
+    	  if(this.folderEditWindow!=null)
+    	  this.folderEditWindow.detach();
+		  return;
+      }
 
       folderEditWindow.addEventListener("onLater", new EventListener<Event>() {
         public void onEvent(Event event) throws Exception {
@@ -110,7 +122,12 @@ public class RenameFolderController extends BaseController {
             Messagebox.ERROR);
         return;
       }
-
+      if(!this.mainController.getWorkspaceService().hasWritePermissionOnFolder(mainController.getSecurityService().getUserByName(UserSessionManager.getCurrentUser().getUsername()), Arrays.asList(this.folderId)))
+      {
+    	  Notification.error(Labels.getLabel("portal_noPrivilegeRename_message"));
+    	  this.folderEditWindow.detach();
+		  return;
+      }
       LOGGER.info("Rename folder " + folderName);
       this.mainController.getManagerService().updateFolder(this.folderId, folderName,
           UserSessionManager.getCurrentUser().getUsername());
