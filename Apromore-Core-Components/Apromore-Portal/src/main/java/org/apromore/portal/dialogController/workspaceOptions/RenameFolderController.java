@@ -53,6 +53,7 @@ public class RenameFolderController extends BaseController {
   private Button btnCancel;
   private Textbox txtName;
   private int folderId;
+  private String folderName;
   private Logger LOGGER = PortalLoggerFactory.getLogger(AddFolderController.class);
 
   public RenameFolderController(MainController mainController, int folderId, String name)
@@ -67,6 +68,8 @@ public class RenameFolderController extends BaseController {
       this.folderEditWindow = (Window) win.getFellow("winFolderRename");
       this.txtName = (Textbox) this.folderEditWindow.getFellow("txtName");
       this.txtName.setValue(name);
+      this.txtName.setSelectionRange(0, name.length());
+      this.folderName=name;
       this.btnSave = (Button) this.folderEditWindow.getFellow("btnSave");
       this.btnCancel = (Button) this.folderEditWindow.getFellow("btnCancel");
       this.folderId = folderId;
@@ -99,13 +102,23 @@ public class RenameFolderController extends BaseController {
           cancel();
         }
       });
+      Button resetB = (Button) this.folderEditWindow.getFellow("resetButton");
+      resetB.addEventListener("onClick", new EventListener<Event>() {
+        public void onEvent(Event event) throws Exception {
+        	resetFolderName();
+        }
+      });
       win.doModal();
     } catch (Exception e) {
       throw new DialogException("Error in RenameFolderController: " + e.getMessage());
     }
   }
 
-  private void submit() throws Exception {
+  protected void resetFolderName() {
+	  txtName.setText(this.folderName);
+  }
+
+private void submit() throws Exception {
     Clients.showBusy("Processing...");
     Events.echoEvent("onLater", folderEditWindow, null);
   }
