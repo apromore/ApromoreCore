@@ -26,10 +26,14 @@ import java.util.Locale;
 import javax.inject.Inject;
 import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.logfilter.generic.LogFilterPlugin;
+import org.apromore.portal.common.UserSessionManager;
+import org.apromore.portal.helper.PermissionCatalog;
 import org.apromore.service.EventLogService;
 import org.apromore.service.ProcessService;
 import org.apromore.service.loganimation.LogAnimationService2;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.zkoss.util.resource.Labels;
@@ -39,6 +43,7 @@ import org.zkoss.zk.ui.util.Clients;
 @Component("frequencyPlugin")
 public class PDFrequencyPlugin extends PDAbstractPlugin {
 
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(PDFrequencyPlugin.class);
     private String label = "Discover model";
 
     @Inject EventLogService eventLogService;
@@ -65,6 +70,12 @@ public class PDFrequencyPlugin extends PDAbstractPlugin {
 
     @Override
     public void execute(PortalContext context) {
+        if (!context.getCurrentUser().hasAnyPermission(PermissionCatalog.PERMISSION_MODEL_DISCOVER)) {
+            LOGGER.info("User '{}' does not have '{}' permission", context.getCurrentUser().getUsername(),
+                    PermissionCatalog.PERMISSION_MODEL_DISCOVER);
+            return;
+        }
+
         try {
         	boolean prepare = this.prepare(context, MeasureType.FREQUENCY); //prepare session
             Sessions.getCurrent().setAttribute("eventLogService", eventLogService);
@@ -77,5 +88,11 @@ public class PDFrequencyPlugin extends PDAbstractPlugin {
             e.printStackTrace();
         }
 
+    }
+
+    @Override
+    public Availability getAvailability() {
+        return UserSessionManager.getCurrentUser().hasAnyPermission(PermissionCatalog.PERMISSION_MODEL_DISCOVER) ?
+                Availability.AVAILABLE : Availability.UNAVAILABLE;
     }
 }

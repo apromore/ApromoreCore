@@ -26,12 +26,14 @@ package org.apromore.plugin.similaritysearch.portal;
 
 import org.apromore.commons.config.ConfigBean;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.context.PluginPortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.similaritysearch.logic.SimilarityService;
 import org.apromore.portal.custom.gui.plugin.PluginCustomGui;
 import org.apromore.portal.dialogController.FolderTreeController;
 import org.apromore.portal.exception.DialogException;
+import org.apromore.portal.helper.PermissionCatalog;
 import org.apromore.portal.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -93,7 +95,9 @@ public class SimilaritySearchPlugin extends PluginCustomGui implements LabelSupp
 
     @Override
     public Availability getAvailability() {
-        return configBean.isEnableSimilaritySearch() ? Availability.AVAILABLE : Availability.UNAVAILABLE;
+        return configBean.isEnableSimilaritySearch() &&
+                UserSessionManager.getCurrentUser().hasAnyPermission(PermissionCatalog.PERMISSION_SEARCH_MODELS)
+                ? Availability.AVAILABLE : Availability.UNAVAILABLE;
     }
 
     @Override

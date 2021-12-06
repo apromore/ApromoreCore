@@ -131,7 +131,7 @@
                           xml: bpmnXML,
                           id : 'editorcanvas',
                           fullscreen : true,
-                          useSimulationPanel: true,
+                          useSimulationPanel: ${arg.availableSimulateModelPlugin},
                           viewOnly: ${arg.viewOnly},
                           langTag: '${arg.langTag}',
                           disabledButtons: disabledPlugins

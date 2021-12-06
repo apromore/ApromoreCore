@@ -37,6 +37,7 @@ public class MenuController extends BaseMenuController {
 
     @Override
     public void doAfterCompose(Menubar menubar) {
+        super.doAfterCompose(menubar);
         // Recreate the menubar when the authenticated user changes
         EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, true)
                 .subscribe(event -> {

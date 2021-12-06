@@ -30,6 +30,7 @@
 package org.apromore.portal.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class UserType {
@@ -161,6 +162,14 @@ public class UserType {
             searchHistories = new ArrayList<SearchHistoriesType>();
         }
         return this.searchHistories;
+    }
+
+    /**
+     * @param permissionName The name of a permission.
+     * @return true if the user has a permission with any of the given names.
+     */
+    public boolean hasAnyPermission(String... permissionName) {
+        return getPermissions().stream().anyMatch(p -> Arrays.asList(permissionName).contains(p.getName()));
     }
 
     /**
