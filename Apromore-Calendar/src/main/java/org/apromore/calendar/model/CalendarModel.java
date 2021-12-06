@@ -79,11 +79,6 @@ public class CalendarModel {
     ZonedDateTime startDate = ZonedDateTime.ofInstant(start, ZoneId.of(zoneId));
     ZonedDateTime endDate = ZonedDateTime.ofInstant(end, ZoneId.of(zoneId));
     collectHolidayDates();
-//    return workDays.stream().parallel()
-//            .filter(WorkDayModel::isWorkingDay)
-//            .map(workDay -> workDay.getWorkDuration(startDate, endDate, holidayDates))
-//            .reduce(Duration.ZERO, (d1, d2) -> d2.plus(d1));
-
     Duration totalDuration = Duration.ZERO;
     for (WorkDayModel workDay : workDays) {
       if (workDay.isWorkingDay()) {

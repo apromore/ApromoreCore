@@ -100,10 +100,6 @@ public class WorkDayModel {
 
   public Duration  getWorkDuration(ZonedDateTime start, ZonedDateTime end, Set<LocalDate> holidays) {
     Map<LocalDateTime, Duration> instances = getWorkdayInstances(start.toLocalDateTime(), end.toLocalDateTime());
-//    return instances.keySet().stream()
-//              .filter(d -> !holidays.contains(d.toLocalDate()))
-//              .map(d -> instances.get(d))
-//              .reduce(Duration.ZERO, (d1, d2) -> d2.plus(d1));
     Duration totalDuration = Duration.ZERO;
     for (LocalDateTime instance : instances.keySet()) {
       if (!holidays.contains(instance.toLocalDate())) {
