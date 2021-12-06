@@ -282,7 +282,7 @@ public class SummaryItemRenderer implements ListitemRenderer {
         for (PortalProcessAttributePlugin plugin: plugins) {
             listitem.appendChild(plugin.getListcell(folder));
         }
-		
+
         listitem.addEventListener(Events.ON_DOUBLE_CLICK, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {

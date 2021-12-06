@@ -61,8 +61,6 @@ public class RenameFolderController extends BaseController {
     this.mainController = mainController;
 
     try {
-    		
-    	
       final Window win =
           (Window) Executions.createComponents("~./macros/folderRename.zul", null, null);
       this.folderEditWindow = (Window) win.getFellow("winFolderRename");
@@ -76,8 +74,9 @@ public class RenameFolderController extends BaseController {
       if(!this.mainController.getWorkspaceService().hasWritePermissionOnFolder(mainController.getSecurityService().getUserByName(UserSessionManager.getCurrentUser().getUsername()), Arrays.asList(this.folderId)))
       {
     	  Notification.error(Labels.getLabel("portal_noPrivilegeRename_message"));
-    	  if(this.folderEditWindow!=null)
-    	  this.folderEditWindow.detach();
+    	  if(this.folderEditWindow!=null) {
+    		  this.folderEditWindow.detach();
+    	  }
 		  return;
       }
 
@@ -103,10 +102,8 @@ public class RenameFolderController extends BaseController {
         }
       });
       Button resetB = (Button) this.folderEditWindow.getFellow("resetButton");
-      resetB.addEventListener("onClick", new EventListener<Event>() {
-        public void onEvent(Event event) throws Exception {
-        	resetFolderName();
-        }
+      resetB.addEventListener("onClick", event -> {
+    	    resetFolderName();
       });
       win.doModal();
     } catch (Exception e) {

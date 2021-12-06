@@ -91,8 +91,9 @@ public class EditMetadataController extends BaseController implements LabelSuppl
     if(!this.mainController.getEventLogService().hasWritePermissionOnLog(mainController.getSecurityService().getUserByName(UserSessionManager.getCurrentUser().getUsername()), Arrays.asList(this.log.getId())))
     {
   	  Notification.error(Labels.getLabel("portal_noPrivilegeRename_message"));
-  	  if(this.window!=null)
-  	  this.window.detach();
+  	  if(this.window!=null) {
+  		  this.window.detach();
+  	  }
 	  return;
     }
 

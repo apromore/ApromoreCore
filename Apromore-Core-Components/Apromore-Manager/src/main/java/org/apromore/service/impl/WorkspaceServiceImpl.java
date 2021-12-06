@@ -1055,12 +1055,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
   @Override
   public boolean hasWritePermissionOnFolder(User user, List<Integer> selectedFolders) {
-	for (Integer folderId : selectedFolders) {
-		if (!canUserWriteFolder(user, folderId)) {
-			return false;
-		}
-	}
-	return true;
+		return selectedFolders.stream().allMatch(folderId -> canUserWriteFolder(user, folderId));
   }
 
 }

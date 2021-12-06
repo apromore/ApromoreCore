@@ -827,22 +827,9 @@ public class ManagerServiceImpl implements ManagerService {
 				logIds.add(((LogSummaryType) obj).getId());
 			}
 		}
-		if (!folderIds.isEmpty()) {
-			boolean folderPermission = workspaceSrv.hasWritePermissionOnFolder(secSrv.getUserByName(username),
-					folderIds);
-			if (!folderPermission)
-				return false;
-		}
-		if (!processIds.isEmpty()) {
-			boolean processPermission = procSrv.hasWritePermissionOnProcess(secSrv.getUserByName(username), processIds);
-			if (!processPermission)
-				return false;
-		}
-		if (!logIds.isEmpty()) {
-			boolean logPermission = logSrv.hasWritePermissionOnLog(secSrv.getUserByName(username), logIds);
-			if (!logPermission)
-				return false;
-		}
-		return true;
+		
+		return (   workspaceSrv.hasWritePermissionOnFolder(secSrv.getUserByName(username),	folderIds) 
+				&& procSrv.hasWritePermissionOnProcess(secSrv.getUserByName(username), processIds)
+				&& logSrv.hasWritePermissionOnLog(secSrv.getUserByName(username), logIds));
 	}
 }

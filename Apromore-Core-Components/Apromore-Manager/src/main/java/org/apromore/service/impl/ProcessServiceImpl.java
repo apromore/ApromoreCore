@@ -845,12 +845,7 @@ public class ProcessServiceImpl implements ProcessService {
 
 	@Override
 	public boolean hasWritePermissionOnProcess(User user, List<Integer> processIds) {
-		for (Integer processId : processIds) {
-			if (!canUserWriteProcess(user, processId)) {
-				return false;
-			}
-		}
-		return true;
+		return processIds.stream().allMatch(processId -> canUserWriteProcess(user, processId));
 	}
 
 }

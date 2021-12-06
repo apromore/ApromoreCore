@@ -36,6 +36,7 @@ import org.apromore.dao.model.GroupProcess;
 import org.apromore.portal.model.FolderType;
 import org.apromore.portal.model.GroupAccessType;
 import org.apromore.service.model.FolderTreeNode;
+import org.apromore.common.Constants;
 
 /**
  * Mapper helper class to convert from the DAO Model to the Webservice Model.
@@ -77,7 +78,8 @@ public class WorkspaceMapper {
      */
     public static List<FolderType> convertFoldersToFolderTypes(List<GroupFolder> folders) {
         List<FolderType> folderTypes = new ArrayList<>();
-        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        
+        DateFormat dateFormat = new SimpleDateFormat(Constants.DATE_FORMAT);
         
         for (GroupFolder node : folders) {
             FolderType folder = new FolderType();
@@ -89,16 +91,15 @@ public class WorkspaceMapper {
             folder.setHasRead(node.isHasRead());
             folder.setHasWrite(node.isHasWrite());
             folder.setHasOwnership(node.isHasOwnership());
-			try {
-				if (node.getFolder().getCreatedBy() != null) {
-					folder.setOwnerName(node.getFolder().getCreatedBy().getUsername());
-				}
+			if (node.getFolder().getCreatedBy() != null) {
+				folder.setOwnerName(node.getFolder().getCreatedBy().getUsername());
+			}
 
-				if (node.getFolder().getDateModified() != null)
-					folder.setLastUpdate(dateFormat.format(node.getFolder().getDateModified()));
-				else
-					folder.setLastUpdate(dateFormat.format(node.getFolder().getDateCreated()));
-			} catch (Exception ex) {}
+			if (node.getFolder().getDateModified() != null) {
+				folder.setLastUpdate(dateFormat.format(node.getFolder().getDateModified()));
+			} else {
+				folder.setLastUpdate(dateFormat.format(node.getFolder().getDateCreated()));
+			}
 			
             folderTypes.add(folder);
         }
