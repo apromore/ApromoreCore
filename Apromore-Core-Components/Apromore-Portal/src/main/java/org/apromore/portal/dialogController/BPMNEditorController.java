@@ -39,6 +39,7 @@ import org.apromore.portal.dialogController.dto.ApromoreSession;
 import org.apromore.portal.menu.PluginCatalog;
 import org.apromore.portal.model.EditSessionType;
 import org.apromore.portal.model.ExportFormatResultType;
+import org.apromore.portal.model.PermissionType;
 import org.apromore.portal.model.PluginMessages;
 import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.UserType;
@@ -124,8 +125,15 @@ public class BPMNEditorController extends BaseController implements Composer<Com
     } else {
       try {
         User user = mainC.getSecurityService().getUserById(currentUserType.getId());
-        currentUserAccessType =
-            mainC.getAuthorizationService().getProcessAccessTypeByUser(process.getId(), user);
+        UserType userType = mainC.getPortalContext().getCurrentUser();
+        if (userType.hasAnyPermission(PermissionType.MODEL_EDIT)) {
+          currentUserAccessType =
+                  mainC.getAuthorizationService().getProcessAccessTypeByUser(process.getId(), user);
+        } else if (userType.hasAnyPermission(PermissionType.MODEL_VIEW)) {
+          currentUserAccessType = AccessType.VIEWER;
+        } else {
+          currentUserAccessType = null;
+        }
       } catch (Exception e) {
         // currentUserAccessType = AccessType.VIEWER;
         currentUserAccessType = null;
