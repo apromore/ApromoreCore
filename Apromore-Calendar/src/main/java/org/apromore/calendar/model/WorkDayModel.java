@@ -52,16 +52,23 @@ package org.apromore.calendar.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import net.time4j.Moment;
-import net.time4j.range.ChronoInterval;
-import net.time4j.range.MomentInterval;
 
 import java.time.*;
-import java.time.temporal.ChronoUnit;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.LongStream;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
+/**
+ * WorkDayModel is a template for actual working days.
+ *
+ * TODO: Using OffsetTime is not a relevant design because WorkDayModel is only a template, not a specific workday in time.
+ * It duplicates the offset information in CalendarModel's zoneID.
+ * TODO: field Duration is not timezone-aware, e.g. daylight savings, because it's not attached to any actual date yet
+ * However, duration with timezone consideration takes longer to compute.
+ *
+ * @author Nolan Tellis - created
+ * @author Bruce Nguyen: add documentation, todo, revised
+ */
 @Data
 @EqualsAndHashCode
 public class WorkDayModel {
@@ -91,26 +98,62 @@ public class WorkDayModel {
   .atOffset(ZoneOffset.UTC)
   .toLocalDate();
 
-  /**
-   * Get all real intervals of this work day model within start to end instants in a time zone
-   * @param start
-   * @param end
-   * @param zoneId
-   * @return list of all real working day intervals within the period
-   */
-  public List<ChronoInterval<Moment>>  getRealIntervals(Instant start, Instant end, ZoneId zoneId) {
-    ZonedDateTime startDate = ZonedDateTime.ofInstant(start, zoneId);
-    ZonedDateTime endDate = ZonedDateTime.ofInstant(end, zoneId);
-    return  LongStream.range(0, ChronoUnit.DAYS.between(startDate.toLocalDate(), endDate.toLocalDate()) + 1)
-                  .mapToObj(startDate::plusDays)
-                  .filter(d -> d.getDayOfWeek().equals(dayOfWeek))
-                  .map(this::getIntervalAtDate)
-                  .collect(Collectors.toList());
+  public Duration  getWorkDuration(ZonedDateTime start, ZonedDateTime end, Set<LocalDate> holidays) {
+    Map<LocalDateTime, Duration> instances = getWorkdayInstances(start.toLocalDateTime(), end.toLocalDateTime());
+    Duration totalDuration = Duration.ZERO;
+    for (LocalDateTime instance : instances.keySet()) {
+      if (!holidays.contains(instance.toLocalDate())) {
+        totalDuration = totalDuration.plus(instances.get(instance));
+      }
+    }
+    return totalDuration;
   }
 
-  public ChronoInterval<Moment> getIntervalAtDate(ZonedDateTime d) {
-    return MomentInterval.between(startTime.atDate(d.toLocalDate()).toInstant(),
-            endTime.atDate(d.toLocalDate()).toInstant());
+  /**
+   * Get workday instances with its duration between two dates
+   * @param from starting date
+   * @param to ending date
+   * @return map from an instance to its duration
+   */
+  private Map<LocalDateTime, Duration> getWorkdayInstances(LocalDateTime from, LocalDateTime to) {
+    Map<LocalDateTime, Duration> result = new HashMap<>();
+    if (from.toLocalDate().isEqual(to.toLocalDate())) {
+      result.put(from, from.getDayOfWeek().equals(this.dayOfWeek)
+                          ? getDurationSameDayForOneDayPeriod(from.toLocalTime(), to.toLocalTime())
+                          : Duration.ZERO);
+      return result;
+    }
+
+    int daysInWeek = 7;
+    int daysToAdd = (this.dayOfWeek.getValue() - from.getDayOfWeek().getValue() + daysInWeek) % daysInWeek;
+    LocalDateTime instance = from.plusDays(daysToAdd);
+    while (!instance.toLocalDate().isAfter(to.toLocalDate())) {
+        result.put(instance,
+                (instance.toLocalDate().isEqual(from.toLocalDate()))
+                        ? getDurationSameDayAtStartOfMultiDayPeriod(from.toLocalTime())
+                        : (
+                        (instance.toLocalDate().isEqual(to.toLocalDate()))
+                                ? getDurationSameDayAtEndOfMultiDayPeriod(to.toLocalTime())
+                                : this.getDuration()
+                ));
+      instance = instance.plusDays(daysInWeek);
+    }
+    return result;
+  }
+
+  private Duration getDurationSameDayForOneDayPeriod(LocalTime periodStart, LocalTime periodEnd) {
+    return Duration.between(startTime.toLocalTime().isBefore(periodStart) ? periodStart : startTime.toLocalTime(),
+            endTime.toLocalTime().isAfter(periodEnd) ? periodEnd : endTime.toLocalTime());
+  }
+
+  private Duration getDurationSameDayAtStartOfMultiDayPeriod(LocalTime periodStart) {
+    return Duration.between(startTime.toLocalTime().isBefore(periodStart) ? periodStart : startTime.toLocalTime(),
+            endTime.toLocalTime().isBefore(periodStart) ? periodStart : endTime.toLocalTime());
+  }
+
+  private Duration getDurationSameDayAtEndOfMultiDayPeriod(LocalTime periodEnd) {
+    return Duration.between(startTime.toLocalTime().isAfter(periodEnd) ? periodEnd : startTime.toLocalTime(),
+            endTime.toLocalTime().isAfter(periodEnd) ? periodEnd : endTime.toLocalTime());
   }
 
 }

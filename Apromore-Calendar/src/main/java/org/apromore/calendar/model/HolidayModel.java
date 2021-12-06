@@ -30,14 +30,10 @@ package org.apromore.calendar.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import net.time4j.Moment;
-import net.time4j.range.ChronoInterval;
-import net.time4j.range.MomentInterval;
 import org.apromore.commons.datetime.TimeUtils;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.Date;
 
 /**
@@ -92,11 +88,6 @@ public class HolidayModel implements Serializable {
 	{
 		return TimeUtils.localDateToDate(holidayDate);
 		
-	}
-
-	public ChronoInterval<Moment> getInterval(ZoneId zoneId) {
-		return MomentInterval.between(holidayDate.atStartOfDay(zoneId).toInstant(),
-				holidayDate.plusDays(1).atStartOfDay(zoneId).toInstant());
 	}
 
 }
