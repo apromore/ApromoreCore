@@ -54,10 +54,21 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.time.*;
-import java.time.temporal.ChronoUnit;
-import java.util.*;
-import java.util.stream.LongStream;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
+/**
+ * WorkDayModel is a template for actual working days.
+ *
+ * TODO: Using OffsetTime is not a relevant design because WorkDayModel is only a template, not a specific workday in time.
+ * It duplicates the offset information in CalendarModel's zoneID.
+ * TODO: field Duration is not timezone-aware, e.g. daylight savings, because it's not attached to any actual date yet
+ * However, duration with timezone consideration takes longer to compute.
+ *
+ * @author Nolan Tellis - created
+ * @author Bruce Nguyen: add documentation, todo, revised
+ */
 @Data
 @EqualsAndHashCode
 public class WorkDayModel {
@@ -88,42 +99,61 @@ public class WorkDayModel {
   .toLocalDate();
 
   public Duration  getWorkDuration(ZonedDateTime start, ZonedDateTime end, Set<LocalDate> holidays) {
-    Map<ZonedDateTime, Duration> instances = getWorkdayInstances(start, end);
-    return instances.keySet().stream()
-              .filter(d -> !holidays.contains(d.toLocalDate()))
-              .map(d -> instances.get(d))
-              .reduce(Duration.ZERO, (d1, d2) -> d2.plus(d1));
+    Map<LocalDateTime, Duration> instances = getWorkdayInstances(start.toLocalDateTime(), end.toLocalDateTime());
+//    return instances.keySet().stream()
+//              .filter(d -> !holidays.contains(d.toLocalDate()))
+//              .map(d -> instances.get(d))
+//              .reduce(Duration.ZERO, (d1, d2) -> d2.plus(d1));
+    Duration totalDuration = Duration.ZERO;
+    for (LocalDateTime instance : instances.keySet()) {
+      if (!holidays.contains(instance.toLocalDate())) {
+        totalDuration = totalDuration.plus(instances.get(instance));
+      }
+    }
+    return totalDuration;
   }
 
   /**
-   * Get this workday instances with its duration between two dates
-   * @param start starting date
-   * @param end ending date
+   * Get workday instances with its duration between two dates
+   * @param from starting date
+   * @param to ending date
    * @return map from instance to its duration
    */
-  private Map<ZonedDateTime, Duration> getWorkdayInstances(ZonedDateTime start, ZonedDateTime end) {
+  private Map<LocalDateTime, Duration> getWorkdayInstances(LocalDateTime from, LocalDateTime to) {
     int daysInWeek = 7;
-    int daysToAdd = (this.dayOfWeek.getValue() - start.getDayOfWeek().getValue() + daysInWeek) % daysInWeek;
-    ZonedDateTime instance = start.plusDays(daysToAdd);
-
-    Map<ZonedDateTime, Duration> result = new HashMap<>();
-    while (!instance.toLocalDate().isAfter(end.toLocalDate())) {
+    int daysToAdd = (this.dayOfWeek.getValue() - from.getDayOfWeek().getValue() + daysInWeek) % daysInWeek;
+    LocalDateTime instance = from.plusDays(daysToAdd);
+    Map<LocalDateTime, Duration> result = new HashMap<>();
+    while (!instance.toLocalDate().isAfter(to.toLocalDate())) {
       result.put(instance,
-              instance.toLocalDate().isEqual(start.toLocalDate()) ||
-              instance.toLocalDate().isEqual(end.toLocalDate())
-              ? getDurationAtDate(instance, start, end)
-              : this.getDuration());
+              (instance.toLocalDate().isEqual(from.toLocalDate()))
+              ? getDurationSameDayAtStartOfPeriod(from.toLocalTime())
+              : (
+                    (instance.toLocalDate().isEqual(to.toLocalDate()))
+                    ? getDurationSameDayAtEndOfPeriod(to.toLocalTime())
+                    : this.getDuration()
+              ));
       instance = instance.plusDays(daysInWeek);
     }
-
     return result;
   }
 
+  // This method must use ZonedDateTime to take into account zone-specific features, e.g. daylight savings
   private Duration getDurationAtDate(ZonedDateTime d, ZonedDateTime start, ZonedDateTime end) {
-    ZonedDateTime workStart = startTime.atDate(d.toLocalDate()).toZonedDateTime();
-    ZonedDateTime workEnd = endTime.atDate(d.toLocalDate()).toZonedDateTime();
+    ZonedDateTime workStart = ZonedDateTime.of(LocalDateTime.of(d.toLocalDate(), startTime.toLocalTime()), start.getZone());
+    ZonedDateTime workEnd = ZonedDateTime.of(LocalDateTime.of(d.toLocalDate(), endTime.toLocalTime()), start.getZone());
     return Duration.between(workStart.isAfter(start) ? workStart : start,
             workEnd.isBefore(end) ? workEnd : end);
+  }
+
+  private Duration getDurationSameDayAtStartOfPeriod(LocalTime periodStart) {
+    return Duration.between(startTime.toLocalTime().isBefore(periodStart) ? periodStart : startTime.toLocalTime(),
+            endTime.toLocalTime().isBefore(periodStart) ? periodStart : endTime.toLocalTime());
+  }
+
+  private Duration getDurationSameDayAtEndOfPeriod(LocalTime periodEnd) {
+    return Duration.between(startTime.toLocalTime().isAfter(periodEnd) ? periodEnd : startTime.toLocalTime(),
+            endTime.toLocalTime().isAfter(periodEnd) ? periodEnd : endTime.toLocalTime());
   }
 
 }
