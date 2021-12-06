@@ -125,15 +125,16 @@ public class BPMNEditorController extends BaseController implements Composer<Com
     } else {
       try {
         User user = mainC.getSecurityService().getUserById(currentUserType.getId());
+        currentUserAccessType = mainC.getAuthorizationService().getProcessAccessTypeByUser(process.getId(), user);
         UserType userType = mainC.getPortalContext().getCurrentUser();
-        if (userType.hasAnyPermission(PermissionType.MODEL_EDIT)) {
-          currentUserAccessType =
-                  mainC.getAuthorizationService().getProcessAccessTypeByUser(process.getId(), user);
-        } else if (userType.hasAnyPermission(PermissionType.MODEL_VIEW)) {
+
+        if (currentUserAccessType != null && !userType.hasAnyPermission(PermissionType.MODEL_EDIT)
+                && userType.hasAnyPermission(PermissionType.MODEL_VIEW)) {
           currentUserAccessType = AccessType.VIEWER;
-        } else {
+        } else if (!userType.hasAnyPermission(PermissionType.MODEL_EDIT)) {
           currentUserAccessType = null;
         }
+
       } catch (Exception e) {
         // currentUserAccessType = AccessType.VIEWER;
         currentUserAccessType = null;
