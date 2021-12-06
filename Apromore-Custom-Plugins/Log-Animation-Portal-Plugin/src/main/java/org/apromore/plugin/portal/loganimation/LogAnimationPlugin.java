@@ -43,10 +43,10 @@ import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.dialogController.dto.ApromoreSession;
-import org.apromore.portal.helper.PermissionCatalog;
 import org.apromore.portal.helper.Version;
 import org.apromore.portal.model.EditSessionType;
 import org.apromore.portal.model.LogSummaryType;
+import org.apromore.portal.model.PermissionType;
 import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.VersionSummaryType;
@@ -78,7 +78,7 @@ public class LogAnimationPlugin extends DefaultPortalPlugin implements LogAnimat
 
     @Override
     public Availability getAvailability() {
-        return UserSessionManager.getCurrentUser().hasAnyPermission(PermissionCatalog.PERMISSION_ANIMATE) ?
+        return UserSessionManager.getCurrentUser().hasAnyPermission(PermissionType.ANIMATE) ?
                 Availability.AVAILABLE : Availability.UNAVAILABLE;
     }
 

@@ -168,8 +168,8 @@ public class UserType {
      * @param permissionName The name of a permission.
      * @return true if the user has a permission with any of the given names.
      */
-    public boolean hasAnyPermission(String... permissionName) {
-        return getPermissions().stream().anyMatch(p -> Arrays.asList(permissionName).contains(p.getName()));
+    public boolean hasAnyPermission(PermissionType... permissionName) {
+        return getPermissions().stream().anyMatch(p -> Arrays.asList(permissionName).contains(p));
     }
 
     /**

@@ -37,10 +37,10 @@ import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.FolderTreeNode;
 import org.apromore.portal.dialogController.MainController;
-import org.apromore.portal.helper.PermissionCatalog;
 import org.apromore.portal.model.FolderSummaryType;
 import org.apromore.portal.model.FolderType;
 import org.apromore.portal.model.LogSummaryType;
+import org.apromore.portal.model.PermissionType;
 import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.VersionSummaryType;
@@ -177,7 +177,7 @@ public class SummaryItemRenderer implements ListitemRenderer {
         }
 
         if (mainController.getPortalContext().getCurrentUser()
-                .hasAnyPermission(PermissionCatalog.PERMISSION_MODEL_DISCOVER)) {
+                .hasAnyPermission(PermissionType.MODEL_DISCOVER)) {
             listItem.addEventListener(Events.ON_DOUBLE_CLICK, event -> {
                 LOGGER.info("Open log {} (id {})", log.getName(), log.getId());
                 mainController.visualizeLog();

@@ -29,7 +29,7 @@ import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.logfilter.generic.LogFilterPlugin;
 import org.apromore.portal.common.UserSessionManager;
-import org.apromore.portal.helper.PermissionCatalog;
+import org.apromore.portal.model.PermissionType;
 import org.apromore.service.EventLogService;
 import org.apromore.service.ProcessService;
 import org.apromore.service.loganimation.LogAnimationService2;
@@ -70,9 +70,9 @@ public class PDFrequencyPlugin extends PDAbstractPlugin {
 
     @Override
     public void execute(PortalContext context) {
-        if (!context.getCurrentUser().hasAnyPermission(PermissionCatalog.PERMISSION_MODEL_DISCOVER)) {
+        if (!context.getCurrentUser().hasAnyPermission(PermissionType.MODEL_DISCOVER)) {
             LOGGER.info("User '{}' does not have '{}' permission", context.getCurrentUser().getUsername(),
-                    PermissionCatalog.PERMISSION_MODEL_DISCOVER);
+                    PermissionType.MODEL_DISCOVER);
             return;
         }
 
@@ -92,7 +92,7 @@ public class PDFrequencyPlugin extends PDAbstractPlugin {
 
     @Override
     public Availability getAvailability() {
-        return UserSessionManager.getCurrentUser().hasAnyPermission(PermissionCatalog.PERMISSION_MODEL_DISCOVER) ?
+        return UserSessionManager.getCurrentUser().hasAnyPermission(PermissionType.MODEL_DISCOVER) ?
                 Availability.AVAILABLE : Availability.UNAVAILABLE;
     }
 }
