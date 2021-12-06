@@ -58,6 +58,7 @@ public class CalendarModel {
   private String zoneId = ZoneOffset.UTC.getId();
   private List<WorkDayModel> workDays = new ArrayList<>();
   private List<HolidayModel> holidays = new ArrayList<>();
+  private Set<LocalDate> holidayDates = new HashSet<>();
 
   public static CalendarModel ABSOLUTE_CALENDAR = new AbsoluteCalendarModel();
 
@@ -77,11 +78,14 @@ public class CalendarModel {
     if (end.isBefore(start) || end.equals(start)) return Duration.ZERO;
     ZonedDateTime startDate = ZonedDateTime.ofInstant(start, ZoneId.of(zoneId));
     ZonedDateTime endDate = ZonedDateTime.ofInstant(end, ZoneId.of(zoneId));
-    Set<LocalDate> holidays = getHolidayDates();
-    return workDays.parallelStream()
-            .filter(WorkDayModel::isWorkingDay)
-            .map(workDay -> workDay.getWorkDuration(startDate, endDate, holidays))
-            .reduce(Duration.ZERO, (d1, d2) -> d2.plus(d1));
+    collectHolidayDates();
+    Duration totalDuration = Duration.ZERO;
+    for (WorkDayModel workDay : workDays) {
+      if (workDay.isWorkingDay()) {
+        totalDuration = totalDuration.plus(workDay.getWorkDuration(startDate, endDate, holidayDates));
+      }
+    }
+    return totalDuration;
   }
 
   // This duration is rounded to the nearest milliseconds
@@ -113,8 +117,10 @@ public class CalendarModel {
     return resultList;
   }
 
-  private Set<LocalDate> getHolidayDates() {
-    return holidays.stream().map(HolidayModel::getHolidayDate).collect(Collectors.toSet());
+  private void collectHolidayDates() {
+    if (holidayDates.isEmpty()) {
+      holidayDates = holidays.stream().map(HolidayModel::getHolidayDate).collect(Collectors.toSet());
+    }
   }
 
   public List<WorkDayModel> getOrderedWorkDay() {
