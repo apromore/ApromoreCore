@@ -53,10 +53,10 @@ import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.BaseController;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.dialogController.dto.ApromoreSession;
-import org.apromore.portal.helper.PermissionCatalog;
 import org.apromore.portal.menu.PluginCatalog;
 import org.apromore.portal.model.FolderType;
 import org.apromore.portal.model.LogSummaryType;
+import org.apromore.portal.model.PermissionType;
 import org.apromore.portal.plugincontrol.PluginExecution;
 import org.apromore.portal.plugincontrol.PluginExecutionManager;
 import org.apromore.service.ProcessService;
@@ -267,7 +267,7 @@ public class PDController extends BaseController implements Composer<Component>,
             LogSummaryType logSummary = (LogSummaryType) session.get("selection");
             PDFactory pdFactory = (PDFactory) session.get("pdFactory");
             boolean calendarPermission = portalContext.getCurrentUser()
-                    .hasAnyPermission(PermissionCatalog.PERMISSION_CALENDAR);
+                    .hasAnyPermission(PermissionType.CALENDAR);
             contextData = ContextData.valueOf(
                     logSummary.getDomain(), portalContext.getCurrentUser().getUsername(),
                     logSummary.getId(),

@@ -34,7 +34,7 @@ import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.calendar.pageutil.PageUtils;
 import org.apromore.portal.common.ItemHelpers;
 import org.apromore.portal.common.UserSessionManager;
-import org.apromore.portal.helper.PermissionCatalog;
+import org.apromore.portal.model.PermissionType;
 import org.apromore.service.EventLogService;
 import org.apromore.service.SecurityService;
 import org.apromore.zk.label.LabelSupplier;
@@ -77,7 +77,7 @@ public class CalendarPlugin extends DefaultPortalPlugin implements LabelSupplier
 
     @Override
     public void execute(PortalContext portalContext) {
-        if (!portalContext.getCurrentUser().hasAnyPermission(PermissionCatalog.PERMISSION_CALENDAR)) {
+        if (!portalContext.getCurrentUser().hasAnyPermission(PermissionType.CALENDAR)) {
             LOGGER.error("User {} does not have calendar permissions", portalContext.getCurrentUser().getUsername());
             Messagebox.show(Labels.getLabel("noPermissionGeneral_message"));
             return;
@@ -129,7 +129,7 @@ public class CalendarPlugin extends DefaultPortalPlugin implements LabelSupplier
     @Override
     public Availability getAvailability() {
         return configBean.isEnableCalendar() &&
-                UserSessionManager.getCurrentUser().hasAnyPermission(PermissionCatalog.PERMISSION_CALENDAR)
+                UserSessionManager.getCurrentUser().hasAnyPermission(PermissionType.CALENDAR)
                 ? Availability.AVAILABLE : Availability.UNAVAILABLE;
     }
 }

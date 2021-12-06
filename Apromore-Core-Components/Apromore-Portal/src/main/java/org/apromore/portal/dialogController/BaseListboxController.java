@@ -47,10 +47,10 @@ import org.apromore.portal.context.PortalPluginResolver;
 import org.apromore.portal.dialogController.workspaceOptions.AddFolderController;
 import org.apromore.portal.dialogController.workspaceOptions.RenameFolderController;
 import org.apromore.portal.exception.DialogException;
-import org.apromore.portal.helper.PermissionCatalog;
 import org.apromore.portal.menu.PluginCatalog;
 import org.apromore.portal.model.FolderType;
 import org.apromore.portal.model.LogSummaryType;
+import org.apromore.portal.model.PermissionType;
 import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.SummariesType;
 import org.apromore.portal.model.SummaryType;
@@ -277,9 +277,9 @@ public abstract class BaseListboxController extends BaseController {
 
     if (portalPluginMap.containsKey(PluginCatalog.PLUGIN_ETL)) {
       boolean createPipelinePermission = portalContext.getCurrentUser()
-              .hasAnyPermission(PermissionCatalog.PERMISSION_PIPELINE_CREATE);
+              .hasAnyPermission(PermissionType.PIPELINE_CREATE);
       boolean managePipelinesPermission = portalContext.getCurrentUser()
-              .hasAnyPermission(PermissionCatalog.PERMISSION_PIPELINE_MANAGE);
+              .hasAnyPermission(PermissionType.PIPELINE_MANAGE);
 
       btnEtlSep.setVisible(mainController.getConfig().isEnableEtl() &&
               (createPipelinePermission || managePipelinesPermission));
@@ -400,7 +400,7 @@ public abstract class BaseListboxController extends BaseController {
     });
 
     boolean calendarPermission = portalContext.getCurrentUser()
-            .hasAnyPermission(PermissionCatalog.PERMISSION_CALENDAR);
+            .hasAnyPermission(PermissionType.CALENDAR);
     this.btnCalendarSep.setVisible(mainController.getConfig().isEnableCalendar() && calendarPermission);
     this.btnCalendar.setVisible(mainController.getConfig().isEnableCalendar() && calendarPermission);
     this.btnCalendar.addEventListener(ON_CLICK, new EventListener<Event>() {

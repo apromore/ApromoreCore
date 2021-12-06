@@ -29,9 +29,78 @@
 
 package org.apromore.portal.model;
 
-public class PermissionType {
+import java.util.Arrays;
+
+public enum PermissionType {
+    USERS_VIEW("dff60714-1d61-4544-8884-0d8b852ba41e","View users"),
+    USERS_EDIT("2e884153-feb2-4842-b291-769370c86e44","Edit users"),
+    GROUPS_EDIT("d9ade57c-14c7-4e43-87e5-6a9127380b1b","Edit groups"),
+    ROLES_EDIT("ea31a607-212f-447e-8c45-78f1e59b1dde","Edit roles"),
+    PIPELINE_CREATE("41877a02-722d-43f7-b47b-75c544013f0f", "Create pipeline"),
+    PIPELINE_MANAGE("a5e0c805-0dec-469c-8bda-1d279e751bd7", "Manage pipelines"),
+    CALENDAR("db2c4517-c9c7-421e-bccf-277baf2fdb72", "Manage calendars"),
+    MODEL_CREATE("e673de93-0646-447e-94fe-98b095290bfe", "Create model"),
+    MODEL_DISCOVER("09c77c0b-6aef-46b2-ad87-e0742092e3ad", "Discover model"),
+    MODEL_EDIT("df0e4630-2019-41aa-980d-73eb08e612ac", "Edit model"),
+    MODEL_VIEW("0159eb6c-226e-4c85-8098-b3538f0be1b8", "View models"),
+    FILTER("03c2ff79-738d-47cb-9386-0cc745604a75", "Filter log"),
+    ANIMATE("bc0253f4-5ae1-44a6-83e2-bbe63f239dd7", "Animate logs"),
+    COMPARE_MODELS("86a5eea2-57f8-4ba4-a88c-e007f4b18ab9", "Compare models"),
+    CHECK_CONFORMANCE("76d044bd-52b9-4261-bc2b-969656f0bd39", "Check conformance"),
+    SIMULATE_MODEL("09e6f182-a2af-448e-a7f6-6d02a0477360", "Simulate model"),
+    DASH_EDIT("a1c46230-c5c5-420b-99a2-43be5fbabd3a", "Edit dashboards"),
+    DASH_VIEW("9eabfb63-8e39-4e03-803d-c94dbe431059", "View dashboards"),
+    MERGE_MODELS("7e1f8cc2-7532-406c-b106-3bf7095047dc", "Merge models"),
+    SEARCH_MODELS("7c0f5dc2-7d39-456e-b1cb-139bb030ee98", "Search similar models"),
+    UNREGISTERED("", "");
+
     protected String id;
     protected String name;
+
+    PermissionType (final String id, final String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    /**
+     * Get PermissionType by name
+     *
+     * @param id
+     * @param name
+     * @return the PermissionType object
+     */
+    public static PermissionType getPermissionType(final String id, final String name) {
+        return Arrays.stream(PermissionType.values())
+                .filter(permissionType -> permissionType.id.equals(id) && permissionType.name.equals(name))
+                .findFirst()
+                .orElse(PermissionType.UNREGISTERED);
+    }
+
+    /**
+     * Get PermissionType by name
+     *
+     * @param name
+     * @return the PermissionType object
+     */
+    public static PermissionType getPermissionTypeByName(final String name) {
+        return Arrays.stream(PermissionType.values())
+                .filter(permissionType -> permissionType.name.equals(name))
+                .findFirst()
+                .orElse(PermissionType.UNREGISTERED);
+    }
+
+    /**
+     * Get PermissionType by id
+     *
+     * @param id
+     * @return the PermissionType object
+     */
+    public static PermissionType getPermissionTypeById(final String id) {
+        return Arrays.stream(PermissionType.values())
+                .filter(permissionType -> permissionType.id.equals(id))
+                .findFirst()
+                .orElse(PermissionType.UNREGISTERED);
+    }
 
     /**
      * Gets the value of the id property.
@@ -46,18 +115,6 @@ public class PermissionType {
     }
 
     /**
-     * Sets the value of the id property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setId(String value) {
-        this.id = value;
-    }
-
-    /**
      * Gets the value of the name property.
      * 
      * @return
@@ -67,18 +124,6 @@ public class PermissionType {
      */
     public String getName() {
         return name;
-    }
-
-    /**
-     * Sets the value of the name property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setName(String value) {
-        this.name = value;
     }
 
 }
