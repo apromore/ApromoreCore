@@ -99,7 +99,7 @@ public class EditSelectionPlugin extends DefaultPortalPlugin implements LabelSup
 
   @Override
   public Availability getAvailability() {
-    return UserSessionManager.getCurrentUser().hasAnyPermission(PermissionType.MODEL_EDIT) ?
+    return UserSessionManager.getCurrentUser().hasAnyPermission(PermissionType.MODEL_EDIT, PermissionType.MODEL_VIEW) ?
             Availability.AVAILABLE : Availability.UNAVAILABLE;
   }
 }
