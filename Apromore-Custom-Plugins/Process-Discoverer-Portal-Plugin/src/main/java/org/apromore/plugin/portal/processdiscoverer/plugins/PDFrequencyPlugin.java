@@ -30,7 +30,6 @@ import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.logfilter.generic.LogFilterPlugin;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.helper.PermissionCatalog;
-import org.apromore.portal.model.UserType;
 import org.apromore.service.EventLogService;
 import org.apromore.service.ProcessService;
 import org.apromore.service.loganimation.LogAnimationService2;
@@ -93,8 +92,7 @@ public class PDFrequencyPlugin extends PDAbstractPlugin {
 
     @Override
     public Availability getAvailability() {
-        UserType user = (UserType) Sessions.getCurrent().getAttribute(UserSessionManager.USER);
-        return user.hasAnyPermission(PermissionCatalog.PERMISSION_MODEL_DISCOVER) ?
+        return UserSessionManager.getCurrentUser().hasAnyPermission(PermissionCatalog.PERMISSION_MODEL_DISCOVER) ?
                 Availability.AVAILABLE : Availability.UNAVAILABLE;
     }
 }

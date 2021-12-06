@@ -49,13 +49,10 @@ import org.apromore.portal.model.EditSessionType;
 import org.apromore.portal.model.LogSummaryType;
 import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.SummaryType;
-import org.apromore.portal.model.UserType;
 import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.service.EventLogService;
 import org.apromore.service.loganimation.LogAnimationService;
 import org.deckfour.xes.model.XLog;
-import org.springframework.stereotype.Component;
-import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Messagebox;
 
@@ -81,9 +78,7 @@ public class LogAnimationPlugin extends DefaultPortalPlugin implements LogAnimat
 
     @Override
     public Availability getAvailability() {
-        UserType userType = (UserType) Sessions.getCurrent().getAttribute(UserSessionManager.USER);
-
-        return userType.hasAnyPermission(PermissionCatalog.PERMISSION_ANIMATE) ?
+        return UserSessionManager.getCurrentUser().hasAnyPermission(PermissionCatalog.PERMISSION_ANIMATE) ?
                 Availability.AVAILABLE : Availability.UNAVAILABLE;
     }
 

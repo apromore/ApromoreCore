@@ -39,7 +39,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.slf4j.Logger;
 import org.zkoss.util.resource.Labels;
-import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.*;
 import org.zkoss.zul.*;
 
@@ -96,10 +95,9 @@ public class SimilaritySearchPlugin extends PluginCustomGui implements LabelSupp
 
     @Override
     public Availability getAvailability() {
-        UserType userType = (UserType) Sessions.getCurrent().getAttribute(UserSessionManager.USER);
-        boolean searchModelPermission = userType.hasAnyPermission(PermissionCatalog.PERMISSION_SEARCH_MODELS);
-        return configBean.isEnableSimilaritySearch() && searchModelPermission ?
-                Availability.AVAILABLE : Availability.UNAVAILABLE;
+        return configBean.isEnableSimilaritySearch() &&
+                UserSessionManager.getCurrentUser().hasAnyPermission(PermissionCatalog.PERMISSION_SEARCH_MODELS)
+                ? Availability.AVAILABLE : Availability.UNAVAILABLE;
     }
 
     @Override

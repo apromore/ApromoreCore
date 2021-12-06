@@ -48,14 +48,12 @@ import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.ProcessVersionIdType;
 import org.apromore.portal.model.ProcessVersionIdsType;
 import org.apromore.portal.model.SummaryType;
-import org.apromore.portal.model.UserType;
 import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.service.DomainService;
 import org.apromore.zk.label.LabelSupplier;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import org.zkoss.util.resource.Labels;
-import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -123,9 +121,7 @@ public class MergePlugin extends DefaultPortalPlugin implements LabelSupplier {
 
     @Override
     public Availability getAvailability() {
-        UserType userType = (UserType) Sessions.getCurrent().getAttribute(UserSessionManager.USER);
-
-        return userType.hasAnyPermission(PermissionCatalog.PERMISSION_MERGE_MODELS) ?
+        return UserSessionManager.getCurrentUser().hasAnyPermission(PermissionCatalog.PERMISSION_MERGE_MODELS) ?
                 Availability.AVAILABLE : Availability.UNAVAILABLE;
     }
 
