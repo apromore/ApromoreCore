@@ -65,9 +65,9 @@ public class EditSelectionPlugin extends DefaultPortalPlugin implements LabelSup
 
   @Override
   public void execute(PortalContext portalContext) {
-    if (!portalContext.getCurrentUser().hasAnyPermission(PermissionType.MODEL_EDIT)) {
-      LOGGER.info("User '{}' does not have '{}' permissions", portalContext.getCurrentUser().getUsername(),
-              PermissionType.MODEL_EDIT.getName());
+    if (!portalContext.getCurrentUser().hasAnyPermission(PermissionType.MODEL_EDIT, PermissionType.MODEL_VIEW)) {
+      LOGGER.info("User '{}' does not have permission to view or edit models",
+              portalContext.getCurrentUser().getUsername());
       return;
     }
 
