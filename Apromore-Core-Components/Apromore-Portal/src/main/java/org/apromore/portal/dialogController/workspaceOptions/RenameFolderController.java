@@ -23,12 +23,15 @@
 package org.apromore.portal.dialogController.workspaceOptions;
 
 import java.io.IOException;
+import java.util.Arrays;
+
 import org.apromore.exception.NotAuthorizedException;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.BaseController;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.exception.DialogException;
+import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Executions;
@@ -50,6 +53,7 @@ public class RenameFolderController extends BaseController {
   private Button btnCancel;
   private Textbox txtName;
   private int folderId;
+  private String folderName;
   private Logger LOGGER = PortalLoggerFactory.getLogger(AddFolderController.class);
 
   public RenameFolderController(MainController mainController, int folderId, String name)
@@ -62,9 +66,19 @@ public class RenameFolderController extends BaseController {
       this.folderEditWindow = (Window) win.getFellow("winFolderRename");
       this.txtName = (Textbox) this.folderEditWindow.getFellow("txtName");
       this.txtName.setValue(name);
+      this.txtName.setSelectionRange(0, name.length());
+      this.folderName=name;
       this.btnSave = (Button) this.folderEditWindow.getFellow("btnSave");
       this.btnCancel = (Button) this.folderEditWindow.getFellow("btnCancel");
       this.folderId = folderId;
+      if(!this.mainController.getWorkspaceService().hasWritePermissionOnFolder(mainController.getSecurityService().getUserByName(UserSessionManager.getCurrentUser().getUsername()), Arrays.asList(this.folderId)))
+      {
+    	  Notification.error(Labels.getLabel("portal_noPrivilegeRename_message"));
+    	  if(this.folderEditWindow!=null) {
+    		  this.folderEditWindow.detach();
+    	  }
+		  return;
+      }
 
       folderEditWindow.addEventListener("onLater", new EventListener<Event>() {
         public void onEvent(Event event) throws Exception {
@@ -87,13 +101,21 @@ public class RenameFolderController extends BaseController {
           cancel();
         }
       });
+      Button resetB = (Button) this.folderEditWindow.getFellow("resetButton");
+      resetB.addEventListener("onClick", event -> {
+    	    resetFolderName();
+      });
       win.doModal();
     } catch (Exception e) {
       throw new DialogException("Error in RenameFolderController: " + e.getMessage());
     }
   }
 
-  private void submit() throws Exception {
+  protected void resetFolderName() {
+	  txtName.setText(this.folderName);
+  }
+
+private void submit() throws Exception {
     Clients.showBusy("Processing...");
     Events.echoEvent("onLater", folderEditWindow, null);
   }
@@ -110,7 +132,12 @@ public class RenameFolderController extends BaseController {
             Messagebox.ERROR);
         return;
       }
-
+      if(!this.mainController.getWorkspaceService().hasWritePermissionOnFolder(mainController.getSecurityService().getUserByName(UserSessionManager.getCurrentUser().getUsername()), Arrays.asList(this.folderId)))
+      {
+    	  Notification.error(Labels.getLabel("portal_noPrivilegeRename_message"));
+    	  this.folderEditWindow.detach();
+		  return;
+      }
       LOGGER.info("Rename folder " + folderName);
       this.mainController.getManagerService().updateFolder(this.folderId, folderName,
           UserSessionManager.getCurrentUser().getUsername());

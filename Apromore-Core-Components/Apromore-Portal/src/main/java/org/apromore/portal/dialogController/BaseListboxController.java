@@ -25,6 +25,7 @@
 package org.apromore.portal.dialogController;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -641,6 +642,11 @@ public abstract class BaseListboxController extends BaseController {
   protected void removeFolder() throws Exception {
     // See if the user has mixed folders and process models. we handle everything
     // differently.
+   if( !(getMainController().getManagerService().hasWritePermission(UserSessionManager.getCurrentUser().getUsername(),new ArrayList<>(getSelection())))) {
+		Notification.error(Labels.getLabel("portal_deleteItemRestricted_message"));
+		return;
+	}
+	  
     ArrayList<FolderType> folders = getSelectedFolders();
     Map<SummaryType, List<VersionSummaryType>> elements =
         getMainController().getSelectedElementsAndVersions();

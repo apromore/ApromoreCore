@@ -41,6 +41,8 @@ public class FolderType {
     protected Boolean hasRead;
     protected Boolean hasWrite;
     protected Boolean hasOwnership;
+    protected String ownerName;
+    protected String lastUpdate;
 
     /**
      * Gets the value of the folders property.
@@ -243,5 +245,21 @@ public class FolderType {
     public void setHasOwnership(Boolean value) {
         this.hasOwnership = value;
     }
+
+	public String getOwnerName() {
+		return ownerName;
+	}
+
+	public void setOwnerName(String ownerName) {
+		this.ownerName = ownerName;
+	}
+
+	public String getLastUpdate() {
+		return lastUpdate;
+	}
+
+	public void setLastUpdate(String lastUpdate) {
+		this.lastUpdate = lastUpdate;
+	}
 
 }

@@ -676,4 +676,16 @@ public class EventLogServiceImpl implements EventLogService {
 		return perspectives;
 
 	}
+
+	@Override
+	public boolean hasWritePermissionOnLog(User user, List<Integer> logIds) {
+		String username = user.getUsername();
+		return logIds.stream().allMatch(logId -> {
+			try {
+				return canUserWriteLog(username, logId);
+			} catch (UserNotFoundException e) {
+				return false;
+			}
+		});
+	}
 }

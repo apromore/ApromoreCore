@@ -208,6 +208,18 @@ public class SummaryItemRenderer implements ListitemRenderer {
         }
         return wrapIntoListCell(new Label(lastUpdate));
     }
+    
+    protected Listcell renderFolderDate(String lastUpdate) {
+    	 Listcell lc = wrapIntoListCell(new Label( DateTimeUtils.normalize(lastUpdate, dateTimeFormatter)));
+         lc.setStyle(CENTRE_ALIGN);
+    	 return lc;
+    }
+    
+    protected Listcell renderFolderOwner(String owner) {
+   	    Listcell lc = wrapIntoListCell(new Label( owner));
+        lc.setStyle(LEFT_ALIGN);
+   	    return lc;
+   }
 
     private void renderFolderSummary(final Listitem listitem, final FolderSummaryType folder, final List<PortalProcessAttributePlugin> plugins) {
         listitem.appendChild(renderFolderImage());
@@ -258,11 +270,14 @@ public class SummaryItemRenderer implements ListitemRenderer {
         listitem.appendChild(renderFolderName(folder));
         listitem.appendChild(renderFolderId(folder));
 
-        // Skip 5 columns that don't apply to folders
-        Listcell spacer = new Listcell();
-        spacer.setSpan(6);
-        listitem.appendChild(spacer);
-
+        // Skip 4 columns that don't apply to folders
+        //Note instead of filling column with span, we have to fill with empty cell, otherwise lastupdate and owner can not be shown in tiles view for folder.
+        listitem.appendChild(new Listcell(""));
+        listitem.appendChild(new Listcell(""));
+        listitem.appendChild(new Listcell(""));
+        listitem.appendChild(new Listcell(""));
+        listitem.appendChild(renderFolderDate(folder.getLastUpdate()));
+        listitem.appendChild(renderFolderOwner(folder.getOwnerName()));
         // Append columns for any folder attributes supplied via plugins
         for (PortalProcessAttributePlugin plugin: plugins) {
             listitem.appendChild(plugin.getListcell(folder));

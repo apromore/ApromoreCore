@@ -810,4 +810,26 @@ public class ManagerServiceImpl implements ManagerService {
       }
     }
   }
+
+
+	@Override
+	public boolean hasWritePermission(String username, List<Object> selectedItems) {
+
+		List<Integer> folderIds = new ArrayList<Integer>();
+		List<Integer> processIds = new ArrayList<Integer>();
+		List<Integer> logIds = new ArrayList<Integer>();
+		for (Object obj : selectedItems) {
+			if (obj instanceof FolderType) {
+				folderIds.add(((FolderType) obj).getId());
+			} else if (obj instanceof ProcessSummaryType) {
+				processIds.add(((ProcessSummaryType) obj).getId());
+			} else if (obj instanceof LogSummaryType) {
+				logIds.add(((LogSummaryType) obj).getId());
+			}
+		}
+		
+		return (   workspaceSrv.hasWritePermissionOnFolder(secSrv.getUserByName(username),	folderIds) 
+				&& procSrv.hasWritePermissionOnProcess(secSrv.getUserByName(username), processIds)
+				&& logSrv.hasWritePermissionOnLog(secSrv.getUserByName(username), logIds));
+	}
 }

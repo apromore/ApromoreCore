@@ -363,4 +363,6 @@ public interface ManagerService {
      * TODO: Fix Exception
      */
     void deleteElements(Map<SummaryType, List<VersionSummaryType>> elements, String username) throws Exception;
+
+	boolean hasWritePermission(String username, List<Object> asList);
 }

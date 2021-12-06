@@ -235,4 +235,6 @@ public interface WorkspaceService {
      */
     void deleteOwnerlessArtifact(User user);
 
+
+	boolean hasWritePermissionOnFolder(User userByName, List<Integer> selectedFolders);
 }
