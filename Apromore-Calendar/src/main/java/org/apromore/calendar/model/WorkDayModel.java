@@ -117,41 +117,45 @@ public class WorkDayModel {
    * Get workday instances with its duration between two dates
    * @param from starting date
    * @param to ending date
-   * @return map from instance to its duration
+   * @return map from an instance to its duration
    */
   private Map<LocalDateTime, Duration> getWorkdayInstances(LocalDateTime from, LocalDateTime to) {
+    Map<LocalDateTime, Duration> result = new HashMap<>();
+    if (from.toLocalDate().isEqual(to.toLocalDate())) {
+      result.put(from, from.getDayOfWeek().equals(this.dayOfWeek)
+                          ? getDurationSameDayForOneDayPeriod(from.toLocalTime(), to.toLocalTime())
+                          : Duration.ZERO);
+      return result;
+    }
+
     int daysInWeek = 7;
     int daysToAdd = (this.dayOfWeek.getValue() - from.getDayOfWeek().getValue() + daysInWeek) % daysInWeek;
     LocalDateTime instance = from.plusDays(daysToAdd);
-    Map<LocalDateTime, Duration> result = new HashMap<>();
     while (!instance.toLocalDate().isAfter(to.toLocalDate())) {
-      result.put(instance,
-              (instance.toLocalDate().isEqual(from.toLocalDate()))
-              ? getDurationSameDayAtStartOfPeriod(from.toLocalTime())
-              : (
-                    (instance.toLocalDate().isEqual(to.toLocalDate()))
-                    ? getDurationSameDayAtEndOfPeriod(to.toLocalTime())
-                    : this.getDuration()
-              ));
+        result.put(instance,
+                (instance.toLocalDate().isEqual(from.toLocalDate()))
+                        ? getDurationSameDayAtStartOfMultiDayPeriod(from.toLocalTime())
+                        : (
+                        (instance.toLocalDate().isEqual(to.toLocalDate()))
+                                ? getDurationSameDayAtEndOfMultiDayPeriod(to.toLocalTime())
+                                : this.getDuration()
+                ));
       instance = instance.plusDays(daysInWeek);
     }
     return result;
   }
 
-  // This method must use ZonedDateTime to take into account zone-specific features, e.g. daylight savings
-  private Duration getDurationAtDate(ZonedDateTime d, ZonedDateTime start, ZonedDateTime end) {
-    ZonedDateTime workStart = ZonedDateTime.of(LocalDateTime.of(d.toLocalDate(), startTime.toLocalTime()), start.getZone());
-    ZonedDateTime workEnd = ZonedDateTime.of(LocalDateTime.of(d.toLocalDate(), endTime.toLocalTime()), start.getZone());
-    return Duration.between(workStart.isAfter(start) ? workStart : start,
-            workEnd.isBefore(end) ? workEnd : end);
+  private Duration getDurationSameDayForOneDayPeriod(LocalTime periodStart, LocalTime periodEnd) {
+    return Duration.between(startTime.toLocalTime().isBefore(periodStart) ? periodStart : startTime.toLocalTime(),
+            endTime.toLocalTime().isAfter(periodEnd) ? periodEnd : endTime.toLocalTime());
   }
 
-  private Duration getDurationSameDayAtStartOfPeriod(LocalTime periodStart) {
+  private Duration getDurationSameDayAtStartOfMultiDayPeriod(LocalTime periodStart) {
     return Duration.between(startTime.toLocalTime().isBefore(periodStart) ? periodStart : startTime.toLocalTime(),
             endTime.toLocalTime().isBefore(periodStart) ? periodStart : endTime.toLocalTime());
   }
 
-  private Duration getDurationSameDayAtEndOfPeriod(LocalTime periodEnd) {
+  private Duration getDurationSameDayAtEndOfMultiDayPeriod(LocalTime periodEnd) {
     return Duration.between(startTime.toLocalTime().isAfter(periodEnd) ? periodEnd : startTime.toLocalTime(),
             endTime.toLocalTime().isAfter(periodEnd) ? periodEnd : endTime.toLocalTime());
   }
