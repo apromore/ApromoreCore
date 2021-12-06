@@ -27,7 +27,9 @@ import java.util.Map;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
+import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.MainController;
+import org.apromore.portal.model.PermissionType;
 import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.VersionSummaryType;
@@ -63,6 +65,12 @@ public class EditSelectionPlugin extends DefaultPortalPlugin implements LabelSup
 
   @Override
   public void execute(PortalContext portalContext) {
+    if (!portalContext.getCurrentUser().hasAnyPermission(PermissionType.MODEL_EDIT)) {
+      LOGGER.info("User '{}' does not have '{}' permissions", portalContext.getCurrentUser().getUsername(),
+              PermissionType.MODEL_EDIT);
+      return;
+    }
+
     try {
       MainController mainC = (MainController) portalContext.getMainController();
       mainC.eraseMessage();
@@ -87,5 +95,11 @@ public class EditSelectionPlugin extends DefaultPortalPlugin implements LabelSup
       LOGGER.error("Unable to edit selection", e);
       Notification.error(getLabel("unableEdit"));
     }
+  }
+
+  @Override
+  public Availability getAvailability() {
+    return UserSessionManager.getCurrentUser().hasAnyPermission(PermissionType.MODEL_EDIT) ?
+            Availability.AVAILABLE : Availability.UNAVAILABLE;
   }
 }

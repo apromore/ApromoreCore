@@ -127,24 +127,27 @@ public class SummaryItemRenderer implements ListitemRenderer {
             listItem.appendChild(plugin.getListcell(process));
         }
 
-        listItem.addEventListener(Events.ON_DOUBLE_CLICK, new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                VersionSummaryType version = getLatestVersion(process.getVersionSummaries());
-                LOGGER.info("Open process model {} (id {}) version {}", process.getName(), process.getId(), version.getVersionNumber());
-                mainController.editProcess2(process, version, getNativeType(process.getOriginalNativeType()), new HashSet<RequestParameterType<?>>(), false);
-                Clients.evalJavaScript("clearSelection('')");
-            }
-
-            /* Sometimes we have merged models with no native type, we should give them a default so they can be edited. */
-            private String getNativeType(String origNativeType) {
-                String nativeType = origNativeType;
-                if (origNativeType == null || origNativeType.isEmpty()) {
-                    nativeType = "BPMN 2.0";
+        if (mainController.getPortalContext().getCurrentUser().hasAnyPermission(
+                PermissionType.MODEL_EDIT, PermissionType.MODEL_VIEW)) {
+            listItem.addEventListener(Events.ON_DOUBLE_CLICK, new EventListener<>() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    VersionSummaryType version = getLatestVersion(process.getVersionSummaries());
+                    LOGGER.info("Open process model {} (id {}) version {}", process.getName(), process.getId(), version.getVersionNumber());
+                    mainController.editProcess2(process, version, getNativeType(process.getOriginalNativeType()), new HashSet<RequestParameterType<?>>(), false);
+                    Clients.evalJavaScript("clearSelection('')");
                 }
-                return nativeType;
-            }
-        });
+
+                /* Sometimes we have merged models with no native type, we should give them a default so they can be edited. */
+                private String getNativeType(String origNativeType) {
+                    String nativeType = origNativeType;
+                    if (origNativeType == null || origNativeType.isEmpty()) {
+                        nativeType = "BPMN 2.0";
+                    }
+                    return nativeType;
+                }
+            });
+        }
         
         listItem.addEventListener(Events.ON_RIGHT_CLICK, new EventListener<Event>() {
             @Override
