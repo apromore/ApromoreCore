@@ -67,7 +67,7 @@ public class EditSelectionPlugin extends DefaultPortalPlugin implements LabelSup
   public void execute(PortalContext portalContext) {
     if (!portalContext.getCurrentUser().hasAnyPermission(PermissionType.MODEL_EDIT)) {
       LOGGER.info("User '{}' does not have '{}' permissions", portalContext.getCurrentUser().getUsername(),
-              PermissionType.MODEL_EDIT);
+              PermissionType.MODEL_EDIT.getName());
       return;
     }
 
