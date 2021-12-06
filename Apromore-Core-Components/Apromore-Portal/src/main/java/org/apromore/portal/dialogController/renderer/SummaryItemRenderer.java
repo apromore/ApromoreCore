@@ -178,13 +178,10 @@ public class SummaryItemRenderer implements ListitemRenderer {
 
         if (mainController.getPortalContext().getCurrentUser()
                 .hasAnyPermission(PermissionCatalog.PERMISSION_MODEL_DISCOVER)) {
-            listItem.addEventListener(Events.ON_DOUBLE_CLICK, new EventListener<Event>() {
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    LOGGER.info("Open log {} (id {})", log.getName(), log.getId());
-                    mainController.visualizeLog();
-                    Clients.evalJavaScript("clearSelection('')");
-                }
+            listItem.addEventListener(Events.ON_DOUBLE_CLICK, event -> {
+                LOGGER.info("Open log {} (id {})", log.getName(), log.getId());
+                mainController.visualizeLog();
+                Clients.evalJavaScript("clearSelection('')");
             });
         }
         
