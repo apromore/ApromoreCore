@@ -21,13 +21,19 @@
  */
 package org.apromore.calendar.builder;
 
-import java.time.*;
-
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.calendar.model.HolidayModel;
 import org.apromore.calendar.model.HolidayType;
 import org.apromore.calendar.model.WorkDayModel;
 
+import java.time.*;
+
+/**
+ * TODO: use of ZoneOffset.of(zoneId) in this class only works if zoneId = zoneoffset. This is because
+ * of the irrelevant use of OffsetTime in {@link WorkDayModel}. See TODO in WorkDayModel.
+ * @author Nolan Tellis
+ * @author Bruce Nguyen - add TODO comments
+ */
 public class CalendarModelBuilder {
 
   CalendarModel model = new CalendarModel();
@@ -77,7 +83,15 @@ public class CalendarModelBuilder {
         OffsetTime.of(5, 0, 0, 0, ZoneOffset.of(model.getZoneId())), false);
 
   }
-  
+
+  /**
+   * Bruce
+   * TODO: changing the zoneid requires changing the offset in WorkDayModel. Making WorkDayModel has offset
+   * is not an appropriate design because WorkDayModel is only a template, not a specific datetime: there's no way to know
+   * a WorkDayModel's offset until it has an actual working day at a specific datetime (an instant).
+   * @param zoneId
+   * @return
+   */
   public CalendarModelBuilder withZoneId(String zoneId) {
     model.setZoneId(zoneId);
     for (WorkDayModel workDay : model.getWorkDays()) {
