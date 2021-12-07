@@ -25,7 +25,9 @@ import java.util.Locale;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
+import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.MainController;
+import org.apromore.portal.model.PermissionType;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import org.zkoss.util.resource.Labels;
@@ -61,4 +63,11 @@ public class CreateProcessPlugin extends DefaultPortalPlugin {
     }
 
   }
+
+  @Override
+  public Availability getAvailability() {
+    return UserSessionManager.getCurrentUser().hasAnyPermission(PermissionType.MODEL_CREATE) ?
+            Availability.AVAILABLE : Availability.UNAVAILABLE;
+  }
+
 }
