@@ -862,3 +862,51 @@ databaseChangeLog:
               - column:
                   name: permissionid
                   value: "16"
+
+  - changeSet:
+      id: 20211203144900
+      author: janeh
+      comment: "add viewer (models) role"
+      changes:
+        - insert:
+            tableName: role
+            columns:
+              - column:
+                  name: id
+                  value: "10"
+              - column:
+                  name: row_guid
+                  value: "dd28764a-d9cd-4905-aa23-011fb12c4fd8"
+              - column:
+                  name: role_name
+                  value: "ROLE_VIEWER_MODELS"
+              - column:
+                  name: description
+                  value: "Allowed access to view models"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "10"
+              - column:
+                  name: permissionid
+                  value: "10"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "10"
+              - column:
+                  name: permissionid
+                  value: "13"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "10"
+              - column:
+                  name: permissionid
+                  value: "19"
