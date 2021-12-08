@@ -910,3 +910,108 @@ databaseChangeLog:
               - column:
                   name: permissionid
                   value: "19"
+  - changeSet:
+      id: 20211207160500
+      author: janeh
+      comment: "change observer to viewer"
+      changes:
+        - update:
+            tableName: role
+            columns:
+              - column:
+                  name: role_name
+                  value: "ROLE_VIEWER"
+            where: role_name = 'ROLE_OBSERVER'
+        - insert:
+            tableName: permission
+            columns:
+              - column:
+                  name: id
+                  value: "21"
+              - column:
+                  name: row_guid
+                  value: "c4f70933-dd23-4ccb-bdcd-85681124d34c"
+              - column:
+                  name: permission_name
+                  value: "View filter"
+              - column:
+                  name: permission_description
+                  value: "View filters"
+        - insert:
+            tableName: permission
+            columns:
+              - column:
+                  name: id
+                  value: "22"
+              - column:
+                  name: row_guid
+                  value: "f404c3e9-5a4d-4d4e-9d6b-0aa2e806c7bc"
+              - column:
+                  name: permission_name
+                  value: "View discover model"
+              - column:
+                  name: permission_description
+                  value: "Open process discoverer in view mode"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "5"
+              - column:
+                  name: permissionid
+                  value: "22"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "5"
+              - column:
+                  name: permissionid
+                  value: "10"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "5"
+              - column:
+                  name: permissionid
+                  value: "21"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "5"
+              - column:
+                  name: permissionid
+                  value: "12"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "5"
+              - column:
+                  name: permissionid
+                  value: "13"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "5"
+              - column:
+                  name: permissionid
+                  value: "16"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "5"
+              - column:
+                  name: permissionid
+                  value: "19"

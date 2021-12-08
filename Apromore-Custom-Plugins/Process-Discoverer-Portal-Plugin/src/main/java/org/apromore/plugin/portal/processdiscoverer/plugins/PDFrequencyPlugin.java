@@ -70,9 +70,9 @@ public class PDFrequencyPlugin extends PDAbstractPlugin {
 
     @Override
     public void execute(PortalContext context) {
-        if (!context.getCurrentUser().hasAnyPermission(PermissionType.MODEL_DISCOVER)) {
-            LOGGER.info("User '{}' does not have '{}' permission", context.getCurrentUser().getUsername(),
-                    PermissionType.MODEL_DISCOVER);
+        if (!context.getCurrentUser().hasAnyPermission(PermissionType.MODEL_DISCOVER_EDIT, PermissionType.MODEL_DISCOVER_VIEW)) {
+            LOGGER.info("User '{}' does not have permission to access process discoverer",
+                    context.getCurrentUser().getUsername());
             return;
         }
 
@@ -92,7 +92,8 @@ public class PDFrequencyPlugin extends PDAbstractPlugin {
 
     @Override
     public Availability getAvailability() {
-        return UserSessionManager.getCurrentUser().hasAnyPermission(PermissionType.MODEL_DISCOVER) ?
+        return UserSessionManager.getCurrentUser()
+                .hasAnyPermission(PermissionType.MODEL_DISCOVER_EDIT, PermissionType.MODEL_DISCOVER_VIEW) ?
                 Availability.AVAILABLE : Availability.UNAVAILABLE;
     }
 }

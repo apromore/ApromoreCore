@@ -78,7 +78,7 @@ public class AuthenticationHandler implements AuthenticationFailureHandler, Auth
     public void onAuthenticationSuccess(HttpServletRequest  request,
                                         HttpServletResponse response,
                                         Authentication      authentication) throws IOException {
-        String[] loginAuthorizedRoles = {"ROLE_ADMIN", "ROLE_MANAGER", "ROLE_ANALYST", "ROLE_OBSERVER",
+        String[] loginAuthorizedRoles = {"ROLE_ADMIN", "ROLE_MANAGER", "ROLE_ANALYST", "ROLE_VIEWER",
                 "ROLE_DESIGNER", "ROLE_DATA_SCIENTIST", "ROLE_OPERATIONS", "ROLE_VIEWER_MODELS"};
 
         //Invalidate the session if the user does not have a role with login permissions
