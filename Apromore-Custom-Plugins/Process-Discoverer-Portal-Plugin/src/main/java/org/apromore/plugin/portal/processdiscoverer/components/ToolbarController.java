@@ -245,9 +245,10 @@ public class ToolbarController extends AbstractController {
         ContextData contextData = parent.getContextData();
         AuthorizationService authorizationService = parent.getAuthorizationService();
 
-        return !contextData.isEditEnabled() ||
-                AccessType.VIEWER == authorizationService.getLogAccessTypeByUser(contextData.getLogId(),
+        AccessType accessType = authorizationService.getLogAccessTypeByUser(contextData.getLogId(),
                 contextData.getUsername());
+
+        return !contextData.isEditEnabled() || AccessType.VIEWER == accessType || AccessType.RESTRICTED == accessType;
     }
 
 }
