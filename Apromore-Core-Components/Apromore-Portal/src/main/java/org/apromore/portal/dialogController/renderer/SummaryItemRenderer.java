@@ -180,7 +180,7 @@ public class SummaryItemRenderer implements ListitemRenderer {
         }
 
         if (mainController.getPortalContext().getCurrentUser()
-                .hasAnyPermission(PermissionType.MODEL_DISCOVER)) {
+                .hasAnyPermission(PermissionType.MODEL_DISCOVER_EDIT, PermissionType.MODEL_DISCOVER_VIEW)) {
             listItem.addEventListener(Events.ON_DOUBLE_CLICK, event -> {
                 LOGGER.info("Open log {} (id {})", log.getName(), log.getId());
                 mainController.visualizeLog();

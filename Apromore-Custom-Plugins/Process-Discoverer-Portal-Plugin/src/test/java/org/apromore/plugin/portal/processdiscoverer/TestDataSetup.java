@@ -55,7 +55,7 @@ public class TestDataSetup {
     
     public PDAnalyst createPDAnalyst(XLog xlog) throws Exception {
         ContextData contextData = ContextData.valueOf("domain1", "username1", 0,
-                            "logName", 0, "folderName", true);
+                            "logName", 0, "folderName", true, true, true);
         Mockito.when(eventLogService.getXLog(contextData.getLogId())).thenReturn(xlog);
         Mockito.when(eventLogService.getAggregatedLog(contextData.getLogId())).thenReturn(
                 XLogToImmutableLog.convertXLog("ProcessLog", xlog));
