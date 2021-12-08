@@ -45,9 +45,6 @@ public class StringUtil {
             normalized = normalized.substring(0, normalized.length() - 1);
         }
 
-        // replace whitespace characters with _
-        normalized = normalized.replaceAll("\\s+", "_");
-
         if (normalized.length() == 0) {
             normalized = "Untitled";
         } else if (normalized.length() > 60) {
