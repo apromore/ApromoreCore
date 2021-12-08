@@ -23,9 +23,10 @@ package org.apromore.apmlog.logobjects;
 
 import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.ATrace;
-import org.apromore.apmlog.stats.TimeStatsProcessor;
 import org.apromore.apmlog.util.Util;
 import org.apromore.calendar.model.CalendarModel;
+import org.apromore.apmlog.stats.TimeStatsProcessor;
+import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
 import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
@@ -50,6 +51,7 @@ public abstract class AbstractTraceImpl implements ATrace, Serializable {
     protected long startTime;
     protected long endTime;
     private int[] activityInstancesIndicator;
+    protected HashBiMap<ActivityInstance, Integer> activityInstanceIndexMap;
 
     // ========================================================
     // Initiation method
@@ -159,17 +161,23 @@ public abstract class AbstractTraceImpl implements ATrace, Serializable {
     }
 
     public ActivityInstance getNextOf(ActivityInstance activityInstance) {
+        if(!activityInstances.contains(activityInstance)) return null;
         if (activityInstances.size() == 1) return null;
         if (activityInstance == getLast()) return null;
 
-        return activityInstances.get(activityInstances.indexOf(activityInstance) + 1);
+        int sourceIndex = activityInstanceIndexMap.get(activityInstance);
+
+        return activityInstanceIndexMap.inverse().get(sourceIndex + 1);
     }
 
     public ActivityInstance getPreviousOf(ActivityInstance activityInstance) {
+        if(!activityInstances.contains(activityInstance)) return null;
         if (activityInstances.size() == 1) return null;
         if (activityInstance == getFirst()) return null;
 
-        return activityInstances.get(activityInstances.indexOf(activityInstance) - 1);
+        int sourceIndex = activityInstanceIndexMap.get(activityInstance);
+
+        return activityInstanceIndexMap.inverse().get(sourceIndex - 1);
     }
 
     @Override
@@ -207,13 +215,23 @@ public abstract class AbstractTraceImpl implements ATrace, Serializable {
         this.caseVariantId = caseVariantId;
     }
 
-
     public void setActivityInstances(List<ActivityInstance> activityInstances) {
+        activityInstanceIndexMap = new HashBiMap<>();
+
         this.activityInstances.clear();
         if (activityInstances != null) {
             this.activityInstances.addAll(activityInstances);
             initActivityInstanceIndicators();
+            int index = 0;
+            for (ActivityInstance activityInstance : activityInstances) {
+                activityInstanceIndexMap.put(activityInstance, index);
+                index += 1;
+            }
         }
+    }
+
+    public HashBiMap<ActivityInstance, Integer> getActivityInstanceIndexMap() {
+        return activityInstanceIndexMap;
     }
 
     // ===============================================================================================================

@@ -46,16 +46,16 @@ import java.util.List;
  */
 public class ActivityInstance implements Serializable {
 
-    private int immutableIndex;
-    private int immutableTraceIndex;
+    private final int immutableIndex;
+    private final int immutableTraceIndex;
     private int mutableTraceIndex;
-    private String parentCaseId;
-    private List<Integer> immutableEventIndexes;
-    private int nameIndicator;
+    private final String parentCaseId;
+    private final List<Integer> immutableEventIndexes;
+    private final int nameIndicator;
     private long startTime;
     private long endTime;
     private UnifiedMap<String, String> attributes;
-    private APMLog sourceLog;
+    private final APMLog sourceLog;
 
     public ActivityInstance(int immutableIndex,
                             List<Integer> immutableEventIndexes,
