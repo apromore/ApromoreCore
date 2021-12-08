@@ -276,8 +276,7 @@ public class PDController extends BaseController implements Composer<Component>,
                             : portalContext.getCurrentFolder().getFolderName(),
                     ((MainController)portalContext.getMainController()).getConfig().isEnableCalendar()
                             && currentUser.hasAnyPermission(PermissionType.CALENDAR),
-                    currentUser.hasAnyPermission(PermissionType.MODEL_DISCOVER_EDIT),
-                    currentUser.hasAnyPermission(PermissionType.MODEL_DISCOVER_VIEW));
+                    currentUser.hasAnyPermission(PermissionType.MODEL_DISCOVER_EDIT));
             processAnalyst = new PDAnalyst(contextData, configData, getEventLogService());
             userOptions = UserOptionsData.DEFAULT(configData);
 

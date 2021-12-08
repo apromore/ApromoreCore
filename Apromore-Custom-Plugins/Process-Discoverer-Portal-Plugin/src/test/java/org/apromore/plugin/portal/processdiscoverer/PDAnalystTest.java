@@ -71,7 +71,7 @@ public class PDAnalystTest extends TestDataSetup {
     public void test_AnalystConstructor_MissingActivityPerspective() throws Exception {
         XLog validLog = readLogWithOneTraceOneEvent();
         ContextData contextData = ContextData.valueOf("domain1", "username1", 0,
-                "logName", 0, "folderName", false, true, true);
+                "logName", 0, "folderName", false, true);
         Mockito.when(eventLogService.getXLog(contextData.getLogId())).thenReturn(validLog);
         Mockito.when(eventLogService.getAggregatedLog(contextData.getLogId())).thenReturn(
                 XLogToImmutableLog.convertXLog("ProcessLog", validLog));
@@ -84,7 +84,7 @@ public class PDAnalystTest extends TestDataSetup {
     public void test_AnalystConstructor_NoPerspectiveAttributes() throws Exception {
         XLog validLog = readLogWithOneTraceOneEvent();
         ContextData contextData = ContextData.valueOf("domain1", "username1", 0,
-                "logName", 0, "folderName", false, true, true);
+                "logName", 0, "folderName", false, true);
         Mockito.when(eventLogService.getXLog(contextData.getLogId())).thenReturn(validLog);
         Mockito.when(eventLogService.getAggregatedLog(contextData.getLogId())).thenReturn(
                 XLogToImmutableLog.convertXLog("ProcessLog", validLog));
@@ -97,7 +97,7 @@ public class PDAnalystTest extends TestDataSetup {
     public void test_AnalystConstructor_TooManyPerspectiveAttributeValues() throws Exception {
         XLog validLog = readLogWithTwoTraceEachTwoEvents();
         ContextData contextData = ContextData.valueOf("domain1", "username1", 0,
-                "logName", 0, "folderName", false, true, true);
+                "logName", 0, "folderName", false, true);
         Mockito.when(eventLogService.getXLog(contextData.getLogId())).thenReturn(validLog);
         Mockito.when(eventLogService.getAggregatedLog(contextData.getLogId())).thenReturn(
                 XLogToImmutableLog.convertXLog("ProcessLog", validLog));

@@ -41,13 +41,12 @@ public class ContextData {
     private final int logId;
     private final boolean isCalendarEnabled;
     private final boolean isEditEnabled;
-    private final boolean isViewEnabled;
 
     private ContextData (String domain,
                         String userName,
                         int logId, String logName,
                         int containingFolderId, String containingFolderName,
-                         boolean isCalendarEnabled, boolean isEditEnabled, boolean isViewEnabled) {
+                         boolean isCalendarEnabled, boolean isEditEnabled) {
         this.username = userName;
         this.folderId = containingFolderId;
         this.folderName = containingFolderName;
@@ -56,16 +55,15 @@ public class ContextData {
         this.logName = logName;
         this.isCalendarEnabled = isCalendarEnabled;
         this.isEditEnabled = isEditEnabled;
-        this.isViewEnabled = isViewEnabled;
     }
     
     public static ContextData valueOf (String domain,
                         String userName,
                         int logId, String logName,
                         int containingFolderId, String containingFolderName, boolean isCalendarEnabled,
-                        boolean isEditEnabled, boolean isViewEnabled) {
+                        boolean isEditEnabled) {
         return new ContextData(domain, userName, logId, logName, containingFolderId, containingFolderName,
-                isCalendarEnabled, isEditEnabled, isViewEnabled);
+                isCalendarEnabled, isEditEnabled);
     }
     
 }
