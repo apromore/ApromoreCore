@@ -108,7 +108,7 @@ public class PathFilter {
                 }
             }
 
-            if (val != null && toValSet.contains(val) && activityList.get(0) != act1) {
+            if (val != null && toValSet.contains(val) && trace.getPreviousOf(act1) != null) {
                 ActivityInstance pAct = trace.getPreviousOf(act1);
                 String pVal = getAttributeValue(pAct, attributeKey);
                 if (pVal != null && fromValSet.contains(pVal) && conformRequirement(pAct, act1, logFilterRule)) {
@@ -171,6 +171,9 @@ public class PathFilter {
 
 
     private static String getAttributeValue(ActivityInstance activity, String key) {
+        if (activity == null || key == null)
+            return null;
+
         return activity.getAttributes().containsKey(key) ? activity.getAttributeValue(key) : null;
     }
 
