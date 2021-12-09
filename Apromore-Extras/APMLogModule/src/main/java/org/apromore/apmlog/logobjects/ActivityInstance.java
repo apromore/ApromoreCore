@@ -22,6 +22,7 @@
 package org.apromore.apmlog.logobjects;
 
 import org.apromore.apmlog.APMLog;
+import org.apromore.apmlog.APMLogAttribute;
 import org.apromore.apmlog.stats.TimeStatsProcessor;
 import org.apromore.apmlog.util.AttributeCodes;
 import org.apromore.calendar.model.CalendarModel;
@@ -44,7 +45,7 @@ import java.util.List;
  *
  * @author Chii Chang (created: 06/05/2021)
  */
-public class ActivityInstance implements Serializable {
+public class ActivityInstance implements APMLogAttribute, Serializable {
 
     private final int immutableIndex;
     private final int immutableTraceIndex;

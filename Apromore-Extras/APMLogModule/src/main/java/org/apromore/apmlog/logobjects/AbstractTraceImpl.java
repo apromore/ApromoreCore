@@ -22,6 +22,7 @@
 package org.apromore.apmlog.logobjects;
 
 import org.apromore.apmlog.APMLog;
+import org.apromore.apmlog.APMLogAttribute;
 import org.apromore.apmlog.ATrace;
 import org.apromore.apmlog.util.Util;
 import org.apromore.calendar.model.CalendarModel;
@@ -36,7 +37,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public abstract class AbstractTraceImpl implements ATrace, Serializable {
+public abstract class AbstractTraceImpl implements ATrace, APMLogAttribute, Serializable {
 
     protected APMLog sourceLog;
     protected int immutableIndex;
