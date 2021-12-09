@@ -1,5 +1,12 @@
-# QBPSimulator
-Integration of the QBP process simulator into Apromore
+# Apromore BPMN Modeler 
+
+This module provides a customized distribution of bpmn.io editor including custom extensions
+for Apromore platform. These extensions could be developed in-house like the Simulator 
+or from bpmn.io/third-party sources like the Color Picker. The following functionalities are 
+implemented in this module: 
+
+- QBPSimulator parameters saving. Integration of the QBP process simulator into Apromore
+- Color picker for BPMN nodes.
 
 To build:
 
