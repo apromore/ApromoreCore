@@ -17,7 +17,7 @@ describe('resource-tab', function() {
   var diagramXML = require('./Resource.bpmn');
 
   var customTranslateModule = {
-    translate: [ 'value', customTranslate ]
+    translate: [ 'value', customTranslate('en') ]
   };
 
   var testModules = [

@@ -16,7 +16,7 @@ describe('simulation-tab', function() {
   var diagramXML = require('./Gateway.bpmn');
 
   var customTranslateModule = {
-    translate: [ 'value', customTranslate ]
+    translate: [ 'value', customTranslate('en') ]
   };
 
   var testModules = [

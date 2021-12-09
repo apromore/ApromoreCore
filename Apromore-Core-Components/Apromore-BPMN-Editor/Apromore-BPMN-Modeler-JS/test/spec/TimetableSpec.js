@@ -18,7 +18,7 @@ describe('timetable-tab', function() {
   var diagramXML = require('./Timetable.bpmn');
 
   var customTranslateModule = {
-    translate: ['value', customTranslate]
+    translate: [ 'value', customTranslate('en') ]
   };
 
   var testModules = [

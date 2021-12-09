@@ -35,7 +35,9 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
       }
 
       if (selectedTimetable.get('default') === 'true') {
-        Ap.common.notify('The default timetable cannot be deleted.', 'error');
+        if (window.Ap) {
+          Ap.common.notify('The default timetable cannot be deleted.', 'error');
+        }
         return cmdHelper.removeElementsFromList(element, timetables, 'values', null, []);
       }
 

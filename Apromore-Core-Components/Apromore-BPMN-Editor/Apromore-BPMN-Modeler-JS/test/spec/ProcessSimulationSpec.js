@@ -23,7 +23,7 @@ describe('simulation-tab', function() {
   var diagramXML = require('./ProcessSimulation.bpmn');
 
   var customTranslateModule = {
-    translate: [ 'value', customTranslate ]
+    translate: [ 'value', customTranslate('en') ]
   };
 
   var testModules = [
