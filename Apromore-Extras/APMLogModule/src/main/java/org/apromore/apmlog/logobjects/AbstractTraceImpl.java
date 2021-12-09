@@ -180,7 +180,7 @@ public abstract class AbstractTraceImpl implements ATrace, APMLogAttribute, Seri
         if (activityInstances.size() == 1)
             return null;
 
-        if(!activityInstanceIndexMap.contains(activityInstance))
+        if(!activityInstanceIndexMap.containsKey(activityInstance))
             return null;
 
         if (activityInstance == getFirst())
