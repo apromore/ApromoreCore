@@ -162,9 +162,14 @@ public abstract class AbstractTraceImpl implements ATrace, APMLogAttribute, Seri
     }
 
     public ActivityInstance getNextOf(ActivityInstance activityInstance) {
-        if(!activityInstances.contains(activityInstance)) return null;
-        if (activityInstances.size() == 1) return null;
-        if (activityInstance == getLast()) return null;
+        if (activityInstances.size() == 1)
+            return null;
+
+        if (!activityInstanceIndexMap.containsKey(activityInstance))
+            return null;
+
+        if (activityInstance == getLast())
+            return null;
 
         int sourceIndex = activityInstanceIndexMap.get(activityInstance);
 
@@ -172,9 +177,14 @@ public abstract class AbstractTraceImpl implements ATrace, APMLogAttribute, Seri
     }
 
     public ActivityInstance getPreviousOf(ActivityInstance activityInstance) {
-        if(!activityInstances.contains(activityInstance)) return null;
-        if (activityInstances.size() == 1) return null;
-        if (activityInstance == getFirst()) return null;
+        if (activityInstances.size() == 1)
+            return null;
+
+        if(!activityInstanceIndexMap.contains(activityInstance))
+            return null;
+
+        if (activityInstance == getFirst())
+            return null;
 
         int sourceIndex = activityInstanceIndexMap.get(activityInstance);
 
