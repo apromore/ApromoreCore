@@ -25,7 +25,6 @@ import java.io.*;
 import java.util.List;
 
 import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -34,7 +33,6 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apromore.plugin.editor.EditorPlugin;
-import org.apromore.portal.context.EditorPluginResolver;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -46,13 +44,11 @@ public class PluginsHandlerServlet extends HttpServlet {
 	
 	@Autowired
 	private ApplicationContext appContext;
-	
-	private ServletContext servletContext;
 
+	@Override
 	public void init(ServletConfig config) throws ServletException {
 		//Workaround to get the Spring applicationContext injected properly
 		SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, config.getServletContext());
-		this.servletContext = config.getServletContext();
 	}
 
 	/**
@@ -82,7 +78,7 @@ public class PluginsHandlerServlet extends HttpServlet {
 			try {
 				String pluginDef = IOUtils.toString(pluginConf);
 				// Insert the Editor plug-ins replacing the placeholder
-				//TODO switch to a real XML reader/writer based implementation
+				// @todo switch to a real XML reader/writer based implementation
 				pluginDef = pluginDef.replace("<?EDITOR-PLUGINS?>", additionalPlugins.toString());
 				res.getWriter().append(pluginDef);
 			} catch (Exception e) {

@@ -42,7 +42,9 @@ class BPMNEditorWebContentService implements WebContentService {
     @Override
     public InputStream getResourceAsStream(String path) {
         LOGGER.debug("Getting resource " + path);
-        assert hasResource(path);
+        if (hasResource(path)) {
+            throw new IllegalArgumentException("Empty path");
+        }
         return classLoader.getResourceAsStream(path);
     }
 }
