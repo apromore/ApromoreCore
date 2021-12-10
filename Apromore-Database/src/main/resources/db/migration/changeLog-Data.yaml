@@ -1021,10 +1021,16 @@ databaseChangeLog:
       author: frankma
       comment: "delete all data in role and role_permission table"
       changes:
-        - delete:
-            tableName: role
-        - delete:
-            tableName: role_permission
+        - sql:
+           dbms: '!h2, mysql'
+           splitStatements: true
+           sql: SET FOREIGN_KEY_CHECKS=0; DELETE FROM `role`; DELETE FROM `role_permission`; SET FOREIGN_KEY_CHECKS=1;
+           stripComments: false
+        - sql:
+           dbms: 'h2, !mysql'
+           splitStatements: true
+           sql: SET REFERENTIAL_INTEGRITY FALSE; DELETE FROM role; DELETE FROM role_permission; SET REFERENTIAL_INTEGRITY TRUE;
+           stripComments: false
 
   - changeSet:
       id:  20211210100500
