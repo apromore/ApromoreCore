@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:qbp="http://www.qbp-simulator.com/Schema201212" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
+  <bpmn2:process id="Process_1" isExecutable="false">
+    <bpmn2:extensionElements>
+      <qbp:processSimulationInfo id="qbp_58cd21a1-714b-4389-9f41-31ab32a2dfd6" processInstances="1000" currency="USD" startDateTime="2020-08-05T10:00:00.000Z">
+        <qbp:arrivalRateDistribution type="NORMAL" mean="42" arg1="10" arg2="NaN">
+          <qbp:timeUnit>minutes</qbp:timeUnit>
+        </qbp:arrivalRateDistribution>
+        <qbp:statsOptions />
+        <qbp:timetables>
+          <qbp:timetable id="DEFAULT_TIMETABLE" default="true" name="Arrival timetable">
+            <qbp:rules>
+              <qbp:rule id="rr4f9148-3d17-4f8a-44f9-8332ee74e999" name="Timeslot" fromTime="09:00:00.000+00:00" toTime="17:00:00.000+00:00" fromWeekDay="MONDAY" toWeekDay="FRIDAY" />
+            </qbp:rules>
+          </qbp:timetable>
+        </qbp:timetables>
+        <qbp:resources>
+          <qbp:resource id="qbp_fd4f9148-3d17-4f8a-83f9-8332de74e986" name="Clerk" totalAmount="10" costPerHour="25" timetableId="DEFAULT_TIMETABLE" />
+        </qbp:resources>
+      </qbp:processSimulationInfo>
+    </bpmn2:extensionElements>
+    <bpmn2:startEvent id="StartEvent_1" />
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="412" y="240" width="36" height="36" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

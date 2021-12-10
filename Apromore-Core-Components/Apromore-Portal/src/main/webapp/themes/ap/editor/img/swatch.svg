@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 512 512">
+  <rect width="256"
+        height="256"
+        style="fill:#bc3c51"/>
+  <rect x="256"
+        width="256"
+        height="256"
+        style="fill:#faa624"/>
+  <rect x="256"
+        y="256"
+        width="256"
+        height="256"
+        style="fill:#3ac16d"/>
+  <rect y="256"
+        width="256"
+        height="256"
+        style="fill:#85c7e2"/>
+</svg>

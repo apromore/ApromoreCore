@@ -1,0 +1,30 @@
+#js-properties-panel {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 450px;
+  z-index: 10;
+  border-left: 1px solid #ccc;
+  background: #f8f8f8;
+  overflow: auto;
+  &:empty {
+    display: none;
+  }
+  > .djs-properties-panel {
+    padding-bottom: 70px;
+    min-height:100%;
+  }
+}
+
+.bpp-properties-header > .label {
+  display: none;
+}
+
+.bpp-properties-panel input {
+  max-width: -moz-available;          /* WebKit-based browsers will ignore this. */
+  max-width: -webkit-fill-available;  /* Mozilla-based browsers will ignore this. */
+  max-width: fill-available;
+}
+
+@import "bpmn-js-properties-panel/styles/properties";

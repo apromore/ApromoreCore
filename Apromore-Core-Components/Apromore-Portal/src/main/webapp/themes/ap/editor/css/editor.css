@@ -96,6 +96,16 @@
 
 .djs-context-pad .entry {
     color: #101010;
+    vertical-align: bottom;
+}
+
+.ap-editor-set-color {
+    background-image: url('../img/swatch.svg') !important;
+    background-size: auto 18px !important;
+    background-position: center 2px !important;
+    background-repeat: no-repeat !important;
+    background-origin: padding-box !important;
+    background-color: transparent;
 }
 
 /* Viewer only overrides */
