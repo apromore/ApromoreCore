@@ -1197,6 +1197,24 @@ databaseChangeLog:
                   value: "1"
               - column:
                   name: permissionid
+                  value: "3"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "1"
+              - column:
+                  name: permissionid
+                  value: "4"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "1"
+              - column:
+                  name: permissionid
                   value: "5"
         - insert:
             tableName: role_permission
@@ -1332,34 +1350,7 @@ databaseChangeLog:
                   value: "3"
               - column:
                   name: permissionid
-                  value: "1"
-        - insert:
-            tableName: role_permission
-            columns:
-              - column:
-                  name: roleid
                   value: "3"
-              - column:
-                  name: permissionid
-                  value: "2"
-        - insert:
-            tableName: role_permission
-            columns:
-              - column:
-                  name: roleid
-                  value: "3"
-              - column:
-                  name: permissionid
-                  value: "3"
-        - insert:
-            tableName: role_permission
-            columns:
-              - column:
-                  name: roleid
-                  value: "3"
-              - column:
-                  name: permissionid
-                  value: "4"
         - insert:
             tableName: role_permission
             columns:
