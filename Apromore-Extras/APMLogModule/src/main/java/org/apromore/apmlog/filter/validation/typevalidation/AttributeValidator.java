@@ -21,10 +21,7 @@ import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.RuleValue;
 import org.apromore.apmlog.filter.validation.ValidatedFilterRule;
-import org.apromore.apmlog.stats.CaseAttributeValue;
-import org.apromore.apmlog.stats.EventAttributeValue;
-import org.eclipse.collections.impl.map.immutable.ImmutableUnifiedMap;
-import org.eclipse.collections.impl.set.mutable.UnifiedSet;
+import org.apromore.apmlog.stats.LogStatsAnalyzer;
 
 import javax.validation.constraints.NotNull;
 import java.util.Set;
@@ -38,26 +35,26 @@ public class AttributeValidator extends AbstractLogFilterRuleValidator {
 
     public static ValidatedFilterRule validateEventAttribute(LogFilterRule originalRule, APMLog apmLog) {
         String attrKey = originalRule.getKey();
-        ImmutableUnifiedMap<String, UnifiedSet<EventAttributeValue>> eavMap = apmLog.getImmutableEventAttributeValues();
+        Set<String> existKeys = LogStatsAnalyzer.getUniqueEventAttributeKeys(apmLog.getActivityInstances());
 
-        if (!eavMap.containsKey(attrKey))
+        if (!existKeys.contains(attrKey))
             return createInvalidFilterRuleResult(originalRule);
 
         Set<String> existValues =
-                eavMap.get(attrKey).stream().map(EventAttributeValue::getValue).collect(Collectors.toSet());
+                LogStatsAnalyzer.getUniqueEventAttributeValues(apmLog.getActivityInstances(), attrKey);
 
         return validatePrimaryAttributeValues(originalRule, existValues);
     }
 
     public static ValidatedFilterRule validateCaseAttribute(LogFilterRule originalRule, APMLog apmLog) {
         String attrKey = originalRule.getKey();
-        ImmutableUnifiedMap<String, UnifiedSet<CaseAttributeValue>> cavMap = apmLog.getImmutableCaseAttributeValues();
+        Set<String> existKeys = LogStatsAnalyzer.getUniqueCaseAttributeKeys(apmLog.getTraces());
 
-        if (!cavMap.containsKey(attrKey))
+
+        if (!existKeys.contains(attrKey))
             return createInvalidFilterRuleResult(originalRule);
 
-        Set<String> existValues =
-                cavMap.get(attrKey).stream().map(CaseAttributeValue::getValue).collect(Collectors.toSet());
+        Set<String> existValues = LogStatsAnalyzer.getUniqueCaseAttributeValues(apmLog.getTraces(), attrKey);
 
         return validatePrimaryAttributeValues(originalRule, existValues);
     }

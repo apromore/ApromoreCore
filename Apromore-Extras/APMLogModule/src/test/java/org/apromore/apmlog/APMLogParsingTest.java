@@ -23,20 +23,17 @@ package org.apromore.apmlog;
 
 import org.apromore.apmlog.exceptions.EmptyInputException;
 import org.apromore.apmlog.logobjects.ActivityInstance;
-import org.apromore.apmlog.stats.EventAttributeValue;
+import org.apromore.apmlog.stats.LogStatsAnalyzer;
 import org.apromore.apmlog.xes.XESAttributeCodes;
 import org.apromore.apmlog.xes.XLogToImmutableLog;
 import org.deckfour.xes.model.XLog;
-import org.eclipse.collections.impl.map.immutable.ImmutableUnifiedMap;
-import org.eclipse.collections.impl.map.mutable.UnifiedMap;
-import org.eclipse.collections.impl.set.mutable.UnifiedSet;
+import static org.junit.Assert.assertTrue;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
-
-import static org.junit.Assert.assertTrue;
 
 public class APMLogParsingTest {
 
@@ -56,7 +53,7 @@ public class APMLogParsingTest {
         APMLog apmLog = XLogToImmutableLog.convertXLog("Process Log", xLog);
 
         assertTrue(apmLog.getTraces().size() == 6);
-        assertTrue(apmLog.getCaseVariantGroupMap().size() == 3);
+        assertTrue(LogStatsAnalyzer.getCaseVariantGroups(apmLog.getActivityInstances()).size() == 3);
         assertTrue(apmLog.getTraces().stream().flatMap(x->x.getActivityInstances().stream())
                 .collect(Collectors.toList()).size() == 23);
         assertTrue(getUniqueActivitySize(apmLog) == 5);
@@ -66,7 +63,7 @@ public class APMLogParsingTest {
         APMLog apmLog = XLogToImmutableLog.convertXLog("Process Log", xLog);
 
         assertTrue(apmLog.getTraces().size() == 6);
-        assertTrue(apmLog.getCaseVariantGroupMap().size() == 3);
+        assertTrue(LogStatsAnalyzer.getCaseVariantGroups(apmLog.getActivityInstances()).size() == 3);
         assertTrue(apmLog.getTraces().stream().flatMap(x->x.getActivityInstances().stream())
                 .collect(Collectors.toList()).size() == 22);
         assertTrue(getUniqueActivitySize(apmLog) == 4);
@@ -76,7 +73,7 @@ public class APMLogParsingTest {
         APMLog apmLog = XLogToImmutableLog.convertXLog("Process Log", xLog);
 
         assertTrue(apmLog.getTraces().size() == 6);
-        assertTrue(apmLog.getCaseVariantGroupMap().size() == 3);
+        assertTrue(LogStatsAnalyzer.getCaseVariantGroups(apmLog.getActivityInstances()).size() == 3);
         assertTrue(apmLog.getTraces().stream().flatMap(x->x.getActivityInstances().stream())
                 .collect(Collectors.toList()).size() == 23);
         assertTrue(getUniqueActivitySize(apmLog) == 5);
@@ -88,40 +85,15 @@ public class APMLogParsingTest {
         String lastActivity = activityList.get(activityList.size()-1).getName();
 
         assertTrue(apmLog.getTraces().size() == 1);
-        assertTrue(apmLog.getCaseVariantGroupMap().size() == 1);
+        assertTrue(LogStatsAnalyzer.getCaseVariantGroups(apmLog.getActivityInstances()).size() == 1);
         assertTrue(apmLog.getTraces().stream().flatMap(x->x.getActivityInstances().stream())
                 .collect(Collectors.toList()).size() == 14);
         assertTrue(getUniqueActivitySize(apmLog) == 14);
         assertTrue(lastActivity.equals("O_Refused"));
     }
 
-    public static void testMixedLifecycleNoOverlapping(XLog xLog, APMLogUnitTest parent) throws UnsupportedEncodingException, EmptyInputException {
-        APMLog apmLog = XLogToImmutableLog.convertXLog("Process Log", xLog);
-
-        assertTrue(apmLog.getTraces().size() == 2);
-        assertTrue(apmLog.getCaseVariantGroupMap().size() == 2);
-        assertTrue(apmLog.getTraces().stream().flatMap(x->x.getActivityInstances().stream())
-                .collect(Collectors.toList()).size() == 6);
-        assertTrue(getUniqueActivitySize(apmLog) == 5);
-
-        List<String> conceptNames = Arrays.asList("a", "b", "c", "d", "e");
-        List<Long> sizes = Arrays.asList(1L, 1L, 1L, 2L, 1L);
-
-        for (int i = 0; i < conceptNames.size(); i++) {
-            EventAttributeValue eav = getEventAttributeValueByConceptName(conceptNames.get(i), apmLog);
-            assertTrue(eav.getCases() == sizes.get(i));
-        }
-    }
-
-    private static int getUniqueActivitySize(APMLog apmLog) {
-        ImmutableUnifiedMap<String, UnifiedSet<EventAttributeValue>> eavMap = apmLog.getImmutableEventAttributeValues();
-        return eavMap.get(XESAttributeCodes.CONCEPT_NAME).size();
-    }
-
-    private static EventAttributeValue getEventAttributeValueByConceptName(String conceptName, APMLog apmLog) {
-        return apmLog.getImmutableEventAttributeValues().get("concept:name").stream()
-                .filter(x -> x.getValue().equals(conceptName))
-                .findFirst()
-                .orElse(null);
+    private static long getUniqueActivitySize(APMLog apmLog) {
+        return LogStatsAnalyzer.getUniqueEventAttributeValueSize(XESAttributeCodes.CONCEPT_NAME,
+                apmLog.getActivityInstances());
     }
 }

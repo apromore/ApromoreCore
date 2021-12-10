@@ -19,6 +19,7 @@ package org.apromore.apmlog.csv;
 
 import org.apromore.apmlog.filter.PLog;
 import org.apromore.apmlog.filter.PTrace;
+import org.apromore.apmlog.stats.LogStatsAnalyzer;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
 import java.util.ArrayList;
@@ -30,7 +31,8 @@ import java.util.List;
 public class AbstractStats {
 
     public static List<String> getCaseAttrNames(PLog log) {
-        List<String> originalAttrNames = new ArrayList<>(log.getImmutableCaseAttributeValues().keySet());
+        List<String> originalAttrNames = new ArrayList<>(
+                LogStatsAnalyzer.getUniqueCaseAttributeKeys(new ArrayList<>(log.getPTraces())));
         List<String> caseAttrNames = new ArrayList<>();
         for (String s : originalAttrNames) {
             if (!"case:variant".equals(s)) {

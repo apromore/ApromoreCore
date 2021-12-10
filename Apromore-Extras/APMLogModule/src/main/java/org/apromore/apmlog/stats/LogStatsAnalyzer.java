@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -21,264 +21,134 @@
  */
 package org.apromore.apmlog.stats;
 
-import org.apromore.apmlog.APMLog;
+import com.google.common.collect.Lists;
 import org.apromore.apmlog.ATrace;
-import org.apromore.apmlog.logobjects.ActivityInstance;
 import org.apromore.apmlog.filter.PLog;
 import org.apromore.apmlog.filter.PTrace;
+import org.apromore.apmlog.logobjects.ActivityInstance;
+import org.apromore.apmlog.util.CalendarDuration;
 import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
-import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.BitSet;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class LogStatsAnalyzer {
 
+    private static final UnifiedSet<String> invalidCaseAttributeKeys = UnifiedSet.newSetWith("case:variant");
+    private static final UnifiedSet<String> invalidEventAttributeKeys = UnifiedSet.newSetWith("activity", "resource");
+
     // ===================================================================================================
     // Common data
     // ===================================================================================================
-    public static UnifiedMap<String, UnifiedSet<EventAttributeValue>> getEventAttributeValues(
-            List<ActivityInstance> activities, long tracesSize) {
 
-        UnifiedSet<String> keys = activities.parallelStream()
-                .flatMap(x -> x.getAttributes().keySet().stream())
-                .collect(Collectors.toCollection(UnifiedSet::new));
-
-        UnifiedMap<String, Map<String, List<ActivityInstance>>> eavaMap = new UnifiedMap<>(keys.size());
-
-        for (String key : keys) {
-            Map<String, List<ActivityInstance>> groups = activities.parallelStream()
-                    .filter(x -> x.getAttributes().containsKey(key))
-                    .collect(Collectors.groupingByConcurrent(x -> x.getAttributes().get(key)));
-
-            eavaMap.put(key, groups);
-        }
-
-        UnifiedMap<String, UnifiedSet<EventAttributeValue>> eavMap = new UnifiedMap<>(keys.size());
-
-        for (Map.Entry<String, Map<String, List<ActivityInstance>>> entry : eavaMap.entrySet()) {
-
-            eavMap.put(entry.getKey(), new UnifiedSet<>(entry.getValue().size()));
-
-            Map<String, List<ActivityInstance>> vals = entry.getValue();
-            for (Map.Entry<String, List<ActivityInstance>> valEntry : vals.entrySet()) {
-                EventAttributeValue eav =
-                        new EventAttributeValue(valEntry.getKey(), new UnifiedSet<>(valEntry.getValue()), tracesSize);
-
-                eavMap.get(entry.getKey()).put(eav);
-            }
-        }
-
-        return eavMap;
+    public static Set<String> getUniqueCaseAttributeKeys(List<ATrace> traceList) {
+        return traceList.stream().flatMap(x -> x.getAttributes().keySet().stream()
+                .filter(n -> !invalidCaseAttributeKeys.contains(n.toLowerCase()))
+        ).collect(Collectors.toSet());
     }
 
-
-    public static UnifiedMap<String, UnifiedSet<CaseAttributeValue>> getCaseAttributeValues(List<ATrace> traces) {
-
-        UnifiedSet<String> keys = traces.parallelStream()
-                .flatMap(x -> x.getAttributes().keySet().stream())
-                .collect(Collectors.toCollection(UnifiedSet::new));
-
-        UnifiedMap<String, Map<String, List<ATrace>>> keyValCaseOccurMap = new UnifiedMap<>();
-
-        for (String key : keys) {
-            Map<String, List<ATrace>> grouped = traces.parallelStream()
-                    .filter(x -> x.getAttributes().containsKey(key))
-                    .collect(Collectors.groupingByConcurrent(x -> x.getAttributes().get(key)));
-            keyValCaseOccurMap.put(key, grouped);
-        }
-
-        // (3) create CaseAttributeValues
-        UnifiedMap<String, UnifiedSet<CaseAttributeValue>> caseAttributeValues = new UnifiedMap<>(keys.size());
-
-        for (Map.Entry<String, Map<String, List<ATrace>>> entry : keyValCaseOccurMap.entrySet()) {
-            String attrKey = entry.getKey();
-            Map<String, List<ATrace>> valOccurMap = entry.getValue();
-
-            UnifiedSet<CaseAttributeValue> cavSet = new UnifiedSet<>(valOccurMap.size());
-
-            int[] arr = valOccurMap.entrySet().parallelStream().mapToInt(x -> x.getValue().size()).toArray();
-            IntArrayList ial = new IntArrayList(arr);
-
-            int maxOccurSize = ial.max();
-
-            for (Map.Entry<String, List<ATrace>> voe: valOccurMap.entrySet()) {
-                int[] occurredIndexes = voe.getValue().stream()
-                        .mapToInt(ATrace::getImmutableIndex)
-                        .toArray();
-                IntArrayList indexes = new IntArrayList(occurredIndexes);
-
-                double[] durs = voe.getValue().stream()
-                        .mapToDouble(ATrace::getDuration)
-                        .toArray();
-
-                DoubleArrayList dalDurs = new DoubleArrayList(durs);
-
-                CaseAttributeValue cav = new CaseAttributeValue(voe.getKey(), indexes, dalDurs, traces.size());
-                cav.setRatio(100 * ( (double) cav.getOccurCasesIndexSet().size() / maxOccurSize));
-                cavSet.add(cav);
-            }
-            caseAttributeValues.put(attrKey, cavSet);
-        }
-
-        return caseAttributeValues;
+    public static Set<String> getUniqueEventAttributeKeys(List<ActivityInstance> activityInstanceList) {
+        return activityInstanceList.stream().flatMap(x -> x.getAttributes().keySet().stream()
+                .filter(n -> !invalidEventAttributeKeys.contains(n.toLowerCase()))
+        ).collect(Collectors.toSet());
     }
 
-    public static Map<Integer, List<ATrace>> getCaseVariantGroupMap(List<ATrace> traces) {
-        Map<Integer, List<ATrace>> groupByExistingId = traces.parallelStream()
-                .collect(Collectors.groupingByConcurrent(ATrace::getCaseVariantId));
-
-        Map<String, List<ATrace>> groups = traces.parallelStream()
-                .collect(Collectors.groupingByConcurrent(ATrace::getCaseVariantIndicator));
-
-        //Use existing case variant ids if they have been generated.
-        if (traces.stream().noneMatch(t -> t.getCaseVariantId() == 0) && !CollectionUtils.isEmpty(traces)) {
-            return groupByExistingId;
-        }
-
-        List<Map.Entry<String, List<ATrace>>> sorted = groups.entrySet().stream()
-                .sorted( (f1, f2) -> Long.compare(f2.getValue().size(), f1.getValue().size()) )
-                .collect(Collectors.toList());
-
-        Map<Integer, List<ATrace>> caseVariantGroupMap = new UnifiedMap<>(sorted.size());
-
-        int variId = 1;
-        for (Map.Entry<String, List<ATrace>> entry : sorted) {
-
-            caseVariantGroupMap.put(variId, entry.getValue());
-
-            for (ATrace trace : entry.getValue()) {
-                trace.setCaseVariantId(variId);
-            }
-
-            variId += 1;
-        }
-
-        return caseVariantGroupMap;
+    public static Set<String> getUniqueCaseAttributeValues(List<ATrace> traceList, String attribute) {
+        return traceList.stream().filter(x -> x.getAttributes().containsKey(attribute))
+                .map(x -> x.getAttributes().get(attribute)).collect(Collectors.toSet());
     }
 
-    public static void updateCaseVariants(List<ATrace> traces) {
-        Map<String, List<ATrace>> groups = traces.parallelStream()
-                .collect(Collectors.groupingByConcurrent(x -> x.getCaseVariantIndicator()));
-
-        List<Map.Entry<String, List<ATrace>>> sorted = groups.entrySet().stream()
-                .sorted( (f1, f2) -> Long.compare(f2.getValue().size(), f1.getValue().size()) )
-                .collect(Collectors.toList());
-
-        int variId = 1;
-        for (Map.Entry<String, List<ATrace>> entry : sorted) {
-            for (ATrace trace : entry.getValue()) {
-                trace.setCaseVariantId(variId);
-            }
-            variId += 1;
-        }
+    public static Set<String> getUniqueEventAttributeValues(List<ActivityInstance> activityInstanceList,
+                                                            String attribute) {
+        return activityInstanceList.stream().filter(x -> x.getAttributes().containsKey(attribute))
+                .map(x -> x.getAttributes().get(attribute)).collect(Collectors.toSet());
     }
 
-    /**
-     *
-     * @param eavSet
-     * @param durationType "min", "median", "average", "max" or "total"
-     * @return
-     */
-    public static DoubleArrayList getEventAttributeValueDurationList(UnifiedSet<EventAttributeValue> eavSet,
-                                                                     String durationType,
-                                                                     UnifiedSet<ActivityInstance> existActivityInstances) {
+    public static double getCaseUtilizationOf(ATrace trace) {
+        DoubleArrayList procTimes = getProcessingTimesOf(trace);
+        DoubleArrayList waitTimes = getWaitingTimesOf(trace);
+        if (procTimes.sum() <= 0)
+            return 1;
 
-        double[] array = eavSet.stream()
-                .filter(x -> x.getOccurActivities(existActivityInstances).size() > 0)
-                .mapToDouble(x -> getDurationOfType(x, durationType, existActivityInstances)).toArray();
-
-        return new DoubleArrayList(array);
+        return procTimes.sum() / (procTimes.sum() + waitTimes.sum());
     }
 
-    private static double getDurationOfType(EventAttributeValue eav, String durationType,
-                                     UnifiedSet<ActivityInstance> validActivities) {
-        switch (durationType) {
-            case "total": return eav.getAllDurations(validActivities).sum();
-            case "min": return eav.getAllDurations(validActivities).min();
-            case "median": return eav.getAllDurations(validActivities).median();
-            case "average": return eav.getAllDurations(validActivities).average();
-            case "max": return eav.getAllDurations(validActivities).max();
-            default: return 0;
-        }
+    public static DoubleArrayList getProcessingTimesOf(ATrace trace) {
+        double[] array = trace.getActivityInstances().stream().mapToDouble(ActivityInstance::getDuration).toArray();
+        return array.length == 0 ? new DoubleArrayList(0.0) : new DoubleArrayList(array);
     }
 
-    // ================================
-    // PD specific method
-    // ================================
-    public static int getNodeDurationSize(String attributeKey, String value, APMLog apmLog) {
-        if (!apmLog.getImmutableEventAttributeValues().containsKey(attributeKey)) return 0;
-
-        EventAttributeValue eav = apmLog.getImmutableEventAttributeValues().get(attributeKey).stream()
-                .filter(x -> x.getValue().equals(value))
-                .findFirst()
-                .orElse(null);
-
-        if (eav == null) return 0;
-
-        UnifiedSet<ActivityInstance> existActs = new UnifiedSet<>(apmLog.getActivityInstances());
-        UnifiedSet<ActivityInstance> activitySet = eav.getOccurActivities(existActs);
-
-        double[] allDurs = activitySet.stream()
-                .mapToDouble(ActivityInstance::getDuration)
+    public static DoubleArrayList getWaitingTimesOf(ATrace trace) {
+        double[] array = trace.getActivityInstances().stream()
+                .filter(n -> trace.getActivityInstanceIndexMap().get(n) < trace.getActivityInstances().size() - 1)
+                .mapToDouble(n -> CalendarDuration.getDuration(trace.getCalendarModel(), n.getEndTime(),
+                        trace.getNextOf(n).getStartTime()))
                 .toArray();
-
-        return allDurs.length;
+        return array.length == 0 ? new DoubleArrayList(0.0) : new DoubleArrayList(array);
     }
 
-    // ================================
-    // PD specific method
-    // ================================
-    public static int getArcDurationSize(String key, String sourceNode, String targetNode, APMLog apmLog) {
+    public static boolean withinRange(Number value, Number rangeFrom, Number rangeTo) {
+        return value.doubleValue() >= rangeFrom.doubleValue() && value.doubleValue() <= rangeTo.doubleValue();
+    }
 
-        UnifiedSet<EventAttributeValue> set = apmLog.getImmutableEventAttributeValues().get(key);
+    private static List<Map.Entry<String, List<Map.Entry<Integer, List<ActivityInstance>>>>>
+    getCaseVariantGroupsEntryList(PLog pLog) {
+        return Lists.reverse(pLog.getActivityInstances().stream()
+                .collect(Collectors.groupingBy(ActivityInstance::getImmutableTraceIndex)).entrySet().stream()
+                .collect(Collectors.groupingBy(entry ->
+                        Arrays.toString(entry.getValue().stream()
+                                .mapToInt(ActivityInstance::getNameIndicator).toArray()))).entrySet().stream()
+                .sorted(Comparator.comparing(x -> x.getValue().size())).collect(Collectors.toList()));
+    }
 
-        EventAttributeValue sourceEav = set.stream()
-                .filter(x -> x.getValue().equals(sourceNode))
-                .findFirst()
-                .orElse(null);
+    public static List<Map.Entry<String, List<Map.Entry<Integer, List<ActivityInstance>>>>>
+    getCaseVariantGroups(PLog pLog) {
+        return getCaseVariantGroups(pLog.getActivityInstances());
+    }
 
-        if (sourceEav == null) return 0;
+    public static List<Map.Entry<String, List<Map.Entry<Integer, List<ActivityInstance>>>>>
+    getCaseVariantGroups(List<ActivityInstance> activityInstanceList) {
+        return Lists.reverse(activityInstanceList.stream()
+                .collect(Collectors.groupingBy(ActivityInstance::getImmutableTraceIndex)).entrySet().stream()
+                .collect(Collectors.groupingBy(entry ->
+                        Arrays.toString(entry.getValue().stream()
+                                .mapToInt(ActivityInstance::getNameIndicator).toArray()))).entrySet().stream()
+                .sorted(Comparator.comparing(x -> x.getValue().size())).collect(Collectors.toList()));
+    }
 
-        // ================================
-        // target activity, source activity
-        // ================================
-        Map<ActivityInstance, ActivityInstance> validFollows = getNextActivities(sourceEav, apmLog);
+    public static Map<Integer, List<ATrace>> getCaseVariantsByPerspective(List<ATrace> traces, String attribute) {
 
-        List<CustomTriple> triples = new ArrayList<>(validFollows.size());
-        for (Map.Entry<ActivityInstance, ActivityInstance> pair : validFollows.entrySet()) {
-            // ===========================================================
-            // target activity, source activity, target attribute value
-            // ===========================================================
-            triples.add(CustomTriple.of(pair.getKey(), pair.getValue(), pair.getValue().getAttributes().get(key)));
+        List<Map.Entry<String, List<ATrace>>> rawList = Lists.reverse(traces.stream()
+                .collect(Collectors.groupingBy(trace -> getVariantIndicator(trace, attribute)))
+                .entrySet().stream()
+                .sorted(Comparator.comparing(entry -> entry.getValue().size())).collect(Collectors.toList()));
+
+        Map<Integer, List<ATrace>> output = new HashMap<>();
+
+        int count = 0;
+        for (Map.Entry<String, List<ATrace>> entry : rawList) {
+            count += 1;
+            final int index = count;
+            output.put(index, entry.getValue());
         }
 
-        Map<String, List<CustomTriple>> groups =
-                triples.stream().collect(Collectors.groupingBy(CustomTriple::getValue));
-
-        List<CustomTriple> data = groups.get(targetNode);
-
-        return data.stream().mapToDouble(CustomTriple::getDuration).toArray().length;
-
+        return output;
     }
 
-    private static Map<ActivityInstance, ActivityInstance> getNextActivities(EventAttributeValue v, APMLog apmLog) {
-        UnifiedSet<ActivityInstance> existActs = new UnifiedSet<>(apmLog.getActivityInstances());
-
-        return v.getOccurActivities(existActs).stream()
-                .filter(x -> getParentTrace(x.getParentTraceId(), apmLog) != null)
-                .filter(x -> getParentTrace(x.getParentTraceId(), apmLog).getNextOf(x) != null)
-                .collect(Collectors.toMap(x -> x, x -> getParentTrace(x.getParentTraceId(), apmLog).getNextOf(x)));
-    }
-
-    private static ATrace getParentTrace(String traceId, APMLog apmLog) {
-        return apmLog.getTraces().stream().filter(x -> x.getCaseId().equals(traceId)).findFirst().orElse(null);
+    private static String getVariantIndicator(ATrace trace, String attribute) {
+        return Arrays.toString(trace.getActivityInstances().stream()
+                .filter(act -> act.getAttributes().containsKey(attribute))
+                .map(act -> act.getAttributeValue(attribute))
+                .toArray());
     }
 
     // ===================================================================================================
@@ -305,106 +175,40 @@ public class LogStatsAnalyzer {
                 .collect(Collectors.toList());
     }
 
-
     public static long getUniqueEventAttributeValueSize(String key, PLog pLog) {
-        if (!pLog.getImmutableLog().getImmutableEventAttributeValues().containsKey(key)) return 0;
-        UnifiedSet<ActivityInstance> existActs =
-                pLog.getActivityInstances().stream().collect(Collectors.toCollection(UnifiedSet::new));
+        return getUniqueEventAttributeValueSize(key, pLog.getActivityInstances());
+    }
 
-        UnifiedSet<EventAttributeValue> eavSet =
-                pLog.getImmutableLog().getImmutableEventAttributeValues().get(key).stream()
-                .filter(x -> x.getOccurActivities(existActs).size() > 0)
-                .collect(Collectors.toCollection(UnifiedSet::new));
-
-        return eavSet.size();
+    public static long getUniqueEventAttributeValueSize(String key, List<ActivityInstance> activityInstances) {
+        return activityInstances.stream().filter(x -> x.getAttributes().containsKey(key))
+                .map(x -> x.getAttributeValue(key)).collect(Collectors.toSet()).size();
     }
 
     public static long getUniqueCaseAttributeValueSize(String key, PLog pLog) {
-        if (!pLog.getImmutableLog().getImmutableCaseAttributeValues().containsKey(key)) return 0;
-
-        BitSet validTraceIndexes = pLog.getValidTraceIndexBS();
-
-        UnifiedSet<CaseAttributeValue> cavSet =
-                pLog.getImmutableLog().getImmutableCaseAttributeValues().get(key).stream()
-                        .filter(x -> x.getCases(validTraceIndexes) > 0)
-                        .collect(Collectors.toCollection(UnifiedSet::new));
-
-        return cavSet.size();
+        return pLog.getPTraces().stream().filter(x -> x.getAttributes().containsKey(key))
+                .map(x -> x.getAttributes().get(key)).collect(Collectors.toSet()).size();
     }
 
     public static Map<String, Number> getEventAttributeValueCaseFrequencies(String key, PLog pLog) {
-
-        UnifiedSet<ActivityInstance> existActs =
-                pLog.getActivityInstances().stream().collect(Collectors.toCollection(UnifiedSet::new));
-
-        UnifiedSet<EventAttributeValue> eavSet = pLog.getImmutableEventAttributeValues().get(key);
-
-        return eavSet.stream()
-                .filter(x -> x.getOccurActivities(existActs).size() > 0)
-                .collect(Collectors.toMap(x -> x.getValue(), x -> getCases(x.getOccurActivities(existActs), pLog)));
+        return getEventAttributeValueCaseFrequencies(key, pLog.getActivityInstances());
     }
 
-    private static long getCases(UnifiedSet<ActivityInstance> validActs, PLog pLog) {
-        return validActs.stream()
-                .filter(x -> pLog.getValidTraceIndexBS().get(x.getImmutableTraceIndex()))
-                .filter(x -> pLog.getPTracesMap().containsKey(x.getParentTraceId()))
-                .map(x -> pLog.getPTracesMap().get(x.getParentTraceId()))
-                .collect(Collectors.toSet()).size();
+    public static Map<String, Number> getEventAttributeValueCaseFrequencies(String key,
+                                                                            List<ActivityInstance> activityInstances) {
+        return activityInstances.stream()
+                .filter(x -> x.getAttributes().containsKey(key))
+                .collect(Collectors.groupingBy(x -> x.getAttributes().get(key))).entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, x ->
+                        x.getValue().stream()
+                                .map(ActivityInstance::getImmutableTraceIndex).collect(Collectors.toSet()).size()
+                ));
     }
 
     public static Map<String, Number> getEventAttributeValueTotalFrequencies(String key, PLog pLog) {
-
-        UnifiedSet<ActivityInstance> existActs =
-                pLog.getActivityInstances().stream().collect(Collectors.toCollection(UnifiedSet::new));
-
-        UnifiedSet<EventAttributeValue> eavSet = pLog.getImmutableEventAttributeValues().get(key);
-
-        return eavSet.stream()
-                .filter(x -> x.getOccurActivities(existActs).size() > 0)
-                .collect(Collectors.toMap(x -> x.getValue(), x -> x.getOccurActivities(existActs).size()));
+        return pLog.getActivityInstances().stream()
+                .filter(x -> x.getAttributes().containsKey(key))
+                .collect(Collectors.groupingBy(x -> x.getAttributes().get(key))).entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, x -> x.getValue().size() ));
     }
 
-    public static Map<String, List<CustomTriple>> getTargetNodeDataBySourceNode(String key,
-                                                                                String sourceNode,
-                                                                                PLog pLog,
-                                                                                UnifiedSet<EventAttributeValue> set) {
-
-        EventAttributeValue sourceEav = set.stream()
-                .filter(x -> x.getValue().equals(sourceNode))
-                .findFirst()
-                .orElse(null);
-
-        if (sourceEav == null) return null;
-
-        // ================================
-        // target activity, source activity
-        // ================================
-        Map<ActivityInstance, ActivityInstance> validFollows = getValidNextActivities(key, sourceEav, pLog);
-
-        List<CustomTriple> triples = new ArrayList<>(validFollows.size());
-        for (Map.Entry<ActivityInstance, ActivityInstance> pair : validFollows.entrySet()) {
-            // ===========================================================
-            // target activity, source activity, target attribute value
-            // ===========================================================
-            triples.add(CustomTriple.of(pair.getKey(), pair.getValue(), pair.getValue().getAttributes().get(key)));
-        }
-
-        return triples.stream().collect(Collectors.groupingBy(CustomTriple::getValue));
-    }
-
-    private static Map<ActivityInstance, ActivityInstance> getValidNextActivities(String key,
-                                                                                  EventAttributeValue v,
-                                                                                  PLog pLog) {
-        UnifiedSet<ActivityInstance> existActs =
-                pLog.getActivityInstances().stream().collect(Collectors.toCollection(UnifiedSet::new));
-
-        return v.getOccurActivities(existActs).stream()
-                .filter(x -> existActs.contains(x))
-                .filter(x -> pLog.getValidTraceIndexBS().get(x.getImmutableTraceIndex()))
-                .filter(x -> pLog.getPTracesMap().get(x.getParentTraceId()).size() > 1)
-                .filter(x -> x != pLog.getPTracesMap().get(x.getParentTraceId()).getLast())
-                .filter(x -> pLog.getPTracesMap().get(x.getParentTraceId()).getNextOf(x) != null)
-                .filter(x -> pLog.getPTracesMap().get(x.getParentTraceId()).getNextOf(x).getAttributes().containsKey(key))
-                .collect(Collectors.toMap(x -> x, x -> pLog.getPTracesMap().get(x.getParentTraceId()).getNextOf(x)));
-    }
 }

@@ -41,6 +41,7 @@
 
 package org.apromore.apmlog.filter;
 
+import com.google.common.collect.Lists;
 import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.exceptions.EmptyInputException;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
@@ -64,15 +65,21 @@ import org.apromore.apmlog.filter.types.OperationType;
 import org.apromore.apmlog.histogram.TimeHistogram;
 import org.apromore.apmlog.logobjects.ActivityInstance;
 import org.apromore.apmlog.stats.LogStatsAnalyzer;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.BitSet;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * This class handles log filtering mechanisms for APMLog.
@@ -92,6 +99,7 @@ import java.util.stream.Collectors;
  * Modified: Chii Chang (22/06/2021)
  * Modified: Chii Chang (13/09/2021) - Case variants must be updated after filtering by case variant
  * Modified: Chii Chang (16/11/2021) - bug fix: Event timeframe filter
+ * Modified: Chii Chang (07/12/2021) - PLog always update after filtering
  */
 public class APMLogFilter {
 
@@ -117,7 +125,7 @@ public class APMLogFilter {
      * @return
      */
     public PLog filterIndex(List<LogFilterRule> logFilterRuleList) {
-        proceedFiltering(logFilterRuleList, false);
+        proceedFiltering(logFilterRuleList, true);
         return pLog;
     }
 
@@ -142,9 +150,10 @@ public class APMLogFilter {
                 FilterType filterType = rule.getFilterType();
                 switch (filterType) {
                     case CASE_ID:
-                    case CASE_VARIANT:
-                        LogStatsAnalyzer.updateCaseVariants(traces.stream().collect(Collectors.toList()));
                         traces = filterByCaseSectionCaseAttribute(rule, traces);
+                        break;
+                    case CASE_VARIANT:
+                        traces = filterByCaseVariants(rule, traces);
                         break;
                     case CASE_CASE_ATTRIBUTE:
                         traces = filterByCaseSectionCaseAttribute(rule, traces);
@@ -200,9 +209,6 @@ public class APMLogFilter {
                     default:
                         break;
                 }
-
-                if (rule.getFilterType() == FilterType.CASE_VARIANT)
-                    LogStatsAnalyzer.updateCaseVariants(new ArrayList<>(traces));
             }
         }
 
@@ -212,9 +218,37 @@ public class APMLogFilter {
         }
 
         pLog.setValidTraceIndexBS(validTracesBS);
-        if (updateStats) pLog.setPTraces(traces);
+        pLog.setPTraces(traces);
     }
 
+    private List<PTrace> filterByCaseVariants(LogFilterRule rule, List<PTrace> traces) {
+        List<Map.Entry<String, List<PTrace>>> data = Lists.reverse(traces.stream()
+                .collect(Collectors.groupingBy(trace ->
+                        Arrays.toString(trace.getActivityInstancesIndicatorArray())))
+                .entrySet().stream()
+                .sorted(Comparator.comparing(x -> x.getValue().size()))
+                .collect(Collectors.toList()));
+
+        Map<Integer, Map.Entry<String, List<PTrace>>> withIndex = new HashMap<>();
+        int id = 0;
+        for (Map.Entry<String, List<PTrace>> entry : data) {
+            id += 1;
+            withIndex.put(id, entry);
+        }
+
+        boolean retain = rule.getChoice() == Choice.RETAIN;
+        if (rule.getPrimaryValues() == null || rule.getPrimaryValues().isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        UnifiedSet<Integer> variants = rule.getPrimaryValuesInString().stream()
+                .map(Integer::parseInt).collect(Collectors.toCollection(UnifiedSet::new));
+
+        return withIndex.entrySet().stream()
+                .filter(entry -> (retain && variants.contains(entry.getKey()) ||
+                        (!retain && !variants.contains(entry.getKey())) ))
+                .flatMap(entry -> entry.getValue().getValue().stream()).distinct().collect(Collectors.toList());
+    }
 
 
     private List<PTrace> filterByCaseSectionCaseAttribute(LogFilterRule rule, List<PTrace> traces) {

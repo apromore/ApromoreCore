@@ -31,6 +31,7 @@ import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 import org.eclipse.collections.impl.list.mutable.primitive.LongArrayList;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TimeStatsProcessor {
 
@@ -42,24 +43,16 @@ public class TimeStatsProcessor {
         if (activityInstances == null || activityInstances.isEmpty())
             return 0;
 
-        long[] allST = activityInstances.stream()
-                .mapToLong(ActivityInstance::getStartTime)
-                .toArray();
-
-        LongArrayList dalST = new LongArrayList(allST);
-        return dalST.min();
+        return activityInstances.stream()
+                .collect(Collectors.summarizingLong(ActivityInstance::getStartTime)).getMin();
     }
 
     public static long getEndTime(List<ActivityInstance> activityInstances) {
         if (activityInstances == null || activityInstances.isEmpty())
             return 0;
 
-        long[] allET = activityInstances.stream()
-                .mapToLong(ActivityInstance::getEndTime)
-                .toArray();
-
-        LongArrayList dalET = new LongArrayList(allET);
-        return dalET.max();
+        return activityInstances.stream()
+                .collect(Collectors.summarizingLong(ActivityInstance::getEndTime)).getMax();
     }
 
     public static long getPLogDuration(PLog log) {

@@ -21,8 +21,7 @@ import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.RuleValue;
 import org.apromore.apmlog.filter.validation.ValidatedFilterRule;
-import org.apromore.apmlog.stats.EventAttributeValue;
-import org.eclipse.collections.impl.set.mutable.UnifiedSet;
+import org.apromore.apmlog.stats.LogStatsAnalyzer;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -39,25 +38,18 @@ public class ReworkValidator extends AbstractLogFilterRuleValidator {
 
         String attrKey = validatedRule.getKey();
 
-        UnifiedSet<EventAttributeValue> eavSet =
-                apmLog.getImmutableEventAttributeValues().getOrDefault(attrKey, null);
-
-        if (eavSet == null)
-            return createInvalidFilterRuleResult(originalRule);
-
-        Set<String> validVals = eavSet.stream().map(EventAttributeValue::getValue).collect(Collectors.toSet());
+        Set<String> validVals =
+                LogStatsAnalyzer.getUniqueEventAttributeValues(apmLog.getActivityInstances(), attrKey);
 
         Set<RuleValue> validValues = validatedRule.getPrimaryValues().stream()
                 .filter(x -> validVals.contains(x.getKey()))
                 .collect(Collectors.toSet());
 
-        if (validValues.isEmpty())
-            return createInvalidFilterRuleResult(originalRule);
+        if (validValues.isEmpty()) return null;
 
         validatedRule.setPrimaryValues(validValues);
 
-        Set<String> origVals = originalRule.getPrimaryValues().stream()
-                .map(RuleValue::getKey).collect(Collectors.toSet());
+        Set<String> origVals = originalRule.getPrimaryValues().stream().map(RuleValue::getKey).collect(Collectors.toSet());
         Set<String> valiVals = validValues.stream().map(RuleValue::getKey).collect(Collectors.toSet());
         boolean substituted = origVals.stream().distinct().filter(valiVals::contains).count() != origVals.size();
 

@@ -21,23 +21,23 @@
  */
 package org.apromore.apmlog;
 
-import org.apromore.apmlog.APMLog;
-import org.apromore.apmlog.APMLogUnitTest;
-import org.apromore.apmlog.ATrace;
 import org.apromore.apmlog.exceptions.EmptyInputException;
 import org.apromore.apmlog.filter.APMLogFilter;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.LogFilterRuleImpl;
 import org.apromore.apmlog.filter.rules.RuleValue;
-import org.apromore.apmlog.filter.types.*;
+import org.apromore.apmlog.filter.types.Choice;
+import org.apromore.apmlog.filter.types.FilterType;
+import org.apromore.apmlog.filter.types.Inclusion;
+import org.apromore.apmlog.filter.types.OperationType;
+import org.apromore.apmlog.filter.types.Section;
+import static org.junit.Assert.assertTrue;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import static org.junit.Assert.assertTrue;
 
 public class EventualFollowFilterTest {
     public static void runTest1(APMLog apmLog, APMLogUnitTest parent) throws EmptyInputException, UnsupportedEncodingException {

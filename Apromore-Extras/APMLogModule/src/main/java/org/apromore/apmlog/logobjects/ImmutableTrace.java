@@ -39,7 +39,6 @@ public class ImmutableTrace extends AbstractTraceImpl implements Serializable {
                           UnifiedMap<String, String> attributes,
                           APMLog sourceLog) {
         super(immutableIndex, caseId, immutableEvents, activityInstances, attributes, sourceLog);
-        updateTimeStats();
     }
 
     // ===============================================================================================================

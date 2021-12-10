@@ -23,17 +23,13 @@ package org.apromore.apmlog.filter;
 
 import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.ATrace;
+import org.apromore.apmlog.exceptions.EmptyInputException;
 import org.apromore.apmlog.logobjects.AbstractLogImpl;
 import org.apromore.apmlog.logobjects.ActivityInstance;
 import org.apromore.apmlog.logobjects.ImmutableLog;
-import org.apromore.apmlog.exceptions.EmptyInputException;
-import org.apromore.apmlog.stats.CaseAttributeValue;
-import org.apromore.apmlog.stats.EventAttributeValue;
 import org.apromore.apmlog.stats.LogStatsAnalyzer;
 import org.apromore.apmlog.stats.TimeStatsProcessor;
 import org.apromore.calendar.model.CalendarModel;
-import org.eclipse.collections.impl.map.immutable.ImmutableUnifiedMap;
-import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -107,14 +103,6 @@ public class PLog extends AbstractLogImpl implements Serializable {
         return pTracesMap;
     }
 
-    public ImmutableUnifiedMap<String, UnifiedSet<CaseAttributeValue>> getImmutableCaseAttributeValues() {
-        return immutableLog.getImmutableCaseAttributeValues();
-    }
-
-    public ImmutableUnifiedMap<String, UnifiedSet<EventAttributeValue>> getImmutableEventAttributeValues() {
-        return immutableLog.getImmutableEventAttributeValues();
-    }
-
     public PTrace getPTraceByImmutableIndex(int index) {
         return immutableIndexPTraceMap.get(index);
     }
@@ -147,10 +135,6 @@ public class PLog extends AbstractLogImpl implements Serializable {
     @Override
     public void setCalendarModel(CalendarModel calendarModel) {
         super.setCalendarModel(calendarModel);
-
-        for (PTrace trace : pTraces) {
-            trace.updateTimeStats();
-        }
     }
 
     // ===============================================================================================================
