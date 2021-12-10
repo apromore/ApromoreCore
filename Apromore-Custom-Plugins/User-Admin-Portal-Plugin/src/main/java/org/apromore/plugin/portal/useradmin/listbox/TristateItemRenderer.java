@@ -25,16 +25,11 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.EventListener;
 
-import org.zkoss.zul.Label;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Listbox;
-import org.zkoss.zul.ListModel;
-import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.ListitemRenderer;
-
-import org.apromore.plugin.portal.useradmin.listbox.TristateModel;
 
 public class TristateItemRenderer implements ListitemRenderer {
 
@@ -46,8 +41,14 @@ public class TristateItemRenderer implements ListitemRenderer {
     public boolean forceTwoState = false;
     public boolean disabled = false;
 
+    private Listbox listbox;
+
     public void setList(TristateListbox list) {
         this.list = list;
+    }
+
+    public void setListbox(Listbox listbox) {
+        this.listbox = listbox;
     }
 
     public void setForceTwoState(boolean forceTwoState) {
@@ -111,6 +112,7 @@ public class TristateItemRenderer implements ListitemRenderer {
 
     public void rotateState(Checkbox checkbox) {
         TristateModel model = checkbox.getValue();
+        updateExistingSelection(checkbox);
         Listitem listitem = (Listitem) checkbox.getParent().getParent();
         int index = listitem.getIndex();
 
@@ -155,5 +157,26 @@ public class TristateItemRenderer implements ListitemRenderer {
             }
         }
         list.getListModel().set(index, model); // trigger change
+    }
+
+    /**
+     * Update other list items if there is a limit to whether multiple items can be selected.
+     * If the selected checkbox is not coSelectable, all other non-coSelectable checkboxes must be unchecked.
+     * @param selectedCheckbox the checkbox of the selected list item.
+     */
+    public void updateExistingSelection(Checkbox selectedCheckbox) {
+        TristateModel selectedModel = selectedCheckbox.getValue();
+        if (!selectedModel.isCoSelectable()) {
+            for (Listitem item : listbox.getItems()) {
+                Checkbox listItemCheckbox = (Checkbox)item.getChildren().get(0).getFirstChild();
+                TristateModel listItemModel = listItemCheckbox.getValue();
+
+                if (!listItemModel.isCoSelectable() && !selectedCheckbox.equals(listItemCheckbox)) {
+                    listItemModel.setState(UNCHECKED);
+                    listItemCheckbox.setIndeterminate(false);
+                    listItemCheckbox.setChecked(false);
+                }
+            }
+        }
     }
 }
