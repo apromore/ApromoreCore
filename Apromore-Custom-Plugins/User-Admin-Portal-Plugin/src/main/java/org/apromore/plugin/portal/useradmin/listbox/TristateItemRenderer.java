@@ -38,9 +38,10 @@ public class TristateItemRenderer implements ListitemRenderer {
     final static int INDETERMINATE = TristateModel.INDETERMINATE;
 
     public TristateListbox list;
-    public Listbox listbox;
     public boolean forceTwoState = false;
     public boolean disabled = false;
+
+    private Listbox listbox;
 
     public void setList(TristateListbox list) {
         this.list = list;
