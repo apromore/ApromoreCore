@@ -132,11 +132,6 @@ public class PLog extends AbstractLogImpl implements Serializable {
         }
     }
 
-    @Override
-    public void setCalendarModel(CalendarModel calendarModel) {
-        super.setCalendarModel(calendarModel);
-    }
-
     // ===============================================================================================================
     // Operation methods
     // ===============================================================================================================

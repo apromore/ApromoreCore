@@ -27,6 +27,7 @@ import org.apromore.apmlog.stats.LogStatsAnalyzer;
 import org.apromore.apmlog.xes.XESAttributeCodes;
 import org.apromore.apmlog.xes.XLogToImmutableLog;
 import org.deckfour.xes.model.XLog;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.UnsupportedEncodingException;
@@ -52,11 +53,10 @@ public class APMLogParsingTest {
     public static void testActivityStartCompleteEventsOnly(XLog xLog, APMLogUnitTest parent) throws EmptyInputException {
         APMLog apmLog = XLogToImmutableLog.convertXLog("Process Log", xLog);
 
-        assertTrue(apmLog.getTraces().size() == 6);
-        assertTrue(LogStatsAnalyzer.getCaseVariantGroups(apmLog.getActivityInstances()).size() == 3);
-        assertTrue(apmLog.getTraces().stream().flatMap(x->x.getActivityInstances().stream())
-                .collect(Collectors.toList()).size() == 23);
-        assertTrue(getUniqueActivitySize(apmLog) == 5);
+        assertEquals(6, apmLog.getTraces().size());
+        assertEquals(3, LogStatsAnalyzer.getCaseVariantGroups(apmLog.getActivityInstances()).size());
+        assertEquals(23, apmLog.getActivityInstances().size());
+        assertEquals(5, getUniqueActivitySize(apmLog));
     }
 
     public static void testMissingTimestamp(XLog xLog, APMLogUnitTest parent) throws EmptyInputException {

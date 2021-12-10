@@ -22,16 +22,6 @@
 
 package org.apromore.plugin.portal.processdiscoverer.impl.apmlog;
 
-import java.text.DecimalFormat;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import com.google.common.collect.Lists;
-import org.apromore.apmlog.ATrace;
 import org.apromore.apmlog.filter.PLog;
 import org.apromore.apmlog.stats.LogStatsAnalyzer;
 import org.apromore.apmlog.xes.XESAttributeCodes;
@@ -47,6 +37,8 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Label;
+
+import java.text.DecimalFormat;
 
 /**
  * LogStatsControllerWithAPMLog is a {@link LogStatsController} with some data

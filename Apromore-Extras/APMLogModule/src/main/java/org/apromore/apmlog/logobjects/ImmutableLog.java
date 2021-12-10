@@ -60,11 +60,6 @@ public class ImmutableLog extends AbstractLogImpl implements APMLog, Serializabl
         setTraces(traces);
     }
 
-    @Override
-    public void setCalendarModel(CalendarModel calendarModel) {
-        super.setCalendarModel(calendarModel);
-    }
-
     // ===============================================================================================================
     // GET methods
     // ===============================================================================================================

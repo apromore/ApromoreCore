@@ -65,7 +65,6 @@ import org.apromore.apmlog.filter.types.OperationType;
 import org.apromore.apmlog.histogram.TimeHistogram;
 import org.apromore.apmlog.logobjects.ActivityInstance;
 import org.apromore.apmlog.stats.LogStatsAnalyzer;
-import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,7 +78,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * This class handles log filtering mechanisms for APMLog.
@@ -125,7 +123,7 @@ public class APMLogFilter {
      * @return
      */
     public PLog filterIndex(List<LogFilterRule> logFilterRuleList) {
-        proceedFiltering(logFilterRuleList, true);
+        proceedFiltering(logFilterRuleList);
         return pLog;
     }
 
@@ -134,10 +132,10 @@ public class APMLogFilter {
      * @param logFilterRuleList
      */
     public void filter(List<LogFilterRule> logFilterRuleList) {
-        proceedFiltering(logFilterRuleList, true);
+        proceedFiltering(logFilterRuleList);
     }
 
-    private void proceedFiltering(List<LogFilterRule> logFilterRuleList, boolean updateStats) {
+    private void proceedFiltering(List<LogFilterRule> logFilterRuleList) {
 
         List<PTrace> traces = new ArrayList<>(pLog.getOriginalPTraces());
 

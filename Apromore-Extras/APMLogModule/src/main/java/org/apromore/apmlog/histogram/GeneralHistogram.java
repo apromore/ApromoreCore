@@ -156,9 +156,9 @@ public class GeneralHistogram {
 
         for (long x : keys) {
             String name = Util.timestampRangeStringOf((x - unit) + 1, x);
-            int y = timeFreqMap.get(x).size();
+            long y = timeFreqMap.get(x).size();
 
-            Triple<String, Long, Long> triple = new ImmutableTriple(name, y, x);
+            Triple<String, Long, Long> triple = new ImmutableTriple<>(name, y, x);
             data.add(triple);
         }
 

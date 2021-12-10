@@ -45,7 +45,6 @@ import org.apromore.apmlog.logobjects.ActivityInstance;
 import org.apromore.apmlog.logobjects.ImmutableEvent;
 import org.apromore.calendar.model.CalendarModel;
 import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
-import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
 import java.util.List;

@@ -23,12 +23,11 @@ package org.apromore.apmlog.stats;
 
 import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.ATrace;
-import org.apromore.apmlog.logobjects.ActivityInstance;
 import org.apromore.apmlog.filter.PLog;
+import org.apromore.apmlog.logobjects.ActivityInstance;
 import org.apromore.apmlog.util.CalendarDuration;
 import org.apromore.calendar.model.CalendarModel;
 import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
-import org.eclipse.collections.impl.list.mutable.primitive.LongArrayList;
 
 import java.util.List;
 import java.util.stream.Collectors;

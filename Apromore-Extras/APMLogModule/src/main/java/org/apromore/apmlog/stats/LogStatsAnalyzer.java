@@ -28,9 +28,7 @@ import org.apromore.apmlog.filter.PTrace;
 import org.apromore.apmlog.logobjects.ActivityInstance;
 import org.apromore.apmlog.util.CalendarDuration;
 import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
-import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
-import org.springframework.util.CollectionUtils;
 
 import java.util.Arrays;
 import java.util.BitSet;
@@ -98,16 +96,6 @@ public class LogStatsAnalyzer {
 
     public static boolean withinRange(Number value, Number rangeFrom, Number rangeTo) {
         return value.doubleValue() >= rangeFrom.doubleValue() && value.doubleValue() <= rangeTo.doubleValue();
-    }
-
-    private static List<Map.Entry<String, List<Map.Entry<Integer, List<ActivityInstance>>>>>
-    getCaseVariantGroupsEntryList(PLog pLog) {
-        return Lists.reverse(pLog.getActivityInstances().stream()
-                .collect(Collectors.groupingBy(ActivityInstance::getImmutableTraceIndex)).entrySet().stream()
-                .collect(Collectors.groupingBy(entry ->
-                        Arrays.toString(entry.getValue().stream()
-                                .mapToInt(ActivityInstance::getNameIndicator).toArray()))).entrySet().stream()
-                .sorted(Comparator.comparing(x -> x.getValue().size())).collect(Collectors.toList()));
     }
 
     public static List<Map.Entry<String, List<Map.Entry<Integer, List<ActivityInstance>>>>>
