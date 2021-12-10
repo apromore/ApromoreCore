@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 
 class BPMNEditorWebContentService implements WebContentService {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(BPMNEditorWebContentService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BPMNEditorWebContentService.class);
 
     private final ClassLoader classLoader = BPMNEditorWebContentService.class.getClassLoader();
 
@@ -41,7 +41,7 @@ class BPMNEditorWebContentService implements WebContentService {
 
     @Override
     public InputStream getResourceAsStream(String path) {
-        LOGGER.debug("Getting resource " + path);
+        LOGGER.debug(String.format("Getting resource %s", path));
         if (hasResource(path)) {
             throw new IllegalArgumentException("Empty path");
         }

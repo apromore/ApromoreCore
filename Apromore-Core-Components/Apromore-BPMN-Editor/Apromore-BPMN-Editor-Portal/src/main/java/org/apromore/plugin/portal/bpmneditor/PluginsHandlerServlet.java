@@ -29,11 +29,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.commons.io.IOUtils;
+import java.nio.charset.StandardCharsets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apromore.plugin.editor.EditorPlugin;
 import org.json.JSONObject;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
@@ -53,9 +54,7 @@ public class PluginsHandlerServlet extends HttpServlet {
 
 	/**
 	 * Returns a plugins configuration xml file that fits to the current user's license.
-	 * @throws Exception
 	 */
-	
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         doPost(request, response);
@@ -63,8 +62,13 @@ public class PluginsHandlerServlet extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse res) throws IOException, ServletException {
-		@SuppressWarnings("unchecked")
-		List<EditorPlugin> editorPlugins = (List<EditorPlugin>) appContext.getBean("bpmnEditorPlugins");
+		List<EditorPlugin> editorPlugins;
+
+		try {
+			editorPlugins = (List<EditorPlugin>) appContext.getBean("bpmnEditorPlugins");
+		} catch (BeansException ex) {
+			throw new ServletException(ex);
+		}
 		StringBuilder additionalPlugins = new StringBuilder();
 		for (EditorPlugin plugin: editorPlugins) {
 			additionalPlugins.append("<plugin source=\""+plugin.getJavaScriptURI()+"\" name=\""+plugin.getJavaScriptPackage()+"\"/>");
@@ -76,7 +80,7 @@ public class PluginsHandlerServlet extends HttpServlet {
   	  		res.setContentType("text/xml");
 
 			try {
-				String pluginDef = IOUtils.toString(pluginConf);
+				String pluginDef = new String(pluginConf.readAllBytes(), StandardCharsets.UTF_8);
 				// Insert the Editor plug-ins replacing the placeholder
 				// @todo switch to a real XML reader/writer based implementation
 				pluginDef = pluginDef.replace("<?EDITOR-PLUGINS?>", additionalPlugins.toString());
