@@ -10,9 +10,10 @@ implemented in this module:
 
 To build:
 
+	npm run test (make sure all tests passed before doing the next step)
     npm run build
     node scripts/bundle-fix/index.js
-    cp dist/bpmn-modeler.development.js ../../Apromore-Frontend/src/bpmneditor/editor/bpmnio/bpmn-modeler.development.js
+    cp dist/bpmn-modeler.development.js ../../../Apromore-Frontend/src/bpmneditor/editor/bpmnio/bpmn-modeler.development.js
 
 WARNING
 -------
