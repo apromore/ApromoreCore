@@ -31,6 +31,7 @@ import org.apromore.apmlog.filter.types.FilterType;
 import org.apromore.apmlog.filter.types.Inclusion;
 import org.apromore.apmlog.filter.types.OperationType;
 import org.apromore.apmlog.filter.types.Section;
+import org.apromore.apmlog.stats.LogStatsAnalyzer;
 import static org.junit.Assert.assertArrayEquals;
 
 import java.io.UnsupportedEncodingException;
@@ -99,7 +100,7 @@ public class PerfFilterTest {
 
         for (ATrace aTrace : apmLog.getTraces()) {
 
-            double ttlProcTime = aTrace.getProcessingTimes().sum();
+            double ttlProcTime = LogStatsAnalyzer.getProcessingTimesOf(aTrace).sum();
             System.out.println(aTrace.getCaseId() + ":" + ttlProcTime);
             System.out.println(ttlProcTime >= val1 && ttlProcTime <= val2);
         }

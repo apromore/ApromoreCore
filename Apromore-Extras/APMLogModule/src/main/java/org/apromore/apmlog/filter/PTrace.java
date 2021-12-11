@@ -24,7 +24,6 @@ package org.apromore.apmlog.filter;
 import org.apromore.apmlog.ATrace;
 import org.apromore.apmlog.logobjects.AbstractTraceImpl;
 import org.apromore.apmlog.logobjects.ActivityInstance;
-import org.apromore.apmlog.logobjects.ImmutableTrace;
 import org.apromore.apmlog.stats.LogStatsAnalyzer;
 import org.apromore.apmlog.util.Util;
 
@@ -39,7 +38,7 @@ public class PTrace extends AbstractTraceImpl implements Comparable<PTrace>, Ser
     private BitSet validEventIndexBS;
     private ATrace immutableTrace;
     private int mutableIndex;
-    private List<ActivityInstance> originalActivityInstances;
+    private final List<ActivityInstance> originalActivityInstances;
 
     public PTrace(int mutableIndex, ATrace immutableTrace) {
         super(immutableTrace.getImmutableIndex(),
@@ -56,7 +55,6 @@ public class PTrace extends AbstractTraceImpl implements Comparable<PTrace>, Ser
         int eventSize = immutableTrace.getImmutableEvents().size();
         validEventIndexBS = new BitSet(eventSize);
         validEventIndexBS.set(0, eventSize);
-        this.caseVariantId = immutableTrace.getCaseVariantId();
         updateStats();
     }
 
@@ -103,7 +101,7 @@ public class PTrace extends AbstractTraceImpl implements Comparable<PTrace>, Ser
     }
 
     public Number getCaseIdDigit() {
-        return Util.isNumeric(caseId) ? Double.valueOf(caseId) : -1;
+        return Util.isNumeric(caseId) ? Double.parseDouble(caseId) : -1;
     }
 
     public BitSet getOriginalValidEventIndexBS() {
@@ -150,7 +148,6 @@ public class PTrace extends AbstractTraceImpl implements Comparable<PTrace>, Ser
                 .collect(Collectors.toList());
 
         setActivityInstances(refinedAI);
-        updateTimeStats();
     }
 
     @Override
@@ -164,16 +161,10 @@ public class PTrace extends AbstractTraceImpl implements Comparable<PTrace>, Ser
                 activityInstanceClone);
     }
 
-    public ImmutableTrace toImmutableTrace() {
-        return new ImmutableTrace(immutableIndex, caseId, immutableEvents, activityInstances, attributes, sourceLog);
-    }
-
     @Override
     public int compareTo(PTrace o) {
         if (Util.isNumeric(getCaseId()) && Util.isNumeric(o.getCaseId())) {
-            if (getCaseIdDigit().doubleValue() > o.getCaseIdDigit().doubleValue()) return 1;
-            else if (getCaseIdDigit().doubleValue() < o.getCaseIdDigit().doubleValue()) return -1;
-            else return 0;
+            return Double.compare(getCaseIdDigit().doubleValue(), o.getCaseIdDigit().doubleValue());
         } else {
             return getCaseId().compareTo(o.getCaseId());
         }

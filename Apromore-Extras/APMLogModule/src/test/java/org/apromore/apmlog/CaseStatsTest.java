@@ -46,29 +46,6 @@ import static org.apromore.apmlog.filter.types.FilterType.EVENT_EVENT_ATTRIBUTE;
 import static org.junit.Assert.assertArrayEquals;
 
 public class CaseStatsTest {
-    public static void testCaseVariantFrequency(APMLog apmLog, Map<String, String> expectedMap, APMLogUnitTest parent)
-            throws Exception
-    {
-        Map<Integer, List<ATrace>> caseVariGroupMap = LogStatsAnalyzer.getCaseVariantGroupMap(apmLog.getTraces());
-
-        UnifiedMap<Integer, Integer> result = UnifiedMap.newMap(
-                caseVariGroupMap.entrySet().stream().collect(
-                        Collectors.toMap(e -> Integer.valueOf(e.getKey()), e -> Integer.valueOf(e.getValue().size()))
-                )
-        );
-
-        UnifiedMap<Integer, Integer> expected = UnifiedMap.newMap(
-            expectedMap.entrySet().stream().collect(
-                Collectors.toMap(e -> Integer.valueOf(e.getKey()), e -> Integer.valueOf(e.getValue()))
-            )
-        );
-
-        if (!result.equals((expected))) {
-            throw new AssertionError("TEST FAILED. CASE VARIANT FREQUENCY MISMATCH.\n");
-        } else {
-            parent.printString("'Case Variant Frequency' test PASS.\n");
-        }
-    }
 
     public static void testCaseDurationAfterEventAttrFilter(APMLog apmLog) throws UnsupportedEncodingException, EmptyInputException {
 

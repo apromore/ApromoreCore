@@ -22,8 +22,7 @@ import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.RuleValue;
 import org.apromore.apmlog.filter.types.OperationType;
 import org.apromore.apmlog.filter.validation.ValidatedFilterRule;
-import org.apromore.apmlog.stats.EventAttributeValue;
-import org.eclipse.collections.impl.set.mutable.UnifiedSet;
+import org.apromore.apmlog.stats.LogStatsAnalyzer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,23 +40,20 @@ public class PathValidator extends AbstractLogFilterRuleValidator {
 
         String mainAttrKey = validatedRule.getKey();
 
-        UnifiedSet<EventAttributeValue> eavSet =
-                apmLog.getImmutableEventAttributeValues().getOrDefault(mainAttrKey, null);
+        Set<String> eavKeys = LogStatsAnalyzer.getUniqueEventAttributeKeys(apmLog.getActivityInstances());
 
-        if (eavSet == null)
+        if (eavKeys.isEmpty())
             return createInvalidFilterRuleResult(originalRule);
 
         Set<RuleValue> secoVals = validatedRule.getSecondaryValues();
         if (secoVals != null && !secoVals.isEmpty()) {
-            RuleValue rvReqAttr = secoVals.stream()
-                    .filter(x -> x.getOperationType() == OperationType.EQUAL).findFirst().orElse(null);
-
-            if (rvReqAttr != null &&
-                    !apmLog.getImmutableEventAttributeValues().containsKey(rvReqAttr.getKey()))
+            RuleValue rvReqAttr = secoVals.stream().filter(x -> x.getOperationType() == OperationType.EQUAL).findFirst().orElse(null);
+            if (rvReqAttr != null && !eavKeys.contains(rvReqAttr.getKey()))
                 return createInvalidFilterRuleResult(originalRule);
         }
 
-        Set<String> validVals = eavSet.stream().map(EventAttributeValue::getValue).collect(Collectors.toSet());
+        Set<String> validVals =
+                LogStatsAnalyzer.getUniqueEventAttributeValues(apmLog.getActivityInstances(), mainAttrKey);
 
         Set<RuleValue> validRVs = validatedRule.getPrimaryValues().stream()
                 .filter(x -> validVals.contains(x.getStringValue()))

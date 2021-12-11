@@ -26,19 +26,20 @@ import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.RuleValue;
 import org.apromore.apmlog.filter.types.Choice;
 import org.apromore.apmlog.filter.types.OperationType;
+import org.apromore.apmlog.stats.LogStatsAnalyzer;
 
 public class CaseUtilisationFilter {
 
     public static boolean toKeep(PTrace trace, LogFilterRule logFilterRule) {
         Choice choice = logFilterRule.getChoice();
-        switch (choice) {
-            case RETAIN: return conformRule(trace, logFilterRule);
-            default: return !conformRule(trace, logFilterRule);
+        if (choice == Choice.RETAIN) {
+            return conformRule(trace, logFilterRule);
         }
+        return !conformRule(trace, logFilterRule);
     }
 
     private static boolean conformRule(PTrace trace, LogFilterRule logFilterRule) {
-        double traceUtilVal = trace.getCaseUtilization();
+        double traceUtilVal = LogStatsAnalyzer.getCaseUtilizationOf(trace);
 
         double utilRangeFrom = 0, utilRangeTo = 0;
         for (RuleValue ruleValue : logFilterRule.getPrimaryValues()) {

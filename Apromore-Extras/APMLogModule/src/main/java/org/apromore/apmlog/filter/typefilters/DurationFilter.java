@@ -27,15 +27,16 @@ import org.apromore.apmlog.filter.rules.RuleValue;
 import org.apromore.apmlog.filter.types.Choice;
 import org.apromore.apmlog.filter.types.FilterType;
 import org.apromore.apmlog.filter.types.OperationType;
+import org.apromore.apmlog.stats.LogStatsAnalyzer;
 
 public class DurationFilter {
 
     public static boolean toKeep(PTrace trace, LogFilterRule logFilterRule) {
         Choice choice = logFilterRule.getChoice();
-        switch (choice) {
-            case RETAIN: return conformRule(trace, logFilterRule);
-            default: return !conformRule(trace, logFilterRule);
+        if (choice == Choice.RETAIN) {
+            return conformRule(trace, logFilterRule);
         }
+        return !conformRule(trace, logFilterRule);
     }
 
     private static boolean conformRule(PTrace trace, LogFilterRule logFilterRule) {
@@ -57,22 +58,22 @@ public class DurationFilter {
             case DURATION:
                 dur = trace.getDuration(); break;
             case MAX_PROCESSING_TIME:
-                dur = trace.getProcessingTimes().sum() > 0 ? trace.getProcessingTimes().max() : 0;
+                dur = LogStatsAnalyzer.getProcessingTimesOf(trace).max();
                 break;
             case AVERAGE_PROCESSING_TIME:
-                dur = trace.getProcessingTimes().sum() > 0 ? trace.getProcessingTimes().average() : 0;
+                dur = LogStatsAnalyzer.getProcessingTimesOf(trace).average();
                 break;
             case TOTAL_PROCESSING_TIME:
-                dur = trace.getProcessingTimes().sum() > 0 ? trace.getProcessingTimes().sum() : 0;
+                dur = LogStatsAnalyzer.getProcessingTimesOf(trace).sum();
                 break;
             case TOTAL_WAITING_TIME:
-                dur = trace.getWaitingTimes().sum() > 0 ? trace.getWaitingTimes().sum() : 0;
+                dur = LogStatsAnalyzer.getWaitingTimesOf(trace).sum();
                 break;
             case AVERAGE_WAITING_TIME:
-                dur = trace.getWaitingTimes().sum() > 0 ? trace.getWaitingTimes().average() : 0;
+                dur = LogStatsAnalyzer.getWaitingTimesOf(trace).average();
                 break;
             case MAX_WAITING_TIME:
-                dur = trace.getWaitingTimes().sum() > 0 ? trace.getWaitingTimes().max() : 0;
+                dur = LogStatsAnalyzer.getWaitingTimesOf(trace).max();
                 break;
                 default: break;
         }

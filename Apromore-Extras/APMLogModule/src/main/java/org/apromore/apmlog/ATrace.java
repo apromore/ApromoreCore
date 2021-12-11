@@ -45,7 +45,6 @@ import org.apromore.apmlog.logobjects.ActivityInstance;
 import org.apromore.apmlog.logobjects.ImmutableEvent;
 import org.apromore.calendar.model.CalendarModel;
 import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
-import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
 import java.util.List;
@@ -92,8 +91,6 @@ public interface ATrace {
      */
     Number getCaseIdDigit();
 
-    int getCaseVariantId();
-
     List<ActivityInstance> getActivityInstances();
 
     /**
@@ -110,19 +107,6 @@ public interface ATrace {
     UnifiedMap<String, String> getAttributes();
 
     /**
-     * A processing time is the duration of an activity instance
-     * @return Time intervals of activity instances
-     */
-    DoubleArrayList getProcessingTimes();
-
-    /**
-     * A waiting time is the duration between the end timestamp of prior activity instance and
-     * the start timestamp of the later activity instance
-     * @return Idle times within the trace
-     */
-    DoubleArrayList getWaitingTimes();
-
-    /**
      *
      * @return Epoch/Unix time
      */
@@ -135,8 +119,6 @@ public interface ATrace {
     long getEndTime();
 
     double getDuration();
-
-    double getCaseUtilization();
 
     /**
      * XEvent list is immutable
@@ -195,22 +177,6 @@ public interface ATrace {
     CalendarModel getCalendarModel();
 
     HashBiMap<ActivityInstance, Integer> getActivityInstanceIndexMap();
-
-    // ========================================================
-    // SET methods
-    // ========================================================
-
-    /**
-     * APMLog need to completely initiating the traces before assign case variant IDs.
-     * Hence, the set case variant ID method is called separately.
-     * @param caseVariantId
-     */
-    void setCaseVariantId(int caseVariantId);
-
-    /**
-     * request the trace object to update its time/duration-related stats values
-     */
-    void updateTimeStats();
 
     // ========================================================
     // Operation methods

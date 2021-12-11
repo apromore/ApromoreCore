@@ -20,6 +20,7 @@ package org.apromore.apmlog.csv;
 import org.apromore.apmlog.filter.PLog;
 import org.apromore.apmlog.filter.PTrace;
 import org.apromore.apmlog.logobjects.ActivityInstance;
+import org.apromore.apmlog.stats.LogStatsAnalyzer;
 import org.apromore.apmlog.util.TimeUtil;
 import org.apromore.apmlog.xes.XESAttributeCodes;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
@@ -55,7 +56,8 @@ public class FullLogCSV extends AbstractStats {
 
             List<String> caseAttrNames = getCaseAttrNames(log);
             Collections.sort(caseAttrNames);
-            List<String> eventAttrNames = new ArrayList<>(log.getImmutableEventAttributeValues().keySet());
+            List<String> eventAttrNames =
+                    new ArrayList<>(LogStatsAnalyzer.getUniqueEventAttributeKeys(log.getActivityInstances()));
             Collections.sort(eventAttrNames);
 
             sb.append(getEventBasedCSVHeader(caseAttrNames, eventAttrNames));

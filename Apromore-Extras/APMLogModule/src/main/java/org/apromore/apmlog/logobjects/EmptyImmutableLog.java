@@ -24,19 +24,13 @@ package org.apromore.apmlog.logobjects;
 import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.ATrace;
 import org.apromore.apmlog.exceptions.CaseIdNotFoundException;
-import org.apromore.apmlog.stats.CaseAttributeValue;
-import org.apromore.apmlog.stats.EventAttributeValue;
 import org.apromore.calendar.model.CalendarModel;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.impl.XLogImpl;
 import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
-import org.eclipse.collections.impl.map.immutable.ImmutableUnifiedMap;
-import org.eclipse.collections.impl.map.mutable.UnifiedMap;
-import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Chii Chang
@@ -44,9 +38,6 @@ import java.util.Map;
 public class EmptyImmutableLog extends AbstractLogImpl implements APMLog {
 
     private final List<ATrace> traces = new ArrayList<>();
-    private final UnifiedMap<String, UnifiedSet<CaseAttributeValue>> immutableCaseAttributeValues = new UnifiedMap<>();
-    private final UnifiedMap<String, UnifiedSet<EventAttributeValue>> immutableEventAttributeValues = new UnifiedMap<>();
-    private final Map<Integer, List<ATrace>> caseVariantGroupMap = new UnifiedMap<>();
 
     public EmptyImmutableLog(String logName, HashBiMap<String, Integer> activityNameIndicatorMap) {
         setLogName(logName);
@@ -69,21 +60,6 @@ public class EmptyImmutableLog extends AbstractLogImpl implements APMLog {
     @Override
     public ATrace get(String caseId) throws CaseIdNotFoundException {
         return null;
-    }
-
-    @Override
-    public Map<Integer, List<ATrace>> getCaseVariantGroupMap() {
-        return caseVariantGroupMap;
-    }
-
-    @Override
-    public ImmutableUnifiedMap<String, UnifiedSet<EventAttributeValue>> getImmutableEventAttributeValues() {
-        return new ImmutableUnifiedMap<>(immutableEventAttributeValues);
-    }
-
-    @Override
-    public ImmutableUnifiedMap<String, UnifiedSet<CaseAttributeValue>> getImmutableCaseAttributeValues() {
-        return new ImmutableUnifiedMap<>(immutableCaseAttributeValues);
     }
 
     @Override

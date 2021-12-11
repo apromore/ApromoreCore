@@ -21,19 +21,14 @@
  */
 package org.apromore.apmlog;
 
-import org.apromore.apmlog.logobjects.ActivityInstance;
 import org.apromore.apmlog.exceptions.CaseIdNotFoundException;
 import org.apromore.apmlog.exceptions.EmptyInputException;
-import org.apromore.apmlog.stats.CaseAttributeValue;
-import org.apromore.apmlog.stats.EventAttributeValue;
+import org.apromore.apmlog.logobjects.ActivityInstance;
 import org.apromore.calendar.model.CalendarModel;
 import org.deckfour.xes.model.XLog;
 import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
-import org.eclipse.collections.impl.map.immutable.ImmutableUnifiedMap;
-import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Chii Chang (11/2019)
@@ -86,24 +81,6 @@ public interface APMLog {
 //    Map<String, ATrace> getTracesMap();
 
     ATrace get(String caseId) throws CaseIdNotFoundException;
-
-    /**
-     * Traces grouped by case variant Ids
-     * @return <k, v> as <caseVariantId, List of ATrace>
-     */
-    Map<Integer, List<ATrace>> getCaseVariantGroupMap();
-
-    /**
-     * The main attribute data of 'activity instances'/events
-     * @return
-     */
-    ImmutableUnifiedMap<String, UnifiedSet<EventAttributeValue>> getImmutableEventAttributeValues();
-
-    /**
-     * The main attribute data of cases
-     * @return
-     */
-    ImmutableUnifiedMap<String, UnifiedSet<CaseAttributeValue>> getImmutableCaseAttributeValues();
 
     /**
      * Represents the size of traces

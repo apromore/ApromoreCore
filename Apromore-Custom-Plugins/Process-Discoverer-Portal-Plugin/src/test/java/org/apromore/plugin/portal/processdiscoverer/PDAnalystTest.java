@@ -124,7 +124,7 @@ public class PDAnalystTest extends TestDataSetup {
         List<CaseVariantDetails> caseVariantDetails = analyst.getCaseVariantDetails();
         assertEquals(2, caseVariantDetails.size());
         assertEquals(1, caseVariantDetails.get(0).getCaseVariantId());
-        assertEquals(1, caseVariantDetails.get(0).getActivityInstances());
+        assertEquals(2, caseVariantDetails.get(0).getActivityInstances());
         assertEquals(0, caseVariantDetails.get(0).getAvgDuration(), 0);
         assertEquals("instant", caseVariantDetails.get(0).getAvgDurationStr());
         assertEquals(0.5, caseVariantDetails.get(0).getFreq(), 0);
@@ -137,7 +137,7 @@ public class PDAnalystTest extends TestDataSetup {
         analyst.filter_RemoveEventsAnyValueOfEventAttribute("a", "concept:name");
         List<CaseVariantDetails> caseVariantDetails = analyst.getCaseVariantDetails();
         assertEquals(1, caseVariantDetails.size());
-        assertEquals(2, caseVariantDetails.get(0).getCaseVariantId());
+        assertEquals(1, caseVariantDetails.get(0).getCaseVariantId());
         assertEquals(2, caseVariantDetails.get(0).getActivityInstances());
         assertEquals(0, caseVariantDetails.get(0).getAvgDuration(), 0);
         assertEquals("instant", caseVariantDetails.get(0).getAvgDurationStr());
