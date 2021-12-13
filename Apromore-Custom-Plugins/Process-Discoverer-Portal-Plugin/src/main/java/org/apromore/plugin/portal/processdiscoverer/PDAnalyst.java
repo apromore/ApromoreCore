@@ -477,7 +477,8 @@ public class PDAnalyst {
             for (ATrace aTrace : entry.getValue()) {
                 String caseId = aTrace.getCaseId();
                 int caseEvents = aTrace.getActivityInstances().size();
-                CaseDetails caseDetails = CaseDetails.valueOf(caseId, caseEvents, caseVariantId);
+                double duration = TimeStatsProcessor.getCaseDuration(aTrace);
+                CaseDetails caseDetails = CaseDetails.valueOf(caseId, caseEvents, duration, caseVariantId);
                 listResult.add(caseDetails);
             }
         }
