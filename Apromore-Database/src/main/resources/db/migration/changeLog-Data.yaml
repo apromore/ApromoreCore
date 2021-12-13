@@ -1690,3 +1690,29 @@ databaseChangeLog:
               - column:
                   name: permissionid
                   value: "19"
+
+  - changeSet:
+      id: 20211213140400
+      author: janeh
+      comment: "migrate existing users to admin or analyst role"
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: INSERT INTO user_role
+              SELECT DISTINCT 4 AS roleid, userid
+              FROM user_role
+              WHERE userid NOT IN (
+              SELECT DISTINCT userid
+              FROM user_role
+              WHERE roleid IN (1, 4, 9)
+              );
+        - delete:
+            tableName: user_role
+            where: roleid NOT IN (1, 4, 9);
+        - delete:
+            tableName: user_role
+            where: userid IN (
+              SELECT userid
+              FROM (SELECT * FROM user_role) AS user_role_copy
+              WHERE roleid = 1
+              ) AND roleid NOT IN (1, 9);
