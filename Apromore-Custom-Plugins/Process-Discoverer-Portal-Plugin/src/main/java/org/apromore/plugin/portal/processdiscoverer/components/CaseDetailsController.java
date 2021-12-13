@@ -67,10 +67,10 @@ public class CaseDetailsController extends DataListController {
   private void generateData() {
     List<CaseDetails> caseDetails = parent.getProcessAnalyst().getCaseDetails();
     records = new ListModelList();
-    rows = new ArrayList<String[]>();
+    rows = new ArrayList<>();
     for (CaseDetails c : caseDetails) {
       records.add(c);
-      rows.add(new String[] {c.getCaseId(), Integer.toString(c.getCaseEvents()),
+      rows.add(new String[] {c.getCaseId(), Integer.toString(c.getCaseEvents()), c.getDurationString(),
           Integer.toString(c.getCaseVariantId())});
     }
   }
@@ -82,7 +82,7 @@ public class CaseDetailsController extends DataListController {
 
   @Override
   public String[] getDataHeaders() {
-    return new String[] {"Case ID", "Events", "Case Variant"};
+    return new String[] {"Case ID", "Events", "Duration", "Case Variant"};
   }
 
   @Override
