@@ -709,9 +709,11 @@ public abstract class BaseListboxController extends BaseController {
 			Notification.error(Labels.getLabel("portal_source_destination_folder_notsame_message"));
 			return;
 		}
-		this.mainController.getPortalSession().setCurrentFolder(dropToFolder);
-		this.mainController.getCopyPasteController().drop(Set.of(dropObject), 1, dropToFolder);
-		refreshContent();
+      FolderType currentFolder = this.mainController.getPortalSession().getCurrentFolder();
+      this.mainController.getPortalSession().setCurrentFolder(dropToFolder);
+	  this.mainController.getCopyPasteController().drop(Set.of(dropObject), 1, dropToFolder);
+      this.mainController.getPortalSession().setCurrentFolder(currentFolder);
+      refreshContent();
 	}
 
   private ArrayList<FolderType> getSelectedFolders() {
