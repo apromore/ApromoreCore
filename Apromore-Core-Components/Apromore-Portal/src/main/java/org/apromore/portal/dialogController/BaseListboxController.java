@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.HashSet;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -223,17 +224,24 @@ public abstract class BaseListboxController extends BaseController {
 			public void onEvent(DropEvent event) throws Exception {
 				try {
 					FolderType currentFolder = mainController.getPortalSession().getCurrentFolder();
-					Object droppedObject = null;
+					Set<Object> droppedObjects = new HashSet<>();
 					if (event.getDragged() instanceof Listitem) {
 						Listitem draggedItem = (Listitem) event.getDragged();
-						droppedObject = draggedItem.getValue();
+						draggedItem.getListbox().getSelectedItems().stream().map(Listitem::getValue).forEach(value -> {
+							droppedObjects.add(value);
+						});
+						droppedObjects.add(draggedItem.getValue());
 					} else if (event.getDragged() instanceof Treerow) {
 						FolderTreeNode draggedItem = ((Treeitem) event.getDragged().getParent()).getValue();
-						droppedObject = draggedItem.getData();
+						((Treeitem) event.getDragged().getParent()).getTree().getSelectedItems().stream()
+								.map(Treeitem::getValue).forEach(value -> {
+									droppedObjects.add(((FolderTreeNode) value).getData());
+								});
+						droppedObjects.add(draggedItem.getData());
 					}
 
-					if (currentFolder != null && droppedObject != null) {
-						mainController.getBaseListboxController().drop(currentFolder, droppedObject);
+					if (currentFolder != null && droppedObjects.size() > 0) {
+						mainController.getBaseListboxController().drop(currentFolder, droppedObjects);
 					}
 				} catch (Exception e) {
 					LOGGER.error("Error Occured in Drag and Drop", e);
@@ -681,9 +689,17 @@ public abstract class BaseListboxController extends BaseController {
   }
 
   public void cut() {
-    FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
+		FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
 
-    this.mainController.getCopyPasteController().cut(getSelection(), getSelectionCount(), currentFolder);
+		if (this.mainController.getCopyPasteController().cut(getSelection(), getSelectionCount(), currentFolder)) {
+			getListBox().getItems().stream().forEach(item -> {
+				item.removeSclass("ap-item-cut-selected");
+			});
+
+			getListBox().getSelectedItems().stream().forEach(item -> {
+				item.setSclass("ap-item-cut-selected");
+			});
+		}
   }
 
   public void copy() {
@@ -703,14 +719,18 @@ public abstract class BaseListboxController extends BaseController {
 	    this.mainController.getCopyPasteController().paste(currentFolder);
 	    refreshContent();
   }
-  
-	public void drop(FolderType dropToFolder,Object dropObject) throws Exception {
-		if (dropObject instanceof FolderType && dropToFolder.getId().equals(((FolderType)dropObject).getId())) {
+
+  public void drop(FolderType dropToFolder,Set<Object> dropObjects) throws Exception {
+		if (dropObjects.stream().anyMatch(dropObject -> {
+			return (dropObject instanceof FolderType && dropToFolder.getId().equals(((FolderType) dropObject).getId()));
+		})) {
 			Notification.error(Labels.getLabel("portal_source_destination_folder_notsame_message"));
 			return;
 		}
+		FolderType currentFolder = this.mainController.getPortalSession().getCurrentFolder();
 		this.mainController.getPortalSession().setCurrentFolder(dropToFolder);
-		this.mainController.getCopyPasteController().drop(Set.of(dropObject), 1, dropToFolder);
+		this.mainController.getCopyPasteController().drop(dropObjects, dropObjects.size(), dropToFolder);
+		this.mainController.getPortalSession().setCurrentFolder(currentFolder);
 		refreshContent();
 	}
 
