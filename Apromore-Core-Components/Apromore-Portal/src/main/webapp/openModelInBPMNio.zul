@@ -71,10 +71,47 @@
     <n:link rel="stylesheet" media="screen" href="libs/spectrum/2.0.5/spectrum.css" type="text/css"/>
     <n:script src="libs/jquery/3.5.1/jquery-3.5.1.min.js" type="text/javascript"/>
 
+    <!-- This will prevent the session to time out when this ZUL page is opened in the browser and user is
+    interacting with BPMN Editor. The session still timeouts when the user has navigated the browser away or stay
+    idle for over 30 min. The delay (30 minutes) shall be as long as possible but smaller than http session timeout. -->
     <script defer="true">
-      setInterval(function() {
-        zk.Widget.$('$divKeepAlive').fire('onKeepAlive', {payload: 'esc'} , {toServer:true});
-      }, 1800000); // Send keep alive request every 30 mins
+        var idleTime = 0;
+        var idleInterval;
+        jQuery(document).ready(function () {
+            // Increment the idle time counter every minute.
+            idleInterval = setInterval(timerIncrement, 60000); // 1 minute
+
+            // Zero the idle timer on mouse and key movement.
+            jQuery(this).mousemove(function (e) {
+                idleTime = 0;
+            });
+            jQuery(this).click(function (e) {
+                idleTime = 0;
+            });
+            jQuery(this).keydown(function (e) {
+                idleTime = 0;
+            });
+        });
+
+        function timerIncrement() {
+            idleTime++;
+            // Send keep alive request every 30 min
+            zk.Widget.$('$divKeepAlive').fire(
+                'onKeepAlive',
+                { payload: 'esc' },
+                { toServer: true },
+            );
+            if (idleTime > 29) {
+                // Timeout after 30 minutes idle
+                timeout();
+            }
+        }
+
+        function timeout() {
+            console.log('Logout user after 30 min idle');
+            clearInterval(idleInterval);
+            window.location.href = '/logout';
+        }
     </script>
 
     <div id="divKeepAlive" apply="org.apromore.portal.dialogController.KeepAliveController"/>
