@@ -711,15 +711,15 @@ public abstract class BaseListboxController extends BaseController {
 	    this.mainController.getCopyPasteController().paste(currentFolder);
 	    refreshContent();
   }
-  
-	public void drop(FolderType dropToFolder,Object dropObject) throws Exception {
-		if (dropObject instanceof FolderType && dropToFolder.getId().equals(((FolderType)dropObject).getId())) {
-			Notification.error(Labels.getLabel("portal_source_destination_folder_notsame_message"));
-			return;
-		}
+
+  public void drop(FolderType dropToFolder,Object dropObject) throws Exception {
+        if (dropObject instanceof FolderType && dropToFolder.getId().equals(((FolderType)dropObject).getId())) {
+          Notification.error(Labels.getLabel("portal_source_destination_folder_notsame_message"));
+          return;
+        }
         FolderType currentFolder = this.mainController.getPortalSession().getCurrentFolder();
         this.mainController.getPortalSession().setCurrentFolder(dropToFolder);
-	    this.mainController.getCopyPasteController().drop(Set.of(dropObject), 1, dropToFolder);
+        this.mainController.getCopyPasteController().drop(Set.of(dropObject), 1, dropToFolder);
         this.mainController.getPortalSession().setCurrentFolder(currentFolder);
         refreshContent();
 	}
