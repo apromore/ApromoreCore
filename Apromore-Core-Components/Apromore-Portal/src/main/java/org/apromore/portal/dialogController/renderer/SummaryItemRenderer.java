@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apromore.commons.datetime.DateTimeUtils;
 import org.apromore.plugin.portal.PortalLoggerFactory;
@@ -316,17 +317,23 @@ public class SummaryItemRenderer implements ListitemRenderer {
             public void onEvent(DropEvent event) throws Exception {
             	try {
             	Listitem droppedToItem = (Listitem)event.getTarget();
-            	Object droppedObject=null;
+            	Set<Object> droppedObjects=new HashSet<>();
             	if(event.getDragged() instanceof Listitem) {
             		Listitem draggedItem = (Listitem ) event.getDragged();
-            		droppedObject=draggedItem.getValue();
+                    draggedItem.getListbox().getSelectedItems().stream().map(Listitem::getValue).forEach(value -> {
+                        droppedObjects.add(value);
+                    });
+                    droppedObjects.add(draggedItem.getValue());
             	}else if(event.getDragged() instanceof Treerow) {
             		FolderTreeNode draggedItem = ((Treeitem) event.getDragged().getParent()).getValue();
-            		droppedObject=draggedItem.getData();
+                    ((Treeitem) event.getDragged().getParent()).getTree().getSelectedItems().stream().map(Treeitem::getValue).forEach(value -> {
+                        droppedObjects.add(((FolderTreeNode)value).getData());
+                    });
+                    droppedObjects.add(draggedItem.getData());
             	}
             	
-            	if(droppedToItem.getValue()!=null && droppedToItem.getValue() instanceof FolderType && droppedObject!=null) {
-            		mainController.getBaseListboxController().drop(droppedToItem.getValue(), droppedObject);
+            	if(droppedToItem.getValue()!=null && droppedToItem.getValue() instanceof FolderType && droppedObjects.size()>0) {
+            		mainController.getBaseListboxController().drop(droppedToItem.getValue(), droppedObjects);
             	}
             	}catch(Exception e) {
             		LOGGER.error("Error Occured in Drag and Drop",e);
