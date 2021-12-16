@@ -683,7 +683,15 @@ public abstract class BaseListboxController extends BaseController {
   public void cut() {
     FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
 
-    this.mainController.getCopyPasteController().cut(getSelection(), getSelectionCount(), currentFolder);
+	if (this.mainController.getCopyPasteController().cut(getSelection(), getSelectionCount(), currentFolder)) {
+		getListBox().getItems().stream().forEach(item -> {
+			item.removeSclass("ap-item-cut-selected");
+		});
+
+		getListBox().getSelectedItems().stream().forEach(item -> {
+			item.setSclass("ap-item-cut-selected");
+		});
+	}
   }
 
   public void copy() {
@@ -709,11 +717,11 @@ public abstract class BaseListboxController extends BaseController {
 			Notification.error(Labels.getLabel("portal_source_destination_folder_notsame_message"));
 			return;
 		}
-      FolderType currentFolder = this.mainController.getPortalSession().getCurrentFolder();
-      this.mainController.getPortalSession().setCurrentFolder(dropToFolder);
-	  this.mainController.getCopyPasteController().drop(Set.of(dropObject), 1, dropToFolder);
-      this.mainController.getPortalSession().setCurrentFolder(currentFolder);
-      refreshContent();
+        FolderType currentFolder = this.mainController.getPortalSession().getCurrentFolder();
+        this.mainController.getPortalSession().setCurrentFolder(dropToFolder);
+	    this.mainController.getCopyPasteController().drop(Set.of(dropObject), 1, dropToFolder);
+        this.mainController.getPortalSession().setCurrentFolder(currentFolder);
+        refreshContent();
 	}
 
   private ArrayList<FolderType> getSelectedFolders() {

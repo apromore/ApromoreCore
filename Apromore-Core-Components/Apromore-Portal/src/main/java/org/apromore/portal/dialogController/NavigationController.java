@@ -195,7 +195,15 @@ public class NavigationController extends BaseController {
      }
      
      public void cut(FolderType selectedFolder) {
-    	 mainC.getCopyPasteController().cut(Collections.singleton(selectedFolder), 1, selectedFolder);
+    		if (mainC.getCopyPasteController().cut(Collections.singleton(selectedFolder), 1, selectedFolder)) {
+    			tree.getItems().stream().forEach(item -> {
+    				item.removeSclass("ap-item-cut-selected");
+    			});
+
+    			tree.getSelectedItems().stream().forEach(item -> {
+    				item.setSclass("ap-item-cut-selected");
+    			});
+    		}
       }
      
 	public void paste(FolderType selectedFolder) {

@@ -272,7 +272,7 @@ public class CopyAndPasteController extends BaseController {
     return true;
   }
 
-  public void cut(Set<Object> selections, int selectionCount, FolderType currentFolder) {
+  public boolean cut(Set<Object> selections, int selectionCount, FolderType currentFolder) {
 
     if (checkContext(selections, selectionCount, currentFolder)) {
       try {
@@ -283,6 +283,7 @@ public class CopyAndPasteController extends BaseController {
           updateSelectedItems(selections);
           Notification.info(MessageFormat.format(
               Labels.getLabel("portal_itemsSelectedToMove_message"), getSelectedItemsSize()));
+          return true;
         } else {
           Notification.error(Labels.getLabel("portal_onlyOwnerCanCutFromCurrent_message"));
         }
@@ -292,6 +293,7 @@ public class CopyAndPasteController extends BaseController {
         LOGGER.error(e.getMessage());
       }
     }
+    return false;
   }
 
   public void copy(Set<Object> selections, int selectionCount, FolderType currentFolder) {
