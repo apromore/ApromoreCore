@@ -224,7 +224,7 @@ public abstract class BaseListboxController extends BaseController {
 			public void onEvent(DropEvent event) throws Exception {
 				try {
 					FolderType currentFolder = mainController.getPortalSession().getCurrentFolder();
-					Set<Object> droppedObjects = new HashSet<>();
+                    Set<Object> droppedObjects = new HashSet<>();
 					if (event.getDragged() instanceof Listitem) {
 						Listitem draggedItem = (Listitem) event.getDragged();
                         draggedItem.getListbox().getSelectedItems().stream().map(Listitem::getValue).forEach(value -> {
@@ -234,7 +234,7 @@ public abstract class BaseListboxController extends BaseController {
 					} else if (event.getDragged() instanceof Treerow) {
 						FolderTreeNode draggedItem = ((Treeitem) event.getDragged().getParent()).getValue();
                         ((Treeitem) event.getDragged().getParent()).getTree().getSelectedItems().stream().map(Treeitem::getValue).forEach(value -> {
-                         droppedObjects.add(((FolderTreeNode)value).getData());
+                          droppedObjects.add(((FolderTreeNode)value).getData());
                         });
                         droppedObjects.add( draggedItem.getData());
 					}

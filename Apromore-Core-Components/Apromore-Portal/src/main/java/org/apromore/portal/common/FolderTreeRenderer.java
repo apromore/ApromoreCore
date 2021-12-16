@@ -151,7 +151,7 @@ public class FolderTreeRenderer implements TreeitemRenderer {
 				if (event.getDragged() instanceof Listitem) {
 					Listitem draggedItem = (Listitem) event.getDragged();
                     draggedItem.getListbox().getSelectedItems().stream().map(Listitem::getValue).forEach(value -> {
-                        droppedObjects.add(value);
+                     droppedObjects.add(value);
                     });
                     droppedObjects.add(draggedItem.getValue());
 				} else if (event.getDragged() instanceof Treerow) {

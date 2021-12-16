@@ -317,11 +317,11 @@ public class SummaryItemRenderer implements ListitemRenderer {
             public void onEvent(DropEvent event) throws Exception {
             	try {
             	Listitem droppedToItem = (Listitem)event.getTarget();
-            	Set<Object> droppedObjects=new HashSet<>();
+                Set<Object> droppedObjects=new HashSet<>();
             	if(event.getDragged() instanceof Listitem) {
             		Listitem draggedItem = (Listitem ) event.getDragged();
                     draggedItem.getListbox().getSelectedItems().stream().map(Listitem::getValue).forEach(value -> {
-                      droppedObjects.add(value);
+                     droppedObjects.add(value);
                     });
                     droppedObjects.add(draggedItem.getValue());
             	}else if(event.getDragged() instanceof Treerow) {
