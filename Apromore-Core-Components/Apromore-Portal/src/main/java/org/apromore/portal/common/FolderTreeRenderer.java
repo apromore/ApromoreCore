@@ -27,6 +27,8 @@ package org.apromore.portal.common;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.dialogController.MainController;
@@ -145,18 +147,20 @@ public class FolderTreeRenderer implements TreeitemRenderer {
 			try {
 				FolderTreeNode dropTarget = ((Treeitem) event.getTarget().getParent()).getValue();
 				FolderType selectedFolder = (FolderType) dropTarget.getData();
-
-				Object droppedObject = null;
+                Set<Object> droppedObjects=new HashSet<>();
 				if (event.getDragged() instanceof Listitem) {
 					Listitem draggedItem = (Listitem) event.getDragged();
-					droppedObject = draggedItem.getValue();
+                    draggedItem.getListbox().getSelectedItems().stream().map(Listitem::getValue).forEach(value -> {
+                        droppedObjects.add(value);
+                    });
+                    droppedObjects.add(draggedItem.getValue());
 				} else if (event.getDragged() instanceof Treerow) {
 					FolderTreeNode draggedItem = ((Treeitem) event.getDragged().getParent()).getValue();
-					droppedObject = draggedItem.getData();
+                    droppedObjects.add(draggedItem.getData());
 				}
 
-				if (selectedFolder != null && droppedObject != null) {
-					mainC.getBaseListboxController().drop(selectedFolder, droppedObject);
+				if (selectedFolder != null && droppedObjects.size()>0) {
+					mainC.getBaseListboxController().drop(selectedFolder, droppedObjects);
 				}
 			} catch (Exception e) {
 				LOGGER.error("Error occurred in Drag and Drop on Tree", e);

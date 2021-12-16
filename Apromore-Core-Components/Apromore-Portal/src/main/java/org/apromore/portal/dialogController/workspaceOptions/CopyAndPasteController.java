@@ -387,7 +387,7 @@ public class CopyAndPasteController extends BaseController {
 						selections.size()));
 				clearSelectedItems();
 		} catch (Exception e) {
-			Messagebox.show(Labels.getLabel("portal_failedPaste_message"), "Apromore", Messagebox.OK, Messagebox.ERROR);
+            Notification.error(Labels.getLabel("portal_failedPaste_message"));
 			LOGGER.error("Unable to perform Paste", e);
 		}
 	}
