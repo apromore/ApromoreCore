@@ -143,23 +143,22 @@ public class FolderTreeRenderer implements TreeitemRenderer {
 	dataRow.addEventListener(Events.ON_DROP, new EventListener<DropEvent>() {
 		@Override
 		public void onEvent(DropEvent event) throws Exception {
-
 			try {
 				FolderTreeNode dropTarget = ((Treeitem) event.getTarget().getParent()).getValue();
 				FolderType selectedFolder = (FolderType) dropTarget.getData();
-                Set<Object> droppedObjects=new HashSet<>();
+				Set<Object> droppedObjects = new HashSet<>();
 				if (event.getDragged() instanceof Listitem) {
 					Listitem draggedItem = (Listitem) event.getDragged();
-                    draggedItem.getListbox().getSelectedItems().stream().map(Listitem::getValue).forEach(value -> {
-                     droppedObjects.add(value);
-                    });
-                    droppedObjects.add(draggedItem.getValue());
+					draggedItem.getListbox().getSelectedItems().stream().map(Listitem::getValue).forEach(value -> {
+						droppedObjects.add(value);
+					});
+					droppedObjects.add(draggedItem.getValue());
 				} else if (event.getDragged() instanceof Treerow) {
 					FolderTreeNode draggedItem = ((Treeitem) event.getDragged().getParent()).getValue();
-                    droppedObjects.add(draggedItem.getData());
+					droppedObjects.add(draggedItem.getData());
 				}
 
-				if (selectedFolder != null && droppedObjects.size()>0) {
+				if (selectedFolder != null && droppedObjects.size() > 0) {
 					mainC.getBaseListboxController().drop(selectedFolder, droppedObjects);
 				}
 			} catch (Exception e) {
