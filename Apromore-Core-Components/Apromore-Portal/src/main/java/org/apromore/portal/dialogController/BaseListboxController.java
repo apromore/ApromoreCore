@@ -220,33 +220,33 @@ public abstract class BaseListboxController extends BaseController {
 	  
 	    this.listBox.setDroppable("true");
 		this.listBox.addEventListener(Events.ON_DROP, new EventListener<DropEvent>() {
-            @Override
-            public void onEvent(DropEvent event) throws Exception {
-                try {
-                    FolderType currentFolder = mainController.getPortalSession().getCurrentFolder();
-                    Set<Object> droppedObjects = new HashSet<>();
-                    if (event.getDragged() instanceof Listitem) {
-                        Listitem draggedItem = (Listitem) event.getDragged();
-                        draggedItem.getListbox().getSelectedItems().stream().map(Listitem::getValue).forEach(value -> {
-                         droppedObjects.add(value);
-                        });
-                        droppedObjects.add(draggedItem.getValue());
-                    } else if (event.getDragged() instanceof Treerow) {
-                        FolderTreeNode draggedItem = ((Treeitem) event.getDragged().getParent()).getValue();
-                        ((Treeitem) event.getDragged().getParent()).getTree().getSelectedItems().stream().map(Treeitem::getValue).forEach(value -> {
-                          droppedObjects.add(((FolderTreeNode)value).getData());
-                        });
-                        droppedObjects.add( draggedItem.getData());
-                    }
+          @Override
+          public void onEvent(DropEvent event) throws Exception {
+            try {
+              FolderType currentFolder = mainController.getPortalSession().getCurrentFolder();
+              Set<Object> droppedObjects = new HashSet<>();
+              if (event.getDragged() instanceof Listitem) {
+                Listitem draggedItem = (Listitem) event.getDragged();
+                draggedItem.getListbox().getSelectedItems().stream().map(Listitem::getValue).forEach(value -> {
+                  droppedObjects.add(value);
+                });
+                droppedObjects.add(draggedItem.getValue());
+              } else if (event.getDragged() instanceof Treerow) {
+                FolderTreeNode draggedItem = ((Treeitem) event.getDragged().getParent()).getValue();
+                ((Treeitem) event.getDragged().getParent()).getTree().getSelectedItems().stream().map(Treeitem::getValue).forEach(value -> {
+                  droppedObjects.add(((FolderTreeNode) value).getData());
+                });
+                droppedObjects.add(draggedItem.getData());
+              }
 
-                    if (currentFolder != null && droppedObjects.size() >0) {
-                        mainController.getBaseListboxController().drop(currentFolder, droppedObjects);
-                    }
-                } catch (Exception e) {
-                    LOGGER.error("Error Occured in Drag and Drop", e);
-                }
+              if (currentFolder != null && droppedObjects.size() > 0) {
+                mainController.getBaseListboxController().drop(currentFolder, droppedObjects);
+              }
+            } catch (Exception e) {
+              LOGGER.error("Error Occured in Drag and Drop", e);
             }
-		});
+          }
+        });
 
     this.listBox.addEventListener("onKeyPress", new EventListener<KeyEvent>() {
       @Override
