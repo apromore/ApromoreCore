@@ -205,49 +205,49 @@ public abstract class BaseListboxController extends BaseController {
 
   protected void attachEvents() {
 
-      this.listBox.addEventListener(Events.ON_RIGHT_CLICK, new EventListener<Event>() {
-          @Override
-          public void onEvent(Event event) throws Exception {
-            if (listBox.getSelectedCount() > 0) {
-              unselectAll();
-            }
-             Map args = new HashMap();
-              args.put("POPUP_TYPE", "CANVAS");
-            Menupopup menupopup = (Menupopup)Executions.createComponents("~./macros/popupMenu.zul", null, args);
-            menupopup.open(event.getTarget(), "at_pointer");
+    this.listBox.addEventListener(Events.ON_RIGHT_CLICK, new EventListener<Event>() {
+      @Override
+      public void onEvent(Event event) throws Exception {
+        if (listBox.getSelectedCount() > 0) {
+          unselectAll();
+        }
+        Map args = new HashMap();
+        args.put("POPUP_TYPE", "CANVAS");
+        Menupopup menupopup = (Menupopup)Executions.createComponents("~./macros/popupMenu.zul", null, args);
+        menupopup.open(event.getTarget(), "at_pointer");
+      }
+    });
+
+    this.listBox.setDroppable("true");
+    this.listBox.addEventListener(Events.ON_DROP, new EventListener<DropEvent>() {
+      @Override
+      public void onEvent(DropEvent event) throws Exception {
+        try {
+          FolderType currentFolder = mainController.getPortalSession().getCurrentFolder();
+          Set<Object> droppedObjects = new HashSet<>();
+          if (event.getDragged() instanceof Listitem) {
+            Listitem draggedItem = (Listitem) event.getDragged();
+            draggedItem.getListbox().getSelectedItems().stream().map(Listitem::getValue).forEach(value -> {
+              droppedObjects.add(value);
+            });
+            droppedObjects.add(draggedItem.getValue());
+          } else if (event.getDragged() instanceof Treerow) {
+            FolderTreeNode draggedItem = ((Treeitem) event.getDragged().getParent()).getValue();
+            ((Treeitem) event.getDragged().getParent()).getTree().getSelectedItems().stream()
+                .map(Treeitem::getValue).forEach(value -> {
+                  droppedObjects.add(((FolderTreeNode) value).getData());
+                });
+            droppedObjects.add(draggedItem.getData());
           }
-        });
 
-        this.listBox.setDroppable("true");
-        this.listBox.addEventListener(Events.ON_DROP, new EventListener<DropEvent>() {
-            @Override
-            public void onEvent(DropEvent event) throws Exception {
-                try {
-                    FolderType currentFolder = mainController.getPortalSession().getCurrentFolder();
-                    Set<Object> droppedObjects = new HashSet<>();
-                    if (event.getDragged() instanceof Listitem) {
-                        Listitem draggedItem = (Listitem) event.getDragged();
-                        draggedItem.getListbox().getSelectedItems().stream().map(Listitem::getValue).forEach(value -> {
-                            droppedObjects.add(value);
-                        });
-                        droppedObjects.add(draggedItem.getValue());
-                    } else if (event.getDragged() instanceof Treerow) {
-                        FolderTreeNode draggedItem = ((Treeitem) event.getDragged().getParent()).getValue();
-                        ((Treeitem) event.getDragged().getParent()).getTree().getSelectedItems().stream()
-                                .map(Treeitem::getValue).forEach(value -> {
-                                    droppedObjects.add(((FolderTreeNode) value).getData());
-                                });
-                        droppedObjects.add(draggedItem.getData());
-                    }
-
-                    if (currentFolder != null && droppedObjects.size() > 0) {
-                        mainController.getBaseListboxController().drop(currentFolder, droppedObjects);
-                    }
-                } catch (Exception e) {
-                    LOGGER.error("Error Occured in Drag and Drop", e);
-                }
-            }
-        });
+          if (currentFolder != null && droppedObjects.size() > 0) {
+            mainController.getBaseListboxController().drop(currentFolder, droppedObjects);
+          }
+        } catch (Exception e) {
+          LOGGER.error("Error Occured in Drag and Drop", e);
+        }
+      }
+    });
 
     this.listBox.addEventListener("onKeyPress", new EventListener<KeyEvent>() {
       @Override
@@ -429,23 +429,23 @@ public abstract class BaseListboxController extends BaseController {
     });
 
     this.listBox.getListhead().addEventListener("onColSize", new EventListener<ColSizeEvent>() {
-        @Override
-        public void onEvent(ColSizeEvent event) throws Exception {
-            try {
-                int widthSetByClient = Integer.parseInt((event.getWidth().substring(0,event.getWidth().indexOf("px"))));
-                int newWidth = 0;
-                Listheader listHeader = (Listheader) event.getColumn();
-                if (event.getColIndex() == 0) {
-                    newWidth = Math.max(widthSetByClient, 40);
-                } else {
-                    newWidth = Math.max(widthSetByClient, 60);
-                }
+      @Override
+      public void onEvent(ColSizeEvent event) throws Exception {
+        try {
+          int widthSetByClient = Integer.parseInt((event.getWidth().substring(0,event.getWidth().indexOf("px"))));
+          int newWidth = 0;
+          Listheader listHeader = (Listheader) event.getColumn();
+          if (event.getColIndex() == 0) {
+            newWidth = Math.max(widthSetByClient, 40);
+          } else {
+            newWidth = Math.max(widthSetByClient, 60);
+          }
 
-                listHeader.setWidth(newWidth + "px");
-            } catch (Exception ex) {
-                LOGGER.error("Error in resize",ex);
-            }
+          listHeader.setWidth(newWidth + "px");
+        } catch (Exception ex) {
+          LOGGER.error("Error in resize",ex);
         }
+      }
     });
 
   }
@@ -716,23 +716,23 @@ public abstract class BaseListboxController extends BaseController {
   }
 
   public void paste(FolderType currentFolder) throws Exception {
-        this.mainController.getCopyPasteController().paste(currentFolder);
-        refreshContent();
+    this.mainController.getCopyPasteController().paste(currentFolder);
+    refreshContent();
   }
 
   public void drop(FolderType dropToFolder,Set<Object> dropObjects) throws Exception {
-        if (dropObjects.stream().anyMatch(dropObject -> {
-            return (dropObject instanceof FolderType && dropToFolder.getId().equals(((FolderType) dropObject).getId()));
-        })) {
-            Notification.error(Labels.getLabel("portal_source_destination_folder_notsame_message"));
-            return;
-        }
-        FolderType currentFolder = this.mainController.getPortalSession().getCurrentFolder();
-        this.mainController.getPortalSession().setCurrentFolder(dropToFolder);
-        this.mainController.getCopyPasteController().drop(dropObjects, dropObjects.size(), dropToFolder);
-        this.mainController.getPortalSession().setCurrentFolder(currentFolder);
-        refreshContent();
+    if (dropObjects.stream().anyMatch(dropObject -> {
+      return (dropObject instanceof FolderType && dropToFolder.getId().equals(((FolderType) dropObject).getId()));
+    })) {
+      Notification.error(Labels.getLabel("portal_source_destination_folder_notsame_message"));
+      return;
     }
+    FolderType currentFolder = this.mainController.getPortalSession().getCurrentFolder();
+    this.mainController.getPortalSession().setCurrentFolder(dropToFolder);
+    this.mainController.getCopyPasteController().drop(dropObjects, dropObjects.size(), dropToFolder);
+    this.mainController.getPortalSession().setCurrentFolder(currentFolder);
+    refreshContent();
+  }
 
   private ArrayList<FolderType> getSelectedFolders() {
     ArrayList<FolderType> folderList = new ArrayList<>();
@@ -941,10 +941,10 @@ public abstract class BaseListboxController extends BaseController {
 
       FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
       if (getSelectionCount() == 0) {
-          if(currentFolder==null) {
-                Notification.error(Labels.getLabel("portal_selectOneLogOrModel_message"));
-                return;
-          }
+        if (currentFolder == null) {
+          Notification.error(Labels.getLabel("portal_selectOneLogOrModel_message"));
+          return;
+        }
       } else if (getSelectionCount() > 1) {
         Notification.error(Labels.getLabel("portal_noMultipleShare_message"));
         return;
@@ -952,13 +952,13 @@ public abstract class BaseListboxController extends BaseController {
 
       accessControlPlugin = portalPluginMap.get(PluginCatalog.PLUGIN_ACCESS_CONTROL);
       Map arg = new HashMap<>();
-      if(getSelectionCount()==1) {
-          Object selectedItem = getSelection().iterator().next();
-          arg.put("withFolderTree", false);
-          arg.put("selectedItem", selectedItem);
-      }else {
-          arg.put("withFolderTree", false);
-          arg.put("selectedItem", currentFolder);
+      if (getSelectionCount() == 1) {
+        Object selectedItem = getSelection().iterator().next();
+        arg.put("withFolderTree", false);
+        arg.put("selectedItem", selectedItem);
+      } else {
+        arg.put("withFolderTree", false);
+        arg.put("selectedItem", currentFolder);
       }
 
       arg.put("currentUser", UserSessionManager.getCurrentUser()); // UserType
