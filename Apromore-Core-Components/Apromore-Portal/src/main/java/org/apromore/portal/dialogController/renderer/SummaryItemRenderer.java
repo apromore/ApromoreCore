@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apromore.commons.datetime.DateTimeUtils;
 import org.apromore.plugin.portal.PortalLoggerFactory;
@@ -152,10 +153,10 @@ public class SummaryItemRenderer implements ListitemRenderer {
         listItem.addEventListener(Events.ON_RIGHT_CLICK, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
-            	Map args = new HashMap();
-          	    args.put("POPUP_TYPE", "PROCESS");
-            	Menupopup menupopup = (Menupopup)Executions.createComponents("~./macros/popupMenu.zul", null, args);
-            	menupopup.open(event.getTarget(), "at_pointer");
+                Map args = new HashMap();
+                  args.put("POPUP_TYPE", "PROCESS");
+                Menupopup menupopup = (Menupopup)Executions.createComponents("~./macros/popupMenu.zul", null, args);
+                menupopup.open(event.getTarget(), "at_pointer");
             }
 
         });
@@ -191,10 +192,10 @@ public class SummaryItemRenderer implements ListitemRenderer {
         listItem.addEventListener(Events.ON_RIGHT_CLICK, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
-            	Map args = new HashMap();
-          	    args.put("POPUP_TYPE", "LOG");
-            	Menupopup menupopup = (Menupopup)Executions.createComponents("~./macros/popupMenu.zul", null, args);
-            	menupopup.open(event.getTarget(), "at_pointer");
+                Map args = new HashMap();
+                  args.put("POPUP_TYPE", "LOG");
+                Menupopup menupopup = (Menupopup)Executions.createComponents("~./macros/popupMenu.zul", null, args);
+                menupopup.open(event.getTarget(), "at_pointer");
             }
 
         });
@@ -214,15 +215,15 @@ public class SummaryItemRenderer implements ListitemRenderer {
     }
     
     protected Listcell renderFolderDate(String lastUpdate) {
-    	 Listcell lc = wrapIntoListCell(new Label( DateTimeUtils.normalize(lastUpdate, dateTimeFormatter)));
+         Listcell lc = wrapIntoListCell(new Label( DateTimeUtils.normalize(lastUpdate, dateTimeFormatter)));
          lc.setStyle(CENTRE_ALIGN);
-    	 return lc;
+         return lc;
     }
     
     protected Listcell renderFolderOwner(String owner) {
-   	    Listcell lc = wrapIntoListCell(new Label( owner));
+           Listcell lc = wrapIntoListCell(new Label( owner));
         lc.setStyle(LEFT_ALIGN);
-   	    return lc;
+           return lc;
    }
 
     private void renderFolderSummary(final Listitem listitem, final FolderSummaryType folder, final List<PortalProcessAttributePlugin> plugins) {
@@ -301,11 +302,11 @@ public class SummaryItemRenderer implements ListitemRenderer {
         listitem.addEventListener(Events.ON_RIGHT_CLICK, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
-            	Map args = new HashMap();
-          	    args.put("POPUP_TYPE", "FOLDER");
-          	    args.put("SELECTED_FOLDER", ((Listitem)event.getTarget()).getValue());
-            	Menupopup menupopup = (Menupopup)Executions.createComponents("~./macros/popupMenu.zul", null, args);
-            	menupopup.open(event.getTarget(), "at_pointer");
+                Map args = new HashMap();
+                  args.put("POPUP_TYPE", "FOLDER");
+                  args.put("SELECTED_FOLDER", ((Listitem)event.getTarget()).getValue());
+                Menupopup menupopup = (Menupopup)Executions.createComponents("~./macros/popupMenu.zul", null, args);
+                menupopup.open(event.getTarget(), "at_pointer");
                 
             }
 
@@ -314,23 +315,31 @@ public class SummaryItemRenderer implements ListitemRenderer {
         listitem.addEventListener(Events.ON_DROP, new EventListener<DropEvent>() {
             @Override
             public void onEvent(DropEvent event) throws Exception {
-            	try {
-            	Listitem droppedToItem = (Listitem)event.getTarget();
-            	Object droppedObject=null;
-            	if(event.getDragged() instanceof Listitem) {
-            		Listitem draggedItem = (Listitem ) event.getDragged();
-            		droppedObject=draggedItem.getValue();
-            	}else if(event.getDragged() instanceof Treerow) {
-            		FolderTreeNode draggedItem = ((Treeitem) event.getDragged().getParent()).getValue();
-            		droppedObject=draggedItem.getData();
-            	}
-            	
-            	if(droppedToItem.getValue()!=null && droppedToItem.getValue() instanceof FolderType && droppedObject!=null) {
-            		mainController.getBaseListboxController().drop(droppedToItem.getValue(), droppedObject);
-            	}
-            	}catch(Exception e) {
-            		LOGGER.error("Error Occured in Drag and Drop",e);
-            	}
+                try {
+                    Listitem droppedToItem = (Listitem) event.getTarget();
+                    Set<Object> droppedObjects = new HashSet<>();
+                    if (event.getDragged() instanceof Listitem) {
+                        Listitem draggedItem = (Listitem) event.getDragged();
+                        draggedItem.getListbox().getSelectedItems().stream().map(Listitem::getValue).forEach(value -> {
+                            droppedObjects.add(value);
+                        });
+                        droppedObjects.add(draggedItem.getValue());
+                    } else if (event.getDragged() instanceof Treerow) {
+                        FolderTreeNode draggedItem = ((Treeitem) event.getDragged().getParent()).getValue();
+                        ((Treeitem) event.getDragged().getParent()).getTree().getSelectedItems().stream()
+                                .map(Treeitem::getValue).forEach(value -> {
+                                    droppedObjects.add(((FolderTreeNode) value).getData());
+                                });
+                        droppedObjects.add(draggedItem.getData());
+                    }
+
+                    if (droppedToItem.getValue() != null && droppedToItem.getValue() instanceof FolderType
+                            && droppedObjects.size() > 0) {
+                        mainController.getBaseListboxController().drop(droppedToItem.getValue(), droppedObjects);
+                    }
+                } catch (Exception e) {
+                    LOGGER.error("Error Occured in Drag and Drop", e);
+                }
             }
         });
     }
@@ -351,10 +360,10 @@ public class SummaryItemRenderer implements ListitemRenderer {
     }
 
     private void addToDisableSelection(Listcell lc) {
-    	 lc.setSclass("ap-disable-selection");		
-	}
+         lc.setSclass("ap-disable-selection");        
+    }
 
-	private Listcell renderFolderName(FolderType folder) {
+    private Listcell renderFolderName(FolderType folder) {
         Label name = new Label(folder.getFolderName());
         Listcell lc = new Listcell();
         lc.appendChild(name);

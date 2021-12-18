@@ -27,6 +27,8 @@ package org.apromore.portal.common;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.dialogController.MainController;
@@ -135,64 +137,62 @@ public class FolderTreeRenderer implements TreeitemRenderer {
         }
       }
     });
-    
+
     dataRow.setDraggable(folder.getId() == 0 ? "false" : "true");
     dataRow.setDroppable("true");
-	dataRow.addEventListener(Events.ON_DROP, new EventListener<DropEvent>() {
-		@Override
-		public void onEvent(DropEvent event) throws Exception {
-
-			try {
-				FolderTreeNode dropTarget = ((Treeitem) event.getTarget().getParent()).getValue();
-				FolderType selectedFolder = (FolderType) dropTarget.getData();
-
-				Object droppedObject = null;
-				if (event.getDragged() instanceof Listitem) {
-					Listitem draggedItem = (Listitem) event.getDragged();
-					droppedObject = draggedItem.getValue();
-				} else if (event.getDragged() instanceof Treerow) {
-					FolderTreeNode draggedItem = ((Treeitem) event.getDragged().getParent()).getValue();
-					droppedObject = draggedItem.getData();
-				}
-
-				if (selectedFolder != null && droppedObject != null) {
-					mainC.getBaseListboxController().drop(selectedFolder, droppedObject);
-				}
-			} catch (Exception e) {
-				LOGGER.error("Error occurred in Drag and Drop on Tree", e);
-			}
-
-		}
-	});
-	
-	
-    dataRow.addEventListener(Events.ON_RIGHT_CLICK, new EventListener<Event>() {
-        @SuppressWarnings({ "unchecked", "rawtypes" })
-		@Override
-        public void onEvent(Event event) throws Exception {
-          try {
-        	  Component targetComponent = event.getTarget().getParent();
-        	  FolderTreeNode clickedNodeValue = ((Treeitem) targetComponent).getValue();
-              FolderType selectedFolder = (FolderType) clickedNodeValue.getData();
-              
-              Map args = new HashMap();
-              if(targetComponent.getParent()!=null && targetComponent.getParent().getParent()!=null && targetComponent.getParent().getParent() instanceof Tree) {
-               args.put("POPUP_TYPE", "ROOT_FOLDER_TREE");
-              }else {
-               args.put("POPUP_TYPE", "FOLDER_TREE");
-              }
-              args.put("SELECTED_FOLDER", selectedFolder);
-          	  Menupopup menupopup = (Menupopup)Executions.createComponents("~./macros/popupMenu.zul", null, args);
-          	  menupopup.open(event.getTarget(), "at_pointer");
-           
-          } catch (Exception ex) {
-            LOGGER.error("FolderTree failed to show Pop-up menu", ex);
+    dataRow.addEventListener(Events.ON_DROP, new EventListener<DropEvent>() {
+      @Override
+      public void onEvent(DropEvent event) throws Exception {
+        try {
+          FolderTreeNode dropTarget = ((Treeitem) event.getTarget().getParent()).getValue();
+          FolderType selectedFolder = (FolderType) dropTarget.getData();
+          Set<Object> droppedObjects = new HashSet<>();
+          if (event.getDragged() instanceof Listitem) {
+            Listitem draggedItem = (Listitem) event.getDragged();
+            draggedItem.getListbox().getSelectedItems().stream().map(Listitem::getValue).forEach(value -> {
+              droppedObjects.add(value);
+            });
+            droppedObjects.add(draggedItem.getValue());
+          } else if (event.getDragged() instanceof Treerow) {
+            FolderTreeNode draggedItem = ((Treeitem) event.getDragged().getParent()).getValue();
+            droppedObjects.add(draggedItem.getData());
           }
+
+          if (selectedFolder != null && droppedObjects.size() > 0) {
+            mainC.getBaseListboxController().drop(selectedFolder, droppedObjects);
+          }
+        } catch (Exception e) {
+          LOGGER.error("Error occurred in Drag and Drop on Tree", e);
         }
-      });
 
-}
+      }
+    });
 
+    dataRow.addEventListener(Events.ON_RIGHT_CLICK, new EventListener<Event>() {
+      @SuppressWarnings({ "unchecked", "rawtypes" })
+      @Override
+      public void onEvent(Event event) throws Exception {
+        try {
+          Component targetComponent = event.getTarget().getParent();
+          FolderTreeNode clickedNodeValue = ((Treeitem) targetComponent).getValue();
+          FolderType selectedFolder = (FolderType) clickedNodeValue.getData();
+
+          Map args = new HashMap();
+          if(targetComponent.getParent()!=null && targetComponent.getParent().getParent()!=null && targetComponent.getParent().getParent() instanceof Tree) {
+            args.put("POPUP_TYPE", "ROOT_FOLDER_TREE");
+          } else {
+            args.put("POPUP_TYPE", "FOLDER_TREE");
+          }
+          args.put("SELECTED_FOLDER", selectedFolder);
+          Menupopup menupopup = (Menupopup)Executions.createComponents("~./macros/popupMenu.zul", null, args);
+          menupopup.open(event.getTarget(), "at_pointer");
+
+        } catch (Exception ex) {
+          LOGGER.error("FolderTree failed to show Pop-up menu", ex);
+        }
+      }
+    });
+  }
 
   /*
    * Check the folder tree and make sure we return true if we are looking at a folder that is opened
