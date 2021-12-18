@@ -172,7 +172,7 @@ public class CopyAndPasteController extends BaseController {
   }
 
   private void moveFolder(FolderType folder, Integer targetFolderId, int level) throws Exception {
-	  mainController.getWorkspaceService().moveFolder(folder.getId(), targetFolderId);
+      mainController.getWorkspaceService().moveFolder(folder.getId(), targetFolderId);
   }
 
   private void moveLog(LogSummaryType log, Integer targetFolderId) throws Exception {
@@ -346,49 +346,49 @@ public class CopyAndPasteController extends BaseController {
       LOGGER.error(e.getMessage());
     }
   }
-  
+
   public void drop(Set<Object> selections, int selectionCount, FolderType currentFolder) throws Exception {
-	  
-	   if (currentFolder == null) {
-	      Notification.error(Labels.getLabel("portal_failedFind_message"));
-	      return;
-	    }
-	    if (!ItemHelpers.isOwner(this.currentUser, currentFolder)) {
-	      Notification.error(Labels.getLabel("portal_onlyOwnerCanMoveToCurrent_message"));
-	      return;
-	    }
-	  
-		if (checkContext(selections, selectionCount, currentFolder)) {
-			try {
-				if (!checkImmediateOwnership(selections)) {
-					Notification.error(Labels.getLabel("portal_onlyOwnerCanMoveToCurrent_message"));
-					return;
-				} else if (ItemHelpers.isOwner(this.currentUser, currentFolder)) {
-					isCut = true;
-					updateSelectedItems(selections);
-				} else {
-					Notification.error(Labels.getLabel("portal_onlyOwnerCanCutFromCurrent_message"));
-					return;
-				}
-			} catch (Exception e) {
-				Notification.error(Labels.getLabel("portal_failedCut_message"));
-				LOGGER.error("Unable to perform Cut", e);
-			}
-		}
-	   
-		try {
-				selectedTargetFolderId = currentFolder.getId();
-				if (isCut) {
-			        moveSelectedItems();
-			      } else {
-			        cloneSelectedItems();
-			      }
-				Notification.info(MessageFormat.format(Labels.getLabel("portal_itemsDropped_message"),
-						selections.size()));
-				clearSelectedItems();
-		} catch (Exception e) {
-			    Notification.error(Labels.getLabel("portal_failedPaste_message"));
-			    LOGGER.error("Unable to perform Paste", e);
-		}
-	}
+
+    if (currentFolder == null) {
+      Notification.error(Labels.getLabel("portal_failedFind_message"));
+      return;
+    }
+    if (!ItemHelpers.isOwner(this.currentUser, currentFolder)) {
+      Notification.error(Labels.getLabel("portal_onlyOwnerCanMoveToCurrent_message"));
+      return;
+    }
+
+    if (checkContext(selections, selectionCount, currentFolder)) {
+      try {
+        if (!checkImmediateOwnership(selections)) {
+          Notification.error(Labels.getLabel("portal_onlyOwnerCanMoveToCurrent_message"));
+          return;
+        } else if (ItemHelpers.isOwner(this.currentUser, currentFolder)) {
+          isCut = true;
+          updateSelectedItems(selections);
+        } else {
+          Notification.error(Labels.getLabel("portal_onlyOwnerCanCutFromCurrent_message"));
+          return;
+        }
+      } catch (Exception e) {
+        Notification.error(Labels.getLabel("portal_failedCut_message"));
+        LOGGER.error("Unable to perform Cut", e);
+      }
+    }
+
+    try {
+      selectedTargetFolderId = currentFolder.getId();
+      if (isCut) {
+        moveSelectedItems();
+      } else {
+        cloneSelectedItems();
+      }
+      Notification.info(MessageFormat.format(Labels.getLabel("portal_itemsDropped_message"),
+          selections.size()));
+      clearSelectedItems();
+    } catch (Exception e) {
+      Notification.error(Labels.getLabel("portal_failedPaste_message"));
+      LOGGER.error("Unable to perform Paste", e);
+    }
+  }
 }
