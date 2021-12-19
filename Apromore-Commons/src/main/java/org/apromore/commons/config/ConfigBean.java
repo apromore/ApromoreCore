@@ -104,6 +104,9 @@ public class ConfigBean {
     // Switch for conformance checking
     private boolean enableConformanceCheck;
 
+    // Switch for publish model
+    private boolean enableModelPublish;
+
     // Maximum upload size
     private long maxUploadSize;
 

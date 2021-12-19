@@ -40,6 +40,7 @@ public abstract class PluginCatalog {
     public static final String PLUGIN_ETL = "org.apromore.etlplugin.portal.etlPortal.ETLPluginPortal";
     public static final String PLUGIN_JOB_SCHEDULER = "org.apromore.etlplugin.portal.etlPortal.JobSchedulerPortalImp";
     public static final String PLUGIN_CALENDAR = "org.apromore.plugin.portal.calendar.CalendarPlugin";
+    public static final String PLUGIN_PUBLISH_MODEL = "org.apromore.plugin.portal.processpublisher.ProcessPublisherPlugin";
 
     public static final String PLUGIN_UPLOAD = "org.apromore.plugin.portal.file.UploadFilePlugin";
     public static final String PLUGIN_DOWNLOAD = "org.apromore.plugin.portal.file.DownloadSelectionPlugin";
