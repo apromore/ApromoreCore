@@ -22,14 +22,36 @@
 package org.apromore.plugin.portal.processpublisher;
 
 import org.apromore.commons.config.ConfigBean;
+import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalPlugin;
+import org.apromore.portal.dialogController.MainController;
+import org.apromore.portal.model.LogSummaryType;
+import org.apromore.portal.model.ProcessSummaryType;
+import org.apromore.portal.model.SummaryType;
+import org.apromore.portal.model.VersionSummaryType;
+import org.apromore.service.SecurityService;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.zkoss.util.resource.Labels;
+import org.zkoss.web.Attributes;
+import org.zkoss.zk.ui.Session;
+import org.zkoss.zk.ui.Sessions;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -38,8 +60,25 @@ public class ProcessPublisherPluginUnitTest {
     @InjectMocks
     private ProcessPublisherPlugin processPublisherPlugin = new ProcessPublisherPlugin();
 
-    @Mock
-    private ConfigBean configBean;
+    @Mock private ConfigBean configBean;
+    @Mock private SecurityService securityService;
+    @Mock private PortalContext portalContext;
+    @Mock private MainController mainController;
+    @Mock private Session session;
+
+    MockedStatic<Labels> labelsMockedStatic = mockStatic(Labels.class);
+    MockedStatic<Sessions> sessionsMockedStatic = mockStatic(Sessions.class);
+
+    @Before
+    public void setup() {
+        MockitoAnnotations.openMocks(this);
+    }
+
+    @After
+    public void reset_mocks() {
+        labelsMockedStatic.close();
+        sessionsMockedStatic.close();
+    }
 
     @Test
     public void testAvailabilityNotEnabled() {
@@ -51,6 +90,47 @@ public class ProcessPublisherPluginUnitTest {
     public void testAvailabilityEnabled() {
         when(configBean.isEnableModelPublish()).thenReturn(true);
         assertEquals(PortalPlugin.Availability.AVAILABLE, processPublisherPlugin.getAvailability());
+    }
+
+    @Test
+    public void testGetBundleName() {
+        assertEquals("process_publisher", processPublisherPlugin.getBundleName());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetSelectedModelNothingSelected() {
+        when(portalContext.getMainController()).thenReturn(mainController);
+        when(mainController.getSelectedElementsAndVersions()).thenReturn(new HashMap<>());
+        when(Sessions.getCurrent()).thenReturn(session);
+        when(session.getAttribute(Attributes.PREFERRED_LOCALE)).thenReturn(Locale.ENGLISH);
+
+        processPublisherPlugin.getSelectedModel(portalContext);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetSelectedModelProcessTypeNotSelected() {
+        Map<SummaryType, List<VersionSummaryType>> selectedProcessVersions = new HashMap<>();
+        selectedProcessVersions.put(new LogSummaryType(), new ArrayList<>());
+
+        when(portalContext.getMainController()).thenReturn(mainController);
+        when(mainController.getSelectedElementsAndVersions()).thenReturn(selectedProcessVersions);
+        sessionsMockedStatic.when(() -> Sessions.getCurrent()).thenReturn(session);
+        when(session.getAttribute(Attributes.PREFERRED_LOCALE)).thenReturn(Locale.ENGLISH);
+
+        processPublisherPlugin.getSelectedModel(portalContext);
+    }
+
+    @Test
+    public void testGetSelectedModelOneProcessTypeSelected() {
+        ProcessSummaryType processSummaryType = new ProcessSummaryType();
+        Map<SummaryType, List<VersionSummaryType>> selectedProcessVersions = new HashMap<>();
+        selectedProcessVersions.put(processSummaryType, new ArrayList<>());
+
+        when(portalContext.getMainController()).thenReturn(mainController);
+        when(mainController.getSelectedElementsAndVersions()).thenReturn(selectedProcessVersions);
+        sessionsMockedStatic.when(() -> Sessions.getCurrent()).thenReturn(session);
+
+        assertEquals(processSummaryType, processPublisherPlugin.getSelectedModel(portalContext));
     }
 
 }

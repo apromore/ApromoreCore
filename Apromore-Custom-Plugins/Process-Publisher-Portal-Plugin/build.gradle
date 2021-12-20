@@ -9,4 +9,6 @@ dependencies {
     implementation project(':Apromore-Clients:manager-client')
     implementation project(':Apromore-Zk')
     implementation project(':Apromore-Plugins:plugin-core:portal:api')
+
+    testImplementation'org.mockito:mockito-inline:3.8.0'
 }
