@@ -79,7 +79,7 @@ public class ProcessPublisherPlugin extends DefaultPortalPlugin implements Label
             boolean canPublish = ItemHelpers.isOwner(currentUser, processSummaryType);
 
             if (!canPublish) {
-                throw new Exception(getLabel("exception_incorrectRights"));
+                throw new IllegalAccessException(getLabel("exception_incorrectRights"));
             }
 
             //TODO: Open copy publish link modal
