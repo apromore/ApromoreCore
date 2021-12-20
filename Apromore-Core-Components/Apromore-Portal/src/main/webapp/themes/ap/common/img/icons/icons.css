@@ -422,6 +422,10 @@
     width: 26px !important;
 }
 
+.ap-icon-link {
+    background-image: url('link.svg') !important;
+    width: 26px !important;
+}
 
 .ap-icon-list {
     background-image: url('list.svg') !important;

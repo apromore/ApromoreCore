@@ -36,7 +36,6 @@ import org.apromore.zk.notification.Notification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.zkoss.util.resource.Labels;
-
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -64,6 +63,11 @@ public class ProcessPublisherPlugin extends DefaultPortalPlugin implements Label
     @Override
     public String getLabel(final Locale locale) {
         return Labels.getLabel("plugin_process_publish_text", "Publish model");
+    }
+
+    @Override
+    public String getIconPath() {
+        return "link.svg";
     }
 
     @Override
