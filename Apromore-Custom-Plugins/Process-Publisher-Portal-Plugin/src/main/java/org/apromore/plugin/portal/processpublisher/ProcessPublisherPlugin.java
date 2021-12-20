@@ -82,7 +82,7 @@ public class ProcessPublisherPlugin extends DefaultPortalPlugin implements Label
                 throw new Exception(getLabel("exception_incorrectRights"));
             }
 
-            //Open link modal
+            //TODO: Open copy publish link modal
             Notification.info("Publish model coming soon...");
         } catch (Exception e) {
             Notification.error(e.getMessage());
