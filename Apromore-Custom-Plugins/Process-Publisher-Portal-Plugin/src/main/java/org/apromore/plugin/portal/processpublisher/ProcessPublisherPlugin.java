@@ -22,12 +22,25 @@
 package org.apromore.plugin.portal.processpublisher;
 
 import org.apromore.commons.config.ConfigBean;
+import org.apromore.dao.model.User;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
+import org.apromore.plugin.portal.PortalContext;
+import org.apromore.portal.common.ItemHelpers;
+import org.apromore.portal.dialogController.MainController;
+import org.apromore.portal.model.ProcessSummaryType;
+import org.apromore.portal.model.SummaryType;
+import org.apromore.portal.model.VersionSummaryType;
+import org.apromore.service.SecurityService;
+import org.apromore.zk.label.LabelSupplier;
+import org.apromore.zk.notification.Notification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.zkoss.util.resource.Labels;
 
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import javax.inject.Inject;
 
 /**
  * The process publisher plugin is responsible for creating and revoking links to view models in view-only mode.
@@ -35,18 +48,66 @@ import java.util.Locale;
  * @author Jane Hoh.
  */
 @Component
-public class ProcessPublisherPlugin extends DefaultPortalPlugin {
+public class ProcessPublisherPlugin extends DefaultPortalPlugin implements LabelSupplier {
 
     @Autowired
     ConfigBean config;
 
+    @Inject
+    private SecurityService securityService;
+
+    @Override
+    public String getBundleName() {
+        return "process_publisher";
+    }
+
     @Override
     public String getLabel(final Locale locale) {
-        return Labels.getLabel("plugin_process_publish_text","Publish model");
+        return Labels.getLabel("plugin_process_publish_text", "Publish model");
     }
 
     @Override
     public Availability getAvailability() {
         return config.isEnableModelPublish() ? Availability.AVAILABLE : Availability.UNAVAILABLE;
+    }
+
+    @Override
+    public void execute(PortalContext portalContext) {
+        try {
+            ProcessSummaryType processSummaryType = getSelectedModel(portalContext);
+            User currentUser = securityService.getUserById(portalContext.getCurrentUser().getId());
+            boolean canPublish = ItemHelpers.isOwner(currentUser, processSummaryType);
+
+            if (!canPublish) {
+                throw new Exception(getLabel("exception_incorrectRights"));
+            }
+
+            //Open link modal
+            Notification.info("Publish model coming soon...");
+        } catch (Exception e) {
+            Notification.error(e.getMessage());
+        }
+    }
+
+    /**
+     * Extracts the selected process model from the portal context.
+     * @param portalContext
+     * @return the selected process model.
+     * @throws IllegalArgumentException if the selection does not include exactly one process model.
+     */
+    public ProcessSummaryType getSelectedModel(PortalContext portalContext) throws IllegalArgumentException {
+        MainController mainController = (MainController) portalContext.getMainController();
+        Map<SummaryType, List<VersionSummaryType>> selectedProcessVersions =
+                mainController.getSelectedElementsAndVersions();
+        if (selectedProcessVersions.size() != 1) {
+            throw new IllegalArgumentException(getLabel("exception_incorrectNumberOfProcess"));
+        }
+
+        SummaryType summaryType = selectedProcessVersions.keySet().iterator().next();
+        if (!(summaryType instanceof ProcessSummaryType)) {
+            throw new IllegalArgumentException(getLabel("exception_incorrectType"));
+        }
+
+        return (ProcessSummaryType) summaryType;
     }
 }
