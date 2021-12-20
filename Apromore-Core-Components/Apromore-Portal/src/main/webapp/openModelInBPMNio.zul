@@ -46,7 +46,7 @@
 
     /* A fix for simulation panel title */
     .x-layout-collapsed-east:after {
-      content: "Simulation parameters";
+      content: "Properties";
       letter-spacing: 1px;
       color: black;
       font-weight: 700;

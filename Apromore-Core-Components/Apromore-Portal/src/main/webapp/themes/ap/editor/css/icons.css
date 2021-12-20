@@ -54,7 +54,7 @@
     width: 26px !important;
 }
 
-.x-panel-editor-north .x-toolbar button[title='Toggle simulation parameters panel'] {
+.x-panel-editor-north .x-toolbar button[title='Toggle Properties panel'] {
     /* background-image: url('../../common/img/icons/simulate-model.svg') !important; */
     width: 26px !important;
 }

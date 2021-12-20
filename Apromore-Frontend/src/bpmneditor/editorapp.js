@@ -197,12 +197,24 @@ export default class EditorApp {
                 collapsible: true,
                 width: this.useSimulationPanel ? 450 : 0,
                 split: true,
-                title: "Simulation parameters",
-                items: {
-                    layout: "fit",
-                    autoHeight: true,
-                    el: document.getElementById("js-properties-panel")
-                }
+                title: "Properties",
+                id: 'ap-editor-props-container',
+                items: [
+                    {   html: '<div id="ap-editor-props-bar"><div id="ap-editor-props-simulation">Simulation</div>' +
+                          '<div id="ap-editor-props-extension">Custom</div></div>',
+                        region:'north',
+                        border: false,
+                        style: "z-index: 300",
+                        height: 30
+                    },
+                    {
+                        // layout: "fit",
+                        region: 'center',
+                        border: false,
+                        autoHeight: true,
+                        el: document.getElementById("js-properties-panel")
+                    }
+                ]
             }),
 
             // DEFINES BOTTOM-AREA
@@ -270,6 +282,19 @@ export default class EditorApp {
                     render: function() {
                         console.log('UI Viewport finished');
                         resolve('UI Viewport finished');
+                        setTimeout(() => {
+                            $('#ap-editor-props-container').addClass('simulation-on');
+                            $('#ap-editor-props-simulation').on('click', () => {
+                              $('#ap-editor-props-container').removeClass('extension-on');
+                              $('#ap-editor-props-container').addClass('simulation-on');
+                              $('#ap-editor-props-container .bpp-properties-tabs-links > li:first-child a')[0].click();
+                            })
+                            $('#ap-editor-props-extension').on('click', () => {
+                              $('#ap-editor-props-container').addClass('extension-on');
+                              $('#ap-editor-props-container').removeClass('simulation-on');
+                              $('#ap-editor-props-container .bpp-properties-tabs-links > li:last-child a')[0].click();
+                            })
+                        }, 1000);
                     }
                 }
             };
