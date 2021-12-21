@@ -31,7 +31,7 @@
         function copyPublishLink() {
             let publishLink = zk.Widget.$('$publishModelLink').getValue();
             navigator.clipboard.writeText(publishLink);
-            Ap.common.notify('Link copied', 'info');
+            Ap.common.notify('${vm_publishModel.labels.copy_link_success_msg}', 'info');
         }
     </script>
     <vlayout spacing="0">
