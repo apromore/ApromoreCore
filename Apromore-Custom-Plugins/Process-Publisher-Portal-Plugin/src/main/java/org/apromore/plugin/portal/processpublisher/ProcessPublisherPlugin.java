@@ -131,8 +131,7 @@ public class ProcessPublisherPlugin extends DefaultPortalPlugin implements Label
 
     private PageDefinition getPageDefinition(String uri) throws IOException {
         Execution current = Executions.getCurrent();
-        PageDefinition pageDefinition = current.getPageDefinitionDirectly(
+        return current.getPageDefinitionDirectly(
                 new InputStreamReader(getClass().getClassLoader().getResourceAsStream(uri)), "zul");
-        return pageDefinition;
     }
 }
