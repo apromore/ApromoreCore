@@ -36,6 +36,14 @@ import org.apromore.zk.notification.Notification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.zkoss.util.resource.Labels;
+import org.zkoss.zk.ui.Execution;
+import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.metainfo.PageDefinition;
+import org.zkoss.zul.Window;
+
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -86,8 +94,14 @@ public class ProcessPublisherPlugin extends DefaultPortalPlugin implements Label
                 throw new IllegalAccessException(getLabel("exception_incorrectRights"));
             }
 
-            //TODO: Open copy publish link modal
-            Notification.info("Publish model coming soon...");
+            Map<String, Object> arg = new HashMap<>();
+            arg.put("model", processSummaryType);
+            PageDefinition pageDefinition = getPageDefinition("static/processpublisher/zul/publishModel.zul");
+
+            Window window =
+                    (Window) Executions.getCurrent().createComponents(pageDefinition, null, arg);
+
+            window.doModal();
         } catch (Exception e) {
             Notification.error(e.getMessage());
         }
@@ -113,5 +127,11 @@ public class ProcessPublisherPlugin extends DefaultPortalPlugin implements Label
         }
 
         return (ProcessSummaryType) summaryType;
+    }
+
+    private PageDefinition getPageDefinition(String uri) throws IOException {
+        Execution current = Executions.getCurrent();
+        return current.getPageDefinitionDirectly(
+                new InputStreamReader(getClass().getClassLoader().getResourceAsStream(uri)), "zul");
     }
 }
