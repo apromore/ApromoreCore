@@ -1,6 +1,6 @@
 Apromore.I18N.PropertyWindow.dateFormat = "d/m/y";
 
-Apromore.I18N.View.East = "Simulation parameters";
+Apromore.I18N.View.East = "Properties";
 Apromore.I18N.View.West = "Modeling Elements";
 
 Apromore.I18N.Apromore.title	= "Apromore.";

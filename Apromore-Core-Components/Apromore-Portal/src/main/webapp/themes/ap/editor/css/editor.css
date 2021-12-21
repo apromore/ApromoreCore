@@ -142,3 +142,84 @@
 .access-type-viewer .bjs-container .djs-palette {
     display: none !important;
 }
+
+.bpp-properties-panel button,
+.bpp-properties-panel input,
+.bpp-properties-panel select,
+.bpp-properties-panel textarea,
+.bpp-properties-panel [contenteditable] {
+  color: black !important;
+  background-color: white !important;
+}
+
+#js-properties-panel {
+  top: 10px;
+}
+
+#ap-editor-props-container > .x-panel-bwrap > .x-panel-body > .x-panel:first-child .x-panel-body {
+  z-index: 200;
+}
+
+#ap-editor-props-bar {
+  display: flex;
+  flex-direction: row;
+}
+
+#ap-editor-props-bar > div {
+  flex: 1 1 auto;
+  color: black;
+  background-color: #e0e0e0;
+  border-right: grey;
+  cursor: pointer;
+  text-align: center;
+  padding: 5px 0 6px 0;
+}
+
+#ap-editor-props-container .bpp-properties-tab.bpp-hidden {
+  display: hidden !important;
+}
+
+#ap-editor-props-container .bpp-properties-tab-link.bpp-hidden {
+  display: hidden !important;
+}
+
+
+#ap-editor-props-container.simulation-on #ap-editor-props-simulation {
+  background-color: #f8f8f8;
+}
+
+#ap-editor-props-container.simulation-on .bpp-properties-tabs-links > .bpp-properties-tab-link.bpp-active {
+  display: inline-block;
+}
+
+#ap-editor-props-container.simulation-on .bpp-properties-tabs-links > .bpp-properties-tab-link:last-child {
+  display: none;
+}
+
+#ap-editor-props-container.simulation-on .bpp-properties-tab.bpp-active {
+  display: block;
+}
+
+#ap-editor-props-container.simulation-on .bpp-properties-tab[data-tab='extensionElements'] {
+  display: none;
+}
+
+#ap-editor-props-container.extension-on .bpp-properties-tabs-links > .bpp-properties-tab-link {
+  display: none;
+}
+
+#ap-editor-props-container.extension-on #ap-editor-props-extension {
+  background-color: #f8f8f8;
+}
+
+#ap-editor-props-container.extension-on .bpp-properties-tabs-links > .bpp-properties-tab-link:last-child {
+  display: inline-block;
+}
+
+#ap-editor-props-container.extension-on .bpp-properties-tab {
+  display: none;
+}
+
+#ap-editor-props-container.extension-on .bpp-properties-tab[data-tab='extensionElements'] {
+  display: block;
+}

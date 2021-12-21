@@ -16,6 +16,8 @@ var createSimulationParametersTab = require('./tabs/SimulationParametersTab'),
     createGatewayTab = require('./tabs/GatewayTab'),
     createIntermediateAndBoundaryEventsTab = require('./tabs/IntermediateAndBoundaryEventsTab');
 
+var properties = require('bpmn-js-properties-panel/lib/provider/camunda/parts/PropertiesProps');
+
 function removeTasks(element, bpmnFactory, elementRegistry) {
   var elements = ElementHelper.getElements(bpmnFactory, elementRegistry);
 
@@ -44,6 +46,20 @@ function removeSequenceFlows(bpmnFactory, elementRegistry) {
   }
 }
 
+function createExtensionElementsGroups(element, bpmnFactory, elementRegistry, translate) {
+
+  var propertiesGroup = {
+    id : 'extensionElements-properties',
+    label: translate('Properties'),
+    entries: []
+  };
+  properties(propertiesGroup, element, bpmnFactory, translate);
+
+  return [
+    propertiesGroup
+  ];
+}
+
 function SimulationPropertiesProvider(eventBus, canvas, bpmnFactory, elementRegistry, translate) {
 
   PropertiesActivator.call(this, eventBus);
@@ -59,20 +75,26 @@ function SimulationPropertiesProvider(eventBus, canvas, bpmnFactory, elementRegi
     var gatewayTab = createGatewayTab(element, bpmnFactory, elementRegistry, translate);
     var intermediateAndBoundaryEventsTab = createIntermediateAndBoundaryEventsTab(element, bpmnFactory, elementRegistry, translate);
 
+    var extensionsTab = {
+      id: 'extensionElements',
+      label: translate('properties'),
+      groups: createExtensionElementsGroups(element, bpmnFactory, elementRegistry, translate)
+    };
+
     function getDefaultTabs() {
-      return [simulationParametersTab, taskTab, timetableTab, resourcesTab, gatewayTab, intermediateAndBoundaryEventsTab];
+      return [simulationParametersTab, taskTab, timetableTab, resourcesTab, gatewayTab, intermediateAndBoundaryEventsTab, extensionsTab];
     }
 
     function getTaskTabs() {
-      return [taskTab, simulationParametersTab, timetableTab, resourcesTab, gatewayTab, intermediateAndBoundaryEventsTab];
+      return [taskTab, simulationParametersTab, timetableTab, resourcesTab, gatewayTab, intermediateAndBoundaryEventsTab, extensionsTab];
     }
 
     function getGatewayTabs() {
-      return [gatewayTab, taskTab, timetableTab, resourcesTab, simulationParametersTab, intermediateAndBoundaryEventsTab];
+      return [gatewayTab, taskTab, timetableTab, resourcesTab, simulationParametersTab, intermediateAndBoundaryEventsTab, extensionsTab];
     }
 
     function getEventTabs() {
-      return [intermediateAndBoundaryEventsTab, simulationParametersTab, gatewayTab, taskTab, timetableTab, resourcesTab];
+      return [intermediateAndBoundaryEventsTab, simulationParametersTab, gatewayTab, taskTab, timetableTab, resourcesTab, extensionsTab];
     }
 
     var tabs = {
