@@ -1249,3 +1249,30 @@ databaseChangeLog:
            splitStatements: true
            sql: ALTER TABLE `storage` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; ALTER TABLE storage MODIFY `key` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
            stripComments: false
+
+ - changeSet:
+     id: 20211222091500
+     author: janeh
+     changes:
+       - createTable:
+           tableName: process_publish
+           columns:
+             - column:
+                 name: publishid
+                 type: VARCHAR(36)
+                 constraints:
+                   nullable: false
+                   primaryKey: true
+                   primaryKeyName: pk_publish_id
+             - column:
+                 name: published
+                 type: BOOLEAN
+             - column:
+                 name: processid
+                 type: INT
+                 constraints:
+                   nullable: false
+                   referencedTableName: process
+                   referencedColumnNames: id
+                   foreignKeyName: fk_publish_process_idk
+                   deleteCascade: true

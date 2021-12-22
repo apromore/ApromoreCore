@@ -742,3 +742,11 @@ CREATE VIEW keywords AS
   SELECT log.domain AS value, 'log' AS type, NULL AS processId, log.id AS logId, NULL AS folderId FROM log UNION
   SELECT folder.folder_name AS value, 'folder' AS type, NULL AS processId, NULL AS logId, folder.id AS folderId FROM folder
 ;
+
+CREATE TABLE process_publish
+(
+   publishid varchar(36) PRIMARY KEY NOT NULL,
+   published bit,
+   processId int,
+)
+;

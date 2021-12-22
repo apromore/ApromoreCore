@@ -95,7 +95,7 @@ public class ProcessPublisherPlugin extends DefaultPortalPlugin implements Label
             }
 
             Map<String, Object> arg = new HashMap<>();
-            arg.put("model", processSummaryType);
+            arg.put("processId", processSummaryType.getId());
             PageDefinition pageDefinition = getPageDefinition("static/processpublisher/zul/publishModel.zul");
 
             Window window =
