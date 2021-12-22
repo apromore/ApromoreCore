@@ -45,7 +45,6 @@
                          readonly="true"/>
                 <checkbox mold="switch"
                           checked="@bind(vm_publishModel.publish)"
-                          visible="@load(vm_publishModel.newPublishRecord eq false)"
                           tooltiptext="${vm_publishModel.labels.publish_toggle_hint}"/>
                 <button sclass="ap-icon ap-icon-copy"
                         tooltiptext="${vm_publishModel.labels.copy_link_hint}"

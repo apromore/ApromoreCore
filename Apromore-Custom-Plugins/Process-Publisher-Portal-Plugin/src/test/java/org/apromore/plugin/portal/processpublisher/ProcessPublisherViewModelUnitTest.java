@@ -92,7 +92,7 @@ public class ProcessPublisherViewModelUnitTest {
         processPublisherViewModel.init(processId);
         assertEquals(processId, processPublisherViewModel.getProcessId());
         assertTrue(processPublisherViewModel.isNewPublishRecord());
-        assertTrue(processPublisherViewModel.isPublish());
+        assertFalse(processPublisherViewModel.isPublish());
         assertNotEquals("", processPublisherViewModel.getPublishId());
     }
 
@@ -118,7 +118,7 @@ public class ProcessPublisherViewModelUnitTest {
         ProcessPublish processPublish = createProcessPublish(processId, publishId, true);
 
         when(processPublishService.savePublishDetails(processId, publishId, true))
-                .thenReturn(createProcessPublish(processId, publishId, true));
+                .thenReturn(processPublish);
         sessionsMockedStatic.when(() -> Sessions.getCurrent()).thenReturn(session);
         when(session.getAttribute(Attributes.PREFERRED_LOCALE)).thenReturn(Locale.ENGLISH);
         notificationMockedStatic.when(() -> Notification.info(anyString())).thenAnswer(invocation -> null);
@@ -141,13 +141,14 @@ public class ProcessPublisherViewModelUnitTest {
         ProcessPublish processPublish = createProcessPublish(processId, publishId, true);
 
         when(processPublishService.updatePublishStatus(publishId, true))
-                .thenReturn(createProcessPublish(processId, publishId, true));
+                .thenReturn(processPublish);
         sessionsMockedStatic.when(() -> Sessions.getCurrent()).thenReturn(session);
         when(session.getAttribute(Attributes.PREFERRED_LOCALE)).thenReturn(Locale.ENGLISH);
         notificationMockedStatic.when(() -> Notification.info(anyString())).thenAnswer(invocation -> null);
         doNothing().when(component).detach();
 
         processPublisherViewModel.setNewPublishRecord(false);
+        processPublisherViewModel.setPublish(true);
         processPublisherViewModel.setProcessId(processId);
         processPublisherViewModel.setPublishId(publishId);
 

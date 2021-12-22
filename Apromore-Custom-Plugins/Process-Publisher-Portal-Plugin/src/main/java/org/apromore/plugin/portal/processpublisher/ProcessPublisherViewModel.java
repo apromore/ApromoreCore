@@ -50,7 +50,7 @@ public class ProcessPublisherViewModel implements LabelSupplier {
     private ProcessPublishService processPublishService;
 
     private String publishId = "";
-    private boolean publish = true;
+    private boolean publish = false;
     private boolean newPublishRecord = true;
     private int processId;
 
@@ -59,7 +59,7 @@ public class ProcessPublisherViewModel implements LabelSupplier {
         this.processId = processId;
         ProcessPublish processPublishDetails = processPublishService.getPublishDetails(processId);
         newPublishRecord = processPublishDetails == null;
-        publish = newPublishRecord || processPublishDetails.isPublished();
+        publish = !newPublishRecord && processPublishDetails.isPublished();
         publishId = newPublishRecord ?
                 UUID.randomUUID().toString() : processPublishDetails.getPublishId();
     }
