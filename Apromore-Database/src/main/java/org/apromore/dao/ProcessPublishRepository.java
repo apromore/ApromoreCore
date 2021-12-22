@@ -48,7 +48,7 @@ public interface ProcessPublishRepository extends JpaRepository<ProcessPublish, 
     /**
      * Finds if a process with a particular publish id exists.
      * @param publishId the publish id
-     * @return the process if one exists, null otherwise.
+     * @return the related process if one exists, null otherwise.
      */
     @Query("SELECT p.process FROM ProcessPublish p WHERE p.publishId = ?1")
     Process findProcessByPublishId(String publishId);
