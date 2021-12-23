@@ -324,7 +324,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
       Map<String, PortalPlugin> portalPluginMap = portalContext.getPortalPluginMap();
       PortalPlugin publishModelPlugin = portalPluginMap.get(PluginCatalog.PLUGIN_PUBLISH_MODEL);
 
-      Map arg = new HashMap<>();
+      Map<String, Object> arg = new HashMap<>();
       arg.put("selectedModel", process);
       publishModelPlugin.setSimpleParams(arg);
       publishModelPlugin.execute(portalContext);
