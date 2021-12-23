@@ -22,6 +22,7 @@
 package org.apromore.service;
 
 import org.apromore.dao.model.ProcessPublish;
+import org.apromore.portal.model.ProcessSummaryType;
 
 /**
  * Interface for the Process Publish Service. Defines all the methods that will do the majority of the work for
@@ -35,4 +36,8 @@ public interface ProcessPublishService {
     ProcessPublish updatePublishStatus(final String publishId, final boolean publishStatus);
 
     ProcessPublish getPublishDetails(final int processId);
+
+    boolean isPublished(final String publishId);
+
+    ProcessSummaryType getSimpleProcessSummary(final String publishId);
 }

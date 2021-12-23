@@ -21,10 +21,13 @@
  */
 package org.apromore.service.impl;
 
+import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.dao.ProcessPublishRepository;
 import org.apromore.dao.ProcessRepository;
 import org.apromore.dao.model.Process;
+import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.dao.model.ProcessPublish;
+import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.service.ProcessPublishService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -38,6 +41,7 @@ import javax.inject.Inject;
 public class ProcessPublishServiceImpl implements ProcessPublishService {
     private ProcessPublishRepository processPublishRepo;
     private ProcessRepository processRepo;
+    private ProcessModelVersionRepository pmvRepo;
 
     /**
      * Default Constructor allowing Spring to Autowire for testing and normal use.
@@ -45,9 +49,11 @@ public class ProcessPublishServiceImpl implements ProcessPublishService {
      */
     @Inject
     public ProcessPublishServiceImpl(final ProcessPublishRepository processPublishRepository,
-                                     final ProcessRepository processRepository) {
+                                     final ProcessRepository processRepository,
+                                     final ProcessModelVersionRepository processModelVersionRepository) {
         processPublishRepo = processPublishRepository;
         processRepo  = processRepository;
+        pmvRepo = processModelVersionRepository;
     }
 
     @Override
@@ -76,5 +82,39 @@ public class ProcessPublishServiceImpl implements ProcessPublishService {
     @Override
     public ProcessPublish getPublishDetails(int processId) {
         return processPublishRepo.findByProcessId(processId);
+    }
+
+    @Override
+    public boolean isPublished(String publishId) {
+        ProcessPublish processPublish = processPublishRepo.findByPublishId(publishId);
+        return processPublish != null && processPublish.isPublished();
+    }
+
+    @Override
+    public ProcessSummaryType getSimpleProcessSummary(String publishId) {
+        Process process = processPublishRepo.findProcessByPublishId(publishId);
+        if (process == null) return null;
+
+        ProcessSummaryType processSummary = new ProcessSummaryType();
+        processSummary.setId(process.getId());
+        processSummary.setName(process.getName());
+        processSummary.setDomain(process.getDomain());
+        processSummary.setRanking(process.getRanking());
+
+        ProcessModelVersion latestVersion = pmvRepo.getLatestProcessModelVersion(process.getId(), "MAIN");
+
+        if (latestVersion != null) {
+            processSummary.setLastVersion(latestVersion.getVersionNumber());
+        }
+
+        if (process.getNativeType() != null) {
+            processSummary.setOriginalNativeType(process.getNativeType().getNatType());
+        }
+
+        if (process.getUser() != null) {
+            processSummary.setOwner(process.getUser().getUsername());
+        }
+
+        return processSummary;
     }
 }
