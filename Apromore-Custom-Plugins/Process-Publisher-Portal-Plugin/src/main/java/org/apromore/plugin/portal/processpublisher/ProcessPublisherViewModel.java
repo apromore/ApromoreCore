@@ -66,16 +66,15 @@ public class ProcessPublisherViewModel implements LabelSupplier {
 
     @Command
     public void updatePublishRecord(@BindingParam(WINDOW_PARAM) final Component window) {
+        String publishNotificationKey;
         if (newPublishRecord) {
-            processPublishService.savePublishDetails(processId, publishId, true);
-            Notification.info(getLabel("publish_link_success_msg"));
+            processPublishService.savePublishDetails(processId, publishId, publish);
+            publishNotificationKey = publish ? "publish_link_success_msg" : "new_inactive_link_msg";
         } else {
             processPublishService.updatePublishStatus(publishId, publish);
-
-            String publishNotificationKey = publish ?
-                    "publish_link_success_msg" : "unpublish_link_success_msg";
-            Notification.info(getLabel(publishNotificationKey));
+            publishNotificationKey = publish ? "publish_link_success_msg" : "unpublish_link_success_msg";
         }
+        Notification.info(getLabel(publishNotificationKey));
         window.detach();
     }
 

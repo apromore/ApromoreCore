@@ -127,11 +127,12 @@ public class ProcessPublisherViewModelUnitTest {
         processPublisherViewModel.setNewPublishRecord(true);
         processPublisherViewModel.setProcessId(processId);
         processPublisherViewModel.setPublishId(publishId);
+        processPublisherViewModel.setPublish(true);
 
         processPublisherViewModel.updatePublishRecord(component);
 
-        assertEquals(publishId, processPublish.getPublishId());
-        assertTrue(processPublish.isPublished());
+        assertEquals(processPublish.getPublishId(), processPublisherViewModel.getPublishId());
+        assertEquals(processPublish.isPublished(), processPublisherViewModel.isPublish());
     }
 
     @Test
@@ -154,8 +155,8 @@ public class ProcessPublisherViewModelUnitTest {
 
         processPublisherViewModel.updatePublishRecord(component);
 
-        assertEquals(publishId, processPublish.getPublishId());
-        assertTrue(processPublish.isPublished());
+        assertEquals(processPublish.getPublishId(), processPublisherViewModel.getPublishId());
+        assertEquals(processPublish.isPublished(), processPublisherViewModel.isPublish());
     }
 
     @Test
