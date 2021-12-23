@@ -22,16 +22,76 @@
 package org.apromore.plugin.portal.processpublisher;
 
 import lombok.Data;
+import org.apromore.dao.model.ProcessPublish;
+import org.apromore.service.ProcessPublishService;
 import org.apromore.zk.label.LabelSupplier;
+import org.apromore.zk.notification.Notification;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.zkoss.bind.annotation.BindingParam;
+import org.zkoss.bind.annotation.Command;
+import org.zkoss.bind.annotation.ExecutionArgParam;
+import org.zkoss.bind.annotation.Init;
+import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.select.annotation.VariableResolver;
+import org.zkoss.zk.ui.select.annotation.WireVariable;
+
+import java.util.UUID;
 
 @Data
+@VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
 public class ProcessPublisherViewModel implements LabelSupplier {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProcessPublisherViewModel.class);
+    private static final String PUBLISH_LINK_FORMAT = "%s://%s/zkau/web/openModelInBPMNio.zul?view=true&publishId=%s";
+    private static final String WINDOW_PARAM = "window";
 
-    private String publishLink = "Link generation coming soon...";
-    private boolean published = false;
+    @WireVariable
+    private ProcessPublishService processPublishService;
+
+    private String publishId = "";
+    private boolean publish = false;
+    private boolean newPublishRecord = true;
+    private int processId;
+
+    @Init
+    public void init(@ExecutionArgParam("processId") final int processId) {
+        this.processId = processId;
+        ProcessPublish processPublishDetails = processPublishService.getPublishDetails(processId);
+        newPublishRecord = processPublishDetails == null;
+        publish = !newPublishRecord && processPublishDetails.isPublished();
+        publishId = newPublishRecord ?
+                UUID.randomUUID().toString() : processPublishDetails.getPublishId();
+    }
+
+    @Command
+    public void updatePublishRecord(@BindingParam(WINDOW_PARAM) final Component window) {
+        if (newPublishRecord) {
+            processPublishService.savePublishDetails(processId, publishId, true);
+            Notification.info(getLabel("publish_link_success_msg"));
+        } else {
+            processPublishService.updatePublishStatus(publishId, publish);
+
+            String publishNotificationKey = publish ?
+                    "publish_link_success_msg" : "unpublish_link_success_msg";
+            Notification.info(getLabel(publishNotificationKey));
+        }
+        window.detach();
+    }
 
     @Override
     public String getBundleName() {
         return "process_publisher";
+    }
+
+    public String getPublishLink() {
+        String scheme = Executions.getCurrent().getScheme();
+        String serverName = Executions.getCurrent().getServerName();
+
+        if ("localhost".equals(serverName)) {
+            serverName += ":" + Executions.getCurrent().getServerPort();
+        }
+
+        return String.format(PUBLISH_LINK_FORMAT, scheme, serverName, publishId);
     }
 }
