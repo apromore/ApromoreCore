@@ -21,23 +21,31 @@
  */
 package org.apromore.service.impl;
 
+import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.dao.ProcessPublishRepository;
 import org.apromore.dao.ProcessRepository;
+import org.apromore.dao.model.NativeType;
 import org.apromore.dao.model.Process;
+import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.dao.model.ProcessPublish;
+import org.apromore.dao.model.User;
+import org.apromore.portal.model.ProcessSummaryType;
 import org.easymock.EasyMockSupport;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.anyString;
 import static org.easymock.EasyMock.expect;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class ProcessPublishServiceImplTest extends EasyMockSupport {
     private ProcessPublishRepository processPublishRepository;
     private ProcessRepository processRepository;
+    private ProcessModelVersionRepository pmvRepository;
 
     private ProcessPublishServiceImpl processPublishService;
 
@@ -45,8 +53,10 @@ public class ProcessPublishServiceImplTest extends EasyMockSupport {
     public void setup() {
         processPublishRepository = createMock(ProcessPublishRepository.class);
         processRepository = createMock(ProcessRepository.class);
+        pmvRepository = createMock(ProcessModelVersionRepository.class);
 
-        processPublishService = new ProcessPublishServiceImpl(processPublishRepository, processRepository);
+        processPublishService = new ProcessPublishServiceImpl(processPublishRepository, processRepository,
+                pmvRepository);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -106,6 +116,103 @@ public class ProcessPublishServiceImplTest extends EasyMockSupport {
         assertEquals(publishId, result.getPublishId());
         assertEquals(process, result.getProcess());
         assertFalse(result.isPublished());
+        verifyAll();
+    }
+
+    @Test
+    public void testIsPublishedNullPublishRecord() {
+        expect(processPublishRepository.findByPublishId(anyString())).andReturn(null);
+        replayAll();
+
+        assertFalse(processPublishService.isPublished("not a record"));
+        verifyAll();
+    }
+
+    @Test
+    public void testIsPublishedExistingPublishedRecord() {
+        ProcessPublish processPublish = new ProcessPublish();
+        processPublish.setPublished(true);
+
+        expect(processPublishRepository.findByPublishId(anyString())).andReturn(processPublish);
+        replayAll();
+
+        assertTrue(processPublishService.isPublished("publishId"));
+        verifyAll();
+    }
+
+    @Test
+    public void testIsPublishedExistingUnpublishedRecord() {
+        ProcessPublish processPublish = new ProcessPublish();
+        processPublish.setPublished(false);
+
+        expect(processPublishRepository.findByPublishId(anyString())).andReturn(processPublish);
+        replayAll();
+
+        assertFalse(processPublishService.isPublished("publishId"));
+        verifyAll();
+    }
+
+    @Test
+    public void getProcessSummaryNullProcess() {
+        expect(processPublishRepository.findProcessByPublishId(anyString())).andReturn(null);
+        replayAll();
+
+        assertNull(processPublishService.getSimpleProcessSummary("non-existent id"));
+        verifyAll();
+    }
+
+    @Test
+    public void getProcessSummaryExistingProcess() {
+        Process process = new Process();
+        process.setId(1);
+        process.setName("name");
+        process.setDomain("domain");
+        process.setRanking("rank");
+
+        NativeType nativeType = new NativeType();
+        nativeType.setNatType("bpmn");
+        process.setNativeType(nativeType);
+
+        User user = new User();
+        user.setUsername("testUser");
+        process.setUser(user);
+
+        ProcessModelVersion processModelVersion = new ProcessModelVersion();
+        processModelVersion.setVersionNumber("1.0");
+
+        expect(processPublishRepository.findProcessByPublishId(anyString())).andReturn(process);
+        expect(pmvRepository.getLatestProcessModelVersion(process.getId(), "MAIN"))
+                .andReturn(processModelVersion);
+        replayAll();
+
+        ProcessSummaryType processSummaryType = processPublishService.getSimpleProcessSummary("publishId");
+        assertEquals(process.getId(), processSummaryType.getId());
+        assertEquals(process.getName(), processSummaryType.getName());
+        assertEquals(process.getDomain(), processSummaryType.getDomain());
+        assertEquals(process.getRanking(), processSummaryType.getRanking());
+        assertEquals(nativeType.getNatType(), processSummaryType.getOriginalNativeType());
+        assertEquals(user.getUsername(), processSummaryType.getOwner());
+        assertEquals(processModelVersion.getVersionNumber(), processSummaryType.getLastVersion());
+        verifyAll();
+    }
+
+    @Test
+    public void getProcessSummaryExistingProcessNullValues() {
+        Process process = new Process();
+
+        expect(processPublishRepository.findProcessByPublishId(anyString())).andReturn(process);
+        expect(pmvRepository.getLatestProcessModelVersion(null, "MAIN"))
+                .andReturn(null);
+        replayAll();
+
+        ProcessSummaryType processSummaryType = processPublishService.getSimpleProcessSummary("publishId");
+        assertNull(processSummaryType.getId());
+        assertNull(processSummaryType.getName());
+        assertNull(processSummaryType.getDomain());
+        assertNull(processSummaryType.getRanking());
+        assertNull(processSummaryType.getOriginalNativeType());
+        assertNull(processSummaryType.getOwner());
+        assertNull(processSummaryType.getLastVersion());
         verifyAll();
     }
 
