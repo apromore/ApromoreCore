@@ -22,52 +22,39 @@
 
 package org.apromore.plugin.portal.processdiscoverer.data;
 
+import lombok.Getter;
 import org.apromore.apmlog.util.Util;
+import org.apromore.commons.datetime.DurationUtils;
 
 import java.util.regex.Pattern;
 
+@Getter
 public class CaseDetails {
 
     private final String caseId;
     private Number caseIdDigit;
     private final String caseIdString;
     private final int caseEvents;
+    private final double duration;
+    private final String durationString;
     private final int caseVariantId;
 
     private final Pattern nonNumPattern = Pattern.compile("[^0-9.]+");
     private final Pattern numPattern = Pattern.compile("[0-9.]+");
 
-    private CaseDetails(String caseId, int caseEvents, int caseVariantId) {
+    private CaseDetails(String caseId, int caseEvents, double duration, int caseVariantId) {
         this.caseId = caseId;
         this.caseEvents = caseEvents;
+        this.duration = duration;
+        this.durationString = DurationUtils.humanize(duration, true);
         this.caseVariantId = caseVariantId;
         this.caseIdString = numPattern.matcher(caseId).replaceAll("");
         String numberOnly = nonNumPattern.matcher(caseId).replaceAll("");
         this.caseIdDigit = Util.isNumeric(numberOnly) ? Double.valueOf(numberOnly) : Long.MIN_VALUE;
     }
     
-    public static CaseDetails valueOf(String caseId, int caseEvents, int caseVariantId) {
-        return new CaseDetails(caseId, caseEvents, caseVariantId);
-    }
-
-    public String getCaseId () {
-        return caseId;
-    }
-
-    public Number getCaseIdDigit() {
-        return caseIdDigit;
-    }
-
-    public String getCaseIdString() {
-        return caseIdString;
-    }
-
-    public int getCaseEvents() {
-        return caseEvents;
-    }
-
-    public int getCaseVariantId() {
-        return caseVariantId;
+    public static CaseDetails valueOf(String caseId, int caseEvents, double duration, int caseVariantId) {
+        return new CaseDetails(caseId, caseEvents, duration, caseVariantId);
     }
 
 }

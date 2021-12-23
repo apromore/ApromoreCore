@@ -33,10 +33,10 @@ public class CaseSectionCaseAttributeFilter {
 
     public static boolean toKeep(PTrace trace, LogFilterRule logFilterRule) {
         Choice choice = logFilterRule.getChoice();
-        switch (choice) {
-            case RETAIN: return conformRule(trace, logFilterRule);
-            default: return !conformRule(trace, logFilterRule);
+        if (choice == Choice.RETAIN) {
+            return conformRule(trace, logFilterRule);
         }
+        return !conformRule(trace, logFilterRule);
     }
 
     private static boolean conformRule(PTrace trace, LogFilterRule logFilterRule) {
@@ -48,21 +48,17 @@ public class CaseSectionCaseAttributeFilter {
             return false;
         }
 
-        switch (filterType) {
-            case CASE_ID:
-                int immutableIndex = trace.getImmutableIndex();
-                BitSet bitSet = (BitSet) logFilterRule.getPrimaryValues().iterator().next().getObjectVal();
-                return bitSet.get(immutableIndex);
-            case CASE_VARIANT:
-                String caseVariant = trace.getCaseVariantId() + "";
-                Set<String> variants = logFilterRule.getPrimaryValuesInString();
-                return variants.contains(caseVariant);
-            default:
-                if (!trace.getAttributes().keySet().contains(attributeKey)) return false;
-                String value = trace.getAttributes().get(attributeKey);
-                Set<String> ruleVals = (Set<String>) logFilterRule.getPrimaryValues().iterator().next().getObjectVal();
-                return ruleVals.contains(value);
+        if (filterType == FilterType.CASE_ID) {
+            int immutableIndex = trace.getImmutableIndex();
+            BitSet bitSet = (BitSet) logFilterRule.getPrimaryValues().iterator().next().getObjectVal();
+            return bitSet.get(immutableIndex);
         }
+        if (!trace.getAttributes().containsKey(attributeKey))
+            return false;
+
+        String value = trace.getAttributes().get(attributeKey);
+        Set<String> ruleVals = (Set<String>) logFilterRule.getPrimaryValues().iterator().next().getObjectVal();
+        return ruleVals.contains(value);
 
     }
 }

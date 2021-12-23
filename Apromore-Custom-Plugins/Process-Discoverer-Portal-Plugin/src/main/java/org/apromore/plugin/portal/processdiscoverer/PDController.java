@@ -56,13 +56,14 @@ import org.apromore.portal.dialogController.dto.ApromoreSession;
 import org.apromore.portal.menu.PluginCatalog;
 import org.apromore.portal.model.FolderType;
 import org.apromore.portal.model.LogSummaryType;
+import org.apromore.portal.model.PermissionType;
+import org.apromore.portal.model.UserType;
 import org.apromore.portal.plugincontrol.PluginExecution;
 import org.apromore.portal.plugincontrol.PluginExecutionManager;
 import org.apromore.service.ProcessService;
 import org.apromore.service.loganimation.LogAnimationService2;
 import org.json.JSONException;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.ComponentNotFoundException;
 import org.zkoss.zk.ui.Executions;
@@ -265,14 +266,17 @@ public class PDController extends BaseController implements Composer<Component>,
             PortalContext portalContext = (PortalContext) session.get("context");
             LogSummaryType logSummary = (LogSummaryType) session.get("selection");
             PDFactory pdFactory = (PDFactory) session.get("pdFactory");
+            UserType currentUser = portalContext.getCurrentUser();
             contextData = ContextData.valueOf(
-                    logSummary.getDomain(), portalContext.getCurrentUser().getUsername(),
+                    logSummary.getDomain(), currentUser.getUsername(),
                     logSummary.getId(),
                     logSummary.getName(),
                     portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId(),
                     portalContext.getCurrentFolder() == null ? "Home"
                             : portalContext.getCurrentFolder().getFolderName(),
-                    ((MainController)portalContext.getMainController()).getConfig().isEnableCalendar());
+                    ((MainController)portalContext.getMainController()).getConfig().isEnableCalendar()
+                            && currentUser.hasAnyPermission(PermissionType.CALENDAR),
+                    currentUser.hasAnyPermission(PermissionType.MODEL_DISCOVER_EDIT));
             processAnalyst = new PDAnalyst(contextData, configData, getEventLogService());
             userOptions = UserOptionsData.DEFAULT(configData);
 

@@ -25,18 +25,11 @@ import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.ATrace;
 import org.apromore.apmlog.exceptions.CaseIdNotFoundException;
 import org.apromore.apmlog.exceptions.EmptyInputException;
-import org.apromore.apmlog.stats.CaseAttributeValue;
-import org.apromore.apmlog.stats.EventAttributeValue;
-import org.apromore.apmlog.xes.APMLogToXLog;
-import org.apromore.apmlog.stats.LogStatsAnalyzer;
 import org.apromore.apmlog.stats.TimeStatsProcessor;
-import org.apromore.calendar.builder.CalendarModelBuilder;
+import org.apromore.apmlog.xes.APMLogToXLog;
 import org.apromore.calendar.model.CalendarModel;
 import org.deckfour.xes.model.XLog;
 import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
-import org.eclipse.collections.impl.map.immutable.ImmutableUnifiedMap;
-import org.eclipse.collections.impl.map.mutable.UnifiedMap;
-import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -48,13 +41,6 @@ public class ImmutableLog extends AbstractLogImpl implements APMLog, Serializabl
 
     private final List<ATrace> traces = new ArrayList<>();
     private Map<String, ATrace> tracesMap;
-    protected UnifiedMap<String, UnifiedSet<CaseAttributeValue>> immutableCaseAttributeValues;
-    protected UnifiedMap<String, UnifiedSet<EventAttributeValue>> immutableEventAttributeValues;
-
-    // ------------------------------------------------------------
-    // Config caseVariantGroupMap after the traces establishment
-    // ------------------------------------------------------------
-    protected Map<Integer, List<ATrace>> caseVariantGroupMap;
 
     public ImmutableLog() {}
 
@@ -72,15 +58,6 @@ public class ImmutableLog extends AbstractLogImpl implements APMLog, Serializabl
         setLogName(logName);
         setActivityNameIndicatorMap(activityNameIndicatorMap);
         setTraces(traces);
-    }
-
-    @Override
-    public void setCalendarModel(CalendarModel calendarModel) {
-        super.setCalendarModel(calendarModel);
-
-        for (ATrace trace : traces) {
-            trace.updateTimeStats();
-        }
     }
 
     // ===============================================================================================================
@@ -112,21 +89,6 @@ public class ImmutableLog extends AbstractLogImpl implements APMLog, Serializabl
         return TimeStatsProcessor.getAPMLogDuration(this);
     }
 
-    @Override
-    public Map<Integer, List<ATrace>> getCaseVariantGroupMap() {
-        return caseVariantGroupMap;
-    }
-
-    @Override
-    public ImmutableUnifiedMap<String, UnifiedSet<CaseAttributeValue>> getImmutableCaseAttributeValues() {
-        return new ImmutableUnifiedMap(immutableCaseAttributeValues);
-    }
-
-    @Override
-    public ImmutableUnifiedMap<String, UnifiedSet<EventAttributeValue>> getImmutableEventAttributeValues() {
-        return new ImmutableUnifiedMap(immutableEventAttributeValues);
-    }
-
     // ===============================================================================================================
     // SET methods
     // ===============================================================================================================
@@ -135,7 +97,7 @@ public class ImmutableLog extends AbstractLogImpl implements APMLog, Serializabl
         if (traces == null || traces.isEmpty()) throw new EmptyInputException(this);
 
         this.traces.clear();
-        if (traces != null && !traces.isEmpty()) {
+        if (!traces.isEmpty()) {
             this.traces.addAll(traces);
             updateStats();
         }
@@ -158,10 +120,6 @@ public class ImmutableLog extends AbstractLogImpl implements APMLog, Serializabl
                 .collect(Collectors.toList());
 
         setActivityInstances(instances);
-
-        immutableCaseAttributeValues = LogStatsAnalyzer.getCaseAttributeValues(traces);
-        immutableEventAttributeValues = LogStatsAnalyzer.getEventAttributeValues(activityInstances, traces.size());
-        caseVariantGroupMap = LogStatsAnalyzer.getCaseVariantGroupMap(traces);
     }
 
     // ===============================================================================================================

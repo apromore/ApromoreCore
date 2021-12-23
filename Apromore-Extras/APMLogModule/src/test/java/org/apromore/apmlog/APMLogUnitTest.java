@@ -36,16 +36,15 @@ import org.apromore.apmlog.filter.types.Inclusion;
 import org.apromore.apmlog.filter.types.OperationType;
 import org.apromore.apmlog.filter.types.Section;
 import org.apromore.apmlog.logobjects.ImmutableLog;
-import org.apromore.apmlog.stats.EventAttributeValue;
 import org.apromore.apmlog.stats.LogStatsAnalyzer;
-import org.apromore.apmlog.util.Util;
+import org.apromore.apmlog.xes.XESAttributeCodes;
 import org.apromore.apmlog.xes.XLogToImmutableLog;
 import org.deckfour.xes.in.XesXmlGZIPParser;
 import org.deckfour.xes.in.XesXmlParser;
 import org.deckfour.xes.model.XLog;
 import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
-import org.eclipse.collections.impl.set.mutable.UnifiedSet;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -57,6 +56,7 @@ import java.io.FileReader;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
+import java.util.DoubleSummaryStatistics;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -81,13 +81,6 @@ public class APMLogUnitTest {
     public void testConstructor_BPIC13() {
 //        APMLog apmLog = new APMLog(bpi2013);
 //        APMLog apmLog = LogFactory.convertXLog(bpi2013);
-    }
-
-    @Test
-    public void testCaseVariantFrequency() throws Exception {
-        APMLog apmLog = getImmutableLog("sepsis-cases-young", "files/sepsis-cases-young.xes");
-        Map<String, String> map = getExpectedMap("files/sepsis-cases-young-case-variant-freq.csv");
-        CaseStatsTest.testCaseVariantFrequency(apmLog, map, this);
     }
 
     @Test
@@ -308,12 +301,6 @@ public class APMLogUnitTest {
     }
 
     @Test
-    public void testAttrArcDur4() throws Exception {
-        APMLog apmLog = getImmutableLog("2TracesArcDurTest", "files/2TracesArcDurTest.xes");
-        AttributeArcDurationTest.testAvgDur1(apmLog, this);
-    }
-
-    @Test
     public void testAPMLogDurations() throws Exception {
         APMLog apmLog = getImmutableLog("durationTest", "files/durationTest.xes");
         LogsDurationsTest.testAPMLogDurations(apmLog);
@@ -384,11 +371,12 @@ public class APMLogUnitTest {
         APMLog apmLog = getImmutableLog("A2_overlap_mixed", "files/A2_overlap_mixed.xes");
         PLog pLog = new PLog(apmLog);
         for (PTrace pTrace : pLog.getPTraces()) {
-            assertTrue(pTrace.getWaitingTimes().min() == 0);
-            assertTrue(pTrace.getWaitingTimes().median() == 0);
-            assertTrue(pTrace.getWaitingTimes().average() == 0);
-            assertTrue(pTrace.getWaitingTimes().max() == 0);
-            assertTrue(pTrace.getWaitingTimes().sum() == 0);
+            DoubleArrayList dss = LogStatsAnalyzer.getWaitingTimesOf(pTrace);
+            assertEquals(0, dss.min(), 0.0);
+            assertEquals(0, dss.median(), 0.0);
+            assertEquals(0, dss.average(), 0.0);
+            assertEquals(0, dss.max(), 0.0);
+            assertEquals(0, dss.sum(), 0.0);
         }
     }
 
@@ -396,13 +384,16 @@ public class APMLogUnitTest {
     public void testCasePerspectiveActivityFrequency() throws Exception {
         APMLog apmLog = getImmutableLog("_reworkTest2", "files/_reworkTest2.xes");
 
-        UnifiedMap<String, String> expected = new UnifiedMap<>();
-        expected.put("a", "100.00");
-        expected.put("b", "50.00");
+        UnifiedMap<String, Integer> expected = new UnifiedMap<>();
+        expected.put("a", 2); // 'a' appear in two cases
+        expected.put("b", 1); // 'b' appear in one case
 
-        UnifiedSet<EventAttributeValue> eavSet = apmLog.getImmutableEventAttributeValues().get("concept:name");
-        for (EventAttributeValue eav : eavSet) {
-            assertTrue(eav.getFrequency().equals(expected.get(eav.getValue())));
+        Map<String, Number> data =
+                LogStatsAnalyzer.getEventAttributeValueCaseFrequencies(XESAttributeCodes.CONCEPT_NAME,
+                        apmLog.getActivityInstances());
+
+        for (Map.Entry<String, Number> entry : data.entrySet()) {
+            assertEquals(expected.get(entry.getKey()), entry.getValue().doubleValue(), 0);
         }
     }
 
@@ -443,16 +434,6 @@ public class APMLogUnitTest {
         APMLog filteredLog = apmLogFilter.getAPMLog();
         assertTrue(filteredLog.size() == 1);
         assertTrue(filteredLog.get(0).getCaseId().equals("3007"));
-    }
-
-    @Test
-    public void testAverageActivityDuration() throws Exception {
-        APMLog apmLog = getImmutableLog("logCSM_15Kcases", "files/logCSM_15Kcases.xes.gz");
-        UnifiedSet<EventAttributeValue> eavSet = apmLog.getImmutableEventAttributeValues().get("concept:name");
-        DoubleArrayList dal = LogStatsAnalyzer.getEventAttributeValueDurationList(eavSet, "average",
-                new UnifiedSet<>(apmLog.getActivityInstances()));
-        String displayVal = Util.durationStringOf(dal.average());
-        assertTrue(displayVal.equalsIgnoreCase("18.09 hrs"));
     }
 
     @Test

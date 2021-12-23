@@ -31,10 +31,11 @@ import org.apromore.apmlog.filter.types.FilterType;
 import org.apromore.apmlog.filter.types.Inclusion;
 import org.apromore.apmlog.filter.types.OperationType;
 import org.apromore.apmlog.filter.types.Section;
-import org.apromore.apmlog.stats.EventAttributeValue;
-import org.eclipse.collections.impl.map.immutable.ImmutableUnifiedMap;
+import org.apromore.apmlog.stats.LogStatsAnalyzer;
+import org.apromore.apmlog.xes.XESAttributeCodes;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
+import static org.junit.Assert.assertEquals;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -43,8 +44,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import static org.junit.Assert.assertEquals;
 
 public class EventSectionAttributeFilterTest {
 
@@ -146,12 +145,10 @@ public class EventSectionAttributeFilterTest {
 
         APMLogFilter apmLogFilter = new APMLogFilter(apmLog);
         apmLogFilter.filter(rules);
-        APMLog filteredLog = apmLogFilter.getAPMLog();
 
-        ImmutableUnifiedMap<String, UnifiedSet<EventAttributeValue>> eavMap = filteredLog.getImmutableEventAttributeValues();
+        long size = LogStatsAnalyzer.getUniqueEventAttributeValueSize(
+                XESAttributeCodes.CONCEPT_NAME, apmLogFilter.getPLog());
 
-        int actSizeOfCFM = eavMap.get("concept:name").size();
-
-        assertEquals(2, actSizeOfCFM);
+        assertEquals(2, size);
     }
 }

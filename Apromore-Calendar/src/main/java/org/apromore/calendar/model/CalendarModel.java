@@ -32,24 +32,11 @@
 
 package org.apromore.calendar.model;
 
-import lombok.AccessLevel;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import net.time4j.ClockUnit;
-import net.time4j.Moment;
-import net.time4j.range.ChronoInterval;
-import net.time4j.range.IntervalCollection;
-import net.time4j.range.MomentInterval;
-import net.time4j.tz.Timezone;
 
 import java.time.*;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Random;
-import java.util.function.Function;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -71,12 +58,9 @@ public class CalendarModel {
   private String zoneId = ZoneOffset.UTC.getId();
   private List<WorkDayModel> workDays = new ArrayList<>();
   private List<HolidayModel> holidays = new ArrayList<>();
+  private Set<LocalDate> holidayDates = new HashSet<>();
 
   public static CalendarModel ABSOLUTE_CALENDAR = new AbsoluteCalendarModel();
-
-  @Getter(AccessLevel.NONE)
-  @Setter(AccessLevel.NONE)
-  private List<ChronoInterval<Moment>> holidayIntervals;
 
   public DurationModel getDuration(OffsetDateTime starDateTime, OffsetDateTime endDateTime) {
     DurationModel durationModel = new DurationModel();
@@ -92,16 +76,16 @@ public class CalendarModel {
 
   public Duration getDuration(Instant start, Instant end) {
     if (end.isBefore(start) || end.equals(start)) return Duration.ZERO;
-    IntervalCollection<Moment> intervals = IntervalCollection.onMomentAxis();
-    return Duration.from(
-            intervals
-              .plus(getWorkDayIntervals(start, end))
-              .minus(getHolidayIntervals())
-              .withTimeWindow(MomentInterval.between(start, end)).stream()
-              .map(MomentInterval.class::cast)
-              .map(v -> v.getNominalDuration(Timezone.of(zoneId), ClockUnit.MILLIS))
-              .collect(net.time4j.Duration.summingUp())
-              .toTemporalAmount());
+    ZonedDateTime startDate = ZonedDateTime.ofInstant(start, ZoneId.of(zoneId));
+    ZonedDateTime endDate = ZonedDateTime.ofInstant(end, ZoneId.of(zoneId));
+    collectHolidayDates();
+    Duration totalDuration = Duration.ZERO;
+    for (WorkDayModel workDay : workDays) {
+      if (workDay.isWorkingDay()) {
+        totalDuration = totalDuration.plus(workDay.getWorkDuration(startDate, endDate, holidayDates));
+      }
+    }
+    return totalDuration;
   }
 
   // This duration is rounded to the nearest milliseconds
@@ -133,20 +117,10 @@ public class CalendarModel {
     return resultList;
   }
 
-  private List<ChronoInterval<Moment>> getWorkDayIntervals(Instant start, Instant end) {
-    return workDays.stream()
-            .filter(WorkDayModel::isWorkingDay)
-            .map(workDay -> workDay.getRealIntervals(start, end, ZoneId.of(zoneId)).stream())
-            .flatMap(Function.identity())
-            .collect(Collectors.toList());
-  }
-
-  private List<ChronoInterval<Moment>> getHolidayIntervals() {
-    if (holidayIntervals == null) {
-      holidayIntervals = holidays.stream().map(d -> d.getInterval(ZoneId.of(zoneId)))
-              .collect(Collectors.toList());
+  private void collectHolidayDates() {
+    if (holidayDates.isEmpty()) {
+      holidayDates = holidays.stream().map(HolidayModel::getHolidayDate).collect(Collectors.toSet());
     }
-    return holidayIntervals;
   }
 
   public List<WorkDayModel> getOrderedWorkDay() {

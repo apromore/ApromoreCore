@@ -26,6 +26,7 @@ package org.apromore.security.provider;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apromore.portal.model.MembershipType;
 import org.apromore.portal.model.PermissionType;
 import org.apromore.portal.model.RoleType;
@@ -111,9 +112,7 @@ public class ApromoreTokenBasedRememberMeServices extends TokenBasedRememberMeSe
 
         PermissionType permissionType;
         for (ApromorePermissionDetails permission : user.getPermissions()) {
-            permissionType = new PermissionType();
-            permissionType.setId(permission.getId());
-            permissionType.setName(permission.getName());
+            permissionType = PermissionType.getPermissionType(permission.getId(), permission.getName());
 
             if (!userType.getPermissions().contains(permissionType)){
                 userType.getPermissions().add(permissionType);

@@ -1,0 +1,83 @@
+{
+  "name": "bpmn-js-example-properties-panel-extension",
+  "version": "0.0.0",
+  "description": "A properties panel extension example",
+  "main": "app/index.js",
+  "scripts": {
+    "lint": "eslint .",
+    "all": "grunt",
+    "dev": "grunt auto-build",
+    "test": "karma start",
+    "build": "webpack --mode production"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/apromore/QBPSimulator"
+  },
+  "keywords": [
+    "QBPSimulator"
+  ],
+  "author": {
+    "name": "Stanislav Deviatykh",
+    "url": "https://github.com/stdevi"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "bpmn-font": "^0.10.0",
+    "babel-core": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babelify": "^8.0.0",
+    "grunt": "~1.0.1",
+    "grunt-browserify": "^5.0.0",
+    "grunt-contrib-connect": "~1.0.2",
+    "grunt-contrib-copy": "~1.0.0",
+    "grunt-contrib-less": "^1.0.1",
+    "grunt-contrib-watch": "~1.0.0",
+    "load-grunt-tasks": "~3.5.0",
+    "stringify": "^3.1.0",
+    "babel-plugin-transform-flow-strip-types": "^6.22.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "chai": "^4.1.2",
+    "eslint": "^5.16.0",
+    "eslint-plugin-bpmn-io": "^0.6.0",
+    "karma": "^4.1.0",
+    "karma-chrome-launcher": "^2.2.0",
+    "karma-firefox-launcher": "^1.1.0",
+    "karma-mocha": "~1.2.0",
+    "karma-phantomjs-launcher": "^1.0.4",
+    "karma-safari-launcher": "^1.0.0",
+    "karma-sinon-chai": "^2.0.2",
+    "karma-spec-reporter": "0.0.31",
+    "karma-webpack": "^4.0.2",
+    "less": "^3.8.0",
+    "mocha": "^5.2.0",
+    "mocha-test-container-support": "0.2.0",
+    "npm-run-all": "^4.1.5",
+    "promise-polyfill": "^8.1.3",
+    "puppeteer": "^1.18.0",
+    "raw-loader": "^0.5.1",
+    "sinon": "^4.5.0",
+    "sinon-chai": "^3.2.0",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12",
+    "copy-webpack-plugin": "^6.1.0",
+    "css-loader": "^4.3.0",
+    "style-loader": "^1.2.1",
+    "less-loader": "^7.0.1"
+  },
+  "dependencies": {
+    "bpmn-js": "^8.7.1",
+    "bpmn-js-color-picker": "^0.3.1",
+    "bpmn-js-properties-panel": "^0.44.0",
+    "camunda-bpmn-moddle": "^4.4.0",
+    "color": "3.1.3",
+    "diagram-js": "^7.3.0",
+    "jquery": "^3.5.1",
+    "min-dash": "^3.0.0",
+    "spectrum-colorpicker2": "2.0.5"
+  },
+  "engines": {
+    "node": ">=10 <11"
+  }
+}

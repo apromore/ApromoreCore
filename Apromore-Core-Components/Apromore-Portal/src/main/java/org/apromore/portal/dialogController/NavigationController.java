@@ -24,10 +24,12 @@
 
 package org.apromore.portal.dialogController;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.apromore.dao.model.User;
 import org.apromore.plugin.portal.PortalContext;
@@ -62,9 +64,9 @@ import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.Window;
 
 public class NavigationController extends BaseController {
-	
-	private static final Logger LOGGER = PortalLoggerFactory.getLogger(BaseListboxController.class);
-	 
+
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(BaseListboxController.class);
+
     private MainController mainC;
     private Component mainComponent;
     private Tree tree;
@@ -75,13 +77,13 @@ public class NavigationController extends BaseController {
 
 
     public NavigationController(MainController newMainC,Component mainComponent) throws Exception {
-    	this.mainComponent = mainComponent;
-    	this.mainC=newMainC;
+        this.mainComponent = mainComponent;
+        this.mainC=newMainC;
 
         Window treeW = (Window) mainComponent.getFellow("navigationcomp").getFellow("treeW");
 //        treeW.setContentStyle("background-image: none; background-color: white");
         Center centre = (Center) mainComponent.getFellow("leftInnerCenterPanel");
-        
+
 
         tree = (Tree) treeW.getFellow("tree");
 //        tree.setStyle("background-image: none; background-color: white");
@@ -102,14 +104,14 @@ public class NavigationController extends BaseController {
                 doCollapseExpandAll(tree, false);
             }
         });
-        
-		centre.addEventListener(Events.ON_RIGHT_CLICK, new EventListener<Event>() {
-			@Override
-			public void onEvent(Event event) throws Exception {
-				//Do nothing. But just to catch the event to avoid browser default right menu
-			}
-		});
-        
+
+        centre.addEventListener(Events.ON_RIGHT_CLICK, new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                //Do nothing. But just to catch the event to avoid browser default right menu
+            }
+        });
+
     }
 
 
@@ -136,7 +138,7 @@ public class NavigationController extends BaseController {
             }
         }
     }
- 
+
     public void currentFolderChanged() {
         updateFolders(tree, mainC.getPortalSession().getCurrentFolder());
     }
@@ -167,137 +169,148 @@ public class NavigationController extends BaseController {
 
         return containsCurrentFolder;
     }
-    
+
     public void selectCurrentFolder() {
         findAndSelectFolder(tree, mainC.getPortalSession().getCurrentFolder());
     }
-    
-	private static void findAndSelectFolder(Component component, FolderType currentFolder) {
-		for (Component child : component.getChildren()) {
-			findAndSelectFolder(child, currentFolder);
-		}
 
-		if (component instanceof Treeitem) {
-			Treeitem treeitem = (Treeitem) component;
-			Object value = treeitem.getValue();
-			if (value instanceof FolderTreeNode) {
-				FolderType folder = (FolderType) ((FolderTreeNode) value).getData();
-				boolean match = currentFolder.getId() == folder.getId();
-				treeitem.setSelected(match);
-			}
-		}
-	}
-    
-     public void copy(FolderType selectedFolder) {
-    	 mainC.getCopyPasteController().copy(Collections.singleton(selectedFolder), 1, selectedFolder);
-     }
-     
-     public void cut(FolderType selectedFolder) {
-    	 mainC.getCopyPasteController().cut(Collections.singleton(selectedFolder), 1, selectedFolder);
-      }
-     
-	public void paste(FolderType selectedFolder) {
-		if (selectedFolder == null) {
-			Notification.error(Labels.getLabel("portal_failedFind_message"));
-			return;
-		}
-		if (mainC.getCopyPasteController().getSelectedItems().isEmpty()) {
-			Notification.error(Labels.getLabel("portal_selectOneItemAndCutCopy_message"));
-			return;
-		}
+    private static void findAndSelectFolder(Component component, FolderType currentFolder) {
+        for (Component child : component.getChildren()) {
+            findAndSelectFolder(child, currentFolder);
+        }
 
-		for(Object item:mainC.getCopyPasteController().getSelectedItems()) {
-			if(item instanceof FolderType) {
-				if (((FolderType)item).getId() == selectedFolder.getId()) {
-					Notification.error(Labels.getLabel("portal_source_destination_folder_notsame_message"));
-					return;
-				}
-			}
-		}
-		try {
-			mainC.getCopyPasteController().paste(selectedFolder);
-			mainC.reloadSummaries();
-		} catch (Exception e) {
-			LOGGER.error("Error in cut/copy folder from tree",e);
-		}
-	}
-	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	protected void share(FolderType selectedFolder) {
-		PortalPlugin accessControlPlugin;
-		mainC.eraseMessage();
-		// Check for ownership is moved to plugin level
-		try {
-			portalPluginMap = PortalPluginResolver.getPortalPluginMap();
-			accessControlPlugin = portalPluginMap.get(PluginCatalog.PLUGIN_ACCESS_CONTROL);
+        if (component instanceof Treeitem) {
+            Treeitem treeitem = (Treeitem) component;
+            Object value = treeitem.getValue();
+            if (value instanceof FolderTreeNode) {
+                FolderType folder = (FolderType) ((FolderTreeNode) value).getData();
+                boolean match = currentFolder.getId() == folder.getId();
+                treeitem.setSelected(match);
+            }
+        }
+    }
 
-			Map arg = new HashMap<>();
-			arg.put("withFolderTree", false);
-			arg.put("selectedItem", selectedFolder);
-			arg.put("currentUser", UserSessionManager.getCurrentUser());
-			arg.put("autoInherit", true);
-			arg.put("showRelatedArtifacts", true);
-			arg.put("enablePublish", mainC.getConfig().isEnablePublish());
+    public void copy(FolderType selectedFolder) {
+        mainC.getCopyPasteController().copy(Collections.singleton(selectedFolder), 1, selectedFolder);
+    }
 
-			accessControlPlugin.setSimpleParams(arg);
-			accessControlPlugin.execute(portalContext);
-		} catch (Exception e) {
-			Messagebox.show(e.getMessage(), APROMORE, Messagebox.OK, Messagebox.ERROR);
-		}
-	}
+    public void cut(FolderType selectedFolder) {
+        if (mainC.getCopyPasteController().cut(Collections.singleton(selectedFolder), 1, selectedFolder)) {
+            tree.getItems().stream().forEach(item -> {
+                item.removeSclass("ap-item-cut-selected");
+            });
+
+            tree.getSelectedItems().stream().forEach(item -> {
+                item.setSclass("ap-item-cut-selected");
+            });
+        }
+    }
+
+    public void paste(FolderType selectedFolder) {
+        if (selectedFolder == null) {
+            Notification.error(Labels.getLabel("portal_failedFind_message"));
+            return;
+        }
+        if (mainC.getCopyPasteController().getSelectedItems().isEmpty()) {
+            Notification.error(Labels.getLabel("portal_selectOneItemAndCutCopy_message"));
+            return;
+        }
+
+        for(Object item:mainC.getCopyPasteController().getSelectedItems()) {
+            if(item instanceof FolderType) {
+                if (((FolderType)item).getId() == selectedFolder.getId()) {
+                    Notification.error(Labels.getLabel("portal_source_destination_folder_notsame_message"));
+                    return;
+                }
+            }
+        }
+        try {
+            mainC.getCopyPasteController().paste(selectedFolder);
+            mainC.reloadSummaries();
+        } catch (Exception e) {
+            LOGGER.error("Error in cut/copy folder from tree",e);
+        }
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    protected void share(FolderType selectedFolder) {
+        PortalPlugin accessControlPlugin;
+        mainC.eraseMessage();
+        // Check for ownership is moved to plugin level
+        try {
+            portalPluginMap = PortalPluginResolver.getPortalPluginMap();
+            accessControlPlugin = portalPluginMap.get(PluginCatalog.PLUGIN_ACCESS_CONTROL);
+
+            Map arg = new HashMap<>();
+            arg.put("withFolderTree", false);
+            arg.put("selectedItem", selectedFolder);
+            arg.put("currentUser", UserSessionManager.getCurrentUser());
+            arg.put("autoInherit", true);
+            arg.put("showRelatedArtifacts", true);
+            arg.put("enablePublish", mainC.getConfig().isEnablePublish());
+
+            accessControlPlugin.setSimpleParams(arg);
+            accessControlPlugin.execute(portalContext);
+        } catch (Exception e) {
+            Messagebox.show(e.getMessage(), APROMORE, Messagebox.OK, Messagebox.ERROR);
+        }
+    }
 
 
-	public void rename(FolderType selectedFolder) throws InterruptedException {
-		
-			if (selectedFolder == null) {
-				Notification.error(Labels.getLabel("portal_failedFind_message"));
-				return;
-			}
-			try {
-				if (ItemHelpers.canModify(mainC.getSecurityService().getUserById(UserSessionManager.getCurrentUser().getId()),
-						selectedFolder)) {
-						mainC.eraseMessage();
-						new RenameFolderController(mainC, selectedFolder.getId(), selectedFolder.getFolderName());
-				} else {
-					   Notification.error(Labels.getLabel("portal_noPrivilegeRename_message"));
-				}
-			} catch (DialogException e) {
-				Messagebox.show(e.getMessage(), APROMORE, Messagebox.OK, Messagebox.ERROR);
-			} catch (Exception e) {
-				Notification.error(e.getMessage());
-				return;
-			}
-	}
+    public void rename(FolderType selectedFolder) throws InterruptedException {
 
-	public void removeFolder(FolderType selectedFolder) {
-		
-		if (selectedFolder == null) {
-			Notification.error(Labels.getLabel("portal_failedFind_message"));
-			return;
-		}
-		
-		Messagebox.show(Labels.getLabel("portal_deleteFolderPrompt_message"), Labels.getLabel(PORTAL_WARNING_TEXT),
-				Messagebox.YES | Messagebox.NO, Messagebox.QUESTION, new EventListener<Event>() {
-					@Override
-					public void onEvent(Event evt) throws Exception {
-						switch (((Integer) evt.getData())) {
-						case Messagebox.YES:
-							try {
-								mainC.getManagerService().deleteFolder(selectedFolder.getId(),
-										UserSessionManager.getCurrentUser().getUsername());
-							} catch (Exception e) {
-								LOGGER.error("Failed to delete folder from Tree", e);
-								Messagebox.show(Labels.getLabel("portal_failedDeleteNotAuthorized_message"),
-										APROMORE, Messagebox.OK, Messagebox.ERROR);
-							}
-							mainC.loadWorkspace();
-							mainC.reloadSummaries();
-							break;
-						case Messagebox.NO:
-							break;
-						default:
-						}
-					}
-				});
-	}
+        if (selectedFolder == null) {
+            Notification.error(Labels.getLabel("portal_failedFind_message"));
+            return;
+        }
+        try {
+            if (ItemHelpers.canModify(mainC.getSecurityService().getUserById(UserSessionManager.getCurrentUser().getId()),
+                selectedFolder)) {
+                mainC.eraseMessage();
+                new RenameFolderController(mainC, selectedFolder.getId(), selectedFolder.getFolderName());
+            } else {
+               Notification.error(Labels.getLabel("portal_noPrivilegeRename_message"));
+            }
+        } catch (DialogException e) {
+            Messagebox.show(e.getMessage(), APROMORE, Messagebox.OK, Messagebox.ERROR);
+        } catch (Exception e) {
+            Notification.error(e.getMessage());
+            return;
+        }
+    }
+
+    public void removeFolder(FolderType selectedFolder) {
+
+        if (selectedFolder == null) {
+            Notification.error(Labels.getLabel("portal_failedFind_message"));
+            return;
+        }
+        if( !(mainC.getManagerService().hasWritePermission(UserSessionManager.getCurrentUser().getUsername(),Arrays.asList(selectedFolder)))) {
+            Notification.error(Labels.getLabel("portal_deleteItemRestricted_message"));
+            return;
+        }
+
+        Messagebox.show(Labels.getLabel("portal_deleteFolderPrompt_message"), Labels.getLabel(PORTAL_WARNING_TEXT),
+                Messagebox.YES | Messagebox.NO, Messagebox.QUESTION, new EventListener<Event>() {
+            @Override
+            public void onEvent(Event evt) throws Exception {
+                switch (((Integer) evt.getData())) {
+                case Messagebox.YES:
+                    try {
+                        mainC.getManagerService().deleteFolder(selectedFolder.getId(),
+                                UserSessionManager.getCurrentUser().getUsername());
+                    } catch (Exception e) {
+                        LOGGER.error("Failed to delete folder from Tree", e);
+                        Notification.error(Labels.getLabel("portal_deleteItemRestricted_message"));
+                    }
+                    mainC.loadWorkspace();
+                    mainC.reloadSummaries();
+                    break;
+                case Messagebox.NO:
+                    break;
+                default:
+                }
+            }
+        });
+    }
 }

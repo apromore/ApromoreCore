@@ -25,6 +25,7 @@ import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
 import org.apromore.apmlog.ATrace;
 import org.apromore.apmlog.logobjects.ActivityInstance;
+import org.apromore.apmlog.stats.LogStatsAnalyzer;
 import org.apromore.apmlog.util.Util;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
@@ -35,7 +36,7 @@ import java.util.List;
 
 public class GeneralHistogram {
 
-    public static List<Triple> getCasesOverTime(List<ATrace> traces, long xMin, long xMax, int xSize) {
+    public static List<Triple<String, Long, Long>> getCasesOverTime(List<ATrace> traces, long xMin, long xMax, int xSize) {
         if (xMax < 1) return new ArrayList<>(); // return empty data
 
         long unit = (xMax - xMin) / xSize;
@@ -56,7 +57,7 @@ public class GeneralHistogram {
         return getOverTimeData(timeFreqMap, unit);
     }
 
-    public static List<Triple> getActivityOverTime(List<ActivityInstance> activityInstances, long xMin, long xMax, int xSize) {
+    public static List<Triple<String, Long, Long>> getActivityOverTime(List<ActivityInstance> activityInstances, long xMin, long xMax, int xSize) {
         if (xMax < 1) return new ArrayList<>(); // return empty data
 
         long unit = (xMax - xMin) / xSize;
@@ -80,7 +81,6 @@ public class GeneralHistogram {
     }
 
     public static List<Triple> getCaseUtilization(List<ATrace> traces, double xMax, double xSize) {
-        double utilMax = xMax;
         double utilMin = 0;
         double utilUnit = (xMax - utilMin) / xSize;
 
@@ -89,16 +89,17 @@ public class GeneralHistogram {
         UnifiedMap<Double, Integer> utilCountMap = new UnifiedMap<>();
         utilCountMap.put(utilCurrent, 0);
 
-        while (utilCurrent < utilMax) {
+        while (utilCurrent < xMax) {
             utilCurrent += utilUnit;
-            utilCountMap.put(utilCurrent <= utilMax ? utilCurrent : utilMax, 0);
+            utilCountMap.put(Math.min(utilCurrent, xMax), 0);
         }
         List<Double> utilKeys = new ArrayList<>(utilCountMap.keySet());
         Collections.sort(utilKeys);
 
 
         for (ATrace trace : traces) {
-            double caseUtil = xMax == 100 ? trace.getCaseUtilization() * 100 : trace.getCaseUtilization();
+            double caseUtil = xMax == 100 ? LogStatsAnalyzer.getCaseUtilizationOf(trace) * 100 :
+                    LogStatsAnalyzer.getCaseUtilizationOf(trace);
             for (double util : utilKeys) {
                 double prior = util - utilUnit;
                 if (caseUtil > prior && caseUtil <= util) {
@@ -124,7 +125,7 @@ public class GeneralHistogram {
                 name = "instant";
             }
 
-            data.add(new ImmutableTriple(name, y, x));
+            data.add(Triple.of(name, y, x));
         }
 
         return data;
@@ -147,17 +148,17 @@ public class GeneralHistogram {
         return timeFreqMap;
     }
 
-    private static List<Triple> getOverTimeData(UnifiedMap<Long, IntArrayList> timeFreqMap, long unit) {
+    private static List<Triple<String, Long, Long>> getOverTimeData(UnifiedMap<Long, IntArrayList> timeFreqMap, long unit) {
         List<Long> keys = new ArrayList<>(timeFreqMap.keySet());
         Collections.sort(keys);
 
-        List<Triple> data = new ArrayList<>();
+        List<Triple<String, Long, Long>> data = new ArrayList<>();
 
         for (long x : keys) {
             String name = Util.timestampRangeStringOf((x - unit) + 1, x);
-            int y = timeFreqMap.get(x).size();
+            long y = timeFreqMap.get(x).size();
 
-            Triple triple = new ImmutableTriple(name, y, x);
+            Triple<String, Long, Long> triple = new ImmutableTriple<>(name, y, x);
             data.add(triple);
         }
 

@@ -40,8 +40,10 @@ import org.apromore.plugin.merge.logic.MergeService;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
+import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.model.ParameterType;
 import org.apromore.portal.model.ParametersType;
+import org.apromore.portal.model.PermissionType;
 import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.ProcessVersionIdType;
 import org.apromore.portal.model.ProcessVersionIdsType;
@@ -115,6 +117,12 @@ public class MergePlugin extends DefaultPortalPlugin implements LabelSupplier {
     @Override
     public String getBundleName() {
         return "processmerge";
+    }
+
+    @Override
+    public Availability getAvailability() {
+        return UserSessionManager.getCurrentUser().hasAnyPermission(PermissionType.MERGE_MODELS) ?
+                Availability.AVAILABLE : Availability.UNAVAILABLE;
     }
 
     @Override

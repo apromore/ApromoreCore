@@ -1,0 +1,11 @@
+# macOS Finder artifacts
+**/.DS_Store
+
+# vi editor artifacts
+**/*.swp
+
+# npm, WebStorms artifacts
+**/debug.log
+**/node_modules
+**/dist
+**/package-lock.json

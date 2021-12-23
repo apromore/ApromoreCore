@@ -21,13 +21,13 @@
  */
 package org.apromore.apmlog.filter.typefilters;
 
-import org.apromore.apmlog.logobjects.ActivityInstance;
 import org.apromore.apmlog.filter.PTrace;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.RuleValue;
 import org.apromore.apmlog.filter.types.Choice;
 import org.apromore.apmlog.filter.types.FilterType;
 import org.apromore.apmlog.filter.types.OperationType;
+import org.apromore.apmlog.logobjects.ActivityInstance;
 import org.apromore.apmlog.util.CalendarDuration;
 import org.apromore.calendar.model.CalendarModel;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
@@ -41,10 +41,10 @@ import java.util.Set;
 public class PathFilter {
     public static boolean toKeep(PTrace trace, LogFilterRule logFilterRule) {
         Choice choice = logFilterRule.getChoice();
-        switch (choice) {
-            case RETAIN: return conformRule(trace, logFilterRule);
-            default: return !conformRule(trace, logFilterRule);
+        if (choice == Choice.RETAIN) {
+            return conformRule(trace, logFilterRule);
         }
+        return !conformRule(trace, logFilterRule);
     }
 
     private static boolean conformRule(PTrace trace, LogFilterRule logFilterRule) {
@@ -108,7 +108,7 @@ public class PathFilter {
                 }
             }
 
-            if (val != null && toValSet.contains(val) && activityList.get(0) != act1) {
+            if (val != null && toValSet.contains(val) && trace.getPreviousOf(act1) != null) {
                 ActivityInstance pAct = trace.getPreviousOf(act1);
                 String pVal = getAttributeValue(pAct, attributeKey);
                 if (pVal != null && fromValSet.contains(pVal) && conformRequirement(pAct, act1, logFilterRule)) {
@@ -152,25 +152,10 @@ public class PathFilter {
         return false;
     }
 
-    private static UnifiedSet<ActivityInstance> getMatchedFollowUpActivities(PTrace trace,
-                                                                             String attributeKey,
-                                                                             UnifiedSet<String> toValSet,
-                                                                             int fromIndex) {
-        UnifiedSet<ActivityInstance> followUpActSet = new UnifiedSet<>();
-
-        List<ActivityInstance> activityList =
-                trace.getActivityInstances().subList(fromIndex, trace.getActivityInstances().size());
-
-        for (ActivityInstance activity : activityList) {
-            String val = getAttributeValue(activity, attributeKey);
-            if (toValSet.contains(val)) followUpActSet.add(activity);
-        }
-        return followUpActSet;
-    }
-
-
-
     private static String getAttributeValue(ActivityInstance activity, String key) {
+        if (activity == null || key == null)
+            return null;
+
         return activity.getAttributes().containsKey(key) ? activity.getAttributeValue(key) : null;
     }
 
@@ -191,8 +176,6 @@ public class PathFilter {
         }
         return valSet;
     }
-
-
 
     private static boolean conformRequirement(ActivityInstance act1, ActivityInstance act2, LogFilterRule logFilterRule) {
         Set<RuleValue> secondaryValues = logFilterRule.getSecondaryValues();
@@ -303,7 +286,7 @@ public class PathFilter {
 
         CalendarModel calendarModel = act1.getCalendarModel();
 
-        double duration = 0;
+        double duration;
 
         if (act2 == null) {
             duration = act1.getDuration();

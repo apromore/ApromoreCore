@@ -32,9 +32,14 @@ import org.apromore.apmlog.filter.PTrace;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.LogFilterRuleImpl;
 import org.apromore.apmlog.filter.rules.RuleValue;
-import org.apromore.apmlog.filter.types.*;
+import org.apromore.apmlog.filter.types.Choice;
+import org.apromore.apmlog.filter.types.FilterType;
+import org.apromore.apmlog.filter.types.Inclusion;
+import org.apromore.apmlog.filter.types.OperationType;
+import org.apromore.apmlog.filter.types.Section;
 import org.apromore.apmlog.stats.LogStatsAnalyzer;
 import org.apromore.apmlog.stats.TimeStatsProcessor;
+import org.apromore.apmlog.xes.XESAttributeCodes;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.commons.datetime.DateTimeUtils;
 import org.apromore.commons.datetime.DurationUtils;
@@ -49,7 +54,15 @@ import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.logman.attribute.log.AttributeInfo;
 import org.apromore.logman.attribute.log.AttributeLog;
 import org.apromore.plugin.portal.PortalLoggerFactory;
-import org.apromore.plugin.portal.processdiscoverer.data.*;
+import org.apromore.plugin.portal.processdiscoverer.data.CaseDetails;
+import org.apromore.plugin.portal.processdiscoverer.data.CaseVariantDetails;
+import org.apromore.plugin.portal.processdiscoverer.data.ConfigData;
+import org.apromore.plugin.portal.processdiscoverer.data.ContextData;
+import org.apromore.plugin.portal.processdiscoverer.data.InvalidDataException;
+import org.apromore.plugin.portal.processdiscoverer.data.NotFoundAttributeException;
+import org.apromore.plugin.portal.processdiscoverer.data.OutputData;
+import org.apromore.plugin.portal.processdiscoverer.data.PerspectiveDetails;
+import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
 import org.apromore.plugin.portal.processdiscoverer.impl.json.ProcessJSONVisualizer;
 import org.apromore.plugin.portal.processdiscoverer.vis.ProcessVisualizer;
 import org.apromore.processdiscoverer.Abstraction;
@@ -62,7 +75,17 @@ import org.eclipse.collections.api.list.ListIterable;
 import org.slf4j.Logger;
 import org.springframework.util.CollectionUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.BitSet;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -104,6 +127,8 @@ public class PDAnalyst {
     @Getter
     Map<Integer, List<ATrace>> caseVariantGroupMap;
 
+    private String caseVariantPerspective = XESAttributeCodes.CONCEPT_NAME;
+
     // Calendar management
     CalendarModel calendarModel;
 
@@ -141,7 +166,8 @@ public class PDAnalyst {
         this.filteredAPMLog = apmLog;
         this.filteredPLog = new PLog(apmLog);
         apmLogFilter = new APMLogFilter(apmLog);
-        caseVariantGroupMap = LogStatsAnalyzer.getCaseVariantGroupMap(filteredAPMLog.getTraces());
+        caseVariantGroupMap = LogStatsAnalyzer.getCaseVariantsByPerspective(filteredAPMLog.getTraces(),
+                caseVariantPerspective);
         
         // ProcessDiscoverer logic with default attribute
         this.calendarModel = eventLogService.getCalendarFromLog(contextData.getLogId());
@@ -444,16 +470,19 @@ public class PDAnalyst {
     }
 
     public List<CaseDetails> getCaseDetails() {
-        List<ATrace> traceList = filteredAPMLog.getTraces();
-
         List<CaseDetails> listResult = new ArrayList<>();
-        for (ATrace aTrace : traceList) {
-            String caseId = aTrace.getCaseId();
-            int caseEvents = aTrace.getActivityInstances().size();
-            int caseVariantId = aTrace.getCaseVariantId();
-            CaseDetails caseDetails = CaseDetails.valueOf(caseId, caseEvents, caseVariantId);
-            listResult.add(caseDetails);
+
+        for (Map.Entry<Integer, List<ATrace>> entry : caseVariantGroupMap.entrySet()) {
+            int caseVariantId = entry.getKey();
+            for (ATrace aTrace : entry.getValue()) {
+                String caseId = aTrace.getCaseId();
+                int caseEvents = aTrace.getActivityInstances().size();
+                double duration = TimeStatsProcessor.getCaseDuration(aTrace);
+                CaseDetails caseDetails = CaseDetails.valueOf(caseId, caseEvents, duration, caseVariantId);
+                listResult.add(caseDetails);
+            }
         }
+
         return listResult;
     }
 
@@ -568,7 +597,8 @@ public class PDAnalyst {
         // PLog does not always have the updated case variants due to performance concern.
         // Such a value can be obtained from the filteredAPMLog (the output)
         // ==================================================================================================
-        return this.filteredAPMLog.getCaseVariantGroupMap().size();
+        return LogStatsAnalyzer.getCaseVariantsByPerspective(filteredAPMLog.getTraces(),
+                XESAttributeCodes.CONCEPT_NAME).size();
     }
 
     public long getFilteredActivityInstanceSize() {
@@ -578,7 +608,8 @@ public class PDAnalyst {
     public void updateLog(PLog pLog, APMLog apmLog) throws Exception {
         this.filteredAPMLog = apmLog;
         this.filteredPLog = pLog;
-        this.caseVariantGroupMap = LogStatsAnalyzer.getCaseVariantGroupMap(filteredAPMLog.getTraces());
+        this.caseVariantGroupMap = LogStatsAnalyzer.getCaseVariantsByPerspective(filteredAPMLog.getTraces(),
+                caseVariantPerspective);
         List<PTrace> pTraces = pLog.getCustomPTraceList();
         
         LogBitMap logBitMap = new LogBitMap(aLog.getOriginalTraces().size());

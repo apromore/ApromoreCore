@@ -1,0 +1,87 @@
+/**
+ * #%L
+ * This file is part of "Apromore Core".
+ * %%
+ * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ *
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * #L%
+ */
+/* COLOR PICKER */
+
+/* context pad */
+.djs-context-pad .entry {
+  background-color: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 0 2px 1px rgba(255, 255, 255, 0.6);
+}
+
+.bpmn-icon-color:before {
+    content: '🖌';
+}
+
+/* color popup menu */
+[class^="color-icon-"]:before,
+[class*=" color-icon-"]:before {
+  display: inline-block;
+  content: '';
+  width: 1.5em;
+  height: 0.6em;
+  border-radius: 0.1em;
+  border: 0.03em solid black;
+}
+
+.djs-popup-header .entry.color-icon-clear {
+  margin-left: 5px;
+  padding: 0;
+}
+
+.djs-popup-header .entry.color-icon-clear > span {
+  margin-left: 5px;
+}
+
+.color-icon-clear:before {
+  background-color: white;
+  border-color: black;
+}
+
+.color-icon-blue:before {
+  background-color: #BBDEFB;
+  border-color: #1E88E5;
+}
+
+.color-icon-orange:before {
+  background-color: #FFE0B2;
+  border-color: #FB8C00;
+}
+
+.color-icon-green:before {
+  background-color: #C8E6C9;
+  border-color: #43A047;
+}
+
+.color-icon-red:before {
+  background-color: #FFCDD2;
+  border-color: #FB8C00;
+}
+
+.color-icon-purple:before {
+  background-color: #E1BEE7;
+  border-color: #8E24AA;
+}
+
+/* transparancy for shapes with colors */
+.color-transparancy {
+  fill-opacity: 0.50;
+}

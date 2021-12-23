@@ -26,19 +26,25 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apromore.calendar.model.CalendarModel;
+import org.apromore.commons.config.ConfigBean;
 import org.apromore.dao.model.User;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.calendar.pageutil.PageUtils;
 import org.apromore.portal.common.ItemHelpers;
+import org.apromore.portal.common.UserSessionManager;
+import org.apromore.portal.model.PermissionType;
 import org.apromore.service.EventLogService;
 import org.apromore.service.SecurityService;
 import org.apromore.zk.label.LabelSupplier;
 import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
 import javax.inject.Inject;
@@ -54,6 +60,9 @@ public class CalendarPlugin extends DefaultPortalPlugin implements LabelSupplier
     @Inject
     private SecurityService securityService;
 
+    @Autowired
+    private ConfigBean configBean;
+
     private String label = "Manage calendars";
 
     @Override
@@ -68,6 +77,12 @@ public class CalendarPlugin extends DefaultPortalPlugin implements LabelSupplier
 
     @Override
     public void execute(PortalContext portalContext) {
+        if (!portalContext.getCurrentUser().hasAnyPermission(PermissionType.CALENDAR)) {
+            LOGGER.error("User {} does not have calendar permissions", portalContext.getCurrentUser().getUsername());
+            Messagebox.show(Labels.getLabel("noPermissionGeneral_message"));
+            return;
+        }
+
         try {
             boolean canEdit = false;
             // Present the user admin window˙
@@ -113,6 +128,8 @@ public class CalendarPlugin extends DefaultPortalPlugin implements LabelSupplier
 
     @Override
     public Availability getAvailability() {
-        return Availability.AVAILABLE;
+        return configBean.isEnableCalendar() &&
+                UserSessionManager.getCurrentUser().hasAnyPermission(PermissionType.CALENDAR)
+                ? Availability.AVAILABLE : Availability.UNAVAILABLE;
     }
 }

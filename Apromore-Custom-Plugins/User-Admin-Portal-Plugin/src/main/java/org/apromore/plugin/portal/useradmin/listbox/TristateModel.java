@@ -33,14 +33,20 @@ public class TristateModel {
     private Object obj;
     private boolean twoStateOnly;
     private boolean disabled;
+    private boolean coSelectable; //True if this object and another can be selected at the same time
 
     public TristateModel(String label, String key, Object obj, Integer state, boolean disabled) {
+        this(label, key, obj, state, disabled, true);
+    }
+
+    public TristateModel(String label, String key, Object obj, Integer state, boolean disabled, boolean coSelectable) {
         this.label = label;
         this.key = key;
         this.obj = obj;
         this.state = state;
         this.twoStateOnly = false;
         this.disabled = disabled;
+        this.coSelectable = coSelectable;
     }
 
     public boolean isDisabled() {
@@ -85,5 +91,13 @@ public class TristateModel {
 
     public void setObj(Object obj) {
         this.obj = obj;
+    }
+
+    public boolean isCoSelectable() {
+        return coSelectable;
+    }
+
+    public void setCoSelectable(boolean coSelectable) {
+        this.coSelectable = coSelectable;
     }
 }

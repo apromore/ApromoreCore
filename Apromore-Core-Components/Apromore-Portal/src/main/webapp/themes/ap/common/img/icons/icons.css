@@ -422,6 +422,10 @@
     width: 26px !important;
 }
 
+.ap-icon-link {
+    background-image: url('link.svg') !important;
+    width: 26px !important;
+}
 
 .ap-icon-list {
     background-image: url('list.svg') !important;
@@ -631,6 +635,11 @@
 .ap-icon-step-forward {
     background-image: url('step-forward.svg') !important;
     width: 26px !important;
+}
+
+.ap-icon-swap {
+  background-image: url('swap.svg') !important;
+  width: 26px !important;
 }
 
 .ap-icon-sync {

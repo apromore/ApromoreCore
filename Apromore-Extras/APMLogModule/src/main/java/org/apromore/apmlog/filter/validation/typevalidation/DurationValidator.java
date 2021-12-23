@@ -23,7 +23,7 @@ import org.apromore.apmlog.ATrace;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.RuleValue;
 import org.apromore.apmlog.filter.validation.ValidatedFilterRule;
-import org.apromore.apmlog.stats.EventAttributeValue;
+import org.apromore.apmlog.stats.LogStatsAnalyzer;
 import org.eclipse.collections.api.tuple.primitive.DoubleDoublePair;
 import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 
@@ -45,28 +45,28 @@ public class DurationValidator extends AbstractLogFilterRuleValidator {
         double[] array = null;
         switch (validatedRule.getFilterType()) {
             case CASE_UTILISATION:
-                array = apmLog.getTraces().stream().mapToDouble(ATrace::getCaseUtilization).toArray();
+                array = apmLog.getTraces().stream().mapToDouble(LogStatsAnalyzer::getCaseUtilizationOf).toArray();
                 break;
             case DURATION:
                 array = apmLog.getTraces().stream().mapToDouble(ATrace::getDuration).toArray();
                 break;
             case TOTAL_PROCESSING_TIME:
-                array = apmLog.getTraces().stream().mapToDouble(x -> x.getProcessingTimes().sum()).toArray();
+                array = apmLog.getTraces().stream().mapToDouble(x -> LogStatsAnalyzer.getProcessingTimesOf(x).sum()).toArray();
                 break;
             case AVERAGE_PROCESSING_TIME:
-                array = apmLog.getTraces().stream().mapToDouble(x -> x.getProcessingTimes().average()).toArray();
+                array = apmLog.getTraces().stream().mapToDouble(x -> LogStatsAnalyzer.getProcessingTimesOf(x).average()).toArray();
                 break;
             case MAX_PROCESSING_TIME:
-                array = apmLog.getTraces().stream().mapToDouble(x -> x.getProcessingTimes().max()).toArray();
+                array = apmLog.getTraces().stream().mapToDouble(x -> LogStatsAnalyzer.getProcessingTimesOf(x).max()).toArray();
                 break;
             case TOTAL_WAITING_TIME:
-                array = apmLog.getTraces().stream().mapToDouble(x -> x.getWaitingTimes().sum()).toArray();
+                array = apmLog.getTraces().stream().mapToDouble(x -> LogStatsAnalyzer.getWaitingTimesOf(x).sum()).toArray();
                 break;
             case AVERAGE_WAITING_TIME:
-                array = apmLog.getTraces().stream().mapToDouble(x -> x.getWaitingTimes().average()).toArray();
+                array = apmLog.getTraces().stream().mapToDouble(x -> LogStatsAnalyzer.getWaitingTimesOf(x).average()).toArray();
                 break;
             case MAX_WAITING_TIME:
-                array = apmLog.getTraces().stream().mapToDouble(x -> x.getWaitingTimes().max()).toArray();
+                array = apmLog.getTraces().stream().mapToDouble(x -> LogStatsAnalyzer.getWaitingTimesOf(x).max()).toArray();
                 break;
             default:
                 break;
@@ -97,13 +97,17 @@ public class DurationValidator extends AbstractLogFilterRuleValidator {
     public static ValidatedFilterRule validateNodeDuration(LogFilterRule originalRule, APMLog apmLog) {
         LogFilterRule validatedRule = originalRule.clone();
 
+        Set<String> eventKeys = apmLog.getActivityInstances().stream()
+                .flatMap(x -> x.getAttributes().keySet().stream()).collect(Collectors.toSet());
+
         String attributeKey = validatedRule.getKey();
-        if (!apmLog.getImmutableEventAttributeValues().containsKey(attributeKey))
+        if (!eventKeys.contains(attributeKey))
             return createInvalidFilterRuleResult(originalRule);
 
         String attributeValue = validatedRule.getPrimaryValues().iterator().next().getKey();
-        Set<String> existVals = apmLog.getImmutableEventAttributeValues().get(attributeKey).stream()
-                .map(EventAttributeValue::getValue).collect(Collectors.toSet());
+        Set<String> existVals = apmLog.getActivityInstances().stream()
+                .filter(x -> x.getAttributes().containsKey(attributeKey))
+                .map(x -> x.getAttributeValue(attributeKey)).collect(Collectors.toSet());
 
         if (!existVals.contains(attributeValue))
             return createInvalidFilterRuleResult(originalRule);

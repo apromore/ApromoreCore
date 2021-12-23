@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:qbp="http://www.qbp-simulator.com/Schema201212" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
+  <bpmn2:process id="Process_1" isExecutable="false">
+    <bpmn2:extensionElements>
+      <qbp:processSimulationInfo id="qbp_e5c1ec7b-02eb-4c25-81d7-87e1c15a5db5" processInstances="10" currency="EUR" startDateTime="2020-08-24T09:00:00.000Z">
+        <qbp:arrivalRateDistribution type="FIXED" mean="1000" arg1="NaN" arg2="NaN">
+          <qbp:timeUnit>seconds</qbp:timeUnit>
+        </qbp:arrivalRateDistribution>
+        <qbp:statsOptions />
+        <qbp:timetables>
+          <qbp:timetable id="DEFAULT_TIMETABLE" default="true" name="Arrival timetable">
+            <qbp:rules>
+              <qbp:rule fromTime="09:00:00.000+00:00" toTime="17:00:00.000+00:00" fromWeekDay="MONDAY" toWeekDay="FRIDAY" />
+            </qbp:rules>
+          </qbp:timetable>
+        </qbp:timetables>
+        <qbp:resources>
+          <qbp:resource id="QBP_DEFAULT_RESOURCE" name="Default Resource" totalAmount="1" timetableId="DEFAULT_TIMETABLE" />
+          <qbp:resource id="qbp_fd4f9148-3d17-4f8a-83f9-8332de74e986" name="Clerk" totalAmount="10" costPerHour="25" timetableId="DEFAULT_TIMETABLE" />
+        </qbp:resources>
+      <qbp:elements>
+        <qbp:element />
+      </qbp:elements>
+      <qbp:sequenceFlows />
+      </qbp:processSimulationInfo>
+    </bpmn2:extensionElements>
+    <bpmn2:startEvent id="StartEvent_1" />
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="412" y="240" width="36" height="36" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

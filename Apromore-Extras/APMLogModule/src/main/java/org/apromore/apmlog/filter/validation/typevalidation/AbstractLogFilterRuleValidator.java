@@ -25,20 +25,16 @@ import org.apromore.apmlog.filter.rules.RuleValue;
 import org.apromore.apmlog.filter.types.OperationType;
 import org.apromore.apmlog.filter.validation.ValidatedFilterRule;
 import org.apromore.apmlog.logobjects.ActivityInstance;
-import org.apromore.apmlog.stats.CaseAttributeValue;
-import org.apromore.apmlog.stats.EventAttributeValue;
+import org.apromore.apmlog.stats.LogStatsAnalyzer;
 import org.eclipse.collections.api.tuple.primitive.DoubleDoublePair;
 import org.eclipse.collections.api.tuple.primitive.LongLongPair;
 import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 import org.eclipse.collections.impl.list.mutable.primitive.LongArrayList;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
-import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.eclipse.collections.impl.tuple.primitive.PrimitiveTuples;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -57,18 +53,9 @@ public abstract class AbstractLogFilterRuleValidator {
     }
 
     protected static Set<String> getExistValues(String section, String attrKey, APMLog apmLog) {
-        Map<String, UnifiedSet<CaseAttributeValue>> cavMap = apmLog.getImmutableCaseAttributeValues();
-        Map<String, UnifiedSet<EventAttributeValue>> eavMap = apmLog.getImmutableEventAttributeValues();
-
-        if (section.equalsIgnoreCase("case") && !cavMap.containsKey(attrKey))
-            return new HashSet<>();
-
-        if (section.equalsIgnoreCase("event") && !eavMap.containsKey(attrKey))
-            return new HashSet<>();
-
         return section.equalsIgnoreCase("case") ?
-                cavMap.get(attrKey).stream().map(CaseAttributeValue::getValue).collect(Collectors.toSet()) :
-                eavMap.get(attrKey).stream().map(EventAttributeValue::getValue).collect(Collectors.toSet());
+                LogStatsAnalyzer.getUniqueCaseAttributeValues(apmLog.getTraces(), attrKey) :
+                LogStatsAnalyzer.getUniqueEventAttributeValues(apmLog.getActivityInstances(), attrKey);
     }
 
     protected static LongLongPair getFromAndToLongValues(LogFilterRule logFilterRule) {

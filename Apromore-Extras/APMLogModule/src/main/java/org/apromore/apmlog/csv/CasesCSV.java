@@ -19,7 +19,9 @@ package org.apromore.apmlog.csv;
 
 import org.apromore.apmlog.filter.PLog;
 import org.apromore.apmlog.filter.PTrace;
+import org.apromore.apmlog.stats.LogStatsAnalyzer;
 import org.apromore.apmlog.util.TimeUtil;
+import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,18 +54,21 @@ public class CasesCSV extends AbstractStats {
 
                 StringBuilder row = new StringBuilder();
                 row.append(StringValidation.getValidString(trace.getCaseId())).append(",");
-                row.append(trace.getCaseVariantId()).append(",");
                 row.append(trace.getActivityInstances().size()).append(",");
                 row.append(TimeUtil.millisecondToZonedDateTime(trace.getStartTime())).append(",");
                 row.append(TimeUtil.millisecondToZonedDateTime(trace.getEndTime())).append(",");
                 row.append(ContentLabels.getFloatDurationOf(trace.getDuration())).append(",");
-                row.append(trace.getCaseUtilization() * 100).append(",");
-                row.append(ContentLabels.getFloatDurationOf(trace.getProcessingTimes().sum())).append(",");
-                row.append(ContentLabels.getFloatDurationOf(trace.getProcessingTimes().average())).append(",");
-                row.append(ContentLabels.getFloatDurationOf(trace.getProcessingTimes().max())).append(",");
-                row.append(ContentLabels.getFloatDurationOf(trace.getWaitingTimes().sum())).append(",");
-                row.append(ContentLabels.getFloatDurationOf(trace.getWaitingTimes().average())).append(",");
-                row.append(ContentLabels.getFloatDurationOf(trace.getWaitingTimes().max()));
+                row.append(LogStatsAnalyzer.getCaseUtilizationOf(trace) * 100).append(",");
+
+                DoubleArrayList procTimes = LogStatsAnalyzer.getProcessingTimesOf(trace);
+                DoubleArrayList waitTImes = LogStatsAnalyzer.getWaitingTimesOf(trace);
+
+                row.append(ContentLabels.getFloatDurationOf(procTimes.sum())).append(",");
+                row.append(ContentLabels.getFloatDurationOf(procTimes.average())).append(",");
+                row.append(ContentLabels.getFloatDurationOf(procTimes.max())).append(",");
+                row.append(ContentLabels.getFloatDurationOf(waitTImes.sum())).append(",");
+                row.append(ContentLabels.getFloatDurationOf(waitTImes.average())).append(",");
+                row.append(ContentLabels.getFloatDurationOf(waitTImes.max()));
                 row.append("\n");
 
                 data.append(row);
@@ -85,7 +90,6 @@ public class CasesCSV extends AbstractStats {
 
         StringBuilder headRow = new StringBuilder();
         headRow.append(HeaderLabels.getLabelWithComma(HeaderLabels.CASE_ID));
-        headRow.append(HeaderLabels.getLabelWithComma(HeaderLabels.CASE_VARIANT));
         headRow.append(HeaderLabels.getLabelWithComma(HeaderLabels.ACTIVITY_INSTANCES));
         headRow.append(HeaderLabels.getLabelWithComma(HeaderLabels.START_TIME));
         headRow.append(HeaderLabels.getLabelWithComma(HeaderLabels.END_TIME));

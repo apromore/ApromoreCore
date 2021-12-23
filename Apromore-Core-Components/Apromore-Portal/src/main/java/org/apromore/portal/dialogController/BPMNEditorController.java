@@ -36,14 +36,18 @@ import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.context.EditorPluginResolver;
 import org.apromore.portal.dialogController.dto.ApromoreSession;
+import org.apromore.portal.helper.Version;
 import org.apromore.portal.menu.PluginCatalog;
 import org.apromore.portal.model.EditSessionType;
 import org.apromore.portal.model.ExportFormatResultType;
+import org.apromore.portal.model.PermissionType;
 import org.apromore.portal.model.PluginMessages;
 import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.UserType;
 import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.portal.util.StreamUtil;
+import org.apromore.service.ProcessPublishService;
+import org.apromore.service.ProcessService;
 import org.apromore.util.AccessType;
 import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
@@ -56,6 +60,7 @@ import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.Composer;
+import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Messagebox;
 
 /**
@@ -95,9 +100,17 @@ public class BPMNEditorController extends BaseController implements Composer<Com
   boolean isNewProcess = false;
   private UserType currentUserType;
   private AccessType currentUserAccessType;
+  private boolean isViewLink = false;
 
   public BPMNEditorController() {
     super();
+
+    isViewLink = Boolean.valueOf(Executions.getCurrent().getParameter("view"));
+    if (isViewLink) {
+      openViewLink();
+      return;
+    }
+
     currentUserType = UserSessionManager.getCurrentUser();
     if (currentUserType == null) {
       throw new AssertionError("Cannot open the editor without any login user!");
@@ -124,8 +137,16 @@ public class BPMNEditorController extends BaseController implements Composer<Com
     } else {
       try {
         User user = mainC.getSecurityService().getUserById(currentUserType.getId());
-        currentUserAccessType =
-            mainC.getAuthorizationService().getProcessAccessTypeByUser(process.getId(), user);
+        currentUserAccessType = mainC.getAuthorizationService().getProcessAccessTypeByUser(process.getId(), user);
+        UserType userType = mainC.getPortalContext().getCurrentUser();
+
+        if (currentUserAccessType != null && !userType.hasAnyPermission(PermissionType.MODEL_EDIT)
+                && userType.hasAnyPermission(PermissionType.MODEL_VIEW)) {
+          currentUserAccessType = AccessType.VIEWER;
+        } else if (!userType.hasAnyPermission(PermissionType.MODEL_EDIT)) {
+          currentUserAccessType = null;
+        }
+
       } catch (Exception e) {
         // currentUserAccessType = AccessType.VIEWER;
         currentUserAccessType = null;
@@ -201,7 +222,9 @@ public class BPMNEditorController extends BaseController implements Composer<Com
         param.put("bpmnioLib", AccessType.VIEWER.equals(currentUserAccessType) ? BPMNIO_VIEWER_JS : BPMNIO_MODELER_JS);
       }
       param.put("viewOnly", AccessType.VIEWER.equals(currentUserAccessType));
-      param.put("availableSimulateModelPlugin", mainC.getPortalPluginMap().get(PluginCatalog.PLUGIN_SIMULATE_MODEL) != null);
+      PortalPlugin simulatePortalPlugin = mainC.getPortalPluginMap().get(PluginCatalog.PLUGIN_SIMULATE_MODEL);
+      param.put("availableSimulateModelPlugin", simulatePortalPlugin != null &&
+              simulatePortalPlugin.getAvailability() == PortalPlugin.Availability.AVAILABLE);
       Executions.getCurrent().pushArg(param);
 
     } catch (Exception e) {
@@ -343,10 +366,58 @@ public class BPMNEditorController extends BaseController implements Composer<Com
     throw new RuntimeException("Unsupported class of event data: " + event.getData());
   }
 
-@Override
-public void doAfterCompose(Component comp) throws Exception {
-	// TODO Auto-generated method stub
-	
-}
+  private void openViewLink() {
+    if (isViewLink) {
+      String publishId = Executions.getCurrent().getParameter("publishId");
+      ProcessPublishService processPublishService = (ProcessPublishService) SpringUtil.getBean("processPublishService");
+      ProcessService processService = (ProcessService) SpringUtil.getBean("processService");
+
+      //Check if link is published. If not, throw an error.
+      if (!processPublishService.isPublished(publishId)) {
+        throw new AssertionError("This link is inactive");
+      }
+
+      //Get process from publish id
+      ProcessSummaryType process = processPublishService.getSimpleProcessSummary(publishId);
+      String nativeType = process.getOriginalNativeType();
+      String version = process.getLastVersion();
+      setTitle(process.getName(), process.getLastVersion());
+
+      //get bpmnXML from process
+      try {
+        ExportFormatResultType exportResult = processService.exportProcess(
+                process.getName(), process.getId(), "MAIN", new Version(version), nativeType);
+        String bpmnXML = StreamUtil.convertStreamToString(exportResult.getNative().getInputStream());
+        pushViewModeParameters(bpmnXML, nativeType);
+      } catch (Exception e) {
+        LOGGER.error("", e);
+        throw new AssertionError("Could not get bpmn xml");
+      }
+    }
+  }
+
+  private void pushViewModeParameters(final String bpmnXML, final String nativeType) {
+    Clients.evalJavaScript("Ap.common.injectGlobalClass(\"access-type-viewer\")");
+    Map<String, Object> param = new HashMap<>();
+
+    param.put(BPMN_XML, escapeXML(bpmnXML));
+    param.put("editor", "bpmneditor");
+    List<EditorPlugin> editorPlugins = EditorPluginResolver.resolve("bpmnEditorPlugins");
+    param.put("plugins", editorPlugins);
+    param.put("availableSimulateModelPlugin", false);
+    param.put("bpmnioLib", BPMNIO_VIEWER_JS);
+    param.put("viewOnly", true);
+    String langTag = UserSessionManager.getCurrentI18nSession().getPreferredLangTag();
+    param.put("langTag", langTag);
+    param.put("doAutoLayout", "false");
+
+    Executions.getCurrent().pushArg(param);
+  }
+
+  @Override
+  public void doAfterCompose(Component comp) throws Exception {
+      // TODO Auto-generated method stub
+
+  }
 
 }

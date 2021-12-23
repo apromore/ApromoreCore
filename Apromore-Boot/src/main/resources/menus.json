@@ -239,6 +239,9 @@
             },
             {
               "id": "SHARE"
+            },
+            {
+              "id": "org.apromore.plugin.portal.processpublisher.ProcessPublisherPlugin"
             }
           ]
         }

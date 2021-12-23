@@ -91,11 +91,12 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
       put("ROLE_ADMIN", "Administrator");
       put("ROLE_MANAGER", "Manager");
       put("ROLE_ANALYST", "Analyst");
-      put("ROLE_OBSERVER", "Observer");
+      put("ROLE_VIEWER", "Viewer");
       put("ROLE_DESIGNER", "Designer");
       put("ROLE_DATA_SCIENTIST", "Data Scientist");
       put("ROLE_OPERATIONS", "Operations");
       put("ROLE_INTEGRATOR", "Integrator");
+      put("ROLE_VIEWER_MODELS", "Viewer (models)");
     }
   };
 
@@ -536,8 +537,9 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
     for (int i = 0; i < roles.size(); i++) {
       Role role = roles.get(i);
       String roleName = role.getName();
+      boolean coSelectable = "ROLE_INTEGRATOR".equals(roleName);
       assignedRoleModel
-          .add(new TristateModel(roleMap.get(roleName), roleName, role, TristateModel.UNCHECKED, false));
+          .add(new TristateModel(roleMap.get(roleName), roleName, role, TristateModel.UNCHECKED, false, coSelectable));
     }
     assignedRoleModel.setMultiple(true);
     assignedRoleListbox.setModel(assignedRoleModel);
@@ -547,6 +549,7 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
     assignedRoleList = new TristateListbox<Role>(assignedRoleListbox, assignedRoleModel,
         getLabel("assignedRoles_text"));
     assignedRoleItemRenderer.setList(assignedRoleList);
+    assignedRoleItemRenderer.setListbox(assignedRoleListbox);
 
   }
 
@@ -575,6 +578,7 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
     assignedGroupList = new TristateListbox<Group>(assignedGroupListbox, assignedGroupModel,
         getLabel("assignedGroups_text"));
     assignedGroupItemRenderer.setList(assignedGroupList);
+    assignedGroupItemRenderer.setListbox(assignedGroupListbox);
   }
 
   private void updateTristateModels(TristateListbox list, Map<String, Integer> tally,

@@ -22,6 +22,8 @@
 
 package org.apromore.plugin.portal.processdiscoverer.data;
 
+import lombok.Getter;
+
 /**
  * ContextData contains contextual data of this plugin
  * Many data items are about the calling plugin or the portal
@@ -29,62 +31,39 @@ package org.apromore.plugin.portal.processdiscoverer.data;
  * @author Bruce Nguyen
  *
  */
+@Getter
 public class ContextData {
-    private final String userName;
-    private final int containingFolderId;
-    private final String containingFolderName;
+    private final String username;
+    private final int folderId;
+    private final String folderName;
     private final String domain;
     private final String logName;
     private final int logId;
     private final boolean isCalendarEnabled;
-    
+    private final boolean isEditEnabled;
+
     private ContextData (String domain,
                         String userName,
                         int logId, String logName,
                         int containingFolderId, String containingFolderName,
-                         boolean isCalendarEnabled) {
-        this.userName = userName;
-        this.containingFolderId = containingFolderId;
-        this.containingFolderName = containingFolderName;
+                         boolean isCalendarEnabled, boolean isEditEnabled) {
+        this.username = userName;
+        this.folderId = containingFolderId;
+        this.folderName = containingFolderName;
         this.domain = domain;
         this.logId = logId;
         this.logName = logName;
         this.isCalendarEnabled = isCalendarEnabled;
+        this.isEditEnabled = isEditEnabled;
     }
     
     public static ContextData valueOf (String domain,
                         String userName,
                         int logId, String logName,
-                        int containingFolderId, String containingFolderName, boolean isCalendarEnabled) {
-        return new ContextData(domain, userName, logId, logName, containingFolderId, containingFolderName, isCalendarEnabled);
-    }
-    
-    public String getUsername() {
-        return this.userName;
-    }
-    
-    public String getLogName() {
-        return logName;
-    }
-    
-    public int getLogId() {
-        return logId;
-    }
-    
-    public String getDomain() {
-        return domain;
-    }
-    
-    public int getFolderId() {
-        return this.containingFolderId;
-    }
-    
-    public String getFolderName() {
-        return this.containingFolderName;
-    }
-
-    public boolean isCalendarEnabled() {
-        return this.isCalendarEnabled;
+                        int containingFolderId, String containingFolderName, boolean isCalendarEnabled,
+                        boolean isEditEnabled) {
+        return new ContextData(domain, userName, logId, logName, containingFolderId, containingFolderName,
+                isCalendarEnabled, isEditEnabled);
     }
     
 }

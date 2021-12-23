@@ -842,4 +842,10 @@ public class ProcessServiceImpl implements ProcessService {
         && pmv.getNativeType().getNatType().equals(format);
   }
 
+
+	@Override
+	public boolean hasWritePermissionOnProcess(User user, List<Integer> processIds) {
+		return processIds.stream().allMatch(processId -> canUserWriteProcess(user, processId));
+	}
+
 }

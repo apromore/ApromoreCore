@@ -22,11 +22,12 @@
 package org.apromore.apmlog.logobjects;
 
 import org.apromore.apmlog.APMLog;
+import org.apromore.apmlog.APMLogAttribute;
 import org.apromore.apmlog.ATrace;
 import org.apromore.apmlog.stats.TimeStatsProcessor;
 import org.apromore.apmlog.util.Util;
 import org.apromore.calendar.model.CalendarModel;
-import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
+import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
 import java.io.Serializable;
@@ -35,21 +36,17 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public abstract class AbstractTraceImpl implements ATrace, Serializable {
+public abstract class AbstractTraceImpl implements ATrace, APMLogAttribute, Serializable {
 
     protected APMLog sourceLog;
     protected int immutableIndex;
     protected String caseId;
-    protected int caseVariantId;
     protected List<ImmutableEvent> immutableEvents;
     protected final List<ActivityInstance> activityInstances = new ArrayList<>();
     protected UnifiedMap<String, String> attributes;
-    protected final DoubleArrayList processingTimes = new DoubleArrayList();
-    protected final DoubleArrayList waitingTimes = new DoubleArrayList();
-    protected double caseUtilization;
-    protected long startTime;
-    protected long endTime;
     private int[] activityInstancesIndicator;
+
+    protected HashBiMap<ActivityInstance, Integer> activityInstanceIndexMap;
 
     // ========================================================
     // Initiation method
@@ -94,11 +91,6 @@ public abstract class AbstractTraceImpl implements ATrace, Serializable {
     }
 
     @Override
-    public int getCaseVariantId() {
-        return caseVariantId;
-    }
-
-    @Override
     public List<ActivityInstance> getActivityInstances() {
         return activityInstances;
     }
@@ -114,35 +106,18 @@ public abstract class AbstractTraceImpl implements ATrace, Serializable {
     }
 
     @Override
-    public DoubleArrayList getProcessingTimes() {
-        if (processingTimes.isEmpty()) processingTimes.add(0);
-        return processingTimes;
-    }
-
-    @Override
-    public DoubleArrayList getWaitingTimes() {
-        if (waitingTimes.isEmpty()) waitingTimes.add(0);
-        return waitingTimes;
-    }
-
-    @Override
     public long getStartTime() {
-        return startTime;
+        return getFirst().getStartTime();
     }
 
     @Override
     public long getEndTime() {
-        return endTime;
+        return getLast().getEndTime();
     }
 
     @Override
     public double getDuration() {
         return TimeStatsProcessor.getCaseDuration(this);
-    }
-
-    @Override
-    public double getCaseUtilization() {
-        return caseUtilization;
     }
 
     @Override
@@ -159,17 +134,33 @@ public abstract class AbstractTraceImpl implements ATrace, Serializable {
     }
 
     public ActivityInstance getNextOf(ActivityInstance activityInstance) {
-        if (activityInstances.size() == 1) return null;
-        if (activityInstance == getLast()) return null;
+        if (activityInstances.size() == 1)
+            return null;
 
-        return activityInstances.get(activityInstances.indexOf(activityInstance) + 1);
+        if (!activityInstanceIndexMap.containsKey(activityInstance))
+            return null;
+
+        if (activityInstance == getLast())
+            return null;
+
+        int sourceIndex = activityInstanceIndexMap.get(activityInstance);
+
+        return activityInstanceIndexMap.inverse().get(sourceIndex + 1);
     }
 
     public ActivityInstance getPreviousOf(ActivityInstance activityInstance) {
-        if (activityInstances.size() == 1) return null;
-        if (activityInstance == getFirst()) return null;
+        if (activityInstances.size() == 1)
+            return null;
 
-        return activityInstances.get(activityInstances.indexOf(activityInstance) - 1);
+        if(!activityInstanceIndexMap.containsKey(activityInstance))
+            return null;
+
+        if (activityInstance == getFirst())
+            return null;
+
+        int sourceIndex = activityInstanceIndexMap.get(activityInstance);
+
+        return activityInstanceIndexMap.inverse().get(sourceIndex - 1);
     }
 
     @Override
@@ -202,39 +193,23 @@ public abstract class AbstractTraceImpl implements ATrace, Serializable {
     // SET methods
     // ========================================================
 
-    @Override
-    public void setCaseVariantId(int caseVariantId) {
-        this.caseVariantId = caseVariantId;
-    }
-
-
     public void setActivityInstances(List<ActivityInstance> activityInstances) {
+        activityInstanceIndexMap = new HashBiMap<>();
+
         this.activityInstances.clear();
         if (activityInstances != null) {
             this.activityInstances.addAll(activityInstances);
             initActivityInstanceIndicators();
+            int index = 0;
+            for (ActivityInstance activityInstance : activityInstances) {
+                activityInstanceIndexMap.put(activityInstance, index);
+                index += 1;
+            }
         }
     }
 
-    // ===============================================================================================================
-    // Operation methods
-    // ===============================================================================================================
-    public void updateTimeStats() {
-        processingTimes.clear();
-        waitingTimes.clear();
-        startTime = 0;
-        endTime = 0;
-
-        if (!activityInstances.isEmpty()) {
-            processingTimes.addAll(TimeStatsProcessor.getProcessingTimes(activityInstances));
-            waitingTimes.addAll(TimeStatsProcessor.getWaitingTimes(activityInstances));
-
-            startTime = TimeStatsProcessor.getStartTime(activityInstances);
-            endTime = TimeStatsProcessor.getEndTime(activityInstances);
-
-            caseUtilization =
-                    TimeStatsProcessor.getCaseUtilization(activityInstances, getProcessingTimes(), getWaitingTimes());
-        }
+    public HashBiMap<ActivityInstance, Integer> getActivityInstanceIndexMap() {
+        return activityInstanceIndexMap;
     }
 
 }

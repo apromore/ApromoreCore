@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -23,33 +23,24 @@ package org.apromore.apmlog;
 
 import org.apromore.apmlog.exceptions.EmptyInputException;
 import org.apromore.apmlog.filter.APMLogFilter;
-import org.apromore.apmlog.filter.PLog;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.LogFilterRuleImpl;
 import org.apromore.apmlog.filter.rules.RuleValue;
 import org.apromore.apmlog.filter.types.Choice;
 import org.apromore.apmlog.filter.types.FilterType;
+import static org.apromore.apmlog.filter.types.FilterType.EVENT_EVENT_ATTRIBUTE;
 import org.apromore.apmlog.filter.types.Inclusion;
 import org.apromore.apmlog.filter.types.OperationType;
 import org.apromore.apmlog.filter.types.Section;
-import org.apromore.apmlog.stats.CustomTriple;
-import org.apromore.apmlog.stats.EventAttributeValue;
-import org.apromore.apmlog.stats.LogStatsAnalyzer;
-import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
-import org.eclipse.collections.impl.map.mutable.UnifiedMap;
-import org.eclipse.collections.impl.set.mutable.UnifiedSet;
+import static org.junit.Assert.assertEquals;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Arrays;
-import java.util.ArrayList;
-import java.util.Map;
 import java.util.Set;
-import java.util.Collections;
-
-import static org.apromore.apmlog.filter.types.FilterType.EVENT_EVENT_ATTRIBUTE;
-import static org.junit.Assert.assertEquals;
 
 public class AttributeArcDurationTest {
     public static void testRetain1(APMLog apmLog, APMLogUnitTest parent) throws UnsupportedEncodingException, EmptyInputException {
@@ -266,26 +257,6 @@ public class AttributeArcDurationTest {
         assert !hasC2;
         assert !hasC3;
         assert hasC4;
-    }
-
-    public static void testAvgDur1(APMLog apmLog, APMLogUnitTest parent) {
-        APMLogFilter apmLogFilter = new APMLogFilter(apmLog);
-        PLog pLog = apmLogFilter.getPLog();
-
-        String key = "concept:name";
-
-        UnifiedMap<String, UnifiedSet<EventAttributeValue>> eavMap =
-                LogStatsAnalyzer.getEventAttributeValues(pLog.getActivityInstances(),
-                        pLog.getValidTraceIndexBS().cardinality());
-
-        UnifiedSet<EventAttributeValue> eavSet = eavMap.get(key);
-        Map<String, List<CustomTriple>> data = LogStatsAnalyzer.getTargetNodeDataBySourceNode(key, "A", pLog, eavSet);
-
-        assert data != null;
-        double[] durArray = data.get("A").stream().mapToDouble(CustomTriple::getDuration).toArray();
-        DoubleArrayList dal = new DoubleArrayList(durArray);
-
-        assertEquals(1000 * 60 * 60 * 2d, dal.average(), 0 /* comparison tolerance */);
     }
 
     /**

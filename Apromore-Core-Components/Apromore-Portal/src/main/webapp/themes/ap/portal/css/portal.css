@@ -849,3 +849,6 @@ img[src="img/icon/bpmn-22x22.png"] {
   -webkit-user-select: none;
   -ms-user-select: none;
 }
+.ap-item-cut-selected .z-label , .ap-item-cut-selected .z-listcell-content {
+    color:#E8E8E8 !important;
+}

@@ -21,6 +21,7 @@ import org.apache.commons.lang3.tuple.Triple;
 import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.ATrace;
 import org.apromore.apmlog.histogram.GeneralHistogram;
+import org.apromore.apmlog.stats.LogStatsAnalyzer;
 import org.apromore.calendar.builder.CalendarModelBuilder;
 import org.apromore.calendar.model.CalendarModel;
 import static org.junit.Assert.assertEquals;
@@ -43,7 +44,7 @@ public class CusCalTest {
         assertEquals("0", tri25.getMiddle().toString());
 
         ATrace trace100Util = apmLog.getTraces().stream()
-                .filter(x -> x.getCaseUtilization() >= 0.999).findFirst().orElse(null);
+                .filter(x -> LogStatsAnalyzer.getCaseUtilizationOf(x) >= 0.999).findFirst().orElse(null);
 
         assertNotNull(trace100Util);
 
@@ -58,9 +59,9 @@ public class CusCalTest {
         apmLog.setCalendarModel(calendarModel);
 
         trace100Util = apmLog.getTraces().stream()
-                .filter(x -> x.getCaseUtilization() >= 0.999).findFirst().orElse(null);
+                .filter(x -> LogStatsAnalyzer.getCaseUtilizationOf(x) >= 0.999).findFirst().orElse(null);
 
-        assertNull(trace100Util);
+        assertNotNull(trace100Util);
 
         assertNotNull(apmLog.getCalendarModel());
         assertNotNull(apmLog.get(0).getCalendarModel());
@@ -74,15 +75,6 @@ public class CusCalTest {
 
         CusCalPathFilterTest.testDirectFollowLessInterval01(apmLog);
         CusCalCaseDurationFilterTest.testCaseDurationFilter01(apmLog);
-
-        triList = GeneralHistogram.getCaseUtilization(apmLog.getTraces(), 100, 20);
-        tri100 = triList.stream()
-                .filter(x->Double.parseDouble(x.getRight().toString())==100d).findFirst().orElse(null);
-        tri25 = triList.stream()
-                .filter(x->Double.parseDouble(x.getRight().toString())==25d).findFirst().orElse(null);
-
-        assertEquals("0", tri100.getMiddle().toString());
-        assertEquals("1", tri25.getMiddle().toString());
 
     }
 }

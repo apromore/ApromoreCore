@@ -23,17 +23,13 @@ package org.apromore.apmlog.filter;
 
 import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.ATrace;
+import org.apromore.apmlog.exceptions.EmptyInputException;
 import org.apromore.apmlog.logobjects.AbstractLogImpl;
 import org.apromore.apmlog.logobjects.ActivityInstance;
 import org.apromore.apmlog.logobjects.ImmutableLog;
-import org.apromore.apmlog.exceptions.EmptyInputException;
-import org.apromore.apmlog.stats.CaseAttributeValue;
-import org.apromore.apmlog.stats.EventAttributeValue;
 import org.apromore.apmlog.stats.LogStatsAnalyzer;
 import org.apromore.apmlog.stats.TimeStatsProcessor;
 import org.apromore.calendar.model.CalendarModel;
-import org.eclipse.collections.impl.map.immutable.ImmutableUnifiedMap;
-import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -50,10 +46,11 @@ import java.util.stream.Collectors;
 public class PLog extends AbstractLogImpl implements Serializable {
 
     private BitSet validTraceIndexBS;
-    private APMLog immutableLog;
+    private final APMLog immutableLog;
     private List<PTrace> originalPTraces;
     private final List<PTrace> pTraces = new ArrayList<>();
     private Map<String, PTrace> pTracesMap;
+    private Map<Integer, PTrace> immutableIndexPTraceMap;
 
     public PLog(APMLog immutableLog) {
         this.immutableLog = immutableLog;
@@ -106,12 +103,8 @@ public class PLog extends AbstractLogImpl implements Serializable {
         return pTracesMap;
     }
 
-    public ImmutableUnifiedMap<String, UnifiedSet<CaseAttributeValue>> getImmutableCaseAttributeValues() {
-        return immutableLog.getImmutableCaseAttributeValues();
-    }
-
-    public ImmutableUnifiedMap<String, UnifiedSet<EventAttributeValue>> getImmutableEventAttributeValues() {
-        return immutableLog.getImmutableEventAttributeValues();
+    public PTrace getPTraceByImmutableIndex(int index) {
+        return immutableIndexPTraceMap.get(index);
     }
 
     // ===============================================================================================================
@@ -139,15 +132,6 @@ public class PLog extends AbstractLogImpl implements Serializable {
         }
     }
 
-    @Override
-    public void setCalendarModel(CalendarModel calendarModel) {
-        super.setCalendarModel(calendarModel);
-
-        for (PTrace trace : pTraces) {
-            trace.updateTimeStats();
-        }
-    }
-
     // ===============================================================================================================
     // Operation methods
     // ===============================================================================================================
@@ -163,6 +147,7 @@ public class PLog extends AbstractLogImpl implements Serializable {
 
         setActivityInstances(immutableLog.getActivityInstances());
         pTracesMap = pTraces.stream().collect(Collectors.toMap( PTrace::getCaseId, x -> x));
+        immutableIndexPTraceMap = pTraces.stream().collect(Collectors.toMap(PTrace::getImmutableIndex, x -> x));
     }
 
     private PTrace createPTraceAndUpdateIndex(ATrace aTrace, int index) {
@@ -173,7 +158,8 @@ public class PLog extends AbstractLogImpl implements Serializable {
 
     private void updateStats() {
         pTracesMap = pTraces.stream().collect(Collectors.toMap( PTrace::getCaseId, x -> x));
-        List<ATrace> traceList = pTraces.stream().collect(Collectors.toList());
+        immutableIndexPTraceMap = pTraces.stream().collect(Collectors.toMap(PTrace::getImmutableIndex, x -> x));
+        List<ATrace> traceList = new ArrayList<>(pTraces);
 
         List<ActivityInstance> instances = traceList.stream()
                 .flatMap(x -> x.getActivityInstances().stream())
@@ -185,7 +171,7 @@ public class PLog extends AbstractLogImpl implements Serializable {
     public ImmutableLog toImmutableLog() throws EmptyInputException {
         setPTraces(LogStatsAnalyzer.getValidTraces(this));
         return new ImmutableLog(this.immutableLog.getLogName(),
-                pTraces.stream().collect(Collectors.toList()),
+                new ArrayList<>(pTraces),
                 this.immutableLog.getActivityNameIndicatorMap());
     }
 
@@ -232,10 +218,4 @@ public class PLog extends AbstractLogImpl implements Serializable {
 
     }
 
-    private PTrace getPTraceByImmutableIndex(int index) {
-        return pTraces.stream()
-                .filter(x -> x.getImmutableIndex() == index)
-                .findFirst()
-                .orElse(null);
-    }
 }

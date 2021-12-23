@@ -191,16 +191,22 @@ public class LogImporterParquetImpl implements LogImporter, Constants {
            * Java 8 (k, v) -> { v.sort(new XEventComparator()); xLog.add(v); }
            */
           new java.util.function.BiConsumer<String, XTrace>() {
+            @Override
             public void accept(String k, XTrace v) {
               v.sort(new XEventComparator());
               xLog.add(v);
             }
           });
 
-      // Import XES
-      if (xLog != null && (username != null && !username.isEmpty()) && folderId != null
-          && (logName != null && !logName.isEmpty()))
+      // Import XES when there is no invalid row
+      if (username != null
+              && !username.isEmpty()
+              && folderId != null
+              && logName != null
+              && !logName.isEmpty()
+              && (logErrorReport.isEmpty() || skipInvalidRow)) {
         log = eventLogImporter.importXesLog(xLog, username, folderId, logName);
+      }
 
       return new LogModelImpl(xLog, logErrorReport, rowLimitExceeded, numOfValidEvents, log);
 

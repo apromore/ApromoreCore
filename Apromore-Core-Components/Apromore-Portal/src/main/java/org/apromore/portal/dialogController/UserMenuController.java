@@ -26,8 +26,6 @@
 
 package org.apromore.portal.dialogController;
 
-import org.apromore.manager.client.ManagerService;
-import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.context.PortalPluginResolver;
 import org.apromore.portal.model.UserType;
 import org.apromore.service.EventLogService;
@@ -43,9 +41,6 @@ import org.zkoss.zul.Menubar;
 @VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
 public class UserMenuController extends BaseMenuController {
 
-  @WireVariable("managerClient")
-  private ManagerService managerService;
-
   @WireVariable
   private EventLogService eventLogService;
 
@@ -53,9 +48,9 @@ public class UserMenuController extends BaseMenuController {
 
     @Override
     public void doAfterCompose(Menubar menubar) {
-        // If there are portal plugins, create the menus for launching them
-        UserSessionManager.initializeUser(managerService, eventLogService.getConfigBean(), null, null);
+        super.doAfterCompose(menubar);
 
+        // If there are portal plugins, create the menus for launching them
         if (!PortalPluginResolver.resolve().isEmpty()) {
             loadMenu(menubar, "user-menu");
 

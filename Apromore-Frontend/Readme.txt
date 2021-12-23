@@ -33,11 +33,11 @@ npm run build: to build distribution bundles
 
 To deploy Javascript bundles to Apromore plugins:
 
-- For Process Discoverer: drop the file dist/processdiscoverer.js into C:\apromore\ApromoreEE\ApromoreCore\Apromore-Custom-Plugins\Process-Discoverer-Portal-Plugin\src\main\resources\processdiscoverer\js\ap\ (Overwrite any existing file)
+- For Process Discoverer: drop the file dist/processdiscoverer.js into ApromoreCore/Apromore-Custom-Plugins/Process-Discoverer-Portal-Plugin/src/main/resources/static/processdiscoverer/js/ap (Overwrite any existing file)
 
-- For Log Animation: drop the file dist/loganimationbpmn.js into ApromoreEE\Log-Animation-Portal-Plugin\src\main\resources\loganimation2\js\ap (Overwrite any existing file)
+- For Log Animation: drop the file dist/loganimationbpmn.js into ApromoreEE/Log-Animation-Portal-Plugin/src/main/resources/static/loganimation2/js/ap/ (Overwrite any existing file)
 - Build and deploy PD or Log Animation plugins
 - Login Apromore portal, run the plugin to view the new deployment.
 
-- For BPMNEditor: drop the file dist/bpmneditor.js into ApromoreCore\Apromore-Core-Components\Apromore-BPMNEditor\src\main\resources\static\bpmneditor\editor (Overwrite any existing file)
+- For BPMNEditor: drop the file dist/bpmneditor.js into ApromoreCore/Apromore-Core-Components/Apromore-BPMN-Editor/Apromore-BPMN-Editor-Portal/src/main/resources/static/bpmneditor/editor/ (Overwrite any existing file)
 
