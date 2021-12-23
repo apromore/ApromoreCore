@@ -207,6 +207,10 @@
                           zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSimulateModel', xml));
                         };
 
+                        Apromore.BPMNEditor.Plugins.PublishModel.apromorePublishModel = function() {
+                          zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onPublishModel'));
+                        };
+
                         //window.setTimeout(function() {
                           //console.log($$("div.Apromore_Editor div.bjs-container div.djs-container svg g.viewport")[0]);
                           //console.log(editorWrapper.getCanvas()._editor.getDefinitions());

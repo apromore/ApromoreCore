@@ -319,6 +319,17 @@ public class BPMNEditorController extends BaseController implements Composer<Com
       }
     });
 
+    this.addEventListener("onPublishModel", event -> {
+      PortalContext portalContext = mainC.getPortalContext();
+      Map<String, PortalPlugin> portalPluginMap = portalContext.getPortalPluginMap();
+      PortalPlugin publishModelPlugin = portalPluginMap.get(PluginCatalog.PLUGIN_PUBLISH_MODEL);
+
+      Map arg = new HashMap<>();
+      arg.put("selectedModel", process);
+      publishModelPlugin.setSimpleParams(arg);
+      publishModelPlugin.execute(portalContext);
+    });
+
     BPMNEditorController editorController = this;
     qeBPMNEditor.subscribe(new EventListener<Event>() {
       @Override
@@ -378,7 +389,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
       }
 
       //Get process from publish id
-      ProcessSummaryType process = processPublishService.getSimpleProcessSummary(publishId);
+      process = processPublishService.getSimpleProcessSummary(publishId);
       String nativeType = process.getOriginalNativeType();
       String version = process.getLastVersion();
       setTitle(process.getName(), process.getLastVersion());

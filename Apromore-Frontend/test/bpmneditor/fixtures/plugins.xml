@@ -10,5 +10,6 @@
 		<plugin source="view.js" name="View"/>
 		<plugin source="share.js" name="Share"/>
 		<plugin source="simulateModel.js" name="SimulateModel"/>
+		<plugin source="publishModel.js" name="PublishModel"/>
 	</plugins>
 </config>
