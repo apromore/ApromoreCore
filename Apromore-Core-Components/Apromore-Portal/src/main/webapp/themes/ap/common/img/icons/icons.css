@@ -692,6 +692,11 @@
     width: 26px !important;
 }
 
+.ap-icon-unlink {
+    background-image: url('unlink.svg') !important;
+    width: 26px !important;
+}
+
 .ap-icon-upload {
     background-image: url('upload.svg') !important;
     width: 28.5px !important;
