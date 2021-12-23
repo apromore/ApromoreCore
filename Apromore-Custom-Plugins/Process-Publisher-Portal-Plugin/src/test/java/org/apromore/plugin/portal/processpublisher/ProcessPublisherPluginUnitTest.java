@@ -51,6 +51,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
@@ -131,6 +132,31 @@ public class ProcessPublisherPluginUnitTest {
         sessionsMockedStatic.when(() -> Sessions.getCurrent()).thenReturn(session);
 
         assertEquals(processSummaryType, processPublisherPlugin.getSelectedModel(portalContext));
+    }
+
+    @Test
+    public void testGetSelectedModelFromParams() {
+        ProcessSummaryType processSummaryType = new ProcessSummaryType();
+        Map<String, Object> params = new HashMap<>();
+        params.put("selectedModel", processSummaryType);
+        processPublisherPlugin.setSimpleParams(params);
+
+        assertEquals(processSummaryType, processPublisherPlugin.getSelectedModel(portalContext));
+        assertTrue(processPublisherPlugin.getSimpleParams().isEmpty());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetSelectedModelParamsWrongTypeNothingSelected() {
+        Map<String, Object> params = new HashMap<>();
+        params.put("selectedModel", "processSummaryType");
+        processPublisherPlugin.setSimpleParams(params);
+
+        when(portalContext.getMainController()).thenReturn(mainController);
+        when(mainController.getSelectedElementsAndVersions()).thenReturn(new HashMap<>());
+        when(Sessions.getCurrent()).thenReturn(session);
+        when(session.getAttribute(Attributes.PREFERRED_LOCALE)).thenReturn(Locale.ENGLISH);
+
+        processPublisherPlugin.getSelectedModel(portalContext);
     }
 
 }

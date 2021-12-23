@@ -106390,11 +106390,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _apromoreSave__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./apromoreSave */ "./src/bpmneditor/plugins/apromoreSave.js");
 /* harmony import */ var _export__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./export */ "./src/bpmneditor/plugins/export.js");
 /* harmony import */ var _pdf__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./pdf */ "./src/bpmneditor/plugins/pdf.js");
-/* harmony import */ var _share__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./share */ "./src/bpmneditor/plugins/share.js");
-/* harmony import */ var _simulateModel__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./simulateModel */ "./src/bpmneditor/plugins/simulateModel.js");
-/* harmony import */ var _toolbar__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./toolbar */ "./src/bpmneditor/plugins/toolbar.js");
-/* harmony import */ var _undo__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./undo */ "./src/bpmneditor/plugins/undo.js");
-/* harmony import */ var _view__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./view */ "./src/bpmneditor/plugins/view.js");
+/* harmony import */ var _publishModel__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./publishModel */ "./src/bpmneditor/plugins/publishModel.js");
+/* harmony import */ var _share__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./share */ "./src/bpmneditor/plugins/share.js");
+/* harmony import */ var _simulateModel__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./simulateModel */ "./src/bpmneditor/plugins/simulateModel.js");
+/* harmony import */ var _toolbar__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./toolbar */ "./src/bpmneditor/plugins/toolbar.js");
+/* harmony import */ var _undo__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./undo */ "./src/bpmneditor/plugins/undo.js");
+/* harmony import */ var _view__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./view */ "./src/bpmneditor/plugins/view.js");
+
 
 
 
@@ -106409,14 +106411,84 @@ let Plugins = {
     ApromoreSave: _apromoreSave__WEBPACK_IMPORTED_MODULE_0__["default"],
     Export: _export__WEBPACK_IMPORTED_MODULE_1__["default"],
     File: _pdf__WEBPACK_IMPORTED_MODULE_2__["default"],
-    Share: _share__WEBPACK_IMPORTED_MODULE_3__["default"],
-    SimulateModel: _simulateModel__WEBPACK_IMPORTED_MODULE_4__["default"],
-    Toolbar: _toolbar__WEBPACK_IMPORTED_MODULE_5__["default"],
-    Undo: _undo__WEBPACK_IMPORTED_MODULE_6__["default"],
-    View: _view__WEBPACK_IMPORTED_MODULE_7__["default"]
+    PublishModel: _publishModel__WEBPACK_IMPORTED_MODULE_3__["default"],
+    Share: _share__WEBPACK_IMPORTED_MODULE_4__["default"],
+    SimulateModel: _simulateModel__WEBPACK_IMPORTED_MODULE_5__["default"],
+    Toolbar: _toolbar__WEBPACK_IMPORTED_MODULE_6__["default"],
+    Undo: _undo__WEBPACK_IMPORTED_MODULE_7__["default"],
+    View: _view__WEBPACK_IMPORTED_MODULE_8__["default"]
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (Plugins);
+
+
+/***/ }),
+
+/***/ "./src/bpmneditor/plugins/publishModel.js":
+/*!************************************************!*\
+  !*** ./src/bpmneditor/plugins/publishModel.js ***!
+  \************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return PublishModel; });
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./../config */ "./src/bpmneditor/config.js");
+/*-
+ * #%L
+ * This file is part of "Apromore Core".
+ * %%
+ * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ *
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * #L%
+ */
+
+
+/**
+ * The publish model plugin offers functionality to publish a link which can be used
+ * to view a model in view-only mode.
+ *
+ * @class PublishModel
+ * @param {Object} facade The editor facade for plugins.
+ */
+class PublishModel {
+
+    constructor(facade) {
+        this.facade = facade;
+
+        /* Register publish model */
+        this.facade.offer({
+            'btnId': 'ap-id-editor-publish-model-btn',
+            'name': window.Apromore.I18N.Share.publish,
+            'functionality': this.publishModel.bind(this),
+            'group': window.Apromore.I18N.Share.group,
+            'description': window.Apromore.I18N.Share.publishDesc,
+            'index': 2,
+            'groupOrder': 4,
+            'icon': _config__WEBPACK_IMPORTED_MODULE_0__["default"].PATH + "images/ap/link.svg",
+        });
+    };
+
+    publishModel() {
+        if (Apromore.BPMNEditor.Plugins.PublishModel.apromorePublishModel) {
+            Apromore.BPMNEditor.Plugins.PublishModel.apromorePublishModel();
+        }
+    }
+};
 
 
 /***/ }),

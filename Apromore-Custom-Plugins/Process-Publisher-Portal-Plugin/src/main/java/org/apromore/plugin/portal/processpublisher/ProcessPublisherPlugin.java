@@ -107,13 +107,21 @@ public class ProcessPublisherPlugin extends DefaultPortalPlugin implements Label
         }
     }
 
+    public ProcessSummaryType getSelectedModel(PortalContext portalContext) throws IllegalArgumentException {
+        ProcessSummaryType processSummaryType = getSelectedModelFromParams();
+        if (processSummaryType == null) {
+            processSummaryType = getSelectedModelFromPortalContext(portalContext);
+        }
+        return processSummaryType;
+    }
+
     /**
      * Extracts the selected process model from the portal context.
      * @param portalContext
      * @return the selected process model.
      * @throws IllegalArgumentException if the selection does not include exactly one process model.
      */
-    public ProcessSummaryType getSelectedModel(PortalContext portalContext) throws IllegalArgumentException {
+    public ProcessSummaryType getSelectedModelFromPortalContext(PortalContext portalContext) throws IllegalArgumentException {
         MainController mainController = (MainController) portalContext.getMainController();
         Map<SummaryType, List<VersionSummaryType>> selectedProcessVersions =
                 mainController.getSelectedElementsAndVersions();
@@ -127,6 +135,23 @@ public class ProcessPublisherPlugin extends DefaultPortalPlugin implements Label
         }
 
         return (ProcessSummaryType) summaryType;
+    }
+
+    /**
+     * Extracts the selected process model from the parameters.
+     * @return the process model passed through the parameters or null if there is none.
+     */
+    private ProcessSummaryType getSelectedModelFromParams() {
+        Map arg = getSimpleParams();
+        if (arg != null && arg.containsKey("selectedModel")) {
+            Object selectedModel = arg.get("selectedModel");
+            arg.clear(); //Clear simple params after getting all required fields
+
+            if (selectedModel instanceof ProcessSummaryType) {
+                return (ProcessSummaryType) selectedModel;
+            }
+        }
+        return null;
     }
 
     private PageDefinition getPageDefinition(String uri) throws IOException {
