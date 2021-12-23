@@ -43,9 +43,9 @@
                          hflex="1"
                          value="@load(vm_publishModel.publishLink)"
                          readonly="true"/>
-                <checkbox mold="switch"
-                          checked="@bind(vm_publishModel.publish)"
-                          tooltiptext="${vm_publishModel.labels.publish_toggle_hint}"/>
+                <button sclass="@load(vm_publishModel.publish ? 'ap-icon ap-icon-link' : 'ap-icon ap-icon-unlink')"
+                        tooltiptext="${vm_publishModel.labels.publish_toggle_hint}"
+                        onClick="@command('togglePublishState')"/>
                 <button sclass="ap-icon ap-icon-copy"
                         tooltiptext="${vm_publishModel.labels.copy_link_hint}"
                         w:onClick="copyPublishLink();"/>
