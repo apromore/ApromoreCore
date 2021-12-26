@@ -144,6 +144,8 @@
     display: none !important;
 }
 
+/* Property panel styles */
+
 .bpp-properties-panel button,
 .bpp-properties-panel input,
 .bpp-properties-panel select,
@@ -184,43 +186,125 @@
   display: hidden !important;
 }
 
+/* Property panel simulation section */
 
-#ap-editor-props-container.simulation-on #ap-editor-props-simulation {
+#ap-editor-props-container.simulation #ap-editor-props-simulation {
   background-color: #f8f8f8;
 }
 
-#ap-editor-props-container.simulation-on .bpp-properties-tabs-links > .bpp-properties-tab-link.bpp-active {
+#ap-editor-props-container.simulation .bpp-properties-tabs-links > .bpp-properties-tab-link.bpp-active {
   display: inline-block;
 }
 
-#ap-editor-props-container.simulation-on .bpp-properties-tabs-links > .bpp-properties-tab-link:last-child {
+#ap-editor-props-container.simulation .bpp-properties-tabs-links > .bpp-properties-tab-link:first-child,
+#ap-editor-props-container.simulation .bpp-properties-tabs-links > .bpp-properties-tab-link:nth-child(2) {
   display: none;
 }
 
-#ap-editor-props-container.simulation-on .bpp-properties-tab.bpp-active {
+#ap-editor-props-container.simulation .bpp-properties-tab.bpp-active {
   display: block;
 }
 
-#ap-editor-props-container.simulation-on .bpp-properties-tab[data-tab='extensionElements'] {
+#ap-editor-props-container.simulation .bpp-properties-tab[data-tab='attachmentTab'],
+#ap-editor-props-container.simulation .bpp-properties-tab[data-tab='customTab'] {
   display: none;
 }
 
-#ap-editor-props-container.extension-on .bpp-properties-tabs-links > .bpp-properties-tab-link {
+/* Property panel attachment section */
+
+#ap-editor-props-container.attachment .bpp-properties-tabs-links > .bpp-properties-tab-link {
   display: none;
 }
 
-#ap-editor-props-container.extension-on #ap-editor-props-extension {
+#ap-editor-props-container.attachment #ap-editor-props-attachment {
   background-color: #f8f8f8;
 }
 
-#ap-editor-props-container.extension-on .bpp-properties-tabs-links > .bpp-properties-tab-link:last-child {
+#ap-editor-props-container.attachment .bpp-properties-tabs-links > .bpp-properties-tab-link:nth-child(2) {
   display: inline-block;
 }
 
-#ap-editor-props-container.extension-on .bpp-properties-tab {
+#ap-editor-props-container.attachment .bpp-properties-tab {
   display: none;
 }
 
-#ap-editor-props-container.extension-on .bpp-properties-tab[data-tab='extensionElements'] {
+#ap-editor-props-container.attachment .bpp-properties-tab[data-tab='attachmentTab'] {
   display: block;
+}
+
+/* Property panel extension section */
+
+#ap-editor-props-container.extension .bpp-properties-tabs-links > .bpp-properties-tab-link {
+  display: none;
+}
+
+#ap-editor-props-container.extension #ap-editor-props-extension {
+  background-color: #f8f8f8;
+}
+
+#ap-editor-props-container.extension .bpp-properties-tabs-links > .bpp-properties-tab-link:first-child {
+  display: inline-block;
+}
+
+#ap-editor-props-container.extension .bpp-properties-tab {
+  display: none;
+}
+
+#ap-editor-props-container.extension .bpp-properties-tab[data-tab='customTab'] {
+  display: block;
+}
+
+/* Property panel aux entries */
+
+#camunda-aux-icon-name {
+  display: none;
+}
+
+#ap-bpmn-icon-picker {
+  color: #606060;
+  margin-top: 7px;
+}
+
+#ap-bpmn-icon-picker > div {
+  margin-bottom: 5px;
+}
+
+#ap-bpmn-icon-picker i {
+  font-size: 20px;
+  display: inline-block;
+  padding: 5px;
+  background-color: #f0f0f0;
+  border: 1px solid transparent;
+  margin-right: 5px;
+}
+
+#ap-bpmn-icon-picker i.selected {
+  border-color: #808080;
+  background-color: white;
+}
+
+/* Aux overlays */
+
+.aux-overlay .aux-image img {
+  height: 90px;
+}
+
+.aux-overlay .aux-bar {
+  max-width: 120px;
+}
+
+.aux-overlay .aux-bar .aux-link {
+  width: calc(100% - 28px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+}
+
+.aux-overlay .aux-bar .aux-icon {
+  font-size: 20px;
+  display: inline-block;
+  margin-right: 8px;
+  color: #606060;
+  vertical-align: middle;
 }

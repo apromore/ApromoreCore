@@ -1,0 +1,51 @@
+{
+  "name": "Apromore",
+  "prefix": "ap",
+  "uri": "http://apromore.org",
+  "xml": {
+    "tagAlias": "lowerCase"
+  },
+  "associations": [],
+  "types": [
+    {
+      "name": "ApromoreProp",
+      "extends": [
+        "bpmn:BaseElement"
+      ],
+      "properties": [
+        {
+          "name": "aux-link-url",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "aux-link-text",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "name": "Img",
+      "superClass": [ "Element" ],
+      "properties": [
+        {
+          "name": "aux-img-src",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "name": "Icon",
+      "superClass": [ "Element" ],
+      "properties": [
+        {
+          "name": "aux-icon-name",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    }
+  ]
+}

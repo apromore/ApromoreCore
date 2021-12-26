@@ -200,8 +200,11 @@ export default class EditorApp {
                 title: "Properties",
                 id: 'ap-editor-props-container',
                 items: [
-                    {   html: '<div id="ap-editor-props-bar"><div id="ap-editor-props-simulation">Simulation</div>' +
-                          '<div id="ap-editor-props-extension">Custom</div></div>',
+                    {   html: '<div id="ap-editor-props-bar">' +
+                          '<div id="ap-editor-props-simulation">Simulation</div>' +
+                          '<div id="ap-editor-props-attachment">Attachment</div>' +
+                          '<div id="ap-editor-props-extension">Metadata</div>' +
+                          '</div>',
                         region:'north',
                         border: false,
                         style: "z-index: 300",
@@ -267,6 +270,18 @@ export default class EditorApp {
             });
         }
 
+        var tabs = ['extension', 'attachment', 'simulation'];
+        function selectTab(tab) {
+          var container = $('#ap-editor-props-container');
+          tabs.forEach((t) => {
+            if (t === tab){
+              container.addClass(tab);
+            } else {
+              container.removeClass(t);
+            }
+          })
+        }
+
         return new Promise(function (resolve, reject) {
             // Config for the Ext.Viewport
             let layout_config = {
@@ -283,16 +298,18 @@ export default class EditorApp {
                         console.log('UI Viewport finished');
                         resolve('UI Viewport finished');
                         setTimeout(() => {
-                            $('#ap-editor-props-container').addClass('simulation-on');
-                            $('#ap-editor-props-simulation').on('click', () => {
-                              $('#ap-editor-props-container').removeClass('extension-on');
-                              $('#ap-editor-props-container').addClass('simulation-on');
-                              $('#ap-editor-props-container .bpp-properties-tabs-links > li:first-child a')[0].click();
-                            })
+                            selectTab('extension')
                             $('#ap-editor-props-extension').on('click', () => {
-                              $('#ap-editor-props-container').addClass('extension-on');
-                              $('#ap-editor-props-container').removeClass('simulation-on');
-                              $('#ap-editor-props-container .bpp-properties-tabs-links > li:last-child a')[0].click();
+                              selectTab('extension');
+                              $('#ap-editor-props-container .bpp-properties-tabs-links > li a[data-tab-target=customTab]')[0].click();
+                            })
+                            $('#ap-editor-props-attachment').on('click', () => {
+                              selectTab('attachment');
+                              $('#ap-editor-props-container .bpp-properties-tabs-links > li a[data-tab-target=attachmentTab]')[0].click();
+                            })
+                            $('#ap-editor-props-simulation').on('click', () => {
+                              selectTab('simulation');
+                              $('#ap-editor-props-container .bpp-properties-tabs-links > li:not(.bpp-hidden):not(:first-child):not(:nth-child(2)) a')[0].click();
                             })
                         }, 1000);
                     }

@@ -14,9 +14,9 @@ var createSimulationParametersTab = require('./tabs/SimulationParametersTab'),
     createTimetableTab = require('./tabs/TimetableTab'),
     createResourceTab = require('./tabs/ResourceTab'),
     createGatewayTab = require('./tabs/GatewayTab'),
+    createCustomTab = require('./tabs/CustomTab'),
+    createAuxTab = require('./tabs/AuxTab'),
     createIntermediateAndBoundaryEventsTab = require('./tabs/IntermediateAndBoundaryEventsTab');
-
-var properties = require('bpmn-js-properties-panel/lib/provider/camunda/parts/PropertiesProps');
 
 function removeTasks(element, bpmnFactory, elementRegistry) {
   var elements = ElementHelper.getElements(bpmnFactory, elementRegistry);
@@ -46,27 +46,11 @@ function removeSequenceFlows(bpmnFactory, elementRegistry) {
   }
 }
 
-function createExtensionElementsGroups(element, bpmnFactory, elementRegistry, translate) {
-
-  var propertiesGroup = {
-    id : 'extensionElements-properties',
-    label: translate('Properties'),
-    entries: []
-  };
-  properties(propertiesGroup, element, bpmnFactory, translate);
-
-  return [
-    propertiesGroup
-  ];
-}
-
-function SimulationPropertiesProvider(eventBus, canvas, bpmnFactory, elementRegistry, translate) {
+function PropertiesProvider(eventBus, canvas, bpmnFactory, elementRegistry, translate) {
 
   PropertiesActivator.call(this, eventBus);
 
   this.getTabs = function(element) {
-
-    console.log(element);
 
     var simulationParametersTab = createSimulationParametersTab(element, bpmnFactory, elementRegistry, translate);
     var taskTab = createTaskTab(element, bpmnFactory, elementRegistry, translate);
@@ -74,27 +58,23 @@ function SimulationPropertiesProvider(eventBus, canvas, bpmnFactory, elementRegi
     var resourcesTab = createResourceTab(element, bpmnFactory, elementRegistry, translate);
     var gatewayTab = createGatewayTab(element, bpmnFactory, elementRegistry, translate);
     var intermediateAndBoundaryEventsTab = createIntermediateAndBoundaryEventsTab(element, bpmnFactory, elementRegistry, translate);
-
-    var extensionsTab = {
-      id: 'extensionElements',
-      label: translate('properties'),
-      groups: createExtensionElementsGroups(element, bpmnFactory, elementRegistry, translate)
-    };
+    var auxTab = createAuxTab(element, bpmnFactory, elementRegistry, translate);
+    var customTab = createCustomTab(element, bpmnFactory, elementRegistry, translate);
 
     function getDefaultTabs() {
-      return [simulationParametersTab, taskTab, timetableTab, resourcesTab, gatewayTab, intermediateAndBoundaryEventsTab, extensionsTab];
+      return [customTab, auxTab, simulationParametersTab, taskTab, timetableTab, resourcesTab, gatewayTab, intermediateAndBoundaryEventsTab];
     }
 
     function getTaskTabs() {
-      return [taskTab, simulationParametersTab, timetableTab, resourcesTab, gatewayTab, intermediateAndBoundaryEventsTab, extensionsTab];
+      return [customTab, auxTab, taskTab, simulationParametersTab, timetableTab, resourcesTab, gatewayTab, intermediateAndBoundaryEventsTab];
     }
 
     function getGatewayTabs() {
-      return [gatewayTab, taskTab, timetableTab, resourcesTab, simulationParametersTab, intermediateAndBoundaryEventsTab, extensionsTab];
+      return [customTab, auxTab, gatewayTab, taskTab, timetableTab, resourcesTab, simulationParametersTab, intermediateAndBoundaryEventsTab];
     }
 
     function getEventTabs() {
-      return [intermediateAndBoundaryEventsTab, simulationParametersTab, gatewayTab, taskTab, timetableTab, resourcesTab, extensionsTab];
+      return [customTab, auxTab, intermediateAndBoundaryEventsTab, simulationParametersTab, gatewayTab, taskTab, timetableTab, resourcesTab];
     }
 
     var tabs = {
@@ -135,7 +115,7 @@ function SimulationPropertiesProvider(eventBus, canvas, bpmnFactory, elementRegi
   });
 }
 
-SimulationPropertiesProvider.$inject = [
+PropertiesProvider.$inject = [
   'eventBus',
   'canvas',
   'bpmnFactory',
@@ -143,6 +123,6 @@ SimulationPropertiesProvider.$inject = [
   'translate'
 ];
 
-inherits(SimulationPropertiesProvider, PropertiesActivator);
+inherits(PropertiesProvider, PropertiesActivator);
 
-module.exports = SimulationPropertiesProvider;
+module.exports = PropertiesProvider;
