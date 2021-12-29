@@ -77,7 +77,14 @@ function showImgPreview(data) {
   preview.src = data;
 }
 
-module.exports = function(element, bpmnFactory, elementRegistry, translate) {
+function refreshOverlay(bpmnjs, element) {
+  setTimeout(function () {
+    var auxModule = bpmnjs.get('aux');
+    auxModule.createAux(element);
+  }, 500);
+}
+
+module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmnjs) {
 
   var bo = getBusinessObject(element);
   var img = getImg(bo, bpmnFactory);
@@ -87,12 +94,30 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
     entryFactory.textField(translate, {
       id : AUX_PROPS.LINK_URL,
       label : 'Link URL',
-      modelProperty : AUX_PROPS.LINK_URL
+      modelProperty : AUX_PROPS.LINK_URL,
+      get: function(_element, _node) {
+        return { [AUX_PROPS.LINK_URL]: bo[AUX_PROPS.LINK_URL] };
+      },
+      set: function(element, values, _node) {
+        refreshOverlay(bpmnjs, element);
+        return cmdHelper.updateBusinessObject(element, bo, {
+          [AUX_PROPS.LINK_URL]: values[AUX_PROPS.LINK_URL]
+        });
+      }
     }),
     entryFactory.textField(translate, {
       id : AUX_PROPS.LINK_TEXT,
       label : 'Link text',
-      modelProperty : AUX_PROPS.LINK_TEXT
+      modelProperty : AUX_PROPS.LINK_TEXT,
+      get: function(_element, _node) {
+        return { [AUX_PROPS.LINK_TEXT]: bo[AUX_PROPS.LINK_TEXT] };
+      },
+      set: function(element, values, _node) {
+        refreshOverlay(bpmnjs, element);
+        return cmdHelper.updateBusinessObject(element, bo, {
+          [AUX_PROPS.LINK_TEXT]: values[AUX_PROPS.LINK_TEXT]
+        });
+      }
     }),
     entryFactory.textField(translate, {
       id: AUX_PROPS.IMG_SRC,
@@ -102,6 +127,7 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
         return { [AUX_PROPS.IMG_SRC]: img[AUX_PROPS.IMG_SRC] };
       },
       set: function(element, values, _node) {
+        refreshOverlay(bpmnjs, element);
         return cmdHelper.updateBusinessObject(element, img, {
           [AUX_PROPS.IMG_SRC]: values[AUX_PROPS.IMG_SRC]
         });
@@ -116,6 +142,7 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
         return { [AUX_PROPS.IMG_URL]: img[AUX_PROPS.IMG_URL] };
       },
       set: function(element, values, _node) {
+        refreshOverlay(bpmnjs, element);
         return cmdHelper.updateBusinessObject(element, img, {
           [AUX_PROPS.IMG_URL]: values[AUX_PROPS.IMG_URL]
         });
@@ -131,6 +158,7 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
           return { [AUX_PROPS.ICON_NAME]: icon[AUX_PROPS.ICON_NAME] };
         },
         set: function(element, values, _node) {
+          refreshOverlay(bpmnjs, element);
           return cmdHelper.updateBusinessObject(element, icon, {
             [AUX_PROPS.ICON_NAME]: values[AUX_PROPS.ICON_NAME]
           });

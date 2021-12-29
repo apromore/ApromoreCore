@@ -4,7 +4,7 @@ var is = require('bpmn-js/lib/util/ModelUtil').is,
 module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 
   function shown(element) {
-    return is(element, 'bpmn:BaseElement');
+    return is(element, 'bpmn:FlowNode');
   }
 
   return {
@@ -12,7 +12,7 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
     label: translate('metadata.properties'),
     groups: createCustomGroups(element, bpmnFactory, elementRegistry, translate),
     enabled: function(element) {
-      return true; // shown(element);
+      return shown(element);
     }
   };
 

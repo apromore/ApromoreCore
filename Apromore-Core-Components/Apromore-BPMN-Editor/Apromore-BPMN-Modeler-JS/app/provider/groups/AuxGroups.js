@@ -1,7 +1,7 @@
 var getBusinessObject = require('bpmn-js/lib/util/ModelUtil').getBusinessObject;
 var createAuxEntries = require('../entries/aux/AuxEntries');
 
-module.exports = function(element, bpmnFactory, elementRegistry, translate) {
+module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmnjs) {
   var bo = getBusinessObject(element),
       groupId = ['bo', bo.get('id'), 'group'].join('-'),
       groupLabel = bo.name || bo.id;
@@ -9,7 +9,7 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
   var auxGroup = {
     id : groupId,
     label: groupLabel,
-    entries: createAuxEntries(element, bpmnFactory, elementRegistry, translate)
+    entries: createAuxEntries(element, bpmnFactory, elementRegistry, translate, bpmnjs)
   };
 
   return [

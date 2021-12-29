@@ -201,9 +201,9 @@ export default class EditorApp {
                 id: 'ap-editor-props-container',
                 items: [
                     {   html: '<div id="ap-editor-props-bar">' +
-                          '<div id="ap-editor-props-simulation">Simulation</div>' +
-                          '<div id="ap-editor-props-attachment">Attachment</div>' +
                           '<div id="ap-editor-props-extension">Metadata</div>' +
+                          '<div id="ap-editor-props-attachment">Attachment</div>' +
+                          '<div id="ap-editor-props-simulation">Simulation</div>' +
                           '</div>',
                         region:'north',
                         border: false,

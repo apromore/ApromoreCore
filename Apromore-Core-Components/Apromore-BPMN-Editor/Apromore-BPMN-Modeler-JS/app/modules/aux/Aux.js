@@ -32,7 +32,7 @@ export default function Aux(eventBus, overlays, bpmnjs) {
     return null;
   }
 
-  function createAuxBox(element) {
+  function createAux(element) {
     var bo = getBusinessObject(element);
     var url = bo.get(AUX_PROPS.LINK_URL);
     var urlText = bo.get(AUX_PROPS.LINK_TEXT);
@@ -44,7 +44,7 @@ export default function Aux(eventBus, overlays, bpmnjs) {
       return;
     }
     try {
-      overlays.remove(element.id);
+      overlays.remove({ element, type: TYPE });
     } catch(e) {
       // pass
     }
@@ -94,7 +94,7 @@ export default function Aux(eventBus, overlays, bpmnjs) {
       return;
     }
     defer(function() {
-      createAuxBox(element);
+      createAux(element);
     });
   });
 
