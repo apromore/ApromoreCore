@@ -256,7 +256,8 @@
 
 /* Property panel aux entries */
 
-#camunda-aux-icon-name {
+#camunda-aux-icon-name,
+#camunda-aux-img-url {
   display: none;
 }
 
@@ -290,7 +291,7 @@
 }
 
 .aux-overlay .aux-bar {
-  max-width: 120px;
+  min-width: 120px;
 }
 
 .aux-overlay .aux-bar .aux-link {

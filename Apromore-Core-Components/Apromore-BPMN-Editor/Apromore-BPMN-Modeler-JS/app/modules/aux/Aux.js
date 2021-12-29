@@ -51,10 +51,11 @@ export default function Aux(eventBus, overlays, bpmnjs) {
 
     var $overlay = $(Aux.OVERLAY_HTML);
     var $content = $overlay.find('.content');
+    var imgUrl = getProp(img, AUX_PROPS.IMG_URL);
     var imgSrc = getProp(img, AUX_PROPS.IMG_SRC);
-    if (imgSrc) {
+    if (imgSrc || imgUrl) {
       top -= 100;
-      $content.append($('<div class="aux-image" style="height: 100px;"><img src="' + imgSrc + '" /></div>'));
+      $content.append($('<div class="aux-image" style="height: 100px;"><img src="' + (imgUrl || imgSrc) + '" /></div>'));
     }
     var iconName = getProp(icon, AUX_PROPS.ICON_NAME);
     if (url || iconName) {

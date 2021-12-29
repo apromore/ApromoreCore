@@ -4,6 +4,7 @@ var getBusinessObject = require('bpmn-js/lib/util/ModelUtil').getBusinessObject;
 var elementHelper = require('bpmn-js-properties-panel/lib/helper/ElementHelper');
 var extensionElementsHelper = require('bpmn-js-properties-panel/lib/helper/ExtensionElementsHelper');
 var IconPickerField = require('./fields/IconPickerField');
+var ImagePickerField = require('./fields/ImagePickerField');
 var { AUX_PROPS } = require('../../../modules/aux/common');
 
 function getExtensionElements(element, bpmnFactory) {
@@ -68,6 +69,14 @@ function selectIcon(iconName) {
   }
 }
 
+function showImgPreview(data) {
+  if (!data || !data.length) {
+    return;
+  }
+  const preview = document.querySelector('.aux-img-preview img');
+  preview.src = data;
+}
+
 module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 
   var bo = getBusinessObject(element);
@@ -87,7 +96,7 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
     }),
     entryFactory.textField(translate, {
       id: AUX_PROPS.IMG_SRC,
-      label: "Image Source",
+      label: "Image Link",
       modelProperty : AUX_PROPS.IMG_SRC,
       get: function(_element, _node) {
         return { [AUX_PROPS.IMG_SRC]: img[AUX_PROPS.IMG_SRC] };
@@ -95,6 +104,20 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
       set: function(element, values, _node) {
         return cmdHelper.updateBusinessObject(element, img, {
           [AUX_PROPS.IMG_SRC]: values[AUX_PROPS.IMG_SRC]
+        });
+      }
+    }),
+    ImagePickerField({
+      id: AUX_PROPS.IMG_URL,
+      label: "Image Upload",
+      modelProperty : AUX_PROPS.IMG_URL,
+      get: function(_element, _node) {
+        showImgPreview(img[AUX_PROPS.IMG_URL]);
+        return { [AUX_PROPS.IMG_URL]: img[AUX_PROPS.IMG_URL] };
+      },
+      set: function(element, values, _node) {
+        return cmdHelper.updateBusinessObject(element, img, {
+          [AUX_PROPS.IMG_URL]: values[AUX_PROPS.IMG_URL]
         });
       }
     }),

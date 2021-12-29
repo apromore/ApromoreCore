@@ -33,6 +33,11 @@
           "name": "aux-img-src",
           "isAttr": true,
           "type": "String"
+        },
+        {
+          "name": "aux-img-url",
+          "isAttr": true,
+          "type": "String"
         }
       ]
     },

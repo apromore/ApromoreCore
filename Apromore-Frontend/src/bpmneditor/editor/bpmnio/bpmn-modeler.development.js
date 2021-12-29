@@ -1448,6 +1448,335 @@ module.exports = isArray;
 /* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
+"use strict";
+
+
+var domQuery = __webpack_require__(2).query,
+    domClear = __webpack_require__(2).clear,
+    domClasses = __webpack_require__(2).classes,
+    is = __webpack_require__(1).is,
+    forEach = __webpack_require__(12),
+    domify = __webpack_require__(2).domify,
+    Ids = __webpack_require__(31).default;
+
+var SPACE_REGEX = /\s/;
+
+// for QName validation as per http://www.w3.org/TR/REC-xml/#NT-NameChar
+var QNAME_REGEX = /^([a-z][\w-.]*:)?[a-z_][\w-.]*$/i;
+
+// for ID validation as per BPMN Schema (QName - Namespace)
+var ID_REGEX = /^[a-z_][\w-.]*$/i;
+
+var HTML_ESCAPE_MAP = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  '\'': '&#39;'
+};
+
+function selectedOption(selectBox) {
+  if (selectBox.selectedIndex >= 0) {
+    return selectBox.options[selectBox.selectedIndex].value;
+  }
+}
+
+module.exports.selectedOption = selectedOption;
+
+
+function selectedType(elementSyntax, inputNode) {
+  var typeSelect = domQuery(elementSyntax, inputNode);
+  return selectedOption(typeSelect);
+}
+
+module.exports.selectedType = selectedType;
+
+
+/**
+ * Retrieve the root element the document this
+ * business object is contained in.
+ *
+ * @return {ModdleElement}
+ */
+function getRoot(businessObject) {
+  var parent = businessObject;
+  while (parent.$parent) {
+    parent = parent.$parent;
+  }
+  return parent;
+}
+
+module.exports.getRoot = getRoot;
+
+
+/**
+ * filters all elements in the list which have a given type.
+ * removes a new list
+ */
+function filterElementsByType(objectList, type) {
+  var list = objectList || [];
+  var result = [];
+  forEach(list, function(obj) {
+    if (is(obj, type)) {
+      result.push(obj);
+    }
+  });
+  return result;
+}
+
+module.exports.filterElementsByType = filterElementsByType;
+
+
+function findRootElementsByType(businessObject, referencedType) {
+  var root = getRoot(businessObject);
+
+  return filterElementsByType(root.rootElements, referencedType);
+}
+
+module.exports.findRootElementsByType = findRootElementsByType;
+
+
+function removeAllChildren(domElement) {
+  while (domElement.firstChild) {
+    domElement.removeChild(domElement.firstChild);
+  }
+}
+
+module.exports.removeAllChildren = removeAllChildren;
+
+
+/**
+ * adds an empty option to the list
+ */
+function addEmptyParameter(list) {
+  return list.push({ 'label': '', 'value': '', 'name': '' });
+}
+
+module.exports.addEmptyParameter = addEmptyParameter;
+
+
+/**
+ * returns a dropdown option label depending on the defined event attributes
+ */
+function getOptionLabel(obj) {
+  var label = obj.name || '';
+
+  if (obj.errorCode)
+    label += ' (code=' + obj.errorCode + ')';
+  if (obj.escalationCode)
+    label += ' (code=' + obj.escalationCode + ')';
+
+  return label;
+}
+
+/**
+ * returns a list with all root elements for the given parameter 'referencedType'
+ */
+function refreshOptionsModel(businessObject, referencedType) {
+  var model = [];
+  var referableObjects = findRootElementsByType(businessObject, referencedType);
+  forEach(referableObjects, function(obj) {
+    model.push({
+      label: getOptionLabel(obj),
+      value: obj.id,
+      name: obj.name
+    });
+  });
+  return model;
+}
+
+module.exports.refreshOptionsModel = refreshOptionsModel;
+
+
+/**
+ * fills the drop down with options
+ */
+function updateOptionsDropDown(domSelector, businessObject, referencedType, entryNode) {
+  var options = refreshOptionsModel(businessObject, referencedType);
+  addEmptyParameter(options);
+  var selectBox = domQuery(domSelector, entryNode);
+  domClear(selectBox);
+
+  forEach(options, function(option) {
+    var optionEntry = domify('<option value="' + escapeHTML(option.value) + '">' + escapeHTML(option.label) + '</option>');
+    selectBox.appendChild(optionEntry);
+  });
+  return options;
+}
+
+module.exports.updateOptionsDropDown = updateOptionsDropDown;
+
+
+/**
+ * checks whether the id value is valid
+ *
+ * @param {ModdleElement} bo
+ * @param {String} idValue
+ * @param {Function} translate
+ *
+ * @return {String} error message
+ */
+function isIdValid(bo, idValue, translate) {
+  var assigned = bo.$model.ids.assigned(idValue);
+
+  var idExists = assigned && assigned !== bo;
+
+  if (!idValue || idExists) {
+    return translate('Element must have an unique id.');
+  }
+
+  return validateId(idValue, translate);
+}
+
+module.exports.isIdValid = isIdValid;
+
+
+function validateId(idValue, translate) {
+
+  if (containsSpace(idValue)) {
+    return translate('Id must not contain spaces.');
+  }
+
+  if (!ID_REGEX.test(idValue)) {
+
+    if (QNAME_REGEX.test(idValue)) {
+      return translate('Id must not contain prefix.');
+    }
+
+    return translate('Id must be a valid QName.');
+  }
+}
+
+module.exports.validateId = validateId;
+
+
+function containsSpace(value) {
+  return SPACE_REGEX.test(value);
+}
+
+module.exports.containsSpace = containsSpace;
+
+/**
+ * generate a semantic id with given prefix
+ */
+function nextId(prefix) {
+  var ids = new Ids([32,32,1]);
+
+  return ids.nextPrefixed(prefix);
+}
+
+module.exports.nextId = nextId;
+
+
+function triggerClickEvent(element) {
+  var evt;
+  var eventType = 'click';
+
+  if (document.createEvent) {
+    try {
+
+      // Chrome, Safari, Firefox
+      evt = new MouseEvent((eventType), { view: window, bubbles: true, cancelable: true });
+    } catch (e) {
+
+      // IE 11, PhantomJS (wat!)
+      evt = document.createEvent('MouseEvent');
+
+      evt.initEvent((eventType), true, true);
+    }
+    return element.dispatchEvent(evt);
+  } else {
+
+    // Welcome IE
+    evt = document.createEventObject();
+
+    return element.fireEvent('on' + eventType, evt);
+  }
+}
+
+module.exports.triggerClickEvent = triggerClickEvent;
+
+
+function escapeHTML(str) {
+  str = '' + str;
+
+  return str && str.replace(/[&<>"']/g, function(match) {
+    return HTML_ESCAPE_MAP[match];
+  });
+}
+
+module.exports.escapeHTML = escapeHTML;
+
+function createDropdown(dropdown) {
+  var menu = dropdown.menu;
+
+  var dropdownNode = domify(
+    '<div class="group__dropdown">' +
+      '<button class="group__dropdown-button">' +
+      '<svg width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 512"><path fill="currentColor" d="M96 184c39.8 0 72 32.2 72 72s-32.2 72-72 72-72-32.2-72-72 32.2-72 72-72zM24 80c0 39.8 32.2 72 72 72s72-32.2 72-72S135.8 8 96 8 24 40.2 24 80zm0 352c0 39.8 32.2 72 72 72s72-32.2 72-72-32.2-72-72-72-72 32.2-72 72z"></path></svg>' +
+      '</button>' +
+      '<div class="group__dropdown-menu"></div>' +
+    '</div>'
+  );
+
+  var buttonNode = domQuery('.group__dropdown-button', dropdownNode),
+      menuNode = domQuery('.group__dropdown-menu', dropdownNode);
+
+  buttonNode.addEventListener('click', function(event) {
+    domClasses(dropdownNode).toggle('group__dropdown--open');
+
+    createOnGlobalClick(event);
+  });
+
+  forEach(menu, function(menuItem) {
+    var menuItemNode = domify('<div class="group__dropdown-menu-item" data-dropdown-action="' +
+      menuItem.id +
+      '">' + escapeHTML(menuItem.label) + '</div>');
+
+    menuItemNode.addEventListener('click', function() {
+      menuItem.onClick();
+
+      domClasses(dropdownNode).remove('group__dropdown--open');
+    });
+
+    menuNode.appendChild(menuItemNode);
+  });
+
+  var _onGlobalClick;
+
+  function createOnGlobalClick(_event) {
+    function onGlobalClick(event) {
+      if (event === _event) {
+        return;
+      }
+
+      var target = event.target;
+
+      if (menuNode !== target && !menuNode.contains(target)) {
+        domClasses(dropdownNode).remove('group__dropdown--open');
+
+        document.removeEventListener('click', onGlobalClick);
+      }
+    }
+
+    if (_onGlobalClick) {
+      document.removeEventListener('click', _onGlobalClick);
+    }
+
+    document.addEventListener('click', onGlobalClick);
+
+    _onGlobalClick = onGlobalClick;
+  }
+
+  return dropdownNode;
+}
+
+module.exports.createDropdown = createDropdown;
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
 var elementHelper = __webpack_require__(9),
     ProcessSimulationHelper = __webpack_require__(11),
     isDigit = __webpack_require__(19).isDigit;
@@ -1906,335 +2235,6 @@ ValidationErrorHelper.validateToTime = function(bpmnFactory, elementRegistry, tr
 module.exports = ValidationErrorHelper;
 
 /***/ }),
-/* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var domQuery = __webpack_require__(2).query,
-    domClear = __webpack_require__(2).clear,
-    domClasses = __webpack_require__(2).classes,
-    is = __webpack_require__(1).is,
-    forEach = __webpack_require__(12),
-    domify = __webpack_require__(2).domify,
-    Ids = __webpack_require__(31).default;
-
-var SPACE_REGEX = /\s/;
-
-// for QName validation as per http://www.w3.org/TR/REC-xml/#NT-NameChar
-var QNAME_REGEX = /^([a-z][\w-.]*:)?[a-z_][\w-.]*$/i;
-
-// for ID validation as per BPMN Schema (QName - Namespace)
-var ID_REGEX = /^[a-z_][\w-.]*$/i;
-
-var HTML_ESCAPE_MAP = {
-  '&': '&amp;',
-  '<': '&lt;',
-  '>': '&gt;',
-  '"': '&quot;',
-  '\'': '&#39;'
-};
-
-function selectedOption(selectBox) {
-  if (selectBox.selectedIndex >= 0) {
-    return selectBox.options[selectBox.selectedIndex].value;
-  }
-}
-
-module.exports.selectedOption = selectedOption;
-
-
-function selectedType(elementSyntax, inputNode) {
-  var typeSelect = domQuery(elementSyntax, inputNode);
-  return selectedOption(typeSelect);
-}
-
-module.exports.selectedType = selectedType;
-
-
-/**
- * Retrieve the root element the document this
- * business object is contained in.
- *
- * @return {ModdleElement}
- */
-function getRoot(businessObject) {
-  var parent = businessObject;
-  while (parent.$parent) {
-    parent = parent.$parent;
-  }
-  return parent;
-}
-
-module.exports.getRoot = getRoot;
-
-
-/**
- * filters all elements in the list which have a given type.
- * removes a new list
- */
-function filterElementsByType(objectList, type) {
-  var list = objectList || [];
-  var result = [];
-  forEach(list, function(obj) {
-    if (is(obj, type)) {
-      result.push(obj);
-    }
-  });
-  return result;
-}
-
-module.exports.filterElementsByType = filterElementsByType;
-
-
-function findRootElementsByType(businessObject, referencedType) {
-  var root = getRoot(businessObject);
-
-  return filterElementsByType(root.rootElements, referencedType);
-}
-
-module.exports.findRootElementsByType = findRootElementsByType;
-
-
-function removeAllChildren(domElement) {
-  while (domElement.firstChild) {
-    domElement.removeChild(domElement.firstChild);
-  }
-}
-
-module.exports.removeAllChildren = removeAllChildren;
-
-
-/**
- * adds an empty option to the list
- */
-function addEmptyParameter(list) {
-  return list.push({ 'label': '', 'value': '', 'name': '' });
-}
-
-module.exports.addEmptyParameter = addEmptyParameter;
-
-
-/**
- * returns a dropdown option label depending on the defined event attributes
- */
-function getOptionLabel(obj) {
-  var label = obj.name || '';
-
-  if (obj.errorCode)
-    label += ' (code=' + obj.errorCode + ')';
-  if (obj.escalationCode)
-    label += ' (code=' + obj.escalationCode + ')';
-
-  return label;
-}
-
-/**
- * returns a list with all root elements for the given parameter 'referencedType'
- */
-function refreshOptionsModel(businessObject, referencedType) {
-  var model = [];
-  var referableObjects = findRootElementsByType(businessObject, referencedType);
-  forEach(referableObjects, function(obj) {
-    model.push({
-      label: getOptionLabel(obj),
-      value: obj.id,
-      name: obj.name
-    });
-  });
-  return model;
-}
-
-module.exports.refreshOptionsModel = refreshOptionsModel;
-
-
-/**
- * fills the drop down with options
- */
-function updateOptionsDropDown(domSelector, businessObject, referencedType, entryNode) {
-  var options = refreshOptionsModel(businessObject, referencedType);
-  addEmptyParameter(options);
-  var selectBox = domQuery(domSelector, entryNode);
-  domClear(selectBox);
-
-  forEach(options, function(option) {
-    var optionEntry = domify('<option value="' + escapeHTML(option.value) + '">' + escapeHTML(option.label) + '</option>');
-    selectBox.appendChild(optionEntry);
-  });
-  return options;
-}
-
-module.exports.updateOptionsDropDown = updateOptionsDropDown;
-
-
-/**
- * checks whether the id value is valid
- *
- * @param {ModdleElement} bo
- * @param {String} idValue
- * @param {Function} translate
- *
- * @return {String} error message
- */
-function isIdValid(bo, idValue, translate) {
-  var assigned = bo.$model.ids.assigned(idValue);
-
-  var idExists = assigned && assigned !== bo;
-
-  if (!idValue || idExists) {
-    return translate('Element must have an unique id.');
-  }
-
-  return validateId(idValue, translate);
-}
-
-module.exports.isIdValid = isIdValid;
-
-
-function validateId(idValue, translate) {
-
-  if (containsSpace(idValue)) {
-    return translate('Id must not contain spaces.');
-  }
-
-  if (!ID_REGEX.test(idValue)) {
-
-    if (QNAME_REGEX.test(idValue)) {
-      return translate('Id must not contain prefix.');
-    }
-
-    return translate('Id must be a valid QName.');
-  }
-}
-
-module.exports.validateId = validateId;
-
-
-function containsSpace(value) {
-  return SPACE_REGEX.test(value);
-}
-
-module.exports.containsSpace = containsSpace;
-
-/**
- * generate a semantic id with given prefix
- */
-function nextId(prefix) {
-  var ids = new Ids([32,32,1]);
-
-  return ids.nextPrefixed(prefix);
-}
-
-module.exports.nextId = nextId;
-
-
-function triggerClickEvent(element) {
-  var evt;
-  var eventType = 'click';
-
-  if (document.createEvent) {
-    try {
-
-      // Chrome, Safari, Firefox
-      evt = new MouseEvent((eventType), { view: window, bubbles: true, cancelable: true });
-    } catch (e) {
-
-      // IE 11, PhantomJS (wat!)
-      evt = document.createEvent('MouseEvent');
-
-      evt.initEvent((eventType), true, true);
-    }
-    return element.dispatchEvent(evt);
-  } else {
-
-    // Welcome IE
-    evt = document.createEventObject();
-
-    return element.fireEvent('on' + eventType, evt);
-  }
-}
-
-module.exports.triggerClickEvent = triggerClickEvent;
-
-
-function escapeHTML(str) {
-  str = '' + str;
-
-  return str && str.replace(/[&<>"']/g, function(match) {
-    return HTML_ESCAPE_MAP[match];
-  });
-}
-
-module.exports.escapeHTML = escapeHTML;
-
-function createDropdown(dropdown) {
-  var menu = dropdown.menu;
-
-  var dropdownNode = domify(
-    '<div class="group__dropdown">' +
-      '<button class="group__dropdown-button">' +
-      '<svg width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 512"><path fill="currentColor" d="M96 184c39.8 0 72 32.2 72 72s-32.2 72-72 72-72-32.2-72-72 32.2-72 72-72zM24 80c0 39.8 32.2 72 72 72s72-32.2 72-72S135.8 8 96 8 24 40.2 24 80zm0 352c0 39.8 32.2 72 72 72s72-32.2 72-72-32.2-72-72-72-72 32.2-72 72z"></path></svg>' +
-      '</button>' +
-      '<div class="group__dropdown-menu"></div>' +
-    '</div>'
-  );
-
-  var buttonNode = domQuery('.group__dropdown-button', dropdownNode),
-      menuNode = domQuery('.group__dropdown-menu', dropdownNode);
-
-  buttonNode.addEventListener('click', function(event) {
-    domClasses(dropdownNode).toggle('group__dropdown--open');
-
-    createOnGlobalClick(event);
-  });
-
-  forEach(menu, function(menuItem) {
-    var menuItemNode = domify('<div class="group__dropdown-menu-item" data-dropdown-action="' +
-      menuItem.id +
-      '">' + escapeHTML(menuItem.label) + '</div>');
-
-    menuItemNode.addEventListener('click', function() {
-      menuItem.onClick();
-
-      domClasses(dropdownNode).remove('group__dropdown--open');
-    });
-
-    menuNode.appendChild(menuItemNode);
-  });
-
-  var _onGlobalClick;
-
-  function createOnGlobalClick(_event) {
-    function onGlobalClick(event) {
-      if (event === _event) {
-        return;
-      }
-
-      var target = event.target;
-
-      if (menuNode !== target && !menuNode.contains(target)) {
-        domClasses(dropdownNode).remove('group__dropdown--open');
-
-        document.removeEventListener('click', onGlobalClick);
-      }
-    }
-
-    if (_onGlobalClick) {
-      document.removeEventListener('click', _onGlobalClick);
-    }
-
-    document.addEventListener('click', onGlobalClick);
-
-    _onGlobalClick = onGlobalClick;
-  }
-
-  return dropdownNode;
-}
-
-module.exports.createDropdown = createDropdown;
-
-/***/ }),
 /* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -2650,7 +2650,7 @@ var domify = __webpack_require__(2).domify,
     domClasses = __webpack_require__(2).classes,
     domEvent = __webpack_require__(2).event;
 
-var escapeHTML = __webpack_require__(7).escapeHTML;
+var escapeHTML = __webpack_require__(6).escapeHTML;
 
 var MAX_DESCRIPTION_LENGTH = 200;
 
@@ -13827,7 +13827,7 @@ module.exports = {
 /* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(337);
+module.exports = __webpack_require__(338);
 
 module.exports.Collection = __webpack_require__(127);
 
@@ -16644,6 +16644,7 @@ const AUX_PROPS = {
   LINK_URL: 'aux-link-url',
   LINK_TEXT: 'aux-link-text',
   IMG_SRC: 'aux-img-src',
+  IMG_URL: 'aux-img-url',
   ICON_NAME: 'aux-icon-name'
 }
 
@@ -17462,7 +17463,7 @@ module.exports = toKey;
 
 var elementHelper = __webpack_require__(9),
     ProcessSimulationHelper = __webpack_require__(11),
-    ValidationErrorHelper = __webpack_require__(6),
+    ValidationErrorHelper = __webpack_require__(7),
     is = __webpack_require__(1).is;
 
 var ElementHelper = {};
@@ -17622,7 +17623,7 @@ var getBusinessObject = __webpack_require__(1).getBusinessObject;
 
 var cmdHelper = __webpack_require__(4);
 
-var escapeHTML = __webpack_require__(7).escapeHTML;
+var escapeHTML = __webpack_require__(6).escapeHTML;
 
 function ensureNotNull(prop) {
   if (!prop) {
@@ -19117,7 +19118,7 @@ module.exports = getHolder;
 var entryFactory = __webpack_require__(8);
 var cmdHelper = __webpack_require__(4);
 
-var validationHelper = __webpack_require__(6);
+var validationHelper = __webpack_require__(7);
 var fixNumber = __webpack_require__(19).fixNumber;
 
 var createDistributionTypeOptions = function(translate) {
@@ -19610,7 +19611,7 @@ var domQuery = __webpack_require__(2).query,
 
 var elementHelper = __webpack_require__(9),
     cmdHelper = __webpack_require__(4),
-    utils = __webpack_require__(7),
+    utils = __webpack_require__(6),
     escapeHTML = utils.escapeHTML;
 
 function getSelectBox(node, id) {
@@ -20998,7 +20999,7 @@ module.exports = SequenceFlowHelper;
 "use strict";
 
 
-var escapeHTML = __webpack_require__(7).escapeHTML;
+var escapeHTML = __webpack_require__(6).escapeHTML;
 
 var domify = __webpack_require__(2).domify,
     domQuery = __webpack_require__(2).query;
@@ -21091,7 +21092,7 @@ module.exports = textField;
 "use strict";
 
 
-var escapeHTML = __webpack_require__(7).escapeHTML;
+var escapeHTML = __webpack_require__(6).escapeHTML;
 
 var domify = __webpack_require__(2).domify,
     domQuery = __webpack_require__(2).query;
@@ -23257,7 +23258,7 @@ module.exports = JSON.parse("{\"name\":\"Simulation\",\"uri\":\"http://www.qbp-s
 /* 132 */
 /***/ (function(module) {
 
-module.exports = JSON.parse("{\"name\":\"Apromore\",\"prefix\":\"ap\",\"uri\":\"http://apromore.org\",\"xml\":{\"tagAlias\":\"lowerCase\"},\"associations\":[],\"types\":[{\"name\":\"ApromoreProp\",\"extends\":[\"bpmn:BaseElement\"],\"properties\":[{\"name\":\"aux-link-url\",\"isAttr\":true,\"type\":\"String\"},{\"name\":\"aux-link-text\",\"isAttr\":true,\"type\":\"String\"}]},{\"name\":\"Img\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"aux-img-src\",\"isAttr\":true,\"type\":\"String\"}]},{\"name\":\"Icon\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"aux-icon-name\",\"isAttr\":true,\"type\":\"String\"}]}]}");
+module.exports = JSON.parse("{\"name\":\"Apromore\",\"prefix\":\"ap\",\"uri\":\"http://apromore.org\",\"xml\":{\"tagAlias\":\"lowerCase\"},\"associations\":[],\"types\":[{\"name\":\"ApromoreProp\",\"extends\":[\"bpmn:BaseElement\"],\"properties\":[{\"name\":\"aux-link-url\",\"isAttr\":true,\"type\":\"String\"},{\"name\":\"aux-link-text\",\"isAttr\":true,\"type\":\"String\"}]},{\"name\":\"Img\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"aux-img-src\",\"isAttr\":true,\"type\":\"String\"},{\"name\":\"aux-img-url\",\"isAttr\":true,\"type\":\"String\"}]},{\"name\":\"Icon\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"aux-icon-name\",\"isAttr\":true,\"type\":\"String\"}]}]}");
 
 /***/ }),
 /* 133 */
@@ -23364,8 +23365,8 @@ function toComment(sourceMap) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // var translations = require('./translations');
-var translationsEn = __webpack_require__(330);
-var translationsJa = __webpack_require__(331);
+var translationsEn = __webpack_require__(331);
+var translationsJa = __webpack_require__(332);
 var translationMap = {
   'en': translationsEn,
   'ja': translationsJa,
@@ -23494,8 +23495,8 @@ ColorContextPad.$inject = [
 "use strict";
 
 
-var colorString = __webpack_require__(332);
-var convert = __webpack_require__(335);
+var colorString = __webpack_require__(333);
+var convert = __webpack_require__(336);
 
 var _slice = [].slice;
 
@@ -23980,7 +23981,7 @@ module.exports = Color;
 /* 137 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(338);
+module.exports = __webpack_require__(339);
 
 
 /***/ }),
@@ -29807,8 +29808,8 @@ MultiCommandHandler.prototype.preExecute = function(context) {
 "use strict";
 
 
-var createDropdown = __webpack_require__(7).createDropdown,
-    escapeHTML = __webpack_require__(7).escapeHTML;
+var createDropdown = __webpack_require__(6).createDropdown,
+    escapeHTML = __webpack_require__(6).escapeHTML;
 
 var domify = __webpack_require__(2).domify,
     domQuery = __webpack_require__(2).query,
@@ -29837,7 +29838,7 @@ var forEach = __webpack_require__(12),
 
 var updateSelection = __webpack_require__(102);
 
-var scrollTabs = __webpack_require__(339).default;
+var scrollTabs = __webpack_require__(340).default;
 
 var getBusinessObject = __webpack_require__(1).getBusinessObject;
 
@@ -32392,7 +32393,7 @@ var getBusinessObject = __webpack_require__(1).getBusinessObject,
 
 var ElementHelper = __webpack_require__(46),
     SequenceFlowHelper = __webpack_require__(103),
-    suppressValidationError = __webpack_require__(6).suppressValidationError;
+    suppressValidationError = __webpack_require__(7).suppressValidationError;
 
 var createSimulationParametersTab = __webpack_require__(246),
     createTaskTab = __webpack_require__(288),
@@ -32401,7 +32402,7 @@ var createSimulationParametersTab = __webpack_require__(246),
     createGatewayTab = __webpack_require__(313),
     createCustomTab = __webpack_require__(316),
     createAuxTab = __webpack_require__(320),
-    createIntermediateAndBoundaryEventsTab = __webpack_require__(324);
+    createIntermediateAndBoundaryEventsTab = __webpack_require__(325);
 
 function removeTasks(element, bpmnFactory, elementRegistry) {
   var elements = ElementHelper.getElements(bpmnFactory, elementRegistry);
@@ -32684,7 +32685,7 @@ var entryFactory = __webpack_require__(8),
     cmdHelper = __webpack_require__(4);
 
 var ProcessSimulationHelper = __webpack_require__(11),
-    validationHelper = __webpack_require__(6);
+    validationHelper = __webpack_require__(7);
 
 module.exports = function(bpmnFactory, elementRegistry, translate) {
 
@@ -32736,7 +32737,7 @@ var domify = __webpack_require__(2).domify;
 
 var getBusinessObject = __webpack_require__(1).getBusinessObject,
     cmdHelper = __webpack_require__(4),
-    escapeHTML = __webpack_require__(7).escapeHTML;
+    escapeHTML = __webpack_require__(6).escapeHTML;
 
 var entryFieldDescription = __webpack_require__(14);
 
@@ -32824,7 +32825,7 @@ var assign = __webpack_require__(106),
 var domify = __webpack_require__(2).domify,
     domQuery = __webpack_require__(2).query;
 
-var escapeHTML = __webpack_require__(7).escapeHTML;
+var escapeHTML = __webpack_require__(6).escapeHTML;
 
 var selectEntryFactory = __webpack_require__(105),
     entryFieldDescription = __webpack_require__(14);
@@ -33217,7 +33218,7 @@ module.exports = toFinite;
 
 var domify = __webpack_require__(2).domify;
 
-var escapeHTML = __webpack_require__(7).escapeHTML;
+var escapeHTML = __webpack_require__(6).escapeHTML;
 
 var entryFieldDescription = __webpack_require__(14);
 
@@ -33329,7 +33330,7 @@ module.exports = validationAwareTextField;
 "use strict";
 
 
-var escapeHTML = __webpack_require__(7).escapeHTML;
+var escapeHTML = __webpack_require__(6).escapeHTML;
 
 var cmdHelper = __webpack_require__(4);
 
@@ -33725,7 +33726,7 @@ module.exports = label;
 
 var domify = __webpack_require__(2).domify;
 
-var escapeHTML = __webpack_require__(7).escapeHTML;
+var escapeHTML = __webpack_require__(6).escapeHTML;
 
 var entryFieldDescription = __webpack_require__(14);
 
@@ -34663,7 +34664,7 @@ var assign = __webpack_require__(0).assign,
     forEach = __webpack_require__(0).forEach,
     debounce = __webpack_require__(0).debounce;
 
-var escapeHTML = __webpack_require__(7).escapeHTML;
+var escapeHTML = __webpack_require__(6).escapeHTML;
 
 var entryFieldDescription = __webpack_require__(14);
 
@@ -34967,7 +34968,7 @@ function setPosition(el, x, y) {
 "use strict";
 
 
-var escapeHTML = __webpack_require__(7).escapeHTML;
+var escapeHTML = __webpack_require__(6).escapeHTML;
 var domQuery = __webpack_require__(2).query;
 
 
@@ -35097,7 +35098,7 @@ function noop() {}
 
 var getBusinessObject = __webpack_require__(1).getBusinessObject,
     cmdHelper = __webpack_require__(4),
-    escapeHTML = __webpack_require__(7).escapeHTML;
+    escapeHTML = __webpack_require__(6).escapeHTML;
 
 var entryFieldDescription = __webpack_require__(14);
 
@@ -35292,7 +35293,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate) {
 
 var entryFactory = __webpack_require__(8),
     cmdHelper = __webpack_require__(4),
-    validationHelper = __webpack_require__(6),
+    validationHelper = __webpack_require__(7),
     ProcessSimulationHelper = __webpack_require__(11);
 
 module.exports = function(bpmnFactory, elementRegistry, translate) {
@@ -35340,7 +35341,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate) {
 
 var entryFactory = __webpack_require__(8),
     cmdHelper = __webpack_require__(4),
-    validationHelper = __webpack_require__(6),
+    validationHelper = __webpack_require__(7),
     ProcessSimulationHelper = __webpack_require__(11);
 
 module.exports = function(bpmnFactory, elementRegistry, translate) {
@@ -35695,7 +35696,7 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 var cmdHelper = __webpack_require__(4),
     extensionElementsEntry = __webpack_require__(72);
 
-var suppressValidationError = __webpack_require__(6).suppressValidationError;
+var suppressValidationError = __webpack_require__(7).suppressValidationError;
 
 var TimetableHelper = __webpack_require__(122);
 
@@ -35816,7 +35817,7 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, opti
 
 var entryFactory = __webpack_require__(8),
     cmdHelper = __webpack_require__(4),
-    validationErrorHelper = __webpack_require__(6);
+    validationErrorHelper = __webpack_require__(7);
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
@@ -35870,7 +35871,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 var cmdHelper = __webpack_require__(4),
     extensionElementsEntry = __webpack_require__(72),
     RuleHelper = __webpack_require__(123),
-    suppressValidationError = __webpack_require__(6).suppressValidationError;
+    suppressValidationError = __webpack_require__(7).suppressValidationError;
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate, options) {
 
@@ -35988,7 +35989,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
 var entryFactory = __webpack_require__(8),
     cmdHelper = __webpack_require__(4),
-    validationErrorHelper = __webpack_require__(6);
+    validationErrorHelper = __webpack_require__(7);
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
@@ -36047,7 +36048,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 var entryFactory = __webpack_require__(8),
     cmdHelper = __webpack_require__(4),
     getWeekDays = __webpack_require__(124),
-    validationErrorHelper = __webpack_require__(6);
+    validationErrorHelper = __webpack_require__(7);
 
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
@@ -36106,7 +36107,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 var entryFactory = __webpack_require__(8),
     cmdHelper = __webpack_require__(4),
     getWeekDays = __webpack_require__(124),
-    validationErrorHelper = __webpack_require__(6);
+    validationErrorHelper = __webpack_require__(7);
 
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
@@ -36215,7 +36216,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
 var cmdHelper = __webpack_require__(4),
     dateTimeField = __webpack_require__(49),
-    validationErrorHelper = __webpack_require__(6);
+    validationErrorHelper = __webpack_require__(7);
 
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
@@ -36336,7 +36337,7 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 var cmdHelper = __webpack_require__(4),
     extensionElementsEntry = __webpack_require__(72),
     ResourceHelper = __webpack_require__(121),
-    suppressValidationError = __webpack_require__(6).suppressValidationError;
+    suppressValidationError = __webpack_require__(7).suppressValidationError;
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 
@@ -36493,7 +36494,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
 var entryFactory = __webpack_require__(8),
     cmdHelper = __webpack_require__(4),
-    validationErrorHelper = __webpack_require__(6);
+    validationErrorHelper = __webpack_require__(7);
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
@@ -36552,7 +36553,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
 var entryFactory = __webpack_require__(8),
     cmdHelper = __webpack_require__(4),
-    validationErrorHelper = __webpack_require__(6);
+    validationErrorHelper = __webpack_require__(7);
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
@@ -36610,7 +36611,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
 var entryFactory = __webpack_require__(8),
     cmdHelper = __webpack_require__(4),
-    validationErrorHelper = __webpack_require__(6);
+    validationErrorHelper = __webpack_require__(7);
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
@@ -36738,7 +36739,7 @@ var getBusinessObject = __webpack_require__(1).getBusinessObject,
     cmdHelper = __webpack_require__(4),
     SequenceFlowHelper = __webpack_require__(103);
 
-var validationErrorHelper = __webpack_require__(6);
+var validationErrorHelper = __webpack_require__(7);
 var fixNumber = __webpack_require__(19).fixNumber;
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
@@ -36906,7 +36907,7 @@ var factory = __webpack_require__(8);
 var elementHelper = __webpack_require__(9),
     extensionElementsHelper = __webpack_require__(25),
     cmdHelper = __webpack_require__(4),
-    utils = __webpack_require__(7);
+    utils = __webpack_require__(6);
 
 var assign = __webpack_require__(106),
     forEach = __webpack_require__(12),
@@ -37126,7 +37127,7 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 
   return {
     id: 'attachmentTab',
-    label: translate('attachment'),
+    label: translate('attachments'),
     groups: createAuxGroups(element, bpmnFactory, elementRegistry, translate),
     enabled: function(element) {
       return shown(element);
@@ -37139,13 +37140,17 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 /* 321 */
 /***/ (function(module, exports, __webpack_require__) {
 
+var getBusinessObject = __webpack_require__(1).getBusinessObject;
 var createAuxEntries = __webpack_require__(322);
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate) {
+  var bo = getBusinessObject(element),
+      groupId = ['bo', bo.get('id'), 'group'].join('-'),
+      groupLabel = bo.name || bo.id;
 
   var auxGroup = {
-    id : 'aux-group',
-    label: 'Accessories',
+    id : groupId,
+    label: groupLabel,
     entries: createAuxEntries(element, bpmnFactory, elementRegistry, translate)
   };
 
@@ -37164,6 +37169,7 @@ var getBusinessObject = __webpack_require__(1).getBusinessObject;
 var elementHelper = __webpack_require__(9);
 var extensionElementsHelper = __webpack_require__(25);
 var IconPickerField = __webpack_require__(323);
+var ImagePickerField = __webpack_require__(324);
 var { AUX_PROPS } = __webpack_require__(26);
 
 function getExtensionElements(element, bpmnFactory) {
@@ -37247,7 +37253,7 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
     }),
     entryFactory.textField(translate, {
       id: AUX_PROPS.IMG_SRC,
-      label: "Image Source",
+      label: "Image Link",
       modelProperty : AUX_PROPS.IMG_SRC,
       get: function(_element, _node) {
         return { [AUX_PROPS.IMG_SRC]: img[AUX_PROPS.IMG_SRC] };
@@ -37255,6 +37261,19 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
       set: function(element, values, _node) {
         return cmdHelper.updateBusinessObject(element, img, {
           [AUX_PROPS.IMG_SRC]: values[AUX_PROPS.IMG_SRC]
+        });
+      }
+    }),
+    ImagePickerField({
+      id: AUX_PROPS.IMG_URL,
+      label: "Image Upload",
+      modelProperty : AUX_PROPS.IMG_URL,
+      get: function(_element, _node) {
+        return { [AUX_PROPS.IMG_URL]: img[AUX_PROPS.IMG_URL] };
+      },
+      set: function(element, values, _node) {
+        return cmdHelper.updateBusinessObject(element, img, {
+          [AUX_PROPS.IMG_URL]: values[AUX_PROPS.IMG_URL]
         });
       }
     }),
@@ -37284,7 +37303,7 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 
 var getBusinessObject = __webpack_require__(1).getBusinessObject;
 var cmdHelper = __webpack_require__(4);
-var escapeHTML = __webpack_require__(7).escapeHTML;
+var escapeHTML = __webpack_require__(6).escapeHTML;
 var domify = __webpack_require__(2).domify,
     domEvent = __webpack_require__(2).event,
     domQuery = __webpack_require__(2).query;
@@ -37400,7 +37419,6 @@ module.exports = function(options) {
     line.forEach((iconName) => {
       var icoEl = domify(`<i id="${iconName}" class="${iconName}"></i>`);
       domEvent.bind(icoEl, 'click', function () {
-        console.log('click ico', this, arguments, this.className);
         var input = document.getElementById('camunda-' + escapeHTML(resource.id));
         input.value = this.id;
         var ev = new Event('change', { 'bubbles': true });
@@ -37427,8 +37445,112 @@ module.exports = function(options) {
 /* 324 */
 /***/ (function(module, exports, __webpack_require__) {
 
+var getBusinessObject = __webpack_require__(1).getBusinessObject;
+var cmdHelper = __webpack_require__(4);
+var escapeHTML = __webpack_require__(6).escapeHTML;
+var domify = __webpack_require__(2).domify,
+    domEvent = __webpack_require__(2).event,
+    domQuery = __webpack_require__(2).query;
+
+function ensureNotNull(prop) {
+  if (!prop) {
+    throw new Error(prop + ' must be set.');
+  }
+
+  return prop;
+}
+
+function setDefaultParameters(options) {
+
+  // default method to fetch the current value of the input field
+  var defaultGet = function(element) {
+    var bo = getBusinessObject(element),
+        res = {},
+        prop = ensureNotNull(options.modelProperty);
+    res[prop] = bo.get(prop);
+
+    return res;
+  };
+
+  // default method to set a new value to the input field
+  var defaultSet = function(element, values) {
+    var res = {},
+        prop = ensureNotNull(options.modelProperty);
+    if (values[prop] !== '') {
+      res[prop] = values[prop];
+    } else {
+      res[prop] = undefined;
+    }
+
+    return cmdHelper.updateProperties(element, res);
+  };
+
+  // default validation method
+  var defaultValidate = function() {
+    return {};
+  };
+
+  return {
+    id: options.id,
+    description: (options.description || ''),
+    get: (options.get || defaultGet),
+    set: (options.set || defaultSet),
+    validate: (options.validate || defaultValidate),
+    html: '',
+    type: 'text'
+  };
+}
+
+function previewFile(callback) {
+  const preview = document.querySelector('.aux-img-preview img');
+  const file = document.querySelector('#aux-img-picker-control').files[0];
+  const reader = new FileReader();
+
+  reader.addEventListener("load", function () {
+    preview.src = reader.result;
+    callback(reader.result);
+  }, false);
+
+  if (file) {
+    reader.readAsDataURL(file); // to base64 string
+  }
+}
+
+module.exports = function(options) {
+
+  var resource = setDefaultParameters(options),
+      label = options.label || resource.id;
+
+  var pickerEl = domify('<div id="ap-bpmn-img-picker"></div>');
+  var inputEl = domify('<input id="aux-img-picker-control" type="file">');
+  pickerEl.appendChild(inputEl);
+  domEvent.bind(inputEl, 'change', function () {
+    previewFile(function(dataURL) {
+      var input = document.getElementById('camunda-' + escapeHTML(resource.id));
+      input.value = dataURL;
+      var ev = new Event('change', { 'bubbles': true });
+      input.dispatchEvent(ev);
+    });
+  })
+  pickerEl.appendChild(domify('<div class="aux-img-preview"><img src="" alt="Image preview..." /></div>'));
+  resource.html = domify(
+    '<label for="camunda-' + escapeHTML(resource.id) + '" >' + escapeHTML(label) + '</label><br>' +
+    '<input id="camunda-' + escapeHTML(resource.id) + '" type="text" name="' +
+    escapeHTML(options.modelProperty) + '" />'
+  );
+  resource.html.appendChild(pickerEl);
+  resource.cssClasses = ['bpp-textbox'];
+
+  return resource;
+};
+
+
+/***/ }),
+/* 325 */
+/***/ (function(module, exports, __webpack_require__) {
+
 var is = __webpack_require__(1).is,
-    intermediateAndBoundaryEventGroups = __webpack_require__(325);
+    intermediateAndBoundaryEventGroups = __webpack_require__(326);
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate) {
   return {
@@ -37444,12 +37566,12 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 325 */
+/* 326 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var getBusinessObject = __webpack_require__(1).getBusinessObject,
     getFlowElementsByType = __webpack_require__(71),
-    intermediateAndBoundaryEventEntries = __webpack_require__(326);
+    intermediateAndBoundaryEventEntries = __webpack_require__(327);
 
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate) {
@@ -37483,7 +37605,7 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 326 */
+/* 327 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var ElementHelper = __webpack_require__(46),
@@ -37510,11 +37632,11 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 };
 
 /***/ }),
-/* 327 */
+/* 328 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var api = __webpack_require__(328);
-            var content = __webpack_require__(329);
+var api = __webpack_require__(329);
+            var content = __webpack_require__(330);
 
             content = content.__esModule ? content.default : content;
 
@@ -37534,7 +37656,7 @@ var update = api(content, options);
 module.exports = content.locals || {};
 
 /***/ }),
-/* 328 */
+/* 329 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37809,7 +37931,7 @@ module.exports = function (list, options) {
 };
 
 /***/ }),
-/* 329 */
+/* 330 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -37826,7 +37948,7 @@ ___CSS_LOADER_EXPORT___.push([module.i, "#js-properties-panel {\n  position: abs
 
 
 /***/ }),
-/* 330 */
+/* 331 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -37929,7 +38051,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 331 */
+/* 332 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -38030,12 +38152,12 @@ module.exports = {
 };
 
 /***/ }),
-/* 332 */
+/* 333 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* MIT license */
 var colorNames = __webpack_require__(125);
-var swizzle = __webpack_require__(333);
+var swizzle = __webpack_require__(334);
 
 var reverseNames = {};
 
@@ -38270,13 +38392,13 @@ function hexDouble(num) {
 
 
 /***/ }),
-/* 333 */
+/* 334 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var isArrayish = __webpack_require__(334);
+var isArrayish = __webpack_require__(335);
 
 var concat = Array.prototype.concat;
 var slice = Array.prototype.slice;
@@ -38306,7 +38428,7 @@ swizzle.wrap = function (fn) {
 
 
 /***/ }),
-/* 334 */
+/* 335 */
 /***/ (function(module, exports) {
 
 module.exports = function isArrayish(obj) {
@@ -38321,11 +38443,11 @@ module.exports = function isArrayish(obj) {
 
 
 /***/ }),
-/* 335 */
+/* 336 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var conversions = __webpack_require__(126);
-var route = __webpack_require__(336);
+var route = __webpack_require__(337);
 
 var convert = {};
 
@@ -38405,7 +38527,7 @@ module.exports = convert;
 
 
 /***/ }),
-/* 336 */
+/* 337 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var conversions = __webpack_require__(126);
@@ -38508,7 +38630,7 @@ module.exports = function (fromModel) {
 
 
 /***/ }),
-/* 337 */
+/* 338 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -38716,7 +38838,7 @@ module.exports = Refs;
  */
 
 /***/ }),
-/* 338 */
+/* 339 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -93354,7 +93476,7 @@ var simulation = __webpack_require__(131);
 var ap = __webpack_require__(132);
 
 // EXTERNAL MODULE: ./styles/customModeler.less
-var customModeler = __webpack_require__(327);
+var customModeler = __webpack_require__(328);
 
 // EXTERNAL MODULE: ./app/translate/customTranslate.js
 var customTranslate = __webpack_require__(134);
@@ -93392,8 +93514,6 @@ const defer = function (fn) {
   setTimeout(fn, 0);
 }
 
-var sample = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAALVBMVEXyUCJ/ugAApO//uQD////yTh/zVy2EvRYWp/D/uxbyTBvzXziJvyQkq/D/viRJQpTmAAABDUlEQVR4nO3PyRHCQBAEwRHo5vDfXD1ZC5oYyHKgIqtSLev8aZtixYCEhISEhISEhISEhISEhISEhISEhISEhISEhISEhISEhISEhISEhISEhISEhISEhISEhISEhISEhISEhISEhISEhISEhISEhISEhISEhISEhISEhISEhISEhIQdhUuq81vCNdZjED63WDX/eoT9I+wfYf8I+0fYv9pjvYbt+4hVt1j7IDzusQgJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQn/WXgB6/1wCkBWrdwAAAAASUVORK5CYII='
-
 function Aux(eventBus, overlays, bpmnjs) {
 
   function toggleCollapse(element) {
@@ -93426,7 +93546,7 @@ function Aux(eventBus, overlays, bpmnjs) {
     var icon = (ExtensionElementsHelper_default.a.getExtensionElements(bo, 'ap:Icon') || [])[0];
     var top = -10;
 
-    if (!url || !url.length || !img) {
+    if ((!url || !url.length) && !img && !icon) {
       return;
     }
     try {
@@ -93457,7 +93577,6 @@ function Aux(eventBus, overlays, bpmnjs) {
         $bar.append(jquery_default()(`<a class="aux-link" title="${urlText}" href="${url}">${urlText}</a>`));
       }
     }
-    // eventBus.fire('aux.updated', { url: url });
 
     $overlay.find('.toggle').click(function(e) {
       toggleCollapse(element);
@@ -93572,7 +93691,7 @@ CustomModeler.prototype._moddleExtensions = {
 };
 
 /***/ }),
-/* 339 */
+/* 340 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
