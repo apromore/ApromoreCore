@@ -990,7 +990,6 @@ public abstract class BaseListboxController extends BaseController {
           "Could not perform all delete operations. You may not be authorized to delete some of the resources.",
           APROMORE, Messagebox.OK, Messagebox.ERROR);
     }
-    mainController.reloadSummaries();
   }
 
   public abstract void displaySummaries(List<FolderType> subFolders, SummariesType summaries,
