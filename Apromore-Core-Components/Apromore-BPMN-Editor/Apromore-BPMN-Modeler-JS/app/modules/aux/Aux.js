@@ -1,14 +1,17 @@
 import $ from 'jquery';
 import { getBusinessObject } from 'bpmn-js/lib/util/ModelUtil';
+import cmdHelper from 'bpmn-js-properties-panel/lib/helper/CmdHelper';
 import extensionElementsHelper from 'bpmn-js-properties-panel/lib/helper/ExtensionElementsHelper';
 import { AUX_PROPS } from './common';
+import { isNil } from 'min-dash';
+import interact from 'interactjs';
 
 const TYPE = 'aux';
 const defer = function (fn) {
   setTimeout(fn, 0);
 }
 
-export default function Aux(eventBus, overlays, bpmnjs) {
+export default function Aux(eventBus, bpmnFactory, elementRegistry, overlays, bpmnjs) {
 
   function toggleCollapse(element) {
     var o = overlays.get({ element: element, type: TYPE })[0];
@@ -32,13 +35,24 @@ export default function Aux(eventBus, overlays, bpmnjs) {
     return null;
   }
 
+  function getNumber(bo, prop) {
+    var num = getProp(bo, prop);
+    if (num !== null) {
+      return Math.round(parseFloat(num));
+    }
+    return null;
+  }
+
   function createAux(element) {
     var bo = getBusinessObject(element);
     var url = bo.get(AUX_PROPS.LINK_URL);
     var urlText = bo.get(AUX_PROPS.LINK_TEXT);
     var img = (extensionElementsHelper.getExtensionElements(bo, 'ap:Img') || [])[0];
     var icon = (extensionElementsHelper.getExtensionElements(bo, 'ap:Icon') || [])[0];
-    var top = -10;
+    var dtop = -10;
+    var dleft = 0;
+    var dwidth = 120;
+    var dheight = 120;
 
     if ((!url || !url.length) && !img && !icon) {
       return;
@@ -50,26 +64,25 @@ export default function Aux(eventBus, overlays, bpmnjs) {
     }
 
     var $overlay = $(Aux.OVERLAY_HTML);
-    var $content = $overlay.find('.content');
     var imgUrl = getProp(img, AUX_PROPS.IMG_URL);
     var imgSrc = getProp(img, AUX_PROPS.IMG_SRC);
     if (imgSrc || imgUrl) {
-      top -= 100;
-      $content.append($('<div class="aux-image" style="height: 100px;"><img src="' + (imgUrl || imgSrc) + '" /></div>'));
+      dtop -= 100;
+      $overlay.append($('<div class="aux-image"><img src="' + (imgUrl || imgSrc) + '" /></div>'));
     }
     var iconName = getProp(icon, AUX_PROPS.ICON_NAME);
     if (url || iconName) {
-      top -= 20;
-      var $bar = $('<div class="aux-bar" style="height: 20px;"></div>');
-      $content.append($bar);
-      if (icon) {
+      dtop -= 26;
+      var $bar = $('<div class="aux-bar"></div>');
+      $overlay.append($bar);
+      if (iconName) {
         $bar.append($('<i class="aux-icon ' + iconName + '" />'));
       }
       if (url) {
         if (!urlText || !urlText.length) {
           urlText = url;
         }
-        $bar.append($(`<a class="aux-link" title="${urlText}" href="${url}">${urlText}</a>`));
+        $bar.append($(`<div class="aux-link"><a target="_blank" title="${urlText}" href="${url}">${urlText}</a></div>`));
       }
     }
 
@@ -77,14 +90,151 @@ export default function Aux(eventBus, overlays, bpmnjs) {
       toggleCollapse(element);
     });
 
+    function readProperties(bo) {
+      let left = getNumber(bo, AUX_PROPS.LEFT);
+      let top = getNumber(bo, AUX_PROPS.TOP);
+      let width = getNumber(bo, AUX_PROPS.WIDTH);
+      let height = getNumber(bo, AUX_PROPS.HEIGHT);
+      return { left, top, width, height };
+    }
+
+    function saveProperties(bo, change) {
+      if (!isNil(change.left)) {
+        bo[AUX_PROPS.LEFT] = change.left;
+      }
+      if (!isNil(change.top)) {
+        bo[AUX_PROPS.TOP] = change.top;
+      }
+      if (!isNil(change.width)) {
+        bo[AUX_PROPS.WIDTH] = change.width;
+      }
+      if (!isNil(change.height)) {
+        bo[AUX_PROPS.HEIGHT] = change.height;
+      }
+    }
+
+    var sx, sy;
+    var cx, cy;
+
+    function updateLocation(overlayId) {
+      var overlay = overlays.get(overlayId);
+      sx = overlay.position.left;
+      sy = overlay.position.top;
+      cx = event.pageX;
+      cy = event.pageY;
+    }
+
+    function getDelta(event) {
+      var scale = overlays._canvas.viewbox().scale;
+      var dx = Math.round((event.pageX - cx) / scale);
+      var dy = Math.round((event.pageY - cy) / scale);
+      return { dx, dy };
+    }
+
+    function updateDragMove(event) {
+      var { dx, dy } = getDelta(event);
+      var left = sx + dx;
+      var top = sy + dy;
+      Object.assign(event.target.style, {
+        left: left + 'px', top: top + 'px'
+      })
+      return { left, top };
+    }
+
+    function updateResizeMove(event) {
+      var scale = overlays._canvas.viewbox().scale;
+      var { dx, dy } = getDelta(event);
+      var left = sx;
+      var top = sy;
+      if (event.edges.left) {
+        left += dx;
+      }
+      if (event.edges.top) {
+        top += dy;
+      }
+      var width = event.rect.width / scale;
+      var height = event.rect.height / scale;
+      Object.assign(event.target.style, {
+        width: `${width}px`,
+        height: `${height}px`,
+        left: left + 'px', top: top + 'px'
+      })
+      return {
+        left, top, width, height
+      }
+    }
+
+    function getBOFromEvent(event) {
+      var elId = $(event.target).data("ap-el-id");
+      var el = elementRegistry.get(elId);
+      return getBusinessObject(element);
+    }
+
+    dheight = -10 - dtop; // update default height
+    let { left, top, width, height } = readProperties(bo);
+    if (isNil(left)) {
+      left = dleft;
+    }
+    if (isNil(top)) {
+      top = dtop;
+    }
+    if (isNil(width)) {
+      width = dwidth;
+    }
+    if (isNil(height)) {
+      height = dheight;
+    }
+
     // attach overlay
     overlays.add(element, TYPE, {
-      position: {
-        top: top,
-        left: 0
-      },
+      position: { left, top },
       html: $overlay
     });
+    var auxCls = "ap-aux-" + element.id;
+    $overlay.parent().data("ap-el-id", element.id);
+    $overlay.parent().addClass(auxCls);
+    $overlay.parent().css('width', width + 'px');
+    $overlay.parent().css('height', height + 'px');
+
+    interact('.' + auxCls)
+      .draggable({
+        listeners: {
+          start (event) {
+            updateLocation(event.target.dataset.overlayId);
+          },
+          move (event) {
+            updateDragMove(event);
+          },
+          end (event) {
+            var overlay = overlays.get(event.target.dataset.overlayId);
+            var { left, top } = updateDragMove(event);
+            overlay.position.left = left;
+            overlay.position.top = top;
+            saveProperties(getBOFromEvent(event), { left, top });
+            eventBus.fire('aux.moved', { left, top });
+          }
+        }
+      })
+      .resizable({
+        margin: 5,
+        edges: { top: true, left: true, bottom: true, right: true },
+        listeners: {
+          start (event) {
+            updateLocation(event.target.dataset.overlayId);
+          },
+          move: function (event) {
+            updateResizeMove(event);
+          },
+          end (event) {
+            var overlay = overlays.get(event.target.dataset.overlayId);
+            var { left, top, width, height } = updateResizeMove(event);
+            overlay.position.left = left;
+            overlay.position.top = top;
+            saveProperties(getBOFromEvent(event), { left, top, width, height });
+            eventBus.fire('aux.moved', { left, top, width, height });
+          }
+        }
+      });
   }
 
   eventBus.on('shape.added', function(event) {
@@ -122,12 +272,14 @@ export default function Aux(eventBus, overlays, bpmnjs) {
   };
 }
 
-Aux.$inject = [ 'eventBus', 'overlays', 'bpmnjs' ];
+Aux.$inject = [
+  'eventBus',
+  'bpmnFactory',
+  'elementRegistry',
+  'overlays',
+  'bpmnjs'
+];
 
 Aux.OVERLAY_HTML =
-  '<div class="aux-overlay">' +
-    '<div class="toggle">' +
-      '<span class="icon-aux"></span>' +
-    '</div>' +
-    '<div class="content"></div>' +
+  '<div class="aux-wrapper">' +
   '</div>';

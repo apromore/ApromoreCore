@@ -286,26 +286,57 @@
 
 /* Aux overlays */
 
-.aux-overlay .aux-image img {
-  height: 90px;
+.djs-overlay-aux {
+  border: 1px solid transparent;
 }
 
-.aux-overlay .aux-bar {
-  min-width: 120px;
+.djs-overlay-aux:hover {
+  border: 1px solid #c0c0c0;
 }
 
-.aux-overlay .aux-bar .aux-link {
-  width: calc(100% - 28px);
+.aux-wrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.aux-wrapper .aux-image {
+  padding: 4px;
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+}
+
+.aux-wrapper .aux-bar {
+  width: 100%;
+  height: 26px;
+  flex: 0 0 auto;
+  padding: 4px;
+  display: flex;
+  flex-direction: row;
+}
+
+.aux-wrapper .aux-image img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.aux-wrapper .aux-bar .aux-link {
+  flex: 1 1 auto;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  vertical-align: middle;
+  vertical-align: bottom;
 }
 
-.aux-overlay .aux-bar .aux-icon {
+.aux-wrapper .aux-bar .aux-icon {
+  flex: 0 0 auto;
   font-size: 20px;
+  width: 22px;
   display: inline-block;
   margin-right: 8px;
   color: #606060;
-  vertical-align: middle;
+  vertical-align: bottom;
 }

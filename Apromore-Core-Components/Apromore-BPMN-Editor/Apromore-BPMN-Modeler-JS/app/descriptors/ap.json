@@ -22,6 +22,26 @@
           "name": "aux-link-text",
           "isAttr": true,
           "type": "String"
+        },
+        {
+          "name": "aux-left",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "aux-top",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "aux-width",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "aux-height",
+          "isAttr": true,
+          "type": "String"
         }
       ]
     },
