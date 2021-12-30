@@ -1,7 +1,7 @@
 /*-
  * #%L
  * This file is part of "Apromore Core".
- * 
+ *
  * Copyright (C) 2011 - 2017 Queensland University of Technology.
  * Copyright (C) 2012 Felix Mannhardt.
  * %%
@@ -11,12 +11,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -129,7 +129,7 @@ public class MainController extends BaseController implements MainControllerInte
     private static final String WELCOME_TEXT = "Welcome %s. Release notes (%s)"; // Welcome %s.
 
     private static final String KEY_ALIAS = "apseckey";
-    private static final int  KEY_COPY= 67;
+    private static final int KEY_COPY = 67;
     private static final int KEY_PASTE = 86;
     private static final int KEY_CUT = 88;
 
@@ -158,318 +158,320 @@ public class MainController extends BaseController implements MainControllerInte
 
 
     public static MainController getController() {
-	return controller;
+        return controller;
     }
 
     public MainController() {
-	portalSession = new PortalSession(this);
+        portalSession = new PortalSession(this);
 
-	qe = EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, true);
-	portalSession = new PortalSession(this);
+        qe = EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, true);
+        portalSession = new PortalSession(this);
 
-	portalPluginMap = PortalPluginResolver.getPortalPluginMap();
-	setupLocale();
+        portalPluginMap = PortalPluginResolver.getPortalPluginMap();
+        setupLocale();
     }
 
     private void setupLocale() {
-	I18nConfig config = (I18nConfig) SpringUtil.getBean("i18nConfig");
-	i18nSession = new I18nSession(config);
-	UserSessionManager.setCurrentI18nSession(i18nSession);
-	i18nSession.applyLocaleFromClient();
+        I18nConfig config = (I18nConfig) SpringUtil.getBean("i18nConfig");
+        i18nSession = new I18nSession(config);
+        UserSessionManager.setCurrentI18nSession(i18nSession);
+        i18nSession.applyLocaleFromClient();
     }
 
     public I18nSession getI18nSession() {
-	return i18nSession;
+        return i18nSession;
     }
 
     private void setupUserDynamically(final UserType userType) {
-	LOGGER.debug("DYNAMICALLY Setting*** userType {} as currentUser", userType);
-	UserSessionManager.setCurrentUser(userType);
-	LOGGER.debug("DONE DYNAMICALLY setting*** userType {} as currentUser", userType);
+        LOGGER.debug("DYNAMICALLY Setting*** userType {} as currentUser", userType);
+        UserSessionManager.setCurrentUser(userType);
+        LOGGER.debug("DONE DYNAMICALLY setting*** userType {} as currentUser", userType);
     }
 
-    /** Unit test constructor. */
+    /**
+     * Unit test constructor.
+     */
     public MainController(ConfigBean configBean) {
-	super(configBean);
+        super(configBean);
 
-	portalSession = new PortalSession(this);
+        portalSession = new PortalSession(this);
     }
 
     public PortalSession getPortalSession() {
-	return portalSession;
+        return portalSession;
     }
 
     public Map<String, PortalPlugin> getPortalPluginMap() {
-	return portalPluginMap;
+        return portalPluginMap;
     }
 
     /**
      * onCreate is executed after the main window has been created it is responsible
      * for instantiating all necessary controllers (one for each window defined in
      * the interface) see description in index.zul
-     * 
+     *
      * @throws InterruptedException
      */
     public void onCreate(Component comp) throws InterruptedException {
-	try {
-	    init(comp);
-	    loadProperties();
-	    this.mainComponent = comp;
-	    Window mainW = (Window) comp.getFellow("mainW");
-	    Hbox pagingandbuttons = (Hbox) mainW.getFellow("pagingandbuttons");
+        try {
+            init(comp);
+            loadProperties();
+            this.mainComponent = comp;
+            Window mainW = (Window) comp.getFellow("mainW");
+            Hbox pagingandbuttons = (Hbox) mainW.getFellow("pagingandbuttons");
 
-	    Window shortmessageW = (Window) this.getFellow("shortmessagescomp").getFellow("shortmessage");
-	    this.breadCrumbs = (Html) mainW.getFellow("breadCrumbs");
-	    this.tabCrumbs = (Tab) mainW.getFellow("tabCrumbs");
-	    this.tabBox = (Tabbox) mainW.getFellow("tabbox");
-	    this.pg = (Paginal) mainW.getFellow("pg");
+            Window shortmessageW = (Window) this.getFellow("shortmessagescomp").getFellow("shortmessage");
+            this.breadCrumbs = (Html) mainW.getFellow("breadCrumbs");
+            this.tabCrumbs = (Tab) mainW.getFellow("tabCrumbs");
+            this.tabBox = (Tabbox) mainW.getFellow("tabbox");
+            this.pg = (Paginal) mainW.getFellow("pg");
 
-	    this.shortmessageC = new ShortMessageController(shortmessageW);
-	    this.simplesearch = new SimpleSearchController(this, comp);
-	    this.portalContext = new PluginPortalContext(this);
-		this.copyAndPasteController =
-		        new CopyAndPasteController(this, UserSessionManager.getCurrentUser());
+            this.shortmessageC = new ShortMessageController(shortmessageW);
+            this.simplesearch = new SimpleSearchController(this, comp);
+            this.portalContext = new PluginPortalContext(this);
+            this.copyAndPasteController =
+                    new CopyAndPasteController(this, UserSessionManager.getCurrentUser());
 
-	    this.navigation = new NavigationController(this, comp);
+            this.navigation = new NavigationController(this, comp);
 
-	    Combobox langChooser = (Combobox) mainW.getFellow("langChooser");
-	    if (i18nSession.getConfig().isEnabled()) {
-		langChooserController = new LangChooserController(langChooser, this);
-		langChooserController.populate();
-		langChooser.setVisible(true);
-	    } else {
-		langChooser.setVisible(false);
-	    }
+            Combobox langChooser = (Combobox) mainW.getFellow("langChooser");
+            if (i18nSession.getConfig().isEnabled()) {
+                langChooserController = new LangChooserController(langChooser, this);
+                langChooserController.populate();
+                langChooser.setVisible(true);
+            } else {
+                langChooser.setVisible(false);
+            }
 
-	    controller = this;
-	    MainController self = this;
+            controller = this;
+            MainController self = this;
 
-	    Sessions.getCurrent().setAttribute("portalContext", portalContext);
+            Sessions.getCurrent().setAttribute("portalContext", portalContext);
 
-	    this.breadCrumbs.addEventListener("onSelectFolder", new EventListener<Event>() {
-		@Override
-		public void onEvent(Event event) throws Exception {
-		    int selectedFolderId = Integer.parseInt(event.getData().toString());
-		    self.selectBreadcrumFolder(selectedFolderId);
-		    self.tabBox.setSelectedIndex(0);
-		}
-	    });
+            this.breadCrumbs.addEventListener("onSelectFolder", new EventListener<Event>() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    int selectedFolderId = Integer.parseInt(event.getData().toString());
+                    self.selectBreadcrumFolder(selectedFolderId);
+                    self.tabBox.setSelectedIndex(0);
+                }
+            });
 
-	    this.breadCrumbs.addEventListener("onReloadBreadcrumbs", new EventListener<Event>() {
-		@Override
-		public void onEvent(Event event) throws Exception {
-		    self.reloadBreadcrumbs();
-		}
-	    });
+            this.breadCrumbs.addEventListener("onReloadBreadcrumbs", new EventListener<Event>() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    self.reloadBreadcrumbs();
+                }
+            });
 
-	    if (qe == null) {
-		qe = EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, true);
-	    }
+            if (qe == null) {
+                qe = EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, true);
+            }
 
-	    qe.subscribe(new EventListener<Event>() {
-		@Override
-		public void onEvent(Event event) throws Exception {
-		    switch (event.getName()) {
-		    case Constants.EVENT_MESSAGE_SAVE:
-			clearProcessVersions();
-			reloadSummaries();
-			break;
+            qe.subscribe(new EventListener<Event>() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    switch (event.getName()) {
+                        case Constants.EVENT_MESSAGE_SAVE:
+                            clearProcessVersions();
+                            reloadSummaries();
+                            break;
 
-		    case Constants.EVENT_QUEUE_REFRESH_SCREEN:
-			reloadSummaries();
-			break;
-		    }
-		}
-	    });
+                        case Constants.EVENT_QUEUE_REFRESH_SCREEN:
+                            reloadSummaries();
+                            break;
+                    }
+                }
+            });
 
-	    // Move this to constructor so that inner component can access
-	    // UserSessionManager data
-	    // UserSessionManager.initializeUser(getService(), config);
-	    switchToProcessSummaryView();
-	    UserSessionManager.setMainController(this);
-	    pagingandbuttons.setVisible(true);
-	    
-		mainW.addEventListener("onCtrlPress", new EventListener<Event>() {
-			@Override
-			public void onEvent(final Event event) throws InterruptedException {
-				try {
-					Integer keycode=(Integer)event.getData();
-					switch (keycode) {
-					case KEY_COPY:
-						baseListboxController.copy();
-						break;
-					case KEY_PASTE:
-						baseListboxController.paste();
-						break;
-					case KEY_CUT:
-						baseListboxController.cut();
-						break;
-					}
-				}catch(Exception e) {
-					LOGGER.error("Wrong Command Key", e);
-				}
-			}
-		});
+            // Move this to constructor so that inner component can access
+            // UserSessionManager data
+            // UserSessionManager.initializeUser(getService(), config);
+            switchToProcessSummaryView();
+            UserSessionManager.setMainController(this);
+            pagingandbuttons.setVisible(true);
 
-	} catch (final Exception e) {
-	    LOGGER.error("Repository NOT available", e);
+            mainW.addEventListener("onCtrlPress", new EventListener<Event>() {
+                @Override
+                public void onEvent(final Event event) throws InterruptedException {
+                    try {
+                        Integer keycode = (Integer) event.getData();
+                        switch (keycode) {
+                            case KEY_COPY:
+                                baseListboxController.copy();
+                                break;
+                            case KEY_PASTE:
+                                baseListboxController.paste();
+                                break;
+                            case KEY_CUT:
+                                baseListboxController.cut();
+                                break;
+                        }
+                    } catch (Exception e) {
+                        LOGGER.error("Wrong Command Key", e);
+                    }
+                }
+            });
 
-	    e.printStackTrace();
+        } catch (final Exception e) {
+            LOGGER.error("Repository NOT available", e);
 
-	    String message;
-	    if (e.getMessage() == null) {
-		message = "Please contact your Apromore Administrator";
-	    } else {
-		message = e.getMessage();
-	    }
-	    e.printStackTrace();
-	    Messagebox.show(Labels.getLabel("portal_repoUnvailable_message"), "Attention", Messagebox.OK,
-	            Messagebox.ERROR);
-	}
+            e.printStackTrace();
+
+            String message;
+            if (e.getMessage() == null) {
+                message = "Please contact your Apromore Administrator";
+            } else {
+                message = e.getMessage();
+            }
+            e.printStackTrace();
+            Messagebox.show(Labels.getLabel("portal_repoUnvailable_message"), "Attention", Messagebox.OK,
+                    Messagebox.ERROR);
+        }
 
     }
 
     public boolean isCurrentUserAdmin() {
-	try {
-	    Role adminRole = getSecurityService().findRoleByName("ROLE_ADMIN");
-	    User currentUser = getSecurityService().getUserById(portalContext.getCurrentUser().getId());
-	    Set<Role> userRoles = getSecurityService().findRolesByUser(currentUser);
-	    if (!userRoles.contains(adminRole)) {
-		return false;
-	    }
-	    return true;
-	} catch (Exception e) {
-	    return false;
-	}
+        try {
+            Role adminRole = getSecurityService().findRoleByName("ROLE_ADMIN");
+            User currentUser = getSecurityService().getUserById(portalContext.getCurrentUser().getId());
+            Set<Role> userRoles = getSecurityService().findRolesByUser(currentUser);
+            if (!userRoles.contains(adminRole)) {
+                return false;
+            }
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     // Bruce: Do not use Executions.sendRedirect as it does not work
     // for webapp bundles with different ZK execution env.
     public void refresh() {
-	try {
-	    // Executions.sendRedirect(null);
-	    qe.publish(new Event(Constants.EVENT_QUEUE_REFRESH_SCREEN, null, Boolean.TRUE));
-	} catch (NullPointerException e) {
-	    // The ZK documentation for sendRedirect claims that passing a null parameter is
-	    // allowed
-	    // https://www.zkoss.org/javadoc/latest/zk/org/zkoss/zk/ui/Executions.html#sendRedirect(java.lang.String)
-	    LOGGER.warn("ZK default redirection failed", e);
-	}
+        try {
+            // Executions.sendRedirect(null);
+            qe.publish(new Event(Constants.EVENT_QUEUE_REFRESH_SCREEN, null, Boolean.TRUE));
+        } catch (NullPointerException e) {
+            // The ZK documentation for sendRedirect claims that passing a null parameter is
+            // allowed
+            // https://www.zkoss.org/javadoc/latest/zk/org/zkoss/zk/ui/Executions.html#sendRedirect(java.lang.String)
+            LOGGER.warn("ZK default redirection failed", e);
+        }
     }
 
     public PortalContext getPortalContext() {
-	return this.portalContext;
+        return this.portalContext;
     }
 
     public void loadWorkspace() {
-	loadWorkspace(true);
+        loadWorkspace(true);
     }
 
     private void loadWorkspace(boolean loadTree) {
-	String userId = UserSessionManager.getCurrentUser().getId();
-	updateTabs(userId);
-	// updateActions();
+        String userId = UserSessionManager.getCurrentUser().getId();
+        updateTabs(userId);
+        // updateActions();
 
-	if (loadTree) {
-	    this.loadTree();
-	}
+        if (loadTree) {
+            this.loadTree();
+        }
 
-	reloadBreadcrumbs();
+        reloadBreadcrumbs();
     }
 
     public void reloadBreadcrumbs() {
-	String userId = UserSessionManager.getCurrentUser().getId();
-	FolderType currentFolder = this.portalSession.getCurrentFolder();
-	int currentParentFolderId = currentFolder == null || currentFolder.getId() == 0 ? 0 : currentFolder.getId();
-	List<FolderType> folders = this.getManagerService().getSubFolders(userId, currentParentFolderId);
-	if (currentFolder != null) {
-	    FolderType folder = currentFolder;
-	    folder.getFolders().clear();
-	    for (FolderType newFolder : folders) {
-		folder.getFolders().add(newFolder);
-	    }
-	    this.portalSession.setCurrentFolder(currentFolder);
-	}
+        String userId = UserSessionManager.getCurrentUser().getId();
+        FolderType currentFolder = this.portalSession.getCurrentFolder();
+        int currentParentFolderId = currentFolder == null || currentFolder.getId() == 0 ? 0 : currentFolder.getId();
+        List<FolderType> folders = this.getManagerService().getSubFolders(userId, currentParentFolderId);
+        if (currentFolder != null) {
+            FolderType folder = currentFolder;
+            folder.getFolders().clear();
+            for (FolderType newFolder : folders) {
+                folder.getFolders().add(newFolder);
+            }
+            this.portalSession.setCurrentFolder(currentFolder);
+        }
     }
 
     private void loadTree() {
-	List<FolderType> folders = this.getManagerService()
-	        .getWorkspaceFolderTree(UserSessionManager.getCurrentUser().getId());
-	this.portalSession.setTree(folders);
-	this.navigation.loadWorkspace();
+        List<FolderType> folders = this.getManagerService()
+                .getWorkspaceFolderTree(UserSessionManager.getCurrentUser().getId());
+        this.portalSession.setTree(folders);
+        this.navigation.loadWorkspace();
     }
 
     public void currentFolderChanged() {
-	navigation.currentFolderChanged();
+        navigation.currentFolderChanged();
     }
 
     /**
      * Display version processes in processSummaries: if isQueryResult, the query is
      * given by version of process
-     * 
+     *
      * @param processSummaries the list of process summaries to display
      * @param isQueryResult    is this from a query (simsearch, clustering, etc.)
      */
     public void displayProcessSummaries(final SummariesType processSummaries, final Boolean isQueryResult) {
-	int folderId;
+        int folderId;
 
-	if (isQueryResult) {
-	    clearProcessVersions();
-	}
-	FolderType currentFolder = this.portalSession.getCurrentFolder();
-	if (currentFolder == null) {
-	    folderId = 0;
-	} else {
-	    folderId = currentFolder.getId();
-	}
+        if (isQueryResult) {
+            clearProcessVersions();
+        }
+        FolderType currentFolder = this.portalSession.getCurrentFolder();
+        if (currentFolder == null) {
+            folderId = 0;
+        } else {
+            folderId = currentFolder.getId();
+        }
 
-	// TODO switch to process query result view
-	switchToProcessSummaryView();
-	List<FolderType> subFolders = getManagerService().getSubFolders(UserSessionManager.getCurrentUser().getId(),
-	        folderId);
-	this.baseListboxController.displaySummaries(subFolders, processSummaries, isQueryResult);
+        // TODO switch to process query result view
+        switchToProcessSummaryView();
+        List<FolderType> subFolders = getManagerService().getSubFolders(UserSessionManager.getCurrentUser().getId(),
+                folderId);
+        this.baseListboxController.displaySummaries(subFolders, processSummaries, isQueryResult);
     }
 
     public void displaySearchResult(final SummariesType summaries) {
-	clearProcessVersions();
-	switchToProcessSummaryView();
-	this.baseListboxController.displaySummaries(new ArrayList<FolderType>(), summaries, true);
+        clearProcessVersions();
+        switchToProcessSummaryView();
+        this.baseListboxController.displaySummaries(new ArrayList<FolderType>(), summaries, true);
     }
 
     public void reloadSummaries() {
-	this.simplesearch.clearSearches();
-	switchToProcessSummaryView();
-	pg.setActivePage(0);
+        this.simplesearch.clearSearches();
+        switchToProcessSummaryView();
+        pg.setActivePage(0);
 
-	FolderType currentFolder = this.portalSession.getCurrentFolder();
-	List<FolderType> subFolders = getManagerService().getSubFolders(UserSessionManager.getCurrentUser().getId(),
-	        currentFolder == null ? 0 : currentFolder.getId());
-	ProcessListboxController.SummaryListModel model = this.baseListboxController.displaySummaries(subFolders,
-	        false);
+        FolderType currentFolder = this.portalSession.getCurrentFolder();
+        List<FolderType> subFolders = getManagerService().getSubFolders(UserSessionManager.getCurrentUser().getId(),
+                currentFolder == null ? 0 : currentFolder.getId());
+        ProcessListboxController.SummaryListModel model = this.baseListboxController.displaySummaries(subFolders,
+                false);
 
-	this.displayMessage(model.getSize() + " out of " + model.getTotalCount()
-	        + (model.getTotalCount() > 1 ? " elements." : " element."));
+        this.displayMessage(model.getSize() + " out of " + model.getTotalCount()
+                + (model.getTotalCount() > 1 ? " elements." : " element."));
 
-	loadWorkspace(true);
+        loadWorkspace(true);
     }
 
     public void reloadSummaries2() {
-	this.simplesearch.clearSearches();
-	switchToProcessSummaryView();
-	pg.setActivePage(0);
+        this.simplesearch.clearSearches();
+        switchToProcessSummaryView();
+        pg.setActivePage(0);
 
-	FolderType currentFolder = this.portalSession.getCurrentFolder();
-	List<FolderType> subFolders = getManagerService().getSubFolders(UserSessionManager.getCurrentUser().getId(),
-	        currentFolder == null ? 0 : currentFolder.getId());
-	ProcessListboxController.SummaryListModel model = this.baseListboxController.displaySummaries(subFolders,
-	        false);
+        FolderType currentFolder = this.portalSession.getCurrentFolder();
+        List<FolderType> subFolders = getManagerService().getSubFolders(UserSessionManager.getCurrentUser().getId(),
+                currentFolder == null ? 0 : currentFolder.getId());
+        ProcessListboxController.SummaryListModel model = this.baseListboxController.displaySummaries(subFolders,
+                false);
 
-	this.displayMessage(model.getSize() + " out of " + model.getTotalCount()
-	        + (model.getTotalCount() > 1 ? " elements." : " element."));
+        this.displayMessage(model.getSize() + " out of " + model.getTotalCount()
+                + (model.getTotalCount() > 1 ? " elements." : " element."));
 
-	loadWorkspace(false);
-	
-	this.baseListboxController.getListBox().setFocus(true); //To handle event on empty list
+        loadWorkspace(false);
+
+        this.baseListboxController.getListBox().setFocus(true); //To handle event on empty list
     }
 
     /**
@@ -477,97 +479,97 @@ public class MainController extends BaseController implements MainControllerInte
      * process to the table
      */
     public void displayNewProcess(final ProcessSummaryType returnedProcess) {
-	switchToProcessSummaryView();
-	((ProcessListboxController) this.baseListboxController).displayNewProcess(returnedProcess);
-	this.displayMessage(this.baseListboxController.getListModel().getSize() + " processes.");
+        switchToProcessSummaryView();
+        ((ProcessListboxController) this.baseListboxController).displayNewProcess(returnedProcess);
+        this.displayMessage(this.baseListboxController.getListModel().getSize() + " processes.");
     }
 
     /**
      * Send request to Manager: deleted process versions given as parameter
-     * 
+     *
      * @param elements a selection of process versions to delete.
      * @throws InterruptedException
      */
     public void deleteElements(final Map<SummaryType, List<VersionSummaryType>> elements) throws InterruptedException {
-	try {
-	    getManagerService().deleteElements(elements, UserSessionManager.getCurrentUser().getUsername());
-	    switchToProcessSummaryView();
-	    this.baseListboxController.refreshContent();
-	    String message;
-	    int nb = 0;
+        try {
+            getManagerService().deleteElements(elements, UserSessionManager.getCurrentUser().getUsername());
+            switchToProcessSummaryView();
+            this.baseListboxController.refreshContent();
+            String message;
+            int nb = 0;
 
-	    // to count how many process version(s) deleted
-	    Collection<List<VersionSummaryType>> sumTypes = elements.values();
-	    for (List<VersionSummaryType> sumType : sumTypes) {
-		if (sumType != null)
-		    nb += sumType.size();
-	    }
-	    if (nb > 1) {
-		message = nb + " process versions deleted.";
-	    } else {
-		message = "One process version deleted.";
-	    }
-	    displayMessage(message);
-	} catch (Exception e) {
-	    LOGGER.warn("Unable to delete elements", e);
-	    Messagebox.show(Labels.getLabel("portal_failedDeleteNonOwner_message"), APROMORE, Messagebox.OK,
-	            Messagebox.ERROR);
-	}
+            // to count how many process version(s) deleted
+            Collection<List<VersionSummaryType>> sumTypes = elements.values();
+            for (List<VersionSummaryType> sumType : sumTypes) {
+                if (sumType != null)
+                    nb += sumType.size();
+            }
+            if (nb > 1) {
+                message = nb + " process versions deleted.";
+            } else {
+                message = "One process version deleted.";
+            }
+            displayMessage(message);
+        } catch (Exception e) {
+            LOGGER.warn("Unable to delete elements", e);
+            Messagebox.show(Labels.getLabel("portal_failedDeleteNonOwner_message"), APROMORE, Messagebox.OK,
+                    Messagebox.ERROR);
+        }
     }
 
     private EditSessionType createEditSession(final ProcessSummaryType process, final VersionSummaryType version,
-            final String nativeType) {
-	EditSessionType editSession = new EditSessionType();
-	editSession.setDomain(process.getDomain());
-	editSession.setNativeType(nativeType.equals("XPDL 2.2") ? "BPMN 2.0" : nativeType);
-	editSession.setProcessId(process.getId());
-	editSession.setProcessName(process.getName());
-	editSession.setUsername(UserSessionManager.getCurrentUser().getUsername());
-	editSession.setPublicModel(process.isMakePublic());
-	editSession.setOriginalBranchName(version.getName()); // Note: version name is the branch name
-	editSession.setOriginalVersionNumber(version.getVersionNumber());
-	editSession.setCurrentVersionNumber(version.getVersionNumber());
-	editSession.setMaxVersionNumber(findMaxVersion(process));
-	editSession.setFolderId(portalContext.getCurrentFolder().getId());
-	editSession.setCreationDate(version.getCreationDate());
-	editSession.setLastUpdate(version.getLastUpdate());
-	editSession.setWithAnnotation(false);
-	editSession.setAnnotation(null);
+                                              final String nativeType) {
+        EditSessionType editSession = new EditSessionType();
+        editSession.setDomain(process.getDomain());
+        editSession.setNativeType(nativeType.equals("XPDL 2.2") ? "BPMN 2.0" : nativeType);
+        editSession.setProcessId(process.getId());
+        editSession.setProcessName(process.getName());
+        editSession.setUsername(UserSessionManager.getCurrentUser().getUsername());
+        editSession.setPublicModel(process.isMakePublic());
+        editSession.setOriginalBranchName(version.getName()); // Note: version name is the branch name
+        editSession.setOriginalVersionNumber(version.getVersionNumber());
+        editSession.setCurrentVersionNumber(version.getVersionNumber());
+        editSession.setMaxVersionNumber(findMaxVersion(process));
+        editSession.setFolderId(portalContext.getCurrentFolder().getId());
+        editSession.setCreationDate(version.getCreationDate());
+        editSession.setLastUpdate(version.getLastUpdate());
+        editSession.setWithAnnotation(false);
+        editSession.setAnnotation(null);
 
-	return editSession;
+        return editSession;
     }
 
     // TO DO: Consolidate these private functions into common
     private VersionSummaryType getLatestVersion(List<VersionSummaryType> versionSummaries) {
-	VersionSummaryType result = null;
-	for (VersionSummaryType version : versionSummaries) {
-	    if (result == null || (version.getVersionNumber().compareTo(result.getVersionNumber()) > 0)) {
-		result = version;
-	    }
-	}
-	return result;
+        VersionSummaryType result = null;
+        for (VersionSummaryType version : versionSummaries) {
+            if (result == null || (version.getVersionNumber().compareTo(result.getVersionNumber()) > 0)) {
+                result = version;
+            }
+        }
+        return result;
     }
 
     private String getNativeType(String origNativeType) {
-	String nativeType = origNativeType;
-	if (origNativeType == null || origNativeType.isEmpty()) {
-	    nativeType = "BPMN 2.0";
-	}
-	return nativeType;
+        String nativeType = origNativeType;
+        if (origNativeType == null || origNativeType.isEmpty()) {
+            nativeType = "BPMN 2.0";
+        }
+        return nativeType;
     }
 
     public void openProcess(ProcessSummaryType process, VersionSummaryType version) throws Exception {
-	String nativeType = getNativeType(process.getOriginalNativeType());
-	LOGGER.info("Open process model {} version {}", process.getName(), version.getVersionNumber());
-	editProcess2(process, version, nativeType, new HashSet<RequestParameterType<?>>(), false);
+        String nativeType = getNativeType(process.getOriginalNativeType());
+        LOGGER.info("Open process model {} version {}", process.getName(), version.getVersionNumber());
+        editProcess2(process, version, nativeType, new HashSet<RequestParameterType<?>>(), false);
     }
 
     public void openNewProcess() throws InterruptedException {
-	ProcessSummaryType process = getManagerService()
-	        .createNewEmptyProcess(UserSessionManager.getCurrentUser().getUsername());
-	VersionSummaryType version = process.getVersionSummaries().get(0);
-	LOGGER.info("Create process model {} version {}", process.getName(), version.getVersionNumber());
-	editProcess2(process, version, process.getOriginalNativeType(), new HashSet<RequestParameterType<?>>(), true);
+        ProcessSummaryType process = getManagerService()
+                .createNewEmptyProcess(UserSessionManager.getCurrentUser().getUsername());
+        VersionSummaryType version = process.getVersionSummaries().get(0);
+        LOGGER.info("Create process model {} version {}", process.getName(), version.getVersionNumber());
+        editProcess2(process, version, process.getOriginalNativeType(), new HashSet<RequestParameterType<?>>(), true);
     }
 
     /**
@@ -585,290 +587,290 @@ public class MainController extends BaseController implements MainControllerInte
      */
     @Override
     public void editProcess(final ProcessSummaryType process, final VersionSummaryType version, final String nativeType,
-            Set<RequestParameterType<?>> requestParameterTypes, boolean newProcess) throws InterruptedException {
-	String instruction = "";
+                            Set<RequestParameterType<?>> requestParameterTypes, boolean newProcess) throws InterruptedException {
+        String instruction = "";
 
-	EditSessionType editSession = createEditSession(process, version, nativeType);
+        EditSessionType editSession = createEditSession(process, version, nativeType);
 
-	try {
-	    String id = UUID.randomUUID().toString();
-	    ApromoreSession session = new ApromoreSession(editSession, null, this, process, version, null, null,
-	            requestParameterTypes);
-	    UserSessionManager.setEditSession(id, session);
+        try {
+            String id = UUID.randomUUID().toString();
+            ApromoreSession session = new ApromoreSession(editSession, null, this, process, version, null, null,
+                    requestParameterTypes);
+            UserSessionManager.setEditSession(id, session);
 
-	    String url = "macros/openModelAlternative.zul?id=" + id;
-	    if (newProcess)
-		url += "&newProcess=true";
-	    instruction += "window.open('" + url + "');";
+            String url = "macros/openModelAlternative.zul?id=" + id;
+            if (newProcess)
+                url += "&newProcess=true";
+            instruction += "window.open('" + url + "');";
 
-	    Clients.evalJavaScript(instruction);
-	} catch (Exception e) {
-	    LOGGER.error("Cannot edit", e.getMessage());
-	    Messagebox.show(MessageFormat.format(Labels.getLabel("portal_cannotEdit_message"), process.getName()),
-	            APROMORE, Messagebox.OK, Messagebox.ERROR);
-	}
+            Clients.evalJavaScript(instruction);
+        } catch (Exception e) {
+            LOGGER.error("Cannot edit", e.getMessage());
+            Messagebox.show(MessageFormat.format(Labels.getLabel("portal_cannotEdit_message"), process.getName()),
+                    APROMORE, Messagebox.OK, Messagebox.ERROR);
+        }
     }
 
     @Override
     public void editProcess2(final ProcessSummaryType process, final VersionSummaryType version,
-            final String nativeType, Set<RequestParameterType<?>> requestParameterTypes, boolean newProcess)
+                             final String nativeType, Set<RequestParameterType<?>> requestParameterTypes, boolean newProcess)
             throws InterruptedException {
-	String instruction = "";
+        String instruction = "";
 
-	EditSessionType editSession = createEditSession(process, version, nativeType);
+        EditSessionType editSession = createEditSession(process, version, nativeType);
 
-	try {
-	    String id = UUID.randomUUID().toString();
-	    requestParameterTypes.add(new RequestParameterType<>("versions", process.getVersionSummaries()));
-	    ApromoreSession session = new ApromoreSession(editSession, null, this, process, version, null, null,
-	            requestParameterTypes);
-	    UserSessionManager.setEditSession(id, session);
+        try {
+            String id = UUID.randomUUID().toString();
+            requestParameterTypes.add(new RequestParameterType<>("versions", process.getVersionSummaries()));
+            ApromoreSession session = new ApromoreSession(editSession, null, this, process, version, null, null,
+                    requestParameterTypes);
+            UserSessionManager.setEditSession(id, session);
 
-	    String url = "openModelInBPMNio.zul?id=" + id;
-	    if (newProcess)
-		url += "&newProcess=true";
-	    instruction += "window.open('" + url + "');";
+            String url = "openModelInBPMNio.zul?id=" + id;
+            if (newProcess)
+                url += "&newProcess=true";
+            instruction += "window.open('" + url + "');";
 
-	    Clients.evalJavaScript(instruction);
-	} catch (Exception e) {
-	    LOGGER.warn("Unable to edit process model " + process.getName() + " version " + version.getVersionNumber(),
-	            e);
-	    Messagebox.show(MessageFormat.format(Labels.getLabel("portal_cannotEdit_message"), process.getName()),
-	            APROMORE, Messagebox.OK, Messagebox.ERROR);
-	}
+            Clients.evalJavaScript(instruction);
+        } catch (Exception e) {
+            LOGGER.warn("Unable to edit process model " + process.getName() + " version " + version.getVersionNumber(),
+                    e);
+            Messagebox.show(MessageFormat.format(Labels.getLabel("portal_cannotEdit_message"), process.getName()),
+                    APROMORE, Messagebox.OK, Messagebox.ERROR);
+        }
     }
 
     public FolderType getBreadcrumFolders(int selectedFolderId) {
-	FolderType selectedFolder = null;
-	List<FolderType> breadcrumbFolders = this.getManagerService()
-	        .getBreadcrumbs(UserSessionManager.getCurrentUser().getId(), selectedFolderId);
+        FolderType selectedFolder = null;
+        List<FolderType> breadcrumbFolders = this.getManagerService()
+                .getBreadcrumbs(UserSessionManager.getCurrentUser().getId(), selectedFolderId);
 
-	for (FolderType folder : breadcrumbFolders) {
-	    if (folder.getId() == selectedFolderId) {
-		selectedFolder = folder;
-		break;
-	    }
-	}
-	return selectedFolder;
+        for (FolderType folder : breadcrumbFolders) {
+            if (folder.getId() == selectedFolderId) {
+                selectedFolder = folder;
+                break;
+            }
+        }
+        return selectedFolder;
     }
 
     public void selectBreadcrumFolder(int selectedFolderId) {
-	FolderType selectedFolder = this.getBreadcrumFolders(selectedFolderId);
+        FolderType selectedFolder = this.getBreadcrumFolders(selectedFolderId);
 
-	if (selectedFolder == null) {
-	    selectedFolder = new FolderType();
-	    selectedFolder.setId(0);
-	    selectedFolder.setFolderName("Home");
-	}
+        if (selectedFolder == null) {
+            selectedFolder = new FolderType();
+            selectedFolder.setId(0);
+            selectedFolder.setFolderName("Home");
+        }
 
-	List<FolderType> availableFolders = this.getManagerService()
-	        .getSubFolders(UserSessionManager.getCurrentUser().getId(), selectedFolderId);
+        List<FolderType> availableFolders = this.getManagerService()
+                .getSubFolders(UserSessionManager.getCurrentUser().getId(), selectedFolderId);
 
-	if (selectedFolder.getFolders().size() == 0) {
-	    for (FolderType folderType : availableFolders) {
-		selectedFolder.getFolders().add(folderType);
-	    }
-	}
-	this.portalSession.setPreviousFolder(this.portalSession.getCurrentFolder());
-	this.portalSession.setCurrentFolder(selectedFolder);
+        if (selectedFolder.getFolders().size() == 0) {
+            for (FolderType folderType : availableFolders) {
+                selectedFolder.getFolders().add(folderType);
+            }
+        }
+        this.portalSession.setPreviousFolder(this.portalSession.getCurrentFolder());
+        this.portalSession.setCurrentFolder(selectedFolder);
 
-	this.reloadSummaries2();
-	navigation.selectCurrentFolder();
-	this.clearProcessVersions();
-	
-	if(selectedFolder.getId()!=0)
-	this.displayFolderVersions(selectedFolder);
-    
+        this.reloadSummaries2();
+        navigation.selectCurrentFolder();
+        this.clearProcessVersions();
+
+        if (selectedFolder.getId() != 0)
+            this.displayFolderVersions(selectedFolder);
+
     }
 
     public void visualizeLog() {
-	if (logVisualizerPlugin == null) {
-	    for (final PortalPlugin plugin : PortalPluginResolver.resolve()) {
-		if (plugin.getName().equals("Process Discoverer")) {
-		    logVisualizerPlugin = plugin;
-		    break;
-		}
-	    }
-	}
-	if (logVisualizerPlugin != null) {
-	    logVisualizerPlugin.execute(new PluginPortalContext(this));
-	}
+        if (logVisualizerPlugin == null) {
+            for (final PortalPlugin plugin : PortalPluginResolver.resolve()) {
+                if (plugin.getName().equals("Process Discoverer")) {
+                    logVisualizerPlugin = plugin;
+                    break;
+                }
+            }
+        }
+        if (logVisualizerPlugin != null) {
+            logVisualizerPlugin.execute(new PluginPortalContext(this));
+        }
     }
 
     public void displayMessage(final String mes) {
-	this.shortmessageC.displayMessage(mes);
+        this.shortmessageC.displayMessage(mes);
     }
 
     public void eraseMessage() {
-	this.shortmessageC.eraseMessage();
+        this.shortmessageC.eraseMessage();
     }
 
     /**
      * get list of domains
      */
     public List<String> getDomains() throws ExceptionDomains {
-	DomainsType domainsType;
-	domainsType = getManagerService().readDomains();
-	return domainsType.getDomain();
+        DomainsType domainsType;
+        domainsType = getManagerService().readDomains();
+        return domainsType.getDomain();
     }
 
     /**
      * get list of users' names
-     * 
+     *
      * @return the list of user names
      * @throws org.apromore.portal.exception.ExceptionAllUsers
      */
     public List<String> getUsers() throws ExceptionAllUsers {
-	UsernamesType usernames = getManagerService().readAllUsers();
-	return usernames.getUsername();
+        UsernamesType usernames = getManagerService().readAllUsers();
+        return usernames.getUsername();
     }
 
     /**
      * get list of formats: <k, v> belongs to getNativeTypes() <=> the file
      * extension k is associated with the native type v (<xpdl,XPDL 1.2>)
-     * 
+     *
      * @throws org.apromore.portal.exception.ExceptionFormats
      */
     public HashMap<String, String> getNativeTypes() throws ExceptionFormats {
-	HashMap<String, String> formats = new HashMap<>();
-	NativeTypesType nativeTypesDB = getManagerService().readNativeTypes();
-	for (int i = 0; i < nativeTypesDB.getNativeType().size(); i++) {
-	    formats.put(nativeTypesDB.getNativeType().get(i).getExtension(),
-	            nativeTypesDB.getNativeType().get(i).getFormat());
-	}
-	return formats;
+        HashMap<String, String> formats = new HashMap<>();
+        NativeTypesType nativeTypesDB = getManagerService().readNativeTypes();
+        for (int i = 0; i < nativeTypesDB.getNativeType().size(); i++) {
+            formats.put(nativeTypesDB.getNativeType().get(i).getExtension(),
+                    nativeTypesDB.getNativeType().get(i).getFormat());
+        }
+        return formats;
     }
 
     public void displayProcessVersions(final ProcessSummaryType data) {
-		switchToProcessSummaryView();
-		((ProcessVersionDetailController) this.baseDetailController).displayProcessVersions(data);
+        switchToProcessSummaryView();
+        ((ProcessVersionDetailController) this.baseDetailController).displayProcessVersions(data);
     }
 
     public void displayLogVersions(final LogSummaryType data) {
-    	switchToProcessSummaryView();
-    	((ProcessVersionDetailController) this.baseDetailController).displayLogVersions(data);
+        switchToProcessSummaryView();
+        ((ProcessVersionDetailController) this.baseDetailController).displayLogVersions(data);
     }
-    
-	public void displayFolderVersions(final FolderType data) {
-		Folder folder = this.getWorkspaceService().getFolder(data.getId());
-		switchToProcessSummaryView();
-		((ProcessVersionDetailController) this.baseDetailController).displayFolderVersions(folder);
-	}
+
+    public void displayFolderVersions(final FolderType data) {
+        Folder folder = this.getWorkspaceService().getFolder(data.getId());
+        switchToProcessSummaryView();
+        ((ProcessVersionDetailController) this.baseDetailController).displayFolderVersions(folder);
+    }
 
     public void clearProcessVersions() {
-	switchToProcessSummaryView();
-	((ProcessVersionDetailController) this.baseDetailController).clearProcessVersions();
+        switchToProcessSummaryView();
+        ((ProcessVersionDetailController) this.baseDetailController).clearProcessVersions();
     }
 
     @SuppressWarnings("unchecked")
     public Set<SummaryType> getSelectedElements() {
-	if (this.baseListboxController instanceof ProcessListboxController) {
-	    ProcessListboxController processController = (ProcessListboxController) getBaseListboxController();
-	    return processController.getListModel().getSelection();
-	} else {
-	    return new HashSet<>();
-	}
+        if (this.baseListboxController instanceof ProcessListboxController) {
+            ProcessListboxController processController = (ProcessListboxController) getBaseListboxController();
+            return processController.getListModel().getSelection();
+        } else {
+            return new HashSet<>();
+        }
     }
 
     /**
      * @return a map with all currently selected process models and the
-     *         corresponding selected versions
+     * corresponding selected versions
      * @throws ParseException
      */
     public Map<SummaryType, List<VersionSummaryType>> getSelectedElementsAndVersions() {
-	Map<SummaryType, List<VersionSummaryType>> summaryTypes = new LinkedHashMap<>();
+        Map<SummaryType, List<VersionSummaryType>> summaryTypes = new LinkedHashMap<>();
 
-	if (getBaseListboxController() instanceof ProcessListboxController) {
-	    ArrayList<VersionSummaryType> versionList;
+        if (getBaseListboxController() instanceof ProcessListboxController) {
+            ArrayList<VersionSummaryType> versionList;
 
-	    Set<VersionDetailType> selectedVersions = ((ProcessVersionDetailController) getDetailListbox())
-	            .getListModel().getSelection();
-	    Set<Object> selectedProcesses = getBaseListboxController().getListModel().getSelection();
-	    for (Object obj : selectedProcesses) {
-		if (obj instanceof ProcessSummaryType) {
-		    ProcessSummaryType processSummaryType = (ProcessSummaryType) obj;
-		    versionList = new ArrayList<>();
-		    if (selectedVersions != null && !selectedVersions.isEmpty()) {
-			for (VersionDetailType detail : selectedVersions) {
-			    versionList.add(detail.getVersion());
-			}
-		    } else {
-			String versionNumber = processSummaryType.getLastVersion();
-			for (VersionSummaryType summaryType : processSummaryType.getVersionSummaries()) {
-			    if (summaryType.getVersionNumber().compareTo(versionNumber) == 0) {
-				versionList.add(summaryType);
-			    }
-			}
-		    }
-		    summaryTypes.put(processSummaryType, versionList);
+            Set<VersionDetailType> selectedVersions = ((ProcessVersionDetailController) getDetailListbox())
+                    .getListModel().getSelection();
+            Set<Object> selectedProcesses = getBaseListboxController().getListModel().getSelection();
+            for (Object obj : selectedProcesses) {
+                if (obj instanceof ProcessSummaryType) {
+                    ProcessSummaryType processSummaryType = (ProcessSummaryType) obj;
+                    versionList = new ArrayList<>();
+                    if (selectedVersions != null && !selectedVersions.isEmpty()) {
+                        for (VersionDetailType detail : selectedVersions) {
+                            versionList.add(detail.getVersion());
+                        }
+                    } else {
+                        String versionNumber = processSummaryType.getLastVersion();
+                        for (VersionSummaryType summaryType : processSummaryType.getVersionSummaries()) {
+                            if (summaryType.getVersionNumber().compareTo(versionNumber) == 0) {
+                                versionList.add(summaryType);
+                            }
+                        }
+                    }
+                    summaryTypes.put(processSummaryType, versionList);
 
-		} else if (obj instanceof LogSummaryType) {
-		    summaryTypes.put((LogSummaryType) obj, null);
-		}
-	    }
-	}
-	LOGGER.debug("Got selected elements and versions");
-	return summaryTypes;
+                } else if (obj instanceof LogSummaryType) {
+                    summaryTypes.put((LogSummaryType) obj, null);
+                }
+            }
+        }
+        LOGGER.debug("Got selected elements and versions");
+        return summaryTypes;
     }
 
     /**
      * Show the messages we get back from plugins.
-     * 
+     *
      * @param messages the messages to display to the user.
      * @throws InterruptedException if the communication was interrupted for any
      *                              reason.
      */
     public void showPluginMessages(final PluginMessages messages) throws InterruptedException {
-	if (messages != null) {
-	    StringBuilder sb = new StringBuilder();
-	    Iterator<PluginMessage> iter = messages.getMessage().iterator();
-	    while (iter.hasNext()) {
-		sb.append(iter.next().getValue());
-		if (iter.hasNext()) {
-		    sb.append("\n\n");
-		}
-	    }
-	    if (sb.length() > 0) {
-		Messagebox.show(sb.toString(), "Apromore Plugin", Messagebox.OK, Messagebox.EXCLAMATION);
-	    }
-	}
+        if (messages != null) {
+            StringBuilder sb = new StringBuilder();
+            Iterator<PluginMessage> iter = messages.getMessage().iterator();
+            while (iter.hasNext()) {
+                sb.append(iter.next().getValue());
+                if (iter.hasNext()) {
+                    sb.append("\n\n");
+                }
+            }
+            if (sb.length() > 0) {
+                Messagebox.show(sb.toString(), "Apromore Plugin", Messagebox.OK, Messagebox.EXCLAMATION);
+            }
+        }
     }
 
     /**
      * Update the List box from the folder view with what is selected and what
      * isn't.
-     * 
+     *
      * @param processIds update the list box of processes with these processes.
      */
     @SuppressWarnings("unchecked")
     public void updateSelectedListBox(List<Integer> processIds) {
-	BaseListboxController baseListBoxController = getBaseListboxController();
-	if (baseListBoxController != null) {
-	    baseListBoxController.getListModel().clearSelection();
-	    if ((baseListBoxController instanceof ProcessListboxController)) {
-		for (ProcessSummaryType pst : (List<ProcessSummaryType>) baseListBoxController.getListModel()) {
-		    for (Integer i : processIds) {
-			if (pst != null && pst.getId().equals(i)) {
-			    baseListBoxController.getListModel().addToSelection(pst);
-			}
-		    }
-		}
-		displayProcessVersions((ProcessSummaryType) getBaseListboxController().getListModel().getSelection()
-		        .iterator().next());
-	    }
-	}
+        BaseListboxController baseListBoxController = getBaseListboxController();
+        if (baseListBoxController != null) {
+            baseListBoxController.getListModel().clearSelection();
+            if ((baseListBoxController instanceof ProcessListboxController)) {
+                for (ProcessSummaryType pst : (List<ProcessSummaryType>) baseListBoxController.getListModel()) {
+                    for (Integer i : processIds) {
+                        if (pst != null && pst.getId().equals(i)) {
+                            baseListBoxController.getListModel().addToSelection(pst);
+                        }
+                    }
+                }
+                displayProcessVersions((ProcessSummaryType) getBaseListboxController().getListModel().getSelection()
+                        .iterator().next());
+            }
+        }
     }
 
     /* Removes the currently displayed listbox, detail and filter view */
     private void deattachDynamicUI() {
-	this.getFellow("baseListboxProcesses").getFellow("tablecomp").getChildren().clear();
-	this.getFellow("baseDetail").getFellow("detailcomp").getChildren().clear();
+        this.getFellow("baseListboxProcesses").getFellow("tablecomp").getChildren().clear();
+        this.getFellow("baseDetail").getFellow("detailcomp").getChildren().clear();
     }
 
     /* Attaches the the listbox, detail and filter view */
     private void reattachDynamicUI() {
-	this.getFellow("baseListboxProcesses").getFellow("tablecomp").appendChild(baseListboxController);
-	this.getFellow("baseDetail").getFellow("detailcomp").appendChild(baseDetailController);
+        this.getFellow("baseListboxProcesses").getFellow("tablecomp").appendChild(baseListboxController);
+        this.getFellow("baseDetail").getFellow("detailcomp").appendChild(baseDetailController);
     }
 
     /*
@@ -876,231 +878,231 @@ public class MainController extends BaseController implements MainControllerInte
      * listbox, detail and filter view
      */
     private void switchToProcessSummaryView() {
-	if (this.baseListboxController != null) {
-	    if ((this.baseListboxController instanceof ProcessListboxController)) {
-		return;
-	    } else {
-		deattachDynamicUI();
-	    }
-	}
+        if (this.baseListboxController != null) {
+            if ((this.baseListboxController instanceof ProcessListboxController)) {
+                return;
+            } else {
+                deattachDynamicUI();
+            }
+        }
 
-	// Otherwise create new Listbox
-	this.baseListboxController = new ProcessListboxController(this);
-	this.baseDetailController = new ProcessVersionDetailController(this);
+        // Otherwise create new Listbox
+        this.baseListboxController = new ProcessListboxController(this);
+        this.baseDetailController = new ProcessVersionDetailController(this);
 
-	reattachDynamicUI();
-	reloadSummaries();
+        reattachDynamicUI();
+        reloadSummaries();
     }
 
     /* Load the props for this app. */
     private void loadProperties() throws IOException {
-	LOGGER.trace("Loading properties of webapp");
+        LOGGER.trace("Loading properties of webapp");
 
-	setMajorVersionNumber(getConfig().getMajorVersionNumber());
-	setMinorVersionNumber(getConfig().getMinorVersionNumber());
+        setMajorVersionNumber(getConfig().getMajorVersionNumber());
+        setMinorVersionNumber(getConfig().getMinorVersionNumber());
 
     }
 
     public String getContactEmail() {
-	return getConfig().getSite().getContactEmail();
+        return getConfig().getSite().getContactEmail();
     }
 
     /* From a list of version summary types find the max version number. */
     private static String findMaxVersion(ProcessSummaryType process) {
-	Version versionNum;
-	Version max = new Version(0, 0);
-	for (VersionSummaryType version : process.getVersionSummaries()) {
-	    versionNum = new Version(version.getVersionNumber());
-	    if (versionNum.compareTo(max) > 0) {
-		max = versionNum;
-	    }
-	}
-	return max.toString();
+        Version versionNum;
+        Version max = new Version(0, 0);
+        for (VersionSummaryType version : process.getVersionSummaries()) {
+            versionNum = new Version(version.getVersionNumber());
+            if (versionNum.compareTo(max) > 0) {
+                max = versionNum;
+            }
+        }
+        return max.toString();
     }
 
     public MenuController getMenu() {
-	return menu;
+        return menu;
     }
 
     public BaseListboxController getBaseListboxController() {
-	return baseListboxController;
+        return baseListboxController;
     }
 
     public BaseDetailController getDetailListbox() {
-	return baseDetailController;
+        return baseDetailController;
     }
 
     public String getMajorVersionNumber() {
-	return majorVersionNumber;
+        return majorVersionNumber;
     }
 
     public void setMajorVersionNumber(final String newMajorVersionNumber) {
-	majorVersionNumber = newMajorVersionNumber;
+        majorVersionNumber = newMajorVersionNumber;
     }
 
     public String getMinorVersionNumber() {
-	return majorVersionNumber;
+        return majorVersionNumber;
     }
 
     public void setMinorVersionNumber(final String newMinorVersionNumber) {
-	minorVersionNumber = newMinorVersionNumber;
+        minorVersionNumber = newMinorVersionNumber;
     }
 
     public String getBuildDate() {
-	return buildDate;
+        return buildDate;
     }
 
     public void setBuildDate(final String newBuildDate) {
-	buildDate = newBuildDate;
+        buildDate = newBuildDate;
     }
 
     private void updateTabs(String userId) {
-	Window mainW = (Window) this.getFellow("mainW");
+        Window mainW = (Window) this.getFellow("mainW");
 
-	Tabbox tabbox = (Tabbox) mainW.getFellow("tabbox");
+        Tabbox tabbox = (Tabbox) mainW.getFellow("tabbox");
 
-	int size = tabbox.getTabs().getChildren().size();
-	boolean added = false;
+        int size = tabbox.getTabs().getChildren().size();
+        boolean added = false;
 
-	List<Tab> tabList = SessionTab.getSessionTab(portalContext).getTabsSession(userId);
-	if (size < tabList.size() + 1) {
-	    for (Tab tab : tabList) {
-		try {
-		    if (!tabbox.getTabs().getChildren().contains(tab)) {
-			PortalTab portalTab = (PortalTab) tab.clone();
-			SessionTab.getSessionTab(portalContext).removeTabFromSession(userId, tab, false);
-			SessionTab.getSessionTab(portalContext).addTabToSession(userId, (org.zkoss.zul.Tab) portalTab,
-			        false);
+        List<Tab> tabList = SessionTab.getSessionTab(portalContext).getTabsSession(userId);
+        if (size < tabList.size() + 1) {
+            for (Tab tab : tabList) {
+                try {
+                    if (!tabbox.getTabs().getChildren().contains(tab)) {
+                        PortalTab portalTab = (PortalTab) tab.clone();
+                        SessionTab.getSessionTab(portalContext).removeTabFromSession(userId, tab, false);
+                        SessionTab.getSessionTab(portalContext).addTabToSession(userId, (org.zkoss.zul.Tab) portalTab,
+                                false);
 
-			portalTab.getTab().setParent(tabbox.getTabs());
-			if (portalTab.getTabpanel() == null) {
-			    LOGGER.warn("Portal tab had no panel " + portalTab);
-			} else {
-			    portalTab.getTabpanel().setParent(tabbox.getTabpanels());
-			}
-		    }
-		} catch (Exception e) {
-		    LOGGER.warn("Couldn't update tab", e);
-		    // Executions.sendRedirect(null);
-		}
-	    }
-	}
+                        portalTab.getTab().setParent(tabbox.getTabs());
+                        if (portalTab.getTabpanel() == null) {
+                            LOGGER.warn("Portal tab had no panel " + portalTab);
+                        } else {
+                            portalTab.getTabpanel().setParent(tabbox.getTabpanels());
+                        }
+                    }
+                } catch (Exception e) {
+                    LOGGER.warn("Couldn't update tab", e);
+                    // Executions.sendRedirect(null);
+                }
+            }
+        }
     }
 
     /**
      * Bruce added 21.05.2019 Display an input dialog
-     * 
+     *
      * @param title:        title of the dialog
      * @param message:      the message regarding the input to enter
      * @param initialValue: initial value for the input
      * @param valuePattern: the expression pattern to check validity of the input
      * @returnValueHander: callback event listener, notified with onOK (containing
-     *                     return value as string) and onCancel event
+     * return value as string) and onCancel event
      */
     public void showInputDialog(String title, String message, String initialValue, String valuePattern,
-            String allowedValues, EventListener<Event> returnValueHander) {
-	Window win = (Window) Executions.createComponents("macros/inputDialog.zul", null, null);
-	Window dialog = (Window) win.getFellow("inputDialog");
-	dialog.setTitle(title);
-	Label labelMessage = (Label) dialog.getFellow("labelMessage");
-	Textbox txtValue = (Textbox) dialog.getFellow("txtValue");
-	Label labelError = (Label) dialog.getFellow("labelError");
-	labelMessage.setValue(message);
-	txtValue.setValue(initialValue);
-	labelError.setValue("");
+                                String allowedValues, EventListener<Event> returnValueHander) {
+        Window win = (Window) Executions.createComponents("macros/inputDialog.zul", null, null);
+        Window dialog = (Window) win.getFellow("inputDialog");
+        dialog.setTitle(title);
+        Label labelMessage = (Label) dialog.getFellow("labelMessage");
+        Textbox txtValue = (Textbox) dialog.getFellow("txtValue");
+        Label labelError = (Label) dialog.getFellow("labelError");
+        labelMessage.setValue(message);
+        txtValue.setValue(initialValue);
+        labelError.setValue("");
 
-	dialog.doModal();
+        dialog.doModal();
 
-	((Button) dialog.getFellow("btnCancel")).addEventListener(ON_CLICK, new EventListener<Event>() {
-	    @Override
-	    public void onEvent(Event event) throws Exception {
-		dialog.detach();
-		returnValueHander.onEvent(new Event("onCancel"));
-	    }
-	});
+        ((Button) dialog.getFellow("btnCancel")).addEventListener(ON_CLICK, new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                dialog.detach();
+                returnValueHander.onEvent(new Event("onCancel"));
+            }
+        });
 
-	((Button) dialog.getFellow("btnOK")).addEventListener(ON_CLICK, new EventListener<Event>() {
-	    @Override
-	    public void onEvent(Event event) throws Exception {
-		if (txtValue.getValue().trim().isEmpty()) {
-		    labelError.setValue("Please enter a value!");
-		} else if (!Pattern.matches(valuePattern, txtValue.getValue())) {
-		    labelError.setValue("The entered value is not valid! Allowed characters: " + allowedValues);
-		} else {
-		    dialog.detach();
-		    returnValueHander.onEvent(new Event("onOK", null, txtValue.getValue()));
-		}
-	    }
-	});
+        ((Button) dialog.getFellow("btnOK")).addEventListener(ON_CLICK, new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                if (txtValue.getValue().trim().isEmpty()) {
+                    labelError.setValue("Please enter a value!");
+                } else if (!Pattern.matches(valuePattern, txtValue.getValue())) {
+                    labelError.setValue("The entered value is not valid! Allowed characters: " + allowedValues);
+                } else {
+                    dialog.detach();
+                    returnValueHander.onEvent(new Event("onOK", null, txtValue.getValue()));
+                }
+            }
+        });
 
-	win.addEventListener("onOK", new EventListener<Event>() {
-	    @Override
-	    public void onEvent(Event event) throws Exception {
-		Events.sendEvent(ON_CLICK, dialog.getFellow("btnOK"), null);
-	    }
-	});
+        win.addEventListener("onOK", new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                Events.sendEvent(ON_CLICK, dialog.getFellow("btnOK"), null);
+            }
+        });
 
     }
 
     public void setBreadcrumbs(int selectedFolderId) {
-	List<FolderType> breadcrumbFolders = this.getManagerService()
-	        .getBreadcrumbs(UserSessionManager.getCurrentUser().getId(), selectedFolderId);
-	Collections.reverse(breadcrumbFolders);
-	String content = "";
-	String crumb;
-	int breadcrumbLength = breadcrumbFolders.size();
+        List<FolderType> breadcrumbFolders = this.getManagerService()
+                .getBreadcrumbs(UserSessionManager.getCurrentUser().getId(), selectedFolderId);
+        Collections.reverse(breadcrumbFolders);
+        String content = "";
+        String crumb;
+        int breadcrumbLength = breadcrumbFolders.size();
 
-	int i = 0;
-	for (FolderType breadcrumb : breadcrumbFolders) {
-	    String folderName = breadcrumb.getFolderName();
-	    String id = breadcrumb.getId().toString();
-	    String onClick = "Ap.portal.clickBreadcrumb('" + id + "')";
-	    if (i == breadcrumbLength - 1) {
-		crumb = "<a data-last=\"true\" data-id=\"" + id + "\" onclick=\"" + onClick + "\">" + folderName
-		        + "</a>";
-	    } else {
-		crumb = "<a data-id=\"" + id + "\" onclick=\"" + onClick + "\">" + folderName + "</a>";
-	    }
-	    content += "&gt;<span class=\"ap-portal-crumb\">" + crumb + "</span>";
-	    i++;
-	}
-	this.breadCrumbs.setContent(content);
-	Clients.evalJavaScript("Ap.portal.updateBreadcrumbs();");
+        int i = 0;
+        for (FolderType breadcrumb : breadcrumbFolders) {
+            String folderName = breadcrumb.getFolderName();
+            String id = breadcrumb.getId().toString();
+            String onClick = "Ap.portal.clickBreadcrumb('" + id + "')";
+            if (i == breadcrumbLength - 1) {
+                crumb = "<a data-last=\"true\" data-id=\"" + id + "\" onclick=\"" + onClick + "\">" + folderName
+                        + "</a>";
+            } else {
+                crumb = "<a data-id=\"" + id + "\" onclick=\"" + onClick + "\">" + folderName + "</a>";
+            }
+            content += "&gt;<span class=\"ap-portal-crumb\">" + crumb + "</span>";
+            i++;
+        }
+        this.breadCrumbs.setContent(content);
+        Clients.evalJavaScript("Ap.portal.updateBreadcrumbs();");
     }
 
     public String deriveName(ProcessSummaryType processSummaryType, String suffix) {
-	String processName = processSummaryType == null ? "untitled" : processSummaryType.getName();
-	List<Log> existingLogs = getWorkspaceService().getLogsByPrefix(processName + suffix);
-	List<String> existingNames = new ArrayList<>();
-	for (Log log : existingLogs) {
-	    existingNames.add(log.getName());
-	}
-	return ItemNameUtils.deriveName(existingNames, processName, suffix);
+        String processName = processSummaryType == null ? "untitled" : processSummaryType.getName();
+        List<Log> existingLogs = getWorkspaceService().getLogsByPrefix(processName + suffix);
+        List<String> existingNames = new ArrayList<>();
+        for (Log log : existingLogs) {
+            existingNames.add(log.getName());
+        }
+        return ItemNameUtils.deriveName(existingNames, processName, suffix);
     }
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
-	onCreate(comp);
+        onCreate(comp);
 
     }
 
     @Override
     public Component getFellow(String id) {
-	return mainComponent.getFellow(id);
+        return mainComponent.getFellow(id);
 
     }
 
     @Override
     public Desktop getDesktop() {
-	return mainComponent.getDesktop();
+        return mainComponent.getDesktop();
     }
-    
+
     public CopyAndPasteController getCopyPasteController() {
-    	return this.copyAndPasteController;
+        return this.copyAndPasteController;
     }
-    
+
     public NavigationController getNavigationController() {
-    	return this.navigation;
+        return this.navigation;
     }
 
 }
