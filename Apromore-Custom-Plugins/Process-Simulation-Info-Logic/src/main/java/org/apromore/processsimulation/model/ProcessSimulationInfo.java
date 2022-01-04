@@ -39,11 +39,14 @@ public class ProcessSimulationInfo {
     @XmlAttribute
     private long processInstances;
     @XmlAttribute
-    private String currency;
+    private Currency currency;
     @XmlAttribute
     private String startDateTime;
 
     @XmlElement(name = "qbp:errors")
     private Errors errors;
+
+    @XmlElement(name = "qbp:arrivalRateDistribution")
+    private ArrivalRateDistribution arrivalRateDistribution;
 
 }

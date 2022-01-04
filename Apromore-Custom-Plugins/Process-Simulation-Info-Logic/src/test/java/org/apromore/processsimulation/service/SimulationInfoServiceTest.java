@@ -20,9 +20,7 @@ package org.apromore.processsimulation.service;
 import org.apache.commons.io.IOUtils;
 import org.apromore.logman.attribute.log.AttributeLog;
 import org.apromore.logman.attribute.log.AttributeLogSummary;
-import org.apromore.processsimulation.model.Currency;
-import org.apromore.processsimulation.model.Errors;
-import org.apromore.processsimulation.model.ProcessSimulationInfo;
+import org.apromore.processsimulation.model.*;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -53,7 +51,7 @@ class SimulationInfoServiceTest {
      * Test method encapsulating all other tests to test capturing sonar cloud coverage
      */
     @Test
-    void deriveSimulationInfo() {
+    void testDeriveSimulationInfo() {
         should_successfully_derive_simulation_info();
         should_return_null_if_no_attribute_log();
         should_return_null_if_no_log_summary();
@@ -63,7 +61,7 @@ class SimulationInfoServiceTest {
      * Test method encapsulating all other tests to test capturing sonar cloud coverage
      */
     @Test
-    void enrichWithSimulationInfo() throws XPathExpressionException, IOException, ParserConfigurationException, SAXException {
+    void testEnrichWithSimulationInfo() throws XPathExpressionException, IOException, ParserConfigurationException, SAXException {
         should_enrich_with_simulation_info();
         should_enrich_with_simulation_info_for_model_with_no_xmlns_prefix();
         should_not_enrich_if_no_process_simulation_info();
@@ -76,18 +74,25 @@ class SimulationInfoServiceTest {
         AttributeLog mockAttributeLog = mock(AttributeLog.class);
         AttributeLogSummary mockAttributeLogSummary = mock(AttributeLogSummary.class);
         when(mockAttributeLog.getLogSummary()).thenReturn(mockAttributeLogSummary);
-        when(mockAttributeLogSummary.getCaseCount()).thenReturn(10L);
+        when(mockAttributeLogSummary.getCaseCount()).thenReturn(100L);
         when(mockAttributeLogSummary.getStartTime()).thenReturn(1577797200000L);
+        when(mockAttributeLogSummary.getEndTime()).thenReturn(1580475600000L);
 
         // when
         ProcessSimulationInfo processSimulationInfo = simulationInfoService.deriveSimulationInfo(mockAttributeLog);
 
         // then
-        assertEquals(10L, processSimulationInfo.getProcessInstances());
-        assertEquals("2019-12-31T13:00:00Z", processSimulationInfo.getStartDateTime());
-        assertEquals(Currency.EUR.toString(), processSimulationInfo.getCurrency());
         assertNotNull(processSimulationInfo.getId());
         assertNotNull(processSimulationInfo.getErrors());
+        assertEquals(100L, processSimulationInfo.getProcessInstances());
+        assertEquals("26784", processSimulationInfo.getArrivalRateDistribution().getArg1());
+        assertEquals("NaN", processSimulationInfo.getArrivalRateDistribution().getArg2());
+        assertEquals("NaN", processSimulationInfo.getArrivalRateDistribution().getMean());
+        assertEquals(TimeUnit.SECONDS, processSimulationInfo.getArrivalRateDistribution().getTimeUnit());
+        assertEquals(DistributionType.EXPONENTIAL, processSimulationInfo.getArrivalRateDistribution().getType());
+        assertEquals("2019-12-31T13:00:00Z", processSimulationInfo.getStartDateTime());
+        assertEquals(Currency.EUR, processSimulationInfo.getCurrency());
+
     }
 
     @Test
@@ -156,33 +161,55 @@ class SimulationInfoServiceTest {
     private void assertBpmnProcessSimulationInfo(String bpmnXmlString)
             throws XPathExpressionException, ParserConfigurationException, IOException, SAXException {
 
-        Node processSimulationInfoXmlNode = getProcessSimulationInfo(bpmnXmlString);
+        Node processSimulationInfoXmlNode = getProcessSimulationInfo(bpmnXmlString,
+                        "/definitions/process/extensionElements/processSimulationInfo");
 
         NamedNodeMap processSimulationAttrMap = processSimulationInfoXmlNode.getAttributes();
-        assertEquals(Currency.EUR.toString(), processSimulationAttrMap.getNamedItem("currency").getNodeValue());
-        assertEquals("10", processSimulationAttrMap.getNamedItem("processInstances").getNodeValue());
-        assertEquals("2019-12-31T13:00:00Z", processSimulationAttrMap.getNamedItem("startDateTime").getNodeValue());
         assertNotNull(processSimulationAttrMap.getNamedItem("id").getNodeValue());
+        assertEquals(Currency.EUR.toString(), processSimulationAttrMap.getNamedItem("currency").getNodeValue());
+        assertEquals("100", processSimulationAttrMap.getNamedItem("processInstances").getNodeValue());
+        assertEquals("2019-12-31T13:00:00Z", processSimulationAttrMap.getNamedItem("startDateTime").getNodeValue());
+
+        Node arrivalDistributionXmlNode = getProcessSimulationInfo(bpmnXmlString,
+                "/definitions/process/extensionElements/processSimulationInfo/arrivalRateDistribution");
+        NamedNodeMap arrivalRateDistributionAttrMap = arrivalDistributionXmlNode.getAttributes();
+        assertEquals("26784", arrivalRateDistributionAttrMap.getNamedItem("arg1").getNodeValue());
+        assertEquals("NaN", arrivalRateDistributionAttrMap.getNamedItem("arg2").getNodeValue());
+        assertEquals("NaN", arrivalRateDistributionAttrMap.getNamedItem("mean").getNodeValue());
+        assertEquals(DistributionType.EXPONENTIAL.toString(), arrivalRateDistributionAttrMap.getNamedItem("type").getNodeValue());
+
+        Node timeUnitXmlNode = getProcessSimulationInfo(bpmnXmlString,
+                "/definitions/process/extensionElements/processSimulationInfo/arrivalRateDistribution/timeUnit");
+        assertEquals("seconds", timeUnitXmlNode.getFirstChild().getNodeValue());
+
     }
 
-    private Node getProcessSimulationInfo(String bpmnXml)
+    private Node getProcessSimulationInfo(String bpmnXml, String xpathExpression)
             throws ParserConfigurationException, XPathExpressionException, IOException, SAXException {
 
         DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = builderFactory.newDocumentBuilder();
         Document xmlDocument = builder.parse(new ByteArrayInputStream(bpmnXml.getBytes()));
         XPath xPath = XPathFactory.newInstance().newXPath();
-        String expression = "/definitions/process/extensionElements/processSimulationInfo";
-        return (Node) xPath.compile(expression).evaluate(xmlDocument, XPathConstants.NODE);
+        return (Node) xPath.compile(xpathExpression).evaluate(xmlDocument, XPathConstants.NODE);
     }
 
     private ProcessSimulationInfo createMockProcessSimulationInfo() {
         return ProcessSimulationInfo.builder()
-                .currency(Currency.EUR.toString())
-                .startDateTime(Instant.ofEpochMilli(1577797200000L).toString())
                 .id("some_random_guid")
                 .errors(Errors.builder().build())
-                .processInstances(10)
+                .currency(Currency.EUR)
+                .startDateTime(Instant.ofEpochMilli(1577797200000L).toString())
+                .processInstances(100)
+                .arrivalRateDistribution(
+                        ArrivalRateDistribution.builder()
+                                .type(DistributionType.EXPONENTIAL)
+                                .arg1("26784")
+                                .arg2("NaN")
+                                .mean("NaN")
+                                .timeUnit(TimeUnit.SECONDS)
+                                .build()
+                )
                 .build();
     }
 

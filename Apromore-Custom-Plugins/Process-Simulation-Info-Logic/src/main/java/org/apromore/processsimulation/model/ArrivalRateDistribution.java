@@ -17,17 +17,31 @@
  */
 package org.apromore.processsimulation.model;
 
-import javax.xml.bind.annotation.XmlEnum;
-import javax.xml.bind.annotation.XmlEnumValue;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@XmlEnum
-public enum TimeUnit {
-    @XmlEnumValue("seconds")
-    SECONDS,
-    @XmlEnumValue("minutes")
-    MINUTES,
-    @XmlEnumValue("hours")
-    HOURS,
-    @XmlEnumValue("days")
-    DAYS
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+
+@Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@XmlAccessorType(XmlAccessType.FIELD)
+public class ArrivalRateDistribution {
+    @XmlAttribute
+    private DistributionType type;
+    @XmlAttribute
+    private String mean;
+    @XmlAttribute
+    private String arg1;
+    @XmlAttribute
+    private String arg2;
+
+    @XmlElement(name = "qbp:timeUnit")
+    private TimeUnit timeUnit;
 }

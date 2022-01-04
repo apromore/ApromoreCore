@@ -21,13 +21,13 @@ import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 
 @XmlEnum
-public enum TimeUnit {
-    @XmlEnumValue("seconds")
-    SECONDS,
-    @XmlEnumValue("minutes")
-    MINUTES,
-    @XmlEnumValue("hours")
-    HOURS,
-    @XmlEnumValue("days")
-    DAYS
+public enum DistributionType {
+    FIXED,
+    NORMAL,
+    EXPONENTIAL,
+    UNIFORM,
+    TRIANGULAR,
+    @XmlEnumValue("LOGNORMAL")
+    LOG_NORMAL,
+    GAMMA
 }

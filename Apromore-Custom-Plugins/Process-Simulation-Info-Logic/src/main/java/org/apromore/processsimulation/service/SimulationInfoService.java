@@ -20,16 +20,14 @@ package org.apromore.processsimulation.service;
 import lombok.extern.slf4j.Slf4j;
 import org.apromore.logman.attribute.log.AttributeLog;
 import org.apromore.logman.attribute.log.AttributeLogSummary;
-import org.apromore.processsimulation.model.Currency;
-import org.apromore.processsimulation.model.Errors;
-import org.apromore.processsimulation.model.ExtensionElements;
-import org.apromore.processsimulation.model.ProcessSimulationInfo;
+import org.apromore.processsimulation.model.*;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import java.io.StringWriter;
 import java.time.Instant;
+import java.util.Locale;
 import java.util.UUID;
 
 @Slf4j
@@ -42,6 +40,7 @@ public class SimulationInfoService {
     private static final String XML_START_DEFINITIONS_TAG = "<definitions";
     private static final String XML_START_BPMN_DEFINITIONS_TAG = "<bpmn:definitions";
     private static final String XML_QBP_NAMESPACE = "\n xmlns:qbp=\"http://www.qbp-simulator.com/Schema201212\"\n";
+    private static final String NAN = "NaN";
 
     private JAXBContext jaxbContext;
 
@@ -64,37 +63,61 @@ public class SimulationInfoService {
     public ProcessSimulationInfo deriveSimulationInfo(final AttributeLog attributeLog) {
 
         ProcessSimulationInfo processSimulationInfo = null;
-        if(attributeLog != null && attributeLog.getLogSummary() != null){
+        if (attributeLog != null) {
             AttributeLogSummary logSummary = attributeLog.getLogSummary();
 
-            processSimulationInfo =
-                    ProcessSimulationInfo.builder()
-                            .id("qbp_de" + UUID.randomUUID())
-                            .processInstances(logSummary.getCaseCount())
-                            .currency(Currency.EUR.toString())
-                            .startDateTime(Instant.ofEpochMilli(logSummary.getStartTime()).toString())
-                            .errors(Errors.builder().build())
-                            .build();
+            if(logSummary != null){
+                ProcessSimulationInfo.ProcessSimulationInfoBuilder builder =
+                        ProcessSimulationInfo.builder()
+                                .id("qbp_" + Locale.getDefault().getLanguage() + UUID.randomUUID())
+                                .errors(Errors.builder().build());
+
+                deriveGeneralSimulationInfo(builder, logSummary);
+
+                processSimulationInfo = builder.build();
+            }
         }
 
         return processSimulationInfo;
     }
+
+    private void deriveGeneralSimulationInfo(
+            ProcessSimulationInfo.ProcessSimulationInfoBuilder builder,
+            final AttributeLogSummary logSummary) {
+
+            long startTimeMillis = logSummary.getStartTime();
+            long endTimeMillis = logSummary.getEndTime();
+            long interArrivalTime = Math.round(
+                    ((double) (endTimeMillis - startTimeMillis) / (double) 1000) / (double) logSummary.getCaseCount());
+
+            builder.processInstances(logSummary.getCaseCount())
+                    .currency(Currency.EUR)
+                    .startDateTime(Instant.ofEpochMilli(logSummary.getStartTime()).toString())
+                    .arrivalRateDistribution(
+                            ArrivalRateDistribution.builder()
+                                    .timeUnit(TimeUnit.SECONDS)
+                                    .type(DistributionType.EXPONENTIAL)
+                                    .arg1(Long.toString(interArrivalTime))
+                                    .mean(NAN)
+                                    .arg2(NAN)
+                                    .build());
+    }
+
 
     /**
      * Enrich the bpmn xml model with the additional extension elements
      * including the process simulation information that was derived from the
      * bpmn model
      *
-     * @param bpmnModelXml the discovered bpmn model
+     * @param bpmnModelXml          the discovered bpmn model
      * @param processSimulationInfo the process simulation information derived from the discovered model
-     *
      * @return a bpmn model enriched with the additional process simulation information set in the extensionElements
      */
     public String enrichWithSimulationInfo(
             final String bpmnModelXml, final ProcessSimulationInfo processSimulationInfo) {
 
         String enrichedBpmnXml = bpmnModelXml;
-        if(processSimulationInfo != null) {
+        if (processSimulationInfo != null) {
 
             ExtensionElements extensionElements = ExtensionElements.builder()
                     .processSimulationInfo(processSimulationInfo).build();
@@ -110,7 +133,7 @@ public class SimulationInfoService {
     private String injectExtensionElements(String exportedBpmnXml, String extensionElementsXml) {
         StringBuilder enrichedBpmnXml = new StringBuilder(exportedBpmnXml);
 
-        if(extensionElementsXml != null && !extensionElementsXml.isEmpty()){
+        if (extensionElementsXml != null && !extensionElementsXml.isEmpty()) {
             // remove the <?xml> tags if present from the extension elements xml
             if (extensionElementsXml.contains(XML_START_TAG)) {
                 extensionElementsXml = extensionElementsXml
@@ -118,22 +141,22 @@ public class SimulationInfoService {
             }
 
             // inject the qbp namespace and the extension elements
-            if(enrichedBpmnXml.indexOf(XML_START_DEFINITIONS_TAG) > 0){
+            if (enrichedBpmnXml.indexOf(XML_START_DEFINITIONS_TAG) > 0) {
                 enrichedBpmnXml.insert(
                         exportedBpmnXml.indexOf(XML_START_DEFINITIONS_TAG) + XML_START_DEFINITIONS_TAG.length(),
                         XML_QBP_NAMESPACE);
 
-            } else if(enrichedBpmnXml.indexOf(XML_START_BPMN_DEFINITIONS_TAG) > 0){
+            } else if (enrichedBpmnXml.indexOf(XML_START_BPMN_DEFINITIONS_TAG) > 0) {
                 enrichedBpmnXml.insert(
                         exportedBpmnXml.indexOf(XML_START_BPMN_DEFINITIONS_TAG) + XML_START_BPMN_DEFINITIONS_TAG.length(),
                         XML_QBP_NAMESPACE);
             }
 
 
-            if(enrichedBpmnXml.indexOf(XML_END_PROCESS_TAG) > 0){
+            if (enrichedBpmnXml.indexOf(XML_END_PROCESS_TAG) > 0) {
                 enrichedBpmnXml.insert(enrichedBpmnXml.indexOf(XML_END_PROCESS_TAG), extensionElementsXml);
 
-            } else if(enrichedBpmnXml.indexOf(XML_END_BPMN_PROCESS_TAG) > 0){
+            } else if (enrichedBpmnXml.indexOf(XML_END_BPMN_PROCESS_TAG) > 0) {
                 enrichedBpmnXml.insert(enrichedBpmnXml.indexOf(XML_END_BPMN_PROCESS_TAG), extensionElementsXml);
             }
         }
