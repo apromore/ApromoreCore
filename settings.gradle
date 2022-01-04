@@ -68,6 +68,7 @@ include ':Apromore-Custom-Plugins:Merge-Portal-Plugin'
 include ':Apromore-Custom-Plugins:Similarity-Search-Portal-Plugin'
 include ':Apromore-Custom-Plugins:Process-Discoverer-Portal-Plugin'
 include ':Apromore-Custom-Plugins:Process-Publisher-Portal-Plugin'
+include ':Apromore-Custom-Plugins:Process-Simulation-Info-Logic'
 
 
 

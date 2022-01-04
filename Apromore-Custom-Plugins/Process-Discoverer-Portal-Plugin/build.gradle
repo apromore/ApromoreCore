@@ -7,6 +7,7 @@ dependencies {
 	implementation project(':Apromore-Custom-Plugins:Log-Animation-Portal-Plugin-API')
 	implementation project(':Apromore-Extras:OpenXES')
 	implementation project(':Apromore-Custom-Plugins:Process-Discoverer-Logic')
+	implementation project(':Apromore-Custom-Plugins:Process-Simulation-Info-Logic')
 	implementation project(':Apromore-Custom-Plugins:Log-Logic')
 	implementation project(':Apromore-ProcessMining-Collection')
 	implementation project(':Apromore-Commons')

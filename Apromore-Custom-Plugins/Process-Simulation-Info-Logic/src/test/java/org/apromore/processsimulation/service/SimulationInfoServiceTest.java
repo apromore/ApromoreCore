@@ -15,14 +15,14 @@
  * is obtained from Apromore Pty Ltd.
  * #L%
  */
-package org.apromore.plugin.portal.processdiscoverer;
+package org.apromore.processsimulation.service;
 
+import org.apache.commons.io.IOUtils;
 import org.apromore.logman.attribute.log.AttributeLog;
 import org.apromore.logman.attribute.log.AttributeLogSummary;
-import org.apromore.plugin.portal.processdiscoverer.data.processSimulation.Currency;
-import org.apromore.plugin.portal.processdiscoverer.data.processSimulation.Errors;
-import org.apromore.plugin.portal.processdiscoverer.data.processSimulation.ProcessSimulationInfo;
-import org.junit.jupiter.api.Assertions;
+import org.apromore.processsimulation.model.Currency;
+import org.apromore.processsimulation.model.Errors;
+import org.apromore.processsimulation.model.ProcessSimulationInfo;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -39,19 +39,36 @@ import javax.xml.xpath.XPathFactory;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.Instant;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class SimulationInfoServiceTest {
 
     private final SimulationInfoService simulationInfoService = SimulationInfoService.getInstance();
+
+    /**
+     * Test method encapsulating all other tests to test capturing sonar cloud coverage
+     */
+    @Test
+    void deriveSimulationInfo() {
+        should_successfully_derive_simulation_info();
+        should_return_null_if_no_attribute_log();
+        should_return_null_if_no_log_summary();
+    }
+
+    /**
+     * Test method encapsulating all other tests to test capturing sonar cloud coverage
+     */
+    @Test
+    void enrichWithSimulationInfo() throws XPathExpressionException, IOException, ParserConfigurationException, SAXException {
+        should_enrich_with_simulation_info();
+        should_enrich_with_simulation_info_for_model_with_no_xmlns_prefix();
+        should_not_enrich_if_no_process_simulation_info();
+
+    }
 
     @Test
     void should_successfully_derive_simulation_info() {
@@ -101,7 +118,7 @@ class SimulationInfoServiceTest {
     @Test
     void should_enrich_with_simulation_info() throws IOException, XPathExpressionException, ParserConfigurationException, SAXException {
         // given
-        String bpmn = readBpmnFile("src/test/logs/no_simulation_info.bpmn");
+        String bpmn = readBpmnFile("/no_simulation_info.bpmn");
         ProcessSimulationInfo processSimulationInfo = createMockProcessSimulationInfo();
 
         // when
@@ -114,7 +131,7 @@ class SimulationInfoServiceTest {
     @Test
     void should_enrich_with_simulation_info_for_model_with_no_xmlns_prefix() throws IOException, XPathExpressionException, ParserConfigurationException, SAXException {
         // given
-        String bpmn = readBpmnFile("src/test/logs/no_simulation_info_without_namespace_prefix.bpmn");
+        String bpmn = readBpmnFile("/no_simulation_info_without_namespace_prefix.bpmn");
         ProcessSimulationInfo processSimulationInfo = createMockProcessSimulationInfo();
 
         // when
@@ -127,7 +144,7 @@ class SimulationInfoServiceTest {
     @Test
     void should_not_enrich_if_no_process_simulation_info() throws IOException {
         // given
-        String originalBpmn = readBpmnFile("src/test/logs/no_simulation_info.bpmn");
+        String originalBpmn = readBpmnFile("/no_simulation_info.bpmn");
 
         // when
         String enrichedBpmn = simulationInfoService.enrichWithSimulationInfo(originalBpmn, null);
@@ -169,9 +186,10 @@ class SimulationInfoServiceTest {
                 .build();
     }
 
-    protected String readBpmnFile(String fullFilePath) throws IOException {
-        byte[] encoded = Files.readAllBytes(Paths.get(fullFilePath));
-        return new String(encoded, StandardCharsets.UTF_8);
+    private String readBpmnFile(String fileName) throws IOException {
+        return IOUtils.toString(
+                this.getClass().getResourceAsStream(fileName),
+                StandardCharsets.UTF_8);
     }
 
 }

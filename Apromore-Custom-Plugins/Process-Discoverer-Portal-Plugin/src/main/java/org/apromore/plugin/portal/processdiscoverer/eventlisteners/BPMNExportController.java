@@ -27,7 +27,6 @@ import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
-import org.apromore.plugin.portal.processdiscoverer.SimulationInfoService;
 import org.apromore.plugin.portal.processdiscoverer.components.AbstractController;
 import org.apromore.plugin.portal.processdiscoverer.utils.InputDialog;
 import org.apromore.plugin.portal.processdiscoverer.vis.InvalidOutputException;
@@ -37,6 +36,7 @@ import org.apromore.processmining.models.graphbased.directed.ContainableDirected
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNEdge;
 import org.apromore.processmining.plugins.bpmn.BpmnDefinitions;
+import org.apromore.processsimulation.service.SimulationInfoService;
 import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
 import org.zkoss.zk.ui.Executions;

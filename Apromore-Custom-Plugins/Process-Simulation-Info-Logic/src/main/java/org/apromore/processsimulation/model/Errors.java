@@ -15,7 +15,7 @@
  * is obtained from Apromore Pty Ltd.
  * #L%
  */
-package org.apromore.plugin.portal.processdiscoverer.data.processSimulation;
+package org.apromore.processsimulation.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

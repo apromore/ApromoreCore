@@ -25,8 +25,8 @@ package org.apromore.plugin.portal.processdiscoverer.data;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import org.apromore.plugin.portal.processdiscoverer.data.processSimulation.ProcessSimulationInfo;
 import org.apromore.processdiscoverer.Abstraction;
+import org.apromore.processsimulation.model.ProcessSimulationInfo;
 
 /**
  * OutputData contains data produced from this plugin

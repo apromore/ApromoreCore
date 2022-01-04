@@ -15,15 +15,15 @@
  * is obtained from Apromore Pty Ltd.
  * #L%
  */
-package org.apromore.plugin.portal.processdiscoverer;
+package org.apromore.processsimulation.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apromore.logman.attribute.log.AttributeLog;
 import org.apromore.logman.attribute.log.AttributeLogSummary;
-import org.apromore.plugin.portal.processdiscoverer.data.processSimulation.Currency;
-import org.apromore.plugin.portal.processdiscoverer.data.processSimulation.Errors;
-import org.apromore.plugin.portal.processdiscoverer.data.processSimulation.ExtensionElements;
-import org.apromore.plugin.portal.processdiscoverer.data.processSimulation.ProcessSimulationInfo;
+import org.apromore.processsimulation.model.Currency;
+import org.apromore.processsimulation.model.Errors;
+import org.apromore.processsimulation.model.ExtensionElements;
+import org.apromore.processsimulation.model.ProcessSimulationInfo;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;

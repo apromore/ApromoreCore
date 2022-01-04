@@ -15,7 +15,7 @@
  * is obtained from Apromore Pty Ltd.
  * #L%
  */
-package org.apromore.plugin.portal.processdiscoverer.data.processSimulation;
+package org.apromore.processsimulation.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,26 +24,16 @@ import lombok.NoArgsConstructor;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@XmlRootElement(name = "extensionElements")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class ProcessSimulationInfo {
-
-    @XmlAttribute
-    private String id;
-    @XmlAttribute
-    private long processInstances;
-    @XmlAttribute
-    private String currency;
-    @XmlAttribute
-    private String startDateTime;
-
-    @XmlElement(name = "qbp:errors")
-    private Errors errors;
-
+public class ExtensionElements {
+    @XmlElement(name = "qbp:processSimulationInfo")
+    private ProcessSimulationInfo processSimulationInfo;
 }
