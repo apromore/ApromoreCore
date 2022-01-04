@@ -1,5 +1,7 @@
 var customTranslate = require('../../app/translate/customTranslate'),
     simulationModdleDescriptor = require('../../app/descriptors/simulation.json'),
+    camundaModdleDescriptor = require('camunda-bpmn-moddle/resources/camunda'),
+    apModdleDescriptor = require('../../app/descriptors/ap.json'),
     TestHelper = require('../TestHelper'),
     TestContainer = require('mocha-test-container-support'),
     getResources = require('../helper/modelHelper').getResources,
@@ -47,7 +49,9 @@ describe('resource-tab', function() {
   beforeEach(bootstrapModeler(diagramXML, {
     modules: testModules,
     moddleExtensions: {
-      qbp: simulationModdleDescriptor
+      qbp: simulationModdleDescriptor,
+      camunda: camundaModdleDescriptor,
+      ap: apModdleDescriptor
     }
   }));
 

@@ -49005,7 +49005,9 @@ function showImgPreview(data) {
     data = "";
   }
   const preview = document.querySelector('.aux-img-preview img');
-  preview.src = data;
+  if (preview) {
+    preview.src = data;
+  }
 }
 
 function refreshOverlay(bpmnjs, element) {
