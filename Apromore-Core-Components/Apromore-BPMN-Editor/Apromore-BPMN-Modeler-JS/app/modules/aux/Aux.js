@@ -71,7 +71,7 @@ export default function Aux(eventBus, bpmnFactory, elementRegistry, overlays, bp
       $overlay.append($('<div class="aux-image"><img src="' + (imgUrl || imgSrc) + '" /></div>'));
     }
     var iconName = getProp(icon, AUX_PROPS.ICON_NAME);
-    if (url || iconName) {
+    if (url || (iconName && iconName.length)) {
       dtop -= 26;
       var $bar = $('<div class="aux-bar"></div>');
       $overlay.append($bar);

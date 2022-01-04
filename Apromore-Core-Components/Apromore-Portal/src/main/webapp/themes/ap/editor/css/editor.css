@@ -186,6 +186,11 @@
   display: hidden !important;
 }
 
+#ap-editor-props-container .bpp-textfield .clear {
+  border: 1px solid #cccccc;
+  height: 24px;
+}
+
 /* Property panel simulation section */
 
 #ap-editor-props-container.simulation #ap-editor-props-simulation {
@@ -282,6 +287,18 @@
 #ap-bpmn-icon-picker i.selected {
   border-color: #808080;
   background-color: white;
+}
+
+#aux-img-picker-remove {
+  margin-left: 5px;
+}
+
+#ap-bpmn-img-picker .aux-img-preview {
+  margin-top: 5px;
+}
+
+#ap-bpmn-img-picker .aux-img-preview img {
+  width: 50%;
 }
 
 /* Aux overlays */

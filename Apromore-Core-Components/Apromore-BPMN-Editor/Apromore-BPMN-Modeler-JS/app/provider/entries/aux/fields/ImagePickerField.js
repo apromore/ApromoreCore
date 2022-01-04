@@ -27,7 +27,9 @@ module.exports = function(options) {
 
   var pickerEl = domify('<div id="ap-bpmn-img-picker"></div>');
   var inputEl = domify('<input id="aux-img-picker-control" type="file">');
+  var removeEl = domify('<input id="aux-img-picker-remove" value="Remove" type="button">');
   pickerEl.appendChild(inputEl);
+  pickerEl.appendChild(removeEl);
   domEvent.bind(inputEl, 'change', function () {
     previewFile(function(dataURL) {
       var input = document.getElementById('camunda-' + escapeHTML(resource.id));
@@ -35,6 +37,12 @@ module.exports = function(options) {
       var ev = new Event('change', { 'bubbles': true });
       input.dispatchEvent(ev);
     });
+  })
+  domEvent.bind(removeEl, 'click', function () {
+    var input = document.getElementById('camunda-' + escapeHTML(resource.id));
+    input.value = "";
+    var ev = new Event('change', { 'bubbles': true });
+    input.dispatchEvent(ev);
   })
   pickerEl.appendChild(domify('<div class="aux-img-preview"><img src="" alt="Image preview..." /></div>'));
   resource.html = domify(

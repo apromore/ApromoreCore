@@ -21,9 +21,6 @@ function getExtensionElements(element, bpmnFactory) {
 
 function getImg(element, bpmnFactory) {
   var extensionElements = getExtensionElements(element, bpmnFactory);
-//  var img = extensionElements.values.filter(function(e) {
-//    return e.$instanceOf('ap:img');
-//  })[0];
 
   var img = (extensionElementsHelper.getExtensionElements(element,
     'ap:Img') || [])[0];
@@ -61,7 +58,7 @@ function selectIcon(iconName) {
     selectedIconEl.classList.remove('selected');
   }
   if (!iconName || !iconName.length) {
-    return;
+    iconName = 'z-icon-times';
   }
   var iconEl = document.querySelector(`#${iconName}`);
   if (iconEl) {
@@ -71,7 +68,7 @@ function selectIcon(iconName) {
 
 function showImgPreview(data) {
   if (!data || !data.length) {
-    return;
+    data = "";
   }
   const preview = document.querySelector('.aux-img-preview img');
   preview.src = data;
@@ -99,9 +96,13 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmn
         return { [AUX_PROPS.LINK_URL]: bo[AUX_PROPS.LINK_URL] };
       },
       set: function(element, values, _node) {
+        var url = values[AUX_PROPS.LINK_URL];
+        if (!url.startsWith('http') && url.length) {
+          url = 'http://' + url;
+        }
         refreshOverlay(bpmnjs, element);
         return cmdHelper.updateBusinessObject(element, bo, {
-          [AUX_PROPS.LINK_URL]: values[AUX_PROPS.LINK_URL]
+          [AUX_PROPS.LINK_URL]: url
         });
       }
     }),
@@ -127,9 +128,13 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmn
         return { [AUX_PROPS.IMG_SRC]: img[AUX_PROPS.IMG_SRC] };
       },
       set: function(element, values, _node) {
+        var src = values[AUX_PROPS.IMG_SRC];
+        if (!src.startsWith('http') && src.length) {
+          src = 'http://' + src;
+        }
         refreshOverlay(bpmnjs, element);
         return cmdHelper.updateBusinessObject(element, img, {
-          [AUX_PROPS.IMG_SRC]: values[AUX_PROPS.IMG_SRC]
+          [AUX_PROPS.IMG_SRC]: src
         });
       }
     }),

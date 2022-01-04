@@ -37255,9 +37255,6 @@ function getExtensionElements(element, bpmnFactory) {
 
 function getImg(element, bpmnFactory) {
   var extensionElements = getExtensionElements(element, bpmnFactory);
-//  var img = extensionElements.values.filter(function(e) {
-//    return e.$instanceOf('ap:img');
-//  })[0];
 
   var img = (extensionElementsHelper.getExtensionElements(element,
     'ap:Img') || [])[0];
@@ -37295,7 +37292,7 @@ function selectIcon(iconName) {
     selectedIconEl.classList.remove('selected');
   }
   if (!iconName || !iconName.length) {
-    return;
+    iconName = 'z-icon-times';
   }
   var iconEl = document.querySelector(`#${iconName}`);
   if (iconEl) {
@@ -37305,7 +37302,7 @@ function selectIcon(iconName) {
 
 function showImgPreview(data) {
   if (!data || !data.length) {
-    return;
+    data = "";
   }
   const preview = document.querySelector('.aux-img-preview img');
   preview.src = data;
@@ -37333,9 +37330,13 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmn
         return { [AUX_PROPS.LINK_URL]: bo[AUX_PROPS.LINK_URL] };
       },
       set: function(element, values, _node) {
+        var url = values[AUX_PROPS.LINK_URL];
+        if (!url.startsWith('http') && url.length) {
+          url = 'http://' + url;
+        }
         refreshOverlay(bpmnjs, element);
         return cmdHelper.updateBusinessObject(element, bo, {
-          [AUX_PROPS.LINK_URL]: values[AUX_PROPS.LINK_URL]
+          [AUX_PROPS.LINK_URL]: url
         });
       }
     }),
@@ -37361,9 +37362,13 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmn
         return { [AUX_PROPS.IMG_SRC]: img[AUX_PROPS.IMG_SRC] };
       },
       set: function(element, values, _node) {
+        var src = values[AUX_PROPS.IMG_SRC];
+        if (!src.startsWith('http') && src.length) {
+          src = 'http://' + src;
+        }
         refreshOverlay(bpmnjs, element);
         return cmdHelper.updateBusinessObject(element, img, {
-          [AUX_PROPS.IMG_SRC]: values[AUX_PROPS.IMG_SRC]
+          [AUX_PROPS.IMG_SRC]: src
         });
       }
     }),
@@ -37463,6 +37468,9 @@ var ICONS = [
     "ap-bpmn-icon-flag",
     "z-icon-book",
     "ap-bpmn-icon-process-performance"
+  ],
+  [
+    "z-icon-times"
   ]
 ];
 
@@ -37477,7 +37485,11 @@ module.exports = function(options) {
       var icoEl = domify(`<i id="${iconName}" class="${iconName}"></i>`);
       domEvent.bind(icoEl, 'click', function () {
         var input = document.getElementById('camunda-' + escapeHTML(resource.id));
-        input.value = this.id;
+        if (this.id === 'z-icon-times') {
+          input.value = "";
+        } else {
+          input.value = this.id;
+        }
         var ev = new Event('change', { 'bubbles': true });
         input.dispatchEvent(ev);
       })
@@ -37531,7 +37543,9 @@ module.exports = function(options) {
 
   var pickerEl = domify('<div id="ap-bpmn-img-picker"></div>');
   var inputEl = domify('<input id="aux-img-picker-control" type="file">');
+  var removeEl = domify('<input id="aux-img-picker-remove" value="Remove" type="button">');
   pickerEl.appendChild(inputEl);
+  pickerEl.appendChild(removeEl);
   domEvent.bind(inputEl, 'change', function () {
     previewFile(function(dataURL) {
       var input = document.getElementById('camunda-' + escapeHTML(resource.id));
@@ -37539,6 +37553,12 @@ module.exports = function(options) {
       var ev = new Event('change', { 'bubbles': true });
       input.dispatchEvent(ev);
     });
+  })
+  domEvent.bind(removeEl, 'click', function () {
+    var input = document.getElementById('camunda-' + escapeHTML(resource.id));
+    input.value = "";
+    var ev = new Event('change', { 'bubbles': true });
+    input.dispatchEvent(ev);
   })
   pickerEl.appendChild(domify('<div class="aux-img-preview"><img src="" alt="Image preview..." /></div>'));
   resource.html = domify(
@@ -93592,7 +93612,7 @@ function Aux(eventBus, bpmnFactory, elementRegistry, overlays, bpmnjs) {
       $overlay.append(jquery_default()('<div class="aux-image"><img src="' + (imgUrl || imgSrc) + '" /></div>'));
     }
     var iconName = getProp(icon, common["AUX_PROPS"].ICON_NAME);
-    if (url || iconName) {
+    if (url || (iconName && iconName.length)) {
       dtop -= 26;
       var $bar = jquery_default()('<div class="aux-bar"></div>');
       $overlay.append($bar);

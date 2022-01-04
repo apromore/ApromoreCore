@@ -54,6 +54,9 @@ var ICONS = [
     "ap-bpmn-icon-flag",
     "z-icon-book",
     "ap-bpmn-icon-process-performance"
+  ],
+  [
+    "z-icon-times"
   ]
 ];
 
@@ -68,7 +71,11 @@ module.exports = function(options) {
       var icoEl = domify(`<i id="${iconName}" class="${iconName}"></i>`);
       domEvent.bind(icoEl, 'click', function () {
         var input = document.getElementById('camunda-' + escapeHTML(resource.id));
-        input.value = this.id;
+        if (this.id === 'z-icon-times') {
+          input.value = "";
+        } else {
+          input.value = this.id;
+        }
         var ev = new Event('change', { 'bubbles': true });
         input.dispatchEvent(ev);
       })
