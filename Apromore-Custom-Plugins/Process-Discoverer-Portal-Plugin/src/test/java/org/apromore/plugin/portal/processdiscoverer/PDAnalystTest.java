@@ -554,7 +554,7 @@ public class PDAnalystTest extends TestDataSetup {
         assertNotNull(outputData.getProcessSimulationInfo().getId());
         assertEquals(6, outputData.getProcessSimulationInfo().getProcessInstances());
         assertEquals("2010-10-27T20:31:19.308Z", outputData.getProcessSimulationInfo().getStartDateTime());
-        assertEquals(Currency.EUR.toString(), outputData.getProcessSimulationInfo().getCurrency());
+        assertEquals(Currency.EUR, outputData.getProcessSimulationInfo().getCurrency());
         assertNotNull(outputData.getProcessSimulationInfo().getErrors());
         assertNull(outputData.getProcessSimulationInfo().getErrors().getId());
         assertNull(outputData.getProcessSimulationInfo().getErrors().getMessage());
