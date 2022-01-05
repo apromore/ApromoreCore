@@ -37,6 +37,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 class MetaDataServiceCSVImpl implements MetaDataService {
@@ -78,7 +79,8 @@ class MetaDataServiceCSVImpl implements MetaDataService {
     }
 
     @Override
-    public LogMetaData extractMetadata(InputStream in, String charset) throws Exception {
+    public LogMetaData extractMetadata(InputStream in, String charset, Map<String, String> customHeaderMap)
+            throws Exception {
 
         if (!headers.isEmpty()) {
             return new LogMetaData(this.headers);
