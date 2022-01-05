@@ -23477,8 +23477,12 @@ const lighten = function (colorCode) {
   return color.lightness(lightness).hex();
 };
 
-const colors = palette.map((color) => ({ stroke: color, fill: lighten(color) }))
-const colorMap = colors.reduce((acc, color) => { acc[color.stroke.toLowerCase()] = color; return acc; }, {})
+const colors = palette.map(
+  (color) => (
+    { stroke: 'black', fill: lighten(color) }
+  )
+);
+const colorMap = colors.reduce((acc, color) => { acc[color.stroke.toLowerCase()] = color; return acc; }, {});
 
 class ColorContextPad {
   constructor(config, modeling, contextPad, canvas, translate) {
@@ -23512,7 +23516,7 @@ class ColorContextPad {
             color = colorMap[colorCode]
           } else {
             color = {
-              stroke: colorCode,
+              stroke: 'black',
               fill: lighten(colorCode)
             }
           }
