@@ -49259,6 +49259,7 @@ module.exports = function(options) {
   domEvent.bind(removeEl, 'click', function () {
     var input = document.getElementById('camunda-' + escapeHTML(resource.id));
     input.value = "";
+    document.querySelector('#aux-img-picker-control').value = '';
     var ev = new Event('change', { 'bubbles': true });
     input.dispatchEvent(ev);
   })
@@ -106273,7 +106274,7 @@ class EditorApp {
                 items: [
                     {   html: '<div id="ap-editor-props-bar">' +
                           '<div id="ap-editor-props-extension">Metadata</div>' +
-                          '<div id="ap-editor-props-attachment">Attachment</div>' +
+                          '<div id="ap-editor-props-attachment">Attachments</div>' +
                           '<div id="ap-editor-props-simulation">Simulation</div>' +
                           '</div>',
                         region:'north',
@@ -106369,7 +106370,7 @@ class EditorApp {
                         console.log('UI Viewport finished');
                         resolve('UI Viewport finished');
                         setTimeout(() => {
-                            selectTab('extension')
+                            selectTab('extension');
                             $('#ap-editor-props-extension').on('click', () => {
                               selectTab('extension');
                               $('#ap-editor-props-container .bpp-properties-tabs-links > li a[data-tab-target=customTab]')[0].click();

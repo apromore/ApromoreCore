@@ -41,6 +41,7 @@ module.exports = function(options) {
   domEvent.bind(removeEl, 'click', function () {
     var input = document.getElementById('camunda-' + escapeHTML(resource.id));
     input.value = "";
+    document.querySelector('#aux-img-picker-control').value = '';
     var ev = new Event('change', { 'bubbles': true });
     input.dispatchEvent(ev);
   })
