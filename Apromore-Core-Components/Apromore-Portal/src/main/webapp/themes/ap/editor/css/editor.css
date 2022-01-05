@@ -100,7 +100,7 @@
 }
 
 .ap-editor-set-color {
-    background-image: url('../img/swatch.svg') !important;
+    background-image: url('../img/palette.svg') !important;
     background-size: auto 18px !important;
     background-position: center 2px !important;
     background-repeat: no-repeat !important;
@@ -144,6 +144,8 @@
     display: none !important;
 }
 
+/* Property panel styles */
+
 .bpp-properties-panel button,
 .bpp-properties-panel input,
 .bpp-properties-panel select,
@@ -184,43 +186,174 @@
   display: hidden !important;
 }
 
+#ap-editor-props-container .bpp-textfield .clear {
+  border: 1px solid #cccccc;
+  height: 24px;
+}
 
-#ap-editor-props-container.simulation-on #ap-editor-props-simulation {
+/* Property panel simulation section */
+
+#ap-editor-props-container.simulation #ap-editor-props-simulation {
   background-color: #f8f8f8;
 }
 
-#ap-editor-props-container.simulation-on .bpp-properties-tabs-links > .bpp-properties-tab-link.bpp-active {
+#ap-editor-props-container.simulation .bpp-properties-tabs-links > .bpp-properties-tab-link.bpp-active {
   display: inline-block;
 }
 
-#ap-editor-props-container.simulation-on .bpp-properties-tabs-links > .bpp-properties-tab-link:last-child {
+#ap-editor-props-container.simulation .bpp-properties-tabs-links > .bpp-properties-tab-link:first-child,
+#ap-editor-props-container.simulation .bpp-properties-tabs-links > .bpp-properties-tab-link:nth-child(2) {
   display: none;
 }
 
-#ap-editor-props-container.simulation-on .bpp-properties-tab.bpp-active {
+#ap-editor-props-container.simulation .bpp-properties-tab.bpp-active {
   display: block;
 }
 
-#ap-editor-props-container.simulation-on .bpp-properties-tab[data-tab='extensionElements'] {
+#ap-editor-props-container.simulation .bpp-properties-tab[data-tab='attachmentTab'],
+#ap-editor-props-container.simulation .bpp-properties-tab[data-tab='customTab'] {
   display: none;
 }
 
-#ap-editor-props-container.extension-on .bpp-properties-tabs-links > .bpp-properties-tab-link {
+/* Property panel attachment section */
+
+#ap-editor-props-container.attachment .bpp-properties-tabs-links > .bpp-properties-tab-link {
   display: none;
 }
 
-#ap-editor-props-container.extension-on #ap-editor-props-extension {
+#ap-editor-props-container.attachment #ap-editor-props-attachment {
   background-color: #f8f8f8;
 }
 
-#ap-editor-props-container.extension-on .bpp-properties-tabs-links > .bpp-properties-tab-link:last-child {
+#ap-editor-props-container.attachment .bpp-properties-tabs-links > .bpp-properties-tab-link:nth-child(2) {
   display: inline-block;
 }
 
-#ap-editor-props-container.extension-on .bpp-properties-tab {
+#ap-editor-props-container.attachment .bpp-properties-tab {
   display: none;
 }
 
-#ap-editor-props-container.extension-on .bpp-properties-tab[data-tab='extensionElements'] {
+#ap-editor-props-container.attachment .bpp-properties-tab[data-tab='attachmentTab'] {
   display: block;
+}
+
+/* Property panel extension section */
+
+#ap-editor-props-container.extension .bpp-properties-tabs-links > .bpp-properties-tab-link {
+  display: none;
+}
+
+#ap-editor-props-container.extension #ap-editor-props-extension {
+  background-color: #f8f8f8;
+}
+
+#ap-editor-props-container.extension .bpp-properties-tabs-links > .bpp-properties-tab-link:first-child {
+  display: inline-block;
+}
+
+#ap-editor-props-container.extension .bpp-properties-tab {
+  display: none;
+}
+
+#ap-editor-props-container.extension .bpp-properties-tab[data-tab='customTab'] {
+  display: block;
+}
+
+/* Property panel aux entries */
+
+#camunda-aux-icon-name,
+#camunda-aux-img-url {
+  display: none;
+}
+
+#ap-bpmn-icon-picker {
+  color: #606060;
+  margin-top: 7px;
+}
+
+#ap-bpmn-icon-picker > div {
+  margin-bottom: 5px;
+}
+
+#ap-bpmn-icon-picker i {
+  font-size: 20px;
+  display: inline-block;
+  padding: 5px;
+  background-color: #f0f0f0;
+  border: 1px solid transparent;
+  margin-right: 5px;
+}
+
+#ap-bpmn-icon-picker i.selected {
+  border-color: #808080;
+  background-color: white;
+}
+
+#aux-img-picker-remove {
+  margin-left: 5px;
+}
+
+#ap-bpmn-img-picker .aux-img-preview {
+  margin-top: 5px;
+}
+
+#ap-bpmn-img-picker .aux-img-preview img {
+  width: 50%;
+}
+
+/* Aux overlays */
+
+.djs-overlay-aux {
+  border: 1px solid transparent;
+}
+
+.djs-overlay-aux:hover {
+  border: 1px solid #c0c0c0;
+}
+
+.aux-wrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.aux-wrapper .aux-image {
+  padding: 4px;
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+}
+
+.aux-wrapper .aux-bar {
+  width: 100%;
+  height: 26px;
+  flex: 0 0 auto;
+  padding: 4px;
+  display: flex;
+  flex-direction: row;
+}
+
+.aux-wrapper .aux-image img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.aux-wrapper .aux-bar .aux-link {
+  flex: 1 1 auto;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: bottom;
+}
+
+.aux-wrapper .aux-bar .aux-icon {
+  flex: 0 0 auto;
+  font-size: 20px;
+  width: 22px;
+  display: inline-block;
+  margin-right: 8px;
+  color: #606060;
+  vertical-align: bottom;
 }

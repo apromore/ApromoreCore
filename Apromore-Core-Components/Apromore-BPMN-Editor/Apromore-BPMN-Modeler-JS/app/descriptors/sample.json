@@ -1,0 +1,102 @@
+{
+  "name": "Apromore",
+  "prefix": "ap",
+  "uri": "http://apromore.org",
+  "xml": {
+    "tagAlias": "lowerCase"
+  },
+  "associations": [],
+  "types": [
+    {
+      "name": "ApromoreProp",
+      "extends": [
+        "bpmn:BaseElement"
+      ],
+      "properties": [
+        {
+          "name": "url",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "urlText",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "name": "Img",
+      "superClass": [ "Element" ],
+      "properties": [
+        {
+          "name": "src",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "left",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "top",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "width",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "height",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "text",
+          "isBody": true,
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "name": "Icon",
+      "superClass": [ "Element" ],
+      "properties": [
+        {
+          "name": "elIconName",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "name": "Parent",
+      "superClass": [ "Element" ],
+      "properties": [
+        {
+          "name": "children",
+          "isMany": true,
+          "type": "Child"
+        }
+      ]
+    },
+    {
+      "name": "Child",
+      "properties": [
+        {
+          "name": "attr",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "text",
+          "isBody": true,
+          "type": "String"
+        }
+      ]
+    }
+  ]
+}

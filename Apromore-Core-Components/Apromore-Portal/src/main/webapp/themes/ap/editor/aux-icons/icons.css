@@ -1,0 +1,383 @@
+/**
+ * #%L
+ * This file is part of "Apromore Enterprise Edition".
+ * %%
+ * Copyright (C) 2019 - 2021 Apromore Pty Ltd. All Rights Reserved.
+ * %%
+ * NOTICE:  All information contained herein is, and remains the
+ * property of Apromore Pty Ltd and its suppliers, if any.
+ * The intellectual and technical concepts contained herein are
+ * proprietary to Apromore Pty Ltd and its suppliers and may
+ * be covered by U.S. and Foreign Patents, patents in process,
+ * and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this
+ * material is strictly forbidden unless prior written permission
+ * is obtained from Apromore Pty Ltd.
+ * #L%
+ */
+@font-face {
+  font-family: 'icomoon-bpmn-editor';
+  src:  url('fonts/icomoon.eot?u2wd5n');
+  src:  url('fonts/icomoon.eot?u2wd5n#iefix') format('embedded-opentype'),
+    url('fonts/icomoon.ttf?u2wd5n') format('truetype'),
+    url('fonts/icomoon.woff?u2wd5n') format('woff'),
+    url('fonts/icomoon.svg?u2wd5n#icomoon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^="ap-bpmn-icon-"], [class*=" ap-bpmn-icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'icomoon-bpmn-editor' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.ap-bpmn-icon-dashboard-combo1:before {
+  content: "\da236";
+}
+.ap-bpmn-icon-new-dashboard-combo:before {
+  content: "\da235";
+}
+.ap-bpmn-icon-dash-temp2:before {
+  content: "\da234";
+}
+.ap-bpmn-icon-filter-round:before {
+  content: "\da233";
+}
+.ap-bpmn-icon-rule:before {
+  content: "\da232";
+}
+.ap-bpmn-icon-simple-chart:before {
+  content: "\da230";
+}
+.ap-bpmn-icon-add-chart:before {
+  content: "\da229";
+}
+.ap-bpmn-icon-plus1:before {
+  content: "\da227";
+}
+.ap-bpmn-icon-add-average:before {
+  content: "\da226";
+}
+.ap-bpmn-icon-add-median:before {
+  content: "\da225";
+}
+.ap-bpmn-icon-parquet1:before {
+  content: "\da224";
+}
+.ap-bpmn-icon-dash-temp1:before {
+  content: "\da221";
+}
+.ap-bpmn-icon-ap-cogs1:before {
+  content: "\da220";
+}
+.ap-bpmn-icon-ap-meter1:before {
+  content: "\da219";
+}
+.ap-bpmn-icon-calendar1:before {
+  content: "\da218";
+}
+.ap-bpmn-icon-cross-circle-filled1:before {
+  content: "\da217";
+}
+.ap-bpmn-icon-check-circle-filled1:before {
+  content: "\da216";
+}
+.ap-bpmn-icon-cross-circle1:before {
+  content: "\da215";
+}
+.ap-bpmn-icon-check-circle1:before {
+  content: "\da214";
+}
+.ap-bpmn-icon-blank:before {
+  content: "\da213";
+}
+.ap-bpmn-icon-new-dashboard:before {
+  content: "\da212";
+}
+.ap-bpmn-icon-template-menu:before {
+  content: "\da211";
+}
+.ap-bpmn-icon-select-block:before {
+  content: "\da210";
+}
+.ap-bpmn-icon-download_menu2:before {
+  content: "\da209";
+}
+.ap-bpmn-icon-save-menu2:before {
+  content: "\da207";
+}
+.ap-bpmn-icon-ap-download-image:before {
+  content: "\da206";
+}
+.ap-bpmn-icon-ap-download-pdf:before {
+  content: "\da205";
+}
+.ap-bpmn-icon-download-csv:before {
+  content: "\da204";
+}
+.ap-bpmn-icon-download-docx:before {
+  content: "\da203";
+}
+.ap-bpmn-icon-download-pptx:before {
+  content: "\da202";
+}
+.ap-bpmn-icon-download-menu:before {
+  content: "\da201";
+}
+.ap-bpmn-icon-reset1:before {
+  content: "\da074";
+}
+.ap-bpmn-icon-edit1:before {
+  content: "\da073";
+}
+.ap-bpmn-icon-home:before {
+  content: "\da072";
+}
+.ap-bpmn-icon-ap-download-h1:before {
+  content: "\da071";
+}
+.ap-bpmn-icon-hour-glass:before {
+  content: "\da070";
+}
+.ap-bpmn-icon-ap-export-file1:before {
+  content: "\da108";
+}
+.ap-bpmn-icon-save-menu:before {
+  content: "\da107";
+}
+.ap-bpmn-icon-open_file1:before {
+  content: "\da106";
+}
+.ap-bpmn-icon-fat-arrow-right1:before {
+  content: "\da105";
+}
+.ap-bpmn-icon-ap-eye-open1:before {
+  content: "\da104";
+}
+.ap-bpmn-icon-ap-rename1:before {
+  content: "\da103";
+}
+.ap-bpmn-icon-ap-share1:before {
+  content: "\da102";
+}
+.ap-bpmn-icon-ap-dashboard:before {
+  content: "\da101";
+}
+.ap-bpmn-icon-process-performance:before {
+  content: "\da069";
+}
+.ap-bpmn-icon-tile:before {
+  content: "\da068";
+}
+.ap-bpmn-icon-brush:before {
+  content: "\da067";
+}
+.ap-bpmn-icon-ap-trash1:before {
+  content: "\da066";
+}
+.ap-bpmn-icon-ap-filter1:before {
+  content: "\da065";
+}
+.ap-bpmn-icon-clone:before {
+  content: "\da064";
+}
+.ap-bpmn-icon-ap-download:before {
+  content: "\da063";
+}
+.ap-bpmn-icon-ap-upload:before {
+  content: "\da062";
+}
+.ap-bpmn-icon-polarspline:before {
+  content: "\da061";
+}
+.ap-bpmn-icon-polararea:before {
+  content: "\da060";
+}
+.ap-bpmn-icon-polarcolumn:before {
+  content: "\da059";
+}
+.ap-bpmn-icon-polarline:before {
+  content: "\da058";
+}
+.ap-bpmn-icon-clouddown:before {
+  content: "\da057";
+}
+.ap-bpmn-icon-cloudup:before {
+  content: "\da056";
+}
+.ap-bpmn-icon-ap-duration:before {
+  content: "\da055";
+}
+.ap-bpmn-icon-ap-cube:before {
+  content: "\da054";
+}
+.ap-bpmn-icon-ap-flag:before {
+  content: "\da053";
+}
+.ap-bpmn-icon-ap-road:before {
+  content: "\da052";
+}
+.ap-bpmn-icon-ap-save1:before {
+  content: "\da051";
+}
+.ap-bpmn-icon-ap-save-as1:before {
+  content: "\da050";
+}
+.ap-bpmn-icon-schedule:before {
+  content: "\da049";
+}
+.ap-bpmn-icon-ap-help:before {
+  content: "\da047";
+}
+.ap-bpmn-icon-ap-user-circle:before {
+  content: "\da048";
+}
+.ap-bpmn-icon-activitiescog:before {
+  content: "\da001";
+}
+.ap-bpmn-icon-anyattribute:before {
+  content: "\da003";
+}
+.ap-bpmn-icon-averageduration:before {
+  content: "\da004";
+}
+.ap-bpmn-icon-bitcoin:before {
+  content: "\da005";
+}
+.ap-bpmn-icon-card1:before {
+  content: "\da006";
+}
+.ap-bpmn-icon-card2:before {
+  content: "\da007";
+}
+.ap-bpmn-icon-caseovertime:before {
+  content: "\da008";
+}
+.ap-bpmn-icon-caseutilisation:before {
+  content: "\da009";
+}
+.ap-bpmn-icon-casevari:before {
+  content: "\da043";
+}
+.ap-bpmn-icon-coins:before {
+  content: "\da010";
+}
+.ap-bpmn-icon-copyrule:before {
+  content: "\da011";
+}
+.ap-bpmn-icon-cube:before {
+  content: "\da012";
+}
+.ap-bpmn-icon-cubes:before {
+  content: "\da013";
+}
+.ap-bpmn-icon-dollar:before {
+  content: "\da014";
+}
+.ap-bpmn-icon-endtime:before {
+  content: "\e900";
+}
+.ap-bpmn-icon-euro:before {
+  content: "\da016";
+}
+.ap-bpmn-icon-eventattribute:before {
+  content: "\da017";
+}
+.ap-bpmn-icon-eventscase:before {
+  content: "\da018";
+}
+.ap-bpmn-icon-eventsovertime:before {
+  content: "\da019";
+}
+.ap-bpmn-icon-flag:before {
+  content: "\da020";
+}
+.ap-bpmn-icon-frequency:before {
+  content: "\da021";
+}
+.ap-bpmn-icon-gold:before {
+  content: "\da022";
+}
+.ap-bpmn-icon-info:before {
+  content: "\da023";
+}
+.ap-bpmn-icon-info-circle:before {
+  content: "\da024";
+}
+.ap-bpmn-icon-logscale:before {
+  content: "\da025";
+}
+.ap-bpmn-icon-medianitem:before {
+  content: "\da026";
+}
+.ap-bpmn-icon-notes:before {
+  content: "\da027";
+}
+.ap-bpmn-icon-overview:before {
+  content: "\da028";
+}
+.ap-bpmn-icon-palette:before {
+  content: "\da029";
+}
+.ap-bpmn-icon-pasterule:before {
+  content: "\da030";
+}
+.ap-bpmn-icon-pound:before {
+  content: "\da031";
+}
+.ap-bpmn-icon-processlog:before {
+  content: "\da046";
+}
+.ap-bpmn-icon-processtime:before {
+  content: "\da032";
+}
+.ap-bpmn-icon-rangearrow:before {
+  content: "\da033";
+}
+.ap-bpmn-icon-relativefrequency:before {
+  content: "\da034";
+}
+.ap-bpmn-icon-resources:before {
+  content: "\da035";
+}
+.ap-bpmn-icon-sortasc:before {
+  content: "\da002";
+}
+.ap-bpmn-icon-starttime:before {
+  content: "\da036";
+}
+.ap-bpmn-icon-timer:before {
+  content: "\da037";
+}
+.ap-bpmn-icon-totalduration:before {
+  content: "\da038";
+}
+.ap-bpmn-icon-trace:before {
+  content: "\da039";
+}
+.ap-bpmn-icon-user:before {
+  content: "\da040";
+}
+.ap-bpmn-icon-user-g:before {
+  content: "\da041";
+}
+.ap-bpmn-icon-users:before {
+  content: "\da042";
+}
+.ap-bpmn-icon-waittime:before {
+  content: "\da044";
+}
+.ap-bpmn-icon-yen:before {
+  content: "\da045";
+}
