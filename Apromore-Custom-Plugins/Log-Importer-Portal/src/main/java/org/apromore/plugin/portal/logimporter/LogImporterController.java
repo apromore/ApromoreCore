@@ -204,7 +204,7 @@ public class LogImporterController extends SelectorComposer<Window> implements C
                     Messagebox.show(getLabel("failedImportEncoding"), getLabel("error"), Messagebox.OK,
                             Messagebox.ERROR);
                 } finally {
-                    if (logMetaData != null && sampleLog.isEmpty()) {
+                    if (logMetaData != null && !sampleLog.isEmpty()) {
                         setUpUI();
                     }
                 }
