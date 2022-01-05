@@ -107,31 +107,6 @@ public class ParquetImporterParquetImplUnitTest {
     }
 
     /**
-     * Test {@link MetaDataService} with column header mapping in <code>test1-valid.parquet</code>.
-     */
-    @Test
-    public void testColumnHeaderMapping() throws Exception {
-
-        LOGGER.info("\n************************************\ntest column header mapping");
-
-        String testFile = "/test1-valid.parquet";
-        Map<String, String> columnHeaderMap = new HashMap<>();
-        columnHeaderMap.put("Non-existing column name", "test");
-        columnHeaderMap.put("case_id", "Case ID");
-        columnHeaderMap.put("activity", "Activity Instance");
-        columnHeaderMap.put("start_date", "Start Date");
-        columnHeaderMap.put("completion_time", "End Time");
-
-        // Perform the test
-        LogMetaData logMetaData = metaDataService
-                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", columnHeaderMap);
-
-        List<String> MAPPED_EXPECTED_HEADER = Arrays.asList("Case ID", "Activity Instance", "Start Date", "End Time", "process_type");
-        // Validate result
-        assertEquals(MAPPED_EXPECTED_HEADER, logMetaData.getHeader());
-    }
-
-    /**
      * Test {@link ParquetImporterParquetImpl} against an valid parquet log <code>test1-valid.parquet</code>.
      */
     @Test
