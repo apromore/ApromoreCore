@@ -65,7 +65,7 @@ public class LogStatsControllerWithAPMLog extends LogStatsController {
     private Button btnActivityHeading;
     private Label lblActivityHeading;
     
-    private Label lblCasePercent, lblVariantPercent, lblEventPercent;
+    private Label lblCasePercent, lblVariantPercent, lblEventPercent, lblVariabilityRatioPercent;
     private Label lblCaseNumberFiltered, lblCaseNumberTotal, lblVariantNumberFiltered, lblVariantNumberTotal, lblEventNumberFiltered, lblEventNumberTotal;
     private Label lblNodePercent, lblNodeNumberFiltered, lblNodeNumberTotal;
 
@@ -108,6 +108,7 @@ public class LogStatsControllerWithAPMLog extends LogStatsController {
         lblVariantPercent = (Label) wdLogStats.getFellow("lblVariantPercent");
         lblEventPercent = (Label) wdLogStats.getFellow("lblEventPercent");
         lblNodePercent = (Label) wdLogStats.getFellow("lblNodePercent");
+        lblVariabilityRatioPercent = (Label) wdLogStats.getFellow("lblVariabilityRatioPercent");
 
         lblCaseNumberFiltered = (Label) wdLogStats.getFellow("lblCaseNumberFiltered");
         lblCaseNumberTotal = (Label) wdLogStats.getFellow("lblCaseNumberTotal");
@@ -220,6 +221,8 @@ public class LogStatsControllerWithAPMLog extends LogStatsController {
         setNumber(this.lblNodeNumberFiltered, filteredNodeCount);
         setNumber(this.lblNodeNumberTotal, totalNodeCount);
         showPercentage(this.lblNodePercent, filteredNodeCount, totalNodeCount, "perspective");
+
+        showPercentage(this.lblVariabilityRatioPercent, filteredVariantCount, filteredCaseCount, null, true);
     }
 
     private void setNumber(Label label, long number) {
@@ -229,7 +232,7 @@ public class LogStatsControllerWithAPMLog extends LogStatsController {
         label.setClientDataAttribute("raw", strNumber);
     }
 
-    private void showPercentage(Label label, long filtered, long total, String chartType) {
+    private void showPercentage(Label label, long filtered, long total, String chartType, boolean colorCode) {
         DecimalFormat decimalFormat = new DecimalFormat("###############.#");
         double retained = 100.0;
 
@@ -243,7 +246,28 @@ public class LogStatsControllerWithAPMLog extends LogStatsController {
             retainedPercent = "~0%";
         }
         label.setValue(retainedPercent);
-        Clients.evalJavaScript("Ap.pd.genChart('" + chartType + "', " + retained + ")");
+        if (colorCode) {
+            label.setSclass("ap-pd-percent-tier-" + getPercentageTier(retained));
+        }
+
+        if (chartType != null) {
+            Clients.evalJavaScript("Ap.pd.genChart('" + chartType + "', " + retained + ")");
+        }
+    }
+
+    private void showPercentage(Label label, long filtered, long total, String chartType) {
+        showPercentage(label, filtered, total, chartType, false);
+    }
+
+    private int getPercentageTier(double percentage) {
+        int tier = (int) percentage / 20 + 1;
+        if (tier < 0) {
+            return 1;
+        } else if (tier > 5) {
+            return 5;
+        } else {
+            return tier;
+        }
     }
 
     private String toShortString(long longNumber) {
