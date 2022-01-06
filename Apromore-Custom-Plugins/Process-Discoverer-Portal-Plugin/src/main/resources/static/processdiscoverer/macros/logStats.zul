@@ -54,7 +54,7 @@
     <div sclass="ap-pd-connector">
       <div class="ap-pd-connector-line-left"/>
       <div class="ap-pd-connector-text">
-        <label id="lblVariabilityRatioPercent" value="50%"/>
+        <label id="lblVariabilityRatioPercent"/>
       </div>
       <div class="ap-pd-connector-line-right"/>
     </div>
