@@ -1277,17 +1277,17 @@ table.ap-pd-case-activity-attrs td:nth-child(2) {
 
 .ap-pd-connector-line-left,  .ap-pd-connector-line-right{
     border-bottom: 1px solid black;
-    width: 1vw;
+    width: 0.8vw;
     position: absolute;
     top: 8px;
 }
 
 .ap-pd-connector-line-left {
-    left: -1vw;
+    left: -0.8vw;
 }
 
 .ap-pd-connector-line-right {
-    right: -1vw;
+    right: -0.8vw;
 }
 
 .ap-pd-connector-line-left:before, .ap-pd-connector-line-right:after {
