@@ -18,15 +18,31 @@
 package org.apromore.processsimulation.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apromore.logman.attribute.log.AttributeLog;
+import org.apromore.logman.attribute.graph.MeasureAggregation;
+import org.apromore.logman.attribute.graph.MeasureRelation;
+import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.logman.attribute.log.AttributeLogSummary;
-import org.apromore.processsimulation.model.*;
+import org.apromore.processdiscoverer.Abstraction;
+import org.apromore.processdiscoverer.abstraction.AbstractAbstraction;
+import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Activity;
+import org.apromore.processsimulation.model.Currency;
+import org.apromore.processsimulation.model.Distribution;
+import org.apromore.processsimulation.model.DistributionType;
+import org.apromore.processsimulation.model.Element;
+import org.apromore.processsimulation.model.Errors;
+import org.apromore.processsimulation.model.ExtensionElements;
+import org.apromore.processsimulation.model.ProcessSimulationInfo;
+import org.apromore.processsimulation.model.TimeUnit;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import java.io.StringWriter;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
@@ -60,19 +76,24 @@ public class SimulationInfoService {
         }
     }
 
-    public ProcessSimulationInfo deriveSimulationInfo(final AttributeLog attributeLog) {
+    public ProcessSimulationInfo deriveSimulationInfo(
+            final Abstraction abstraction) {
 
         ProcessSimulationInfo processSimulationInfo = null;
-        if (attributeLog != null) {
-            AttributeLogSummary logSummary = attributeLog.getLogSummary();
+        if (abstraction instanceof AbstractAbstraction &&
+                abstraction != null &&
+                ((AbstractAbstraction) abstraction).getLog() != null) {
 
-            if(logSummary != null){
+            AttributeLogSummary logSummary = ((AbstractAbstraction) abstraction).getLog().getLogSummary();
+
+            if (logSummary != null) {
                 ProcessSimulationInfo.ProcessSimulationInfoBuilder builder =
                         ProcessSimulationInfo.builder()
                                 .id("qbp_" + Locale.getDefault().getLanguage() + UUID.randomUUID())
                                 .errors(Errors.builder().build());
 
                 deriveGeneralSimulationInfo(builder, logSummary);
+                deriveTaskSimulationInfo(builder, abstraction);
 
                 processSimulationInfo = builder.build();
             }
@@ -85,22 +106,53 @@ public class SimulationInfoService {
             ProcessSimulationInfo.ProcessSimulationInfoBuilder builder,
             final AttributeLogSummary logSummary) {
 
-            long startTimeMillis = logSummary.getStartTime();
-            long endTimeMillis = logSummary.getEndTime();
-            long interArrivalTime = Math.round(
-                    ((double) (endTimeMillis - startTimeMillis) / (double) 1000) / (double) logSummary.getCaseCount());
+        long startTimeMillis = logSummary.getStartTime();
+        long endTimeMillis = logSummary.getEndTime();
+        long interArrivalTime = Math.round(
+                ((double) (endTimeMillis - startTimeMillis) / (double) 1000) / (double) logSummary.getCaseCount());
 
-            builder.processInstances(logSummary.getCaseCount())
-                    .currency(Currency.EUR)
-                    .startDateTime(Instant.ofEpochMilli(logSummary.getStartTime()).toString())
-                    .arrivalRateDistribution(
-                            ArrivalRateDistribution.builder()
-                                    .timeUnit(TimeUnit.SECONDS)
+        builder.processInstances(logSummary.getCaseCount())
+                .currency(Currency.EUR)
+                .startDateTime(Instant.ofEpochMilli(logSummary.getStartTime()).toString())
+                .arrivalRateDistribution(
+                        Distribution.builder()
+                                .timeUnit(TimeUnit.SECONDS)
+                                .type(DistributionType.EXPONENTIAL)
+                                .arg1(Long.toString(interArrivalTime))
+                                .mean(NAN)
+                                .arg2(NAN)
+                                .build());
+    }
+
+    private void deriveTaskSimulationInfo(
+            ProcessSimulationInfo.ProcessSimulationInfoBuilder builder,
+            final Abstraction abstraction) {
+
+        if (abstraction.getDiagram() != null && abstraction.getDiagram().getNodes() != null) {
+            List<Element> taskList = new ArrayList<>();
+
+            abstraction.getDiagram().getNodes().forEach(bpmnNode -> {
+                BigDecimal nodeAvgDuration = new BigDecimal(((AbstractAbstraction) abstraction).getLog().getGraphView()
+                        .getNodeWeight(bpmnNode.getLabel(), MeasureType.DURATION,
+                                MeasureAggregation.MEAN, MeasureRelation.ABSOLUTE) / 1000)
+                        .setScale(2, RoundingMode.HALF_UP);
+
+                if (bpmnNode instanceof Activity) {
+                    taskList.add(Element.builder()
+                            .elementId(bpmnNode.getId().toString())
+                            .distributionDuration(Distribution.builder()
                                     .type(DistributionType.EXPONENTIAL)
-                                    .arg1(Long.toString(interArrivalTime))
-                                    .mean(NAN)
+                                    .arg1(nodeAvgDuration.toString())
                                     .arg2(NAN)
-                                    .build());
+                                    .mean(NAN)
+                                    .timeUnit(TimeUnit.SECONDS)
+                                    .build())
+                            .build());
+                }
+            });
+
+            builder.tasks(taskList);
+        }
     }
 
 

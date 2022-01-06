@@ -20,7 +20,14 @@ package org.apromore.processsimulation.service;
 import org.apache.commons.io.IOUtils;
 import org.apromore.logman.attribute.log.AttributeLog;
 import org.apromore.logman.attribute.log.AttributeLogSummary;
-import org.apromore.processsimulation.model.*;
+import org.apromore.processdiscoverer.abstraction.AbstractAbstraction;
+import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
+import org.apromore.processsimulation.model.Currency;
+import org.apromore.processsimulation.model.Distribution;
+import org.apromore.processsimulation.model.DistributionType;
+import org.apromore.processsimulation.model.Errors;
+import org.apromore.processsimulation.model.ProcessSimulationInfo;
+import org.apromore.processsimulation.model.TimeUnit;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -39,7 +46,9 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -65,21 +74,26 @@ class SimulationInfoServiceTest {
         should_enrich_with_simulation_info();
         should_enrich_with_simulation_info_for_model_with_no_xmlns_prefix();
         should_not_enrich_if_no_process_simulation_info();
-
     }
 
     @Test
     void should_successfully_derive_simulation_info() {
         // given
+        AbstractAbstraction mockAbstraction = mock(AbstractAbstraction.class);
         AttributeLog mockAttributeLog = mock(AttributeLog.class);
         AttributeLogSummary mockAttributeLogSummary = mock(AttributeLogSummary.class);
+        BPMNDiagram mockDiagram = mock(BPMNDiagram.class);
+
+        when(mockAbstraction.getLog()).thenReturn(mockAttributeLog);
         when(mockAttributeLog.getLogSummary()).thenReturn(mockAttributeLogSummary);
         when(mockAttributeLogSummary.getCaseCount()).thenReturn(100L);
         when(mockAttributeLogSummary.getStartTime()).thenReturn(1577797200000L);
         when(mockAttributeLogSummary.getEndTime()).thenReturn(1580475600000L);
+        when(mockAbstraction.getDiagram()).thenReturn(mockDiagram);
+        when(mockDiagram.getNodes()).thenReturn(null);
 
         // when
-        ProcessSimulationInfo processSimulationInfo = simulationInfoService.deriveSimulationInfo(mockAttributeLog);
+        ProcessSimulationInfo processSimulationInfo = simulationInfoService.deriveSimulationInfo(mockAbstraction);
 
         // then
         assertNotNull(processSimulationInfo.getId());
@@ -98,10 +112,11 @@ class SimulationInfoServiceTest {
     @Test
     void should_return_null_if_no_attribute_log() {
         // given
-        AttributeLog mockAttributeLog = null;
+        AbstractAbstraction mockAbstraction = mock(AbstractAbstraction.class);
+        when(mockAbstraction.getLog()).thenReturn(null);
 
         // when
-        ProcessSimulationInfo processSimulationInfo = simulationInfoService.deriveSimulationInfo(mockAttributeLog);
+        ProcessSimulationInfo processSimulationInfo = simulationInfoService.deriveSimulationInfo(mockAbstraction);
 
         // then
         assertNull(processSimulationInfo);
@@ -110,11 +125,13 @@ class SimulationInfoServiceTest {
     @Test
     void should_return_null_if_no_log_summary() {
         // given
+        AbstractAbstraction mockAbstraction = mock(AbstractAbstraction.class);
         AttributeLog mockAttributeLog = mock(AttributeLog.class);
+        when(mockAbstraction.getLog()).thenReturn(mockAttributeLog);
         when(mockAttributeLog.getLogSummary()).thenReturn(null);
 
         // when
-        ProcessSimulationInfo processSimulationInfo = simulationInfoService.deriveSimulationInfo(mockAttributeLog);
+        ProcessSimulationInfo processSimulationInfo = simulationInfoService.deriveSimulationInfo(mockAbstraction);
 
         // then
         assertNull(processSimulationInfo);
@@ -202,7 +219,7 @@ class SimulationInfoServiceTest {
                 .startDateTime(Instant.ofEpochMilli(1577797200000L).toString())
                 .processInstances(100)
                 .arrivalRateDistribution(
-                        ArrivalRateDistribution.builder()
+                        Distribution.builder()
                                 .type(DistributionType.EXPONENTIAL)
                                 .arg1("26784")
                                 .arg2("NaN")

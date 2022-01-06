@@ -32,7 +32,7 @@ import javax.xml.bind.annotation.XmlElement;
 @NoArgsConstructor
 @AllArgsConstructor
 @XmlAccessorType(XmlAccessType.FIELD)
-public class ArrivalRateDistribution {
+public class Distribution {
     @XmlAttribute
     private DistributionType type;
     @XmlAttribute

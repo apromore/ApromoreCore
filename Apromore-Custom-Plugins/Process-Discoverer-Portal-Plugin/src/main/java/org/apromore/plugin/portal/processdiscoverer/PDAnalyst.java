@@ -56,6 +56,7 @@ import org.apromore.plugin.portal.processdiscoverer.vis.ProcessVisualizer;
 import org.apromore.processdiscoverer.Abstraction;
 import org.apromore.processdiscoverer.AbstractionParams;
 import org.apromore.processdiscoverer.ProcessDiscoverer;
+import org.apromore.processsimulation.model.ProcessSimulationInfo;
 import org.apromore.processsimulation.service.SimulationInfoService;
 import org.apromore.service.EventLogService;
 import org.deckfour.xes.model.XLog;
@@ -236,9 +237,12 @@ public class PDAnalyst {
             currentAbstraction = dfgAbstraction;
         }
 
+        ProcessSimulationInfo simulationInfo = SimulationInfoService.getInstance()
+                .deriveSimulationInfo(currentAbstraction);
+
         String visualizedText = processVisualizer.generateVisualizationText(currentAbstraction);
-        return Optional.of(new OutputData(currentAbstraction, visualizedText,
-                SimulationInfoService.getInstance().deriveSimulationInfo(getAttributeLog())));
+
+        return Optional.of(new OutputData(currentAbstraction, visualizedText, simulationInfo));
     }
 
     public OutputData discoverTrace(String traceID, UserOptionsData userOptions) throws Exception {
