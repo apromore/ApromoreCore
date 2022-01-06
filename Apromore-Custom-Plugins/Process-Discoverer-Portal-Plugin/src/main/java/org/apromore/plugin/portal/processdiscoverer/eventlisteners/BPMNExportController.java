@@ -22,14 +22,7 @@
 
 package org.apromore.plugin.portal.processdiscoverer.eventlisteners;
 
-import java.io.ByteArrayInputStream;
-import java.text.MessageFormat;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.xml.datatype.DatatypeFactory;
-
+import lombok.extern.slf4j.Slf4j;
 import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.plugin.portal.PortalLoggerFactory;
@@ -43,6 +36,7 @@ import org.apromore.processmining.models.graphbased.directed.ContainableDirected
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNEdge;
 import org.apromore.processmining.plugins.bpmn.BpmnDefinitions;
+import org.apromore.processsimulation.service.SimulationInfoService;
 import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
 import org.zkoss.zk.ui.Executions;
@@ -50,11 +44,14 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
-import org.zkoss.zul.Button;
-import org.zkoss.zul.Label;
-import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.Progressmeter;
-import org.zkoss.zul.Window;
+import org.zkoss.zul.*;
+
+import javax.xml.datatype.DatatypeFactory;
+import java.io.ByteArrayInputStream;
+import java.text.MessageFormat;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.apromore.commons.item.Constants.HOME_FOLDER_NAME;
 
@@ -73,6 +70,7 @@ import static org.apromore.commons.item.Constants.HOME_FOLDER_NAME;
  * @modified Bruce Nguyen
  *
  */
+@Slf4j
 public class BPMNExportController extends AbstractController {
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(PDController.class);
     private static final String EVENT_QUEUE = BPMNExportController.class.getCanonicalName();
@@ -81,17 +79,17 @@ public class BPMNExportController extends AbstractController {
     private static final String MINING_COMPLETE = "MINING_COMPLETE";
     private static final String MINING_EXCEPTION = "MINING_EXCEPTION";
     private static final String ANNOTATION_EXCEPTION = "ANNOTATION_EXCEPTION";
-    private EventQueue<Event> eventQueue = null;
+    private EventQueue<Event> eventQueue;
 
-    private PDController controller = null;
+    private PDController controller;
     private String minedModel = null;
-    
+
     //Progress window
     private Window window;
     private Label descriptionLabel;
     private Progressmeter fractionCompleteProgressmeter;
-    private ProgressEventListener progressListener = null;
-    private boolean showProgressBar = false;
+    private ProgressEventListener progressListener;
+    private boolean showProgressBar;
 
     public BPMNExportController(PDController controller, boolean showProgressBar) {
         super(controller);
@@ -158,7 +156,7 @@ public class BPMNExportController extends AbstractController {
             window = (Window) Executions.createComponents("mineAndSave.zul", null, null);
             ((Button) window.getFellow("cancel")).addEventListener("onClick", new EventListener<Event>() {
                 @Override
-                public void onEvent(Event event) throws Exception {
+                public void onEvent(Event event) {
                     window.detach();
                 }
             });
@@ -196,8 +194,8 @@ public class BPMNExportController extends AbstractController {
         
         // Prepare diagram for export
         BPMNDiagram d = abs.getValidBPMNDiagram();
-        BpmnDefinitions.BpmnDefinitionsBuilder definitionsBuilder = null;
-        Map<ContainableDirectedGraphElement, String> labelMapping = null;
+        BpmnDefinitions.BpmnDefinitionsBuilder definitionsBuilder;
+        Map<ContainableDirectedGraphElement, String> labelMapping;
         labelMapping = cleanDiagramBeforeExport(d);
         if (!controller.getUserOptions().getBPMNMode()) {
             definitionsBuilder = new BpmnDefinitions.BpmnDefinitionsBuilder(d); // recreate layout
@@ -269,12 +267,15 @@ public class BPMNExportController extends AbstractController {
                         boolean publicModel = false;
 
                         try {
+                            String enrichedBpmnXml = SimulationInfoService.getInstance()
+                                    .enrichWithSimulationInfo(minedModel, controller.getOutputData().getProcessSimulationInfo());
+
                             ProcessModelVersion pmv = controller.getProcessService().importProcess(user,
                                     controller.getContextData().getFolderId(),
                                     modelName,
                                     version,
                                     "BPMN 2.0",
-                                    new ByteArrayInputStream(minedModel.getBytes()),
+                                    new ByteArrayInputStream(enrichedBpmnXml.getBytes()),
                                     "",
                                     "Model generated by the Apromore BPMN process mining service.",
                                     now,  // creation timestamp
@@ -301,6 +302,5 @@ public class BPMNExportController extends AbstractController {
             });
 
 
-    };
-
+    }
 }

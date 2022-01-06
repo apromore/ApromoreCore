@@ -22,70 +22,17 @@
 
 package org.apromore.logman.attribute.log;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@AllArgsConstructor
+@Getter
 public class AttributeLogSummary  {
-    private long eventCount = 0;
-    private long actCount = 0;
-    private long caseCount = 0;
-    private long variantCount = 0;
+    private long eventCount;
+    private long activityCount;
+    private long caseCount;
+    private long variantCount;
     private long startTime = Long.MAX_VALUE;
     private long endTime = Long.MIN_VALUE;
     private double traceDurationMin, traceDurationMax, traceDurationMean, traceDurationMedian;
-    
-    public AttributeLogSummary(long eventCount, long actCount, long caseCount, long variantCount,
-                              long startTime, long endTime,
-                              double traceDurationMin, double traceDurationMax, 
-                              double traceDurationMean, double traceDurationMedian) {
-        this.eventCount = eventCount;
-        this.actCount = actCount;
-        this.caseCount = caseCount;
-        this.variantCount = variantCount;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.traceDurationMin = traceDurationMin;
-        this.traceDurationMax = traceDurationMax;
-        this.traceDurationMean = traceDurationMean;
-        this.traceDurationMedian = traceDurationMedian;
-    }
-    
-    public long getEventCount() {
-        return eventCount;
-    }
-    
-    public long getActivityCount() {
-        return actCount;
-    }
-    
-    public long getCaseCount() {
-        return caseCount;
-    }
-    
-    public long getVariantCount() {
-        return variantCount;
-    }
-    
-    public long getLogMinTime() {
-        return startTime;
-    }
-    
-    public long getLogMaxTime() {
-        return endTime;
-    }
-    
-    public double getTraceDurationMin() {
-    	return traceDurationMin;
-    }
-    
-    public double getTraceDurationMax() {
-    	return traceDurationMax;
-    }
-    
-    public double getTraceDurationMean() {
-    	return traceDurationMean;
-    }
-    
-    public double getTraceDurationMedian() {
-    	return traceDurationMedian;
-    }
-
-
 }
