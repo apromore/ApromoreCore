@@ -1321,7 +1321,7 @@ table.ap-pd-case-activity-attrs td:nth-child(2) {
 }
 
 .ap-pd-percent-tier-4 {
-    color: var(--ap-c-sunset);
+    color: #f93c00;
 }
 
 .ap-pd-percent-tier-5 {
