@@ -15,7 +15,7 @@ var createSimulationParametersTab = require('./tabs/SimulationParametersTab'),
     createResourceTab = require('./tabs/ResourceTab'),
     createGatewayTab = require('./tabs/GatewayTab'),
     createCustomTab = require('./tabs/CustomTab'),
-    createAuxTab = require('./tabs/AuxTab'),
+    createAuxTab = require('./tabs/AttachmentTab'),
     createIntermediateAndBoundaryEventsTab = require('./tabs/IntermediateAndBoundaryEventsTab');
 
 function removeTasks(element, bpmnFactory, elementRegistry) {
