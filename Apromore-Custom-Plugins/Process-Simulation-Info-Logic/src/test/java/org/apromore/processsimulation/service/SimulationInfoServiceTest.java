@@ -18,10 +18,15 @@
 package org.apromore.processsimulation.service;
 
 import org.apache.commons.io.IOUtils;
+import org.apromore.logman.attribute.graph.AttributeLogGraph;
+import org.apromore.logman.attribute.graph.MeasureAggregation;
+import org.apromore.logman.attribute.graph.MeasureRelation;
+import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.logman.attribute.log.AttributeLog;
 import org.apromore.logman.attribute.log.AttributeLogSummary;
 import org.apromore.processdiscoverer.abstraction.AbstractAbstraction;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
+import org.apromore.processmining.plugins.bpmn.plugins.BpmnImportPlugin;
 import org.apromore.processsimulation.model.Currency;
 import org.apromore.processsimulation.model.Distribution;
 import org.apromore.processsimulation.model.DistributionType;
@@ -45,26 +50,19 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class SimulationInfoServiceTest {
 
     private final SimulationInfoService simulationInfoService = SimulationInfoService.getInstance();
-
-    /**
-     * Test method encapsulating all other tests to test capturing sonar cloud coverage
-     */
-    @Test
-    void testDeriveSimulationInfo() {
-        should_successfully_derive_simulation_info();
-        should_return_null_if_no_attribute_log();
-        should_return_null_if_no_log_summary();
-    }
 
     /**
      * Test method encapsulating all other tests to test capturing sonar cloud coverage
@@ -77,7 +75,7 @@ class SimulationInfoServiceTest {
     }
 
     @Test
-    void should_successfully_derive_simulation_info() {
+    void should_successfully_derive_general_simulation_info() {
         // given
         AbstractAbstraction mockAbstraction = mock(AbstractAbstraction.class);
         AttributeLog mockAttributeLog = mock(AttributeLog.class);
@@ -96,6 +94,64 @@ class SimulationInfoServiceTest {
         ProcessSimulationInfo processSimulationInfo = simulationInfoService.deriveSimulationInfo(mockAbstraction);
 
         // then
+        assertGeneralSimulationInfo(processSimulationInfo);
+    }
+
+    @Test
+    void should_derive_task_simulation_info() throws Exception {
+        // given
+        AbstractAbstraction mockAbstraction = mock(AbstractAbstraction.class);
+        AttributeLog mockAttributeLog = mock(AttributeLog.class);
+        AttributeLogSummary mockAttributeLogSummary = mock(AttributeLogSummary.class);
+        AttributeLogGraph mockAttributeLogGraph = mock(AttributeLogGraph.class);
+        BPMNDiagram mockDiagram = readBPMNDiagram("/no_simulation_info_without_namespace_prefix.bpmn");
+
+        when(mockAbstraction.getLog()).thenReturn(mockAttributeLog);
+        when(mockAttributeLog.getLogSummary()).thenReturn(mockAttributeLogSummary);
+        when(mockAttributeLogSummary.getCaseCount()).thenReturn(100L);
+        when(mockAttributeLogSummary.getStartTime()).thenReturn(1577797200000L);
+        when(mockAttributeLogSummary.getEndTime()).thenReturn(1580475600000L);
+
+        when(mockAttributeLog.getGraphView()).thenReturn(mockAttributeLogGraph);
+        when(mockAttributeLogGraph.getNodeWeight("a", MeasureType.DURATION, MeasureAggregation.MEAN, MeasureRelation.ABSOLUTE)).thenReturn(10100.00);
+        when(mockAttributeLogGraph.getNodeWeight("b", MeasureType.DURATION, MeasureAggregation.MEAN, MeasureRelation.ABSOLUTE)).thenReturn(11110.00);
+        when(mockAttributeLogGraph.getNodeWeight("c", MeasureType.DURATION, MeasureAggregation.MEAN, MeasureRelation.ABSOLUTE)).thenReturn(12120.00);
+        when(mockAbstraction.getDiagram()).thenReturn(mockDiagram);
+
+        // when
+        ProcessSimulationInfo processSimulationInfo = simulationInfoService.deriveSimulationInfo(mockAbstraction);
+
+        // then
+        assertGeneralSimulationInfo(processSimulationInfo);
+        assertEquals(3, processSimulationInfo.getTasks().size());
+        assertTrue(
+                processSimulationInfo.getTasks().stream()
+                        .map(element -> element.getElementId())
+                        .collect(Collectors.toList())
+                        .containsAll(Arrays.asList("Activity_089vlk4", "Activity_1m9vbxe", "Activity_0qorbah")));
+
+        processSimulationInfo.getTasks().forEach(element -> {
+            switch (element.getElementId()){
+                case "Activity_089vlk4":
+                    assertEquals("10.10", element.getDistributionDuration().getArg1());
+                    break;
+                case "Activity_1m9vbxe":
+                    assertEquals("11.11", element.getDistributionDuration().getArg1());
+                    break;
+                case "Activity_0qorbah":
+                    assertEquals("12.12", element.getDistributionDuration().getArg1());
+                    break;
+            }
+
+            assertEquals("NaN", element.getDistributionDuration().getArg2());
+            assertEquals("NaN", element.getDistributionDuration().getMean());
+            assertEquals(TimeUnit.SECONDS, element.getDistributionDuration().getTimeUnit());
+            assertEquals(DistributionType.EXPONENTIAL, element.getDistributionDuration().getType());
+        });
+
+    }
+
+    private void assertGeneralSimulationInfo(final ProcessSimulationInfo processSimulationInfo){
         assertNotNull(processSimulationInfo.getId());
         assertNotNull(processSimulationInfo.getErrors());
         assertEquals(100L, processSimulationInfo.getProcessInstances());
@@ -106,7 +162,6 @@ class SimulationInfoServiceTest {
         assertEquals(DistributionType.EXPONENTIAL, processSimulationInfo.getArrivalRateDistribution().getType());
         assertEquals("2019-12-31T13:00:00Z", processSimulationInfo.getStartDateTime());
         assertEquals(Currency.EUR, processSimulationInfo.getCurrency());
-
     }
 
     @Test
@@ -230,10 +285,15 @@ class SimulationInfoServiceTest {
                 .build();
     }
 
-    private String readBpmnFile(String fileName) throws IOException {
+    private String readBpmnFile(final String fileName) throws IOException {
         return IOUtils.toString(
                 this.getClass().getResourceAsStream(fileName),
                 StandardCharsets.UTF_8);
+    }
+
+    private BPMNDiagram readBPMNDiagram(final String fileName) throws Exception {
+        BpmnImportPlugin bpmnImport = new BpmnImportPlugin();
+        return bpmnImport.importFromStreamToDiagram(this.getClass().getResourceAsStream(fileName), fileName);
     }
 
 }

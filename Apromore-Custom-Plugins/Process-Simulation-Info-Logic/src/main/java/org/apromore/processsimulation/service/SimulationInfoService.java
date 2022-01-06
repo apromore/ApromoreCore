@@ -131,25 +131,26 @@ public class SimulationInfoService {
         if (abstraction.getDiagram() != null && abstraction.getDiagram().getNodes() != null) {
             List<Element> taskList = new ArrayList<>();
 
-            abstraction.getDiagram().getNodes().forEach(bpmnNode -> {
-                BigDecimal nodeAvgDuration = new BigDecimal(((AbstractAbstraction) abstraction).getLog().getGraphView()
-                        .getNodeWeight(bpmnNode.getLabel(), MeasureType.DURATION,
-                                MeasureAggregation.MEAN, MeasureRelation.ABSOLUTE) / 1000)
-                        .setScale(2, RoundingMode.HALF_UP);
+            abstraction.getDiagram().getNodes()
+                    .stream()
+                    .filter(bpmnNode -> bpmnNode instanceof Activity)
+                    .forEach(bpmnNode -> {
+                        BigDecimal nodeAvgDuration = new BigDecimal(((AbstractAbstraction) abstraction).getLog().getGraphView()
+                                .getNodeWeight(bpmnNode.getLabel(), MeasureType.DURATION,
+                                        MeasureAggregation.MEAN, MeasureRelation.ABSOLUTE) / 1000)
+                                .setScale(2, RoundingMode.HALF_UP);
 
-                if (bpmnNode instanceof Activity) {
-                    taskList.add(Element.builder()
-                            .elementId(bpmnNode.getId().toString())
-                            .distributionDuration(Distribution.builder()
-                                    .type(DistributionType.EXPONENTIAL)
-                                    .arg1(nodeAvgDuration.toString())
-                                    .arg2(NAN)
-                                    .mean(NAN)
-                                    .timeUnit(TimeUnit.SECONDS)
-                                    .build())
-                            .build());
-                }
-            });
+                        taskList.add(Element.builder()
+                                .elementId(bpmnNode.getId().toString())
+                                .distributionDuration(Distribution.builder()
+                                        .type(DistributionType.EXPONENTIAL)
+                                        .arg1(nodeAvgDuration.toString())
+                                        .arg2(NAN)
+                                        .mean(NAN)
+                                        .timeUnit(TimeUnit.SECONDS)
+                                        .build())
+                                .build());
+                    });
 
             builder.tasks(taskList);
         }
