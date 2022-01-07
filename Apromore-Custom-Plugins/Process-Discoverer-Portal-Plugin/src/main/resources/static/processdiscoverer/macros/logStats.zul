@@ -51,6 +51,13 @@
         </div>
       </vlayout>
     </div>
+    <div sclass="ap-pd-connector">
+      <div class="ap-pd-connector-line-left"/>
+      <div class="ap-pd-connector-text">
+        <label id="lblVariabilityRatioPercent"/>
+      </div>
+      <div class="ap-pd-connector-line-right"/>
+    </div>
     <div hflex="1"
          align="center">
       <vlayout spacing="0">
