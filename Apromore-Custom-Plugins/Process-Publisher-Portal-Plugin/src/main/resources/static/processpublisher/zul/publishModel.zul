@@ -35,17 +35,19 @@
         }
     </script>
     <vlayout spacing="0">
-        <vlayout style="padding: 8px;">
+        <vlayout style="padding: 8px;" spacing="4px">
             <label value="${vm_publishModel.labels.info_publish_model_link}"
                    style="font-size: 12px;"/>
             <hlayout hflex="1" style="line-height: 0px;">
                 <textbox id="publishModelLink"
                          hflex="1"
                          value="@load(vm_publishModel.publishLink)"
+                         style="margin-top: 1px;"
                          readonly="true"/>
-                <button sclass="@load(vm_publishModel.publish ? 'ap-icon ap-icon-link' : 'ap-icon ap-icon-unlink')"
-                        tooltiptext="${vm_publishModel.labels.publish_toggle_hint}"
-                        onClick="@command('togglePublishState')"/>
+                <checkbox mold="switch"
+                          checked="@bind(vm_publishModel.publish)"
+                          style="height: 20px; margin-top: 2px;"
+                          tooltiptext="${vm_publishModel.labels.publish_toggle_hint}"/>
                 <button sclass="ap-icon ap-icon-copy"
                         tooltiptext="${vm_publishModel.labels.copy_link_hint}"
                         w:onClick="copyPublishLink();"/>
