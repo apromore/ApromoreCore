@@ -184,17 +184,6 @@ public class ProcessPublisherViewModelUnitTest {
         assertEquals(expectedLink, processPublisherViewModel.getPublishLink());
     }
 
-    @Test
-    public void testTogglePublishState() {
-        processPublisherViewModel.setPublish(true);
-
-        processPublisherViewModel.togglePublishState();
-        assertFalse(processPublisherViewModel.isPublish());
-
-        processPublisherViewModel.togglePublishState();
-        assertTrue(processPublisherViewModel.isPublish());
-    }
-
     private ProcessPublish createProcessPublish(final int processId, final String publishId,
                                                 final boolean published) {
         Process process = new Process();
