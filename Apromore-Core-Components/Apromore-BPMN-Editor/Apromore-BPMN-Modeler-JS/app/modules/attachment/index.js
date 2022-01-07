@@ -1,4 +1,4 @@
-import Aux from './Aux';
+import Aux from './Attachment';
 
 export default {
   __init__: [ 'aux' ],

@@ -12,7 +12,7 @@ import apModdleDescriptor from './descriptors/ap';
 import '../styles/customModeler.less';
 import customTranslate from './translate/customTranslate';
 import ColorPickerModule from './modules/color-picker';
-import AuxModule from './modules/aux';
+import AttachmentModule from './modules/attachment';
 
 export default function CustomModeler(options) {
   var customTranslateModule = {
@@ -21,7 +21,7 @@ export default function CustomModeler(options) {
   options.additionalModules = options.additionalModules || [];
   options.additionalModules.push(customTranslateModule);
   options.additionalModules.push(ColorPickerModule);
-  options.additionalModules.push(AuxModule);
+  options.additionalModules.push(AttachmentModule);
   Modeler.call(this, options);
 }
 

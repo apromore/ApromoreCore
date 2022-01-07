@@ -1,5 +1,5 @@
 var getBusinessObject = require('bpmn-js/lib/util/ModelUtil').getBusinessObject;
-var createAuxEntries = require('../entries/aux/AuxEntries');
+var createAuxEntries = require('../entries/attachment/AttachmentEntries');
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmnjs) {
   var bo = getBusinessObject(element),

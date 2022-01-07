@@ -105238,14 +105238,14 @@ var CmdHelper = __webpack_require__(4);
 var ExtensionElementsHelper = __webpack_require__(26);
 var ExtensionElementsHelper_default = /*#__PURE__*/__webpack_require__.n(ExtensionElementsHelper);
 
-// EXTERNAL MODULE: ./app/modules/aux/common.js
+// EXTERNAL MODULE: ./app/modules/attachment/common.js
 var common = __webpack_require__(10);
 
 // EXTERNAL MODULE: ./node_modules/interactjs/dist/interact.min.js
 var interact_min = __webpack_require__(138);
 var interact_min_default = /*#__PURE__*/__webpack_require__.n(interact_min);
 
-// CONCATENATED MODULE: ./app/modules/aux/Aux.js
+// CONCATENATED MODULE: ./app/modules/attachment/Attachment.js
 
 
 
@@ -105532,10 +105532,10 @@ Aux.OVERLAY_HTML =
   '<div class="aux-wrapper">' +
   '</div>';
 
-// CONCATENATED MODULE: ./app/modules/aux/index.js
+// CONCATENATED MODULE: ./app/modules/attachment/index.js
 
 
-/* harmony default export */ var aux = ({
+/* harmony default export */ var modules_attachment = ({
   __init__: [ 'aux' ],
   'aux': [ 'type', Aux ]
 });
@@ -105563,7 +105563,7 @@ function CustomModeler(options) {
   options.additionalModules = options.additionalModules || [];
   options.additionalModules.push(customTranslateModule);
   options.additionalModules.push(color_picker);
-  options.additionalModules.push(aux);
+  options.additionalModules.push(modules_attachment);
   Modeler.call(this, options);
 }
 

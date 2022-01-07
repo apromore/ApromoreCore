@@ -1,5 +1,5 @@
 var is = require('bpmn-js/lib/util/ModelUtil').is,
-    createAuxGroups = require('../groups/AuxGroups');
+    createAuxGroups = require('../groups/AttachmentGroups');
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmnjs) {
 

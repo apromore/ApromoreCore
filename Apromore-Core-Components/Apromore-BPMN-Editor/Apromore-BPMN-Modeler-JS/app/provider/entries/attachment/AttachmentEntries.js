@@ -5,7 +5,7 @@ var elementHelper = require('bpmn-js-properties-panel/lib/helper/ElementHelper')
 var extensionElementsHelper = require('bpmn-js-properties-panel/lib/helper/ExtensionElementsHelper');
 var IconPickerField = require('./fields/IconPickerField');
 var ImagePickerField = require('./fields/ImagePickerField');
-var { AUX_PROPS } = require('../../../modules/aux/common');
+var { AUX_PROPS } = require('../../../modules/attachment/common');
 
 function getExtensionElements(element, bpmnFactory) {
   var extensionElements = element.extensionElements;
