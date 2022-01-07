@@ -430,7 +430,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
     I18nSession i18nSession = UserSessionManager.getCurrentI18nSession();
 
     if (i18nSession == null) {
-      I18nConfig i18nConfig = (I18nConfig) org.zkoss.spring.SpringUtil.getBean("i18nConfig");
+      I18nConfig i18nConfig = (I18nConfig) SpringUtil.getBean("i18nConfig");
       i18nSession = new I18nSession(i18nConfig);
       UserSessionManager.setCurrentI18nSession(i18nSession);
       i18nSession.applyLocaleFromClient();
