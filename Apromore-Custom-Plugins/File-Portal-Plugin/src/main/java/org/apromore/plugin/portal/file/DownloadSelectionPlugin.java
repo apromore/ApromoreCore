@@ -21,14 +21,24 @@
  */
 package org.apromore.plugin.portal.file;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.ParseException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.zip.GZIPOutputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
+import javax.activation.DataHandler;
 import javax.inject.Inject;
 
 import org.apromore.apmlog.APMLog;
@@ -103,23 +113,29 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin implements Labe
 
   @Override
   public void execute(PortalContext portalContext) {
-    try {
-      MainController mainController = (MainController) portalContext.getMainController();
-
-      if (mainController.getSelectedElements().size() == 1) {
-        SummaryType summaryType = mainController.getSelectedElements().iterator().next();
-        if (summaryType instanceof LogSummaryType) {
-          exportLog(mainController, portalContext, (LogSummaryType) summaryType);
-        } else if (summaryType instanceof ProcessSummaryType) {
-          exportProcessModel(mainController, portalContext);
-        }
-      } else {
-        Notification.info(getLabel("selectOnlyOneFile"));
+      try {
+          MainController mainController = (MainController) portalContext.getMainController();
+          if (mainController.getSelectedElements().size() == 0) {
+              Notification.info(getLabel("selectMinimumOneFile"));
+          } else if (mainController.getSelectedElements().size() == 1) {
+              SummaryType summaryType = mainController.getSelectedElements().iterator().next();
+              if (summaryType instanceof LogSummaryType) {
+                  exportLog(mainController, portalContext, (LogSummaryType) summaryType);
+              } else if (summaryType instanceof ProcessSummaryType) {
+                  exportProcessModel(mainController, portalContext);
+              }
+          } else {
+              if (mainController.getSelectedElements().stream()
+                      .anyMatch(summaryType -> summaryType instanceof LogSummaryType)) {
+                  exportSelectedLogsAndProcessModel(mainController, portalContext);
+              } else {
+                  exportFiles(mainController,"","");
+              }
+          }
+      } catch (Exception e) {
+          LOGGER.error("Unable to download selection", e);
+          Notification.error(getLabel("unableDownload"));
       }
-    } catch (Exception e) {
-      LOGGER.error("Unable to download selection", e);
-      Notification.error(getLabel("unableDownload"));
-    }
   }
 
   /**
@@ -210,6 +226,57 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin implements Labe
       LOGGER.error("Failed to read");
     }
   }
+  
+  public void exportSelectedLogsAndProcessModel(MainController mainController, PortalContext portalContext) {
+        try {
+          Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(),
+              "zul/downloadLog.zul", null, null);
+          Button downloadButton = (Button) window.getFellow("downloadButton");
+          Row rowEncoding = (Row) window.getFellow("rowEncoding");
+
+          selectedEncoding = (Listbox) window.getFellow("selectEncoding");
+          format = (Radiogroup) window.getFellow("format");
+
+          format.addEventListener("onCheck", new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+              if (format.getSelectedItem().getLabel().equals("CSV")) {
+                rowEncoding.setVisible(true);
+              } else {
+                rowEncoding.setVisible(false);
+              }
+            }
+          });
+
+          downloadButton.addEventListener("onClick", new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+              if (format.getSelectedItem().getLabel().equals("CSV")) {
+                  exportFiles(mainController,format.getSelectedItem().getLabel(), selectedEncoding.getSelectedItem().getValue());
+              } else {
+                  exportFiles(mainController,format.getSelectedItem().getLabel(),"");
+              }
+             
+              LOGGER.info("User {} downloaded  in format {}",
+                  UserSessionManager.getCurrentUser().getUsername(), format.getSelectedItem().getLabel());
+              window.invalidate();
+              window.detach();
+            }
+          });
+
+          Button cancelButton = (Button) window.getFellow("cancelButton");
+          cancelButton.addEventListener("onClick", new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+              window.invalidate();
+              window.detach();
+            }
+          });
+          window.doModal();
+        } catch (IOException e) {
+          LOGGER.error("Failed to read");
+        }
+      }
 
   /**
    * Export all selected process versions, each of which in a native format to be chosen by the user
@@ -244,5 +311,135 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin implements Labe
           Messagebox.ERROR);
     }
   }
+  
+   private Path getCSVFile(LogSummaryType summaryType) {
+      APMLog apmLog = eventLogService.getAggregatedLog(summaryType.getId());
+      return csvExporterLogic.generateCSV(apmLog);
+   }
+
+   private Path getXESFile(LogSummaryType logSummary, MainController mainController) throws Exception {
+       String filename = logSummary.getName().replace('.', '-');
+       ExportLogResultType exportResult = mainController.getManagerService().exportLog(logSummary.getId(), filename);
+       Path tempPath = Files.createTempFile(null, ".xes.gz");
+       tempPath.toFile().deleteOnExit();
+       writeToFile(tempPath,exportResult.getNative());
+       return tempPath;
+   }
+   
+   private void writeToFile(Path tempPath, DataHandler data) throws Exception {
+       try (GZIPOutputStream gos = new GZIPOutputStream(new FileOutputStream(tempPath.toFile()));
+               InputStream native_is = data.getInputStream()) {
+           byte[] buffer = new byte[1024];
+           int len;
+           while ((len = native_is.read(buffer)) > 0) {
+               gos.write(buffer, 0, len);
+           }
+       }
+   }
+
+   private Path getProcessModelFile(ProcessSummaryType model, VersionSummaryType version, MainController mainController)
+           throws Exception {
+       ExportFormatResultType exportResult = mainController.getManagerService().exportFormat(model.getId(),
+               model.getName(), version.getName(), version.getVersionNumber(), model.getOriginalNativeType(),
+               UserSessionManager.getCurrentUser().getUsername());
+       Path tempPath = Files.createTempFile(null, ".bpmn");
+       tempPath.toFile().deleteOnExit();
+       writeToFile(tempPath, exportResult.getNative());
+       return tempPath;
+   }
+  
+   private void exportFiles(MainController mainController, String format, String encoding) {
+       Map<String, String> filesToBeDownloaded = new HashMap<String, String>();
+       mainController.getSelectedElements().stream().forEach(item -> {
+           try {
+               Path path = null;
+               String currentFileName = "";
+               if (item instanceof LogSummaryType) {
+                   LogSummaryType logSummaryType = (LogSummaryType) item;
+                   if ("CSV".equals(format)) {
+                       path = getCSVFile(logSummaryType);
+                       LOGGER.info("Export log {} as CSV using {} to {}", item.getName(), encoding, path);
+                   } else {
+                       path = getXESFile(logSummaryType, mainController);
+                       LOGGER.info("Export log {} as XES using {} to {}", item.getName(), encoding, path);
+                   }
+                   currentFileName = logSummaryType.getName();
+
+               } else if (item instanceof ProcessSummaryType) {
+                   ProcessSummaryType model = (ProcessSummaryType) item;
+                   VersionSummaryType version = null;
+                   for (VersionSummaryType summaryType : model.getVersionSummaries()) {
+                       if (summaryType.getVersionNumber().compareTo(model.getLastVersion()) == 0) {
+                           version = summaryType;
+                           break;
+                       }
+                   }
+                   path = getProcessModelFile((ProcessSummaryType) item, version, mainController);
+                   LOGGER.info("User {} downloaded process model \"{}\" (id {}, version {}/{})",
+                           UserSessionManager.getCurrentUser().getUsername(), model.getName(), model.getId(),
+                           version.getName(), version.getVersionNumber());
+                   currentFileName = model.getName();
+               }
+               if (filesToBeDownloaded.get(currentFileName) == null) {
+                   filesToBeDownloaded.put(currentFileName, path.toFile().getAbsolutePath());
+               } else {
+                   int i = 1;
+                   while (filesToBeDownloaded.get(currentFileName + "_" + i) != null) {
+                       i++;
+                   }
+                   filesToBeDownloaded.put(currentFileName + "_" + i, path.toFile().getAbsolutePath());
+               }
+
+           } catch (Exception e) {
+               cleanTempFiles(filesToBeDownloaded);
+               filesToBeDownloaded.clear();
+               LOGGER.error("Export process model/log failed", e);
+               Notification.error(getLabel("unableDownloadModel"));
+           }
+       });
+
+       if (!filesToBeDownloaded.isEmpty()) {
+           try {
+               byte[] zipFiles = makeZipFile(filesToBeDownloaded);
+               Filedownload.save(zipFiles, "application/zip", "download.zip");
+           } catch (Exception e) {
+               cleanTempFiles(filesToBeDownloaded);
+               LOGGER.error("Export process model/log failed", e);
+               Notification.error(getLabel("unableDownloadModel"));
+           }
+       }
+
+   }
+ 
+   private void cleanTempFiles(Map<String, String> filesToBeDownloaded) {
+       for (String filePath : filesToBeDownloaded.values()) {
+           try {
+               Files.delete(Path.of(filePath));
+           } catch (IOException e) {
+           }
+       }
+
+   }
+
+   private byte[] makeZipFile(Map<String, String> filesDownloaded) throws IOException {
+       try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); ZipOutputStream zos = new ZipOutputStream(baos)) {
+           byte[] bytes = new byte[2048];
+           for (String fileName : filesDownloaded.keySet()) {
+               String absoluteFilePath = filesDownloaded.get(fileName);
+               try (FileInputStream fis = new FileInputStream(absoluteFilePath);
+                       BufferedInputStream bis = new BufferedInputStream(fis)) {
+                   zos.putNextEntry(new ZipEntry(fileName + absoluteFilePath.substring(absoluteFilePath.indexOf("."))));
+                   int bytesRead;
+                   while ((bytesRead = bis.read(bytes)) != -1) {
+                       zos.write(bytes, 0, bytesRead);
+                   }
+                   zos.closeEntry();
+               }
+               Files.delete(Path.of(absoluteFilePath));
+           }
+           zos.close();
+           return baos.toByteArray();
+       }
+   }
 
 }
