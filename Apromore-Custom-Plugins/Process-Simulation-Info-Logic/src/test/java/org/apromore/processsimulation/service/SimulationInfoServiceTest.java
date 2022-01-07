@@ -17,7 +17,6 @@
  */
 package org.apromore.processsimulation.service;
 
-import org.apache.commons.io.IOUtils;
 import org.apromore.logman.attribute.graph.AttributeLogGraph;
 import org.apromore.logman.attribute.graph.MeasureAggregation;
 import org.apromore.logman.attribute.graph.MeasureRelation;
@@ -26,30 +25,18 @@ import org.apromore.logman.attribute.log.AttributeLog;
 import org.apromore.logman.attribute.log.AttributeLogSummary;
 import org.apromore.processdiscoverer.abstraction.AbstractAbstraction;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
-import org.apromore.processmining.plugins.bpmn.plugins.BpmnImportPlugin;
 import org.apromore.processsimulation.model.Currency;
-import org.apromore.processsimulation.model.Distribution;
 import org.apromore.processsimulation.model.DistributionType;
-import org.apromore.processsimulation.model.Errors;
 import org.apromore.processsimulation.model.ProcessSimulationInfo;
 import org.apromore.processsimulation.model.TimeUnit;
 import org.junit.jupiter.api.Test;
-import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.time.Instant;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -63,16 +50,6 @@ import static org.mockito.Mockito.when;
 class SimulationInfoServiceTest {
 
     private final SimulationInfoService simulationInfoService = SimulationInfoService.getInstance();
-
-    /**
-     * Test method encapsulating all other tests to test capturing sonar cloud coverage
-     */
-    @Test
-    void testEnrichWithSimulationInfo() throws XPathExpressionException, IOException, ParserConfigurationException, SAXException {
-        should_enrich_with_simulation_info();
-        should_enrich_with_simulation_info_for_model_with_no_xmlns_prefix();
-        should_not_enrich_if_no_process_simulation_info();
-    }
 
     @Test
     void should_successfully_derive_general_simulation_info() {
@@ -98,13 +75,13 @@ class SimulationInfoServiceTest {
     }
 
     @Test
-    void should_derive_task_simulation_info() throws Exception {
+    void should_successfully_derive_task_simulation_info() throws Exception {
         // given
         AbstractAbstraction mockAbstraction = mock(AbstractAbstraction.class);
         AttributeLog mockAttributeLog = mock(AttributeLog.class);
         AttributeLogSummary mockAttributeLogSummary = mock(AttributeLogSummary.class);
         AttributeLogGraph mockAttributeLogGraph = mock(AttributeLogGraph.class);
-        BPMNDiagram mockDiagram = readBPMNDiagram("/no_simulation_info_without_namespace_prefix.bpmn");
+        BPMNDiagram mockDiagram = TestHelper.readBPMNDiagram("/no_simulation_info_without_namespace_prefix.bpmn");
 
         when(mockAbstraction.getLog()).thenReturn(mockAttributeLog);
         when(mockAttributeLog.getLogSummary()).thenReturn(mockAttributeLogSummary);
@@ -131,7 +108,7 @@ class SimulationInfoServiceTest {
                         .containsAll(Arrays.asList("Activity_089vlk4", "Activity_1m9vbxe", "Activity_0qorbah")));
 
         processSimulationInfo.getTasks().forEach(element -> {
-            switch (element.getElementId()){
+            switch (element.getElementId()) {
                 case "Activity_089vlk4":
                     assertEquals("10.10", element.getDistributionDuration().getArg1());
                     break;
@@ -151,7 +128,7 @@ class SimulationInfoServiceTest {
 
     }
 
-    private void assertGeneralSimulationInfo(final ProcessSimulationInfo processSimulationInfo){
+    private void assertGeneralSimulationInfo(final ProcessSimulationInfo processSimulationInfo) {
         assertNotNull(processSimulationInfo.getId());
         assertNotNull(processSimulationInfo.getErrors());
         assertEquals(100L, processSimulationInfo.getProcessInstances());
@@ -193,35 +170,50 @@ class SimulationInfoServiceTest {
     }
 
     @Test
-    void should_enrich_with_simulation_info() throws IOException, XPathExpressionException, ParserConfigurationException, SAXException {
+    void should_enrich_with_general_simulation_info() throws IOException, XPathExpressionException, ParserConfigurationException, SAXException {
         // given
-        String bpmn = readBpmnFile("/no_simulation_info.bpmn");
-        ProcessSimulationInfo processSimulationInfo = createMockProcessSimulationInfo();
+        String bpmn = TestHelper.readBpmnFile("/no_simulation_info.bpmn");
+        ProcessSimulationInfo processSimulationInfo = TestHelper.createMockProcessSimulationInfo(false);
 
         // when
         String enrichedBpmn = simulationInfoService.enrichWithSimulationInfo(bpmn, processSimulationInfo);
 
         // then
-        assertBpmnProcessSimulationInfo(enrichedBpmn);
+        assertBpmnGeneralProcessSimulationInfo(enrichedBpmn);
     }
+
+    @Test
+    void should_enrich_with_task_simulation_info() throws IOException, XPathExpressionException, ParserConfigurationException, SAXException {
+        // given
+        String bpmn = TestHelper.readBpmnFile("/no_simulation_info.bpmn");
+        ProcessSimulationInfo processSimulationInfo = TestHelper.createMockProcessSimulationInfo(true);
+
+        // when
+        String enrichedBpmn = simulationInfoService.enrichWithSimulationInfo(bpmn, processSimulationInfo);
+
+        // then
+        assertBpmnGeneralProcessSimulationInfo(enrichedBpmn);
+        assertBpmnTaskProcessSimulationInfo(enrichedBpmn);
+    }
+
 
     @Test
     void should_enrich_with_simulation_info_for_model_with_no_xmlns_prefix() throws IOException, XPathExpressionException, ParserConfigurationException, SAXException {
         // given
-        String bpmn = readBpmnFile("/no_simulation_info_without_namespace_prefix.bpmn");
-        ProcessSimulationInfo processSimulationInfo = createMockProcessSimulationInfo();
+        String bpmn = TestHelper.readBpmnFile("/no_simulation_info_without_namespace_prefix.bpmn");
+        ProcessSimulationInfo processSimulationInfo = TestHelper.createMockProcessSimulationInfo(false);
 
         // when
         String enrichedBpmn = simulationInfoService.enrichWithSimulationInfo(bpmn, processSimulationInfo);
 
         // then
-        assertBpmnProcessSimulationInfo(enrichedBpmn);
+        assertBpmnGeneralProcessSimulationInfo(enrichedBpmn);
     }
 
     @Test
     void should_not_enrich_if_no_process_simulation_info() throws IOException {
         // given
-        String originalBpmn = readBpmnFile("/no_simulation_info.bpmn");
+        String originalBpmn = TestHelper.readBpmnFile("/no_simulation_info.bpmn");
 
         // when
         String enrichedBpmn = simulationInfoService.enrichWithSimulationInfo(originalBpmn, null);
@@ -230,11 +222,11 @@ class SimulationInfoServiceTest {
         assertEquals(originalBpmn, enrichedBpmn);
     }
 
-    private void assertBpmnProcessSimulationInfo(String bpmnXmlString)
+    private void assertBpmnGeneralProcessSimulationInfo(String bpmnXmlString)
             throws XPathExpressionException, ParserConfigurationException, IOException, SAXException {
 
-        Node processSimulationInfoXmlNode = getProcessSimulationInfo(bpmnXmlString,
-                        "/definitions/process/extensionElements/processSimulationInfo");
+        Node processSimulationInfoXmlNode = TestHelper.getProcessSimulationInfo(bpmnXmlString,
+                "/definitions/process/extensionElements/processSimulationInfo");
 
         NamedNodeMap processSimulationAttrMap = processSimulationInfoXmlNode.getAttributes();
         assertNotNull(processSimulationAttrMap.getNamedItem("id").getNodeValue());
@@ -242,7 +234,7 @@ class SimulationInfoServiceTest {
         assertEquals("100", processSimulationAttrMap.getNamedItem("processInstances").getNodeValue());
         assertEquals("2019-12-31T13:00:00Z", processSimulationAttrMap.getNamedItem("startDateTime").getNodeValue());
 
-        Node arrivalDistributionXmlNode = getProcessSimulationInfo(bpmnXmlString,
+        Node arrivalDistributionXmlNode = TestHelper.getProcessSimulationInfo(bpmnXmlString,
                 "/definitions/process/extensionElements/processSimulationInfo/arrivalRateDistribution");
         NamedNodeMap arrivalRateDistributionAttrMap = arrivalDistributionXmlNode.getAttributes();
         assertEquals("26784", arrivalRateDistributionAttrMap.getNamedItem("arg1").getNodeValue());
@@ -250,50 +242,39 @@ class SimulationInfoServiceTest {
         assertEquals("NaN", arrivalRateDistributionAttrMap.getNamedItem("mean").getNodeValue());
         assertEquals(DistributionType.EXPONENTIAL.toString(), arrivalRateDistributionAttrMap.getNamedItem("type").getNodeValue());
 
-        Node timeUnitXmlNode = getProcessSimulationInfo(bpmnXmlString,
+        Node timeUnitXmlNode = TestHelper.getProcessSimulationInfo(bpmnXmlString,
                 "/definitions/process/extensionElements/processSimulationInfo/arrivalRateDistribution/timeUnit");
         assertEquals("seconds", timeUnitXmlNode.getFirstChild().getNodeValue());
 
     }
 
-    private Node getProcessSimulationInfo(String bpmnXml, String xpathExpression)
-            throws ParserConfigurationException, XPathExpressionException, IOException, SAXException {
+    private void assertBpmnTaskProcessSimulationInfo(String bpmnXmlString)
+            throws XPathExpressionException, ParserConfigurationException, IOException, SAXException {
 
-        DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = builderFactory.newDocumentBuilder();
-        Document xmlDocument = builder.parse(new ByteArrayInputStream(bpmnXml.getBytes()));
-        XPath xPath = XPathFactory.newInstance().newXPath();
-        return (Node) xPath.compile(xpathExpression).evaluate(xmlDocument, XPathConstants.NODE);
+        assertTaskElement("node1", "EXPONENTIAL", "seconds", "34.34", "NaN", "NaN",
+                bpmnXmlString, 1);
+        assertTaskElement("node2", "EXPONENTIAL", "seconds", "56.56", "NaN", "NaN",
+                bpmnXmlString, 2);
+        assertTaskElement("node3", "EXPONENTIAL", "seconds", "89.89", "NaN", "NaN",
+                bpmnXmlString, 3);
+
     }
 
-    private ProcessSimulationInfo createMockProcessSimulationInfo() {
-        return ProcessSimulationInfo.builder()
-                .id("some_random_guid")
-                .errors(Errors.builder().build())
-                .currency(Currency.EUR)
-                .startDateTime(Instant.ofEpochMilli(1577797200000L).toString())
-                .processInstances(100)
-                .arrivalRateDistribution(
-                        Distribution.builder()
-                                .type(DistributionType.EXPONENTIAL)
-                                .arg1("26784")
-                                .arg2("NaN")
-                                .mean("NaN")
-                                .timeUnit(TimeUnit.SECONDS)
-                                .build()
-                )
-                .build();
-    }
+    private void assertTaskElement(final String elementId, final String distributionType, final String timeUnit,
+                                   final String arg1, final String arg2, final String mean,
+                                   final String bpmnXmlString, int elementIndex)
+            throws XPathExpressionException, ParserConfigurationException, IOException, SAXException {
 
-    private String readBpmnFile(final String fileName) throws IOException {
-        return IOUtils.toString(
-                this.getClass().getResourceAsStream(fileName),
-                StandardCharsets.UTF_8);
-    }
+        Node elementNode = TestHelper.getProcessSimulationInfo(bpmnXmlString,
+                "/definitions/process/extensionElements/processSimulationInfo/elements/element[" + elementIndex + "]");
 
-    private BPMNDiagram readBPMNDiagram(final String fileName) throws Exception {
-        BpmnImportPlugin bpmnImport = new BpmnImportPlugin();
-        return bpmnImport.importFromStreamToDiagram(this.getClass().getResourceAsStream(fileName), fileName);
+        assertEquals(elementId, elementNode.getAttributes().getNamedItem("elementId").getNodeValue());
+        assertEquals(distributionType, elementNode.getFirstChild().getAttributes().getNamedItem("type").getNodeValue());
+        assertEquals(arg1, elementNode.getFirstChild().getAttributes().getNamedItem("arg1").getNodeValue());
+        assertEquals(arg2, elementNode.getFirstChild().getAttributes().getNamedItem("arg2").getNodeValue());
+        assertEquals(mean, elementNode.getFirstChild().getAttributes().getNamedItem("mean").getNodeValue());
+        assertEquals(timeUnit, elementNode.getFirstChild().getFirstChild().getFirstChild().getNodeValue());
+
     }
 
 }

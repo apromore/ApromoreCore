@@ -6,4 +6,7 @@ dependencies {
 	implementation project(':Apromore-ProcessMining-Collection')
 	implementation project(':Apromore-Custom-Plugins:Log-Logic')
 	implementation project(':Apromore-Custom-Plugins:Process-Discoverer-Logic')
+
+	implementation 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
 }
