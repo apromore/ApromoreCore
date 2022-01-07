@@ -34,6 +34,8 @@ import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.UserSessionManager;
+import org.apromore.portal.common.i18n.I18nConfig;
+import org.apromore.portal.common.i18n.I18nSession;
 import org.apromore.portal.context.EditorPluginResolver;
 import org.apromore.portal.dialogController.dto.ApromoreSession;
 import org.apromore.portal.helper.Version;
@@ -418,11 +420,23 @@ public class BPMNEditorController extends BaseController implements Composer<Com
     param.put("availableSimulateModelPlugin", false);
     param.put("bpmnioLib", BPMNIO_VIEWER_JS);
     param.put("viewOnly", true);
-    String langTag = UserSessionManager.getCurrentI18nSession().getPreferredLangTag();
-    param.put("langTag", langTag);
+    param.put("langTag", getLanguageTag());
     param.put("doAutoLayout", "false");
 
     Executions.getCurrent().pushArg(param);
+  }
+
+  private String getLanguageTag() {
+    I18nSession i18nSession = UserSessionManager.getCurrentI18nSession();
+
+    if (i18nSession == null) {
+      I18nConfig i18nConfig = (I18nConfig) SpringUtil.getBean("i18nConfig");
+      i18nSession = new I18nSession(i18nConfig);
+      UserSessionManager.setCurrentI18nSession(i18nSession);
+      i18nSession.applyLocaleFromClient();
+    }
+
+    return i18nSession.getPreferredLangTag();
   }
 
   @Override
