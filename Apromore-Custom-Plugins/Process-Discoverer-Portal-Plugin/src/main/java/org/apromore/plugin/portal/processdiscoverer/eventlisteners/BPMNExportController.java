@@ -44,7 +44,12 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
-import org.zkoss.zul.*;
+import org.zkoss.zkplus.spring.SpringUtil;
+import org.zkoss.zul.Button;
+import org.zkoss.zul.Label;
+import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Progressmeter;
+import org.zkoss.zul.Window;
 
 import javax.xml.datatype.DatatypeFactory;
 import java.io.ByteArrayInputStream;
@@ -91,12 +96,16 @@ public class BPMNExportController extends AbstractController {
     private ProgressEventListener progressListener;
     private boolean showProgressBar;
 
+    private SimulationInfoService simulationInfoService;
+
     public BPMNExportController(PDController controller, boolean showProgressBar) {
         super(controller);
         this.controller = controller;
         this.showProgressBar = showProgressBar;
         this.progressListener = new ProgressEventListener();
         eventQueue = EventQueues.lookup(EVENT_QUEUE, EventQueues.SESSION, true);
+
+        this.simulationInfoService = (SimulationInfoService) SpringUtil.getBean("simulationInfoService");
     }
     
     /*
@@ -267,7 +276,7 @@ public class BPMNExportController extends AbstractController {
                         boolean publicModel = false;
 
                         try {
-                            String enrichedBpmnXml = SimulationInfoService.getInstance()
+                            String enrichedBpmnXml = simulationInfoService
                                     .enrichWithSimulationInfo(minedModel, controller.getOutputData().getProcessSimulationInfo());
 
                             ProcessModelVersion pmv = controller.getProcessService().importProcess(user,

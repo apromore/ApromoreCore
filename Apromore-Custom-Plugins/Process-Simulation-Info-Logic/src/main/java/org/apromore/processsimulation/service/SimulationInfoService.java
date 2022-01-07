@@ -33,6 +33,8 @@ import org.apromore.processsimulation.model.Errors;
 import org.apromore.processsimulation.model.ExtensionElements;
 import org.apromore.processsimulation.model.ProcessSimulationInfo;
 import org.apromore.processsimulation.model.TimeUnit;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -47,6 +49,7 @@ import java.util.Locale;
 import java.util.UUID;
 
 @Slf4j
+@Service
 public class SimulationInfoService {
 
     private static final String XML_START_TAG = "<?xml";
@@ -60,15 +63,19 @@ public class SimulationInfoService {
 
     private JAXBContext jaxbContext;
 
-    private static class SimulationInfoServiceHolder {
-        private static final SimulationInfoService INSTANCE = new SimulationInfoService();
-    }
+    @Value("${process.simulation.info.export.enable}")
+    private boolean enableExportSimulationInfo;
 
-    public static SimulationInfoService getInstance() {
-        return SimulationInfoServiceHolder.INSTANCE;
-    }
+    @Value("${process.simulation.info.export.default.timeUnit:SECONDS}")
+    private String defaultTimeUnit;
 
-    private SimulationInfoService() {
+    @Value("${process.simulation.info.export.default.distributionType:EXPONENTIAL}")
+    private String defaultDistributionType;
+
+    @Value("${process.simulation.info.export.default.currency:EUR}")
+    private String defaultCurrency;
+
+    public SimulationInfoService() {
         try {
             jaxbContext = JAXBContext.newInstance(ExtensionElements.class);
         } catch (JAXBException e) {
@@ -80,7 +87,8 @@ public class SimulationInfoService {
             final Abstraction abstraction) {
 
         ProcessSimulationInfo processSimulationInfo = null;
-        if (abstraction instanceof AbstractAbstraction &&
+        if (enableExportSimulationInfo &&
+                abstraction instanceof AbstractAbstraction &&
                 abstraction != null &&
                 ((AbstractAbstraction) abstraction).getLog() != null) {
 
@@ -112,12 +120,12 @@ public class SimulationInfoService {
                 ((double) (endTimeMillis - startTimeMillis) / (double) 1000) / (double) logSummary.getCaseCount());
 
         builder.processInstances(logSummary.getCaseCount())
-                .currency(Currency.EUR)
+                .currency(Currency.valueOf(defaultCurrency.toUpperCase()))
                 .startDateTime(Instant.ofEpochMilli(logSummary.getStartTime()).toString())
                 .arrivalRateDistribution(
                         Distribution.builder()
-                                .timeUnit(TimeUnit.SECONDS)
-                                .type(DistributionType.EXPONENTIAL)
+                                .timeUnit(TimeUnit.valueOf(defaultTimeUnit.toUpperCase()))
+                                .type(DistributionType.valueOf(defaultDistributionType.toUpperCase()))
                                 .arg1(Long.toString(interArrivalTime))
                                 .mean(NAN)
                                 .arg2(NAN)
@@ -143,11 +151,11 @@ public class SimulationInfoService {
                         taskList.add(Element.builder()
                                 .elementId(bpmnNode.getId().toString())
                                 .distributionDuration(Distribution.builder()
-                                        .type(DistributionType.EXPONENTIAL)
+                                        .type(DistributionType.valueOf(defaultDistributionType.toUpperCase()))
                                         .arg1(nodeAvgDuration.toString())
                                         .arg2(NAN)
                                         .mean(NAN)
-                                        .timeUnit(TimeUnit.SECONDS)
+                                        .timeUnit(TimeUnit.valueOf(defaultTimeUnit.toUpperCase()))
                                         .build())
                                 .build());
                     });
@@ -170,7 +178,7 @@ public class SimulationInfoService {
             final String bpmnModelXml, final ProcessSimulationInfo processSimulationInfo) {
 
         String enrichedBpmnXml = bpmnModelXml;
-        if (processSimulationInfo != null) {
+        if (enableExportSimulationInfo && processSimulationInfo != null) {
 
             ExtensionElements extensionElements = ExtensionElements.builder()
                     .processSimulationInfo(processSimulationInfo).build();

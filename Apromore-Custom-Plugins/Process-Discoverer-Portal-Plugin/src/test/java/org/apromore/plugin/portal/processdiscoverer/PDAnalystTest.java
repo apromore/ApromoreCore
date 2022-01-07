@@ -17,8 +17,6 @@
  */
 package org.apromore.plugin.portal.processdiscoverer;
 
-import java.util.*;
-
 import org.apromore.apmlog.xes.XLogToImmutableLog;
 import org.apromore.commons.datetime.DateTimeUtils;
 import org.apromore.logman.Constants;
@@ -29,7 +27,13 @@ import org.apromore.logman.attribute.graph.MeasureRelation;
 import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.logman.attribute.log.AttributeInfo;
 import org.apromore.logman.attribute.log.AttributeLog;
-import org.apromore.plugin.portal.processdiscoverer.data.*;
+import org.apromore.plugin.portal.processdiscoverer.data.CaseDetails;
+import org.apromore.plugin.portal.processdiscoverer.data.CaseVariantDetails;
+import org.apromore.plugin.portal.processdiscoverer.data.ConfigData;
+import org.apromore.plugin.portal.processdiscoverer.data.ContextData;
+import org.apromore.plugin.portal.processdiscoverer.data.InvalidDataException;
+import org.apromore.plugin.portal.processdiscoverer.data.OutputData;
+import org.apromore.plugin.portal.processdiscoverer.data.PerspectiveDetails;
 import org.apromore.processdiscoverer.layout.Layout;
 import org.apromore.processsimulation.model.Currency;
 import org.deckfour.xes.model.XAttributeTimestamp;
@@ -38,9 +42,26 @@ import org.eclipse.collections.api.list.ListIterable;
 import org.joda.time.DateTime;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import static org.junit.Assert.*;
+import org.springframework.test.util.ReflectionTestUtils;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PDAnalystTest extends TestDataSetup {
@@ -532,6 +553,11 @@ public class PDAnalystTest extends TestDataSetup {
     public void test_discover_process_with_simulation_info() throws Exception {
         //given
         PDAnalyst analyst = createPDAnalyst(readLogWithStartCompleteEventsNonOverlapping());
+        ReflectionTestUtils.setField(simulationInfoService, "enableExportSimulationInfo", true);
+        ReflectionTestUtils.setField(simulationInfoService, "defaultDistributionType", "EXPONENTIAL");
+        ReflectionTestUtils.setField(simulationInfoService, "defaultTimeUnit", "SECONDS");
+        ReflectionTestUtils.setField(simulationInfoService, "defaultCurrency", "EUR");
+        when(simulationInfoService.deriveSimulationInfo(ArgumentMatchers.any())).thenCallRealMethod();
 
         //when
         OutputData outputData = analyst.discoverProcess(

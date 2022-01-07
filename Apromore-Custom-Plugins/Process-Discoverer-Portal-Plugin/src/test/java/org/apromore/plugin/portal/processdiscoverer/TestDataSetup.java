@@ -37,6 +37,7 @@ import org.apromore.plugin.portal.processdiscoverer.data.ConfigData;
 import org.apromore.plugin.portal.processdiscoverer.data.ContextData;
 import org.apromore.plugin.portal.processdiscoverer.data.OutputData;
 import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
+import org.apromore.processsimulation.service.SimulationInfoService;
 import org.apromore.service.EventLogService;
 import org.deckfour.xes.in.XesXmlGZIPParser;
 import org.deckfour.xes.in.XesXmlParser;
@@ -52,6 +53,9 @@ import org.mockito.MockitoAnnotations;
 public class TestDataSetup {
     @Mock
     protected EventLogService eventLogService;
+
+    @Mock
+    protected SimulationInfoService simulationInfoService;
     
     public PDAnalyst createPDAnalyst(XLog xlog) throws Exception {
         ContextData contextData = ContextData.valueOf("domain1", "username1", 0,
@@ -63,7 +67,7 @@ public class TestDataSetup {
         Mockito.when(eventLogService.getPerspectiveTagByLog(contextData.getLogId())).thenReturn(
                 Arrays.asList(new String[] {"concept:name", "lifecycle:transition"}));
         ConfigData configData = ConfigData.DEFAULT;
-        PDAnalyst analyst = new PDAnalyst(contextData, configData, eventLogService);
+        PDAnalyst analyst = new PDAnalyst(contextData, configData, eventLogService, simulationInfoService);
         return analyst;
     }
     

@@ -29,7 +29,9 @@ import org.apromore.processsimulation.model.Currency;
 import org.apromore.processsimulation.model.DistributionType;
 import org.apromore.processsimulation.model.ProcessSimulationInfo;
 import org.apromore.processsimulation.model.TimeUnit;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
@@ -49,7 +51,16 @@ import static org.mockito.Mockito.when;
 
 class SimulationInfoServiceTest {
 
-    private final SimulationInfoService simulationInfoService = SimulationInfoService.getInstance();
+    private SimulationInfoService simulationInfoService;
+
+    @BeforeEach
+    void setup(){
+        simulationInfoService = new SimulationInfoService();
+        ReflectionTestUtils.setField(simulationInfoService, "enableExportSimulationInfo", true);
+        ReflectionTestUtils.setField(simulationInfoService, "defaultDistributionType", "EXPONENTIAL");
+        ReflectionTestUtils.setField(simulationInfoService, "defaultTimeUnit", "SECONDS");
+        ReflectionTestUtils.setField(simulationInfoService, "defaultCurrency", "EUR");
+    }
 
     @Test
     void should_successfully_derive_general_simulation_info() {
@@ -170,6 +181,19 @@ class SimulationInfoServiceTest {
     }
 
     @Test
+    void should_return_null_if_feature_disabled() {
+        // given
+        ReflectionTestUtils.setField(simulationInfoService, "enableExportSimulationInfo", false);
+        AbstractAbstraction mockAbstraction = mock(AbstractAbstraction.class);
+
+        // when
+        ProcessSimulationInfo processSimulationInfo = simulationInfoService.deriveSimulationInfo(mockAbstraction);
+
+        // then
+        assertNull(processSimulationInfo);
+    }
+
+    @Test
     void should_enrich_with_general_simulation_info() throws IOException, XPathExpressionException, ParserConfigurationException, SAXException {
         // given
         String bpmn = TestHelper.readBpmnFile("/no_simulation_info.bpmn");
@@ -217,6 +241,20 @@ class SimulationInfoServiceTest {
 
         // when
         String enrichedBpmn = simulationInfoService.enrichWithSimulationInfo(originalBpmn, null);
+
+        // then
+        assertEquals(originalBpmn, enrichedBpmn);
+    }
+
+    @Test
+    void should_not_enrich_if_feature_disabled() throws IOException {
+        // given
+        ReflectionTestUtils.setField(simulationInfoService, "enableExportSimulationInfo", false);
+        String originalBpmn = TestHelper.readBpmnFile("/no_simulation_info.bpmn");
+        ProcessSimulationInfo processSimulationInfo = TestHelper.createMockProcessSimulationInfo(false);
+
+        // when
+        String enrichedBpmn = simulationInfoService.enrichWithSimulationInfo(originalBpmn, processSimulationInfo);
 
         // then
         assertEquals(originalBpmn, enrichedBpmn);
