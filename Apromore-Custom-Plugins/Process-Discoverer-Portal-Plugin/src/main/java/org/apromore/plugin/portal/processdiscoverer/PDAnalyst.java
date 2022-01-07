@@ -40,9 +40,11 @@ import org.apromore.apmlog.filter.types.Section;
 import org.apromore.apmlog.stats.LogStatsAnalyzer;
 import org.apromore.apmlog.stats.TimeStatsProcessor;
 import org.apromore.apmlog.xes.XESAttributeCodes;
+import org.apromore.calendar.exception.CalendarNotExistsException;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.commons.datetime.DateTimeUtils;
 import org.apromore.commons.datetime.DurationUtils;
+import org.apromore.exception.UserMetadataException;
 import org.apromore.logman.ALog;
 import org.apromore.logman.Constants;
 import org.apromore.logman.LogBitMap;
@@ -142,7 +144,8 @@ public class PDAnalyst {
     public PDAnalyst(
             ContextData contextData,
             ConfigData configData,
-            EventLogService eventLogService) throws Exception {
+            EventLogService eventLogService)
+            throws NotFoundAttributeException, CalendarNotExistsException, InvalidDataException, UserMetadataException {
 
         this(contextData, configData, eventLogService, null);
     }
@@ -151,7 +154,8 @@ public class PDAnalyst {
             ContextData contextData,
             ConfigData configData,
             EventLogService eventLogService,
-            SimulationInfoService simulationInfoService) throws Exception {
+            SimulationInfoService simulationInfoService)
+            throws InvalidDataException, UserMetadataException, CalendarNotExistsException, NotFoundAttributeException {
 
         XLog xlog = eventLogService.getXLog(contextData.getLogId());
         APMLog apmLog = eventLogService.getAggregatedLog(contextData.getLogId());
@@ -189,7 +193,9 @@ public class PDAnalyst {
 
         // ProcessDiscoverer logic with default attribute
         this.calendarModel = eventLogService.getCalendarFromLog(contextData.getLogId());
-        if (calendarModel == null) throw new Exception("The open log doesn't have an associated calendar.");
+        if (calendarModel == null) {
+            throw new CalendarNotExistsException("The open log doesn't have an associated calendar.");
+        }
 
         this.originalAPMLog.setCalendarModel(this.calendarModel);
 

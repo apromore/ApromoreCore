@@ -88,8 +88,8 @@ public class SimulationInfoService {
 
         ProcessSimulationInfo processSimulationInfo = null;
         if (enableExportSimulationInfo &&
-                abstraction instanceof AbstractAbstraction &&
                 abstraction != null &&
+                abstraction instanceof AbstractAbstraction &&
                 ((AbstractAbstraction) abstraction).getLog() != null) {
 
             AttributeLogSummary logSummary = ((AbstractAbstraction) abstraction).getLog().getLogSummary();
@@ -141,9 +141,9 @@ public class SimulationInfoService {
 
             abstraction.getDiagram().getNodes()
                     .stream()
-                    .filter(bpmnNode -> bpmnNode instanceof Activity)
+                    .filter(Activity.class::isInstance)
                     .forEach(bpmnNode -> {
-                        BigDecimal nodeAvgDuration = new BigDecimal(((AbstractAbstraction) abstraction).getLog().getGraphView()
+                        BigDecimal nodeAvgDuration = BigDecimal.valueOf(((AbstractAbstraction) abstraction).getLog().getGraphView()
                                 .getNodeWeight(bpmnNode.getLabel(), MeasureType.DURATION,
                                         MeasureAggregation.MEAN, MeasureRelation.ABSOLUTE) / 1000)
                                 .setScale(2, RoundingMode.HALF_UP);
