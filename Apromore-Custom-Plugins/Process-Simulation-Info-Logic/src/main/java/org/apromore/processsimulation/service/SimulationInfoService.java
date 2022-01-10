@@ -127,8 +127,6 @@ public class SimulationInfoService {
                                 .timeUnit(TimeUnit.valueOf(defaultTimeUnit.toUpperCase()))
                                 .type(DistributionType.valueOf(defaultDistributionType.toUpperCase()))
                                 .arg1(Long.toString(interArrivalTime))
-                                .mean(NAN)
-                                .arg2(NAN)
                                 .build());
     }
 
@@ -153,8 +151,6 @@ public class SimulationInfoService {
                                 .distributionDuration(Distribution.builder()
                                         .type(DistributionType.valueOf(defaultDistributionType.toUpperCase()))
                                         .arg1(nodeAvgDuration.toString())
-                                        .arg2(NAN)
-                                        .mean(NAN)
                                         .timeUnit(TimeUnit.valueOf(defaultTimeUnit.toUpperCase()))
                                         .build())
                                 .build());

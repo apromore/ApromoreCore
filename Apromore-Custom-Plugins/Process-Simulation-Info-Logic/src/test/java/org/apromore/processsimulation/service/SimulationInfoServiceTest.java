@@ -131,8 +131,8 @@ class SimulationInfoServiceTest {
                     break;
             }
 
-            assertEquals("NaN", element.getDistributionDuration().getArg2());
-            assertEquals("NaN", element.getDistributionDuration().getMean());
+            assertNull(element.getDistributionDuration().getArg2());
+            assertNull(element.getDistributionDuration().getMean());
             assertEquals(TimeUnit.SECONDS, element.getDistributionDuration().getTimeUnit());
             assertEquals(DistributionType.EXPONENTIAL, element.getDistributionDuration().getType());
         });
@@ -144,8 +144,8 @@ class SimulationInfoServiceTest {
         assertNotNull(processSimulationInfo.getErrors());
         assertEquals(100L, processSimulationInfo.getProcessInstances());
         assertEquals("26784", processSimulationInfo.getArrivalRateDistribution().getArg1());
-        assertEquals("NaN", processSimulationInfo.getArrivalRateDistribution().getArg2());
-        assertEquals("NaN", processSimulationInfo.getArrivalRateDistribution().getMean());
+        assertNull(processSimulationInfo.getArrivalRateDistribution().getArg2());
+        assertNull(processSimulationInfo.getArrivalRateDistribution().getMean());
         assertEquals(TimeUnit.SECONDS, processSimulationInfo.getArrivalRateDistribution().getTimeUnit());
         assertEquals(DistributionType.EXPONENTIAL, processSimulationInfo.getArrivalRateDistribution().getType());
         assertEquals("2019-12-31T13:00:00Z", processSimulationInfo.getStartDateTime());
