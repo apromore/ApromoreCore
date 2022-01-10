@@ -22,11 +22,6 @@
 
 package org.apromore.plugin.portal.processdiscoverer;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.util.Arrays;
-
 import org.apromore.apmlog.xes.XLogToImmutableLog;
 import org.apromore.calendar.builder.CalendarModelBuilder;
 import org.apromore.calendar.model.CalendarModel;
@@ -37,7 +32,6 @@ import org.apromore.plugin.portal.processdiscoverer.data.ConfigData;
 import org.apromore.plugin.portal.processdiscoverer.data.ContextData;
 import org.apromore.plugin.portal.processdiscoverer.data.OutputData;
 import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
-import org.apromore.processsimulation.service.SimulationInfoService;
 import org.apromore.service.EventLogService;
 import org.deckfour.xes.in.XesXmlGZIPParser;
 import org.deckfour.xes.in.XesXmlParser;
@@ -50,12 +44,14 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.Arrays;
+
 public class TestDataSetup {
     @Mock
     protected EventLogService eventLogService;
-
-    @Mock
-    protected SimulationInfoService simulationInfoService;
     
     public PDAnalyst createPDAnalyst(XLog xlog) throws Exception {
         ContextData contextData = ContextData.valueOf("domain1", "username1", 0,
@@ -67,7 +63,7 @@ public class TestDataSetup {
         Mockito.when(eventLogService.getPerspectiveTagByLog(contextData.getLogId())).thenReturn(
                 Arrays.asList(new String[] {"concept:name", "lifecycle:transition"}));
         ConfigData configData = ConfigData.DEFAULT;
-        PDAnalyst analyst = new PDAnalyst(contextData, configData, eventLogService, simulationInfoService);
+        PDAnalyst analyst = new PDAnalyst(contextData, configData, eventLogService);
         return analyst;
     }
     

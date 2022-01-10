@@ -70,15 +70,12 @@ import org.apromore.plugin.portal.processdiscoverer.vis.ProcessVisualizer;
 import org.apromore.processdiscoverer.Abstraction;
 import org.apromore.processdiscoverer.AbstractionParams;
 import org.apromore.processdiscoverer.ProcessDiscoverer;
-import org.apromore.processsimulation.model.ProcessSimulationInfo;
-import org.apromore.processsimulation.service.SimulationInfoService;
 import org.apromore.service.EventLogService;
 import org.deckfour.xes.model.XLog;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.ListIterable;
 import org.slf4j.Logger;
 import org.springframework.util.CollectionUtils;
-import org.zkoss.zkplus.spring.SpringUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -139,22 +136,10 @@ public class PDAnalyst {
 
     ConfigData configData;
 
-    private SimulationInfoService simulationInfoService;
-
     public PDAnalyst(
             ContextData contextData,
             ConfigData configData,
             EventLogService eventLogService)
-            throws NotFoundAttributeException, CalendarNotExistsException, InvalidDataException, UserMetadataException {
-
-        this(contextData, configData, eventLogService, null);
-    }
-
-    public PDAnalyst(
-            ContextData contextData,
-            ConfigData configData,
-            EventLogService eventLogService,
-            SimulationInfoService simulationInfoService)
             throws InvalidDataException, UserMetadataException, CalendarNotExistsException, NotFoundAttributeException {
 
         XLog xlog = eventLogService.getXLog(contextData.getLogId());
@@ -202,13 +187,6 @@ public class PDAnalyst {
         this.setMainAttribute(configData.getDefaultAttribute());
         this.processDiscoverer = new ProcessDiscoverer();
         this.processVisualizer = new ProcessJSONVisualizer();
-
-        if(simulationInfoService == null){
-            this.simulationInfoService = (SimulationInfoService) SpringUtil.getBean("simulationInfoService");
-        } else {
-            this.simulationInfoService = simulationInfoService;
-        }
-
     }
 
     public void cleanUp() {
@@ -288,12 +266,9 @@ public class PDAnalyst {
             currentAbstraction = dfgAbstraction;
         }
 
-        ProcessSimulationInfo simulationInfo = simulationInfoService
-                .deriveSimulationInfo(currentAbstraction);
-
         String visualizedText = processVisualizer.generateVisualizationText(currentAbstraction);
 
-        return Optional.of(new OutputData(currentAbstraction, visualizedText, simulationInfo));
+        return Optional.of(new OutputData(currentAbstraction, visualizedText));
     }
 
     public OutputData discoverTrace(String traceID, UserOptionsData userOptions) throws Exception {
