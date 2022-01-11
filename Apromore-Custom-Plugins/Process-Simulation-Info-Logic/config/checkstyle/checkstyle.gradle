@@ -1,10 +1,8 @@
 checkstyle {
     toolVersion checkstyleVersion
-    var configSrc = "${rootDir}/ApromoreCore/Apromore-Custom-Plugins/Process-Simulation-Info-Logic"
-
     sourceSets = [sourceSets.main, sourceSets.test]
-    configFile = file("${configSrc}/config/checkstyle/checkstyle.xml")
-    configProperties = [suppression_file: file("${configSrc}/config/checkstyle/suppressions.xml").toURI()]
+    configFile = file("${project.projectDir}/config/checkstyle/checkstyle.xml")
+    configProperties = [suppression_file: file("${project.projectDir}/config/checkstyle/suppressions.xml").toURI()]
 }
 
 tasks.withType(Checkstyle) {
