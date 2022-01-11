@@ -15,6 +15,7 @@
  * is obtained from Apromore Pty Ltd.
  * #L%
  */
+
 package org.apromore.processsimulation.model;
 
 import javax.xml.bind.annotation.XmlEnum;

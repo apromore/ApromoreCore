@@ -15,6 +15,7 @@
  * is obtained from Apromore Pty Ltd.
  * #L%
  */
+
 package org.apromore.processsimulation.model;
 
 public enum Currency {
