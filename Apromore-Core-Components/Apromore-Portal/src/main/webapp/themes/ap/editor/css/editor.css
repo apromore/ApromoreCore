@@ -144,6 +144,17 @@
     display: none !important;
 }
 
+
+.access-type-viewer .x-panel-editor-center {
+    left: 0 !important;
+    width: auto !important;
+}
+
+
+.access-type-viewer .x-panel-editor-center .x-panel-body {
+    width: auto !important;
+}
+
 /* Property panel styles */
 
 .bpp-properties-panel button,

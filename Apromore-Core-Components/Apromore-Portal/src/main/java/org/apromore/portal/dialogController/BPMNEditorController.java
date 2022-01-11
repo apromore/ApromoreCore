@@ -401,7 +401,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
         ExportFormatResultType exportResult = processService.exportProcess(
                 process.getName(), process.getId(), "MAIN", new Version(version), nativeType);
         String bpmnXML = StreamUtil.convertStreamToString(exportResult.getNative().getInputStream());
-        pushViewModeParameters(bpmnXML, nativeType);
+        pushViewModeParameters(bpmnXML);
       } catch (Exception e) {
         LOGGER.error("", e);
         throw new AssertionError("Could not get bpmn xml");
@@ -409,7 +409,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
     }
   }
 
-  private void pushViewModeParameters(final String bpmnXML, final String nativeType) {
+  private void pushViewModeParameters(final String bpmnXML) {
     Clients.evalJavaScript("Ap.common.injectGlobalClass(\"access-type-viewer\")");
     Map<String, Object> param = new HashMap<>();
 
@@ -418,7 +418,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
     List<EditorPlugin> editorPlugins = EditorPluginResolver.resolve("bpmnEditorPlugins");
     param.put("plugins", editorPlugins);
     param.put("availableSimulateModelPlugin", false);
-    param.put("bpmnioLib", BPMNIO_VIEWER_JS);
+    param.put("bpmnioLib", BPMNIO_MODELER_JS);
     param.put("viewOnly", true);
     param.put("langTag", getLanguageTag());
     param.put("doAutoLayout", "false");
