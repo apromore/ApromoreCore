@@ -1276,10 +1276,11 @@ table.ap-pd-case-activity-attrs td:nth-child(2) {
 }
 
 .ap-pd-connector-line-left,  .ap-pd-connector-line-right{
-    border-bottom: 1px solid black;
     width: 0.8vw;
     position: absolute;
     top: 8px;
+    background-color: black;
+    height: 1px;
 }
 
 .ap-pd-connector-line-left {
@@ -1292,12 +1293,12 @@ table.ap-pd-case-activity-attrs td:nth-child(2) {
 
 .ap-pd-connector-line-left:before, .ap-pd-connector-line-right:after {
     position: absolute;
-    bottom: -3px;
-    height: 6px;
-    width: 6px;
+    bottom: -2px;
+    height: 5px;
+    width: 5px;
     background: black;
     content: "";
-    border-radius: 3px;
+    border-radius: 50%;
 }
 
 .ap-pd-connector-line-left:before {
