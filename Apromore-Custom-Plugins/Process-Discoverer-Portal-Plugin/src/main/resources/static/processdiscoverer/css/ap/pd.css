@@ -1328,3 +1328,12 @@ table.ap-pd-case-activity-attrs td:nth-child(2) {
 .ap-pd-percent-tier-5 {
     color: var(--ap-c-maroon-dark-1);
 }
+
+.ap-pd-caption-title {
+    font-size: 12px;
+    font-weight:bold;
+}
+
+.ap-pd-caption-subtitle {
+    font-size: 10px;
+}
