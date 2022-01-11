@@ -26,33 +26,16 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import java.util.List;
 
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @XmlAccessorType(XmlAccessType.FIELD)
-public class ProcessSimulationInfo {
-
+public class Element {
     @XmlAttribute
-    private String id;
-    @XmlAttribute
-    private long processInstances;
-    @XmlAttribute
-    private Currency currency;
-    @XmlAttribute
-    private String startDateTime;
+    private String elementId;
 
-    @XmlElement(name = "qbp:errors")
-    private Errors errors;
-
-    @XmlElement(name = "qbp:arrivalRateDistribution")
-    private Distribution arrivalRateDistribution;
-
-    @XmlElementWrapper(name="qbp:elements")
-    @XmlElement(name="qbp:element")
-    private List<Element> tasks;
-
+    @XmlElement(name = "qbp:durationDistribution")
+    private Distribution distributionDuration;
 }

@@ -17,8 +17,6 @@
  */
 package org.apromore.plugin.portal.processdiscoverer;
 
-import java.util.*;
-
 import org.apromore.apmlog.xes.XLogToImmutableLog;
 import org.apromore.commons.datetime.DateTimeUtils;
 import org.apromore.logman.Constants;
@@ -29,9 +27,13 @@ import org.apromore.logman.attribute.graph.MeasureRelation;
 import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.logman.attribute.log.AttributeInfo;
 import org.apromore.logman.attribute.log.AttributeLog;
-import org.apromore.plugin.portal.processdiscoverer.data.*;
+import org.apromore.plugin.portal.processdiscoverer.data.CaseDetails;
+import org.apromore.plugin.portal.processdiscoverer.data.CaseVariantDetails;
+import org.apromore.plugin.portal.processdiscoverer.data.ConfigData;
+import org.apromore.plugin.portal.processdiscoverer.data.ContextData;
+import org.apromore.plugin.portal.processdiscoverer.data.InvalidDataException;
+import org.apromore.plugin.portal.processdiscoverer.data.PerspectiveDetails;
 import org.apromore.processdiscoverer.layout.Layout;
-import org.apromore.processsimulation.model.Currency;
 import org.deckfour.xes.model.XAttributeTimestamp;
 import org.deckfour.xes.model.XLog;
 import org.eclipse.collections.api.list.ListIterable;
@@ -40,7 +42,19 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import static org.junit.Assert.*;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PDAnalystTest extends TestDataSetup {
@@ -527,38 +541,4 @@ public class PDAnalystTest extends TestDataSetup {
                         false)).get().getAbstraction().getLayout();
         assertNotSame(layout1, layout9);
     }
-
-    @Test
-    public void test_discover_process_with_simulation_info() throws Exception {
-        //given
-        PDAnalyst analyst = createPDAnalyst(readLogWithStartCompleteEventsNonOverlapping());
-
-        //when
-        OutputData outputData = analyst.discoverProcess(
-                createUserOptions(100, 100, 40,
-                        MeasureType.FREQUENCY,
-                        MeasureAggregation.CASES,
-                        MeasureRelation.ABSOLUTE,
-                        false, false,
-                        MeasureType.FREQUENCY,
-                        MeasureAggregation.CASES,
-                        MeasureRelation.ABSOLUTE,
-                        MeasureType.DURATION,
-                        MeasureAggregation.MEAN,
-                        MeasureRelation.ABSOLUTE,
-                        false,
-                        false)).get();
-
-        //then
-        assertNotNull(outputData.getProcessSimulationInfo());
-        assertNotNull(outputData.getProcessSimulationInfo().getId());
-        assertEquals(6, outputData.getProcessSimulationInfo().getProcessInstances());
-        assertEquals("2010-10-27T20:31:19.308Z", outputData.getProcessSimulationInfo().getStartDateTime());
-        assertEquals(Currency.EUR, outputData.getProcessSimulationInfo().getCurrency());
-        assertNotNull(outputData.getProcessSimulationInfo().getErrors());
-        assertNull(outputData.getProcessSimulationInfo().getErrors().getId());
-        assertNull(outputData.getProcessSimulationInfo().getErrors().getMessage());
-        assertNull(outputData.getProcessSimulationInfo().getErrors().getElementId());
-    }
-
 }

@@ -41,11 +41,4 @@ public class OutputData {
     private final Abstraction abstraction;
     @Getter
     private final String visualizedText; // the corresponding JSON format of the diagram
-    @Getter @Setter
-    private ProcessSimulationInfo processSimulationInfo;
-    
-    public OutputData(Abstraction currentAbstraction, String visualizedText) {
-        this.abstraction = currentAbstraction;
-        this.visualizedText = visualizedText;
-    }
 }

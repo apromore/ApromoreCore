@@ -32,13 +32,19 @@ import org.apromore.apmlog.filter.PTrace;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.LogFilterRuleImpl;
 import org.apromore.apmlog.filter.rules.RuleValue;
-import org.apromore.apmlog.filter.types.*;
+import org.apromore.apmlog.filter.types.Choice;
+import org.apromore.apmlog.filter.types.FilterType;
+import org.apromore.apmlog.filter.types.Inclusion;
+import org.apromore.apmlog.filter.types.OperationType;
+import org.apromore.apmlog.filter.types.Section;
 import org.apromore.apmlog.stats.LogStatsAnalyzer;
 import org.apromore.apmlog.stats.TimeStatsProcessor;
 import org.apromore.apmlog.xes.XESAttributeCodes;
+import org.apromore.calendar.exception.CalendarNotExistsException;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.commons.datetime.DateTimeUtils;
 import org.apromore.commons.datetime.DurationUtils;
+import org.apromore.exception.UserMetadataException;
 import org.apromore.logman.ALog;
 import org.apromore.logman.Constants;
 import org.apromore.logman.LogBitMap;
@@ -50,13 +56,20 @@ import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.logman.attribute.log.AttributeInfo;
 import org.apromore.logman.attribute.log.AttributeLog;
 import org.apromore.plugin.portal.PortalLoggerFactory;
-import org.apromore.plugin.portal.processdiscoverer.data.*;
+import org.apromore.plugin.portal.processdiscoverer.data.CaseDetails;
+import org.apromore.plugin.portal.processdiscoverer.data.CaseVariantDetails;
+import org.apromore.plugin.portal.processdiscoverer.data.ConfigData;
+import org.apromore.plugin.portal.processdiscoverer.data.ContextData;
+import org.apromore.plugin.portal.processdiscoverer.data.InvalidDataException;
+import org.apromore.plugin.portal.processdiscoverer.data.NotFoundAttributeException;
+import org.apromore.plugin.portal.processdiscoverer.data.OutputData;
+import org.apromore.plugin.portal.processdiscoverer.data.PerspectiveDetails;
+import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
 import org.apromore.plugin.portal.processdiscoverer.impl.json.ProcessJSONVisualizer;
 import org.apromore.plugin.portal.processdiscoverer.vis.ProcessVisualizer;
 import org.apromore.processdiscoverer.Abstraction;
 import org.apromore.processdiscoverer.AbstractionParams;
 import org.apromore.processdiscoverer.ProcessDiscoverer;
-import org.apromore.processsimulation.service.SimulationInfoService;
 import org.apromore.service.EventLogService;
 import org.deckfour.xes.model.XLog;
 import org.eclipse.collections.api.list.ImmutableList;
@@ -64,7 +77,17 @@ import org.eclipse.collections.api.list.ListIterable;
 import org.slf4j.Logger;
 import org.springframework.util.CollectionUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.BitSet;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -113,7 +136,12 @@ public class PDAnalyst {
 
     ConfigData configData;
 
-    public PDAnalyst(ContextData contextData, ConfigData configData, EventLogService eventLogService) throws Exception {
+    public PDAnalyst(
+            ContextData contextData,
+            ConfigData configData,
+            EventLogService eventLogService)
+            throws InvalidDataException, UserMetadataException, CalendarNotExistsException, NotFoundAttributeException {
+
         XLog xlog = eventLogService.getXLog(contextData.getLogId());
         APMLog apmLog = eventLogService.getAggregatedLog(contextData.getLogId());
         Collection<String> perspectiveAttKeys = eventLogService.getPerspectiveTagByLog(contextData.getLogId());
@@ -150,7 +178,9 @@ public class PDAnalyst {
 
         // ProcessDiscoverer logic with default attribute
         this.calendarModel = eventLogService.getCalendarFromLog(contextData.getLogId());
-        if (calendarModel == null) throw new Exception("The open log doesn't have an associated calendar.");
+        if (calendarModel == null) {
+            throw new CalendarNotExistsException("The open log doesn't have an associated calendar.");
+        }
 
         this.originalAPMLog.setCalendarModel(this.calendarModel);
 
@@ -237,8 +267,8 @@ public class PDAnalyst {
         }
 
         String visualizedText = processVisualizer.generateVisualizationText(currentAbstraction);
-        return Optional.of(new OutputData(currentAbstraction, visualizedText,
-                SimulationInfoService.getInstance().deriveSimulationInfo(getAttributeLog())));
+
+        return Optional.of(new OutputData(currentAbstraction, visualizedText));
     }
 
     public OutputData discoverTrace(String traceID, UserOptionsData userOptions) throws Exception {
