@@ -15,19 +15,19 @@
  * is obtained from Apromore Pty Ltd.
  * #L%
  */
+
 package org.apromore.processsimulation.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
+import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
-import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
@@ -51,8 +51,8 @@ public class ProcessSimulationInfo {
     @XmlElement(name = "qbp:arrivalRateDistribution")
     private Distribution arrivalRateDistribution;
 
-    @XmlElementWrapper(name="qbp:elements")
-    @XmlElement(name="qbp:element")
+    @XmlElementWrapper(name = "qbp:elements")
+    @XmlElement(name = "qbp:element")
     private List<Element> tasks;
 
 }

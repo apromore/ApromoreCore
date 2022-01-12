@@ -15,8 +15,20 @@
  * is obtained from Apromore Pty Ltd.
  * #L%
  */
+
 package org.apromore.processsimulation.service;
 
+import java.io.StringWriter;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.UUID;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import lombok.extern.slf4j.Slf4j;
 import org.apromore.logman.attribute.graph.MeasureAggregation;
 import org.apromore.logman.attribute.graph.MeasureRelation;
@@ -35,18 +47,6 @@ import org.apromore.processsimulation.model.ProcessSimulationInfo;
 import org.apromore.processsimulation.model.TimeUnit;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import java.io.StringWriter;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.UUID;
 
 @Slf4j
 @Service
@@ -84,21 +84,21 @@ public class SimulationInfoService {
     }
 
     public ProcessSimulationInfo deriveSimulationInfo(
-            final Abstraction abstraction) {
+        final Abstraction abstraction) {
 
         ProcessSimulationInfo processSimulationInfo = null;
-        if (enableExportSimulationInfo &&
-                abstraction != null &&
-                abstraction instanceof AbstractAbstraction &&
-                ((AbstractAbstraction) abstraction).getLog() != null) {
+        if (enableExportSimulationInfo
+            && abstraction != null
+            && abstraction instanceof AbstractAbstraction
+            && ((AbstractAbstraction) abstraction).getLog() != null) {
 
             AttributeLogSummary logSummary = ((AbstractAbstraction) abstraction).getLog().getLogSummary();
 
             if (logSummary != null) {
                 ProcessSimulationInfo.ProcessSimulationInfoBuilder builder =
-                        ProcessSimulationInfo.builder()
-                                .id("qbp_" + Locale.getDefault().getLanguage() + UUID.randomUUID())
-                                .errors(Errors.builder().build());
+                    ProcessSimulationInfo.builder()
+                        .id("qbp_" + Locale.getDefault().getLanguage() + UUID.randomUUID())
+                        .errors(Errors.builder().build());
 
                 deriveGeneralSimulationInfo(builder, logSummary);
                 deriveTaskSimulationInfo(builder, abstraction);
@@ -111,50 +111,51 @@ public class SimulationInfoService {
     }
 
     private void deriveGeneralSimulationInfo(
-            ProcessSimulationInfo.ProcessSimulationInfoBuilder builder,
-            final AttributeLogSummary logSummary) {
+        ProcessSimulationInfo.ProcessSimulationInfoBuilder builder,
+        final AttributeLogSummary logSummary) {
 
         long startTimeMillis = logSummary.getStartTime();
         long endTimeMillis = logSummary.getEndTime();
         long interArrivalTime = Math.round(
-                ((double) (endTimeMillis - startTimeMillis) / (double) 1000) / (double) logSummary.getCaseCount());
+            ((double) (endTimeMillis - startTimeMillis) / (double) 1000) / (double) logSummary.getCaseCount());
 
         builder.processInstances(logSummary.getCaseCount())
-                .currency(Currency.valueOf(defaultCurrency.toUpperCase()))
-                .startDateTime(Instant.ofEpochMilli(logSummary.getStartTime()).toString())
-                .arrivalRateDistribution(
-                        Distribution.builder()
-                                .timeUnit(TimeUnit.valueOf(defaultTimeUnit.toUpperCase()))
-                                .type(DistributionType.valueOf(defaultDistributionType.toUpperCase()))
-                                .arg1(Long.toString(interArrivalTime))
-                                .build());
+            .currency(Currency.valueOf(defaultCurrency.toUpperCase()))
+            .startDateTime(Instant.ofEpochMilli(logSummary.getStartTime()).toString())
+            .arrivalRateDistribution(
+                Distribution.builder()
+                    .timeUnit(TimeUnit.valueOf(defaultTimeUnit.toUpperCase()))
+                    .type(DistributionType.valueOf(defaultDistributionType.toUpperCase()))
+                    .arg1(Long.toString(interArrivalTime))
+                    .build());
     }
 
     private void deriveTaskSimulationInfo(
-            ProcessSimulationInfo.ProcessSimulationInfoBuilder builder,
-            final Abstraction abstraction) {
+        ProcessSimulationInfo.ProcessSimulationInfoBuilder builder,
+        final Abstraction abstraction) {
 
         if (abstraction.getDiagram() != null && abstraction.getDiagram().getNodes() != null) {
             List<Element> taskList = new ArrayList<>();
 
             abstraction.getDiagram().getNodes()
-                    .stream()
-                    .filter(Activity.class::isInstance)
-                    .forEach(bpmnNode -> {
-                        BigDecimal nodeAvgDuration = BigDecimal.valueOf(((AbstractAbstraction) abstraction).getLog().getGraphView()
+                .stream()
+                .filter(Activity.class::isInstance)
+                .forEach(bpmnNode -> {
+                    BigDecimal nodeAvgDuration =
+                        BigDecimal.valueOf(((AbstractAbstraction) abstraction).getLog().getGraphView()
                                 .getNodeWeight(bpmnNode.getLabel(), MeasureType.DURATION,
-                                        MeasureAggregation.MEAN, MeasureRelation.ABSOLUTE) / 1000)
-                                .setScale(2, RoundingMode.HALF_UP);
+                                    MeasureAggregation.MEAN, MeasureRelation.ABSOLUTE) / 1000)
+                            .setScale(2, RoundingMode.HALF_UP);
 
-                        taskList.add(Element.builder()
-                                .elementId(bpmnNode.getId().toString())
-                                .distributionDuration(Distribution.builder()
-                                        .type(DistributionType.valueOf(defaultDistributionType.toUpperCase()))
-                                        .arg1(nodeAvgDuration.toString())
-                                        .timeUnit(TimeUnit.valueOf(defaultTimeUnit.toUpperCase()))
-                                        .build())
-                                .build());
-                    });
+                    taskList.add(Element.builder()
+                        .elementId(bpmnNode.getId().toString())
+                        .distributionDuration(Distribution.builder()
+                            .type(DistributionType.valueOf(defaultDistributionType.toUpperCase()))
+                            .arg1(nodeAvgDuration.toString())
+                            .timeUnit(TimeUnit.valueOf(defaultTimeUnit.toUpperCase()))
+                            .build())
+                        .build());
+                });
 
             builder.tasks(taskList);
         }
@@ -164,24 +165,24 @@ public class SimulationInfoService {
     /**
      * Enrich the bpmn xml model with the additional extension elements
      * including the process simulation information that was derived from the
-     * bpmn model
+     * bpmn model.
      *
      * @param bpmnModelXml          the discovered bpmn model
      * @param processSimulationInfo the process simulation information derived from the discovered model
      * @return a bpmn model enriched with the additional process simulation information set in the extensionElements
      */
     public String enrichWithSimulationInfo(
-            final String bpmnModelXml, final ProcessSimulationInfo processSimulationInfo) {
+        final String bpmnModelXml, final ProcessSimulationInfo processSimulationInfo) {
 
         String enrichedBpmnXml = bpmnModelXml;
         if (enableExportSimulationInfo && processSimulationInfo != null) {
 
             ExtensionElements extensionElements = ExtensionElements.builder()
-                    .processSimulationInfo(processSimulationInfo).build();
+                .processSimulationInfo(processSimulationInfo).build();
 
             // Inject process simulation information to bpmn export xml
             enrichedBpmnXml = injectExtensionElements(
-                    bpmnModelXml, stringifyExtensionElements(extensionElements, jaxbContext));
+                bpmnModelXml, stringifyExtensionElements(extensionElements, jaxbContext));
         }
 
         return enrichedBpmnXml;
@@ -194,19 +195,19 @@ public class SimulationInfoService {
             // remove the <?xml> tags if present from the extension elements xml
             if (extensionElementsXml.contains(XML_START_TAG)) {
                 extensionElementsXml = extensionElementsXml
-                        .substring(extensionElementsXml.indexOf(XML_START_EXTENSION_ELEMENTS_TAG));
+                    .substring(extensionElementsXml.indexOf(XML_START_EXTENSION_ELEMENTS_TAG));
             }
 
             // inject the qbp namespace and the extension elements
             if (enrichedBpmnXml.indexOf(XML_START_DEFINITIONS_TAG) > 0) {
                 enrichedBpmnXml.insert(
-                        exportedBpmnXml.indexOf(XML_START_DEFINITIONS_TAG) + XML_START_DEFINITIONS_TAG.length(),
-                        XML_QBP_NAMESPACE);
+                    exportedBpmnXml.indexOf(XML_START_DEFINITIONS_TAG) + XML_START_DEFINITIONS_TAG.length(),
+                    XML_QBP_NAMESPACE);
 
             } else if (enrichedBpmnXml.indexOf(XML_START_BPMN_DEFINITIONS_TAG) > 0) {
                 enrichedBpmnXml.insert(
-                        exportedBpmnXml.indexOf(XML_START_BPMN_DEFINITIONS_TAG) + XML_START_BPMN_DEFINITIONS_TAG.length(),
-                        XML_QBP_NAMESPACE);
+                    exportedBpmnXml.indexOf(XML_START_BPMN_DEFINITIONS_TAG) + XML_START_BPMN_DEFINITIONS_TAG.length(),
+                    XML_QBP_NAMESPACE);
             }
 
 
@@ -222,8 +223,8 @@ public class SimulationInfoService {
     }
 
     private String stringifyExtensionElements(
-            final ExtensionElements extensionElements,
-            final JAXBContext jaxbContext) {
+        final ExtensionElements extensionElements,
+        final JAXBContext jaxbContext) {
         StringWriter extElementsStringWriter = new StringWriter();
         try {
             Marshaller marshaller = jaxbContext.createMarshaller();

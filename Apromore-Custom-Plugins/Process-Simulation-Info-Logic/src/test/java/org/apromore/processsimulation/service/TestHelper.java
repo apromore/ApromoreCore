@@ -15,8 +15,22 @@
  * is obtained from Apromore Pty Ltd.
  * #L%
  */
+
 package org.apromore.processsimulation.service;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.io.IOUtils;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
@@ -32,60 +46,46 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-
 @UtilityClass
 public class TestHelper {
 
     public static ProcessSimulationInfo createMockProcessSimulationInfo(boolean includeTasks) {
         ProcessSimulationInfo.ProcessSimulationInfoBuilder builder = ProcessSimulationInfo.builder()
-                .id("some_random_guid")
-                .errors(Errors.builder().build())
-                .currency(Currency.EUR)
-                .startDateTime(Instant.ofEpochMilli(1577797200000L).toString())
-                .processInstances(100)
-                .arrivalRateDistribution(
-                        Distribution.builder()
-                                .type(DistributionType.EXPONENTIAL)
-                                .arg1("26784")
-                                .arg2("NaN")
-                                .mean("NaN")
-                                .timeUnit(TimeUnit.SECONDS)
-                                .build()
-                );
+            .id("some_random_guid")
+            .errors(Errors.builder().build())
+            .currency(Currency.EUR)
+            .startDateTime(Instant.ofEpochMilli(1577797200000L).toString())
+            .processInstances(100)
+            .arrivalRateDistribution(
+                Distribution.builder()
+                    .type(DistributionType.EXPONENTIAL)
+                    .arg1("26784")
+                    .arg2("NaN")
+                    .mean("NaN")
+                    .timeUnit(TimeUnit.SECONDS)
+                    .build()
+            );
 
         if (includeTasks) {
             List<Element> tasks = new ArrayList<>();
             tasks.add(Element.builder().elementId("node1").distributionDuration(
-                    Distribution.builder().type(DistributionType.EXPONENTIAL)
-                            .arg1("34.34")
-                            .arg2("NaN")
-                            .mean("NaN")
-                            .timeUnit(TimeUnit.SECONDS).build()).build());
+                Distribution.builder().type(DistributionType.EXPONENTIAL)
+                    .arg1("34.34")
+                    .arg2("NaN")
+                    .mean("NaN")
+                    .timeUnit(TimeUnit.SECONDS).build()).build());
             tasks.add(Element.builder().elementId("node2").distributionDuration(
-                    Distribution.builder().type(DistributionType.EXPONENTIAL)
-                            .arg1("56.56")
-                            .arg2("NaN")
-                            .mean("NaN")
-                            .timeUnit(TimeUnit.SECONDS).build()).build());
+                Distribution.builder().type(DistributionType.EXPONENTIAL)
+                    .arg1("56.56")
+                    .arg2("NaN")
+                    .mean("NaN")
+                    .timeUnit(TimeUnit.SECONDS).build()).build());
             tasks.add(Element.builder().elementId("node3").distributionDuration(
-                    Distribution.builder().type(DistributionType.EXPONENTIAL)
-                            .arg1("89.89")
-                            .arg2("NaN")
-                            .mean("NaN")
-                            .timeUnit(TimeUnit.SECONDS).build()).build());
+                Distribution.builder().type(DistributionType.EXPONENTIAL)
+                    .arg1("89.89")
+                    .arg2("NaN")
+                    .mean("NaN")
+                    .timeUnit(TimeUnit.SECONDS).build()).build());
 
             builder.tasks(tasks);
         }
@@ -93,23 +93,23 @@ public class TestHelper {
     }
 
     public static Node getProcessSimulationInfo(String bpmnXml, String xpathExpression)
-            throws ParserConfigurationException, XPathExpressionException, IOException, SAXException {
+        throws ParserConfigurationException, XPathExpressionException, IOException, SAXException {
 
         DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = builderFactory.newDocumentBuilder();
         Document xmlDocument = builder.parse(new ByteArrayInputStream(bpmnXml.getBytes()));
-        XPath xPath = XPathFactory.newInstance().newXPath();
-        return (Node) xPath.compile(xpathExpression).evaluate(xmlDocument, XPathConstants.NODE);
+        XPath xpath = XPathFactory.newInstance().newXPath();
+        return (Node) xpath.compile(xpathExpression).evaluate(xmlDocument, XPathConstants.NODE);
     }
 
 
     public static String readBpmnFile(final String fileName) throws IOException {
         return IOUtils.toString(
-                TestHelper.class.getResourceAsStream(fileName),
-                StandardCharsets.UTF_8);
+            TestHelper.class.getResourceAsStream(fileName),
+            StandardCharsets.UTF_8);
     }
 
-    public static BPMNDiagram readBPMNDiagram(final String fileName) throws Exception {
+    public static BPMNDiagram readBpmnDiagram(final String fileName) throws Exception {
         BpmnImportPlugin bpmnImport = new BpmnImportPlugin();
         return bpmnImport.importFromStreamToDiagram(TestHelper.class.getResourceAsStream(fileName), fileName);
     }
