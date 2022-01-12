@@ -18,11 +18,21 @@
 
 package org.apromore.processsimulation.service;
 
+import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_FROM_TIME;
+import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_FROM_WEEKDAY_KEY;
+import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_NAME_KEY;
+import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_TO_TIME;
+import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_TO_WEEKDAY_KEY;
+import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_DEFAULT_TIMETABLE_ID_KEY;
+import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_DEFAULT_TIMETABLE_NAME_KEY;
+
 import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.DayOfWeek;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -37,6 +47,7 @@ import org.apromore.logman.attribute.log.AttributeLogSummary;
 import org.apromore.processdiscoverer.Abstraction;
 import org.apromore.processdiscoverer.abstraction.AbstractAbstraction;
 import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Activity;
+import org.apromore.processsimulation.config.SimulationInfoConfig;
 import org.apromore.processsimulation.model.Currency;
 import org.apromore.processsimulation.model.Distribution;
 import org.apromore.processsimulation.model.DistributionType;
@@ -44,8 +55,10 @@ import org.apromore.processsimulation.model.Element;
 import org.apromore.processsimulation.model.Errors;
 import org.apromore.processsimulation.model.ExtensionElements;
 import org.apromore.processsimulation.model.ProcessSimulationInfo;
+import org.apromore.processsimulation.model.Rule;
 import org.apromore.processsimulation.model.TimeUnit;
-import org.springframework.beans.factory.annotation.Value;
+import org.apromore.processsimulation.model.Timetable;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -59,23 +72,15 @@ public class SimulationInfoService {
     private static final String XML_START_DEFINITIONS_TAG = "<definitions";
     private static final String XML_START_BPMN_DEFINITIONS_TAG = "<bpmn:definitions";
     private static final String XML_QBP_NAMESPACE = "\n xmlns:qbp=\"http://www.qbp-simulator.com/Schema201212\"\n";
-    private static final String NAN = "NaN";
+    private static final Locale ENGLISH_LOCALE = Locale.ENGLISH;
 
     private JAXBContext jaxbContext;
 
-    @Value("${process.simulation.info.export.enable}")
-    private boolean enableExportSimulationInfo;
+    private SimulationInfoConfig config;
 
-    @Value("${process.simulation.info.export.default.timeUnit:SECONDS}")
-    private String defaultTimeUnit;
-
-    @Value("${process.simulation.info.export.default.distributionType:EXPONENTIAL}")
-    private String defaultDistributionType;
-
-    @Value("${process.simulation.info.export.default.currency:EUR}")
-    private String defaultCurrency;
-
-    public SimulationInfoService() {
+    @Autowired
+    public SimulationInfoService(SimulationInfoConfig config) {
+        this.config = config;
         try {
             jaxbContext = JAXBContext.newInstance(ExtensionElements.class);
         } catch (JAXBException e) {
@@ -87,7 +92,7 @@ public class SimulationInfoService {
         final Abstraction abstraction) {
 
         ProcessSimulationInfo processSimulationInfo = null;
-        if (enableExportSimulationInfo
+        if (isFeatureEnabled()
             && abstraction != null
             && abstraction instanceof AbstractAbstraction
             && ((AbstractAbstraction) abstraction).getLog() != null) {
@@ -100,8 +105,11 @@ public class SimulationInfoService {
                         .id("qbp_" + Locale.getDefault().getLanguage() + UUID.randomUUID())
                         .errors(Errors.builder().build());
 
-                deriveGeneralSimulationInfo(builder, logSummary);
-                deriveTaskSimulationInfo(builder, abstraction);
+                deriveGeneralInfo(builder, logSummary);
+
+                deriveTaskInfo(builder, abstraction);
+
+                deriveTimetable(builder);
 
                 processSimulationInfo = builder.build();
             }
@@ -110,8 +118,8 @@ public class SimulationInfoService {
         return processSimulationInfo;
     }
 
-    private void deriveGeneralSimulationInfo(
-        ProcessSimulationInfo.ProcessSimulationInfoBuilder builder,
+    private void deriveGeneralInfo(
+        final ProcessSimulationInfo.ProcessSimulationInfoBuilder builder,
         final AttributeLogSummary logSummary) {
 
         long startTimeMillis = logSummary.getStartTime();
@@ -120,18 +128,18 @@ public class SimulationInfoService {
             ((double) (endTimeMillis - startTimeMillis) / (double) 1000) / (double) logSummary.getCaseCount());
 
         builder.processInstances(logSummary.getCaseCount())
-            .currency(Currency.valueOf(defaultCurrency.toUpperCase(Locale.ENGLISH)))
+            .currency(Currency.valueOf(config.getDefaultCurrency().toUpperCase(ENGLISH_LOCALE)))
             .startDateTime(Instant.ofEpochMilli(logSummary.getStartTime()).toString())
             .arrivalRateDistribution(
                 Distribution.builder()
-                    .timeUnit(TimeUnit.valueOf(defaultTimeUnit.toUpperCase(Locale.ENGLISH)))
-                    .type(DistributionType.valueOf(defaultDistributionType.toUpperCase(Locale.ENGLISH)))
+                    .timeUnit(TimeUnit.valueOf(config.getDefaultTimeUnit().toUpperCase(ENGLISH_LOCALE)))
+                    .type(DistributionType.valueOf(config.getDefaultDistributionType().toUpperCase(ENGLISH_LOCALE)))
                     .arg1(Long.toString(interArrivalTime))
                     .build());
     }
 
-    private void deriveTaskSimulationInfo(
-        ProcessSimulationInfo.ProcessSimulationInfoBuilder builder,
+    private void deriveTaskInfo(
+        final ProcessSimulationInfo.ProcessSimulationInfoBuilder builder,
         final Abstraction abstraction) {
 
         if (abstraction.getDiagram() != null && abstraction.getDiagram().getNodes() != null) {
@@ -150,9 +158,10 @@ public class SimulationInfoService {
                     taskList.add(Element.builder()
                         .elementId(bpmnNode.getId().toString())
                         .distributionDuration(Distribution.builder()
-                            .type(DistributionType.valueOf(defaultDistributionType.toUpperCase(Locale.ENGLISH)))
+                            .type(DistributionType.valueOf(
+                                config.getDefaultDistributionType().toUpperCase(ENGLISH_LOCALE)))
                             .arg1(nodeAvgDuration.toString())
-                            .timeUnit(TimeUnit.valueOf(defaultTimeUnit.toUpperCase(Locale.ENGLISH)))
+                            .timeUnit(TimeUnit.valueOf(config.getDefaultTimeUnit().toUpperCase(ENGLISH_LOCALE)))
                             .build())
                         .build());
                 });
@@ -161,6 +170,28 @@ public class SimulationInfoService {
         }
     }
 
+    private void deriveTimetable(
+        final ProcessSimulationInfo.ProcessSimulationInfoBuilder builder) {
+
+        builder.timetables(
+            Arrays.asList(Timetable.builder()
+                .defaultTimetable(true)
+                .id(config.getDefaultTimetable().get(CONFIG_DEFAULT_TIMETABLE_ID_KEY))
+                .name(config.getDefaultTimetable().get(CONFIG_DEFAULT_TIMETABLE_NAME_KEY))
+                .rules(Arrays.asList(Rule.builder()
+                    .id(UUID.randomUUID().toString())
+                    .name(config.getDefaultTimetable().get(CONFIG_DEFAULT_TIMESLOT_NAME_KEY))
+                    .fromWeekDay(DayOfWeek.valueOf(
+                        config.getDefaultTimetable().get(CONFIG_DEFAULT_TIMESLOT_FROM_WEEKDAY_KEY)
+                            .toUpperCase(ENGLISH_LOCALE)))
+                    .toWeekDay(DayOfWeek.valueOf(
+                        config.getDefaultTimetable().get(CONFIG_DEFAULT_TIMESLOT_TO_WEEKDAY_KEY)
+                            .toUpperCase(ENGLISH_LOCALE)))
+                    .fromTime(config.getDefaultTimetable().get(CONFIG_DEFAULT_TIMESLOT_FROM_TIME))
+                    .toTime(config.getDefaultTimetable().get(CONFIG_DEFAULT_TIMESLOT_TO_TIME))
+                    .build()))
+                .build()));
+    }
 
     /**
      * Enrich the bpmn xml model with the additional extension elements
@@ -175,7 +206,7 @@ public class SimulationInfoService {
         final String bpmnModelXml, final ProcessSimulationInfo processSimulationInfo) {
 
         String enrichedBpmnXml = bpmnModelXml;
-        if (enableExportSimulationInfo && processSimulationInfo != null) {
+        if (isFeatureEnabled() && processSimulationInfo != null) {
 
             ExtensionElements extensionElements = ExtensionElements.builder()
                 .processSimulationInfo(processSimulationInfo).build();
@@ -186,6 +217,10 @@ public class SimulationInfoService {
         }
 
         return enrichedBpmnXml;
+    }
+
+    private boolean isFeatureEnabled() {
+        return Boolean.valueOf(config.isEnable());
     }
 
     private String injectExtensionElements(String exportedBpmnXml, String extensionElementsXml) {
