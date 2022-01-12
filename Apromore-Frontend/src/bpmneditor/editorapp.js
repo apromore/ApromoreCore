@@ -198,7 +198,7 @@ export default class EditorApp {
                 expandTriggerAll: true,
                 collapsible: true,
                 width: this.useSimulationPanel ? 450 : 0,
-                split: true,
+                split: false,
                 title: "Properties",
                 id: 'ap-editor-props-container',
                 items: [
