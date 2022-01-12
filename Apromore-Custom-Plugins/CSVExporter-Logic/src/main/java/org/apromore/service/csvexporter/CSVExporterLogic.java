@@ -39,4 +39,6 @@ public interface CSVExporterLogic {
      * @return CSV File
      */
     Path exportCSV(APMLog myLog, String encoding);
+
+    Path generateCSV(APMLog apmLog);
 }
