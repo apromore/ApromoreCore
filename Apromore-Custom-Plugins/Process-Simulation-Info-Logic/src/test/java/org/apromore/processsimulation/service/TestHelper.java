@@ -20,6 +20,7 @@ package org.apromore.processsimulation.service;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -97,7 +98,7 @@ public class TestHelper {
 
         DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = builderFactory.newDocumentBuilder();
-        Document xmlDocument = builder.parse(new ByteArrayInputStream(bpmnXml.getBytes()));
+        Document xmlDocument = builder.parse(new ByteArrayInputStream(bpmnXml.getBytes(StandardCharsets.UTF_8)));
         XPath xpath = XPathFactory.newInstance().newXPath();
         return (Node) xpath.compile(xpathExpression).evaluate(xmlDocument, XPathConstants.NODE);
     }
@@ -110,7 +111,9 @@ public class TestHelper {
     }
 
     public static BPMNDiagram readBpmnDiagram(final String fileName) throws Exception {
-        BpmnImportPlugin bpmnImport = new BpmnImportPlugin();
-        return bpmnImport.importFromStreamToDiagram(TestHelper.class.getResourceAsStream(fileName), fileName);
+        try (InputStream inputStream = TestHelper.class.getResourceAsStream(fileName)) {
+            BpmnImportPlugin bpmnImport = new BpmnImportPlugin();
+            return bpmnImport.importFromStreamToDiagram(inputStream, fileName);
+        }
     }
 }

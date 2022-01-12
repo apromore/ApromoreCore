@@ -120,12 +120,12 @@ public class SimulationInfoService {
             ((double) (endTimeMillis - startTimeMillis) / (double) 1000) / (double) logSummary.getCaseCount());
 
         builder.processInstances(logSummary.getCaseCount())
-            .currency(Currency.valueOf(defaultCurrency.toUpperCase()))
+            .currency(Currency.valueOf(defaultCurrency.toUpperCase(Locale.ENGLISH)))
             .startDateTime(Instant.ofEpochMilli(logSummary.getStartTime()).toString())
             .arrivalRateDistribution(
                 Distribution.builder()
-                    .timeUnit(TimeUnit.valueOf(defaultTimeUnit.toUpperCase()))
-                    .type(DistributionType.valueOf(defaultDistributionType.toUpperCase()))
+                    .timeUnit(TimeUnit.valueOf(defaultTimeUnit.toUpperCase(Locale.ENGLISH)))
+                    .type(DistributionType.valueOf(defaultDistributionType.toUpperCase(Locale.ENGLISH)))
                     .arg1(Long.toString(interArrivalTime))
                     .build());
     }
@@ -150,9 +150,9 @@ public class SimulationInfoService {
                     taskList.add(Element.builder()
                         .elementId(bpmnNode.getId().toString())
                         .distributionDuration(Distribution.builder()
-                            .type(DistributionType.valueOf(defaultDistributionType.toUpperCase()))
+                            .type(DistributionType.valueOf(defaultDistributionType.toUpperCase(Locale.ENGLISH)))
                             .arg1(nodeAvgDuration.toString())
-                            .timeUnit(TimeUnit.valueOf(defaultTimeUnit.toUpperCase()))
+                            .timeUnit(TimeUnit.valueOf(defaultTimeUnit.toUpperCase(Locale.ENGLISH)))
                             .build())
                         .build());
                 });
