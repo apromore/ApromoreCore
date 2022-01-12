@@ -80,7 +80,7 @@ public class LogProcessorImpl implements LogProcessor {
                 logMetaData.getEndTimestampFormat(), logMetaData.getTimeZone());
         if (endTimestamp == null) {
             logErrorReport.add(new LogErrorReportImpl(lineIndex, logMetaData.getEndTimestampPos(),
-                    header.get(logMetaData.getEndTimestampPos()), "End timestamp Can not parse!"));
+                    header.get(logMetaData.getEndTimestampPos()), "Invalid end timestamp due to wrong format or daylight saving!"));
             validRow = false;
         }
         // Start Timestamp
@@ -102,7 +102,7 @@ public class LogProcessorImpl implements LogProcessor {
                     otherTimestamps.put(header.get(otherTimestamp.getKey()), tempTimestamp);
                 } else {
                     logErrorReport.add(new LogErrorReportImpl(lineIndex, otherTimestamp.getKey(),
-                            header.get(otherTimestamp.getKey()), "Other timestamp Can not parse!"));
+                            header.get(otherTimestamp.getKey()), "Invalid other timestamp due to wrong format or daylight saving!"));
                     validRow = false;
                     break;
                 }
