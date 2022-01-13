@@ -72,7 +72,7 @@ public class SimulationInfoService {
     private static final String XML_START_DEFINITIONS_TAG = "<definitions";
     private static final String XML_START_BPMN_DEFINITIONS_TAG = "<bpmn:definitions";
     private static final String XML_QBP_NAMESPACE = "\n xmlns:qbp=\"http://www.qbp-simulator.com/Schema201212\"\n";
-    private static final Locale ENGLISH_LOCALE = Locale.ENGLISH;
+    private static final Locale DOCUMENT_LOCALE = Locale.ENGLISH;
 
     private JAXBContext jaxbContext;
 
@@ -128,12 +128,12 @@ public class SimulationInfoService {
             ((double) (endTimeMillis - startTimeMillis) / (double) 1000) / (double) logSummary.getCaseCount());
 
         builder.processInstances(logSummary.getCaseCount())
-            .currency(Currency.valueOf(config.getDefaultCurrency().toUpperCase(ENGLISH_LOCALE)))
+            .currency(Currency.valueOf(config.getDefaultCurrency().toUpperCase(DOCUMENT_LOCALE)))
             .startDateTime(Instant.ofEpochMilli(logSummary.getStartTime()).toString())
             .arrivalRateDistribution(
                 Distribution.builder()
-                    .timeUnit(TimeUnit.valueOf(config.getDefaultTimeUnit().toUpperCase(ENGLISH_LOCALE)))
-                    .type(DistributionType.valueOf(config.getDefaultDistributionType().toUpperCase(ENGLISH_LOCALE)))
+                    .timeUnit(TimeUnit.valueOf(config.getDefaultTimeUnit().toUpperCase(DOCUMENT_LOCALE)))
+                    .type(DistributionType.valueOf(config.getDefaultDistributionType().toUpperCase(DOCUMENT_LOCALE)))
                     .arg1(Long.toString(interArrivalTime))
                     .build());
     }
@@ -159,9 +159,9 @@ public class SimulationInfoService {
                         .elementId(bpmnNode.getId().toString())
                         .distributionDuration(Distribution.builder()
                             .type(DistributionType.valueOf(
-                                config.getDefaultDistributionType().toUpperCase(ENGLISH_LOCALE)))
+                                config.getDefaultDistributionType().toUpperCase(DOCUMENT_LOCALE)))
                             .arg1(nodeAvgDuration.toString())
-                            .timeUnit(TimeUnit.valueOf(config.getDefaultTimeUnit().toUpperCase(ENGLISH_LOCALE)))
+                            .timeUnit(TimeUnit.valueOf(config.getDefaultTimeUnit().toUpperCase(DOCUMENT_LOCALE)))
                             .build())
                         .build());
                 });
@@ -183,10 +183,10 @@ public class SimulationInfoService {
                     .name(config.getDefaultTimetable().get(CONFIG_DEFAULT_TIMESLOT_NAME_KEY))
                     .fromWeekDay(DayOfWeek.valueOf(
                         config.getDefaultTimetable().get(CONFIG_DEFAULT_TIMESLOT_FROM_WEEKDAY_KEY)
-                            .toUpperCase(ENGLISH_LOCALE)))
+                            .toUpperCase(DOCUMENT_LOCALE)))
                     .toWeekDay(DayOfWeek.valueOf(
                         config.getDefaultTimetable().get(CONFIG_DEFAULT_TIMESLOT_TO_WEEKDAY_KEY)
-                            .toUpperCase(ENGLISH_LOCALE)))
+                            .toUpperCase(DOCUMENT_LOCALE)))
                     .fromTime(config.getDefaultTimetable().get(CONFIG_DEFAULT_TIMESLOT_FROM_TIME))
                     .toTime(config.getDefaultTimetable().get(CONFIG_DEFAULT_TIMESLOT_TO_TIME))
                     .build()))
