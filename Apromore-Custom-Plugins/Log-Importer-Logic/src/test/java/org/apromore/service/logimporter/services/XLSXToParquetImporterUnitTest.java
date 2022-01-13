@@ -79,7 +79,7 @@ public class XLSXToParquetImporterUnitTest {
         String testFile = "/test1-valid.xlsx";
         // Perform the test
         LogMetaData logMetaData = metaDataService
-                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
 
         List<List<String>> sampleLog = metaDataService
                 .generateSampleLog(this.getClass().getResourceAsStream(testFile), 2, "UTF-8");
@@ -100,7 +100,7 @@ public class XLSXToParquetImporterUnitTest {
         // Test file data
         String testFile = "/test1-valid.xlsx";
         LogMetaData logMetaData = metaDataService
-                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
 
         List<List<String>> sampleLog = metaDataService
                 .generateSampleLog(this.getClass().getResourceAsStream(testFile), 5, "UTF-8");
@@ -127,7 +127,7 @@ public class XLSXToParquetImporterUnitTest {
 
         // Perform the test
         LogMetaData logMetaData = metaDataService
-                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
         List<List<String>> sampleLog = metaDataService
                 .generateSampleLog(
                         this.getClass().getResourceAsStream(testFile),
@@ -175,7 +175,7 @@ public class XLSXToParquetImporterUnitTest {
 
         // Perform the test
         LogMetaData logMetaData = metaDataService
-                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
         List<List<String>> sampleLog = metaDataService
                 .generateSampleLog(
                         this.getClass().getResourceAsStream(testFile),
@@ -222,7 +222,7 @@ public class XLSXToParquetImporterUnitTest {
 
         // Perform the test
         LogMetaData logMetaData = metaDataService
-                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
         List<List<String>> sampleLog = metaDataService
                 .generateSampleLog(
                         this.getClass().getResourceAsStream(testFile),
@@ -269,7 +269,7 @@ public class XLSXToParquetImporterUnitTest {
 
         // Perform the test
         LogMetaData logMetaData = metaDataService
-                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
         List<List<String>> sampleLog = metaDataService
                 .generateSampleLog(
                         this.getClass().getResourceAsStream(testFile),
@@ -316,7 +316,7 @@ public class XLSXToParquetImporterUnitTest {
 
         // Perform the test
         LogMetaData logMetaData = metaDataService
-                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
         List<List<String>> sampleLog = metaDataService
                 .generateSampleLog(
                         this.getClass().getResourceAsStream(testFile),
@@ -363,7 +363,7 @@ public class XLSXToParquetImporterUnitTest {
 
         // Perform the test
         LogMetaData logMetaData = metaDataService
-                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
         List<List<String>> sampleLog = metaDataService
                 .generateSampleLog(
                         this.getClass().getResourceAsStream(testFile),
@@ -410,7 +410,7 @@ public class XLSXToParquetImporterUnitTest {
 
         // Perform the test
         LogMetaData logMetaData = metaDataService
-                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
         List<List<String>> sampleLog = metaDataService
                 .generateSampleLog(
                         this.getClass().getResourceAsStream(testFile),
@@ -451,7 +451,7 @@ public class XLSXToParquetImporterUnitTest {
 
         // Perform the test
         LogMetaData logMetaData = metaDataService
-                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
         List<List<String>> sampleLog = metaDataService
                 .generateSampleLog(
                         this.getClass().getResourceAsStream(testFile),
@@ -503,7 +503,7 @@ public class XLSXToParquetImporterUnitTest {
 
         // Perform the test
         LogMetaData logMetaData = metaDataService
-                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
         List<List<String>> sampleLog = metaDataService
                 .generateSampleLog(
                         this.getClass().getResourceAsStream(testFile),
@@ -551,7 +551,7 @@ public class XLSXToParquetImporterUnitTest {
 
         // Perform the test
         LogMetaData logMetaData = metaDataService
-                .extractMetadata(this.getClass().getResourceAsStream(testFile), "windows-1255");
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "windows-1255", null);
         List<List<String>> sampleLog = metaDataService
                 .generateSampleLog(
                         this.getClass().getResourceAsStream(testFile),

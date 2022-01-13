@@ -25,12 +25,13 @@ import org.apromore.service.logimporter.model.LogMetaData;
 
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 
 public interface MetaDataService {
 
     void validateLog(InputStream in, String charset) throws Exception;
 
-    LogMetaData extractMetadata(InputStream in, String charset) throws Exception;
+    LogMetaData extractMetadata(InputStream in, String charset, Map<String, String> customHeaderMap) throws Exception;
 
     List<List<String>> generateSampleLog(InputStream in, int sampleSize, String charset) throws Exception;
 
