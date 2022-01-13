@@ -32,6 +32,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 
 public class MetaDataServiceXLSXImpl implements MetaDataService {
@@ -80,7 +81,8 @@ public class MetaDataServiceXLSXImpl implements MetaDataService {
     }
 
     @Override
-    public LogMetaData extractMetadata(InputStream in, String charset) throws Exception {
+    public LogMetaData extractMetadata(InputStream in, String charset, Map<String, String> customHeaderMap)
+            throws Exception {
 
         try (Workbook workbook = new XLSReader().readXLS(in, 10, BUFFER_SIZE)) {
             List<String> header = new ArrayList<>();
