@@ -189,6 +189,8 @@ Apromore.I18N.Share.share = "Share";
 Apromore.I18N.Share.shareDesc = "Share the model";
 Apromore.I18N.Share.publish = "Publish";
 Apromore.I18N.Share.publishDesc = "Publish model";
+Apromore.I18N.Share.unpublish = "Unpublish";
+Apromore.I18N.Share.unpublishDesc = "Unpublish model";
 
 if(!Apromore.I18N.SimulationPanel) Apromore.I18N.SimulationPanel = {};
 
