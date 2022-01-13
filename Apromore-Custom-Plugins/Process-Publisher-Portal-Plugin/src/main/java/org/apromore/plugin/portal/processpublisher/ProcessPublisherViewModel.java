@@ -36,6 +36,7 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
+import org.zkoss.zk.ui.util.Clients;
 
 import java.util.UUID;
 
@@ -75,6 +76,7 @@ public class ProcessPublisherViewModel implements LabelSupplier {
             publishNotificationKey = publish ? "publish_link_success_msg" : "unpublish_link_success_msg";
         }
         Notification.info(getLabel(publishNotificationKey));
+        Clients.evalJavaScript(String.format("onUpdatePublishState(%s)", publish));
         window.detach();
     }
 

@@ -140,3 +140,5 @@ Apromore.I18N.Share.shareDesc = "Share";
 Apromore.I18N.Share.group = "Share";
 Apromore.I18N.Share.publish = "Publish";
 Apromore.I18N.Share.publishDesc = "Publish model";
+Apromore.I18N.Share.unpublish = "Unpublish";
+Apromore.I18N.Share.unpublishDesc = "Unpublish model";
