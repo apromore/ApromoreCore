@@ -46,7 +46,7 @@
 
     /* A fix for simulation panel title */
     .x-layout-collapsed-east:after {
-      content: "Simulation parameters";
+      content: "Properties";
       letter-spacing: 1px;
       color: black;
       font-weight: 700;
@@ -205,6 +205,10 @@
 
                         Apromore.BPMNEditor.Plugins.SimulateModel.apromoreSimulateModel = function(xml) {
                           zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSimulateModel', xml));
+                        };
+
+                        Apromore.BPMNEditor.Plugins.PublishModel.apromorePublishModel = function() {
+                          zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onPublishModel'));
                         };
 
                         //window.setTimeout(function() {

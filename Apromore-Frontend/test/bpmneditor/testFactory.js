@@ -62,6 +62,7 @@ export function createEditorAppWithCustomToolbarButtons() {
             window.Apromore.I18N.Undo.undo,
             window.Apromore.I18N.Undo.redo,
             window.Apromore.I18N.Share.share,
+            window.Apromore.I18N.Share.publish,
             window.Apromore.I18N.SimulationPanel.simulateModel
         ]
     });

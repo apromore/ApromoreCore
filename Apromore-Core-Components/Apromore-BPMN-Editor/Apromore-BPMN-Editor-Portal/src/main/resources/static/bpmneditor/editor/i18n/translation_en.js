@@ -187,12 +187,14 @@ if(!Apromore.I18N.Share) Apromore.I18N.Share = {};
 Apromore.I18N.Share.group = "Share";
 Apromore.I18N.Share.share = "Share";
 Apromore.I18N.Share.shareDesc = "Share the model";
+Apromore.I18N.Share.publish = "Publish";
+Apromore.I18N.Share.publishDesc = "Publish model";
 
 if(!Apromore.I18N.SimulationPanel) Apromore.I18N.SimulationPanel = {};
 
 Apromore.I18N.SimulationPanel.group = "Simulation";
 Apromore.I18N.SimulationPanel.toggleSimulationDrawer = "Toggle simulation panel";
-Apromore.I18N.SimulationPanel.toggleSimulationDrawerDesc = "Toggle simulation parameters panel";
+Apromore.I18N.SimulationPanel.toggleSimulationDrawerDesc = "Toggle Properties panel";
 Apromore.I18N.SimulationPanel.simulateModel = "Simulate model";
 Apromore.I18N.SimulationPanel.simulateModelDesc = "Simulate model";
 
@@ -345,7 +347,7 @@ Apromore.I18N.SyntaxChecker.CONV_LINK_CANNOT_CONNECT_CONV_NODES = "The conversat
 
 Apromore.I18N.PropertyWindow.dateFormat = "d/m/y";
 
-Apromore.I18N.View.East = "Simulation parameters";
+Apromore.I18N.View.East = "Properties";
 Apromore.I18N.View.West = "Modeling Elements";
 
 Apromore.I18N.Apromore.title	= "Apromore.";

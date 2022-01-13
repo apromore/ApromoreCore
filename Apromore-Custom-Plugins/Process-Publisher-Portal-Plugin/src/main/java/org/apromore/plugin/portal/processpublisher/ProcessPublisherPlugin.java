@@ -36,7 +36,14 @@ import org.apromore.zk.notification.Notification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.zkoss.util.resource.Labels;
+import org.zkoss.zk.ui.Execution;
+import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.metainfo.PageDefinition;
+import org.zkoss.zul.Window;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -67,6 +74,11 @@ public class ProcessPublisherPlugin extends DefaultPortalPlugin implements Label
     }
 
     @Override
+    public String getIconPath() {
+        return "link.svg";
+    }
+
+    @Override
     public Availability getAvailability() {
         return config.isEnableModelPublish() ? Availability.AVAILABLE : Availability.UNAVAILABLE;
     }
@@ -82,11 +94,25 @@ public class ProcessPublisherPlugin extends DefaultPortalPlugin implements Label
                 throw new IllegalAccessException(getLabel("exception_incorrectRights"));
             }
 
-            //TODO: Open copy publish link modal
-            Notification.info("Publish model coming soon...");
+            Map<String, Object> arg = new HashMap<>();
+            arg.put("processId", processSummaryType.getId());
+            PageDefinition pageDefinition = getPageDefinition("static/processpublisher/zul/publishModel.zul");
+
+            Window window =
+                    (Window) Executions.getCurrent().createComponents(pageDefinition, null, arg);
+
+            window.doModal();
         } catch (Exception e) {
             Notification.error(e.getMessage());
         }
+    }
+
+    public ProcessSummaryType getSelectedModel(PortalContext portalContext) throws IllegalArgumentException {
+        ProcessSummaryType processSummaryType = getSelectedModelFromParams();
+        if (processSummaryType == null) {
+            processSummaryType = getSelectedModelFromPortalContext(portalContext);
+        }
+        return processSummaryType;
     }
 
     /**
@@ -95,7 +121,7 @@ public class ProcessPublisherPlugin extends DefaultPortalPlugin implements Label
      * @return the selected process model.
      * @throws IllegalArgumentException if the selection does not include exactly one process model.
      */
-    public ProcessSummaryType getSelectedModel(PortalContext portalContext) throws IllegalArgumentException {
+    public ProcessSummaryType getSelectedModelFromPortalContext(PortalContext portalContext) throws IllegalArgumentException {
         MainController mainController = (MainController) portalContext.getMainController();
         Map<SummaryType, List<VersionSummaryType>> selectedProcessVersions =
                 mainController.getSelectedElementsAndVersions();
@@ -109,5 +135,28 @@ public class ProcessPublisherPlugin extends DefaultPortalPlugin implements Label
         }
 
         return (ProcessSummaryType) summaryType;
+    }
+
+    /**
+     * Extracts the selected process model from the parameters.
+     * @return the process model passed through the parameters or null if there is none.
+     */
+    private ProcessSummaryType getSelectedModelFromParams() {
+        Map arg = getSimpleParams();
+        if (arg != null && arg.containsKey("selectedModel")) {
+            Object selectedModel = arg.get("selectedModel");
+            arg.clear(); //Clear simple params after getting all required fields
+
+            if (selectedModel instanceof ProcessSummaryType) {
+                return (ProcessSummaryType) selectedModel;
+            }
+        }
+        return null;
+    }
+
+    private PageDefinition getPageDefinition(String uri) throws IOException {
+        Execution current = Executions.getCurrent();
+        return current.getPageDefinitionDirectly(
+                new InputStreamReader(getClass().getClassLoader().getResourceAsStream(uri)), "zul");
     }
 }

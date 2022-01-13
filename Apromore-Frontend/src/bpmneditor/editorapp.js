@@ -197,12 +197,27 @@ export default class EditorApp {
                 collapsible: true,
                 width: this.useSimulationPanel ? 450 : 0,
                 split: true,
-                title: "Simulation parameters",
-                items: {
-                    layout: "fit",
-                    autoHeight: true,
-                    el: document.getElementById("js-properties-panel")
-                }
+                title: "Properties",
+                id: 'ap-editor-props-container',
+                items: [
+                    {   html: '<div id="ap-editor-props-bar">' +
+                          '<div id="ap-editor-props-extension">Metadata</div>' +
+                          '<div id="ap-editor-props-attachment">Attachments</div>' +
+                          '<div id="ap-editor-props-simulation">Simulation</div>' +
+                          '</div>',
+                        region:'north',
+                        border: false,
+                        style: "z-index: 300",
+                        height: 30
+                    },
+                    {
+                        // layout: "fit",
+                        region: 'center',
+                        border: false,
+                        autoHeight: true,
+                        el: document.getElementById("js-properties-panel")
+                    }
+                ]
             }),
 
             // DEFINES BOTTOM-AREA
@@ -255,6 +270,18 @@ export default class EditorApp {
             });
         }
 
+        var tabs = ['extension', 'attachment', 'simulation'];
+        function selectTab(tab) {
+          var container = $('#ap-editor-props-container');
+          tabs.forEach((t) => {
+            if (t === tab){
+              container.addClass(tab);
+            } else {
+              container.removeClass(t);
+            }
+          })
+        }
+
         return new Promise(function (resolve, reject) {
             // Config for the Ext.Viewport
             let layout_config = {
@@ -270,6 +297,21 @@ export default class EditorApp {
                     render: function() {
                         console.log('UI Viewport finished');
                         resolve('UI Viewport finished');
+                        setTimeout(() => {
+                            selectTab('extension');
+                            $('#ap-editor-props-extension').on('click', () => {
+                              selectTab('extension');
+                              $('#ap-editor-props-container .bpp-properties-tabs-links > li a[data-tab-target=customTab]')[0].click();
+                            })
+                            $('#ap-editor-props-attachment').on('click', () => {
+                              selectTab('attachment');
+                              $('#ap-editor-props-container .bpp-properties-tabs-links > li a[data-tab-target=attachmentTab]')[0].click();
+                            })
+                            $('#ap-editor-props-simulation').on('click', () => {
+                              selectTab('simulation');
+                              $('#ap-editor-props-container .bpp-properties-tabs-links > li:not(.bpp-hidden):not(:first-child):not(:nth-child(2)) a')[0].click();
+                            })
+                        }, 1000);
                     }
                 }
             };

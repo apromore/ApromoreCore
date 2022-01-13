@@ -91,4 +91,8 @@ module.exports = {
 
   'details': 'Details',
   'N/A': 'N/A',
+
+  'properties': 'Properties',
+  'metadata.properties': 'Metadata Properties',
+  'attachments': 'Attachments'
 };

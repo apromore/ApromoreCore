@@ -115,7 +115,7 @@ if(!Apromore.I18N.SimulationPanel) Apromore.I18N.SimulationPanel = {};
 
 Apromore.I18N.SimulationPanel.group = "Simulation";
 Apromore.I18N.SimulationPanel.toggleSimulationDrawer = "Toggle simulation panel";
-Apromore.I18N.SimulationPanel.toggleSimulationDrawerDesc = "Toggle simulation parameters panel";
+Apromore.I18N.SimulationPanel.toggleSimulationDrawerDesc = "Toggle Properties panel";
 Apromore.I18N.SimulationPanel.simulateModel = "Simulate model";
 Apromore.I18N.SimulationPanel.simulateModelDesc = "Simulate model";
 
@@ -138,3 +138,5 @@ if(!Apromore.I18N.Share) Apromore.I18N.Share = {};
 Apromore.I18N.Share.share = "Share";
 Apromore.I18N.Share.shareDesc = "Share";
 Apromore.I18N.Share.group = "Share";
+Apromore.I18N.Share.publish = "Publish";
+Apromore.I18N.Share.publishDesc = "Publish model";

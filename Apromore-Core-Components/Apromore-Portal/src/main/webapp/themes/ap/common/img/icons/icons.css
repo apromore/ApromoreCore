@@ -422,6 +422,10 @@
     width: 26px !important;
 }
 
+.ap-icon-link {
+    background-image: url('link.svg') !important;
+    width: 26px !important;
+}
 
 .ap-icon-list {
     background-image: url('list.svg') !important;
@@ -685,6 +689,11 @@
 
 .ap-icon-undo {
     background-image: url('undo.svg') !important;
+    width: 26px !important;
+}
+
+.ap-icon-unlink {
+    background-image: url('unlink.svg') !important;
     width: 26px !important;
 }
 

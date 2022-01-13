@@ -5,11 +5,14 @@ import Modeler from 'bpmn-js/lib/Modeler';
 
 import propertiesPanelModule from 'bpmn-js-properties-panel';
 import propertiesProviderModule from './provider';
+import camundaModdleDescriptor from "camunda-bpmn-moddle/resources/camunda";
 import simulationModdleDescriptor from './descriptors/simulation';
+import apModdleDescriptor from './descriptors/ap';
 
 import '../styles/customModeler.less';
 import customTranslate from './translate/customTranslate';
 import ColorPickerModule from './modules/color-picker';
+import AttachmentModule from './modules/attachment';
 
 export default function CustomModeler(options) {
   var customTranslateModule = {
@@ -18,6 +21,7 @@ export default function CustomModeler(options) {
   options.additionalModules = options.additionalModules || [];
   options.additionalModules.push(customTranslateModule);
   options.additionalModules.push(ColorPickerModule);
+  options.additionalModules.push(AttachmentModule);
   Modeler.call(this, options);
 }
 
@@ -34,5 +38,7 @@ CustomModeler.prototype._modules = [].concat(
 );
 
 CustomModeler.prototype._moddleExtensions = {
-  qbp: simulationModdleDescriptor
+  qbp: simulationModdleDescriptor,
+  camunda: camundaModdleDescriptor,
+  ap: apModdleDescriptor
 };

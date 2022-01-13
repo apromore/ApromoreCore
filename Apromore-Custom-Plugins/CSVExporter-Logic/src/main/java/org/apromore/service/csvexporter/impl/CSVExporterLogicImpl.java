@@ -89,4 +89,17 @@ public class CSVExporterLogicImpl implements CSVExporterLogic {
             }
         }
     }
+    
+    @Override
+    public Path generateCSV(APMLog apmLog) {
+        Path tempCSV = FullLogCSV.getCSVFile(new PLog(apmLog), StandardCharsets.UTF_8.toString());
+        if (tempCSV == null || Files.notExists(tempCSV)) {
+            LOGGER.debug("The temp CSV path \"{}\" doesn't exist!", tempCSV);
+            return null;
+        }
+        tempCSV.toFile().deleteOnExit();
+        LOGGER.debug("Get temp CSV path \"{}\"", tempCSV);
+        return tempCSV;
+    }
+
 }

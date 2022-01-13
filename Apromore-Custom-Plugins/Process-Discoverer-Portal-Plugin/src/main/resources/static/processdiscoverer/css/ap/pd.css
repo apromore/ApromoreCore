@@ -1262,3 +1262,68 @@ table.ap-pd-case-activity-attrs td:nth-child(2) {
     text-align: left;
     font-weight: bold
 }
+
+.ap-pd-connector {
+    position: absolute;
+    z-index: 1;
+    left: -19px;
+    top: 67px;
+}
+
+.ap-pd-connector-text {
+    text-align: center;
+    width: 38px;
+}
+
+.ap-pd-connector-line-left,  .ap-pd-connector-line-right{
+    border-bottom: 1px solid black;
+    width: 0.8vw;
+    position: absolute;
+    top: 8px;
+}
+
+.ap-pd-connector-line-left {
+    left: -0.8vw;
+}
+
+.ap-pd-connector-line-right {
+    right: -0.8vw;
+}
+
+.ap-pd-connector-line-left:before, .ap-pd-connector-line-right:after {
+    position: absolute;
+    bottom: -3px;
+    height: 6px;
+    width: 6px;
+    background: black;
+    content: "";
+    border-radius: 3px;
+}
+
+.ap-pd-connector-line-left:before {
+    left: 0;
+}
+
+.ap-pd-connector-line-right:after {
+    right: 0;
+}
+
+.ap-pd-percent-tier-1 {
+    color: #277D46;
+}
+
+.ap-pd-percent-tier-2 {
+    color: var(--ap-c-green);
+}
+
+.ap-pd-percent-tier-3 {
+    color: var(--ap-c-orange);
+}
+
+.ap-pd-percent-tier-4 {
+    color: #f93c00;
+}
+
+.ap-pd-percent-tier-5 {
+    color: var(--ap-c-maroon-dark-1);
+}

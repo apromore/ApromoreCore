@@ -1,6 +1,7 @@
 import savePlugin from './apromoreSave';
 import exportPlugin from './export';
 import pdfPlugin from './pdf';
+import publishModelPlugin from './publishModel';
 import sharePlugin from './share';
 import simModelPlugin from './simulateModel';
 import toolbarPlugin from './toolbar';
@@ -12,6 +13,7 @@ let Plugins = {
     ApromoreSave: savePlugin,
     Export: exportPlugin,
     File: pdfPlugin,
+    PublishModel: publishModelPlugin,
     Share: sharePlugin,
     SimulateModel: simModelPlugin,
     Toolbar: toolbarPlugin,

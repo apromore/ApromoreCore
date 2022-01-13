@@ -90,5 +90,7 @@ module.exports = {
   'invalid.endTime {beginTime}':	'無効な終了時間：{beginTime}以降の時間を選択してください。',
 
   'details':	'詳細',
-  'N/A':	'該当なし'
+  'N/A':	'該当なし',
+
+  'properties': 'Properties'
 };
