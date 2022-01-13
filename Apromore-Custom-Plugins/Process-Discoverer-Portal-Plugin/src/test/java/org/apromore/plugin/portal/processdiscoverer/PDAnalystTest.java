@@ -17,8 +17,6 @@
  */
 package org.apromore.plugin.portal.processdiscoverer;
 
-import java.util.*;
-
 import org.apromore.apmlog.xes.XLogToImmutableLog;
 import org.apromore.commons.datetime.DateTimeUtils;
 import org.apromore.logman.Constants;
@@ -29,7 +27,12 @@ import org.apromore.logman.attribute.graph.MeasureRelation;
 import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.logman.attribute.log.AttributeInfo;
 import org.apromore.logman.attribute.log.AttributeLog;
-import org.apromore.plugin.portal.processdiscoverer.data.*;
+import org.apromore.plugin.portal.processdiscoverer.data.CaseDetails;
+import org.apromore.plugin.portal.processdiscoverer.data.CaseVariantDetails;
+import org.apromore.plugin.portal.processdiscoverer.data.ConfigData;
+import org.apromore.plugin.portal.processdiscoverer.data.ContextData;
+import org.apromore.plugin.portal.processdiscoverer.data.InvalidDataException;
+import org.apromore.plugin.portal.processdiscoverer.data.PerspectiveDetails;
 import org.apromore.processdiscoverer.layout.Layout;
 import org.deckfour.xes.model.XAttributeTimestamp;
 import org.deckfour.xes.model.XLog;
@@ -39,7 +42,19 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import static org.junit.Assert.*;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PDAnalystTest extends TestDataSetup {
@@ -48,19 +63,19 @@ public class PDAnalystTest extends TestDataSetup {
     public void test_AnalystConstructor_ValidData() throws Exception {
         PDAnalyst analyst = createPDAnalyst(readLogWithOneTraceOneEvent());
         
-        assertEquals(false, analyst.hasEmptyData());
+        assertFalse(analyst.hasEmptyData());
         
         assertEquals(2, analyst.getAvailableAttributes().size());
-        assertEquals(false, Objects.isNull(analyst.getAttributeLog()));
-        assertEquals(false, Objects.isNull(analyst.getAttribute("concept:name")));
-        assertEquals(false, Objects.isNull(analyst.getAttribute("lifecycle:transition")));
-        assertEquals(true, Objects.isNull(analyst.getAttribute("org:resource")));
+        assertFalse(Objects.isNull(analyst.getAttributeLog()));
+        assertFalse(Objects.isNull(analyst.getAttribute("concept:name")));
+        assertFalse(Objects.isNull(analyst.getAttribute("lifecycle:transition")));
+        assertTrue(Objects.isNull(analyst.getAttribute("org:resource")));
         
         assertEquals("concept:name", analyst.getMainAttribute().getKey());
         assertEquals(AttributeLevel.EVENT, analyst.getMainAttribute().getLevel());
         assertEquals(AttributeType.LITERAL, analyst.getMainAttribute().getType());
         
-        assertEquals(true, ((List)analyst.getCurrentFilterCriteria()).isEmpty());
+        assertTrue(((List)analyst.getCurrentFilterCriteria()).isEmpty());
         
         AttributeLog attLog = analyst.getAttributeLog();
         assertEquals(1, attLog.getTraces().size());
@@ -75,7 +90,7 @@ public class PDAnalystTest extends TestDataSetup {
         Mockito.when(eventLogService.getXLog(contextData.getLogId())).thenReturn(validLog);
         Mockito.when(eventLogService.getAggregatedLog(contextData.getLogId())).thenReturn(
                 XLogToImmutableLog.convertXLog("ProcessLog", validLog));
-        Mockito.when(eventLogService.getPerspectiveTagByLog(contextData.getLogId())).thenReturn(Arrays.asList(new String[] {"org:resource"}));
+        Mockito.when(eventLogService.getPerspectiveTagByLog(contextData.getLogId())).thenReturn(Arrays.asList("org:resource"));
         ConfigData configData = ConfigData.DEFAULT;
         PDAnalyst analyst = new PDAnalyst(contextData, configData, eventLogService);
     }
@@ -101,7 +116,7 @@ public class PDAnalystTest extends TestDataSetup {
         Mockito.when(eventLogService.getXLog(contextData.getLogId())).thenReturn(validLog);
         Mockito.when(eventLogService.getAggregatedLog(contextData.getLogId())).thenReturn(
                 XLogToImmutableLog.convertXLog("ProcessLog", validLog));
-        Mockito.when(eventLogService.getPerspectiveTagByLog(contextData.getLogId())).thenReturn(Arrays.asList(new String[] {"concept:name"}));
+        Mockito.when(eventLogService.getPerspectiveTagByLog(contextData.getLogId())).thenReturn(Arrays.asList("concept:name"));
         ConfigData configData = new ConfigData("concept:name", 1, Integer.MAX_VALUE);
         PDAnalyst analyst = new PDAnalyst(contextData, configData, eventLogService);
     }
@@ -526,5 +541,4 @@ public class PDAnalystTest extends TestDataSetup {
                         false)).get().getAbstraction().getLayout();
         assertNotSame(layout1, layout9);
     }
-    
 }
