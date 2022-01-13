@@ -27,7 +27,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
+import java.time.DayOfWeek;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
@@ -39,13 +42,15 @@ import org.apromore.logman.attribute.log.AttributeLog;
 import org.apromore.logman.attribute.log.AttributeLogSummary;
 import org.apromore.processdiscoverer.abstraction.AbstractAbstraction;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
+import org.apromore.processsimulation.config.SimulationInfoConfig;
 import org.apromore.processsimulation.model.Currency;
 import org.apromore.processsimulation.model.DistributionType;
 import org.apromore.processsimulation.model.ProcessSimulationInfo;
 import org.apromore.processsimulation.model.TimeUnit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.util.ReflectionTestUtils;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
@@ -54,13 +59,29 @@ class SimulationInfoServiceTest {
 
     private SimulationInfoService simulationInfoService;
 
+    @Mock
+    private SimulationInfoConfig config;
+
     @BeforeEach
     void setup() {
-        simulationInfoService = new SimulationInfoService();
-        ReflectionTestUtils.setField(simulationInfoService, "enableExportSimulationInfo", true);
-        ReflectionTestUtils.setField(simulationInfoService, "defaultDistributionType", "EXPONENTIAL");
-        ReflectionTestUtils.setField(simulationInfoService, "defaultTimeUnit", "SECONDS");
-        ReflectionTestUtils.setField(simulationInfoService, "defaultCurrency", "EUR");
+        MockitoAnnotations.openMocks(this);
+
+        simulationInfoService = new SimulationInfoService(config);
+
+        when(config.isEnable()).thenReturn(true);
+        when(config.getDefaultCurrency()).thenReturn("EUR");
+        when(config.getDefaultDistributionType()).thenReturn("EXPONENTIAL");
+        when(config.getDefaultTimeUnit()).thenReturn("SECONDS");
+
+        Map<String, String> timeTableConfigMap = new HashMap<>();
+        timeTableConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_TIMETABLE_ID_KEY, "DEFAULT_TIMETABLE");
+        timeTableConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_TIMETABLE_NAME_KEY, "Arrival Timetable");
+        timeTableConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_NAME_KEY, "Default Timeslot");
+        timeTableConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_FROM_TIME, "10:00:00.000+00:00");
+        timeTableConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_TO_TIME, "15:00:00.000+00:00");
+        timeTableConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_FROM_WEEKDAY_KEY, "MONDAY");
+        timeTableConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_TO_WEEKDAY_KEY, "THURSDAY");
+        when(config.getDefaultTimetable()).thenReturn(timeTableConfigMap);
     }
 
     @Test
@@ -146,6 +167,42 @@ class SimulationInfoServiceTest {
 
     }
 
+    @Test
+    void should_successfully_derive_timetable_info() throws Exception {
+        // given
+        AbstractAbstraction mockAbstraction = mock(AbstractAbstraction.class);
+        AttributeLog mockAttributeLog = mock(AttributeLog.class);
+        AttributeLogSummary mockAttributeLogSummary = mock(AttributeLogSummary.class);
+
+        when(mockAbstraction.getLog()).thenReturn(mockAttributeLog);
+        when(mockAttributeLog.getLogSummary()).thenReturn(mockAttributeLogSummary);
+        when(mockAttributeLogSummary.getCaseCount()).thenReturn(100L);
+        when(mockAttributeLogSummary.getStartTime()).thenReturn(1577797200000L);
+        when(mockAttributeLogSummary.getEndTime()).thenReturn(1580475600000L);
+
+        // when
+        ProcessSimulationInfo processSimulationInfo = simulationInfoService.deriveSimulationInfo(mockAbstraction);
+
+        // then
+        assertGeneralSimulationInfo(processSimulationInfo);
+
+        assertNotNull(processSimulationInfo.getTimetables());
+        assertEquals(1, processSimulationInfo.getTimetables().size());
+        assertEquals("Arrival Timetable", processSimulationInfo.getTimetables().get(0).getName());
+        assertEquals("DEFAULT_TIMETABLE", processSimulationInfo.getTimetables().get(0).getId());
+        assertTrue(processSimulationInfo.getTimetables().get(0).isDefaultTimetable());
+
+        assertNotNull(processSimulationInfo.getTimetables().get(0).getRules());
+        assertEquals(1, processSimulationInfo.getTimetables().get(0).getRules().size());
+        assertNotNull(processSimulationInfo.getTimetables().get(0).getRules().get(0).getId());
+        assertEquals("Default Timeslot", processSimulationInfo.getTimetables().get(0).getRules().get(0).getName());
+        assertEquals("10:00:00.000+00:00",
+            processSimulationInfo.getTimetables().get(0).getRules().get(0).getFromTime());
+        assertEquals("15:00:00.000+00:00", processSimulationInfo.getTimetables().get(0).getRules().get(0).getToTime());
+        assertEquals(DayOfWeek.MONDAY, processSimulationInfo.getTimetables().get(0).getRules().get(0).getFromWeekDay());
+        assertEquals(DayOfWeek.THURSDAY, processSimulationInfo.getTimetables().get(0).getRules().get(0).getToWeekDay());
+    }
+
     private void assertGeneralSimulationInfo(final ProcessSimulationInfo processSimulationInfo) {
         assertNotNull(processSimulationInfo.getId());
         assertNotNull(processSimulationInfo.getErrors());
@@ -190,7 +247,7 @@ class SimulationInfoServiceTest {
     @Test
     void should_return_null_if_feature_disabled() {
         // given
-        ReflectionTestUtils.setField(simulationInfoService, "enableExportSimulationInfo", false);
+        when(config.isEnable()).thenReturn(false);
         AbstractAbstraction mockAbstraction = mock(AbstractAbstraction.class);
 
         // when
@@ -259,7 +316,7 @@ class SimulationInfoServiceTest {
     @Test
     void should_not_enrich_if_feature_disabled() throws IOException {
         // given
-        ReflectionTestUtils.setField(simulationInfoService, "enableExportSimulationInfo", false);
+        when(config.isEnable()).thenReturn(false);
         String originalBpmn = TestHelper.readBpmnFile("/no_simulation_info.bpmn");
         ProcessSimulationInfo processSimulationInfo = TestHelper.createMockProcessSimulationInfo(false);
 

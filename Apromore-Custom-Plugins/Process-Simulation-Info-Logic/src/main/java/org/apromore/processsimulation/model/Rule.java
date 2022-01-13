@@ -18,12 +18,10 @@
 
 package org.apromore.processsimulation.model;
 
-import java.util.List;
+import java.time.DayOfWeek;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -34,29 +32,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @XmlAccessorType(XmlAccessType.FIELD)
-public class ProcessSimulationInfo {
-
+public class Rule {
     @XmlAttribute
     private String id;
     @XmlAttribute
-    private long processInstances;
+    private String name;
     @XmlAttribute
-    private Currency currency;
+    private String fromTime;
     @XmlAttribute
-    private String startDateTime;
-
-    @XmlElement(name = "qbp:errors")
-    private Errors errors;
-
-    @XmlElement(name = "qbp:arrivalRateDistribution")
-    private Distribution arrivalRateDistribution;
-
-    @XmlElementWrapper(name = "qbp:elements")
-    @XmlElement(name = "qbp:element")
-    private List<Element> tasks;
-
-    @XmlElementWrapper(name = "qbp:timetables")
-    @XmlElement(name = "qbp:timetable")
-    private List<Timetable> timetables;
-
+    private String toTime;
+    @XmlAttribute
+    private DayOfWeek fromWeekDay;
+    @XmlAttribute
+    private DayOfWeek toWeekDay;
 }

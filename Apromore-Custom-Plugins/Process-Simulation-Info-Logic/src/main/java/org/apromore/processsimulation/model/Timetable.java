@@ -34,29 +34,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @XmlAccessorType(XmlAccessType.FIELD)
-public class ProcessSimulationInfo {
-
+public class Timetable {
     @XmlAttribute
     private String id;
+    @XmlAttribute(name = "default")
+    private boolean defaultTimetable;
     @XmlAttribute
-    private long processInstances;
-    @XmlAttribute
-    private Currency currency;
-    @XmlAttribute
-    private String startDateTime;
+    private String name;
 
-    @XmlElement(name = "qbp:errors")
-    private Errors errors;
-
-    @XmlElement(name = "qbp:arrivalRateDistribution")
-    private Distribution arrivalRateDistribution;
-
-    @XmlElementWrapper(name = "qbp:elements")
-    @XmlElement(name = "qbp:element")
-    private List<Element> tasks;
-
-    @XmlElementWrapper(name = "qbp:timetables")
-    @XmlElement(name = "qbp:timetable")
-    private List<Timetable> timetables;
-
+    @XmlElementWrapper(name = "qbp:rules")
+    @XmlElement(name = "qbp:rule")
+    private List<Rule> rules;
 }
