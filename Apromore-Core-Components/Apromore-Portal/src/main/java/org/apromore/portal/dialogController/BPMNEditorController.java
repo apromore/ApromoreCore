@@ -432,7 +432,6 @@ public class BPMNEditorController extends BaseController implements Composer<Com
     param.put("availableSimulateModelPlugin", false);
     param.put("bpmnioLib", BPMNIO_MODELER_JS);
     param.put("isPublished", true);
-    param.put("bpmnioLib", BPMNIO_MODELER_JS);
     param.put("viewOnly", true);
     param.put("langTag", getLanguageTag());
     param.put("doAutoLayout", "false");
