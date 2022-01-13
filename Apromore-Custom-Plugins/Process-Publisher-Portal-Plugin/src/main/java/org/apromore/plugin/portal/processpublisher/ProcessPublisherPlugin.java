@@ -40,6 +40,7 @@ import org.springframework.stereotype.Component;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.metainfo.PageDefinition;
 import org.zkoss.zul.Window;
 
@@ -162,12 +163,14 @@ public class ProcessPublisherPlugin extends DefaultPortalPlugin implements Label
     }
 
     private boolean isPublished() {
-        if (getSimpleParams() == null || !(getSimpleParams().get("PROCESS_ID") instanceof Integer)) {
+        try {
+            PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
+            ProcessSummaryType process = getSelectedModelFromPortalContext(portalContext);
+            ProcessPublish processPublishDetails = processPublishService.getPublishDetails(process.getId());
+            return processPublishDetails !=null && processPublishDetails.isPublished();
+        } catch (Exception e) {
             return false;
         }
-        int processId = (int) getSimpleParams().get("PROCESS_ID");
-        ProcessPublish processPublishDetails = processPublishService.getPublishDetails(processId);
-        return processPublishDetails !=null && processPublishDetails.isPublished();
     }
 
     private PageDefinition getPageDefinition(String uri) throws IOException {

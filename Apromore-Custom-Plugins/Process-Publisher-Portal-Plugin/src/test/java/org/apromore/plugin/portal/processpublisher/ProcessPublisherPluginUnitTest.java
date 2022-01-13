@@ -164,25 +164,21 @@ public class ProcessPublisherPluginUnitTest {
     }
 
     @Test
-    public void testGetIconNoProcessIDParams() {
-        assertEquals("unlink.svg", processPublisherPlugin.getIconPath());
-    }
-
-    @Test
-    public void testGetIconPublishedNonIntProcessId() {
-        Map<String, Object> params = new HashMap<>();
-        params.put("PROCESS_ID", "Not an int");
-        processPublisherPlugin.setSimpleParams(params);
-
+    public void testGetIconIsPublishException() {
         assertEquals("unlink.svg", processPublisherPlugin.getIconPath());
     }
 
     @Test
     public void testGetIconPublishedUnrecordedProcessId() {
-        Map<String, Object> params = new HashMap<>();
-        params.put("PROCESS_ID", 1);
-        processPublisherPlugin.setSimpleParams(params);
+        ProcessSummaryType processSummaryType = new ProcessSummaryType();
+        processSummaryType.setId(1);
+        Map<SummaryType, List<VersionSummaryType>> selectedProcessVersions = new HashMap<>();
+        selectedProcessVersions.put(processSummaryType, new ArrayList<>());
 
+        sessionsMockedStatic.when(() -> Sessions.getCurrent()).thenReturn(session);
+        when(session.getAttribute("portalContext")).thenReturn(portalContext);
+        when(portalContext.getMainController()).thenReturn(mainController);
+        when(mainController.getSelectedElementsAndVersions()).thenReturn(selectedProcessVersions);
         when(processPublishService.getPublishDetails(1)).thenReturn(null);
 
         assertEquals("unlink.svg", processPublisherPlugin.getIconPath());
@@ -190,10 +186,15 @@ public class ProcessPublisherPluginUnitTest {
 
     @Test
     public void testGetIconUnpublishedProcessId() {
-        Map<String, Object> params = new HashMap<>();
-        params.put("PROCESS_ID", 1);
-        processPublisherPlugin.setSimpleParams(params);
+        ProcessSummaryType processSummaryType = new ProcessSummaryType();
+        processSummaryType.setId(1);
+        Map<SummaryType, List<VersionSummaryType>> selectedProcessVersions = new HashMap<>();
+        selectedProcessVersions.put(processSummaryType, new ArrayList<>());
 
+        sessionsMockedStatic.when(() -> Sessions.getCurrent()).thenReturn(session);
+        when(session.getAttribute("portalContext")).thenReturn(portalContext);
+        when(portalContext.getMainController()).thenReturn(mainController);
+        when(mainController.getSelectedElementsAndVersions()).thenReturn(selectedProcessVersions);
         when(processPublishService.getPublishDetails(1)).thenReturn(processPublish);
         when(processPublish.isPublished()).thenReturn(false);
 
@@ -202,10 +203,15 @@ public class ProcessPublisherPluginUnitTest {
 
     @Test
     public void testGetIconPublishedProcessId() {
-        Map<String, Object> params = new HashMap<>();
-        params.put("PROCESS_ID", 1);
-        processPublisherPlugin.setSimpleParams(params);
+        ProcessSummaryType processSummaryType = new ProcessSummaryType();
+        processSummaryType.setId(1);
+        Map<SummaryType, List<VersionSummaryType>> selectedProcessVersions = new HashMap<>();
+        selectedProcessVersions.put(processSummaryType, new ArrayList<>());
 
+        sessionsMockedStatic.when(() -> Sessions.getCurrent()).thenReturn(session);
+        when(session.getAttribute("portalContext")).thenReturn(portalContext);
+        when(portalContext.getMainController()).thenReturn(mainController);
+        when(mainController.getSelectedElementsAndVersions()).thenReturn(selectedProcessVersions);
         when(processPublishService.getPublishDetails(1)).thenReturn(processPublish);
         when(processPublish.isPublished()).thenReturn(true);
 

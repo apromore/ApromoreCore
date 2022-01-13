@@ -125,7 +125,6 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 			return;
 		}
 		PortalPlugin.Availability availability = plugin.getAvailability();
-		plugin.setSimpleParams(Executions.getCurrent().getArg());
 		if (availability == PortalPlugin.Availability.UNAVAILABLE || availability == PortalPlugin.Availability.HIDDEN) {
 			return;
 		}

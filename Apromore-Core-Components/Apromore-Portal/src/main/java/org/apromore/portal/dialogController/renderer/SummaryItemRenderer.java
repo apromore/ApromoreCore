@@ -155,7 +155,6 @@ public class SummaryItemRenderer implements ListitemRenderer {
             public void onEvent(Event event) throws Exception {
                 Map args = new HashMap();
                   args.put("POPUP_TYPE", "PROCESS");
-                  args.put("PROCESS_ID", process.getId());
                 Menupopup menupopup = (Menupopup)Executions.createComponents("~./macros/popupMenu.zul", null, args);
                 menupopup.open(event.getTarget(), "at_pointer");
             }
