@@ -4,7 +4,7 @@ var is = require('bpmn-js/lib/util/ModelUtil').is,
 module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmnjs) {
 
   function shown(element) {
-    return is(element, 'bpmn:FlowNode');
+    return is(element, 'bpmn:FlowNode') && !is(element, 'bpmn:Process');
   }
 
   return {

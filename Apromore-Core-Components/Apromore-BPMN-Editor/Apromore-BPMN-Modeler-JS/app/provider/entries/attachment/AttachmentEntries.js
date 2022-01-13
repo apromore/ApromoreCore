@@ -4,6 +4,7 @@ var getBusinessObject = require('bpmn-js/lib/util/ModelUtil').getBusinessObject;
 var elementHelper = require('bpmn-js-properties-panel/lib/helper/ElementHelper');
 var extensionElementsHelper = require('bpmn-js-properties-panel/lib/helper/ExtensionElementsHelper');
 var IconPickerField = require('./fields/IconPickerField');
+var IconSetPickerField = require('./fields/IconSetPickerField');
 var ImagePickerField = require('./fields/ImagePickerField');
 var { AUX_PROPS } = require('../../../modules/attachment/common');
 
@@ -91,49 +92,14 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmn
 
   return [
     entryFactory.textField(translate, {
-      id : AUX_PROPS.LINK_URL,
-      label : 'Link URL',
-      modelProperty : AUX_PROPS.LINK_URL,
-      get: function(_element, _node) {
-        return { [AUX_PROPS.LINK_URL]: bo[AUX_PROPS.LINK_URL] };
-      },
-      set: function(element, values, _node) {
-        var url = values[AUX_PROPS.LINK_URL];
-        if (!url.startsWith('http') && url.length) {
-          url = 'http://' + url;
-        }
-        refreshOverlay(bpmnjs, element);
-        return cmdHelper.updateBusinessObject(element, bo, {
-          [AUX_PROPS.LINK_URL]: url
-        });
-      }
-    }),
-    entryFactory.textField(translate, {
-      id : AUX_PROPS.LINK_TEXT,
-      label : 'Link text',
-      modelProperty : AUX_PROPS.LINK_TEXT,
-      get: function(_element, _node) {
-        return { [AUX_PROPS.LINK_TEXT]: bo[AUX_PROPS.LINK_TEXT] };
-      },
-      set: function(element, values, _node) {
-        refreshOverlay(bpmnjs, element);
-        return cmdHelper.updateBusinessObject(element, bo, {
-          [AUX_PROPS.LINK_TEXT]: values[AUX_PROPS.LINK_TEXT]
-        });
-      }
-    }),
-    entryFactory.textField(translate, {
       id: AUX_PROPS.IMG_SRC,
-      label: "Image Link",
+      label: "Image source URL",
       modelProperty : AUX_PROPS.IMG_SRC,
       get: function(_element, _node) {
         return { [AUX_PROPS.IMG_SRC]: img[AUX_PROPS.IMG_SRC] };
       },
       set: function(element, values, _node) {
         var src = values[AUX_PROPS.IMG_SRC];
-        if (!src.startsWith('http') && src.length) {
-          src = 'http://' + src;
-        }
         refreshOverlay(bpmnjs, element);
         return cmdHelper.updateBusinessObject(element, img, {
           [AUX_PROPS.IMG_SRC]: src
@@ -142,7 +108,7 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmn
     }),
     ImagePickerField({
       id: AUX_PROPS.IMG_URL,
-      label: "Image Upload",
+      label: "Image upload",
       modelProperty : AUX_PROPS.IMG_URL,
       get: function(_element, _node) {
         showImgPreview(img[AUX_PROPS.IMG_URL]);
@@ -155,6 +121,36 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmn
         });
       }
     }),
+    entryFactory.textField(translate, {
+      id : AUX_PROPS.LINK_URL,
+      label : 'Link for image',
+      modelProperty : AUX_PROPS.LINK_URL,
+      get: function(_element, _node) {
+        return { [AUX_PROPS.LINK_URL]: bo[AUX_PROPS.LINK_URL] };
+      },
+      set: function(element, values, _node) {
+        var url = values[AUX_PROPS.LINK_URL];
+        refreshOverlay(bpmnjs, element);
+        return cmdHelper.updateBusinessObject(element, bo, {
+          [AUX_PROPS.LINK_URL]: url
+        });
+      }
+    }),
+    entryFactory.textField(translate, {
+      id : AUX_PROPS.LINK_TEXT,
+      label : 'Text for image',
+      modelProperty : AUX_PROPS.LINK_TEXT,
+      get: function(_element, _node) {
+        return { [AUX_PROPS.LINK_TEXT]: bo[AUX_PROPS.LINK_TEXT] };
+      },
+      set: function(element, values, _node) {
+        refreshOverlay(bpmnjs, element);
+        return cmdHelper.updateBusinessObject(element, bo, {
+          [AUX_PROPS.LINK_TEXT]: values[AUX_PROPS.LINK_TEXT]
+        });
+      }
+    }),
+    /*
     IconPickerField(
       {
         id: AUX_PROPS.ICON_NAME,
@@ -171,6 +167,16 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmn
           });
         }
       }
-    )
+    ),*/
+    IconSetPickerField({
+      id: AUX_PROPS.ICON_SET,
+      label: "Icon List",
+      modelProperty: AUX_PROPS.ICON_SET,
+      element,
+      bpmnFactory,
+      elementRegistry,
+      translate,
+      bpmnjs
+    })
   ];
 }
