@@ -350,8 +350,8 @@
   color: black;
   height: 24px;
   box-sizing: border-box;
+  cursor: pointer;
 }
-
 
 /* Aux overlays */
 

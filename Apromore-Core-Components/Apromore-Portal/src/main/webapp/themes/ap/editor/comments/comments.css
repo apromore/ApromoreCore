@@ -1,0 +1,149 @@
+
+.comments-overlay {
+  background: #52B415;
+  font-size: 10px;
+
+  color: white;
+  display: none;
+}
+
+.selected .comments-overlay,
+.comments-overlay.with-comments {
+  display: block;
+}
+
+.comments-overlay .edit {
+  margin: 2px 0 0 0;
+  padding-top: 2px;
+}
+
+.comments-overlay .edit textarea {
+  border: none;
+  margin: 0;
+  color: black;
+  font-size: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  font-family: 'Source Sans Pro', sans-serif !important;
+}
+
+.comments-overlay .icon-comment:hover {
+  color: #EEE;
+}
+
+.comments-overlay .comment {
+  border-top-color: white;
+}
+
+
+.comments-overlay .icon-comment {
+  margin-right: 2px;
+}
+
+.comments-overlay .icon-delete {
+  color: white;
+}
+
+
+/** fonts **/
+
+@font-face {
+  font-family: 'bpmn-js-comments';
+  src: url('font/bpmn-js-comments.eot?23532594');
+  src: url('font/bpmn-js-comments.eot?23532594#iefix') format('embedded-opentype'),
+       url('font/bpmn-js-comments.woff?23532594') format('woff'),
+       url('font/bpmn-js-comments.ttf?23532594') format('truetype'),
+       url('font/bpmn-js-comments.svg?23532594#bpmn-js-comments') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+[class^="icon-"]:before,
+[class*=" icon-"]:before {
+  font-family: "bpmn-js-comments";
+  font-style: normal;
+  font-weight: normal;
+  speak: none;
+
+  display: inline-block;
+  text-decoration: inherit;
+  width: 1em;
+  text-align: center;
+
+  font-variant: normal;
+  text-transform: none;
+
+  line-height: 1em;
+}
+
+.icon-comment:before { content: '\e800'; }
+.icon-delete:before { content: '\e802'; }
+
+.comments-overlay {
+  background: #5b889b;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.comments-overlay.expanded {
+  z-index: 100;
+  position: absolute; /* for z-index to work */
+}
+
+.comments-overlay .toggle {
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.comments-overlay.expanded .comment-count,
+.comments-overlay .content {
+  display: none;
+}
+
+.comments-overlay .comment-count {
+  display: inline;
+}
+
+.comments-overlay.expanded .content {
+  display: block;
+}
+
+.comments-overlay .comment {
+  border-top: dotted 1px #666;
+  margin-top: 4px;
+  padding-top: 4px;
+  white-space: pre-wrap;
+
+  position: relative;
+}
+
+.comments-overlay .comment .delete {
+  position: absolute;
+  right: 3px;
+  top: 3px;
+
+  text-decoration: none;
+
+  display: none;
+}
+
+.comments-overlay .comment:hover .delete {
+  display: block;
+}
+
+.comments-overlay {
+  position: absolute !important;
+  right: 10px !important;
+  top: 0px !important;
+}
+
+.comments-overlay.expanded {
+  width: 150px !important;
+}
+
+.djs-overlay.djs-overlay-comments {
+  position: absolute !important;
+  left: 0 !important;
+  top: 0 !important;
+  transform-origin: left top !important;
+}
