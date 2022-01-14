@@ -1,10 +1,12 @@
 plugins {
 	id "checkstyle"
 	id "com.github.spotbugs" version "${spotbugsPluginVersion}"
+	id "jacoco"
 }
 
 apply from: 'config/checkstyle/checkstyle.gradle'
 apply from: 'config/spotbugs/spotbugs.gradle'
+apply from: 'config/jacoco/jacoco.gradle'
 
 group = 'org.apromore'
 version = '2.0.0'

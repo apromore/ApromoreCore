@@ -20,7 +20,6 @@ package org.apromore.processsimulation.config;
 
 import java.util.Map;
 import lombok.Data;
-import lombok.ToString;
 import org.apromore.processsimulation.model.Currency;
 import org.apromore.processsimulation.model.DistributionType;
 import org.apromore.processsimulation.model.TimeUnit;
@@ -28,7 +27,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Data
-@ToString
 @Configuration
 @ConfigurationProperties(prefix = "process.simulation.info.export")
 public class SimulationInfoConfig {

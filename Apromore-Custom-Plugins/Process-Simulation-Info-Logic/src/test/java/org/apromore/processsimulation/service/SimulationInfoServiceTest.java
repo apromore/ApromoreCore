@@ -248,6 +248,56 @@ class SimulationInfoServiceTest {
     }
 
     @Test
+    void should_contain_no_resources_if_no_log_available() {
+        // given
+        AbstractAbstraction mockAbstraction = mock(AbstractAbstraction.class);
+        AttributeLog mockAttributeLog = mock(AttributeLog.class);
+        AttributeLogSummary mockAttributeLogSummary = mock(AttributeLogSummary.class);
+
+        when(mockAbstraction.getLog()).thenReturn(mockAttributeLog);
+        when(mockAttributeLog.getLogSummary()).thenReturn(mockAttributeLogSummary);
+        when(mockAttributeLog.getFullLog()).thenReturn(null);
+
+        when(mockAttributeLogSummary.getCaseCount()).thenReturn(100L);
+        when(mockAttributeLogSummary.getStartTime()).thenReturn(1577797200000L);
+        when(mockAttributeLogSummary.getEndTime()).thenReturn(1580475600000L);
+
+        // when
+        ProcessSimulationInfo processSimulationInfo = simulationInfoService.deriveSimulationInfo(mockAbstraction);
+
+        // then
+        assertGeneralSimulationInfo(processSimulationInfo);
+
+        assertNull(processSimulationInfo.getResources());
+    }
+
+    @Test
+    void should_contain_no_resources_if_no_attribute_store_available() {
+        // given
+        AbstractAbstraction mockAbstraction = mock(AbstractAbstraction.class);
+        AttributeLog mockAttributeLog = mock(AttributeLog.class);
+        AttributeLogSummary mockAttributeLogSummary = mock(AttributeLogSummary.class);
+        ALog mockALog = mock(ALog.class);
+
+        when(mockAbstraction.getLog()).thenReturn(mockAttributeLog);
+        when(mockAttributeLog.getLogSummary()).thenReturn(mockAttributeLogSummary);
+        when(mockAttributeLog.getFullLog()).thenReturn(mockALog);
+        when(mockALog.getAttributeStore()).thenReturn(null);
+
+        when(mockAttributeLogSummary.getCaseCount()).thenReturn(100L);
+        when(mockAttributeLogSummary.getStartTime()).thenReturn(1577797200000L);
+        when(mockAttributeLogSummary.getEndTime()).thenReturn(1580475600000L);
+
+        // when
+        ProcessSimulationInfo processSimulationInfo = simulationInfoService.deriveSimulationInfo(mockAbstraction);
+
+        // then
+        assertGeneralSimulationInfo(processSimulationInfo);
+
+        assertNull(processSimulationInfo.getResources());
+    }
+
+    @Test
     void should_contain_no_resources_if_not_available_in_log() {
         // given
         AbstractAbstraction mockAbstraction = mock(AbstractAbstraction.class);
@@ -265,7 +315,6 @@ class SimulationInfoServiceTest {
         when(mockAttributeLogSummary.getCaseCount()).thenReturn(100L);
         when(mockAttributeLogSummary.getStartTime()).thenReturn(1577797200000L);
         when(mockAttributeLogSummary.getEndTime()).thenReturn(1580475600000L);
-
 
         // when
         ProcessSimulationInfo processSimulationInfo = simulationInfoService.deriveSimulationInfo(mockAbstraction);

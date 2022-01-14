@@ -28,6 +28,7 @@ subprojects {
   apply plugin: "java-library"
   apply plugin: "eclipse"
   apply plugin: "com.github.hierynomus.license"
+  apply plugin: "jacoco"
 
   sourceCompatibility = '11'
 
@@ -87,12 +88,24 @@ subprojects {
 
   test {
     useJUnitPlatform()
+    finalizedBy jacocoTestReport // report is always generated after tests run
   }
+
   dependencyManagement {
     imports {
       mavenBom "org.keycloak.bom:keycloak-adapter-bom:14.0.0"
     }
   }
+
+  jacocoTestReport {
+    dependsOn test
+    reports {
+      xml.enabled true
+      csv.enabled false
+      html.destination file("${buildDir}/jacocoHtml")
+    }
+  }
+
   project(':Apromore-Boot') {
 
     bootJar.baseName = "Apromore-Core"
@@ -146,6 +159,27 @@ sonarqube {
     property "sonar.issue.ignore.multicriteria", "S1948"
     property "sonar.issue.ignore.multicriteria.S1948.ruleKey", "java:S1948"
     property "sonar.issue.ignore.multicriteria.S1948.resourceKey", "src/main/java/org/apromore/**/*.java"
-
+    property 'sonar.coverage.jacoco.xmlReportPaths', "${project.buildDir}/reports/jacoco/report.xml"
   }
 }
+
+task jacocoGenerateRootReport(type: JacocoReport, group: 'Test Reporting') {
+  description = 'Generates aggregate report from all subprojects.'
+
+  def includeFilter = ['**/build/classes/java/**/*.class']
+  def excludeFilter = ['**/classes', '**/*.zul'] // classes which have duplicated names to overcome ` Can't add different class with same name issue` See https://github.com/jacoco/jacoco/issues/858
+  def classTree = fileTree(dir: "${rootProject.projectDir}", includes: includeFilter, excludes: excludeFilter)
+  def sourceTree = fileTree(dir: "${rootProject.projectDir}", includes: ['**/src/main/java/**/*.*'])
+  def executionTree = fileTree(dir: "${rootProject.projectDir}", includes: ['**/build/jacoco/*.exec'])
+
+  classDirectories.from = files([classTree])
+  jacocoClasspath = rootProject.buildscript.configurations.classpath
+  sourceDirectories.from = files([sourceTree])
+  executionData.from = files([executionTree])
+  reports {
+    xml.enabled true
+    xml.destination file("${rootProject.projectDir}/build/reports/jacoco/report.xml")
+  }
+}
+
+tasks['sonarqube'].dependsOn jacocoGenerateRootReport
