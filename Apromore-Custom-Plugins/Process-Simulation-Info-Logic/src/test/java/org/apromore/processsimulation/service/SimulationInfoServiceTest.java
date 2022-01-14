@@ -34,6 +34,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
+import org.apromore.logman.ALog;
+import org.apromore.logman.attribute.AttributeStore;
+import org.apromore.logman.attribute.IndexableAttribute;
 import org.apromore.logman.attribute.graph.AttributeLogGraph;
 import org.apromore.logman.attribute.graph.MeasureAggregation;
 import org.apromore.logman.attribute.graph.MeasureRelation;
@@ -74,14 +77,19 @@ class SimulationInfoServiceTest {
         when(config.getDefaultTimeUnit()).thenReturn("SECONDS");
 
         Map<String, String> timeTableConfigMap = new HashMap<>();
-        timeTableConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_TIMETABLE_ID_KEY, "DEFAULT_TIMETABLE");
-        timeTableConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_TIMETABLE_NAME_KEY, "Arrival Timetable");
+        timeTableConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_ID_KEY, "DEFAULT_TIMETABLE");
+        timeTableConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_NAME_KEY, "Arrival Timetable");
         timeTableConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_NAME_KEY, "Default Timeslot");
         timeTableConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_FROM_TIME, "10:00:00.000+00:00");
         timeTableConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_TO_TIME, "15:00:00.000+00:00");
         timeTableConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_FROM_WEEKDAY_KEY, "MONDAY");
         timeTableConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_TO_WEEKDAY_KEY, "THURSDAY");
         when(config.getDefaultTimetable()).thenReturn(timeTableConfigMap);
+
+        Map<String, String> defaultResourceConfigMap = new HashMap<>();
+        defaultResourceConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_ID_KEY, "QBP_DEFAULT_RESOURCE");
+        defaultResourceConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_NAME_KEY, "Default resource");
+        when(config.getDefaultResource()).thenReturn(defaultResourceConfigMap);
     }
 
     @Test
@@ -168,7 +176,7 @@ class SimulationInfoServiceTest {
     }
 
     @Test
-    void should_successfully_derive_timetable_info() throws Exception {
+    void should_successfully_derive_timetable_info() {
         // given
         AbstractAbstraction mockAbstraction = mock(AbstractAbstraction.class);
         AttributeLog mockAttributeLog = mock(AttributeLog.class);
@@ -201,6 +209,71 @@ class SimulationInfoServiceTest {
         assertEquals("15:00:00.000+00:00", processSimulationInfo.getTimetables().get(0).getRules().get(0).getToTime());
         assertEquals(DayOfWeek.MONDAY, processSimulationInfo.getTimetables().get(0).getRules().get(0).getFromWeekDay());
         assertEquals(DayOfWeek.THURSDAY, processSimulationInfo.getTimetables().get(0).getRules().get(0).getToWeekDay());
+    }
+
+    @Test
+    void should_successfully_derive_resource_info() {
+        // given
+        AbstractAbstraction mockAbstraction = mock(AbstractAbstraction.class);
+        AttributeLog mockAttributeLog = mock(AttributeLog.class);
+        AttributeLogSummary mockAttributeLogSummary = mock(AttributeLogSummary.class);
+        ALog mockALog = mock(ALog.class);
+        AttributeStore mockAttributeStore = mock(AttributeStore.class);
+        IndexableAttribute mockResourceAttribute = mock(IndexableAttribute.class);
+
+        when(mockAbstraction.getLog()).thenReturn(mockAttributeLog);
+        when(mockAttributeLog.getLogSummary()).thenReturn(mockAttributeLogSummary);
+        when(mockAttributeLog.getFullLog()).thenReturn(mockALog);
+        when(mockALog.getAttributeStore()).thenReturn(mockAttributeStore);
+        when(mockAttributeStore.getStandardEventResource()).thenReturn(mockResourceAttribute);
+
+        when(mockAttributeLogSummary.getCaseCount()).thenReturn(100L);
+        when(mockAttributeLogSummary.getStartTime()).thenReturn(1577797200000L);
+        when(mockAttributeLogSummary.getEndTime()).thenReturn(1580475600000L);
+
+        when(mockResourceAttribute.getValueSize()).thenReturn(27);
+
+        // when
+        ProcessSimulationInfo processSimulationInfo = simulationInfoService.deriveSimulationInfo(mockAbstraction);
+
+        // then
+        assertGeneralSimulationInfo(processSimulationInfo);
+
+        assertNotNull(processSimulationInfo.getResources());
+        assertEquals(1, processSimulationInfo.getResources().size());
+        assertEquals("QBP_DEFAULT_RESOURCE", processSimulationInfo.getResources().get(0).getId());
+        assertEquals("Default resource", processSimulationInfo.getResources().get(0).getName());
+        assertEquals("DEFAULT_TIMETABLE", processSimulationInfo.getResources().get(0).getTimetableId());
+        assertEquals(27, processSimulationInfo.getResources().get(0).getTotalAmount());
+    }
+
+    @Test
+    void should_contain_no_resources_if_not_available_in_log() {
+        // given
+        AbstractAbstraction mockAbstraction = mock(AbstractAbstraction.class);
+        AttributeLog mockAttributeLog = mock(AttributeLog.class);
+        AttributeLogSummary mockAttributeLogSummary = mock(AttributeLogSummary.class);
+        ALog mockALog = mock(ALog.class);
+        AttributeStore mockAttributeStore = mock(AttributeStore.class);
+
+        when(mockAbstraction.getLog()).thenReturn(mockAttributeLog);
+        when(mockAttributeLog.getLogSummary()).thenReturn(mockAttributeLogSummary);
+        when(mockAttributeLog.getFullLog()).thenReturn(mockALog);
+        when(mockALog.getAttributeStore()).thenReturn(mockAttributeStore);
+        when(mockAttributeStore.getStandardEventResource()).thenReturn(null);
+
+        when(mockAttributeLogSummary.getCaseCount()).thenReturn(100L);
+        when(mockAttributeLogSummary.getStartTime()).thenReturn(1577797200000L);
+        when(mockAttributeLogSummary.getEndTime()).thenReturn(1580475600000L);
+
+
+        // when
+        ProcessSimulationInfo processSimulationInfo = simulationInfoService.deriveSimulationInfo(mockAbstraction);
+
+        // then
+        assertGeneralSimulationInfo(processSimulationInfo);
+
+        assertNull(processSimulationInfo.getResources());
     }
 
     private void assertGeneralSimulationInfo(final ProcessSimulationInfo processSimulationInfo) {
@@ -262,7 +335,7 @@ class SimulationInfoServiceTest {
         throws IOException, XPathExpressionException, ParserConfigurationException, SAXException {
         // given
         String bpmn = TestHelper.readBpmnFile("/no_simulation_info.bpmn");
-        ProcessSimulationInfo processSimulationInfo = TestHelper.createMockProcessSimulationInfo(false);
+        ProcessSimulationInfo processSimulationInfo = TestHelper.createMockProcessSimulationInfo(false, false, false);
 
         // when
         String enrichedBpmn = simulationInfoService.enrichWithSimulationInfo(bpmn, processSimulationInfo);
@@ -276,7 +349,49 @@ class SimulationInfoServiceTest {
         throws IOException, XPathExpressionException, ParserConfigurationException, SAXException {
         // given
         String bpmn = TestHelper.readBpmnFile("/no_simulation_info.bpmn");
-        ProcessSimulationInfo processSimulationInfo = TestHelper.createMockProcessSimulationInfo(true);
+        ProcessSimulationInfo processSimulationInfo = TestHelper.createMockProcessSimulationInfo(true, false, false);
+
+        // when
+        String enrichedBpmn = simulationInfoService.enrichWithSimulationInfo(bpmn, processSimulationInfo);
+
+        // then
+        assertBpmnTaskProcessSimulationInfo(enrichedBpmn);
+    }
+
+    @Test
+    void should_enrich_with_timetable_simulation_info()
+        throws IOException, XPathExpressionException, ParserConfigurationException, SAXException {
+        // given
+        String bpmn = TestHelper.readBpmnFile("/no_simulation_info.bpmn");
+        ProcessSimulationInfo processSimulationInfo = TestHelper.createMockProcessSimulationInfo(false, true, false);
+
+        // when
+        String enrichedBpmn = simulationInfoService.enrichWithSimulationInfo(bpmn, processSimulationInfo);
+
+        // then
+        assertBpmnTimetableSimulationInfo(enrichedBpmn);
+    }
+
+    @Test
+    void should_enrich_with_resource_simulation_info()
+        throws IOException, XPathExpressionException, ParserConfigurationException, SAXException {
+        // given
+        String bpmn = TestHelper.readBpmnFile("/no_simulation_info.bpmn");
+        ProcessSimulationInfo processSimulationInfo = TestHelper.createMockProcessSimulationInfo(false, false, true);
+
+        // when
+        String enrichedBpmn = simulationInfoService.enrichWithSimulationInfo(bpmn, processSimulationInfo);
+
+        // then
+        assertBpmnResourceSimulationInfo(enrichedBpmn);
+    }
+
+    @Test
+    void should_enrich_with_all_simulation_info()
+        throws IOException, XPathExpressionException, ParserConfigurationException, SAXException {
+        // given
+        String bpmn = TestHelper.readBpmnFile("/no_simulation_info.bpmn");
+        ProcessSimulationInfo processSimulationInfo = TestHelper.createMockProcessSimulationInfo(true, true, true);
 
         // when
         String enrichedBpmn = simulationInfoService.enrichWithSimulationInfo(bpmn, processSimulationInfo);
@@ -284,15 +399,16 @@ class SimulationInfoServiceTest {
         // then
         assertBpmnGeneralProcessSimulationInfo(enrichedBpmn);
         assertBpmnTaskProcessSimulationInfo(enrichedBpmn);
+        assertBpmnTimetableSimulationInfo(enrichedBpmn);
+        assertBpmnResourceSimulationInfo(enrichedBpmn);
     }
-
 
     @Test
     void should_enrich_with_simulation_info_for_model_with_no_xmlns_prefix()
         throws IOException, XPathExpressionException, ParserConfigurationException, SAXException {
         // given
         String bpmn = TestHelper.readBpmnFile("/no_simulation_info_without_namespace_prefix.bpmn");
-        ProcessSimulationInfo processSimulationInfo = TestHelper.createMockProcessSimulationInfo(false);
+        ProcessSimulationInfo processSimulationInfo = TestHelper.createMockProcessSimulationInfo(false, false, false);
 
         // when
         String enrichedBpmn = simulationInfoService.enrichWithSimulationInfo(bpmn, processSimulationInfo);
@@ -318,7 +434,7 @@ class SimulationInfoServiceTest {
         // given
         when(config.isEnable()).thenReturn(false);
         String originalBpmn = TestHelper.readBpmnFile("/no_simulation_info.bpmn");
-        ProcessSimulationInfo processSimulationInfo = TestHelper.createMockProcessSimulationInfo(false);
+        ProcessSimulationInfo processSimulationInfo = TestHelper.createMockProcessSimulationInfo(true, true, true);
 
         // when
         String enrichedBpmn = simulationInfoService.enrichWithSimulationInfo(originalBpmn, processSimulationInfo);
@@ -381,6 +497,38 @@ class SimulationInfoServiceTest {
         assertEquals(mean, elementNode.getFirstChild().getAttributes().getNamedItem("mean").getNodeValue());
         assertEquals(timeUnit, elementNode.getFirstChild().getFirstChild().getFirstChild().getNodeValue());
 
+    }
+
+    private void assertBpmnTimetableSimulationInfo(String bpmnXmlString)
+        throws XPathExpressionException, ParserConfigurationException, IOException, SAXException {
+
+        Node timeTableNode = TestHelper.getProcessSimulationInfo(bpmnXmlString,
+            "/definitions/process/extensionElements/processSimulationInfo/timetables/timetable[1]");
+        assertEquals("A_DEFAULT_TIME_TABLE_ID", timeTableNode.getAttributes().getNamedItem("id").getNodeValue());
+        assertEquals("The default timetable name", timeTableNode.getAttributes().getNamedItem("name").getNodeValue());
+        assertEquals("true", timeTableNode.getAttributes().getNamedItem("default").getNodeValue());
+
+        Node timeTableRuleNode = TestHelper.getProcessSimulationInfo(bpmnXmlString,
+            "/definitions/process/extensionElements/processSimulationInfo/timetables/timetable[1]/rules/rule[1]");
+        assertEquals("DEF_RULE_ID", timeTableRuleNode.getAttributes().getNamedItem("id").getNodeValue());
+        assertEquals("default rule name", timeTableRuleNode.getAttributes().getNamedItem("name").getNodeValue());
+        assertEquals("SUNDAY", timeTableRuleNode.getAttributes().getNamedItem("fromWeekDay").getNodeValue());
+        assertEquals("SATURDAY", timeTableRuleNode.getAttributes().getNamedItem("toWeekDay").getNodeValue());
+        assertEquals("06:00:00.000+00:00",
+            timeTableRuleNode.getAttributes().getNamedItem("fromTime").getNodeValue());
+        assertEquals("18:00:00.000+00:00", timeTableRuleNode.getAttributes().getNamedItem("toTime").getNodeValue());
+
+    }
+
+    private void assertBpmnResourceSimulationInfo(String bpmnXmlString)
+        throws XPathExpressionException, ParserConfigurationException, IOException, SAXException {
+
+        Node resourceNode = TestHelper.getProcessSimulationInfo(bpmnXmlString,
+            "/definitions/process/extensionElements/processSimulationInfo/resources/resource[1]");
+        assertEquals("A_DEFAULT_RESOURCE_ID", resourceNode.getAttributes().getNamedItem("id").getNodeValue());
+        assertEquals("The default resource name", resourceNode.getAttributes().getNamedItem("name").getNodeValue());
+        assertEquals("A_DEFAULT_TIMETABLE_ID", resourceNode.getAttributes().getNamedItem("timetableId").getNodeValue());
+        assertEquals("23", resourceNode.getAttributes().getNamedItem("totalAmount").getNodeValue());
     }
 
 }

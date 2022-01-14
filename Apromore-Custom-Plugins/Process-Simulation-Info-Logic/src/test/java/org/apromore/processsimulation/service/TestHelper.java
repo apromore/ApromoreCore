@@ -22,8 +22,10 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.time.DayOfWeek;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -42,7 +44,10 @@ import org.apromore.processsimulation.model.DistributionType;
 import org.apromore.processsimulation.model.Element;
 import org.apromore.processsimulation.model.Errors;
 import org.apromore.processsimulation.model.ProcessSimulationInfo;
+import org.apromore.processsimulation.model.Resource;
+import org.apromore.processsimulation.model.Rule;
 import org.apromore.processsimulation.model.TimeUnit;
+import org.apromore.processsimulation.model.Timetable;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
@@ -50,7 +55,8 @@ import org.xml.sax.SAXException;
 @UtilityClass
 public class TestHelper {
 
-    public static ProcessSimulationInfo createMockProcessSimulationInfo(boolean includeTasks) {
+    public static ProcessSimulationInfo createMockProcessSimulationInfo(
+        boolean includeTasks, boolean includeTimetable, boolean includeResource) {
         ProcessSimulationInfo.ProcessSimulationInfoBuilder builder = ProcessSimulationInfo.builder()
             .id("some_random_guid")
             .errors(Errors.builder().build())
@@ -90,6 +96,32 @@ public class TestHelper {
 
             builder.tasks(tasks);
         }
+
+        if (includeTimetable) {
+            builder.timetables(Arrays.asList(Timetable.builder()
+                    .id("A_DEFAULT_TIME_TABLE_ID")
+                    .name("The default timetable name")
+                    .defaultTimetable(true)
+                    .rules(Arrays.asList(Rule.builder()
+                            .name("default rule name")
+                            .id("DEF_RULE_ID")
+                            .fromWeekDay(DayOfWeek.SUNDAY)
+                            .toWeekDay(DayOfWeek.SATURDAY)
+                            .fromTime("06:00:00.000+00:00")
+                            .toTime("18:00:00.000+00:00")
+                        .build()))
+                .build()));
+        }
+
+        if (includeResource) {
+            builder.resources(Arrays.asList(Resource.builder()
+                .id("A_DEFAULT_RESOURCE_ID")
+                .name("The default resource name")
+                .timetableId("A_DEFAULT_TIMETABLE_ID")
+                .totalAmount(23)
+                .build()));
+        }
+
         return builder.build();
     }
 
