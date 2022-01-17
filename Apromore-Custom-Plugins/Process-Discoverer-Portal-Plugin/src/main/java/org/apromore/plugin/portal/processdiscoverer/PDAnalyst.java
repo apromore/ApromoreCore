@@ -625,6 +625,11 @@ public class PDAnalyst {
         //printAttributeLogBitMap(attLog);
     }
 
+    /**
+     * Simulation data are used to add simulation values to the BPMN diagram.
+     * @param abs Process Abstraction
+     * @return SimulationData
+     */
     public SimulationData getSimulationData(@NonNull Abstraction abs) {
         Map<String, Double> nodeDurationMap =
                 abs.getDiagram().getNodes()
