@@ -643,8 +643,6 @@ public class PDAnalyst {
     
     // For debug only
     private void printPLogBitMap(PLog log) {
-        SimulationData test = this.getSimulationData(null);
-
         BitSet bitSet = log.getValidTraceIndexBS();
         List<PTrace> pTraces = log.getCustomPTraceList();
         LOGGER.debug("PLog trace status (trace_number:bit): ");
