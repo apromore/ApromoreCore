@@ -457,13 +457,16 @@ class SimulationInfoServiceTest {
         throws IOException, XPathExpressionException, ParserConfigurationException, SAXException {
         // given
         String bpmn = TestHelper.readBpmnFile("/no_simulation_info_without_namespace_prefix.bpmn");
-        ProcessSimulationInfo processSimulationInfo = TestHelper.createMockProcessSimulationInfo(false, false, false);
+        ProcessSimulationInfo processSimulationInfo = TestHelper.createMockProcessSimulationInfo(true, true, true);
 
         // when
         String enrichedBpmn = simulationInfoService.enrichWithSimulationInfo(bpmn, processSimulationInfo);
 
         // then
         assertBpmnGeneralProcessSimulationInfo(enrichedBpmn);
+        assertBpmnTaskProcessSimulationInfo(enrichedBpmn);
+        assertBpmnTimetableSimulationInfo(enrichedBpmn);
+        assertBpmnResourceSimulationInfo(enrichedBpmn);
     }
 
     @Test
