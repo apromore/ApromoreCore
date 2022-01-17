@@ -17,8 +17,6 @@
  */
 package org.apromore.plugin.portal.processdiscoverer;
 
-import java.util.*;
-
 import org.apromore.apmlog.xes.XLogToImmutableLog;
 import org.apromore.commons.datetime.DateTimeUtils;
 import org.apromore.logman.Constants;
@@ -33,7 +31,6 @@ import org.apromore.plugin.portal.processdiscoverer.data.*;
 import org.apromore.processdiscoverer.Abstraction;
 import org.apromore.processdiscoverer.layout.Layout;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
-import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNNode;
 import org.deckfour.xes.model.XAttributeTimestamp;
 import org.deckfour.xes.model.XLog;
 import org.eclipse.collections.api.list.ListIterable;
@@ -42,6 +39,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+
+import java.util.*;
+
 import static org.junit.Assert.*;
 
 @RunWith(MockitoJUnitRunner.class)
