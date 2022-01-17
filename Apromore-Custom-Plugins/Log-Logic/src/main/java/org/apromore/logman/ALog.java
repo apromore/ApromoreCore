@@ -129,10 +129,10 @@ public class ALog extends XLogImpl {
         activeTraces.clear();
         for (int i=0;i<this.getOriginalTraces().size();i++) {
             if (newTraceStatus.get(i)) activeTraces.add(getOriginalTraceFromIndex(i));
-            if (originalTraceStatus.get(i) != newTraceStatus.get(i)) {
-                boolean increase = !originalTraceStatus.get(i) && newTraceStatus.get(i);
-                this.getAttributeStore().updateAttributeValueCount(getOriginalTraceFromIndex(i), increase);
-            }
+//            if (originalTraceStatus.get(i) != newTraceStatus.get(i)) {
+//                boolean increase = !originalTraceStatus.get(i) && newTraceStatus.get(i);
+//                this.getAttributeStore().updateAttributeValueCount(getOriginalTraceFromIndex(i), increase);
+//            }
         }
         originalTraceStatus = newTraceStatus;
     }

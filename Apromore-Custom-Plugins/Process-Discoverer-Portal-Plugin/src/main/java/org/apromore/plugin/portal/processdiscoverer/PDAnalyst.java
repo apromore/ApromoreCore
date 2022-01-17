@@ -23,6 +23,7 @@
 package org.apromore.plugin.portal.processdiscoverer;
 
 import lombok.Getter;
+import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
 import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.ATrace;
@@ -54,20 +55,14 @@ import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.logman.attribute.log.AttributeInfo;
 import org.apromore.logman.attribute.log.AttributeLog;
 import org.apromore.plugin.portal.PortalLoggerFactory;
-import org.apromore.plugin.portal.processdiscoverer.data.CaseDetails;
-import org.apromore.plugin.portal.processdiscoverer.data.CaseVariantDetails;
-import org.apromore.plugin.portal.processdiscoverer.data.ConfigData;
-import org.apromore.plugin.portal.processdiscoverer.data.ContextData;
-import org.apromore.plugin.portal.processdiscoverer.data.InvalidDataException;
-import org.apromore.plugin.portal.processdiscoverer.data.NotFoundAttributeException;
-import org.apromore.plugin.portal.processdiscoverer.data.OutputData;
-import org.apromore.plugin.portal.processdiscoverer.data.PerspectiveDetails;
-import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
+import org.apromore.plugin.portal.processdiscoverer.data.*;
 import org.apromore.plugin.portal.processdiscoverer.impl.json.ProcessJSONVisualizer;
 import org.apromore.plugin.portal.processdiscoverer.vis.ProcessVisualizer;
 import org.apromore.processdiscoverer.Abstraction;
 import org.apromore.processdiscoverer.AbstractionParams;
 import org.apromore.processdiscoverer.ProcessDiscoverer;
+import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNNode;
+import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Activity;
 import org.apromore.service.EventLogService;
 import org.deckfour.xes.model.XLog;
 import org.eclipse.collections.api.list.ImmutableList;
@@ -75,6 +70,8 @@ import org.eclipse.collections.api.list.ListIterable;
 import org.slf4j.Logger;
 import org.springframework.util.CollectionUtils;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
@@ -627,9 +624,37 @@ public class PDAnalyst {
         //printALogBitMap(aLog);
         //printAttributeLogBitMap(attLog);
     }
+
+    public SimulationData getSimulationData(@NonNull Abstraction abs) {
+        Map<String, Double> nodeDurationMap =
+                abs.getDiagram().getNodes()
+                    .stream()
+                    .filter(Activity.class::isInstance)
+                    .collect(Collectors.toMap(
+                            node -> node.getId().toString(),
+                            node -> BigDecimal.valueOf(attLog.getGraphView().getNodeWeight(node.getLabel(),
+                                                        MeasureType.DURATION,
+                                                        MeasureAggregation.MEAN,
+                                                        MeasureRelation.ABSOLUTE) / 1000)
+                                        .setScale(2, RoundingMode.HALF_UP).doubleValue()));
+
+        return SimulationData.builder()
+                .caseCount(filteredPLog.getValidTraceIndexBS().cardinality())
+                .resourceCount(filteredPLog.getActivityInstances().stream()
+                        .filter(x -> x.getAttributes().containsKey(Constants.ATT_KEY_RESOURCE))
+                        .map(x -> x.getAttributes().get(Constants.ATT_KEY_RESOURCE))
+                        .collect(Collectors.toSet())
+                        .size())
+                .startTime(filteredAPMLog.getStartTime())
+                .endTime(filteredAPMLog.getEndTime())
+                .nodeWeights(nodeDurationMap)
+                .build();
+    }
     
     // For debug only
     private void printPLogBitMap(PLog log) {
+        SimulationData test = this.getSimulationData(null);
+
         BitSet bitSet = log.getValidTraceIndexBS();
         List<PTrace> pTraces = log.getCustomPTraceList();
         LOGGER.debug("PLog trace status (trace_number:bit): ");
