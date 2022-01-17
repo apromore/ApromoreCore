@@ -17,8 +17,6 @@
  */
 package org.apromore.plugin.portal.processdiscoverer;
 
-import java.util.*;
-
 import org.apromore.apmlog.xes.XLogToImmutableLog;
 import org.apromore.commons.datetime.DateTimeUtils;
 import org.apromore.logman.Constants;
@@ -30,7 +28,9 @@ import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.logman.attribute.log.AttributeInfo;
 import org.apromore.logman.attribute.log.AttributeLog;
 import org.apromore.plugin.portal.processdiscoverer.data.*;
+import org.apromore.processdiscoverer.Abstraction;
 import org.apromore.processdiscoverer.layout.Layout;
+import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.deckfour.xes.model.XAttributeTimestamp;
 import org.deckfour.xes.model.XLog;
 import org.eclipse.collections.api.list.ListIterable;
@@ -39,6 +39,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+
+import java.util.*;
+
 import static org.junit.Assert.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -525,6 +528,53 @@ public class PDAnalystTest extends TestDataSetup {
                         false,
                         false)).get().getAbstraction().getLayout();
         assertNotSame(layout1, layout9);
+    }
+
+    @Test
+    public void test_SimulationData() throws Exception {
+        UserOptionsData userOptions = createUserOptions(100, 100, 40,
+                MeasureType.FREQUENCY,
+                MeasureAggregation.CASES,
+                MeasureRelation.ABSOLUTE,
+                false, false,
+                MeasureType.FREQUENCY,
+                MeasureAggregation.CASES,
+                MeasureRelation.ABSOLUTE,
+                MeasureType.DURATION,
+                MeasureAggregation.MEAN,
+                MeasureRelation.ABSOLUTE,
+                false,
+                false);
+        PDAnalyst analyst = createPDAnalyst(readLogWithOneTraceStartCompleteEventsNonOverlapping());
+        Abstraction abs = analyst.discoverProcess(userOptions).get().getAbstraction();
+        SimulationData data = analyst.getSimulationData(abs);
+        assertEquals(1, data.getCaseCount());
+        assertEquals(5, data.getResourceCount());
+        assertEquals(DateTime.parse("2010-10-27T21:59:19.308+10:00").getMillis(), data.getStartTime());
+        assertEquals(DateTime.parse("2010-10-27T22:55:19.308+10:00").getMillis(), data.getEndTime());
+        assertEquals(60, data.getDiagramNodeDuration(getNodeId("a", abs.getDiagram())), 0.0);
+        assertEquals(60, data.getDiagramNodeDuration(getNodeId("b", abs.getDiagram())), 0.0);
+        assertEquals(60, data.getDiagramNodeDuration(getNodeId("c", abs.getDiagram())), 0.0);
+        assertEquals(60, data.getDiagramNodeDuration(getNodeId("d", abs.getDiagram())), 0.0);
+
+        // Filter out some events
+        analyst.filter_RemoveEventsAnyValueOfEventAttribute("c", "concept:name");
+        Abstraction abs2 = analyst.discoverProcess(userOptions).get().getAbstraction();
+        SimulationData data2 = analyst.getSimulationData(abs2);
+        assertEquals(1, data2.getCaseCount());
+        assertEquals(4, data2.getResourceCount()); // changed
+        assertEquals(DateTime.parse("2010-10-27T21:59:19.308+10:00").getMillis(), data2.getStartTime());
+        assertEquals(DateTime.parse("2010-10-27T22:45:19.308+10:00").getMillis(), data2.getEndTime()); // changed
+        assertEquals(60, data.getDiagramNodeDuration(getNodeId("b", abs2.getDiagram())), 0.0);
+    }
+
+    private String getNodeId(String label, BPMNDiagram diagram) {
+        return diagram.getNodes().stream()
+                .filter(n -> n.getLabel().equals(label))
+                .findFirst()
+                .get()
+                .getId()
+                .toString();
     }
     
 }
