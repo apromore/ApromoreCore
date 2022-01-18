@@ -31,5 +31,6 @@ dependencies {
 	runtimeOnly project(':Apromore-Custom-Plugins:Similarity-Search-Portal-Plugin')
 	runtimeOnly project(':Apromore-Custom-Plugins:Process-Discoverer-Portal-Plugin')
 	runtimeOnly project(':Apromore-Custom-Plugins:Process-Publisher-Portal-Plugin')
+	runtimeOnly project(':Apromore-Custom-Plugins:Process-Simulation-Info-Logic')
 
 }

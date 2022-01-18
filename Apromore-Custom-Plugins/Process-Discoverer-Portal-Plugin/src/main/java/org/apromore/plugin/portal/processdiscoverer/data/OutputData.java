@@ -22,6 +22,8 @@
 
 package org.apromore.plugin.portal.processdiscoverer.data;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.apromore.processdiscoverer.Abstraction;
 
 /**
@@ -31,20 +33,10 @@ import org.apromore.processdiscoverer.Abstraction;
  * @author Bruce Nguyen
  *
  */
+@AllArgsConstructor
 public class OutputData {
-    private final Abstraction currentAbstraction;
+    @Getter
+    private final Abstraction abstraction;
+    @Getter
     private final String visualizedText; // the corresponding JSON format of the diagram
-    
-    public OutputData(Abstraction currentAbstraction, String visualizedText) {
-        this.currentAbstraction = currentAbstraction;
-        this.visualizedText = visualizedText;
-    }
-    
-    public Abstraction getAbstraction() {
-        return currentAbstraction;
-    }
-    
-    public String getVisualizedText() {
-        return visualizedText;
-    }
 }

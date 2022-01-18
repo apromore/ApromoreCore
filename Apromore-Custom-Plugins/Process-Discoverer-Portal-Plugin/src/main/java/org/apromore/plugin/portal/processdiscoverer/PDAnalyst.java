@@ -22,6 +22,20 @@
 
 package org.apromore.plugin.portal.processdiscoverer;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.BitSet;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
@@ -33,7 +47,11 @@ import org.apromore.apmlog.filter.PTrace;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.LogFilterRuleImpl;
 import org.apromore.apmlog.filter.rules.RuleValue;
-import org.apromore.apmlog.filter.types.*;
+import org.apromore.apmlog.filter.types.Choice;
+import org.apromore.apmlog.filter.types.FilterType;
+import org.apromore.apmlog.filter.types.Inclusion;
+import org.apromore.apmlog.filter.types.OperationType;
+import org.apromore.apmlog.filter.types.Section;
 import org.apromore.apmlog.stats.LogStatsAnalyzer;
 import org.apromore.apmlog.stats.TimeStatsProcessor;
 import org.apromore.apmlog.xes.XESAttributeCodes;
@@ -51,7 +69,16 @@ import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.logman.attribute.log.AttributeInfo;
 import org.apromore.logman.attribute.log.AttributeLog;
 import org.apromore.plugin.portal.PortalLoggerFactory;
-import org.apromore.plugin.portal.processdiscoverer.data.*;
+import org.apromore.plugin.portal.processdiscoverer.data.CaseDetails;
+import org.apromore.plugin.portal.processdiscoverer.data.CaseVariantDetails;
+import org.apromore.plugin.portal.processdiscoverer.data.ConfigData;
+import org.apromore.plugin.portal.processdiscoverer.data.ContextData;
+import org.apromore.plugin.portal.processdiscoverer.data.InvalidDataException;
+import org.apromore.plugin.portal.processdiscoverer.data.NotFoundAttributeException;
+import org.apromore.plugin.portal.processdiscoverer.data.OutputData;
+import org.apromore.plugin.portal.processdiscoverer.data.PerspectiveDetails;
+import org.apromore.plugin.portal.processdiscoverer.data.SimulationData;
+import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
 import org.apromore.plugin.portal.processdiscoverer.impl.json.ProcessJSONVisualizer;
 import org.apromore.plugin.portal.processdiscoverer.vis.ProcessVisualizer;
 import org.apromore.processdiscoverer.Abstraction;
@@ -64,11 +91,6 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.ListIterable;
 import org.slf4j.Logger;
 import org.springframework.util.CollectionUtils;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * PDAnalyst represents a process analyst who will performs log analysis in the form of graphs and BPMN diagrams

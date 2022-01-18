@@ -22,11 +22,6 @@
 
 package org.apromore.plugin.portal.processdiscoverer;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.util.Arrays;
-
 import org.apromore.apmlog.xes.XLogToImmutableLog;
 import org.apromore.calendar.builder.CalendarModelBuilder;
 import org.apromore.calendar.model.CalendarModel;
@@ -48,6 +43,11 @@ import org.junit.Before;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.Arrays;
 
 public class TestDataSetup {
     @Mock
