@@ -125,7 +125,7 @@ public class SimulationInfoService {
         long startTimeMillis = logSummary.getStartTime();
         long endTimeMillis = logSummary.getEndTime();
         long interArrivalTime = Math.round(
-            ((double) (endTimeMillis - startTimeMillis) / (double) 1000) / (double) logSummary.getCaseCount());
+             (endTimeMillis - startTimeMillis) / (double) (1000 * logSummary.getCaseCount()));
 
         builder.processInstances(logSummary.getCaseCount())
             .currency(Currency.valueOf(config.getDefaultCurrency().toUpperCase(DOCUMENT_LOCALE)))

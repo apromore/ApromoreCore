@@ -164,12 +164,7 @@ public class BPMNExportController extends AbstractController {
     public void onEvent(Event event) throws Exception {
         if (this.showProgressBar) {
             window = (Window) Executions.createComponents("mineAndSave.zul", null, null);
-            ((Button) window.getFellow("cancel")).addEventListener("onClick", new EventListener<Event>() {
-                @Override
-                public void onEvent(Event event) {
-                    window.detach();
-                }
-            });
+            ((Button) window.getFellow("cancel")).addEventListener("onClick", onClickEvent -> window.detach());
 
             descriptionLabel = (Label) window.getFellow("description");
             fractionCompleteProgressmeter = (Progressmeter) window.getFellow("fractionComplete");
