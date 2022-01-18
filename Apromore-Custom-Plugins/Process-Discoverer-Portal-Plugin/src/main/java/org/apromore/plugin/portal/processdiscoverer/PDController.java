@@ -23,25 +23,25 @@
 package org.apromore.plugin.portal.processdiscoverer;
 
 import lombok.Getter;
-import static org.apromore.logman.attribute.graph.MeasureType.DURATION;
-import static org.apromore.logman.attribute.graph.MeasureType.FREQUENCY;
-
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-import javax.servlet.http.HttpSession;
-
+import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.plugin.portal.logfilter.generic.LogFilterPlugin;
 import org.apromore.plugin.portal.processdiscoverer.actions.ActionManager;
-import org.apromore.plugin.portal.processdiscoverer.components.*;
-import org.apromore.plugin.portal.processdiscoverer.data.InvalidDataException;
+import org.apromore.plugin.portal.processdiscoverer.components.CaseDetailsController;
+import org.apromore.plugin.portal.processdiscoverer.components.CaseVariantDetailsController;
+import org.apromore.plugin.portal.processdiscoverer.components.GraphSettingsController;
+import org.apromore.plugin.portal.processdiscoverer.components.GraphVisController;
+import org.apromore.plugin.portal.processdiscoverer.components.LogStatsController;
+import org.apromore.plugin.portal.processdiscoverer.components.PerspectiveDetailsController;
+import org.apromore.plugin.portal.processdiscoverer.components.TimeStatsController;
+import org.apromore.plugin.portal.processdiscoverer.components.ToolbarController;
+import org.apromore.plugin.portal.processdiscoverer.components.ViewSettingsController;
 import org.apromore.plugin.portal.processdiscoverer.data.ConfigData;
 import org.apromore.plugin.portal.processdiscoverer.data.ContextData;
+import org.apromore.plugin.portal.processdiscoverer.data.InvalidDataException;
 import org.apromore.plugin.portal.processdiscoverer.data.OutputData;
 import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
 import org.apromore.plugin.portal.processdiscoverer.eventlisteners.AnimationController;
@@ -62,13 +62,14 @@ import org.apromore.portal.plugincontrol.PluginExecution;
 import org.apromore.portal.plugincontrol.PluginExecutionManager;
 import org.apromore.service.ProcessService;
 import org.apromore.service.loganimation.LogAnimationService2;
+import org.apromore.zk.event.CalendarEvents;
+import org.apromore.zk.label.LabelSupplier;
 import org.json.JSONException;
 import org.slf4j.Logger;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.ComponentNotFoundException;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
-import org.zkoss.zul.Messagebox.ClickEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
@@ -77,10 +78,20 @@ import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Messagebox.ClickEvent;
 import org.zkoss.zul.Window;
 
-import org.apromore.zk.event.CalendarEvents;
-import org.apromore.zk.label.LabelSupplier;
+import javax.servlet.http.HttpSession;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import static org.apromore.logman.attribute.graph.MeasureType.DURATION;
+import static org.apromore.logman.attribute.graph.MeasureType.FREQUENCY;
 
 /**
  * PDController is the top-level application object to manage PD plugin as a
@@ -177,6 +188,7 @@ public class PDController extends BaseController implements Composer<Component>,
 
     public PDController() throws Exception {
         super();
+
         Map<String, Object> pageParams = new HashMap<>();
         String pluginExecutionId = PluginExecutionManager.registerPluginExecution(new PluginExecution(this),
                 Sessions.getCurrent());
@@ -278,6 +290,15 @@ public class PDController extends BaseController implements Composer<Component>,
                             && currentUser.hasAnyPermission(PermissionType.CALENDAR),
                     currentUser.hasAnyPermission(PermissionType.MODEL_DISCOVER_EDIT));
             processAnalyst = new PDAnalyst(contextData, configData, getEventLogService());
+            if (session.containsKey("logFilters")) {
+                if (!processAnalyst.filter((List<LogFilterRule>)session.get("logFilters"))) {
+                    Messagebox.show("The log is empty after applying log filter criteria. Stop opening Process Discoverer.");
+                    return;
+                }
+                else {
+                    LOGGER.info("Applied filter criteria to the log before opening Process Discoverer.");
+                }
+            }
             userOptions = UserOptionsData.DEFAULT(configData);
 
             // Set up UI components
