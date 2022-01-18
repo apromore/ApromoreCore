@@ -10,6 +10,14 @@ const TYPE = 'aux';
 const defer = function (fn) {
   setTimeout(fn, 0);
 }
+const ICON_ITEM_HEIGHT = 26;
+
+const fixUrl = (url) => {
+  if (url && url.length && !url.startsWith('http')) {
+    return 'http://' + url;
+  }
+  return url
+};
 
 export default function Aux(eventBus, bpmnFactory, elementRegistry, overlays, bpmnjs) {
 
@@ -49,6 +57,7 @@ export default function Aux(eventBus, bpmnFactory, elementRegistry, overlays, bp
     var urlText = bo.get(AUX_PROPS.LINK_TEXT);
     var img = (extensionElementsHelper.getExtensionElements(bo, 'ap:Img') || [])[0];
     var icon = (extensionElementsHelper.getExtensionElements(bo, 'ap:Icon') || [])[0];
+    var icons = (extensionElementsHelper.getExtensionElements(bo, 'ap:Icons') || [])[0];
     var dtop = -10;
     var dleft = 0;
     var dwidth = 120;
@@ -63,27 +72,50 @@ export default function Aux(eventBus, bpmnFactory, elementRegistry, overlays, bp
       // pass
     }
 
+    url = fixUrl(url);
     var $overlay = $(Aux.OVERLAY_HTML);
     var imgUrl = getProp(img, AUX_PROPS.IMG_URL);
     var imgSrc = getProp(img, AUX_PROPS.IMG_SRC);
     if (imgSrc || imgUrl) {
       dtop -= 100;
-      $overlay.append($('<div class="aux-image"><img src="' + (imgUrl || imgSrc) + '" /></div>'));
-    }
-    var iconName = getProp(icon, AUX_PROPS.ICON_NAME);
-    if (url || (iconName && iconName.length)) {
-      dtop -= 26;
-      var $bar = $('<div class="aux-bar"></div>');
-      $overlay.append($bar);
-      if (iconName) {
-        $bar.append($('<i class="aux-icon ' + iconName + '" />'));
-      }
+      let imgEl = '<img src="' + (imgUrl || imgSrc) + '" />';
       if (url) {
         if (!urlText || !urlText.length) {
           urlText = url;
         }
-        $bar.append($(`<div class="aux-link"><a target="_blank" title="${urlText}" href="${url}">${urlText}</a></div>`));
+        imgEl = `<a target="_blank" title="${urlText}" href="${url}">${imgEl}</a></div>`;
       }
+      $overlay.append($(`<div class="aux-image">${imgEl}</div>`));
+    }
+    if (icons && icons.values && icons.values.length) {
+      let iconEls = '';
+      let iconCount = 0;
+      var $footer = $('<div class="aux-footer"></div>');
+      icons.values.forEach((iconItem) => {
+        var iconUrl = getProp(iconItem, AUX_PROPS.ICON_URL);
+        var iconText = getProp(iconItem, AUX_PROPS.ICON_TEXT) || iconUrl;
+        var iconName = getProp(iconItem, AUX_PROPS.ICON_NAME);
+        if (iconName === 'z-icon-ban') {
+          iconName = null;
+        }
+        iconUrl = fixUrl(iconUrl);
+        if (iconName || iconUrl || iconText) {
+          dtop -= ICON_ITEM_HEIGHT;
+          iconCount++;
+          let $item = $('<div class="aux-icon-item"></div>');
+          iconName = iconName || ''
+          $item.append($('<i class="aux-icon ' + iconName + '" />'));
+          if (iconUrl) {
+            $item.append($(`<div class="aux-icon-link"><a target="_blank" title="${iconText}" href="${iconUrl}">${iconText}</a></div>`));
+          } else if (iconText) {
+            $item.append($(`<div class="aux-icon-link">${iconText}</div>`));
+          }
+          $item.css('height', ICON_ITEM_HEIGHT + 'px');
+          $footer.append($item);
+        }
+      })
+      $footer.css('height', (iconCount * ICON_ITEM_HEIGHT) + 'px');
+      $overlay.append($footer);
     }
 
     $overlay.find('.toggle').click(function(e) {

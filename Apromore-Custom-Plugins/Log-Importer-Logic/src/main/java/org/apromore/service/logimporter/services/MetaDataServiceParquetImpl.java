@@ -68,11 +68,17 @@ public class MetaDataServiceParquetImpl implements MetaDataService {
     }
 
     @Override
-    public LogMetaData extractMetadata(InputStream in, String charset) throws Exception {
+    public LogMetaData extractMetadata(InputStream in, String charset, Map<String, String> customHeaderMap)
+            throws Exception {
         File tempFile = File.createTempFile(SAMPLELOG, PARQUET_EXT);
         MessageType schema = extractSchema(in, tempFile);
 
-        return new ParquetLogMetaData(getHeaderFromParquet(schema), tempFile);
+        List<String> headers = getHeaderFromParquet(schema);
+        if (customHeaderMap != null) {
+            headers.replaceAll(h -> customHeaderMap.getOrDefault(h, h));
+        }
+
+        return new ParquetLogMetaData(headers, tempFile);
     }
 
     @Override

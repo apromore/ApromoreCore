@@ -106,6 +106,7 @@ public class LogImporterController extends SelectorComposer<Window> implements C
     // Get Data layer config
     private final String propertyFile = "datalayer.config";
     protected boolean isModal = true;
+    protected Map<String, String> customHeaderMap = new HashMap<>();
     @WireVariable
     private EventLogService eventLogService;
     @WireVariable
@@ -194,7 +195,7 @@ public class LogImporterController extends SelectorComposer<Window> implements C
                     encoding = getFileEncoding();
                     metaDataService.validateLog(getInputSream(media), encoding);
                     this.logMetaData =
-                            metaDataService.extractMetadata(getInputSream(media), encoding);
+                            metaDataService.extractMetadata(getInputSream(media), encoding, customHeaderMap);
                     this.sampleLog = metaDataService.generateSampleLog(getInputSream(media), LOG_SAMPLE_SIZE,
                             encoding);
                     this.logMetaData = metaDataUtilities.processMetaData(this.logMetaData, this.sampleLog);
@@ -242,7 +243,7 @@ public class LogImporterController extends SelectorComposer<Window> implements C
 
             metaDataService.validateLog(getInputSream(media), getFileEncoding());
             LogMetaData tempLogMetaData =
-                    metaDataService.extractMetadata(getInputSream(media), getFileEncoding());
+                    metaDataService.extractMetadata(getInputSream(media), getFileEncoding(), customHeaderMap);
             this.sampleLog =
                     metaDataService.generateSampleLog(getInputSream(media), LOG_SAMPLE_SIZE, getFileEncoding());
             tempLogMetaData = metaDataUtilities.processMetaData(tempLogMetaData, this.sampleLog);

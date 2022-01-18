@@ -11,6 +11,7 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
     label: groupLabel,
     entries: []
   };
+
   properties(customGroup, element, bpmnFactory, translate);
 
   return [

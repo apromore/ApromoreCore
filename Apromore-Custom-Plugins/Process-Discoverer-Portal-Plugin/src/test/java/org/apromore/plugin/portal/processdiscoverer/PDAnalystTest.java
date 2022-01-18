@@ -116,7 +116,7 @@ public class PDAnalystTest extends TestDataSetup {
         Mockito.when(eventLogService.getXLog(contextData.getLogId())).thenReturn(validLog);
         Mockito.when(eventLogService.getAggregatedLog(contextData.getLogId())).thenReturn(
                 XLogToImmutableLog.convertXLog("ProcessLog", validLog));
-        Mockito.when(eventLogService.getPerspectiveTagByLog(contextData.getLogId())).thenReturn(Arrays.asList("concept:name"));
+        Mockito.when(eventLogService.getPerspectiveTagByLog(contextData.getLogId())).thenReturn(Arrays.asList(new String[] {"concept:name"}));
         ConfigData configData = new ConfigData("concept:name", 1, Integer.MAX_VALUE);
         PDAnalyst analyst = new PDAnalyst(contextData, configData, eventLogService);
     }
@@ -541,4 +541,52 @@ public class PDAnalystTest extends TestDataSetup {
                         false)).get().getAbstraction().getLayout();
         assertNotSame(layout1, layout9);
     }
+
+    @Test
+    public void test_SimulationData() throws Exception {
+        UserOptionsData userOptions = createUserOptions(100, 100, 40,
+                MeasureType.FREQUENCY,
+                MeasureAggregation.CASES,
+                MeasureRelation.ABSOLUTE,
+                false, false,
+                MeasureType.FREQUENCY,
+                MeasureAggregation.CASES,
+                MeasureRelation.ABSOLUTE,
+                MeasureType.DURATION,
+                MeasureAggregation.MEAN,
+                MeasureRelation.ABSOLUTE,
+                false,
+                false);
+        PDAnalyst analyst = createPDAnalyst(readLogWithOneTraceStartCompleteEventsNonOverlapping());
+        Abstraction abs = analyst.discoverProcess(userOptions).get().getAbstraction();
+        SimulationData data = analyst.getSimulationData(abs);
+        assertEquals(1, data.getCaseCount());
+        assertEquals(5, data.getResourceCount());
+        assertEquals(DateTime.parse("2010-10-27T21:59:19.308+10:00").getMillis(), data.getStartTime());
+        assertEquals(DateTime.parse("2010-10-27T22:55:19.308+10:00").getMillis(), data.getEndTime());
+        assertEquals(60, data.getDiagramNodeDuration(getNodeId("a", abs.getDiagram())), 0.0);
+        assertEquals(60, data.getDiagramNodeDuration(getNodeId("b", abs.getDiagram())), 0.0);
+        assertEquals(60, data.getDiagramNodeDuration(getNodeId("c", abs.getDiagram())), 0.0);
+        assertEquals(60, data.getDiagramNodeDuration(getNodeId("d", abs.getDiagram())), 0.0);
+
+        // Filter out some events
+        analyst.filter_RemoveEventsAnyValueOfEventAttribute("c", "concept:name");
+        Abstraction abs2 = analyst.discoverProcess(userOptions).get().getAbstraction();
+        SimulationData data2 = analyst.getSimulationData(abs2);
+        assertEquals(1, data2.getCaseCount());
+        assertEquals(4, data2.getResourceCount()); // changed
+        assertEquals(DateTime.parse("2010-10-27T21:59:19.308+10:00").getMillis(), data2.getStartTime());
+        assertEquals(DateTime.parse("2010-10-27T22:45:19.308+10:00").getMillis(), data2.getEndTime()); // changed
+        assertEquals(60, data.getDiagramNodeDuration(getNodeId("b", abs2.getDiagram())), 0.0);
+    }
+
+    private String getNodeId(String label, BPMNDiagram diagram) {
+        return diagram.getNodes().stream()
+                .filter(n -> n.getLabel().equals(label))
+                .findFirst()
+                .get()
+                .getId()
+                .toString();
+    }
+
 }

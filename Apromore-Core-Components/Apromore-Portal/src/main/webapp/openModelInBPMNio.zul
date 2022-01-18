@@ -178,6 +178,7 @@
                           id : 'editorcanvas',
                           fullscreen : true,
                           useSimulationPanel: ${arg.availableSimulateModelPlugin},
+                          isPublished: ${arg.isPublished},
                           viewOnly: ${arg.viewOnly},
                           langTag: '${arg.langTag}',
                           disabledButtons: disabledPlugins

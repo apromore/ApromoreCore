@@ -77,7 +77,7 @@ public class LogImporterCSVImplUnitTest {
     // Test file data
     String testFile = "/test1-valid.csv";
     LogMetaData logMetaData =
-        metaDataService.extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+        metaDataService.extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
 
     List<List<String>> sampleLog = metaDataService
         .generateSampleLog(this.getClass().getResourceAsStream(testFile), 2, "UTF-8");
@@ -99,7 +99,7 @@ public class LogImporterCSVImplUnitTest {
     // Test file data
     String testFile = "/test1-valid.csv";
     LogMetaData logMetaData =
-        metaDataService.extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+        metaDataService.extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
 
     List<List<String>> sampleLog = metaDataService
         .generateSampleLog(this.getClass().getResourceAsStream(testFile), 5, "UTF-8");
@@ -125,7 +125,7 @@ public class LogImporterCSVImplUnitTest {
     String expectedXES = TestUtilities.resourceToString(expectedFile);
 
     LogMetaData logMetaData =
-        metaDataService.extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+        metaDataService.extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
     List<List<String>> sampleLog = metaDataService
         .generateSampleLog(this.getClass().getResourceAsStream(testFile), 100, "UTF-8");
     logMetaData = metaDataUtilities.processMetaData(logMetaData, sampleLog);
@@ -158,7 +158,7 @@ public class LogImporterCSVImplUnitTest {
     String testFile = "/test1-valid.csv";
 
     LogMetaData logMetaData =
-        metaDataService.extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+        metaDataService.extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
     List<List<String>> sampleLog = metaDataService
         .generateSampleLog(this.getClass().getResourceAsStream(testFile), 100, "UTF-8");
     logMetaData = metaDataUtilities.processMetaData(logMetaData, sampleLog);
@@ -210,7 +210,7 @@ public class LogImporterCSVImplUnitTest {
     String expectedXES = TestUtilities.resourceToString(expectedFile);
 
     LogMetaData logMetaData =
-        metaDataService.extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+        metaDataService.extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
     List<List<String>> sampleLog = metaDataService
         .generateSampleLog(this.getClass().getResourceAsStream(testFile), 100, "UTF-8");
     logMetaData = metaDataUtilities.processMetaData(logMetaData, sampleLog);
@@ -246,7 +246,7 @@ public class LogImporterCSVImplUnitTest {
     String expectedXES = TestUtilities.resourceToString(expectedFile);
 
     LogMetaData logMetaData =
-        metaDataService.extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+        metaDataService.extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
     List<List<String>> sampleLog = metaDataService
         .generateSampleLog(this.getClass().getResourceAsStream(testFile), 2, "UTF-8");
     logMetaData = metaDataUtilities.processMetaData(logMetaData, sampleLog);
@@ -282,7 +282,7 @@ public class LogImporterCSVImplUnitTest {
     String expectedXES = TestUtilities.resourceToString(expectedFile);
 
     LogMetaData logMetaData =
-        metaDataService.extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+        metaDataService.extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
     List<List<String>> sampleLog = metaDataService
         .generateSampleLog(this.getClass().getResourceAsStream(testFile), 2, "UTF-8");
     logMetaData = metaDataUtilities.processMetaData(logMetaData, sampleLog);
@@ -318,7 +318,7 @@ public class LogImporterCSVImplUnitTest {
     String expectedXES = TestUtilities.resourceToString(expectedFile);
 
     LogMetaData logMetaData =
-        metaDataService.extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+        metaDataService.extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
     List<List<String>> sampleLog = metaDataService
         .generateSampleLog(this.getClass().getResourceAsStream(testFile), 100, "UTF-8");
     logMetaData = metaDataUtilities.processMetaData(logMetaData, sampleLog);
@@ -355,7 +355,7 @@ public class LogImporterCSVImplUnitTest {
     String expectedXES = TestUtilities.resourceToString(expectedFile);
 
     LogMetaData logMetaData =
-        metaDataService.extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+        metaDataService.extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
     List<List<String>> sampleLog = metaDataService
         .generateSampleLog(this.getClass().getResourceAsStream(testFile), 100, "UTF-8");
     logMetaData = metaDataUtilities.processMetaData(logMetaData, sampleLog);
@@ -392,7 +392,7 @@ public class LogImporterCSVImplUnitTest {
     String expectedXES = TestUtilities.resourceToString(expectedFile);
 
     LogMetaData logMetaData =
-        metaDataService.extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+        metaDataService.extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
     List<List<String>> sampleLog = metaDataService
         .generateSampleLog(this.getClass().getResourceAsStream(testFile), 100, "UTF-8");
     logMetaData = metaDataUtilities.processMetaData(logMetaData, sampleLog);
@@ -430,7 +430,7 @@ public class LogImporterCSVImplUnitTest {
     String testFile = "/test8-all-invalid.csv";
 
     LogMetaData logMetaData =
-        metaDataService.extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+        metaDataService.extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
     List<List<String>> sampleLog = metaDataService
         .generateSampleLog(this.getClass().getResourceAsStream(testFile), 2, "UTF-8");
     logMetaData = metaDataUtilities.processMetaData(logMetaData, sampleLog);
@@ -461,7 +461,7 @@ public class LogImporterCSVImplUnitTest {
     String expectedXES = TestUtilities.resourceToString(expectedFile);
 
     LogMetaData logMetaData =
-        metaDataService.extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+        metaDataService.extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
     List<List<String>> sampleLog = metaDataService
         .generateSampleLog(this.getClass().getResourceAsStream(testFile), 3, "UTF-8");
     logMetaData = metaDataUtilities.processMetaData(logMetaData, sampleLog);
@@ -505,7 +505,7 @@ public class LogImporterCSVImplUnitTest {
     String expectedXES = TestUtilities.resourceToString(expectedFile);
 
     LogMetaData logMetaData =
-        metaDataService.extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+        metaDataService.extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
     List<List<String>> sampleLog = metaDataService
         .generateSampleLog(this.getClass().getResourceAsStream(testFile), 100, "UTF-8");
     logMetaData = metaDataUtilities.processMetaData(logMetaData, sampleLog);
@@ -541,7 +541,7 @@ public class LogImporterCSVImplUnitTest {
 
 
     LogMetaData logMetaData = metaDataService
-        .extractMetadata(this.getClass().getResourceAsStream(testFile), "windows-1255");
+        .extractMetadata(this.getClass().getResourceAsStream(testFile), "windows-1255", null);
     List<List<String>> sampleLog = metaDataService
         .generateSampleLog(this.getClass().getResourceAsStream(testFile), 3, "UTF-8");
     logMetaData = metaDataUtilities.processMetaData(logMetaData, sampleLog);

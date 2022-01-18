@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -23,6 +23,7 @@
 package org.apromore.plugin.portal.processdiscoverer;
 
 import lombok.Getter;
+import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
 import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.ATrace;
@@ -32,19 +33,13 @@ import org.apromore.apmlog.filter.PTrace;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.LogFilterRuleImpl;
 import org.apromore.apmlog.filter.rules.RuleValue;
-import org.apromore.apmlog.filter.types.Choice;
-import org.apromore.apmlog.filter.types.FilterType;
-import org.apromore.apmlog.filter.types.Inclusion;
-import org.apromore.apmlog.filter.types.OperationType;
-import org.apromore.apmlog.filter.types.Section;
+import org.apromore.apmlog.filter.types.*;
 import org.apromore.apmlog.stats.LogStatsAnalyzer;
 import org.apromore.apmlog.stats.TimeStatsProcessor;
 import org.apromore.apmlog.xes.XESAttributeCodes;
-import org.apromore.calendar.exception.CalendarNotExistsException;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.commons.datetime.DateTimeUtils;
 import org.apromore.commons.datetime.DurationUtils;
-import org.apromore.exception.UserMetadataException;
 import org.apromore.logman.ALog;
 import org.apromore.logman.Constants;
 import org.apromore.logman.LogBitMap;
@@ -56,20 +51,13 @@ import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.logman.attribute.log.AttributeInfo;
 import org.apromore.logman.attribute.log.AttributeLog;
 import org.apromore.plugin.portal.PortalLoggerFactory;
-import org.apromore.plugin.portal.processdiscoverer.data.CaseDetails;
-import org.apromore.plugin.portal.processdiscoverer.data.CaseVariantDetails;
-import org.apromore.plugin.portal.processdiscoverer.data.ConfigData;
-import org.apromore.plugin.portal.processdiscoverer.data.ContextData;
-import org.apromore.plugin.portal.processdiscoverer.data.InvalidDataException;
-import org.apromore.plugin.portal.processdiscoverer.data.NotFoundAttributeException;
-import org.apromore.plugin.portal.processdiscoverer.data.OutputData;
-import org.apromore.plugin.portal.processdiscoverer.data.PerspectiveDetails;
-import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
+import org.apromore.plugin.portal.processdiscoverer.data.*;
 import org.apromore.plugin.portal.processdiscoverer.impl.json.ProcessJSONVisualizer;
 import org.apromore.plugin.portal.processdiscoverer.vis.ProcessVisualizer;
 import org.apromore.processdiscoverer.Abstraction;
 import org.apromore.processdiscoverer.AbstractionParams;
 import org.apromore.processdiscoverer.ProcessDiscoverer;
+import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Activity;
 import org.apromore.service.EventLogService;
 import org.deckfour.xes.model.XLog;
 import org.eclipse.collections.api.list.ImmutableList;
@@ -77,17 +65,9 @@ import org.eclipse.collections.api.list.ListIterable;
 import org.slf4j.Logger;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.BitSet;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.Set;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -105,17 +85,17 @@ public class PDAnalyst {
 
     // Graph/BPMN analysis tool
     private final ProcessDiscoverer processDiscoverer;
-
+    
     // Visualization tool
     private final ProcessVisualizer processVisualizer;
-
+    
     // Log management tool
     private final ALog aLog;
     private AttributeLog attLog;
     private Object currentFilterCriteria = new ArrayList<LogFilterRule>(); // list of log filter criteria
     private IndexableAttribute mainAttribute;
     private final ImmutableList<AbstractAttribute> indexableAttributes;
-
+    
     // Log filtering tool
     private final APMLog originalAPMLog;
     private APMLog filteredAPMLog;
@@ -125,7 +105,7 @@ public class PDAnalyst {
     // ==========================================
     private PLog filteredPLog;
     private final APMLogFilter apmLogFilter;
-
+    
     @Getter
     Map<Integer, List<ATrace>> caseVariantGroupMap;
 
@@ -135,13 +115,8 @@ public class PDAnalyst {
     CalendarModel calendarModel;
 
     ConfigData configData;
-
-    public PDAnalyst(
-            ContextData contextData,
-            ConfigData configData,
-            EventLogService eventLogService)
-            throws InvalidDataException, UserMetadataException, CalendarNotExistsException, NotFoundAttributeException {
-
+    
+    public PDAnalyst(ContextData contextData, ConfigData configData, EventLogService eventLogService) throws Exception {
         XLog xlog = eventLogService.getXLog(contextData.getLogId());
         APMLog apmLog = eventLogService.getAggregatedLog(contextData.getLogId());
         Collection<String> perspectiveAttKeys = eventLogService.getPerspectiveTagByLog(contextData.getLogId());
@@ -168,32 +143,30 @@ public class PDAnalyst {
             throw new InvalidDataException("No perspective attributes could be found in the log with key in " + perspectiveAttKeys.toString() +
                     " and number of distinct values is less than or equal to " + configData.getMaxNumberOfNodes());
         }
-
+        
         this.originalAPMLog = apmLog;
         this.filteredAPMLog = apmLog;
         this.filteredPLog = new PLog(apmLog);
         apmLogFilter = new APMLogFilter(apmLog);
         caseVariantGroupMap = LogStatsAnalyzer.getCaseVariantsByPerspective(filteredAPMLog.getTraces(),
                 caseVariantPerspective);
-
+        
         // ProcessDiscoverer logic with default attribute
         this.calendarModel = eventLogService.getCalendarFromLog(contextData.getLogId());
-        if (calendarModel == null) {
-            throw new CalendarNotExistsException("The open log doesn't have an associated calendar.");
-        }
+        if (calendarModel == null) throw new Exception("The open log doesn't have an associated calendar.");
 
         this.originalAPMLog.setCalendarModel(this.calendarModel);
-
+        
         this.setMainAttribute(configData.getDefaultAttribute());
         this.processDiscoverer = new ProcessDiscoverer();
         this.processVisualizer = new ProcessJSONVisualizer();
     }
-
+    
     public void cleanUp() {
         processDiscoverer.cleanUp();
         processVisualizer.cleanUp();
     }
-
+    
     private AbstractionParams genAbstractionParams(UserOptionsData userOptions) {
         return new AbstractionParams(
                 this.getMainAttribute(),
@@ -217,7 +190,7 @@ public class PDAnalyst {
                 configData.getMaxNumberOfArcs(),
                 null);
     }
-
+    
     private AbstractionParams genAbstractionParamsForTrace(UserOptionsData userOptions) {
         return new AbstractionParams(
                 this.getMainAttribute(),
@@ -241,7 +214,7 @@ public class PDAnalyst {
                 configData.getMaxNumberOfArcs(),
                 null);
     }
-
+    
     /*
      * This is the main processing method calling to process-discoverer-logic
      */
@@ -267,10 +240,9 @@ public class PDAnalyst {
         }
 
         String visualizedText = processVisualizer.generateVisualizationText(currentAbstraction);
-
         return Optional.of(new OutputData(currentAbstraction, visualizedText));
     }
-
+    
     public OutputData discoverTrace(String traceID, UserOptionsData userOptions) throws Exception {
         AbstractionParams params = genAbstractionParamsForTrace(userOptions);
         Abstraction traceAbs = processDiscoverer.generateTraceAbstraction(attLog, traceID, params);
@@ -297,19 +269,19 @@ public class PDAnalyst {
     public AttributeLog getAttributeLog() {
         return this.attLog;
     }
-
+    
     public XLog getXLog() {
         return this.aLog.getActualXLog();
     }
-
+    
     public boolean hasEmptyData() {
         return (this.attLog != null && this.attLog.getTraces().size() == 0);
     }
-
+    
     public IndexableAttribute getAttribute(String key) {
         return (IndexableAttribute)indexableAttributes.select(att -> att.getKey().equals(key)).getFirst();
     }
-
+    
     public void setMainAttribute(String key) throws NotFoundAttributeException  {
         IndexableAttribute newAttribute = getAttribute(key);
         if (newAttribute != null) {
@@ -325,32 +297,32 @@ public class PDAnalyst {
                     attLog.setAttribute(mainAttribute);
                     LOGGER.debug("Update AttributeLog to the new perspective attribute: {} ms.", System.currentTimeMillis() - timer);
                 }
-
+                
             }
         }
         else {
             throw new NotFoundAttributeException("Cannot find an attribute in ALog with key = " + key);
         }
     }
-
+    
     public ImmutableList<AbstractAttribute> getAvailableAttributes() {
         return this.indexableAttributes;
     }
-
+    
     public IndexableAttribute getMainAttribute() {
         return this.mainAttribute;
     }
-
+    
     public ListIterable<AttributeInfo> getAttributeInfoList() {
         return this.attLog.getAttributeInfoList();
     }
 
     //////////////////////// Filter /////////////////////////////
-
+    
     public Object getCurrentFilterCriteria() {
         return this.currentFilterCriteria;
     }
-
+    
     public void setCurrentFilterCriteria(Object criteria) {
         this.currentFilterCriteria = criteria;
     }
@@ -359,26 +331,26 @@ public class PDAnalyst {
         ArrayList<LogFilterRule> filterCriteria = (ArrayList<LogFilterRule>)this.currentFilterCriteria;
         return (filterCriteria != null && filterCriteria.size() > 0) ? false: true;
     }
-
+    
     private List<LogFilterRule> copyFilterCriteria(List<LogFilterRule> criteria) {
         return criteria
                 .stream()
                 .map(LogFilterRule::clone)
                 .collect(Collectors.toList());
     }
-
+    
     public List<LogFilterRule> copyCurrentFilterCriteria() {
         return copyFilterCriteria((List<LogFilterRule>)this.getCurrentFilterCriteria());
     }
-
+    
     public APMLog getOriginalAPMLog() {
         return this.originalAPMLog;
     }
-
+    
     public PLog getFilteredPLog() {
         return this.filteredPLog;
     }
-
+    
     public void clearFilter() throws Exception {
         this.filter(new ArrayList<LogFilterRule>());
     }
@@ -398,7 +370,7 @@ public class PDAnalyst {
             return true;
         }
     }
-
+    
     // Apply filter criteria on top of the original log
     public boolean filter(List<LogFilterRule> criteria) throws Exception {
         this.apmLogFilter.filter(criteria);
@@ -463,17 +435,17 @@ public class PDAnalyst {
         return filterAdditive(getEventAttributeFilterRule(attKey, Choice.REMOVE, Section.EVENT, Inclusion.ANY_VALUE,
                 getEventAttributeRuleValue(value, attKey, FilterType.EVENT_EVENT_ATTRIBUTE)));
     }
-
+    
     public boolean filter_RetainEventsAnyValueOfEventAttribute(String value, String attKey) throws Exception {
         return filterAdditive(getEventAttributeFilterRule(attKey, Choice.RETAIN, Section.EVENT, Inclusion.ANY_VALUE,
                 getEventAttributeRuleValue(value, attKey, FilterType.EVENT_EVENT_ATTRIBUTE)));
     }
-
+    
     public boolean filter_RemoveTracesAnyValueOfDirectFollowRelation(String value, String attKey) throws Exception {
         return filterAdditive(getDirectFollowFilterRule(attKey, Choice.REMOVE, Section.CASE, Inclusion.ANY_VALUE,
                 getDirectFollowRuleValue(value, attKey)));
     }
-
+    
     public boolean filter_RetainTracesAnyValueOfDirectFollowRelation(String value, String attKey) throws Exception {
         return filterAdditive(getDirectFollowFilterRule(attKey, Choice.RETAIN, Section.CASE, Inclusion.ANY_VALUE,
                 getDirectFollowRuleValue(value, attKey)));
@@ -614,30 +586,61 @@ public class PDAnalyst {
     public long getFilteredActivityInstanceSize() {
         return this.filteredAPMLog.getActivityInstances().size();
     }
-
+    
     public void updateLog(PLog pLog, APMLog apmLog) throws Exception {
         this.filteredAPMLog = apmLog;
         this.filteredPLog = pLog;
         this.caseVariantGroupMap = LogStatsAnalyzer.getCaseVariantsByPerspective(filteredAPMLog.getTraces(),
                 caseVariantPerspective);
         List<PTrace> pTraces = pLog.getCustomPTraceList();
-
+        
         LogBitMap logBitMap = new LogBitMap(aLog.getOriginalTraces().size());
         logBitMap.setTraceBitSet(pLog.getValidTraceIndexBS(), pTraces.size());
-
+        
         for (int i=0; i<pTraces.size(); i++) {
             logBitMap.addEventBitSet(pTraces.get(i).getValidEventIndexBS(), aLog.getOriginalTraceFromIndex(i).getOriginalEvents().size());
         }
         aLog.updateLogStatus(logBitMap);
         attLog.refresh();
         processDiscoverer.invalidateAbstraction();
-
+        
         //Use for debugging the bitset transfer from PLog to ALog/AttributeLog
         //printPLogBitMap(pLog);
         //printALogBitMap(aLog);
         //printAttributeLogBitMap(attLog);
     }
 
+    /**
+     * Simulation data are used to add simulation values to the BPMN diagram.
+     * @param abs Process Abstraction
+     * @return SimulationData
+     */
+    public SimulationData getSimulationData(@NonNull Abstraction abs) {
+        Map<String, Double> nodeDurationMap =
+                abs.getDiagram().getNodes()
+                    .stream()
+                    .filter(Activity.class::isInstance)
+                    .collect(Collectors.toMap(
+                            node -> node.getId().toString(),
+                            node -> BigDecimal.valueOf(attLog.getGraphView().getNodeWeight(node.getLabel(),
+                                                        MeasureType.DURATION,
+                                                        MeasureAggregation.MEAN,
+                                                        MeasureRelation.ABSOLUTE) / 1000)
+                                        .setScale(2, RoundingMode.HALF_UP).doubleValue()));
+
+        return SimulationData.builder()
+                .caseCount(filteredPLog.getValidTraceIndexBS().cardinality())
+                .resourceCount(filteredPLog.getActivityInstances().stream()
+                        .filter(x -> x.getAttributes().containsKey(Constants.ATT_KEY_RESOURCE))
+                        .map(x -> x.getAttributes().get(Constants.ATT_KEY_RESOURCE))
+                        .collect(Collectors.toSet())
+                        .size())
+                .startTime(filteredAPMLog.getStartTime())
+                .endTime(filteredAPMLog.getEndTime())
+                .nodeWeights(nodeDurationMap)
+                .build();
+    }
+    
     // For debug only
     private void printPLogBitMap(PLog log) {
         BitSet bitSet = log.getValidTraceIndexBS();
@@ -647,7 +650,7 @@ public class PDAnalyst {
             LOGGER.debug(i + ":" + (bitSet.get(i) ? "1" : "0") + ",");
         }
         LOGGER.debug("end");
-
+        
         LOGGER.debug("PLog trace event status: ");
         for (int i=0; i<pTraces.size(); i++) {
             LOGGER.debug("Trace " + i + " event status (event_number:bit):");
@@ -657,9 +660,9 @@ public class PDAnalyst {
             }
             LOGGER.debug("end");
         }
-
+        
     }
-
+    
     // For debug only
     private void printALogBitMap(ALog log) {
         BitSet bitSet = log.getOriginalTraceStatus();
@@ -668,7 +671,7 @@ public class PDAnalyst {
             LOGGER.debug(i + ":" + (bitSet.get(i) ? "1" : "0") + ",");
         }
         LOGGER.debug("end");
-
+        
         LOGGER.debug("ALog trace event status: ");
         for (int i=0; i<log.getOriginalTraces().size(); i++) {
             LOGGER.debug("Trace " + i + " event status (event_number:bit):");
@@ -679,7 +682,7 @@ public class PDAnalyst {
             LOGGER.debug("end");
         }
     }
-
+    
     private void printAttributeLogBitMap(AttributeLog log) {
         BitSet bitSet = log.getOriginalTraceStatus();
         LOGGER.debug("AttributeLog trace status (trace_number:bit): ");
@@ -687,7 +690,7 @@ public class PDAnalyst {
             LOGGER.debug(i + ":" + (bitSet.get(i) ? "1" : "0") + ",");
         }
         LOGGER.debug("end");
-
+        
         LOGGER.debug("AttributeLog trace (aggregated) event status: ");
         for (int i=0; i<log.getOriginalTraces().size(); i++) {
             LOGGER.debug("Trace " + i + " event status (event_number:bit):");

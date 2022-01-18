@@ -40,6 +40,7 @@ import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.Sessions;
+import org.zkoss.zk.ui.util.Clients;
 
 import java.util.Locale;
 
@@ -65,6 +66,7 @@ public class ProcessPublisherViewModelUnitTest {
     MockedStatic<Executions> executionsMockedStatic = mockStatic(Executions.class);
     MockedStatic<Sessions> sessionsMockedStatic = mockStatic(Sessions.class);
     MockedStatic<Notification> notificationMockedStatic = mockStatic(Notification.class);
+    MockedStatic<Clients> clientsMockedStatic = mockStatic(Clients.class);
 
     @Before
     public void setup() {
@@ -76,6 +78,7 @@ public class ProcessPublisherViewModelUnitTest {
         executionsMockedStatic.close();
         sessionsMockedStatic.close();
         notificationMockedStatic.close();
+        clientsMockedStatic.close();
     }
 
     @Test
@@ -122,6 +125,7 @@ public class ProcessPublisherViewModelUnitTest {
         sessionsMockedStatic.when(() -> Sessions.getCurrent()).thenReturn(session);
         when(session.getAttribute(Attributes.PREFERRED_LOCALE)).thenReturn(Locale.ENGLISH);
         notificationMockedStatic.when(() -> Notification.info(anyString())).thenAnswer(invocation -> null);
+        clientsMockedStatic.when(() -> Clients.evalJavaScript(anyString())).thenAnswer(invocation -> null);
         doNothing().when(component).detach();
 
         processPublisherViewModel.setNewPublishRecord(true);
@@ -146,6 +150,7 @@ public class ProcessPublisherViewModelUnitTest {
         sessionsMockedStatic.when(() -> Sessions.getCurrent()).thenReturn(session);
         when(session.getAttribute(Attributes.PREFERRED_LOCALE)).thenReturn(Locale.ENGLISH);
         notificationMockedStatic.when(() -> Notification.info(anyString())).thenAnswer(invocation -> null);
+        clientsMockedStatic.when(() -> Clients.evalJavaScript(anyString())).thenAnswer(invocation -> null);
         doNothing().when(component).detach();
 
         processPublisherViewModel.setNewPublishRecord(false);

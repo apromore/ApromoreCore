@@ -22,6 +22,7 @@
 package org.apromore.plugin.portal.processpublisher;
 
 import org.apromore.commons.config.ConfigBean;
+import org.apromore.dao.model.ProcessPublish;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.portal.dialogController.MainController;
@@ -29,6 +30,7 @@ import org.apromore.portal.model.LogSummaryType;
 import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.VersionSummaryType;
+import org.apromore.service.ProcessPublishService;
 import org.apromore.service.SecurityService;
 import org.junit.After;
 import org.junit.Before;
@@ -63,6 +65,8 @@ public class ProcessPublisherPluginUnitTest {
 
     @Mock private ConfigBean configBean;
     @Mock private SecurityService securityService;
+    @Mock private ProcessPublishService processPublishService;
+    @Mock private ProcessPublish processPublish;
     @Mock private PortalContext portalContext;
     @Mock private MainController mainController;
     @Mock private Session session;
@@ -157,6 +161,61 @@ public class ProcessPublisherPluginUnitTest {
         when(session.getAttribute(Attributes.PREFERRED_LOCALE)).thenReturn(Locale.ENGLISH);
 
         processPublisherPlugin.getSelectedModel(portalContext);
+    }
+
+    @Test
+    public void testGetIconIsPublishException() {
+        assertEquals("unlink.svg", processPublisherPlugin.getIconPath());
+    }
+
+    @Test
+    public void testGetIconPublishedUnrecordedProcessId() {
+        ProcessSummaryType processSummaryType = new ProcessSummaryType();
+        processSummaryType.setId(1);
+        Map<SummaryType, List<VersionSummaryType>> selectedProcessVersions = new HashMap<>();
+        selectedProcessVersions.put(processSummaryType, new ArrayList<>());
+
+        sessionsMockedStatic.when(() -> Sessions.getCurrent()).thenReturn(session);
+        when(session.getAttribute("portalContext")).thenReturn(portalContext);
+        when(portalContext.getMainController()).thenReturn(mainController);
+        when(mainController.getSelectedElementsAndVersions()).thenReturn(selectedProcessVersions);
+        when(processPublishService.getPublishDetails(1)).thenReturn(null);
+
+        assertEquals("unlink.svg", processPublisherPlugin.getIconPath());
+    }
+
+    @Test
+    public void testGetIconUnpublishedProcessId() {
+        ProcessSummaryType processSummaryType = new ProcessSummaryType();
+        processSummaryType.setId(1);
+        Map<SummaryType, List<VersionSummaryType>> selectedProcessVersions = new HashMap<>();
+        selectedProcessVersions.put(processSummaryType, new ArrayList<>());
+
+        sessionsMockedStatic.when(() -> Sessions.getCurrent()).thenReturn(session);
+        when(session.getAttribute("portalContext")).thenReturn(portalContext);
+        when(portalContext.getMainController()).thenReturn(mainController);
+        when(mainController.getSelectedElementsAndVersions()).thenReturn(selectedProcessVersions);
+        when(processPublishService.getPublishDetails(1)).thenReturn(processPublish);
+        when(processPublish.isPublished()).thenReturn(false);
+
+        assertEquals("unlink.svg", processPublisherPlugin.getIconPath());
+    }
+
+    @Test
+    public void testGetIconPublishedProcessId() {
+        ProcessSummaryType processSummaryType = new ProcessSummaryType();
+        processSummaryType.setId(1);
+        Map<SummaryType, List<VersionSummaryType>> selectedProcessVersions = new HashMap<>();
+        selectedProcessVersions.put(processSummaryType, new ArrayList<>());
+
+        sessionsMockedStatic.when(() -> Sessions.getCurrent()).thenReturn(session);
+        when(session.getAttribute("portalContext")).thenReturn(portalContext);
+        when(portalContext.getMainController()).thenReturn(mainController);
+        when(mainController.getSelectedElementsAndVersions()).thenReturn(selectedProcessVersions);
+        when(processPublishService.getPublishDetails(1)).thenReturn(processPublish);
+        when(processPublish.isPublished()).thenReturn(true);
+
+        assertEquals("link.svg", processPublisherPlugin.getIconPath());
     }
 
 }
