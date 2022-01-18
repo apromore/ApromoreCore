@@ -51,12 +51,25 @@
         </div>
       </vlayout>
     </div>
-    <div sclass="ap-pd-connector">
+    <div sclass="ap-pd-connector" tooltip="variRatioDetailTipPop, delay=0.5">
       <div class="ap-pd-connector-line-left"/>
       <div class="ap-pd-connector-text">
         <label id="lblVariabilityRatioPercent"/>
       </div>
       <div class="ap-pd-connector-line-right"/>
+      <popup id="variRatioDetailTipPop">
+        <vlayout>
+          <vlayout spacing="0">
+            <label sclass="ap-pd-caption-title" value="${arg.pdLabels.variabilityRatioTitle_text}"/>
+            <label sclass="ap-pd-caption-subtitle" value="${arg.pdLabels.variabilityRatioSubtitle_text}"/>
+          </vlayout>
+          <label sclass="ap-pd-percent-tier-1" value="${arg.pdLabels.variabilityRatioTier1_text}"/>
+          <label sclass="ap-pd-percent-tier-2" value="${arg.pdLabels.variabilityRatioTier2_text}"/>
+          <label sclass="ap-pd-percent-tier-3" value="${arg.pdLabels.variabilityRatioTier3_text}"/>
+          <label sclass="ap-pd-percent-tier-4" value="${arg.pdLabels.variabilityRatioTier4_text}"/>
+          <label sclass="ap-pd-percent-tier-5" value="${arg.pdLabels.variabilityRatioTier5_text}"/>
+        </vlayout>
+      </popup>
     </div>
     <div hflex="1"
          align="center">

@@ -66,6 +66,7 @@ import org.deckfour.xes.model.XTrace;
 import org.deckfour.xes.model.impl.XAttributeLiteralImpl;
 import org.deckfour.xes.model.impl.XAttributeTimestampImpl;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 @Service("parquetLogImporter")
 public class LogImporterParquetImpl implements LogImporter, Constants {
@@ -98,7 +99,9 @@ public class LogImporterParquetImpl implements LogImporter, Constants {
       if (reader == null)
         return null;
 
-      String[] header = getHeaderFromParquet(tempFileSchema).toArray(new String[0]);
+      String[] header = CollectionUtils.isEmpty(logMetaData.getHeader()) ?
+              getHeaderFromParquet(tempFileSchema).toArray(new String[0]) :
+              logMetaData.getHeader().toArray(new String[0]);
 
       logProcessor = new LogProcessorImpl();
       logErrorReport = new ArrayList<>();

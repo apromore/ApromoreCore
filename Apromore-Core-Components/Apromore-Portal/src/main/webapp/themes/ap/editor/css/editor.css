@@ -190,11 +190,11 @@
 }
 
 #ap-editor-props-container .bpp-properties-tab.bpp-hidden {
-  display: hidden !important;
+  display: none !important;
 }
 
 #ap-editor-props-container .bpp-properties-tab-link.bpp-hidden {
-  display: hidden !important;
+  display: none !important;
 }
 
 #ap-editor-props-container .bpp-textfield .clear {
@@ -277,24 +277,30 @@
   display: none;
 }
 
+#ap-bpmn-icon-set-picker,
 #ap-bpmn-icon-picker {
   color: #606060;
-  margin-top: 7px;
+  margin-top: 5px;
 }
 
+#ap-bpmn-icon-set-picker > div,
 #ap-bpmn-icon-picker > div {
   margin-bottom: 5px;
 }
 
+#ap-bpmn-icon-set-picker i,
 #ap-bpmn-icon-picker i {
-  font-size: 20px;
+  font-size: 14px;
+  width: 22px;
+  box-sizing: border-box;
   display: inline-block;
-  padding: 5px;
+  padding: 3px;
   background-color: #f0f0f0;
   border: 1px solid transparent;
   margin-right: 5px;
 }
 
+#ap-bpmn-icon-set-picker i.selected,
 #ap-bpmn-icon-picker i.selected {
   border-color: #808080;
   background-color: white;
@@ -311,6 +317,39 @@
 #ap-bpmn-img-picker .aux-img-preview img {
   width: 50%;
 }
+
+#ap-bpmn-icon-set .icon-item input {
+  margin-right: 5px;
+}
+
+#ap-bpmn-icon-set .icon-name {
+  box-sizing: border-box;
+  display: inline-block;
+  margin-top: 5px;
+  line-height: 24px;
+  vertical-align: bottom;
+  color: #606060;
+  border: 1px solid #cccccc;
+  width: 24px;
+  height: 24px;
+  text-align: center;
+  background-color: white;
+}
+
+#ap-bpmn-icon-set .remove {
+  margin-left: 8px;
+}
+
+#ap-bpmn-icon-set .remove,
+#ap-bpmn-icon-set .add {
+  border: 1px solid #cccccc;
+  border-radius: 2px;
+  padding: 2px 5px;
+  background-color: white;
+  display: inline-block;
+  color: black;
+}
+
 
 /* Aux overlays */
 
@@ -338,7 +377,6 @@
 
 .aux-wrapper .aux-bar {
   width: 100%;
-  height: 26px;
   flex: 0 0 auto;
   padding: 4px;
   display: flex;
@@ -367,4 +405,41 @@
   margin-right: 8px;
   color: #606060;
   vertical-align: bottom;
+}
+
+.aux-wrapper .aux-icon-item {
+  display: flex;
+  flex-direction: row;
+  height: 26px;
+}
+
+.aux-wrapper .aux-icon-item .aux-icon {
+  flex: 0 0 auto;
+  font-size: 20px;
+  width: 22px;
+  display: inline-block;
+  margin-right: 8px;
+  color: #606060;
+  vertical-align: bottom;
+}
+
+.aux-wrapper .aux-icon-item .aux-icon-link {
+  flex: 1 1 auto;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: bottom;
+}
+
+.aux-wrapper .aux-icon-item .aux-icon-link a {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: bottom;
+  width: 100%;
+  display: inline-block;
+}
+
+.aux-wrapper .aux-footer {
+  padding: 4px;
 }

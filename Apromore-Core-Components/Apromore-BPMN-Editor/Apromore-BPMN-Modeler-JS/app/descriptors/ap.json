@@ -62,11 +62,32 @@
       ]
     },
     {
+      "name": "Icons",
+      "superClass": [ "Element" ],
+      "properties": [
+        {
+          "name": "values",
+          "isMany": true,
+          "type": "Icon"
+        }
+      ]
+    },
+    {
       "name": "Icon",
       "superClass": [ "Element" ],
       "properties": [
         {
           "name": "aux-icon-name",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "aux-icon-url",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "aux-icon-text",
           "isAttr": true,
           "type": "String"
         }
