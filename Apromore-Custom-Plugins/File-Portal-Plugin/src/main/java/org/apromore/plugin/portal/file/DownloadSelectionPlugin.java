@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.MessageFormat;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
@@ -179,6 +180,8 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin implements Labe
     try {
       Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(),
           "zul/downloadLog.zul", null, null);
+        window.setTitle(MessageFormat.format(
+            Labels.getLabel("file_downloadLog_text"), mainC.getSelectedElements().size()));
       Button downloadButton = (Button) window.getFellow("downloadButton");
       Row rowEncoding = (Row) window.getFellow("rowEncoding");
 
@@ -231,6 +234,8 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin implements Labe
         try {
           Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(),
               "zul/downloadLog.zul", null, null);
+          window.setTitle(MessageFormat.format(
+                Labels.getLabel("file_downloadLog_text"), mainController.getSelectedElements().size()));
           Button downloadButton = (Button) window.getFellow("downloadButton");
           Row rowEncoding = (Row) window.getFellow("rowEncoding");
 
