@@ -28,6 +28,7 @@ import de.hpi.bpmn2_0.model.Definitions;
 import de.hpi.bpmn2_0.model.FlowNode;
 import de.hpi.bpmn2_0.model.connector.SequenceFlow;
 import de.hpi.bpmn2_0.transformation.BPMN2DiagramConverter;
+import de.hpi.bpmn2_0.transformation.ModelCheckResult;
 import org.apromore.plugin.DefaultParameterAwarePlugin;
 import org.apromore.service.loganimation.AnimationResult;
 import org.apromore.service.loganimation.LogAnimationService2;

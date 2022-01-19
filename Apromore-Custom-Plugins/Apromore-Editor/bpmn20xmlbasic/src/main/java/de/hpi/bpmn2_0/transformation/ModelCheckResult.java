@@ -19,7 +19,7 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.service.loganimation.replay;
+package de.hpi.bpmn2_0.transformation;
 
 import java.util.AbstractMap;
 

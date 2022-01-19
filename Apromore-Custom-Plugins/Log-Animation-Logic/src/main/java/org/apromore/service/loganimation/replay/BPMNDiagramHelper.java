@@ -29,6 +29,8 @@ import java.util.stream.Collectors;
 
 import de.hpi.bpmn2_0.model.*;
 import de.hpi.bpmn2_0.model.Process;
+import de.hpi.bpmn2_0.transformation.ModelCheckResult;
+import de.hpi.bpmn2_0.transformation.ModelChecker;
 import org.apromore.service.loganimation.dijkstra.engine.DijkstraAlgorithm;
 import org.apromore.service.loganimation.dijkstra.model.Edge;
 import org.apromore.service.loganimation.dijkstra.model.Graph;
