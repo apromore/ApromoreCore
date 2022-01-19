@@ -7,7 +7,7 @@ import {
 } from './util';
 
 
-export default function Comments(eventBus, overlays, bpmnjs) {
+export default function Comments(config, eventBus, overlays, bpmnjs) {
 
   function toggleCollapse(element) {
 
@@ -53,7 +53,7 @@ export default function Comments(eventBus, overlays, bpmnjs) {
       comments.forEach(function(val) {
         var $comment = $(Comments.COMMENT_HTML);
 
-        $comment.find('[data-text]').text(val[1]);
+        $comment.find('[data-text]').text(val[1] + ((val[0]) ? (' (' + val[0] + ')') : ''));
         $comment.find('[data-delete]').click(function(e) {
 
           e.preventDefault();
@@ -78,9 +78,9 @@ export default function Comments(eventBus, overlays, bpmnjs) {
         e.preventDefault();
 
         var comment = $textarea.val();
-
+        console.log('config.username', config.username);
         if (comment) {
-          addComment(element, '', comment);
+          addComment(element, config.username || '', comment);
           $textarea.val('');
           renderComments();
         }
@@ -127,7 +127,7 @@ export default function Comments(eventBus, overlays, bpmnjs) {
   };
 }
 
-Comments.$inject = [ 'eventBus', 'overlays', 'bpmnjs' ];
+Comments.$inject = [ 'config', 'eventBus', 'overlays', 'bpmnjs' ];
 
 Comments.OVERLAY_HTML =
   '<div class="comments-overlay">' +

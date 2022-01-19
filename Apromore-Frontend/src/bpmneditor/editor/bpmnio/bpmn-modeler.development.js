@@ -95988,7 +95988,7 @@ function removeComment(element, comment) {
 
 
 
-function Comments(eventBus, overlays, bpmnjs) {
+function Comments(config, eventBus, overlays, bpmnjs) {
 
   function toggleCollapse(element) {
 
@@ -96034,7 +96034,7 @@ function Comments(eventBus, overlays, bpmnjs) {
       comments.forEach(function(val) {
         var $comment = jquery_default()(Comments.COMMENT_HTML);
 
-        $comment.find('[data-text]').text(val[1]);
+        $comment.find('[data-text]').text(val[1] + ((val[0]) ? (' (' + val[0] + ')') : ''));
         $comment.find('[data-delete]').click(function(e) {
 
           e.preventDefault();
@@ -96059,9 +96059,9 @@ function Comments(eventBus, overlays, bpmnjs) {
         e.preventDefault();
 
         var comment = $textarea.val();
-
+        console.log('config.username', config.username);
         if (comment) {
-          addComment(element, '', comment);
+          addComment(element, config.username || '', comment);
           $textarea.val('');
           renderComments();
         }
@@ -96108,7 +96108,7 @@ function Comments(eventBus, overlays, bpmnjs) {
   };
 }
 
-Comments.$inject = [ 'eventBus', 'overlays', 'bpmnjs' ];
+Comments.$inject = [ 'config', 'eventBus', 'overlays', 'bpmnjs' ];
 
 Comments.OVERLAY_HTML =
   '<div class="comments-overlay">' +

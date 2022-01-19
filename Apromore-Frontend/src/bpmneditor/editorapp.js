@@ -573,7 +573,7 @@ export default class EditorApp {
           options.keyboard = { bindTo: window };
           options.propertiesPanel = me.useSimulationPanel ? { parent: '#js-properties-panel' } : undefined
         }
-
+        options.username = config.username || '';
         await me.editor.attachEditor(new BpmnJS(options));
 
         if (config && config.xml) {
