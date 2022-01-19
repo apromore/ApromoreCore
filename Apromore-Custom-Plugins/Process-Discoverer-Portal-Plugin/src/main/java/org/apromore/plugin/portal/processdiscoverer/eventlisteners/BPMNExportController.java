@@ -54,7 +54,6 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zkplus.spring.SpringUtil;
-import org.zkoss.zul.Button;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Progressmeter;
@@ -83,6 +82,8 @@ public class BPMNExportController extends AbstractController {
     private static final String MINING_COMPLETE = "MINING_COMPLETE";
     private static final String MINING_EXCEPTION = "MINING_EXCEPTION";
     private static final String ANNOTATION_EXCEPTION = "ANNOTATION_EXCEPTION";
+    private static final String MESSAGE_BOX_TITLE = "Apromore";
+
     private EventQueue<Event> eventQueue;
 
     private PDController controller;
@@ -144,29 +145,30 @@ public class BPMNExportController extends AbstractController {
                             window.detach();
                         }
                         eventQueue.unsubscribe(this); //unsubscribe after finishing work
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        Messagebox.show(parent.getLabel("failedProcessMining_message"), "Apromore", Messagebox.OK,
+                    } catch (Exception exception) {
+                        log.error(parent.getLabel("Process mining failed"), exception);
+                        Messagebox.show(parent.getLabel("failedProcessMining_message"), MESSAGE_BOX_TITLE,
+                            Messagebox.OK,
                             Messagebox.ERROR);
                         eventQueue.unsubscribe(this); //unsubscribe after finishing work even fails
                     }
                     break;
 
-                case MINING_EXCEPTION:
-                    Exception e = (Exception) event.getData();
-                    if (window != null) {
-                        window.detach();
-                    }
-                    Messagebox.show(parent.getLabel("failedProcessMining_message"), "Apromore", Messagebox.OK,
-                        Messagebox.ERROR);
+                case ANNOTATION_EXCEPTION:
+                    log.error(parent.getLabel("Unable to annotate BPMN model"), (Exception) event.getData());
+                    Messagebox.show(parent.getLabel("failedAnnotateBPMN_message"), MESSAGE_BOX_TITLE, Messagebox.OK,
+                        Messagebox.EXCLAMATION);
                     eventQueue.unsubscribe(this); //unsubscribe after finishing work even fails
                     break;
 
-                case ANNOTATION_EXCEPTION:
-                    Exception e2 = (Exception) event.getData();
-                    e2.printStackTrace();
-                    Messagebox.show(parent.getLabel("failedAnnotateBPMN_message"), "Apromore", Messagebox.OK,
-                        Messagebox.EXCLAMATION);
+                case MINING_EXCEPTION:
+                default:
+                    log.error("Process mining failed", (Exception) event.getData());
+                    if (window != null) {
+                        window.detach();
+                    }
+                    Messagebox.show(parent.getLabel("failedProcessMining_message"), MESSAGE_BOX_TITLE, Messagebox.OK,
+                        Messagebox.ERROR);
                     eventQueue.unsubscribe(this); //unsubscribe after finishing work even fails
                     break;
             }
@@ -177,12 +179,7 @@ public class BPMNExportController extends AbstractController {
     public void onEvent(Event event) throws Exception {
         if (this.showProgressBar) {
             window = (Window) Executions.createComponents("mineAndSave.zul", null, null);
-            ((Button) window.getFellow("cancel")).addEventListener("onClick", new EventListener<Event>() {
-                @Override
-                public void onEvent(Event event) {
-                    window.detach();
-                }
-            });
+            window.getFellow("cancel").addEventListener("onClick", event1 -> window.detach());
 
             descriptionLabel = (Label) window.getFellow("description");
             fractionCompleteProgressmeter = (Progressmeter) window.getFellow("fractionComplete");
@@ -330,7 +327,5 @@ public class BPMNExportController extends AbstractController {
                     }
                 }
             });
-
-
     }
 }
