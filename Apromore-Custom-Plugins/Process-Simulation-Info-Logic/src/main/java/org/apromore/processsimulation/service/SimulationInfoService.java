@@ -90,6 +90,10 @@ public class SimulationInfoService {
         }
     }
 
+    public boolean isFeatureEnabled() {
+        return Boolean.valueOf(config.isEnable());
+    }
+
     public ProcessSimulationInfo deriveSimulationInfo(
         final Abstraction abstraction) {
 
@@ -244,10 +248,6 @@ public class SimulationInfoService {
         }
 
         return enrichedBpmnXml;
-    }
-
-    private boolean isFeatureEnabled() {
-        return Boolean.valueOf(config.isEnable());
     }
 
     private String injectExtensionElements(String exportedBpmnXml, String extensionElementsXml) {
