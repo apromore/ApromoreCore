@@ -454,3 +454,11 @@
 .aux-wrapper .aux-footer {
   padding: 4px;
 }
+
+.access-type-viewer .djs-overlay-aux {
+  pointer-events: none;
+}
+
+.access-type-viewer .djs-overlay-aux a {
+  pointer-events: auto;
+}

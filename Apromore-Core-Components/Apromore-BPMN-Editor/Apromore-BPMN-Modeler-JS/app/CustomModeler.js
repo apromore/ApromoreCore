@@ -13,7 +13,7 @@ import '../styles/customModeler.less';
 import customTranslate from './translate/customTranslate';
 import ColorPickerModule from './modules/color-picker';
 import AttachmentModule from './modules/attachment';
-import EmbeddedCommentsModule from 'bpmn-js-embedded-comments';
+import EmbeddedCommentsModule from './modules/comments';
 
 export default function CustomModeler(options) {
   var customTranslateModule = {

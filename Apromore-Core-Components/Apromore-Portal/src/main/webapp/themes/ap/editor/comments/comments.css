@@ -1,49 +1,27 @@
-
-.comments-overlay {
-  background: #52B415;
-  font-size: 10px;
-
-  color: white;
-  display: none;
-}
-
-.selected .comments-overlay,
-.comments-overlay.with-comments {
-  display: block;
-}
-
-.comments-overlay .edit {
-  margin: 2px 0 0 0;
-  padding-top: 2px;
-}
-
-.comments-overlay .edit textarea {
-  border: none;
-  margin: 0;
-  color: black;
-  font-size: 10px;
-  width: 100%;
-  box-sizing: border-box;
-  font-family: 'Source Sans Pro', sans-serif !important;
-}
-
-.comments-overlay .icon-comment:hover {
-  color: #EEE;
-}
-
-.comments-overlay .comment {
-  border-top-color: white;
-}
-
-
-.comments-overlay .icon-comment {
-  margin-right: 2px;
-}
-
-.comments-overlay .icon-delete {
-  color: white;
-}
-
+/*-
+ * #%L
+ * This file is part of "Apromore Core".
+ * %%
+ * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ *
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * #L%
+ */
+/*
+ * Based on https://github.com/bpmn-io/bpmn-js-embedded-comments/blob/master/assets/comments.css
+ */
 
 /** fonts **/
 
@@ -80,14 +58,51 @@
 .icon-delete:before { content: '\e802'; }
 
 .comments-overlay {
+  font-size: 10px;
+  color: white;
+  display: none;
   background: #5b889b;
   padding: 5px;
   border-radius: 5px;
 }
 
+.comments-overlay .edit {
+  margin: 2px 0 0 0;
+  padding-top: 2px;
+}
+
+.comments-overlay .edit textarea {
+  border: none;
+  margin: 0;
+  color: black;
+  font-size: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  font-family: 'Source Sans Pro', sans-serif !important;
+  resize: vertical;
+}
+
+.comments-overlay .icon-comment:hover {
+  color: #EEE;
+}
+
+.comments-overlay .icon-comment {
+  margin-right: 2px;
+}
+
+.comments-overlay .icon-delete {
+  color: white;
+}
+
+.selected .comments-overlay,
+.comments-overlay.with-comments {
+  display: block;
+}
+
 .comments-overlay.expanded {
   z-index: 100;
   position: absolute; /* for z-index to work */
+  width: 150px !important;
 }
 
 .comments-overlay .toggle {
@@ -109,7 +124,7 @@
 }
 
 .comments-overlay .comment {
-  border-top: dotted 1px #666;
+  border-top: dotted 1px #99aabb;
   margin-top: 4px;
   padding-top: 4px;
   white-space: pre-wrap;
@@ -121,9 +136,7 @@
   position: absolute;
   right: 3px;
   top: 3px;
-
   text-decoration: none;
-
   display: none;
 }
 
@@ -137,13 +150,14 @@
   top: 0px !important;
 }
 
-.comments-overlay.expanded {
-  width: 150px !important;
-}
-
 .djs-overlay.djs-overlay-comments {
   position: absolute !important;
   left: 0 !important;
   top: 0 !important;
   transform-origin: left top !important;
+}
+
+.access-type-viewer .comments-overlay .comment .delete,
+.access-type-viewer .comments-overlay .edit {
+  display: none !important;
 }
