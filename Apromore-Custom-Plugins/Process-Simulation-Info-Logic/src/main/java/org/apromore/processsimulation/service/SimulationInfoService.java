@@ -18,13 +18,13 @@
 
 package org.apromore.processsimulation.service;
 
+import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_DEFAULT_ID_KEY;
+import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_DEFAULT_NAME_KEY;
 import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_FROM_TIME;
 import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_FROM_WEEKDAY_KEY;
 import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_NAME_KEY;
 import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_TO_TIME;
 import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_TO_WEEKDAY_KEY;
-import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_DEFAULT_TIMETABLE_ID_KEY;
-import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_DEFAULT_TIMETABLE_NAME_KEY;
 
 import java.io.StringWriter;
 import java.math.BigDecimal;
@@ -40,6 +40,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import lombok.extern.slf4j.Slf4j;
+import org.apromore.logman.attribute.IndexableAttribute;
 import org.apromore.logman.attribute.graph.MeasureAggregation;
 import org.apromore.logman.attribute.graph.MeasureRelation;
 import org.apromore.logman.attribute.graph.MeasureType;
@@ -55,6 +56,7 @@ import org.apromore.processsimulation.model.Element;
 import org.apromore.processsimulation.model.Errors;
 import org.apromore.processsimulation.model.ExtensionElements;
 import org.apromore.processsimulation.model.ProcessSimulationInfo;
+import org.apromore.processsimulation.model.Resource;
 import org.apromore.processsimulation.model.Rule;
 import org.apromore.processsimulation.model.TimeUnit;
 import org.apromore.processsimulation.model.Timetable;
@@ -97,6 +99,8 @@ public class SimulationInfoService {
             && abstraction instanceof AbstractAbstraction
             && ((AbstractAbstraction) abstraction).getLog() != null) {
 
+            final AbstractAbstraction abstractAbstraction = (AbstractAbstraction) abstraction;
+
             AttributeLogSummary logSummary = ((AbstractAbstraction) abstraction).getLog().getLogSummary();
 
             if (logSummary != null) {
@@ -107,9 +111,11 @@ public class SimulationInfoService {
 
                 deriveGeneralInfo(builder, logSummary);
 
-                deriveTaskInfo(builder, abstraction);
+                deriveTaskInfo(builder, abstractAbstraction);
 
                 deriveTimetable(builder);
+
+                deriveResourceInfo(builder, abstractAbstraction);
 
                 processSimulationInfo = builder.build();
             }
@@ -140,7 +146,7 @@ public class SimulationInfoService {
 
     private void deriveTaskInfo(
         final ProcessSimulationInfo.ProcessSimulationInfoBuilder builder,
-        final Abstraction abstraction) {
+        final AbstractAbstraction abstraction) {
 
         if (abstraction.getDiagram() != null && abstraction.getDiagram().getNodes() != null) {
             List<Element> taskList = new ArrayList<>();
@@ -150,7 +156,7 @@ public class SimulationInfoService {
                 .filter(Activity.class::isInstance)
                 .forEach(bpmnNode -> {
                     BigDecimal nodeAvgDuration =
-                        BigDecimal.valueOf(((AbstractAbstraction) abstraction).getLog().getGraphView()
+                        BigDecimal.valueOf(abstraction.getLog().getGraphView()
                                 .getNodeWeight(bpmnNode.getLabel(), MeasureType.DURATION,
                                     MeasureAggregation.MEAN, MeasureRelation.ABSOLUTE) / 1000)
                             .setScale(2, RoundingMode.HALF_UP);
@@ -176,8 +182,8 @@ public class SimulationInfoService {
         builder.timetables(
             Arrays.asList(Timetable.builder()
                 .defaultTimetable(true)
-                .id(config.getDefaultTimetable().get(CONFIG_DEFAULT_TIMETABLE_ID_KEY))
-                .name(config.getDefaultTimetable().get(CONFIG_DEFAULT_TIMETABLE_NAME_KEY))
+                .id(config.getDefaultTimetable().get(CONFIG_DEFAULT_ID_KEY))
+                .name(config.getDefaultTimetable().get(CONFIG_DEFAULT_NAME_KEY))
                 .rules(Arrays.asList(Rule.builder()
                     .id(UUID.randomUUID().toString())
                     .name(config.getDefaultTimetable().get(CONFIG_DEFAULT_TIMESLOT_NAME_KEY))
@@ -192,6 +198,29 @@ public class SimulationInfoService {
                     .build()))
                 .build()));
     }
+
+    private void deriveResourceInfo(
+        final ProcessSimulationInfo.ProcessSimulationInfoBuilder builder,
+        final AbstractAbstraction abstraction) {
+        if (abstraction.getLog() != null
+            && abstraction.getLog().getFullLog() != null
+            && abstraction.getLog().getFullLog().getAttributeStore() != null) {
+
+            IndexableAttribute resourcesAttribute =
+                abstraction.getLog().getFullLog().getAttributeStore().getStandardEventResource();
+
+            if (resourcesAttribute != null) {
+                builder.resources(Arrays.asList(
+                    Resource.builder()
+                        .id(config.getDefaultResource().get(CONFIG_DEFAULT_ID_KEY))
+                        .name(config.getDefaultResource().get(CONFIG_DEFAULT_NAME_KEY))
+                        .totalAmount(resourcesAttribute.getValueSize())
+                        .timetableId(config.getDefaultTimetable().get(CONFIG_DEFAULT_ID_KEY))
+                        .build()));
+            }
+        }
+    }
+
 
     /**
      * Enrich the bpmn xml model with the additional extension elements

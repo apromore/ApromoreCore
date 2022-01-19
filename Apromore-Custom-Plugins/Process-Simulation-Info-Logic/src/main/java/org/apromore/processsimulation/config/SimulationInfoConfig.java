@@ -30,10 +30,10 @@ import org.springframework.context.annotation.Configuration;
 @Data
 @ToString
 @Configuration
-@ConfigurationProperties(prefix = "process.simulation.info.export")
+@ConfigurationProperties(prefix = "process-simulation-info-export")
 public class SimulationInfoConfig {
-    public static final String CONFIG_DEFAULT_TIMETABLE_ID_KEY = "id";
-    public static final String CONFIG_DEFAULT_TIMETABLE_NAME_KEY = "name";
+    public static final String CONFIG_DEFAULT_ID_KEY = "id";
+    public static final String CONFIG_DEFAULT_NAME_KEY = "name";
     public static final String CONFIG_DEFAULT_TIMESLOT_NAME_KEY = "timeslot-name";
     public static final String CONFIG_DEFAULT_TIMESLOT_FROM_WEEKDAY_KEY = "timeslot-from-weekday";
     public static final String CONFIG_DEFAULT_TIMESLOT_TO_WEEKDAY_KEY = "timeslot-to-weekday";
@@ -45,4 +45,5 @@ public class SimulationInfoConfig {
     private String defaultDistributionType = DistributionType.EXPONENTIAL.toString();
     private String defaultCurrency = Currency.EUR.toString();
     private Map<String, String> defaultTimetable;
+    private Map<String, String> defaultResource;
 }
