@@ -99,6 +99,8 @@ public class SimulationInfoService {
             && abstraction instanceof AbstractAbstraction
             && ((AbstractAbstraction) abstraction).getLog() != null) {
 
+            final AbstractAbstraction abstractAbstraction = (AbstractAbstraction) abstraction;
+
             AttributeLogSummary logSummary = ((AbstractAbstraction) abstraction).getLog().getLogSummary();
 
             if (logSummary != null) {
@@ -109,11 +111,11 @@ public class SimulationInfoService {
 
                 deriveGeneralInfo(builder, logSummary);
 
-                deriveTaskInfo(builder, (AbstractAbstraction) abstraction);
+                deriveTaskInfo(builder, abstractAbstraction);
 
                 deriveTimetable(builder);
 
-                deriveResourceInfo(builder, (AbstractAbstraction) abstraction);
+                deriveResourceInfo(builder, abstractAbstraction);
 
                 processSimulationInfo = builder.build();
             }

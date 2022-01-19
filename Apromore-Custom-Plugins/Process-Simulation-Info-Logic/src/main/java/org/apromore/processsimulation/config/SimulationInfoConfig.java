@@ -30,7 +30,7 @@ import org.springframework.context.annotation.Configuration;
 @Data
 @ToString
 @Configuration
-@ConfigurationProperties(prefix = "process.simulation.info.export")
+@ConfigurationProperties(prefix = "process-simulation-info-export")
 public class SimulationInfoConfig {
     public static final String CONFIG_DEFAULT_ID_KEY = "id";
     public static final String CONFIG_DEFAULT_NAME_KEY = "name";
