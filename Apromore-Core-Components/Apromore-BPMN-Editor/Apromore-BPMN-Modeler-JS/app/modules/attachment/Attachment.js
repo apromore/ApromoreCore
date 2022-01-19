@@ -5,6 +5,7 @@ import extensionElementsHelper from 'bpmn-js-properties-panel/lib/helper/Extensi
 import { AUX_PROPS } from './common';
 import { isNil } from 'min-dash';
 import interact from 'interactjs';
+import xss from 'xss';
 
 const TYPE = 'aux';
 const defer = function (fn) {
@@ -38,14 +39,14 @@ export default function Aux(eventBus, bpmnFactory, elementRegistry, overlays, bp
 
   function getProp(bo, prop) {
     if (bo && bo[prop] && bo[prop].length) {
-      return bo[prop];
+      return xss(bo[prop]);
     }
     return null;
   }
 
   function getNumber(bo, prop) {
-    var num = getProp(bo, prop);
-    if (num !== null) {
+    var num = bo && bo[prop];
+    if (!isNil(num)) {
       return Math.round(parseFloat(num));
     }
     return null;
@@ -53,17 +54,17 @@ export default function Aux(eventBus, bpmnFactory, elementRegistry, overlays, bp
 
   function createAux(element) {
     var bo = getBusinessObject(element);
-    var url = bo.get(AUX_PROPS.LINK_URL);
-    var urlText = bo.get(AUX_PROPS.LINK_TEXT);
+    var url = xss(bo.get(AUX_PROPS.LINK_URL));
+    var text = xss(bo.get(AUX_PROPS.LINK_TEXT));
     var img = (extensionElementsHelper.getExtensionElements(bo, 'ap:Img') || [])[0];
-    var icon = (extensionElementsHelper.getExtensionElements(bo, 'ap:Icon') || [])[0];
     var icons = (extensionElementsHelper.getExtensionElements(bo, 'ap:Icons') || [])[0];
     var dtop = -10;
     var dleft = 0;
     var dwidth = 120;
     var dheight = 120;
+    var urlText;
 
-    if ((!url || !url.length) && !img && !icon) {
+    if ((!url || !url.length) && !img && !icons) {
       return;
     }
     try {
@@ -77,13 +78,22 @@ export default function Aux(eventBus, bpmnFactory, elementRegistry, overlays, bp
     var imgUrl = getProp(img, AUX_PROPS.IMG_URL);
     var imgSrc = getProp(img, AUX_PROPS.IMG_SRC);
     if (imgSrc || imgUrl) {
-      dtop -= 100;
+      dtop -= 120;
       let imgEl = '<img src="' + (imgUrl || imgSrc) + '" />';
       if (url) {
-        if (!urlText || !urlText.length) {
+        if (!text || !text.length) {
           urlText = url;
+        } else {
+          urlText = text;
         }
-        imgEl = `<a target="_blank" title="${urlText}" href="${url}">${imgEl}</a></div>`;
+        imgEl = `<div><a target="_blank" title="${urlText}" href="${url}">${imgEl}</a></div>`;
+      }
+      if (text && text.length) {
+        if (url) {
+          imgEl += `<div class="caption"><a target="_blank" href="${url}">${text}</a></div>`;
+        } else {
+          imgEl += `<div class="caption">${text}<div>`;
+        }
       }
       $overlay.append($(`<div class="aux-image">${imgEl}</div>`));
     }
@@ -248,7 +258,7 @@ export default function Aux(eventBus, bpmnFactory, elementRegistry, overlays, bp
         }
       })
       .resizable({
-        margin: 5,
+        margin: 4,
         edges: { top: true, left: true, bottom: true, right: true },
         listeners: {
           start (event) {

@@ -22,8 +22,8 @@
 
 package org.apromore.plugin.portal.processdiscoverer.plugins;
 
-import java.util.Locale;
-import javax.inject.Inject;
+import lombok.NonNull;
+import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
@@ -40,8 +40,13 @@ import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.util.Clients;
 
-@Component("frequencyPlugin")
-public class PDFrequencyPlugin extends PDAbstractPlugin {
+import javax.inject.Inject;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+
+@Component("processDiscovererPlugin")
+public class PDFrequencyPlugin extends PDAbstractPlugin implements PDPluginAPI {
 
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(PDFrequencyPlugin.class);
     private String label = "Discover model";
@@ -70,24 +75,7 @@ public class PDFrequencyPlugin extends PDAbstractPlugin {
 
     @Override
     public void execute(PortalContext context) {
-        if (!context.getCurrentUser().hasAnyPermission(PermissionType.MODEL_DISCOVER_EDIT, PermissionType.MODEL_DISCOVER_VIEW)) {
-            LOGGER.info("User '{}' does not have permission to access process discoverer",
-                    context.getCurrentUser().getUsername());
-            return;
-        }
-
-        try {
-        	boolean prepare = this.prepare(context, MeasureType.FREQUENCY); //prepare session
-            Sessions.getCurrent().setAttribute("eventLogService", eventLogService);
-            Sessions.getCurrent().setAttribute("processService", processService);
-            Sessions.getCurrent().setAttribute("logFilterPlugin", logFilterPlugin);
-            Sessions.getCurrent().setAttribute("logAnimationService", logAnimationService);
-        	if (!prepare) return;
-        	Clients.evalJavaScript("window.open('processdiscoverer/zul/processDiscoverer.zul?id=" + this.getSessionId() + "')");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        openWindow(context, Collections.emptyList());
     }
 
     @Override
@@ -95,5 +83,30 @@ public class PDFrequencyPlugin extends PDAbstractPlugin {
         return UserSessionManager.getCurrentUser()
                 .hasAnyPermission(PermissionType.MODEL_DISCOVER_EDIT, PermissionType.MODEL_DISCOVER_VIEW) ?
                 Availability.AVAILABLE : Availability.UNAVAILABLE;
+    }
+
+    @Override
+    public void openWithFilters(PortalContext portalContext, List<LogFilterRule> logFilters) {
+        openWindow(portalContext, logFilters);
+    }
+
+    private void openWindow(@NonNull PortalContext context, @NonNull List<LogFilterRule> filters) {
+        if (!context.getCurrentUser().hasAnyPermission(PermissionType.MODEL_DISCOVER_EDIT, PermissionType.MODEL_DISCOVER_VIEW)) {
+            LOGGER.info("User '{}' does not have permission to access process discoverer",
+                    context.getCurrentUser().getUsername());
+            return;
+        }
+
+        try {
+            if (!preparePluginSession(context, MeasureType.FREQUENCY, filters)) return;
+            Sessions.getCurrent().setAttribute("eventLogService", eventLogService);
+            Sessions.getCurrent().setAttribute("processService", processService);
+            Sessions.getCurrent().setAttribute("logFilterPlugin", logFilterPlugin);
+            Sessions.getCurrent().setAttribute("logAnimationService", logAnimationService);
+            Clients.evalJavaScript("window.open('processdiscoverer/zul/processDiscoverer.zul?id=" + this.getSessionId() + "')");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 }
