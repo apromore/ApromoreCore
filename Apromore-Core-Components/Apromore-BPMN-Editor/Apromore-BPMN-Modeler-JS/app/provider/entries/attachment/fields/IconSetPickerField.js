@@ -1,3 +1,4 @@
+var xss = require("xss");
 var getBusinessObject = require('bpmn-js/lib/util/ModelUtil').getBusinessObject;
 var cmdHelper = require('bpmn-js-properties-panel/lib/helper/CmdHelper');
 var elementHelper = require('bpmn-js-properties-panel/lib/helper/ElementHelper');
@@ -88,8 +89,8 @@ function updateObjects(element, icons, bpmnFactory, bpmnjs) {
     let urlEl = $('.icon-url', itemEl);
     let textEl = $('.icon-text', itemEl);
     let nameEl = $('.icon-name', itemEl);
-    let iconUrl = urlEl.val() || '';
-    let iconText = textEl.val() || '';
+    let iconUrl = xss(urlEl.val()) || '';
+    let iconText = xss(textEl.val()) || '';
     let iconName = nameEl.data('icon-name') || '';
     if (iconName === ICON_NOT_SET) {
       iconName = '';
