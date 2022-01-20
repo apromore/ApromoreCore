@@ -1,7 +1,7 @@
 checkstyle {
     toolVersion checkstyleVersion
     sourceSets = [sourceSets.main, sourceSets.test]
-    configFile = file("${project.projectDir}/config/checkstyle/checkstyle.xml")
+    configFile = file("${project.rootDir}/config/checkstyle/checkstyle.xml")
     configProperties = [suppression_file: file("${project.projectDir}/config/checkstyle/suppressions.xml").toURI()]
 }
 
