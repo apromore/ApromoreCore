@@ -25,6 +25,7 @@
 @import "oryx.css";
 @import "icons.css";
 @import "../aux-icons/icons.css";
+@import "../comments/comments.css";
 
 .x-panel-editor-north .x-btn {
     opacity: 1 !important;

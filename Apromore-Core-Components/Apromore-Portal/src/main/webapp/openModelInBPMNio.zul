@@ -181,7 +181,8 @@
                           isPublished: ${arg.isPublished},
                           viewOnly: ${arg.viewOnly},
                           langTag: '${arg.langTag}',
-                          disabledButtons: disabledPlugins
+                          disabledButtons: disabledPlugins,
+                          username: '${arg.username}'
                         };
                       editorWrapper = new Apromore.BPMNEditor.EditorApp (config);
                       await editorWrapper.init(config);
