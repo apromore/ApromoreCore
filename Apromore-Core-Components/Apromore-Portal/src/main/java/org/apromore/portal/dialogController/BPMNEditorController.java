@@ -109,15 +109,15 @@ public class BPMNEditorController extends BaseController implements Composer<Com
   public BPMNEditorController() {
     super();
 
+    currentUserType = UserSessionManager.getCurrentUser();
+    if (currentUserType == null) {
+      throw new AssertionError("Cannot open the editor without any login user!");
+    }
+
     isViewLink = Boolean.valueOf(Executions.getCurrent().getParameter("view"));
     if (isViewLink) {
       openViewLink();
       return;
-    }
-
-    currentUserType = UserSessionManager.getCurrentUser();
-    if (currentUserType == null) {
-      throw new AssertionError("Cannot open the editor without any login user!");
     }
 
     String id = Executions.getCurrent().getParameter("id");
