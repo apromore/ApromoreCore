@@ -272,7 +272,7 @@ public class BPMNExportController extends AbstractController {
         }
 
         String conditionalMessage =
-            simulationInfoService.isFeatureEnabled() ? parent.getLabel("includeSimulationParams_message") : null;
+            simulationInfoService.isFeatureEnabled() ? parent.getLabel("includeSimulationParams_text") : null;
 
         InputDialog.showInputDialog(
             parent.getLabel("saveBPMN_message"),
