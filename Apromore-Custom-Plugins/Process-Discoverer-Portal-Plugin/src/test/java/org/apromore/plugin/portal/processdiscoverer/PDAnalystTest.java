@@ -45,7 +45,7 @@ import org.apromore.plugin.portal.processdiscoverer.data.ConfigData;
 import org.apromore.plugin.portal.processdiscoverer.data.ContextData;
 import org.apromore.plugin.portal.processdiscoverer.data.InvalidDataException;
 import org.apromore.plugin.portal.processdiscoverer.data.PerspectiveDetails;
-import org.apromore.plugin.portal.processdiscoverer.data.SimulationData;
+import org.apromore.processsimulation.dto.SimulationData;
 import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
 import org.apromore.processdiscoverer.Abstraction;
 import org.apromore.processdiscoverer.layout.Layout;

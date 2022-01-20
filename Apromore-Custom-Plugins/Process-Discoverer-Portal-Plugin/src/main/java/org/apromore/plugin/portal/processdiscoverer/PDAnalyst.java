@@ -77,7 +77,7 @@ import org.apromore.plugin.portal.processdiscoverer.data.InvalidDataException;
 import org.apromore.plugin.portal.processdiscoverer.data.NotFoundAttributeException;
 import org.apromore.plugin.portal.processdiscoverer.data.OutputData;
 import org.apromore.plugin.portal.processdiscoverer.data.PerspectiveDetails;
-import org.apromore.plugin.portal.processdiscoverer.data.SimulationData;
+import org.apromore.processsimulation.dto.SimulationData;
 import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
 import org.apromore.plugin.portal.processdiscoverer.impl.json.ProcessJSONVisualizer;
 import org.apromore.plugin.portal.processdiscoverer.vis.ProcessVisualizer;
