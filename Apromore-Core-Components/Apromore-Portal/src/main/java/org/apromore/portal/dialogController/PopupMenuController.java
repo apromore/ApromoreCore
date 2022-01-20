@@ -300,38 +300,10 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 
 	private void addSubMenuItem(Menupopup popup, String subMenuId) {
 		try {
-			PortalContext portalContext = getPortalContext();
-			String subMenuImagePath ;
-			if (PluginCatalog.PLUGIN_DISCOVER_MODEL_SUB_MENU.equals(subMenuId)) {
-				if (!portalContext.getCurrentUser().hasAnyPermission(PermissionType.MODEL_DISCOVER_EDIT,
-					PermissionType.MODEL_DISCOVER_VIEW)) {
-					LOGGER.info("User '{}' does not have permission to access process discoverer",
-						portalContext.getCurrentUser().getUsername());
-					return;
-				}
-				subMenuImagePath = "~./themes/ap/common/img/icons/model-discover.svg";
-			} else if (PluginCatalog.PLUGIN_DASHBOARD_SUB_MENU.equals(subMenuId)) {
-				if (!portalContext.getCurrentUser().hasAnyPermission(PermissionType.DASH_EDIT,
-					PermissionType.DASH_VIEW)) {
-					LOGGER.info("User '{}' does not have permission to access dashboard",
-						portalContext.getCurrentUser().getUsername());
-					return;
-				}
-				subMenuImagePath = "~./themes/ap/common/img/icons/dashboard.svg";
-			} else if (PluginCatalog.PLUGIN_LOG_FILTER_SUB_MENU.equals(subMenuId)) {
-				if (!portalContext.getCurrentUser().hasAnyPermission(PermissionType.FILTER_VIEW,
-					PermissionType.FILTER_EDIT)) {
-					LOGGER.info("User '{}' does not have permission to access log filter",
-						portalContext.getCurrentUser().getUsername());
-					return;
-				}
-				subMenuImagePath = "~./themes/ap/common/img/icons/filter.svg";
-			} else if (PluginCatalog.PLUGIN_APPLY_CALENDAR_SUB_MENU.equals(subMenuId)) {
-				subMenuImagePath = "~./themes/ap/common/img/icons/calendar.svg";
-			} else {
+			String subMenuImagePath  = getSubMenuImage(subMenuId);
+			if (subMenuImagePath == null) {
 				return;
 			}
-
 			MenuConfig menuConfig = menuConfigLoader.getMenuConfig(subMenuId);
 			if (menuConfig.getGroups().isEmpty())
 				return;
@@ -352,6 +324,41 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 		} catch (Exception e) {
 			LOGGER.error("Failed to load menu", e);
 		}
+	}
+
+	private String getSubMenuImage(String subMenuId) {
+		String subMenuImagePath;
+		PortalContext portalContext = getPortalContext();
+		if (PluginCatalog.PLUGIN_DISCOVER_MODEL_SUB_MENU.equals(subMenuId)) {
+			if (!portalContext.getCurrentUser().hasAnyPermission(PermissionType.MODEL_DISCOVER_EDIT,
+				PermissionType.MODEL_DISCOVER_VIEW)) {
+				LOGGER.info("User '{}' does not have permission to access process discoverer",
+					portalContext.getCurrentUser().getUsername());
+				return null;
+			}
+			subMenuImagePath = "~./themes/ap/common/img/icons/model-discover.svg";
+		} else if (PluginCatalog.PLUGIN_DASHBOARD_SUB_MENU.equals(subMenuId)) {
+			if (!portalContext.getCurrentUser().hasAnyPermission(PermissionType.DASH_EDIT,
+				PermissionType.DASH_VIEW)) {
+				LOGGER.info("User '{}' does not have permission to access dashboard",
+					portalContext.getCurrentUser().getUsername());
+				return null;
+			}
+			subMenuImagePath = "~./themes/ap/common/img/icons/dashboard.svg";
+		} else if (PluginCatalog.PLUGIN_LOG_FILTER_SUB_MENU.equals(subMenuId)) {
+			if (!portalContext.getCurrentUser().hasAnyPermission(PermissionType.FILTER_VIEW,
+				PermissionType.FILTER_EDIT)) {
+				LOGGER.info("User '{}' does not have permission to access log filter",
+					portalContext.getCurrentUser().getUsername());
+				return null;
+			}
+			subMenuImagePath = "~./themes/ap/common/img/icons/filter.svg";
+		} else if (PluginCatalog.PLUGIN_APPLY_CALENDAR_SUB_MENU.equals(subMenuId)) {
+			subMenuImagePath = "~./themes/ap/common/img/icons/calendar.svg";
+		} else {
+			return null;
+		}
+		return subMenuImagePath;
 	}
 
 	private void addPluginMenuitem(Menupopup popup, MenuItem menuItem) {
@@ -375,9 +382,7 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 		String label = plugin.getLabel(Locale.getDefault());
 		item.setLabel(label);
 		item.setDisabled(plugin.getAvailability() == PortalPlugin.Availability.DISABLED);
-		item.addEventListener(ON_CLICK, event -> {
-			plugin.execute(getPortalContext());
-		});
+		item.addEventListener(ON_CLICK, event -> plugin.execute(getPortalContext()));
 		popup.appendChild(item);
 	}
 

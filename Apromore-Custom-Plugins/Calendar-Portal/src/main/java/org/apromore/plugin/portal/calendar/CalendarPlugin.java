@@ -57,6 +57,8 @@ import org.zkoss.zul.Window;
 public class CalendarPlugin extends DefaultPortalPlugin implements LabelSupplier {
 
     private static Logger LOGGER = PortalLoggerFactory.getLogger(CalendarPlugin.class);
+    private static final String CREATE_NEW_CALENDAR_CONST="createNewCalendar";
+    private static final String CAN_EDIT_CONST="canEdit";
 
     @Inject
     private EventLogService eventLogService;
@@ -99,11 +101,11 @@ public class CalendarPlugin extends DefaultPortalPlugin implements LabelSupplier
             if (logId != null) {
                 canEdit = ItemHelpers.canModifyCalendar(currentUser, logId);
             }
-            arg.put("canEdit", canEdit);
-            boolean createNewCalendar=arg.get("createNewCalendar")!=null && (boolean)arg.get("createNewCalendar");
+            arg.put(CAN_EDIT_CONST, canEdit);
+            boolean createNewCalendar=arg.get(CREATE_NEW_CALENDAR_CONST)!=null && (boolean)arg.get(CREATE_NEW_CALENDAR_CONST);
             if(createNewCalendar) {
                 createNewCalendar(canEdit);
-                getSimpleParams().put("createNewCalendar",null);//clear
+                getSimpleParams().put(CREATE_NEW_CALENDAR_CONST,null);//clear
                 return;
             }
 
@@ -130,7 +132,7 @@ public class CalendarPlugin extends DefaultPortalPlugin implements LabelSupplier
             Map arg = new HashMap<>();
             arg.put("calendarId", calendarId);
             arg.put("isNew", false);
-            arg.put("canEdit", false);
+            arg.put(CAN_EDIT_CONST, false);
             Window window = (Window) Executions.getCurrent()
                 .createComponents(PageUtils.getPageDefinition("calendar/zul/calendar.zul"), null, arg);
             window.doModal();
@@ -149,7 +151,7 @@ public class CalendarPlugin extends DefaultPortalPlugin implements LabelSupplier
                 arg.put("calendarId", calendarModel.getId());
                 arg.put("parentController", this);
                 arg.put("isNew", true);
-                arg.put("canEdit", canEdit);
+                arg.put(CAN_EDIT_CONST, canEdit);
                 arg.put("directCreateNew", true);
                 Window window = (Window) Executions.getCurrent()
                     .createComponents(PageUtils.getPageDefinition("calendar/zul/calendar.zul"), null, arg);
