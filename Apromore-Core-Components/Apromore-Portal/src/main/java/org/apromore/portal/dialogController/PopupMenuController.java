@@ -27,15 +27,19 @@
 package org.apromore.portal.dialogController;
 
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.portal.common.LabelConstants;
+import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.context.PortalPluginResolver;
 import org.apromore.portal.menu.MenuConfig;
 import org.apromore.portal.menu.MenuConfigLoader;
@@ -43,7 +47,10 @@ import org.apromore.portal.menu.MenuGroup;
 import org.apromore.portal.menu.MenuItem;
 import org.apromore.portal.menu.PluginCatalog;
 import org.apromore.portal.model.FolderType;
+import org.apromore.portal.model.LogSummaryType;
+import org.apromore.portal.model.PermissionType;
 import org.apromore.portal.model.UserType;
+import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.util.resource.Labels;
@@ -51,6 +58,7 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
+import org.zkoss.zul.Menu;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Menupopup;
 import org.zkoss.zul.Menuseparator;
@@ -79,23 +87,23 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 			popupType = (String) Executions.getCurrent().getArg().get("POPUP_TYPE");
 			if (popupType != null && !PortalPluginResolver.resolve().isEmpty()) {
 				switch (popupType) {
-				case "PROCESS": loadPopupMenu(menuPopup, "process-popup-menu"); break;
-				case "LOG":     loadPopupMenu(menuPopup, "log-popup-menu"); break;
-				case "CANVAS":  loadPopupMenu(menuPopup, "canvas-popup-menu"); break;
-				case "FOLDER":
-								selectedFolder=(FolderType)Executions.getCurrent().getArg().get("SELECTED_FOLDER");
-						        loadPopupMenu(menuPopup, "folder-popup-menu"); 
-						        break;
-				case "FOLDER_TREE":  
-						        popUpOnTree=true;
-						        selectedFolder=(FolderType)Executions.getCurrent().getArg().get("SELECTED_FOLDER");
-						        loadPopupMenu(menuPopup, "folder-popup-menu"); 
-						        break;
-				case "ROOT_FOLDER_TREE" :
-					            popUpOnTree=true;
-			                    selectedFolder=(FolderType)Executions.getCurrent().getArg().get("SELECTED_FOLDER");
-			                    loadPopupMenu(menuPopup, "root-folder-popup-menu"); 
-			                    break;
+					case "PROCESS": loadPopupMenu(menuPopup, "process-popup-menu"); break;
+					case "LOG":     loadPopupMenu(menuPopup, "log-popup-menu"); break;
+					case "CANVAS":  loadPopupMenu(menuPopup, "canvas-popup-menu"); break;
+					case "FOLDER":
+						selectedFolder=(FolderType)Executions.getCurrent().getArg().get("SELECTED_FOLDER");
+						loadPopupMenu(menuPopup, "folder-popup-menu");
+						break;
+					case "FOLDER_TREE":
+						popUpOnTree=true;
+						selectedFolder=(FolderType)Executions.getCurrent().getArg().get("SELECTED_FOLDER");
+						loadPopupMenu(menuPopup, "folder-popup-menu");
+						break;
+					case "ROOT_FOLDER_TREE" :
+						popUpOnTree=true;
+						selectedFolder=(FolderType)Executions.getCurrent().getArg().get("SELECTED_FOLDER");
+						loadPopupMenu(menuPopup, "root-folder-popup-menu");
+						break;
 				}
 			}
 		} catch (Exception ex) {
@@ -105,16 +113,243 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 
 	private void addMenuitem(Menupopup popup, MenuItem menuItem) {
 		switch (menuItem.getId()) {
-		case PluginCatalog.PLUGIN_CUT:     addCutMenuItem(popup); return;
-		case PluginCatalog.PLUGIN_COPY:    addCopyMenuItem(popup); return;
-		case PluginCatalog.PLUGIN_PASTE:   addPasteMenuItem(popup); return;
-		case PluginCatalog.PLUGIN_SHARE:   addShareMenuItem(popup); return;
-		case PluginCatalog.ITEM_SEPARATOR: addMenuSeparator(popup); return;
-		case PluginCatalog.PLUGIN_DELETE_MENU: addDeleteMenuItem(popup); return;
-		case PluginCatalog.PLUGIN_RENAME_MENU: addRenameMenuItem(popup); return;
-                }
-
+			case PluginCatalog.PLUGIN_CUT:     addCutMenuItem(popup); return;
+			case PluginCatalog.PLUGIN_COPY:    addCopyMenuItem(popup); return;
+			case PluginCatalog.PLUGIN_PASTE:   addPasteMenuItem(popup); return;
+			case PluginCatalog.PLUGIN_SHARE:   addShareMenuItem(popup); return;
+			case PluginCatalog.ITEM_SEPARATOR: addMenuSeparator(popup); return;
+			case PluginCatalog.PLUGIN_DELETE_MENU: addDeleteMenuItem(popup); return;
+			case PluginCatalog.PLUGIN_RENAME_MENU: addRenameMenuItem(popup); return;
+			case PluginCatalog.PLUGIN_CREATE_NEW_CALENDAR:   addNewCalendarMenuItem(popup); return;
+			case PluginCatalog.PLUGIN_EXISTING_CALENDAR:     addExistingCalendarMenuItem(popup); return;
+			case PluginCatalog.PLUGIN_CREATE_NEW_DASHBOARD:   addNewDashboardMenuItem(popup); return;
+			case PluginCatalog.PLUGIN_VIEW_EXISTING_DASHBOARD:   addExistingDashboardMenuItem(popup); return;
+			case PluginCatalog.PLUGIN_VIEW_FULL_LOG_DISCOVER_MODEL:   addFullLogDiscoverModelMenuItem(popup); return;
+			case PluginCatalog.PLUGIN_VIEW_FILTER_LOG_DISCOVER_MODEL:   addViewLogFilterMenuItem(popup); return;
+			case PluginCatalog.PLUGIN_CREATE_NEW_LOG_FILTER:   addNewLogFilterMenuItem(popup); return;
+			case PluginCatalog.PLUGIN_VIEW_EXISTING_LOG_FILTER:   addExistingLogFilterViewMenuItem(popup); return;
+			case PluginCatalog.PLUGIN_DISCOVER_MODEL_SUB_MENU:
+			case PluginCatalog.PLUGIN_DASHBOARD_SUB_MENU:
+			case PluginCatalog.PLUGIN_LOG_FILTER_SUB_MENU:
+			case PluginCatalog.PLUGIN_APPLY_CALENDAR_SUB_MENU: addSubMenuItem(popup,menuItem.getId()); return;
+		}
 		addPluginMenuitem(popup, menuItem);  // handle null or unknown menuitem id
+	}
+
+	private void addExistingLogFilterViewMenuItem(Menupopup popup) {
+		Menuitem item = new Menuitem();
+		item.setLabel(Labels.getLabel("plugin_existing_log_filter_text"));
+		item.setImage("~./themes/ap/common/img/icons/list.svg");
+		item.addEventListener(ON_CLICK, event -> {
+			try {
+				PortalPlugin plugin = portalPluginMap.get(PluginCatalog.PLUGIN_FILTER_LOG);
+				Map<String, Object> attrMap = new HashMap<>();
+				attrMap.put("FORWARD_FROM_CONTEXT_MENU",true);
+				attrMap.put("EDIT_FILTER",true);
+				plugin.setSimpleParams(attrMap);
+				plugin.execute((PortalContext) Sessions.getCurrent().getAttribute("portalContext"));
+			} catch (Exception e) {
+				LOGGER.error("Error in showing the log filter", e);
+			}
+		});
+		popup.appendChild(item);
+	}
+
+	private void addViewLogFilterMenuItem(Menupopup popup) {
+		Menuitem item = new Menuitem();
+		item.setLabel(Labels.getLabel("portal_filter_log_discover_model"));
+		item.setImage("~./themes/ap/common/img/icons/list.svg");
+		item.addEventListener(ON_CLICK, event -> {
+			try {
+				PortalPlugin plugin = portalPluginMap.get(PluginCatalog.PLUGIN_FILTER_LOG);
+				Map<String, Object> attrMap = new HashMap<>();
+				attrMap.put("FORWARD_FROM_CONTEXT_MENU",true);
+				attrMap.put("EDIT_FILTER",false);
+				plugin.setSimpleParams(attrMap);
+				plugin.execute((PortalContext) Sessions.getCurrent().getAttribute("portalContext"));
+			} catch (Exception e) {
+				LOGGER.error("Error in showing the filter log discover model", e);
+			}
+		});
+		popup.appendChild(item);
+	}
+
+	private void addNewLogFilterMenuItem(Menupopup popup) {
+		Menuitem item = new Menuitem();
+		item.setLabel(Labels.getLabel("plugin_new_log_filter_text"));
+		item.setIconSclass("z-icon-plus-circle");
+		item.addEventListener(ON_CLICK, event -> {
+			try {
+				PortalPlugin plugin = portalPluginMap.get(PluginCatalog.PLUGIN_FILTER_LOG);
+				plugin.setSimpleParams(null);
+				plugin.execute((PortalContext) Sessions.getCurrent().getAttribute("portalContext"));
+			} catch (Exception e) {
+				LOGGER.error("Error in showing log filter", e);
+			}
+		});
+		popup.appendChild(item);
+	}
+
+	private void addFullLogDiscoverModelMenuItem(Menupopup popup) {
+		Menuitem item = new Menuitem();
+		item.setLabel(Labels.getLabel("portal_full_log_discover_model"));
+		item.setImage("~./themes/ap/common/img/icons/filter.svg");
+		item.addEventListener(ON_CLICK, event -> {
+			try {
+				PortalPlugin plugin = portalPluginMap.get(PluginCatalog.PLUGIN_DISCOVER_MODEL);
+				plugin.execute((PortalContext) Sessions.getCurrent().getAttribute("portalContext"));
+			} catch (Exception e) {
+				LOGGER.error("Error in showing the full log discover model", e);
+			}
+		});
+		popup.appendChild(item);
+	}
+
+	private void addExistingCalendarMenuItem(Menupopup popup) {
+		Menuitem item = new Menuitem();
+		item.setLabel(Labels.getLabel("portal_existing_calendars"));
+		item.setImage("~./themes/ap/common/img/icons/list.svg");
+		item.addEventListener(ON_CLICK, event -> {
+			Set<Object> selections = getBaseListboxController().getSelection();
+			if (selections.size() != 1 || !selections.iterator().next().getClass().equals(LogSummaryType.class)) {
+				Notification.error(Labels.getLabel("portal_selectOneLog_message"));
+				return;
+			}
+			LogSummaryType selectedItem = (LogSummaryType) selections.iterator().next();
+			getBaseListboxController().launchCalendar(selectedItem.getName(), selectedItem.getId());
+		});
+		popup.appendChild(item);
+
+	}
+	private void addNewCalendarMenuItem(Menupopup popup) {
+		Menuitem item = new Menuitem();
+		item.setLabel(Labels.getLabel("portal_create_new_calendar"));
+		item.setIconSclass("z-icon-plus-circle");
+		item.addEventListener(ON_CLICK,  event ->  createNewCalendar());
+		popup.appendChild(item);
+	}
+
+	private void addNewDashboardMenuItem(Menupopup popup) {
+		Menuitem item = new Menuitem();
+		item.setLabel(Labels.getLabel("portal_create_new_dashboard"));
+		item.setIconSclass("z-icon-plus-circle");
+		item.addEventListener(ON_CLICK,  event ->  createNewDashboard());
+		popup.appendChild(item);
+	}
+
+	private void addExistingDashboardMenuItem(Menupopup popup) {
+		Menuitem item = new Menuitem();
+		item.setLabel(Labels.getLabel("portal_existing_dashboards"));
+		item.setImage("~./themes/ap/common/img/icons/list.svg");
+		item.addEventListener(ON_CLICK,  event ->  viewExistingDashboard());
+		popup.appendChild(item);
+	}
+
+
+	private void createNewCalendar() {
+		try {
+			Set<Object> selections = getBaseListboxController().getSelection();
+			if (selections.size() != 1 || !selections.iterator().next().getClass().equals(LogSummaryType.class)) {
+				Notification.error(Labels.getLabel("portal_selectOneLog_message"));
+				return;
+			}
+			LogSummaryType selectedItem = (LogSummaryType) selections.iterator().next();
+			PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
+			Map<String, Object> attrMap = new HashMap<>();
+			attrMap.put("portalContext", portalContext);
+			attrMap.put("artifactName", selectedItem.getName());
+			attrMap.put("logId", selectedItem.getId());
+			attrMap.put("createNewCalendar", true);
+			PortalPlugin calendarPlugin = portalPluginMap.get(PluginCatalog.PLUGIN_CALENDAR);
+			calendarPlugin.setSimpleParams(attrMap);
+			calendarPlugin.execute(portalContext);
+		} catch (Exception e) {
+			LOGGER.error(Labels.getLabel("portal_failedLaunchCustomCalendar_message"), e);
+			Messagebox.show(Labels.getLabel("portal_failedLaunchCustomCalendar_message"));
+		}
+	}
+
+	private void createNewDashboard() {
+		try {
+			Map<String, Object> attrMap = new HashMap<>();
+			attrMap.put("createNewDashboard", true);
+			attrMap.put("forwardFromPopup", true);
+			PortalPlugin plugin = portalPluginMap.get(PluginCatalog.PLUGIN_DASHBOARD);
+			plugin.setSimpleParams(attrMap);
+			plugin.execute((PortalContext) Sessions.getCurrent().getAttribute("portalContext"));
+		} catch (Exception e) {
+			LOGGER.error("Error in showing New Dashboard", e);
+		}
+	}
+
+	private void viewExistingDashboard() {
+		try {
+			Map<String, Object> attrMap = new HashMap<>();
+			attrMap.put("createNewDashboard", false);
+			attrMap.put("forwardFromPopup", true);
+			PortalPlugin plugin = portalPluginMap.get(PluginCatalog.PLUGIN_DASHBOARD);
+			plugin.setSimpleParams(attrMap);
+			plugin.execute((PortalContext) Sessions.getCurrent().getAttribute("portalContext"));
+		} catch (Exception e) {
+			LOGGER.error("Error in showing the Dashboard", e);
+		}
+
+	}
+
+	private void addSubMenuItem(Menupopup popup, String subMenuId) {
+		try {
+			PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
+			String subMenuImagePath ;
+			if (PluginCatalog.PLUGIN_DISCOVER_MODEL_SUB_MENU.equals(subMenuId)) {
+				if (!portalContext.getCurrentUser().hasAnyPermission(PermissionType.MODEL_DISCOVER_EDIT,
+					PermissionType.MODEL_DISCOVER_VIEW)) {
+					LOGGER.info("User '{}' does not have permission to access process discoverer",
+						portalContext.getCurrentUser().getUsername());
+					return;
+				}
+				subMenuImagePath = "~./themes/ap/common/img/icons/model-discover.svg";
+			} else if (PluginCatalog.PLUGIN_DASHBOARD_SUB_MENU.equals(subMenuId)) {
+				if (!portalContext.getCurrentUser().hasAnyPermission(PermissionType.DASH_EDIT,
+					PermissionType.DASH_VIEW)) {
+					LOGGER.info("User '{}' does not have permission to access dashboard",
+						portalContext.getCurrentUser().getUsername());
+					return;
+				}
+				subMenuImagePath = "~./themes/ap/common/img/icons/dashboard.svg";
+			} else if (PluginCatalog.PLUGIN_LOG_FILTER_SUB_MENU.equals(subMenuId)) {
+				if (!portalContext.getCurrentUser().hasAnyPermission(PermissionType.FILTER_VIEW,
+					PermissionType.FILTER_EDIT)) {
+					LOGGER.info("User '{}' does not have permission to access log filter",
+						portalContext.getCurrentUser().getUsername());
+					return;
+				}
+				subMenuImagePath = "~./themes/ap/common/img/icons/filter.svg";
+			} else if (PluginCatalog.PLUGIN_APPLY_CALENDAR_SUB_MENU.equals(subMenuId)) {
+				subMenuImagePath = "~./themes/ap/common/img/icons/calendar.svg";
+			} else {
+				return;
+			}
+
+			MenuConfig menuConfig = menuConfigLoader.getMenuConfig(subMenuId);
+			if (menuConfig.getGroups().isEmpty())
+				return;
+
+			MenuGroup menuGroup = menuConfig.getGroups().get(0);
+			if (!menuGroup.getItems().isEmpty()) {
+				Menu subMenu = new Menu();
+				subMenu.setLabel(getGroupLabel(menuGroup));
+				subMenu.setImage(subMenuImagePath);
+				Menupopup menuPopup = new Menupopup();
+				for (MenuItem menuItem : menuGroup.getItems()) {
+					addMenuitem(menuPopup, menuItem);
+				}
+				subMenu.appendChild(menuPopup);
+				popup.appendChild(subMenu);
+			}
+
+		} catch (Exception e) {
+			LOGGER.error("Failed to load menu", e);
+		}
 	}
 
 	private void addPluginMenuitem(Menupopup popup, MenuItem menuItem) {
@@ -144,22 +379,22 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 		});
 		popup.appendChild(item);
 	}
-	
+
 	private void addRenameMenuItem(Menupopup popup) {
 		Menuitem item = new Menuitem();
 		item.setLabel(Labels.getLabel("portal_rename_hint"));
 		item.setImage("~./themes/ap/common/img/icons/rename.svg");
 		item.addEventListener(ON_CLICK, popUpOnTree ? event -> getNavigationController().rename(selectedFolder)
-													: event -> getBaseListboxController().rename());
+			: event -> getBaseListboxController().rename());
 		popup.appendChild(item);
 	}
-	
+
 	private void addDeleteMenuItem(Menupopup popup) {
 		Menuitem item = new Menuitem();
 		item.setLabel(Labels.getLabel("portal_delete_hint"));
 		item.setImage("~./themes/ap/common/img/icons/trash.svg");
 		item.addEventListener(ON_CLICK, popUpOnTree ? event -> getNavigationController().removeFolder(selectedFolder)
-													: event -> getBaseListboxController().removeFolder());
+			: event -> getBaseListboxController().removeFolder());
 		popup.appendChild(item);
 	}
 
@@ -168,7 +403,7 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 		item.setLabel(Labels.getLabel("common_cut_text"));
 		item.setImage("~./themes/ap/common/img/icons/cut.svg");
 		item.addEventListener(ON_CLICK, popUpOnTree ? event -> getNavigationController().cut(selectedFolder)
-													: event -> getBaseListboxController().cut());
+			: event -> getBaseListboxController().cut());
 		popup.appendChild(item);
 	}
 
@@ -177,22 +412,22 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 		item.setLabel(Labels.getLabel("common_copy_text"));
 		item.setImage("~./themes/ap/common/img/icons/copy.svg");
 		item.addEventListener(ON_CLICK, popUpOnTree ? event -> getNavigationController().copy(selectedFolder)
-													: event -> getBaseListboxController().copy());
+			: event -> getBaseListboxController().copy());
 		popup.appendChild(item);
 	}
 
 	private void addPasteMenuItem(Menupopup popup) {
 		Menuitem item = new Menuitem();
 		if("FOLDER".equals(popupType) ||"FOLDER_TREE".equals(popupType)||"ROOT_FOLDER_TREE".equals(popupType)) {
-			item.setLabel(Labels.getLabel("common_paste_within_text"));	
+			item.setLabel(Labels.getLabel("common_paste_within_text"));
 		}else {
 			item.setLabel(Labels.getLabel("common_paste_text"));
 		}
 		item.setImage("~./themes/ap/common/img/icons/paste.svg");
 		item.addEventListener(ON_CLICK,	popUpOnTree ? event -> getNavigationController().paste(selectedFolder)
-													:(selectedFolder!=null?event -> getBaseListboxController().paste(selectedFolder): event -> getBaseListboxController().paste()));
+			:(selectedFolder!=null?event -> getBaseListboxController().paste(selectedFolder): event -> getBaseListboxController().paste()));
 		if(getBaseListboxController().getMainController().getCopyPasteController().getSelectedItemsSize()==0) {
-			item.setDisabled(true);	
+			item.setDisabled(true);
 			item.setStyle("pointer-events:none");
 		}
 		popup.appendChild(item);
@@ -203,7 +438,7 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 		item.setLabel(Labels.getLabel("portal_share_hint"));
 		item.setImage("~./themes/ap/common/img/icons/share.svg");
 		item.addEventListener(ON_CLICK, popUpOnTree ? event -> getNavigationController().share(selectedFolder)
-											: event -> getBaseListboxController().share());
+			: event -> getBaseListboxController().share());
 		popup.appendChild(item);
 	}
 
@@ -223,6 +458,7 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 			if (PortalPluginResolver.resolve().isEmpty()) {
 				return;
 			}
+
 			portalPluginMap = PortalPluginResolver.getPortalPluginMap();
 			List<MenuGroup> menuGroups = menuConfig.getGroups();
 
@@ -249,6 +485,30 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 			LOGGER.error("Failed to load menu", e);
 			loadError();
 		}
+	}
+
+	private String getGroupLabel(MenuGroup group) {
+		String groupId = group.getId();
+		String groupLabelExp = group.getLabelExp();
+		String groupLabelKey = group.getLabelKey();
+		String groupLabel = null;
+		if (groupLabelExp != null) {
+			if (DISPLAY_NAME_EXP.equals(groupLabelExp)) {
+				UserType userType = UserSessionManager.getCurrentUser();
+				if (userType != null) {
+					groupLabel = getDisplayName(userType);
+				}
+			}
+		} else if (groupLabelKey != null){
+			groupLabel = Labels.getLabel(groupLabelKey, groupId);
+		}
+		if (groupLabel == null) {
+			groupLabel = Labels.getLabel(
+				MessageFormat.format("plugin_{0}_title_text", groupId.toLowerCase()),
+				groupId
+			);
+		}
+		return groupLabel;
 	}
 
 	private void loadError() {
