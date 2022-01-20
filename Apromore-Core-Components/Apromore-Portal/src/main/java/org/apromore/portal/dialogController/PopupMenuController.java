@@ -77,6 +77,8 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 	private static final String DISPLAY_NAME_EXP = "displayName";
 	private static final String GROUP = "group";
 	private static final String ON_CLICK = "onClick";
+	private static final String ICON_PLUS="z-icon-plus-circle";
+	private static final String LIST_ICON="~./themes/ap/common/img/icons/list.svg";
 	private boolean popUpOnTree=false;
 	private FolderType selectedFolder=null;
 	private String popupType;
@@ -139,7 +141,7 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 	private void addExistingLogFilterViewMenuItem(Menupopup popup) {
 		Menuitem item = new Menuitem();
 		item.setLabel(Labels.getLabel("plugin_existing_log_filter_text"));
-		item.setImage("~./themes/ap/common/img/icons/list.svg");
+		item.setImage(LIST_ICON);
 		item.addEventListener(ON_CLICK, event -> {
 			try {
 				PortalPlugin plugin = portalPluginMap.get(PluginCatalog.PLUGIN_FILTER_LOG);
@@ -147,7 +149,7 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 				attrMap.put("FORWARD_FROM_CONTEXT_MENU",true);
 				attrMap.put("EDIT_FILTER",true);
 				plugin.setSimpleParams(attrMap);
-				plugin.execute((PortalContext) Sessions.getCurrent().getAttribute("portalContext"));
+				plugin.execute(getPortalContext());
 			} catch (Exception e) {
 				LOGGER.error("Error in showing the log filter", e);
 			}
@@ -158,7 +160,7 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 	private void addViewLogFilterMenuItem(Menupopup popup) {
 		Menuitem item = new Menuitem();
 		item.setLabel(Labels.getLabel("portal_filter_log_discover_model"));
-		item.setImage("~./themes/ap/common/img/icons/list.svg");
+		item.setImage(LIST_ICON);
 		item.addEventListener(ON_CLICK, event -> {
 			try {
 				PortalPlugin plugin = portalPluginMap.get(PluginCatalog.PLUGIN_FILTER_LOG);
@@ -166,7 +168,7 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 				attrMap.put("FORWARD_FROM_CONTEXT_MENU",true);
 				attrMap.put("EDIT_FILTER",false);
 				plugin.setSimpleParams(attrMap);
-				plugin.execute((PortalContext) Sessions.getCurrent().getAttribute("portalContext"));
+				plugin.execute(getPortalContext());
 			} catch (Exception e) {
 				LOGGER.error("Error in showing the filter log discover model", e);
 			}
@@ -177,12 +179,12 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 	private void addNewLogFilterMenuItem(Menupopup popup) {
 		Menuitem item = new Menuitem();
 		item.setLabel(Labels.getLabel("plugin_new_log_filter_text"));
-		item.setIconSclass("z-icon-plus-circle");
+		item.setIconSclass(ICON_PLUS);
 		item.addEventListener(ON_CLICK, event -> {
 			try {
 				PortalPlugin plugin = portalPluginMap.get(PluginCatalog.PLUGIN_FILTER_LOG);
 				plugin.setSimpleParams(null);
-				plugin.execute((PortalContext) Sessions.getCurrent().getAttribute("portalContext"));
+				plugin.execute(getPortalContext());
 			} catch (Exception e) {
 				LOGGER.error("Error in showing log filter", e);
 			}
@@ -197,7 +199,7 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 		item.addEventListener(ON_CLICK, event -> {
 			try {
 				PortalPlugin plugin = portalPluginMap.get(PluginCatalog.PLUGIN_DISCOVER_MODEL);
-				plugin.execute((PortalContext) Sessions.getCurrent().getAttribute("portalContext"));
+				plugin.execute(getPortalContext());
 			} catch (Exception e) {
 				LOGGER.error("Error in showing the full log discover model", e);
 			}
@@ -208,7 +210,7 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 	private void addExistingCalendarMenuItem(Menupopup popup) {
 		Menuitem item = new Menuitem();
 		item.setLabel(Labels.getLabel("portal_existing_calendars"));
-		item.setImage("~./themes/ap/common/img/icons/list.svg");
+		item.setImage(LIST_ICON);
 		item.addEventListener(ON_CLICK, event -> {
 			Set<Object> selections = getBaseListboxController().getSelection();
 			if (selections.size() != 1 || !selections.iterator().next().getClass().equals(LogSummaryType.class)) {
@@ -224,7 +226,7 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 	private void addNewCalendarMenuItem(Menupopup popup) {
 		Menuitem item = new Menuitem();
 		item.setLabel(Labels.getLabel("portal_create_new_calendar"));
-		item.setIconSclass("z-icon-plus-circle");
+		item.setIconSclass(ICON_PLUS);
 		item.addEventListener(ON_CLICK,  event ->  createNewCalendar());
 		popup.appendChild(item);
 	}
@@ -232,7 +234,7 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 	private void addNewDashboardMenuItem(Menupopup popup) {
 		Menuitem item = new Menuitem();
 		item.setLabel(Labels.getLabel("portal_create_new_dashboard"));
-		item.setIconSclass("z-icon-plus-circle");
+		item.setIconSclass(ICON_PLUS);
 		item.addEventListener(ON_CLICK,  event ->  createNewDashboard());
 		popup.appendChild(item);
 	}
@@ -240,7 +242,7 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 	private void addExistingDashboardMenuItem(Menupopup popup) {
 		Menuitem item = new Menuitem();
 		item.setLabel(Labels.getLabel("portal_existing_dashboards"));
-		item.setImage("~./themes/ap/common/img/icons/list.svg");
+		item.setImage(LIST_ICON);
 		item.addEventListener(ON_CLICK,  event ->  viewExistingDashboard());
 		popup.appendChild(item);
 	}
@@ -254,7 +256,7 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 				return;
 			}
 			LogSummaryType selectedItem = (LogSummaryType) selections.iterator().next();
-			PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
+			PortalContext portalContext = getPortalContext();
 			Map<String, Object> attrMap = new HashMap<>();
 			attrMap.put("portalContext", portalContext);
 			attrMap.put("artifactName", selectedItem.getName());
@@ -276,7 +278,7 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 			attrMap.put("forwardFromPopup", true);
 			PortalPlugin plugin = portalPluginMap.get(PluginCatalog.PLUGIN_DASHBOARD);
 			plugin.setSimpleParams(attrMap);
-			plugin.execute((PortalContext) Sessions.getCurrent().getAttribute("portalContext"));
+			plugin.execute(getPortalContext());
 		} catch (Exception e) {
 			LOGGER.error("Error in showing New Dashboard", e);
 		}
@@ -289,7 +291,7 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 			attrMap.put("forwardFromPopup", true);
 			PortalPlugin plugin = portalPluginMap.get(PluginCatalog.PLUGIN_DASHBOARD);
 			plugin.setSimpleParams(attrMap);
-			plugin.execute((PortalContext) Sessions.getCurrent().getAttribute("portalContext"));
+			plugin.execute(getPortalContext());
 		} catch (Exception e) {
 			LOGGER.error("Error in showing the Dashboard", e);
 		}
@@ -298,7 +300,7 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 
 	private void addSubMenuItem(Menupopup popup, String subMenuId) {
 		try {
-			PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
+			PortalContext portalContext = getPortalContext();
 			String subMenuImagePath ;
 			if (PluginCatalog.PLUGIN_DISCOVER_MODEL_SUB_MENU.equals(subMenuId)) {
 				if (!portalContext.getCurrentUser().hasAnyPermission(PermissionType.MODEL_DISCOVER_EDIT,
@@ -374,8 +376,7 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 		item.setLabel(label);
 		item.setDisabled(plugin.getAvailability() == PortalPlugin.Availability.DISABLED);
 		item.addEventListener(ON_CLICK, event -> {
-			PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
-			plugin.execute(portalContext);
+			plugin.execute(getPortalContext());
 		});
 		popup.appendChild(item);
 	}
@@ -532,15 +533,14 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 	}
 
 	private BaseListboxController getBaseListboxController() {
-		PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
-		MainController mainController = (MainController) portalContext.getMainController();
-
+		MainController mainController = (MainController) getPortalContext().getMainController();
 		return mainController.getBaseListboxController();
 	}
 	private NavigationController getNavigationController() {
-		PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
-		MainController mainController = (MainController) portalContext.getMainController();
-
+		MainController mainController = (MainController) getPortalContext().getMainController();
 		return mainController.getNavigationController();
+	}
+	private PortalContext getPortalContext(){
+		return (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
 	}
 }

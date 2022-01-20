@@ -92,7 +92,7 @@ public class CalendarPlugin extends DefaultPortalPlugin implements LabelSupplier
 
         try {
             boolean canEdit = false;
-            // Present the user admin windowË™
+            // Present the user admin window
             Map arg = new HashMap<>(getSimpleParams());
             Integer logId = (Integer) arg.get("logId");
             User currentUser = securityService.getUserById(portalContext.getCurrentUser().getId());
@@ -100,9 +100,9 @@ public class CalendarPlugin extends DefaultPortalPlugin implements LabelSupplier
                 canEdit = ItemHelpers.canModifyCalendar(currentUser, logId);
             }
             arg.put("canEdit", canEdit);
-
-            if(arg!=null && arg.get("createNewCalendar")!=null && (boolean)arg.get("createNewCalendar")) {
-                createNewCalendar(logId,canEdit);
+            boolean createNewCalendar=arg.get("createNewCalendar")!=null && (boolean)arg.get("createNewCalendar");
+            if(createNewCalendar) {
+                createNewCalendar(canEdit);
                 getSimpleParams().put("createNewCalendar",null);//clear
                 return;
             }
@@ -139,12 +139,12 @@ public class CalendarPlugin extends DefaultPortalPlugin implements LabelSupplier
         }
     }
 
-    public void createNewCalendar(Integer logId,boolean canEdit) {
-        try {
-            String msg = getLabels().getString("created_default_cal_message");
-            String calendarName = msg + " " + DateTimeUtils.humanize(LocalDateTime.now());
-            CalendarModel calendarModel = calendarService.createBusinessCalendar(calendarName, true, ZoneId.systemDefault().toString());
+    private void createNewCalendar(boolean canEdit) {
+            String msg;
             try {
+                msg = getLabels().getString("created_default_cal_message");
+                String calendarName = msg + " " + DateTimeUtils.humanize(LocalDateTime.now());
+                CalendarModel calendarModel = calendarService.createBusinessCalendar(calendarName, true, ZoneId.systemDefault().toString());
                 Map<String, Object> arg = new HashMap<>();
                 arg.put("calendarId", calendarModel.getId());
                 arg.put("parentController", this);
@@ -159,9 +159,6 @@ public class CalendarPlugin extends DefaultPortalPlugin implements LabelSupplier
                 LOGGER.error(msg, e);
                 Notification.error(msg);
             }
-        } catch (Exception e) {
-            LOGGER.error("Unable to create new calendar dialog", e);
-        }
     }
 
     @Override
