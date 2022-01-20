@@ -19,7 +19,6 @@
  * #L%
  */
 
-
 package org.apromore.processsimulation.service;
 
 import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_DEFAULT_ID_KEY;
@@ -40,6 +39,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -53,6 +53,7 @@ import org.apromore.processdiscoverer.Abstraction;
 import org.apromore.processdiscoverer.abstraction.AbstractAbstraction;
 import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Activity;
 import org.apromore.processsimulation.config.SimulationInfoConfig;
+import org.apromore.processsimulation.dto.SimulationData;
 import org.apromore.processsimulation.model.Currency;
 import org.apromore.processsimulation.model.Distribution;
 import org.apromore.processsimulation.model.DistributionType;
@@ -82,7 +83,7 @@ public class SimulationInfoService {
 
     private JAXBContext jaxbContext;
 
-    private SimulationInfoConfig config;
+    private final SimulationInfoConfig config;
 
     @Autowired
     public SimulationInfoService(SimulationInfoConfig config) {
@@ -95,7 +96,7 @@ public class SimulationInfoService {
     }
 
     public boolean isFeatureEnabled() {
-        return Boolean.valueOf(config.isEnable());
+        return config.isEnable();
     }
 
     public ProcessSimulationInfo deriveSimulationInfo(
@@ -103,7 +104,6 @@ public class SimulationInfoService {
 
         ProcessSimulationInfo processSimulationInfo = null;
         if (isFeatureEnabled()
-            && abstraction != null
             && abstraction instanceof AbstractAbstraction
             && ((AbstractAbstraction) abstraction).getLog() != null) {
 
@@ -132,6 +132,32 @@ public class SimulationInfoService {
         return processSimulationInfo;
     }
 
+    public ProcessSimulationInfo deriveSimulationInfo(
+        final SimulationData simulationData) {
+
+        ProcessSimulationInfo processSimulationInfo = null;
+        if (isFeatureEnabled() && simulationData != null) {
+
+            ProcessSimulationInfo.ProcessSimulationInfoBuilder builder =
+                ProcessSimulationInfo.builder()
+                    .id("qbp_" + Locale.getDefault().getLanguage() + UUID.randomUUID())
+                    .errors(Errors.builder().build());
+
+            deriveGeneralInfo(builder, simulationData);
+
+            deriveTaskInfo(builder, simulationData);
+
+            deriveTimetable(builder);
+
+            deriveResourceInfo(builder, simulationData);
+
+            processSimulationInfo = builder.build();
+
+        }
+
+        return processSimulationInfo;
+    }
+
     private void deriveGeneralInfo(
         final ProcessSimulationInfo.ProcessSimulationInfoBuilder builder,
         final AttributeLogSummary logSummary) {
@@ -139,11 +165,31 @@ public class SimulationInfoService {
         long startTimeMillis = logSummary.getStartTime();
         long endTimeMillis = logSummary.getEndTime();
         long interArrivalTime = Math.round(
-             (endTimeMillis - startTimeMillis) / (double) (1000 * logSummary.getCaseCount()));
+            (endTimeMillis - startTimeMillis) / (double) (1000 * logSummary.getCaseCount()));
 
         builder.processInstances(logSummary.getCaseCount())
             .currency(Currency.valueOf(config.getDefaultCurrency().toUpperCase(DOCUMENT_LOCALE)))
             .startDateTime(Instant.ofEpochMilli(logSummary.getStartTime()).toString())
+            .arrivalRateDistribution(
+                Distribution.builder()
+                    .timeUnit(TimeUnit.valueOf(config.getDefaultTimeUnit().toUpperCase(DOCUMENT_LOCALE)))
+                    .type(DistributionType.valueOf(config.getDefaultDistributionType().toUpperCase(DOCUMENT_LOCALE)))
+                    .arg1(Long.toString(interArrivalTime))
+                    .build());
+    }
+
+    private void deriveGeneralInfo(
+        final ProcessSimulationInfo.ProcessSimulationInfoBuilder builder,
+        final SimulationData simulationData) {
+
+        long startTimeMillis = simulationData.getStartTime();
+        long endTimeMillis = simulationData.getEndTime();
+        long interArrivalTime = Math.round(
+            (endTimeMillis - startTimeMillis) / (double) (1000 * simulationData.getCaseCount()));
+
+        builder.processInstances(simulationData.getCaseCount())
+            .currency(Currency.valueOf(config.getDefaultCurrency().toUpperCase(DOCUMENT_LOCALE)))
+            .startDateTime(Instant.ofEpochMilli(simulationData.getStartTime()).toString())
             .arrivalRateDistribution(
                 Distribution.builder()
                     .timeUnit(TimeUnit.valueOf(config.getDefaultTimeUnit().toUpperCase(DOCUMENT_LOCALE)))
@@ -182,6 +228,25 @@ public class SimulationInfoService {
 
             builder.tasks(taskList);
         }
+    }
+
+    private void deriveTaskInfo(
+        final ProcessSimulationInfo.ProcessSimulationInfoBuilder builder,
+        final SimulationData simulationData) {
+
+        List<Element> taskList = simulationData.getDiagramNodeIDs().stream()
+            .map(nodeId -> Element.builder()
+                .elementId(nodeId)
+                .distributionDuration(Distribution.builder()
+                    .type(DistributionType.valueOf(
+                        config.getDefaultDistributionType().toUpperCase(DOCUMENT_LOCALE)))
+                    .arg1(Double.toString(simulationData.getDiagramNodeDuration(nodeId)))
+                    .timeUnit(TimeUnit.valueOf(config.getDefaultTimeUnit().toUpperCase(DOCUMENT_LOCALE)))
+                    .build())
+                .build())
+            .collect(Collectors.toUnmodifiableList());
+
+        builder.tasks(taskList);
     }
 
     private void deriveTimetable(
@@ -227,6 +292,20 @@ public class SimulationInfoService {
                         .build()));
             }
         }
+    }
+
+    private void deriveResourceInfo(
+        final ProcessSimulationInfo.ProcessSimulationInfoBuilder builder,
+        final SimulationData simulationData) {
+
+        builder.resources(Arrays.asList(
+            Resource.builder()
+                .id(config.getDefaultResource().get(CONFIG_DEFAULT_ID_KEY))
+                .name(config.getDefaultResource().get(CONFIG_DEFAULT_NAME_KEY))
+                .totalAmount(simulationData.getResourceCount())
+                .timetableId(config.getDefaultTimetable().get(CONFIG_DEFAULT_ID_KEY))
+                .build()));
+
     }
 
 
