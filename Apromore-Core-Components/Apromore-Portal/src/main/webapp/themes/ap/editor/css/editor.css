@@ -344,10 +344,12 @@
 #ap-bpmn-icon-set .add {
   border: 1px solid #cccccc;
   border-radius: 2px;
-  padding: 2px 5px;
+  padding: 3px 5px;
   background-color: white;
   display: inline-block;
   color: black;
+  height: 24px;
+  box-sizing: border-box;
 }
 
 
@@ -369,8 +371,8 @@
 }
 
 .aux-wrapper .aux-image {
-  padding: 4px;
-  flex: 1 1 auto;
+  padding: 20px 4px 4px 4px;
+  flex: 1 0 auto;
   min-width: 0;
   min-height: 0;
 }
@@ -387,6 +389,16 @@
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
+}
+
+.aux-wrapper .aux-image a {
+  text-decoration: none !important;
+  display: inline-block;
+}
+
+.aux-wrapper .aux-image .caption {
+  margin-top: 4px;
+  color: black;
 }
 
 .aux-wrapper .aux-bar .aux-link {
@@ -436,7 +448,6 @@
   overflow: hidden;
   text-overflow: ellipsis;
   vertical-align: bottom;
-  width: 100%;
   display: inline-block;
 }
 
