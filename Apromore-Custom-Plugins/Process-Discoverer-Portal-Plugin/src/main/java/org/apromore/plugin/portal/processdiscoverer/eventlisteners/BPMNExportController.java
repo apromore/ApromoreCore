@@ -271,14 +271,22 @@ public class BPMNExportController extends AbstractController {
             defaultProcessName = parent.getContextData().getLogName().split("\\.")[0];
         }
 
-        String conditionalMessage =
-            simulationInfoService.isFeatureEnabled() ? parent.getLabel("includeSimulationParams_text") : null;
+        String conditionText = null;
+        String footnoteMessage = null;
+        if (simulationInfoService.isFeatureEnabled()) {
+            conditionText = parent.getLabel("includeSimulationParams_text");
+        } else {
+            footnoteMessage = parent.getLabel("warnNoSimulationParams_text");
+            log.warn(
+                "Exporting simulation info feature is disabled. Model will be exported without simulation parameters");
+        }
 
         InputDialog.showInputDialog(
             parent.getLabel("saveBPMN_message"),
             parent.getLabel("saveBPMNName_message"),
             defaultProcessName,
-            conditionalMessage,
+            conditionText,
+            footnoteMessage,
             event -> {
                 if (event.getName().equals("onOK") || event.getName().equals("onOKChecked")) {
                     if (event.getName().equals("onOKChecked")) {
