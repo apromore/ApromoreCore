@@ -80,7 +80,7 @@ public class ParquetImporterCSVImplUnitTest {
 
         // Perform the test
         LogMetaData logMetaData = metaDataService
-                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
         List<List<String>> sampleLog = metaDataService
                 .generateSampleLog(
                         this.getClass().getResourceAsStream(testFile),
@@ -127,7 +127,7 @@ public class ParquetImporterCSVImplUnitTest {
 
         // Perform the test
         LogMetaData logMetaData = metaDataService
-                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
         List<List<String>> sampleLog = metaDataService
                 .generateSampleLog(
                         this.getClass().getResourceAsStream(testFile),
@@ -175,7 +175,7 @@ public class ParquetImporterCSVImplUnitTest {
 
         // Perform the test
         LogMetaData logMetaData = metaDataService
-                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
         List<List<String>> sampleLog = metaDataService
                 .generateSampleLog(
                         this.getClass().getResourceAsStream(testFile),
@@ -223,7 +223,7 @@ public class ParquetImporterCSVImplUnitTest {
 
         // Perform the test
         LogMetaData logMetaData = metaDataService
-                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
         List<List<String>> sampleLog = metaDataService
                 .generateSampleLog(
                         this.getClass().getResourceAsStream(testFile),
@@ -271,7 +271,7 @@ public class ParquetImporterCSVImplUnitTest {
 
         // Perform the test
         LogMetaData logMetaData = metaDataService
-                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
         List<List<String>> sampleLog = metaDataService
                 .generateSampleLog(
                         this.getClass().getResourceAsStream(testFile),
@@ -318,7 +318,7 @@ public class ParquetImporterCSVImplUnitTest {
 
         // Perform the test
         LogMetaData logMetaData = metaDataService
-                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
         List<List<String>> sampleLog = metaDataService
                 .generateSampleLog(
                         this.getClass().getResourceAsStream(testFile),
@@ -366,7 +366,7 @@ public class ParquetImporterCSVImplUnitTest {
 
         // Perform the test
         LogMetaData logMetaData = metaDataService
-                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
         List<List<String>> sampleLog = metaDataService
                 .generateSampleLog(
                         this.getClass().getResourceAsStream(testFile),
@@ -415,7 +415,7 @@ public class ParquetImporterCSVImplUnitTest {
 
         // Perform the test
         LogMetaData logMetaData = metaDataService
-                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
         List<List<String>> sampleLog = metaDataService
                 .generateSampleLog(
                         this.getClass().getResourceAsStream(testFile),
@@ -456,7 +456,7 @@ public class ParquetImporterCSVImplUnitTest {
 
         // Perform the test
         LogMetaData logMetaData = metaDataService
-                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
         List<List<String>> sampleLog = metaDataService
                 .generateSampleLog(
                         this.getClass().getResourceAsStream(testFile),
@@ -510,7 +510,7 @@ public class ParquetImporterCSVImplUnitTest {
 
         // Perform the test
         LogMetaData logMetaData = metaDataService
-                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8");
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
         List<List<String>> sampleLog = metaDataService
                 .generateSampleLog(
                         this.getClass().getResourceAsStream(testFile),
@@ -559,7 +559,7 @@ public class ParquetImporterCSVImplUnitTest {
 
         // Perform the test
         LogMetaData logMetaData = metaDataService
-                .extractMetadata(this.getClass().getResourceAsStream(testFile), "windows-1255");
+                .extractMetadata(this.getClass().getResourceAsStream(testFile), "windows-1255", null);
         List<List<String>> sampleLog = metaDataService
                 .generateSampleLog(
                         this.getClass().getResourceAsStream(testFile),

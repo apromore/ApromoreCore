@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -22,6 +22,14 @@
 
 package org.apromore.plugin.portal.processdiscoverer.eventlisteners;
 
+import static org.apromore.commons.item.Constants.HOME_FOLDER_NAME;
+
+import java.io.ByteArrayInputStream;
+import java.text.MessageFormat;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Map;
+import javax.xml.datatype.DatatypeFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.ProcessModelVersion;
@@ -46,20 +54,10 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zkplus.spring.SpringUtil;
-import org.zkoss.zul.Button;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Progressmeter;
 import org.zkoss.zul.Window;
-
-import javax.xml.datatype.DatatypeFactory;
-import java.io.ByteArrayInputStream;
-import java.text.MessageFormat;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.apromore.commons.item.Constants.HOME_FOLDER_NAME;
 
 /**
  * This class provides a facility to export BPMN models from ProcessDiscoverer and save
@@ -71,10 +69,9 @@ import static org.apromore.commons.item.Constants.HOME_FOLDER_NAME;
  * and then finished, then another instance is used and then finished.
  * If multiple instances concurrently exist and run, it may happen that one instance may respond
  * to events occuring in another instance.
- * 
+ *
  * @author Simon Rabozi
  * @modified Bruce Nguyen
- *
  */
 @Slf4j
 public class BPMNExportController extends AbstractController {
@@ -85,6 +82,8 @@ public class BPMNExportController extends AbstractController {
     private static final String MINING_COMPLETE = "MINING_COMPLETE";
     private static final String MINING_EXCEPTION = "MINING_EXCEPTION";
     private static final String ANNOTATION_EXCEPTION = "ANNOTATION_EXCEPTION";
+    private static final String MESSAGE_BOX_TITLE = "Apromore";
+
     private EventQueue<Event> eventQueue;
 
     private PDController controller;
@@ -108,7 +107,7 @@ public class BPMNExportController extends AbstractController {
 
         this.simulationInfoService = (SimulationInfoService) SpringUtil.getBean("simulationInfoService");
     }
-    
+
     /*
      * Note: forget to unsubscribe may lead to unexpected behavior
      * if multiple ExportBPMNHander objects exist.
@@ -119,63 +118,74 @@ public class BPMNExportController extends AbstractController {
             if (!parent.prepareCriticalServices()) {
                 return;
             }
-            
+
             switch (event.getName()) {
                 case CHANGE_DESCRIPTION:
-                    if (descriptionLabel != null) descriptionLabel.setValue((String) event.getData());
+                    if (descriptionLabel != null) {
+                        descriptionLabel.setValue((String) event.getData());
+                    }
                     break;
-    
+
                 case CHANGE_FRACTION_COMPLETE:
-                    if (fractionCompleteProgressmeter != null) fractionCompleteProgressmeter.setValue((int) Math.round(100.0 * (Double) event.getData()));
+                    if (fractionCompleteProgressmeter != null) {
+                        fractionCompleteProgressmeter.setValue((int) Math.round(100.0 * (Double) event.getData()));
+                    }
                     break;
-    
+
                 case MINING_COMPLETE:
-                    if (fractionCompleteProgressmeter != null) fractionCompleteProgressmeter.setValue(100);
-                    if (descriptionLabel != null) descriptionLabel.setValue(parent.getLabel("savingBPMN_message"));
+                    if (fractionCompleteProgressmeter != null) {
+                        fractionCompleteProgressmeter.setValue(100);
+                    }
+                    if (descriptionLabel != null) {
+                        descriptionLabel.setValue(parent.getLabel("savingBPMN_message"));
+                    }
                     try {
                         BPMNExportController.this.save();
-                        if (window != null) window.detach();
+                        if (window != null) {
+                            window.detach();
+                        }
                         eventQueue.unsubscribe(this); //unsubscribe after finishing work
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        Messagebox.show(parent.getLabel("failedProcessMining_message"), "Apromore", Messagebox.OK, Messagebox.ERROR);
+                    } catch (Exception exception) {
+                        log.error(parent.getLabel("Process mining failed"), exception);
+                        Messagebox.show(parent.getLabel("failedProcessMining_message"), MESSAGE_BOX_TITLE,
+                            Messagebox.OK,
+                            Messagebox.ERROR);
                         eventQueue.unsubscribe(this); //unsubscribe after finishing work even fails
                     }
                     break;
 
-                case MINING_EXCEPTION:
-                    Exception e = (Exception) event.getData();
-                    if (window != null) window.detach();
-                    Messagebox.show(parent.getLabel("failedProcessMining_message"), "Apromore", Messagebox.OK, Messagebox.ERROR);
+                case ANNOTATION_EXCEPTION:
+                    log.error(parent.getLabel("Unable to annotate BPMN model"), (Exception) event.getData());
+                    Messagebox.show(parent.getLabel("failedAnnotateBPMN_message"), MESSAGE_BOX_TITLE, Messagebox.OK,
+                        Messagebox.EXCLAMATION);
                     eventQueue.unsubscribe(this); //unsubscribe after finishing work even fails
                     break;
 
-                case ANNOTATION_EXCEPTION:
-                    Exception e2 = (Exception) event.getData();
-                    e2.printStackTrace();
-                    Messagebox.show(parent.getLabel("failedAnnotateBPMN_message"), "Apromore", Messagebox.OK, Messagebox.EXCLAMATION);
+                case MINING_EXCEPTION:
+                default:
+                    log.error("Process mining failed", (Exception) event.getData());
+                    if (window != null) {
+                        window.detach();
+                    }
+                    Messagebox.show(parent.getLabel("failedProcessMining_message"), MESSAGE_BOX_TITLE, Messagebox.OK,
+                        Messagebox.ERROR);
                     eventQueue.unsubscribe(this); //unsubscribe after finishing work even fails
                     break;
-                }
+            }
         }
     }
-    
+
     @Override
     public void onEvent(Event event) throws Exception {
         if (this.showProgressBar) {
             window = (Window) Executions.createComponents("mineAndSave.zul", null, null);
-            ((Button) window.getFellow("cancel")).addEventListener("onClick", new EventListener<Event>() {
-                @Override
-                public void onEvent(Event event) {
-                    window.detach();
-                }
-            });
+            window.getFellow("cancel").addEventListener("onClick", event1 -> window.detach());
 
             descriptionLabel = (Label) window.getFellow("description");
             fractionCompleteProgressmeter = (Progressmeter) window.getFellow("fractionComplete");
             window.doModal();
         }
-        
+
         eventQueue.subscribe(progressListener); // subscribe to start listening to events
 
         new Thread() {
@@ -192,7 +202,7 @@ public class BPMNExportController extends AbstractController {
             }
         }.start();
     }
-    
+
     private void mine() throws Exception {
         if (controller.getOutputData() == null) {
             throw new InvalidOutputException("Output data is not available yet!");
@@ -209,38 +219,31 @@ public class BPMNExportController extends AbstractController {
         labelMapping = cleanDiagramBeforeExport(d);
         if (!controller.getUserOptions().getBPMNMode()) {
             definitionsBuilder = new BpmnDefinitions.BpmnDefinitionsBuilder(d); // recreate layout
-        }
-        else {
+        } else {
             definitionsBuilder = new BpmnDefinitions.BpmnDefinitionsBuilder(d, abs.getLayout().getGraphLayout());
         }
 
         // Export to text
         BpmnDefinitions definitions = new BpmnDefinitions("definitions", definitionsBuilder);
-        String exportedBPMN = definitions.exportElements();
-        minedModel = ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                "<definitions xmlns=\"http://www.omg.org/spec/BPMN/20100524/MODEL\"\n " +
-                "xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\"\n " +
-                "xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\"\n " +
-                "xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\"\n " +
-                "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n " +
-                "targetNamespace=\"http://www.omg.org/bpmn20\"\n " +
-                "xsi:schemaLocation=\"http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd\">") +
-                exportedBPMN +
-                "</definitions>";
 
-        // Derive process simulation information
-        ProcessSimulationInfo simulationInfo = simulationInfoService.deriveSimulationInfo(abs);
-
-        // Enrich the exported bpmn with process simulation info
-        minedModel = simulationInfoService.enrichWithSimulationInfo(minedModel, simulationInfo);
+        minedModel = ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            + "<definitions xmlns=\"http://www.omg.org/spec/BPMN/20100524/MODEL\"\n "
+            + "xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\"\n "
+            + "xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\"\n "
+            + "xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\"\n "
+            + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n "
+            + "targetNamespace=\"http://www.omg.org/bpmn20\"\n "
+            + "xsi:schemaLocation=\"http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd\">")
+            + definitions.exportElements()
+            + "</definitions>";
 
         restoreDiagramAfterExport(d, labelMapping);
     }
-    
+
     private Map<ContainableDirectedGraphElement, String> cleanDiagramBeforeExport(BPMNDiagram d) {
         Map<ContainableDirectedGraphElement, String> labelMapping = new HashMap<>();
-        
-        for(BPMNEdge edge : d.getEdges()) {
+
+        for (BPMNEdge edge : d.getEdges()) {
             labelMapping.put(edge, edge.getLabel());
             edge.setLabel("");
         }
@@ -251,13 +254,12 @@ public class BPMNExportController extends AbstractController {
         }
         return labelMapping;
     }
-    
+
     private void restoreDiagramAfterExport(BPMNDiagram d, Map<ContainableDirectedGraphElement, String> labelMapping) {
         for (ContainableDirectedGraphElement ele : labelMapping.keySet()) {
             if (ele instanceof BPMNEdge) {
-                ((BPMNEdge)ele).setLabel(labelMapping.get(ele));
-            }
-            else if (ele instanceof org.apromore.processmining.models.graphbased.directed.bpmn.elements.Event) {
+                ((BPMNEdge) ele).setLabel(labelMapping.get(ele));
+            } else if (ele instanceof org.apromore.processmining.models.graphbased.directed.bpmn.elements.Event) {
                 ele.getAttributeMap().put("ProM_Vis_attr_label", labelMapping.get(ele));
             }
         }
@@ -268,52 +270,70 @@ public class BPMNExportController extends AbstractController {
         if (parent.getContextData().getLogName() != null) {
             defaultProcessName = parent.getContextData().getLogName().split("\\.")[0];
         }
+
+        String conditionText = null;
+        String footnoteMessage = null;
+        if (simulationInfoService.isFeatureEnabled()) {
+            conditionText = parent.getLabel("includeSimulationParams_text");
+        } else {
+            footnoteMessage = parent.getLabel("warnNoSimulationParams_text");
+            log.warn(
+                "Exporting simulation info feature is disabled. Model will be exported without simulation parameters");
+        }
+
         InputDialog.showInputDialog(
             parent.getLabel("saveBPMN_message"),
             parent.getLabel("saveBPMNName_message"),
             defaultProcessName,
-            new EventListener<Event>() {
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    if (event.getName().equals("onOK")) {
-                        String modelName = (String)event.getData();
-                        String user = controller.getContextData().getUsername();
-                        Version version = new Version(1, 0);
-                        String now = DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString();
-                        boolean publicModel = false;
+            conditionText,
+            footnoteMessage,
+            event -> {
+                if (event.getName().equals("onOK") || event.getName().equals("onOKChecked")) {
+                    if (event.getName().equals("onOKChecked")) {
 
-                        try {
-                            ProcessModelVersion pmv = controller.getProcessService().importProcess(user,
-                                    controller.getContextData().getFolderId(),
-                                    modelName,
-                                    version,
-                                    "BPMN 2.0",
-                                    new ByteArrayInputStream(minedModel.getBytes()),
-                                    "",
-                                    "Model generated by the Apromore BPMN process mining service.",
-                                    now,  // creation timestamp
-                                    now,  // last update timestamp
-                                    publicModel);
-                            Folder folder = pmv.getProcessBranch().getProcess().getFolder();
-                            String folderName = folder == null ? HOME_FOLDER_NAME : folder.getName();
-                            String notif = MessageFormat.format(
-                                parent.getLabel("successSaveBPMN_message"),
-                                "<strong>" + modelName + "</strong>",
-                                "<strong>" + folderName + "</strong>"
-                            );
-                            Notification.info(notif);
-                            controller.refreshPortal();
-                        }
-                        catch (Exception ex) {
-                            Messagebox.show(
-                                parent.getLabel("failedSaveModel_message")
-                            );
-                            LOGGER.error("Error in saving model: ", ex);
-                        }
+                        // Derive process simulation information
+                        ProcessSimulationInfo simulationInfo =
+                            simulationInfoService.deriveSimulationInfo(controller.getOutputData().getAbstraction());
+
+                        // Enrich the exported bpmn with process simulation info
+                        minedModel = simulationInfoService.enrichWithSimulationInfo(minedModel, simulationInfo);
+                    }
+
+                    String modelName = (String) event.getData();
+                    String user = controller.getContextData().getUsername();
+                    Version version = new Version(1, 0);
+                    String now =
+                        DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString();
+                    boolean publicModel = false;
+
+                    try {
+                        ProcessModelVersion pmv = controller.getProcessService().importProcess(user,
+                            controller.getContextData().getFolderId(),
+                            modelName,
+                            version,
+                            "BPMN 2.0",
+                            new ByteArrayInputStream(minedModel.getBytes()),
+                            "",
+                            "Model generated by the Apromore BPMN process mining service.",
+                            now,  // creation timestamp
+                            now,  // last update timestamp
+                            publicModel);
+                        Folder folder = pmv.getProcessBranch().getProcess().getFolder();
+                        String folderName = folder == null ? HOME_FOLDER_NAME : folder.getName();
+                        String notif = MessageFormat.format(
+                            parent.getLabel("successSaveBPMN_message"),
+                            "<strong>" + modelName + "</strong>",
+                            "<strong>" + folderName + "</strong>"
+                        );
+                        Notification.info(notif);
+                        controller.refreshPortal();
+                    } catch (Exception ex) {
+                        Messagebox.show(
+                            parent.getLabel("failedSaveModel_message")
+                        );
+                        LOGGER.error("Error in saving model: ", ex);
                     }
                 }
             });
-
-
     }
 }

@@ -33,6 +33,12 @@
             navigator.clipboard.writeText(publishLink);
             Ap.common.notify('${vm_publishModel.labels.copy_link_success_msg}', 'info');
         }
+
+        function onUpdatePublishState(state) {
+            if (typeof editorWrapper !== "undefined") {
+                editorWrapper._onPublishStateUpdate(state);
+            }
+        }
     </script>
     <vlayout spacing="0">
         <vlayout style="padding: 8px;" spacing="4px">

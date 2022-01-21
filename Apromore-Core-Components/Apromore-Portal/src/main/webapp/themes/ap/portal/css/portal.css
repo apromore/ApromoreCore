@@ -788,7 +788,7 @@ img[src="img/icon/bpmn-22x22.png"] {
 .ap-listbox-process.ap-tiles-view .z-listbox-body .z-listitem > td:nth-child(9) div,
 .ap-listbox-process.ap-tiles-view .z-listbox-body .z-listitem > td:nth-child(10) div {
   font-size: 12px;
-  color: var(--ap-c-text-minor) !important;
+  color: var(--ap-c-text-minor) ;
 }
 
 /*
@@ -850,5 +850,6 @@ img[src="img/icon/bpmn-22x22.png"] {
   -ms-user-select: none;
 }
 .ap-item-cut-selected .z-label , .ap-item-cut-selected .z-listcell-content {
-    color:#E8E8E8 !important;
+     opacity: 0.4;
+     filter: alpha(opacity=40);
 }

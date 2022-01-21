@@ -90,6 +90,10 @@ public class SimulationInfoService {
         }
     }
 
+    public boolean isFeatureEnabled() {
+        return Boolean.valueOf(config.isEnable());
+    }
+
     public ProcessSimulationInfo deriveSimulationInfo(
         final Abstraction abstraction) {
 
@@ -98,6 +102,8 @@ public class SimulationInfoService {
             && abstraction != null
             && abstraction instanceof AbstractAbstraction
             && ((AbstractAbstraction) abstraction).getLog() != null) {
+
+            final AbstractAbstraction abstractAbstraction = (AbstractAbstraction) abstraction;
 
             AttributeLogSummary logSummary = ((AbstractAbstraction) abstraction).getLog().getLogSummary();
 
@@ -109,11 +115,11 @@ public class SimulationInfoService {
 
                 deriveGeneralInfo(builder, logSummary);
 
-                deriveTaskInfo(builder, (AbstractAbstraction) abstraction);
+                deriveTaskInfo(builder, abstractAbstraction);
 
                 deriveTimetable(builder);
 
-                deriveResourceInfo(builder, (AbstractAbstraction) abstraction);
+                deriveResourceInfo(builder, abstractAbstraction);
 
                 processSimulationInfo = builder.build();
             }
@@ -129,7 +135,7 @@ public class SimulationInfoService {
         long startTimeMillis = logSummary.getStartTime();
         long endTimeMillis = logSummary.getEndTime();
         long interArrivalTime = Math.round(
-            ((double) (endTimeMillis - startTimeMillis) / (double) 1000) / (double) logSummary.getCaseCount());
+             (endTimeMillis - startTimeMillis) / (double) (1000 * logSummary.getCaseCount()));
 
         builder.processInstances(logSummary.getCaseCount())
             .currency(Currency.valueOf(config.getDefaultCurrency().toUpperCase(DOCUMENT_LOCALE)))
@@ -244,10 +250,6 @@ public class SimulationInfoService {
         }
 
         return enrichedBpmnXml;
-    }
-
-    private boolean isFeatureEnabled() {
-        return Boolean.valueOf(config.isEnable());
     }
 
     private String injectExtensionElements(String exportedBpmnXml, String extensionElementsXml) {

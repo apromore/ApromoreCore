@@ -77,7 +77,8 @@
     "jquery": "^3.5.1",
     "min-dash": "^3.0.0",
     "min-dom": "^3.1.3",
-    "spectrum-colorpicker2": "2.0.5"
+    "spectrum-colorpicker2": "2.0.5",
+    "xss": "^1.0.10"
   },
   "engines": {
     "node": ">=10 <11"

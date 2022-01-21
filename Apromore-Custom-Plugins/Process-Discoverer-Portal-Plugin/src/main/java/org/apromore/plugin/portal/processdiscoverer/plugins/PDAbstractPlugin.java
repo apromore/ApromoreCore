@@ -22,12 +22,8 @@
 
 package org.apromore.plugin.portal.processdiscoverer.plugins;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.ResourceBundle;
-import java.util.UUID;
+import lombok.NonNull;
+import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
@@ -45,6 +41,13 @@ import org.apromore.portal.model.VersionSummaryType;
 import org.zkoss.web.Attributes;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Messagebox;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.UUID;
 
 public class PDAbstractPlugin extends DefaultPortalPlugin {
 
@@ -84,7 +87,9 @@ public class PDAbstractPlugin extends DefaultPortalPlugin {
         return label;
     }
 
-    protected boolean prepare(PortalContext context, MeasureType visType) {
+    protected boolean preparePluginSession(@NonNull PortalContext context,
+                                           @NonNull MeasureType visType,
+                                           @NonNull List<LogFilterRule> logFilters) {
         try {
             Map<SummaryType, List<VersionSummaryType>> elements = context.getSelection().getSelectedProcessModelVersions();
             if (elements.size() != 1) {
@@ -116,6 +121,7 @@ public class PDAbstractPlugin extends DefaultPortalPlugin {
             session.put("visType", visType);
             session.put("selection", selection);
             session.put("pdFactory", new PDCustomFactory());
+            if (!logFilters.isEmpty()) session.put("logFilters", logFilters);
             
             sessionId = UUID.randomUUID().toString();
             UserSessionManager.setEditSession(sessionId, session);

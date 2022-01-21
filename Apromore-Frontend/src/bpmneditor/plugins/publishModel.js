@@ -32,17 +32,18 @@ export default class PublishModel {
 
     constructor(facade) {
         this.facade = facade;
+        this.btnId = 'ap-id-editor-publish-model-btn';
 
         /* Register publish model */
         this.facade.offer({
-            'btnId': 'ap-id-editor-publish-model-btn',
+            'btnId': this.btnId,
             'name': window.Apromore.I18N.Share.publish,
             'functionality': this.publishModel.bind(this),
             'group': window.Apromore.I18N.Share.group,
-            'description': window.Apromore.I18N.Share.publishDesc,
+            'description': this.getDescription(facade.isPublished),
             'index': 2,
             'groupOrder': 4,
-            'icon': CONFIG.PATH + "images/ap/link.svg",
+            'icon': this.getIcon(facade.isPublished)
         });
     };
 
@@ -51,4 +52,27 @@ export default class PublishModel {
             Apromore.BPMNEditor.Plugins.PublishModel.apromorePublishModel();
         }
     }
+
+    /**
+     * Notified by the EditorApp about the changes in the publish state.
+     * Update the publish model button style based on the publish state.
+     * @param isPublished: true if the model is currently published.
+     */
+    onPublishStateUpdate(isPublished) {
+        let title = this.getDescription(isPublished);
+        let icon = this.getIcon(isPublished);
+
+        $('#' + this.btnId + ' button').prop('title', title);
+        $('#' + this.btnId + ' button').css('background-image', 'url(' + icon + ')');
+    }
+
+    getDescription(isPublished) {
+        return isPublished ? window.Apromore.I18N.Share.unpublishDesc : window.Apromore.I18N.Share.publishDesc;
+    }
+
+    getIcon(isPublished) {
+        let iconUrl = isPublished ? "images/ap/link.svg" : "images/ap/unlink.svg";
+        return CONFIG.PATH + iconUrl;
+    }
+
 };

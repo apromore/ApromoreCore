@@ -41,4 +41,12 @@ describe('After the EditorApp has been created with a BPMN model and plugins', f
         element.handler.call(element.scope);
         expect(redoButton.buttonInstance.enable).toHaveBeenCalled();
     });
+
+    it('It can communicate publish state changes to other parts', async function() {
+        let publishModelPlugin = editorApp.getActivatedPlugins()[8];
+        spyOn(publishModelPlugin, 'onPublishStateUpdate');
+        //Call the update method
+        editorApp._onPublishStateUpdate(true);
+        expect(publishModelPlugin.onPublishStateUpdate).toHaveBeenCalled();
+    });
 });

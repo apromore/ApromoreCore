@@ -22,6 +22,7 @@
 package org.apromore.plugin.portal.processpublisher;
 
 import org.apromore.commons.config.ConfigBean;
+import org.apromore.dao.model.ProcessPublish;
 import org.apromore.dao.model.User;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
@@ -30,6 +31,7 @@ import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.VersionSummaryType;
+import org.apromore.service.ProcessPublishService;
 import org.apromore.service.SecurityService;
 import org.apromore.zk.label.LabelSupplier;
 import org.apromore.zk.notification.Notification;
@@ -38,6 +40,7 @@ import org.springframework.stereotype.Component;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.metainfo.PageDefinition;
 import org.zkoss.zul.Window;
 
@@ -60,6 +63,9 @@ public class ProcessPublisherPlugin extends DefaultPortalPlugin implements Label
     @Autowired
     ConfigBean config;
 
+    @Autowired
+    private ProcessPublishService processPublishService;
+
     @Inject
     private SecurityService securityService;
 
@@ -70,12 +76,14 @@ public class ProcessPublisherPlugin extends DefaultPortalPlugin implements Label
 
     @Override
     public String getLabel(final Locale locale) {
-        return Labels.getLabel("plugin_process_publish_text", "Publish model");
+        String publishLabel = Labels.getLabel("plugin_process_publish_text", "Publish model");
+        String unpublishLabel = Labels.getLabel("plugin_process_unpublish_text", "Unpublish model");
+        return isPublished() ? unpublishLabel : publishLabel;
     }
 
     @Override
     public String getIconPath() {
-        return "link.svg";
+        return isPublished() ? "link.svg" : "unlink.svg";
     }
 
     @Override
@@ -152,6 +160,17 @@ public class ProcessPublisherPlugin extends DefaultPortalPlugin implements Label
             }
         }
         return null;
+    }
+
+    private boolean isPublished() {
+        try {
+            PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
+            ProcessSummaryType process = getSelectedModelFromPortalContext(portalContext);
+            ProcessPublish processPublishDetails = processPublishService.getPublishDetails(process.getId());
+            return processPublishDetails !=null && processPublishDetails.isPublished();
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     private PageDefinition getPageDefinition(String uri) throws IOException {

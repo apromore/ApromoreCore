@@ -165,13 +165,16 @@
           "id": "LOG_POPUP",
           "items": [
             {
-              "id": "org.apromore.plugin.portal.logfilteree.LogFilterEEPlugin"
+              "id": "DISCOVER_MODEL_SUB_MENU"
             },
             {
-              "id": "org.apromore.plugin.portal.processdiscoverer.plugins.PDFrequencyPlugin"
+              "id": "DASHBOARD_SUB_MENU"
             },
             {
-              "id": "dashboard.portal.DashboardPlugin"
+              "id": "LOG_FILTER_SUB_MENU"
+            },
+            {
+              "id": "APPLY_CALENDAR_SUB_MENU"
             },
             {
               "id": "SEPARATOR"
@@ -283,6 +286,74 @@
           "items": [
             {
               "id": "PASTE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DISCOVER_MODEL_SUB_MENU",
+      "groups": [
+        {
+          "id": "DISCOVER_MODEL_MENU",
+          "labelKey": "plugin_discover_discoverModel_text",
+          "items": [
+            {
+              "id": "VIEW_FULL_LOG_DISCOVER_MODEL"
+            },
+            {
+              "id": "VIEW_FILTER_LOG_DISCOVER_MODEL"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DASHBOARD_SUB_MENU",
+      "groups": [
+        {
+          "id": "DASHBOARD_MENU",
+          "labelKey": "plugin_analyze_dashboard_text",
+          "items": [
+            {
+              "id": "CREATE_NEW_DASHBOARD"
+            },
+            {
+              "id": "EXISTING_DASHBOARD"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "LOG_FILTER_SUB_MENU",
+      "groups": [
+        {
+          "id": "LOG_FILTER_MENU",
+          "labelKey": "plugin_create_Edit_filter_text",
+          "items": [
+            {
+              "id": "CREATE_NEW_LOG_FILTER"
+            },
+            {
+              "id": "EXISTING_LOG_FILTER"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "APPLY_CALENDAR_SUB_MENU",
+      "groups": [
+        {
+          "id": "APPLY_CALENDAR_MENU",
+          "labelKey": "plugin_apply_calendar_text",
+          "items": [
+            {
+              "id": "CREATE_NEW_CALENDAR"
+            },
+            {
+              "id": "EXISTING_CALENDAR"
             }
           ]
         }

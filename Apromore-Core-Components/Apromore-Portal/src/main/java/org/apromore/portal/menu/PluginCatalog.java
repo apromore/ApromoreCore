@@ -1,7 +1,7 @@
 /*-
  * #%L
  * This file is part of "Apromore Core".
- * 
+ *
  * Copyright (C) 2011 Marie Christine.
  * Copyright (C) 2012 - 2017 Queensland University of Technology.
  * %%
@@ -11,12 +11,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -73,4 +73,16 @@ public abstract class PluginCatalog {
     public static final String PLUGIN_CHANGE_PASSWORD = "org.apromore.plugin.portal.account.ChangePasswordPlugin";
     public static final String PLUGIN_REPORT_ISSUE = "org.apromore.plugin.portal.account.ReportIssuePlugin";
     public static final String PLUGIN_SIGN_OUT = "org.apromore.plugin.portal.account.SignOutPlugin";
+    public static final String PLUGIN_DISCOVER_MODEL_SUB_MENU = "DISCOVER_MODEL_SUB_MENU";
+    public static final String PLUGIN_DASHBOARD_SUB_MENU = "DASHBOARD_SUB_MENU";
+    public static final String PLUGIN_LOG_FILTER_SUB_MENU = "LOG_FILTER_SUB_MENU";
+    public static final String PLUGIN_APPLY_CALENDAR_SUB_MENU = "APPLY_CALENDAR_SUB_MENU";
+    public static final String PLUGIN_CREATE_NEW_CALENDAR = "CREATE_NEW_CALENDAR";
+    public static final String PLUGIN_EXISTING_CALENDAR = "EXISTING_CALENDAR";
+    public static final String PLUGIN_CREATE_NEW_DASHBOARD = "CREATE_NEW_DASHBOARD";
+    public static final String PLUGIN_VIEW_EXISTING_DASHBOARD = "EXISTING_DASHBOARD";
+    public static final String PLUGIN_VIEW_FULL_LOG_DISCOVER_MODEL = "VIEW_FULL_LOG_DISCOVER_MODEL";
+    public static final String PLUGIN_CREATE_NEW_LOG_FILTER = "CREATE_NEW_LOG_FILTER";
+    public static final String PLUGIN_VIEW_FILTER_LOG_DISCOVER_MODEL = "VIEW_FILTER_LOG_DISCOVER_MODEL";
+    public static final String PLUGIN_VIEW_EXISTING_LOG_FILTER = "EXISTING_LOG_FILTER";
 }
