@@ -38,8 +38,11 @@
                 <row>
                     <textbox id="txtValue" value="" width="100%" submitByEnter="true"/>
                 </row>
-                <row>
-                    <checkbox id="chkConditionalCheck" label="check" />
+                <row id="rowConditionCheck" visible="false">
+                    <checkbox id="chkConditionCheck" label="" />
+                </row>
+                <row id="rowFootnote" sclass="ap-footnotes" visible="false">
+                    <label id="labelFootnote" value=""/>
                 </row>
                 <row spans="3" sclass="ap-window-footer-actions">
                     <div align="center">

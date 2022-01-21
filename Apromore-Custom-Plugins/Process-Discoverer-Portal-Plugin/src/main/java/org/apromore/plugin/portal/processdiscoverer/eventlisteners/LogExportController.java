@@ -61,7 +61,7 @@ public class LogExportController extends AbstractController {
         InputDialog.showInputDialog(
             // Labels.getLabel("e.pd.saveLogWin.text"), // "Save filtered log",
             parent.getLabel("saveLogWin_text"), "Enter a log name (no more than 60 characters)",
-            contextData.getLogName() + "_filtered", null, returnEvent -> {
+            contextData.getLogName() + "_filtered", null, null, returnEvent -> {
                 if (returnEvent.getName().equals("onOK")) {
                     String logName = (String) returnEvent.getData();
                     // userOptions.setActivityFilterValue(activities.getCurpos());

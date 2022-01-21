@@ -109,15 +109,15 @@ public class BPMNEditorController extends BaseController implements Composer<Com
   public BPMNEditorController() {
     super();
 
+    currentUserType = UserSessionManager.getCurrentUser();
+    if (currentUserType == null) {
+      throw new AssertionError("Cannot open the editor without any login user!");
+    }
+
     isViewLink = Boolean.valueOf(Executions.getCurrent().getParameter("view"));
     if (isViewLink) {
       openViewLink();
       return;
-    }
-
-    currentUserType = UserSessionManager.getCurrentUser();
-    if (currentUserType == null) {
-      throw new AssertionError("Cannot open the editor without any login user!");
     }
 
     String id = Executions.getCurrent().getParameter("id");
@@ -220,6 +220,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
       List<EditorPlugin> editorPlugins = EditorPluginResolver.resolve("bpmnEditorPlugins");
       param.put("plugins", editorPlugins);
       param.put("langTag", langTag);
+      param.put("username", currentUserType.getUsername());
       if (USE_BPMNIO_MODELER) {
         param.put("bpmnioLib", BPMNIO_MODELER_JS);
       } else {
@@ -435,7 +436,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
     param.put("viewOnly", true);
     param.put("langTag", getLanguageTag());
     param.put("doAutoLayout", "false");
-
+    param.put("username", currentUserType.getUsername());
     Executions.getCurrent().pushArg(param);
   }
 

@@ -33,6 +33,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.metainfo.PageDefinition;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Row;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
@@ -41,19 +42,21 @@ public class InputDialog {
      * Bruce added 21.05.2019
      * Display an input dialog
      *
-     * @param title              title of the dialog
-     * @param message            the message regarding the input to enter
-     * @param initialValue       initial value for the input
-     * @param conditionalMessage text to display if a conditional checkbox is meant to be displayed
-     * @param returnValueHander  callback event listener, notified with onOK (containing return value as string)
-     *                           and onCancel event
+     * @param title             title of the dialog
+     * @param message           the message regarding the input to enter
+     * @param initialValue      initial value for the input
+     * @param conditionText     text to display if a conditional checkbox is meant to be displayed
+     * @param footnote          Any other additional information to be displayed to the user
+     * @param returnValueHander callback event listener, notified with onOK (containing return value as string)
+     *                          and onCancel event
      * @throws IOException exception to be thrown in the event of an error.
      */
     public static void showInputDialog(
         final String title,
         final String message,
         final String initialValue,
-        final String conditionalMessage,
+        final String conditionText,
+        final String footnote,
         final EventListener<Event> returnValueHander) throws IOException {
 
         Window win =
@@ -72,11 +75,22 @@ public class InputDialog {
         Label labelError = (Label) dialog.getFellow("labelError");
         labelError.setValue("");
 
-        Checkbox conditionalCheckbox = (Checkbox) dialog.getFellow("chkConditionalCheck");
-        if (conditionalMessage != null && !conditionalMessage.isEmpty()) {
-            conditionalCheckbox.setLabel(conditionalMessage);
-        } else {
-            conditionalCheckbox.setVisible(false);
+        // Set the condition checkbox if available
+        Checkbox conditionalCheckbox = (Checkbox) dialog.getFellow("chkConditionCheck");
+        if (conditionText != null && !conditionText.isEmpty()) {
+            conditionalCheckbox.setLabel(conditionText);
+
+            Row footNoteRow = (Row) dialog.getFellow("rowConditionCheck");
+            footNoteRow.setVisible(true);
+        }
+
+        // Add footnote messages if available
+        if (footnote != null && !footnote.isEmpty()) {
+            Label footnoteLabel = (Label) dialog.getFellow("labelFootnote");
+            footnoteLabel.setValue(footnote);
+
+            Row footNoteRow = (Row) dialog.getFellow("rowFootnote");
+            footNoteRow.setVisible(true);
         }
 
         dialog.doModal();
@@ -114,7 +128,6 @@ public class InputDialog {
                 returnValueHander.onEvent(new Event("onOK", null, txtValue.getValue()));
             }
         }
-
     }
 
     private static PageDefinition getPageDefination(String uri) throws IOException {

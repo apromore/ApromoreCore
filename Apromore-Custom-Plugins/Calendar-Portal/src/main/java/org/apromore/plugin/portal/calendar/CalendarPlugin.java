@@ -21,12 +21,18 @@
  */
 package org.apromore.plugin.portal.calendar;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import org.apromore.calendar.model.CalendarModel;
+import org.apromore.calendar.service.CalendarService;
 import org.apromore.commons.config.ConfigBean;
+import org.apromore.commons.datetime.DateTimeUtils;
 import org.apromore.dao.model.User;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
@@ -47,12 +53,12 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
-import javax.inject.Inject;
-
 @Component("calendarPlugin")
 public class CalendarPlugin extends DefaultPortalPlugin implements LabelSupplier {
 
     private static Logger LOGGER = PortalLoggerFactory.getLogger(CalendarPlugin.class);
+    private static final String CREATE_NEW_CALENDAR_CONST="createNewCalendar";
+    private static final String CAN_EDIT_CONST="canEdit";
 
     @Inject
     private EventLogService eventLogService;
@@ -62,6 +68,9 @@ public class CalendarPlugin extends DefaultPortalPlugin implements LabelSupplier
 
     @Autowired
     private ConfigBean configBean;
+
+    @Autowired
+    private CalendarService calendarService;
 
     private String label = "Manage calendars";
 
@@ -85,19 +94,25 @@ public class CalendarPlugin extends DefaultPortalPlugin implements LabelSupplier
 
         try {
             boolean canEdit = false;
-            // Present the user admin window˙
+            // Present the user admin window
             Map arg = new HashMap<>(getSimpleParams());
             Integer logId = (Integer) arg.get("logId");
             User currentUser = securityService.getUserById(portalContext.getCurrentUser().getId());
             if (logId != null) {
                 canEdit = ItemHelpers.canModifyCalendar(currentUser, logId);
             }
-            arg.put("canEdit", canEdit);
+            arg.put(CAN_EDIT_CONST, canEdit);
+            boolean createNewCalendar=arg.get(CREATE_NEW_CALENDAR_CONST)!=null && (boolean)arg.get(CREATE_NEW_CALENDAR_CONST);
+            if(createNewCalendar) {
+                createNewCalendar(canEdit);
+                getSimpleParams().put(CREATE_NEW_CALENDAR_CONST,null);//clear
+                return;
+            }
 
             if (canEdit) {
                 // Present the calendar window
                 Window window = (Window) Executions.getCurrent()
-                        .createComponents(PageUtils.getPageDefinition("calendar/zul/calendars.zul"), null, arg);
+                    .createComponents(PageUtils.getPageDefinition("calendar/zul/calendars.zul"), null, arg);
                 window.doModal();
             } else {
                 CalendarModel calendarModel = eventLogService.getCalendarFromLog(logId);
@@ -117,19 +132,41 @@ public class CalendarPlugin extends DefaultPortalPlugin implements LabelSupplier
             Map arg = new HashMap<>();
             arg.put("calendarId", calendarId);
             arg.put("isNew", false);
-            arg.put("canEdit", false);
+            arg.put(CAN_EDIT_CONST, false);
             Window window = (Window) Executions.getCurrent()
-                    .createComponents(PageUtils.getPageDefinition("calendar/zul/calendar.zul"), null, arg);
+                .createComponents(PageUtils.getPageDefinition("calendar/zul/calendar.zul"), null, arg);
             window.doModal();
         } catch (Exception e) {
             LOGGER.error("Unable to create custom calendar dialog", e);
         }
     }
 
+    private void createNewCalendar(boolean canEdit) {
+            String msg;
+            try {
+                msg = getLabels().getString("created_default_cal_message");
+                String calendarName = msg + " " + DateTimeUtils.humanize(LocalDateTime.now());
+                CalendarModel calendarModel = calendarService.createBusinessCalendar(calendarName, true, ZoneId.systemDefault().toString());
+                Map<String, Object> arg = new HashMap<>();
+                arg.put("calendarId", calendarModel.getId());
+                arg.put("parentController", this);
+                arg.put("isNew", true);
+                arg.put(CAN_EDIT_CONST, canEdit);
+                arg.put("directCreateNew", true);
+                Window window = (Window) Executions.getCurrent()
+                    .createComponents(PageUtils.getPageDefinition("calendar/zul/calendar.zul"), null, arg);
+                window.doModal();
+            } catch (Exception e) {
+                msg = getLabels().getString("failed_create_message");
+                LOGGER.error(msg, e);
+                Notification.error(msg);
+            }
+    }
+
     @Override
     public Availability getAvailability() {
         return configBean.isEnableCalendar() &&
-                UserSessionManager.getCurrentUser().hasAnyPermission(PermissionType.CALENDAR)
-                ? Availability.AVAILABLE : Availability.UNAVAILABLE;
+            UserSessionManager.getCurrentUser().hasAnyPermission(PermissionType.CALENDAR)
+            ? Availability.AVAILABLE : Availability.UNAVAILABLE;
     }
 }

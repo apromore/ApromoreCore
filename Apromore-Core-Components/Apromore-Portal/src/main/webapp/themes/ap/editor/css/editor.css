@@ -350,8 +350,8 @@
   color: black;
   height: 24px;
   box-sizing: border-box;
+  cursor: pointer;
 }
-
 
 /* Aux overlays */
 
@@ -453,4 +453,12 @@
 
 .aux-wrapper .aux-footer {
   padding: 4px;
+}
+
+.access-type-viewer .djs-overlay-aux {
+  pointer-events: none;
+}
+
+.access-type-viewer .djs-overlay-aux a {
+  pointer-events: auto;
 }
