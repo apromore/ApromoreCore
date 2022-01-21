@@ -51,6 +51,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 class SimulationInfoServiceTest {
@@ -72,18 +73,18 @@ class SimulationInfoServiceTest {
         when(config.getDefaultTimeUnit()).thenReturn("SECONDS");
 
         Map<String, String> timeTableConfigMap = new HashMap<>();
-        timeTableConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_ID_KEY, "DEFAULT_TIMETABLE");
+        timeTableConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_ID_KEY, "A_DEFAULT_TIMETABLE_ID");
         timeTableConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_NAME_KEY, "Arrival Timetable");
         timeTableConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_NAME_KEY, "Default Timeslot");
         timeTableConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_FROM_TIME, "10:00:00.000+00:00");
         timeTableConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_TO_TIME, "15:00:00.000+00:00");
-        timeTableConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_FROM_WEEKDAY_KEY, "MONDAY");
-        timeTableConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_TO_WEEKDAY_KEY, "THURSDAY");
+        timeTableConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_FROM_WEEKDAY_KEY, "SUNDAY");
+        timeTableConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_TO_WEEKDAY_KEY, "SATURDAY");
         when(config.getDefaultTimetable()).thenReturn(timeTableConfigMap);
 
         Map<String, String> defaultResourceConfigMap = new HashMap<>();
-        defaultResourceConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_ID_KEY, "QBP_DEFAULT_RESOURCE");
-        defaultResourceConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_NAME_KEY, "Default resource");
+        defaultResourceConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_ID_KEY, "A_DEFAULT_RESOURCE_ID");
+        defaultResourceConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_NAME_KEY, "The default resource name");
         when(config.getDefaultResource()).thenReturn(defaultResourceConfigMap);
     }
 
@@ -174,7 +175,7 @@ class SimulationInfoServiceTest {
         assertNotNull(processSimulationInfo.getTimetables());
         assertEquals(1, processSimulationInfo.getTimetables().size());
         assertEquals("Arrival Timetable", processSimulationInfo.getTimetables().get(0).getName());
-        assertEquals("DEFAULT_TIMETABLE", processSimulationInfo.getTimetables().get(0).getId());
+        assertEquals("A_DEFAULT_TIMETABLE_ID", processSimulationInfo.getTimetables().get(0).getId());
         assertTrue(processSimulationInfo.getTimetables().get(0).isDefaultTimetable());
 
         assertNotNull(processSimulationInfo.getTimetables().get(0).getRules());
@@ -184,8 +185,8 @@ class SimulationInfoServiceTest {
         assertEquals("10:00:00.000+00:00",
             processSimulationInfo.getTimetables().get(0).getRules().get(0).getFromTime());
         assertEquals("15:00:00.000+00:00", processSimulationInfo.getTimetables().get(0).getRules().get(0).getToTime());
-        assertEquals(DayOfWeek.MONDAY, processSimulationInfo.getTimetables().get(0).getRules().get(0).getFromWeekDay());
-        assertEquals(DayOfWeek.THURSDAY, processSimulationInfo.getTimetables().get(0).getRules().get(0).getToWeekDay());
+        assertEquals(DayOfWeek.SUNDAY, processSimulationInfo.getTimetables().get(0).getRules().get(0).getFromWeekDay());
+        assertEquals(DayOfWeek.SATURDAY, processSimulationInfo.getTimetables().get(0).getRules().get(0).getToWeekDay());
     }
 
     @Test
@@ -207,9 +208,9 @@ class SimulationInfoServiceTest {
 
         assertNotNull(processSimulationInfo.getResources());
         assertEquals(1, processSimulationInfo.getResources().size());
-        assertEquals("QBP_DEFAULT_RESOURCE", processSimulationInfo.getResources().get(0).getId());
-        assertEquals("Default resource", processSimulationInfo.getResources().get(0).getName());
-        assertEquals("DEFAULT_TIMETABLE", processSimulationInfo.getResources().get(0).getTimetableId());
+        assertEquals("A_DEFAULT_RESOURCE_ID", processSimulationInfo.getResources().get(0).getId());
+        assertEquals("The default resource name", processSimulationInfo.getResources().get(0).getName());
+        assertEquals("A_DEFAULT_TIMETABLE_ID", processSimulationInfo.getResources().get(0).getTimetableId());
         assertEquals(27, processSimulationInfo.getResources().get(0).getTotalAmount());
     }
 
@@ -345,6 +346,23 @@ class SimulationInfoServiceTest {
     }
 
     @Test
+    void should_enrich_with_all_simulation_data()
+        throws IOException, XPathExpressionException, ParserConfigurationException, SAXException {
+        // given
+        String bpmn = TestHelper.readBpmnFile("/no_simulation_info.bpmn");
+        SimulationData simulationData = TestHelper.createMockSimulationData();
+
+        // when
+        String enrichedBpmn = simulationInfoService.enrichWithSimulationInfo(bpmn, simulationData);
+
+        // then
+        assertBpmnGeneralProcessSimulationInfo(enrichedBpmn);
+        assertBpmnTaskProcessSimulationInfo(enrichedBpmn);
+        assertBpmnTimetableSimulationInfo(enrichedBpmn);
+        assertBpmnResourceSimulationInfo(enrichedBpmn);
+    }
+
+    @Test
     void should_enrich_with_simulation_info_for_model_with_no_xmlns_prefix()
         throws IOException, XPathExpressionException, ParserConfigurationException, SAXException {
         // given
@@ -401,8 +419,8 @@ class SimulationInfoServiceTest {
             "/definitions/process/extensionElements/processSimulationInfo/arrivalRateDistribution");
         NamedNodeMap arrivalRateDistributionAttrMap = arrivalDistributionXmlNode.getAttributes();
         assertEquals("26784", arrivalRateDistributionAttrMap.getNamedItem("arg1").getNodeValue());
-        assertEquals("NaN", arrivalRateDistributionAttrMap.getNamedItem("arg2").getNodeValue());
-        assertEquals("NaN", arrivalRateDistributionAttrMap.getNamedItem("mean").getNodeValue());
+        assertNull(arrivalRateDistributionAttrMap.getNamedItem("arg2"));
+        assertNull(arrivalRateDistributionAttrMap.getNamedItem("mean"));
         assertEquals(DistributionType.EXPONENTIAL.toString(),
             arrivalRateDistributionAttrMap.getNamedItem("type").getNodeValue());
 
@@ -415,28 +433,32 @@ class SimulationInfoServiceTest {
     private void assertBpmnTaskProcessSimulationInfo(String bpmnXmlString)
         throws XPathExpressionException, ParserConfigurationException, IOException, SAXException {
 
-        assertTaskElement("node1", "EXPONENTIAL", "seconds", "34.34", "NaN", "NaN",
-            bpmnXmlString, 1);
-        assertTaskElement("node2", "EXPONENTIAL", "seconds", "56.56", "NaN", "NaN",
-            bpmnXmlString, 2);
-        assertTaskElement("node3", "EXPONENTIAL", "seconds", "89.89", "NaN", "NaN",
-            bpmnXmlString, 3);
+        NodeList elementNodeList = TestHelper.getProcessSimulationInfo(bpmnXmlString,
+            "/definitions/process/extensionElements/processSimulationInfo/elements").getChildNodes();
+
+        Map<String, Node> elementsMap = new HashMap<>();
+        for (int i = 0; i < elementNodeList.getLength(); i++) {
+            Node element = elementNodeList.item(i);
+            elementsMap.put(element.getAttributes().getNamedItem("elementId").getNodeValue(),  element);
+        }
+
+        assertTaskElement("node1", "EXPONENTIAL", "seconds", "34.34", elementsMap);
+        assertTaskElement("node2", "EXPONENTIAL", "seconds", "56.56", elementsMap);
+        assertTaskElement("node3", "EXPONENTIAL", "seconds", "89.89", elementsMap);
 
     }
 
     private void assertTaskElement(final String elementId, final String distributionType, final String timeUnit,
-                                   final String arg1, final String arg2, final String mean,
-                                   final String bpmnXmlString, int elementIndex)
-        throws XPathExpressionException, ParserConfigurationException, IOException, SAXException {
+                                   final String arg1,
+                                   final Map<String, Node> elementsMap) {
 
-        Node elementNode = TestHelper.getProcessSimulationInfo(bpmnXmlString,
-            "/definitions/process/extensionElements/processSimulationInfo/elements/element[" + elementIndex + "]");
+        Node elementNode = elementsMap.get(elementId);
 
         assertEquals(elementId, elementNode.getAttributes().getNamedItem("elementId").getNodeValue());
         assertEquals(distributionType, elementNode.getFirstChild().getAttributes().getNamedItem("type").getNodeValue());
         assertEquals(arg1, elementNode.getFirstChild().getAttributes().getNamedItem("arg1").getNodeValue());
-        assertEquals(arg2, elementNode.getFirstChild().getAttributes().getNamedItem("arg2").getNodeValue());
-        assertEquals(mean, elementNode.getFirstChild().getAttributes().getNamedItem("mean").getNodeValue());
+        assertNull(elementNode.getFirstChild().getAttributes().getNamedItem("arg2"));
+        assertNull(elementNode.getFirstChild().getAttributes().getNamedItem("mean"));
         assertEquals(timeUnit, elementNode.getFirstChild().getFirstChild().getFirstChild().getNodeValue());
 
     }
@@ -446,19 +468,19 @@ class SimulationInfoServiceTest {
 
         Node timeTableNode = TestHelper.getProcessSimulationInfo(bpmnXmlString,
             "/definitions/process/extensionElements/processSimulationInfo/timetables/timetable[1]");
-        assertEquals("A_DEFAULT_TIME_TABLE_ID", timeTableNode.getAttributes().getNamedItem("id").getNodeValue());
-        assertEquals("The default timetable name", timeTableNode.getAttributes().getNamedItem("name").getNodeValue());
+        assertEquals("A_DEFAULT_TIMETABLE_ID", timeTableNode.getAttributes().getNamedItem("id").getNodeValue());
+        assertEquals("Arrival Timetable", timeTableNode.getAttributes().getNamedItem("name").getNodeValue());
         assertEquals("true", timeTableNode.getAttributes().getNamedItem("default").getNodeValue());
 
         Node timeTableRuleNode = TestHelper.getProcessSimulationInfo(bpmnXmlString,
             "/definitions/process/extensionElements/processSimulationInfo/timetables/timetable[1]/rules/rule[1]");
-        assertEquals("DEF_RULE_ID", timeTableRuleNode.getAttributes().getNamedItem("id").getNodeValue());
-        assertEquals("default rule name", timeTableRuleNode.getAttributes().getNamedItem("name").getNodeValue());
+        assertNotNull(timeTableRuleNode.getAttributes().getNamedItem("id").getNodeValue());
+        assertEquals("Default Timeslot", timeTableRuleNode.getAttributes().getNamedItem("name").getNodeValue());
         assertEquals("SUNDAY", timeTableRuleNode.getAttributes().getNamedItem("fromWeekDay").getNodeValue());
         assertEquals("SATURDAY", timeTableRuleNode.getAttributes().getNamedItem("toWeekDay").getNodeValue());
-        assertEquals("06:00:00.000+00:00",
+        assertEquals("10:00:00.000+00:00",
             timeTableRuleNode.getAttributes().getNamedItem("fromTime").getNodeValue());
-        assertEquals("18:00:00.000+00:00", timeTableRuleNode.getAttributes().getNamedItem("toTime").getNodeValue());
+        assertEquals("15:00:00.000+00:00", timeTableRuleNode.getAttributes().getNamedItem("toTime").getNodeValue());
 
     }
 

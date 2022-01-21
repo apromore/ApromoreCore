@@ -30,6 +30,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -39,6 +40,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.io.IOUtils;
+import org.apromore.processsimulation.dto.SimulationData;
 import org.apromore.processsimulation.model.Currency;
 import org.apromore.processsimulation.model.Distribution;
 import org.apromore.processsimulation.model.DistributionType;
@@ -68,8 +70,6 @@ public class TestHelper {
                 Distribution.builder()
                     .type(DistributionType.EXPONENTIAL)
                     .arg1("26784")
-                    .arg2("NaN")
-                    .mean("NaN")
                     .timeUnit(TimeUnit.SECONDS)
                     .build()
             );
@@ -79,20 +79,14 @@ public class TestHelper {
             tasks.add(Element.builder().elementId("node1").distributionDuration(
                 Distribution.builder().type(DistributionType.EXPONENTIAL)
                     .arg1("34.34")
-                    .arg2("NaN")
-                    .mean("NaN")
                     .timeUnit(TimeUnit.SECONDS).build()).build());
             tasks.add(Element.builder().elementId("node2").distributionDuration(
                 Distribution.builder().type(DistributionType.EXPONENTIAL)
                     .arg1("56.56")
-                    .arg2("NaN")
-                    .mean("NaN")
                     .timeUnit(TimeUnit.SECONDS).build()).build());
             tasks.add(Element.builder().elementId("node3").distributionDuration(
                 Distribution.builder().type(DistributionType.EXPONENTIAL)
                     .arg1("89.89")
-                    .arg2("NaN")
-                    .mean("NaN")
                     .timeUnit(TimeUnit.SECONDS).build()).build());
 
             builder.tasks(tasks);
@@ -100,16 +94,16 @@ public class TestHelper {
 
         if (includeTimetable) {
             builder.timetables(Arrays.asList(Timetable.builder()
-                    .id("A_DEFAULT_TIME_TABLE_ID")
-                    .name("The default timetable name")
+                    .id("A_DEFAULT_TIMETABLE_ID")
+                    .name("Arrival Timetable")
                     .defaultTimetable(true)
                     .rules(Arrays.asList(Rule.builder()
-                            .name("default rule name")
+                            .name("Default Timeslot")
                             .id("DEF_RULE_ID")
                             .fromWeekDay(DayOfWeek.SUNDAY)
                             .toWeekDay(DayOfWeek.SATURDAY)
-                            .fromTime("06:00:00.000+00:00")
-                            .toTime("18:00:00.000+00:00")
+                            .fromTime("10:00:00.000+00:00")
+                            .toTime("15:00:00.000+00:00")
                         .build()))
                 .build()));
         }
@@ -124,6 +118,20 @@ public class TestHelper {
         }
 
         return builder.build();
+    }
+
+    public static SimulationData createMockSimulationData() {
+
+        SimulationData simulationData = SimulationData.builder()
+            .caseCount(100)
+            .resourceCount(23)
+            .startTime(1577797200000L)
+            .endTime(1580475600000L)
+            .nodeWeights(Map.of("node1",34.34, "node2", 56.56, "node3", 89.89))
+            .build();
+
+
+        return simulationData;
     }
 
     public static Node getProcessSimulationInfo(String bpmnXml, String xpathExpression)

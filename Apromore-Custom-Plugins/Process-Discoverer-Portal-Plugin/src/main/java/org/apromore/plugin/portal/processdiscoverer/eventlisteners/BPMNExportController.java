@@ -292,15 +292,12 @@ public class BPMNExportController extends AbstractController {
                 if (event.getName().equals("onOK") || event.getName().equals("onOKChecked")) {
                     if (event.getName().equals("onOKChecked")) {
 
+                        // Derive process simulation data
                         SimulationData simulationData = controller.getProcessAnalyst()
                             .getSimulationData(controller.getOutputData().getAbstraction());
 
-                        // Derive process simulation information
-                        ProcessSimulationInfo simulationInfo =
-                            simulationInfoService.transformToSimulationInfo(simulationData);
-
                         // Enrich the exported bpmn with process simulation info
-                        minedModel = simulationInfoService.enrichWithSimulationInfo(minedModel, simulationInfo);
+                        minedModel = simulationInfoService.enrichWithSimulationInfo(minedModel, simulationData);
                     }
 
                     String modelName = (String) event.getData();
