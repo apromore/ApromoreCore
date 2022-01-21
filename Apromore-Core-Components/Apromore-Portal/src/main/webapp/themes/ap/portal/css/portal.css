@@ -850,8 +850,6 @@ img[src="img/icon/bpmn-22x22.png"] {
   -ms-user-select: none;
 }
 .ap-item-cut-selected .z-label , .ap-item-cut-selected .z-listcell-content {
-    color:#E8E8E8 !important;
-}
-.ap-item-cut-selected  div:first-child {
-    background: none !important;
+     opacity: 0.4;
+     filter: alpha(opacity=40);
 }
