@@ -24,7 +24,6 @@ package org.apromore.processsimulation.service;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.DayOfWeek;
 import java.time.Instant;
@@ -40,8 +39,6 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.io.IOUtils;
-import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
-import org.apromore.processmining.plugins.bpmn.plugins.BpmnImportPlugin;
 import org.apromore.processsimulation.model.Currency;
 import org.apromore.processsimulation.model.Distribution;
 import org.apromore.processsimulation.model.DistributionType;
@@ -144,12 +141,5 @@ public class TestHelper {
         return IOUtils.toString(
             TestHelper.class.getResourceAsStream(fileName),
             StandardCharsets.UTF_8);
-    }
-
-    public static BPMNDiagram readBpmnDiagram(final String fileName) throws Exception {
-        try (InputStream inputStream = TestHelper.class.getResourceAsStream(fileName)) {
-            BpmnImportPlugin bpmnImport = new BpmnImportPlugin();
-            return bpmnImport.importFromStreamToDiagram(inputStream, fileName);
-        }
     }
 }

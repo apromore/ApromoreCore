@@ -34,7 +34,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.DayOfWeek;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -44,14 +43,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import lombok.extern.slf4j.Slf4j;
-import org.apromore.logman.attribute.IndexableAttribute;
-import org.apromore.logman.attribute.graph.MeasureAggregation;
-import org.apromore.logman.attribute.graph.MeasureRelation;
-import org.apromore.logman.attribute.graph.MeasureType;
-import org.apromore.logman.attribute.log.AttributeLogSummary;
-import org.apromore.processdiscoverer.Abstraction;
-import org.apromore.processdiscoverer.abstraction.AbstractAbstraction;
-import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Activity;
 import org.apromore.processsimulation.config.SimulationInfoConfig;
 import org.apromore.processsimulation.dto.SimulationData;
 import org.apromore.processsimulation.model.Currency;
@@ -99,40 +90,7 @@ public class SimulationInfoService {
         return config.isEnable();
     }
 
-    public ProcessSimulationInfo deriveSimulationInfo(
-        final Abstraction abstraction) {
-
-        ProcessSimulationInfo processSimulationInfo = null;
-        if (isFeatureEnabled()
-            && abstraction instanceof AbstractAbstraction
-            && ((AbstractAbstraction) abstraction).getLog() != null) {
-
-            final AbstractAbstraction abstractAbstraction = (AbstractAbstraction) abstraction;
-
-            AttributeLogSummary logSummary = ((AbstractAbstraction) abstraction).getLog().getLogSummary();
-
-            if (logSummary != null) {
-                ProcessSimulationInfo.ProcessSimulationInfoBuilder builder =
-                    ProcessSimulationInfo.builder()
-                        .id("qbp_" + Locale.getDefault().getLanguage() + UUID.randomUUID())
-                        .errors(Errors.builder().build());
-
-                deriveGeneralInfo(builder, logSummary);
-
-                deriveTaskInfo(builder, abstractAbstraction);
-
-                deriveTimetable(builder);
-
-                deriveResourceInfo(builder, abstractAbstraction);
-
-                processSimulationInfo = builder.build();
-            }
-        }
-
-        return processSimulationInfo;
-    }
-
-    public ProcessSimulationInfo deriveSimulationInfo(
+    public ProcessSimulationInfo transformToSimulationInfo(
         final SimulationData simulationData) {
 
         ProcessSimulationInfo processSimulationInfo = null;
@@ -160,26 +118,6 @@ public class SimulationInfoService {
 
     private void deriveGeneralInfo(
         final ProcessSimulationInfo.ProcessSimulationInfoBuilder builder,
-        final AttributeLogSummary logSummary) {
-
-        long startTimeMillis = logSummary.getStartTime();
-        long endTimeMillis = logSummary.getEndTime();
-        long interArrivalTime = Math.round(
-            (endTimeMillis - startTimeMillis) / (double) (1000 * logSummary.getCaseCount()));
-
-        builder.processInstances(logSummary.getCaseCount())
-            .currency(Currency.valueOf(config.getDefaultCurrency().toUpperCase(DOCUMENT_LOCALE)))
-            .startDateTime(Instant.ofEpochMilli(logSummary.getStartTime()).toString())
-            .arrivalRateDistribution(
-                Distribution.builder()
-                    .timeUnit(TimeUnit.valueOf(config.getDefaultTimeUnit().toUpperCase(DOCUMENT_LOCALE)))
-                    .type(DistributionType.valueOf(config.getDefaultDistributionType().toUpperCase(DOCUMENT_LOCALE)))
-                    .arg1(Long.toString(interArrivalTime))
-                    .build());
-    }
-
-    private void deriveGeneralInfo(
-        final ProcessSimulationInfo.ProcessSimulationInfoBuilder builder,
         final SimulationData simulationData) {
 
         long startTimeMillis = simulationData.getStartTime();
@@ -200,38 +138,6 @@ public class SimulationInfoService {
 
     private void deriveTaskInfo(
         final ProcessSimulationInfo.ProcessSimulationInfoBuilder builder,
-        final AbstractAbstraction abstraction) {
-
-        if (abstraction.getDiagram() != null && abstraction.getDiagram().getNodes() != null) {
-            List<Element> taskList = new ArrayList<>();
-
-            abstraction.getDiagram().getNodes()
-                .stream()
-                .filter(Activity.class::isInstance)
-                .forEach(bpmnNode -> {
-                    BigDecimal nodeAvgDuration =
-                        BigDecimal.valueOf(abstraction.getLog().getGraphView()
-                                .getNodeWeight(bpmnNode.getLabel(), MeasureType.DURATION,
-                                    MeasureAggregation.MEAN, MeasureRelation.ABSOLUTE) / 1000)
-                            .setScale(2, RoundingMode.HALF_UP);
-
-                    taskList.add(Element.builder()
-                        .elementId(bpmnNode.getId().toString())
-                        .distributionDuration(Distribution.builder()
-                            .type(DistributionType.valueOf(
-                                config.getDefaultDistributionType().toUpperCase(DOCUMENT_LOCALE)))
-                            .arg1(nodeAvgDuration.toString())
-                            .timeUnit(TimeUnit.valueOf(config.getDefaultTimeUnit().toUpperCase(DOCUMENT_LOCALE)))
-                            .build())
-                        .build());
-                });
-
-            builder.tasks(taskList);
-        }
-    }
-
-    private void deriveTaskInfo(
-        final ProcessSimulationInfo.ProcessSimulationInfoBuilder builder,
         final SimulationData simulationData) {
 
         List<Element> taskList = simulationData.getDiagramNodeIDs().stream()
@@ -240,7 +146,8 @@ public class SimulationInfoService {
                 .distributionDuration(Distribution.builder()
                     .type(DistributionType.valueOf(
                         config.getDefaultDistributionType().toUpperCase(DOCUMENT_LOCALE)))
-                    .arg1(Double.toString(simulationData.getDiagramNodeDuration(nodeId)))
+                    .arg1(BigDecimal.valueOf((simulationData.getDiagramNodeDuration(nodeId)))
+                        .setScale(2, RoundingMode.HALF_UP).toString())
                     .timeUnit(TimeUnit.valueOf(config.getDefaultTimeUnit().toUpperCase(DOCUMENT_LOCALE)))
                     .build())
                 .build())
@@ -274,40 +181,33 @@ public class SimulationInfoService {
 
     private void deriveResourceInfo(
         final ProcessSimulationInfo.ProcessSimulationInfoBuilder builder,
-        final AbstractAbstraction abstraction) {
-        if (abstraction.getLog() != null
-            && abstraction.getLog().getFullLog() != null
-            && abstraction.getLog().getFullLog().getAttributeStore() != null) {
-
-            IndexableAttribute resourcesAttribute =
-                abstraction.getLog().getFullLog().getAttributeStore().getStandardEventResource();
-
-            if (resourcesAttribute != null) {
-                builder.resources(Arrays.asList(
-                    Resource.builder()
-                        .id(config.getDefaultResource().get(CONFIG_DEFAULT_ID_KEY))
-                        .name(config.getDefaultResource().get(CONFIG_DEFAULT_NAME_KEY))
-                        .totalAmount(resourcesAttribute.getValueSize())
-                        .timetableId(config.getDefaultTimetable().get(CONFIG_DEFAULT_ID_KEY))
-                        .build()));
-            }
-        }
-    }
-
-    private void deriveResourceInfo(
-        final ProcessSimulationInfo.ProcessSimulationInfoBuilder builder,
         final SimulationData simulationData) {
 
-        builder.resources(Arrays.asList(
-            Resource.builder()
-                .id(config.getDefaultResource().get(CONFIG_DEFAULT_ID_KEY))
-                .name(config.getDefaultResource().get(CONFIG_DEFAULT_NAME_KEY))
-                .totalAmount(simulationData.getResourceCount())
-                .timetableId(config.getDefaultTimetable().get(CONFIG_DEFAULT_ID_KEY))
-                .build()));
+        if (simulationData.getResourceCount() > 0) {
+            builder.resources(Arrays.asList(
+                Resource.builder()
+                    .id(config.getDefaultResource().get(CONFIG_DEFAULT_ID_KEY))
+                    .name(config.getDefaultResource().get(CONFIG_DEFAULT_NAME_KEY))
+                    .totalAmount(simulationData.getResourceCount())
+                    .timetableId(config.getDefaultTimetable().get(CONFIG_DEFAULT_ID_KEY))
+                    .build()));
+        }
 
     }
 
+    /**
+     * Enrich the bpmn xml model with the additional extension elements
+     * including the process simulation information that was derived from the
+     * bpmn model.
+     *
+     * @param bpmnModelXml   the discovered bpmn model
+     * @param simulationData the process simulation data derived from the discovered model
+     * @return a bpmn model enriched with the additional process simulation information set in the extensionElements
+     */
+    public String enrichWithSimulationInfo(
+        final String bpmnModelXml, final SimulationData simulationData) {
+        return enrichWithSimulationInfo(bpmnModelXml, transformToSimulationInfo(simulationData));
+    }
 
     /**
      * Enrich the bpmn xml model with the additional extension elements

@@ -38,20 +38,11 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
-import org.apromore.logman.ALog;
-import org.apromore.logman.attribute.AttributeStore;
-import org.apromore.logman.attribute.IndexableAttribute;
-import org.apromore.logman.attribute.graph.AttributeLogGraph;
-import org.apromore.logman.attribute.graph.MeasureAggregation;
-import org.apromore.logman.attribute.graph.MeasureRelation;
-import org.apromore.logman.attribute.graph.MeasureType;
-import org.apromore.logman.attribute.log.AttributeLog;
-import org.apromore.logman.attribute.log.AttributeLogSummary;
-import org.apromore.processdiscoverer.abstraction.AbstractAbstraction;
-import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.apromore.processsimulation.config.SimulationInfoConfig;
+import org.apromore.processsimulation.dto.SimulationData;
 import org.apromore.processsimulation.model.Currency;
 import org.apromore.processsimulation.model.DistributionType;
+import org.apromore.processsimulation.model.Element;
 import org.apromore.processsimulation.model.ProcessSimulationInfo;
 import org.apromore.processsimulation.model.TimeUnit;
 import org.junit.jupiter.api.BeforeEach;
@@ -99,71 +90,57 @@ class SimulationInfoServiceTest {
     @Test
     void should_successfully_derive_general_simulation_info() {
         // given
-        AbstractAbstraction mockAbstraction = mock(AbstractAbstraction.class);
-        AttributeLog mockAttributeLog = mock(AttributeLog.class);
-        AttributeLogSummary mockAttributeLogSummary = mock(AttributeLogSummary.class);
-        BPMNDiagram mockDiagram = mock(BPMNDiagram.class);
+        SimulationData mockSimulationData = mock(SimulationData.class);
 
-        when(mockAbstraction.getLog()).thenReturn(mockAttributeLog);
-        when(mockAttributeLog.getLogSummary()).thenReturn(mockAttributeLogSummary);
-        when(mockAttributeLogSummary.getCaseCount()).thenReturn(100L);
-        when(mockAttributeLogSummary.getStartTime()).thenReturn(1577797200000L);
-        when(mockAttributeLogSummary.getEndTime()).thenReturn(1580475600000L);
-        when(mockAbstraction.getDiagram()).thenReturn(mockDiagram);
-        when(mockDiagram.getNodes()).thenReturn(null);
+        when(mockSimulationData.getCaseCount()).thenReturn(100L);
+        when(mockSimulationData.getStartTime()).thenReturn(1577797200000L);
+        when(mockSimulationData.getEndTime()).thenReturn(1580475600000L);
 
         // when
-        ProcessSimulationInfo processSimulationInfo = simulationInfoService.deriveSimulationInfo(mockAbstraction);
+        ProcessSimulationInfo processSimulationInfo =
+            simulationInfoService.transformToSimulationInfo(mockSimulationData);
 
         // then
         assertGeneralSimulationInfo(processSimulationInfo);
     }
 
     @Test
-    void should_successfully_derive_task_simulation_info() throws Exception {
+    void should_successfully_derive_task_simulation_info() {
         // given
-        AbstractAbstraction mockAbstraction = mock(AbstractAbstraction.class);
-        AttributeLog mockAttributeLog = mock(AttributeLog.class);
-        AttributeLogSummary mockAttributeLogSummary = mock(AttributeLogSummary.class);
-        AttributeLogGraph mockAttributeLogGraph = mock(AttributeLogGraph.class);
-        BPMNDiagram mockDiagram = TestHelper.readBpmnDiagram("/no_simulation_info_without_namespace_prefix.bpmn");
+        SimulationData mockSimulationData = mock(SimulationData.class);
 
-        when(mockAbstraction.getLog()).thenReturn(mockAttributeLog);
-        when(mockAttributeLog.getLogSummary()).thenReturn(mockAttributeLogSummary);
-        when(mockAttributeLogSummary.getCaseCount()).thenReturn(100L);
-        when(mockAttributeLogSummary.getStartTime()).thenReturn(1577797200000L);
-        when(mockAttributeLogSummary.getEndTime()).thenReturn(1580475600000L);
+        when(mockSimulationData.getCaseCount()).thenReturn(100L);
+        when(mockSimulationData.getStartTime()).thenReturn(1577797200000L);
+        when(mockSimulationData.getEndTime()).thenReturn(1580475600000L);
 
-        when(mockAttributeLog.getGraphView()).thenReturn(mockAttributeLogGraph);
-        when(mockAttributeLogGraph.getNodeWeight("a", MeasureType.DURATION, MeasureAggregation.MEAN,
-            MeasureRelation.ABSOLUTE)).thenReturn(10100.00);
-        when(mockAttributeLogGraph.getNodeWeight("b", MeasureType.DURATION, MeasureAggregation.MEAN,
-            MeasureRelation.ABSOLUTE)).thenReturn(11110.00);
-        when(mockAttributeLogGraph.getNodeWeight("c", MeasureType.DURATION, MeasureAggregation.MEAN,
-            MeasureRelation.ABSOLUTE)).thenReturn(12120.00);
-        when(mockAbstraction.getDiagram()).thenReturn(mockDiagram);
+        when(mockSimulationData.getDiagramNodeIDs()).thenReturn(Arrays.asList("a", "b", "c"));
+        when(mockSimulationData.getDiagramNodeDuration("a")).thenReturn(10.10);
+        when(mockSimulationData.getDiagramNodeDuration("b")).thenReturn(11.11);
+        when(mockSimulationData.getDiagramNodeDuration("c")).thenReturn(12.12);
 
         // when
-        ProcessSimulationInfo processSimulationInfo = simulationInfoService.deriveSimulationInfo(mockAbstraction);
+        ProcessSimulationInfo processSimulationInfo =
+            simulationInfoService.transformToSimulationInfo(mockSimulationData);
 
         // then
         assertGeneralSimulationInfo(processSimulationInfo);
+
         assertEquals(3, processSimulationInfo.getTasks().size());
         assertTrue(
             processSimulationInfo.getTasks().stream()
-                .map(element -> element.getElementId())
+                .map(Element::getElementId)
                 .collect(Collectors.toList())
-                .containsAll(Arrays.asList("Activity_089vlk4", "Activity_1m9vbxe", "Activity_0qorbah")));
+                .containsAll(Arrays.asList("a", "b", "c")));
 
         processSimulationInfo.getTasks().forEach(element -> {
             switch (element.getElementId()) {
-                case "Activity_089vlk4":
+                case "a":
                     assertEquals("10.10", element.getDistributionDuration().getArg1());
                     break;
-                case "Activity_1m9vbxe":
+                case "b":
                     assertEquals("11.11", element.getDistributionDuration().getArg1());
                     break;
-                case "Activity_0qorbah":
+                case "c":
                     assertEquals("12.12", element.getDistributionDuration().getArg1());
                     break;
                 default:
@@ -176,24 +153,20 @@ class SimulationInfoServiceTest {
             assertEquals(TimeUnit.SECONDS, element.getDistributionDuration().getTimeUnit());
             assertEquals(DistributionType.EXPONENTIAL, element.getDistributionDuration().getType());
         });
-
     }
 
     @Test
     void should_successfully_derive_timetable_info() {
         // given
-        AbstractAbstraction mockAbstraction = mock(AbstractAbstraction.class);
-        AttributeLog mockAttributeLog = mock(AttributeLog.class);
-        AttributeLogSummary mockAttributeLogSummary = mock(AttributeLogSummary.class);
+        SimulationData mockSimulationData = mock(SimulationData.class);
 
-        when(mockAbstraction.getLog()).thenReturn(mockAttributeLog);
-        when(mockAttributeLog.getLogSummary()).thenReturn(mockAttributeLogSummary);
-        when(mockAttributeLogSummary.getCaseCount()).thenReturn(100L);
-        when(mockAttributeLogSummary.getStartTime()).thenReturn(1577797200000L);
-        when(mockAttributeLogSummary.getEndTime()).thenReturn(1580475600000L);
+        when(mockSimulationData.getCaseCount()).thenReturn(100L);
+        when(mockSimulationData.getStartTime()).thenReturn(1577797200000L);
+        when(mockSimulationData.getEndTime()).thenReturn(1580475600000L);
 
         // when
-        ProcessSimulationInfo processSimulationInfo = simulationInfoService.deriveSimulationInfo(mockAbstraction);
+        ProcessSimulationInfo processSimulationInfo =
+            simulationInfoService.transformToSimulationInfo(mockSimulationData);
 
         // then
         assertGeneralSimulationInfo(processSimulationInfo);
@@ -218,27 +191,16 @@ class SimulationInfoServiceTest {
     @Test
     void should_successfully_derive_resource_info() {
         // given
-        AbstractAbstraction mockAbstraction = mock(AbstractAbstraction.class);
-        AttributeLog mockAttributeLog = mock(AttributeLog.class);
-        AttributeLogSummary mockAttributeLogSummary = mock(AttributeLogSummary.class);
-        ALog mockALog = mock(ALog.class);
-        AttributeStore mockAttributeStore = mock(AttributeStore.class);
-        IndexableAttribute mockResourceAttribute = mock(IndexableAttribute.class);
+        SimulationData mockSimulationData = mock(SimulationData.class);
 
-        when(mockAbstraction.getLog()).thenReturn(mockAttributeLog);
-        when(mockAttributeLog.getLogSummary()).thenReturn(mockAttributeLogSummary);
-        when(mockAttributeLog.getFullLog()).thenReturn(mockALog);
-        when(mockALog.getAttributeStore()).thenReturn(mockAttributeStore);
-        when(mockAttributeStore.getStandardEventResource()).thenReturn(mockResourceAttribute);
-
-        when(mockAttributeLogSummary.getCaseCount()).thenReturn(100L);
-        when(mockAttributeLogSummary.getStartTime()).thenReturn(1577797200000L);
-        when(mockAttributeLogSummary.getEndTime()).thenReturn(1580475600000L);
-
-        when(mockResourceAttribute.getValueSize()).thenReturn(27);
+        when(mockSimulationData.getCaseCount()).thenReturn(100L);
+        when(mockSimulationData.getStartTime()).thenReturn(1577797200000L);
+        when(mockSimulationData.getEndTime()).thenReturn(1580475600000L);
+        when(mockSimulationData.getResourceCount()).thenReturn(27L);
 
         // when
-        ProcessSimulationInfo processSimulationInfo = simulationInfoService.deriveSimulationInfo(mockAbstraction);
+        ProcessSimulationInfo processSimulationInfo =
+            simulationInfoService.transformToSimulationInfo(mockSimulationData);
 
         // then
         assertGeneralSimulationInfo(processSimulationInfo);
@@ -252,27 +214,19 @@ class SimulationInfoServiceTest {
     }
 
     @Test
-    void should_contain_no_resources_if_not_available_in_log() {
+    void should_contain_no_resources_if_resource_count_is_zero() {
         // given
-        AbstractAbstraction mockAbstraction = mock(AbstractAbstraction.class);
-        AttributeLog mockAttributeLog = mock(AttributeLog.class);
-        AttributeLogSummary mockAttributeLogSummary = mock(AttributeLogSummary.class);
-        ALog mockALog = mock(ALog.class);
-        AttributeStore mockAttributeStore = mock(AttributeStore.class);
+        SimulationData mockSimulationData = mock(SimulationData.class);
 
-        when(mockAbstraction.getLog()).thenReturn(mockAttributeLog);
-        when(mockAttributeLog.getLogSummary()).thenReturn(mockAttributeLogSummary);
-        when(mockAttributeLog.getFullLog()).thenReturn(mockALog);
-        when(mockALog.getAttributeStore()).thenReturn(mockAttributeStore);
-        when(mockAttributeStore.getStandardEventResource()).thenReturn(null);
-
-        when(mockAttributeLogSummary.getCaseCount()).thenReturn(100L);
-        when(mockAttributeLogSummary.getStartTime()).thenReturn(1577797200000L);
-        when(mockAttributeLogSummary.getEndTime()).thenReturn(1580475600000L);
+        when(mockSimulationData.getCaseCount()).thenReturn(100L);
+        when(mockSimulationData.getStartTime()).thenReturn(1577797200000L);
+        when(mockSimulationData.getEndTime()).thenReturn(1580475600000L);
+        when(mockSimulationData.getResourceCount()).thenReturn(0L);
 
 
         // when
-        ProcessSimulationInfo processSimulationInfo = simulationInfoService.deriveSimulationInfo(mockAbstraction);
+        ProcessSimulationInfo processSimulationInfo =
+            simulationInfoService.transformToSimulationInfo(mockSimulationData);
 
         // then
         assertGeneralSimulationInfo(processSimulationInfo);
@@ -294,28 +248,10 @@ class SimulationInfoServiceTest {
     }
 
     @Test
-    void should_return_null_if_no_attribute_log() {
-        // given
-        AbstractAbstraction mockAbstraction = mock(AbstractAbstraction.class);
-        when(mockAbstraction.getLog()).thenReturn(null);
-
+    void should_return_null_if_no_simulation_data() {
         // when
-        ProcessSimulationInfo processSimulationInfo = simulationInfoService.deriveSimulationInfo(mockAbstraction);
-
-        // then
-        assertNull(processSimulationInfo);
-    }
-
-    @Test
-    void should_return_null_if_no_log_summary() {
-        // given
-        AbstractAbstraction mockAbstraction = mock(AbstractAbstraction.class);
-        AttributeLog mockAttributeLog = mock(AttributeLog.class);
-        when(mockAbstraction.getLog()).thenReturn(mockAttributeLog);
-        when(mockAttributeLog.getLogSummary()).thenReturn(null);
-
-        // when
-        ProcessSimulationInfo processSimulationInfo = simulationInfoService.deriveSimulationInfo(mockAbstraction);
+        ProcessSimulationInfo processSimulationInfo =
+            simulationInfoService.transformToSimulationInfo(null);
 
         // then
         assertNull(processSimulationInfo);
@@ -325,10 +261,11 @@ class SimulationInfoServiceTest {
     void should_return_null_if_feature_disabled() {
         // given
         when(config.isEnable()).thenReturn(false);
-        AbstractAbstraction mockAbstraction = mock(AbstractAbstraction.class);
+        SimulationData mockSimulationData = mock(SimulationData.class);
 
         // when
-        ProcessSimulationInfo processSimulationInfo = simulationInfoService.deriveSimulationInfo(mockAbstraction);
+        ProcessSimulationInfo processSimulationInfo =
+            simulationInfoService.transformToSimulationInfo(mockSimulationData);
 
         // then
         assertNull(processSimulationInfo);
@@ -427,7 +364,8 @@ class SimulationInfoServiceTest {
         String originalBpmn = TestHelper.readBpmnFile("/no_simulation_info.bpmn");
 
         // when
-        String enrichedBpmn = simulationInfoService.enrichWithSimulationInfo(originalBpmn, null);
+        String enrichedBpmn =
+            simulationInfoService.enrichWithSimulationInfo(originalBpmn, (ProcessSimulationInfo) null);
 
         // then
         assertEquals(originalBpmn, enrichedBpmn);

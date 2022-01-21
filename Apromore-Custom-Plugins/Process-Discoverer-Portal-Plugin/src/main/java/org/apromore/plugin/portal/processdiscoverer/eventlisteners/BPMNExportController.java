@@ -44,6 +44,7 @@ import org.apromore.processmining.models.graphbased.directed.ContainableDirected
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNEdge;
 import org.apromore.processmining.plugins.bpmn.BpmnDefinitions;
+import org.apromore.processsimulation.dto.SimulationData;
 import org.apromore.processsimulation.model.ProcessSimulationInfo;
 import org.apromore.processsimulation.service.SimulationInfoService;
 import org.apromore.zk.notification.Notification;
@@ -291,9 +292,12 @@ public class BPMNExportController extends AbstractController {
                 if (event.getName().equals("onOK") || event.getName().equals("onOKChecked")) {
                     if (event.getName().equals("onOKChecked")) {
 
+                        SimulationData simulationData = controller.getProcessAnalyst()
+                            .getSimulationData(controller.getOutputData().getAbstraction());
+
                         // Derive process simulation information
                         ProcessSimulationInfo simulationInfo =
-                            simulationInfoService.deriveSimulationInfo(controller.getOutputData().getAbstraction());
+                            simulationInfoService.transformToSimulationInfo(simulationData);
 
                         // Enrich the exported bpmn with process simulation info
                         minedModel = simulationInfoService.enrichWithSimulationInfo(minedModel, simulationInfo);
