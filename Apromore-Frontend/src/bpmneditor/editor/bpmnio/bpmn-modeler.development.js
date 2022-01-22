@@ -1808,7 +1808,7 @@ module.exports = isArray;
 /***/ (function(module, exports, __webpack_require__) {
 
 var elementHelper = __webpack_require__(6),
-    ProcessSimulationHelper = __webpack_require__(12),
+    ProcessSimulationHelper = __webpack_require__(13),
     isDigit = __webpack_require__(20).isDigit;
 
 var ValidationErrorHelper = {};
@@ -2515,112 +2515,6 @@ module.exports = EntryFactory;
 
 /***/ }),
 /* 11 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var freeGlobal = __webpack_require__(78);
-
-/** Detect free variable `self`. */
-var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
-
-/** Used as a reference to the global object. */
-var root = freeGlobal || freeSelf || Function('return this')();
-
-module.exports = root;
-
-
-/***/ }),
-/* 12 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var elementHelper = __webpack_require__(6),
-    extensionElementsHelper = __webpack_require__(21),
-    createUUID = __webpack_require__(20).createUUID,
-    getRoot = __webpack_require__(20).getRoot;
-
-var ProcessSimulationHelper = {
-  prevRoot: undefined
-};
-
-ProcessSimulationHelper.getProcessSimulationInfo = function(bpmnFactory, elementRegistry) {
-  var root = getRoot(elementRegistry);
-
-  if (this.prevRoot === undefined) {
-    this.prevRoot = root;
-  }
-
-  if (this.prevRoot.id !== root.id) {
-    root.extensionElements = this.prevRoot.extensionElements;
-    this.prevRoot.extensionElements = undefined;
-    this.prevRoot = root;
-  }
-
-  var extensionElements = root.extensionElements;
-
-  if (!extensionElements) {
-    extensionElements = elementHelper.createElement('bpmn:ExtensionElements',
-      { values: [] }, root, bpmnFactory);
-
-    root.extensionElements = extensionElements;
-  }
-
-  var processSimulationInfo = (extensionElementsHelper.getExtensionElements(root,
-    'qbp:ProcessSimulationInfo') || [])[0];
-
-  if (!processSimulationInfo) {
-    processSimulationInfo = createProcessSimulationInfo(root, bpmnFactory);
-    extensionElements.values.push(processSimulationInfo);
-  }
-
-  return processSimulationInfo;
-};
-
-ProcessSimulationHelper.getStatsOptions = function(bpmnFactory, elementRegistry) {
-  var processSimulationInfo = ProcessSimulationHelper.getProcessSimulationInfo(bpmnFactory, elementRegistry);
-
-  var statsOptions = processSimulationInfo.statsOptions;
-
-  if (!statsOptions) {
-    statsOptions = elementHelper.createElement('qbp:StatsOptions',
-      {}, processSimulationInfo, bpmnFactory);
-
-    processSimulationInfo.statsOptions = statsOptions;
-  }
-
-  return statsOptions;
-};
-
-
-function createProcessSimulationInfo(root, bpmnFactory) {
-  var todayDate = new Date();
-  todayDate.setUTCHours(9, 0, 0, 0);
-
-  var processSimulationInfo = elementHelper.createElement('qbp:ProcessSimulationInfo',
-    {
-      processInstances: '',
-      id: 'qbp_' + createUUID(),
-      startDateTime: todayDate.toISOString(),
-      currency: 'EUR',
-    }, root, bpmnFactory);
-
-  processSimulationInfo.timetables = elementHelper.createElement('qbp:Timetables',
-    { values: [] }, processSimulationInfo, bpmnFactory);
-
-  processSimulationInfo.resources = elementHelper.createElement('qbp:Resources',
-    { values: [] }, processSimulationInfo, bpmnFactory);
-
-  var defaultSequenceFlow = elementHelper.createElement('qbp:SequenceFlow',
-    {}, null, bpmnFactory);
-
-  processSimulationInfo.sequenceFlows = elementHelper.createElement('qbp:SequenceFlows',
-    { values: [defaultSequenceFlow] }, processSimulationInfo, bpmnFactory);
-
-  return processSimulationInfo;
-}
-
-module.exports = ProcessSimulationHelper;
-
-/***/ }),
-/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -13499,6 +13393,112 @@ return jQuery;
 
 
 /***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var freeGlobal = __webpack_require__(78);
+
+/** Detect free variable `self`. */
+var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
+
+/** Used as a reference to the global object. */
+var root = freeGlobal || freeSelf || Function('return this')();
+
+module.exports = root;
+
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var elementHelper = __webpack_require__(6),
+    extensionElementsHelper = __webpack_require__(21),
+    createUUID = __webpack_require__(20).createUUID,
+    getRoot = __webpack_require__(20).getRoot;
+
+var ProcessSimulationHelper = {
+  prevRoot: undefined
+};
+
+ProcessSimulationHelper.getProcessSimulationInfo = function(bpmnFactory, elementRegistry) {
+  var root = getRoot(elementRegistry);
+
+  if (this.prevRoot === undefined) {
+    this.prevRoot = root;
+  }
+
+  if (this.prevRoot.id !== root.id) {
+    root.extensionElements = this.prevRoot.extensionElements;
+    this.prevRoot.extensionElements = undefined;
+    this.prevRoot = root;
+  }
+
+  var extensionElements = root.extensionElements;
+
+  if (!extensionElements) {
+    extensionElements = elementHelper.createElement('bpmn:ExtensionElements',
+      { values: [] }, root, bpmnFactory);
+
+    root.extensionElements = extensionElements;
+  }
+
+  var processSimulationInfo = (extensionElementsHelper.getExtensionElements(root,
+    'qbp:ProcessSimulationInfo') || [])[0];
+
+  if (!processSimulationInfo) {
+    processSimulationInfo = createProcessSimulationInfo(root, bpmnFactory);
+    extensionElements.values.push(processSimulationInfo);
+  }
+
+  return processSimulationInfo;
+};
+
+ProcessSimulationHelper.getStatsOptions = function(bpmnFactory, elementRegistry) {
+  var processSimulationInfo = ProcessSimulationHelper.getProcessSimulationInfo(bpmnFactory, elementRegistry);
+
+  var statsOptions = processSimulationInfo.statsOptions;
+
+  if (!statsOptions) {
+    statsOptions = elementHelper.createElement('qbp:StatsOptions',
+      {}, processSimulationInfo, bpmnFactory);
+
+    processSimulationInfo.statsOptions = statsOptions;
+  }
+
+  return statsOptions;
+};
+
+
+function createProcessSimulationInfo(root, bpmnFactory) {
+  var todayDate = new Date();
+  todayDate.setUTCHours(9, 0, 0, 0);
+
+  var processSimulationInfo = elementHelper.createElement('qbp:ProcessSimulationInfo',
+    {
+      processInstances: '',
+      id: 'qbp_' + createUUID(),
+      startDateTime: todayDate.toISOString(),
+      currency: 'EUR',
+    }, root, bpmnFactory);
+
+  processSimulationInfo.timetables = elementHelper.createElement('qbp:Timetables',
+    { values: [] }, processSimulationInfo, bpmnFactory);
+
+  processSimulationInfo.resources = elementHelper.createElement('qbp:Resources',
+    { values: [] }, processSimulationInfo, bpmnFactory);
+
+  var defaultSequenceFlow = elementHelper.createElement('qbp:SequenceFlow',
+    {}, null, bpmnFactory);
+
+  processSimulationInfo.sequenceFlows = elementHelper.createElement('qbp:SequenceFlows',
+    { values: [defaultSequenceFlow] }, processSimulationInfo, bpmnFactory);
+
+  return processSimulationInfo;
+}
+
+module.exports = ProcessSimulationHelper;
+
+/***/ }),
 /* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16755,7 +16755,7 @@ module.exports = baseGetTag;
 /* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var root = __webpack_require__(11);
+var root = __webpack_require__(12);
 
 /** Built-in value references. */
 var Symbol = root.Symbol;
@@ -17166,7 +17166,7 @@ module.exports = isArguments;
 /* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(module) {var root = __webpack_require__(11),
+/* WEBPACK VAR INJECTION */(function(module) {var root = __webpack_require__(12),
     stubFalse = __webpack_require__(157);
 
 /** Detect free variable `exports`. */
@@ -17561,7 +17561,7 @@ module.exports = toKey;
 /***/ (function(module, exports, __webpack_require__) {
 
 var elementHelper = __webpack_require__(6),
-    ProcessSimulationHelper = __webpack_require__(12),
+    ProcessSimulationHelper = __webpack_require__(13),
     ValidationErrorHelper = __webpack_require__(8),
     is = __webpack_require__(1).is;
 
@@ -18822,7 +18822,7 @@ module.exports = isPrototype;
 /***/ (function(module, exports, __webpack_require__) {
 
 var getNative = __webpack_require__(26),
-    root = __webpack_require__(11);
+    root = __webpack_require__(12);
 
 /* Built-in method references that are verified to be native. */
 var Map = getNative(root, 'Map');
@@ -19586,7 +19586,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var elementHelper = __webpack_require__(6),
-    ProcessSimulationHelper = __webpack_require__(12);
+    ProcessSimulationHelper = __webpack_require__(13);
 
 var DistributionHelper = {};
 
@@ -20519,7 +20519,7 @@ module.exports = getTag;
 /***/ (function(module, exports, __webpack_require__) {
 
 var getNative = __webpack_require__(26),
-    root = __webpack_require__(11);
+    root = __webpack_require__(12);
 
 /* Built-in method references that are verified to be native. */
 var Set = getNative(root, 'Set');
@@ -20532,7 +20532,7 @@ module.exports = Set;
 /***/ (function(module, exports, __webpack_require__) {
 
 var getNative = __webpack_require__(26),
-    root = __webpack_require__(11);
+    root = __webpack_require__(12);
 
 /* Built-in method references that are verified to be native. */
 var WeakMap = getNative(root, 'WeakMap');
@@ -21180,7 +21180,7 @@ function splitStr(str, position) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var elementHelper = __webpack_require__(6),
-    ProcessSimulationHelper = __webpack_require__(12);
+    ProcessSimulationHelper = __webpack_require__(13);
 
 var SequenceFlowHelper = {};
 
@@ -21705,7 +21705,7 @@ var composeArgs = __webpack_require__(117),
     getHolder = __webpack_require__(69),
     reorder = __webpack_require__(285),
     replaceHolders = __webpack_require__(49),
-    root = __webpack_require__(11);
+    root = __webpack_require__(12);
 
 /** Used to compose bitmasks for function metadata. */
 var WRAP_BIND_FLAG = 1,
@@ -22078,7 +22078,7 @@ module.exports = setWrapToString;
 /***/ (function(module, exports, __webpack_require__) {
 
 var elementHelper = __webpack_require__(6),
-    ProcessSimulationHelper = __webpack_require__(12),
+    ProcessSimulationHelper = __webpack_require__(13),
     createUUID = __webpack_require__(20).createUUID;
 
 var ResourceHelper = {};
@@ -22152,7 +22152,7 @@ module.exports = ResourceHelper;
 /***/ (function(module, exports, __webpack_require__) {
 
 var elementHelper = __webpack_require__(6),
-    ProcessSimulationHelper = __webpack_require__(12),
+    ProcessSimulationHelper = __webpack_require__(13),
     RuleHelper = __webpack_require__(127),
     createUUID = __webpack_require__(20).createUUID;
 
@@ -24886,7 +24886,7 @@ ColorContextPad.$inject = [
   'translate'
 ];
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(13)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(11)))
 
 /***/ }),
 /* 144 */
@@ -25406,7 +25406,7 @@ module.exports = __webpack_require__(352);
     "use strict";
 
     if (true) { // AMD
-        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(13)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(11)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -28298,7 +28298,7 @@ module.exports = __webpack_require__(352);
 
 })( jQuery );
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(13)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(11)))
 
 /***/ }),
 /* 148 */
@@ -29434,7 +29434,7 @@ module.exports = isMasked;
 /* 179 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var root = __webpack_require__(11);
+var root = __webpack_require__(12);
 
 /** Used to detect overreaching core-js shims. */
 var coreJsData = root['__core-js_shared__'];
@@ -30066,7 +30066,7 @@ module.exports = equalByTag;
 /* 198 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var root = __webpack_require__(11);
+var root = __webpack_require__(12);
 
 /** Built-in value references. */
 var Uint8Array = root.Uint8Array;
@@ -30312,7 +30312,7 @@ module.exports = stubArray;
 /***/ (function(module, exports, __webpack_require__) {
 
 var getNative = __webpack_require__(26),
-    root = __webpack_require__(11);
+    root = __webpack_require__(12);
 
 /* Built-in method references that are verified to be native. */
 var DataView = getNative(root, 'DataView');
@@ -30325,7 +30325,7 @@ module.exports = DataView;
 /***/ (function(module, exports, __webpack_require__) {
 
 var getNative = __webpack_require__(26),
-    root = __webpack_require__(11);
+    root = __webpack_require__(12);
 
 /* Built-in method references that are verified to be native. */
 var Promise = getNative(root, 'Promise');
@@ -33402,7 +33402,7 @@ module.exports = debounce;
 /* 242 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var root = __webpack_require__(11);
+var root = __webpack_require__(12);
 
 /**
  * Gets the timestamp of the number of milliseconds that have elapsed since
@@ -34094,7 +34094,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate) {
 var entryFactory = __webpack_require__(10),
     cmdHelper = __webpack_require__(4);
 
-var ProcessSimulationHelper = __webpack_require__(12),
+var ProcessSimulationHelper = __webpack_require__(13),
     validationHelper = __webpack_require__(8);
 
 module.exports = function(bpmnFactory, elementRegistry, translate) {
@@ -35403,7 +35403,7 @@ module.exports = createWrap;
 /***/ (function(module, exports, __webpack_require__) {
 
 var createCtor = __webpack_require__(48),
-    root = __webpack_require__(11);
+    root = __webpack_require__(12);
 
 /** Used to compose bitmasks for function metadata. */
 var WRAP_BIND_FLAG = 1;
@@ -35442,7 +35442,7 @@ var apply = __webpack_require__(64),
     createRecurry = __webpack_require__(119),
     getHolder = __webpack_require__(69),
     replaceHolders = __webpack_require__(49),
-    root = __webpack_require__(11);
+    root = __webpack_require__(12);
 
 /**
  * Creates a function that wraps `func` to enable currying.
@@ -35919,7 +35919,7 @@ module.exports = reorder;
 
 var apply = __webpack_require__(64),
     createCtor = __webpack_require__(48),
-    root = __webpack_require__(11);
+    root = __webpack_require__(12);
 
 /** Used to compose bitmasks for function metadata. */
 var WRAP_BIND_FLAG = 1;
@@ -36616,7 +36616,7 @@ module.exports = toggleSwitch;
 
 var cmdHelper = __webpack_require__(4),
     dateTimeField = __webpack_require__(50),
-    ProcessSimulationHelper = __webpack_require__(12);
+    ProcessSimulationHelper = __webpack_require__(13);
 
 module.exports = function(bpmnFactory, elementRegistry, translate) {
 
@@ -36662,7 +36662,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate) {
 
 var cmdHelper = __webpack_require__(4),
     dateTimeField = __webpack_require__(50),
-    ProcessSimulationHelper = __webpack_require__(12);
+    ProcessSimulationHelper = __webpack_require__(13);
 
 module.exports = function(bpmnFactory, elementRegistry, translate) {
 
@@ -36704,7 +36704,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate) {
 var entryFactory = __webpack_require__(10),
     cmdHelper = __webpack_require__(4),
     validationHelper = __webpack_require__(8),
-    ProcessSimulationHelper = __webpack_require__(12);
+    ProcessSimulationHelper = __webpack_require__(13);
 
 module.exports = function(bpmnFactory, elementRegistry, translate) {
 
@@ -36752,7 +36752,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate) {
 var entryFactory = __webpack_require__(10),
     cmdHelper = __webpack_require__(4),
     validationHelper = __webpack_require__(8),
-    ProcessSimulationHelper = __webpack_require__(12);
+    ProcessSimulationHelper = __webpack_require__(13);
 
 module.exports = function(bpmnFactory, elementRegistry, translate) {
 
@@ -36798,7 +36798,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var distributionEntries = __webpack_require__(70),
-    ProcessSimulationHelper = __webpack_require__(12),
+    ProcessSimulationHelper = __webpack_require__(13),
     DistributionHelper = __webpack_require__(71);
 
 module.exports = function(bpmnFactory, elementRegistry, translate) {
@@ -36820,7 +36820,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate) {
 
 var entryFactory = __webpack_require__(10),
     cmdHelper = __webpack_require__(4),
-    ProcessSimulationHelper = __webpack_require__(12);
+    ProcessSimulationHelper = __webpack_require__(13);
 
 module.exports = function(bpmnFactory, elementRegistry, translate) {
 
@@ -38573,7 +38573,7 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmn
 /* 331 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var cmdHelper = __webpack_require__(4);
+/* WEBPACK VAR INJECTION */(function($) {var cmdHelper = __webpack_require__(4);
 var entryFactory = __webpack_require__(10);
 var getBusinessObject = __webpack_require__(1).getBusinessObject;
 var elementHelper = __webpack_require__(6);
@@ -38644,11 +38644,16 @@ function selectIcon(iconName) {
 
 function showImgPreview(data) {
   if (!data || !data.length) {
-    data = "";
+    data = null;
   }
   const preview = document.querySelector('.aux-img-preview img');
   if (preview) {
-    preview.src = data;
+    if (data) {
+      preview.src = data;
+      $('.aux-img-preview').show();
+    } else {
+      $('.aux-img-preview').hide();
+    }
   }
 }
 
@@ -38756,6 +38761,7 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmn
   ];
 }
 
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(11)))
 
 /***/ }),
 /* 332 */
@@ -39123,7 +39129,7 @@ module.exports = function(options) {
 };
 
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(13)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(11)))
 
 /***/ }),
 /* 334 */
@@ -39542,7 +39548,7 @@ module.exports = FilterXSS;
 /* 337 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getBusinessObject = __webpack_require__(1).getBusinessObject;
+/* WEBPACK VAR INJECTION */(function($) {var getBusinessObject = __webpack_require__(1).getBusinessObject;
 var cmdHelper = __webpack_require__(4);
 var escapeHTML = __webpack_require__(5).escapeHTML;
 var domify = __webpack_require__(2).domify;
@@ -39557,6 +39563,7 @@ function previewFile(callback) {
 
   reader.addEventListener("load", function () {
     preview.src = reader.result;
+    $('.aux-img-preview').show();
     callback(reader.result);
   }, false);
 
@@ -39601,6 +39608,7 @@ module.exports = function(options) {
   return resource;
 };
 
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(11)))
 
 /***/ }),
 /* 338 */
@@ -95550,7 +95558,7 @@ var ColorContextPad = __webpack_require__(143);
   colorContextPad: [ 'type', ColorContextPad["a" /* default */] ]
 });
 // EXTERNAL MODULE: ./node_modules/jquery/dist/jquery.js
-var jquery = __webpack_require__(13);
+var jquery = __webpack_require__(11);
 var jquery_default = /*#__PURE__*/__webpack_require__.n(jquery);
 
 // EXTERNAL MODULE: ./node_modules/bpmn-js-properties-panel/lib/helper/CmdHelper.js

@@ -13,6 +13,7 @@ function previewFile(callback) {
 
   reader.addEventListener("load", function () {
     preview.src = reader.result;
+    $('.aux-img-preview').show();
     callback(reader.result);
   }, false);
 
