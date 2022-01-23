@@ -33,6 +33,7 @@ import javax.xml.datatype.DatatypeFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.ProcessModelVersion;
+import org.apromore.logman.Constants;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
 import org.apromore.plugin.portal.processdiscoverer.components.AbstractController;
@@ -45,7 +46,6 @@ import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNEdge;
 import org.apromore.processmining.plugins.bpmn.BpmnDefinitions;
 import org.apromore.processsimulation.dto.SimulationData;
-import org.apromore.processsimulation.model.ProcessSimulationInfo;
 import org.apromore.processsimulation.service.SimulationInfoService;
 import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
@@ -275,9 +275,19 @@ public class BPMNExportController extends AbstractController {
         String conditionText = null;
         String footnoteMessage = null;
         if (simulationInfoService.isFeatureEnabled()) {
-            conditionText = parent.getLabel("includeSimulationParams_text");
+
+            if (controller.getUserOptions().getMainAttributeKey().equals(Constants.ATT_KEY_RESOURCE)
+                || controller.getUserOptions().getMainAttributeKey().equals(Constants.ATT_KEY_ROLE)) {
+
+                footnoteMessage = parent.getLabel("warnSimParamInvalidPerspective_text");
+                log.debug("Cannot export simulation information for resource or role perspectives");
+            } else {
+
+                conditionText = parent.getLabel("includeSimulationParams_text");
+            }
         } else {
-            footnoteMessage = parent.getLabel("warnNoSimulationParams_text");
+
+            footnoteMessage = parent.getLabel("warnSimParamExportDisabled_text");
             log.warn(
                 "Exporting simulation info feature is disabled. Model will be exported without simulation parameters");
         }
