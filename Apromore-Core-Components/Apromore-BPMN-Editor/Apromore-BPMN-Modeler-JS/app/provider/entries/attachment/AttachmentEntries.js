@@ -69,11 +69,16 @@ function selectIcon(iconName) {
 
 function showImgPreview(data) {
   if (!data || !data.length) {
-    data = "";
+    data = null;
   }
   const preview = document.querySelector('.aux-img-preview img');
   if (preview) {
-    preview.src = data;
+    if (data) {
+      preview.src = data;
+      $('.aux-img-preview').show();
+    } else {
+      $('.aux-img-preview').hide();
+    }
   }
 }
 

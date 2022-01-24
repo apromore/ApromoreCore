@@ -13966,255 +13966,6 @@ module.exports = ValidationErrorHelper;
 
 /***/ }),
 /* 9 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AUX_PROPS", function() { return AUX_PROPS; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getExtensionElements", function() { return getExtensionElements; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getAux", function() { return getAux; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "refreshOverlay", function() { return refreshOverlay; });
-/* harmony import */ var bpmn_js_properties_panel_lib_helper_ElementHelper__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6);
-/* harmony import */ var bpmn_js_properties_panel_lib_helper_ElementHelper__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(bpmn_js_properties_panel_lib_helper_ElementHelper__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var bpmn_js_properties_panel_lib_helper_ExtensionElementsHelper__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(21);
-/* harmony import */ var bpmn_js_properties_panel_lib_helper_ExtensionElementsHelper__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(bpmn_js_properties_panel_lib_helper_ExtensionElementsHelper__WEBPACK_IMPORTED_MODULE_1__);
-
-
-
-const AUX_PROPS = {
-  LEFT: 'aux-left',
-  TOP: 'aux-top',
-  WIDTH: 'aux-width',
-  HEIGHT: 'aux-height',
-  LINK_URL: 'aux-link-url',
-  LINK_TEXT: 'aux-link-text',
-  IMG_SRC: 'aux-img-src',
-  IMG_URL: 'aux-img-url',
-  ICON_URL: 'aux-icon-url',
-  ICON_TEXT: 'aux-icon-text',
-  ICON_NAME: 'aux-icon-name',
-  ICON_SET: 'aux-icon-set'
-}
-
-function getExtensionElements(element, bpmnFactory) {
-  var extensionElements = element.extensionElements;
-
-  if (!extensionElements || !extensionElements.values) {
-    extensionElements = bpmn_js_properties_panel_lib_helper_ElementHelper__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('bpmn:ExtensionElements',
-      { values: [] }, element, bpmnFactory);
-    element.extensionElements = extensionElements;
-  }
-
-  return extensionElements;
-}
-
-function getAux(element, bpmnFactory, type, init) {
-  var extensionElements = getExtensionElements(element, bpmnFactory);
-  var aux = (bpmn_js_properties_panel_lib_helper_ExtensionElementsHelper__WEBPACK_IMPORTED_MODULE_1___default.a.getExtensionElements(element,
-    type) || [])[0];
-
-  if (!aux) {
-    aux = bpmn_js_properties_panel_lib_helper_ElementHelper__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(type, init, element, bpmnFactory);
-    extensionElements.values.push(aux);
-  }
-
-  return aux;
-}
-
-function refreshOverlay(bpmnjs, element) {
-  setTimeout(function () {
-    var auxModule = bpmnjs.get('aux');
-    auxModule.createAux(element);
-  }, 500);
-}
-
-/***/ }),
-/* 10 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var getBusinessObject = __webpack_require__(1).getBusinessObject;
-
-// input entities
-var textInputField = __webpack_require__(108),
-    checkboxField = __webpack_require__(259),
-    selectBoxField = __webpack_require__(109),
-    comboBoxField = __webpack_require__(260),
-    textBoxField = __webpack_require__(267),
-    validationAwareTextInputField = __webpack_require__(268),
-    tableField = __webpack_require__(269),
-    labelEntry = __webpack_require__(270),
-    link = __webpack_require__(271),
-    autoSuggestTextBoxField = __webpack_require__(288),
-    collapsible = __webpack_require__(289),
-    toggleSwitch = __webpack_require__(290);
-
-var cmdHelper = __webpack_require__(4);
-
-// helpers ////////////////////////////////////////
-
-function ensureNotNull(prop) {
-  if (!prop) {
-    throw new Error(prop + ' must be set.');
-  }
-
-  return prop;
-}
-
-/**
- * sets the default parameters which are needed to create an entry
- *
- * @param options
- * @returns {{id: *, description: (*|string), get: (*|Function), set: (*|Function),
- *            validate: (*|Function), html: string}}
- */
-var setDefaultParameters = function(options) {
-
-  // default method to fetch the current value of the input field
-  var defaultGet = function(element) {
-    var bo = getBusinessObject(element),
-        res = {},
-        prop = ensureNotNull(options.modelProperty);
-    res[prop] = bo.get(prop);
-
-    return res;
-  };
-
-  // default method to set a new value to the input field
-  var defaultSet = function(element, values) {
-    var res = {},
-        prop = ensureNotNull(options.modelProperty);
-    if (values[prop] !== '') {
-      res[prop] = values[prop];
-    } else {
-      res[prop] = undefined;
-    }
-
-    return cmdHelper.updateProperties(element, res);
-  };
-
-  // default validation method
-  var defaultValidate = function() {
-    return {};
-  };
-
-  return {
-    id : options.id,
-    description : (options.description || ''),
-    get : (options.get || defaultGet),
-    set : (options.set || defaultSet),
-    validate : (options.validate || defaultValidate),
-    html: ''
-  };
-};
-
-function EntryFactory() {
-
-}
-
-/**
- * Generates an text input entry object for a property panel.
- * options are:
- * - id: id of the entry - String
- *
- * - description: description of the property - String
- *
- * - label: label for the input field - String
- *
- * - set: setter method - Function
- *
- * - get: getter method - Function
- *
- * - validate: validation mehtod - Function
- *
- * - modelProperty: name of the model property - String
- *
- * - buttonAction: Object which contains the following properties: - Object
- * ---- name: name of the [data-action] callback - String
- * ---- method: callback function for [data-action] - Function
- *
- * - buttonShow: Object which contains the following properties: - Object
- * ---- name: name of the [data-show] callback - String
- * ---- method: callback function for [data-show] - Function
- *
- * @param options
- * @returns the propertyPanel entry resource object
- */
-EntryFactory.textField = function(translate, options) {
-  return textInputField(translate, options, setDefaultParameters(options));
-};
-
-EntryFactory.validationAwareTextField = function(translate, options) {
-  return validationAwareTextInputField(translate, options, setDefaultParameters(options));
-};
-
-/**
- * Generates a checkbox input entry object for a property panel.
- * options are:
- * - id: id of the entry - String
- *
- * - description: description of the property - String
- *
- * - label: label for the input field - String
- *
- * - set: setter method - Function
- *
- * - get: getter method - Function
- *
- * - validate: validation method - Function
- *
- * - modelProperty: name of the model property - String
- *
- * @param options
- * @returns the propertyPanel entry resource object
- */
-EntryFactory.checkbox = function(translate, options) {
-  return checkboxField(translate, options, setDefaultParameters(options));
-};
-
-EntryFactory.textBox = function(translate, options) {
-  return textBoxField(translate, options, setDefaultParameters(options));
-};
-
-EntryFactory.selectBox = function(translate, options) {
-  return selectBoxField(translate, options, setDefaultParameters(options));
-};
-
-EntryFactory.comboBox = function(translate, options) {
-  return comboBoxField(translate, options);
-};
-
-EntryFactory.table = function(translate, options) {
-  return tableField(translate, options);
-};
-
-EntryFactory.label = function(options) {
-  return labelEntry(options);
-};
-
-EntryFactory.link = function(translate, options) {
-  return link(translate, options);
-};
-
-EntryFactory.autoSuggest = function(translate, options) {
-  return autoSuggestTextBoxField(translate, options, setDefaultParameters(options));
-};
-
-EntryFactory.collapsible = function(options) {
-  return collapsible(options);
-};
-
-EntryFactory.toggleSwitch = function(translate, options) {
-  return toggleSwitch(translate, options, setDefaultParameters(options));
-};
-
-module.exports = EntryFactory;
-
-
-/***/ }),
-/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -25093,6 +24844,255 @@ return jQuery;
 
 
 /***/ }),
+/* 10 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AUX_PROPS", function() { return AUX_PROPS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getExtensionElements", function() { return getExtensionElements; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getAux", function() { return getAux; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "refreshOverlay", function() { return refreshOverlay; });
+/* harmony import */ var bpmn_js_properties_panel_lib_helper_ElementHelper__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6);
+/* harmony import */ var bpmn_js_properties_panel_lib_helper_ElementHelper__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(bpmn_js_properties_panel_lib_helper_ElementHelper__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var bpmn_js_properties_panel_lib_helper_ExtensionElementsHelper__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(21);
+/* harmony import */ var bpmn_js_properties_panel_lib_helper_ExtensionElementsHelper__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(bpmn_js_properties_panel_lib_helper_ExtensionElementsHelper__WEBPACK_IMPORTED_MODULE_1__);
+
+
+
+const AUX_PROPS = {
+  LEFT: 'aux-left',
+  TOP: 'aux-top',
+  WIDTH: 'aux-width',
+  HEIGHT: 'aux-height',
+  LINK_URL: 'aux-link-url',
+  LINK_TEXT: 'aux-link-text',
+  IMG_SRC: 'aux-img-src',
+  IMG_URL: 'aux-img-url',
+  ICON_URL: 'aux-icon-url',
+  ICON_TEXT: 'aux-icon-text',
+  ICON_NAME: 'aux-icon-name',
+  ICON_SET: 'aux-icon-set'
+}
+
+function getExtensionElements(element, bpmnFactory) {
+  var extensionElements = element.extensionElements;
+
+  if (!extensionElements || !extensionElements.values) {
+    extensionElements = bpmn_js_properties_panel_lib_helper_ElementHelper__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('bpmn:ExtensionElements',
+      { values: [] }, element, bpmnFactory);
+    element.extensionElements = extensionElements;
+  }
+
+  return extensionElements;
+}
+
+function getAux(element, bpmnFactory, type, init) {
+  var extensionElements = getExtensionElements(element, bpmnFactory);
+  var aux = (bpmn_js_properties_panel_lib_helper_ExtensionElementsHelper__WEBPACK_IMPORTED_MODULE_1___default.a.getExtensionElements(element,
+    type) || [])[0];
+
+  if (!aux) {
+    aux = bpmn_js_properties_panel_lib_helper_ElementHelper__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(type, init, element, bpmnFactory);
+    extensionElements.values.push(aux);
+  }
+
+  return aux;
+}
+
+function refreshOverlay(bpmnjs, element) {
+  setTimeout(function () {
+    var auxModule = bpmnjs.get('aux');
+    auxModule.createAux(element);
+  }, 500);
+}
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var getBusinessObject = __webpack_require__(1).getBusinessObject;
+
+// input entities
+var textInputField = __webpack_require__(108),
+    checkboxField = __webpack_require__(259),
+    selectBoxField = __webpack_require__(109),
+    comboBoxField = __webpack_require__(260),
+    textBoxField = __webpack_require__(267),
+    validationAwareTextInputField = __webpack_require__(268),
+    tableField = __webpack_require__(269),
+    labelEntry = __webpack_require__(270),
+    link = __webpack_require__(271),
+    autoSuggestTextBoxField = __webpack_require__(288),
+    collapsible = __webpack_require__(289),
+    toggleSwitch = __webpack_require__(290);
+
+var cmdHelper = __webpack_require__(4);
+
+// helpers ////////////////////////////////////////
+
+function ensureNotNull(prop) {
+  if (!prop) {
+    throw new Error(prop + ' must be set.');
+  }
+
+  return prop;
+}
+
+/**
+ * sets the default parameters which are needed to create an entry
+ *
+ * @param options
+ * @returns {{id: *, description: (*|string), get: (*|Function), set: (*|Function),
+ *            validate: (*|Function), html: string}}
+ */
+var setDefaultParameters = function(options) {
+
+  // default method to fetch the current value of the input field
+  var defaultGet = function(element) {
+    var bo = getBusinessObject(element),
+        res = {},
+        prop = ensureNotNull(options.modelProperty);
+    res[prop] = bo.get(prop);
+
+    return res;
+  };
+
+  // default method to set a new value to the input field
+  var defaultSet = function(element, values) {
+    var res = {},
+        prop = ensureNotNull(options.modelProperty);
+    if (values[prop] !== '') {
+      res[prop] = values[prop];
+    } else {
+      res[prop] = undefined;
+    }
+
+    return cmdHelper.updateProperties(element, res);
+  };
+
+  // default validation method
+  var defaultValidate = function() {
+    return {};
+  };
+
+  return {
+    id : options.id,
+    description : (options.description || ''),
+    get : (options.get || defaultGet),
+    set : (options.set || defaultSet),
+    validate : (options.validate || defaultValidate),
+    html: ''
+  };
+};
+
+function EntryFactory() {
+
+}
+
+/**
+ * Generates an text input entry object for a property panel.
+ * options are:
+ * - id: id of the entry - String
+ *
+ * - description: description of the property - String
+ *
+ * - label: label for the input field - String
+ *
+ * - set: setter method - Function
+ *
+ * - get: getter method - Function
+ *
+ * - validate: validation mehtod - Function
+ *
+ * - modelProperty: name of the model property - String
+ *
+ * - buttonAction: Object which contains the following properties: - Object
+ * ---- name: name of the [data-action] callback - String
+ * ---- method: callback function for [data-action] - Function
+ *
+ * - buttonShow: Object which contains the following properties: - Object
+ * ---- name: name of the [data-show] callback - String
+ * ---- method: callback function for [data-show] - Function
+ *
+ * @param options
+ * @returns the propertyPanel entry resource object
+ */
+EntryFactory.textField = function(translate, options) {
+  return textInputField(translate, options, setDefaultParameters(options));
+};
+
+EntryFactory.validationAwareTextField = function(translate, options) {
+  return validationAwareTextInputField(translate, options, setDefaultParameters(options));
+};
+
+/**
+ * Generates a checkbox input entry object for a property panel.
+ * options are:
+ * - id: id of the entry - String
+ *
+ * - description: description of the property - String
+ *
+ * - label: label for the input field - String
+ *
+ * - set: setter method - Function
+ *
+ * - get: getter method - Function
+ *
+ * - validate: validation method - Function
+ *
+ * - modelProperty: name of the model property - String
+ *
+ * @param options
+ * @returns the propertyPanel entry resource object
+ */
+EntryFactory.checkbox = function(translate, options) {
+  return checkboxField(translate, options, setDefaultParameters(options));
+};
+
+EntryFactory.textBox = function(translate, options) {
+  return textBoxField(translate, options, setDefaultParameters(options));
+};
+
+EntryFactory.selectBox = function(translate, options) {
+  return selectBoxField(translate, options, setDefaultParameters(options));
+};
+
+EntryFactory.comboBox = function(translate, options) {
+  return comboBoxField(translate, options);
+};
+
+EntryFactory.table = function(translate, options) {
+  return tableField(translate, options);
+};
+
+EntryFactory.label = function(options) {
+  return labelEntry(options);
+};
+
+EntryFactory.link = function(translate, options) {
+  return link(translate, options);
+};
+
+EntryFactory.autoSuggest = function(translate, options) {
+  return autoSuggestTextBoxField(translate, options, setDefaultParameters(options));
+};
+
+EntryFactory.collapsible = function(options) {
+  return collapsible(options);
+};
+
+EntryFactory.toggleSwitch = function(translate, options) {
+  return toggleSwitch(translate, options, setDefaultParameters(options));
+};
+
+module.exports = EntryFactory;
+
+
+/***/ }),
 /* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -30914,7 +30914,7 @@ module.exports = getHolder;
 /* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var entryFactory = __webpack_require__(10);
+var entryFactory = __webpack_require__(11);
 var cmdHelper = __webpack_require__(4);
 
 var validationHelper = __webpack_require__(8);
@@ -36586,7 +36586,7 @@ ColorContextPad.$inject = [
   'translate'
 ];
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(11)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(9)))
 
 /***/ }),
 /* 144 */
@@ -37106,7 +37106,7 @@ module.exports = __webpack_require__(352);
     "use strict";
 
     if (true) { // AMD
-        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(11)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(9)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -39998,7 +39998,7 @@ module.exports = __webpack_require__(352);
 
 })( jQuery );
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(11)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(9)))
 
 /***/ }),
 /* 148 */
@@ -45791,7 +45791,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate) {
 /* 258 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var entryFactory = __webpack_require__(10),
+var entryFactory = __webpack_require__(11),
     cmdHelper = __webpack_require__(4);
 
 var ProcessSimulationHelper = __webpack_require__(13),
@@ -48401,7 +48401,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate) {
 /* 293 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var entryFactory = __webpack_require__(10),
+var entryFactory = __webpack_require__(11),
     cmdHelper = __webpack_require__(4),
     validationHelper = __webpack_require__(8),
     ProcessSimulationHelper = __webpack_require__(13);
@@ -48449,7 +48449,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate) {
 /* 294 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var entryFactory = __webpack_require__(10),
+var entryFactory = __webpack_require__(11),
     cmdHelper = __webpack_require__(4),
     validationHelper = __webpack_require__(8),
     ProcessSimulationHelper = __webpack_require__(13);
@@ -48518,7 +48518,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate) {
 /* 296 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var entryFactory = __webpack_require__(10),
+var entryFactory = __webpack_require__(11),
     cmdHelper = __webpack_require__(4),
     ProcessSimulationHelper = __webpack_require__(13);
 
@@ -48648,7 +48648,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 /* 300 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var entryFactory = __webpack_require__(10),
+var entryFactory = __webpack_require__(11),
     cmdHelper = __webpack_require__(4),
     ResourceHelper = __webpack_require__(125),
     ElementHelper = __webpack_require__(47);
@@ -48925,7 +48925,7 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, opti
 /* 306 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var entryFactory = __webpack_require__(10),
+var entryFactory = __webpack_require__(11),
     cmdHelper = __webpack_require__(4),
     validationErrorHelper = __webpack_require__(8);
 
@@ -49097,7 +49097,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 /* 309 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var entryFactory = __webpack_require__(10),
+var entryFactory = __webpack_require__(11),
     cmdHelper = __webpack_require__(4),
     validationErrorHelper = __webpack_require__(8);
 
@@ -49155,7 +49155,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 /* 310 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var entryFactory = __webpack_require__(10),
+var entryFactory = __webpack_require__(11),
     cmdHelper = __webpack_require__(4),
     getWeekDays = __webpack_require__(128),
     validationErrorHelper = __webpack_require__(8);
@@ -49214,7 +49214,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 /* 311 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var entryFactory = __webpack_require__(10),
+var entryFactory = __webpack_require__(11),
     cmdHelper = __webpack_require__(4),
     getWeekDays = __webpack_require__(128),
     validationErrorHelper = __webpack_require__(8);
@@ -49549,7 +49549,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 /* 318 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var entryFactory = __webpack_require__(10),
+var entryFactory = __webpack_require__(11),
     cmdHelper = __webpack_require__(4),
     TimetableHelper = __webpack_require__(126);
 
@@ -49602,7 +49602,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 /* 319 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var entryFactory = __webpack_require__(10),
+var entryFactory = __webpack_require__(11),
     cmdHelper = __webpack_require__(4),
     validationErrorHelper = __webpack_require__(8);
 
@@ -49661,7 +49661,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 /* 320 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var entryFactory = __webpack_require__(10),
+var entryFactory = __webpack_require__(11),
     cmdHelper = __webpack_require__(4),
     validationErrorHelper = __webpack_require__(8);
 
@@ -49719,7 +49719,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 /* 321 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var entryFactory = __webpack_require__(10),
+var entryFactory = __webpack_require__(11),
     cmdHelper = __webpack_require__(4),
     validationErrorHelper = __webpack_require__(8);
 
@@ -49845,7 +49845,7 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var getBusinessObject = __webpack_require__(1).getBusinessObject,
-    entryFactory = __webpack_require__(10),
+    entryFactory = __webpack_require__(11),
     cmdHelper = __webpack_require__(4),
     SequenceFlowHelper = __webpack_require__(107);
 
@@ -50013,7 +50013,7 @@ module.exports = function(group, element, bpmnFactory, translate) {
 var getBusinessObject = __webpack_require__(1).getBusinessObject,
     is = __webpack_require__(1).is;
 
-var factory = __webpack_require__(10);
+var factory = __webpack_require__(11);
 
 var elementHelper = __webpack_require__(6),
     extensionElementsHelper = __webpack_require__(21),
@@ -50273,15 +50273,15 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmn
 /* 331 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var cmdHelper = __webpack_require__(4);
-var entryFactory = __webpack_require__(10);
+/* WEBPACK VAR INJECTION */(function($) {var cmdHelper = __webpack_require__(4);
+var entryFactory = __webpack_require__(11);
 var getBusinessObject = __webpack_require__(1).getBusinessObject;
 var elementHelper = __webpack_require__(6);
 var extensionElementsHelper = __webpack_require__(21);
 var IconPickerField = __webpack_require__(332);
 var IconSetPickerField = __webpack_require__(333);
 var ImagePickerField = __webpack_require__(337);
-var { AUX_PROPS } = __webpack_require__(9);
+var { AUX_PROPS } = __webpack_require__(10);
 
 function getExtensionElements(element, bpmnFactory) {
   var extensionElements = element.extensionElements;
@@ -50344,11 +50344,16 @@ function selectIcon(iconName) {
 
 function showImgPreview(data) {
   if (!data || !data.length) {
-    data = "";
+    data = null;
   }
   const preview = document.querySelector('.aux-img-preview img');
   if (preview) {
-    preview.src = data;
+    if (data) {
+      preview.src = data;
+      $('.aux-img-preview').show();
+    } else {
+      $('.aux-img-preview').hide();
+    }
   }
 }
 
@@ -50456,6 +50461,7 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmn
   ];
 }
 
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(9)))
 
 /***/ }),
 /* 332 */
@@ -50572,7 +50578,7 @@ var domify = __webpack_require__(2).domify;
 var domEvent = __webpack_require__(2).event;
 var domQuery = __webpack_require__(2).query;
 var { ensureNotNull, setDefaultParameters } = __webpack_require__(74);
-var { AUX_PROPS, getAux, refreshOverlay } = __webpack_require__(9);
+var { AUX_PROPS, getAux, refreshOverlay } = __webpack_require__(10);
 
 var ICONS = [
   [
@@ -50823,7 +50829,7 @@ module.exports = function(options) {
 };
 
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(11)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(9)))
 
 /***/ }),
 /* 334 */
@@ -51242,7 +51248,7 @@ module.exports = FilterXSS;
 /* 337 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getBusinessObject = __webpack_require__(1).getBusinessObject;
+/* WEBPACK VAR INJECTION */(function($) {var getBusinessObject = __webpack_require__(1).getBusinessObject;
 var cmdHelper = __webpack_require__(4);
 var escapeHTML = __webpack_require__(5).escapeHTML;
 var domify = __webpack_require__(2).domify;
@@ -51257,6 +51263,7 @@ function previewFile(callback) {
 
   reader.addEventListener("load", function () {
     preview.src = reader.result;
+    $('.aux-img-preview').show();
     callback(reader.result);
   }, false);
 
@@ -51301,6 +51308,7 @@ module.exports = function(options) {
   return resource;
 };
 
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(9)))
 
 /***/ }),
 /* 338 */
@@ -107250,7 +107258,7 @@ var ColorContextPad = __webpack_require__(143);
   colorContextPad: [ 'type', ColorContextPad["a" /* default */] ]
 });
 // EXTERNAL MODULE: ./node_modules/jquery/dist/jquery.js
-var jquery = __webpack_require__(11);
+var jquery = __webpack_require__(9);
 var jquery_default = /*#__PURE__*/__webpack_require__.n(jquery);
 
 // EXTERNAL MODULE: ./node_modules/bpmn-js-properties-panel/lib/helper/CmdHelper.js
@@ -107261,7 +107269,7 @@ var ExtensionElementsHelper = __webpack_require__(21);
 var ExtensionElementsHelper_default = /*#__PURE__*/__webpack_require__.n(ExtensionElementsHelper);
 
 // EXTERNAL MODULE: ./app/modules/attachment/common.js
-var common = __webpack_require__(9);
+var common = __webpack_require__(10);
 
 // EXTERNAL MODULE: ./node_modules/interactjs/dist/interact.min.js
 var interact_min = __webpack_require__(145);
