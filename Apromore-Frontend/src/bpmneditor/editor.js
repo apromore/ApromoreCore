@@ -131,7 +131,7 @@ export default class Editor {
             ];
 
             REMOVE_LIST.forEach(function(regex) {
-                xml = xml.replaceAll(regex, '');
+                xml = xml.replace(regex, '');
             })
             return xml;
         }

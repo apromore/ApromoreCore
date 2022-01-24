@@ -355,6 +355,10 @@
 
 /* Aux overlays */
 
+.aux-disabled .djs-overlay-aux {
+  display: none !important;
+}
+
 .djs-overlay-aux {
   border: 1px solid transparent;
 }

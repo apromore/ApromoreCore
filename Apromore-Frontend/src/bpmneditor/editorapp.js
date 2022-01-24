@@ -122,6 +122,8 @@ export default class EditorApp {
         await this._loadData(config);
 
         await this._initUI();
+
+        return this.editor && this.editor.actualEditor
     }
 
     /**
