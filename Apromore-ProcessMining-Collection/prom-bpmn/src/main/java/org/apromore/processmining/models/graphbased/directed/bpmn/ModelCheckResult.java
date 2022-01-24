@@ -38,10 +38,11 @@ public class ModelCheckResult {
     }
 
     public String invalidMessage() {
-        String errorMessage = "";
+        StringBuilder errorMsgBuilder = new StringBuilder();
         for (String error : errors) {
-            errorMessage += error + System.getProperty("line.separator");
+            errorMsgBuilder.append(error);
+            errorMsgBuilder.append(System.getProperty("line.separator"));
         }
-        return errorMessage;
+        return errorMsgBuilder.toString();
     }
 }

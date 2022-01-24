@@ -57,7 +57,7 @@ public class ModelChecker {
     public ModelCheckResult checkModel(BPMNDiagram bpmnDiagram, boolean allowPools) {
         List<String> errors = new ArrayList<>();
 
-        if (CollectionUtils.isEmpty(bpmnDiagram.getNodes()) && CollectionUtils.isEmpty(bpmnDiagram.getEdges())) {
+        if (isModelEmpty(bpmnDiagram)) {
             errors.add(EMPTY_MODEL_MSG); //empty model - no nodes or edges
         }
 
@@ -69,8 +69,10 @@ public class ModelChecker {
         List<BPMNNode> targetNodes = new ArrayList<>();
 
         for (Flow flow : bpmnDiagram.getFlows()) {
-            if ((flow.getSource() == null || flow.getTarget() == null) && !errors.contains(DISCONNECTED_ARC_MSG)) {
-                errors.add(DISCONNECTED_ARC_MSG); //disconnected - a flow source or target is missing
+            if ((flow.getSource() == null || flow.getTarget() == null)) {
+                if (!errors.contains(DISCONNECTED_ARC_MSG)) {
+                    errors.add(DISCONNECTED_ARC_MSG); //disconnected - a flow source or target is missing
+                }
             } else if (flow.getSource().equals(flow.getTarget())) {
                 errors.add(String.format(SELF_LOOP_MSG_FORMAT, flow.getSource().getLabel()));
             }
@@ -83,21 +85,23 @@ public class ModelChecker {
         }
 
         for (Event event : bpmnDiagram.getEvents()) {
-            if (Event.EventType.START.equals(event.getEventType())) {
-                errors.addAll(checkStartEvent(event, sourceNodes, targetNodes));
-            } else if (Event.EventType.END.equals(event.getEventType())) {
-                errors.addAll(checkEndEvent(event, sourceNodes, targetNodes));
-            }
+            errors.addAll(checkEvent(event, sourceNodes, targetNodes));
         }
 
         for (Gateway gateway : bpmnDiagram.getGateways()) {
-            if (!sourceNodes.contains(gateway) || !targetNodes.contains(gateway)) {
-                // missing incoming or outgoing arc - gateway does not appear as a flow source or target
-                errors.add(String.format(GATE_MISSING_ARCS_MSG_FORMAT, gateway.getId()));
-            }
+            errors.addAll(checkGateway(gateway, sourceNodes, targetNodes));
         }
 
         return new ModelCheckResult(errors);
+    }
+
+    /**
+     * Check if the model is empty.
+     * @param bpmnDiagram the model being checked.
+     * @return true if the model has no nodes or edges.
+     */
+    private boolean isModelEmpty(BPMNDiagram bpmnDiagram) {
+        return CollectionUtils.isEmpty(bpmnDiagram.getNodes()) && CollectionUtils.isEmpty(bpmnDiagram.getEdges());
     }
 
     /**
@@ -124,6 +128,22 @@ public class ModelChecker {
             errors.add(String.format(TASK_MISSING_ARCS_MSG_FORMAT, activity.getLabel()));
         }
         return errors;
+    }
+
+    /**
+     * Finds errors in an event.
+     * @param event the event to find errors in.
+     * @param sourceNodes a list of nodes in the model which have outgoing edges.
+     * @param targetNodes a list of nodes in the model which have incoming edges.
+     * @return A list of errors in the activity.
+     */
+    private List<String> checkEvent(Event event, List<BPMNNode> sourceNodes, List<BPMNNode> targetNodes) {
+        if (Event.EventType.START.equals(event.getEventType())) {
+            return checkStartEvent(event, sourceNodes, targetNodes);
+        } else if (Event.EventType.END.equals(event.getEventType())) {
+            return checkEndEvent(event, sourceNodes, targetNodes);
+        }
+        return Collections.emptyList();
     }
 
     /**
@@ -170,6 +190,22 @@ public class ModelChecker {
         if (sourceNodes.contains(event)) {
             // Any number of outgoing arcs - end event appears as a flow source
             errors.add(END_OUTGOING_ARCS_MSG);
+        }
+        return errors;
+    }
+
+    /**
+     * Finds errors in a gateway.
+     * @param gateway the gateway to find errors in.
+     * @param sourceNodes a list of nodes in the model which have outgoing edges.
+     * @param targetNodes a list of nodes in the model which have incoming edges.
+     * @return A list of errors in the activity.
+     */
+    private List<String> checkGateway(Gateway gateway, List<BPMNNode> sourceNodes, List<BPMNNode> targetNodes) {
+        List<String> errors = new ArrayList<>();
+        if (!sourceNodes.contains(gateway) || !targetNodes.contains(gateway)) {
+            // missing incoming or outgoing arc - gateway does not appear as a flow source or target
+            errors.add(String.format(GATE_MISSING_ARCS_MSG_FORMAT, gateway.getId()));
         }
         return errors;
     }
