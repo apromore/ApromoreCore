@@ -29,8 +29,8 @@ describe('After the EditorApp has been initialized with a BPMN model with Toolba
     it('The Toolbar plugin has correct buttons created from a complex configuration', async function() {
         let editorApp = await testFactory.createEditorAppWithModelAndPlugins();
         let toolbarPlugin = editorApp.getActivatedPlugins()[0];
-        expect(editorApp.getActivatedPlugins().length).toEqual(9);
-        expect(toolbarPlugin.getNumberOfButtons()).toEqual(13);
+        expect(editorApp.getActivatedPlugins().length).toEqual(10);
+        expect(toolbarPlugin.getNumberOfButtons()).toEqual(14);
 
         expect(toolbarPlugin.getButtonByIndex(0).btnId).toEqual('ap-id-editor-save-btn');
         expect(toolbarPlugin.getButtonByIndex(0).buttonInstance).toBeInstanceOf(Ext.Button);
@@ -44,7 +44,7 @@ describe('After the EditorApp has been initialized with a BPMN model with Toolba
     it('The Toolbar plugin has correct button status from a custom configuration', async function() {
         let editorApp = await testFactory.createEditorAppWithDataAndCustomButtons();
         let toolbarPlugin = editorApp.getActivatedPlugins()[0];
-        expect(toolbarPlugin.getNumberOfButtons()).toEqual(13);
+        expect(toolbarPlugin.getNumberOfButtons()).toEqual(14);
         expect(toolbarPlugin.getButtonById('ap-id-editor-save-btn').buttonInstance.disabled).toBeTruthy();
         expect(toolbarPlugin.getButtonById('ap-id-editor-save-as-btn').buttonInstance.disabled).toBeTruthy();
         expect(toolbarPlugin.getButtonById('ap-id-editor-export-svg-btn').buttonInstance.disabled).toBeTruthy();

@@ -102,6 +102,16 @@
     width: 26px !important;
 }
 
+.ap-icon-attachment-off {
+  background-image: url('attachment-off.svg') !important;
+  width: 26px !important;
+}
+
+.ap-icon-attachment-on {
+  background-image: url('attachment-on.svg') !important;
+  width: 26px !important;
+}
+
 .ap-icon-attribute {
     background-image: url('attribute.svg') !important;
     width: 26px !important;

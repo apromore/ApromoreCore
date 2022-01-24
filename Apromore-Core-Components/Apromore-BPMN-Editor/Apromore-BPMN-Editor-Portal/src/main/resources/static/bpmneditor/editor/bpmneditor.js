@@ -11533,7 +11533,7 @@ class Editor {
             ];
 
             REMOVE_LIST.forEach(function(regex) {
-                xml = xml.replaceAll(regex, '');
+                xml = xml.replace(regex, '');
             })
             return xml;
         }
@@ -51256,6 +51256,8 @@ var domEvent = __webpack_require__(2).event;
 var domQuery = __webpack_require__(2).query;
 var { ensureNotNull, setDefaultParameters } = __webpack_require__(74);
 
+const MAX_IMAGE_SIZE = 1000000; // 1MB max image size
+
 function previewFile(callback) {
   const preview = document.querySelector('.aux-img-preview img');
   const file = document.querySelector('#aux-img-picker-control').files[0];
@@ -51268,7 +51270,12 @@ function previewFile(callback) {
   }, false);
 
   if (file) {
-    reader.readAsDataURL(file); // to base64 string
+    if (file.size && file.size > MAX_IMAGE_SIZE) {
+      document.querySelector('#aux-img-picker-control').value = '';
+      Ap.common.notify('Image is too big');
+    } else {
+      reader.readAsDataURL(file); // to base64 string
+    }
   }
 }
 
@@ -108274,6 +108281,8 @@ class EditorApp {
         await this._loadData(config);
 
         await this._initUI();
+
+        return this.editor && this.editor.actualEditor
     }
 
     /**
@@ -109075,6 +109084,96 @@ class ApromoreSave {
 
 /***/ }),
 
+/***/ "./src/bpmneditor/plugins/attachment.js":
+/*!**********************************************!*\
+  !*** ./src/bpmneditor/plugins/attachment.js ***!
+  \**********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* WEBPACK VAR INJECTION */(function($) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Attachment; });
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./../config */ "./src/bpmneditor/config.js");
+/*-
+ * #%L
+ * This file is part of "Apromore Core".
+ * %%
+ * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ *
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * #L%
+ */
+
+
+
+/**
+ * The attachment plugin provide toggle attachment functionality
+ *
+ * @class Attachment
+ * @param {Object} facade The editor facade for plugins.
+ */
+class Attachment {
+
+    constructor (facade) {
+        this.facade = facade;
+        this.btnId = 'ap-id-editor-attachment-btn';
+        this.state = true;
+
+        this.facade.offer({
+            'btnId': this.btnId,
+            'name': Apromore.I18N.Attachment.attachment,
+            'functionality': this.toggleAttachment.bind(this),
+            'icon': this.getIcon(),
+            'description': this.getDescription(),
+            'index': 1,
+            'groupOrder': 5
+        });
+
+    }
+
+    toggleAttachment(factor) {
+            if (Apromore.BPMNEditor.Plugins.Attachment.toggle) {
+                this.state = !this.state;
+                Apromore.BPMNEditor.Plugins.Attachment.toggle();
+                this.onToggle();
+            }
+    }
+
+    onToggle() {
+        let title = this.getDescription();
+        let icon = this.getIcon();
+
+        $('#' + this.btnId + ' button').prop('title', title);
+        $('#' + this.btnId + ' button').css('background-image', 'url(' + icon + ')');
+    }
+
+    getDescription() {
+        return this.state ? window.Apromore.I18N.Attachment.hideDesc : window.Apromore.I18N.Attachment.showDesc;
+    }
+
+    getIcon() {
+        let iconUrl = this.state ? "images/ap/attachment-on.svg" : "images/ap/attachment-off.svg";
+        return _config__WEBPACK_IMPORTED_MODULE_0__["default"].PATH + iconUrl;
+    }
+};
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js")))
+
+/***/ }),
+
 /***/ "./src/bpmneditor/plugins/export.js":
 /*!******************************************!*\
   !*** ./src/bpmneditor/plugins/export.js ***!
@@ -109334,11 +109433,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _export__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./export */ "./src/bpmneditor/plugins/export.js");
 /* harmony import */ var _pdf__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./pdf */ "./src/bpmneditor/plugins/pdf.js");
 /* harmony import */ var _publishModel__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./publishModel */ "./src/bpmneditor/plugins/publishModel.js");
-/* harmony import */ var _share__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./share */ "./src/bpmneditor/plugins/share.js");
-/* harmony import */ var _simulateModel__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./simulateModel */ "./src/bpmneditor/plugins/simulateModel.js");
-/* harmony import */ var _toolbar__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./toolbar */ "./src/bpmneditor/plugins/toolbar.js");
-/* harmony import */ var _undo__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./undo */ "./src/bpmneditor/plugins/undo.js");
-/* harmony import */ var _view__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./view */ "./src/bpmneditor/plugins/view.js");
+/* harmony import */ var _attachment__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./attachment */ "./src/bpmneditor/plugins/attachment.js");
+/* harmony import */ var _share__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./share */ "./src/bpmneditor/plugins/share.js");
+/* harmony import */ var _simulateModel__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./simulateModel */ "./src/bpmneditor/plugins/simulateModel.js");
+/* harmony import */ var _toolbar__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./toolbar */ "./src/bpmneditor/plugins/toolbar.js");
+/* harmony import */ var _undo__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./undo */ "./src/bpmneditor/plugins/undo.js");
+/* harmony import */ var _view__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./view */ "./src/bpmneditor/plugins/view.js");
+
 
 
 
@@ -109351,15 +109452,16 @@ __webpack_require__.r(__webpack_exports__);
 
 //Add plugins to list
 let Plugins = {
+    Attachment: _attachment__WEBPACK_IMPORTED_MODULE_4__["default"],
     ApromoreSave: _apromoreSave__WEBPACK_IMPORTED_MODULE_0__["default"],
     Export: _export__WEBPACK_IMPORTED_MODULE_1__["default"],
     File: _pdf__WEBPACK_IMPORTED_MODULE_2__["default"],
     PublishModel: _publishModel__WEBPACK_IMPORTED_MODULE_3__["default"],
-    Share: _share__WEBPACK_IMPORTED_MODULE_4__["default"],
-    SimulateModel: _simulateModel__WEBPACK_IMPORTED_MODULE_5__["default"],
-    Toolbar: _toolbar__WEBPACK_IMPORTED_MODULE_6__["default"],
-    Undo: _undo__WEBPACK_IMPORTED_MODULE_7__["default"],
-    View: _view__WEBPACK_IMPORTED_MODULE_8__["default"]
+    Share: _share__WEBPACK_IMPORTED_MODULE_5__["default"],
+    SimulateModel: _simulateModel__WEBPACK_IMPORTED_MODULE_6__["default"],
+    Toolbar: _toolbar__WEBPACK_IMPORTED_MODULE_7__["default"],
+    Undo: _undo__WEBPACK_IMPORTED_MODULE_8__["default"],
+    View: _view__WEBPACK_IMPORTED_MODULE_9__["default"]
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (Plugins);
