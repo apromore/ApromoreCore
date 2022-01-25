@@ -223,10 +223,9 @@ public class UsernamePasswordAuthenticationProvider implements AuthenticationPro
     }
 
     /**
-     * Retrieves the correct ROLE or PERMISSION type depending on the access level, where access level is an Integer.
-     * Basically, this interprets the access value whether it's for a regular user or admin.
+     * Retrieves the roles and permissions of a user which are used to determine their access to different features.
      *
-     * @param access an integer value representing the access of the user
+     * @param access a set of roles representing the access of the user
      * @return collection of granted authorities
      */
     public List<GrantedAuthority> getAuthorities(Set<Role> access) {
