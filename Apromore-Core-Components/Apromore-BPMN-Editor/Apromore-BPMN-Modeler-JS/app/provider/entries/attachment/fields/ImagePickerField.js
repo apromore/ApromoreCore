@@ -6,6 +6,8 @@ var domEvent = require('min-dom').event;
 var domQuery = require('min-dom').query;
 var { ensureNotNull, setDefaultParameters } = require('../../common');
 
+const MAX_IMAGE_SIZE = 1000000; // 1MB max image size
+
 function previewFile(callback) {
   const preview = document.querySelector('.aux-img-preview img');
   const file = document.querySelector('#aux-img-picker-control').files[0];
@@ -18,7 +20,12 @@ function previewFile(callback) {
   }, false);
 
   if (file) {
-    reader.readAsDataURL(file); // to base64 string
+    if (file.size && file.size > MAX_IMAGE_SIZE) {
+      document.querySelector('#aux-img-picker-control').value = '';
+      Ap.common.notify('Image is too big');
+    } else {
+      reader.readAsDataURL(file); // to base64 string
+    }
   }
 }
 
