@@ -147,6 +147,7 @@ public class FolderTreeRenderer implements TreeitemRenderer {
           FolderTreeNode dropTarget = ((Treeitem) event.getTarget().getParent()).getValue();
           FolderType selectedFolder = (FolderType) dropTarget.getData();
           Set<Object> droppedObjects = new HashSet<>();
+          boolean draggedFromTree=false;
           if (event.getDragged() instanceof Listitem) {
             Listitem draggedItem = (Listitem) event.getDragged();
             draggedItem.getListbox().getSelectedItems().stream().map(Listitem::getValue).forEach(value -> {
@@ -156,10 +157,11 @@ public class FolderTreeRenderer implements TreeitemRenderer {
           } else if (event.getDragged() instanceof Treerow) {
             FolderTreeNode draggedItem = ((Treeitem) event.getDragged().getParent()).getValue();
             droppedObjects.add(draggedItem.getData());
+            draggedFromTree=true;
           }
 
           if (selectedFolder != null && droppedObjects.size() > 0) {
-            mainC.getBaseListboxController().drop(selectedFolder, droppedObjects);
+            mainC.getBaseListboxController().dropToTree(selectedFolder, droppedObjects,draggedFromTree);
           }
         } catch (Exception e) {
           LOGGER.error("Error occurred in Drag and Drop on Tree", e);
