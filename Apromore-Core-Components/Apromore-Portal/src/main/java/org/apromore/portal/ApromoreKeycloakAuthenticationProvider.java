@@ -22,6 +22,7 @@
 package org.apromore.portal;
 
 import org.apromore.manager.client.ManagerService;
+import org.apromore.portal.model.PermissionType;
 import org.apromore.portal.model.RoleType;
 import org.apromore.portal.model.UserType;
 import org.keycloak.KeycloakPrincipal;
@@ -69,12 +70,16 @@ public class ApromoreKeycloakAuthenticationProvider extends KeycloakAuthenticati
                     (KeycloakPrincipal<KeycloakSecurityContext>) token.getPrincipal();
             UserType user = getUserFromPrincipal(kcPrincipal);
 
-            //Add Apromore roles as authorities. First time users have the analyst role by default.
-            List<String> roles = user == null ? Arrays.asList("ROLE_ANALYST") :
-                    user.getRoles().stream().map(RoleType::getName).collect(Collectors.toList());
-
-            for (String role : roles) {
-                grantedAuthorities.add(new SimpleGrantedAuthority(role));
+            //Add Apromore roles and permissions as authorities. First time users have the analyst role by default.
+            if (user == null) {
+                grantedAuthorities.addAll(getNewUserAuthorities());
+            } else {
+                for (RoleType role : user.getRoles()) {
+                    grantedAuthorities.add(new SimpleGrantedAuthority(role.getName()));
+                }
+                for (PermissionType permission : user.getPermissions()) {
+                    grantedAuthorities.add(new SimpleGrantedAuthority(permission.getName()));
+                }
             }
         }
 
@@ -102,5 +107,19 @@ public class ApromoreKeycloakAuthenticationProvider extends KeycloakAuthenticati
             return managerClient.readUserByUsername(userName);
         }
         return null;
+    }
+
+    private List<GrantedAuthority> getNewUserAuthorities() {
+        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+        grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_ANALYST"));
+
+        if (managerClient != null) {
+            List<PermissionType> permissions = managerClient.getRolePermissions("ROLE_ANALYST");
+            for (PermissionType permission : permissions) {
+                grantedAuthorities.add(new SimpleGrantedAuthority(permission.getName()));
+            }
+        }
+
+        return grantedAuthorities;
     }
 }

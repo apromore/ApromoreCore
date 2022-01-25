@@ -22,10 +22,11 @@
 package org.apromore.portal;
 
 import java.io.IOException;
-import java.util.Arrays;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.apromore.plugin.portal.PortalLoggerFactory;
+import org.apromore.portal.model.PermissionType;
 import org.slf4j.Logger;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
@@ -78,12 +79,10 @@ public class AuthenticationHandler implements AuthenticationFailureHandler, Auth
     public void onAuthenticationSuccess(HttpServletRequest  request,
                                         HttpServletResponse response,
                                         Authentication      authentication) throws IOException {
-        String[] loginAuthorizedRoles = {"ROLE_ADMIN", "ROLE_MANAGER", "ROLE_ANALYST", "ROLE_VIEWER",
-                "ROLE_DESIGNER", "ROLE_DATA_SCIENTIST", "ROLE_OPERATIONS", "ROLE_VIEWER_MODELS"};
 
         //Invalidate the session if the user does not have a role with login permissions
-        if (authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).noneMatch(
-                a -> Arrays.asList(loginAuthorizedRoles).contains(a))) {
+        if (authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority)
+                .noneMatch(a -> PermissionType.PORTAL_LOGIN.getName().equals(a))) {
 
             LOGGER.info("User \"{}\" does not have login permissions", authentication.getName());
             request.getSession().invalidate();

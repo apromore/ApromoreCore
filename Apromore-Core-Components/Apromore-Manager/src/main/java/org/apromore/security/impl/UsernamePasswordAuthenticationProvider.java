@@ -25,6 +25,7 @@ package org.apromore.security.impl;
 
 import org.apromore.dao.UserRepository;
 import org.apromore.dao.model.Membership;
+import org.apromore.dao.model.Permission;
 import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
 import org.apromore.mapper.UserMapper;
@@ -222,7 +223,7 @@ public class UsernamePasswordAuthenticationProvider implements AuthenticationPro
     }
 
     /**
-     * Retrieves the correct ROLE type depending on the access level, where access level is an Integer.
+     * Retrieves the correct ROLE or PERMISSION type depending on the access level, where access level is an Integer.
      * Basically, this interprets the access value whether it's for a regular user or admin.
      *
      * @param access an integer value representing the access of the user
@@ -232,6 +233,9 @@ public class UsernamePasswordAuthenticationProvider implements AuthenticationPro
         List<GrantedAuthority> authList = new ArrayList<>();
         for (Role role : access) {
             authList.add(new SimpleGrantedAuthority(role.getName()));
+            for(Permission permission : role.getPermissions()) {
+                authList.add(new SimpleGrantedAuthority(permission.getName()));
+            }
         }
         return authList;
     }
