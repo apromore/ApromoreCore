@@ -38,6 +38,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.ATrace;
@@ -83,7 +84,10 @@ import org.apromore.plugin.portal.processdiscoverer.vis.ProcessVisualizer;
 import org.apromore.processdiscoverer.Abstraction;
 import org.apromore.processdiscoverer.AbstractionParams;
 import org.apromore.processdiscoverer.ProcessDiscoverer;
+import org.apromore.processdiscoverer.abstraction.BPMNAbstraction;
+import org.apromore.processdiscoverer.abstraction.DFGAbstraction;
 import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Activity;
+import org.apromore.processsimulation.dto.EdgeFrequency;
 import org.apromore.processsimulation.dto.SimulationData;
 import org.apromore.service.EventLogService;
 import org.deckfour.xes.model.XLog;
@@ -103,6 +107,7 @@ import org.springframework.util.CollectionUtils;
  *
  * @author Bruce Nguyen
  */
+@Slf4j
 public class PDAnalyst {
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(PDAnalyst.class);
 
@@ -641,7 +646,7 @@ public class PDAnalyst {
      * @param abs Process Abstraction
      * @return SimulationData
      */
-    public SimulationData getSimulationData(@NonNull Abstraction abs) {
+    public SimulationData getSimulationData(@NonNull Abstraction abs) throws Exception {
         Map<String, Double> nodeDurationMap =
             abs.getDiagram().getNodes()
                 .stream()
@@ -664,7 +669,63 @@ public class PDAnalyst {
             .startTime(filteredAPMLog.getStartTime())
             .endTime(filteredAPMLog.getEndTime())
             .nodeWeights(nodeDurationMap)
+            .edgeFrequencies(groupOutboundEdgeFrequenciesByGateway(abs))
             .build();
+    }
+
+    /**
+     * Converts a DFGAbstraction to a BPMNAbstraction so as to include arc weights for outgoing edges from gateways,
+     * which are only available in a BPMN model.
+     *
+     * @param abstraction the abstraction to be converted
+     * @return the BPMNAbstraction representation of the input abstraction
+     * @throws Exception in the event of a conversion error
+     */
+    public BPMNAbstraction convertToBpmnAbstraction(@NonNull Abstraction abstraction) throws Exception {
+        final BPMNAbstraction bpmnAbstraction;
+        if (abstraction instanceof DFGAbstraction) {
+            bpmnAbstraction =
+                new BPMNAbstraction(attLog, (DFGAbstraction) abstraction, abstraction.getAbstractionParams());
+
+        } else if (abstraction instanceof BPMNAbstraction) {
+            bpmnAbstraction = (BPMNAbstraction) abstraction;
+        } else {
+            String errMsg = "Unsupported abstraction. Unable to convert abstraction into BPMN Abstraction";
+            log.warn(errMsg);
+            throw new InvalidDataException(errMsg);
+        }
+
+        return bpmnAbstraction;
+    }
+
+    private Map<String, List<EdgeFrequency>> groupOutboundEdgeFrequenciesByGateway(final Abstraction abstraction) {
+
+        final BPMNAbstraction bpmnAbstraction;
+        Map<String, List<EdgeFrequency>> gatewayIdToEdgeFrequencies = null;
+        try {
+            bpmnAbstraction = convertToBpmnAbstraction(abstraction);
+            if (bpmnAbstraction != null) {
+                gatewayIdToEdgeFrequencies = bpmnAbstraction.getValidBPMNDiagram().getGateways().stream()
+                    .collect(Collectors.toMap(
+                        // Key -> gatewayId
+                        gateway -> gateway.getId().toString(),
+
+                        // Value -> List of outbound edge frequencies
+                        gateway -> bpmnAbstraction.getValidBPMNDiagram().getOutEdges(gateway).stream()
+                            .map(bpmnEdge -> EdgeFrequency.builder()
+                                .edgeId(bpmnEdge.getEdgeID().toString())
+                                .frequency(bpmnAbstraction.getArcPrimaryWeight(bpmnEdge))
+                                .build())
+                            .collect(Collectors.toList())
+                    ));
+            }
+
+        } catch (Exception e) {
+            String errMsg = "Unsupported abstraction. Unable to compute gateway probabilities";
+            log.warn(errMsg, e);
+        }
+
+        return gatewayIdToEdgeFrequencies;
     }
 
     // For debug only

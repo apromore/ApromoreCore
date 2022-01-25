@@ -34,6 +34,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.DayOfWeek;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -44,6 +45,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import lombok.extern.slf4j.Slf4j;
 import org.apromore.processsimulation.config.SimulationInfoConfig;
+import org.apromore.processsimulation.dto.EdgeFrequency;
 import org.apromore.processsimulation.dto.SimulationData;
 import org.apromore.processsimulation.model.Currency;
 import org.apromore.processsimulation.model.Distribution;
@@ -54,6 +56,7 @@ import org.apromore.processsimulation.model.ExtensionElements;
 import org.apromore.processsimulation.model.ProcessSimulationInfo;
 import org.apromore.processsimulation.model.Resource;
 import org.apromore.processsimulation.model.Rule;
+import org.apromore.processsimulation.model.SequenceFlow;
 import org.apromore.processsimulation.model.TimeUnit;
 import org.apromore.processsimulation.model.Timetable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -109,8 +112,9 @@ public class SimulationInfoService {
 
             deriveResourceInfo(builder, simulationData);
 
-            processSimulationInfo = builder.build();
+            deriveGatewayProbabilities(builder, simulationData);
 
+            processSimulationInfo = builder.build();
         }
 
         return processSimulationInfo;
@@ -192,7 +196,34 @@ public class SimulationInfoService {
                     .timetableId(config.getDefaultTimetable().get(CONFIG_DEFAULT_ID_KEY))
                     .build()));
         }
+    }
 
+    private void deriveGatewayProbabilities(
+        final ProcessSimulationInfo.ProcessSimulationInfoBuilder builder,
+        final SimulationData simulationData) {
+
+        List<SequenceFlow> sequenceFlowList = new ArrayList<>();
+        if (simulationData.getEdgeFrequencies() != null && !simulationData.getEdgeFrequencies().isEmpty()) {
+
+            simulationData.getEdgeFrequencies().entrySet().forEach(gatewayEntry -> {
+
+                // Calculate the total outbound edge frequencies for each gateway
+                double totalFrequency = gatewayEntry.getValue().stream()
+                    .map(EdgeFrequency::getFrequency)
+                    .reduce(0.0D, Double::sum);
+
+                gatewayEntry.getValue().forEach(edgeFrequency -> {
+                    sequenceFlowList.add(SequenceFlow.builder()
+                        .elementId(edgeFrequency.getEdgeId())
+                        .executionProbability(
+                            BigDecimal.valueOf(edgeFrequency.getFrequency() / totalFrequency)
+                                .setScale(4, RoundingMode.HALF_UP).doubleValue())
+                        .build());
+                });
+            });
+
+            builder.sequenceFlows(sequenceFlowList);
+        }
     }
 
     /**

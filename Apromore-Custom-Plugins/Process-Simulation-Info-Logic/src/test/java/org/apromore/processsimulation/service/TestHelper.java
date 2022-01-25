@@ -40,6 +40,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.io.IOUtils;
+import org.apromore.processsimulation.dto.EdgeFrequency;
 import org.apromore.processsimulation.dto.SimulationData;
 import org.apromore.processsimulation.model.Currency;
 import org.apromore.processsimulation.model.Distribution;
@@ -49,6 +50,7 @@ import org.apromore.processsimulation.model.Errors;
 import org.apromore.processsimulation.model.ProcessSimulationInfo;
 import org.apromore.processsimulation.model.Resource;
 import org.apromore.processsimulation.model.Rule;
+import org.apromore.processsimulation.model.SequenceFlow;
 import org.apromore.processsimulation.model.TimeUnit;
 import org.apromore.processsimulation.model.Timetable;
 import org.w3c.dom.Document;
@@ -59,7 +61,10 @@ import org.xml.sax.SAXException;
 public class TestHelper {
 
     public static ProcessSimulationInfo createMockProcessSimulationInfo(
-        boolean includeTasks, boolean includeTimetable, boolean includeResource) {
+        boolean includeTasks,
+        boolean includeTimetable,
+        boolean includeResource,
+        boolean includeGatewayProbabilities) {
         ProcessSimulationInfo.ProcessSimulationInfoBuilder builder = ProcessSimulationInfo.builder()
             .id("some_random_guid")
             .errors(Errors.builder().build())
@@ -117,6 +122,22 @@ public class TestHelper {
                 .build()));
         }
 
+        if (includeGatewayProbabilities) {
+            builder.sequenceFlows(Arrays.asList(
+                SequenceFlow.builder()
+                    .elementId("edge2")
+                    .executionProbability(.2025)
+                .build(),
+                SequenceFlow.builder()
+                    .elementId("edge3")
+                    .executionProbability(.3016)
+                    .build(),
+                SequenceFlow.builder()
+                    .elementId("edge4")
+                    .executionProbability(.4959)
+                    .build()));
+        }
+
         return builder.build();
     }
 
@@ -128,9 +149,11 @@ public class TestHelper {
             .startTime(1577797200000L)
             .endTime(1580475600000L)
             .nodeWeights(Map.of("node1",34.34, "node2", 56.56, "node3", 89.89))
+            .edgeFrequencies(Map.of("node9", List.of(
+                        EdgeFrequency.builder().edgeId("edge2").frequency(2025).build(),
+                        EdgeFrequency.builder().edgeId("edge3").frequency(3016).build(),
+                        EdgeFrequency.builder().edgeId("edge4").frequency(4959).build())))
             .build();
-
-
         return simulationData;
     }
 

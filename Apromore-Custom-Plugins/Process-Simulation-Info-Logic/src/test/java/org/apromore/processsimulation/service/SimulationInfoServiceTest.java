@@ -277,7 +277,8 @@ class SimulationInfoServiceTest {
         throws IOException, XPathExpressionException, ParserConfigurationException, SAXException {
         // given
         String bpmn = TestHelper.readBpmnFile("/no_simulation_info.bpmn");
-        ProcessSimulationInfo processSimulationInfo = TestHelper.createMockProcessSimulationInfo(false, false, false);
+        ProcessSimulationInfo processSimulationInfo =
+            TestHelper.createMockProcessSimulationInfo(false, false, false, false);
 
         // when
         String enrichedBpmn = simulationInfoService.enrichWithSimulationInfo(bpmn, processSimulationInfo);
@@ -291,7 +292,8 @@ class SimulationInfoServiceTest {
         throws IOException, XPathExpressionException, ParserConfigurationException, SAXException {
         // given
         String bpmn = TestHelper.readBpmnFile("/no_simulation_info.bpmn");
-        ProcessSimulationInfo processSimulationInfo = TestHelper.createMockProcessSimulationInfo(true, false, false);
+        ProcessSimulationInfo processSimulationInfo =
+            TestHelper.createMockProcessSimulationInfo(true, false, false, false);
 
         // when
         String enrichedBpmn = simulationInfoService.enrichWithSimulationInfo(bpmn, processSimulationInfo);
@@ -305,7 +307,8 @@ class SimulationInfoServiceTest {
         throws IOException, XPathExpressionException, ParserConfigurationException, SAXException {
         // given
         String bpmn = TestHelper.readBpmnFile("/no_simulation_info.bpmn");
-        ProcessSimulationInfo processSimulationInfo = TestHelper.createMockProcessSimulationInfo(false, true, false);
+        ProcessSimulationInfo processSimulationInfo =
+            TestHelper.createMockProcessSimulationInfo(false, true, false, false);
 
         // when
         String enrichedBpmn = simulationInfoService.enrichWithSimulationInfo(bpmn, processSimulationInfo);
@@ -319,7 +322,8 @@ class SimulationInfoServiceTest {
         throws IOException, XPathExpressionException, ParserConfigurationException, SAXException {
         // given
         String bpmn = TestHelper.readBpmnFile("/no_simulation_info.bpmn");
-        ProcessSimulationInfo processSimulationInfo = TestHelper.createMockProcessSimulationInfo(false, false, true);
+        ProcessSimulationInfo processSimulationInfo =
+            TestHelper.createMockProcessSimulationInfo(false, false, true, false);
 
         // when
         String enrichedBpmn = simulationInfoService.enrichWithSimulationInfo(bpmn, processSimulationInfo);
@@ -329,11 +333,27 @@ class SimulationInfoServiceTest {
     }
 
     @Test
+    void should_enrich_with_gateway_probability_simulation_info()
+        throws IOException, XPathExpressionException, ParserConfigurationException, SAXException {
+        // given
+        String bpmn = TestHelper.readBpmnFile("/no_simulation_info.bpmn");
+        ProcessSimulationInfo processSimulationInfo =
+            TestHelper.createMockProcessSimulationInfo(false, false, false, true);
+
+        // when
+        String enrichedBpmn = simulationInfoService.enrichWithSimulationInfo(bpmn, processSimulationInfo);
+
+        // then
+        assertBpmnGatewayProbabilitySimulationInfo(enrichedBpmn);
+    }
+
+    @Test
     void should_enrich_with_all_simulation_info()
         throws IOException, XPathExpressionException, ParserConfigurationException, SAXException {
         // given
         String bpmn = TestHelper.readBpmnFile("/no_simulation_info.bpmn");
-        ProcessSimulationInfo processSimulationInfo = TestHelper.createMockProcessSimulationInfo(true, true, true);
+        ProcessSimulationInfo processSimulationInfo =
+            TestHelper.createMockProcessSimulationInfo(true, true, true, true);
 
         // when
         String enrichedBpmn = simulationInfoService.enrichWithSimulationInfo(bpmn, processSimulationInfo);
@@ -360,6 +380,7 @@ class SimulationInfoServiceTest {
         assertBpmnTaskProcessSimulationInfo(enrichedBpmn);
         assertBpmnTimetableSimulationInfo(enrichedBpmn);
         assertBpmnResourceSimulationInfo(enrichedBpmn);
+        assertBpmnGatewayProbabilitySimulationInfo(enrichedBpmn);
     }
 
     @Test
@@ -367,7 +388,8 @@ class SimulationInfoServiceTest {
         throws IOException, XPathExpressionException, ParserConfigurationException, SAXException {
         // given
         String bpmn = TestHelper.readBpmnFile("/no_simulation_info_without_namespace_prefix.bpmn");
-        ProcessSimulationInfo processSimulationInfo = TestHelper.createMockProcessSimulationInfo(false, false, false);
+        ProcessSimulationInfo processSimulationInfo =
+            TestHelper.createMockProcessSimulationInfo(false, false, false, false);
 
         // when
         String enrichedBpmn = simulationInfoService.enrichWithSimulationInfo(bpmn, processSimulationInfo);
@@ -394,7 +416,8 @@ class SimulationInfoServiceTest {
         // given
         when(config.isEnable()).thenReturn(false);
         String originalBpmn = TestHelper.readBpmnFile("/no_simulation_info.bpmn");
-        ProcessSimulationInfo processSimulationInfo = TestHelper.createMockProcessSimulationInfo(true, true, true);
+        ProcessSimulationInfo processSimulationInfo =
+            TestHelper.createMockProcessSimulationInfo(true, true, true, true);
 
         // when
         String enrichedBpmn = simulationInfoService.enrichWithSimulationInfo(originalBpmn, processSimulationInfo);
@@ -439,7 +462,7 @@ class SimulationInfoServiceTest {
         Map<String, Node> elementsMap = new HashMap<>();
         for (int i = 0; i < elementNodeList.getLength(); i++) {
             Node element = elementNodeList.item(i);
-            elementsMap.put(element.getAttributes().getNamedItem("elementId").getNodeValue(),  element);
+            elementsMap.put(element.getAttributes().getNamedItem("elementId").getNodeValue(), element);
         }
 
         assertTaskElement("node1", "EXPONENTIAL", "seconds", "34.34", elementsMap);
@@ -495,4 +518,32 @@ class SimulationInfoServiceTest {
         assertEquals("23", resourceNode.getAttributes().getNamedItem("totalAmount").getNodeValue());
     }
 
+    private void assertBpmnGatewayProbabilitySimulationInfo(String bpmnXmlString)
+        throws XPathExpressionException, ParserConfigurationException, IOException, SAXException {
+
+        NodeList seqFlowNodeList = TestHelper.getProcessSimulationInfo(bpmnXmlString,
+            "/definitions/process/extensionElements/processSimulationInfo/sequenceFlows").getChildNodes();
+
+        Map<String, Node> sequenceFlowMap = new HashMap<>();
+        for (int i = 0; i < seqFlowNodeList.getLength(); i++) {
+            Node seqFlow = seqFlowNodeList.item(i);
+            sequenceFlowMap.put(seqFlow.getAttributes().getNamedItem("elementId").getNodeValue(), seqFlow);
+        }
+
+        assertSequenceFlow("edge2", .2025, sequenceFlowMap);
+        assertSequenceFlow("edge3", .3016, sequenceFlowMap);
+        assertSequenceFlow("edge4", .4959, sequenceFlowMap);
+
+    }
+
+    private void assertSequenceFlow(final String elementId, double executionProbability,
+                                    Map<String, Node> sequenceFlowMap) {
+
+        Node seqFlowNode = sequenceFlowMap.get(elementId);
+
+        assertEquals(elementId, seqFlowNode.getAttributes().getNamedItem("elementId").getNodeValue());
+        assertEquals(Double.toString(executionProbability),
+            seqFlowNode.getAttributes().getNamedItem("executionProbability").getNodeValue());
+
+    }
 }
