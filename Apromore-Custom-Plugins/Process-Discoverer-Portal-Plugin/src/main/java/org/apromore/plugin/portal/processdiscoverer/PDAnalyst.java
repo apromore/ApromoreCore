@@ -647,7 +647,7 @@ public class PDAnalyst {
      * @param abs Process Abstraction
      * @return SimulationData
      */
-    public SimulationData getSimulationData(@NonNull Abstraction abs) throws Exception {
+    public SimulationData getSimulationData(@NonNull Abstraction abs) {
         Map<String, Double> nodeDurationMap =
             abs.getDiagram().getNodes()
                 .stream()

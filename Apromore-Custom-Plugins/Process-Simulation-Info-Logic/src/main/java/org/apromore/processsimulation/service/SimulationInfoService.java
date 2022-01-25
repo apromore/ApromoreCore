@@ -212,14 +212,12 @@ public class SimulationInfoService {
                     .map(EdgeFrequency::getFrequency)
                     .reduce(0.0D, Double::sum);
 
-                gatewayEntry.getValue().forEach(edgeFrequency -> {
-                    sequenceFlowList.add(SequenceFlow.builder()
-                        .elementId(edgeFrequency.getEdgeId())
-                        .executionProbability(
-                            BigDecimal.valueOf(edgeFrequency.getFrequency() / totalFrequency)
-                                .setScale(4, RoundingMode.HALF_UP).doubleValue())
-                        .build());
-                });
+                gatewayEntry.getValue().forEach(edgeFrequency -> sequenceFlowList.add(SequenceFlow.builder()
+                    .elementId(edgeFrequency.getEdgeId())
+                    .executionProbability(
+                        BigDecimal.valueOf(edgeFrequency.getFrequency() / totalFrequency)
+                            .setScale(4, RoundingMode.HALF_UP).doubleValue())
+                    .build()));
             });
 
             builder.sequenceFlows(sequenceFlowList);
