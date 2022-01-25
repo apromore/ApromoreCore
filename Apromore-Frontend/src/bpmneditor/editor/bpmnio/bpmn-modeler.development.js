@@ -96128,7 +96128,7 @@ Comments.$inject = [ 'config', 'eventBus', 'overlays', 'bpmnjs' ];
 Comments.OVERLAY_HTML =
   '<div class="comments-overlay">' +
     '<div class="toggle">' +
-      '<span class="icon-comment"></span>' +
+      '<span class="comments-icon-comment"></span>' +
       '<span class="comment-count" data-comment-count></span>' +
     '</div>' +
     '<div class="content">' +
@@ -96141,7 +96141,7 @@ Comments.OVERLAY_HTML =
 
 Comments.COMMENT_HTML =
   '<div class="comment">' +
-    '<div data-text></div><a href class="delete icon-delete" data-delete></a>' +
+    '<div data-text></div><a href class="delete comments-icon-delete" data-delete></a>' +
   '</div>';
 
 
