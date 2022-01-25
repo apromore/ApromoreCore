@@ -185,10 +185,10 @@
                           username: '${arg.username}'
                         };
                       editorWrapper = new Apromore.BPMNEditor.EditorApp (config);
-                      await editorWrapper.init(config);
+                      return await editorWrapper.init(config);
                     }
 					//console.log('${arg.bpmnXML}');
-                    createEditor('${arg.bpmnXML}').then(() => {
+                    createEditor('${arg.bpmnXML}').then((editor) => {
                         window.Ap = window.Ap || {};
                         Apromore.BPMNEditor.Plugins.Share.shareExt = function() {
                           zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onShare'));
@@ -211,6 +211,10 @@
 
                         Apromore.BPMNEditor.Plugins.PublishModel.apromorePublishModel = function() {
                           zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onPublishModel'));
+                        };
+
+                        Apromore.BPMNEditor.Plugins.Attachment.toggle = function() {
+                          jq(".djs-overlay-container").toggleClass('aux-disabled');
                         };
 
                         //window.setTimeout(function() {
