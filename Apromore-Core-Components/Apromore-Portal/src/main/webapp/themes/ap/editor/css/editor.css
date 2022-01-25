@@ -318,14 +318,23 @@
   width: 50%;
 }
 
+#ap-bpmn-icon-set .icon-item {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
+  margin-top: 5px;
+}
+
 #ap-bpmn-icon-set .icon-item input {
   margin-right: 5px;
+  flex: 1 1 auto;
+  width: 120px;
 }
 
 #ap-bpmn-icon-set .icon-name {
   box-sizing: border-box;
   display: inline-block;
-  margin-top: 5px;
   line-height: 24px;
   vertical-align: bottom;
   color: #606060;
@@ -337,7 +346,7 @@
 }
 
 #ap-bpmn-icon-set .remove {
-  margin-left: 8px;
+  margin-left: 5px;
 }
 
 #ap-bpmn-icon-set .remove,
