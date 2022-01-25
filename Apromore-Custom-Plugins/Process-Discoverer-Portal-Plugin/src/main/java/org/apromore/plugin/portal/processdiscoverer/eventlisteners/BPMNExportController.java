@@ -25,6 +25,7 @@ package org.apromore.plugin.portal.processdiscoverer.eventlisteners;
 import static org.apromore.commons.item.Constants.HOME_FOLDER_NAME;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -291,6 +292,14 @@ public class BPMNExportController extends AbstractController {
             log.warn(
                 "Exporting simulation info feature is disabled. Model will be exported without simulation parameters");
         }
+
+        showSaveDialog(defaultProcessName, conditionText, footnoteMessage);
+    }
+
+    private void showSaveDialog(
+        final String defaultProcessName,
+        final String conditionText,
+        final String footnoteMessage) throws IOException {
 
         InputDialog.showInputDialog(
             parent.getLabel("saveBPMN_message"),
