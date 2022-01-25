@@ -734,6 +734,24 @@ public abstract class BaseListboxController extends BaseController {
     refreshContent();
   }
 
+  public void dropToTree(FolderType dropToFolder,Set<Object> dropObjects,boolean draggedFromTree) throws Exception {
+    if (dropObjects.stream().anyMatch(dropObject -> (dropObject instanceof FolderType && dropToFolder.getId().equals(((FolderType) dropObject).getId())))) {
+      Notification.error(Labels.getLabel("portal_source_destination_folder_notsame_message"));
+      return;
+    }
+    FolderType currentFolder = mainController.getPortalSession().getCurrentFolder();
+    mainController.getPortalSession().setCurrentFolder(dropToFolder);
+    mainController.getCopyPasteController().drop(dropObjects, dropObjects.size(), dropToFolder);
+    mainController.getPortalSession().setCurrentFolder(currentFolder);
+    if(draggedFromTree){
+      refreshContent();
+    }else {
+      List<Integer> openFoldersId = mainController.getNavigationController().getAllOpenFolderItems();
+      mainController.reloadSummaries2();
+      mainController.getNavigationController().restoreTreeItem(openFoldersId);
+    }
+  }
+
   private ArrayList<FolderType> getSelectedFolders() {
     ArrayList<FolderType> folderList = new ArrayList<>();
     if (this instanceof ProcessListboxController) {
