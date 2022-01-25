@@ -56,6 +56,7 @@ import org.apromore.apmlog.filter.types.Section;
 import org.apromore.apmlog.stats.LogStatsAnalyzer;
 import org.apromore.apmlog.stats.TimeStatsProcessor;
 import org.apromore.apmlog.xes.XESAttributeCodes;
+import org.apromore.calendar.exception.CalendarNotExistsException;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.commons.datetime.DateTimeUtils;
 import org.apromore.commons.datetime.DurationUtils;
@@ -181,7 +182,7 @@ public class PDAnalyst {
         // ProcessDiscoverer logic with default attribute
         this.calendarModel = eventLogService.getCalendarFromLog(contextData.getLogId());
         if (calendarModel == null) {
-            throw new Exception("The open log doesn't have an associated calendar.");
+            throw new CalendarNotExistsException("The open log doesn't have an associated calendar.");
         }
 
         this.originalAPMLog.setCalendarModel(this.calendarModel);
