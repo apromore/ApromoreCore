@@ -367,7 +367,6 @@ public class NavigationController extends BaseController {
             if (value instanceof FolderTreeNode) {
                 FolderType folder = (FolderType) ((FolderTreeNode) value).getData();
                 if(openFolderItems.contains(folder.getId())){
-                    System.out.println("Folder Id: "+folder.getId());
                     treeitem.setOpen(true);
                 }
             }
