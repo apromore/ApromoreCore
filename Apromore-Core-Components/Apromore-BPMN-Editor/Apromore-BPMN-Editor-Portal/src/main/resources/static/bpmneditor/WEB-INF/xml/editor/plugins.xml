@@ -34,6 +34,7 @@
 		<plugin source="share.js" name="Share"/>
 		<plugin source="simulateModel.js" name="SimulateModel"/>
 		<plugin source="publishModel.js" name="PublishModel"/>
+		<plugin source="attachment.js" name="Attachment"/>
 
 		<!-- Added to dynamically include Apromore plug-ins -->
 		<?EDITOR-PLUGINS?>
