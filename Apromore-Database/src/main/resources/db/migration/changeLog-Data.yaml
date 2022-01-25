@@ -1716,3 +1716,95 @@ databaseChangeLog:
               FROM (SELECT * FROM user_role) AS user_role_copy
               WHERE roleid = 1
               ) AND roleid NOT IN (1, 9);
+  - changeSet:
+      id: 20220125105200
+      author: janeh
+      comment: "add login permission"
+      changes:
+        - insert:
+            tableName: permission
+            columns:
+              - column:
+                  name: id
+                  value: "23"
+              - column:
+                  name: row_guid
+                  value: "d7ff28d6-7cdc-11ec-90d6-0242ac120003"
+              - column:
+                  name: permission_name
+                  value: "Portal login"
+              - column:
+                  name: permission_description
+                  value: "Log in to Apromore Portal"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "1"
+              - column:
+                  name: permissionid
+                  value: "23"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "3"
+              - column:
+                  name: permissionid
+                  value: "23"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "4"
+              - column:
+                  name: permissionid
+                  value: "23"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "5"
+              - column:
+                  name: permissionid
+                  value: "23"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "6"
+              - column:
+                  name: permissionid
+                  value: "23"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "7"
+              - column:
+                  name: permissionid
+                  value: "23"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "8"
+              - column:
+                  name: permissionid
+                  value: "23"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "10"
+              - column:
+                  name: permissionid
+                  value: "23"
