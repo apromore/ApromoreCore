@@ -90,7 +90,7 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 			popupType = (String) Executions.getCurrent().getArg().get("POPUP_TYPE");
 			if (popupType != null && !PortalPluginResolver.resolve().isEmpty()) {
 				switch (popupType) {
-					case "PROCESS": loadPopupMenu(menuPopup, "process-popup-menu"); break;
+					case POPUP_MENU_PROCESS : loadPopupMenu(menuPopup, "process-popup-menu"); break;
 					case "LOG":     loadPopupMenu(menuPopup, "log-popup-menu"); break;
 					case "CANVAS":  loadPopupMenu(menuPopup, "canvas-popup-menu"); break;
 					case "FOLDER":
@@ -404,12 +404,13 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 						popupLabel = "plugin_process_unpublishShort_text";
 					}
 					break;
+				default: popupLabel=null;
 			}
 			if(popupLabel!=null){
 				item.setLabel(Labels.getLabel(popupLabel));
 			}
 		}catch (Exception ex){
-			LOGGER.error("Property not found : "+ex.getMessage());
+			LOGGER.error("Property not found " ,ex.getMessage());
 		}
 	}
 
