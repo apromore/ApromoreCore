@@ -410,7 +410,7 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 				item.setLabel(Labels.getLabel(popupLabel));
 			}
 		}catch (Exception ex){
-			LOGGER.error("Property not found " ,ex.getMessage());
+			LOGGER.error("Error occurred in getting label" ,ex);
 		}
 	}
 
