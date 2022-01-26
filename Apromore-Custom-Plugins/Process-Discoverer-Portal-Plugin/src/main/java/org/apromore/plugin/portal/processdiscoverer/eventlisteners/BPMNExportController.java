@@ -100,6 +100,7 @@ public class BPMNExportController extends AbstractController {
     private boolean showProgressBar;
 
     private SimulationInfoService simulationInfoService;
+    private BPMNAbstraction bpmnAbstraction;
 
     public BPMNExportController(PDController controller, boolean showProgressBar) {
         super(controller);
@@ -215,7 +216,7 @@ public class BPMNExportController extends AbstractController {
             throw new InvalidOutputException("Missing layout of the process map for exporting BPMN diagram.");
         }
 
-        BPMNAbstraction bpmnAbstraction = controller.getProcessAnalyst().convertToBpmnAbstraction(abs);
+        bpmnAbstraction = controller.getProcessAnalyst().convertToBpmnAbstraction(abs);
 
         // Prepare diagram for export
         BPMNDiagram diagram = bpmnAbstraction.getValidBPMNDiagram();
@@ -316,7 +317,7 @@ public class BPMNExportController extends AbstractController {
 
                         // Derive process simulation data
                         SimulationData simulationData = controller.getProcessAnalyst()
-                            .getSimulationData(controller.getOutputData().getAbstraction());
+                            .getSimulationData(bpmnAbstraction);
 
                         // Enrich the exported bpmn with process simulation info
                         minedModel = simulationInfoService.enrichWithSimulationInfo(minedModel, simulationData);
