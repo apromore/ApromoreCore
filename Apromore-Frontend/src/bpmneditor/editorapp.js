@@ -150,7 +150,7 @@ export default class EditorApp {
     async _collapsePanels() {
         let me = this;
         return new Promise(async (resolve, reject) => {
-            await Utils.delay(200);
+            await Utils.delay(300);
             this.useSimulationPanel ? me.layout_regions.east.collapse() : me.layout_regions.east.hide();
             me.layout_regions.west.hide();
             resolve('PanelCollapsedCompleted');

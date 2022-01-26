@@ -107828,7 +107828,7 @@ Comments.$inject = [ 'config', 'eventBus', 'overlays', 'bpmnjs' ];
 Comments.OVERLAY_HTML =
   '<div class="comments-overlay">' +
     '<div class="toggle">' +
-      '<span class="icon-comment"></span>' +
+      '<span class="comments-icon-comment"></span>' +
       '<span class="comment-count" data-comment-count></span>' +
     '</div>' +
     '<div class="content">' +
@@ -107841,7 +107841,7 @@ Comments.OVERLAY_HTML =
 
 Comments.COMMENT_HTML =
   '<div class="comment">' +
-    '<div data-text></div><a href class="delete icon-delete" data-delete></a>' +
+    '<div data-text></div><a href class="delete comments-icon-delete" data-delete></a>' +
   '</div>';
 
 
@@ -108547,7 +108547,7 @@ class EditorApp {
     async _collapsePanels() {
         let me = this;
         return new Promise(async (resolve, reject) => {
-            await _utils__WEBPACK_IMPORTED_MODULE_3__["default"].delay(200);
+            await _utils__WEBPACK_IMPORTED_MODULE_3__["default"].delay(300);
             this.useSimulationPanel ? me.layout_regions.east.collapse() : me.layout_regions.east.hide();
             me.layout_regions.west.hide();
             resolve('PanelCollapsedCompleted');
