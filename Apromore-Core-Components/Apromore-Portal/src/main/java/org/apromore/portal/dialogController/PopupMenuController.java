@@ -82,6 +82,7 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 	private boolean popUpOnTree=false;
 	private FolderType selectedFolder=null;
 	private String popupType;
+	private static final String POPUP_MENU_PROCESS="PROCESS";
 
 	@Override
 	public void doAfterCompose(Menupopup menuPopup) {
@@ -381,9 +382,35 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 		}
 		String label = plugin.getLabel(Locale.getDefault());
 		item.setLabel(label);
+		if(POPUP_MENU_PROCESS.equals(popupType)){
+			//Modify Label for Model Popup Menu
+			getModifiedMenuLabel(plugin,itemId,item);
+		}
 		item.setDisabled(plugin.getAvailability() == PortalPlugin.Availability.DISABLED);
 		item.addEventListener(ON_CLICK, event -> plugin.execute(getPortalContext()));
 		popup.appendChild(item);
+	}
+	private void getModifiedMenuLabel(PortalPlugin plugin,String itemId, Menuitem item){
+		try {
+			String popupLabel=null;
+			switch (itemId) {
+				case PluginCatalog.PLUGIN_EDIT_MODEL: popupLabel="plugin_discover_editModelShort_text"; break;
+				case PluginCatalog.PLUGIN_SIMULATE_MODEL:popupLabel="plugin_analyze_simulateModelShort_text"; break;
+				case PluginCatalog.PLUGIN_SEARCH_MODELS:popupLabel="plugin_redesign_searchModelsShort_text"; break;
+				case PluginCatalog.PLUGIN_PUBLISH_MODEL:
+					if(plugin.getIconPath()!=null && plugin.getIconPath().contains("unlink")) {
+						popupLabel = "plugin_process_publishShort_text";
+					}else{
+						popupLabel = "plugin_process_unpublishShort_text";
+					}
+					break;
+			}
+			if(popupLabel!=null){
+				item.setLabel(Labels.getLabel(popupLabel));
+			}
+		}catch (Exception ex){
+			LOGGER.error("Property not found : "+ex.getMessage());
+		}
 	}
 
 	private void addRenameMenuItem(Menupopup popup) {
