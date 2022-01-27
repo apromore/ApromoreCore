@@ -91,10 +91,8 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 		try {
 			portalPluginMap = PortalPluginResolver.getPortalPluginMap();
 			popupType = (String) Executions.getCurrent().getArg().get("POPUP_TYPE");
-			if(getBaseListboxController().getSelection().size()>1 && getBaseListboxController().getSelection().size()<=MAX_SELECTION_FOR_MENU_MULTIPLE){
-				if(handleMenuForMultipleSelection(menuPopup)){
+			if(getBaseListboxController().getSelection().size()>1 && getBaseListboxController().getSelection().size()<=MAX_SELECTION_FOR_MENU_MULTIPLE && handleMenuForMultipleSelection(menuPopup)){
 					return; // Customize Menu will Open for multiple selection
-				}
 			}
 			if (popupType != null && !PortalPluginResolver.resolve().isEmpty()) {
 				switch (popupType) {
@@ -166,7 +164,8 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 		popup.appendChild(item);
 	}
 	private boolean handleMenuForMultipleSelection(Menupopup menuPopup) {
-		int countLog=0,countProcess=0;
+		int countLog=0;
+		int countProcess=0;
 		for (Object obj : getBaseListboxController().getListModel().getSelection()) {
 			if (obj instanceof FolderType) {
 				return false; // if there is any folder selected then right-click menu will work normally
