@@ -53,6 +53,7 @@ import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventQueues;
+import org.zkoss.zkplus.spring.SpringUtil;
 
 /**
  * Static methods for typed access to user session attributes.
@@ -108,6 +109,12 @@ public abstract class UserSessionManager {
 
     public static UserType getCurrentUser() {
 	Object attribute = getAttribute(USER);
+
+	if (attribute == null) {
+		ManagerService managerService = (ManagerService) SpringUtil.getBean("managerClient");
+		initializeUser(managerService, null, null, null);
+		attribute = getAttribute(USER);
+	}
 
 	return attribute instanceof UserType ? (UserType) attribute : null;
     }
