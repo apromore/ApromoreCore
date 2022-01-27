@@ -34,6 +34,15 @@ import org.springframework.security.web.header.writers.StaticHeadersWriter;
 @ConditionalOnProperty(prefix = "keycloak", name = "enabled", havingValue = "false")
 public class PortalSecurityConfig extends WebSecurityConfigurerAdapter {
 
+  private static final String[] SWAGGER2_AUTH_WHITELIST = {
+          "/v2/api-docs",
+          "/configuration/**",
+          "/swagger-resources/**",
+          "/swagger-ui/**",
+          "/swagger-ui.html",
+          "/webjars/**"
+  };
+
   @Autowired
   AuthenticationHandler authenticationHandler;
 
@@ -87,6 +96,7 @@ public class PortalSecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/zkau/*").permitAll()
             .antMatchers("/login").permitAll()
             .antMatchers("/logout").permitAll()
+            .antMatchers(SWAGGER2_AUTH_WHITELIST).permitAll()
             .anyRequest().authenticated()
         .and()
         .formLogin()

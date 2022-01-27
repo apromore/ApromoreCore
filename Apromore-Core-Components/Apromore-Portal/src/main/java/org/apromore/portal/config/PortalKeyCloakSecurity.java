@@ -35,6 +35,16 @@ import org.springframework.security.web.session.HttpSessionEventPublisher;
 @KeycloakConfiguration
 @ConditionalOnProperty(prefix = "keycloak", name = "enabled", havingValue = "true")
 public class PortalKeyCloakSecurity extends KeycloakWebSecurityConfigurerAdapter {
+
+  private static final String[] SWAGGER2_AUTH_WHITELIST = {
+          "/v2/api-docs",
+          "/configuration/**",
+          "/swagger-resources/**",
+          "/swagger-ui/**",
+          "/swagger-ui.html",
+          "/webjars/**"
+  };
+
   @Autowired
   private ManagerService manager;
 
@@ -98,6 +108,7 @@ public class PortalKeyCloakSecurity extends KeycloakWebSecurityConfigurerAdapter
         .antMatchers("/rest/**/*").permitAll()
         .antMatchers("/rest/*").permitAll()
         .antMatchers("/zkau/web/bpmneditor/*").permitAll()
+        .antMatchers(SWAGGER2_AUTH_WHITELIST).permitAll()
         .anyRequest().authenticated();
   }
 }
