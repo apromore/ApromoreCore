@@ -50,6 +50,7 @@ import org.apromore.portal.model.FolderType;
 import org.apromore.portal.model.LogSummaryType;
 import org.apromore.portal.model.PermissionType;
 import org.apromore.portal.model.UserType;
+import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
 import org.zkoss.spring.SpringUtil;
@@ -83,11 +84,18 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 	private FolderType selectedFolder=null;
 	private String popupType;
 	private static final String POPUP_MENU_PROCESS="PROCESS";
+	private static final int MAX_SELECTION_FOR_MENU_MULTIPLE=6; //when a model and up to 5 logs are selected
 
 	@Override
 	public void doAfterCompose(Menupopup menuPopup) {
 		try {
+			portalPluginMap = PortalPluginResolver.getPortalPluginMap();
 			popupType = (String) Executions.getCurrent().getArg().get("POPUP_TYPE");
+			if(getBaseListboxController().getSelection().size()>1 && getBaseListboxController().getSelection().size()<=MAX_SELECTION_FOR_MENU_MULTIPLE){
+				if(handleMenuForMultipleSelection(menuPopup)){
+					return; // Customize Menu will Open for multiple selection
+				}
+			}
 			if (popupType != null && !PortalPluginResolver.resolve().isEmpty()) {
 				switch (popupType) {
 					case POPUP_MENU_PROCESS : loadPopupMenu(menuPopup, "process-popup-menu"); break;
@@ -156,6 +164,34 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 			}
 		});
 		popup.appendChild(item);
+	}
+	private boolean handleMenuForMultipleSelection(Menupopup menuPopup) {
+		int countLog=0,countProcess=0;
+		for (Object obj : getBaseListboxController().getListModel().getSelection()) {
+			if (obj instanceof FolderType) {
+				return false; // if there is any folder selected then right-click menu will work normally
+			}else if (obj instanceof LogSummaryType) {
+				countLog++;
+			}else if (obj instanceof ProcessSummaryType) {
+				countProcess++;
+			}
+		}
+		List<MenuItem> menuItems=new ArrayList<>();
+		if(countProcess==2 && countLog==0){ //When two models are selected, and the user right-clicks on one of them, show a menu with:
+			menuItems.add(new MenuItem(PluginCatalog.PLUGIN_COMPARE_MODELS));
+			menuItems.add(new MenuItem(PluginCatalog.PLUGIN_MERGE_MODELS));
+		}else if(countProcess==1 && countLog==1){ //when a model and a log are selected, and the user right-clicks on one of them, show a menu with:
+			menuItems.add(new MenuItem(PluginCatalog.PLUGIN_ANIMATE_LOG));
+			menuItems.add(new MenuItem(PluginCatalog.PLUGIN_CHECK_CONFORMANCE));
+		}else if(countProcess==0 && (countLog>=2 && countLog<=5)){ // when two or more logs are selected (up to 5), and the user right-clicks on one of them, show a menu with:
+			menuItems.add(new MenuItem(PluginCatalog.PLUGIN_DASHBOARD)); //Need to modify it
+		}else if(countProcess==1 && (countLog>=1 && countLog<=5)){ // when a model and up to 5 logs are selected, and the user right-clicks on one of them, show a menu with
+			menuItems.add(new MenuItem(PluginCatalog.PLUGIN_ANIMATE_LOG));
+		}
+		for (MenuItem menuItem : menuItems) {
+			addMenuitem(menuPopup, menuItem);
+		}
+		return !menuItems.isEmpty();
 	}
 
 	private void addViewLogFilterMenuItem(Menupopup popup) {
@@ -497,8 +533,6 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 			if (PortalPluginResolver.resolve().isEmpty()) {
 				return;
 			}
-
-			portalPluginMap = PortalPluginResolver.getPortalPluginMap();
 			List<MenuGroup> menuGroups = menuConfig.getGroups();
 
 			List<MenuItem> menuitems = new ArrayList<MenuItem>();
