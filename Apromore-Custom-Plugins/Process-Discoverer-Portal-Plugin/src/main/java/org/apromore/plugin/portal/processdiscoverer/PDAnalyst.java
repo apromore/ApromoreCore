@@ -88,6 +88,7 @@ import org.apromore.processdiscoverer.ProcessDiscoverer;
 import org.apromore.processdiscoverer.abstraction.BPMNAbstraction;
 import org.apromore.processdiscoverer.abstraction.DFGAbstraction;
 import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Activity;
+import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Gateway;
 import org.apromore.processsimulation.dto.EdgeFrequency;
 import org.apromore.processsimulation.dto.SimulationData;
 import org.apromore.service.EventLogService;
@@ -707,6 +708,7 @@ public class PDAnalyst {
             bpmnAbstraction = convertToBpmnAbstraction(abstraction);
             if (bpmnAbstraction != null) {
                 gatewayIdToEdgeFrequencies = bpmnAbstraction.getValidBPMNDiagram().getGateways().stream()
+                    .filter(gateway -> gateway.getGatewayType().equals(Gateway.GatewayType.DATABASED)) //XOR Gateway
                     .collect(Collectors.toMap(
                         // Key -> gatewayId
                         gateway -> gateway.getId().toString(),
