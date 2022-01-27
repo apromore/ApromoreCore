@@ -89,6 +89,7 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
   private Map<String, String> roleMap = new HashMap<>() {
     {
       put("ROLE_ADMIN", "Administrator");
+      put("ROLE_SUPER_ADMIN", "Super Admin");
       put("ROLE_MANAGER", "Manager");
       put("ROLE_ANALYST", "Analyst");
       put("ROLE_VIEWER", "Viewer");
