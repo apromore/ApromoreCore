@@ -21,13 +21,6 @@
  */
 package org.apromore.calendar.service;
 
-import java.time.Duration;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
-import java.util.Collection;
-
 import org.apromore.calendar.builder.CalendarModelBuilder;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.calendar.model.DurationModel;
@@ -35,15 +28,22 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+
+import java.time.Duration;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
+import java.util.Collection;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class DurationCalculationUnitTest {
-
-  CalendarModelBuilder calendarModelBuilder;
-  OffsetDateTime startDateTime;
-  OffsetDateTime endDateTime;
-  Duration expected;
+  private CalendarModelBuilder calendarModelBuilder;
+  private OffsetDateTime startDateTime;
+  private OffsetDateTime endDateTime;
+  private Duration expected;
   
 
   @Before
@@ -62,24 +62,40 @@ public class DurationCalculationUnitTest {
  @Parameterized.Parameters
  public static Collection params() {
     return Arrays.asList(new Object[][] {
-       { OffsetDateTime.of(2019, 02, 01, 07, 00, 00, 0, ZoneOffset.UTC), OffsetDateTime.of(2019, 02, 02, 20, 00, 00, 0, ZoneOffset.UTC), Duration.of(16, ChronoUnit.HOURS)},
-       { OffsetDateTime.of(2019, 02, 01, 07, 00, 00, 0, ZoneOffset.UTC), OffsetDateTime.of(2019, 02, 01, 18, 00, 00, 0, ZoneOffset.UTC), Duration.of(8, ChronoUnit.HOURS)},
-       {  OffsetDateTime.of(2019, 02, 01, 12, 00, 00, 0, ZoneOffset.UTC),OffsetDateTime.of(2019, 02, 01, 18, 00, 00, 0, ZoneOffset.UTC), Duration.of(5, ChronoUnit.HOURS)},
-       {  OffsetDateTime.of(2019, 02, 01, 17, 00, 00, 0, ZoneOffset.UTC),OffsetDateTime.of(2019, 02, 01, 18, 00, 00, 0, ZoneOffset.UTC), Duration.of(0, ChronoUnit.HOURS)},
-       {  OffsetDateTime.of(2019, 02, 01, 12, 00, 00, 0, ZoneOffset.UTC),OffsetDateTime.of(2019, 02, 03, 15, 00, 00, 0, ZoneOffset.UTC), Duration.of(19, ChronoUnit.HOURS)},
-       {  OffsetDateTime.of(2019, 02, 01, 12, 00, 00, 0, ZoneOffset.UTC),OffsetDateTime.of(2019, 02, 03, 19, 00, 00, 0, ZoneOffset.UTC), Duration.of(21, ChronoUnit.HOURS)}
+        // Span 2 work-day periods, fully contain them
+        { OffsetDateTime.of(2019, 02, 01, 07, 00, 00, 0, ZoneOffset.UTC),
+            OffsetDateTime.of(2019, 02, 02, 20, 00, 00, 0, ZoneOffset.UTC), Duration.of(16, ChronoUnit.HOURS)},
+
+        // Span 3 work-day periods but not fully contain them
+        { OffsetDateTime.of(2019, 02, 01, 12, 00, 00, 0, ZoneOffset.UTC),
+            OffsetDateTime.of(2019, 02, 03, 15, 00, 00, 0, ZoneOffset.UTC), Duration.of(19, ChronoUnit.HOURS)},
+
+        // Same day and completely contain a work-day period (9 to 5)
+        { OffsetDateTime.of(2019, 02, 01, 07, 00, 00, 0, ZoneOffset.UTC),
+            OffsetDateTime.of(2019, 02, 01, 18, 00, 00, 0, ZoneOffset.UTC), Duration.of(8, ChronoUnit.HOURS)},
+
+        // Same day but overlap with a work-day period (9 to 5)
+        { OffsetDateTime.of(2019, 02, 01, 12, 00, 00, 0, ZoneOffset.UTC),
+            OffsetDateTime.of(2019, 02, 01, 18, 00, 00, 0, ZoneOffset.UTC), Duration.of(5, ChronoUnit.HOURS)},
+
+        // Same day but outside a work-day period (9 to 5)
+        { OffsetDateTime.of(2019, 02, 01, 18, 00, 00, 0, ZoneOffset.UTC),
+            OffsetDateTime.of(2019, 02, 01, 19, 00, 00, 0, ZoneOffset.UTC), Duration.of(0, ChronoUnit.HOURS)},
+
+        // Same day but outside a work-day period (9 to 5)
+        { OffsetDateTime.of(2019, 02, 01, 3, 00, 00, 0, ZoneOffset.UTC),
+            OffsetDateTime.of(2019, 02, 01, 4, 00, 00, 0, ZoneOffset.UTC), Duration.of(0, ChronoUnit.HOURS)},
     });
  }
- 
- 
+
   @Test
   public void testCalculateDuration8HoursDifferentDay() {
-   
+
     CalendarModel calendarModel = calendarModelBuilder.with7DayWorking().withZoneId(ZoneOffset.UTC.getId()).build();
 
     // When
-    DurationModel durationModel = calendarModel.getDuration(startDateTime, endDateTime);  
-    
+    DurationModel durationModel = calendarModel.getDuration(startDateTime, endDateTime);
+
     // Then
     assertThat(durationModel.getDuration()).isEqualTo(expected);
   }
