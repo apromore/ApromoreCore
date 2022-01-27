@@ -355,6 +355,11 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 			}
 			subMenuImagePath = "~./themes/ap/common/img/icons/filter.svg";
 		} else if (PluginCatalog.PLUGIN_APPLY_CALENDAR_SUB_MENU.equals(subMenuId)) {
+			if (!portalContext.getCurrentUser().hasAnyPermission(PermissionType.CALENDAR)) {
+				LOGGER.info("User '{}' does not have permission to access calendar",
+						portalContext.getCurrentUser().getUsername());
+				return null;
+			}
 			subMenuImagePath = "~./themes/ap/common/img/icons/calendar.svg";
 		} else {
 			return null;
