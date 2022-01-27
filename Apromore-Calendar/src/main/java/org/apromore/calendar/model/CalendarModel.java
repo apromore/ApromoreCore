@@ -88,6 +88,10 @@ public class CalendarModel {
     return totalDuration;
   }
 
+  public long getDurationMillis(long start, long end) {
+    return getDurationMillis(Instant.ofEpochMilli(start), Instant.ofEpochMilli(end));
+  }
+
   // This duration is rounded to the nearest milliseconds
   public long getDurationMillis(Instant start, Instant end) {
     Duration dur = getDuration(start, end);
