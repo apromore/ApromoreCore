@@ -56,12 +56,13 @@ public class TraceVariantBPMNDiagram extends SimpleBPMNDiagram {
             throw new IllegalArgumentException("All traces must be of the same variant");
         }
 
-        int numDurTraces = attTraces.get(0).getDurationTrace().size();
+        int numTraces = attTraces.get(0).getValueTrace().size();
 
         //Get average durationTrace
-        double[] avgDurationTraces = IntStream.range(0, numDurTraces).boxed()
+        double[] avgDurationTraces = IntStream.range(0, numTraces).boxed()
                 .mapToDouble(i -> IntStream.range(0, attTraces.size())
-                        .mapToDouble(attIndex -> attTraces.get(attIndex).getDurationTrace().get(i))
+                        .mapToDouble(attIndex -> log.getCalendarModel().getDurationMillis(attTraces.get(attIndex).getStartTimeAtIndex(i),
+                                        attTraces.get(attIndex).getEndTimeAtIndex(i)))
                         .sum() / Double.valueOf(attTraces.size()))
                 .toArray();
 
@@ -118,7 +119,8 @@ public class TraceVariantBPMNDiagram extends SimpleBPMNDiagram {
     }
 
     private long getAverageDurationAtPairIndexes(List<AttributeTrace> attTraces, int node1Index, int node2Index) {
-        return (long) attTraces.stream().mapToLong(t -> t.getDurationAtPairIndexes(node1Index, node2Index))
+        return (long) attTraces.stream().mapToLong(t -> log.getCalendarModel().getDurationMillis(
+                t.getEndTimeAtIndex(node1Index), t.getStartTimeAtIndex(node2Index)))
                 .average().orElse(0);
     }
 }
