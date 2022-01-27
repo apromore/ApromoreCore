@@ -269,7 +269,6 @@ export default class EditorApp {
 
         if (this.useSimulationPanel) {
             this.layout_regions.center.addListener('resize', function () {
-                console.log('Center Panel resize resize');
                 me.zoomFitToModel();
             });
         }
@@ -313,7 +312,10 @@ export default class EditorApp {
                             })
                             $('#ap-editor-props-simulation').on('click', () => {
                               selectTab('simulation');
-                              $('#ap-editor-props-container .bpp-properties-tabs-links > li:not(.bpp-hidden):not(:first-child):not(:nth-child(2)) a')[0].click();
+                              var tabLink = $('#ap-editor-props-container .bpp-properties-tabs-links > li:not(.bpp-hidden):not(:first-child):not(:nth-child(2)) a');
+                              if (tabLink && tabLink[0]) {
+                                tabLink[0].click();
+                              }
                             })
                         }, 1000);
                     }
