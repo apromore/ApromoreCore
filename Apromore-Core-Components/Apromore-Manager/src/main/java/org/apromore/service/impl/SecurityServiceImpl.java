@@ -275,6 +275,14 @@ public class SecurityServiceImpl implements SecurityService {
   }
 
   /**
+   * @see org.apromore.service.SecurityService#getRolePermissions(String) {@inheritDoc}
+   */
+  @Override
+  public List<Permission> getRolePermissions(String roleName) {
+    return permissionRepo.findByRole(roleName);
+  }
+
+  /**
    * @see org.apromore.service.SecurityService#hasAccess(String, String) {@inheritDoc}
    */
   @Override
