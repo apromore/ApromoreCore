@@ -32,6 +32,7 @@ package org.apromore.portal.model;
 import java.util.Arrays;
 
 public enum PermissionType {
+    PORTAL_LOGIN("d7ff28d6-7cdc-11ec-90d6-0242ac120003","Portal login"),
     USERS_VIEW("dff60714-1d61-4544-8884-0d8b852ba41e","View users"),
     USERS_EDIT("2e884153-feb2-4842-b291-769370c86e44","Edit users"),
     GROUPS_EDIT("d9ade57c-14c7-4e43-87e5-6a9127380b1b","Edit groups"),

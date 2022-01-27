@@ -42,6 +42,7 @@ import org.apromore.common.Constants;
 import org.apromore.dao.model.Group;
 import org.apromore.dao.model.Log;
 import org.apromore.dao.model.NativeType;
+import org.apromore.dao.model.Permission;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.dao.model.User;
 import org.apromore.exception.NotAuthorizedException;
@@ -65,6 +66,7 @@ import org.apromore.portal.model.ImportLogResultType;
 import org.apromore.portal.model.ImportProcessResultType;
 import org.apromore.portal.model.LogSummaryType;
 import org.apromore.portal.model.NativeTypesType;
+import org.apromore.portal.model.PermissionType;
 import org.apromore.portal.model.PluginInfo;
 import org.apromore.portal.model.PluginInfoResult;
 import org.apromore.portal.model.PluginMessages;
@@ -310,6 +312,16 @@ public class ManagerServiceImpl implements ManagerService {
   @Override
   public List<GroupAccessType> getLogGroups(int logId) {
     return WorkspaceMapper.convertGroupLogsToGroupAccessTypes(authorizationSrv.getGroupLogs(logId));
+  }
+
+  @Override
+  public List<PermissionType> getRolePermissions(String roleName) {
+    List<PermissionType> permissionTypes = new ArrayList<>();
+    for (Permission permission : secSrv.getRolePermissions(roleName)) {
+      PermissionType permissionType = PermissionType.getPermissionType(permission.getRowGuid(), permission.getName());
+      permissionTypes.add(permissionType);
+    }
+    return permissionTypes;
   }
 
   @Override
