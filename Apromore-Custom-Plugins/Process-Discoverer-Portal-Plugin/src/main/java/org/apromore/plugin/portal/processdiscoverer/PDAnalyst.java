@@ -683,11 +683,17 @@ public class PDAnalyst {
      * @return the BPMNAbstraction representation of the input abstraction
      * @throws Exception in the event of a conversion error
      */
-    public BPMNAbstraction convertToBpmnAbstraction(@NonNull Abstraction abstraction) throws Exception {
+    public BPMNAbstraction convertToBpmnAbstraction(@NonNull Abstraction abstraction) throws InvalidDataException {
         final BPMNAbstraction bpmnAbstraction;
         if (abstraction instanceof DFGAbstraction) {
-            bpmnAbstraction =
-                new BPMNAbstraction(attLog, (DFGAbstraction) abstraction, abstraction.getAbstractionParams());
+            try {
+                bpmnAbstraction =
+                    new BPMNAbstraction(attLog, (DFGAbstraction) abstraction, abstraction.getAbstractionParams());
+            } catch (Exception exception) {
+                String errMsg = "Error. Unable to convert DFGAbstraction to BPMNAbstraction.";
+                log.error(errMsg);
+                    throw new InvalidDataException(errMsg);
+            }
 
         } else if (abstraction instanceof BPMNAbstraction) {
             bpmnAbstraction = (BPMNAbstraction) abstraction;
