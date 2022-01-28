@@ -77,7 +77,7 @@ public class UserAdminPlugin extends DefaultPortalPlugin {
 
     try {
       // Deny access if the caller isn't an administrator
-      Role adminRole = securityService.findRoleByName("ROLE_ADMIN");
+      Role adminRole = securityService.findRoleByName("ROLE_SUPER_ADMIN");
       User currentUser = securityService.getUserById(portalContext.getCurrentUser().getId());
       Set<Role> userRoles = securityService.findRolesByUser(currentUser);
       if (!userRoles.contains(adminRole)) {

@@ -333,7 +333,7 @@ public class MainController extends BaseController implements MainControllerInte
 
     public boolean isCurrentUserAdmin() {
         try {
-            Role adminRole = getSecurityService().findRoleByName("ROLE_ADMIN");
+            Role adminRole = getSecurityService().findRoleByName("ROLE_SUPER_ADMIN");
             User currentUser = getSecurityService().getUserById(portalContext.getCurrentUser().getId());
             Set<Role> userRoles = getSecurityService().findRolesByUser(currentUser);
             if (!userRoles.contains(adminRole)) {
