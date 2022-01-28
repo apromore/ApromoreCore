@@ -555,6 +555,7 @@ public class PDAnalyst {
                 try {
                     //Get average of any numerical attributes
                     double average = caseAttMaps.stream()
+                            .filter(m -> m.get(key) != null)
                             .mapToDouble(m -> Double.parseDouble(m.get(key)))
                             .average().orElseThrow();
 

@@ -345,12 +345,12 @@ public class PDAnalystTest extends TestDataSetup {
 
     @Test
     public void test_getActivityAttributeAverageMap() throws Exception {
-        PDAnalyst analyst = createPDAnalyst(readLogWithThreeTraceOneVariant());
+        PDAnalyst analyst = createPDAnalyst(readLogWithThreeTraceOneVariantMissingValues());
         Map<String, String> activityAverages = analyst.getActivityAttributeAverageMap(1, 1);
 
         Map<String, String> expectedMap = Map.of(
                 "concept:name", "a",
-                "Average riskLevelNumber", "3.0"
+                "Average riskLevelNumber", "2.5"
         );
 
         assertEquals(expectedMap, activityAverages);
