@@ -171,6 +171,8 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
     private ListModelList<HolidayModel> holidayCustomListModel;
     private ListModelList<Zone> zoneModel;
 
+    EventQueue<Event> localCalendarEventQueue;
+
     @Override
     public String getBundleName() {
         return Constants.BUNDLE_NAME;
@@ -189,6 +191,7 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
         calendarExists = calId != null;
         calendarModel = !calendarExists ? new CalendarModel() : calendarService.getCalendar(calId);
         calendarId = calendarModel.getId();
+        localCalendarEventQueue = EventQueues.lookup(CalendarEvents.TOPIC + "LOCAL", EventQueues.DESKTOP,true);
 
         populateTimeZone();
         initialize();
@@ -577,13 +580,13 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
     public void onClickApplyBtn() {
         if (!canEdit) { return; }
         toModels();
+        localCalendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_CHANGED, null, calendarId));
         getSelf().detach();
     }
 
     @Listen("onClick = #cancelBtn")
     public void onClickCancelBtn() {
         if (isNew) {
-            EventQueue<Event> localCalendarEventQueue = EventQueues.lookup(CalendarEvents.TOPIC + "LOCAL", EventQueues.DESKTOP,true);
             localCalendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_ABANDON, null, calendarId));
             if(directlyCreateNewCalled) {
                 calendarService.deleteCalendar(calendarId);
