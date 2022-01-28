@@ -85,6 +85,7 @@ import org.apromore.plugin.portal.processdiscoverer.vis.ProcessVisualizer;
 import org.apromore.processdiscoverer.Abstraction;
 import org.apromore.processdiscoverer.AbstractionParams;
 import org.apromore.processdiscoverer.ProcessDiscoverer;
+import org.apromore.processdiscoverer.abstraction.AbstractAbstraction;
 import org.apromore.processdiscoverer.abstraction.BPMNAbstraction;
 import org.apromore.processdiscoverer.abstraction.DFGAbstraction;
 import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Activity;
@@ -645,34 +646,39 @@ public class PDAnalyst {
     /**
      * Simulation data are used to add simulation values to the BPMN diagram.
      *
-     * @param abs Process Abstraction
+     * @param bpmnAbstraction Process Abstraction
      * @return SimulationData
      */
-    public SimulationData getSimulationData(@NonNull Abstraction abs) {
-        Map<String, Double> nodeDurationMap =
-            abs.getDiagram().getNodes()
-                .stream()
-                .filter(Activity.class::isInstance)
-                .collect(Collectors.toMap(
-                    node -> node.getId().toString(),
-                    node -> BigDecimal.valueOf(attLog.getGraphView().getNodeWeight(node.getLabel(),
-                            MeasureType.DURATION,
-                            MeasureAggregation.MEAN,
-                            MeasureRelation.ABSOLUTE) / 1000)
-                        .setScale(2, RoundingMode.HALF_UP).doubleValue()));
+    public SimulationData getSimulationData(BPMNAbstraction bpmnAbstraction) {
+        SimulationData simulationData = null;
+        if (bpmnAbstraction != null) {
+            Map<String, Double> nodeDurationMap =
+                bpmnAbstraction.getDiagram().getNodes()
+                    .stream()
+                    .filter(Activity.class::isInstance)
+                    .collect(Collectors.toMap(
+                        node -> node.getId().toString(),
+                        node -> BigDecimal.valueOf(attLog.getGraphView().getNodeWeight(node.getLabel(),
+                                MeasureType.DURATION,
+                                MeasureAggregation.MEAN,
+                                MeasureRelation.ABSOLUTE) / 1000)
+                            .setScale(2, RoundingMode.HALF_UP).doubleValue()));
 
-        return SimulationData.builder()
-            .caseCount(filteredPLog.getValidTraceIndexBS().cardinality())
-            .resourceCount(filteredPLog.getActivityInstances().stream()
-                .filter(activityInstance -> activityInstance.getAttributes().containsKey(Constants.ATT_KEY_RESOURCE))
-                .map(activityInstance -> activityInstance.getAttributes().get(Constants.ATT_KEY_RESOURCE))
-                .collect(Collectors.toSet())
-                .size())
-            .startTime(filteredAPMLog.getStartTime())
-            .endTime(filteredAPMLog.getEndTime())
-            .nodeWeights(nodeDurationMap)
-            .edgeFrequencies(groupOutboundEdgeFrequenciesByGateway(abs))
-            .build();
+            simulationData = SimulationData.builder()
+                .caseCount(filteredPLog.getValidTraceIndexBS().cardinality())
+                .resourceCount(filteredPLog.getActivityInstances().stream()
+                    .filter(
+                        activityInstance -> activityInstance.getAttributes().containsKey(Constants.ATT_KEY_RESOURCE))
+                    .map(activityInstance -> activityInstance.getAttributes().get(Constants.ATT_KEY_RESOURCE))
+                    .collect(Collectors.toSet())
+                    .size())
+                .startTime(filteredAPMLog.getStartTime())
+                .endTime(filteredAPMLog.getEndTime())
+                .nodeWeights(nodeDurationMap)
+                .edgeFrequencies(groupOutboundEdgeFrequenciesByGateway(bpmnAbstraction))
+                .build();
+        }
+        return simulationData;
     }
 
     /**
@@ -683,51 +689,62 @@ public class PDAnalyst {
      * @return the BPMNAbstraction representation of the input abstraction
      * @throws Exception in the event of a conversion error
      */
-    public BPMNAbstraction convertToBpmnAbstraction(@NonNull Abstraction abstraction) throws InvalidDataException {
-        final BPMNAbstraction bpmnAbstraction;
-        if (abstraction instanceof DFGAbstraction) {
-            try {
-                bpmnAbstraction =
-                    new BPMNAbstraction(attLog, (DFGAbstraction) abstraction, abstraction.getAbstractionParams());
-            } catch (Exception exception) {
-                String errMsg = "Error. Unable to convert DFGAbstraction to BPMNAbstraction.";
-                log.error(errMsg);
-                    throw new InvalidDataException(errMsg);
-            }
+    public BPMNAbstraction convertToBpmnAbstractionForExport(@NonNull Abstraction abstraction)
+        throws InvalidDataException {
 
-        } else if (abstraction instanceof BPMNAbstraction) {
-            bpmnAbstraction = (BPMNAbstraction) abstraction;
-        } else {
-            String errMsg = "Unsupported abstraction. Unable to convert abstraction into BPMN Abstraction";
-            log.warn(errMsg);
+        BPMNAbstraction bpmnAbstraction;
+
+        try {
+            if (abstraction instanceof AbstractAbstraction) {
+                AbstractAbstraction abstractAbstraction = (AbstractAbstraction) abstraction;
+
+                // Forcing params for BPMN Export
+                AbstractionParams paramsForExport = abstraction.getAbstractionParams().clone();
+                paramsForExport.setPrimaryMeasure(MeasureType.FREQUENCY, MeasureAggregation.TOTAL, MeasureRelation.ABSOLUTE);
+
+                // Regenerating the DFGAbstraction to suite the above params
+                ProcessDiscoverer pdForExport = new ProcessDiscoverer();
+                Abstraction dfgAbstraction = pdForExport.generateDFGAbstraction(abstractAbstraction.getLog(), paramsForExport);
+
+                // Generating the BPMNAbstraction out of the DFG
+                bpmnAbstraction = new BPMNAbstraction(attLog, (DFGAbstraction) dfgAbstraction, paramsForExport);
+
+            } else {
+                String errMsg =
+                    "Error. Abstraction is not of type AbstractAbstraction. Unable to convert to BPMNAbstraction.";
+                log.error(errMsg);
+                throw new InvalidDataException(errMsg);
+            }
+        } catch (InvalidDataException invalidDataException) {
+            throw invalidDataException;
+        } catch (Exception exception) {
+            String errMsg = "Error. Unable to convert Abstraction to BPMNAbstraction.";
+            log.error(errMsg);
             throw new InvalidDataException(errMsg);
         }
 
         return bpmnAbstraction;
     }
 
-    private Map<String, List<EdgeFrequency>> groupOutboundEdgeFrequenciesByGateway(final Abstraction abstraction) {
+    private Map<String, List<EdgeFrequency>> groupOutboundEdgeFrequenciesByGateway(
+        final BPMNAbstraction bpmnAbstraction) {
 
-        final BPMNAbstraction bpmnAbstraction;
         Map<String, List<EdgeFrequency>> gatewayIdToEdgeFrequencies = null;
         try {
-            bpmnAbstraction = convertToBpmnAbstraction(abstraction);
-            if (bpmnAbstraction != null) {
-                gatewayIdToEdgeFrequencies = bpmnAbstraction.getValidBPMNDiagram().getGateways().stream()
-                    .filter(gateway -> gateway.getGatewayType().equals(Gateway.GatewayType.DATABASED)) //XOR Gateway
-                    .collect(Collectors.toMap(
-                        // Key -> gatewayId
-                        gateway -> gateway.getId().toString(),
+            gatewayIdToEdgeFrequencies = bpmnAbstraction.getValidBPMNDiagram().getGateways().stream()
+                .filter(gateway -> gateway.getGatewayType().equals(Gateway.GatewayType.DATABASED)) //XOR Gateway
+                .collect(Collectors.toMap(
+                    // Key -> gatewayId
+                    gateway -> gateway.getId().toString(),
 
-                        // Value -> List of outbound edge frequencies
-                        gateway -> bpmnAbstraction.getValidBPMNDiagram().getOutEdges(gateway).stream()
-                            .map(bpmnEdge -> EdgeFrequency.builder()
-                                .edgeId(bpmnEdge.getEdgeID().toString())
-                                .frequency(bpmnAbstraction.getArcPrimaryWeight(bpmnEdge))
-                                .build())
-                            .collect(Collectors.toList())
-                    ));
-            }
+                    // Value -> List of outbound edge frequencies
+                    gateway -> bpmnAbstraction.getValidBPMNDiagram().getOutEdges(gateway).stream()
+                        .map(bpmnEdge -> EdgeFrequency.builder()
+                            .edgeId(bpmnEdge.getEdgeID().toString())
+                            .frequency(bpmnAbstraction.getArcPrimaryWeight(bpmnEdge))
+                            .build())
+                        .collect(Collectors.toList())
+                ));
 
         } catch (Exception e) {
             String errMsg = "Unsupported abstraction. Unable to compute gateway probabilities";

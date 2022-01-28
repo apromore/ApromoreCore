@@ -21,6 +21,7 @@ package org.apromore.plugin.portal.processdiscoverer;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -571,16 +572,17 @@ public class PDAnalystTest extends TestDataSetup {
             false);
         PDAnalyst analyst = createPDAnalyst(readLogWithOneTraceStartCompleteEventsNonOverlapping());
         Abstraction abs = analyst.discoverProcess(userOptions).get().getAbstraction();
+        BPMNAbstraction bpmnAbstraction = analyst.convertToBpmnAbstractionForExport(abs);
 
-        SimulationData data = analyst.getSimulationData(abs);
+        SimulationData data = analyst.getSimulationData(bpmnAbstraction);
         assertEquals(1, data.getCaseCount());
         assertEquals(5, data.getResourceCount());
         assertEquals(DateTime.parse("2010-10-27T21:59:19.308+10:00").getMillis(), data.getStartTime());
         assertEquals(DateTime.parse("2010-10-27T22:55:19.308+10:00").getMillis(), data.getEndTime());
-        assertEquals(60, data.getDiagramNodeDuration(getNodeId("a", abs.getDiagram())), 0.0);
-        assertEquals(60, data.getDiagramNodeDuration(getNodeId("b", abs.getDiagram())), 0.0);
-        assertEquals(60, data.getDiagramNodeDuration(getNodeId("c", abs.getDiagram())), 0.0);
-        assertEquals(60, data.getDiagramNodeDuration(getNodeId("d", abs.getDiagram())), 0.0);
+        assertEquals(60, data.getDiagramNodeDuration(getNodeId("a", bpmnAbstraction.getDiagram())), 0.0);
+        assertEquals(60, data.getDiagramNodeDuration(getNodeId("b", bpmnAbstraction.getDiagram())), 0.0);
+        assertEquals(60, data.getDiagramNodeDuration(getNodeId("c", bpmnAbstraction.getDiagram())), 0.0);
+        assertEquals(60, data.getDiagramNodeDuration(getNodeId("d", bpmnAbstraction.getDiagram())), 0.0);
 
         Map<String, Map<String, Double>> expectedEdgeFrequencies = Map.of(
             "node4", Map.of("edge3", 0.0, "edge4", 1.0),
@@ -593,12 +595,13 @@ public class PDAnalystTest extends TestDataSetup {
         // Filter out some events
         analyst.filter_RemoveEventsAnyValueOfEventAttribute("c", "concept:name");
         Abstraction abs2 = analyst.discoverProcess(userOptions).get().getAbstraction();
-        SimulationData data2 = analyst.getSimulationData(abs2);
+        BPMNAbstraction bpmnAbstraction2 = analyst.convertToBpmnAbstractionForExport(abs);
+        SimulationData data2 = analyst.getSimulationData(analyst.convertToBpmnAbstractionForExport(abs2));
         assertEquals(1, data2.getCaseCount());
         assertEquals(4, data2.getResourceCount()); // changed
         assertEquals(DateTime.parse("2010-10-27T21:59:19.308+10:00").getMillis(), data2.getStartTime());
         assertEquals(DateTime.parse("2010-10-27T22:45:19.308+10:00").getMillis(), data2.getEndTime()); // changed
-        assertEquals(60, data2.getDiagramNodeDuration(getNodeId("b", abs2.getDiagram())), 0.0);
+        assertEquals(60, data2.getDiagramNodeDuration(getNodeId("b", bpmnAbstraction2.getDiagram())), 0.0);
 
         Map<String, Map<String, Double>> expectedEdgeFrequencies2 = Map.of(
             "node10", Map.of("edge14", 1.0, "edge17", 1.0, "edge18", 0.0),
@@ -607,7 +610,14 @@ public class PDAnalystTest extends TestDataSetup {
             "node7", Map.of("edge10", 1.0)
         );
         assertGateways(expectedEdgeFrequencies2, data2.getEdgeFrequencies());
+    }
 
+    @Test
+    public void test_simulation_data_with_null_abstraction() throws Exception {
+        PDAnalyst analyst = createPDAnalyst(readLogWithOneTraceStartCompleteEventsNonOverlapping());
+        SimulationData data = analyst.getSimulationData(null);
+
+        assertNull(data);
     }
 
     @Test
@@ -627,7 +637,7 @@ public class PDAnalystTest extends TestDataSetup {
             false);
         PDAnalyst analyst = createPDAnalyst(readLogWithOneTraceStartCompleteEventsNonOverlapping());
         Abstraction abs = analyst.discoverProcess(userOptions).get().getAbstraction();
-        BPMNAbstraction bpmnAbstraction = analyst.convertToBpmnAbstraction(abs);
+        BPMNAbstraction bpmnAbstraction = analyst.convertToBpmnAbstractionForExport(abs);
 
         assertEquals(4, bpmnAbstraction.getDiagram().getGateways().size());
         bpmnAbstraction.getDiagram().addGateway("MockGw1", Gateway.GatewayType.INCLUSIVE);
@@ -636,7 +646,7 @@ public class PDAnalystTest extends TestDataSetup {
         bpmnAbstraction.getDiagram().addGateway("MockGw4", Gateway.GatewayType.COMPLEX);
         assertEquals(8, bpmnAbstraction.getDiagram().getGateways().size());
 
-        SimulationData data = analyst.getSimulationData(abs);
+        SimulationData data = analyst.getSimulationData(bpmnAbstraction);
         Map<String, Map<String, Double>> expectedEdgeFrequencies = Map.of(
             "node4", Map.of("edge3", 0.0, "edge4", 1.0),
             "node5", Map.of("edge5", 1.0),

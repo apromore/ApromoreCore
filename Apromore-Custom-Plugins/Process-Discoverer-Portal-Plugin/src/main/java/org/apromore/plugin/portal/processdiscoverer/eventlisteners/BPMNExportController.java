@@ -216,10 +216,15 @@ public class BPMNExportController extends AbstractController {
             throw new InvalidOutputException("Missing layout of the process map for exporting BPMN diagram.");
         }
 
-        bpmnAbstraction = controller.getProcessAnalyst().convertToBpmnAbstraction(abs);
+        try {
+            bpmnAbstraction = controller.getProcessAnalyst().convertToBpmnAbstractionForExport(abs);
+            abs = bpmnAbstraction;
+        } catch (Exception invalidDataException) {
+            log.warn("Unable to convert to valid BPMN. Export will not contain simulation information");
+        }
 
         // Prepare diagram for export
-        BPMNDiagram diagram = bpmnAbstraction.getValidBPMNDiagram();
+        BPMNDiagram diagram = abs.getValidBPMNDiagram();
         BpmnDefinitions.BpmnDefinitionsBuilder definitionsBuilder;
         Map<ContainableDirectedGraphElement, String> labelMapping;
         labelMapping = cleanDiagramBeforeExport(diagram);
@@ -286,6 +291,9 @@ public class BPMNExportController extends AbstractController {
 
                 footnoteMessage = parent.getLabel("warnSimParamInvalidPerspective_text");
                 log.debug("Cannot export simulation information for resource or role perspectives");
+            } else if (bpmnAbstraction == null) {
+
+                footnoteMessage = parent.getLabel("warnSimParamInternalError_text");
             } else {
 
                 conditionText = parent.getLabel("includeSimulationParams_text");
@@ -316,8 +324,8 @@ public class BPMNExportController extends AbstractController {
                     if (event.getName().equals("onOKChecked")) {
 
                         // Derive process simulation data
-                        SimulationData simulationData = controller.getProcessAnalyst()
-                            .getSimulationData(bpmnAbstraction);
+                        SimulationData simulationData =
+                            controller.getProcessAnalyst().getSimulationData(bpmnAbstraction);
 
                         // Enrich the exported bpmn with process simulation info
                         minedModel = simulationInfoService.enrichWithSimulationInfo(minedModel, simulationData);
