@@ -72,10 +72,18 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 	private boolean popUpOnTree=false;
 	private FolderType selectedFolder=null;
 	private String popupType;
+	private MainController mainController;
 
 	@Override
 	public void doAfterCompose(Menupopup menuPopup) {
 		try {
+			Object parent = Executions.getCurrent().getArg().get("PARENT_CONTROLLER");
+			if(parent instanceof MainController ) {
+				mainController = (MainController)parent;
+			}
+			if(mainController==null){
+				mainController=(MainController)getPortalContext().getMainController();
+			}
 			popupType = (String) Executions.getCurrent().getArg().get("POPUP_TYPE");
 			if (popupType != null && !PortalPluginResolver.resolve().isEmpty()) {
 				switch (popupType) {
@@ -272,15 +280,15 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 	}
 
 	private BaseListboxController getBaseListboxController() {
-		PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
-		MainController mainController = (MainController) portalContext.getMainController();
-
 		return mainController.getBaseListboxController();
 	}
-	private NavigationController getNavigationController() {
-		PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
-		MainController mainController = (MainController) portalContext.getMainController();
 
+	private NavigationController getNavigationController() {
 		return mainController.getNavigationController();
 	}
+
+	private PortalContext getPortalContext() {
+		return (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
+	}
+
 }

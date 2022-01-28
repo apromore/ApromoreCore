@@ -184,6 +184,7 @@ public class FolderTreeRenderer implements TreeitemRenderer {
             args.put("POPUP_TYPE", "FOLDER_TREE");
           }
           args.put("SELECTED_FOLDER", selectedFolder);
+          args.put("PARENT_CONTROLLER",mainC);
           Menupopup menupopup = (Menupopup)Executions.createComponents("~./macros/popupMenu.zul", null, args);
           menupopup.open(event.getTarget(), "at_pointer");
 
