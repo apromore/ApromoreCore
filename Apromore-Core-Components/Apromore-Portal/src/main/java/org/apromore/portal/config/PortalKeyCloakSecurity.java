@@ -45,6 +45,12 @@ public class PortalKeyCloakSecurity extends KeycloakWebSecurityConfigurerAdapter
           "/webjars/**"
   };
 
+  private static final String[] API_WHITELIST = {
+          "/api",
+          "/api/**/*",
+          "/api/*"
+  };
+
   @Autowired
   private ManagerService manager;
 
@@ -97,7 +103,9 @@ public class PortalKeyCloakSecurity extends KeycloakWebSecurityConfigurerAdapter
 
     http.headers().frameOptions().sameOrigin();
     http.addFilterAfter(new SameSiteFilter(), BasicAuthenticationFilter.class);
-    http.csrf().ignoringAntMatchers("/zkau", "/rest", "/rest/*", "/rest/**/*", "/zkau/*", "/bpmneditor/editor/*").and()
+    http.csrf().ignoringAntMatchers("/zkau", "/rest", "/rest/*", "/rest/**/*", "/zkau/*", "/bpmneditor/editor/*")
+            .ignoringAntMatchers(API_WHITELIST)
+            .and()
         .authorizeRequests()
         // .antMatchers("/**").hasRole("USER")
         .antMatchers("/sso/login").permitAll()
@@ -107,6 +115,7 @@ public class PortalKeyCloakSecurity extends KeycloakWebSecurityConfigurerAdapter
         .antMatchers("/rest").permitAll()
         .antMatchers("/rest/**/*").permitAll()
         .antMatchers("/rest/*").permitAll()
+        .antMatchers(API_WHITELIST).permitAll()
         .antMatchers("/zkau/web/bpmneditor/*").permitAll()
         .antMatchers(SWAGGER2_AUTH_WHITELIST).permitAll()
         .anyRequest().authenticated();

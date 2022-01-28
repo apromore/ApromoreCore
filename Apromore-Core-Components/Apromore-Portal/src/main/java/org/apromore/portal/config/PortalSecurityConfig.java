@@ -43,6 +43,12 @@ public class PortalSecurityConfig extends WebSecurityConfigurerAdapter {
           "/webjars/**"
   };
 
+  private static final String[] API_WHITELIST = {
+          "/api",
+          "/api/**/*",
+          "/api/*"
+  };
+
   @Autowired
   AuthenticationHandler authenticationHandler;
 
@@ -84,6 +90,7 @@ public class PortalSecurityConfig extends WebSecurityConfigurerAdapter {
 
     http.csrf()
             .ignoringAntMatchers("/zkau", "/rest", "/rest/*", "/rest/**/*", "/zkau/*", "/login", "/bpmneditor/editor/*")
+            .ignoringAntMatchers(API_WHITELIST)
         .and()
         .authorizeRequests()
             .antMatchers("/zkau/web/login.zul").permitAll()
@@ -92,6 +99,7 @@ public class PortalSecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/rest").permitAll()
             .antMatchers("/rest/**/*").permitAll()
             .antMatchers("/rest/*").permitAll()
+            .antMatchers(API_WHITELIST).permitAll()
             .antMatchers("/zkau/upload").permitAll()
             .antMatchers("/zkau/*").permitAll()
             .antMatchers("/login").permitAll()
