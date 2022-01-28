@@ -24,6 +24,7 @@
 
 package org.apromore.portal.dialogController;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -397,9 +398,14 @@ public class BPMNEditorController extends BaseController implements Composer<Com
       ProcessPublishService processPublishService = (ProcessPublishService) SpringUtil.getBean("processPublishService");
       ProcessService processService = (ProcessService) SpringUtil.getBean("processService");
 
-      //Check if link is published. If not, throw an error.
+      //Check if link is published. If not, show an error.
       if (!processPublishService.isPublished(publishId)) {
-        throw new AssertionError("This link is inactive");
+        try {
+          Executions.forward("./macros/invalidLink.zul");
+          return;
+        } catch (IOException e) {
+          throw new AssertionError("This link is inactive");
+        }
       }
 
       //Get process from publish id
