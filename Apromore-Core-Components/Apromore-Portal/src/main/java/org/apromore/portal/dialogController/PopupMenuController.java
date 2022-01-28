@@ -84,16 +84,26 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
     private FolderType selectedFolder = null;
     private String popupType;
     private static final String POPUP_MENU_PROCESS = "PROCESS";
+    private static final String POPUP_MENU_LOG = "LOG";
     private static final int MAX_SELECTION_FOR_MENU_MULTIPLE = 6; //when a model and up to 5 logs are selected
-
+    private MainController mainController;
     @Override
     public void doAfterCompose(Menupopup menuPopup) {
         try {
+            Object parent = Executions.getCurrent().getArg().get("PARENT_CONTROLLER");
+            if(parent instanceof MainController ) {
+                mainController = (MainController)parent;
+            }
+            if(mainController==null){
+                mainController=(MainController)getPortalContext().getMainController();
+            }
             portalPluginMap = PortalPluginResolver.getPortalPluginMap();
             popupType = (String) Executions.getCurrent().getArg().get("POPUP_TYPE");
             if (getBaseListboxController().getSelection().size() > 1 &&
                 getBaseListboxController().getSelection().size() <= MAX_SELECTION_FOR_MENU_MULTIPLE &&
-                handleMenuForMultipleSelection(menuPopup)) {
+                (popupType.equals(POPUP_MENU_LOG) || popupType.equals(POPUP_MENU_PROCESS)) &&
+                handleMenuForMultipleSelection(menuPopup)
+                ) {
                 return; // Customize Menu will Open for multiple selection
             }
             if (popupType != null && !PortalPluginResolver.resolve().isEmpty()) {
@@ -101,7 +111,7 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
                     case POPUP_MENU_PROCESS:
                         loadPopupMenu(menuPopup, "process-popup-menu");
                         break;
-                    case "LOG":
+                    case POPUP_MENU_LOG:
                         loadPopupMenu(menuPopup, "log-popup-menu");
                         break;
                     case "CANVAS":
@@ -410,40 +420,47 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
     }
 
     private String getSubMenuImage(String subMenuId) {
-        String subMenuImagePath;
-        PortalContext portalContext = getPortalContext();
-        if (PluginCatalog.PLUGIN_DISCOVER_MODEL_SUB_MENU.equals(subMenuId)) {
-            if (!portalContext.getCurrentUser()
-                .hasAnyPermission(PermissionType.MODEL_DISCOVER_EDIT, PermissionType.MODEL_DISCOVER_VIEW)) {
-                LOGGER.info("User '{}' does not have permission to access process discoverer",
-                    portalContext.getCurrentUser().getUsername());
+        String subMenuImagePath = null;
+        try {
+            UserType currentUser = UserSessionManager.getCurrentUser();
+            if (currentUser == null) {
                 return null;
             }
-            subMenuImagePath = "~./themes/ap/common/img/icons/model-discover.svg";
-        } else if (PluginCatalog.PLUGIN_DASHBOARD_SUB_MENU.equals(subMenuId)) {
-            if (!portalContext.getCurrentUser().hasAnyPermission(PermissionType.DASH_EDIT, PermissionType.DASH_VIEW)) {
-                LOGGER.info("User '{}' does not have permission to access dashboard",
-                    portalContext.getCurrentUser().getUsername());
+            if (PluginCatalog.PLUGIN_DISCOVER_MODEL_SUB_MENU.equals(subMenuId)) {
+                if (!currentUser
+                    .hasAnyPermission(PermissionType.MODEL_DISCOVER_EDIT, PermissionType.MODEL_DISCOVER_VIEW)) {
+                    LOGGER.info("User '{}' does not have permission to access process discoverer",
+                        currentUser.getUsername());
+                    return null;
+                }
+                subMenuImagePath = "~./themes/ap/common/img/icons/model-discover.svg";
+            } else if (PluginCatalog.PLUGIN_DASHBOARD_SUB_MENU.equals(subMenuId)) {
+                if (!currentUser.hasAnyPermission(PermissionType.DASH_EDIT, PermissionType.DASH_VIEW)) {
+                    LOGGER.info("User '{}' does not have permission to access dashboard",
+                        currentUser.getUsername());
+                    return null;
+                }
+                subMenuImagePath = "~./themes/ap/common/img/icons/dashboard.svg";
+            } else if (PluginCatalog.PLUGIN_LOG_FILTER_SUB_MENU.equals(subMenuId)) {
+                if (!currentUser
+                    .hasAnyPermission(PermissionType.FILTER_VIEW, PermissionType.FILTER_EDIT)) {
+                    LOGGER.info("User '{}' does not have permission to access log filter",
+                        currentUser.getUsername());
+                    return null;
+                }
+                subMenuImagePath = "~./themes/ap/common/img/icons/filter.svg";
+            } else if (PluginCatalog.PLUGIN_APPLY_CALENDAR_SUB_MENU.equals(subMenuId)) {
+                if (!currentUser.hasAnyPermission(PermissionType.CALENDAR)) {
+                    LOGGER.info("User '{}' does not have permission to access calendar",
+                        currentUser.getUsername());
+                    return null;
+                }
+                subMenuImagePath = "~./themes/ap/common/img/icons/calendar.svg";
+            } else {
                 return null;
             }
-            subMenuImagePath = "~./themes/ap/common/img/icons/dashboard.svg";
-        } else if (PluginCatalog.PLUGIN_LOG_FILTER_SUB_MENU.equals(subMenuId)) {
-            if (!portalContext.getCurrentUser()
-                .hasAnyPermission(PermissionType.FILTER_VIEW, PermissionType.FILTER_EDIT)) {
-                LOGGER.info("User '{}' does not have permission to access log filter",
-                    portalContext.getCurrentUser().getUsername());
-                return null;
-            }
-            subMenuImagePath = "~./themes/ap/common/img/icons/filter.svg";
-        } else if (PluginCatalog.PLUGIN_APPLY_CALENDAR_SUB_MENU.equals(subMenuId)) {
-            if (!portalContext.getCurrentUser().hasAnyPermission(PermissionType.CALENDAR)) {
-                LOGGER.info("User '{}' does not have permission to access calendar",
-                    portalContext.getCurrentUser().getUsername());
-                return null;
-            }
-            subMenuImagePath = "~./themes/ap/common/img/icons/calendar.svg";
-        } else {
-            return null;
+        } catch (Exception ex) {
+            LOGGER.error("Error in retrieving user permission", ex);
         }
         return subMenuImagePath;
     }
@@ -656,12 +673,10 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
     }
 
     private BaseListboxController getBaseListboxController() {
-        MainController mainController = (MainController) getPortalContext().getMainController();
         return mainController.getBaseListboxController();
     }
 
     private NavigationController getNavigationController() {
-        MainController mainController = (MainController) getPortalContext().getMainController();
         return mainController.getNavigationController();
     }
 
