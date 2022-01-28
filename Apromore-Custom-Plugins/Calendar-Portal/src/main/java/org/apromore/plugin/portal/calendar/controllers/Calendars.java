@@ -145,8 +145,14 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
             } else if (CalendarEvents.ON_CALENDAR_BEFORE_REMOVE.equals(event.getName())) {
                 CalendarModel calendarItem = (CalendarModel) event.getData();
                 beforeRemoveCalendar(calendarItem);
+            } else if (CalendarEvents.ON_CALENDAR_CHANGED.equals(event.getName())) {
+                // propagate to session queue (other tabs/plugins)
+                sessionCalendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_CHANGED, null, logId));
             } else if (CalendarEvents.ON_CALENDAR_REMOVE.equals(event.getName())) {
                 CalendarModel calendarItem = (CalendarModel) event.getData();
+                // propagate to session queue (other tabs/plugins)
+                sessionCalendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_REMOVE, null, logId));
+                sessionCalendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_UNLINK, null, logId));
                 removeCalendar(calendarItem);
             }
         };
@@ -169,7 +175,11 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
 
     private void applyCalendarForLog(Integer logId, Long calendarId) {
         eventLogService.updateCalendarForLog(logId, calendarId);
-        sessionCalendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_CHANGED, null, logId));
+        if (calendarId == null) {
+            sessionCalendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_UNLINK, null, logId));
+        } else {
+            sessionCalendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_LINK, null, logId));
+        }
     }
 
     private void beforeRemoveCalendar(CalendarModel calendarItem) {

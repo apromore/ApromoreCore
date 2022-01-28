@@ -64,6 +64,7 @@ import org.apromore.service.ProcessService;
 import org.apromore.service.loganimation.LogAnimationService2;
 import org.json.JSONException;
 import org.slf4j.Logger;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.ComponentNotFoundException;
 import org.zkoss.zk.ui.Executions;
@@ -334,21 +335,25 @@ public class PDController extends BaseController implements Composer<Component>,
 
     public void initializeCalendar() {
         sessionQueue = EventQueues.lookup(CalendarEvents.TOPIC, EventQueues.SESSION,true);
-        sessionQueue.subscribe(new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) {
-                if (CalendarEvents.ON_CALENDAR_CHANGED.equals(event.getName())) {
-                    int logId = (int) event.getData();
-                    if (logId == sourceLogId) {
-                        Messagebox.show("Custom calendar for this process log is updated. You need to reload the page. Continue?",
-                                new Messagebox.Button[] {Messagebox.Button.OK, Messagebox.Button.CANCEL},
-                                (ClickEvent e) -> {
-                                    if (Messagebox.ON_OK.equals(e.getName())) {
-                                        Clients.evalJavaScript("window.location.reload()");
-                                    }
-                                }
-                        );
-                    }
+        sessionQueue.subscribe(event -> {
+            String eventName = event.getName();
+            int logId = (int) event.getData();
+            String message = null;
+            if (logId == sourceLogId) {
+                if (CalendarEvents.ON_CALENDAR_LINK.equals(eventName) || CalendarEvents.ON_CALENDAR_CHANGED.equals(eventName)) {
+                    message = Labels.getLabel("common_calendarUpdated_message");
+                } else if (CalendarEvents.ON_CALENDAR_UNLINK.equals(eventName)) {
+                    message = Labels.getLabel("common_calendarUnlinked_message");
+                }
+                if (message != null) {
+                    Messagebox.show(message,
+                        new Messagebox.Button[] {Messagebox.Button.OK, Messagebox.Button.CANCEL},
+                        (ClickEvent e) -> {
+                            if (Messagebox.ON_OK.equals(e.getName())) {
+                                Clients.evalJavaScript("window.location.reload()");
+                            }
+                        }
+                    );
                 }
             }
         });
