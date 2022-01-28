@@ -111,6 +111,10 @@ public class TestDataSetup {
     public XLog readLogWithThreeTraceOneVariant() {
         return this.readXESFile("src/test/logs/L1_3traces_1variant.xes");
     }
+
+    public XLog readLogWithThreeTraceOneVariantMissingValues() {
+        return this.readXESFile("src/test/logs/L1_3traces_1variant_missing_values.xes");
+    }
     
     public XLog readLogWithStartCompleteEventsNonOverlapping() {
         return this.readXESFile("src/test/logs/L1_start_complete_no_overlapping.xes");
