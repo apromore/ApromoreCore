@@ -78,4 +78,29 @@ public class PathValidatorTest extends FilterRuleValidatorTest {
             System.out.println(e);
         }
     }
+
+    @Test
+    public void validateDirectFollowToEnd() {
+        FilterType filterType = FilterType.DIRECT_FOLLOW;
+        String mainKey = XESAttributeCodes.CONCEPT_NAME;
+
+        RuleValue r1v1 = new RuleValue(filterType, OperationType.FROM, mainKey, "Prepare package");
+        RuleValue r1v2 = new RuleValue(filterType, OperationType.TO, mainKey, "[End]");
+
+        Set<RuleValue> primaryValues = Set.of(r1v1, r1v2);
+
+        LogFilterRule rule = new LogFilterRuleImpl(Choice.RETAIN, Inclusion.ANY_VALUE, Section.CASE,
+                filterType, mainKey,
+                primaryValues, null);
+
+        try {
+            List<LogFilterRule> criteria = List.of(rule);
+            APMLog logEF2 = getLog("5 cases EFollow (2).xes");
+            List<ValidatedFilterRule> validatedRules = FilterRuleValidator.validate(criteria, logEF2);
+            assertTrue(validatedRules.get(0).isApplicable());
+            assertFalse(validatedRules.get(0).isSubstituted());
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
 }
