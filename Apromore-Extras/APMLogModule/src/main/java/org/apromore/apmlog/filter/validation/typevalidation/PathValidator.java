@@ -20,6 +20,7 @@ package org.apromore.apmlog.filter.validation.typevalidation;
 import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.RuleValue;
+import org.apromore.apmlog.filter.types.FilterType;
 import org.apromore.apmlog.filter.types.OperationType;
 import org.apromore.apmlog.filter.validation.ValidatedFilterRule;
 import org.apromore.apmlog.stats.LogStatsAnalyzer;
@@ -54,6 +55,11 @@ public class PathValidator extends AbstractLogFilterRuleValidator {
 
         Set<String> validVals =
                 LogStatsAnalyzer.getUniqueEventAttributeValues(apmLog.getActivityInstances(), mainAttrKey);
+
+        if (originalRule.getFilterType().equals(FilterType.DIRECT_FOLLOW)) {
+            validVals.add("[Start]");
+            validVals.add("[End]");
+        }
 
         Set<RuleValue> validRVs = validatedRule.getPrimaryValues().stream()
                 .filter(x -> validVals.contains(x.getStringValue()))
