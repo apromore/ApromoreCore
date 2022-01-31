@@ -166,6 +166,7 @@
         <n:span id="Apromorestartupcode">
             <n:script>
                 <![CDATA[
+
                     var editorWrapper;
                     var disabledPlugins = [];
                     if (!${arg.availableSimulateModelPlugin}) {
@@ -185,11 +186,18 @@
                           username: '${arg.username}'
                         };
                       editorWrapper = new Apromore.BPMNEditor.EditorApp (config);
+                      Apromore.BPMNEditor.app = editorWrapper;
                       return await editorWrapper.init(config);
                     }
-					//console.log('${arg.bpmnXML}');
+
+                    Apromore.BPMNEditor.readXML = function(callback) {
+                       Apromore.BPMNEditor.app.getXML().then((xml) => { callback(xml); })
+                    }
+
                     createEditor('${arg.bpmnXML}').then((editor) => {
-                        window.Ap = window.Ap || {};
+                        // example for getting current XML via callback
+                        // console.log(Apromore.BPMNEditor.readXML((xml) => { console.log(xml); }));
+
                         Apromore.BPMNEditor.Plugins.Share.shareExt = function() {
                           zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onShare'));
                         };
