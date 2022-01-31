@@ -76,7 +76,7 @@ public interface ProcessModelVersionRepository extends JpaRepository<ProcessMode
      */
     @Query("SELECT pmv FROM ProcessModelVersion pmv JOIN pmv.processBranch pb " +
             "JOIN pb.process p WHERE p.id = ?1 AND pmv.versionNumber = ?2")
-    ProcessModelVersion getCurrentProcessModelVersion(Integer processId, String versionNumber);
+    List<ProcessModelVersion> getCurrentProcessModelVersion(Integer processId, String versionNumber);
 
     /**
      * find the current process model version for the process name and branch provided.

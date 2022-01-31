@@ -96,6 +96,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static org.apromore.common.Constants.DRAFT_BRANCH_NAME;
+import static org.apromore.common.Constants.TRUNK_NAME;
+
 /**
  * Implementation of the ProcessService Contract.
  * 
@@ -227,7 +230,7 @@ public class ProcessServiceImpl implements ProcessService {
             + "\", but JPA repository assigned a primary key ID of " + process.getId());
       }
 
-      ProcessBranch branch = insertProcessBranch(process, created, lastUpdate, Constants.TRUNK_NAME);
+      ProcessBranch branch = insertProcessBranch(process, created, lastUpdate, TRUNK_NAME);
       ProcessModelVersion pmv = insertProcessModelVersion(processName, branch, version, nativeType,
           sanitizedStream, lastUpdate, user);
 
@@ -515,41 +518,43 @@ public class ProcessServiceImpl implements ProcessService {
     LOGGER.debug("Executing operation update process meta data.");
 
     try {
-      ProcessModelVersion processModelVersion =
+      List<ProcessModelVersion> processModelVersions =
           processModelVersionRepo.getCurrentProcessModelVersion(processId, preVersion.toString());
-      ProcessBranch branch = processModelVersion.getProcessBranch();
-      Process process = processRepo.findById(processId).get();
+      for (ProcessModelVersion processModelVersion : processModelVersions) {
+        ProcessBranch branch = processModelVersion.getProcessBranch();
+        Process process = processRepo.findById(processId).get();
 
-      process.setDomain(domain);
-      process.setName(processName);
-      process.setRanking(ranking);
-      process.setUser(userSrv.findUserByLogin(username));
-      processModelVersion.setVersionNumber(newVersion.toString());
+        process.setDomain(domain);
+        process.setName(processName);
+        process.setRanking(ranking);
+        process.setUser(userSrv.findUserByLogin(username));
+        processModelVersion.setVersionNumber(newVersion.toString());
 
-      Group publicGroup = groupRepo.findPublicGroup();
-      if (publicGroup == null) {
-        LOGGER.warn("No public group present in repository");
-      } else {
-        Set<GroupProcess> groupProcesses = process.getGroupProcesses();
-        Set<GroupProcess> publicGroupProcesses = filterPublicGroupProcesses(groupProcesses);
-        boolean isCurrentPublic = !publicGroupProcesses.isEmpty();
+        Group publicGroup = groupRepo.findPublicGroup();
+        if (publicGroup == null) {
+          LOGGER.warn("No public group present in repository");
+        } else {
+          Set<GroupProcess> groupProcesses = process.getGroupProcesses();
+          Set<GroupProcess> publicGroupProcesses = filterPublicGroupProcesses(groupProcesses);
+          boolean isCurrentPublic = !publicGroupProcesses.isEmpty();
 
-        if (!isCurrentPublic && tobePublic) {
-          groupProcesses
-              .add(new GroupProcess(process, publicGroup, new AccessRights(true, true, false)));
-          process.setGroupProcesses(groupProcesses);
-          workspaceSrv.createPublicStatusForUsers(process);
+          if (!isCurrentPublic && tobePublic) {
+            groupProcesses
+                    .add(new GroupProcess(process, publicGroup, new AccessRights(true, true, false)));
+            process.setGroupProcesses(groupProcesses);
+            workspaceSrv.createPublicStatusForUsers(process);
 
-        } else if (isCurrentPublic && !tobePublic) {
-          groupProcesses.removeAll(publicGroupProcesses);
-          process.setGroupProcesses(groupProcesses);
-          workspaceSrv.removePublicStatusForUsers(process);
+          } else if (isCurrentPublic && !tobePublic) {
+            groupProcesses.removeAll(publicGroupProcesses);
+            process.setGroupProcesses(groupProcesses);
+            workspaceSrv.removePublicStatusForUsers(process);
+          }
         }
-      }
 
-      processRepo.save(process);
-      processModelVersionRepo.save(processModelVersion);
-      processBranchRepo.save(branch);
+        processRepo.save(process);
+        processModelVersionRepo.save(processModelVersion);
+        processBranchRepo.save(branch);
+      }
     } catch (Exception e) {
       throw new UpdateProcessException(e.getMessage(), e.getCause());
     }
@@ -592,34 +597,34 @@ public class ProcessServiceImpl implements ProcessService {
   @Transactional(readOnly = false)
   public void deleteProcessModel(final List<ProcessData> models, final User user)
       throws UpdateProcessException {
-    // TODO: Delete corresponding draft versions
     for (ProcessData entry : models) {
-      ProcessModelVersion pvid = processModelVersionRepo
+      List<ProcessModelVersion> processModelVersionList = processModelVersionRepo
           .getCurrentProcessModelVersion(entry.getId(), entry.getVersionNumber().toString());
-
-      if (pvid != null) {
-        Process process = pvid.getProcessBranch().getProcess();
-        if (!canUserWriteProcess(user, process.getId())) {
-          throw new UpdateProcessException("Write permission denied for " + user.getUsername());
-        }
-        // List<ProcessBranch> branches = process.getProcessBranches();
-        LOGGER.debug("Retrieving the Process Model of the current version of " + process.getName()
-            + " to be deleted.");
-
-        try {
-          // Delete the process and branch if there's only one model version
-          ProcessBranch branch = pvid.getProcessBranch();
-          List<ProcessModelVersion> pmvs = pvid.getProcessBranch().getProcessModelVersions();
-          deleteProcessModelVersion(pmvs, pvid, branch);
-          LOGGER.debug("Branch has {} versions", pvid.getProcessBranch().getProcessModelVersions().size());
-          if (pvid.getProcessBranch().getProcessModelVersions().isEmpty()) {
-            LOGGER.debug("Deleting entire process");
-            processRepo.delete(process);
+      for (ProcessModelVersion pvid : processModelVersionList) {
+        if (pvid != null && TRUNK_NAME.equals(pvid.getProcessBranch().getBranchName())) {
+          Process process = pvid.getProcessBranch().getProcess();
+          if (!canUserWriteProcess(user, process.getId())) {
+            throw new UpdateProcessException("Write permission denied for " + user.getUsername());
           }
-        } catch (ExceptionDao e) {
-          throw new UpdateProcessException("Unable to modify " + process.getName(), e);
-        }
+          // Get all branches List<ProcessBranch> branches = process.getProcessBranches();
+          LOGGER.debug("Retrieving the Process Model of the current version of " + process.getName()
+                  + " to be deleted.");
 
+          try {
+            // Delete the process and branch if there's only one model version
+            ProcessBranch branch = pvid.getProcessBranch();
+            List<ProcessModelVersion> pmvs = pvid.getProcessBranch().getProcessModelVersions();
+            deleteProcessModelVersion(pmvs, pvid, branch, user);
+            LOGGER.debug("Main branch has {} versions", pvid.getProcessBranch().getProcessModelVersions().size());
+            // Delete the process only when main branch is empty
+            if (pvid.getProcessBranch().getProcessModelVersions().isEmpty()) {
+              LOGGER.debug("Deleting entire process");
+              processRepo.delete(process);
+            }
+          } catch (ExceptionDao e) {
+            throw new UpdateProcessException("Unable to modify " + process.getName(), e);
+          }
+        }
       }
     }
   }
@@ -662,8 +667,9 @@ public class ProcessServiceImpl implements ProcessService {
     }
   }
 
+  @Transactional(readOnly = false)
   private void deleteProcessModelVersion(List<ProcessModelVersion> pmvs,
-      ProcessModelVersion pvidToDelete, ProcessBranch branch) throws ExceptionDao {
+      ProcessModelVersion pvidToDelete, ProcessBranch branch, User user) throws ExceptionDao {
     ProcessModelVersion newCurrent = getPreviousVersion(pmvs, pvidToDelete);
     if (newCurrent == null) {
       newCurrent = getNextVersion(pmvs, pvidToDelete);
@@ -673,6 +679,12 @@ public class ProcessServiceImpl implements ProcessService {
     processBranchRepo.save(branch);
 
     deleteProcessModelVersion(pvidToDelete);
+
+    // Delete corresponding draft version of current user
+    ProcessModelVersion draft = getProcessModelVersionByUser(pvidToDelete.getProcessBranch().getProcess().getId(),
+            DRAFT_BRANCH_NAME, pvidToDelete.getVersionNumber(), user.getId());
+    deleteProcessModelVersion(draft);
+
   }
 
   private ProcessModelVersion getPreviousVersion(List<ProcessModelVersion> pmvs,
@@ -888,12 +900,12 @@ public class ProcessServiceImpl implements ProcessService {
 
       // Check whether draft branch for this process model is already exist
       ProcessBranch branch = processModel.getProcessBranches().stream().filter(processBranch ->
-              processBranch.getBranchName().equals(org.apromore.common.Constants.DRAFT_BRANCH_NAME))
+              processBranch.getBranchName().equals(DRAFT_BRANCH_NAME))
               .findAny().orElse(null);
 
       if (branch == null) {
         branch = insertProcessBranch(processModel, now, now,
-                org.apromore.common.Constants.DRAFT_BRANCH_NAME);
+                DRAFT_BRANCH_NAME);
       }
 
       return insertProcessModelVersion(processName, branch, new Version(versionNumber)
@@ -919,7 +931,7 @@ public class ProcessServiceImpl implements ProcessService {
 //      session.getVersion().setVersionNumber(versionNumber);
 
       return updateProcessModelVersion(
-              processId, org.apromore.common.Constants.DRAFT_BRANCH_NAME, new Version(versionNumber), userSrv.findUserByLogin(userName), "", formatSrv.findNativeType(nativeType),
+              processId, DRAFT_BRANCH_NAME, new Version(versionNumber), userSrv.findUserByLogin(userName), "", formatSrv.findNativeType(nativeType),
               nativeStream);
     } catch (Exception e) {
       LOGGER.error("Update draft failed caused by {}", e.getMessage());
