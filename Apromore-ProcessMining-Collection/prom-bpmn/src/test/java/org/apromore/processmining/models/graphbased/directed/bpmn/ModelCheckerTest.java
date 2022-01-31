@@ -27,89 +27,89 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class ModelCheckerTest {
-    private ModelChecker modelChecker = new ModelChecker();
 
     @Test
     public void testValidModel() throws Exception {
         BPMNDiagram diagram = getDiagramFromFile("d1_valid.bpmn");
-        ModelCheckResult modelCheckResult = modelChecker.checkModel(diagram, false);
+        ModelCheckResult modelCheckResult = ModelChecker.MODEL_CHECKER_NO_POOLS.checkModel(diagram);
         assertTrue(modelCheckResult.isValid());
+        assertTrue(modelCheckResult.getErrorCodes().isEmpty());
         assertEquals("", modelCheckResult.invalidMessage());
     }
 
     @Test
     public void testEmptyModel() throws Exception {
         BPMNDiagram diagram = getDiagramFromFile("empty_model.bpmn");
-        ModelCheckResult modelCheckResult = modelChecker.checkModel(diagram, false);
+        ModelCheckResult modelCheckResult = ModelChecker.MODEL_CHECKER_NO_POOLS.checkModel(diagram);
         assertFalse(modelCheckResult.isValid());
-        assertTrue(modelCheckResult.invalidMessage().contains("The model is empty"));
+        assertTrue(modelCheckResult.getErrorCodes().contains(ModelCheckResult.EMPTY_MODEL_CODE));
     }
 
     @Test
     public void testModelWithPool() throws Exception {
         BPMNDiagram diagram = getDiagramFromFile("model_with_pool.bpmn");
-        ModelCheckResult modelCheckResult = modelChecker.checkModel(diagram, true);
+        ModelCheckResult modelCheckResult = ModelChecker.MODEL_CHECKER_ALLOW_POOLS.checkModel(diagram);
         assertTrue(modelCheckResult.isValid());
+        assertTrue(modelCheckResult.getErrorCodes().isEmpty());
         assertEquals("", modelCheckResult.invalidMessage());
 
-        modelCheckResult = modelChecker.checkModel(diagram, false);
+        modelCheckResult = ModelChecker.MODEL_CHECKER_NO_POOLS.checkModel(diagram);
         assertFalse(modelCheckResult.isValid());
-        assertTrue(modelCheckResult.invalidMessage()
-                .contains("There are pools in the model. Pools are not yet supported"));
+        assertTrue(modelCheckResult.getErrorCodes().contains(ModelCheckResult.POOLS_NOT_SUPPORTED_CODE));
     }
 
     @Test
     public void testModelWithSelfLoopAndMultipleEventArcs() throws Exception {
         BPMNDiagram diagram = getDiagramFromFile("self_loop.bpmn");
 
-        ModelCheckResult modelCheckResult = modelChecker.checkModel(diagram, false);
+        ModelCheckResult modelCheckResult = ModelChecker.MODEL_CHECKER_NO_POOLS.checkModel(diagram);
         assertFalse(modelCheckResult.isValid());
 
-        String invalidMsg = modelCheckResult.invalidMessage();
-        assertTrue(invalidMsg.contains("The element A has a self-loop"));
-        assertTrue(invalidMsg.contains("The task A has more than one outgoing arc"));
-        assertTrue(invalidMsg.contains("The task A has more than one incoming arc"));
-        assertTrue(invalidMsg.contains("The Start Event has more than one outgoing arc"));
-        assertTrue(invalidMsg.contains("The End Event has more than one incoming arc"));
+        Set<Integer> errorCodes = modelCheckResult.getErrorCodes();
+        assertTrue(errorCodes.contains(ModelCheckResult.SELF_LOOP_CODE));
+        assertTrue(errorCodes.contains(ModelCheckResult.TASK_MULTIPLE_OUTGOING_ARCS_CODE));
+        assertTrue(errorCodes.contains(ModelCheckResult.TASK_MULTIPLE_INCOMING_ARCS_CODE));
+        assertTrue(errorCodes.contains(ModelCheckResult.START_MULTIPLE_OUTGOING_ARCS_CODE));
+        assertTrue(errorCodes.contains(ModelCheckResult.END_MULTIPLE_INCOMING_ARCS_CODE));
     }
 
     @Test
     public void testModelDisjointedNodes() throws Exception {
         BPMNDiagram diagram = getDiagramFromFile("disjointed.bpmn");
-        ModelCheckResult modelCheckResult = modelChecker.checkModel(diagram, false);
+        ModelCheckResult modelCheckResult = ModelChecker.MODEL_CHECKER_NO_POOLS.checkModel(diagram);
 
         assertFalse(modelCheckResult.isValid());
 
-        String invalidMsg = modelCheckResult.invalidMessage();
-        assertTrue(invalidMsg.contains("The task A has missing incoming or outgoing arcs"));
-        assertTrue(invalidMsg.contains("The Start Event has a missing outgoing arc"));
-        assertTrue(invalidMsg.contains("The End Event has a missing incoming arc"));
-        assertTrue(invalidMsg.contains("The gateway Gateway_0gczbo1 has missing incoming or outgoing arcs"));
+        Set<Integer> errorCodes = modelCheckResult.getErrorCodes();
+        assertTrue(errorCodes.contains(ModelCheckResult.TASK_MISSING_ARCS_CODE));
+        assertTrue(errorCodes.contains(ModelCheckResult.START_NO_OUTGOING_ARC_CODE));
+        assertTrue(errorCodes.contains(ModelCheckResult.END_NO_INCOMING_ARC_CODE));
     }
 
     @Test
     public void testModelReverseSequenceFlow() throws Exception {
         BPMNDiagram diagram = getDiagramFromFile("start_end_reversed.bpmn");
-        ModelCheckResult modelCheckResult = modelChecker.checkModel(diagram, false);
+        ModelCheckResult modelCheckResult = ModelChecker.MODEL_CHECKER_NO_POOLS.checkModel(diagram);
 
         assertFalse(modelCheckResult.isValid());
 
-        String invalidMsg = modelCheckResult.invalidMessage();
-        assertTrue(invalidMsg.contains("The Start Event has incoming arc(s)"));
-        assertTrue(invalidMsg.contains("The Start Event has a missing outgoing arc"));
-        assertTrue(invalidMsg.contains("The End Event has outgoing arc(s)"));
-        assertTrue(invalidMsg.contains("The End Event has a missing incoming arc"));
+        Set<Integer> errorCodes = modelCheckResult.getErrorCodes();
+        assertTrue(errorCodes.contains(ModelCheckResult.START_INCOMING_ARCS_CODE));
+        assertTrue(errorCodes.contains(ModelCheckResult.START_NO_OUTGOING_ARC_CODE));
+        assertTrue(errorCodes.contains(ModelCheckResult.END_OUTGOING_ARCS_CODE));
+        assertTrue(errorCodes.contains(ModelCheckResult.END_NO_INCOMING_ARC_CODE));
     }
 
     /**
-     * Get the contents of a file as string in the following directory: src/test/resources/data
-     * @param filename the name of a file in the src/test/resources/data directory.
+     * Get the contents of a file as string in the following directory: src/test/data
+     * @param filename the name of a file in the src/test/data directory.
      * @return the contents of the file as a string.
      * @throws IOException
      */

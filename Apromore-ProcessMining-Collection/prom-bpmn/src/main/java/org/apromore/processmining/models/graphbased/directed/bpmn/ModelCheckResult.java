@@ -21,16 +21,63 @@
  */
 package org.apromore.processmining.models.graphbased.directed.bpmn;
 
-import lombok.Getter;
-
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class ModelCheckResult {
-    @Getter
-    private List<String> errors;
+    public static final int DISCONNECTED_ARC_CODE = 1;
+    public static final int EMPTY_MODEL_CODE = 2;
+    public static final int POOLS_NOT_SUPPORTED_CODE = 3;
+    public static final int SELF_LOOP_CODE = 4;
+    public static final int TASK_MULTIPLE_OUTGOING_ARCS_CODE = 5;
+    public static final int TASK_MULTIPLE_INCOMING_ARCS_CODE = 6;
+    public static final int TASK_MISSING_ARCS_CODE = 7;
+    public static final int GATE_MISSING_ARCS_CODE = 8;
+    public static final int START_MULTIPLE_OUTGOING_ARCS_CODE = 9;
+    public static final int START_NO_OUTGOING_ARC_CODE = 10;
+    public static final int START_INCOMING_ARCS_CODE = 11;
+    public static final int END_MULTIPLE_INCOMING_ARCS_CODE = 12;
+    public static final int END_NO_INCOMING_ARC_CODE = 13;
+    public static final int END_OUTGOING_ARCS_CODE = 14;
 
-    public ModelCheckResult(List<String> errorMessages) {
-        errors = errorMessages;
+    private static final String DISCONNECTED_ARC_MSG = "The model has disconnected arcs";
+    private static final String EMPTY_MODEL_MSG = "The model is empty";
+    private static final String POOLS_NOT_SUPPORTED_MSG = "There are pools in the model. Pools are not yet supported";
+    private static final String SELF_LOOP_MSG_FORMAT = "The element %s has a self-loop";
+    private static final String TASK_MULTIPLE_OUTGOING_ARCS_MSG_FORMAT = "The task %s has more than one outgoing arc";
+    private static final String TASK_MULTIPLE_INCOMING_ARCS_MSG_FORMAT = "The task %s has more than one incoming arc";
+    private static final String TASK_MISSING_ARCS_MSG_FORMAT = "The task %s has missing incoming or outgoing arcs";
+    private static final String GATE_MISSING_ARCS_MSG_FORMAT = "The gateway %s has missing incoming or outgoing arcs";
+    private static final String START_MULTIPLE_OUTGOING_ARCS_MSG = "The Start Event has more than one outgoing arc";
+    private static final String START_NO_OUTGOING_ARC_MSG = "The Start Event has a missing outgoing arc";
+    private static final String START_INCOMING_ARCS_MSG = "The Start Event has incoming arc(s)";
+    private static final String END_MULTIPLE_INCOMING_ARCS_MSG = "The End Event has more than one incoming arc";
+    private static final String END_NO_INCOMING_ARC_MSG = "The End Event has a missing incoming arc";
+    private static final String END_OUTGOING_ARCS_MSG = "The End Event has outgoing arc(s)";
+
+    private static final Map<Integer, String> ERROR_MAP = Map.ofEntries(
+            Map.entry(DISCONNECTED_ARC_CODE, DISCONNECTED_ARC_MSG),
+            Map.entry(EMPTY_MODEL_CODE, EMPTY_MODEL_MSG),
+            Map.entry(POOLS_NOT_SUPPORTED_CODE, POOLS_NOT_SUPPORTED_MSG),
+            Map.entry(SELF_LOOP_CODE, SELF_LOOP_MSG_FORMAT),
+            Map.entry(TASK_MULTIPLE_OUTGOING_ARCS_CODE, TASK_MULTIPLE_OUTGOING_ARCS_MSG_FORMAT),
+            Map.entry(TASK_MULTIPLE_INCOMING_ARCS_CODE, TASK_MULTIPLE_INCOMING_ARCS_MSG_FORMAT),
+            Map.entry(TASK_MISSING_ARCS_CODE, TASK_MISSING_ARCS_MSG_FORMAT),
+            Map.entry(GATE_MISSING_ARCS_CODE, GATE_MISSING_ARCS_MSG_FORMAT),
+            Map.entry(START_MULTIPLE_OUTGOING_ARCS_CODE, START_MULTIPLE_OUTGOING_ARCS_MSG),
+            Map.entry(START_NO_OUTGOING_ARC_CODE, START_NO_OUTGOING_ARC_MSG),
+            Map.entry(START_INCOMING_ARCS_CODE, START_INCOMING_ARCS_MSG),
+            Map.entry(END_MULTIPLE_INCOMING_ARCS_CODE, END_MULTIPLE_INCOMING_ARCS_MSG),
+            Map.entry(END_NO_INCOMING_ARC_CODE, END_NO_INCOMING_ARC_MSG),
+            Map.entry(END_OUTGOING_ARCS_CODE, END_OUTGOING_ARCS_MSG)
+    );
+
+    private Map<Integer, List<String>> errors;
+
+    public ModelCheckResult(Map<Integer, List<String>> errorMap) {
+        this.errors = errorMap;
     }
 
     public boolean isValid() {
@@ -39,10 +86,17 @@ public class ModelCheckResult {
 
     public String invalidMessage() {
         StringBuilder errorMsgBuilder = new StringBuilder();
-        for (String error : errors) {
-            errorMsgBuilder.append(error);
-            errorMsgBuilder.append(System.getProperty("line.separator"));
+        for (Map.Entry<Integer, List<String>> entry : errors.entrySet()) {
+            String msgFormat = ERROR_MAP.get(entry.getKey());
+            for (String element : entry.getValue()) {
+                errorMsgBuilder.append(String.format(msgFormat, element));
+                errorMsgBuilder.append(System.getProperty("line.separator"));
+            }
         }
         return errorMsgBuilder.toString();
+    }
+
+    public Set<Integer> getErrorCodes() {
+        return Collections.unmodifiableSet(errors.keySet());
     }
 }

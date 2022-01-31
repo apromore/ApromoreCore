@@ -29,40 +29,37 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ModelChecker {
-    private static final String DISCONNECTED_ARC_MSG = "The model has disconnected arcs";
-    private static final String EMPTY_MODEL_MSG = "The model is empty";
-    private static final String POOLS_NOT_SUPPORTED_MSG = "There are pools in the model. Pools are not yet supported";
-    private static final String SELF_LOOP_MSG_FORMAT = "The element %s has a self-loop";
-    private static final String TASK_MULTIPLE_OUTGOING_ARCS_MSG_FORMAT = "The task %s has more than one outgoing arc";
-    private static final String TASK_MULTIPLE_INCOMING_ARCS_MSG_FORMAT = "The task %s has more than one incoming arc";
-    private static final String TASK_MISSING_ARCS_MSG_FORMAT = "The task %s has missing incoming or outgoing arcs";
-    private static final String GATE_MISSING_ARCS_MSG_FORMAT = "The gateway %s has missing incoming or outgoing arcs";
-    private static final String START_MULTIPLE_OUTGOING_ARCS_MSG = "The Start Event has more than one outgoing arc";
-    private static final String START_NO_OUTGOING_ARC_MSG = "The Start Event has a missing outgoing arc";
-    private static final String START_INCOMING_ARCS_MSG = "The Start Event has incoming arc(s)";
-    private static final String END_MULTIPLE_INCOMING_ARCS_MSG = "The End Event has more than one incoming arc";
-    private static final String END_NO_INCOMING_ARC_MSG = "The End Event has a missing incoming arc";
-    private static final String END_OUTGOING_ARCS_MSG = "The End Event has outgoing arc(s)";
 
+    private boolean allowPools;
+    private Map<Integer, List<String>> errorMap = new HashMap<>();
+
+    public static final ModelChecker MODEL_CHECKER_NO_POOLS = new ModelChecker(false);
+    public static final ModelChecker MODEL_CHECKER_ALLOW_POOLS = new ModelChecker(true);
+
+    private ModelChecker(boolean allowPools) {
+        this.allowPools = allowPools;
+    }
 
     /**
      * Finds errors in a model.
      * @param bpmnDiagram the model to find errors in.
-     * @param allowPools true if pools are supported.
      * @return a object containing the errors in the model.
      */
-    public ModelCheckResult checkModel(BPMNDiagram bpmnDiagram, boolean allowPools) {
-        List<String> errors = new ArrayList<>();
+    public ModelCheckResult checkModel(BPMNDiagram bpmnDiagram) {
+        errorMap.clear();
 
         if (isModelEmpty(bpmnDiagram)) {
-            errors.add(EMPTY_MODEL_MSG); //empty model - no nodes or edges
+            //empty model - no nodes or edges
+            addError(ModelCheckResult.EMPTY_MODEL_CODE, "DIAGRAM");
         }
 
         if (!allowPools && !CollectionUtils.isEmpty(bpmnDiagram.getPools())) {
-            errors.add(POOLS_NOT_SUPPORTED_MSG);
+            addError(ModelCheckResult.POOLS_NOT_SUPPORTED_CODE, "DIAGRAM");
         }
 
         List<BPMNNode> sourceNodes = new ArrayList<>();
@@ -70,29 +67,30 @@ public class ModelChecker {
 
         for (Flow flow : bpmnDiagram.getFlows()) {
             if ((flow.getSource() == null || flow.getTarget() == null)) {
-                if (!errors.contains(DISCONNECTED_ARC_MSG)) {
-                    errors.add(DISCONNECTED_ARC_MSG); //disconnected - a flow source or target is missing
+                if (!errorMap.containsKey(ModelCheckResult.DISCONNECTED_ARC_CODE)) {
+                    //disconnected - a flow source or target is missing
+                    addError(ModelCheckResult.DISCONNECTED_ARC_CODE, flow.getSource().getLabel());
                 }
             } else if (flow.getSource().equals(flow.getTarget())) {
-                errors.add(String.format(SELF_LOOP_MSG_FORMAT, flow.getSource().getLabel()));
+                addError(ModelCheckResult.SELF_LOOP_CODE, flow.getSource().getLabel());
             }
             sourceNodes.add(flow.getSource());
             targetNodes.add(flow.getTarget());
         }
 
         for (Activity activity : bpmnDiagram.getActivities()) {
-            errors.addAll(checkActivity(activity, sourceNodes, targetNodes));
+            checkActivity(activity, sourceNodes, targetNodes);
         }
 
         for (Event event : bpmnDiagram.getEvents()) {
-            errors.addAll(checkEvent(event, sourceNodes, targetNodes));
+            checkEvent(event, sourceNodes, targetNodes);
         }
 
         for (Gateway gateway : bpmnDiagram.getGateways()) {
-            errors.addAll(checkGateway(gateway, sourceNodes, targetNodes));
+            checkGateway(gateway, sourceNodes, targetNodes);
         }
 
-        return new ModelCheckResult(errors);
+        return new ModelCheckResult(errorMap);
     }
 
     /**
@@ -109,25 +107,22 @@ public class ModelChecker {
      * @param activity the activity to find errors in.
      * @param sourceNodes a list of nodes in the model which have outgoing edges.
      * @param targetNodes a list of nodes in the model which have incoming edges.
-     * @return A list of errors in the activity.
      */
-    private List<String> checkActivity(Activity activity, List<BPMNNode> sourceNodes, List<BPMNNode> targetNodes) {
-        List<String> errors = new ArrayList<>();
+    private void checkActivity(Activity activity, List<BPMNNode> sourceNodes, List<BPMNNode> targetNodes) {
         if (Collections.frequency(sourceNodes, activity) > 1) {
             // > 1 outgoing arc - activity appears more than once as a flow source
-            errors.add(String.format(TASK_MULTIPLE_OUTGOING_ARCS_MSG_FORMAT, activity.getLabel()));
+            addError(ModelCheckResult.TASK_MULTIPLE_OUTGOING_ARCS_CODE, activity.getLabel());
         }
 
         if (Collections.frequency(targetNodes, activity) > 1) {
             // > 1 incoming arc - activity appears more than once as a flow target
-            errors.add(String.format(TASK_MULTIPLE_INCOMING_ARCS_MSG_FORMAT, activity.getLabel()));
+            addError(ModelCheckResult.TASK_MULTIPLE_INCOMING_ARCS_CODE, activity.getLabel());
         }
 
         if (!sourceNodes.contains(activity) || !targetNodes.contains(activity)) {
             // missing incoming or outgoing arc - activity does not appear as a flow source or target
-            errors.add(String.format(TASK_MISSING_ARCS_MSG_FORMAT, activity.getLabel()));
+            addError(ModelCheckResult.TASK_MISSING_ARCS_CODE, activity.getLabel());
         }
-        return errors;
     }
 
     /**
@@ -135,15 +130,13 @@ public class ModelChecker {
      * @param event the event to find errors in.
      * @param sourceNodes a list of nodes in the model which have outgoing edges.
      * @param targetNodes a list of nodes in the model which have incoming edges.
-     * @return A list of errors in the activity.
      */
-    private List<String> checkEvent(Event event, List<BPMNNode> sourceNodes, List<BPMNNode> targetNodes) {
+    private void checkEvent(Event event, List<BPMNNode> sourceNodes, List<BPMNNode> targetNodes) {
         if (Event.EventType.START.equals(event.getEventType())) {
-            return checkStartEvent(event, sourceNodes, targetNodes);
+            checkStartEvent(event, sourceNodes, targetNodes);
         } else if (Event.EventType.END.equals(event.getEventType())) {
-            return checkEndEvent(event, sourceNodes, targetNodes);
+            checkEndEvent(event, sourceNodes, targetNodes);
         }
-        return Collections.emptyList();
     }
 
     /**
@@ -151,23 +144,20 @@ public class ModelChecker {
      * @param event the start event to find errors in.
      * @param sourceNodes a list of nodes in the model which have outgoing edges.
      * @param targetNodes a list of nodes in the model which have incoming edges.
-     * @return A list of errors in the activity.
      */
-    private List<String> checkStartEvent(Event event, List<BPMNNode> sourceNodes, List<BPMNNode> targetNodes) {
-        List<String> errors = new ArrayList<>();
+    private void checkStartEvent(Event event, List<BPMNNode> sourceNodes, List<BPMNNode> targetNodes) {
         if (Collections.frequency(sourceNodes, event) > 1) {
             // > 1 outgoing arc - start event appears more than once as a flow source
-            errors.add(START_MULTIPLE_OUTGOING_ARCS_MSG);
+            addError(ModelCheckResult.START_MULTIPLE_OUTGOING_ARCS_CODE, "START_EVENT");
         } else if (!sourceNodes.contains(event)) {
             // No outgoing arc - start event does not appear as a flow source
-            errors.add(START_NO_OUTGOING_ARC_MSG);
+            addError(ModelCheckResult.START_NO_OUTGOING_ARC_CODE, "START_EVENT");
         }
 
         if (targetNodes.contains(event)) {
             // Any number of incoming arcs - start event appears as a flow target
-            errors.add(START_INCOMING_ARCS_MSG);
+            addError(ModelCheckResult.START_INCOMING_ARCS_CODE, "START_EVENT");
         }
-        return errors;
     }
 
     /**
@@ -175,23 +165,20 @@ public class ModelChecker {
      * @param event the end event to find errors in.
      * @param sourceNodes a list of nodes in the model which have outgoing edges.
      * @param targetNodes a list of nodes in the model which have incoming edges.
-     * @return A list of errors in the activity.
      */
-    private List<String> checkEndEvent(Event event, List<BPMNNode> sourceNodes, List<BPMNNode> targetNodes) {
-        List<String> errors = new ArrayList<>();
+    private void checkEndEvent(Event event, List<BPMNNode> sourceNodes, List<BPMNNode> targetNodes) {
         if (Collections.frequency(targetNodes, event) > 1) {
             // > 1 incoming arc - end event appears more than once as a flow target
-            errors.add(END_MULTIPLE_INCOMING_ARCS_MSG);
+            addError(ModelCheckResult.END_MULTIPLE_INCOMING_ARCS_CODE, "END_EVENT");
         } else if (!targetNodes.contains(event)) {
             // No incoming arc - end event does not appear as a flow target
-            errors.add(END_NO_INCOMING_ARC_MSG);
+            addError(ModelCheckResult.END_NO_INCOMING_ARC_CODE, "END_EVENT");
         }
 
         if (sourceNodes.contains(event)) {
             // Any number of outgoing arcs - end event appears as a flow source
-            errors.add(END_OUTGOING_ARCS_MSG);
+            addError(ModelCheckResult.END_OUTGOING_ARCS_CODE, "END_EVENT");
         }
-        return errors;
     }
 
     /**
@@ -199,14 +186,25 @@ public class ModelChecker {
      * @param gateway the gateway to find errors in.
      * @param sourceNodes a list of nodes in the model which have outgoing edges.
      * @param targetNodes a list of nodes in the model which have incoming edges.
-     * @return A list of errors in the activity.
      */
-    private List<String> checkGateway(Gateway gateway, List<BPMNNode> sourceNodes, List<BPMNNode> targetNodes) {
-        List<String> errors = new ArrayList<>();
+    private void checkGateway(Gateway gateway, List<BPMNNode> sourceNodes, List<BPMNNode> targetNodes) {
         if (!sourceNodes.contains(gateway) || !targetNodes.contains(gateway)) {
             // missing incoming or outgoing arc - gateway does not appear as a flow source or target
-            errors.add(String.format(GATE_MISSING_ARCS_MSG_FORMAT, gateway.getId()));
+            addError(ModelCheckResult.GATE_MISSING_ARCS_CODE, gateway.getId().toString());
         }
-        return errors;
+    }
+
+    /**
+     * Add an error to the error map.
+     * @param errorCode the error code.
+     * @param element the name or id of the element with an error.
+     */
+    private void addError(int errorCode, String element) {
+        List<String> elementList = errorMap.get(errorCode);
+        if (elementList == null) {
+            elementList = new ArrayList<>();
+        }
+        elementList.add(element);
+        errorMap.put(errorCode, elementList);
     }
 }
