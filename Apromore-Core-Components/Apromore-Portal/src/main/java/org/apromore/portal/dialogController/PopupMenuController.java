@@ -85,8 +85,8 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
     private String popupType;
     private static final String POPUP_MENU_PROCESS = "PROCESS";
     private static final String POPUP_MENU_LOG = "LOG";
-    private static final int MAX_SELECTION_FOR_MENU_MULTIPLE = 6; //when a model and up to 5 logs are selected
     private MainController mainController;
+    private  int countLog = 0;
     @Override
     public void doAfterCompose(Menupopup menuPopup) {
         try {
@@ -100,7 +100,6 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
             portalPluginMap = PortalPluginResolver.getPortalPluginMap();
             popupType = (String) Executions.getCurrent().getArg().get("POPUP_TYPE");
             if (getBaseListboxController().getSelection().size() > 1 &&
-                getBaseListboxController().getSelection().size() <= MAX_SELECTION_FOR_MENU_MULTIPLE &&
                 (popupType.equals(POPUP_MENU_LOG) || popupType.equals(POPUP_MENU_PROCESS)) &&
                 handleMenuForMultipleSelection(menuPopup)
                 ) {
@@ -215,7 +214,6 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
     }
 
     private boolean handleMenuForMultipleSelection(Menupopup menuPopup) {
-        int countLog = 0;
         int countProcess = 0;
         for (Object obj : getBaseListboxController().getListModel().getSelection()) {
             if (obj instanceof FolderType) {
@@ -231,16 +229,27 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
             //When two models are selected, and the user right-clicks on one of them, show a menu with:
             menuItems.add(new MenuItem(PluginCatalog.PLUGIN_COMPARE_MODELS));
             menuItems.add(new MenuItem(PluginCatalog.PLUGIN_MERGE_MODELS));
+            menuItems.add(new MenuItem(PluginCatalog.ITEM_SEPARATOR));
+            menuItems.add(new MenuItem(PluginCatalog.PLUGIN_DOWNLOAD));
         } else if (countProcess == 1 && countLog == 1) {
             //when a model and a log are selected, and the user right-clicks on one of them, show a menu with:
-            menuItems.add(new MenuItem(PluginCatalog.PLUGIN_ANIMATE_LOG));
+            menuItems.add(new MenuItem(PluginCatalog.PLUGIN_ANIMATE_LOG));// Will be Singular
+
             menuItems.add(new MenuItem(PluginCatalog.PLUGIN_CHECK_CONFORMANCE));
+            menuItems.add(new MenuItem(PluginCatalog.ITEM_SEPARATOR));
+            menuItems.add(new MenuItem(PluginCatalog.PLUGIN_DOWNLOAD));
         } else if (countProcess == 0 && (countLog >= 2 && countLog <= 5)) {
             // when two or more logs are selected (up to 5), and the user right-clicks on one of them, show a menu with:
             menuItems.add(new MenuItem(PluginCatalog.PLUGIN_DASHBOARD)); //Need to modify it
+            menuItems.add(new MenuItem(PluginCatalog.ITEM_SEPARATOR));
+            menuItems.add(new MenuItem(PluginCatalog.PLUGIN_DOWNLOAD));
         } else if (countProcess == 1 && (countLog >= 1 && countLog <= 5)) {
             // when a model and up to 5 logs are selected, and the user right-clicks on one of them, show a menu with
             menuItems.add(new MenuItem(PluginCatalog.PLUGIN_ANIMATE_LOG));
+            menuItems.add(new MenuItem(PluginCatalog.ITEM_SEPARATOR));
+            menuItems.add(new MenuItem(PluginCatalog.PLUGIN_DOWNLOAD));
+        }else{
+            menuItems.add(new MenuItem(PluginCatalog.PLUGIN_DOWNLOAD));
         }
         for (MenuItem menuItem : menuItems) {
             addMenuitem(menuPopup, menuItem);
@@ -485,7 +494,7 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
         }
         String label = plugin.getLabel(Locale.getDefault());
         item.setLabel(label);
-        if (POPUP_MENU_PROCESS.equals(popupType)) {
+        if (POPUP_MENU_PROCESS.equals(popupType) || (PluginCatalog.PLUGIN_ANIMATE_LOG.equals(itemId) && countLog==1 )) {
             //Modify Label for Model Popup Menu
             getModifiedMenuLabel(plugin, itemId, item);
         }
@@ -513,6 +522,9 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
                     } else {
                         popupLabel = "plugin_process_unpublishShort_text";
                     }
+                    break;
+                case PluginCatalog.PLUGIN_ANIMATE_LOG:
+                    popupLabel = "plugin_analyze_animateLog_text";
                     break;
                 default:
                     popupLabel = null;
