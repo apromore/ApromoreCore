@@ -474,6 +474,14 @@ public class MainController extends BaseController implements MainControllerInte
         this.baseListboxController.getListBox().setFocus(true); //To handle event on empty list
     }
 
+    public void reloadSummariesWithOpenTreeItems(List<Integer> folderIds) {
+        this.reloadSummaries2(); //Reload without Tree
+        List<FolderType> folders = this.getManagerService()
+            .getWorkspaceFolderTree(UserSessionManager.getCurrentUser().getId());
+        this.portalSession.setTree(folders);
+        this.navigation.loadTreeSpace(folderIds); //Reload tree with Existing Open Items
+    }
+
     /**
      * Forward to the controller ProcessListBoxController the request to add the
      * process to the table
