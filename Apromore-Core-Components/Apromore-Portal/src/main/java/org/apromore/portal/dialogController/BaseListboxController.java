@@ -712,14 +712,16 @@ public abstract class BaseListboxController extends BaseController {
     FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
 
     this.mainController.getCopyPasteController().paste(currentFolder);
-    refreshContent();
+    refreshWorkspace();
   }
 
   public void paste(FolderType currentFolder) throws Exception {
     this.mainController.getCopyPasteController().paste(currentFolder);
-    refreshContent();
+    refreshWorkspace();
   }
-
+  private void refreshWorkspace(){
+    mainController.reloadSummariesWithOpenTreeItems(mainController.getNavigationController().getAllOpenFolderItems());
+  }
   public void drop(FolderType dropToFolder,Set<Object> dropObjects) throws Exception {
     if (dropObjects.stream().anyMatch(dropObject -> {
       return (dropObject instanceof FolderType && dropToFolder.getId().equals(((FolderType) dropObject).getId()));
@@ -731,25 +733,7 @@ public abstract class BaseListboxController extends BaseController {
     this.mainController.getPortalSession().setCurrentFolder(dropToFolder);
     this.mainController.getCopyPasteController().drop(dropObjects, dropObjects.size(), dropToFolder);
     this.mainController.getPortalSession().setCurrentFolder(currentFolder);
-    refreshContent();
-  }
-
-  public void dropToTree(FolderType dropToFolder,Set<Object> dropObjects,boolean draggedFromTree) throws Exception {
-    if (dropObjects.stream().anyMatch(dropObject -> (dropObject instanceof FolderType && dropToFolder.getId().equals(((FolderType) dropObject).getId())))) {
-      Notification.error(Labels.getLabel("portal_source_destination_folder_notsame_message"));
-      return;
-    }
-    FolderType currentFolder = mainController.getPortalSession().getCurrentFolder();
-    mainController.getPortalSession().setCurrentFolder(dropToFolder);
-    mainController.getCopyPasteController().drop(dropObjects, dropObjects.size(), dropToFolder);
-    mainController.getPortalSession().setCurrentFolder(currentFolder);
-    if(draggedFromTree){
-      refreshContent();
-    }else {
-      List<Integer> openFoldersId = mainController.getNavigationController().getAllOpenFolderItems();
-      mainController.reloadSummaries2();
-      mainController.getNavigationController().restoreTreeItem(openFoldersId);
-    }
+    refreshWorkspace();
   }
 
   private ArrayList<FolderType> getSelectedFolders() {
