@@ -25,22 +25,6 @@
 
 package org.apromore.portal.dialogController;
 
-import java.io.IOException;
-import java.text.MessageFormat;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-import java.util.regex.Pattern;
-
 import org.apromore.commons.config.ConfigBean;
 import org.apromore.commons.item.ItemNameUtils;
 import org.apromore.dao.model.Folder;
@@ -70,6 +54,7 @@ import org.apromore.portal.exception.ExceptionFormats;
 import org.apromore.portal.helper.Version;
 import org.apromore.portal.model.DomainsType;
 import org.apromore.portal.model.EditSessionType;
+import org.apromore.portal.model.ExportFormatResultType;
 import org.apromore.portal.model.FolderType;
 import org.apromore.portal.model.LogSummaryType;
 import org.apromore.portal.model.NativeTypesType;
@@ -81,6 +66,7 @@ import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.UserType;
 import org.apromore.portal.model.UsernamesType;
 import org.apromore.portal.model.VersionSummaryType;
+import org.apromore.portal.util.StreamUtil;
 import org.slf4j.Logger;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.util.resource.Labels;
@@ -107,6 +93,24 @@ import org.zkoss.zul.Tabbox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 import org.zkoss.zul.ext.Paginal;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.text.MessageFormat;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
+import java.util.regex.Pattern;
 
 /**
  * Main Controller for the whole application, most of the UI state is managed
@@ -156,6 +160,7 @@ public class MainController extends BaseController implements MainControllerInte
     private Component mainComponent;
     private CopyAndPasteController copyAndPasteController;
 
+    private String instruction = "";
 
     public static MainController getController() {
         return controller;
@@ -615,7 +620,7 @@ public class MainController extends BaseController implements MainControllerInte
     public void editProcess2(final ProcessSummaryType process, final VersionSummaryType version,
                              final String nativeType, Set<RequestParameterType<?>> requestParameterTypes, boolean newProcess)
             throws InterruptedException {
-        String instruction = "";
+
 
         EditSessionType editSession = createEditSession(process, version, nativeType);
 
@@ -625,13 +630,56 @@ public class MainController extends BaseController implements MainControllerInte
             ApromoreSession session = new ApromoreSession(editSession, null, this, process, version, null, null,
                     requestParameterTypes);
             UserSessionManager.setEditSession(id, session);
-
+            instruction = "";
             String url = "openModelInBPMNio.zul?id=" + id;
             if (newProcess)
                 url += "&newProcess=true";
             instruction += "window.open('" + url + "');";
 
-            Clients.evalJavaScript(instruction);
+
+            ExportFormatResultType exportResult = this.getManagerService().exportFormat(
+                    editSession.getProcessId(), editSession.getProcessName(),
+                    editSession.getOriginalBranchName(), editSession.getCurrentVersionNumber(),
+                    editSession.getNativeType(), editSession.getUsername());
+            String bpmnXML = StreamUtil.convertStreamToString(exportResult.getNative().getInputStream());
+
+            // If no draft associated with specified model, version and user
+            if (this.getProcessService().getProcessModelVersionByUser(process.getId(),
+                    org.apromore.common.Constants.DRAFT_BRANCH_NAME, version.getVersionNumber(),
+                    getSecurityService().getUserById(portalContext.getCurrentUser().getId()).getId()) == null) {
+                this.getProcessService().createDraft(process.getId(), process.getName(), version.getVersionNumber(),
+                        nativeType, new ByteArrayInputStream(bpmnXML.getBytes()),
+                        UserSessionManager.getCurrentUser().getUsername());
+            }
+            ExportFormatResultType exportResultDraft = this.getManagerService().exportFormat(
+                    editSession.getProcessId(), editSession.getProcessName(),
+                    org.apromore.common.Constants.DRAFT_BRANCH_NAME, editSession.getCurrentVersionNumber(),
+                    editSession.getNativeType(), editSession.getUsername());
+            String bpmnXmlDraft = StreamUtil.convertStreamToString(exportResultDraft.getNative().getInputStream());
+
+            if (!Objects.equals(bpmnXML, bpmnXmlDraft)) {
+                Messagebox.show(
+                        MessageFormat.format(Labels.getLabel("portal_unsavedDraftExisted_message"), editSession.getCurrentVersionNumber()),
+                        "Question", new Messagebox.Button[] {Messagebox.Button.YES, Messagebox.Button.NO},
+                        Messagebox.QUESTION, e -> {
+                            switch (e.getButton()) {
+                                case YES:
+                                    Clients.evalJavaScript(instruction);
+                                    break;
+                                case NO: // Cancel is clicked
+                                    this.getProcessService().updateDraft(editSession.getProcessId(),
+                                            editSession.getCurrentVersionNumber(), editSession.getNativeType(),
+                                            new ByteArrayInputStream(bpmnXML.getBytes()),
+                                            editSession.getUsername());
+                                    Clients.evalJavaScript(instruction);
+                                    break;
+                                default: // if the Close button is clicked, e.getButton() returns null
+                            }
+                        });
+            } else {
+                Clients.evalJavaScript(instruction);
+            }
+
         } catch (Exception e) {
             LOGGER.warn("Unable to edit process model " + process.getName() + " version " + version.getVersionNumber(),
                     e);

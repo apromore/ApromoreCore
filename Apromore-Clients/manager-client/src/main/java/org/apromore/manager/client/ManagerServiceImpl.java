@@ -25,6 +25,7 @@ package org.apromore.manager.client;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -95,6 +96,9 @@ import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
+
+import static org.apromore.common.Constants.DRAFT_BRANCH_NAME;
+import static org.apromore.common.Constants.TRUNK_NAME;
 
 /**
  * Implements {@link ManagerService} by delegating to OSGi services.
@@ -547,6 +551,7 @@ public class ManagerServiceImpl implements ManagerService {
   @Override
   public ExportFormatResultType exportFormat(int processId, String processName, String branch,
       String versionNumber, String nativeType, String owner) throws Exception {
+    // TODO why run 3 times
     LOGGER.info("Export process model \"{}\" (id {}, branch {}, version {}, type {}, owner {})",
         processName, processId, branch, versionNumber, nativeType, owner);
     return procSrv.exportProcess(processName, processId, branch, new Version(versionNumber),
@@ -614,7 +619,7 @@ public class ManagerServiceImpl implements ManagerService {
     DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
     String now = dateFormat.format(new Date());
 
-    verType.setName(Constants.TRUNK_NAME);
+    verType.setName(TRUNK_NAME);
     verType.setCreationDate(now);
     verType.setLastUpdate(now);
     verType.setVersionNumber("1.0");
@@ -844,4 +849,38 @@ public class ManagerServiceImpl implements ManagerService {
 				&& procSrv.hasWritePermissionOnProcess(secSrv.getUserByName(username), processIds)
 				&& logSrv.hasWritePermissionOnLog(secSrv.getUserByName(username), logIds));
 	}
+
+  @Override
+  public ProcessModelVersion updateDraft(Integer processId, String versionNumber, String nativeType,
+                                    InputStream nativeStream, String userName) {
+    return procSrv.updateDraft(processId, versionNumber, nativeType, nativeStream, userName);
+
+  }
+
+  @Override
+  public ProcessModelVersion createDraft(Integer processId, String processName, String versionNumber, String nativeType,
+                                         InputStream nativeStream, String userName) {
+    return procSrv.createDraft(processId, processName, versionNumber, nativeType, nativeStream, userName);
+
+  }
+
+  @Override
+  public Boolean isProcessUpdatedWithUserDraft(Integer processId, String processName, String versionNumber,
+                                        String nativeType, String username) {
+
+    ProcessModelVersion processModelVersion = procSrv.getProcessModelVersion(processId, TRUNK_NAME, versionNumber);
+    ProcessModelVersion draftProcessModelVersion = procSrv.getProcessModelVersionByUser(processId, DRAFT_BRANCH_NAME,
+            versionNumber, secSrv.getUserByName(username).getId());
+
+    DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+    try {
+      Date d1 = dateFormat.parse(processModelVersion.getLastUpdateDate());
+      Date d2 = dateFormat.parse(draftProcessModelVersion.getLastUpdateDate());
+      return d1.compareTo(d2) > 0;
+    } catch (ParseException e) {
+      return false;
+    }
+
+
+  }
 }

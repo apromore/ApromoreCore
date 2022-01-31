@@ -25,7 +25,10 @@ package org.apromore.plugin.portal.processdiscoverer.eventlisteners;
 import static org.apromore.commons.item.Constants.HOME_FOLDER_NAME;
 
 import java.io.ByteArrayInputStream;
+import java.text.DateFormat;
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -302,8 +305,9 @@ public class BPMNExportController extends AbstractController {
                     String modelName = (String) event.getData();
                     String user = controller.getContextData().getUsername();
                     Version version = new Version(1, 0);
-                    String now =
-                        DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString();
+                    // Unify timestamp format for now
+                    DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+                    String now = dateFormat.format(new Date());
                     boolean publicModel = false;
 
                     try {

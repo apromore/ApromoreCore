@@ -36,6 +36,7 @@ import org.apromore.commons.config.ConfigBean;
 import org.apromore.manager.client.ManagerService;
 import org.apromore.service.AuthorizationService;
 import org.apromore.service.EventLogService;
+import org.apromore.service.FormatService;
 import org.apromore.service.ProcessService;
 import org.apromore.service.SecurityService;
 import org.apromore.service.UserService;
@@ -83,6 +84,8 @@ public class BaseController extends Window {
   @WireVariable
   private ProcessService processService;
 
+  @WireVariable
+  private FormatService formatService;
 
   protected BaseController() {
 

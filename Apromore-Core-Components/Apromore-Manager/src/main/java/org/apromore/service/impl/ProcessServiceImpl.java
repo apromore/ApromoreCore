@@ -77,7 +77,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.activation.DataHandler;
-import javax.annotation.Resource;
 import javax.inject.Inject;
 import javax.mail.util.ByteArrayDataSource;
 import javax.xml.transform.TransformerFactory;
@@ -230,7 +229,7 @@ public class ProcessServiceImpl implements ProcessService {
 
       ProcessBranch branch = insertProcessBranch(process, created, lastUpdate, Constants.TRUNK_NAME);
       ProcessModelVersion pmv = insertProcessModelVersion(processName, branch, version, nativeType,
-          sanitizedStream, lastUpdate);
+          sanitizedStream, lastUpdate, user);
 
       LOGGER.debug("Process model version: {}", pmv);
 
@@ -249,20 +248,20 @@ public class ProcessServiceImpl implements ProcessService {
   }
 
   private ProcessModelVersion insertProcessModelVersion(final String processName,
-    final ProcessBranch branch, final Version version, final NativeType nativeType,
-    final InputStream sanitizedStream, final String lastUpdate)
+                                                       final ProcessBranch branch, final Version version, final NativeType nativeType,
+                                                       final InputStream sanitizedStream, final String lastUpdate, final User user)
     throws IOException, ObjectCreationException {
 
     if (enableStorageService) {
       Storage storage = createStorage(processName, version, nativeType, sanitizedStream);
 
-      return createProcessModelVersion(branch, version, nativeType, null, null, storage);
+      return createProcessModelVersion(branch, version, nativeType, null, null, storage, user);
 
     } else {
       Native nat = formatSrv.storeNative(processName, null, lastUpdate, null, nativeType,
           Constants.INITIAL_ANNOTATION, sanitizedStream);
 
-      return createProcessModelVersion(branch, version, nativeType, null, nat, null);
+      return createProcessModelVersion(branch, version, nativeType, null, nat, null, user);
     }
   }
 
@@ -455,7 +454,7 @@ public class ProcessServiceImpl implements ProcessService {
       }
 
       pmv = insertProcessModelVersion(processName, currentVersion.getProcessBranch(), newVersion,
-          nativeType, nativeStream, now);
+          nativeType, nativeStream, now, user);
       LOGGER.info("Updated existing process model \"{}\"", processName);
 
       return pmv;
@@ -593,6 +592,7 @@ public class ProcessServiceImpl implements ProcessService {
   @Transactional(readOnly = false)
   public void deleteProcessModel(final List<ProcessData> models, final User user)
       throws UpdateProcessException {
+    // TODO: Delete corresponding draft versions
     for (ProcessData entry : models) {
       ProcessModelVersion pvid = processModelVersionRepo
           .getCurrentProcessModelVersion(entry.getId(), entry.getVersionNumber().toString());
@@ -810,7 +810,7 @@ public class ProcessServiceImpl implements ProcessService {
 
   private ProcessModelVersion createProcessModelVersion(final ProcessBranch branch,
       final Version version, NativeType nativeType, final String netId, Native nat,
-      Storage storage) {
+      Storage storage, final User user) {
 
     String now = new SimpleDateFormat(Constants.DATE_FORMAT).format(new Date());
     ProcessModelVersion processModel = new ProcessModelVersion();
@@ -826,6 +826,7 @@ public class ProcessServiceImpl implements ProcessService {
     processModel.setNativeType(nativeType);
     processModel.setNativeDocument(nat);
     processModel.setStorage(storage);
+    processModel.setCreator(user);
     branch.setCurrentProcessModelVersion(processModel);
     branch.getProcessModelVersions().add(processModel);
 
@@ -847,5 +848,84 @@ public class ProcessServiceImpl implements ProcessService {
 	public boolean hasWritePermissionOnProcess(User user, List<Integer> processIds) {
 		return processIds.stream().allMatch(processId -> canUserWriteProcess(user, processId));
 	}
+
+    @Override
+    public ProcessModelVersion getProcessModelVersionByUser(Integer processId, String branch, String version,
+                                                            Integer userId) {
+
+      return processModelVersionRepo.getProcessModelVersionByUser(processId, branch,
+              version, userId);
+    }
+
+  @Override
+  public Process getProcessById(final Integer processId) {
+    return processRepo.findById(processId).get();
+  }
+
+  @Override
+  public ProcessModelVersion getProcessModelVersion(Integer processId, String branch, String version) {
+    return processModelVersionRepo.getProcessModelVersion(processId, branch, version);
+  }
+
+  @Override
+  @Transactional
+  public ProcessModelVersion createDraft(Integer processId, String processName, String versionNumber,
+                                          String nativeType, InputStream nativeStream, String userName) {
+    try {
+
+      // Update process data with the new process to keep a consistent state
+//      editSession.setOriginalVersionNumber(versionNumber);
+//      editSession.setCurrentVersionNumber(versionNumber);
+//      editSession.setLastUpdate(newVersion.getLastUpdateDate());
+//      session.getVersion().setLastUpdate(newVersion.getLastUpdateDate());
+//      session.getVersion().setVersionNumber(versionNumber);
+
+      Process processModel = getProcessById(processId);
+
+      DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+      Date date = new Date();
+      String now = dateFormat.format(date);
+
+      // Check whether draft branch for this process model is already exist
+      ProcessBranch branch = processModel.getProcessBranches().stream().filter(processBranch ->
+              processBranch.getBranchName().equals(org.apromore.common.Constants.DRAFT_BRANCH_NAME))
+              .findAny().orElse(null);
+
+      if (branch == null) {
+        branch = insertProcessBranch(processModel, now, now,
+                org.apromore.common.Constants.DRAFT_BRANCH_NAME);
+      }
+
+      return insertProcessModelVersion(processName, branch, new Version(versionNumber)
+              , formatSrv.findNativeType(nativeType),
+              nativeStream, now, userSrv.findUserByLogin(userName));
+    } catch (Exception e) { //TODO fix exceptions
+      LOGGER.error("Create draft failed caused by {}", e.getMessage());
+    }
+
+    return null;
+  }
+
+  @Override
+  public ProcessModelVersion updateDraft(Integer processId, String versionNumber,
+                                         String nativeType, InputStream nativeStream, String userName) {
+    try {
+
+      // Update process data with the new process to keep a consistent state
+//      editSession.setOriginalVersionNumber(versionNumber);
+//      editSession.setCurrentVersionNumber(versionNumber);
+//      editSession.setLastUpdate(newVersion.getLastUpdateDate());
+//      session.getVersion().setLastUpdate(newVersion.getLastUpdateDate());
+//      session.getVersion().setVersionNumber(versionNumber);
+
+      return updateProcessModelVersion(
+              processId, org.apromore.common.Constants.DRAFT_BRANCH_NAME, new Version(versionNumber), userSrv.findUserByLogin(userName), "", formatSrv.findNativeType(nativeType),
+              nativeStream);
+    } catch (Exception e) {
+      LOGGER.error("Update draft failed caused by {}", e.getMessage());
+    }
+
+    return null;
+  }
 
 }

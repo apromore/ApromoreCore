@@ -59,6 +59,7 @@ import org.slf4j.Logger;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
@@ -66,6 +67,7 @@ import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zkplus.spring.SpringUtil;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 
 /**
@@ -191,7 +193,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
           // processService.getBPMNRepresentation
           ExportFormatResultType exportResult = mainC.getManagerService().exportFormat(
               editSession.getProcessId(), editSession.getProcessName(),
-              editSession.getOriginalBranchName(), editSession.getCurrentVersionNumber(),
+                  org.apromore.common.Constants.DRAFT_BRANCH_NAME, editSession.getCurrentVersionNumber(),
               editSession.getNativeType(), editSession.getUsername());
           bpmnXML = StreamUtil.convertStreamToString(exportResult.getNative().getInputStream());
           param.put("doAutoLayout", "false");
@@ -210,6 +212,10 @@ public class BPMNEditorController extends BaseController implements Composer<Com
         param.put("editor", "bpmneditor");
         param.put("doAutoLayout", "false");
       }
+
+      param.put("processId", process.getId());
+      param.put("nativeType", process.getOriginalNativeType());
+      param.put("currentVersion", editSession.getCurrentVersionNumber());
 
       this.setTitle(
           editSession.getProcessName() + " (" + "v" + editSession.getCurrentVersionNumber() + ")");
@@ -253,6 +259,17 @@ public class BPMNEditorController extends BaseController implements Composer<Com
         }
       }
     });
+//
+//    this.addEventListener("onKeepAlive", new EventListener<Event>() {
+//      @Override
+//      public void onEvent(Event event) throws Exception {
+//        UserType user = (UserType) Sessions.getCurrent().getAttributes().get("USER");
+//        String BPMNXML = ((Map<String, String>) event.getData()).get("payload");
+//        System.out.println(BPMNXML);
+//        PortalLoggerFactory.getLogger(this.getClass()).debug("Keep BPMN Editor alive for user: " + user.getUsername());
+//
+//      }
+//    });
 
     this.addEventListener("onSaveAs", new EventListener<Event>() {
       @Override
