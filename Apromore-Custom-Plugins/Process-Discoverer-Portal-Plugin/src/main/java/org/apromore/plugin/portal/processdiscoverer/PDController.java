@@ -361,7 +361,7 @@ public class PDController extends BaseController implements Composer<Component>,
             int logId = (int) event.getData();
             String message = null;
             if (logId == sourceLogId) {
-                if (CalendarEvents.ON_CALENDAR_LINK.equals(eventName) || CalendarEvents.ON_CALENDAR_CHANGED.equals(eventName)) {
+                if (CalendarEvents.ON_CALENDAR_LINK.equals(eventName)) {
                     message = Labels.getLabel("common_calendarUpdated_message");
                 } else if (CalendarEvents.ON_CALENDAR_UNLINK.equals(eventName)) {
                     message = Labels.getLabel("common_calendarUnlinked_message");
