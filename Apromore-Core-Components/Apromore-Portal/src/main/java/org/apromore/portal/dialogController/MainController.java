@@ -45,8 +45,6 @@ import org.apromore.commons.config.ConfigBean;
 import org.apromore.commons.item.ItemNameUtils;
 import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.Log;
-import org.apromore.dao.model.Role;
-import org.apromore.dao.model.User;
 import org.apromore.plugin.portal.MainControllerInterface;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
@@ -329,20 +327,6 @@ public class MainController extends BaseController implements MainControllerInte
                     Messagebox.ERROR);
         }
 
-    }
-
-    public boolean isCurrentUserAdmin() {
-        try {
-            Role adminRole = getSecurityService().findRoleByName("ROLE_SUPER_ADMIN");
-            User currentUser = getSecurityService().getUserById(portalContext.getCurrentUser().getId());
-            Set<Role> userRoles = getSecurityService().findRolesByUser(currentUser);
-            if (!userRoles.contains(adminRole)) {
-                return false;
-            }
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
     }
 
     // Bruce: Do not use Executions.sendRedirect as it does not work
