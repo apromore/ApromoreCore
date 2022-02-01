@@ -24,6 +24,7 @@ package org.apromore.plugin.portal.calendar.controllers;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import org.apromore.dao.model.Log;
 import org.apromore.calendar.exception.CalendarAlreadyExistsException;
@@ -147,16 +148,27 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
                 beforeRemoveCalendar(calendarItem);
             } else if (CalendarEvents.ON_CALENDAR_CHANGED.equals(event.getName())) {
                 // propagate to session queue (other tabs/plugins)
-                sessionCalendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_CHANGED, null, logId));
-            } else if (CalendarEvents.ON_CALENDAR_REMOVE.equals(event.getName())) {
                 CalendarModel calendarItem = (CalendarModel) event.getData();
+                Long calendarId = calendarItem.getId();
+                List<Integer> logIds = getAssociatedLogIds(calendarId);
+                sessionCalendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_CHANGED, null, calendarId));
+                sessionCalendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_REFRESH, null, logIds));
+            } else if (CalendarEvents.ON_CALENDAR_REMOVE.equals(event.getName())) {
                 // propagate to session queue (other tabs/plugins)
-                sessionCalendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_REMOVE, null, logId));
-                sessionCalendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_UNLINK, null, logId));
+                CalendarModel calendarItem = (CalendarModel) event.getData();
+                Long calendarId = calendarItem.getId();
+                List<Integer> logIds = getAssociatedLogIds(calendarId);
+                sessionCalendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_REMOVE, null, calendarId));
+                sessionCalendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_UNLINK, null, logIds));
                 removeCalendar(calendarItem);
             }
         };
         localCalendarEventQueue.subscribe(eventHandler);
+    }
+
+    List<Integer> getAssociatedLogIds(Long calendarId) {
+        return eventLogService.getLogListFromCalendarId(calendarId)
+                .stream().map(Log::getId).collect(Collectors.toList());
     }
 
     public void populateCalendarList() {
@@ -176,7 +188,7 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
     private void applyCalendarForLog(Integer logId, Long calendarId) {
         eventLogService.updateCalendarForLog(logId, calendarId);
         if (calendarId == null) {
-            sessionCalendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_UNLINK, null, logId));
+            sessionCalendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_UNLINK, null, Arrays.asList(calendarId)));
         } else {
             sessionCalendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_LINK, null, logId));
         }
