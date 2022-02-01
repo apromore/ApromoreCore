@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -24,6 +24,7 @@ package org.apromore.apmlog.util;
 import org.deckfour.xes.extension.std.XTimeExtension;
 import org.deckfour.xes.model.XEvent;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
+import org.zkoss.zk.ui.Executions;
 
 import java.text.DecimalFormat;
 import java.time.Instant;
@@ -36,25 +37,20 @@ import java.time.format.DateTimeFormatter;
  * Modified: Frank Ma (16/11/2019)
  * Modified: Chii Chang (28/01/2020)
  * Modified: Chii Chang (10/11/2020)
+ * Modified: Chii Chang (01/02/2022)
  */
 public class Util {
+
+    private Util() {
+        throw new IllegalStateException("Utility class");
+    }
 
     public static final DecimalFormat df3 = new DecimalFormat("###############.###");
     public static final DecimalFormat df2 = new DecimalFormat("###############.##");
     public static final DecimalFormat df0 = new DecimalFormat("###############");
 
-    private static final double year = 1000.0D * 60 * 60 * 24 * 365.25;
-    private static final double month = 1000.0D * 60 * 60 * 24 * (365.25 / 12);
-    private static final double week = 1000.0D * 60 * 60 * 24 * 7;
-    private static final double day = 1000.0D * 60 * 60 * 24;
-    private static final double hour = 1000.0D *  60 * 60;
-    private static final double minute = 1000.0D *  60;
-    private static final double second = 1000.0D;
-
     public static long epochMilliOf(ZonedDateTime zonedDateTime){
-
-        long s = zonedDateTime.toInstant().toEpochMilli();
-        return s;
+        return zonedDateTime.toInstant().toEpochMilli();
     }
 
     public static ZonedDateTime zonedDateTimeOf(XEvent xEvent) {
@@ -81,8 +77,7 @@ public class Util {
 
     public static ZonedDateTime millisecondToZonedDateTime(long millisecond){
         Instant i = Instant.ofEpochMilli(millisecond);
-        ZonedDateTime z = ZonedDateTime.ofInstant(i, ZoneId.systemDefault());
-        return z;
+        return ZonedDateTime.ofInstant(i, ZoneId.systemDefault());
     }
 
     public static String timestampStringOf(ZonedDateTime zdt){
@@ -101,13 +96,13 @@ public class Util {
 
     public static String durationStringOf(double millis) {
 
-        double secs = millis / second;
-        double mins = millis / minute;
-        double hrs = millis / hour;
-        double days = millis / day;
-        double wks = millis / week;
-        double mths = millis / month;
-        double yrs = millis / year;
+        double secs = millis / TimeUtil.SECOND.doubleValue();
+        double mins = millis / TimeUtil.MINUTE.doubleValue();
+        double hrs = millis / TimeUtil.HOUR.doubleValue();
+        double days = millis / TimeUtil.DAY.doubleValue();
+        double wks = millis / TimeUtil.WEEK.doubleValue();
+        double mths = millis / TimeUtil.MONTH.doubleValue();
+        double yrs = millis / TimeUtil.YEAR.doubleValue();
 
         if (yrs > 1)  return df2.format(yrs) + " yrs";
         if (mths > 1) return df2.format(mths) + " mths";
@@ -191,5 +186,12 @@ public class Util {
     public static String timestampStringOf(long millisecond){
         ZonedDateTime zdt = millisecondToZonedDateTime(millisecond);
         return zdt.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss"));
+    }
+
+    public static DecimalFormat getDecimalFormat() {
+        NumberFormatStyle nfs =
+                (NumberFormatStyle) Executions.getCurrent().getDesktop().getAttribute("numberFormatStyle");
+
+        return nfs != null ? nfs.getDecimalFormat() : new DecimalFormat("##############0.##");
     }
 }
