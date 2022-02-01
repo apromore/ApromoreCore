@@ -1,5 +1,5 @@
 /**
- * #%L This file is part of "Apromore Core". %% Copyright (C) 2018 - 2021 Apromore Pty Ltd. %% This
+ * #%L This file is part of "Apromore Core". %% Copyright (C) 2018 - 2022 Apromore Pty Ltd. %% This
  * program is free software: you can redistribute it and/or modify it under the terms of the GNU
  * Lesser General Public License as published by the Free Software Foundation, either version 3 of
  * the License, or (at your option) any later version.
@@ -14,6 +14,7 @@
 package org.apromore.portal.config;
 
 import org.apromore.portal.AuthenticationHandler;
+import org.apromore.portal.common.Constants;
 import org.apromore.portal.servlet.filter.SameSiteFilter;
 import org.apromore.security.impl.UsernamePasswordAuthenticationProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,21 +34,6 @@ import org.springframework.security.web.header.writers.StaticHeadersWriter;
 @EnableWebSecurity
 @ConditionalOnProperty(prefix = "keycloak", name = "enabled", havingValue = "false")
 public class PortalSecurityConfig extends WebSecurityConfigurerAdapter {
-
-  private static final String[] SWAGGER2_AUTH_WHITELIST = {
-          "/v2/api-docs",
-          "/configuration/**",
-          "/swagger-resources/**",
-          "/swagger-ui/**",
-          "/swagger-ui.html",
-          "/webjars/**"
-  };
-
-  private static final String[] API_WHITELIST = {
-          "/api",
-          "/api/**/*",
-          "/api/*"
-  };
 
   @Autowired
   AuthenticationHandler authenticationHandler;
@@ -90,7 +76,7 @@ public class PortalSecurityConfig extends WebSecurityConfigurerAdapter {
 
     http.csrf()
             .ignoringAntMatchers("/zkau", "/rest", "/rest/*", "/rest/**/*", "/zkau/*", "/login", "/bpmneditor/editor/*")
-            .ignoringAntMatchers(API_WHITELIST)
+            .ignoringAntMatchers(Constants.API_WHITELIST)
         .and()
         .authorizeRequests()
             .antMatchers("/zkau/web/login.zul").permitAll()
@@ -99,12 +85,12 @@ public class PortalSecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/rest").permitAll()
             .antMatchers("/rest/**/*").permitAll()
             .antMatchers("/rest/*").permitAll()
-            .antMatchers(API_WHITELIST).permitAll()
+            .antMatchers(Constants.API_WHITELIST).permitAll()
             .antMatchers("/zkau/upload").permitAll()
             .antMatchers("/zkau/*").permitAll()
             .antMatchers("/login").permitAll()
             .antMatchers("/logout").permitAll()
-            .antMatchers(SWAGGER2_AUTH_WHITELIST).permitAll()
+            .antMatchers(Constants.SWAGGER2_AUTH_WHITELIST).permitAll()
             .anyRequest().authenticated()
         .and()
         .formLogin()
