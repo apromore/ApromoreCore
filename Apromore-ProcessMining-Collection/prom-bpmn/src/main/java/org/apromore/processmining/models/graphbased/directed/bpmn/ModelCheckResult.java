@@ -19,12 +19,12 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+
 package org.apromore.processmining.models.graphbased.directed.bpmn;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import lombok.NonNull;
 
 public class ModelCheckResult {
     public static final int DISCONNECTED_ARC_CODE = 1;
@@ -58,25 +58,25 @@ public class ModelCheckResult {
     private static final String END_OUTGOING_ARCS_MSG = "The End Event has outgoing arc(s)";
 
     private static final Map<Integer, String> ERROR_MAP = Map.ofEntries(
-            Map.entry(DISCONNECTED_ARC_CODE, DISCONNECTED_ARC_MSG),
-            Map.entry(EMPTY_MODEL_CODE, EMPTY_MODEL_MSG),
-            Map.entry(POOLS_NOT_SUPPORTED_CODE, POOLS_NOT_SUPPORTED_MSG),
-            Map.entry(SELF_LOOP_CODE, SELF_LOOP_MSG_FORMAT),
-            Map.entry(TASK_MULTIPLE_OUTGOING_ARCS_CODE, TASK_MULTIPLE_OUTGOING_ARCS_MSG_FORMAT),
-            Map.entry(TASK_MULTIPLE_INCOMING_ARCS_CODE, TASK_MULTIPLE_INCOMING_ARCS_MSG_FORMAT),
-            Map.entry(TASK_MISSING_ARCS_CODE, TASK_MISSING_ARCS_MSG_FORMAT),
-            Map.entry(GATE_MISSING_ARCS_CODE, GATE_MISSING_ARCS_MSG_FORMAT),
-            Map.entry(START_MULTIPLE_OUTGOING_ARCS_CODE, START_MULTIPLE_OUTGOING_ARCS_MSG),
-            Map.entry(START_NO_OUTGOING_ARC_CODE, START_NO_OUTGOING_ARC_MSG),
-            Map.entry(START_INCOMING_ARCS_CODE, START_INCOMING_ARCS_MSG),
-            Map.entry(END_MULTIPLE_INCOMING_ARCS_CODE, END_MULTIPLE_INCOMING_ARCS_MSG),
-            Map.entry(END_NO_INCOMING_ARC_CODE, END_NO_INCOMING_ARC_MSG),
-            Map.entry(END_OUTGOING_ARCS_CODE, END_OUTGOING_ARCS_MSG)
+        Map.entry(DISCONNECTED_ARC_CODE, DISCONNECTED_ARC_MSG),
+        Map.entry(EMPTY_MODEL_CODE, EMPTY_MODEL_MSG),
+        Map.entry(POOLS_NOT_SUPPORTED_CODE, POOLS_NOT_SUPPORTED_MSG),
+        Map.entry(SELF_LOOP_CODE, SELF_LOOP_MSG_FORMAT),
+        Map.entry(TASK_MULTIPLE_OUTGOING_ARCS_CODE, TASK_MULTIPLE_OUTGOING_ARCS_MSG_FORMAT),
+        Map.entry(TASK_MULTIPLE_INCOMING_ARCS_CODE, TASK_MULTIPLE_INCOMING_ARCS_MSG_FORMAT),
+        Map.entry(TASK_MISSING_ARCS_CODE, TASK_MISSING_ARCS_MSG_FORMAT),
+        Map.entry(GATE_MISSING_ARCS_CODE, GATE_MISSING_ARCS_MSG_FORMAT),
+        Map.entry(START_MULTIPLE_OUTGOING_ARCS_CODE, START_MULTIPLE_OUTGOING_ARCS_MSG),
+        Map.entry(START_NO_OUTGOING_ARC_CODE, START_NO_OUTGOING_ARC_MSG),
+        Map.entry(START_INCOMING_ARCS_CODE, START_INCOMING_ARCS_MSG),
+        Map.entry(END_MULTIPLE_INCOMING_ARCS_CODE, END_MULTIPLE_INCOMING_ARCS_MSG),
+        Map.entry(END_NO_INCOMING_ARC_CODE, END_NO_INCOMING_ARC_MSG),
+        Map.entry(END_OUTGOING_ARCS_CODE, END_OUTGOING_ARCS_MSG)
     );
 
     private Map<Integer, List<String>> errors;
 
-    public ModelCheckResult(Map<Integer, List<String>> errorMap) {
+    public ModelCheckResult(@NonNull Map<Integer, List<String>> errorMap) {
         this.errors = errorMap;
     }
 
@@ -84,7 +84,7 @@ public class ModelCheckResult {
         return errors == null || errors.isEmpty();
     }
 
-    public String invalidMessage() {
+    public String getFormattedMessage() {
         StringBuilder errorMsgBuilder = new StringBuilder();
         for (Map.Entry<Integer, List<String>> entry : errors.entrySet()) {
             String msgFormat = ERROR_MAP.get(entry.getKey());
@@ -96,7 +96,7 @@ public class ModelCheckResult {
         return errorMsgBuilder.toString();
     }
 
-    public Set<Integer> getErrorCodes() {
-        return Collections.unmodifiableSet(errors.keySet());
+    public boolean contains(int errorCode) {
+        return errors.containsKey(errorCode);
     }
 }

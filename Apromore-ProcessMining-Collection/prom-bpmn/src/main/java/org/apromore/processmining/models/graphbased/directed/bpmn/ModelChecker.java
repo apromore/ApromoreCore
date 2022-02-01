@@ -19,27 +19,27 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.processmining.models.graphbased.directed.bpmn;
 
-import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Activity;
-import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Event;
-import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Flow;
-import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Gateway;
-import org.springframework.util.CollectionUtils;
+package org.apromore.processmining.models.graphbased.directed.bpmn;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Activity;
+import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Event;
+import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Flow;
+import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Gateway;
+import org.springframework.util.CollectionUtils;
 
 public class ModelChecker {
 
     private boolean allowPools;
     private Map<Integer, List<String>> errorMap = new HashMap<>();
 
-    public static final ModelChecker MODEL_CHECKER_NO_POOLS = new ModelChecker(false);
-    public static final ModelChecker MODEL_CHECKER_ALLOW_POOLS = new ModelChecker(true);
+    public static final ModelChecker MODEL_CHECKER_RESTRICTED = new ModelChecker(false);
+    public static final ModelChecker MODEL_CHECKER_RELAXED = new ModelChecker(true);
 
     private ModelChecker(boolean allowPools) {
         this.allowPools = allowPools;
@@ -47,6 +47,7 @@ public class ModelChecker {
 
     /**
      * Finds errors in a model.
+     *
      * @param bpmnDiagram the model to find errors in.
      * @return a object containing the errors in the model.
      */
@@ -95,6 +96,7 @@ public class ModelChecker {
 
     /**
      * Check if the model is empty.
+     *
      * @param bpmnDiagram the model being checked.
      * @return true if the model has no nodes or edges.
      */
@@ -104,7 +106,8 @@ public class ModelChecker {
 
     /**
      * Finds errors in an activity.
-     * @param activity the activity to find errors in.
+     *
+     * @param activity    the activity to find errors in.
      * @param sourceNodes a list of nodes in the model which have outgoing edges.
      * @param targetNodes a list of nodes in the model which have incoming edges.
      */
@@ -127,7 +130,8 @@ public class ModelChecker {
 
     /**
      * Finds errors in an event.
-     * @param event the event to find errors in.
+     *
+     * @param event       the event to find errors in.
      * @param sourceNodes a list of nodes in the model which have outgoing edges.
      * @param targetNodes a list of nodes in the model which have incoming edges.
      */
@@ -141,7 +145,8 @@ public class ModelChecker {
 
     /**
      * Finds errors in a start event.
-     * @param event the start event to find errors in.
+     *
+     * @param event       the start event to find errors in.
      * @param sourceNodes a list of nodes in the model which have outgoing edges.
      * @param targetNodes a list of nodes in the model which have incoming edges.
      */
@@ -162,7 +167,8 @@ public class ModelChecker {
 
     /**
      * Finds errors in an end event.
-     * @param event the end event to find errors in.
+     *
+     * @param event       the end event to find errors in.
      * @param sourceNodes a list of nodes in the model which have outgoing edges.
      * @param targetNodes a list of nodes in the model which have incoming edges.
      */
@@ -183,7 +189,8 @@ public class ModelChecker {
 
     /**
      * Finds errors in a gateway.
-     * @param gateway the gateway to find errors in.
+     *
+     * @param gateway     the gateway to find errors in.
      * @param sourceNodes a list of nodes in the model which have outgoing edges.
      * @param targetNodes a list of nodes in the model which have incoming edges.
      */
@@ -196,8 +203,9 @@ public class ModelChecker {
 
     /**
      * Add an error to the error map.
+     *
      * @param errorCode the error code.
-     * @param element the name or id of the element with an error.
+     * @param element   the name or id of the element with an error.
      */
     private void addError(int errorCode, String element) {
         List<String> elementList = errorMap.getOrDefault(errorCode, new ArrayList<>());
