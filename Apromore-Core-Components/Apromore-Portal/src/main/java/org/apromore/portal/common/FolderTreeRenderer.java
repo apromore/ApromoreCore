@@ -61,10 +61,15 @@ public class FolderTreeRenderer implements TreeitemRenderer {
 
   private static final Logger LOGGER = PortalLoggerFactory.getLogger(FolderTreeRenderer.class);
   private MainController mainC;
+  private  List<Integer> openedFolderIds;
 
 
   public FolderTreeRenderer(MainController controller) {
     this.mainC = controller;
+  }
+  public FolderTreeRenderer(MainController controller, List<Integer> folderIds) {
+    this.mainC = controller;
+    this.openedFolderIds=folderIds;
   }
 
   @Override
@@ -85,6 +90,10 @@ public class FolderTreeRenderer implements TreeitemRenderer {
     treeItem.setOpen(folder.getId() == 0
         || folderContainsSubfolder(folder, mainC.getPortalSession().getCurrentFolder()));
 
+    if(openedFolderIds!=null && openedFolderIds.contains(folder.getId())){
+      treeItem.setOpen(true);
+      openedFolderIds.remove(folder.getId());//Just to avoid impact on next rendering
+    }
     Hlayout hl = new Hlayout();
     hl.setValign("middle");
 
@@ -184,6 +193,7 @@ public class FolderTreeRenderer implements TreeitemRenderer {
             args.put("POPUP_TYPE", "FOLDER_TREE");
           }
           args.put("SELECTED_FOLDER", selectedFolder);
+          args.put("PARENT_CONTROLLER",mainC);
           Menupopup menupopup = (Menupopup)Executions.createComponents("~./macros/popupMenu.zul", null, args);
           menupopup.open(event.getTarget(), "at_pointer");
 

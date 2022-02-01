@@ -24,6 +24,7 @@ package org.apromore.apmlog.filter.rules.desc;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.RuleValue;
 import org.apromore.apmlog.filter.types.OperationType;
+import org.apromore.apmlog.util.Util;
 
 import java.text.DecimalFormat;
 
@@ -42,7 +43,7 @@ public class CaseUtilisationDesc {
             if (operationType == OperationType.LESS_EQUAL) utilRangeTo = ruleValue.getDoubleValue();
         }
 
-        DecimalFormat df2 = new DecimalFormat("###############.##");
+        DecimalFormat df2 = Util.getDecimalFormat();
         String fromString = df2.format(utilRangeFrom * 100) + "%";
         String toString = df2.format(utilRangeTo * 100) + "%";
 

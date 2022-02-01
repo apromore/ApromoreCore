@@ -89,10 +89,12 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
   private Map<String, String> roleMap = new HashMap<>() {
     {
       put("ROLE_ADMIN", "Administrator");
+      put("ROLE_SUPER_ADMIN", "Super Admin");
       put("ROLE_MANAGER", "Manager");
       put("ROLE_ANALYST", "Analyst");
       put("ROLE_VIEWER", "Viewer");
       put("ROLE_DESIGNER", "Designer");
+      put("ROLE_DATA_ENGINEER", "Data Engineer");
       put("ROLE_DATA_SCIENTIST", "Data Scientist");
       put("ROLE_OPERATIONS", "Operations");
       put("ROLE_INTEGRATOR", "Integrator");
@@ -955,6 +957,10 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
     }
     if (selectedUsers.contains(currentUser)) {
       Notification.error(getLabel("noDeleteSelf_message"));
+      return;
+    }
+    if (selectedUsers.stream().anyMatch(u -> "admin".equals(u.getUsername()))) {
+      Notification.error(getLabel("noDeleteAdminUser_message"));
       return;
     }
     List<String> users = new ArrayList<>();

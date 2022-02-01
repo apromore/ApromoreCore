@@ -173,6 +173,13 @@ public interface SecurityService {
     List<Permission> getUserPermissions(String guid);
 
     /**
+     * Gets all role permissions.
+     * @param roleName the role's name
+     * @return a List of permissions for the specific role.
+     */
+    List<Permission> getRolePermissions(String roleName);
+
+    /**
      * @param user  a populated user, except for the id
      * @return the created user with id assigned
      */

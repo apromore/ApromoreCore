@@ -386,7 +386,7 @@ public abstract class BaseListboxController extends BaseController {
       }
     });
 
-    if (mainController.isCurrentUserAdmin()) {
+    if (portalContext.getCurrentUser().hasAnyPermission(PermissionType.USERS_EDIT)) {
       this.btnUserMgmt.addEventListener(ON_CLICK, new EventListener<Event>() {
         @Override
         public void onEvent(Event event) throws Exception {
@@ -712,14 +712,16 @@ public abstract class BaseListboxController extends BaseController {
     FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
 
     this.mainController.getCopyPasteController().paste(currentFolder);
-    refreshContent();
+    refreshWorkspace();
   }
 
   public void paste(FolderType currentFolder) throws Exception {
     this.mainController.getCopyPasteController().paste(currentFolder);
-    refreshContent();
+    refreshWorkspace();
   }
-
+  private void refreshWorkspace(){
+    mainController.reloadSummariesWithOpenTreeItems(mainController.getNavigationController().getAllOpenFolderItems());
+  }
   public void drop(FolderType dropToFolder,Set<Object> dropObjects) throws Exception {
     if (dropObjects.stream().anyMatch(dropObject -> {
       return (dropObject instanceof FolderType && dropToFolder.getId().equals(((FolderType) dropObject).getId()));
@@ -731,7 +733,7 @@ public abstract class BaseListboxController extends BaseController {
     this.mainController.getPortalSession().setCurrentFolder(dropToFolder);
     this.mainController.getCopyPasteController().drop(dropObjects, dropObjects.size(), dropToFolder);
     this.mainController.getPortalSession().setCurrentFolder(currentFolder);
-    refreshContent();
+    refreshWorkspace();
   }
 
   private ArrayList<FolderType> getSelectedFolders() {

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:qbp="http://www.qbp-simulator.com/Schema201212" xmlns:ap="http://apromore.org" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:collaboration id="Collaboration_0ftmt37">
+    <bpmn:participant id="Participant_0ax4akj" name="Test" processRef="Process_1">
+    </bpmn:participant>
+  </bpmn:collaboration>
+  <bpmn:process id="Process_1" isExecutable="false">
+    <bpmn:endEvent id="Event_0hlbw0j">
+      <bpmn:incoming>Flow_14we3ad</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:task id="Activity_137p6fc" name="A">
+      <bpmn:incoming>Flow_0nnwqk0</bpmn:incoming>
+      <bpmn:outgoing>Flow_14we3ad</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_0nnwqk0</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_14we3ad" sourceRef="Activity_137p6fc" targetRef="Event_0hlbw0j" />
+    <bpmn:sequenceFlow id="Flow_0nnwqk0" sourceRef="StartEvent_1" targetRef="Activity_137p6fc" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0ftmt37">
+      <bpmndi:BPMNShape id="Participant_0ax4akj_di" bpmnElement="Participant_0ax4akj" isHorizontal="true">
+        <dc:Bounds x="-400" y="-200" width="600" height="250" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_14we3ad_di" bpmnElement="Flow_14we3ad">
+        <di:waypoint x="-50" y="-80" />
+        <di:waypoint x="42" y="-80" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0nnwqk0_di" bpmnElement="Flow_0nnwqk0">
+        <di:waypoint x="-242" y="-80" />
+        <di:waypoint x="-150" y="-80" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_0hlbw0j_di" bpmnElement="Event_0hlbw0j">
+        <dc:Bounds x="42" y="-98" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_137p6fc_di" bpmnElement="Activity_137p6fc">
+        <dc:Bounds x="-150" y="-120" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="-278" y="-98" width="36" height="36" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

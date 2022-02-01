@@ -66,6 +66,7 @@ import org.apromore.zk.event.CalendarEvents;
 import org.apromore.zk.label.LabelSupplier;
 import org.json.JSONException;
 import org.slf4j.Logger;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.ComponentNotFoundException;
 import org.zkoss.zk.ui.Executions;
@@ -355,22 +356,34 @@ public class PDController extends BaseController implements Composer<Component>,
 
     public void initializeCalendar() {
         sessionQueue = EventQueues.lookup(CalendarEvents.TOPIC, EventQueues.SESSION,true);
-        sessionQueue.subscribe(new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) {
-                if (CalendarEvents.ON_CALENDAR_CHANGED.equals(event.getName())) {
-                    int logId = (int) event.getData();
-                    if (logId == sourceLogId) {
-                        Messagebox.show("Custom calendar for this process log is updated. You need to reload the page. Continue?",
-                                new Messagebox.Button[] {Messagebox.Button.OK, Messagebox.Button.CANCEL},
-                                (ClickEvent e) -> {
-                                    if (Messagebox.ON_OK.equals(e.getName())) {
-                                        Clients.evalJavaScript("window.location.reload()");
-                                    }
-                                }
-                        );
-                    }
+        sessionQueue.subscribe(event -> {
+            String eventName = event.getName();
+            String message = null;
+            if (CalendarEvents.ON_CALENDAR_LINK.equals(eventName)) {
+                int logId = (int) event.getData();
+                if (logId == sourceLogId) {
+                    message = Labels.getLabel("common_calendarUpdated_message");
                 }
+            } else if (CalendarEvents.ON_CALENDAR_UNLINK.equals(eventName)) {
+                List<Integer> logIds = (List<Integer>) event.getData();
+                if (logIds.contains(sourceLogId)) {
+                    message = Labels.getLabel("common_calendarUnlinked_message");
+                }
+            } else if (CalendarEvents.ON_CALENDAR_REFRESH.equals(eventName)) {
+                List<Integer> logIds = (List<Integer>) event.getData();
+                if (logIds.contains(sourceLogId)) {
+                    message = Labels.getLabel("common_calendarUpdated_message");
+                }
+            }
+            if (message != null) {
+                Messagebox.show(message,
+                    new Messagebox.Button[] {Messagebox.Button.OK, Messagebox.Button.CANCEL},
+                    (ClickEvent e) -> {
+                        if (Messagebox.ON_OK.equals(e.getName())) {
+                            Clients.evalJavaScript("window.location.reload()");
+                        }
+                    }
+                );
             }
         });
     }

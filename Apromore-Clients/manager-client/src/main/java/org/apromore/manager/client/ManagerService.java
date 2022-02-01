@@ -44,6 +44,7 @@ import org.apromore.portal.model.GroupType;
 import org.apromore.portal.model.ImportLogResultType;
 import org.apromore.portal.model.ImportProcessResultType;
 import org.apromore.portal.model.NativeTypesType;
+import org.apromore.portal.model.PermissionType;
 import org.apromore.portal.model.PluginInfo;
 import org.apromore.portal.model.PluginInfoResult;
 import org.apromore.portal.model.PluginMessages;
@@ -121,6 +122,8 @@ public interface ManagerService {
     List<GroupAccessType> getProcessGroups(int processId);
 
     List<GroupAccessType> getLogGroups(int logId);
+
+    List<PermissionType> getRolePermissions(String roleName);
 
     SummariesType getProcessSummaries(String userId, int folderId, int pageIndex, int pageSize);
 

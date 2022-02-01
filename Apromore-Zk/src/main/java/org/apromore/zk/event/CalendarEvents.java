@@ -32,4 +32,7 @@ public abstract class CalendarEvents {
     public static final String ON_CALENDAR_BEFORE_REMOVE = "onCalendarBeforeRemove";
     public static final String ON_CALENDAR_REMOVE = "onCalendarRemove";
     public static final String ON_CALENDAR_CHANGED = "onCalendarChanged";
+    public static final String ON_CALENDAR_REFRESH = "onCalendarRefresh";
+    public static final String ON_CALENDAR_LINK = "onCalendarLink";
+    public static final String ON_CALENDAR_UNLINK = "onCalendarUnlink";
 }

@@ -27,13 +27,11 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.Set;
 import javax.inject.Inject;
-import org.apromore.dao.model.Role;
-import org.apromore.dao.model.User;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
+import org.apromore.portal.model.PermissionType;
 import org.apromore.zk.notification.Notification;
 import org.apromore.service.SecurityService;
 import org.apromore.service.WorkspaceService;
@@ -76,11 +74,9 @@ public class UserAdminPlugin extends DefaultPortalPlugin {
   public void execute(PortalContext portalContext) {
 
     try {
-      // Deny access if the caller isn't an administrator
-      Role adminRole = securityService.findRoleByName("ROLE_ADMIN");
-      User currentUser = securityService.getUserById(portalContext.getCurrentUser().getId());
-      Set<Role> userRoles = securityService.findRolesByUser(currentUser);
-      if (!userRoles.contains(adminRole)) {
+      // Deny access if the caller does not have edit user permissions
+      if (!securityService.hasAccess(portalContext.getCurrentUser().getId(),
+              PermissionType.USERS_EDIT.getId())) {
         Notification.info(getLabel("onlyAdmin_message"));
         return;
       }

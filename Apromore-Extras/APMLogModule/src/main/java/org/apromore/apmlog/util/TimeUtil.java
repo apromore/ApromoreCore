@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -52,17 +52,28 @@ import java.time.format.DateTimeFormatter;
 /**
  * @author Chii Chang (created: 2019)
  * Modified: Chii Chang (23/03/2020)
+ * Modified: Chii Chang (01/02/2022)
  */
 public class TimeUtil {
 
+    private TimeUtil() {
+        throw new IllegalStateException("Utility class");
+    }
+
+    public static final Number YEAR = 1000.0D * 60 * 60 * 24 * 365.25;
+    public static final Number MONTH = 1000.0D * 60 * 60 * 24 * (365.25 / 12);
+    public static final Number WEEK = 1000.0D * 60 * 60 * 24 * 7;
+    public static final Number DAY = 1000.0D * 60 * 60 * 24;
+    public static final Number HOUR = 1000.0D *  60 * 60;
+    public static final Number MINUTE = 1000.0D *  60;
+    public static final Number SECOND = 1000.0D;
+
     public static long epochMilliOf(ZonedDateTime zonedDateTime){
-        long s = zonedDateTime.toInstant().toEpochMilli();
-        return s;
+        return zonedDateTime.toInstant().toEpochMilli();
     }
     public static ZonedDateTime millisecondToZonedDateTime(long millisecond){
         Instant i = Instant.ofEpochMilli(millisecond);
-        ZonedDateTime z = ZonedDateTime.ofInstant(i, ZoneId.systemDefault());
-        return z;
+        return ZonedDateTime.ofInstant(i, ZoneId.systemDefault());
     }
 
     public static String millisecondToLocalDateTime(long millisecond) {
@@ -72,8 +83,7 @@ public class TimeUtil {
 
     public static ZonedDateTime zonedDateTimeOf(XEvent xEvent) {
         String timestamp = xEvent.getAttributes().get(XTimeExtension.KEY_TIMESTAMP).toString();
-        ZonedDateTime z = ZonedDateTime.parse(timestamp);
-        return z;
+        return ZonedDateTime.parse(timestamp);
     }
 
     public static String convertTimestamp(long milliseconds) {
@@ -83,106 +93,40 @@ public class TimeUtil {
 
     public static String durationStringOf(long millis) {
 
-        long yr = Long.valueOf("31536000000");
-        long mth = Long.valueOf("2678400000");
-        long wks = Long.valueOf("604800000");
-        long days = Long.valueOf("86400000");
-        long hrs = Long.valueOf("3600000");
-        long mins = Long.valueOf("60000");
-        long secs = Long.valueOf("1000");
+        long yr = YEAR.longValue();
+        long mth = MONTH.longValue();
+        long wks = WEEK.longValue();
+        long days = DAY.longValue();
+        long hrs = HOUR.longValue();
+        long mins = MINUTE.longValue();
+        long secs = SECOND.longValue();
 
         if (millis >  yr) {
-            long yrPart =  millis / (long) yr;
-            long remainder = millis % (long) yr;
-            long mthPart = remainder / (long) mth;
-            long dPart = remainder / (long) days;
-            String output = "";
-            if (yrPart < 2) output += yrPart + " year ";
-            if (yrPart > 1) output += yrPart + " years ";
-            if (mthPart == 1) output += mthPart + " month ";
-            if (mthPart > 1) output += mthPart + " months ";
-            if (mthPart == 0) {
-                if (dPart == 1) output += dPart + " day";
-                if (dPart > 1) output += dPart + " days";
-            }
-            return output;
+            return getYearDurationOutput(millis, yr, mth, days);
         }
 
         if (millis >  mth) {
-            long mthPart =  millis / (long) mth;
-            long remainder = millis % (long) mth;
-            long dPart = remainder / (long) days;
-            String output = "";
-            if (mthPart == 1) output += mthPart + " month ";
-            if (mthPart > 1) output += mthPart + " months ";
-            if (dPart == 1) output += dPart + " day";
-            if (dPart > 1) output += dPart + " days";
-
-            return output;
+            return getDurationOutput(millis, mth, days, "month", "day");
         }
 
         if (millis >  wks) {
-            long wksPart =  millis / (long) wks;
-            long remainder = millis % (long) wks;
-            long dPart = remainder / (long) days;
-            String output = "";
-            if (wksPart == 1) output += wksPart + " week ";
-            if (wksPart > 1) output += wksPart + " weeks ";
-            if (dPart == 1) output += dPart + " day";
-            if (dPart > 1) output += dPart + " days";
-
-            return output;
+            return getDurationOutput(millis, wks, days, "week", "day");
         }
 
         if (millis >  days) {
-            long dPart =  millis / (long) days;
-            long remainder = millis % (long) days;
-            long hrPart = remainder / (long) hrs;
-            String output = "";
-            if (dPart == 1) output += dPart + " day ";
-            if (dPart > 1) output += dPart + " days ";
-            if (hrPart == 1) output += hrPart + " hour";
-            if (hrPart > 1) output += hrPart + " hours";
-
-            return output;
+            return getDurationOutput(millis, days, hrs, "day", "hour");
         }
 
         if (millis >  hrs) {
-            long hrPart =  millis / (long) hrs;
-            long remainder = millis % (long) hrs;
-            long mPart = remainder / (long) mins;
-            String output = "";
-            if (hrPart  == 1) output += hrPart + " hour ";
-            if (hrPart > 1) output += hrPart + " hours ";
-            if (mPart == 1) output += mPart + " min";
-            if (mPart > 1) output += mPart + " mins";
-
-            return output;
+            return getDurationOutput(millis, hrs, mins, "hour", "min");
         }
 
         if (millis >  mins) {
-            long minPart =  millis / (long) mins;
-            long remainder = millis % (long) mins;
-            long secPart = remainder / (long) secs;
-            String output = "";
-            if (minPart  == 1) output += minPart + " min ";
-            if (minPart > 1) output += minPart + " mins ";
-            if (secPart == 1) output += secPart + " sec";
-            if (secPart > 1) output += secPart + " secs";
-
-            return output;
+            return getDurationOutput(millis, mins, secs, "min", "sec");
         }
 
         if (millis > secs) {
-            long secPart =  millis / (long) secs;
-            long remainder = millis % (long) secs;
-            String output = "";
-            if (secPart == 1) output += secPart + " sec ";
-            if (secPart > 1) output += secPart + " secs ";
-            if (remainder == 1) output += remainder + " milli";
-            if (remainder > 1) output += remainder + " millis";
-
-            return output;
+            return getMillisDurationOutput(millis, secs);
         }
 
         if (millis > 0) {
@@ -192,33 +136,75 @@ public class TimeUtil {
         return "instant";
     }
 
-    public static String durationStringOf(double millis, String unit) {
-        DecimalFormat df2 = new DecimalFormat("###############.##");
+    private static String getYearDurationOutput(long millis, long yr, long mth, long days) {
+        long yrPart =  millis / yr;
+        long remainder = millis % yr;
+        long mthPart = remainder / mth;
+        long dPart = remainder / days;
+        String output = "";
+        if (yrPart < 2) output += yrPart + " year ";
+        if (yrPart > 1) output += yrPart + " years ";
+        if (mthPart == 1) output += mthPart + " month ";
+        if (mthPart > 1) output += mthPart + " months ";
+        if (mthPart == 0) {
+            if (dPart == 1) output += dPart + " day";
+            if (dPart > 1) output += dPart + " days";
+        }
+        return output;
+    }
 
-        double yr = Double.valueOf("31536000000");
-        double mth = Double.valueOf("2678400000");
-        double wks = Double.valueOf("604800000");
-        double days = Double.valueOf("86400000");
-        double hrs = Double.valueOf("3600000");
-        double mins = Double.valueOf("60000");
-        double secs = Double.valueOf("1000");
+    private static String getDurationOutput(long millis, long refVal1, long refVal2, String unit1, String unit2) {
+        long part1 =  millis / refVal1;
+        long remainder = millis % refVal1;
+        long part2 = remainder / refVal2;
+        String output = "";
+        if (part1  == 1) output += part1 + " "+unit1+" ";
+        if (part1 > 1) output += part1 + " "+unit1+"s ";
+        if (part2 == 1) output += part2 + " " + unit2;
+        if (part2 > 1) output += part2 + " " + unit2 + "s";
+
+        return output;
+    }
+
+    private static String getMillisDurationOutput(long millis, long secs) {
+        long secPart =  millis / secs;
+        long remainder = millis % secs;
+        String output = "";
+        if (secPart == 1) output += secPart + " sec ";
+        if (secPart > 1) output += secPart + " secs ";
+        if (remainder == 1) output += remainder + " milli";
+        if (remainder > 1) output += remainder + " millis";
+
+        return output;
+    }
+
+    public static String durationStringOf(double millis, String unit) {
+        DecimalFormat df = Util.getDecimalFormat();
+
+        double yr = YEAR.doubleValue();
+        double mth = MONTH.doubleValue();
+        double wks = WEEK.doubleValue();
+        double days = DAY.doubleValue();
+        double hrs = HOUR.doubleValue();
+        double mins = MINUTE.doubleValue();
+        double secs = SECOND.doubleValue();
 
         if (unit.toLowerCase().contains("year") || unit.toLowerCase().contains("yr")) {
-            return df2.format(millis / yr) + " years";
+            return df.format(millis / yr) + " years";
         } else if (unit.toLowerCase().contains("month") || unit.toLowerCase().contains("mth")) {
-            return df2.format(millis / mth) + " months";
+            return df.format(millis / mth) + " months";
         } else if (unit.toLowerCase().contains("week") || unit.toLowerCase().contains("wk")) {
-            return df2.format(millis / wks) + " weeks";
+            return df.format(millis / wks) + " weeks";
         } else if (unit.toLowerCase().contains("day")) {
-            return df2.format(millis / days) + " days";
+            return df.format(millis / days) + " days";
         } else if (unit.toLowerCase().contains("hour") || unit.toLowerCase().contains("hr")) {
-            return df2.format(millis / hrs) + " hours";
+            return df.format(millis / hrs) + " hours";
         } else if (unit.toLowerCase().contains("minute") || unit.toLowerCase().contains("min")) {
-            return df2.format(millis / mins) + " minutes";
+            return df.format(millis / mins) + " minutes";
         } else if (unit.toLowerCase().contains("second") || unit.toLowerCase().contains("sec")) {
-            return df2.format(millis / secs) + " seconds";
+            return df.format(millis / secs) + " seconds";
         } else if (unit.toLowerCase().contains("milli")) {
-            return df2.format(millis ) + " milliseconds";
+            return df.format(millis ) + " milliseconds";
         }
 
         return "instant";
