@@ -683,8 +683,9 @@ public class ProcessServiceImpl implements ProcessService {
     // Delete corresponding draft version of current user
     ProcessModelVersion draft = getProcessModelVersionByUser(pvidToDelete.getProcessBranch().getProcess().getId(),
             DRAFT_BRANCH_NAME, pvidToDelete.getVersionNumber(), user.getId());
-    deleteProcessModelVersion(draft);
-
+    if (draft != null) {
+      deleteProcessModelVersion(draft);
+    }
   }
 
   private ProcessModelVersion getPreviousVersion(List<ProcessModelVersion> pmvs,

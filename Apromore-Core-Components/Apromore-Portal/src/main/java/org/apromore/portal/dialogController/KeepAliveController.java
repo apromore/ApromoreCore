@@ -24,8 +24,12 @@ package org.apromore.portal.dialogController;
 import org.apromore.manager.client.ManagerService;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.common.Constants;
+import org.apromore.portal.common.UserSessionManager;
+import org.apromore.portal.dialogController.dto.ApromoreSession;
+import org.apromore.portal.model.EditSessionType;
 import org.apromore.portal.model.UserType;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -48,6 +52,13 @@ public class KeepAliveController extends SelectorComposer<Component> {
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
 
+        String id = Executions.getCurrent().getParameter("id");
+        if (id == null) {
+            throw new AssertionError("No id parameter in URL");
+        }
+        ApromoreSession session = UserSessionManager.getEditSession(id);
+        EditSessionType editSession = session.getEditSession();
+
         divKeepAlive.addEventListener("onKeepAlive", new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
@@ -55,11 +66,11 @@ public class KeepAliveController extends SelectorComposer<Component> {
                 Sessions.getCurrent().getAttribute("MAIN_CONTROLLER");
                 Map<String, Object> arg = (Map<String, Object>) event.getData();
                 String bpmnXML = arg.get("bpmnXML").toString();
-                Integer processId = Integer.parseInt(arg.get("processId").toString());
-                String currentVersion = arg.get("currentVersion").toString();
+                Integer processId = editSession.getProcessId();
+                String currentVersion = editSession.getCurrentVersionNumber();
                 String nativeType = arg.get("nativeType").toString();
 
-                System.out.println(bpmnXML);
+//                System.out.println(bpmnXML);
                 System.out.println(processId);
                 System.out.println(currentVersion);
 

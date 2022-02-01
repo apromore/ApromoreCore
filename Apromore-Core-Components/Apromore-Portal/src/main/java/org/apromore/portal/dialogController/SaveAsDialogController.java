@@ -35,6 +35,7 @@ import java.util.Objects;
 import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.portal.common.Constants;
+import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.dto.ApromoreSession;
 import org.apromore.portal.model.EditSessionType;
 import org.apromore.portal.model.ImportProcessResultType;
@@ -42,6 +43,7 @@ import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.service.ProcessService;
 import org.apromore.service.WorkspaceService;
+import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
@@ -202,6 +204,7 @@ public class SaveAsDialogController extends BaseController {
 
   }
 
+  @Transactional(readOnly = false)
   private void saveAsNewModel(String userName, Integer folderId, String processName,
       String versionNumber, String nativeType, InputStream nativeStream, String domain,
       String documentation, String created, String lastUpdate, boolean publicModel,
@@ -210,9 +213,13 @@ public class SaveAsDialogController extends BaseController {
       ImportProcessResultType importResult = mainController.getManagerService().importProcess(
           userName, folderId, nativeType, processName, versionNumber, nativeStream, domain,
           documentation, created, null, publicModel);
-//TODO: update current draft to associated with new model
-      // Update process data with the new process to keep a consistent state
+
       Integer processId = importResult.getProcessSummary().getId();
+
+      // Create draft to associated with new model
+      mainController.getManagerService().createDraft(processId, processName, versionNumber,
+              nativeType, nativeStream, userName);
+      // Update process data with the new process to keep a consistent state
       editSession.setProcessId(processId);
       editSession.setProcessName(processName);
       editSession.setOriginalVersionNumber(versionNumber);
@@ -230,6 +237,7 @@ public class SaveAsDialogController extends BaseController {
     }
   }
 
+  @Transactional(readOnly = false)
   private void saveCurrentModelVersion(Integer processId, String processName, String versionNumber,
       String nativeType, InputStream nativeStream, String userName, String containingFolderName) {
     try {

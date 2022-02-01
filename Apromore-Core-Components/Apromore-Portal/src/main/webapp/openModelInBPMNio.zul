@@ -96,13 +96,19 @@
         function timerIncrement() {
             idleTime++;
             // Send keep alive request every 1 min
-            zk.Widget.$('$divKeepAlive').fire(
-                'onKeepAlive',
-        // Need to pass updated xml, processid, version
-                { bpmnXML: '${arg.bpmnXML}', processId: '${arg.processId}', currentVersion:
-        '${arg.currentVersion}', nativeType: '${arg.nativeType}'},
-                { toServer: true },
-            );
+<!--        console.log(Apromore.BPMNEditor.readXML((xml) => { console.log(xml); }));-->
+            Apromore.BPMNEditor.readXML((xml) => {
+                console.log('Auto saving .....');
+                zk.Widget.$('$divKeepAlive').fire(
+                    'onKeepAlive',
+                    { bpmnXML: xml,
+                      processId: '${arg.processId}',
+                      currentVersion: '${arg.currentVersion}',
+                      nativeType: '${arg.nativeType}'},
+                    { toServer: true },
+                );
+            });
+
             if (idleTime > 29) {
                 // Timeout after 30 minutes idle
                 timeout();

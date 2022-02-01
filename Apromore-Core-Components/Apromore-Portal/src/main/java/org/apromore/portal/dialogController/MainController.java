@@ -647,7 +647,7 @@ public class MainController extends BaseController implements MainControllerInte
             if (this.getProcessService().getProcessModelVersionByUser(process.getId(),
                     org.apromore.common.Constants.DRAFT_BRANCH_NAME, version.getVersionNumber(),
                     getSecurityService().getUserById(portalContext.getCurrentUser().getId()).getId()) == null) {
-                this.getProcessService().createDraft(process.getId(), process.getName(), version.getVersionNumber(),
+                this.getManagerService().createDraft(process.getId(), process.getName(), version.getVersionNumber(),
                         nativeType, new ByteArrayInputStream(bpmnXML.getBytes()),
                         UserSessionManager.getCurrentUser().getUsername());
             }
