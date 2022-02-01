@@ -94,6 +94,7 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
       put("ROLE_ANALYST", "Analyst");
       put("ROLE_VIEWER", "Viewer");
       put("ROLE_DESIGNER", "Designer");
+      put("ROLE_DATA_ENGINEER", "Data Engineer");
       put("ROLE_DATA_SCIENTIST", "Data Scientist");
       put("ROLE_OPERATIONS", "Operations");
       put("ROLE_INTEGRATOR", "Integrator");
