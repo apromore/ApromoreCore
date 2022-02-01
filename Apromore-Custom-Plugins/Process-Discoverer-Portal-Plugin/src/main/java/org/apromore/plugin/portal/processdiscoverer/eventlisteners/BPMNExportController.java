@@ -42,6 +42,7 @@ import org.apromore.plugin.portal.processdiscoverer.utils.InputDialog;
 import org.apromore.plugin.portal.processdiscoverer.vis.InvalidOutputException;
 import org.apromore.portal.helper.Version;
 import org.apromore.processdiscoverer.Abstraction;
+import org.apromore.processdiscoverer.abstraction.BPMNAbstraction;
 import org.apromore.processmining.models.graphbased.directed.ContainableDirectedGraphElement;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNEdge;
@@ -99,6 +100,7 @@ public class BPMNExportController extends AbstractController {
     private boolean showProgressBar;
 
     private SimulationInfoService simulationInfoService;
+    private BPMNAbstraction bpmnAbstraction;
 
     public BPMNExportController(PDController controller, boolean showProgressBar) {
         super(controller);
@@ -214,15 +216,22 @@ public class BPMNExportController extends AbstractController {
             throw new InvalidOutputException("Missing layout of the process map for exporting BPMN diagram.");
         }
 
+        try {
+            bpmnAbstraction = controller.getProcessAnalyst().convertToBpmnAbstractionForExport(abs);
+            abs = bpmnAbstraction;
+        } catch (Exception invalidDataException) {
+            log.warn("Unable to convert to valid BPMN. Export will not contain simulation information");
+        }
+
         // Prepare diagram for export
-        BPMNDiagram d = abs.getValidBPMNDiagram();
+        BPMNDiagram diagram = abs.getValidBPMNDiagram();
         BpmnDefinitions.BpmnDefinitionsBuilder definitionsBuilder;
         Map<ContainableDirectedGraphElement, String> labelMapping;
-        labelMapping = cleanDiagramBeforeExport(d);
+        labelMapping = cleanDiagramBeforeExport(diagram);
         if (!controller.getUserOptions().getBPMNMode()) {
-            definitionsBuilder = new BpmnDefinitions.BpmnDefinitionsBuilder(d); // recreate layout
+            definitionsBuilder = new BpmnDefinitions.BpmnDefinitionsBuilder(diagram); // recreate layout
         } else {
-            definitionsBuilder = new BpmnDefinitions.BpmnDefinitionsBuilder(d, abs.getLayout().getGraphLayout());
+            definitionsBuilder = new BpmnDefinitions.BpmnDefinitionsBuilder(diagram, abs.getLayout().getGraphLayout());
         }
 
         // Export to text
@@ -239,7 +248,7 @@ public class BPMNExportController extends AbstractController {
             + definitions.exportElements()
             + "</definitions>";
 
-        restoreDiagramAfterExport(d, labelMapping);
+        restoreDiagramAfterExport(diagram, labelMapping);
     }
 
     private Map<ContainableDirectedGraphElement, String> cleanDiagramBeforeExport(BPMNDiagram d) {
@@ -282,6 +291,9 @@ public class BPMNExportController extends AbstractController {
 
                 footnoteMessage = parent.getLabel("warnSimParamInvalidPerspective_text");
                 log.debug("Cannot export simulation information for resource or role perspectives");
+            } else if (bpmnAbstraction == null) {
+
+                footnoteMessage = parent.getLabel("warnSimParamInternalError_text");
             } else {
 
                 conditionText = parent.getLabel("includeSimulationParams_text");
@@ -312,8 +324,8 @@ public class BPMNExportController extends AbstractController {
                     if (event.getName().equals("onOKChecked")) {
 
                         // Derive process simulation data
-                        SimulationData simulationData = controller.getProcessAnalyst()
-                            .getSimulationData(controller.getOutputData().getAbstraction());
+                        SimulationData simulationData =
+                            controller.getProcessAnalyst().getSimulationData(bpmnAbstraction);
 
                         // Enrich the exported bpmn with process simulation info
                         minedModel = simulationInfoService.enrichWithSimulationInfo(minedModel, simulationData);

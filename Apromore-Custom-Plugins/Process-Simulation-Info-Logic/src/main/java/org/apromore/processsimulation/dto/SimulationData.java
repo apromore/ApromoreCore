@@ -23,6 +23,7 @@ package org.apromore.processsimulation.dto;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -40,11 +41,18 @@ public class SimulationData {
     @Getter(AccessLevel.NONE)
     private Map<String, Double> nodeWeights; // nodeId => mean duration
 
+    @Getter(AccessLevel.NONE)
+    private Map<String, List<EdgeFrequency>> edgeFrequencies; // gatewayId => edge frequencies
+
     public Collection<String> getDiagramNodeIDs() {
         return Collections.unmodifiableSet(nodeWeights.keySet());
     }
 
     public double getDiagramNodeDuration(@NonNull String nodeId) {
         return nodeWeights.getOrDefault(nodeId, 0d);
+    }
+
+    public Map<String, List<EdgeFrequency>> getEdgeFrequencies() {
+        return edgeFrequencies != null ? Collections.unmodifiableMap(edgeFrequencies) : null;
     }
 }

@@ -15,11 +15,13 @@
  * is obtained from Apromore Pty Ltd.
  * #L%
  */
+
 package org.apromore.plugin.portal.processdiscoverer;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -29,6 +31,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import org.apromore.apmlog.xes.XLogToImmutableLog;
 import org.apromore.commons.datetime.DateTimeUtils;
 import org.apromore.logman.Constants;
@@ -45,11 +48,14 @@ import org.apromore.plugin.portal.processdiscoverer.data.ConfigData;
 import org.apromore.plugin.portal.processdiscoverer.data.ContextData;
 import org.apromore.plugin.portal.processdiscoverer.data.InvalidDataException;
 import org.apromore.plugin.portal.processdiscoverer.data.PerspectiveDetails;
-import org.apromore.processsimulation.dto.SimulationData;
 import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
 import org.apromore.processdiscoverer.Abstraction;
+import org.apromore.processdiscoverer.abstraction.BPMNAbstraction;
 import org.apromore.processdiscoverer.layout.Layout;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
+import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Gateway;
+import org.apromore.processsimulation.dto.EdgeFrequency;
+import org.apromore.processsimulation.dto.SimulationData;
 import org.deckfour.xes.model.XAttributeTimestamp;
 import org.deckfour.xes.model.XLog;
 import org.eclipse.collections.api.list.ListIterable;
@@ -78,48 +84,50 @@ public class PDAnalystTest extends TestDataSetup {
         assertEquals(AttributeLevel.EVENT, analyst.getMainAttribute().getLevel());
         assertEquals(AttributeType.LITERAL, analyst.getMainAttribute().getType());
 
-        assertTrue(((List)analyst.getCurrentFilterCriteria()).isEmpty());
+        assertTrue(((List) analyst.getCurrentFilterCriteria()).isEmpty());
 
         AttributeLog attLog = analyst.getAttributeLog();
         assertEquals(1, attLog.getTraces().size());
         assertEquals(3, attLog.getTraces().get(0).getValueTrace().size());
     }
 
-    @Test (expected = InvalidDataException.class)
+    @Test(expected = InvalidDataException.class)
     public void test_AnalystConstructor_MissingActivityPerspective() throws Exception {
         XLog validLog = readLogWithOneTraceOneEvent();
         ContextData contextData = ContextData.valueOf("domain1", "username1", 0,
-                "logName", 0, "folderName", false, true);
+            "logName", 0, "folderName", false, true);
         Mockito.when(eventLogService.getXLog(contextData.getLogId())).thenReturn(validLog);
         Mockito.when(eventLogService.getAggregatedLog(contextData.getLogId())).thenReturn(
-                XLogToImmutableLog.convertXLog("ProcessLog", validLog));
-        Mockito.when(eventLogService.getPerspectiveTagByLog(contextData.getLogId())).thenReturn(Arrays.asList("org:resource"));
+            XLogToImmutableLog.convertXLog("ProcessLog", validLog));
+        Mockito.when(eventLogService.getPerspectiveTagByLog(contextData.getLogId()))
+            .thenReturn(Arrays.asList("org:resource"));
         ConfigData configData = ConfigData.DEFAULT;
         PDAnalyst analyst = new PDAnalyst(contextData, configData, eventLogService);
     }
 
-    @Test (expected = InvalidDataException.class)
+    @Test(expected = InvalidDataException.class)
     public void test_AnalystConstructor_NoPerspectiveAttributes() throws Exception {
         XLog validLog = readLogWithOneTraceOneEvent();
         ContextData contextData = ContextData.valueOf("domain1", "username1", 0,
-                "logName", 0, "folderName", false, true);
+            "logName", 0, "folderName", false, true);
         Mockito.when(eventLogService.getXLog(contextData.getLogId())).thenReturn(validLog);
         Mockito.when(eventLogService.getAggregatedLog(contextData.getLogId())).thenReturn(
-                XLogToImmutableLog.convertXLog("ProcessLog", validLog));
+            XLogToImmutableLog.convertXLog("ProcessLog", validLog));
         Mockito.when(eventLogService.getPerspectiveTagByLog(contextData.getLogId())).thenReturn(new ArrayList<>());
         ConfigData configData = ConfigData.DEFAULT;
         PDAnalyst analyst = new PDAnalyst(contextData, configData, eventLogService);
     }
 
-    @Test (expected = InvalidDataException.class)
+    @Test(expected = InvalidDataException.class)
     public void test_AnalystConstructor_TooManyPerspectiveAttributeValues() throws Exception {
         XLog validLog = readLogWithTwoTraceEachTwoEvents();
         ContextData contextData = ContextData.valueOf("domain1", "username1", 0,
-                "logName", 0, "folderName", false, true);
+            "logName", 0, "folderName", false, true);
         Mockito.when(eventLogService.getXLog(contextData.getLogId())).thenReturn(validLog);
         Mockito.when(eventLogService.getAggregatedLog(contextData.getLogId())).thenReturn(
-                XLogToImmutableLog.convertXLog("ProcessLog", validLog));
-        Mockito.when(eventLogService.getPerspectiveTagByLog(contextData.getLogId())).thenReturn(Arrays.asList(new String[] {"concept:name"}));
+            XLogToImmutableLog.convertXLog("ProcessLog", validLog));
+        Mockito.when(eventLogService.getPerspectiveTagByLog(contextData.getLogId()))
+            .thenReturn(Arrays.asList(new String[] {"concept:name"}));
         ConfigData configData = new ConfigData("concept:name", 1, Integer.MAX_VALUE);
         PDAnalyst analyst = new PDAnalyst(contextData, configData, eventLogService);
     }
@@ -191,8 +199,10 @@ public class PDAnalystTest extends TestDataSetup {
         PDAnalyst analyst = createPDAnalyst(readLogWithOneTraceOneEvent());
         assertEquals(1, analyst.getFilteredActivityInstanceSize());
         assertEquals(1, analyst.getFilteredCaseVariantSize());
-        assertEquals(DateTimeUtils.humanize(DateTime.parse("2010-10-27T22:31:19.495+10:00").getMillis()), analyst.getFilteredStartTime());
-        assertEquals(DateTimeUtils.humanize(DateTime.parse("2010-10-27T22:31:19.495+10:00").getMillis()), analyst.getFilteredEndTime());
+        assertEquals(DateTimeUtils.humanize(DateTime.parse("2010-10-27T22:31:19.495+10:00").getMillis()),
+            analyst.getFilteredStartTime());
+        assertEquals(DateTimeUtils.humanize(DateTime.parse("2010-10-27T22:31:19.495+10:00").getMillis()),
+            analyst.getFilteredEndTime());
 
         assertEquals("instant", analyst.getFilteredMinDuration());
         assertEquals("instant", analyst.getFilteredMaxDuration());
@@ -211,7 +221,7 @@ public class PDAnalystTest extends TestDataSetup {
         assertEquals(3, xlog.get(0).get(0).getAttributes().size());
         assertEquals("a", xlog.get(0).get(0).getAttributes().get("concept:name").toString());
         assertEquals(DateTime.parse("2010-10-27T22:31:19.495+10:00").getMillis(),
-                ((XAttributeTimestamp)xlog.get(0).get(0).getAttributes().get("time:timestamp")).getValueMillis());
+            ((XAttributeTimestamp) xlog.get(0).get(0).getAttributes().get("time:timestamp")).getValueMillis());
         assertEquals("complete", xlog.get(0).get(0).getAttributes().get("lifecycle:transition").toString());
     }
 
@@ -363,8 +373,8 @@ public class PDAnalystTest extends TestDataSetup {
         Map<String, String> activityAverages = analyst.getActivityAttributeAverageMap(1, 1);
 
         Map<String, String> expectedMap = Map.of(
-                "concept:name", "a",
-                "Average riskLevelNumber", "3.5"
+            "concept:name", "a",
+            "Average riskLevelNumber", "3.5"
         );
 
         assertEquals(expectedMap, activityAverages);
@@ -387,167 +397,7 @@ public class PDAnalystTest extends TestDataSetup {
         // Initial layout with standard options
         PDAnalyst analyst = createPDAnalyst(readLogWithStartCompleteEventsNonOverlapping());
         Layout layout1 = analyst.discoverProcess(
-                createUserOptions(100, 100, 40,
-                        MeasureType.FREQUENCY,
-                        MeasureAggregation.CASES,
-                        MeasureRelation.ABSOLUTE,
-                        false, false,
-                        MeasureType.FREQUENCY,
-                        MeasureAggregation.CASES,
-                        MeasureRelation.ABSOLUTE,
-                        MeasureType.DURATION,
-                        MeasureAggregation.MEAN,
-                        MeasureRelation.ABSOLUTE,
-                        false,
-                        false)).get().getAbstraction().getLayout();
-
-        // Change user options, layout must be retained
-
-        // Change primary measure aggregation type
-        Layout layout2 = analyst.discoverProcess(
-                createUserOptions(100, 100, 40,
-                        MeasureType.FREQUENCY,
-                        MeasureAggregation.CASES,
-                        MeasureRelation.ABSOLUTE,
-                        false, false,
-                        MeasureType.FREQUENCY,
-                        MeasureAggregation.MIN, // changed
-                        MeasureRelation.ABSOLUTE,
-                        MeasureType.DURATION,
-                        MeasureAggregation.MEAN,
-                        MeasureRelation.ABSOLUTE,
-                        false,
-                        false)).get().getAbstraction().getLayout();
-        assertSame(layout1, layout2);
-
-        // Change primary measure type
-        Layout layout3 = analyst.discoverProcess(
-                createUserOptions(100, 100, 40,
-                        MeasureType.FREQUENCY,
-                        MeasureAggregation.CASES,
-                        MeasureRelation.ABSOLUTE,
-                        false, false,
-                        MeasureType.DURATION,       // changed
-                        MeasureAggregation.CASES,
-                        MeasureRelation.ABSOLUTE,
-                        MeasureType.DURATION,
-                        MeasureAggregation.MEAN,
-                        MeasureRelation.ABSOLUTE,
-                        false,
-                        false)).get().getAbstraction().getLayout();
-        assertSame(layout1, layout3);
-
-        // Add secondary measure
-        Layout layout4 = analyst.discoverProcess(
-                createUserOptions(100, 100, 40,
-                        MeasureType.FREQUENCY,
-                        MeasureAggregation.CASES,
-                        MeasureRelation.ABSOLUTE,
-                        false, false,
-                        MeasureType.FREQUENCY,
-                        MeasureAggregation.CASES,
-                        MeasureRelation.ABSOLUTE,
-                        MeasureType.DURATION,
-                        MeasureAggregation.MEAN,
-                        MeasureRelation.ABSOLUTE,
-                        true,            // changed
-                        false)).get().getAbstraction().getLayout();
-        assertSame(layout1, layout4);
-
-
-        // Change user options, layout is not retained
-
-        // Change structural measure type
-        Layout layout5 = analyst.discoverProcess(
-                createUserOptions(100, 100, 40,
-                        MeasureType.DURATION,           // changed
-                        MeasureAggregation.MEAN,
-                        MeasureRelation.ABSOLUTE,
-                        false, false,
-                        MeasureType.FREQUENCY,
-                        MeasureAggregation.CASES,
-                        MeasureRelation.ABSOLUTE,
-                        MeasureType.DURATION,
-                        MeasureAggregation.MEAN,
-                        MeasureRelation.ABSOLUTE,
-                        false,
-                        false)).get().getAbstraction().getLayout();
-        assertNotSame(layout1, layout5);
-
-        // Change perspective attribute
-        analyst.setMainAttribute(Constants.ATT_KEY_LIFECYCLE_TRANSITION); // changed
-        Layout layout6 = analyst.discoverProcess(
-                createUserOptions(100, 100, 40,
-                        MeasureType.FREQUENCY,
-                        MeasureAggregation.CASES,
-                        MeasureRelation.ABSOLUTE,
-                        false, false,
-                        MeasureType.FREQUENCY,
-                        MeasureAggregation.CASES,
-                        MeasureRelation.ABSOLUTE,
-                        MeasureType.DURATION,
-                        MeasureAggregation.MEAN,
-                        MeasureRelation.ABSOLUTE,
-                        false,
-                        false)).get().getAbstraction().getLayout();
-        assertNotSame(layout1, layout6);
-
-        // Change graph filtering threshold
-        Layout layout7 = analyst.discoverProcess(
-                createUserOptions(100, 10, 40, // Changed
-                        MeasureType.FREQUENCY,
-                        MeasureAggregation.CASES,
-                        MeasureRelation.ABSOLUTE,
-                        false, false,
-                        MeasureType.FREQUENCY,
-                        MeasureAggregation.CASES,
-                        MeasureRelation.ABSOLUTE,
-                        MeasureType.DURATION,
-                        MeasureAggregation.MEAN,
-                        MeasureRelation.ABSOLUTE,
-                        false,
-                        false)).get().getAbstraction().getLayout();
-        assertNotSame(layout1, layout7);
-
-        // Change the weight ordering of nodes/arcs in the structural measure
-        Layout layout8 = analyst.discoverProcess(
-                createUserOptions(100, 10, 40,
-                        MeasureType.FREQUENCY,
-                        MeasureAggregation.CASES,
-                        MeasureRelation.ABSOLUTE,
-                        true, true, // changed
-                        MeasureType.FREQUENCY,
-                        MeasureAggregation.CASES,
-                        MeasureRelation.ABSOLUTE,
-                        MeasureType.DURATION,
-                        MeasureAggregation.MEAN,
-                        MeasureRelation.ABSOLUTE,
-                        false,
-                        false)).get().getAbstraction().getLayout();
-        assertNotSame(layout1, layout8);
-
-        // After applying filter, layout must change
-        analyst.filter_RemoveTracesAnyValueOfEventAttribute("b", "concept:name");
-        Layout layout9 = analyst.discoverProcess(
-                createUserOptions(100, 100, 40,
-                        MeasureType.FREQUENCY,
-                        MeasureAggregation.CASES,
-                        MeasureRelation.ABSOLUTE,
-                        false, false,
-                        MeasureType.FREQUENCY,
-                        MeasureAggregation.CASES,
-                        MeasureRelation.ABSOLUTE,
-                        MeasureType.DURATION,
-                        MeasureAggregation.MEAN,
-                        MeasureRelation.ABSOLUTE,
-                        false,
-                        false)).get().getAbstraction().getLayout();
-        assertNotSame(layout1, layout9);
-    }
-
-    @Test
-    public void test_SimulationData() throws Exception {
-        UserOptionsData userOptions = createUserOptions(100, 100, 40,
+            createUserOptions(100, 100, 40,
                 MeasureType.FREQUENCY,
                 MeasureAggregation.CASES,
                 MeasureRelation.ABSOLUTE,
@@ -559,37 +409,278 @@ public class PDAnalystTest extends TestDataSetup {
                 MeasureAggregation.MEAN,
                 MeasureRelation.ABSOLUTE,
                 false,
-                false);
+                false)).get().getAbstraction().getLayout();
+
+        // Change user options, layout must be retained
+
+        // Change primary measure aggregation type
+        Layout layout2 = analyst.discoverProcess(
+            createUserOptions(100, 100, 40,
+                MeasureType.FREQUENCY,
+                MeasureAggregation.CASES,
+                MeasureRelation.ABSOLUTE,
+                false, false,
+                MeasureType.FREQUENCY,
+                MeasureAggregation.MIN, // changed
+                MeasureRelation.ABSOLUTE,
+                MeasureType.DURATION,
+                MeasureAggregation.MEAN,
+                MeasureRelation.ABSOLUTE,
+                false,
+                false)).get().getAbstraction().getLayout();
+        assertSame(layout1, layout2);
+
+        // Change primary measure type
+        Layout layout3 = analyst.discoverProcess(
+            createUserOptions(100, 100, 40,
+                MeasureType.FREQUENCY,
+                MeasureAggregation.CASES,
+                MeasureRelation.ABSOLUTE,
+                false, false,
+                MeasureType.DURATION,       // changed
+                MeasureAggregation.CASES,
+                MeasureRelation.ABSOLUTE,
+                MeasureType.DURATION,
+                MeasureAggregation.MEAN,
+                MeasureRelation.ABSOLUTE,
+                false,
+                false)).get().getAbstraction().getLayout();
+        assertSame(layout1, layout3);
+
+        // Add secondary measure
+        Layout layout4 = analyst.discoverProcess(
+            createUserOptions(100, 100, 40,
+                MeasureType.FREQUENCY,
+                MeasureAggregation.CASES,
+                MeasureRelation.ABSOLUTE,
+                false, false,
+                MeasureType.FREQUENCY,
+                MeasureAggregation.CASES,
+                MeasureRelation.ABSOLUTE,
+                MeasureType.DURATION,
+                MeasureAggregation.MEAN,
+                MeasureRelation.ABSOLUTE,
+                true,            // changed
+                false)).get().getAbstraction().getLayout();
+        assertSame(layout1, layout4);
+
+
+        // Change user options, layout is not retained
+
+        // Change structural measure type
+        Layout layout5 = analyst.discoverProcess(
+            createUserOptions(100, 100, 40,
+                MeasureType.DURATION,           // changed
+                MeasureAggregation.MEAN,
+                MeasureRelation.ABSOLUTE,
+                false, false,
+                MeasureType.FREQUENCY,
+                MeasureAggregation.CASES,
+                MeasureRelation.ABSOLUTE,
+                MeasureType.DURATION,
+                MeasureAggregation.MEAN,
+                MeasureRelation.ABSOLUTE,
+                false,
+                false)).get().getAbstraction().getLayout();
+        assertNotSame(layout1, layout5);
+
+        // Change perspective attribute
+        analyst.setMainAttribute(Constants.ATT_KEY_LIFECYCLE_TRANSITION); // changed
+        Layout layout6 = analyst.discoverProcess(
+            createUserOptions(100, 100, 40,
+                MeasureType.FREQUENCY,
+                MeasureAggregation.CASES,
+                MeasureRelation.ABSOLUTE,
+                false, false,
+                MeasureType.FREQUENCY,
+                MeasureAggregation.CASES,
+                MeasureRelation.ABSOLUTE,
+                MeasureType.DURATION,
+                MeasureAggregation.MEAN,
+                MeasureRelation.ABSOLUTE,
+                false,
+                false)).get().getAbstraction().getLayout();
+        assertNotSame(layout1, layout6);
+
+        // Change graph filtering threshold
+        Layout layout7 = analyst.discoverProcess(
+            createUserOptions(100, 10, 40, // Changed
+                MeasureType.FREQUENCY,
+                MeasureAggregation.CASES,
+                MeasureRelation.ABSOLUTE,
+                false, false,
+                MeasureType.FREQUENCY,
+                MeasureAggregation.CASES,
+                MeasureRelation.ABSOLUTE,
+                MeasureType.DURATION,
+                MeasureAggregation.MEAN,
+                MeasureRelation.ABSOLUTE,
+                false,
+                false)).get().getAbstraction().getLayout();
+        assertNotSame(layout1, layout7);
+
+        // Change the weight ordering of nodes/arcs in the structural measure
+        Layout layout8 = analyst.discoverProcess(
+            createUserOptions(100, 10, 40,
+                MeasureType.FREQUENCY,
+                MeasureAggregation.CASES,
+                MeasureRelation.ABSOLUTE,
+                true, true, // changed
+                MeasureType.FREQUENCY,
+                MeasureAggregation.CASES,
+                MeasureRelation.ABSOLUTE,
+                MeasureType.DURATION,
+                MeasureAggregation.MEAN,
+                MeasureRelation.ABSOLUTE,
+                false,
+                false)).get().getAbstraction().getLayout();
+        assertNotSame(layout1, layout8);
+
+        // After applying filter, layout must change
+        analyst.filter_RemoveTracesAnyValueOfEventAttribute("b", "concept:name");
+        Layout layout9 = analyst.discoverProcess(
+            createUserOptions(100, 100, 40,
+                MeasureType.FREQUENCY,
+                MeasureAggregation.CASES,
+                MeasureRelation.ABSOLUTE,
+                false, false,
+                MeasureType.FREQUENCY,
+                MeasureAggregation.CASES,
+                MeasureRelation.ABSOLUTE,
+                MeasureType.DURATION,
+                MeasureAggregation.MEAN,
+                MeasureRelation.ABSOLUTE,
+                false,
+                false)).get().getAbstraction().getLayout();
+        assertNotSame(layout1, layout9);
+    }
+
+    @Test
+    public void test_SimulationData() throws Exception {
+        UserOptionsData userOptions = createUserOptions(100, 100, 40,
+            MeasureType.FREQUENCY,
+            MeasureAggregation.CASES,
+            MeasureRelation.ABSOLUTE,
+            false, false,
+            MeasureType.FREQUENCY,
+            MeasureAggregation.CASES,
+            MeasureRelation.ABSOLUTE,
+            MeasureType.DURATION,
+            MeasureAggregation.MEAN,
+            MeasureRelation.ABSOLUTE,
+            false,
+            false);
         PDAnalyst analyst = createPDAnalyst(readLogWithOneTraceStartCompleteEventsNonOverlapping());
         Abstraction abs = analyst.discoverProcess(userOptions).get().getAbstraction();
-        SimulationData data = analyst.getSimulationData(abs);
+        BPMNAbstraction bpmnAbstraction = analyst.convertToBpmnAbstractionForExport(abs);
+
+        SimulationData data = analyst.getSimulationData(bpmnAbstraction);
         assertEquals(1, data.getCaseCount());
         assertEquals(5, data.getResourceCount());
         assertEquals(DateTime.parse("2010-10-27T21:59:19.308+10:00").getMillis(), data.getStartTime());
         assertEquals(DateTime.parse("2010-10-27T22:55:19.308+10:00").getMillis(), data.getEndTime());
-        assertEquals(60, data.getDiagramNodeDuration(getNodeId("a", abs.getDiagram())), 0.0);
-        assertEquals(60, data.getDiagramNodeDuration(getNodeId("b", abs.getDiagram())), 0.0);
-        assertEquals(60, data.getDiagramNodeDuration(getNodeId("c", abs.getDiagram())), 0.0);
-        assertEquals(60, data.getDiagramNodeDuration(getNodeId("d", abs.getDiagram())), 0.0);
+        assertEquals(60, data.getDiagramNodeDuration(getNodeId("a", bpmnAbstraction.getDiagram())), 0.0);
+        assertEquals(60, data.getDiagramNodeDuration(getNodeId("b", bpmnAbstraction.getDiagram())), 0.0);
+        assertEquals(60, data.getDiagramNodeDuration(getNodeId("c", bpmnAbstraction.getDiagram())), 0.0);
+        assertEquals(60, data.getDiagramNodeDuration(getNodeId("d", bpmnAbstraction.getDiagram())), 0.0);
+
+        Map<String, Map<String, Double>> expectedEdgeFrequencies = Map.of(
+            "node4", Map.of("edge3", 0.0, "edge4", 1.0),
+            "node5", Map.of("edge5", 1.0),
+            "node8", Map.of("edge11", 1.0),
+            "node9", Map.of("edge9", 1.0, "edge10", 1.0)
+        );
+        assertGateways(expectedEdgeFrequencies, data.getEdgeFrequencies());
 
         // Filter out some events
         analyst.filter_RemoveEventsAnyValueOfEventAttribute("c", "concept:name");
         Abstraction abs2 = analyst.discoverProcess(userOptions).get().getAbstraction();
-        SimulationData data2 = analyst.getSimulationData(abs2);
+        BPMNAbstraction bpmnAbstraction2 = analyst.convertToBpmnAbstractionForExport(abs);
+        SimulationData data2 = analyst.getSimulationData(analyst.convertToBpmnAbstractionForExport(abs2));
         assertEquals(1, data2.getCaseCount());
         assertEquals(4, data2.getResourceCount()); // changed
         assertEquals(DateTime.parse("2010-10-27T21:59:19.308+10:00").getMillis(), data2.getStartTime());
         assertEquals(DateTime.parse("2010-10-27T22:45:19.308+10:00").getMillis(), data2.getEndTime()); // changed
-        assertEquals(60, data.getDiagramNodeDuration(getNodeId("b", abs2.getDiagram())), 0.0);
+        assertEquals(60, data2.getDiagramNodeDuration(getNodeId("b", bpmnAbstraction2.getDiagram())), 0.0);
+
+        Map<String, Map<String, Double>> expectedEdgeFrequencies2 = Map.of(
+            "node10", Map.of("edge14", 1.0, "edge17", 1.0, "edge18", 0.0),
+            "node8", Map.of("edge9", 1.0, "edge20", 1.0),
+            "node9", Map.of("edge15", 1.0),
+            "node7", Map.of("edge10", 1.0)
+        );
+        assertGateways(expectedEdgeFrequencies2, data2.getEdgeFrequencies());
+    }
+
+    @Test
+    public void test_simulation_data_with_null_abstraction() throws Exception {
+        PDAnalyst analyst = createPDAnalyst(readLogWithOneTraceStartCompleteEventsNonOverlapping());
+        SimulationData data = analyst.getSimulationData(null);
+
+        assertNull(data);
+    }
+
+    @Test
+    public void test_only_xor_gateways_in_simulation_data() throws Exception {
+        UserOptionsData userOptions = createUserOptions(100, 100, 40,
+            MeasureType.FREQUENCY,
+            MeasureAggregation.CASES,
+            MeasureRelation.ABSOLUTE,
+            false, false,
+            MeasureType.FREQUENCY,
+            MeasureAggregation.CASES,
+            MeasureRelation.ABSOLUTE,
+            MeasureType.DURATION,
+            MeasureAggregation.MEAN,
+            MeasureRelation.ABSOLUTE,
+            false,
+            false);
+        PDAnalyst analyst = createPDAnalyst(readLogWithOneTraceStartCompleteEventsNonOverlapping());
+        Abstraction abs = analyst.discoverProcess(userOptions).get().getAbstraction();
+        BPMNAbstraction bpmnAbstraction = analyst.convertToBpmnAbstractionForExport(abs);
+
+        assertEquals(4, bpmnAbstraction.getDiagram().getGateways().size());
+        bpmnAbstraction.getDiagram().addGateway("MockGw1", Gateway.GatewayType.INCLUSIVE);
+        bpmnAbstraction.getDiagram().addGateway("MockGw2", Gateway.GatewayType.EVENTBASED);
+        bpmnAbstraction.getDiagram().addGateway("MockGw3", Gateway.GatewayType.PARALLEL);
+        bpmnAbstraction.getDiagram().addGateway("MockGw4", Gateway.GatewayType.COMPLEX);
+        assertEquals(8, bpmnAbstraction.getDiagram().getGateways().size());
+
+        SimulationData data = analyst.getSimulationData(bpmnAbstraction);
+        Map<String, Map<String, Double>> expectedEdgeFrequencies = Map.of(
+            "node4", Map.of("edge3", 0.0, "edge4", 1.0),
+            "node5", Map.of("edge5", 1.0),
+            "node8", Map.of("edge11", 1.0),
+            "node9", Map.of("edge9", 1.0, "edge10", 1.0)
+        );
+        assertGateways(expectedEdgeFrequencies, data.getEdgeFrequencies());
+
+    }
+
+    private void assertGateways(
+        Map<String, Map<String, Double>> expectedEdgeFrequencies,
+        Map<String, List<EdgeFrequency>> actualEdgeFrequencies) {
+
+        assertEquals(expectedEdgeFrequencies.size(), actualEdgeFrequencies.size());
+        expectedEdgeFrequencies.entrySet().forEach(expectedEntry -> {
+            assertEdgeFrequencies(expectedEntry.getValue(), actualEdgeFrequencies.get(expectedEntry.getKey()));
+        });
+    }
+
+    private void assertEdgeFrequencies(Map<String, Double> expectedEdgeFrequencies,
+                                       List<EdgeFrequency> actualEdgeFrequencies) {
+        assertEquals(expectedEdgeFrequencies.size(), actualEdgeFrequencies.size());
+        assertTrue(expectedEdgeFrequencies.keySet().containsAll(
+            actualEdgeFrequencies.stream().map(EdgeFrequency::getEdgeId).collect(Collectors.toList())));
     }
 
     private String getNodeId(String label, BPMNDiagram diagram) {
         return diagram.getNodes().stream()
-                .filter(n -> n.getLabel().equals(label))
-                .findFirst()
-                .get()
-                .getId()
-                .toString();
+            .filter(n -> n.getLabel().equals(label))
+            .findFirst()
+            .get()
+            .getId()
+            .toString();
     }
 
 }
