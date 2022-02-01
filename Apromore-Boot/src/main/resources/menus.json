@@ -199,6 +199,12 @@
             },
             {
               "id": "SHARE"
+            },
+            {
+              "id": "SEPARATOR"
+            },
+            {
+              "id": "org.apromore.plugin.portal.file.DownloadSelectionPlugin"
             }
           ]
         }
@@ -245,6 +251,12 @@
             },
             {
               "id": "org.apromore.plugin.portal.processpublisher.ProcessPublisherPlugin"
+            },
+            {
+              "id": "SEPARATOR"
+            },
+            {
+              "id": "org.apromore.plugin.portal.file.DownloadSelectionPlugin"
             }
           ]
         }

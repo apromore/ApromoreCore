@@ -74,6 +74,7 @@ public class SummaryItemRenderer implements ListitemRenderer {
     private static final String CENTRE_ALIGN = "vertical-align: middle; text-align:center";
     private static final String VERTICAL_ALIGN = "vertical-align: middle;";
     private static final String LEFT_ALIGN = "text-align:left";
+    private static final String PARENT_CONTROLLER = "PARENT_CONTROLLER";
 
     private MainController mainController;
     private DateTimeFormatter dateTimeFormatter;
@@ -159,7 +160,8 @@ public class SummaryItemRenderer implements ListitemRenderer {
             @Override
             public void onEvent(Event event) throws Exception {
                 Map args = new HashMap();
-                  args.put("POPUP_TYPE", "PROCESS");
+                args.put("POPUP_TYPE", "PROCESS");
+                args.put(PARENT_CONTROLLER,mainController);
                 Menupopup menupopup = (Menupopup)Executions.createComponents("~./macros/popupMenu.zul", null, args);
                 menupopup.open(event.getTarget(), "at_pointer");
             }
@@ -201,7 +203,8 @@ public class SummaryItemRenderer implements ListitemRenderer {
             @Override
             public void onEvent(Event event) throws Exception {
                 Map args = new HashMap();
-                  args.put("POPUP_TYPE", "LOG");
+                args.put("POPUP_TYPE", "LOG");
+                args.put(PARENT_CONTROLLER,mainController);
                 Menupopup menupopup = (Menupopup)Executions.createComponents("~./macros/popupMenu.zul", null, args);
                 menupopup.open(event.getTarget(), "at_pointer");
             }
@@ -311,8 +314,9 @@ public class SummaryItemRenderer implements ListitemRenderer {
             @Override
             public void onEvent(Event event) throws Exception {
                 Map args = new HashMap();
-                  args.put("POPUP_TYPE", "FOLDER");
-                  args.put("SELECTED_FOLDER", ((Listitem)event.getTarget()).getValue());
+                args.put("POPUP_TYPE", "FOLDER");
+                args.put("SELECTED_FOLDER", ((Listitem)event.getTarget()).getValue());
+                args.put(PARENT_CONTROLLER,mainController);
                 Menupopup menupopup = (Menupopup)Executions.createComponents("~./macros/popupMenu.zul", null, args);
                 menupopup.open(event.getTarget(), "at_pointer");
                 

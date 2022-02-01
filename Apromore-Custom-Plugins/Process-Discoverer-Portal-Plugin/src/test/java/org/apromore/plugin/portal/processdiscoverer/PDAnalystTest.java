@@ -179,7 +179,7 @@ public class PDAnalystTest extends TestDataSetup {
         List<PerspectiveDetails> actDetails = analyst.getActivityDetails();
         assertEquals(1, actDetails.size());
         assertEquals("a", actDetails.get(0).getValue());
-        assertEquals(1, actDetails.get(0).getFreq(), 0);
+        assertEquals(1, actDetails.get(0).getFreq(),0);
         assertEquals("100", actDetails.get(0).getFreqStr());
         assertEquals(1, actDetails.get(0).getOccurrences());
     }
@@ -355,12 +355,12 @@ public class PDAnalystTest extends TestDataSetup {
 
     @Test
     public void test_getActivityAttributeAverageMap() throws Exception {
-        PDAnalyst analyst = createPDAnalyst(readLogWithThreeTraceOneVariant());
+        PDAnalyst analyst = createPDAnalyst(readLogWithThreeTraceOneVariantMissingValues());
         Map<String, String> activityAverages = analyst.getActivityAttributeAverageMap(1, 1);
 
         Map<String, String> expectedMap = Map.of(
-            "concept:name", "a",
-            "Average riskLevelNumber", "3.0"
+                "concept:name", "a",
+                "Average riskLevelNumber", "2.5"
         );
 
         assertEquals(expectedMap, activityAverages);

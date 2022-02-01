@@ -141,16 +141,32 @@ public class WorkDayModel {
     return result;
   }
 
+  // periodStart and periodEnd are on the same day
+  // startTime --- endTime ---> periodStart ---> periodEnd  : 0
+  // periodStart --- periodEnd ---> startTime ---> endTime  : 0
+  // startTime --- periodStart ---> endTime ---> periodEnd  : endTime - periodStart
+  // periodStart ---> startTime ---> periodEnd ---> endTime : periodEnd - startTime
+  // startTime --- periodStart ---> periodEnd ---> endTime  : periodEnd - periodStart
+  // periodStart --- startTime ---> endTime ---> periodEnd  : endTime - startTime
   private Duration getDurationSameDayForOneDayPeriod(LocalTime periodStart, LocalTime periodEnd) {
+    if (startTime.toLocalTime().isAfter(periodEnd) || endTime.toLocalTime().isBefore(periodStart)) return Duration.ZERO;
     return Duration.between(startTime.toLocalTime().isBefore(periodStart) ? periodStart : startTime.toLocalTime(),
             endTime.toLocalTime().isAfter(periodEnd) ? periodEnd : endTime.toLocalTime());
   }
 
+  // periodStart and periodEnd are on different days
+  // startTime ---> endTime ---> periodStart ---> periodEnd(next day)  : periodStart - periodStart = 0
+  // startTime ---> periodStart ---> endTime ---> periodEnd(next day) : endTime - periodStart
+  // periodStart ---> startTime ---> endTime ---> periodEnd(next day) : endTime - startTime
   private Duration getDurationSameDayAtStartOfMultiDayPeriod(LocalTime periodStart) {
     return Duration.between(startTime.toLocalTime().isBefore(periodStart) ? periodStart : startTime.toLocalTime(),
             endTime.toLocalTime().isBefore(periodStart) ? periodStart : endTime.toLocalTime());
   }
 
+  // periodStart and periodEnd are on different days
+  // periodStart(previous day) ---> startTime ---> endTime ---> periodEnd : endTime - startTime
+  // periodStart(previous day) ---> startTime ---> periodEnd ---> endTime : periodEnd - startTime
+  // periodStart(previous day) ---> periodEnd ---> startTime ---> endTime : periodEnd - periodEnd = 0
   private Duration getDurationSameDayAtEndOfMultiDayPeriod(LocalTime periodEnd) {
     return Duration.between(startTime.toLocalTime().isAfter(periodEnd) ? periodEnd : startTime.toLocalTime(),
             endTime.toLocalTime().isAfter(periodEnd) ? periodEnd : endTime.toLocalTime());

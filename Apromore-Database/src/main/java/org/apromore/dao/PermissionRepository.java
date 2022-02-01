@@ -57,5 +57,13 @@ public interface PermissionRepository extends JpaRepository<Permission, Integer>
     @Query("SELECT DISTINCT p FROM User u JOIN u.roles r JOIN r.permissions p WHERE u.rowGuid = ?1")
     List<Permission> findByUser(String userGuid);
 
+    /**
+     * Find the permission for a Role.
+     * @param name the name of the role whose permissions we are searching for.
+     * @return the list of Permissions.
+     */
+    @Query("SELECT DISTINCT p FROM Role r JOIN r.permissions p WHERE r.name = ?1")
+    List<Permission> findByRole(String name);
+
 
 }

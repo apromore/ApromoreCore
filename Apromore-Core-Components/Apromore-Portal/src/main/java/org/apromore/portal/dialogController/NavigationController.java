@@ -29,7 +29,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
+import java.util.List;
+import java.util.ArrayList;
 
 import org.apromore.dao.model.User;
 import org.apromore.plugin.portal.PortalContext;
@@ -72,6 +73,7 @@ public class NavigationController extends BaseController {
     private Tree tree;
     private PortalContext portalContext;
     private Map<String, PortalPlugin> portalPluginMap;
+    private List<Integer> openFolderItems;
     public static final String APROMORE = "Apromore";
     public static final String PORTAL_WARNING_TEXT = "portal_warning_text";
 
@@ -121,6 +123,12 @@ public class NavigationController extends BaseController {
     public void loadWorkspace() {
         FolderTreeModel model = new FolderTreeModel(new FolderTree(false, mainC).getRoot(), null);
         tree.setItemRenderer(new FolderTreeRenderer(mainC));
+        tree.setModel(model);
+    }
+    /*Load Tree with selected open items */
+    public void loadTreeSpace(List<Integer> folderIds) {
+        FolderTreeModel model = new FolderTreeModel(new FolderTree(false, mainC).getRoot(), null);
+        tree.setItemRenderer(new FolderTreeRenderer(mainC, folderIds));
         tree.setModel(model);
     }
 
@@ -313,4 +321,62 @@ public class NavigationController extends BaseController {
             }
         });
     }
+
+    public List<Integer> getAllOpenFolderItems(){
+        openFolderItems = new ArrayList<>();
+        try {
+            findAndStoreOpenFolderItemList(tree);
+        }catch (Exception ex){
+            LOGGER.error("Error in getting tree information",ex);
+        }
+        return openFolderItems;
+    }
+    public void restoreTreeItem(List<Integer> openFolderItems){
+        if(openFolderItems.isEmpty()){
+            return;
+        }
+        try {
+            this.openFolderItems = new ArrayList<>(openFolderItems);
+            findAndReopenFolderItem(tree);
+        }catch (Exception ex){
+            LOGGER.error("Error in restoring tree information",ex);
+        }
+    }
+    private void findAndStoreOpenFolderItemList(Component component) {
+        if(openFolderItems==null){
+            return;
+        }
+        for (Component child : component.getChildren()) {
+            findAndStoreOpenFolderItemList(child);
+        }
+
+        if (component instanceof Treeitem) {
+            Treeitem treeitem = (Treeitem) component;
+            Object value = treeitem.getValue();
+            if (treeitem.isOpen() && value instanceof FolderTreeNode) {
+                FolderType folder = (FolderType) ((FolderTreeNode) value).getData();
+                openFolderItems.add(folder.getId());
+            }
+        }
+    }
+
+    private void findAndReopenFolderItem(Component component) {
+        if(openFolderItems.isEmpty()){
+            return;
+        }
+        for (Component child : component.getChildren()) {
+            findAndReopenFolderItem(child);
+        }
+        if (component instanceof Treeitem) {
+            Treeitem treeitem = (Treeitem) component;
+            Object value = treeitem.getValue();
+            if (value instanceof FolderTreeNode) {
+                FolderType folder = (FolderType) ((FolderTreeNode) value).getData();
+                if(openFolderItems.contains(folder.getId())){
+                    treeitem.setOpen(true);
+                }
+            }
+        }
+    }
+
 }
