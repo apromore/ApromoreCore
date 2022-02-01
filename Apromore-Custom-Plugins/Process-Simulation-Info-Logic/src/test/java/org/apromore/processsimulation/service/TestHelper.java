@@ -1,32 +1,36 @@
 /**
  * #%L
- * This file is part of "Apromore Enterprise Edition".
+ * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2019 - 2021 Apromore Pty Ltd. All Rights Reserved.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
- * NOTICE:  All information contained herein is, and remains the
- * property of Apromore Pty Ltd and its suppliers, if any.
- * The intellectual and technical concepts contained herein are
- * proprietary to Apromore Pty Ltd and its suppliers and may
- * be covered by U.S. and Foreign Patents, patents in process,
- * and are protected by trade secret or copyright law.
- * Dissemination of this information or reproduction of this
- * material is strictly forbidden unless prior written permission
- * is obtained from Apromore Pty Ltd.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * <p>This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ *
+ * <p>You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not @see <a href="http://www.gnu.org/licenses/lgpl-3.0.html"></a>
  * #L%
  */
+
 
 package org.apromore.processsimulation.service;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.DayOfWeek;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -36,8 +40,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.io.IOUtils;
-import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
-import org.apromore.processmining.plugins.bpmn.plugins.BpmnImportPlugin;
+import org.apromore.processsimulation.dto.SimulationData;
 import org.apromore.processsimulation.model.Currency;
 import org.apromore.processsimulation.model.Distribution;
 import org.apromore.processsimulation.model.DistributionType;
@@ -67,8 +70,6 @@ public class TestHelper {
                 Distribution.builder()
                     .type(DistributionType.EXPONENTIAL)
                     .arg1("26784")
-                    .arg2("NaN")
-                    .mean("NaN")
                     .timeUnit(TimeUnit.SECONDS)
                     .build()
             );
@@ -78,20 +79,14 @@ public class TestHelper {
             tasks.add(Element.builder().elementId("node1").distributionDuration(
                 Distribution.builder().type(DistributionType.EXPONENTIAL)
                     .arg1("34.34")
-                    .arg2("NaN")
-                    .mean("NaN")
                     .timeUnit(TimeUnit.SECONDS).build()).build());
             tasks.add(Element.builder().elementId("node2").distributionDuration(
                 Distribution.builder().type(DistributionType.EXPONENTIAL)
                     .arg1("56.56")
-                    .arg2("NaN")
-                    .mean("NaN")
                     .timeUnit(TimeUnit.SECONDS).build()).build());
             tasks.add(Element.builder().elementId("node3").distributionDuration(
                 Distribution.builder().type(DistributionType.EXPONENTIAL)
                     .arg1("89.89")
-                    .arg2("NaN")
-                    .mean("NaN")
                     .timeUnit(TimeUnit.SECONDS).build()).build());
 
             builder.tasks(tasks);
@@ -99,16 +94,16 @@ public class TestHelper {
 
         if (includeTimetable) {
             builder.timetables(Arrays.asList(Timetable.builder()
-                    .id("A_DEFAULT_TIME_TABLE_ID")
-                    .name("The default timetable name")
+                    .id("A_DEFAULT_TIMETABLE_ID")
+                    .name("Arrival Timetable")
                     .defaultTimetable(true)
                     .rules(Arrays.asList(Rule.builder()
-                            .name("default rule name")
+                            .name("Default Timeslot")
                             .id("DEF_RULE_ID")
                             .fromWeekDay(DayOfWeek.SUNDAY)
                             .toWeekDay(DayOfWeek.SATURDAY)
-                            .fromTime("06:00:00.000+00:00")
-                            .toTime("18:00:00.000+00:00")
+                            .fromTime("10:00:00.000+00:00")
+                            .toTime("15:00:00.000+00:00")
                         .build()))
                 .build()));
         }
@@ -123,6 +118,20 @@ public class TestHelper {
         }
 
         return builder.build();
+    }
+
+    public static SimulationData createMockSimulationData() {
+
+        SimulationData simulationData = SimulationData.builder()
+            .caseCount(100)
+            .resourceCount(23)
+            .startTime(1577797200000L)
+            .endTime(1580475600000L)
+            .nodeWeights(Map.of("node1",34.34, "node2", 56.56, "node3", 89.89))
+            .build();
+
+
+        return simulationData;
     }
 
     public static Node getProcessSimulationInfo(String bpmnXml, String xpathExpression)
@@ -140,12 +149,5 @@ public class TestHelper {
         return IOUtils.toString(
             TestHelper.class.getResourceAsStream(fileName),
             StandardCharsets.UTF_8);
-    }
-
-    public static BPMNDiagram readBpmnDiagram(final String fileName) throws Exception {
-        try (InputStream inputStream = TestHelper.class.getResourceAsStream(fileName)) {
-            BpmnImportPlugin bpmnImport = new BpmnImportPlugin();
-            return bpmnImport.importFromStreamToDiagram(inputStream, fileName);
-        }
     }
 }

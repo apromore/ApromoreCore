@@ -1,18 +1,21 @@
 /**
  * #%L
- * This file is part of "Apromore Enterprise Edition".
+ * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2019 - 2021 Apromore Pty Ltd. All Rights Reserved.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
- * NOTICE:  All information contained herein is, and remains the
- * property of Apromore Pty Ltd and its suppliers, if any.
- * The intellectual and technical concepts contained herein are
- * proprietary to Apromore Pty Ltd and its suppliers and may
- * be covered by U.S. and Foreign Patents, patents in process,
- * and are protected by trade secret or copyright law.
- * Dissemination of this information or reproduction of this
- * material is strictly forbidden unless prior written permission
- * is obtained from Apromore Pty Ltd.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * <p>This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ *
+ * <p>You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not @see <a href="http://www.gnu.org/licenses/lgpl-3.0.html"></a>
  * #L%
  */
 
@@ -31,24 +34,17 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.DayOfWeek;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import lombok.extern.slf4j.Slf4j;
-import org.apromore.logman.attribute.IndexableAttribute;
-import org.apromore.logman.attribute.graph.MeasureAggregation;
-import org.apromore.logman.attribute.graph.MeasureRelation;
-import org.apromore.logman.attribute.graph.MeasureType;
-import org.apromore.logman.attribute.log.AttributeLogSummary;
-import org.apromore.processdiscoverer.Abstraction;
-import org.apromore.processdiscoverer.abstraction.AbstractAbstraction;
-import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Activity;
 import org.apromore.processsimulation.config.SimulationInfoConfig;
+import org.apromore.processsimulation.dto.SimulationData;
 import org.apromore.processsimulation.model.Currency;
 import org.apromore.processsimulation.model.Distribution;
 import org.apromore.processsimulation.model.DistributionType;
@@ -78,7 +74,7 @@ public class SimulationInfoService {
 
     private JAXBContext jaxbContext;
 
-    private SimulationInfoConfig config;
+    private final SimulationInfoConfig config;
 
     @Autowired
     public SimulationInfoService(SimulationInfoConfig config) {
@@ -91,38 +87,30 @@ public class SimulationInfoService {
     }
 
     public boolean isFeatureEnabled() {
-        return Boolean.valueOf(config.isEnable());
+        return config.isEnable();
     }
 
-    public ProcessSimulationInfo deriveSimulationInfo(
-        final Abstraction abstraction) {
+    public ProcessSimulationInfo transformToSimulationInfo(
+        final SimulationData simulationData) {
 
         ProcessSimulationInfo processSimulationInfo = null;
-        if (isFeatureEnabled()
-            && abstraction != null
-            && abstraction instanceof AbstractAbstraction
-            && ((AbstractAbstraction) abstraction).getLog() != null) {
+        if (isFeatureEnabled() && simulationData != null) {
 
-            final AbstractAbstraction abstractAbstraction = (AbstractAbstraction) abstraction;
+            ProcessSimulationInfo.ProcessSimulationInfoBuilder builder =
+                ProcessSimulationInfo.builder()
+                    .id("qbp_" + Locale.getDefault().getLanguage() + UUID.randomUUID())
+                    .errors(Errors.builder().build());
 
-            AttributeLogSummary logSummary = ((AbstractAbstraction) abstraction).getLog().getLogSummary();
+            deriveGeneralInfo(builder, simulationData);
 
-            if (logSummary != null) {
-                ProcessSimulationInfo.ProcessSimulationInfoBuilder builder =
-                    ProcessSimulationInfo.builder()
-                        .id("qbp_" + Locale.getDefault().getLanguage() + UUID.randomUUID())
-                        .errors(Errors.builder().build());
+            deriveTaskInfo(builder, simulationData);
 
-                deriveGeneralInfo(builder, logSummary);
+            deriveTimetable(builder);
 
-                deriveTaskInfo(builder, abstractAbstraction);
+            deriveResourceInfo(builder, simulationData);
 
-                deriveTimetable(builder);
+            processSimulationInfo = builder.build();
 
-                deriveResourceInfo(builder, abstractAbstraction);
-
-                processSimulationInfo = builder.build();
-            }
         }
 
         return processSimulationInfo;
@@ -130,16 +118,16 @@ public class SimulationInfoService {
 
     private void deriveGeneralInfo(
         final ProcessSimulationInfo.ProcessSimulationInfoBuilder builder,
-        final AttributeLogSummary logSummary) {
+        final SimulationData simulationData) {
 
-        long startTimeMillis = logSummary.getStartTime();
-        long endTimeMillis = logSummary.getEndTime();
+        long startTimeMillis = simulationData.getStartTime();
+        long endTimeMillis = simulationData.getEndTime();
         long interArrivalTime = Math.round(
-             (endTimeMillis - startTimeMillis) / (double) (1000 * logSummary.getCaseCount()));
+            (endTimeMillis - startTimeMillis) / (double) (1000 * simulationData.getCaseCount()));
 
-        builder.processInstances(logSummary.getCaseCount())
+        builder.processInstances(simulationData.getCaseCount())
             .currency(Currency.valueOf(config.getDefaultCurrency().toUpperCase(DOCUMENT_LOCALE)))
-            .startDateTime(Instant.ofEpochMilli(logSummary.getStartTime()).toString())
+            .startDateTime(Instant.ofEpochMilli(simulationData.getStartTime()).toString())
             .arrivalRateDistribution(
                 Distribution.builder()
                     .timeUnit(TimeUnit.valueOf(config.getDefaultTimeUnit().toUpperCase(DOCUMENT_LOCALE)))
@@ -150,34 +138,22 @@ public class SimulationInfoService {
 
     private void deriveTaskInfo(
         final ProcessSimulationInfo.ProcessSimulationInfoBuilder builder,
-        final AbstractAbstraction abstraction) {
+        final SimulationData simulationData) {
 
-        if (abstraction.getDiagram() != null && abstraction.getDiagram().getNodes() != null) {
-            List<Element> taskList = new ArrayList<>();
+        List<Element> taskList = simulationData.getDiagramNodeIDs().stream()
+            .map(nodeId -> Element.builder()
+                .elementId(nodeId)
+                .distributionDuration(Distribution.builder()
+                    .type(DistributionType.valueOf(
+                        config.getDefaultDistributionType().toUpperCase(DOCUMENT_LOCALE)))
+                    .arg1(BigDecimal.valueOf((simulationData.getDiagramNodeDuration(nodeId)))
+                        .setScale(2, RoundingMode.HALF_UP).toString())
+                    .timeUnit(TimeUnit.valueOf(config.getDefaultTimeUnit().toUpperCase(DOCUMENT_LOCALE)))
+                    .build())
+                .build())
+            .collect(Collectors.toUnmodifiableList());
 
-            abstraction.getDiagram().getNodes()
-                .stream()
-                .filter(Activity.class::isInstance)
-                .forEach(bpmnNode -> {
-                    BigDecimal nodeAvgDuration =
-                        BigDecimal.valueOf(abstraction.getLog().getGraphView()
-                                .getNodeWeight(bpmnNode.getLabel(), MeasureType.DURATION,
-                                    MeasureAggregation.MEAN, MeasureRelation.ABSOLUTE) / 1000)
-                            .setScale(2, RoundingMode.HALF_UP);
-
-                    taskList.add(Element.builder()
-                        .elementId(bpmnNode.getId().toString())
-                        .distributionDuration(Distribution.builder()
-                            .type(DistributionType.valueOf(
-                                config.getDefaultDistributionType().toUpperCase(DOCUMENT_LOCALE)))
-                            .arg1(nodeAvgDuration.toString())
-                            .timeUnit(TimeUnit.valueOf(config.getDefaultTimeUnit().toUpperCase(DOCUMENT_LOCALE)))
-                            .build())
-                        .build());
-                });
-
-            builder.tasks(taskList);
-        }
+        builder.tasks(taskList);
     }
 
     private void deriveTimetable(
@@ -205,26 +181,33 @@ public class SimulationInfoService {
 
     private void deriveResourceInfo(
         final ProcessSimulationInfo.ProcessSimulationInfoBuilder builder,
-        final AbstractAbstraction abstraction) {
-        if (abstraction.getLog() != null
-            && abstraction.getLog().getFullLog() != null
-            && abstraction.getLog().getFullLog().getAttributeStore() != null) {
+        final SimulationData simulationData) {
 
-            IndexableAttribute resourcesAttribute =
-                abstraction.getLog().getFullLog().getAttributeStore().getStandardEventResource();
-
-            if (resourcesAttribute != null) {
-                builder.resources(Arrays.asList(
-                    Resource.builder()
-                        .id(config.getDefaultResource().get(CONFIG_DEFAULT_ID_KEY))
-                        .name(config.getDefaultResource().get(CONFIG_DEFAULT_NAME_KEY))
-                        .totalAmount(resourcesAttribute.getValueSize())
-                        .timetableId(config.getDefaultTimetable().get(CONFIG_DEFAULT_ID_KEY))
-                        .build()));
-            }
+        if (simulationData.getResourceCount() > 0) {
+            builder.resources(Arrays.asList(
+                Resource.builder()
+                    .id(config.getDefaultResource().get(CONFIG_DEFAULT_ID_KEY))
+                    .name(config.getDefaultResource().get(CONFIG_DEFAULT_NAME_KEY))
+                    .totalAmount(simulationData.getResourceCount())
+                    .timetableId(config.getDefaultTimetable().get(CONFIG_DEFAULT_ID_KEY))
+                    .build()));
         }
+
     }
 
+    /**
+     * Enrich the bpmn xml model with the additional extension elements
+     * including the process simulation information that was derived from the
+     * bpmn model.
+     *
+     * @param bpmnModelXml   the discovered bpmn model
+     * @param simulationData the process simulation data derived from the discovered model
+     * @return a bpmn model enriched with the additional process simulation information set in the extensionElements
+     */
+    public String enrichWithSimulationInfo(
+        final String bpmnModelXml, final SimulationData simulationData) {
+        return enrichWithSimulationInfo(bpmnModelXml, transformToSimulationInfo(simulationData));
+    }
 
     /**
      * Enrich the bpmn xml model with the additional extension elements
