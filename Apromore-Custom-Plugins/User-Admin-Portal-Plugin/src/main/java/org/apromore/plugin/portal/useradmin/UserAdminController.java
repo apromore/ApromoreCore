@@ -958,6 +958,10 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
       Notification.error(getLabel("noDeleteSelf_message"));
       return;
     }
+    if (selectedUsers.stream().anyMatch(u -> "admin".equals(u.getUsername()))) {
+      Notification.error(getLabel("noDeleteAdminUser_message"));
+      return;
+    }
     List<String> users = new ArrayList<>();
     for (User u : selectedUsers) {
       users.add(u.getUsername());
