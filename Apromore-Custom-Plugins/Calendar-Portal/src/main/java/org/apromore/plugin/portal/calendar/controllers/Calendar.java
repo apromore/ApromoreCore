@@ -580,7 +580,9 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
     public void onClickApplyBtn() {
         if (!canEdit) { return; }
         toModels();
-        localCalendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_CHANGED, null, calendarId));
+        if (!isNew) {
+            localCalendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_CHANGED, null, calendarId));
+        }
         getSelf().detach();
     }
 
