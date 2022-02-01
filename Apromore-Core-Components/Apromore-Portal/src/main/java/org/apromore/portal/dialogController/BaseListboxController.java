@@ -386,7 +386,7 @@ public abstract class BaseListboxController extends BaseController {
       }
     });
 
-    if (mainController.isCurrentUserAdmin()) {
+    if (portalContext.getCurrentUser().hasAnyPermission(PermissionType.USERS_EDIT)) {
       this.btnUserMgmt.addEventListener(ON_CLICK, new EventListener<Event>() {
         @Override
         public void onEvent(Event event) throws Exception {
