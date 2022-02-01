@@ -200,10 +200,7 @@ public class ModelChecker {
      * @param element the name or id of the element with an error.
      */
     private void addError(int errorCode, String element) {
-        List<String> elementList = errorMap.get(errorCode);
-        if (elementList == null) {
-            elementList = new ArrayList<>();
-        }
+        List<String> elementList = errorMap.getOrDefault(errorCode, new ArrayList<>());
         elementList.add(element);
         errorMap.put(errorCode, elementList);
     }
