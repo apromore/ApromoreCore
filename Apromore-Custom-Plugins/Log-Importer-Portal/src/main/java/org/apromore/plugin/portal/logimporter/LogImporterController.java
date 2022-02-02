@@ -1173,7 +1173,7 @@ public class LogImporterController extends SelectorComposer<Window> implements C
         Label notSkipRowsLbl = (Label) errorPopUp.getFellow(CANT_SKIP_INVALID_ROWS);
         notSkipRowsLbl.setVisible(false);
 
-        if (logModel.getXLog().isEmpty()) {
+        if (logModel.getXLog() == null || logModel.getXLog().isEmpty()) {
             skipRows.setVisible(false);
             skipRowsLbl.setVisible(false);
             notSkipRowsLbl.setVisible(true);
