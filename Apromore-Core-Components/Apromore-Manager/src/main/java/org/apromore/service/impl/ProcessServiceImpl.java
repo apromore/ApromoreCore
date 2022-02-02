@@ -659,7 +659,7 @@ public class ProcessServiceImpl implements ProcessService {
     try {
       ProcessModelVersion pmv;
       // The #getProcessModelVersion() method would return more than one result in draft branch
-      if (DRAFT_BRANCH_NAME.equals(branch)) {
+      if (DRAFT_BRANCH_NAME.equals(branch) && userId != null) {
         pmv = processModelVersionRepo
                 .getProcessModelVersionByUser(processId, branch, version.toString(), userId);
       } else {

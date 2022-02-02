@@ -145,6 +145,7 @@ public interface ProcessService {
      * @param processId  the processId
      * @param branch     the branch name
      * @param version    the version of the process model.
+     * @param userId     the userId of creator, nullable if not get BPMN from draft branch
      * @return the XML as a String
      * @throws RepositoryException if for some reason the process model can not be found.
      */
