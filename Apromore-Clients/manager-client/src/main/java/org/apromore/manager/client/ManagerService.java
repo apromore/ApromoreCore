@@ -27,6 +27,8 @@
 package org.apromore.manager.client;
 
 import org.apromore.dao.model.ProcessModelVersion;
+import org.apromore.exception.ImportException;
+import org.apromore.exception.UpdateProcessException;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.model.DomainsType;
@@ -386,7 +388,7 @@ public interface ManagerService {
      * @return updated PMV
      */
     ProcessModelVersion updateDraft(Integer processId, String versionNumber, String nativeType,
-                                    InputStream nativeStream, String userName);
+                                    InputStream nativeStream, String userName) throws UpdateProcessException;
 
     /**
      * Create draft for specified PMV and user
@@ -400,7 +402,7 @@ public interface ManagerService {
      * @return Draft PMV
      */
     ProcessModelVersion createDraft(Integer processId, String processName, String versionNumber, String nativeType,
-                                    InputStream nativeStream, String userName);
+                                    InputStream nativeStream, String userName) throws ImportException;
 
     /**
      * Return whether this PMV is updated with its auto-save draft

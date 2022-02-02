@@ -46,7 +46,9 @@ import org.apromore.dao.model.NativeType;
 import org.apromore.dao.model.Permission;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.dao.model.User;
+import org.apromore.exception.ImportException;
 import org.apromore.exception.NotAuthorizedException;
+import org.apromore.exception.UpdateProcessException;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.mapper.DomainMapper;
 import org.apromore.mapper.GroupMapper;
@@ -852,14 +854,14 @@ public class ManagerServiceImpl implements ManagerService {
 
   @Override
   public ProcessModelVersion updateDraft(Integer processId, String versionNumber, String nativeType,
-                                    InputStream nativeStream, String userName) {
+                                    InputStream nativeStream, String userName) throws UpdateProcessException {
     return procSrv.updateDraft(processId, versionNumber, nativeType, nativeStream, userName);
 
   }
 
   @Override
   public ProcessModelVersion createDraft(Integer processId, String processName, String versionNumber, String nativeType,
-                                         InputStream nativeStream, String userName) {
+                                         InputStream nativeStream, String userName) throws ImportException {
     return procSrv.createDraft(processId, processName, versionNumber, nativeType, nativeStream, userName);
 
   }

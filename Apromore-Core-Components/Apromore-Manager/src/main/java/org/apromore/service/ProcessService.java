@@ -195,7 +195,7 @@ public interface ProcessService {
      * @return Draft's ProcessModelVersion
      */
     ProcessModelVersion createDraft(Integer processId, String processName, String versionNumber,
-                                    String nativeType, InputStream nativeStream, String userName);
+                                    String nativeType, InputStream nativeStream, String userName) throws ImportException;
 
     /**
      * Update draft for specified process, version and user
@@ -208,5 +208,5 @@ public interface ProcessService {
      * @return Draft's ProcessModelVersion
      */
     ProcessModelVersion updateDraft(Integer processId, String versionNumber,
-                                    String nativeType, InputStream nativeStream, String userName);
+                                    String nativeType, InputStream nativeStream, String userName) throws UpdateProcessException;
 }

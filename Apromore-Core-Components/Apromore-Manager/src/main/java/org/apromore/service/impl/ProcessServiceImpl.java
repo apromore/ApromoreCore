@@ -883,16 +883,8 @@ public class ProcessServiceImpl implements ProcessService {
   @Override
   @Transactional
   public ProcessModelVersion createDraft(Integer processId, String processName, String versionNumber,
-                                          String nativeType, InputStream nativeStream, String userName) {
+                                          String nativeType, InputStream nativeStream, String userName) throws ImportException {
     try {
-
-      // Update process data with the new process to keep a consistent state
-//      editSession.setOriginalVersionNumber(versionNumber);
-//      editSession.setCurrentVersionNumber(versionNumber);
-//      editSession.setLastUpdate(newVersion.getLastUpdateDate());
-//      session.getVersion().setLastUpdate(newVersion.getLastUpdateDate());
-//      session.getVersion().setVersionNumber(versionNumber);
-
       Process processModel = getProcessById(processId);
 
       DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
@@ -912,33 +904,23 @@ public class ProcessServiceImpl implements ProcessService {
       return insertProcessModelVersion(processName, branch, new Version(versionNumber)
               , formatSrv.findNativeType(nativeType),
               nativeStream, now, userSrv.findUserByLogin(userName));
-    } catch (Exception e) { //TODO fix exceptions
+    } catch (Exception e) {
       LOGGER.error("Create draft failed caused by {}", e.getMessage());
+      throw new ImportException(e);
     }
-
-    return null;
   }
 
   @Override
   public ProcessModelVersion updateDraft(Integer processId, String versionNumber,
-                                         String nativeType, InputStream nativeStream, String userName) {
+                                         String nativeType, InputStream nativeStream, String userName) throws UpdateProcessException {
     try {
-
-      // Update process data with the new process to keep a consistent state
-//      editSession.setOriginalVersionNumber(versionNumber);
-//      editSession.setCurrentVersionNumber(versionNumber);
-//      editSession.setLastUpdate(newVersion.getLastUpdateDate());
-//      session.getVersion().setLastUpdate(newVersion.getLastUpdateDate());
-//      session.getVersion().setVersionNumber(versionNumber);
-
       return updateProcessModelVersion(
               processId, DRAFT_BRANCH_NAME, new Version(versionNumber), userSrv.findUserByLogin(userName), "", formatSrv.findNativeType(nativeType),
               nativeStream);
     } catch (Exception e) {
       LOGGER.error("Update draft failed caused by {}", e.getMessage());
+      throw new UpdateProcessException(e);
     }
-
-    return null;
   }
 
 }
