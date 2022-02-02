@@ -341,7 +341,7 @@ public class ProcessServiceImpl implements ProcessService {
     try {
       Optional<Process> processOptional = processRepo.findById(processId);
       if (processOptional.isPresent()) {
-        process = processRepo.findById(processId).get();
+        process = processOptional.get();
         processName = process.getName();
       } else {
         throw new RepositoryException("Can not get Process with id: " + processId);
