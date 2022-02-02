@@ -648,7 +648,7 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
         InputStream stream = client.getInputStream("model", filename);
 
         // Mock Recording
-        expect(processRepo.findById(processId)).andReturn(Optional.of(process)).times(2);
+        expect(processRepo.findById(processId)).andReturn(Optional.of(process));
         expect(groupProcessRepo.findByProcessAndUser(processId, user.getRowGuid()))
                 .andReturn(List.of(groupProcess));
         expect(processModelVersionRepo.getProcessModelVersion(processId, branchName,
@@ -698,7 +698,7 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
                         .getInputStream();
 
         // Mock Recording
-        expect(processRepo.findById(processId)).andReturn(Optional.of(process)).times(2);
+        expect(processRepo.findById(processId)).andReturn(Optional.of(process));
         expect(groupProcessRepo.findByProcessAndUser(processId, user.getRowGuid()))
                 .andReturn(List.of(groupProcess));
         expect(processModelVersionRepo.getProcessModelVersion(processId, branchName,
