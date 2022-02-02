@@ -344,20 +344,6 @@ public class MainController extends BaseController implements MainControllerInte
 
     }
 
-    public boolean isCurrentUserAdmin() {
-        try {
-            Role adminRole = getSecurityService().findRoleByName("ROLE_SUPER_ADMIN");
-            User currentUser = getSecurityService().getUserById(portalContext.getCurrentUser().getId());
-            Set<Role> userRoles = getSecurityService().findRolesByUser(currentUser);
-            if (!userRoles.contains(adminRole)) {
-                return false;
-            }
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
     // Bruce: Do not use Executions.sendRedirect as it does not work
     // for webapp bundles with different ZK execution env.
     public void refresh() {
@@ -487,6 +473,14 @@ public class MainController extends BaseController implements MainControllerInte
         this.baseListboxController.getListBox().setFocus(true); //To handle event on empty list
     }
 
+    public void reloadSummariesWithOpenTreeItems(List<Integer> folderIds) {
+        this.reloadSummaries2(); //Reload without Tree
+        List<FolderType> folders = this.getManagerService()
+            .getWorkspaceFolderTree(UserSessionManager.getCurrentUser().getId());
+        this.portalSession.setTree(folders);
+        this.navigation.loadTreeSpace(folderIds); //Reload tree with Existing Open Items
+    }
+
     /**
      * Forward to the controller ProcessListBoxController the request to add the
      * process to the table
@@ -587,10 +581,10 @@ public class MainController extends BaseController implements MainControllerInte
         if (currentFolder != null) {
             folderId = currentFolder.getId();
         }
-        
+
         Pageable wholePage = Pageable.unpaged();
         Page<Process> processes =  this.getWorkspaceService().getProcesses(userId, folderId, wholePage);
-        
+
         DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         String now = dateFormat.format(new Date());
 

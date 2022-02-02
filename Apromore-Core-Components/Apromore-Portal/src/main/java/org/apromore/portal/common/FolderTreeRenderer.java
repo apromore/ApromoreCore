@@ -61,10 +61,15 @@ public class FolderTreeRenderer implements TreeitemRenderer {
 
   private static final Logger LOGGER = PortalLoggerFactory.getLogger(FolderTreeRenderer.class);
   private MainController mainC;
+  private  List<Integer> openedFolderIds;
 
 
   public FolderTreeRenderer(MainController controller) {
     this.mainC = controller;
+  }
+  public FolderTreeRenderer(MainController controller, List<Integer> folderIds) {
+    this.mainC = controller;
+    this.openedFolderIds=folderIds;
   }
 
   @Override
@@ -85,6 +90,10 @@ public class FolderTreeRenderer implements TreeitemRenderer {
     treeItem.setOpen(folder.getId() == 0
         || folderContainsSubfolder(folder, mainC.getPortalSession().getCurrentFolder()));
 
+    if(openedFolderIds!=null && openedFolderIds.contains(folder.getId())){
+      treeItem.setOpen(true);
+      openedFolderIds.remove(folder.getId());//Just to avoid impact on next rendering
+    }
     Hlayout hl = new Hlayout();
     hl.setValign("middle");
 
@@ -147,7 +156,6 @@ public class FolderTreeRenderer implements TreeitemRenderer {
           FolderTreeNode dropTarget = ((Treeitem) event.getTarget().getParent()).getValue();
           FolderType selectedFolder = (FolderType) dropTarget.getData();
           Set<Object> droppedObjects = new HashSet<>();
-          boolean draggedFromTree=false;
           if (event.getDragged() instanceof Listitem) {
             Listitem draggedItem = (Listitem) event.getDragged();
             draggedItem.getListbox().getSelectedItems().stream().map(Listitem::getValue).forEach(value -> {
@@ -157,11 +165,10 @@ public class FolderTreeRenderer implements TreeitemRenderer {
           } else if (event.getDragged() instanceof Treerow) {
             FolderTreeNode draggedItem = ((Treeitem) event.getDragged().getParent()).getValue();
             droppedObjects.add(draggedItem.getData());
-            draggedFromTree=true;
           }
 
           if (selectedFolder != null && droppedObjects.size() > 0) {
-            mainC.getBaseListboxController().dropToTree(selectedFolder, droppedObjects,draggedFromTree);
+            mainC.getBaseListboxController().drop(selectedFolder, droppedObjects);
           }
         } catch (Exception e) {
           LOGGER.error("Error occurred in Drag and Drop on Tree", e);

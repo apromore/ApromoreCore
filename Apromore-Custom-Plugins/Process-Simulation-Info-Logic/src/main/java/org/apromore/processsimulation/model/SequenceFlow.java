@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,15 +19,11 @@
  * #L%
  */
 
-
 package org.apromore.processsimulation.model;
 
-import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -38,15 +34,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Timetable {
+public class SequenceFlow {
     @XmlAttribute
-    private String id;
-    @XmlAttribute(name = "default")
-    private boolean defaultTimetable;
+    private String elementId;
     @XmlAttribute
-    private String name;
+    private double executionProbability;
 
-    @XmlElementWrapper(name = "qbp:rules")
-    @XmlElement(name = "qbp:rule")
-    private List<Rule> rules;
 }

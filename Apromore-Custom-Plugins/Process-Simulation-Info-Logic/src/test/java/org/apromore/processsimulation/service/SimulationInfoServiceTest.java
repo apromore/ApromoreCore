@@ -1,20 +1,24 @@
 /**
  * #%L
- * This file is part of "Apromore Enterprise Edition".
+ * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2019 - 2021 Apromore Pty Ltd. All Rights Reserved.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
- * NOTICE:  All information contained herein is, and remains the
- * property of Apromore Pty Ltd and its suppliers, if any.
- * The intellectual and technical concepts contained herein are
- * proprietary to Apromore Pty Ltd and its suppliers and may
- * be covered by U.S. and Foreign Patents, patents in process,
- * and are protected by trade secret or copyright law.
- * Dissemination of this information or reproduction of this
- * material is strictly forbidden unless prior written permission
- * is obtained from Apromore Pty Ltd.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * <p>This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ *
+ * <p>You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not @see <a href="http://www.gnu.org/licenses/lgpl-3.0.html"></a>
  * #L%
  */
+
 
 package org.apromore.processsimulation.service;
 
@@ -34,20 +38,11 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
-import org.apromore.logman.ALog;
-import org.apromore.logman.attribute.AttributeStore;
-import org.apromore.logman.attribute.IndexableAttribute;
-import org.apromore.logman.attribute.graph.AttributeLogGraph;
-import org.apromore.logman.attribute.graph.MeasureAggregation;
-import org.apromore.logman.attribute.graph.MeasureRelation;
-import org.apromore.logman.attribute.graph.MeasureType;
-import org.apromore.logman.attribute.log.AttributeLog;
-import org.apromore.logman.attribute.log.AttributeLogSummary;
-import org.apromore.processdiscoverer.abstraction.AbstractAbstraction;
-import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.apromore.processsimulation.config.SimulationInfoConfig;
+import org.apromore.processsimulation.dto.SimulationData;
 import org.apromore.processsimulation.model.Currency;
 import org.apromore.processsimulation.model.DistributionType;
+import org.apromore.processsimulation.model.Element;
 import org.apromore.processsimulation.model.ProcessSimulationInfo;
 import org.apromore.processsimulation.model.TimeUnit;
 import org.junit.jupiter.api.BeforeEach;
@@ -56,6 +51,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 class SimulationInfoServiceTest {
@@ -77,89 +73,75 @@ class SimulationInfoServiceTest {
         when(config.getDefaultTimeUnit()).thenReturn("SECONDS");
 
         Map<String, String> timeTableConfigMap = new HashMap<>();
-        timeTableConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_ID_KEY, "DEFAULT_TIMETABLE");
+        timeTableConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_ID_KEY, "A_DEFAULT_TIMETABLE_ID");
         timeTableConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_NAME_KEY, "Arrival Timetable");
         timeTableConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_NAME_KEY, "Default Timeslot");
         timeTableConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_FROM_TIME, "10:00:00.000+00:00");
         timeTableConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_TO_TIME, "15:00:00.000+00:00");
-        timeTableConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_FROM_WEEKDAY_KEY, "MONDAY");
-        timeTableConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_TO_WEEKDAY_KEY, "THURSDAY");
+        timeTableConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_FROM_WEEKDAY_KEY, "SUNDAY");
+        timeTableConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_TO_WEEKDAY_KEY, "SATURDAY");
         when(config.getDefaultTimetable()).thenReturn(timeTableConfigMap);
 
         Map<String, String> defaultResourceConfigMap = new HashMap<>();
-        defaultResourceConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_ID_KEY, "QBP_DEFAULT_RESOURCE");
-        defaultResourceConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_NAME_KEY, "Default resource");
+        defaultResourceConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_ID_KEY, "A_DEFAULT_RESOURCE_ID");
+        defaultResourceConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_NAME_KEY, "The default resource name");
         when(config.getDefaultResource()).thenReturn(defaultResourceConfigMap);
     }
 
     @Test
     void should_successfully_derive_general_simulation_info() {
         // given
-        AbstractAbstraction mockAbstraction = mock(AbstractAbstraction.class);
-        AttributeLog mockAttributeLog = mock(AttributeLog.class);
-        AttributeLogSummary mockAttributeLogSummary = mock(AttributeLogSummary.class);
-        BPMNDiagram mockDiagram = mock(BPMNDiagram.class);
+        SimulationData mockSimulationData = mock(SimulationData.class);
 
-        when(mockAbstraction.getLog()).thenReturn(mockAttributeLog);
-        when(mockAttributeLog.getLogSummary()).thenReturn(mockAttributeLogSummary);
-        when(mockAttributeLogSummary.getCaseCount()).thenReturn(100L);
-        when(mockAttributeLogSummary.getStartTime()).thenReturn(1577797200000L);
-        when(mockAttributeLogSummary.getEndTime()).thenReturn(1580475600000L);
-        when(mockAbstraction.getDiagram()).thenReturn(mockDiagram);
-        when(mockDiagram.getNodes()).thenReturn(null);
+        when(mockSimulationData.getCaseCount()).thenReturn(100L);
+        when(mockSimulationData.getStartTime()).thenReturn(1577797200000L);
+        when(mockSimulationData.getEndTime()).thenReturn(1580475600000L);
 
         // when
-        ProcessSimulationInfo processSimulationInfo = simulationInfoService.deriveSimulationInfo(mockAbstraction);
+        ProcessSimulationInfo processSimulationInfo =
+            simulationInfoService.transformToSimulationInfo(mockSimulationData);
 
         // then
         assertGeneralSimulationInfo(processSimulationInfo);
     }
 
     @Test
-    void should_successfully_derive_task_simulation_info() throws Exception {
+    void should_successfully_derive_task_simulation_info() {
         // given
-        AbstractAbstraction mockAbstraction = mock(AbstractAbstraction.class);
-        AttributeLog mockAttributeLog = mock(AttributeLog.class);
-        AttributeLogSummary mockAttributeLogSummary = mock(AttributeLogSummary.class);
-        AttributeLogGraph mockAttributeLogGraph = mock(AttributeLogGraph.class);
-        BPMNDiagram mockDiagram = TestHelper.readBpmnDiagram("/no_simulation_info_without_namespace_prefix.bpmn");
+        SimulationData mockSimulationData = mock(SimulationData.class);
 
-        when(mockAbstraction.getLog()).thenReturn(mockAttributeLog);
-        when(mockAttributeLog.getLogSummary()).thenReturn(mockAttributeLogSummary);
-        when(mockAttributeLogSummary.getCaseCount()).thenReturn(100L);
-        when(mockAttributeLogSummary.getStartTime()).thenReturn(1577797200000L);
-        when(mockAttributeLogSummary.getEndTime()).thenReturn(1580475600000L);
+        when(mockSimulationData.getCaseCount()).thenReturn(100L);
+        when(mockSimulationData.getStartTime()).thenReturn(1577797200000L);
+        when(mockSimulationData.getEndTime()).thenReturn(1580475600000L);
 
-        when(mockAttributeLog.getGraphView()).thenReturn(mockAttributeLogGraph);
-        when(mockAttributeLogGraph.getNodeWeight("a", MeasureType.DURATION, MeasureAggregation.MEAN,
-            MeasureRelation.ABSOLUTE)).thenReturn(10100.00);
-        when(mockAttributeLogGraph.getNodeWeight("b", MeasureType.DURATION, MeasureAggregation.MEAN,
-            MeasureRelation.ABSOLUTE)).thenReturn(11110.00);
-        when(mockAttributeLogGraph.getNodeWeight("c", MeasureType.DURATION, MeasureAggregation.MEAN,
-            MeasureRelation.ABSOLUTE)).thenReturn(12120.00);
-        when(mockAbstraction.getDiagram()).thenReturn(mockDiagram);
+        when(mockSimulationData.getDiagramNodeIDs()).thenReturn(Arrays.asList("a", "b", "c"));
+        when(mockSimulationData.getDiagramNodeDuration("a")).thenReturn(10.10);
+        when(mockSimulationData.getDiagramNodeDuration("b")).thenReturn(11.11);
+        when(mockSimulationData.getDiagramNodeDuration("c")).thenReturn(12.12);
 
         // when
-        ProcessSimulationInfo processSimulationInfo = simulationInfoService.deriveSimulationInfo(mockAbstraction);
+        ProcessSimulationInfo processSimulationInfo =
+            simulationInfoService.transformToSimulationInfo(mockSimulationData);
 
         // then
         assertGeneralSimulationInfo(processSimulationInfo);
+
         assertEquals(3, processSimulationInfo.getTasks().size());
         assertTrue(
             processSimulationInfo.getTasks().stream()
-                .map(element -> element.getElementId())
+                .map(Element::getElementId)
                 .collect(Collectors.toList())
-                .containsAll(Arrays.asList("Activity_089vlk4", "Activity_1m9vbxe", "Activity_0qorbah")));
+                .containsAll(Arrays.asList("a", "b", "c")));
 
         processSimulationInfo.getTasks().forEach(element -> {
             switch (element.getElementId()) {
-                case "Activity_089vlk4":
+                case "a":
                     assertEquals("10.10", element.getDistributionDuration().getArg1());
                     break;
-                case "Activity_1m9vbxe":
+                case "b":
                     assertEquals("11.11", element.getDistributionDuration().getArg1());
                     break;
-                case "Activity_0qorbah":
+                case "c":
                     assertEquals("12.12", element.getDistributionDuration().getArg1());
                     break;
                 default:
@@ -172,24 +154,20 @@ class SimulationInfoServiceTest {
             assertEquals(TimeUnit.SECONDS, element.getDistributionDuration().getTimeUnit());
             assertEquals(DistributionType.EXPONENTIAL, element.getDistributionDuration().getType());
         });
-
     }
 
     @Test
     void should_successfully_derive_timetable_info() {
         // given
-        AbstractAbstraction mockAbstraction = mock(AbstractAbstraction.class);
-        AttributeLog mockAttributeLog = mock(AttributeLog.class);
-        AttributeLogSummary mockAttributeLogSummary = mock(AttributeLogSummary.class);
+        SimulationData mockSimulationData = mock(SimulationData.class);
 
-        when(mockAbstraction.getLog()).thenReturn(mockAttributeLog);
-        when(mockAttributeLog.getLogSummary()).thenReturn(mockAttributeLogSummary);
-        when(mockAttributeLogSummary.getCaseCount()).thenReturn(100L);
-        when(mockAttributeLogSummary.getStartTime()).thenReturn(1577797200000L);
-        when(mockAttributeLogSummary.getEndTime()).thenReturn(1580475600000L);
+        when(mockSimulationData.getCaseCount()).thenReturn(100L);
+        when(mockSimulationData.getStartTime()).thenReturn(1577797200000L);
+        when(mockSimulationData.getEndTime()).thenReturn(1580475600000L);
 
         // when
-        ProcessSimulationInfo processSimulationInfo = simulationInfoService.deriveSimulationInfo(mockAbstraction);
+        ProcessSimulationInfo processSimulationInfo =
+            simulationInfoService.transformToSimulationInfo(mockSimulationData);
 
         // then
         assertGeneralSimulationInfo(processSimulationInfo);
@@ -197,7 +175,7 @@ class SimulationInfoServiceTest {
         assertNotNull(processSimulationInfo.getTimetables());
         assertEquals(1, processSimulationInfo.getTimetables().size());
         assertEquals("Arrival Timetable", processSimulationInfo.getTimetables().get(0).getName());
-        assertEquals("DEFAULT_TIMETABLE", processSimulationInfo.getTimetables().get(0).getId());
+        assertEquals("A_DEFAULT_TIMETABLE_ID", processSimulationInfo.getTimetables().get(0).getId());
         assertTrue(processSimulationInfo.getTimetables().get(0).isDefaultTimetable());
 
         assertNotNull(processSimulationInfo.getTimetables().get(0).getRules());
@@ -207,68 +185,49 @@ class SimulationInfoServiceTest {
         assertEquals("10:00:00.000+00:00",
             processSimulationInfo.getTimetables().get(0).getRules().get(0).getFromTime());
         assertEquals("15:00:00.000+00:00", processSimulationInfo.getTimetables().get(0).getRules().get(0).getToTime());
-        assertEquals(DayOfWeek.MONDAY, processSimulationInfo.getTimetables().get(0).getRules().get(0).getFromWeekDay());
-        assertEquals(DayOfWeek.THURSDAY, processSimulationInfo.getTimetables().get(0).getRules().get(0).getToWeekDay());
+        assertEquals(DayOfWeek.SUNDAY, processSimulationInfo.getTimetables().get(0).getRules().get(0).getFromWeekDay());
+        assertEquals(DayOfWeek.SATURDAY, processSimulationInfo.getTimetables().get(0).getRules().get(0).getToWeekDay());
     }
 
     @Test
     void should_successfully_derive_resource_info() {
         // given
-        AbstractAbstraction mockAbstraction = mock(AbstractAbstraction.class);
-        AttributeLog mockAttributeLog = mock(AttributeLog.class);
-        AttributeLogSummary mockAttributeLogSummary = mock(AttributeLogSummary.class);
-        ALog mockALog = mock(ALog.class);
-        AttributeStore mockAttributeStore = mock(AttributeStore.class);
-        IndexableAttribute mockResourceAttribute = mock(IndexableAttribute.class);
+        SimulationData mockSimulationData = mock(SimulationData.class);
 
-        when(mockAbstraction.getLog()).thenReturn(mockAttributeLog);
-        when(mockAttributeLog.getLogSummary()).thenReturn(mockAttributeLogSummary);
-        when(mockAttributeLog.getFullLog()).thenReturn(mockALog);
-        when(mockALog.getAttributeStore()).thenReturn(mockAttributeStore);
-        when(mockAttributeStore.getStandardEventResource()).thenReturn(mockResourceAttribute);
-
-        when(mockAttributeLogSummary.getCaseCount()).thenReturn(100L);
-        when(mockAttributeLogSummary.getStartTime()).thenReturn(1577797200000L);
-        when(mockAttributeLogSummary.getEndTime()).thenReturn(1580475600000L);
-
-        when(mockResourceAttribute.getValueSize()).thenReturn(27);
+        when(mockSimulationData.getCaseCount()).thenReturn(100L);
+        when(mockSimulationData.getStartTime()).thenReturn(1577797200000L);
+        when(mockSimulationData.getEndTime()).thenReturn(1580475600000L);
+        when(mockSimulationData.getResourceCount()).thenReturn(27L);
 
         // when
-        ProcessSimulationInfo processSimulationInfo = simulationInfoService.deriveSimulationInfo(mockAbstraction);
+        ProcessSimulationInfo processSimulationInfo =
+            simulationInfoService.transformToSimulationInfo(mockSimulationData);
 
         // then
         assertGeneralSimulationInfo(processSimulationInfo);
 
         assertNotNull(processSimulationInfo.getResources());
         assertEquals(1, processSimulationInfo.getResources().size());
-        assertEquals("QBP_DEFAULT_RESOURCE", processSimulationInfo.getResources().get(0).getId());
-        assertEquals("Default resource", processSimulationInfo.getResources().get(0).getName());
-        assertEquals("DEFAULT_TIMETABLE", processSimulationInfo.getResources().get(0).getTimetableId());
+        assertEquals("A_DEFAULT_RESOURCE_ID", processSimulationInfo.getResources().get(0).getId());
+        assertEquals("The default resource name", processSimulationInfo.getResources().get(0).getName());
+        assertEquals("A_DEFAULT_TIMETABLE_ID", processSimulationInfo.getResources().get(0).getTimetableId());
         assertEquals(27, processSimulationInfo.getResources().get(0).getTotalAmount());
     }
 
     @Test
-    void should_contain_no_resources_if_not_available_in_log() {
+    void should_contain_no_resources_if_resource_count_is_zero() {
         // given
-        AbstractAbstraction mockAbstraction = mock(AbstractAbstraction.class);
-        AttributeLog mockAttributeLog = mock(AttributeLog.class);
-        AttributeLogSummary mockAttributeLogSummary = mock(AttributeLogSummary.class);
-        ALog mockALog = mock(ALog.class);
-        AttributeStore mockAttributeStore = mock(AttributeStore.class);
+        SimulationData mockSimulationData = mock(SimulationData.class);
 
-        when(mockAbstraction.getLog()).thenReturn(mockAttributeLog);
-        when(mockAttributeLog.getLogSummary()).thenReturn(mockAttributeLogSummary);
-        when(mockAttributeLog.getFullLog()).thenReturn(mockALog);
-        when(mockALog.getAttributeStore()).thenReturn(mockAttributeStore);
-        when(mockAttributeStore.getStandardEventResource()).thenReturn(null);
-
-        when(mockAttributeLogSummary.getCaseCount()).thenReturn(100L);
-        when(mockAttributeLogSummary.getStartTime()).thenReturn(1577797200000L);
-        when(mockAttributeLogSummary.getEndTime()).thenReturn(1580475600000L);
+        when(mockSimulationData.getCaseCount()).thenReturn(100L);
+        when(mockSimulationData.getStartTime()).thenReturn(1577797200000L);
+        when(mockSimulationData.getEndTime()).thenReturn(1580475600000L);
+        when(mockSimulationData.getResourceCount()).thenReturn(0L);
 
 
         // when
-        ProcessSimulationInfo processSimulationInfo = simulationInfoService.deriveSimulationInfo(mockAbstraction);
+        ProcessSimulationInfo processSimulationInfo =
+            simulationInfoService.transformToSimulationInfo(mockSimulationData);
 
         // then
         assertGeneralSimulationInfo(processSimulationInfo);
@@ -290,28 +249,10 @@ class SimulationInfoServiceTest {
     }
 
     @Test
-    void should_return_null_if_no_attribute_log() {
-        // given
-        AbstractAbstraction mockAbstraction = mock(AbstractAbstraction.class);
-        when(mockAbstraction.getLog()).thenReturn(null);
-
+    void should_return_null_if_no_simulation_data() {
         // when
-        ProcessSimulationInfo processSimulationInfo = simulationInfoService.deriveSimulationInfo(mockAbstraction);
-
-        // then
-        assertNull(processSimulationInfo);
-    }
-
-    @Test
-    void should_return_null_if_no_log_summary() {
-        // given
-        AbstractAbstraction mockAbstraction = mock(AbstractAbstraction.class);
-        AttributeLog mockAttributeLog = mock(AttributeLog.class);
-        when(mockAbstraction.getLog()).thenReturn(mockAttributeLog);
-        when(mockAttributeLog.getLogSummary()).thenReturn(null);
-
-        // when
-        ProcessSimulationInfo processSimulationInfo = simulationInfoService.deriveSimulationInfo(mockAbstraction);
+        ProcessSimulationInfo processSimulationInfo =
+            simulationInfoService.transformToSimulationInfo(null);
 
         // then
         assertNull(processSimulationInfo);
@@ -321,10 +262,11 @@ class SimulationInfoServiceTest {
     void should_return_null_if_feature_disabled() {
         // given
         when(config.isEnable()).thenReturn(false);
-        AbstractAbstraction mockAbstraction = mock(AbstractAbstraction.class);
+        SimulationData mockSimulationData = mock(SimulationData.class);
 
         // when
-        ProcessSimulationInfo processSimulationInfo = simulationInfoService.deriveSimulationInfo(mockAbstraction);
+        ProcessSimulationInfo processSimulationInfo =
+            simulationInfoService.transformToSimulationInfo(mockSimulationData);
 
         // then
         assertNull(processSimulationInfo);
@@ -335,7 +277,8 @@ class SimulationInfoServiceTest {
         throws IOException, XPathExpressionException, ParserConfigurationException, SAXException {
         // given
         String bpmn = TestHelper.readBpmnFile("/no_simulation_info.bpmn");
-        ProcessSimulationInfo processSimulationInfo = TestHelper.createMockProcessSimulationInfo(false, false, false);
+        ProcessSimulationInfo processSimulationInfo =
+            TestHelper.createMockProcessSimulationInfo(false, false, false, false);
 
         // when
         String enrichedBpmn = simulationInfoService.enrichWithSimulationInfo(bpmn, processSimulationInfo);
@@ -349,7 +292,8 @@ class SimulationInfoServiceTest {
         throws IOException, XPathExpressionException, ParserConfigurationException, SAXException {
         // given
         String bpmn = TestHelper.readBpmnFile("/no_simulation_info.bpmn");
-        ProcessSimulationInfo processSimulationInfo = TestHelper.createMockProcessSimulationInfo(true, false, false);
+        ProcessSimulationInfo processSimulationInfo =
+            TestHelper.createMockProcessSimulationInfo(true, false, false, false);
 
         // when
         String enrichedBpmn = simulationInfoService.enrichWithSimulationInfo(bpmn, processSimulationInfo);
@@ -363,7 +307,8 @@ class SimulationInfoServiceTest {
         throws IOException, XPathExpressionException, ParserConfigurationException, SAXException {
         // given
         String bpmn = TestHelper.readBpmnFile("/no_simulation_info.bpmn");
-        ProcessSimulationInfo processSimulationInfo = TestHelper.createMockProcessSimulationInfo(false, true, false);
+        ProcessSimulationInfo processSimulationInfo =
+            TestHelper.createMockProcessSimulationInfo(false, true, false, false);
 
         // when
         String enrichedBpmn = simulationInfoService.enrichWithSimulationInfo(bpmn, processSimulationInfo);
@@ -377,7 +322,8 @@ class SimulationInfoServiceTest {
         throws IOException, XPathExpressionException, ParserConfigurationException, SAXException {
         // given
         String bpmn = TestHelper.readBpmnFile("/no_simulation_info.bpmn");
-        ProcessSimulationInfo processSimulationInfo = TestHelper.createMockProcessSimulationInfo(false, false, true);
+        ProcessSimulationInfo processSimulationInfo =
+            TestHelper.createMockProcessSimulationInfo(false, false, true, false);
 
         // when
         String enrichedBpmn = simulationInfoService.enrichWithSimulationInfo(bpmn, processSimulationInfo);
@@ -387,11 +333,27 @@ class SimulationInfoServiceTest {
     }
 
     @Test
+    void should_enrich_with_gateway_probability_simulation_info()
+        throws IOException, XPathExpressionException, ParserConfigurationException, SAXException {
+        // given
+        String bpmn = TestHelper.readBpmnFile("/no_simulation_info.bpmn");
+        ProcessSimulationInfo processSimulationInfo =
+            TestHelper.createMockProcessSimulationInfo(false, false, false, true);
+
+        // when
+        String enrichedBpmn = simulationInfoService.enrichWithSimulationInfo(bpmn, processSimulationInfo);
+
+        // then
+        assertBpmnGatewayProbabilitySimulationInfo(enrichedBpmn);
+    }
+
+    @Test
     void should_enrich_with_all_simulation_info()
         throws IOException, XPathExpressionException, ParserConfigurationException, SAXException {
         // given
         String bpmn = TestHelper.readBpmnFile("/no_simulation_info.bpmn");
-        ProcessSimulationInfo processSimulationInfo = TestHelper.createMockProcessSimulationInfo(true, true, true);
+        ProcessSimulationInfo processSimulationInfo =
+            TestHelper.createMockProcessSimulationInfo(true, true, true, true);
 
         // when
         String enrichedBpmn = simulationInfoService.enrichWithSimulationInfo(bpmn, processSimulationInfo);
@@ -404,11 +366,30 @@ class SimulationInfoServiceTest {
     }
 
     @Test
+    void should_enrich_with_all_simulation_data()
+        throws IOException, XPathExpressionException, ParserConfigurationException, SAXException {
+        // given
+        String bpmn = TestHelper.readBpmnFile("/no_simulation_info.bpmn");
+        SimulationData simulationData = TestHelper.createMockSimulationData();
+
+        // when
+        String enrichedBpmn = simulationInfoService.enrichWithSimulationInfo(bpmn, simulationData);
+
+        // then
+        assertBpmnGeneralProcessSimulationInfo(enrichedBpmn);
+        assertBpmnTaskProcessSimulationInfo(enrichedBpmn);
+        assertBpmnTimetableSimulationInfo(enrichedBpmn);
+        assertBpmnResourceSimulationInfo(enrichedBpmn);
+        assertBpmnGatewayProbabilitySimulationInfo(enrichedBpmn);
+    }
+
+    @Test
     void should_enrich_with_simulation_info_for_model_with_no_xmlns_prefix()
         throws IOException, XPathExpressionException, ParserConfigurationException, SAXException {
         // given
         String bpmn = TestHelper.readBpmnFile("/no_simulation_info_without_namespace_prefix.bpmn");
-        ProcessSimulationInfo processSimulationInfo = TestHelper.createMockProcessSimulationInfo(false, false, false);
+        ProcessSimulationInfo processSimulationInfo =
+            TestHelper.createMockProcessSimulationInfo(false, false, false, false);
 
         // when
         String enrichedBpmn = simulationInfoService.enrichWithSimulationInfo(bpmn, processSimulationInfo);
@@ -423,7 +404,8 @@ class SimulationInfoServiceTest {
         String originalBpmn = TestHelper.readBpmnFile("/no_simulation_info.bpmn");
 
         // when
-        String enrichedBpmn = simulationInfoService.enrichWithSimulationInfo(originalBpmn, null);
+        String enrichedBpmn =
+            simulationInfoService.enrichWithSimulationInfo(originalBpmn, (ProcessSimulationInfo) null);
 
         // then
         assertEquals(originalBpmn, enrichedBpmn);
@@ -434,7 +416,8 @@ class SimulationInfoServiceTest {
         // given
         when(config.isEnable()).thenReturn(false);
         String originalBpmn = TestHelper.readBpmnFile("/no_simulation_info.bpmn");
-        ProcessSimulationInfo processSimulationInfo = TestHelper.createMockProcessSimulationInfo(true, true, true);
+        ProcessSimulationInfo processSimulationInfo =
+            TestHelper.createMockProcessSimulationInfo(true, true, true, true);
 
         // when
         String enrichedBpmn = simulationInfoService.enrichWithSimulationInfo(originalBpmn, processSimulationInfo);
@@ -459,8 +442,8 @@ class SimulationInfoServiceTest {
             "/definitions/process/extensionElements/processSimulationInfo/arrivalRateDistribution");
         NamedNodeMap arrivalRateDistributionAttrMap = arrivalDistributionXmlNode.getAttributes();
         assertEquals("26784", arrivalRateDistributionAttrMap.getNamedItem("arg1").getNodeValue());
-        assertEquals("NaN", arrivalRateDistributionAttrMap.getNamedItem("arg2").getNodeValue());
-        assertEquals("NaN", arrivalRateDistributionAttrMap.getNamedItem("mean").getNodeValue());
+        assertNull(arrivalRateDistributionAttrMap.getNamedItem("arg2"));
+        assertNull(arrivalRateDistributionAttrMap.getNamedItem("mean"));
         assertEquals(DistributionType.EXPONENTIAL.toString(),
             arrivalRateDistributionAttrMap.getNamedItem("type").getNodeValue());
 
@@ -473,28 +456,32 @@ class SimulationInfoServiceTest {
     private void assertBpmnTaskProcessSimulationInfo(String bpmnXmlString)
         throws XPathExpressionException, ParserConfigurationException, IOException, SAXException {
 
-        assertTaskElement("node1", "EXPONENTIAL", "seconds", "34.34", "NaN", "NaN",
-            bpmnXmlString, 1);
-        assertTaskElement("node2", "EXPONENTIAL", "seconds", "56.56", "NaN", "NaN",
-            bpmnXmlString, 2);
-        assertTaskElement("node3", "EXPONENTIAL", "seconds", "89.89", "NaN", "NaN",
-            bpmnXmlString, 3);
+        NodeList elementNodeList = TestHelper.getProcessSimulationInfo(bpmnXmlString,
+            "/definitions/process/extensionElements/processSimulationInfo/elements").getChildNodes();
+
+        Map<String, Node> elementsMap = new HashMap<>();
+        for (int i = 0; i < elementNodeList.getLength(); i++) {
+            Node element = elementNodeList.item(i);
+            elementsMap.put(element.getAttributes().getNamedItem("elementId").getNodeValue(), element);
+        }
+
+        assertTaskElement("node1", "EXPONENTIAL", "seconds", "34.34", elementsMap);
+        assertTaskElement("node2", "EXPONENTIAL", "seconds", "56.56", elementsMap);
+        assertTaskElement("node3", "EXPONENTIAL", "seconds", "89.89", elementsMap);
 
     }
 
     private void assertTaskElement(final String elementId, final String distributionType, final String timeUnit,
-                                   final String arg1, final String arg2, final String mean,
-                                   final String bpmnXmlString, int elementIndex)
-        throws XPathExpressionException, ParserConfigurationException, IOException, SAXException {
+                                   final String arg1,
+                                   final Map<String, Node> elementsMap) {
 
-        Node elementNode = TestHelper.getProcessSimulationInfo(bpmnXmlString,
-            "/definitions/process/extensionElements/processSimulationInfo/elements/element[" + elementIndex + "]");
+        Node elementNode = elementsMap.get(elementId);
 
         assertEquals(elementId, elementNode.getAttributes().getNamedItem("elementId").getNodeValue());
         assertEquals(distributionType, elementNode.getFirstChild().getAttributes().getNamedItem("type").getNodeValue());
         assertEquals(arg1, elementNode.getFirstChild().getAttributes().getNamedItem("arg1").getNodeValue());
-        assertEquals(arg2, elementNode.getFirstChild().getAttributes().getNamedItem("arg2").getNodeValue());
-        assertEquals(mean, elementNode.getFirstChild().getAttributes().getNamedItem("mean").getNodeValue());
+        assertNull(elementNode.getFirstChild().getAttributes().getNamedItem("arg2"));
+        assertNull(elementNode.getFirstChild().getAttributes().getNamedItem("mean"));
         assertEquals(timeUnit, elementNode.getFirstChild().getFirstChild().getFirstChild().getNodeValue());
 
     }
@@ -504,19 +491,19 @@ class SimulationInfoServiceTest {
 
         Node timeTableNode = TestHelper.getProcessSimulationInfo(bpmnXmlString,
             "/definitions/process/extensionElements/processSimulationInfo/timetables/timetable[1]");
-        assertEquals("A_DEFAULT_TIME_TABLE_ID", timeTableNode.getAttributes().getNamedItem("id").getNodeValue());
-        assertEquals("The default timetable name", timeTableNode.getAttributes().getNamedItem("name").getNodeValue());
+        assertEquals("A_DEFAULT_TIMETABLE_ID", timeTableNode.getAttributes().getNamedItem("id").getNodeValue());
+        assertEquals("Arrival Timetable", timeTableNode.getAttributes().getNamedItem("name").getNodeValue());
         assertEquals("true", timeTableNode.getAttributes().getNamedItem("default").getNodeValue());
 
         Node timeTableRuleNode = TestHelper.getProcessSimulationInfo(bpmnXmlString,
             "/definitions/process/extensionElements/processSimulationInfo/timetables/timetable[1]/rules/rule[1]");
-        assertEquals("DEF_RULE_ID", timeTableRuleNode.getAttributes().getNamedItem("id").getNodeValue());
-        assertEquals("default rule name", timeTableRuleNode.getAttributes().getNamedItem("name").getNodeValue());
+        assertNotNull(timeTableRuleNode.getAttributes().getNamedItem("id").getNodeValue());
+        assertEquals("Default Timeslot", timeTableRuleNode.getAttributes().getNamedItem("name").getNodeValue());
         assertEquals("SUNDAY", timeTableRuleNode.getAttributes().getNamedItem("fromWeekDay").getNodeValue());
         assertEquals("SATURDAY", timeTableRuleNode.getAttributes().getNamedItem("toWeekDay").getNodeValue());
-        assertEquals("06:00:00.000+00:00",
+        assertEquals("10:00:00.000+00:00",
             timeTableRuleNode.getAttributes().getNamedItem("fromTime").getNodeValue());
-        assertEquals("18:00:00.000+00:00", timeTableRuleNode.getAttributes().getNamedItem("toTime").getNodeValue());
+        assertEquals("15:00:00.000+00:00", timeTableRuleNode.getAttributes().getNamedItem("toTime").getNodeValue());
 
     }
 
@@ -531,4 +518,32 @@ class SimulationInfoServiceTest {
         assertEquals("23", resourceNode.getAttributes().getNamedItem("totalAmount").getNodeValue());
     }
 
+    private void assertBpmnGatewayProbabilitySimulationInfo(String bpmnXmlString)
+        throws XPathExpressionException, ParserConfigurationException, IOException, SAXException {
+
+        NodeList seqFlowNodeList = TestHelper.getProcessSimulationInfo(bpmnXmlString,
+            "/definitions/process/extensionElements/processSimulationInfo/sequenceFlows").getChildNodes();
+
+        Map<String, Node> sequenceFlowMap = new HashMap<>();
+        for (int i = 0; i < seqFlowNodeList.getLength(); i++) {
+            Node seqFlow = seqFlowNodeList.item(i);
+            sequenceFlowMap.put(seqFlow.getAttributes().getNamedItem("elementId").getNodeValue(), seqFlow);
+        }
+
+        assertSequenceFlow("edge2", .2025, sequenceFlowMap);
+        assertSequenceFlow("edge3", .3016, sequenceFlowMap);
+        assertSequenceFlow("edge4", .4959, sequenceFlowMap);
+
+    }
+
+    private void assertSequenceFlow(final String elementId, double executionProbability,
+                                    Map<String, Node> sequenceFlowMap) {
+
+        Node seqFlowNode = sequenceFlowMap.get(elementId);
+
+        assertEquals(elementId, seqFlowNode.getAttributes().getNamedItem("elementId").getNodeValue());
+        assertEquals(Double.toString(executionProbability),
+            seqFlowNode.getAttributes().getNamedItem("executionProbability").getNodeValue());
+
+    }
 }

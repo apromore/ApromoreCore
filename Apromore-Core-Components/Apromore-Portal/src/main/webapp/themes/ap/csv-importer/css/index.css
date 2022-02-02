@@ -201,6 +201,10 @@
     padding: 2px 0;
 }
 
+.ap-csv-importer-grid .z-auxheader-content option {
+    color: black;
+}
+
 /* Fixes for CSV importer list */
 .ap-csv-importer .myGroupBox .z-window-content {
     padding: 0 !important;

@@ -358,24 +358,32 @@ public class PDController extends BaseController implements Composer<Component>,
         sessionQueue = EventQueues.lookup(CalendarEvents.TOPIC, EventQueues.SESSION,true);
         sessionQueue.subscribe(event -> {
             String eventName = event.getName();
-            int logId = (int) event.getData();
             String message = null;
-            if (logId == sourceLogId) {
-                if (CalendarEvents.ON_CALENDAR_LINK.equals(eventName) || CalendarEvents.ON_CALENDAR_CHANGED.equals(eventName)) {
+            if (CalendarEvents.ON_CALENDAR_LINK.equals(eventName)) {
+                int logId = (int) event.getData();
+                if (logId == sourceLogId) {
                     message = Labels.getLabel("common_calendarUpdated_message");
-                } else if (CalendarEvents.ON_CALENDAR_UNLINK.equals(eventName)) {
+                }
+            } else if (CalendarEvents.ON_CALENDAR_UNLINK.equals(eventName)) {
+                List<Integer> logIds = (List<Integer>) event.getData();
+                if (logIds.contains(sourceLogId)) {
                     message = Labels.getLabel("common_calendarUnlinked_message");
                 }
-                if (message != null) {
-                    Messagebox.show(message,
-                        new Messagebox.Button[] {Messagebox.Button.OK, Messagebox.Button.CANCEL},
-                        (ClickEvent e) -> {
-                            if (Messagebox.ON_OK.equals(e.getName())) {
-                                Clients.evalJavaScript("window.location.reload()");
-                            }
-                        }
-                    );
+            } else if (CalendarEvents.ON_CALENDAR_REFRESH.equals(eventName)) {
+                List<Integer> logIds = (List<Integer>) event.getData();
+                if (logIds.contains(sourceLogId)) {
+                    message = Labels.getLabel("common_calendarUpdated_message");
                 }
+            }
+            if (message != null) {
+                Messagebox.show(message,
+                    new Messagebox.Button[] {Messagebox.Button.OK, Messagebox.Button.CANCEL},
+                    (ClickEvent e) -> {
+                        if (Messagebox.ON_OK.equals(e.getName())) {
+                            Clients.evalJavaScript("window.location.reload()");
+                        }
+                    }
+                );
             }
         });
     }

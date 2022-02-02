@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,33 +19,15 @@
  * #L%
  */
 
+package org.apromore.processsimulation.dto;
 
-package org.apromore.processsimulation.model;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.Data;
 
-@Getter
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@XmlAccessorType(XmlAccessType.FIELD)
-public class Distribution {
-    @XmlAttribute
-    private DistributionType type;
-    @XmlAttribute
-    private String mean;
-    @XmlAttribute
-    private String arg1;
-    @XmlAttribute
-    private String arg2;
+@Data
+public class EdgeFrequency {
+    private String edgeId;
+    private double frequency;
 
-    @XmlElement(name = "qbp:timeUnit")
-    private TimeUnit timeUnit;
 }

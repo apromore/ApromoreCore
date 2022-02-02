@@ -125,6 +125,12 @@ public class NavigationController extends BaseController {
         tree.setItemRenderer(new FolderTreeRenderer(mainC));
         tree.setModel(model);
     }
+    /*Load Tree with selected open items */
+    public void loadTreeSpace(List<Integer> folderIds) {
+        FolderTreeModel model = new FolderTreeModel(new FolderTree(false, mainC).getRoot(), null);
+        tree.setItemRenderer(new FolderTreeRenderer(mainC, folderIds));
+        tree.setModel(model);
+    }
 
     /* Expand or Collapse the tree. */
     private void doCollapseExpandAll(Component component, boolean open) {

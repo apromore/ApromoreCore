@@ -1820,3 +1820,115 @@ databaseChangeLog:
                   name: role_name
                   value: "ROLE_SUPER_ADMIN"
             where: id = 1
+  - changeSet:
+      id: 20220201104100
+      author: janeh
+      comment: "add new admin role"
+      changes:
+        - insert:
+            tableName: role
+            columns:
+              - column:
+                  name: id
+                  value: "11"
+              - column:
+                  name: row_guid
+                  value: "381bba7a-82ed-11ec-a8a3-0242ac120002"
+              - column:
+                  name: role_name
+                  value: "ROLE_ADMIN"
+              - column:
+                  name: description
+                  value: "Allowed access to manage users and access rights"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "11"
+              - column:
+                  name: permissionid
+                  value: "1"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "11"
+              - column:
+                  name: permissionid
+                  value: "2"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "11"
+              - column:
+                  name: permissionid
+                  value: "3"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "11"
+              - column:
+                  name: permissionid
+                  value: "4"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "11"
+              - column:
+                  name: permissionid
+                  value: "23"
+  - changeSet:
+      id: 20220201144000
+      author: janeh
+      comment: "add data engineer role"
+      changes:
+        - insert:
+            tableName: role
+            columns:
+              - column:
+                  name: id
+                  value: "12"
+              - column:
+                  name: row_guid
+                  value: "fd433676-830f-11ec-a8a3-0242ac120002"
+              - column:
+                  name: role_name
+                  value: "ROLE_DATA_ENGINEER"
+              - column:
+                  name: description
+                  value: "Allowed access to create and manage data pipelines"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "12"
+              - column:
+                  name: permissionid
+                  value: "5"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "12"
+              - column:
+                  name: permissionid
+                  value: "6"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "12"
+              - column:
+                  name: permissionid
+                  value: "23"
