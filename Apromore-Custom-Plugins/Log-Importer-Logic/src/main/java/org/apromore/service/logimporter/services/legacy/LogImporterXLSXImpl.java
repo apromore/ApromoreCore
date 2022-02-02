@@ -156,11 +156,7 @@ public class LogImporterXLSXImpl implements LogImporter, Constants {
 
         // If row is invalid, continue to next row.
         if (!logEventModelExt.isValid()) {
-          if (skipInvalidRow) {
-            continue;
-          } else {
-            return new LogModelImpl(null, logErrorReport, rowLimitExceeded, numOfValidEvents, null);
-          }
+          continue;
         }
         // Construct a Trace if it's not exists
         if (tracesHistory.isEmpty() || !tracesHistory.containsKey(logEventModelExt.getCaseID())) {
