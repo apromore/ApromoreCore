@@ -43,6 +43,8 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 
+import static org.apromore.common.Constants.TRUNK_NAME;
+
 public class ProcessVersionDetailController extends BaseDetailController {
 
     private static final long serialVersionUID = 3661234712204860492L;
@@ -69,13 +71,16 @@ public class ProcessVersionDetailController extends BaseDetailController {
         getListModel().clear();
         List<VersionDetailType> details = new ArrayList<>();
         for (VersionSummaryType version : data.getVersionSummaries()) {
-            String lastUpdate = version.getLastUpdate();
+            // Only show MAIN branch versions
+            if (version.getName().equals(TRUNK_NAME)) {
+                String lastUpdate = version.getLastUpdate();
 
-            if (lastUpdate != null) {
-                lastUpdate = DateTimeUtils.normalize(lastUpdate);
+                if (lastUpdate != null) {
+                    lastUpdate = DateTimeUtils.normalize(lastUpdate);
+                }
+                version.setLastUpdate(lastUpdate);
+                details.add(new VersionDetailType(data, version));
             }
-            version.setLastUpdate(lastUpdate);
-            details.add(new VersionDetailType(data, version));
         }
         getListModel().addAll(details);
         if (!details.isEmpty()) {

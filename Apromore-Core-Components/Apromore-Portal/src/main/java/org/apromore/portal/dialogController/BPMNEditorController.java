@@ -93,7 +93,6 @@ public class BPMNEditorController extends BaseController implements Composer<Com
 
   private static final Logger LOGGER = PortalLoggerFactory.getLogger(BPMNEditorController.class);
   public static final String BPMN_XML = "bpmnXML";
-  public static final String BPMN_2_01 = "BPMN 2.0";
   private EventQueue<Event> qeBPMNEditor =
       EventQueues.lookup(Constants.EVENT_QUEUE_BPMN_EDITOR, EventQueues.DESKTOP, true);
 
@@ -170,32 +169,15 @@ public class BPMNEditorController extends BaseController implements Composer<Com
       String bpmnXML = (String) session.get(BPMN_XML);
 
       if (bpmnXML == null) {
-        if (isNewProcess) {
-          bpmnXML = "<?xml version='1.0' encoding='UTF-8'?>"
-              + "<bpmn:definitions xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' "
-              + "xmlns:bpmn='http://www.omg.org/spec/BPMN/20100524/MODEL' "
-              + "xmlns:bpmndi='http://www.omg.org/spec/BPMN/20100524/DI' "
-              + "xmlns:dc='http://www.omg.org/spec/DD/20100524/DC' "
-              + "targetNamespace='http://bpmn.io/schema/bpmn' " + "id='Definitions_1'>"
-              + "<bpmn:process id='Process_1' isExecutable='false'>"
-              + "<bpmn:startEvent id='StartEvent_1'/>" + "</bpmn:process>"
-              + "<bpmndi:BPMNDiagram id='BPMNDiagram_1'>"
-              + "<bpmndi:BPMNPlane id='BPMNPlane_1' bpmnElement='Process_1'>"
-              + "<bpmndi:BPMNShape id='_BPMNShape_StartEvent_2' bpmnElement='StartEvent_1'>"
-              + "<dc:Bounds height='36.0' width='36.0' x='173.0' y='102.0'/>"
-              + "</bpmndi:BPMNShape>" + "</bpmndi:BPMNPlane>" + "</bpmndi:BPMNDiagram>"
-              + "</bpmn:definitions>";
-        } 
-        else {
-          // Note: process models created by merging are not BPMN, cannot use
-          // processService.getBPMNRepresentation
-          ExportFormatResultType exportResult = mainC.getManagerService().exportFormat(
-              editSession.getProcessId(), editSession.getProcessName(),
-              editSession.getOriginalBranchName(), editSession.getCurrentVersionNumber(),
-              editSession.getNativeType(), editSession.getUsername());
-          bpmnXML = StreamUtil.convertStreamToString(exportResult.getNative().getInputStream());
-          param.put("doAutoLayout", "false");
-        }
+
+        // Note: process models created by merging are not BPMN, cannot use
+        // processService.getBPMNRepresentation
+        ExportFormatResultType exportResult = mainC.getManagerService().exportFormat(
+            editSession.getProcessId(), editSession.getProcessName(),
+                org.apromore.common.Constants.DRAFT_BRANCH_NAME, editSession.getCurrentVersionNumber(),
+            editSession.getNativeType(), editSession.getUsername());
+        bpmnXML = StreamUtil.convertStreamToString(exportResult.getNative().getInputStream());
+        param.put("doAutoLayout", "false");
 
         param.put(BPMN_XML, escapeXML(bpmnXML));
         param.put("url", getURL(editSession.getNativeType()));
@@ -204,12 +186,14 @@ public class BPMNEditorController extends BaseController implements Composer<Com
         param.put("editor", "bpmneditor");
       } else {
         param.put(BPMN_XML, bpmnXML);
-        param.put("url", getURL(BPMN_2_01));
-        param.put("importPath", getImportPath(BPMN_2_01));
-        param.put("exportPath", getExportPath(BPMN_2_01));
+        param.put("url", getURL(BPMN_2_0));
+        param.put("importPath", getImportPath(BPMN_2_0));
+        param.put("exportPath", getExportPath(BPMN_2_0));
         param.put("editor", "bpmneditor");
         param.put("doAutoLayout", "false");
       }
+
+      param.put("nativeType", process.getOriginalNativeType());
 
       this.setTitle(
           editSession.getProcessName() + " (" + "v" + editSession.getCurrentVersionNumber() + ")");
@@ -418,7 +402,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
       //get bpmnXML from process
       try {
         ExportFormatResultType exportResult = processService.exportProcess(
-                process.getName(), process.getId(), "MAIN", new Version(version), nativeType);
+                process.getName(), process.getId(), "MAIN", new Version(version), nativeType, currentUserType.getUsername());
         String bpmnXML = StreamUtil.convertStreamToString(exportResult.getNative().getInputStream());
         pushViewModeParameters(bpmnXML);
       } catch (Exception e) {

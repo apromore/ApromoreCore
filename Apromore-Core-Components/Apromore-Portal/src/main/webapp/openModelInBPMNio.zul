@@ -79,7 +79,7 @@
         var idleInterval;
         jQuery(document).ready(function () {
             // Increment the idle time counter every minute.
-            idleInterval = setInterval(timerIncrement, 60000); // 1 minute
+            idleInterval = setInterval(timerIncrement, 6000); // 1 minute
 
             // Zero the idle timer on mouse and key movement.
             jQuery(this).mousemove(function (e) {
@@ -95,12 +95,17 @@
 
         function timerIncrement() {
             idleTime++;
-            // Send keep alive request every 30 min
-            zk.Widget.$('$divKeepAlive').fire(
-                'onKeepAlive',
-                { payload: 'esc' },
-                { toServer: true },
-            );
+            // Send auto-save request every 1 min
+            Apromore.BPMNEditor.readXML((xml) => {
+                console.log('Auto-saving .....');
+                zk.Widget.$('$divKeepAlive').fire(
+                    'onKeepAlive',
+                    { bpmnXML: xml,
+                      nativeType: '${arg.nativeType}'},
+                    { toServer: true },
+                );
+            });
+
             if (idleTime > 29) {
                 // Timeout after 30 minutes idle
                 timeout();
@@ -114,7 +119,11 @@
         }
     </script>
 
-    <div id="divKeepAlive" apply="org.apromore.portal.dialogController.KeepAliveController"/>
+    <div id="divKeepAlive" style="position:absolute; top:40px; left:520px; z-index:+999; visibility:hidden;"
+         width="150px" height="30px"
+         apply="org.apromore.portal.dialogController.KeepAliveController">
+        Saving draft...
+    </div>
     <!-- STYLESHEET FOR BPMN.IO -->
     <n:link rel="stylesheet" href="${arg.editor}/editor/bpmnio/bpmn.css" type="text/css"/>
     <n:link rel="stylesheet" href="${arg.editor}/editor/bpmnio/diagram-js.css" type="text/css"/>

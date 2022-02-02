@@ -125,7 +125,7 @@ public class MergeServiceImpl extends DefaultParameterAwarePlugin implements Mer
                 pmv.getProcessBranch().getProcess().getName(),
                 pmv.getProcessBranch().getProcess().getId(),
                 pmv.getProcessBranch().getBranchName(),
-                new Version(pmv.getVersionNumber())
+                new Version(pmv.getVersionNumber()), null
             )));
         }
         return data;

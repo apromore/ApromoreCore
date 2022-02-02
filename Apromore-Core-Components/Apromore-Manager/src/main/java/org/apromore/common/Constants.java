@@ -36,6 +36,7 @@ public interface Constants {
     public static final String NATIVE_TYPE = "BPMN 2.0";
 
     public static final String TRUNK_NAME = "MAIN";
+    public static final String DRAFT_BRANCH_NAME = "DRAFT";
     public static final String TYPE = "type";
     public static final String CONNECTOR = "Connector";
     public static final String FUNCTION = "Function";

@@ -25,12 +25,8 @@
 
 package org.apromore.service;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-
-import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.NativeType;
+import org.apromore.dao.model.Process;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.dao.model.User;
 import org.apromore.exception.ExportFormatException;
@@ -40,7 +36,9 @@ import org.apromore.exception.UpdateProcessException;
 import org.apromore.portal.helper.Version;
 import org.apromore.portal.model.ExportFormatResultType;
 import org.apromore.service.model.ProcessData;
-import org.apromore.storage.exception.ObjectCreationException;
+
+import java.io.InputStream;
+import java.util.List;
 
 /**
  * Interface for the Process Service. Defines all the methods that will do the majority of the work for
@@ -79,12 +77,11 @@ public interface ProcessService {
      * @param branch     the branch name
      * @param version    the version of the process model.
      * @param nativeType the format of the model
-     * @param annName    the annotation format
      * @return the XML but as a dataSource object
      * @throws ExportFormatException if for some reason the process model can not be found.
      */
     ExportFormatResultType exportProcess(final String name, final Integer processId, final String branch, final Version version,
-            final String nativeType)
+            final String nativeType, final String username)
             throws ExportFormatException;
 
     /**
@@ -106,7 +103,6 @@ public interface ProcessService {
     /**
      * Create a process Model version in the database.
      * @param processId of this update.
-     * @param processName of this update.
      * @param branchName of this update.
      * @param versionNumber of this update.
      * @param originalVersionNumber of this update.
@@ -149,10 +145,69 @@ public interface ProcessService {
      * @param processId  the processId
      * @param branch     the branch name
      * @param version    the version of the process model.
+     * @param userId     the userId of creator, nullable if not get BPMN from draft branch
      * @return the XML as a String
      * @throws RepositoryException if for some reason the process model can not be found.
      */
-    String getBPMNRepresentation(final String name, final Integer processId, final String branch, final Version version) throws RepositoryException;
+    String getBPMNRepresentation(final String name, final Integer processId, final String branch,
+                                 final Version version, final Integer userId) throws RepositoryException;
 
 	boolean hasWritePermissionOnProcess(User userByName, List<Integer> processIds);
+
+    /**
+     * Find a Model based on specified ProcessId, Branch, Version and Creator
+     *
+     * @param processId processId
+     * @param branch    branch
+     * @param version   version
+     * @param userId    userId
+     * @return ProcessModelVersion
+     */
+    ProcessModelVersion getProcessModelVersionByUser(Integer processId, String branch, String version,
+                                                     Integer userId);
+
+    /**
+     * Get Process by processId
+     *
+     * @param processId processId
+     * @return Process
+     */
+    Process getProcessById(final Integer processId) throws RepositoryException;
+
+    /**
+     * Get ProcessModelVersion by processId, branch name and version
+     *
+     * @param processId processId
+     * @param branch    branch name
+     * @param version   version
+     * @return ProcessModelVersion
+     */
+    ProcessModelVersion getProcessModelVersion(Integer processId, String branch, String version);
+
+    /**
+     * Create a draft for specified process, version and user
+     *
+     * @param processId     processId
+     * @param processName   process Name
+     * @param versionNumber version Number
+     * @param nativeType    nativeType
+     * @param nativeStream  nativeStream
+     * @param userName      userName
+     * @return Draft's ProcessModelVersion
+     */
+    ProcessModelVersion createDraft(Integer processId, String processName, String versionNumber,
+                                    String nativeType, InputStream nativeStream, String userName) throws ImportException;
+
+    /**
+     * Update draft for specified process, version and user
+     *
+     * @param processId     processId
+     * @param versionNumber versionNumber
+     * @param nativeType    nativeType
+     * @param nativeStream  nativeStream
+     * @param userName      userName
+     * @return Draft's ProcessModelVersion
+     */
+    ProcessModelVersion updateDraft(Integer processId, String versionNumber,
+                                    String nativeType, InputStream nativeStream, String userName) throws UpdateProcessException;
 }
