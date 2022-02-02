@@ -334,10 +334,15 @@ public class ProcessServiceImpl implements ProcessService {
           throws ImportException, UpdateProcessException {
     DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
     String now = dateFormat.format(new Date());
-    Process process = processRepo.findById(processId).get();
-    String processName = process.getName();
 
     try {
+
+      if (processRepo.findById(processId).isEmpty()) {
+        throw new RepositoryException("Can not get Process with id: " + processId);
+      }
+      Process process = processRepo.findById(processId).get();
+      String processName = process.getName();
+
       if (user == null) {
         throw new ImportException("Permission to change this model denied.  No user specified.");
       }

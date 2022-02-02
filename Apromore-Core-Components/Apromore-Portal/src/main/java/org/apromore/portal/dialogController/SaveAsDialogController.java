@@ -35,7 +35,6 @@ import java.util.Objects;
 import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.portal.common.Constants;
-import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.dto.ApromoreSession;
 import org.apromore.portal.model.EditSessionType;
 import org.apromore.portal.model.ImportProcessResultType;
@@ -43,7 +42,6 @@ import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.service.ProcessService;
 import org.apromore.service.WorkspaceService;
-import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
@@ -242,7 +240,7 @@ public class SaveAsDialogController extends BaseController {
       ProcessModelVersion newVersion = mainController.getManagerService().updateProcessModelVersion(
           processId, editSession.getOriginalBranchName(), versionNumber, userName, "", nativeType,
           nativeStream);
-      ProcessModelVersion draft = mainController.getManagerService().updateDraft(processId,
+      mainController.getManagerService().updateDraft(processId,
               editSession.getOriginalVersionNumber(), nativeType, nativeStream, userName);
 
       // Update process data with the new process to keep a consistent state
@@ -269,7 +267,7 @@ public class SaveAsDialogController extends BaseController {
               userName, nativeType, processId, editSession.getOriginalBranchName(), versionNumber,
               editSession.getOriginalVersionNumber(), "", nativeStream);
       // Create draft version for new PMV
-      ProcessModelVersion draft =  mainController.getManagerService().createDraft(processId, processName,
+      mainController.getManagerService().createDraft(processId, processName,
               versionNumber, nativeType, nativeStream, userName);
 
               // Update process data with the new process to keep a consistent state
