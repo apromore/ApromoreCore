@@ -77,12 +77,11 @@ public interface ProcessService {
      * @param branch     the branch name
      * @param version    the version of the process model.
      * @param nativeType the format of the model
-     * @param annName    the annotation format
      * @return the XML but as a dataSource object
      * @throws ExportFormatException if for some reason the process model can not be found.
      */
     ExportFormatResultType exportProcess(final String name, final Integer processId, final String branch, final Version version,
-            final String nativeType)
+            final String nativeType, final String username)
             throws ExportFormatException;
 
     /**
@@ -149,7 +148,8 @@ public interface ProcessService {
      * @return the XML as a String
      * @throws RepositoryException if for some reason the process model can not be found.
      */
-    String getBPMNRepresentation(final String name, final Integer processId, final String branch, final Version version) throws RepositoryException;
+    String getBPMNRepresentation(final String name, final Integer processId, final String branch,
+                                 final Version version, final Integer userId) throws RepositoryException;
 
 	boolean hasWritePermissionOnProcess(User userByName, List<Integer> processIds);
 

@@ -402,7 +402,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
       //get bpmnXML from process
       try {
         ExportFormatResultType exportResult = processService.exportProcess(
-                process.getName(), process.getId(), "MAIN", new Version(version), nativeType);
+                process.getName(), process.getId(), "MAIN", new Version(version), nativeType, currentUserType.getUsername());
         String bpmnXML = StreamUtil.convertStreamToString(exportResult.getNative().getInputStream());
         pushViewModeParameters(bpmnXML);
       } catch (Exception e) {

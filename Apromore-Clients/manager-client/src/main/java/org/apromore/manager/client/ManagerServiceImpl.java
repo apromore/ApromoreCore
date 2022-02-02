@@ -556,7 +556,7 @@ public class ManagerServiceImpl implements ManagerService {
     LOGGER.info("Export process model \"{}\" (id {}, branch {}, version {}, type {}, owner {})",
         processName, processId, branch, versionNumber, nativeType, owner);
     return procSrv.exportProcess(processName, processId, branch, new Version(versionNumber),
-        nativeType);
+        nativeType, owner);
   }
 
   @Override

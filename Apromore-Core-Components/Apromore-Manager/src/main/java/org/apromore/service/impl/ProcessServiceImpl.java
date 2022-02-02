@@ -77,6 +77,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.activation.DataHandler;
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.mail.util.ByteArrayDataSource;
 import javax.xml.transform.TransformerFactory;
@@ -355,8 +356,14 @@ public class ProcessServiceImpl implements ProcessService {
         throw new ImportException("Permission to change this model denied.");
       }
 
-      ProcessModelVersion pmv = processModelVersionRepo.getProcessModelVersion(processId,
-          branchName, version.toString());
+      ProcessModelVersion pmv;
+      if (DRAFT_BRANCH_NAME.equals(branchName)) {
+        pmv = processModelVersionRepo
+                .getProcessModelVersionByUser(processId, branchName, version.toString(), user.getId());
+      } else {
+        pmv = processModelVersionRepo
+                .getProcessModelVersion(processId, branchName, version.toString());
+      }
 
       if (pmv == null) {
           throw new RepositoryException("Failed to update process " + processName + ". Unable to get storage " +
@@ -497,15 +504,15 @@ public class ProcessServiceImpl implements ProcessService {
 
   /**
    * @see org.apromore.service.ProcessService#exportProcess(String, Integer, String, Version,
-   *      String) {@inheritDoc}
+   *      String, String) {@inheritDoc}
    */
   @Override
   public ExportFormatResultType exportProcess(final String name, final Integer processId,
-      final String branch, final Version version, final String format)
+      final String branch, final Version version, final String format, final String username)
       throws ExportFormatException {
     try {
       ExportFormatResultType exportResult = new ExportFormatResultType();
-      String xmlProcess = getBPMNRepresentation(name, processId, branch, version);
+      String xmlProcess = getBPMNRepresentation(name, processId, branch, version, userSrv.findUserByLogin(username).getId());
       exportResult.setNative(new DataHandler(new ByteArrayDataSource(xmlProcess, "text/xml")));
       return exportResult;
     } catch (Exception e) {
@@ -641,20 +648,27 @@ public class ProcessServiceImpl implements ProcessService {
 
   /**
    * @see org.apromore.service.ProcessService#getBPMNRepresentation(String, Integer, String,
-   *      Version) {@inheritDoc}
+   *      Version, Integer) {@inheritDoc}
    */
   @Override
   public String getBPMNRepresentation(final String name, final Integer processId,
-      final String branch, final Version version) throws RepositoryException {
+      final String branch, final Version version, @Nullable final Integer userId) throws RepositoryException {
     String xmlBPMNProcess;
     String format = "BPMN 2.0";
 
     try {
+      ProcessModelVersion pmv;
+      // The #getProcessModelVersion() method would return more than one result in draft branch
+      if (DRAFT_BRANCH_NAME.equals(branch)) {
+        pmv = processModelVersionRepo
+                .getProcessModelVersionByUser(processId, branch, version.toString(), userId);
+      } else {
+        pmv = processModelVersionRepo
+                .getProcessModelVersion(processId, branch, version.toString());
+      }
       // Work out if we are looking at the original format or native format for this model.
-      if (isRequestForNativeFormat(processId, branch, version, format)) {
-        Storage storage = processModelVersionRepo
-              .getProcessModelVersion(processId, branch, version.toString())
-              .getStorage();
+      if (isRequestForNativeFormat(pmv, format)) {
+        Storage storage = pmv.getStorage();
         if (storage != null) {
           try (InputStream in = storageFactory
                 .getStorageClient(storage.getStoragePath())
@@ -856,10 +870,8 @@ public class ProcessServiceImpl implements ProcessService {
 
 
   /* Did the request ask for the model in the same format as it was originally added? */
-  private boolean isRequestForNativeFormat(Integer processId, String branch, Version version,
+  private boolean isRequestForNativeFormat(ProcessModelVersion pmv,
       String format) {
-    ProcessModelVersion pmv =
-        processModelVersionRepo.getProcessModelVersion(processId, branch, version.toString());
     return pmv != null && pmv.getNativeType() != null
         && pmv.getNativeType().getNatType().equals(format);
   }
