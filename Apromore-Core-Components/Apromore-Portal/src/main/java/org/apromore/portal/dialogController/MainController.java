@@ -31,8 +31,6 @@ import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.Log;
 import org.apromore.dao.model.Process;
 import org.apromore.dao.model.ProcessModelVersion;
-import org.apromore.dao.model.Role;
-import org.apromore.dao.model.User;
 import org.apromore.plugin.portal.MainControllerInterface;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
@@ -167,8 +165,6 @@ public class MainController extends BaseController implements MainControllerInte
     private LangChooserController langChooserController;
     private Component mainComponent;
     private CopyAndPasteController copyAndPasteController;
-
-    private String instruction = "";
 
     public static MainController getController() {
         return controller;
@@ -584,6 +580,7 @@ public class MainController extends BaseController implements MainControllerInte
 
         Pageable wholePage = Pageable.unpaged();
         Page<Process> processes =  this.getWorkspaceService().getProcesses(userId, folderId, wholePage);
+        LOGGER.info("Find {} processes in current folder", processes.getSize());
 
         DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         String now = dateFormat.format(new Date());
@@ -617,11 +614,12 @@ public class MainController extends BaseController implements MainControllerInte
         ProcessModelVersion draft = getManagerService().createDraft(processId, process.getName(),
                 version.getVersionNumber(), process.getOriginalNativeType(),
                 new ByteArrayInputStream(bpmnXML.getBytes()), username);
-        LOGGER.info("Create draft version for model {} version {}", process.getName(), version.getVersionNumber());
+        LOGGER.info("Create draft version id: {} for model {} version {}", draft.getId(), process.getName(),
+                version.getVersionNumber());
 
         qe.publish(new Event(Constants.EVENT_MESSAGE_SAVE, null, Boolean.TRUE));
 
-        editProcess2(process, version, process.getOriginalNativeType(), new HashSet<RequestParameterType<?>>(),
+        editProcess2(process, version, process.getOriginalNativeType(), new HashSet<>(),
                 true);
     }
 
@@ -669,7 +667,7 @@ public class MainController extends BaseController implements MainControllerInte
                              final String nativeType, Set<RequestParameterType<?>> requestParameterTypes, boolean newProcess)
             throws InterruptedException {
 
-
+        String instruction = "";
         EditSessionType editSession = createEditSession(process, version, nativeType);
 
         try {
@@ -678,7 +676,7 @@ public class MainController extends BaseController implements MainControllerInte
             ApromoreSession session = new ApromoreSession(editSession, null, this, process, version, null, null,
                     requestParameterTypes);
             UserSessionManager.setEditSession(id, session);
-            instruction = "";
+
             String url = "openModelInBPMNio.zul?id=" + id;
             if (newProcess)
                 url += "&newProcess=true";
@@ -706,20 +704,21 @@ public class MainController extends BaseController implements MainControllerInte
             String bpmnXmlDraft = StreamUtil.convertStreamToString(exportResultDraft.getNative().getInputStream());
 
             if (!Objects.equals(bpmnXML, bpmnXmlDraft)) {
+                String finalInstruction = instruction;
                 Messagebox.show(
                         MessageFormat.format(Labels.getLabel("portal_unsavedDraftExisted_message"), editSession.getCurrentVersionNumber()),
                         "Question", new Messagebox.Button[] {Messagebox.Button.YES, Messagebox.Button.NO},
                         Messagebox.QUESTION, e -> {
                             switch (e.getButton()) {
                                 case YES:
-                                    Clients.evalJavaScript(instruction);
+                                    Clients.evalJavaScript(finalInstruction);
                                     break;
                                 case NO: // Cancel is clicked
                                     this.getProcessService().updateDraft(editSession.getProcessId(),
                                             editSession.getCurrentVersionNumber(), editSession.getNativeType(),
                                             new ByteArrayInputStream(bpmnXML.getBytes()),
                                             editSession.getUsername());
-                                    Clients.evalJavaScript(instruction);
+                                    Clients.evalJavaScript(finalInstruction);
                                     break;
                                 default: // if the Close button is clicked, e.getButton() returns null
                             }

@@ -37,7 +37,6 @@ import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Label;
 
 import java.io.ByteArrayInputStream;
 import java.util.Map;
@@ -70,19 +69,12 @@ public class KeepAliveController extends SelectorComposer<Component> {
                 String currentVersion = editSession.getCurrentVersionNumber();
                 String nativeType = arg.get("nativeType").toString();
 
-//                System.out.println(bpmnXML);
-                System.out.println(processId);
-                System.out.println(currentVersion);
-
                 managerService.updateDraft(processId, currentVersion, nativeType,
                         new ByteArrayInputStream(bpmnXML.getBytes()), user.getUsername());
 
                 PortalLoggerFactory.getLogger(this.getClass()).debug("Keep BPMN Editor alive for user: " + user.getUsername());
 
-//                divKeepAlive.setVisible(true);
                 divKeepAlive.setStyle(divKeepAlive.getStyle().replace("hidden", "visible"));
-
-//                divKeepAlive.appendChild(new Label("Saving..."));
 
             }
         });

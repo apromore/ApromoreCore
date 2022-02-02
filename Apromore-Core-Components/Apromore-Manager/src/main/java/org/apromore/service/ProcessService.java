@@ -171,7 +171,7 @@ public interface ProcessService {
      * @param processId processId
      * @return Process
      */
-    Process getProcessById(final Integer processId);
+    Process getProcessById(final Integer processId) throws RepositoryException;
 
     /**
      * Get ProcessModelVersion by processId, branch name and version

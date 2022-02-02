@@ -204,7 +204,6 @@ public class SaveAsDialogController extends BaseController {
 
   }
 
-  @Transactional(readOnly = false)
   private void saveAsNewModel(String userName, Integer folderId, String processName,
       String versionNumber, String nativeType, InputStream nativeStream, String domain,
       String documentation, String created, String lastUpdate, boolean publicModel,
@@ -237,7 +236,6 @@ public class SaveAsDialogController extends BaseController {
     }
   }
 
-  @Transactional(readOnly = false)
   private void saveCurrentModelVersion(Integer processId, String processName, String versionNumber,
       String nativeType, InputStream nativeStream, String userName, String containingFolderName) {
     try {

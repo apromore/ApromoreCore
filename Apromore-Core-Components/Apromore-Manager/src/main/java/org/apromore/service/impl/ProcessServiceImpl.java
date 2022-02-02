@@ -96,6 +96,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static org.apromore.common.Constants.DATE_FORMAT;
 import static org.apromore.common.Constants.DRAFT_BRANCH_NAME;
 import static org.apromore.common.Constants.TRUNK_NAME;
 
@@ -331,7 +332,7 @@ public class ProcessServiceImpl implements ProcessService {
       final String branchName, final Version version, final User user, final String lockStatus,
       final NativeType nativeType, final InputStream nativeStream)
           throws ImportException, UpdateProcessException {
-    DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+    DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
     String now = dateFormat.format(new Date());
     Process process = processRepo.findById(processId).get();
     String processName = process.getName();
@@ -416,7 +417,7 @@ public class ProcessServiceImpl implements ProcessService {
       final User user, final String lockStatus, final NativeType nativeType,
       final InputStream nativeStream) throws ImportException, RepositoryException {
     ProcessModelVersion pmv;
-    DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+    DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
     String now = dateFormat.format(new Date());
     Process process = processRepo.findById(processId).get();
     String processName = process.getName();
@@ -606,7 +607,6 @@ public class ProcessServiceImpl implements ProcessService {
           if (!canUserWriteProcess(user, process.getId())) {
             throw new UpdateProcessException("Write permission denied for " + user.getUsername());
           }
-          // Get all branches List<ProcessBranch> branches = process.getProcessBranches();
           LOGGER.debug("Retrieving the Process Model of the current version of " + process.getName()
                   + " to be deleted.");
 
@@ -667,7 +667,6 @@ public class ProcessServiceImpl implements ProcessService {
     }
   }
 
-  @Transactional(readOnly = false)
   private void deleteProcessModelVersion(List<ProcessModelVersion> pmvs,
       ProcessModelVersion pvidToDelete, ProcessBranch branch, User user) throws ExceptionDao {
     ProcessModelVersion newCurrent = getPreviousVersion(pmvs, pvidToDelete);
@@ -825,7 +824,7 @@ public class ProcessServiceImpl implements ProcessService {
       final Version version, NativeType nativeType, final String netId, Native nat,
       Storage storage, final User user) {
 
-    String now = new SimpleDateFormat(Constants.DATE_FORMAT).format(new Date());
+    String now = new SimpleDateFormat(DATE_FORMAT).format(new Date());
     ProcessModelVersion processModel = new ProcessModelVersion();
 
     processModel.setProcessBranch(branch);
@@ -871,7 +870,10 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
   @Override
-  public Process getProcessById(final Integer processId) {
+  public Process getProcessById(final Integer processId) throws RepositoryException {
+    if (processRepo.findById(processId).isEmpty()) {
+      throw new RepositoryException("Can not get Process with id: " + processId);
+    }
     return processRepo.findById(processId).get();
   }
 
@@ -887,7 +889,7 @@ public class ProcessServiceImpl implements ProcessService {
     try {
       Process processModel = getProcessById(processId);
 
-      DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+      DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
       Date date = new Date();
       String now = dateFormat.format(date);
 
@@ -905,8 +907,7 @@ public class ProcessServiceImpl implements ProcessService {
               , formatSrv.findNativeType(nativeType),
               nativeStream, now, userSrv.findUserByLogin(userName));
     } catch (Exception e) {
-      LOGGER.error("Create draft failed caused by {}", e.getMessage());
-      throw new ImportException(e);
+      throw new ImportException("Create draft failed caused by {}", e);
     }
   }
 
@@ -918,8 +919,7 @@ public class ProcessServiceImpl implements ProcessService {
               processId, DRAFT_BRANCH_NAME, new Version(versionNumber), userSrv.findUserByLogin(userName), "", formatSrv.findNativeType(nativeType),
               nativeStream);
     } catch (Exception e) {
-      LOGGER.error("Update draft failed caused by {}", e.getMessage());
-      throw new UpdateProcessException(e);
+      throw new UpdateProcessException("Update draft failed caused by {}", e);
     }
   }
 
