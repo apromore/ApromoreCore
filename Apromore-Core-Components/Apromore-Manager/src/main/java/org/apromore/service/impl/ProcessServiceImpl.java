@@ -94,6 +94,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.apromore.common.Constants.DATE_FORMAT;
@@ -338,8 +339,8 @@ public class ProcessServiceImpl implements ProcessService {
     String processName = null;
 
     try {
-
-      if (processRepo.findById(processId).isPresent()) {
+      Optional<Process> processOptional = processRepo.findById(processId);
+      if (processOptional.isPresent()) {
         process = processRepo.findById(processId).get();
         processName = process.getName();
       } else {
@@ -879,10 +880,13 @@ public class ProcessServiceImpl implements ProcessService {
 
   @Override
   public Process getProcessById(final Integer processId) throws RepositoryException {
-    if (processRepo.findById(processId).isEmpty()) {
+
+    Optional<Process> processOptional = processRepo.findById(processId);
+    if (processOptional.isPresent()) {
+      return processOptional.get();
+    } else {
       throw new RepositoryException("Can not get Process with id: " + processId);
     }
-    return processRepo.findById(processId).get();
   }
 
   @Override
