@@ -338,7 +338,7 @@ public class BPMNExportController extends AbstractController {
                     String user = controller.getContextData().getUsername();
                     Version version = new Version(1, 0);
                     // Unify timestamp format for now
-                    DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+                    DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
                     String now = dateFormat.format(new Date());
                     boolean publicModel = false;
 
