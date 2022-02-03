@@ -142,7 +142,7 @@ public class SimilarityServiceImpl extends DefaultParameterAwarePlugin implement
             pmv.getProcessBranch().getProcess().getName(),
             pmv.getProcessBranch().getProcess().getId(),
             pmv.getProcessBranch().getBranchName(),
-            new Version(pmv.getVersionNumber()), null
+            new Version(pmv.getVersionNumber())
         ));
     }
 
