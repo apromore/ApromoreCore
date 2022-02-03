@@ -25,12 +25,13 @@ package org.apromore.plugin.portal.processdiscoverer.eventlisteners;
 import static org.apromore.commons.item.Constants.HOME_FOLDER_NAME;
 
 import java.io.ByteArrayInputStream;
+import java.text.DateFormat;
 import java.io.IOException;
 import java.text.MessageFormat;
-import java.util.GregorianCalendar;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import javax.xml.datatype.DatatypeFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.ProcessModelVersion;
@@ -334,8 +335,9 @@ public class BPMNExportController extends AbstractController {
                     String modelName = (String) event.getData();
                     String user = controller.getContextData().getUsername();
                     Version version = new Version(1, 0);
-                    String now =
-                        DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString();
+                    // Unify timestamp format for now
+                    DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+                    String now = dateFormat.format(new Date());
                     boolean publicModel = false;
 
                     try {

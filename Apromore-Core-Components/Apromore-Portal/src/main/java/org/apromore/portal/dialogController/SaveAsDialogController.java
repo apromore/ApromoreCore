@@ -30,6 +30,8 @@ import java.text.DateFormat;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
+
 import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.portal.common.Constants;
@@ -79,8 +81,13 @@ public class SaveAsDialogController extends BaseController {
 
   private EditSessionType editSession;
   private ApromoreSession session;
-  private Boolean isSaveCurrent; // null: save first time for new model, true: save existing model,
-                                 // false: save as
+  /**
+   * isSaveCurrent
+   * null: save first time for new model
+   * true: save existing model
+   * false: save as
+   */
+  private final Boolean isSaveCurrent;
   private String modelData;
 
   ProcessService processService;
@@ -155,7 +162,7 @@ public class SaveAsDialogController extends BaseController {
     DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss");
     String created = dateFormat.format(new Date());
 
-    boolean makePublic = (this.isSaveCurrent ? processService.isPublicProcess(processId) : false);
+    boolean makePublic = (this.isSaveCurrent && processService.isPublicProcess(processId));
     int containingFolderId = this.editSession.getFolderId();
     InputStream is = new ByteArrayInputStream(this.modelData.getBytes());
 
@@ -184,7 +191,7 @@ public class SaveAsDialogController extends BaseController {
                   }
                 }
               });
-        } else {
+        } else { // save first time for new model
           createNewModelVersion(processId, processName, versionNo, nativeType, is, userName,
               containingFolderName);
         }
@@ -204,8 +211,12 @@ public class SaveAsDialogController extends BaseController {
           userName, folderId, nativeType, processName, versionNumber, nativeStream, domain,
           documentation, created, null, publicModel);
 
-      // Update process data with the new process to keep a consistent state
       Integer processId = importResult.getProcessSummary().getId();
+
+      // Create draft to associated with new model
+      mainController.getManagerService().createDraft(processId, processName, versionNumber,
+              nativeType, nativeStream, userName);
+      // Update process data with the new process to keep a consistent state
       editSession.setProcessId(processId);
       editSession.setProcessName(processName);
       editSession.setOriginalVersionNumber(versionNumber);
@@ -229,6 +240,8 @@ public class SaveAsDialogController extends BaseController {
       ProcessModelVersion newVersion = mainController.getManagerService().updateProcessModelVersion(
           processId, editSession.getOriginalBranchName(), versionNumber, userName, "", nativeType,
           nativeStream);
+      mainController.getManagerService().updateDraft(processId,
+              editSession.getOriginalVersionNumber(), nativeType, nativeStream, userName);
 
       // Update process data with the new process to keep a consistent state
       editSession.setOriginalVersionNumber(versionNumber);
@@ -253,8 +266,11 @@ public class SaveAsDialogController extends BaseController {
           mainController.getManagerService().createProcessModelVersion(editSession.hashCode(),
               userName, nativeType, processId, editSession.getOriginalBranchName(), versionNumber,
               editSession.getOriginalVersionNumber(), "", nativeStream);
+      // Create draft version for new PMV
+      mainController.getManagerService().createDraft(processId, processName,
+              versionNumber, nativeType, nativeStream, userName);
 
-      // Update process data with the new process to keep a consistent state
+              // Update process data with the new process to keep a consistent state
       editSession.setOriginalVersionNumber(versionNumber);
       editSession.setCurrentVersionNumber(versionNumber);
       editSession.setLastUpdate(newVersion.getLastUpdateDate());
@@ -278,12 +294,12 @@ public class SaveAsDialogController extends BaseController {
 
     try {
       if (!this.isSaveCurrent) {
-        if (this.modelName.getText() == null || this.modelName.getText().trim().equals("")) {
+        if (this.modelName.getText() == null || "".equals(this.modelName.getText().trim())) {
           valid = false;
           message = message + "Model Name cannot be empty";
           title = "Model Name Empty";
         }
-        if (this.modelName.getText().equals(this.editSession.getProcessName())) {
+        if (Objects.equals(this.modelName.getText(), this.editSession.getProcessName())) {
           valid = false;
           message =
               message + "Model Name has to be different from " + this.editSession.getProcessName();
@@ -291,13 +307,13 @@ public class SaveAsDialogController extends BaseController {
         }
       }
 
-      if (this.versionNumber.getText().equals("") || this.versionNumber.getText() == null) {
+      if ("".equals(this.versionNumber.getText()) || this.versionNumber.getText() == null) {
         valid = false;
         message = message + "Version Number cannot be empty";
         title = "Version Number Empty";
       }
 
-      if (!message.equals("")) {
+      if (!"".equals(message)) {
         Messagebox.show(message, title, Messagebox.OK, Messagebox.INFORMATION);
       }
     } catch (Exception e) {

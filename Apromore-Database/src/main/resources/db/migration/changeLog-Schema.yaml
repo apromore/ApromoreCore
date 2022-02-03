@@ -1276,3 +1276,14 @@ databaseChangeLog:
                    referencedColumnNames: id
                    foreignKeyName: fk_publish_process_idk
                    deleteCascade: true
+
+ - changeSet:
+     id: 20220131091400
+     author: frankm
+     changes:
+        - addColumn:
+            tableName: process_model_version
+            columns:
+               - column:
+                  name: creator
+                  type: INT

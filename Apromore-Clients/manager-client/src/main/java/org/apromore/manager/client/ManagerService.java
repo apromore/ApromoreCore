@@ -26,13 +26,9 @@
 
 package org.apromore.manager.client;
 
-import java.io.InputStream;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.apromore.dao.model.ProcessModelVersion;
+import org.apromore.exception.ImportException;
+import org.apromore.exception.UpdateProcessException;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.model.DomainsType;
@@ -49,13 +45,18 @@ import org.apromore.portal.model.PluginInfo;
 import org.apromore.portal.model.PluginInfoResult;
 import org.apromore.portal.model.PluginMessages;
 import org.apromore.portal.model.ProcessSummaryType;
-import org.apromore.portal.model.SearchHistoriesType;
 import org.apromore.portal.model.SummariesType;
 import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.UserType;
 import org.apromore.portal.model.UsernamesType;
 import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.util.AccessType;
+
+import java.io.InputStream;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Manager interface.
@@ -367,5 +368,52 @@ public interface ManagerService {
      */
     void deleteElements(Map<SummaryType, List<VersionSummaryType>> elements, String username) throws Exception;
 
-	boolean hasWritePermission(String username, List<Object> asList);
+    /**
+     * Return whether user has write pemission to the specified processes
+     *
+     * @param username username
+     * @param asList   List of processes
+     * @return whether user has write pemission to the specified processes
+     */
+    boolean hasWritePermission(String username, List<Object> asList);
+
+    /**
+     * Update draft for specified PMV and user
+     *
+     * @param processId     processId
+     * @param versionNumber versionNumber
+     * @param nativeType    nativeType
+     * @param nativeStream  nativeStream
+     * @param userName      userName
+     * @return updated PMV
+     */
+    ProcessModelVersion updateDraft(Integer processId, String versionNumber, String nativeType,
+                                    InputStream nativeStream, String userName) throws UpdateProcessException;
+
+    /**
+     * Create draft for specified PMV and user
+     *
+     * @param processId     processId
+     * @param processName   processName
+     * @param versionNumber versionNumber
+     * @param nativeType    nativeType
+     * @param nativeStream  nativeStream
+     * @param userName      userName
+     * @return Draft PMV
+     */
+    ProcessModelVersion createDraft(Integer processId, String processName, String versionNumber, String nativeType,
+                                    InputStream nativeStream, String userName) throws ImportException;
+
+    /**
+     * Return whether this PMV is updated with its auto-save draft
+     *
+     * @param processId     processId
+     * @param processName   processName
+     * @param versionNumber versionNumber
+     * @param nativeType    nativeType
+     * @param username      username
+     * @return whether this PMV is updated with its auto-save draft
+     */
+    Boolean isProcessUpdatedWithUserDraft(Integer processId, String processName, String versionNumber,
+                                          String nativeType, String username);
 }

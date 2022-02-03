@@ -134,11 +134,7 @@ public class LogImporterXLSXImpl extends AbstractLogImporter implements Constant
 
         // If row is invalid, continue to next row.
         if (!logEventModel.isValid()) {
-          if (skipInvalidRow) {
-            continue;
-          } else {
-            return new LogModelImpl(null, logErrorReport, rowLimitExceeded, numOfValidEvents, null);
-          }
+          continue;
         }
         // Construct a Trace if it's not exists
         constructTrace(tracesHistory, logEventModel, xFactory, concept);

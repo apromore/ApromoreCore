@@ -567,6 +567,31 @@
     width: 28.5px !important;
 }
 
+.ap-icon-role-add {
+    background-image: url('role-add.svg') !important;
+    width: 28.5px !important;
+}
+
+.ap-icon-role-copy {
+    background-image: url('role-copy.svg') !important;
+    width: 28.5px !important;
+}
+
+.ap-icon-role-edit {
+    background-image: url('role-edit.svg') !important;
+    width: 28.5px !important;
+}
+
+.ap-icon-role-remove {
+    background-image: url('role-remove.svg') !important;
+    width: 28.5px !important;
+}
+
+.ap-icon-role-view {
+    background-image: url('role-view.svg') !important;
+    width: 28.5px !important;
+}
+
 .ap-icon-route {
     background-image: url('route.svg') !important;
     width: 26px !important;

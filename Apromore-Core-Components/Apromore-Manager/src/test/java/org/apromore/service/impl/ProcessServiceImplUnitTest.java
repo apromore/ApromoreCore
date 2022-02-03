@@ -83,12 +83,15 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import static org.apromore.common.Constants.DRAFT_BRANCH_NAME;
+import static org.apromore.common.Constants.TRUNK_NAME;
 import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.anyString;
 import static org.easymock.EasyMock.expect;
@@ -742,7 +745,7 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
                         .getInputStream();
 
         // Mock Recording
-        expect(processRepo.findById(processId)).andReturn(Optional.of(process));
+        expect(processRepo.findById(processId)).andReturn(Optional.of(process)).times(2);
         expect(groupProcessRepo.findByProcessAndUser(processId, user.getRowGuid()))
                 .andReturn(List.of(groupProcess));
         expect(processModelVersionRepo.getProcessModelVersion(processId, branchName,
@@ -779,6 +782,7 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
         ProcessBranch branch = createBranch(process);
         Storage storage = createStorage();
         ProcessModelVersion pmv = createPMV(branch, existingNativeDoc, existingVersion, storage);
+        List<ProcessModelVersion> pmvs = Collections.singletonList(pmv);
         branch.setCurrentProcessModelVersion(pmv);
         branch.getProcessModelVersions().add(pmv);
         process.getProcessBranches().add(branch);
@@ -797,7 +801,7 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
 
         // Mock Recording
         expect(processModelVersionRepo.getCurrentProcessModelVersion(processId, existingVersionNumber))
-                .andReturn(pmv);
+                .andReturn(pmvs);
         expect(processRepo.findById(processId)).andReturn(Optional.of(process));
         expect(usrSrv.findUserByLogin(newUserName)).andReturn(newUser);
         expect(groupRepo.findPublicGroup()).andStubReturn(publicGroup);
@@ -851,6 +855,7 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
         ProcessBranch branch = createBranch(process);
         Storage storage = createStorage();
         ProcessModelVersion pmv = createPMV(branch, existingNativeDoc, existingVersion, storage);
+        List<ProcessModelVersion> pmvs = Collections.singletonList(pmv);
         branch.setCurrentProcessModelVersion(pmv);
         branch.getProcessModelVersions().add(pmv);
         process.getProcessBranches().add(branch);
@@ -869,7 +874,7 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
 
         // Mock Recording
         expect(processModelVersionRepo.getCurrentProcessModelVersion(processId, existingVersionNumber))
-                .andReturn(pmv);
+                .andReturn(pmvs);
         expect(processRepo.findById(processId)).andReturn(Optional.of(process));
         expect(usrSrv.findUserByLogin(newUserName)).andReturn(newUser);
         expect(groupRepo.findPublicGroup()).andReturn(publicGroup);
@@ -925,6 +930,7 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
         ProcessBranch branch = createBranch(process);
         Storage storage = createStorage();
         ProcessModelVersion pmv = createPMV(branch, existingNativeDoc, existingVersion, storage);
+        List<ProcessModelVersion> pmvs = Collections.singletonList(pmv);
         branch.setCurrentProcessModelVersion(pmv);
         branch.getProcessModelVersions().add(pmv);
         process.getProcessBranches().add(branch);
@@ -943,7 +949,7 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
 
         // Mock Recording
         expect(processModelVersionRepo.getCurrentProcessModelVersion(processId, existingVersionNumber))
-                .andReturn(pmv);
+                .andReturn(pmvs);
         expect(processRepo.findById(processId)).andReturn(Optional.of(process));
         expect(usrSrv.findUserByLogin(newUserName)).andReturn(newUser);
         expect(groupRepo.findPublicGroup()).andReturn(publicGroup);
@@ -1012,15 +1018,16 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
         InputStream stream = client.getInputStream("model", filename);
 
         // Mock Recording
+        expect(usrSrv.findUserByLogin("")).andReturn(user);
         expect(processModelVersionRepo.getProcessModelVersion(processId, branchName, versionNumber))
-                .andReturn(pmv).times(2);
+                .andReturn(pmv);
         expect(storageFactory.getStorageClient(storage.getStoragePath()))
                 .andReturn(client);
         replayAll();
 
         // Mock call
         ExportFormatResultType exportResult =
-                processService.exportProcess(processName, processId, branchName, version, nativeTypeS);
+                processService.exportProcess(processName, processId, branchName, version, nativeTypeS, "");
 
         // Verify mock and result
         verifyAll();
@@ -1065,14 +1072,14 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
 
         // Mock Recording
         expect(processModelVersionRepo.getProcessModelVersion(processId, branchName, versionNumber))
-                .andReturn(pmv).times(2);
+                .andReturn(pmv);
         expect(storageFactory.getStorageClient(storage.getStoragePath()))
                 .andReturn(client);
         replayAll();
 
         // Mock call
         String bpmnResult =
-                processService.getBPMNRepresentation(processName, processId, branchName, version);
+                processService.getBPMNRepresentation(processName, processId, branchName, version, null);
 
         // Verify mock and result
         verifyAll();
@@ -1098,6 +1105,9 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
         Storage storage = createStorage();
         ProcessModelVersion pmv10 = createPMV(branch, existingNativeDoc, version10, storage); // to delete
         ProcessModelVersion pmv11 = createPMV(branch, newNativeDoc, version11, storage);
+
+        List<ProcessModelVersion> pmvs = Collections.singletonList(pmv10);
+
         addProcessModelVersions(branch, pmv10, pmv11);
         GroupProcess groupProcess = createGroupProcess(group, process, true, true, true);
 
@@ -1107,13 +1117,14 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
         ProcessData processDataToDelete = new ProcessData(processId, version10);
 
         // Mock Recording
+        expect(groupProcessRepo.findByProcessAndUser(processId, user.getRowGuid())).andReturn(Collections.singletonList(groupProcess));
         expect(processModelVersionRepo.getCurrentProcessModelVersion(processId, versionToDelete))
-                .andReturn(pmv10);
-        expect(groupProcessRepo.findByProcessAndUser(processId, user.getRowGuid()))
-                .andReturn(Arrays.asList(new GroupProcess[]{groupProcess}));
-        expect(processBranchRepo.save((ProcessBranch) EasyMock.anyObject())).andReturn(branch);
+                .andReturn(pmvs);
+        expect(processBranchRepo.save((ProcessBranch) anyObject())).andReturn(branch);
+        processModelVersionRepo.delete(anyObject());
         expect(processModelVersionRepo.countByStorageId(storage.getId())).andReturn(1L);
-        processModelVersionRepo.delete(pmv10);
+        expect(processModelVersionRepo.getProcessModelVersionByUser(processId, DRAFT_BRANCH_NAME, "1.0",
+                user.getId())).andReturn(null);
         replayAll();
 
         // Mock Call
@@ -1141,6 +1152,7 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
         ProcessBranch branch = createBranch(process);
         Storage storage = createStorage();
         ProcessModelVersion pmv10 = createPMV(branch, existingNativeDoc, version10, storage); // to delete
+        List<ProcessModelVersion> pmvs = Collections.singletonList(pmv10);
         addProcessModelVersions(branch, pmv10);
         GroupProcess groupProcess = createGroupProcess(group, process, true, true, true);
 
@@ -1150,14 +1162,16 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
         ProcessData processDataToDelete = new ProcessData(processId, version10);
 
         // Mock Recording
+        expect(groupProcessRepo.findByProcessAndUser(processId, user.getRowGuid())).andReturn(Collections.singletonList(groupProcess));
         expect(processModelVersionRepo.getCurrentProcessModelVersion(processId, versionToDelete))
-                .andReturn(pmv10);
-        expect(groupProcessRepo.findByProcessAndUser(processId, user.getRowGuid()))
-                .andReturn(Arrays.asList(new GroupProcess[]{groupProcess}));
-        expect(processBranchRepo.save(branch)).andReturn(branch);
+                .andReturn(pmvs);
+        expect(processBranchRepo.save((ProcessBranch) anyObject())).andReturn(branch);
+        processModelVersionRepo.delete(anyObject());
         expect(processModelVersionRepo.countByStorageId(storage.getId())).andReturn(1L);
-        processModelVersionRepo.delete(pmv10);
+        expect(processModelVersionRepo.getProcessModelVersionByUser(processId, DRAFT_BRANCH_NAME, "1.0",
+                user.getId())).andReturn(null);
         processRepo.delete(process);
+
         replayAll();
 
         // Mock Call
@@ -1223,7 +1237,7 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
     private ProcessBranch createBranch(Process process) {
         ProcessBranch branch = new ProcessBranch();
         branch.setId(1234);
-        branch.setBranchName("BranchName");
+        branch.setBranchName(TRUNK_NAME);
         branch.setProcess(process);
         branch.setCreateDate("1.1.2020");
         branch.setLastUpdateDate("1.1.2020");

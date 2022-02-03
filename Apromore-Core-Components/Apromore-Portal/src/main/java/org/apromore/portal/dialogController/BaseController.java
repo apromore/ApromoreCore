@@ -36,6 +36,7 @@ import org.apromore.commons.config.ConfigBean;
 import org.apromore.manager.client.ManagerService;
 import org.apromore.service.AuthorizationService;
 import org.apromore.service.EventLogService;
+import org.apromore.service.FormatService;
 import org.apromore.service.ProcessService;
 import org.apromore.service.SecurityService;
 import org.apromore.service.UserService;
@@ -66,6 +67,8 @@ public class BaseController extends Window {
   public static final String YAWL_2_2 = "YAWL 2.2";
   public static final String EPML_2_0 = "EPML 2.0";
 
+  public static final String VERSION_1_0 = "1.0";
+
   @WireVariable("managerClient")
   private ManagerService managerService;
   @WireVariable("eventLogService")
@@ -83,6 +86,8 @@ public class BaseController extends Window {
   @WireVariable
   private ProcessService processService;
 
+  @WireVariable
+  private FormatService formatService;
 
   protected BaseController() {
 

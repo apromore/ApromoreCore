@@ -74,6 +74,8 @@ public class ProcessModelVersion implements Serializable {
     private Set<ProcessBranch> sourceProcessModelVersion = new HashSet<>();
     private Set<ProcessModelAttribute> processModelAttributes = new HashSet<>();
 
+    private User creator;
+
 
     /**
      * Default Constructor.
@@ -246,6 +248,15 @@ public class ProcessModelVersion implements Serializable {
         this.processModelAttributes = processModelAttributes;
     }
 
+    @ManyToOne
+    @JoinColumn(name = "creator")
+    public User getCreator() {
+        return this.creator;
+    }
+
+    public void setCreator(final User creator) {
+        this.creator = creator;
+    }
 
     @Override
     public int hashCode() {
