@@ -290,6 +290,7 @@ public class LogImporterController extends SelectorComposer<Window> implements C
             tempLogMetaData.setStartTimestampFormat(storedSchemaMapping.getStartTimestampFormat());
             tempLogMetaData.setStartTimestampPos(storedSchemaMapping.getStartTimestampPos());
             tempLogMetaData.setResourcePos(storedSchemaMapping.getResourcePos());
+            tempLogMetaData.setRolePos(storedSchemaMapping.getRolePos());
             tempLogMetaData.getEventAttributesPos().clear();
             tempLogMetaData.getEventAttributesPos().addAll(storedSchemaMapping.getEventAttributesPos());
             tempLogMetaData.getCaseAttributesPos().clear();
@@ -739,6 +740,7 @@ public class LogImporterController extends SelectorComposer<Window> implements C
         menuItems.put(START_TIMESTAMP_LABEL, getLabel("start_timestamp"));
         menuItems.put(OTHER_TIMESTAMP_LABEL, getLabel("other_timestamp"));
         menuItems.put(RESOURCE_LABEL, getLabel("resource"));
+        menuItems.put(ROLE_LABEL, getLabel("role"));
         menuItems.put(CASE_ATTRIBUTE_LABEL, getLabel("case_attribute"));
         menuItems.put(EVENT_ATTRIBUTE_LABEL, getLabel("event_attribute"));
         menuItems.put(PERSPECTIVE_LABEL, getLabel("perspective"));
@@ -760,27 +762,29 @@ public class LogImporterController extends SelectorComposer<Window> implements C
                 item.setId(myItem.getKey());
 
                 if ((box.getSelectedItem() == null)
-                        && ((myItem.getKey().equals(CASE_ID_LABEL) && logMetaData.getCaseIdPos() == pos)
-                        || (myItem.getKey().equals(ACTIVITY_LABEL) && logMetaData.getActivityPos() == pos)
-                        || (myItem.getKey().equals(END_TIMESTAMP_LABEL)
-                        && logMetaData.getEndTimestampPos() == pos))
-                        || (myItem.getKey().equals(START_TIMESTAMP_LABEL)
-                        && logMetaData.getStartTimestampPos() == pos)
-                        || (myItem.getKey().equals(OTHER_TIMESTAMP_LABEL)
-                        && ((Map<Integer, String>) logMetaData.getOtherTimestamps()).containsKey(pos))
-                        || (myItem.getKey().equals(RESOURCE_LABEL)
-                        && logMetaData.getResourcePos() == pos)
-                        || (myItem.getKey().equals(CASE_ATTRIBUTE_LABEL)
-                        && logMetaData.getCaseAttributesPos().contains(pos))
-                        // When this head is in Perspective tag list, select PERSPECTIVE_LABEL instead of
-                        // EVENT_ATTRIBUTE_LABEL
-                        || (myItem.getKey().equals(EVENT_ATTRIBUTE_LABEL)
-                        && logMetaData.getEventAttributesPos().contains(pos)
-                        && !logMetaData.getPerspectivePos().contains(pos))
-                        || (myItem.getKey().equals(IGNORE_LABEL)
-                        && logMetaData.getIgnoredPos().contains(pos))
-                        || (myItem.getKey().equals(PERSPECTIVE_LABEL)
-                        && logMetaData.getPerspectivePos().contains(pos))) {
+                    && ((myItem.getKey().equals(CASE_ID_LABEL) && logMetaData.getCaseIdPos() == pos)
+                    || (myItem.getKey().equals(ACTIVITY_LABEL) && logMetaData.getActivityPos() == pos)
+                    || (myItem.getKey().equals(END_TIMESTAMP_LABEL) && logMetaData.getEndTimestampPos() == pos))
+
+                    || (myItem.getKey().equals(START_TIMESTAMP_LABEL) && logMetaData.getStartTimestampPos() == pos)
+
+                    || (myItem.getKey().equals(OTHER_TIMESTAMP_LABEL) && ((Map<Integer, String>) logMetaData.getOtherTimestamps()).containsKey(pos))
+
+                    || (myItem.getKey().equals(RESOURCE_LABEL) && logMetaData.getResourcePos() == pos)
+
+                    || (myItem.getKey().equals(ROLE_LABEL) && logMetaData.getRolePos() == pos)
+
+                    || (myItem.getKey().equals(CASE_ATTRIBUTE_LABEL) && logMetaData.getCaseAttributesPos().contains(pos))
+
+                    // When this head is in Perspective tag list, select PERSPECTIVE_LABEL instead of
+                    // EVENT_ATTRIBUTE_LABEL
+                    || (myItem.getKey().equals(EVENT_ATTRIBUTE_LABEL) && logMetaData.getEventAttributesPos().contains(pos)
+                    && !logMetaData.getPerspectivePos().contains(pos))
+
+                    || (myItem.getKey().equals(IGNORE_LABEL) && logMetaData.getIgnoredPos().contains(pos))
+
+                    || (myItem.getKey().equals(PERSPECTIVE_LABEL) && logMetaData.getPerspectivePos().contains(pos))) {
+
                     item.setSelected(true);
                 }
                 box.appendChild(item);
@@ -840,6 +844,10 @@ public class LogImporterController extends SelectorComposer<Window> implements C
                         resetUniqueAttribute(logMetaData.getResourcePos());
                         logMetaData.setResourcePos(colPos);
                         break;
+                    case ROLE_LABEL:
+                        resetUniqueAttribute(logMetaData.getRolePos());
+                        logMetaData.setRolePos(colPos);
+                        break;
                     case OTHER_TIMESTAMP_LABEL:
                         timestampSelected(colPos, selected);
                         break;
@@ -895,6 +903,8 @@ public class LogImporterController extends SelectorComposer<Window> implements C
             logMetaData.setStartTimestampPos(-1);
         } else if (logMetaData.getResourcePos() == pos) {
             logMetaData.setResourcePos(-1);
+        } else if (logMetaData.getRolePos() == pos) {
+            logMetaData.setRolePos(-1);
         } else if (logMetaData.getOtherTimestamps().containsKey(pos)) {
             logMetaData.getOtherTimestamps().remove(pos);
         } else if (logMetaData.getIgnoredPos().contains(pos)) {

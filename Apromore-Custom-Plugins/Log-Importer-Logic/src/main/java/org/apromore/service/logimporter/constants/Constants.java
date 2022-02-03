@@ -31,6 +31,7 @@ public interface Constants {
     String possibleCaseId = "^((case)|(.*(case|service|event)(\\s|-|_)?(id)).*)$";
     String possibleActivity = "^((activity|operation)(.*)|event)$";
     String possibleResource = "^(resource|agent|employee|group)$";
+    String possibleRole = "^(role)$";
     String possibleEndTimestamp = "^((.*(end|complete|completion).*)|(time:)?timestamp|date & time)$";
     String possibleStartTimestamp = "^(.*start.*)$";
     String possibleOtherTimestamp = "^(.*(date|time).*)$";

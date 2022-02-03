@@ -21,19 +21,18 @@
  */
 package org.apromore.service.logimporter.services;
 
-import org.apromore.service.logimporter.model.LogErrorReport;
-import org.apromore.service.logimporter.model.LogErrorReportImpl;
-import org.apromore.service.logimporter.model.LogEventModelExt;
-import org.apromore.service.logimporter.model.LogMetaData;
-import org.apromore.service.logimporter.utilities.FileUtils;
+import static org.apromore.service.logimporter.dateparser.DateUtil.parseToTimestamp;
 
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
-
-import static org.apromore.service.logimporter.dateparser.DateUtil.parseToTimestamp;
+import org.apromore.service.logimporter.model.LogErrorReport;
+import org.apromore.service.logimporter.model.LogErrorReportImpl;
+import org.apromore.service.logimporter.model.LogEventModel;
+import org.apromore.service.logimporter.model.LogMetaData;
+import org.apromore.service.logimporter.utilities.FileUtils;
 
 /**
  * @author 2021-08-18 18:15:00 frankma
@@ -43,7 +42,7 @@ public class LogProcessorImpl implements LogProcessor {
     private List<Integer> maskPos;
 
     @Override
-    public LogEventModelExt processLog(List<String> line, List<String> header, LogMetaData logMetaData, int lineIndex,
+    public LogEventModel processLog(List<String> line, List<String> header, LogMetaData logMetaData, int lineIndex,
                                        List<LogErrorReport> logErrorReport) {
         // Construct an event
         Timestamp startTimestamp = null;
@@ -121,6 +120,17 @@ public class LogProcessorImpl implements LogProcessor {
             }
         }
 
+        // Role
+        String role = null;
+        if (logMetaData.getRolePos() != -1) {
+            role = line.get(logMetaData.getRolePos());
+            if (role == null || role.isEmpty()) {
+                logErrorReport.add(new LogErrorReportImpl(lineIndex, logMetaData.getRolePos(),
+                    header.get(logMetaData.getRolePos()), "Role is empty or has a null value!"));
+                validRow = false;
+            }
+        }
+
         // Case Attributes
         if (validRow && logMetaData.getCaseAttributesPos() != null && !logMetaData.getCaseAttributesPos().isEmpty()) {
             for (int columnPos : logMetaData.getCaseAttributesPos()) {
@@ -150,11 +160,20 @@ public class LogProcessorImpl implements LogProcessor {
                     validRow = false;
                 }
             }
-
         }
 
-        return new LogEventModelExt(caseId, activity, endTimestamp, startTimestamp, otherTimestamps, resource,
-                eventAttributes, caseAttributes, validRow);
+        return LogEventModel.builder()
+            .caseID(caseId)
+            .activity(activity)
+            .endTimestamp(endTimestamp)
+            .startTimestamp(startTimestamp)
+            .otherTimestamps(otherTimestamps)
+            .resource(resource)
+            .role(role)
+            .eventAttributes(eventAttributes)
+            .caseAttributes(caseAttributes)
+            .valid(validRow)
+            .build();
     }
 
     private Timestamp parseTimestampValue(String theValue, String format, String timeZone) {
@@ -173,4 +192,5 @@ public class LogProcessorImpl implements LogProcessor {
             return maskPos.contains(pos);
         }
     }
+
 }
