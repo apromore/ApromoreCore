@@ -645,6 +645,13 @@ public class ProcessServiceImpl implements ProcessService {
     }
   }
 
+  @Override
+  public String getBPMNRepresentation(final String name, final Integer processId,
+                                      final String branch, final Version version) throws RepositoryException {
+
+    return getBPMNRepresentation(name, processId, branch, version, null);
+  }
+
 
   /**
    * @see org.apromore.service.ProcessService#getBPMNRepresentation(String, Integer, String,
