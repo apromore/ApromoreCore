@@ -24,6 +24,7 @@ package org.apromore.apmlog.xes;
 public class XESAttributeCodes {
     public static final String CONCEPT_NAME = "concept:name";
     public static final String ORG_RESOURCE = "org:resource";
+    public static final String ORG_ROLE = "org:role";
     public static final String ORG_GROUP = "org:group";
     public static final String TIME_TIMESTAMP = "time:timestamp";
     public static final String LIFECYCLE_TRANSITION = "lifecycle:transition";
@@ -32,6 +33,7 @@ public class XESAttributeCodes {
         switch (xesAttributeCode) {
             case CONCEPT_NAME: return "Activities";
             case ORG_RESOURCE: return "Resources";
+            case ORG_ROLE: return "Role";
             case ORG_GROUP: return "Groups";
             default: return xesAttributeCode;
         }
@@ -41,6 +43,7 @@ public class XESAttributeCodes {
         switch (xesAttributeCode) {
             case CONCEPT_NAME: return "Activity";
             case ORG_RESOURCE: return "Resource";
+            case ORG_ROLE: return "Role";
             case ORG_GROUP: return "Group";
             default: return xesAttributeCode;
         }
