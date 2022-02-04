@@ -146,23 +146,22 @@ public class SimulationInfoService {
         final SimulationData simulationData) {
 
         List<Element> taskList = null;
-        if (simulationData.getDiagramNodeIDs() != null) {
-            taskList = simulationData.getDiagramNodeIDs().stream()
-                .map(nodeId -> {
-                    double durationMillis = simulationData.getDiagramNodeDuration(nodeId);
-                    TimeUnit timeUnit = getDisplayTimeUnit(durationMillis);
-                    return Element.builder()
-                        .elementId(nodeId)
-                        .distributionDuration(Distribution.builder()
-                            .type(DistributionType.valueOf(
-                                config.getDefaultDistributionType().toUpperCase(DOCUMENT_LOCALE)))
-                            .arg1(getDisplayTimeDuration(durationMillis).toString())
-                            .timeUnit(timeUnit)
-                            .build())
-                        .build();
-                })
-                .collect(Collectors.toUnmodifiableList());
-        }
+
+        taskList = simulationData.getDiagramNodeIDs().stream()
+            .map(nodeId -> {
+                double durationMillis = simulationData.getDiagramNodeDuration(nodeId);
+                TimeUnit timeUnit = getDisplayTimeUnit(durationMillis);
+                return Element.builder()
+                    .elementId(nodeId)
+                    .distributionDuration(Distribution.builder()
+                        .type(DistributionType.valueOf(
+                            config.getDefaultDistributionType().toUpperCase(DOCUMENT_LOCALE)))
+                        .arg1(getDisplayTimeDuration(durationMillis).toString())
+                        .timeUnit(timeUnit)
+                        .build())
+                    .build();
+            })
+            .collect(Collectors.toUnmodifiableList());
 
         builder.tasks(taskList);
     }
@@ -255,7 +254,7 @@ public class SimulationInfoService {
      * @return the converted rounded time duration
      */
     private BigDecimal getDisplayTimeDuration(double timeDuration) {
-        return BigDecimal.valueOf(timeDuration / (double) TimeUnit.SECONDS.getNumberOfMilliseconds())
+        return BigDecimal.valueOf(timeDuration / TimeUnit.SECONDS.getNumberOfMilliseconds())
             .setScale(2, RoundingMode.HALF_UP);
     }
 

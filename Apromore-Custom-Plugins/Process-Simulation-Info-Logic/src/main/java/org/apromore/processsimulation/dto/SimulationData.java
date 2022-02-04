@@ -48,7 +48,7 @@ public class SimulationData {
         if (nodeWeights != null) {
             return Collections.unmodifiableSet(nodeWeights.keySet());
         } else {
-            return null;
+            return Collections.EMPTY_SET;
         }
     }
 
