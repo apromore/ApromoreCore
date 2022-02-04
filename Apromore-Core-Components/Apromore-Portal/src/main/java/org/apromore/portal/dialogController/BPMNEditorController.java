@@ -258,6 +258,30 @@ public class BPMNEditorController extends BaseController implements Composer<Com
       }
     });
 
+    this.addEventListener("onCheckUnsaved", (Event event) -> {
+      String flowOnEvent = (String) event.getData();
+      boolean isUpToDate = mainC.getManagerService().isProcessUpdatedWithUserDraft(
+        editSession.getProcessId(),
+        editSession.getProcessName(),
+        editSession.getCurrentVersionNumber(),
+        editSession.getNativeType(),
+        editSession.getUsername()
+      );
+      if (isUpToDate) {
+        Clients.evalJavaScript("Apromore.BPMNEditor.afterCheckUnsaved('" + flowOnEvent + "')");
+      } else {
+        Messagebox.show("There are unsaved changes in the editor. Do you want to continue anyway?",
+          "Apromore", Messagebox.OK | Messagebox.CANCEL,
+          Messagebox.QUESTION,
+          (Event e) -> {
+            if (Messagebox.ON_OK.equals(e.getName())) {
+              Clients.evalJavaScript("Apromore.BPMNEditor.afterCheckUnsaved('" + flowOnEvent + "')");
+            }
+          }
+        );
+      }
+    });
+
     this.addEventListener("onSimulateModel", new EventListener<Event>() {
       @Override
       public void onEvent(final Event event) throws InterruptedException {
@@ -339,6 +363,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
           setTitle(data[0], data[1]);
           process = session.getProcess();
           editorController.isNewProcess = false;
+          Clients.evalJavaScript("Apromore.BPMNEditor.afterSave()");
         }
       }
     });

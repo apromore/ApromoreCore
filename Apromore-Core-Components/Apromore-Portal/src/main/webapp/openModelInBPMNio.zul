@@ -98,17 +98,11 @@
       idleTime++;
 
       // Send auto-save request
-      Apromore.BPMNEditor.readXML((xml) => {
-        if (!${arg.viewOnly}) {
-          console.log('Auto-saving ...');
-          jq(".ap-bpmneditor-top-notice").show();
-          zk.Widget.$('$divKeepAlive').fire(
-            'onKeepAlive',
-            { bpmnXML: xml, nativeType: '${arg.nativeType}'},
-            { toServer: true },
-          );
-        }
-      });
+      if (!${arg.viewOnly}) {
+        Apromore.BPMNEditor.saveDraft();
+      } else {
+        zk.Widget.$('$divKeepAlive').fire('onKeepAlive', null, { toServer: true });
+      }
 
       if (idleTime >= MAX_IDLE_MINS) {
         // Timeout after MAX_IDLE_MINS minutes idle
@@ -185,6 +179,7 @@
           if (!${arg.availableSimulateModelPlugin}) {
             disabledPlugins.push(Apromore.I18N.SimulationPanel.simulateModel);
           }
+          var isEditorSaving = false;
 
           createEditor = async function (bpmnXML) {
             var config = {
@@ -204,37 +199,109 @@
           }
 
           Apromore.BPMNEditor.readXML = function(callback) {
-            Apromore.BPMNEditor.app.getXML().then((xml) => { callback(xml); })
+            Apromore.BPMNEditor.app.getXML().then((xml) => {
+              console.log(xml.substring(2200, 2300));
+              console.log(xml);
+              callback(xml);
+            });
           }
 
-          Apromore.BPMNEditor.hideSavingNotice = function() {
+          Apromore.BPMNEditor.afterSaveDraft = function(flowOnEvent) {
+            console.log('After saving draft ...', flowOnEvent);
+            // The dirty flag here is to indicate if the in-memory changes have been saved to draft.
+            Apromore.BPMNEditor.app.getEditor().setDirty(false);
             setTimeout(function () {
               jq(".ap-bpmneditor-top-notice").hide();
             }, 1000);
+            if (flowOnEvent && flowOnEvent.length) {
+              if (flowOnEvent === 'onSave' || flowOnEvent === 'onSaveAs') {
+                Apromore.BPMNEditor.save(flowOnEvent);
+              } else {
+                isEditorSaving = false;
+                zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onCheckUnsaved', flowOnEvent));
+              }
+            } else {
+              isEditorSaving = false;
+            }
           }
 
+          Apromore.BPMNEditor.saveDraft = function(flowOnEvent, force) {
+            if (!force && isEditorSaving) {
+              return;
+            }
+            isEditorSaving = true;
+            flowOnEvent = flowOnEvent || '';
+            console.log('Saving draft ...', flowOnEvent);
+            Apromore.BPMNEditor.readXML((xml) => {
+              jq(".ap-bpmneditor-top-notice").show();
+              zk.Widget.$('$divKeepAlive').fire(
+                'onSaveDraft',
+                { bpmnXML: xml, nativeType: '${arg.nativeType}', flowOnEvent },
+                { toServer: true },
+              );
+            });
+          }
+
+          Apromore.BPMNEditor.beforeCheckUnsaved = function(flowOnEvent) {
+            console.log('beforeCheckUnsaved ...', flowOnEvent);
+            if (Apromore.BPMNEditor.app.getEditor().isDirty()) {
+              // Make sure the most recent changes saved to draft
+              console.log('Dirty editor is flushed to draft');
+              Apromore.BPMNEditor.saveDraft(flowOnEvent, true);
+            } else {
+              console.log('Editor and draft are in sync');
+              zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onCheckUnsaved', flowOnEvent));
+            }
+          }
+
+          Apromore.BPMNEditor.afterCheckUnsaved = function(flowOnEvent) {
+            console.log('afterCheckUnsaved - Proceed with flow on action ...', flowOnEvent);
+            if (flowOnEvent === 'onShare' || flowOnEvent === 'onPublishModel') {
+              zAu.send(new zk.Event(zk.Widget.$(jq("$win")), flowOnEvent));
+            } else if (flowOnEvent === 'onSimulateModel') {
+              Apromore.BPMNEditor.readXML((xml) => {
+                zAu.send(new zk.Event(zk.Widget.$(jq("$win")), flowOnEvent, xml));
+              });
+            }
+          }
+
+          Apromore.BPMNEditor.beforeSave = function(saveEvent) {
+            console.log('Before save ...', saveEvent);
+            // Force save draft before actual save
+            Apromore.BPMNEditor.saveDraft(saveEvent, true);
+          }
+
+          Apromore.BPMNEditor.save = function(saveEvent) {
+            console.log('Saving process model ...');
+            Apromore.BPMNEditor.readXML((xml) => {
+              zAu.send(new zk.Event(zk.Widget.$(jq("$win")), saveEvent, xml));
+            });
+          }
+
+          Apromore.BPMNEditor.afterSave = function() {
+            console.log('After saving process model ...');
+            isEditorSaving = false;
+          }
+          console.log('${arg.bpmnXML}');
           createEditor('${arg.bpmnXML}').then((editor) => {
             Apromore.BPMNEditor.Plugins.Share.shareExt = function() {
-              zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onShare'));
+              Apromore.BPMNEditor.beforeCheckUnsaved('onShare');
             };
 
             Apromore.BPMNEditor.Plugins.ApromoreSave.apromoreSaveAs = function(xml, svg) {
-              //console.log(xml);
-              zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSaveAs', xml));
+              Apromore.BPMNEditor.save('onSaveAs');
             };
 
             Apromore.BPMNEditor.Plugins.ApromoreSave.apromoreSave = function(xml, svg) {
-              //console.log(xml);
-              //console.log(svg);
-              zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSave', xml));
+              Apromore.BPMNEditor.save('onSave');
             };
 
             Apromore.BPMNEditor.Plugins.SimulateModel.apromoreSimulateModel = function(xml) {
-              zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSimulateModel', xml));
+              Apromore.BPMNEditor.beforeCheckUnsaved('onSimulateModel');
             };
 
             Apromore.BPMNEditor.Plugins.PublishModel.apromorePublishModel = function() {
-              zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onPublishModel'));
+              Apromore.BPMNEditor.beforeCheckUnsaved('onPublishModel');
             };
 
             Apromore.BPMNEditor.Plugins.Attachment.toggle = function() {

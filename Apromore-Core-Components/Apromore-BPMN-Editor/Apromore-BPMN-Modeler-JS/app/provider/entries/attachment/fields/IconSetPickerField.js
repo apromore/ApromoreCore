@@ -82,7 +82,7 @@ function selectIcon(iconName) {
 
 const SET_PICKER_SEL = '#ap-bpmn-icon-set-picker';
 
-function updateObjects(element, icons, bpmnFactory, bpmnjs) {
+function updateObjects(element, icons, bpmnFactory, bpmnjs, eventBus) {
   icons.values = [];
   let setContainer = $('#ap-bpmn-icon-set');
   $('.icon-item', setContainer).each((index, itemEl) => {
@@ -109,6 +109,7 @@ function updateObjects(element, icons, bpmnFactory, bpmnjs) {
       icons.values.push(iconEl);
     }
   })
+  eventBus.fire("elements.changedAux", [element])
   // update overlays
   refreshOverlay(bpmnjs, element);
   return icons.values;
@@ -233,7 +234,7 @@ module.exports = function(options) {
         rowIcon.removeClass();
         rowIcon.addClass("icon-name " + newIconName);
         selectIcon(newIconName);
-        updateObjects(options.element, icons, options.bpmnFactory, options.bpmnjs);
+        updateObjects(options.element, icons, options.bpmnFactory, options.bpmnjs, options.eventBus);
       })
       lineEl.appendChild(icoEl);
     });

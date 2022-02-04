@@ -62,8 +62,14 @@ public class KeepAliveController extends SelectorComposer<Component> {
 
         divKeepAlive.addEventListener("onKeepAlive", event -> {
             UserType user = (UserType) Sessions.getCurrent().getAttributes().get("USER");
+            LOGGER.debug("Keep BPMN Editor alive for user: " + user.getUsername());
+        });
+
+        divKeepAlive.addEventListener("onSaveDraft", event -> {
+            UserType user = (UserType) Sessions.getCurrent().getAttributes().get("USER");
             Map<String, Object> arg = (Map<String, Object>) event.getData();
             String bpmnXml = arg.get("bpmnXML").toString();
+            String flowOnEvent = arg.get("flowOnEvent").toString();
             Integer processId = editSession.getProcessId();
             String currentVersion = editSession.getCurrentVersionNumber();
             String nativeType = arg.get("nativeType").toString();
@@ -71,9 +77,9 @@ public class KeepAliveController extends SelectorComposer<Component> {
             managerService.updateDraft(processId, currentVersion, nativeType,
                     new ByteArrayInputStream(bpmnXml.getBytes()), user.getUsername());
 
-            LOGGER.debug("Keep BPMN Editor alive for user: " + user.getUsername());
+            LOGGER.debug("Autosave for user: " + user.getUsername());
 
-            Clients.evalJavaScript("Apromore.BPMNEditor.hideSavingNotice()");
+            Clients.evalJavaScript("Apromore.BPMNEditor.afterSaveDraft('" + flowOnEvent + "')");
         });
     }
 
