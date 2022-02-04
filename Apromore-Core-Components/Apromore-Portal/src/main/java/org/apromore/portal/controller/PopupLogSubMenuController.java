@@ -194,7 +194,7 @@ public class PopupLogSubMenuController {
                 } else if (SUB_MENU_FOR_LOG_FILTER.equals(event.getTarget().getAttribute(SUB_MENU_FOR))) {
                     viewPdOrLogFilter(null, true);
                 } else if (SUB_MENU_FOR_DASHBOARD.equals(event.getTarget().getAttribute(SUB_MENU_FOR))) {
-                    viewExistingDashboard();
+                    viewAllExistingDashboard();
                 }
             } catch (Exception ex) {
                 LOGGER.error("Error in forwarding the request", ex);
@@ -203,7 +203,7 @@ public class PopupLogSubMenuController {
         menuPopup.appendChild(item);
     }
 
-    private void viewExistingDashboard() {
+    private void viewAllExistingDashboard() {
         try {
             Map<String, Object> attrMap = new HashMap<>();
             attrMap.put("createNewDashboard", false);
