@@ -96,9 +96,9 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
     private Integer logId;
     private EventListener<Event> eventHandler;
     private Window win;
-    private static String CALENDAR_ID_CONST="calendarId";
-    private static String CAN_EDIT_CONST="canEdit";
-    private static String IS_NEW_CONST="isNew";
+    private static final String CALENDAR_ID_CONST="calendarId";
+    private static final String CAN_EDIT_CONST="canEdit";
+    private static final String IS_NEW_CONST="isNew";
 
     public Calendars() {
     }

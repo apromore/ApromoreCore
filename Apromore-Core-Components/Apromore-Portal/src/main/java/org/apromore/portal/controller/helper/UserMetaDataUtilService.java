@@ -50,12 +50,7 @@ public class UserMetaDataUtilService {
                 for (Usermetadata u : filterUmSet) {
                     AccessType accessType = userMetadataService.getUserMetadataAccessTypeByUser(u.getId(), user);
                     if (accessType != null) {
-                        try {
-                            umSummaries.add(
-                                userInterfaceHelper.buildUserMetadataSummary(u.getCreatedBy(), u, accessType));
-                        } catch (UserNotFoundException e) {
-                            LOGGER.error("Error in retrieving user,",e);
-                        }
+                        getSummary(umSummaries, u, accessType);
                     }
                 }
                 return umSummaries;
@@ -65,7 +60,16 @@ public class UserMetaDataUtilService {
             }
         }
 
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
+    }
+
+    private void getSummary(List<UserMetadataSummaryType> umSummaries, Usermetadata u, AccessType accessType) {
+        try {
+            umSummaries.add(
+                userInterfaceHelper.buildUserMetadataSummary(u.getCreatedBy(), u, accessType));
+        } catch (UserNotFoundException e) {
+            LOGGER.error("Error in retrieving user,",e);
+        }
     }
 
     private Set<Usermetadata> getUserMetadata(Integer logId, UserMetadataTypeEnum userMetadataTypeEnum) {
@@ -75,7 +79,7 @@ public class UserMetaDataUtilService {
         } catch (Exception ex) {
             LOGGER.error("Error in retrieving UserMetadata", ex);
         }
-        return null;
+        return Collections.emptySet();
     }
 
     public Usermetadata getUserMetaDataById(int umId) {

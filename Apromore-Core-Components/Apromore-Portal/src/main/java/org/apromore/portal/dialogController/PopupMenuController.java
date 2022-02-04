@@ -27,7 +27,6 @@
 package org.apromore.portal.dialogController;
 
 import java.io.IOException;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,7 +38,6 @@ import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.portal.common.LabelConstants;
-import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.context.PortalPluginResolver;
 import org.apromore.portal.controller.PopupLogSubMenuController;
 import org.apromore.portal.menu.MenuConfig;
@@ -74,7 +72,6 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 
     protected transient MenuConfigLoader menuConfigLoader;
     protected transient Map<String, PortalPlugin> portalPluginMap;
-    private static final String DISPLAY_NAME_EXP = "displayName";
     private static final String GROUP = "group";
     private static final String ON_CLICK = "onClick";
     private static final String ICON_PLUS = "z-icon-plus-circle";
