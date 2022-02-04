@@ -21,8 +21,6 @@
  */
 package org.apromore.plugin.portal.calendar;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -32,7 +30,6 @@ import javax.inject.Inject;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.calendar.service.CalendarService;
 import org.apromore.commons.config.ConfigBean;
-import org.apromore.commons.datetime.DateTimeUtils;
 import org.apromore.dao.model.User;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
@@ -57,7 +54,7 @@ import org.zkoss.zul.Window;
 public class CalendarPlugin extends DefaultPortalPlugin implements LabelSupplier {
 
     private static Logger LOGGER = PortalLoggerFactory.getLogger(CalendarPlugin.class);
-    private static final String CREATE_NEW_CALENDAR_CONST="createNewCalendar";
+    private static final String FOWARD_FROM_CONTEXT_CONST="FOWARD_FROM_CONTEXT";
     private static final String CAN_EDIT_CONST="canEdit";
 
     @Inject
@@ -102,10 +99,10 @@ public class CalendarPlugin extends DefaultPortalPlugin implements LabelSupplier
                 canEdit = ItemHelpers.canModifyCalendar(currentUser, logId);
             }
             arg.put(CAN_EDIT_CONST, canEdit);
-            boolean createNewCalendar=arg.get(CREATE_NEW_CALENDAR_CONST)!=null && (boolean)arg.get(CREATE_NEW_CALENDAR_CONST);
-            if(createNewCalendar) {
-                createNewCalendar(canEdit);
-                getSimpleParams().put(CREATE_NEW_CALENDAR_CONST,null);//clear
+            boolean forwardFromContext=arg.get(FOWARD_FROM_CONTEXT_CONST)!=null && (boolean)arg.get(FOWARD_FROM_CONTEXT_CONST);
+            if(forwardFromContext) {
+                editOrCreateNewCalendar(arg);
+                getSimpleParams().put(FOWARD_FROM_CONTEXT_CONST,null);//clear
                 return;
             }
 
@@ -141,25 +138,14 @@ public class CalendarPlugin extends DefaultPortalPlugin implements LabelSupplier
         }
     }
 
-    private void createNewCalendar(boolean canEdit) {
-            String msg;
+    private void editOrCreateNewCalendar(Map<String,Object> arg) {
             try {
-                msg = getLabels().getString("created_default_cal_message");
-                String calendarName = msg + " " + DateTimeUtils.humanize(LocalDateTime.now());
-                CalendarModel calendarModel = calendarService.createBusinessCalendar(calendarName, true, ZoneId.systemDefault().toString());
-                Map<String, Object> arg = new HashMap<>();
-                arg.put("calendarId", calendarModel.getId());
-                arg.put("parentController", this);
-                arg.put("isNew", true);
-                arg.put(CAN_EDIT_CONST, canEdit);
-                arg.put("directCreateNew", true);
-                Window window = (Window) Executions.getCurrent()
-                    .createComponents(PageUtils.getPageDefinition("calendar/zul/calendar.zul"), null, arg);
-                window.doModal();
+                if(arg!=null){
+                    Executions.getCurrent()
+                    .createComponents(PageUtils.getPageDefinition("calendar/zul/calendars.zul"), null, arg);
+                }
             } catch (Exception e) {
-                msg = getLabels().getString("failed_create_message");
-                LOGGER.error(msg, e);
-                Notification.error(msg);
+                LOGGER.error("Unable to edit or create custom calendar dialog", e);
             }
     }
 

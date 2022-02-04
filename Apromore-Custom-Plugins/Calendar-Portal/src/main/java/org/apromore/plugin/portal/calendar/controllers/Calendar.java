@@ -96,7 +96,6 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
     private boolean isNew;
     private boolean canEdit;
     private boolean calendarExists = false;
-    private boolean directlyCreateNewCalled=false;
 
     /**
      * For searching time zone id
@@ -185,9 +184,6 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
         Long calId = (Long) Executions.getCurrent().getArg().get("calendarId");
         isNew = (boolean) Executions.getCurrent().getArg().get("isNew");
         canEdit = (boolean) Executions.getCurrent().getArg().get("canEdit");
-        if(Executions.getCurrent().getArg().get("directCreateNew")!=null) {
-            directlyCreateNewCalled=(boolean)Executions.getCurrent().getArg().get("directCreateNew");
-        }
         calendarExists = calId != null;
         calendarModel = !calendarExists ? new CalendarModel() : calendarService.getCalendar(calId);
         calendarId = calendarModel.getId();
@@ -590,10 +586,7 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
     public void onClickCancelBtn() {
         if (isNew) {
             localCalendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_ABANDON, null, calendarId));
-            if(directlyCreateNewCalled) {
-                calendarService.deleteCalendar(calendarId);
             }
-        }
         getSelf().detach();
     }
 
