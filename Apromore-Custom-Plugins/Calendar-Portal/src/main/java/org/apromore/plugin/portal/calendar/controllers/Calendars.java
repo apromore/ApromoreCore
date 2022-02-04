@@ -95,6 +95,7 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
     private boolean canEdit;
     private Integer logId;
     private EventListener<Event> eventHandler;
+    private Window win;
 
     public Calendars() {
     }
@@ -110,6 +111,16 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
         initialize();
         win.setTitle(getLabels().getString("title_text"));
         win.addEventListener("onClose", (Event event) -> cleanup());
+        this.win=win;
+        try {
+            Boolean forwardFromContext = (Boolean) Executions.getCurrent().getArg().get("FOWARD_FROM_CONTEXT");
+            if (forwardFromContext != null && forwardFromContext) {
+                forwardToEditOrCreateNewCalendar();
+            }
+        } catch (Exception ex) {
+            LOGGER.error("Error in retrieving information directCreateNew");
+        }
+
     }
 
     public void cleanup() {
@@ -276,6 +287,44 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
             e.printStackTrace();
         }
     }
+
+    private void forwardToEditOrCreateNewCalendar() {
+        Map<String, Object> arg = new HashMap<>();
+        if (appliedCalendarId == null || appliedCalendarId == 0) {
+            try {
+                if (canEdit) {
+                    LOGGER.error("Not Authorized to create calendar!");
+                    return;
+                }
+                String msg = getLabels().getString("created_default_cal_message");
+                String calendarName = msg + " " + DateTimeUtils.humanize(LocalDateTime.now());
+                CalendarModel model =
+                    calendarService.createBusinessCalendar(calendarName, true, ZoneId.systemDefault().toString());
+                populateCalendarList();
+                updateApplyCalendarButton();
+                arg.put("calendarId", model.getId());
+                arg.put("isNew", true);
+            } catch (CalendarAlreadyExistsException e) {
+                LOGGER.error("Error in creating Calendar", e);
+                return;
+            }
+        } else {
+            arg.put("calendarId", appliedCalendarId);
+            arg.put("isNew", false);
+        }
+        try {
+            arg.put("canEdit", canEdit);
+            arg.put("parentController", this);
+            Window window = (Window) Executions.getCurrent()
+                .createComponents(PageUtils.getPageDefinition("calendar/zul/calendar.zul"), this.win, arg);
+            this.win.doModal();// parent popup
+            window.doModal(); // child popup
+        } catch (Exception e) {
+            LOGGER.error("Error in forward to edit/create calendar", e);
+        }
+
+    }
+
 
     @Listen("onSelect = #calendarListbox")
     public void onSelectCalendarItem() {

@@ -853,3 +853,6 @@ img[src="img/icon/bpmn-22x22.png"] {
      opacity: 0.4;
      filter: alpha(opacity=40);
 }
+.z-menu-image {
+    filter: var(--ap-filter-ico-normal-dark);
+}
