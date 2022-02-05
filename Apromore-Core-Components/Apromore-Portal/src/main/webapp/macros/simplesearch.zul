@@ -60,6 +60,8 @@
         popupWidth="226px"
         buttonVisible="true"
         submitByEnter="true"
+        readonly="false"
+        autocomplete="false"
         tooltip="${labels.portal_search_hint}"
         placeholder="${labels.portal_search_text}"
         ca:onkeyup="Ap.search.onEnter(event)"
