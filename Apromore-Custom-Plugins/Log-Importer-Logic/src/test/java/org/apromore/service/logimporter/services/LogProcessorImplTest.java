@@ -42,7 +42,7 @@ class LogProcessorImplTest {
     }
 
     @Test
-    public void should_process_log_with_valid_information() {
+    void should_process_log_with_valid_information() {
         // given
         List<String> line =
             List.of("case_1", "Activity_1", "2011/02/16 14:31:00.000", "2011/02/16 15:23:00.000", "Frodo Baggins",
@@ -88,7 +88,7 @@ class LogProcessorImplTest {
     }
 
     @Test
-    public void should_return_error_report_for_invalid_information() {
+    void should_return_error_report_for_invalid_information() {
         // given
         List<String> line =
             List.of("", "", "", "", "", "");

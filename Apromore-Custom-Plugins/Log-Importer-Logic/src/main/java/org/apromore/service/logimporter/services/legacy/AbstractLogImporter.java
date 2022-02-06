@@ -57,7 +57,7 @@ public abstract class AbstractLogImporter implements LogImporter {
     @Inject
     ConfigBean config;
 
-    protected XEvent createEvent(LogEventModel myEvent, Boolean isEndTimestamp) {
+    protected XEvent createEvent(LogEventModel myEvent, boolean isEndTimestamp) {
 
         XFactory xFactory = new XFactoryNaiveImpl();
         XEvent xEvent = xFactory.createEvent();
@@ -151,14 +151,9 @@ public abstract class AbstractLogImporter implements LogImporter {
 
     protected void sortAndFeedLog(final TreeMap<String, XTrace> tracesHistory, final XLog xLog) {
         tracesHistory.forEach(
-            /*
-             * Java 8 (k, v) -> { v.sort(new XEventComparator()); xLog.add(v); }
-             */
-            new java.util.function.BiConsumer<String, XTrace>() {
-                public void accept(String k, XTrace v) {
-                    v.sort(new XEventComparator());
-                    xLog.add(v);
-                }
+            (k, v) -> {
+                v.sort(new XEventComparator());
+                xLog.add(v);
             });
     }
 
@@ -174,7 +169,7 @@ public abstract class AbstractLogImporter implements LogImporter {
             // keep log  null.
             // 2. If there is invalid row and skipInvalidRow equals true (when user click 'Skip
             // invalid row/s'), then import this Log with invalid row skipped.
-            && (logErrorReport.size() == 0 || skipInvalidRow)) {
+            && (logErrorReport.isEmpty() || skipInvalidRow)) {
 
             log = eventLogImporter.importXesLog(xLog, username, folderId, logName);
         }
