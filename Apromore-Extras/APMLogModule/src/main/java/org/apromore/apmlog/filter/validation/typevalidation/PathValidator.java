@@ -37,7 +37,7 @@ public class PathValidator extends AbstractLogFilterRuleValidator {
     }
 
     public static ValidatedFilterRule validate(LogFilterRule originalRule, APMLog apmLog) {
-        LogFilterRule validatedRule = originalRule.clone();
+        LogFilterRule validatedRule = originalRule.deepClone();
 
         String mainAttrKey = validatedRule.getKey();
 
