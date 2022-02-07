@@ -793,8 +793,7 @@ public abstract class BaseListboxController extends BaseController {
             switch (((Integer) evt.getData())) {
               case Messagebox.YES:
                 deleteElements(mainController);
-                mainController.loadWorkspace();
-                refreshContent();
+                mainController.reloadSummariesWithOpenTreeItems(mainController.getNavigationController().getAllOpenFolderItems());
                 break;
               case Messagebox.NO:
                 break;
@@ -814,8 +813,7 @@ public abstract class BaseListboxController extends BaseController {
             switch (((Integer) evt.getData())) {
               case Messagebox.YES:
                 deleteElements(mainController);
-                mainController.loadWorkspace();
-                refreshContent();
+                mainController.reloadSummariesWithOpenTreeItems(mainController.getNavigationController().getAllOpenFolderItems());
                 break;
               case Messagebox.NO:
                 break;
@@ -835,8 +833,7 @@ public abstract class BaseListboxController extends BaseController {
             switch (((Integer) evt.getData())) {
               case Messagebox.YES:
                 deleteElements(mainController);
-                mainController.loadWorkspace();
-                refreshContent();
+                mainController.reloadSummariesWithOpenTreeItems(mainController.getNavigationController().getAllOpenFolderItems());
                 break;
               case Messagebox.NO:
                 break;
@@ -857,8 +854,7 @@ public abstract class BaseListboxController extends BaseController {
             switch (((Integer) evt.getData())) {
               case Messagebox.YES:
                 deleteFolders(folders, mainController);
-                mainController.loadWorkspace();
-                refreshContent();
+                mainController.reloadSummariesWithOpenTreeItems(mainController.getNavigationController().getAllOpenFolderItems());
                 break;
               case Messagebox.NO:
                 break;

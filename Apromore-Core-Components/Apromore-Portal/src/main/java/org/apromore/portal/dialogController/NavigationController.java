@@ -234,7 +234,7 @@ public class NavigationController extends BaseController {
         }
         try {
             mainC.getCopyPasteController().paste(selectedFolder);
-            mainC.reloadSummaries();
+            mainC.reloadSummariesWithOpenTreeItems(mainC.getNavigationController().getAllOpenFolderItems());
         } catch (Exception e) {
             LOGGER.error("Error in cut/copy folder from tree",e);
         }
@@ -311,8 +311,7 @@ public class NavigationController extends BaseController {
                         LOGGER.error("Failed to delete folder from Tree", e);
                         Notification.error(Labels.getLabel("portal_deleteItemRestricted_message"));
                     }
-                    mainC.loadWorkspace();
-                    mainC.reloadSummaries();
+                    mainC.reloadSummariesWithOpenTreeItems(mainC.getNavigationController().getAllOpenFolderItems());
                     break;
                 case Messagebox.NO:
                     break;
