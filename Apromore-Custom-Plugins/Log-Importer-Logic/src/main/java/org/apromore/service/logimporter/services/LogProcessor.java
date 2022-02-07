@@ -23,6 +23,7 @@
 package org.apromore.service.logimporter.services;
 
 import java.util.List;
+import org.apromore.service.logimporter.exception.InvalidLogMetadataException;
 import org.apromore.service.logimporter.model.LogErrorReport;
 import org.apromore.service.logimporter.model.LogEventModel;
 import org.apromore.service.logimporter.model.LogMetaData;
@@ -30,5 +31,5 @@ import org.apromore.service.logimporter.model.LogMetaData;
 public interface LogProcessor {
 
     LogEventModel processLog(List<String> line, List<String> header, LogMetaData sample, int lineIndex,
-                             List<LogErrorReport> logErrorReport);
+                             List<LogErrorReport> logErrorReport) throws InvalidLogMetadataException;
 }

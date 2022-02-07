@@ -20,12 +20,14 @@ package org.apromore.service.logimporter.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.apromore.service.logimporter.exception.InvalidLogMetadataException;
 import org.apromore.service.logimporter.model.LogErrorReport;
 import org.apromore.service.logimporter.model.LogEventModel;
 import org.apromore.service.logimporter.model.LogMetaData;
@@ -42,7 +44,7 @@ class LogProcessorImplTest {
     }
 
     @Test
-    void should_process_log_with_valid_information() {
+    void should_process_log_with_valid_information() throws InvalidLogMetadataException {
         // given
         List<String> line =
             List.of("case_1", "Activity_1", "2011/02/16 14:31:00.000", "2011/02/16 15:23:00.000", "Frodo Baggins",
@@ -88,7 +90,7 @@ class LogProcessorImplTest {
     }
 
     @Test
-    void should_return_error_report_for_invalid_information() {
+    void should_return_error_report_for_invalid_information() throws InvalidLogMetadataException {
         // given
         List<String> line =
             List.of("", "", "", "", "", "");
@@ -117,6 +119,26 @@ class LogProcessorImplTest {
         assertEquals("Invalid end timestamp due to wrong format or daylight saving!", logErrorReport.get(2).getError());
         assertEquals("Resource is empty or has a null value!", logErrorReport.get(3).getError());
         assertEquals("Role is empty or has a null value!", logErrorReport.get(4).getError());
+    }
+
+    @Test()
+    void should_throw_exception_when_case_id_header_is_not_available() {
+        // given
+        List<String> line =
+            List.of("", "", "", "", "", "");
+        List<String> header =
+            List.of("CaseId", "Activity", "StartTimestamp", "EndTimestamp", "Resource", "Role");
+
+        LogMetaData logMetaData = getLogMetadata(header);
+        logMetaData.setCaseIdPos(LogMetaData.HEADER_ABSENT);
+
+        int lineIndex = 0;
+        List<LogErrorReport> logErrorReport = new ArrayList<>();
+
+        // when, then
+        assertThrows(InvalidLogMetadataException.class, () -> {
+            logProcessor.processLog(line, header, logMetaData, lineIndex, logErrorReport);
+        });
     }
 
     private LogMetaData getLogMetadata(List<String> header) {

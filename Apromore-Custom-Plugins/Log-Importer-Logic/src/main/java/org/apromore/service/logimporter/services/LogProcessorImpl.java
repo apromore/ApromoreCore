@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
+import org.apromore.service.logimporter.exception.InvalidLogMetadataException;
 import org.apromore.service.logimporter.model.LogErrorReport;
 import org.apromore.service.logimporter.model.LogErrorReportImpl;
 import org.apromore.service.logimporter.model.LogEventModel;
@@ -45,7 +46,7 @@ public class LogProcessorImpl implements LogProcessor {
 
     @Override
     public LogEventModel processLog(List<String> line, List<String> header, LogMetaData logMetaData, int lineIndex,
-                                    List<LogErrorReport> logErrorReport) {
+                                    List<LogErrorReport> logErrorReport) throws InvalidLogMetadataException {
 
         if (logErrorReport == null) {
             logErrorReport = new ArrayList<>();
@@ -59,7 +60,10 @@ public class LogProcessorImpl implements LogProcessor {
         maskPos = logMetaData.getMaskPos();
 
         // CaseId
-        assert logMetaData.getCaseIdPos() != LogMetaData.HEADER_ABSENT;
+        if(logMetaData.getCaseIdPos() == LogMetaData.HEADER_ABSENT) {
+            throw new InvalidLogMetadataException("No Case Id in metadata");
+        }
+
         String caseId = getStringAttribute(line, header, logMetaData.getCaseIdPos(), lineIndex, logErrorReport,
             "Case id is empty or has a null value!");
 
