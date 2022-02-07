@@ -81,20 +81,8 @@ public class LogProcessorImpl implements LogProcessor {
         }
 
         // Other timestamps
-        if (!logMetaData.getOtherTimestamps().isEmpty()) {
-            for (Map.Entry<Integer, String> otherTimestamp : logMetaData.getOtherTimestamps().entrySet()) {
-                Timestamp tempTimestamp = parseTimestampValue(line.get(otherTimestamp.getKey()),
-                    otherTimestamp.getValue(), logMetaData.getTimeZone());
-                if (tempTimestamp != null) {
-                    otherTimestamps.put(header.get(otherTimestamp.getKey()), tempTimestamp);
-                } else {
-                    logErrorReport.add(new LogErrorReportImpl(lineIndex, otherTimestamp.getKey(),
-                        header.get(otherTimestamp.getKey()),
-                        "Invalid other timestamp due to wrong format or daylight saving!"));
-                    break;
-                }
-            }
-        }
+        getTimestampMap(line, header, logMetaData.getOtherTimestamps(), lineIndex, logMetaData.getTimeZone(),
+            logErrorReport, otherTimestamps);
 
         // Resource
         String resource = getStringAttribute(line, header, logMetaData.getResourcePos(), lineIndex, logErrorReport,
@@ -111,15 +99,8 @@ public class LogProcessorImpl implements LogProcessor {
         getAttributesMap(line, header, logMetaData.getEventAttributesPos(), eventAttributes);
 
         // Perspective
-        if (logMetaData.getPerspectivePos() != null && !logMetaData.getPerspectivePos().isEmpty()) {
-            for (int columnPos : logMetaData.getPerspectivePos()) {
-                String perspective = line.get(columnPos);
-                if (perspective == null || perspective.isEmpty()) {
-                    logErrorReport.add(new LogErrorReportImpl(lineIndex, columnPos,
-                        header.get(columnPos), "Perspective is empty or has a null value!"));
-                }
-            }
-        }
+        validatePerspectives(line, header, logMetaData.getPerspectivePos(), lineIndex, logErrorReport);
+
 
         return LogEventModel.builder()
             .caseID(caseId)
@@ -133,6 +114,40 @@ public class LogProcessorImpl implements LogProcessor {
             .caseAttributes(caseAttributes)
             .valid(initialErrorLogSize == logErrorReport.size())
             .build();
+    }
+
+    private void validatePerspectives(
+        final List<String> line, final List<String> header, List<Integer> perspectivePositions, int lineIndex,
+        final List<LogErrorReport> logErrorReport) {
+        if (perspectivePositions != null && !perspectivePositions.isEmpty()) {
+            for (int columnPos : perspectivePositions) {
+                String perspective = line.get(columnPos);
+                if (perspective == null || perspective.isEmpty()) {
+                    logErrorReport.add(new LogErrorReportImpl(lineIndex, columnPos,
+                        header.get(columnPos), "Perspective is empty or has a null value!"));
+                }
+            }
+        }
+    }
+
+    private void getTimestampMap(
+        final List<String> line, final List<String> header, HashMap<Integer, String> otherTimestamps,
+        int lineIndex, final String timeZone, final List<LogErrorReport> logErrorReport,
+        final HashMap<String, Timestamp> timestampAttributeMap) {
+        if (!otherTimestamps.isEmpty()) {
+            for (Map.Entry<Integer, String> otherTimestamp : otherTimestamps.entrySet()) {
+                Timestamp tempTimestamp = parseTimestampValue(line.get(otherTimestamp.getKey()),
+                    otherTimestamp.getValue(), timeZone);
+                if (tempTimestamp != null) {
+                    timestampAttributeMap.put(header.get(otherTimestamp.getKey()), tempTimestamp);
+                } else {
+                    logErrorReport.add(new LogErrorReportImpl(lineIndex, otherTimestamp.getKey(),
+                        header.get(otherTimestamp.getKey()),
+                        "Invalid other timestamp due to wrong format or daylight saving!"));
+                    break;
+                }
+            }
+        }
     }
 
     private void getAttributesMap(
