@@ -34,6 +34,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 import javax.inject.Inject;
@@ -91,6 +92,7 @@ import org.apromore.service.WorkspaceService;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.service.model.ProcessData;
 import org.apromore.util.AccessType;
+import org.apromore.util.StreamUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -869,19 +871,17 @@ public class ManagerServiceImpl implements ManagerService {
   public Boolean isProcessUpdatedWithUserDraft(Integer processId, String processName, String versionNumber,
                                         String nativeType, String username) {
 
-    ProcessModelVersion processModelVersion = procSrv.getProcessModelVersion(processId, TRUNK_NAME, versionNumber);
-    ProcessModelVersion draftProcessModelVersion = procSrv.getProcessModelVersionByUser(processId, DRAFT_BRANCH_NAME,
-            versionNumber, secSrv.getUserByName(username).getId());
-
-    DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
     try {
-      Date d1 = dateFormat.parse(processModelVersion.getLastUpdateDate());
-      Date d2 = dateFormat.parse(draftProcessModelVersion.getLastUpdateDate());
-      return d1.compareTo(d2) > 0;
-    } catch (ParseException e) {
+      ExportFormatResultType exportResult = exportFormat(processId, processName, TRUNK_NAME, versionNumber, nativeType, username);
+      String bpmnXML = StreamUtil.convertStreamToString(exportResult.getNative().getInputStream());
+
+      ExportFormatResultType exportResultDraft = exportFormat(processId, processName, DRAFT_BRANCH_NAME, versionNumber, nativeType, username);
+      String bpmnXmlDraft = StreamUtil.convertStreamToString(exportResultDraft.getNative().getInputStream());
+
+      return Objects.equals(bpmnXML, bpmnXmlDraft);
+    } catch (Exception e) {
       return false;
     }
-
-
   }
+
 }
