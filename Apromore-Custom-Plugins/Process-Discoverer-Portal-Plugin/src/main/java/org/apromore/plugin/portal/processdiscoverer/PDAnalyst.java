@@ -367,7 +367,7 @@ public class PDAnalyst {
     private List<LogFilterRule> copyFilterCriteria(List<LogFilterRule> criteria) {
         return criteria
             .stream()
-            .map(LogFilterRule::clone)
+            .map(LogFilterRule::deepClone)
             .collect(Collectors.toList());
     }
 
@@ -390,7 +390,7 @@ public class PDAnalyst {
     // Apply a filter criterion on top of the current filter criteria
     private boolean filterAdditive(LogFilterRule filterCriterion) throws Exception {
         List<LogFilterRule> criteria = (List<LogFilterRule>) currentFilterCriteria;
-        criteria.add(filterCriterion.clone());
+        criteria.add(filterCriterion.deepClone());
         this.apmLogFilter.filter(criteria);
         if (apmLogFilter.getPLog().getPTraces().isEmpty()) { // Restore to the last state
             criteria.remove(criteria.get(criteria.size() - 1));

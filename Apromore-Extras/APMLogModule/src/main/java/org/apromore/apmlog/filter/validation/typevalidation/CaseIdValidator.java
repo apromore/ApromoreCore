@@ -41,7 +41,7 @@ public class CaseIdValidator extends AbstractLogFilterRuleValidator {
             return createInvalidFilterRuleResult(originalRule);
 
         List<ATrace> traceList = apmLog.getTraces();
-        LogFilterRule cloned = originalRule.clone();
+        LogFilterRule cloned = originalRule.deepClone();
         RuleValue priVal = cloned.getPrimaryValues().iterator().next();
         Set<String> ruleCaseIds = priVal.getCustomAttributes().keySet();
 

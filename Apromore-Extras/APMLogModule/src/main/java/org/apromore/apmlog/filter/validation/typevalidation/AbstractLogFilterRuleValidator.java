@@ -96,7 +96,7 @@ public abstract class AbstractLogFilterRuleValidator {
     }
 
     protected static ValidatedFilterRule replaceLongValues(LogFilterRule originalRule, long from, long to) {
-        LogFilterRule validatedRule = originalRule.clone();
+        LogFilterRule validatedRule = originalRule.deepClone();
 
         for (RuleValue ruleValue : validatedRule.getPrimaryValues()) {
             OperationType operationType = ruleValue.getOperationType();

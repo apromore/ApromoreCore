@@ -30,7 +30,7 @@ public class CaseLengthValidator extends AbstractLogFilterRuleValidator {
 
     public static ValidatedFilterRule validateCaseLength(LogFilterRule originalRule, APMLog apmLog) {
 
-        LogFilterRule clone = originalRule.clone();
+        LogFilterRule clone = originalRule.deepClone();
 
         long[] caseLengthArray = apmLog.getTraces().stream()
                 .mapToLong(x -> x.getActivityInstances().size())

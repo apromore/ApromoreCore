@@ -40,7 +40,7 @@ public class DurationValidator extends AbstractLogFilterRuleValidator {
 
     public static ValidatedFilterRule validateDoubleValues(LogFilterRule originalRule, APMLog apmLog) {
 
-        LogFilterRule validatedRule = originalRule.clone();
+        LogFilterRule validatedRule = originalRule.deepClone();
 
         double[] array = null;
         switch (validatedRule.getFilterType()) {
@@ -95,7 +95,7 @@ public class DurationValidator extends AbstractLogFilterRuleValidator {
 
 
     public static ValidatedFilterRule validateNodeDuration(LogFilterRule originalRule, APMLog apmLog) {
-        LogFilterRule validatedRule = originalRule.clone();
+        LogFilterRule validatedRule = originalRule.deepClone();
 
         Set<String> eventKeys = apmLog.getActivityInstances().stream()
                 .flatMap(x -> x.getAttributes().keySet().stream()).collect(Collectors.toSet());
@@ -134,7 +134,7 @@ public class DurationValidator extends AbstractLogFilterRuleValidator {
 
     public static ValidatedFilterRule validateArcDuration(LogFilterRule originalRule, APMLog apmLog) {
 
-        LogFilterRule validatedRule = originalRule.clone();
+        LogFilterRule validatedRule = originalRule.deepClone();
 
         String attributeKey = validatedRule.getKey();
 
