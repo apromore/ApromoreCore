@@ -28,7 +28,6 @@ package org.apromore.portal.controller;
 
 import java.util.Map;
 import org.apromore.plugin.portal.PortalContext;
-import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.portal.controller.helper.UserMetaDataUtilService;
 import org.apromore.portal.context.PortalPluginResolver;

@@ -135,9 +135,6 @@ public class DiscoverPopupLogSubMenuController extends PopupLogSubMenuController
         popup.appendChild(item);
     }
 
-    private void viewProcessDiscover(UserMetadataSummaryType um) {
-
-    }
     private String getSubMenuImage() {
         String subMenuImagePath = null;
         try {
