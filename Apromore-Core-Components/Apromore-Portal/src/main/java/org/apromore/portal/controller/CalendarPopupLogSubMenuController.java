@@ -41,7 +41,7 @@ import org.zkoss.zul.Menu;
 import org.zkoss.zul.Menupopup;
 
 public class CalendarPopupLogSubMenuController extends PopupLogSubMenuController {
-    private static final Logger LOGGER = PortalLoggerFactory.getLogger(LogFilterPopupLogSubMenuController.class);
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(CalendarPopupLogSubMenuController.class);
 
     public CalendarPopupLogSubMenuController(PopupMenuController popupMenuController,
                                              MainController mainController,

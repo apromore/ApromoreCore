@@ -71,7 +71,7 @@ abstract class PopupLogSubMenuController {
     private static final String CALENDAR_DATA = "CALENDAR_DATA";
 
 
-    public PopupLogSubMenuController(PopupMenuController popupMenuController, MainController mainController,
+    protected PopupLogSubMenuController(PopupMenuController popupMenuController, MainController mainController,
                                      Menupopup popupMenu,
                                      LogSummaryType logSummaryType) {
         this.popupMenuController = popupMenuController;
