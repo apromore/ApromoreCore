@@ -27,8 +27,8 @@
 package org.apromore.portal.dialogController;
 
 import java.io.IOException;
-import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -39,8 +39,11 @@ import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.portal.common.LabelConstants;
-import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.context.PortalPluginResolver;
+import org.apromore.portal.controller.CalendarPopupLogSubMenuController;
+import org.apromore.portal.controller.DashboardPopupLogSubMenuController;
+import org.apromore.portal.controller.DiscoverPopupLogSubMenuController;
+import org.apromore.portal.controller.LogFilterPopupLogSubMenuController;
 import org.apromore.portal.menu.MenuConfig;
 import org.apromore.portal.menu.MenuConfigLoader;
 import org.apromore.portal.menu.MenuGroup;
@@ -48,7 +51,6 @@ import org.apromore.portal.menu.MenuItem;
 import org.apromore.portal.menu.PluginCatalog;
 import org.apromore.portal.model.FolderType;
 import org.apromore.portal.model.LogSummaryType;
-import org.apromore.portal.model.PermissionType;
 import org.apromore.portal.model.UserType;
 import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.zk.notification.Notification;
@@ -59,7 +61,6 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
-import org.zkoss.zul.Menu;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Menupopup;
 import org.zkoss.zul.Menuseparator;
@@ -75,7 +76,6 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 
     protected transient MenuConfigLoader menuConfigLoader;
     protected transient Map<String, PortalPlugin> portalPluginMap;
-    private static final String DISPLAY_NAME_EXP = "displayName";
     private static final String GROUP = "group";
     private static final String ON_CLICK = "onClick";
     private static final String ICON_PLUS = "z-icon-plus-circle";
@@ -87,6 +87,7 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
     private static final String POPUP_MENU_LOG = "LOG";
     private MainController mainController;
     private  int countLog = 0;
+    private static final String FAILED_LOAD_SUB_MENU="Failed to load sub menu";
     @Override
     public void doAfterCompose(Menupopup menuPopup) {
         try {
@@ -137,7 +138,7 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
         }
     }
 
-    private void addMenuitem(Menupopup popup, MenuItem menuItem) {
+    public void addMenuitem(Menupopup popup, MenuItem menuItem) {
         switch (menuItem.getId()) {
             case PluginCatalog.PLUGIN_CUT:
                 addCutMenuItem(popup);
@@ -188,7 +189,7 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
             case PluginCatalog.PLUGIN_DASHBOARD_SUB_MENU:
             case PluginCatalog.PLUGIN_LOG_FILTER_SUB_MENU:
             case PluginCatalog.PLUGIN_APPLY_CALENDAR_SUB_MENU:
-                addSubMenuItem(popup, menuItem.getId());
+                addSubMenuItem(popup,menuItem.getId());
                 return;
         }
         addPluginMenuitem(popup, menuItem);  // handle null or unknown menuitem id
@@ -362,7 +363,8 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
             attrMap.put("portalContext", portalContext);
             attrMap.put("artifactName", selectedItem.getName());
             attrMap.put("logId", selectedItem.getId());
-            attrMap.put("createNewCalendar", true);
+            attrMap.put("FOWARD_FROM_CONTEXT", true);
+            attrMap.put("calendarId", 0L);
             PortalPlugin calendarPlugin = portalPluginMap.get(PluginCatalog.PLUGIN_CALENDAR);
             calendarPlugin.setSimpleParams(attrMap);
             calendarPlugin.execute(portalContext);
@@ -399,80 +401,53 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 
     }
 
-    private void addSubMenuItem(Menupopup popup, String subMenuId) {
+    private void addSubMenuItem(Menupopup popup, String menuId) {
         try {
-            String subMenuImagePath = getSubMenuImage(subMenuId);
-            if (subMenuImagePath == null) {
+            Set<Object> selections = getSelections();
+            if (selections.isEmpty()) {
                 return;
             }
-            MenuConfig menuConfig = menuConfigLoader.getMenuConfig(subMenuId);
-            if (menuConfig.getGroups().isEmpty()) {
-                return;
-            }
+            switch (menuId) {
+                case PluginCatalog.PLUGIN_DISCOVER_MODEL_SUB_MENU:
+                    if (pluginAvailable(PluginCatalog.PLUGIN_DISCOVER_MODEL)) {
+                        new DiscoverPopupLogSubMenuController(this, mainController, popup,
+                            (LogSummaryType) selections.iterator().next());
+                    }
+                    return;
+                case PluginCatalog.PLUGIN_DASHBOARD_SUB_MENU:
+                    if (pluginAvailable(PluginCatalog.PLUGIN_DASHBOARD)) {
+                        new DashboardPopupLogSubMenuController(this, mainController, popup,
+                            (LogSummaryType) selections.iterator().next());
+                    }
+                    return;
+                case PluginCatalog.PLUGIN_LOG_FILTER_SUB_MENU:
+                    if (pluginAvailable(PluginCatalog.PLUGIN_FILTER_LOG)) {
+                        new LogFilterPopupLogSubMenuController(this, mainController, popup,
+                            (LogSummaryType) selections.iterator().next());
+                    }
+                    return;
 
-            MenuGroup menuGroup = menuConfig.getGroups().get(0);
-            if (!menuGroup.getItems().isEmpty()) {
-                Menu subMenu = new Menu();
-                subMenu.setLabel(getGroupLabel(menuGroup));
-                subMenu.setImage(subMenuImagePath);
-                Menupopup menuPopup = new Menupopup();
-                for (MenuItem menuItem : menuGroup.getItems()) {
-                    addMenuitem(menuPopup, menuItem);
-                }
-                subMenu.appendChild(menuPopup);
-                popup.appendChild(subMenu);
+                case PluginCatalog.PLUGIN_APPLY_CALENDAR_SUB_MENU:
+                    if (pluginAvailable(PluginCatalog.PLUGIN_CALENDAR)) {
+                        new CalendarPopupLogSubMenuController(this, mainController, popup,
+                            (LogSummaryType) selections.iterator().next());
+                    }
+                    return;
+                default: return;
             }
 
         } catch (Exception e) {
-            LOGGER.error("Failed to load menu", e);
+            LOGGER.error(FAILED_LOAD_SUB_MENU, e);
         }
+    }
+    private Set<Object> getSelections() {
+        Set<Object> selections = getBaseListboxController().getSelection();
+        if (selections.size() != 1 || !selections.iterator().next().getClass().equals(LogSummaryType.class)) {
+            return Collections.emptySet();
+        }
+        return selections;
     }
 
-    private String getSubMenuImage(String subMenuId) {
-        String subMenuImagePath = null;
-        try {
-            UserType currentUser = UserSessionManager.getCurrentUser();
-            if (currentUser == null) {
-                return null;
-            }
-            if (PluginCatalog.PLUGIN_DISCOVER_MODEL_SUB_MENU.equals(subMenuId)) {
-                if (!currentUser
-                    .hasAnyPermission(PermissionType.MODEL_DISCOVER_EDIT, PermissionType.MODEL_DISCOVER_VIEW)) {
-                    LOGGER.info("User '{}' does not have permission to access process discoverer",
-                        currentUser.getUsername());
-                    return null;
-                }
-                subMenuImagePath = "~./themes/ap/common/img/icons/model-discover.svg";
-            } else if (PluginCatalog.PLUGIN_DASHBOARD_SUB_MENU.equals(subMenuId)) {
-                if (!currentUser.hasAnyPermission(PermissionType.DASH_EDIT, PermissionType.DASH_VIEW)) {
-                    LOGGER.info("User '{}' does not have permission to access dashboard",
-                        currentUser.getUsername());
-                    return null;
-                }
-                subMenuImagePath = "~./themes/ap/common/img/icons/dashboard.svg";
-            } else if (PluginCatalog.PLUGIN_LOG_FILTER_SUB_MENU.equals(subMenuId)) {
-                if (!currentUser
-                    .hasAnyPermission(PermissionType.FILTER_VIEW, PermissionType.FILTER_EDIT)) {
-                    LOGGER.info("User '{}' does not have permission to access log filter",
-                        currentUser.getUsername());
-                    return null;
-                }
-                subMenuImagePath = "~./themes/ap/common/img/icons/filter.svg";
-            } else if (PluginCatalog.PLUGIN_APPLY_CALENDAR_SUB_MENU.equals(subMenuId)) {
-                if (!currentUser.hasAnyPermission(PermissionType.CALENDAR)) {
-                    LOGGER.info("User '{}' does not have permission to access calendar",
-                        currentUser.getUsername());
-                    return null;
-                }
-                subMenuImagePath = "~./themes/ap/common/img/icons/calendar.svg";
-            } else {
-                return null;
-            }
-        } catch (Exception ex) {
-            LOGGER.error("Error in retrieving user permission", ex);
-        }
-        return subMenuImagePath;
-    }
 
     private void addPluginMenuitem(Menupopup popup, MenuItem menuItem) {
         String itemId = menuItem.getId();
@@ -642,28 +617,6 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
             loadError();
         }
     }
-
-    private String getGroupLabel(MenuGroup group) {
-        String groupId = group.getId();
-        String groupLabelExp = group.getLabelExp();
-        String groupLabelKey = group.getLabelKey();
-        String groupLabel = null;
-        if (groupLabelExp != null) {
-            if (DISPLAY_NAME_EXP.equals(groupLabelExp)) {
-                UserType userType = UserSessionManager.getCurrentUser();
-                if (userType != null) {
-                    groupLabel = getDisplayName(userType);
-                }
-            }
-        } else if (groupLabelKey != null) {
-            groupLabel = Labels.getLabel(groupLabelKey, groupId);
-        }
-        if (groupLabel == null) {
-            groupLabel = Labels.getLabel(MessageFormat.format("plugin_{0}_title_text", groupId.toLowerCase()), groupId);
-        }
-        return groupLabel;
-    }
-
     private void loadError() {
         Messagebox.show(Labels.getLabel("portal_failedLoadMenu_message"), "Error", Messagebox.OK, Messagebox.ERROR);
     }
@@ -682,6 +635,15 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
             displayName = displayName.toUpperCase();
         }
         return displayName;
+    }
+    private boolean pluginAvailable(String pluginId) {
+        PortalPlugin plugin = portalPluginMap.get(pluginId);
+        if (plugin == null) {
+            LOGGER.warn("Missing menu item or plugin ");
+            return false;
+        }
+        PortalPlugin.Availability availability = plugin.getAvailability();
+        return !(availability == PortalPlugin.Availability.UNAVAILABLE || availability == PortalPlugin.Availability.HIDDEN);
     }
 
     private BaseListboxController getBaseListboxController() {
