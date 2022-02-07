@@ -101,7 +101,12 @@ public class DashboardPopupLogSubMenuController extends PopupLogSubMenuControlle
         item.setStyle(CENTRE_ALIGN);
         item.addEventListener(ON_CLICK, event -> {
             try {
-                viewAllExistingDashboard();
+                Map<String, Object> attrMap = new HashMap<>();
+                attrMap.put("createNewDashboard", false);
+                attrMap.put("forwardFromPopup", true);
+                PortalPlugin plugin = portalPluginMap.get(PluginCatalog.PLUGIN_DASHBOARD);
+                plugin.setSimpleParams(attrMap);
+                plugin.execute(getPortalContext());
             } catch (Exception ex) {
                 LOGGER.error("Error in forwarding the request", ex);
             }
@@ -115,40 +120,18 @@ public class DashboardPopupLogSubMenuController extends PopupLogSubMenuControlle
         item.setAttribute(USER_META_DATA, um);
         item.addEventListener(ON_CLICK, event -> {
             try {
-                viewExistingDashboard((UserMetadataSummaryType) event.getTarget().getAttribute(USER_META_DATA));
-            } catch (Exception ex) {
-                LOGGER.error("Error in forwarding the request", ex);
+                UserMetadataSummaryType umData= (UserMetadataSummaryType) event.getTarget().getAttribute(USER_META_DATA);
+                Sessions.getCurrent().setAttribute("logSummaries", Collections.singletonList(logSummaryType));
+                Sessions.getCurrent()
+                    .setAttribute("userMetadata_dash", userMetaDataUtilService.getUserMetaDataById(umData.getId()));
+                Clients.evalJavaScript("window.open('dashboard/index.zul')");
+            } catch (Exception e) {
+                LOGGER.error("Error in showing the Dashboard", e);
             }
-        });
+          });
         item.setVisible(visibleOnLoad);
         popup.appendChild(item);
     }
-
-
-    private void viewAllExistingDashboard() {
-        try {
-            Map<String, Object> attrMap = new HashMap<>();
-            attrMap.put("createNewDashboard", false);
-            attrMap.put("forwardFromPopup", true);
-            PortalPlugin plugin = portalPluginMap.get(PluginCatalog.PLUGIN_DASHBOARD);
-            plugin.setSimpleParams(attrMap);
-            plugin.execute(getPortalContext());
-        } catch (Exception e) {
-            LOGGER.error("Error in showing the Dashboard", e);
-        }
-    }
-
-    private void viewExistingDashboard(UserMetadataSummaryType um) {
-        try {
-            Sessions.getCurrent().setAttribute("logSummaries", Collections.singletonList(logSummaryType));
-            Sessions.getCurrent()
-                .setAttribute("userMetadata_dash", userMetaDataUtilService.getUserMetaDataById(um.getId()));
-            Clients.evalJavaScript("window.open('dashboard/index.zul')");
-        } catch (Exception e) {
-            LOGGER.error("Error in showing the Dashboard", e);
-        }
-    }
-
 
     private String getSubMenuImage() {
         String subMenuImagePath = null;

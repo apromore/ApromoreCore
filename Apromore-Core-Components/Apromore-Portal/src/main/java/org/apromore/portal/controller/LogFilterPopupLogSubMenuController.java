@@ -98,11 +98,17 @@ public class LogFilterPopupLogSubMenuController extends PopupLogSubMenuControlle
         item.setLabel("...");
         item.setStyle(CENTRE_ALIGN);
         item.addEventListener(ON_CLICK, event -> {
-            try {
-                viewLogFilter(null);
-            } catch (Exception ex) {
-                LOGGER.error("Error in forwarding the request", ex);
-            }
+                try {
+                    Map<String, Object> attrMap = new HashMap<>();
+                    attrMap.put("FORWARD_FROM_CONTEXT_MENU", true);
+                    attrMap.put("EDIT_FILTER", true);
+                    attrMap.put("USER_METADATA_SUM", null);
+                    PortalPlugin plugin = portalPluginMap.get(PluginCatalog.PLUGIN_FILTER_LOG);
+                    plugin.setSimpleParams(attrMap);
+                    plugin.execute(getPortalContext());
+                } catch (Exception e) {
+                    LOGGER.error("Error in showing the filter log discover model", e);
+                }
         });
         menuPopup.appendChild(item);
     }
@@ -113,31 +119,23 @@ public class LogFilterPopupLogSubMenuController extends PopupLogSubMenuControlle
         item.setAttribute(USER_META_DATA, um);
         item.addEventListener(ON_CLICK, event -> {
             try {
-                viewLogFilter((UserMetadataSummaryType) event.getTarget().getAttribute(USER_META_DATA));
-            } catch (Exception ex) {
-                LOGGER.error("Error in forwarding the request", ex);
+                UserMetadataSummaryType umData= (UserMetadataSummaryType) event.getTarget().getAttribute(USER_META_DATA);
+                Map<String, Object> attrMap = new HashMap<>();
+                attrMap.put("FORWARD_FROM_CONTEXT_MENU", true);
+                attrMap.put("EDIT_FILTER", true);
+                if (umData != null) {
+                    attrMap.put("USER_METADATA_SUM", umData.getId());
+                }
+                PortalPlugin plugin = portalPluginMap.get(PluginCatalog.PLUGIN_FILTER_LOG);
+                plugin.setSimpleParams(attrMap);
+                plugin.execute(getPortalContext());
+            } catch (Exception e) {
+                LOGGER.error("Error in showing the filter log discover model", e);
             }
         });
         item.setVisible(visibleOnLoad);
         popup.appendChild(item);
     }
-
-    private void viewLogFilter(UserMetadataSummaryType um) {
-        try {
-            Map<String, Object> attrMap = new HashMap<>();
-            attrMap.put("FORWARD_FROM_CONTEXT_MENU", true);
-            attrMap.put("EDIT_FILTER", true);
-            if (um != null) {
-                attrMap.put("USER_METADATA_SUM", um.getId());
-            }
-            PortalPlugin plugin = portalPluginMap.get(PluginCatalog.PLUGIN_FILTER_LOG);
-            plugin.setSimpleParams(attrMap);
-            plugin.execute(getPortalContext());
-        } catch (Exception e) {
-            LOGGER.error("Error in showing the filter log discover model", e);
-        }
-    }
-
 
     private String getSubMenuImage() {
         String subMenuImagePath = null;

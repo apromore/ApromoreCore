@@ -35,13 +35,10 @@ import org.apromore.portal.context.PortalPluginResolver;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.dialogController.PopupMenuController;
 import org.apromore.portal.model.LogSummaryType;
-import org.slf4j.Logger;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Menupopup;
 
 abstract class PopupLogSubMenuController {
-    private static final Logger LOGGER = PortalLoggerFactory.getLogger(PopupLogSubMenuController.class);
-
     protected PopupMenuController popupMenuController;
     protected MainController mainController;
     protected Menupopup popupMenu;
