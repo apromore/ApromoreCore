@@ -25,6 +25,7 @@ package org.apromore.service.logimporter.services;
 import static org.apromore.service.logimporter.dateparser.DateUtil.parseToTimestamp;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,12 +46,16 @@ public class LogProcessorImpl implements LogProcessor {
     @Override
     public LogEventModel processLog(List<String> line, List<String> header, LogMetaData logMetaData, int lineIndex,
                                     List<LogErrorReport> logErrorReport) {
-        // Construct an event
 
+        if (logErrorReport == null) {
+            logErrorReport = new ArrayList<>();
+        }
+        int initialErrorLogSize = logErrorReport.size();
+
+        // Construct an event
         HashMap<String, String> caseAttributes = new HashMap<>(logMetaData.getCaseAttributesPos().size());
         HashMap<String, String> eventAttributes = new HashMap<>(logMetaData.getEventAttributesPos().size());
         HashMap<String, Timestamp> otherTimestamps = new HashMap<>(logMetaData.getOtherTimestamps().size());
-        boolean validRow = true;
         maskPos = logMetaData.getMaskPos();
 
         // CaseId
@@ -86,7 +91,6 @@ public class LogProcessorImpl implements LogProcessor {
                     logErrorReport.add(new LogErrorReportImpl(lineIndex, otherTimestamp.getKey(),
                         header.get(otherTimestamp.getKey()),
                         "Invalid other timestamp due to wrong format or daylight saving!"));
-                    validRow = false;
                     break;
                 }
             }
@@ -100,28 +104,19 @@ public class LogProcessorImpl implements LogProcessor {
         String role = getStringAttribute(line, header, logMetaData.getRolePos(), lineIndex, logErrorReport,
             "Role is empty or has a null value!");
 
-        if (caseId == null || caseId.isEmpty()
-            || activity == null || activity.isEmpty()
-            || endTimestamp == null
-            || (logMetaData.getResourcePos() != LogMetaData.HEADER_ABSENT && (resource == null || resource.isEmpty()))
-            || (logMetaData.getRolePos() != LogMetaData.HEADER_ABSENT && (role == null || role.isEmpty()))) {
-            validRow = false;
-        }
-
         // Case Attributes
-        getAttributesMap(line, header, logMetaData.getCaseAttributesPos(), caseAttributes, validRow);
+        getAttributesMap(line, header, logMetaData.getCaseAttributesPos(), caseAttributes);
 
         // Event Attributes
-        getAttributesMap(line, header, logMetaData.getEventAttributesPos(), eventAttributes, validRow);
+        getAttributesMap(line, header, logMetaData.getEventAttributesPos(), eventAttributes);
 
         // Perspective
-        if (validRow && logMetaData.getPerspectivePos() != null && !logMetaData.getPerspectivePos().isEmpty()) {
+        if (logMetaData.getPerspectivePos() != null && !logMetaData.getPerspectivePos().isEmpty()) {
             for (int columnPos : logMetaData.getPerspectivePos()) {
                 String perspective = line.get(columnPos);
                 if (perspective == null || perspective.isEmpty()) {
                     logErrorReport.add(new LogErrorReportImpl(lineIndex, columnPos,
                         header.get(columnPos), "Perspective is empty or has a null value!"));
-                    validRow = false;
                 }
             }
         }
@@ -136,19 +131,21 @@ public class LogProcessorImpl implements LogProcessor {
             .role(role)
             .eventAttributes(eventAttributes)
             .caseAttributes(caseAttributes)
-            .valid(validRow)
+            .valid(initialErrorLogSize == logErrorReport.size())
             .build();
     }
 
     private void getAttributesMap(
         final List<String> line, final List<String> header, List<Integer> attributePositions,
-        final HashMap<String, String> attributeHeaderToValue, boolean validRow) {
+        final HashMap<String, String> attributeHeaderToValue) {
 
-        if (validRow && attributePositions != null && !attributePositions.isEmpty()) {
+        if (attributePositions != null && !attributePositions.isEmpty()) {
             for (int columnPos : attributePositions) {
-                attributeHeaderToValue.put(header.get(columnPos), applyMask(columnPos) ?
-                    FileUtils.sha256Hashing(line.get(columnPos)) :
-                    line.get(columnPos));
+                if (line.size() > columnPos) {
+                    attributeHeaderToValue.put(header.get(columnPos), applyMask(columnPos) ?
+                        FileUtils.sha256Hashing(line.get(columnPos)) :
+                        line.get(columnPos));
+                }
             }
         }
     }
@@ -183,6 +180,7 @@ public class LogProcessorImpl implements LogProcessor {
 
             attributeValue = parseTimestampValue(line.get(attributePosition),
                 timestampFormat, timeZone);
+
             if (logErrorReport != null && attributeValue == null) {
                 logErrorReport.add(new LogErrorReportImpl(lineIndex, attributePosition,
                     header.get(attributePosition), errorMsg));

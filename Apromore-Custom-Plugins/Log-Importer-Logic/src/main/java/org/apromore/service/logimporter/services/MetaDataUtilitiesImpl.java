@@ -35,14 +35,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static org.apromore.service.logimporter.constants.Constants.possibleActivity;
-import static org.apromore.service.logimporter.constants.Constants.possibleCaseId;
-import static org.apromore.service.logimporter.constants.Constants.possibleEndTimestamp;
-import static org.apromore.service.logimporter.constants.Constants.possibleOtherTimestamp;
-import static org.apromore.service.logimporter.constants.Constants.possibleResource;
-import static org.apromore.service.logimporter.constants.Constants.possibleRole;
-import static org.apromore.service.logimporter.constants.Constants.possibleStartTimestamp;
-import static org.apromore.service.logimporter.constants.Constants.timestampPattern;
+import static org.apromore.service.logimporter.constants.Constants.POSSIBLE_ACTIVITY;
+import static org.apromore.service.logimporter.constants.Constants.POSSIBLE_CASE_ID;
+import static org.apromore.service.logimporter.constants.Constants.POSSIBLE_END_TIMESTAMP;
+import static org.apromore.service.logimporter.constants.Constants.POSSIBLE_OTHER_TIMESTAMP;
+import static org.apromore.service.logimporter.constants.Constants.POSSIBLE_RESOURCE;
+import static org.apromore.service.logimporter.constants.Constants.POSSIBLE_ROLE;
+import static org.apromore.service.logimporter.constants.Constants.POSSIBLE_START_TIMESTAMP;
+import static org.apromore.service.logimporter.constants.Constants.TIMESTAMP_PATTERN;
 import static org.apromore.service.logimporter.dateparser.DateUtil.determineDateFormat;
 import static org.apromore.service.logimporter.dateparser.DateUtil.parseToTimestamp;
 
@@ -88,21 +88,21 @@ public class MetaDataUtilitiesImpl implements MetaDataUtilities {
 
         for (int pos = 0; pos < logMetaData.getHeader().size(); pos++) {
             String value = logMetaData.getHeader().get(pos);
-            if (this.logMetaData.getCaseIdPos() == -1 && match(possibleCaseId, value)) {
+            if (this.logMetaData.getCaseIdPos() == -1 && match(POSSIBLE_CASE_ID, value)) {
                 this.logMetaData.setCaseIdPos(pos);
-            } else if (this.logMetaData.getActivityPos() == -1 && match(possibleActivity, value)) {
+            } else if (this.logMetaData.getActivityPos() == -1 && match(POSSIBLE_ACTIVITY, value)) {
                 this.logMetaData.setActivityPos(pos);
-            } else if (this.logMetaData.getEndTimestampPos() == -1 && match(possibleEndTimestamp, value) &&
+            } else if (this.logMetaData.getEndTimestampPos() == -1 && match(POSSIBLE_END_TIMESTAMP, value) &&
                 isTimestamp(pos, this.lines)) {
                 this.logMetaData.setEndTimestampPos(pos);
                 this.logMetaData.setEndTimestampFormat(detectDateTimeFormat(pos));
-            } else if (this.logMetaData.getStartTimestampPos() == -1 && match(possibleStartTimestamp, value) &&
+            } else if (this.logMetaData.getStartTimestampPos() == -1 && match(POSSIBLE_START_TIMESTAMP, value) &&
                 isTimestamp(pos, this.lines)) {
                 this.logMetaData.setStartTimestampPos(pos);
                 this.logMetaData.setStartTimestampFormat(detectDateTimeFormat(pos));
-            } else if (this.logMetaData.getResourcePos() == -1 && match(possibleResource, value)) {
+            } else if (this.logMetaData.getResourcePos() == -1 && match(POSSIBLE_RESOURCE, value)) {
                 this.logMetaData.setResourcePos(pos);
-            } else if (this.logMetaData.getRolePos() == -1 && match(possibleRole, value)) {
+            } else if (this.logMetaData.getRolePos() == -1 && match(POSSIBLE_ROLE, value)) {
                 this.logMetaData.setRolePos(pos);
             }
         }
@@ -169,12 +169,12 @@ public class MetaDataUtilitiesImpl implements MetaDataUtilities {
     }
 
     private boolean couldBeTimestamp(int pos) {
-        if (match(possibleOtherTimestamp, logMetaData.getHeader().get(pos))) {
+        if (match(POSSIBLE_OTHER_TIMESTAMP, logMetaData.getHeader().get(pos))) {
             return true;
         }
 
         for (List<String> myLine : lines) {
-            if (match(timestampPattern, myLine.get(pos))) {
+            if (match(TIMESTAMP_PATTERN, myLine.get(pos))) {
                 return true;
             }
         }
