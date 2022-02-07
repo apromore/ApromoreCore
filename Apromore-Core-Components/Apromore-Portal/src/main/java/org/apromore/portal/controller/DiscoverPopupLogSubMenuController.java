@@ -25,7 +25,11 @@
  */
 package org.apromore.portal.controller;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.apromore.plugin.portal.PortalLoggerFactory;
+import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.dialogController.PopupMenuController;
@@ -33,10 +37,12 @@ import org.apromore.portal.menu.MenuItem;
 import org.apromore.portal.menu.PluginCatalog;
 import org.apromore.portal.model.LogSummaryType;
 import org.apromore.portal.model.PermissionType;
+import org.apromore.portal.model.UserMetadataSummaryType;
 import org.apromore.portal.model.UserType;
 import org.slf4j.Logger;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zul.Menu;
+import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Menupopup;
 
 public class DiscoverPopupLogSubMenuController extends PopupLogSubMenuController {
@@ -59,13 +65,76 @@ public class DiscoverPopupLogSubMenuController extends PopupLogSubMenuController
             Menupopup menuPopup = new Menupopup();
             popupMenuController.addMenuitem(menuPopup, new MenuItem(PluginCatalog.PLUGIN_VIEW_FULL_LOG_DISCOVER_MODEL));
             fetchAndConstructMenu(menuPopup,
-                userMetaDataUtilService.getUserMetadataSummariesForFilter(logSummaryType.getId()), SUB_MENU_FOR_PD,
-                true);
+                userMetaDataUtilService.getUserMetadataSummariesForFilter(logSummaryType.getId()),true);
             subMenu.appendChild(menuPopup);
             popupMenu.appendChild(subMenu);
         }
     }
+    private void fetchAndConstructMenu(Menupopup menuPopup, List<UserMetadataSummaryType> summaryTypes,
+                                       boolean separatorRequired) {
+        if (!summaryTypes.isEmpty()) {
+            if (separatorRequired) {
+                popupMenuController.addMenuitem(menuPopup, new MenuItem(PluginCatalog.ITEM_SEPARATOR));
+            }
+            int index = 1;
+            for (UserMetadataSummaryType um : summaryTypes) {
+                if (index <= SUBMENU_SIZE) {
+                    addMenuItem(menuPopup, um, true);
+                    if (index == SUBMENU_SIZE && index < summaryTypes.size()) {
+                        addOptionToViewMoreMenuItems(menuPopup);
+                        break;
+                    }
+                }
+                index++;
+            }
+        }
+    }
 
+
+    private void addOptionToViewMoreMenuItems(Menupopup menuPopup) {
+        Menuitem item = new Menuitem();
+        item.setLabel("...");
+        item.setStyle(CENTRE_ALIGN);
+        item.addEventListener(ON_CLICK, event -> {
+            try {
+                viewProcessDiscover(null);
+            } catch (Exception ex) {
+                LOGGER.error("Error in forwarding the request", ex);
+            }
+        });
+        menuPopup.appendChild(item);
+    }
+
+    private void addMenuItem(Menupopup popup, UserMetadataSummaryType um, boolean visibleOnLoad) {
+        Menuitem item = new Menuitem();
+        item.setLabel(um.getName());
+        item.setAttribute(USER_META_DATA, um);
+        item.addEventListener(ON_CLICK, event -> {
+            try {
+                viewProcessDiscover((UserMetadataSummaryType) event.getTarget().getAttribute(USER_META_DATA));
+            } catch (Exception ex) {
+                LOGGER.error("Error in forwarding the request", ex);
+            }
+        });
+        item.setVisible(visibleOnLoad);
+        popup.appendChild(item);
+    }
+
+    private void viewProcessDiscover(UserMetadataSummaryType um) {
+        try {
+            Map<String, Object> attrMap = new HashMap<>();
+            attrMap.put("FORWARD_FROM_CONTEXT_MENU", true);
+            attrMap.put("EDIT_FILTER", false);
+            if (um != null) {
+                attrMap.put("USER_METADATA_SUM", um.getId());
+            }
+            PortalPlugin plugin = portalPluginMap.get(PluginCatalog.PLUGIN_FILTER_LOG);
+            plugin.setSimpleParams(attrMap);
+            plugin.execute(getPortalContext());
+        } catch (Exception e) {
+            LOGGER.error("Error in showing the filter log discover model", e);
+        }
+    }
     private String getSubMenuImage() {
         String subMenuImagePath = null;
         try {

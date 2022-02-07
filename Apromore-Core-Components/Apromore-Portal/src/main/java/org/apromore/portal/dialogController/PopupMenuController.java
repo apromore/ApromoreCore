@@ -186,16 +186,10 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
                 addExistingLogFilterViewMenuItem(popup);
                 return;
             case PluginCatalog.PLUGIN_DISCOVER_MODEL_SUB_MENU:
-                addProcessDiscoverSubMenuItem(popup);
-                return;
             case PluginCatalog.PLUGIN_DASHBOARD_SUB_MENU:
-                addDashboardSubMenuItem(popup);
-                return;
             case PluginCatalog.PLUGIN_LOG_FILTER_SUB_MENU:
-                addLogFilterSubMenuItem(popup);
-                return;
             case PluginCatalog.PLUGIN_APPLY_CALENDAR_SUB_MENU:
-                addCalendarSubMenuItem(popup);
+                addSubMenuItem(popup,menuItem.getId());
                 return;
         }
         addPluginMenuitem(popup, menuItem);  // handle null or unknown menuitem id
@@ -407,66 +401,45 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 
     }
 
-    private void addProcessDiscoverSubMenuItem(Menupopup popup) {
+    private void addSubMenuItem(Menupopup popup, String menuId) {
         try {
             Set<Object> selections = getSelections();
             if (selections.isEmpty()) {
                 return;
             }
-            if (pluginAvailable(PluginCatalog.PLUGIN_DISCOVER_MODEL)) {
-                new DiscoverPopupLogSubMenuController(this, mainController, popup,
-                    (LogSummaryType) selections.iterator().next());
+            switch (menuId) {
+                case PluginCatalog.PLUGIN_DISCOVER_MODEL_SUB_MENU:
+                    if (pluginAvailable(PluginCatalog.PLUGIN_DISCOVER_MODEL)) {
+                        new DiscoverPopupLogSubMenuController(this, mainController, popup,
+                            (LogSummaryType) selections.iterator().next());
+                    }
+                    return;
+                case PluginCatalog.PLUGIN_DASHBOARD_SUB_MENU:
+                    if (pluginAvailable(PluginCatalog.PLUGIN_DASHBOARD)) {
+                        new DashboardPopupLogSubMenuController(this, mainController, popup,
+                            (LogSummaryType) selections.iterator().next());
+                    }
+                    return;
+                case PluginCatalog.PLUGIN_LOG_FILTER_SUB_MENU:
+                    if (pluginAvailable(PluginCatalog.PLUGIN_FILTER_LOG)) {
+                        new LogFilterPopupLogSubMenuController(this, mainController, popup,
+                            (LogSummaryType) selections.iterator().next());
+                    }
+                    return;
+
+                case PluginCatalog.PLUGIN_APPLY_CALENDAR_SUB_MENU:
+                    if (pluginAvailable(PluginCatalog.PLUGIN_CALENDAR)) {
+                        new CalendarPopupLogSubMenuController(this, mainController, popup,
+                            (LogSummaryType) selections.iterator().next());
+                    }
+                    return;
+                default: return;
             }
-            } catch (Exception e) {
-            LOGGER.error(FAILED_LOAD_SUB_MENU, e);
-        }
-    }
-    private void addLogFilterSubMenuItem(Menupopup popup) {
-        try {
-            Set<Object> selections = getSelections();
-            if (selections.isEmpty()) {
-                return;
-            }
-            if (pluginAvailable(PluginCatalog.PLUGIN_FILTER_LOG)) {
-                new LogFilterPopupLogSubMenuController(this, mainController, popup,
-                    (LogSummaryType) selections.iterator().next());
-            }
+
         } catch (Exception e) {
             LOGGER.error(FAILED_LOAD_SUB_MENU, e);
         }
     }
-
-    private void addDashboardSubMenuItem(Menupopup popup) {
-        try {
-            Set<Object> selections = getSelections();
-            if (selections.isEmpty()) {
-                return;
-            }
-            if (pluginAvailable(PluginCatalog.PLUGIN_DASHBOARD)) {
-                new DashboardPopupLogSubMenuController(this, mainController, popup,
-                    (LogSummaryType) selections.iterator().next());
-            }
-        } catch (Exception e) {
-            LOGGER.error(FAILED_LOAD_SUB_MENU, e);
-        }
-    }
-
-    private void addCalendarSubMenuItem(Menupopup popup) {
-        try {
-            Set<Object> selections = getSelections();
-            if (selections.isEmpty()) {
-                return;
-            }
-            if (pluginAvailable(PluginCatalog.PLUGIN_CALENDAR)) {
-                new CalendarPopupLogSubMenuController(this, mainController, popup,
-                    (LogSummaryType) selections.iterator().next());
-            }
-        } catch (Exception e) {
-            LOGGER.error(FAILED_LOAD_SUB_MENU, e);
-        }
-    }
-
-
     private Set<Object> getSelections() {
         Set<Object> selections = getBaseListboxController().getSelection();
         if (selections.size() != 1 || !selections.iterator().next().getClass().equals(LogSummaryType.class)) {

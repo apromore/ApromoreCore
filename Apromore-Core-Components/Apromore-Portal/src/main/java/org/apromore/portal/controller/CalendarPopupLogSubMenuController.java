@@ -23,10 +23,14 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+
 package org.apromore.portal.controller;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.plugin.portal.PortalLoggerFactory;
+import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.dialogController.PopupMenuController;
@@ -38,15 +42,15 @@ import org.apromore.portal.model.UserType;
 import org.slf4j.Logger;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zul.Menu;
+import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Menupopup;
+import org.zkoss.zul.Messagebox;
 
 public class CalendarPopupLogSubMenuController extends PopupLogSubMenuController {
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(CalendarPopupLogSubMenuController.class);
 
-    public CalendarPopupLogSubMenuController(PopupMenuController popupMenuController,
-                                             MainController mainController,
-                                             Menupopup popupMenu,
-                                             LogSummaryType logSummaryType) {
+    public CalendarPopupLogSubMenuController(PopupMenuController popupMenuController, MainController mainController,
+                                             Menupopup popupMenu, LogSummaryType logSummaryType) {
         super(popupMenuController, mainController, popupMenu, logSummaryType);
         constructMenu();
     }
@@ -63,11 +67,38 @@ public class CalendarPopupLogSubMenuController extends PopupLogSubMenuController
             if (mainController.getEventLogService().getCalendarIdFromLog(logSummaryType.getId()) > 0) {
                 calendarModel = mainController.getEventLogService().getCalendarFromLog(logSummaryType.getId());
             }
-            fetchAndConstructMenuForCalendar(menuPopup, calendarModel, SUB_MENU_FOR_CALENDAR, true);
+            fetchAndConstructMenuForCalendar(menuPopup, calendarModel);
             subMenu.appendChild(menuPopup);
             popupMenu.appendChild(subMenu);
         }
     }
+
+    private void fetchAndConstructMenuForCalendar(Menupopup menuPopup, CalendarModel calendarModel) {
+        if (calendarModel != null) {
+            popupMenuController.addMenuitem(menuPopup, new MenuItem(PluginCatalog.ITEM_SEPARATOR));
+            Menuitem item = new Menuitem();
+            item.setLabel(calendarModel.getName());
+            item.setAttribute(CALENDAR_DATA, calendarModel);
+            item.addEventListener(ON_CLICK, event -> {
+                try {
+                    CalendarModel model = (CalendarModel) event.getTarget().getAttribute(CALENDAR_DATA);
+                    Map<String, Object> attrMap = new HashMap<>();
+                    attrMap.put("artifactName", model.getName());
+                    attrMap.put("logId", logSummaryType.getId());
+                    attrMap.put("calendarId", model.getId());
+                    attrMap.put("FOWARD_FROM_CONTEXT", true);
+                    PortalPlugin calendarPlugin = portalPluginMap.get(PluginCatalog.PLUGIN_CALENDAR);
+                    calendarPlugin.setSimpleParams(attrMap);
+                    calendarPlugin.execute(getPortalContext());
+                } catch (Exception e) {
+                    LOGGER.error(Labels.getLabel("portal_failedLaunchCustomCalendar_message"), e);
+                    Messagebox.show(Labels.getLabel("portal_failedLaunchCustomCalendar_message"));
+                }
+            });
+            menuPopup.appendChild(item);
+        }
+    }
+
 
     private String getSubMenuImage() {
         String subMenuImagePath = null;
@@ -77,8 +108,7 @@ public class CalendarPopupLogSubMenuController extends PopupLogSubMenuController
                 return null;
             }
             if (!currentUser.hasAnyPermission(PermissionType.CALENDAR)) {
-                LOGGER.info("User '{}' does not have permission to access calendar",
-                    currentUser.getUsername());
+                LOGGER.info("User '{}' does not have permission to access calendar", currentUser.getUsername());
                 return null;
             }
             subMenuImagePath = "~./themes/ap/common/img/icons/calendar.svg";

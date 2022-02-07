@@ -23,9 +23,15 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+
 package org.apromore.portal.controller;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.apromore.plugin.portal.PortalLoggerFactory;
+import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.dialogController.PopupMenuController;
@@ -33,10 +39,14 @@ import org.apromore.portal.menu.MenuItem;
 import org.apromore.portal.menu.PluginCatalog;
 import org.apromore.portal.model.LogSummaryType;
 import org.apromore.portal.model.PermissionType;
+import org.apromore.portal.model.UserMetadataSummaryType;
 import org.apromore.portal.model.UserType;
 import org.slf4j.Logger;
 import org.zkoss.util.resource.Labels;
+import org.zkoss.zk.ui.Sessions;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Menu;
+import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Menupopup;
 
 public class DashboardPopupLogSubMenuController extends PopupLogSubMenuController {
@@ -59,12 +69,86 @@ public class DashboardPopupLogSubMenuController extends PopupLogSubMenuControlle
             Menupopup menuPopup = new Menupopup();
             popupMenuController.addMenuitem(menuPopup, new MenuItem(PluginCatalog.PLUGIN_CREATE_NEW_DASHBOARD));
             fetchAndConstructMenu(menuPopup,
-                userMetaDataUtilService.getUserMetadataSummariesForDashboard(logSummaryType.getId()),
-                SUB_MENU_FOR_DASHBOARD, true);
+                userMetaDataUtilService.getUserMetadataSummariesForDashboard(logSummaryType.getId()), true);
             subMenu.appendChild(menuPopup);
             popupMenu.appendChild(subMenu);
         }
     }
+
+    private void fetchAndConstructMenu(Menupopup menuPopup, List<UserMetadataSummaryType> summaryTypes,
+                                       boolean separatorRequired) {
+        if (!summaryTypes.isEmpty()) {
+            if (separatorRequired) {
+                popupMenuController.addMenuitem(menuPopup, new MenuItem(PluginCatalog.ITEM_SEPARATOR));
+            }
+            int index = 1;
+            for (UserMetadataSummaryType um : summaryTypes) {
+                if (index <= SUBMENU_SIZE) {
+                    addMenuItem(menuPopup, um, true);
+                    if (index == SUBMENU_SIZE && index < summaryTypes.size()) {
+                        addOptionToViewMoreMenuItems(menuPopup);
+                        break;
+                    }
+                }
+                index++;
+            }
+        }
+    }
+
+    private void addOptionToViewMoreMenuItems(Menupopup menuPopup) {
+        Menuitem item = new Menuitem();
+        item.setLabel("...");
+        item.setStyle(CENTRE_ALIGN);
+        item.addEventListener(ON_CLICK, event -> {
+            try {
+                viewAllExistingDashboard();
+            } catch (Exception ex) {
+                LOGGER.error("Error in forwarding the request", ex);
+            }
+        });
+        menuPopup.appendChild(item);
+    }
+
+    private void addMenuItem(Menupopup popup, UserMetadataSummaryType um, boolean visibleOnLoad) {
+        Menuitem item = new Menuitem();
+        item.setLabel(um.getName());
+        item.setAttribute(USER_META_DATA, um);
+        item.addEventListener(ON_CLICK, event -> {
+            try {
+                viewExistingDashboard((UserMetadataSummaryType) event.getTarget().getAttribute(USER_META_DATA));
+            } catch (Exception ex) {
+                LOGGER.error("Error in forwarding the request", ex);
+            }
+        });
+        item.setVisible(visibleOnLoad);
+        popup.appendChild(item);
+    }
+
+
+    private void viewAllExistingDashboard() {
+        try {
+            Map<String, Object> attrMap = new HashMap<>();
+            attrMap.put("createNewDashboard", false);
+            attrMap.put("forwardFromPopup", true);
+            PortalPlugin plugin = portalPluginMap.get(PluginCatalog.PLUGIN_DASHBOARD);
+            plugin.setSimpleParams(attrMap);
+            plugin.execute(getPortalContext());
+        } catch (Exception e) {
+            LOGGER.error("Error in showing the Dashboard", e);
+        }
+    }
+
+    private void viewExistingDashboard(UserMetadataSummaryType um) {
+        try {
+            Sessions.getCurrent().setAttribute("logSummaries", Collections.singletonList(logSummaryType));
+            Sessions.getCurrent()
+                .setAttribute("userMetadata_dash", userMetaDataUtilService.getUserMetaDataById(um.getId()));
+            Clients.evalJavaScript("window.open('dashboard/index.zul')");
+        } catch (Exception e) {
+            LOGGER.error("Error in showing the Dashboard", e);
+        }
+    }
+
 
     private String getSubMenuImage() {
         String subMenuImagePath = null;
