@@ -65,7 +65,7 @@ public class LogFilterPopupLogSubMenuController extends PopupLogSubMenuControlle
             subMenu.setImage(subMenuImage);
             Menupopup menuPopup = new Menupopup();
             popupMenuController.addMenuitem(menuPopup, new MenuItem(PluginCatalog.PLUGIN_CREATE_NEW_LOG_FILTER));
-            fetchAndConstructMenu(menuPopup,
+            fetchAndConstructMenuForLogFilter(menuPopup,
                 userMetaDataUtilService.getUserMetadataSummariesForFilter(logSummaryType.getId()),
                 true);
             subMenu.appendChild(menuPopup);
@@ -73,8 +73,8 @@ public class LogFilterPopupLogSubMenuController extends PopupLogSubMenuControlle
         }
     }
 
-    private void fetchAndConstructMenu(Menupopup menuPopup, List<UserMetadataSummaryType> summaryTypes,
-                                       boolean separatorRequired) {
+    private void fetchAndConstructMenuForLogFilter(Menupopup menuPopup, List<UserMetadataSummaryType> summaryTypes,
+                                                   boolean separatorRequired) {
         if (!summaryTypes.isEmpty()) {
             if (separatorRequired) {
                 popupMenuController.addMenuitem(menuPopup, new MenuItem(PluginCatalog.ITEM_SEPARATOR));
@@ -82,9 +82,9 @@ public class LogFilterPopupLogSubMenuController extends PopupLogSubMenuControlle
             int index = 1;
             for (UserMetadataSummaryType um : summaryTypes) {
                 if (index <= SUBMENU_SIZE) {
-                    addMenuItem(menuPopup, um, true);
+                    addMenuItemForLogFilter(menuPopup, um, true);
                     if (index == SUBMENU_SIZE && index < summaryTypes.size()) {
-                        addOptionToViewMoreMenuItems(menuPopup);
+                        addOptionToViewMoreMenuItemsForLogFilter(menuPopup);
                         break;
                     }
                 }
@@ -93,44 +93,43 @@ public class LogFilterPopupLogSubMenuController extends PopupLogSubMenuControlle
         }
     }
 
-    private void addOptionToViewMoreMenuItems(Menupopup menuPopup) {
+    private void addOptionToViewMoreMenuItemsForLogFilter(Menupopup menuPopup) {
         Menuitem item = new Menuitem();
         item.setLabel("...");
         item.setStyle(CENTRE_ALIGN);
         item.addEventListener(ON_CLICK, event -> {
-                try {
-                    Map<String, Object> attrMap = new HashMap<>();
-                    attrMap.put("FORWARD_FROM_CONTEXT_MENU", true);
-                    attrMap.put("EDIT_FILTER", true);
-                    attrMap.put("USER_METADATA_SUM", null);
-                    PortalPlugin plugin = portalPluginMap.get(PluginCatalog.PLUGIN_FILTER_LOG);
-                    plugin.setSimpleParams(attrMap);
-                    plugin.execute(getPortalContext());
-                } catch (Exception e) {
-                    LOGGER.error("Error in showing the filter log discover model", e);
-                }
+            viewLogFilter(null);
         });
         menuPopup.appendChild(item);
     }
 
-    private void addMenuItem(Menupopup popup, UserMetadataSummaryType um, boolean visibleOnLoad) {
+    private void viewLogFilter(UserMetadataSummaryType umData) {
+        try {
+            Map<String, Object> attrMap = new HashMap<>();
+            attrMap.put("FORWARD_FROM_CONTEXT_MENU", true);
+            attrMap.put("EDIT_FILTER", true);
+            if (umData != null) {
+                attrMap.put("USER_METADATA_SUM", umData.getId());
+            } else {
+                attrMap.put("USER_METADATA_SUM", null);
+            }
+            PortalPlugin plugin = portalPluginMap.get(PluginCatalog.PLUGIN_FILTER_LOG);
+            plugin.setSimpleParams(attrMap);
+            plugin.execute(getPortalContext());
+        } catch (Exception e) {
+            LOGGER.error("Error in showing the filter log discover model", e);
+        }
+    }
+
+    private void addMenuItemForLogFilter(Menupopup popup, UserMetadataSummaryType um, boolean visibleOnLoad) {
         Menuitem item = new Menuitem();
         item.setLabel(um.getName());
         item.setAttribute(USER_META_DATA, um);
         item.addEventListener(ON_CLICK, event -> {
             try {
-                UserMetadataSummaryType umData= (UserMetadataSummaryType) event.getTarget().getAttribute(USER_META_DATA);
-                Map<String, Object> attrMap = new HashMap<>();
-                attrMap.put("FORWARD_FROM_CONTEXT_MENU", true);
-                attrMap.put("EDIT_FILTER", true);
-                if (umData != null) {
-                    attrMap.put("USER_METADATA_SUM", umData.getId());
-                }
-                PortalPlugin plugin = portalPluginMap.get(PluginCatalog.PLUGIN_FILTER_LOG);
-                plugin.setSimpleParams(attrMap);
-                plugin.execute(getPortalContext());
-            } catch (Exception e) {
-                LOGGER.error("Error in showing the filter log discover model", e);
+                viewLogFilter((UserMetadataSummaryType) event.getTarget().getAttribute(USER_META_DATA));
+            } catch (Exception ex) {
+                LOGGER.error("Error in showing the filter log discover model", ex);
             }
         });
         item.setVisible(visibleOnLoad);

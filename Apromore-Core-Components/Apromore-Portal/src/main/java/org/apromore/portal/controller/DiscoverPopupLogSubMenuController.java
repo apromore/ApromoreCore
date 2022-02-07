@@ -23,6 +23,7 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+
 package org.apromore.portal.controller;
 
 import java.util.HashMap;
@@ -64,14 +65,15 @@ public class DiscoverPopupLogSubMenuController extends PopupLogSubMenuController
             subMenu.setImage(subMenuImage);
             Menupopup menuPopup = new Menupopup();
             popupMenuController.addMenuitem(menuPopup, new MenuItem(PluginCatalog.PLUGIN_VIEW_FULL_LOG_DISCOVER_MODEL));
-            fetchAndConstructMenu(menuPopup,
-                userMetaDataUtilService.getUserMetadataSummariesForFilter(logSummaryType.getId()),true);
+            fetchAndConstructMenuForPd(menuPopup,
+                userMetaDataUtilService.getUserMetadataSummariesForFilter(logSummaryType.getId()), true);
             subMenu.appendChild(menuPopup);
             popupMenu.appendChild(subMenu);
         }
     }
-    private void fetchAndConstructMenu(Menupopup menuPopup, List<UserMetadataSummaryType> summaryTypes,
-                                       boolean separatorRequired) {
+
+    private void fetchAndConstructMenuForPd(Menupopup menuPopup, List<UserMetadataSummaryType> summaryTypes,
+                                            boolean separatorRequired) {
         if (!summaryTypes.isEmpty()) {
             if (separatorRequired) {
                 popupMenuController.addMenuitem(menuPopup, new MenuItem(PluginCatalog.ITEM_SEPARATOR));
@@ -79,9 +81,9 @@ public class DiscoverPopupLogSubMenuController extends PopupLogSubMenuController
             int index = 1;
             for (UserMetadataSummaryType um : summaryTypes) {
                 if (index <= SUBMENU_SIZE) {
-                    addMenuItem(menuPopup, um, true);
+                    addMenuItemForPd(menuPopup, um, true);
                     if (index == SUBMENU_SIZE && index < summaryTypes.size()) {
-                        addOptionToViewMoreMenuItems(menuPopup);
+                        addOptionToViewMoreMenuItemsForPd(menuPopup);
                         break;
                     }
                 }
@@ -90,43 +92,41 @@ public class DiscoverPopupLogSubMenuController extends PopupLogSubMenuController
         }
     }
 
-
-    private void addOptionToViewMoreMenuItems(Menupopup menuPopup) {
+    private void addOptionToViewMoreMenuItemsForPd(Menupopup menuPopup) {
         Menuitem item = new Menuitem();
         item.setLabel("...");
         item.setStyle(CENTRE_ALIGN);
         item.addEventListener(ON_CLICK, event -> {
-            try {
-                Map<String, Object> attrMap = new HashMap<>();
-                attrMap.put("FORWARD_FROM_CONTEXT_MENU", true);
-                attrMap.put("EDIT_FILTER", false);
-                attrMap.put("USER_METADATA_SUM", null);
-                PortalPlugin plugin = portalPluginMap.get(PluginCatalog.PLUGIN_FILTER_LOG);
-                plugin.setSimpleParams(attrMap);
-                plugin.execute(getPortalContext());
-            } catch (Exception e) {
-                LOGGER.error("Error in showing the filter log discover model", e);
-            }
+            viewProcessDiscovery(null);
         });
         menuPopup.appendChild(item);
     }
 
-    private void addMenuItem(Menupopup popup, UserMetadataSummaryType um, boolean visibleOnLoad) {
+    private void viewProcessDiscovery(UserMetadataSummaryType umData) {
+        try {
+            Map<String, Object> attrMap = new HashMap<>();
+            attrMap.put("FORWARD_FROM_CONTEXT_MENU", true);
+            attrMap.put("EDIT_FILTER", false);
+            if (umData != null) {
+                attrMap.put("USER_METADATA_SUM", umData.getId());
+            } else {
+                attrMap.put("USER_METADATA_SUM", null);
+            }
+            PortalPlugin plugin = portalPluginMap.get(PluginCatalog.PLUGIN_FILTER_LOG);
+            plugin.setSimpleParams(attrMap);
+            plugin.execute(getPortalContext());
+        } catch (Exception e) {
+            LOGGER.error("Error in showing the filter log discover model", e);
+        }
+    }
+
+    private void addMenuItemForPd(Menupopup popup, UserMetadataSummaryType um, boolean visibleOnLoad) {
         Menuitem item = new Menuitem();
         item.setLabel(um.getName());
         item.setAttribute(USER_META_DATA, um);
         item.addEventListener(ON_CLICK, event -> {
-             try {
-                UserMetadataSummaryType umData= (UserMetadataSummaryType) event.getTarget().getAttribute(USER_META_DATA);
-                Map<String, Object> attrMap = new HashMap<>();
-                attrMap.put("FORWARD_FROM_CONTEXT_MENU", true);
-                attrMap.put("EDIT_FILTER", false);
-                if (umData != null) {
-                    attrMap.put("USER_METADATA_SUM", umData.getId());
-                }
-                PortalPlugin plugin = portalPluginMap.get(PluginCatalog.PLUGIN_FILTER_LOG);
-                plugin.setSimpleParams(attrMap);
-                plugin.execute(getPortalContext());
+            try {
+                viewProcessDiscovery((UserMetadataSummaryType) event.getTarget().getAttribute(USER_META_DATA));
             } catch (Exception e) {
                 LOGGER.error("Error in showing the filter log discover model", e);
             }

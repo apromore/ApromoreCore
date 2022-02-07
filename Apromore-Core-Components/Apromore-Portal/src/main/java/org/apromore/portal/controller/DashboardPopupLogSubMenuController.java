@@ -68,15 +68,15 @@ public class DashboardPopupLogSubMenuController extends PopupLogSubMenuControlle
             subMenu.setImage(subMenuImage);
             Menupopup menuPopup = new Menupopup();
             popupMenuController.addMenuitem(menuPopup, new MenuItem(PluginCatalog.PLUGIN_CREATE_NEW_DASHBOARD));
-            fetchAndConstructMenu(menuPopup,
+            fetchAndConstructMenuForDb(menuPopup,
                 userMetaDataUtilService.getUserMetadataSummariesForDashboard(logSummaryType.getId()), true);
             subMenu.appendChild(menuPopup);
             popupMenu.appendChild(subMenu);
         }
     }
 
-    private void fetchAndConstructMenu(Menupopup menuPopup, List<UserMetadataSummaryType> summaryTypes,
-                                       boolean separatorRequired) {
+    private void fetchAndConstructMenuForDb(Menupopup menuPopup, List<UserMetadataSummaryType> summaryTypes,
+                                            boolean separatorRequired) {
         if (!summaryTypes.isEmpty()) {
             if (separatorRequired) {
                 popupMenuController.addMenuitem(menuPopup, new MenuItem(PluginCatalog.ITEM_SEPARATOR));
@@ -84,9 +84,9 @@ public class DashboardPopupLogSubMenuController extends PopupLogSubMenuControlle
             int index = 1;
             for (UserMetadataSummaryType um : summaryTypes) {
                 if (index <= SUBMENU_SIZE) {
-                    addMenuItem(menuPopup, um, true);
+                    addMenuItemForDb(menuPopup, um, true);
                     if (index == SUBMENU_SIZE && index < summaryTypes.size()) {
-                        addOptionToViewMoreMenuItems(menuPopup);
+                        addOptionToViewMoreMenuItemsForDb(menuPopup);
                         break;
                     }
                 }
@@ -95,7 +95,7 @@ public class DashboardPopupLogSubMenuController extends PopupLogSubMenuControlle
         }
     }
 
-    private void addOptionToViewMoreMenuItems(Menupopup menuPopup) {
+    private void addOptionToViewMoreMenuItemsForDb(Menupopup menuPopup) {
         Menuitem item = new Menuitem();
         item.setLabel("...");
         item.setStyle(CENTRE_ALIGN);
@@ -114,13 +114,14 @@ public class DashboardPopupLogSubMenuController extends PopupLogSubMenuControlle
         menuPopup.appendChild(item);
     }
 
-    private void addMenuItem(Menupopup popup, UserMetadataSummaryType um, boolean visibleOnLoad) {
+    private void addMenuItemForDb(Menupopup popup, UserMetadataSummaryType um, boolean visibleOnLoad) {
         Menuitem item = new Menuitem();
         item.setLabel(um.getName());
         item.setAttribute(USER_META_DATA, um);
         item.addEventListener(ON_CLICK, event -> {
             try {
-                UserMetadataSummaryType umData= (UserMetadataSummaryType) event.getTarget().getAttribute(USER_META_DATA);
+                UserMetadataSummaryType umData =
+                    (UserMetadataSummaryType) event.getTarget().getAttribute(USER_META_DATA);
                 Sessions.getCurrent().setAttribute("logSummaries", Collections.singletonList(logSummaryType));
                 Sessions.getCurrent()
                     .setAttribute("userMetadata_dash", userMetaDataUtilService.getUserMetaDataById(umData.getId()));
@@ -128,7 +129,7 @@ public class DashboardPopupLogSubMenuController extends PopupLogSubMenuControlle
             } catch (Exception e) {
                 LOGGER.error("Error in showing the Dashboard", e);
             }
-          });
+        });
         item.setVisible(visibleOnLoad);
         popup.appendChild(item);
     }
