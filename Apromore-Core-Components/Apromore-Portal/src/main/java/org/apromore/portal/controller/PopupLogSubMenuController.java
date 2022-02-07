@@ -34,7 +34,6 @@ import org.apromore.calendar.model.CalendarModel;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.PortalPlugin;
-import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.controller.helper.UserMetaDataUtilService;
 import org.apromore.portal.context.PortalPluginResolver;
 import org.apromore.portal.dialogController.MainController;
@@ -42,34 +41,31 @@ import org.apromore.portal.dialogController.PopupMenuController;
 import org.apromore.portal.menu.MenuItem;
 import org.apromore.portal.menu.PluginCatalog;
 import org.apromore.portal.model.LogSummaryType;
-import org.apromore.portal.model.PermissionType;
 import org.apromore.portal.model.UserMetadataSummaryType;
-import org.apromore.portal.model.UserType;
 import org.slf4j.Logger;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.Menu;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Menupopup;
 import org.zkoss.zul.Messagebox;
 
-public class PopupLogSubMenuController {
+abstract class PopupLogSubMenuController {
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(PopupLogSubMenuController.class);
 
-    private PopupMenuController popupMenuController;
-    private MainController mainController;
-    private Menupopup popupMenu;
-    private final LogSummaryType logSummaryType;
+    protected PopupMenuController popupMenuController;
+    protected MainController mainController;
+    protected Menupopup popupMenu;
+    protected final LogSummaryType logSummaryType;
     private Map<String, PortalPlugin> portalPluginMap;
-    private UserMetaDataUtilService userMetaDataUtilService;
+    protected UserMetaDataUtilService userMetaDataUtilService;
     private static final String ON_CLICK = "onClick";
     private static final String CENTRE_ALIGN = "vertical-align: middle; text-align:left;color: var(--ap-c-widget)";
     private static final int SUBMENU_SIZE = 5;
-    private static final String SUB_MENU_FOR_PD = "PD";
-    private static final String SUB_MENU_FOR_LOG_FILTER = "LOG_FILTER";
-    private static final String SUB_MENU_FOR_DASHBOARD = "DASHBOARD";
-    private static final String SUB_MENU_FOR_CALENDAR = "CALENDAR";
+    protected static final String SUB_MENU_FOR_PD = "PD";
+    protected static final String SUB_MENU_FOR_LOG_FILTER = "LOG_FILTER";
+    protected static final String SUB_MENU_FOR_DASHBOARD = "DASHBOARD";
+    protected static final String SUB_MENU_FOR_CALENDAR = "CALENDAR";
     private static final String SUB_MENU_FOR = "SUB_MENU_FOR";
     private static final String USER_META_DATA = "USER_META_DATA";
     private static final String CALENDAR_DATA = "CALENDAR_DATA";
@@ -86,53 +82,7 @@ public class PopupLogSubMenuController {
         userMetaDataUtilService = new UserMetaDataUtilService();
     }
 
-    public void constructSubMenu(String subMenuId) {
-        try {
-            switch (subMenuId) {
-                case PluginCatalog.PLUGIN_DISCOVER_MODEL_SUB_MENU:
-                    if (pluginAvailable(PluginCatalog.PLUGIN_DISCOVER_MODEL)) {
-                        addSubMenuProcessDiscoverModel();
-                    }
-                    break;
-                case PluginCatalog.PLUGIN_DASHBOARD_SUB_MENU:
-                    if (pluginAvailable(PluginCatalog.PLUGIN_DASHBOARD)) {
-                        addSubMenuDashboard();
-                    }
-                    break;
-                case PluginCatalog.PLUGIN_LOG_FILTER_SUB_MENU:
-                    if (pluginAvailable(PluginCatalog.PLUGIN_FILTER_LOG)) {
-                        addSubMenuFilter();
-                    }
-                    break;
-                case PluginCatalog.PLUGIN_APPLY_CALENDAR_SUB_MENU:
-                    if (pluginAvailable(PluginCatalog.PLUGIN_CALENDAR)) {
-                        addSubMenuCalendar();
-                    }
-                    break;
-                default:
-            }
-        } catch (Exception ex) {
-            LOGGER.error("Error in constructing menu sub-menu: " + subMenuId, ex);
-        }
-    }
-
-    private void addSubMenuProcessDiscoverModel() {
-        String subMenuImage = getSubMenuImage(PluginCatalog.PLUGIN_DISCOVER_MODEL_SUB_MENU);
-        if (subMenuImage != null) {
-            Menu subMenu = new Menu();
-            subMenu.setLabel(Labels.getLabel("plugin_discover_discoverModel_text"));
-            subMenu.setImage(subMenuImage);
-            Menupopup menuPopup = new Menupopup();
-            popupMenuController.addMenuitem(menuPopup, new MenuItem(PluginCatalog.PLUGIN_VIEW_FULL_LOG_DISCOVER_MODEL));
-            fetchAndConstructMenu(menuPopup,
-                userMetaDataUtilService.getUserMetadataSummariesForFilter(logSummaryType.getId()), SUB_MENU_FOR_PD,
-                true);
-            subMenu.appendChild(menuPopup);
-            popupMenu.appendChild(subMenu);
-        }
-    }
-
-    private void fetchAndConstructMenu(Menupopup menuPopup, List<UserMetadataSummaryType> summaryTypes,
+    protected void fetchAndConstructMenu(Menupopup menuPopup, List<UserMetadataSummaryType> summaryTypes,
                                        String subMenuFor, boolean separatorRequired) {
         if (!summaryTypes.isEmpty()) {
             if (separatorRequired) {
@@ -152,7 +102,7 @@ public class PopupLogSubMenuController {
         }
     }
 
-    private void fetchAndConstructMenuForCalendar(Menupopup menuPopup, CalendarModel calendarModel, String subMenuFor,
+    protected void fetchAndConstructMenuForCalendar(Menupopup menuPopup, CalendarModel calendarModel, String subMenuFor,
                                                   boolean separatorRequired) {
         if (calendarModel != null) {
             if (separatorRequired) {
@@ -264,117 +214,6 @@ public class PopupLogSubMenuController {
             LOGGER.error("Error in showing the filter log discover model", e);
         }
     }
-
-
-    private void addSubMenuDashboard() {
-        String subMenuImage = getSubMenuImage(PluginCatalog.PLUGIN_DASHBOARD_SUB_MENU);
-        if (subMenuImage != null) {
-            Menu subMenu = new Menu();
-            subMenu.setLabel(Labels.getLabel("plugin_analyze_dashboard_text"));
-            subMenu.setImage(subMenuImage);
-            Menupopup menuPopup = new Menupopup();
-            popupMenuController.addMenuitem(menuPopup, new MenuItem(PluginCatalog.PLUGIN_CREATE_NEW_DASHBOARD));
-            fetchAndConstructMenu(menuPopup,
-                userMetaDataUtilService.getUserMetadataSummariesForDashboard(logSummaryType.getId()),
-                SUB_MENU_FOR_DASHBOARD, true);
-            subMenu.appendChild(menuPopup);
-            popupMenu.appendChild(subMenu);
-        }
-    }
-
-    private void addSubMenuFilter() {
-        String subMenuImage = getSubMenuImage(PluginCatalog.PLUGIN_LOG_FILTER_SUB_MENU);
-        if (subMenuImage != null) {
-            Menu subMenu = new Menu();
-            subMenu.setLabel(Labels.getLabel("plugin_create_Edit_filter_text"));
-            subMenu.setImage(subMenuImage);
-            Menupopup menuPopup = new Menupopup();
-            popupMenuController.addMenuitem(menuPopup, new MenuItem(PluginCatalog.PLUGIN_CREATE_NEW_LOG_FILTER));
-            fetchAndConstructMenu(menuPopup,
-                userMetaDataUtilService.getUserMetadataSummariesForFilter(logSummaryType.getId()),
-                SUB_MENU_FOR_LOG_FILTER,
-                true);
-            subMenu.appendChild(menuPopup);
-            popupMenu.appendChild(subMenu);
-        }
-    }
-
-    private void addSubMenuCalendar() {
-        String subMenuImage = getSubMenuImage(PluginCatalog.PLUGIN_APPLY_CALENDAR_SUB_MENU);
-        if (subMenuImage != null) {
-            Menu subMenu = new Menu();
-            subMenu.setLabel(Labels.getLabel("plugin_apply_calendar_text"));
-            subMenu.setImage(subMenuImage);
-            Menupopup menuPopup = new Menupopup();
-            popupMenuController.addMenuitem(menuPopup, new MenuItem(PluginCatalog.PLUGIN_CREATE_NEW_CALENDAR));
-            CalendarModel calendarModel = null;
-            if (mainController.getEventLogService().getCalendarIdFromLog(logSummaryType.getId()) > 0) {
-                calendarModel = mainController.getEventLogService().getCalendarFromLog(logSummaryType.getId());
-            }
-            fetchAndConstructMenuForCalendar(menuPopup, calendarModel, SUB_MENU_FOR_CALENDAR, true);
-            subMenu.appendChild(menuPopup);
-            popupMenu.appendChild(subMenu);
-        }
-
-
-    }
-
-    private String getSubMenuImage(String subMenuId) {
-        String subMenuImagePath = null;
-        try {
-            UserType currentUser = UserSessionManager.getCurrentUser();
-            if (currentUser == null) {
-                return null;
-            }
-            if (PluginCatalog.PLUGIN_DISCOVER_MODEL_SUB_MENU.equals(subMenuId)) {
-                if (!currentUser
-                    .hasAnyPermission(PermissionType.MODEL_DISCOVER_EDIT, PermissionType.MODEL_DISCOVER_VIEW)) {
-                    LOGGER.info("User '{}' does not have permission to access process discoverer",
-                        currentUser.getUsername());
-                    return null;
-                }
-                subMenuImagePath = "~./themes/ap/common/img/icons/model-discover.svg";
-            } else if (PluginCatalog.PLUGIN_DASHBOARD_SUB_MENU.equals(subMenuId)) {
-                if (!currentUser.hasAnyPermission(PermissionType.DASH_EDIT, PermissionType.DASH_VIEW)) {
-                    LOGGER.info("User '{}' does not have permission to access dashboard",
-                        currentUser.getUsername());
-                    return null;
-                }
-                subMenuImagePath = "~./themes/ap/common/img/icons/dashboard.svg";
-            } else if (PluginCatalog.PLUGIN_LOG_FILTER_SUB_MENU.equals(subMenuId)) {
-                if (!currentUser
-                    .hasAnyPermission(PermissionType.FILTER_VIEW, PermissionType.FILTER_EDIT)) {
-                    LOGGER.info("User '{}' does not have permission to access log filter",
-                        currentUser.getUsername());
-                    return null;
-                }
-                subMenuImagePath = "~./themes/ap/common/img/icons/filter.svg";
-            } else if (PluginCatalog.PLUGIN_APPLY_CALENDAR_SUB_MENU.equals(subMenuId)) {
-                if (!currentUser.hasAnyPermission(PermissionType.CALENDAR)) {
-                    LOGGER.info("User '{}' does not have permission to access calendar",
-                        currentUser.getUsername());
-                    return null;
-                }
-                subMenuImagePath = "~./themes/ap/common/img/icons/calendar.svg";
-            } else {
-                return null;
-            }
-        } catch (Exception ex) {
-            LOGGER.error("Error in retrieving user permission", ex);
-        }
-        return subMenuImagePath;
-    }
-
-    private boolean pluginAvailable(String pluginId) {
-        PortalPlugin plugin = portalPluginMap.get(pluginId);
-        if (plugin == null) {
-            LOGGER.warn("Missing menu item or plugin ");
-            return false;
-        }
-        PortalPlugin.Availability availability = plugin.getAvailability();
-        return !(availability == PortalPlugin.Availability.UNAVAILABLE || availability == PortalPlugin.Availability.HIDDEN);
-    }
-
     private PortalContext getPortalContext() {
         return (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
     }
