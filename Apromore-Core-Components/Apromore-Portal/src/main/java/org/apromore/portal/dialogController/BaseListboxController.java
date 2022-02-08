@@ -793,7 +793,7 @@ public abstract class BaseListboxController extends BaseController {
             switch (((Integer) evt.getData())) {
               case Messagebox.YES:
                 deleteElements(mainController);
-                mainController.reloadSummariesWithOpenTreeItems(mainController.getNavigationController().getAllOpenFolderItems());
+                refreshWorkspace();
                 break;
               case Messagebox.NO:
                 break;
@@ -813,7 +813,7 @@ public abstract class BaseListboxController extends BaseController {
             switch (((Integer) evt.getData())) {
               case Messagebox.YES:
                 deleteElements(mainController);
-                mainController.reloadSummariesWithOpenTreeItems(mainController.getNavigationController().getAllOpenFolderItems());
+                refreshWorkspace();
                 break;
               case Messagebox.NO:
                 break;
@@ -833,7 +833,7 @@ public abstract class BaseListboxController extends BaseController {
             switch (((Integer) evt.getData())) {
               case Messagebox.YES:
                 deleteElements(mainController);
-                mainController.reloadSummariesWithOpenTreeItems(mainController.getNavigationController().getAllOpenFolderItems());
+                refreshWorkspace();
                 break;
               case Messagebox.NO:
                 break;
@@ -854,7 +854,7 @@ public abstract class BaseListboxController extends BaseController {
             switch (((Integer) evt.getData())) {
               case Messagebox.YES:
                 deleteFolders(folders, mainController);
-                mainController.reloadSummariesWithOpenTreeItems(mainController.getNavigationController().getAllOpenFolderItems());
+                refreshWorkspace();
                 break;
               case Messagebox.NO:
                 break;
@@ -876,8 +876,7 @@ public abstract class BaseListboxController extends BaseController {
               case Messagebox.YES:
                 deleteFolders(folders, mainController);
                 deleteElements(mainController);
-                mainController.loadWorkspace();
-                refreshContent();
+                refreshWorkspace();
                 break;
               case Messagebox.NO:
                 break;
