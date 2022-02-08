@@ -1063,25 +1063,23 @@ public class LogImporterController extends SelectorComposer<Window> implements C
 
     private StringBuilder validateUniqueAttributes() {
         StringBuilder importMessage = new StringBuilder();
-        String mess = getLabel("no_attribute_has_been_selected_as");
+        String unselectedAttributeFormat = getLabel("unselected_attribute_format");
 
         if (logMetaData.getCaseIdPos() == -1) {
-            importMessage.append(mess).append(" ").append(getLabel("case_id"));
+            importMessage.append(String.format(unselectedAttributeFormat, getLabel("case_id")));
         }
         if (logMetaData.getActivityPos() == -1) {
             if (importMessage.length() == 0) {
-                importMessage.append(mess).append(" ").append(getLabel("activity"));
+                importMessage.append(String.format(unselectedAttributeFormat, getLabel("activity")));
             } else {
-                importMessage.append(System.lineSeparator()).append(System.lineSeparator()).append(mess).append(" ")
-                        .append(getLabel("activity"));
+                importMessage.append(System.lineSeparator()).append(System.lineSeparator()).append(String.format(unselectedAttributeFormat, getLabel("activity")));
             }
         }
         if (logMetaData.getEndTimestampPos() == -1) {
             if (importMessage.length() == 0) {
-                importMessage.append(mess).append(" ").append(getLabel("end_timestamp"));
+                importMessage.append(String.format(unselectedAttributeFormat, getLabel("end_timestamp")));
             } else {
-                importMessage.append(System.lineSeparator()).append(System.lineSeparator()).append(mess).append(" ")
-                        .append(getLabel("end_timestamp"));
+                importMessage.append(System.lineSeparator()).append(System.lineSeparator()).append(String.format(unselectedAttributeFormat, getLabel("end_timestamp")));
             }
         }
 

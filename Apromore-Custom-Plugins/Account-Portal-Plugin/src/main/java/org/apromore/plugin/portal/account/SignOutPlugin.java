@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -28,24 +28,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Locale;
 import javax.imageio.ImageIO;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apromore.plugin.portal.DefaultPortalPlugin;
+import org.apromore.plugin.portal.PortalContext;
+import org.apromore.zk.label.LabelSupplier;
 import org.springframework.stereotype.Component;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Messagebox;
-import org.apromore.plugin.portal.DefaultPortalPlugin;
-import org.apromore.plugin.portal.PortalContext;
-import org.apromore.zk.label.LabelSupplier;
 
 @Component
 public class SignOutPlugin extends DefaultPortalPlugin implements LabelSupplier {
-
-  private static Logger LOGGER = LoggerFactory.getLogger(SignOutPlugin.class);
-
-  private String label = "Sign out";
 
   // PortalPlugin overrides
 
@@ -56,8 +50,8 @@ public class SignOutPlugin extends DefaultPortalPlugin implements LabelSupplier 
 
   @Override
   public String getLabel(Locale locale) {
-    return label;
-  }
+        return getLabel("signOut");
+    }
 
   @Override
   public RenderedImage getIcon() {
