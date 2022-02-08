@@ -41,6 +41,10 @@ function createCurrencyOptions() {
     {
       name: 'GBP',
       value: 'GBP'
+    },
+    {
+      name: 'JPY',
+      value: 'JPY'
     }
   ];
 }
