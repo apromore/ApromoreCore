@@ -35,6 +35,7 @@ import java.util.Objects;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.zkoss.json.JSONObject;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
@@ -149,6 +150,7 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
 
   private boolean isUserDetailDirty = false;
   private boolean isGroupDetailDirty = false;
+  private String dialogTitle = "Apromore";
 
   boolean canViewUsers;
   boolean canEditUsers;
@@ -272,6 +274,7 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
     String userName = portalContext.getCurrentUser().getUsername();
     currentUser = securityService.getUserByName(userName);
     selectedUser = null;
+    dialogTitle = Labels.getLabel("brand_name");
 
     canViewUsers = hasPermission(Permissions.VIEW_USERS);
     canEditUsers = hasPermission(Permissions.EDIT_USERS);
@@ -327,40 +330,34 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
     /**
      * Enable toggle selection in user Listbox on individual row
      */
-    userEditBtn.addEventListener("onToggleClick", new EventListener() {
-      @Override
-      public void onEvent(Event event) throws Exception {
-        JSONObject param = (JSONObject) event.getData();
-        String name = (String) param.get("name");
-        User user = new User();
-        user.setUsername(name);
-        ListModelList model = (ListModelList) userListbox.getListModel();
-        int index = model.indexOf(user);
-        Listitem item = userListbox.getItemAtIndex(index);
-        if (item.isSelected() && userListbox.getSelectedCount() == 1) {
-          userListbox.clearSelection();
-          setSelectedUsers(null);
-        }
+    userEditBtn.addEventListener("onToggleClick", event -> {
+      JSONObject param = (JSONObject) event.getData();
+      String name = (String) param.get("name");
+      User user = new User();
+      user.setUsername(name);
+      ListModelList model = (ListModelList) userListbox.getListModel();
+      int index = model.indexOf(user);
+      Listitem item = userListbox.getItemAtIndex(index);
+      if (item.isSelected() && userListbox.getSelectedCount() == 1) {
+        userListbox.clearSelection();
+        setSelectedUsers(null);
       }
     });
 
     /**
      * Enable toggle selection in group Listbox on individual row
      */
-    groupEditBtn.addEventListener("onToggleClick", new EventListener() {
-      @Override
-      public void onEvent(Event event) throws Exception {
-        JSONObject param = (JSONObject) event.getData();
-        Integer id = (Integer) param.get("id");
-        Group group = new Group();
-        group.setId(id);
-        ListModelList model = (ListModelList) groupListbox.getListModel();
-        int index = model.indexOf(group);
-        Listitem item = groupListbox.getItemAtIndex(index);
-        if (item.isSelected() && groupListbox.getSelectedCount() == 1) {
-          groupListbox.clearSelection();
-          setSelectedGroup(null);
-        }
+    groupEditBtn.addEventListener("onToggleClick",event -> {
+      JSONObject param = (JSONObject) event.getData();
+      Integer id = (Integer) param.get("id");
+      Group group = new Group();
+      group.setId(id);
+      ListModelList model = (ListModelList) groupListbox.getListModel();
+      int index = model.indexOf(group);
+      Listitem item = groupListbox.getItemAtIndex(index);
+      if (item.isSelected() && groupListbox.getSelectedCount() == 1) {
+        groupListbox.clearSelection();
+        setSelectedGroup(null);
       }
     });
 
@@ -374,25 +371,19 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
     groupTab.setWidgetOverride("_sel", onSwitchTab);
     userTab.setSelected(true);
 
-    groupTab.addEventListener("onSwitchTab", new EventListener() {
-      @Override
-      public void onEvent(Event event) throws InterruptedException {
-        Tab tab = (Tab) event.getTarget();
-        Tab selectedTab = tabbox.getSelectedTab();
-        if (userTab.equals(selectedTab)) {
-          checkDirtyUser(null, null, null, tab);
-        }
+    groupTab.addEventListener("onSwitchTab", event -> {
+      Tab tab = (Tab) event.getTarget();
+      Tab selectedTab = tabbox.getSelectedTab();
+      if (userTab.equals(selectedTab)) {
+        checkDirtyUser(null, null, null, tab);
       }
     });
 
-    userTab.addEventListener("onSwitchTab", new EventListener() {
-      @Override
-      public void onEvent(Event event) throws InterruptedException {
-        Tab tab = (Tab) event.getTarget();
-        Tab selectedTab = tabbox.getSelectedTab();
-        if (groupTab.equals(selectedTab)) {
-          checkDirtyGroup(null, null, null, tab);
-        }
+    userTab.addEventListener("onSwitchTab", event -> {
+      Tab tab = (Tab) event.getTarget();
+      Tab selectedTab = tabbox.getSelectedTab();
+      if (groupTab.equals(selectedTab)) {
+        checkDirtyGroup(null, null, null, tab);
       }
     });
 
@@ -841,37 +832,38 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
    */
   public void checkDirtyUser(Set<User> prevUsers, Set<User> newUsers, Boolean select, Tab tab) {
     if (isUserDetailDirty) {
-      Messagebox.show(getLabel("dirtyUser_message"), "Apromore",
-          new Messagebox.Button[] {Messagebox.Button.YES, Messagebox.Button.NO,
-              Messagebox.Button.CANCEL},
-          Messagebox.QUESTION, new org.zkoss.zk.ui.event.EventListener() {
-            public void onEvent(Event e) {
-              String buttonName = e.getName();
-              if (Messagebox.ON_CANCEL.equals(buttonName)) {
-                if (prevUsers != null) {
-                  userList.getListModel().setSelection(prevUsers);
-                }
-                return;
-              } else if (Messagebox.ON_YES.equals(buttonName)) {
-                onClickUserSaveButton();
-              } else {
-                refreshUsers();
-                setSelectedUsers(null);
-              }
-              if (select != null) {
-                selectBulk(userList, select);
-                if (!select) {
-                  setSelectedUsers(null);
-                }
-              }
-              if (newUsers != null) {
-                updateUserDetail(newUsers);
-              }
-              if (tab != null) {
-                tab.setSelected(true);
-              }
+      Messagebox.show(
+        getLabel("dirtyUser_message"),
+        dialogTitle,
+        new Messagebox.Button[] {Messagebox.Button.YES, Messagebox.Button.NO, Messagebox.Button.CANCEL},
+        Messagebox.QUESTION,
+        e -> {
+          String buttonName = e.getName();
+          if (Messagebox.ON_CANCEL.equals(buttonName)) {
+            if (prevUsers != null) {
+              userList.getListModel().setSelection(prevUsers);
             }
-          });
+            return;
+          } else if (Messagebox.ON_YES.equals(buttonName)) {
+            onClickUserSaveButton();
+          } else {
+            refreshUsers();
+            setSelectedUsers(null);
+          }
+          if (select != null) {
+            selectBulk(userList, select);
+            if (!select) {
+              setSelectedUsers(null);
+            }
+          }
+          if (newUsers != null) {
+            updateUserDetail(newUsers);
+          }
+          if (tab != null) {
+            tab.setSelected(true);
+          }
+        }
+      );
     } else {
       if (select != null) {
         selectBulk(userList, select);
@@ -968,41 +960,42 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
       users.add(u.getUsername());
     }
     String userNames = String.join(",", users);
-    Messagebox.show(MessageFormat.format(getLabel("deletePrompt_message"), userNames), "Apromore",
-        Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION,
-        new org.zkoss.zk.ui.event.EventListener() {
-          public void onEvent(Event e) {
-            if (Messagebox.ON_OK.equals(e.getName())) {
-              for (User user : selectedUsers) {
-                LOGGER.info("Deleting user " + user.getUsername());
-                if (workspaceService.isOnlyOwner(user)) {
-                  try {
-                    Map arg = new HashMap<>();
-                    arg.put("selectedUser", user);
-                    Window window = (Window) Executions.getCurrent()
-                        .createComponents(getPageDefinition("zul/delete-user.zul"), getSelf(), arg);
-                    window.doModal();
-                  } catch (Exception ex) {
-                    LOGGER.error("Unable to create transfer owner dialog", ex);
-                    Messagebox.show(getLabel("failedLaunchTransferOwner_message"));
-                  }
-                } else {
-                  securityService.deleteUser(user);
-                  // Force logout the deleted user
-                  Map dataMap = Map.of("type", "DELETE_USER");
-
-                  EventQueues
-                      .lookup(SecurityService.EVENT_TOPIC, getSelf().getDesktop().getWebApp(), true)
-                      .publish(new Event("User Deleted", null, dataMap));
-
-                  EventQueues.lookup("forceSignOutQueue", EventQueues.APPLICATION, true)
-                      .publish(new Event("onSignout", null, user.getUsername()));
-                }
+    Messagebox.show(
+      MessageFormat.format(getLabel("deletePrompt_message"), userNames),
+      dialogTitle,
+      Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION,
+      e -> {
+        if (Messagebox.ON_OK.equals(e.getName())) {
+          for (User user : selectedUsers) {
+            LOGGER.info("Deleting user " + user.getUsername());
+            if (workspaceService.isOnlyOwner(user)) {
+              try {
+                Map arg = new HashMap<>();
+                arg.put("selectedUser", user);
+                Window window = (Window) Executions.getCurrent()
+                    .createComponents(getPageDefinition("zul/delete-user.zul"), getSelf(), arg);
+                window.doModal();
+              } catch (Exception ex) {
+                LOGGER.error("Unable to create transfer owner dialog", ex);
+                Messagebox.show(getLabel("failedLaunchTransferOwner_message"));
               }
-              setSelectedUsers(null);
+            } else {
+              securityService.deleteUser(user);
+              // Force logout the deleted user
+              Map dataMap = Map.of("type", "DELETE_USER");
+
+              EventQueues
+                  .lookup(SecurityService.EVENT_TOPIC, getSelf().getDesktop().getWebApp(), true)
+                  .publish(new Event("User Deleted", null, dataMap));
+
+              EventQueues.lookup("forceSignOutQueue", EventQueues.APPLICATION, true)
+                  .publish(new Event("onSignout", null, user.getUsername()));
             }
           }
-        });
+          setSelectedUsers(null);
+        }
+      }
+    );
   }
 
   @Listen("onClick = #userSaveBtn")
@@ -1080,39 +1073,39 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
   public void checkDirtyGroup(Set<Group> prevGroups, Set<Group> newGroups, Boolean select,
       Tab tab) {
     if (isGroupDetailDirty) {
-      Messagebox.show(getLabel("unsavedGroupDetail_message"),
-          "Question",
-          new Messagebox.Button[] {Messagebox.Button.YES, Messagebox.Button.NO,
-              Messagebox.Button.CANCEL},
-          Messagebox.QUESTION, new org.zkoss.zk.ui.event.EventListener() {
-            public void onEvent(Event e) {
-              String buttonName = e.getName();
-              if (Messagebox.ON_CANCEL.equals(buttonName)) {
-                if (prevGroups != null) {
-                  groupList.getListModel().setSelection(prevGroups);
-                }
-                return;
-              } else if (Messagebox.ON_YES.equals(buttonName)) {
-                onClickGroupSaveButton();
-              } else {
-                isGroupDetailDirty = false;
-                refreshGroups();
-                setSelectedGroup(null);
-              }
-              if (select != null) {
-                selectBulk(groupList, select);
-                if (!select) {
-                  setSelectedGroup(null);
-                }
-              }
-              if (newGroups != null) {
-                updateGroupDetail(newGroups);
-              }
-              if (tab != null) {
-                tab.setSelected(true);
-              }
+      Messagebox.show(
+        getLabel("unsavedGroupDetail_message"),
+        dialogTitle,
+        new Messagebox.Button[] {Messagebox.Button.YES, Messagebox.Button.NO, Messagebox.Button.CANCEL},
+        Messagebox.QUESTION,
+        e -> {
+          String buttonName = e.getName();
+          if (Messagebox.ON_CANCEL.equals(buttonName)) {
+            if (prevGroups != null) {
+              groupList.getListModel().setSelection(prevGroups);
             }
-          });
+            return;
+          } else if (Messagebox.ON_YES.equals(buttonName)) {
+            onClickGroupSaveButton();
+          } else {
+            isGroupDetailDirty = false;
+            refreshGroups();
+            setSelectedGroup(null);
+          }
+          if (select != null) {
+            selectBulk(groupList, select);
+            if (!select) {
+              setSelectedGroup(null);
+            }
+          }
+          if (newGroups != null) {
+            updateGroupDetail(newGroups);
+          }
+          if (tab != null) {
+            tab.setSelected(true);
+          }
+        }
+      );
     } else {
       if (select != null) {
         selectBulk(groupList, select);
@@ -1270,23 +1263,25 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
       groups.add(g.getName());
     }
     String groupNames = String.join(",", groups);
-    Messagebox.show("Do you really want to delete " + groupNames + "?", "Question",
-        Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION,
-        new org.zkoss.zk.ui.event.EventListener() {
-          public void onEvent(Event e) {
-            if (Messagebox.ON_OK.equals(e.getName())) {
-              for (Group group : selectedGroups) {
-                LOGGER.info("Deleting user " + group.getName());
-                securityService.deleteGroup(group);
-                Map dataMap = Map.of("type", "DELETE_GROUP");
-                EventQueues
-                    .lookup(SecurityService.EVENT_TOPIC, getSelf().getDesktop().getWebApp(), true)
-                    .publish(new Event("Group Created", null, dataMap));
-              }
-              setSelectedGroup(null);
-            }
+    Messagebox.show(
+      "Do you really want to delete " + groupNames + "?",
+      dialogTitle,
+      Messagebox.OK | Messagebox.CANCEL,
+      Messagebox.QUESTION,
+      e -> {
+        if (Messagebox.ON_OK.equals(e.getName())) {
+          for (Group group : selectedGroups) {
+            LOGGER.info("Deleting user " + group.getName());
+            securityService.deleteGroup(group);
+            Map dataMap = Map.of("type", "DELETE_GROUP");
+            EventQueues
+                .lookup(SecurityService.EVENT_TOPIC, getSelf().getDesktop().getWebApp(), true)
+                .publish(new Event("Group Created", null, dataMap));
           }
-        });
+          setSelectedGroup(null);
+        }
+      }
+    );
   }
 
   @Listen("onClick = #groupSaveBtn")

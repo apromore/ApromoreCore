@@ -706,23 +706,24 @@ public class MainController extends BaseController implements MainControllerInte
             if (!Objects.equals(bpmnXML, bpmnXmlDraft)) {
                 String finalInstruction = instruction;
                 Messagebox.show(
-                        MessageFormat.format(Labels.getLabel("portal_unsavedDraftExisted_message"), editSession.getCurrentVersionNumber()),
-                        "Question", new Messagebox.Button[] {Messagebox.Button.YES, Messagebox.Button.NO},
-                        Messagebox.QUESTION, e -> {
-                            switch (e.getButton()) {
-                                case YES:
-                                    Clients.evalJavaScript(finalInstruction);
-                                    break;
-                                case NO: // Cancel is clicked
-                                    this.getProcessService().updateDraft(editSession.getProcessId(),
-                                            editSession.getCurrentVersionNumber(), editSession.getNativeType(),
-                                            new ByteArrayInputStream(bpmnXML.getBytes()),
-                                            editSession.getUsername());
-                                    Clients.evalJavaScript(finalInstruction);
-                                    break;
-                                default: // if the Close button is clicked, e.getButton() returns null
-                            }
-                        });
+                    MessageFormat.format(Labels.getLabel("portal_unsavedDraftExisted_message"), editSession.getCurrentVersionNumber()),
+                    Labels.getLabel("brand_name"),
+                    new Messagebox.Button[] {Messagebox.Button.YES, Messagebox.Button.NO},
+                    Messagebox.QUESTION, e -> {
+                        switch (e.getButton()) {
+                            case YES:
+                                Clients.evalJavaScript(finalInstruction);
+                                break;
+                            case NO: // Cancel is clicked
+                                this.getProcessService().updateDraft(editSession.getProcessId(),
+                                    editSession.getCurrentVersionNumber(), editSession.getNativeType(),
+                                    new ByteArrayInputStream(bpmnXML.getBytes()),
+                                    editSession.getUsername());
+                                Clients.evalJavaScript(finalInstruction);
+                                break;
+                            default: // if the Close button is clicked, e.getButton() returns null
+                        }
+                    });
             } else {
                 Clients.evalJavaScript(instruction);
             }
