@@ -653,41 +653,10 @@ public class PDAnalyst {
     public SimulationData getSimulationData(BPMNAbstraction bpmnAbstraction) {
         SimulationData simulationData = null;
         if (bpmnAbstraction != null) {
-            Map<String, Double> nodeDurationMap =
-                bpmnAbstraction.getDiagram().getNodes()
-                    .stream()
-                    .filter(Activity.class::isInstance)
-                    .collect(Collectors.toMap(
-                        node -> node.getId().toString(),
-                        node -> BigDecimal.valueOf(attLog.getGraphView().getNodeWeight(node.getLabel(),
-                                MeasureType.DURATION,
-                                MeasureAggregation.MEAN,
-                                MeasureRelation.ABSOLUTE) / 1000)
-                            .setScale(2, RoundingMode.HALF_UP).doubleValue()));
-
-            Map<String, Set<String>> rolesToResourcesMap = new HashMap<>();
-            filteredPLog.getActivityInstances().stream()
-                .filter(activityInstance -> activityInstance.getAttributes().containsKey(Constants.ATT_KEY_RESOURCE))
-                .forEach(activityInstance -> {
-                    String role = activityInstance.getAttributeValue(Constants.ATT_KEY_ROLE);
-
-                    if (role == null || role.isEmpty()) {
-                        role = SimulationData.DEFAULT_ROLE;
-                    }
-                    Set<String> resources = rolesToResourcesMap.get(role);
-                    if (resources == null) {
-                        resources = new HashSet<>();
-                    }
-                    resources.add(activityInstance.getResource());
-                    rolesToResourcesMap.put(role, resources);
-                });
-
-            Map<String, Integer> roleCounts = rolesToResourcesMap.entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, stringSetEntry -> stringSetEntry.getValue().size()));
 
             simulationData = SimulationData.builder()
                 .caseCount(filteredPLog.getValidTraceIndexBS().cardinality())
-                .resourceCountByRole(roleCounts)
+                .resourceCountByRole(getResourceCountsGroupedByRole())
                 .resourceCount(filteredPLog.getActivityInstances().stream()
                     .filter(
                         activityInstance -> activityInstance.getAttributes().containsKey(Constants.ATT_KEY_RESOURCE))
@@ -696,11 +665,76 @@ public class PDAnalyst {
                     .size())
                 .startTime(filteredAPMLog.getStartTime())
                 .endTime(filteredAPMLog.getEndTime())
-                .nodeWeights(nodeDurationMap)
+                .nodeWeights(getNodeWeights(bpmnAbstraction))
                 .edgeFrequencies(groupOutboundEdgeFrequenciesByGateway(bpmnAbstraction))
                 .build();
         }
         return simulationData;
+    }
+
+    private Map<String, Double> getNodeWeights(BPMNAbstraction bpmnAbstraction) {
+        return bpmnAbstraction.getDiagram().getNodes()
+            .stream()
+            .filter(Activity.class::isInstance)
+            .collect(Collectors.toMap(
+                node -> node.getId().toString(),
+                node -> BigDecimal.valueOf(attLog.getGraphView().getNodeWeight(node.getLabel(),
+                        MeasureType.DURATION,
+                        MeasureAggregation.MEAN,
+                        MeasureRelation.ABSOLUTE) / 1000)
+                    .setScale(2, RoundingMode.HALF_UP).doubleValue()));
+    }
+
+    private Map<String, Integer> getResourceCountsGroupedByRole() {
+        Map<String, Set<String>> rolesToResourcesMap = new HashMap<>();
+        filteredPLog.getActivityInstances().stream()
+            .filter(activityInstance -> activityInstance.getAttributes().containsKey(Constants.ATT_KEY_RESOURCE))
+            .forEach(activityInstance -> {
+                String role = activityInstance.getAttributeValue(Constants.ATT_KEY_ROLE);
+
+                if (role == null || role.isEmpty()) {
+                    role = SimulationData.DEFAULT_ROLE;
+                }
+                Set<String> resources = rolesToResourcesMap.get(role);
+                if (resources == null) {
+                    resources = new HashSet<>();
+                }
+                resources.add(activityInstance.getResource());
+                rolesToResourcesMap.put(role, resources);
+            });
+
+        Map<String, Integer> roleCounts = rolesToResourcesMap.entrySet().stream()
+            .collect(Collectors.toMap(Map.Entry::getKey, stringSetEntry -> stringSetEntry.getValue().size()));
+
+        return roleCounts;
+    }
+
+    private Map<String, List<EdgeFrequency>> groupOutboundEdgeFrequenciesByGateway(
+        final BPMNAbstraction bpmnAbstraction) {
+
+        Map<String, List<EdgeFrequency>> gatewayIdToEdgeFrequencies = null;
+        try {
+            gatewayIdToEdgeFrequencies = bpmnAbstraction.getValidBPMNDiagram().getGateways().stream()
+                .filter(gateway -> gateway.getGatewayType().equals(Gateway.GatewayType.DATABASED)) //XOR Gateway
+                .collect(Collectors.toMap(
+                    // Key -> gatewayId
+                    gateway -> gateway.getId().toString(),
+
+                    // Value -> List of outbound edge frequencies
+                    gateway -> bpmnAbstraction.getValidBPMNDiagram().getOutEdges(gateway).stream()
+                        .map(bpmnEdge -> EdgeFrequency.builder()
+                            .edgeId(bpmnEdge.getEdgeID().toString())
+                            .frequency(bpmnAbstraction.getArcPrimaryWeight(bpmnEdge))
+                            .build())
+                        .collect(Collectors.toList())
+                ));
+
+        } catch (Exception e) {
+            String errMsg = "Unsupported abstraction. Unable to compute gateway probabilities";
+            log.warn(errMsg, e);
+        }
+
+        return gatewayIdToEdgeFrequencies;
     }
 
     /**
@@ -748,34 +782,6 @@ public class PDAnalyst {
         }
 
         return bpmnAbstraction;
-    }
-
-    private Map<String, List<EdgeFrequency>> groupOutboundEdgeFrequenciesByGateway(
-        final BPMNAbstraction bpmnAbstraction) {
-
-        Map<String, List<EdgeFrequency>> gatewayIdToEdgeFrequencies = null;
-        try {
-            gatewayIdToEdgeFrequencies = bpmnAbstraction.getValidBPMNDiagram().getGateways().stream()
-                .filter(gateway -> gateway.getGatewayType().equals(Gateway.GatewayType.DATABASED)) //XOR Gateway
-                .collect(Collectors.toMap(
-                    // Key -> gatewayId
-                    gateway -> gateway.getId().toString(),
-
-                    // Value -> List of outbound edge frequencies
-                    gateway -> bpmnAbstraction.getValidBPMNDiagram().getOutEdges(gateway).stream()
-                        .map(bpmnEdge -> EdgeFrequency.builder()
-                            .edgeId(bpmnEdge.getEdgeID().toString())
-                            .frequency(bpmnAbstraction.getArcPrimaryWeight(bpmnEdge))
-                            .build())
-                        .collect(Collectors.toList())
-                ));
-
-        } catch (Exception e) {
-            String errMsg = "Unsupported abstraction. Unable to compute gateway probabilities";
-            log.warn(errMsg, e);
-        }
-
-        return gatewayIdToEdgeFrequencies;
     }
 
     // For debug only
