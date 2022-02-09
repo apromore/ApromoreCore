@@ -171,13 +171,13 @@ public class MainController extends BaseController implements MainControllerInte
     }
 
     public MainController() {
+        setupLocale();
         portalSession = new PortalSession(this);
 
         qe = EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, true);
         portalSession = new PortalSession(this);
 
         portalPluginMap = PortalPluginResolver.getPortalPluginMap();
-        setupLocale();
     }
 
     private void setupLocale() {
