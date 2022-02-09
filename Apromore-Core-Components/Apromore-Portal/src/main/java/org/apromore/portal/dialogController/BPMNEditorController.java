@@ -68,6 +68,9 @@ import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Messagebox;
 
+import static org.apromore.common.Constants.DRAFT_BRANCH_NAME;
+import static org.apromore.common.Constants.TRUNK_NAME;
+
 /**
  * ApromoreSession and ApromoreSession.EditSessionType represent data objects of the model being
  * opened in the editor However, they don't contain the XML native model data which can be retrieved
@@ -172,14 +175,20 @@ public class BPMNEditorController extends BaseController implements Composer<Com
 
         // Note: process models created by merging are not BPMN, cannot use
         // processService.getBPMNRepresentation
-        ExportFormatResultType exportResult = mainC.getManagerService().exportFormat(
-            editSession.getProcessId(), editSession.getProcessName(),
-                org.apromore.common.Constants.DRAFT_BRANCH_NAME, editSession.getCurrentVersionNumber(),
-            editSession.getNativeType(), editSession.getUsername());
+        ExportFormatResultType exportResult = mainC.getManagerService().exportFormat(editSession.getProcessId(),
+                editSession.getProcessName(), TRUNK_NAME, editSession.getCurrentVersionNumber(),
+                editSession.getNativeType(), editSession.getUsername());
         bpmnXML = StreamUtil.convertStreamToString(exportResult.getNative().getInputStream());
+
+        ExportFormatResultType exportResultDraft = mainC.getManagerService().exportFormat(editSession.getProcessId(),
+                editSession.getProcessName(), DRAFT_BRANCH_NAME, editSession.getCurrentVersionNumber(),
+                editSession.getNativeType(), editSession.getUsername());
+        String bpmnXmlDraft = StreamUtil.convertStreamToString(exportResultDraft.getNative().getInputStream());
+
         param.put("doAutoLayout", "false");
 
-        param.put(BPMN_XML, escapeXML(bpmnXML));
+        param.put(BPMN_XML, AccessType.VIEWER.equals(currentUserAccessType) ? escapeXML(bpmnXML) :
+                escapeXML(bpmnXmlDraft));
         param.put("url", getURL(editSession.getNativeType()));
         param.put("importPath", mainC.getImportPath(editSession.getNativeType()));
         param.put("exportPath", mainC.getExportPath(editSession.getNativeType()));

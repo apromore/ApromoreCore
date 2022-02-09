@@ -99,13 +99,15 @@
 
       // Send auto-save request
       Apromore.BPMNEditor.readXML((xml) => {
-        console.log('Auto-saving ...');
-        jq(".ap-bpmneditor-top-notice").show();
-        zk.Widget.$('$divKeepAlive').fire(
-          'onKeepAlive',
-          { bpmnXML: xml, nativeType: '${arg.nativeType}'},
-          { toServer: true },
-        );
+        if (!${arg.viewOnly}) {
+          console.log('Auto-saving ...');
+          jq(".ap-bpmneditor-top-notice").show();
+          zk.Widget.$('$divKeepAlive').fire(
+            'onKeepAlive',
+            { bpmnXML: xml, nativeType: '${arg.nativeType}'},
+            { toServer: true },
+          );
+        }
       });
 
       if (idleTime >= MAX_IDLE_MINS) {
