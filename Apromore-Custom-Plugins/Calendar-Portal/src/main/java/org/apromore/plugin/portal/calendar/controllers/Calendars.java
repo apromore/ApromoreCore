@@ -317,6 +317,7 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
             arg.put(CALENDAR_ID_CONST, appliedCalendarId);
             arg.put(IS_NEW_CONST, false);
         }
+        reCheckOnExistingCalendar();
         try {
             arg.put(CAN_EDIT_CONST, canEdit);
             arg.put("parentController", this);
@@ -328,6 +329,19 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
             LOGGER.error("Error in forward to edit/create calendar", e);
         }
 
+    }
+
+    private void reCheckOnExistingCalendar() {
+        try {
+            Long calendarIdFromLog = eventLogService.getCalendarIdFromLog(logId);
+            if (calendarIdFromLog > 0 && !calendarIdFromLog.equals(appliedCalendarId)) {
+                appliedCalendarId = calendarIdFromLog;
+                calendarListbox.setItemRenderer(new CalendarItemRenderer(calendarService, appliedCalendarId, canEdit));
+                populateCalendarList();
+            }
+        }catch(Exception ex){
+            LOGGER.error("Error in refreshing with existing calendar!",ex);
+        }
     }
 
 

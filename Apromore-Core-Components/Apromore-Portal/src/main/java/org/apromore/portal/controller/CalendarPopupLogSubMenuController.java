@@ -50,6 +50,7 @@ import org.zkoss.zul.Messagebox;
 
 public class CalendarPopupLogSubMenuController extends PopupLogSubMenuController {
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(CalendarPopupLogSubMenuController.class);
+    private static final String FAILED_LAUNCH_CALENDAR="portal_failedLaunchCustomCalendar_message";
 
     public CalendarPopupLogSubMenuController(PopupMenuController popupMenuController, MainController mainController,
                                              Menupopup popupMenu, LogSummaryType logSummaryType) {
@@ -89,18 +90,14 @@ public class CalendarPopupLogSubMenuController extends PopupLogSubMenuController
                 index++;
             }
             for (CalendarModel calendar : calendarModels) {
-                if (index <= SUBMENU_SIZE) {
-                    if (selectedCalendar != null && calendar.getId().equals(selectedCalendar.getId())){
-                        continue; //skip same calendar
-                    }else{
-                        addMenuItemForCalendar(menuPopup, calendar, false);
-                    }
+                if (selectedCalendar == null || !calendar.getId().equals(selectedCalendar.getId())) {
+                    addMenuItemForCalendar(menuPopup, calendar, false);
                     if (index == SUBMENU_SIZE && index < calendarModels.size()) {
                         addOptionToViewMoreMenuItemsForCalendar(menuPopup);
                         break;
                     }
+                    index++;
                 }
-                index++;
             }
 
         }
@@ -121,8 +118,8 @@ public class CalendarPopupLogSubMenuController extends PopupLogSubMenuController
                 calendarPlugin.setSimpleParams(attrMap);
                 calendarPlugin.execute(getPortalContext());
             } catch (Exception e) {
-                LOGGER.error(Labels.getLabel("portal_failedLaunchCustomCalendar_message"), e);
-                Messagebox.show(Labels.getLabel("portal_failedLaunchCustomCalendar_message"));
+                LOGGER.error(Labels.getLabel(FAILED_LAUNCH_CALENDAR), e);
+                Messagebox.show(Labels.getLabel(FAILED_LAUNCH_CALENDAR));
             }
 
 
@@ -146,8 +143,8 @@ public class CalendarPopupLogSubMenuController extends PopupLogSubMenuController
                     calendarPlugin.setSimpleParams(attrMap);
                     calendarPlugin.execute(getPortalContext());
                 } catch (Exception e) {
-                    LOGGER.error(Labels.getLabel("portal_failedLaunchCustomCalendar_message"), e);
-                    Messagebox.show(Labels.getLabel("portal_failedLaunchCustomCalendar_message"));
+                    LOGGER.error(Labels.getLabel(FAILED_LAUNCH_CALENDAR), e);
+                    Messagebox.show(Labels.getLabel(FAILED_LAUNCH_CALENDAR));
                 }
             });
             if(selected) {
