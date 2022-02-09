@@ -26,6 +26,7 @@ package org.apromore.portal.dialogController;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
@@ -237,11 +238,14 @@ public class SaveAsDialogController extends BaseController {
   private void saveCurrentModelVersion(Integer processId, String processName, String versionNumber,
       String nativeType, InputStream nativeStream, String userName, String containingFolderName) {
     try {
+      String bpmnXml = new String(nativeStream.readAllBytes(), StandardCharsets.UTF_8);
+
       ProcessModelVersion newVersion = mainController.getManagerService().updateProcessModelVersion(
           processId, editSession.getOriginalBranchName(), versionNumber, userName, "", nativeType,
-          nativeStream);
+              new ByteArrayInputStream(bpmnXml.getBytes()));
       mainController.getManagerService().updateDraft(processId,
-              editSession.getOriginalVersionNumber(), nativeType, nativeStream, userName);
+              editSession.getOriginalVersionNumber(), nativeType, new ByteArrayInputStream(bpmnXml.getBytes()),
+              userName);
 
       // Update process data with the new process to keep a consistent state
       editSession.setOriginalVersionNumber(versionNumber);
