@@ -192,4 +192,9 @@ public interface EventLogService {
   List<String> getDefaultPerspectiveFromLog(Integer logId) throws EventLogException;
 
   boolean hasWritePermissionOnLog(User user, List<Integer> logIds);
+
+  /**
+   * Get All CustomCalendars
+    */
+  List<CalendarModel> getAllCustomCalendars();
 }

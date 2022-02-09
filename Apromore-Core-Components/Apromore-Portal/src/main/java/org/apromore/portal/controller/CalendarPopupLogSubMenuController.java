@@ -26,8 +26,10 @@
 
 package org.apromore.portal.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.PortalPlugin;
@@ -48,6 +50,7 @@ import org.zkoss.zul.Messagebox;
 
 public class CalendarPopupLogSubMenuController extends PopupLogSubMenuController {
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(CalendarPopupLogSubMenuController.class);
+    private static final String FAILED_LAUNCH_CALENDAR="portal_failedLaunchCustomCalendar_message";
 
     public CalendarPopupLogSubMenuController(PopupMenuController popupMenuController, MainController mainController,
                                              Menupopup popupMenu, LogSummaryType logSummaryType) {
@@ -63,19 +66,68 @@ public class CalendarPopupLogSubMenuController extends PopupLogSubMenuController
             subMenu.setImage(subMenuImage);
             Menupopup menuPopup = new Menupopup();
             popupMenuController.addMenuitem(menuPopup, new MenuItem(PluginCatalog.PLUGIN_CREATE_NEW_CALENDAR));
-            CalendarModel calendarModel = null;
-            if (mainController.getEventLogService().getCalendarIdFromLog(logSummaryType.getId()) > 0) {
-                calendarModel = mainController.getEventLogService().getCalendarFromLog(logSummaryType.getId());
+            List<CalendarModel> calendarModels=null;
+            calendarModels=mainController.getEventLogService().getAllCustomCalendars();
+            if(calendarModels==null){
+                calendarModels=new ArrayList<>();
             }
-            fetchAndConstructMenuForCalendar(menuPopup, calendarModel);
+            CalendarModel selectedCalendar=null;
+            if(mainController.getEventLogService().getCalendarIdFromLog(logSummaryType.getId())>0){
+                selectedCalendar=mainController.getEventLogService().getCalendarFromLog(logSummaryType.getId());
+            }
+            fetchAndConstructMenuForCalendar(menuPopup, calendarModels,selectedCalendar);
             subMenu.appendChild(menuPopup);
             popupMenu.appendChild(subMenu);
         }
     }
 
-    private void fetchAndConstructMenuForCalendar(Menupopup menuPopup, CalendarModel calendarModel) {
-        if (calendarModel != null) {
+    private void fetchAndConstructMenuForCalendar(Menupopup menuPopup,List<CalendarModel> calendarModels, CalendarModel selectedCalendar) {
+        if (!calendarModels.isEmpty()) {
             popupMenuController.addMenuitem(menuPopup, new MenuItem(PluginCatalog.ITEM_SEPARATOR));
+            int index = 1;
+            if(selectedCalendar!=null){
+                addMenuItemForCalendar(menuPopup, selectedCalendar, true);
+                index++;
+            }
+            for (CalendarModel calendar : calendarModels) {
+                if (selectedCalendar == null || !calendar.getId().equals(selectedCalendar.getId())) {
+                    addMenuItemForCalendar(menuPopup, calendar, false);
+                    if (index == SUBMENU_SIZE && index < calendarModels.size()) {
+                        addOptionToViewMoreMenuItemsForCalendar(menuPopup);
+                        break;
+                    }
+                    index++;
+                }
+            }
+
+        }
+    }
+    private void addOptionToViewMoreMenuItemsForCalendar(Menupopup menuPopup) {
+        Menuitem item = new Menuitem();
+        item.setLabel("...");
+        item.setStyle(CENTRE_ALIGN);
+        item.addEventListener(ON_CLICK, event -> {
+            try {
+                Long calendarId = mainController.getEventLogService().getCalendarIdFromLog(logSummaryType.getId());
+                Map<String, Object> attrMap = new HashMap<>();
+                attrMap.put("portalContext", getPortalContext());
+                attrMap.put("artifactName", logSummaryType.getName());
+                attrMap.put("logId", logSummaryType.getId());
+                attrMap.put("calendarId", calendarId);
+                PortalPlugin calendarPlugin = portalPluginMap.get(PluginCatalog.PLUGIN_CALENDAR);
+                calendarPlugin.setSimpleParams(attrMap);
+                calendarPlugin.execute(getPortalContext());
+            } catch (Exception e) {
+                LOGGER.error(Labels.getLabel(FAILED_LAUNCH_CALENDAR), e);
+                Messagebox.show(Labels.getLabel(FAILED_LAUNCH_CALENDAR));
+            }
+
+
+        });
+        menuPopup.appendChild(item);
+    }
+
+    private void addMenuItemForCalendar(Menupopup popup, CalendarModel calendarModel, boolean selected) {
             Menuitem item = new Menuitem();
             item.setLabel(calendarModel.getName());
             item.setAttribute(CALENDAR_DATA, calendarModel);
@@ -91,13 +143,16 @@ public class CalendarPopupLogSubMenuController extends PopupLogSubMenuController
                     calendarPlugin.setSimpleParams(attrMap);
                     calendarPlugin.execute(getPortalContext());
                 } catch (Exception e) {
-                    LOGGER.error(Labels.getLabel("portal_failedLaunchCustomCalendar_message"), e);
-                    Messagebox.show(Labels.getLabel("portal_failedLaunchCustomCalendar_message"));
+                    LOGGER.error(Labels.getLabel(FAILED_LAUNCH_CALENDAR), e);
+                    Messagebox.show(Labels.getLabel(FAILED_LAUNCH_CALENDAR));
                 }
             });
-            menuPopup.appendChild(item);
-        }
+            if(selected) {
+                item.setImage("~./themes/ap/common/img/icons/check-circle.svg");
+            }
+          popup.appendChild(item);
     }
+
 
 
     private String getSubMenuImage() {
