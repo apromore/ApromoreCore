@@ -702,11 +702,9 @@ public class PDAnalyst {
                 resources.add(activityInstance.getResource());
                 rolesToResourcesMap.put(role, resources);
             });
-
-        Map<String, Integer> roleCounts = rolesToResourcesMap.entrySet().stream()
+        
+        return rolesToResourcesMap.entrySet().stream()
             .collect(Collectors.toMap(Map.Entry::getKey, stringSetEntry -> stringSetEntry.getValue().size()));
-
-        return roleCounts;
     }
 
     private Map<String, List<EdgeFrequency>> groupOutboundEdgeFrequenciesByGateway(
