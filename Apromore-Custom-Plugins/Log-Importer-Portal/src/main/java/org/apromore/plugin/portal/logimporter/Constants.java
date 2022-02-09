@@ -54,6 +54,7 @@ interface Constants {
     String START_TIMESTAMP_LABEL = "startTimestamp";
     String OTHER_TIMESTAMP_LABEL = "otherTimestamp";
     String RESOURCE_LABEL = "resource";
+    String ROLE_LABEL = "role";
     String EVENT_ATTRIBUTE_LABEL = "eventAttribute";
     String CASE_ATTRIBUTE_LABEL = "caseAttribute";
     String IGNORE_LABEL = "ignoreAttribute";

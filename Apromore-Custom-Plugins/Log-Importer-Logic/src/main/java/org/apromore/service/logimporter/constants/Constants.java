@@ -28,13 +28,14 @@ public interface Constants {
 
     char[] supportedSeparators = {',','|',';','\t'};
 
-    String possibleCaseId = "^((case)|(.*(case|service|event)(\\s|-|_)?(id)).*)$";
-    String possibleActivity = "^((activity|operation)(.*)|event)$";
-    String possibleResource = "^(resource|agent|employee|group)$";
-    String possibleEndTimestamp = "^((.*(end|complete|completion).*)|(time:)?timestamp|date & time)$";
-    String possibleStartTimestamp = "^(.*start.*)$";
-    String possibleOtherTimestamp = "^(.*(date|time).*)$";
-    String timestampPattern = "^(\\d{1,2}|\\d{4})([/\\-.])\\d{1,2}([/\\-.])(\\d{1,2}.*)$";
+    String POSSIBLE_CASE_ID = "^((case)|(.*(case|service|event)(\\s|-|_)?(id)).*)$";
+    String POSSIBLE_ACTIVITY = "^((activity|operation)(.*)|event)$";
+    String POSSIBLE_RESOURCE = "^(resource|agent|employee|group)$";
+    String POSSIBLE_ROLE = "^role$";
+    String POSSIBLE_END_TIMESTAMP = "^((.*(end|complete|completion).*)|(time:)?timestamp|date & time)$";
+    String POSSIBLE_START_TIMESTAMP = "^(.*start.*)$";
+    String POSSIBLE_OTHER_TIMESTAMP = "^(.*(date|time).*)$";
+    String TIMESTAMP_PATTERN = "^(\\d{1,2}|\\d{4})([/\\-.])\\d{1,2}([/\\-.])(\\d{1,2}.*)$";
 
     // File extension will be converted to lowercase before comparisons, so only use lowercase characters
     String CSV_FILE_EXTENSION = "csv";

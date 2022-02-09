@@ -1,7 +1,7 @@
 /*-
  * #%L
  * This file is part of "Apromore Core".
- * 
+ *
  * Copyright (C) 2020 University of Tartu
  * %%
  * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
@@ -10,12 +10,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -50,6 +50,7 @@ public class LogMetaData {
     private int endTimestampPos = HEADER_ABSENT;
     private int startTimestampPos = HEADER_ABSENT;
     private int resourcePos = HEADER_ABSENT;
+    private int rolePos = HEADER_ABSENT;
     private List<Integer> caseAttributesPos;
     private List<Integer> eventAttributesPos;
     /**
@@ -79,11 +80,24 @@ public class LogMetaData {
 
     public void validateSample() throws Exception {
         int count = 0;
-        if (caseIdPos != HEADER_ABSENT) count++;
-        if (activityPos != HEADER_ABSENT) count++;
-        if (endTimestampPos != HEADER_ABSENT) count++;
-        if (startTimestampPos != HEADER_ABSENT) count++;
-        if (resourcePos != HEADER_ABSENT) count++;
+        if (caseIdPos != HEADER_ABSENT) {
+            count++;
+        }
+        if (activityPos != HEADER_ABSENT) {
+            count++;
+        }
+        if (endTimestampPos != HEADER_ABSENT) {
+            count++;
+        }
+        if (startTimestampPos != HEADER_ABSENT) {
+            count++;
+        }
+        if (resourcePos != HEADER_ABSENT) {
+            count++;
+        }
+        if (rolePos != HEADER_ABSENT) {
+            count++;
+        }
 
         count += otherTimestamps.size();
         count += eventAttributesPos.size();
@@ -91,8 +105,9 @@ public class LogMetaData {
         count += ignoredPos.size();
 
         if (header.size() != count) {
-            throw new InvalidLogMetadataException("Failed to construct valid log sample!  Only specified " + count + " of " +
-                header.size() + " headers: " + header);
+            throw new InvalidLogMetadataException(
+                "Failed to construct valid log sample!  Only specified " + count + " of " +
+                    header.size() + " headers: " + header);
         }
     }
 
@@ -108,13 +123,16 @@ public class LogMetaData {
         if (resourcePos != HEADER_ABSENT) {
             result.add(XOrganizationalExtension.KEY_RESOURCE);
         }
+        if (rolePos != HEADER_ABSENT) {
+            result.add(XOrganizationalExtension.KEY_ROLE);
+        }
         if (perspectivePos != null && !perspectivePos.isEmpty()) {
             for (Integer i : perspectivePos) {
                 if (eventAttributesPos.contains(i)) {
                     result.add(header.get(i));
                 } else {
                     throw new InvalidLogMetadataException("Found invalid Log Metadata that eventAttributesPos doesn't" +
-                            " match with perspectivePos");
+                        " match with perspectivePos");
                 }
             }
         }
