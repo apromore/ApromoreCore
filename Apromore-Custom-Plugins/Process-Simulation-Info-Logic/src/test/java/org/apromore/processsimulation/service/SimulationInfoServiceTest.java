@@ -35,6 +35,7 @@ import java.time.DayOfWeek;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
@@ -44,6 +45,7 @@ import org.apromore.processsimulation.model.Currency;
 import org.apromore.processsimulation.model.DistributionType;
 import org.apromore.processsimulation.model.Element;
 import org.apromore.processsimulation.model.ProcessSimulationInfo;
+import org.apromore.processsimulation.model.Resource;
 import org.apromore.processsimulation.model.TimeUnit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -199,6 +201,13 @@ class SimulationInfoServiceTest {
         when(mockSimulationData.getEndTime()).thenReturn(1580475600000L);
         when(mockSimulationData.getResourceCount()).thenReturn(27L);
 
+        Map<String, Integer> mockRoleToResourceCounts = Map.of(
+            "Role_1", 5,
+            "Role_2", 10,
+            "Role_3", 15
+        );
+        when(mockSimulationData.getResourceCountsByRole()).thenReturn(mockRoleToResourceCounts);
+
         // when
         ProcessSimulationInfo processSimulationInfo =
             simulationInfoService.transformToSimulationInfo(mockSimulationData);
@@ -207,23 +216,45 @@ class SimulationInfoServiceTest {
         assertGeneralSimulationInfo(processSimulationInfo);
 
         assertNotNull(processSimulationInfo.getResources());
-        assertEquals(1, processSimulationInfo.getResources().size());
-        assertEquals("A_DEFAULT_RESOURCE_ID", processSimulationInfo.getResources().get(0).getId());
-        assertEquals("The default resource name", processSimulationInfo.getResources().get(0).getName());
-        assertEquals("A_DEFAULT_TIMETABLE_ID", processSimulationInfo.getResources().get(0).getTimetableId());
-        assertEquals(27, processSimulationInfo.getResources().get(0).getTotalAmount());
+        assertEquals(3, processSimulationInfo.getResources().size());
+
+        Optional<Resource> role1 =
+            processSimulationInfo.getResources().stream().filter(resource -> resource.getName().equals("Role_1"))
+                .findFirst();
+        assertResource("Role_1", 5, "A_DEFAULT_TIMETABLE_ID", role1);
+
+        Optional<Resource> role2 =
+            processSimulationInfo.getResources().stream().filter(resource -> resource.getName().equals("Role_2"))
+                .findFirst();
+        assertResource("Role_2", 10, "A_DEFAULT_TIMETABLE_ID", role2);
+
+        Optional<Resource> role3 =
+            processSimulationInfo.getResources().stream().filter(resource -> resource.getName().equals("Role_3"))
+                .findFirst();
+        assertResource("Role_3", 15, "A_DEFAULT_TIMETABLE_ID", role3);
+    }
+
+    private void assertResource(
+        final String expectedResourceName,
+        final int expectedResourceCount,
+        final String expectedTimetableId,
+        final Optional<Resource> actualRole) {
+        assertTrue(actualRole.isPresent());
+        assertEquals(expectedResourceName, actualRole.get().getName());
+        assertEquals(expectedResourceCount, actualRole.get().getTotalAmount());
+        assertEquals(expectedTimetableId, actualRole.get().getTimetableId());
     }
 
     @Test
-    void should_contain_no_resources_if_resource_count_is_zero() {
+    void should_contain_default_resource_if_no_roles() {
         // given
         SimulationData mockSimulationData = mock(SimulationData.class);
 
         when(mockSimulationData.getCaseCount()).thenReturn(100L);
         when(mockSimulationData.getStartTime()).thenReturn(1577797200000L);
         when(mockSimulationData.getEndTime()).thenReturn(1580475600000L);
-        when(mockSimulationData.getResourceCount()).thenReturn(0L);
-
+        when(mockSimulationData.getResourceCount()).thenReturn(19L);
+        when(mockSimulationData.getResourceCountsByRole()).thenReturn(null);
 
         // when
         ProcessSimulationInfo processSimulationInfo =
@@ -232,7 +263,11 @@ class SimulationInfoServiceTest {
         // then
         assertGeneralSimulationInfo(processSimulationInfo);
 
-        assertNull(processSimulationInfo.getResources());
+        assertEquals(1, processSimulationInfo.getResources().size());
+        assertEquals("A_DEFAULT_RESOURCE_ID", processSimulationInfo.getResources().get(0).getId());
+        assertEquals("The default resource name", processSimulationInfo.getResources().get(0).getName());
+        assertEquals("A_DEFAULT_TIMETABLE_ID", processSimulationInfo.getResources().get(0).getTimetableId());
+        assertEquals(19, processSimulationInfo.getResources().get(0).getTotalAmount());
     }
 
     private void assertGeneralSimulationInfo(final ProcessSimulationInfo processSimulationInfo) {
@@ -510,12 +545,29 @@ class SimulationInfoServiceTest {
     private void assertBpmnResourceSimulationInfo(String bpmnXmlString)
         throws XPathExpressionException, ParserConfigurationException, IOException, SAXException {
 
-        Node resourceNode = TestHelper.getProcessSimulationInfo(bpmnXmlString,
-            "/definitions/process/extensionElements/processSimulationInfo/resources/resource[1]");
-        assertEquals("A_DEFAULT_RESOURCE_ID", resourceNode.getAttributes().getNamedItem("id").getNodeValue());
-        assertEquals("The default resource name", resourceNode.getAttributes().getNamedItem("name").getNodeValue());
-        assertEquals("A_DEFAULT_TIMETABLE_ID", resourceNode.getAttributes().getNamedItem("timetableId").getNodeValue());
-        assertEquals("23", resourceNode.getAttributes().getNamedItem("totalAmount").getNodeValue());
+        NodeList resourceNodeList = TestHelper.getProcessSimulationInfo(bpmnXmlString,
+            "/definitions/process/extensionElements/processSimulationInfo/resources").getChildNodes();
+
+        Map<String, Node> resourceNodeMap = new HashMap<>();
+        for (int i = 0; i < resourceNodeList.getLength(); i++) {
+            Node resource = resourceNodeList.item(i);
+            resourceNodeMap.put(resource.getAttributes().getNamedItem("name").getNodeValue(), resource);
+        }
+
+        assertResources("Role_1", 5, "A_DEFAULT_TIMETABLE_ID", resourceNodeMap);
+        assertResources("Role_2", 10, "A_DEFAULT_TIMETABLE_ID", resourceNodeMap);
+        assertResources("Role_3", 15, "A_DEFAULT_TIMETABLE_ID", resourceNodeMap);
+    }
+
+    private void assertResources(String resourceName, int totalAmount, String timetableId,
+                                 final Map<String, Node> resourceNodeMap) {
+        Node resourceNode = resourceNodeMap.get(resourceName);
+
+        assertEquals(resourceName, resourceNode.getAttributes().getNamedItem("name").getNodeValue());
+        assertEquals(String.valueOf(totalAmount),
+            resourceNode.getAttributes().getNamedItem("totalAmount").getNodeValue());
+        assertEquals(timetableId, resourceNode.getAttributes().getNamedItem("timetableId").getNodeValue());
+
     }
 
     private void assertBpmnGatewayProbabilitySimulationInfo(String bpmnXmlString)

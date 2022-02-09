@@ -665,8 +665,29 @@ public class PDAnalyst {
                                 MeasureRelation.ABSOLUTE) / 1000)
                             .setScale(2, RoundingMode.HALF_UP).doubleValue()));
 
+            Map<String, Set<String>> rolesToResourcesMap = new HashMap<>();
+            filteredPLog.getActivityInstances().stream()
+                .filter(activityInstance -> activityInstance.getAttributes().containsKey(Constants.ATT_KEY_RESOURCE))
+                .forEach(activityInstance -> {
+                    String role = activityInstance.getAttributeValue(Constants.ATT_KEY_ROLE);
+
+                    if (role == null || role.isEmpty()) {
+                        role = SimulationData.DEFAULT_ROLE;
+                    }
+                    Set<String> resources = rolesToResourcesMap.get(role);
+                    if (resources == null) {
+                        resources = new HashSet<>();
+                    }
+                    resources.add(activityInstance.getResource());
+                    rolesToResourcesMap.put(role, resources);
+                });
+
+            Map<String, Integer> roleCounts = rolesToResourcesMap.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, stringSetEntry -> stringSetEntry.getValue().size()));
+
             simulationData = SimulationData.builder()
                 .caseCount(filteredPLog.getValidTraceIndexBS().cardinality())
+                .resourceCountByRole(roleCounts)
                 .resourceCount(filteredPLog.getActivityInstances().stream()
                     .filter(
                         activityInstance -> activityInstance.getAttributes().containsKey(Constants.ATT_KEY_RESOURCE))
@@ -701,11 +722,13 @@ public class PDAnalyst {
 
                 // Forcing params for BPMN Export
                 AbstractionParams paramsForExport = abstraction.getAbstractionParams().clone();
-                paramsForExport.setPrimaryMeasure(MeasureType.FREQUENCY, MeasureAggregation.TOTAL, MeasureRelation.ABSOLUTE);
+                paramsForExport.setPrimaryMeasure(MeasureType.FREQUENCY, MeasureAggregation.TOTAL,
+                    MeasureRelation.ABSOLUTE);
 
                 // Regenerating the DFGAbstraction to suite the above params
                 ProcessDiscoverer pdForExport = new ProcessDiscoverer();
-                Abstraction dfgAbstraction = pdForExport.generateDFGAbstraction(abstractAbstraction.getLog(), paramsForExport);
+                Abstraction dfgAbstraction =
+                    pdForExport.generateDFGAbstraction(abstractAbstraction.getLog(), paramsForExport);
 
                 // Generating the BPMNAbstraction out of the DFG
                 bpmnAbstraction = new BPMNAbstraction(attLog, (DFGAbstraction) dfgAbstraction, paramsForExport);

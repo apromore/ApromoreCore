@@ -22,6 +22,7 @@
 package org.apromore.processsimulation.service;
 
 import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_DEFAULT_ID_KEY;
+import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_DEFAULT_ID_PREFIX_KEY;
 import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_DEFAULT_NAME_KEY;
 import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_FROM_TIME;
 import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_FROM_WEEKDAY_KEY;
@@ -187,14 +188,39 @@ public class SimulationInfoService {
         final ProcessSimulationInfo.ProcessSimulationInfoBuilder builder,
         final SimulationData simulationData) {
 
-        if (simulationData.getResourceCount() > 0) {
-            builder.resources(Arrays.asList(
+        if (simulationData.getResourceCountsByRole() == null || simulationData.getResourceCountsByRole().isEmpty()) {
+            builder.resources(List.of(
                 Resource.builder()
                     .id(config.getDefaultResource().get(CONFIG_DEFAULT_ID_KEY))
                     .name(config.getDefaultResource().get(CONFIG_DEFAULT_NAME_KEY))
                     .totalAmount(simulationData.getResourceCount())
                     .timetableId(config.getDefaultTimetable().get(CONFIG_DEFAULT_ID_KEY))
-                    .build()));
+                    .build()
+            ));
+        } else {
+
+            builder.resources(simulationData.getResourceCountsByRole().entrySet().stream()
+                .map(roleToResourceCount -> {
+                    String resourceId;
+                    String resourceName;
+
+                    if (roleToResourceCount.getKey().equals(SimulationData.DEFAULT_ROLE)) {
+                        // key -> DEFAULT_RESOURCE (i.e. no associated role)
+                        resourceId = config.getDefaultResource().get(CONFIG_DEFAULT_ID_PREFIX_KEY)
+                            + config.getDefaultResource().get(CONFIG_DEFAULT_ID_KEY);
+                        resourceName = config.getDefaultResource().get(CONFIG_DEFAULT_NAME_KEY);
+                    } else {
+                        resourceId = config.getDefaultResource().get(CONFIG_DEFAULT_ID_KEY) + UUID.randomUUID();
+                        resourceName = roleToResourceCount.getKey();
+                    }
+
+                    return Resource.builder()
+                        .id(resourceId)
+                        .name(resourceName)
+                        .totalAmount(roleToResourceCount.getValue())
+                        .timetableId(config.getDefaultTimetable().get(CONFIG_DEFAULT_ID_KEY))
+                        .build();
+                }).collect(Collectors.toList()));
         }
     }
 
