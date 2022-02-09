@@ -1,0 +1,622 @@
+databaseChangeLog:
+- changeSet:
+    id:  91220115105200
+    author:  "add new test user to user table"
+    comment: "add new test user to user table"
+    changes:
+      - insert:
+          tableName: user
+          columns:
+            - column:
+                name: id
+                value: 10
+            - column:
+                name: row_guid
+                value: 'ad1f7b60-1143-4399-b331-b887585a0f40'
+            - column:
+                name: username
+                value: 'test-user'
+            - column:
+                name: date_created
+                value: '2022-01-17 16:11:05'
+            - column:
+                name: first_name
+                value: 'Test'
+            - column:
+                name: last_name
+                value: 'User'
+            - column:
+                name: last_activity_date
+                value: '2012-01-17 16:12:05'
+            - column:
+                name: groupid
+                value: 8
+            - column:
+                name: organization
+                value:
+            - column:
+                name: role
+                value:
+            - column:
+                name: country
+                value:
+            - column:
+                name: phone
+                value:
+            - column:
+                name: subscription
+                value:
+- changeSet:
+    id:  91220117161600
+    author:  "add new test membership to membership table"
+    comment: "add new test membership to membership table"
+    changes:
+      - insert:
+          tableName: membership
+          columns:
+            - column:
+                name: id
+                value: 10
+            - column:
+                name: userid
+                value: 10
+            - column:
+                name: password
+                value: '5f4dcc3b5aa765d61d8327deb882cf99'
+            - column:
+                name: password_salt
+                value: 'username'
+            - column:
+                name: mobile_pin
+                value: ''
+            - column:
+                name: email
+                value: 'test-user@apromore.com'
+            - column:
+                name: password_question
+                value: 'Test question'
+            - column:
+                name: password_answer
+                value: 'test'
+            - column:
+                name: is_approved
+                valueBoolean: true
+            - column:
+                name: is_locked
+                valueBoolean: false
+            - column:
+                name: date_created
+                value: '2022-01-17 16:21:05'
+            - column:
+                name: failed_password_attempts
+                value: 0
+            - column:
+                name: failed_answer_attempts
+                value: 0
+            - column:
+                name: password_hashing_algorithm
+                value: 'MD5-UNSALTED'
+
+- changeSet:
+    id:  91220117174700
+    author:  "populate data for folder table"
+    comment: "populate data for folder table"
+    changes:
+      - insert:
+          tableName: folder
+          columns:
+            - column:
+                name: id
+                value: 1
+            - column:
+                name: parentid
+                value:
+            - column:
+                name: workspaceid
+                value:
+            - column:
+                name: folder_name
+                value: "logs"
+            - column:
+                name: folder_description
+                value: "my logs folder"
+            - column:
+                name: creatorid
+                value: 8
+            - column:
+                name: date_created
+                value: '2022-01-14 15:30:59'
+            - column:
+                name: modifiedbyid
+                value: 8
+            - column:
+                name: date_modified
+                value: '2022-01-14 17:32:59'
+            - column:
+                name: ged_matrix_computation
+                valueBoolean: true
+            - column:
+                name: parent_folder_chain
+                value: '0'
+      - insert:
+          tableName: folder
+          columns:
+            - column:
+                name: id
+                value: 2
+            - column:
+                name: parentid
+                value: 1
+            - column:
+                name: workspaceid
+                value:
+            - column:
+                name: folder_name
+                value: "sap"
+            - column:
+                name: folder_description
+                value: "sap folder"
+            - column:
+                name: creatorid
+                value: 8
+            - column:
+                name: date_created
+                value: '2022-01-14 15:30:59'
+            - column:
+                name: modifiedbyid
+                value: 8
+            - column:
+                name: date_modified
+                value: '2022-01-14 17:32:59'
+            - column:
+                name: ged_matrix_computation
+                valueBoolean: true
+            - column:
+                name: parent_folder_chain
+                value: '0_1'
+      - insert:
+          tableName: folder
+          columns:
+            - column:
+                name: id
+                value: 3
+            - column:
+                name: parentid
+                value: 1
+            - column:
+                name: workspaceid
+                value:
+            - column:
+                name: folder_name
+                value: "anz"
+            - column:
+                name: folder_description
+                value: "anz folder"
+            - column:
+                name: creatorid
+                value: 8
+            - column:
+                name: date_created
+                value: '2022-01-14 15:30:59'
+            - column:
+                name: modifiedbyid
+                value: 8
+            - column:
+                name: date_modified
+                value: '2022-01-14 17:32:59'
+            - column:
+                name: ged_matrix_computation
+                valueBoolean: true
+            - column:
+                name: parent_folder_chain
+                value: '0_1'
+      - insert:
+          tableName: folder
+          columns:
+            - column:
+                name: id
+                value: 4
+            - column:
+                name: parentid
+                value: 2
+            - column:
+                name: workspaceid
+                value:
+            - column:
+                name: folder_name
+                value: "scsv"
+            - column:
+                name: folder_description
+                value: "sap csv folder"
+            - column:
+                name: creatorid
+                value: 8
+            - column:
+                name: date_created
+                value: '2022-01-14 15:30:59'
+            - column:
+                name: modifiedbyid
+                value: 8
+            - column:
+                name: date_modified
+                value: '2022-01-14 17:32:59'
+            - column:
+                name: ged_matrix_computation
+                valueBoolean: true
+            - column:
+                name: parent_folder_chain
+                value: '0_1_2'
+      - insert:
+          tableName: folder
+          columns:
+            - column:
+                name: id
+                value: 5
+            - column:
+                name: parentid
+                value: 2
+            - column:
+                name: workspaceid
+                value:
+            - column:
+                name: folder_name
+                value: "sxes"
+            - column:
+                name: folder_description
+                value: "sap xes folder"
+            - column:
+                name: creatorid
+                value: 8
+            - column:
+                name: date_created
+                value: '2022-01-14 15:30:59'
+            - column:
+                name: modifiedbyid
+                value: 8
+            - column:
+                name: date_modified
+                value: '2022-01-14 17:32:59'
+            - column:
+                name: ged_matrix_computation
+                valueBoolean: true
+            - column:
+                name: parent_folder_chain
+                value: '0_1_2'
+      - insert:
+          tableName: folder
+          columns:
+            - column:
+                name: id
+                value: 6
+            - column:
+                name: parentid
+                value: 2
+            - column:
+                name: workspaceid
+                value:
+            - column:
+                name: folder_name
+                value: "sparquet"
+            - column:
+                name: folder_description
+                value: "sap parquet folder"
+            - column:
+                name: creatorid
+                value: 8
+            - column:
+                name: date_created
+                value: '2022-01-14 15:30:59'
+            - column:
+                name: modifiedbyid
+                value: 8
+            - column:
+                name: date_modified
+                value: '2022-01-14 17:32:59'
+            - column:
+                name: ged_matrix_computation
+                valueBoolean: true
+            - column:
+                name: parent_folder_chain
+                value: '0_1_2'
+      - insert:
+          tableName: folder
+          columns:
+            - column:
+                name: id
+                value: 7
+            - column:
+                name: parentid
+                value: 3
+            - column:
+                name: workspaceid
+                value:
+            - column:
+                name: folder_name
+                value: "acsv"
+            - column:
+                name: folder_description
+                value: "anz csv folder"
+            - column:
+                name: creatorid
+                value: 8
+            - column:
+                name: date_created
+                value: '2022-01-14 15:30:59'
+            - column:
+                name: modifiedbyid
+                value: 8
+            - column:
+                name: date_modified
+                value: '2022-01-14 17:32:59'
+            - column:
+                name: ged_matrix_computation
+                valueBoolean: true
+            - column:
+                name: parent_folder_chain
+                value: '0_1_3'
+      - insert:
+          tableName: folder
+          columns:
+            - column:
+                name: id
+                value: 8
+            - column:
+                name: parentid
+                value: 3
+            - column:
+                name: workspaceid
+                value:
+            - column:
+                name: folder_name
+                value: "axes"
+            - column:
+                name: folder_description
+                value: "anz xes folder"
+            - column:
+                name: creatorid
+                value: 8
+            - column:
+                name: date_created
+                value: '2022-01-14 15:30:59'
+            - column:
+                name: modifiedbyid
+                value: 8
+            - column:
+                name: date_modified
+                value: '2022-01-14 17:32:59'
+            - column:
+                name: ged_matrix_computation
+                valueBoolean: true
+            - column:
+                name: parent_folder_chain
+                value: '0_1_3'
+      - insert:
+          tableName: folder
+          columns:
+            - column:
+                name: id
+                value: 9
+            - column:
+                name: parentid
+                value: 3
+            - column:
+                name: workspaceid
+                value:
+            - column:
+                name: folder_name
+                value: "aparquet"
+            - column:
+                name: folder_description
+                value: "anz parquet folder"
+            - column:
+                name: creatorid
+                value: 8
+            - column:
+                name: date_created
+                value: '2022-01-14 15:30:59'
+            - column:
+                name: modifiedbyid
+                value: 8
+            - column:
+                name: date_modified
+                value: '2022-01-14 17:32:59'
+            - column:
+                name: ged_matrix_computation
+                valueBoolean: true
+            - column:
+                name: parent_folder_chain
+                value: '0_1_3'
+- changeSet:
+    id:  91220117174800
+    author:  "populate data for group_folder table"
+    comment: "populate data for group_folder table"
+    changes:
+      - insert:
+          tableName: group_folder
+          columns:
+            - column:
+                name: id
+                value: 1
+            - column:
+                name: groupid
+                value: 8
+            - column:
+                name: folderid
+                value: 1
+            - column:
+                name: has_read
+                valueBoolean: true
+            - column:
+                name: has_write
+                valueBoolean: true
+            - column:
+                name: has_ownership
+                valueBoolean: true
+      - insert:
+          tableName: group_folder
+          columns:
+            - column:
+                name: id
+                value: 2
+            - column:
+                name: groupid
+                value: 8
+            - column:
+                name: folderid
+                value: 2
+            - column:
+                name: has_read
+                valueBoolean: true
+            - column:
+                name: has_write
+                valueBoolean: true
+            - column:
+                name: has_ownership
+                valueBoolean: true
+      - insert:
+          tableName: group_folder
+          columns:
+            - column:
+                name: id
+                value: 3
+            - column:
+                name: groupid
+                value: 8
+            - column:
+                name: folderid
+                value: 3
+            - column:
+                name: has_read
+                valueBoolean: true
+            - column:
+                name: has_write
+                valueBoolean: true
+            - column:
+                name: has_ownership
+                valueBoolean: true
+      - insert:
+          tableName: group_folder
+          columns:
+            - column:
+                name: id
+                value: 4
+            - column:
+                name: groupid
+                value: 8
+            - column:
+                name: folderid
+                value: 4
+            - column:
+                name: has_read
+                valueBoolean: true
+            - column:
+                name: has_write
+                valueBoolean: true
+            - column:
+                name: has_ownership
+                valueBoolean: true
+      - insert:
+          tableName: group_folder
+          columns:
+            - column:
+                name: id
+                value: 5
+            - column:
+                name: groupid
+                value: 8
+            - column:
+                name: folderid
+                value: 5
+            - column:
+                name: has_read
+                valueBoolean: true
+            - column:
+                name: has_write
+                valueBoolean: true
+            - column:
+                name: has_ownership
+                valueBoolean: true
+      - insert:
+          tableName: group_folder
+          columns:
+            - column:
+                name: id
+                value: 6
+            - column:
+                name: groupid
+                value: 8
+            - column:
+                name: folderid
+                value: 6
+            - column:
+                name: has_read
+                valueBoolean: true
+            - column:
+                name: has_write
+                valueBoolean: true
+            - column:
+                name: has_ownership
+                valueBoolean: true
+      - insert:
+          tableName: group_folder
+          columns:
+            - column:
+                name: id
+                value: 7
+            - column:
+                name: groupid
+                value: 8
+            - column:
+                name: folderid
+                value: 7
+            - column:
+                name: has_read
+                valueBoolean: true
+            - column:
+                name: has_write
+                valueBoolean: true
+            - column:
+                name: has_ownership
+                valueBoolean: true
+      - insert:
+          tableName: group_folder
+          columns:
+            - column:
+                name: id
+                value: 8
+            - column:
+                name: groupid
+                value: 8
+            - column:
+                name: folderid
+                value: 8
+            - column:
+                name: has_read
+                valueBoolean: true
+            - column:
+                name: has_write
+                valueBoolean: true
+            - column:
+                name: has_ownership
+                valueBoolean: true
+      - insert:
+          tableName: group_folder
+          columns:
+            - column:
+                name: id
+                value: 9
+            - column:
+                name: groupid
+                value: 8
+            - column:
+                name: folderid
+                value: 9
+            - column:
+                name: has_read
+                valueBoolean: true
+            - column:
+                name: has_write
+                valueBoolean: true
+            - column:
+                name: has_ownership
+                valueBoolean: true
