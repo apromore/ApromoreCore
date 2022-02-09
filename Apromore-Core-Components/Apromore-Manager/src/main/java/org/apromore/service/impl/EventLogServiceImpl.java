@@ -688,4 +688,8 @@ public class EventLogServiceImpl implements EventLogService {
 			}
 		});
 	}
+	@Override
+	public List<CalendarModel> getAllCustomCalendars(){
+		return calendarService.getCalendars();
+	}
 }

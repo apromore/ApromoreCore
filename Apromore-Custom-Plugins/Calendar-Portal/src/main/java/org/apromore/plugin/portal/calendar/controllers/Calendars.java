@@ -256,7 +256,9 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
         String msg = getLabels().getString("success_apply_message");
         String infoText = String.format(msg, logName);
         Notification.info(infoText);
-        applyCalendarForLog(logId, (calendarListModel.getSelection().iterator().next()).getId());
+        if(!calendarListModel.getSelection().isEmpty()) {
+            applyCalendarForLog(logId, (calendarListModel.getSelection().iterator().next()).getId());
+        }
         cleanup();
         getSelf().detach();
     }
