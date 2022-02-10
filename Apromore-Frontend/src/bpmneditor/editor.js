@@ -32,6 +32,7 @@ import Utils from './utils';
  */
 export default class Editor {
     constructor(options) {
+        this.dirty = false;
         this.actualEditor = undefined;
         // this.preventFitDelay = options.preventFitDelay;
 
@@ -46,6 +47,14 @@ export default class Editor {
             ]);
         //this.rootNode.addClassName(this.className);
         this.rootNode.classList.add(this.className);
+    }
+
+    setDirty(dirty) {
+        this.dirty = dirty;
+    }
+
+    isDirty() {
+        return this.dirty;
     }
 
     attachEditor(editor) {
@@ -109,6 +118,15 @@ export default class Editor {
         var editor = this.actualEditor;
         var eventBus = editor.get('eventBus');
         var elementRegistry = editor.get('elementRegistry');
+        var me = this;
+
+        eventBus.on('elements.changed', function () {
+            me.setDirty(true);
+        });
+        eventBus.on('elements.changedAux', function () {
+            me.setDirty(true);
+        });
+
         var connections = elementRegistry.filter(function(e) {return e.waypoints;});
         var connectionDocking = editor.get('connectionDocking');
         connections.forEach(function(connection) {
@@ -140,7 +158,11 @@ export default class Editor {
     async getXML() {
         if (!this.actualEditor) return '';
         const result = await this.actualEditor.saveXML({ format: true }).catch(err => {throw err;});
-        const {xml} = result;
+        let {xml} = result;
+        if (xml) {
+            xml = xml.replace(/>\s*/g, '>');
+            xml = xml.replace(/\s*</g, '<');
+        }
         return xml;
     }
 

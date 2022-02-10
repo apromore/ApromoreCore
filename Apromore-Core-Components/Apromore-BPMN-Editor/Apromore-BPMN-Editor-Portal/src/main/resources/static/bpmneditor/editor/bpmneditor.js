@@ -11434,6 +11434,7 @@ __webpack_require__.r(__webpack_exports__);
  */
 class Editor {
     constructor(options) {
+        this.dirty = false;
         this.actualEditor = undefined;
         // this.preventFitDelay = options.preventFitDelay;
 
@@ -11448,6 +11449,14 @@ class Editor {
             ]);
         //this.rootNode.addClassName(this.className);
         this.rootNode.classList.add(this.className);
+    }
+
+    setDirty(dirty) {
+        this.dirty = dirty;
+    }
+
+    isDirty() {
+        return this.dirty;
     }
 
     attachEditor(editor) {
@@ -11511,6 +11520,15 @@ class Editor {
         var editor = this.actualEditor;
         var eventBus = editor.get('eventBus');
         var elementRegistry = editor.get('elementRegistry');
+        var me = this;
+
+        eventBus.on('elements.changed', function () {
+            me.setDirty(true);
+        });
+        eventBus.on('elements.changedAux', function () {
+            me.setDirty(true);
+        });
+
         var connections = elementRegistry.filter(function(e) {return e.waypoints;});
         var connectionDocking = editor.get('connectionDocking');
         connections.forEach(function(connection) {
@@ -11542,7 +11560,11 @@ class Editor {
     async getXML() {
         if (!this.actualEditor) return '';
         const result = await this.actualEditor.saveXML({ format: true }).catch(err => {throw err;});
-        const {xml} = result;
+        let {xml} = result;
+        if (xml) {
+            xml = xml.replace(/>\s*/g, '>');
+            xml = xml.replace(/\s*</g, '<');
+        }
         return xml;
     }
 
@@ -62924,7 +62946,7 @@ function PropertiesProvider(eventBus, canvas, bpmnFactory, elementRegistry, tran
     var resourcesTab = createResourceTab(element, bpmnFactory, elementRegistry, translate);
     var gatewayTab = createGatewayTab(element, bpmnFactory, elementRegistry, translate);
     var intermediateAndBoundaryEventsTab = createIntermediateAndBoundaryEventsTab(element, bpmnFactory, elementRegistry, translate);
-    var auxTab = createAuxTab(element, bpmnFactory, elementRegistry, translate, bpmnjs);
+    var auxTab = createAuxTab(element, bpmnFactory, elementRegistry, translate, bpmnjs, eventBus);
     var customTab = createCustomTab(element, bpmnFactory, elementRegistry, translate);
 
     function getDefaultTabs() {
@@ -67604,7 +67626,7 @@ module.exports = function(element, bpmnFactory, options, translate) {
 var is = __webpack_require__(1).is,
     createAuxGroups = __webpack_require__(333);
 
-module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmnjs) {
+module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmnjs, eventBus) {
 
   function shown(element) {
     return is(element, 'bpmn:FlowNode') && !is(element, 'bpmn:Process');
@@ -67613,7 +67635,7 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmn
   return {
     id: 'attachmentTab',
     label: translate('attachments'),
-    groups: createAuxGroups(element, bpmnFactory, elementRegistry, translate, bpmnjs),
+    groups: createAuxGroups(element, bpmnFactory, elementRegistry, translate, bpmnjs, eventBus),
     enabled: function(element) {
       return shown(element);
     }
@@ -67628,7 +67650,7 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmn
 var getBusinessObject = __webpack_require__(1).getBusinessObject;
 var createAuxEntries = __webpack_require__(334);
 
-module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmnjs) {
+module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmnjs, eventBus) {
   var bo = getBusinessObject(element),
       groupId = ['bo', bo.get('id'), 'group'].join('-'),
       groupLabel = bo.name || bo.id;
@@ -67636,7 +67658,7 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmn
   var auxGroup = {
     id : groupId,
     label: groupLabel,
-    entries: createAuxEntries(element, bpmnFactory, elementRegistry, translate, bpmnjs)
+    entries: createAuxEntries(element, bpmnFactory, elementRegistry, translate, bpmnjs, eventBus)
   };
 
   return [
@@ -67739,7 +67761,7 @@ function refreshOverlay(bpmnjs, element) {
   }, 500);
 }
 
-module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmnjs) {
+module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmnjs, eventBus) {
 
   var bo = getBusinessObject(element);
   var img = getImg(bo, bpmnFactory);
@@ -67831,7 +67853,8 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmn
       bpmnFactory,
       elementRegistry,
       translate,
-      bpmnjs
+      bpmnjs,
+      eventBus
     })
   ];
 }
@@ -68028,7 +68051,7 @@ function selectIcon(iconName) {
 
 const SET_PICKER_SEL = '#ap-bpmn-icon-set-picker';
 
-function updateObjects(element, icons, bpmnFactory, bpmnjs) {
+function updateObjects(element, icons, bpmnFactory, bpmnjs, eventBus) {
   icons.values = [];
   let setContainer = $('#ap-bpmn-icon-set');
   $('.icon-item', setContainer).each((index, itemEl) => {
@@ -68055,6 +68078,7 @@ function updateObjects(element, icons, bpmnFactory, bpmnjs) {
       icons.values.push(iconEl);
     }
   })
+  eventBus.fire("elements.changedAux", [element])
   // update overlays
   refreshOverlay(bpmnjs, element);
   return icons.values;
@@ -68179,7 +68203,7 @@ module.exports = function(options) {
         rowIcon.removeClass();
         rowIcon.addClass("icon-name " + newIconName);
         selectIcon(newIconName);
-        updateObjects(options.element, icons, options.bpmnFactory, options.bpmnjs);
+        updateObjects(options.element, icons, options.bpmnFactory, options.bpmnjs, options.eventBus);
       })
       lineEl.appendChild(icoEl);
     });

@@ -89,7 +89,7 @@ function refreshOverlay(bpmnjs, element) {
   }, 500);
 }
 
-module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmnjs) {
+module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmnjs, eventBus) {
 
   var bo = getBusinessObject(element);
   var img = getImg(bo, bpmnFactory);
@@ -181,7 +181,8 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmn
       bpmnFactory,
       elementRegistry,
       translate,
-      bpmnjs
+      bpmnjs,
+      eventBus
     })
   ];
 }
