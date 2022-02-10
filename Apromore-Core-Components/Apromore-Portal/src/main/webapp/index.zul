@@ -155,22 +155,24 @@
         window.onerror = function myErrorHandler(errorMsg, url, lineNumber) {
             window.location.reload();
         }
-        
+
         window.addEventListener('keydown', (evt) => {
-           	  
-           	   evt = evt||window.event ;
-			   var keyCode = evt.keyCode;
-			   var target = evt.target || evt.srcElement;
-			   
-			   if(evt.ctrlKey||evt.metaKey) {
-			   	
-			   	if (target.tagName.toUpperCase() == 'INPUT') return;
-			   	
-				if (keyCode==67 || keyCode==86 || keyCode==88) {
-					zAu.send(new zk.Event(zk.Widget.$(jq("$mainW")), 'onCtrlPress',keyCode));
-				}
-          	 }
-           });
+
+        evt = evt||window.event ;
+        var keyCode = evt.keyCode;
+        var target = evt.target || evt.srcElement;
+
+        if(evt.ctrlKey||evt.metaKey) {
+            if (target.tagName.toUpperCase() == 'INPUT') return;
+
+            if (keyCode==67 || keyCode==86 || keyCode==88 || keyCode == 65 || keyCode == 97) {
+                if(keyCode == 65 || keyCode == 97){
+                    document.getElementsByTagName("body")[0].className = "ap-disable-selection";
+                }
+                zAu.send(new zk.Event(zk.Widget.$(jq("$mainW")), 'onCtrlPress',keyCode));
+            }
+        }
+        });
            
           function clearSelection(){
           	var selectedArea = window.getSelection ? window.getSelection() : document.selection;
