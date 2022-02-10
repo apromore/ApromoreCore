@@ -113562,7 +113562,40 @@ function comments_defer(fn) {
   __init__: [ 'comments' ],
   'comments': [ 'type', Comments ]
 });
+// CONCATENATED MODULE: ./app/modules/resize-tasks/ResizeTasks.js
+
+
+
+
+class ResizeTasks_ResizeTasks extends RuleProvider {
+  constructor(bpmnRules, eventBus) {
+    super(eventBus);
+
+    this._bpmnRules = bpmnRules;
+  }
+
+  init() {
+    this.addRule('shape.resize', Infinity, ({ shape, newBounds }) => {
+      return (
+        Object(ModelUtil["is"])(shape, 'bpmn:Task') || this._bpmnRules.canResize(shape, newBounds)
+      );
+    });
+  }
+}
+
+ResizeTasks_ResizeTasks.$inject = [ 'bpmnRules', 'eventBus' ];
+
+
+// CONCATENATED MODULE: ./app/modules/resize-tasks/index.js
+
+
+/* harmony default export */ var resize_tasks = ({
+  __init__: [ 'resizeTasks' ],
+  resizeTasks: [ 'type', ResizeTasks_ResizeTasks ]
+});
+
 // CONCATENATED MODULE: ./app/CustomModeler.js
+
 
 
 
@@ -113659,6 +113692,7 @@ function CustomModeler(options) {
   options.additionalModules.push(color_picker);
   options.additionalModules.push(modules_attachment);
   options.additionalModules.push(modules_comments);
+  options.additionalModules.push(resize_tasks);
   Modeler.call(this, options);
 }
 

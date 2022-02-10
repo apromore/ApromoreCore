@@ -13,6 +13,7 @@ import customTranslate from './translate/customTranslate';
 import ColorPickerModule from './modules/color-picker';
 import AttachmentModule from './modules/attachment';
 import EmbeddedCommentsModule from './modules/comments';
+import ResizeTasksModule from './modules/resize-tasks';
 
 var domify = require('min-dom').domify,
   domQuery = require('min-dom').query,
@@ -94,6 +95,7 @@ export default function CustomModeler(options) {
   options.additionalModules.push(ColorPickerModule);
   options.additionalModules.push(AttachmentModule);
   options.additionalModules.push(EmbeddedCommentsModule);
+  options.additionalModules.push(ResizeTasksModule);
   Modeler.call(this, options);
 }
 
