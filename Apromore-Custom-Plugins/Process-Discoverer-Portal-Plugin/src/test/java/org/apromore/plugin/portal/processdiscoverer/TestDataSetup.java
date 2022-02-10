@@ -123,6 +123,10 @@ public class TestDataSetup {
     public XLog readLogWithOneTraceStartCompleteEventsNonOverlapping() {
         return this.readXESFile("src/test/logs/L1_1trace_start_complete_events_non_overlapping.xes");
     }
+
+    public XLog readLogWithOneTraceStartCompleteEventsNonOverlappingWithRoles() {
+        return this.readXESFile("src/test/logs/L1_1trace_start_complete_events_non_overlapping_with_role.xes");
+    }
     
     public JSONArray readJSON_DFG_Frequency_LogWithStartCompleteEventsNonOverlapping_100_100() throws JSONException, FileNotFoundException {
         JSONTokener tokener = new JSONTokener(new FileReader("src/test/logs/L1_start_complete_no_overlapping_DFG_100_100_Frequency.json"));

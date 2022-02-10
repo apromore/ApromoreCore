@@ -53,6 +53,7 @@ import org.apromore.apmlog.filter.types.FilterType;
 import org.apromore.apmlog.filter.types.Inclusion;
 import org.apromore.apmlog.filter.types.OperationType;
 import org.apromore.apmlog.filter.types.Section;
+import org.apromore.apmlog.logobjects.ActivityInstance;
 import org.apromore.apmlog.stats.LogStatsAnalyzer;
 import org.apromore.apmlog.stats.TimeStatsProcessor;
 import org.apromore.apmlog.xes.XESAttributeCodes;
@@ -98,6 +99,7 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.ListIterable;
 import org.slf4j.Logger;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 
 /**
  * PDAnalyst represents a process analyst who will performs log analysis in the form of graphs and BPMN diagrams
@@ -657,12 +659,8 @@ public class PDAnalyst {
             simulationData = SimulationData.builder()
                 .caseCount(filteredPLog.getValidTraceIndexBS().cardinality())
                 .resourceCountByRole(getResourceCountsGroupedByRole())
-                .resourceCount(filteredPLog.getActivityInstances().stream()
-                    .filter(
-                        activityInstance -> activityInstance.getAttributes().containsKey(Constants.ATT_KEY_RESOURCE))
-                    .map(activityInstance -> activityInstance.getAttributes().get(Constants.ATT_KEY_RESOURCE))
-                    .collect(Collectors.toSet())
-                    .size())
+                .resourceCount(getTotalResourcesCount())
+                .nodeIdToRoleName(getRoleForNodeId(bpmnAbstraction))
                 .startTime(filteredAPMLog.getStartTime())
                 .endTime(filteredAPMLog.getEndTime())
                 .nodeWeights(getNodeWeights(bpmnAbstraction))
@@ -685,6 +683,15 @@ public class PDAnalyst {
                     .setScale(2, RoundingMode.HALF_UP).doubleValue()));
     }
 
+    private long getTotalResourcesCount() {
+        return filteredPLog.getActivityInstances().stream()
+            .filter(
+                activityInstance -> activityInstance.getAttributes().containsKey(Constants.ATT_KEY_RESOURCE))
+            .map(activityInstance -> activityInstance.getAttributes().get(Constants.ATT_KEY_RESOURCE))
+            .collect(Collectors.toSet())
+            .size();
+    }
+
     private Map<String, Integer> getResourceCountsGroupedByRole() {
         Map<String, Set<String>> rolesToResourcesMap = new HashMap<>();
         filteredPLog.getActivityInstances().stream()
@@ -702,9 +709,36 @@ public class PDAnalyst {
                 resources.add(activityInstance.getResource());
                 rolesToResourcesMap.put(role, resources);
             });
-        
+
         return rolesToResourcesMap.entrySet().stream()
             .collect(Collectors.toMap(Map.Entry::getKey, stringSetEntry -> stringSetEntry.getValue().size()));
+    }
+
+    private Map<String, String> getRoleForNodeId(BPMNAbstraction bpmnAbstraction) {
+        Map<String, String> activityNameToRoleMap =  filteredPLog.getActivityNameIndicatorMap().keySet().stream()
+            .collect(Collectors.toMap(
+                //key
+                activityName -> activityName,
+                //value
+                activityName -> {
+                    Optional<ActivityInstance> activityInst = filteredAPMLog.getActivityInstances().stream()
+                        .filter(activityInstance -> activityInstance.getName().equals(activityName)
+                            && !ObjectUtils.isEmpty(activityInstance.getAttributeValue(Constants.ATT_KEY_ROLE)))
+                        .findFirst();
+
+                    return activityInst.isPresent() ? activityInst.get().getAttributeValue(Constants.ATT_KEY_ROLE) :
+                        SimulationData.DEFAULT_ROLE;
+                }
+            ));
+
+        return bpmnAbstraction.getDiagram().getNodes()
+            .stream()
+            .filter(Activity.class::isInstance)
+            .collect(Collectors.toMap(
+                //key
+                bpmnNode -> bpmnNode.getId().toString(),
+                //value
+                bpmnNode -> activityNameToRoleMap.get(bpmnNode.getLabel())));
     }
 
     private Map<String, List<EdgeFrequency>> groupOutboundEdgeFrequenciesByGateway(

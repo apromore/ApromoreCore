@@ -152,6 +152,7 @@ public class TestHelper {
             .endTime(1580475600000L)
             .nodeWeights(Map.of("node1", 34.34, "node2", 56.56, "node3", 89.89))
             .resourceCountByRole(Map.of("Role_1", 5, "Role_2", 10, "Role_3", 15))
+            .nodeIdToRoleName(Map.of("node1", "Role_1", "node2", "Role_2", "node3", "Role_3"))
             .edgeFrequencies(Map.of("node9", List.of(
                 EdgeFrequency.builder().edgeId("edge2").frequency(2025).build(),
                 EdgeFrequency.builder().edgeId("edge3").frequency(3016).build(),

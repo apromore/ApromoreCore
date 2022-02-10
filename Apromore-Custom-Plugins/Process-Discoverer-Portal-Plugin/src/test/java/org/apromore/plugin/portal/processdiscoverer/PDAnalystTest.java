@@ -577,6 +577,12 @@ public class PDAnalystTest extends TestDataSetup {
         SimulationData data = analyst.getSimulationData(bpmnAbstraction);
         assertEquals(1, data.getCaseCount());
         assertEquals(5, data.getResourceCount());
+        assertEquals(1, data.getResourceCountsByRole().size());
+        assertEquals(5, data.getResourceCountsByRole().get("DEFAULT_ROLE").intValue());
+        assertEquals("DEFAULT_ROLE", data.getRoleNameByNodeId(getNodeId("a", bpmnAbstraction.getDiagram())));
+        assertEquals("DEFAULT_ROLE", data.getRoleNameByNodeId(getNodeId("b", bpmnAbstraction.getDiagram())));
+        assertEquals("DEFAULT_ROLE", data.getRoleNameByNodeId(getNodeId("c", bpmnAbstraction.getDiagram())));
+        assertEquals("DEFAULT_ROLE", data.getRoleNameByNodeId(getNodeId("d", bpmnAbstraction.getDiagram())));
         assertEquals(DateTime.parse("2010-10-27T21:59:19.308+10:00").getMillis(), data.getStartTime());
         assertEquals(DateTime.parse("2010-10-27T22:55:19.308+10:00").getMillis(), data.getEndTime());
         assertEquals(60, data.getDiagramNodeDuration(getNodeId("a", bpmnAbstraction.getDiagram())), 0.0);
@@ -610,6 +616,40 @@ public class PDAnalystTest extends TestDataSetup {
             "node7", Map.of("edge10", 1.0)
         );
         assertGateways(expectedEdgeFrequencies2, data2.getEdgeFrequencies());
+    }
+
+    @Test
+    public void test_SimulationData_with_roles() throws Exception {
+        UserOptionsData userOptions = createUserOptions(100, 100, 40,
+            MeasureType.FREQUENCY,
+            MeasureAggregation.CASES,
+            MeasureRelation.ABSOLUTE,
+            false, false,
+            MeasureType.FREQUENCY,
+            MeasureAggregation.CASES,
+            MeasureRelation.ABSOLUTE,
+            MeasureType.DURATION,
+            MeasureAggregation.MEAN,
+            MeasureRelation.ABSOLUTE,
+            false,
+            false);
+        PDAnalyst analyst = createPDAnalyst(readLogWithOneTraceStartCompleteEventsNonOverlappingWithRoles());
+        Abstraction abs = analyst.discoverProcess(userOptions).get().getAbstraction();
+        BPMNAbstraction bpmnAbstraction = analyst.convertToBpmnAbstractionForExport(abs);
+
+        SimulationData data = analyst.getSimulationData(bpmnAbstraction);
+        assertEquals(1, data.getCaseCount());
+        assertEquals(5, data.getResourceCount());
+        assertEquals(5, data.getResourceCountsByRole().size());
+        assertEquals(2, data.getResourceCountsByRole().get("role_1").intValue());
+        assertEquals(2, data.getResourceCountsByRole().get("role_2").intValue());
+        assertEquals(1, data.getResourceCountsByRole().get("role_3").intValue());
+        assertEquals(1, data.getResourceCountsByRole().get("role_4").intValue());
+        assertEquals(3, data.getResourceCountsByRole().get("DEFAULT_ROLE").intValue());
+        assertEquals("role_1", data.getRoleNameByNodeId(getNodeId("a", bpmnAbstraction.getDiagram())));
+        assertEquals("role_2", data.getRoleNameByNodeId(getNodeId("b", bpmnAbstraction.getDiagram())));
+        assertEquals("role_3", data.getRoleNameByNodeId(getNodeId("c", bpmnAbstraction.getDiagram())));
+        assertEquals("role_4", data.getRoleNameByNodeId(getNodeId("d", bpmnAbstraction.getDiagram())));
     }
 
     @Test

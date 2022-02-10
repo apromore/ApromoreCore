@@ -44,6 +44,9 @@ public class SimulationData {
     private Map<String, Integer> resourceCountByRole;
 
     @Getter(AccessLevel.NONE)
+    private Map<String, String> nodeIdToRoleName;
+
+    @Getter(AccessLevel.NONE)
     private Map<String, Double> nodeWeights; // nodeId => mean duration
 
     @Getter(AccessLevel.NONE)
@@ -63,5 +66,9 @@ public class SimulationData {
 
     public Map<String, Integer> getResourceCountsByRole() {
         return resourceCountByRole != null ? Collections.unmodifiableMap(resourceCountByRole) : null;
+    }
+
+    public String getRoleNameByNodeId(@NonNull String nodeId) {
+        return nodeIdToRoleName.getOrDefault(nodeId, DEFAULT_ROLE);
     }
 }

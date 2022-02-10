@@ -37,8 +37,10 @@ import java.time.DayOfWeek;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.xml.bind.JAXBContext;
@@ -107,11 +109,12 @@ public class SimulationInfoService {
 
             deriveGeneralInfo(builder, simulationData);
 
-            deriveTaskInfo(builder, simulationData);
+            Map<String, String> resourceNameToId = deriveResourceInfo(builder, simulationData);
+
+            deriveTaskInfo(builder, simulationData, resourceNameToId);
 
             deriveTimetable(builder);
 
-            deriveResourceInfo(builder, simulationData);
 
             deriveGatewayProbabilities(builder, simulationData);
 
@@ -143,7 +146,8 @@ public class SimulationInfoService {
 
     private void deriveTaskInfo(
         final ProcessSimulationInfo.ProcessSimulationInfoBuilder builder,
-        final SimulationData simulationData) {
+        final SimulationData simulationData,
+        final Map<String, String> resourceNameToId) {
 
         List<Element> taskList = simulationData.getDiagramNodeIDs().stream()
             .map(nodeId -> Element.builder()
@@ -155,6 +159,7 @@ public class SimulationInfoService {
                         .setScale(2, RoundingMode.HALF_UP).toString())
                     .timeUnit(TimeUnit.valueOf(config.getDefaultTimeUnit().toUpperCase(DOCUMENT_LOCALE)))
                     .build())
+                .resourceIds(List.of(resourceNameToId.get(simulationData.getRoleNameByNodeId(nodeId))))
                 .build())
             .collect(Collectors.toUnmodifiableList());
 
@@ -184,10 +189,11 @@ public class SimulationInfoService {
                 .build()));
     }
 
-    private void deriveResourceInfo(
+    private Map<String, String> deriveResourceInfo(
         final ProcessSimulationInfo.ProcessSimulationInfoBuilder builder,
         final SimulationData simulationData) {
 
+        Map<String, String> resouceNameToId = new HashMap<>();
         if (simulationData.getResourceCountsByRole() == null || simulationData.getResourceCountsByRole().isEmpty()) {
             builder.resources(List.of(
                 Resource.builder()
@@ -197,6 +203,9 @@ public class SimulationInfoService {
                     .timetableId(config.getDefaultTimetable().get(CONFIG_DEFAULT_ID_KEY))
                     .build()
             ));
+
+            resouceNameToId.put(config.getDefaultResource().get(CONFIG_DEFAULT_NAME_KEY),
+                config.getDefaultResource().get(CONFIG_DEFAULT_ID_KEY));
         } else {
 
             builder.resources(simulationData.getResourceCountsByRole().entrySet().stream()
@@ -210,9 +219,11 @@ public class SimulationInfoService {
                             + config.getDefaultResource().get(CONFIG_DEFAULT_ID_KEY);
                         resourceName = config.getDefaultResource().get(CONFIG_DEFAULT_NAME_KEY);
                     } else {
-                        resourceId = config.getDefaultResource().get(CONFIG_DEFAULT_ID_KEY) + UUID.randomUUID();
+                        resourceId = config.getDefaultResource().get(CONFIG_DEFAULT_ID_PREFIX_KEY) + UUID.randomUUID();
                         resourceName = roleToResourceCount.getKey();
                     }
+
+                    resouceNameToId.put(resourceName, resourceId);
 
                     return Resource.builder()
                         .id(resourceId)
@@ -222,6 +233,8 @@ public class SimulationInfoService {
                         .build();
                 }).collect(Collectors.toList()));
         }
+
+        return resouceNameToId;
     }
 
     private void deriveGatewayProbabilities(
