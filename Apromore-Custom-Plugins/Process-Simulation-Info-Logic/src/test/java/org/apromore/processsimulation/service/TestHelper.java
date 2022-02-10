@@ -74,8 +74,8 @@ public class TestHelper {
             .arrivalRateDistribution(
                 Distribution.builder()
                     .type(DistributionType.EXPONENTIAL)
-                    .arg1("26784")
-                    .timeUnit(TimeUnit.SECONDS)
+                    .arg1("26784.00")
+                    .timeUnit(TimeUnit.HOURS)
                     .build()
             );
 
@@ -92,7 +92,7 @@ public class TestHelper {
             tasks.add(Element.builder().elementId("node3").distributionDuration(
                 Distribution.builder().type(DistributionType.EXPONENTIAL)
                     .arg1("89.89")
-                    .timeUnit(TimeUnit.SECONDS).build()).build());
+                    .timeUnit(TimeUnit.MINUTES).build()).build());
 
             builder.tasks(tasks);
         }
@@ -148,7 +148,7 @@ public class TestHelper {
             .resourceCount(23)
             .startTime(1577797200000L)
             .endTime(1580475600000L)
-            .nodeWeights(Map.of("node1",34.34, "node2", 56.56, "node3", 89.89))
+            .nodeWeights(Map.of("node1",34340.00, "node2", 56560.00, "node3", 89890.00))
             .edgeFrequencies(Map.of("node9", List.of(
                         EdgeFrequency.builder().edgeId("edge2").frequency(2025).build(),
                         EdgeFrequency.builder().edgeId("edge3").frequency(3016).build(),

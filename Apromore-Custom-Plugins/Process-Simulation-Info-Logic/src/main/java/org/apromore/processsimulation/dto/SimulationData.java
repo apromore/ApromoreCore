@@ -39,13 +39,17 @@ public class SimulationData {
     private long endTime;
 
     @Getter(AccessLevel.NONE)
-    private Map<String, Double> nodeWeights; // nodeId => mean duration
+    private Map<String, Double> nodeWeights; // nodeId => mean duration (in milliseconds)
 
     @Getter(AccessLevel.NONE)
     private Map<String, List<EdgeFrequency>> edgeFrequencies; // gatewayId => edge frequencies
 
     public Collection<String> getDiagramNodeIDs() {
-        return Collections.unmodifiableSet(nodeWeights.keySet());
+        if (nodeWeights != null) {
+            return Collections.unmodifiableSet(nodeWeights.keySet());
+        } else {
+            return Collections.emptySet();
+        }
     }
 
     public double getDiagramNodeDuration(@NonNull String nodeId) {

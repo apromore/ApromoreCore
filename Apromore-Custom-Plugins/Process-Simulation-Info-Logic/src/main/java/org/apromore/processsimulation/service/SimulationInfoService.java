@@ -126,17 +126,18 @@ public class SimulationInfoService {
 
         long startTimeMillis = simulationData.getStartTime();
         long endTimeMillis = simulationData.getEndTime();
-        long interArrivalTime = Math.round(
-            (endTimeMillis - startTimeMillis) / (double) (1000 * simulationData.getCaseCount()));
+        double interArrivalTimeMillis = (endTimeMillis - startTimeMillis) / (double) simulationData.getCaseCount();
+
+        TimeUnit timeUnit = getDisplayTimeUnit(interArrivalTimeMillis);
 
         builder.processInstances(simulationData.getCaseCount())
             .currency(Currency.valueOf(config.getDefaultCurrency().toUpperCase(DOCUMENT_LOCALE)))
             .startDateTime(Instant.ofEpochMilli(simulationData.getStartTime()).toString())
             .arrivalRateDistribution(
                 Distribution.builder()
-                    .timeUnit(TimeUnit.valueOf(config.getDefaultTimeUnit().toUpperCase(DOCUMENT_LOCALE)))
+                    .timeUnit(timeUnit)
                     .type(DistributionType.valueOf(config.getDefaultDistributionType().toUpperCase(DOCUMENT_LOCALE)))
-                    .arg1(Long.toString(interArrivalTime))
+                    .arg1(getDisplayTimeDuration(interArrivalTimeMillis).toString())
                     .build());
     }
 
@@ -144,17 +145,22 @@ public class SimulationInfoService {
         final ProcessSimulationInfo.ProcessSimulationInfoBuilder builder,
         final SimulationData simulationData) {
 
-        List<Element> taskList = simulationData.getDiagramNodeIDs().stream()
-            .map(nodeId -> Element.builder()
-                .elementId(nodeId)
-                .distributionDuration(Distribution.builder()
-                    .type(DistributionType.valueOf(
-                        config.getDefaultDistributionType().toUpperCase(DOCUMENT_LOCALE)))
-                    .arg1(BigDecimal.valueOf((simulationData.getDiagramNodeDuration(nodeId)))
-                        .setScale(2, RoundingMode.HALF_UP).toString())
-                    .timeUnit(TimeUnit.valueOf(config.getDefaultTimeUnit().toUpperCase(DOCUMENT_LOCALE)))
-                    .build())
-                .build())
+        List<Element> taskList = null;
+
+        taskList = simulationData.getDiagramNodeIDs().stream()
+            .map(nodeId -> {
+                double durationMillis = simulationData.getDiagramNodeDuration(nodeId);
+                TimeUnit timeUnit = getDisplayTimeUnit(durationMillis);
+                return Element.builder()
+                    .elementId(nodeId)
+                    .distributionDuration(Distribution.builder()
+                        .type(DistributionType.valueOf(
+                            config.getDefaultDistributionType().toUpperCase(DOCUMENT_LOCALE)))
+                        .arg1(getDisplayTimeDuration(durationMillis).toString())
+                        .timeUnit(timeUnit)
+                        .build())
+                    .build();
+            })
             .collect(Collectors.toUnmodifiableList());
 
         builder.tasks(taskList);
@@ -222,6 +228,34 @@ public class SimulationInfoService {
 
             builder.sequenceFlows(sequenceFlowList);
         }
+    }
+
+    private TimeUnit getDisplayTimeUnit(double timeDurationMillis) {
+        TimeUnit timeUnit;
+
+        if (timeDurationMillis <= 60000) {
+            timeUnit = TimeUnit.SECONDS;
+        } else if (timeDurationMillis > 60000 && timeDurationMillis <= 3600000) {
+            timeUnit = TimeUnit.MINUTES;
+        } else if (timeDurationMillis > 3600000) {
+            timeUnit = TimeUnit.HOURS;
+        } else {
+            timeUnit = TimeUnit.valueOf(config.getDefaultTimeUnit().toUpperCase(DOCUMENT_LOCALE));
+        }
+        return timeUnit;
+    }
+
+    /**
+     * Converts milliseconds into the time duration based on the desired TimeUnit.
+     * For now the Simulator and BPMN Editor only accept seconds as the value, and therefore
+     * we convert milliseconds to seconds.
+     *
+     * @param timeDuration the time duration in milliseconds
+     * @return the converted rounded time duration
+     */
+    private BigDecimal getDisplayTimeDuration(double timeDuration) {
+        return BigDecimal.valueOf(timeDuration / TimeUnit.SECONDS.getNumberOfMilliseconds())
+            .setScale(2, RoundingMode.HALF_UP);
     }
 
     /**

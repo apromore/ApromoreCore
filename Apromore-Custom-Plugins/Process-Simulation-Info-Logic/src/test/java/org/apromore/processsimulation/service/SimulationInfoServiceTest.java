@@ -19,7 +19,6 @@
  * #L%
  */
 
-
 package org.apromore.processsimulation.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -31,6 +30,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.DayOfWeek;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -115,9 +116,9 @@ class SimulationInfoServiceTest {
         when(mockSimulationData.getEndTime()).thenReturn(1580475600000L);
 
         when(mockSimulationData.getDiagramNodeIDs()).thenReturn(Arrays.asList("a", "b", "c"));
-        when(mockSimulationData.getDiagramNodeDuration("a")).thenReturn(10.10);
-        when(mockSimulationData.getDiagramNodeDuration("b")).thenReturn(11.11);
-        when(mockSimulationData.getDiagramNodeDuration("c")).thenReturn(12.12);
+        when(mockSimulationData.getDiagramNodeDuration("a")).thenReturn(10100.00);
+        when(mockSimulationData.getDiagramNodeDuration("b")).thenReturn(11110.00);
+        when(mockSimulationData.getDiagramNodeDuration("c")).thenReturn(12120.00);
 
         // when
         ProcessSimulationInfo processSimulationInfo =
@@ -239,10 +240,10 @@ class SimulationInfoServiceTest {
         assertNotNull(processSimulationInfo.getId());
         assertNotNull(processSimulationInfo.getErrors());
         assertEquals(100L, processSimulationInfo.getProcessInstances());
-        assertEquals("26784", processSimulationInfo.getArrivalRateDistribution().getArg1());
+        assertEquals("26784.00", processSimulationInfo.getArrivalRateDistribution().getArg1());
         assertNull(processSimulationInfo.getArrivalRateDistribution().getArg2());
         assertNull(processSimulationInfo.getArrivalRateDistribution().getMean());
-        assertEquals(TimeUnit.SECONDS, processSimulationInfo.getArrivalRateDistribution().getTimeUnit());
+        assertEquals(TimeUnit.HOURS, processSimulationInfo.getArrivalRateDistribution().getTimeUnit());
         assertEquals(DistributionType.EXPONENTIAL, processSimulationInfo.getArrivalRateDistribution().getType());
         assertEquals("2019-12-31T13:00:00Z", processSimulationInfo.getStartDateTime());
         assertEquals(Currency.EUR, processSimulationInfo.getCurrency());
@@ -426,6 +427,146 @@ class SimulationInfoServiceTest {
         assertEquals(originalBpmn, enrichedBpmn);
     }
 
+    @Test
+    void should_convert_display_time_unit_based_on_time_duration() {
+
+        long startTime = 1643839200000L; // Thursday, 3 February 2022 09:00:00 GMT+11:00 DST
+
+        /* *********************************************
+         * duration < 1 second
+         * Display Unit -> seconds
+         * Display duration -> value in seconds
+         * *********************************************
+         */
+        long endTime = 1643839200001L; // Thursday, 3 February 2022 09:00:00.001 GMT+11:00 DST
+        testTimeUnitsAndDurations(startTime, endTime, TimeUnit.SECONDS);
+
+        /* *********************************************
+         * duration < 60 seconds
+         * Display Unit -> seconds
+         * Display duration -> value in seconds
+         * *********************************************
+         */
+        endTime = 1643839259000L; // Thursday, 3 February 2022 09:00:59 GMT+11:00 DST
+        testTimeUnitsAndDurations(startTime, endTime, TimeUnit.SECONDS);
+
+
+        /* *********************************************
+         * duration == 60 seconds (1 min)
+         * Display Unit -> seconds
+         * Display duration -> value in seconds
+         * *********************************************
+         */
+        endTime = 1643839260000L; // Thursday, 3 February 2022 09:01:00 GMT+11:00 DST
+        testTimeUnitsAndDurations(startTime, endTime, TimeUnit.SECONDS);
+
+        /* *********************************************
+         * duration > 1 min
+         * Display Unit -> minutes
+         * Display duration -> value in seconds
+         * *********************************************
+         */
+        endTime = 1643839290000L; // Thursday, 3 February 2022 09:01:30 GMT+11:00 DST
+        testTimeUnitsAndDurations(startTime, endTime, TimeUnit.MINUTES);
+
+        /* *********************************************
+         * duration == 1 hour
+         * Display Unit -> minutes
+         * Display duration -> value in seconds
+         * *********************************************
+         */
+        endTime = 1643842800000L; // Thursday, 3 February 2022 10:00:00 GMT+11:00 DST
+        testTimeUnitsAndDurations(startTime, endTime, TimeUnit.MINUTES);
+
+        /* *********************************************
+         * duration > 1 hour
+         * Display Unit -> hours
+         * Display duration -> value in seconds
+         * *********************************************
+         */
+        endTime = 1643843400000L; // Thursday, 3 February 2022 10:10:00 GMT+11:00 DST
+        testTimeUnitsAndDurations(startTime, endTime, TimeUnit.HOURS);
+
+        /* *********************************************
+         * duration == 1 day
+         * Display Unit -> hours
+         * Display duration -> value in seconds
+         * *********************************************
+         */
+        endTime = 1643925600000L; // Friday, 4 February 2022 09:00:00 GMT+11:00 DST
+        testTimeUnitsAndDurations(startTime, endTime, TimeUnit.HOURS);
+
+        /* *********************************************
+         * duration > 1 day
+         * Display Unit -> hours
+         * Display duration -> value in seconds
+         * *********************************************
+         */
+        endTime = 1644012000000L; // Saturday, 5 February 2022 09:00:00 GMT+11:00 DST
+        testTimeUnitsAndDurations(startTime, endTime, TimeUnit.HOURS);
+
+        /* *********************************************
+         * duration == 1 month
+         * Display Unit -> hours
+         * Display duration -> value in seconds
+         * *********************************************
+         */
+        endTime = 1646258400000L; // Thursday, 3 March 2022 09:00:00 GMT+11:00 DST
+        testTimeUnitsAndDurations(startTime, endTime, TimeUnit.HOURS);
+
+        /* *********************************************
+         * duration > 1 month
+         * Display Unit -> hours
+         * Display duration -> value in seconds
+         * *********************************************
+         */
+        endTime = 1648940400000L; // Sunday, 3 April 2022 09:00:00 GMT+10:00
+        testTimeUnitsAndDurations(startTime, endTime, TimeUnit.HOURS);
+
+        /* *********************************************
+         * duration == 1 year
+         * Display Unit -> hours
+         * Display duration -> value in seconds
+         * *********************************************
+         */
+        endTime = 1675375200000L; // Friday, 3 February 2023 09:00:00 GMT+11:00 DST
+        testTimeUnitsAndDurations(startTime, endTime, TimeUnit.HOURS);
+
+        /* *********************************************
+         * duration > 1 year
+         * Display Unit -> hours
+         * Display duration -> value in seconds
+         * *********************************************
+         */
+        endTime = 1738533600000L; // Monday, 3 February 2025 09:00:00 GMT+11:00 DST
+        testTimeUnitsAndDurations(startTime, endTime, TimeUnit.HOURS);
+    }
+
+    private void testTimeUnitsAndDurations(long startTime, long endTime, TimeUnit expectedTimeUnit) {
+        // given
+        long caseCount = 1;
+        SimulationData simulationData = SimulationData.builder()
+            .startTime(startTime)
+            .endTime(endTime)
+            .caseCount(caseCount)
+            .build();
+
+        // when
+        ProcessSimulationInfo simulationInfo = simulationInfoService.transformToSimulationInfo(simulationData);
+
+        // then
+        assertEquals(expectedTimeUnit, simulationInfo.getArrivalRateDistribution().getTimeUnit());
+        assertEquals(getInterArrivalTime(startTime, endTime, caseCount),
+            simulationInfo.getArrivalRateDistribution().getArg1());
+    }
+
+    private String getInterArrivalTime(long startTime, long endTime, long caseCount) {
+        double interArrivalTimeMillis = (endTime - startTime) / (double) caseCount;
+
+        return BigDecimal.valueOf(interArrivalTimeMillis / (double) TimeUnit.SECONDS.getNumberOfMilliseconds())
+            .setScale(2, RoundingMode.HALF_UP).toString();
+    }
+
     private void assertBpmnGeneralProcessSimulationInfo(String bpmnXmlString)
         throws XPathExpressionException, ParserConfigurationException, IOException, SAXException {
 
@@ -441,7 +582,7 @@ class SimulationInfoServiceTest {
         Node arrivalDistributionXmlNode = TestHelper.getProcessSimulationInfo(bpmnXmlString,
             "/definitions/process/extensionElements/processSimulationInfo/arrivalRateDistribution");
         NamedNodeMap arrivalRateDistributionAttrMap = arrivalDistributionXmlNode.getAttributes();
-        assertEquals("26784", arrivalRateDistributionAttrMap.getNamedItem("arg1").getNodeValue());
+        assertEquals("26784.00", arrivalRateDistributionAttrMap.getNamedItem("arg1").getNodeValue());
         assertNull(arrivalRateDistributionAttrMap.getNamedItem("arg2"));
         assertNull(arrivalRateDistributionAttrMap.getNamedItem("mean"));
         assertEquals(DistributionType.EXPONENTIAL.toString(),
@@ -449,7 +590,7 @@ class SimulationInfoServiceTest {
 
         Node timeUnitXmlNode = TestHelper.getProcessSimulationInfo(bpmnXmlString,
             "/definitions/process/extensionElements/processSimulationInfo/arrivalRateDistribution/timeUnit");
-        assertEquals("seconds", timeUnitXmlNode.getFirstChild().getNodeValue());
+        assertEquals("hours", timeUnitXmlNode.getFirstChild().getNodeValue());
 
     }
 
@@ -467,7 +608,7 @@ class SimulationInfoServiceTest {
 
         assertTaskElement("node1", "EXPONENTIAL", "seconds", "34.34", elementsMap);
         assertTaskElement("node2", "EXPONENTIAL", "seconds", "56.56", elementsMap);
-        assertTaskElement("node3", "EXPONENTIAL", "seconds", "89.89", elementsMap);
+        assertTaskElement("node3", "EXPONENTIAL", "minutes", "89.89", elementsMap);
 
     }
 
