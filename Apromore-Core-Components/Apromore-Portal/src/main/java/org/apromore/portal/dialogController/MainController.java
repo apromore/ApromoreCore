@@ -142,6 +142,8 @@ public class MainController extends BaseController implements MainControllerInte
     private static final int KEY_COPY = 67;
     private static final int KEY_PASTE = 86;
     private static final int KEY_CUT = 88;
+    private static final int KEY_CTRL_A_LO = 65;
+    private static final int KEY_CTRL_A_BG = 97;
 
     private PortalContext portalContext;
     private MenuController menu;
@@ -314,6 +316,10 @@ public class MainController extends BaseController implements MainControllerInte
                                 break;
                             case KEY_CUT:
                                 baseListboxController.cut();
+                                break;
+                            case KEY_CTRL_A_LO:
+                            case KEY_CTRL_A_BG:
+                                baseListboxController.selectAll();
                                 break;
                         }
                     } catch (Exception e) {

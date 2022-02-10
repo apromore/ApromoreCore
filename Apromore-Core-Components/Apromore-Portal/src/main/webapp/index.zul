@@ -166,8 +166,11 @@
 			   	
 			   	if (target.tagName.toUpperCase() == 'INPUT') return;
 			   	
-				if (keyCode==67 || keyCode==86 || keyCode==88) {
-					zAu.send(new zk.Event(zk.Widget.$(jq("$mainW")), 'onCtrlPress',keyCode));
+				if (keyCode==67 || keyCode==86 || keyCode==88 || keyCode == 65 || keyCode == 97) {
+                    if(keyCode == 65 || keyCode == 97){
+                        document.getElementsByTagName("body")[0].className = "ap-disable-selection";
+                    }
+                   	zAu.send(new zk.Event(zk.Widget.$(jq("$mainW")), 'onCtrlPress',keyCode));
 				}
           	 }
            });
