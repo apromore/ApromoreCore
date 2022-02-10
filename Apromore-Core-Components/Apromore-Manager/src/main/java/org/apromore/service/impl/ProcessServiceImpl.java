@@ -403,7 +403,7 @@ public class ProcessServiceImpl implements ProcessService {
       }
 
       processModelVersionRepo.save(pmv);
-      LOGGER.info("Updated existing process model \"{}\"", processName);
+      LOGGER.debug("Updated existing process model \"{}\"", processName);
       return pmv;
 
     } catch (RepositoryException | ObjectCreationException | IOException e) {

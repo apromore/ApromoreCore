@@ -200,8 +200,8 @@
 
           Apromore.BPMNEditor.readXML = function(callback) {
             Apromore.BPMNEditor.app.getXML().then((xml) => {
-              console.log(xml.substring(2200, 2300));
-              console.log(xml);
+              // console.log(xml.substring(2200, 2300));
+              // console.log(xml);
               callback(xml);
             });
           }
@@ -231,7 +231,7 @@
             }
             isEditorSaving = true;
             flowOnEvent = flowOnEvent || '';
-            console.log('Saving draft ...', flowOnEvent);
+            console.log('Auto-saving draft ...', flowOnEvent);
             Apromore.BPMNEditor.readXML((xml) => {
               jq(".ap-bpmneditor-top-notice").show();
               zk.Widget.$('$divKeepAlive').fire(
@@ -266,20 +266,20 @@
           }
 
           Apromore.BPMNEditor.beforeSave = function(saveEvent) {
-            console.log('Before save ...', saveEvent);
+            // console.log('Before save ...', saveEvent);
             // Force save draft before actual save
             Apromore.BPMNEditor.saveDraft(saveEvent, true);
           }
 
           Apromore.BPMNEditor.save = function(saveEvent) {
-            console.log('Saving process model ...');
+            console.log('Auto-saving process model ...');
             Apromore.BPMNEditor.readXML((xml) => {
               zAu.send(new zk.Event(zk.Widget.$(jq("$win")), saveEvent, xml));
             });
           }
 
           Apromore.BPMNEditor.afterSave = function() {
-            console.log('After saving process model ...');
+            // console.log('After saving process model ...');
             isEditorSaving = false;
           }
           console.log('${arg.bpmnXML}');

@@ -62,7 +62,7 @@ public class KeepAliveController extends SelectorComposer<Component> {
 
         divKeepAlive.addEventListener("onKeepAlive", event -> {
             UserType user = (UserType) Sessions.getCurrent().getAttributes().get("USER");
-            LOGGER.debug("Keep BPMN Editor alive for user: " + user.getUsername());
+            LOGGER.debug("Keep BPMN Editor alive for user: {}",  user.getUsername());
         });
 
         divKeepAlive.addEventListener("onSaveDraft", event -> {
@@ -77,7 +77,7 @@ public class KeepAliveController extends SelectorComposer<Component> {
             managerService.updateDraft(processId, currentVersion, nativeType,
                     new ByteArrayInputStream(bpmnXml.getBytes()), user.getUsername());
 
-            LOGGER.debug("Autosave for user: " + user.getUsername());
+            LOGGER.debug("Auto-save for user: {}", user.getUsername());
 
             Clients.evalJavaScript("Apromore.BPMNEditor.afterSaveDraft('" + flowOnEvent + "')");
         });
