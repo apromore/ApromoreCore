@@ -48,7 +48,6 @@ import javax.xml.bind.Marshaller;
 import lombok.extern.slf4j.Slf4j;
 import org.apromore.calendar.builder.CalendarModelBuilder;
 import org.apromore.calendar.model.CalendarModel;
-import org.apromore.calendar.service.CalendarService;
 import org.apromore.commons.datetime.DateTimeUtils;
 import org.apromore.processsimulation.config.SimulationInfoConfig;
 import org.apromore.processsimulation.dto.EdgeFrequency;
@@ -84,12 +83,10 @@ public class SimulationInfoService {
     private JAXBContext jaxbContext;
 
     private final SimulationInfoConfig config;
-    private final CalendarService calendarService;
 
     @Autowired
-    public SimulationInfoService(SimulationInfoConfig config, CalendarService calendarService) {
+    public SimulationInfoService(SimulationInfoConfig config) {
         this.config = config;
-        this.calendarService = calendarService;
 
         try {
             jaxbContext = JAXBContext.newInstance(ExtensionElements.class);
@@ -155,25 +152,27 @@ public class SimulationInfoService {
     }
 
     /**
-     * Returns the inter arrival time in seconds, based on a default 9 - 5 business calendar.
+     * Returns the inter-arrival time of events in seconds, based on a default 9 - 5 business calendar.
      *
      * @param simulationData the raw simulation data from PD
      * @return the inter-arrival time of events (in milliseconds)
      */
-    protected long getInterArrivalTime(final SimulationData simulationData) {
+    protected double getInterArrivalTime(final SimulationData simulationData) {
         long startTimeMillis = simulationData.getStartTime();
         long endTimeMillis = simulationData.getEndTime();
         long timeDiff;
-        if (endTimeMillis - startTimeMillis <= 86400000) {
-            // CalendarModel.getDurationMillis() is not sensitive within
-            // the same day
+        if (endTimeMillis - startTimeMillis <= TimeUnit.DAYS.getNumberOfMilliseconds()) {
+            /*
+             * CalendarModel.getDurationMillis() is not sensitive for time durations within the same day
+             * For inter day time durations, simply use the difference
+             */
             timeDiff = endTimeMillis - startTimeMillis;
         } else {
             CalendarModel arrivalCalendar = new CalendarModelBuilder().with5DayWorking().build();
             timeDiff = arrivalCalendar.getDurationMillis(startTimeMillis, endTimeMillis);
         }
 
-        return Math.round(timeDiff / (double) (simulationData.getCaseCount()));
+        return timeDiff / (double) simulationData.getCaseCount();
     }
 
     private void deriveTaskInfo(

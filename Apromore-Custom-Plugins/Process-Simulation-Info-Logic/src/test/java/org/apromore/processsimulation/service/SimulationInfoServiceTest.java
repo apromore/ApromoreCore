@@ -42,9 +42,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
-import org.apromore.calendar.builder.CalendarModelBuilder;
-import org.apromore.calendar.model.CalendarModel;
-import org.apromore.calendar.service.CalendarService;
 import org.apromore.processsimulation.config.SimulationInfoConfig;
 import org.apromore.processsimulation.dto.SimulationData;
 import org.apromore.processsimulation.model.Currency;
@@ -69,14 +66,11 @@ class SimulationInfoServiceTest {
     @Mock
     private SimulationInfoConfig config;
 
-    @Mock
-    private CalendarService calendarService;
-
     @BeforeEach
     void setup() {
         MockitoAnnotations.openMocks(this);
 
-        simulationInfoService = new SimulationInfoService(config, calendarService);
+        simulationInfoService = new SimulationInfoService(config);
 
         when(config.isEnable()).thenReturn(true);
         when(config.getDefaultCurrency()).thenReturn("EUR");
@@ -661,24 +655,11 @@ class SimulationInfoServiceTest {
 
         // then
         assertEquals(expectedTimeUnit, simulationInfo.getArrivalRateDistribution().getTimeUnit());
-        assertEquals(getInterArrivalTime(startTime, endTime, caseCount),
-            simulationInfo.getArrivalRateDistribution().getArg1());
-    }
-
-    private String getInterArrivalTime(long startTime, long endTime, long caseCount) {
-
-        long timeDiff;
-        if (endTime - startTime <= 86400000) {
-            // CalendarModel.getDurationMillis() is not sensitive within
-            // the same day
-            timeDiff = endTime - startTime;
-        } else {
-            CalendarModel arrivalCalendar = new CalendarModelBuilder().with5DayWorking().build();
-            timeDiff = arrivalCalendar.getDurationMillis(startTime, endTime);
-        }
-
-        return BigDecimal.valueOf(timeDiff / ((double) caseCount * TimeUnit.SECONDS.getNumberOfMilliseconds()))
+        String interArrivalTime = BigDecimal.valueOf(
+                simulationInfoService.getInterArrivalTime(simulationData) / TimeUnit.SECONDS.getNumberOfMilliseconds())
             .setScale(2, RoundingMode.HALF_UP).toString();
+
+        assertEquals(interArrivalTime, simulationInfo.getArrivalRateDistribution().getArg1());
     }
 
     private void assertBpmnGeneralProcessSimulationInfo(String bpmnXmlString)
