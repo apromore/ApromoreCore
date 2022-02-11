@@ -50,7 +50,7 @@
     "jasmine-jquery": "^2.1.1",
     "jasmine-ajax": "^4.0.0",
     "@metahub/karma-jasmine-jquery": "^4.0.1",
-    "karma": "^4.0.0",
+    "karma": "^6.3.14",
     "karma-chrome-launcher": "^3.1.0",
     "karma-jasmine": "^4.0.0",
     "karma-jasmine-html-reporter": "^1.5.4",
