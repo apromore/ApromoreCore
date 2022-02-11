@@ -80,7 +80,7 @@
       <!-- Option area -->
       <div ca:data-t="ap-pd-aux">
         <div sclass="ap-pd-drawer">
-          <hlayout width="100%" height="170px" valign="top" spacing="0px">
+          <hlayout width="100%" height="190px" valign="top" spacing="0px">
             <!-- View settings -->
             <div hflex="2"></div>
             <viewSettings sclass="ap-pd-drawer-box" width="300px" pdLabels="${arg.pdLabels}"/>

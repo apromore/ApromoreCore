@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -24,6 +24,7 @@ package org.apromore.plugin.portal.processdiscoverer.components;
 
 import static org.apromore.logman.attribute.graph.MeasureType.DURATION;
 import static org.apromore.logman.attribute.graph.MeasureType.FREQUENCY;
+import static org.apromore.logman.attribute.graph.MeasureType.COST;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,7 +46,6 @@ import org.apromore.plugin.portal.processdiscoverer.PDAnalyst;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
 import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
 import org.slf4j.Logger;
-import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -53,7 +53,6 @@ import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Label;
 import org.zkoss.zul.Span;
 
 /**
@@ -74,8 +73,8 @@ public class ViewSettingsController extends VisualController {
             "org:resource",
             "org:role"
     );
-    
-    private String[] measures = {
+
+    private final String[] measures = {
             "case_count",
             "case_relative",
             "total",
@@ -85,7 +84,7 @@ public class ViewSettingsController extends VisualController {
             "min"
     };
 
-    private Map<String, MeasureAggregation> measureAggMap = new HashMap<String, MeasureAggregation>() {
+    private final Map<String, MeasureAggregation> measureAggMap = new HashMap<>() {
         {
             put(measures[0], MeasureAggregation.CASES);
             put(measures[1], MeasureAggregation.CASES);
@@ -96,8 +95,8 @@ public class ViewSettingsController extends VisualController {
             put(measures[6], MeasureAggregation.MIN);
         }
     };
-    
-    private Map<String, MeasureRelation> measureRelationMap = new HashMap<String, MeasureRelation>() {
+
+    private final Map<String, MeasureRelation> measureRelationMap = new HashMap<>() {
         {
             put(measures[0], MeasureRelation.ABSOLUTE);
             put(measures[1], MeasureRelation.RELATIVE);
@@ -113,29 +112,43 @@ public class ViewSettingsController extends VisualController {
     private Checkbox includeSecondary;
     private Combobox perspectiveSelector;
 
-
     private Combobox frequencyAggSelector;
     private Combobox durationAggSelector;
+    private Combobox costAggSelector;
 
     private Div defaultPerspective;
     private Div defaultFrequency;
     private Div defaultDuration;
+    private Div defaultCost;
 
-    private Label freqRank;
-    private Label durationRank;
     private Span freqShow;
     private Span durationShow;
-    private Div freqOption;
-    private Div durationOption;
+    private Span costShow;
 
-    private UserOptionsData userOptions;
+    private Map<MeasureType, Span> showSecondaryMap;
+    private Map<MeasureType, Div> measureOptionMap;
+    private Map<MeasureType, Combobox> measureAggSelectorMap;
+    private Map<MeasureType, Div> defaultAggMap;
+    private final Map<MeasureType, MeasureType> defaultSecondaryMap =  new HashMap<>() {
+        {
+            put(FREQUENCY, DURATION);
+            put(DURATION, FREQUENCY);
+            put(COST, DURATION);
+        }
+    };
     
+    private UserOptionsData userOptions;
+
     private String primaryTypeLabel;
     private String primaryAggregateCode;
     private final String FREQ_LABEL = "frequency";
     private final String DURATION_LABEL = "duration";
-    
+    private final String COST_LABEL = "cost";
+
     private boolean disabled = false;
+    private MeasureType primaryMeasureType = FREQUENCY;
+    private MeasureType secondaryMeasureType = DURATION;
+    private boolean isSecondaryShown = false;
 
     public ViewSettingsController(PDController parent) {
         super(parent);
@@ -158,144 +171,119 @@ public class ViewSettingsController extends VisualController {
         defaultPerspective = (Div) compViewSettings.getFellow("defaultPerspective");
         defaultFrequency = (Div) compViewSettings.getFellow("defaultFrequency");
         defaultDuration = (Div) compViewSettings.getFellow("defaultDuration");
+        defaultCost = (Div) compViewSettings.getFellow("defaultCost");
 
         includeSecondary = (Checkbox) compViewSettings.getFellow("includeSecondary");
         includeSecondary.setChecked(userOptions.getIncludeSecondary());
-
-        freqRank = (Label) compViewSettings.getFellow("freqRank");
-        freqRank.setVisible(false);
-        durationRank = (Label) compViewSettings.getFellow("durationRank");
-        durationRank.setVisible(false);
 
         freqShow = (Span) compViewSettings.getFellow("freqShow");
         freqShow.setVisible(false);
         durationShow = (Span) compViewSettings.getFellow("durationShow");
         durationShow.setVisible(true);
+        costShow = (Span) compViewSettings.getFellow("costShow");
+        costShow.setVisible(true);
 
-        freqOption = (Div) compViewSettings.getFellow("freqOption");
-        durationOption = (Div) compViewSettings.getFellow("durationOption");
+        Div freqOption = (Div) compViewSettings.getFellow("freqOption");
+        Div durationOption = (Div) compViewSettings.getFellow("durationOption");
+        Div costOption = (Div) compViewSettings.getFellow("costOption");
 
         frequencyAggSelector = (Combobox) compViewSettings.getFellow("frequencyAggSelector");
         durationAggSelector = (Combobox) compViewSettings.getFellow("durationAggSelector");
-        
+        costAggSelector = (Combobox) compViewSettings.getFellow("costAggSelector");
+
+        showSecondaryMap = Map.of(
+            FREQUENCY, freqShow,
+            DURATION, durationShow,
+            COST, costShow
+        );
+        measureOptionMap = Map.of(
+            FREQUENCY, freqOption,
+            DURATION, durationOption,
+            COST, costOption
+        );
+        measureAggSelectorMap = Map.of(
+            FREQUENCY, frequencyAggSelector,
+            DURATION, durationAggSelector,
+            COST, costAggSelector
+        );
+        defaultAggMap = Map.of(
+            FREQUENCY, defaultFrequency,
+            DURATION, defaultDuration,
+            COST, defaultCost
+        );
+
         primaryTypeLabel = FREQ_LABEL;
         primaryAggregateCode = measures[0];
     }
-    
+
     @Override
     public void initializeEventListeners(Object data) {
-        perspectiveSelector.addEventListener("onSelect", new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
+        perspectiveSelector.addEventListener("onSelect", (event) -> {
                 String value = perspectiveSelector.getSelectedItem().getValue();
                 if (value.equals("-")) return;
                 String label = perspectiveSelector.getSelectedItem().getLabel();
                 parent.setPerspective(value, label);
-            }
         });
 
-        EventListener<Event> radioListener = new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                parent.setBPMNView(bpmnMode.isChecked());
-            }
-        };
-        this.bpmnMode.addEventListener("onCheck", radioListener);
+        this.bpmnMode.addEventListener("onCheck", (event) -> parent.setBPMNView(bpmnMode.isChecked()));
 
-        defaultPerspective.addEventListener("onClick", new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
+        defaultPerspective.addEventListener("onClick", (event) -> {
                 if (disabled) return;
                 String value = "concept:name";
                 selectComboboxByKey(perspectiveSelector, value);
                 String label = perspectiveSelector.getSelectedItem().getLabel();
                 parent.setPerspective(value, label);
-            }
         });
 
-        defaultFrequency.addEventListener("onClick", new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
+        defaultFrequency.addEventListener("onClick", (event) -> {
                 if (disabled) return;
                 String key = "case";
                 selectComboboxByKey(frequencyAggSelector, key);
-                userOptions.setRetainZoomPan(true);
                 selectFrequencyViz();
-            }
         });
 
-        defaultDuration.addEventListener("onClick", new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
+        defaultDuration.addEventListener("onClick", (event) ->{
                 if (disabled) return;
                 String key = "mean";
                 selectComboboxByKey(durationAggSelector, key);
-                userOptions.setRetainZoomPan(true);
                 selectDurationViz();
-            }
         });
 
-        freqShow.addEventListener("onClick", new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
+        defaultCost.addEventListener("onClick", (event) -> {
                 if (disabled) return;
-                boolean isShown = !includeSecondary.isChecked();
-                userOptions.setIncludeSecondary(isShown);
-                includeSecondary.setChecked(isShown);
-                toggleComponentSclass(freqShow, isShown, "ap-icon-eye-close", "ap-icon-eye-open");
-                freqShow.setTooltiptext(isShown ?
-                    parent.getLabel("metricHideSecondary_text") :
-                    parent.getLabel("metricShowSecondary_text")
-                );
-                userOptions.setRetainZoomPan(true);
-                parent.generateViz();
-            }
+                String key = "mean";
+                selectComboboxByKey(costAggSelector, key);
+                selectCostViz();
         });
 
-        durationShow.addEventListener("onClick", new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
+        freqShow.addEventListener("onClick", (event) -> {
                 if (disabled) return;
-                boolean isShown = !includeSecondary.isChecked();
-                userOptions.setIncludeSecondary(isShown);
-                includeSecondary.setChecked(isShown);
-                toggleComponentSclass(durationShow, isShown, "ap-icon-eye-close", "ap-icon-eye-open");
-                durationShow.setTooltiptext(isShown ?
-                    parent.getLabel("metricHideSecondary_text") :
-                    parent.getLabel("metricShowSecondary_text")
-                );
-                userOptions.setRetainZoomPan(true);
-                parent.generateViz();
-            }
+                setSecondaryOverlay(FREQUENCY);
         });
 
+        durationShow.addEventListener("onClick", (event) -> {
+                if (disabled) return;
+                setSecondaryOverlay(DURATION);
+        });
 
-        EventListener<Event> frequencyAggSelectorListener = new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                toggleComponentClass(defaultFrequency, true);
-                toggleComponentClass(defaultDuration, false);
-                userOptions.setRetainZoomPan(true);
-                selectFrequencyViz();
-            }
-        };
+        costShow.addEventListener("onClick", (event) -> {
+                if (disabled) return;
+                setSecondaryOverlay(COST);
+        });
+
+        EventListener<Event> frequencyAggSelectorListener = (event) -> selectFrequencyViz();
         this.frequencyAggSelector.addEventListener("onSelect", frequencyAggSelectorListener);
         this.frequencyAggSelector.addEventListener("onForceSelect", frequencyAggSelectorListener);
 
-        EventListener<Event> durationAggSelectorListener = new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                toggleComponentClass(defaultFrequency, false);
-                toggleComponentClass(defaultDuration, true);
-                userOptions.setRetainZoomPan(true);
-                selectDurationViz();
-            }
-        };
+        EventListener<Event> durationAggSelectorListener = (event) -> selectDurationViz();
         this.durationAggSelector.addEventListener("onSelect", durationAggSelectorListener);
         this.durationAggSelector.addEventListener("onForceSelect", durationAggSelectorListener);
 
+        EventListener<Event> costAggSelectorListener = (event) -> selectCostViz();
+        this.costAggSelector.addEventListener("onSelect", costAggSelectorListener);
+        this.costAggSelector.addEventListener("onForceSelect", costAggSelectorListener);
     }
-    
+
     @Override
     public void setDisabled(boolean disabled) {
         this.disabled = disabled;
@@ -303,6 +291,7 @@ public class ViewSettingsController extends VisualController {
         perspectiveSelector.setDisabled(disabled);
         frequencyAggSelector.setDisabled(disabled);
         durationAggSelector.setDisabled(disabled);
+        costAggSelector.setDisabled(disabled);
         includeSecondary.setDisabled(disabled);
     }
 
@@ -330,12 +319,7 @@ public class ViewSettingsController extends VisualController {
 
     private LinkedHashMap<String, String> getPerspectiveMap() {
 
-        Comparator<Map.Entry<String, String>> comparator = new Comparator<Map.Entry<String, String>>() {
-            @Override
-            public int compare(Map.Entry<String, String> o1, Map.Entry<String, String> o2) {
-                return o1.getValue().compareTo(o2.getValue());
-            }
-        };
+        Comparator<Map.Entry<String, String>> comparator = (o1, o2) -> o1.getValue().compareTo(o2.getValue());
 
         PDAnalyst analyst = parent.getProcessAnalyst();
         Set<String> set = new HashSet<>();
@@ -353,7 +337,6 @@ public class ViewSettingsController extends VisualController {
             if (!CANONICAL_PERSPECTIVES.contains(key)) {
                 map.put(key, key);
             } else {
-                // String value = Labels.getLabel("e.pd.perspective." + key.replace(':', '.') + ".hint", key);
                 String value = parent.getLabel("perspective_" + key.replace(':', '_') + "_hint", key);
                 canonMap.put(key, value);
             }
@@ -376,67 +359,112 @@ public class ViewSettingsController extends VisualController {
         return linkMap;
     }
 
-    private void selectFrequencyViz() throws InterruptedException {
-        String freqAgg = frequencyAggSelector.getSelectedItem().getValue();
-        String durationAgg = durationAggSelector.getSelectedItem().getValue();
-
-        selectComboboxByKey(frequencyAggSelector, freqAgg);
-        freqRank.setValue("1");
-        durationRank.setValue("2");
-        freqShow.setVisible(false);
-        durationShow.setVisible(true);
-        toggleComponentClass(freqOption, true);
-        toggleComponentClass(durationOption, false);
-        toggleComponentSclass(durationShow, includeSecondary.isChecked(), "ap-icon-eye-close", "ap-icon-eye-open");
-        durationShow.setTooltiptext(includeSecondary.isChecked() ?
+    private void refreshShowSecondary(MeasureType measureType, boolean isShown) {
+        isSecondaryShown = isShown;
+        Span showSpan = showSecondaryMap.get(measureType);
+        toggleComponentSclass(showSpan, isShown, "ap-icon-eye-close", "ap-icon-eye-open");
+        showSpan.setTooltiptext(isShown ?
             parent.getLabel("metricHideSecondary_text") :
-            parent.getLabel("metricShowSecondary_text")
-        );
+            parent.getLabel("metricShowSecondary_text"));
+    }
 
+    private Combobox getSelectedAggSelectorByMeasureType(MeasureType measureType) {
+        return measureAggSelectorMap.get(measureType);
+    }
+
+    private String getSelectedAggByMeasureType(MeasureType measureType) {
+        return getSelectedAggSelectorByMeasureType(measureType).getSelectedItem().getValue();
+    }
+
+    private void setShowSecondary(boolean isShown) {
+        userOptions.setIncludeSecondary(isShown);
+        isSecondaryShown = isShown;
+        includeSecondary.setChecked(isShown);
+    }
+
+    private void setSecondaryOverlay(MeasureType measureType) {
+        boolean isShown;
+        if (secondaryMeasureType == measureType) {
+            isShown = !isSecondaryShown;
+            refreshShowSecondary(secondaryMeasureType, isShown);
+        } else {
+            refreshShowSecondary(secondaryMeasureType, false); // reset old show
+            secondaryMeasureType = measureType;
+            isShown = true;
+        }
+        setShowSecondary(isShown);
+        refreshShowSecondary(secondaryMeasureType, isShown);
+        String primaryAgg = getSelectedAggByMeasureType(primaryMeasureType);
+        String secondaryAgg = getSelectedAggByMeasureType(secondaryMeasureType);
         setOverlay(
-            FREQUENCY,
-            measureAggMap.get(freqAgg),
-            measureRelationMap.get(freqAgg),
-            DURATION,
-            measureAggMap.get(durationAgg),
-            measureRelationMap.get(durationAgg),
-            freqAgg
+            primaryMeasureType,
+            measureAggMap.get(primaryAgg),
+            measureRelationMap.get(primaryAgg),
+            secondaryMeasureType,
+            measureAggMap.get(secondaryAgg),
+            measureRelationMap.get(secondaryAgg),
+            primaryAgg
         );
     }
 
-    private void selectDurationViz() throws InterruptedException {
-        String durationAgg = durationAggSelector.getSelectedItem().getValue();
-        String freqAgg = frequencyAggSelector.getSelectedItem().getValue();
+    private void toggleShowSecondary() {
+        showSecondaryMap.forEach((key, span) -> span.setVisible(!key.equals(primaryMeasureType)));
+    }
 
-        selectComboboxByKey(durationAggSelector, durationAgg);
-        freqRank.setValue("2");
-        durationRank.setValue("1");
-        freqShow.setVisible(true);
-        durationShow.setVisible(false);
-        toggleComponentClass(freqOption, false);
-        toggleComponentClass(durationOption, true);
-        toggleComponentSclass(freqShow, includeSecondary.isChecked(), "ap-icon-eye-close", "ap-icon-eye-open");
-        freqShow.setTooltiptext(includeSecondary.isChecked() ?
-            parent.getLabel("metricHideSecondary_text") :
-            parent.getLabel("metricShowSecondary_text")
-        );
+    private void toggleMeasureOption() {
+        measureOptionMap.forEach((key, div) -> toggleComponentClass(div, key.equals(primaryMeasureType)));
+    }
+
+    private void toggleDefaultAgg() {
+        defaultAggMap.forEach((key, div) -> toggleComponentClass(div, key.equals(primaryMeasureType)));
+    }    
+
+    private void setPrimaryOverlay(MeasureType measureType) {
+
+        primaryMeasureType = measureType;
+        if (primaryMeasureType.equals(secondaryMeasureType)) {
+            secondaryMeasureType = defaultSecondaryMap.get(primaryMeasureType);
+            setShowSecondary(false);
+            refreshShowSecondary(secondaryMeasureType, false);
+        }
+
+        Combobox primaryAggSelector = getSelectedAggSelectorByMeasureType(primaryMeasureType);
+        String primaryAgg = getSelectedAggByMeasureType(primaryMeasureType);
+        String secondaryAgg = getSelectedAggByMeasureType(secondaryMeasureType);
+        selectComboboxByKey(primaryAggSelector, primaryAgg);
+
+        toggleShowSecondary();
+        toggleMeasureOption();
+        toggleDefaultAgg();
 
         setOverlay(
-            DURATION,
-            measureAggMap.get(durationAgg),
-            measureRelationMap.get(durationAgg),
-            FREQUENCY,
-            measureAggMap.get(freqAgg),
-            measureRelationMap.get(freqAgg),
-                durationAgg
+                primaryMeasureType,
+                measureAggMap.get(primaryAgg),
+                measureRelationMap.get(primaryAgg),
+                secondaryMeasureType,
+                measureAggMap.get(secondaryAgg),
+                measureRelationMap.get(secondaryAgg),
+                primaryAgg
         );
+    }
+
+    private void selectFrequencyViz() {
+        setPrimaryOverlay(FREQUENCY);
+    }
+
+    private void selectDurationViz() {
+        setPrimaryOverlay(DURATION);
+    }
+
+    private void selectCostViz() {
+        setPrimaryOverlay(COST);
     }
 
     @Override
     public void onEvent(Event event) throws Exception {
         throw new Exception("Unsupported interactive Event Handler");
     }
-    
+
     private void setOverlay(
             MeasureType primaryType,
             MeasureAggregation primaryAggregation,
@@ -446,29 +474,32 @@ public class ViewSettingsController extends VisualController {
             MeasureRelation secondaryRelation,
             String aggregateCode
     ) {
+        parent.getUserOptions().setRetainZoomPan(true);
 
-        parent.getUserOptions().setPrimaryType(primaryType);
+        parent.getUserOptions().setPrimaryType(primaryType == COST ? DURATION : primaryType);
         parent.getUserOptions().setPrimaryAggregation(primaryAggregation);
         parent.getUserOptions().setPrimaryRelation(primaryRelation);
-        
-        parent.getUserOptions().setSecondaryType(secondaryType);
+
+        parent.getUserOptions().setSecondaryType(secondaryType == COST ? DURATION : secondaryType);
         parent.getUserOptions().setSecondaryAggregation(secondaryAggregation);
         parent.getUserOptions().setSecondaryRelation(secondaryRelation);
 
         primaryAggregateCode = aggregateCode;
         if (primaryType == FREQUENCY) {
             primaryTypeLabel = parent.getLabel("common_frequencyLabel_text", FREQ_LABEL);
-        } else { // (overlay == DURATION) assume DURATION
+        } else if (primaryType == DURATION) {
             primaryTypeLabel = parent.getLabel("common_durationLabel_text", DURATION_LABEL);
+        } else {
+            primaryTypeLabel = parent.getLabel("common_durationLabel_text", COST_LABEL);
         }
         parent.generateViz();
     }
-    
+
     public String getOutputName() {
         return parent.getContextData().getLogName() + " - " +
             parent.getLabel("stat_" + primaryAggregateCode + "_text") + " " + primaryTypeLabel;
     }
-    
+
     public String getPerspectiveName() {
         String name = "Untitled-perspective";
         if (perspectiveSelector != null) {
@@ -479,5 +510,5 @@ public class ViewSettingsController extends VisualController {
         }
         return name;
     }
-    
+
 }

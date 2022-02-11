@@ -20,10 +20,31 @@
  * #L%
  */
 
-package org.apromore.logman.attribute.graph;
+package org.apromore.plugin.portal.processdiscoverer.data;
 
-public enum MeasureType {
+import lombok.Getter;
+import lombok.Setter;
+import org.apromore.apmlog.util.Util;
+import org.apromore.commons.datetime.DurationUtils;
 
-    FREQUENCY, DURATION, COST
+import java.util.regex.Pattern;
+
+@Getter
+public class AttributeCost {
+
+    @Getter @Setter
+    private String attributeId;
+
+    @Getter @Setter
+    private Double costValue;
+
+    private AttributeCost(String attributeId, Double costValue) {
+        this.attributeId = attributeId;
+        this.costValue = costValue;
+    }
+    
+    public static AttributeCost valueOf(String attributeId, Double costValue) {
+        return new AttributeCost(attributeId, costValue);
+    }
 
 }
