@@ -194,7 +194,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
         param.put("exportPath", mainC.getExportPath(editSession.getNativeType()));
         param.put("editor", "bpmneditor");
       } else {
-        param.put(BPMN_XML, bpmnXML);
+        param.put(BPMN_XML, escapeXML(bpmnXML));
         param.put("url", getURL(BPMN_2_0));
         param.put("importPath", getImportPath(BPMN_2_0));
         param.put("exportPath", getExportPath(BPMN_2_0));
@@ -380,7 +380,11 @@ public class BPMNEditorController extends BaseController implements Composer<Com
    *         trailing whitespace.
    */
   private String escapeXML(String xml) {
-    return xml.replaceAll("(\\r|\\n|\\r\\n)+", " ").replace("'", "\\'");
+    return xml
+            .replaceAll("(\\r|\\n|\\r\\n)+", " ")
+            // remove LSEP (line separator), that breaks XML code embedding in ZK's inline JS script
+            .replaceAll("\u2028", " ")
+            .replace("'", "\\'");
   }
 
   /**
