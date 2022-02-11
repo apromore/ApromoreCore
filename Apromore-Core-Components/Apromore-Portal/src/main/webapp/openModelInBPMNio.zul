@@ -175,7 +175,7 @@
                     createEditor = async function (bpmnXML) {
                       var config = {
                           xml: bpmnXML,
-                          id : 'editorcanvas',
+                          id: 'editorcanvas',
                           fullscreen : true,
                           useSimulationPanel: ${arg.availableSimulateModelPlugin},
                           isPublished: ${arg.isPublished},
@@ -186,8 +186,7 @@
                       editorWrapper = new Apromore.BPMNEditor.EditorApp (config);
                       return await editorWrapper.init(config);
                     }
-					//console.log('${arg.bpmnXML}');
-                    createEditor('${arg.bpmnXML}').then((editor) => {
+					          createEditor('${arg.bpmnXML}').then((editor) => {
                         window.Ap = window.Ap || {};
                         Apromore.BPMNEditor.Plugins.Share.shareExt = function() {
                           zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onShare'));
