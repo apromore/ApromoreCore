@@ -42,6 +42,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
+import org.apromore.calendar.builder.CalendarModelBuilder;
+import org.apromore.calendar.model.CalendarModel;
+import org.apromore.calendar.service.CalendarService;
 import org.apromore.processsimulation.config.SimulationInfoConfig;
 import org.apromore.processsimulation.dto.SimulationData;
 import org.apromore.processsimulation.model.Currency;
@@ -66,11 +69,14 @@ class SimulationInfoServiceTest {
     @Mock
     private SimulationInfoConfig config;
 
+    @Mock
+    private CalendarService calendarService;
+
     @BeforeEach
     void setup() {
         MockitoAnnotations.openMocks(this);
 
-        simulationInfoService = new SimulationInfoService(config);
+        simulationInfoService = new SimulationInfoService(config, calendarService);
 
         when(config.isEnable()).thenReturn(true);
         when(config.getDefaultCurrency()).thenReturn("EUR");
@@ -339,12 +345,12 @@ class SimulationInfoServiceTest {
         assertNotNull(processSimulationInfo.getId());
         assertNotNull(processSimulationInfo.getErrors());
         assertEquals(100L, processSimulationInfo.getProcessInstances());
-        assertEquals("26784.00", processSimulationInfo.getArrivalRateDistribution().getArg1());
+        assertEquals("6624.00", processSimulationInfo.getArrivalRateDistribution().getArg1());
         assertNull(processSimulationInfo.getArrivalRateDistribution().getArg2());
         assertNull(processSimulationInfo.getArrivalRateDistribution().getMean());
         assertEquals(TimeUnit.HOURS, processSimulationInfo.getArrivalRateDistribution().getTimeUnit());
         assertEquals(DistributionType.EXPONENTIAL, processSimulationInfo.getArrivalRateDistribution().getType());
-        assertEquals("2019-12-31T13:00:00Z", processSimulationInfo.getStartDateTime());
+        assertEquals("2020-01-01T00:00+11:00", processSimulationInfo.getStartDateTime());
         assertEquals(Currency.EUR, processSimulationInfo.getCurrency());
     }
 
@@ -660,9 +666,18 @@ class SimulationInfoServiceTest {
     }
 
     private String getInterArrivalTime(long startTime, long endTime, long caseCount) {
-        double interArrivalTimeMillis = (endTime - startTime) / (double) caseCount;
 
-        return BigDecimal.valueOf(interArrivalTimeMillis / (double) TimeUnit.SECONDS.getNumberOfMilliseconds())
+        long timeDiff;
+        if (endTime - startTime <= 86400000) {
+            // CalendarModel.getDurationMillis() is not sensitive within
+            // the same day
+            timeDiff = endTime - startTime;
+        } else {
+            CalendarModel arrivalCalendar = new CalendarModelBuilder().with5DayWorking().build();
+            timeDiff = arrivalCalendar.getDurationMillis(startTime, endTime);
+        }
+
+        return BigDecimal.valueOf(timeDiff / ((double) caseCount * TimeUnit.SECONDS.getNumberOfMilliseconds()))
             .setScale(2, RoundingMode.HALF_UP).toString();
     }
 
@@ -676,12 +691,12 @@ class SimulationInfoServiceTest {
         assertNotNull(processSimulationAttrMap.getNamedItem("id").getNodeValue());
         assertEquals(Currency.EUR.toString(), processSimulationAttrMap.getNamedItem("currency").getNodeValue());
         assertEquals("100", processSimulationAttrMap.getNamedItem("processInstances").getNodeValue());
-        assertEquals("2019-12-31T13:00:00Z", processSimulationAttrMap.getNamedItem("startDateTime").getNodeValue());
+        assertEquals("2020-01-01T00:00+11:00", processSimulationAttrMap.getNamedItem("startDateTime").getNodeValue());
 
         Node arrivalDistributionXmlNode = TestHelper.getProcessSimulationInfo(bpmnXmlString,
             "/definitions/process/extensionElements/processSimulationInfo/arrivalRateDistribution");
         NamedNodeMap arrivalRateDistributionAttrMap = arrivalDistributionXmlNode.getAttributes();
-        assertEquals("26784.00", arrivalRateDistributionAttrMap.getNamedItem("arg1").getNodeValue());
+        assertEquals("6624.00", arrivalRateDistributionAttrMap.getNamedItem("arg1").getNodeValue());
         assertNull(arrivalRateDistributionAttrMap.getNamedItem("arg2"));
         assertNull(arrivalRateDistributionAttrMap.getNamedItem("mean"));
         assertEquals(DistributionType.EXPONENTIAL.toString(),

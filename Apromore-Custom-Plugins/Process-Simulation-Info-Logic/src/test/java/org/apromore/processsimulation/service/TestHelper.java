@@ -26,7 +26,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.DayOfWeek;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -40,6 +39,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.io.IOUtils;
+import org.apromore.commons.datetime.DateTimeUtils;
 import org.apromore.processsimulation.dto.EdgeFrequency;
 import org.apromore.processsimulation.dto.SimulationData;
 import org.apromore.processsimulation.model.Currency;
@@ -69,12 +69,12 @@ public class TestHelper {
             .id("some_random_guid")
             .errors(Errors.builder().build())
             .currency(Currency.EUR)
-            .startDateTime(Instant.ofEpochMilli(1577797200000L).toString())
+            .startDateTime(DateTimeUtils.toZonedDateTime(1577797200000L).toOffsetDateTime().toString())
             .processInstances(100)
             .arrivalRateDistribution(
                 Distribution.builder()
                     .type(DistributionType.EXPONENTIAL)
-                    .arg1("26784.00")
+                    .arg1("6624.00")
                     .timeUnit(TimeUnit.HOURS)
                     .build()
             );

@@ -34,7 +34,6 @@ import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.DayOfWeek;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -47,6 +46,10 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import lombok.extern.slf4j.Slf4j;
+import org.apromore.calendar.builder.CalendarModelBuilder;
+import org.apromore.calendar.model.CalendarModel;
+import org.apromore.calendar.service.CalendarService;
+import org.apromore.commons.datetime.DateTimeUtils;
 import org.apromore.processsimulation.config.SimulationInfoConfig;
 import org.apromore.processsimulation.dto.EdgeFrequency;
 import org.apromore.processsimulation.dto.SimulationData;
@@ -81,10 +84,13 @@ public class SimulationInfoService {
     private JAXBContext jaxbContext;
 
     private final SimulationInfoConfig config;
+    private final CalendarService calendarService;
 
     @Autowired
-    public SimulationInfoService(SimulationInfoConfig config) {
+    public SimulationInfoService(SimulationInfoConfig config, CalendarService calendarService) {
         this.config = config;
+        this.calendarService = calendarService;
+
         try {
             jaxbContext = JAXBContext.newInstance(ExtensionElements.class);
         } catch (JAXBException e) {
@@ -96,6 +102,13 @@ public class SimulationInfoService {
         return config.isEnable();
     }
 
+    /**
+     * Transform the raw simulation data obtained in PD and convert it to an xml serialisable @ProcessSimulationInfo
+     * object.
+     *
+     * @param simulationData the raw simulation data obtained from Process Discoverer
+     * @return simulation data converted into a @ProcessSimulationInfo object
+     */
     public ProcessSimulationInfo transformToSimulationInfo(
         final SimulationData simulationData) {
 
@@ -115,7 +128,6 @@ public class SimulationInfoService {
 
             deriveTimetable(builder);
 
-
             deriveGatewayProbabilities(builder, simulationData);
 
             processSimulationInfo = builder.build();
@@ -128,21 +140,40 @@ public class SimulationInfoService {
         final ProcessSimulationInfo.ProcessSimulationInfoBuilder builder,
         final SimulationData simulationData) {
 
-        long startTimeMillis = simulationData.getStartTime();
-        long endTimeMillis = simulationData.getEndTime();
-        double interArrivalTimeMillis = (endTimeMillis - startTimeMillis) / (double) simulationData.getCaseCount();
-
+        double interArrivalTimeMillis = getInterArrivalTime(simulationData);
         TimeUnit timeUnit = getDisplayTimeUnit(interArrivalTimeMillis);
 
         builder.processInstances(simulationData.getCaseCount())
             .currency(Currency.valueOf(config.getDefaultCurrency().toUpperCase(DOCUMENT_LOCALE)))
-            .startDateTime(Instant.ofEpochMilli(simulationData.getStartTime()).toString())
+            .startDateTime(DateTimeUtils.toZonedDateTime(simulationData.getStartTime()).toOffsetDateTime().toString())
             .arrivalRateDistribution(
                 Distribution.builder()
                     .timeUnit(timeUnit)
                     .type(DistributionType.valueOf(config.getDefaultDistributionType().toUpperCase(DOCUMENT_LOCALE)))
                     .arg1(getDisplayTimeDuration(interArrivalTimeMillis).toString())
                     .build());
+    }
+
+    /**
+     * Returns the inter arrival time in seconds, based on a default 9 - 5 business calendar.
+     *
+     * @param simulationData the raw simulation data from PD
+     * @return the inter-arrival time of events (in milliseconds)
+     */
+    protected long getInterArrivalTime(final SimulationData simulationData) {
+        long startTimeMillis = simulationData.getStartTime();
+        long endTimeMillis = simulationData.getEndTime();
+        long timeDiff;
+        if (endTimeMillis - startTimeMillis <= 86400000) {
+            // CalendarModel.getDurationMillis() is not sensitive within
+            // the same day
+            timeDiff = endTimeMillis - startTimeMillis;
+        } else {
+            CalendarModel arrivalCalendar = new CalendarModelBuilder().with5DayWorking().build();
+            timeDiff = arrivalCalendar.getDurationMillis(startTimeMillis, endTimeMillis);
+        }
+
+        return Math.round(timeDiff / (double) (simulationData.getCaseCount()));
     }
 
     private void deriveTaskInfo(
