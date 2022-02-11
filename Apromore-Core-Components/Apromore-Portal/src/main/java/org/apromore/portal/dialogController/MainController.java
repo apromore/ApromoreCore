@@ -25,6 +25,8 @@
 
 package org.apromore.portal.dialogController;
 
+import static org.apromore.common.Constants.TRUNK_NAME;
+
 import org.apromore.commons.config.ConfigBean;
 import org.apromore.commons.item.ItemNameUtils;
 import org.apromore.dao.model.Folder;
@@ -899,8 +901,10 @@ public class MainController extends BaseController implements MainControllerInte
                     } else {
                         String versionNumber = processSummaryType.getLastVersion();
                         for (VersionSummaryType summaryType : processSummaryType.getVersionSummaries()) {
-                            if (summaryType.getVersionNumber().compareTo(versionNumber) == 0) {
+                            if (summaryType.getVersionNumber().compareTo(versionNumber) == 0 &&
+                                TRUNK_NAME.equals(summaryType.getName())) {
                                 versionList.add(summaryType);
+                                break;
                             }
                         }
                     }
