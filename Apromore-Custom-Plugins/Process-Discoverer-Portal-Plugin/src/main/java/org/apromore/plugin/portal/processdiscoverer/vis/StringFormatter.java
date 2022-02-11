@@ -175,7 +175,7 @@ public class StringFormatter {
 
             }
             return formattedName.toString();
-        } catch (Error e) {
+        } catch (Exception e) {
             name = originalName;
         }
         return name;
