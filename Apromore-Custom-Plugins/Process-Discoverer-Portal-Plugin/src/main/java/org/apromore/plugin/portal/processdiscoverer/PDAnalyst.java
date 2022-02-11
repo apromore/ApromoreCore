@@ -676,11 +676,10 @@ public class PDAnalyst {
             .filter(Activity.class::isInstance)
             .collect(Collectors.toMap(
                 node -> node.getId().toString(),
-                node -> BigDecimal.valueOf(attLog.getGraphView().getNodeWeight(node.getLabel(),
+                node -> attLog.getGraphView().getNodeWeight(node.getLabel(),
                         MeasureType.DURATION,
                         MeasureAggregation.MEAN,
-                        MeasureRelation.ABSOLUTE) / 1000)
-                    .setScale(2, RoundingMode.HALF_UP).doubleValue()));
+                        MeasureRelation.ABSOLUTE)));
     }
 
     private long getTotalResourcesCount() {

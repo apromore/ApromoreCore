@@ -175,9 +175,9 @@ class SimulationInfoServiceTest {
         when(mockSimulationData.getEndTime()).thenReturn(1580475600000L);
 
         when(mockSimulationData.getDiagramNodeIDs()).thenReturn(Arrays.asList("a", "b", "c"));
-        when(mockSimulationData.getDiagramNodeDuration("a")).thenReturn(10.10);
-        when(mockSimulationData.getDiagramNodeDuration("b")).thenReturn(11.11);
-        when(mockSimulationData.getDiagramNodeDuration("c")).thenReturn(12.12);
+        when(mockSimulationData.getDiagramNodeDuration("a")).thenReturn(10100.00);
+        when(mockSimulationData.getDiagramNodeDuration("b")).thenReturn(11110.00);
+        when(mockSimulationData.getDiagramNodeDuration("c")).thenReturn(12120.00);
 
         when(mockSimulationData.getResourceCountsByRole()).thenReturn(Map.of("Role_1", 5, "Role_2", 10, "Role_3", 15));
         when(mockSimulationData.getRoleNameByNodeId("a")).thenReturn("Role_1");

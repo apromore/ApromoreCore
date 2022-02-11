@@ -151,17 +151,20 @@ public class SimulationInfoService {
         final Map<String, String> resourceNameToId) {
 
         List<Element> taskList = simulationData.getDiagramNodeIDs().stream()
-            .map(nodeId -> Element.builder()
-                .elementId(nodeId)
-                .distributionDuration(Distribution.builder()
-                    .type(DistributionType.valueOf(
-                        config.getDefaultDistributionType().toUpperCase(DOCUMENT_LOCALE)))
-                    .arg1(BigDecimal.valueOf((simulationData.getDiagramNodeDuration(nodeId)))
-                        .setScale(2, RoundingMode.HALF_UP).toString())
-                    .timeUnit(TimeUnit.valueOf(config.getDefaultTimeUnit().toUpperCase(DOCUMENT_LOCALE)))
-                    .build())
-                .resourceIds(List.of(resourceNameToId.get(simulationData.getRoleNameByNodeId(nodeId))))
-                .build())
+            .map(nodeId -> {
+                double durationMillis = simulationData.getDiagramNodeDuration(nodeId);
+                TimeUnit timeUnit = getDisplayTimeUnit(durationMillis);
+                return Element.builder()
+                    .elementId(nodeId)
+                    .distributionDuration(Distribution.builder()
+                        .type(DistributionType.valueOf(
+                            config.getDefaultDistributionType().toUpperCase(DOCUMENT_LOCALE)))
+                        .arg1(getDisplayTimeDuration(durationMillis).toString())
+                        .timeUnit(timeUnit)
+                        .build())
+                    .resourceIds(List.of(resourceNameToId.get(simulationData.getRoleNameByNodeId(nodeId))))
+                    .build();
+            })
             .collect(Collectors.toUnmodifiableList());
 
         builder.tasks(taskList);
