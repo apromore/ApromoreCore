@@ -38,6 +38,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apromore.apmlog.APMLog;
@@ -139,6 +140,11 @@ public class PDAnalyst {
 
     @Getter
     Map<Integer, List<ATrace>> caseVariantGroupMap;
+
+    @Getter
+    String costAttribute = XESAttributeCodes.ORG_ROLE;
+    @Getter @Setter
+    Map<String, Double> costTable = new HashMap<>();
 
     private String caseVariantPerspective = XESAttributeCodes.CONCEPT_NAME;
 
@@ -577,6 +583,10 @@ public class PDAnalyst {
         }
 
         return avgAttributeMap;
+    }
+
+    public ImmutableList<Object> getRoleValues() {
+        return this.getAttributeLog().getFullLog().getAttributeStore().getStandardEventRole().getValues();
     }
 
     public String getFilteredStartTime() {

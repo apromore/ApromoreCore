@@ -30,15 +30,7 @@ import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.plugin.portal.logfilter.generic.LogFilterPlugin;
 import org.apromore.plugin.portal.processdiscoverer.actions.ActionManager;
-import org.apromore.plugin.portal.processdiscoverer.components.CaseDetailsController;
-import org.apromore.plugin.portal.processdiscoverer.components.CaseVariantDetailsController;
-import org.apromore.plugin.portal.processdiscoverer.components.GraphSettingsController;
-import org.apromore.plugin.portal.processdiscoverer.components.GraphVisController;
-import org.apromore.plugin.portal.processdiscoverer.components.LogStatsController;
-import org.apromore.plugin.portal.processdiscoverer.components.PerspectiveDetailsController;
-import org.apromore.plugin.portal.processdiscoverer.components.TimeStatsController;
-import org.apromore.plugin.portal.processdiscoverer.components.ToolbarController;
-import org.apromore.plugin.portal.processdiscoverer.components.ViewSettingsController;
+import org.apromore.plugin.portal.processdiscoverer.components.*;
 import org.apromore.plugin.portal.processdiscoverer.data.ConfigData;
 import org.apromore.plugin.portal.processdiscoverer.data.ContextData;
 import org.apromore.plugin.portal.processdiscoverer.data.InvalidDataException;
@@ -160,6 +152,7 @@ public class PDController extends BaseController implements Composer<Component>,
     private AnimationController animationController;
     private LogExportController logExportController;
     private BPMNExportController bpmnExportController;
+    private CostTableController costTableController;
     private ToolbarController toolbarController;
 
     //////////////////// DATA ///////////////////////////////////
@@ -315,6 +308,7 @@ public class PDController extends BaseController implements Composer<Component>,
             animationController = pdFactory.createAnimationController(this);
             logExportController = pdFactory.createLogExportController(this);
             bpmnExportController = pdFactory.createBPMNExportController(this);
+            costTableController = pdFactory.createCostTableController(this);
             toolbarController = pdFactory.createToolbarController(this);
 
             initialize();
@@ -485,6 +479,14 @@ public class PDController extends BaseController implements Composer<Component>,
 
     public void openCalendar() {
         ((MainController)portalContext.getMainController()).getBaseListboxController().launchCalendar(sourceLogName, sourceLogId);
+    }
+
+    public void openCost() {
+        try {
+            costTableController.onEvent(new Event("onCostTable"));
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+        }
     }
 
     public void openAnimation(Event e) {
