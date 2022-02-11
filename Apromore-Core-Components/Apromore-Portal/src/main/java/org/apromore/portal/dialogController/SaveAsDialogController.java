@@ -26,6 +26,7 @@ package org.apromore.portal.dialogController;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
@@ -50,7 +51,6 @@ import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.Messagebox.ClickEvent;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Rows;
 import org.zkoss.zul.Textbox;
@@ -175,22 +175,22 @@ public class SaveAsDialogController extends BaseController {
       } else {
         if (session.containVersion(versionNo)) {
           Messagebox.show(
-              MessageFormat.format(Labels.getLabel("portal_versionExisted_message"), versionNo),
-              "Question", new Messagebox.Button[] {Messagebox.Button.YES, Messagebox.Button.NO},
-              Messagebox.QUESTION, new org.zkoss.zk.ui.event.EventListener<ClickEvent>() {
-                @Override
-                public void onEvent(ClickEvent e) throws Exception {
-                  switch (e.getButton()) {
-                    case YES:
-                      saveCurrentModelVersion(processId, processName, versionNo, nativeType, is,
-                          userName, containingFolderName);
-                      break;
-                    case NO: // Cancel is clicked
-                      break;
-                    default: // if the Close button is clicked, e.getButton() returns null
-                  }
-                }
-              });
+            MessageFormat.format(Labels.getLabel("portal_versionExisted_message"), versionNo),
+            Labels.getLabel("brand_name"),
+            new Messagebox.Button[] {Messagebox.Button.YES, Messagebox.Button.NO},
+            Messagebox.QUESTION,
+            e -> {
+              switch (e.getButton()) {
+                case YES:
+                  saveCurrentModelVersion(processId, processName, versionNo, nativeType, is,
+                      userName, containingFolderName);
+                  break;
+                case NO: // Cancel is clicked
+                  break;
+                default: // if the Close button is clicked, e.getButton() returns null
+              }
+            }
+          );
         } else { // save first time for new model
           createNewModelVersion(processId, processName, versionNo, nativeType, is, userName,
               containingFolderName);
@@ -237,11 +237,14 @@ public class SaveAsDialogController extends BaseController {
   private void saveCurrentModelVersion(Integer processId, String processName, String versionNumber,
       String nativeType, InputStream nativeStream, String userName, String containingFolderName) {
     try {
+      String bpmnXml = new String(nativeStream.readAllBytes(), StandardCharsets.UTF_8);
+
       ProcessModelVersion newVersion = mainController.getManagerService().updateProcessModelVersion(
           processId, editSession.getOriginalBranchName(), versionNumber, userName, "", nativeType,
-          nativeStream);
+              new ByteArrayInputStream(bpmnXml.getBytes()));
       mainController.getManagerService().updateDraft(processId,
-              editSession.getOriginalVersionNumber(), nativeType, nativeStream, userName);
+              editSession.getOriginalVersionNumber(), nativeType, new ByteArrayInputStream(bpmnXml.getBytes()),
+              userName);
 
       // Update process data with the new process to keep a consistent state
       editSession.setOriginalVersionNumber(versionNumber);

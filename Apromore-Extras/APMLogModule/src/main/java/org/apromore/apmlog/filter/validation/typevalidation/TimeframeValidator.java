@@ -30,7 +30,7 @@ public class TimeframeValidator extends AbstractLogFilterRuleValidator {
 
     public static ValidatedFilterRule validateTimeframe(LogFilterRule originalRule, APMLog apmLog) {
 
-        LogFilterRule logFilterRule = originalRule.clone();
+        LogFilterRule logFilterRule = originalRule.deepClone();
 
         LongLongPair valPair = getFromAndToLongValues(logFilterRule);
 

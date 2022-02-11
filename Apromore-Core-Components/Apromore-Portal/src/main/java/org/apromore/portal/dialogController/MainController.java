@@ -142,6 +142,8 @@ public class MainController extends BaseController implements MainControllerInte
     private static final int KEY_COPY = 67;
     private static final int KEY_PASTE = 86;
     private static final int KEY_CUT = 88;
+    private static final int KEY_CTRL_A_LO = 65;
+    private static final int KEY_CTRL_A_BG = 97;
 
     private PortalContext portalContext;
     private MenuController menu;
@@ -171,13 +173,13 @@ public class MainController extends BaseController implements MainControllerInte
     }
 
     public MainController() {
+        setupLocale();
         portalSession = new PortalSession(this);
 
         qe = EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, true);
         portalSession = new PortalSession(this);
 
         portalPluginMap = PortalPluginResolver.getPortalPluginMap();
-        setupLocale();
     }
 
     private void setupLocale() {
@@ -314,6 +316,10 @@ public class MainController extends BaseController implements MainControllerInte
                                 break;
                             case KEY_CUT:
                                 baseListboxController.cut();
+                                break;
+                            case KEY_CTRL_A_LO:
+                            case KEY_CTRL_A_BG:
+                                baseListboxController.selectAll();
                                 break;
                         }
                     } catch (Exception e) {
@@ -706,23 +712,24 @@ public class MainController extends BaseController implements MainControllerInte
             if (!Objects.equals(bpmnXML, bpmnXmlDraft)) {
                 String finalInstruction = instruction;
                 Messagebox.show(
-                        MessageFormat.format(Labels.getLabel("portal_unsavedDraftExisted_message"), editSession.getCurrentVersionNumber()),
-                        "Question", new Messagebox.Button[] {Messagebox.Button.YES, Messagebox.Button.NO},
-                        Messagebox.QUESTION, e -> {
-                            switch (e.getButton()) {
-                                case YES:
-                                    Clients.evalJavaScript(finalInstruction);
-                                    break;
-                                case NO: // Cancel is clicked
-                                    this.getProcessService().updateDraft(editSession.getProcessId(),
-                                            editSession.getCurrentVersionNumber(), editSession.getNativeType(),
-                                            new ByteArrayInputStream(bpmnXML.getBytes()),
-                                            editSession.getUsername());
-                                    Clients.evalJavaScript(finalInstruction);
-                                    break;
-                                default: // if the Close button is clicked, e.getButton() returns null
-                            }
-                        });
+                    MessageFormat.format(Labels.getLabel("portal_unsavedDraftExisted_message"), editSession.getCurrentVersionNumber()),
+                    Labels.getLabel("brand_name"),
+                    new Messagebox.Button[] {Messagebox.Button.YES, Messagebox.Button.NO},
+                    Messagebox.QUESTION, e -> {
+                        switch (e.getButton()) {
+                            case YES:
+                                Clients.evalJavaScript(finalInstruction);
+                                break;
+                            case NO: // Cancel is clicked
+                                this.getProcessService().updateDraft(editSession.getProcessId(),
+                                    editSession.getCurrentVersionNumber(), editSession.getNativeType(),
+                                    new ByteArrayInputStream(bpmnXML.getBytes()),
+                                    editSession.getUsername());
+                                Clients.evalJavaScript(finalInstruction);
+                                break;
+                            default: // if the Close button is clicked, e.getButton() returns null
+                        }
+                    });
             } else {
                 Clients.evalJavaScript(instruction);
             }

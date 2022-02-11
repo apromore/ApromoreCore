@@ -68,6 +68,9 @@ import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Messagebox;
 
+import static org.apromore.common.Constants.DRAFT_BRANCH_NAME;
+import static org.apromore.common.Constants.TRUNK_NAME;
+
 /**
  * ApromoreSession and ApromoreSession.EditSessionType represent data objects of the model being
  * opened in the editor However, they don't contain the XML native model data which can be retrieved
@@ -172,14 +175,20 @@ public class BPMNEditorController extends BaseController implements Composer<Com
 
         // Note: process models created by merging are not BPMN, cannot use
         // processService.getBPMNRepresentation
-        ExportFormatResultType exportResult = mainC.getManagerService().exportFormat(
-            editSession.getProcessId(), editSession.getProcessName(),
-                org.apromore.common.Constants.DRAFT_BRANCH_NAME, editSession.getCurrentVersionNumber(),
-            editSession.getNativeType(), editSession.getUsername());
+        ExportFormatResultType exportResult = mainC.getManagerService().exportFormat(editSession.getProcessId(),
+                editSession.getProcessName(), TRUNK_NAME, editSession.getCurrentVersionNumber(),
+                editSession.getNativeType(), editSession.getUsername());
         bpmnXML = StreamUtil.convertStreamToString(exportResult.getNative().getInputStream());
+
+        ExportFormatResultType exportResultDraft = mainC.getManagerService().exportFormat(editSession.getProcessId(),
+                editSession.getProcessName(), DRAFT_BRANCH_NAME, editSession.getCurrentVersionNumber(),
+                editSession.getNativeType(), editSession.getUsername());
+        String bpmnXmlDraft = StreamUtil.convertStreamToString(exportResultDraft.getNative().getInputStream());
+
         param.put("doAutoLayout", "false");
 
-        param.put(BPMN_XML, escapeXML(bpmnXML));
+        param.put(BPMN_XML, AccessType.VIEWER.equals(currentUserAccessType) ? escapeXML(bpmnXML) :
+                escapeXML(bpmnXmlDraft));
         param.put("url", getURL(editSession.getNativeType()));
         param.put("importPath", mainC.getImportPath(editSession.getNativeType()));
         param.put("exportPath", mainC.getExportPath(editSession.getNativeType()));
@@ -246,6 +255,30 @@ public class BPMNEditorController extends BaseController implements Composer<Com
           return;
         }
         new SaveAsDialogController(process, vst, session, false, eventToString(event), mainC);
+      }
+    });
+
+    this.addEventListener("onCheckUnsaved", (Event event) -> {
+      String flowOnEvent = (String) event.getData();
+      boolean isUpToDate = mainC.getManagerService().isProcessUpdatedWithUserDraft(
+        editSession.getProcessId(),
+        editSession.getProcessName(),
+        editSession.getCurrentVersionNumber(),
+        editSession.getNativeType(),
+        editSession.getUsername()
+      );
+      if (isUpToDate) {
+        Clients.evalJavaScript("Apromore.BPMNEditor.afterCheckUnsaved('" + flowOnEvent + "')");
+      } else {
+        Messagebox.show("There are unsaved changes in the editor. Do you want to continue anyway?",
+          "Apromore", Messagebox.OK | Messagebox.CANCEL,
+          Messagebox.QUESTION,
+          (Event e) -> {
+            if (Messagebox.ON_OK.equals(e.getName())) {
+              Clients.evalJavaScript("Apromore.BPMNEditor.afterCheckUnsaved('" + flowOnEvent + "')");
+            }
+          }
+        );
       }
     });
 
@@ -330,6 +363,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
           setTitle(data[0], data[1]);
           process = session.getProcess();
           editorController.isNewProcess = false;
+          Clients.evalJavaScript("Apromore.BPMNEditor.afterSave()");
         }
       }
     });

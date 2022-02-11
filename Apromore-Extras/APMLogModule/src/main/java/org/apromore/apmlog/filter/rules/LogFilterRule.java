@@ -39,7 +39,13 @@ public interface LogFilterRule {
     Set<RuleValue> getSecondaryValues();
     Set<String> getPrimaryValuesInString();
     Set<String> getSecondaryValuesInString();
+    LogFilterRule deepClone();
+
+    // ====================================================================================
+    // DO NOT USED!! TO BE REMOVED!!
+    // ====================================================================================
     LogFilterRule clone();
+
     void setPrimaryValues(Set<RuleValue> primaryValues);
     void setSecondaryValues(Set<RuleValue> secondaryValues);
     String getFilterRuleDesc();

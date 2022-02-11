@@ -58,7 +58,7 @@ function PropertiesProvider(eventBus, canvas, bpmnFactory, elementRegistry, tran
     var resourcesTab = createResourceTab(element, bpmnFactory, elementRegistry, translate);
     var gatewayTab = createGatewayTab(element, bpmnFactory, elementRegistry, translate);
     var intermediateAndBoundaryEventsTab = createIntermediateAndBoundaryEventsTab(element, bpmnFactory, elementRegistry, translate);
-    var auxTab = createAuxTab(element, bpmnFactory, elementRegistry, translate, bpmnjs);
+    var auxTab = createAuxTab(element, bpmnFactory, elementRegistry, translate, bpmnjs, eventBus);
     var customTab = createCustomTab(element, bpmnFactory, elementRegistry, translate);
 
     function getDefaultTabs() {

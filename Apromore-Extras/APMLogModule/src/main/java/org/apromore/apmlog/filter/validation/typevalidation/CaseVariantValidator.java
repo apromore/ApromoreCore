@@ -40,7 +40,7 @@ public class CaseVariantValidator extends AbstractLogFilterRuleValidator {
 
     public static ValidatedFilterRule validateCaseVariant(LogFilterRule originalRule, APMLog apmLog) {
 
-        LogFilterRule clone = originalRule.clone();
+        LogFilterRule clone = originalRule.deepClone();
 
         List<Map.Entry<String, List<Map.Entry<Integer, List<ActivityInstance>>>>> groups =
                 LogStatsAnalyzer.getCaseVariantGroups(apmLog.getActivityInstances());

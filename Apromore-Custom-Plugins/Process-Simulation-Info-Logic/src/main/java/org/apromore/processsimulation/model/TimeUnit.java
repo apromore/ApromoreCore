@@ -27,11 +27,21 @@ import javax.xml.bind.annotation.XmlEnumValue;
 @XmlEnum
 public enum TimeUnit {
     @XmlEnumValue("seconds")
-    SECONDS,
+    SECONDS(1000),
     @XmlEnumValue("minutes")
-    MINUTES,
+    MINUTES(60000),
     @XmlEnumValue("hours")
-    HOURS,
+    HOURS(3600000),
     @XmlEnumValue("days")
-    DAYS
+    DAYS(86400000);
+
+    private final long numberOfMilliseconds;
+
+    TimeUnit(long numberOfMilliseconds) {
+        this.numberOfMilliseconds = numberOfMilliseconds;
+    }
+
+    public long getNumberOfMilliseconds() {
+        return this.numberOfMilliseconds;
+    }
 }

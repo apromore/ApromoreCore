@@ -585,10 +585,10 @@ public class PDAnalystTest extends TestDataSetup {
         assertEquals("DEFAULT_ROLE", data.getRoleNameByNodeId(getNodeId("d", bpmnAbstraction.getDiagram())));
         assertEquals(DateTime.parse("2010-10-27T21:59:19.308+10:00").getMillis(), data.getStartTime());
         assertEquals(DateTime.parse("2010-10-27T22:55:19.308+10:00").getMillis(), data.getEndTime());
-        assertEquals(60, data.getDiagramNodeDuration(getNodeId("a", bpmnAbstraction.getDiagram())), 0.0);
-        assertEquals(60, data.getDiagramNodeDuration(getNodeId("b", bpmnAbstraction.getDiagram())), 0.0);
-        assertEquals(60, data.getDiagramNodeDuration(getNodeId("c", bpmnAbstraction.getDiagram())), 0.0);
-        assertEquals(60, data.getDiagramNodeDuration(getNodeId("d", bpmnAbstraction.getDiagram())), 0.0);
+        assertEquals(60000, data.getDiagramNodeDuration(getNodeId("a", bpmnAbstraction.getDiagram())), 0.0);
+        assertEquals(60000, data.getDiagramNodeDuration(getNodeId("b", bpmnAbstraction.getDiagram())), 0.0);
+        assertEquals(60000, data.getDiagramNodeDuration(getNodeId("c", bpmnAbstraction.getDiagram())), 0.0);
+        assertEquals(60000, data.getDiagramNodeDuration(getNodeId("d", bpmnAbstraction.getDiagram())), 0.0);
 
         Map<String, Map<String, Double>> expectedEdgeFrequencies = Map.of(
             "node4", Map.of("edge3", 0.0, "edge4", 1.0),
@@ -607,7 +607,7 @@ public class PDAnalystTest extends TestDataSetup {
         assertEquals(4, data2.getResourceCount()); // changed
         assertEquals(DateTime.parse("2010-10-27T21:59:19.308+10:00").getMillis(), data2.getStartTime());
         assertEquals(DateTime.parse("2010-10-27T22:45:19.308+10:00").getMillis(), data2.getEndTime()); // changed
-        assertEquals(60, data2.getDiagramNodeDuration(getNodeId("b", bpmnAbstraction2.getDiagram())), 0.0);
+        assertEquals(60000, data2.getDiagramNodeDuration(getNodeId("b", bpmnAbstraction2.getDiagram())), 0.0);
 
         Map<String, Map<String, Double>> expectedEdgeFrequencies2 = Map.of(
             "node10", Map.of("edge14", 1.0, "edge17", 1.0, "edge18", 0.0),

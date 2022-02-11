@@ -25,6 +25,7 @@ package org.apromore.zk.label;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.MissingResourceException;
+import org.slf4j.LoggerFactory;
 import org.zkoss.web.Attributes;
 import org.zkoss.zk.ui.Sessions;
 
@@ -35,6 +36,12 @@ public interface LabelSupplier {
 
     default ResourceBundle getLabels() {
         Locale locale = (Locale) Sessions.getCurrent().getAttribute(Attributes.PREFERRED_LOCALE);
+        if (locale == null) {
+          locale = Locale.getDefault();
+          LoggerFactory.getLogger(LabelSupplier.class)
+                       .warn("ZK user session has no preferred locale; using JVM default {}", locale);
+        }
+
         return ResourceBundle.getBundle(this.getBundleName(), locale, this.getClass().getClassLoader());
     }
 

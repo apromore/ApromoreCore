@@ -34,7 +34,7 @@ public class ReworkValidator extends AbstractLogFilterRuleValidator {
 
     public static ValidatedFilterRule validate(LogFilterRule originalRule, APMLog apmLog) {
 
-        LogFilterRule validatedRule = originalRule.clone();
+        LogFilterRule validatedRule = originalRule.deepClone();
 
         String attrKey = validatedRule.getKey();
 

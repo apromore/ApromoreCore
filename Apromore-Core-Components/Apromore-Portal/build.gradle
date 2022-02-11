@@ -13,6 +13,7 @@ dependencies {
 	implementation project(':Apromore-Extras:OpenXES')
 	implementation project(':Apromore-Plugins:plugin-templates:portal-custom-gui')
 	implementation project(':Apromore-Zk')
+	implementation project(':Apromore-Calendar')
 
 	
 	compileOnly 'javax.servlet:javax.servlet-api'
