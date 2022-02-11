@@ -25,14 +25,25 @@
 package org.apromore.plugin.portal.calendar;
 
 import java.time.OffsetDateTime;
-import java.util.*;
-
+import java.util.HashMap;
+import java.util.Map;
+import org.apromore.calendar.exception.CalendarNotExistsException;
+import org.apromore.calendar.model.CalendarModel;
+import org.apromore.calendar.service.CalendarService;
+import org.apromore.commons.datetime.DateTimeUtils;
+import org.apromore.plugin.portal.PortalLoggerFactory;
+import org.apromore.plugin.portal.calendar.pageutil.PageUtils;
+import org.apromore.zk.event.CalendarEvents;
+import org.apromore.zk.label.LabelSupplier;
 import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.event.*;
+import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.EventQueue;
+import org.zkoss.zk.ui.event.EventQueues;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.ListModelList;
@@ -42,15 +53,6 @@ import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Span;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
-
-import org.apromore.calendar.exception.CalendarNotExistsException;
-import org.apromore.calendar.model.CalendarModel;
-import org.apromore.calendar.service.CalendarService;
-import org.apromore.commons.datetime.DateTimeUtils;
-import org.apromore.plugin.portal.PortalLoggerFactory;
-import org.apromore.plugin.portal.calendar.pageutil.PageUtils;
-import org.apromore.zk.event.CalendarEvents;
-import org.apromore.zk.label.LabelSupplier;
 
 public class CalendarItemRenderer implements ListitemRenderer<CalendarModel>, LabelSupplier {
 
@@ -105,7 +107,7 @@ public class CalendarItemRenderer implements ListitemRenderer<CalendarModel>, La
             arg.put("isNew", false);
             arg.put("canEdit", true);
             Window window = (Window) Executions.getCurrent()
-                    .createComponents(PageUtils.getPageDefinition("calendar/zul/calendar.zul"), null, arg);
+                .createComponents(PageUtils.getPageDefinition("calendar/zul/calendar.zul"), null, arg);
             window.doModal();
         } catch (Exception e) {
             LOGGER.error(failedMessage, e);
@@ -171,7 +173,7 @@ public class CalendarItemRenderer implements ListitemRenderer<CalendarModel>, La
         });
 
         OffsetDateTime created = calendarItem.getCreated();
-		renderTextCell(listItem, DateTimeUtils.humanize(created));
+        renderTextCell(listItem, DateTimeUtils.humanize(created));
         Hlayout actionBar = new Hlayout();
         Span renameAction = renderIcon(actionBar, "ap-icon ap-icon-rename", "Rename", !canEdit);
         Span editAction = renderIcon(actionBar, "ap-icon ap-icon-calendar-edit", "Edit", !canEdit);
@@ -205,7 +207,8 @@ public class CalendarItemRenderer implements ListitemRenderer<CalendarModel>, La
         removeAction.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
-                EventQueue<Event> calendarEventQueue = EventQueues.lookup(CalendarEvents.TOPIC + "LOCAL", EventQueues.DESKTOP,true);
+                EventQueue<Event> calendarEventQueue =
+                    EventQueues.lookup(CalendarEvents.TOPIC + "LOCAL", EventQueues.DESKTOP, true);
                 calendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_BEFORE_REMOVE, null, calendarItem));
             }
         });
