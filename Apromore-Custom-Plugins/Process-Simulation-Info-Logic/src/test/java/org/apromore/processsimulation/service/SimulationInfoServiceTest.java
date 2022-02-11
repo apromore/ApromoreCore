@@ -674,7 +674,8 @@ class SimulationInfoServiceTest {
         assertNotNull(processSimulationAttrMap.getNamedItem("id").getNodeValue());
         assertEquals(Currency.EUR.toString(), processSimulationAttrMap.getNamedItem("currency").getNodeValue());
         assertEquals("100", processSimulationAttrMap.getNamedItem("processInstances").getNodeValue());
-        assertEquals("2020-01-01T00:00+11:00", processSimulationAttrMap.getNamedItem("startDateTime").getNodeValue());
+        assertEquals(DateTimeUtils.toZonedDateTime(1577797200000L).toOffsetDateTime().toString(),
+            processSimulationAttrMap.getNamedItem("startDateTime").getNodeValue());
 
         Node arrivalDistributionXmlNode = TestHelper.getProcessSimulationInfo(bpmnXmlString,
             "/definitions/process/extensionElements/processSimulationInfo/arrivalRateDistribution");
