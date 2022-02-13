@@ -19,8 +19,14 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+
 package org.apromore.service.logimporter.services;
 
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -28,17 +34,11 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apromore.service.logimporter.io.XLSReader;
 import org.apromore.service.logimporter.model.LogMetaData;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
 
 public class MetaDataServiceXLSXImpl implements MetaDataService {
 
-    private final int BUFFER_SIZE = 2048;
-    private final int DEFAULT_NUMBER_OF_ROWS = 10;
+    private static final int BUFFER_SIZE = 2048;
+    private static final int DEFAULT_NUMBER_OF_ROWS = 10;
 
     private List<String> getHeader(Sheet sheet) throws Exception {
         List<String> header = new ArrayList<>();
@@ -82,7 +82,7 @@ public class MetaDataServiceXLSXImpl implements MetaDataService {
 
     @Override
     public LogMetaData extractMetadata(InputStream in, String charset, Map<String, String> customHeaderMap)
-            throws Exception {
+        throws Exception {
 
         try (Workbook workbook = new XLSReader().readXLS(in, 10, BUFFER_SIZE)) {
             List<String> header = new ArrayList<>();
@@ -124,21 +124,25 @@ public class MetaDataServiceXLSXImpl implements MetaDataService {
 
                 //Get the rows
                 for (Row r : sheet) {
-                    if (lines.size() == sampleSize) break;
-                    if (r.getPhysicalNumberOfCells() > header.size()) continue;
+                    if (lines.size() == sampleSize) {
+                        break;
+                    }
+                    if (r.getPhysicalNumberOfCells() > header.size()) {
+                        continue;
+                    }
 
                     line = new String[header.size()];
                     for (Cell c : r) {
                         line[c.getColumnIndex()] = c.getStringCellValue();
                     }
                     Arrays.asList(line).replaceAll(
-                            //val -> val == null ? "" : val  // Java 8
-                            new java.util.function.UnaryOperator<String>() {
-                                @Override
-                                public String apply(String val) {
-                                    return val == null ? "" : val;
-                                }
+                        //val -> val == null ? "" : val  // Java 8
+                        new java.util.function.UnaryOperator<String>() {
+                            @Override
+                            public String apply(String val) {
+                                return val == null ? "" : val;
                             }
+                        }
                     );
                     lines.add(Arrays.asList(line));
                 }

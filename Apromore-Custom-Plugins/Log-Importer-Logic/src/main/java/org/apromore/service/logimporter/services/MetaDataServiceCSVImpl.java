@@ -19,15 +19,11 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+
 package org.apromore.service.logimporter.services;
 
 import com.google.common.base.Splitter;
 import com.opencsv.CSVReader;
-import org.apache.commons.io.input.ReaderInputStream;
-import org.apromore.commons.utils.Delimiter;
-import org.apromore.service.logimporter.io.CSVFileReader;
-import org.apromore.service.logimporter.model.LogMetaData;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,11 +35,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import org.apache.commons.io.input.ReaderInputStream;
+import org.apromore.commons.utils.Delimiter;
+import org.apromore.service.logimporter.io.CSVFileReader;
+import org.apromore.service.logimporter.model.LogMetaData;
 
 class MetaDataServiceCSVImpl implements MetaDataService {
 
     /**
-     * Sample rows that are used to determine Delimiter
+     * Sample rows that are used to determine Delimiter.
      */
     private static final int SAMPLE_ROW_COUNT = 2;
 
@@ -80,7 +80,7 @@ class MetaDataServiceCSVImpl implements MetaDataService {
 
     @Override
     public LogMetaData extractMetadata(InputStream in, String charset, Map<String, String> customHeaderMap)
-            throws Exception {
+        throws Exception {
 
         if (!headers.isEmpty()) {
             return new LogMetaData(this.headers);
@@ -114,17 +114,18 @@ class MetaDataServiceCSVImpl implements MetaDataService {
             String firstLine = sampleRows.get(0);
 
             String separator = !Objects.equals(this.separator, "") ? this.separator :
-                    Delimiter.findDelimiter(sampleRows);
+                Delimiter.findDelimiter(sampleRows);
 
             List<String> header = !headers.isEmpty() ? headers
-                    : Splitter.on(separator).splitToList(firstLine);
+                : Splitter.on(separator).splitToList(firstLine);
 
             in2 = new ReaderInputStream(brReader, charset);
-            csvReader = new CSVFileReader().newCSVReader(in2, charset, !Objects.equals(separator, "") ?
-                    separator.charAt(0) : '\u0000');
+            csvReader = new CSVFileReader().newCSVReader(in2, charset, !Objects.equals(separator, "")
+                ? separator.charAt(0) : '\u0000');
 
-            if (csvReader == null)
+            if (csvReader == null) {
                 return null;
+            }
 
             List<List<String>> lines = new ArrayList<>();
             String[] myLine;
@@ -135,8 +136,9 @@ class MetaDataServiceCSVImpl implements MetaDataService {
             }
 
             while ((myLine = csvReader.readNext()) != null && lines.size() < sampleSize) {
-                if (myLine.length != header.size())
+                if (myLine.length != header.size()) {
                     continue;
+                }
                 lines.add(Arrays.asList(myLine));
             }
 
@@ -162,15 +164,20 @@ class MetaDataServiceCSVImpl implements MetaDataService {
     }
 
     private void closeQuietly(InputStream in) throws IOException {
-        if (in != null)
+        if (in != null) {
             in.close();
-        if (this.csvReader != null)
+        }
+        if (this.csvReader != null) {
             this.csvReader.close();
-        if (this.brReader != null)
+        }
+        if (this.brReader != null) {
             this.brReader.close();
-        if (this.reader != null)
+        }
+        if (this.reader != null) {
             this.reader.close();
-        if (this.in2 != null)
+        }
+        if (this.in2 != null) {
             this.in2.close();
+        }
     }
 }

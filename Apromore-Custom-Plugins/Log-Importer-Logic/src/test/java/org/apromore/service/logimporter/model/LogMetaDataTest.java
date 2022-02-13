@@ -19,8 +19,14 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+
 package org.apromore.service.logimporter.model;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+
+import java.util.Arrays;
+import java.util.List;
 import org.apromore.service.logimporter.exception.InvalidLogMetadataException;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.extension.std.XOrganizationalExtension;
@@ -28,16 +34,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import java.util.Arrays;
-import java.util.List;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-
 public class LogMetaDataTest {
 
-    private final String perspective_1 = "Perspective_1";
-    private final String perspective_2 = "Perspective_2";
+    private final String perspective1 = "Perspective_1";
+    private final String perspective2 = "Perspective_2";
     @Rule
     public ExpectedException exception = ExpectedException.none();
 
@@ -56,7 +56,7 @@ public class LogMetaDataTest {
         // When
         List<String> actual = logMetaData.getPerspectives();
         List<String> expected = Arrays.asList(XConceptExtension.KEY_NAME, XOrganizationalExtension.KEY_RESOURCE,
-                perspective_1, perspective_2);
+            perspective1, perspective2);
 
         // Then
         // Test equal
@@ -95,7 +95,7 @@ public class LogMetaDataTest {
 
         // When
         List<String> actual = logMetaData.getPerspectives();
-        List<String> expected = Arrays.asList(XConceptExtension.KEY_NAME, perspective_1, perspective_2);
+        List<String> expected = Arrays.asList(XConceptExtension.KEY_NAME, perspective1, perspective2);
 
         // Then
         // Test equal
@@ -137,6 +137,6 @@ public class LogMetaDataTest {
 
     private LogMetaData createTestLogMetaData() {
         return new LogMetaData(Arrays.asList("case id", "activity", "resource", "2011/02/16 14:31:00.000",
-                perspective_1, perspective_2));
+            perspective1, perspective2));
     }
 }
