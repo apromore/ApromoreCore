@@ -1,7 +1,7 @@
 /*-
  * #%L
  * This file is part of "Apromore Core".
- * 
+ *
  * Copyright (C) 2020 University of Tartu
  * %%
  * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
@@ -10,12 +10,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -30,17 +30,18 @@ import java.util.regex.Pattern;
 
 /**
  * A comparator which sorts embedded runs of digits in numerical rather than alphabetical order.
- * <p>
- * So "a9" &lt; "a10" &lt; "b9" &lt; "b10".
- * <p>
- * If numerical values are the same, the ordering is alphabetical: "01" &lt; "1".
- * <p>
- * Beware that negative signs and decimal point are not treated as part of the numbers.
+ *
+ * <p>So "a9" &lt; "a10" &lt; "b9" &lt; "b10".
+ *
+ * <p>If numerical values are the same, the ordering is alphabetical: "01" &lt; "1".
+ *
+ * <p>Beware that negative signs and decimal point are not treated as part of the numbers.
  * This can lead to unexpected behaviors: "-1" &lt; "-2", "1.2" &lt; "1.11", and "1.0" &lt; "1.00".
  */
 public class NameComparator implements Comparator<String> {
 
-    private Matcher m1, m2;
+    private Matcher m1;
+    private Matcher m2;
 
     public NameComparator() {
         // Extracts the leading token, which is a run of either only digits or only non-digits, or empty

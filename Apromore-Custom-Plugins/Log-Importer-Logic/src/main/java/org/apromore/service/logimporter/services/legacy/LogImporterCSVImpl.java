@@ -19,6 +19,7 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+
 package org.apromore.service.logimporter.services.legacy;
 
 import static org.apromore.service.logimporter.utilities.CSVUtilities.getMaxOccurringChar;
@@ -58,118 +59,126 @@ import org.springframework.stereotype.Service;
 @Service("csvLogImporter")
 public class LogImporterCSVImpl extends AbstractLogImporter implements Constants {
 
-  private Reader readerin;
-  private BufferedReader brReader;
-  private InputStream in2;
-  private CSVReader reader;
+    private Reader readerin;
+    private BufferedReader brReader;
+    private InputStream in2;
+    private CSVReader reader;
 
-  @Override
-  public LogModel importLog(InputStream in, LogMetaData logMetaData, String charset,
-      boolean skipInvalidRow, String username, Integer folderId, String logName) throws Exception {
+    @Override
+    public LogModel importLog(InputStream in, LogMetaData logMetaData, String charset,
+                              boolean skipInvalidRow, String username, Integer folderId, String logName)
+        throws Exception {
 
-    try {
-      logMetaData.validateSample();
-      // Read the header
-      readerin = new InputStreamReader(in, Charset.forName(charset));
-      brReader = new BufferedReader(readerin);
-      String firstLine = brReader.readLine();
-      firstLine = firstLine.replaceAll("\"", "");
-      char separator = getMaxOccurringChar(firstLine);
-      List<String> headerList = Splitter.on(separator).splitToList(firstLine);
+        try {
+            logMetaData.validateSample();
+            // Read the header
+            readerin = new InputStreamReader(in, Charset.forName(charset));
+            brReader = new BufferedReader(readerin);
+            String firstLine = brReader.readLine();
+            firstLine = firstLine.replaceAll("\"", "");
+            char separator = getMaxOccurringChar(firstLine);
+            List<String> headerList = Splitter.on(separator).splitToList(firstLine);
 
-      // Read the reset of the log
-      in2 = new ReaderInputStream(brReader, charset);
-      reader = new CSVFileReader().newCSVReader(in2, charset, separator);
+            // Read the reset of the log
+            in2 = new ReaderInputStream(brReader, charset);
+            reader = new CSVFileReader().newCSVReader(in2, charset, separator);
 
-      if (reader == null)
-        return null;
+            if (reader == null) {
+                return null;
+            }
 
-      logProcessor = new LogProcessorImpl();
-      logErrorReport = new ArrayList<>();
-      int lineIndex = 1; // set to 1 since first line is the header
-      int numOfValidEvents = 0;
+            logProcessor = new LogProcessorImpl();
+            logErrorReport = new ArrayList<>();
+            int lineIndex = 1; // set to 1 since first line is the header
+            int numOfValidEvents = 0;
 
-      String[] line;
-      TreeMap<String, XTrace> tracesHistory = new TreeMap<String, XTrace>(); // Keep track of traces
-      boolean rowLimitExceeded = false;
+            TreeMap<String, XTrace> tracesHistory = new TreeMap<String, XTrace>(); // Keep track of traces
+            boolean rowLimitExceeded = false;
 
-      // XES
-      XFactory xFactory = new XFactoryNaiveImpl();
-      XConceptExtension concept = XConceptExtension.instance();
-      XLifecycleExtension lifecycle = XLifecycleExtension.instance();
-      XTimeExtension timestamp = XTimeExtension.instance();
-      XOrganizationalExtension resourceXes = XOrganizationalExtension.instance();
+            // XES
+            XFactory xfactory = new XFactoryNaiveImpl();
+            final XConceptExtension concept = XConceptExtension.instance();
+            final XLifecycleExtension lifecycle = XLifecycleExtension.instance();
+            final XTimeExtension timestamp = XTimeExtension.instance();
+            final XOrganizationalExtension resourceXes = XOrganizationalExtension.instance();
 
-      XLog xLog;
-      xLog = xFactory.createLog();
-      xLog.getExtensions().add(concept);
-      xLog.getExtensions().add(lifecycle);
-      xLog.getExtensions().add(timestamp);
-      xLog.getExtensions().add(resourceXes);
-      lifecycle.assignModel(xLog, XLifecycleExtension.VALUE_MODEL_STANDARD);
+            XLog xlog;
+            xlog = xfactory.createLog();
+            xlog.getExtensions().add(concept);
+            xlog.getExtensions().add(lifecycle);
+            xlog.getExtensions().add(timestamp);
+            xlog.getExtensions().add(resourceXes);
+            lifecycle.assignModel(xlog, XLifecycleExtension.VALUE_MODEL_STANDARD);
 
-      LogEventModel logEventModel;
-      while ((line = reader.readNext()) != null) {
+            LogEventModel logEventModel;
+            String[] line;
+            while ((line = reader.readNext()) != null) {
 
-        // row in excess of the allowed limit
-        if (!isValidLineCount(lineIndex)) {
-          rowLimitExceeded = true;
-          break;
+                // row in excess of the allowed limit
+                if (!isValidLineCount(lineIndex)) {
+                    rowLimitExceeded = true;
+                    break;
+                }
+
+                // new row, new event.
+                lineIndex++;
+
+                // empty row
+                if (line.length == 0
+                    || (line.length == 1 && ("".equals(line[0].trim()) || "\n".equals(line[0].trim())))) {
+                    continue;
+                }
+
+                // Validate num of column
+                if (headerList.size() != line.length) {
+                    logErrorReport.add(new LogErrorReportImpl(lineIndex, 0, null,
+                        "Number of columns does not match " + "the number of headers. Number of headers: ("
+                        + headerList.size() + "). Number of columns: (" + line.length + ")"));
+                    continue;
+                }
+
+                // Construct an event
+                logEventModel = logProcessor.processLog(Arrays.asList(line), headerList, logMetaData,
+                    lineIndex, logErrorReport);
+
+                // If row is invalid, continue to next row.
+                if (!logEventModel.isValid()) {
+                    continue;
+                }
+
+                // Construct a Trace if it's not exists
+                constructTrace(tracesHistory, logEventModel, xfactory, concept);
+                numOfValidEvents++;
+            }
+
+            // Sort and feed xLog
+            sortAndFeedLog(tracesHistory, xlog);
+
+            // Import XES
+            Log log = importXesLog(username, folderId, logName, skipInvalidRow, xlog);
+
+            return new LogModelImpl(xlog, logErrorReport, rowLimitExceeded, numOfValidEvents, log);
+
+        } finally {
+            closeQuietly(in);
         }
-
-        // new row, new event.
-        lineIndex++;
-
-        // empty row
-        if (line.length == 0
-            || (line.length == 1 && ("".equals(line[0].trim()) || "\n".equals(line[0].trim()))))
-          continue;
-
-        // Validate num of column
-        if (headerList.size() != line.length) {
-          logErrorReport.add(new LogErrorReportImpl(lineIndex, 0, null,
-              "Number of columns does not match " + "the number of headers. Number of headers: ("
-                  + headerList.size() + "). Number of columns: (" + line.length + ")"));
-          continue;
-        }
-
-        // Construct an event
-        logEventModel = logProcessor.processLog(Arrays.asList(line), headerList, logMetaData,
-            lineIndex, logErrorReport);
-
-        // If row is invalid, continue to next row.
-        if (!logEventModel.isValid()) {
-          continue;
-        }
-
-        // Construct a Trace if it's not exists
-        constructTrace(tracesHistory, logEventModel, xFactory, concept);
-        numOfValidEvents++;
-      }
-
-      // Sort and feed xLog
-      sortAndFeedLog(tracesHistory, xLog);
-
-      // Import XES
-      Log log = importXesLog(username,folderId,logName,skipInvalidRow,xLog);
-
-      return new LogModelImpl(xLog, logErrorReport, rowLimitExceeded, numOfValidEvents, log);
-
-    } finally {
-      closeQuietly(in);
     }
-  }
 
-  private void closeQuietly(InputStream in) throws IOException {
-    if (in != null)
-      in.close();
-    if (this.readerin != null)
-      this.readerin.close();
-    if (this.brReader != null)
-      this.brReader.close();
-    if (this.reader != null)
-      this.reader.close();
-    if (this.in2 != null)
-      this.in2.close();
-  }
+    private void closeQuietly(InputStream in) throws IOException {
+        if (in != null) {
+            in.close();
+        }
+        if (this.readerin != null) {
+            this.readerin.close();
+        }
+        if (this.brReader != null) {
+            this.brReader.close();
+        }
+        if (this.reader != null) {
+            this.reader.close();
+        }
+        if (this.in2 != null) {
+            this.in2.close();
+        }
+    }
 }

@@ -8,19 +8,30 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+
 package org.apromore.service.logimporter.services;
 
+import static org.apromore.service.logimporter.utilities.ParquetUtilities.getHeaderFromParquet;
+import static org.apromore.service.logimporter.utilities.ParquetUtilities.getSchemaMappingFromParquet;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.parquet.example.data.Group;
 import org.apache.parquet.hadoop.ParquetReader;
@@ -31,14 +42,6 @@ import org.apromore.service.logimporter.model.LogMetaData;
 import org.apromore.service.logimporter.model.ParquetColumnType;
 import org.apromore.service.logimporter.model.ParquetLogMetaData;
 import org.apromore.service.logimporter.utilities.FileUtils;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.*;
-
-import static org.apromore.service.logimporter.utilities.ParquetUtilities.getHeaderFromParquet;
-import static org.apromore.service.logimporter.utilities.ParquetUtilities.getSchemaMappingFromParquet;
 
 public class MetaDataServiceParquetImpl implements MetaDataService {
 
@@ -54,7 +57,7 @@ public class MetaDataServiceParquetImpl implements MetaDataService {
             new FileWriter(in, tempFile).writeToFile();
             //Read Parquet file
             ParquetLocalFileReader parquetLocalFileReader = new ParquetLocalFileReader(new Configuration(true),
-                    tempFile);
+                tempFile);
             MessageType schema = parquetLocalFileReader.getSchema();
 
             if (schema == null || schema.getColumns().size() <= 0) {
@@ -69,7 +72,7 @@ public class MetaDataServiceParquetImpl implements MetaDataService {
 
     @Override
     public LogMetaData extractMetadata(InputStream in, String charset, Map<String, String> customHeaderMap)
-            throws Exception {
+        throws Exception {
         File tempFile = File.createTempFile(SAMPLELOG, PARQUET_EXT);
         MessageType schema = extractSchema(in, tempFile);
 
@@ -91,7 +94,7 @@ public class MetaDataServiceParquetImpl implements MetaDataService {
 
             //Read Parquet file
             ParquetLocalFileReader parquetLocalFileReader = new ParquetLocalFileReader(new Configuration(true),
-                    tempFile);
+                tempFile);
             MessageType schema = parquetLocalFileReader.getSchema();
             reader = parquetLocalFileReader.getParquetReader();
 
@@ -122,7 +125,7 @@ public class MetaDataServiceParquetImpl implements MetaDataService {
             new FileWriter(in, tempFile).writeToFile();
             //Read Parquet file
             ParquetLocalFileReader parquetLocalFileReader = new ParquetLocalFileReader(new Configuration(true),
-                    tempFile);
+                tempFile);
             return parquetLocalFileReader.getSchema();
         }
     }

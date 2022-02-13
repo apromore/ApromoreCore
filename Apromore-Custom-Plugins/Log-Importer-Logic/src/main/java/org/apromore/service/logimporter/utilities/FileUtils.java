@@ -19,24 +19,26 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.service.logimporter.utilities;
 
-import org.apache.commons.codec.digest.DigestUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+package org.apromore.service.logimporter.utilities;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
+ * Utility class to work with files.
+ *
  * @author frankma
  */
 public class FileUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FileUtils.class);
 
-    public static void deleteFile (File file) {
+    public static void deleteFile(File file) {
 
         // Delete file after pipe close, else delete the file when the application is terminated
         try {
@@ -45,11 +47,11 @@ public class FileUtils {
         } catch (IOException e) {
             file.deleteOnExit();
             LOGGER.error("Temp file \"{}\" is scheduled for deletion as previous attempt was failed: {}", file,
-                    e.getMessage());
+                e.getMessage());
         }
     }
 
-    public static String sha256Hashing (String originalString) {
+    public static String sha256Hashing(String originalString) {
         return DigestUtils.sha256Hex(originalString.trim());
     }
 }

@@ -9,30 +9,29 @@
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
+ * <p>This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
  *
- * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * <p>You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not @see <a href="http://www.gnu.org/licenses/lgpl-3.0.html"></a>
  * #L%
  */
+
 package org.apromore.service.logimporter.services;
 
-import org.apromore.service.logimporter.model.LogMetaData;
-import org.junit.Before;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static org.junit.Assert.assertEquals;
+import org.apromore.service.logimporter.model.LogMetaData;
+import org.junit.Before;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MetaDataServiceParquetImplUnitTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(MetaDataServiceParquetImplUnitTest.class);
@@ -61,23 +60,27 @@ public class MetaDataServiceParquetImplUnitTest {
 
         // Perform the test
         LogMetaData logMetaData = metaDataService
-                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", columnHeaderMap);
+            .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", columnHeaderMap);
 
-        List<String> expectedMappedHeader = Arrays.asList("Case ID", "Activity Instance", "Start Date", "End Time", "process_type");
+        List<String> expectedMappedHeader =
+            Arrays.asList("Case ID", "Activity Instance", "Start Date", "End Time", "process_type");
         // Validate result
         assertEquals(expectedMappedHeader, logMetaData.getHeader());
     }
 
     @Test
     public void testGenerateSampleLog() throws Exception {
-        List<String> row1 = Arrays.asList("case2", "activity1", "2019-09-23 15:13:05.071", "2019-09-23 15:13:05.132", "1");
-        List<String> row2 = Arrays.asList("case1", "activity1", "2019-09-23 15:13:05.114", "2019-09-23 15:13:05.132", "1");
-        List<String> row3 = Arrays.asList("case2", "activity2", "2019-09-23 15:13:05.133", "2019-09-23 15:13:05.133", "1");
+        List<String> row1 =
+            Arrays.asList("case2", "activity1", "2019-09-23 15:13:05.071", "2019-09-23 15:13:05.132", "1");
+        List<String> row2 =
+            Arrays.asList("case1", "activity1", "2019-09-23 15:13:05.114", "2019-09-23 15:13:05.132", "1");
+        List<String> row3 =
+            Arrays.asList("case2", "activity2", "2019-09-23 15:13:05.133", "2019-09-23 15:13:05.133", "1");
 
         List<List<String>> expectedSampleLog = Arrays.asList(row1, row2, row3);
         String testFile = "/test1-valid.parquet";
 
         assertEquals(expectedSampleLog, metaDataService.generateSampleLog(this.getClass().getResourceAsStream(testFile),
-                50, "UTF-8"));
+            50, "UTF-8"));
     }
 }
