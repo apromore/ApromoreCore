@@ -36,7 +36,7 @@ import lombok.EqualsAndHashCode;
 import org.apromore.commons.datetime.TimeUtils;
 
 /**
- * Represent a holiday<br>
+ * Represent a holiday.
  */
 @Data
 @EqualsAndHashCode

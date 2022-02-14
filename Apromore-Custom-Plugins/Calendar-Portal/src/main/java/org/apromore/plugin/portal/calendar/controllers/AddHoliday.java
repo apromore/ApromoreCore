@@ -44,7 +44,7 @@ import org.zkoss.zul.Window;
 
 public class AddHoliday extends SelectorComposer<Window> implements LabelSupplier {
 
-    private final static Logger LOGGER = PortalLoggerFactory.getLogger(AddHoliday.class);
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(AddHoliday.class);
 
     private Calendar parentController = (Calendar) Executions.getCurrent().getArg().get("parentController");
 

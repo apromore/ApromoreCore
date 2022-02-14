@@ -63,10 +63,10 @@ public class CalendarModelBuilder {
 
     /**
      * Because of the ending time setting to 23:59:59:999999999, duration calculation based on this calendar will have a
-     * nanosecond imprecision. When comparing a Duration value with a constant, it must be rounded up to a precision level
-     * to be compared, e.g. rounded up to SECONDS or MILLISECONDS.
+     * nanosecond imprecision. When comparing a Duration value with a constant, it must be rounded up to a precision
+     * level to be compared, e.g. rounded up to SECONDS or MILLISECONDS.
      *
-     * @return
+     * @return A CalendarModelBuilder with all days and times selected.
      */
     public CalendarModelBuilder withAllDayAllTime() {
         for (DayOfWeek dayOfWeek : DayOfWeek.values()) {
@@ -93,11 +93,11 @@ public class CalendarModelBuilder {
     /**
      * Bruce
      * TODO: changing the zoneid requires changing the offset in WorkDayModel. Making WorkDayModel has offset
-     * is not an appropriate design because WorkDayModel is only a template, not a specific datetime: there's no way to know
-     * a WorkDayModel's offset until it has an actual working day at a specific datetime (an instant).
+     * is not an appropriate design because WorkDayModel is only a template, not a specific datetime: there's no way
+     * to know a WorkDayModel's offset until it has an actual working day at a specific datetime (an instant).
      *
-     * @param zoneId
-     * @return
+     * @param zoneId the timezone id.
+     * @return a CalendarModelBuilder with the timezone id set to zoneId.
      */
     public CalendarModelBuilder withZoneId(String zoneId) {
         model.setZoneId(zoneId);

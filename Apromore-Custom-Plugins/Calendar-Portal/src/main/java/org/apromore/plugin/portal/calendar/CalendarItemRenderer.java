@@ -149,7 +149,6 @@ public class CalendarItemRenderer implements ListitemRenderer<CalendarModel>, La
         textbox.setSclass("ap-inline-textbox");
         textbox.setHflex("1");
         textbox.setReadonly(true);
-        Listcell nameCell = renderCell(listItem, textbox);
         textbox.addEventListener(Events.ON_CHANGE, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
@@ -172,14 +171,7 @@ public class CalendarItemRenderer implements ListitemRenderer<CalendarModel>, La
             }
         });
 
-        OffsetDateTime created = calendarItem.getCreated();
-        renderTextCell(listItem, DateTimeUtils.humanize(created));
-        Hlayout actionBar = new Hlayout();
-        Span renameAction = renderIcon(actionBar, "ap-icon ap-icon-rename", "Rename", !canEdit);
-        Span editAction = renderIcon(actionBar, "ap-icon ap-icon-calendar-edit", "Edit", !canEdit);
-        Span removeAction = renderIcon(actionBar, "ap-icon ap-icon-trash", "Remove", !canEdit);
-        renderCell(listItem, actionBar);
-
+        Listcell nameCell = renderCell(listItem, textbox);
         nameCell.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
@@ -189,6 +181,11 @@ public class CalendarItemRenderer implements ListitemRenderer<CalendarModel>, La
             }
         });
 
+        OffsetDateTime created = calendarItem.getCreated();
+        renderTextCell(listItem, DateTimeUtils.humanize(created));
+        Hlayout actionBar = new Hlayout();
+
+        Span renameAction = renderIcon(actionBar, "ap-icon ap-icon-rename", "Rename", !canEdit);
         renameAction.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
@@ -197,6 +194,7 @@ public class CalendarItemRenderer implements ListitemRenderer<CalendarModel>, La
             }
         });
 
+        Span editAction = renderIcon(actionBar, "ap-icon ap-icon-calendar-edit", "Edit", !canEdit);
         editAction.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
@@ -204,6 +202,7 @@ public class CalendarItemRenderer implements ListitemRenderer<CalendarModel>, La
             }
         });
 
+        Span removeAction = renderIcon(actionBar, "ap-icon ap-icon-trash", "Remove", !canEdit);
         removeAction.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
@@ -212,6 +211,8 @@ public class CalendarItemRenderer implements ListitemRenderer<CalendarModel>, La
                 calendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_BEFORE_REMOVE, null, calendarItem));
             }
         });
+
+        renderCell(listItem, actionBar);
 
         listItem.addEventListener(Events.ON_DOUBLE_CLICK, new EventListener<Event>() {
             @Override

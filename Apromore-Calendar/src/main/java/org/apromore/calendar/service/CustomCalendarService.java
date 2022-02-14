@@ -82,6 +82,16 @@ public class CustomCalendarService implements CalendarService {
         return calendarModel;
     }
 
+    private CustomCalendar createGenericCalendar(OffsetTime start, OffsetTime end) {
+
+        final CustomCalendar calendar = new CustomCalendar("Generic 24/7");
+        for (WorkDay workDay : getWorkDays(start, end, false)) {
+            calendar.addWorkDay(workDay);
+        }
+        return calendar;
+
+    }
+
     @Override
     public CalendarModel getGenericCalendar() {
 
@@ -140,16 +150,6 @@ public class CustomCalendarService implements CalendarService {
         }
         CustomCalendar newcalendar = calendarRepo.saveAndFlush(calendar);
         return newcalendar;
-
-    }
-
-    private CustomCalendar createGenericCalendar(OffsetTime start, OffsetTime end) {
-
-        final CustomCalendar calendar = new CustomCalendar("Generic 24/7");
-        for (WorkDay workDay : getWorkDays(start, end, false)) {
-            calendar.addWorkDay(workDay);
-        }
-        return calendar;
 
     }
 

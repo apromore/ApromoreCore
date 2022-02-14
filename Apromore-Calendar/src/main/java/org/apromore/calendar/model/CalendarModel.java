@@ -32,19 +32,31 @@
 
 package org.apromore.calendar.model;
 
-import lombok.Data;
-
-import java.time.*;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import lombok.Data;
 
 /**
+ * Represents one custom calendar.
+ *
  * @author Nolan Tellis:
- * - Created this module
+ *     - Created this module
  * @author Bruce Nguyen:
- * - Add new duration calculation based on intervals
+ *     - Add new duration calculation based on intervals
  */
 @Data
 public class CalendarModel {
@@ -76,9 +88,9 @@ public class CalendarModel {
     }
 
     public Duration getDuration(Instant start, Instant end) {
-      if (end.isBefore(start) || end.equals(start)) {
-        return Duration.ZERO;
-      }
+        if (end.isBefore(start) || end.equals(start)) {
+            return Duration.ZERO;
+        }
         ZonedDateTime startDate = ZonedDateTime.ofInstant(start, ZoneId.of(zoneId));
         ZonedDateTime endDate = ZonedDateTime.ofInstant(end, ZoneId.of(zoneId));
         collectHolidayDates();
@@ -91,18 +103,6 @@ public class CalendarModel {
         return totalDuration;
     }
 
-    public long getDurationMillis(long start, long end) {
-        return getDurationMillis(Instant.ofEpochMilli(start), Instant.ofEpochMilli(end));
-    }
-
-    // This duration is rounded to the nearest milliseconds
-    public long getDurationMillis(Instant start, Instant end) {
-        Duration dur = getDuration(start, end);
-        return dur.getNano() > 500_000
-            ? dur.truncatedTo(ChronoUnit.MILLIS).plusMillis(1).toMillis()
-            : dur.toMillis();
-    }
-
     public Long[] getDuration(Long[] starDateTimeUnixTs, Long[] endDateTimeunixTs) {
         Long[] resultList = new Long[starDateTimeUnixTs.length];
         IntStream.range(0, starDateTimeUnixTs.length).parallel().forEach(i ->
@@ -113,16 +113,28 @@ public class CalendarModel {
     }
 
     public long[] getDuration(long[] starDateTimeUnixTs, long[] endDateTimeunixTs) {
-      if (starDateTimeUnixTs == null || starDateTimeUnixTs.length == 0 || endDateTimeunixTs == null
-          || endDateTimeunixTs.length == 0) {
-        return new long[] {};
-      }
+        if (starDateTimeUnixTs == null || starDateTimeUnixTs.length == 0 || endDateTimeunixTs == null
+            || endDateTimeunixTs.length == 0) {
+            return new long[] {};
+        }
         long[] resultList = new long[starDateTimeUnixTs.length];
         IntStream.range(0, starDateTimeUnixTs.length).parallel().forEach(i ->
             resultList[i] = getDurationMillis(Instant.ofEpochMilli(starDateTimeUnixTs[i]),
                 Instant.ofEpochMilli(endDateTimeunixTs[i])));
 
         return resultList;
+    }
+
+    public long getDurationMillis(long start, long end) {
+        return getDurationMillis(Instant.ofEpochMilli(start), Instant.ofEpochMilli(end));
+    }
+
+    // This duration is rounded to the nearest milliseconds
+    public long getDurationMillis(Instant start, Instant end) {
+        Duration dur = getDuration(start, end);
+        return dur.getNano() > 500_000
+            ? dur.truncatedTo(ChronoUnit.MILLIS).plusMillis(1).toMillis()
+            : dur.toMillis();
     }
 
     private void collectHolidayDates() {

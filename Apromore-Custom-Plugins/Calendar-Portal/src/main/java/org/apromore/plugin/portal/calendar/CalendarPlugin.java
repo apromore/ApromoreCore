@@ -151,8 +151,8 @@ public class CalendarPlugin extends DefaultPortalPlugin implements LabelSupplier
 
     @Override
     public Availability getAvailability() {
-        return configBean.isEnableCalendar() &&
-            UserSessionManager.getCurrentUser().hasAnyPermission(PermissionType.CALENDAR)
+        return configBean.isEnableCalendar()
+            && UserSessionManager.getCurrentUser().hasAnyPermission(PermissionType.CALENDAR)
             ? Availability.AVAILABLE : Availability.UNAVAILABLE;
     }
 }

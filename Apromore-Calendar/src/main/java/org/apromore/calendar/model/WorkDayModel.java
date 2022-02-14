@@ -69,7 +69,8 @@ import lombok.EqualsAndHashCode;
 /**
  * WorkDayModel is a template for actual working days.
  *
- * TODO: Using OffsetTime is not a relevant design because WorkDayModel is only a template, not a specific workday in time.
+ * <p>TODO: Using OffsetTime is not a relevant design because WorkDayModel is only a template,
+ * not a specific workday in time.
  * It duplicates the offset information in CalendarModel's zoneID.
  * TODO: field Duration is not timezone-aware, e.g. daylight savings, because it's not attached to any actual date yet
  * However, duration with timezone consideration takes longer to compute.
@@ -118,9 +119,10 @@ public class WorkDayModel {
     }
 
     /**
-     * Get workday instances with its duration between two dates
+     * Get workday instances with its duration between two dates.
+     *
      * @param from starting date
-     * @param to ending date
+     * @param to   ending date
      * @return map from an instance to its duration
      */
     private Map<LocalDateTime, Duration> getWorkdayInstances(LocalDateTime from, LocalDateTime to) {
@@ -157,9 +159,9 @@ public class WorkDayModel {
     // startTime --- periodStart ---> periodEnd ---> endTime  : periodEnd - periodStart
     // periodStart --- startTime ---> endTime ---> periodEnd  : endTime - startTime
     private Duration getDurationSameDayForOneDayPeriod(LocalTime periodStart, LocalTime periodEnd) {
-      if (startTime.toLocalTime().isAfter(periodEnd) || endTime.toLocalTime().isBefore(periodStart)) {
-        return Duration.ZERO;
-      }
+        if (startTime.toLocalTime().isAfter(periodEnd) || endTime.toLocalTime().isBefore(periodStart)) {
+            return Duration.ZERO;
+        }
         return Duration.between(startTime.toLocalTime().isBefore(periodStart) ? periodStart : startTime.toLocalTime(),
             endTime.toLocalTime().isAfter(periodEnd) ? periodEnd : endTime.toLocalTime());
     }

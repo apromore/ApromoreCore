@@ -31,9 +31,9 @@ import lombok.Setter;
 import org.apromore.commons.datetime.TimeUtils;
 
 /**
- * UI model for time range
- * <p>
- * Note: We need to use Date for ZK
+ * UI model for time range.
+ *
+ * <p>Note: We need to use Date for ZK
  */
 public class TimeRange {
 
