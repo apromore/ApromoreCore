@@ -188,7 +188,8 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
     private void applyCalendarForLog(Integer logId, Long calendarId) {
         eventLogService.updateCalendarForLog(logId, calendarId);
         if (calendarId == null) {
-            sessionCalendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_UNLINK, null, Arrays.asList(calendarId)));
+            sessionCalendarEventQueue
+                .publish(new Event(CalendarEvents.ON_CALENDAR_UNLINK, null, Arrays.asList(logId)));
         } else {
             sessionCalendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_LINK, null, logId));
         }
