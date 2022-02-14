@@ -52,10 +52,12 @@ public class CalendarServiceIntegrationTest extends BaseTestClass {
     public void testCreateCalendar() throws CalendarAlreadyExistsException {
 
         // when
-        CalendarModel model = calendarService.createGenericCalendar("Generic", true, ZoneId.systemDefault().toString());
+        CalendarModel model =
+            calendarService.createGenericCalendar("Generic", "username", true, ZoneId.systemDefault().toString());
 
         // Then
         assertThat(model.getId()).isNotNull();
+        assertThat(model.getCreatedBy()).isEqualTo("username");
         assertThat(model.getWorkDays()).hasSize(7);
         assertThat(model.getWorkDays().get(5).getDayOfWeek()).isEqualTo(DayOfWeek.SATURDAY);
         assertThat(model.getWorkDays().get(6).getDayOfWeek()).isEqualTo(DayOfWeek.SUNDAY);
@@ -71,12 +73,13 @@ public class CalendarServiceIntegrationTest extends BaseTestClass {
     public void testGetCalendar() throws CalendarAlreadyExistsException {
         // Given
         CalendarModel model = calendarService
-            .createGenericCalendar(UUID.randomUUID().toString(), true, ZoneId.systemDefault().toString());
+            .createGenericCalendar(UUID.randomUUID().toString(), "username", true, ZoneId.systemDefault().toString());
         // when
         CalendarModel modelExpected = calendarService.getCalendar(model.getId());
 
         // Then
         assertThat(modelExpected.getId()).isNotNull();
+        assertThat(model.getCreatedBy()).isEqualTo("username");
         assertThat(modelExpected.getName()).isEqualTo(model.getName());
         assertThat(modelExpected.getWorkDays()).hasSize(7);
 
@@ -87,7 +90,7 @@ public class CalendarServiceIntegrationTest extends BaseTestClass {
     public void testGetCalendarWithCustomHoliday() throws CalendarAlreadyExistsException, CalendarNotExistsException {
         // Given
         CalendarModel model = calendarService
-            .createGenericCalendar(UUID.randomUUID().toString(), true, ZoneId.systemDefault().toString());
+            .createGenericCalendar(UUID.randomUUID().toString(), "username", true, ZoneId.systemDefault().toString());
 
         HolidayModel holiday =
             new HolidayModel("CUSTOM", "Test Holiday", "Test Holiday Desc", LocalDate.of(2020, 01, 01));
@@ -98,6 +101,7 @@ public class CalendarServiceIntegrationTest extends BaseTestClass {
 
         // Then
         assertThat(modelExpected.getId()).isNotNull();
+        assertThat(model.getCreatedBy()).isEqualTo("username");
         assertThat(modelExpected.getName()).isEqualTo(model.getName());
         assertThat(modelExpected.getWorkDays()).hasSize(7);
         assertThat(modelExpected.getHolidays()).hasSize(1);
@@ -110,7 +114,7 @@ public class CalendarServiceIntegrationTest extends BaseTestClass {
         throws CalendarAlreadyExistsException, CalendarNotExistsException {
         // Given
         CalendarModel model = calendarService
-            .createGenericCalendar(UUID.randomUUID().toString(), true, ZoneId.systemDefault().toString());
+            .createGenericCalendar(UUID.randomUUID().toString(), "username", true, ZoneId.systemDefault().toString());
         HolidayModel holiday1 =
             new HolidayModel("CUSTOM", "Test Holiday1", "Test Holiday Desc1", LocalDate.of(2020, 01, 01));
         HolidayModel holiday2 =
@@ -124,6 +128,7 @@ public class CalendarServiceIntegrationTest extends BaseTestClass {
 
         // Then
         assertThat(modelExpected.getId()).isNotNull();
+        assertThat(model.getCreatedBy()).isEqualTo("username");
         assertThat(modelExpected.getName()).isEqualTo(model.getName());
         assertThat(modelExpected.getWorkDays()).hasSize(7);
         assertThat(modelExpected.getHolidays()).hasSize(3);
@@ -138,6 +143,7 @@ public class CalendarServiceIntegrationTest extends BaseTestClass {
         // Then
 
         assertThat(modelExpected.getId()).isNotNull();
+        assertThat(model.getCreatedBy()).isEqualTo("username");
         assertThat(modelExpected.getName()).isEqualTo(model.getName());
         assertThat(modelExpected.getWorkDays()).hasSize(7);
         assertThat(modelExpected.getHolidays()).hasSize(1);
@@ -148,7 +154,7 @@ public class CalendarServiceIntegrationTest extends BaseTestClass {
     @Test
     public void testGetCalendarWithCustomHolidays() throws CalendarAlreadyExistsException, CalendarNotExistsException {
         // Given
-        CalendarModel model = calendarService.createGenericCalendar(UUID.randomUUID().toString(), true,
+        CalendarModel model = calendarService.createGenericCalendar(UUID.randomUUID().toString(), "username", true,
             ZoneId.systemDefault().toString());
         HolidayModel holiday1 = new HolidayModel("CUSTOM", "Test Holiday1", "Test Holiday Desc1",
             LocalDate.of(2020, 01, 01));

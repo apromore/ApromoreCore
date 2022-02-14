@@ -38,6 +38,7 @@ import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.calendar.CalendarItemRenderer;
 import org.apromore.plugin.portal.calendar.Constants;
 import org.apromore.plugin.portal.calendar.pageutil.PageUtils;
+import org.apromore.portal.common.UserSessionManager;
 import org.apromore.service.EventLogService;
 import org.apromore.zk.event.CalendarEvents;
 import org.apromore.zk.label.LabelSupplier;
@@ -96,6 +97,7 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
     private Long appliedCalendarId;
     private boolean canEdit;
     private Integer logId;
+    private String username;
     private EventListener<Event> eventHandler;
     private Window win;
     private static final String CALENDAR_ID_CONST = "calendarId";
@@ -136,6 +138,7 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
     public void initialize() {
         appliedCalendarId = (Long) Executions.getCurrent().getArg().get(CALENDAR_ID_CONST);
         logId = (Integer) Executions.getCurrent().getArg().get("logId");
+        username = UserSessionManager.getCurrentUser().getUsername();
         canEdit = (boolean) Executions.getCurrent().getArg().get(CAN_EDIT_CONST);
         applyCalendarBtn.setDisabled(!canEdit);
         restoreBtn.setDisabled(!canEdit);
@@ -272,7 +275,8 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
         try {
             String msg = getLabels().getString("created_default_cal_message");
             String calendarName = msg + " " + DateTimeUtils.humanize(LocalDateTime.now());
-            model = calendarService.createBusinessCalendar(calendarName, true, ZoneId.systemDefault().toString());
+            model = calendarService.createBusinessCalendar(calendarName, username, true,
+                ZoneId.systemDefault().toString());
             populateCalendarList();
             updateApplyCalendarButton();
             Long calendarId = model.getId();
@@ -307,7 +311,8 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
                 String msg = getLabels().getString("created_default_cal_message");
                 String calendarName = msg + " " + DateTimeUtils.humanize(LocalDateTime.now());
                 CalendarModel model =
-                    calendarService.createBusinessCalendar(calendarName, true, ZoneId.systemDefault().toString());
+                    calendarService.createBusinessCalendar(calendarName, username, true,
+                        ZoneId.systemDefault().toString());
                 populateCalendarList();
                 updateApplyCalendarButton();
                 arg.put(CALENDAR_ID_CONST, model.getId());

@@ -70,14 +70,14 @@ public class CustomCalendarService implements CalendarService {
     private CustomMapper modelMapper;
 
     @Override
-    public CalendarModel createGenericCalendar(String description, boolean weekendsOff, String zoneId)
+    public CalendarModel createGenericCalendar(String description, String username, boolean weekendsOff, String zoneId)
         throws CalendarAlreadyExistsException {
 
         OffsetTime startTime = OffsetTime.of(LocalTime.MIN, ZoneId.of(zoneId).getRules().getOffset(Instant.now()));
 
         OffsetTime endTime = OffsetTime.of(LocalTime.MAX, ZoneId.of(zoneId).getRules().getOffset(Instant.now()));
 
-        CustomCalendar customCalendar = createCalendar(description, weekendsOff, startTime, endTime);
+        CustomCalendar customCalendar = createCalendar(description, username, weekendsOff, startTime, endTime);
         CalendarModel calendarModel = modelMapper.getMapper().map(customCalendar, CalendarModel.class);
         return calendarModel;
     }
@@ -105,13 +105,13 @@ public class CustomCalendarService implements CalendarService {
     }
 
     @Override
-    public CalendarModel createBusinessCalendar(String description, boolean weekendsOff, String zoneId)
+    public CalendarModel createBusinessCalendar(String description, String username, boolean weekendsOff, String zoneId)
         throws CalendarAlreadyExistsException {
 
         OffsetTime startTime = OffsetTime.of(LocalTime.of(9, 0), ZoneId.of(zoneId).getRules().getOffset(Instant.now()));
         OffsetTime endTime = OffsetTime.of(LocalTime.of(17, 0), ZoneId.of(zoneId).getRules().getOffset(Instant.now()));
 
-        CustomCalendar customCalendar = createCalendar(description, weekendsOff, startTime, endTime);
+        CustomCalendar customCalendar = createCalendar(description, username, weekendsOff, startTime, endTime);
         CalendarModel calendarModel = modelMapper.getMapper().map(customCalendar, CalendarModel.class);
 
         return calendarModel;
@@ -139,12 +139,14 @@ public class CustomCalendarService implements CalendarService {
 
     }
 
-    private CustomCalendar createCalendar(String description, boolean weekendsOff, OffsetTime start, OffsetTime end)
+    private CustomCalendar createCalendar(String description, String username, boolean weekendsOff, OffsetTime start,
+                                          OffsetTime end)
         throws CalendarAlreadyExistsException {
 
         String name = getUniqueCalendarName(description);
 
         final CustomCalendar calendar = new CustomCalendar(name);
+        calendar.setCreatedBy(username);
         for (WorkDay workDay : getWorkDays(start, end, weekendsOff)) {
             calendar.addWorkDay(workDay);
         }

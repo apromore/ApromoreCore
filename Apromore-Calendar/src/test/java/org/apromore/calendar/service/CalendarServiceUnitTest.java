@@ -80,7 +80,7 @@ public class CalendarServiceUnitTest {
         when(calendarRepository.saveAndFlush(any(CustomCalendar.class))).thenReturn(calendar);
 
         // When
-        CalendarModel calendarSaved = calendarService.createGenericCalendar(calendar.getName(), true,
+        CalendarModel calendarSaved = calendarService.createGenericCalendar(calendar.getName(), "username", true,
             ZoneId.systemDefault().toString());
 
         // Then
@@ -100,7 +100,7 @@ public class CalendarServiceUnitTest {
 
 
         // When
-        calendarService.createGenericCalendar(calendar.getName(), true,
+        calendarService.createGenericCalendar(calendar.getName(), "username", true,
             ZoneId.systemDefault().toString());
 
         // Then
@@ -124,7 +124,7 @@ public class CalendarServiceUnitTest {
 
 
         // When
-        CalendarModel calendarSaved = calendarService.createGenericCalendar(originalDescription, true,
+        CalendarModel calendarSaved = calendarService.createGenericCalendar(originalDescription, "username", true,
             ZoneId.systemDefault().toString());
 
         // Then
@@ -149,7 +149,7 @@ public class CalendarServiceUnitTest {
         when(calendarRepository.saveAndFlush(any(CustomCalendar.class))).thenReturn(calendar);
 
         // When
-        CalendarModel calendarSaved = calendarService.createGenericCalendar(calendar.getName(), true,
+        CalendarModel calendarSaved = calendarService.createGenericCalendar(calendar.getName(), "username", true,
             ZoneId.systemDefault().toString());
 
         // Then
@@ -175,7 +175,7 @@ public class CalendarServiceUnitTest {
         when(calendarRepository.saveAndFlush(any(CustomCalendar.class))).thenReturn(calendar);
 
         // When
-        CalendarModel calendarSaved = calendarService.createGenericCalendar(calendar.getName(), true,
+        CalendarModel calendarSaved = calendarService.createGenericCalendar(calendar.getName(), "username", true,
             ZoneId.systemDefault().toString());
 
         // Then
