@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 import javax.transaction.Transactional;
-import lombok.Data;
+import lombok.Setter;
 import org.apromore.calendar.exception.CalendarAlreadyExistsException;
 import org.apromore.calendar.exception.CalendarNotExistsException;
 import org.apromore.calendar.model.CalendarModel;
@@ -42,6 +42,7 @@ import org.apromore.commons.mapper.CustomMapper;
 import org.apromore.dao.CustomCalendarInfoRepository;
 import org.apromore.dao.CustomCalendarRepository;
 import org.apromore.dao.HolidayRepository;
+import org.apromore.dao.UserRepository;
 import org.apromore.dao.model.CustomCalendar;
 import org.apromore.dao.model.CustomCalendarInfo;
 import org.apromore.dao.model.HOLIDAYTYPE;
@@ -51,7 +52,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-@Data
 @Service("calendarService")
 @Transactional
 public class CustomCalendarService implements CalendarService {
@@ -66,7 +66,11 @@ public class CustomCalendarService implements CalendarService {
     public HolidayRepository holidayRepository;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     @Qualifier("customMapper")
+    @Setter
     private CustomMapper modelMapper;
 
     @Override
@@ -147,6 +151,7 @@ public class CustomCalendarService implements CalendarService {
 
         final CustomCalendar calendar = new CustomCalendar(name);
         calendar.setCreatedBy(username);
+        calendar.setUser(userRepository.findByUsername(username));
         for (WorkDay workDay : getWorkDays(start, end, weekendsOff)) {
             calendar.addWorkDay(workDay);
         }

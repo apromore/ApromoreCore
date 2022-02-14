@@ -1287,3 +1287,25 @@ databaseChangeLog:
                - column:
                   name: creator
                   type: INT
+
+ - changeSet:
+     id: 20220215092400
+     author: janeh
+     changes:
+       - addColumn:
+           tableName: custom_calendar
+           columns:
+             - column:
+                 name: owner
+                 type: INT
+                 constraints:
+                   nullable: true
+                 defaultValue: null
+       - addForeignKeyConstraint:
+           baseColumnNames: owner
+           baseTableName: custom_calendar
+           constraintName: fk_calendar_owner
+           onDelete:  CASCADE
+           onUpdate:  CASCADE
+           referencedColumnNames: id
+           referencedTableName: user
