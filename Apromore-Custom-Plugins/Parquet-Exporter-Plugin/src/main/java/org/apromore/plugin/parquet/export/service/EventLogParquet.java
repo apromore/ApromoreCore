@@ -30,7 +30,7 @@ import org.apromore.apmlog.ATrace;
 import org.apromore.apmlog.logobjects.ActivityInstance;
 import org.apromore.plugin.parquet.export.core.data.APMLogData;
 import org.apromore.plugin.parquet.export.util.Util;
-import org.apromore.plugin.parquet.export.core.data.LogItem;
+import org.apromore.plugin.parquet.export.core.data.LogExportItem;
 import org.zkoss.json.JSONArray;
 import org.zkoss.json.JSONObject;
 
@@ -48,7 +48,7 @@ public class EventLogParquet extends AbstractParquetProducer {
     private static final Set<String> invalidNames =
             Set.of(START_TIME_COL, END_TIME_COL, TIMESTAMP_COL, START_TIMESTAMP_COL, END_TIMESTAMP_COL);
 
-    public static Schema getEventLogSchema(LogItem logItem, Charset charset) {
+    public static Schema getEventLogSchema(LogExportItem logItem, Charset charset) {
         String schemaStr = getSchema(logItem);
         byte[] bytes = schemaStr.getBytes(charset);
         String utf8EncodedString = new String(bytes, charset);
@@ -56,7 +56,7 @@ public class EventLogParquet extends AbstractParquetProducer {
         return new Schema.Parser().parse(utf8EncodedString);
     }
 
-    public static List<GenericData.Record> getEventLogRecords(LogItem logItem, Schema schema) {
+    public static List<GenericData.Record> getEventLogRecords(LogExportItem logItem, Schema schema) {
         List<GenericData.Record> data = new ArrayList<>();
         List<Pair<String, String>> caList = getAttributeHeaders(logItem, true);
         List<Pair<String, String>> eaList = getAttributeHeaders(logItem, false);
@@ -79,7 +79,7 @@ public class EventLogParquet extends AbstractParquetProducer {
     }
 
     private static GenericData.Record getRecord(Schema schema, ActivityInstance activityInstance,
-                                                LogItem logItem,
+                                                LogExportItem logItem,
                                                 List<Pair<String, String>> caseAttrs,
                                                 List<Pair<String, String>> eventAttrs) {
         caseAttrs = getValidPairs(caseAttrs);
@@ -141,7 +141,7 @@ public class EventLogParquet extends AbstractParquetProducer {
         }
     }
 
-    private static String getSchema(LogItem logItem) {
+    private static String getSchema(LogExportItem logItem) {
         JSONObject schema = new JSONObject();
 
         schema.put("type", "record");
@@ -207,7 +207,7 @@ public class EventLogParquet extends AbstractParquetProducer {
         return colName;
     }
 
-    private static String getCaseAttrType(String attribute, LogItem logItem) {
+    private static String getCaseAttrType(String attribute, LogExportItem logItem) {
         if (attribute.toLowerCase().contains("case") && attribute.toLowerCase().contains("id"))
             return STRING_TYPE;
 
@@ -215,7 +215,7 @@ public class EventLogParquet extends AbstractParquetProducer {
         return values.stream().anyMatch(x -> !Util.isNumeric(x)) ? STRING_TYPE : DOUBLE_TYPE;
     }
 
-    private static String getEventAttrType(String attribute, LogItem logItem) {
+    private static String getEventAttrType(String attribute, LogExportItem logItem) {
         Set<String> values =
                 APMLogData.getUniqueEventAttributeValues(logItem.getPLog().getActivityInstances(), attribute);
         return values.stream().anyMatch(x -> !Util.isNumeric(x)) ? STRING_TYPE : DOUBLE_TYPE;

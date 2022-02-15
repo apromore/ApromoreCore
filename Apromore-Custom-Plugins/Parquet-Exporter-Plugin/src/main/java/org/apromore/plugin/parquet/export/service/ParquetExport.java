@@ -35,7 +35,7 @@ import org.apache.parquet.hadoop.metadata.CompressionCodecName;
 import org.apromore.apmlog.xes.XESAttributeCodes;
 import org.apromore.plugin.parquet.export.util.LoggerUtil;
 import org.apromore.plugin.parquet.export.util.ZKMessageCtrl;
-import org.apromore.plugin.parquet.export.core.data.LogItem;
+import org.apromore.plugin.parquet.export.core.data.LogExportItem;
 import org.apromore.plugin.parquet.export.tables.CaseAttributeTable;
 import org.apromore.plugin.parquet.export.tables.CaseVariantsTable;
 import org.apromore.plugin.parquet.export.tables.CasesTable;
@@ -53,13 +53,13 @@ public class ParquetExport extends AbstractParquetProducer {
     // public methods
     // ================================================================================================
 
-    public static void downloadEventLog(LogItem logItem, Charset charset) {
+    public static void downloadEventLog(LogExportItem logItem, Charset charset) {
         Schema schema = EventLogParquet.getEventLogSchema(logItem, charset);
         List<GenericData.Record> data = EventLogParquet.getEventLogRecords(logItem, schema);
         downloadParquet("General", logItem, data, schema);
     }
 
-    public static boolean exportParquetFile(LogItem logItem, String directoryPath) {
+    public static boolean exportParquetFile(LogExportItem logItem, String directoryPath) {
         Schema schema = EventLogParquet.getEventLogSchema(logItem, StandardCharsets.UTF_8);
         List<GenericData.Record> data = EventLogParquet.getEventLogRecords(logItem, schema);
         String filename = logItem.getSourceLogName() + ".parquet";
@@ -84,19 +84,19 @@ public class ParquetExport extends AbstractParquetProducer {
         return dir.delete();
     }
 
-    public static void downloadCasesTable(LogItem logItem, Charset charset) {
+    public static void downloadCasesTable(LogExportItem logItem, Charset charset) {
         Schema schema = CasesTable.getSchema(charset);
         List<GenericData.Record> data = CasesTable.getRecords(logItem, schema);
         downloadParquet("Cases", logItem, data, schema);
     }
 
-    public static void downloadCaseVariantsTable(LogItem logItem, Charset charset) {
+    public static void downloadCaseVariantsTable(LogExportItem logItem, Charset charset) {
         Schema schema = CaseVariantsTable.getSchema(charset);
         List<GenericData.Record> data = CaseVariantsTable.getRecords(logItem, schema);
         downloadParquet("Case variants", logItem, data, schema);
     }
 
-    public static void downloadCaseAttributeTable(String key, LogItem logItem, Charset charset) {
+    public static void downloadCaseAttributeTable(String key, LogExportItem logItem, Charset charset) {
         Schema schema = CaseAttributeTable.getSchema(charset);
         List<GenericData.Record> data = CaseAttributeTable.getRecords(key, logItem, schema);
         downloadParquet(key, logItem, data, schema);
@@ -105,7 +105,7 @@ public class ParquetExport extends AbstractParquetProducer {
     public static void downloadEventAttributeTable(List<EventAttributeContentItem> items,
                                                    String key,
                                                    String setType,
-                                                   LogItem logItem,
+                                                   LogExportItem logItem,
                                                    Charset charset) {
 
         Schema schema = EventAttributeTable.getSchema(charset);
@@ -170,7 +170,7 @@ public class ParquetExport extends AbstractParquetProducer {
     }
 
     protected static void downloadParquet(String dataName,
-                                          LogItem logItem,
+                                          LogExportItem logItem,
                                           List<GenericData.Record> data,
                                           Schema schema) {
         String filename = String.format("%s.%s", FileNameGenerator.getName(logItem.getLabel(), dataName), "parquet");

@@ -40,7 +40,7 @@ public class TableDataModels {
         throw new IllegalStateException("Utility class");
     }
 
-    public static List<CaseVariantItem> getCaseVariantTableModel(LogItem logItem) {
+    public static List<CaseVariantItem> getCaseVariantTableModel(LogExportItem logItem) {
         return getCaseVariantTableModel(logItem.getPLog());
     }
 

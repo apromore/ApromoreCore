@@ -28,8 +28,8 @@ import java.util.Locale;
 import java.util.Map;
 import javax.inject.Inject;
 import org.apromore.apmlog.APMLog;
-import org.apromore.plugin.parquet.export.core.data.APMLogCombo;
-import org.apromore.plugin.parquet.export.service.APMLogComboManager;
+import org.apromore.plugin.parquet.export.core.data.APMLogWrapper;
+import org.apromore.plugin.parquet.export.service.APMLogWrapperManager;
 import org.apromore.plugin.parquet.export.service.ParquetExporterService;
 import org.apromore.plugin.parquet.export.util.LabelUtil;
 import org.apromore.plugin.parquet.export.util.PageUtil;
@@ -76,7 +76,7 @@ public class ParquetExportPlugin extends DefaultPortalPlugin implements LabelSup
                 return;
             }
 
-            APMLogComboManager apmLogComboManager = initAPMLogComboManagers(lstList);
+            APMLogWrapperManager apmLogComboManager = initAPMLogComboManagers(lstList);
             if (apmLogComboManager.getAPMLogComboList().size()!=1) {
                 LOGGER.error("Select one log for parquet download");
                 ZKMessageCtrl.showInfo(getLabel("dash_wrong_log_select"));
@@ -89,7 +89,7 @@ public class ParquetExportPlugin extends DefaultPortalPlugin implements LabelSup
         }
     }
 
-    private void onExportParquetConfig(APMLogCombo apmLogCombo) {
+    private void onExportParquetConfig(APMLogWrapper apmLogCombo) {
         try {
             Window wd = (Window) PageUtil.getPageWithArgument(
                 "parquetExporter.zul", null, Map.of("service", new ParquetExporterService(apmLogCombo)));
@@ -99,12 +99,13 @@ public class ParquetExportPlugin extends DefaultPortalPlugin implements LabelSup
         }
     }
 
-    private APMLogComboManager initAPMLogComboManagers(List<Integer> logSummaries) {
-        APMLogComboManager  apmLogComboManager = new APMLogComboManager();
+    private APMLogWrapperManager initAPMLogComboManagers(List<Integer> logSummaries) {
+        APMLogWrapperManager apmLogComboManager = new APMLogWrapperManager();
         for (int i=0;i<logSummaries.size();i++) {
             Integer logIdInt=logSummaries.get(i);
             APMLog apmLog = eventLogService.getAggregatedLog(logIdInt);
             XLog xLog = eventLogService.getXLog(logIdInt);
+
             String filename = apmLog.getLogName();
             if (xLog == null ||  apmLog.size() != xLog.size()) {
                 ZKMessageCtrl.showError(String.format(LabelUtil.getLabel(LOG_ERR_MSG_KEY), filename));

@@ -28,7 +28,7 @@ import org.apromore.apmlog.ATrace;
 import org.apromore.plugin.parquet.export.service.AbstractParquetProducer;
 import org.apromore.plugin.parquet.export.util.Util;
 import org.apromore.plugin.parquet.export.core.data.APMLogData;
-import org.apromore.plugin.parquet.export.core.data.LogItem;
+import org.apromore.plugin.parquet.export.core.data.LogExportItem;
 import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 import org.zkoss.json.JSONArray;
 import org.zkoss.json.JSONObject;
@@ -47,7 +47,7 @@ public class CaseAttributeTable extends AbstractParquetProducer {
         return new Schema.Parser().parse(utf8EncodedString);
     }
 
-    public static List<GenericData.Record> getRecords(String key, LogItem logItem, Schema schema) {
+    public static List<GenericData.Record> getRecords(String key, LogExportItem logItem, Schema schema) {
         Map<String, List<ATrace>> map =
                 APMLogData.getCaseAttributeValueGroups(new ArrayList<>(logItem.getPLog().getPTraces()), key);
 

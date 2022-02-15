@@ -24,7 +24,7 @@ import java.util.List;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apromore.plugin.parquet.export.service.AbstractParquetProducer;
-import org.apromore.plugin.parquet.export.core.data.LogItem;
+import org.apromore.plugin.parquet.export.core.data.LogExportItem;
 import org.apromore.plugin.parquet.export.core.data.TableDataModels;
 import org.apromore.plugin.parquet.export.core.data.dataobjects.CaseVariantItem;
 import org.zkoss.json.JSONArray;
@@ -45,7 +45,7 @@ public class CaseVariantsTable extends AbstractParquetProducer {
         return new Schema.Parser().parse(utf8EncodedString);
     }
 
-    public static List<GenericData.Record> getRecords(LogItem logItem, Schema schema) {
+    public static List<GenericData.Record> getRecords(LogExportItem logItem, Schema schema) {
         List<CaseVariantItem> records = TableDataModels.getCaseVariantTableModel(logItem);
 
         List<GenericData.Record> data = new ArrayList<>();

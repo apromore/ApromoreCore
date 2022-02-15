@@ -21,17 +21,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apromore.apmlog.APMLog;
-import org.apromore.plugin.parquet.export.core.data.APMLogCombo;
+import org.apromore.plugin.parquet.export.core.data.APMLogWrapper;
 import org.deckfour.xes.model.XLog;
 
 /**
- * @author Chii Chang
+ * @author Mohammad Ali
  */
-public class APMLogComboManager {
+public class APMLogWrapperManager {
 
-    List<APMLogCombo> apmLogComboList = new ArrayList<>();
+    List<APMLogWrapper> apmLogComboList = new ArrayList<>();
     public boolean contains(String logName) {
-        APMLogCombo apmLogCombo = apmLogComboList.stream()
+        APMLogWrapper apmLogCombo = apmLogComboList.stream()
                 .filter(x -> x.getName().equals(logName) || x.getSeriesName().equals(logName))
                 .findFirst()
                 .orElse(null);
@@ -41,14 +41,14 @@ public class APMLogComboManager {
 
     public void put(int id, String name, APMLog apmLog, XLog xLog, String color, String label) {
         if(!contains(name)) {
-            apmLogComboList.add(new APMLogCombo(id, name, apmLog, xLog, color, label));
+            apmLogComboList.add(new APMLogWrapper(id, name, apmLog, xLog, color, label));
         }else{
             int nameIndex = checkNameIndex(name);
-            apmLogComboList.set(nameIndex, new APMLogCombo(id, name, apmLog, xLog, color, label));
+            apmLogComboList.set(nameIndex, new APMLogWrapper(id, name, apmLog, xLog, color, label));
         }
     }
 
-    public void add(APMLogCombo apmLogCombo) {
+    public void add(APMLogWrapper apmLogCombo) {
         apmLogComboList.add(apmLogCombo);
     }
 
@@ -61,12 +61,12 @@ public class APMLogComboManager {
     }
 
 
-    public List<APMLogCombo> getAPMLogComboList() {
+    public List<APMLogWrapper> getAPMLogComboList() {
         return apmLogComboList;
     }
 
     public List<APMLog> getAPMLogs() {
-        return apmLogComboList.stream().map(APMLogCombo::getAPMLog).collect(Collectors.toList());
+        return apmLogComboList.stream().map(APMLogWrapper::getAPMLog).collect(Collectors.toList());
     }
 
     public int size() {
@@ -80,7 +80,7 @@ public class APMLogComboManager {
     public XLog getXLogByLogName(String logName) {
         return apmLogComboList.stream()
                 .filter(x -> x.getName().equals(logName))
-                .map(APMLogCombo::getXLog)
+                .map(APMLogWrapper::getXLog)
                 .findFirst()
                 .orElse(null);
     }
@@ -96,13 +96,13 @@ public class APMLogComboManager {
     public APMLog getAPMLogByName(String logName) {
         return apmLogComboList.stream()
                 .filter(x -> x.getName().equals(logName))
-                .map(APMLogCombo::getAPMLog)
+                .map(APMLogWrapper::getAPMLog)
                 .findFirst()
                 .orElse(null);
     }
 
-    public APMLogCombo getById(int logId) {
-        for (APMLogCombo combo : apmLogComboList) {
+    public APMLogWrapper getById(int logId) {
+        for (APMLogWrapper combo : apmLogComboList) {
             if (combo.getId() == logId) {
                 return combo;
             }
@@ -111,15 +111,15 @@ public class APMLogComboManager {
         return null;
     }
 
-    public APMLogCombo get(int index) {
+    public APMLogWrapper get(int index) {
         if (index < apmLogComboList.size())
             return apmLogComboList.get(index);
 
         return null;
     }
 
-    public APMLogCombo get(String logName) {
-        for (APMLogCombo combo : apmLogComboList) {
+    public APMLogWrapper get(String logName) {
+        for (APMLogWrapper combo : apmLogComboList) {
             if (combo.getName().equals(logName)) {
                 return combo;
             }

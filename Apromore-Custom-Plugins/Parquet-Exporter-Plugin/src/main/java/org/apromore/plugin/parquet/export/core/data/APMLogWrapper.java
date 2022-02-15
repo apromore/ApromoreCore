@@ -23,9 +23,9 @@ import org.apromore.plugin.parquet.export.util.SeriesIdGenerator;
 import org.deckfour.xes.model.XLog;
 
 /**
- * @author Chii Chang
+ * @author Mohammad Ali
  */
-public class APMLogCombo {
+public class APMLogWrapper {
     private int id;
     private String name;
     private APMLog apmLog;
@@ -35,7 +35,7 @@ public class APMLogCombo {
     private String originalLabel;
     private String originalColor;
 
-    public APMLogCombo(int id, String name, APMLog apmLog, XLog xLog, String color, String label) {
+    public APMLogWrapper(int id, String name, APMLog apmLog, XLog xLog, String color, String label) {
         this.id = id;
         this.apmLog = apmLog;
         this.xLog = xLog;
@@ -109,8 +109,8 @@ public class APMLogCombo {
         this.color = originalColor;
     }
 
-    public APMLogCombo clone(int logId, String color) throws EmptyInputException {
+    public APMLogWrapper clone(int logId, String color) throws EmptyInputException {
         APMLog clonedAPMLog = this.apmLog.deepClone();
-        return new APMLogCombo(logId, name + "", clonedAPMLog, this.xLog, color, label);
+        return new APMLogWrapper(logId, name + "", clonedAPMLog, this.xLog, color, label);
     }
 }

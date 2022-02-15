@@ -33,7 +33,7 @@ import org.apromore.apmlog.ATrace;
 import org.apromore.apmlog.logobjects.ActivityInstance;
 import org.apromore.apmlog.xes.XESAttributeCodes;
 import org.apromore.plugin.parquet.export.types.EncodeOption;
-import org.apromore.plugin.parquet.export.core.data.APMLogCombo;
+import org.apromore.plugin.parquet.export.core.data.APMLogWrapper;
 import org.apromore.plugin.parquet.export.util.LabelUtil;
 import org.apromore.plugin.parquet.export.util.Util;
 import org.apromore.plugin.parquet.export.types.ParquetCell;
@@ -44,7 +44,7 @@ import org.zkoss.json.JSONObject;
 
 public class ParquetExporterService extends AbstractParquetProducer {
 
-    private final APMLogCombo apmLogCombo;
+    private final APMLogWrapper apmLogWrapper;
     private final Properties labels;
     private final List<ParquetCol> headers = new ArrayList<>();
     private final List<List<ParquetCell>> parquetRows = new ArrayList<>();
@@ -80,14 +80,14 @@ public class ParquetExporterService extends AbstractParquetProducer {
             new EncodeOption("Big5 (Traditional Chinese)", "Big5", false)
     );
 
-    public ParquetExporterService(APMLogCombo apmLogCombo) {
-        this.apmLogCombo = apmLogCombo;
+    public ParquetExporterService(APMLogWrapper apmLogCombo) {
+        this.apmLogWrapper = apmLogCombo;
         labels = LabelUtil.getLabelProperties();
         initHeaders();
     }
 
     public String getLogLabel() {
-        return apmLogCombo.getLabel();
+        return apmLogWrapper.getLabel();
     }
 
     public Properties getLabels() {
@@ -115,7 +115,7 @@ public class ParquetExporterService extends AbstractParquetProducer {
                 .filter(EncodeOption::isSelected)
                 .map(EncodeOption::getValue)
                 .findFirst().orElse(UTF8);
-        String filename = getValidParquetLabel(apmLogCombo.getLabel()) + ".parquet";
+        String filename = getValidParquetLabel(apmLogWrapper.getLabel()) + ".parquet";
         Schema schema = getSchema(charsetVal);
         ParquetExport.downloadParquet(filename, getData(schema), schema);
         return true;
@@ -193,8 +193,8 @@ public class ParquetExporterService extends AbstractParquetProducer {
     private void initRows() {
         parquetRows.clear();
 
-        int size = Math.min(apmLogCombo.getAPMLog().size(), 50);
-        List<ActivityInstance> activityInstances = apmLogCombo.getAPMLog().getActivityInstances().subList(0, size);
+        int size = Math.min(apmLogWrapper.getAPMLog().size(), 50);
+        List<ActivityInstance> activityInstances = apmLogWrapper.getAPMLog().getActivityInstances().subList(0, size);
 
         for (ActivityInstance ai : activityInstances) {
             ATrace trace = getTrace(ai.getMutableTraceIndex());
@@ -230,15 +230,15 @@ public class ParquetExporterService extends AbstractParquetProducer {
     }
 
     private ATrace getTrace(int index) {
-        return apmLogCombo.getAPMLog().get(index);
+        return apmLogWrapper.getAPMLog().get(index);
     }
 
     private List<ParquetCol> getValidCaseAttributes() {
-        return getValidAttributes(APMLogData.getUniqueCaseAttributeKeys(apmLogCombo.getAPMLog().getTraces()));
+        return getValidAttributes(APMLogData.getUniqueCaseAttributeKeys(apmLogWrapper.getAPMLog().getTraces()));
     }
 
     private List<ParquetCol> getValidEventAttributes() {
-        return getValidAttributes(APMLogData.getUniqueEventAttributeKeys(apmLogCombo.getAPMLog().getActivityInstances())
+        return getValidAttributes(APMLogData.getUniqueEventAttributeKeys(apmLogWrapper.getAPMLog().getActivityInstances())
                 .stream().filter(x -> !invalidAttributes.contains(x)).collect(Collectors.toSet()));
     }
 

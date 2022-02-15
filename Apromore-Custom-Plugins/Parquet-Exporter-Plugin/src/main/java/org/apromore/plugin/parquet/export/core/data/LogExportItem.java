@@ -21,17 +21,17 @@ package org.apromore.plugin.parquet.export.core.data;
 import java.io.Serializable;
 import org.apromore.apmlog.filter.PLog;
 
-public class LogItem implements Serializable {
+public class LogExportItem implements Serializable {
 
     private final PLog pLog;
     private String label;
     private final String sourceLogName;
     private final String originalLogLabel;
 
-    public LogItem(APMLogCombo apmLogCombo)  {
-        this.pLog = new PLog(apmLogCombo.getAPMLog());
-        this.sourceLogName = apmLogCombo.getName();
-        this.originalLogLabel = apmLogCombo.getOriginalLabel();
+    public LogExportItem(APMLogWrapper apmLogWrapper)  {
+        this.pLog = new PLog(apmLogWrapper.getAPMLog());
+        this.sourceLogName = apmLogWrapper.getName();
+        this.originalLogLabel = apmLogWrapper.getOriginalLabel();
         resetStyle();
     }
 

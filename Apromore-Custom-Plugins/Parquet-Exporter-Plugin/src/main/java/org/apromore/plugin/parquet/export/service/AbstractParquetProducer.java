@@ -28,7 +28,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apromore.apmlog.csv.StringValidation;
 import org.apromore.apmlog.xes.XESAttributeCodes;
 import org.apromore.plugin.parquet.export.core.data.APMLogData;
-import org.apromore.plugin.parquet.export.core.data.LogItem;
+import org.apromore.plugin.parquet.export.core.data.LogExportItem;
 import org.apromore.plugin.parquet.export.util.Util;
 import org.zkoss.json.JSONArray;
 import org.zkoss.json.JSONObject;
@@ -37,7 +37,7 @@ public abstract class AbstractParquetProducer {
 
     protected static final String DOUBLE_TYPE = "double";
 
-    protected static List<Pair<String, String>> getAttributeHeaders(LogItem logItem, boolean caseSection) {
+    protected static List<Pair<String, String>> getAttributeHeaders(LogExportItem logItem, boolean caseSection) {
         List<String> headers = new ArrayList<>(caseSection ?
                 APMLogData.getUniqueCaseAttributeKeys(logItem.getPLog())
                 :

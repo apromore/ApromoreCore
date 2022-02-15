@@ -24,7 +24,7 @@ import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apromore.apmlog.ATrace;
 import org.apromore.plugin.parquet.export.service.AbstractParquetProducer;
-import org.apromore.plugin.parquet.export.core.data.LogItem;
+import org.apromore.plugin.parquet.export.core.data.LogExportItem;
 import org.zkoss.json.JSONArray;
 import org.zkoss.json.JSONObject;
 
@@ -42,7 +42,7 @@ public class CasesTable extends AbstractParquetProducer {
         return new Schema.Parser().parse(utf8EncodedString);
     }
 
-    public static List<GenericData.Record> getRecords(LogItem logItem, Schema schema) {
+    public static List<GenericData.Record> getRecords(LogExportItem logItem, Schema schema) {
         List<GenericData.Record> data = new ArrayList<>();
 
         for (ATrace trace : logItem.getPLog().getPTraces()) {
