@@ -44,6 +44,7 @@ public abstract class PluginCatalog {
 
     public static final String PLUGIN_UPLOAD = "org.apromore.plugin.portal.file.UploadFilePlugin";
     public static final String PLUGIN_DOWNLOAD = "org.apromore.plugin.portal.file.DownloadSelectionPlugin";
+    public static final String PLUGIN_PARQUET_DOWNLOAD = "org.apromore.plugin.parquet.export.ParquetExportPlugin";
     public static final String PLUGIN_CUT = "CUT";
     public static final String PLUGIN_COPY = "COPY";
     public static final String PLUGIN_PASTE = "PASTE";
