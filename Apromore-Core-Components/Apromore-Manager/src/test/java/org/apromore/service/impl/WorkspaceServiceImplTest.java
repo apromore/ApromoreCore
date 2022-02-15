@@ -70,6 +70,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
     private GroupProcessRepository groupProcessRepo;
     private GroupLogRepository groupLogRepo;
     private GroupUsermetadataRepository groupUsermetadataRepo;
+    private CustomCalendarRepository customCalendarRepository;
     
     private ProcessRepository processRepo;
     private ProcessModelVersionRepository pmvRepo;
@@ -88,6 +89,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
         groupProcessRepo = createMock(GroupProcessRepository.class);
         groupLogRepo = createMock(GroupLogRepository.class);
         groupUsermetadataRepo = createMock(GroupUsermetadataRepository.class);
+        customCalendarRepository = createMock(CustomCalendarRepository.class);
 
         logRepo = createMock(LogRepository.class);
         usermetadataRepo = createMock(UsermetadataRepository.class);
@@ -116,6 +118,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
                                                 groupProcessRepo,
                                                 groupLogRepo,
                                                 groupUsermetadataRepo,
+                                                customCalendarRepository,
                                                 logFileService,
                                                 folderServiceImpl,
                                                 storageFactory,

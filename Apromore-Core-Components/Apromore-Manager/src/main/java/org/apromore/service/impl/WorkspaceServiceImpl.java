@@ -43,6 +43,7 @@ import java.util.TreeMap;
 import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 import org.apromore.commons.config.ConfigBean;
+import org.apromore.dao.CustomCalendarRepository;
 import org.apromore.dao.FolderRepository;
 import org.apromore.dao.GroupFolderRepository;
 import org.apromore.dao.GroupLogRepository;
@@ -57,6 +58,7 @@ import org.apromore.dao.UserRepository;
 import org.apromore.dao.UsermetadataRepository;
 import org.apromore.dao.WorkspaceRepository;
 import org.apromore.dao.model.AccessRights;
+import org.apromore.dao.model.CustomCalendar;
 import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.Group;
 import org.apromore.dao.model.GroupFolder;
@@ -111,6 +113,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
   private GroupProcessRepository groupProcessRepo;
   private GroupLogRepository groupLogRepo;
   private GroupUsermetadataRepository groupUsermetadataRepo;
+  private CustomCalendarRepository customCalendarRepo;
   private EventLogFileService logFileService;
   private FolderService folderService;
   private StorageRepository storageRepository;
@@ -139,6 +142,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
       final GroupProcessRepository groupProcessRepository,
       final GroupLogRepository groupLogRepository,
       final GroupUsermetadataRepository groupUsermetadataRepository,
+      final CustomCalendarRepository customCalendarRepository,
       final EventLogFileService eventLogFileService, final FolderService folderService,
       final StorageManagementFactory storageFactory, final EventLogService eventLogService,
       final StorageRepository storageRepository, final ConfigBean configBean) {
@@ -155,6 +159,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     groupProcessRepo = groupProcessRepository;
     groupLogRepo = groupLogRepository;
     groupUsermetadataRepo = groupUsermetadataRepository;
+    customCalendarRepo = customCalendarRepository;
     logFileService = eventLogFileService;
     this.folderService = folderService;
     this.storageFactory = storageFactory;
@@ -847,6 +852,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     List<Folder> folders = getSingleOwnerFolderByUser(sourceUser);
     List<Log> logs = getSingleOwnerLogByUser(sourceUser);
     List<Process> processes = getSingleOwnerProcessByUser(sourceUser);
+    Set<CustomCalendar> calendars = customCalendarRepo.findByUser(sourceUser);
 
     for (Folder f : folders) {
       GroupFolder targetUserGF = groupFolderRepo.findByGroupAndFolder(targetUser.getGroup(), f);
@@ -888,6 +894,11 @@ public class WorkspaceServiceImpl implements WorkspaceService {
       groupProcessRepo.save(gp);
       p.setUser(targetUser);
       processRepo.save(p);
+    }
+
+    for (CustomCalendar c : calendars) {
+      c.setUser(targetUser);
+      customCalendarRepo.save(c);
     }
   }
 
