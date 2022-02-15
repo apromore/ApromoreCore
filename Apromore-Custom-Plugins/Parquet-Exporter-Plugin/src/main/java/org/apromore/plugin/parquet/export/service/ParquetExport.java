@@ -64,7 +64,7 @@ public class ParquetExport extends AbstractParquetProducer {
         List<GenericData.Record> data = EventLogParquet.getEventLogRecords(logItem, schema);
         String filename = logItem.getSourceLogName() + ".parquet";
         deleteDir(new File(directoryPath));
-        String outPath = directoryPath + "/" + filename;
+        String outPath = directoryPath + File.separator + filename;
 
         try {
             writeToParquet(data, new Path(outPath), schema);
@@ -181,7 +181,7 @@ public class ParquetExport extends AbstractParquetProducer {
     public static void downloadParquet(String filename,
                                        List<GenericData.Record> data,
                                        Schema schema) {
-        Path OUT_PATH = new Path(filename);
+        Path outPath = new Path(filename);
 
         // delete if exist
         try {
@@ -189,7 +189,7 @@ public class ParquetExport extends AbstractParquetProducer {
         } catch (Exception ignored) {}
 
         try {
-            writeToParquet(data, OUT_PATH, schema);
+            writeToParquet(data, outPath, schema);
             byte[] finalbytes = Files.readAllBytes(java.nio.file.Paths.get(filename));
             Filedownload.save(finalbytes, "application/parquet", filename);
             Files.delete(java.nio.file.Paths.get(filename));
@@ -209,8 +209,8 @@ public class ParquetExport extends AbstractParquetProducer {
                 .withCompressionCodec(CompressionCodecName.SNAPPY)
                 .build()) {
 
-            for (GenericData.Record record : recordsToWrite) {
-                pqWriter.write(record);
+            for (GenericData.Record recordGen : recordsToWrite) {
+                pqWriter.write(recordGen);
             }
         }
     }

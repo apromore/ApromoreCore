@@ -29,7 +29,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apromore.apmlog.ATrace;
 import org.apromore.apmlog.logobjects.ActivityInstance;
 import org.apromore.plugin.parquet.export.core.data.APMLogData;
-import org.apromore.plugin.parquet.export.service.AbstractParquetProducer;
 import org.apromore.plugin.parquet.export.util.Util;
 import org.apromore.plugin.parquet.export.core.data.LogItem;
 import org.zkoss.json.JSONArray;
@@ -64,8 +63,8 @@ public class EventLogParquet extends AbstractParquetProducer {
 
         List<ActivityInstance> activityInstances = logItem.getPLog().getActivityInstances();
         for (ActivityInstance act : activityInstances) {
-            GenericData.Record record = getRecord(schema, act, logItem, caList, eaList);
-            data.add(record);
+            GenericData.Record recordGen = getRecord(schema, act, logItem, caList, eaList);
+            data.add(recordGen);
         }
 
         return data;
@@ -79,41 +78,41 @@ public class EventLogParquet extends AbstractParquetProducer {
                 .collect(Collectors.toList());
     }
 
-    private static GenericData.Record getRecord(Schema SCHEMA, ActivityInstance activityInstance,
+    private static GenericData.Record getRecord(Schema schema, ActivityInstance activityInstance,
                                                 LogItem logItem,
                                                 List<Pair<String, String>> caseAttrs,
                                                 List<Pair<String, String>> eventAttrs) {
         caseAttrs = getValidPairs(caseAttrs);
         eventAttrs = getValidPairs(eventAttrs);
 
-        GenericData.Record record = new GenericData.Record(SCHEMA);
+        GenericData.Record recordGen = new GenericData.Record(schema);
 
         if (caseAttrs.stream().noneMatch(x -> x.getLeft().equals(CASE_ID_COL)))
-            record.put(CASE_ID_COL, activityInstance.getParentTraceId());
+            recordGen.put(CASE_ID_COL, activityInstance.getParentTraceId());
 
         if (eventAttrs.stream().noneMatch(x -> x.getLeft().equals(START_TIMESTAMP_COL)))
-            record.put(START_TIMESTAMP_COL,
+            recordGen.put(START_TIMESTAMP_COL,
                     Util.timestampStringOf(Util.millisecondToZonedDateTime(activityInstance.getStartTime())));
 
         if (eventAttrs.stream().noneMatch(x -> x.getLeft().equals(END_TIMESTAMP_COL)))
-            record.put(END_TIMESTAMP_COL,
+            recordGen.put(END_TIMESTAMP_COL,
                     Util.timestampStringOf(Util.millisecondToZonedDateTime(activityInstance.getEndTime())));
 
         if (eventAttrs.stream().noneMatch(x -> x.getLeft().equals(START_TIME_COL)))
-            record.put(START_TIME_COL, activityInstance.getStartTime());
+            recordGen.put(START_TIME_COL, activityInstance.getStartTime());
 
         if (eventAttrs.stream().noneMatch(x -> x.getLeft().equals(END_TIME_COL)))
-            record.put(END_TIME_COL, activityInstance.getEndTime());
+            recordGen.put(END_TIME_COL, activityInstance.getEndTime());
 
         ATrace trace = logItem.getPLog().getPTracesMap().get(activityInstance.getParentTraceId());
 
-        putCaseAttrsToGenericDataRecord(caseAttrs, trace, record);
-        putEventAttrsToGenericDataRecord(eventAttrs, activityInstance, record);
+        putCaseAttrsToGenericDataRecord(caseAttrs, trace, recordGen);
+        putEventAttrsToGenericDataRecord(eventAttrs, activityInstance, recordGen);
 
         if (eventAttrs.stream().noneMatch(x -> x.getLeft().equals(TIMESTAMP_COL)))
-            record.put(TIMESTAMP_COL, activityInstance.getEndTime());
+            recordGen.put(TIMESTAMP_COL, activityInstance.getEndTime());
 
-        return record;
+        return recordGen;
     }
 
     private static void putCaseAttrsToGenericDataRecord(List<Pair<String, String>> caseAttrs,
@@ -202,7 +201,7 @@ public class EventLogParquet extends AbstractParquetProducer {
     }
 
     private static String getValidColName(String colName) {
-        if (colName.toLowerCase().equals("group"))
+        if (colName.equalsIgnoreCase("group"))
             return "resource_group";
 
         return colName;

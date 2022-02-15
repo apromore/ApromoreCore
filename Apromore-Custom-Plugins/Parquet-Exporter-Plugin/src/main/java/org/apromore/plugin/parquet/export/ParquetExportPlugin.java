@@ -39,7 +39,6 @@ import org.apromore.plugin.parquet.export.util.ZKMessageCtrl;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
-import org.apromore.portal.model.LogSummaryType;
 import org.apromore.service.EventLogService;
 import org.apromore.zk.label.LabelSupplier;
 import org.deckfour.xes.model.XLog;
@@ -52,25 +51,13 @@ import org.zkoss.zul.Window;
 @Component
 public class ParquetExportPlugin extends DefaultPortalPlugin implements LabelSupplier {
 
-    private static Logger LOGGER = PortalLoggerFactory.getLogger(ParquetExportPlugin.class);
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(ParquetExportPlugin.class);
     private static final String LOG_ERR_MSG_KEY="Failed to open Parquet Exporter window";
 
     @Inject
     private EventLogService eventLogService;
 
     private String label = "Parquet download";
-    @Override
-    public String getBundleName() {
-        return "parquetexporter";
-    }
-    @Override
-    public String getLabel(Locale locale) {
-        return Labels.getLabel("dash_download_parquet", label);
-    }
-    @Override
-    public String getIconPath() {
-        return "download.svg";
-    }
 
     private final String[][] palette = new String[][]{{"blue", "#84C7E3"}, {"red", "#C96173"},
         {"yellow", "#FCB751"}, {"green", "#61CDBA"}, {"orange", "#FB9859"}, {"olive", "#C0CA33"},
@@ -117,9 +104,9 @@ public class ParquetExportPlugin extends DefaultPortalPlugin implements LabelSup
         for (int i=0;i<logSummaries.size();i++) {
             Integer logIdInt=logSummaries.get(i);
             APMLog apmLog = eventLogService.getAggregatedLog(logIdInt);
-            String filename = apmLog.getLogName();
             XLog xLog = eventLogService.getXLog(logIdInt);
-            if (xLog == null || apmLog == null || apmLog.size() != xLog.size()) {
+            String filename = apmLog.getLogName();
+            if (xLog == null ||  apmLog.size() != xLog.size()) {
                 ZKMessageCtrl.showError(String.format(LabelUtil.getLabel(LOG_ERR_MSG_KEY), filename));
             } else {
                 String color = getDefaultSeriesColor(i);
@@ -130,6 +117,21 @@ public class ParquetExportPlugin extends DefaultPortalPlugin implements LabelSup
             }
         }
     return apmLogComboManager;
+    }
+
+    @Override
+    public String getIconPath() {
+        return "download.svg";
+    }
+
+    @Override
+    public String getLabel(Locale locale) {
+        return Labels.getLabel("dash_download_parquet", label);
+    }
+
+    @Override
+    public String getBundleName() {
+        return "parquetexporter";
     }
 
     private String getDefaultSeriesColor(int seriesIndex) {
