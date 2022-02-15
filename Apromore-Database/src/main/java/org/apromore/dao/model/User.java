@@ -396,7 +396,7 @@ public class User implements Serializable {
         return this.calendars;
     }
 
-    public void setCalendars(Set<CustomCalendar> processes) {
+    public void setCalendars(Set<CustomCalendar> calendars) {
         this.calendars = calendars;
     }
 
