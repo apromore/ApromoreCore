@@ -88,6 +88,7 @@ public class User implements Serializable {
     private Set<Folder> foldersForCreatorId = new HashSet<>();
     private Set<Folder> foldersForModifiedById = new HashSet<>();
     private Set<Process> processes = new HashSet<>();
+    private Set<CustomCalendar> calendars = new HashSet<>();
     private List<SearchHistory> searchHistories = new ArrayList<>();
     private List<HistoryEvent> historyEvents = new ArrayList<>();
 
@@ -388,6 +389,15 @@ public class User implements Serializable {
 
     public void setProcesses(Set<Process> processes) {
         this.processes = processes;
+    }
+
+    @OneToMany(mappedBy = "user")
+    public Set<CustomCalendar> getCalendars() {
+        return this.calendars;
+    }
+
+    public void setCalendars(Set<CustomCalendar> calendars) {
+        this.calendars = calendars;
     }
 
     /**

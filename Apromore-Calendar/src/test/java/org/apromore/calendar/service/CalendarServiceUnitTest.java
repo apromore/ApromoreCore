@@ -38,6 +38,7 @@ import org.apromore.calendar.exception.CalendarAlreadyExistsException;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.commons.mapper.CustomMapper;
 import org.apromore.dao.CustomCalendarRepository;
+import org.apromore.dao.UserRepository;
 import org.apromore.dao.model.CustomCalendar;
 import org.apromore.dao.model.Holiday;
 import org.junit.Before;
@@ -54,6 +55,9 @@ public class CalendarServiceUnitTest {
 
     @Mock
     CustomCalendarRepository calendarRepository;
+
+    @Mock
+    UserRepository userRepository;
 
 
     @Spy
@@ -77,10 +81,11 @@ public class CalendarServiceUnitTest {
         CustomCalendar calendar = new CustomCalendar("Test Desc", ZoneId.of("UTC"));
         calendar.setId(1L);
         when(calendarRepository.findByName(calendar.getName())).thenReturn(null);
+        when(userRepository.findByUsername(anyString())).thenReturn(null);
         when(calendarRepository.saveAndFlush(any(CustomCalendar.class))).thenReturn(calendar);
 
         // When
-        CalendarModel calendarSaved = calendarService.createGenericCalendar(calendar.getName(), true,
+        CalendarModel calendarSaved = calendarService.createGenericCalendar(calendar.getName(), "username", true,
             ZoneId.systemDefault().toString());
 
         // Then
@@ -100,7 +105,7 @@ public class CalendarServiceUnitTest {
 
 
         // When
-        calendarService.createGenericCalendar(calendar.getName(), true,
+        calendarService.createGenericCalendar(calendar.getName(), "username", true,
             ZoneId.systemDefault().toString());
 
         // Then
@@ -120,11 +125,12 @@ public class CalendarServiceUnitTest {
         when(calendarRepository.findByName(originalDescription)).thenReturn(calendar);
         when(calendarRepository.findByName(duplicate1Name)).thenReturn(calendar);
         when(calendarRepository.findByName(expectedName)).thenReturn(null);
+        when(userRepository.findByUsername(anyString())).thenReturn(null);
         when(calendarRepository.saveAndFlush(any(CustomCalendar.class))).thenReturn(calendar);
 
 
         // When
-        CalendarModel calendarSaved = calendarService.createGenericCalendar(originalDescription, true,
+        CalendarModel calendarSaved = calendarService.createGenericCalendar(originalDescription, "username", true,
             ZoneId.systemDefault().toString());
 
         // Then
@@ -146,10 +152,11 @@ public class CalendarServiceUnitTest {
         calendar.setHolidays(Arrays.asList(holiday));
 
         when(calendarRepository.findByName(calendar.getName())).thenReturn(null);
+        when(userRepository.findByUsername(anyString())).thenReturn(null);
         when(calendarRepository.saveAndFlush(any(CustomCalendar.class))).thenReturn(calendar);
 
         // When
-        CalendarModel calendarSaved = calendarService.createGenericCalendar(calendar.getName(), true,
+        CalendarModel calendarSaved = calendarService.createGenericCalendar(calendar.getName(), "username", true,
             ZoneId.systemDefault().toString());
 
         // Then
@@ -172,10 +179,11 @@ public class CalendarServiceUnitTest {
         calendar.setHolidays(Arrays.asList(holiday, holiday));
 
         when(calendarRepository.findByName(calendar.getName())).thenReturn(null);
+        when(userRepository.findByUsername(anyString())).thenReturn(null);
         when(calendarRepository.saveAndFlush(any(CustomCalendar.class))).thenReturn(calendar);
 
         // When
-        CalendarModel calendarSaved = calendarService.createGenericCalendar(calendar.getName(), true,
+        CalendarModel calendarSaved = calendarService.createGenericCalendar(calendar.getName(), "username", true,
             ZoneId.systemDefault().toString());
 
         // Then

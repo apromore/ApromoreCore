@@ -33,12 +33,12 @@ public interface CalendarService {
 
     final String EVENT_TOPIC = "org/apromore/service/CALENDAR";
 
-    public CalendarModel createGenericCalendar(String description, boolean weekendsOff, String zoneId)
+    public CalendarModel createGenericCalendar(String description, String username,  boolean weekendsOff, String zoneId)
         throws CalendarAlreadyExistsException;
 
     CalendarModel getGenericCalendar();
 
-    public CalendarModel createBusinessCalendar(String description, boolean weekendsOff, String zoneId)
+    public CalendarModel createBusinessCalendar(String description, String username, boolean weekendsOff, String zoneId)
         throws CalendarAlreadyExistsException;
 
     public CalendarModel getCalendar(Long id);
