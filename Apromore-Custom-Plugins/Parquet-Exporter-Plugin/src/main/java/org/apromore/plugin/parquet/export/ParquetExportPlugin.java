@@ -87,10 +87,9 @@ public class ParquetExportPlugin extends DefaultPortalPlugin implements LabelSup
             }
 
             APMLogWrapperManager apmLogComboManager = initAPMLogWrapperManagers(lstList);
-            if (apmLogComboManager.getAPMLogComboList().size()<1) {
+            if (apmLogComboManager.getAPMLogComboList().isEmpty()) {
                 LOGGER.error("Select minimum one log for parquet download");
                 ZKMessageCtrl.showInfo(getLabel("dash_wrong_log_select"));
-                return;
             }else if(apmLogComboManager.getAPMLogComboList().size()==1){
                 openExportPopupWindow(apmLogComboManager.get(0));
             }else{
@@ -105,7 +104,7 @@ public class ParquetExportPlugin extends DefaultPortalPlugin implements LabelSup
     }
 
     private void exportParquetLogs(APMLogWrapperManager apmLogComboManager, String charsetVal) {
-        Map<String, String> filesToBeDownloaded = new HashMap<String, String>();
+        Map<String, String> filesToBeDownloaded = new HashMap<>();
         apmLogComboManager.getAPMLogComboList().stream().forEach(apmLogWrapper -> {
             try {
                 String currentFileName = apmLogWrapper.getName();
@@ -123,7 +122,7 @@ public class ParquetExportPlugin extends DefaultPortalPlugin implements LabelSup
 
         if (!filesToBeDownloaded.isEmpty()) {
             try {
-                byte[] zipFiles = makeZipFile(filesToBeDownloaded);
+                byte[] zipFiles = makeZipFileOnParquetFile(filesToBeDownloaded);
                 Filedownload.save(zipFiles, "application/zip", "download.zip");
             } catch (Exception e) {
                 cleanTempFiles(filesToBeDownloaded);
@@ -145,11 +144,13 @@ public class ParquetExportPlugin extends DefaultPortalPlugin implements LabelSup
         return currentFileName;
     }
 
-    private byte[] makeZipFile(Map<String, String> filesDownloaded) throws IOException {
-        try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); ZipOutputStream zos = new ZipOutputStream(baos)) {
+    private byte[] makeZipFileOnParquetFile(Map<String, String> filesDownloaded) throws IOException {
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream() ) {
             byte[] bytes = new byte[2048];
-            for (String fileName : filesDownloaded.keySet()) {
-                String absoluteFilePath = filesDownloaded.get(fileName);
+            ZipOutputStream zos = new ZipOutputStream(baos);
+            for (Map.Entry<String, String> entry:filesDownloaded.entrySet()) {
+                String fileName = entry.getKey();
+                String absoluteFilePath = entry.getValue();
                 try (FileInputStream fis = new FileInputStream(absoluteFilePath);
                      BufferedInputStream bis = new BufferedInputStream(fis)) {
                     zos.putNextEntry(new ZipEntry(fileName + absoluteFilePath.substring(absoluteFilePath.indexOf("."))));
@@ -171,6 +172,7 @@ public class ParquetExportPlugin extends DefaultPortalPlugin implements LabelSup
             try {
                 Files.delete(Path.of(filePath));
             } catch (IOException e) {
+                //Do Nothing
             }
         }
 

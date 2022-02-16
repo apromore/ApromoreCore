@@ -46,16 +46,6 @@ public class APMLogWrapperManager {
     public void add(APMLogWrapper apmLogCombo) {
         apmLogComboList.add(apmLogCombo);
     }
-
-     private int checkNameIndex(String logName) {
-        for(int i = 0; i< apmLogComboList.size(); i++) {
-            String name = apmLogComboList.get(i).getName();
-            if(name.equals(logName)) return i;
-        }
-        return apmLogComboList.size();
-    }
-
-
     public List<APMLogWrapper> getAPMLogComboList() {
         return apmLogComboList;
     }

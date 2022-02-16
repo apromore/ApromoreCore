@@ -84,6 +84,7 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin implements Labe
 
   private static Logger LOGGER = PortalLoggerFactory.getLogger(DownloadSelectionPlugin.class);
 
+  private static final String PARQUET_DOWNLOAD="PARQUET";
   private String label = "Download";
   @Inject
   EventLogService eventLogService;
@@ -212,7 +213,7 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin implements Labe
             exportCSV(logSummary, selectedEncoding.getSelectedItem().getValue());
           } else if (format.getSelectedItem().getLabel().equals("XES")){
             exportXES(logSummary, mainC);
-          }else if (format.getSelectedItem().getLabel().equals("PARQUET")){
+          }else if (format.getSelectedItem().getLabel().equals(PARQUET_DOWNLOAD)){
               callParquetLogsToDownload(mainC,null); //encoding with selected later
           }
           LOGGER.info("User {} downloaded log \"{}\" (id {}) in format {}",
@@ -242,7 +243,7 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin implements Labe
         PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
         try {
             List<Integer> selectedLogs =
-                mainController.getSelectedElements().stream().map(item -> item.getId()).collect(Collectors.toList());
+                mainController.getSelectedElements().stream().map(SummaryType::getId).collect(Collectors.toList());
             Sessions.getCurrent().setAttribute("logParquetDownload", selectedLogs);
             Sessions.getCurrent().setAttribute("encodingLogParquet", encoding);
             PortalPlugin plugin = PortalPluginResolver.getPortalPluginMap().get(PluginCatalog.PLUGIN_PARQUET_DOWNLOAD);
@@ -275,9 +276,7 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin implements Labe
             format.addEventListener("onCheck", new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
-              if (format.getSelectedItem().getLabel().equals("CSV")||format.getSelectedItem().getLabel().equals("PARQUET")) {
-                rowEncoding.setVisible(true);
-              } else {
+              if (!(format.getSelectedItem().getLabel().equals("CSV")||format.getSelectedItem().getLabel().equals(PARQUET_DOWNLOAD))) {
                 rowEncoding.setVisible(false);
               }
             }
@@ -289,7 +288,7 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin implements Labe
                 if (format.getSelectedItem().getLabel().equals("CSV")) {
                     exportFiles(mainController, format.getSelectedItem().getLabel(),
                         selectedEncoding.getSelectedItem().getValue());
-                } else if (format.getSelectedItem().getLabel().equals("PARQUET")) {
+                } else if (format.getSelectedItem().getLabel().equals(PARQUET_DOWNLOAD)) {
                     callParquetLogsToDownload(mainController, selectedEncoding.getSelectedItem().getValue());
                 } else {
                     exportFiles(mainController, format.getSelectedItem().getLabel(), "");
