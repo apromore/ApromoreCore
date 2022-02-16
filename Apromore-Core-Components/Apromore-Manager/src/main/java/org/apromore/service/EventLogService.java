@@ -161,6 +161,14 @@ public interface EventLogService {
   List<Log> getLogListFromCalendarId(Long calendarId);
 
   /**
+   * Find logs associated with a calendar and owned by a user.
+   * @param calendarId calendar id.
+   * @param username username of the log owner.
+   * @return A list of logs owned by the user with the calendar applied.
+   */
+  List<Log> getLogListFromCalendarId(Long calendarId, String username);
+
+  /**
    * Find perspective tag that are linked to the specified Log
    * @param logId Log Id
    * @return Perspective tags

@@ -45,6 +45,7 @@ import org.apromore.zk.event.CalendarEvents;
 import org.apromore.zk.label.LabelSupplier;
 import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
+import org.springframework.util.CollectionUtils;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -241,8 +242,17 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
     public void removeCalendar(CalendarModel calendarItem) {
         try {
             // Update listbox. onSelect is sent when an item is selected or deselected.
-            calendarListModel.remove(calendarItem);
-            calendarService.deleteCalendar(calendarItem.getId());
+            List<Log> relatedLogs = eventLogService.getLogListFromCalendarId(calendarItem.getId(), username);
+            relatedLogs.forEach(l -> applyCalendarForLog(l.getId(), null));
+
+            if (CollectionUtils.isEmpty(eventLogService.getLogListFromCalendarId(calendarItem.getId()))) {
+                calendarListModel.remove(calendarItem);
+                calendarService.deleteCalendar(calendarItem.getId());
+            }
+
+            if (calendarItem.getId().equals(appliedCalendarId)) {
+                appliedCalendarId = null;
+            }
             updateApplyCalendarButton();
             restoreBtn.setDisabled(
                 !canEdit || calendarService.getCalendars().stream().noneMatch(c -> c.getId().equals(appliedCalendarId))
