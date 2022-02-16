@@ -182,7 +182,6 @@ public class ParquetExport extends AbstractParquetProducer {
                                        List<GenericData.Record> data,
                                        Schema schema) {
         Path outPath = new Path(filename);
-
         // delete if exist
         try {
             Files.delete(java.nio.file.Paths.get(filename));
@@ -196,6 +195,24 @@ public class ParquetExport extends AbstractParquetProducer {
         } catch (Exception e) {
             LoggerUtil.getLogger(ParquetExport.class).error("Failed to write parquet file", e);
         }
+    }
+
+    public static java.nio.file.Path writeAndReturnParquetFilePath(String filename,
+                                                                   List<GenericData.Record> data,
+                                                                   Schema schema) {
+        Path outPath = new Path(filename);
+        try {
+            Files.delete(java.nio.file.Paths.get(filename));
+        } catch (Exception ignored) {
+            //Do nothing
+        }
+        try {
+            writeToParquet(data, outPath, schema);
+            return java.nio.file.Paths.get(filename); //Temp File will be deleted after ZIP
+        } catch (Exception e) {
+            LoggerUtil.getLogger(ParquetExport.class).error("Failed to write parquet file", e);
+        }
+        return null;
     }
 
     protected static void writeToParquet(List<GenericData.Record> recordsToWrite,

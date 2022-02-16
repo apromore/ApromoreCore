@@ -40,12 +40,7 @@ public class APMLogWrapperManager {
     }
 
     public void put(int id, String name, APMLog apmLog, XLog xLog, String color, String label) {
-        if(!contains(name)) {
-            apmLogComboList.add(new APMLogWrapper(id, name, apmLog, xLog, color, label));
-        }else{
-            int nameIndex = checkNameIndex(name);
-            apmLogComboList.set(nameIndex, new APMLogWrapper(id, name, apmLog, xLog, color, label));
-        }
+        apmLogComboList.add(new APMLogWrapper(id, name, apmLog, xLog, color, label));
     }
 
     public void add(APMLogWrapper apmLogCombo) {

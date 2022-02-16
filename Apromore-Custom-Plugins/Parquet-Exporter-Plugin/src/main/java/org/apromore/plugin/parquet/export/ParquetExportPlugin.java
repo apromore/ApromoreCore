@@ -21,11 +21,19 @@
  */
 package org.apromore.plugin.parquet.export;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 import javax.inject.Inject;
 import org.apromore.apmlog.APMLog;
 import org.apromore.plugin.parquet.export.core.data.APMLogWrapper;
@@ -41,11 +49,13 @@ import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.service.EventLogService;
 import org.apromore.zk.label.LabelSupplier;
+import org.apromore.zk.notification.Notification;
 import org.deckfour.xes.model.XLog;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Sessions;
+import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Window;
 
 @Component
@@ -76,20 +86,97 @@ public class ParquetExportPlugin extends DefaultPortalPlugin implements LabelSup
                 return;
             }
 
-            APMLogWrapperManager apmLogComboManager = initAPMLogComboManagers(lstList);
-            if (apmLogComboManager.getAPMLogComboList().size()!=1) {
-                LOGGER.error("Select one log for parquet download");
+            APMLogWrapperManager apmLogComboManager = initAPMLogWrapperManagers(lstList);
+            if (apmLogComboManager.getAPMLogComboList().size()<1) {
+                LOGGER.error("Select minimum one log for parquet download");
                 ZKMessageCtrl.showInfo(getLabel("dash_wrong_log_select"));
                 return;
+            }else if(apmLogComboManager.getAPMLogComboList().size()==1){
+                openExportPopupWindow(apmLogComboManager.get(0));
+            }else{
+               exportParquetLogs(apmLogComboManager,(String) Sessions.getCurrent().getAttribute("encodingLogParquet"));
             }
-            onExportParquetConfig(apmLogComboManager.get(0));
+
+
         } catch (Exception e) {
             LOGGER.error(LOG_ERR_MSG_KEY, e);
             ZKMessageCtrl.showInfo(getLabel("dash_parquet_gen_fail"));
         }
     }
 
-    private void onExportParquetConfig(APMLogWrapper apmLogCombo) {
+    private void exportParquetLogs(APMLogWrapperManager apmLogComboManager, String charsetVal) {
+        Map<String, String> filesToBeDownloaded = new HashMap<String, String>();
+        apmLogComboManager.getAPMLogComboList().stream().forEach(apmLogWrapper -> {
+            try {
+                String currentFileName = apmLogWrapper.getName();
+                currentFileName = getCurrenFileName(filesToBeDownloaded, currentFileName);
+                Path path = new ParquetExporterService(apmLogWrapper).saveParquetFile(charsetVal,currentFileName);
+                if(path!=null) {
+                    filesToBeDownloaded.put(currentFileName, path.toFile().getAbsolutePath());
+                }
+            } catch (Exception e) {
+                cleanTempFiles(filesToBeDownloaded);
+                filesToBeDownloaded.clear();
+                LOGGER.error("Export parquet logs failed", e);
+            }
+        });
+
+        if (!filesToBeDownloaded.isEmpty()) {
+            try {
+                byte[] zipFiles = makeZipFile(filesToBeDownloaded);
+                Filedownload.save(zipFiles, "application/zip", "download.zip");
+            } catch (Exception e) {
+                cleanTempFiles(filesToBeDownloaded);
+                LOGGER.error("Export process model/log failed", e);
+                Notification.error(getLabel("unableDownloadModel"));
+            }
+        }
+
+    }
+
+    private String getCurrenFileName(Map<String, String> filesToBeDownloaded, String currentFileName) {
+        if (filesToBeDownloaded!=null && filesToBeDownloaded.get(currentFileName) != null) {
+            int i = 1;
+            while (filesToBeDownloaded.get(currentFileName + "_" + i) != null) {
+                i++;
+            }
+            currentFileName = currentFileName + "_" + i;
+        }
+        return currentFileName;
+    }
+
+    private byte[] makeZipFile(Map<String, String> filesDownloaded) throws IOException {
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); ZipOutputStream zos = new ZipOutputStream(baos)) {
+            byte[] bytes = new byte[2048];
+            for (String fileName : filesDownloaded.keySet()) {
+                String absoluteFilePath = filesDownloaded.get(fileName);
+                try (FileInputStream fis = new FileInputStream(absoluteFilePath);
+                     BufferedInputStream bis = new BufferedInputStream(fis)) {
+                    zos.putNextEntry(new ZipEntry(fileName + absoluteFilePath.substring(absoluteFilePath.indexOf("."))));
+                    int bytesRead;
+                    while ((bytesRead = bis.read(bytes)) != -1) {
+                        zos.write(bytes, 0, bytesRead);
+                    }
+                    zos.closeEntry();
+                }
+                Files.delete(Path.of(absoluteFilePath));
+            }
+            zos.close();
+            return baos.toByteArray();
+        }
+    }
+
+    private void cleanTempFiles(Map<String, String> filesToBeDownloaded) {
+        for (String filePath : filesToBeDownloaded.values()) {
+            try {
+                Files.delete(Path.of(filePath));
+            } catch (IOException e) {
+            }
+        }
+
+    }
+
+    private void openExportPopupWindow(APMLogWrapper apmLogCombo) {
         try {
             Window wd = (Window) PageUtil.getPageWithArgument(
                 "parquetExporter.zul", null, Map.of("service", new ParquetExporterService(apmLogCombo)));
@@ -99,7 +186,7 @@ public class ParquetExportPlugin extends DefaultPortalPlugin implements LabelSup
         }
     }
 
-    private APMLogWrapperManager initAPMLogComboManagers(List<Integer> logSummaries) {
+    private APMLogWrapperManager initAPMLogWrapperManagers(List<Integer> logSummaries) {
         APMLogWrapperManager apmLogComboManager = new APMLogWrapperManager();
         for (int i=0;i<logSummaries.size();i++) {
             Integer logIdInt=logSummaries.get(i);
