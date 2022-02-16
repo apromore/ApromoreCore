@@ -18,9 +18,8 @@
 package org.apromore.plugin.parquet.export.service;
 
 
-
-
 import java.nio.charset.Charset;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +34,7 @@ import org.apromore.apmlog.xes.XESAttributeCodes;
 import org.apromore.plugin.parquet.export.types.EncodeOption;
 import org.apromore.plugin.parquet.export.core.data.APMLogWrapper;
 import org.apromore.plugin.parquet.export.util.LabelUtil;
+import org.apromore.plugin.parquet.export.util.LoggerUtil;
 import org.apromore.plugin.parquet.export.util.Util;
 import org.apromore.plugin.parquet.export.types.ParquetCell;
 import org.apromore.plugin.parquet.export.types.ParquetCol;
@@ -334,5 +334,24 @@ public class ParquetExporterService extends AbstractParquetProducer {
         }
 
         return data;
+    }
+
+    public Path saveParquetFile(String chartSet,String logFileName) {
+       try {
+           if (!isDownloadAllowed()) {
+               return null;
+           }
+           initRows();
+           String charsetVal = encodeOptions.stream()
+               .filter(item -> item.getValue().equals(chartSet))
+               .map(EncodeOption::getValue)
+               .findFirst().orElse(UTF8);
+           String filename = getValidParquetLabel(logFileName) + ".parquet";
+           Schema schema = getSchema(charsetVal);
+           return ParquetExport.writeAndReturnParquetFilePath(filename, getData(schema), schema);
+       }catch(Exception ex){
+           LoggerUtil.getLogger(ParquetExporterService.class).error("Failed to generate parquet file", ex);
+       }
+       return null;
     }
 }
