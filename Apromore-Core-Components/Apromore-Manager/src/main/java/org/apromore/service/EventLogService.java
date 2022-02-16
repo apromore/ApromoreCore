@@ -194,7 +194,13 @@ public interface EventLogService {
   boolean hasWritePermissionOnLog(User user, List<Integer> logIds);
 
   /**
-   * Get All CustomCalendars
+   * Get All CustomCalendars.
     */
   List<CalendarModel> getAllCustomCalendars();
+
+  /**
+   * Get All CustomCalendars owned by a user.
+   */
+  List<CalendarModel> getAllCustomCalendars(String username);
+
 }

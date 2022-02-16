@@ -28,8 +28,8 @@ package org.apromore.portal.controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.PortalPlugin;
@@ -50,7 +50,7 @@ import org.zkoss.zul.Messagebox;
 
 public class CalendarPopupLogSubMenuController extends PopupLogSubMenuController {
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(CalendarPopupLogSubMenuController.class);
-    private static final String FAILED_LAUNCH_CALENDAR="portal_failedLaunchCustomCalendar_message";
+    private static final String FAILED_LAUNCH_CALENDAR = "portal_failedLaunchCustomCalendar_message";
 
     public CalendarPopupLogSubMenuController(PopupMenuController popupMenuController, MainController mainController,
                                              Menupopup popupMenu, LogSummaryType logSummaryType) {
@@ -66,16 +66,19 @@ public class CalendarPopupLogSubMenuController extends PopupLogSubMenuController
             subMenu.setImage(subMenuImage);
             Menupopup menuPopup = new Menupopup();
             popupMenuController.addMenuitem(menuPopup, new MenuItem(PluginCatalog.PLUGIN_CREATE_NEW_CALENDAR));
-            List<CalendarModel> calendarModels=null;
-            calendarModels=mainController.getEventLogService().getAllCustomCalendars();
-            if(calendarModels==null){
-                calendarModels=new ArrayList<>();
+            String currentUser = UserSessionManager.getCurrentUser().getUsername();
+            List<CalendarModel> calendarModels = mainController.getEventLogService().getAllCustomCalendars(currentUser);
+            if (calendarModels == null) {
+                calendarModels = new ArrayList<>();
             }
-            CalendarModel selectedCalendar=null;
-            if(mainController.getEventLogService().getCalendarIdFromLog(logSummaryType.getId())>0){
-                selectedCalendar=mainController.getEventLogService().getCalendarFromLog(logSummaryType.getId());
+            CalendarModel selectedCalendar = null;
+            if (mainController.getEventLogService().getCalendarIdFromLog(logSummaryType.getId()) > 0) {
+                selectedCalendar = mainController.getEventLogService().getCalendarFromLog(logSummaryType.getId());
             }
-            fetchAndConstructMenuForCalendar(menuPopup, calendarModels,selectedCalendar);
+            if (selectedCalendar != null && !calendarModels.contains(selectedCalendar)) {
+                calendarModels.add(selectedCalendar);
+            }
+            fetchAndConstructMenuForCalendar(menuPopup, calendarModels, selectedCalendar);
             subMenu.appendChild(menuPopup);
             popupMenu.appendChild(subMenu);
         }
