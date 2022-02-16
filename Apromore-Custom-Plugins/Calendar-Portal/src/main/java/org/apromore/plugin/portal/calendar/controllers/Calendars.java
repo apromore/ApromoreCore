@@ -22,6 +22,7 @@
 
 package org.apromore.plugin.portal.calendar.controllers;
 
+import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Arrays;
@@ -277,7 +278,7 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
     public void onClickAddNewCalendar() {
         CalendarModel model;
         try {
-            String calendarName = String.format(getLabels().getString("created_default_cal_message"),
+            String calendarName = MessageFormat.format(getLabels().getString("created_default_cal_message"),
                 DateTimeUtils.humanize(LocalDateTime.now()), username);
             model = calendarService.createBusinessCalendar(calendarName, username, true,
                 ZoneId.systemDefault().toString());
@@ -312,8 +313,8 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
                     LOGGER.error("Not Authorized to create calendar!");
                     return;
                 }
-                String msg = getLabels().getString("created_default_cal_message");
-                String calendarName = msg + " " + DateTimeUtils.humanize(LocalDateTime.now());
+                String calendarName = MessageFormat.format(getLabels().getString("created_default_cal_message"),
+                    DateTimeUtils.humanize(LocalDateTime.now()), username);
                 CalendarModel model =
                     calendarService.createBusinessCalendar(calendarName, username, true,
                         ZoneId.systemDefault().toString());
