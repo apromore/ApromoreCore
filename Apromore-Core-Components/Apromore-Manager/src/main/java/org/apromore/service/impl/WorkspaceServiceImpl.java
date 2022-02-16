@@ -456,7 +456,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     newLog.setDomain(currentLog.getDomain());
     newLog.setRanking(currentLog.getRanking());
     newLog.setFilePath(currentLog.getFilePath());
-    newLog.setUser(currentLog.getUser());
+    newLog.setUser(newUser);
     newLog.setFolder(newFolder);
     newLog.setCreateDate(now);
 
@@ -511,19 +511,22 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         }
 
         newLog.setStorage(storageRepository.saveAndFlush(storage));
+        LOGGER.info("User {} copy Log {} to folder {}", userName, currentLog.getName(), null == newFolder ?
+                "Home folder" : newFolder.getName());
       }
     }
 
     // Link old_log's perspective and schema mapping metadata to new log, since they are immutable once created
     Set<Usermetadata> usermetadataSet = currentLog.getUsermetadataSet();
+    Set<Usermetadata> us = newLog.getUsermetadataSet();
     for (Usermetadata u : usermetadataSet) {
-      Set<Usermetadata> us = newLog.getUsermetadataSet();
       if (UserMetadataTypeEnum.CSV_IMPORTER.getUserMetadataTypeId().equals(u.getUsermetadataType().getId())
       || UserMetadataTypeEnum.PERSPECTIVE_TAG.getUserMetadataTypeId().equals(u.getUsermetadataType().getId())) {
         us.add(u);
+        LOGGER.debug("Link user metadata type:{} id:{} to new Log id:{} during copy", u.getUsermetadataType().getType(),
+                u.getId(), newLog.getId());
       }
     }
-    usermetadataRepo.saveAll(usermetadataSet);
 
     // Persist
     try {
