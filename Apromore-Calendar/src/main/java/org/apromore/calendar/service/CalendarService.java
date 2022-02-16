@@ -45,6 +45,8 @@ public interface CalendarService {
 
     public List<CalendarModel> getCalendars();
 
+    public List<CalendarModel> getCalendars(String username);
+
     public void deleteCalendar(Long calendarId);
 
     public void updateHoliday(Long id, List<HolidayModel> holidayModels) throws CalendarNotExistsException;

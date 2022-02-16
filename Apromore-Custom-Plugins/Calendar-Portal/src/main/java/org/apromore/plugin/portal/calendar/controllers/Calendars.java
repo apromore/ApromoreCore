@@ -191,7 +191,11 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
     }
 
     public void populateCalendarList() {
-        List<CalendarModel> models = calendarService.getCalendars();
+        List<CalendarModel> models = calendarService.getCalendars(username);
+        if (appliedCalendarId != null && appliedCalendarId > 0
+            && models.stream().noneMatch(c -> c.getId().equals(appliedCalendarId))) {
+            models.add(calendarService.getCalendar(appliedCalendarId));
+        }
         calendarListModel.clear();
         for (CalendarModel model : models) {
             calendarListModel.add(model);
@@ -273,8 +277,8 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
     public void onClickAddNewCalendar() {
         CalendarModel model;
         try {
-            String msg = getLabels().getString("created_default_cal_message");
-            String calendarName = msg + " " + DateTimeUtils.humanize(LocalDateTime.now());
+            String calendarName = String.format(getLabels().getString("created_default_cal_message"),
+                DateTimeUtils.humanize(LocalDateTime.now()), username);
             model = calendarService.createBusinessCalendar(calendarName, username, true,
                 ZoneId.systemDefault().toString());
             populateCalendarList();
@@ -290,7 +294,7 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
                     .createComponents(PageUtils.getPageDefinition("calendar/zul/calendar.zul"), null, arg);
                 window.doModal();
             } catch (Exception e) {
-                msg = getLabels().getString("failed_create_message");
+                String msg = getLabels().getString("failed_create_message");
                 LOGGER.error(msg, e);
                 Notification.error(msg);
             }

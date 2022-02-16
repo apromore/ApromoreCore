@@ -29,6 +29,7 @@ import java.time.OffsetTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
 import javax.transaction.Transactional;
 import lombok.Setter;
@@ -141,6 +142,18 @@ public class CustomCalendarService implements CalendarService {
 
         return calendarModels;
 
+    }
+
+    @Override
+    public List<CalendarModel> getCalendars(String username) {
+        Set<CustomCalendar> calendars = calendarRepo.findByUser(userRepository.findByUsername(username));
+        List<CalendarModel> calendarModels = new ArrayList<>();
+
+        for (CustomCalendar c : calendars) {
+            calendarModels.add(modelMapper.getMapper().map(c, CalendarModel.class));
+        }
+
+        return calendarModels;
     }
 
     private CustomCalendar createCalendar(String description, String username, boolean weekendsOff, OffsetTime start,
