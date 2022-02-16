@@ -21,9 +21,9 @@
   -->
 
 
-<window id="perspectiveDetailsWindow" mode="overlapped" width="700px" sizable="true" maximizable="true" closable="true" position="center"
+<window id="perspectiveDetailsWindow" mode="overlapped" width="700px"  height="427px" sizable="true" maximizable="true" closable="true" position="center"
         contentStyle="overflow:auto">
-  <listbox id="perspectiveDetailsList">
+  <listbox id="perspectiveDetailsList"  vflex="1" >
     <listhead sizable="true">
       <listheader id="perspectiveDetailName" label="Value" width="45%" sort="auto(value)"/>
       <listheader label="${arg.pdLabels.detailsActivityInstances_text}" width="20%" sort="auto(occurrences)"/>
