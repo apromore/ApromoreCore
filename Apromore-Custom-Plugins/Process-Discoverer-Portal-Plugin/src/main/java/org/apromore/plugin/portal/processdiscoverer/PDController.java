@@ -31,11 +31,7 @@ import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.plugin.portal.logfilter.generic.LogFilterPlugin;
 import org.apromore.plugin.portal.processdiscoverer.actions.ActionManager;
 import org.apromore.plugin.portal.processdiscoverer.components.*;
-import org.apromore.plugin.portal.processdiscoverer.data.ConfigData;
-import org.apromore.plugin.portal.processdiscoverer.data.ContextData;
-import org.apromore.plugin.portal.processdiscoverer.data.InvalidDataException;
-import org.apromore.plugin.portal.processdiscoverer.data.OutputData;
-import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
+import org.apromore.plugin.portal.processdiscoverer.data.*;
 import org.apromore.plugin.portal.processdiscoverer.eventlisteners.AnimationController;
 import org.apromore.plugin.portal.processdiscoverer.eventlisteners.BPMNExportController;
 import org.apromore.plugin.portal.processdiscoverer.eventlisteners.LogExportController;
@@ -83,8 +79,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.apromore.logman.attribute.graph.MeasureType.DURATION;
-import static org.apromore.logman.attribute.graph.MeasureType.FREQUENCY;
+import static org.apromore.logman.attribute.graph.MeasureType.*;
 
 /**
  * PDController is the top-level application object to manage PD plugin as a
@@ -563,7 +558,17 @@ public class PDController extends BaseController implements Composer<Component>,
                     Messagebox.INFORMATION);
             return;
         }
-
+        try {
+            if (userOptions.getPrimaryType() == COST || userOptions.getSecondaryType() == COST) {
+                processAnalyst.updateCostTable();
+                String key = userOptions.getMainAttributeKey();
+                processAnalyst.setMainAttribute(key);
+                timeStatsController.updateUI(contextData);
+                logStatsController.updateUI(contextData);
+            }
+        } catch (NotFoundAttributeException e) {
+            return;
+        }
         boolean isNormalOrdering = graphSettingsController.getNormalOrdering();
         MeasureType fixedType = userOptions.getFixedType();
         if (isNormalOrdering && fixedType == FREQUENCY || !isNormalOrdering && fixedType == DURATION) {

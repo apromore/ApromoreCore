@@ -476,11 +476,13 @@ public class ViewSettingsController extends VisualController {
     ) {
         parent.getUserOptions().setRetainZoomPan(true);
 
-        parent.getUserOptions().setPrimaryType(primaryType == COST ? DURATION : primaryType);
+        // parent.getUserOptions().setPrimaryType(primaryType == COST ? DURATION : primaryType);
+        parent.getUserOptions().setPrimaryType(primaryType);
         parent.getUserOptions().setPrimaryAggregation(primaryAggregation);
         parent.getUserOptions().setPrimaryRelation(primaryRelation);
 
-        parent.getUserOptions().setSecondaryType(secondaryType == COST ? DURATION : secondaryType);
+        // parent.getUserOptions().setSecondaryType(secondaryType == COST ? DURATION : secondaryType);
+        parent.getUserOptions().setSecondaryType(secondaryType);
         parent.getUserOptions().setSecondaryAggregation(secondaryAggregation);
         parent.getUserOptions().setSecondaryRelation(secondaryRelation);
 

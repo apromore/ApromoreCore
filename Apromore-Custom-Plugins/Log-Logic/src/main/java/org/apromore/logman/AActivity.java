@@ -25,6 +25,7 @@ package org.apromore.logman;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apromore.calendar.model.CalendarModel;
 import org.apromore.logman.utils.LogUtils;
 import org.deckfour.xes.extension.std.XTimeExtension;
 import org.deckfour.xes.model.XAttribute;
@@ -87,7 +88,16 @@ public class AActivity extends XEventImpl {// implements Map.Entry<XEvent,XEvent
     public long getOriginalDuration() {
         return (getOriginalEndTimestamp() - getOriginalStartTimestamp());
     }
-    
+
+    public double getOriginalCost(Map<String, Double> costTable, CalendarModel calendarModel) {
+        String role = getAttributeMap().get("org:role");
+        double multiplier = costTable.getOrDefault(role, 1.0);
+        double cost = Double.valueOf(calendarModel.getDurationMillis(
+            getOriginalStartTimestamp(), getOriginalEndTimestamp()));
+        cost = (cost / 3600000) * multiplier; // convert ms to hour
+        return cost;
+    }
+
     public long getOriginalDurationForAttribute(String attributeKey) {
         XAttribute startAtt = this.getOriginalStartAttribute(attributeKey);
         XAttribute endAtt = this.getOriginalCompleteAttribute(attributeKey);
@@ -101,7 +111,21 @@ public class AActivity extends XEventImpl {// implements Map.Entry<XEvent,XEvent
             return this.getOriginalDuration();
         }
     }
-    
+
+    public double getOriginalCostForAttribute(String attributeKey, Map<String, Double> costTable, CalendarModel calendarModel) {
+        XAttribute startAtt = this.getOriginalStartAttribute(attributeKey);
+        XAttribute endAtt = this.getOriginalCompleteAttribute(attributeKey);
+        if (startAtt == null || endAtt == null) {
+            return 0;
+        }
+        else if (!LogUtils.getValueString(startAtt).equalsIgnoreCase(LogUtils.getValueString(endAtt))) {
+            return 0;
+        }
+        else {
+            return this.getOriginalCost(costTable, calendarModel);
+        }
+    }
+
     ////////////////////////// ACTIVE METHODS //////////////////////////////////////
     
     private XAttribute getStartAttribute(String attributeKey) {

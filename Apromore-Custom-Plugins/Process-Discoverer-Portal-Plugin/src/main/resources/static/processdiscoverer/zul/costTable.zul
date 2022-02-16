@@ -23,22 +23,32 @@
 
 <window id="costTableWindow" width="700px" height="427px" mode="overlapped" sizable="true" maximizable="true" closable="true" position="center"
         contentStyle="overflow:auto">
-  <listbox id="costTableListbox" vflex="1" mold="paging" pageSize="100">
-    <listhead sizable="true">
-      <listheader label="${arg.pdLabels.costAttributeID_text}" sort="auto(attributeId)" onCreate="self.sort(true);"/>
-      <listheader label="${arg.pdLabels.costValue_text}" />
-    </listhead>
-    <template name="model">
-      <listitem>
-        <listcell label="${each.attributeId}" />
-        <listcell>
-          <doublebox constraint="no negative,no empty" hflex="1" value="${each.costValue}" forward="onChanging=costTableListbox.onUpdateCostValue, onChange=costTableListbox.onUpdateCostValue"
-          />
-        </listcell>
-      </listitem>
-    </template>
-  </listbox>
-  <div sclass="ap-window-footer-actions">
-    <button id="applyCost" label="Apply Cost" forward="onClick=costTableWindow.onApplyCost" />
-  </div>
+  <vbox hflex="1" vflex="1" spacing="0">
+    <listbox id="costTableListbox" vflex="1" hflex="1" mold="paging" pageSize="100">
+      <listhead sizable="true">
+        <listheader label="${arg.pdLabels.costAttributeID_text}" sort="auto(attributeId)" onCreate="self.sort(true);"/>
+        <listheader label="${arg.pdLabels.costValue_text}" />
+      </listhead>
+      <template name="model">
+        <listitem>
+          <listcell label="${each.attributeId}" />
+          <listcell>
+            <doublebox constraint="no negative,no empty" hflex="1" value="${each.costValue}" forward="onChanging=costTableListbox.onUpdateCostValue, onChange=costTableListbox.onUpdateCostValue"
+            />
+          </listcell>
+        </listitem>
+      </template>
+    </listbox>
+    <div height="40px" hflex="1" style="padding:4px; padding-left: 10px;">
+      <combobox id="costTableCurrency" forward="onChanging=costTableWindow.onChangeCurrency, onChange=costTableWindow.onChangeCurrency">
+        <comboitem label="AUD" value="AUD" />
+        <comboitem label="USD" value="USD" />
+        <comboitem label="EUR" value="EUR" />
+        <comboitem label="GBP" value="GBP" />
+      </combobox>
+    </div>
+    <div height="42px" hflex="1" sclass="ap-window-footer-actions">
+      <button id="applyCost" label="Apply Cost" forward="onClick=costTableWindow.onApplyCost" />
+    </div>
+  </vbox>
 </window>

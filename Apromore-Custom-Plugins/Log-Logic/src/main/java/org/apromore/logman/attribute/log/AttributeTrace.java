@@ -26,6 +26,7 @@ import java.util.BitSet;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apromore.calendar.model.CalendarModel;
 import org.apromore.logman.AActivity;
 import org.apromore.logman.ATrace;
 import org.apromore.logman.Constants;
@@ -35,10 +36,13 @@ import org.apromore.logman.attribute.log.variants.AttributeTraceVariants;
 import org.eclipse.collections.api.list.ListIterable;
 import org.eclipse.collections.api.list.primitive.IntList;
 import org.eclipse.collections.api.list.primitive.LongList;
+import org.eclipse.collections.api.list.primitive.DoubleList;
 import org.eclipse.collections.api.list.primitive.MutableIntList;
 import org.eclipse.collections.api.list.primitive.MutableLongList;
+import org.eclipse.collections.api.list.primitive.MutableDoubleList;
 import org.eclipse.collections.impl.factory.primitive.IntLists;
 import org.eclipse.collections.impl.factory.primitive.LongLists;
+import org.eclipse.collections.impl.factory.primitive.DoubleLists;
 
 /**
  * AttributeTrac represents a sequence of activities created from an ATrace based on a chosen attribute.
@@ -70,6 +74,7 @@ public class AttributeTrace {
     private MutableLongList originalStartTimeTrace = LongLists.mutable.empty();
     private MutableLongList originalEndTimeTrace = LongLists.mutable.empty();
     private MutableLongList originalDurationTrace = LongLists.mutable.empty();
+    private MutableDoubleList originalCostTrace = DoubleLists.mutable.empty();
     
     // Filter bitset
     private BitSet originalEventStatus;
@@ -79,16 +84,17 @@ public class AttributeTrace {
     private MutableLongList activeStartTimeTrace = LongLists.mutable.empty();
     private MutableLongList activeEndTimeTrace = LongLists.mutable.empty();
     private MutableLongList activeDurationTrace = LongLists.mutable.empty();
+    private MutableDoubleList activeCostTrace = DoubleLists.mutable.empty();
     
     // Different views on traces
     private AttributeTraceGraph activeGraph;
     private AttributeTraceVariants variants;
     
-    public AttributeTrace(IndexableAttribute attribute, ATrace originalTrace) {
+    public AttributeTrace(IndexableAttribute attribute, ATrace originalTrace, Map<String, Double> costTable, CalendarModel calendarModel) {
         this.originalTrace = originalTrace;
         this.attribute = attribute;
         this.activeGraph = new AttributeTraceGraph(this);
-        initializeOriginalData();
+        initializeOriginalData(costTable, calendarModel);
         updateOriginalEventStatus(originalTrace.getOriginalActivityStatusWithStartEnd());
     }
     
@@ -102,19 +108,20 @@ public class AttributeTrace {
     
     // Set this trace to the new perspective attribute including the original data
     // If the trace is being filtered, apply the same filter to the new perspective
-    public void setAttribute(IndexableAttribute newAttribute) {
+    public void setAttribute(IndexableAttribute newAttribute, Map<String, Double> costTable, CalendarModel calendarModel) {
         this.attribute = newAttribute;
         this.activeGraph.resetToAttribute(attribute);
-        initializeOriginalData();
+        initializeOriginalData(costTable, calendarModel);
         updateOriginalEventStatus(originalTrace.getOriginalActivityStatusWithStartEnd());
     }
     
-    private void initializeOriginalData() {
+    private void initializeOriginalData(Map<String, Double> costTable, CalendarModel calendarModel) {
         originalActIndexes.clear();
         originalValueTrace.clear();
         originalStartTimeTrace.clear();
         originalEndTimeTrace.clear();
         originalDurationTrace.clear();
+        originalCostTrace.clear();
 
         ListIterable<AActivity> acts = originalTrace.getOriginalActivities();
         for(int i=0; i<acts.size();i++) {
@@ -132,9 +139,11 @@ public class AttributeTrace {
                 // Duration trace
                 if (attribute.getKey().equals(Constants.ATT_KEY_CONCEPT_NAME)) {
                     originalDurationTrace.add(act.getOriginalDuration());
+                    originalCostTrace.add(act.getOriginalCost(costTable, calendarModel));
                 }
                 else {
                     originalDurationTrace.add(act.getOriginalDurationForAttribute(attribute.getKey()));
+                    originalCostTrace.add(act.getOriginalCostForAttribute(attribute.getKey(), costTable, calendarModel));
                 }
             }
         }
@@ -156,6 +165,10 @@ public class AttributeTrace {
             
             originalDurationTrace.addAtIndex(0, 0);
             originalDurationTrace.add(0);
+
+            originalCostTrace.addAtIndex(0, 0);
+            originalCostTrace.add(0);
+
         }
         
         this.originalEventStatus = originalTrace.getOriginalActivityStatusWithStartEnd();
@@ -184,13 +197,16 @@ public class AttributeTrace {
                 activeStartTimeTrace.add(originalStartTimeTrace.get(i));
                 activeEndTimeTrace.add(originalEndTimeTrace.get(i));
                 activeDurationTrace.add(originalDurationTrace.get(i));
+                activeCostTrace.add(originalCostTrace.get(i));
                 
                 // Graph data
                 activeGraph.addNode(node);
                 
                 long nodeDur = originalDurationTrace.get(i);
+                double nodeCost = originalCostTrace.get(i);
                 activeGraph.incrementNodeTotalFrequency(node, 1);
                 activeGraph.collectNodeDuration(node, nodeDur);
+                activeGraph.collectNodeCost(node, nodeCost);
                 activeGraph.collectNodeInterval(node, originalStartTimeTrace.get(i), originalEndTimeTrace.get(i));
                 
                 if (preIndex >= 0) {
@@ -201,6 +217,8 @@ public class AttributeTrace {
                     activeGraph.addArc(arc);
                     activeGraph.incrementArcTotalFrequency(arc, 1);
                     activeGraph.collectArcDuration(arc, arcDur);
+                    // Set arcCost to 0 for now
+                    activeGraph.collectArcCost(arc, 0);
                     activeGraph.collectArcInterval(arc, originalEndTimeTrace.get(preIndex), originalStartTimeTrace.get(i));
                 }
                 preIndex = i;
@@ -229,21 +247,25 @@ public class AttributeTrace {
             activeGraph.addNode(sourceNode);
             activeGraph.incrementNodeTotalFrequency(sourceNode, 1);
             activeGraph.collectNodeDuration(sourceNode, 0);
+            activeGraph.collectNodeCost(sourceNode, 0);
             
             int sinkNode = attribute.getMatrixGraph().getNodeFromValueIndex(activeValueTrace.get(activeValueTrace.size()-1));
             activeGraph.addNode(sinkNode);
             activeGraph.incrementNodeTotalFrequency(sinkNode, 1);
             activeGraph.collectNodeDuration(sinkNode, 0);
+            activeGraph.collectNodeCost(sinkNode, 0);
             
             int sourceArc = attribute.getMatrixGraph().getArc(sourceNode, attribute.getMatrixGraph().getNodeFromValueIndex(activeValueTrace.get(1)));
             activeGraph.addArc(sourceArc);
             activeGraph.incrementArcTotalFrequency(sourceArc, 1);
             activeGraph.collectArcDuration(sourceArc, 0);
+            activeGraph.collectArcCost(sourceArc, 0);
             
             int sinkArc = attribute.getMatrixGraph().getArc(attribute.getMatrixGraph().getNodeFromValueIndex(activeValueTrace.get(activeValueTrace.size()-2)), sinkNode);
             activeGraph.addArc(sinkArc);
             activeGraph.incrementArcTotalFrequency(sinkArc, 1);
             activeGraph.collectArcDuration(sinkArc, 0);
+            activeGraph.collectArcCost(sinkArc, 0);
         }
         
     }

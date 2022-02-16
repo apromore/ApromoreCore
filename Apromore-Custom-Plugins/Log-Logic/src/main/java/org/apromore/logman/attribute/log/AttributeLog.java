@@ -23,6 +23,8 @@
 package org.apromore.logman.attribute.log;
 
 import java.util.BitSet;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apromore.calendar.model.CalendarModel;
@@ -44,6 +46,9 @@ import org.eclipse.collections.impl.factory.Lists;
 import org.eclipse.collections.impl.factory.Maps;
 import org.eclipse.collections.impl.factory.primitive.DoubleLists;
 import org.eclipse.collections.impl.factory.primitive.IntSets;
+
+import static org.apromore.logman.attribute.graph.MeasureType.*;
+import static org.apromore.logman.attribute.graph.MeasureType.DURATION;
 
 /**
  * An AttributeLog is a view of ALog based on an attribute. This log extracts the traces with the chosen attribute only,
@@ -75,6 +80,9 @@ public class AttributeLog {
     
     // Calendar model used for this log
     private CalendarModel calendarModel;
+    private Map<String, Double> costTable = new HashMap<>() {{
+        put("Banker", 2.0);
+    }};
     
     // Original log data
     private MutableList<AttributeTrace> originalTraces = Lists.mutable.empty();
@@ -91,20 +99,20 @@ public class AttributeLog {
     
     // Graph view of the log
     private AttributeLogGraph graphView;
-    
-	public AttributeLog(ALog log, IndexableAttribute attribute, CalendarModel calendarModel) {
-	    this.fullLog = log;
-	    this.attribute = attribute;
-	    this.calendarModel = calendarModel;
-	    this.originalTraceStatus = fullLog.getOriginalTraceStatus();
-	    if (log.getOriginalTraces().size()==0 || attribute == null) return;
-	    
-	    this.variantView = new AttributeLogVariantView(this);
-		this.graphView = new AttributeLogGraph(this);
-		
+
+    public AttributeLog(ALog log, IndexableAttribute attribute, CalendarModel calendarModel, Map<String, Double> costTable) {
+        this.fullLog = log;
+        this.attribute = attribute;
+        this.calendarModel = calendarModel;
+        this.originalTraceStatus = fullLog.getOriginalTraceStatus();
+        if (log.getOriginalTraces().size()==0 || attribute == null) return;
+
+        this.variantView = new AttributeLogVariantView(this);
+        this.graphView = new AttributeLogGraph(this);
+
         for(int i=0; i<fullLog.getOriginalTraces().size(); i++) {
             ATrace trace = fullLog.getOriginalTraces().get(i);
-            AttributeTrace attTrace = new AttributeTrace(attribute, trace);
+            AttributeTrace attTrace = new AttributeTrace(attribute, trace, costTable, calendarModel);
             originalTraces.add(attTrace);
             originalTraceIdMap.put(trace.getTraceId(), attTrace);
             variantView.addOriginalTrace(attTrace);
@@ -114,9 +122,17 @@ public class AttributeLog {
                 graphView.addTraceGraph(attTrace.getActiveGraph());
             }
         }
-        
+
         variantView.finalUpdate();
         graphView.finalUpdate();
+    }
+
+    public void setCostTable(Map<String, Double> costTable) {
+        this.costTable = costTable;
+    }
+
+    public AttributeLog(ALog log, IndexableAttribute attribute, CalendarModel calendarModel) {
+        this(log, attribute, calendarModel, null);
 	}
 	
     public IndexableAttribute getAttribute() {
@@ -137,7 +153,7 @@ public class AttributeLog {
 	        activeTraces.clear();
     	    for (int i=0; i<originalTraces.size(); i++) {
     	        AttributeTrace attTrace = originalTraces.get(i);
-    	        attTrace.setAttribute(newAttribute);
+    	        attTrace.setAttribute(newAttribute, costTable, calendarModel);
     	        variantView.addOriginalTrace(attTrace);
     	        if (originalTraceStatus.get(i) && !attTrace.isEmpty()) {
     	            activeTraces.add(attTrace);

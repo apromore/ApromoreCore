@@ -145,6 +145,8 @@ public class PDAnalyst {
     String costAttribute = XESAttributeCodes.ORG_ROLE;
     @Getter @Setter
     Map<String, Double> costTable = new HashMap<>();
+    @Getter @Setter
+    String currency = "AUD";
 
     private String caseVariantPerspective = XESAttributeCodes.CONCEPT_NAME;
 
@@ -197,7 +199,7 @@ public class PDAnalyst {
 
         this.setMainAttribute(configData.getDefaultAttribute());
         this.processDiscoverer = new ProcessDiscoverer();
-        this.processVisualizer = new ProcessJSONVisualizer();
+        this.processVisualizer = new ProcessJSONVisualizer(currency);
     }
 
     public void cleanUp() {
@@ -258,7 +260,6 @@ public class PDAnalyst {
      */
     public Optional<OutputData> discoverProcess(UserOptionsData userOptions) throws Exception {
         AbstractionParams params = genAbstractionParams(userOptions);
-
         // Find a DFG first
         Abstraction dfgAbstraction = processDiscoverer.generateDFGAbstraction(attLog, params);
         if (dfgAbstraction == null ||
@@ -327,7 +328,7 @@ public class PDAnalyst {
                 mainAttribute = newAttribute;
                 if (attLog == null) {
                     long timer = System.currentTimeMillis();
-                    attLog = new AttributeLog(aLog, mainAttribute, this.calendarModel);
+                    attLog = new AttributeLog(aLog, mainAttribute, this.calendarModel, this.costTable);
                     LOGGER.debug("Create AttributeLog for the perspective attribute: {} ms.",
                         System.currentTimeMillis() - timer);
                 } else {
@@ -628,6 +629,10 @@ public class PDAnalyst {
 
     public long getFilteredActivityInstanceSize() {
         return this.filteredAPMLog.getActivityInstances().size();
+    }
+
+    public void updateCostTable() {
+        this.attLog.setCostTable(costTable);
     }
 
     public void updateLog(PLog pLog, APMLog apmLog) throws Exception {

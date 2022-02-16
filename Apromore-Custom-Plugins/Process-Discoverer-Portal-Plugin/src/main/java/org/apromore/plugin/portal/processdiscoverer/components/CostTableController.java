@@ -41,7 +41,7 @@ import java.util.ArrayList;
 public class CostTableController extends DataListController {
     private Window costTableWindow;
     private boolean disabled = false;
-    private Map<String, Map<String, String>> activityToAttributeMap = new HashMap<>();
+    private Combobox currencyCombobox;
 
     public CostTableController(PDController controller) {
         super(controller);
@@ -60,7 +60,7 @@ public class CostTableController extends DataListController {
         }
     }
 
-    private void populateRoles(Listbox listbox) {
+    private void initializeData(Listbox listbox) {
         generateData();
         listbox.setModel(records);
         listbox.addEventListener("onUpdateCostValue", (ForwardEvent event) -> {
@@ -71,6 +71,7 @@ public class CostTableController extends DataListController {
             AttributeCost ac = listItem.getValue();
             ac.setCostValue(costValue);
         });
+        currencyCombobox.setValue(parent.getProcessAnalyst().getCurrency());
     }
 
     @Override
@@ -91,14 +92,19 @@ public class CostTableController extends DataListController {
                 costTableWindow = null;
             });
 
+            costTableWindow.addEventListener("onChangeCurrency", (e) -> {
+                parent.getProcessAnalyst().setCurrency(currencyCombobox.getValue());
+            });
+
             costTableWindow.addEventListener("onApplyCost", (e) -> {
                 parent.getProcessAnalyst().setCostTable(this.getCostMapper());
                 costTableWindow.detach();
                 costTableWindow = null;
             });
 
+            currencyCombobox = (Combobox) costTableWindow.getFellow("costTableCurrency");
             Listbox listbox = (Listbox) costTableWindow.getFellow("costTableListbox");
-            populateRoles(listbox);
+            initializeData(listbox);
 
             try {
                 // @todo Incorrect coordinate returned by ZK 9

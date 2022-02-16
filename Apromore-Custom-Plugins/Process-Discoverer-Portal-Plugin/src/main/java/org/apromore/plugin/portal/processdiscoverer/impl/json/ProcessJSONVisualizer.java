@@ -51,11 +51,17 @@ public class ProcessJSONVisualizer implements ProcessVisualizer {
 
 	private VisualToolkit visToolkit = new VisualToolkit();
 	private Layouter layouter = new JGraphLayouter();
-	
+    private String currency;
+
+    public ProcessJSONVisualizer(String currency) {
+        super();
+        this.currency = currency;
+    }
+
     @Override
     public String generateVisualizationText(Abstraction abs) throws Exception {
         VisualContext visContext = new VisualContext(abs);
-        VisualSettings visSettings = new VisualSettings();
+        VisualSettings visSettings = new VisualSettings(currency);
         
         long timer1 = System.currentTimeMillis();
         layouter.setVisualSettings(visSettings);
