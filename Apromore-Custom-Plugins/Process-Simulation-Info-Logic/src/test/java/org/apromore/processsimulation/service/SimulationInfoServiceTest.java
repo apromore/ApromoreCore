@@ -22,7 +22,7 @@
 package org.apromore.processsimulation.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -125,6 +125,7 @@ class SimulationInfoServiceTest {
         when(mockSimulationData.getDiagramNodeDuration("b")).thenReturn(11110.00);
         when(mockSimulationData.getDiagramNodeDuration("c")).thenReturn(12120.00);
 
+        when(mockSimulationData.getResourceCountsByRole()).thenReturn(null);
         when(mockSimulationData.getRoleNameByNodeId(anyString())).thenReturn("The default resource name");
 
         // when
@@ -134,35 +135,34 @@ class SimulationInfoServiceTest {
         // then
         assertGeneralSimulationInfo(processSimulationInfo);
 
-        assertEquals(3, processSimulationInfo.getTasks().size());
-        assertTrue(
-            processSimulationInfo.getTasks().stream()
-                .map(Element::getElementId)
-                .collect(Collectors.toList())
-                .containsAll(Arrays.asList("a", "b", "c")));
+        assertTaskInfo(processSimulationInfo, true);
+    }
 
-        processSimulationInfo.getTasks().forEach(element -> {
-            switch (element.getElementId()) {
-                case "a":
-                    assertEquals("10.10", element.getDistributionDuration().getArg1());
-                    break;
-                case "b":
-                    assertEquals("11.11", element.getDistributionDuration().getArg1());
-                    break;
-                case "c":
-                    assertEquals("12.12", element.getDistributionDuration().getArg1());
-                    break;
-                default:
-                    fail("Unrecognised task identifier");
-                    break;
-            }
+    @Test
+    void should_successfully_derive_task_simulation_info_with_default_role() {
+        // given
+        SimulationData mockSimulationData = mock(SimulationData.class);
 
-            assertEquals("A_DEFAULT_RESOURCE_ID", element.getResourceIds().get(0));
-            assertNull(element.getDistributionDuration().getArg2());
-            assertNull(element.getDistributionDuration().getMean());
-            assertEquals(TimeUnit.SECONDS, element.getDistributionDuration().getTimeUnit());
-            assertEquals(DistributionType.EXPONENTIAL, element.getDistributionDuration().getType());
-        });
+        when(mockSimulationData.getCaseCount()).thenReturn(100L);
+        when(mockSimulationData.getStartTime()).thenReturn(1577797200000L);
+        when(mockSimulationData.getEndTime()).thenReturn(1580475600000L);
+
+        when(mockSimulationData.getDiagramNodeIDs()).thenReturn(Arrays.asList("a", "b", "c"));
+        when(mockSimulationData.getDiagramNodeDuration("a")).thenReturn(10100.00);
+        when(mockSimulationData.getDiagramNodeDuration("b")).thenReturn(11110.00);
+        when(mockSimulationData.getDiagramNodeDuration("c")).thenReturn(12120.00);
+
+        when(mockSimulationData.getResourceCountsByRole()).thenReturn(Map.of(SimulationData.DEFAULT_ROLE, 30));
+        when(mockSimulationData.getRoleNameByNodeId(anyString())).thenReturn(SimulationData.DEFAULT_ROLE);
+
+        // when
+        ProcessSimulationInfo processSimulationInfo =
+            simulationInfoService.transformToSimulationInfo(mockSimulationData);
+
+        // then
+        assertGeneralSimulationInfo(processSimulationInfo);
+
+        assertTaskInfo(processSimulationInfo, true);
     }
 
     @Test
@@ -191,6 +191,10 @@ class SimulationInfoServiceTest {
         // then
         assertGeneralSimulationInfo(processSimulationInfo);
 
+        assertTaskInfo(processSimulationInfo, false);
+    }
+
+    private void assertTaskInfo(final ProcessSimulationInfo processSimulationInfo, boolean expectDefaultResource) {
         assertEquals(3, processSimulationInfo.getTasks().size());
         assertTrue(
             processSimulationInfo.getTasks().stream()
@@ -213,9 +217,14 @@ class SimulationInfoServiceTest {
                     fail("Unrecognised task identifier");
                     break;
             }
-            assertNotEquals("A_DEFAULT_RESOURCE_ID", element.getResourceIds().get(0));
-            assertTrue(element.getResourceIds().get(0)
-                .matches("QBP_[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}"));
+
+            if (expectDefaultResource) {
+                assertEquals("QBP_A_DEFAULT_RESOURCE_ID", element.getResourceIds().get(0));
+            } else {
+                assertFalse(element.getResourceIds().get(0).contains("A_DEFAULT_RESOURCE_ID"));
+                assertTrue(element.getResourceIds().get(0)
+                    .matches("QBP_[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}"));
+            }
             assertNull(element.getDistributionDuration().getArg2());
             assertNull(element.getDistributionDuration().getMean());
             assertEquals(TimeUnit.SECONDS, element.getDistributionDuration().getTimeUnit());
@@ -329,7 +338,7 @@ class SimulationInfoServiceTest {
         assertGeneralSimulationInfo(processSimulationInfo);
 
         assertEquals(1, processSimulationInfo.getResources().size());
-        assertEquals("A_DEFAULT_RESOURCE_ID", processSimulationInfo.getResources().get(0).getId());
+        assertEquals("QBP_A_DEFAULT_RESOURCE_ID", processSimulationInfo.getResources().get(0).getId());
         assertEquals("The default resource name", processSimulationInfo.getResources().get(0).getName());
         assertEquals("A_DEFAULT_TIMETABLE_ID", processSimulationInfo.getResources().get(0).getTimetableId());
         assertEquals(19, processSimulationInfo.getResources().get(0).getTotalAmount());
