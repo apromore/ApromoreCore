@@ -98,12 +98,14 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
 
     private Long appliedCalendarId;
     private boolean canEdit;
+    private boolean canDelete;
     private Integer logId;
     private String username;
     private EventListener<Event> eventHandler;
     private Window win;
     private static final String CALENDAR_ID_CONST = "calendarId";
     private static final String CAN_EDIT_CONST = "canEdit";
+    private static final String CAN_DELETE_CONST = "canDelete";
     private static final String IS_NEW_CONST = "isNew";
 
     public Calendars() {
@@ -142,13 +144,15 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
         logId = (Integer) Executions.getCurrent().getArg().get("logId");
         username = UserSessionManager.getCurrentUser().getUsername();
         canEdit = (boolean) Executions.getCurrent().getArg().get(CAN_EDIT_CONST);
+        canDelete = (boolean) Executions.getCurrent().getArg().get(CAN_DELETE_CONST);
         applyCalendarBtn.setDisabled(!canEdit);
         restoreBtn.setDisabled(!canEdit);
         addNewCalendar.setDisabled(!canEdit);
         localCalendarEventQueue = EventQueues.lookup(LOCAL_TOPIC, EventQueues.DESKTOP, true);
         sessionCalendarEventQueue = EventQueues.lookup(CalendarEvents.TOPIC, EventQueues.SESSION, true);
 
-        CalendarItemRenderer itemRenderer = new CalendarItemRenderer(calendarService, appliedCalendarId, canEdit);
+        CalendarItemRenderer itemRenderer =
+            new CalendarItemRenderer(calendarService, appliedCalendarId, canEdit, canDelete);
         calendarListbox.setItemRenderer(itemRenderer);
         calendarListModel = new ListModelList<>();
         calendarListModel.setMultiple(false);
@@ -360,7 +364,8 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
             Long calendarIdFromLog = eventLogService.getCalendarIdFromLog(logId);
             if (calendarIdFromLog > 0 && !calendarIdFromLog.equals(appliedCalendarId)) {
                 appliedCalendarId = calendarIdFromLog;
-                calendarListbox.setItemRenderer(new CalendarItemRenderer(calendarService, appliedCalendarId, canEdit));
+                calendarListbox
+                    .setItemRenderer(new CalendarItemRenderer(calendarService, appliedCalendarId, canEdit, canDelete));
                 populateCalendarList();
             }
         } catch (Exception ex) {

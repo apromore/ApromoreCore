@@ -61,13 +61,16 @@ public class CalendarItemRenderer implements ListitemRenderer<CalendarModel>, La
     private CalendarService calendarService;
     private long appliedCalendarId;
     private boolean canEdit;
+    private boolean canDelete;
     private String failedMessage;
 
-    public CalendarItemRenderer(CalendarService calendarService, long appliedCalendarId, boolean canEdit) {
+    public CalendarItemRenderer(CalendarService calendarService, long appliedCalendarId, boolean canEdit,
+                                boolean canDelete) {
         super();
         this.calendarService = calendarService;
         this.appliedCalendarId = appliedCalendarId;
         this.canEdit = canEdit;
+        this.canDelete = canDelete;
         this.failedMessage = getLabel("failed_create_message");
     }
 
@@ -202,7 +205,7 @@ public class CalendarItemRenderer implements ListitemRenderer<CalendarModel>, La
             }
         });
 
-        Span removeAction = renderIcon(actionBar, "ap-icon ap-icon-trash", "Remove", !canEdit);
+        Span removeAction = renderIcon(actionBar, "ap-icon ap-icon-trash", "Remove", !canEdit || !canDelete);
         removeAction.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {

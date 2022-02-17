@@ -55,6 +55,7 @@ public class CalendarPlugin extends DefaultPortalPlugin implements LabelSupplier
     private static Logger LOGGER = PortalLoggerFactory.getLogger(CalendarPlugin.class);
     private static final String FOWARD_FROM_CONTEXT_CONST = "FOWARD_FROM_CONTEXT";
     private static final String CAN_EDIT_CONST = "canEdit";
+    private static final String CAN_DELETE_CONST = "canDelete";
 
     @Inject
     private EventLogService eventLogService;
@@ -90,14 +91,17 @@ public class CalendarPlugin extends DefaultPortalPlugin implements LabelSupplier
 
         try {
             boolean canEdit = false;
+            boolean canDelete = false;
             // Present the user admin window
             Map arg = new HashMap<>(getSimpleParams());
             Integer logId = (Integer) arg.get("logId");
             User currentUser = securityService.getUserById(portalContext.getCurrentUser().getId());
             if (logId != null) {
                 canEdit = ItemHelpers.canModifyCalendar(currentUser, logId);
+                canDelete = ItemHelpers.canDeleteCalendar(currentUser, logId);
             }
             arg.put(CAN_EDIT_CONST, canEdit);
+            arg.put(CAN_DELETE_CONST, canDelete);
             boolean forwardFromContext =
                 arg.get(FOWARD_FROM_CONTEXT_CONST) != null && (boolean) arg.get(FOWARD_FROM_CONTEXT_CONST);
             if (forwardFromContext) {
