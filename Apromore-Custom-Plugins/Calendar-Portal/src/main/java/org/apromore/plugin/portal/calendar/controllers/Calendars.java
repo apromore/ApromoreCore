@@ -241,10 +241,11 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
 
     public void removeCalendar(CalendarModel calendarItem) {
         try {
-            // Update listbox. onSelect is sent when an item is selected or deselected.
+            // Reset the calendar of all owned logs associated with the calendar to remove
             List<Log> relatedLogs = eventLogService.getLogListFromCalendarId(calendarItem.getId(), username);
             relatedLogs.forEach(l -> applyCalendarForLog(l.getId(), null));
 
+            //Only delete the calendar if there are no more logs associated with it
             if (CollectionUtils.isEmpty(eventLogService.getLogListFromCalendarId(calendarItem.getId()))) {
                 calendarListModel.remove(calendarItem);
                 calendarService.deleteCalendar(calendarItem.getId());

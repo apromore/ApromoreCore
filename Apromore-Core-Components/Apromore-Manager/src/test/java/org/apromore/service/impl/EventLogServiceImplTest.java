@@ -52,6 +52,7 @@ import org.apromore.service.impl.EventLogServiceImpl;
 import org.apromore.service.impl.TemporaryCacheService;
 import org.apromore.storage.StorageClient;
 import org.apromore.storage.factory.StorageManagementFactory;
+import org.apromore.util.AccessType;
 import org.apromore.util.UserMetadataTypeEnum;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
@@ -558,5 +559,30 @@ public class EventLogServiceImplTest extends AbstractTest {
     // Mock call
     List<String> perspectives = eventLogService.getDefaultPerspectiveFromLog(logId);
 
+  }
+
+  @Test
+  public void testGetLogListFromCalendarId() throws UserNotFoundException {
+    long calendarId = 157;
+    int numLogs = 6;
+
+    List<Log> logs = new ArrayList<>();
+    for (int i = 1; i <= numLogs; i++) {
+      logs.add(createLogWithId(i, user, createFolder("testFolder", null, wp)));
+    }
+
+    expect(logRepository.findByCalendarId(calendarId)).andReturn(logs);
+    expect(authorizationService.getLogAccessTypeByUser(1, "test")).andReturn(AccessType.OWNER);
+    expect(authorizationService.getLogAccessTypeByUser(2, "test")).andReturn(AccessType.EDITOR);
+    expect(authorizationService.getLogAccessTypeByUser(3, "test")).andReturn(AccessType.VIEWER);
+    expect(authorizationService.getLogAccessTypeByUser(4, "test")).andReturn(AccessType.RESTRICTED);
+    expect(authorizationService.getLogAccessTypeByUser(5, "test")).andReturn(null);
+    expect(authorizationService.getLogAccessTypeByUser(6, "test")).andThrow(new UserNotFoundException());
+    replayAll();
+
+    // Only logs with AccessType.OWNER should be returned
+    List<Log> calendarOwnerLogs = eventLogService.getLogListFromCalendarId(calendarId, "test");
+    assertEquals(1, calendarOwnerLogs.size());
+    assertEquals(1, (long) calendarOwnerLogs.get(0).getId());
   }
 }
