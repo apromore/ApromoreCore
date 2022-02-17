@@ -31,6 +31,7 @@ import java.util.Set;
 
 import org.apromore.common.Constants;
 import org.apromore.dao.model.AccessRights;
+import org.apromore.dao.model.CustomCalendar;
 import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.Group;
 import org.apromore.dao.model.GroupProcess;
@@ -246,5 +247,15 @@ public class AbstractTest extends EasyMockSupport {
         usermetadata.setLogs(logs);
 
         return usermetadata;
+    }
+
+    public CustomCalendar createCalendar(long id, String name, User user) {
+        CustomCalendar customCalendar = new CustomCalendar();
+        customCalendar.setId(id);
+        customCalendar.setName(name);
+        customCalendar.setUser(user);
+        customCalendar.setCreatedBy("test");
+
+        return customCalendar;
     }
 }

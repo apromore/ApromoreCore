@@ -107,6 +107,11 @@ public final class ItemHelpers {
         return AccessType.OWNER.equals(accessType) || AccessType.EDITOR.equals(accessType);
     }
 
+    public static final boolean canDeleteCalendar(User user, Integer logId) {
+        AccessType accessType = ItemHelpers.getLogEffectiveAccessType(logId, user);
+        return AccessType.OWNER.equals(accessType);
+    }
+
     public static final boolean canModify(User user, Object item) throws Exception {
         AccessType accessType = ItemHelpers.getEffectiveAccessType(item, user);
         return AccessType.OWNER.equals(accessType) || AccessType.EDITOR.equals(accessType);

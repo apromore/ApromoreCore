@@ -45,6 +45,7 @@ import org.apromore.zk.event.CalendarEvents;
 import org.apromore.zk.label.LabelSupplier;
 import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
+import org.springframework.util.CollectionUtils;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -97,12 +98,14 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
 
     private Long appliedCalendarId;
     private boolean canEdit;
+    private boolean canDelete;
     private Integer logId;
     private String username;
     private EventListener<Event> eventHandler;
     private Window win;
     private static final String CALENDAR_ID_CONST = "calendarId";
     private static final String CAN_EDIT_CONST = "canEdit";
+    private static final String CAN_DELETE_CONST = "canDelete";
     private static final String IS_NEW_CONST = "isNew";
 
     public Calendars() {
@@ -141,13 +144,15 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
         logId = (Integer) Executions.getCurrent().getArg().get("logId");
         username = UserSessionManager.getCurrentUser().getUsername();
         canEdit = (boolean) Executions.getCurrent().getArg().get(CAN_EDIT_CONST);
+        canDelete = (boolean) Executions.getCurrent().getArg().get(CAN_DELETE_CONST);
         applyCalendarBtn.setDisabled(!canEdit);
         restoreBtn.setDisabled(!canEdit);
         addNewCalendar.setDisabled(!canEdit);
         localCalendarEventQueue = EventQueues.lookup(LOCAL_TOPIC, EventQueues.DESKTOP, true);
         sessionCalendarEventQueue = EventQueues.lookup(CalendarEvents.TOPIC, EventQueues.SESSION, true);
 
-        CalendarItemRenderer itemRenderer = new CalendarItemRenderer(calendarService, appliedCalendarId, canEdit);
+        CalendarItemRenderer itemRenderer =
+            new CalendarItemRenderer(calendarService, appliedCalendarId, canEdit, canDelete);
         calendarListbox.setItemRenderer(itemRenderer);
         calendarListModel = new ListModelList<>();
         calendarListModel.setMultiple(false);
@@ -240,9 +245,19 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
 
     public void removeCalendar(CalendarModel calendarItem) {
         try {
-            // Update listbox. onSelect is sent when an item is selected or deselected.
-            calendarListModel.remove(calendarItem);
-            calendarService.deleteCalendar(calendarItem.getId());
+            // Reset the calendar of all owned logs associated with the calendar to remove
+            List<Log> relatedLogs = eventLogService.getLogListFromCalendarId(calendarItem.getId(), username);
+            relatedLogs.forEach(l -> applyCalendarForLog(l.getId(), null));
+
+            //Only delete the calendar if there are no more logs associated with it
+            if (CollectionUtils.isEmpty(eventLogService.getLogListFromCalendarId(calendarItem.getId()))) {
+                calendarListModel.remove(calendarItem);
+                calendarService.deleteCalendar(calendarItem.getId());
+            }
+
+            if (calendarItem.getId().equals(appliedCalendarId)) {
+                appliedCalendarId = null;
+            }
             updateApplyCalendarButton();
             restoreBtn.setDisabled(
                 !canEdit || calendarService.getCalendars().stream().noneMatch(c -> c.getId().equals(appliedCalendarId))
@@ -349,7 +364,8 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
             Long calendarIdFromLog = eventLogService.getCalendarIdFromLog(logId);
             if (calendarIdFromLog > 0 && !calendarIdFromLog.equals(appliedCalendarId)) {
                 appliedCalendarId = calendarIdFromLog;
-                calendarListbox.setItemRenderer(new CalendarItemRenderer(calendarService, appliedCalendarId, canEdit));
+                calendarListbox
+                    .setItemRenderer(new CalendarItemRenderer(calendarService, appliedCalendarId, canEdit, canDelete));
                 populateCalendarList();
             }
         } catch (Exception ex) {

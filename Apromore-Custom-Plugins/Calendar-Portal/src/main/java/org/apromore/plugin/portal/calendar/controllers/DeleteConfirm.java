@@ -28,6 +28,7 @@ import org.apromore.calendar.service.CalendarService;
 import org.apromore.commons.datetime.DateTimeUtils;
 import org.apromore.dao.model.Log;
 import org.apromore.plugin.portal.calendar.Constants;
+import org.apromore.portal.common.UserSessionManager;
 import org.apromore.service.EventLogService;
 import org.apromore.zk.event.CalendarEvents;
 import org.apromore.zk.label.LabelSupplier;
@@ -111,7 +112,8 @@ public class DeleteConfirm extends SelectorComposer<Window> implements LabelSupp
     }
 
     public void populateRelatedLogs() {
-        List<Log> relatedLogList = eventLogService.getLogListFromCalendarId(calendarId);
+        String currentUser = UserSessionManager.getCurrentUser().getUsername();
+        List<Log> relatedLogList = eventLogService.getLogListFromCalendarId(calendarId, currentUser);
         ListModelList<RelatedLog> relatedLogModel = new ListModelList<>();
         for (Log log : relatedLogList) {
             relatedLogModel.add(new RelatedLog(
