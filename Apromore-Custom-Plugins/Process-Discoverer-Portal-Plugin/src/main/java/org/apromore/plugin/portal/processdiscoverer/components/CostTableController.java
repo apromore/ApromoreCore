@@ -86,7 +86,6 @@ public class CostTableController extends DataListController {
             arg.put("pdLabels", parent.getLabels());
             costTableWindow = (Window) Executions
                     .createComponents(getPageDefinition("processdiscoverer/zul/costTable.zul"), null, arg);
-            costTableWindow.setTitle("Cost Table");
 
             costTableWindow.addEventListener("onClose", (e) -> {
                 costTableWindow = null;
