@@ -344,6 +344,11 @@ public class BPMNEditorController extends BaseController implements Composer<Com
     });
 
     this.addEventListener("onPublishModel", event -> {
+      if (isNewProcess || process == null) {
+        Notification.error(Labels.getLabel("portal_saveModelFirst_message"));
+        return;
+      }
+
       PortalContext portalContext = mainC.getPortalContext();
       Map<String, PortalPlugin> portalPluginMap = portalContext.getPortalPluginMap();
       PortalPlugin publishModelPlugin = portalPluginMap.get(PluginCatalog.PLUGIN_PUBLISH_MODEL);
