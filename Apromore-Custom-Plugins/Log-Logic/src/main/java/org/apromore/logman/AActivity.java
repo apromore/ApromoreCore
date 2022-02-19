@@ -22,9 +22,6 @@
 
 package org.apromore.logman;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.logman.utils.LogUtils;
 import org.deckfour.xes.extension.std.XTimeExtension;
@@ -32,6 +29,9 @@ import org.deckfour.xes.model.XAttribute;
 import org.deckfour.xes.model.XAttributeMap;
 import org.deckfour.xes.model.impl.XEventImpl;
 import org.joda.time.DateTime;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Represent a process activity. An activity can contain a list of events.
@@ -90,7 +90,8 @@ public class AActivity extends XEventImpl {// implements Map.Entry<XEvent,XEvent
     }
 
     public double getOriginalCost(Map<String, Double> costTable, CalendarModel calendarModel) {
-        String role = getAttributeMap().get("org:role");
+        String role = getAttributeMap().get(Constants.ATT_KEY_ROLE);
+        if (role == null || costTable == null) return 0;
         double multiplier = costTable.getOrDefault(role, 1.0);
         double cost = Double.valueOf(calendarModel.getDurationMillis(
             getOriginalStartTimestamp(), getOriginalEndTimestamp()));
