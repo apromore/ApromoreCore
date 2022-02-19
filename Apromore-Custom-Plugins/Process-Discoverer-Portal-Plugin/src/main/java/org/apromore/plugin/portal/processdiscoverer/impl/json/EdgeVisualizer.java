@@ -138,7 +138,7 @@ public class EdgeVisualizer extends AbstractElementVisualizer {
             }
             else if (measureType == MeasureType.COST) {
                 jsonData.put("label", jsonData.get("label") + separator +
-                    visSettings.getCurrency() + visSettings.getDecimalFormatter().format(weightValue));
+                    visSettings.getCurrency() + " " + visSettings.getDecimalFormatter().format(weightValue));
             }
             else if (measureType == MeasureType.DURATION) {
                 jsonData.put("label", jsonData.get("label") + separator + 

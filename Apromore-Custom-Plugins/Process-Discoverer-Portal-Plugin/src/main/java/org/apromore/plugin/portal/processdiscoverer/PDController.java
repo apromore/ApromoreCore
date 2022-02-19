@@ -24,6 +24,7 @@ package org.apromore.plugin.portal.processdiscoverer;
 
 import lombok.Getter;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
+import org.apromore.dao.model.Usermetadata;
 import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
@@ -54,15 +55,14 @@ import org.apromore.zk.event.CalendarEvents;
 import org.apromore.zk.label.LabelSupplier;
 import org.json.JSONException;
 import org.slf4j.Logger;
+import org.zkoss.json.JSONObject;
+import org.zkoss.json.parser.JSONParser;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.ComponentNotFoundException;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.event.EventQueue;
-import org.zkoss.zk.ui.event.EventQueues;
+import org.zkoss.zk.ui.event.*;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.Composer;
@@ -173,6 +173,10 @@ public class PDController extends BaseController implements Composer<Component>,
     private Component pdComponent;
     private EventQueue<Event> sessionQueue;
 
+    private String currentPerspectiveValue;
+    private String currentPerspectiveLabel;
+    private boolean isBeginning = true;
+
     /////////////////////////////////////////////////////////////////////////
 
     public PDController() throws Exception {
@@ -185,6 +189,16 @@ public class PDController extends BaseController implements Composer<Component>,
         pageParams.put("pdLabels", getLabels());
         Executions.getCurrent().pushArg(pageParams);
         actionManager = new ActionManager(this);
+        if (!preparePluginSessionId()) {
+            Messagebox.show(getLabel("sessionNotInitialized_message"));
+            return;
+        }
+
+        if (!prepareCriticalServices()) {
+            return;
+        }
+        currentPerspectiveValue = "concept:name";
+        currentPerspectiveLabel = "Activity";
     }
 
     @Override
@@ -249,18 +263,30 @@ public class PDController extends BaseController implements Composer<Component>,
     }
 
     public void onCreate(Component comp) throws InterruptedException {
+        comp.addEventListener("onCostTableInit", (event) -> {
+            String jsonString = (String)event.getData();
+            Map<String, Double> costTable = new HashMap<>();
+            String currency = "USD";
+            if (jsonString != null) {
+                JSONParser parser = new JSONParser();
+                JSONObject jsonObject = (JSONObject) parser.parse(jsonString);
+                if (jsonObject.containsKey("costTable")) {
+                    costTable = (Map<String, Double>) jsonObject.get("costTable");
+                }
+                if (jsonObject.containsKey("currency")) {
+                    currency = (String) jsonObject.get("currency");
+                }
+            }
+            onCreateFollowUp(comp, costTable, currency);
+            Events.postEvent("onFakeLoaded", mainWindow, null);
+        });
+        Clients.evalJavaScript("Ap.common.getLocalStorageItem('ap.cost.table', 'win', 'onCostTableInit')");
+    }
+
+    public void onCreateFollowUp(Component comp, Map<String, Double> costTable, String currency) throws InterruptedException {
         try {
 
             init(comp);
-
-            if (!preparePluginSessionId()) {
-                Messagebox.show(getLabel("sessionNotInitialized_message"));
-                return;
-            }
-
-            if (!prepareCriticalServices()) {
-                return;
-            }
 
             // Set up Process Analyst
             ApromoreSession session = UserSessionManager.getEditSession(pluginSessionId);
@@ -277,7 +303,8 @@ public class PDController extends BaseController implements Composer<Component>,
                             : portalContext.getCurrentFolder().getFolderName(),
                     ((MainController)portalContext.getMainController()).getConfig().isEnableCalendar()
                             && currentUser.hasAnyPermission(PermissionType.CALENDAR),
-                    currentUser.hasAnyPermission(PermissionType.MODEL_DISCOVER_EDIT));
+                    currentUser.hasAnyPermission(PermissionType.MODEL_DISCOVER_EDIT),
+                    costTable, currency);
             processAnalyst = new PDAnalyst(contextData, configData, getEventLogService());
             if (session.containsKey("logFilters")) {
                 if (!processAnalyst.filter((List<LogFilterRule>)session.get("logFilters"))) {
@@ -403,11 +430,15 @@ public class PDController extends BaseController implements Composer<Component>,
             timeStatsController.initializeEventListeners(contextData);
 
             EventListener<Event> windowListener = event -> {
-                graphSettingsController.ensureSliders();
-                generateViz();
+                if (isBeginning) {
+                    isBeginning = false;
+                    graphSettingsController.ensureSliders();
+                    generateViz();
+                }
             };
             mainWindow.addEventListener("onLoaded", windowListener);
             mainWindow.addEventListener("onOpen", windowListener);
+            mainWindow.addEventListener("onFakeLoaded", windowListener);
             mainWindow.addEventListener("onZIndex", event -> {
                 putWindowAtTop(caseDetailsController.getWindow());
                 putWindowAtTop(caseVariantDetailsController.getWindow());
@@ -558,17 +589,6 @@ public class PDController extends BaseController implements Composer<Component>,
                     Messagebox.INFORMATION);
             return;
         }
-        try {
-            if (userOptions.getPrimaryType() == COST || userOptions.getSecondaryType() == COST) {
-                processAnalyst.updateCostTable();
-                String key = userOptions.getMainAttributeKey();
-                processAnalyst.setMainAttribute(key);
-                timeStatsController.updateUI(contextData);
-                logStatsController.updateUI(contextData);
-            }
-        } catch (NotFoundAttributeException e) {
-            return;
-        }
         boolean isNormalOrdering = graphSettingsController.getNormalOrdering();
         MeasureType fixedType = userOptions.getFixedType();
         if (isNormalOrdering && fixedType == FREQUENCY || !isNormalOrdering && fixedType == DURATION) {
@@ -703,6 +723,8 @@ public class PDController extends BaseController implements Composer<Component>,
     }
 
     public void setPerspective(String value, String label) throws Exception {
+        currentPerspectiveValue = value;
+        currentPerspectiveLabel = label;
         if (this.mode != InteractiveMode.MODEL_MODE)
             return;
         if (!value.equals(userOptions.getMainAttributeKey())) {
@@ -796,7 +818,6 @@ public class PDController extends BaseController implements Composer<Component>,
     public void doAfterCompose(Component comp) throws Exception {
         this.pdComponent = comp;
         onCreate(comp);
-
     }
 
     @Override

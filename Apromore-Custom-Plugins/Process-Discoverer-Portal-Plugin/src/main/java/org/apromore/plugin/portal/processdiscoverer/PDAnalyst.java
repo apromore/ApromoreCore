@@ -144,9 +144,9 @@ public class PDAnalyst {
     @Getter
     String costAttribute = XESAttributeCodes.ORG_ROLE;
     @Getter @Setter
-    Map<String, Double> costTable = new HashMap<>();
+    Map<String, Double> costTable;
     @Getter @Setter
-    String currency = "AUD";
+    String currency = "USD";
 
     private String caseVariantPerspective = XESAttributeCodes.CONCEPT_NAME;
 
@@ -159,6 +159,11 @@ public class PDAnalyst {
         XLog xlog = eventLogService.getXLog(contextData.getLogId());
         APMLog apmLog = eventLogService.getAggregatedLog(contextData.getLogId());
         Collection<String> perspectiveAttKeys = eventLogService.getPerspectiveTagByLog(contextData.getLogId());
+        currency = contextData.getCurrency();
+        costTable = contextData.getCostTable();
+        if (costTable == null) {
+            costTable = new HashMap<>();
+        }
 
         if (xlog == null) {
             throw new InvalidDataException("XLog data of this log is missing");
@@ -629,10 +634,6 @@ public class PDAnalyst {
 
     public long getFilteredActivityInstanceSize() {
         return this.filteredAPMLog.getActivityInstances().size();
-    }
-
-    public void updateCostTable() {
-        this.attLog.setCostTable(costTable);
     }
 
     public void updateLog(PLog pLog, APMLog apmLog) throws Exception {

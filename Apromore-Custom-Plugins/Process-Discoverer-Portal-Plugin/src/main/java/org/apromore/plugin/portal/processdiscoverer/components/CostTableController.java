@@ -24,12 +24,14 @@ package org.apromore.plugin.portal.processdiscoverer.components;
 
 import org.apromore.plugin.portal.processdiscoverer.PDController;
 import org.apromore.plugin.portal.processdiscoverer.data.AttributeCost;
+import org.zkoss.json.JSONObject;
 import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.metainfo.PageDefinition;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.*;
 
 import java.io.IOException;
@@ -79,6 +81,13 @@ public class CostTableController extends DataListController {
         return new String[]{"Attribute", "Cost Value"};
     }
 
+    private void persistCostTable() {
+        String currency = currencyCombobox.getValue();
+        String costTable = JSONObject.toJSONString(this.getCostMapper()).replaceAll("\\r?\\n", "");
+        String jsonString = "{ \"currency\": \"" + currency + "\", \"costTable\": " + costTable + " }";
+        Clients.evalJavaScript("Ap.common.setLocalStorageItem('ap.cost.table', '" + jsonString + "')");
+    }
+
     @Override
     public void onEvent(Event event) throws Exception {
         if (costTableWindow == null) {
@@ -93,12 +102,23 @@ public class CostTableController extends DataListController {
 
             costTableWindow.addEventListener("onChangeCurrency", (e) -> {
                 parent.getProcessAnalyst().setCurrency(currencyCombobox.getValue());
+                persistCostTable();
             });
 
             costTableWindow.addEventListener("onApplyCost", (e) -> {
                 parent.getProcessAnalyst().setCostTable(this.getCostMapper());
+                parent.getProcessAnalyst().setCurrency(currencyCombobox.getValue());
+                persistCostTable();
                 costTableWindow.detach();
                 costTableWindow = null;
+                Messagebox.show("You need to reload the page",
+                    new Messagebox.Button[] {Messagebox.Button.OK, Messagebox.Button.CANCEL},
+                    (ev) -> {
+                        if (Messagebox.ON_OK.equals(ev.getName())) {
+                            Clients.evalJavaScript("window.location.reload()");
+                        }
+                    }
+                );
             });
 
             currencyCombobox = (Combobox) costTableWindow.getFellow("costTableCurrency");
