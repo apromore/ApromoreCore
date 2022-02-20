@@ -32,9 +32,9 @@ public class DurationUnitTest {
     @Test
     public void getDurationUnit() {
         Optional<DurationUnit> output = DurationUnit.getDurationUnit(1000.0D * 60 * 60 * 24 * 365.25);
-        assertEquals(output.stream().iterator().next().getUnit(), ChronoUnit.YEARS);
+        assertEquals(ChronoUnit.YEARS, output.stream().iterator().next().getUnit());
 
         output = DurationUnit.getDurationUnit(1000.0D * 60 * 60 * 24 * (365.25 / 12));
-        assertEquals(output.stream().iterator().next().getUnit(), ChronoUnit.MONTHS);
+        assertEquals(ChronoUnit.MONTHS, output.stream().iterator().next().getUnit());
     }
 }
