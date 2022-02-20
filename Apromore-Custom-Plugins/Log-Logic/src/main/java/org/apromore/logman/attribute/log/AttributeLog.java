@@ -47,9 +47,6 @@ import org.eclipse.collections.impl.factory.Maps;
 import org.eclipse.collections.impl.factory.primitive.DoubleLists;
 import org.eclipse.collections.impl.factory.primitive.IntSets;
 
-import static org.apromore.logman.attribute.graph.MeasureType.*;
-import static org.apromore.logman.attribute.graph.MeasureType.DURATION;
-
 /**
  * An AttributeLog is a view of ALog based on an attribute. This log extracts the traces with the chosen attribute only,
  * each trace is an AttributeTrace. Since it is based on a specific attribute, the trace sequence is specific to the
@@ -80,10 +77,8 @@ public class AttributeLog {
     
     // Calendar model used for this log
     private CalendarModel calendarModel;
-    private Map<String, Double> costTable = new HashMap<>() {{
-        put("Banker", 2.0);
-    }};
-    
+    private Map<String, Double> costTable = new HashMap<>();
+
     // Original log data
     private MutableList<AttributeTrace> originalTraces = Lists.mutable.empty();
     private MutableMap<String, AttributeTrace> originalTraceIdMap = Maps.mutable.empty();
@@ -109,6 +104,7 @@ public class AttributeLog {
 
         this.variantView = new AttributeLogVariantView(this);
         this.graphView = new AttributeLogGraph(this);
+        this.costTable = costTable;
 
         for(int i=0; i<fullLog.getOriginalTraces().size(); i++) {
             ATrace trace = fullLog.getOriginalTraces().get(i);
@@ -125,10 +121,6 @@ public class AttributeLog {
 
         variantView.finalUpdate();
         graphView.finalUpdate();
-    }
-
-    public void setCostTable(Map<String, Double> costTable) {
-        this.costTable = costTable;
     }
 
     public AttributeLog(ALog log, IndexableAttribute attribute, CalendarModel calendarModel) {

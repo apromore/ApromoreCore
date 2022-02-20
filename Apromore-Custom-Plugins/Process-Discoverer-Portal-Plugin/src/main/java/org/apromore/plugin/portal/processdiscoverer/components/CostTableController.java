@@ -42,8 +42,8 @@ import java.util.ArrayList;
 
 public class CostTableController extends DataListController {
     private Window costTableWindow;
-    private boolean disabled = false;
     private Combobox currencyCombobox;
+    private boolean disabled;
 
     public CostTableController(PDController controller) {
         super(controller);
@@ -51,7 +51,7 @@ public class CostTableController extends DataListController {
 
     private void generateData() {
         Map<String, Double> currentMapper = parent.getProcessAnalyst().getCostTable();
-        records = new ListModelList();
+        records = new ListModelList<AttributeCost>();
         rows = new ArrayList<>();
         for (Object role : parent.getProcessAnalyst().getRoleValues()) {
             String attrVal = (String) role;
@@ -96,16 +96,14 @@ public class CostTableController extends DataListController {
             costTableWindow = (Window) Executions
                     .createComponents(getPageDefinition("processdiscoverer/zul/costTable.zul"), null, arg);
 
-            costTableWindow.addEventListener("onClose", (e) -> {
-                costTableWindow = null;
-            });
+            costTableWindow.addEventListener("onClose", e -> costTableWindow = null);
 
-            costTableWindow.addEventListener("onChangeCurrency", (e) -> {
+            costTableWindow.addEventListener("onChangeCurrency", e -> {
                 parent.getProcessAnalyst().setCurrency(currencyCombobox.getValue());
                 persistCostTable();
             });
 
-            costTableWindow.addEventListener("onApplyCost", (e) -> {
+            costTableWindow.addEventListener("onApplyCost", e -> {
                 parent.getProcessAnalyst().setCostTable(this.getCostMapper());
                 parent.getProcessAnalyst().setCurrency(currencyCombobox.getValue());
                 persistCostTable();
@@ -140,8 +138,8 @@ public class CostTableController extends DataListController {
 
     public Map<String, Double> getCostMapper() {
         Map<String, Double> attributeCostMapper = new HashMap<>();
-        for (Object record : records) {
-            AttributeCost ac = (AttributeCost) record;
+        for (Object rec: records) {
+            AttributeCost ac = (AttributeCost) rec;
             attributeCostMapper.put(ac.getAttributeId(), ac.getCostValue());
         }
         return attributeCostMapper;
@@ -159,9 +157,8 @@ public class CostTableController extends DataListController {
     private PageDefinition getPageDefinition(String uri) throws IOException {
         String url = "static/" + uri;
         Execution current = Executions.getCurrent();
-        PageDefinition pageDefinition = current.getPageDefinitionDirectly(
+        return current.getPageDefinitionDirectly(
                 new InputStreamReader(getClass().getClassLoader().getResourceAsStream(url)), "zul");
-        return pageDefinition;
     }
 
 }

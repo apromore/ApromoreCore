@@ -84,29 +84,25 @@ public class ViewSettingsController extends VisualController {
             "min"
     };
 
-    private final Map<String, MeasureAggregation> measureAggMap = new HashMap<>() {
-        {
-            put(measures[0], MeasureAggregation.CASES);
-            put(measures[1], MeasureAggregation.CASES);
-            put(measures[2], MeasureAggregation.TOTAL);
-            put(measures[3], MeasureAggregation.MEAN);
-            put(measures[4], MeasureAggregation.MEDIAN);
-            put(measures[5], MeasureAggregation.MAX);
-            put(measures[6], MeasureAggregation.MIN);
-        }
-    };
+    private final Map<String, MeasureAggregation> measureAggMap = Map.of(
+        measures[0], MeasureAggregation.CASES,
+        measures[1], MeasureAggregation.CASES,
+        measures[2], MeasureAggregation.TOTAL,
+        measures[3], MeasureAggregation.MEAN,
+        measures[4], MeasureAggregation.MEDIAN,
+        measures[5], MeasureAggregation.MAX,
+        measures[6], MeasureAggregation.MIN
+    );
 
-    private final Map<String, MeasureRelation> measureRelationMap = new HashMap<>() {
-        {
-            put(measures[0], MeasureRelation.ABSOLUTE);
-            put(measures[1], MeasureRelation.RELATIVE);
-            put(measures[2], MeasureRelation.ABSOLUTE);
-            put(measures[3], MeasureRelation.ABSOLUTE);
-            put(measures[4], MeasureRelation.ABSOLUTE);
-            put(measures[5], MeasureRelation.ABSOLUTE);
-            put(measures[6], MeasureRelation.ABSOLUTE);
-        }
-    };
+    private final Map<String, MeasureRelation> measureRelationMap = Map.of(
+        measures[0], MeasureRelation.ABSOLUTE,
+        measures[1], MeasureRelation.RELATIVE,
+        measures[2], MeasureRelation.ABSOLUTE,
+        measures[3], MeasureRelation.ABSOLUTE,
+        measures[4], MeasureRelation.ABSOLUTE,
+        measures[5], MeasureRelation.ABSOLUTE,
+        measures[6], MeasureRelation.ABSOLUTE
+    );
 
     private Checkbox bpmnMode;
     private Checkbox includeSecondary;
@@ -129,21 +125,23 @@ public class ViewSettingsController extends VisualController {
     private Map<MeasureType, Div> measureOptionMap;
     private Map<MeasureType, Combobox> measureAggSelectorMap;
     private Map<MeasureType, Div> defaultAggMap;
-    private final Map<MeasureType, MeasureType> defaultSecondaryMap =  new HashMap<>() {
-        {
-            put(FREQUENCY, DURATION);
-            put(DURATION, FREQUENCY);
-            put(COST, DURATION);
-        }
-    };
+    private final Map<MeasureType, MeasureType> defaultSecondaryMap =
+        Map.of(
+            FREQUENCY, DURATION,
+            DURATION, FREQUENCY,
+            COST, DURATION
+        );
     
     private UserOptionsData userOptions;
 
     private String primaryTypeLabel;
     private String primaryAggregateCode;
-    private final String FREQ_LABEL = "frequency";
-    private final String DURATION_LABEL = "duration";
-    private final String COST_LABEL = "cost";
+    private static final String FREQ_LABEL = "frequency";
+    private static final String DURATION_LABEL = "duration";
+    private static final String COST_LABEL = "cost";
+
+    private static final String ON_SELECT = "onSelect";
+    private static final String ON_FORCE_SELECT = "onForceSelect";
 
     private boolean disabled = false;
     private MeasureType primaryMeasureType = FREQUENCY;
@@ -218,16 +216,16 @@ public class ViewSettingsController extends VisualController {
 
     @Override
     public void initializeEventListeners(Object data) {
-        perspectiveSelector.addEventListener("onSelect", (event) -> {
+        perspectiveSelector.addEventListener(ON_SELECT, event -> {
                 String value = perspectiveSelector.getSelectedItem().getValue();
                 if (value.equals("-")) return;
                 String label = perspectiveSelector.getSelectedItem().getLabel();
                 parent.setPerspective(value, label);
         });
 
-        this.bpmnMode.addEventListener("onCheck", (event) -> parent.setBPMNView(bpmnMode.isChecked()));
+        this.bpmnMode.addEventListener("onCheck", event -> parent.setBPMNView(bpmnMode.isChecked()));
 
-        defaultPerspective.addEventListener("onClick", (event) -> {
+        defaultPerspective.addEventListener("onClick", event -> {
                 if (disabled) return;
                 String value = "concept:name";
                 selectComboboxByKey(perspectiveSelector, value);
@@ -235,53 +233,53 @@ public class ViewSettingsController extends VisualController {
                 parent.setPerspective(value, label);
         });
 
-        defaultFrequency.addEventListener("onClick", (event) -> {
+        defaultFrequency.addEventListener("onClick", event -> {
                 if (disabled) return;
                 String key = "case";
                 selectComboboxByKey(frequencyAggSelector, key);
                 selectFrequencyViz();
         });
 
-        defaultDuration.addEventListener("onClick", (event) ->{
+        defaultDuration.addEventListener("onClick", event ->{
                 if (disabled) return;
                 String key = "mean";
                 selectComboboxByKey(durationAggSelector, key);
                 selectDurationViz();
         });
 
-        defaultCost.addEventListener("onClick", (event) -> {
+        defaultCost.addEventListener("onClick", event -> {
                 if (disabled) return;
                 String key = "mean";
                 selectComboboxByKey(costAggSelector, key);
                 selectCostViz();
         });
 
-        freqShow.addEventListener("onClick", (event) -> {
+        freqShow.addEventListener("onClick", event -> {
                 if (disabled) return;
                 setSecondaryOverlay(FREQUENCY);
         });
 
-        durationShow.addEventListener("onClick", (event) -> {
+        durationShow.addEventListener("onClick", event -> {
                 if (disabled) return;
                 setSecondaryOverlay(DURATION);
         });
 
-        costShow.addEventListener("onClick", (event) -> {
+        costShow.addEventListener("onClick", event -> {
                 if (disabled) return;
                 setSecondaryOverlay(COST);
         });
 
-        EventListener<Event> frequencyAggSelectorListener = (event) -> selectFrequencyViz();
-        this.frequencyAggSelector.addEventListener("onSelect", frequencyAggSelectorListener);
-        this.frequencyAggSelector.addEventListener("onForceSelect", frequencyAggSelectorListener);
+        EventListener<Event> frequencyAggSelectorListener = event -> selectFrequencyViz();
+        this.frequencyAggSelector.addEventListener(ON_SELECT, frequencyAggSelectorListener);
+        this.frequencyAggSelector.addEventListener(ON_FORCE_SELECT, frequencyAggSelectorListener);
 
-        EventListener<Event> durationAggSelectorListener = (event) -> selectDurationViz();
-        this.durationAggSelector.addEventListener("onSelect", durationAggSelectorListener);
-        this.durationAggSelector.addEventListener("onForceSelect", durationAggSelectorListener);
+        EventListener<Event> durationAggSelectorListener = event -> selectDurationViz();
+        this.durationAggSelector.addEventListener(ON_SELECT, durationAggSelectorListener);
+        this.durationAggSelector.addEventListener(ON_FORCE_SELECT, durationAggSelectorListener);
 
-        EventListener<Event> costAggSelectorListener = (event) -> selectCostViz();
-        this.costAggSelector.addEventListener("onSelect", costAggSelectorListener);
-        this.costAggSelector.addEventListener("onForceSelect", costAggSelectorListener);
+        EventListener<Event> costAggSelectorListener = event -> selectCostViz();
+        this.costAggSelector.addEventListener(ON_SELECT, costAggSelectorListener);
+        this.costAggSelector.addEventListener(ON_FORCE_SELECT, costAggSelectorListener);
     }
 
     @Override
@@ -476,12 +474,10 @@ public class ViewSettingsController extends VisualController {
     ) {
         parent.getUserOptions().setRetainZoomPan(true);
 
-        // parent.getUserOptions().setPrimaryType(primaryType == COST ? DURATION : primaryType);
         parent.getUserOptions().setPrimaryType(primaryType);
         parent.getUserOptions().setPrimaryAggregation(primaryAggregation);
         parent.getUserOptions().setPrimaryRelation(primaryRelation);
 
-        // parent.getUserOptions().setSecondaryType(secondaryType == COST ? DURATION : secondaryType);
         parent.getUserOptions().setSecondaryType(secondaryType);
         parent.getUserOptions().setSecondaryAggregation(secondaryAggregation);
         parent.getUserOptions().setSecondaryRelation(secondaryRelation);

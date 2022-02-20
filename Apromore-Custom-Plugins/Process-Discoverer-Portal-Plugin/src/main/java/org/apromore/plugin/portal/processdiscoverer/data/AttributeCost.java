@@ -24,10 +24,6 @@ package org.apromore.plugin.portal.processdiscoverer.data;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.apromore.apmlog.util.Util;
-import org.apromore.commons.datetime.DurationUtils;
-
-import java.util.regex.Pattern;
 
 @Getter
 public class AttributeCost {

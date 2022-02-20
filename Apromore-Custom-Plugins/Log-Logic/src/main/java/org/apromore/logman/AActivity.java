@@ -93,8 +93,9 @@ public class AActivity extends XEventImpl {// implements Map.Entry<XEvent,XEvent
         String role = getAttributeMap().get(Constants.ATT_KEY_ROLE);
         if (role == null || costTable == null) return 0;
         double multiplier = costTable.getOrDefault(role, 1.0);
-        double cost = Double.valueOf(calendarModel.getDurationMillis(
-            getOriginalStartTimestamp(), getOriginalEndTimestamp()));
+        double cost = (double)calendarModel.getDurationMillis(
+            getOriginalStartTimestamp(), getOriginalEndTimestamp()
+        );
         cost = (cost / 3600000) * multiplier; // convert ms to hour
         return cost;
     }

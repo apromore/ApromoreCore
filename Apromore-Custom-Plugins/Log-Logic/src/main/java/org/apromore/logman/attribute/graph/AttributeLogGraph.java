@@ -485,21 +485,20 @@ public class AttributeLogGraph extends WeightedAttributeGraph {
                 default:
                     return arcTotalDurs;
             }
-        }
-        else {
+        } else {
             switch (aggregation) {
-            case TOTAL:
-                return arcTotalDurs;
-            case MEAN:
-                return arcMeanDurs;
-            case MIN:
-                return arcMinDurs;
-            case MAX:
-                return arcMaxDurs;
-            case MEDIAN:
-                return arcMedianDurs;
-            default:
-                return arcTotalDurs;
+                case TOTAL:
+                    return arcTotalDurs;
+                case MEAN:
+                    return arcMeanDurs;
+                case MIN:
+                    return arcMinDurs;
+                case MAX:
+                    return arcMaxDurs;
+                case MEDIAN:
+                    return arcMedianDurs;
+                default:
+                    return arcTotalDurs;
             }
         }
     }
@@ -509,20 +508,20 @@ public class AttributeLogGraph extends WeightedAttributeGraph {
     private double getTotalWeight(MeasureType type, MeasureAggregation aggregation) {
         if (type == MeasureType.FREQUENCY) {
             switch (aggregation) {
-            case TOTAL:
-                return 1;
-            case CASES:
-                return this.attLog.getTraces().size();
-            case MEAN:
-                return 1;
-            case MIN:
-                return 1;
-            case MAX:
-                return 1;
-            case MEDIAN:
-                return 1;
-            default:
-                return 1;
+                case TOTAL:
+                    return 1;
+                case CASES:
+                    return this.attLog.getTraces().size();
+                case MEAN:
+                    return 1;
+                case MIN:
+                    return 1;
+                case MAX:
+                    return 1;
+                case MEDIAN:
+                    return 1;
+                default:
+                    return 1;
             }
         } else if (type == MeasureType.DURATION) {
             switch (aggregation) {
@@ -541,18 +540,18 @@ public class AttributeLogGraph extends WeightedAttributeGraph {
             }
         } else {
             switch (aggregation) {
-            case TOTAL:
-                return 1;
-            case MEAN:
-                return 1;
-            case MIN:
-                return 1;
-            case MAX:
-                return 1;
-            case MEDIAN:
-                return 1;
-            default:
-                return 1;
+                case TOTAL:
+                    return 1;
+                case MEAN:
+                    return 1;
+                case MIN:
+                    return 1;
+                case MAX:
+                    return 1;
+                case MEDIAN:
+                    return 1;
+                default:
+                    return 1;
             }
         }
     }

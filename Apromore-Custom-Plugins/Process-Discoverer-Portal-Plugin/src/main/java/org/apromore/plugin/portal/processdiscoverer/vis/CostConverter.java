@@ -21,8 +21,6 @@
  */
 package org.apromore.plugin.portal.processdiscoverer.vis;
 
-import org.apromore.commons.datetime.DurationUtils;
-
 import java.text.DecimalFormat;
 
 /**
