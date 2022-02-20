@@ -22,15 +22,16 @@
 
 package org.apromore.logman;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import org.apromore.calendar.model.CalendarModel;
 import org.apromore.logman.utils.LogUtils;
 import org.deckfour.xes.extension.std.XTimeExtension;
 import org.deckfour.xes.model.XAttribute;
 import org.deckfour.xes.model.XAttributeMap;
 import org.deckfour.xes.model.impl.XEventImpl;
 import org.joda.time.DateTime;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Represent a process activity. An activity can contain a list of events.
@@ -87,7 +88,19 @@ public class AActivity extends XEventImpl {// implements Map.Entry<XEvent,XEvent
     public long getOriginalDuration() {
         return (getOriginalEndTimestamp() - getOriginalStartTimestamp());
     }
-    
+
+    public double getOriginalCost(Map<String, Double> costTable, CalendarModel calendarModel) {
+        if (costTable == null || costTable.isEmpty()) return 0;
+        String role = getAttributeMap().get(Constants.ATT_KEY_ROLE);
+        if (role == null) return 0;
+        double multiplier = costTable.getOrDefault(role, 1.0);
+        double cost = (double)calendarModel.getDurationMillis(
+            getOriginalStartTimestamp(), getOriginalEndTimestamp()
+        );
+        cost = (cost / 3600000) * multiplier; // convert ms to hour
+        return cost;
+    }
+
     public long getOriginalDurationForAttribute(String attributeKey) {
         XAttribute startAtt = this.getOriginalStartAttribute(attributeKey);
         XAttribute endAtt = this.getOriginalCompleteAttribute(attributeKey);
@@ -101,7 +114,21 @@ public class AActivity extends XEventImpl {// implements Map.Entry<XEvent,XEvent
             return this.getOriginalDuration();
         }
     }
-    
+
+    public double getOriginalCostForAttribute(String attributeKey, Map<String, Double> costTable, CalendarModel calendarModel) {
+        XAttribute startAtt = this.getOriginalStartAttribute(attributeKey);
+        XAttribute endAtt = this.getOriginalCompleteAttribute(attributeKey);
+        if (startAtt == null || endAtt == null) {
+            return 0;
+        }
+        else if (!LogUtils.getValueString(startAtt).equalsIgnoreCase(LogUtils.getValueString(endAtt))) {
+            return 0;
+        }
+        else {
+            return this.getOriginalCost(costTable, calendarModel);
+        }
+    }
+
     ////////////////////////// ACTIVE METHODS //////////////////////////////////////
     
     private XAttribute getStartAttribute(String attributeKey) {

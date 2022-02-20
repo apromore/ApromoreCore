@@ -33,6 +33,8 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.util.Map;
+
 public class AttributeLogGraphTest extends DataSetup {
 
     @Test
@@ -787,5 +789,31 @@ public class AttributeLogGraphTest extends DataSetup {
         Assert.assertEquals(0, graph3.getNodeWeight("a", MeasureType.DURATION, MeasureAggregation.MEAN, MeasureRelation.ABSOLUTE),0.0);
         Assert.assertEquals(0, graph3.getNodeWeight("b", MeasureType.DURATION, MeasureAggregation.MEAN, MeasureRelation.ABSOLUTE),0.0);
         Assert.assertEquals(3600000, graph3.getArcWeight("a", "b", MeasureType.DURATION, MeasureAggregation.MEAN, MeasureRelation.ABSOLUTE),0.0);
+    }
+
+    @Test
+    public void testCostWeight() {
+        ALog log = new ALog(readLogWithOneTrace_TwoActivities_StartCompleteEvents());
+        AttributeLog attLog0 = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName(),
+                getAllDayAllTimeCalendar(),
+                Map.ofEntries(Map.entry("O1", 3D), Map.entry("O2", 1D)));
+        AttributeLogGraph graph0 = attLog0.getGraphView();
+
+        Assert.assertEquals(0, graph0.getNodeWeight(Constants.START_NAME, MeasureType.COST, MeasureAggregation.MEAN, MeasureRelation.ABSOLUTE),0);
+        Assert.assertEquals(0, graph0.getNodeWeight(Constants.END_NAME, MeasureType.COST, MeasureAggregation.MEAN, MeasureRelation.ABSOLUTE),0);
+
+        Assert.assertEquals(1.5, graph0.getNodeWeight("a", MeasureType.COST, MeasureAggregation.MEAN, MeasureRelation.ABSOLUTE),0);
+
+        Assert.assertEquals(1, graph0.getNodeWeight("b", MeasureType.COST, MeasureAggregation.MIN, MeasureRelation.ABSOLUTE),0);
+        Assert.assertEquals(4, graph0.getNodeWeight("b", MeasureType.COST, MeasureAggregation.MAX, MeasureRelation.ABSOLUTE),0);
+        Assert.assertEquals(2.333333, graph0.getNodeWeight("b", MeasureType.COST, MeasureAggregation.MEAN, MeasureRelation.ABSOLUTE),0.001);
+        Assert.assertEquals(2, graph0.getNodeWeight("b", MeasureType.COST, MeasureAggregation.MEDIAN, MeasureRelation.ABSOLUTE),0.001);
+        Assert.assertEquals(7, graph0.getNodeWeight("b", MeasureType.COST, MeasureAggregation.TOTAL, MeasureRelation.ABSOLUTE),0.001);
+        Assert.assertEquals(7, graph0.getNodeWeight("b", MeasureType.COST, MeasureAggregation.CASES, MeasureRelation.ABSOLUTE),0.001);
+        Assert.assertEquals(1, graph0.getNodeWeight("b", MeasureType.COST, MeasureAggregation.MIN, MeasureRelation.RELATIVE),0);
+
+        Assert.assertEquals(0, graph0.getArcWeight("a", "b", MeasureType.COST, MeasureAggregation.MEAN, MeasureRelation.ABSOLUTE),0);
+        Assert.assertEquals(0, graph0.getArcWeight("a", "a", MeasureType.COST, MeasureAggregation.MEAN, MeasureRelation.ABSOLUTE),0);
+
     }
 }

@@ -89,6 +89,24 @@ Ap.common.removeCookie = (name) => {
   document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 };
 
+/**
+ * Local storage functionalities
+ */
+Ap.common.setLocalStorageItem = (key, value) => {
+  if (localStorage) {
+    localStorage.setItem(key, value);
+  }
+};
+
+Ap.common.getLocalStorageItem = (key, elId, eventName) => {
+  if (localStorage) {
+    let value = localStorage.getItem(key);
+    zAu.send(new zk.Event(zk.Widget.$('$' + elId), eventName, value));
+  } else {
+    zAu.send(new zk.Event(zk.Widget.$('$' + elId), eventName, ''));
+  }
+};
+
 /*
  * @todo: offset should be decoupled from timezone
  */

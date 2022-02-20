@@ -24,6 +24,9 @@ package org.apromore.plugin.portal.processdiscoverer.data;
 
 import lombok.Getter;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * ContextData contains contextual data of this plugin
  * Many data items are about the calling plugin or the portal
@@ -41,12 +44,20 @@ public class ContextData {
     private final int logId;
     private final boolean isCalendarEnabled;
     private final boolean isEditEnabled;
+    private Map<String, Double> costTable = new HashMap<>();
+    private String currency = "USD";
 
     private ContextData (String domain,
                         String userName,
-                        int logId, String logName,
-                        int containingFolderId, String containingFolderName,
-                         boolean isCalendarEnabled, boolean isEditEnabled) {
+                        int logId,
+                         String logName,
+                        int containingFolderId,
+                         String containingFolderName,
+                         boolean isCalendarEnabled,
+                         boolean isEditEnabled,
+                         Map<String, Double> costTable,
+                         String currency
+    ) {
         this.username = userName;
         this.folderId = containingFolderId;
         this.folderName = containingFolderName;
@@ -55,15 +66,18 @@ public class ContextData {
         this.logName = logName;
         this.isCalendarEnabled = isCalendarEnabled;
         this.isEditEnabled = isEditEnabled;
+        this.costTable = costTable;
+        this.currency = currency;
     }
     
     public static ContextData valueOf (String domain,
                         String userName,
                         int logId, String logName,
                         int containingFolderId, String containingFolderName, boolean isCalendarEnabled,
-                        boolean isEditEnabled) {
+                        boolean isEditEnabled, Map<String, Double> costTable,
+                                       String currency) {
         return new ContextData(domain, userName, logId, logName, containingFolderId, containingFolderName,
-                isCalendarEnabled, isEditEnabled);
+                isCalendarEnabled, isEditEnabled, costTable, currency);
     }
     
 }

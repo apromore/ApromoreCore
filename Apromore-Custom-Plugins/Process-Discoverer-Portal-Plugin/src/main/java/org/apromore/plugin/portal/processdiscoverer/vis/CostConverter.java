@@ -19,11 +19,21 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+package org.apromore.plugin.portal.processdiscoverer.vis;
 
-package org.apromore.logman.attribute.graph;
+import java.text.DecimalFormat;
 
-public enum MeasureType {
+/**
+ * Abstract cost conversion in this class
+ */
+public class CostConverter {
 
-    FREQUENCY, DURATION, COST
+    private final DecimalFormat decimalFormatter = new DecimalFormat("##############0.##");
+    /**
+     * This is used for the node cost, so forceDecimal is set to false to conserve space
+     */
+    public String format(double number) {
+        return decimalFormatter.format(number);
+    }
 
 }

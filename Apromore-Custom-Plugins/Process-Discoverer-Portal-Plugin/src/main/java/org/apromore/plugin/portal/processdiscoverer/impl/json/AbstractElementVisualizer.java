@@ -63,6 +63,9 @@ public abstract class AbstractElementVisualizer implements ElementVisualizer {
             else if (measureType == MeasureType.DURATION) {
                 return separator + visSettings.getTimeConverter().convertMilliseconds("" + weightValue);
             }
+            else if (measureType == MeasureType.COST) {
+                return separator + visSettings.getCurrency() + " " + visSettings.getDecimalFormatter().format(weightValue);
+            }
             else {
                 return "";
             }

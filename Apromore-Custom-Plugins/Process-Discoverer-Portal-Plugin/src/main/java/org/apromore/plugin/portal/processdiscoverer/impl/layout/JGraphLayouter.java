@@ -85,7 +85,7 @@ public class JGraphLayouter implements Layouter {
 	
 	private int SEQUENCE_LENGTH = 3;
 	
-	private VisualSettings visSettings = VisualSettings.standard();
+	private VisualSettings visSettings = VisualSettings.standard("USD");
 	
     @Override
     public void setVisualSettings(VisualSettings visSettings) {
