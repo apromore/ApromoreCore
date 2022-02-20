@@ -22,9 +22,7 @@
 
 package org.apromore.processdiscoverer;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
+import org.apromore.calendar.model.CalendarModel;
 import org.apromore.logman.ALog;
 import org.apromore.logman.Constants;
 import org.apromore.logman.LogBitMap;
@@ -46,6 +44,10 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class ProcessDiscovererTest extends LogicDataSetup {
     
@@ -94,14 +96,36 @@ public class ProcessDiscovererTest extends LogicDataSetup {
         Abstraction dfgAbs = pd.generateDFGAbstraction(attLog, params);
         return (!bpmn ? dfgAbs : pd.generateBPMNAbstraction(attLog, params, dfgAbs));
     }
+
+    private Abstraction discoverProcess(XLog xlog, double nodeSlider, double arcSlider, double paraSlider,
+                                        MeasureType structureType, MeasureAggregation structureAggregate, MeasureRelation structureRelation,
+                                        MeasureType primaryType, MeasureAggregation primaryAggregate, MeasureRelation primaryRelation,
+                                        MeasureType secondaryType, MeasureAggregation secondaryAggregate, MeasureRelation secondaryRelation,
+                                        boolean bpmn) throws Exception {
+        return discoverProcess(createAttributeLog(xlog),
+                nodeSlider,
+                arcSlider,
+                paraSlider,
+                structureType,
+                structureAggregate,
+                structureRelation,
+                primaryType,
+                primaryAggregate,
+                primaryRelation,
+                secondaryType,
+                secondaryAggregate,
+                secondaryRelation,
+                bpmn);
+    }
     
     private Abstraction discoverProcess(XLog xlog, double nodeSlider, double arcSlider, double paraSlider,
             MeasureType structureType, MeasureAggregation structureAggregate, MeasureRelation structureRelation,
                         MeasureType primaryType, MeasureAggregation primaryAggregate, MeasureRelation primaryRelation,
                         MeasureType secondaryType, MeasureAggregation secondaryAggregate, MeasureRelation secondaryRelation,
-                        boolean bpmn) throws Exception {
+                        boolean bpmn,
+                        CalendarModel cal, Map<String, Double> costTable) throws Exception {
 
-        return discoverProcess(createAttributeLog(xlog),
+        return discoverProcess(createAttributeLog(xlog, cal, costTable),
                         nodeSlider,
                         arcSlider,
                         paraSlider,
@@ -120,7 +144,14 @@ public class ProcessDiscovererTest extends LogicDataSetup {
     private AttributeLog createAttributeLog(XLog xlog) {
         ALog log = new ALog(xlog);
         IndexableAttribute mainAttribute = log.getAttributeStore().getStandardEventConceptName();
-        AttributeLog attLog = new AttributeLog(log, mainAttribute, getAllDayAllTimeCalendar());
+        AttributeLog attLog = new AttributeLog(log, mainAttribute, getAllDayAllTimeCalendar(), Map.of());
+        return attLog;
+    }
+
+    private AttributeLog createAttributeLog(XLog xlog, CalendarModel cal, Map<String, Double> costTable) {
+        ALog log = new ALog(xlog);
+        IndexableAttribute mainAttribute = log.getAttributeStore().getStandardEventConceptName();
+        AttributeLog attLog = new AttributeLog(log, mainAttribute, cal, costTable);
         return attLog;
     }
     
@@ -235,6 +266,84 @@ public class ProcessDiscovererTest extends LogicDataSetup {
                     else if (((BPMNNode)e.getSource()).getLabel().equals("a") &&
                             ((BPMNNode)e.getTarget()).getLabel().equals(Constants.END_NAME)) {
                         assertEquals(1, abs.getArcPrimaryWeight(e), 0);
+                        edgeCount++;
+                    }
+                }
+                if (edgeCount != abs.getDiagram().getEdges().size()) {
+                    fail("Missing tests for edges");
+                }
+            }
+        } catch (Exception e) {
+            fail("Exception occurred: " + e.getMessage());
+        }
+    }
+
+    @Test
+    public void testDFG_LogWithOneTrace_StartCompleteEvents_Cost() {
+        try {
+            Abstraction abs = discoverProcess(readLogWithOneTrace_StartCompleteEvents(),
+                    1.0, 1.0, 0.4,
+                    MeasureType.FREQUENCY,
+                    MeasureAggregation.CASES,
+                    MeasureRelation.ABSOLUTE,
+                    MeasureType.COST,
+                    MeasureAggregation.MEAN,
+                    MeasureRelation.ABSOLUTE,
+                    MeasureType.DURATION,
+                    MeasureAggregation.MEAN,
+                    MeasureRelation.ABSOLUTE,
+                    false,
+                    getAllDayAllTimeCalendar(),
+                    Map.ofEntries(Map.entry("O1", 3D), Map.entry("O2", 1D)));
+            BPMNDiagram d = this.readDFG_LogWithOneTrace_StartCompleteEvents();
+            if (!abs.getDiagram().checkSimpleEquality(d)) {
+                fail("BPMNDiagram is different");
+            }
+            else {
+                int nodeCount = 0;
+                for (BPMNNode node: abs.getDiagram().getNodes()) {
+                    if (node.getLabel().equalsIgnoreCase("a")) {
+                        assertEquals(1.5, abs.getNodePrimaryWeight(node), 0);
+                        nodeCount++;
+                    }
+                    if (node.getLabel().equalsIgnoreCase("b")) {
+                        assertEquals(2.33333, abs.getNodePrimaryWeight(node), 0.001);
+                        nodeCount++;
+                    }
+                    else if (node.getLabel().equalsIgnoreCase(Constants.START_NAME)) {
+                        assertEquals(0, abs.getNodePrimaryWeight(node), 0);
+                        nodeCount++;
+                    }
+                    else if (node.getLabel().equalsIgnoreCase(Constants.END_NAME)) {
+                        assertEquals(0, abs.getNodePrimaryWeight(node), 0);
+                        nodeCount++;
+                    }
+                }
+
+                if (nodeCount != abs.getDiagram().getNodes().size()) {
+                    fail("Missing tests for nodes");
+                }
+
+                int edgeCount = 0;
+                for (BPMNEdge<? extends BPMNNode, ? extends BPMNNode> e: abs.getDiagram().getEdges()) {
+                    if (((BPMNNode)e.getSource()).getLabel().equals(Constants.START_NAME) &&
+                            ((BPMNNode)e.getTarget()).getLabel().equals("a")) {
+                        assertEquals(0, abs.getArcPrimaryWeight(e), 0);
+                        edgeCount++;
+                    }
+                    else if (((BPMNNode)e.getSource()).getLabel().equals("a") &&
+                            ((BPMNNode)e.getTarget()).getLabel().equals("b")) {
+                        assertEquals(0, abs.getArcPrimaryWeight(e), 0);
+                        edgeCount++;
+                    }
+                    else if (((BPMNNode)e.getSource()).getLabel().equals("b") &&
+                            ((BPMNNode)e.getTarget()).getLabel().equals("b")) {
+                        assertEquals(0, abs.getArcPrimaryWeight(e), 0);
+                        edgeCount++;
+                    }
+                    else if (((BPMNNode)e.getSource()).getLabel().equals("b") &&
+                            ((BPMNNode)e.getTarget()).getLabel().equals(Constants.END_NAME)) {
+                        assertEquals(0, abs.getArcPrimaryWeight(e), 0);
                         edgeCount++;
                     }
                 }

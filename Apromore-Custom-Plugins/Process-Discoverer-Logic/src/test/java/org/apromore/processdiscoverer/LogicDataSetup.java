@@ -22,10 +22,6 @@
 
 package org.apromore.processdiscoverer;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-
 import org.apromore.calendar.builder.CalendarModelBuilder;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
@@ -33,6 +29,10 @@ import org.apromore.processmining.plugins.bpmn.plugins.BpmnImportPlugin;
 import org.deckfour.xes.in.XesXmlGZIPParser;
 import org.deckfour.xes.in.XesXmlParser;
 import org.deckfour.xes.model.XLog;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 public class LogicDataSetup {
     private BpmnImportPlugin bpmnImport = new BpmnImportPlugin();
@@ -71,9 +71,17 @@ public class LogicDataSetup {
     public XLog readLogWithOneTraceOneEvent() {
         return this.readXESFile("src/test/logs/L1_1trace_1event.xes");
     }
+
+    public XLog readLogWithOneTrace_StartCompleteEvents() {
+        return this.readXESFile("src/test/logs/L1_1trace_2activity_with_start_complete_events.xes");
+    }
     
     public BPMNDiagram readDFG_LogWithOneTraceOneEvent() throws FileNotFoundException, Exception {
         return this.readBPMNDiagram("src/test/logs/L1_1trace_1event.bpmn");
+    }
+
+    public BPMNDiagram readDFG_LogWithOneTrace_StartCompleteEvents() throws FileNotFoundException, Exception {
+        return this.readBPMNDiagram("src/test/logs/L1_1trace_2activity_with_start_complete_events.bpmn");
     }
     
     //-------------------------------------------------
