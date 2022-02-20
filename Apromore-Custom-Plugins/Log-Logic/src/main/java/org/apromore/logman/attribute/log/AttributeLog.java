@@ -22,10 +22,6 @@
 
 package org.apromore.logman.attribute.log;
 
-import java.util.BitSet;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.logman.ALog;
@@ -47,8 +43,9 @@ import org.eclipse.collections.impl.factory.Maps;
 import org.eclipse.collections.impl.factory.primitive.DoubleLists;
 import org.eclipse.collections.impl.factory.primitive.IntSets;
 
-import static org.apromore.logman.attribute.graph.MeasureType.*;
-import static org.apromore.logman.attribute.graph.MeasureType.DURATION;
+import java.util.BitSet;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * An AttributeLog is a view of ALog based on an attribute. This log extracts the traces with the chosen attribute only,
@@ -132,7 +129,7 @@ public class AttributeLog {
     }
 
     public AttributeLog(ALog log, IndexableAttribute attribute, CalendarModel calendarModel) {
-        this(log, attribute, calendarModel, null);
+        this(log, attribute, calendarModel, Map.of());
 	}
 	
     public IndexableAttribute getAttribute() {

@@ -22,9 +22,6 @@
 
 package org.apromore.logman.attribute.graph;
 
-import java.util.Arrays;
-import java.util.Comparator;
-
 import org.apache.commons.math3.stat.descriptive.rank.Median;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.logman.attribute.AttributeMatrixGraph;
@@ -34,7 +31,11 @@ import org.apromore.logman.attribute.log.AttributeLog;
 import org.apromore.logman.attribute.log.AttributeTrace;
 import org.eclipse.collections.api.list.ListIterable;
 import org.eclipse.collections.api.list.MutableList;
-import org.eclipse.collections.api.list.primitive.*;
+import org.eclipse.collections.api.list.primitive.DoubleList;
+import org.eclipse.collections.api.list.primitive.IntList;
+import org.eclipse.collections.api.list.primitive.LongList;
+import org.eclipse.collections.api.list.primitive.MutableDoubleList;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
 import org.eclipse.collections.api.map.primitive.IntDoubleMap;
 import org.eclipse.collections.api.map.primitive.MutableIntDoubleMap;
 import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
@@ -51,6 +52,9 @@ import org.eclipse.collections.impl.factory.primitive.IntSets;
 import org.eclipse.collections.impl.factory.primitive.LongLists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Arrays;
+import java.util.Comparator;
 
 /**
  * AttributeLogGraph is a {@link WeightedAttributeGraph} for an {@link AttributeLog}.
@@ -489,17 +493,17 @@ public class AttributeLogGraph extends WeightedAttributeGraph {
         else {
             switch (aggregation) {
             case TOTAL:
-                return arcTotalDurs;
+                return arcTotalCosts;
             case MEAN:
-                return arcMeanDurs;
+                return arcMeanCosts;
             case MIN:
-                return arcMinDurs;
+                return arcMinCosts;
             case MAX:
-                return arcMaxDurs;
+                return arcMaxCosts;
             case MEDIAN:
-                return arcMedianDurs;
+                return arcMedianCosts;
             default:
-                return arcTotalDurs;
+                return arcTotalCosts;
             }
         }
     }
