@@ -23,7 +23,6 @@
 package org.apromore.plugin.portal.processdiscoverer.data;
 
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -22,6 +22,10 @@
 
 package org.apromore.logman.attribute.log;
 
+import java.util.BitSet;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.logman.ALog;
@@ -42,10 +46,6 @@ import org.eclipse.collections.impl.factory.Lists;
 import org.eclipse.collections.impl.factory.Maps;
 import org.eclipse.collections.impl.factory.primitive.DoubleLists;
 import org.eclipse.collections.impl.factory.primitive.IntSets;
-
-import java.util.BitSet;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * An AttributeLog is a view of ALog based on an attribute. This log extracts the traces with the chosen attribute only,
@@ -77,10 +77,8 @@ public class AttributeLog {
     
     // Calendar model used for this log
     private CalendarModel calendarModel;
-    private Map<String, Double> costTable = new HashMap<>() {{
-        put("Banker", 2.0);
-    }};
-    
+    private Map<String, Double> costTable = new HashMap<>();
+
     // Original log data
     private MutableList<AttributeTrace> originalTraces = Lists.mutable.empty();
     private MutableMap<String, AttributeTrace> originalTraceIdMap = Maps.mutable.empty();
@@ -106,6 +104,7 @@ public class AttributeLog {
 
         this.variantView = new AttributeLogVariantView(this);
         this.graphView = new AttributeLogGraph(this);
+        this.costTable = costTable;
 
         for(int i=0; i<fullLog.getOriginalTraces().size(); i++) {
             ATrace trace = fullLog.getOriginalTraces().get(i);
@@ -124,12 +123,8 @@ public class AttributeLog {
         graphView.finalUpdate();
     }
 
-    public void setCostTable(Map<String, Double> costTable) {
-        this.costTable = costTable;
-    }
-
     public AttributeLog(ALog log, IndexableAttribute attribute, CalendarModel calendarModel) {
-        this(log, attribute, calendarModel, Map.of());
+        this(log, attribute, calendarModel, null);
 	}
 	
     public IndexableAttribute getAttribute() {

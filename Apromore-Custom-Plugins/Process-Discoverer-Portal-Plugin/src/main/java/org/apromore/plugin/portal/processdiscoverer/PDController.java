@@ -24,7 +24,6 @@ package org.apromore.plugin.portal.processdiscoverer;
 
 import lombok.Getter;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
-import org.apromore.dao.model.Usermetadata;
 import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
@@ -173,8 +172,6 @@ public class PDController extends BaseController implements Composer<Component>,
     private Component pdComponent;
     private EventQueue<Event> sessionQueue;
 
-    private String currentPerspectiveValue;
-    private String currentPerspectiveLabel;
     private boolean isBeginning = true;
 
     /////////////////////////////////////////////////////////////////////////
@@ -189,16 +186,6 @@ public class PDController extends BaseController implements Composer<Component>,
         pageParams.put("pdLabels", getLabels());
         Executions.getCurrent().pushArg(pageParams);
         actionManager = new ActionManager(this);
-        if (!preparePluginSessionId()) {
-            Messagebox.show(getLabel("sessionNotInitialized_message"));
-            return;
-        }
-
-        if (!prepareCriticalServices()) {
-            return;
-        }
-        currentPerspectiveValue = "concept:name";
-        currentPerspectiveLabel = "Activity";
     }
 
     @Override
@@ -263,7 +250,14 @@ public class PDController extends BaseController implements Composer<Component>,
     }
 
     public void onCreate(Component comp) throws InterruptedException {
-        comp.addEventListener("onCostTableInit", (event) -> {
+        if (!preparePluginSessionId()) {
+            Messagebox.show(getLabel("sessionNotInitialized_message"));
+            return;
+        }
+        if (!prepareCriticalServices()) {
+            return;
+        }
+        comp.addEventListener("onCostTableInit", event -> {
             String jsonString = (String)event.getData();
             Map<String, Double> costTable = new HashMap<>();
             String currency = "USD";
@@ -278,12 +272,12 @@ public class PDController extends BaseController implements Composer<Component>,
                 }
             }
             onCreateFollowUp(comp, costTable, currency);
-            Events.postEvent("onFakeLoaded", mainWindow, null);
+            Events.postEvent("onFakeLoaded", comp, null);
         });
         Clients.evalJavaScript("Ap.common.getLocalStorageItem('ap.cost.table', 'win', 'onCostTableInit')");
     }
 
-    public void onCreateFollowUp(Component comp, Map<String, Double> costTable, String currency) throws InterruptedException {
+    public void onCreateFollowUp(Component comp, Map<String, Double> costTable, String currency) {
         try {
 
             init(comp);
@@ -723,8 +717,6 @@ public class PDController extends BaseController implements Composer<Component>,
     }
 
     public void setPerspective(String value, String label) throws Exception {
-        currentPerspectiveValue = value;
-        currentPerspectiveLabel = label;
         if (this.mode != InteractiveMode.MODEL_MODE)
             return;
         if (!value.equals(userOptions.getMainAttributeKey())) {

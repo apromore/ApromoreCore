@@ -24,7 +24,6 @@ package org.apromore.plugin.portal.processdiscoverer.data;
 
 import static org.apromore.logman.attribute.graph.MeasureType.DURATION;
 import static org.apromore.logman.attribute.graph.MeasureType.FREQUENCY;
-import static org.apromore.logman.attribute.graph.MeasureType.COST;
 
 import org.apromore.logman.attribute.graph.MeasureAggregation;
 import org.apromore.logman.attribute.graph.MeasureRelation;
