@@ -44,6 +44,8 @@ import java.util.stream.Collectors;
 
 public class NodeDurationFilterTest {
 
+    private static final String ATTR_VAL = "Prepare package";
+
     @Test
     public void filter() throws Exception {
         APMLog log5cases = APMLogUnitTest.getImmutableLog("5cases", "files/5cases.xes");
@@ -51,7 +53,7 @@ public class NodeDurationFilterTest {
         APMLogFilter apmLogFilter = new APMLogFilter(log5cases);
         apmLogFilter.filter(criteria);
         assertTrue(apmLogFilter.getAPMLog().getActivityInstances().stream()
-                .filter(x -> x.getAttributeValue(XESAttributeCodes.CONCEPT_NAME).equals("Prepare package"))
+                .filter(x -> x.getAttributeValue(XESAttributeCodes.CONCEPT_NAME).equals(ATTR_VAL))
                 .collect(Collectors.summarizingDouble(ActivityInstance::getDuration)).getMin() >= 40 * (1000 * 60));
 
         criteria = getFilterCriteria(Choice.RETAIN);
@@ -74,13 +76,12 @@ public class NodeDurationFilterTest {
         Set<RuleValue> primaryValues = new HashSet<RuleValue>();
 
         String attrKey = XESAttributeCodes.CONCEPT_NAME;
-        String attrVal = "Prepare package";
 
-        RuleValue ruleValue1 = new RuleValue(filterType, OperationType.GREATER_EQUAL, attrVal, lowBoundVal);
+        RuleValue ruleValue1 = new RuleValue(filterType, OperationType.GREATER_EQUAL, ATTR_VAL, lowBoundVal);
 
         ruleValue1.getCustomAttributes().put("unit", lowBoundUnit);
 
-        RuleValue ruleValue2 = new RuleValue(filterType, OperationType.LESS_EQUAL, attrVal, upBoundVal);
+        RuleValue ruleValue2 = new RuleValue(filterType, OperationType.LESS_EQUAL, ATTR_VAL, upBoundVal);
 
         ruleValue2.getCustomAttributes().put("unit", upBoundUnit);
 
