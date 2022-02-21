@@ -159,7 +159,7 @@ public class SaveAsDialogController extends BaseController {
     String processName = this.modelName.getText();
     String versionNo = versionNumber.getText();
     Integer processId = this.editSession.getProcessId();
-    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss");
+    DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
     String created = dateFormat.format(new Date());
 
     boolean makePublic = (this.isSaveCurrent && processService.isPublicProcess(processId));

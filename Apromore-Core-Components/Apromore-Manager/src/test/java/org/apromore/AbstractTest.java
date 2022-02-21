@@ -49,6 +49,8 @@ import org.apromore.dao.model.Workspace;
 import org.apromore.portal.helper.Version;
 import org.easymock.EasyMockSupport;
 
+import static org.apromore.common.Constants.TRUNK_NAME;
+
 public class AbstractTest extends EasyMockSupport {
     public Process createProcess(User user, NativeType natType, Folder folder) {
         Process process = new Process();
@@ -65,7 +67,7 @@ public class AbstractTest extends EasyMockSupport {
     public ProcessBranch createBranch(Process process) {
         ProcessBranch branch = new ProcessBranch();
         branch.setId(1234);
-        branch.setBranchName("BranchName");
+        branch.setBranchName(TRUNK_NAME);
         branch.setProcess(process);
         branch.setCreateDate("1.1.2020");
         branch.setLastUpdateDate("1.1.2020");

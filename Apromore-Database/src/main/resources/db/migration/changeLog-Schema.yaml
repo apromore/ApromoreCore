@@ -1309,3 +1309,16 @@ databaseChangeLog:
            onUpdate:  CASCADE
            referencedColumnNames: id
            referencedTableName: user
+
+ - changeSet:
+     id: 20220221101400
+     author: frankm
+     changes:
+        - addForeignKeyConstraint:
+           baseColumnNames: creator
+           baseTableName: process_model_version
+           constraintName: fk_pmv_creator
+           onDelete:  SET NULL
+           onUpdate:  CASCADE
+           referencedColumnNames: id
+           referencedTableName: user
