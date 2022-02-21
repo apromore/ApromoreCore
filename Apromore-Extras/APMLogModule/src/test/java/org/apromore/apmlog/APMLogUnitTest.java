@@ -56,7 +56,6 @@ import java.io.FileReader;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
-import java.util.DoubleSummaryStatistics;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -274,12 +273,6 @@ public class APMLogUnitTest {
     public void testAttrCombFilterEventCase1() throws Exception {
         APMLog apmLog = getImmutableLog("attrCombTest", "files/attrCombTest.xes");
         AttributeCombinationTest.testRetainEventCase1(apmLog, this);
-    }
-
-    @Test
-    public void testAttrDuration1() throws Exception {
-        APMLog apmLog = getImmutableLog("attrCombTest", "files/attrCombTest.xes");
-        AttributeDurationTest.testRetainAttributeDuration1(apmLog, this);
     }
 
     @Test
