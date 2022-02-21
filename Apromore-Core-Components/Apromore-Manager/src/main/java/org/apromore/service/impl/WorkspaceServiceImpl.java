@@ -24,23 +24,6 @@
 
 package org.apromore.service.impl;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.TreeMap;
-import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 import org.apromore.commons.config.ConfigBean;
 import org.apromore.dao.CustomCalendarRepository;
@@ -92,6 +75,27 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.inject.Inject;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.TreeMap;
+
+import static org.apromore.common.Constants.DRAFT_BRANCH_NAME;
+import static org.apromore.common.Constants.TRUNK_NAME;
 
 @Service("workspaceService")
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT,
@@ -630,10 +634,19 @@ public class WorkspaceServiceImpl implements WorkspaceService {
   public Process copyProcess(Integer processId, Integer newFolderId, String userName,
       boolean isPublic) throws Exception {
     Process process = processRepo.findUniqueByID(processId);
-    ProcessBranch branch = process.getProcessBranches().get(0);
+
+    // Only copy MAIN branch but not DRAFT branch
+    ProcessBranch branch = process.getProcessBranches().stream()
+            .filter(pb -> TRUNK_NAME.equals(pb.getBranchName()))
+            .findAny()
+            .orElse(null);
+
     List<String> pmvVersions = new ArrayList<>();
-    for (ProcessModelVersion pmv : branch.getProcessModelVersions()) {
-      pmvVersions.add(pmv.getVersionNumber());
+
+    if (branch != null) {
+      for (ProcessModelVersion pmv : branch.getProcessModelVersions()) {
+        pmvVersions.add(pmv.getVersionNumber());
+      }
     }
 
     return copyProcessVersions(processId, pmvVersions, newFolderId, userName, isPublic);
@@ -897,11 +910,23 @@ public class WorkspaceServiceImpl implements WorkspaceService {
       groupProcessRepo.save(gp);
       p.setUser(targetUser);
       processRepo.save(p);
+      transferProcessModelVersions(p, sourceUser, targetUser);
     }
 
     for (CustomCalendar c : calendars) {
       c.setUser(targetUser);
       customCalendarRepo.save(c);
+    }
+  }
+
+  private void transferProcessModelVersions(Process process, User sourceUser, User targetUser) {
+    for (ProcessBranch branch : process.getProcessBranches()) {
+      for (ProcessModelVersion pmv : branch.getProcessModelVersions()) {
+        if (pmv.getCreator().equals(sourceUser)) {
+          pmv.setCreator(targetUser);
+          pmvRepo.save(pmv);
+        }
+      }
     }
   }
 

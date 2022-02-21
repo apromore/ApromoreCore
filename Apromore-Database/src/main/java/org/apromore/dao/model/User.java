@@ -88,6 +88,7 @@ public class User implements Serializable {
     private Set<Folder> foldersForCreatorId = new HashSet<>();
     private Set<Folder> foldersForModifiedById = new HashSet<>();
     private Set<Process> processes = new HashSet<>();
+    private Set<ProcessModelVersion> processModelVersions = new HashSet<>();
     private Set<CustomCalendar> calendars = new HashSet<>();
     private List<SearchHistory> searchHistories = new ArrayList<>();
     private List<HistoryEvent> historyEvents = new ArrayList<>();
@@ -290,7 +291,7 @@ public class User implements Serializable {
     }
 
     /**
-     * @param the user's personal access control group
+     * @param newGroup the user's personal access control group
      */
     public void setGroup(final Group newGroup) {
         this.group = newGroup;
@@ -389,6 +390,15 @@ public class User implements Serializable {
 
     public void setProcesses(Set<Process> processes) {
         this.processes = processes;
+    }
+
+    @OneToMany(mappedBy = "creator")
+    public Set<ProcessModelVersion> getProcessModelVersions() {
+        return this.processModelVersions;
+    }
+
+    public void setProcessModelVersions(Set<ProcessModelVersion> processModelVersions) {
+        this.processModelVersions = processModelVersions;
     }
 
     @OneToMany(mappedBy = "user")
