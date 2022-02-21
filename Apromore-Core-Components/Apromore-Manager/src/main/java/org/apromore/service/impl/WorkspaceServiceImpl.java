@@ -94,6 +94,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
 
+import static org.apromore.common.Constants.DRAFT_BRANCH_NAME;
 import static org.apromore.common.Constants.TRUNK_NAME;
 
 @Service("workspaceService")
@@ -919,7 +920,14 @@ public class WorkspaceServiceImpl implements WorkspaceService {
   }
 
   private void transferProcessModelVersions(Process process, User sourceUser, User targetUser) {
-    for (ProcessBranch branch : process.getProcessBranches()) {
+
+    // Only transfer PMVs in MAIN branch in order to avoid non-unique result when query PMV by user
+    ProcessBranch branch = process.getProcessBranches().stream()
+            .filter(pb -> TRUNK_NAME.equals(pb.getBranchName()))
+            .findAny()
+            .orElse(null);
+
+    if (branch != null) {
       for (ProcessModelVersion pmv : branch.getProcessModelVersions()) {
         if (pmv.getCreator().equals(sourceUser)) {
           pmv.setCreator(targetUser);
