@@ -41,6 +41,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Ignore
 public class LogImporterCSVImplUnitTest {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(LogImporterCSVImplUnitTest.class);

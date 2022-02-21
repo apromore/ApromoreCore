@@ -27,6 +27,7 @@ import org.apromore.service.logimporter.services.legacy.LogImporter;
 import org.apromore.service.logimporter.services.legacy.LogImporterCSVImpl;
 import org.apromore.service.logimporter.services.utilities.TestUtilities;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -36,7 +37,7 @@ import static org.apromore.service.logimporter.dateparser.DateUtil.determineDate
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-
+@Ignore
 public class DateUtilUnitTest {
     /**
      * Expected headers for <code>test1-valid.csv</code>.

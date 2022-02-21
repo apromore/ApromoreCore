@@ -41,6 +41,7 @@ import static org.apromore.service.logimporter.services.utilities.TestUtilities.
 import static org.apromore.service.logimporter.utilities.ParquetUtilities.getHeaderFromParquet;
 import static org.junit.Assert.assertEquals;
 
+@Ignore
 public class ParquetImporterCSVImplUnitTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ParquetImporterCSVImplUnitTest.class);

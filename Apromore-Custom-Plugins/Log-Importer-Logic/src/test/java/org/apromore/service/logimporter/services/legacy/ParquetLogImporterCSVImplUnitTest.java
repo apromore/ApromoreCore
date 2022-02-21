@@ -36,12 +36,13 @@ import org.apromore.service.logimporter.services.ParquetImporterFactory;
 import org.apromore.service.logimporter.services.utilities.TestUtilities;
 import org.deckfour.xes.model.XLog;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.google.common.io.ByteStreams;
 
-
+@Ignore
 public class ParquetLogImporterCSVImplUnitTest {
 
   private static final Logger LOGGER =

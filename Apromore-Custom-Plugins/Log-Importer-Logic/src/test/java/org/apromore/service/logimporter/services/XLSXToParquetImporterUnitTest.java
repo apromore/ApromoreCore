@@ -42,7 +42,7 @@ import static org.apromore.service.logimporter.utilities.ParquetUtilities.getHea
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-
+@Ignore
 public class XLSXToParquetImporterUnitTest {
 
 
