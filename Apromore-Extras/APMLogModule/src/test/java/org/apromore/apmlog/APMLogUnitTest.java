@@ -277,12 +277,6 @@ public class APMLogUnitTest {
     }
 
     @Test
-    public void testAttrDuration1() throws Exception {
-        APMLog apmLog = getImmutableLog("attrCombTest", "files/attrCombTest.xes");
-        AttributeDurationTest.testRetainAttributeDuration1(apmLog, this);
-    }
-
-    @Test
     public void testAttrArcDur1() throws Exception {
         APMLog apmLog = getImmutableLog("attrArcDurTest", "files/attrArcDurTest.xes");
         AttributeArcDurationTest.testRetain1(apmLog, this);
