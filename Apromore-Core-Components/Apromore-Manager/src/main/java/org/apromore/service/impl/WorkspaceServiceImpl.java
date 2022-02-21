@@ -94,7 +94,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
 
-import static org.apromore.common.Constants.DRAFT_BRANCH_NAME;
 import static org.apromore.common.Constants.TRUNK_NAME;
 
 @Service("workspaceService")
