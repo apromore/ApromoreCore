@@ -8,30 +8,27 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+
 package org.apromore.plugin.portal.useradmin.listbox;
 
-import org.apromore.plugin.portal.useradmin.common.SearchableListbox;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zul.Listbox;
-import org.zkoss.zul.ListModelList;
-import org.apromore.plugin.portal.useradmin.listbox.TristateModel;
-
-import java.util.Set;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+import org.apromore.plugin.portal.useradmin.common.SearchableListbox;
+import org.zkoss.zul.ListModelList;
+import org.zkoss.zul.Listbox;
 
 public class TristateListbox<T> extends SearchableListbox {
 
@@ -53,7 +50,7 @@ public class TristateListbox<T> extends SearchableListbox {
 
     public void updateCache() {
         for (int i = 0; i < listModel.size(); i++) {
-            TristateModel model = (TristateModel)(listModel.get(i));
+            TristateModel model = (TristateModel) (listModel.get(i));
             Integer state = model.getState();
             keyToStateCache.put(model.getKey(), state);
         }
@@ -83,7 +80,7 @@ public class TristateListbox<T> extends SearchableListbox {
             listModel.clear();
             int j = 0;
             for (int i = 0; i < sourceListModel.size(); i++) {
-                TristateModel model = (TristateModel)(sourceListModel.get(i));
+                TristateModel model = (TristateModel) (sourceListModel.get(i));
                 String value = model.getLabel().toLowerCase();
                 if (value.contains(input.toLowerCase())) {
                     listModel.add(model);
@@ -100,7 +97,7 @@ public class TristateListbox<T> extends SearchableListbox {
         listModel.clear();
         keyToIndexMap = new HashMap<String, Integer>();
         for (int i = 0; i < sourceListModel.size(); i++) {
-            TristateModel model = (TristateModel)(sourceListModel.get(i));
+            TristateModel model = (TristateModel) (sourceListModel.get(i));
             model.setState(TristateModel.UNCHECKED);
             listModel.add(model);
             keyToIndexMap.put(model.getKey(), i);
@@ -115,8 +112,8 @@ public class TristateListbox<T> extends SearchableListbox {
         addedObjects = new HashSet<T>();
         removedObjects = new HashSet<T>();
         for (int i = 0; i < listModel.size(); i++) {
-            TristateModel model = (TristateModel)(listModel.get(i));
-            T obj = (T)model.getObj();
+            TristateModel model = (TristateModel) (listModel.get(i));
+            T obj = (T) model.getObj();
             int state = model.getState();
             if (state == TristateModel.UNCHECKED) {
                 removedObjects.add(obj);

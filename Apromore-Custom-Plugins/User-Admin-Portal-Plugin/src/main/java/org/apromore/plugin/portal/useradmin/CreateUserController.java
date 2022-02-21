@@ -8,17 +8,18 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+
 package org.apromore.plugin.portal.useradmin;
 
 import java.util.Map;
@@ -26,6 +27,7 @@ import org.apromore.dao.model.User;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.service.SecurityService;
+import org.apromore.zk.label.LabelSupplier;
 import org.slf4j.Logger;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
@@ -37,67 +39,65 @@ import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
-import org.apromore.zk.label.LabelSupplier;
-
 public class CreateUserController extends SelectorComposer<Window> implements LabelSupplier {
 
-  private final static Logger LOGGER = PortalLoggerFactory.getLogger(CreateUserController.class);
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(CreateUserController.class);
 
-  private PortalContext portalContext =
-      (PortalContext) Executions.getCurrent().getArg().get("portalContext");
-  private SecurityService securityService =
-      (SecurityService) /* SpringUtil.getBean("securityService"); */ Executions.getCurrent()
-          .getArg().get("securityService");
+    private PortalContext portalContext =
+        (PortalContext) Executions.getCurrent().getArg().get("portalContext");
+    private SecurityService securityService =
+        (SecurityService) /* SpringUtil.getBean("securityService"); */ Executions.getCurrent()
+            .getArg().get("securityService");
 
-  @Wire("#userNameTextbox")
-  Textbox userNameTextbox;
-  @Wire("#firstNameTextbox")
-  Textbox firstNameTextbox;
-  @Wire("#lastNameTextbox")
-  Textbox lastNameTextbox;
-  @Wire("#emailTextbox")
-  Textbox emailTextbox;
-  @Wire("#passwordTextbox")
-  Textbox passwordTextbox;
+    @Wire("#userNameTextbox")
+    Textbox userNameTextbox;
+    @Wire("#firstNameTextbox")
+    Textbox firstNameTextbox;
+    @Wire("#lastNameTextbox")
+    Textbox lastNameTextbox;
+    @Wire("#emailTextbox")
+    Textbox emailTextbox;
+    @Wire("#passwordTextbox")
+    Textbox passwordTextbox;
 
-  @Override
-  public String getBundleName() {
-    return "useradmin";
-  }
-
-  @Listen("onClick = #createBtn")
-  public void onClickCreateButton() {
-    boolean canEditUsers = securityService.hasAccess(portalContext.getCurrentUser().getId(),
-        Permissions.EDIT_USERS.getRowGuid());
-    if (!canEditUsers) {
-      Messagebox.show(getLabel("noPermissionCreateUser_message"));
-      return;
+    @Override
+    public String getBundleName() {
+        return "useradmin";
     }
 
-    try {
-      User user = new User();
-      user.setUsername(userNameTextbox.getValue());
-      user.setFirstName(firstNameTextbox.getValue());
-      user.setLastName(lastNameTextbox.getValue());
+    @Listen("onClick = #createBtn")
+    public void onClickCreateButton() {
+        boolean canEditUsers = securityService.hasAccess(portalContext.getCurrentUser().getId(),
+            Permissions.EDIT_USERS.getRowGuid());
+        if (!canEditUsers) {
+            Messagebox.show(getLabel("noPermissionCreateUser_message"));
+            return;
+        }
 
-      user.getMembership().setEmail(emailTextbox.getValue());
-      user.getMembership().setUser(user);
-      securityService.createUser(user, passwordTextbox.getValue());
+        try {
+            User user = new User();
+            user.setUsername(userNameTextbox.getValue());
+            user.setFirstName(firstNameTextbox.getValue());
+            user.setLastName(lastNameTextbox.getValue());
 
-      Map dataMap = Map.of("type", "CREATE_USER");
+            user.getMembership().setEmail(emailTextbox.getValue());
+            user.getMembership().setUser(user);
+            securityService.createUser(user, passwordTextbox.getValue());
 
-      EventQueues.lookup(SecurityService.EVENT_TOPIC, getSelf().getDesktop().getWebApp(), true)
-          .publish(new Event("User Create", null, dataMap));
+            Map dataMap = Map.of("type", "CREATE_USER");
 
-    } catch (Exception e) {
-      LOGGER.error("Unable to create user", e);
-      Messagebox.show(getLabel("failedCreateUser_message"));
+            EventQueues.lookup(SecurityService.EVENT_TOPIC, getSelf().getDesktop().getWebApp(), true)
+                .publish(new Event("User Create", null, dataMap));
+
+        } catch (Exception e) {
+            LOGGER.error("Unable to create user", e);
+            Messagebox.show(getLabel("failedCreateUser_message"));
+        }
+        getSelf().detach();
     }
-    getSelf().detach();
-  }
 
-  @Listen("onClick = #cancelBtn")
-  public void onClickCancelButton() {
-    getSelf().detach();
-  }
+    @Listen("onClick = #cancelBtn")
+    public void onClickCancelButton() {
+        getSelf().detach();
+    }
 }
