@@ -43,27 +43,19 @@
       <div sclass="ap-pd-duration">
         <div>
           <n:span>${arg.pdLabels.stat_min_text}</n:span>
-          <label id="minDuration"
-                 sclass="ap-stat-val">CaseMinDuration
-          </label>
+          <label id="minDuration" sclass="ap-stat-val"></label>
         </div>
         <div>
           <n:span>${arg.pdLabels.stat_median_text}</n:span>
-          <label id="medianDuration"
-                 sclass="ap-stat-val">CaseMedianDuration
-          </label>
+          <label id="medianDuration" sclass="ap-stat-val"></label>
         </div>
         <div>
           <n:span>${arg.pdLabels.stat_mean_text}</n:span>
-          <label id="meanDuration"
-                 sclass="ap-stat-val">CaseAverageDuration
-          </label>
+          <label id="meanDuration" sclass="ap-stat-val"></label>
         </div>
         <div>
           <n:span>${arg.pdLabels.stat_max_text}</n:span>
-          <label id="maxDuration"
-                 sclass="ap-stat-val">CaseMaxDuration
-          </label>
+          <label id="maxDuration" sclass="ap-stat-val"></label>
         </div>
       </div>
     </vlayout>

@@ -30,20 +30,8 @@ import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.plugin.portal.logfilter.generic.LogFilterPlugin;
 import org.apromore.plugin.portal.processdiscoverer.actions.ActionManager;
-import org.apromore.plugin.portal.processdiscoverer.components.CaseDetailsController;
-import org.apromore.plugin.portal.processdiscoverer.components.CaseVariantDetailsController;
-import org.apromore.plugin.portal.processdiscoverer.components.GraphSettingsController;
-import org.apromore.plugin.portal.processdiscoverer.components.GraphVisController;
-import org.apromore.plugin.portal.processdiscoverer.components.LogStatsController;
-import org.apromore.plugin.portal.processdiscoverer.components.PerspectiveDetailsController;
-import org.apromore.plugin.portal.processdiscoverer.components.TimeStatsController;
-import org.apromore.plugin.portal.processdiscoverer.components.ToolbarController;
-import org.apromore.plugin.portal.processdiscoverer.components.ViewSettingsController;
-import org.apromore.plugin.portal.processdiscoverer.data.ConfigData;
-import org.apromore.plugin.portal.processdiscoverer.data.ContextData;
-import org.apromore.plugin.portal.processdiscoverer.data.InvalidDataException;
-import org.apromore.plugin.portal.processdiscoverer.data.OutputData;
-import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
+import org.apromore.plugin.portal.processdiscoverer.components.*;
+import org.apromore.plugin.portal.processdiscoverer.data.*;
 import org.apromore.plugin.portal.processdiscoverer.eventlisteners.AnimationController;
 import org.apromore.plugin.portal.processdiscoverer.eventlisteners.BPMNExportController;
 import org.apromore.plugin.portal.processdiscoverer.eventlisteners.LogExportController;
@@ -66,15 +54,14 @@ import org.apromore.zk.event.CalendarEvents;
 import org.apromore.zk.label.LabelSupplier;
 import org.json.JSONException;
 import org.slf4j.Logger;
+import org.zkoss.json.JSONObject;
+import org.zkoss.json.parser.JSONParser;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.ComponentNotFoundException;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.event.EventQueue;
-import org.zkoss.zk.ui.event.EventQueues;
+import org.zkoss.zk.ui.event.*;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.Composer;
@@ -91,8 +78,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.apromore.logman.attribute.graph.MeasureType.DURATION;
-import static org.apromore.logman.attribute.graph.MeasureType.FREQUENCY;
+import static org.apromore.logman.attribute.graph.MeasureType.*;
 
 /**
  * PDController is the top-level application object to manage PD plugin as a
@@ -160,6 +146,7 @@ public class PDController extends BaseController implements Composer<Component>,
     private AnimationController animationController;
     private LogExportController logExportController;
     private BPMNExportController bpmnExportController;
+    private CostTableController costTableController;
     private ToolbarController toolbarController;
 
     //////////////////// DATA ///////////////////////////////////
@@ -184,6 +171,8 @@ public class PDController extends BaseController implements Composer<Component>,
 
     private Component pdComponent;
     private EventQueue<Event> sessionQueue;
+
+    private boolean isBeginning = true;
 
     /////////////////////////////////////////////////////////////////////////
 
@@ -261,18 +250,37 @@ public class PDController extends BaseController implements Composer<Component>,
     }
 
     public void onCreate(Component comp) throws InterruptedException {
+        if (!preparePluginSessionId()) {
+            Messagebox.show(getLabel("sessionNotInitialized_message"));
+            return;
+        }
+        if (!prepareCriticalServices()) {
+            return;
+        }
+        comp.addEventListener("onCostTableInit", event -> {
+            String jsonString = (String)event.getData();
+            Map<String, Double> costTable = new HashMap<>();
+            String currency = "USD";
+            if (jsonString != null) {
+                JSONParser parser = new JSONParser();
+                JSONObject jsonObject = (JSONObject) parser.parse(jsonString);
+                if (jsonObject.containsKey("costTable")) {
+                    costTable = (Map<String, Double>) jsonObject.get("costTable");
+                }
+                if (jsonObject.containsKey("currency")) {
+                    currency = (String) jsonObject.get("currency");
+                }
+            }
+            onCreateFollowUp(comp, costTable, currency);
+            Events.postEvent("onFakeLoaded", comp, null);
+        });
+        Clients.evalJavaScript("Ap.common.getLocalStorageItem('ap.cost.table', 'win', 'onCostTableInit')");
+    }
+
+    public void onCreateFollowUp(Component comp, Map<String, Double> costTable, String currency) {
         try {
 
             init(comp);
-
-            if (!preparePluginSessionId()) {
-                Messagebox.show(getLabel("sessionNotInitialized_message"));
-                return;
-            }
-
-            if (!prepareCriticalServices()) {
-                return;
-            }
 
             // Set up Process Analyst
             ApromoreSession session = UserSessionManager.getEditSession(pluginSessionId);
@@ -289,7 +297,8 @@ public class PDController extends BaseController implements Composer<Component>,
                             : portalContext.getCurrentFolder().getFolderName(),
                     ((MainController)portalContext.getMainController()).getConfig().isEnableCalendar()
                             && currentUser.hasAnyPermission(PermissionType.CALENDAR),
-                    currentUser.hasAnyPermission(PermissionType.MODEL_DISCOVER_EDIT));
+                    currentUser.hasAnyPermission(PermissionType.MODEL_DISCOVER_EDIT),
+                    costTable, currency);
             processAnalyst = new PDAnalyst(contextData, configData, getEventLogService());
             if (session.containsKey("logFilters")) {
                 if (!processAnalyst.filter((List<LogFilterRule>)session.get("logFilters"))) {
@@ -315,6 +324,7 @@ public class PDController extends BaseController implements Composer<Component>,
             animationController = pdFactory.createAnimationController(this);
             logExportController = pdFactory.createLogExportController(this);
             bpmnExportController = pdFactory.createBPMNExportController(this);
+            costTableController = pdFactory.createCostTableController(this);
             toolbarController = pdFactory.createToolbarController(this);
 
             initialize();
@@ -414,11 +424,15 @@ public class PDController extends BaseController implements Composer<Component>,
             timeStatsController.initializeEventListeners(contextData);
 
             EventListener<Event> windowListener = event -> {
-                graphSettingsController.ensureSliders();
-                generateViz();
+                if (isBeginning) {
+                    isBeginning = false;
+                    graphSettingsController.ensureSliders();
+                    generateViz();
+                }
             };
             mainWindow.addEventListener("onLoaded", windowListener);
             mainWindow.addEventListener("onOpen", windowListener);
+            mainWindow.addEventListener("onFakeLoaded", windowListener);
             mainWindow.addEventListener("onZIndex", event -> {
                 putWindowAtTop(caseDetailsController.getWindow());
                 putWindowAtTop(caseVariantDetailsController.getWindow());
@@ -485,6 +499,14 @@ public class PDController extends BaseController implements Composer<Component>,
 
     public void openCalendar() {
         ((MainController)portalContext.getMainController()).getBaseListboxController().launchCalendar(sourceLogName, sourceLogId);
+    }
+
+    public void openCost() {
+        try {
+            costTableController.onEvent(new Event("onCostTable"));
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+        }
     }
 
     public void openAnimation(Event e) {
@@ -561,7 +583,6 @@ public class PDController extends BaseController implements Composer<Component>,
                     Messagebox.INFORMATION);
             return;
         }
-
         boolean isNormalOrdering = graphSettingsController.getNormalOrdering();
         MeasureType fixedType = userOptions.getFixedType();
         if (isNormalOrdering && fixedType == FREQUENCY || !isNormalOrdering && fixedType == DURATION) {
@@ -789,7 +810,6 @@ public class PDController extends BaseController implements Composer<Component>,
     public void doAfterCompose(Component comp) throws Exception {
         this.pdComponent = comp;
         onCreate(comp);
-
     }
 
     @Override

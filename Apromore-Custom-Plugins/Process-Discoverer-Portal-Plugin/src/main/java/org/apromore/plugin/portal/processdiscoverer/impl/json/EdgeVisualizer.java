@@ -70,7 +70,10 @@ public class EdgeVisualizer extends AbstractElementVisualizer {
         double secondaryWeight = abs.getArcSecondaryWeight(edge);
         double relativeWeight = abs.getEdgeRelativePrimaryWeight(edge);
         relativeWeight = (relativeWeight < 0 ? 0 : relativeWeight);
-        
+        if (MeasureType.COST.equals(params.getPrimaryType())) {
+            relativeWeight = 1;
+        }
+
         JSONObject jsonData = new JSONObject();
         jsonData.put("id", edge.getEdgeID().toString());
         jsonData.put("source", edge.getSource().getId().toString());
@@ -79,9 +82,12 @@ public class EdgeVisualizer extends AbstractElementVisualizer {
         jsonData.put("strength", relativeWeight*100);
         jsonData.put("color", visSettings.getColorSettings().getEdgeColor(element, visContext, visSettings));
         
-        String label = getWeightString(primaryWeight, "", params.getPrimaryType(), params.getPrimaryRelation());
+        String label = (MeasureType.COST.equals(params.getPrimaryType())) ?
+            "" : getWeightString(primaryWeight, "", params.getPrimaryType(), params.getPrimaryRelation());
         if (params.getSecondary()) {
-            label += getWeightString(secondaryWeight, "\\n", params.getSecondaryType(), params.getSecondaryRelation());
+            label +=
+                (MeasureType.COST.equals(params.getSecondaryType())) ?
+                "" : getWeightString(secondaryWeight, "\\n", params.getSecondaryType(), params.getSecondaryRelation());
         }
         jsonData.put("label", label);
         
@@ -129,6 +135,10 @@ public class EdgeVisualizer extends AbstractElementVisualizer {
             if (measureType == MeasureType.FREQUENCY) {
                 jsonData.put("label", jsonData.get("label") + separator + 
                 visSettings.getDecimalFormatter().format(weightValue));
+            }
+            else if (measureType == MeasureType.COST) {
+                jsonData.put("label", jsonData.get("label") + separator +
+                    visSettings.getCurrency() + " " + visSettings.getDecimalFormatter().format(weightValue));
             }
             else if (measureType == MeasureType.DURATION) {
                 jsonData.put("label", jsonData.get("label") + separator + 

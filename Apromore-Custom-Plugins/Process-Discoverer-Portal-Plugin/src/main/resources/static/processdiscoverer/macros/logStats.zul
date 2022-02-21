@@ -36,17 +36,17 @@
         </n:div>
         <n:div id="ap-pd-chart-case" class="ap-pd-chart" />
         <label id="lblCasePercent"
-               value="${arg.pdLabels.casesPercent_text}"/>
+               tooltiptext="${arg.pdLabels.casePercent_text}"/>
         <div sclass="ap-link" w:onClick="Ap.pd.showCaseDetails()">
           <label id="lblCaseNumberFiltered"
-                 value="${arg.pdLabels.casesNumber_text}"
+                 tooltiptext="${arg.pdLabels.caseNumber_text}"
                  sclass="ap-case-filtered"/>
           /
           <label id="lblCaseNumberTotal"
-                 value="${arg.pdLabels.casesNumber_text}"
+                 tooltiptext="${arg.pdLabels.caseNumber_text}"
                  sclass="ap-case-total"/>
           <label id="lblCaseNumber"
-                 value="${arg.pdLabels.casesNumber_text}"
+                 tooltiptext="${arg.pdLabels.caseNumber_text}"
                  visible="false"/>
         </div>
       </vlayout>
@@ -80,17 +80,17 @@
         </n:div>
         <n:div id="ap-pd-chart-variant" class="ap-pd-chart" />
         <label id="lblVariantPercent"
-               value="${arg.pdLabels.caseVariantsPercent_text}"/>
+               tooltiptext="${arg.pdLabels.caseVariantPercent_text}"/>
         <div id="divCaseVariantInspectorLink" sclass="ap-link" w:onClick="Ap.pd.showCaseVariantDetails()">
           <label id="lblVariantNumberFiltered"
-                 value="${arg.pdLabels.caseVariantsNumber_text}"
+                 tooltiptext="${arg.pdLabels.caseVariantNumber_text}"
                  sclass="ap-variant-filtered"/>
           /
           <label id="lblVariantNumberTotal"
-                 value="${arg.pdLabels.caseVariantsNumber_text}"
+                 tooltiptext="${arg.pdLabels.caseVariantNumber_text}"
                  sclass="ap-variant-total"/>
           <label id="lblVariantNumber"
-                 value="${arg.pdLabels.caseVariantsNumber_text}"
+                 tooltiptext="${arg.pdLabels.caseVariantNumber_text}"
                  visible="false"/>
         </div>
       </vlayout>
@@ -104,17 +104,17 @@
         </n:div>
         <n:div id="ap-pd-chart-event" class="ap-pd-chart" />
         <label id="lblEventPercent"
-               value="${arg.pdLabels.activityInstancesPercent_text}"/>
+               tooltiptext="${arg.pdLabels.activityInstancesPercent_text}"/>
         <div>
           <label id="lblEventNumberFiltered"
-                 value="${arg.pdLabels.activityInstancesNumber_text}"
+                 tooltiptext="${arg.pdLabels.activityInstancesNumber_text}"
                  sclass="ap-event-filtered"/>
           /
           <label id="lblEventNumberTotal"
-                 value="${arg.pdLabels.activityInstancesNumber_text}"
+                 tooltiptext="${arg.pdLabels.activityInstancesNumber_text}"
                  sclass="ap-event-total"/>
           <label id="lblEventNumber"
-                 value="Events number"
+                 tooltiptext="Events number"
                  visible="false"/>
         </div>
       </vlayout>
@@ -134,14 +134,14 @@
         </n:div>
         <div id="ap-pd-chart-perspective" class="ap-pd-chart" xmlns="http://www.zkoss.org/2005/zk/native" /> 
         <label id="lblNodePercent"
-               value="${arg.pdLabels.nodesPercent_text}"/>
+               tooltiptext="${arg.pdLabels.nodesPercent_text}"/>
         <div sclass="ap-link" w:onClick="Ap.pd.showPerspectiveDetails()">
           <label id="lblNodeNumberFiltered"
-                 value="${arg.pdLabels.nodesNumber_text}"
+                 tooltiptext="${arg.pdLabels.nodesNumber_text}"
                  sclass="ap-nodes-filtered"/>
           /
           <label id="lblNodeNumberTotal"
-                 value="${arg.pdLabels.nodesNumber_text}"
+                 tooltiptext="${arg.pdLabels.nodesNumber_text}"
                  sclass="ap-nodes-total"/>
         </div>
 

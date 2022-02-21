@@ -22,16 +22,16 @@
 
 package org.apromore.logman;
 
-import java.io.File;
-import java.time.DayOfWeek;
-import java.time.OffsetTime;
-import java.time.ZoneOffset;
-
 import org.apromore.calendar.builder.CalendarModelBuilder;
 import org.apromore.calendar.model.CalendarModel;
 import org.deckfour.xes.in.XesXmlGZIPParser;
 import org.deckfour.xes.in.XesXmlParser;
 import org.deckfour.xes.model.XLog;
+
+import java.io.File;
+import java.time.DayOfWeek;
+import java.time.OffsetTime;
+import java.time.ZoneOffset;
 
 public class DataSetup {
     private XLog readXESFile(String fullFilePath) {
@@ -135,6 +135,10 @@ public class DataSetup {
     
     public XLog readLogWithOneTrace_TwoActivities_StartCompleteEvents_Friday() {
         return this.readXESFile("src/test/logs/L1_1trace_2activity_with_start_complete_events_friday.xes");
+    }
+
+    public XLog readLogWithOneTrace_TwoActivities_StartCompleteEvents() {
+        return this.readXESFile("src/test/logs/L1_1trace_2activity_with_start_complete_events.xes");
     }
     
     public XLog readLogWithNoLifecycleTransitions() {

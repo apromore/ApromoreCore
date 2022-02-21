@@ -50,7 +50,10 @@ public class AttributeTraceGraph extends WeightedAttributeGraph {
     
     private MutableIntObjectMap<MutableDoubleList> nodeDurs = IntObjectMaps.mutable.empty();
     private MutableIntObjectMap<MutableDoubleList> arcDurs = IntObjectMaps.mutable.empty();
-    
+
+    private MutableIntObjectMap<MutableDoubleList> nodeCosts = IntObjectMaps.mutable.empty();
+    private MutableIntObjectMap<MutableDoubleList> arcCosts = IntObjectMaps.mutable.empty();
+
     // Collection of node and arc intervals
     private MutableIntObjectMap<MutableList<LongLongPair>> nodeIntervals = IntObjectMaps.mutable.empty();
     private MutableIntObjectMap<MutableList<LongLongPair>> arcIntervals = IntObjectMaps.mutable.empty();
@@ -67,6 +70,8 @@ public class AttributeTraceGraph extends WeightedAttributeGraph {
         arcTotalFreqs.clear();
         nodeDurs.clear();
         arcDurs.clear();
+        nodeCosts.clear();
+        arcCosts.clear();
         nodeIntervals.clear();
         arcIntervals.clear();
     }
@@ -79,7 +84,12 @@ public class AttributeTraceGraph extends WeightedAttributeGraph {
         if (!nodeDurs.containsKey(node)) nodeDurs.put(node, DoubleLists.mutable.empty());
         nodeDurs.get(node).add(nodeDuration);
     }
-    
+
+    public void collectNodeCost(int node, double nodeCost) {
+        if (!nodeCosts.containsKey(node)) nodeCosts.put(node, DoubleLists.mutable.empty());
+        nodeCosts.get(node).add(nodeCost);
+    }
+
     public void collectNodeInterval(int node, long startTimestamp, long endTimestamp) {
         nodeIntervals.getIfAbsentPut(node, Lists.mutable::empty).add(PrimitiveTuples.pair(startTimestamp, endTimestamp));
     }
@@ -92,9 +102,22 @@ public class AttributeTraceGraph extends WeightedAttributeGraph {
         if (!arcDurs.containsKey(arc)) arcDurs.put(arc, DoubleLists.mutable.empty());
         arcDurs.get(arc).add(arcDuration);
     }
-    
+
+    public void collectArcCost(int arc, double arcCost) {
+        if (!arcCosts.containsKey(arc)) arcCosts.put(arc, DoubleLists.mutable.empty());
+        arcCosts.get(arc).add(arcCost);
+    }
+
     public void collectArcInterval(int node, long startTimestamp, long endTimestamp) {
         arcIntervals.getIfAbsentPut(node, Lists.mutable::empty).add(PrimitiveTuples.pair(startTimestamp, endTimestamp));
+    }
+
+    public DoubleList getNodeCosts(int node) {
+        return nodeCosts.getIfAbsent(node, DoubleLists.mutable::empty).toImmutable();
+    }
+
+    public DoubleList getArcCosts(int arc) {
+        return arcCosts.getIfAbsent(arc, DoubleLists.mutable::empty).toImmutable();
     }
     
     public DoubleList getNodeDurations(int node) {
@@ -131,8 +154,22 @@ public class AttributeTraceGraph extends WeightedAttributeGraph {
             default:
                 return 1;
             }
-        }
-        else {
+        } else if (type == MeasureType.DURATION){
+            switch (aggregation) {
+                case TOTAL:
+                    return 1;
+                case MEAN:
+                    return 1;
+                case MIN:
+                    return 1;
+                case MAX:
+                    return 1;
+                case MEDIAN:
+                    return 1;
+                default:
+                    return 1;
+            }
+        } else {
             switch (aggregation) {
             case TOTAL:
                 return 1;
@@ -173,21 +210,35 @@ public class AttributeTraceGraph extends WeightedAttributeGraph {
             default:
                 return (nodeTotalFreqs.get(node) > 0 ? 1 : 0)/totalWeight;
             }
-        }
-        else {
+        } else if (type == MeasureType.DURATION){
+            switch (aggregation) {
+                case TOTAL:
+                    return nodeDurs.get(node).isEmpty() ? 0 : nodeDurs.get(node).sum()/totalWeight;
+                case MEAN:
+                    return nodeDurs.get(node).isEmpty() ? 0 : nodeDurs.get(node).average()/totalWeight;
+                case MIN:
+                    return nodeDurs.get(node).isEmpty() ? 0 : nodeDurs.get(node).min()/totalWeight;
+                case MAX:
+                    return nodeDurs.get(node).isEmpty() ? 0 : nodeDurs.get(node).max()/totalWeight;
+                case MEDIAN:
+                    return nodeDurs.get(node).isEmpty() ? 0 : nodeDurs.get(node).median()/totalWeight;
+                default:
+                    return nodeDurs.get(node).isEmpty() ? 0 : nodeDurs.get(node).average()/totalWeight;
+            }
+        } else {
             switch (aggregation) {
             case TOTAL:
-                return nodeDurs.get(node).isEmpty() ? 0 : nodeDurs.get(node).sum()/totalWeight;
+                return nodeCosts.get(node).isEmpty() ? 0 : nodeCosts.get(node).sum()/totalWeight;
             case MEAN:
-                return nodeDurs.get(node).isEmpty() ? 0 : nodeDurs.get(node).average()/totalWeight;
+                return nodeCosts.get(node).isEmpty() ? 0 : nodeCosts.get(node).average()/totalWeight;
             case MIN:
-                return nodeDurs.get(node).isEmpty() ? 0 : nodeDurs.get(node).min()/totalWeight;
+                return nodeCosts.get(node).isEmpty() ? 0 : nodeCosts.get(node).min()/totalWeight;
             case MAX:
-                return nodeDurs.get(node).isEmpty() ? 0 : nodeDurs.get(node).max()/totalWeight;
+                return nodeCosts.get(node).isEmpty() ? 0 : nodeCosts.get(node).max()/totalWeight;
             case MEDIAN:
-                return nodeDurs.get(node).isEmpty() ? 0 : nodeDurs.get(node).median()/totalWeight;
+                return nodeCosts.get(node).isEmpty() ? 0 : nodeCosts.get(node).median()/totalWeight;
             default:
-                return nodeDurs.get(node).isEmpty() ? 0 : nodeDurs.get(node).average()/totalWeight;
+                return nodeCosts.get(node).isEmpty() ? 0 : nodeCosts.get(node).average()/totalWeight;
             }
         }
     }
@@ -214,21 +265,35 @@ public class AttributeTraceGraph extends WeightedAttributeGraph {
             default:
                 return (arcTotalFreqs.get(arc) > 0 ? 1 : 0)/totalWeight;
             }
-        }
-        else {
+        } else if (type == MeasureType.DURATION){
+            switch (aggregation) {
+                case TOTAL:
+                    return arcDurs.get(arc).isEmpty() ? 0 : arcDurs.get(arc).sum()/totalWeight;
+                case MEAN:
+                    return arcDurs.get(arc).isEmpty() ? 0 : arcDurs.get(arc).average()/totalWeight;
+                case MIN:
+                    return arcDurs.get(arc).isEmpty() ? 0 : arcDurs.get(arc).min()/totalWeight;
+                case MAX:
+                    return arcDurs.get(arc).isEmpty() ? 0 : arcDurs.get(arc).max()/totalWeight;
+                case MEDIAN:
+                    return arcDurs.get(arc).isEmpty() ? 0 : arcDurs.get(arc).median()/totalWeight;
+                default:
+                    return arcDurs.get(arc).isEmpty() ? 0 : arcDurs.get(arc).average()/totalWeight;
+            }
+        } else {
             switch (aggregation) {
             case TOTAL:
-                return arcDurs.get(arc).isEmpty() ? 0 : arcDurs.get(arc).sum()/totalWeight;
+                return arcCosts.get(arc).isEmpty() ? 0 : arcCosts.get(arc).sum()/totalWeight;
             case MEAN:
-                return arcDurs.get(arc).isEmpty() ? 0 : arcDurs.get(arc).average()/totalWeight;
+                return arcCosts.get(arc).isEmpty() ? 0 : arcCosts.get(arc).average()/totalWeight;
             case MIN:
-                return arcDurs.get(arc).isEmpty() ? 0 : arcDurs.get(arc).min()/totalWeight;
+                return arcCosts.get(arc).isEmpty() ? 0 : arcCosts.get(arc).min()/totalWeight;
             case MAX:
-                return arcDurs.get(arc).isEmpty() ? 0 : arcDurs.get(arc).max()/totalWeight;
+                return arcCosts.get(arc).isEmpty() ? 0 : arcCosts.get(arc).max()/totalWeight;
             case MEDIAN:
-                return arcDurs.get(arc).isEmpty() ? 0 : arcDurs.get(arc).median()/totalWeight;
+                return arcCosts.get(arc).isEmpty() ? 0 : arcCosts.get(arc).median()/totalWeight;
             default:
-                return arcDurs.get(arc).isEmpty() ? 0 : arcDurs.get(arc).average()/totalWeight;
+                return arcCosts.get(arc).isEmpty() ? 0 : arcCosts.get(arc).average()/totalWeight;
             }
         }
     }
