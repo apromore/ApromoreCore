@@ -23,6 +23,9 @@ package org.apromore.apmlog.xes;
 
 import org.zkoss.util.resource.Labels;
 
+/**
+ * Modified: Jane Hoh (23/02/2022) - i18n support. Get display labels from property file.
+ */
 public class XESAttributeCodes {
     public static final String CONCEPT_NAME = "concept:name";
     public static final String ORG_RESOURCE = "org:resource";
