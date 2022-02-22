@@ -415,5 +415,8 @@ if(!Apromore.I18N.Attachment) Apromore.I18N.Attachment = {};
 Apromore.I18N.Attachment.attachment = "アタッチメント";
 Apromore.I18N.Attachment.showDesc = "アタッチメントの表示";
 Apromore.I18N.Attachment.hideDesc = "アタッチメントの非表示";
+Apromore.I18N.Attachment.comment = "Comments";
+Apromore.I18N.Attachment.showComments = "Show comments";
+Apromore.I18N.Attachment.hideComments = "Hide comments";
 
 

@@ -307,8 +307,12 @@
               Apromore.BPMNEditor.beforeCheckUnsaved('onPublishModel');
             };
 
-            Apromore.BPMNEditor.Plugins.Attachment.toggle = function() {
+            Apromore.BPMNEditor.Plugins.Attachment.toggleAttachment = function() {
               jq(".djs-overlay-container").toggleClass('aux-disabled');
+            };
+
+           Apromore.BPMNEditor.Plugins.Attachment.toggleComment = function() {
+              jq(".djs-overlay-container").toggleClass('comment-disabled');
             };
 
             // window.setTimeout(function() {
