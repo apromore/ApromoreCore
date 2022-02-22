@@ -32,6 +32,7 @@ import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
+import javax.annotation.Nullable;
 
 import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.ProcessModelVersion;
@@ -55,6 +56,8 @@ import org.zkoss.zul.Row;
 import org.zkoss.zul.Rows;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
+
+import static org.apromore.common.Constants.DATE_FORMAT;
 
 /**
  * ApromoreSession and ApromoreSession.EditSessionType contain data of the process model being
@@ -95,7 +98,7 @@ public class SaveAsDialogController extends BaseController {
   MainController mainController;
 
   public SaveAsDialogController(ProcessSummaryType process, VersionSummaryType version,
-      ApromoreSession session, Boolean isUpdate, String data, MainController mainController) {
+      ApromoreSession session, @Nullable Boolean isUpdate, String data, MainController mainController) {
     this.session = session;
     this.editSession = session.getEditSession();
     this.isSaveCurrent = isUpdate;
@@ -111,14 +114,14 @@ public class SaveAsDialogController extends BaseController {
     Row versionNumberR = (Row) rows.getChildren().get(1);
     Row buttonGroupR = (Row) rows.getChildren().get(2);
     this.modelName = (Textbox) modelNameR.getFirstChild().getNextSibling();
-    this.modelName.setText(this.isSaveCurrent ? this.editSession.getProcessName()
+    this.modelName.setText(!Boolean.FALSE.equals(this.isSaveCurrent) ? this.editSession.getProcessName()
         : this.editSession.getProcessName() + "_new");
-    this.modelName.setReadonly(this.isSaveCurrent);
+    this.modelName.setReadonly(Boolean.TRUE.equals(this.isSaveCurrent) && !UNTITLED_PROCESS_NAME.equals(this.editSession.getProcessName()));
     this.versionNumber = (Textbox) versionNumberR.getFirstChild().getNextSibling();
     this.versionNumber.setText(this.editSession.getCurrentVersionNumber());
     Button saveB = (Button) buttonGroupR.getFirstChild().getFirstChild();
     Button cancelB = (Button) saveB.getNextSibling();
-    if (isUpdate) {
+    if (Boolean.TRUE.equals(isUpdate)) {
       saveAsW.setTitle("Save BPMN model");
     } else {
       saveAsW.setTitle("Save BPMN model as");
@@ -159,19 +162,19 @@ public class SaveAsDialogController extends BaseController {
     String processName = this.modelName.getText();
     String versionNo = versionNumber.getText();
     Integer processId = this.editSession.getProcessId();
-    DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+    DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
     String created = dateFormat.format(new Date());
 
-    boolean makePublic = (this.isSaveCurrent && processService.isPublicProcess(processId));
+    boolean makePublic = (Boolean.TRUE.equals(this.isSaveCurrent) && processService.isPublicProcess(processId));
     int containingFolderId = this.editSession.getFolderId();
     InputStream is = new ByteArrayInputStream(this.modelData.getBytes());
 
     if (validateFields()) {
       Folder folder = workspaceService.getFolder(editSession.getFolderId());
       String containingFolderName = (folder == null) ? "Home" : folder.getName();
-      if (!this.isSaveCurrent) { // Save As new model
+      if (Boolean.FALSE.equals(this.isSaveCurrent)) { // Save As new model
         saveAsNewModel(userName, containingFolderId, processName, versionNo, nativeType, is, "", "",
-            created, null, makePublic, containingFolderName);
+            created, makePublic, containingFolderName);
       } else {
         if (session.containVersion(versionNo)) {
           Messagebox.show(
@@ -204,7 +207,7 @@ public class SaveAsDialogController extends BaseController {
 
   private void saveAsNewModel(String userName, Integer folderId, String processName,
       String versionNumber, String nativeType, InputStream nativeStream, String domain,
-      String documentation, String created, String lastUpdate, boolean publicModel,
+      String documentation, String created, boolean publicModel,
       String containingFolderName) {
     try {
       ImportProcessResultType importResult = mainController.getManagerService().importProcess(
@@ -245,6 +248,11 @@ public class SaveAsDialogController extends BaseController {
       mainController.getManagerService().updateDraft(processId,
               editSession.getOriginalVersionNumber(), nativeType, new ByteArrayInputStream(bpmnXml.getBytes()),
               userName);
+      // Update process name if it's a new process
+      if (UNTITLED_PROCESS_NAME.equals(this.editSession.getProcessName())) {
+        mainController.getManagerService().editProcessData(processId, processName, "", userName, versionNumber,
+                versionNumber, null, false);
+      }
 
       // Update process data with the new process to keep a consistent state
       editSession.setOriginalVersionNumber(versionNumber);
@@ -296,7 +304,7 @@ public class SaveAsDialogController extends BaseController {
     String title = "Missing Fields";
 
     try {
-      if (!this.isSaveCurrent) {
+      if (Boolean.FALSE.equals(this.isSaveCurrent)) {
         if (this.modelName.getText() == null || "".equals(this.modelName.getText().trim())) {
           valid = false;
           message = message + "Model Name cannot be empty";

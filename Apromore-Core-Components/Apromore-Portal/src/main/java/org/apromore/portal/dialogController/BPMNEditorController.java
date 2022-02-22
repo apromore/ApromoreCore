@@ -240,7 +240,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
           return;
         }
         if (isNewProcess) {
-          new SaveAsDialogController(process, vst, session, false, eventToString(event), mainC);
+          new SaveAsDialogController(process, vst, session, null, eventToString(event), mainC);
         } else {
           new SaveAsDialogController(process, vst, session, true, eventToString(event), mainC);
         }
