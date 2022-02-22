@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -25,6 +25,7 @@ public class XESAttributeCodes {
     public static final String CONCEPT_NAME = "concept:name";
     public static final String ORG_RESOURCE = "org:resource";
     public static final String ORG_GROUP = "org:group";
+    public static final String ORG_ROLE = "org:role";
     public static final String TIME_TIMESTAMP = "time:timestamp";
     public static final String LIFECYCLE_TRANSITION = "lifecycle:transition";
 
@@ -33,6 +34,7 @@ public class XESAttributeCodes {
             case CONCEPT_NAME: return "Activities";
             case ORG_RESOURCE: return "Resources";
             case ORG_GROUP: return "Groups";
+            case ORG_ROLE: return "Roles";
             default: return xesAttributeCode;
         }
     }
@@ -42,6 +44,7 @@ public class XESAttributeCodes {
             case CONCEPT_NAME: return "Activity";
             case ORG_RESOURCE: return "Resource";
             case ORG_GROUP: return "Group";
+            case ORG_ROLE: return "Role";
             default: return xesAttributeCode;
         }
     }
