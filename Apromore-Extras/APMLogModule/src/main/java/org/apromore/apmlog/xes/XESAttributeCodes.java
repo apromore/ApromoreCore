@@ -33,7 +33,7 @@ public class XESAttributeCodes {
         switch (xesAttributeCode) {
             case CONCEPT_NAME: return "Activities";
             case ORG_RESOURCE: return "Resources";
-            case ORG_ROLE: return "Role";
+            case ORG_ROLE: return "Roles";
             case ORG_GROUP: return "Groups";
             default: return xesAttributeCode;
         }
