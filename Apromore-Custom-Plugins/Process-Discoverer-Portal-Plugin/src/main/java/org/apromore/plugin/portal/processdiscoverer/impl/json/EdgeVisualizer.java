@@ -70,16 +70,14 @@ public class EdgeVisualizer extends AbstractElementVisualizer {
         double secondaryWeight = abs.getArcSecondaryWeight(edge);
         double relativeWeight = abs.getEdgeRelativePrimaryWeight(edge);
         relativeWeight = (relativeWeight < 0 ? 0 : relativeWeight);
-        if (MeasureType.COST.equals(params.getPrimaryType())) {
-            relativeWeight = 1;
-        }
+        double strength = (MeasureType.COST.equals(params.getPrimaryType())) ? 10 : relativeWeight * 100;
 
         JSONObject jsonData = new JSONObject();
         jsonData.put("id", edge.getEdgeID().toString());
         jsonData.put("source", edge.getSource().getId().toString());
         jsonData.put("target", edge.getTarget().getId().toString());
         jsonData.put("style", BPMNHelper.isStartingOrEndingEdge(edge, abs.getDiagram()) ? "dashed" : "solid");
-        jsonData.put("strength", relativeWeight*100);
+        jsonData.put("strength", strength);
         jsonData.put("color", visSettings.getColorSettings().getEdgeColor(element, visContext, visSettings));
         
         String label = (MeasureType.COST.equals(params.getPrimaryType())) ?
