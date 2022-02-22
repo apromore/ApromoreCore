@@ -36,6 +36,7 @@ import javax.annotation.Nullable;
 
 import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.ProcessModelVersion;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.dialogController.dto.ApromoreSession;
 import org.apromore.portal.model.EditSessionType;
@@ -44,6 +45,7 @@ import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.service.ProcessService;
 import org.apromore.service.WorkspaceService;
+import org.slf4j.Logger;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
@@ -72,6 +74,8 @@ import static org.apromore.common.Constants.DATE_FORMAT;
  *
  */
 public class SaveAsDialogController extends BaseController {
+
+  static final Logger LOGGER = PortalLoggerFactory.getLogger(SaveAsDialogController.class);
 
   private EventQueue<Event> qePortal =
       EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, true);
@@ -214,6 +218,9 @@ public class SaveAsDialogController extends BaseController {
           userName, folderId, nativeType, processName, versionNumber, nativeStream, domain,
           documentation, created, null, publicModel);
 
+      LOGGER.info("User {} save new model {} version {} in folder {}", userName, processName, versionNumber,
+              containingFolderName);
+
       Integer processId = importResult.getProcessSummary().getId();
 
       // Create draft to associated with new model
@@ -254,6 +261,9 @@ public class SaveAsDialogController extends BaseController {
                 versionNumber, null, false);
       }
 
+      LOGGER.info("User {} save current model {} version {} in folder {}", userName, processName, versionNumber,
+              containingFolderName);
+
       // Update process data with the new process to keep a consistent state
       editSession.setOriginalVersionNumber(versionNumber);
       editSession.setCurrentVersionNumber(versionNumber);
@@ -277,11 +287,14 @@ public class SaveAsDialogController extends BaseController {
           mainController.getManagerService().createProcessModelVersion(editSession.hashCode(),
               userName, nativeType, processId, editSession.getOriginalBranchName(), versionNumber,
               editSession.getOriginalVersionNumber(), "", nativeStream);
+      LOGGER.info("User {} save new model {} version {} in folder {}", userName, processName, versionNumber,
+              containingFolderName);
+
       // Create draft version for new PMV
       mainController.getManagerService().createDraft(processId, processName,
               versionNumber, nativeType, nativeStream, userName);
 
-              // Update process data with the new process to keep a consistent state
+      // Update process data with the new process to keep a consistent state
       editSession.setOriginalVersionNumber(versionNumber);
       editSession.setCurrentVersionNumber(versionNumber);
       editSession.setLastUpdate(newVersion.getLastUpdateDate());
