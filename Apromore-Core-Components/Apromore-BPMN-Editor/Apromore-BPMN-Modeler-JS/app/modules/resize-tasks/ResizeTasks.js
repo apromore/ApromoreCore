@@ -12,7 +12,13 @@ export default class ResizeTasks extends RuleProvider {
   init() {
     this.addRule('shape.resize', Infinity, ({ shape, newBounds }) => {
       return (
-        is(shape, 'bpmn:Task') || this._bpmnRules.canResize(shape, newBounds)
+        is(shape, 'bpmn:Task') ||
+        is(shape, 'bpmn:Gateway') ||
+        is(shape, 'bpmn:Event') ||
+        is(shape, 'bpmn:DataObject') ||
+        is(shape, 'bpmn:DataObjectReference') ||
+        is(shape, 'bpmn:DataStoreReference') ||
+        this._bpmnRules.canResize(shape, newBounds)
       );
     });
   }
