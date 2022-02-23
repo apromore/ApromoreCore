@@ -197,7 +197,6 @@ public class LogTest extends DataSetup {
         Assert.assertEquals(dateFormatter.parseDateTime("2010-10-27T22:31:19.495+10:00"), activity0.getStartTime());
         Assert.assertEquals(dateFormatter.parseDateTime("2010-10-27T22:31:19.495+10:00"), activity0.getEndTime());
         Assert.assertEquals(true, activity0.isActive());
-        Assert.assertEquals(true, activity0.isUseComplete());
         Assert.assertEquals(true, activity0.isInstant());
         
         // AttributeLog
