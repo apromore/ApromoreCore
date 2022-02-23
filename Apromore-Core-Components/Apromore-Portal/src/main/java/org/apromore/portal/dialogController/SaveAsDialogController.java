@@ -218,7 +218,7 @@ public class SaveAsDialogController extends BaseController {
           userName, folderId, nativeType, processName, versionNumber, nativeStream, domain,
           documentation, created, null, publicModel);
 
-      LOGGER.info("User {} save new model {} version {} in folder {}", userName, processName, versionNumber,
+      LOGGER.info("User {} save new model \"{}\" version {} in folder {}", userName, processName, versionNumber,
               containingFolderName);
 
       Integer processId = importResult.getProcessSummary().getId();
@@ -259,9 +259,11 @@ public class SaveAsDialogController extends BaseController {
       if (UNTITLED_PROCESS_NAME.equals(this.editSession.getProcessName())) {
         mainController.getManagerService().editProcessData(processId, processName, "", userName, versionNumber,
                 versionNumber, null, false);
+        editSession.setProcessName(processName);
+        qePortal.publish(new Event(Constants.EVENT_MESSAGE_SAVE, null, Boolean.TRUE));
       }
 
-      LOGGER.info("User {} save current model {} version {} in folder {}", userName, processName, versionNumber,
+      LOGGER.info("User {} save current model \"{}\" version {} in folder {}", userName, processName, versionNumber,
               containingFolderName);
 
       // Update process data with the new process to keep a consistent state
@@ -287,7 +289,7 @@ public class SaveAsDialogController extends BaseController {
           mainController.getManagerService().createProcessModelVersion(editSession.hashCode(),
               userName, nativeType, processId, editSession.getOriginalBranchName(), versionNumber,
               editSession.getOriginalVersionNumber(), "", nativeStream);
-      LOGGER.info("User {} save new model {} version {} in folder {}", userName, processName, versionNumber,
+      LOGGER.info("User {} save new model \"{}\" version {} in folder {}", userName, processName, versionNumber,
               containingFolderName);
 
       // Create draft version for new PMV
