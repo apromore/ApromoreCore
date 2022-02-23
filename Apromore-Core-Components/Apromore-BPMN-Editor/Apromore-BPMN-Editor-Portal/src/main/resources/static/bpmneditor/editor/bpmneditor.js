@@ -126472,10 +126472,10 @@ class EditorApp {
      * @param buttonData: button data
      */
     offer(buttonData) {
-        if (this.disabledButtons && this.disabledButtons.includes(buttonData.name)) {
-            buttonData.isDisabled = function(){ return true};
+        //Do not add buttons in the disabledButtons list to the toolbar
+        if (!this.disabledButtons || !this.disabledButtons.includes(buttonData.name)) {
+            this.buttonsData.push(buttonData);
         }
-        this.buttonsData.push(buttonData);
     }
 
     getEditor() {
