@@ -67,6 +67,7 @@ public class BaseController extends Window {
   public static final String YAWL_2_2 = "YAWL 2.2";
   public static final String EPML_2_0 = "EPML 2.0";
 
+  public static final String UNTITLED_PROCESS_NAME = "Untitled";
   public static final String VERSION_1_0 = "1.0";
 
   @WireVariable("managerClient")

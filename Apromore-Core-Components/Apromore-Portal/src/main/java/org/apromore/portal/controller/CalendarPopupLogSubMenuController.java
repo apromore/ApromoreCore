@@ -28,11 +28,12 @@ package org.apromore.portal.controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.PortalPlugin;
+import org.apromore.portal.common.ItemHelpers;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.dialogController.PopupMenuController;
@@ -41,6 +42,7 @@ import org.apromore.portal.menu.PluginCatalog;
 import org.apromore.portal.model.LogSummaryType;
 import org.apromore.portal.model.PermissionType;
 import org.apromore.portal.model.UserType;
+import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zul.Menu;
@@ -50,7 +52,7 @@ import org.zkoss.zul.Messagebox;
 
 public class CalendarPopupLogSubMenuController extends PopupLogSubMenuController {
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(CalendarPopupLogSubMenuController.class);
-    private static final String FAILED_LAUNCH_CALENDAR="portal_failedLaunchCustomCalendar_message";
+    private static final String FAILED_LAUNCH_CALENDAR = "portal_failedLaunchCustomCalendar_message";
 
     public CalendarPopupLogSubMenuController(PopupMenuController popupMenuController, MainController mainController,
                                              Menupopup popupMenu, LogSummaryType logSummaryType) {
@@ -66,16 +68,19 @@ public class CalendarPopupLogSubMenuController extends PopupLogSubMenuController
             subMenu.setImage(subMenuImage);
             Menupopup menuPopup = new Menupopup();
             popupMenuController.addMenuitem(menuPopup, new MenuItem(PluginCatalog.PLUGIN_CREATE_NEW_CALENDAR));
-            List<CalendarModel> calendarModels=null;
-            calendarModels=mainController.getEventLogService().getAllCustomCalendars();
-            if(calendarModels==null){
-                calendarModels=new ArrayList<>();
+            String currentUser = UserSessionManager.getCurrentUser().getUsername();
+            List<CalendarModel> calendarModels = mainController.getEventLogService().getAllCustomCalendars(currentUser);
+            if (calendarModels == null) {
+                calendarModels = new ArrayList<>();
             }
-            CalendarModel selectedCalendar=null;
-            if(mainController.getEventLogService().getCalendarIdFromLog(logSummaryType.getId())>0){
-                selectedCalendar=mainController.getEventLogService().getCalendarFromLog(logSummaryType.getId());
+            CalendarModel selectedCalendar = null;
+            if (mainController.getEventLogService().getCalendarIdFromLog(logSummaryType.getId()) > 0) {
+                selectedCalendar = mainController.getEventLogService().getCalendarFromLog(logSummaryType.getId());
             }
-            fetchAndConstructMenuForCalendar(menuPopup, calendarModels,selectedCalendar);
+            if (selectedCalendar != null && !calendarModels.contains(selectedCalendar)) {
+                calendarModels.add(selectedCalendar);
+            }
+            fetchAndConstructMenuForCalendar(menuPopup, calendarModels, selectedCalendar);
             subMenu.appendChild(menuPopup);
             popupMenu.appendChild(subMenu);
         }
@@ -131,17 +136,23 @@ public class CalendarPopupLogSubMenuController extends PopupLogSubMenuController
             Menuitem item = new Menuitem();
             item.setLabel(calendarModel.getName());
             item.setAttribute(CALENDAR_DATA, calendarModel);
+            item.setAttribute("CURRENT_APPLIED",selected);
             item.addEventListener(ON_CLICK, event -> {
                 try {
                     CalendarModel model = (CalendarModel) event.getTarget().getAttribute(CALENDAR_DATA);
-                    Map<String, Object> attrMap = new HashMap<>();
-                    attrMap.put("artifactName", model.getName());
-                    attrMap.put("logId", logSummaryType.getId());
-                    attrMap.put("calendarId", model.getId());
-                    attrMap.put("FOWARD_FROM_CONTEXT", true);
-                    PortalPlugin calendarPlugin = portalPluginMap.get(PluginCatalog.PLUGIN_CALENDAR);
-                    calendarPlugin.setSimpleParams(attrMap);
-                    calendarPlugin.execute(getPortalContext());
+                    boolean currentApplied = (boolean) event.getTarget().getAttribute("CURRENT_APPLIED");
+                    if (!currentApplied) {
+                        boolean canEdit = ItemHelpers.canModifyCalendar(this.mainController.getUserService()
+                            .findUserByRowGuid(UserSessionManager.getCurrentUser().getId()), logSummaryType.getId());
+                        if (canEdit) {
+                            this.mainController.getEventLogService()
+                                .updateCalendarForLog(logSummaryType.getId(), model.getId());
+                            Notification.info(
+                                String.format(Labels.getLabel("success_apply_message"), logSummaryType.getName()));
+                        }else{
+                            Notification.error(Labels.getLabel("portal_unauthorizedRoleAccess_message"));
+                        }
+                    }
                 } catch (Exception e) {
                     LOGGER.error(Labels.getLabel(FAILED_LAUNCH_CALENDAR), e);
                     Messagebox.show(Labels.getLabel(FAILED_LAUNCH_CALENDAR));

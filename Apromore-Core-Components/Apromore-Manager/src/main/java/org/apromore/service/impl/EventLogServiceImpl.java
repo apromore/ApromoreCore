@@ -580,7 +580,19 @@ public class EventLogServiceImpl implements EventLogService {
       return logRepo.findByCalendarId(calendarId);
     }
 
-
+    @Override
+    public List<Log> getLogListFromCalendarId(Long calendarId, String username) {
+        List<Log> relatedLogs = logRepo.findByCalendarId(calendarId);
+        relatedLogs.removeIf(l -> {
+            try {
+                return !AccessType.OWNER.equals(authorizationService.getLogAccessTypeByUser(l.getId(), username));
+            } catch (UserNotFoundException e) {
+                LOGGER.error("Could not find user with username {}", username);
+            }
+            return true;
+        });
+        return relatedLogs;
+    }
 
     @Override
     public boolean saveFileToVolume(String filename, String prefix, ByteArrayOutputStream baos) throws Exception {
@@ -688,8 +700,47 @@ public class EventLogServiceImpl implements EventLogService {
 			}
 		});
 	}
+
 	@Override
 	public List<CalendarModel> getAllCustomCalendars(){
 		return calendarService.getCalendars();
+	}
+
+	@Override
+	public List<CalendarModel> getAllCustomCalendars(String username){
+		return calendarService.getCalendars(username);
+	}
+
+	@Override
+	public void shallowCopyArtifacts(Log oldLog, Log newLog, List<Integer> artifactTypes) {
+
+		Set<Usermetadata> usermetadataSet = oldLog.getUsermetadataSet();
+		Set<Usermetadata> us = newLog.getUsermetadataSet();
+		for (Usermetadata u : usermetadataSet) {
+			if (artifactTypes.contains(u.getUsermetadataType().getId())) {
+				us.add(u);
+				LOGGER.debug("Link user metadata type:{} id:{} to new Log id:{} during copy", u.getUsermetadataType().getType(),
+						u.getId(), newLog.getId());
+			}
+		}
+		logRepo.save(newLog);
+	}
+
+	@Override
+	public void deepCopyArtifacts(Log oldLog, Log newLog, List<Integer> artifactTypes, String username) throws UserNotFoundException {
+
+		Set<Usermetadata> usermetadataSet = oldLog.getUsermetadataSet();
+		Set<Usermetadata> us = newLog.getUsermetadataSet();
+		for (Usermetadata u : usermetadataSet) {
+			if (artifactTypes.contains(u.getUsermetadataType().getId())) {
+				Usermetadata newUm = userMetadataService.saveUserMetadata(u.getName(), u.getContent(),
+						UserMetadataTypeEnum.valueOf(u.getUsermetadataType().getType()), username, newLog.getId());
+				us.add(newUm);
+				LOGGER.debug("Deep copy user metadata type:{} id:{} to new Log id:{} during copy",
+						u.getUsermetadataType().getType(),
+						u.getId(), newLog.getId());
+			}
+		}
+		logRepo.save(newLog);
 	}
 }

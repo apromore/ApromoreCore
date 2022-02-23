@@ -8,27 +8,28 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+
 package org.apromore.plugin.portal.calendar.controllers;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apromore.calendar.model.HolidayModel;
 import org.apromore.calendar.model.HolidayType;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.calendar.Constants;
+import org.apromore.zk.label.LabelSupplier;
 import org.slf4j.Logger;
 import org.zkoss.json.JSONObject;
 import org.zkoss.zk.ui.Executions;
@@ -40,16 +41,17 @@ import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Window;
-import org.apromore.zk.label.LabelSupplier;
 
 public class ImportHolidays extends SelectorComposer<Window> implements LabelSupplier {
 
-    private final static Logger LOGGER = PortalLoggerFactory.getLogger(ImportHolidays.class);
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(ImportHolidays.class);
 
     private Calendar parentController = (Calendar) Executions.getCurrent().getArg().get("parentController");
 
-    @Wire("#saveBtn") Button saveBtn;
-    @Wire("#cancelBtn") Button cancelBtn;
+    @Wire("#saveBtn")
+    Button saveBtn;
+    @Wire("#cancelBtn")
+    Button cancelBtn;
 
     @Override
     public String getBundleName() {
@@ -65,8 +67,8 @@ public class ImportHolidays extends SelectorComposer<Window> implements LabelSup
             @Override
             public void onEvent(Event event) throws Exception {
                 List<HolidayModel> holidays = new ArrayList<HolidayModel>();
-                Object [] params = (Object []) event.getData();
-                for (Object param: params) {
+                Object[] params = (Object[]) event.getData();
+                for (Object param : params) {
                     JSONObject item = (JSONObject) param;
                     String name = (String) item.get("name");
                     String date = (String) item.get("date");

@@ -113579,7 +113579,13 @@ class ResizeTasks_ResizeTasks extends RuleProvider {
   init() {
     this.addRule('shape.resize', Infinity, ({ shape, newBounds }) => {
       return (
-        Object(ModelUtil["is"])(shape, 'bpmn:Task') || this._bpmnRules.canResize(shape, newBounds)
+        Object(ModelUtil["is"])(shape, 'bpmn:Task') ||
+        Object(ModelUtil["is"])(shape, 'bpmn:Gateway') ||
+        Object(ModelUtil["is"])(shape, 'bpmn:Event') ||
+        Object(ModelUtil["is"])(shape, 'bpmn:DataObject') ||
+        Object(ModelUtil["is"])(shape, 'bpmn:DataObjectReference') ||
+        Object(ModelUtil["is"])(shape, 'bpmn:DataStoreReference') ||
+        this._bpmnRules.canResize(shape, newBounds)
       );
     });
   }

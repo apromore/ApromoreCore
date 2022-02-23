@@ -8,19 +8,22 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+
 package org.apromore.service.logimporter.io;
 
+import java.io.File;
+import java.io.IOException;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.parquet.ParquetReadOptions;
@@ -31,9 +34,6 @@ import org.apache.parquet.hadoop.example.GroupReadSupport;
 import org.apache.parquet.hadoop.util.HadoopInputFile;
 import org.apache.parquet.io.InputFile;
 import org.apache.parquet.schema.MessageType;
-
-import java.io.File;
-import java.io.IOException;
 
 public class ParquetLocalFileReader {
     private Configuration conf;
@@ -89,7 +89,8 @@ public class ParquetLocalFileReader {
             try {
                 thread.setContextClassLoader(Path.class.getClassLoader());
                 InputFile inputFile = HadoopInputFile.fromPath(new Path(file.toURI()), conf);
-                ParquetFileReader parquetFileReader = new ParquetFileReader(inputFile, ParquetReadOptions.builder().build());
+                ParquetFileReader parquetFileReader =
+                    new ParquetFileReader(inputFile, ParquetReadOptions.builder().build());
 
 
                 return parquetFileReader;

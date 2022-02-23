@@ -8,19 +8,28 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+
 package org.apromore.service.logimporter.services;
 
+import static org.apromore.service.logimporter.services.utilities.TestUtilities.convertParquetToCsv;
+import static org.apromore.service.logimporter.utilities.ParquetUtilities.getHeaderFromParquet;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.parquet.schema.MessageType;
 import org.apromore.service.logimporter.io.ParquetLocalFileReader;
@@ -33,16 +42,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.util.Arrays;
-import java.util.List;
 
-import static org.apromore.service.logimporter.services.utilities.TestUtilities.convertParquetToCSV;
-import static org.apromore.service.logimporter.utilities.ParquetUtilities.getHeaderFromParquet;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-@Ignore
 public class XLSXToParquetImporterUnitTest {
 
 
@@ -50,8 +50,10 @@ public class XLSXToParquetImporterUnitTest {
     /**
      * Expected headers for <code>test1-valid.csv</code>.
      */
-    private final List<String> SAMPLE_EXPECTED_HEADER = Arrays.asList("case id", "activity", "start date", "completion time", "process type");
-    private final List<String> PARQUET_EXPECTED_HEADER = Arrays.asList("case_id", "activity", "start_date", "completion_time", "process_type");
+    private static final List<String> SAMPLE_EXPECTED_HEADER =
+        Arrays.asList("case id", "activity", "start date", "completion time", "process type");
+    private static final List<String> PARQUET_EXPECTED_HEADER =
+        Arrays.asList("case_id", "activity", "start_date", "completion_time", "process_type");
 
     private TestUtilities utilities;
     private MetaDataService metaDataService;
@@ -73,16 +75,17 @@ public class XLSXToParquetImporterUnitTest {
     @Test
     public void testSampleCSV_undersample() throws Exception {
 
-        LOGGER.info("\n************************************\ntest - sampling fewer lines than contained in test1-valid.xlsx");
+        LOGGER.info(
+            "\n************************************\ntest - sampling fewer lines than contained in test1-valid.xlsx");
 
         // Test file data
         String testFile = "/test1-valid.xlsx";
         // Perform the test
         LogMetaData logMetaData = metaDataService
-                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
+            .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
 
         List<List<String>> sampleLog = metaDataService
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 2, "UTF-8");
+            .generateSampleLog(this.getClass().getResourceAsStream(testFile), 2, "UTF-8");
 
         // Validate result
         assertEquals(SAMPLE_EXPECTED_HEADER, logMetaData.getHeader());
@@ -95,15 +98,16 @@ public class XLSXToParquetImporterUnitTest {
     @Test
     public void testSampleCSV_oversample() throws Exception {
 
-        LOGGER.info("\n************************************\ntest - sampling more lines than contained in test1-valid.xlsx");
+        LOGGER.info(
+            "\n************************************\ntest - sampling more lines than contained in test1-valid.xlsx");
 
         // Test file data
         String testFile = "/test1-valid.xlsx";
         LogMetaData logMetaData = metaDataService
-                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
+            .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
 
         List<List<String>> sampleLog = metaDataService
-                .generateSampleLog(this.getClass().getResourceAsStream(testFile), 5, "UTF-8");
+            .generateSampleLog(this.getClass().getResourceAsStream(testFile), 5, "UTF-8");
 
         // Validate result
         assertEquals(SAMPLE_EXPECTED_HEADER, logMetaData.getHeader());
@@ -123,31 +127,31 @@ public class XLSXToParquetImporterUnitTest {
         String expectedTestFile = "/test1-valid-expected.csv";
         //Create an output parquet file
         File tempOutput = File.createTempFile("test", "parquet");
-        String expectedCsv = TestUtilities.resourceToString(expectedTestFile);
+        final String expectedCsv = TestUtilities.resourceToString(expectedTestFile);
 
         // Perform the test
         LogMetaData logMetaData = metaDataService
-                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
+            .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
         List<List<String>> sampleLog = metaDataService
-                .generateSampleLog(
-                        this.getClass().getResourceAsStream(testFile),
-                        3,
-                        "UTF-8");
+            .generateSampleLog(
+                this.getClass().getResourceAsStream(testFile),
+                3,
+                "UTF-8");
         logMetaData = metaDataUtilities.processMetaData(logMetaData, sampleLog);
         //logMetaData.setTimeZone("Australia/Melbourne");
 
         //Export parquet
         LogModel logModel = parquetImporter
-                .importParquetFile(
-                        this.getClass().getResourceAsStream(testFile),
-                        logMetaData,
-                        "UTF-8",
-                        tempOutput,
-                        true);
+            .importParquetFile(
+                this.getClass().getResourceAsStream(testFile),
+                logMetaData,
+                "UTF-8",
+                tempOutput,
+                true);
 
         //Read Parquet file
-        MessageType schema = new ParquetLocalFileReader(new Configuration(true), tempOutput).getSchema();
-        String parquetToCSV = convertParquetToCSV(tempOutput, ',');
+        final MessageType schema = new ParquetLocalFileReader(new Configuration(true), tempOutput).getSchema();
+        final String parquetToCSV = convertParquetToCsv(tempOutput, ',');
 
         // Validate result
         assertNotNull(logModel);
@@ -171,31 +175,31 @@ public class XLSXToParquetImporterUnitTest {
         //Create an output parquet file
         File tempOutput = File.createTempFile("test", "parquet");
         // Set up inputs and expected outputs
-        String expectedCsv = TestUtilities.resourceToString(expectedFile);
+        final String expectedCsv = TestUtilities.resourceToString(expectedFile);
 
         // Perform the test
         LogMetaData logMetaData = metaDataService
-                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
+            .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
         List<List<String>> sampleLog = metaDataService
-                .generateSampleLog(
-                        this.getClass().getResourceAsStream(testFile),
-                        3,
-                        "UTF-8");
+            .generateSampleLog(
+                this.getClass().getResourceAsStream(testFile),
+                3,
+                "UTF-8");
         logMetaData = metaDataUtilities.processMetaData(logMetaData, sampleLog);
         //logMetaData.setTimeZone("Australia/Melbourne");
 
         //Export parquet
         LogModel logModel = parquetImporter
-                .importParquetFile(
-                        this.getClass().getResourceAsStream(testFile),
-                        logMetaData,
-                        "UTF-8",
-                        tempOutput,
-                        true);
+            .importParquetFile(
+                this.getClass().getResourceAsStream(testFile),
+                logMetaData,
+                "UTF-8",
+                tempOutput,
+                true);
 
         //Read Parquet file
-        MessageType schema = new ParquetLocalFileReader(new Configuration(true), tempOutput).getSchema();
-        String parquetToCSV = convertParquetToCSV(tempOutput, ',');
+        final MessageType schema = new ParquetLocalFileReader(new Configuration(true), tempOutput).getSchema();
+        final String parquetToCSV = convertParquetToCsv(tempOutput, ',');
 
         // Validate result
         assertNotNull(logModel);
@@ -218,31 +222,31 @@ public class XLSXToParquetImporterUnitTest {
         //Create an output parquet file
         File tempOutput = File.createTempFile("test", "parquet");
         // Set up inputs and expected outputs
-        String expectedCsv = TestUtilities.resourceToString(expectedFile);
+        final String expectedCsv = TestUtilities.resourceToString(expectedFile);
 
         // Perform the test
         LogMetaData logMetaData = metaDataService
-                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
+            .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
         List<List<String>> sampleLog = metaDataService
-                .generateSampleLog(
-                        this.getClass().getResourceAsStream(testFile),
-                        2,
-                        "UTF-8");
+            .generateSampleLog(
+                this.getClass().getResourceAsStream(testFile),
+                2,
+                "UTF-8");
         logMetaData = metaDataUtilities.processMetaData(logMetaData, sampleLog);
         //logMetaData.setTimeZone("Australia/Melbourne");
 
         //Export parquet
         LogModel logModel = parquetImporter
-                .importParquetFile(
-                        this.getClass().getResourceAsStream(testFile),
-                        logMetaData,
-                        "UTF-8",
-                        tempOutput,
-                        true);
+            .importParquetFile(
+                this.getClass().getResourceAsStream(testFile),
+                logMetaData,
+                "UTF-8",
+                tempOutput,
+                true);
 
         //Read Parquet file
-        MessageType schema = new ParquetLocalFileReader(new Configuration(true), tempOutput).getSchema();
-        String parquetToCSV = convertParquetToCSV(tempOutput, ',');
+        final MessageType schema = new ParquetLocalFileReader(new Configuration(true), tempOutput).getSchema();
+        final String parquetToCSV = convertParquetToCsv(tempOutput, ',');
 
         // Validate result
         assertNotNull(logModel);
@@ -265,31 +269,31 @@ public class XLSXToParquetImporterUnitTest {
         //Create an output parquet file
         File tempOutput = File.createTempFile("test", "parquet");
         // Set up inputs and expected outputs
-        String expectedCsv = TestUtilities.resourceToString(expectedFile);
+        final String expectedCsv = TestUtilities.resourceToString(expectedFile);
 
         // Perform the test
         LogMetaData logMetaData = metaDataService
-                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
+            .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
         List<List<String>> sampleLog = metaDataService
-                .generateSampleLog(
-                        this.getClass().getResourceAsStream(testFile),
-                        2,
-                        "UTF-8");
+            .generateSampleLog(
+                this.getClass().getResourceAsStream(testFile),
+                2,
+                "UTF-8");
         logMetaData = metaDataUtilities.processMetaData(logMetaData, sampleLog);
         //logMetaData.setTimeZone("Australia/Melbourne");
 
         //Export parquet
         LogModel logModel = parquetImporter
-                .importParquetFile(
-                        this.getClass().getResourceAsStream(testFile),
-                        logMetaData,
-                        "UTF-8",
-                        tempOutput,
-                        true);
+            .importParquetFile(
+                this.getClass().getResourceAsStream(testFile),
+                logMetaData,
+                "UTF-8",
+                tempOutput,
+                true);
 
         //Read Parquet file
-        MessageType schema = new ParquetLocalFileReader(new Configuration(true), tempOutput).getSchema();
-        String parquetToCSV = convertParquetToCSV(tempOutput, ',');
+        final MessageType schema = new ParquetLocalFileReader(new Configuration(true), tempOutput).getSchema();
+        final String parquetToCSV = convertParquetToCsv(tempOutput, ',');
 
         // Validate result
         assertNotNull(logModel);
@@ -312,31 +316,31 @@ public class XLSXToParquetImporterUnitTest {
         //Create an output parquet file
         File tempOutput = File.createTempFile("test", "parquet");
         // Set up inputs and expected outputs
-        String expectedCsv = TestUtilities.resourceToString(expectedFile);
+        final String expectedCsv = TestUtilities.resourceToString(expectedFile);
 
         // Perform the test
         LogMetaData logMetaData = metaDataService
-                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
+            .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
         List<List<String>> sampleLog = metaDataService
-                .generateSampleLog(
-                        this.getClass().getResourceAsStream(testFile),
-                        2,
-                        "UTF-8");
+            .generateSampleLog(
+                this.getClass().getResourceAsStream(testFile),
+                2,
+                "UTF-8");
         logMetaData = metaDataUtilities.processMetaData(logMetaData, sampleLog);
         //logMetaData.setTimeZone("Australia/Melbourne");
 
         //Export parquet
         LogModel logModel = parquetImporter
-                .importParquetFile(
-                        this.getClass().getResourceAsStream(testFile),
-                        logMetaData,
-                        "UTF-8",
-                        tempOutput,
-                        true);
+            .importParquetFile(
+                this.getClass().getResourceAsStream(testFile),
+                logMetaData,
+                "UTF-8",
+                tempOutput,
+                true);
 
         //Read Parquet file
-        MessageType schema = new ParquetLocalFileReader(new Configuration(true), tempOutput).getSchema();
-        String parquetToCSV = convertParquetToCSV(tempOutput, ',');
+        final MessageType schema = new ParquetLocalFileReader(new Configuration(true), tempOutput).getSchema();
+        final String parquetToCSV = convertParquetToCsv(tempOutput, ',');
 
         // Validate result
         assertNotNull(logModel);
@@ -357,18 +361,18 @@ public class XLSXToParquetImporterUnitTest {
         String testFile = "/test7-record-invalid.xlsx";
         String expectedFile = "/test7-record-invalid-expected.csv";
         //Create an output parquet file
-        File tempOutput = File.createTempFile("test", "parquet");
+        final File tempOutput = File.createTempFile("test", "parquet");
         // Set up inputs and expected outputs
-        String expectedCsv = TestUtilities.resourceToString(expectedFile);
+        final String expectedCsv = TestUtilities.resourceToString(expectedFile);
 
         // Perform the test
         LogMetaData logMetaData = metaDataService
-                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
+            .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
         List<List<String>> sampleLog = metaDataService
-                .generateSampleLog(
-                        this.getClass().getResourceAsStream(testFile),
-                        100,
-                        "UTF-8");
+            .generateSampleLog(
+                this.getClass().getResourceAsStream(testFile),
+                100,
+                "UTF-8");
         logMetaData = metaDataUtilities.processMetaData(logMetaData, sampleLog);
         //logMetaData.setTimeZone("Australia/Melbourne");
 
@@ -378,16 +382,16 @@ public class XLSXToParquetImporterUnitTest {
 
         //Export parquet
         LogModel logModel = parquetImporter
-                .importParquetFile(
-                        this.getClass().getResourceAsStream(testFile),
-                        logMetaData,
-                        "UTF-8",
-                        tempOutput,
-                        true);
+            .importParquetFile(
+                this.getClass().getResourceAsStream(testFile),
+                logMetaData,
+                "UTF-8",
+                tempOutput,
+                true);
 
         //Read Parquet file
-        MessageType schema = new ParquetLocalFileReader(new Configuration(true), tempOutput).getSchema();
-        String parquetToCSV = convertParquetToCSV(tempOutput, ',');
+        final MessageType schema = new ParquetLocalFileReader(new Configuration(true), tempOutput).getSchema();
+        final String parquetToCSV = convertParquetToCsv(tempOutput, ',');
 
         // Validate result
         assertNotNull(logModel);
@@ -410,23 +414,23 @@ public class XLSXToParquetImporterUnitTest {
 
         // Perform the test
         LogMetaData logMetaData = metaDataService
-                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
+            .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
         List<List<String>> sampleLog = metaDataService
-                .generateSampleLog(
-                        this.getClass().getResourceAsStream(testFile),
-                        2,
-                        "UTF-8");
+            .generateSampleLog(
+                this.getClass().getResourceAsStream(testFile),
+                2,
+                "UTF-8");
         logMetaData = metaDataUtilities.processMetaData(logMetaData, sampleLog);
         //logMetaData.setTimeZone("Australia/Melbourne");
 
         //Export parquet
         LogModel logModel = parquetImporter
-                .importParquetFile(
-                        this.getClass().getResourceAsStream(testFile),
-                        logMetaData,
-                        "UTF-8",
-                        tempOutput,
-                        true);
+            .importParquetFile(
+                this.getClass().getResourceAsStream(testFile),
+                logMetaData,
+                "UTF-8",
+                tempOutput,
+                true);
 
         // Validate result
         assertNotNull(logModel);
@@ -445,18 +449,18 @@ public class XLSXToParquetImporterUnitTest {
         String testFile = "/test9-differentiate-dates.xlsx";
         String expectedFile = "/test9-differentiate-dates-expected.csv";
         //Create an output parquet file
-        File tempOutput = File.createTempFile("test", "parquet");
+        final File tempOutput = File.createTempFile("test", "parquet");
         // Set up inputs and expected outputs
-        String expectedCsv = TestUtilities.resourceToString(expectedFile);
+        final String expectedCsv = TestUtilities.resourceToString(expectedFile);
 
         // Perform the test
         LogMetaData logMetaData = metaDataService
-                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
+            .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
         List<List<String>> sampleLog = metaDataService
-                .generateSampleLog(
-                        this.getClass().getResourceAsStream(testFile),
-                        100,
-                        "UTF-8");
+            .generateSampleLog(
+                this.getClass().getResourceAsStream(testFile),
+                100,
+                "UTF-8");
         logMetaData = metaDataUtilities.processMetaData(logMetaData, sampleLog);
         //logMetaData.setTimeZone("Australia/Melbourne");
         logMetaData.setEndTimestampFormat("yyyy-dd-MM'T'HH:mm:ss.SSS");
@@ -468,16 +472,16 @@ public class XLSXToParquetImporterUnitTest {
 
         //Export parquet
         LogModel logModel = parquetImporter
-                .importParquetFile(
-                        this.getClass().getResourceAsStream(testFile),
-                        logMetaData,
-                        "UTF-8",
-                        tempOutput,
-                        true);
+            .importParquetFile(
+                this.getClass().getResourceAsStream(testFile),
+                logMetaData,
+                "UTF-8",
+                tempOutput,
+                true);
 
         //Read Parquet file
-        MessageType schema = new ParquetLocalFileReader(new Configuration(true), tempOutput).getSchema();
-        String parquetToCSV = convertParquetToCSV(tempOutput, ',');
+        final MessageType schema = new ParquetLocalFileReader(new Configuration(true), tempOutput).getSchema();
+        final String parquetToCSV = convertParquetToCsv(tempOutput, ',');
 
         assertNotNull(logModel);
         assertEquals(13, logModel.getRowsCount());
@@ -499,31 +503,31 @@ public class XLSXToParquetImporterUnitTest {
         //Create an output parquet file
         File tempOutput = File.createTempFile("test", "parquet");
         // Set up inputs and expected outputs
-        String expectedCsv = TestUtilities.resourceToString(expectedFile);
+        final String expectedCsv = TestUtilities.resourceToString(expectedFile);
 
         // Perform the test
         LogMetaData logMetaData = metaDataService
-                .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
+            .extractMetadata(this.getClass().getResourceAsStream(testFile), "UTF-8", null);
         List<List<String>> sampleLog = metaDataService
-                .generateSampleLog(
-                        this.getClass().getResourceAsStream(testFile),
-                        100,
-                        "UTF-8");
+            .generateSampleLog(
+                this.getClass().getResourceAsStream(testFile),
+                100,
+                "UTF-8");
         logMetaData = metaDataUtilities.processMetaData(logMetaData, sampleLog);
         //logMetaData.setTimeZone("Australia/Melbourne");
 
         //Export parquet
         LogModel logModel = parquetImporter
-                .importParquetFile(
-                        this.getClass().getResourceAsStream(testFile),
-                        logMetaData,
-                        "UTF-8",
-                        tempOutput,
-                        true);
+            .importParquetFile(
+                this.getClass().getResourceAsStream(testFile),
+                logMetaData,
+                "UTF-8",
+                tempOutput,
+                true);
 
         //Read Parquet file
-        MessageType schema = new ParquetLocalFileReader(new Configuration(true), tempOutput).getSchema();
-        String parquetToCSV = convertParquetToCSV(tempOutput, ',');
+        final MessageType schema = new ParquetLocalFileReader(new Configuration(true), tempOutput).getSchema();
+        final String parquetToCSV = convertParquetToCsv(tempOutput, ',');
 
         // Validate result
         assertNotNull(logModel);
@@ -545,18 +549,18 @@ public class XLSXToParquetImporterUnitTest {
         String testFile = "/test11-encoding.xlsx";
         String expectedFile = "/test11-encoding-expected.csv";
         //Create an output parquet file
-        File tempOutput = File.createTempFile("test", "parquet");
+        final File tempOutput = File.createTempFile("test", "parquet");
         // Set up inputs and expected outputs
-        String expectedCsv = TestUtilities.resourceToString(expectedFile);
+        final String expectedCsv = TestUtilities.resourceToString(expectedFile);
 
         // Perform the test
         LogMetaData logMetaData = metaDataService
-                .extractMetadata(this.getClass().getResourceAsStream(testFile), "windows-1255", null);
+            .extractMetadata(this.getClass().getResourceAsStream(testFile), "windows-1255", null);
         List<List<String>> sampleLog = metaDataService
-                .generateSampleLog(
-                        this.getClass().getResourceAsStream(testFile),
-                        3,
-                        "windows-1255");
+            .generateSampleLog(
+                this.getClass().getResourceAsStream(testFile),
+                3,
+                "windows-1255");
         logMetaData = metaDataUtilities.processMetaData(logMetaData, sampleLog);
         //logMetaData.setTimeZone("Australia/Melbourne");
 
@@ -566,15 +570,15 @@ public class XLSXToParquetImporterUnitTest {
 
         //Export parquet
         LogModel logModel = parquetImporter
-                .importParquetFile(
-                        this.getClass().getResourceAsStream(testFile),
-                        logMetaData,
-                        "windows-1255",
-                        tempOutput,
-                        true);
+            .importParquetFile(
+                this.getClass().getResourceAsStream(testFile),
+                logMetaData,
+                "windows-1255",
+                tempOutput,
+                true);
 
         //Read Parquet file
-        String parquetToCSV = convertParquetToCSV(tempOutput, '¸');
+        final String parquetToCSV = convertParquetToCsv(tempOutput, '¸');
 
         // Validate result
         assertNotNull(logModel);

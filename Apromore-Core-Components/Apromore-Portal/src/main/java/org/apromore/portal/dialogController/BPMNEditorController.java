@@ -240,7 +240,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
           return;
         }
         if (isNewProcess) {
-          new SaveAsDialogController(process, vst, session, false, eventToString(event), mainC);
+          new SaveAsDialogController(process, vst, session, null, eventToString(event), mainC);
         } else {
           new SaveAsDialogController(process, vst, session, true, eventToString(event), mainC);
         }
@@ -344,6 +344,11 @@ public class BPMNEditorController extends BaseController implements Composer<Com
     });
 
     this.addEventListener("onPublishModel", event -> {
+      if (isNewProcess || process == null) {
+        Notification.error(Labels.getLabel("portal_saveModelFirst_message"));
+        return;
+      }
+
       PortalContext portalContext = mainC.getPortalContext();
       Map<String, PortalPlugin> portalPluginMap = portalContext.getPortalPluginMap();
       PortalPlugin publishModelPlugin = portalPluginMap.get(PluginCatalog.PLUGIN_PUBLISH_MODEL);

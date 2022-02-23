@@ -32,5 +32,5 @@ dependencies {
 	runtimeOnly project(':Apromore-Custom-Plugins:Process-Discoverer-Portal-Plugin')
 	runtimeOnly project(':Apromore-Custom-Plugins:Process-Publisher-Portal-Plugin')
 	runtimeOnly project(':Apromore-Custom-Plugins:Process-Simulation-Info-Logic')
-
+	runtimeOnly project(':Apromore-Custom-Plugins:Parquet-Exporter-Plugin')
 }

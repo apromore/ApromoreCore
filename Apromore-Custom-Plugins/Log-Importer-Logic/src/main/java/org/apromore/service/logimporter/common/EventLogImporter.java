@@ -19,22 +19,22 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+
 package org.apromore.service.logimporter.common;
 
+import static org.apromore.service.logimporter.constants.Constants.XES_EXTENSION;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.util.GregorianCalendar;
+import javax.inject.Inject;
+import javax.xml.datatype.DatatypeFactory;
 import org.apromore.dao.model.Log;
 import org.apromore.service.EventLogService;
 import org.deckfour.xes.model.XLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
-import javax.inject.Inject;
-import javax.xml.datatype.DatatypeFactory;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.util.GregorianCalendar;
-
-import static org.apromore.service.logimporter.constants.Constants.XES_EXTENSION;
 
 @Service("eventLogImporter")
 public class EventLogImporter {
@@ -46,22 +46,22 @@ public class EventLogImporter {
         this.eventLogService = eventLogService;
     }
 
-    public Log importXesLog(XLog xLog, String username, Integer folderId, String logName) throws Exception {
+    public Log importXesLog(XLog xlog, String username, Integer folderId, String logName) throws Exception {
         LOGGER.info("Importing log " + logName + " by " + username + " at folder ID " + folderId);
 
         final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        eventLogService.exportToStream(outputStream, xLog);
+        eventLogService.exportToStream(outputStream, xlog);
 
         return eventLogService.importLog(
-                username,
-                folderId,
-                logName,
-                new ByteArrayInputStream(outputStream.toByteArray()),
-                XES_EXTENSION,
-                "",  // domain
-                DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(),
-                false, // public
-                false // perspective
+            username,
+            folderId,
+            logName,
+            new ByteArrayInputStream(outputStream.toByteArray()),
+            XES_EXTENSION,
+            "",  // domain
+            DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(),
+            false, // public
+            false // perspective
         );
     }
 }

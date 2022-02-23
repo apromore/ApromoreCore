@@ -1,0 +1,71 @@
+<!--
+  #%L
+  This file is part of "Apromore Enterprise Edition".
+  %%
+  Copyright (C) 2019 - 2021 Apromore Pty Ltd. All Rights Reserved.
+  %%
+  NOTICE:  All information contained herein is, and remains the
+  property of Apromore Pty Ltd and its suppliers, if any.
+  The intellectual and technical concepts contained herein are
+  proprietary to Apromore Pty Ltd and its suppliers and may
+  be covered by U.S. and Foreign Patents, patents in process,
+  and are protected by trade secret or copyright law.
+  Dissemination of this information or reproduction of this
+  material is strictly forbidden unless prior written permission
+  is obtained from Apromore Pty Ltd.
+  #L%
+  -->
+<window id="parquetExportWindow"
+        width="90%" height="90%"
+        title="@load(vm.windowTitle)"
+        closable="true"
+        viewModel="@id('vm') @init('org.apromore.plugin.parquet.export.ParquetExporterViewModel')">
+    <vlayout hflex="1" vflex="1">
+        <listbox vflex="1" style="overflow:auto" sizedByContent="true"
+                 model="@bind(vm.parquetRows)">
+            <listhead children="@load(vm.headers)" sizable="true">
+                <template name="children">
+                    <listheader>
+                        <hlayout width="100%">
+                            <div hflex="1">
+                                <textbox value="@bind(each.label)"
+                                         style="@load(each.invalidLabel ? 'border:2px solid #F00; color:#F00;' : '')"
+                                         visible="@load(each.primary eq false)"
+                                         onOK="@command('onChangeHeaderLabel')"
+                                         onChange="@command('onChangeHeaderLabel')"
+                                         disabled="@load(each.checked eq false)"/>
+                                <label value="@load(each.label)"
+                                       visible="@load(each.primary)"
+                                       style="@load(each.checked ? '' : 'color:#CCC;')"/>
+                            </div>
+                            <checkbox visible="@load(each.primary eq false)"
+                                      tooltiptext="@load(vm.labels.dash_check_include_uncheck_exclude)"
+                                      checked="@bind(each.checked)"
+                                      onCheck="@command('onCheckHeader')"/>
+                        </hlayout>
+                    </listheader>
+                </template>
+            </listhead>
+            <template name="model" var="line">
+                <listitem children="@bind(line)" >
+                    <template name="children" var="cell">
+                        <listcell label="@load(cell.value)" tooltiptext="@load(cell.value)"
+                                  style="@load(cell.enabled ? 'text-align:left;' : 'background:#CCC; color: #DDD;')"/>
+                    </template>
+                </listitem>
+            </template>
+        </listbox>
+        <hlayout hflex="1" height="40px" style="text-align:center;">
+            <label value="@load(vm.labels.dash_encoding)"/>
+            <listbox mold="select" model="@bind(vm.encodeOptions)">
+                <template name="model">
+                    <listitem label="@load(each.label)" value="@load(each.value)" selected="@load(each.selected)"/>
+                </template>
+            </listbox>
+            <space/>
+            <button label="@load(vm.labels.dash_download)" onClick="@command('downloadFile')"
+                    disabled="@load(vm.downloadAllowed eq false)"/>
+            <button label="@load(vm.labels.dash_cancel)" onClick="@command('cancelDownload')"/>
+        </hlayout>
+    </vlayout>
+</window>

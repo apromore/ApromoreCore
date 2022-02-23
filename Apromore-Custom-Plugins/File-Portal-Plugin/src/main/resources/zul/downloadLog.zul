@@ -35,6 +35,7 @@
                     <label value="${labels.file_downloadFormat_text}"/>
                     <radiogroup id="format">
                         <radio label="CSV" selected="true"/>
+                        <radio id="parquetDownload" label="PARQUET"/>
                         <radio label="XES" />
                     </radiogroup>
                 </row>

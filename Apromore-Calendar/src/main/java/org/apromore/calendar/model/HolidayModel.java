@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -28,66 +28,64 @@
 
 package org.apromore.calendar.model;
 
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.util.Date;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apromore.commons.datetime.TimeUtils;
 
-import java.io.Serializable;
-import java.time.LocalDate;
-import java.util.Date;
-
 /**
- * Represent a holiday<br>
+ * Represent a holiday.
  */
 @Data
 @EqualsAndHashCode
 public class HolidayModel implements Serializable {
 
-	@EqualsAndHashCode.Exclude
-	private Long id;
-	@EqualsAndHashCode.Exclude
-	private Long referenceId;
+    @EqualsAndHashCode.Exclude
+    private Long id;
+    @EqualsAndHashCode.Exclude
+    private Long referenceId;
 
-	private HolidayType holidayType = HolidayType.PUBLIC;
+    private HolidayType holidayType = HolidayType.PUBLIC;
 
-	private String name;
-	private String description;
-	private LocalDate holidayDate;
+    private String name;
+    private String description;
+    private LocalDate holidayDate;
 
-	@EqualsAndHashCode.Exclude
-	private String createdBy;
+    @EqualsAndHashCode.Exclude
+    private String createdBy;
 
-	@EqualsAndHashCode.Exclude
-	private String updatedBy;
-	
-	public HolidayModel(String holidayTypeLabel, String name, String description, LocalDate holidayDate) {
-		super();
-		this.holidayType = HolidayType.valueOf(holidayTypeLabel);
-		this.name = name;
-		this.description = description;
-		this.holidayDate = holidayDate;
-	}
+    @EqualsAndHashCode.Exclude
+    private String updatedBy;
 
-	public HolidayModel(HolidayType holidayType, String name, String description, LocalDate holidayDate) {
-		super();
-		this.holidayType = holidayType;
-		this.name = name;
-		this.description = description;
-		this.holidayDate = holidayDate;
-	}
+    public HolidayModel(String holidayTypeLabel, String name, String description, LocalDate holidayDate) {
+        super();
+        this.holidayType = HolidayType.valueOf(holidayTypeLabel);
+        this.name = name;
+        this.description = description;
+        this.holidayDate = holidayDate;
+    }
 
-	public boolean isPublic() {
-		return HolidayType.PUBLIC.equals(holidayType);
-	}
+    public HolidayModel(HolidayType holidayType, String name, String description, LocalDate holidayDate) {
+        super();
+        this.holidayType = holidayType;
+        this.name = name;
+        this.description = description;
+        this.holidayDate = holidayDate;
+    }
 
-	public HolidayModel() {
-		super();
-	}
-	
-	public Date getDate()
-	{
-		return TimeUtils.localDateToDate(holidayDate);
-		
-	}
+    public boolean isPublic() {
+        return HolidayType.PUBLIC.equals(holidayType);
+    }
+
+    public HolidayModel() {
+        super();
+    }
+
+    public Date getDate() {
+        return TimeUtils.localDateToDate(holidayDate);
+
+    }
 
 }

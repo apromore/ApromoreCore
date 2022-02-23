@@ -40,6 +40,7 @@ import org.apromore.dao.model.NativeType;
 import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
 import org.apromore.dao.model.Usermetadata;
+import org.apromore.dao.model.UsermetadataType;
 import org.apromore.dao.model.Workspace;
 import org.apromore.exception.EventLogException;
 import org.apromore.exception.UserMetadataException;
@@ -52,6 +53,7 @@ import org.apromore.service.impl.EventLogServiceImpl;
 import org.apromore.service.impl.TemporaryCacheService;
 import org.apromore.storage.StorageClient;
 import org.apromore.storage.factory.StorageManagementFactory;
+import org.apromore.util.AccessType;
 import org.apromore.util.UserMetadataTypeEnum;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
@@ -558,5 +560,108 @@ public class EventLogServiceImplTest extends AbstractTest {
     // Mock call
     List<String> perspectives = eventLogService.getDefaultPerspectiveFromLog(logId);
 
+  }
+
+  @Test
+  public void testGetLogListFromCalendarId() throws UserNotFoundException {
+    long calendarId = 157;
+    int numLogs = 6;
+
+    List<Log> logs = new ArrayList<>();
+    for (int i = 1; i <= numLogs; i++) {
+      logs.add(createLogWithId(i, user, createFolder("testFolder", null, wp)));
+    }
+
+    expect(logRepository.findByCalendarId(calendarId)).andReturn(logs);
+    expect(authorizationService.getLogAccessTypeByUser(1, "test")).andReturn(AccessType.OWNER);
+    expect(authorizationService.getLogAccessTypeByUser(2, "test")).andReturn(AccessType.EDITOR);
+    expect(authorizationService.getLogAccessTypeByUser(3, "test")).andReturn(AccessType.VIEWER);
+    expect(authorizationService.getLogAccessTypeByUser(4, "test")).andReturn(AccessType.RESTRICTED);
+    expect(authorizationService.getLogAccessTypeByUser(5, "test")).andReturn(null);
+    expect(authorizationService.getLogAccessTypeByUser(6, "test")).andThrow(new UserNotFoundException());
+    replayAll();
+
+    // Only logs with AccessType.OWNER should be returned
+    List<Log> calendarOwnerLogs = eventLogService.getLogListFromCalendarId(calendarId, "test");
+    assertEquals(1, calendarOwnerLogs.size());
+    assertEquals(1, (long) calendarOwnerLogs.get(0).getId());
+  }
+
+  @Test
+  public void testDeepCopyArtifacts() throws UserNotFoundException {
+
+    // Set up test data
+    Integer oldLogId = 1;
+    Integer newLogId = 2;
+    Log oldLog = createLogWithId(oldLogId, user, createFolder("testFolder", null, wp));
+    Log newLog = createLogWithId(newLogId, user, createFolder("testFolder", null, wp));
+
+    Set<Log> logs = new HashSet<>();
+    logs.add(oldLog);
+
+    Set<Log> newLogs = new HashSet<>();
+    newLogs.add(newLog);
+
+    Usermetadata perspective = createUserMetadataWithType(1, "[\"concept:name\",\"org:resource\"," +
+            "\"lifecycle:transition\"]", logs, UserMetadataTypeEnum.PERSPECTIVE_TAG);
+    Usermetadata perspective_copy = createUserMetadataWithType(3, "[\"concept:name\",\"org:resource\"," +
+            "\"lifecycle:transition\"]", newLogs, UserMetadataTypeEnum.PERSPECTIVE_TAG);
+    Set<Usermetadata> usermetadataSet = new HashSet<>();
+    usermetadataSet.add(perspective);
+
+    oldLog.setUsermetadataSet(usermetadataSet);
+
+    // Mock recording
+    expect(userMetadataService.saveUserMetadata(perspective.getName(), perspective.getContent(),
+            UserMetadataTypeEnum.PERSPECTIVE_TAG, user.getUsername(), newLog.getId())).andReturn(perspective_copy);
+
+
+    // Mock call
+    eventLogService.deepCopyArtifacts(oldLog, newLog,
+            List.of(UserMetadataTypeEnum.PERSPECTIVE_TAG.getUserMetadataTypeId()), user.getUsername());
+
+    assertEquals(1, newLog.getUsermetadataSet().size());
+  }
+
+  @Test
+  public void testDeepCopyArtifacts_withUnwantedType() throws UserNotFoundException {
+
+    // Set up test data
+    Integer oldLogId = 1;
+    Integer newLogId = 2;
+    Log oldLog = createLogWithId(oldLogId, user, createFolder("testFolder", null, wp));
+    Log newLog = createLogWithId(newLogId, user, createFolder("testFolder", null, wp));
+
+    Set<Log> logs = new HashSet<>();
+    logs.add(oldLog);
+
+    Set<Log> newLogs = new HashSet<>();
+    newLogs.add(newLog);
+
+    Usermetadata perspective = createUserMetadataWithType(1, "[\"concept:name\",\"org:resource\"," +
+            "\"lifecycle:transition\"]", logs, UserMetadataTypeEnum.PERSPECTIVE_TAG);
+    Usermetadata dash = createUserMetadataWithType(2, "[\"concept:name\",\"org:resource\"," +
+            "\"lifecycle:transition\"]", logs, UserMetadataTypeEnum.SIMULATOR);
+    Usermetadata perspective_copy = createUserMetadataWithType(3, "[\"concept:name\",\"org:resource\"," +
+            "\"lifecycle:transition\"]", newLogs, UserMetadataTypeEnum.PERSPECTIVE_TAG);
+    Usermetadata dash_copy = createUserMetadataWithType(4, "[\"concept:name\",\"org:resource\"," +
+            "\"lifecycle:transition\"]", newLogs, UserMetadataTypeEnum.SIMULATOR);
+    Set<Usermetadata> usermetadataSet = new HashSet<>();
+    usermetadataSet.add(perspective);
+    usermetadataSet.add(dash);
+
+    oldLog.setUsermetadataSet(usermetadataSet);
+
+    // Mock recording
+    expect(userMetadataService.saveUserMetadata(perspective.getName(), perspective.getContent(),
+            UserMetadataTypeEnum.PERSPECTIVE_TAG, user.getUsername(), newLog.getId())).andReturn(perspective_copy);
+
+
+    // Mock call
+    eventLogService.deepCopyArtifacts(oldLog, newLog,
+            Arrays.asList(UserMetadataTypeEnum.PERSPECTIVE_TAG.getUserMetadataTypeId(),
+                    UserMetadataTypeEnum.DASHBOARD.getUserMetadataTypeId()), user.getUsername());
+
+    assertEquals(1, newLog.getUsermetadataSet().size());
   }
 }

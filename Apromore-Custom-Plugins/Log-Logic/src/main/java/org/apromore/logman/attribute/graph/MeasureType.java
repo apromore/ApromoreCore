@@ -24,6 +24,6 @@ package org.apromore.logman.attribute.graph;
 
 public enum MeasureType {
 
-    FREQUENCY, DURATION
+    FREQUENCY, DURATION, COST
 
 }

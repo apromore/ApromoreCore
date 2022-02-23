@@ -207,6 +207,11 @@
     width: 23.5px !important;
 }
 
+.ap-icon-cost {
+    background-image: url('cost.svg') !important;
+    width: 27.953125px !important;
+}
+
 .ap-icon-cut {
     background-image: url('cut.svg') !important;
     width: 23.5px !important;

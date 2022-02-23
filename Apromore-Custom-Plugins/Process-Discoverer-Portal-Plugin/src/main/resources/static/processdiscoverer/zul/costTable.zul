@@ -1,0 +1,55 @@
+<!--
+  #%L
+  This file is part of "Apromore Core".
+  %%
+  Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+  %%
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Lesser General Public License as
+  published by the Free Software Foundation, either version 3 of the
+  License, or (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Lesser Public License for more details.
+  
+  You should have received a copy of the GNU General Lesser Public
+  License along with this program.  If not, see
+  <http://www.gnu.org/licenses/lgpl-3.0.html>.
+  #L%
+  -->
+
+
+<window id="costTableWindow" width="700px" height="427px" mode="overlapped" sizable="true" maximizable="true" closable="true" position="center"
+        title="${arg.pdLabels.costTable_text}"
+        contentStyle="overflow:auto">
+  <vbox hflex="1" vflex="1" spacing="0">
+    <listbox id="costTableListbox" vflex="1" hflex="1" mold="paging" pageSize="100">
+      <listhead sizable="true">
+        <listheader label="${arg.pdLabels.costAttributeID_text}" sort="auto(attributeId)" onCreate="self.sort(true);"/>
+        <listheader label="${arg.pdLabels.costValue_text}" />
+      </listhead>
+      <template name="model">
+        <listitem>
+          <listcell label="${each.attributeId}" />
+          <listcell>
+            <doublebox constraint="no negative,no empty" hflex="1" value="${each.costValue}" forward="onChanging=costTableListbox.onUpdateCostValue, onChange=costTableListbox.onUpdateCostValue"
+            />
+          </listcell>
+        </listitem>
+      </template>
+    </listbox>
+    <div height="40px" hflex="1" style="padding:4px; padding-left: 10px;">
+      <combobox id="costTableCurrency" forward="onChanging=costTableWindow.onChangeCurrency, onChange=costTableWindow.onChangeCurrency">
+        <comboitem label="AUD" value="AUD" />
+        <comboitem label="USD" value="USD" />
+        <comboitem label="EUR" value="EUR" />
+        <comboitem label="GBP" value="GBP" />
+      </combobox>
+    </div>
+    <div height="42px" hflex="1" sclass="ap-window-footer-actions">
+      <button id="applyCost" label="Apply Cost" forward="onClick=costTableWindow.onApplyCost" />
+    </div>
+  </vbox>
+</window>

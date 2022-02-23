@@ -8,25 +8,36 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+
 package org.apromore.plugin.portal.useradmin.common;
 
-import org.zkoss.zk.ui.event.Events;
+import java.util.Set;
+import org.zkoss.zk.ui.event.CheckEvent;
+import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.event.*;
-import org.zkoss.zul.*;
-
-import java.util.*;
+import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.SelectEvent;
+import org.zkoss.zul.Auxhead;
+import org.zkoss.zul.Button;
+import org.zkoss.zul.Checkbox;
+import org.zkoss.zul.Label;
+import org.zkoss.zul.ListModelList;
+import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listhead;
+import org.zkoss.zul.Listheader;
+import org.zkoss.zul.Listitem;
+import org.zkoss.zul.Textbox;
 
 /**
  * Based on Chii's SearchableCaseIdListbox.java
@@ -57,11 +68,11 @@ public class SearchableListbox {
         this.listModel.setMultiple(true);
 
         // These selector must be custom and defined via sclass
-        this.listheader = (Listheader)listbox.query(".z-listheader");
-        this.searchToggle = (Checkbox)listbox.query(".ap-listbox-search-toggle");
-        this.searchInput = (Textbox)listbox.query(".ap-listbox-search-input");
-        this.searchBtn = (Button)listbox.query(".ap-listbox-search-btn");
-        this.searchBtnClear = (Button)listbox.query(".ap-listbox-search-clear");
+        this.listheader = (Listheader) listbox.query(".z-listheader");
+        this.searchToggle = (Checkbox) listbox.query(".ap-listbox-search-toggle");
+        this.searchInput = (Textbox) listbox.query(".ap-listbox-search-input");
+        this.searchBtn = (Button) listbox.query(".ap-listbox-search-btn");
+        this.searchBtnClear = (Button) listbox.query(".ap-listbox-search-clear");
         this.searchCount = (Label) listbox.query(".ap-listbox-search-count");
         this.initEvents();
         this.initData();
@@ -157,7 +168,7 @@ public class SearchableListbox {
     public void setSourceListModel(ListModelList sourceListModel) {
         this.sourceListModel = sourceListModel;
     }
-    
+
     public ListModelList getListModel() {
         return this.listModel;
     }
@@ -178,7 +189,7 @@ public class SearchableListbox {
         return getSelectionCount() == 1;
     }
 
-    public Set getSelection () {
+    public Set getSelection() {
         return listModel.getSelection();
     }
 
@@ -198,7 +209,7 @@ public class SearchableListbox {
     }
 
     public void showSearchDrawer(boolean visible) {
-        Auxhead auxhead = (Auxhead)listbox.query(".ap-auxhead");
+        Auxhead auxhead = (Auxhead) listbox.query(".ap-auxhead");
         auxhead.setVisible(visible);
     }
 

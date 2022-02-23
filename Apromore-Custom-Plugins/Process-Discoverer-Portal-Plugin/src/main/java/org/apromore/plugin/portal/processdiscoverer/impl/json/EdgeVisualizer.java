@@ -70,18 +70,22 @@ public class EdgeVisualizer extends AbstractElementVisualizer {
         double secondaryWeight = abs.getArcSecondaryWeight(edge);
         double relativeWeight = abs.getEdgeRelativePrimaryWeight(edge);
         relativeWeight = (relativeWeight < 0 ? 0 : relativeWeight);
-        
+        double strength = (MeasureType.COST.equals(params.getPrimaryType())) ? 10 : relativeWeight * 100;
+
         JSONObject jsonData = new JSONObject();
         jsonData.put("id", edge.getEdgeID().toString());
         jsonData.put("source", edge.getSource().getId().toString());
         jsonData.put("target", edge.getTarget().getId().toString());
         jsonData.put("style", BPMNHelper.isStartingOrEndingEdge(edge, abs.getDiagram()) ? "dashed" : "solid");
-        jsonData.put("strength", relativeWeight*100);
+        jsonData.put("strength", strength);
         jsonData.put("color", visSettings.getColorSettings().getEdgeColor(element, visContext, visSettings));
         
-        String label = getWeightString(primaryWeight, "", params.getPrimaryType(), params.getPrimaryRelation());
+        String label = (MeasureType.COST.equals(params.getPrimaryType())) ?
+            "" : getWeightString(primaryWeight, "", params.getPrimaryType(), params.getPrimaryRelation());
         if (params.getSecondary()) {
-            label += getWeightString(secondaryWeight, "\\n", params.getSecondaryType(), params.getSecondaryRelation());
+            label +=
+                (MeasureType.COST.equals(params.getSecondaryType())) ?
+                "" : getWeightString(secondaryWeight, "\\n", params.getSecondaryType(), params.getSecondaryRelation());
         }
         jsonData.put("label", label);
         
@@ -129,6 +133,10 @@ public class EdgeVisualizer extends AbstractElementVisualizer {
             if (measureType == MeasureType.FREQUENCY) {
                 jsonData.put("label", jsonData.get("label") + separator + 
                 visSettings.getDecimalFormatter().format(weightValue));
+            }
+            else if (measureType == MeasureType.COST) {
+                jsonData.put("label", jsonData.get("label") + separator +
+                    visSettings.getCurrency() + " " + visSettings.getDecimalFormatter().format(weightValue));
             }
             else if (measureType == MeasureType.DURATION) {
                 jsonData.put("label", jsonData.get("label") + separator + 
