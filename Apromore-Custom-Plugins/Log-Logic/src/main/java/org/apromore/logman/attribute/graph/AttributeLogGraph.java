@@ -179,6 +179,8 @@ public class AttributeLogGraph extends WeightedAttributeGraph {
         arcFreqs.clear();
         nodeIntervals.clear();
         arcIntervals.clear();
+        nodeCosts.clear();
+        arcCosts.clear();
         
         subGraphs.clear();
     }

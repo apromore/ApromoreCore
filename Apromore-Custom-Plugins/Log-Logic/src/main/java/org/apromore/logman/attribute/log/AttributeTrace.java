@@ -22,10 +22,6 @@
 
 package org.apromore.logman.attribute.log;
 
-import java.util.BitSet;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.logman.AActivity;
 import org.apromore.logman.ATrace;
@@ -36,12 +32,16 @@ import org.apromore.logman.attribute.log.variants.AttributeTraceVariants;
 import org.eclipse.collections.api.list.ListIterable;
 import org.eclipse.collections.api.list.primitive.IntList;
 import org.eclipse.collections.api.list.primitive.LongList;
+import org.eclipse.collections.api.list.primitive.MutableDoubleList;
 import org.eclipse.collections.api.list.primitive.MutableIntList;
 import org.eclipse.collections.api.list.primitive.MutableLongList;
-import org.eclipse.collections.api.list.primitive.MutableDoubleList;
+import org.eclipse.collections.impl.factory.primitive.DoubleLists;
 import org.eclipse.collections.impl.factory.primitive.IntLists;
 import org.eclipse.collections.impl.factory.primitive.LongLists;
-import org.eclipse.collections.impl.factory.primitive.DoubleLists;
+
+import java.util.BitSet;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * AttributeTrac represents a sequence of activities created from an ATrace based on a chosen attribute.
@@ -185,6 +185,7 @@ public class AttributeTrace {
         activeStartTimeTrace.clear();
         activeEndTimeTrace.clear();
         activeDurationTrace.clear();
+        activeCostTrace.clear();
         activeGraph.clear();
         
         int preIndex = -1;
@@ -241,6 +242,9 @@ public class AttributeTrace {
             
             activeDurationTrace.addAtIndex(0, 0);
             activeDurationTrace.add(0);
+
+            activeCostTrace.addAtIndex(0, 0);
+            activeCostTrace.add(0);
             
             int sourceNode = attribute.getMatrixGraph().getNodeFromValueIndex(activeValueTrace.get(0));
             activeGraph.addNode(sourceNode);
