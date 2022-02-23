@@ -620,7 +620,7 @@ public class EventLogServiceImplTest extends AbstractTest {
     eventLogService.deepCopyArtifacts(oldLog, newLog,
             List.of(UserMetadataTypeEnum.PERSPECTIVE_TAG.getUserMetadataTypeId()), user.getUsername());
 
-    assertEquals(newLog.getUsermetadataSet().size(), 1);
+    assertEquals(1, newLog.getUsermetadataSet().size());
   }
 
   @Test
@@ -662,6 +662,6 @@ public class EventLogServiceImplTest extends AbstractTest {
             Arrays.asList(UserMetadataTypeEnum.PERSPECTIVE_TAG.getUserMetadataTypeId(),
                     UserMetadataTypeEnum.DASHBOARD.getUserMetadataTypeId()), user.getUsername());
 
-    assertEquals(newLog.getUsermetadataSet().size(), 1);
+    assertEquals(1, newLog.getUsermetadataSet().size());
   }
 }
