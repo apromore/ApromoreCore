@@ -211,4 +211,23 @@ public interface EventLogService {
    */
   List<CalendarModel> getAllCustomCalendars(String username);
 
+  /**
+   * Shallow copy associated artifacts from one Log to another
+   *
+   * @param oldLog        From Log
+   * @param newLog        To Log
+   * @param artifactTypes List of types of artifact defined in {@link org.apromore.util.UserMetadataTypeEnum}
+   */
+  void shallowCopyArtifacts(Log oldLog, Log newLog, List<Integer> artifactTypes);
+
+  /**
+   * Deep copy associated artifacts from one Log to another
+   *
+   * @param oldLog        From Log
+   * @param newLog        To Log
+   * @param artifactTypes List of types of artifact defined in {@link org.apromore.util.UserMetadataTypeEnum}
+   * @param username      username
+   * @throws UserNotFoundException
+   */
+  void deepCopyArtifacts(Log oldLog, Log newLog, List<Integer> artifactTypes, String username) throws UserNotFoundException;
 }

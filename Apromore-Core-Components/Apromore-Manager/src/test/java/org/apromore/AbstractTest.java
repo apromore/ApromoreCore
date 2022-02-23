@@ -45,8 +45,10 @@ import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
 import org.apromore.dao.model.Usermetadata;
+import org.apromore.dao.model.UsermetadataType;
 import org.apromore.dao.model.Workspace;
 import org.apromore.portal.helper.Version;
+import org.apromore.util.UserMetadataTypeEnum;
 import org.easymock.EasyMockSupport;
 
 import static org.apromore.common.Constants.TRUNK_NAME;
@@ -247,6 +249,18 @@ public class AbstractTest extends EasyMockSupport {
         usermetadata.setId(id);
         usermetadata.setName("Test User Metadata");
         usermetadata.setLogs(logs);
+
+        return usermetadata;
+    }
+
+    public Usermetadata createUserMetadataWithType(Integer id, String content, Set<Log> logs,
+                                                   UserMetadataTypeEnum typeEnum) {
+        Usermetadata usermetadata = createUserMetadata(id, content, logs);
+
+        UsermetadataType usermetadataType = new UsermetadataType();
+        usermetadataType.setType(typeEnum.name());
+        usermetadataType.setId(typeEnum.getUserMetadataTypeId());
+        usermetadata.setUsermetadataType(usermetadataType);
 
         return usermetadata;
     }

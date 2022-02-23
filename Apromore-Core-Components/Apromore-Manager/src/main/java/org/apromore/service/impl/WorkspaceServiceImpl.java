@@ -82,6 +82,7 @@ import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
@@ -519,17 +520,14 @@ public class WorkspaceServiceImpl implements WorkspaceService {
       }
     }
 
-    // Link old_log's perspective and schema mapping metadata to new log, since they are immutable once created
-    Set<Usermetadata> usermetadataSet = currentLog.getUsermetadataSet();
-    Set<Usermetadata> us = newLog.getUsermetadataSet();
-    for (Usermetadata u : usermetadataSet) {
-      if (UserMetadataTypeEnum.CSV_IMPORTER.getUserMetadataTypeId().equals(u.getUsermetadataType().getId())
-      || UserMetadataTypeEnum.PERSPECTIVE_TAG.getUserMetadataTypeId().equals(u.getUsermetadataType().getId())) {
-        us.add(u);
-        LOGGER.debug("Link user metadata type:{} id:{} to new Log id:{} during copy", u.getUsermetadataType().getType(),
-                u.getId(), newLog.getId());
-      }
-    }
+    // Deep copy old_log's artifacts to new log
+    eventLogService.deepCopyArtifacts(currentLog, newLog,
+            Arrays.asList(UserMetadataTypeEnum.CSV_IMPORTER.getUserMetadataTypeId(),
+                    UserMetadataTypeEnum.PERSPECTIVE_TAG.getUserMetadataTypeId(),
+                    UserMetadataTypeEnum.DASHBOARD.getUserMetadataTypeId(),
+                    UserMetadataTypeEnum.DASH_TEMPLATE.getUserMetadataTypeId(),
+                    UserMetadataTypeEnum.FILTER.getUserMetadataTypeId(),
+                    UserMetadataTypeEnum.FILTER_TEMPLATE.getUserMetadataTypeId()), userName);
 
     // Persist
     try {
