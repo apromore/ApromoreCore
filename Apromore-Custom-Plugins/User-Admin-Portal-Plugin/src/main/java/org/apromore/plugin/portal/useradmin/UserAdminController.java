@@ -92,17 +92,17 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(UserAdminController.class);
     private Map<String, String> roleMap = new HashMap<>() {
         {
-            put("ROLE_ADMIN", "Administrator");
-            put("ROLE_SUPER_ADMIN", "Super Admin");
-            put("ROLE_MANAGER", "Manager");
-            put("ROLE_ANALYST", "Analyst");
-            put("ROLE_VIEWER", "Viewer");
-            put("ROLE_DESIGNER", "Designer");
-            put("ROLE_DATA_ENGINEER", "Data Engineer");
-            put("ROLE_DATA_SCIENTIST", "Data Scientist");
-            put("ROLE_OPERATIONS", "Operations");
-            put("ROLE_INTEGRATOR", "Integrator");
-            put("ROLE_VIEWER_MODELS", "Viewer (models)");
+            put("ROLE_ADMIN", Labels.getLabel("role_admin_text", "Administrator"));
+            put("ROLE_SUPER_ADMIN", Labels.getLabel("role_super_admin_text", "Super Admin"));
+            put("ROLE_MANAGER", Labels.getLabel("role_manager_text", "Manager"));
+            put("ROLE_ANALYST", Labels.getLabel("role_analyst_text", "Analyst"));
+            put("ROLE_VIEWER", Labels.getLabel("role_viewer_text", "Viewer"));
+            put("ROLE_DESIGNER", Labels.getLabel("role_designer_text", "Designer"));
+            put("ROLE_DATA_ENGINEER", Labels.getLabel("role_data_engineer_text", "Data Engineer"));
+            put("ROLE_DATA_SCIENTIST", Labels.getLabel("role_data_scientist_text", "Data Scientist"));
+            put("ROLE_OPERATIONS", Labels.getLabel("role_operations_text", "Operations"));
+            put("ROLE_INTEGRATOR", Labels.getLabel("role_integrator_text", "Integrator"));
+            put("ROLE_VIEWER_MODELS", Labels.getLabel("role_viewer_models_text", "Viewer (models)"));
         }
     };
 
