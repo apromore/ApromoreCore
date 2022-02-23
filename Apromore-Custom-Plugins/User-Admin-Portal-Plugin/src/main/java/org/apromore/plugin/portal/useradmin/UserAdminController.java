@@ -89,6 +89,8 @@ import org.zkoss.zul.Window;
 public class UserAdminController extends SelectorComposer<Window> implements LabelSupplier {
 
     private static final String NO_PERMISSION_TO_ALLOCATE_USER = "noPermissionAllocateUserToGroup_message";
+    private static final String TOGGLE_CLICK_EVENT_NAME = "onToggleClick";
+    private static final String SWITCH_TAB_EVENT_NAME = "onSwitchTab";
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(UserAdminController.class);
     private Map<String, String> roleMap = new HashMap<>() {
         {
@@ -394,7 +396,7 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
         /**
          * Enable toggle selection in user Listbox on individual row
          */
-        userEditBtn.addEventListener("onToggleClick", event -> {
+        userEditBtn.addEventListener(TOGGLE_CLICK_EVENT_NAME, event -> {
             JSONObject param = (JSONObject) event.getData();
             String name = (String) param.get("name");
             User user = new User();
@@ -411,7 +413,7 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
         /**
          * Enable toggle selection in group Listbox on individual row
          */
-        groupEditBtn.addEventListener("onToggleClick", event -> {
+        groupEditBtn.addEventListener(TOGGLE_CLICK_EVENT_NAME, event -> {
             JSONObject param = (JSONObject) event.getData();
             Integer id = (Integer) param.get("id");
             Group group = new Group();
@@ -428,7 +430,7 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
         /**
          * Enable toggle selection in role Listbox on individual row
          */
-        roleSelectBtn.addEventListener("onToggleClick", event -> {
+        roleSelectBtn.addEventListener(TOGGLE_CLICK_EVENT_NAME, event -> {
             JSONObject param = (JSONObject) event.getData();
             Integer index = (Integer) param.get("index");
             Listitem item = roleListbox.getItemAtIndex(index);
@@ -449,7 +451,7 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
         roleTab.setWidgetOverride("_sel", onSwitchTab);
         userTab.setSelected(true);
 
-        groupTab.addEventListener("onSwitchTab", event -> {
+        groupTab.addEventListener(SWITCH_TAB_EVENT_NAME, event -> {
             Tab tab = (Tab) event.getTarget();
             Tab selectedTab = tabbox.getSelectedTab();
             if (userTab.equals(selectedTab)) {
@@ -459,7 +461,7 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
             }
         });
 
-        userTab.addEventListener("onSwitchTab", event -> {
+        userTab.addEventListener(SWITCH_TAB_EVENT_NAME, event -> {
             Tab tab = (Tab) event.getTarget();
             Tab selectedTab = tabbox.getSelectedTab();
             if (groupTab.equals(selectedTab)) {
@@ -469,7 +471,7 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
             }
         });
 
-        roleTab.addEventListener("onSwitchTab", event -> {
+        roleTab.addEventListener(SWITCH_TAB_EVENT_NAME, event -> {
             Tab tab = (Tab) event.getTarget();
             Tab selectedTab = tabbox.getSelectedTab();
             if (userTab.equals(selectedTab)) {

@@ -239,6 +239,7 @@ public class SecurityServiceImpl implements SecurityService {
   public Role findRoleByName(String name) {
       Role role = roleRepo.findByName(name);
       if (role != null) {
+          //Load users in the role object
           role.getUsers().size();
       }
       return role;

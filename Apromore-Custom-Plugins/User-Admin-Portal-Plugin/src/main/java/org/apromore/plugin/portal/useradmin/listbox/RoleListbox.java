@@ -40,6 +40,6 @@ public class RoleListbox extends SearchableListbox {
 
     @Override
     public Set<RoleModel> getSelection() {
-        return (Set<RoleModel>) getListModel().getSelection();
+        return getListModel().getSelection();
     }
 }
