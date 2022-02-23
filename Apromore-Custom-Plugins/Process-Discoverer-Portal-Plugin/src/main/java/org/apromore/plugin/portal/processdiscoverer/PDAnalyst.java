@@ -289,7 +289,7 @@ public class PDAnalyst {
     }
     
     public XLog getXLog() {
-        return this.aLog.getActualXLog();
+        return this.filteredAPMLog.toXLog();
     }
     
     public boolean hasEmptyData() {
