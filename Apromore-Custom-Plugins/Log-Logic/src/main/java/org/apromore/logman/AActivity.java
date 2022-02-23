@@ -32,6 +32,7 @@ import org.joda.time.DateTime;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Represent a process activity. An activity can contain a list of events.
@@ -50,7 +51,6 @@ import java.util.Map;
 public class AActivity extends XEventImpl {// implements Map.Entry<XEvent,XEvent> {// Pair<XEvent, XEvent> {
     private int originalStartIndex; //index of the start event in the trace
     private int originalCompleteIndex; //index of the complete event in the trace
-    private boolean useComplete = true;
     private ATrace trace;
     
     public AActivity(ATrace trace, int start, int complete) {
@@ -60,11 +60,8 @@ public class AActivity extends XEventImpl {// implements Map.Entry<XEvent,XEvent
     public AActivity(ATrace trace, int originalStartIndex, int originalCompleteIndex, boolean useComplete) {
     	super();
     	this.trace = trace;
-    	this.setAttributes(useComplete ? trace.getOriginalEventFromIndex(originalCompleteIndex).getAttributes() :
-    	                    trace.getOriginalEventFromIndex(originalStartIndex).getAttributes());
     	this.originalStartIndex = originalStartIndex;
     	this.originalCompleteIndex = originalCompleteIndex;
-        this.useComplete = useComplete;
     }
     
     ////////////////////////// ORIGINAL METHODS //////////////////////////////////////
@@ -206,31 +203,23 @@ public class AActivity extends XEventImpl {// implements Map.Entry<XEvent,XEvent
     public long getDuration() {
         return (getEndTimestamp() - getStartTimestamp());
     }
-    
-    public long getDurationForAttribute(String attributeKey) {
-        XAttribute startAtt = this.getStartAttribute(attributeKey);
-        XAttribute endAtt = this.getCompleteAttribute(attributeKey);
-        if (startAtt == null || endAtt == null) {
-            return 0;
-        }
-        else if (!LogUtils.getValueString(startAtt).equalsIgnoreCase(LogUtils.getValueString(endAtt))) {
-            return 0;
-        }
-        else {
-            return this.getDuration();
-        }
+
+    private boolean isStartEventActive() {
+        return trace.getOriginalEventStatus(originalStartIndex);
     }
-    
-    public boolean isUseComplete() {
-    	return this.useComplete;
+
+    private boolean isEndEventActive() {
+        return trace.getOriginalEventStatus(originalCompleteIndex);
     }
     
     public boolean isInstant() {
-        return (originalStartIndex == originalCompleteIndex);
+        return (originalStartIndex == originalCompleteIndex) ||
+                (isStartEventActive() && !isEndEventActive()) ||
+                (!isStartEventActive() && isEndEventActive());
     }
     
     public boolean isActive() {
-        return (trace.getOriginalEventStatus(originalStartIndex) || trace.getOriginalEventStatus(originalCompleteIndex));
+        return isStartEventActive() || isEndEventActive();
     }
     
     @Override
@@ -239,10 +228,8 @@ public class AActivity extends XEventImpl {// implements Map.Entry<XEvent,XEvent
     }
     
     public Map<String,String> getAttributeMap() {
-        XAttributeMap xMap = useComplete ? trace.getOriginalEventFromIndex(originalCompleteIndex).getAttributes() :
-                                trace.getOriginalEventFromIndex(originalStartIndex).getAttributes();
-        Map<String,String> attributes = new HashMap<>();
-        xMap.entrySet().forEach(entry -> attributes.put(entry.getKey(), entry.getValue().toString()));
+        Map<String,String> attributes = getAttributes().entrySet().stream()
+                .collect(Collectors.toMap(e->e.getKey(), e->e.getValue().toString()));
 
         //Adjust for timestamp and lifecycle transition
         if (!isInstant()) {
@@ -255,5 +242,22 @@ public class AActivity extends XEventImpl {// implements Map.Entry<XEvent,XEvent
         }
         return attributes;
     }
-    
+
+    @Override
+    public XAttributeMap getAttributes() {
+        XAttributeMap xMap;
+        if (!isInstant()) {
+            xMap = trace.getOriginalEventFromIndex(originalStartIndex).getAttributes();
+        }
+        else if (isStartEventActive()) {
+            xMap = trace.getOriginalEventFromIndex(originalStartIndex).getAttributes();
+        }
+        else if (isEndEventActive()) {
+            xMap = trace.getOriginalEventFromIndex(originalCompleteIndex).getAttributes();
+        }
+        else {
+            xMap = trace.getOriginalEventFromIndex(originalStartIndex).getAttributes();
+        }
+        return xMap;
+    }
 }
