@@ -40,6 +40,7 @@ import org.apromore.dao.model.NativeType;
 import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
 import org.apromore.dao.model.Usermetadata;
+import org.apromore.dao.model.UsermetadataType;
 import org.apromore.dao.model.Workspace;
 import org.apromore.exception.EventLogException;
 import org.apromore.exception.UserMetadataException;
@@ -584,5 +585,83 @@ public class EventLogServiceImplTest extends AbstractTest {
     List<Log> calendarOwnerLogs = eventLogService.getLogListFromCalendarId(calendarId, "test");
     assertEquals(1, calendarOwnerLogs.size());
     assertEquals(1, (long) calendarOwnerLogs.get(0).getId());
+  }
+
+  @Test
+  public void testDeepCopyArtifacts() throws UserNotFoundException {
+
+    // Set up test data
+    Integer oldLogId = 1;
+    Integer newLogId = 2;
+    Log oldLog = createLogWithId(oldLogId, user, createFolder("testFolder", null, wp));
+    Log newLog = createLogWithId(newLogId, user, createFolder("testFolder", null, wp));
+
+    Set<Log> logs = new HashSet<>();
+    logs.add(oldLog);
+
+    Set<Log> newLogs = new HashSet<>();
+    newLogs.add(newLog);
+
+    Usermetadata perspective = createUserMetadataWithType(1, "[\"concept:name\",\"org:resource\"," +
+            "\"lifecycle:transition\"]", logs, UserMetadataTypeEnum.PERSPECTIVE_TAG);
+    Usermetadata perspective_copy = createUserMetadataWithType(3, "[\"concept:name\",\"org:resource\"," +
+            "\"lifecycle:transition\"]", newLogs, UserMetadataTypeEnum.PERSPECTIVE_TAG);
+    Set<Usermetadata> usermetadataSet = new HashSet<>();
+    usermetadataSet.add(perspective);
+
+    oldLog.setUsermetadataSet(usermetadataSet);
+
+    // Mock recording
+    expect(userMetadataService.saveUserMetadata(perspective.getName(), perspective.getContent(),
+            UserMetadataTypeEnum.PERSPECTIVE_TAG, user.getUsername(), newLog.getId())).andReturn(perspective_copy);
+
+
+    // Mock call
+    eventLogService.deepCopyArtifacts(oldLog, newLog,
+            List.of(UserMetadataTypeEnum.PERSPECTIVE_TAG.getUserMetadataTypeId()), user.getUsername());
+
+    assertEquals(newLog.getUsermetadataSet().size(), 1);
+  }
+
+  @Test
+  public void testDeepCopyArtifacts_withUnwantedType() throws UserNotFoundException {
+
+    // Set up test data
+    Integer oldLogId = 1;
+    Integer newLogId = 2;
+    Log oldLog = createLogWithId(oldLogId, user, createFolder("testFolder", null, wp));
+    Log newLog = createLogWithId(newLogId, user, createFolder("testFolder", null, wp));
+
+    Set<Log> logs = new HashSet<>();
+    logs.add(oldLog);
+
+    Set<Log> newLogs = new HashSet<>();
+    newLogs.add(newLog);
+
+    Usermetadata perspective = createUserMetadataWithType(1, "[\"concept:name\",\"org:resource\"," +
+            "\"lifecycle:transition\"]", logs, UserMetadataTypeEnum.PERSPECTIVE_TAG);
+    Usermetadata dash = createUserMetadataWithType(2, "[\"concept:name\",\"org:resource\"," +
+            "\"lifecycle:transition\"]", logs, UserMetadataTypeEnum.SIMULATOR);
+    Usermetadata perspective_copy = createUserMetadataWithType(3, "[\"concept:name\",\"org:resource\"," +
+            "\"lifecycle:transition\"]", newLogs, UserMetadataTypeEnum.PERSPECTIVE_TAG);
+    Usermetadata dash_copy = createUserMetadataWithType(4, "[\"concept:name\",\"org:resource\"," +
+            "\"lifecycle:transition\"]", newLogs, UserMetadataTypeEnum.SIMULATOR);
+    Set<Usermetadata> usermetadataSet = new HashSet<>();
+    usermetadataSet.add(perspective);
+    usermetadataSet.add(dash);
+
+    oldLog.setUsermetadataSet(usermetadataSet);
+
+    // Mock recording
+    expect(userMetadataService.saveUserMetadata(perspective.getName(), perspective.getContent(),
+            UserMetadataTypeEnum.PERSPECTIVE_TAG, user.getUsername(), newLog.getId())).andReturn(perspective_copy);
+
+
+    // Mock call
+    eventLogService.deepCopyArtifacts(oldLog, newLog,
+            Arrays.asList(UserMetadataTypeEnum.PERSPECTIVE_TAG.getUserMetadataTypeId(),
+                    UserMetadataTypeEnum.DASHBOARD.getUserMetadataTypeId()), user.getUsername());
+
+    assertEquals(newLog.getUsermetadataSet().size(), 1);
   }
 }
