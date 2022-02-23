@@ -609,7 +609,7 @@ public class MainController extends BaseController implements MainControllerInte
                 + "</bpmn:definitions>";
 
         ImportProcessResultType importResult = getManagerService().importProcess(
-                username, folderId, BPMN_2_0, "Untitled", VERSION_1_0, new ByteArrayInputStream(bpmnXML.getBytes()), "",
+                username, folderId, BPMN_2_0, UNTITLED_PROCESS_NAME, VERSION_1_0, new ByteArrayInputStream(bpmnXML.getBytes()), "",
                 "", now, null, false);
 
         Integer processId = importResult.getProcessSummary().getId();

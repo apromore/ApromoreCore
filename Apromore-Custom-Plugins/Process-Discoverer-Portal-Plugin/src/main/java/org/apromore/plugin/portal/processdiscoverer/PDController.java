@@ -272,7 +272,7 @@ public class PDController extends BaseController implements Composer<Component>,
                 }
             }
             onCreateFollowUp(comp, costTable, currency);
-            Events.postEvent("onFakeLoaded", comp, null);
+            Events.sendEvent("onFakeLoaded", comp, null);
         });
         Clients.evalJavaScript("Ap.common.getLocalStorageItem('ap.cost.table', 'win', 'onCostTableInit')");
     }
