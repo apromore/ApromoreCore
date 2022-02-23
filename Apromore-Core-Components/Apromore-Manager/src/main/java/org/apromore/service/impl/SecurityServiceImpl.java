@@ -237,12 +237,23 @@ public class SecurityServiceImpl implements SecurityService {
 
   @Override
   public Role findRoleByName(String name) {
-    return roleRepo.findByName(name);
+      Role role = roleRepo.findByName(name);
+      if (role != null) {
+          //Load users in the role object
+          //@TODO: Use another way to load the users so we don't return an unused value.
+          role.getUsers().size();
+      }
+      return role;
   }
 
   @Override
   public Set<Role> findRolesByUser(User user) {
     return roleRepo.findByUser(user);
+  }
+
+  @Override
+  public Role updateRole(Role role) {
+    return roleRepo.saveAndFlush(role);
   }
 
   /**

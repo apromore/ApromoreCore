@@ -151,6 +151,12 @@ public interface SecurityService {
     Set<Role> findRolesByUser(User user);
 
     /**
+     * @param role an existing role with modifications
+     * @return the updated role
+     */
+    Role updateRole(Role role);
+
+    /**
      * Get a particular User by their email.
      * @param email the username of the user we are searching for.
      * @return the logged in User         
