@@ -293,6 +293,7 @@ public class SaveAsDialogController extends BaseController {
               containingFolderName);
 
       // Create draft version for new PMV
+      nativeStream.reset();
       mainController.getManagerService().createDraft(processId, processName,
               versionNumber, nativeType, nativeStream, userName);
 
