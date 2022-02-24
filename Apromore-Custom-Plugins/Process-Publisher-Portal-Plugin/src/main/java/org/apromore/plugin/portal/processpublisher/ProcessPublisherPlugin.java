@@ -27,7 +27,9 @@ import org.apromore.dao.model.User;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.portal.common.ItemHelpers;
+import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.MainController;
+import org.apromore.portal.model.PermissionType;
 import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.VersionSummaryType;
@@ -88,7 +90,9 @@ public class ProcessPublisherPlugin extends DefaultPortalPlugin implements Label
 
     @Override
     public Availability getAvailability() {
-        return config.isEnableModelPublish() ? Availability.AVAILABLE : Availability.UNAVAILABLE;
+        return config.isEnableModelPublish()
+            && UserSessionManager.getCurrentUser() .hasAnyPermission(PermissionType.PUBLISH_MODELS)
+            ? Availability.AVAILABLE : Availability.UNAVAILABLE;
     }
 
     @Override
