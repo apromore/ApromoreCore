@@ -91,7 +91,7 @@ public class ProcessPublisherPlugin extends DefaultPortalPlugin implements Label
     @Override
     public Availability getAvailability() {
         return config.isEnableModelPublish()
-            && UserSessionManager.getCurrentUser() .hasAnyPermission(PermissionType.PUBLISH_MODELS)
+            && UserSessionManager.getCurrentUser().hasAnyPermission(PermissionType.PUBLISH_MODELS)
             ? Availability.AVAILABLE : Availability.UNAVAILABLE;
     }
 
