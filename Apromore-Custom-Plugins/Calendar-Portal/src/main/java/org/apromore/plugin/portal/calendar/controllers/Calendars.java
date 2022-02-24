@@ -175,6 +175,7 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
                 // propagate to session queue (other tabs/plugins)
                 CalendarModel calendarItem = (CalendarModel) event.getData();
                 Long calendarId = calendarItem.getId();
+                appliedCalendarId = calendarId;
                 List<Integer> logIds = getAssociatedLogIds(calendarId);
                 sessionCalendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_CHANGED, null, calendarId));
                 sessionCalendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_REFRESH, null, logIds));
@@ -183,6 +184,9 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
                 CalendarModel calendarItem = (CalendarModel) event.getData();
                 Long calendarId = calendarItem.getId();
                 List<Integer> logIds = getAssociatedLogIds(calendarId);
+                if (logId != null && logIds.contains(logId)) {
+                    appliedCalendarId = null;
+                }
                 sessionCalendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_REMOVE, null, calendarId));
                 sessionCalendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_UNLINK, null, logIds));
                 removeCalendar(calendarItem);
@@ -207,11 +211,10 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
             calendarListModel.add(model);
             if (model.getId().equals(appliedCalendarId)) {
                 calendarListModel.addToSelection(model);
-                applyCalendarBtn.setDisabled(!canEdit);
-                restoreBtn.setDisabled(!canEdit);
             }
         }
         calendarListbox.setModel(calendarListModel);
+        updateButtons();
     }
 
     private void applyCalendarForLog(Integer logId, Long calendarId) {
@@ -258,10 +261,6 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
             if (calendarItem.getId().equals(appliedCalendarId)) {
                 appliedCalendarId = null;
             }
-            updateApplyCalendarButton();
-            restoreBtn.setDisabled(
-                !canEdit || calendarService.getCalendars().stream().noneMatch(c -> c.getId().equals(appliedCalendarId))
-            );
         } catch (Exception e) {
             String msg = getLabels().getString("failed_remove_cal_message");
             LOGGER.error(msg, e);
@@ -298,7 +297,6 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
             model = calendarService.createBusinessCalendar(calendarName, username, true,
                 ZoneId.systemDefault().toString());
             populateCalendarList();
-            updateApplyCalendarButton();
             Long calendarId = model.getId();
             try {
                 Map<String, Object> arg = new HashMap<>();
@@ -334,7 +332,6 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
                     calendarService.createBusinessCalendar(calendarName, username, true,
                         ZoneId.systemDefault().toString());
                 populateCalendarList();
-                updateApplyCalendarButton();
                 arg.put(CALENDAR_ID_CONST, model.getId());
                 arg.put(IS_NEW_CONST, true);
             } catch (CalendarAlreadyExistsException e) {
@@ -376,7 +373,7 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
 
     @Listen("onSelect = #calendarListbox")
     public void onSelectCalendarItem() {
-        updateApplyCalendarButton();
+        updateButtons();
     }
 
     @Listen("onClick = #restoreBtn")
@@ -390,8 +387,11 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
         Notification.info(infoText);
     }
 
-    private void updateApplyCalendarButton() {
+    private void updateButtons() {
         applyCalendarBtn.setDisabled(calendarListbox.getSelectedCount() <= 0 || !canEdit);
+        restoreBtn.setDisabled(
+            !canEdit || appliedCalendarId == null || calendarService.getCalendars().stream().noneMatch(c -> c.getId().equals(appliedCalendarId))
+        );
     }
 
 }
