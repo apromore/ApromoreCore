@@ -1940,3 +1940,50 @@ databaseChangeLog:
         - delete:
             tableName: custom_calendar
             where: created_by IS NULL OR owner IS NULL
+  - changeSet:
+      id: 20220224112500
+      author: janeh
+      comment: "add publish model permission"
+      changes:
+        - insert:
+            tableName: permission
+            columns:
+              - column:
+                  name: id
+                  value: "24"
+              - column:
+                  name: row_guid
+                  value: "607b5dfe-9508-11ec-b909-0242ac120002"
+              - column:
+                  name: permission_name
+                  value: "Publish models"
+              - column:
+                  name: permission_description
+                  value: "Create and revoke publish model links"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "1"
+              - column:
+                  name: permissionid
+                  value: "24"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "4"
+              - column:
+                  name: permissionid
+                  value: "24"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "6"
+              - column:
+                  name: permissionid
+                  value: "24"

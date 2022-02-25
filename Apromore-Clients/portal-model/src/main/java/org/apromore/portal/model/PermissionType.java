@@ -55,6 +55,7 @@ public enum PermissionType {
     DASH_VIEW("9eabfb63-8e39-4e03-803d-c94dbe431059", "View dashboards"),
     MERGE_MODELS("7e1f8cc2-7532-406c-b106-3bf7095047dc", "Merge models"),
     SEARCH_MODELS("7c0f5dc2-7d39-456e-b1cb-139bb030ee98", "Search similar models"),
+    PUBLISH_MODELS("607b5dfe-9508-11ec-b909-0242ac120002", "Publish models"),
     UNREGISTERED("", "");
 
     protected String id;

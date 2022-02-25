@@ -179,6 +179,9 @@
           if (!${arg.availableSimulateModelPlugin}) {
             disabledPlugins.push(Apromore.I18N.SimulationPanel.simulateModel);
           }
+          if (!${arg.availablePublishModelPlugin}) {
+            disabledPlugins.push(Apromore.I18N.Share.publish);
+          }
           var isEditorSaving = false;
 
           createEditor = async function (bpmnXML) {
