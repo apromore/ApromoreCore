@@ -35,16 +35,16 @@
           </div>
           <div sclass="ap-edition">${arg.edition}</div>
           <div sclass="ap-version">Version: ${arg.version}</div>
-          <div sclass="ap-copyright">Copyright 2019-2021, ${arg.holder}</div>
+          <div sclass="ap-copyright">Copyright 2019-2022, ${arg.holder}</div>
           <div>
             ${arg.detail}
           </div>
         </vlayout>
-        <space vflex="10"/>
+        <space vflex="10" />
       </tabpanel>
     </tabpanels>
   </tabbox>
   <div align="right" style="padding: 10px;">
-    <button id="ok" label="OK" iconSclass="z-icon-check-circle"/>
+    <button id="ok" label="OK" iconSclass="z-icon-check-circle" />
   </div>
 </window>
