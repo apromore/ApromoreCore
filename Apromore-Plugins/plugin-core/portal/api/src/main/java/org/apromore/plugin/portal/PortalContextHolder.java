@@ -22,8 +22,6 @@
 
 package org.apromore.plugin.portal;
 
-import java.util.HashMap;
-import java.util.Map;
 import org.slf4j.Logger;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
