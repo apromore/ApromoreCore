@@ -109,7 +109,8 @@ public class CostTableController extends DataListController {
                 persistCostTable();
                 costTableWindow.detach();
                 costTableWindow = null;
-                Messagebox.show("You need to reload the page",
+                Messagebox.show(
+                    parent.getLabel("costTableUpdated_message"),
                     new Messagebox.Button[] {Messagebox.Button.OK, Messagebox.Button.CANCEL},
                     (ev) -> {
                         if (Messagebox.ON_OK.equals(ev.getName())) {
