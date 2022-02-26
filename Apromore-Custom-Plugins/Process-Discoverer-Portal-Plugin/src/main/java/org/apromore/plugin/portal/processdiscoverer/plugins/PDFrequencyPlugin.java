@@ -104,7 +104,7 @@ public class PDFrequencyPlugin extends PDAbstractPlugin implements PDPluginAPI {
             Sessions.getCurrent().setAttribute("processService", processService);
             Sessions.getCurrent().setAttribute("logFilterPlugin", logFilterPlugin);
             Sessions.getCurrent().setAttribute("logAnimationService", logAnimationService);
-           // Clients.evalJavaScript("window.open('processdiscoverer/zul/processDiscoverer.zul?id=" + this.getSessionId() + "')");
+
             Clients.evalJavaScript("window.open('processdiscoverer/zul/processDiscoverer.zul?id=" + this.getSessionId() + "&REFER_ID="+
                 Executions.getCurrent().getDesktop().getId()+"')");
         } catch (Exception e) {

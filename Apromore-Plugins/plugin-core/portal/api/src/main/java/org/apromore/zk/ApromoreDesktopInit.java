@@ -36,7 +36,7 @@ public class ApromoreDesktopInit implements DesktopInit {
 
         if (desktop.getExecution().getParameterMap().containsKey("REFER_ID")) {
             try {
-                String referId = ((String[]) desktop.getExecution().getParameterMap().get("REFER_ID"))[0];
+                String referId = (desktop.getExecution().getParameterMap().get("REFER_ID"))[0];
                 desktop.setAttribute("PORTAL_REF_ID", referId);
                 LOGGER.info("New Desktop Created with REFER_ID:{}", referId);
             } catch (Exception ex) {

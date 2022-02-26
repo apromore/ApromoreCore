@@ -260,8 +260,7 @@ public class MainController extends BaseController implements MainControllerInte
             controller = this;
             MainController self = this;
 
-//            Sessions.getCurrent().setAttribute("portalContext", portalContext);
-            // It will be set from one place
+            // portalContext_ will be set from one place
             Sessions.getCurrent().setAttribute("portalContext_" + this.mainComponent.getDesktop().getId(), portalContext);
             //We are keeping it's own ID to retrieve the portal context from anywhere of the portal
             this.mainComponent.getDesktop().setAttribute("PORTAL_REF_ID",this.mainComponent.getDesktop().getId());

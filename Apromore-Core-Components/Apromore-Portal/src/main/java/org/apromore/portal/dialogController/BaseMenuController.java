@@ -141,9 +141,7 @@ public class BaseMenuController extends SelectorComposer<Menubar> {
         String label = plugin.getLabel(Locale.getDefault());
         item.setLabel(label);
         item.setDisabled(plugin.getAvailability() == PortalPlugin.Availability.DISABLED);
-        item.addEventListener(ON_CLICK, event -> {
-                plugin.execute(PortalContextHolder.getActivePortalContext());
-            });
+        item.addEventListener(ON_CLICK, event -> plugin.execute(PortalContextHolder.getActivePortalContext()));
         popup.appendChild(item);
     }
 

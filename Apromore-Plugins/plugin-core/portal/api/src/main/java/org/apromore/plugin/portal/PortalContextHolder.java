@@ -32,14 +32,19 @@ import org.zkoss.zk.ui.Sessions;
 
 public final class PortalContextHolder {
 	private static final Logger LOGGER = PortalLoggerFactory.getLogger(PortalContextHolder.class);
+	private static final String PORTAL_CONTEXT="portalContext_";
+
+	private PortalContextHolder(){
+		//Nothing
+	}
 
 	public static PortalContext getActivePortalContext() {
 		PortalContext portalContext=null;
 		try {
 			String referId=getReferId();
 			Session current = Sessions.getCurrent();
-			if (current!=null && referId!=null && current.getAttribute("portalContext_"+referId) != null) {
-				portalContext=(PortalContext) current.getAttribute("portalContext_"+referId);
+			if (current!=null && referId!=null && current.getAttribute(PORTAL_CONTEXT+referId) != null) {
+				portalContext=(PortalContext) current.getAttribute(PORTAL_CONTEXT+referId);
 			}
 		} catch (Exception ex) {
 			LOGGER.error("Error in retrieving PortalContext", ex);
@@ -58,27 +63,11 @@ public final class PortalContextHolder {
 		return portalRef;
 	}
 
-	public static void addNewPortalContextReference(String key, String referenceId) {
-		try {
-			Session current = Sessions.getCurrent();
-			Map map = null;
-			if (current.getAttribute("REF_PARENT") != null) {
-				map = (Map<String, String>) current.getAttribute("REF_PARENT");
-			} else {
-				map = new HashMap<>();
-			}
-			map.put(key, referenceId);
-			current.setAttribute("REF_PARENT", map);
-		} catch (Exception ex) {
-			LOGGER.error("Error in creating portalContext reference", ex);
-		}
-	}
-
 	public static void removePortalContextReference(Desktop desktop) {
 		try {
 			Session session = Executions.getCurrent().getSession();
-			if (session.getAttribute("portalContext_" + desktop.getId()) != null) {
-				session.removeAttribute("portalContext_" + desktop.getId());
+			if (session.getAttribute(PORTAL_CONTEXT + desktop.getId()) != null) {
+				session.removeAttribute(PORTAL_CONTEXT + desktop.getId());
 				LOGGER.info("Successfully removed from session with ID:{}",desktop.getId());
 			}
 		} catch (Exception ex) {

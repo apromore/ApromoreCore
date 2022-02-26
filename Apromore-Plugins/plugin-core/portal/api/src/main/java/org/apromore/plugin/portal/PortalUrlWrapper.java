@@ -25,6 +25,9 @@ package org.apromore.plugin.portal;
 import org.zkoss.zk.ui.Executions;
 
 public class PortalUrlWrapper {
+    private PortalUrlWrapper(){
+
+    }
     public static String getUrlWithReference(String url) {
         if (url == null || url.isEmpty()) {
             return "";
