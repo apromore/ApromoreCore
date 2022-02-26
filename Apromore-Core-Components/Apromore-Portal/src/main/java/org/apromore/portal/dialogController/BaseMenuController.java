@@ -30,7 +30,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.base.Strings;
 import org.apromore.manager.client.ManagerService;
-import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.PortalContextHolder;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.portal.common.LabelConstants;
@@ -46,7 +46,6 @@ import org.apromore.service.EventLogService;
 import org.slf4j.Logger;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.util.resource.Labels;
-import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
@@ -143,9 +142,7 @@ public class BaseMenuController extends SelectorComposer<Menubar> {
         item.setLabel(label);
         item.setDisabled(plugin.getAvailability() == PortalPlugin.Availability.DISABLED);
         item.addEventListener(ON_CLICK, event -> {
-                PortalContext portalContext =
-                        (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
-                plugin.execute(portalContext);
+                plugin.execute(PortalContextHolder.getActivePortalContext());
             });
         popup.appendChild(item);
     }
@@ -246,9 +243,7 @@ public class BaseMenuController extends SelectorComposer<Menubar> {
     }
 
     private BaseListboxController getBaseListboxController() {
-        PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
-        MainController mainController = (MainController) portalContext.getMainController();
-
+        MainController mainController = (MainController) PortalContextHolder.getActivePortalContext().getMainController();
         return mainController.getBaseListboxController();
     }
 

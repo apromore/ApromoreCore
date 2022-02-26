@@ -46,6 +46,7 @@ import javax.inject.Inject;
 import org.apromore.apmlog.APMLog;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.PortalContextHolder;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.portal.common.UserSessionManager;
@@ -151,7 +152,7 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin implements Labe
    *
    * @throws InterruptedException
    * @throws SuspendNotAllowedException
-   * @throws org.apromore.portal.exception.ExceptionFormats
+   * @throws ExceptionFormats
    */
   protected void exportProcessModel(MainController mainC, PortalContext portalContext)
       throws SuspendNotAllowedException, InterruptedException, ExceptionFormats, ParseException {
@@ -227,6 +228,7 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin implements Labe
       Button cancelButton = (Button) window.getFellow("cancelButton");
       cancelButton.addEventListener("onClick", new EventListener<Event>() {
         @Override
+
         public void onEvent(Event event) throws Exception {
           window.invalidate();
           window.detach();
@@ -240,7 +242,6 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin implements Labe
   }
 
     private void callParquetLogsToDownload(MainController mainController, String encoding) {
-        PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
         try {
             List<Integer> selectedLogs =
                 mainController.getSelectedElements().stream().map(SummaryType::getId).collect(Collectors.toList());
@@ -248,7 +249,7 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin implements Labe
             Sessions.getCurrent().setAttribute("encodingLogParquet", encoding);
             PortalPlugin plugin = PortalPluginResolver.getPortalPluginMap().get(PluginCatalog.PLUGIN_PARQUET_DOWNLOAD);
             if (plugin != null) {
-                plugin.execute(portalContext);
+                plugin.execute(PortalContextHolder.getActivePortalContext());
             }
         } catch (Exception e) {
             LOGGER.error(Labels.getLabel("Failed to open ParquetExporter window"), e);
@@ -320,7 +321,7 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin implements Labe
    *
    * @throws InterruptedException
    * @throws SuspendNotAllowedException
-   * @throws org.apromore.portal.exception.ExceptionFormats
+   * @throws ExceptionFormats
    */
   protected void exportXES(LogSummaryType logSummary, MainController mainController)
       throws Exception {

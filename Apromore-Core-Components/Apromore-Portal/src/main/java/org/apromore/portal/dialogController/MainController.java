@@ -70,6 +70,7 @@ import org.apromore.portal.model.UserType;
 import org.apromore.portal.model.UsernamesType;
 import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.portal.util.StreamUtil;
+import org.apromore.zk.ApromoreDesktopCleanup;
 import org.slf4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -259,7 +260,12 @@ public class MainController extends BaseController implements MainControllerInte
             controller = this;
             MainController self = this;
 
-            Sessions.getCurrent().setAttribute("portalContext", portalContext);
+//            Sessions.getCurrent().setAttribute("portalContext", portalContext);
+            // It will be set from one place
+            Sessions.getCurrent().setAttribute("portalContext_" + this.mainComponent.getDesktop().getId(), portalContext);
+            //We are keeping it's own ID to retrieve the portal context from anywhere of the portal
+            this.mainComponent.getDesktop().setAttribute("PORTAL_REF_ID",this.mainComponent.getDesktop().getId());
+            this.mainComponent.getDesktop().addListener(new ApromoreDesktopCleanup());
 
             this.breadCrumbs.addEventListener("onSelectFolder", new EventListener<Event>() {
                 @Override
@@ -301,7 +307,6 @@ public class MainController extends BaseController implements MainControllerInte
             // UserSessionManager data
             // UserSessionManager.initializeUser(getService(), config);
             switchToProcessSummaryView();
-            UserSessionManager.setMainController(this);
             pagingandbuttons.setVisible(true);
 
             mainW.addEventListener("onCtrlPress", new EventListener<Event>() {

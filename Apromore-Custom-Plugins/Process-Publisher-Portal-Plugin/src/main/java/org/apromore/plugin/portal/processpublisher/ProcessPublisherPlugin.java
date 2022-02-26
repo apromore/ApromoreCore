@@ -26,6 +26,7 @@ import org.apromore.dao.model.ProcessPublish;
 import org.apromore.dao.model.User;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.PortalContextHolder;
 import org.apromore.portal.common.ItemHelpers;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.MainController;
@@ -42,7 +43,6 @@ import org.springframework.stereotype.Component;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.metainfo.PageDefinition;
 import org.zkoss.zul.Window;
 
@@ -168,8 +168,7 @@ public class ProcessPublisherPlugin extends DefaultPortalPlugin implements Label
 
     private boolean isPublished() {
         try {
-            PortalContext portalContext = (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
-            ProcessSummaryType process = getSelectedModelFromPortalContext(portalContext);
+            ProcessSummaryType process = getSelectedModelFromPortalContext(PortalContextHolder.getActivePortalContext());
             ProcessPublish processPublishDetails = processPublishService.getPublishDetails(process.getId());
             return processPublishDetails !=null && processPublishDetails.isPublished();
         } catch (Exception e) {

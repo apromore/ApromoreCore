@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.PortalPlugin;
+import org.apromore.plugin.portal.PortalUrlWrapper;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.dialogController.PopupMenuController;
@@ -125,7 +126,7 @@ public class DashboardPopupLogSubMenuController extends PopupLogSubMenuControlle
                 Sessions.getCurrent().setAttribute("logSummaries", Collections.singletonList(logSummaryType));
                 Sessions.getCurrent()
                     .setAttribute("userMetadata_dash", userMetaDataUtilService.getUserMetaDataById(umData.getId()));
-                Clients.evalJavaScript("window.open('dashboard/index.zul')");
+                Clients.evalJavaScript("window.open('" + PortalUrlWrapper.getUrlWithReference("dashboard/index.zul")+"')");
             } catch (Exception e) {
                 LOGGER.error("Error in showing the Dashboard", e);
             }

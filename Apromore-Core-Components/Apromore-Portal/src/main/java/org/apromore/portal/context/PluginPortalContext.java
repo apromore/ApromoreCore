@@ -45,7 +45,7 @@ import org.apromore.portal.model.VersionSummaryType;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.Session;
+import org.zkoss.zk.ui.Sessions;
 
 /**
  * Implementation of the PortalContext that is use by portal plug-ins to communicate with the portal.
@@ -132,11 +132,16 @@ public class PluginPortalContext implements PortalContext {
      */
     @Override
     public UserType getCurrentUser() {
+        //If parent window is closed, then below code block gives nullpointer
         //return UserSessionManager.getCurrentUser();
-    	Desktop desktop = mainController.getDesktop();
-        Session session = desktop.getSession();
-        UserType userType = (UserType) session.getAttribute(UserSessionManager.USER);
-    	return userType;
+        //Desktop desktop = mainController.getDesktop();
+        //Session session = desktop.getSession();
+
+        UserType userType = UserSessionManager.getCurrentUser();
+        if (UserSessionManager.getCurrentUser() == null) {
+            userType = (UserType) Sessions.getCurrent().getAttribute(UserSessionManager.USER);
+        }
+        return userType;
     }
     
     /**
