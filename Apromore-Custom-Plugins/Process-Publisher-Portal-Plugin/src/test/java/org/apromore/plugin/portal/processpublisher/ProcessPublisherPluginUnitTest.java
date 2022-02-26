@@ -40,11 +40,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatcher;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.zkoss.util.resource.Labels;
@@ -81,6 +79,7 @@ public class ProcessPublisherPluginUnitTest {
     MockedStatic<Labels> labelsMockedStatic = mockStatic(Labels.class);
     MockedStatic<Sessions> sessionsMockedStatic = mockStatic(Sessions.class);
     MockedStatic<UserSessionManager> userSessionManagerMockedStatic = mockStatic(UserSessionManager.class);
+    MockedStatic<PortalContextHolder> portalContextHolderMockedStatic = mockStatic(PortalContextHolder.class);
 
     @Before
     public void setup() {
@@ -92,6 +91,7 @@ public class ProcessPublisherPluginUnitTest {
         labelsMockedStatic.close();
         sessionsMockedStatic.close();
         userSessionManagerMockedStatic.close();
+        portalContextHolderMockedStatic.close();
     }
 
     @Test
@@ -195,7 +195,7 @@ public class ProcessPublisherPluginUnitTest {
         selectedProcessVersions.put(processSummaryType, new ArrayList<>());
 
         sessionsMockedStatic.when(() -> Sessions.getCurrent()).thenReturn(session);
-        when(PortalContextHolder.getActivePortalContext()).thenReturn(portalContext);
+        portalContextHolderMockedStatic.when(() -> PortalContextHolder.getActivePortalContext()).thenReturn(portalContext);
         when(portalContext.getMainController()).thenReturn(mainController);
         when(mainController.getSelectedElementsAndVersions()).thenReturn(selectedProcessVersions);
         when(processPublishService.getPublishDetails(1)).thenReturn(null);
@@ -211,7 +211,7 @@ public class ProcessPublisherPluginUnitTest {
         selectedProcessVersions.put(processSummaryType, new ArrayList<>());
 
         sessionsMockedStatic.when(() -> Sessions.getCurrent()).thenReturn(session);
-        when(PortalContextHolder.getActivePortalContext()).thenReturn(portalContext);
+        portalContextHolderMockedStatic.when(() -> PortalContextHolder.getActivePortalContext()).thenReturn(portalContext);
         when(portalContext.getMainController()).thenReturn(mainController);
         when(mainController.getSelectedElementsAndVersions()).thenReturn(selectedProcessVersions);
         when(processPublishService.getPublishDetails(1)).thenReturn(processPublish);
@@ -228,7 +228,7 @@ public class ProcessPublisherPluginUnitTest {
         selectedProcessVersions.put(processSummaryType, new ArrayList<>());
 
         sessionsMockedStatic.when(() -> Sessions.getCurrent()).thenReturn(session);
-        when(PortalContextHolder.getActivePortalContext()).thenReturn(portalContext);
+        portalContextHolderMockedStatic.when(() -> PortalContextHolder.getActivePortalContext()).thenReturn(portalContext);
         when(portalContext.getMainController()).thenReturn(mainController);
         when(mainController.getSelectedElementsAndVersions()).thenReturn(selectedProcessVersions);
         when(processPublishService.getPublishDetails(1)).thenReturn(processPublish);
