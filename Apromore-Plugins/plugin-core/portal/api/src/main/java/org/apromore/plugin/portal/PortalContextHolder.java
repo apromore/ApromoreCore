@@ -33,7 +33,7 @@ public final class PortalContextHolder {
 	private static final String PORTAL_CONTEXT="portalContext_";
 
 	private PortalContextHolder(){
-		//Nothing
+
 	}
 
 	public static PortalContext getActivePortalContext() {
