@@ -467,6 +467,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
     List<EditorPlugin> editorPlugins = EditorPluginResolver.resolve("bpmnEditorPlugins");
     param.put("plugins", editorPlugins);
     param.put("availableSimulateModelPlugin", false);
+    param.put("availablePublishModelPlugin", false);
     param.put("bpmnioLib", BPMNIO_MODELER_JS);
     param.put("isPublished", true);
     param.put("viewOnly", true);
