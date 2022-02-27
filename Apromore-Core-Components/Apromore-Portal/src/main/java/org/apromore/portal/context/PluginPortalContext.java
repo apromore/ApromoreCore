@@ -45,7 +45,6 @@ import org.apromore.portal.model.VersionSummaryType;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.Sessions;
 
 /**
  * Implementation of the PortalContext that is use by portal plug-ins to communicate with the portal.
@@ -136,12 +135,7 @@ public class PluginPortalContext implements PortalContext {
         //return UserSessionManager.getCurrentUser();
         //Desktop desktop = mainController.getDesktop();
         //Session session = desktop.getSession();
-
-        UserType userType = UserSessionManager.getCurrentUser();
-        if (UserSessionManager.getCurrentUser() == null) {
-            userType = (UserType) Sessions.getCurrent().getAttribute(UserSessionManager.USER);
-        }
-        return userType;
+        return UserSessionManager.getCurrentUser();
     }
     
     /**
