@@ -36,6 +36,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.PortalContexts;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.portal.common.ItemHelpers;
@@ -60,7 +61,6 @@ import org.slf4j.Logger;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zul.Menuitem;
@@ -663,6 +663,6 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
     }
 
     private PortalContext getPortalContext() {
-        return (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
+        return PortalContexts.getActivePortalContext();
     }
 }
