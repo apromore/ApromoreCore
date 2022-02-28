@@ -41,8 +41,8 @@ export default class Attachment {
             'functionality': this.toggleAttachment.bind(this),
             'icon': this.getIcon(),
             'description': this.getDescription(),
-            'index': 1,
-            'groupOrder': 5
+            'index': 4,
+            'groupOrder': 2
         });
 
     }
