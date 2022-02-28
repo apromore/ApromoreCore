@@ -34,7 +34,7 @@ public class ApromoreDesktopCleanup implements DesktopCleanup {
 
     @Override
     public void cleanup(Desktop desktop) throws Exception {
-        LOGGER.info("Desktop cleanup happening with desktop ID:{} " , desktop.getId());
+        LOGGER.info("Desktop cleanup happening with desktop ID:{} ", desktop.getId());
         PortalContextHolder.removePortalContextReference(desktop);
     }
 }

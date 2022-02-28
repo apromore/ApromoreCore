@@ -22,21 +22,28 @@
 
 package org.apromore.plugin.portal;
 
+import java.net.URI;
+import org.slf4j.Logger;
 import org.zkoss.zk.ui.Executions;
 
 public class PortalUrlWrapper {
-    private PortalUrlWrapper(){
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(PortalUrlWrapper.class);
+
+    private PortalUrlWrapper() {
 
     }
-    public static String getUrlWithReference(String url) {
-        if (url == null || url.isEmpty()) {
-            return "";
-        } else if (url.contains("?") || url.contains("=")) {
-            url += "&REFER_ID=" + Executions.getCurrent().getDesktop().getId();
-        }else{
-            url += "?REFER_ID=" + Executions.getCurrent().getDesktop().getId();
-        }
 
+    public static String getUrlWithReference(String url) {
+        try {
+            URI uri = new URI(url);
+            if (uri.getQuery() == null) {
+                url += "?REFER_ID=" + Executions.getCurrent().getDesktop().getId();
+            } else {
+                url += "&REFER_ID=" + Executions.getCurrent().getDesktop().getId();
+            }
+        } catch (Exception ex) {
+            LOGGER.error("Invalid URL", ex);
+        }
         return url;
     }
 }

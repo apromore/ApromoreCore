@@ -131,10 +131,6 @@ public class PluginPortalContext implements PortalContext {
      */
     @Override
     public UserType getCurrentUser() {
-        //If parent window is closed, then below code block gives nullpointer
-        //return UserSessionManager.getCurrentUser();
-        //Desktop desktop = mainController.getDesktop();
-        //Session session = desktop.getSession();
         return UserSessionManager.getCurrentUser();
     }
     

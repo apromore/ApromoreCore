@@ -29,47 +29,48 @@ import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.Sessions;
 
 public final class PortalContextHolder {
-	private static final Logger LOGGER = PortalLoggerFactory.getLogger(PortalContextHolder.class);
-	private static final String PORTAL_CONTEXT="portalContext_";
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(PortalContextHolder.class);
+    private static final String PORTAL_CONTEXT = "portalContext_";
 
-	private PortalContextHolder(){
+    private PortalContextHolder() {
 
-	}
+    }
 
-	public static PortalContext getActivePortalContext() {
-		PortalContext portalContext=null;
-		try {
-			String referId=getReferId();
-			Session current = Sessions.getCurrent();
-			if (current!=null && referId!=null && current.getAttribute(PORTAL_CONTEXT+referId) != null) {
-				portalContext=(PortalContext) current.getAttribute(PORTAL_CONTEXT+referId);
-			}
-		} catch (Exception ex) {
-			LOGGER.error("Error in retrieving PortalContext", ex);
-		}
-		return portalContext;
-	}
-	/*
-	 *	Using portal's reference id from the desktop scope, we will us it to retrieve the portalContext object from Session
-	 */
-	private static String getReferId() {
-		Desktop desktop = Executions.getCurrent().getDesktop();
-		String portalRef = null;
-		if (desktop.getAttribute("PORTAL_REF_ID") != null) {
-			portalRef = (String) desktop.getAttribute("PORTAL_REF_ID");
-		}
-		return portalRef;
-	}
+    public static PortalContext getActivePortalContext() {
+        PortalContext portalContext = null;
+        try {
+            String referId = getReferId();
+            Session current = Sessions.getCurrent();
+            if (current != null && referId != null && current.getAttribute(PORTAL_CONTEXT + referId) != null) {
+                portalContext = (PortalContext) current.getAttribute(PORTAL_CONTEXT + referId);
+            }
+        } catch (Exception ex) {
+            LOGGER.error("Error in retrieving PortalContext", ex);
+        }
+        return portalContext;
+    }
 
-	public static void removePortalContextReference(Desktop desktop) {
-		try {
-			Session session = Executions.getCurrent().getSession();
-			if (session.getAttribute(PORTAL_CONTEXT + desktop.getId()) != null) {
-				session.removeAttribute(PORTAL_CONTEXT + desktop.getId());
-				LOGGER.info("Successfully removed from session with ID:{}",desktop.getId());
-			}
-		} catch (Exception ex) {
-			LOGGER.error("Error in removing portalContext", ex);
-		}
-	}
+    /*
+     *	Using portal's reference id from the desktop scope, we will us it to retrieve the portalContext object from Session
+     */
+    private static String getReferId() {
+        Desktop desktop = Executions.getCurrent().getDesktop();
+        String portalRef = null;
+        if (desktop.getAttribute("PORTAL_REF_ID") != null) {
+            portalRef = (String) desktop.getAttribute("PORTAL_REF_ID");
+        }
+        return portalRef;
+    }
+
+    public static void removePortalContextReference(Desktop desktop) {
+        try {
+            Session session = Executions.getCurrent().getSession();
+            if (session.getAttribute(PORTAL_CONTEXT + desktop.getId()) != null) {
+                session.removeAttribute(PORTAL_CONTEXT + desktop.getId());
+                LOGGER.info("Successfully removed from session with ID:{}", desktop.getId());
+            }
+        } catch (Exception ex) {
+            LOGGER.error("Error in removing portalContext", ex);
+        }
+    }
 }
