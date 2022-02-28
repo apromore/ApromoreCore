@@ -32,7 +32,7 @@ import org.apromore.dao.model.Usermetadata;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.plugin.portal.FileImporterPlugin;
 import org.apromore.plugin.portal.PortalContext;
-import org.apromore.plugin.portal.PortalContextHolder;
+import org.apromore.plugin.portal.PortalContexts;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.logimporter.listener.LogImportListener;
 import org.apromore.service.UserMetadataService;
@@ -119,7 +119,7 @@ public class LogImporterFileImporterPlugin implements FileImporterPlugin {
     arg.put("logImporterProvider", logImporterProvider);
     arg.put("media", media);
     Sessions.getCurrent().setAttribute(LogImporterController.SESSION_ATTRIBUTE_KEY, arg);
-    PortalContext portalContext = PortalContextHolder.getActivePortalContext();
+    PortalContext portalContext = PortalContexts.getActivePortalContext();
     LogImportListener logImportListener = new LogImportListener(arg,
         (String) Sessions.getCurrent().getAttribute("fileimportertarget"), null, null);
     // Only works for CSV

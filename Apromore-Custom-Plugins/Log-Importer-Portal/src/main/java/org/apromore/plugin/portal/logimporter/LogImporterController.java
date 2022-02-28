@@ -31,7 +31,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apromore.dao.model.Log;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.plugin.portal.PortalContext;
-import org.apromore.plugin.portal.PortalContextHolder;
+import org.apromore.plugin.portal.PortalContexts;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.service.EventLogService;
 import org.apromore.service.UserMetadataService;
@@ -115,7 +115,7 @@ public class LogImporterController extends SelectorComposer<Window> implements C
     // Fields injected from the ZK session
     private Media media =
             (Media) ((Map) Sessions.getCurrent().getAttribute(SESSION_ATTRIBUTE_KEY)).get("media");
-    private PortalContext portalContext = PortalContextHolder.getActivePortalContext();
+    private PortalContext portalContext = PortalContexts.getActivePortalContext();
     private JSONObject mappingJSON =
             (JSONObject) ((Map) Sessions.getCurrent().getAttribute(SESSION_ATTRIBUTE_KEY))
                     .get("mappingJSON");

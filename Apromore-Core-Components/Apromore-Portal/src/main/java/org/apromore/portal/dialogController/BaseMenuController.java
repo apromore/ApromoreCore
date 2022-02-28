@@ -30,7 +30,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.base.Strings;
 import org.apromore.manager.client.ManagerService;
-import org.apromore.plugin.portal.PortalContextHolder;
+import org.apromore.plugin.portal.PortalContexts;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.portal.common.LabelConstants;
@@ -141,7 +141,7 @@ public class BaseMenuController extends SelectorComposer<Menubar> {
         String label = plugin.getLabel(Locale.getDefault());
         item.setLabel(label);
         item.setDisabled(plugin.getAvailability() == PortalPlugin.Availability.DISABLED);
-        item.addEventListener(ON_CLICK, event -> plugin.execute(PortalContextHolder.getActivePortalContext()));
+        item.addEventListener(ON_CLICK, event -> plugin.execute(PortalContexts.getActivePortalContext()));
         popup.appendChild(item);
     }
 
@@ -241,7 +241,7 @@ public class BaseMenuController extends SelectorComposer<Menubar> {
     }
 
     private BaseListboxController getBaseListboxController() {
-        MainController mainController = (MainController) PortalContextHolder.getActivePortalContext().getMainController();
+        MainController mainController = (MainController) PortalContexts.getActivePortalContext().getMainController();
         return mainController.getBaseListboxController();
     }
 

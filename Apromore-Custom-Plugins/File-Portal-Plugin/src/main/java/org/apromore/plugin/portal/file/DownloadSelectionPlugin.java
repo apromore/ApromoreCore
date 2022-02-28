@@ -46,7 +46,7 @@ import javax.inject.Inject;
 import org.apromore.apmlog.APMLog;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
-import org.apromore.plugin.portal.PortalContextHolder;
+import org.apromore.plugin.portal.PortalContexts;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.portal.common.UserSessionManager;
@@ -249,7 +249,7 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin implements Labe
             Sessions.getCurrent().setAttribute("encodingLogParquet", encoding);
             PortalPlugin plugin = PortalPluginResolver.getPortalPluginMap().get(PluginCatalog.PLUGIN_PARQUET_DOWNLOAD);
             if (plugin != null) {
-                plugin.execute(PortalContextHolder.getActivePortalContext());
+                plugin.execute(PortalContexts.getActivePortalContext());
             }
         } catch (Exception e) {
             LOGGER.error(Labels.getLabel("Failed to open ParquetExporter window"), e);

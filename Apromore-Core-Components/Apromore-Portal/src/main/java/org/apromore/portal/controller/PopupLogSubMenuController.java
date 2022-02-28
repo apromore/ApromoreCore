@@ -28,7 +28,7 @@ package org.apromore.portal.controller;
 
 import java.util.Map;
 import org.apromore.plugin.portal.PortalContext;
-import org.apromore.plugin.portal.PortalContextHolder;
+import org.apromore.plugin.portal.PortalContexts;
 import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.portal.controller.helper.UserMetaDataUtilService;
 import org.apromore.portal.context.PortalPluginResolver;
@@ -63,7 +63,7 @@ abstract class PopupLogSubMenuController {
     }
 
     protected PortalContext getPortalContext() {
-        return PortalContextHolder.getActivePortalContext();
+        return PortalContexts.getActivePortalContext();
     }
 
 }

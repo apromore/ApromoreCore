@@ -26,7 +26,7 @@ import org.apromore.dao.model.ProcessPublish;
 import org.apromore.dao.model.User;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
-import org.apromore.plugin.portal.PortalContextHolder;
+import org.apromore.plugin.portal.PortalContexts;
 import org.apromore.portal.common.ItemHelpers;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.MainController;
@@ -168,7 +168,7 @@ public class ProcessPublisherPlugin extends DefaultPortalPlugin implements Label
 
     private boolean isPublished() {
         try {
-            ProcessSummaryType process = getSelectedModelFromPortalContext(PortalContextHolder.getActivePortalContext());
+            ProcessSummaryType process = getSelectedModelFromPortalContext(PortalContexts.getActivePortalContext());
             ProcessPublish processPublishDetails = processPublishService.getPublishDetails(process.getId());
             return processPublishDetails !=null && processPublishDetails.isPublished();
         } catch (Exception e) {

@@ -40,7 +40,7 @@ import org.apromore.dao.model.Group.Type;
 import org.apromore.dao.model.Usermetadata;
 import org.apromore.dao.model.UsermetadataType;
 import org.apromore.plugin.portal.PortalContext;
-import org.apromore.plugin.portal.PortalContextHolder;
+import org.apromore.plugin.portal.PortalContexts;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.accesscontrol.model.Artifact;
 import org.apromore.plugin.portal.accesscontrol.model.Assignee;
@@ -707,7 +707,7 @@ public class AccessController extends SelectorComposer<Div> {
     destroy();
     Notification.info(getLabel("shareSuccess_message"));
 
-    PortalContext portalContext = PortalContextHolder.getActivePortalContext();
+    PortalContext portalContext = PortalContexts.getActivePortalContext();
     String username = portalContext.getCurrentUser().getUsername();
 
     EventQueue eqAccessRight =

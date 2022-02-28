@@ -22,7 +22,7 @@
 
 package org.apromore.zk;
 
-import org.apromore.plugin.portal.PortalContextHolder;
+import org.apromore.plugin.portal.PortalContexts;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.slf4j.Logger;
 import org.zkoss.zk.ui.Desktop;
@@ -35,6 +35,6 @@ public class ApromoreDesktopCleanup implements DesktopCleanup {
     @Override
     public void cleanup(Desktop desktop) throws Exception {
         LOGGER.info("Desktop cleanup happening with desktop ID:{} ", desktop.getId());
-        PortalContextHolder.removePortalContextReference(desktop);
+        PortalContexts.removePortalContextReference(desktop);
     }
 }

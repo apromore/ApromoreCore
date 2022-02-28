@@ -36,7 +36,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apromore.plugin.portal.PortalContext;
-import org.apromore.plugin.portal.PortalContextHolder;
+import org.apromore.plugin.portal.PortalContexts;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.portal.common.ItemHelpers;
@@ -663,6 +663,6 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
     }
 
     private PortalContext getPortalContext() {
-        return PortalContextHolder.getActivePortalContext();
+        return PortalContexts.getActivePortalContext();
     }
 }

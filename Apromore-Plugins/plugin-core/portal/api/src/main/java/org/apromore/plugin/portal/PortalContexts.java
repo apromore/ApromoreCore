@@ -28,11 +28,11 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.Sessions;
 
-public final class PortalContextHolder {
-    private static final Logger LOGGER = PortalLoggerFactory.getLogger(PortalContextHolder.class);
+public final class PortalContexts {
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(PortalContexts.class);
     private static final String PORTAL_CONTEXT = "portalContext_";
 
-    private PortalContextHolder() {
+    private PortalContexts() {
 
     }
 
