@@ -143,6 +143,9 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
         appliedCalendarId = (Long) Executions.getCurrent().getArg().get(CALENDAR_ID_CONST);
         logId = (Integer) Executions.getCurrent().getArg().get("logId");
         username = UserSessionManager.getCurrentUser().getUsername();
+        if (username == null) {
+            return;
+        }
         canEdit = (boolean) Executions.getCurrent().getArg().get(CAN_EDIT_CONST);
         canDelete = (boolean) Executions.getCurrent().getArg().get(CAN_DELETE_CONST);
         applyCalendarBtn.setDisabled(!canEdit);
@@ -390,7 +393,9 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
     private void updateButtons() {
         applyCalendarBtn.setDisabled(calendarListbox.getSelectedCount() <= 0 || !canEdit);
         restoreBtn.setDisabled(
-            !canEdit || appliedCalendarId == null || calendarService.getCalendars().stream().noneMatch(c -> c.getId().equals(appliedCalendarId))
+            !canEdit
+            || appliedCalendarId == null
+            || calendarService.getCalendars().stream().noneMatch(c -> c.getId().equals(appliedCalendarId))
         );
     }
 
