@@ -126907,43 +126907,80 @@ class Attachment {
 
     constructor (facade) {
         this.facade = facade;
-        this.btnId = 'ap-id-editor-attachment-btn';
-        this.state = true;
+        this.attachmentBtnId = 'ap-id-editor-attachment-btn';
+        this.commentBtnId = 'ap-id-editor-comment-btn';
+        this.attachmentState = true;
+        this.commentState = true;
 
         this.facade.offer({
-            'btnId': this.btnId,
+            'btnId': this.attachmentBtnId,
             'name': Apromore.I18N.Attachment.attachment,
             'functionality': this.toggleAttachment.bind(this),
-            'icon': this.getIcon(),
-            'description': this.getDescription(),
+            'icon': this.getAttachmentIcon(),
+            'description': this.getAttachmentDescription(),
             'index': 4,
+            'groupOrder': 2
+        });
+
+        this.facade.offer({
+            'btnId': this.commentBtnId,
+            'name': Apromore.I18N.Attachment.comment,
+            'functionality': this.toggleComment.bind(this),
+            'icon': this.getCommentIcon(),
+            'description': this.getCommentDescription(),
+            'index': 5,
             'groupOrder': 2
         });
 
     }
 
     toggleAttachment(factor) {
-            if (Apromore.BPMNEditor.Plugins.Attachment.toggle) {
-                this.state = !this.state;
-                Apromore.BPMNEditor.Plugins.Attachment.toggle();
-                this.onToggle();
-            }
+        if (Apromore.BPMNEditor.Plugins.Attachment.toggleAttachment) {
+            this.attachmentState = !this.attachmentState;
+            Apromore.BPMNEditor.Plugins.Attachment.toggleAttachment();
+            this.onAttachmentToggle();
+        }
     }
 
-    onToggle() {
-        let title = this.getDescription();
-        let icon = this.getIcon();
+    onAttachmentToggle() {
+        let title = this.getAttachmentDescription();
+        let icon = this.getAttachmentIcon();
 
-        $('#' + this.btnId + ' button').prop('title', title);
-        $('#' + this.btnId + ' button').css('background-image', 'url(' + icon + ')');
+        $('#' + this.attachmentBtnId + ' button').prop('title', title);
+        $('#' + this.attachmentBtnId + ' button').css('background-image', 'url(' + icon + ')');
     }
 
-    getDescription() {
-        return this.state ? window.Apromore.I18N.Attachment.hideDesc : window.Apromore.I18N.Attachment.showDesc;
+    toggleComment(factor) {
+        if (Apromore.BPMNEditor.Plugins.Attachment.toggleComment) {
+            this.commentState = !this.commentState;
+            Apromore.BPMNEditor.Plugins.Attachment.toggleComment();
+            this.onCommentToggle();
+        }
     }
 
-    getIcon() {
-        let iconUrl = this.state ? "images/ap/attachment-on.svg" : "images/ap/attachment-off.svg";
+    onCommentToggle() {
+        let title = this.getCommentDescription();
+        let icon = this.getCommentIcon();
+
+        $('#' + this.commentBtnId + ' button').prop('title', title);
+        $('#' + this.commentBtnId + ' button').css('background-image', 'url(' + icon + ')');
+    }
+
+    getAttachmentDescription() {
+        return this.attachmentState ? window.Apromore.I18N.Attachment.hideDesc : window.Apromore.I18N.Attachment.showDesc;
+    }
+
+    getAttachmentIcon() {
+        let iconUrl = this.attachmentState ? "images/ap/attachment-on.svg" : "images/ap/attachment-off.svg";
+        return _config__WEBPACK_IMPORTED_MODULE_0__["default"].PATH + iconUrl;
+    }
+
+    getCommentDescription() {
+        return this.commentState ? window.Apromore.I18N.Attachment.hideComments : window.Apromore.I18N.Attachment.showComments;
+    }
+
+    getCommentIcon() {
+        let iconUrl = this.commentState ? "images/ap/comments-on.svg" : "images/ap/comments-off.svg";
         return _config__WEBPACK_IMPORTED_MODULE_0__["default"].PATH + iconUrl;
     }
 };
