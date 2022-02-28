@@ -51212,7 +51212,7 @@ function removeSequenceFlows(bpmnFactory, elementRegistry) {
   }
 }
 
-function PropertiesProvider(eventBus, canvas, bpmnFactory, elementRegistry, translate, bpmnjs) {
+function PropertiesProvider(eventBus, canvas, bpmnFactory, elementRegistry, translate, bpmnjs, config) {
 
   PropertiesActivator.call(this, eventBus);
 
@@ -51225,7 +51225,7 @@ function PropertiesProvider(eventBus, canvas, bpmnFactory, elementRegistry, tran
     var gatewayTab = createGatewayTab(element, bpmnFactory, elementRegistry, translate);
     var intermediateAndBoundaryEventsTab = createIntermediateAndBoundaryEventsTab(element, bpmnFactory, elementRegistry, translate);
     var auxTab = createAuxTab(element, bpmnFactory, elementRegistry, translate, bpmnjs, eventBus);
-    var customTab = createCustomTab(element, bpmnFactory, elementRegistry, translate);
+    var customTab = createCustomTab(element, bpmnFactory, elementRegistry, translate, config);
 
     function getDefaultTabs() {
       return [customTab, auxTab, simulationParametersTab, taskTab, timetableTab, resourcesTab, gatewayTab, intermediateAndBoundaryEventsTab];
@@ -51287,7 +51287,8 @@ PropertiesProvider.$inject = [
   'bpmnFactory',
   'elementRegistry',
   'translate',
-  'bpmnjs'
+  'bpmnjs',
+  'config'
 ];
 
 inherits(PropertiesProvider, PropertiesActivator);
@@ -55596,16 +55597,23 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 var is = __webpack_require__(1).is,
     createCustomGroups = __webpack_require__(329);
 
-module.exports = function(element, bpmnFactory, elementRegistry, translate) {
+module.exports = function(element, bpmnFactory, elementRegistry, translate, config) {
 
   function shown(element) {
-    return is(element, 'bpmn:FlowNode') || is(element, 'bpmn:Process') ;
+    return is(element, 'bpmn:FlowNode') ||
+        is(element, 'bpmn:Process') ||
+        is(element, 'bpmn:DataObject') ||
+        is(element, 'bpmn:DataObjectReference') ||
+        is(element, 'bpmn:DataStoreReference') ||
+        is(element, 'bpmn:Participant') ||
+        is(element, 'bpmn:Collaboration') ||
+        is(element, 'bpmn:Lane');
   }
 
   return {
     id: 'customTab',
     label: translate('metadata.properties'),
-    groups: createCustomGroups(element, bpmnFactory, elementRegistry, translate),
+    groups: createCustomGroups(element, bpmnFactory, elementRegistry, translate, config),
     enabled: function(element) {
       return shown(element);
     }
@@ -55617,14 +55625,18 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 /* 329 */
 /***/ (function(module, exports, __webpack_require__) {
 
+var is = __webpack_require__(1).is;
 var getBusinessObject = __webpack_require__(1).getBusinessObject;
 var properties = __webpack_require__(330);
 
-module.exports = function(element, bpmnFactory, elementRegistry, translate) {
+module.exports = function(element, bpmnFactory, elementRegistry, translate, config) {
   var bo = getBusinessObject(element),
       groupId = ['bo', bo.get('id'), 'group'].join('-'),
       groupLabel = bo.name || bo.id;
 
+  if (is(element, 'bpmn:Process')) {
+    groupLabel = config.processName || 'untitled';
+  }
   var customGroup = {
     id : groupId,
     label: groupLabel,
@@ -113480,7 +113492,7 @@ function Comments(config, eventBus, overlays, bpmnjs) {
         e.preventDefault();
 
         var comment = $textarea.val();
-        console.log('config.username', config.username);
+        // console.log('config.username', config.username);
         if (comment) {
           addComment(element, config.username || '', comment);
           $textarea.val('');
