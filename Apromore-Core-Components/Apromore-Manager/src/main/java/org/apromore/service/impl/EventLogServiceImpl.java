@@ -745,7 +745,7 @@ public class EventLogServiceImpl implements EventLogService {
 		Set<Usermetadata> usermetadataSet = oldLog.getUsermetadataSet();
 		for (Usermetadata u : usermetadataSet) {
 			if (artifactTypes.contains(u.getUsermetadataType().getId())) {
-				Usermetadata newUm = userMetadataService.saveUserMetadata(u.getName(), u.getContent(),
+				userMetadataService.saveUserMetadata(u.getName(), u.getContent(),
 						UserMetadataTypeEnum.valueOf(u.getUsermetadataType().getType()), username, newLog.getId());
 				LOGGER.debug("Deep copy user metadata type:{} id:{} to new Log id:{} during copy",
 						u.getUsermetadataType().getType(),
