@@ -161,28 +161,27 @@ public class SimulationInfoService {
     protected double getInterArrivalTime(final SimulationData simulationData) {
         long startTimeMillis = simulationData.getStartTime();
         long endTimeMillis = simulationData.getEndTime();
+
+        /*
+         * CalendarModel.getDurationMillis() is not sensitive for time durations within the same day
+         * For inter work day (8 hours) time durations, simply use the difference
+         */
         long timeDiff = endTimeMillis - startTimeMillis;
 
-        if (timeDiff <= WORK_DAY_MILLIS) {
+        if (timeDiff > TimeUnit.DAYS.getNumberOfMilliseconds()) {
             /*
-             * CalendarModel.getDurationMillis() is not sensitive for time durations within the same day
-             * For inter work day (8 hours) time durations, simply use the difference
+             * For durations greater than a day, allow the CalendarModel to determine the duration based on
+             * the default (8 hour per work day) calendar
              */
-        } else if (timeDiff > WORK_DAY_MILLIS && timeDiff <= TimeUnit.DAYS.getNumberOfMilliseconds()) {
+            CalendarModel arrivalCalendar = new CalendarModelBuilder().with5DayWorking().build();
+            timeDiff = arrivalCalendar.getDurationMillis(startTimeMillis, endTimeMillis);
+        } else if (timeDiff > WORK_DAY_MILLIS) {
             /*
              * CalendarModel.getDurationMillis() is not sensitive for time durations within the same day
              * For time durations greater than a work day (8 hours) but within a 24 hour window,
              * use the 8 hour work day
              */
             timeDiff = WORK_DAY_MILLIS;
-
-        } else {
-            /*
-             * For ducations greater than a day, allow the CalendarModel to determine the duration based on
-             * the default (8 hour per work day) calendar
-             */
-            CalendarModel arrivalCalendar = new CalendarModelBuilder().with5DayWorking().build();
-            timeDiff = arrivalCalendar.getDurationMillis(startTimeMillis, endTimeMillis);
         }
 
         return timeDiff / (double) simulationData.getCaseCount();
