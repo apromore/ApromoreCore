@@ -99,27 +99,29 @@ public class TestHelper {
 
         if (includeTimetable) {
             builder.timetables(Arrays.asList(Timetable.builder()
-                    .id("A_DEFAULT_TIMETABLE_ID")
-                    .name("Arrival Timetable")
-                    .defaultTimetable(true)
-                    .rules(Arrays.asList(Rule.builder()
-                            .name("Default Timeslot")
-                            .id("DEF_RULE_ID")
-                            .fromWeekDay(DayOfWeek.SUNDAY)
-                            .toWeekDay(DayOfWeek.SATURDAY)
-                            .fromTime("10:00:00.000+00:00")
-                            .toTime("15:00:00.000+00:00")
-                        .build()))
+                .id("A_DEFAULT_TIMETABLE_ID")
+                .name("Arrival Timetable")
+                .defaultTimetable(true)
+                .rules(Arrays.asList(Rule.builder()
+                    .name("Default Timeslot")
+                    .id("DEF_RULE_ID")
+                    .fromWeekDay(DayOfWeek.SUNDAY)
+                    .toWeekDay(DayOfWeek.SATURDAY)
+                    .fromTime("10:00:00.000+00:00")
+                    .toTime("15:00:00.000+00:00")
+                    .build()))
                 .build()));
         }
 
         if (includeResource) {
-            builder.resources(Arrays.asList(Resource.builder()
-                .id("A_DEFAULT_RESOURCE_ID")
-                .name("The default resource name")
-                .timetableId("A_DEFAULT_TIMETABLE_ID")
-                .totalAmount(23)
-                .build()));
+            builder.resources(List.of(
+                Resource.builder()
+                    .id("QBP_1").name("Role_1").totalAmount(5).timetableId("A_DEFAULT_TIMETABLE_ID").build(),
+                Resource.builder()
+                    .id("QBP_2").name("Role_2").totalAmount(10).timetableId("A_DEFAULT_TIMETABLE_ID").build(),
+                Resource.builder()
+                    .id("QBP_3").name("Role_3").totalAmount(15).timetableId("A_DEFAULT_TIMETABLE_ID").build()
+            ));
         }
 
         if (includeGatewayProbabilities) {
@@ -127,7 +129,7 @@ public class TestHelper {
                 SequenceFlow.builder()
                     .elementId("edge2")
                     .executionProbability(.2025)
-                .build(),
+                    .build(),
                 SequenceFlow.builder()
                     .elementId("edge3")
                     .executionProbability(.3016)
@@ -149,10 +151,12 @@ public class TestHelper {
             .startTime(1577797200000L)
             .endTime(1580475600000L)
             .nodeWeights(Map.of("node1",34340.00, "node2", 56560.00, "node3", 89890.00))
+            .resourceCountByRole(Map.of("Role_1", 5, "Role_2", 10, "Role_3", 15))
+            .nodeIdToRoleName(Map.of("node1", "Role_1", "node2", "Role_2", "node3", "Role_3"))
             .edgeFrequencies(Map.of("node9", List.of(
-                        EdgeFrequency.builder().edgeId("edge2").frequency(2025).build(),
-                        EdgeFrequency.builder().edgeId("edge3").frequency(3016).build(),
-                        EdgeFrequency.builder().edgeId("edge4").frequency(4959).build())))
+                EdgeFrequency.builder().edgeId("edge2").frequency(2025).build(),
+                EdgeFrequency.builder().edgeId("edge3").frequency(3016).build(),
+                EdgeFrequency.builder().edgeId("edge4").frequency(4959).build())))
             .build();
         return simulationData;
     }

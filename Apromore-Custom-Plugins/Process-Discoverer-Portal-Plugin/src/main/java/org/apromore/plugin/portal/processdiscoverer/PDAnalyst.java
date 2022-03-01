@@ -54,6 +54,7 @@ import org.apromore.apmlog.filter.types.FilterType;
 import org.apromore.apmlog.filter.types.Inclusion;
 import org.apromore.apmlog.filter.types.OperationType;
 import org.apromore.apmlog.filter.types.Section;
+import org.apromore.apmlog.logobjects.ActivityInstance;
 import org.apromore.apmlog.stats.LogStatsAnalyzer;
 import org.apromore.apmlog.stats.TimeStatsProcessor;
 import org.apromore.apmlog.xes.XESAttributeCodes;
@@ -99,6 +100,7 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.ListIterable;
 import org.slf4j.Logger;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 
 /**
  * PDAnalyst represents a process analyst who will performs log analysis in the form of graphs and BPMN diagrams
@@ -143,9 +145,11 @@ public class PDAnalyst {
 
     @Getter
     String costAttribute = XESAttributeCodes.ORG_ROLE;
-    @Getter @Setter
+    @Getter
+    @Setter
     Map<String, Double> costTable;
-    @Getter @Setter
+    @Getter
+    @Setter
     String currency = "USD";
 
     private String caseVariantPerspective = XESAttributeCodes.CONCEPT_NAME;
@@ -184,7 +188,7 @@ public class PDAnalyst {
         if (indexableAttributes == null || indexableAttributes.isEmpty()) {
             throw new InvalidDataException(
                 "No perspective attributes could be found in the log with key in " + perspectiveAttKeys.toString() +
-                    " and number of distinct values is less than or equal to " + configData.getMaxNumberOfNodes());
+                " and number of distinct values is less than or equal to " + configData.getMaxNumberOfNodes());
         }
 
         this.originalAPMLog = apmLog;
@@ -669,77 +673,112 @@ public class PDAnalyst {
     public SimulationData getSimulationData(BPMNAbstraction bpmnAbstraction) {
         SimulationData simulationData = null;
         if (bpmnAbstraction != null) {
-            Map<String, Double> nodeDurationMap =
-                bpmnAbstraction.getDiagram().getNodes()
-                    .stream()
-                    .filter(Activity.class::isInstance)
-                    .collect(Collectors.toMap(
-                        node -> node.getId().toString(),
-                        node -> attLog.getGraphView().getNodeWeight(node.getLabel(),
-                                MeasureType.DURATION,
-                                MeasureAggregation.MEAN,
-                                MeasureRelation.ABSOLUTE)));
 
             simulationData = SimulationData.builder()
                 .caseCount(filteredPLog.getValidTraceIndexBS().cardinality())
-                .resourceCount(filteredPLog.getActivityInstances().stream()
-                    .filter(
-                        activityInstance -> activityInstance.getAttributes().containsKey(Constants.ATT_KEY_RESOURCE))
-                    .map(activityInstance -> activityInstance.getAttributes().get(Constants.ATT_KEY_RESOURCE))
-                    .collect(Collectors.toSet())
-                    .size())
+                .resourceCountByRole(getResourceCountsGroupedByRole())
+                .resourceCount(getTotalResourcesCount())
+                .nodeIdToRoleName(getRoleForNodeId(bpmnAbstraction))
                 .startTime(filteredAPMLog.getStartTime())
                 .endTime(filteredAPMLog.getEndTime())
-                .nodeWeights(nodeDurationMap)
+                .nodeWeights(getNodeWeights(bpmnAbstraction))
                 .edgeFrequencies(groupOutboundEdgeFrequenciesByGateway(bpmnAbstraction))
                 .build();
         }
         return simulationData;
     }
 
-    /**
-     * Converts a DFGAbstraction to a BPMNAbstraction so as to include arc weights for outgoing edges from gateways,
-     * which are only available in a BPMN model.
-     *
-     * @param abstraction the abstraction to be converted
-     * @return the BPMNAbstraction representation of the input abstraction
-     * @throws Exception in the event of a conversion error
-     */
-    public BPMNAbstraction convertToBpmnAbstractionForExport(@NonNull Abstraction abstraction)
-        throws InvalidDataException {
+    private Map<String, Double> getNodeWeights(BPMNAbstraction bpmnAbstraction) {
+        return bpmnAbstraction.getDiagram().getNodes()
+            .stream()
+            .filter(Activity.class::isInstance)
+            .collect(Collectors.toMap(
+                node -> node.getId().toString(),
+                node -> attLog.getGraphView().getNodeWeight(node.getLabel(),
+                    MeasureType.DURATION,
+                    MeasureAggregation.MEAN,
+                    MeasureRelation.ABSOLUTE)));
+    }
 
-        BPMNAbstraction bpmnAbstraction;
+    private long getTotalResourcesCount() {
+        return filteredPLog.getActivityInstances().stream()
+            .filter(
+                activityInstance -> activityInstance.getAttributes().containsKey(Constants.ATT_KEY_RESOURCE))
+            .map(activityInstance -> activityInstance.getAttributes().get(Constants.ATT_KEY_RESOURCE))
+            .collect(Collectors.toSet())
+            .size();
+    }
 
-        try {
-            if (abstraction instanceof AbstractAbstraction) {
-                AbstractAbstraction abstractAbstraction = (AbstractAbstraction) abstraction;
+    private Map<String, Integer> getResourceCountsGroupedByRole() {
+        Map<String, Set<String>> rolesToResourcesMap = new HashMap<>();
+        filteredPLog.getActivityInstances().stream()
+            .forEach(activityInstance -> {
 
-                // Forcing params for BPMN Export
-                AbstractionParams paramsForExport = abstraction.getAbstractionParams().clone();
-                paramsForExport.setPrimaryMeasure(MeasureType.FREQUENCY, MeasureAggregation.TOTAL, MeasureRelation.ABSOLUTE);
+                // Get the resource attribute (DEFAULT_RESOURCE if null or empty)
+                String resource = activityInstance.getResource();
+                if (ObjectUtils.isEmpty(resource)) {
+                    resource = SimulationData.DEFAULT_RESOURCE;
+                }
 
-                // Regenerating the DFGAbstraction to suite the above params
-                ProcessDiscoverer pdForExport = new ProcessDiscoverer();
-                Abstraction dfgAbstraction = pdForExport.generateDFGAbstraction(abstractAbstraction.getLog(), paramsForExport);
+                // Get the resource attribute (DEFAULT_ROLE if null or empty)
+                String role = activityInstance.getAttributeValue(Constants.ATT_KEY_ROLE);
+                if (ObjectUtils.isEmpty(role)) {
+                    role = SimulationData.DEFAULT_ROLE;
+                }
 
-                // Generating the BPMNAbstraction out of the DFG
-                bpmnAbstraction = new BPMNAbstraction(attLog, (DFGAbstraction) dfgAbstraction, paramsForExport);
+                // Get the distinct resources for the role, and add it to the set
+                Set<String> resources = rolesToResourcesMap.get(role);
+                if (resources == null) {
+                    resources = new HashSet<>();
+                }
+                resources.add(resource);
+                rolesToResourcesMap.put(role, resources);
+            });
 
-            } else {
-                String errMsg =
-                    "Error. Abstraction is not of type AbstractAbstraction. Unable to convert to BPMNAbstraction.";
-                log.error(errMsg);
-                throw new InvalidDataException(errMsg);
-            }
-        } catch (InvalidDataException invalidDataException) {
-            throw invalidDataException;
-        } catch (Exception exception) {
-            String errMsg = "Error. Unable to convert Abstraction to BPMNAbstraction.";
-            log.error(errMsg);
-            throw new InvalidDataException(errMsg);
-        }
+        return rolesToResourcesMap.entrySet().stream()
+            .collect(Collectors.toMap(Map.Entry::getKey, stringSetEntry -> stringSetEntry.getValue().size()));
+    }
 
-        return bpmnAbstraction;
+    private Map<String, String> getRoleForNodeId(BPMNAbstraction bpmnAbstraction) {
+
+        Map<String, String> activityNameToRoleMap = filteredAPMLog.getActivityInstances().stream()
+            .filter(activityInst -> !ObjectUtils.isEmpty(activityInst.getName()))
+            .collect(Collectors.toMap(
+                // key --> activityName
+                ActivityInstance::getName,
+
+                // value --> act
+                activityInst -> {
+                    String role = activityInst.getAttributeValue(Constants.ATT_KEY_ROLE);
+                    return ObjectUtils.isEmpty(role) ? SimulationData.DEFAULT_ROLE : role;
+                },
+
+                /*
+                 * Merge function --> Ignore duplicate keys
+                 * role1 --> The role currently in the map against the key (activity name)
+                 * role2 --> The new role that matches an existing key (activity name)
+                 *
+                 * An activity could be performed by one or more resources, each with the same or different roles.
+                 * We will treat the first role we find among the list of activities as the primary role for that
+                 * activity, (unless it is currently a DEFAULT_ROLE, and we encounter a non-DEFAULT_ROLE
+                 * in a subsequent activity), and ignore the rest.
+                 */
+                (role1, role2) -> !role1.equals(SimulationData.DEFAULT_ROLE) ? role1 : role2
+
+            ));
+
+        return bpmnAbstraction.getDiagram().getNodes()
+            .stream()
+            .filter(Activity.class::isInstance)
+            .collect(Collectors.toMap(
+                //key --> node Id
+                bpmnNode -> bpmnNode.getId().toString(),
+                //value --> role
+                bpmnNode -> {
+                    String nodeLabel = bpmnNode.getLabel();
+                    return ObjectUtils.isEmpty(nodeLabel) || !activityNameToRoleMap.containsKey(nodeLabel)
+                        ? SimulationData.DEFAULT_ROLE : activityNameToRoleMap.get(nodeLabel);
+                }));
     }
 
     private Map<String, List<EdgeFrequency>> groupOutboundEdgeFrequenciesByGateway(
@@ -768,6 +807,53 @@ public class PDAnalyst {
         }
 
         return gatewayIdToEdgeFrequencies;
+    }
+
+    /**
+     * Converts a DFGAbstraction to a BPMNAbstraction so as to include arc weights for outgoing edges from gateways,
+     * which are only available in a BPMN model.
+     *
+     * @param abstraction the abstraction to be converted
+     * @return the BPMNAbstraction representation of the input abstraction
+     * @throws Exception in the event of a conversion error
+     */
+    public BPMNAbstraction convertToBpmnAbstractionForExport(@NonNull Abstraction abstraction)
+        throws InvalidDataException {
+
+        BPMNAbstraction bpmnAbstraction;
+
+        try {
+            if (abstraction instanceof AbstractAbstraction) {
+                AbstractAbstraction abstractAbstraction = (AbstractAbstraction) abstraction;
+
+                // Forcing params for BPMN Export
+                AbstractionParams paramsForExport = abstraction.getAbstractionParams().clone();
+                paramsForExport.setPrimaryMeasure(MeasureType.FREQUENCY, MeasureAggregation.TOTAL,
+                    MeasureRelation.ABSOLUTE);
+
+                // Regenerating the DFGAbstraction to suite the above params
+                ProcessDiscoverer pdForExport = new ProcessDiscoverer();
+                Abstraction dfgAbstraction =
+                    pdForExport.generateDFGAbstraction(abstractAbstraction.getLog(), paramsForExport);
+
+                // Generating the BPMNAbstraction out of the DFG
+                bpmnAbstraction = new BPMNAbstraction(attLog, (DFGAbstraction) dfgAbstraction, paramsForExport);
+
+            } else {
+                String errMsg =
+                    "Error. Abstraction is not of type AbstractAbstraction. Unable to convert to BPMNAbstraction.";
+                log.error(errMsg);
+                throw new InvalidDataException(errMsg);
+            }
+        } catch (InvalidDataException invalidDataException) {
+            throw invalidDataException;
+        } catch (Exception exception) {
+            String errMsg = "Error. Unable to convert Abstraction to BPMNAbstraction.";
+            log.error(errMsg);
+            throw new InvalidDataException(errMsg);
+        }
+
+        return bpmnAbstraction;
     }
 
     // For debug only

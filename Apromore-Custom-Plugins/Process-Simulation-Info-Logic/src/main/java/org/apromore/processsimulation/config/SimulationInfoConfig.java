@@ -36,6 +36,7 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "process-simulation-info-export")
 public class SimulationInfoConfig {
     public static final String CONFIG_DEFAULT_ID_KEY = "id";
+    public static final String CONFIG_DEFAULT_ID_PREFIX_KEY = "id-prefix";
     public static final String CONFIG_DEFAULT_NAME_KEY = "name";
     public static final String CONFIG_DEFAULT_TIMESLOT_NAME_KEY = "timeslot-name";
     public static final String CONFIG_DEFAULT_TIMESLOT_FROM_WEEKDAY_KEY = "timeslot-from-weekday";
