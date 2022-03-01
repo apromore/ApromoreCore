@@ -138,9 +138,9 @@ public class EditRolePermissionController extends SelectorComposer<Window> imple
 
     @Listen("onClick = #createBtn")
     public void onClickCreateButton() {
-        boolean canEditUsers = securityService.hasAccess(portalContext.getCurrentUser().getId(),
+        boolean canEditRoles = securityService.hasAccess(portalContext.getCurrentUser().getId(),
             PermissionType.ROLES_EDIT.getId());
-        if (!canEditUsers) {
+        if (!canEditRoles) {
             Messagebox.show(getLabel("noPermissionCreateRole_message"));
             return;
         }
@@ -156,7 +156,7 @@ public class EditRolePermissionController extends SelectorComposer<Window> imple
 
             getSelf().detach();
         } catch (Exception e) {
-            LOGGER.error("Unable to create user", e);
+            LOGGER.error("Unable to create role", e);
             Messagebox.show(getLabel("failedCreateRole_message"));
         }
 
