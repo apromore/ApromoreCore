@@ -64,6 +64,7 @@ import org.apromore.processsimulation.model.TimeUnit;
 import org.apromore.processsimulation.model.Timetable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 @Slf4j
 @Service
@@ -204,9 +205,11 @@ public class SimulationInfoService {
 
         Map<String, String> resouceNameToId = new HashMap<>();
 
-        if (simulationData.getResourceCountsByRole() == null || simulationData.getResourceCountsByRole().isEmpty()) {
+        if (ObjectUtils.isEmpty(simulationData.getResourceCountsByRole())) {
+            // No role to resource count mapping. Use the QBP_DEFAULT_RESOURCE tag and the total
+            // resource count agains it.
             String defaultResourceId = config.getDefaultResource().get(CONFIG_DEFAULT_ID_PREFIX_KEY)
-                         + config.getDefaultResource().get(CONFIG_DEFAULT_ID_KEY);
+                                       + config.getDefaultResource().get(CONFIG_DEFAULT_ID_KEY);
 
             builder.resources(List.of(
                 Resource.builder()
@@ -226,8 +229,14 @@ public class SimulationInfoService {
                     String resourceId;
                     String resourceName;
 
+                    /*
+                     * It gets a bit confusing here as in QBP, the DEFAULT_ROLE (from PD, when there is an activity
+                     * with an empty role) is treated as a QBP_DEFAULT_RESOURCE.
+                     *
+                     * In QBP, resource == role
+                     */
                     if (roleToResourceCount.getKey().equals(SimulationData.DEFAULT_ROLE)) {
-                        // key -> DEFAULT_RESOURCE (i.e. no associated role)
+                        // key -> QBP_DEFAULT_RESOURCE (i.e. no associated role)
                         resourceId = config.getDefaultResource().get(CONFIG_DEFAULT_ID_PREFIX_KEY)
                                      + config.getDefaultResource().get(CONFIG_DEFAULT_ID_KEY);
                         resourceName = config.getDefaultResource().get(CONFIG_DEFAULT_NAME_KEY);
