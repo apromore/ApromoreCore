@@ -606,6 +606,9 @@ public class EventLogServiceImplTest extends AbstractTest {
             "\"lifecycle:transition\"]", logs, UserMetadataTypeEnum.PERSPECTIVE_TAG);
     Usermetadata perspective_copy = createUserMetadataWithType(3, "[\"concept:name\",\"org:resource\"," +
             "\"lifecycle:transition\"]", newLogs, UserMetadataTypeEnum.PERSPECTIVE_TAG);
+    Set<Usermetadata> usermetadataSetCopy = new HashSet<>();
+    usermetadataSetCopy.add(perspective_copy);
+    newLog.setUsermetadataSet(usermetadataSetCopy);
     Set<Usermetadata> usermetadataSet = new HashSet<>();
     usermetadataSet.add(perspective);
 
@@ -649,6 +652,10 @@ public class EventLogServiceImplTest extends AbstractTest {
     Set<Usermetadata> usermetadataSet = new HashSet<>();
     usermetadataSet.add(perspective);
     usermetadataSet.add(dash);
+
+    Set<Usermetadata> usermetadataSetCopy = new HashSet<>();
+    usermetadataSetCopy.add(perspective_copy);
+    newLog.setUsermetadataSet(usermetadataSetCopy);
 
     oldLog.setUsermetadataSet(usermetadataSet);
 

@@ -310,6 +310,18 @@ public class EventLogServiceImpl implements EventLogService {
 	return log;
     }
 
+	@Override
+	public Log importFilteredLog(String username, Integer folderId, String logName, InputStream inputStreamLog,
+								 String extension, String domain, String created, boolean publicModel,
+								 boolean perspective, Integer sourceLogId) throws Exception {
+		Log filteredLog = importLog(username, folderId, logName, inputStreamLog, extension, domain, created,
+				publicModel, perspective);
+		deepCopyArtifacts(findLogById(sourceLogId), filteredLog,
+				Arrays.asList(UserMetadataTypeEnum.CSV_IMPORTER.getUserMetadataTypeId(),
+						UserMetadataTypeEnum.PERSPECTIVE_TAG.getUserMetadataTypeId()), username);
+		return filteredLog;
+	}
+
     @Override
     public Log importLog(Integer folderId, String logName, String domain, String created, boolean publicModel,
             User user, XLog xLog) {
@@ -727,20 +739,24 @@ public class EventLogServiceImpl implements EventLogService {
 	}
 
 	@Override
+	@Transactional
 	public void deepCopyArtifacts(Log oldLog, Log newLog, List<Integer> artifactTypes, String username) throws UserNotFoundException {
 
 		Set<Usermetadata> usermetadataSet = oldLog.getUsermetadataSet();
-		Set<Usermetadata> us = newLog.getUsermetadataSet();
 		for (Usermetadata u : usermetadataSet) {
 			if (artifactTypes.contains(u.getUsermetadataType().getId())) {
-				Usermetadata newUm = userMetadataService.saveUserMetadata(u.getName(), u.getContent(),
+				userMetadataService.saveUserMetadata(u.getName(), u.getContent(),
 						UserMetadataTypeEnum.valueOf(u.getUsermetadataType().getType()), username, newLog.getId());
-				us.add(newUm);
 				LOGGER.debug("Deep copy user metadata type:{} id:{} to new Log id:{} during copy",
 						u.getUsermetadataType().getType(),
 						u.getId(), newLog.getId());
 			}
 		}
 		logRepo.save(newLog);
+	}
+
+	@Override
+	public Log findLogById(Integer logId) {
+		return logRepo.findUniqueByID(logId);
 	}
 }
