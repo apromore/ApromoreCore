@@ -79,6 +79,7 @@ public class SimulationInfoService {
     private static final String XML_START_BPMN_DEFINITIONS_TAG = "<bpmn:definitions";
     private static final String XML_QBP_NAMESPACE = "\n xmlns:qbp=\"http://www.qbp-simulator.com/Schema201212\"\n";
     private static final Locale DOCUMENT_LOCALE = Locale.ENGLISH;
+    private static final long WORK_DAY_MILLIS = TimeUnit.HOURS.getNumberOfMilliseconds() * 8;
 
     private JAXBContext jaxbContext;
 
@@ -160,14 +161,27 @@ public class SimulationInfoService {
     protected double getInterArrivalTime(final SimulationData simulationData) {
         long startTimeMillis = simulationData.getStartTime();
         long endTimeMillis = simulationData.getEndTime();
-        long timeDiff;
-        if (endTimeMillis - startTimeMillis <= TimeUnit.DAYS.getNumberOfMilliseconds()) {
+        long timeDiff = endTimeMillis - startTimeMillis;
+
+        if (timeDiff  <= WORK_DAY_MILLIS) {
             /*
              * CalendarModel.getDurationMillis() is not sensitive for time durations within the same day
-             * For inter day time durations, simply use the difference
+             * For inter work day (8 hours) time durations, simply use the difference
              */
-            timeDiff = endTimeMillis - startTimeMillis;
+        }
+        else if (timeDiff  > WORK_DAY_MILLIS && timeDiff <= TimeUnit.DAYS.getNumberOfMilliseconds()) {
+            /*
+             * CalendarModel.getDurationMillis() is not sensitive for time durations within the same day
+             * For time durations greater than a work day (8 hours) but within a 24 hour window,
+             * use the 8 hour work day
+             */
+            timeDiff = WORK_DAY_MILLIS;
+
         } else {
+            /*
+             * For ducations greater than a day, allow the CalendarModel to determine the duration based on
+             * the default (8 hour per work day) calendar
+             */
             CalendarModel arrivalCalendar = new CalendarModelBuilder().with5DayWorking().build();
             timeDiff = arrivalCalendar.getDurationMillis(startTimeMillis, endTimeMillis);
         }
