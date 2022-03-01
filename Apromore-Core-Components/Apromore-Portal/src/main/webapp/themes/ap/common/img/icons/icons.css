@@ -332,6 +332,11 @@
     width: 27.5234375px !important;
 }
 
+.ap-icon-filter-edit {
+    background-image: url('filter-edit.svg') !important;
+    width: 28.5px !important;
+}
+
 .ap-icon-filter {
     background-image: url('filter.svg') !important;
     width: 26px !important;
