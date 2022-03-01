@@ -714,30 +714,44 @@ public class PDAnalyst {
     }
 
     private Map<String, String> getRoleForNodeId(BPMNAbstraction bpmnAbstraction) {
-        Map<String, String> activityNameToRoleMap =  filteredPLog.getActivityNameIndicatorMap().keySet().stream()
-            .collect(Collectors.toMap(
-                //key
-                activityName -> activityName,
-                //value
-                activityName -> {
-                    Optional<ActivityInstance> activityInst = filteredAPMLog.getActivityInstances().stream()
-                        .filter(activityInstance -> activityInstance.getName().equals(activityName)
-                            && !ObjectUtils.isEmpty(activityInstance.getAttributeValue(Constants.ATT_KEY_ROLE)))
-                        .findFirst();
 
-                    return activityInst.isPresent() ? activityInst.get().getAttributeValue(Constants.ATT_KEY_ROLE) :
-                        SimulationData.DEFAULT_ROLE;
-                }
+        Map<String, String> activityNameToRoleMap = filteredAPMLog.getActivityInstances().stream()
+            .filter(activityInst -> !ObjectUtils.isEmpty(activityInst.getName()))
+            .collect(Collectors.toMap(
+                // key --> activityName
+                activityInst -> activityInst.getName(),
+
+                // value --> act
+                activityInst -> {
+                    String role = activityInst.getAttributeValue(Constants.ATT_KEY_ROLE);
+                    return ObjectUtils.isEmpty(role) ? SimulationData.DEFAULT_ROLE : role;
+                },
+
+                /*
+                 * Merge function --> Ignore duplicate keys
+                 * role1 --> The role currently in the map against the key (activity name)
+                 * role2 --> The new role that matches an existing key (activity name)
+                 *
+                 * An activity can be performed by multiple resources, each with the same or different roles
+                 * We will treat the first role of an activity as the primary role for that activity, and ignore
+                 * the rest.
+                 */
+                (role1, role2) -> role1
+
             ));
 
         return bpmnAbstraction.getDiagram().getNodes()
             .stream()
             .filter(Activity.class::isInstance)
             .collect(Collectors.toMap(
-                //key
+                //key --> node Id
                 bpmnNode -> bpmnNode.getId().toString(),
-                //value
-                bpmnNode -> activityNameToRoleMap.get(bpmnNode.getLabel())));
+                //value --> role
+                bpmnNode -> {
+                    String nodeLabel = bpmnNode.getLabel();
+                    return ObjectUtils.isEmpty(nodeLabel)
+                        ? SimulationData.DEFAULT_ROLE : activityNameToRoleMap.get(nodeLabel);
+                }));
     }
 
     private Map<String, List<EdgeFrequency>> groupOutboundEdgeFrequenciesByGateway(
