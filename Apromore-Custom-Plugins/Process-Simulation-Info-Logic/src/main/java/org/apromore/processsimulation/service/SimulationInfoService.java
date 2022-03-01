@@ -163,13 +163,12 @@ public class SimulationInfoService {
         long endTimeMillis = simulationData.getEndTime();
         long timeDiff = endTimeMillis - startTimeMillis;
 
-        if (timeDiff  <= WORK_DAY_MILLIS) {
+        if (timeDiff <= WORK_DAY_MILLIS) {
             /*
              * CalendarModel.getDurationMillis() is not sensitive for time durations within the same day
              * For inter work day (8 hours) time durations, simply use the difference
              */
-        }
-        else if (timeDiff  > WORK_DAY_MILLIS && timeDiff <= TimeUnit.DAYS.getNumberOfMilliseconds()) {
+        } else if (timeDiff > WORK_DAY_MILLIS && timeDiff <= TimeUnit.DAYS.getNumberOfMilliseconds()) {
             /*
              * CalendarModel.getDurationMillis() is not sensitive for time durations within the same day
              * For time durations greater than a work day (8 hours) but within a 24 hour window,
@@ -251,7 +250,7 @@ public class SimulationInfoService {
 
         if (simulationData.getResourceCountsByRole() == null || simulationData.getResourceCountsByRole().isEmpty()) {
             String defaultResourceId = config.getDefaultResource().get(CONFIG_DEFAULT_ID_PREFIX_KEY)
-                         + config.getDefaultResource().get(CONFIG_DEFAULT_ID_KEY);
+                                       + config.getDefaultResource().get(CONFIG_DEFAULT_ID_KEY);
 
             builder.resources(List.of(
                 Resource.builder()
