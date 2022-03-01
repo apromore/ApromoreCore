@@ -735,7 +735,7 @@ public class PDAnalyst {
             .filter(activityInst -> !ObjectUtils.isEmpty(activityInst.getName()))
             .collect(Collectors.toMap(
                 // key --> activityName
-                activityInst -> activityInst.getName(),
+                ActivityInstance::getName,
 
                 // value --> act
                 activityInst -> {
