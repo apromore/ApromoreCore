@@ -68,6 +68,7 @@ public class Log implements Serializable {
     private String domain;
     private String ranking;
     private String createDate;
+    private String fileUploadId;
     private boolean publicLog;
 
     private User user;
@@ -114,6 +115,11 @@ public class Log implements Serializable {
     public void setFilePath(final String filePath) {
         this.filePath = filePath;
     }
+
+    @Column(name = "file_upload_id")
+    public String getFileUploadId() { return fileUploadId; }
+
+    public void setFileUploadId(String fileUploadId) { this.fileUploadId = fileUploadId; }
 
     @Column(name = "name")
     public String getName() {
@@ -230,6 +236,7 @@ public class Log implements Serializable {
         newLog.setFilePath(this.getFilePath());
         newLog.setUser(this.getUser());
         newLog.setFolder(this.getFolder());
+        newLog.setFileUploadId(this.getFileUploadId());
         
         DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         String now = dateFormat.format(new Date());
@@ -237,5 +244,4 @@ public class Log implements Serializable {
         
         return newLog;
     }
-
 }

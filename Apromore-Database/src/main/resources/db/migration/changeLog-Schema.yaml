@@ -1322,3 +1322,18 @@ databaseChangeLog:
            onUpdate:  CASCADE
            referencedColumnNames: id
            referencedTableName: user
+
+
+ - changeSet:
+     id: 20220301131400
+     author: atuld
+     changes:
+       - addColumn:
+           tableName: log
+           columns:
+             - column:
+                 name: file_upload_id
+                 type: VARCHAR(200)
+                 constraints:
+                   nullable: true
+                 defaultValue: null

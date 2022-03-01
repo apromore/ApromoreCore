@@ -101,6 +101,14 @@ public interface LogRepository extends JpaRepository<Log, Integer>, LogRepositor
     @Query("SELECT DISTINCT l FROM Log l WHERE l.folder.id in ?1")
     List<Log> findByFolderIdIn(List<Integer> folderIds);
 
+    /**
+     * Returns a List of Logs
+     * @param fileUploadId the fileUploadId of the process log
+     * @return list of logs with fileUploadId
+     */
+    @Query("SELECT l FROM Log l WHERE l.fileUploadId = ?1")
+    List<Log>findByFileUploadId(String fileUploadId);
+
     List<Log> findByCalendarId(Long calendarId);
 
 //    /**
