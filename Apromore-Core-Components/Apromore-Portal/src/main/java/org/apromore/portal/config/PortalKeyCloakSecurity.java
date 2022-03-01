@@ -1,5 +1,5 @@
 /**
- * #%L This file is part of "Apromore Enterprise Edition". %% Copyright (C) 2019 - 2021 Apromore Pty
+ * #%L This file is part of "Apromore Enterprise Edition". %% Copyright (C) 2019 - 2022 Apromore Pty
  * Ltd. All Rights Reserved. %% NOTICE: All information contained herein is, and remains the
  * property of Apromore Pty Ltd and its suppliers, if any. The intellectual and technical concepts
  * contained herein are proprietary to Apromore Pty Ltd and its suppliers and may be covered by U.S.
@@ -12,6 +12,7 @@ package org.apromore.portal.config;
 import org.apromore.manager.client.ManagerService;
 import org.apromore.portal.ApromoreKeycloakAuthenticationProvider;
 import org.apromore.portal.ApromoreKeycloakAuthenticationSuccessHandler;
+import org.apromore.portal.common.Constants;
 import org.apromore.portal.servlet.filter.SameSiteFilter;
 import org.keycloak.adapters.KeycloakConfigResolver;
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
@@ -35,6 +36,7 @@ import org.springframework.security.web.session.HttpSessionEventPublisher;
 @KeycloakConfiguration
 @ConditionalOnProperty(prefix = "keycloak", name = "enabled", havingValue = "true")
 public class PortalKeyCloakSecurity extends KeycloakWebSecurityConfigurerAdapter {
+
   @Autowired
   private ManagerService manager;
 
@@ -87,7 +89,9 @@ public class PortalKeyCloakSecurity extends KeycloakWebSecurityConfigurerAdapter
 
     http.headers().frameOptions().sameOrigin();
     http.addFilterAfter(new SameSiteFilter(), BasicAuthenticationFilter.class);
-    http.csrf().ignoringAntMatchers("/zkau", "/rest", "/rest/*", "/rest/**/*", "/zkau/*", "/bpmneditor/editor/*").and()
+    http.csrf().ignoringAntMatchers("/zkau", "/rest", "/rest/*", "/rest/**/*", "/zkau/*", "/bpmneditor/editor/*")
+            .ignoringAntMatchers(Constants.API_WHITELIST)
+            .and()
         .authorizeRequests()
         // .antMatchers("/**").hasRole("USER")
         .antMatchers("/sso/login").permitAll()
@@ -97,7 +101,9 @@ public class PortalKeyCloakSecurity extends KeycloakWebSecurityConfigurerAdapter
         .antMatchers("/rest").permitAll()
         .antMatchers("/rest/**/*").permitAll()
         .antMatchers("/rest/*").permitAll()
+        .antMatchers(Constants.API_WHITELIST).permitAll()
         .antMatchers("/zkau/web/bpmneditor/*").permitAll()
+        .antMatchers(Constants.SWAGGER2_AUTH_WHITELIST).permitAll()
         .anyRequest().authenticated();
   }
 }

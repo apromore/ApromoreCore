@@ -8,17 +8,18 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+
 package org.apromore.service.logimporter.dateparser;
 
 import java.sql.Timestamp;
@@ -97,15 +98,17 @@ public class DateUtil extends DatePatterns {
     }
 
     public static Timestamp parseToTimestamp(String dateString, String dateFormat, TimeZone timeZone) {
-        if (dateString == null || dateString.isEmpty() || dateFormat == null || dateFormat.isEmpty())
+        if (dateString == null || dateString.isEmpty() || dateFormat == null || dateFormat.isEmpty()) {
             return null;
+        }
 
         removeUnwantedChartsFromDate(dateString);
         Date date;
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
         simpleDateFormat.setLenient(false); // Don't automatically convert invalid date.
-        if (timeZone != null)
+        if (timeZone != null) {
             simpleDateFormat.setTimeZone(timeZone);
+        }
 
         try {
             date = simpleDateFormat.parse(dateString);
@@ -150,8 +153,7 @@ public class DateUtil extends DatePatterns {
      *
      * @param dateString The date string.
      * @param dateFormat The date format pattern which should respect the SimpleDateFormat rules.
-     * @return True if the actual date of the given date string is valid based on the given date
-     * format pattern.
+     * @return True if the actual date of the given date string is valid based on the given date format pattern.
      * @see SimpleDateFormat
      */
     public static boolean isValidDate(String dateString, String dateFormat) {
@@ -176,8 +178,9 @@ public class DateUtil extends DatePatterns {
 
         String dateFormat = findMatchDateFormat(removeUnwantedChartsFromDate(dateString));
 
-        if (dateFormat == null)
+        if (dateFormat == null) {
             dateFormat = findMatchDateFormat(removeUnwantedChartsFromDate(dateString.replaceAll("\\W", " ")));
+        }
 
         return dateFormat;
     }
@@ -194,6 +197,7 @@ public class DateUtil extends DatePatterns {
     private static String removeUnwantedChartsFromDate(String str) {
         // Remove timezone: (?:Z|[+-](?:2[0-3]|[01][0-9]):[0-5][0-9])
         // Remove 1st, 2nd, ect: (?<=\d)(st|nd|rd|th)
-        return str.replaceAll("(?:Z|[+-](?:2[0-3]|[01][0-9]):[0-5][0-9])", "").replaceAll("(?<=\\d)(st|nd|rd|th)", "").toLowerCase();
+        return str.replaceAll("(?:Z|[+-](?:2[0-3]|[01][0-9]):[0-5][0-9])", "").replaceAll("(?<=\\d)(st|nd|rd|th)", "")
+            .toLowerCase();
     }
 }

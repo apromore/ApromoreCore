@@ -1932,3 +1932,96 @@ databaseChangeLog:
               - column:
                   name: permissionid
                   value: "23"
+  - changeSet:
+      id: 20220216164800
+      author: janeh
+      comment: "remove calendars not associated with a user"
+      changes:
+        - delete:
+            tableName: custom_calendar
+            where: created_by IS NULL OR owner IS NULL
+  - changeSet:
+      id: 20220224112500
+      author: janeh
+      comment: "add publish model permission"
+      changes:
+        - insert:
+            tableName: permission
+            columns:
+              - column:
+                  name: id
+                  value: "24"
+              - column:
+                  name: row_guid
+                  value: "607b5dfe-9508-11ec-b909-0242ac120002"
+              - column:
+                  name: permission_name
+                  value: "Publish models"
+              - column:
+                  name: permission_description
+                  value: "Create and revoke publish model links"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "1"
+              - column:
+                  name: permissionid
+                  value: "24"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "4"
+              - column:
+                  name: permissionid
+                  value: "24"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "6"
+              - column:
+                  name: permissionid
+                  value: "24"
+  - changeSet:
+      id: 20220301150700
+      author: janeh
+      comment: "add manage access rights permission"
+      changes:
+        - insert:
+            tableName: permission
+            columns:
+              - column:
+                  name: id
+                  value: "25"
+              - column:
+                  name: row_guid
+                  value: "165962fc-9913-11ec-b909-0242ac120002"
+              - column:
+                  name: permission_name
+                  value: "Manage access rights"
+              - column:
+                  name: permission_description
+                  value: "Manage access rights for artifacts"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "1"
+              - column:
+                  name: permissionid
+                  value: "25"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "11"
+              - column:
+                  name: permissionid
+                  value: "25"

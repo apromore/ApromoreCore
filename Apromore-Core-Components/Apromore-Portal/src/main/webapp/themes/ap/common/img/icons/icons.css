@@ -202,9 +202,24 @@
     width: 28.5px !important;
 }
 
+.ap-icon-comments-off {
+    background-image: url('comments-off.svg') !important;
+    width: 26px !important;
+}
+
+.ap-icon-comments-on {
+    background-image: url('comments-on.svg') !important;
+    width: 26px !important;
+}
+
 .ap-icon-copy {
     background-image: url('copy.svg') !important;
     width: 23.5px !important;
+}
+
+.ap-icon-cost {
+    background-image: url('cost.svg') !important;
+    width: 27.953125px !important;
 }
 
 .ap-icon-cut {

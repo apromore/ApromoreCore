@@ -8,19 +8,28 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+
 package org.apromore.service.logimporter.services;
 
+import static org.apromore.service.logimporter.utilities.ParquetUtilities.createParquetSchema;
+import static org.apromore.service.logimporter.utilities.ParquetUtilities.getHeaderFromParquet;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.parquet.example.data.Group;
 import org.apache.parquet.hadoop.ParquetReader;
@@ -28,17 +37,14 @@ import org.apache.parquet.schema.MessageType;
 import org.apromore.service.logimporter.io.ParquetFileWriter;
 import org.apromore.service.logimporter.io.ParquetLocalFileReader;
 import org.apromore.service.logimporter.io.ParquetLocalFileWriter;
-import org.apromore.service.logimporter.model.*;
+import org.apromore.service.logimporter.model.LogErrorReport;
+import org.apromore.service.logimporter.model.LogErrorReportImpl;
+import org.apromore.service.logimporter.model.LogMetaData;
+import org.apromore.service.logimporter.model.LogModel;
+import org.apromore.service.logimporter.model.LogModelImpl;
+import org.apromore.service.logimporter.model.ParquetEventLogModel;
+import org.apromore.service.logimporter.model.ParquetLogMetaData;
 import org.apromore.service.logimporter.utilities.FileUtils;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.apromore.service.logimporter.utilities.ParquetUtilities.createParquetSchema;
-import static org.apromore.service.logimporter.utilities.ParquetUtilities.getHeaderFromParquet;
 
 class ParquetImporterParquetImpl extends AbstractParquetImporter {
 
@@ -52,7 +58,8 @@ class ParquetImporterParquetImpl extends AbstractParquetImporter {
     }
 
     @Override
-    public LogModel importParquetFile(InputStream in, LogMetaData logMetaData, String charset, File outputParquet, boolean skipInvalidRow) throws Exception {
+    public LogModel importParquetFile(InputStream in, LogMetaData logMetaData, String charset, File outputParquet,
+                                      boolean skipInvalidRow) throws Exception {
 
         try {
             ParquetLogMetaData parquetLogSample = (ParquetLogMetaData) logMetaData;
@@ -64,16 +71,19 @@ class ParquetImporterParquetImpl extends AbstractParquetImporter {
             }
 
             File tempFile = parquetLogSample.getParquetTempFile();
-            if (tempFile == null)
+            if (tempFile == null) {
                 throw new Exception("Imported file cant be found!");
+            }
 
             //Read Parquet file
-            ParquetLocalFileReader parquetLocalFileReader = new ParquetLocalFileReader(new Configuration(true), tempFile);
+            ParquetLocalFileReader parquetLocalFileReader =
+                new ParquetLocalFileReader(new Configuration(true), tempFile);
             MessageType tempFileSchema = parquetLocalFileReader.getSchema();
             reader = parquetLocalFileReader.getParquetReader();
 
-            if (reader == null)
+            if (reader == null) {
                 return null;
+            }
 
             String[] header = getHeaderFromParquet(tempFileSchema).toArray(new String[0]);
             MessageType sampleSchema = createParquetSchema(header);
@@ -101,17 +111,22 @@ class ParquetImporterParquetImpl extends AbstractParquetImporter {
                 lineIndex++;
 
                 //empty row
-                if (line.length == 0 || (line.length == 1 && (line[0].trim().equals("") || line[0].trim().equals("\n"))))
+                if (line.length == 0
+                    || (line.length == 1 && (line[0].trim().equals("") || line[0].trim().equals("\n")))) {
                     continue;
+                }
 
                 //Validate num of column
                 if (header.length != line.length) {
-                    logErrorReport.add(new LogErrorReportImpl(lineIndex, 0, null, "Number of columns does not match the number of headers. Number of headers: (" + header.length + "). Number of columns: (" + line.length + ")"));
+                    logErrorReport.add(new LogErrorReportImpl(lineIndex, 0, null,
+                        "Number of columns does not match the number of headers. Number of headers: ("
+                        + header.length + "). Number of columns: (" + line.length + ")"));
                     continue;
                 }
 
                 //Construct an event
-                parquetEventLogModel = logProcessorParquet.processLog(line, header, logMetaData, lineIndex, logErrorReport);
+                parquetEventLogModel =
+                    logProcessorParquet.processLog(line, header, logMetaData, lineIndex, logErrorReport);
 
                 // If row is invalid, continue to next row.
                 if (!parquetEventLogModel.isValid()) {
@@ -132,8 +147,9 @@ class ParquetImporterParquetImpl extends AbstractParquetImporter {
                 FileUtils.deleteFile(outputParquet);
             }
 
-            if (!isValidLineCount(lineIndex))
+            if (!isValidLineCount(lineIndex)) {
                 rowLimitExceeded = true;
+            }
 
             //Upon migrating to parquet, xlog need to be removed and LogModelImpl need to be renamed
             return new LogModelImpl(null, logErrorReport, rowLimitExceeded, numOfValidEvents, null);
@@ -154,11 +170,14 @@ class ParquetImporterParquetImpl extends AbstractParquetImporter {
     }
 
     private void closeQuietly(InputStream in) throws IOException {
-        if (in != null)
+        if (in != null) {
             in.close();
-        if (this.writer != null)
+        }
+        if (this.writer != null) {
             this.writer.close();
-        if (this.reader != null)
+        }
+        if (this.reader != null) {
             this.reader.close();
+        }
     }
 }

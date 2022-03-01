@@ -5,7 +5,7 @@
  * Copyright (C) 2011 Marie Christine.
  * Copyright (C) 2012 - 2017 Queensland University of Technology.
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -93,4 +93,19 @@ public abstract class Constants {
     public static final String SECURITY_SERVICE = "securityService";
     public static final String AUTH_SERVICE = "authorizationService";
     public static final String WORKSPACE_SERVICE = "workspaceService";
+
+    public static final String[] SWAGGER2_AUTH_WHITELIST = {
+            "/v2/api-docs",
+            "/configuration/**",
+            "/swagger-resources/**",
+            "/swagger-ui/**",
+            "/swagger-ui.html",
+            "/webjars/**"
+    };
+
+    public static final String[] API_WHITELIST = {
+            "/api",
+            "/api/**/*",
+            "/api/*"
+    };
 }

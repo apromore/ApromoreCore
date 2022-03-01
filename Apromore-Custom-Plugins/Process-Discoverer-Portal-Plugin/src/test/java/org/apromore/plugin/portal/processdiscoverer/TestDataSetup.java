@@ -48,6 +48,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.Arrays;
+import java.util.Map;
 
 public class TestDataSetup {
     @Mock
@@ -55,7 +56,8 @@ public class TestDataSetup {
     
     public PDAnalyst createPDAnalyst(XLog xlog) throws Exception {
         ContextData contextData = ContextData.valueOf("domain1", "username1", 0,
-                            "logName", 0, "folderName", true, true);
+                            "logName", 0, "folderName", true, true,
+                                    Map.of(), "AUD");
         Mockito.when(eventLogService.getXLog(contextData.getLogId())).thenReturn(xlog);
         Mockito.when(eventLogService.getAggregatedLog(contextData.getLogId())).thenReturn(
                 XLogToImmutableLog.convertXLog("ProcessLog", xlog));

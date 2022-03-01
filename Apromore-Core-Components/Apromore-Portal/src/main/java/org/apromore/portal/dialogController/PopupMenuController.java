@@ -36,9 +36,12 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.PortalContexts;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.PortalPlugin;
+import org.apromore.portal.common.ItemHelpers;
 import org.apromore.portal.common.LabelConstants;
+import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.context.PortalPluginResolver;
 import org.apromore.portal.controller.CalendarPopupLogSubMenuController;
 import org.apromore.portal.controller.DashboardPopupLogSubMenuController;
@@ -58,7 +61,6 @@ import org.slf4j.Logger;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zul.Menuitem;
@@ -358,16 +360,22 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
                 return;
             }
             LogSummaryType selectedItem = (LogSummaryType) selections.iterator().next();
-            PortalContext portalContext = getPortalContext();
-            Map<String, Object> attrMap = new HashMap<>();
-            attrMap.put("portalContext", portalContext);
-            attrMap.put("artifactName", selectedItem.getName());
-            attrMap.put("logId", selectedItem.getId());
-            attrMap.put("FOWARD_FROM_CONTEXT", true);
-            attrMap.put("calendarId", 0L);
-            PortalPlugin calendarPlugin = portalPluginMap.get(PluginCatalog.PLUGIN_CALENDAR);
-            calendarPlugin.setSimpleParams(attrMap);
-            calendarPlugin.execute(portalContext);
+            boolean canEdit = ItemHelpers.canModifyCalendar(this.mainController.getUserService()
+                .findUserByRowGuid(UserSessionManager.getCurrentUser().getId()), selectedItem.getId());
+            if (canEdit) {
+                PortalContext portalContext = getPortalContext();
+                Map<String, Object> attrMap = new HashMap<>();
+                attrMap.put("portalContext", portalContext);
+                attrMap.put("artifactName", selectedItem.getName());
+                attrMap.put("logId", selectedItem.getId());
+                attrMap.put("FOWARD_FROM_CONTEXT", true);
+                attrMap.put("calendarId", 0L);
+                PortalPlugin calendarPlugin = portalPluginMap.get(PluginCatalog.PLUGIN_CALENDAR);
+                calendarPlugin.setSimpleParams(attrMap);
+                calendarPlugin.execute(portalContext);
+            }else{
+                Notification.error(Labels.getLabel("portal_unauthorizedRoleAccess_message"));
+            }
         } catch (Exception e) {
             LOGGER.error(Labels.getLabel("portal_failedLaunchCustomCalendar_message"), e);
             Messagebox.show(Labels.getLabel("portal_failedLaunchCustomCalendar_message"));
@@ -655,6 +663,6 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
     }
 
     private PortalContext getPortalContext() {
-        return (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
+        return PortalContexts.getActivePortalContext();
     }
 }

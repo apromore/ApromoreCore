@@ -52,6 +52,11 @@ public class KeepAliveController extends SelectorComposer<Component> {
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
 
+        boolean viewMode = Boolean.parseBoolean(Executions.getCurrent().getParameter("view"));
+        if (viewMode) {
+            return;
+        }
+
         String id = Executions.getCurrent().getParameter("id");
 
         if (id == null) {

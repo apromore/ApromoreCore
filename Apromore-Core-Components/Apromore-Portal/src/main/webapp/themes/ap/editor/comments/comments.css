@@ -161,3 +161,7 @@
 .access-type-viewer .comments-overlay .edit {
   display: none !important;
 }
+
+.comment-disabled .djs-overlay-comments {
+  display: none !important;
+}

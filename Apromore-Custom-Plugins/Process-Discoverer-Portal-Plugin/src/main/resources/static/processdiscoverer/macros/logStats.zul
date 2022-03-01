@@ -34,19 +34,27 @@
           <button id="btnCaseHeading" sclass="ap-icon ap-icon-road"></button>
           <label id="lblCaseHeading" sclass="title" value="${arg.pdLabels.logStatCases_text}"></label>
         </n:div>
-        <n:div id="ap-pd-chart-case" class="ap-pd-chart" />
+        <n:div id="ap-pd-chart-case" class="ap-pd-chart">
+          <n:svg height="50" width="50" viewBox="0 0 50 50">
+            <n:circle r="25" cx="25" cy="25" fill="#D7DAE0" stroke-width="1" stroke="white"></n:circle>
+            <n:path stroke="white" fill="#afdaed" stroke-width="1" d="M 25 25 L 25 0 A 25 25 0 1 1 24.84292140086103 0.0004934785965708954 Z"></n:path>
+          </n:svg>
+        </n:div>
         <label id="lblCasePercent"
-               value="${arg.pdLabels.casesPercent_text}"/>
+               value="100%"
+               tooltiptext="${arg.pdLabels.casePercent_text}"/>
         <div sclass="ap-link" w:onClick="Ap.pd.showCaseDetails()">
           <label id="lblCaseNumberFiltered"
-                 value="${arg.pdLabels.casesNumber_text}"
+                 tooltiptext="${arg.pdLabels.caseNumber_text}"
+                 value="0"
                  sclass="ap-case-filtered"/>
           /
           <label id="lblCaseNumberTotal"
-                 value="${arg.pdLabels.casesNumber_text}"
+                 tooltiptext="${arg.pdLabels.caseNumber_text}"
+                 value="0"
                  sclass="ap-case-total"/>
           <label id="lblCaseNumber"
-                 value="${arg.pdLabels.casesNumber_text}"
+                 tooltiptext="${arg.pdLabels.caseNumber_text}"
                  visible="false"/>
         </div>
       </vlayout>
@@ -78,19 +86,28 @@
           <button id="btnCaseVariantHeading" sclass="ap-icon ap-icon-random"></button>
           <label id="lblCaseVariantHeading" sclass="title" value="${arg.pdLabels.logStatCaseVariants_text}"/>
         </n:div>
-        <n:div id="ap-pd-chart-variant" class="ap-pd-chart" />
+        <n:div id="ap-pd-chart-variant" class="ap-pd-chart">
+          <n:svg height="50" width="50" viewBox="0 0 50 50">
+            <n:circle r="25" cx="25" cy="25" fill="#D7DAE0" stroke-width="1" stroke="white"></n:circle>
+            <n:path stroke="white" fill="#afdaed" stroke-width="1" d="M 25 25 L 25 0 A 25 25 0 1 1 24.84292140086103 0.0004934785965708954 Z"></n:path>
+          </n:svg>
+        </n:div>
         <label id="lblVariantPercent"
-               value="${arg.pdLabels.caseVariantsPercent_text}"/>
+               value="100%"
+               tooltiptext="${arg.pdLabels.caseVariantPercent_text}"/>
         <div id="divCaseVariantInspectorLink" sclass="ap-link" w:onClick="Ap.pd.showCaseVariantDetails()">
           <label id="lblVariantNumberFiltered"
-                 value="${arg.pdLabels.caseVariantsNumber_text}"
+                 tooltiptext="${arg.pdLabels.caseVariantNumber_text}"
+                 value="0"
                  sclass="ap-variant-filtered"/>
           /
           <label id="lblVariantNumberTotal"
-                 value="${arg.pdLabels.caseVariantsNumber_text}"
+                 tooltiptext="${arg.pdLabels.caseVariantNumber_text}"
+                 value="0"
                  sclass="ap-variant-total"/>
           <label id="lblVariantNumber"
-                 value="${arg.pdLabels.caseVariantsNumber_text}"
+                 tooltiptext="${arg.pdLabels.caseVariantNumber_text}"
+                 value="0"
                  visible="false"/>
         </div>
       </vlayout>
@@ -102,19 +119,27 @@
           <button id="btnEventHeading" sclass="ap-icon ap-icon-flag" ></button>
           <label id="lblEventHeading" sclass="title" value="${arg.pdLabels.logStatActivityInstances_text}"/>
         </n:div>
-        <n:div id="ap-pd-chart-event" class="ap-pd-chart" />
+        <n:div id="ap-pd-chart-event" class="ap-pd-chart">
+          <n:svg height="50" width="50" viewBox="0 0 50 50">
+            <n:circle r="25" cx="25" cy="25" fill="#D7DAE0" stroke-width="1" stroke="white"></n:circle>
+            <n:path stroke="white" fill="#afdaed" stroke-width="1" d="M 25 25 L 25 0 A 25 25 0 1 1 24.84292140086103 0.0004934785965708954 Z"></n:path>
+          </n:svg>
+        </n:div>
         <label id="lblEventPercent"
-               value="${arg.pdLabels.activityInstancesPercent_text}"/>
+               value="100%"
+               tooltiptext="${arg.pdLabels.activityInstancesPercent_text}"/>
         <div>
           <label id="lblEventNumberFiltered"
-                 value="${arg.pdLabels.activityInstancesNumber_text}"
+                 tooltiptext="${arg.pdLabels.activityInstancesNumber_text}"
+                 value="0"
                  sclass="ap-event-filtered"/>
           /
           <label id="lblEventNumberTotal"
-                 value="${arg.pdLabels.activityInstancesNumber_text}"
+                 value="0"
+                 tooltiptext="${arg.pdLabels.activityInstancesNumber_text}"
                  sclass="ap-event-total"/>
           <label id="lblEventNumber"
-                 value="Events number"
+                 tooltiptext="Events number"
                  visible="false"/>
         </div>
       </vlayout>
@@ -132,19 +157,26 @@
                  value="${arg.pdLabels.logStatActivities_text}" >
           </label>
         </n:div>
-        <div id="ap-pd-chart-perspective" class="ap-pd-chart" xmlns="http://www.zkoss.org/2005/zk/native" /> 
+        <n:div id="ap-pd-chart-perspective" class="ap-pd-chart">
+          <n:svg height="50" width="50" viewBox="0 0 50 50">
+            <n:circle r="25" cx="25" cy="25" fill="#D7DAE0" stroke-width="1" stroke="white"></n:circle>
+            <n:path stroke="white" fill="#afdaed" stroke-width="1" d="M 25 25 L 25 0 A 25 25 0 1 1 24.84292140086103 0.0004934785965708954 Z"></n:path>
+          </n:svg>
+        </n:div>
         <label id="lblNodePercent"
-               value="${arg.pdLabels.nodesPercent_text}"/>
+               value="100%"
+               tooltiptext="${arg.pdLabels.nodesPercent_text}"/>
         <div sclass="ap-link" w:onClick="Ap.pd.showPerspectiveDetails()">
           <label id="lblNodeNumberFiltered"
-                 value="${arg.pdLabels.nodesNumber_text}"
+                 value="0"
+                 tooltiptext="${arg.pdLabels.nodesNumber_text}"
                  sclass="ap-nodes-filtered"/>
           /
           <label id="lblNodeNumberTotal"
-                 value="${arg.pdLabels.nodesNumber_text}"
+                 tooltiptext="${arg.pdLabels.nodesNumber_text}"
+                 value="0"
                  sclass="ap-nodes-total"/>
         </div>
-
       </vlayout>
     </div>
   </hlayout>

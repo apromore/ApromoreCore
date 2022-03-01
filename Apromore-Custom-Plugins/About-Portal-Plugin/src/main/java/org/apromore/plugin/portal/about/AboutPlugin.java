@@ -60,11 +60,11 @@ public class AboutPlugin extends DefaultPortalPlugin {
             @Value("${git.commit.time}") final String newBuildDate,
             @Value("${site.aboutMeName}") final String newHolder, @Value("${newDetail:#{null}}") final String newDetail,
             ConfigBean configBean) {
-	this.commitId = newCommitId;
-	this.buildDate = newBuildDate;
-	this.holder = newHolder;
-	this.detail = newDetail;
-	this.config = configBean;
+		this.commitId = newCommitId;
+		this.buildDate = newBuildDate;
+		this.holder = newHolder;
+		this.detail = newDetail;
+		this.config = configBean;
     }
 
     public String getCommitId() {
@@ -89,36 +89,36 @@ public class AboutPlugin extends DefaultPortalPlugin {
 
     @Override
     public void execute(final PortalContext portalContext) {
-	LOGGER.info("Debug");
+		LOGGER.info("Debug");
 
-	try {
+		try {
 
-	    Map args = new HashMap();
-	    args.put("community", config.isCommunity());
-	    args.put("edition", config.getVersionEdition());
-	    args.put("holder", this.holder);
-	    args.put("detail", this.detail);
-	    args.put("version", config.getMajorVersionNumber() + "." + config.getMinorVersionNumber() + " (commit "
-	            + getCommitId() + " built on " + getBuildDate() + ")");
-	    final Window pluginWindow = (Window) Executions.getCurrent()
-	            .createComponentsDirectly(
-	                    new InputStreamReader(
-	                            getClass().getClassLoader().getResourceAsStream("about/zul/about.zul"), "UTF-8"),
-	                    "zul", null, args);
-	    pluginWindow.setAttribute("version", "dummy");
+			Map args = new HashMap();
+			args.put("community", config.isCommunity());
+			args.put("edition", config.getVersionEdition());
+			args.put("holder", this.holder);
+			args.put("detail", this.detail);
+			args.put("version", config.getMajorVersionNumber() + "." + config.getMinorVersionNumber() + " (commit "
+					+ getCommitId() + " built on " + getBuildDate() + ")");
+			final Window pluginWindow = (Window) Executions.getCurrent()
+					.createComponentsDirectly(
+							new InputStreamReader(
+									getClass().getClassLoader().getResourceAsStream("about/zul/about.zul"), "UTF-8"),
+							"zul", null, args);
+			pluginWindow.setAttribute("version", "dummy");
 
-	    Button buttonOk = (Button) pluginWindow.getFellow("ok");
-	    buttonOk.addEventListener("onClick", new EventListener<Event>() {
-		@Override
-		public void onEvent(final Event event) throws Exception {
-		    pluginWindow.detach();
+			Button buttonOk = (Button) pluginWindow.getFellow("ok");
+			buttonOk.addEventListener("onClick", new EventListener<Event>() {
+			@Override
+			public void onEvent(final Event event) throws Exception {
+				pluginWindow.detach();
+			}
+			});
+			pluginWindow.doModal();
+
+		} catch (Exception e) {
+			Messagebox.show(e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
+			LOGGER.error("Unable to display About dialog", e);
 		}
-	    });
-	    pluginWindow.doModal();
-
-	} catch (Exception e) {
-	    Messagebox.show(e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
-	    LOGGER.error("Unable to display About dialog", e);
-	}
     }
 }

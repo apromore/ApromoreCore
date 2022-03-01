@@ -1287,3 +1287,38 @@ databaseChangeLog:
                - column:
                   name: creator
                   type: INT
+
+ - changeSet:
+     id: 20220215092400
+     author: janeh
+     changes:
+       - addColumn:
+           tableName: custom_calendar
+           columns:
+             - column:
+                 name: owner
+                 type: INT
+                 constraints:
+                   nullable: true
+                 defaultValue: null
+       - addForeignKeyConstraint:
+           baseColumnNames: owner
+           baseTableName: custom_calendar
+           constraintName: fk_calendar_owner
+           onDelete:  CASCADE
+           onUpdate:  CASCADE
+           referencedColumnNames: id
+           referencedTableName: user
+
+ - changeSet:
+     id: 20220221101400
+     author: frankm
+     changes:
+        - addForeignKeyConstraint:
+           baseColumnNames: creator
+           baseTableName: process_model_version
+           constraintName: fk_pmv_creator
+           onDelete:  SET NULL
+           onUpdate:  CASCADE
+           referencedColumnNames: id
+           referencedTableName: user

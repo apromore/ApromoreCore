@@ -198,6 +198,12 @@ public class SimulationInfoService {
             .map(nodeId -> {
                 double durationMillis = simulationData.getDiagramNodeDuration(nodeId);
                 TimeUnit timeUnit = getDisplayTimeUnit(durationMillis);
+
+                String roleName = simulationData.getRoleNameByNodeId(nodeId);
+                if (roleName.equals(SimulationData.DEFAULT_ROLE)) {
+                    roleName = config.getDefaultResource().get(CONFIG_DEFAULT_NAME_KEY);
+                }
+
                 return Element.builder()
                     .elementId(nodeId)
                     .distributionDuration(Distribution.builder()
@@ -206,7 +212,7 @@ public class SimulationInfoService {
                         .arg1(getDisplayTimeDuration(durationMillis).toString())
                         .timeUnit(timeUnit)
                         .build())
-                    .resourceIds(List.of(resourceNameToId.get(simulationData.getRoleNameByNodeId(nodeId))))
+                    .resourceIds(List.of(resourceNameToId.get(roleName)))
                     .build();
             })
             .collect(Collectors.toUnmodifiableList());
@@ -242,18 +248,22 @@ public class SimulationInfoService {
         final SimulationData simulationData) {
 
         Map<String, String> resouceNameToId = new HashMap<>();
+
         if (simulationData.getResourceCountsByRole() == null || simulationData.getResourceCountsByRole().isEmpty()) {
+            String defaultResourceId = config.getDefaultResource().get(CONFIG_DEFAULT_ID_PREFIX_KEY)
+                         + config.getDefaultResource().get(CONFIG_DEFAULT_ID_KEY);
+
             builder.resources(List.of(
                 Resource.builder()
-                    .id(config.getDefaultResource().get(CONFIG_DEFAULT_ID_KEY))
+                    .id(defaultResourceId)
                     .name(config.getDefaultResource().get(CONFIG_DEFAULT_NAME_KEY))
                     .totalAmount(simulationData.getResourceCount())
                     .timetableId(config.getDefaultTimetable().get(CONFIG_DEFAULT_ID_KEY))
                     .build()
             ));
 
-            resouceNameToId.put(config.getDefaultResource().get(CONFIG_DEFAULT_NAME_KEY),
-                config.getDefaultResource().get(CONFIG_DEFAULT_ID_KEY));
+            resouceNameToId.put(config.getDefaultResource().get(CONFIG_DEFAULT_NAME_KEY), defaultResourceId);
+
         } else {
 
             builder.resources(simulationData.getResourceCountsByRole().entrySet().stream()
@@ -264,7 +274,7 @@ public class SimulationInfoService {
                     if (roleToResourceCount.getKey().equals(SimulationData.DEFAULT_ROLE)) {
                         // key -> DEFAULT_RESOURCE (i.e. no associated role)
                         resourceId = config.getDefaultResource().get(CONFIG_DEFAULT_ID_PREFIX_KEY)
-                            + config.getDefaultResource().get(CONFIG_DEFAULT_ID_KEY);
+                                     + config.getDefaultResource().get(CONFIG_DEFAULT_ID_KEY);
                         resourceName = config.getDefaultResource().get(CONFIG_DEFAULT_NAME_KEY);
                     } else {
                         resourceId = config.getDefaultResource().get(CONFIG_DEFAULT_ID_PREFIX_KEY) + UUID.randomUUID();

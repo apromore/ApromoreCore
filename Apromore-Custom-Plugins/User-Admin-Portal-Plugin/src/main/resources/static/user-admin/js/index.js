@@ -37,6 +37,16 @@ Ap.userAdmin.toggleGroupClick = (id, event) => {
   Ap.userAdmin.toggleClick('$groupEditBtn', { id }, event);
 }
 
+/**
+ * Manual single-row toggle for role Listbox
+ *
+ * @param index {number} Row index
+ * @param event {Event} Click Event
+ */
+Ap.userAdmin.toggleRoleClick = (index, event) => {
+  Ap.userAdmin.toggleClick('$roleSelectBtn', { index }, event);
+}
+
 Ap.userAdmin.editUser = (userName) => {
   zAu.send(new zk.Event(zk.Widget.$('$userEditBtn'), 'onExecute', userName));
 }

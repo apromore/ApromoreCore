@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -35,9 +35,16 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 ==================================================================== */
+
 package org.apromore.service.logimporter.io;
 
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
+import javax.xml.parsers.ParserConfigurationException;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.ss.usermodel.DataFormatter;
@@ -58,21 +65,14 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * A rudimentary XLSX -> CSV processor modeled on the
  * POI sample program XLS2CSVmra from the package
  * org.apache.poi.hssf.eventusermodel.examples.
  * As with the HSSF version, this tries to spot missing
  * rows and cells, and output empty entries for them.
- * <p>
- * Data sheets are read using a SAX parser to keep the
+ *
+ * <p>Data sheets are read using a SAX parser to keep the
  * memory footprint relatively small, so this should be
  * able to read enormous workbooks.  The styles table and
  * the shared-string table must be kept in memory.  The
@@ -80,8 +80,8 @@ import java.util.List;
  * (read-only) class is used for the shared string table
  * because the standard POI SharedStringsTable grows very
  * quickly with the number of unique strings.
- * <p>
- * For a more advanced implementation of SAX event parsing
+ *
+ * <p>For a more advanced implementation of SAX event parsing
  * of XLSX files, see {@link XSSFEventBasedExcelExtractor}
  * and {@link XSSFSheetXMLHandler}. Note that for many cases,
  * it may be possible to simply use those with a custom
@@ -94,18 +94,18 @@ public class XLSX2CSV {
     private final OPCPackage xlsxPackage;
 
     /**
-     * Number of columns to read starting with leftmost
+     * Number of columns to read starting with leftmost.
      */
     private final int minColumns;
 
     /**
-     * Destination for data
+     * Destination for data.
      */
     private final PrintStream output;
     private final List<List<String>> lines = new ArrayList<>();
 
     /**
-     * Creates a new XLSX -> CSV examples
+     * Creates a new XLSX -> CSV examples.
      *
      * @param pkg        The XLSX package to process
      * @param output     The PrintStream to output the CSV to
@@ -134,7 +134,7 @@ public class XLSX2CSV {
                 String sheetName = iter.getSheetName();
                 this.output.println();
                 this.output.println(sheetName + " [index=" + index + "]:");
-                processSheet(styles, strings, new SheetToCSV(), stream);
+                processSheet(styles, strings, new SheetToCsv(), stream);
             }
             ++index;
         }
@@ -155,16 +155,16 @@ public class XLSX2CSV {
      * @throws SAXException if parsing the XML data fails.
      */
     public void processSheet(
-            Styles styles,
-            SharedStrings strings,
-            SheetContentsHandler sheetHandler,
-            InputStream sheetInputStream) throws IOException, SAXException {
+        Styles styles,
+        SharedStrings strings,
+        SheetContentsHandler sheetHandler,
+        InputStream sheetInputStream) throws IOException, SAXException {
         DataFormatter formatter = new DataFormatter();
         InputSource sheetSource = new InputSource(sheetInputStream);
         try {
             XMLReader sheetParser = XMLHelper.newXMLReader();
             ContentHandler handler = new XSSFSheetXMLHandler(
-                    styles, null, strings, sheetHandler, formatter, false);
+                styles, null, strings, sheetHandler, formatter, false);
             sheetParser.setContentHandler(handler);
             sheetParser.parse(sheetSource);
         } catch (ParserConfigurationException e) {
@@ -177,7 +177,7 @@ public class XLSX2CSV {
      * of parsing the Sheet XML, and outputs the contents
      * as a (basic) CSV.
      */
-    private class SheetToCSV implements SheetContentsHandler {
+    private class SheetToCsv implements SheetContentsHandler {
         private boolean firstCellOfRow;
         private int currentRow = -1;
         private int currentCol = -1;

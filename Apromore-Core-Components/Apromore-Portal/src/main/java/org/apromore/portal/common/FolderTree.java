@@ -130,7 +130,7 @@ public class FolderTree {
     if (loadAll) {
       final int PAGE_SIZE = 100;
 
-      ManagerService service = UserSessionManager.getMainController().getManagerService();
+      ManagerService service = this.mainController.getManagerService();
       String userId = UserSessionManager.getCurrentUser().getId();
 
       int page = 0;

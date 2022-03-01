@@ -36,6 +36,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -184,7 +185,7 @@ public class Log implements Serializable {
     /**
      * @return all the logs this user metadata is linked to
      */
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "usermetadata_log",
             joinColumns = @JoinColumn(name = "log_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "usermetadata_id", referencedColumnName = "id"))

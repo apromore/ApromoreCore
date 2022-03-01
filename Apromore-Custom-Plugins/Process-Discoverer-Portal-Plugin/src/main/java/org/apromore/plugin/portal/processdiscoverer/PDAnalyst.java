@@ -38,6 +38,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apromore.apmlog.APMLog;
@@ -142,6 +143,13 @@ public class PDAnalyst {
     @Getter
     Map<Integer, List<ATrace>> caseVariantGroupMap;
 
+    @Getter
+    String costAttribute = XESAttributeCodes.ORG_ROLE;
+    @Getter @Setter
+    Map<String, Double> costTable;
+    @Getter @Setter
+    String currency = "USD";
+
     private String caseVariantPerspective = XESAttributeCodes.CONCEPT_NAME;
 
     // Calendar management
@@ -153,6 +161,11 @@ public class PDAnalyst {
         XLog xlog = eventLogService.getXLog(contextData.getLogId());
         APMLog apmLog = eventLogService.getAggregatedLog(contextData.getLogId());
         Collection<String> perspectiveAttKeys = eventLogService.getPerspectiveTagByLog(contextData.getLogId());
+        currency = contextData.getCurrency();
+        costTable = contextData.getCostTable();
+        if (costTable == null) {
+            costTable = new HashMap<>();
+        }
 
         if (xlog == null) {
             throw new InvalidDataException("XLog data of this log is missing");
@@ -193,7 +206,7 @@ public class PDAnalyst {
 
         this.setMainAttribute(configData.getDefaultAttribute());
         this.processDiscoverer = new ProcessDiscoverer();
-        this.processVisualizer = new ProcessJSONVisualizer();
+        this.processVisualizer = new ProcessJSONVisualizer(currency);
     }
 
     public void cleanUp() {
@@ -254,7 +267,6 @@ public class PDAnalyst {
      */
     public Optional<OutputData> discoverProcess(UserOptionsData userOptions) throws Exception {
         AbstractionParams params = genAbstractionParams(userOptions);
-
         // Find a DFG first
         Abstraction dfgAbstraction = processDiscoverer.generateDFGAbstraction(attLog, params);
         if (dfgAbstraction == null ||
@@ -305,7 +317,7 @@ public class PDAnalyst {
     }
 
     public XLog getXLog() {
-        return this.aLog.getActualXLog();
+        return this.filteredAPMLog.toXLog();
     }
 
     public boolean hasEmptyData() {
@@ -323,7 +335,7 @@ public class PDAnalyst {
                 mainAttribute = newAttribute;
                 if (attLog == null) {
                     long timer = System.currentTimeMillis();
-                    attLog = new AttributeLog(aLog, mainAttribute, this.calendarModel);
+                    attLog = new AttributeLog(aLog, mainAttribute, this.calendarModel, this.costTable);
                     LOGGER.debug("Create AttributeLog for the perspective attribute: {} ms.",
                         System.currentTimeMillis() - timer);
                 } else {
@@ -581,6 +593,10 @@ public class PDAnalyst {
         return avgAttributeMap;
     }
 
+    public ImmutableList<Object> getRoleValues() {
+        return this.getAttributeLog().getFullLog().getAttributeStore().getStandardEventRole().getValues();
+    }
+
     public String getFilteredStartTime() {
         return DateTimeUtils.humanize(this.filteredAPMLog.getStartTime());
     }
@@ -714,30 +730,44 @@ public class PDAnalyst {
     }
 
     private Map<String, String> getRoleForNodeId(BPMNAbstraction bpmnAbstraction) {
-        Map<String, String> activityNameToRoleMap =  filteredPLog.getActivityNameIndicatorMap().keySet().stream()
-            .collect(Collectors.toMap(
-                //key
-                activityName -> activityName,
-                //value
-                activityName -> {
-                    Optional<ActivityInstance> activityInst = filteredAPMLog.getActivityInstances().stream()
-                        .filter(activityInstance -> activityInstance.getName().equals(activityName)
-                            && !ObjectUtils.isEmpty(activityInstance.getAttributeValue(Constants.ATT_KEY_ROLE)))
-                        .findFirst();
 
-                    return activityInst.isPresent() ? activityInst.get().getAttributeValue(Constants.ATT_KEY_ROLE) :
-                        SimulationData.DEFAULT_ROLE;
-                }
+        Map<String, String> activityNameToRoleMap = filteredAPMLog.getActivityInstances().stream()
+            .filter(activityInst -> !ObjectUtils.isEmpty(activityInst.getName()))
+            .collect(Collectors.toMap(
+                // key --> activityName
+                ActivityInstance::getName,
+
+                // value --> act
+                activityInst -> {
+                    String role = activityInst.getAttributeValue(Constants.ATT_KEY_ROLE);
+                    return ObjectUtils.isEmpty(role) ? SimulationData.DEFAULT_ROLE : role;
+                },
+
+                /*
+                 * Merge function --> Ignore duplicate keys
+                 * role1 --> The role currently in the map against the key (activity name)
+                 * role2 --> The new role that matches an existing key (activity name)
+                 *
+                 * An activity can be performed by multiple resources, each with the same or different roles
+                 * We will treat the first role of an activity as the primary role for that activity, and ignore
+                 * the rest.
+                 */
+                (role1, role2) -> role1
+
             ));
 
         return bpmnAbstraction.getDiagram().getNodes()
             .stream()
             .filter(Activity.class::isInstance)
             .collect(Collectors.toMap(
-                //key
+                //key --> node Id
                 bpmnNode -> bpmnNode.getId().toString(),
-                //value
-                bpmnNode -> activityNameToRoleMap.get(bpmnNode.getLabel())));
+                //value --> role
+                bpmnNode -> {
+                    String nodeLabel = bpmnNode.getLabel();
+                    return ObjectUtils.isEmpty(nodeLabel)
+                        ? SimulationData.DEFAULT_ROLE : activityNameToRoleMap.get(nodeLabel);
+                }));
     }
 
     private Map<String, List<EdgeFrequency>> groupOutboundEdgeFrequenciesByGateway(

@@ -28,13 +28,13 @@ package org.apromore.portal.controller;
 
 import java.util.Map;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.PortalContexts;
 import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.portal.controller.helper.UserMetaDataUtilService;
 import org.apromore.portal.context.PortalPluginResolver;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.dialogController.PopupMenuController;
 import org.apromore.portal.model.LogSummaryType;
-import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Menupopup;
 
 abstract class PopupLogSubMenuController {
@@ -63,7 +63,7 @@ abstract class PopupLogSubMenuController {
     }
 
     protected PortalContext getPortalContext() {
-        return (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
+        return PortalContexts.getActivePortalContext();
     }
 
 }
