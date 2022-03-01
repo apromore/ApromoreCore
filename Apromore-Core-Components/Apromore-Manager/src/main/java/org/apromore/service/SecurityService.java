@@ -172,6 +172,13 @@ public interface SecurityService {
     User getUserById(String guid) throws UserNotFoundException;
 
     /**
+     * Gets specified permission in the System.
+     * @param name the name of the permission we are searching for.
+     * @return the name of the permission we are searching for.
+     */
+    Permission getPermission(String name);
+
+    /**
      * Gets all user permissions.
      * @param guid the users Globally Unique Id
      * @return a List of permissions for the specific user.
@@ -184,6 +191,12 @@ public interface SecurityService {
      * @return a List of permissions for the specific role.
      */
     List<Permission> getRolePermissions(String roleName);
+
+    /**
+     * @param role  a populated role, except for the id
+     * @return the created role with id assigned
+     */
+    Role createRole(Role role);
 
     /**
      * @param user  a populated user, except for the id

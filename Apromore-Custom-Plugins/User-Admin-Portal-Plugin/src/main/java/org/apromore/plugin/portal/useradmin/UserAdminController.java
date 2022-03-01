@@ -534,6 +534,12 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
                         refreshAssignedGroups();
                     }
 
+                    // Update the role collection
+                    if (eventType.equals("CREATE_ROLE")) {
+                        refreshRoles();
+                        refreshAssignedRoles();
+                    }
+
                     // Update the user panel
                     if ("UPDATE_USER".equals(eventType)) {
                         // TO DO: Check for dirty group detail
@@ -635,8 +641,8 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
             String roleName = role.getName();
             boolean coSelectable = "ROLE_INTEGRATOR".equals(roleName);
             assignedRoleModel
-                .add(new TristateModel(roleMap.get(roleName), roleName, role, TristateModel.UNCHECKED, false,
-                    coSelectable));
+                .add(new TristateModel(roleMap.getOrDefault(roleName, roleName), roleName, role,
+                    TristateModel.UNCHECKED, false, coSelectable));
         }
         assignedRoleModel.setMultiple(true);
         assignedRoleListbox.setModel(assignedRoleModel);
@@ -1568,7 +1574,19 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
             Notification.error(getLabel("noPermissionCreateRole_message"));
             return;
         }
-        Notification.info("Create roles coming soon!");
+        try {
+            Map arg = new HashMap<>();
+            arg.put("portalContext", portalContext);
+            arg.put("securityService", securityService);
+            arg.put("mode", "CREATE");
+            Window window = (Window) Executions.getCurrent()
+                .createComponents(getPageDefinition("zul/edit-role-permission.zul"), getSelf(), arg);
+            window.doModal();
+
+        } catch (Exception e) {
+            LOGGER.error("Unable to create role creation dialog", e);
+            Messagebox.show(getLabel("failedLaunchCreateRole_message"));
+        }
     }
 
     @Listen("onClick = #roleEditBtn")
@@ -1616,12 +1634,19 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
         Set<User> users = new HashSet<>(listModel);
         selectedRole.setName(roleNameTextbox.getValue());
         selectedRole.setUsers(users);
-        securityService.updateRole(selectedRole);
-        Notification.info(
-            MessageFormat.format(getLabel("updatedRoleDetails_message"), selectedRole.getName()));
-        isRoleDetailDirty = false;
-        refreshRoles();
-        setSelectedRole(null);
+
+        try {
+            securityService.updateRole(selectedRole);
+            Notification.info(
+                MessageFormat.format(getLabel("updatedRoleDetails_message"), selectedRole.getName()));
+            isRoleDetailDirty = false;
+            refreshRoles();
+            refreshAssignedRoles();
+            setSelectedRole(null);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+            Messagebox.show(getLabel("failedUpdateRole_message"));
+        }
     }
 
     @Listen("onClick = #userSelectAllBtn")

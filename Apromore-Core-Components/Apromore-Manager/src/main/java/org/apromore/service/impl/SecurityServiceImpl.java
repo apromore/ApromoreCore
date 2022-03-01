@@ -55,6 +55,7 @@ import org.apromore.service.SecurityService;
 import org.apromore.service.WorkspaceService;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
@@ -253,6 +254,11 @@ public class SecurityServiceImpl implements SecurityService {
 
   @Override
   public Role updateRole(Role role) {
+    Role sameNameRole = roleRepo.findByName(role.getName());
+    if (sameNameRole != null && !sameNameRole.getRowGuid().equals(role.getRowGuid())) {
+      throw new DuplicateKeyException("A role with this name already exists");
+    }
+
     return roleRepo.saveAndFlush(role);
   }
 
@@ -278,6 +284,14 @@ public class SecurityServiceImpl implements SecurityService {
   }
 
   /**
+   * @see org.apromore.service.SecurityService#getPermission(String) {@inheritDoc}
+   */
+  @Override
+  public Permission getPermission(String name) {
+    return permissionRepo.findByName(name);
+  }
+
+  /**
    * @see org.apromore.service.SecurityService#getUserPermissions(String) {@inheritDoc}
    */
   @Override
@@ -299,6 +313,18 @@ public class SecurityServiceImpl implements SecurityService {
   @Override
   public boolean hasAccess(String userId, String permissionId) {
     return userRepo.hasAccess(userId, permissionId);
+  }
+
+  /**
+   * @see org.apromore.service.SecurityService#createRole(org.apromore.dao.model.Role) {@inheritDoc}
+   */
+  @Override
+  @Transactional(readOnly = false)
+  public Role createRole(Role role) {
+    if (roleRepo.findByName(role.getName()) != null) {
+      throw new DuplicateKeyException("A role with this name already exists");
+    }
+    return roleRepo.saveAndFlush(role);
   }
 
   /**
