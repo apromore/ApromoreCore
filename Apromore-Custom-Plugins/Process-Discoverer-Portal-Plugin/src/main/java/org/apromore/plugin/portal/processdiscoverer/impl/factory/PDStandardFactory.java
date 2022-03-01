@@ -22,15 +22,7 @@
 package org.apromore.plugin.portal.processdiscoverer.impl.factory;
 
 import org.apromore.plugin.portal.processdiscoverer.PDController;
-import org.apromore.plugin.portal.processdiscoverer.components.CaseDetailsController;
-import org.apromore.plugin.portal.processdiscoverer.components.CaseVariantDetailsController;
-import org.apromore.plugin.portal.processdiscoverer.components.GraphSettingsController;
-import org.apromore.plugin.portal.processdiscoverer.components.GraphVisController;
-import org.apromore.plugin.portal.processdiscoverer.components.LogStatsController;
-import org.apromore.plugin.portal.processdiscoverer.components.PerspectiveDetailsController;
-import org.apromore.plugin.portal.processdiscoverer.components.TimeStatsController;
-import org.apromore.plugin.portal.processdiscoverer.components.ToolbarController;
-import org.apromore.plugin.portal.processdiscoverer.components.ViewSettingsController;
+import org.apromore.plugin.portal.processdiscoverer.components.*;
 import org.apromore.plugin.portal.processdiscoverer.eventlisteners.AnimationController;
 import org.apromore.plugin.portal.processdiscoverer.eventlisteners.BPMNExportController;
 import org.apromore.plugin.portal.processdiscoverer.eventlisteners.LogExportController;
@@ -100,5 +92,10 @@ public class PDStandardFactory implements PDFactory {
     @Override
     public ToolbarController createToolbarController(PDController controller) throws Exception {
         return new ToolbarController(controller);
+    }
+
+    @Override
+    public CostTableController createCostTableController(PDController controller) throws Exception {
+        return new CostTableController(controller);
     }
 }

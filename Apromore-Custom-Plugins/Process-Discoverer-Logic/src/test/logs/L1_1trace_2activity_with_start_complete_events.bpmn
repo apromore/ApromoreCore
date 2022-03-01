@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" targetNamespace="http://www.omg.org/bpmn20" exporter="bpmn-js (https://demo.bpmn.io)" exporterVersion="9.0.0-alpha.2" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
+  <process id="proc_1720433357">
+    <startEvent id="node0" name="">
+      <outgoing>edge2</outgoing>
+    </startEvent>
+    <endEvent id="node1" name="">
+      <incoming>edge7</incoming>
+    </endEvent>
+    <task id="node2" name="a">
+      <incoming>edge2</incoming>
+      <outgoing>Flow_1xw40dn</outgoing>
+    </task>
+    <task id="node3" name="b">
+      <incoming>Flow_1xw40dn</incoming>
+      <incoming>Flow_0ds3fmk</incoming>
+      <outgoing>edge7</outgoing>
+      <outgoing>Flow_0ds3fmk</outgoing>
+    </task>
+    <sequenceFlow id="edge2" name="" sourceRef="node0" targetRef="node2" />
+    <sequenceFlow id="edge7" name="" sourceRef="node3" targetRef="node1" />
+    <sequenceFlow id="Flow_1xw40dn" sourceRef="node2" targetRef="node3" />
+    <sequenceFlow id="Flow_0ds3fmk" sourceRef="node3" targetRef="node3" />
+  </process>
+  <bpmndi:BPMNDiagram id="id_1631877307">
+    <bpmndi:BPMNPlane bpmnElement="proc_1720433357">
+      <bpmndi:BPMNEdge bpmnElement="edge7">
+        <di:waypoint x="530" y="139" />
+        <di:waypoint x="584" y="139" />
+        <di:waypoint x="584" y="138" />
+        <di:waypoint x="637" y="138" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="edge2">
+        <di:waypoint x="186" y="139" />
+        <di:waypoint x="250" y="139" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1xw40dn_di" bpmnElement="Flow_1xw40dn">
+        <di:waypoint x="350" y="139" />
+        <di:waypoint x="390" y="139" />
+        <di:waypoint x="390" y="140" />
+        <di:waypoint x="430" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ds3fmk_di" bpmnElement="Flow_0ds3fmk">
+        <di:waypoint x="480" y="159" />
+        <di:waypoint x="480" y="179" />
+        <di:waypoint x="410" y="179" />
+        <di:waypoint x="410" y="150" />
+        <di:waypoint x="430" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape bpmnElement="node0">
+        <dc:Bounds x="161" y="127" width="25" height="25" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="node3">
+        <dc:Bounds x="430" y="119" width="100" height="40" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="node2">
+        <dc:Bounds x="250" y="119" width="100" height="40" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="node1">
+        <dc:Bounds x="637" y="126" width="25" height="25" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

@@ -310,6 +310,18 @@ public class EventLogServiceImpl implements EventLogService {
 	return log;
     }
 
+	@Override
+	public Log importFilteredLog(String username, Integer folderId, String logName, InputStream inputStreamLog,
+								 String extension, String domain, String created, boolean publicModel,
+								 boolean perspective, Integer sourceLogId) throws Exception {
+		Log filteredLog = importLog(username, folderId, logName, inputStreamLog, extension, domain, created,
+				publicModel, perspective);
+		deepCopyArtifacts(findLogById(sourceLogId), filteredLog,
+				Arrays.asList(UserMetadataTypeEnum.CSV_IMPORTER.getUserMetadataTypeId(),
+						UserMetadataTypeEnum.PERSPECTIVE_TAG.getUserMetadataTypeId()), username);
+		return filteredLog;
+	}
+
     @Override
     public Log importLog(Integer folderId, String logName, String domain, String created, boolean publicModel,
             User user, XLog xLog) {
@@ -580,7 +592,19 @@ public class EventLogServiceImpl implements EventLogService {
       return logRepo.findByCalendarId(calendarId);
     }
 
-
+    @Override
+    public List<Log> getLogListFromCalendarId(Long calendarId, String username) {
+        List<Log> relatedLogs = logRepo.findByCalendarId(calendarId);
+        relatedLogs.removeIf(l -> {
+            try {
+                return !AccessType.OWNER.equals(authorizationService.getLogAccessTypeByUser(l.getId(), username));
+            } catch (UserNotFoundException e) {
+                LOGGER.error("Could not find user with username {}", username);
+            }
+            return true;
+        });
+        return relatedLogs;
+    }
 
     @Override
     public boolean saveFileToVolume(String filename, String prefix, ByteArrayOutputStream baos) throws Exception {
@@ -688,8 +712,51 @@ public class EventLogServiceImpl implements EventLogService {
 			}
 		});
 	}
+
 	@Override
 	public List<CalendarModel> getAllCustomCalendars(){
 		return calendarService.getCalendars();
+	}
+
+	@Override
+	public List<CalendarModel> getAllCustomCalendars(String username){
+		return calendarService.getCalendars(username);
+	}
+
+	@Override
+	public void shallowCopyArtifacts(Log oldLog, Log newLog, List<Integer> artifactTypes) {
+
+		Set<Usermetadata> usermetadataSet = oldLog.getUsermetadataSet();
+		Set<Usermetadata> us = newLog.getUsermetadataSet();
+		for (Usermetadata u : usermetadataSet) {
+			if (artifactTypes.contains(u.getUsermetadataType().getId())) {
+				us.add(u);
+				LOGGER.debug("Link user metadata type:{} id:{} to new Log id:{} during copy", u.getUsermetadataType().getType(),
+						u.getId(), newLog.getId());
+			}
+		}
+		logRepo.save(newLog);
+	}
+
+	@Override
+	@Transactional
+	public void deepCopyArtifacts(Log oldLog, Log newLog, List<Integer> artifactTypes, String username) throws UserNotFoundException {
+
+		Set<Usermetadata> usermetadataSet = oldLog.getUsermetadataSet();
+		for (Usermetadata u : usermetadataSet) {
+			if (artifactTypes.contains(u.getUsermetadataType().getId())) {
+				userMetadataService.saveUserMetadata(u.getName(), u.getContent(),
+						UserMetadataTypeEnum.valueOf(u.getUsermetadataType().getType()), username, newLog.getId());
+				LOGGER.debug("Deep copy user metadata type:{} id:{} to new Log id:{} during copy",
+						u.getUsermetadataType().getType(),
+						u.getId(), newLog.getId());
+			}
+		}
+		logRepo.save(newLog);
+	}
+
+	@Override
+	public Log findLogById(Integer logId) {
+		return logRepo.findUniqueByID(logId);
 	}
 }

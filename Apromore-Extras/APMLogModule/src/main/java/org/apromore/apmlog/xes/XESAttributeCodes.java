@@ -21,6 +21,11 @@
  */
 package org.apromore.apmlog.xes;
 
+import org.zkoss.util.resource.Labels;
+
+/**
+ * Modified: Jane Hoh (23/02/2022) - i18n support. Get display labels from property file.
+ */
 public class XESAttributeCodes {
     public static final String CONCEPT_NAME = "concept:name";
     public static final String ORG_RESOURCE = "org:resource";
@@ -31,20 +36,20 @@ public class XESAttributeCodes {
 
     public static String getDisplayLabelForMultiple(String xesAttributeCode) {
         switch (xesAttributeCode) {
-            case CONCEPT_NAME: return "Activities";
-            case ORG_RESOURCE: return "Resources";
-            case ORG_ROLE: return "Role";
-            case ORG_GROUP: return "Groups";
+            case CONCEPT_NAME: return Labels.getLabel("att_multiple_activity_text", "Activities");
+            case ORG_RESOURCE: return Labels.getLabel("att_multiple_resource_text", "Resources");
+            case ORG_ROLE: return Labels.getLabel("att_multiple_role_text", "Roles");
+            case ORG_GROUP: return Labels.getLabel("att_multiple_group_text", "Groups");
             default: return xesAttributeCode;
         }
     }
 
     public static String getDisplayLabelForSingle(String xesAttributeCode) {
         switch (xesAttributeCode) {
-            case CONCEPT_NAME: return "Activity";
-            case ORG_RESOURCE: return "Resource";
-            case ORG_ROLE: return "Role";
-            case ORG_GROUP: return "Group";
+            case CONCEPT_NAME: return Labels.getLabel("att_single_activity_text", "Activity");
+            case ORG_RESOURCE: return Labels.getLabel("att_single_resource_text", "Resource");
+            case ORG_ROLE: return Labels.getLabel("att_single_role_text", "Role");
+            case ORG_GROUP: return Labels.getLabel("att_single_group_text", "Group");
             default: return xesAttributeCode;
         }
     }

@@ -109,7 +109,7 @@ public class ReworkFilter {
                     matchedCountMap.put(rvKey, count);
                 }
             } else {
-                if (operationType == OperationType.GREATER_EQUAL && intVal == 0) reqNotOccur = true;
+                if (operationType == OperationType.LESS_EQUAL && intVal <= 1) reqNotOccur = true;
             }
         }
 

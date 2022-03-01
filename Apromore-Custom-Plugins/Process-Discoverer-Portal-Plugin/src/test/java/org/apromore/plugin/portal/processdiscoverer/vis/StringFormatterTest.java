@@ -47,4 +47,27 @@ public class StringFormatterTest {
         assertEquals("-", stringFormatter.shortenName("-", 0));
         assertEquals("RA", stringFormatter.shortenName("RA", 0));
     }
+
+    @Test
+    public void testWrapName() {
+        assertEquals("Great\\nWhiteVeryLongString\\nWhiteVeryLongStr...", stringFormatter.wrapName("Great WhiteVeryLongStringWhiteVeryLongStringWhiteVeryLongStringWhiteVeryLongString Shark", 0));
+        assertEquals("1234567890123456789\\n0123456789012345678\\n9012345678901234...", stringFormatter.wrapName("123456789012345678901234567890123456789012345678901234567890", 0));
+        assertEquals("12345678901234\\n1234567890\\n1234567890 12345...", stringFormatter.wrapName("12345678901234 1234567890 1234567890 1234567890 1234567890 1234567890", 0));
+        assertEquals("1234567890\\n1234567890\\n1234567890 12345...", stringFormatter.wrapName("1234567890 1234567890 1234567890 1234567890 1234567890", 0));
+        assertEquals("1234567890\\n1234567890\\n1234567890\\n1234567890 12345...", stringFormatter.wrapName("1234567890 1234567890 1234567890 1234567890 12345678900", 4));
+        assertEquals("Great White", stringFormatter.wrapName("Great White", 0));
+        assertEquals("1234567890123456789\\n0 12345678", stringFormatter.wrapName("12345678901234567890 12345678", 0));
+        assertEquals("12345678\\n1234567890123456789\\n0", stringFormatter.wrapName("12345678 12345678901234567890", 0));
+        assertEquals("1234567890123456789\\n0", stringFormatter.wrapName("12345678901234567890", 0));
+        assertEquals("一二三四五六七八九\\n十０１２３４５６７\\n８９０", stringFormatter.wrapName("一二三四五六七八九十０１２３４５６７８９０", 0));
+        assertEquals("123456789\\n0一二三四五六七八\\n九十０１２３...", stringFormatter.wrapName("1234567890一二三四五六七八九十０１２３４５６７８９０", 0));
+        assertEquals("あいうえおかきくけ\\nこたちつてと", stringFormatter.wrapName("あいうえおかきくけこたちつてと", 0));
+        assertEquals("アイウエオカキクケ\\nコ", stringFormatter.wrapName("アイウエオカキクケコ", 0));
+        assertEquals("ｱｲｳｴｵｶｷｸｹｺ plus\\nother half width\\ncharacters", stringFormatter.wrapName("ｱｲｳｴｵｶｷｸｹｺ plus other half-width characters", 0));
+        assertEquals("*", stringFormatter.wrapName(null, 0));
+        assertEquals("*", stringFormatter.wrapName("", 0));
+        assertEquals("_", stringFormatter.wrapName("_", 0));
+        assertEquals("-", stringFormatter.wrapName("-", 0));
+        assertEquals("RA", stringFormatter.wrapName("RA", 0));
+    }
 }

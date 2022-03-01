@@ -24,8 +24,11 @@ package org.apromore.dao;
 
 import java.util.Optional;
 
+import java.util.Set;
 import org.apromore.dao.model.CustomCalendar;
+import org.apromore.dao.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -35,5 +38,11 @@ public interface CustomCalendarRepository extends JpaRepository<CustomCalendar, 
 
     Optional<CustomCalendar> findById(Long id);
 
+    /**
+     * @param user arbitrary, but non-null
+     * @return all custom calendars owned by the specified <var>user</var>
+     */
+    @Query("SELECT c FROM User u JOIN u.calendars c WHERE u = ?1")
+    Set<CustomCalendar> findByUser(User user);
 
 }

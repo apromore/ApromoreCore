@@ -415,4 +415,6 @@ if(!Apromore.I18N.Attachment) Apromore.I18N.Attachment = {};
 Apromore.I18N.Attachment.attachment = "Attachment";
 Apromore.I18N.Attachment.showDesc = "Show attachments";
 Apromore.I18N.Attachment.hideDesc = "Hide attachments";
-
+Apromore.I18N.Attachment.comment = "Comments";
+Apromore.I18N.Attachment.showComments = "Show comments";
+Apromore.I18N.Attachment.hideComments = "Hide comments";

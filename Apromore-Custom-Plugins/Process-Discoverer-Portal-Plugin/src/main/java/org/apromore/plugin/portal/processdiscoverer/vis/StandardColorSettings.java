@@ -46,11 +46,14 @@ public class StandardColorSettings {
     private final String end_event_edge_color = "#646464";
     private final String gateway_bg_color = "white"; //"#C0A1BE";
     private final String edge_starting_ending_color = "#646464";
+	private final String edge_cost_color = "#2E9A56";
 
-	 private final Color NODE_LIGHT_BLUE = new Color(226,242,248);
-	 private final Color NODE_DARK_BLUE = new Color(91,136,155);
-	 private final Color NODE_LIGHT_RED = new Color(238,206,211);
-	 private final Color NODE_DARK_RED = new Color(142,43,60);
+	private final Color NODE_LIGHT_BLUE = new Color(226,242,248);
+	private final Color NODE_DARK_BLUE = new Color(91,136,155);
+	private final Color NODE_LIGHT_RED = new Color(238,206,211);
+	private final Color NODE_DARK_RED = new Color(142,43,60);
+	private final Color NODE_LIGHT_GREEN = new Color(226, 246, 233);
+	private final Color NODE_DARK_GREEN = new Color(97, 205, 138);
 
 	// Sync closer to dash palette
 	// Two bases for the frequency and duration:
@@ -65,14 +68,18 @@ public class StandardColorSettings {
 	private final Color EDGE_DARK_BLUE = new Color(70,105,119);
 	private final Color EDGE_LIGHT_RED = new Color(180, 100, 100);
 	private final Color EDGE_DARK_RED = new Color(142,43,60);
-	
+	private final Color EDGE_LIGHT_GREEN = new Color(52, 173, 97);
+	private final Color EDGE_DARK_GREEN = new Color(31, 105, 58);
+
 	private double text_color_limit = 0.7;
 	
     private final LinearColorBlender activity_frequency_blender = new LinearColorBlender(NODE_LIGHT_BLUE, NODE_DARK_BLUE);
     private final LinearColorBlender activity_duration_blender = new LinearColorBlender(NODE_LIGHT_RED, NODE_DARK_RED);
+	private final LinearColorBlender activity_cost_blender = new LinearColorBlender(NODE_LIGHT_GREEN, NODE_DARK_GREEN);
     private final LinearColorBlender edge_frequency_blender = new LinearColorBlender(EDGE_LIGHT_BLUE, EDGE_DARK_BLUE);
     private final LinearColorBlender edge_duration_blender = new LinearColorBlender(EDGE_LIGHT_RED, EDGE_DARK_RED);
-    
+	private final LinearColorBlender edge_cost_blender = new LinearColorBlender(EDGE_LIGHT_GREEN, EDGE_DARK_GREEN);
+
     public String getStartEventBackgroundColor() {
     	return start_event_bg_color;
     }
@@ -95,7 +102,9 @@ public class StandardColorSettings {
 		if (node_relative_weight < 0) node_relative_weight = 0;
 		
 		AbstractionParams params = visContext.getProcessAbstraction().getAbstractionParams();
-		LinearColorBlender colorBlender = (params.getPrimaryType() == MeasureType.FREQUENCY ? activity_frequency_blender : activity_duration_blender);
+		LinearColorBlender colorBlender = (params.getPrimaryType() == MeasureType.FREQUENCY ?
+			activity_frequency_blender : (params.getPrimaryType() == MeasureType.DURATION ?
+			activity_duration_blender : activity_cost_blender));
         int background_color = colorBlender.blend(node_relative_weight).getRGB();
         return "#" + Integer.toHexString(background_color).substring(2);
 	}
@@ -140,8 +149,11 @@ public class StandardColorSettings {
         else if (params.getPrimaryType() == MeasureType.FREQUENCY) {
         	return "#" + Integer.toHexString(edge_frequency_blender.blend(edge_relative_weight).getRGB()).substring(2);
         }
+		else if (params.getPrimaryType() == MeasureType.DURATION) {
+			return "#" + Integer.toHexString(edge_duration_blender.blend(edge_relative_weight).getRGB()).substring(2);
+		}
         else {
-            return "#" + Integer.toHexString(edge_duration_blender.blend(edge_relative_weight).getRGB()).substring(2);
+            return edge_cost_color;
         }
 	}
 }

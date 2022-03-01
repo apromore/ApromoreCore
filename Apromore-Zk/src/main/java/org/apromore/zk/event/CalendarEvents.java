@@ -19,11 +19,13 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+
 package org.apromore.zk.event;
 
 public abstract class CalendarEvents {
 
-    private CalendarEvents () {}
+    private CalendarEvents() {
+    }
 
     public static final String TOPIC = "org/apromore/plugin/calendar";
 

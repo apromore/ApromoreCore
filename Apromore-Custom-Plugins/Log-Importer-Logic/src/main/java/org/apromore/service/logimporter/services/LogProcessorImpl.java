@@ -38,6 +38,8 @@ import org.apromore.service.logimporter.model.LogMetaData;
 import org.apromore.service.logimporter.utilities.FileUtils;
 
 /**
+ * Logic to process a single line of a log.
+ *
  * @author 2021-08-18 18:15:00 frankma
  */
 public class LogProcessorImpl implements LogProcessor {
@@ -51,28 +53,28 @@ public class LogProcessorImpl implements LogProcessor {
         if (logErrorReport == null) {
             logErrorReport = new ArrayList<>();
         }
-        int initialErrorLogSize = logErrorReport.size();
+        final int initialErrorLogSize = logErrorReport.size();
 
         // Construct an event
-        HashMap<String, String> caseAttributes = new HashMap<>(logMetaData.getCaseAttributesPos().size());
-        HashMap<String, String> eventAttributes = new HashMap<>(logMetaData.getEventAttributesPos().size());
-        HashMap<String, Timestamp> otherTimestamps = new HashMap<>(logMetaData.getOtherTimestamps().size());
+        final HashMap<String, String> caseAttributes = new HashMap<>(logMetaData.getCaseAttributesPos().size());
+        final HashMap<String, String> eventAttributes = new HashMap<>(logMetaData.getEventAttributesPos().size());
+        final HashMap<String, Timestamp> otherTimestamps = new HashMap<>(logMetaData.getOtherTimestamps().size());
         maskPos = logMetaData.getMaskPos();
 
         // CaseId
-        if(logMetaData.getCaseIdPos() == LogMetaData.HEADER_ABSENT) {
+        if (logMetaData.getCaseIdPos() == LogMetaData.HEADER_ABSENT) {
             throw new InvalidLogMetadataException("No Case Id in metadata");
         }
 
-        String caseId = getStringAttribute(line, header, logMetaData.getCaseIdPos(), lineIndex, logErrorReport,
+        final String caseId = getStringAttribute(line, header, logMetaData.getCaseIdPos(), lineIndex, logErrorReport,
             "Case id is empty or has a null value!");
 
         // Activity
-        String activity = getStringAttribute(line, header, logMetaData.getActivityPos(), lineIndex, logErrorReport,
-            "Activity is empty or has a null value!");
+        final String activity = getStringAttribute(line, header, logMetaData.getActivityPos(), lineIndex,
+            logErrorReport, "Activity is empty or has a null value!");
 
         // End Timestamp
-        Timestamp endTimestamp = getTimestampAttribute(line, header, logMetaData.getEndTimestampPos(), lineIndex,
+        final Timestamp endTimestamp = getTimestampAttribute(line, header, logMetaData.getEndTimestampPos(), lineIndex,
             logMetaData.getEndTimestampFormat(), logMetaData.getTimeZone(), logErrorReport,
             "Invalid end timestamp due to wrong format or daylight saving!");
 
@@ -89,11 +91,11 @@ public class LogProcessorImpl implements LogProcessor {
             logErrorReport, otherTimestamps);
 
         // Resource
-        String resource = getStringAttribute(line, header, logMetaData.getResourcePos(), lineIndex, logErrorReport,
-            "Resource is empty or has a null value!");
+        final String resource = getStringAttribute(line, header, logMetaData.getResourcePos(), lineIndex,
+            logErrorReport, "Resource is empty or has a null value!");
 
         // Role
-        String role = getStringAttribute(line, header, logMetaData.getRolePos(), lineIndex, logErrorReport,
+        final String role = getStringAttribute(line, header, logMetaData.getRolePos(), lineIndex, logErrorReport,
             "Role is empty or has a null value!");
 
         // Case Attributes
@@ -161,9 +163,8 @@ public class LogProcessorImpl implements LogProcessor {
         if (attributePositions != null && !attributePositions.isEmpty()) {
             for (int columnPos : attributePositions) {
                 if (line.size() > columnPos) {
-                    attributeHeaderToValue.put(header.get(columnPos), applyMask(columnPos) ?
-                        FileUtils.sha256Hashing(line.get(columnPos)) :
-                        line.get(columnPos));
+                    attributeHeaderToValue.put(header.get(columnPos), applyMask(columnPos)
+                        ? FileUtils.sha256Hashing(line.get(columnPos)) : line.get(columnPos));
                 }
             }
         }

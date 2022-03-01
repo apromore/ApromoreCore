@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE suppressions PUBLIC
+        "-//Puppy Crawl//DTD Suppressions 1.2//EN"
+        "http://checkstyle.sourceforge.net/dtds/suppressions_1_2.dtd">
+
+<suppressions>
+    <suppress files="CSVFileReader.java" checks="AbbreviationAsWordInName"/>
+    <suppress files="XLSReader.java" checks="AbbreviationAsWordInName"/>
+    <suppress files="MetaDataServiceXLSXImpl.java" checks="AbbreviationAsWordInName"/>
+    <suppress files="MetaDataServiceCSVImpl.java" checks="AbbreviationAsWordInName"/>
+    <suppress files="XLSX2CSV.java" checks="AbbreviationAsWordInName"/>
+    <suppress files="ParquetImporterCSVImpl.java" checks="AbbreviationAsWordInName"/>
+    <suppress files="ParquetImporterFactoryCSVImpl.java" checks="AbbreviationAsWordInName"/>
+    <suppress files="ParquetImporterFactoryXLSXImpl.java" checks="AbbreviationAsWordInName"/>
+    <suppress files="ParquetImporterXLSXImpl.java" checks="AbbreviationAsWordInName"/>
+    <suppress files="LogImporterCSVImpl.java" checks="AbbreviationAsWordInName"/>
+    <suppress files="LogImporterXLSXImpl.java" checks="AbbreviationAsWordInName"/>
+    <suppress files="CSVUtilities.java" checks="AbbreviationAsWordInName"/>
+    <suppress files="InvalidCSVException.java" checks="AbbreviationAsWordInName"/>
+
+    <suppress files="LogImporterCSVImplUnitTest.java" checks="AbbreviationAsWordInName"/>
+    <suppress files="XLSXLogImporterCSVImplUnitTest.java" checks="AbbreviationAsWordInName"/>
+    <suppress files="ParquetLogImporterCSVImplUnitTest.java" checks="AbbreviationAsWordInName"/>
+    <suppress files="XLSXToParquetImporterUnitTest.java" checks="AbbreviationAsWordInName"/>
+    <suppress files="ParquetImporterCSVImplUnitTest.java" checks="AbbreviationAsWordInName"/>
+    <suppress files="ParquetImporterParquetImplUnitTest.java" checks="AbbreviationAsWordInName"/>
+
+
+</suppressions>
