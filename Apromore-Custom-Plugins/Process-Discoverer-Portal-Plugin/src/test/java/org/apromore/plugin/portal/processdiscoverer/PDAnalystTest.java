@@ -18,7 +18,24 @@
 
 package org.apromore.plugin.portal.processdiscoverer;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import org.apromore.apmlog.xes.XLogToImmutableLog;
+import org.apromore.calendar.builder.CalendarModelBuilder;
+import org.apromore.calendar.model.CalendarModel;
 import org.apromore.commons.datetime.DateTimeUtils;
 import org.apromore.logman.Constants;
 import org.apromore.logman.attribute.AttributeLevel;
@@ -51,15 +68,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import static org.junit.Assert.*;
-
 @RunWith(MockitoJUnitRunner.class)
 public class PDAnalystTest extends TestDataSetup {
 
@@ -91,7 +99,7 @@ public class PDAnalystTest extends TestDataSetup {
         XLog validLog = readLogWithOneTraceOneEvent();
         ContextData contextData = ContextData.valueOf("domain1", "username1", 0,
             "logName", 0, "folderName", false, true,
-                Map.of(), "AUD");
+            Map.of(), "AUD");
         Mockito.when(eventLogService.getXLog(contextData.getLogId())).thenReturn(validLog);
         Mockito.when(eventLogService.getAggregatedLog(contextData.getLogId())).thenReturn(
             XLogToImmutableLog.convertXLog("ProcessLog", validLog));
@@ -106,7 +114,7 @@ public class PDAnalystTest extends TestDataSetup {
         XLog validLog = readLogWithOneTraceOneEvent();
         ContextData contextData = ContextData.valueOf("domain1", "username1", 0,
             "logName", 0, "folderName", false, true,
-                Map.of(), "AUD");
+            Map.of(), "AUD");
         Mockito.when(eventLogService.getXLog(contextData.getLogId())).thenReturn(validLog);
         Mockito.when(eventLogService.getAggregatedLog(contextData.getLogId())).thenReturn(
             XLogToImmutableLog.convertXLog("ProcessLog", validLog));
@@ -120,7 +128,7 @@ public class PDAnalystTest extends TestDataSetup {
         XLog validLog = readLogWithTwoTraceEachTwoEvents();
         ContextData contextData = ContextData.valueOf("domain1", "username1", 0,
             "logName", 0, "folderName", false, true,
-                Map.of(), "AUD");
+            Map.of(), "AUD");
         Mockito.when(eventLogService.getXLog(contextData.getLogId())).thenReturn(validLog);
         Mockito.when(eventLogService.getAggregatedLog(contextData.getLogId())).thenReturn(
             XLogToImmutableLog.convertXLog("ProcessLog", validLog));
@@ -177,7 +185,7 @@ public class PDAnalystTest extends TestDataSetup {
         List<PerspectiveDetails> actDetails = analyst.getActivityDetails();
         assertEquals(1, actDetails.size());
         assertEquals("a", actDetails.get(0).getValue());
-        assertEquals(1, actDetails.get(0).getFreq(),0);
+        assertEquals(1, actDetails.get(0).getFreq(), 0);
         assertEquals("100", actDetails.get(0).getFreqStr());
         assertEquals(1, actDetails.get(0).getOccurrences());
     }
@@ -357,8 +365,8 @@ public class PDAnalystTest extends TestDataSetup {
         Map<String, String> activityAverages = analyst.getActivityAttributeAverageMap(1, 1);
 
         Map<String, String> expectedMap = Map.of(
-                "concept:name", "a",
-                "Average riskLevelNumber", "2.5"
+            "concept:name", "a",
+            "Average riskLevelNumber", "2.5"
         );
 
         assertEquals(expectedMap, activityAverages);
@@ -555,6 +563,10 @@ public class PDAnalystTest extends TestDataSetup {
 
     @Test
     public void test_SimulationData() throws Exception {
+        // given
+        CalendarModel businessCalendar = new CalendarModelBuilder().with5DayWorking().build();
+        businessCalendar.setName("Business_Calendar");
+
         UserOptionsData userOptions = createUserOptions(100, 100, 40,
             MeasureType.FREQUENCY,
             MeasureAggregation.CASES,
@@ -568,11 +580,14 @@ public class PDAnalystTest extends TestDataSetup {
             MeasureRelation.ABSOLUTE,
             false,
             false);
-        PDAnalyst analyst = createPDAnalyst(readLogWithOneTraceStartCompleteEventsNonOverlapping());
+        PDAnalyst analyst = createPDAnalyst(readLogWithOneTraceStartCompleteEventsNonOverlapping(), businessCalendar);
         Abstraction abs = analyst.discoverProcess(userOptions).get().getAbstraction();
         BPMNAbstraction bpmnAbstraction = analyst.convertToBpmnAbstractionForExport(abs);
 
+        // when
         SimulationData data = analyst.getSimulationData(bpmnAbstraction);
+
+        // then
         assertEquals(1, data.getCaseCount());
         assertEquals(5, data.getResourceCount());
         assertEquals(1, data.getResourceCountsByRole().size());
@@ -596,6 +611,9 @@ public class PDAnalystTest extends TestDataSetup {
         );
         assertGateways(expectedEdgeFrequencies, data.getEdgeFrequencies());
 
+        assertNotNull(data.getCalendarModel());
+        assertEquals("Business_Calendar", data.getCalendarModel().getName());
+
         // Filter out some events
         analyst.filter_RemoveEventsAnyValueOfEventAttribute("c", "concept:name");
         Abstraction abs2 = analyst.discoverProcess(userOptions).get().getAbstraction();
@@ -618,6 +636,7 @@ public class PDAnalystTest extends TestDataSetup {
 
     @Test
     public void test_SimulationData_with_roles() throws Exception {
+        // given
         UserOptionsData userOptions = createUserOptions(100, 100, 40,
             MeasureType.FREQUENCY,
             MeasureAggregation.CASES,
@@ -635,7 +654,10 @@ public class PDAnalystTest extends TestDataSetup {
         Abstraction abs = analyst.discoverProcess(userOptions).get().getAbstraction();
         BPMNAbstraction bpmnAbstraction = analyst.convertToBpmnAbstractionForExport(abs);
 
+        // when
         SimulationData data = analyst.getSimulationData(bpmnAbstraction);
+
+        // then
         assertEquals(1, data.getCaseCount());
         assertEquals(5, data.getResourceCount());
         assertEquals(6, data.getResourceCountsByRole().size());
@@ -654,6 +676,7 @@ public class PDAnalystTest extends TestDataSetup {
 
     @Test
     public void test_SimulationData_role_precedence_for_activities() throws Exception {
+        // given
         UserOptionsData userOptions = createUserOptions(100, 100, 40,
             MeasureType.FREQUENCY,
             MeasureAggregation.CASES,
@@ -671,7 +694,10 @@ public class PDAnalystTest extends TestDataSetup {
         Abstraction abs = analyst.discoverProcess(userOptions).get().getAbstraction();
         BPMNAbstraction bpmnAbstraction = analyst.convertToBpmnAbstractionForExport(abs);
 
+        // when
         SimulationData data = analyst.getSimulationData(bpmnAbstraction);
+
+        // then
         assertEquals(1, data.getCaseCount());
         assertEquals(5, data.getResourceCount());
         assertEquals(5, data.getResourceCountsByRole().size());
@@ -690,14 +716,19 @@ public class PDAnalystTest extends TestDataSetup {
 
     @Test
     public void test_simulation_data_with_null_abstraction() throws Exception {
+        // given
         PDAnalyst analyst = createPDAnalyst(readLogWithOneTraceStartCompleteEventsNonOverlapping());
+
+        // when
         SimulationData data = analyst.getSimulationData(null);
 
+        // then
         assertNull(data);
     }
 
     @Test
     public void test_only_xor_gateways_in_simulation_data() throws Exception {
+        // given
         UserOptionsData userOptions = createUserOptions(100, 100, 40,
             MeasureType.FREQUENCY,
             MeasureAggregation.CASES,
@@ -722,7 +753,10 @@ public class PDAnalystTest extends TestDataSetup {
         bpmnAbstraction.getDiagram().addGateway("MockGw4", Gateway.GatewayType.COMPLEX);
         assertEquals(8, bpmnAbstraction.getDiagram().getGateways().size());
 
+        // when
         SimulationData data = analyst.getSimulationData(bpmnAbstraction);
+
+        // then
         Map<String, Map<String, Double>> expectedEdgeFrequencies = Map.of(
             "node4", Map.of("edge3", 0.0, "edge4", 1.0),
             "node5", Map.of("edge5", 1.0),

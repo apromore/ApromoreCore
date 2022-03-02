@@ -690,6 +690,7 @@ public class PDAnalyst {
                 .endTime(filteredAPMLog.getEndTime())
                 .nodeWeights(getNodeWeights(bpmnAbstraction))
                 .edgeFrequencies(groupOutboundEdgeFrequenciesByGateway(bpmnAbstraction))
+                .calendarModel(getCalendarModel())
                 .build();
         }
         return simulationData;
