@@ -127,7 +127,7 @@
                 </div>
             </div>
         </div>
-        <div>
+        <div visible="false">
             <label sclass="ap-permission-group-title" value="${$composer.labels.permission_monitor_group_title}"/>
             <div sclass="ap-permission-group-box">
                 <div sclass="ap-permission-switch">
