@@ -125,14 +125,15 @@ public class PDAnalyst {
     private final APMLogFilter apmLogFilter;
     
     @Getter
-    Map<Integer, List<ATrace>> caseVariantGroupMap;
+    private Map<Integer, List<ATrace>> caseVariantGroupMap;
 
     private String caseVariantPerspective = XESAttributeCodes.CONCEPT_NAME;
 
     // Calendar management
-    CalendarModel calendarModel;
+    private CalendarModel calendarModel;
 
-    ConfigData configData;
+    private ConfigData configData;
+    private ContextData contextData;
     
     public PDAnalyst(ContextData contextData, ConfigData configData, EventLogService eventLogService) throws Exception {
         XLog xlog = eventLogService.getXLog(contextData.getLogId());
@@ -154,6 +155,7 @@ public class PDAnalyst {
 
         long timer = System.currentTimeMillis();
         this.configData = configData;
+        this.contextData = contextData;
         this.aLog = new ALog(xlog);
         LOGGER.debug("ALog.constructor: {} ms.", System.currentTimeMillis() - timer);
         indexableAttributes = aLog.getAttributeStore().getPerspectiveEventAttributes(configData.getMaxNumberOfNodes(), perspectiveAttKeys);
@@ -289,7 +291,11 @@ public class PDAnalyst {
     }
     
     public XLog getXLog() {
-        return this.filteredAPMLog.toXLog();
+        XLog log = this.filteredAPMLog.toXLog();
+        log.getAttributes().put(Constants.ATT_KEY_CONCEPT_NAME,
+            new XFactoryNaiveImpl()
+                .createAttributeLiteral(Constants.ATT_KEY_CONCEPT_NAME, contextData.getLogName(), null));
+        return log;
     }
     
     public boolean hasEmptyData() {
