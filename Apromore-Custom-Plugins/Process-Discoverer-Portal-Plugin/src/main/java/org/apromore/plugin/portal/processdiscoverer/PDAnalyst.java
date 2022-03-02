@@ -22,20 +22,6 @@
 
 package org.apromore.plugin.portal.processdiscoverer;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.BitSet;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -95,12 +81,26 @@ import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Gatew
 import org.apromore.processsimulation.dto.EdgeFrequency;
 import org.apromore.processsimulation.dto.SimulationData;
 import org.apromore.service.EventLogService;
+import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.model.XLog;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.ListIterable;
 import org.slf4j.Logger;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.BitSet;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * PDAnalyst represents a process analyst who will performs log analysis in the form of graphs and BPMN diagrams
@@ -155,9 +155,11 @@ public class PDAnalyst {
     private String caseVariantPerspective = XESAttributeCodes.CONCEPT_NAME;
 
     // Calendar management
-    CalendarModel calendarModel;
+    private CalendarModel calendarModel;
 
-    ConfigData configData;
+    private ConfigData configData;
+
+    private ContextData contextData;
 
     public PDAnalyst(ContextData contextData, ConfigData configData, EventLogService eventLogService) throws Exception {
         XLog xlog = eventLogService.getXLog(contextData.getLogId());
@@ -181,6 +183,7 @@ public class PDAnalyst {
 
         long timer = System.currentTimeMillis();
         this.configData = configData;
+        this.contextData = contextData;
         this.aLog = new ALog(xlog);
         LOGGER.debug("ALog.constructor: {} ms.", System.currentTimeMillis() - timer);
         indexableAttributes = aLog.getAttributeStore()
@@ -319,7 +322,11 @@ public class PDAnalyst {
     }
 
     public XLog getXLog() {
-        return this.filteredAPMLog.toXLog();
+        XLog log = this.filteredAPMLog.toXLog();
+        log.getAttributes().put(Constants.ATT_KEY_CONCEPT_NAME,
+                new XFactoryNaiveImpl()
+                    .createAttributeLiteral(Constants.ATT_KEY_CONCEPT_NAME, contextData.getLogName(), null));
+        return log;
     }
 
     public boolean hasEmptyData() {
