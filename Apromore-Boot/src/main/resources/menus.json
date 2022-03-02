@@ -84,6 +84,9 @@
             },
             {
               "id": "dashboard.portal.DashboardPlugin"
+            },
+            {
+              "id": "org.apromore.ppm.portal.services.PredictorTrainerPortalPlugin"
             }
           ]
         },
@@ -175,6 +178,12 @@
             },
             {
               "id": "APPLY_CALENDAR_SUB_MENU"
+            },
+            {
+              "id": "SEPARATOR"
+            },
+            {
+              "id": "org.apromore.ppm.portal.services.PredictorTrainerPortalPlugin"
             },
             {
               "id": "SEPARATOR"
