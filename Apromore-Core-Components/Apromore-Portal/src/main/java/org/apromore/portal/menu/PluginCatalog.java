@@ -65,6 +65,7 @@ public abstract class PluginCatalog {
     public static final String PLUGIN_CHECK_CONFORMANCE = "org.apromore.plugin.portal.conformancechecking.ConformanceCheckingPlugin";
     public static final String PLUGIN_SIMULATE_MODEL = "org.apromore.plugin.portal.bimp.BIMPPortalPlugin";
     public static final String PLUGIN_DASHBOARD = "dashboard.portal.DashboardPlugin";
+    public static final String PLUGIN_PREDICTOR_TRAINER = "org.apromore.ppm.portal.services.PredictorTrainerPortalPlugin";
 
     public static final String PLUGIN_MERGE_MODELS = "org.apromore.plugin.merge.portal.MergePlugin";
     public static final String PLUGIN_SEARCH_MODELS = "org.apromore.plugin.similaritysearch.portal.SimilaritySearchPlugin";
