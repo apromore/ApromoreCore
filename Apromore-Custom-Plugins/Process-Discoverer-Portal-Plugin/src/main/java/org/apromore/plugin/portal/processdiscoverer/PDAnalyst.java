@@ -69,6 +69,7 @@ import org.apromore.processdiscoverer.Abstraction;
 import org.apromore.processdiscoverer.AbstractionParams;
 import org.apromore.processdiscoverer.ProcessDiscoverer;
 import org.apromore.service.EventLogService;
+import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.model.XLog;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.ListIterable;
