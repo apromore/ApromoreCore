@@ -153,6 +153,7 @@ public class PDAnalyst {
     private String caseVariantPerspective = XESAttributeCodes.CONCEPT_NAME;
 
     // Calendar management
+    @Getter
     CalendarModel calendarModel;
 
     ConfigData configData;
@@ -681,6 +682,7 @@ public class PDAnalyst {
                 .endTime(filteredAPMLog.getEndTime())
                 .nodeWeights(getNodeWeights(bpmnAbstraction))
                 .edgeFrequencies(groupOutboundEdgeFrequenciesByGateway(bpmnAbstraction))
+                .calendarModel(getCalendarModel())
                 .build();
         }
         return simulationData;

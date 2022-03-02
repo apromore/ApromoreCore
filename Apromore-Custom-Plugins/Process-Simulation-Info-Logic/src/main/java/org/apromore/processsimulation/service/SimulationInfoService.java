@@ -159,32 +159,15 @@ public class SimulationInfoService {
      * @return the inter-arrival time of events (in milliseconds)
      */
     protected double getInterArrivalTime(final SimulationData simulationData) {
-        long startTimeMillis = simulationData.getStartTime();
-        long endTimeMillis = simulationData.getEndTime();
-
-        /*
-         * CalendarModel.getDurationMillis() is not sensitive for time durations within the same day
-         * For inter work day (8 hours) time durations, simply use the difference
-         */
-        long timeDiff = endTimeMillis - startTimeMillis;
-
-        if (timeDiff > TimeUnit.DAYS.getNumberOfMilliseconds()) {
-            /*
-             * For durations greater than a day, allow the CalendarModel to determine the duration based on
-             * the default (8 hour per work day) calendar
-             */
-            CalendarModel arrivalCalendar = new CalendarModelBuilder().with5DayWorking().build();
-            timeDiff = arrivalCalendar.getDurationMillis(startTimeMillis, endTimeMillis);
-        } else if (timeDiff > WORK_DAY_MILLIS) {
-            /*
-             * CalendarModel.getDurationMillis() is not sensitive for time durations within the same day
-             * For time durations greater than a work day (8 hours) but within a 24 hour window,
-             * use the 8 hour work day
-             */
-            timeDiff = WORK_DAY_MILLIS;
+        CalendarModel arrivalCalendar = null;
+        if (simulationData.getCalendarModel() == null) {
+            arrivalCalendar = new CalendarModelBuilder().with5DayWorking().build();
+        } else {
+            arrivalCalendar = simulationData.getCalendarModel();
         }
 
-        return timeDiff / (double) simulationData.getCaseCount();
+        return arrivalCalendar.getDurationMillis(simulationData.getStartTime(), simulationData.getEndTime())
+               / (double) simulationData.getCaseCount();
     }
 
     private void deriveTaskInfo(

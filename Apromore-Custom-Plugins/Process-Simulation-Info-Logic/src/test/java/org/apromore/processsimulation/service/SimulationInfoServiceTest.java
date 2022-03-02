@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.DayOfWeek;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,6 +43,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
+import org.apromore.calendar.builder.CalendarModelBuilder;
+import org.apromore.calendar.model.CalendarModel;
 import org.apromore.commons.datetime.DateTimeUtils;
 import org.apromore.processsimulation.config.SimulationInfoConfig;
 import org.apromore.processsimulation.dto.SimulationData;
@@ -655,9 +658,12 @@ class SimulationInfoServiceTest {
     private void testTimeUnitsAndDurations(long startTime, long endTime, TimeUnit expectedTimeUnit) {
         // given
         long caseCount = 1;
+        CalendarModel calendarModel = new CalendarModelBuilder().with5DayWorking().build();
+        calendarModel.setZoneId(ZoneId.SHORT_IDS.get("AET"));
         SimulationData simulationData = SimulationData.builder()
             .startTime(startTime)
             .endTime(endTime)
+            .calendarModel(calendarModel)
             .caseCount(caseCount)
             .build();
 
