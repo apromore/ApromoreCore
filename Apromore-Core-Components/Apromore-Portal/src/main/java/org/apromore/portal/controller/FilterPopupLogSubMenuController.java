@@ -42,6 +42,7 @@ import org.apromore.portal.model.UserMetadataSummaryType;
 import org.apromore.portal.model.UserType;
 import org.slf4j.Logger;
 import org.zkoss.util.resource.Labels;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.Menu;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Menupopup;
@@ -49,6 +50,8 @@ import org.zkoss.zul.Menupopup;
 public class FilterPopupLogSubMenuController extends PopupLogSubMenuController {
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(FilterPopupLogSubMenuController.class);
     private static final String ICON_PLUS = "z-icon-plus-circle";
+    private static final String USER_METADATA_SUM = "USER_METADATA_SUM";
+
     public FilterPopupLogSubMenuController(PopupMenuController popupMenuController,
                                            MainController mainController,
                                            Menupopup popupMenu,
@@ -58,7 +61,7 @@ public class FilterPopupLogSubMenuController extends PopupLogSubMenuController {
     }
 
     private void constructMenu() {
-        String subMenuImage = getSubMenuImage();
+        String subMenuImage = getFilterSubMenuImage();
         if (subMenuImage != null) {
             Menu subMenu = new Menu();
             subMenu.setLabel(Labels.getLabel("plugin_create_Edit_filter_text"));
@@ -81,7 +84,7 @@ public class FilterPopupLogSubMenuController extends PopupLogSubMenuController {
             try {
                 Map<String, Object> attrMap = new HashMap<>();
                 attrMap.put("FORWARD_FROM_CONTEXT_MENU", true);
-                attrMap.put("USER_METADATA_SUM", 0);
+                attrMap.put(USER_METADATA_SUM, 0);
                 attrMap.put("EDIT_FILTER", true);
                 PortalPlugin plugin = portalPluginMap.get(PluginCatalog.PLUGIN_FILTER_LOG);
                 plugin.setSimpleParams(attrMap);
@@ -118,21 +121,20 @@ public class FilterPopupLogSubMenuController extends PopupLogSubMenuController {
         Menuitem item = new Menuitem();
         item.setLabel("...");
         item.setStyle(CENTRE_ALIGN);
-        item.addEventListener(ON_CLICK, event -> {
-            viewFilter(null);
-        });
+        item.addEventListener(ON_CLICK, event -> viewFilter(null));
         menuPopup.appendChild(item);
     }
 
     private void viewFilter(UserMetadataSummaryType umData) {
         try {
+            Executions.getCurrent().getDesktop().setAttribute("DEFAULT_VIEW",false);
             Map<String, Object> attrMap = new HashMap<>();
             attrMap.put("FORWARD_FROM_CONTEXT_MENU", true);
             attrMap.put("EDIT_FILTER", true);
             if (umData != null) {
-                attrMap.put("USER_METADATA_SUM", umData.getId());
+                attrMap.put(USER_METADATA_SUM, umData.getId());
             } else {
-                attrMap.put("USER_METADATA_SUM", null);
+                attrMap.put(USER_METADATA_SUM, null);
             }
             PortalPlugin plugin = portalPluginMap.get(PluginCatalog.PLUGIN_FILTER_LOG);
             plugin.setSimpleParams(attrMap);
@@ -157,7 +159,7 @@ public class FilterPopupLogSubMenuController extends PopupLogSubMenuController {
         popup.appendChild(item);
     }
 
-    private String getSubMenuImage() {
+    private String getFilterSubMenuImage() {
         String subMenuImagePath = null;
         try {
             UserType currentUser = UserSessionManager.getCurrentUser();

@@ -318,7 +318,7 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
     private void addFullLogDiscoverModelMenuItem(Menupopup popup) {
         Menuitem item = new Menuitem();
         item.setLabel(Labels.getLabel("portal_full_log_discover_model"));
-        item.setImage("~./themes/ap/common/img/icons/filter.svg");
+        item.setImage("~./img/icon/svg/log_icon.svg");
         item.addEventListener(ON_CLICK, event -> {
             try {
                 PortalPlugin plugin = portalPluginMap.get(PluginCatalog.PLUGIN_DISCOVER_MODEL);
