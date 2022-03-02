@@ -35,6 +35,7 @@ import org.apromore.calendar.model.CalendarModel;
 @Getter
 public class SimulationData {
     public static final String DEFAULT_ROLE = "DEFAULT_ROLE";
+    public static final String DEFAULT_RESOURCE = "DEFAULT_RESOURCE";
 
     private long caseCount;
     private long resourceCount;

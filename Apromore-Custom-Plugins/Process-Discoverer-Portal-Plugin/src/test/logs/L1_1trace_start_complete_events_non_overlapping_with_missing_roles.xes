@@ -30,14 +30,12 @@
         
 		<event>
 			<string key="org:resource" value="R1"/>
-			<string key="org:role" value="role_1"/>
 			<date key="time:timestamp" value="2010-10-27T21:59:19.308+10:00"/>
 			<string key="concept:name" value="a"/>
 			<string key="lifecycle:transition" value="start"/>
 		</event>        
 		<event>
 			<string key="org:resource" value="R1"/>
-			<string key="org:role" value="role_1"/>
 			<date key="time:timestamp" value="2010-10-27T22:00:19.308+10:00"/>
 			<string key="concept:name" value="a"/>
 			<string key="lifecycle:transition" value="complete"/>
@@ -202,6 +200,30 @@
 			<string key="concept:name" value="c"/>
 			<string key="lifecycle:transition" value="complete"/>
 		</event>
+
+		<event>
+            <date key="time:timestamp" value="2010-10-27T22:55:19.308+10:00"/>
+            <string key="concept:name" value="e"/>
+            <string key="lifecycle:transition" value="start"/>
+        </event>
+        <event>
+            <date key="time:timestamp" value="2010-10-27T22:56:19.308+10:00"/>
+            <string key="concept:name" value="e"/>
+            <string key="lifecycle:transition" value="complete"/>
+        </event>
+
+        <event>
+            <string key="org:role" value="role_1"/>
+            <date key="time:timestamp" value="2010-10-27T22:57:19.308+10:00"/>
+            <string key="concept:name" value="f"/>
+            <string key="lifecycle:transition" value="start"/>
+        </event>
+        <event>
+            <string key="org:role" value="role_1"/>
+            <date key="time:timestamp" value="2010-10-27T22:58:19.308+10:00"/>
+            <string key="concept:name" value="f"/>
+            <string key="lifecycle:transition" value="complete"/>
+        </event>
         
         
 	</trace>

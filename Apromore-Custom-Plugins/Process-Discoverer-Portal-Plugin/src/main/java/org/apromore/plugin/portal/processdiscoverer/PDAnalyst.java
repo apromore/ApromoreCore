@@ -95,12 +95,26 @@ import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Gatew
 import org.apromore.processsimulation.dto.EdgeFrequency;
 import org.apromore.processsimulation.dto.SimulationData;
 import org.apromore.service.EventLogService;
+import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.model.XLog;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.ListIterable;
 import org.slf4j.Logger;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.BitSet;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * PDAnalyst represents a process analyst who will performs log analysis in the form of graphs and BPMN diagrams
@@ -145,18 +159,22 @@ public class PDAnalyst {
 
     @Getter
     String costAttribute = XESAttributeCodes.ORG_ROLE;
-    @Getter @Setter
+    @Getter
+    @Setter
     Map<String, Double> costTable;
-    @Getter @Setter
+    @Getter
+    @Setter
     String currency = "USD";
 
     private String caseVariantPerspective = XESAttributeCodes.CONCEPT_NAME;
 
     // Calendar management
     @Getter
-    CalendarModel calendarModel;
+    private CalendarModel calendarModel;
 
-    ConfigData configData;
+    private ConfigData configData;
+
+    private ContextData contextData;
 
     public PDAnalyst(ContextData contextData, ConfigData configData, EventLogService eventLogService) throws Exception {
         XLog xlog = eventLogService.getXLog(contextData.getLogId());
@@ -180,6 +198,7 @@ public class PDAnalyst {
 
         long timer = System.currentTimeMillis();
         this.configData = configData;
+        this.contextData = contextData;
         this.aLog = new ALog(xlog);
         LOGGER.debug("ALog.constructor: {} ms.", System.currentTimeMillis() - timer);
         indexableAttributes = aLog.getAttributeStore()
@@ -187,7 +206,7 @@ public class PDAnalyst {
         if (indexableAttributes == null || indexableAttributes.isEmpty()) {
             throw new InvalidDataException(
                 "No perspective attributes could be found in the log with key in " + perspectiveAttKeys.toString() +
-                    " and number of distinct values is less than or equal to " + configData.getMaxNumberOfNodes());
+                " and number of distinct values is less than or equal to " + configData.getMaxNumberOfNodes());
         }
 
         this.originalAPMLog = apmLog;
@@ -318,7 +337,11 @@ public class PDAnalyst {
     }
 
     public XLog getXLog() {
-        return this.filteredAPMLog.toXLog();
+        XLog log = this.filteredAPMLog.toXLog();
+        log.getAttributes().put(Constants.ATT_KEY_CONCEPT_NAME,
+                new XFactoryNaiveImpl()
+                    .createAttributeLiteral(Constants.ATT_KEY_CONCEPT_NAME, contextData.getLogName(), null));
+        return log;
     }
 
     public boolean hasEmptyData() {
@@ -682,7 +705,6 @@ public class PDAnalyst {
                 .endTime(filteredAPMLog.getEndTime())
                 .nodeWeights(getNodeWeights(bpmnAbstraction))
                 .edgeFrequencies(groupOutboundEdgeFrequenciesByGateway(bpmnAbstraction))
-                .calendarModel(getCalendarModel())
                 .build();
         }
         return simulationData;
@@ -712,18 +734,26 @@ public class PDAnalyst {
     private Map<String, Integer> getResourceCountsGroupedByRole() {
         Map<String, Set<String>> rolesToResourcesMap = new HashMap<>();
         filteredPLog.getActivityInstances().stream()
-            .filter(activityInstance -> activityInstance.getAttributes().containsKey(Constants.ATT_KEY_RESOURCE))
             .forEach(activityInstance -> {
-                String role = activityInstance.getAttributeValue(Constants.ATT_KEY_ROLE);
 
-                if (role == null || role.isEmpty()) {
+                // Get the resource attribute (DEFAULT_RESOURCE if null or empty)
+                String resource = activityInstance.getResource();
+                if (ObjectUtils.isEmpty(resource)) {
+                    resource = SimulationData.DEFAULT_RESOURCE;
+                }
+
+                // Get the resource attribute (DEFAULT_ROLE if null or empty)
+                String role = activityInstance.getAttributeValue(Constants.ATT_KEY_ROLE);
+                if (ObjectUtils.isEmpty(role)) {
                     role = SimulationData.DEFAULT_ROLE;
                 }
+
+                // Get the distinct resources for the role, and add it to the set
                 Set<String> resources = rolesToResourcesMap.get(role);
                 if (resources == null) {
                     resources = new HashSet<>();
                 }
-                resources.add(activityInstance.getResource());
+                resources.add(resource);
                 rolesToResourcesMap.put(role, resources);
             });
 
@@ -750,11 +780,12 @@ public class PDAnalyst {
                  * role1 --> The role currently in the map against the key (activity name)
                  * role2 --> The new role that matches an existing key (activity name)
                  *
-                 * An activity can be performed by multiple resources, each with the same or different roles
-                 * We will treat the first role of an activity as the primary role for that activity, and ignore
-                 * the rest.
+                 * An activity could be performed by one or more resources, each with the same or different roles.
+                 * We will treat the first role we find among the list of activities as the primary role for that
+                 * activity, (unless it is currently a DEFAULT_ROLE, and we encounter a non-DEFAULT_ROLE
+                 * in a subsequent activity), and ignore the rest.
                  */
-                (role1, role2) -> role1
+                (role1, role2) -> !role1.equals(SimulationData.DEFAULT_ROLE) ? role1 : role2
 
             ));
 
@@ -767,7 +798,7 @@ public class PDAnalyst {
                 //value --> role
                 bpmnNode -> {
                     String nodeLabel = bpmnNode.getLabel();
-                    return ObjectUtils.isEmpty(nodeLabel)
+                    return ObjectUtils.isEmpty(nodeLabel) || !activityNameToRoleMap.containsKey(nodeLabel)
                         ? SimulationData.DEFAULT_ROLE : activityNameToRoleMap.get(nodeLabel);
                 }));
     }
