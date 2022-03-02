@@ -23,7 +23,6 @@
 package org.apromore.plugin.portal.useradmin;
 
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import org.apromore.dao.model.Permission;
