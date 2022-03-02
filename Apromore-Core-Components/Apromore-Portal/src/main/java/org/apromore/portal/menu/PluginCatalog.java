@@ -77,6 +77,8 @@ public abstract class PluginCatalog {
     public static final String PLUGIN_DISCOVER_MODEL_SUB_MENU = "DISCOVER_MODEL_SUB_MENU";
     public static final String PLUGIN_DASHBOARD_SUB_MENU = "DASHBOARD_SUB_MENU";
     public static final String PLUGIN_LOG_FILTER_SUB_MENU = "LOG_FILTER_SUB_MENU";
+    public static final String PLUGIN_FILTER_SUB_MENU = "FILTER_SUB_MENU";
+    public static final String PLUGIN_CREATE_NEW_FILTER = "CREATE_NEW_FILTER";
     public static final String PLUGIN_APPLY_CALENDAR_SUB_MENU = "APPLY_CALENDAR_SUB_MENU";
     public static final String PLUGIN_CREATE_NEW_CALENDAR = "CREATE_NEW_CALENDAR";
     public static final String PLUGIN_EXISTING_CALENDAR = "EXISTING_CALENDAR";
