@@ -22,6 +22,7 @@
 
 package org.apromore.plugin.portal.useradmin;
 
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -56,7 +57,7 @@ public class EditRolePermissionController extends SelectorComposer<Window> imple
         (SecurityService) Executions.getCurrent().getArg().get("securityService");
     private final String mode = (String) Executions.getCurrent().getArg().get("mode");
 
-    private final Map<PermissionType, Checkbox> permissionToggles = new HashMap<>();
+    private final EnumMap<PermissionType, Checkbox> permissionToggles = new EnumMap<>(PermissionType.class);
 
     @Wire
     private Textbox roleNameTextbox;
