@@ -157,6 +157,11 @@ public interface SecurityService {
     Role updateRole(Role role);
 
     /**
+     * @param role an existing group
+     */
+    void deleteRole(Role role);
+
+    /**
      * Get a particular User by their email.
      * @param email the username of the user we are searching for.
      * @return the logged in User         

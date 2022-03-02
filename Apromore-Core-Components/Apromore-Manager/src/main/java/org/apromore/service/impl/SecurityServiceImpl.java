@@ -263,6 +263,18 @@ public class SecurityServiceImpl implements SecurityService {
   }
 
   /**
+   * @see org.apromore.service.SecurityService#deleteRole(org.apromore.dao.model.Role) {@inheritDoc}
+   */
+  @Override
+  @Transactional(readOnly = false)
+  public void deleteRole(Role role) {
+    //Remove users from role before deleting. This fixes an issue where the
+    //individual user group is deleted when deleting a role.
+    role.setUsers(new HashSet<>());
+    roleRepo.delete(role);
+  }
+
+  /**
    * @see org.apromore.service.SecurityService#getUserByEmail(String) {@inheritDoc}
    */
   @Override

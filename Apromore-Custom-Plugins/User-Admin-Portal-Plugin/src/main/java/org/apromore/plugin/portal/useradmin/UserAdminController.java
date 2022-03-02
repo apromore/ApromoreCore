@@ -535,7 +535,7 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
                     }
 
                     // Update the role collection
-                    if (eventType.equals("CREATE_ROLE")) {
+                    if (eventType.equals("CREATE_ROLE") || eventType.equals("DELETE_ROLE")) {
                         refreshRoles();
                         refreshAssignedRoles();
                     }
@@ -1418,7 +1418,7 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
         }
         String groupNames = String.join(",", groups);
         Messagebox.show(
-            "Do you really want to delete " + groupNames + "?",
+            MessageFormat.format(getLabel("deletePrompt_message"), groupNames),
             dialogTitle,
             Messagebox.OK | Messagebox.CANCEL,
             Messagebox.QUESTION,
@@ -1609,7 +1609,43 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
             Notification.error(getLabel("noPermissionRemoveRole_message"));
             return;
         }
-        Notification.info("Delete roles coming soon!");
+
+        Set<RoleModel> selectedRoles = roleList.getSelection();
+        if (roleList.getSelectionCount() == 0) {
+            Notification.error(getLabel("noDeleteNoRoleSelected_message"));
+            return;
+        }
+
+        if (selectedRoles.stream().anyMatch(r -> isDefaultRole(r.getRole()))) {
+            Notification.error(getLabel("noDeleteDefaultRole_message"));
+            return;
+        }
+
+        List<String> roles = new ArrayList<>();
+        for (RoleModel r : selectedRoles) {
+            roles.add(r.getLabel());
+        }
+        String roleNames = String.join(", ", roles);
+        Messagebox.show(
+            MessageFormat.format(getLabel("deletePrompt_message"), roleNames),
+            dialogTitle,
+            Messagebox.OK | Messagebox.CANCEL,
+            Messagebox.QUESTION,
+            e -> {
+                if (Messagebox.ON_OK.equals(e.getName())) {
+                    for (RoleModel roleModel : selectedRoles) {
+                        Role role = roleModel.getRole();
+                        LOGGER.info("Deleting role " + role.getName());
+                        securityService.deleteRole(role);
+                        Map dataMap = Map.of("type", "DELETE_ROLE");
+                        EventQueues
+                            .lookup(SecurityService.EVENT_TOPIC, getSelf().getDesktop().getWebApp(), true)
+                            .publish(new Event("Role(s) Deleted", null, dataMap));
+                    }
+                    setSelectedRole(null);
+                }
+            }
+        );
     }
 
     @Listen("onClick = #roleCloneBtn")
