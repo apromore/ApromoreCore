@@ -22,8 +22,6 @@
 
 package org.apromore.plugin.portal.processdiscoverer;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
@@ -102,19 +100,6 @@ import org.eclipse.collections.api.list.ListIterable;
 import org.slf4j.Logger;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.BitSet;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * PDAnalyst represents a process analyst who will performs log analysis in the form of graphs and BPMN diagrams
@@ -339,8 +324,8 @@ public class PDAnalyst {
     public XLog getXLog() {
         XLog log = this.filteredAPMLog.toXLog();
         log.getAttributes().put(Constants.ATT_KEY_CONCEPT_NAME,
-                new XFactoryNaiveImpl()
-                    .createAttributeLiteral(Constants.ATT_KEY_CONCEPT_NAME, contextData.getLogName(), null));
+            new XFactoryNaiveImpl()
+                .createAttributeLiteral(Constants.ATT_KEY_CONCEPT_NAME, contextData.getLogName(), null));
         return log;
     }
 
@@ -717,9 +702,9 @@ public class PDAnalyst {
             .collect(Collectors.toMap(
                 node -> node.getId().toString(),
                 node -> attLog.getGraphView().getNodeWeight(node.getLabel(),
-                        MeasureType.DURATION,
-                        MeasureAggregation.MEAN,
-                        MeasureRelation.ABSOLUTE)));
+                    MeasureType.DURATION,
+                    MeasureAggregation.MEAN,
+                    MeasureRelation.ABSOLUTE)));
     }
 
     private long getTotalResourcesCount() {
