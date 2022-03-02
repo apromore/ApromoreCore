@@ -80,7 +80,6 @@ public class SimulationInfoService {
     private static final String XML_START_BPMN_DEFINITIONS_TAG = "<bpmn:definitions";
     private static final String XML_QBP_NAMESPACE = "\n xmlns:qbp=\"http://www.qbp-simulator.com/Schema201212\"\n";
     private static final Locale DOCUMENT_LOCALE = Locale.ENGLISH;
-    private static final long WORK_DAY_MILLIS = TimeUnit.HOURS.getNumberOfMilliseconds() * 8;
 
     private JAXBContext jaxbContext;
 
