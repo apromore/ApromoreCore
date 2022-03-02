@@ -22,6 +22,18 @@
 
 package org.apromore.plugin.portal.processdiscoverer;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.BitSet;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -89,19 +101,6 @@ import org.slf4j.Logger;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.BitSet;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 /**
  * PDAnalyst represents a process analyst who will performs log analysis in the form of graphs and BPMN diagrams
  * PDAnalyst has a number of tools to do its job:
@@ -155,6 +154,7 @@ public class PDAnalyst {
     private String caseVariantPerspective = XESAttributeCodes.CONCEPT_NAME;
 
     // Calendar management
+    @Getter
     private CalendarModel calendarModel;
 
     private ConfigData configData;
@@ -324,8 +324,8 @@ public class PDAnalyst {
     public XLog getXLog() {
         XLog log = this.filteredAPMLog.toXLog();
         log.getAttributes().put(Constants.ATT_KEY_CONCEPT_NAME,
-                new XFactoryNaiveImpl()
-                    .createAttributeLiteral(Constants.ATT_KEY_CONCEPT_NAME, contextData.getLogName(), null));
+            new XFactoryNaiveImpl()
+                .createAttributeLiteral(Constants.ATT_KEY_CONCEPT_NAME, contextData.getLogName(), null));
         return log;
     }
 
@@ -690,6 +690,7 @@ public class PDAnalyst {
                 .endTime(filteredAPMLog.getEndTime())
                 .nodeWeights(getNodeWeights(bpmnAbstraction))
                 .edgeFrequencies(groupOutboundEdgeFrequenciesByGateway(bpmnAbstraction))
+                .calendarModel(getCalendarModel())
                 .build();
         }
         return simulationData;

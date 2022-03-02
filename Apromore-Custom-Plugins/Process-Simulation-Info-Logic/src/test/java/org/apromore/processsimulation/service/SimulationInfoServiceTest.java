@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.DayOfWeek;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,6 +43,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
+import org.apromore.calendar.builder.CalendarModelBuilder;
+import org.apromore.calendar.model.CalendarModel;
+import org.apromore.commons.datetime.DateTimeUtils;
 import org.apromore.processsimulation.config.SimulationInfoConfig;
 import org.apromore.processsimulation.dto.SimulationData;
 import org.apromore.processsimulation.model.Currency;
@@ -348,12 +352,13 @@ class SimulationInfoServiceTest {
         assertNotNull(processSimulationInfo.getId());
         assertNotNull(processSimulationInfo.getErrors());
         assertEquals(100L, processSimulationInfo.getProcessInstances());
-        assertEquals("26784.00", processSimulationInfo.getArrivalRateDistribution().getArg1());
+        assertEquals("6624.00", processSimulationInfo.getArrivalRateDistribution().getArg1());
         assertNull(processSimulationInfo.getArrivalRateDistribution().getArg2());
         assertNull(processSimulationInfo.getArrivalRateDistribution().getMean());
         assertEquals(TimeUnit.HOURS, processSimulationInfo.getArrivalRateDistribution().getTimeUnit());
         assertEquals(DistributionType.EXPONENTIAL, processSimulationInfo.getArrivalRateDistribution().getType());
-        assertEquals("2019-12-31T13:00:00Z", processSimulationInfo.getStartDateTime());
+        assertEquals(DateTimeUtils.toZonedDateTime(1577797200000L).toOffsetDateTime().toString(),
+            processSimulationInfo.getStartDateTime());
         assertEquals(Currency.EUR, processSimulationInfo.getCurrency());
     }
 
@@ -653,9 +658,12 @@ class SimulationInfoServiceTest {
     private void testTimeUnitsAndDurations(long startTime, long endTime, TimeUnit expectedTimeUnit) {
         // given
         long caseCount = 1;
+        CalendarModel calendarModel = new CalendarModelBuilder().with5DayWorking().build();
+        calendarModel.setZoneId(ZoneId.SHORT_IDS.get("AET"));
         SimulationData simulationData = SimulationData.builder()
             .startTime(startTime)
             .endTime(endTime)
+            .calendarModel(calendarModel)
             .caseCount(caseCount)
             .build();
 
@@ -664,15 +672,11 @@ class SimulationInfoServiceTest {
 
         // then
         assertEquals(expectedTimeUnit, simulationInfo.getArrivalRateDistribution().getTimeUnit());
-        assertEquals(getInterArrivalTime(startTime, endTime, caseCount),
-            simulationInfo.getArrivalRateDistribution().getArg1());
-    }
-
-    private String getInterArrivalTime(long startTime, long endTime, long caseCount) {
-        double interArrivalTimeMillis = (endTime - startTime) / (double) caseCount;
-
-        return BigDecimal.valueOf(interArrivalTimeMillis / (double) TimeUnit.SECONDS.getNumberOfMilliseconds())
+        String interArrivalTime = BigDecimal.valueOf(
+                simulationInfoService.getInterArrivalTime(simulationData) / TimeUnit.SECONDS.getNumberOfMilliseconds())
             .setScale(2, RoundingMode.HALF_UP).toString();
+
+        assertEquals(interArrivalTime, simulationInfo.getArrivalRateDistribution().getArg1());
     }
 
     private void assertBpmnGeneralProcessSimulationInfo(String bpmnXmlString)
@@ -685,12 +689,13 @@ class SimulationInfoServiceTest {
         assertNotNull(processSimulationAttrMap.getNamedItem("id").getNodeValue());
         assertEquals(Currency.EUR.toString(), processSimulationAttrMap.getNamedItem("currency").getNodeValue());
         assertEquals("100", processSimulationAttrMap.getNamedItem("processInstances").getNodeValue());
-        assertEquals("2019-12-31T13:00:00Z", processSimulationAttrMap.getNamedItem("startDateTime").getNodeValue());
+        assertEquals(DateTimeUtils.toZonedDateTime(1577797200000L).toOffsetDateTime().toString(),
+            processSimulationAttrMap.getNamedItem("startDateTime").getNodeValue());
 
         Node arrivalDistributionXmlNode = TestHelper.getProcessSimulationInfo(bpmnXmlString,
             "/definitions/process/extensionElements/processSimulationInfo/arrivalRateDistribution");
         NamedNodeMap arrivalRateDistributionAttrMap = arrivalDistributionXmlNode.getAttributes();
-        assertEquals("26784.00", arrivalRateDistributionAttrMap.getNamedItem("arg1").getNodeValue());
+        assertEquals("6624.00", arrivalRateDistributionAttrMap.getNamedItem("arg1").getNodeValue());
         assertNull(arrivalRateDistributionAttrMap.getNamedItem("arg2"));
         assertNull(arrivalRateDistributionAttrMap.getNamedItem("mean"));
         assertEquals(DistributionType.EXPONENTIAL.toString(),

@@ -29,6 +29,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
+import org.apromore.calendar.model.CalendarModel;
 
 @Builder
 @Getter
@@ -40,6 +41,8 @@ public class SimulationData {
     private long resourceCount;
     private long startTime;
     private long endTime;
+
+    private CalendarModel calendarModel;
 
     @Getter(AccessLevel.NONE)
     private Map<String, Integer> resourceCountByRole;
