@@ -89,6 +89,7 @@ import org.zkoss.zul.Window;
 public class UserAdminController extends SelectorComposer<Window> implements LabelSupplier {
 
     private static final String NO_PERMISSION_TO_ALLOCATE_USER = "noPermissionAllocateUserToGroup_message";
+    private static final String DELETE_PROMPT_MESSAGE = "deletePrompt_message";
     private static final String TOGGLE_CLICK_EVENT_NAME = "onToggleClick";
     private static final String SWITCH_TAB_EVENT_NAME = "onSwitchTab";
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(UserAdminController.class);
@@ -534,6 +535,12 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
                         refreshAssignedGroups();
                     }
 
+                    // Update the role collection
+                    if (eventType.equals("CREATE_ROLE") || eventType.equals("DELETE_ROLE")) {
+                        refreshRoles();
+                        refreshAssignedRoles();
+                    }
+
                     // Update the user panel
                     if ("UPDATE_USER".equals(eventType)) {
                         // TO DO: Check for dirty group detail
@@ -635,8 +642,8 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
             String roleName = role.getName();
             boolean coSelectable = "ROLE_INTEGRATOR".equals(roleName);
             assignedRoleModel
-                .add(new TristateModel(roleMap.get(roleName), roleName, role, TristateModel.UNCHECKED, false,
-                    coSelectable));
+                .add(new TristateModel(roleMap.getOrDefault(roleName, roleName), roleName, role,
+                    TristateModel.UNCHECKED, false, coSelectable));
         }
         assignedRoleModel.setMultiple(true);
         assignedRoleListbox.setModel(assignedRoleModel);
@@ -1110,7 +1117,7 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
         }
         String userNames = String.join(",", users);
         Messagebox.show(
-            MessageFormat.format(getLabel("deletePrompt_message"), userNames),
+            MessageFormat.format(getLabel(DELETE_PROMPT_MESSAGE), userNames),
             dialogTitle,
             Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION,
             e -> {
@@ -1412,7 +1419,7 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
         }
         String groupNames = String.join(",", groups);
         Messagebox.show(
-            "Do you really want to delete " + groupNames + "?",
+            MessageFormat.format(getLabel(DELETE_PROMPT_MESSAGE), groupNames),
             dialogTitle,
             Messagebox.OK | Messagebox.CANCEL,
             Messagebox.QUESTION,
@@ -1568,7 +1575,19 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
             Notification.error(getLabel("noPermissionCreateRole_message"));
             return;
         }
-        Notification.info("Create roles coming soon!");
+        try {
+            Map<String, Object> arg = new HashMap<>();
+            arg.put("portalContext", portalContext);
+            arg.put("securityService", securityService);
+            arg.put("mode", "CREATE");
+            Window window = (Window) Executions.getCurrent()
+                .createComponents(getPageDefinition("zul/edit-role-permission.zul"), getSelf(), arg);
+            window.doModal();
+
+        } catch (Exception e) {
+            LOGGER.error("Unable to create role creation dialog", e);
+            Messagebox.show(getLabel("failedLaunchCreateRole_message"));
+        }
     }
 
     @Listen("onClick = #roleEditBtn")
@@ -1591,7 +1610,43 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
             Notification.error(getLabel("noPermissionRemoveRole_message"));
             return;
         }
-        Notification.info("Delete roles coming soon!");
+
+        Set<RoleModel> selectedRoles = roleList.getSelection();
+        if (roleList.getSelectionCount() == 0) {
+            Notification.error(getLabel("noDeleteNoRoleSelected_message"));
+            return;
+        }
+
+        if (selectedRoles.stream().anyMatch(r -> isDefaultRole(r.getRole()))) {
+            Notification.error(getLabel("noDeleteDefaultRole_message"));
+            return;
+        }
+
+        List<String> roles = new ArrayList<>();
+        for (RoleModel r : selectedRoles) {
+            roles.add(r.getLabel());
+        }
+        String roleNames = String.join(", ", roles);
+        Messagebox.show(
+            MessageFormat.format(getLabel(DELETE_PROMPT_MESSAGE), roleNames),
+            dialogTitle,
+            Messagebox.OK | Messagebox.CANCEL,
+            Messagebox.QUESTION,
+            e -> {
+                if (Messagebox.ON_OK.equals(e.getName())) {
+                    for (RoleModel r : selectedRoles) {
+                        Role role = r.getRole();
+                        LOGGER.info(MessageFormat.format("Deleting role {0}", role.getName()));
+                        securityService.deleteRole(role);
+                        Map<String, String> dataMap = Map.of("type", "DELETE_ROLE");
+                        EventQueues
+                            .lookup(SecurityService.EVENT_TOPIC, getSelf().getDesktop().getWebApp(), true)
+                            .publish(new Event("Role(s) Deleted", null, dataMap));
+                    }
+                    setSelectedRole(null);
+                }
+            }
+        );
     }
 
     @Listen("onClick = #roleCloneBtn")
@@ -1616,12 +1671,19 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
         Set<User> users = new HashSet<>(listModel);
         selectedRole.setName(roleNameTextbox.getValue());
         selectedRole.setUsers(users);
-        securityService.updateRole(selectedRole);
-        Notification.info(
-            MessageFormat.format(getLabel("updatedRoleDetails_message"), selectedRole.getName()));
-        isRoleDetailDirty = false;
-        refreshRoles();
-        setSelectedRole(null);
+
+        try {
+            securityService.updateRole(selectedRole);
+            Notification.info(
+                MessageFormat.format(getLabel("updatedRoleDetails_message"), selectedRole.getName()));
+            isRoleDetailDirty = false;
+            refreshRoles();
+            refreshAssignedRoles();
+            setSelectedRole(null);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+            Messagebox.show(getLabel("failedUpdateRole_message"));
+        }
     }
 
     @Listen("onClick = #userSelectAllBtn")
