@@ -33,10 +33,19 @@ import lombok.NonNull;
 @Builder
 @Getter
 public class SimulationData {
+    public static final String DEFAULT_ROLE = "DEFAULT_ROLE";
+    public static final String DEFAULT_RESOURCE = "DEFAULT_RESOURCE";
+
     private long caseCount;
     private long resourceCount;
     private long startTime;
     private long endTime;
+
+    @Getter(AccessLevel.NONE)
+    private Map<String, Integer> resourceCountByRole;
+
+    @Getter(AccessLevel.NONE)
+    private Map<String, String> nodeIdToRoleName;
 
     @Getter(AccessLevel.NONE)
     private Map<String, Double> nodeWeights; // nodeId => mean duration (in milliseconds)
@@ -58,5 +67,13 @@ public class SimulationData {
 
     public Map<String, List<EdgeFrequency>> getEdgeFrequencies() {
         return edgeFrequencies != null ? Collections.unmodifiableMap(edgeFrequencies) : null;
+    }
+
+    public Map<String, Integer> getResourceCountsByRole() {
+        return resourceCountByRole != null ? Collections.unmodifiableMap(resourceCountByRole) : null;
+    }
+
+    public String getRoleNameByNodeId(@NonNull String nodeId) {
+        return nodeIdToRoleName.getOrDefault(nodeId, DEFAULT_ROLE);
     }
 }
