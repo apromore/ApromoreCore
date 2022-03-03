@@ -17,9 +17,13 @@
  */
 package org.apromore.plugin.parquet.export.service;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -48,6 +52,8 @@ import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.zkoss.zul.Filedownload;
 
 public class ParquetExport extends AbstractParquetProducer {
+    public static final int BUFFER_SIZE = 16384;
+    public static final String FAILED_TO_WRITE_PARQUET_FILE = "Failed to write parquet file";
 
     // ================================================================================================
     // public methods
@@ -178,6 +184,40 @@ public class ParquetExport extends AbstractParquetProducer {
         downloadParquet(filename, data, schema);
     }
 
+    public static boolean writeParquetToOutputStream(String filename, List<GenericData.Record> data,
+                                                     Schema schema, OutputStream outputStream) {
+        Path outPath = new Path(filename);
+        // delete if exist
+        try {
+            Files.delete(java.nio.file.Paths.get(filename));
+        } catch (Exception ignored) {
+            LoggerUtil.getLogger(ParquetExport.class).error("File not found", ignored);
+        }
+
+        try {
+            writeToParquet(data, outPath, schema);
+        } catch (IOException e) {
+            return false;
+        }
+
+        // Replace with the
+        try (InputStream fIn = Files.newInputStream(java.nio.file.Paths.get(filename));
+             BufferedInputStream in = new BufferedInputStream(fIn)) {
+            BufferedOutputStream out = new BufferedOutputStream(outputStream);
+            byte[] buffer = new byte[BUFFER_SIZE];
+            int len;
+            while ((len = in.read(buffer)) > 0) {
+                out.write(buffer, 0, len);
+            }
+            out.close();
+            Files.delete(java.nio.file.Paths.get(filename));
+        } catch (Exception e) {
+            LoggerUtil.getLogger(ParquetExport.class).error(FAILED_TO_WRITE_PARQUET_FILE, e);
+            return false;
+        }
+        return true;
+    }
+
     public static void downloadParquet(String filename,
                                        List<GenericData.Record> data,
                                        Schema schema) {
@@ -190,10 +230,11 @@ public class ParquetExport extends AbstractParquetProducer {
         try {
             writeToParquet(data, outPath, schema);
             byte[] finalbytes = Files.readAllBytes(java.nio.file.Paths.get(filename));
+
             Filedownload.save(finalbytes, "application/parquet", filename);
             Files.delete(java.nio.file.Paths.get(filename));
         } catch (Exception e) {
-            LoggerUtil.getLogger(ParquetExport.class).error("Failed to write parquet file", e);
+            LoggerUtil.getLogger(ParquetExport.class).error(FAILED_TO_WRITE_PARQUET_FILE, e);
         }
     }
 
@@ -210,7 +251,7 @@ public class ParquetExport extends AbstractParquetProducer {
             writeToParquet(data, outPath, schema);
             return java.nio.file.Paths.get(filename); //Temp File will be deleted after ZIP
         } catch (Exception e) {
-            LoggerUtil.getLogger(ParquetExport.class).error("Failed to write parquet file", e);
+            LoggerUtil.getLogger(ParquetExport.class).error(FAILED_TO_WRITE_PARQUET_FILE, e);
         }
         return null;
     }

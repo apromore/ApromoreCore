@@ -18,6 +18,7 @@
 package org.apromore.plugin.parquet.export.service;
 
 
+import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -44,6 +45,7 @@ import org.zkoss.json.JSONObject;
 
 public class ParquetExporterService extends AbstractParquetProducer {
 
+    public static final String PARQUET_EXT = ".parquet";
     private final APMLogWrapper apmLogWrapper;
     private final Properties labels;
     private final List<ParquetCol> headers = new ArrayList<>();
@@ -99,12 +101,28 @@ public class ParquetExporterService extends AbstractParquetProducer {
     }
 
     public List<List<ParquetCell>> getParquetRows() {
-        initRows();
+        initRows(false);
         return parquetRows;
     }
 
     public List<EncodeOption> getEncodeOptions() {
         return encodeOptions;
+    }
+
+    public boolean exportParquetFileToOutputStream(OutputStream outputStream) {
+        if (!isDownloadAllowed()){
+            return false;
+        }
+
+        initRows(true);
+        String charsetVal = encodeOptions.stream()
+                .filter(EncodeOption::isSelected)
+                .map(EncodeOption::getValue)
+                .findFirst().orElse(UTF8);
+        String filename = getValidParquetLabel(apmLogWrapper.getLabel()) + PARQUET_EXT;
+        Schema schema = getSchema(charsetVal);
+        ParquetExport.writeParquetToOutputStream(filename, getData(schema), schema, outputStream);
+        return true;
     }
 
     public boolean downloadParquetFile() {
@@ -115,7 +133,7 @@ public class ParquetExporterService extends AbstractParquetProducer {
                 .filter(EncodeOption::isSelected)
                 .map(EncodeOption::getValue)
                 .findFirst().orElse(UTF8);
-        String filename = getValidParquetLabel(apmLogWrapper.getLabel()) + ".parquet";
+        String filename = getValidParquetLabel(apmLogWrapper.getLabel()) + PARQUET_EXT;
         Schema schema = getSchema(charsetVal);
         ParquetExport.downloadParquet(filename, getData(schema), schema);
         return true;
@@ -190,10 +208,15 @@ public class ParquetExporterService extends AbstractParquetProducer {
         return col.isChecked();
     }
 
-    private void initRows() {
+    private void initRows(boolean fullLoad) {
         parquetRows.clear();
 
         int size = Math.min(apmLogWrapper.getAPMLog().size(), 50);
+
+        if (fullLoad) {
+            size = apmLogWrapper.getAPMLog().getActivityInstances().size();
+        }
+
         List<ActivityInstance> activityInstances = apmLogWrapper.getAPMLog().getActivityInstances().subList(0, size);
 
         for (ActivityInstance ai : activityInstances) {
@@ -341,12 +364,12 @@ public class ParquetExporterService extends AbstractParquetProducer {
            if (!isDownloadAllowed()) {
                return null;
            }
-           initRows();
+           initRows(false);
            String charsetVal = encodeOptions.stream()
                .filter(item -> item.getValue().equals(chartSet))
                .map(EncodeOption::getValue)
                .findFirst().orElse(UTF8);
-           String filename = getValidParquetLabel(logFileName) + ".parquet";
+           String filename = getValidParquetLabel(logFileName) + PARQUET_EXT;
            Schema schema = getSchema(charsetVal);
            return ParquetExport.writeAndReturnParquetFilePath(filename, getData(schema), schema);
        }catch(Exception ex){
