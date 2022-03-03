@@ -183,8 +183,8 @@ public class ParquetExport extends AbstractParquetProducer {
         downloadParquet(filename, data, schema);
     }
 
-    public static boolean transferParquetToOutputStream(String filename, List<GenericData.Record> data,
-                                                        Schema schema, OutputStream outputStream) {
+    public static boolean writeParquetToOutputStream(String filename, List<GenericData.Record> data,
+                                                     Schema schema, OutputStream outputStream) {
         Path outPath = new Path(filename);
         // delete if exist
         try {
@@ -226,12 +226,6 @@ public class ParquetExport extends AbstractParquetProducer {
 
         try {
             writeToParquet(data, outPath, schema);
-
-            // Read this file inputstream
-//            for until not bytes to read {
-            //      Read byte[] from inputstream and write to the output
-//              }
-
             byte[] finalbytes = Files.readAllBytes(java.nio.file.Paths.get(filename));
 
             Filedownload.save(finalbytes, "application/parquet", filename);

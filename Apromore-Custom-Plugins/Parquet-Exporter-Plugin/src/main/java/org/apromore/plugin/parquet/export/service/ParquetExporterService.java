@@ -120,7 +120,7 @@ public class ParquetExporterService extends AbstractParquetProducer {
                 .findFirst().orElse(UTF8);
         String filename = getValidParquetLabel(apmLogWrapper.getLabel()) + ".parquet";
         Schema schema = getSchema(charsetVal);
-        ParquetExport.transferParquetToOutputStream(filename, getData(schema), schema, outputStream);
+        ParquetExport.writeParquetToOutputStream(filename, getData(schema), schema, outputStream);
         return true;
     }
 
