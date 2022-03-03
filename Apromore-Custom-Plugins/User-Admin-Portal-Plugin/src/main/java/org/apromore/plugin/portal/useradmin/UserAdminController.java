@@ -92,6 +92,7 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
     private static final String DELETE_PROMPT_MESSAGE = "deletePrompt_message";
     private static final String TOGGLE_CLICK_EVENT_NAME = "onToggleClick";
     private static final String SWITCH_TAB_EVENT_NAME = "onSwitchTab";
+    private static final String ROLE_PERMISSION_WINDOW = "zul/edit-role-permission.zul";
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(UserAdminController.class);
     private Map<String, String> roleMap = new HashMap<>() {
         {
@@ -1586,7 +1587,7 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
             arg.put("securityService", securityService);
             arg.put("mode", "CREATE");
             Window window = (Window) Executions.getCurrent()
-                .createComponents(getPageDefinition("zul/edit-role-permission.zul"), getSelf(), arg);
+                .createComponents(getPageDefinition(ROLE_PERMISSION_WINDOW), getSelf(), arg);
             window.doModal();
 
         } catch (Exception e) {
@@ -1614,13 +1615,13 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
         }
 
         try {
-            Map arg = new HashMap<>();
+            Map<String, Object> arg = new HashMap<>();
             arg.put("portalContext", portalContext);
             arg.put("securityService", securityService);
             arg.put("mode", "EDIT");
             arg.put("role", selectedRole);
             Window window = (Window) Executions.getCurrent()
-                .createComponents(getPageDefinition("zul/edit-role-permission.zul"), getSelf(), arg);
+                .createComponents(getPageDefinition(ROLE_PERMISSION_WINDOW), getSelf(), arg);
             window.doModal();
 
         } catch (Exception e) {
@@ -1637,14 +1638,14 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
         }
 
         try {
-            Map arg = new HashMap<>();
+            Map<String, Object> arg = new HashMap<>();
             arg.put("portalContext", portalContext);
             arg.put("securityService", securityService);
             arg.put("mode", "VIEW");
             arg.put("role", selectedRole);
             arg.put("roleLabel", roleMap.getOrDefault(selectedRole.getName(), selectedRole.getName()));
             Window window = (Window) Executions.getCurrent()
-                .createComponents(getPageDefinition("zul/edit-role-permission.zul"), getSelf(), arg);
+                .createComponents(getPageDefinition(ROLE_PERMISSION_WINDOW), getSelf(), arg);
             window.doModal();
 
         } catch (Exception e) {
