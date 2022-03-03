@@ -21,6 +21,7 @@
  */
 package org.apromore.portal;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apromore.manager.client.ManagerService;
 import org.apromore.portal.model.PermissionType;
 import org.apromore.portal.model.RoleType;
@@ -76,7 +77,9 @@ public class ApromoreKeycloakAuthenticationProvider extends KeycloakAuthenticati
                     grantedAuthorities.add(new SimpleGrantedAuthority(role.getName()));
                 }
                 for (PermissionType permission : user.getPermissions()) {
-                    grantedAuthorities.add(new SimpleGrantedAuthority(permission.getName()));
+                    if (!StringUtils.isEmpty(permission.getName())) {
+                        grantedAuthorities.add(new SimpleGrantedAuthority(permission.getName()));
+                    }
                 }
             }
         }
@@ -114,7 +117,9 @@ public class ApromoreKeycloakAuthenticationProvider extends KeycloakAuthenticati
         if (managerClient != null) {
             List<PermissionType> permissions = managerClient.getRolePermissions("ROLE_ANALYST");
             for (PermissionType permission : permissions) {
-                grantedAuthorities.add(new SimpleGrantedAuthority(permission.getName()));
+                if (!StringUtils.isEmpty(permission.getName())) {
+                    grantedAuthorities.add(new SimpleGrantedAuthority(permission.getName()));
+                }
             }
         }
 
