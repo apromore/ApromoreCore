@@ -215,6 +215,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
       param.put("plugins", editorPlugins);
       param.put("langTag", langTag);
       param.put("username", currentUserType.getUsername());
+      param.put("processName", editSession.getProcessName());
       if (USE_BPMNIO_MODELER) {
         param.put("bpmnioLib", BPMNIO_MODELER_JS);
       } else {
