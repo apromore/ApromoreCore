@@ -18,6 +18,7 @@
 package org.apromore.plugin.parquet.export.service;
 
 
+import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -105,6 +106,21 @@ public class ParquetExporterService extends AbstractParquetProducer {
 
     public List<EncodeOption> getEncodeOptions() {
         return encodeOptions;
+    }
+
+    public boolean exportParquetFileToOutputStream(OutputStream outputStream) {
+        if (!isDownloadAllowed()){
+            return false;
+        }
+
+        String charsetVal = encodeOptions.stream()
+                .filter(EncodeOption::isSelected)
+                .map(EncodeOption::getValue)
+                .findFirst().orElse(UTF8);
+        String filename = getValidParquetLabel(apmLogWrapper.getLabel()) + ".parquet";
+        Schema schema = getSchema(charsetVal);
+        ParquetExport.transferParquetToOutputStream(filename, getData(schema), schema, outputStream);
+        return true;
     }
 
     public boolean downloadParquetFile() {

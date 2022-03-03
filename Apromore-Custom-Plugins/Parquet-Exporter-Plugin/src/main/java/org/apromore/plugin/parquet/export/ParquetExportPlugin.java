@@ -103,6 +103,27 @@ public class ParquetExportPlugin extends DefaultPortalPlugin implements LabelSup
         }
     }
 
+    public APMLogWrapperManager initAPMLogWrapperManagers(List<Integer> logSummaries) {
+        APMLogWrapperManager apmLogComboManager = new APMLogWrapperManager();
+        for (int i=0;i<logSummaries.size();i++) {
+            Integer logIdInt=logSummaries.get(i);
+            APMLog apmLog = eventLogService.getAggregatedLog(logIdInt);
+            XLog xLog = eventLogService.getXLog(logIdInt);
+
+            String filename = apmLog.getLogName();
+            if (xLog == null ||  apmLog.size() != xLog.size()) {
+                ZKMessageCtrl.showError(String.format(LabelUtil.getLabel(LOG_ERR_MSG_KEY), filename));
+            } else {
+                String color = getDefaultSeriesColor(i);
+                int fileExtIndex = filename.indexOf(".");
+                String nameWithoutExt = fileExtIndex != -1 ? filename.substring(0, fileExtIndex) : filename;
+                String seriesId = SeriesIdGenerator.getSeriesId(getValidLogName(nameWithoutExt));
+                apmLogComboManager.put(logIdInt, seriesId, apmLog, xLog, color, nameWithoutExt);
+            }
+        }
+        return apmLogComboManager;
+    }
+
     private void exportParquetLogs(APMLogWrapperManager apmLogComboManager, String charsetVal) {
         Map<String, String> filesToBeDownloaded = new HashMap<>();
         apmLogComboManager.getAPMLogComboList().stream().forEach(apmLogWrapper -> {
@@ -188,26 +209,6 @@ public class ParquetExportPlugin extends DefaultPortalPlugin implements LabelSup
         }
     }
 
-    private APMLogWrapperManager initAPMLogWrapperManagers(List<Integer> logSummaries) {
-        APMLogWrapperManager apmLogComboManager = new APMLogWrapperManager();
-        for (int i=0;i<logSummaries.size();i++) {
-            Integer logIdInt=logSummaries.get(i);
-            APMLog apmLog = eventLogService.getAggregatedLog(logIdInt);
-            XLog xLog = eventLogService.getXLog(logIdInt);
-
-            String filename = apmLog.getLogName();
-            if (xLog == null ||  apmLog.size() != xLog.size()) {
-                ZKMessageCtrl.showError(String.format(LabelUtil.getLabel(LOG_ERR_MSG_KEY), filename));
-            } else {
-                String color = getDefaultSeriesColor(i);
-                int fileExtIndex = filename.indexOf(".");
-                String nameWithoutExt = fileExtIndex != -1 ? filename.substring(0, fileExtIndex) : filename;
-                String seriesId = SeriesIdGenerator.getSeriesId(getValidLogName(nameWithoutExt));
-                apmLogComboManager.put(logIdInt, seriesId, apmLog, xLog, color, nameWithoutExt);
-            }
-        }
-    return apmLogComboManager;
-    }
 
     @Override
     public String getIconPath() {
