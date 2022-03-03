@@ -26,7 +26,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.Arrays;
-import java.util.Map;
 import org.apromore.apmlog.xes.XLogToImmutableLog;
 import org.apromore.calendar.builder.CalendarModelBuilder;
 import org.apromore.calendar.model.CalendarModel;
@@ -37,6 +36,7 @@ import org.apromore.plugin.portal.processdiscoverer.data.ConfigData;
 import org.apromore.plugin.portal.processdiscoverer.data.ContextData;
 import org.apromore.plugin.portal.processdiscoverer.data.OutputData;
 import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
+import org.apromore.portal.util.CostTable;
 import org.apromore.service.EventLogService;
 import org.deckfour.xes.in.XesXmlGZIPParser;
 import org.deckfour.xes.in.XesXmlParser;
@@ -54,13 +54,12 @@ public class TestDataSetup {
     protected EventLogService eventLogService;
 
     public PDAnalyst createPDAnalyst(XLog xlog) throws Exception {
-        return createPDAnalyst(xlog, getAllDayAllTimeCalendar());
+        return createPDAnalyst(xlog, getAllDayAllTimeCalendar(), CostTable.EMPTY);
     }
 
-    public PDAnalyst createPDAnalyst(XLog xlog, CalendarModel calendarModel) throws Exception {
+    public PDAnalyst createPDAnalyst(XLog xlog, CalendarModel calendarModel, CostTable costTable) throws Exception {
         ContextData contextData = ContextData.valueOf("domain1", "username1", 0,
-            "logName", 0, "folderName", true, true,
-            Map.of(), "AUD");
+            "logName", 0, "folderName", true, true);
         Mockito.when(eventLogService.getXLog(contextData.getLogId())).thenReturn(xlog);
         Mockito.when(eventLogService.getAggregatedLog(contextData.getLogId())).thenReturn(
             XLogToImmutableLog.convertXLog("ProcessLog", xlog));
@@ -69,6 +68,7 @@ public class TestDataSetup {
             Arrays.asList(new String[] {"concept:name", "lifecycle:transition"}));
         ConfigData configData = ConfigData.DEFAULT;
         PDAnalyst analyst = new PDAnalyst(contextData, configData, eventLogService);
+        analyst.loadAttributeData(configData.getDefaultAttribute(), calendarModel, costTable);
         return analyst;
     }
 

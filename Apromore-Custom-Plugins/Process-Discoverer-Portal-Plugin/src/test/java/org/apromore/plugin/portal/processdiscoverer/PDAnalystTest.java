@@ -52,6 +52,7 @@ import org.apromore.plugin.portal.processdiscoverer.data.ContextData;
 import org.apromore.plugin.portal.processdiscoverer.data.InvalidDataException;
 import org.apromore.plugin.portal.processdiscoverer.data.PerspectiveDetails;
 import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
+import org.apromore.portal.util.CostTable;
 import org.apromore.processdiscoverer.Abstraction;
 import org.apromore.processdiscoverer.abstraction.BPMNAbstraction;
 import org.apromore.processdiscoverer.layout.Layout;
@@ -98,8 +99,7 @@ public class PDAnalystTest extends TestDataSetup {
     public void test_AnalystConstructor_MissingActivityPerspective() throws Exception {
         XLog validLog = readLogWithOneTraceOneEvent();
         ContextData contextData = ContextData.valueOf("domain1", "username1", 0,
-            "logName", 0, "folderName", false, true,
-            Map.of(), "AUD");
+            "logName", 0, "folderName", false, true);
         Mockito.when(eventLogService.getXLog(contextData.getLogId())).thenReturn(validLog);
         Mockito.when(eventLogService.getAggregatedLog(contextData.getLogId())).thenReturn(
             XLogToImmutableLog.convertXLog("ProcessLog", validLog));
@@ -113,8 +113,7 @@ public class PDAnalystTest extends TestDataSetup {
     public void test_AnalystConstructor_NoPerspectiveAttributes() throws Exception {
         XLog validLog = readLogWithOneTraceOneEvent();
         ContextData contextData = ContextData.valueOf("domain1", "username1", 0,
-            "logName", 0, "folderName", false, true,
-            Map.of(), "AUD");
+            "logName", 0, "folderName", false, true);
         Mockito.when(eventLogService.getXLog(contextData.getLogId())).thenReturn(validLog);
         Mockito.when(eventLogService.getAggregatedLog(contextData.getLogId())).thenReturn(
             XLogToImmutableLog.convertXLog("ProcessLog", validLog));
@@ -127,8 +126,7 @@ public class PDAnalystTest extends TestDataSetup {
     public void test_AnalystConstructor_TooManyPerspectiveAttributeValues() throws Exception {
         XLog validLog = readLogWithTwoTraceEachTwoEvents();
         ContextData contextData = ContextData.valueOf("domain1", "username1", 0,
-            "logName", 0, "folderName", false, true,
-            Map.of(), "AUD");
+            "logName", 0, "folderName", false, true);
         Mockito.when(eventLogService.getXLog(contextData.getLogId())).thenReturn(validLog);
         Mockito.when(eventLogService.getAggregatedLog(contextData.getLogId())).thenReturn(
             XLogToImmutableLog.convertXLog("ProcessLog", validLog));
@@ -474,24 +472,26 @@ public class PDAnalystTest extends TestDataSetup {
         // Change user options, layout is not retained
 
         // Change structural measure type
-        Layout layout5 = analyst.discoverProcess(
-            createUserOptions(100, 100, 40,
-                MeasureType.DURATION,           // changed
-                MeasureAggregation.MEAN,
-                MeasureRelation.ABSOLUTE,
-                false, false,
-                MeasureType.FREQUENCY,
-                MeasureAggregation.CASES,
-                MeasureRelation.ABSOLUTE,
-                MeasureType.DURATION,
-                MeasureAggregation.MEAN,
-                MeasureRelation.ABSOLUTE,
-                false,
-                false)).get().getAbstraction().getLayout();
+        UserOptionsData userOptions = createUserOptions(100, 100, 40,
+            MeasureType.DURATION,           // changed
+            MeasureAggregation.MEAN,
+            MeasureRelation.ABSOLUTE,
+            false, false,
+            MeasureType.FREQUENCY,
+            MeasureAggregation.CASES,
+            MeasureRelation.ABSOLUTE,
+            MeasureType.DURATION,
+            MeasureAggregation.MEAN,
+            MeasureRelation.ABSOLUTE,
+            false,
+            false);
+        Layout layout5 = analyst.discoverProcess(userOptions).get().getAbstraction().getLayout();
         assertNotSame(layout1, layout5);
 
         // Change perspective attribute
-        analyst.setMainAttribute(Constants.ATT_KEY_LIFECYCLE_TRANSITION); // changed
+        analyst.loadAttributeData(Constants.ATT_KEY_LIFECYCLE_TRANSITION,
+            userOptions.getCalendarModel(),
+            userOptions.getCostTable()); // changed
         Layout layout6 = analyst.discoverProcess(
             createUserOptions(100, 100, 40,
                 MeasureType.FREQUENCY,
@@ -580,7 +580,8 @@ public class PDAnalystTest extends TestDataSetup {
             MeasureRelation.ABSOLUTE,
             false,
             false);
-        PDAnalyst analyst = createPDAnalyst(readLogWithOneTraceStartCompleteEventsNonOverlapping(), businessCalendar);
+        PDAnalyst analyst = createPDAnalyst(readLogWithOneTraceStartCompleteEventsNonOverlapping(),
+            businessCalendar, CostTable.EMPTY);
         Abstraction abs = analyst.discoverProcess(userOptions).get().getAbstraction();
         BPMNAbstraction bpmnAbstraction = analyst.convertToBpmnAbstractionForExport(abs);
 

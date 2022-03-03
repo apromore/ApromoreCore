@@ -54,9 +54,7 @@ public class ContextData {
                         int containingFolderId,
                          String containingFolderName,
                          boolean isCalendarEnabled,
-                         boolean isEditEnabled,
-                         Map<String, Double> costTable,
-                         String currency
+                         boolean isEditEnabled
     ) {
         this.username = userName;
         this.folderId = containingFolderId;
@@ -74,10 +72,9 @@ public class ContextData {
                         String userName,
                         int logId, String logName,
                         int containingFolderId, String containingFolderName, boolean isCalendarEnabled,
-                        boolean isEditEnabled, Map<String, Double> costTable,
-                                       String currency) {
+                        boolean isEditEnabled) {
         return new ContextData(domain, userName, logId, logName, containingFolderId, containingFolderName,
-                isCalendarEnabled, isEditEnabled, costTable, currency);
+                isCalendarEnabled, isEditEnabled);
     }
     
 }
