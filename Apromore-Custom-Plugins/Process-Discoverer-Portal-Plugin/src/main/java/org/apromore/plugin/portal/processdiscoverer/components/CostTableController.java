@@ -109,7 +109,8 @@ public class CostTableController extends DataListController {
                 persistCostTable();
                 costTableWindow.detach();
                 costTableWindow = null;
-                Messagebox.show("You need to reload the page",
+                Messagebox.show(
+                    parent.getLabel("costTableUpdated_message"),
                     new Messagebox.Button[] {Messagebox.Button.OK, Messagebox.Button.CANCEL},
                     (ev) -> {
                         if (Messagebox.ON_OK.equals(ev.getName())) {
@@ -126,9 +127,7 @@ public class CostTableController extends DataListController {
             try {
                 // @todo Incorrect coordinate returned by ZK 9
                 // org.zkoss.json.JSONObject param = (org.zkoss.json.JSONObject) event.getData();
-                costTableWindow.setPosition("nocenter");
-                costTableWindow.setLeft("10px");
-                costTableWindow.setTop("76px");
+                costTableWindow.setPosition("center");
             } catch (Exception e) {
                 // ignore the exception and proceed with default centered window
             }

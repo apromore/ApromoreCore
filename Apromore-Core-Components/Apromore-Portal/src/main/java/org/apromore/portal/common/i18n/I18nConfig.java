@@ -21,6 +21,7 @@
  */
 package org.apromore.portal.common.i18n;
 
+import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -70,6 +71,10 @@ public class I18nConfig {
 
     public String getDateTimePattern(Locale locale) {
         return supportedLocales.get(locale);
+    }
+
+    public NumberFormat getNumberFormat(Locale locale) {
+        return NumberFormat.getInstance(locale);
     }
 
     public LinkedHashMap<String, String> getSelectionSet() {
