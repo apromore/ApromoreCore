@@ -92,6 +92,7 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
     private static final String DELETE_PROMPT_MESSAGE = "deletePrompt_message";
     private static final String TOGGLE_CLICK_EVENT_NAME = "onToggleClick";
     private static final String SWITCH_TAB_EVENT_NAME = "onSwitchTab";
+    private static final String ROLE_PERMISSION_WINDOW = "zul/edit-role-permission.zul";
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(UserAdminController.class);
     private Map<String, String> roleMap = new HashMap<>() {
         {
@@ -524,19 +525,20 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
                     String eventUserName = (String) properties.get("user.name");
 
                     // Update the user collection
-                    if (eventType.equals("CREATE_USER") || eventType.equals("DELETE_USER")) {
+                    if ("CREATE_USER".equals(eventType) || "DELETE_USER".equals(eventType)) {
                         refreshUsers();
                         refreshCandidateUsers();
                     }
 
                     // Update the group collection
-                    if (eventType.equals("CREATE_GROUP") || eventType.equals("DELETE_GROUP")) {
+                    if ("CREATE_GROUP".equals(eventType) || "DELETE_GROUP".equals(eventType)) {
                         refreshGroups();
                         refreshAssignedGroups();
                     }
 
                     // Update the role collection
-                    if (eventType.equals("CREATE_ROLE") || eventType.equals("DELETE_ROLE")) {
+                    if ("CREATE_ROLE".equals(eventType) || "DELETE_ROLE".equals(eventType)
+                        || "UPDATE_ROLE".equals(eventType)) {
                         refreshRoles();
                         refreshAssignedRoles();
                     }
@@ -558,6 +560,10 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
                             // TO DO: Check for dirty user detail
                             setSelectedUsers(selectedUsers); // reload the current user
                         }
+                    }
+                    if ("UPDATE_ROLE".equals(eventType)) {
+                        // Reset role panel
+                        setSelectedRole(null);
                     }
                 }
             }
@@ -1581,7 +1587,7 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
             arg.put("securityService", securityService);
             arg.put("mode", "CREATE");
             Window window = (Window) Executions.getCurrent()
-                .createComponents(getPageDefinition("zul/edit-role-permission.zul"), getSelf(), arg);
+                .createComponents(getPageDefinition(ROLE_PERMISSION_WINDOW), getSelf(), arg);
             window.doModal();
 
         } catch (Exception e) {
@@ -1596,12 +1602,56 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
             Notification.error(getLabel("noPermissionEditRole_message"));
             return;
         }
-        Notification.info("Edit roles coming soon!");
+
+        Set<RoleModel> selectedRoles = roleList.getSelection();
+        if (roleList.getSelectionCount() == 0 || selectedRole == null) {
+            Notification.error(getLabel("noEditNoRoleSelected_message"));
+            return;
+        }
+
+        if (selectedRoles.stream().anyMatch(r -> isDefaultRole(r.getRole()))) {
+            Notification.error(getLabel("noEditDefaultRole_message"));
+            return;
+        }
+
+        try {
+            Map<String, Object> arg = new HashMap<>();
+            arg.put("portalContext", portalContext);
+            arg.put("securityService", securityService);
+            arg.put("mode", "EDIT");
+            arg.put("role", selectedRole);
+            Window window = (Window) Executions.getCurrent()
+                .createComponents(getPageDefinition(ROLE_PERMISSION_WINDOW), getSelf(), arg);
+            window.doModal();
+
+        } catch (Exception e) {
+            LOGGER.error("Unable to create role edit dialog", e);
+            Messagebox.show(getLabel("failedLaunchEditRole_message"));
+        }
     }
 
     @Listen("onClick = #roleViewBtn")
     public void onClickRoleViewBtn() {
-        Notification.info("View roles coming soon!");
+        if (roleList.getSelectionCount() == 0 || selectedRole == null) {
+            Notification.error(getLabel("noEditNoRoleSelected_message"));
+            return;
+        }
+
+        try {
+            Map<String, Object> arg = new HashMap<>();
+            arg.put("portalContext", portalContext);
+            arg.put("securityService", securityService);
+            arg.put("mode", "VIEW");
+            arg.put("role", selectedRole);
+            arg.put("roleLabel", roleMap.getOrDefault(selectedRole.getName(), selectedRole.getName()));
+            Window window = (Window) Executions.getCurrent()
+                .createComponents(getPageDefinition(ROLE_PERMISSION_WINDOW), getSelf(), arg);
+            window.doModal();
+
+        } catch (Exception e) {
+            LOGGER.error("Unable to create role view dialog", e);
+            Messagebox.show(getLabel("failedLaunchViewRole_message"));
+        }
     }
 
     @Listen("onClick = #roleRemoveBtn")
