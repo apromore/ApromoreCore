@@ -53,6 +53,7 @@ import org.zkoss.zul.Filedownload;
 
 public class ParquetExport extends AbstractParquetProducer {
     public static final int BUFFER_SIZE = 16384;
+    public static final String FAILED_TO_WRITE_PARQUET_FILE = "Failed to write parquet file";
 
     // ================================================================================================
     // public methods
@@ -189,7 +190,9 @@ public class ParquetExport extends AbstractParquetProducer {
         // delete if exist
         try {
             Files.delete(java.nio.file.Paths.get(filename));
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+            LoggerUtil.getLogger(ParquetExport.class).error("File not found", ignored);
+        }
 
         try {
             writeToParquet(data, outPath, schema);
@@ -209,7 +212,7 @@ public class ParquetExport extends AbstractParquetProducer {
             out.close();
             Files.delete(java.nio.file.Paths.get(filename));
         } catch (Exception e) {
-            LoggerUtil.getLogger(ParquetExport.class).error("Failed to write parquet file", e);
+            LoggerUtil.getLogger(ParquetExport.class).error(FAILED_TO_WRITE_PARQUET_FILE, e);
             return false;
         }
         return true;
@@ -231,7 +234,7 @@ public class ParquetExport extends AbstractParquetProducer {
             Filedownload.save(finalbytes, "application/parquet", filename);
             Files.delete(java.nio.file.Paths.get(filename));
         } catch (Exception e) {
-            LoggerUtil.getLogger(ParquetExport.class).error("Failed to write parquet file", e);
+            LoggerUtil.getLogger(ParquetExport.class).error(FAILED_TO_WRITE_PARQUET_FILE, e);
         }
     }
 
@@ -248,7 +251,7 @@ public class ParquetExport extends AbstractParquetProducer {
             writeToParquet(data, outPath, schema);
             return java.nio.file.Paths.get(filename); //Temp File will be deleted after ZIP
         } catch (Exception e) {
-            LoggerUtil.getLogger(ParquetExport.class).error("Failed to write parquet file", e);
+            LoggerUtil.getLogger(ParquetExport.class).error(FAILED_TO_WRITE_PARQUET_FILE, e);
         }
         return null;
     }

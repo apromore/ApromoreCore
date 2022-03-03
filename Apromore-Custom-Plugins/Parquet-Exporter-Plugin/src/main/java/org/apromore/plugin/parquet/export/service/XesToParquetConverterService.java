@@ -13,9 +13,8 @@ public class XesToParquetConverterService {
     private ParquetExportPlugin parquetExportPlugin;
 
     public boolean exportXesToParquetToFilesystem(int logId, OutputStream outputStream) {
-        List<Integer> lstList = new ArrayList<>() {{
-            add(logId);
-        }};
+        List<Integer> lstList = new ArrayList<>();
+        lstList.add(logId);
 
         // Convert the log to parquert
         APMLogWrapperManager apmLogComboManager = parquetExportPlugin.initAPMLogWrapperManagers(lstList);
