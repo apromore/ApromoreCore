@@ -182,7 +182,7 @@ public class PDController extends BaseController implements Composer<Component>,
     private int sourceLogId; // plugin maintain log ID for Filter; Filter remove value to avoid
                              // conflicts from multiple plugins
 
-    private InteractiveMode mode = InteractiveMode.MODEL_MODE; // initial mode
+    private InteractiveMode interactionMode = InteractiveMode.MODEL_MODE; // initial mode
 
     private Component pdComponent;
     private EventQueue<Event> sessionQueue;
@@ -463,7 +463,7 @@ public class PDController extends BaseController implements Composer<Component>,
     }
 
     public void changeLayout() throws Exception {
-        if (this.mode != InteractiveMode.MODEL_MODE)
+        if (this.interactionMode != InteractiveMode.MODEL_MODE)
             return;
         graphVisController.changeLayout();
     }
@@ -547,7 +547,7 @@ public class PDController extends BaseController implements Composer<Component>,
      * @param reset: true to reset the graph zoom and panning
      */
     public void updateUI(boolean reset) {
-        if (this.mode != InteractiveMode.MODEL_MODE)
+        if (this.interactionMode != InteractiveMode.MODEL_MODE)
             return;
         try {
             logStatsController.updateUI(contextData);
@@ -571,7 +571,7 @@ public class PDController extends BaseController implements Composer<Component>,
     public void generateViz() {
         long timer1 = System.currentTimeMillis();
 
-        if (this.mode != InteractiveMode.MODEL_MODE)
+        if (this.interactionMode != InteractiveMode.MODEL_MODE)
             return;
 
         if (processAnalyst.hasEmptyData()) {
@@ -615,11 +615,12 @@ public class PDController extends BaseController implements Composer<Component>,
         return this.userOptions.getBPMNMode();
     }
 
-    public void setBPMNView(boolean mode) {
-        if (this.mode != InteractiveMode.MODEL_MODE)
+    public void setBPMNView(boolean isBPMNView) {
+        if (this.interactionMode != InteractiveMode.MODEL_MODE)
             return;
-        userOptions.setBPMNMode(mode);
-        graphSettingsController.updateParallelism(mode);
+        userOptions.setBPMNMode(isBPMNView);
+        graphSettingsController.updateParallelism(isBPMNView);
+        toolbarController.setDisabledModelExport(!isBPMNView);
         generateViz();
     }
 
@@ -666,7 +667,7 @@ public class PDController extends BaseController implements Composer<Component>,
      */
     private boolean setInteractiveMode(InteractiveMode newMode) {
         if (newMode == InteractiveMode.ANIMATION_MODE) {
-            if (this.mode == InteractiveMode.TRACE_MODE)
+            if (this.interactionMode == InteractiveMode.TRACE_MODE)
                 return false; // invalid move
             viewSettingsController.setDisabled(true);
             graphSettingsController.setDisabled(true);
@@ -689,7 +690,7 @@ public class PDController extends BaseController implements Composer<Component>,
             caseDetailsController.setDisabled(false);
             caseVariantDetailsController.setDisabled(false);
         } else if (newMode == InteractiveMode.TRACE_MODE) {
-            if (this.mode == InteractiveMode.ANIMATION_MODE)
+            if (this.interactionMode == InteractiveMode.ANIMATION_MODE)
                 return false; // invalid move
             viewSettingsController.setDisabled(true);
             graphSettingsController.setDisabled(true);
@@ -700,12 +701,12 @@ public class PDController extends BaseController implements Composer<Component>,
             toolbarController.setDisabledAnimation(true);
             toolbarController.toogleAnimateBtn(false);
         }
-        this.mode = newMode;
+        this.interactionMode = newMode;
         return true;
     }
 
     public InteractiveMode getInteractiveMode() {
-        return this.mode;
+        return this.interactionMode;
     }
 
     public String getPerspectiveName() {
@@ -713,7 +714,7 @@ public class PDController extends BaseController implements Composer<Component>,
     }
 
     public void setPerspective(String value, String label) throws Exception {
-        if (this.mode != InteractiveMode.MODEL_MODE)
+        if (this.interactionMode != InteractiveMode.MODEL_MODE)
             return;
         if (!value.equals(userOptions.getMainAttributeKey())) {
             boolean disableVariantInspector = !"concept:name".equals(value);
