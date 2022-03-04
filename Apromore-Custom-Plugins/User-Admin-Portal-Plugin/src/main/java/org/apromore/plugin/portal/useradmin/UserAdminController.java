@@ -36,6 +36,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apromore.dao.model.Group;
+import org.apromore.dao.model.Permission;
 import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
 import org.apromore.plugin.portal.PortalContext;
@@ -50,6 +51,7 @@ import org.apromore.plugin.portal.useradmin.listbox.TristateListbox;
 import org.apromore.plugin.portal.useradmin.listbox.TristateModel;
 import org.apromore.plugin.portal.useradmin.listbox.UserListbox;
 import org.apromore.portal.common.zk.ComponentUtils;
+import org.apromore.portal.model.PermissionType;
 import org.apromore.portal.types.EventQueueEvents;
 import org.apromore.portal.types.EventQueueTypes;
 import org.apromore.service.SecurityService;
@@ -1705,7 +1707,40 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
             Notification.error(getLabel("noPermissionCloneRole_message"));
             return;
         }
-        Notification.info("Clone roles coming soon!");
+
+        if (roleList.getSelectionCount() == 0) {
+            Notification.error(getLabel("noCloneNoRoleSelected_message"));
+            return;
+        }
+
+        //Clone each selected role
+        roleList.getSelection().forEach(r -> securityService.createRole(cloneRole(r.getRole())));
+
+        //Publish create role event after all roles are created
+        Map<String, String> dataMap = Map.of("type", "CREATE_ROLE");
+        EventQueues.lookup(SecurityService.EVENT_TOPIC, getSelf().getDesktop().getWebApp(), true)
+            .publish(new Event("Role Create", null, dataMap));
+    }
+
+    private Role cloneRole(Role originalRole) {
+        String duplicateRoleNameFormat = "%s_%d";
+        int count = 1;
+        Role clonedRole = new Role();
+        //Set unique role name
+        String baseRoleName = roleMap.getOrDefault(originalRole.getName(), originalRole.getName());
+        String clonedRoleName = String.format(duplicateRoleNameFormat, baseRoleName, count);
+        while (securityService.findRoleByName(clonedRoleName) != null) {
+            clonedRoleName = String.format(duplicateRoleNameFormat, baseRoleName, ++count);
+        }
+        clonedRole.setName(clonedRoleName);
+        clonedRole.setDescription("Custom role");
+        //Get role permissions of selected log - all cloned roles should have login permission
+        List<Permission> clonePermissions = securityService.getRolePermissions(originalRole.getName());
+        if (clonePermissions.stream().noneMatch(p -> PermissionType.PORTAL_LOGIN.getId().equals(p.getRowGuid()))) {
+            clonePermissions.add(securityService.getPermission(PermissionType.PORTAL_LOGIN.getName()));
+        }
+        clonedRole.setPermissions(new HashSet<>(clonePermissions));
+        return clonedRole;
     }
 
     @Listen("onClick = #roleSaveBtn")
