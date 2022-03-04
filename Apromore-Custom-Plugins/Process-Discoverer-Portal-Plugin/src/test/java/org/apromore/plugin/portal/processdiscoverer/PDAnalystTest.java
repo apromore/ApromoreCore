@@ -580,13 +580,15 @@ public class PDAnalystTest extends TestDataSetup {
             MeasureRelation.ABSOLUTE,
             false,
             false);
+        userOptions.setCalendarModel(businessCalendar);
+
         PDAnalyst analyst = createPDAnalyst(readLogWithOneTraceStartCompleteEventsNonOverlapping(),
             businessCalendar, CostTable.EMPTY);
         Abstraction abs = analyst.discoverProcess(userOptions).get().getAbstraction();
         BPMNAbstraction bpmnAbstraction = analyst.convertToBpmnAbstractionForExport(abs);
 
         // when
-        SimulationData data = analyst.getSimulationData(bpmnAbstraction);
+        SimulationData data = analyst.getSimulationData(bpmnAbstraction, userOptions);
 
         // then
         assertEquals(1, data.getCaseCount());
@@ -619,7 +621,9 @@ public class PDAnalystTest extends TestDataSetup {
         analyst.filter_RemoveEventsAnyValueOfEventAttribute("c", "concept:name");
         Abstraction abs2 = analyst.discoverProcess(userOptions).get().getAbstraction();
         BPMNAbstraction bpmnAbstraction2 = analyst.convertToBpmnAbstractionForExport(abs);
-        SimulationData data2 = analyst.getSimulationData(analyst.convertToBpmnAbstractionForExport(abs2));
+        SimulationData data2 = analyst.getSimulationData(
+            analyst.convertToBpmnAbstractionForExport(abs2),
+            userOptions);
         assertEquals(1, data2.getCaseCount());
         assertEquals(4, data2.getResourceCount()); // changed
         assertEquals(DateTime.parse("2010-10-27T21:59:19.308+10:00").getMillis(), data2.getStartTime());
@@ -656,7 +660,7 @@ public class PDAnalystTest extends TestDataSetup {
         BPMNAbstraction bpmnAbstraction = analyst.convertToBpmnAbstractionForExport(abs);
 
         // when
-        SimulationData data = analyst.getSimulationData(bpmnAbstraction);
+        SimulationData data = analyst.getSimulationData(bpmnAbstraction, userOptions);
 
         // then
         assertEquals(1, data.getCaseCount());
@@ -696,7 +700,7 @@ public class PDAnalystTest extends TestDataSetup {
         BPMNAbstraction bpmnAbstraction = analyst.convertToBpmnAbstractionForExport(abs);
 
         // when
-        SimulationData data = analyst.getSimulationData(bpmnAbstraction);
+        SimulationData data = analyst.getSimulationData(bpmnAbstraction, userOptions);
 
         // then
         assertEquals(1, data.getCaseCount());
@@ -721,7 +725,8 @@ public class PDAnalystTest extends TestDataSetup {
         PDAnalyst analyst = createPDAnalyst(readLogWithOneTraceStartCompleteEventsNonOverlapping());
 
         // when
-        SimulationData data = analyst.getSimulationData(null);
+        SimulationData data = analyst.getSimulationData(null,
+            UserOptionsData.DEFAULT(ConfigData.DEFAULT));
 
         // then
         assertNull(data);
@@ -755,7 +760,7 @@ public class PDAnalystTest extends TestDataSetup {
         assertEquals(8, bpmnAbstraction.getDiagram().getGateways().size());
 
         // when
-        SimulationData data = analyst.getSimulationData(bpmnAbstraction);
+        SimulationData data = analyst.getSimulationData(bpmnAbstraction, userOptions);
 
         // then
         Map<String, Map<String, Double>> expectedEdgeFrequencies = Map.of(

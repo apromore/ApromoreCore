@@ -322,7 +322,7 @@ public class BPMNExportController extends AbstractController {
 
                         // Derive process simulation data
                         SimulationData simulationData =
-                            controller.getProcessAnalyst().getSimulationData(bpmnAbstraction);
+                            controller.getProcessAnalyst().getSimulationData(bpmnAbstraction, controller.getUserOptions());
 
                         // Enrich the exported bpmn with process simulation info
                         minedModel = simulationInfoService.enrichWithSimulationInfo(minedModel, simulationData);

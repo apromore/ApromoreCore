@@ -291,6 +291,7 @@ public class PDController extends BaseController implements Composer<Component>,
                     && currentUser.hasAnyPermission(PermissionType.CALENDAR),
                 currentUser.hasAnyPermission(PermissionType.MODEL_DISCOVER_EDIT));
 
+            userOptions = UserOptionsData.DEFAULT(configData);
             userOptions.setCostTable((CostTable) Sessions.getCurrent().getAttribute("costTable"));
             userOptions.setCalendarModel(getEventLogService().getCalendarFromLog(contextData.getLogId()));
 

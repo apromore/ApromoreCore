@@ -145,14 +145,7 @@ public class PDAnalyst {
     @Getter
     private String costAttribute = XESAttributeCodes.ORG_ROLE;
 
-    @Getter
-    private CostTable costTable = CostTable.EMPTY;
-
     private String caseVariantPerspective = XESAttributeCodes.CONCEPT_NAME;
-
-    // Calendar management
-    @Getter
-    private CalendarModel calendarModel;
 
     private ConfigData configData;
 
@@ -194,12 +187,12 @@ public class PDAnalyst {
             caseVariantPerspective);
 
         // ProcessDiscoverer logic with default attribute
-        this.calendarModel = eventLogService.getCalendarFromLog(contextData.getLogId());
+        CalendarModel calendarModel = eventLogService.getCalendarFromLog(contextData.getLogId());
         if (calendarModel == null) {
             throw new CalendarNotExistsException("The open log doesn't have an associated calendar.");
         }
 
-        this.originalAPMLog.setCalendarModel(this.calendarModel);
+        this.originalAPMLog.setCalendarModel(calendarModel);
         this.processDiscoverer = new ProcessDiscoverer();
         this.processVisualizer = new ProcessJSONVisualizer();
     }
@@ -667,9 +660,10 @@ public class PDAnalyst {
      * Simulation data are used to add simulation values to the BPMN diagram.
      *
      * @param bpmnAbstraction Process Abstraction
+     * @param userOptions current user options
      * @return SimulationData
      */
-    public SimulationData getSimulationData(BPMNAbstraction bpmnAbstraction) {
+    public SimulationData getSimulationData(BPMNAbstraction bpmnAbstraction, UserOptionsData userOptions) {
         SimulationData simulationData = null;
         if (bpmnAbstraction != null) {
 
@@ -682,7 +676,7 @@ public class PDAnalyst {
                 .endTime(filteredAPMLog.getEndTime())
                 .nodeWeights(getNodeWeights(bpmnAbstraction))
                 .edgeFrequencies(groupOutboundEdgeFrequenciesByGateway(bpmnAbstraction))
-                .calendarModel(getCalendarModel())
+                .calendarModel(userOptions.getCalendarModel())
                 .build();
         }
         return simulationData;
