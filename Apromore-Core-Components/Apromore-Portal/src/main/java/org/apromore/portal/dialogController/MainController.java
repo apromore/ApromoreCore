@@ -337,6 +337,8 @@ public class MainController extends BaseController implements MainControllerInte
                 }
             });
 
+            final String COST_KEY = "costTable";
+            final String CURRENCY_KEY = "currency";
             mainW.addEventListener("onCostTableInit", e -> {
                 String jsonString = (String)e.getData();
                 Map<String, Double> costRates = new HashMap<>();
@@ -344,15 +346,11 @@ public class MainController extends BaseController implements MainControllerInte
                 if (jsonString != null) {
                     JSONParser parser = new JSONParser();
                     JSONObject jsonObject = (JSONObject) parser.parse(jsonString);
-                    if (jsonObject.containsKey("costTable")) {
-                        costRates = (Map<String, Double>) jsonObject.get("costTable");
-                    }
-                    if (jsonObject.containsKey("currency")) {
-                        currency = (String) jsonObject.get("currency");
-                    }
+                    costRates = (Map<String, Double>) jsonObject.getOrDefault(COST_KEY, costRates);
+                    currency = (String) jsonObject.getOrDefault(CURRENCY_KEY, currency);
                 }
 
-                Sessions.getCurrent().setAttribute("costTable", CostTable.builder()
+                Sessions.getCurrent().setAttribute(COST_KEY, CostTable.builder()
                     .currency(currency)
                     .costRates(costRates)
                     .build());

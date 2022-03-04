@@ -348,10 +348,6 @@ public class PDController extends BaseController implements Composer<Component>,
             LOGGER.error("Error occurred while initializing: " + ex.getMessage(), ex);
         }
     }
-//
-//    public void onCreateFollowUp(Component comp, Map<String, Double> costTable, String currency) {
-//
-//    }
 
     // All data and controllers must be already available
     private void initialize() {

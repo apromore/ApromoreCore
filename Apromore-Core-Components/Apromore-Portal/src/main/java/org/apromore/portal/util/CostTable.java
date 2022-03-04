@@ -39,7 +39,7 @@ public class CostTable {
     @Getter(AccessLevel.NONE)
     private final Map<String, Double> costRates;
 
-    public static CostTable EMPTY = CostTable.builder().currency("AUD").costRates(new HashMap<>()).build();
+    public static final CostTable EMPTY = CostTable.builder().currency("AUD").costRates(new HashMap<>()).build();
 
     public Double getCost(@NonNull String attributeId) {
         return costRates.getOrDefault(attributeId, DEFAULT_COST);

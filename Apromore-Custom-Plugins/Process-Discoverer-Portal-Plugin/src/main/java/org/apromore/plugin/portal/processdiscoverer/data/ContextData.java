@@ -24,9 +24,6 @@ package org.apromore.plugin.portal.processdiscoverer.data;
 
 import lombok.Getter;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * ContextData contains contextual data of this plugin
  * Many data items are about the calling plugin or the portal
@@ -44,8 +41,6 @@ public class ContextData {
     private final int logId;
     private final boolean isCalendarEnabled;
     private final boolean isEditEnabled;
-    private Map<String, Double> costTable = new HashMap<>();
-    private String currency = "USD";
 
     private ContextData (String domain,
                         String userName,
@@ -64,8 +59,6 @@ public class ContextData {
         this.logName = logName;
         this.isCalendarEnabled = isCalendarEnabled;
         this.isEditEnabled = isEditEnabled;
-        this.costTable = costTable;
-        this.currency = currency;
     }
     
     public static ContextData valueOf (String domain,
