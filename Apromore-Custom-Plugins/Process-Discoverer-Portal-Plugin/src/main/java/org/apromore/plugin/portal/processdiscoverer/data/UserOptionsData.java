@@ -25,11 +25,15 @@ package org.apromore.plugin.portal.processdiscoverer.data;
 import static org.apromore.logman.attribute.graph.MeasureType.DURATION;
 import static org.apromore.logman.attribute.graph.MeasureType.FREQUENCY;
 
+import lombok.Getter;
+import lombok.Setter;
+import org.apromore.calendar.model.CalendarModel;
 import org.apromore.logman.attribute.graph.MeasureAggregation;
 import org.apromore.logman.attribute.graph.MeasureRelation;
 import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.logman.attribute.log.relation.DirectFollowReader;
 import org.apromore.logman.attribute.log.relation.RelationReader;
+import org.apromore.portal.util.CostTable;
 
 /**
  * UserOptions contain user inputs on UI
@@ -85,6 +89,12 @@ public class UserOptionsData {
     protected boolean duration_median = false;
     
     protected RelationReader relationReader = new DirectFollowReader();
+
+    @Getter @Setter
+    private CalendarModel calendarModel = CalendarModel.ABSOLUTE_CALENDAR;
+
+    @Getter @Setter
+    private CostTable costTable = CostTable.EMPTY;
     
     public static UserOptionsData DEFAULT(ConfigData configData) {
         UserOptionsData userOptions = new UserOptionsData();

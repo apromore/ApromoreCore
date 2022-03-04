@@ -24,9 +24,12 @@ package org.apromore.plugin.portal.processdiscoverer.components;
 
 import org.apromore.plugin.portal.processdiscoverer.PDController;
 import org.apromore.plugin.portal.processdiscoverer.data.AttributeCost;
+import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
+import org.apromore.portal.util.CostTable;
 import org.zkoss.json.JSONObject;
 import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zk.ui.event.InputEvent;
@@ -44,13 +47,15 @@ public class CostTableController extends DataListController {
     private Window costTableWindow;
     private Combobox currencyCombobox;
     private boolean disabled;
+    private UserOptionsData userOptions;
 
     public CostTableController(PDController controller) {
         super(controller);
+        this.userOptions = controller.getUserOptions();
     }
 
     private void generateData() {
-        Map<String, Double> currentMapper = parent.getProcessAnalyst().getCostTable();
+        Map<String, Double> currentMapper = userOptions.getCostTable().getCostRates();
         records = new ListModelList<AttributeCost>();
         rows = new ArrayList<>();
         for (Object role : parent.getProcessAnalyst().getRoleValues()) {
@@ -73,7 +78,7 @@ public class CostTableController extends DataListController {
             AttributeCost ac = listItem.getValue();
             ac.setCostValue(costValue);
         });
-        currencyCombobox.setValue(parent.getProcessAnalyst().getCurrency());
+        currencyCombobox.setValue(userOptions.getCostTable().getCurrency());
     }
 
     @Override
@@ -86,6 +91,10 @@ public class CostTableController extends DataListController {
         String costTable = JSONObject.toJSONString(this.getCostMapper()).replaceAll("\\r?\\n", "");
         String jsonString = "{ \"currency\": \"" + currency + "\", \"costTable\": " + costTable + " }";
         Clients.evalJavaScript("Ap.common.setLocalStorageItem('ap.cost.table', '" + jsonString + "')");
+        Sessions.getCurrent().setAttribute("costTable", CostTable.builder()
+            .currency(currency)
+            .costRates(this.getCostMapper())
+            .build());
     }
 
     @Override
@@ -99,13 +108,16 @@ public class CostTableController extends DataListController {
             costTableWindow.addEventListener("onClose", e -> costTableWindow = null);
 
             costTableWindow.addEventListener("onChangeCurrency", e -> {
-                parent.getProcessAnalyst().setCurrency(currencyCombobox.getValue());
+                userOptions.setCostTable(CostTable.builder()
+                    .currency(currencyCombobox.getValue())
+                    .costRates(this.getCostMapper()).build());
                 persistCostTable();
             });
 
             costTableWindow.addEventListener("onApplyCost", e -> {
-                parent.getProcessAnalyst().setCostTable(this.getCostMapper());
-                parent.getProcessAnalyst().setCurrency(currencyCombobox.getValue());
+                userOptions.setCostTable(CostTable.builder()
+                    .currency(currencyCombobox.getValue())
+                    .costRates(this.getCostMapper()).build());
                 persistCostTable();
                 costTableWindow.detach();
                 costTableWindow = null;
