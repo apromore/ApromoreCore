@@ -98,11 +98,14 @@ public class ToolbarController extends AbstractController {
 
         exportFilteredLog = (Button) toolbar.getFellow("exportUnfitted");
         exportFilteredLog.setVisible(!isReadOnly);
+
         downloadPDF = (Button) toolbar.getFellow("downloadPDF");
         downloadPNG = (Button) toolbar.getFellow("downloadPNG");
         downloadJSON = (Button) toolbar.getFellow("downloadJSON");
+
         exportBPMN = (Button) toolbar.getFellow("exportBPMN");
         exportBPMN.setVisible(!isReadOnly);
+        exportBPMN.setDisabled(true);
 
         layoutHierarchy = (Button) toolbar.getFellow(LAYOUT_HIERARCHY);
         layoutDagreTopBottom = (Button) toolbar.getFellow(LAYOUT_DAGRE_TB);
@@ -197,6 +200,10 @@ public class ToolbarController extends AbstractController {
 
     public void setDisabledFilterClear(boolean disabled) {
         filterClear.setDisabled(disabled);
+    }
+
+    public void setDisabledModelExport(boolean disabled) {
+        exportBPMN.setDisabled(disabled);
     }
     
     @Override
