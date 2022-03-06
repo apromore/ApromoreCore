@@ -80,24 +80,24 @@
                     <label value="${$composer.labels.permission_analyze_log_anim}"/>
                 </div>
                 <div sclass="ap-permission-switch">
-                    <checkbox mold="switch" id="rolePermissionDashView"/>
-                    <label value="${$composer.labels.permission_analyze_dash_view}"/>
+                    <checkbox mold="switch" id="rolePermissionModelCompare"/>
+                    <label value="${$composer.labels.permission_analyze_model_compare}"/>
                 </div>
                 <div sclass="ap-permission-switch">
                     <checkbox mold="switch" id="rolePermissionCheckConformance"/>
                     <label value="${$composer.labels.permission_analyze_conformance}"/>
                 </div>
                 <div sclass="ap-permission-switch">
-                    <checkbox mold="switch" id="rolePermissionModelSimulate"/>
-                    <label value="${$composer.labels.permission_analyze_simulate}"/>
+                    <checkbox mold="switch" id="rolePermissionDashView"/>
+                    <label value="${$composer.labels.permission_analyze_dash_view}"/>
                 </div>
                 <div sclass="ap-permission-switch">
                     <checkbox mold="switch" id="rolePermissionDashFull"/>
                     <label value="${$composer.labels.permission_analyze_dash_full}"/>
                 </div>
                 <div sclass="ap-permission-switch">
-                    <checkbox mold="switch" id="rolePermissionModelCompare"/>
-                    <label value="${$composer.labels.permission_analyze_model_compare}"/>
+                    <checkbox mold="switch" id="rolePermissionModelSimulate"/>
+                    <label value="${$composer.labels.permission_analyze_simulate}"/>
                 </div>
             </div>
         </div>
