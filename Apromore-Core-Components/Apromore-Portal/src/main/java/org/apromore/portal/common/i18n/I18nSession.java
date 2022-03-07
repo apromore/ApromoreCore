@@ -21,6 +21,7 @@
  */
 package org.apromore.portal.common.i18n;
 
+import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 import java.util.HashMap;
@@ -45,6 +46,9 @@ public class I18nSession {
 
   private static final String DEFAULT_LANG_TAG = "en";
   private static final String DEFAULT_DATE_TIME_PATTERN = Constants.DATE_TIME_FORMAT_HUMANIZED;
+  private static final NumberFormat DEFAULT_NUMBER_FORMATTER = NumberFormat.getInstance(
+      new Locale("us", "US")
+  );
 
   private static final Logger LOGGER = PortalLoggerFactory.getLogger(I18nSession.class);
   @Getter
@@ -58,6 +62,8 @@ public class I18nSession {
   private String preferredDateTimePattern = null;
   @Getter
   private DateTimeFormatter preferredDateTimeFormatter = null;
+  @Getter
+  private NumberFormat preferredNumberFormatter = null;
 
   public I18nSession(I18nConfig config) {
     this.config = config;
@@ -130,6 +136,7 @@ public class I18nSession {
       preferredLocale = locale;
     }
     genDateTimeFormatter();
+    genNumberFormatter();
     Sessions.getCurrent().setAttribute(Attributes.PREFERRED_LOCALE, preferredLocale);
     try {
       Clients.reloadMessages(preferredLocale);
@@ -170,6 +177,14 @@ public class I18nSession {
     }
     preferredDateTimeFormatter =
         DateTimeFormatter.ofPattern(preferredDateTimePattern, preferredLocale);
+  }
+
+  public void genNumberFormatter() {
+    if (preferredLocale == null) {
+      preferredNumberFormatter = DEFAULT_NUMBER_FORMATTER;
+    } else {
+      preferredNumberFormatter = config.getNumberFormat(preferredLocale);
+    }
   }
 
 }

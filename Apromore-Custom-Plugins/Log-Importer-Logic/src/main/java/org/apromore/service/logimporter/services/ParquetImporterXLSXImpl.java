@@ -19,8 +19,15 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+
 package org.apromore.service.logimporter.services;
 
+import static org.apromore.service.logimporter.utilities.ParquetUtilities.createParquetSchema;
+
+import java.io.File;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.hadoop.fs.Path;
 import org.apache.parquet.schema.MessageType;
 import org.apache.poi.ss.usermodel.Cell;
@@ -37,17 +44,10 @@ import org.apromore.service.logimporter.model.LogModelImpl;
 import org.apromore.service.logimporter.model.ParquetEventLogModel;
 import org.apromore.service.logimporter.utilities.FileUtils;
 
-import java.io.File;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.apromore.service.logimporter.utilities.ParquetUtilities.createParquetSchema;
-
 public class ParquetImporterXLSXImpl extends AbstractParquetImporter {
 
-    private final int BUFFER_SIZE = 2048;
-    private final int DEFAULT_NUMBER_OF_ROWS = 100;
+    private static final int BUFFER_SIZE = 2048;
+    private static final int DEFAULT_NUMBER_OF_ROWS = 100;
     private List<LogErrorReport> logErrorReport;
     private LogProcessorParquet logProcessorParquet;
     private ParquetFileWriter writer;
@@ -69,14 +69,16 @@ public class ParquetImporterXLSXImpl extends AbstractParquetImporter {
 
             logMetaData.validateSample();
 
-            if (workbook == null)
+            if (workbook == null) {
                 throw new Exception("Unable to import file");
+            }
 
             Sheet sheet = workbook.getSheetAt(0);
 
             //Get the header
-            if (sheet == null)
+            if (sheet == null) {
                 throw new Exception("Unable to import file");
+            }
 
             String[] header = logMetaData.getHeader().toArray(new String[0]);
 
@@ -105,19 +107,22 @@ public class ParquetImporterXLSXImpl extends AbstractParquetImporter {
             for (Row r : sheet) {
 
                 //Skip header
-                if (r.getRowNum() == 0)
+                if (r.getRowNum() == 0) {
                     continue;
+                }
 
-                if (!isValidLineCount(lineIndex - 1))
+                if (!isValidLineCount(lineIndex - 1)) {
                     break;
+                }
 
                 // new row, new event.
                 lineIndex++;
 
                 //Validate num of column
                 if (r.getPhysicalNumberOfCells() > header.length) {
-                    logErrorReport.add(new LogErrorReportImpl(lineIndex, 0, null, "Number of columns does not match " +
-                            "the number of headers. Number of headers: (" + header.length + "). Number of columns: (" + r.getPhysicalNumberOfCells() + ")"));
+                    logErrorReport.add(new LogErrorReportImpl(lineIndex, 0, null,
+                        "Number of columns does not match the number of headers. Number of headers: ("
+                        + header.length + "). Number of columns: (" + r.getPhysicalNumberOfCells() + ")"));
                     continue;
                 }
 
@@ -129,12 +134,14 @@ public class ParquetImporterXLSXImpl extends AbstractParquetImporter {
                 }
 
                 //empty row
-                if (line.length == 0 || (line.length == 1 && (line[0].trim().equals("") || line[0].trim().equals("\n"))))
+                if (line.length == 0 || (line.length == 1 && (line[0].trim().equals("") || line[0].trim()
+                    .equals("\n")))) {
                     continue;
+                }
 
                 //Construct an event
                 parquetEventLogModel = logProcessorParquet.processLog(line, header, logMetaData, lineIndex,
-                        logErrorReport);
+                    logErrorReport);
 
                 // If row is invalid, continue to next row.
                 if (!parquetEventLogModel.isValid()) {
@@ -149,12 +156,14 @@ public class ParquetImporterXLSXImpl extends AbstractParquetImporter {
                 numOfValidEvents++;
             }
             //If file empty, delete it
-            if (numOfValidEvents == 0)
+            if (numOfValidEvents == 0) {
                 FileUtils.deleteFile(outputParquet);
+            }
 
 
-            if (!isValidLineCount(lineIndex - 1))
+            if (!isValidLineCount(lineIndex - 1)) {
                 rowLimitExceeded = true;
+            }
 
             return new LogModelImpl(null, logErrorReport, rowLimitExceeded, numOfValidEvents, null);
         } finally {

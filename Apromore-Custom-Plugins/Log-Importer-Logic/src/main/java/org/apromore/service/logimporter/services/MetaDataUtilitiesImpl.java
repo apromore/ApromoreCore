@@ -22,19 +22,6 @@
 
 package org.apromore.service.logimporter.services;
 
-import org.apromore.service.logimporter.model.CaseAttributesDiscovery;
-import org.apromore.service.logimporter.model.LogMetaData;
-import org.apromore.service.logimporter.utilities.NameComparator;
-
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
 import static org.apromore.service.logimporter.constants.Constants.POSSIBLE_ACTIVITY;
 import static org.apromore.service.logimporter.constants.Constants.POSSIBLE_CASE_ID;
 import static org.apromore.service.logimporter.constants.Constants.POSSIBLE_END_TIMESTAMP;
@@ -45,6 +32,18 @@ import static org.apromore.service.logimporter.constants.Constants.POSSIBLE_STAR
 import static org.apromore.service.logimporter.constants.Constants.TIMESTAMP_PATTERN;
 import static org.apromore.service.logimporter.dateparser.DateUtil.determineDateFormat;
 import static org.apromore.service.logimporter.dateparser.DateUtil.parseToTimestamp;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import org.apromore.service.logimporter.model.CaseAttributesDiscovery;
+import org.apromore.service.logimporter.model.LogMetaData;
+import org.apromore.service.logimporter.utilities.NameComparator;
 
 public class MetaDataUtilitiesImpl implements MetaDataUtilities {
     private List<List<String>> lines;
@@ -92,12 +91,12 @@ public class MetaDataUtilitiesImpl implements MetaDataUtilities {
                 this.logMetaData.setCaseIdPos(pos);
             } else if (this.logMetaData.getActivityPos() == -1 && match(POSSIBLE_ACTIVITY, value)) {
                 this.logMetaData.setActivityPos(pos);
-            } else if (this.logMetaData.getEndTimestampPos() == -1 && match(POSSIBLE_END_TIMESTAMP, value) &&
-                isTimestamp(pos, this.lines)) {
+            } else if (this.logMetaData.getEndTimestampPos() == -1 && match(POSSIBLE_END_TIMESTAMP, value)
+                       && isTimestamp(pos, this.lines)) {
                 this.logMetaData.setEndTimestampPos(pos);
                 this.logMetaData.setEndTimestampFormat(detectDateTimeFormat(pos));
-            } else if (this.logMetaData.getStartTimestampPos() == -1 && match(POSSIBLE_START_TIMESTAMP, value) &&
-                isTimestamp(pos, this.lines)) {
+            } else if (this.logMetaData.getStartTimestampPos() == -1 && match(POSSIBLE_START_TIMESTAMP, value)
+                       && isTimestamp(pos, this.lines)) {
                 this.logMetaData.setStartTimestampPos(pos);
                 this.logMetaData.setStartTimestampFormat(detectDateTimeFormat(pos));
             } else if (this.logMetaData.getResourcePos() == -1 && match(POSSIBLE_RESOURCE, value)) {
@@ -162,7 +161,7 @@ public class MetaDataUtilitiesImpl implements MetaDataUtilities {
 
     private void setOtherTimestamps() {
         for (int pos = 0; pos < logMetaData.getHeader().size(); pos++) {
-            if (isNOTUniqueAttribute(pos) && couldBeTimestamp(pos) && isTimestamp(pos, this.lines)) {
+            if (isNotUniqueAttribute(pos) && couldBeTimestamp(pos) && isTimestamp(pos, this.lines)) {
                 logMetaData.getOtherTimestamps().put(pos, detectDateTimeFormat(pos));
             }
         }
@@ -192,7 +191,7 @@ public class MetaDataUtilitiesImpl implements MetaDataUtilities {
     private void setEventAttributesPos() {
         // set all attributes that are not main attributes or timestamps as event attributes
         for (int pos = 0; pos < logMetaData.getHeader().size(); pos++) {
-            if (isNOTUniqueAttribute(pos) && !logMetaData.getOtherTimestamps().containsKey(pos)) {
+            if (isNotUniqueAttribute(pos) && !logMetaData.getOtherTimestamps().containsKey(pos)) {
                 logMetaData.getEventAttributesPos().add(pos);
             }
         }
@@ -200,16 +199,16 @@ public class MetaDataUtilitiesImpl implements MetaDataUtilities {
 
     // If only one timestamp found then set it as endTimestamp
     private void onlyOnetimestampFound() {
-        if (logMetaData.getEndTimestampPos() == -1 && logMetaData.getStartTimestampPos() == -1 &&
-            logMetaData.getOtherTimestamps().size() > 0) {
+        if (logMetaData.getEndTimestampPos() == -1 && logMetaData.getStartTimestampPos() == -1
+            && logMetaData.getOtherTimestamps().size() > 0) {
             logMetaData.getOtherTimestamps().keySet().stream().findFirst()
                 .ifPresent(integer -> logMetaData.setEndTimestampPos(integer));
             logMetaData.getOtherTimestamps().remove(logMetaData.getEndTimestampPos());
             logMetaData.setEndTimestampFormat(detectDateTimeFormat(logMetaData.getEndTimestampPos()));
 
-        } else if (logMetaData.getEndTimestampPos() == -1 &&
-            (logMetaData.getOtherTimestamps() == null || logMetaData.getOtherTimestamps().isEmpty())
-            && logMetaData.getStartTimestampPos() != -1) {
+        } else if (logMetaData.getEndTimestampPos() == -1
+                   && (logMetaData.getOtherTimestamps() == null || logMetaData.getOtherTimestamps().isEmpty())
+                   && logMetaData.getStartTimestampPos() != -1) {
             logMetaData.setEndTimestampPos(logMetaData.getStartTimestampPos());
             logMetaData.setStartTimestampPos(-1);
             logMetaData.setEndTimestampFormat(detectDateTimeFormat(logMetaData.getEndTimestampPos()));
@@ -217,13 +216,14 @@ public class MetaDataUtilitiesImpl implements MetaDataUtilities {
     }
 
     private void setCaseAttributesPos() {
-        if (logMetaData.getCaseIdPos() != -1 && logMetaData.getEventAttributesPos() != null &&
-            !logMetaData.getEventAttributesPos().isEmpty()) {
+        if (logMetaData.getCaseIdPos() != -1 && logMetaData.getEventAttributesPos() != null
+            && !logMetaData.getEventAttributesPos().isEmpty()) {
             // sort by case id
             List<List<String>> myLines = new ArrayList<>(lines);
             Comparator<String> nameOrder = new NameComparator();
             myLines.sort(
-                //(o1, o2) -> nameOrder.compare(o1.get(logMetaData.getCaseIdPos()), o2.get(logMetaData.getCaseIdPos()))  // Java 8
+                //(o1, o2) -> nameOrder.compare(o1.get(logMetaData.getCaseIdPos()),
+                // o2.get(logMetaData.getCaseIdPos()))  // Java 8
                 new java.util.Comparator<List<String>>() {
                     public int compare(List<String> o1, List<String> o2) {
                         return nameOrder.compare(o1.get(logMetaData.getCaseIdPos()),
@@ -270,12 +270,12 @@ public class MetaDataUtilitiesImpl implements MetaDataUtilities {
         }
     }
 
-    private boolean isNOTUniqueAttribute(int pos) {
-        return (pos != logMetaData.getCaseIdPos() &&
-            pos != logMetaData.getActivityPos() &&
-            pos != logMetaData.getEndTimestampPos() &&
-            pos != logMetaData.getStartTimestampPos() &&
-            pos != logMetaData.getResourcePos() &&
-            pos != logMetaData.getRolePos());
+    private boolean isNotUniqueAttribute(int pos) {
+        return (pos != logMetaData.getCaseIdPos()
+                && pos != logMetaData.getActivityPos()
+                && pos != logMetaData.getEndTimestampPos()
+                && pos != logMetaData.getStartTimestampPos()
+                && pos != logMetaData.getResourcePos()
+                && pos != logMetaData.getRolePos());
     }
 }

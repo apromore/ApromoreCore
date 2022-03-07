@@ -52,10 +52,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Adapts {@link org.apromore.dao.UserRepository#login(String, String)} to the SpringSecurity AuthenticationProvider SPI.
@@ -110,6 +107,9 @@ public class UsernamePasswordAuthenticationProvider implements AuthenticationPro
 
         UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) authentication;
         User user = findUser(token.getName());
+        if(Optional.ofNullable(user).isEmpty()) {
+            throw new UsernameNotFoundException("User '" + token.getName() + "' not found");
+        }
         Membership membership = user.getMembership();
         String password = (String) token.getCredentials();
 

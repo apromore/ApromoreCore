@@ -555,7 +555,7 @@ public class ManagerServiceImpl implements ManagerService {
   @Override
   public ExportFormatResultType exportFormat(int processId, String processName, String branch,
       String versionNumber, String nativeType, String owner) throws Exception {
-    LOGGER.info("Export process model \"{}\" (id {}, branch {}, version {}, type {}, owner {})",
+    LOGGER.debug("Export process model \"{}\" (id {}, branch {}, version {}, type {}, owner {})",
         processName, processId, branch, versionNumber, nativeType, owner);
     return procSrv.exportProcess(processName, processId, branch, new Version(versionNumber),
         nativeType, owner);

@@ -37,6 +37,7 @@ public enum PermissionType {
     USERS_EDIT("2e884153-feb2-4842-b291-769370c86e44","Edit users"),
     GROUPS_EDIT("d9ade57c-14c7-4e43-87e5-6a9127380b1b","Edit groups"),
     ROLES_EDIT("ea31a607-212f-447e-8c45-78f1e59b1dde","Edit roles"),
+    ACCESS_RIGHTS_MANAGE("165962fc-9913-11ec-b909-0242ac120002","Manage access rights"),
     PIPELINE_CREATE("41877a02-722d-43f7-b47b-75c544013f0f", "Create pipeline"),
     PIPELINE_MANAGE("a5e0c805-0dec-469c-8bda-1d279e751bd7", "Manage pipelines"),
     CALENDAR("db2c4517-c9c7-421e-bccf-277baf2fdb72", "Manage calendars"),
@@ -55,6 +56,7 @@ public enum PermissionType {
     DASH_VIEW("9eabfb63-8e39-4e03-803d-c94dbe431059", "View dashboards"),
     MERGE_MODELS("7e1f8cc2-7532-406c-b106-3bf7095047dc", "Merge models"),
     SEARCH_MODELS("7c0f5dc2-7d39-456e-b1cb-139bb030ee98", "Search similar models"),
+    PUBLISH_MODELS("607b5dfe-9508-11ec-b909-0242ac120002", "Publish models"),
     UNREGISTERED("", "");
 
     protected String id;

@@ -69,10 +69,14 @@ import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.UserType;
 import org.apromore.portal.model.UsernamesType;
 import org.apromore.portal.model.VersionSummaryType;
+import org.apromore.portal.util.CostTable;
 import org.apromore.portal.util.StreamUtil;
+import org.apromore.zk.ApromoreDesktopCleanup;
 import org.slf4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.zkoss.json.JSONObject;
+import org.zkoss.json.parser.JSONParser;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
@@ -259,7 +263,11 @@ public class MainController extends BaseController implements MainControllerInte
             controller = this;
             MainController self = this;
 
-            Sessions.getCurrent().setAttribute("portalContext", portalContext);
+            // portalContext_ will be set from one place
+            Sessions.getCurrent().setAttribute("portalContext_" + this.mainComponent.getDesktop().getId(), portalContext);
+            //We are keeping it's own ID to retrieve the portal context from anywhere of the portal
+            this.mainComponent.getDesktop().setAttribute("PORTAL_REF_ID",this.mainComponent.getDesktop().getId());
+            this.mainComponent.getDesktop().addListener(new ApromoreDesktopCleanup());
 
             this.breadCrumbs.addEventListener("onSelectFolder", new EventListener<Event>() {
                 @Override
@@ -301,7 +309,6 @@ public class MainController extends BaseController implements MainControllerInte
             // UserSessionManager data
             // UserSessionManager.initializeUser(getService(), config);
             switchToProcessSummaryView();
-            UserSessionManager.setMainController(this);
             pagingandbuttons.setVisible(true);
 
             mainW.addEventListener("onCtrlPress", new EventListener<Event>() {
@@ -329,6 +336,27 @@ public class MainController extends BaseController implements MainControllerInte
                     }
                 }
             });
+
+            final String COST_KEY = "costTable";
+            final String CURRENCY_KEY = "currency";
+            mainW.addEventListener("onCostTableInit", e -> {
+                String jsonString = (String)e.getData();
+                Map<String, Double> costRates = new HashMap<>();
+                String currency = "USD";
+                if (jsonString != null) {
+                    JSONParser parser = new JSONParser();
+                    JSONObject jsonObject = (JSONObject) parser.parse(jsonString);
+                    costRates = (Map<String, Double>) jsonObject.getOrDefault(COST_KEY, costRates);
+                    currency = (String) jsonObject.getOrDefault(CURRENCY_KEY, currency);
+                }
+
+                Sessions.getCurrent().setAttribute(COST_KEY, CostTable.builder()
+                    .currency(currency)
+                    .costRates(costRates)
+                    .build());
+            });
+
+            Clients.evalJavaScript("Ap.common.getLocalStorageItem('ap.cost.table', 'mainW', 'onCostTableInit')");
 
         } catch (final Exception e) {
             LOGGER.error("Repository NOT available", e);
@@ -609,7 +637,7 @@ public class MainController extends BaseController implements MainControllerInte
                 + "</bpmn:definitions>";
 
         ImportProcessResultType importResult = getManagerService().importProcess(
-                username, folderId, BPMN_2_0, "Untitled", VERSION_1_0, new ByteArrayInputStream(bpmnXML.getBytes()), "",
+                username, folderId, BPMN_2_0, UNTITLED_PROCESS_NAME, VERSION_1_0, new ByteArrayInputStream(bpmnXML.getBytes()), "",
                 "", now, null, false);
 
         Integer processId = importResult.getProcessSummary().getId();

@@ -42,6 +42,7 @@ import org.apromore.portal.model.UserMetadataSummaryType;
 import org.apromore.portal.model.UserType;
 import org.slf4j.Logger;
 import org.zkoss.util.resource.Labels;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.Menu;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Menupopup;
@@ -58,10 +59,10 @@ public class LogFilterPopupLogSubMenuController extends PopupLogSubMenuControlle
     }
 
     private void constructMenu() {
-        String subMenuImage = getSubMenuImage();
+        String subMenuImage = getLogFilterSubMenuImage();
         if (subMenuImage != null) {
             Menu subMenu = new Menu();
-            subMenu.setLabel(Labels.getLabel("plugin_create_Edit_filter_text"));
+            subMenu.setLabel(Labels.getLabel("plugin_create_log_Edit_filter_text"));
             subMenu.setImage(subMenuImage);
             Menupopup menuPopup = new Menupopup();
             popupMenuController.addMenuitem(menuPopup, new MenuItem(PluginCatalog.PLUGIN_CREATE_NEW_LOG_FILTER));
@@ -103,8 +104,24 @@ public class LogFilterPopupLogSubMenuController extends PopupLogSubMenuControlle
         menuPopup.appendChild(item);
     }
 
+    private void addMenuItemForLogFilter(Menupopup popup, UserMetadataSummaryType um, boolean visibleOnLoad) {
+        Menuitem item = new Menuitem();
+        item.setLabel(um.getName());
+        item.setAttribute(USER_META_DATA, um);
+        item.addEventListener(ON_CLICK, event -> {
+            try {
+                viewLogFilter((UserMetadataSummaryType) event.getTarget().getAttribute(USER_META_DATA));
+            } catch (Exception ex) {
+                LOGGER.error("Error in showing the filter log discover model", ex);
+            }
+        });
+        item.setVisible(visibleOnLoad);
+        popup.appendChild(item);
+    }
+
     private void viewLogFilter(UserMetadataSummaryType umData) {
         try {
+            Executions.getCurrent().getDesktop().setAttribute("DEFAULT_VIEW",true);
             Map<String, Object> attrMap = new HashMap<>();
             attrMap.put("FORWARD_FROM_CONTEXT_MENU", true);
             attrMap.put("EDIT_FILTER", true);
@@ -121,22 +138,7 @@ public class LogFilterPopupLogSubMenuController extends PopupLogSubMenuControlle
         }
     }
 
-    private void addMenuItemForLogFilter(Menupopup popup, UserMetadataSummaryType um, boolean visibleOnLoad) {
-        Menuitem item = new Menuitem();
-        item.setLabel(um.getName());
-        item.setAttribute(USER_META_DATA, um);
-        item.addEventListener(ON_CLICK, event -> {
-            try {
-                viewLogFilter((UserMetadataSummaryType) event.getTarget().getAttribute(USER_META_DATA));
-            } catch (Exception ex) {
-                LOGGER.error("Error in showing the filter log discover model", ex);
-            }
-        });
-        item.setVisible(visibleOnLoad);
-        popup.appendChild(item);
-    }
-
-    private String getSubMenuImage() {
+    private String getLogFilterSubMenuImage() {
         String subMenuImagePath = null;
         try {
             UserType currentUser = UserSessionManager.getCurrentUser();

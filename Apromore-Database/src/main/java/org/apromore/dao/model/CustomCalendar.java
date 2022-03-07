@@ -33,6 +33,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -61,6 +63,8 @@ public class CustomCalendar implements Serializable {
 	private String createdBy;
 
 	private String updatedBy;
+
+	private User user;
 
 	private List<WorkDay> workDays = new ArrayList<WorkDay>();
 	private List<Holiday> holidays = new ArrayList<Holiday>();
@@ -190,6 +194,16 @@ public class CustomCalendar implements Serializable {
 
 	public void setZoneId(String zoneId) {
 		this.zoneId = zoneId;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "owner")
+	public User getUser() {
+		return this.user;
+	}
+
+	public void setUser(final User owner) {
+		this.user = owner;
 	}
 
 }

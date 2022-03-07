@@ -22,10 +22,12 @@
 package org.apromore.processsimulation.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -33,18 +35,24 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.DayOfWeek;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
+import org.apromore.calendar.builder.CalendarModelBuilder;
+import org.apromore.calendar.model.CalendarModel;
+import org.apromore.commons.datetime.DateTimeUtils;
 import org.apromore.processsimulation.config.SimulationInfoConfig;
 import org.apromore.processsimulation.dto.SimulationData;
 import org.apromore.processsimulation.model.Currency;
 import org.apromore.processsimulation.model.DistributionType;
 import org.apromore.processsimulation.model.Element;
 import org.apromore.processsimulation.model.ProcessSimulationInfo;
+import org.apromore.processsimulation.model.Resource;
 import org.apromore.processsimulation.model.TimeUnit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -86,6 +94,7 @@ class SimulationInfoServiceTest {
         Map<String, String> defaultResourceConfigMap = new HashMap<>();
         defaultResourceConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_ID_KEY, "A_DEFAULT_RESOURCE_ID");
         defaultResourceConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_NAME_KEY, "The default resource name");
+        defaultResourceConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_ID_PREFIX_KEY, "QBP_");
         when(config.getDefaultResource()).thenReturn(defaultResourceConfigMap);
     }
 
@@ -107,7 +116,7 @@ class SimulationInfoServiceTest {
     }
 
     @Test
-    void should_successfully_derive_task_simulation_info() {
+    void should_successfully_derive_task_simulation_info_with_default_resource() {
         // given
         SimulationData mockSimulationData = mock(SimulationData.class);
 
@@ -120,6 +129,9 @@ class SimulationInfoServiceTest {
         when(mockSimulationData.getDiagramNodeDuration("b")).thenReturn(11110.00);
         when(mockSimulationData.getDiagramNodeDuration("c")).thenReturn(12120.00);
 
+        when(mockSimulationData.getResourceCountsByRole()).thenReturn(null);
+        when(mockSimulationData.getRoleNameByNodeId(anyString())).thenReturn("The default resource name");
+
         // when
         ProcessSimulationInfo processSimulationInfo =
             simulationInfoService.transformToSimulationInfo(mockSimulationData);
@@ -127,6 +139,66 @@ class SimulationInfoServiceTest {
         // then
         assertGeneralSimulationInfo(processSimulationInfo);
 
+        assertTaskInfo(processSimulationInfo, true);
+    }
+
+    @Test
+    void should_successfully_derive_task_simulation_info_with_default_role() {
+        // given
+        SimulationData mockSimulationData = mock(SimulationData.class);
+
+        when(mockSimulationData.getCaseCount()).thenReturn(100L);
+        when(mockSimulationData.getStartTime()).thenReturn(1577797200000L);
+        when(mockSimulationData.getEndTime()).thenReturn(1580475600000L);
+
+        when(mockSimulationData.getDiagramNodeIDs()).thenReturn(Arrays.asList("a", "b", "c"));
+        when(mockSimulationData.getDiagramNodeDuration("a")).thenReturn(10100.00);
+        when(mockSimulationData.getDiagramNodeDuration("b")).thenReturn(11110.00);
+        when(mockSimulationData.getDiagramNodeDuration("c")).thenReturn(12120.00);
+
+        when(mockSimulationData.getResourceCountsByRole()).thenReturn(Map.of(SimulationData.DEFAULT_ROLE, 30));
+        when(mockSimulationData.getRoleNameByNodeId(anyString())).thenReturn(SimulationData.DEFAULT_ROLE);
+
+        // when
+        ProcessSimulationInfo processSimulationInfo =
+            simulationInfoService.transformToSimulationInfo(mockSimulationData);
+
+        // then
+        assertGeneralSimulationInfo(processSimulationInfo);
+
+        assertTaskInfo(processSimulationInfo, true);
+    }
+
+    @Test
+    void should_successfully_derive_task_simulation_info_with_associated_resource() {
+        // given
+        SimulationData mockSimulationData = mock(SimulationData.class);
+
+        when(mockSimulationData.getCaseCount()).thenReturn(100L);
+        when(mockSimulationData.getStartTime()).thenReturn(1577797200000L);
+        when(mockSimulationData.getEndTime()).thenReturn(1580475600000L);
+
+        when(mockSimulationData.getDiagramNodeIDs()).thenReturn(Arrays.asList("a", "b", "c"));
+        when(mockSimulationData.getDiagramNodeDuration("a")).thenReturn(10100.00);
+        when(mockSimulationData.getDiagramNodeDuration("b")).thenReturn(11110.00);
+        when(mockSimulationData.getDiagramNodeDuration("c")).thenReturn(12120.00);
+
+        when(mockSimulationData.getResourceCountsByRole()).thenReturn(Map.of("Role_1", 5, "Role_2", 10, "Role_3", 15));
+        when(mockSimulationData.getRoleNameByNodeId("a")).thenReturn("Role_1");
+        when(mockSimulationData.getRoleNameByNodeId("b")).thenReturn("Role_2");
+        when(mockSimulationData.getRoleNameByNodeId("c")).thenReturn("Role_3");
+
+        // when
+        ProcessSimulationInfo processSimulationInfo =
+            simulationInfoService.transformToSimulationInfo(mockSimulationData);
+
+        // then
+        assertGeneralSimulationInfo(processSimulationInfo);
+
+        assertTaskInfo(processSimulationInfo, false);
+    }
+
+    private void assertTaskInfo(final ProcessSimulationInfo processSimulationInfo, boolean expectDefaultResource) {
         assertEquals(3, processSimulationInfo.getTasks().size());
         assertTrue(
             processSimulationInfo.getTasks().stream()
@@ -150,6 +222,13 @@ class SimulationInfoServiceTest {
                     break;
             }
 
+            if (expectDefaultResource) {
+                assertEquals("QBP_A_DEFAULT_RESOURCE_ID", element.getResourceIds().get(0));
+            } else {
+                assertFalse(element.getResourceIds().get(0).contains("A_DEFAULT_RESOURCE_ID"));
+                assertTrue(element.getResourceIds().get(0)
+                    .matches("QBP_[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}"));
+            }
             assertNull(element.getDistributionDuration().getArg2());
             assertNull(element.getDistributionDuration().getMean());
             assertEquals(TimeUnit.SECONDS, element.getDistributionDuration().getTimeUnit());
@@ -200,6 +279,13 @@ class SimulationInfoServiceTest {
         when(mockSimulationData.getEndTime()).thenReturn(1580475600000L);
         when(mockSimulationData.getResourceCount()).thenReturn(27L);
 
+        Map<String, Integer> mockRoleToResourceCounts = Map.of(
+            "Role_1", 5,
+            "Role_2", 10,
+            "Role_3", 15
+        );
+        when(mockSimulationData.getResourceCountsByRole()).thenReturn(mockRoleToResourceCounts);
+
         // when
         ProcessSimulationInfo processSimulationInfo =
             simulationInfoService.transformToSimulationInfo(mockSimulationData);
@@ -208,23 +294,45 @@ class SimulationInfoServiceTest {
         assertGeneralSimulationInfo(processSimulationInfo);
 
         assertNotNull(processSimulationInfo.getResources());
-        assertEquals(1, processSimulationInfo.getResources().size());
-        assertEquals("A_DEFAULT_RESOURCE_ID", processSimulationInfo.getResources().get(0).getId());
-        assertEquals("The default resource name", processSimulationInfo.getResources().get(0).getName());
-        assertEquals("A_DEFAULT_TIMETABLE_ID", processSimulationInfo.getResources().get(0).getTimetableId());
-        assertEquals(27, processSimulationInfo.getResources().get(0).getTotalAmount());
+        assertEquals(3, processSimulationInfo.getResources().size());
+
+        Optional<Resource> role1 =
+            processSimulationInfo.getResources().stream().filter(resource -> resource.getName().equals("Role_1"))
+                .findFirst();
+        assertResource("Role_1", 5, "A_DEFAULT_TIMETABLE_ID", role1);
+
+        Optional<Resource> role2 =
+            processSimulationInfo.getResources().stream().filter(resource -> resource.getName().equals("Role_2"))
+                .findFirst();
+        assertResource("Role_2", 10, "A_DEFAULT_TIMETABLE_ID", role2);
+
+        Optional<Resource> role3 =
+            processSimulationInfo.getResources().stream().filter(resource -> resource.getName().equals("Role_3"))
+                .findFirst();
+        assertResource("Role_3", 15, "A_DEFAULT_TIMETABLE_ID", role3);
+    }
+
+    private void assertResource(
+        final String expectedResourceName,
+        final int expectedResourceCount,
+        final String expectedTimetableId,
+        final Optional<Resource> actualRole) {
+        assertTrue(actualRole.isPresent());
+        assertEquals(expectedResourceName, actualRole.get().getName());
+        assertEquals(expectedResourceCount, actualRole.get().getTotalAmount());
+        assertEquals(expectedTimetableId, actualRole.get().getTimetableId());
     }
 
     @Test
-    void should_contain_no_resources_if_resource_count_is_zero() {
+    void should_contain_default_resource_if_no_roles() {
         // given
         SimulationData mockSimulationData = mock(SimulationData.class);
 
         when(mockSimulationData.getCaseCount()).thenReturn(100L);
         when(mockSimulationData.getStartTime()).thenReturn(1577797200000L);
         when(mockSimulationData.getEndTime()).thenReturn(1580475600000L);
-        when(mockSimulationData.getResourceCount()).thenReturn(0L);
-
+        when(mockSimulationData.getResourceCount()).thenReturn(19L);
+        when(mockSimulationData.getResourceCountsByRole()).thenReturn(null);
 
         // when
         ProcessSimulationInfo processSimulationInfo =
@@ -233,19 +341,24 @@ class SimulationInfoServiceTest {
         // then
         assertGeneralSimulationInfo(processSimulationInfo);
 
-        assertNull(processSimulationInfo.getResources());
+        assertEquals(1, processSimulationInfo.getResources().size());
+        assertEquals("QBP_A_DEFAULT_RESOURCE_ID", processSimulationInfo.getResources().get(0).getId());
+        assertEquals("The default resource name", processSimulationInfo.getResources().get(0).getName());
+        assertEquals("A_DEFAULT_TIMETABLE_ID", processSimulationInfo.getResources().get(0).getTimetableId());
+        assertEquals(19, processSimulationInfo.getResources().get(0).getTotalAmount());
     }
 
     private void assertGeneralSimulationInfo(final ProcessSimulationInfo processSimulationInfo) {
         assertNotNull(processSimulationInfo.getId());
         assertNotNull(processSimulationInfo.getErrors());
         assertEquals(100L, processSimulationInfo.getProcessInstances());
-        assertEquals("26784.00", processSimulationInfo.getArrivalRateDistribution().getArg1());
+        assertEquals("6624.00", processSimulationInfo.getArrivalRateDistribution().getArg1());
         assertNull(processSimulationInfo.getArrivalRateDistribution().getArg2());
         assertNull(processSimulationInfo.getArrivalRateDistribution().getMean());
         assertEquals(TimeUnit.HOURS, processSimulationInfo.getArrivalRateDistribution().getTimeUnit());
         assertEquals(DistributionType.EXPONENTIAL, processSimulationInfo.getArrivalRateDistribution().getType());
-        assertEquals("2019-12-31T13:00:00Z", processSimulationInfo.getStartDateTime());
+        assertEquals(DateTimeUtils.toZonedDateTime(1577797200000L).toOffsetDateTime().toString(),
+            processSimulationInfo.getStartDateTime());
         assertEquals(Currency.EUR, processSimulationInfo.getCurrency());
     }
 
@@ -545,9 +658,12 @@ class SimulationInfoServiceTest {
     private void testTimeUnitsAndDurations(long startTime, long endTime, TimeUnit expectedTimeUnit) {
         // given
         long caseCount = 1;
+        CalendarModel calendarModel = new CalendarModelBuilder().with5DayWorking().build();
+        calendarModel.setZoneId(ZoneId.SHORT_IDS.get("AET"));
         SimulationData simulationData = SimulationData.builder()
             .startTime(startTime)
             .endTime(endTime)
+            .calendarModel(calendarModel)
             .caseCount(caseCount)
             .build();
 
@@ -556,15 +672,11 @@ class SimulationInfoServiceTest {
 
         // then
         assertEquals(expectedTimeUnit, simulationInfo.getArrivalRateDistribution().getTimeUnit());
-        assertEquals(getInterArrivalTime(startTime, endTime, caseCount),
-            simulationInfo.getArrivalRateDistribution().getArg1());
-    }
-
-    private String getInterArrivalTime(long startTime, long endTime, long caseCount) {
-        double interArrivalTimeMillis = (endTime - startTime) / (double) caseCount;
-
-        return BigDecimal.valueOf(interArrivalTimeMillis / (double) TimeUnit.SECONDS.getNumberOfMilliseconds())
+        String interArrivalTime = BigDecimal.valueOf(
+                simulationInfoService.getInterArrivalTime(simulationData) / TimeUnit.SECONDS.getNumberOfMilliseconds())
             .setScale(2, RoundingMode.HALF_UP).toString();
+
+        assertEquals(interArrivalTime, simulationInfo.getArrivalRateDistribution().getArg1());
     }
 
     private void assertBpmnGeneralProcessSimulationInfo(String bpmnXmlString)
@@ -577,12 +689,13 @@ class SimulationInfoServiceTest {
         assertNotNull(processSimulationAttrMap.getNamedItem("id").getNodeValue());
         assertEquals(Currency.EUR.toString(), processSimulationAttrMap.getNamedItem("currency").getNodeValue());
         assertEquals("100", processSimulationAttrMap.getNamedItem("processInstances").getNodeValue());
-        assertEquals("2019-12-31T13:00:00Z", processSimulationAttrMap.getNamedItem("startDateTime").getNodeValue());
+        assertEquals(DateTimeUtils.toZonedDateTime(1577797200000L).toOffsetDateTime().toString(),
+            processSimulationAttrMap.getNamedItem("startDateTime").getNodeValue());
 
         Node arrivalDistributionXmlNode = TestHelper.getProcessSimulationInfo(bpmnXmlString,
             "/definitions/process/extensionElements/processSimulationInfo/arrivalRateDistribution");
         NamedNodeMap arrivalRateDistributionAttrMap = arrivalDistributionXmlNode.getAttributes();
-        assertEquals("26784.00", arrivalRateDistributionAttrMap.getNamedItem("arg1").getNodeValue());
+        assertEquals("6624.00", arrivalRateDistributionAttrMap.getNamedItem("arg1").getNodeValue());
         assertNull(arrivalRateDistributionAttrMap.getNamedItem("arg2"));
         assertNull(arrivalRateDistributionAttrMap.getNamedItem("mean"));
         assertEquals(DistributionType.EXPONENTIAL.toString(),
@@ -651,12 +764,29 @@ class SimulationInfoServiceTest {
     private void assertBpmnResourceSimulationInfo(String bpmnXmlString)
         throws XPathExpressionException, ParserConfigurationException, IOException, SAXException {
 
-        Node resourceNode = TestHelper.getProcessSimulationInfo(bpmnXmlString,
-            "/definitions/process/extensionElements/processSimulationInfo/resources/resource[1]");
-        assertEquals("A_DEFAULT_RESOURCE_ID", resourceNode.getAttributes().getNamedItem("id").getNodeValue());
-        assertEquals("The default resource name", resourceNode.getAttributes().getNamedItem("name").getNodeValue());
-        assertEquals("A_DEFAULT_TIMETABLE_ID", resourceNode.getAttributes().getNamedItem("timetableId").getNodeValue());
-        assertEquals("23", resourceNode.getAttributes().getNamedItem("totalAmount").getNodeValue());
+        NodeList resourceNodeList = TestHelper.getProcessSimulationInfo(bpmnXmlString,
+            "/definitions/process/extensionElements/processSimulationInfo/resources").getChildNodes();
+
+        Map<String, Node> resourceNodeMap = new HashMap<>();
+        for (int i = 0; i < resourceNodeList.getLength(); i++) {
+            Node resource = resourceNodeList.item(i);
+            resourceNodeMap.put(resource.getAttributes().getNamedItem("name").getNodeValue(), resource);
+        }
+
+        assertResources("Role_1", 5, "A_DEFAULT_TIMETABLE_ID", resourceNodeMap);
+        assertResources("Role_2", 10, "A_DEFAULT_TIMETABLE_ID", resourceNodeMap);
+        assertResources("Role_3", 15, "A_DEFAULT_TIMETABLE_ID", resourceNodeMap);
+    }
+
+    private void assertResources(String resourceName, int totalAmount, String timetableId,
+                                 final Map<String, Node> resourceNodeMap) {
+        Node resourceNode = resourceNodeMap.get(resourceName);
+
+        assertEquals(resourceName, resourceNode.getAttributes().getNamedItem("name").getNodeValue());
+        assertEquals(String.valueOf(totalAmount),
+            resourceNode.getAttributes().getNamedItem("totalAmount").getNodeValue());
+        assertEquals(timetableId, resourceNode.getAttributes().getNamedItem("timetableId").getNodeValue());
+
     }
 
     private void assertBpmnGatewayProbabilitySimulationInfo(String bpmnXmlString)

@@ -8,57 +8,64 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+
 package org.apromore.service.logimporter.services;
 
-import org.apromore.service.logimporter.model.LogErrorReport;
-import org.apromore.service.logimporter.model.LogErrorReportImpl;
-import org.apromore.service.logimporter.model.LogMetaData;
-import org.apromore.service.logimporter.model.ParquetEventLogModel;
+import static org.apromore.service.logimporter.dateparser.DateUtil.parseToTimestamp;
 
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
-
-import static org.apromore.service.logimporter.dateparser.DateUtil.parseToTimestamp;
+import org.apromore.service.logimporter.model.LogErrorReport;
+import org.apromore.service.logimporter.model.LogErrorReportImpl;
+import org.apromore.service.logimporter.model.LogMetaData;
+import org.apromore.service.logimporter.model.ParquetEventLogModel;
 
 public class LogProcessorParquetImpl implements LogProcessorParquet {
 
     private boolean validRow;
 
     @Override
-    public ParquetEventLogModel processLog(String[] line, String[] header, LogMetaData sample, int lineIndex, List<LogErrorReport> logErrorReport) {
+    public ParquetEventLogModel processLog(String[] line, String[] header, LogMetaData sample, int lineIndex,
+                                           List<LogErrorReport> logErrorReport) {
 
         //Construct an event
         validRow = true;
 
         // Case id:
         if (line[sample.getCaseIdPos()] == null || line[sample.getCaseIdPos()].isEmpty()) {
-            logErrorReport.add(new LogErrorReportImpl(lineIndex, sample.getCaseIdPos(), header[sample.getCaseIdPos()], "Case id is empty or has a null value!"));
+            logErrorReport.add(new LogErrorReportImpl(lineIndex, sample.getCaseIdPos(), header[sample.getCaseIdPos()],
+                "Case id is empty or has a null value!"));
             validRow = false;
         }
 
         // Activity
         if (line[sample.getActivityPos()] == null || line[sample.getActivityPos()].isEmpty()) {
-            logErrorReport.add(new LogErrorReportImpl(lineIndex, sample.getActivityPos(), header[sample.getActivityPos()], "Activity is empty or has a null value!"));
+            logErrorReport.add(
+                new LogErrorReportImpl(lineIndex, sample.getActivityPos(), header[sample.getActivityPos()],
+                    "Activity is empty or has a null value!"));
             validRow = false;
         }
 
         // End Timestamp
-        Timestamp endTimestamp = parseTimestampValue(line[sample.getEndTimestampPos()], sample.getEndTimestampFormat(), sample.getTimeZone());
+        Timestamp endTimestamp = parseTimestampValue(line[sample.getEndTimestampPos()], sample.getEndTimestampFormat(),
+            sample.getTimeZone());
         if (endTimestamp == null) {
-            logErrorReport.add(new LogErrorReportImpl(lineIndex, sample.getEndTimestampPos(), header[sample.getEndTimestampPos()], "End timestamp Can not parse!"));
+            logErrorReport.add(
+                new LogErrorReportImpl(lineIndex, sample.getEndTimestampPos(), header[sample.getEndTimestampPos()],
+                    "End timestamp Can not parse!"));
             validRow = false;
         } else {
             line[sample.getEndTimestampPos()] = endTimestamp.toString();
@@ -66,9 +73,12 @@ public class LogProcessorParquetImpl implements LogProcessorParquet {
 
         // Start Timestamp
         if (sample.getStartTimestampPos() != -1) {
-            Timestamp startTimestamp = parseTimestampValue(line[sample.getStartTimestampPos()], sample.getStartTimestampFormat(), sample.getTimeZone());
+            Timestamp startTimestamp =
+                parseTimestampValue(line[sample.getStartTimestampPos()], sample.getStartTimestampFormat(),
+                    sample.getTimeZone());
             if (startTimestamp == null) {
-                logErrorReport.add(new LogErrorReportImpl(lineIndex, sample.getStartTimestampPos(), header[sample.getStartTimestampPos()], "Start timestamp Can not parse!"));
+                logErrorReport.add(new LogErrorReportImpl(lineIndex, sample.getStartTimestampPos(),
+                    header[sample.getStartTimestampPos()], "Start timestamp Can not parse!"));
                 validRow = false;
             } else {
                 line[sample.getStartTimestampPos()] = startTimestamp.toString();
@@ -78,11 +88,14 @@ public class LogProcessorParquetImpl implements LogProcessorParquet {
         // Other timestamps
         if (!sample.getOtherTimestamps().isEmpty()) {
             for (Map.Entry<Integer, String> otherTimestamp : sample.getOtherTimestamps().entrySet()) {
-                Timestamp tempTimestamp = parseTimestampValue(line[otherTimestamp.getKey()], otherTimestamp.getValue(), sample.getTimeZone());
+                Timestamp tempTimestamp =
+                    parseTimestampValue(line[otherTimestamp.getKey()], otherTimestamp.getValue(), sample.getTimeZone());
                 if (tempTimestamp != null) {
                     line[otherTimestamp.getKey()] = tempTimestamp.toString();
                 } else {
-                    logErrorReport.add(new LogErrorReportImpl(lineIndex, otherTimestamp.getKey(), header[otherTimestamp.getKey()], "Other timestamp Can not parse!"));
+                    logErrorReport.add(
+                        new LogErrorReportImpl(lineIndex, otherTimestamp.getKey(), header[otherTimestamp.getKey()],
+                            "Other timestamp Can not parse!"));
                     validRow = false;
                 }
             }
@@ -91,7 +104,9 @@ public class LogProcessorParquetImpl implements LogProcessorParquet {
         // Resource
         if (sample.getResourcePos() != -1) {
             if (line[sample.getResourcePos()] == null || line[sample.getResourcePos()].isEmpty()) {
-                logErrorReport.add(new LogErrorReportImpl(lineIndex, sample.getResourcePos(), header[sample.getResourcePos()], "Resource is empty or has a null value!"));
+                logErrorReport.add(
+                    new LogErrorReportImpl(lineIndex, sample.getResourcePos(), header[sample.getResourcePos()],
+                        "Resource is empty or has a null value!"));
                 validRow = false;
             }
         }
@@ -101,9 +116,9 @@ public class LogProcessorParquetImpl implements LogProcessorParquet {
 
     private Timestamp parseTimestampValue(String theValue, String format, String timeZone) {
         if (theValue != null && !theValue.isEmpty() && format != null && !format.isEmpty()) {
-            return (timeZone == null || timeZone.isEmpty()) ?
-                    parseToTimestamp(theValue, format, null)
-                    : parseToTimestamp(theValue, format, TimeZone.getTimeZone(timeZone));
+            return (timeZone == null || timeZone.isEmpty())
+                ? parseToTimestamp(theValue, format, null)
+                : parseToTimestamp(theValue, format, TimeZone.getTimeZone(timeZone));
         } else {
             return null;
         }

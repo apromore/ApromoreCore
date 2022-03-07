@@ -8,41 +8,37 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+
 package org.apromore.service.logimporter.dateparser;
-
-import org.apromore.service.logimporter.services.ParquetFactoryProvider;
-import org.apromore.service.logimporter.services.MetaDataService;
-import org.apromore.service.logimporter.services.legacy.LogImporter;
-import org.apromore.service.logimporter.services.legacy.LogImporterCSVImpl;
-import org.apromore.service.logimporter.services.utilities.TestUtilities;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-
-import java.util.Arrays;
-import java.util.List;
 
 import static org.apromore.service.logimporter.dateparser.DateUtil.determineDateFormat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-@Ignore
+import org.apromore.service.logimporter.services.MetaDataService;
+import org.apromore.service.logimporter.services.ParquetFactoryProvider;
+import org.apromore.service.logimporter.services.legacy.LogImporter;
+import org.apromore.service.logimporter.services.legacy.LogImporterCSVImpl;
+import org.apromore.service.logimporter.services.utilities.TestUtilities;
+import org.junit.Before;
+import org.junit.Test;
+
+
 public class DateUtilUnitTest {
     /**
      * Expected headers for <code>test1-valid.csv</code>.
      */
-    private List<String> TEST1_EXPECTED_HEADER = Arrays.asList("case id", "activity", "start date", "completion time", "process type");
     private TestUtilities utilities;
     private ParquetFactoryProvider parquetFactoryProvider;
     private MetaDataService metaDataService;
@@ -53,15 +49,15 @@ public class DateUtilUnitTest {
         utilities = new TestUtilities();
         parquetFactoryProvider = new ParquetFactoryProvider();
         metaDataService = parquetFactoryProvider
-                .getParquetFactory("csv")
-                .getMetaDataService();
+            .getParquetFactory("csv")
+            .getMetaDataService();
         logImporter = new LogImporterCSVImpl();
     }
 
     @Test
     public void test_timestamp_date() {
 
-        System.out.println("\n************************************\ntest - Test timestamp format - date only");
+        System.out.println("\n*****************\ntest - Test timestamp format - date only");
 
         //12/19/2019 15:13:05
         assertEquals("yyyyMMdd", determineDateFormat("20191219"));
@@ -94,7 +90,8 @@ public class DateUtilUnitTest {
     @Test
     public void test_timestamp_date_HH_MM() {
 
-        System.out.println("\n************************************\ntest - Test timestamp format - date, hours and minutes");
+        System.out.println(
+            "\n*****************\ntest - Test timestamp format - date, hours and minutes");
 
         assertEquals("yyyyMMddHHmm", determineDateFormat("201912191513"));
         assertEquals("yyyyMMdd HHmm", determineDateFormat("20191219 1513"));
@@ -121,7 +118,8 @@ public class DateUtilUnitTest {
     @Test
     public void test_timestamp_date_HH_MM_AM_PM() {
 
-        System.out.println("\n************************************\ntest - Test timestamp format - date, hours and minutes AM/PM");
+        System.out.println(
+            "\n*****************\ntest - Test timestamp format - date, hours and minutes AM/PM");
 
         assertEquals("dd-MM-yyyy HH:mm a", determineDateFormat("19-12-2019 08:13 AM"));
         assertEquals("MM-dd-yyyy HH:mm a", determineDateFormat("12-19-2019 08:13 AM"));
@@ -164,7 +162,8 @@ public class DateUtilUnitTest {
     @Test
     public void test_timestamp_date_HH_MM_ss() {
 
-        System.out.println("\n************************************\ntest - Test timestamp format - date, hours, minutes and seconds");
+        System.out.println(
+            "\n*****************\ntest - Test timestamp format - date, hours, minutes and seconds");
 
         assertEquals("yyyyMMddHHmmss", determineDateFormat("20191219151305"));
         assertEquals("yyyyMMdd HHmmss", determineDateFormat("20191219 151305"));
@@ -191,7 +190,8 @@ public class DateUtilUnitTest {
     @Test
     public void test_timestamp_date_HH_MM_ss_am_pm() {
 
-        System.out.println("\n************************************\ntest - Test timestamp format - date, hours, minutes and seconds AM/PM");
+        System.out.println(
+            "\n*****************\ntest - Test timestamp format - date, hours, minutes and seconds AM/PM");
 
         assertEquals("dd-MM-yyyy HH:mm:ss a", determineDateFormat("19-12-2019 08:13:05 pm"));
         assertEquals("MM-dd-yyyy HH:mm:ss a", determineDateFormat("12-19-2019 08:13:05 pm"));
@@ -234,7 +234,8 @@ public class DateUtilUnitTest {
     @Test
     public void test_timestamp_date_HH_MM_ss_millisecond() {
 
-        System.out.println("\n************************************\ntest - Test timestamp format - date, hours, minutes, seconds and millisecond");
+        System.out.println(
+            "\n*****************\ntest - Test timestamp format - date, hours, minutes, seconds and millisecond");
 
         assertEquals("yyyyMMddHHmmssSSS", determineDateFormat("20191219151305328"));
         assertEquals("yyyyMMdd HHmmssSSS", determineDateFormat("20191219 151305328"));
@@ -261,7 +262,7 @@ public class DateUtilUnitTest {
     @Test
     public void test_timestamp_date_yy() {
 
-        System.out.println("\n************************************\ntest - Test timestamp format - date (yy) only");
+        System.out.println("\n*****************\ntest - Test timestamp format - date (yy) only");
 
         //12/19/2019 15:13:05
         assertEquals("yyMMdd", determineDateFormat("001219"));
@@ -287,7 +288,8 @@ public class DateUtilUnitTest {
     @Test
     public void test_timestamp_date_yy_HH_MM() {
 
-        System.out.println("\n************************************\ntest - Test timestamp format - date (yy), hours and minutes");
+        System.out.println(
+            "\n*****************\ntest - Test timestamp format - date (yy), hours and minutes");
 
         assertEquals("yyMMdd HHmm", determineDateFormat("001219 1513"));
         assertEquals("dd-MM-yy HH:mm", determineDateFormat("19-12-00 15:13"));
@@ -313,7 +315,8 @@ public class DateUtilUnitTest {
     @Test
     public void test_timestamp_date_yy_HH_MM_AM_PM() {
 
-        System.out.println("\n************************************\ntest - Test timestamp format - date (yy), hours and minutes - AM/PM");
+        System.out.println(
+            "\n*****************\ntest - Test timestamp format - date (yy), hours and minutes - AM/PM");
 
         assertEquals("dd-MM-yy HH:mm a", determineDateFormat("19-12-00 08:13 AM"));
         assertEquals("MM-dd-yy HH:mm a", determineDateFormat("12-19-00 08:13 AM"));
@@ -356,7 +359,8 @@ public class DateUtilUnitTest {
     @Test
     public void test_timestamp_date_yy_HH_MM_ss() {
 
-        System.out.println("\n************************************\ntest - Test timestamp format - date (yy), hours, minutes and seconds");
+        System.out.println(
+            "\n*****************\ntest - Test timestamp format - date (yy), hours, minutes and seconds");
 
         assertEquals("yyMMdd HHmmss", determineDateFormat("001219 151305"));
         assertEquals("dd-MM-yy HH:mm:ss", determineDateFormat("19-12-00 15:13:05"));
@@ -382,7 +386,8 @@ public class DateUtilUnitTest {
     @Test
     public void test_timestamp_date_yy_HH_MM_ss_am_pm() {
 
-        System.out.println("\n************************************\ntest - Test timestamp format - date (yy), hours, minutes and seconds - AM/PM");
+        System.out.println(
+            "\n*****************\ntest - Test timestamp format - date (yy), hours, minutes and seconds - AM/PM");
 
         assertEquals("dd-MM-yy HH:mm:ss a", determineDateFormat("19-12-00 09:13:05 pm"));
         assertEquals("MM-dd-yy HH:mm:ss a", determineDateFormat("12-19-00 09:13:05 pm"));
@@ -425,7 +430,8 @@ public class DateUtilUnitTest {
     @Test
     public void test_timestamp_date_yy_HH_MM_ss_millisecond() {
 
-        System.out.println("\n************************************\ntest - Test timestamp format - date (yy), hours, minutes, seconds and millisecond");
+        System.out.println(
+            "\n*****************\ntest - Test timestamp format - date (yy), hours, minutes, seconds and millisecond");
 
         assertEquals("yyMMdd HHmmssSSS", determineDateFormat("001219 151305328"));
         assertEquals("dd-MM-yy HH:mm:ss.SSS", determineDateFormat("19-12-00 15:13:05.328"));
@@ -461,7 +467,8 @@ public class DateUtilUnitTest {
     @Test
     public void test_timestamp_date_yy_only() {
 
-        System.out.println("\n************************************\ntest - Test timestamp format - year only (00, 2000 and 200012)");
+        System.out.println(
+            "\n*****************\ntest - Test timestamp format - year only (00, 2000 and 200012)");
         assertNull("yy", determineDateFormat("19"));
         assertNull("yyyy", determineDateFormat("2019"));
         assertNull("yyyyMM", determineDateFormat("200012"));
@@ -470,7 +477,8 @@ public class DateUtilUnitTest {
     @Test
     public void test_timestamp_date_week_day_only() {
 
-        System.out.println("\n************************************\ntest - Test timestamp format - week day only (Sat, Saturday and Sa)");
+        System.out.println(
+            "\n*****************\ntest - Test timestamp format - week day only (Sat, Saturday and Sa)");
         assertNull("EEE", determineDateFormat("Sat"));
         assertNull("EEEE", determineDateFormat("Saturday"));
         assertNull("EEEEE", determineDateFormat("SA"));
@@ -479,7 +487,8 @@ public class DateUtilUnitTest {
     @Test
     public void test_timestamp_date_time_only() {
 
-        System.out.println("\n************************************\ntest - Test timestamp format - time only (0208, 125959, 125959.879 or 12:08, 12:59:59, 12:59:59.879)");
+        System.out.println("\n*****************\ntest - Test timestamp format - time only "
+                           + "(0208, 125959, 125959.879 or 12:08, 12:59:59, 12:59:59.879)");
         assertNull("HHmm", determineDateFormat("0208"));
         assertNull("HHmmss", determineDateFormat("125959"));
         assertNull("HHmmss.SSS", determineDateFormat("125959.879"));
@@ -501,7 +510,8 @@ public class DateUtilUnitTest {
     @Test
     public void test_timestamp_unsupported_separators() {
 
-        System.out.println("\n************************************\ntest - Test timestamp format with unsupported separators");
+        System.out.println(
+            "\n*****************\ntest - Test timestamp format with unsupported separators");
         assertEquals("yyyy MM dd", determineDateFormat("2019#12#19"));
         assertEquals("yyyy MM dd HH mm", determineDateFormat("2019*12*19*15*13"));
         assertEquals("dd MM yyyy HH mm ss", determineDateFormat("19#12#2019 15#13#05"));
@@ -515,7 +525,8 @@ public class DateUtilUnitTest {
     @Test
     public void test_timestamp_date_HH_MM_ss_S() {
 
-        System.out.println("\n************************************\ntest - Test timestamp format - date, hours, minutes , seconds and single digit millisecond");
+        System.out.println("\n*****************\ntest - Test timestamp format - "
+                           + "date, hours, minutes , seconds and single digit millisecond");
 
         assertEquals("yyyyMMddHHmmssS", determineDateFormat("201912191513059"));
         assertEquals("yyyyMMdd HHmmssS", determineDateFormat("20191219 1513059"));

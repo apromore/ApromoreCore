@@ -1,3 +1,10 @@
+plugins {
+    id "checkstyle"
+}
+
+apply from: 'config/checkstyle/checkstyle.gradle'
+
+
 group = 'org.apromore'
 version = '1.0'
 description = 'apromore-calendar'

@@ -22,8 +22,6 @@
 
 package org.apromore.plugin.portal.processdiscoverer;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
@@ -53,6 +51,7 @@ import org.apromore.apmlog.filter.types.FilterType;
 import org.apromore.apmlog.filter.types.Inclusion;
 import org.apromore.apmlog.filter.types.OperationType;
 import org.apromore.apmlog.filter.types.Section;
+import org.apromore.apmlog.logobjects.ActivityInstance;
 import org.apromore.apmlog.stats.LogStatsAnalyzer;
 import org.apromore.apmlog.stats.TimeStatsProcessor;
 import org.apromore.apmlog.xes.XESAttributeCodes;
@@ -82,6 +81,7 @@ import org.apromore.plugin.portal.processdiscoverer.data.PerspectiveDetails;
 import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
 import org.apromore.plugin.portal.processdiscoverer.impl.json.ProcessJSONVisualizer;
 import org.apromore.plugin.portal.processdiscoverer.vis.ProcessVisualizer;
+import org.apromore.portal.util.CostTable;
 import org.apromore.processdiscoverer.Abstraction;
 import org.apromore.processdiscoverer.AbstractionParams;
 import org.apromore.processdiscoverer.ProcessDiscoverer;
@@ -93,11 +93,13 @@ import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Gatew
 import org.apromore.processsimulation.dto.EdgeFrequency;
 import org.apromore.processsimulation.dto.SimulationData;
 import org.apromore.service.EventLogService;
+import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.model.XLog;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.ListIterable;
 import org.slf4j.Logger;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 
 /**
  * PDAnalyst represents a process analyst who will performs log analysis in the form of graphs and BPMN diagrams
@@ -138,14 +140,16 @@ public class PDAnalyst {
     private final APMLogFilter apmLogFilter;
 
     @Getter
-    Map<Integer, List<ATrace>> caseVariantGroupMap;
+    private Map<Integer, List<ATrace>> caseVariantGroupMap;
+
+    @Getter
+    private String costAttribute = XESAttributeCodes.ORG_ROLE;
 
     private String caseVariantPerspective = XESAttributeCodes.CONCEPT_NAME;
 
-    // Calendar management
-    CalendarModel calendarModel;
+    private ConfigData configData;
 
-    ConfigData configData;
+    private ContextData contextData;
 
     public PDAnalyst(ContextData contextData, ConfigData configData, EventLogService eventLogService) throws Exception {
         XLog xlog = eventLogService.getXLog(contextData.getLogId());
@@ -164,6 +168,7 @@ public class PDAnalyst {
 
         long timer = System.currentTimeMillis();
         this.configData = configData;
+        this.contextData = contextData;
         this.aLog = new ALog(xlog);
         LOGGER.debug("ALog.constructor: {} ms.", System.currentTimeMillis() - timer);
         indexableAttributes = aLog.getAttributeStore()
@@ -171,7 +176,7 @@ public class PDAnalyst {
         if (indexableAttributes == null || indexableAttributes.isEmpty()) {
             throw new InvalidDataException(
                 "No perspective attributes could be found in the log with key in " + perspectiveAttKeys.toString() +
-                    " and number of distinct values is less than or equal to " + configData.getMaxNumberOfNodes());
+                " and number of distinct values is less than or equal to " + configData.getMaxNumberOfNodes());
         }
 
         this.originalAPMLog = apmLog;
@@ -182,14 +187,12 @@ public class PDAnalyst {
             caseVariantPerspective);
 
         // ProcessDiscoverer logic with default attribute
-        this.calendarModel = eventLogService.getCalendarFromLog(contextData.getLogId());
+        CalendarModel calendarModel = eventLogService.getCalendarFromLog(contextData.getLogId());
         if (calendarModel == null) {
             throw new CalendarNotExistsException("The open log doesn't have an associated calendar.");
         }
 
-        this.originalAPMLog.setCalendarModel(this.calendarModel);
-
-        this.setMainAttribute(configData.getDefaultAttribute());
+        this.originalAPMLog.setCalendarModel(calendarModel);
         this.processDiscoverer = new ProcessDiscoverer();
         this.processVisualizer = new ProcessJSONVisualizer();
     }
@@ -251,8 +254,8 @@ public class PDAnalyst {
      * This is the main processing method calling to process-discoverer-logic
      */
     public Optional<OutputData> discoverProcess(UserOptionsData userOptions) throws Exception {
+        if (attLog == null) throw new IllegalStateException("Perspective data is not yet loaded");
         AbstractionParams params = genAbstractionParams(userOptions);
-
         // Find a DFG first
         Abstraction dfgAbstraction = processDiscoverer.generateDFGAbstraction(attLog, params);
         if (dfgAbstraction == null ||
@@ -271,18 +274,20 @@ public class PDAnalyst {
             currentAbstraction = dfgAbstraction;
         }
 
-        String visualizedText = processVisualizer.generateVisualizationText(currentAbstraction);
+        String visualizedText = processVisualizer.generateVisualizationText(currentAbstraction, userOptions);
         return Optional.of(new OutputData(currentAbstraction, visualizedText));
     }
 
     public OutputData discoverTrace(String traceID, UserOptionsData userOptions) throws Exception {
+        if (attLog == null) throw new IllegalStateException("Perspective data is not yet loaded");
         AbstractionParams params = genAbstractionParamsForTrace(userOptions);
         Abstraction traceAbs = processDiscoverer.generateTraceAbstraction(attLog, traceID, params);
-        String traceVisualization = processVisualizer.generateVisualizationText(traceAbs);
+        String traceVisualization = processVisualizer.generateVisualizationText(traceAbs, userOptions);
         return new OutputData(traceAbs, traceVisualization);
     }
 
     public OutputData discoverTraceVariant(int traceVariantID, UserOptionsData userOptions) throws Exception {
+        if (attLog == null) throw new IllegalStateException("Perspective data is not yet loaded");
         List<ATrace> traces = caseVariantGroupMap.get(traceVariantID);
         if (CollectionUtils.isEmpty(traces)) {
             throw new IllegalArgumentException("No traces were found for trace variant id = " + traceVariantID);
@@ -294,7 +299,7 @@ public class PDAnalyst {
 
         AbstractionParams params = genAbstractionParamsForTrace(userOptions);
         Abstraction traceAbs = processDiscoverer.generateTraceVariantAbstraction(attLog, traceIDs, params);
-        String traceVisualization = processVisualizer.generateVisualizationText(traceAbs);
+        String traceVisualization = processVisualizer.generateVisualizationText(traceAbs, userOptions);
         return new OutputData(traceAbs, traceVisualization);
     }
 
@@ -303,7 +308,11 @@ public class PDAnalyst {
     }
 
     public XLog getXLog() {
-        return this.aLog.getActualXLog();
+        XLog log = this.filteredAPMLog.toXLog();
+        log.getAttributes().put(Constants.ATT_KEY_CONCEPT_NAME,
+            new XFactoryNaiveImpl()
+                .createAttributeLiteral(Constants.ATT_KEY_CONCEPT_NAME, contextData.getLogName(), null));
+        return log;
     }
 
     public boolean hasEmptyData() {
@@ -314,14 +323,14 @@ public class PDAnalyst {
         return (IndexableAttribute) indexableAttributes.select(att -> att.getKey().equals(key)).getFirst();
     }
 
-    public void setMainAttribute(String key) throws NotFoundAttributeException {
-        IndexableAttribute newAttribute = getAttribute(key);
+    public void loadAttributeData(String attributeKey, CalendarModel calendarModel, CostTable costTable) throws NotFoundAttributeException {
+        IndexableAttribute newAttribute = getAttribute(attributeKey);
         if (newAttribute != null) {
             if (mainAttribute != newAttribute) {
                 mainAttribute = newAttribute;
                 if (attLog == null) {
                     long timer = System.currentTimeMillis();
-                    attLog = new AttributeLog(aLog, mainAttribute, this.calendarModel);
+                    attLog = new AttributeLog(aLog, mainAttribute, calendarModel, costTable.getCostRates());
                     LOGGER.debug("Create AttributeLog for the perspective attribute: {} ms.",
                         System.currentTimeMillis() - timer);
                 } else {
@@ -330,10 +339,9 @@ public class PDAnalyst {
                     LOGGER.debug("Update AttributeLog to the new perspective attribute: {} ms.",
                         System.currentTimeMillis() - timer);
                 }
-
             }
         } else {
-            throw new NotFoundAttributeException("Cannot find an attribute in ALog with key = " + key);
+            throw new NotFoundAttributeException("Cannot find an attribute in ALog with key = " + attributeKey);
         }
     }
 
@@ -579,6 +587,10 @@ public class PDAnalyst {
         return avgAttributeMap;
     }
 
+    public ImmutableList<Object> getRoleValues() {
+        return this.getAttributeLog().getFullLog().getAttributeStore().getStandardEventRole().getValues();
+    }
+
     public String getFilteredStartTime() {
         return DateTimeUtils.humanize(this.filteredAPMLog.getStartTime());
     }
@@ -648,82 +660,119 @@ public class PDAnalyst {
      * Simulation data are used to add simulation values to the BPMN diagram.
      *
      * @param bpmnAbstraction Process Abstraction
+     * @param userOptions current user options
      * @return SimulationData
      */
-    public SimulationData getSimulationData(BPMNAbstraction bpmnAbstraction) {
+    public SimulationData getSimulationData(BPMNAbstraction bpmnAbstraction, UserOptionsData userOptions) {
         SimulationData simulationData = null;
         if (bpmnAbstraction != null) {
-            Map<String, Double> nodeDurationMap =
-                bpmnAbstraction.getDiagram().getNodes()
-                    .stream()
-                    .filter(Activity.class::isInstance)
-                    .collect(Collectors.toMap(
-                        node -> node.getId().toString(),
-                        node -> attLog.getGraphView().getNodeWeight(node.getLabel(),
-                                MeasureType.DURATION,
-                                MeasureAggregation.MEAN,
-                                MeasureRelation.ABSOLUTE)));
 
             simulationData = SimulationData.builder()
                 .caseCount(filteredPLog.getValidTraceIndexBS().cardinality())
-                .resourceCount(filteredPLog.getActivityInstances().stream()
-                    .filter(
-                        activityInstance -> activityInstance.getAttributes().containsKey(Constants.ATT_KEY_RESOURCE))
-                    .map(activityInstance -> activityInstance.getAttributes().get(Constants.ATT_KEY_RESOURCE))
-                    .collect(Collectors.toSet())
-                    .size())
+                .resourceCountByRole(getResourceCountsGroupedByRole())
+                .resourceCount(getTotalResourcesCount())
+                .nodeIdToRoleName(getRoleForNodeId(bpmnAbstraction))
                 .startTime(filteredAPMLog.getStartTime())
                 .endTime(filteredAPMLog.getEndTime())
-                .nodeWeights(nodeDurationMap)
+                .nodeWeights(getNodeWeights(bpmnAbstraction))
                 .edgeFrequencies(groupOutboundEdgeFrequenciesByGateway(bpmnAbstraction))
+                .calendarModel(userOptions.getCalendarModel())
                 .build();
         }
         return simulationData;
     }
 
-    /**
-     * Converts a DFGAbstraction to a BPMNAbstraction so as to include arc weights for outgoing edges from gateways,
-     * which are only available in a BPMN model.
-     *
-     * @param abstraction the abstraction to be converted
-     * @return the BPMNAbstraction representation of the input abstraction
-     * @throws Exception in the event of a conversion error
-     */
-    public BPMNAbstraction convertToBpmnAbstractionForExport(@NonNull Abstraction abstraction)
-        throws InvalidDataException {
+    private Map<String, Double> getNodeWeights(BPMNAbstraction bpmnAbstraction) {
+        return bpmnAbstraction.getDiagram().getNodes()
+            .stream()
+            .filter(Activity.class::isInstance)
+            .collect(Collectors.toMap(
+                node -> node.getId().toString(),
+                node -> attLog.getGraphView().getNodeWeight(node.getLabel(),
+                    MeasureType.DURATION,
+                    MeasureAggregation.MEAN,
+                    MeasureRelation.ABSOLUTE)));
+    }
 
-        BPMNAbstraction bpmnAbstraction;
+    private long getTotalResourcesCount() {
+        return filteredPLog.getActivityInstances().stream()
+            .filter(
+                activityInstance -> activityInstance.getAttributes().containsKey(Constants.ATT_KEY_RESOURCE))
+            .map(activityInstance -> activityInstance.getAttributes().get(Constants.ATT_KEY_RESOURCE))
+            .collect(Collectors.toSet())
+            .size();
+    }
 
-        try {
-            if (abstraction instanceof AbstractAbstraction) {
-                AbstractAbstraction abstractAbstraction = (AbstractAbstraction) abstraction;
+    private Map<String, Integer> getResourceCountsGroupedByRole() {
+        Map<String, Set<String>> rolesToResourcesMap = new HashMap<>();
+        filteredPLog.getActivityInstances().stream()
+            .forEach(activityInstance -> {
 
-                // Forcing params for BPMN Export
-                AbstractionParams paramsForExport = abstraction.getAbstractionParams().clone();
-                paramsForExport.setPrimaryMeasure(MeasureType.FREQUENCY, MeasureAggregation.TOTAL, MeasureRelation.ABSOLUTE);
+                // Get the resource attribute (DEFAULT_RESOURCE if null or empty)
+                String resource = activityInstance.getResource();
+                if (ObjectUtils.isEmpty(resource)) {
+                    resource = SimulationData.DEFAULT_RESOURCE;
+                }
 
-                // Regenerating the DFGAbstraction to suite the above params
-                ProcessDiscoverer pdForExport = new ProcessDiscoverer();
-                Abstraction dfgAbstraction = pdForExport.generateDFGAbstraction(abstractAbstraction.getLog(), paramsForExport);
+                // Get the resource attribute (DEFAULT_ROLE if null or empty)
+                String role = activityInstance.getAttributeValue(Constants.ATT_KEY_ROLE);
+                if (ObjectUtils.isEmpty(role)) {
+                    role = SimulationData.DEFAULT_ROLE;
+                }
 
-                // Generating the BPMNAbstraction out of the DFG
-                bpmnAbstraction = new BPMNAbstraction(attLog, (DFGAbstraction) dfgAbstraction, paramsForExport);
+                // Get the distinct resources for the role, and add it to the set
+                Set<String> resources = rolesToResourcesMap.get(role);
+                if (resources == null) {
+                    resources = new HashSet<>();
+                }
+                resources.add(resource);
+                rolesToResourcesMap.put(role, resources);
+            });
 
-            } else {
-                String errMsg =
-                    "Error. Abstraction is not of type AbstractAbstraction. Unable to convert to BPMNAbstraction.";
-                log.error(errMsg);
-                throw new InvalidDataException(errMsg);
-            }
-        } catch (InvalidDataException invalidDataException) {
-            throw invalidDataException;
-        } catch (Exception exception) {
-            String errMsg = "Error. Unable to convert Abstraction to BPMNAbstraction.";
-            log.error(errMsg);
-            throw new InvalidDataException(errMsg);
-        }
+        return rolesToResourcesMap.entrySet().stream()
+            .collect(Collectors.toMap(Map.Entry::getKey, stringSetEntry -> stringSetEntry.getValue().size()));
+    }
 
-        return bpmnAbstraction;
+    private Map<String, String> getRoleForNodeId(BPMNAbstraction bpmnAbstraction) {
+
+        Map<String, String> activityNameToRoleMap = filteredAPMLog.getActivityInstances().stream()
+            .filter(activityInst -> !ObjectUtils.isEmpty(activityInst.getName()))
+            .collect(Collectors.toMap(
+                // key --> activityName
+                ActivityInstance::getName,
+
+                // value --> act
+                activityInst -> {
+                    String role = activityInst.getAttributeValue(Constants.ATT_KEY_ROLE);
+                    return ObjectUtils.isEmpty(role) ? SimulationData.DEFAULT_ROLE : role;
+                },
+
+                /*
+                 * Merge function --> Ignore duplicate keys
+                 * role1 --> The role currently in the map against the key (activity name)
+                 * role2 --> The new role that matches an existing key (activity name)
+                 *
+                 * An activity could be performed by one or more resources, each with the same or different roles.
+                 * We will treat the first role we find among the list of activities as the primary role for that
+                 * activity, (unless it is currently a DEFAULT_ROLE, and we encounter a non-DEFAULT_ROLE
+                 * in a subsequent activity), and ignore the rest.
+                 */
+                (role1, role2) -> !role1.equals(SimulationData.DEFAULT_ROLE) ? role1 : role2
+
+            ));
+
+        return bpmnAbstraction.getDiagram().getNodes()
+            .stream()
+            .filter(Activity.class::isInstance)
+            .collect(Collectors.toMap(
+                //key --> node Id
+                bpmnNode -> bpmnNode.getId().toString(),
+                //value --> role
+                bpmnNode -> {
+                    String nodeLabel = bpmnNode.getLabel();
+                    return ObjectUtils.isEmpty(nodeLabel) || !activityNameToRoleMap.containsKey(nodeLabel)
+                        ? SimulationData.DEFAULT_ROLE : activityNameToRoleMap.get(nodeLabel);
+                }));
     }
 
     private Map<String, List<EdgeFrequency>> groupOutboundEdgeFrequenciesByGateway(
@@ -752,6 +801,53 @@ public class PDAnalyst {
         }
 
         return gatewayIdToEdgeFrequencies;
+    }
+
+    /**
+     * Converts a DFGAbstraction to a BPMNAbstraction so as to include arc weights for outgoing edges from gateways,
+     * which are only available in a BPMN model.
+     *
+     * @param abstraction the abstraction to be converted
+     * @return the BPMNAbstraction representation of the input abstraction
+     * @throws Exception in the event of a conversion error
+     */
+    public BPMNAbstraction convertToBpmnAbstractionForExport(@NonNull Abstraction abstraction)
+        throws InvalidDataException {
+
+        BPMNAbstraction bpmnAbstraction;
+
+        try {
+            if (abstraction instanceof AbstractAbstraction) {
+                AbstractAbstraction abstractAbstraction = (AbstractAbstraction) abstraction;
+
+                // Forcing params for BPMN Export
+                AbstractionParams paramsForExport = abstraction.getAbstractionParams().clone();
+                paramsForExport.setPrimaryMeasure(MeasureType.FREQUENCY, MeasureAggregation.TOTAL,
+                    MeasureRelation.ABSOLUTE);
+
+                // Regenerating the DFGAbstraction to suite the above params
+                ProcessDiscoverer pdForExport = new ProcessDiscoverer();
+                Abstraction dfgAbstraction =
+                    pdForExport.generateDFGAbstraction(abstractAbstraction.getLog(), paramsForExport);
+
+                // Generating the BPMNAbstraction out of the DFG
+                bpmnAbstraction = new BPMNAbstraction(attLog, (DFGAbstraction) dfgAbstraction, paramsForExport);
+
+            } else {
+                String errMsg =
+                    "Error. Abstraction is not of type AbstractAbstraction. Unable to convert to BPMNAbstraction.";
+                log.error(errMsg);
+                throw new InvalidDataException(errMsg);
+            }
+        } catch (InvalidDataException invalidDataException) {
+            throw invalidDataException;
+        } catch (Exception exception) {
+            String errMsg = "Error. Unable to convert Abstraction to BPMNAbstraction.";
+            log.error(errMsg);
+            throw new InvalidDataException(errMsg);
+        }
+
+        return bpmnAbstraction;
     }
 
     // For debug only

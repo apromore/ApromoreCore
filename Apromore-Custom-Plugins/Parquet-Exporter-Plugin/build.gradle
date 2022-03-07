@@ -1,0 +1,17 @@
+group ='org.apromore'
+version ='1.0'
+description='Parquet Exporter Plugin'
+
+dependencies {
+    implementation project(':Apromore-Zk')
+    implementation project(':Apromore-Core-Components:Apromore-Portal')
+    implementation project(':Apromore-Plugins:plugin-core:portal:api')
+    implementation project(':Apromore-Core-Components:Apromore-Manager')
+    implementation project(':Apromore-Extras:APMLogModule')
+    implementation project(':Apromore-Calendar')
+    implementation group: 'org.apache.avro', name: 'avro', version: '1.10.2'
+    implementation group: 'org.apache.parquet', name: 'parquet-hadoop', version: '1.12.0'
+    implementation group: 'org.apache.hadoop', name: 'hadoop-common', version: '3.3.1'
+    implementation group: 'org.apache.hadoop', name: 'hadoop-client', version: '3.3.1'
+    implementation group: 'org.apache.parquet', name: 'parquet-avro', version: '1.12.0'
+}

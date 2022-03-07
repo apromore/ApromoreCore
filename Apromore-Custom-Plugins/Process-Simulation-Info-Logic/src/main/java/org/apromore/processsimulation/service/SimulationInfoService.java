@@ -22,6 +22,7 @@
 package org.apromore.processsimulation.service;
 
 import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_DEFAULT_ID_KEY;
+import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_DEFAULT_ID_PREFIX_KEY;
 import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_DEFAULT_NAME_KEY;
 import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_FROM_TIME;
 import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_FROM_WEEKDAY_KEY;
@@ -33,17 +34,21 @@ import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.DayOfWeek;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import lombok.extern.slf4j.Slf4j;
+import org.apromore.calendar.builder.CalendarModelBuilder;
+import org.apromore.calendar.model.CalendarModel;
+import org.apromore.commons.datetime.DateTimeUtils;
 import org.apromore.processsimulation.config.SimulationInfoConfig;
 import org.apromore.processsimulation.dto.EdgeFrequency;
 import org.apromore.processsimulation.dto.SimulationData;
@@ -61,6 +66,7 @@ import org.apromore.processsimulation.model.TimeUnit;
 import org.apromore.processsimulation.model.Timetable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 @Slf4j
 @Service
@@ -82,6 +88,7 @@ public class SimulationInfoService {
     @Autowired
     public SimulationInfoService(SimulationInfoConfig config) {
         this.config = config;
+
         try {
             jaxbContext = JAXBContext.newInstance(ExtensionElements.class);
         } catch (JAXBException e) {
@@ -93,6 +100,13 @@ public class SimulationInfoService {
         return config.isEnable();
     }
 
+    /**
+     * Transform the raw simulation data obtained in PD and convert it to an xml serialisable @ProcessSimulationInfo
+     * object.
+     *
+     * @param simulationData the raw simulation data obtained from Process Discoverer
+     * @return simulation data converted into a @ProcessSimulationInfo object
+     */
     public ProcessSimulationInfo transformToSimulationInfo(
         final SimulationData simulationData) {
 
@@ -106,11 +120,11 @@ public class SimulationInfoService {
 
             deriveGeneralInfo(builder, simulationData);
 
-            deriveTaskInfo(builder, simulationData);
+            Map<String, String> resourceNameToId = deriveResourceInfo(builder, simulationData);
+
+            deriveTaskInfo(builder, simulationData, resourceNameToId);
 
             deriveTimetable(builder);
-
-            deriveResourceInfo(builder, simulationData);
 
             deriveGatewayProbabilities(builder, simulationData);
 
@@ -124,15 +138,12 @@ public class SimulationInfoService {
         final ProcessSimulationInfo.ProcessSimulationInfoBuilder builder,
         final SimulationData simulationData) {
 
-        long startTimeMillis = simulationData.getStartTime();
-        long endTimeMillis = simulationData.getEndTime();
-        double interArrivalTimeMillis = (endTimeMillis - startTimeMillis) / (double) simulationData.getCaseCount();
-
+        double interArrivalTimeMillis = getInterArrivalTime(simulationData);
         TimeUnit timeUnit = getDisplayTimeUnit(interArrivalTimeMillis);
 
         builder.processInstances(simulationData.getCaseCount())
             .currency(Currency.valueOf(config.getDefaultCurrency().toUpperCase(DOCUMENT_LOCALE)))
-            .startDateTime(Instant.ofEpochMilli(simulationData.getStartTime()).toString())
+            .startDateTime(DateTimeUtils.toZonedDateTime(simulationData.getStartTime()).toOffsetDateTime().toString())
             .arrivalRateDistribution(
                 Distribution.builder()
                     .timeUnit(timeUnit)
@@ -141,16 +152,39 @@ public class SimulationInfoService {
                     .build());
     }
 
+    /**
+     * Returns the inter-arrival time of events in seconds, based on a default 9 - 5 business calendar.
+     *
+     * @param simulationData the raw simulation data from PD
+     * @return the inter-arrival time of events (in milliseconds)
+     */
+    protected double getInterArrivalTime(final SimulationData simulationData) {
+        CalendarModel arrivalCalendar = null;
+        if (simulationData.getCalendarModel() == null) {
+            arrivalCalendar = new CalendarModelBuilder().with5DayWorking().build();
+        } else {
+            arrivalCalendar = simulationData.getCalendarModel();
+        }
+
+        return arrivalCalendar.getDurationMillis(simulationData.getStartTime(), simulationData.getEndTime())
+               / (double) simulationData.getCaseCount();
+    }
+
     private void deriveTaskInfo(
         final ProcessSimulationInfo.ProcessSimulationInfoBuilder builder,
-        final SimulationData simulationData) {
+        final SimulationData simulationData,
+        final Map<String, String> resourceNameToId) {
 
-        List<Element> taskList = null;
-
-        taskList = simulationData.getDiagramNodeIDs().stream()
+        List<Element> taskList = simulationData.getDiagramNodeIDs().stream()
             .map(nodeId -> {
                 double durationMillis = simulationData.getDiagramNodeDuration(nodeId);
                 TimeUnit timeUnit = getDisplayTimeUnit(durationMillis);
+
+                String roleName = simulationData.getRoleNameByNodeId(nodeId);
+                if (roleName.equals(SimulationData.DEFAULT_ROLE)) {
+                    roleName = config.getDefaultResource().get(CONFIG_DEFAULT_NAME_KEY);
+                }
+
                 return Element.builder()
                     .elementId(nodeId)
                     .distributionDuration(Distribution.builder()
@@ -159,6 +193,7 @@ public class SimulationInfoService {
                         .arg1(getDisplayTimeDuration(durationMillis).toString())
                         .timeUnit(timeUnit)
                         .build())
+                    .resourceIds(List.of(resourceNameToId.get(roleName)))
                     .build();
             })
             .collect(Collectors.toUnmodifiableList());
@@ -189,19 +224,64 @@ public class SimulationInfoService {
                 .build()));
     }
 
-    private void deriveResourceInfo(
+    private Map<String, String> deriveResourceInfo(
         final ProcessSimulationInfo.ProcessSimulationInfoBuilder builder,
         final SimulationData simulationData) {
 
-        if (simulationData.getResourceCount() > 0) {
-            builder.resources(Arrays.asList(
+        Map<String, String> resouceNameToId = new HashMap<>();
+
+        if (ObjectUtils.isEmpty(simulationData.getResourceCountsByRole())) {
+            // No role to resource count mapping. Use the QBP_DEFAULT_RESOURCE tag and the total
+            // resource count agains it.
+            String defaultResourceId = config.getDefaultResource().get(CONFIG_DEFAULT_ID_PREFIX_KEY)
+                                       + config.getDefaultResource().get(CONFIG_DEFAULT_ID_KEY);
+
+            builder.resources(List.of(
                 Resource.builder()
-                    .id(config.getDefaultResource().get(CONFIG_DEFAULT_ID_KEY))
+                    .id(defaultResourceId)
                     .name(config.getDefaultResource().get(CONFIG_DEFAULT_NAME_KEY))
                     .totalAmount(simulationData.getResourceCount())
                     .timetableId(config.getDefaultTimetable().get(CONFIG_DEFAULT_ID_KEY))
-                    .build()));
+                    .build()
+            ));
+
+            resouceNameToId.put(config.getDefaultResource().get(CONFIG_DEFAULT_NAME_KEY), defaultResourceId);
+
+        } else {
+
+            builder.resources(simulationData.getResourceCountsByRole().entrySet().stream()
+                .map(roleToResourceCount -> {
+                    String resourceId;
+                    String resourceName;
+
+                    /*
+                     * It gets a bit confusing here as in QBP, the DEFAULT_ROLE (from PD, when there is an activity
+                     * with an empty role) is treated as a QBP_DEFAULT_RESOURCE.
+                     *
+                     * In QBP, resource == role
+                     */
+                    if (roleToResourceCount.getKey().equals(SimulationData.DEFAULT_ROLE)) {
+                        // key -> QBP_DEFAULT_RESOURCE (i.e. no associated role)
+                        resourceId = config.getDefaultResource().get(CONFIG_DEFAULT_ID_PREFIX_KEY)
+                                     + config.getDefaultResource().get(CONFIG_DEFAULT_ID_KEY);
+                        resourceName = config.getDefaultResource().get(CONFIG_DEFAULT_NAME_KEY);
+                    } else {
+                        resourceId = config.getDefaultResource().get(CONFIG_DEFAULT_ID_PREFIX_KEY) + UUID.randomUUID();
+                        resourceName = roleToResourceCount.getKey();
+                    }
+
+                    resouceNameToId.put(resourceName, resourceId);
+
+                    return Resource.builder()
+                        .id(resourceId)
+                        .name(resourceName)
+                        .totalAmount(roleToResourceCount.getValue())
+                        .timetableId(config.getDefaultTimetable().get(CONFIG_DEFAULT_ID_KEY))
+                        .build();
+                }).collect(Collectors.toList()));
         }
+
+        return resouceNameToId;
     }
 
     private void deriveGatewayProbabilities(

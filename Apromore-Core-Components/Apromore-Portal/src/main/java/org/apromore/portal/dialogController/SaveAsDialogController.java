@@ -32,9 +32,11 @@ import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
+import javax.annotation.Nullable;
 
 import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.ProcessModelVersion;
+import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.dialogController.dto.ApromoreSession;
 import org.apromore.portal.model.EditSessionType;
@@ -43,6 +45,7 @@ import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.service.ProcessService;
 import org.apromore.service.WorkspaceService;
+import org.slf4j.Logger;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
@@ -55,6 +58,8 @@ import org.zkoss.zul.Row;
 import org.zkoss.zul.Rows;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
+
+import static org.apromore.common.Constants.DATE_FORMAT;
 
 /**
  * ApromoreSession and ApromoreSession.EditSessionType contain data of the process model being
@@ -69,6 +74,8 @@ import org.zkoss.zul.Window;
  *
  */
 public class SaveAsDialogController extends BaseController {
+
+  static final Logger LOGGER = PortalLoggerFactory.getLogger(SaveAsDialogController.class);
 
   private EventQueue<Event> qePortal =
       EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, true);
@@ -95,7 +102,7 @@ public class SaveAsDialogController extends BaseController {
   MainController mainController;
 
   public SaveAsDialogController(ProcessSummaryType process, VersionSummaryType version,
-      ApromoreSession session, Boolean isUpdate, String data, MainController mainController) {
+      ApromoreSession session, @Nullable Boolean isUpdate, String data, MainController mainController) {
     this.session = session;
     this.editSession = session.getEditSession();
     this.isSaveCurrent = isUpdate;
@@ -111,14 +118,14 @@ public class SaveAsDialogController extends BaseController {
     Row versionNumberR = (Row) rows.getChildren().get(1);
     Row buttonGroupR = (Row) rows.getChildren().get(2);
     this.modelName = (Textbox) modelNameR.getFirstChild().getNextSibling();
-    this.modelName.setText(this.isSaveCurrent ? this.editSession.getProcessName()
+    this.modelName.setText(!Boolean.FALSE.equals(this.isSaveCurrent) ? this.editSession.getProcessName()
         : this.editSession.getProcessName() + "_new");
-    this.modelName.setReadonly(this.isSaveCurrent);
+    this.modelName.setReadonly(Boolean.TRUE.equals(this.isSaveCurrent) && !UNTITLED_PROCESS_NAME.equals(this.editSession.getProcessName()));
     this.versionNumber = (Textbox) versionNumberR.getFirstChild().getNextSibling();
     this.versionNumber.setText(this.editSession.getCurrentVersionNumber());
     Button saveB = (Button) buttonGroupR.getFirstChild().getFirstChild();
     Button cancelB = (Button) saveB.getNextSibling();
-    if (isUpdate) {
+    if (Boolean.TRUE.equals(isUpdate)) {
       saveAsW.setTitle("Save BPMN model");
     } else {
       saveAsW.setTitle("Save BPMN model as");
@@ -159,19 +166,19 @@ public class SaveAsDialogController extends BaseController {
     String processName = this.modelName.getText();
     String versionNo = versionNumber.getText();
     Integer processId = this.editSession.getProcessId();
-    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss");
+    DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
     String created = dateFormat.format(new Date());
 
-    boolean makePublic = (this.isSaveCurrent && processService.isPublicProcess(processId));
+    boolean makePublic = (Boolean.TRUE.equals(this.isSaveCurrent) && processService.isPublicProcess(processId));
     int containingFolderId = this.editSession.getFolderId();
     InputStream is = new ByteArrayInputStream(this.modelData.getBytes());
 
     if (validateFields()) {
       Folder folder = workspaceService.getFolder(editSession.getFolderId());
       String containingFolderName = (folder == null) ? "Home" : folder.getName();
-      if (!this.isSaveCurrent) { // Save As new model
+      if (Boolean.FALSE.equals(this.isSaveCurrent)) { // Save As new model
         saveAsNewModel(userName, containingFolderId, processName, versionNo, nativeType, is, "", "",
-            created, null, makePublic, containingFolderName);
+            created, makePublic, containingFolderName);
       } else {
         if (session.containVersion(versionNo)) {
           Messagebox.show(
@@ -204,12 +211,15 @@ public class SaveAsDialogController extends BaseController {
 
   private void saveAsNewModel(String userName, Integer folderId, String processName,
       String versionNumber, String nativeType, InputStream nativeStream, String domain,
-      String documentation, String created, String lastUpdate, boolean publicModel,
+      String documentation, String created, boolean publicModel,
       String containingFolderName) {
     try {
       ImportProcessResultType importResult = mainController.getManagerService().importProcess(
           userName, folderId, nativeType, processName, versionNumber, nativeStream, domain,
           documentation, created, null, publicModel);
+
+      LOGGER.info("User {} save new model \"{}\" version {} in folder {}", userName, processName, versionNumber,
+              containingFolderName);
 
       Integer processId = importResult.getProcessSummary().getId();
 
@@ -245,6 +255,16 @@ public class SaveAsDialogController extends BaseController {
       mainController.getManagerService().updateDraft(processId,
               editSession.getOriginalVersionNumber(), nativeType, new ByteArrayInputStream(bpmnXml.getBytes()),
               userName);
+      // Update process name if it's a new process
+      if (UNTITLED_PROCESS_NAME.equals(this.editSession.getProcessName())) {
+        mainController.getManagerService().editProcessData(processId, processName, "", userName, versionNumber,
+                versionNumber, null, false);
+        editSession.setProcessName(processName);
+        qePortal.publish(new Event(Constants.EVENT_MESSAGE_SAVE, null, Boolean.TRUE));
+      }
+
+      LOGGER.info("User {} save current model \"{}\" version {} in folder {}", userName, processName, versionNumber,
+              containingFolderName);
 
       // Update process data with the new process to keep a consistent state
       editSession.setOriginalVersionNumber(versionNumber);
@@ -269,11 +289,15 @@ public class SaveAsDialogController extends BaseController {
           mainController.getManagerService().createProcessModelVersion(editSession.hashCode(),
               userName, nativeType, processId, editSession.getOriginalBranchName(), versionNumber,
               editSession.getOriginalVersionNumber(), "", nativeStream);
+      LOGGER.info("User {} save new model \"{}\" version {} in folder {}", userName, processName, versionNumber,
+              containingFolderName);
+
       // Create draft version for new PMV
+      nativeStream.reset();
       mainController.getManagerService().createDraft(processId, processName,
               versionNumber, nativeType, nativeStream, userName);
 
-              // Update process data with the new process to keep a consistent state
+      // Update process data with the new process to keep a consistent state
       editSession.setOriginalVersionNumber(versionNumber);
       editSession.setCurrentVersionNumber(versionNumber);
       editSession.setLastUpdate(newVersion.getLastUpdateDate());
@@ -296,7 +320,7 @@ public class SaveAsDialogController extends BaseController {
     String title = "Missing Fields";
 
     try {
-      if (!this.isSaveCurrent) {
+      if (Boolean.FALSE.equals(this.isSaveCurrent)) {
         if (this.modelName.getText() == null || "".equals(this.modelName.getText().trim())) {
           valid = false;
           message = message + "Model Name cannot be empty";

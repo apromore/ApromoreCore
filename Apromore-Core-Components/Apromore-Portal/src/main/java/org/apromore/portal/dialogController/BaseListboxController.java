@@ -386,6 +386,8 @@ public abstract class BaseListboxController extends BaseController {
       }
     });
 
+    this.btnSecurity.setVisible(portalContext.getCurrentUser().hasAnyPermission(PermissionType.ACCESS_RIGHTS_MANAGE));
+
     if (portalContext.getCurrentUser().hasAnyPermission(PermissionType.USERS_EDIT)) {
       this.btnUserMgmt.addEventListener(ON_CLICK, new EventListener<Event>() {
         @Override
@@ -394,10 +396,8 @@ public abstract class BaseListboxController extends BaseController {
         }
       });
       this.btnUserMgmt.setVisible(true);
-      this.btnSecurity.setVisible(true);
     } else {
       this.btnUserMgmt.setVisible(false);
-      this.btnSecurity.setVisible(false);
     }
 
     this.btnShare.addEventListener(ON_CLICK, new EventListener<Event>() {

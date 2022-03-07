@@ -8,15 +8,14 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * <p>
- * This program is distributed in the hope that it will be useful,
+ *
+ * <p>This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * <p>
- * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ *
+ * <p>You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, @see <a href="http://www.gnu.org/licenses/lgpl-3.0.html"></a>
  * #L%
  */
 
@@ -59,29 +58,29 @@ public abstract class AbstractLogImporter implements LogImporter {
 
     protected XEvent createEvent(LogEventModel myEvent, boolean isEndTimestamp) {
 
-        XFactory xFactory = new XFactoryNaiveImpl();
-        XEvent xEvent = xFactory.createEvent();
+        XFactory xfactory = new XFactoryNaiveImpl();
+        XEvent xevent = xfactory.createEvent();
 
         XConceptExtension concept = XConceptExtension.instance();
-        concept.assignName(xEvent, myEvent.getActivity());
+        concept.assignName(xevent, myEvent.getActivity());
 
         XOrganizationalExtension orgExtension = XOrganizationalExtension.instance();
         if (myEvent.getResource() != null) {
-            orgExtension.assignResource(xEvent, myEvent.getResource());
+            orgExtension.assignResource(xevent, myEvent.getResource());
         }
 
         if (myEvent.getRole() != null) {
-            orgExtension.assignRole(xEvent, myEvent.getRole());
+            orgExtension.assignRole(xevent, myEvent.getRole());
         }
 
         XLifecycleExtension lifecycle = XLifecycleExtension.instance();
         XTimeExtension timestamp = XTimeExtension.instance();
         if (isEndTimestamp) {
-            lifecycle.assignStandardTransition(xEvent, XLifecycleExtension.StandardModel.COMPLETE);
-            timestamp.assignTimestamp(xEvent, myEvent.getEndTimestamp());
+            lifecycle.assignStandardTransition(xevent, XLifecycleExtension.StandardModel.COMPLETE);
+            timestamp.assignTimestamp(xevent, myEvent.getEndTimestamp());
         } else {
-            lifecycle.assignStandardTransition(xEvent, XLifecycleExtension.StandardModel.START);
-            timestamp.assignTimestamp(xEvent, myEvent.getStartTimestamp());
+            lifecycle.assignStandardTransition(xevent, XLifecycleExtension.StandardModel.START);
+            timestamp.assignTimestamp(xevent, myEvent.getStartTimestamp());
         }
 
         XAttribute attribute;
@@ -89,7 +88,7 @@ public abstract class AbstractLogImporter implements LogImporter {
             Map<String, Timestamp> otherTimestamps = myEvent.getOtherTimestamps();
             for (Map.Entry<String, Timestamp> entry : otherTimestamps.entrySet()) {
                 attribute = new XAttributeTimestampImpl(entry.getKey(), entry.getValue());
-                xEvent.getAttributes().put(entry.getKey(), attribute);
+                xevent.getAttributes().put(entry.getKey(), attribute);
             }
         }
 
@@ -97,33 +96,33 @@ public abstract class AbstractLogImporter implements LogImporter {
         for (Map.Entry<String, String> entry : eventAttributes.entrySet()) {
             if (entry.getValue() != null && entry.getValue().trim().length() != 0) {
                 attribute = new XAttributeLiteralImpl(entry.getKey(), entry.getValue());
-                xEvent.getAttributes().put(entry.getKey(), attribute);
+                xevent.getAttributes().put(entry.getKey(), attribute);
             }
         }
-        return xEvent;
+        return xevent;
     }
 
-    protected void assignEventsToTrace(LogEventModel logEventModel, XTrace xTrace) {
-        XEvent xEvent;
+    protected void assignEventsToTrace(LogEventModel logEventModel, XTrace xtrace) {
+        XEvent xevent;
 
         if (logEventModel.getStartTimestamp() != null) {
-            xEvent = createEvent(logEventModel, false);
-            xTrace.add(xEvent);
+            xevent = createEvent(logEventModel, false);
+            xtrace.add(xevent);
         }
-        xEvent = createEvent(logEventModel, true);
-        xTrace.add(xEvent);
+        xevent = createEvent(logEventModel, true);
+        xtrace.add(xevent);
     }
 
-    protected void assignMyCaseAttributes(Map<String, String> caseAttributes, XTrace xTrace) {
-        XAttributeMap xAttributeMap = xTrace.getAttributes();
+    protected void assignMyCaseAttributes(Map<String, String> caseAttributes, XTrace xtrace) {
+        XAttributeMap xattributemap = xtrace.getAttributes();
 
         if (caseAttributes != null && !caseAttributes.isEmpty()) {
             XAttribute attribute;
             for (Map.Entry<String, String> entry : caseAttributes.entrySet()) {
                 if (entry.getValue() != null && entry.getValue().trim().length() != 0
-                    && !xAttributeMap.containsKey(entry.getKey())) {
+                    && !xattributemap.containsKey(entry.getKey())) {
                     attribute = new XAttributeLiteralImpl(entry.getKey(), entry.getValue());
-                    xTrace.getAttributes().put(entry.getKey(), attribute);
+                    xtrace.getAttributes().put(entry.getKey(), attribute);
                 }
             }
         }
@@ -135,29 +134,29 @@ public abstract class AbstractLogImporter implements LogImporter {
 
     protected void constructTrace(
         final TreeMap<String, XTrace> tracesHistory, final LogEventModel logEventModel,
-        final XFactory xFactory, XConceptExtension concept) {
+        final XFactory xfactory, XConceptExtension concept) {
         if (tracesHistory.isEmpty() || !tracesHistory.containsKey(logEventModel.getCaseID())) {
-            XTrace xT = xFactory.createTrace();
-            concept.assignName(xT, logEventModel.getCaseID());
-            assignEventsToTrace(logEventModel, xT);
-            assignMyCaseAttributes(logEventModel.getCaseAttributes(), xT);
-            tracesHistory.put(logEventModel.getCaseID(), xT);
+            XTrace xtrace = xfactory.createTrace();
+            concept.assignName(xtrace, logEventModel.getCaseID());
+            assignEventsToTrace(logEventModel, xtrace);
+            assignMyCaseAttributes(logEventModel.getCaseAttributes(), xtrace);
+            tracesHistory.put(logEventModel.getCaseID(), xtrace);
         } else {
-            XTrace xT = tracesHistory.get(logEventModel.getCaseID());
-            assignEventsToTrace(logEventModel, xT);
-            assignMyCaseAttributes(logEventModel.getCaseAttributes(), xT);
+            XTrace xtrace = tracesHistory.get(logEventModel.getCaseID());
+            assignEventsToTrace(logEventModel, xtrace);
+            assignMyCaseAttributes(logEventModel.getCaseAttributes(), xtrace);
         }
     }
 
-    protected void sortAndFeedLog(final TreeMap<String, XTrace> tracesHistory, final XLog xLog) {
+    protected void sortAndFeedLog(final TreeMap<String, XTrace> tracesHistory, final XLog xlog) {
         tracesHistory.forEach(
             (k, v) -> {
                 v.sort(new XEventComparator());
-                xLog.add(v);
+                xlog.add(v);
             });
     }
 
-    protected Log importXesLog(String username, Integer folderId, String logName, boolean skipInvalidRow, XLog xLog)
+    protected Log importXesLog(String username, Integer folderId, String logName, boolean skipInvalidRow, XLog xlog)
         throws Exception {
         Log log = null;
         if (username != null
@@ -171,7 +170,7 @@ public abstract class AbstractLogImporter implements LogImporter {
             // invalid row/s'), then import this Log with invalid row skipped.
             && (logErrorReport.isEmpty() || skipInvalidRow)) {
 
-            log = eventLogImporter.importXesLog(xLog, username, folderId, logName);
+            log = eventLogImporter.importXesLog(xlog, username, folderId, logName);
         }
         return log;
     }
