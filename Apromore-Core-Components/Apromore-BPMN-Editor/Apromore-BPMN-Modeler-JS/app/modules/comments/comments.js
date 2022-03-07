@@ -78,7 +78,7 @@ export default function Comments(config, eventBus, overlays, bpmnjs) {
         e.preventDefault();
 
         var comment = $textarea.val();
-        console.log('config.username', config.username);
+        // console.log('config.username', config.username);
         if (comment) {
           addComment(element, config.username || '', comment);
           $textarea.val('');

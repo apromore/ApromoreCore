@@ -21,10 +21,12 @@
 
 package org.apromore.processsimulation.model;
 
+import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -41,4 +43,8 @@ public class Element {
 
     @XmlElement(name = "qbp:durationDistribution")
     private Distribution distributionDuration;
+
+    @XmlElementWrapper(name = "qbp:resourceIds")
+    @XmlElement(name = "qbp:resourceId")
+    private List<String> resourceIds;
 }

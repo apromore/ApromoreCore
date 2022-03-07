@@ -22,6 +22,7 @@
 
 package org.apromore.plugin.portal.processdiscoverer.impl.json;
 
+import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
 import org.apromore.plugin.portal.processdiscoverer.impl.layout.JGraphLayouter;
 import org.apromore.plugin.portal.processdiscoverer.vis.InvalidOutputException;
 import org.apromore.plugin.portal.processdiscoverer.vis.Layouter;
@@ -51,17 +52,15 @@ public class ProcessJSONVisualizer implements ProcessVisualizer {
 
 	private VisualToolkit visToolkit = new VisualToolkit();
 	private Layouter layouter = new JGraphLayouter();
-    private String currency;
 
-    public ProcessJSONVisualizer(String currency) {
+    public ProcessJSONVisualizer() {
         super();
-        this.currency = currency;
     }
 
     @Override
-    public String generateVisualizationText(Abstraction abs) throws Exception {
+    public String generateVisualizationText(Abstraction abs, UserOptionsData userOptions) throws Exception {
         VisualContext visContext = new VisualContext(abs);
-        VisualSettings visSettings = new VisualSettings(currency);
+        VisualSettings visSettings = new VisualSettings(userOptions.getCostTable().getCurrency());
         
         long timer1 = System.currentTimeMillis();
         layouter.setVisualSettings(visSettings);

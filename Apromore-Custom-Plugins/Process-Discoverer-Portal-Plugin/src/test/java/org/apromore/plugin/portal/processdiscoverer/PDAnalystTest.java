@@ -18,7 +18,24 @@
 
 package org.apromore.plugin.portal.processdiscoverer;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import org.apromore.apmlog.xes.XLogToImmutableLog;
+import org.apromore.calendar.builder.CalendarModelBuilder;
+import org.apromore.calendar.model.CalendarModel;
 import org.apromore.commons.datetime.DateTimeUtils;
 import org.apromore.logman.Constants;
 import org.apromore.logman.attribute.AttributeLevel;
@@ -35,6 +52,7 @@ import org.apromore.plugin.portal.processdiscoverer.data.ContextData;
 import org.apromore.plugin.portal.processdiscoverer.data.InvalidDataException;
 import org.apromore.plugin.portal.processdiscoverer.data.PerspectiveDetails;
 import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
+import org.apromore.portal.util.CostTable;
 import org.apromore.processdiscoverer.Abstraction;
 import org.apromore.processdiscoverer.abstraction.BPMNAbstraction;
 import org.apromore.processdiscoverer.layout.Layout;
@@ -50,15 +68,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import static org.junit.Assert.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PDAnalystTest extends TestDataSetup {
@@ -90,8 +99,7 @@ public class PDAnalystTest extends TestDataSetup {
     public void test_AnalystConstructor_MissingActivityPerspective() throws Exception {
         XLog validLog = readLogWithOneTraceOneEvent();
         ContextData contextData = ContextData.valueOf("domain1", "username1", 0,
-            "logName", 0, "folderName", false, true,
-                Map.of(), "AUD");
+            "logName", 0, "folderName", false, true);
         Mockito.when(eventLogService.getXLog(contextData.getLogId())).thenReturn(validLog);
         Mockito.when(eventLogService.getAggregatedLog(contextData.getLogId())).thenReturn(
             XLogToImmutableLog.convertXLog("ProcessLog", validLog));
@@ -105,8 +113,7 @@ public class PDAnalystTest extends TestDataSetup {
     public void test_AnalystConstructor_NoPerspectiveAttributes() throws Exception {
         XLog validLog = readLogWithOneTraceOneEvent();
         ContextData contextData = ContextData.valueOf("domain1", "username1", 0,
-            "logName", 0, "folderName", false, true,
-                Map.of(), "AUD");
+            "logName", 0, "folderName", false, true);
         Mockito.when(eventLogService.getXLog(contextData.getLogId())).thenReturn(validLog);
         Mockito.when(eventLogService.getAggregatedLog(contextData.getLogId())).thenReturn(
             XLogToImmutableLog.convertXLog("ProcessLog", validLog));
@@ -119,8 +126,7 @@ public class PDAnalystTest extends TestDataSetup {
     public void test_AnalystConstructor_TooManyPerspectiveAttributeValues() throws Exception {
         XLog validLog = readLogWithTwoTraceEachTwoEvents();
         ContextData contextData = ContextData.valueOf("domain1", "username1", 0,
-            "logName", 0, "folderName", false, true,
-                Map.of(), "AUD");
+            "logName", 0, "folderName", false, true);
         Mockito.when(eventLogService.getXLog(contextData.getLogId())).thenReturn(validLog);
         Mockito.when(eventLogService.getAggregatedLog(contextData.getLogId())).thenReturn(
             XLogToImmutableLog.convertXLog("ProcessLog", validLog));
@@ -177,7 +183,7 @@ public class PDAnalystTest extends TestDataSetup {
         List<PerspectiveDetails> actDetails = analyst.getActivityDetails();
         assertEquals(1, actDetails.size());
         assertEquals("a", actDetails.get(0).getValue());
-        assertEquals(1, actDetails.get(0).getFreq(),0);
+        assertEquals(1, actDetails.get(0).getFreq(), 0);
         assertEquals("100", actDetails.get(0).getFreqStr());
         assertEquals(1, actDetails.get(0).getOccurrences());
     }
@@ -357,8 +363,8 @@ public class PDAnalystTest extends TestDataSetup {
         Map<String, String> activityAverages = analyst.getActivityAttributeAverageMap(1, 1);
 
         Map<String, String> expectedMap = Map.of(
-                "concept:name", "a",
-                "Average riskLevelNumber", "2.5"
+            "concept:name", "a",
+            "Average riskLevelNumber", "2.5"
         );
 
         assertEquals(expectedMap, activityAverages);
@@ -466,24 +472,26 @@ public class PDAnalystTest extends TestDataSetup {
         // Change user options, layout is not retained
 
         // Change structural measure type
-        Layout layout5 = analyst.discoverProcess(
-            createUserOptions(100, 100, 40,
-                MeasureType.DURATION,           // changed
-                MeasureAggregation.MEAN,
-                MeasureRelation.ABSOLUTE,
-                false, false,
-                MeasureType.FREQUENCY,
-                MeasureAggregation.CASES,
-                MeasureRelation.ABSOLUTE,
-                MeasureType.DURATION,
-                MeasureAggregation.MEAN,
-                MeasureRelation.ABSOLUTE,
-                false,
-                false)).get().getAbstraction().getLayout();
+        UserOptionsData userOptions = createUserOptions(100, 100, 40,
+            MeasureType.DURATION,           // changed
+            MeasureAggregation.MEAN,
+            MeasureRelation.ABSOLUTE,
+            false, false,
+            MeasureType.FREQUENCY,
+            MeasureAggregation.CASES,
+            MeasureRelation.ABSOLUTE,
+            MeasureType.DURATION,
+            MeasureAggregation.MEAN,
+            MeasureRelation.ABSOLUTE,
+            false,
+            false);
+        Layout layout5 = analyst.discoverProcess(userOptions).get().getAbstraction().getLayout();
         assertNotSame(layout1, layout5);
 
         // Change perspective attribute
-        analyst.setMainAttribute(Constants.ATT_KEY_LIFECYCLE_TRANSITION); // changed
+        analyst.loadAttributeData(Constants.ATT_KEY_LIFECYCLE_TRANSITION,
+            userOptions.getCalendarModel(),
+            userOptions.getCostTable()); // changed
         Layout layout6 = analyst.discoverProcess(
             createUserOptions(100, 100, 40,
                 MeasureType.FREQUENCY,
@@ -555,6 +563,10 @@ public class PDAnalystTest extends TestDataSetup {
 
     @Test
     public void test_SimulationData() throws Exception {
+        // given
+        CalendarModel businessCalendar = new CalendarModelBuilder().with5DayWorking().build();
+        businessCalendar.setName("Business_Calendar");
+
         UserOptionsData userOptions = createUserOptions(100, 100, 40,
             MeasureType.FREQUENCY,
             MeasureAggregation.CASES,
@@ -568,13 +580,25 @@ public class PDAnalystTest extends TestDataSetup {
             MeasureRelation.ABSOLUTE,
             false,
             false);
-        PDAnalyst analyst = createPDAnalyst(readLogWithOneTraceStartCompleteEventsNonOverlapping());
+        userOptions.setCalendarModel(businessCalendar);
+
+        PDAnalyst analyst = createPDAnalyst(readLogWithOneTraceStartCompleteEventsNonOverlapping(),
+            businessCalendar, CostTable.EMPTY);
         Abstraction abs = analyst.discoverProcess(userOptions).get().getAbstraction();
         BPMNAbstraction bpmnAbstraction = analyst.convertToBpmnAbstractionForExport(abs);
 
-        SimulationData data = analyst.getSimulationData(bpmnAbstraction);
+        // when
+        SimulationData data = analyst.getSimulationData(bpmnAbstraction, userOptions);
+
+        // then
         assertEquals(1, data.getCaseCount());
         assertEquals(5, data.getResourceCount());
+        assertEquals(1, data.getResourceCountsByRole().size());
+        assertEquals(5, data.getResourceCountsByRole().get("DEFAULT_ROLE").intValue());
+        assertEquals("DEFAULT_ROLE", data.getRoleNameByNodeId(getNodeId("a", bpmnAbstraction.getDiagram())));
+        assertEquals("DEFAULT_ROLE", data.getRoleNameByNodeId(getNodeId("b", bpmnAbstraction.getDiagram())));
+        assertEquals("DEFAULT_ROLE", data.getRoleNameByNodeId(getNodeId("c", bpmnAbstraction.getDiagram())));
+        assertEquals("DEFAULT_ROLE", data.getRoleNameByNodeId(getNodeId("d", bpmnAbstraction.getDiagram())));
         assertEquals(DateTime.parse("2010-10-27T21:59:19.308+10:00").getMillis(), data.getStartTime());
         assertEquals(DateTime.parse("2010-10-27T22:55:19.308+10:00").getMillis(), data.getEndTime());
         assertEquals(60000, data.getDiagramNodeDuration(getNodeId("a", bpmnAbstraction.getDiagram())), 0.0);
@@ -590,11 +614,16 @@ public class PDAnalystTest extends TestDataSetup {
         );
         assertGateways(expectedEdgeFrequencies, data.getEdgeFrequencies());
 
+        assertNotNull(data.getCalendarModel());
+        assertEquals("Business_Calendar", data.getCalendarModel().getName());
+
         // Filter out some events
         analyst.filter_RemoveEventsAnyValueOfEventAttribute("c", "concept:name");
         Abstraction abs2 = analyst.discoverProcess(userOptions).get().getAbstraction();
         BPMNAbstraction bpmnAbstraction2 = analyst.convertToBpmnAbstractionForExport(abs);
-        SimulationData data2 = analyst.getSimulationData(analyst.convertToBpmnAbstractionForExport(abs2));
+        SimulationData data2 = analyst.getSimulationData(
+            analyst.convertToBpmnAbstractionForExport(abs2),
+            userOptions);
         assertEquals(1, data2.getCaseCount());
         assertEquals(4, data2.getResourceCount()); // changed
         assertEquals(DateTime.parse("2010-10-27T21:59:19.308+10:00").getMillis(), data2.getStartTime());
@@ -611,15 +640,101 @@ public class PDAnalystTest extends TestDataSetup {
     }
 
     @Test
-    public void test_simulation_data_with_null_abstraction() throws Exception {
-        PDAnalyst analyst = createPDAnalyst(readLogWithOneTraceStartCompleteEventsNonOverlapping());
-        SimulationData data = analyst.getSimulationData(null);
+    public void test_SimulationData_with_roles() throws Exception {
+        // given
+        UserOptionsData userOptions = createUserOptions(100, 100, 40,
+            MeasureType.FREQUENCY,
+            MeasureAggregation.CASES,
+            MeasureRelation.ABSOLUTE,
+            false, false,
+            MeasureType.FREQUENCY,
+            MeasureAggregation.CASES,
+            MeasureRelation.ABSOLUTE,
+            MeasureType.DURATION,
+            MeasureAggregation.MEAN,
+            MeasureRelation.ABSOLUTE,
+            false,
+            false);
+        PDAnalyst analyst = createPDAnalyst(readLogWithOneTraceStartCompleteEventsNonOverlappingWithRoles());
+        Abstraction abs = analyst.discoverProcess(userOptions).get().getAbstraction();
+        BPMNAbstraction bpmnAbstraction = analyst.convertToBpmnAbstractionForExport(abs);
 
+        // when
+        SimulationData data = analyst.getSimulationData(bpmnAbstraction, userOptions);
+
+        // then
+        assertEquals(1, data.getCaseCount());
+        assertEquals(5, data.getResourceCount());
+        assertEquals(6, data.getResourceCountsByRole().size());
+        assertEquals(2, data.getResourceCountsByRole().get("role_1").intValue());
+        assertEquals(2, data.getResourceCountsByRole().get("role_2").intValue());
+        assertEquals(1, data.getResourceCountsByRole().get("role_3").intValue());
+        assertEquals(1, data.getResourceCountsByRole().get("role_4").intValue());
+        assertEquals(4, data.getResourceCountsByRole().get("DEFAULT_ROLE").intValue());
+        assertEquals("role_1", data.getRoleNameByNodeId(getNodeId("a", bpmnAbstraction.getDiagram())));
+        assertEquals("role_2", data.getRoleNameByNodeId(getNodeId("b", bpmnAbstraction.getDiagram())));
+        assertEquals("role_3", data.getRoleNameByNodeId(getNodeId("c", bpmnAbstraction.getDiagram())));
+        assertEquals("role_4", data.getRoleNameByNodeId(getNodeId("d", bpmnAbstraction.getDiagram())));
+        assertEquals("DEFAULT_ROLE", data.getRoleNameByNodeId(getNodeId("e", bpmnAbstraction.getDiagram())));
+        assertEquals("role_5", data.getRoleNameByNodeId(getNodeId("f", bpmnAbstraction.getDiagram())));
+    }
+
+    @Test
+    public void test_SimulationData_role_precedence_for_activities() throws Exception {
+        // given
+        UserOptionsData userOptions = createUserOptions(100, 100, 40,
+            MeasureType.FREQUENCY,
+            MeasureAggregation.CASES,
+            MeasureRelation.ABSOLUTE,
+            false, false,
+            MeasureType.FREQUENCY,
+            MeasureAggregation.CASES,
+            MeasureRelation.ABSOLUTE,
+            MeasureType.DURATION,
+            MeasureAggregation.MEAN,
+            MeasureRelation.ABSOLUTE,
+            false,
+            false);
+        PDAnalyst analyst = createPDAnalyst(readLogWithOneTraceStartCompleteEventsNonOverlappingWithMissingRoles());
+        Abstraction abs = analyst.discoverProcess(userOptions).get().getAbstraction();
+        BPMNAbstraction bpmnAbstraction = analyst.convertToBpmnAbstractionForExport(abs);
+
+        // when
+        SimulationData data = analyst.getSimulationData(bpmnAbstraction, userOptions);
+
+        // then
+        assertEquals(1, data.getCaseCount());
+        assertEquals(5, data.getResourceCount());
+        assertEquals(5, data.getResourceCountsByRole().size());
+        assertEquals(2, data.getResourceCountsByRole().get("role_1").intValue());
+        assertEquals(2, data.getResourceCountsByRole().get("role_2").intValue());
+        assertEquals(1, data.getResourceCountsByRole().get("role_3").intValue());
+        assertEquals(1, data.getResourceCountsByRole().get("role_4").intValue());
+        assertEquals(4, data.getResourceCountsByRole().get("DEFAULT_ROLE").intValue());
+        assertEquals("role_2", data.getRoleNameByNodeId(getNodeId("a", bpmnAbstraction.getDiagram())));
+        assertEquals("role_2", data.getRoleNameByNodeId(getNodeId("b", bpmnAbstraction.getDiagram())));
+        assertEquals("role_3", data.getRoleNameByNodeId(getNodeId("c", bpmnAbstraction.getDiagram())));
+        assertEquals("role_4", data.getRoleNameByNodeId(getNodeId("d", bpmnAbstraction.getDiagram())));
+        assertEquals("DEFAULT_ROLE", data.getRoleNameByNodeId(getNodeId("e", bpmnAbstraction.getDiagram())));
+        assertEquals("role_1", data.getRoleNameByNodeId(getNodeId("f", bpmnAbstraction.getDiagram())));
+    }
+
+    @Test
+    public void test_simulation_data_with_null_abstraction() throws Exception {
+        // given
+        PDAnalyst analyst = createPDAnalyst(readLogWithOneTraceStartCompleteEventsNonOverlapping());
+
+        // when
+        SimulationData data = analyst.getSimulationData(null,
+            UserOptionsData.DEFAULT(ConfigData.DEFAULT));
+
+        // then
         assertNull(data);
     }
 
     @Test
     public void test_only_xor_gateways_in_simulation_data() throws Exception {
+        // given
         UserOptionsData userOptions = createUserOptions(100, 100, 40,
             MeasureType.FREQUENCY,
             MeasureAggregation.CASES,
@@ -644,7 +759,10 @@ public class PDAnalystTest extends TestDataSetup {
         bpmnAbstraction.getDiagram().addGateway("MockGw4", Gateway.GatewayType.COMPLEX);
         assertEquals(8, bpmnAbstraction.getDiagram().getGateways().size());
 
-        SimulationData data = analyst.getSimulationData(bpmnAbstraction);
+        // when
+        SimulationData data = analyst.getSimulationData(bpmnAbstraction, userOptions);
+
+        // then
         Map<String, Map<String, Double>> expectedEdgeFrequencies = Map.of(
             "node4", Map.of("edge3", 0.0, "edge4", 1.0),
             "node5", Map.of("edge5", 1.0),

@@ -537,10 +537,10 @@ export default class EditorApp {
      * @param buttonData: button data
      */
     offer(buttonData) {
-        if (this.disabledButtons && this.disabledButtons.includes(buttonData.name)) {
-            buttonData.isDisabled = function(){ return true};
+        //Do not add buttons in the disabledButtons list to the toolbar
+        if (!this.disabledButtons || !this.disabledButtons.includes(buttonData.name)) {
+            this.buttonsData.push(buttonData);
         }
-        this.buttonsData.push(buttonData);
     }
 
     getEditor() {
@@ -571,13 +571,16 @@ export default class EditorApp {
         let me = this;
         let options = {
           container: '#' + me.editor.rootNode.id,
-          langTag: config.langTag
+          langTag: config.langTag,
+          username: '',
+          processName: ''
         }
         if (!config.viewOnly) {
           options.keyboard = { bindTo: window };
           options.propertiesPanel = me.useSimulationPanel ? { parent: '#js-properties-panel' } : undefined
         }
         options.username = config.username || '';
+        options.processName = config.processName || 'untitled';
         await me.editor.attachEditor(new BpmnJS(options));
 
         if (config && config.xml) {

@@ -62934,7 +62934,7 @@ function removeSequenceFlows(bpmnFactory, elementRegistry) {
   }
 }
 
-function PropertiesProvider(eventBus, canvas, bpmnFactory, elementRegistry, translate, bpmnjs) {
+function PropertiesProvider(eventBus, canvas, bpmnFactory, elementRegistry, translate, bpmnjs, config) {
 
   PropertiesActivator.call(this, eventBus);
 
@@ -62947,7 +62947,7 @@ function PropertiesProvider(eventBus, canvas, bpmnFactory, elementRegistry, tran
     var gatewayTab = createGatewayTab(element, bpmnFactory, elementRegistry, translate);
     var intermediateAndBoundaryEventsTab = createIntermediateAndBoundaryEventsTab(element, bpmnFactory, elementRegistry, translate);
     var auxTab = createAuxTab(element, bpmnFactory, elementRegistry, translate, bpmnjs, eventBus);
-    var customTab = createCustomTab(element, bpmnFactory, elementRegistry, translate);
+    var customTab = createCustomTab(element, bpmnFactory, elementRegistry, translate, config);
 
     function getDefaultTabs() {
       return [customTab, auxTab, simulationParametersTab, taskTab, timetableTab, resourcesTab, gatewayTab, intermediateAndBoundaryEventsTab];
@@ -63009,7 +63009,8 @@ PropertiesProvider.$inject = [
   'bpmnFactory',
   'elementRegistry',
   'translate',
-  'bpmnjs'
+  'bpmnjs',
+  'config'
 ];
 
 inherits(PropertiesProvider, PropertiesActivator);
@@ -67318,16 +67319,23 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 var is = __webpack_require__(1).is,
     createCustomGroups = __webpack_require__(329);
 
-module.exports = function(element, bpmnFactory, elementRegistry, translate) {
+module.exports = function(element, bpmnFactory, elementRegistry, translate, config) {
 
   function shown(element) {
-    return is(element, 'bpmn:FlowNode') || is(element, 'bpmn:Process') ;
+    return is(element, 'bpmn:FlowNode') ||
+        is(element, 'bpmn:Process') ||
+        is(element, 'bpmn:DataObject') ||
+        is(element, 'bpmn:DataObjectReference') ||
+        is(element, 'bpmn:DataStoreReference') ||
+        is(element, 'bpmn:Participant') ||
+        is(element, 'bpmn:Collaboration') ||
+        is(element, 'bpmn:Lane');
   }
 
   return {
     id: 'customTab',
     label: translate('metadata.properties'),
-    groups: createCustomGroups(element, bpmnFactory, elementRegistry, translate),
+    groups: createCustomGroups(element, bpmnFactory, elementRegistry, translate, config),
     enabled: function(element) {
       return shown(element);
     }
@@ -67339,14 +67347,18 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 /* 329 */
 /***/ (function(module, exports, __webpack_require__) {
 
+var is = __webpack_require__(1).is;
 var getBusinessObject = __webpack_require__(1).getBusinessObject;
 var properties = __webpack_require__(330);
 
-module.exports = function(element, bpmnFactory, elementRegistry, translate) {
+module.exports = function(element, bpmnFactory, elementRegistry, translate, config) {
   var bo = getBusinessObject(element),
       groupId = ['bo', bo.get('id'), 'group'].join('-'),
       groupLabel = bo.name || bo.id;
 
+  if (is(element, 'bpmn:Process')) {
+    groupLabel = config.processName || 'untitled';
+  }
   var customGroup = {
     id : groupId,
     label: groupLabel,
@@ -125202,7 +125214,7 @@ function Comments(config, eventBus, overlays, bpmnjs) {
         e.preventDefault();
 
         var comment = $textarea.val();
-        console.log('config.username', config.username);
+        // console.log('config.username', config.username);
         if (comment) {
           addComment(element, config.username || '', comment);
           $textarea.val('');
@@ -126472,10 +126484,10 @@ class EditorApp {
      * @param buttonData: button data
      */
     offer(buttonData) {
-        if (this.disabledButtons && this.disabledButtons.includes(buttonData.name)) {
-            buttonData.isDisabled = function(){ return true};
+        //Do not add buttons in the disabledButtons list to the toolbar
+        if (!this.disabledButtons || !this.disabledButtons.includes(buttonData.name)) {
+            this.buttonsData.push(buttonData);
         }
-        this.buttonsData.push(buttonData);
     }
 
     getEditor() {
@@ -126506,13 +126518,16 @@ class EditorApp {
         let me = this;
         let options = {
           container: '#' + me.editor.rootNode.id,
-          langTag: config.langTag
+          langTag: config.langTag,
+          username: '',
+          processName: ''
         }
         if (!config.viewOnly) {
           options.keyboard = { bindTo: window };
           options.propertiesPanel = me.useSimulationPanel ? { parent: '#js-properties-panel' } : undefined
         }
         options.username = config.username || '';
+        options.processName = config.processName || 'untitled';
         await me.editor.attachEditor(new _editor_bpmnio_bpmn_modeler_development__WEBPACK_IMPORTED_MODULE_4___default.a(options));
 
         if (config && config.xml) {
@@ -126907,43 +126922,80 @@ class Attachment {
 
     constructor (facade) {
         this.facade = facade;
-        this.btnId = 'ap-id-editor-attachment-btn';
-        this.state = true;
+        this.attachmentBtnId = 'ap-id-editor-attachment-btn';
+        this.commentBtnId = 'ap-id-editor-comment-btn';
+        this.attachmentState = true;
+        this.commentState = true;
 
         this.facade.offer({
-            'btnId': this.btnId,
+            'btnId': this.attachmentBtnId,
             'name': Apromore.I18N.Attachment.attachment,
             'functionality': this.toggleAttachment.bind(this),
-            'icon': this.getIcon(),
-            'description': this.getDescription(),
-            'index': 1,
-            'groupOrder': 5
+            'icon': this.getAttachmentIcon(),
+            'description': this.getAttachmentDescription(),
+            'index': 4,
+            'groupOrder': 2
+        });
+
+        this.facade.offer({
+            'btnId': this.commentBtnId,
+            'name': Apromore.I18N.Attachment.comment,
+            'functionality': this.toggleComment.bind(this),
+            'icon': this.getCommentIcon(),
+            'description': this.getCommentDescription(),
+            'index': 5,
+            'groupOrder': 2
         });
 
     }
 
     toggleAttachment(factor) {
-            if (Apromore.BPMNEditor.Plugins.Attachment.toggle) {
-                this.state = !this.state;
-                Apromore.BPMNEditor.Plugins.Attachment.toggle();
-                this.onToggle();
-            }
+        if (Apromore.BPMNEditor.Plugins.Attachment.toggleAttachment) {
+            this.attachmentState = !this.attachmentState;
+            Apromore.BPMNEditor.Plugins.Attachment.toggleAttachment();
+            this.onAttachmentToggle();
+        }
     }
 
-    onToggle() {
-        let title = this.getDescription();
-        let icon = this.getIcon();
+    onAttachmentToggle() {
+        let title = this.getAttachmentDescription();
+        let icon = this.getAttachmentIcon();
 
-        $('#' + this.btnId + ' button').prop('title', title);
-        $('#' + this.btnId + ' button').css('background-image', 'url(' + icon + ')');
+        $('#' + this.attachmentBtnId + ' button').prop('title', title);
+        $('#' + this.attachmentBtnId + ' button').css('background-image', 'url(' + icon + ')');
     }
 
-    getDescription() {
-        return this.state ? window.Apromore.I18N.Attachment.hideDesc : window.Apromore.I18N.Attachment.showDesc;
+    toggleComment(factor) {
+        if (Apromore.BPMNEditor.Plugins.Attachment.toggleComment) {
+            this.commentState = !this.commentState;
+            Apromore.BPMNEditor.Plugins.Attachment.toggleComment();
+            this.onCommentToggle();
+        }
     }
 
-    getIcon() {
-        let iconUrl = this.state ? "images/ap/attachment-on.svg" : "images/ap/attachment-off.svg";
+    onCommentToggle() {
+        let title = this.getCommentDescription();
+        let icon = this.getCommentIcon();
+
+        $('#' + this.commentBtnId + ' button').prop('title', title);
+        $('#' + this.commentBtnId + ' button').css('background-image', 'url(' + icon + ')');
+    }
+
+    getAttachmentDescription() {
+        return this.attachmentState ? window.Apromore.I18N.Attachment.hideDesc : window.Apromore.I18N.Attachment.showDesc;
+    }
+
+    getAttachmentIcon() {
+        let iconUrl = this.attachmentState ? "images/ap/attachment-on.svg" : "images/ap/attachment-off.svg";
+        return _config__WEBPACK_IMPORTED_MODULE_0__["default"].PATH + iconUrl;
+    }
+
+    getCommentDescription() {
+        return this.commentState ? window.Apromore.I18N.Attachment.hideComments : window.Apromore.I18N.Attachment.showComments;
+    }
+
+    getCommentIcon() {
+        let iconUrl = this.commentState ? "images/ap/comments-on.svg" : "images/ap/comments-off.svg";
         return _config__WEBPACK_IMPORTED_MODULE_0__["default"].PATH + iconUrl;
     }
 };

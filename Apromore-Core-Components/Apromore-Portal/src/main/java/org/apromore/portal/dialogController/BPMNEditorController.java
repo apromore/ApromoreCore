@@ -1,7 +1,7 @@
 /*-
  * #%L
  * This file is part of "Apromore Core".
- * 
+ *
  * Copyright (C) 2012 - 2017 Queensland University of Technology.
  * %%
  * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
@@ -10,12 +10,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -77,13 +77,13 @@ import static org.apromore.common.Constants.TRUNK_NAME;
  * from the editor Remember to update these data objects after every action on the model to keep it
  * in a consistent state. For example, after save as a new model, these data objects must be updated
  * to the new model info.
- * 
+ *
  * @todo there is a duplication between ApromoreSession and EditSessionType, they need to be clean
  *       later.
  *
  * @todo avoid thread conflict issues when setting instance data for BIMPPortalPlugin, instead it
  *       should be passed as a method parameter.
- * 
+ *
  * @author Bruce Nguyen
  *
  */
@@ -215,6 +215,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
       param.put("plugins", editorPlugins);
       param.put("langTag", langTag);
       param.put("username", currentUserType.getUsername());
+      param.put("processName", editSession.getProcessName());
       if (USE_BPMNIO_MODELER) {
         param.put("bpmnioLib", BPMNIO_MODELER_JS);
       } else {
@@ -224,6 +225,9 @@ public class BPMNEditorController extends BaseController implements Composer<Com
       PortalPlugin simulatePortalPlugin = mainC.getPortalPluginMap().get(PluginCatalog.PLUGIN_SIMULATE_MODEL);
       param.put("availableSimulateModelPlugin", simulatePortalPlugin != null &&
               simulatePortalPlugin.getAvailability() == PortalPlugin.Availability.AVAILABLE);
+      PortalPlugin processPublishPlugin = mainC.getPortalPluginMap().get(PluginCatalog.PLUGIN_PUBLISH_MODEL);
+      param.put("availablePublishModelPlugin", processPublishPlugin != null
+          && processPublishPlugin.getAvailability() == PortalPlugin.Availability.AVAILABLE);
       param.put("isPublished", isProcessPublished());
       Executions.getCurrent().pushArg(param);
 
@@ -464,6 +468,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
     List<EditorPlugin> editorPlugins = EditorPluginResolver.resolve("bpmnEditorPlugins");
     param.put("plugins", editorPlugins);
     param.put("availableSimulateModelPlugin", false);
+    param.put("availablePublishModelPlugin", false);
     param.put("bpmnioLib", BPMNIO_MODELER_JS);
     param.put("isPublished", true);
     param.put("viewOnly", true);

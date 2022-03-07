@@ -1,0 +1,162 @@
+<!--
+  #%L
+  This file is part of "Apromore Core".
+  %%
+  Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+  %%
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Lesser General Public License as
+  published by the Free Software Foundation, either version 3 of the
+  License, or (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Lesser Public License for more details.
+  
+  You should have received a copy of the GNU General Lesser Public
+  License along with this program.  If not, see
+  <http://www.gnu.org/licenses/lgpl-3.0.html>.
+  #L%
+  -->
+<window width="950px" position="center" title="${$composer.labels.createRoleTitle_text}" apply="org.apromore.plugin.portal.useradmin.EditRolePermissionController">
+    <vlayout sclass="ap-role-edit-box" spacing="0">
+        <hlayout hflex="1" valign="middle">
+            <div hflex="1" sclass="ap-role-name-title">
+                <label value="${$composer.labels.roleName_text}"/>
+            </div>
+            <div hflex="1">
+                <textbox id="roleNameTextbox" placeholder="${$composer.labels.roleName_hint}"
+                         constraint="${labels.common_nameConstraint_text}"/>
+            </div>
+        </hlayout>
+        <label value="${$composer.labels.permissionsTitle_text}" sclass="ap-permission-subtitle"/>
+        <div>
+            <label sclass="ap-permission-group-title" value="${$composer.labels.permission_discover_group_title}"/>
+            <div sclass="ap-permission-group-box">
+                <div sclass="ap-permission-switch">
+                    <checkbox mold="switch" id="rolePermissionModelCreate"/>
+                    <label value="${$composer.labels.permission_discover_model_create}"/>
+                </div>
+                <div sclass="ap-permission-switch">
+                    <checkbox mold="switch" id="rolePermissionModelEdit"/>
+                    <label value="${$composer.labels.permission_discover_model_edit}"/>
+                </div>
+                <div sclass="ap-permission-switch">
+                    <checkbox mold="switch" id="rolePermissionModelView"/>
+                    <label value="${$composer.labels.permission_discover_model_view}"/>
+                </div>
+                <div sclass="ap-permission-switch">
+                    <checkbox mold="switch" id="rolePermissionModelDiscoverView"/>
+                    <label value="${$composer.labels.permission_discover_model_discover_view}"/>
+                </div>
+                <div sclass="ap-permission-switch">
+                    <checkbox mold="switch" id="rolePermissionModelDiscoverFull"/>
+                    <label value="${$composer.labels.permission_discover_model_discover_full}"/>
+                </div>
+                <div sclass="ap-permission-switch">
+                    <checkbox mold="switch" id="rolePermissionModelPublish"/>
+                    <label value="${$composer.labels.permission_discover_model_publish}"/>
+                </div>
+                <div sclass="ap-permission-switch">
+                    <checkbox mold="switch" id="rolePermissionFilterView"/>
+                    <label value="${$composer.labels.permission_discover_filter_view}"/>
+                </div>
+                <div sclass="ap-permission-switch">
+                    <checkbox mold="switch" id="rolePermissionFilterFull"/>
+                    <label value="${$composer.labels.permission_discover_filter_full}"/>
+                </div>
+                <div sclass="ap-permission-switch">
+                    <checkbox mold="switch" id="rolePermissionCalendar"/>
+                    <label value="${$composer.labels.permission_discover_calendars}"/>
+                </div>
+            </div>
+        </div>
+        <div>
+            <label sclass="ap-permission-group-title" value="${$composer.labels.permission_analyze_group_title}"/>
+            <div sclass="ap-permission-group-box">
+                <div sclass="ap-permission-switch">
+                    <checkbox mold="switch" id="rolePermissionLogAnim"/>
+                    <label value="${$composer.labels.permission_analyze_log_anim}"/>
+                </div>
+                <div sclass="ap-permission-switch">
+                    <checkbox mold="switch" id="rolePermissionModelCompare"/>
+                    <label value="${$composer.labels.permission_analyze_model_compare}"/>
+                </div>
+                <div sclass="ap-permission-switch">
+                    <checkbox mold="switch" id="rolePermissionCheckConformance"/>
+                    <label value="${$composer.labels.permission_analyze_conformance}"/>
+                </div>
+                <div sclass="ap-permission-switch">
+                    <checkbox mold="switch" id="rolePermissionDashView"/>
+                    <label value="${$composer.labels.permission_analyze_dash_view}"/>
+                </div>
+                <div sclass="ap-permission-switch">
+                    <checkbox mold="switch" id="rolePermissionDashFull"/>
+                    <label value="${$composer.labels.permission_analyze_dash_full}"/>
+                </div>
+                <div sclass="ap-permission-switch">
+                    <checkbox mold="switch" id="rolePermissionModelSimulate"/>
+                    <label value="${$composer.labels.permission_analyze_simulate}"/>
+                </div>
+            </div>
+        </div>
+        <div>
+            <label sclass="ap-permission-group-title" value="${$composer.labels.permission_redesign_group_title}"/>
+            <div sclass="ap-permission-group-box">
+                <div sclass="ap-permission-switch">
+                    <checkbox mold="switch" id="rolePermissionModelMerge"/>
+                    <label value="${$composer.labels.permission_redesign_model_merge}"/>
+                </div>
+                <div sclass="ap-permission-switch">
+                    <checkbox mold="switch" id="rolePermissionModelSimSearch"/>
+                    <label value="${$composer.labels.permission_redesign_model_sim_search}"/>
+                </div>
+            </div>
+        </div>
+        <div>
+            <label sclass="ap-permission-group-title" value="${$composer.labels.permission_etl_group_title}"/>
+            <div sclass="ap-permission-group-box">
+                <div sclass="ap-permission-switch">
+                    <checkbox mold="switch" id="rolePermissionEtlPipelineCreate"/>
+                    <label value="${$composer.labels.permission_etl_pipeline_create}"/>
+                </div>
+                <div sclass="ap-permission-switch">
+                    <checkbox mold="switch" id="rolePermissionEtlPipelineManage"/>
+                    <label value="${$composer.labels.permission_etl_pipeline_manage}"/>
+                </div>
+            </div>
+        </div>
+        <div visible="false">
+            <label sclass="ap-permission-group-title" value="${$composer.labels.permission_monitor_group_title}"/>
+            <div sclass="ap-permission-group-box">
+                <div sclass="ap-permission-switch">
+                    <checkbox mold="switch"/>
+                    <label value="${$composer.labels.permission_monitor_model_train}"/>
+                </div>
+                <div sclass="ap-permission-switch">
+                    <checkbox mold="switch"/>
+                    <label value="${$composer.labels.permission_monitor_dash_view}"/>
+                </div>
+            </div>
+        </div>
+        <div>
+            <label sclass="ap-permission-group-title" value="${$composer.labels.permission_manage_group_title}"/>
+            <div sclass="ap-permission-group-box">
+                <div sclass="ap-permission-switch">
+                    <checkbox mold="switch" id="rolePermissionManageAccessRights"/>
+                    <label value="${$composer.labels.permission_manage_access_rights}"/>
+                </div>
+                <div sclass="ap-permission-switch">
+                    <checkbox mold="switch" id="rolePermissionManageUsers"/>
+                    <label value="${$composer.labels.permission_manage_users}"/>
+                </div>
+            </div>
+        </div>
+    </vlayout>
+    <div sclass="ap-window-footer-actions">
+        <button id="editBtn" label="${labels.common_save_text}" iconSclass="z-icon-check-circle" disabled="true"/>
+        <button id="createBtn" label="${labels.common_create_text}" iconSclass="z-icon-check-circle" disabled="true"/>
+        <button id="cancelBtn" label="${labels.common_cancel_text}" iconSclass="z-icon-times-circle" />
+    </div>
+</window>

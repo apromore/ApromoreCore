@@ -36,6 +36,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.PortalContexts;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.portal.common.ItemHelpers;
@@ -45,6 +46,7 @@ import org.apromore.portal.context.PortalPluginResolver;
 import org.apromore.portal.controller.CalendarPopupLogSubMenuController;
 import org.apromore.portal.controller.DashboardPopupLogSubMenuController;
 import org.apromore.portal.controller.DiscoverPopupLogSubMenuController;
+import org.apromore.portal.controller.FilterPopupLogSubMenuController;
 import org.apromore.portal.controller.LogFilterPopupLogSubMenuController;
 import org.apromore.portal.menu.MenuConfig;
 import org.apromore.portal.menu.MenuConfigLoader;
@@ -60,7 +62,6 @@ import org.slf4j.Logger;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zul.Menuitem;
@@ -184,12 +185,16 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
             case PluginCatalog.PLUGIN_CREATE_NEW_LOG_FILTER:
                 addNewLogFilterMenuItem(popup);
                 return;
+            case PluginCatalog.PLUGIN_CREATE_NEW_FILTER:
+                addNewFilterMenuItem(popup);
+                return;
             case PluginCatalog.PLUGIN_VIEW_EXISTING_LOG_FILTER:
                 addExistingLogFilterViewMenuItem(popup);
                 return;
             case PluginCatalog.PLUGIN_DISCOVER_MODEL_SUB_MENU:
             case PluginCatalog.PLUGIN_DASHBOARD_SUB_MENU:
             case PluginCatalog.PLUGIN_LOG_FILTER_SUB_MENU:
+            case PluginCatalog.PLUGIN_FILTER_SUB_MENU:
             case PluginCatalog.PLUGIN_APPLY_CALENDAR_SUB_MENU:
                 addSubMenuItem(popup,menuItem.getId());
                 return;
@@ -294,11 +299,26 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
         });
         popup.appendChild(item);
     }
+    private void addNewFilterMenuItem(Menupopup popup) {
+        Menuitem item = new Menuitem();
+        item.setLabel(Labels.getLabel("plugin_new_filter_text"));
+        item.setIconSclass(ICON_PLUS);
+        item.addEventListener(ON_CLICK, event -> {
+            try {
+                PortalPlugin plugin = portalPluginMap.get(PluginCatalog.PLUGIN_FILTER_LOG);
+                plugin.setSimpleParams(null);
+                plugin.execute(getPortalContext());
+            } catch (Exception e) {
+                LOGGER.error("Error in showing log filter", e);
+            }
+        });
+        popup.appendChild(item);
+    }
 
     private void addFullLogDiscoverModelMenuItem(Menupopup popup) {
         Menuitem item = new Menuitem();
         item.setLabel(Labels.getLabel("portal_full_log_discover_model"));
-        item.setImage("~./themes/ap/common/img/icons/filter.svg");
+        item.setImage("~./img/icon/svg/log_icon.svg");
         item.addEventListener(ON_CLICK, event -> {
             try {
                 PortalPlugin plugin = portalPluginMap.get(PluginCatalog.PLUGIN_DISCOVER_MODEL);
@@ -434,7 +454,12 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
                             (LogSummaryType) selections.iterator().next());
                     }
                     return;
-
+                case PluginCatalog.PLUGIN_FILTER_SUB_MENU:
+                    if (pluginAvailable(PluginCatalog.PLUGIN_FILTER_LOG)) {
+                        new FilterPopupLogSubMenuController(this, mainController, popup,
+                            (LogSummaryType) selections.iterator().next());
+                    }
+                    return;
                 case PluginCatalog.PLUGIN_APPLY_CALENDAR_SUB_MENU:
                     if (pluginAvailable(PluginCatalog.PLUGIN_CALENDAR)) {
                         new CalendarPopupLogSubMenuController(this, mainController, popup,
@@ -663,6 +688,6 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
     }
 
     private PortalContext getPortalContext() {
-        return (PortalContext) Sessions.getCurrent().getAttribute("portalContext");
+        return PortalContexts.getActivePortalContext();
     }
 }

@@ -229,11 +229,7 @@ public class BPMNExportController extends AbstractController {
         BpmnDefinitions.BpmnDefinitionsBuilder definitionsBuilder;
         Map<ContainableDirectedGraphElement, String> labelMapping;
         labelMapping = cleanDiagramBeforeExport(diagram);
-        if (!controller.getUserOptions().getBPMNMode()) {
-            definitionsBuilder = new BpmnDefinitions.BpmnDefinitionsBuilder(diagram); // recreate layout
-        } else {
-            definitionsBuilder = new BpmnDefinitions.BpmnDefinitionsBuilder(diagram, abs.getLayout().getGraphLayout());
-        }
+        definitionsBuilder = new BpmnDefinitions.BpmnDefinitionsBuilder(diagram); // recreate layout
 
         // Export to text
         BpmnDefinitions definitions = new BpmnDefinitions("definitions", definitionsBuilder);
@@ -326,7 +322,7 @@ public class BPMNExportController extends AbstractController {
 
                         // Derive process simulation data
                         SimulationData simulationData =
-                            controller.getProcessAnalyst().getSimulationData(bpmnAbstraction);
+                            controller.getProcessAnalyst().getSimulationData(bpmnAbstraction, controller.getUserOptions());
 
                         // Enrich the exported bpmn with process simulation info
                         minedModel = simulationInfoService.enrichWithSimulationInfo(minedModel, simulationData);
