@@ -108,6 +108,9 @@ public class ConfigBean {
     // Switch for publish model
     private boolean enableModelPublish;
 
+    // Switch for PD on new data layer
+    private boolean enableNewPD;
+
     // Maximum upload size
     private long maxUploadSize;
 
