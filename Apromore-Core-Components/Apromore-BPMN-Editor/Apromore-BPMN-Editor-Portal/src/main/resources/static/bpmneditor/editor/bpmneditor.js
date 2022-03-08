@@ -125320,6 +125320,7 @@ class ResizeTasks_ResizeTasks extends RuleProvider {
     this.addRule('shape.resize', Infinity, ({ shape, newBounds }) => {
       return (
         Object(ModelUtil["is"])(shape, 'bpmn:Task') ||
+        Object(ModelUtil["is"])(shape, 'bpmn:SubProcess') ||
         Object(ModelUtil["is"])(shape, 'bpmn:Gateway') ||
         Object(ModelUtil["is"])(shape, 'bpmn:Event') ||
         Object(ModelUtil["is"])(shape, 'bpmn:DataObject') ||
