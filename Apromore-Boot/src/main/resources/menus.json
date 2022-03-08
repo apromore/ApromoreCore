@@ -87,6 +87,9 @@
             },
             {
               "id": "org.apromore.ppm.portal.services.PredictorTrainerPortalPlugin"
+            },
+            {
+              "id": "org.apromore.ppm.portal.services.PredictionPortalPlugin"
             }
           ]
         },
@@ -187,6 +190,9 @@
             },
             {
               "id": "org.apromore.ppm.portal.services.PredictorTrainerPortalPlugin"
+            },
+            {
+              "id": "org.apromore.ppm.portal.services.PredictionPortalPlugin"
             },
             {
               "id": "SEPARATOR"

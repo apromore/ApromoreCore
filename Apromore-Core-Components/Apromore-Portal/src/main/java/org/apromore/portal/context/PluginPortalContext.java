@@ -38,6 +38,7 @@ import org.apromore.plugin.portal.PortalUI;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.model.FolderType;
+import org.apromore.portal.model.LogSummaryType;
 import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.UserType;
@@ -79,18 +80,7 @@ public class PluginPortalContext implements PortalContext {
 
     @Override
     public PortalSelection getSelection() {
-        return new PortalSelection() {
-            @Override
-            public Map<SummaryType, List<VersionSummaryType>> getSelectedProcessModelVersions() {
-                return mainController.getSelectedElementsAndVersions();
-            }
-
-            @Override
-            public Set<SummaryType> getSelectedProcessModels() {
-                return mainController.getSelectedElements();
-            }
-
-        };
+        return new PluginPortalSelection(mainController);
     }
 
     @Override
