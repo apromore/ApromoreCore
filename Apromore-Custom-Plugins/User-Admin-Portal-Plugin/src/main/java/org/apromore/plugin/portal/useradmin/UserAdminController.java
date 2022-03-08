@@ -1569,7 +1569,7 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
         }
 
         List<User> users = new ArrayList<>(nonAssignedUserRoleList.getSelection());
-        if (users != null && users.size() >= 1) {
+        if (!users.isEmpty()) {
             for (User user : users) {
                 assignedUserRoleModel.add(user);
                 nonAssignedUserRoleModel.remove(user);
@@ -1590,7 +1590,7 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
             return;
         }
         List<User> users = new ArrayList<>(assignedUserRoleList.getSelection());
-        if (users != null && users.size() >= 1) {
+        if (!users.isEmpty()) {
             for (User user : users) {
                 nonAssignedUserRoleModel.add(user);
                 assignedUserRoleModel.remove(user);
