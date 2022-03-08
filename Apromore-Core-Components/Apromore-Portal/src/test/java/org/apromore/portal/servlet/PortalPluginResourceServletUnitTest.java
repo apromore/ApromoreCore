@@ -67,7 +67,6 @@ class PortalPluginResourceServletUnitTest {
      * @param expectedContent  the content of the test file, always actually ASCII text
      * @param expectedContentType  the MIME type indicated by the test file's extension
      */
-	@Disabled 
     @ParameterizedTest
     @CsvSource({"/test-icon.svg,             FAKE SVG CONTENT,   image/svg+xml",
                 "/test-icon.png,             FAKE PNG CONTENT,   image/png",
