@@ -67,6 +67,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
+import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.metainfo.PageDefinition;
 import org.zkoss.zk.ui.select.SelectorComposer;
@@ -90,11 +91,15 @@ import org.zkoss.zul.Window;
 
 public class UserAdminController extends SelectorComposer<Window> implements LabelSupplier {
 
+    private static final int KEY_CTRL_A_LO = 65;
+    private static final int KEY_CTRL_A_BG = 97;
+
     private static final String NO_PERMISSION_TO_ALLOCATE_USER = "noPermissionAllocateUserToGroup_message";
     private static final String DELETE_PROMPT_MESSAGE = "deletePrompt_message";
     private static final String TOGGLE_CLICK_EVENT_NAME = "onToggleClick";
     private static final String SWITCH_TAB_EVENT_NAME = "onSwitchTab";
     private static final String ROLE_PERMISSION_WINDOW = "zul/edit-role-permission.zul";
+    private static final List<String> CO_SELECTABLE_ROLES = Collections.singletonList("ROLE_INTEGRATOR");
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(UserAdminController.class);
     private Map<String, String> roleMap = new HashMap<>() {
         {
@@ -366,7 +371,7 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
 
         // Roles tab
         List<RoleModel> roleModels = securityService.getAllRoles().stream()
-            .map(r -> new RoleModel(r, roleMap.getOrDefault(r.getName(), r.getName()))).collect(
+            .map(r -> new RoleModel(r, getDisplayRoleName(r.getName()))).collect(
                 Collectors.toList());
         roleModel = new ListModelList<>(roleModels, false);
         roleModel.setMultiple(true);
@@ -627,7 +632,7 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
 
     private void refreshRoles() {
         List<RoleModel> roleModels = securityService.getAllRoles().stream()
-            .map(r -> new RoleModel(r, roleMap.getOrDefault(r.getName(), r.getName()))).collect(
+            .map(r -> new RoleModel(r, getDisplayRoleName(r.getName()))).collect(
                 Collectors.toList());
         roleModel = new ListModelList<>(roleModels, false);
         roleList.setSourceListModel(roleModel);
@@ -648,9 +653,9 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
         for (int i = 0; i < roles.size(); i++) {
             Role role = roles.get(i);
             String roleName = role.getName();
-            boolean coSelectable = "ROLE_INTEGRATOR".equals(roleName);
+            boolean coSelectable = CO_SELECTABLE_ROLES.contains(roleName);
             assignedRoleModel
-                .add(new TristateModel(roleMap.getOrDefault(roleName, roleName), roleName, role,
+                .add(new TristateModel(getDisplayRoleName(roleName), roleName, role,
                     TristateModel.UNCHECKED, false, coSelectable));
         }
         assignedRoleModel.setMultiple(true);
@@ -925,7 +930,7 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
             nonAssignedUserRoleModel = new ListModelList<>();
             setRoleDetailReadOnly(true);
         } else {
-            String roleName = roleMap.getOrDefault(role.getName(), role.getName());
+            String roleName = getDisplayRoleName(role.getName());
             roleNameTextbox.setValue(roleName);
             roleDetail.setValue(MessageFormat.format(getLabel("roleRoleNameTitle_text"), roleName));
             List<User> assignedUsers = new ArrayList<>(role.getUsers());
@@ -1562,7 +1567,17 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
             Notification.error(getLabel("noPermissionAssignRoles_message"));
             return;
         }
-        Notification.info("Assign roles coming soon!");
+
+        List<User> users = new ArrayList<>(nonAssignedUserRoleList.getSelection());
+        if (!users.isEmpty()) {
+            for (User user : users) {
+                assignedUserRoleModel.add(user);
+                nonAssignedUserRoleModel.remove(user);
+                nonAssignedUserRoleList.reset();
+                assignedUserRoleList.reset();
+            }
+            isRoleDetailDirty = true;
+        }
     }
 
     @Listen("onClick = #retractUserRoleBtn")
@@ -1574,7 +1589,16 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
             Notification.error(getLabel("noPermissionAssignRoles_message"));
             return;
         }
-        Notification.info("Retract roles coming soon!");
+        List<User> users = new ArrayList<>(assignedUserRoleList.getSelection());
+        if (!users.isEmpty()) {
+            for (User user : users) {
+                nonAssignedUserRoleModel.add(user);
+                assignedUserRoleModel.remove(user);
+                nonAssignedUserRoleList.reset();
+                assignedUserRoleList.reset();
+            }
+            isRoleDetailDirty = true;
+        }
     }
 
     @Listen("onClick = #roleAddBtn")
@@ -1645,7 +1669,7 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
             arg.put("securityService", securityService);
             arg.put("mode", "VIEW");
             arg.put("role", selectedRole);
-            arg.put("roleLabel", roleMap.getOrDefault(selectedRole.getName(), selectedRole.getName()));
+            arg.put("roleLabel", getDisplayRoleName(selectedRole.getName()));
             Window window = (Window) Executions.getCurrent()
                 .createComponents(getPageDefinition(ROLE_PERMISSION_WINDOW), getSelf(), arg);
             window.doModal();
@@ -1727,7 +1751,7 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
         int count = 1;
         Role clonedRole = new Role();
         //Set unique role name
-        String baseRoleName = roleMap.getOrDefault(originalRole.getName(), originalRole.getName());
+        String baseRoleName = getDisplayRoleName(originalRole.getName());
         String clonedRoleName = String.format(duplicateRoleNameFormat, baseRoleName, count);
         while (securityService.findRoleByName(clonedRoleName) != null) {
             clonedRoleName = String.format(duplicateRoleNameFormat, baseRoleName, ++count);
@@ -1748,19 +1772,73 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
         if (!hasPermission(Permissions.EDIT_ROLES)) {
             Notification.error(getLabel("noPermissionEditRole_message"));
             return;
-        } else if (isDefaultRole(selectedRole)) {
-            Notification.error(getLabel("noEditDefaultRole_message"));
+        }
+
+        if (CO_SELECTABLE_ROLES.contains(selectedRole.getName())) {
+            saveUserRoleChanges();
             return;
         }
+
+        ListModelList<User> assignedUsers = assignedUserRoleList.getListModel();
+        List<String> unChangedRoles = new ArrayList<>(CO_SELECTABLE_ROLES);
+        unChangedRoles.add(selectedRole.getName());
+        for (User u : assignedUsers) {
+            Set<Role> userRoles = securityService.findRolesByUser(u);
+            //Show a confirmation message if the any user will be removed from a role.
+            if (!userRoles.isEmpty() && userRoles.stream().anyMatch(r -> !unChangedRoles.contains(r.getName()))) {
+                confirmSaveRole();
+                return;
+            }
+        }
+        saveUserRoleChanges();
+    }
+
+    private void confirmSaveRole() {
+        String displayRoleName = getDisplayRoleName(selectedRole.getName());
+        Messagebox.show(
+            MessageFormat.format(getLabel("confirmChangeRole_message"), displayRoleName),
+            dialogTitle,
+            new Messagebox.Button[] {Messagebox.Button.YES, Messagebox.Button.NO, Messagebox.Button.CANCEL},
+            Messagebox.QUESTION,
+            e -> {
+                String buttonName = e.getName();
+                if (Messagebox.ON_YES.equals(buttonName)) {
+                    saveUserRoleChanges();
+                }
+            }
+        );
+    }
+
+    private void saveUserRoleChanges() {
+        //Update assigned user roles
         ListModelList<User> listModel = assignedUserRoleList.getListModel();
         Set<User> users = new HashSet<>(listModel);
-        selectedRole.setName(roleNameTextbox.getValue());
+
+        if (!CO_SELECTABLE_ROLES.contains(selectedRole.getName())) {
+            for (User u : users) {
+                Set<Role> userRoles = securityService.findRolesByUser(u);
+                //Remove the newly assigned users from their non-integrator roles before reassigning
+                if (!userRoles.isEmpty()
+                    && userRoles.stream().noneMatch(r -> selectedRole.getName().equals(r.getName()))) {
+                    userRoles.removeIf(r -> !CO_SELECTABLE_ROLES.contains(r.getName()));
+                    u.setRoles(userRoles);
+                    securityService.updateUser(u);
+                }
+            }
+        }
+
+        //Add and remove users to the selected role
         selectedRole.setUsers(users);
+        //Only update the names of non-default roles
+        if (!isDefaultRole(selectedRole)) {
+            selectedRole.setName(roleNameTextbox.getValue());
+        }
 
         try {
             securityService.updateRole(selectedRole);
+            String displayRoleName = getDisplayRoleName(selectedRole.getName());
             Notification.info(
-                MessageFormat.format(getLabel("updatedRoleDetails_message"), selectedRole.getName()));
+                MessageFormat.format(getLabel("updatedRoleDetails_message"), displayRoleName));
             isRoleDetailDirty = false;
             refreshRoles();
             refreshAssignedRoles();
@@ -1769,6 +1847,16 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
             LOGGER.error(e.getMessage(), e);
             Messagebox.show(getLabel("failedUpdateRole_message"));
         }
+    }
+
+    @Listen("onCtrlKey = #nonAssignedUserRoleListbox")
+    public void onCtrlKeyNonAssignedUserRoleListbox(KeyEvent keyEvent) {
+        handleAssignedUserListboxCtrlKeyEvent(nonAssignedUserRoleList, keyEvent);
+    }
+
+    @Listen("onCtrlKey = #assignedUserRoleListbox")
+    public void onCtrlKeyAssignedUserRoleListbox(KeyEvent keyEvent) {
+        handleAssignedUserListboxCtrlKeyEvent(assignedUserRoleList, keyEvent);
     }
 
     @Listen("onClick = #userSelectAllBtn")
@@ -1861,6 +1949,21 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
 
     private boolean isDefaultRole(Role role) {
         return roleMap.containsKey(role.getName());
+    }
+
+    private String getDisplayRoleName(String originalName) {
+        return roleMap.getOrDefault(originalName, originalName);
+    }
+
+    private void handleAssignedUserListboxCtrlKeyEvent(AssignedUserListbox listbox, KeyEvent keyEvent) {
+        switch (keyEvent.getKeyCode()) {
+            case KEY_CTRL_A_LO:
+            case KEY_CTRL_A_BG:
+                selectBulk(listbox, true);
+                break;
+            default:
+                LOGGER.error("Unsupported Ctrl key");
+        }
     }
 
 }
