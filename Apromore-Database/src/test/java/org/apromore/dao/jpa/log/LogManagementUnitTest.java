@@ -125,4 +125,33 @@ public class LogManagementUnitTest extends BaseTestClass {
 	
     }
 
+	@Test
+	public void testSaveLogWithFileUploadId()
+	{
+//	Given
+		Log log=new Log();
+		log.setDomain("testDomain");
+		log.setName("testName");
+		log.setFilePath("testFilePath");
+		log.setFileUploadId("abc12546");
+		Storage logStorage= new Storage();
+		logStorage.setPrefix("log");
+		logStorage.setKey("20201222183534890_CallcenterExample.xes.gz");
+		logStorage.setStoragePath("FILE::test");
+
+		logStorage=storageRepository.saveAndFlush(logStorage);
+
+		log.setStorage(logStorage);
+
+//	When
+		log=logRepository.saveAndFlush(log);
+//	Then
+		assertThat(log.getId()).isNotNull();
+		assertThat(log.getFileUploadId()).isNotNull();
+		assertThat(log.getFileUploadId()).isEqualTo("abc12546");
+		assertThat(log.getStorage().getId()).isNotNull();
+
+	}
+
+
 }
