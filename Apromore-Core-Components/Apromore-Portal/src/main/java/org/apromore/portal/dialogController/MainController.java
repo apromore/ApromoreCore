@@ -713,7 +713,7 @@ public class MainController extends BaseController implements MainControllerInte
                     requestParameterTypes);
             UserSessionManager.setEditSession(id, session);
 
-            String url = "openModelInBPMNio.zul?id=" + id;
+            String url = "openModelInBPMNio.zul?id=" + id + "&REFER_ID="+ Executions.getCurrent().getDesktop().getId();
             if (newProcess)
                 url += "&newProcess=true";
             instruction += "window.open('" + url + "');";

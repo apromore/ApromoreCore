@@ -26,6 +26,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.DayOfWeek;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -39,7 +40,6 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.io.IOUtils;
-import org.apromore.commons.datetime.DateTimeUtils;
 import org.apromore.processsimulation.dto.EdgeFrequency;
 import org.apromore.processsimulation.dto.SimulationData;
 import org.apromore.processsimulation.model.Currency;
@@ -69,7 +69,7 @@ public class TestHelper {
             .id("some_random_guid")
             .errors(Errors.builder().build())
             .currency(Currency.EUR)
-            .startDateTime(DateTimeUtils.toZonedDateTime(1577797200000L).toOffsetDateTime().toString())
+            .startDateTime(Instant.ofEpochMilli(1577797200000L).toString())
             .processInstances(100)
             .arrivalRateDistribution(
                 Distribution.builder()
@@ -150,7 +150,7 @@ public class TestHelper {
             .resourceCount(23)
             .startTime(1577797200000L)
             .endTime(1580475600000L)
-            .nodeWeights(Map.of("node1",34340.00, "node2", 56560.00, "node3", 89890.00))
+            .nodeWeights(Map.of("node1", 34340.00, "node2", 56560.00, "node3", 89890.00))
             .resourceCountByRole(Map.of("Role_1", 5, "Role_2", 10, "Role_3", 15))
             .nodeIdToRoleName(Map.of("node1", "Role_1", "node2", "Role_2", "node3", "Role_3"))
             .edgeFrequencies(Map.of("node9", List.of(
