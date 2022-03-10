@@ -24,7 +24,6 @@
  */
 package org.apromore.service.impl;
 
-import org.apache.commons.io.IOUtils;
 import org.apromore.aop.Event;
 import org.apromore.aop.HistoryEnum;
 import org.apromore.common.Constants;
@@ -717,13 +716,6 @@ public class ProcessServiceImpl implements ProcessService {
     processBranchRepo.save(branch);
 
     deleteProcessModelVersion(pvidToDelete);
-//
-//    // Delete corresponding draft version of current user
-//    ProcessModelVersion draft = getProcessModelVersionByUser(pvidToDelete.getProcessBranch().getProcess().getId(),
-//            DRAFT_BRANCH_NAME, pvidToDelete.getVersionNumber(), user.getId());
-//    if (draft != null) {
-//      deleteProcessModelVersion(draft);
-//    }
   }
 
   private ProcessModelVersion getPreviousVersion(List<ProcessModelVersion> pmvs,
