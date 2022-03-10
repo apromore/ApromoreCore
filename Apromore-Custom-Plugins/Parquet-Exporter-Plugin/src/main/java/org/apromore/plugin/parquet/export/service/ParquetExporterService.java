@@ -101,7 +101,7 @@ public class ParquetExporterService extends AbstractParquetProducer {
     }
 
     public List<List<ParquetCell>> getParquetRows() {
-        initRows(false);
+        initRows();
         return parquetRows;
     }
 
@@ -114,7 +114,7 @@ public class ParquetExporterService extends AbstractParquetProducer {
             return false;
         }
 
-        initRows(true);
+        initRows();
         String charsetVal = encodeOptions.stream()
                 .filter(EncodeOption::isSelected)
                 .map(EncodeOption::getValue)
@@ -208,48 +208,13 @@ public class ParquetExporterService extends AbstractParquetProducer {
         return col.isChecked();
     }
 
-    private void initRows(boolean fullLoad) {
+    private void initRows() {
         parquetRows.clear();
 
         int size = Math.min(apmLogWrapper.getAPMLog().size(), 50);
-
-        if (fullLoad) {
-            size = apmLogWrapper.getAPMLog().getActivityInstances().size();
-        }
-
         List<ActivityInstance> activityInstances = apmLogWrapper.getAPMLog().getActivityInstances().subList(0, size);
 
-        for (ActivityInstance ai : activityInstances) {
-            ATrace trace = getTrace(ai.getMutableTraceIndex());
-            String caseId = trace.getCaseId();
-            long startTime = ai.getStartTime();
-            long endTtime = ai.getEndTime();
-            String startTimestamp = Util.timestampStringOf(Util.millisecondToZonedDateTime(startTime));
-            String endTimestamp = Util.timestampStringOf(Util.millisecondToZonedDateTime(endTtime));
-
-            List<ParquetCell> cells = new ArrayList<>();
-
-            cells.add(new ParquetCell(CASE_ID, caseId, isChecked(CASE_ID)));
-            cells.add(new ParquetCell(START_TIMESTAMP, startTimestamp, isChecked(START_TIMESTAMP)));
-            cells.add(new ParquetCell(END_TIMESTAMP, endTimestamp, isChecked(END_TIMESTAMP)));
-            cells.add(new ParquetCell(START_TIME, startTime, isChecked(START_TIME)));
-            cells.add(new ParquetCell(END_TIME, endTtime, isChecked(END_TIME)));
-            cells.add(new ParquetCell(TIMESTAMP, endTtime, isChecked(TIMESTAMP)));
-
-            for (ParquetCol parquetCol : caseAttributes) {
-                Object val = trace.getAttributes().get(parquetCol.getValue());
-                ParquetCell cell = new ParquetCell(parquetCol.getValue(), val, isChecked(parquetCol.getValue()));
-                cells.add(cell);
-            }
-
-            for (ParquetCol parquetCol : eventAttributes) {
-                Object val = ai.getAttributeValue(parquetCol.getValue());
-                ParquetCell cell = new ParquetCell(parquetCol.getValue(), val, isChecked(parquetCol.getValue()));
-                cells.add(cell);
-            }
-
-            parquetRows.add(cells);
-        }
+        parquetRows.addAll(createRows(activityInstances));
     }
 
     private ATrace getTrace(int index) {
@@ -342,11 +307,32 @@ public class ParquetExporterService extends AbstractParquetProducer {
                 .findFirst().orElse("");
     }
 
+    public Path saveParquetFile(String chartSet,String logFileName) {
+        try {
+            if (!isDownloadAllowed()) {
+                return null;
+            }
+            initRows();
+            String charsetVal = encodeOptions.stream()
+                    .filter(item -> item.getValue().equals(chartSet))
+                    .map(EncodeOption::getValue)
+                    .findFirst().orElse(UTF8);
+            String filename = getValidParquetLabel(logFileName) + PARQUET_EXT;
+            Schema schema = getSchema(charsetVal);
+            return ParquetExport.writeAndReturnParquetFilePath(filename, getData(schema), schema);
+        }catch(Exception ex){
+            LoggerUtil.getLogger(ParquetExporterService.class).error("Failed to generate parquet file", ex);
+        }
+        return null;
+    }
+
     private List<GenericData.Record> getData(Schema schema) {
 
         List<GenericData.Record> data = new ArrayList<>();
 
-        for (List<ParquetCell> row : parquetRows) {
+        List<List<ParquetCell>> rows = createRows(apmLogWrapper.getAPMLog().getActivityInstances());
+
+        for (List<ParquetCell> row : rows) {
             GenericData.Record dataRecord = new GenericData.Record(schema);
             for (ParquetCell cell : row) {
                 if (cell.isEnabled()) {
@@ -359,22 +345,41 @@ public class ParquetExporterService extends AbstractParquetProducer {
         return data;
     }
 
-    public Path saveParquetFile(String chartSet,String logFileName) {
-       try {
-           if (!isDownloadAllowed()) {
-               return null;
-           }
-           initRows(false);
-           String charsetVal = encodeOptions.stream()
-               .filter(item -> item.getValue().equals(chartSet))
-               .map(EncodeOption::getValue)
-               .findFirst().orElse(UTF8);
-           String filename = getValidParquetLabel(logFileName) + PARQUET_EXT;
-           Schema schema = getSchema(charsetVal);
-           return ParquetExport.writeAndReturnParquetFilePath(filename, getData(schema), schema);
-       }catch(Exception ex){
-           LoggerUtil.getLogger(ParquetExporterService.class).error("Failed to generate parquet file", ex);
-       }
-       return null;
+    private List<List<ParquetCell>> createRows(List<ActivityInstance> activityInstances) {
+        List<List<ParquetCell>> rows = new ArrayList<>();
+
+        for (ActivityInstance ai : activityInstances) {
+            ATrace trace = getTrace(ai.getMutableTraceIndex());
+            String caseId = trace.getCaseId();
+            long startTime = ai.getStartTime();
+            long endTtime = ai.getEndTime();
+            String startTimestamp = Util.timestampStringOf(Util.millisecondToZonedDateTime(startTime));
+            String endTimestamp = Util.timestampStringOf(Util.millisecondToZonedDateTime(endTtime));
+
+            List<ParquetCell> cells = new ArrayList<>();
+
+            cells.add(new ParquetCell(CASE_ID, caseId, isChecked(CASE_ID)));
+            cells.add(new ParquetCell(START_TIMESTAMP, startTimestamp, isChecked(START_TIMESTAMP)));
+            cells.add(new ParquetCell(END_TIMESTAMP, endTimestamp, isChecked(END_TIMESTAMP)));
+            cells.add(new ParquetCell(START_TIME, startTime, isChecked(START_TIME)));
+            cells.add(new ParquetCell(END_TIME, endTtime, isChecked(END_TIME)));
+            cells.add(new ParquetCell(TIMESTAMP, endTtime, isChecked(TIMESTAMP)));
+
+            for (ParquetCol parquetCol : caseAttributes) {
+                Object val = trace.getAttributes().get(parquetCol.getValue());
+                ParquetCell cell = new ParquetCell(parquetCol.getValue(), val, isChecked(parquetCol.getValue()));
+                cells.add(cell);
+            }
+
+            for (ParquetCol parquetCol : eventAttributes) {
+                Object val = ai.getAttributeValue(parquetCol.getValue());
+                ParquetCell cell = new ParquetCell(parquetCol.getValue(), val, isChecked(parquetCol.getValue()));
+                cells.add(cell);
+            }
+
+            rows.add(cells);
+        }
+
+        return rows;
     }
 }
