@@ -34,6 +34,7 @@ import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.DayOfWeek;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -48,7 +49,6 @@ import javax.xml.bind.Marshaller;
 import lombok.extern.slf4j.Slf4j;
 import org.apromore.calendar.builder.CalendarModelBuilder;
 import org.apromore.calendar.model.CalendarModel;
-import org.apromore.commons.datetime.DateTimeUtils;
 import org.apromore.processsimulation.config.SimulationInfoConfig;
 import org.apromore.processsimulation.dto.EdgeFrequency;
 import org.apromore.processsimulation.dto.SimulationData;
@@ -143,7 +143,8 @@ public class SimulationInfoService {
 
         builder.processInstances(simulationData.getCaseCount())
             .currency(Currency.valueOf(config.getDefaultCurrency().toUpperCase(DOCUMENT_LOCALE)))
-            .startDateTime(DateTimeUtils.toZonedDateTime(simulationData.getStartTime()).toOffsetDateTime().toString())
+            .startDateTime(
+                Instant.ofEpochMilli(simulationData.getStartTime()).toString())
             .arrivalRateDistribution(
                 Distribution.builder()
                     .timeUnit(timeUnit)

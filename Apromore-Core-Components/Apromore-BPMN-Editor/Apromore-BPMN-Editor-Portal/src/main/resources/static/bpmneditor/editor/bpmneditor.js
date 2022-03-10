@@ -69164,11 +69164,11 @@ module.exports = {
   'timeslot.endTime': 'End time',
   'timeslot.details': 'Timeslot details',
 
-  'resources.label': 'Resources',
+  'resources.label': 'Resource pools',
   'defaultResource.name': 'Default resource',
   'resource': 'Resource',
-  'resource.timetable': 'Resource timetable',
-  'resource.name': 'Resource name',
+  'resource.timetable': 'Resource pool timetable',
+  'resource.name': 'Resource pool name',
   'resource.totalAmount': 'Number of resources',
   'resource.costPerHour': 'Cost per hour',
 
