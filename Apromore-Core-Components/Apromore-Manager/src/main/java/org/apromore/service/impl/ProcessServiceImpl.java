@@ -630,14 +630,14 @@ public class ProcessServiceImpl implements ProcessService {
             // Delete the process and branch if there's only one model version
             ProcessBranch branch = pvid.getProcessBranch();
             List<ProcessModelVersion> pmvs = pvid.getProcessBranch().getProcessModelVersions();
-            deleteProcessModelVersion(pmvs, pvid, branch, user);
+            deleteProcessModelVersion(pmvs, pvid, branch);
 
             // Delete corresponding draft version of current user
             ProcessModelVersion draft = getProcessModelVersionByUser(pvid.getProcessBranch().getProcess().getId(),
                     DRAFT_BRANCH_NAME, pvid.getVersionNumber(), user.getId());
             ProcessBranch draftBranch = draft.getProcessBranch();
             List<ProcessModelVersion> draft_pmvs = draftBranch.getProcessModelVersions();
-            deleteProcessModelVersion(draft_pmvs, draft, draftBranch, user);
+            deleteProcessModelVersion(draft_pmvs, draft, draftBranch);
 
             LOGGER.debug("Main branch has {} versions", pvid.getProcessBranch().getProcessModelVersions().size());
             // Delete the process only when main branch is empty
@@ -706,7 +706,7 @@ public class ProcessServiceImpl implements ProcessService {
   }
 
   private void deleteProcessModelVersion(List<ProcessModelVersion> pmvs,
-      ProcessModelVersion pvidToDelete, ProcessBranch branch, User user) throws ExceptionDao {
+      ProcessModelVersion pvidToDelete, ProcessBranch branch) throws ExceptionDao {
     ProcessModelVersion newCurrent = getPreviousVersion(pmvs, pvidToDelete);
     if (newCurrent == null) {
       newCurrent = getNextVersion(pmvs, pvidToDelete);
