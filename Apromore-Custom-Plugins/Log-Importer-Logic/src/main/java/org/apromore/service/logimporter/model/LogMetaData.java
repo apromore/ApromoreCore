@@ -24,6 +24,7 @@
 package org.apromore.service.logimporter.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import lombok.Data;
@@ -51,6 +52,9 @@ public class LogMetaData {
     private int rolePos = HEADER_ABSENT;
     private List<Integer> caseAttributesPos;
     private List<Integer> eventAttributesPos;
+    private List<Integer> stringAttributesPos = Arrays.asList(4, 5, 6, 11, 13, 14, 15); //TODO: Remove hardcode
+    private List<Integer> numberAttributesPos = Arrays.asList(2, 3, 7, 8, 9, 10, 16);   //TODO: Remove hardcode
+    private List<Integer> timestampAttributesPos = new ArrayList<>();                   //TODO: Remove hardcode
     /**
      * store position as key and format as value.
      */
