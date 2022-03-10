@@ -24,6 +24,7 @@
  */
 package org.apromore.service.impl;
 
+import org.apache.commons.io.IOUtils;
 import org.apromore.aop.Event;
 import org.apromore.aop.HistoryEnum;
 import org.apromore.common.Constants;
@@ -631,6 +632,14 @@ public class ProcessServiceImpl implements ProcessService {
             ProcessBranch branch = pvid.getProcessBranch();
             List<ProcessModelVersion> pmvs = pvid.getProcessBranch().getProcessModelVersions();
             deleteProcessModelVersion(pmvs, pvid, branch, user);
+
+            // Delete corresponding draft version of current user
+            ProcessModelVersion draft = getProcessModelVersionByUser(pvid.getProcessBranch().getProcess().getId(),
+                    DRAFT_BRANCH_NAME, pvid.getVersionNumber(), user.getId());
+            ProcessBranch draftBranch = draft.getProcessBranch();
+            List<ProcessModelVersion> draft_pmvs = draftBranch.getProcessModelVersions();
+            deleteProcessModelVersion(draft_pmvs, draft, draftBranch, user);
+
             LOGGER.debug("Main branch has {} versions", pvid.getProcessBranch().getProcessModelVersions().size());
             // Delete the process only when main branch is empty
             if (pvid.getProcessBranch().getProcessModelVersions().isEmpty()) {
@@ -708,13 +717,13 @@ public class ProcessServiceImpl implements ProcessService {
     processBranchRepo.save(branch);
 
     deleteProcessModelVersion(pvidToDelete);
-
-    // Delete corresponding draft version of current user
-    ProcessModelVersion draft = getProcessModelVersionByUser(pvidToDelete.getProcessBranch().getProcess().getId(),
-            DRAFT_BRANCH_NAME, pvidToDelete.getVersionNumber(), user.getId());
-    if (draft != null) {
-      deleteProcessModelVersion(draft);
-    }
+//
+//    // Delete corresponding draft version of current user
+//    ProcessModelVersion draft = getProcessModelVersionByUser(pvidToDelete.getProcessBranch().getProcess().getId(),
+//            DRAFT_BRANCH_NAME, pvidToDelete.getVersionNumber(), user.getId());
+//    if (draft != null) {
+//      deleteProcessModelVersion(draft);
+//    }
   }
 
   private ProcessModelVersion getPreviousVersion(List<ProcessModelVersion> pmvs,
