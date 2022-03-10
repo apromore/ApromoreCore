@@ -101,7 +101,7 @@ public class ParquetExporterService extends AbstractParquetProducer {
     }
 
     public List<List<ParquetCell>> getParquetRows() {
-        initRows(false);
+        initRows();
         return parquetRows;
     }
 
@@ -114,7 +114,7 @@ public class ParquetExporterService extends AbstractParquetProducer {
             return false;
         }
 
-        initRows(true);
+        initRows();
         String charsetVal = encodeOptions.stream()
                 .filter(EncodeOption::isSelected)
                 .map(EncodeOption::getValue)
@@ -208,7 +208,7 @@ public class ParquetExporterService extends AbstractParquetProducer {
         return col.isChecked();
     }
 
-    private void initRows(boolean fullLoad) {
+    private void initRows() {
         parquetRows.clear();
 
         int size = Math.min(apmLogWrapper.getAPMLog().size(), 50);
@@ -312,7 +312,7 @@ public class ParquetExporterService extends AbstractParquetProducer {
             if (!isDownloadAllowed()) {
                 return null;
             }
-            initRows(false);
+            initRows();
             String charsetVal = encodeOptions.stream()
                     .filter(item -> item.getValue().equals(chartSet))
                     .map(EncodeOption::getValue)
