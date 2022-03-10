@@ -57442,11 +57442,11 @@ module.exports = {
   'timeslot.endTime': 'End time',
   'timeslot.details': 'Timeslot details',
 
-  'resources.label': 'Resource pools',
+  'resources.label': 'Resources',
   'defaultResource.name': 'Default resource',
   'resource': 'Resource',
-  'resource.timetable': 'Resource pool timetable',
-  'resource.name': 'Resource pool name',
+  'resource.timetable': 'Resource timetable',
+  'resource.name': 'Resource name',
   'resource.totalAmount': 'Number of resources',
   'resource.costPerHour': 'Cost per hour',
 
@@ -113598,6 +113598,7 @@ class ResizeTasks_ResizeTasks extends RuleProvider {
     this.addRule('shape.resize', Infinity, ({ shape, newBounds }) => {
       return (
         Object(ModelUtil["is"])(shape, 'bpmn:Task') ||
+        Object(ModelUtil["is"])(shape, 'bpmn:SubProcess') ||
         Object(ModelUtil["is"])(shape, 'bpmn:Gateway') ||
         Object(ModelUtil["is"])(shape, 'bpmn:Event') ||
         Object(ModelUtil["is"])(shape, 'bpmn:DataObject') ||

@@ -655,7 +655,30 @@ public class UserMetadataServiceImpl implements UserMetadataService {
                                            String username) throws UserNotFoundException {
 
         User user = userSrv.findUserByLogin(username);
+        Usermetadata userMetadata = buildUserMetadataFromContent(content, userMetadataTypeEnum, user);
+        userMetadataRepo.saveAndFlush(userMetadata);
+        LOGGER.info("User: {} create user metadata ID: {} TYPE: {}.", username,
+                userMetadata.getId(), userMetadataTypeEnum);
+    }
 
+    @Override
+    @Transactional
+    public List<Usermetadata> saveAllUserMetadataWithoutLog(List<String> contentList, UserMetadataTypeEnum userMetadataTypeEnum,
+                                           String username) throws UserNotFoundException {
+
+        User user = userSrv.findUserByLogin(username);
+        List<Usermetadata> usermetadataList = new ArrayList<>();
+
+        for (String content : contentList) {
+            usermetadataList.add(buildUserMetadataFromContent(content, userMetadataTypeEnum, user));
+        }
+
+        return userMetadataRepo.saveAll(usermetadataList);
+
+    }
+
+    private Usermetadata buildUserMetadataFromContent(String content, UserMetadataTypeEnum userMetadataTypeEnum,
+                                                      User user) {
         Usermetadata userMetadata = new Usermetadata();
 
         Set<GroupUsermetadata> groupUserMetadataSet = userMetadata.getGroupUserMetadata();
@@ -678,9 +701,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         userMetadata.setCreatedTime(dateFormat.format(new Date()));
         userMetadata.setContent(content);
 
-        userMetadataRepo.saveAndFlush(userMetadata);
-        LOGGER.info("User: {} create user metadata ID: {} TYPE: {}.", username,
-                userMetadata.getId(), UserMetadataTypeEnum.DASH_TEMPLATE.toString());
+        return userMetadata;
     }
 
     @Override
