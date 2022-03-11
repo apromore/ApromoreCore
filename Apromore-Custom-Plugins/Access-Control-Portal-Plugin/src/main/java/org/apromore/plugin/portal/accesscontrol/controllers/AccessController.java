@@ -98,7 +98,6 @@ import com.google.common.base.Strings;
 public class AccessController extends SelectorComposer<Div> {
 
   private static Logger LOGGER = PortalLoggerFactory.getLogger(AccessController.class);
-  private static boolean USE_STRICT_USER_ADDITION = true;
 
   @WireVariable("securityService")
   private SecurityService securityService;
@@ -118,6 +117,7 @@ public class AccessController extends SelectorComposer<Div> {
   private Boolean autoInherit = (Boolean) argMap.get("autoInherit");
   private Boolean showRelatedArtifacts = (Boolean) argMap.get("showRelatedArtifacts");
   Boolean enablePublish = (Boolean) argMap.get("enablePublish");
+  Boolean enableUsersList = (Boolean) argMap.getOrDefault("enableUsersList", false);
   private String userName;
 
   private Integer selectedItemId;
@@ -229,8 +229,8 @@ public class AccessController extends SelectorComposer<Div> {
     super.doAfterCompose(div);
     container = div;
 
-    candidateAssigneeTextbox.setVisible(USE_STRICT_USER_ADDITION);
-    candidateAssigneeCombobox.setVisible(!USE_STRICT_USER_ADDITION);
+    candidateAssigneeTextbox.setVisible(!enableUsersList);
+    candidateAssigneeCombobox.setVisible(enableUsersList);
     loadCandidateAssignee();
     setSelectedItem(selectedItem);
 
@@ -662,7 +662,7 @@ public class AccessController extends SelectorComposer<Div> {
 
   @Listen("onClick = #candidateAssigneeAdd")
   public void onClickCandidateUserAdd() {
-    if (USE_STRICT_USER_ADDITION) {
+    if (!enableUsersList) {
       String userName = candidateAssigneeTextbox.getValue();
       Assignee assignee = candidateAssigneeMap.get(userName);
       if (assignee != null) {
