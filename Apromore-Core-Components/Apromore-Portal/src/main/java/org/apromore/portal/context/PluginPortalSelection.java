@@ -30,8 +30,6 @@ import java.util.Map;
 import java.util.Set;
 import org.apromore.plugin.portal.PortalSelection;
 import org.apromore.portal.dialogController.MainController;
-import org.apromore.portal.model.LogSummaryType;
-import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.VersionSummaryType;
 
@@ -50,16 +48,6 @@ public class PluginPortalSelection implements PortalSelection {
     @Override
     public Set<SummaryType> getSelectedProcessModels() {
         return mainController.getSelectedElements();
-    }
-
-    @Override
-    public List<LogSummaryType> getSelectedEventLogs() {
-        return null;
-    }
-
-    @Override
-    public List<ProcessSummaryType> getSelectedBpmnModels() {
-        return null;
     }
 
     @Override

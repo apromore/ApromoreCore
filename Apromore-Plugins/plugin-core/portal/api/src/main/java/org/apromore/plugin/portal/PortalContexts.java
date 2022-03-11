@@ -80,8 +80,8 @@ public final class PortalContexts {
 
     public static PageDefinition getPageDefinition(String path) throws IOException {
         Execution current = Executions.getCurrent();
-        PageDefinition pageDefinition = current.getPageDefinitionDirectly(
-            new InputStreamReader(PageDefinition.class.getClassLoader().getResourceAsStream(path)), "zul");
-        return pageDefinition;
+        return current.getPageDefinitionDirectly(
+            new InputStreamReader(PageDefinition.class.getClassLoader().getResourceAsStream(path)), "zul"
+        );
     }
 }

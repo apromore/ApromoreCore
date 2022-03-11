@@ -49,16 +49,6 @@ public interface PortalSelection {
     Set<SummaryType> getSelectedProcessModels();
 
     /**
-     * @return the Set of currently selected event logs
-     */
-    List<LogSummaryType> getSelectedEventLogs();
-
-    /**
-     * @return the Set of currently selected process models
-     */
-    List<ProcessSummaryType> getSelectedBpmnModels();
-
-    /**
      * @return the Set of currently selected process models
      */
     List<SummaryType> getSelectedArtifacts();

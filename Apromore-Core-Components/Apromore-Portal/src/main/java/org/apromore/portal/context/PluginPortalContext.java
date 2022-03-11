@@ -26,9 +26,7 @@ package org.apromore.portal.context;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
 import org.apromore.plugin.portal.PortalContext;
@@ -38,11 +36,8 @@ import org.apromore.plugin.portal.PortalUI;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.model.FolderType;
-import org.apromore.portal.model.LogSummaryType;
 import org.apromore.portal.model.ProcessSummaryType;
-import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.UserType;
-import org.apromore.portal.model.VersionSummaryType;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
