@@ -367,13 +367,15 @@ public class ParquetExporterService extends AbstractParquetProducer {
 
             for (ParquetCol parquetCol : caseAttributes) {
                 Object val = trace.getAttributes().get(parquetCol.getValue());
-                ParquetCell cell = new ParquetCell(parquetCol.getValue(), val, isChecked(parquetCol.getValue()));
+                String valStr = val != null ? val.toString() : "";
+                ParquetCell cell = new ParquetCell(parquetCol.getValue(), valStr, isChecked(parquetCol.getValue()));
                 cells.add(cell);
             }
 
             for (ParquetCol parquetCol : eventAttributes) {
                 Object val = ai.getAttributeValue(parquetCol.getValue());
-                ParquetCell cell = new ParquetCell(parquetCol.getValue(), val, isChecked(parquetCol.getValue()));
+                String valStr = val != null ? val.toString() : "";
+                ParquetCell cell = new ParquetCell(parquetCol.getValue(), valStr, isChecked(parquetCol.getValue()));
                 cells.add(cell);
             }
 
