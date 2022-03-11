@@ -22,9 +22,14 @@
 
 package org.apromore.plugin.portal.useradmin;
 
+import java.text.MessageFormat;
+import java.util.Arrays;
 import java.util.EnumMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
 import org.apromore.dao.model.Permission;
 import org.apromore.dao.model.Role;
 import org.apromore.plugin.portal.PortalContext;
@@ -32,6 +37,7 @@ import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.model.PermissionType;
 import org.apromore.service.SecurityService;
 import org.apromore.zk.label.LabelSupplier;
+import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
@@ -49,6 +55,14 @@ import org.zkoss.zul.Window;
 public class EditRolePermissionController extends SelectorComposer<Window> implements LabelSupplier {
 
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(EditRolePermissionController.class);
+    private static final PermissionType[] MANAGE_USERS_PERMISSIONS = {
+        PermissionType.USERS_VIEW, PermissionType.USERS_EDIT,
+        PermissionType.GROUPS_EDIT, PermissionType.ROLES_EDIT};
+    private static final PermissionType[] UNCHECKED_CREATE_ROLE_PERMISSIONS = {
+        PermissionType.MODEL_DISCOVER_VIEW, PermissionType.FILTER_VIEW, PermissionType.DASH_VIEW};
+    private static final String CREATE_MODE = "CREATE";
+    private static final String EDIT_MODE = "EDIT";
+    private static final String VIEW_MODE = "VIEW";
 
     private final PortalContext portalContext =
         (PortalContext) Executions.getCurrent().getArg().get("portalContext");
@@ -62,6 +76,8 @@ public class EditRolePermissionController extends SelectorComposer<Window> imple
     private Textbox roleNameTextbox;
     @Wire
     private Button createBtn;
+    @Wire
+    private Button editBtn;
     @Wire
     private Checkbox rolePermissionModelCreate;
     @Wire
@@ -106,10 +122,12 @@ public class EditRolePermissionController extends SelectorComposer<Window> imple
     private Checkbox rolePermissionManageUsers;
 
     private Role role;
+    private String roleLabel;
 
     public EditRolePermissionController() {
         Map<String, Object> args = (Map<String, Object>) Executions.getCurrent().getArg();
         role = (Role) args.getOrDefault("role", createCustomRoleTemplate());
+        roleLabel = (String) args.get("roleLabel");
     }
 
     @Override
@@ -120,8 +138,9 @@ public class EditRolePermissionController extends SelectorComposer<Window> imple
     @Override
     public void doAfterCompose(Window win) throws Exception {
         super.doAfterCompose(win);
-        updateTitle(win);
         updatePermissionToggleMap();
+        populateFormWithRoleData();
+        displayFormInMode(win);
 
         permissionToggles.values().stream().distinct()
             .forEach(c -> c.addEventListener(Events.ON_CHECK, e -> updateButtons()));
@@ -155,6 +174,33 @@ public class EditRolePermissionController extends SelectorComposer<Window> imple
             EventQueues.lookup(SecurityService.EVENT_TOPIC, getSelf().getDesktop().getWebApp(), true)
                 .publish(new Event("Role Create", null, dataMap));
 
+            getSelf().detach();
+        } catch (Exception e) {
+            LOGGER.error("Unable to create role", e);
+            Messagebox.show(getLabel("failedCreateRole_message"));
+        }
+
+    }
+
+    @Listen("onClick = #editBtn")
+    public void onClickEditButton() {
+        boolean canEditRoles = securityService.hasAccess(portalContext.getCurrentUser().getId(),
+            PermissionType.ROLES_EDIT.getId());
+        if (!canEditRoles) {
+            Messagebox.show(getLabel("noPermissionCreateRole_message"));
+            return;
+        }
+
+        try {
+            updateRoleWithFormData();
+            securityService.updateRole(role);
+
+            //Publish create event
+            Map<String, String> dataMap = Map.of("type", "UPDATE_ROLE");
+            EventQueues.lookup(SecurityService.EVENT_TOPIC, getSelf().getDesktop().getWebApp(), true)
+                .publish(new Event("Role Update", null, dataMap));
+
+            Notification.info(MessageFormat.format(getLabel("updatedRoleDetails_message"), role.getName()));
             getSelf().detach();
         } catch (Exception e) {
             LOGGER.error("Unable to create role", e);
@@ -197,6 +243,20 @@ public class EditRolePermissionController extends SelectorComposer<Window> imple
         }
     }
 
+    @Listen("onCheck = #rolePermissionDashView")
+    public void onToggleDashView() {
+        if (rolePermissionDashView.isChecked()) {
+            rolePermissionDashFull.setChecked(false);
+        }
+    }
+
+    @Listen("onCheck = #rolePermissionDashFull")
+    public void onToggleDashEdit() {
+        if (rolePermissionDashFull.isChecked()) {
+            rolePermissionDashView.setChecked(false);
+        }
+    }
+
     /**
      * Create an empty role with login permission.
      *
@@ -214,8 +274,12 @@ public class EditRolePermissionController extends SelectorComposer<Window> imple
      * Enable/Disable buttons based on the selection.
      */
     private void updateButtons() {
-        boolean toggleOn = permissionToggles.values().stream().distinct().anyMatch(Checkbox::isChecked);
-        createBtn.setDisabled(!roleNameTextbox.isValid() || !toggleOn);
+        boolean anyToggleOn = permissionToggles.values().stream().distinct().anyMatch(Checkbox::isChecked);
+        if (CREATE_MODE.equals(mode)) {
+            createBtn.setDisabled(!roleNameTextbox.isValid() || !anyToggleOn);
+        } else if (EDIT_MODE.equals(mode)) {
+            editBtn.setDisabled(!roleNameTextbox.isValid() || !anyToggleOn);
+        }
     }
 
     /**
@@ -224,9 +288,29 @@ public class EditRolePermissionController extends SelectorComposer<Window> imple
      * @param win the window whose title will be updated.
      */
     private void updateTitle(Window win) {
-        if ("CREATE".equals(mode)) {
+        if (CREATE_MODE.equals(mode)) {
             win.setTitle(getLabel("createRoleTitle_text", "Create role"));
+        } else if (EDIT_MODE.equals(mode)) {
+            win.setTitle(getLabel("editRoleTitle_text", "Edit role"));
+        } else {
+            win.setTitle(getLabel("viewRoleTitle_text", "View role"));
         }
+    }
+
+    /**
+     * Update the form UI based on the mode.
+     *
+     * @param win the form window.
+     */
+    private void displayFormInMode(Window win) {
+        updateTitle(win);
+
+        createBtn.setVisible(CREATE_MODE.equals(mode));
+        editBtn.setVisible(EDIT_MODE.equals(mode));
+
+        permissionToggles.values().stream().distinct()
+            .forEach(c -> c.setDisabled(!CREATE_MODE.equals(mode) && !EDIT_MODE.equals(mode)));
+        roleNameTextbox.setReadonly(!CREATE_MODE.equals(mode) && !EDIT_MODE.equals(mode));
     }
 
     /**
@@ -260,6 +344,40 @@ public class EditRolePermissionController extends SelectorComposer<Window> imple
     }
 
     /**
+     * Update the role permission form based on the role object.
+     */
+    private void populateFormWithRoleData() {
+        if (EDIT_MODE.equals(mode) || VIEW_MODE.equals(mode)) {
+            //Update role name textbox
+            if (!StringUtils.isEmpty(roleLabel)) {
+                roleNameTextbox.setValue(roleLabel);
+            } else if (!StringUtils.isEmpty(role.getName())) {
+                roleNameTextbox.setValue(role.getName());
+            }
+
+            //Update toggles with existing permissions
+            role.setPermissions(new HashSet<>(securityService.getRolePermissions(role.getName())));
+            Set<PermissionType> permissionTypes = role.getPermissions().stream()
+                .map(p -> PermissionType.getPermissionTypeById(p.getRowGuid()))
+                .collect(Collectors.toSet());
+
+            for (PermissionType permissionType : permissionTypes) {
+                if (permissionToggles.containsKey(permissionType)) {
+                    permissionToggles.get(permissionType).setChecked(true);
+                }
+            }
+
+            //Only set manage users as checked if the user has all relevant permissions
+            boolean manageUsersPermission = permissionTypes.containsAll(Arrays.asList(MANAGE_USERS_PERMISSIONS));
+            rolePermissionManageUsers.setChecked(manageUsersPermission);
+        } else if (CREATE_MODE.equals(mode)) {
+            permissionToggles.forEach((permissionType, checkbox) ->
+                checkbox.setChecked(!Arrays.asList(UNCHECKED_CREATE_ROLE_PERMISSIONS).contains(permissionType))
+            );
+        }
+    }
+
+    /**
      * Update the role object based on the state of the form.
      */
     private void updateRoleWithFormData() {
@@ -270,7 +388,11 @@ public class EditRolePermissionController extends SelectorComposer<Window> imple
         permissionToggles.forEach((permissionType, checkbox) -> {
             if (checkbox.isChecked()
                 && permissions.stream().noneMatch(p -> permissionType.getId().equals(p.getRowGuid()))) {
+                //Add checked permissions if not in the permission set
                 permissions.add(securityService.getPermission(permissionType.getName()));
+            } else if (!checkbox.isChecked()) {
+                //Remove unchecked permissions from the permission set
+                permissions.removeIf(p -> permissionType.getId().equals(p.getRowGuid()));
             }
         });
     }

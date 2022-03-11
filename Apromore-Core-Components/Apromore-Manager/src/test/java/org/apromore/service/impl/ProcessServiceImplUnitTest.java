@@ -1111,6 +1111,12 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
         addProcessModelVersions(branch, pmv10, pmv11);
         GroupProcess groupProcess = createGroupProcess(group, process, true, true, true);
 
+        ProcessBranch draftBranch = createDraftBranch(process);
+        Storage draftStorage = createStorage();
+        ProcessModelVersion draft_pmv10 = createPMV(draftBranch, existingNativeDoc, version10, draftStorage); // to delete
+        List<ProcessModelVersion> draft_pmvs = Collections.singletonList(draft_pmv10);
+        addProcessModelVersions(draftBranch, draft_pmv10);
+
         // Parameter setup
         Integer processId = process.getId();
         String versionToDelete = version10.toString();
@@ -1120,11 +1126,12 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
         expect(groupProcessRepo.findByProcessAndUser(processId, user.getRowGuid())).andReturn(Collections.singletonList(groupProcess));
         expect(processModelVersionRepo.getCurrentProcessModelVersion(processId, versionToDelete))
                 .andReturn(pmvs);
-        expect(processBranchRepo.save((ProcessBranch) anyObject())).andReturn(branch);
+        expect(processBranchRepo.save((ProcessBranch) anyObject())).andReturn(branch).times(2);
         processModelVersionRepo.delete(anyObject());
-        expect(processModelVersionRepo.countByStorageId(storage.getId())).andReturn(1L);
+        processModelVersionRepo.delete(anyObject());
+        expect(processModelVersionRepo.countByStorageId(storage.getId())).andReturn(1L).times(2);
         expect(processModelVersionRepo.getProcessModelVersionByUser(processId, DRAFT_BRANCH_NAME, "1.0",
-                user.getId())).andReturn(null);
+                user.getId())).andReturn(draft_pmv10);
         replayAll();
 
         // Mock Call
@@ -1156,6 +1163,12 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
         addProcessModelVersions(branch, pmv10);
         GroupProcess groupProcess = createGroupProcess(group, process, true, true, true);
 
+        ProcessBranch draftBranch = createDraftBranch(process);
+        Storage draftStorage = createStorage();
+        ProcessModelVersion draft_pmv10 = createPMV(draftBranch, existingNativeDoc, version10, draftStorage); // to delete
+        List<ProcessModelVersion> draft_pmvs = Collections.singletonList(draft_pmv10);
+        addProcessModelVersions(draftBranch, draft_pmv10);
+
         // Parameter setup
         Integer processId = process.getId();
         String versionToDelete = version10.toString();
@@ -1165,17 +1178,18 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
         expect(groupProcessRepo.findByProcessAndUser(processId, user.getRowGuid())).andReturn(Collections.singletonList(groupProcess));
         expect(processModelVersionRepo.getCurrentProcessModelVersion(processId, versionToDelete))
                 .andReturn(pmvs);
-        expect(processBranchRepo.save((ProcessBranch) anyObject())).andReturn(branch);
+        expect(processBranchRepo.save(anyObject())).andReturn(branch).times(2);
         processModelVersionRepo.delete(anyObject());
-        expect(processModelVersionRepo.countByStorageId(storage.getId())).andReturn(1L);
+        processModelVersionRepo.delete(anyObject());
+        expect(processModelVersionRepo.countByStorageId(storage.getId())).andReturn(1L).times(2);
         expect(processModelVersionRepo.getProcessModelVersionByUser(processId, DRAFT_BRANCH_NAME, "1.0",
-                user.getId())).andReturn(null);
+                user.getId())).andReturn(draft_pmv10);
         processRepo.delete(process);
 
         replayAll();
 
         // Mock Call
-        processService.deleteProcessModel(Arrays.asList(new ProcessData[]{processDataToDelete}), user);
+        processService.deleteProcessModel(List.of(processDataToDelete), user);
 
         // Verify mock only (assume that JPA has done all database work properly)
         verifyAll();
@@ -1238,6 +1252,16 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
         ProcessBranch branch = new ProcessBranch();
         branch.setId(1234);
         branch.setBranchName(TRUNK_NAME);
+        branch.setProcess(process);
+        branch.setCreateDate("1.1.2020");
+        branch.setLastUpdateDate("1.1.2020");
+        return branch;
+    }
+
+    private ProcessBranch createDraftBranch(Process process) {
+        ProcessBranch branch = new ProcessBranch();
+        branch.setId(1234);
+        branch.setBranchName(DRAFT_BRANCH_NAME);
         branch.setProcess(process);
         branch.setCreateDate("1.1.2020");
         branch.setLastUpdateDate("1.1.2020");

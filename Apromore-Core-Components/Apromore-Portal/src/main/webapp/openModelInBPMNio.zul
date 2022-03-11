@@ -194,7 +194,8 @@
               viewOnly: ${arg.viewOnly},
               langTag: '${arg.langTag}',
               disabledButtons: disabledPlugins,
-              username: '${arg.username}'
+              username: '${arg.username}',
+              processName: '${arg.processName}',
             };
             editorWrapper = new Apromore.BPMNEditor.EditorApp (config);
             Apromore.BPMNEditor.app = editorWrapper;

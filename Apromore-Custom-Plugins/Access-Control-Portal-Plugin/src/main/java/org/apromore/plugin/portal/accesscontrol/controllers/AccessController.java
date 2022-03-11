@@ -390,7 +390,7 @@ public class AccessController extends SelectorComposer<Div> {
       AccessType accessType = entry.getValue();
       String rowGuid = group.getRowGuid();
       Assignment assignment =
-          new Assignment(group.getName(), rowGuid, Type.USER, accessType.getLabel());
+          new Assignment(group.getName(), rowGuid, group.getType(), accessType.getLabel());
       assignments.add(assignment);
       assignmentMap.put(rowGuid, assignment);
       if (accessType == AccessType.OWNER) {

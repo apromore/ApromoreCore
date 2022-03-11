@@ -105,9 +105,9 @@ export default function Aux(eventBus, bpmnFactory, elementRegistry, overlays, bp
         var iconUrl = getProp(iconItem, AUX_PROPS.ICON_URL);
         var iconText = getProp(iconItem, AUX_PROPS.ICON_TEXT) || iconUrl;
         var iconName = getProp(iconItem, AUX_PROPS.ICON_NAME);
-        if (iconName === 'z-icon-ban') {
-          iconName = null;
-        }
+        // if (iconName === 'z-icon-ban') {
+        //  iconName = null;
+        // }
         iconUrl = fixUrl(iconUrl);
         if (iconName || iconUrl || iconText) {
           dtop -= ICON_ITEM_HEIGHT;
@@ -194,8 +194,14 @@ export default function Aux(eventBus, bpmnFactory, elementRegistry, overlays, bp
       if (event.edges.top) {
         top += dy;
       }
+      var calcHeight = $('.aux-wrapper > div > *', event.target).map((x, y) => y.clientHeight)
+        .toArray().reduce((x,y) => x + y, 0) + 24 + 8
       var width = event.rect.width / scale;
       var height = event.rect.height / scale;
+      if (height < calcHeight) {
+        height = calcHeight;
+      }
+
       Object.assign(event.target.style, {
         width: `${width}px`,
         height: `${height}px`,

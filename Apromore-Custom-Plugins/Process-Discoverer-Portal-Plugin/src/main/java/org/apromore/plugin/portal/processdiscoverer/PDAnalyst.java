@@ -36,7 +36,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apromore.apmlog.APMLog;
@@ -82,6 +81,7 @@ import org.apromore.plugin.portal.processdiscoverer.data.PerspectiveDetails;
 import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
 import org.apromore.plugin.portal.processdiscoverer.impl.json.ProcessJSONVisualizer;
 import org.apromore.plugin.portal.processdiscoverer.vis.ProcessVisualizer;
+import org.apromore.portal.util.CostTable;
 import org.apromore.processdiscoverer.Abstraction;
 import org.apromore.processdiscoverer.AbstractionParams;
 import org.apromore.processdiscoverer.ProcessDiscoverer;
@@ -140,22 +140,12 @@ public class PDAnalyst {
     private final APMLogFilter apmLogFilter;
 
     @Getter
-    Map<Integer, List<ATrace>> caseVariantGroupMap;
+    private Map<Integer, List<ATrace>> caseVariantGroupMap;
 
     @Getter
-    String costAttribute = XESAttributeCodes.ORG_ROLE;
-    @Getter
-    @Setter
-    Map<String, Double> costTable;
-    @Getter
-    @Setter
-    String currency = "USD";
+    private String costAttribute = XESAttributeCodes.ORG_ROLE;
 
     private String caseVariantPerspective = XESAttributeCodes.CONCEPT_NAME;
-
-    // Calendar management
-    @Getter
-    private CalendarModel calendarModel;
 
     private ConfigData configData;
 
@@ -165,11 +155,6 @@ public class PDAnalyst {
         XLog xlog = eventLogService.getXLog(contextData.getLogId());
         APMLog apmLog = eventLogService.getAggregatedLog(contextData.getLogId());
         Collection<String> perspectiveAttKeys = eventLogService.getPerspectiveTagByLog(contextData.getLogId());
-        currency = contextData.getCurrency();
-        costTable = contextData.getCostTable();
-        if (costTable == null) {
-            costTable = new HashMap<>();
-        }
 
         if (xlog == null) {
             throw new InvalidDataException("XLog data of this log is missing");
@@ -202,16 +187,14 @@ public class PDAnalyst {
             caseVariantPerspective);
 
         // ProcessDiscoverer logic with default attribute
-        this.calendarModel = eventLogService.getCalendarFromLog(contextData.getLogId());
+        CalendarModel calendarModel = eventLogService.getCalendarFromLog(contextData.getLogId());
         if (calendarModel == null) {
             throw new CalendarNotExistsException("The open log doesn't have an associated calendar.");
         }
 
-        this.originalAPMLog.setCalendarModel(this.calendarModel);
-
-        this.setMainAttribute(configData.getDefaultAttribute());
+        this.originalAPMLog.setCalendarModel(calendarModel);
         this.processDiscoverer = new ProcessDiscoverer();
-        this.processVisualizer = new ProcessJSONVisualizer(currency);
+        this.processVisualizer = new ProcessJSONVisualizer();
     }
 
     public void cleanUp() {
@@ -271,6 +254,7 @@ public class PDAnalyst {
      * This is the main processing method calling to process-discoverer-logic
      */
     public Optional<OutputData> discoverProcess(UserOptionsData userOptions) throws Exception {
+        if (attLog == null) throw new IllegalStateException("Perspective data is not yet loaded");
         AbstractionParams params = genAbstractionParams(userOptions);
         // Find a DFG first
         Abstraction dfgAbstraction = processDiscoverer.generateDFGAbstraction(attLog, params);
@@ -290,18 +274,20 @@ public class PDAnalyst {
             currentAbstraction = dfgAbstraction;
         }
 
-        String visualizedText = processVisualizer.generateVisualizationText(currentAbstraction);
+        String visualizedText = processVisualizer.generateVisualizationText(currentAbstraction, userOptions);
         return Optional.of(new OutputData(currentAbstraction, visualizedText));
     }
 
     public OutputData discoverTrace(String traceID, UserOptionsData userOptions) throws Exception {
+        if (attLog == null) throw new IllegalStateException("Perspective data is not yet loaded");
         AbstractionParams params = genAbstractionParamsForTrace(userOptions);
         Abstraction traceAbs = processDiscoverer.generateTraceAbstraction(attLog, traceID, params);
-        String traceVisualization = processVisualizer.generateVisualizationText(traceAbs);
+        String traceVisualization = processVisualizer.generateVisualizationText(traceAbs, userOptions);
         return new OutputData(traceAbs, traceVisualization);
     }
 
     public OutputData discoverTraceVariant(int traceVariantID, UserOptionsData userOptions) throws Exception {
+        if (attLog == null) throw new IllegalStateException("Perspective data is not yet loaded");
         List<ATrace> traces = caseVariantGroupMap.get(traceVariantID);
         if (CollectionUtils.isEmpty(traces)) {
             throw new IllegalArgumentException("No traces were found for trace variant id = " + traceVariantID);
@@ -313,7 +299,7 @@ public class PDAnalyst {
 
         AbstractionParams params = genAbstractionParamsForTrace(userOptions);
         Abstraction traceAbs = processDiscoverer.generateTraceVariantAbstraction(attLog, traceIDs, params);
-        String traceVisualization = processVisualizer.generateVisualizationText(traceAbs);
+        String traceVisualization = processVisualizer.generateVisualizationText(traceAbs, userOptions);
         return new OutputData(traceAbs, traceVisualization);
     }
 
@@ -337,14 +323,14 @@ public class PDAnalyst {
         return (IndexableAttribute) indexableAttributes.select(att -> att.getKey().equals(key)).getFirst();
     }
 
-    public void setMainAttribute(String key) throws NotFoundAttributeException {
-        IndexableAttribute newAttribute = getAttribute(key);
+    public void loadAttributeData(String attributeKey, CalendarModel calendarModel, CostTable costTable) throws NotFoundAttributeException {
+        IndexableAttribute newAttribute = getAttribute(attributeKey);
         if (newAttribute != null) {
             if (mainAttribute != newAttribute) {
                 mainAttribute = newAttribute;
                 if (attLog == null) {
                     long timer = System.currentTimeMillis();
-                    attLog = new AttributeLog(aLog, mainAttribute, this.calendarModel, this.costTable);
+                    attLog = new AttributeLog(aLog, mainAttribute, calendarModel, costTable.getCostRates());
                     LOGGER.debug("Create AttributeLog for the perspective attribute: {} ms.",
                         System.currentTimeMillis() - timer);
                 } else {
@@ -353,10 +339,9 @@ public class PDAnalyst {
                     LOGGER.debug("Update AttributeLog to the new perspective attribute: {} ms.",
                         System.currentTimeMillis() - timer);
                 }
-
             }
         } else {
-            throw new NotFoundAttributeException("Cannot find an attribute in ALog with key = " + key);
+            throw new NotFoundAttributeException("Cannot find an attribute in ALog with key = " + attributeKey);
         }
     }
 
@@ -675,9 +660,10 @@ public class PDAnalyst {
      * Simulation data are used to add simulation values to the BPMN diagram.
      *
      * @param bpmnAbstraction Process Abstraction
+     * @param userOptions current user options
      * @return SimulationData
      */
-    public SimulationData getSimulationData(BPMNAbstraction bpmnAbstraction) {
+    public SimulationData getSimulationData(BPMNAbstraction bpmnAbstraction, UserOptionsData userOptions) {
         SimulationData simulationData = null;
         if (bpmnAbstraction != null) {
 
@@ -690,7 +676,7 @@ public class PDAnalyst {
                 .endTime(filteredAPMLog.getEndTime())
                 .nodeWeights(getNodeWeights(bpmnAbstraction))
                 .edgeFrequencies(groupOutboundEdgeFrequenciesByGateway(bpmnAbstraction))
-                .calendarModel(getCalendarModel())
+                .calendarModel(userOptions.getCalendarModel())
                 .build();
         }
         return simulationData;

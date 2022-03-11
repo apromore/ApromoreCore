@@ -196,11 +196,14 @@ public class SearchableListbox {
     public void selectAll() {
         listbox.selectAll();
         listbox.getItemAtIndex(0).setFocus(true);
+        listModel.clearSelection();
+        getListModel().getInnerList().forEach(li -> listModel.addToSelection(li));
         updateCounts();
     }
 
     public void unselectAll() {
         listbox.clearSelection();
+        listModel.clearSelection();
         updateCounts();
     }
 
