@@ -189,6 +189,16 @@ public interface UserMetadataService {
     Set<Usermetadata> getUserMetadataByUser(String username, UserMetadataTypeEnum userMetadataTypeEnum) throws UserNotFoundException;
 
     /**
+     * Find a list of user metadata by username and type
+     *
+     * @param username             username
+     * @param userMetadataTypeEnum Type of UserMetadata, get from UserMetadataTypeEnum
+     * @return A list of user metadata
+     * @throws UserNotFoundException Can't find a user with specified username
+     */
+    List<Usermetadata> getUserMetadataListByUser(String username, UserMetadataTypeEnum userMetadataTypeEnum) throws UserNotFoundException;
+
+    /**
      * Find a set of user metadata that are linked to specified list of Logs and type
      *
      * @param logIds               List of logId
