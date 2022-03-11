@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.VersionSummaryType;
 
@@ -46,5 +45,10 @@ public interface PortalSelection {
      * @return the Set of currently selected process models
      */
     Set<SummaryType> getSelectedProcessModels();
+
+    /**
+     * @return the Set of currently selected process models
+     */
+    List<SummaryType> getSelectedArtifacts();
 
 }
