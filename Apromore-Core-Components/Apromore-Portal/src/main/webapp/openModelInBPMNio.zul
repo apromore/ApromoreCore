@@ -176,6 +176,8 @@
         <![CDATA[
           var editorWrapper;
           var disabledPlugins = [];
+          var forceSync = true; // force process save before invoking third party plugins
+
           if (!${arg.availableSimulateModelPlugin}) {
             disabledPlugins.push(Apromore.I18N.SimulationPanel.simulateModel);
           }
@@ -246,15 +248,22 @@
             });
           }
 
+          // Pre-check before invoking plugin
           Apromore.BPMNEditor.beforeCheckUnsaved = function(flowOnEvent) {
             console.log('beforeCheckUnsaved ...', flowOnEvent);
-            if (Apromore.BPMNEditor.app.getEditor().isDirty()) {
-              // Make sure the most recent changes saved to draft
-              console.log('Dirty editor is flushed to draft');
-              Apromore.BPMNEditor.saveDraft(flowOnEvent, true);
+            if (forceSync) {
+              Apromore.BPMNEditor.readXML((xml) => {
+                zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onForceSave', { xml, flowOnEvent }));
+              });
             } else {
-              console.log('Editor and draft are in sync');
-              zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onCheckUnsaved', flowOnEvent));
+              if (Apromore.BPMNEditor.app.getEditor().isDirty()) {
+                // Make sure the most recent changes saved to draft
+                console.log('Dirty editor is flushed to draft');
+                Apromore.BPMNEditor.saveDraft(flowOnEvent, true);
+              } else {
+                console.log('Editor and draft are in sync');
+                zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onCheckUnsaved', flowOnEvent));
+              }
             }
           }
 
@@ -286,7 +295,7 @@
             // console.log('After saving process model ...');
             isEditorSaving = false;
           }
-          console.log('${arg.bpmnXML}');
+
           createEditor('${arg.bpmnXML}').then((editor) => {
             Apromore.BPMNEditor.Plugins.Share.shareExt = function() {
               Apromore.BPMNEditor.beforeCheckUnsaved('onShare');

@@ -24,11 +24,16 @@
 
 package org.apromore.portal.dialogController;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.dao.model.ProcessPublish;
 import org.apromore.dao.model.User;
 import org.apromore.plugin.editor.EditorPlugin;
@@ -70,6 +75,7 @@ import org.zkoss.zul.Messagebox;
 
 import static org.apromore.common.Constants.DRAFT_BRANCH_NAME;
 import static org.apromore.common.Constants.TRUNK_NAME;
+import static org.apromore.portal.common.LabelConstants.MESSAGEBOX_DEFAULT_TITLE;
 
 /**
  * ApromoreSession and ApromoreSession.EditSessionType represent data objects of the model being
@@ -262,24 +268,61 @@ public class BPMNEditorController extends BaseController implements Composer<Com
       }
     });
 
+    this.addEventListener("onForceSave", new EventListener<Event>() {
+      @Override
+      public void onEvent(final Event event) throws InterruptedException {
+        Map<String, Object> arg = (Map<String, Object>) event.getData();
+        String xml = arg.get("xml").toString();
+        String flowOnEvent = arg.get("flowOnEvent").toString();
+        InputStream is = new ByteArrayInputStream(xml.getBytes());
+        saveCurrentModelVersion(
+          editSession.getProcessId(),
+          editSession.getProcessName(),
+          editSession.getCurrentVersionNumber(),
+          editSession.getNativeType(),
+          is,
+          editSession.getUsername()
+        );
+        Notification.info(
+          MessageFormat.format(
+            Labels.getLabel("bpmnEditor_afterSave_message"),
+            editSession.getProcessName(),
+            editSession.getCurrentVersionNumber()
+          )
+        );
+        callAfterCheckUnsaved(flowOnEvent);
+      }
+    });
+
     this.addEventListener("onCheckUnsaved", (Event event) -> {
       String flowOnEvent = (String) event.getData();
+      if (isNewProcess) {
+        Messagebox.show(
+          Labels.getLabel("bpmnEditor_mustSave_message"),
+          Labels.getLabel(MESSAGEBOX_DEFAULT_TITLE),
+          Messagebox.OK,
+          Messagebox.EXCLAMATION
+        );
+        return;
+      }
       boolean isUpToDate = mainC.getManagerService().isProcessUpdatedWithUserDraft(
-        editSession.getProcessId(),
-        editSession.getProcessName(),
-        editSession.getCurrentVersionNumber(),
-        editSession.getNativeType(),
-        editSession.getUsername()
+          editSession.getProcessId(),
+          editSession.getProcessName(),
+          editSession.getCurrentVersionNumber(),
+          editSession.getNativeType(),
+          editSession.getUsername()
       );
       if (isUpToDate) {
-        Clients.evalJavaScript("Apromore.BPMNEditor.afterCheckUnsaved('" + flowOnEvent + "')");
+        callAfterCheckUnsaved(flowOnEvent);
       } else {
-        Messagebox.show("There are unsaved changes in the editor. Do you want to continue anyway?",
-          "Apromore", Messagebox.OK | Messagebox.CANCEL,
+        Messagebox.show(
+          Labels.getLabel("bpmnEditor_unsavedChanges_message"),
+          Labels.getLabel(MESSAGEBOX_DEFAULT_TITLE),
+          Messagebox.OK | Messagebox.CANCEL,
           Messagebox.QUESTION,
           (Event e) -> {
             if (Messagebox.ON_OK.equals(e.getName())) {
-              Clients.evalJavaScript("Apromore.BPMNEditor.afterCheckUnsaved('" + flowOnEvent + "')");
+              callAfterCheckUnsaved(flowOnEvent);
             }
           }
         );
@@ -341,7 +384,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
             accessControlPlugin.setSimpleParams(arg);
             accessControlPlugin.execute(portalContext);
           } catch (Exception e) {
-            Messagebox.show(e.getMessage(), "Apromore", Messagebox.OK, Messagebox.ERROR);
+            Messagebox.show(e.getMessage(), Labels.getLabel(MESSAGEBOX_DEFAULT_TITLE), Messagebox.OK, Messagebox.ERROR);
           }
         }
       }
@@ -378,6 +421,35 @@ public class BPMNEditorController extends BaseController implements Composer<Com
     });
   }
 
+  private void saveCurrentModelVersion(Integer processId, String processName, String versionNumber,
+                                       String nativeType, InputStream nativeStream, String userName) {
+    try {
+      String bpmnXml = new String(nativeStream.readAllBytes(), StandardCharsets.UTF_8);
+
+      ProcessModelVersion newVersion = mainC.getManagerService().updateProcessModelVersion(
+          processId, editSession.getOriginalBranchName(), versionNumber, userName, "", nativeType,
+          new ByteArrayInputStream(bpmnXml.getBytes()));
+      mainC.getManagerService().updateDraft(processId,
+          editSession.getOriginalVersionNumber(), nativeType, new ByteArrayInputStream(bpmnXml.getBytes()),
+          userName);
+      editSession.setOriginalVersionNumber(versionNumber);
+      editSession.setCurrentVersionNumber(versionNumber);
+      editSession.setLastUpdate(newVersion.getLastUpdateDate());
+      session.getVersion().setLastUpdate(newVersion.getLastUpdateDate());
+      session.getVersion().setVersionNumber(versionNumber);
+
+      qeBPMNEditor.publish(new Event(BPMNEditorController.EVENT_MESSAGE_SAVE, null,
+          new String[] {processName, versionNumber}));
+    } catch (Exception e) {
+      Messagebox.show(Labels.getLabel("portal_unableSave_message"), null, Messagebox.OK,
+          Messagebox.ERROR);
+    }
+  }
+
+  private void callAfterCheckUnsaved(String flowOnEvent) {
+    Clients.evalJavaScript("Apromore.BPMNEditor.afterCheckUnsaved('" + flowOnEvent + "')");
+  }
+  
   private void setTitle(String processName, String versionNumber) {
     this.setTitle(processName + " (" + "v" + versionNumber + ")");
   }
