@@ -229,7 +229,7 @@ public class AccessController extends SelectorComposer<Div> {
     super.doAfterCompose(div);
     container = div;
 
-    candidateAssigneeTextbox.setVisible(!enableUsersList);
+    candidateAssigneeTextbox.setVisible(Boolean.FALSE.equals(enableUsersList));
     candidateAssigneeCombobox.setVisible(enableUsersList);
     loadCandidateAssignee();
     setSelectedItem(selectedItem);
@@ -662,7 +662,7 @@ public class AccessController extends SelectorComposer<Div> {
 
   @Listen("onClick = #candidateAssigneeAdd")
   public void onClickCandidateUserAdd() {
-    if (!enableUsersList) {
+    if (Boolean.FALSE.equals(enableUsersList)) {
       String userName = candidateAssigneeTextbox.getValue();
       Assignee assignee = candidateAssigneeMap.get(userName);
       if (assignee != null) {
