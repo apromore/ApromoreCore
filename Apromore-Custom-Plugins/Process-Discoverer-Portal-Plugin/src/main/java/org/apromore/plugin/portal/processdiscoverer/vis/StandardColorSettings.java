@@ -53,7 +53,7 @@ public class StandardColorSettings {
 	private final Color NODE_LIGHT_RED = new Color(238,206,211);
 	private final Color NODE_DARK_RED = new Color(142,43,60);
 	private final Color NODE_LIGHT_GREEN = new Color(226, 246, 233);
-	private final Color NODE_DARK_GREEN = new Color(97, 205, 138);
+	private final Color NODE_DARK_GREEN = new Color(31, 105, 58);
 
 	// Sync closer to dash palette
 	// Two bases for the frequency and duration:

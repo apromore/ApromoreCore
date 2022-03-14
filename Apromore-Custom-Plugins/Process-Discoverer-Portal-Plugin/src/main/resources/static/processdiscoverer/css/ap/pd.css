@@ -1337,3 +1337,8 @@ table.ap-pd-case-activity-attrs td:nth-child(2) {
 .ap-pd-caption-subtitle {
     font-size: 10px;
 }
+
+.ap-cost-table .z-listitem.z-listitem-selected > .z-listcell,
+.ap-cost-table .z-listitem:hover > .z-listcell {
+    background-color: transparent !important;
+}

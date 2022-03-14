@@ -93,6 +93,7 @@ public class ConfigBean {
     private boolean enableFullUserReg;
     private boolean enableSubscription;
     private boolean enableEtl;
+    private boolean enablePpm;
     private boolean enableSimilaritySearch;
 
     // Switch for custom calendar
@@ -106,6 +107,9 @@ public class ConfigBean {
 
     // Switch for publish model
     private boolean enableModelPublish;
+
+    // Switch for PD on new data layer
+    private boolean enableNewPD;
 
     // Maximum upload size
     private long maxUploadSize;

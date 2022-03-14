@@ -81,8 +81,27 @@ public interface EventLogService {
       String extension, String domain, String created, boolean publicModel, boolean perspective) throws Exception;
 
 
+  /**
+   * Import a filtered log that's derived from original log
+   *
+   * @param username    The user doing the importing.
+   * @param folderId    The folder we are saving the process in.
+   * @param logName     the name of the process being imported.
+   * @param extension   the extension of stored log.
+   * @param domain      the domain of the model
+   * @param created     the time created
+   * @param publicModel is this a public model?
+   * @param perspective whether generate default perspective for this log
+   * @param sourceLogId The original log's id
+   * @return the processSummaryType
+   * @throws Exception if the import process failed for any reason
+   */
+  Log importFilteredLog(String username, Integer folderId, String logName, InputStream inputStreamLog,
+                        String extension, String domain, String created, boolean publicModel,
+                        boolean perspective, Integer sourceLogId) throws Exception;
+
   Log importLog(Integer folderId, String logName, String domain, String created,
-      boolean publicModel, User user, XLog xLog);
+                boolean publicModel, User user, XLog xLog);
 
   /**
    * @param username a username
@@ -230,4 +249,12 @@ public interface EventLogService {
    * @throws UserNotFoundException
    */
   void deepCopyArtifacts(Log oldLog, Log newLog, List<Integer> artifactTypes, String username) throws UserNotFoundException;
+
+  /**
+   * Find Log by its ID
+   *
+   * @param logId Log ID
+   * @return Log
+   */
+  Log findLogById(Integer logId);
 }

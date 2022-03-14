@@ -386,6 +386,8 @@ public abstract class BaseListboxController extends BaseController {
       }
     });
 
+    this.btnSecurity.setVisible(portalContext.getCurrentUser().hasAnyPermission(PermissionType.ACCESS_RIGHTS_MANAGE));
+
     if (portalContext.getCurrentUser().hasAnyPermission(PermissionType.USERS_EDIT)) {
       this.btnUserMgmt.addEventListener(ON_CLICK, new EventListener<Event>() {
         @Override
@@ -394,10 +396,8 @@ public abstract class BaseListboxController extends BaseController {
         }
       });
       this.btnUserMgmt.setVisible(true);
-      this.btnSecurity.setVisible(true);
     } else {
       this.btnUserMgmt.setVisible(false);
-      this.btnSecurity.setVisible(false);
     }
 
     this.btnShare.addEventListener(ON_CLICK, new EventListener<Event>() {
@@ -935,18 +935,15 @@ public abstract class BaseListboxController extends BaseController {
     getMainController().eraseMessage();
     // Check for ownership is moved to plugin level
     try {
-
-      FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
       if (getSelectionCount() == 0) {
-        if (currentFolder == null) {
-          Notification.error(Labels.getLabel("portal_selectOneLogOrModel_message"));
-          return;
-        }
+        Notification.error(Labels.getLabel("portal_selectOneLogOrModel_message"));
+        return;
       } else if (getSelectionCount() > 1) {
         Notification.error(Labels.getLabel("portal_noMultipleShare_message"));
         return;
       }
 
+      FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
       accessControlPlugin = portalPluginMap.get(PluginCatalog.PLUGIN_ACCESS_CONTROL);
       Map arg = new HashMap<>();
       if (getSelectionCount() == 1) {

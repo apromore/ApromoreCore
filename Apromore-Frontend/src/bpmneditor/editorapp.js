@@ -571,13 +571,16 @@ export default class EditorApp {
         let me = this;
         let options = {
           container: '#' + me.editor.rootNode.id,
-          langTag: config.langTag
+          langTag: config.langTag,
+          username: '',
+          processName: ''
         }
         if (!config.viewOnly) {
           options.keyboard = { bindTo: window };
           options.propertiesPanel = me.useSimulationPanel ? { parent: '#js-properties-panel' } : undefined
         }
         options.username = config.username || '';
+        options.processName = config.processName || 'untitled';
         await me.editor.attachEditor(new BpmnJS(options));
 
         if (config && config.xml) {

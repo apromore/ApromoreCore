@@ -69,11 +69,14 @@ import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.UserType;
 import org.apromore.portal.model.UsernamesType;
 import org.apromore.portal.model.VersionSummaryType;
+import org.apromore.portal.util.CostTable;
 import org.apromore.portal.util.StreamUtil;
 import org.apromore.zk.ApromoreDesktopCleanup;
 import org.slf4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.zkoss.json.JSONObject;
+import org.zkoss.json.parser.JSONParser;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
@@ -333,6 +336,27 @@ public class MainController extends BaseController implements MainControllerInte
                     }
                 }
             });
+
+            final String COST_KEY = "costTable";
+            final String CURRENCY_KEY = "currency";
+            mainW.addEventListener("onCostTableInit", e -> {
+                String jsonString = (String)e.getData();
+                Map<String, Double> costRates = new HashMap<>();
+                String currency = "USD";
+                if (jsonString != null) {
+                    JSONParser parser = new JSONParser();
+                    JSONObject jsonObject = (JSONObject) parser.parse(jsonString);
+                    costRates = (Map<String, Double>) jsonObject.getOrDefault(COST_KEY, costRates);
+                    currency = (String) jsonObject.getOrDefault(CURRENCY_KEY, currency);
+                }
+
+                Sessions.getCurrent().setAttribute(COST_KEY, CostTable.builder()
+                    .currency(currency)
+                    .costRates(costRates)
+                    .build());
+            });
+
+            Clients.evalJavaScript("Ap.common.getLocalStorageItem('ap.cost.table', 'mainW', 'onCostTableInit')");
 
         } catch (final Exception e) {
             LOGGER.error("Repository NOT available", e);
@@ -689,7 +713,7 @@ public class MainController extends BaseController implements MainControllerInte
                     requestParameterTypes);
             UserSessionManager.setEditSession(id, session);
 
-            String url = "openModelInBPMNio.zul?id=" + id;
+            String url = "openModelInBPMNio.zul?id=" + id + "&REFER_ID="+ Executions.getCurrent().getDesktop().getId();
             if (newProcess)
                 url += "&newProcess=true";
             instruction += "window.open('" + url + "');";

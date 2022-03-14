@@ -42,6 +42,7 @@ import javax.inject.Inject;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service("userMetadataService")
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, rollbackFor =
@@ -385,6 +386,20 @@ public class UserMetadataServiceImpl implements UserMetadataService {
     }
 
     @Override
+    public List<Usermetadata> getUserMetadataListByUser(String username, UserMetadataTypeEnum userMetadataTypeEnum) throws UserNotFoundException {
+
+        User user = userSrv.findUserByLogin(username);
+
+        return user.getGroups().stream()
+                .flatMap(x -> groupUsermetadataRepo.findByGroup(x).stream()
+                        .filter(gu -> gu.getUsermetadata().getUsermetadataType().getId().equals(userMetadataTypeEnum.getUserMetadataTypeId())
+                                && gu.getUsermetadata().getIsValid()).map(GroupUsermetadata::getUsermetadata))
+                .collect(Collectors.toList()).stream()
+                .collect(Collectors.groupingBy(Usermetadata::getId)).values().stream()
+                .map(v -> v.get(0)).collect(Collectors.toList());
+    }
+
+    @Override
     public Set<Usermetadata> getUserMetadataByLogs(List<Integer> logIds, UserMetadataTypeEnum userMetadataTypeEnum) {
 
         Set<Usermetadata> result = new HashSet<>();
@@ -655,7 +670,30 @@ public class UserMetadataServiceImpl implements UserMetadataService {
                                            String username) throws UserNotFoundException {
 
         User user = userSrv.findUserByLogin(username);
+        Usermetadata userMetadata = buildUserMetadataFromContent(content, userMetadataTypeEnum, user);
+        userMetadataRepo.saveAndFlush(userMetadata);
+        LOGGER.info("User: {} create user metadata ID: {} TYPE: {}.", username,
+                userMetadata.getId(), userMetadataTypeEnum);
+    }
 
+    @Override
+    @Transactional
+    public List<Usermetadata> saveAllUserMetadataWithoutLog(List<String> contentList, UserMetadataTypeEnum userMetadataTypeEnum,
+                                           String username) throws UserNotFoundException {
+
+        User user = userSrv.findUserByLogin(username);
+        List<Usermetadata> usermetadataList = new ArrayList<>();
+
+        for (String content : contentList) {
+            usermetadataList.add(buildUserMetadataFromContent(content, userMetadataTypeEnum, user));
+        }
+
+        return userMetadataRepo.saveAll(usermetadataList);
+
+    }
+
+    private Usermetadata buildUserMetadataFromContent(String content, UserMetadataTypeEnum userMetadataTypeEnum,
+                                                      User user) {
         Usermetadata userMetadata = new Usermetadata();
 
         Set<GroupUsermetadata> groupUserMetadataSet = userMetadata.getGroupUserMetadata();
@@ -678,9 +716,7 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         userMetadata.setCreatedTime(dateFormat.format(new Date()));
         userMetadata.setContent(content);
 
-        userMetadataRepo.saveAndFlush(userMetadata);
-        LOGGER.info("User: {} create user metadata ID: {} TYPE: {}.", username,
-                userMetadata.getId(), UserMetadataTypeEnum.DASH_TEMPLATE.toString());
+        return userMetadata;
     }
 
     @Override

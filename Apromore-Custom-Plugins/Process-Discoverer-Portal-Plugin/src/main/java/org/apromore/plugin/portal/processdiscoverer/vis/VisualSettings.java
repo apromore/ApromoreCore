@@ -36,7 +36,7 @@ import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Gatew
  *
  */
 public class VisualSettings {
-	private final DecimalFormat decimalFormatter = new DecimalFormat("##############0.##");
+	private final DecimalFormat decimalFormatter = new DecimalFormat("###,###,###,###,##0.##");
 	private final TimeConverter timeConverter = new TimeConverter();
 	private final StringFormatter stringFormatter = new StringFormatter();
 	private final StandardColorSettings colorSettings = new StandardColorSettings();
