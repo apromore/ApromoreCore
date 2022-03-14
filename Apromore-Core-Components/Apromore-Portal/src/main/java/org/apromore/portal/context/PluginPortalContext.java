@@ -26,9 +26,7 @@ package org.apromore.portal.context;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
 import org.apromore.plugin.portal.PortalContext;
@@ -39,9 +37,7 @@ import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.model.FolderType;
 import org.apromore.portal.model.ProcessSummaryType;
-import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.UserType;
-import org.apromore.portal.model.VersionSummaryType;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
@@ -79,18 +75,7 @@ public class PluginPortalContext implements PortalContext {
 
     @Override
     public PortalSelection getSelection() {
-        return new PortalSelection() {
-            @Override
-            public Map<SummaryType, List<VersionSummaryType>> getSelectedProcessModelVersions() {
-                return mainController.getSelectedElementsAndVersions();
-            }
-
-            @Override
-            public Set<SummaryType> getSelectedProcessModels() {
-                return mainController.getSelectedElements();
-            }
-
-        };
+        return new PluginPortalSelection(mainController);
     }
 
     @Override

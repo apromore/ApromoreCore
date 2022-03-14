@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.DayOfWeek;
+import java.time.Instant;
 import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -45,7 +46,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
 import org.apromore.calendar.builder.CalendarModelBuilder;
 import org.apromore.calendar.model.CalendarModel;
-import org.apromore.commons.datetime.DateTimeUtils;
 import org.apromore.processsimulation.config.SimulationInfoConfig;
 import org.apromore.processsimulation.dto.SimulationData;
 import org.apromore.processsimulation.model.Currency;
@@ -357,7 +357,7 @@ class SimulationInfoServiceTest {
         assertNull(processSimulationInfo.getArrivalRateDistribution().getMean());
         assertEquals(TimeUnit.HOURS, processSimulationInfo.getArrivalRateDistribution().getTimeUnit());
         assertEquals(DistributionType.EXPONENTIAL, processSimulationInfo.getArrivalRateDistribution().getType());
-        assertEquals(DateTimeUtils.toZonedDateTime(1577797200000L).toOffsetDateTime().toString(),
+        assertEquals(Instant.ofEpochMilli(1577797200000L).toString(),
             processSimulationInfo.getStartDateTime());
         assertEquals(Currency.EUR, processSimulationInfo.getCurrency());
     }
@@ -689,7 +689,7 @@ class SimulationInfoServiceTest {
         assertNotNull(processSimulationAttrMap.getNamedItem("id").getNodeValue());
         assertEquals(Currency.EUR.toString(), processSimulationAttrMap.getNamedItem("currency").getNodeValue());
         assertEquals("100", processSimulationAttrMap.getNamedItem("processInstances").getNodeValue());
-        assertEquals(DateTimeUtils.toZonedDateTime(1577797200000L).toOffsetDateTime().toString(),
+        assertEquals(Instant.ofEpochMilli(1577797200000L).toString(),
             processSimulationAttrMap.getNamedItem("startDateTime").getNodeValue());
 
         Node arrivalDistributionXmlNode = TestHelper.getProcessSimulationInfo(bpmnXmlString,
