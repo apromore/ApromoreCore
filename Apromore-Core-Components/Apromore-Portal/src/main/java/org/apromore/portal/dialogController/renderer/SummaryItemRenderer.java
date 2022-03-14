@@ -31,6 +31,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import org.apromore.commons.datetime.DateTimeUtils;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.PortalProcessAttributePlugin;
@@ -75,6 +77,7 @@ public class SummaryItemRenderer implements ListitemRenderer {
     private static final String VERTICAL_ALIGN = "vertical-align: middle;";
     private static final String LEFT_ALIGN = "text-align:left";
     private static final String PARENT_CONTROLLER = "PARENT_CONTROLLER";
+    private String currentView=null;
 
     private MainController mainController;
     private DateTimeFormatter dateTimeFormatter;
@@ -82,6 +85,7 @@ public class SummaryItemRenderer implements ListitemRenderer {
     public SummaryItemRenderer(MainController main) {
         this.mainController = main;
         this.dateTimeFormatter = main.getI18nSession().getPreferredDateTimeFormatter();
+        currentView=getPersistedView();
     }
 
     /* (non-Javadoc)
@@ -230,12 +234,14 @@ public class SummaryItemRenderer implements ListitemRenderer {
          lc.setStyle(CENTRE_ALIGN);
          return lc;
     }
-    
+
     protected Listcell renderFolderOwner(String owner) {
-           Listcell lc = wrapIntoListCell(new Label( owner));
-        lc.setStyle(LEFT_ALIGN);
-           return lc;
-   }
+        Listcell lc = wrapIntoListCell(new Label(owner));
+        if ("list".equalsIgnoreCase(currentView)) {
+            lc.setStyle(LEFT_ALIGN);
+        }
+        return lc;
+    }
 
     private void renderFolderSummary(final Listitem listitem, final FolderSummaryType folder, final List<PortalProcessAttributePlugin> plugins) {
         listitem.appendChild(renderFolderImage());
@@ -413,7 +419,9 @@ public class SummaryItemRenderer implements ListitemRenderer {
         Label label = new Label(owner);
         label.setClientAttribute("title", owner);
         Listcell lc = wrapIntoListCell(label);
-        lc.setStyle(LEFT_ALIGN);
+        if ("list".equalsIgnoreCase(currentView)) {
+            lc.setStyle(LEFT_ALIGN);
+        }
         return lc;
     }
 
@@ -588,6 +596,23 @@ public class SummaryItemRenderer implements ListitemRenderer {
             }
         }
         return result;
+    }
+
+    private String getPersistedView() {
+        try {
+            Cookie[] cookiesData =
+                ((HttpServletRequest) Executions.getCurrent().getNativeRequest()).getCookies();
+            if (cookiesData != null) {
+                for (Cookie cookie : cookiesData) {
+                    if ("view".equals(cookie.getName())) {
+                        return cookie.getValue();
+                    }
+                }
+            }
+        }catch(Exception ex){
+            LOGGER.error("Error in retrieving perspective",ex);
+        }
+        return null;
     }
 
 }
