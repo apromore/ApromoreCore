@@ -99,6 +99,8 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
     private static final int KEY_CTRL_A_BG = 97;
 
     private static final String NO_PERMISSION_TO_ALLOCATE_USER = "noPermissionAllocateUserToGroup_message";
+    private static final String NO_PERMISSION_EDIT_GROUP = "noPermissionEditGroup_message";
+    private static final String NO_PERMISSION_EDIT_ROLE = "noPermissionEditRole_message";
     private static final String DELETE_PROMPT_MESSAGE = "deletePrompt_message";
     private static final String TOGGLE_CLICK_EVENT_NAME = "onToggleClick";
     private static final String SWITCH_TAB_EVENT_NAME = "onSwitchTab";
@@ -1233,7 +1235,7 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
     @Listen("onSelect = #groupListbox")
     public void onSelectGroupsListbox(SelectEvent event) {
         if (!hasPermission(Permissions.EDIT_GROUPS)) {
-            Notification.error(getLabel("noPermissionEditGroup_message"));
+            Notification.error(getLabel(NO_PERMISSION_EDIT_GROUP));
             return;
         }
         Set<Group> newGroups = event.getSelectedObjects();
@@ -1427,7 +1429,7 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
     @Listen("onClick = #groupRemoveBtn")
     public void onClickGroupRemoveBtn() {
         if (!hasPermission(Permissions.EDIT_GROUPS)) {
-            Notification.error(getLabel("noPermissionEditGroup_message"));
+            Notification.error(getLabel(NO_PERMISSION_EDIT_GROUP));
             return;
         }
         Set<Group> selectedGroups = groupList.getSelection();
@@ -1465,7 +1467,7 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
     @Listen("onClick = #groupSaveBtn")
     public void onClickGroupSaveButton() {
         if (!hasPermission(Permissions.EDIT_GROUPS)) {
-            Notification.error(getLabel("noPermissionEditGroup_message"));
+            Notification.error(getLabel(NO_PERMISSION_EDIT_GROUP));
             return;
         }
         ListModelList listModel = assignedUserList.getListModel();
@@ -1485,7 +1487,7 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
     @Listen("onSelect = #roleListbox")
     public void onSelectRolesListbox(SelectEvent event) {
         if (!hasPermission(Permissions.EDIT_ROLES)) {
-            Notification.error(getLabel("noPermissionEditRole_message"));
+            Notification.error(getLabel(NO_PERMISSION_EDIT_ROLE));
             return;
         }
         Set<RoleModel> newRoles = event.getSelectedObjects();
@@ -1639,7 +1641,7 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
     @Listen("onClick = #roleEditBtn")
     public void onClickRoleEditBtn() {
         if (!hasPermission(Permissions.EDIT_ROLES)) {
-            Notification.error(getLabel("noPermissionEditRole_message"));
+            Notification.error(getLabel(NO_PERMISSION_EDIT_ROLE));
             return;
         }
 
@@ -1788,7 +1790,7 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
 
     private void onClickRoleSaveButton(boolean retainSelection) {
         if (!hasPermission(Permissions.EDIT_ROLES)) {
-            Notification.error(getLabel("noPermissionEditRole_message"));
+            Notification.error(getLabel(NO_PERMISSION_EDIT_ROLE));
             return;
         }
 
@@ -2003,7 +2005,7 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
     @Listen("onSelect = #roleTabGroupListbox")
     public void onSelectRoleTabGroupListbox(SelectEvent<Listitem, Group> event) {
         if (!hasPermission(Permissions.EDIT_ROLES)) {
-            Notification.error(getLabel("noPermissionEditRole_message"));
+            Notification.error(getLabel(NO_PERMISSION_EDIT_ROLE));
             return;
         }
         Set<Group> selectedGroups = event.getSelectedObjects();
@@ -2098,7 +2100,6 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
         if (!assignedUserRoleList.getSourceListModel().isEmpty()) {
             selectBulk(assignedUserRoleList, event.isChecked());
         }
-        ;
     }
 
     @Listen("onCheck = #nonAssignedUserRoleCheckbox")
