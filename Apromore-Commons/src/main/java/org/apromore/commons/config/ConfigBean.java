@@ -95,6 +95,7 @@ public class ConfigBean {
     private boolean enableEtl;
     private boolean enablePpm;
     private boolean enableSimilaritySearch;
+    private boolean enableUsersList;
 
     // Switch for custom calendar
     private boolean enableCalendar;

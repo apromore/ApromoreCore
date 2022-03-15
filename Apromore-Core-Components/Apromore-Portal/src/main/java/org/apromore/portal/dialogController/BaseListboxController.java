@@ -959,6 +959,7 @@ public abstract class BaseListboxController extends BaseController {
       arg.put("autoInherit", true);
       arg.put("showRelatedArtifacts", true);
       arg.put("enablePublish", getMainController().getConfig().isEnablePublish());
+      arg.put("enableUsersList", getMainController().getConfig().isEnableUsersList());
       accessControlPlugin.setSimpleParams(arg);
       accessControlPlugin.execute(portalContext);
     } catch (Exception e) {
