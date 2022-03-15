@@ -61,7 +61,13 @@
                         <comboitem sclass="type-${each.type}" label="${each.name}"/>
                     </template>
                 </combobox>
-                <textbox id="candidateAssigneeTextbox" width="240px" style="margin-right: 7px" placeholder="${$composer.labels.typeUserOrGroup_text}" />
+                <textbox id="candidateAssigneeTextbox"
+                         width="240px"
+                         style="margin-right: 7px"
+                         placeholder="${$composer.labels.typeUserOrGroup_text}"
+                         submitByEnter="true"
+                         forward="onOK=candidateAssigneeAdd.onClick"
+                />
                 <button id="candidateAssigneeAdd" label="${$composer.labels.share_text}"/>
             </div>
         </div>
