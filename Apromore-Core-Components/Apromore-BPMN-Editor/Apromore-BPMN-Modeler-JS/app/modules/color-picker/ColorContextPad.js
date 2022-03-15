@@ -1,4 +1,5 @@
 import Color from 'color';
+import { is } from 'bpmn-js/lib/util/ModelUtil';
 
 const palette = [
   '#84c7e3',
@@ -17,12 +18,23 @@ const lighten = function (colorCode) {
   return color.lightness(lightness).hex();
 };
 
+const darken = function (colorCode) {
+  const color = Color(colorCode);
+  const start = color.lightness();
+  const lightness = start * 0.3;
+  return color.lightness(lightness).hex();
+};
+
 const colors = palette.map(
   (color) => (
-    { stroke: 'black', fill: lighten(color) }
+    {
+        stroke: 'black',
+        fill: lighten(color),
+        key: color.toLowerCase()
+    }
   )
 );
-const colorMap = colors.reduce((acc, color) => { acc[color.stroke.toLowerCase()] = color; return acc; }, {});
+const colorMap = colors.reduce((acc, color) => { acc[color.key.toLowerCase()] = color; return acc; }, {});
 
 export default class ColorContextPad {
   constructor(config, modeling, contextPad, canvas, translate) {
@@ -53,12 +65,18 @@ export default class ColorContextPad {
           let colorCode = newColor.toHexString();
           let color;
           if (colorMap[colorCode]) {
-            color = colorMap[colorCode]
+            color = {
+              stroke: 'black',
+              fill: colorMap[colorCode].fill
+            }
           } else {
             color = {
               stroke: 'black',
               fill: lighten(colorCode)
             }
+          }
+          if (is(element, 'bpmn:SequenceFlow')) {
+            color.stroke = darken(colorCode);
           }
           _modeling.setColor(element, color);
           el.spectrum('hide');
