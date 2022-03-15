@@ -55,6 +55,7 @@ import org.apromore.portal.menu.MenuItem;
 import org.apromore.portal.menu.PluginCatalog;
 import org.apromore.portal.model.FolderType;
 import org.apromore.portal.model.LogSummaryType;
+import org.apromore.portal.model.PermissionType;
 import org.apromore.portal.model.UserType;
 import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.zk.notification.Notification;
@@ -516,7 +517,8 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
             String popupLabel = null;
             switch (itemId) {
                 case PluginCatalog.PLUGIN_EDIT_MODEL:
-                    popupLabel = "plugin_discover_editModelShort_text";
+                    popupLabel = UserSessionManager.getCurrentUser().hasAnyPermission(PermissionType.MODEL_EDIT)
+                        ? "plugin_discover_editModelShort_text" : "plugin_discover_viewModelShort_text";
                     break;
                 case PluginCatalog.PLUGIN_SIMULATE_MODEL:
                     popupLabel = "plugin_analyze_simulateModelShort_text";
