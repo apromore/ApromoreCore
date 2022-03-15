@@ -49,7 +49,6 @@ import org.zkoss.zul.Menupopup;
 
 public class FilterPopupLogSubMenuController extends PopupLogSubMenuController {
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(FilterPopupLogSubMenuController.class);
-    private static final String ICON_PLUS = "z-icon-plus-circle";
     private static final String USER_METADATA_SUM = "USER_METADATA_SUM";
 
     public FilterPopupLogSubMenuController(PopupMenuController popupMenuController,
