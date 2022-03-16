@@ -1322,3 +1322,41 @@ databaseChangeLog:
            onUpdate:  CASCADE
            referencedColumnNames: id
            referencedTableName: user
+
+ - changeSet:
+     id: 20220316131800
+     author: mtomar
+     changes:
+       - createTable:
+           tableName: predictor
+           columns:
+             - column:
+                 name: id
+                 type: BIGINT
+                 autoIncrement: true
+                 constraints:
+                   nullable: false
+                   primaryKey: true
+                   primaryKeyName: pk_predictor_id
+             - column:
+                 constraints:
+                   nullable: false
+                   unique: true
+                 name: log_id
+                 type: INT
+                 remarks: 'Training Log id'
+             - column:
+                 name: name
+                 type: VARCHAR(200)
+             - column:
+                 name: prediction_type
+                 type: VARCHAR(25)
+             - column:
+                 name: target_attribute
+                 type: VARCHAR(200)
+             - column:
+                 name: save_location
+                 type: VARCHAR(600)
+             - column:
+                 name: ppm_status
+                 type: VARCHAR(15)
