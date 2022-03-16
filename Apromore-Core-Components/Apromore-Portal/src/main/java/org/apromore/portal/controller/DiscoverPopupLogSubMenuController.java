@@ -64,6 +64,7 @@ public class DiscoverPopupLogSubMenuController extends PopupLogSubMenuController
             subMenu.setLabel(Labels.getLabel("plugin_discover_discoverModel_text"));
             subMenu.setImage(subMenuImage);
             Menupopup menuPopup = new Menupopup();
+            menuPopup.setSclass("inner-submenu");
             popupMenuController.addMenuitem(menuPopup, new MenuItem(PluginCatalog.PLUGIN_VIEW_FULL_LOG_DISCOVER_MODEL));
             fetchAndConstructMenuForPd(menuPopup,
                 userMetaDataUtilService.getUserMetadataSummariesForFilter(logSummaryType.getId()), true);
