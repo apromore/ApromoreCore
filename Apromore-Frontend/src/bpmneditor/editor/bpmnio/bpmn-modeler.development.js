@@ -42142,17 +42142,27 @@ const colors = palette.map(
 const colorMap = colors.reduce((acc, color) => { acc[color.stroke.toLowerCase()] = color; return acc; }, {});
 
 class ColorContextPad {
-  constructor(config, modeling, contextPad, canvas, translate) {
+  constructor(config, modeling, contextPad, canvas, translate, bpmnjs) {
     this._config = config;
     this._modeling = modeling;
     this._contextPad = contextPad;
     this._canvas = canvas;
     this._translate = translate;
+    this._bpmnjs = bpmnjs;
     contextPad.registerProvider(this);
+    var bpmnRenderer = bpmnjs.get("bpmnRenderer");
+    var drawConnectionOld = bpmnRenderer.drawConnection;
+    var fixConnectionColor = function(visuals, connection){
+    	var res = drawConnectionOld.call(bpmnRenderer, visuals, connection);
+    	var color = 'green';
+    	visuals.select('path').attr({stroke: color});
+    	return res;
+    }
+    bpmnRenderer.drawConnection = fixConnectionColor;
   }
 
   getContextPadEntries(element) {
-    const { _canvas, _contextPad, _colorPalette, _modeling } = this;
+    const { _canvas, _contextPad, _colorPalette, _modeling, _bpmnjs } = this;
 
     function launchPalette(event, element) {
       let el = $j(`.ap-editor-set-color`)
@@ -42183,7 +42193,7 @@ class ColorContextPad {
       });
       setTimeout(function () {
         el.spectrum('show');
-      }, 300);
+      }, 500);
     }
 
     return {
@@ -42204,7 +42214,8 @@ ColorContextPad.$inject = [
   'modeling',
   'contextPad',
   'canvas',
-  'translate'
+  'translate',
+  'bpmnjs'
 ];
 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(7)))
