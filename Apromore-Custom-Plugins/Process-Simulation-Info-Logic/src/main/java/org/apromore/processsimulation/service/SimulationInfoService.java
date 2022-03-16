@@ -234,7 +234,7 @@ public class SimulationInfoService {
         final String timetableId,
         boolean setAsDefault) {
         List<WorkDayModel> workingDays = calendarModel.getOrderedWorkDay().stream()
-            .filter(workDayModel -> workDayModel.isWorkingDay())
+            .filter(WorkDayModel::isWorkingDay)
             .collect(Collectors.toList());
 
         // The timetable from PD
