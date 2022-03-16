@@ -21,20 +21,17 @@
 
 package org.apromore.processsimulation.service;
 
+import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_CUSTOM_ID_KEY;
 import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_DEFAULT_ID_KEY;
 import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_DEFAULT_ID_PREFIX_KEY;
 import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_DEFAULT_NAME_KEY;
-import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_FROM_TIME;
-import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_FROM_WEEKDAY_KEY;
 import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_NAME_KEY;
-import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_TO_TIME;
-import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_TO_WEEKDAY_KEY;
 
 import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.DayOfWeek;
 import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -47,8 +44,9 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import lombok.extern.slf4j.Slf4j;
-import org.apromore.calendar.builder.CalendarModelBuilder;
 import org.apromore.calendar.model.CalendarModel;
+import org.apromore.calendar.model.WorkDayModel;
+import org.apromore.calendar.service.CalendarService;
 import org.apromore.processsimulation.config.SimulationInfoConfig;
 import org.apromore.processsimulation.dto.EdgeFrequency;
 import org.apromore.processsimulation.dto.SimulationData;
@@ -80,14 +78,17 @@ public class SimulationInfoService {
     private static final String XML_START_BPMN_DEFINITIONS_TAG = "<bpmn:definitions";
     private static final String XML_QBP_NAMESPACE = "\n xmlns:qbp=\"http://www.qbp-simulator.com/Schema201212\"\n";
     private static final Locale DOCUMENT_LOCALE = Locale.ENGLISH;
+    private static final DateTimeFormatter TIMETABLE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
 
     private JAXBContext jaxbContext;
 
     private final SimulationInfoConfig config;
+    private final CalendarService calendarService;
 
     @Autowired
-    public SimulationInfoService(SimulationInfoConfig config) {
+    public SimulationInfoService(SimulationInfoConfig config, CalendarService calendarService) {
         this.config = config;
+        this.calendarService = calendarService;
 
         try {
             jaxbContext = JAXBContext.newInstance(ExtensionElements.class);
@@ -113,6 +114,8 @@ public class SimulationInfoService {
         ProcessSimulationInfo processSimulationInfo = null;
         if (isFeatureEnabled() && simulationData != null) {
 
+            CalendarModel calendarModel = getActiveCalendarModel(simulationData);
+
             ProcessSimulationInfo.ProcessSimulationInfoBuilder builder =
                 ProcessSimulationInfo.builder()
                     .id("qbp_" + Locale.getDefault().getLanguage() + UUID.randomUUID())
@@ -124,7 +127,7 @@ public class SimulationInfoService {
 
             deriveTaskInfo(builder, simulationData, resourceNameToId);
 
-            deriveTimetable(builder);
+            deriveTimetable(builder, calendarModel);
 
             deriveGatewayProbabilities(builder, simulationData);
 
@@ -132,6 +135,18 @@ public class SimulationInfoService {
         }
 
         return processSimulationInfo;
+    }
+
+    private CalendarModel getActiveCalendarModel(SimulationData simulationData) {
+        CalendarModel activeCalendar;
+        if (simulationData.getCalendarModel() == null) {
+            // If no calendar, default to a 24 x 7 calendar
+            activeCalendar = calendarService.getGenericCalendar();
+        } else {
+            activeCalendar = simulationData.getCalendarModel();
+        }
+
+        return activeCalendar;
     }
 
     private void deriveGeneralInfo(
@@ -154,18 +169,13 @@ public class SimulationInfoService {
     }
 
     /**
-     * Returns the inter-arrival time of events in seconds, based on a default 9 - 5 business calendar.
+     * Returns the inter-arrival time of events in seconds, based on the calendar from PD.
      *
      * @param simulationData the raw simulation data from PD
      * @return the inter-arrival time of events (in milliseconds)
      */
     protected double getInterArrivalTime(final SimulationData simulationData) {
-        CalendarModel arrivalCalendar = null;
-        if (simulationData.getCalendarModel() == null) {
-            arrivalCalendar = new CalendarModelBuilder().with5DayWorking().build();
-        } else {
-            arrivalCalendar = simulationData.getCalendarModel();
-        }
+        CalendarModel arrivalCalendar = getActiveCalendarModel(simulationData);
 
         return arrivalCalendar.getDurationMillis(simulationData.getStartTime(), simulationData.getEndTime())
                / (double) simulationData.getCaseCount();
@@ -203,26 +213,44 @@ public class SimulationInfoService {
     }
 
     private void deriveTimetable(
-        final ProcessSimulationInfo.ProcessSimulationInfoBuilder builder) {
+        final ProcessSimulationInfo.ProcessSimulationInfoBuilder builder,
+        final CalendarModel calendarModel) {
 
-        builder.timetables(
-            Arrays.asList(Timetable.builder()
-                .defaultTimetable(true)
-                .id(config.getDefaultTimetable().get(CONFIG_DEFAULT_ID_KEY))
-                .name(config.getDefaultTimetable().get(CONFIG_DEFAULT_NAME_KEY))
-                .rules(Arrays.asList(Rule.builder()
-                    .id(UUID.randomUUID().toString())
-                    .name(config.getDefaultTimetable().get(CONFIG_DEFAULT_TIMESLOT_NAME_KEY))
-                    .fromWeekDay(DayOfWeek.valueOf(
-                        config.getDefaultTimetable().get(CONFIG_DEFAULT_TIMESLOT_FROM_WEEKDAY_KEY)
-                            .toUpperCase(DOCUMENT_LOCALE)))
-                    .toWeekDay(DayOfWeek.valueOf(
-                        config.getDefaultTimetable().get(CONFIG_DEFAULT_TIMESLOT_TO_WEEKDAY_KEY)
-                            .toUpperCase(DOCUMENT_LOCALE)))
-                    .fromTime(config.getDefaultTimetable().get(CONFIG_DEFAULT_TIMESLOT_FROM_TIME))
-                    .toTime(config.getDefaultTimetable().get(CONFIG_DEFAULT_TIMESLOT_TO_TIME))
-                    .build()))
-                .build()));
+        if (calendarModel.getName().equals("Generic 24/7")) {
+            builder.timetables(List.of(createTimetable(
+                calendarModel, config.getTimetable().get(CONFIG_CUSTOM_ID_KEY), true)));
+        } else {
+            builder.timetables(
+                List.of(
+                    createTimetable(calendarModel, config.getTimetable().get(CONFIG_CUSTOM_ID_KEY), true),
+                    createTimetable(calendarService.getGenericCalendar(),
+                        config.getTimetable().get(CONFIG_DEFAULT_ID_KEY), false)
+                ));
+        }
+    }
+
+    private Timetable createTimetable(
+        final CalendarModel calendarModel,
+        final String timetableId,
+        boolean setAsDefault) {
+        List<WorkDayModel> workingDays = calendarModel.getOrderedWorkDay().stream()
+            .filter(workDayModel -> workDayModel.isWorkingDay())
+            .collect(Collectors.toList());
+
+        // The timetable from PD
+        return Timetable.builder()
+            .defaultTimetable(setAsDefault)
+            .id(timetableId)
+            .name(calendarModel.getName())
+            .rules(Arrays.asList(Rule.builder()
+                .id(UUID.randomUUID().toString())
+                .name(config.getTimetable().get(CONFIG_DEFAULT_TIMESLOT_NAME_KEY))
+                .fromWeekDay(workingDays.get(0).getDayOfWeek())
+                .toWeekDay(workingDays.get(workingDays.size() - 1).getDayOfWeek())
+                .fromTime(workingDays.get(0).getStartTime().format(TIMETABLE_TIME_FORMATTER))
+                .toTime(workingDays.get(workingDays.size() - 1).getEndTime().format(TIMETABLE_TIME_FORMATTER))
+                .build()))
+            .build();
     }
 
     private Map<String, String> deriveResourceInfo(
@@ -242,7 +270,7 @@ public class SimulationInfoService {
                     .id(defaultResourceId)
                     .name(config.getDefaultResource().get(CONFIG_DEFAULT_NAME_KEY))
                     .totalAmount(simulationData.getResourceCount())
-                    .timetableId(config.getDefaultTimetable().get(CONFIG_DEFAULT_ID_KEY))
+                    .timetableId(config.getTimetable().get(CONFIG_CUSTOM_ID_KEY))
                     .build()
             ));
 
@@ -277,7 +305,7 @@ public class SimulationInfoService {
                         .id(resourceId)
                         .name(resourceName)
                         .totalAmount(roleToResourceCount.getValue())
-                        .timetableId(config.getDefaultTimetable().get(CONFIG_DEFAULT_ID_KEY))
+                        .timetableId(config.getTimetable().get(CONFIG_CUSTOM_ID_KEY))
                         .build();
                 }).collect(Collectors.toList()));
         }

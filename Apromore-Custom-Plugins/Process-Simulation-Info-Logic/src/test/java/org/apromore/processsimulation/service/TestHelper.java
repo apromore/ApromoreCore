@@ -74,7 +74,7 @@ public class TestHelper {
             .arrivalRateDistribution(
                 Distribution.builder()
                     .type(DistributionType.EXPONENTIAL)
-                    .arg1("6624.00")
+                    .arg1("26784.00")
                     .timeUnit(TimeUnit.HOURS)
                     .build()
             );
@@ -99,16 +99,16 @@ public class TestHelper {
 
         if (includeTimetable) {
             builder.timetables(Arrays.asList(Timetable.builder()
-                .id("A_DEFAULT_TIMETABLE_ID")
-                .name("Arrival Timetable")
+                .id("A_CUSTOM_TIMETABLE_ID")
+                .name("Generic 24/7")
                 .defaultTimetable(true)
                 .rules(Arrays.asList(Rule.builder()
                     .name("Default Timeslot")
                     .id("DEF_RULE_ID")
-                    .fromWeekDay(DayOfWeek.SUNDAY)
-                    .toWeekDay(DayOfWeek.SATURDAY)
-                    .fromTime("10:00:00.000+00:00")
-                    .toTime("15:00:00.000+00:00")
+                    .fromWeekDay(DayOfWeek.MONDAY)
+                    .toWeekDay(DayOfWeek.SUNDAY)
+                    .fromTime("00:00:00.000")
+                    .toTime("23:59:59.999")
                     .build()))
                 .build()));
         }
@@ -116,11 +116,11 @@ public class TestHelper {
         if (includeResource) {
             builder.resources(List.of(
                 Resource.builder()
-                    .id("QBP_1").name("Role_1").totalAmount(5).timetableId("A_DEFAULT_TIMETABLE_ID").build(),
+                    .id("QBP_1").name("Role_1").totalAmount(5).timetableId("A_CUSTOM_TIMETABLE_ID").build(),
                 Resource.builder()
-                    .id("QBP_2").name("Role_2").totalAmount(10).timetableId("A_DEFAULT_TIMETABLE_ID").build(),
+                    .id("QBP_2").name("Role_2").totalAmount(10).timetableId("A_CUSTOM_TIMETABLE_ID").build(),
                 Resource.builder()
-                    .id("QBP_3").name("Role_3").totalAmount(15).timetableId("A_DEFAULT_TIMETABLE_ID").build()
+                    .id("QBP_3").name("Role_3").totalAmount(15).timetableId("A_CUSTOM_TIMETABLE_ID").build()
             ));
         }
 
