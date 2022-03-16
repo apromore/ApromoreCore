@@ -191,7 +191,7 @@ public class ParquetExport extends AbstractParquetProducer {
         try {
             Files.delete(java.nio.file.Paths.get(filename));
         } catch (Exception ignored) {
-            LoggerUtil.getLogger(ParquetExport.class).error("File not found", ignored);
+            LoggerUtil.getLogger(ParquetExport.class).info("File not found", ignored);
         }
 
         try {

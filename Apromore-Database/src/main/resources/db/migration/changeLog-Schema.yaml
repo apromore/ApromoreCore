@@ -1341,7 +1341,6 @@ databaseChangeLog:
              - column:
                  constraints:
                    nullable: false
-                   unique: true
                  name: log_id
                  type: INT
                  remarks: 'Training Log id'
