@@ -86,6 +86,10 @@
     display: none;
 }
 
+.ap-auxhead .z-icon-filter {
+    line-height: 20px;
+}
+
 .ap-role-edit-box {
     padding: 8px;
 }
@@ -138,4 +142,47 @@
 
 .z-button[disabled] {
     color: var(--text-color-lighter);
+}
+
+.ap-assign-role-listbox-container {
+    position:relative;
+    display:flex;
+}
+
+.ap-role-listbox-toggle {
+    position: absolute;
+    top: 13px;
+    left: 15px;
+    z-index: 2;
+    color: white;
+    cursor: pointer;
+}
+
+.ap-role-listbox-toggle .z-checkbox {
+    padding: 0px;
+    border: 0px;
+    box-shadow: 0px 0px black;
+    width: 20px;
+}
+
+.ap-role-listbox-toggle input[type="checkbox"] {
+    display: none;
+}
+
+.ap-role-listbox-toggle i {
+    font-size: 10px;
+    padding-right: 3px;
+}
+
+.ap-assigned-user-listbox-checkbox {
+    position: absolute;
+    top: 14px;
+    left: 15px;
+    z-index: 2;
+}
+
+.ap-assigned-user-listbox-checkbox input[type="checkbox"]:indeterminate,
+.ap-assigned-user-listbox-checkbox input[type="checkbox"]:checked {
+    background-color: white;
+    color: var(--ap-c-widget);
 }

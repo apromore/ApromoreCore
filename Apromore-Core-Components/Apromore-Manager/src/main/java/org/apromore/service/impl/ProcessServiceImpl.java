@@ -80,6 +80,7 @@ import javax.activation.DataHandler;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.mail.util.ByteArrayDataSource;
+import javax.xml.XMLConstants;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
@@ -316,10 +317,12 @@ public class ProcessServiceImpl implements ProcessService {
    */
   public static InputStream sanitizeBPMN(final InputStream in) throws Exception {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
-    TransformerFactory.newInstance()
-        .newTransformer(new StreamSource(
-            ProcessServiceImpl.class.getClassLoader().getResourceAsStream("xsd/sanitizeBPMN.xsl")))
-        .transform(new StreamSource(in), new StreamResult(out));
+    TransformerFactory factory = TransformerFactory.newInstance();
+    factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+    factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+    factory.newTransformer(new StreamSource(
+        ProcessServiceImpl.class.getClassLoader().getResourceAsStream("xsd/sanitizeBPMN.xsl")))
+      .transform(new StreamSource(in), new StreamResult(out));
 
     return new ByteArrayInputStream(out.toByteArray());
   }

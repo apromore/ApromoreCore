@@ -21,7 +21,7 @@
   -->
 
 
-<window id="costTableWindow" width="700px" height="427px" mode="overlapped" sizable="true" maximizable="true" closable="true" position="center"
+<window id="costTableWindow" width="700px" height="427px" mode="overlapped" sizable="true" maximizable="false" closable="true" position="center"
         title="${arg.pdLabels.costTable_text}"
         sclass="ap-cost-table"
         contentStyle="overflow:auto">
