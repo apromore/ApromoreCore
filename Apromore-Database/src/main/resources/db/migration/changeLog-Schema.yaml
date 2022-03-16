@@ -1355,8 +1355,5 @@ databaseChangeLog:
                  name: target_attribute
                  type: VARCHAR(200)
              - column:
-                 name: save_location
-                 type: VARCHAR(600)
-             - column:
                  name: ppm_status
                  type: VARCHAR(15)

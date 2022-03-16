@@ -28,19 +28,16 @@ public class PredictorDao {
     private PredictionType predictionType;
     @Column(name = "target_attribute")
     private String targetAttribute;
-    @Column(name = "save_location")
-    private String saveLocation;
     @Column(name = "ppm_status")
     @Enumerated(EnumType.STRING)
     private PpmStatus ppmStatus;
 
     public PredictorDao(int logId, String name, PredictionType predictionType, String targetAttribute,
-                        String saveLocation, PpmStatus ppmStatus) {
+                        PpmStatus ppmStatus) {
         this.logId = logId;
         this.name = name;
         this.predictionType = predictionType;
         this.targetAttribute = targetAttribute;
-        this.saveLocation = saveLocation;
         this.ppmStatus = ppmStatus;
     }
 }
