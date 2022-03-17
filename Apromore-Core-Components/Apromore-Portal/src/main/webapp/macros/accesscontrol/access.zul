@@ -56,7 +56,10 @@
         <div sclass="ap-portal-menu-actions" hflex="1" height="40px"
              style="box-sizing: border-box; padding: 8px;">
             <div id="assigneeAddView">
-                <combobox id="candidateAssigneeCombobox" placeholder="${$composer.labels.selectUserOrGroup_text}">
+                <combobox id="candidateAssigneeCombobox"
+                          placeholder="${$composer.labels.selectUserOrGroup_text}"
+                          forward="onOK=candidateAssigneeAdd.onClick"
+                >
                     <template name="model">
                         <comboitem sclass="type-${each.type}" label="${each.name}"/>
                     </template>
