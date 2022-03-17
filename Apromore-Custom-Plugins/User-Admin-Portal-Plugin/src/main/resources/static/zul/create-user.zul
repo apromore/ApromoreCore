@@ -34,19 +34,20 @@
                          placeholder="Username"/>
             </row>
             <row>
-                <label value="First Name"/>
+                <label value="${$composer.labels.firstName_text}"/>
                 <textbox id="firstNameTextbox" placeholder="${$composer.labels.firstName_text}"/>
             </row>
             <row>
-                <label value="Last Name"/>
+                <label value="${$composer.labels.lastName_text}"/>
                 <textbox id="lastNameTextbox" placeholder="${$composer.labels.lastName_text}"/>
             </row>
             <row>
-                <label value="Email"/>
-                <textbox id="emailTextbox" constraint="no empty: {Email is mandatory}" placeholder="${$composer.labels.email_text}"/>
+                <label value="${$composer.labels.email_text}"/>
+                <textbox id="emailTextbox" constraint="no empty: ${$composer.labels.email_mandatory_message}"
+                         placeholder="${$composer.labels.email_text}"/>
             </row>
             <row>
-                <label value="Password"/>
+                <label value="${$composer.labels.password_text}"/>
                 <textbox id="passwordTextbox" constraint="no empty" placeholder="${$composer.labels.password_text}" type="password"/>
             </row>
         </rows>
