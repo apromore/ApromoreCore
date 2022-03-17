@@ -20,7 +20,9 @@ package org.apromore.dao.model;
 
 public enum PpmStatus {
     INITIALIZED,
+    DOWNLOADING,
     PROCESSING,
+    UPLOADING,
     COMPLETED,
     CANCELLED,
     ERROR
