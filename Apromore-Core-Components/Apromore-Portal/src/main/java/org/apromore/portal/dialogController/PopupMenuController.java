@@ -288,7 +288,7 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
     private void addNewLogFilterMenuItem(Menupopup popup) {
         Menuitem item = new Menuitem();
         item.setLabel(Labels.getLabel("plugin_new_log_filter_text"));
-        item.setImage("~./themes/ap/common/img/icons/create_filtered_log.svg");
+        item.setIconSclass("icon-create_filtered_log");
         item.addEventListener(ON_CLICK, event -> {
             try {
                 PortalPlugin plugin = portalPluginMap.get(PluginCatalog.PLUGIN_FILTER_LOG);
@@ -319,7 +319,7 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
     private void addFullLogDiscoverModelMenuItem(Menupopup popup) {
         Menuitem item = new Menuitem();
         item.setLabel(Labels.getLabel("portal_full_log_discover_model"));
-        item.setImage("~./img/icon/svg/log_icon.svg");
+        item.setIconSclass("icon-log");
         item.addEventListener(ON_CLICK, event -> {
             try {
                 PortalPlugin plugin = portalPluginMap.get(PluginCatalog.PLUGIN_DISCOVER_MODEL);
@@ -351,7 +351,7 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
     private void addNewCalendarMenuItem(Menupopup popup) {
         Menuitem item = new Menuitem();
         item.setLabel(Labels.getLabel("portal_create_new_calendar"));
-        item.setImage("~./themes/ap/common/img/icons/create_calendar.svg");
+        item.setIconSclass("icon-create_calendar");
         item.addEventListener(ON_CLICK, event -> createNewCalendar());
         popup.appendChild(item);
     }

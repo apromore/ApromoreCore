@@ -66,3 +66,18 @@
 .icon-rename:before {
   content: "\e905";
 }
+.icon-create_filter:before {
+  content: "\a0003";
+}
+.icon-create_dashboard:before {
+  content: "\e900";
+}
+.icon-create_filtered_log:before {
+  content: "\a0002";
+}
+.icon-log:before {
+  content: "\a0001";
+}
+.icon-create_calendar:before {
+  content: "\a0005";
+}
