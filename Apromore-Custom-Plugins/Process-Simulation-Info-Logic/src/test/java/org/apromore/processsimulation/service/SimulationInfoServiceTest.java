@@ -95,7 +95,7 @@ class SimulationInfoServiceTest {
         when(config.getDefaultResourceName()).thenReturn("The default resource name");
 
         CalendarModel mockCalendarModel = new CalendarModelBuilder().withAllDayAllTime().build();
-        mockCalendarModel.setName("Generic 24/7");
+        mockCalendarModel.setName(SimulationData.DEFAULT_CALENDAR_NAME);
 
         when(calendarService.getGenericCalendar()).thenReturn(mockCalendarModel);
     }

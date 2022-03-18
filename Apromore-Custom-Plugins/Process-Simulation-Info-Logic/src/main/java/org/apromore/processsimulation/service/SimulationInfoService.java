@@ -210,7 +210,7 @@ public class SimulationInfoService {
         final ProcessSimulationInfo.ProcessSimulationInfoBuilder builder,
         final CalendarModel calendarModel) {
 
-        if (calendarModel.getName().equals("Generic 24/7")) {
+        if (calendarModel.getName().equals(SimulationData.DEFAULT_CALENDAR_NAME)) {
             builder.timetables(List.of(createTimetable(
                 calendarModel, config.getCustomTimetableId(), true)));
         } else {
