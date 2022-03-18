@@ -10,6 +10,8 @@ import org.slf4j.Logger;
 public class AlphaNumericComparator {
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(AlphaNumericComparator.class);
 
+    private AlphaNumericComparator(){}
+
     // Taken from https://javaprogramming.language-tutorial.com/2012/10/alphanumeric-string-sorting-using-java.html
     public static int compareTo(String name1, String name2) {
         try {
