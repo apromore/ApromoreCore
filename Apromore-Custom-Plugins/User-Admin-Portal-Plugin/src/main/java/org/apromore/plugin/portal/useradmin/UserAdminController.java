@@ -563,6 +563,7 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
                     if ("CREATE_GROUP".equals(eventType) || "DELETE_GROUP".equals(eventType)) {
                         refreshGroups();
                         refreshAssignedGroups();
+                        refreshRoleTabGroupList();
                     }
 
                     // Update the role collection
@@ -719,6 +720,13 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
             getLabel("assignedGroups_text"));
         assignedGroupItemRenderer.setList(assignedGroupList);
         assignedGroupItemRenderer.setListbox(assignedGroupListbox);
+    }
+
+    private void refreshRoleTabGroupList() {
+        roleTabGroupModel = selectedRole == null ? new ListModelList<>()
+            : new ListModelList<>(securityService.findElectiveGroups(), false);
+        roleTabGroupList.setSourceListModel(roleTabGroupModel);
+        roleTabGroupList.reset();
     }
 
     private void updateTristateModels(TristateListbox list, Map<String, Integer> tally,
@@ -1479,6 +1487,8 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
             MessageFormat.format(getLabel("updatedGroupDetails_message"), selectedGroup.getName()));
         isGroupDetailDirty = false;
         refreshGroups();
+        refreshAssignedGroups();
+        refreshRoleTabGroupList();
         setSelectedGroup(null);
     }
 
