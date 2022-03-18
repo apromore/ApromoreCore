@@ -25,7 +25,7 @@
 package org.apromore.portal.dialogController;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +57,7 @@ import org.apromore.portal.model.SummariesType;
 import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.UserType;
 import org.apromore.portal.model.VersionSummaryType;
+import org.apromore.portal.util.SummaryTypeComparator;
 import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
 import org.zkoss.util.resource.Labels;
@@ -1095,6 +1096,7 @@ public abstract class BaseListboxController extends BaseController {
         FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
         summaries = mainController.getManagerService().getProcessSummaries(user.getId(),
             currentFolder == null ? 0 : currentFolder.getId(), pageIndex, pageSize);
+        Collections.sort(summaries.getSummary(), new SummaryTypeComparator());
         currentPageIndex = pageIndex;
       }
       return summaries;
@@ -1107,6 +1109,7 @@ public abstract class BaseListboxController extends BaseController {
         FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
         logSummaries = mainController.getManagerService().getLogSummaries(user.getId(),
             currentFolder == null ? 0 : currentFolder.getId(), pageIndex, pageSize);
+        Collections.sort(logSummaries.getSummary(), new SummaryTypeComparator());
         currentLogPageIndex = pageIndex;
       }
       return logSummaries;
