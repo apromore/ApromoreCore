@@ -108,8 +108,6 @@ public class SimulationInfoService {
         ProcessSimulationInfo processSimulationInfo = null;
         if (isFeatureEnabled() && simulationData != null) {
 
-            CalendarModel calendarModel = getActiveCalendarModel(simulationData);
-
             ProcessSimulationInfo.ProcessSimulationInfoBuilder builder =
                 ProcessSimulationInfo.builder()
                     .id("qbp_" + Locale.getDefault().getLanguage() + UUID.randomUUID())
@@ -121,7 +119,7 @@ public class SimulationInfoService {
 
             deriveTaskInfo(builder, simulationData, resourceNameToId);
 
-            deriveTimetable(builder, calendarModel);
+            deriveTimetable(builder, simulationData);
 
             deriveGatewayProbabilities(builder, simulationData);
 
@@ -129,18 +127,6 @@ public class SimulationInfoService {
         }
 
         return processSimulationInfo;
-    }
-
-    private CalendarModel getActiveCalendarModel(SimulationData simulationData) {
-        CalendarModel activeCalendar;
-        if (simulationData.getCalendarModel() == null) {
-            // If no calendar, default to a 24 x 7 calendar
-            activeCalendar = calendarService.getGenericCalendar();
-        } else {
-            activeCalendar = simulationData.getCalendarModel();
-        }
-
-        return activeCalendar;
     }
 
     private void deriveGeneralInfo(
@@ -169,10 +155,9 @@ public class SimulationInfoService {
      * @return the inter-arrival time of events (in milliseconds)
      */
     protected double getInterArrivalTime(final SimulationData simulationData) {
-        CalendarModel arrivalCalendar = getActiveCalendarModel(simulationData);
 
-        return arrivalCalendar.getDurationMillis(simulationData.getStartTime(), simulationData.getEndTime())
-               / (double) simulationData.getCaseCount();
+        return simulationData.getCalendarModel().getDurationMillis(
+            simulationData.getStartTime(), simulationData.getEndTime()) / (double) simulationData.getCaseCount();
     }
 
     private void deriveTaskInfo(
@@ -208,7 +193,9 @@ public class SimulationInfoService {
 
     private void deriveTimetable(
         final ProcessSimulationInfo.ProcessSimulationInfoBuilder builder,
-        final CalendarModel calendarModel) {
+        final SimulationData simulationData) {
+
+        CalendarModel calendarModel = simulationData.getCalendarModel();
 
         if (calendarModel.getName().equals(SimulationData.DEFAULT_CALENDAR_NAME)) {
             builder.timetables(List.of(createTimetable(

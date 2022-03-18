@@ -43,6 +43,7 @@ public class SimulationData {
     private long startTime;
     private long endTime;
 
+    @NonNull
     private CalendarModel calendarModel;
 
     @Getter(AccessLevel.NONE)

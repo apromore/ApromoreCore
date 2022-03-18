@@ -40,6 +40,8 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.io.IOUtils;
+import org.apromore.calendar.builder.CalendarModelBuilder;
+import org.apromore.calendar.model.CalendarModel;
 import org.apromore.processsimulation.dto.EdgeFrequency;
 import org.apromore.processsimulation.dto.SimulationData;
 import org.apromore.processsimulation.model.Currency;
@@ -145,6 +147,9 @@ public class TestHelper {
 
     public static SimulationData createMockSimulationData() {
 
+        CalendarModel mockCalendarModel = new CalendarModelBuilder().withAllDayAllTime().build();
+        mockCalendarModel.setName(SimulationData.DEFAULT_CALENDAR_NAME);
+
         SimulationData simulationData = SimulationData.builder()
             .caseCount(100)
             .resourceCount(23)
@@ -157,6 +162,7 @@ public class TestHelper {
                 EdgeFrequency.builder().edgeId("edge2").frequency(2025).build(),
                 EdgeFrequency.builder().edgeId("edge3").frequency(3016).build(),
                 EdgeFrequency.builder().edgeId("edge4").frequency(4959).build())))
+            .calendarModel(mockCalendarModel)
             .build();
         return simulationData;
     }

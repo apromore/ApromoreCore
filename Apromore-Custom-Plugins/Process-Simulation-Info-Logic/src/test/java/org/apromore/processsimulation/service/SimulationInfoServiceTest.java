@@ -103,11 +103,7 @@ class SimulationInfoServiceTest {
     @Test
     void should_successfully_derive_general_simulation_info() {
         // given
-        SimulationData mockSimulationData = mock(SimulationData.class);
-
-        when(mockSimulationData.getCaseCount()).thenReturn(100L);
-        when(mockSimulationData.getStartTime()).thenReturn(1577797200000L);
-        when(mockSimulationData.getEndTime()).thenReturn(1580475600000L);
+        SimulationData mockSimulationData = mockBasicSimulationData();
 
         // when
         ProcessSimulationInfo processSimulationInfo =
@@ -120,11 +116,7 @@ class SimulationInfoServiceTest {
     @Test
     void should_successfully_derive_task_simulation_info_with_default_resource() {
         // given
-        SimulationData mockSimulationData = mock(SimulationData.class);
-
-        when(mockSimulationData.getCaseCount()).thenReturn(100L);
-        when(mockSimulationData.getStartTime()).thenReturn(1577797200000L);
-        when(mockSimulationData.getEndTime()).thenReturn(1580475600000L);
+        SimulationData mockSimulationData = mockBasicSimulationData();
 
         when(mockSimulationData.getDiagramNodeIDs()).thenReturn(Arrays.asList("a", "b", "c"));
         when(mockSimulationData.getDiagramNodeDuration("a")).thenReturn(10100.00);
@@ -147,11 +139,7 @@ class SimulationInfoServiceTest {
     @Test
     void should_successfully_derive_task_simulation_info_with_default_role() {
         // given
-        SimulationData mockSimulationData = mock(SimulationData.class);
-
-        when(mockSimulationData.getCaseCount()).thenReturn(100L);
-        when(mockSimulationData.getStartTime()).thenReturn(1577797200000L);
-        when(mockSimulationData.getEndTime()).thenReturn(1580475600000L);
+        SimulationData mockSimulationData = mockBasicSimulationData();
 
         when(mockSimulationData.getDiagramNodeIDs()).thenReturn(Arrays.asList("a", "b", "c"));
         when(mockSimulationData.getDiagramNodeDuration("a")).thenReturn(10100.00);
@@ -174,11 +162,7 @@ class SimulationInfoServiceTest {
     @Test
     void should_successfully_derive_task_simulation_info_with_associated_resource() {
         // given
-        SimulationData mockSimulationData = mock(SimulationData.class);
-
-        when(mockSimulationData.getCaseCount()).thenReturn(100L);
-        when(mockSimulationData.getStartTime()).thenReturn(1577797200000L);
-        when(mockSimulationData.getEndTime()).thenReturn(1580475600000L);
+        SimulationData mockSimulationData = mockBasicSimulationData();
 
         when(mockSimulationData.getDiagramNodeIDs()).thenReturn(Arrays.asList("a", "b", "c"));
         when(mockSimulationData.getDiagramNodeDuration("a")).thenReturn(10100.00);
@@ -241,11 +225,7 @@ class SimulationInfoServiceTest {
     @Test
     void should_successfully_derive_timetable_info_with_generic_24_7_calendar() {
         // given
-        SimulationData mockSimulationData = mock(SimulationData.class);
-
-        when(mockSimulationData.getCaseCount()).thenReturn(100L);
-        when(mockSimulationData.getStartTime()).thenReturn(1577797200000L);
-        when(mockSimulationData.getEndTime()).thenReturn(1580475600000L);
+        SimulationData mockSimulationData = mockBasicSimulationData();
 
         // when
         ProcessSimulationInfo processSimulationInfo =
@@ -273,11 +253,7 @@ class SimulationInfoServiceTest {
     @Test
     void should_successfully_derive_timetable_info_with_custom_calendar() {
         // given
-        SimulationData mockSimulationData = mock(SimulationData.class);
-
-        when(mockSimulationData.getCaseCount()).thenReturn(100L);
-        when(mockSimulationData.getStartTime()).thenReturn(1577797200000L);
-        when(mockSimulationData.getEndTime()).thenReturn(1580475600000L);
+        SimulationData mockSimulationData = mockBasicSimulationData();
 
         CalendarModel mockCustomCalendarModel = new CalendarModelBuilder().with5DayWorking().build();
         mockCustomCalendarModel.setName("Mock Business Calendar");
@@ -354,11 +330,7 @@ class SimulationInfoServiceTest {
     @Test
     void should_successfully_derive_resource_info() {
         // given
-        SimulationData mockSimulationData = mock(SimulationData.class);
-
-        when(mockSimulationData.getCaseCount()).thenReturn(100L);
-        when(mockSimulationData.getStartTime()).thenReturn(1577797200000L);
-        when(mockSimulationData.getEndTime()).thenReturn(1580475600000L);
+        SimulationData mockSimulationData = mockBasicSimulationData();
         when(mockSimulationData.getResourceCount()).thenReturn(27L);
 
         Map<String, Integer> mockRoleToResourceCounts = Map.of(
@@ -408,11 +380,7 @@ class SimulationInfoServiceTest {
     @Test
     void should_contain_default_resource_if_no_roles() {
         // given
-        SimulationData mockSimulationData = mock(SimulationData.class);
-
-        when(mockSimulationData.getCaseCount()).thenReturn(100L);
-        when(mockSimulationData.getStartTime()).thenReturn(1577797200000L);
-        when(mockSimulationData.getEndTime()).thenReturn(1580475600000L);
+        SimulationData mockSimulationData = mockBasicSimulationData();
         when(mockSimulationData.getResourceCount()).thenReturn(19L);
         when(mockSimulationData.getResourceCountsByRole()).thenReturn(null);
 
@@ -443,6 +411,20 @@ class SimulationInfoServiceTest {
         assertEquals(Instant.ofEpochMilli(1577797200000L).toString(),
             actualProcessSimulationInfo.getStartDateTime());
         assertEquals(Currency.EUR, actualProcessSimulationInfo.getCurrency());
+    }
+
+    private SimulationData mockBasicSimulationData() {
+        SimulationData mockSimulationData = mock(SimulationData.class);
+
+        when(mockSimulationData.getCaseCount()).thenReturn(100L);
+        when(mockSimulationData.getStartTime()).thenReturn(1577797200000L);
+        when(mockSimulationData.getEndTime()).thenReturn(1580475600000L);
+
+        CalendarModel mockCalendarModel = new CalendarModelBuilder().withAllDayAllTime().build();
+        mockCalendarModel.setName(SimulationData.DEFAULT_CALENDAR_NAME);
+        when(mockSimulationData.getCalendarModel()).thenReturn(mockCalendarModel);
+
+        return mockSimulationData;
     }
 
     @Test
