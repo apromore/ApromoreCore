@@ -1,3 +1,24 @@
+/*-
+ * #%L
+ * This file is part of "Apromore Core".
+ * %%
+ * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ *
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * #L%
+ */
 package org.apromore.apmlog.filter.typefilters;
 
 import org.apromore.apmlog.APMLog;
@@ -11,15 +32,13 @@ import org.apromore.apmlog.filter.types.FilterType;
 import org.apromore.apmlog.filter.types.Inclusion;
 import org.apromore.apmlog.filter.types.OperationType;
 import org.apromore.apmlog.filter.types.Section;
-import org.apromore.apmlog.logobjects.ActivityInstance;
 import org.apromore.apmlog.xes.XESAttributeCodes;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class NodeDurationFilterTest {
 
@@ -31,15 +50,11 @@ public class NodeDurationFilterTest {
         List<LogFilterRule> criteria = getFilterCriteria(Choice.REMOVE);
         APMLogFilter apmLogFilter = new APMLogFilter(log5cases);
         apmLogFilter.filter(criteria);
-        assertTrue(apmLogFilter.getAPMLog().getActivityInstances().stream()
-                .filter(x -> x.getAttributeValue(XESAttributeCodes.CONCEPT_NAME).equals(ATTR_VAL))
-                .collect(Collectors.summarizingDouble(ActivityInstance::getDuration)).getMin() >= 40 * (1000 * 60));
+        assertEquals(2, apmLogFilter.getAPMLog().size());
 
         criteria = getFilterCriteria(Choice.RETAIN);
         apmLogFilter.filter(criteria);
-        assertTrue(apmLogFilter.getAPMLog().getActivityInstances().stream()
-                .filter(x -> x.getAttributeValue(XESAttributeCodes.CONCEPT_NAME).equals(ATTR_VAL))
-                .collect(Collectors.summarizingDouble(ActivityInstance::getDuration)).getMax() <= 40 * (1000 * 60));
+        assertEquals(3, apmLogFilter.getAPMLog().size());
     }
 
     private List<LogFilterRule> getFilterCriteria(Choice choice) {
@@ -52,7 +67,7 @@ public class NodeDurationFilterTest {
         String lowBoundUnit = "days";
         String upBoundUnit = "days";
 
-        Set<RuleValue> primaryValues = new HashSet<>();
+        Set<RuleValue> primaryValues = new HashSet<RuleValue>();
 
         String attrKey = XESAttributeCodes.CONCEPT_NAME;
 
