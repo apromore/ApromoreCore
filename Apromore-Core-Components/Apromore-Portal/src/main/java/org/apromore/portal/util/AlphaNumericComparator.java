@@ -1,0 +1,78 @@
+package org.apromore.portal.util;
+
+import org.apromore.plugin.portal.PortalLoggerFactory;
+import org.slf4j.Logger;
+
+/*
+ * @author Mohammad Ali
+ */
+
+public class AlphaNumericComparator {
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(AlphaNumericComparator.class);
+
+    // Taken from https://javaprogramming.language-tutorial.com/2012/10/alphanumeric-string-sorting-using-java.html
+    public static int compareTo(String name1, String name2) {
+        try {
+            if (name1 == null || name2 == null) {
+                return 0;
+            }
+            name1 = name1.toUpperCase();
+            name2 = name2.toUpperCase();
+            int lengthFirstStr = name1.length();
+            int lengthSecondStr = name2.length();
+
+            int index1 = 0;
+            int index2 = 0;
+
+            while (index1 < lengthFirstStr && index2 < lengthSecondStr) {
+                char ch1 = name1.charAt(index1);
+                char ch2 = name2.charAt(index2);
+
+                char[] space1 = new char[lengthFirstStr];
+                char[] space2 = new char[lengthSecondStr];
+
+                index1 = getFirstNonMatchTypeIndex(name1, lengthFirstStr, index1, ch1, space1);
+                index2 = getFirstNonMatchTypeIndex(name2, lengthSecondStr, index2, ch2, space2);
+
+                String str1 = new String(space1);
+                String str2 = new String(space2);
+
+                int result;
+                if (Character.isDigit(space1[0]) && Character.isDigit(space2[0])) {
+                    Integer firstNumberToCompare = Integer
+                        .parseInt(str1.trim());
+                    Integer secondNumberToCompare = Integer
+                        .parseInt(str2.trim());
+                    result = firstNumberToCompare.compareTo(secondNumberToCompare);
+                } else {
+                    result = str1.compareTo(str2);
+                }
+
+                if (result != 0) {
+                    return result;
+                }
+            }
+            return lengthFirstStr - lengthSecondStr;
+        } catch (Exception ex) {
+            LOGGER.error("Error in compare string", ex);
+            return 0;
+        }
+    }
+
+    private static int getFirstNonMatchTypeIndex(String name, int lengthStr, int index, char ch, char[] space) {
+        int loc = 0;
+        do {
+            space[loc++] = ch;
+            index++;
+
+            if (index < lengthStr) {
+                ch = name.charAt(index);
+            } else {
+                break;
+            }
+        } while (Character.isDigit(ch) == Character.isDigit(space[0]));
+        return index;
+    }
+
+
+}
