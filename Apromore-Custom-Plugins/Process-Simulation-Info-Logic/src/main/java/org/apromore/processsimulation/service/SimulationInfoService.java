@@ -21,12 +21,6 @@
 
 package org.apromore.processsimulation.service;
 
-import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_CUSTOM_ID_KEY;
-import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_DEFAULT_ID_KEY;
-import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_DEFAULT_ID_PREFIX_KEY;
-import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_DEFAULT_NAME_KEY;
-import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_NAME_KEY;
-
 import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -193,7 +187,7 @@ public class SimulationInfoService {
 
                 String roleName = simulationData.getRoleNameByNodeId(nodeId);
                 if (roleName.equals(SimulationData.DEFAULT_ROLE)) {
-                    roleName = config.getDefaultResource().get(CONFIG_DEFAULT_NAME_KEY);
+                    roleName = config.getDefaultResourceName();
                 }
 
                 return Element.builder()
@@ -218,13 +212,13 @@ public class SimulationInfoService {
 
         if (calendarModel.getName().equals("Generic 24/7")) {
             builder.timetables(List.of(createTimetable(
-                calendarModel, config.getTimetable().get(CONFIG_CUSTOM_ID_KEY), true)));
+                calendarModel, config.getCustomTimetableId(), true)));
         } else {
             builder.timetables(
                 List.of(
-                    createTimetable(calendarModel, config.getTimetable().get(CONFIG_CUSTOM_ID_KEY), true),
+                    createTimetable(calendarModel, config.getCustomTimetableId(), true),
                     createTimetable(calendarService.getGenericCalendar(),
-                        config.getTimetable().get(CONFIG_DEFAULT_ID_KEY), false)
+                        config.getDefaultTimetableId(), false)
                 ));
         }
     }
@@ -244,7 +238,7 @@ public class SimulationInfoService {
             .name(calendarModel.getName())
             .rules(Arrays.asList(Rule.builder()
                 .id(UUID.randomUUID().toString())
-                .name(config.getTimetable().get(CONFIG_DEFAULT_TIMESLOT_NAME_KEY))
+                .name(config.getDefaultTimeslotName())
                 .fromWeekDay(workingDays.get(0).getDayOfWeek())
                 .toWeekDay(workingDays.get(workingDays.size() - 1).getDayOfWeek())
                 .fromTime(workingDays.get(0).getStartTime().format(TIMETABLE_TIME_FORMATTER))
@@ -262,19 +256,18 @@ public class SimulationInfoService {
         if (ObjectUtils.isEmpty(simulationData.getResourceCountsByRole())) {
             // No role to resource count mapping. Use the QBP_DEFAULT_RESOURCE tag and the total
             // resource count agains it.
-            String defaultResourceId = config.getDefaultResource().get(CONFIG_DEFAULT_ID_PREFIX_KEY)
-                                       + config.getDefaultResource().get(CONFIG_DEFAULT_ID_KEY);
+            String defaultResourceId = config.getDefaultResourceIdPrefix() + config.getDefaultResourceId();
 
             builder.resources(List.of(
                 Resource.builder()
                     .id(defaultResourceId)
-                    .name(config.getDefaultResource().get(CONFIG_DEFAULT_NAME_KEY))
+                    .name(config.getDefaultResourceName())
                     .totalAmount(simulationData.getResourceCount())
-                    .timetableId(config.getTimetable().get(CONFIG_CUSTOM_ID_KEY))
+                    .timetableId(config.getCustomTimetableId())
                     .build()
             ));
 
-            resouceNameToId.put(config.getDefaultResource().get(CONFIG_DEFAULT_NAME_KEY), defaultResourceId);
+            resouceNameToId.put(config.getDefaultResourceName(), defaultResourceId);
 
         } else {
 
@@ -291,11 +284,10 @@ public class SimulationInfoService {
                      */
                     if (roleToResourceCount.getKey().equals(SimulationData.DEFAULT_ROLE)) {
                         // key -> QBP_DEFAULT_RESOURCE (i.e. no associated role)
-                        resourceId = config.getDefaultResource().get(CONFIG_DEFAULT_ID_PREFIX_KEY)
-                                     + config.getDefaultResource().get(CONFIG_DEFAULT_ID_KEY);
-                        resourceName = config.getDefaultResource().get(CONFIG_DEFAULT_NAME_KEY);
+                        resourceId = config.getDefaultResourceIdPrefix() + config.getDefaultResourceId();
+                        resourceName = config.getDefaultResourceName();
                     } else {
-                        resourceId = config.getDefaultResource().get(CONFIG_DEFAULT_ID_PREFIX_KEY) + UUID.randomUUID();
+                        resourceId = config.getDefaultResourceIdPrefix() + UUID.randomUUID();
                         resourceName = roleToResourceCount.getKey();
                     }
 
@@ -305,7 +297,7 @@ public class SimulationInfoService {
                         .id(resourceId)
                         .name(resourceName)
                         .totalAmount(roleToResourceCount.getValue())
-                        .timetableId(config.getTimetable().get(CONFIG_CUSTOM_ID_KEY))
+                        .timetableId(config.getCustomTimetableId())
                         .build();
                 }).collect(Collectors.toList()));
         }

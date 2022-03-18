@@ -86,17 +86,13 @@ class SimulationInfoServiceTest {
         when(config.getDefaultDistributionType()).thenReturn("EXPONENTIAL");
         when(config.getDefaultTimeUnit()).thenReturn("SECONDS");
 
-        Map<String, String> timeTableConfigMap = new HashMap<>();
-        timeTableConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_ID_KEY, "A_DEFAULT_TIMETABLE_ID");
-        timeTableConfigMap.put(SimulationInfoConfig.CONFIG_CUSTOM_ID_KEY, "A_CUSTOM_TIMETABLE_ID");
-        timeTableConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_NAME_KEY, "Default Timeslot");
-        when(config.getTimetable()).thenReturn(timeTableConfigMap);
+        when(config.getDefaultTimetableId()).thenReturn("A_DEFAULT_TIMETABLE_ID");
+        when(config.getCustomTimetableId()).thenReturn("A_CUSTOM_TIMETABLE_ID");
+        when(config.getDefaultTimeslotName()).thenReturn("Default Timeslot");
 
-        Map<String, String> defaultResourceConfigMap = new HashMap<>();
-        defaultResourceConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_ID_KEY, "A_DEFAULT_RESOURCE_ID");
-        defaultResourceConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_NAME_KEY, "The default resource name");
-        defaultResourceConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_ID_PREFIX_KEY, "QBP_");
-        when(config.getDefaultResource()).thenReturn(defaultResourceConfigMap);
+        when(config.getDefaultResourceId()).thenReturn("A_DEFAULT_RESOURCE_ID");
+        when(config.getDefaultResourceIdPrefix()).thenReturn("QBP_");
+        when(config.getDefaultResourceName()).thenReturn("The default resource name");
 
         CalendarModel mockCalendarModel = new CalendarModelBuilder().withAllDayAllTime().build();
         mockCalendarModel.setName("Generic 24/7");
