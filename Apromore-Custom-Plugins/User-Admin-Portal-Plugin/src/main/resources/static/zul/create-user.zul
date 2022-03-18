@@ -43,7 +43,7 @@
             </row>
             <row>
                 <label value="${$composer.labels.email_text}"/>
-                <textbox id="emailTextbox" constraint="no empty: ${$composer.labels.email_mandatory_message}"
+                <textbox id="emailTextbox" constraint="no empty: ${$composer.labels.email_mandatory_message}, ${labels.common_validEmailConstraint_text}"
                          placeholder="${$composer.labels.email_text}"/>
             </row>
             <row>
