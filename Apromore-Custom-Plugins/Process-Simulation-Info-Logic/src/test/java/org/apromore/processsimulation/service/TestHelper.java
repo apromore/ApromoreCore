@@ -40,6 +40,8 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.io.IOUtils;
+import org.apromore.calendar.builder.CalendarModelBuilder;
+import org.apromore.calendar.model.CalendarModel;
 import org.apromore.processsimulation.dto.EdgeFrequency;
 import org.apromore.processsimulation.dto.SimulationData;
 import org.apromore.processsimulation.model.Currency;
@@ -74,7 +76,7 @@ public class TestHelper {
             .arrivalRateDistribution(
                 Distribution.builder()
                     .type(DistributionType.EXPONENTIAL)
-                    .arg1("6624.00")
+                    .arg1("26784.00")
                     .timeUnit(TimeUnit.HOURS)
                     .build()
             );
@@ -99,16 +101,16 @@ public class TestHelper {
 
         if (includeTimetable) {
             builder.timetables(Arrays.asList(Timetable.builder()
-                .id("A_DEFAULT_TIMETABLE_ID")
-                .name("Arrival Timetable")
+                .id("A_CUSTOM_TIMETABLE_ID")
+                .name("Generic 24/7")
                 .defaultTimetable(true)
                 .rules(Arrays.asList(Rule.builder()
                     .name("Default Timeslot")
                     .id("DEF_RULE_ID")
-                    .fromWeekDay(DayOfWeek.SUNDAY)
-                    .toWeekDay(DayOfWeek.SATURDAY)
-                    .fromTime("10:00:00.000+00:00")
-                    .toTime("15:00:00.000+00:00")
+                    .fromWeekDay(DayOfWeek.MONDAY)
+                    .toWeekDay(DayOfWeek.SUNDAY)
+                    .fromTime("00:00:00.000")
+                    .toTime("23:59:59.999")
                     .build()))
                 .build()));
         }
@@ -116,11 +118,11 @@ public class TestHelper {
         if (includeResource) {
             builder.resources(List.of(
                 Resource.builder()
-                    .id("QBP_1").name("Role_1").totalAmount(5).timetableId("A_DEFAULT_TIMETABLE_ID").build(),
+                    .id("QBP_1").name("Role_1").totalAmount(5).timetableId("A_CUSTOM_TIMETABLE_ID").build(),
                 Resource.builder()
-                    .id("QBP_2").name("Role_2").totalAmount(10).timetableId("A_DEFAULT_TIMETABLE_ID").build(),
+                    .id("QBP_2").name("Role_2").totalAmount(10).timetableId("A_CUSTOM_TIMETABLE_ID").build(),
                 Resource.builder()
-                    .id("QBP_3").name("Role_3").totalAmount(15).timetableId("A_DEFAULT_TIMETABLE_ID").build()
+                    .id("QBP_3").name("Role_3").totalAmount(15).timetableId("A_CUSTOM_TIMETABLE_ID").build()
             ));
         }
 
@@ -145,6 +147,9 @@ public class TestHelper {
 
     public static SimulationData createMockSimulationData() {
 
+        CalendarModel mockCalendarModel = new CalendarModelBuilder().withAllDayAllTime().build();
+        mockCalendarModel.setName(SimulationData.DEFAULT_CALENDAR_NAME);
+
         SimulationData simulationData = SimulationData.builder()
             .caseCount(100)
             .resourceCount(23)
@@ -157,6 +162,7 @@ public class TestHelper {
                 EdgeFrequency.builder().edgeId("edge2").frequency(2025).build(),
                 EdgeFrequency.builder().edgeId("edge3").frequency(3016).build(),
                 EdgeFrequency.builder().edgeId("edge4").frequency(4959).build())))
+            .calendarModel(mockCalendarModel)
             .build();
         return simulationData;
     }
