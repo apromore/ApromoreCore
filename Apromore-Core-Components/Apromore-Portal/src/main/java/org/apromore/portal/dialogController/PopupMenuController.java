@@ -55,6 +55,7 @@ import org.apromore.portal.menu.MenuItem;
 import org.apromore.portal.menu.PluginCatalog;
 import org.apromore.portal.model.FolderType;
 import org.apromore.portal.model.LogSummaryType;
+import org.apromore.portal.model.PermissionType;
 import org.apromore.portal.model.UserType;
 import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.zk.notification.Notification;
@@ -287,7 +288,7 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
     private void addNewLogFilterMenuItem(Menupopup popup) {
         Menuitem item = new Menuitem();
         item.setLabel(Labels.getLabel("plugin_new_log_filter_text"));
-        item.setIconSclass(ICON_PLUS);
+        item.setIconSclass("icon-create_filtered_log");
         item.addEventListener(ON_CLICK, event -> {
             try {
                 PortalPlugin plugin = portalPluginMap.get(PluginCatalog.PLUGIN_FILTER_LOG);
@@ -318,7 +319,7 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
     private void addFullLogDiscoverModelMenuItem(Menupopup popup) {
         Menuitem item = new Menuitem();
         item.setLabel(Labels.getLabel("portal_full_log_discover_model"));
-        item.setImage("~./img/icon/svg/log_icon.svg");
+        item.setIconSclass("icon-log");
         item.addEventListener(ON_CLICK, event -> {
             try {
                 PortalPlugin plugin = portalPluginMap.get(PluginCatalog.PLUGIN_DISCOVER_MODEL);
@@ -350,7 +351,7 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
     private void addNewCalendarMenuItem(Menupopup popup) {
         Menuitem item = new Menuitem();
         item.setLabel(Labels.getLabel("portal_create_new_calendar"));
-        item.setIconSclass(ICON_PLUS);
+        item.setIconSclass("icon-create_calendar");
         item.addEventListener(ON_CLICK, event -> createNewCalendar());
         popup.appendChild(item);
     }
@@ -358,7 +359,7 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
     private void addNewDashboardMenuItem(Menupopup popup) {
         Menuitem item = new Menuitem();
         item.setLabel(Labels.getLabel("portal_create_new_dashboard"));
-        item.setIconSclass(ICON_PLUS);
+        item.setImage("~./themes/ap/common/img/icons/create_dashboard_menu.svg");
         item.addEventListener(ON_CLICK, event -> createNewDashboard());
         popup.appendChild(item);
     }
@@ -516,7 +517,8 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
             String popupLabel = null;
             switch (itemId) {
                 case PluginCatalog.PLUGIN_EDIT_MODEL:
-                    popupLabel = "plugin_discover_editModelShort_text";
+                    popupLabel = UserSessionManager.getCurrentUser().hasAnyPermission(PermissionType.MODEL_EDIT)
+                        ? "plugin_discover_editModelShort_text" : "plugin_discover_viewModelShort_text";
                     break;
                 case PluginCatalog.PLUGIN_SIMULATE_MODEL:
                     popupLabel = "plugin_analyze_simulateModelShort_text";

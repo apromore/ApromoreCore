@@ -150,7 +150,7 @@ public class CaseVariantDetailsController extends DataListController {
             parent.disableGraphEditButtons();
             caseVariantDetailsWindow = (Window) Executions
                     .createComponents(getPageDefinition("processdiscoverer/zul/caseVariantDetails.zul"), null, arg);
-            caseVariantDetailsWindow.setTitle("Case variant Inspector");
+            caseVariantDetailsWindow.setTitle(getLabel("caseVariantInspector_text", "Case variant Inspector"));
             caseVariantDetailsWindow.getFellow("lblClickACase").setVisible(!this.disabled);
             caseVariantDetailsWindow.addEventListener("onClose", new EventListener<Event>() {
                 @Override

@@ -22,11 +22,15 @@
 
 package org.apromore.plugin.portal;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
 import org.slf4j.Logger;
 import org.zkoss.zk.ui.Desktop;
+import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.Sessions;
+import org.zkoss.zk.ui.metainfo.PageDefinition;
 
 public final class PortalContexts {
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(PortalContexts.class);
@@ -72,5 +76,12 @@ public final class PortalContexts {
         } catch (Exception ex) {
             LOGGER.error("Error in removing portalContext", ex);
         }
+    }
+
+    public static PageDefinition getPageDefinition(String path) throws IOException {
+        Execution current = Executions.getCurrent();
+        return current.getPageDefinitionDirectly(
+            new InputStreamReader(PageDefinition.class.getClassLoader().getResourceAsStream(path)), "zul"
+        );
     }
 }

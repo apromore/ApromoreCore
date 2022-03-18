@@ -61,6 +61,7 @@ public class SecuritySetupController extends BaseController {
     arg.put("autoInherit", true);
     arg.put("showRelatedArtifacts", true);
     arg.put("enablePublish", mainController.getConfig().isEnablePublish());
+    arg.put("enableUsersList", mainController.getConfig().isEnableUsersList());
     try {
       final Window win = (Window) Executions
           .createComponents(getPageDefination("accesscontrol/zul/securitySetup.zul"), null, arg);

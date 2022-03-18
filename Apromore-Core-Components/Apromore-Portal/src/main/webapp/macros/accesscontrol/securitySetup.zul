@@ -50,6 +50,7 @@
                            selectedItem="${arg.selectedItem}"
                            autoInherit="${arg.autoInherit}"
                            enablePublish="${arg.enablePublish}"
+                           enableUsersList="${arg.enableUsersList}"
                            securityService="${arg.securityService}"
                            workspaceService="${arg.workspaceService}"
                            authorizationService="${arg.authorizationService}"

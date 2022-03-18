@@ -935,18 +935,15 @@ public abstract class BaseListboxController extends BaseController {
     getMainController().eraseMessage();
     // Check for ownership is moved to plugin level
     try {
-
-      FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
       if (getSelectionCount() == 0) {
-        if (currentFolder == null) {
-          Notification.error(Labels.getLabel("portal_selectOneLogOrModel_message"));
-          return;
-        }
+        Notification.error(Labels.getLabel("portal_selectOneLogOrModel_message"));
+        return;
       } else if (getSelectionCount() > 1) {
         Notification.error(Labels.getLabel("portal_noMultipleShare_message"));
         return;
       }
 
+      FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
       accessControlPlugin = portalPluginMap.get(PluginCatalog.PLUGIN_ACCESS_CONTROL);
       Map arg = new HashMap<>();
       if (getSelectionCount() == 1) {
@@ -962,6 +959,7 @@ public abstract class BaseListboxController extends BaseController {
       arg.put("autoInherit", true);
       arg.put("showRelatedArtifacts", true);
       arg.put("enablePublish", getMainController().getConfig().isEnablePublish());
+      arg.put("enableUsersList", getMainController().getConfig().isEnableUsersList());
       accessControlPlugin.setSimpleParams(arg);
       accessControlPlugin.execute(portalContext);
     } catch (Exception e) {

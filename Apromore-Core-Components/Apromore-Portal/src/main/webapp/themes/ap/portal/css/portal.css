@@ -856,3 +856,6 @@ img[src="img/icon/bpmn-22x22.png"] {
 .z-menu-image {
     filter: var(--ap-filter-ico-normal-dark);
 }
+.inner-submenu .z-menuitem-image{
+    filter:none;
+}

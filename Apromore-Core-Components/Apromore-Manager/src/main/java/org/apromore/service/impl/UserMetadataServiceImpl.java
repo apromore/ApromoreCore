@@ -42,6 +42,7 @@ import javax.inject.Inject;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service("userMetadataService")
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, rollbackFor =
@@ -382,6 +383,20 @@ public class UserMetadataServiceImpl implements UserMetadataService {
             }
         }
         return umSet;
+    }
+
+    @Override
+    public List<Usermetadata> getUserMetadataListByUser(String username, UserMetadataTypeEnum userMetadataTypeEnum) throws UserNotFoundException {
+
+        User user = userSrv.findUserByLogin(username);
+
+        return user.getGroups().stream()
+                .flatMap(x -> groupUsermetadataRepo.findByGroup(x).stream()
+                        .filter(gu -> gu.getUsermetadata().getUsermetadataType().getId().equals(userMetadataTypeEnum.getUserMetadataTypeId())
+                                && gu.getUsermetadata().getIsValid()).map(GroupUsermetadata::getUsermetadata))
+                .collect(Collectors.toList()).stream()
+                .collect(Collectors.groupingBy(Usermetadata::getId)).values().stream()
+                .map(v -> v.get(0)).collect(Collectors.toList());
     }
 
     @Override

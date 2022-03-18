@@ -49,7 +49,6 @@ import org.zkoss.zul.Menupopup;
 
 public class FilterPopupLogSubMenuController extends PopupLogSubMenuController {
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(FilterPopupLogSubMenuController.class);
-    private static final String ICON_PLUS = "z-icon-plus-circle";
     private static final String USER_METADATA_SUM = "USER_METADATA_SUM";
 
     public FilterPopupLogSubMenuController(PopupMenuController popupMenuController,
@@ -79,7 +78,7 @@ public class FilterPopupLogSubMenuController extends PopupLogSubMenuController {
     private void addNewFilterMenuItem(Menupopup popup) {
         Menuitem item = new Menuitem();
         item.setLabel(Labels.getLabel("plugin_new_filter_text"));
-        item.setIconSclass(ICON_PLUS);
+        item.setIconSclass("icon-create_filter");
         item.addEventListener(ON_CLICK, event -> {
             try {
                 Map<String, Object> attrMap = new HashMap<>();
