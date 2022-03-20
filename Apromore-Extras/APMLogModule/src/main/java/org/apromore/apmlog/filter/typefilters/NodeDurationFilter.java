@@ -27,9 +27,9 @@ import org.apromore.apmlog.filter.rules.RuleValue;
 import org.apromore.apmlog.filter.types.Choice;
 import org.apromore.apmlog.filter.types.Inclusion;
 import org.apromore.apmlog.filter.types.OperationType;
-import org.apromore.apmlog.logobjects.ActivityInstance;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class NodeDurationFilter extends AbstractAttributeDurationFilter {
@@ -50,19 +50,28 @@ public class NodeDurationFilter extends AbstractAttributeDurationFilter {
         String k = rule.getKey();
         String v = rule.getPrimaryValues().iterator().next().getKey();
 
-        return inclusion == Inclusion.ALL_VALUES ?
-                traces.stream().filter(x -> x.getActivityInstances().stream()
-                        .filter(a -> a.getAttributes().containsKey(k) && a.getAttributeValue(k).equals(v))
-                        .allMatch(a -> actMatchRule(a, rule, finFrom, finTo))).collect(Collectors.toList()) :
-                traces.stream().filter(x -> x.getActivityInstances().stream()
-                        .filter(a -> a.getAttributes().containsKey(k) && a.getAttributeValue(k).equals(v))
-                        .anyMatch(a -> actMatchRule(a, rule, finFrom, finTo))).collect(Collectors.toList());
-    }
+        List<PTrace> matched = inclusion == Inclusion.ALL_VALUES ?
+                traces.stream()
+                        .filter(t -> t.getActivityInstances().stream()
+                                .anyMatch(a -> a.getAttributes().containsKey(k) && a.getAttributeValue(k).equals(v)))
+                        .filter(t -> t.getActivityInstances().stream()
+                                .filter(a -> a.getAttributes().containsKey(k) && a.getAttributeValue(k).equals(v))
+                                .collect(Collectors.toList()).stream()
+                                .allMatch(a -> a.getDuration() >= finFrom && a.getDuration() <= finTo))
+                        .collect(Collectors.toList()) :
+                traces.stream()
+                        .filter(t -> t.getActivityInstances().stream()
+                                .anyMatch(a -> a.getAttributes().containsKey(k) && a.getAttributeValue(k).equals(v)))
+                        .filter(t -> t.getActivityInstances().stream()
+                                .filter(a -> a.getAttributes().containsKey(k) && a.getAttributeValue(k).equals(v))
+                                .collect(Collectors.toList()).stream()
+                                .anyMatch(a -> a.getDuration() >= finFrom && a.getDuration() <= finTo))
+                        .collect(Collectors.toList());
 
-    private static boolean actMatchRule(ActivityInstance a, LogFilterRule rule, double finFrom, double finTo) {
-        return rule.getChoice() == Choice.REMOVE ?
-                a.getDuration() < finFrom || a.getDuration() > finTo:
-                a.getDuration() >= finFrom && a.getDuration() <= finTo;
-    }
+        Set<String> caseIds = matched.stream().map(PTrace::getCaseId).collect(Collectors.toSet());
 
+        return rule.getChoice() == Choice.RETAIN ? matched :
+                traces.stream().filter(t -> !caseIds.contains(t.getCaseId())).collect(Collectors.toList());
+
+    }
 }

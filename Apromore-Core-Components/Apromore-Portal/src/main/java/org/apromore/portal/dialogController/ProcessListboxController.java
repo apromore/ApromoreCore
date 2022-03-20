@@ -37,6 +37,7 @@ import org.apromore.portal.model.LogSummaryType;
 import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.SummariesType;
 // import org.apromore.portal.util.SummaryComparator;
+import org.apromore.portal.util.FolderTypeComparator;
 import org.slf4j.Logger;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.ui.event.Event;
@@ -150,6 +151,7 @@ public class ProcessListboxController extends BaseListboxController {
     this.columnScore.setVisible(false);
 
     getListBox().clearSelection();
+    Collections.sort(subFolders,new FolderTypeComparator());
     SummaryListModel model =
         new SummaryListModel(isQueryResult ? Collections.<FolderType>emptyList() : subFolders);
 

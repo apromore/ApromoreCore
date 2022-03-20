@@ -160,7 +160,7 @@ public class APMLogFilter {
                         traces = filterByCaseSectEventAttribute(rule, traces);
                         break;
                     case CASE_SECTION_ATTRIBUTE_COMBINATION:
-                        traces = filterByCaseSectAttributeCombination(rule, traces);
+                        traces = CaseSectionAttributeCombinationFilter.of(rule).filter(traces);
                         break;
                     case CASE_TIME:
                     case STARTTIME:
@@ -259,13 +259,6 @@ public class APMLogFilter {
         // CaseSectionEventAttributeFilter handles Choice
         return traces.stream()
                 .filter(x -> CaseSectionEventAttributeFilter.toKeep(x, rule))
-                .collect(Collectors.toList());
-    }
-
-    private List<PTrace> filterByCaseSectAttributeCombination(LogFilterRule rule, List<PTrace> traces) {
-        // CaseSectionAttributeCombinationFilter handles Choice
-        return traces.stream()
-                .filter(x -> CaseSectionAttributeCombinationFilter.toKeep(x, rule))
                 .collect(Collectors.toList());
     }
 
