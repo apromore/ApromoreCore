@@ -8,12 +8,12 @@ implemented in this module:
 - QBPSimulator parameters saving. Integration of the QBP process simulator into Apromore
 - Color picker for BPMN nodes.
 
-To build:
-
-	npm run test (make sure all tests passed before doing the next step)
-    npm run build
-    node scripts/bundle-fix/index.js
-    cp dist/bpmn-modeler.development.js ../../../Apromore-Frontend/src/bpmneditor/editor/bpmnio/bpmn-modeler.development.js
+To build and bundle:
+```
+    npm run test (make sure all tests passed before doing the next step)
+    ./update-editor.sh
+```
+	
 
 WARNING
 -------
