@@ -840,7 +840,13 @@ function merge(target) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "is", function() { return is; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isAny", function() { return isAny; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getBusinessObject", function() { return getBusinessObject; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getDi", function() { return getDi; });
+/* harmony import */ var min_dash__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(0);
+
+
+
 /**
  * Is an element of the given BPMN type?
  *
@@ -857,6 +863,20 @@ function is(element, type) {
 
 
 /**
+ * Return true if element has any of the given types.
+ *
+ * @param {djs.model.Base} element
+ * @param {Array<string>} types
+ *
+ * @return {boolean}
+ */
+function isAny(element, types) {
+  return Object(min_dash__WEBPACK_IMPORTED_MODULE_0__["some"])(types, function(t) {
+    return is(element, t);
+  });
+}
+
+/**
  * Return the business object for a given element.
  *
  * @param  {djs.model.Base|ModdleElement} element
@@ -865,6 +885,19 @@ function is(element, type) {
  */
 function getBusinessObject(element) {
   return (element && element.businessObject) || element;
+}
+
+/**
+ * Return the di object for a given element.
+ *
+ * @param  {djs.model.Base} element
+ *
+ * @return {ModdleElement}
+ */
+function getDi(element) {
+  var bo = getBusinessObject(element);
+
+  return bo && bo.di;
 }
 
 /***/ }),
@@ -13586,7 +13619,7 @@ ProcessSimulationHelper.getStatsOptions = function(bpmnFactory, elementRegistry)
 
 function createProcessSimulationInfo(root, bpmnFactory) {
   var todayDate = new Date();
-  todayDate.setUTCHours(9, 0, 0, 0);
+  todayDate.setHours(9, 0, 0, 0);
 
   var processSimulationInfo = elementHelper.createElement('qbp:ProcessSimulationInfo',
     {
@@ -51434,8 +51467,8 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, show
 /***/ (function(module, exports, __webpack_require__) {
 
 var ProcessInstancesField = __webpack_require__(261),
-    StartTimeField = __webpack_require__(294),
-    StartDateField = __webpack_require__(295),
+    StartDateField = __webpack_require__(294),
+    StartTimeField = __webpack_require__(295),
     TrimStartField = __webpack_require__(296),
     TrimEndField = __webpack_require__(297),
     DistributionFields = __webpack_require__(298),
@@ -51449,8 +51482,8 @@ module.exports = function(bpmnFactory, elementRegistry, translate) {
 
   entries.push(
     ProcessInstancesField(bpmnFactory, elementRegistry, translate),
-    StartTimeField(bpmnFactory, elementRegistry, translate),
     StartDateField(bpmnFactory, elementRegistry, translate),
+    StartTimeField(bpmnFactory, elementRegistry, translate),
     TrimStartField(bpmnFactory, elementRegistry, translate),
     TrimEndField(bpmnFactory, elementRegistry, translate),
     CurrencySelectBox(bpmnFactory, elementRegistry, translate)
@@ -54001,28 +54034,30 @@ module.exports = function(bpmnFactory, elementRegistry, translate) {
     modelProperty: 'startDate',
 
     get: function(_element, _node) {
+      var dateArr = new Date(processSimulationInfo.startDateTime).toLocaleDateString('en-GB').split('/');
       return {
-        startDate: processSimulationInfo.startDateTime.split('T')[0]
+        startDate: dateArr[2] + '-' + dateArr[1] + '-' + dateArr[0]
       };
     },
 
     set: function(element, values) {
-      var startDate = new Date(processSimulationInfo.startDateTime);
+      // Get the data model's date time
+      var modelStartDateTime = new Date(processSimulationInfo.startDateTime);
 
       if (values.startDate !== '') {
-        var date = values.startDate.split('-');
-        startDate.setUTCFullYear(date[0]);
-        startDate.setUTCMonth(date[1] - 1);
-        startDate.setUTCDate(date[2]);
+        // Get the local time from the data model's date time
+        var localStartTime = modelStartDateTime.toLocaleTimeString('en-GB');
+
+        // Construct the utc date time based on the local date from the UI control,
+        // and the converted local time from the data model above
+        modelStartDateTime = new Date(values.startDate + 'T' + localStartTime);
+
       } else {
-        var today = new Date();
-        startDate.setUTCFullYear(today.getUTCFullYear());
-        startDate.setUTCMonth(today.getUTCMonth());
-        startDate.setUTCDate(today.getUTCDate());
+        modelStartDateTime = new Date();
       }
 
       return cmdHelper.updateBusinessObject(element, processSimulationInfo, {
-        startDateTime: startDate.toISOString()
+        startDateTime: modelStartDateTime.toISOString()
       });
     }
   });
@@ -54048,22 +54083,28 @@ module.exports = function(bpmnFactory, elementRegistry, translate) {
 
     get: function(_element, _node) {
       return {
-        startTime: processSimulationInfo.startDateTime.split('T')[1].slice(0, 5)
+        startTime: new Date(processSimulationInfo.startDateTime).toLocaleTimeString('en-GB').slice(0, 5)
       };
     },
 
     set: function(element, values) {
-      var startTime = new Date(processSimulationInfo.startDateTime);
+      // Get the data model's date time
+      var modelStartDateTime = new Date(processSimulationInfo.startDateTime);
 
       if (values.startTime && values.startTime !== '') {
-        var time = values.startTime.split(':');
-        startTime.setUTCHours(time[0], time[1]);
+
+        // Get the local date from the data model's date time
+        var localDateArr = modelStartDateTime.toLocaleDateString('en-GB').split('/');
+
+        // Construct the utc date time based on the local date above, and the local time from the UI control
+        modelStartDateTime = new Date(localDateArr[2] + '-' + localDateArr[1] + '-' + localDateArr[0] + 'T' + values.startTime);
+
       } else {
-        startTime.setUTCHours(9, 0, 0, 0);
+        modelStartDateTime = new Date();
       }
 
       return cmdHelper.updateBusinessObject(element, processSimulationInfo, {
-        startDateTime: startTime.toISOString()
+        startDateTime: modelStartDateTime.toISOString()
       });
     }
   });
@@ -56786,7 +56827,7 @@ function shallowCopyObject(obj) {
  * FilterXSS class
  *
  * @param {Object} options
- *        whiteList, onTag, onTagAttr, onIgnoreTag,
+ *        whiteList (or allowList), onTag, onTagAttr, onIgnoreTag,
  *        onIgnoreTagAttr, safeAttrValue, escapeHtml
  *        stripIgnoreTagBody, allowCommentTag, stripBlankChar
  *        css{whiteList, onAttr, onIgnoreAttr} `css=false` means don't use `cssfilter`
@@ -56803,7 +56844,7 @@ function FilterXSS(options) {
     options.onIgnoreTag = DEFAULT.onIgnoreTagStripAll;
   }
 
-  options.whiteList = options.whiteList || DEFAULT.whiteList;
+  options.whiteList = options.whiteList || options.allowList || DEFAULT.whiteList;
   options.onTag = options.onTag || DEFAULT.onTag;
   options.onTagAttr = options.onTagAttr || DEFAULT.onTagAttr;
   options.onIgnoreTag = options.onIgnoreTag || DEFAULT.onIgnoreTag;
@@ -80103,49 +80144,6 @@ AutoPlaceSelectionBehavior.$inject = [
   autoPlace: [ 'type', AutoPlace ],
   autoPlaceSelectionBehavior: [ 'type', AutoPlaceSelectionBehavior ]
 });
-// CONCATENATED MODULE: ./node_modules/bpmn-js/lib/features/modeling/util/ModelingUtil.js
-
-
-
-
-
-/**
- * Return true if element has any of the given types.
- *
- * @param {djs.model.Base} element
- * @param {Array<string>} types
- *
- * @return {boolean}
- */
-function isAny(element, types) {
-  return Object(dist_index_esm["some"])(types, function(t) {
-    return Object(ModelUtil["is"])(element, t);
-  });
-}
-
-
-/**
- * Return the parent of the element with any of the given types.
- *
- * @param {djs.model.Base} element
- * @param {string|Array<string>} anyType
- *
- * @return {djs.model.Base}
- */
-function ModelingUtil_getParent(element, anyType) {
-
-  if (typeof anyType === 'string') {
-    anyType = [ anyType ];
-  }
-
-  while ((element = element.parent)) {
-    if (isAny(element, anyType)) {
-      return element;
-    }
-  }
-
-  return null;
-}
 // CONCATENATED MODULE: ./node_modules/bpmn-js/lib/features/auto-place/BpmnAutoPlaceUtil.js
 
 
@@ -80170,7 +80168,7 @@ function BpmnAutoPlaceUtil_getNewShapePosition(source, element) {
     return getTextAnnotationPosition(source, element);
   }
 
-  if (isAny(element, [ 'bpmn:DataObjectReference', 'bpmn:DataStoreReference' ])) {
+  if (Object(ModelUtil["isAny"])(element, [ 'bpmn:DataObjectReference', 'bpmn:DataStoreReference' ])) {
     return getDataElementPosition(source, element);
   }
 
@@ -88126,12 +88124,12 @@ function BpmnReplace(
 
     // retain default flow's reference between inclusive <-> exclusive gateways and activities
     if (
-      isAny(oldBusinessObject, [
+      Object(ModelUtil["isAny"])(oldBusinessObject, [
         'bpmn:ExclusiveGateway',
         'bpmn:InclusiveGateway',
         'bpmn:Activity'
       ]) &&
-      isAny(newBusinessObject, [
+      Object(ModelUtil["isAny"])(newBusinessObject, [
         'bpmn:ExclusiveGateway',
         'bpmn:InclusiveGateway',
         'bpmn:Activity'
@@ -89733,6 +89731,33 @@ ReplaceMenuProvider.prototype._getAdHocEntry = function(element) {
   __init__: [ 'replaceMenuProvider' ],
   replaceMenuProvider: [ 'type', ReplaceMenuProvider ]
 });
+// CONCATENATED MODULE: ./node_modules/bpmn-js/lib/features/modeling/util/ModelingUtil.js
+
+
+
+
+/**
+ * Return the parent of the element with any of the given types.
+ *
+ * @param {djs.model.Base} element
+ * @param {string|Array<string>} anyType
+ *
+ * @return {djs.model.Base}
+ */
+function ModelingUtil_getParent(element, anyType) {
+
+  if (typeof anyType === 'string') {
+    anyType = [ anyType ];
+  }
+
+  while ((element = element.parent)) {
+    if (Object(ModelUtil["isAny"])(element, anyType)) {
+      return element;
+    }
+  }
+
+  return null;
+}
 // CONCATENATED MODULE: ./node_modules/diagram-js/lib/features/resize/ResizeUtil.js
 
 
@@ -90304,7 +90329,7 @@ ContextPadProvider.prototype.getContextPadEntries = function(element) {
   }
 
 
-  if (isAny(businessObject, [ 'bpmn:Lane', 'bpmn:Participant' ]) && isExpanded(businessObject)) {
+  if (Object(ModelUtil["isAny"])(businessObject, [ 'bpmn:Lane', 'bpmn:Participant' ]) && isExpanded(businessObject)) {
 
     var childLanes = getChildLanes(element);
 
@@ -90470,7 +90495,7 @@ ContextPadProvider.prototype.getContextPadEntries = function(element) {
   }
 
   if (
-    isAny(businessObject, [
+    Object(ModelUtil["isAny"])(businessObject, [
       'bpmn:FlowNode',
       'bpmn:InteractionNode',
       'bpmn:DataObjectReference',
@@ -90515,7 +90540,7 @@ ContextPadProvider.prototype.getContextPadEntries = function(element) {
     });
   }
 
-  if (isAny(businessObject, [ 'bpmn:DataObjectReference', 'bpmn:DataStoreReference' ])) {
+  if (Object(ModelUtil["isAny"])(businessObject, [ 'bpmn:DataObjectReference', 'bpmn:DataStoreReference' ])) {
     Object(dist_index_esm["assign"])(actions, {
       'connect': {
         group: 'connect',
@@ -90837,7 +90862,7 @@ function BpmnDistributeElements(distributeElements) {
 
   distributeElements.registerFilter(function(elements) {
     return Object(dist_index_esm["filter"])(elements, function(element) {
-      var cannotDistribute = isAny(element, [
+      var cannotDistribute = Object(ModelUtil["isAny"])(element, [
         'bpmn:Association',
         'bpmn:BoundaryEvent',
         'bpmn:DataInputAssociation',
@@ -91333,7 +91358,7 @@ function BpmnGridSnapping(eventBus) {
     var context = event.context,
         shape = event.shape;
 
-    if (isAny(shape, [
+    if (Object(ModelUtil["isAny"])(shape, [
       'bpmn:Participant',
       'bpmn:SubProcess',
       'bpmn:TextAnnotation'
@@ -93418,7 +93443,7 @@ function LabelEditingProvider(
 
   function activateDirectEdit(element, force) {
     if (force ||
-        isAny(element, [ 'bpmn:Task', 'bpmn:TextAnnotation' ]) ||
+        Object(ModelUtil["isAny"])(element, [ 'bpmn:Task', 'bpmn:TextAnnotation' ]) ||
         isCollapsedSubProcess(element)) {
 
       directEditing.activate(element);
@@ -93467,7 +93492,7 @@ LabelEditingProvider.prototype.activate = function(element) {
 
   // tasks
   if (
-    isAny(element, [
+    Object(ModelUtil["isAny"])(element, [
       'bpmn:Task',
       'bpmn:Participant',
       'bpmn:Lane',
@@ -93566,7 +93591,7 @@ LabelEditingProvider.prototype.getEditingBBox = function(element) {
 
   // internal labels for tasks and collapsed call activities,
   // sub processes and participants
-  if (isAny(element, [ 'bpmn:Task', 'bpmn:CallActivity']) ||
+  if (Object(ModelUtil["isAny"])(element, [ 'bpmn:Task', 'bpmn:CallActivity']) ||
       isCollapsedPool(element) ||
       isCollapsedSubProcess(element)) {
 
@@ -94338,7 +94363,7 @@ function getEventDefinition(element) {
 
 function shouldReplace(shape, host) {
   return !isLabel(shape) &&
-    isAny(shape, [ 'bpmn:IntermediateThrowEvent', 'bpmn:IntermediateCatchEvent' ]) && !!host;
+    Object(ModelUtil["isAny"])(shape, [ 'bpmn:IntermediateThrowEvent', 'bpmn:IntermediateCatchEvent' ]) && !!host;
 }
 
 // CONCATENATED MODULE: ./node_modules/bpmn-js/lib/features/modeling/behavior/BoundaryEventBehavior.js
@@ -94450,7 +94475,7 @@ function RootElementReferenceBehavior(
   injector.invoke(CommandInterceptor, this);
 
   function canHaveRootElementReference(element) {
-    return isAny(element, [ 'bpmn:ReceiveTask', 'bpmn:SendTask' ]) ||
+    return Object(ModelUtil["isAny"])(element, [ 'bpmn:ReceiveTask', 'bpmn:SendTask' ]) ||
       hasAnyEventDefinition(element, [
         'bpmn:ErrorEventDefinition',
         'bpmn:EscalationEventDefinition',
@@ -94479,7 +94504,7 @@ function RootElementReferenceBehavior(
   }
 
   function getRootElement(businessObject) {
-    if (isAny(businessObject, [ 'bpmn:ReceiveTask', 'bpmn:SendTask' ])) {
+    if (Object(ModelUtil["isAny"])(businessObject, [ 'bpmn:ReceiveTask', 'bpmn:SendTask' ])) {
       return businessObject.get('messageRef');
     }
 
@@ -94490,7 +94515,7 @@ function RootElementReferenceBehavior(
   }
 
   function setRootElement(businessObject, rootElement) {
-    if (isAny(businessObject, [ 'bpmn:ReceiveTask', 'bpmn:SendTask' ])) {
+    if (Object(ModelUtil["isAny"])(businessObject, [ 'bpmn:ReceiveTask', 'bpmn:SendTask' ])) {
       return businessObject.set('messageRef', rootElement);
     }
 
@@ -94662,7 +94687,7 @@ function FixHoverBehavior(elementRegistry, eventBus, canvas) {
 
     // ensure elements are not dropped onto a bpmn:Lane but onto
     // the underlying bpmn:Participant
-    if (Object(ModelUtil["is"])(hover, 'bpmn:Lane') && !isAny(shape, [ 'bpmn:Lane', 'bpmn:Participant' ])) {
+    if (Object(ModelUtil["is"])(hover, 'bpmn:Lane') && !Object(ModelUtil["isAny"])(shape, [ 'bpmn:Lane', 'bpmn:Participant' ])) {
       event.hover = getLanesRoot(hover);
       event.hoverGfx = elementRegistry.getGraphics(event.hover);
     }
@@ -95340,7 +95365,7 @@ function DataStoreBehavior(
         shape = context.shape,
         rootElement = canvas.getRootElement();
 
-    if (isAny(shape, [ 'bpmn:Participant', 'bpmn:SubProcess' ])
+    if (Object(ModelUtil["isAny"])(shape, [ 'bpmn:Participant', 'bpmn:SubProcess' ])
         && Object(ModelUtil["is"])(rootElement, 'bpmn:Collaboration')) {
       getDataStores(rootElement)
         .filter(function(dataStore) {
@@ -96249,7 +96274,7 @@ function IsHorizontalFix(eventBus) {
   this.executed([ 'shape.move', 'shape.create', 'shape.resize' ], function(event) {
     var bo = Object(ModelUtil["getBusinessObject"])(event.context.shape);
 
-    if (isAny(bo, elementTypesToUpdate) && !bo.di.get('isHorizontal')) {
+    if (Object(ModelUtil["isAny"])(bo, elementTypesToUpdate) && !bo.di.get('isHorizontal')) {
 
       // set attribute directly to avoid modeling#updateProperty side effects
       bo.di.set('isHorizontal', true);
@@ -99155,7 +99180,7 @@ function canStartConnection(element) {
     return null;
   }
 
-  return isAny(element, [
+  return Object(ModelUtil["isAny"])(element, [
     'bpmn:FlowNode',
     'bpmn:InteractionNode',
     'bpmn:DataObjectReference',
@@ -99410,7 +99435,7 @@ function canDrop(element, target, position) {
   }
 
   // allow moving DataInput / DataOutput within its original container only
-  if (isAny(element, [ 'bpmn:DataInput', 'bpmn:DataOutput' ])) {
+  if (Object(ModelUtil["isAny"])(element, [ 'bpmn:DataInput', 'bpmn:DataOutput' ])) {
 
     if (element.parent) {
       return target === element.parent;
@@ -99434,7 +99459,7 @@ function canDrop(element, target, position) {
       return isExpanded(target);
     }
 
-    return isAny(target, [ 'bpmn:Participant', 'bpmn:Lane' ]);
+    return Object(ModelUtil["isAny"])(target, [ 'bpmn:Participant', 'bpmn:Lane' ]);
   }
 
   // disallow dropping data store reference if there is no process to append to
@@ -99448,8 +99473,8 @@ function canDrop(element, target, position) {
   // rendered and moved to top (Process or Collaboration level)
   //
   // artifacts may be placed wherever, too
-  if (isAny(element, [ 'bpmn:Artifact', 'bpmn:DataAssociation', 'bpmn:DataStoreReference' ])) {
-    return isAny(target, [
+  if (Object(ModelUtil["isAny"])(element, [ 'bpmn:Artifact', 'bpmn:DataAssociation', 'bpmn:DataStoreReference' ])) {
+    return Object(ModelUtil["isAny"])(target, [
       'bpmn:Collaboration',
       'bpmn:Lane',
       'bpmn:Participant',
@@ -99822,13 +99847,13 @@ function canConnectSequenceFlow(source, target) {
 
 function canConnectDataAssociation(source, target) {
 
-  if (isAny(source, [ 'bpmn:DataObjectReference', 'bpmn:DataStoreReference' ]) &&
-      isAny(target, [ 'bpmn:Activity', 'bpmn:ThrowEvent' ])) {
+  if (Object(ModelUtil["isAny"])(source, [ 'bpmn:DataObjectReference', 'bpmn:DataStoreReference' ]) &&
+      Object(ModelUtil["isAny"])(target, [ 'bpmn:Activity', 'bpmn:ThrowEvent' ])) {
     return { type: 'bpmn:DataInputAssociation' };
   }
 
-  if (isAny(target, [ 'bpmn:DataObjectReference', 'bpmn:DataStoreReference' ]) &&
-      isAny(source, [ 'bpmn:Activity', 'bpmn:CatchEvent' ])) {
+  if (Object(ModelUtil["isAny"])(target, [ 'bpmn:DataObjectReference', 'bpmn:DataStoreReference' ]) &&
+      Object(ModelUtil["isAny"])(source, [ 'bpmn:Activity', 'bpmn:CatchEvent' ])) {
     return { type: 'bpmn:DataOutputAssociation' };
   }
 
@@ -99861,7 +99886,7 @@ function BpmnRules_canInsert(shape, flow, position) {
   // about connection rules (yet)
 
   return (
-    isAny(flow, [ 'bpmn:SequenceFlow', 'bpmn:MessageFlow' ]) &&
+    Object(ModelUtil["isAny"])(flow, [ 'bpmn:SequenceFlow', 'bpmn:MessageFlow' ]) &&
     !isLabel(flow) &&
     Object(ModelUtil["is"])(shape, 'bpmn:FlowNode') &&
     !Object(ModelUtil["is"])(shape, 'bpmn:BoundaryEvent') &&
@@ -100138,7 +100163,7 @@ function BpmnOrderingProvider(eventBus, canvas, translate) {
     }
 
     var entry = Object(dist_index_esm["find"])(orders, function(o) {
-      return isAny(element, [ o.type ]);
+      return Object(ModelUtil["isAny"])(element, [ o.type ]);
     });
 
     return entry && entry.order || { level: 1 };
@@ -100165,7 +100190,7 @@ function BpmnOrderingProvider(eventBus, canvas, translate) {
 
     while (actualParent) {
 
-      if (isAny(actualParent, containers)) {
+      if (Object(ModelUtil["isAny"])(actualParent, containers)) {
         break;
       }
 
@@ -102746,7 +102771,7 @@ BpmnFactory.$inject = [ 'moddle' ];
 
 
 BpmnFactory.prototype._needsId = function(element) {
-  return isAny(element, [
+  return Object(ModelUtil["isAny"])(element, [
     'bpmn:RootElement',
     'bpmn:FlowElement',
     'bpmn:MessageFlow',
@@ -102782,7 +102807,7 @@ BpmnFactory.prototype._ensureId = function(element) {
     prefix = 'Event';
   } else if (Object(ModelUtil["is"])(element, 'bpmn:Gateway')) {
     prefix = 'Gateway';
-  } else if (isAny(element, [ 'bpmn:SequenceFlow', 'bpmn:MessageFlow' ])) {
+  } else if (Object(ModelUtil["isAny"])(element, [ 'bpmn:SequenceFlow', 'bpmn:MessageFlow' ])) {
     prefix = 'Flow';
   } else {
     prefix = (element.$type || '').replace(/^[^:]*:/g, '');
@@ -103060,7 +103085,7 @@ function BpmnUpdater(
 
     // remove condition from connection on reconnect to new source
     // if new source can NOT have condional sequence flow
-    if (connectionBo.conditionExpression && !isAny(newSourceBo, [
+    if (connectionBo.conditionExpression && !Object(ModelUtil["isAny"])(newSourceBo, [
       'bpmn:Activity',
       'bpmn:ExclusiveGateway',
       'bpmn:InclusiveGateway'
@@ -110944,12 +110969,12 @@ function BpmnConnectSnapping(eventBus) {
       context.connectionStart = SnapUtil_mid(start);
 
       // snap hover
-      if (isAny(hover, [ 'bpmn:Event', 'bpmn:Gateway' ])) {
+      if (Object(ModelUtil["isAny"])(hover, [ 'bpmn:Event', 'bpmn:Gateway' ])) {
         snapToPosition(event, SnapUtil_mid(hover));
       }
 
       // snap hover
-      if (isAny(hover, [ 'bpmn:Task', 'bpmn:SubProcess' ])) {
+      if (Object(ModelUtil["isAny"])(hover, [ 'bpmn:Task', 'bpmn:SubProcess' ])) {
         snapToTargetMid(event, hover);
       }
 

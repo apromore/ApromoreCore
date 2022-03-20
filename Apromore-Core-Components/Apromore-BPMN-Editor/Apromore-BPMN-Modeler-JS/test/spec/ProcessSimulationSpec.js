@@ -544,13 +544,13 @@ describe('simulation-tab', function() {
 
     it('should fetch the value',function() {
       // then
-      expect(startTimeField.value).to.equal('10:00');
+      expect(startTimeField.value).to.equal('20:00');
     });
 
     it('should set correct value', inject(function(bpmnFactory, elementRegistry) {
 
       // assume
-      expect(startTimeField.value).to.equal('10:00');
+      expect(startTimeField.value).to.equal('20:00');
 
       // when
       TestHelper.triggerValue(startTimeField, '08:30', 'change');
@@ -558,7 +558,7 @@ describe('simulation-tab', function() {
       // then
       expect(startTimeField.value).to.equal('08:30');
       expect(domClasses(startTimeField).has('invalid')).to.be.false;
-      expect(getProcessSimulationInfo(bpmnFactory, elementRegistry).startDateTime).to.equal('2020-08-05T08:30:00.000Z');
+      expect(getProcessSimulationInfo(bpmnFactory, elementRegistry).startDateTime).to.equal('2020-08-04T22:30:00.000Z');
     }));
   });
 
