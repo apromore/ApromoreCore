@@ -1,5 +1,6 @@
 package org.apromore.portal.util;
 
+import java.math.BigDecimal;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.slf4j.Logger;
 
@@ -13,7 +14,7 @@ public class AlphaNumericComparator {
     private AlphaNumericComparator(){}
 
     // Taken from https://javaprogramming.language-tutorial.com/2012/10/alphanumeric-string-sorting-using-java.html
-    public static int compareTo(String name1, String name2) {
+   public static int compareTo(String name1, String name2) {
         try {
             if (name1 == null || name2 == null) {
                 return 0;
@@ -41,13 +42,11 @@ public class AlphaNumericComparator {
 
                 int result;
                 if (Character.isDigit(space1[0]) && Character.isDigit(space2[0])) {
-                    Integer firstNumberToCompare = Integer
-                        .parseInt(str1.trim());
-                    Integer secondNumberToCompare = Integer
-                        .parseInt(str2.trim());
+                    BigDecimal firstNumberToCompare=new BigDecimal(str1.trim());
+                    BigDecimal secondNumberToCompare=new BigDecimal(str2.trim());
                     result = firstNumberToCompare.compareTo(secondNumberToCompare);
                 } else {
-                    result = str1.compareTo(str2);
+                    result = str1.trim().compareTo(str2.trim());
                 }
 
                 if (result != 0) {
