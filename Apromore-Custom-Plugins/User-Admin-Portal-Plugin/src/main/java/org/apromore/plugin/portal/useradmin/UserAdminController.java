@@ -110,17 +110,17 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(UserAdminController.class);
     private Map<String, String> roleMap = new HashMap<>() {
         {
-            put("ROLE_ADMIN", Labels.getLabel("role_admin_text", "Administrator"));
-            put("ROLE_SUPER_ADMIN", Labels.getLabel("role_super_admin_text", "Super Admin"));
-            put("ROLE_MANAGER", Labels.getLabel("role_manager_text", "Manager"));
-            put("ROLE_ANALYST", Labels.getLabel("role_analyst_text", "Analyst"));
-            put("ROLE_VIEWER", Labels.getLabel("role_viewer_text", "Viewer"));
-            put("ROLE_DESIGNER", Labels.getLabel("role_designer_text", "Designer"));
-            put("ROLE_DATA_ENGINEER", Labels.getLabel("role_data_engineer_text", "Data Engineer"));
-            put("ROLE_DATA_SCIENTIST", Labels.getLabel("role_data_scientist_text", "Data Scientist"));
-            put("ROLE_OPERATIONS", Labels.getLabel("role_operations_text", "Operations"));
-            put("ROLE_INTEGRATOR", Labels.getLabel("role_integrator_text", "Integrator"));
-            put("ROLE_VIEWER_MODELS", Labels.getLabel("role_viewer_models_text", "Viewer (models)"));
+            put("ROLE_ADMIN", getLabel("role_admin_text", "Administrator"));
+            put("ROLE_SUPER_ADMIN", getLabel("role_super_admin_text", "Super Admin"));
+            put("ROLE_MANAGER", getLabel("role_manager_text", "Manager"));
+            put("ROLE_ANALYST", getLabel("role_analyst_text", "Analyst"));
+            put("ROLE_VIEWER", getLabel("role_viewer_text", "Viewer"));
+            put("ROLE_DESIGNER", getLabel("role_designer_text", "Designer"));
+            put("ROLE_DATA_ENGINEER", getLabel("role_data_engineer_text", "Data Engineer"));
+            put("ROLE_DATA_SCIENTIST", getLabel("role_data_scientist_text", "Data Scientist"));
+            put("ROLE_OPERATIONS", getLabel("role_operations_text", "Operations"));
+            put("ROLE_INTEGRATOR", getLabel("role_integrator_text", "Integrator"));
+            put("ROLE_VIEWER_MODELS", getLabel("role_viewer_models_text", "Viewer (models)"));
         }
     };
 
@@ -656,8 +656,9 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
 
     private void refreshRoles() {
         List<RoleModel> roleModels = securityService.getAllRoles().stream()
-            .map(r -> new RoleModel(r, getDisplayRoleName(r.getName()))).collect(
-                Collectors.toList());
+            .map(r -> new RoleModel(r, getDisplayRoleName(r.getName())))
+            .sorted((r1, r2) -> r1.getLabel().compareToIgnoreCase(r2.getLabel()))
+            .collect(Collectors.toList());
         roleModel = new ListModelList<>(roleModels, false);
         roleList.setSourceListModel(roleModel);
         roleList.reset();
