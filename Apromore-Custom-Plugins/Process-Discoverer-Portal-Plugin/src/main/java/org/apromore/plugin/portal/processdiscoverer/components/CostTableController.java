@@ -22,14 +22,13 @@
 
 package org.apromore.plugin.portal.processdiscoverer.components;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
 import org.apromore.plugin.portal.processdiscoverer.data.AttributeCost;
 import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
 import org.apromore.portal.util.CostTable;
-import org.zkoss.json.JSONObject;
 import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zk.ui.event.InputEvent;
@@ -40,8 +39,11 @@ import org.zkoss.zul.*;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class CostTableController extends DataListController {
     private Window costTableWindow;
@@ -86,15 +88,23 @@ public class CostTableController extends DataListController {
         return new String[]{"Attribute", "Cost Value"};
     }
 
-    private void persistCostTable() {
+    private void persistCostTable() throws Exception {
         String currency = currencyCombobox.getValue();
-        String costTable = JSONObject.toJSONString(this.getCostMapper()).replaceAll("\\r?\\n", "");
-        String jsonString = "{ \"currency\": \"" + currency + "\", \"costTable\": " + costTable + " }";
-        Clients.evalJavaScript("Ap.common.setLocalStorageItem('ap.cost.table', '" + jsonString + "')");
-        Sessions.getCurrent().setAttribute("costTable", CostTable.builder()
-            .currency(currency)
-            .costRates(this.getCostMapper())
-            .build());
+        //TODO: Get perspective value from user input
+        String perspective = "role";
+        CostTable costTable = CostTable.builder()
+                .perspective(perspective)
+                .currency(currency)
+                .costRates(this.getCostMapper())
+                .build();
+        List<CostTable> costTables = Stream.of(costTable)
+                .collect(Collectors.toList());
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String arrayToJson = objectMapper.writeValueAsString(costTables);
+
+        parent.getEventLogService().saveCostTablesByLog(arrayToJson, parent.getContextData().getLogId(),
+                parent.getContextData().getUsername());
     }
 
     @Override

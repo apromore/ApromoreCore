@@ -209,6 +209,23 @@ public interface EventLogService {
           UserNotFoundException;
 
   /**
+   * @param costTables Cost tables info that associated with specified log
+   * @param logId      log id
+   * @param username   username
+   * @return Cost tables user metadata
+   * @throws UserNotFoundException If could not find specified username
+   */
+  Usermetadata saveCostTablesByLog(String costTables, Integer logId, String username) throws UserNotFoundException;
+
+  /**
+   * Find cost tables that are linked to the specified Log
+   *
+   * @param logId Log id
+   * @return Json string of associated cost tables
+   */
+  String getCostTablesByLog(Integer logId);
+
+  /**
    * Get perspective tag from specified event log.
    * Add default perspectives (concept:name, and org:resource if any) for existing logs
    *

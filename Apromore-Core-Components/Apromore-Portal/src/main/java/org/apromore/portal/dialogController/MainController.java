@@ -356,8 +356,6 @@ public class MainController extends BaseController implements MainControllerInte
                     .build());
             });
 
-            Clients.evalJavaScript("Ap.common.getLocalStorageItem('ap.cost.table', 'mainW', 'onCostTableInit')");
-
         } catch (final Exception e) {
             LOGGER.error("Repository NOT available", e);
 

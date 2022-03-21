@@ -606,6 +606,9 @@ public class EventLogServiceImpl implements EventLogService {
         return relatedLogs;
     }
 
+//	@Override
+//	public
+
     @Override
     public boolean saveFileToVolume(String filename, String prefix, ByteArrayOutputStream baos) throws Exception {
 
@@ -661,6 +664,35 @@ public class EventLogServiceImpl implements EventLogService {
 		} catch (JsonProcessingException e) {
 			throw new UserMetadataException("Could not serialize given perspective list: " + perspectives.toString(), e);
 		}
+	}
+
+	@Override
+	public Usermetadata saveCostTablesByLog(String costTables, Integer logId, String username) throws UserNotFoundException {
+
+		Set<Usermetadata> usermetadataSet = userMetadataService.getUserMetadataByLog(logId,
+				UserMetadataTypeEnum.COST_TABLE);
+		if (usermetadataSet.isEmpty()) {
+			return userMetadataService.saveUserMetadata("Cost tables", costTables,
+					UserMetadataTypeEnum.COST_TABLE, username, logId);
+		}
+		return userMetadataService.updateUserMetadata(usermetadataSet.iterator().next(), username, costTables);
+	}
+
+	@Override
+	public String getCostTablesByLog(Integer logId) {
+
+		String jsonString = "";
+
+		Set<Usermetadata> usermetadataSet = userMetadataService.getUserMetadataByLog(logId,
+				UserMetadataTypeEnum.COST_TABLE);
+
+		if (usermetadataSet.isEmpty()) {
+			LOGGER.info("Log (ID: {}) doesn't have associated cost table stored in DB.", logId);
+			return jsonString;
+		}
+		LOGGER.debug("Get cost table for log (ID: {}): {}", logId, jsonString);
+		return usermetadataSet.iterator().next().getContent();
+
 	}
 
 	@Override
