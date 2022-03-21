@@ -24,10 +24,13 @@ package org.apromore.processsimulation.service;
 import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -296,6 +299,9 @@ public class SimulationInfoService {
         final ProcessSimulationInfo.ProcessSimulationInfoBuilder builder,
         final SimulationData simulationData) {
 
+        DecimalFormat df = new DecimalFormat("0.0000");
+        df.setRoundingMode(RoundingMode.UP);
+
         List<SequenceFlow> sequenceFlowList = new ArrayList<>();
         if (simulationData.getEdgeFrequencies() != null && !simulationData.getEdgeFrequencies().isEmpty()) {
 
@@ -306,11 +312,38 @@ public class SimulationInfoService {
                     .map(EdgeFrequency::getFrequency)
                     .reduce(0.0D, Double::sum);
 
+                // Set the probability for each edge
+                gatewayEntry.getValue().forEach(edgeFrequency -> {
+                    edgeFrequency.setProbability(BigDecimal.valueOf(edgeFrequency.getFrequency() / totalFrequency)
+                        .setScale(4, RoundingMode.HALF_UP).doubleValue());
+                });
+
+                // Determine if the probabilities add up to a 100%
+                double totalProbabilities = gatewayEntry.getValue().stream()
+                    .map(EdgeFrequency::getProbability)
+                    .reduce(0.0D, Double::sum);
+
+                // If the total probabilities is less than 100%
+                // then add the difference to the gateway with the lowest probability
+                if (totalProbabilities < 1.0) {
+                    EdgeFrequency minEdgeFrequency =
+                        Collections.min(gatewayEntry.getValue(), Comparator.comparing(EdgeFrequency::getProbability));
+
+                    minEdgeFrequency.setProbability(minEdgeFrequency.getProbability() + (1.0 - totalProbabilities));
+                }
+
+                // If the total probabilities are greater than 100%
+                // then remove the difference from the gateway with the highest probability
+                if (totalProbabilities > 1.0) {
+                    EdgeFrequency maxEdgeFrequency =
+                        Collections.max(gatewayEntry.getValue(), Comparator.comparing(EdgeFrequency::getProbability));
+
+                    maxEdgeFrequency.setProbability(maxEdgeFrequency.getProbability() - (totalProbabilities - 1.0));
+                }
+
                 gatewayEntry.getValue().forEach(edgeFrequency -> sequenceFlowList.add(SequenceFlow.builder()
                     .elementId(edgeFrequency.getEdgeId())
-                    .executionProbability(
-                        BigDecimal.valueOf(edgeFrequency.getFrequency() / totalFrequency)
-                            .setScale(4, RoundingMode.HALF_UP).toPlainString())
+                    .executionProbability(df.format(edgeFrequency.getProbability()))
                     .build()));
             });
 
