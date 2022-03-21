@@ -12562,13 +12562,7 @@ function merge(target) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "is", function() { return is; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isAny", function() { return isAny; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getBusinessObject", function() { return getBusinessObject; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getDi", function() { return getDi; });
-/* harmony import */ var min_dash__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(0);
-
-
-
 /**
  * Is an element of the given BPMN type?
  *
@@ -12585,20 +12579,6 @@ function is(element, type) {
 
 
 /**
- * Return true if element has any of the given types.
- *
- * @param {djs.model.Base} element
- * @param {Array<string>} types
- *
- * @return {boolean}
- */
-function isAny(element, types) {
-  return Object(min_dash__WEBPACK_IMPORTED_MODULE_0__["some"])(types, function(t) {
-    return is(element, t);
-  });
-}
-
-/**
  * Return the business object for a given element.
  *
  * @param  {djs.model.Base|ModdleElement} element
@@ -12607,19 +12587,6 @@ function isAny(element, types) {
  */
 function getBusinessObject(element) {
   return (element && element.businessObject) || element;
-}
-
-/**
- * Return the di object for a given element.
- *
- * @param  {djs.model.Base} element
- *
- * @return {ModdleElement}
- */
-function getDi(element) {
-  var bo = getBusinessObject(element);
-
-  return bo && bo.di;
 }
 
 /***/ }),
@@ -54413,6 +54380,10 @@ class ColorContextPad {
   getContextPadEntries(element) {
     const { _canvas, _contextPad, _colorPalette, _modeling } = this;
 
+    if (Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:TextAnnotation')) {
+      return;
+    }
+
     function launchPalette(event, element) {
       let el = $j(`.ap-editor-set-color`)
       el.spectrum({
@@ -54439,7 +54410,13 @@ class ColorContextPad {
               fill: lighten(colorCode)
             }
           }
-          if (Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:SequenceFlow')) {
+          if (
+            Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:SequenceFlow') ||
+            Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:Association') ||
+            Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:DataInputAssociation') ||
+            Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:DataOutputAssociation') ||
+            Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:MessageFlow')
+          ) {
             color.stroke = darken(colorCode);
           }
           _modeling.setColor(element, color);
@@ -68570,7 +68547,7 @@ function shallowCopyObject(obj) {
  * FilterXSS class
  *
  * @param {Object} options
- *        whiteList (or allowList), onTag, onTagAttr, onIgnoreTag,
+ *        whiteList, onTag, onTagAttr, onIgnoreTag,
  *        onIgnoreTagAttr, safeAttrValue, escapeHtml
  *        stripIgnoreTagBody, allowCommentTag, stripBlankChar
  *        css{whiteList, onAttr, onIgnoreAttr} `css=false` means don't use `cssfilter`
@@ -68587,7 +68564,7 @@ function FilterXSS(options) {
     options.onIgnoreTag = DEFAULT.onIgnoreTagStripAll;
   }
 
-  options.whiteList = options.whiteList || options.allowList || DEFAULT.whiteList;
+  options.whiteList = options.whiteList || DEFAULT.whiteList;
   options.onTag = options.onTag || DEFAULT.onTag;
   options.onTagAttr = options.onTagAttr || DEFAULT.onTagAttr;
   options.onIgnoreTag = options.onIgnoreTag || DEFAULT.onIgnoreTag;
@@ -91887,6 +91864,49 @@ AutoPlaceSelectionBehavior.$inject = [
   autoPlace: [ 'type', AutoPlace ],
   autoPlaceSelectionBehavior: [ 'type', AutoPlaceSelectionBehavior ]
 });
+// CONCATENATED MODULE: ./node_modules/bpmn-js/lib/features/modeling/util/ModelingUtil.js
+
+
+
+
+
+/**
+ * Return true if element has any of the given types.
+ *
+ * @param {djs.model.Base} element
+ * @param {Array<string>} types
+ *
+ * @return {boolean}
+ */
+function isAny(element, types) {
+  return Object(dist_index_esm["some"])(types, function(t) {
+    return Object(ModelUtil["is"])(element, t);
+  });
+}
+
+
+/**
+ * Return the parent of the element with any of the given types.
+ *
+ * @param {djs.model.Base} element
+ * @param {string|Array<string>} anyType
+ *
+ * @return {djs.model.Base}
+ */
+function ModelingUtil_getParent(element, anyType) {
+
+  if (typeof anyType === 'string') {
+    anyType = [ anyType ];
+  }
+
+  while ((element = element.parent)) {
+    if (isAny(element, anyType)) {
+      return element;
+    }
+  }
+
+  return null;
+}
 // CONCATENATED MODULE: ./node_modules/bpmn-js/lib/features/auto-place/BpmnAutoPlaceUtil.js
 
 
@@ -91911,7 +91931,7 @@ function BpmnAutoPlaceUtil_getNewShapePosition(source, element) {
     return getTextAnnotationPosition(source, element);
   }
 
-  if (Object(ModelUtil["isAny"])(element, [ 'bpmn:DataObjectReference', 'bpmn:DataStoreReference' ])) {
+  if (isAny(element, [ 'bpmn:DataObjectReference', 'bpmn:DataStoreReference' ])) {
     return getDataElementPosition(source, element);
   }
 
@@ -99867,12 +99887,12 @@ function BpmnReplace(
 
     // retain default flow's reference between inclusive <-> exclusive gateways and activities
     if (
-      Object(ModelUtil["isAny"])(oldBusinessObject, [
+      isAny(oldBusinessObject, [
         'bpmn:ExclusiveGateway',
         'bpmn:InclusiveGateway',
         'bpmn:Activity'
       ]) &&
-      Object(ModelUtil["isAny"])(newBusinessObject, [
+      isAny(newBusinessObject, [
         'bpmn:ExclusiveGateway',
         'bpmn:InclusiveGateway',
         'bpmn:Activity'
@@ -101474,33 +101494,6 @@ ReplaceMenuProvider.prototype._getAdHocEntry = function(element) {
   __init__: [ 'replaceMenuProvider' ],
   replaceMenuProvider: [ 'type', ReplaceMenuProvider ]
 });
-// CONCATENATED MODULE: ./node_modules/bpmn-js/lib/features/modeling/util/ModelingUtil.js
-
-
-
-
-/**
- * Return the parent of the element with any of the given types.
- *
- * @param {djs.model.Base} element
- * @param {string|Array<string>} anyType
- *
- * @return {djs.model.Base}
- */
-function ModelingUtil_getParent(element, anyType) {
-
-  if (typeof anyType === 'string') {
-    anyType = [ anyType ];
-  }
-
-  while ((element = element.parent)) {
-    if (Object(ModelUtil["isAny"])(element, anyType)) {
-      return element;
-    }
-  }
-
-  return null;
-}
 // CONCATENATED MODULE: ./node_modules/diagram-js/lib/features/resize/ResizeUtil.js
 
 
@@ -102072,7 +102065,7 @@ ContextPadProvider.prototype.getContextPadEntries = function(element) {
   }
 
 
-  if (Object(ModelUtil["isAny"])(businessObject, [ 'bpmn:Lane', 'bpmn:Participant' ]) && isExpanded(businessObject)) {
+  if (isAny(businessObject, [ 'bpmn:Lane', 'bpmn:Participant' ]) && isExpanded(businessObject)) {
 
     var childLanes = getChildLanes(element);
 
@@ -102238,7 +102231,7 @@ ContextPadProvider.prototype.getContextPadEntries = function(element) {
   }
 
   if (
-    Object(ModelUtil["isAny"])(businessObject, [
+    isAny(businessObject, [
       'bpmn:FlowNode',
       'bpmn:InteractionNode',
       'bpmn:DataObjectReference',
@@ -102283,7 +102276,7 @@ ContextPadProvider.prototype.getContextPadEntries = function(element) {
     });
   }
 
-  if (Object(ModelUtil["isAny"])(businessObject, [ 'bpmn:DataObjectReference', 'bpmn:DataStoreReference' ])) {
+  if (isAny(businessObject, [ 'bpmn:DataObjectReference', 'bpmn:DataStoreReference' ])) {
     Object(dist_index_esm["assign"])(actions, {
       'connect': {
         group: 'connect',
@@ -102605,7 +102598,7 @@ function BpmnDistributeElements(distributeElements) {
 
   distributeElements.registerFilter(function(elements) {
     return Object(dist_index_esm["filter"])(elements, function(element) {
-      var cannotDistribute = Object(ModelUtil["isAny"])(element, [
+      var cannotDistribute = isAny(element, [
         'bpmn:Association',
         'bpmn:BoundaryEvent',
         'bpmn:DataInputAssociation',
@@ -103101,7 +103094,7 @@ function BpmnGridSnapping(eventBus) {
     var context = event.context,
         shape = event.shape;
 
-    if (Object(ModelUtil["isAny"])(shape, [
+    if (isAny(shape, [
       'bpmn:Participant',
       'bpmn:SubProcess',
       'bpmn:TextAnnotation'
@@ -105186,7 +105179,7 @@ function LabelEditingProvider(
 
   function activateDirectEdit(element, force) {
     if (force ||
-        Object(ModelUtil["isAny"])(element, [ 'bpmn:Task', 'bpmn:TextAnnotation' ]) ||
+        isAny(element, [ 'bpmn:Task', 'bpmn:TextAnnotation' ]) ||
         isCollapsedSubProcess(element)) {
 
       directEditing.activate(element);
@@ -105235,7 +105228,7 @@ LabelEditingProvider.prototype.activate = function(element) {
 
   // tasks
   if (
-    Object(ModelUtil["isAny"])(element, [
+    isAny(element, [
       'bpmn:Task',
       'bpmn:Participant',
       'bpmn:Lane',
@@ -105334,7 +105327,7 @@ LabelEditingProvider.prototype.getEditingBBox = function(element) {
 
   // internal labels for tasks and collapsed call activities,
   // sub processes and participants
-  if (Object(ModelUtil["isAny"])(element, [ 'bpmn:Task', 'bpmn:CallActivity']) ||
+  if (isAny(element, [ 'bpmn:Task', 'bpmn:CallActivity']) ||
       isCollapsedPool(element) ||
       isCollapsedSubProcess(element)) {
 
@@ -106106,7 +106099,7 @@ function getEventDefinition(element) {
 
 function shouldReplace(shape, host) {
   return !isLabel(shape) &&
-    Object(ModelUtil["isAny"])(shape, [ 'bpmn:IntermediateThrowEvent', 'bpmn:IntermediateCatchEvent' ]) && !!host;
+    isAny(shape, [ 'bpmn:IntermediateThrowEvent', 'bpmn:IntermediateCatchEvent' ]) && !!host;
 }
 
 // CONCATENATED MODULE: ./node_modules/bpmn-js/lib/features/modeling/behavior/BoundaryEventBehavior.js
@@ -106218,7 +106211,7 @@ function RootElementReferenceBehavior(
   injector.invoke(CommandInterceptor, this);
 
   function canHaveRootElementReference(element) {
-    return Object(ModelUtil["isAny"])(element, [ 'bpmn:ReceiveTask', 'bpmn:SendTask' ]) ||
+    return isAny(element, [ 'bpmn:ReceiveTask', 'bpmn:SendTask' ]) ||
       hasAnyEventDefinition(element, [
         'bpmn:ErrorEventDefinition',
         'bpmn:EscalationEventDefinition',
@@ -106247,7 +106240,7 @@ function RootElementReferenceBehavior(
   }
 
   function getRootElement(businessObject) {
-    if (Object(ModelUtil["isAny"])(businessObject, [ 'bpmn:ReceiveTask', 'bpmn:SendTask' ])) {
+    if (isAny(businessObject, [ 'bpmn:ReceiveTask', 'bpmn:SendTask' ])) {
       return businessObject.get('messageRef');
     }
 
@@ -106258,7 +106251,7 @@ function RootElementReferenceBehavior(
   }
 
   function setRootElement(businessObject, rootElement) {
-    if (Object(ModelUtil["isAny"])(businessObject, [ 'bpmn:ReceiveTask', 'bpmn:SendTask' ])) {
+    if (isAny(businessObject, [ 'bpmn:ReceiveTask', 'bpmn:SendTask' ])) {
       return businessObject.set('messageRef', rootElement);
     }
 
@@ -106430,7 +106423,7 @@ function FixHoverBehavior(elementRegistry, eventBus, canvas) {
 
     // ensure elements are not dropped onto a bpmn:Lane but onto
     // the underlying bpmn:Participant
-    if (Object(ModelUtil["is"])(hover, 'bpmn:Lane') && !Object(ModelUtil["isAny"])(shape, [ 'bpmn:Lane', 'bpmn:Participant' ])) {
+    if (Object(ModelUtil["is"])(hover, 'bpmn:Lane') && !isAny(shape, [ 'bpmn:Lane', 'bpmn:Participant' ])) {
       event.hover = getLanesRoot(hover);
       event.hoverGfx = elementRegistry.getGraphics(event.hover);
     }
@@ -107108,7 +107101,7 @@ function DataStoreBehavior(
         shape = context.shape,
         rootElement = canvas.getRootElement();
 
-    if (Object(ModelUtil["isAny"])(shape, [ 'bpmn:Participant', 'bpmn:SubProcess' ])
+    if (isAny(shape, [ 'bpmn:Participant', 'bpmn:SubProcess' ])
         && Object(ModelUtil["is"])(rootElement, 'bpmn:Collaboration')) {
       getDataStores(rootElement)
         .filter(function(dataStore) {
@@ -108017,7 +108010,7 @@ function IsHorizontalFix(eventBus) {
   this.executed([ 'shape.move', 'shape.create', 'shape.resize' ], function(event) {
     var bo = Object(ModelUtil["getBusinessObject"])(event.context.shape);
 
-    if (Object(ModelUtil["isAny"])(bo, elementTypesToUpdate) && !bo.di.get('isHorizontal')) {
+    if (isAny(bo, elementTypesToUpdate) && !bo.di.get('isHorizontal')) {
 
       // set attribute directly to avoid modeling#updateProperty side effects
       bo.di.set('isHorizontal', true);
@@ -110923,7 +110916,7 @@ function canStartConnection(element) {
     return null;
   }
 
-  return Object(ModelUtil["isAny"])(element, [
+  return isAny(element, [
     'bpmn:FlowNode',
     'bpmn:InteractionNode',
     'bpmn:DataObjectReference',
@@ -111178,7 +111171,7 @@ function canDrop(element, target, position) {
   }
 
   // allow moving DataInput / DataOutput within its original container only
-  if (Object(ModelUtil["isAny"])(element, [ 'bpmn:DataInput', 'bpmn:DataOutput' ])) {
+  if (isAny(element, [ 'bpmn:DataInput', 'bpmn:DataOutput' ])) {
 
     if (element.parent) {
       return target === element.parent;
@@ -111202,7 +111195,7 @@ function canDrop(element, target, position) {
       return isExpanded(target);
     }
 
-    return Object(ModelUtil["isAny"])(target, [ 'bpmn:Participant', 'bpmn:Lane' ]);
+    return isAny(target, [ 'bpmn:Participant', 'bpmn:Lane' ]);
   }
 
   // disallow dropping data store reference if there is no process to append to
@@ -111216,8 +111209,8 @@ function canDrop(element, target, position) {
   // rendered and moved to top (Process or Collaboration level)
   //
   // artifacts may be placed wherever, too
-  if (Object(ModelUtil["isAny"])(element, [ 'bpmn:Artifact', 'bpmn:DataAssociation', 'bpmn:DataStoreReference' ])) {
-    return Object(ModelUtil["isAny"])(target, [
+  if (isAny(element, [ 'bpmn:Artifact', 'bpmn:DataAssociation', 'bpmn:DataStoreReference' ])) {
+    return isAny(target, [
       'bpmn:Collaboration',
       'bpmn:Lane',
       'bpmn:Participant',
@@ -111590,13 +111583,13 @@ function canConnectSequenceFlow(source, target) {
 
 function canConnectDataAssociation(source, target) {
 
-  if (Object(ModelUtil["isAny"])(source, [ 'bpmn:DataObjectReference', 'bpmn:DataStoreReference' ]) &&
-      Object(ModelUtil["isAny"])(target, [ 'bpmn:Activity', 'bpmn:ThrowEvent' ])) {
+  if (isAny(source, [ 'bpmn:DataObjectReference', 'bpmn:DataStoreReference' ]) &&
+      isAny(target, [ 'bpmn:Activity', 'bpmn:ThrowEvent' ])) {
     return { type: 'bpmn:DataInputAssociation' };
   }
 
-  if (Object(ModelUtil["isAny"])(target, [ 'bpmn:DataObjectReference', 'bpmn:DataStoreReference' ]) &&
-      Object(ModelUtil["isAny"])(source, [ 'bpmn:Activity', 'bpmn:CatchEvent' ])) {
+  if (isAny(target, [ 'bpmn:DataObjectReference', 'bpmn:DataStoreReference' ]) &&
+      isAny(source, [ 'bpmn:Activity', 'bpmn:CatchEvent' ])) {
     return { type: 'bpmn:DataOutputAssociation' };
   }
 
@@ -111629,7 +111622,7 @@ function BpmnRules_canInsert(shape, flow, position) {
   // about connection rules (yet)
 
   return (
-    Object(ModelUtil["isAny"])(flow, [ 'bpmn:SequenceFlow', 'bpmn:MessageFlow' ]) &&
+    isAny(flow, [ 'bpmn:SequenceFlow', 'bpmn:MessageFlow' ]) &&
     !isLabel(flow) &&
     Object(ModelUtil["is"])(shape, 'bpmn:FlowNode') &&
     !Object(ModelUtil["is"])(shape, 'bpmn:BoundaryEvent') &&
@@ -111906,7 +111899,7 @@ function BpmnOrderingProvider(eventBus, canvas, translate) {
     }
 
     var entry = Object(dist_index_esm["find"])(orders, function(o) {
-      return Object(ModelUtil["isAny"])(element, [ o.type ]);
+      return isAny(element, [ o.type ]);
     });
 
     return entry && entry.order || { level: 1 };
@@ -111933,7 +111926,7 @@ function BpmnOrderingProvider(eventBus, canvas, translate) {
 
     while (actualParent) {
 
-      if (Object(ModelUtil["isAny"])(actualParent, containers)) {
+      if (isAny(actualParent, containers)) {
         break;
       }
 
@@ -114514,7 +114507,7 @@ BpmnFactory.$inject = [ 'moddle' ];
 
 
 BpmnFactory.prototype._needsId = function(element) {
-  return Object(ModelUtil["isAny"])(element, [
+  return isAny(element, [
     'bpmn:RootElement',
     'bpmn:FlowElement',
     'bpmn:MessageFlow',
@@ -114550,7 +114543,7 @@ BpmnFactory.prototype._ensureId = function(element) {
     prefix = 'Event';
   } else if (Object(ModelUtil["is"])(element, 'bpmn:Gateway')) {
     prefix = 'Gateway';
-  } else if (Object(ModelUtil["isAny"])(element, [ 'bpmn:SequenceFlow', 'bpmn:MessageFlow' ])) {
+  } else if (isAny(element, [ 'bpmn:SequenceFlow', 'bpmn:MessageFlow' ])) {
     prefix = 'Flow';
   } else {
     prefix = (element.$type || '').replace(/^[^:]*:/g, '');
@@ -114828,7 +114821,7 @@ function BpmnUpdater(
 
     // remove condition from connection on reconnect to new source
     // if new source can NOT have condional sequence flow
-    if (connectionBo.conditionExpression && !Object(ModelUtil["isAny"])(newSourceBo, [
+    if (connectionBo.conditionExpression && !isAny(newSourceBo, [
       'bpmn:Activity',
       'bpmn:ExclusiveGateway',
       'bpmn:InclusiveGateway'
@@ -122712,12 +122705,12 @@ function BpmnConnectSnapping(eventBus) {
       context.connectionStart = SnapUtil_mid(start);
 
       // snap hover
-      if (Object(ModelUtil["isAny"])(hover, [ 'bpmn:Event', 'bpmn:Gateway' ])) {
+      if (isAny(hover, [ 'bpmn:Event', 'bpmn:Gateway' ])) {
         snapToPosition(event, SnapUtil_mid(hover));
       }
 
       // snap hover
-      if (Object(ModelUtil["isAny"])(hover, [ 'bpmn:Task', 'bpmn:SubProcess' ])) {
+      if (isAny(hover, [ 'bpmn:Task', 'bpmn:SubProcess' ])) {
         snapToTargetMid(event, hover);
       }
 
