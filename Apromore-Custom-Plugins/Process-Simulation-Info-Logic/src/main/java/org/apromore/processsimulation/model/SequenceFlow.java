@@ -38,6 +38,6 @@ public class SequenceFlow {
     @XmlAttribute
     private String elementId;
     @XmlAttribute
-    private double executionProbability;
+    private String executionProbability;
 
 }
