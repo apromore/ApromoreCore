@@ -955,7 +955,7 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
 
     private Role setSelectedRole(Role role) {
         if (role == null) {
-            roleNameTextbox.setValue("");
+            roleNameTextbox.setValue(getLabel("roleName_hint", "Enter role name"));
             roleDetail.setValue(getLabel("noRoleSelected_text"));
             roleTabGroupModel = new ListModelList<>();
             setRoleDetailReadOnly(true);
