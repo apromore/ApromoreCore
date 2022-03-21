@@ -69,6 +69,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
+import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.metainfo.PageDefinition;
@@ -954,7 +955,7 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
 
     private Role setSelectedRole(Role role) {
         if (role == null) {
-            roleNameTextbox.setValue("");
+            roleNameTextbox.setValue(getLabel("roleName_hint", "Enter role name"));
             roleDetail.setValue(getLabel("noRoleSelected_text"));
             roleTabGroupModel = new ListModelList<>();
             setRoleDetailReadOnly(true);
@@ -1598,7 +1599,7 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
                 nonAssignedUserRoleList.reset();
                 assignedUserRoleList.reset();
             }
-            isRoleDetailDirty = true;
+            isRoleDetailDirty = isRoleChanged(roleNameTextbox.getValue());
             assignedUserRoleCheckbox.setChecked(false);
             nonAssignedUserRoleCheckbox.setChecked(false);
         }
@@ -1621,10 +1622,27 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
                 nonAssignedUserRoleList.reset();
                 assignedUserRoleList.reset();
             }
-            isRoleDetailDirty = true;
+            isRoleDetailDirty = isRoleChanged(roleNameTextbox.getValue());
             assignedUserRoleCheckbox.setChecked(false);
             nonAssignedUserRoleCheckbox.setChecked(false);
         }
+    }
+
+    private boolean isRoleChanged(String textBoxValue) {
+        if (selectedRole == null) {
+            return false;
+        }
+
+        List<String> currentRoleUsers = selectedRole.getUsers().stream()
+            .map(User::getUsername).collect(Collectors.toList());
+        List<String> unSelectedRoleUsers = nonAssignedUserRoleModel.getInnerList().stream()
+            .map(User::getUsername).collect(Collectors.toList());
+        List<String> selectedRoleUsers = assignedUserRoleModel.getInnerList().stream()
+            .map(User::getUsername).collect(Collectors.toList());
+
+        return !getDisplayRoleName(selectedRole.getName()).equals(textBoxValue)
+            || !currentRoleUsers.containsAll(selectedRoleUsers)
+            || currentRoleUsers.stream().anyMatch(unSelectedRoleUsers::contains);
     }
 
     @Listen("onClick = #roleAddBtn")
@@ -2101,8 +2119,8 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
     }
 
     @Listen("onChanging = #roleNameTextbox")
-    public void onChangingRoleNameTextbox() {
-        isRoleDetailDirty = true;
+    public void onChangingRoleNameTextbox(InputEvent event) {
+        isRoleDetailDirty = isRoleChanged(event.getValue());
     }
 
     @Listen("onCheck = #assignedUserRoleCheckbox")

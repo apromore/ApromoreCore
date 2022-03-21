@@ -54,7 +54,8 @@
                 <row>
                     <label value="${$composer.labels.roleName_text}"/>
                     <hbox>
-                        <textbox id="roleNameTextbox" placeholder="${$composer.labels.roleName_hint}"/>
+                        <textbox id="roleNameTextbox" placeholder="${$composer.labels.roleName_hint}"
+                                 constraint="${labels.common_nameConstraint_text}"/>
                     </hbox>
                 </row>
             </rows>
