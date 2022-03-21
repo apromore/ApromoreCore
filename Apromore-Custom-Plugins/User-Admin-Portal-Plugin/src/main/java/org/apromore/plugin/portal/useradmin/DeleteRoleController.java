@@ -165,7 +165,7 @@ public class DeleteRoleController extends SelectorComposer<Window> implements La
         }
 
         //Delete old role
-        LOGGER.info(MessageFormat.format("Deleting role {0}", roleLabel));
+        LOGGER.info("Deleting role {}", roleLabel);
         securityService.deleteRole(selectedRole);
         Map<String, String> dataMap = Map.of("type", "DELETE_ROLE");
         EventQueues
