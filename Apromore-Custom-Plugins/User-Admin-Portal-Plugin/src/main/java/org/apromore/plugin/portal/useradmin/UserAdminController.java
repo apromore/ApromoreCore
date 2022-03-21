@@ -1599,7 +1599,7 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
                 nonAssignedUserRoleList.reset();
                 assignedUserRoleList.reset();
             }
-            isRoleDetailDirty = isUserRolesChanged(roleNameTextbox.getValue());
+            isRoleDetailDirty = isRoleChanged(roleNameTextbox.getValue());
             assignedUserRoleCheckbox.setChecked(false);
             nonAssignedUserRoleCheckbox.setChecked(false);
         }
@@ -1622,13 +1622,13 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
                 nonAssignedUserRoleList.reset();
                 assignedUserRoleList.reset();
             }
-            isRoleDetailDirty = isUserRolesChanged(roleNameTextbox.getValue());
+            isRoleDetailDirty = isRoleChanged(roleNameTextbox.getValue());
             assignedUserRoleCheckbox.setChecked(false);
             nonAssignedUserRoleCheckbox.setChecked(false);
         }
     }
 
-    private boolean isUserRolesChanged(String textBoxValue) {
+    private boolean isRoleChanged(String textBoxValue) {
         if (selectedRole == null) {
             return false;
         }
@@ -2120,7 +2120,7 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
 
     @Listen("onChanging = #roleNameTextbox")
     public void onChangingRoleNameTextbox(InputEvent event) {
-        isRoleDetailDirty = isUserRolesChanged(event.getValue());
+        isRoleDetailDirty = isRoleChanged(event.getValue());
     }
 
     @Listen("onCheck = #assignedUserRoleCheckbox")
