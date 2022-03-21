@@ -20,7 +20,7 @@
   <http://www.gnu.org/licenses/lgpl-3.0.html>.
   #L%
   -->
-<window sclass="ap-transfer-win"
+<window sclass="ap-role-transfer-win"
         width="950px" height="700px" position="center"
         closable="true"
         title="${$composer.labels.removeRole_text}"
