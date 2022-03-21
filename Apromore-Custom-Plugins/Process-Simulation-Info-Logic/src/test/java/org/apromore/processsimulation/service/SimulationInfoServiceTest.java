@@ -866,19 +866,19 @@ class SimulationInfoServiceTest {
             sequenceFlowMap.put(seqFlow.getAttributes().getNamedItem("elementId").getNodeValue(), seqFlow);
         }
 
-        assertSequenceFlow("edge2", .2025, sequenceFlowMap);
-        assertSequenceFlow("edge3", .3016, sequenceFlowMap);
-        assertSequenceFlow("edge4", .4959, sequenceFlowMap);
+        assertSequenceFlow("edge2", "0.2025", sequenceFlowMap);
+        assertSequenceFlow("edge3", "0.3016", sequenceFlowMap);
+        assertSequenceFlow("edge4", "0.4959", sequenceFlowMap);
 
     }
 
-    private void assertSequenceFlow(final String elementId, double executionProbability,
+    private void assertSequenceFlow(final String elementId, String executionProbability,
                                     Map<String, Node> sequenceFlowMap) {
 
         Node seqFlowNode = sequenceFlowMap.get(elementId);
 
         assertEquals(elementId, seqFlowNode.getAttributes().getNamedItem("elementId").getNodeValue());
-        assertEquals(Double.toString(executionProbability),
+        assertEquals(executionProbability,
             seqFlowNode.getAttributes().getNamedItem("executionProbability").getNodeValue());
 
     }

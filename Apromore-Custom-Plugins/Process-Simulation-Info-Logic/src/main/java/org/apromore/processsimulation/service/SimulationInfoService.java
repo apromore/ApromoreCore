@@ -310,7 +310,7 @@ public class SimulationInfoService {
                     .elementId(edgeFrequency.getEdgeId())
                     .executionProbability(
                         BigDecimal.valueOf(edgeFrequency.getFrequency() / totalFrequency)
-                            .setScale(4, RoundingMode.HALF_UP).doubleValue())
+                            .setScale(4, RoundingMode.HALF_UP).toPlainString())
                     .build()));
             });
 

@@ -130,15 +130,15 @@ public class TestHelper {
             builder.sequenceFlows(Arrays.asList(
                 SequenceFlow.builder()
                     .elementId("edge2")
-                    .executionProbability(.2025)
+                    .executionProbability("0.2025")
                     .build(),
                 SequenceFlow.builder()
                     .elementId("edge3")
-                    .executionProbability(.3016)
+                    .executionProbability("0.3016")
                     .build(),
                 SequenceFlow.builder()
                     .elementId("edge4")
-                    .executionProbability(.4959)
+                    .executionProbability("0.4959")
                     .build()));
         }
 
