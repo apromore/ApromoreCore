@@ -314,10 +314,9 @@ public class SimulationInfoService {
                     .reduce(0.0D, Double::sum);
 
                 // Set the percentage for each edge's frequency
-                gatewayEntry.getValue().forEach(edgeFrequency -> {
+                gatewayEntry.getValue().forEach(edgeFrequency ->
                     edgeFrequency.setPercentage(BigDecimal.valueOf(edgeFrequency.getFrequency() / totalFrequency)
-                        .setScale(4, RoundingMode.HALF_UP).doubleValue());
-                });
+                        .setScale(4, RoundingMode.HALF_UP).doubleValue()));
 
                 // Determine if the percentages add up to a 100%
                 double totalProbabilities = gatewayEntry.getValue().stream()
