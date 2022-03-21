@@ -304,8 +304,8 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
         ListModel listSubModel = ListModels.toListSubModel(zoneModel, zoneComparator, zoneIds.size());
         zoneCombobox.setModel(listSubModel);
         zoneCombobox.addEventListener("onClientTimeZone", (Event event) -> {
-            if (zoneModel.getSelection().isEmpty() ||
-                (selectedZone != null && !ZoneOffset.UTC.getId().equals(selectedZone.getId()))) {
+            if (zoneModel.getSelection().isEmpty()
+                || (selectedZone != null && !ZoneOffset.UTC.getId().equals(selectedZone.getId()))) {
                 return;
             }
 
