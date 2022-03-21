@@ -76,6 +76,8 @@ public class SimulationInfoService {
     private static final String XML_QBP_NAMESPACE = "\n xmlns:qbp=\"http://www.qbp-simulator.com/Schema201212\"\n";
     private static final Locale DOCUMENT_LOCALE = Locale.ENGLISH;
     private static final DateTimeFormatter TIMETABLE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
+    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.0000");
+
 
     private JAXBContext jaxbContext;
 
@@ -92,6 +94,8 @@ public class SimulationInfoService {
         } catch (JAXBException e) {
             log.warn("Unable to instantiate Jaxb context");
         }
+
+        DECIMAL_FORMAT.setRoundingMode(RoundingMode.UP);
     }
 
     public boolean isFeatureEnabled() {
@@ -299,9 +303,6 @@ public class SimulationInfoService {
         final ProcessSimulationInfo.ProcessSimulationInfoBuilder builder,
         final SimulationData simulationData) {
 
-        DecimalFormat df = new DecimalFormat("0.0000");
-        df.setRoundingMode(RoundingMode.UP);
-
         List<SequenceFlow> sequenceFlowList = new ArrayList<>();
         if (simulationData.getEdgeFrequencies() != null && !simulationData.getEdgeFrequencies().isEmpty()) {
 
@@ -312,38 +313,38 @@ public class SimulationInfoService {
                     .map(EdgeFrequency::getFrequency)
                     .reduce(0.0D, Double::sum);
 
-                // Set the probability for each edge
+                // Set the percentage for each edge's frequency
                 gatewayEntry.getValue().forEach(edgeFrequency -> {
-                    edgeFrequency.setProbability(BigDecimal.valueOf(edgeFrequency.getFrequency() / totalFrequency)
+                    edgeFrequency.setPercentage(BigDecimal.valueOf(edgeFrequency.getFrequency() / totalFrequency)
                         .setScale(4, RoundingMode.HALF_UP).doubleValue());
                 });
 
-                // Determine if the probabilities add up to a 100%
+                // Determine if the percentages add up to a 100%
                 double totalProbabilities = gatewayEntry.getValue().stream()
-                    .map(EdgeFrequency::getProbability)
+                    .map(EdgeFrequency::getPercentage)
                     .reduce(0.0D, Double::sum);
 
-                // If the total probabilities is less than 100%
-                // then add the difference to the gateway with the lowest probability
+                // If the total percentage is less than 100%
+                // then add the difference to the gateway with the lowest percentage
                 if (totalProbabilities < 1.0) {
                     EdgeFrequency minEdgeFrequency =
-                        Collections.min(gatewayEntry.getValue(), Comparator.comparing(EdgeFrequency::getProbability));
+                        Collections.min(gatewayEntry.getValue(), Comparator.comparing(EdgeFrequency::getPercentage));
 
-                    minEdgeFrequency.setProbability(minEdgeFrequency.getProbability() + (1.0 - totalProbabilities));
+                    minEdgeFrequency.setPercentage(minEdgeFrequency.getPercentage() + (1.0 - totalProbabilities));
                 }
 
-                // If the total probabilities are greater than 100%
-                // then remove the difference from the gateway with the highest probability
+                // If the total percentage are greater than 100%
+                // then remove the difference from the gateway with the highest percentage
                 if (totalProbabilities > 1.0) {
                     EdgeFrequency maxEdgeFrequency =
-                        Collections.max(gatewayEntry.getValue(), Comparator.comparing(EdgeFrequency::getProbability));
+                        Collections.max(gatewayEntry.getValue(), Comparator.comparing(EdgeFrequency::getPercentage));
 
-                    maxEdgeFrequency.setProbability(maxEdgeFrequency.getProbability() - (totalProbabilities - 1.0));
+                    maxEdgeFrequency.setPercentage(maxEdgeFrequency.getPercentage() - (totalProbabilities - 1.0));
                 }
 
                 gatewayEntry.getValue().forEach(edgeFrequency -> sequenceFlowList.add(SequenceFlow.builder()
                     .elementId(edgeFrequency.getEdgeId())
-                    .executionProbability(df.format(edgeFrequency.getProbability()))
+                    .executionProbability(DECIMAL_FORMAT.format(edgeFrequency.getPercentage()))
                     .build()));
             });
 

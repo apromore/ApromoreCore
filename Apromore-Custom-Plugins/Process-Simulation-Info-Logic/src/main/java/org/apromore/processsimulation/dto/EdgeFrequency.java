@@ -29,6 +29,6 @@ import lombok.Data;
 public class EdgeFrequency {
     private String edgeId;
     private double frequency;
-    private double probability;
+    private double percentage;
 
 }
