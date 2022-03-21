@@ -51,6 +51,10 @@ export default class ColorContextPad {
   getContextPadEntries(element) {
     const { _canvas, _contextPad, _colorPalette, _modeling } = this;
 
+    if (is(element, 'bpmn:TextAnnotation')) {
+      return;
+    }
+
     function launchPalette(event, element) {
       let el = $j(`.ap-editor-set-color`)
       el.spectrum({
@@ -77,7 +81,13 @@ export default class ColorContextPad {
               fill: lighten(colorCode)
             }
           }
-          if (is(element, 'bpmn:SequenceFlow')) {
+          if (
+            is(element, 'bpmn:SequenceFlow') ||
+            is(element, 'bpmn:Association') ||
+            is(element, 'bpmn:DataInputAssociation') ||
+            is(element, 'bpmn:DataOutputAssociation') ||
+            is(element, 'bpmn:MessageFlow')
+          ) {
             color.stroke = darken(colorCode);
           }
           _modeling.setColor(element, color);
