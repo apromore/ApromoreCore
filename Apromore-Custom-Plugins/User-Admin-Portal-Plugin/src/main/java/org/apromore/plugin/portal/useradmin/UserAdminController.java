@@ -1635,14 +1635,14 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
 
         List<String> currentRoleUsers = selectedRole.getUsers().stream()
             .map(User::getUsername).collect(Collectors.toList());
-        List<String> unSelectedUsers = nonAssignedUserRoleModel.getInnerList().stream()
+        List<String> unSelectedRoleUsers = nonAssignedUserRoleModel.getInnerList().stream()
             .map(User::getUsername).collect(Collectors.toList());
-        List<String> selectedUsers = assignedUserRoleModel.getInnerList().stream()
+        List<String> selectedRoleUsers = assignedUserRoleModel.getInnerList().stream()
             .map(User::getUsername).collect(Collectors.toList());
 
         return !getDisplayRoleName(selectedRole.getName()).equals(textBoxValue)
-            || !currentRoleUsers.containsAll(selectedUsers)
-            || currentRoleUsers.stream().anyMatch(unSelectedUsers::contains);
+            || !currentRoleUsers.containsAll(selectedRoleUsers)
+            || currentRoleUsers.stream().anyMatch(unSelectedRoleUsers::contains);
     }
 
     @Listen("onClick = #roleAddBtn")
