@@ -46,6 +46,7 @@ import org.apromore.portal.common.i18n.I18nConfig;
 import org.apromore.portal.common.i18n.I18nSession;
 import org.apromore.portal.context.PluginPortalContext;
 import org.apromore.portal.context.PortalPluginResolver;
+import org.apromore.portal.controller.SortMenuController;
 import org.apromore.portal.custom.gui.tab.PortalTab;
 import org.apromore.portal.dialogController.dto.ApromoreSession;
 import org.apromore.portal.dialogController.dto.VersionDetailType;
@@ -96,6 +97,7 @@ import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Html;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Menupopup;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Tabbox;
@@ -173,6 +175,8 @@ public class MainController extends BaseController implements MainControllerInte
     private LangChooserController langChooserController;
     private Component mainComponent;
     private CopyAndPasteController copyAndPasteController;
+    private Button orderListSortBtn;
+    private Menupopup orderListItemPopup ;
 
     public static MainController getController() {
         return controller;
@@ -242,6 +246,10 @@ public class MainController extends BaseController implements MainControllerInte
             this.tabCrumbs = (Tab) mainW.getFellow("tabCrumbs");
             this.tabBox = (Tabbox) mainW.getFellow("tabbox");
             this.pg = (Paginal) mainW.getFellow("pg");
+            orderListItemPopup= (Menupopup) mainW.getFellow("orderListItemPopup");
+            orderListSortBtn= (Button) mainW.getFellow("orderListSortBtn");
+            SortMenuController sortMenuController=new SortMenuController(this, orderListItemPopup);
+            orderListSortBtn.addEventListener(Events.ON_CLICK, event -> sortMenuController.showSortMenu(event));
 
             this.shortmessageC = new ShortMessageController(shortmessageW);
             this.simplesearch = new SimpleSearchController(this, comp);

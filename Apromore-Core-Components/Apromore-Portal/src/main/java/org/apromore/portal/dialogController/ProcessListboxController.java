@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.List;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.PortalProcessAttributePlugin;
+import org.apromore.portal.common.ArtifactOrderTypes;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.renderer.SummaryItemRenderer;
@@ -37,12 +38,17 @@ import org.apromore.portal.model.LogSummaryType;
 import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.SummariesType;
 // import org.apromore.portal.util.SummaryComparator;
-import org.apromore.portal.util.FolderTypeComparator;
+import org.apromore.portal.model.SummaryType;
+import org.apromore.portal.model.UserType;
+import org.apromore.portal.util.ArtifactsComparator;
 import org.slf4j.Logger;
 import org.zkoss.spring.SpringUtil;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.SortEvent;
+import org.zkoss.zul.ListModel;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listheader;
 
@@ -52,17 +58,11 @@ public class ProcessListboxController extends BaseListboxController {
   private static final Logger LOGGER =
       PortalLoggerFactory.getLogger(ProcessListboxController.class);
 
-  private Listheader columnScore;
-  private Listheader columnName;
-
   public ProcessListboxController(MainController mainController) {
     super(mainController, "~./macros/listbox/processSummaryListbox.zul",
         new SummaryItemRenderer(mainController));
 
-    this.columnScore = (Listheader) this.getListBox().getFellow("columnScore");
-    this.columnName = (Listheader) this.getListBox().getFellow("columnName");
-    // this.columnName.setSortAscending(new SummaryComparator(true, 1));
-    // this.columnName.setSortDescending(new SummaryComparator(false, 1));
+    initializeHeader();
 
     // Add plugin attributes as additional columns
     for (PortalProcessAttributePlugin plugin : (List<PortalProcessAttributePlugin>) SpringUtil
@@ -111,6 +111,83 @@ public class ProcessListboxController extends BaseListboxController {
     });
   }
 
+  private void initializeHeader() {
+    Listheader columnScore = (Listheader) this.getListBox().getFellow("columnScore");
+    columnScore.setVisible(false);
+
+    Listheader columnName = (Listheader) this.getListBox().getFellow("columnName");
+    columnName.setSortAscending(new ArtifactsComparator(true, ArtifactOrderTypes.BY_NAME));
+    columnName.setSortDescending(new ArtifactsComparator(false, ArtifactOrderTypes.BY_NAME));
+    columnName.addEventListener(Events.ON_SORT, (EventListener<SortEvent>) event -> forwardSortEvent(event));
+
+    Listheader columnId = (Listheader) this.getListBox().getFellow("columnId");
+    columnId.setSortAscending(new ArtifactsComparator(true, ArtifactOrderTypes.BY_ID));
+    columnId.setSortDescending(new ArtifactsComparator(false, ArtifactOrderTypes.BY_ID));
+    columnId.addEventListener(Events.ON_SORT, (EventListener<SortEvent>) event -> forwardSortEvent(event));
+
+    Listheader columnType = (Listheader) this.getListBox().getFellow("columnType");
+    columnType.setSortAscending(new ArtifactsComparator(true, ArtifactOrderTypes.BY_TYPE));
+    columnType.setSortDescending(new ArtifactsComparator(false, ArtifactOrderTypes.BY_TYPE));
+    columnType.addEventListener(Events.ON_SORT, (EventListener<SortEvent>) event -> forwardSortEvent(event));
+
+    Listheader columnLastUpdate = (Listheader) this.getListBox().getFellow("columnLastUpdate");
+    columnLastUpdate.setSortAscending(new ArtifactsComparator(true, ArtifactOrderTypes.BY_UPDATE_DATE));
+    columnLastUpdate.setSortDescending(new ArtifactsComparator(false, ArtifactOrderTypes.BY_UPDATE_DATE));
+    columnLastUpdate.addEventListener(Events.ON_SORT, (EventListener<SortEvent>) event -> forwardSortEvent(event));
+
+    Listheader columnLastVersion = (Listheader) this.getListBox().getFellow("columnLastVersion");
+    columnLastVersion.setSortAscending(new ArtifactsComparator(true, ArtifactOrderTypes.BY_LAST_VERSION));
+    columnLastVersion.setSortDescending(new ArtifactsComparator(false, ArtifactOrderTypes.BY_LAST_VERSION));
+    columnLastVersion.addEventListener(Events.ON_SORT, (EventListener<SortEvent>) event -> forwardSortEvent(event));
+
+    Listheader columnOwner = (Listheader) this.getListBox().getFellow("columnOwner");
+    columnOwner.setSortAscending(new ArtifactsComparator(true, ArtifactOrderTypes.BY_OWNER));
+    columnOwner.setSortDescending(new ArtifactsComparator(false, ArtifactOrderTypes.BY_OWNER));
+    columnOwner.addEventListener(Events.ON_SORT, (EventListener<SortEvent>) event -> forwardSortEvent(event));
+
+  }
+
+  private void forwardSortEvent(SortEvent event) {
+    try {
+      Listheader header = (Listheader) event.getTarget();
+      ArtifactsComparator comparator = event.isAscending() ? (ArtifactsComparator) header.getSortAscending() :
+          (ArtifactsComparator) header.getSortDescending();
+      redrawList(comparator);
+    } catch (Exception ex) {
+      LOGGER.error("Error in sorting", ex);
+    }
+  }
+
+  public void redrawList(ArtifactsComparator comparator) {
+
+    Executions.getCurrent().getDesktop().setAttribute("ARTIFACT_COMPARATOR", comparator);
+    ListModel<Object> listModel = getListBox().getListModel();
+
+    List<SummaryType> dataProcessSummaryType = new ArrayList<>();
+    List<SummaryType> dataLogSummaryType = new ArrayList<>();
+    List<FolderType> dataFolderType = new ArrayList<>();
+
+    for (int i = 0; i < listModel.getSize(); i++) {
+      Object obj = listModel.getElementAt(i);
+      if (obj instanceof ProcessSummaryType) {
+        dataProcessSummaryType.add((SummaryType) obj);
+      } else if (obj instanceof LogSummaryType) {
+        dataLogSummaryType.add((SummaryType) obj);
+      } else if (obj instanceof FolderType) {
+        dataFolderType.add((FolderType) obj);
+      }
+    }
+    List<Object> data = sortArtifacts(dataFolderType, dataProcessSummaryType, dataLogSummaryType, comparator);
+    setModel(data);
+  }
+
+  private void setModel(List<Object> data) {
+    SummaryListModel model =
+        new SummaryListModel(data, 1,
+            1, 1);
+    getListBox().setModel(model);
+  }
+
   /*
    * (non-Javadoc)
    * 
@@ -133,7 +210,6 @@ public class ProcessListboxController extends BaseListboxController {
   public void displaySummaries(List<FolderType> subFolders, SummariesType summaries,
       Boolean isQueryResult) {
     // this.columnScore.setVisible(isQueryResult);
-    this.columnScore.setVisible(false);
 
     getListBox().clearSelection();
     getListBox().setModel(new ListModelList<>());
@@ -148,12 +224,30 @@ public class ProcessListboxController extends BaseListboxController {
 
   public SummaryListModel displaySummaries(List<FolderType> subFolders, boolean isQueryResult) {
     // this.columnScore.setVisible(isQueryResult);
-    this.columnScore.setVisible(false);
-
     getListBox().clearSelection();
-    Collections.sort(subFolders,new FolderTypeComparator());
+
+    UserType user = UserSessionManager.getCurrentUser();
+
+
+    // FolderType currentFolder = UserSessionManager.getCurrentFolder();
+    FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
+    SummariesType processSummaries = getMainController().getManagerService().getProcessSummaries(user.getId(),
+        currentFolder == null ? 0 : currentFolder.getId(), 0, SummaryListModel.pageSize);
+
+    SummariesType logSummaries = getMainController().getManagerService().getLogSummaries(user.getId(),
+        currentFolder == null ? 0 : currentFolder.getId(), 0, SummaryListModel.pageSize);
+    ArtifactsComparator comparator = (ArtifactsComparator) Executions.getCurrent().getDesktop().getAttribute("ARTIFACT_COMPARATOR");
+    if (comparator == null) {
+      comparator = new ArtifactsComparator(true, ArtifactOrderTypes.BY_TYPE);
+      Executions.getCurrent().getDesktop().setAttribute("ARTIFACT_COMPARATOR",comparator);
+    }
+
+
+    List<Object> allArtifacts =sortArtifacts(subFolders, processSummaries.getSummary(), logSummaries.getSummary(),comparator);
+
     SummaryListModel model =
-        new SummaryListModel(isQueryResult ? Collections.<FolderType>emptyList() : subFolders);
+        new SummaryListModel(allArtifacts, subFolders.size(),
+            processSummaries.getSummary().size(), logSummaries.getSummary().size());
 
     getListBox().setModel(model);
 
@@ -163,6 +257,56 @@ public class ProcessListboxController extends BaseListboxController {
 
     return model;
   }
+
+  private List<Object> sortArtifacts(List<FolderType> subFolders, List<SummaryType> processSummaries,
+                                     List<SummaryType> logSummaries, ArtifactsComparator comparator) {
+    List<Object> allArtifacts = new ArrayList<>();
+
+    if (comparator == null) {
+      comparator = new ArtifactsComparator(true, ArtifactOrderTypes.BY_TYPE); //default
+    }
+
+    if (comparator.getArtifactOrder() == ArtifactOrderTypes.BY_TYPE) { // For Type, we are soring individually
+      if (comparator.isAsc()) {
+        addFolderArtifactsList(allArtifacts, subFolders, comparator, true); //1
+        addSummaryToArtifactsList(allArtifacts, processSummaries, comparator, true); //2
+        addSummaryToArtifactsList(allArtifacts, logSummaries, comparator, true); //3
+      } else {
+        addSummaryToArtifactsList(allArtifacts, logSummaries, comparator, true); //3
+        addSummaryToArtifactsList(allArtifacts, processSummaries, comparator, true); //2
+        addFolderArtifactsList(allArtifacts, subFolders, comparator, true); //1
+      }
+
+    } else {
+      addFolderArtifactsList(allArtifacts, subFolders, comparator, false); //1
+      addSummaryToArtifactsList(allArtifacts, processSummaries, comparator, false); //2
+      addSummaryToArtifactsList(allArtifacts, logSummaries, comparator, false); //3
+      Collections.sort(allArtifacts, comparator);
+    }
+    return allArtifacts;
+  }
+
+  private void addFolderArtifactsList(List<Object> allArtifacts, List<FolderType> subFolders,
+                                      ArtifactsComparator comparator, boolean sortRequired) {
+    if (!subFolders.isEmpty()) {
+      if (sortRequired) {
+        Collections.sort(subFolders, comparator);
+      }
+      allArtifacts.addAll(subFolders);
+    }
+  }
+
+  private void addSummaryToArtifactsList(List<Object> allArtifacts, List<SummaryType> summaryTypes,
+                                       ArtifactsComparator comparator, boolean sortRequired) {
+    if (!summaryTypes.isEmpty()) {
+      if (sortRequired) {
+        Collections.sort(summaryTypes, comparator);
+      }
+      allArtifacts.addAll(summaryTypes);
+    }
+  }
+
+
 
   // public SummaryListModel displayProcessSummaries(List<FolderType> subFolders, boolean
   // isQueryResult) {
