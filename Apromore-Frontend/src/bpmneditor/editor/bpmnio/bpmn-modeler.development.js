@@ -14028,11 +14028,20 @@ var fixNumber = function(value) {
   );
 };
 
+/**
+ * @param {double} value Value to be rounded up
+ * @returns {String} rounded up value
+ */
+var roundUp = function(value) {
+  return (+(Math.round(value + 'e+2') + 'e-2')).toString();
+};
+
 module.exports = {
   createUUID: createUUID,
   fixNumber: fixNumber,
   isDigit: isDigit,
-  getRoot: getRoot
+  getRoot: getRoot,
+  roundUp: roundUp
 };
 
 /***/ }),
@@ -36628,7 +36637,7 @@ var entryFactory = __webpack_require__(11);
 var cmdHelper = __webpack_require__(4);
 
 var validationHelper = __webpack_require__(9);
-var fixNumber = __webpack_require__(20).fixNumber;
+var roundUp = __webpack_require__(20).roundUp;
 
 var createDistributionTypeOptions = function(translate) {
   return [{
@@ -36730,11 +36739,11 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
           return { mean: distribution.mean };
         }
 
-        return { mean: (+(Math.round((distribution.mean / timeUnits[distribution.timeUnit].unit) + 'e+2') + 'e-2')).toString() };
+        return { mean: roundUp(distribution.mean / timeUnits[distribution.timeUnit].unit) };
       },
 
       set: function(element, values, _node) {
-        var mean = fixNumber(values.mean);
+        var mean = roundUp(values.mean);
         distribution.rawMean = mean;
         return cmdHelper.updateBusinessObject(element, distribution, {
           mean: (isNaN(values.mean) || values.mean === '') ? values.mean :
@@ -36786,11 +36795,11 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
           return { arg1: distribution.arg1 };
         }
 
-        return { arg1: (+(Math.round((distribution.arg1 / timeUnits[distribution.timeUnit].unit) + 'e+2') + 'e-2')).toString() };
+        return { arg1: roundUp(distribution.arg1 / timeUnits[distribution.timeUnit].unit) };
       },
 
       set: function(element, values, _node) {
-        var arg1 = fixNumber(values.arg1);
+        var arg1 = roundUp(values.arg1);
         distribution.rawArg1 = arg1;
         return cmdHelper.updateBusinessObject(element, distribution, {
           arg1: (isNaN(values.arg1) || values.arg1 === '') ? values.arg1 :
@@ -36842,11 +36851,11 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
           return { arg2: distribution.arg2 };
         }
 
-        return { arg2: (+(Math.round((distribution.arg2 / timeUnits[distribution.timeUnit].unit) + 'e+2') + 'e-2')).toString() };
+        return { arg2: roundUp(distribution.arg2 / timeUnits[distribution.timeUnit].unit) };
       },
 
       set: function(element, values, _node) {
-        var arg2 = fixNumber(values.arg2);
+        var arg2 = roundUp(values.arg2);
         distribution.rawArg2 = arg2;
         return cmdHelper.updateBusinessObject(element, distribution, {
           arg2: (isNaN(values.arg2) || values.arg2 === '') ? values.arg2 :
