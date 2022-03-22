@@ -104,7 +104,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
           return { mean: distribution.mean };
         }
 
-        return { mean: (distribution.mean / timeUnits[distribution.timeUnit].unit).toString() };
+        return { mean: (+(Math.round((distribution.mean / timeUnits[distribution.timeUnit].unit) + 'e+2') + 'e-2')).toString() };
       },
 
       set: function(element, values, _node) {
@@ -160,7 +160,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
           return { arg1: distribution.arg1 };
         }
 
-        return { arg1: (distribution.arg1 / timeUnits[distribution.timeUnit].unit).toString() };
+        return { arg1: (+(Math.round((distribution.arg1 / timeUnits[distribution.timeUnit].unit) + 'e+2') + 'e-2')).toString() };
       },
 
       set: function(element, values, _node) {
@@ -216,7 +216,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
           return { arg2: distribution.arg2 };
         }
 
-        return { arg2: (distribution.arg2 / timeUnits[distribution.timeUnit].unit).toString() };
+        return { arg2: (+(Math.round((distribution.arg2 / timeUnits[distribution.timeUnit].unit) + 'e+2') + 'e-2')).toString() };
       },
 
       set: function(element, values, _node) {
