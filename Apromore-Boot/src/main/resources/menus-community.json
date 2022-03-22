@@ -1,0 +1,328 @@
+{
+  "configs": [
+    {
+      "id": "main-menu",
+      "groups": [
+        {
+          "id": "FILE",
+          "labelKey": "plugin_file_title_text",
+          "items": [
+            {
+              "id": "org.apromore.plugin.portal.file.UploadFilePlugin"
+            },
+            {
+              "id": "org.apromore.plugin.portal.file.DownloadSelectionPlugin"
+            },
+            {
+              "id": "SEPARATOR"
+            },
+            {
+              "id": "org.apromore.etlplugin.portal.etlPortal.ETLPluginPortal"
+            },
+            {
+              "id": "org.apromore.etlplugin.portal.etlPortal.JobSchedulerPortalImp"
+            },
+            {
+              "id": "SEPARATOR"
+            },
+            {
+              "id": "CUT"
+            },
+            {
+              "id": "COPY"
+            },
+            {
+              "id": "PASTE"
+            },
+            {
+              "id": "SEPARATOR"
+            },
+            {
+              "id": "org.apromore.plugin.portal.file.CreateFolderPlugin"
+            },
+            {
+              "id": "org.apromore.plugin.portal.file.EditSelectionMetadataPlugin"
+            },
+            {
+              "id": "org.apromore.plugin.portal.file.DeleteSelectionPlugin"
+            }
+          ]
+        },
+        {
+          "id": "DISCOVER",
+          "labelKey": "plugin_discover_title_text",
+          "items": [
+            {
+              "id": "org.apromore.plugin.portal.file.CreateProcessPlugin"
+            },
+            {
+              "id": "org.apromore.plugin.portal.processdiscoverer.plugins.PDFrequencyPlugin"
+            },
+            {
+              "id": "org.apromore.plugin.portal.pd.plugins.PDFrequencyPlugin"
+            },
+            {
+              "id": "org.apromore.plugin.portal.file.EditSelectionPlugin"
+            },
+            {
+              "id": "org.apromore.plugin.portal.logfilteree.LogFilterEEPlugin"
+            }
+          ]
+        },
+        {
+          "id": "ANALYZE",
+          "labelKey": "plugin_analyze_title_text",
+          "items": [
+            {
+              "id": "org.apromore.plugin.portal.loganimation2.LogAnimationPlugin"
+            },
+            {
+              "id": "org.apromore.plugin.portal.bpmndiff.BPMNDiffPlugin"
+            },
+            {
+              "id": "org.apromore.plugin.portal.conformancechecking.ConformanceCheckingPlugin"
+            },
+            {
+              "id": "org.apromore.plugin.portal.bimp.BIMPPortalPlugin"
+            },
+            {
+              "id": "dashboard.portal.DashboardPlugin"
+            },
+            {
+              "id": "org.apromore.ppm.portal.services.PredictorTrainerPortalPlugin"
+            },
+            {
+              "id": "org.apromore.ppm.portal.services.PredictionPortalPlugin"
+            }
+          ]
+        },
+        {
+          "id": "REDESIGN",
+          "labelKey": "plugin_redesign_title_text",
+          "items": [
+            {
+              "id": "org.apromore.plugin.merge.portal.MergePlugin"
+            },
+            {
+              "id": "org.apromore.plugin.similaritysearch.portal.SimilaritySearchPlugin"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "user-menu",
+      "groups": [
+        {
+          "id": "ACCOUNT",
+          "labelExp": "displayName",
+          "items": [
+            {
+              "id": "org.apromore.plugin.portal.about.AboutPlugin"
+            },
+            {
+              "id": "org.apromore.plugin.portal.account.ChangePasswordPlugin"
+            },
+            {
+              "id": "org.apromore.plugin.portal.account.ReportIssuePlugin"
+            },
+            {
+              "id": "org.apromore.plugin.portal.account.SignOutPlugin"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "folder-popup-menu",
+      "groups": [
+        {
+          "id": "FOLDER_POPUP",
+          "items": [
+            {
+              "id": "CUT"
+            },
+            {
+              "id": "COPY"
+            },
+            {
+              "id": "PASTE"
+            },
+            {
+              "id": "SEPARATOR"
+            },
+            {
+              "id": "RENAME"
+            },
+            {
+              "id": "DELETE"
+            },
+            {
+              "id": "SEPARATOR"
+            },
+            {
+              "id": "SHARE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "log-popup-menu",
+      "groups": [
+        {
+          "id": "LOG_POPUP",
+          "items": [
+            {
+              "id": "DISCOVER_MODEL_SUB_MENU"
+            },
+            {
+              "id": "DASHBOARD_SUB_MENU"
+            },
+            {
+              "id": "LOG_FILTER_SUB_MENU"
+            },
+            {
+              "id": "FILTER_SUB_MENU"
+            },
+            {
+              "id": "APPLY_CALENDAR_SUB_MENU"
+            },
+            {
+              "id": "SEPARATOR"
+            },
+            {
+              "id": "org.apromore.ppm.portal.services.PredictorTrainerPortalPlugin"
+            },
+            {
+              "id": "org.apromore.ppm.portal.services.PredictionPortalPlugin"
+            },
+            {
+              "id": "SEPARATOR"
+            },
+            {
+              "id": "CUT"
+            },
+            {
+              "id": "COPY"
+            },
+            {
+              "id": "SEPARATOR"
+            },
+            {
+              "id": "RENAME"
+            },
+            {
+              "id": "DELETE"
+            },
+            {
+              "id": "SEPARATOR"
+            },
+            {
+              "id": "SHARE"
+            },
+            {
+              "id": "SEPARATOR"
+            },
+            {
+              "id": "org.apromore.plugin.portal.file.DownloadSelectionPlugin"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "process-popup-menu",
+      "groups": [
+        {
+          "id": "PROCESS_POPUP",
+          "items": [
+            {
+              "id": "org.apromore.plugin.portal.file.EditSelectionPlugin"
+            },
+            {
+              "id": "org.apromore.plugin.portal.bimp.BIMPPortalPlugin"
+            },
+            {
+              "id": "org.apromore.plugin.similaritysearch.portal.SimilaritySearchPlugin"
+            },
+            {
+              "id": "SEPARATOR"
+            },
+            {
+              "id": "CUT"
+            },
+            {
+              "id": "COPY"
+            },
+            {
+              "id": "SEPARATOR"
+            },
+            {
+              "id": "RENAME"
+            },
+            {
+              "id": "DELETE"
+            },
+            {
+              "id": "SEPARATOR"
+            },
+            {
+              "id": "SHARE"
+            },
+            {
+              "id": "org.apromore.plugin.portal.processpublisher.ProcessPublisherPlugin"
+            },
+            {
+              "id": "SEPARATOR"
+            },
+            {
+              "id": "org.apromore.plugin.portal.file.DownloadSelectionPlugin"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "canvas-popup-menu",
+      "groups": [
+        {
+          "id": "CANVAS_POPUP",
+          "items": [
+            {
+              "id": "org.apromore.plugin.portal.file.UploadFilePlugin"
+            },
+            {
+              "id": "SEPARATOR"
+            },
+            {
+              "id": "org.apromore.plugin.portal.file.CreateFolderPlugin"
+            },
+            {
+              "id": "org.apromore.plugin.portal.file.CreateProcessPlugin"
+            },
+            {
+              "id": "SEPARATOR"
+            },
+            {
+              "id": "PASTE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "root-folder-popup-menu",
+      "groups": [
+        {
+          "id": "FOLDER_POPUP",
+          "items": [
+            {
+              "id": "PASTE"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
