@@ -39,6 +39,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -48,6 +49,7 @@ import org.apromore.calendar.builder.CalendarModelBuilder;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.calendar.service.CustomCalendarService;
 import org.apromore.processsimulation.config.SimulationInfoConfig;
+import org.apromore.processsimulation.dto.EdgeFrequency;
 import org.apromore.processsimulation.dto.SimulationData;
 import org.apromore.processsimulation.model.Currency;
 import org.apromore.processsimulation.model.DistributionType;
@@ -396,6 +398,62 @@ class SimulationInfoServiceTest {
         assertEquals("The default resource name", processSimulationInfo.getResources().get(0).getName());
         assertEquals("A_CUSTOM_TIMETABLE_ID", processSimulationInfo.getResources().get(0).getTimetableId());
         assertEquals(19, processSimulationInfo.getResources().get(0).getTotalAmount());
+    }
+
+    @Test
+    void should_successfully_derive_gateway_probabilities() {
+        // given
+        SimulationData mockSimulationData = mockBasicSimulationData();
+
+        Map<String, List<EdgeFrequency>> mockEdgeFrequencies = Map.of(
+            "g1", List.of(
+                EdgeFrequency.builder().edgeId("e1").frequency(125).build(),
+                EdgeFrequency.builder().edgeId("e2").frequency(12).build(),
+                EdgeFrequency.builder().edgeId("e3").frequency(34).build(),
+                EdgeFrequency.builder().edgeId("e4").frequency(456).build(),
+                EdgeFrequency.builder().edgeId("e5").frequency(6).build()),
+
+            "g2", List.of(
+                EdgeFrequency.builder().edgeId("e6").frequency(56).build(),
+                EdgeFrequency.builder().edgeId("e7").frequency(987).build(),
+                EdgeFrequency.builder().edgeId("e8").frequency(1).build()),
+
+            "g3", List.of(
+                EdgeFrequency.builder().edgeId("e9").frequency(56).build(),
+                EdgeFrequency.builder().edgeId("e10").frequency(987).build(),
+                EdgeFrequency.builder().edgeId("e11").frequency(65).build(),
+                EdgeFrequency.builder().edgeId("e12").frequency(654).build(),
+                EdgeFrequency.builder().edgeId("e13").frequency(258).build(),
+                EdgeFrequency.builder().edgeId("e14").frequency(54).build(),
+                EdgeFrequency.builder().edgeId("e15").frequency(78).build(),
+                EdgeFrequency.builder().edgeId("e16").frequency(3).build(),
+                EdgeFrequency.builder().edgeId("e17").frequency(81).build(),
+                EdgeFrequency.builder().edgeId("e18").frequency(1).build())
+        );
+        when(mockSimulationData.getEdgeFrequencies()).thenReturn(mockEdgeFrequencies);
+
+        // when
+        ProcessSimulationInfo processSimulationInfo =
+            simulationInfoService.transformToSimulationInfo(mockSimulationData);
+
+        // then
+        assertGeneralSimulationInfo("26784.00", processSimulationInfo);
+
+        assertGatewayProbabilitiesAddTo100Percent(processSimulationInfo, List.of("e1", "e2", "e3", "e4", "e5"));
+        assertGatewayProbabilitiesAddTo100Percent(processSimulationInfo, List.of("e6", "e7", "e8"));
+        assertGatewayProbabilitiesAddTo100Percent(processSimulationInfo, List.of("e9", "e10", "e11", "e12", "e13",
+            "e14", "e15", "e16", "e17", "e18"));
+    }
+
+    private void assertGatewayProbabilitiesAddTo100Percent(
+        final ProcessSimulationInfo processSimulationInfo,
+        final List<String> gatewayEdgeIds) {
+
+        assertEquals(1.0,
+            processSimulationInfo.getSequenceFlows().stream()
+                .filter(sequenceFlow -> gatewayEdgeIds.contains(sequenceFlow.getElementId()))
+                .map(sequenceFlow -> Double.valueOf(sequenceFlow.getExecutionProbability()))
+                .reduce(0.0D, Double::sum));
     }
 
     private void assertGeneralSimulationInfo(String expectedArrivalRate,

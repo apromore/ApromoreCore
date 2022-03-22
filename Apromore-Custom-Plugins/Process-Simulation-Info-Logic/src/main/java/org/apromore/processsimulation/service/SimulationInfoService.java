@@ -24,10 +24,13 @@ package org.apromore.processsimulation.service;
 import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -73,6 +76,8 @@ public class SimulationInfoService {
     private static final String XML_QBP_NAMESPACE = "\n xmlns:qbp=\"http://www.qbp-simulator.com/Schema201212\"\n";
     private static final Locale DOCUMENT_LOCALE = Locale.ENGLISH;
     private static final DateTimeFormatter TIMETABLE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
+    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.0000");
+
 
     private JAXBContext jaxbContext;
 
@@ -89,6 +94,8 @@ public class SimulationInfoService {
         } catch (JAXBException e) {
             log.warn("Unable to instantiate Jaxb context");
         }
+
+        DECIMAL_FORMAT.setRoundingMode(RoundingMode.UP);
     }
 
     public boolean isFeatureEnabled() {
@@ -303,14 +310,40 @@ public class SimulationInfoService {
 
                 // Calculate the total outbound edge frequencies for each gateway
                 double totalFrequency = gatewayEntry.getValue().stream()
-                    .map(EdgeFrequency::getFrequency)
-                    .reduce(0.0D, Double::sum);
+                    .mapToDouble(EdgeFrequency::getFrequency)
+                    .sum();
+
+                // Set the percentage for each edge's frequency
+                gatewayEntry.getValue().forEach(edgeFrequency ->
+                    edgeFrequency.setPercentage(BigDecimal.valueOf(edgeFrequency.getFrequency() / totalFrequency)
+                        .setScale(4, RoundingMode.HALF_UP).doubleValue()));
+
+                // Determine if the percentages add up to a 100%
+                double totalProbabilities = gatewayEntry.getValue().stream()
+                    .mapToDouble(EdgeFrequency::getPercentage)
+                    .sum();
+
+                // If the total percentage is less than 100%
+                // then add the difference to the gateway with the lowest percentage
+                if (totalProbabilities < 1.0) {
+                    EdgeFrequency minEdgeFrequency =
+                        Collections.min(gatewayEntry.getValue(), Comparator.comparing(EdgeFrequency::getPercentage));
+
+                    minEdgeFrequency.setPercentage(minEdgeFrequency.getPercentage() + (1.0 - totalProbabilities));
+                }
+
+                // If the total percentage are greater than 100%
+                // then remove the difference from the gateway with the highest percentage
+                if (totalProbabilities > 1.0) {
+                    EdgeFrequency maxEdgeFrequency =
+                        Collections.max(gatewayEntry.getValue(), Comparator.comparing(EdgeFrequency::getPercentage));
+
+                    maxEdgeFrequency.setPercentage(maxEdgeFrequency.getPercentage() - (totalProbabilities - 1.0));
+                }
 
                 gatewayEntry.getValue().forEach(edgeFrequency -> sequenceFlowList.add(SequenceFlow.builder()
                     .elementId(edgeFrequency.getEdgeId())
-                    .executionProbability(
-                        BigDecimal.valueOf(edgeFrequency.getFrequency() / totalFrequency)
-                            .setScale(4, RoundingMode.HALF_UP).toPlainString())
+                    .executionProbability(DECIMAL_FORMAT.format(edgeFrequency.getPercentage()))
                     .build()));
             });
 
