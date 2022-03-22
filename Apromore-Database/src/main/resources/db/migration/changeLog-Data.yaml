@@ -2025,3 +2025,22 @@ databaseChangeLog:
               - column:
                   name: permissionid
                   value: "25"
+  - changeSet:
+      id:  20220321091000
+      author:  frankma
+      changes:
+        - insert:
+            tableName: usermetadata_type
+            columns:
+              - column:
+                  name: id
+                  value: "9"
+              - column:
+                  name: type
+                  value: "COST_TABLE"
+              - column:
+                  name: version
+                  value: "1"
+              - column:
+                  name: is_valid
+                  value: "1"
