@@ -194,17 +194,21 @@ public class SearchableListbox {
     }
 
     public void selectAll() {
-        listbox.selectAll();
-        listbox.getItemAtIndex(0).setFocus(true);
-        listModel.clearSelection();
-        getListModel().getInnerList().forEach(li -> listModel.addToSelection(li));
-        updateCounts();
+        if (listbox != null && listModel != null && !listbox.getItems().isEmpty()) {
+            listbox.selectAll();
+            listbox.getItemAtIndex(0).setFocus(true);
+            listModel.clearSelection();
+            getListModel().getInnerList().forEach(li -> listModel.addToSelection(li));
+            updateCounts();
+        }
     }
 
     public void unselectAll() {
-        listbox.clearSelection();
-        listModel.clearSelection();
-        updateCounts();
+        if (listbox != null && listModel != null) {
+            listbox.clearSelection();
+            listModel.clearSelection();
+            updateCounts();
+        }
     }
 
     public Set<Listitem> getSelectedItems() {
