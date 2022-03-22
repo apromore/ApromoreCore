@@ -310,8 +310,8 @@ public class SimulationInfoService {
 
                 // Calculate the total outbound edge frequencies for each gateway
                 double totalFrequency = gatewayEntry.getValue().stream()
-                    .map(EdgeFrequency::getFrequency)
-                    .reduce(0.0D, Double::sum);
+                    .mapToDouble(EdgeFrequency::getFrequency)
+                    .sum();
 
                 // Set the percentage for each edge's frequency
                 gatewayEntry.getValue().forEach(edgeFrequency ->
@@ -320,8 +320,8 @@ public class SimulationInfoService {
 
                 // Determine if the percentages add up to a 100%
                 double totalProbabilities = gatewayEntry.getValue().stream()
-                    .map(EdgeFrequency::getPercentage)
-                    .reduce(0.0D, Double::sum);
+                    .mapToDouble(EdgeFrequency::getPercentage)
+                    .sum();
 
                 // If the total percentage is less than 100%
                 // then add the difference to the gateway with the lowest percentage
