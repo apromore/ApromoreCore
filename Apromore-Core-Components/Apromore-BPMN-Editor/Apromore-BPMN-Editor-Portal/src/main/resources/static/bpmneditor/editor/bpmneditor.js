@@ -125319,7 +125319,7 @@ Comments.OVERLAY_HTML =
     '<div class="content">' +
       '<div class="comments"></div>' +
       '<div class="edit">' +
-        '<textarea tabindex="1" placeholder="Add a comment"></textarea>' +
+        '<textarea tabindex="1" placeholder="Type a comment and press Return"></textarea>' +
       '</div>' +
     '</div>' +
   '</div>';
