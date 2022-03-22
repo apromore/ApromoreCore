@@ -22,7 +22,9 @@
 
 package org.apromore.plugin.portal.processdiscoverer.components;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apromore.exception.UserNotFoundException;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
 import org.apromore.plugin.portal.processdiscoverer.data.AttributeCost;
 import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
@@ -88,7 +90,7 @@ public class CostTableController extends DataListController {
         return new String[]{"Attribute", "Cost Value"};
     }
 
-    private void persistCostTable() throws Exception {
+    private void persistCostTable() throws JsonProcessingException, UserNotFoundException {
         String currency = currencyCombobox.getValue();
         //TODO: Get perspective value from user input
         String perspective = "role";

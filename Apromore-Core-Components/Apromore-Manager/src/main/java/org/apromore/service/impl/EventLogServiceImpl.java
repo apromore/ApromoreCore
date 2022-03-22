@@ -318,7 +318,8 @@ public class EventLogServiceImpl implements EventLogService {
 				publicModel, perspective);
 		deepCopyArtifacts(findLogById(sourceLogId), filteredLog,
 				Arrays.asList(UserMetadataTypeEnum.CSV_IMPORTER.getUserMetadataTypeId(),
-						UserMetadataTypeEnum.PERSPECTIVE_TAG.getUserMetadataTypeId()), username);
+						UserMetadataTypeEnum.PERSPECTIVE_TAG.getUserMetadataTypeId(),
+						UserMetadataTypeEnum.COST_TABLE.getUserMetadataTypeId()), username);
 		return filteredLog;
 	}
 
@@ -605,9 +606,6 @@ public class EventLogServiceImpl implements EventLogService {
         });
         return relatedLogs;
     }
-
-//	@Override
-//	public
 
     @Override
     public boolean saveFileToVolume(String filename, String prefix, ByteArrayOutputStream baos) throws Exception {
