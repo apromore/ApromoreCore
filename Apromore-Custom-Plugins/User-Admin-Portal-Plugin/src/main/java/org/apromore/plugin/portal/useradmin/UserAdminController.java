@@ -2006,6 +2006,7 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
         if (role == null || (!isRoleTabUserView && CollectionUtils.isEmpty(selectedGroups))) {
             assignedUserRoleModel = new ListModelList<>();
             nonAssignedUserRoleModel = new ListModelList<>();
+            ComponentUtils.toggleSclass(applyRoleUserSelection, false);
         } else {
             List<User> assignedUsers = new ArrayList<>(role.getUsers());
             List<User> nonAssignedUsers =
@@ -2017,6 +2018,7 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
             nonAssignedUsers.sort(nameComparator);
             assignedUserRoleModel = new ListModelList<>(assignedUsers, false);
             nonAssignedUserRoleModel = new ListModelList<>(nonAssignedUsers, false);
+            ComponentUtils.toggleSclass(applyRoleUserSelection, true);
         }
 
         assignedUserRoleModel.setMultiple(true);
