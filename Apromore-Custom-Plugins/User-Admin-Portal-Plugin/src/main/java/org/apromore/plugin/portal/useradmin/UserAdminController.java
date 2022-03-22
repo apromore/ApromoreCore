@@ -1732,19 +1732,20 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
             return;
         }
 
-        Set<RoleModel> selectedRoles = roleList.getSelection();
+        Set<RoleModel> selectedRoleModels = roleList.getSelection();
         if (roleList.getSelectionCount() == 0) {
             Notification.error(getLabel("noDeleteNoRoleSelected_message"));
             return;
         }
 
-        if (selectedRoles.stream().anyMatch(r -> isDefaultRole(r.getRole()))) {
+        List<Role> selectedRoles = selectedRoleModels.stream().map(RoleModel::getRole).collect(Collectors.toList());
+        if (selectedRoles.stream().anyMatch(this::isDefaultRole)) {
             Notification.error(getLabel("noDeleteDefaultRole_message"));
             return;
         }
 
         List<String> roles = new ArrayList<>();
-        for (RoleModel r : selectedRoles) {
+        for (RoleModel r : selectedRoleModels) {
             roles.add(r.getLabel());
         }
         String roleNames = String.join(", ", roles);
@@ -1755,14 +1756,27 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
             Messagebox.QUESTION,
             e -> {
                 if (Messagebox.ON_OK.equals(e.getName())) {
-                    for (RoleModel r : selectedRoles) {
-                        Role role = r.getRole();
-                        LOGGER.info(MessageFormat.format("Deleting role {0}", role.getName()));
-                        securityService.deleteRole(role);
-                        Map<String, String> dataMap = Map.of("type", "DELETE_ROLE");
-                        EventQueues
-                            .lookup(SecurityService.EVENT_TOPIC, getSelf().getDesktop().getWebApp(), true)
-                            .publish(new Event("Role(s) Deleted", null, dataMap));
+                    for (RoleModel r : selectedRoleModels) {
+                        Role role = securityService.findRoleByName(r.getRole().getName());
+
+                        if (CollectionUtils.isEmpty(role.getUsers())) {
+                            LOGGER.info(MessageFormat.format("Deleting role {0}", role.getName()));
+                            securityService.deleteRole(role);
+                            Map<String, String> dataMap = Map.of("type", "DELETE_ROLE");
+                            EventQueues
+                                .lookup(SecurityService.EVENT_TOPIC, getSelf().getDesktop().getWebApp(), true)
+                                .publish(new Event("Role(s) Deleted", null, dataMap));
+                        } else {
+                            Map<String, Object> arg = new HashMap<>();
+                            arg.put("rolesToDelete", selectedRoles);
+                            arg.put("selectedRole", role);
+                            arg.put("roleLabel", r.getLabel());
+                            arg.put("displayRoleNameMap", roleMap);
+                            Window window = (Window) Executions.getCurrent()
+                                .createComponents(getPageDefinition("zul/delete-role.zul"), getSelf(), arg);
+                            window.doModal();
+                        }
+
                     }
                     setSelectedRole(null);
                 }

@@ -186,3 +186,9 @@
     background-color: white;
     color: var(--ap-c-widget);
 }
+
+.ap-role-transfer-win .z-listheader-checkable {
+    position: absolute;
+    top: 6px;
+    left: 7px;
+}
