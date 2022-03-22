@@ -1042,9 +1042,6 @@ public abstract class BaseListboxController extends BaseController {
     // Need refactoring, for now assume paging is not used and items < 10000 per view
     static final int pageSize = 10000;
     private int totalProcessSummary=0;
-    private int totalLogSummary=0;
-    private int totalFolder=0;
-
     private transient List<Object> objectList;
 
     /**
@@ -1053,11 +1050,9 @@ public abstract class BaseListboxController extends BaseController {
      * @param objectList will be displayed before processes
      */
 
-    SummaryListModel(List<Object> objectList,int totalFolder,int totalProcessSummary,int totalLogSummary) {
+    SummaryListModel(List<Object> objectList,int totalProcessSummary) {
       this.objectList = objectList;
-      this.totalFolder=totalFolder;
       this.totalProcessSummary=totalProcessSummary;
-      this.totalLogSummary=totalLogSummary;
       setMultiple(true);
     }
     public int getTotalCount() {

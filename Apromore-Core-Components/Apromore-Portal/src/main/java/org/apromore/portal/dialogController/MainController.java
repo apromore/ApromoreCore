@@ -175,8 +175,6 @@ public class MainController extends BaseController implements MainControllerInte
     private LangChooserController langChooserController;
     private Component mainComponent;
     private CopyAndPasteController copyAndPasteController;
-    private Button orderListSortBtn;
-    private Menupopup orderListItemPopup ;
 
     public static MainController getController() {
         return controller;
@@ -246,10 +244,10 @@ public class MainController extends BaseController implements MainControllerInte
             this.tabCrumbs = (Tab) mainW.getFellow("tabCrumbs");
             this.tabBox = (Tabbox) mainW.getFellow("tabbox");
             this.pg = (Paginal) mainW.getFellow("pg");
-            orderListItemPopup= (Menupopup) mainW.getFellow("orderListItemPopup");
-            orderListSortBtn= (Button) mainW.getFellow("orderListSortBtn");
+            Menupopup orderListItemPopup= (Menupopup) mainW.getFellow("orderListItemPopup");
+            Button orderListSortBtn= (Button) mainW.getFellow("orderListSortBtn");
             SortMenuController sortMenuController=new SortMenuController(this, orderListItemPopup);
-            orderListSortBtn.addEventListener(Events.ON_CLICK, event -> sortMenuController.showSortMenu(event));
+            orderListSortBtn.addEventListener(Events.ON_CLICK, sortMenuController::showSortMenu);
 
             this.shortmessageC = new ShortMessageController(shortmessageW);
             this.simplesearch = new SimpleSearchController(this, comp);

@@ -21,45 +21,29 @@ public class ArtifactsComparator implements Comparator<Object> {
         if (object1 == null || object2 == null) {
             return 0;
         }
+        int factor = 1;
+        if (!asc) {
+            factor = -1;
+        }
         switch (artifactOrderTypes.name()) {
             case "BY_NAME":
-                if (asc) {
-                    return AlphaNumericComparator.compareTo(getNameFromObject(object1), getNameFromObject(object2));
-                } else {
-                    return (AlphaNumericComparator.compareTo(getNameFromObject(object1), getNameFromObject(object2))) *
-                        -1;
-                }
+                return (AlphaNumericComparator.compareTo(getNameFromObject(object1), getNameFromObject(object2))) *
+                    factor;
             case "BY_ID":
-                if (asc) {
-                    return compareToInt(getIdFromObject(object1), getIdFromObject(object2));
-                } else {
-                    return compareToInt(getIdFromObject(object1), getIdFromObject(object2)) *
-                        -1;
-                }
+                return compareToInt(getIdFromObject(object1), getIdFromObject(object2)) *
+                    factor;
             case "BY_UPDATE_DATE":
-                if (asc) {
-                    return compareDateString(getUpdateDateFromObject(object1), getUpdateDateFromObject(object2));
-                } else {
-                    return compareDateString(getUpdateDateFromObject(object1), getUpdateDateFromObject(object2)) *
-                        -1;
-                }
+                return compareDateString(getUpdateDateFromObject(object1), getUpdateDateFromObject(object2)) *
+                    -factor;
             case "BY_TYPE": // same as name sorting but always ascending order. Its related logic is kept into another place
                 return AlphaNumericComparator.compareTo(getNameFromObject(object1), getNameFromObject(object2));
             case "BY_OWNER":
-                if (asc) {
-                    return AlphaNumericComparator.compareTo(getOwnerFromObject(object1), getOwnerFromObject(object2));
-                } else {
-                    return
-                        (AlphaNumericComparator.compareTo(getOwnerFromObject(object1), getOwnerFromObject(object2))) *
-                            -1;
-                }
+                return (AlphaNumericComparator.compareTo(getOwnerFromObject(object1), getOwnerFromObject(object2))) *
+                    factor;
             case "BY_LAST_VERSION":
-                if (asc) {
-                    return AlphaNumericComparator.compareTo(getLastVersionFromObject(object1), getLastVersionFromObject(object2));
-                } else {
-                    return (AlphaNumericComparator.compareTo(getLastVersionFromObject(object1), getLastVersionFromObject(object2))) *
-                        -1;
-                }
+                return (AlphaNumericComparator.compareTo(getLastVersionFromObject(object1),
+                    getLastVersionFromObject(object2))) *
+                    factor;
             default:
                 return 0;
         }

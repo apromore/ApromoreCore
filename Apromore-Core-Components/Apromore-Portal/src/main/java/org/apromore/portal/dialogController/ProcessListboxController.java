@@ -57,6 +57,7 @@ public class ProcessListboxController extends BaseListboxController {
   private static final long serialVersionUID = -6874531673992239378L;
   private static final Logger LOGGER =
       PortalLoggerFactory.getLogger(ProcessListboxController.class);
+  private static final String ARTIFACT_COMPARATOR="ARTIFACT_COMPARATOR";
 
   public ProcessListboxController(MainController mainController) {
     super(mainController, "~./macros/listbox/processSummaryListbox.zul",
@@ -118,37 +119,38 @@ public class ProcessListboxController extends BaseListboxController {
     Listheader columnName = (Listheader) this.getListBox().getFellow("columnName");
     columnName.setSortAscending(new ArtifactsComparator(true, ArtifactOrderTypes.BY_NAME));
     columnName.setSortDescending(new ArtifactsComparator(false, ArtifactOrderTypes.BY_NAME));
-    columnName.addEventListener(Events.ON_SORT, (EventListener<SortEvent>) event -> forwardSortEvent(event));
+    columnName.addEventListener(Events.ON_SORT, this::forwardSortEvent);
 
     Listheader columnId = (Listheader) this.getListBox().getFellow("columnId");
     columnId.setSortAscending(new ArtifactsComparator(true, ArtifactOrderTypes.BY_ID));
     columnId.setSortDescending(new ArtifactsComparator(false, ArtifactOrderTypes.BY_ID));
-    columnId.addEventListener(Events.ON_SORT, (EventListener<SortEvent>) event -> forwardSortEvent(event));
+    columnId.addEventListener(Events.ON_SORT, this::forwardSortEvent);
 
     Listheader columnType = (Listheader) this.getListBox().getFellow("columnType");
     columnType.setSortAscending(new ArtifactsComparator(true, ArtifactOrderTypes.BY_TYPE));
     columnType.setSortDescending(new ArtifactsComparator(false, ArtifactOrderTypes.BY_TYPE));
-    columnType.addEventListener(Events.ON_SORT, (EventListener<SortEvent>) event -> forwardSortEvent(event));
+    columnType.addEventListener(Events.ON_SORT, this::forwardSortEvent);
 
     Listheader columnLastUpdate = (Listheader) this.getListBox().getFellow("columnLastUpdate");
     columnLastUpdate.setSortAscending(new ArtifactsComparator(true, ArtifactOrderTypes.BY_UPDATE_DATE));
     columnLastUpdate.setSortDescending(new ArtifactsComparator(false, ArtifactOrderTypes.BY_UPDATE_DATE));
-    columnLastUpdate.addEventListener(Events.ON_SORT, (EventListener<SortEvent>) event -> forwardSortEvent(event));
+    columnLastUpdate.addEventListener(Events.ON_SORT, this::forwardSortEvent);
 
     Listheader columnLastVersion = (Listheader) this.getListBox().getFellow("columnLastVersion");
     columnLastVersion.setSortAscending(new ArtifactsComparator(true, ArtifactOrderTypes.BY_LAST_VERSION));
     columnLastVersion.setSortDescending(new ArtifactsComparator(false, ArtifactOrderTypes.BY_LAST_VERSION));
-    columnLastVersion.addEventListener(Events.ON_SORT, (EventListener<SortEvent>) event -> forwardSortEvent(event));
+    columnLastVersion.addEventListener(Events.ON_SORT, this::forwardSortEvent);
 
     Listheader columnOwner = (Listheader) this.getListBox().getFellow("columnOwner");
     columnOwner.setSortAscending(new ArtifactsComparator(true, ArtifactOrderTypes.BY_OWNER));
     columnOwner.setSortDescending(new ArtifactsComparator(false, ArtifactOrderTypes.BY_OWNER));
-    columnOwner.addEventListener(Events.ON_SORT, (EventListener<SortEvent>) event -> forwardSortEvent(event));
+    columnOwner.addEventListener(Events.ON_SORT, this::forwardSortEvent);
 
   }
 
-  private void forwardSortEvent(SortEvent event) {
+  private void forwardSortEvent(Event evt) {
     try {
+      SortEvent event=(SortEvent)evt;
       Listheader header = (Listheader) event.getTarget();
       ArtifactsComparator comparator = event.isAscending() ? (ArtifactsComparator) header.getSortAscending() :
           (ArtifactsComparator) header.getSortDescending();
@@ -160,7 +162,7 @@ public class ProcessListboxController extends BaseListboxController {
 
   public void redrawList(ArtifactsComparator comparator) {
 
-    Executions.getCurrent().getDesktop().setAttribute("ARTIFACT_COMPARATOR", comparator);
+    Executions.getCurrent().getDesktop().setAttribute(ARTIFACT_COMPARATOR, comparator);
     ListModel<Object> listModel = getListBox().getListModel();
 
     List<SummaryType> dataProcessSummaryType = new ArrayList<>();
@@ -178,13 +180,12 @@ public class ProcessListboxController extends BaseListboxController {
       }
     }
     List<Object> data = sortArtifacts(dataFolderType, dataProcessSummaryType, dataLogSummaryType, comparator);
-    setModel(data);
+    setModel(data,dataProcessSummaryType.size());
   }
 
-  private void setModel(List<Object> data) {
+  private void setModel(List<Object> data,int processSummarySize) {
     SummaryListModel model =
-        new SummaryListModel(data, 1,
-            1, 1);
+        new SummaryListModel(data, processSummarySize);
     getListBox().setModel(model);
   }
 
@@ -227,27 +228,24 @@ public class ProcessListboxController extends BaseListboxController {
     getListBox().clearSelection();
 
     UserType user = UserSessionManager.getCurrentUser();
-
-
-    // FolderType currentFolder = UserSessionManager.getCurrentFolder();
     FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
     SummariesType processSummaries = getMainController().getManagerService().getProcessSummaries(user.getId(),
         currentFolder == null ? 0 : currentFolder.getId(), 0, SummaryListModel.pageSize);
 
     SummariesType logSummaries = getMainController().getManagerService().getLogSummaries(user.getId(),
         currentFolder == null ? 0 : currentFolder.getId(), 0, SummaryListModel.pageSize);
-    ArtifactsComparator comparator = (ArtifactsComparator) Executions.getCurrent().getDesktop().getAttribute("ARTIFACT_COMPARATOR");
+    ArtifactsComparator comparator = (ArtifactsComparator) Executions.getCurrent().getDesktop().getAttribute(ARTIFACT_COMPARATOR);
     if (comparator == null) {
       comparator = new ArtifactsComparator(true, ArtifactOrderTypes.BY_TYPE);
-      Executions.getCurrent().getDesktop().setAttribute("ARTIFACT_COMPARATOR",comparator);
+      Executions.getCurrent().getDesktop().setAttribute(ARTIFACT_COMPARATOR,comparator);
     }
 
 
     List<Object> allArtifacts =sortArtifacts(subFolders, processSummaries.getSummary(), logSummaries.getSummary(),comparator);
 
     SummaryListModel model =
-        new SummaryListModel(allArtifacts, subFolders.size(),
-            processSummaries.getSummary().size(), logSummaries.getSummary().size());
+        new SummaryListModel(allArtifacts,
+            processSummaries.getSummary().size());
 
     getListBox().setModel(model);
 
