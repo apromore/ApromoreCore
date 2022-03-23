@@ -25,7 +25,6 @@
 package org.apromore.portal.dialogController;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,7 +54,6 @@ import org.apromore.portal.model.PermissionType;
 import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.SummariesType;
 import org.apromore.portal.model.SummaryType;
-import org.apromore.portal.model.UserType;
 import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
@@ -1043,76 +1041,32 @@ public abstract class BaseListboxController extends BaseController {
     // @todo: ought to be externally configurable
     // Need refactoring, for now assume paging is not used and items < 10000 per view
     static final int pageSize = 10000;
-
-    private transient SummariesType summaries, logSummaries;
-    private int currentPageIndex = 0, currentLogPageIndex = 0;
-    private transient List<FolderType> subFolders;
+    private int totalProcessSummary=0;
+    private transient List<Object> objectList;
 
     /**
      * Constructor.
      *
-     * @param subFolders will be displayed before processes
+     * @param objectList will be displayed before processes
      */
-    SummaryListModel(List<FolderType> subFolders) {
-      this.subFolders = subFolders;
+
+    SummaryListModel(List<Object> objectList,int totalProcessSummary) {
+      this.objectList = objectList;
+      this.totalProcessSummary=totalProcessSummary;
       setMultiple(true);
+    }
+    public int getTotalCount() {
+      return totalProcessSummary;
     }
 
     @Override
     public Object getElementAt(int index) {
-
-      // Elements are always accessed in the following order: subfolders, then process
-      // models, then logs
-
-      if (index < subFolders.size()) {
-        return subFolders.get(index); // subfolder
-      } else {
-        int processIndex = index - subFolders.size();
-        SummariesType summaries = getSummaries(processIndex / pageSize);
-        if (processIndex % pageSize < summaries.getSummary().size()) {
-          return summaries.getSummary().get(processIndex % pageSize); // process model
-        } else {
-          int logIndex = processIndex - summaries.getCount().intValue();
-          return getLogSummaries(logIndex / pageSize).getSummary().get(logIndex % pageSize); // log
-        }
-      }
+      return objectList.get(index); //
     }
 
     @Override
     public int getSize() {
-      return subFolders.size() + getSummaries(currentPageIndex).getCount().intValue()
-          + getLogSummaries(currentLogPageIndex).getCount().intValue();
-    }
-
-    public int getTotalCount() {
-      return getSummaries(currentPageIndex).getTotalCount().intValue();
-    }
-
-    private SummariesType getSummaries(int pageIndex) {
-      if (summaries == null || currentPageIndex != pageIndex) {
-        UserType user = UserSessionManager.getCurrentUser();
-        // FolderType currentFolder = UserSessionManager.getCurrentFolder();
-        FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
-        summaries = mainController.getManagerService().getProcessSummaries(user.getId(),
-            currentFolder == null ? 0 : currentFolder.getId(), pageIndex, pageSize);
-        currentPageIndex = pageIndex;
-      }
-      return summaries;
-    }
-
-    private SummariesType getLogSummaries(int pageIndex) {
-      if (logSummaries == null || currentLogPageIndex != pageIndex) {
-        UserType user = UserSessionManager.getCurrentUser();
-        // FolderType currentFolder = UserSessionManager.getCurrentFolder();
-        FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
-        logSummaries = mainController.getManagerService().getLogSummaries(user.getId(),
-            currentFolder == null ? 0 : currentFolder.getId(), pageIndex, pageSize);
-        currentLogPageIndex = pageIndex;
-      }
-      return logSummaries;
+      return objectList.size();
     }
   }
-
-
-
 }

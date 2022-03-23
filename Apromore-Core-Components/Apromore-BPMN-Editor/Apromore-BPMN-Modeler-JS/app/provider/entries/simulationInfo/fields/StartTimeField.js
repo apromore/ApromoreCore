@@ -7,34 +7,35 @@ module.exports = function(bpmnFactory, elementRegistry, translate) {
   var processSimulationInfo = ProcessSimulationHelper.getProcessSimulationInfo(bpmnFactory, elementRegistry);
 
   return dateTimeField({
-    id: 'startDate',
-    type: 'date',
-    label: translate('scenarioGroup.startDate.label'),
-    modelProperty: 'startDate',
+    id: 'startTime',
+    type: 'time',
+    label: translate('scenarioGroup.startTime.label'),
+    modelProperty: 'startTime',
 
     get: function(_element, _node) {
       return {
-        startDate: processSimulationInfo.startDateTime.split('T')[0]
+        startTime: new Date(processSimulationInfo.startDateTime).toLocaleTimeString('en-GB').slice(0, 5)
       };
     },
 
     set: function(element, values) {
-      var startDate = new Date(processSimulationInfo.startDateTime);
+      // Get the data model's date time
+      var modelStartDateTime = new Date(processSimulationInfo.startDateTime);
 
-      if (values.startDate !== '') {
-        var date = values.startDate.split('-');
-        startDate.setUTCFullYear(date[0]);
-        startDate.setUTCMonth(date[1] - 1);
-        startDate.setUTCDate(date[2]);
+      if (values.startTime && values.startTime !== '') {
+
+        // Get the local date from the data model's date time
+        var localDateArr = modelStartDateTime.toLocaleDateString('en-GB').split('/');
+
+        // Construct the utc date time based on the local date above, and the local time from the UI control
+        modelStartDateTime = new Date(localDateArr[2] + '-' + localDateArr[1] + '-' + localDateArr[0] + 'T' + values.startTime);
+
       } else {
-        var today = new Date();
-        startDate.setUTCFullYear(today.getUTCFullYear());
-        startDate.setUTCMonth(today.getUTCMonth());
-        startDate.setUTCDate(today.getUTCDate());
+        modelStartDateTime = new Date();
       }
 
       return cmdHelper.updateBusinessObject(element, processSimulationInfo, {
-        startDateTime: startDate.toISOString()
+        startDateTime: modelStartDateTime.toISOString()
       });
     }
   });

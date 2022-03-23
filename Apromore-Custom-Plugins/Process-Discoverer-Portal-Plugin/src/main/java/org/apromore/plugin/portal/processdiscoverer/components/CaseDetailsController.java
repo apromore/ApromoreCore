@@ -135,7 +135,7 @@ public class CaseDetailsController extends DataListController {
       arg.put("pdLabels", parent.getLabels());
       caseDetailsWindow = (Window) Executions
           .createComponents(getPageDefinition("processdiscoverer/zul/caseDetails.zul"), null, arg);
-      caseDetailsWindow.setTitle("Case Inspector");
+      caseDetailsWindow.setTitle(getLabel("caseInspector_text", "Case Inspector"));
       caseDetailsWindow.getFellow("lblClickACase").setVisible(!this.disabled);
 
       caseDetailsWindow.addEventListener("onClose", new EventListener<Event>() {

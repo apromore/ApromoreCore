@@ -536,7 +536,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
                     UserMetadataTypeEnum.DASHBOARD.getUserMetadataTypeId(),
                     UserMetadataTypeEnum.DASH_TEMPLATE.getUserMetadataTypeId(),
                     UserMetadataTypeEnum.FILTER.getUserMetadataTypeId(),
-                    UserMetadataTypeEnum.FILTER_TEMPLATE.getUserMetadataTypeId()), userName);
+                    UserMetadataTypeEnum.FILTER_TEMPLATE.getUserMetadataTypeId(),
+                    UserMetadataTypeEnum.COST_TABLE.getUserMetadataTypeId()), userName);
 
     return newLog;
   }

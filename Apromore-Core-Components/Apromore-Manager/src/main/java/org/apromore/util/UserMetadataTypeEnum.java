@@ -43,7 +43,8 @@ public enum UserMetadataTypeEnum {
     DASH_TEMPLATE(5),
     SIMULATOR(6),
     FILTER_TEMPLATE(7),
-    PERSPECTIVE_TAG(8);
+    PERSPECTIVE_TAG(8),
+    COST_TABLE(9);
 
     private final Integer userMetadataTypeId;
 
