@@ -17,7 +17,7 @@
   <http://www.gnu.org/licenses/lgpl-3.0.html>.
   #L%
   -->
-<listbox id="${arg.id}" multiple="true" hflex="1" vflex="1" style="margin: 8px" sclass="ap-form-sublist" ctrlKeys="^a%a">
+<listbox id="${arg.id}" multiple="${arg.multiple}" hflex="1" vflex="1" style="margin: 8px" sclass="ap-form-sublist" ctrlKeys="^a%a">
     <listhead>
         <listheader sclass="ap-listheader" label="${arg.title}" hflex="1" style="cursor:pointer;" sort="auto(UPPER(name))">
             <div sclass="ap-listheader-search">
