@@ -115,28 +115,34 @@ public class LogStatsAnalyzer {
 
     public static Map<Integer, List<ATrace>> getCaseVariantsByPerspective(List<ATrace> traces, String attribute) {
 
-        List<Map.Entry<String, List<ATrace>>> rawList = Lists.reverse(traces.stream()
+        List<List<ATrace>> rawList = Lists.reverse(traces.stream()
                 .collect(Collectors.groupingBy(trace -> getVariantIndicator(trace, attribute)))
-                .entrySet().stream()
-                .sorted(Comparator.comparing(entry -> entry.getValue().size())).collect(Collectors.toList()));
+                .values().stream()
+                .sorted(Comparator.comparing(List<ATrace>::size)
+                        .thenComparing(v -> getVariantIndicatorArray(v.get(0), attribute).length))
+                .collect(Collectors.toList()));
 
         Map<Integer, List<ATrace>> output = new HashMap<>();
 
         int count = 0;
-        for (Map.Entry<String, List<ATrace>> entry : rawList) {
+        for (List<ATrace> atList : rawList) {
             count += 1;
             final int index = count;
-            output.put(index, entry.getValue());
+            output.put(index, atList);
         }
 
         return output;
     }
 
     private static String getVariantIndicator(ATrace trace, String attribute) {
-        return Arrays.toString(trace.getActivityInstances().stream()
+        return Arrays.toString(getVariantIndicatorArray(trace, attribute));
+    }
+
+    private static String[] getVariantIndicatorArray(ATrace trace, String attribute) {
+        return (String[]) trace.getActivityInstances().stream()
                 .filter(act -> act.getAttributes().containsKey(attribute))
                 .map(act -> act.getAttributeValue(attribute))
-                .toArray());
+                .toArray();
     }
 
     // ===================================================================================================
