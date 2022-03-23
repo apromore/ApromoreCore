@@ -1893,7 +1893,8 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
                 }
                 if (Messagebox.ON_CANCEL.equals(buttonName)) {
                     if (!isRoleTabUserView && roleToUpdate == selectedRole) {
-                        roleTabGroupList.getListModel().setSelection(Objects.requireNonNullElse(previousSelectedGroups, Collections.emptySet()));
+                        roleTabGroupList.getListModel()
+                            .setSelection(Objects.requireNonNullElse(previousSelectedGroups, Collections.emptySet()));
                         selectedRoleTabGroups = previousSelectedGroups;
                     }
                 }
