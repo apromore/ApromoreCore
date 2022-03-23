@@ -102,6 +102,7 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
     private static final String NO_PERMISSION_TO_ALLOCATE_USER = "noPermissionAllocateUserToGroup_message";
     private static final String NO_PERMISSION_EDIT_GROUP = "noPermissionEditGroup_message";
     private static final String NO_PERMISSION_EDIT_ROLE = "noPermissionEditRole_message";
+    private static final String UNSAVED_ROLE_MESSAGE = "unsavedRoleDetail_message";
     private static final String DELETE_PROMPT_MESSAGE = "deletePrompt_message";
     private static final String TOGGLE_CLICK_EVENT_NAME = "onToggleClick";
     private static final String SWITCH_TAB_EVENT_NAME = "onSwitchTab";
@@ -1521,7 +1522,7 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
                                Tab tab) {
         if (isRoleDetailDirty) {
             Messagebox.show(
-                getLabel("unsavedRoleDetail_message"),
+                getLabel(UNSAVED_ROLE_MESSAGE),
                 dialogTitle,
                 new Messagebox.Button[] {Messagebox.Button.YES, Messagebox.Button.NO, Messagebox.Button.CANCEL},
                 Messagebox.QUESTION,
@@ -1891,12 +1892,10 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
                     setSelectedRoleTabGroups(selectedGroups);
                     isRoleDetailDirty = false;
                 }
-                if (Messagebox.ON_CANCEL.equals(buttonName)) {
-                    if (!isRoleTabUserView && roleToUpdate == selectedRole) {
-                        roleTabGroupList.getListModel()
-                            .setSelection(Objects.requireNonNullElse(previousSelectedGroups, Collections.emptySet()));
-                        selectedRoleTabGroups = previousSelectedGroups;
-                    }
+                if (Messagebox.ON_CANCEL.equals(buttonName) && !isRoleTabUserView && roleToUpdate == selectedRole) {
+                    roleTabGroupList.getListModel()
+                        .setSelection(Objects.requireNonNullElse(previousSelectedGroups, Collections.emptySet()));
+                    selectedRoleTabGroups = previousSelectedGroups;
                 }
             }
         );
@@ -1978,7 +1977,7 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
 
         if (isRoleDetailDirty) {
             Messagebox.show(
-                MessageFormat.format(getLabel("unsavedRoleDetail_message"), displayRoleName),
+                MessageFormat.format(getLabel(UNSAVED_ROLE_MESSAGE), displayRoleName),
                 dialogTitle,
                 new Messagebox.Button[] {Messagebox.Button.YES, Messagebox.Button.NO, Messagebox.Button.CANCEL},
                 Messagebox.QUESTION,
@@ -2091,7 +2090,7 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
             String displayRoleName = getDisplayRoleName(selectedRole.getName());
 
             Messagebox.show(
-                MessageFormat.format(getLabel("unsavedRoleDetail_message"), displayRoleName),
+                MessageFormat.format(getLabel(UNSAVED_ROLE_MESSAGE), displayRoleName),
                 dialogTitle,
                 new Messagebox.Button[] {Messagebox.Button.YES, Messagebox.Button.NO, Messagebox.Button.CANCEL},
                 Messagebox.QUESTION,
