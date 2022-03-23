@@ -15,6 +15,7 @@
  * is obtained from Apromore Pty Ltd.
  * #L%
  */
+
 package org.apromore.dao.model;
 
 import javax.persistence.Column;

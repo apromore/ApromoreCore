@@ -15,6 +15,7 @@
  * is obtained from Apromore Pty Ltd.
  * #L%
  */
+
 package org.apromore.dao;
 
 import org.apromore.dao.model.PredictorDao;
