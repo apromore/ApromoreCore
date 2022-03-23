@@ -138,8 +138,8 @@ public class LogStatsAnalyzer {
         return Arrays.toString(getVariantIndicatorArray(trace, attribute));
     }
 
-    private static String[] getVariantIndicatorArray(ATrace trace, String attribute) {
-        return (String[]) trace.getActivityInstances().stream()
+    private static Object[] getVariantIndicatorArray(ATrace trace, String attribute) {
+        return trace.getActivityInstances().stream()
                 .filter(act -> act.getAttributes().containsKey(attribute))
                 .map(act -> act.getAttributeValue(attribute))
                 .toArray();
