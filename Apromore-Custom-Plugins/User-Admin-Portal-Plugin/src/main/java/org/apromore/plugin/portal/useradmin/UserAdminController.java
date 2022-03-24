@@ -963,6 +963,10 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
             roleTabGroupModel = new ListModelList<>();
             setRoleDetailReadOnly(true);
         } else {
+            List<RoleModel> selectedRoleModel =
+                roleModel.getInnerList().stream().filter(r -> role.getRowGuid().equals(r.getRole().getRowGuid()))
+                    .collect(Collectors.toList());
+            roleList.getListModel().setSelection(selectedRoleModel);
             String roleName = getDisplayRoleName(role.getName());
             roleNameTextbox.setValue(roleName);
             roleDetail.setValue(MessageFormat.format(getLabel("roleRoleNameTitle_text"), roleName));
