@@ -376,12 +376,12 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin implements Labe
        }
    }
 
-    private void writeToFileWithoutZip(Path tempPath, DataHandler data) throws Exception {
+    private void writeToFileWithoutZip(Path tempPath, DataHandler data) throws IOException  {
         try (OutputStream os = (new FileOutputStream(tempPath.toFile()));
-             InputStream native_is = data.getInputStream()) {
+             InputStream inputStream = data.getInputStream()) {
             byte[] buffer = new byte[1024];
             int len;
-            while ((len = native_is.read(buffer)) > 0) {
+            while ((len = inputStream.read(buffer)) > 0) {
                 os.write(buffer, 0, len);
             }
         }
