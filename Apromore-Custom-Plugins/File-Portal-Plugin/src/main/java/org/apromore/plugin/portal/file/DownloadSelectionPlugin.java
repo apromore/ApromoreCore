@@ -27,6 +27,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.MessageFormat;
@@ -375,14 +376,25 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin implements Labe
        }
    }
 
-   private Path getProcessModelFile(ProcessSummaryType model, VersionSummaryType version, MainController mainController)
+    private void writeToFileWithoutZip(Path tempPath, DataHandler data) throws Exception {
+        try (OutputStream os = (new FileOutputStream(tempPath.toFile()));
+             InputStream native_is = data.getInputStream()) {
+            byte[] buffer = new byte[1024];
+            int len;
+            while ((len = native_is.read(buffer)) > 0) {
+                os.write(buffer, 0, len);
+            }
+        }
+    }
+
+    private Path getProcessModelFile(ProcessSummaryType model, VersionSummaryType version, MainController mainController)
            throws Exception {
        ExportFormatResultType exportResult = mainController.getManagerService().exportFormat(model.getId(),
                model.getName(), version.getName(), version.getVersionNumber(), model.getOriginalNativeType(),
                UserSessionManager.getCurrentUser().getUsername());
        Path tempPath = Files.createTempFile(null, ".bpmn");
        tempPath.toFile().deleteOnExit();
-       writeToFile(tempPath, exportResult.getNative());
+       writeToFileWithoutZip(tempPath, exportResult.getNative());
        return tempPath;
    }
   
