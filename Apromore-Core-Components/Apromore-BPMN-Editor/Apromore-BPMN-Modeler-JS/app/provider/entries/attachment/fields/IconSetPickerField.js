@@ -59,6 +59,7 @@ var ICONS = [
     "ap-bpmn-icon-flag",
     "z-icon-book",
     "ap-bpmn-icon-process-performance",
+    "ap-bpmn-icon-ap-dashboard",
     "z-icon-ban"
   ]
 ];
