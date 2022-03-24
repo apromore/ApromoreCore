@@ -110,9 +110,6 @@ public class EdgeVisualizer extends AbstractElementVisualizer {
                     point_distances = "0";
                     point_weights = "0.5";
                 }
-                // jsonData.put("edge-style", "unbundled-bezier");
-                // jsonData.put("point-distances", point_distances.trim());
-                // jsonData.put("point-weights", point_weights.trim());
             }
             else {
                 point_distances = "0";
