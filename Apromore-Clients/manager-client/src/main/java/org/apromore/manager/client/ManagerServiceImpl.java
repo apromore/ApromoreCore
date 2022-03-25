@@ -326,7 +326,7 @@ public class ManagerServiceImpl implements ManagerService {
   public List<PermissionType> getRolePermissions(String roleName) {
     List<PermissionType> permissionTypes = new ArrayList<>();
     for (Permission permission : secSrv.getRolePermissions(roleName)) {
-      PermissionType permissionType = PermissionType.getPermissionType(permission.getRowGuid(), permission.getName());
+      PermissionType permissionType = PermissionType.getPermissionTypeById(permission.getRowGuid());
       permissionTypes.add(permissionType);
     }
     return permissionTypes;
