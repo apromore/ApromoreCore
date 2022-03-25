@@ -2052,28 +2052,28 @@ databaseChangeLog:
         -  update:
              columns:
                -  column:
-                    name:  permission_name
+                    name: permission_name
                     value: "View users"
-             tableName:  permission
-             where:  id = 1
+             tableName: permission
+             where: id = 1
         -  update:
              columns:
                -  column:
-                    name:  permission_name
+                    name: permission_name
                     value: "Edit users"
-             tableName:  permission
-             where:  id = 2
+             tableName: permission
+             where: id = 2
         -  update:
              columns:
                -  column:
-                    name:  permission_name
+                    name: permission_name
                     value: "Edit groups"
-             tableName:  permission
-             where:  id = 3
+             tableName: permission
+             where: id = 3
         -  update:
              columns:
                -  column:
-                    name:  permission_name
+                    name: permission_name
                     value: "Edit roles"
-             tableName:  permission
-             where:  id = 4
+             tableName: permission
+             where: id = 4
