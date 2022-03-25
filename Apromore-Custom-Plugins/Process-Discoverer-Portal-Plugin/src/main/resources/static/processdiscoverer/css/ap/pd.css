@@ -165,7 +165,7 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    padding: 10px;
+    margin: 10px;
 }
 
 [data-t='ap-pd-aux'] {
