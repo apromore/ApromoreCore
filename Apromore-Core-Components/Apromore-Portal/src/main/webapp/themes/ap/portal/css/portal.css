@@ -859,3 +859,9 @@ img[src="img/icon/bpmn-22x22.png"] {
 .inner-submenu .z-menuitem-image{
     filter:none;
 }
+.ap-tree-leaf-node > .z-treecell > .z-treecell-content > .z-tree-icon > .z-icon-caret-right:before {
+    content: "" !important;
+}
+.ap-tree-leaf-node > .z-treecell > .z-treecell-content >  .z-tree-icon > .z-icon-caret-down:before {
+	content: "" !important;
+}
