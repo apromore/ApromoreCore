@@ -13,7 +13,7 @@
   },
   "resolutions": {
     "path-parse": "^1.0.7",
-    "url-parse": "^1.5.7",
+    "url-parse": "^1.5.9",
     "lodash.template": "^4.5.0",
     "jquery": "3.5.1"
   },
