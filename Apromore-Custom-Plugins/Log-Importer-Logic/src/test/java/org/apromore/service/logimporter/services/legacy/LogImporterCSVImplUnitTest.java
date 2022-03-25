@@ -22,8 +22,8 @@
 
 package org.apromore.service.logimporter.services.legacy;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Arrays;
 import java.util.List;
@@ -36,9 +36,9 @@ import org.apromore.service.logimporter.services.ParquetFactoryProvider;
 import org.apromore.service.logimporter.services.ParquetImporterFactory;
 import org.apromore.service.logimporter.services.utilities.TestUtilities;
 import org.deckfour.xes.model.XLog;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,7 +55,7 @@ public class LogImporterCSVImplUnitTest {
     private LogImporterCSVImpl logImporter;
     private MetaDataUtilities metaDataUtilities;
 
-    @Before
+    @BeforeEach
     public void init() {
         utilities = new TestUtilities();
         ParquetImporterFactory parquetImporterFactory =
@@ -152,7 +152,7 @@ public class LogImporterCSVImplUnitTest {
      * upload limiting is in effect.
      */
     @Test
-    @Ignore
+    @Disabled
     public void testImportLog_maxEventCount() throws Exception {
 
         // Test file data

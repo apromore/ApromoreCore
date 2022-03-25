@@ -22,75 +22,64 @@
 
 package org.apromore.calendar.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.stream.Stream;
 import org.apromore.calendar.builder.CalendarModelBuilder;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.calendar.model.HolidayType;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-@RunWith(Parameterized.class)
 public class DurationCalculationTestWithHolidayUnitTest {
 
     CalendarModelBuilder calendarModelBuilder;
-    OffsetDateTime startDateTime;
-    OffsetDateTime endDateTime;
-    Duration expected;
 
-
-    @Before
+    @BeforeEach
     public void setup() {
         calendarModelBuilder = new CalendarModelBuilder();
     }
 
-    public DurationCalculationTestWithHolidayUnitTest(OffsetDateTime startDateTime, OffsetDateTime endDateTime,
-                                                      Duration expected) {
-        this.startDateTime = startDateTime;
-        this.endDateTime = endDateTime;
-        this.expected = expected;
-    }
-
-
-    @Parameterized.Parameters
-    public static Collection params() {
-        return Arrays.asList(new Object[][] {
+    private static Stream<Arguments> params() {
+        return Stream.of(
             // Within holiday 26/1
-            {OffsetDateTime.of(2021, 01, 26, 9, 00, 59, 0, ZoneOffset.UTC),
+            Arguments.of(
+                OffsetDateTime.of(2021, 01, 26, 9, 00, 59, 0, ZoneOffset.UTC),
                 OffsetDateTime.of(2021, 01, 26, 10, 00, 00, 0, ZoneOffset.UTC),
                 Duration.of(0, ChronoUnit.HOURS)
-            },
+            ),
             // Overlapping holiday 26/1
-            {
+            Arguments.of(
                 OffsetDateTime.of(2021, 01, 25, 23, 00, 00, 0, ZoneOffset.UTC),
                 OffsetDateTime.of(2021, 01, 26, 9, 00, 00, 0, ZoneOffset.UTC),
                 Duration.of(1, ChronoUnit.HOURS)
-            },
+            ),
             // Containing holiday 26/1
-            {
+            Arguments.of(
                 OffsetDateTime.of(2021, 01, 25, 23, 00, 00, 0, ZoneOffset.UTC),
                 OffsetDateTime.of(2021, 01, 27, 01, 00, 00, 0, ZoneOffset.UTC),
                 Duration.of(2, ChronoUnit.HOURS)
-            },
+            ),
             // Outside holiday 26/1
-            {
+            Arguments.of(
                 OffsetDateTime.of(2021, 01, 25, 9, 00, 00, 0, ZoneOffset.UTC),
                 OffsetDateTime.of(2021, 01, 25, 10, 00, 00, 0, ZoneOffset.UTC),
-                Duration.of(1, ChronoUnit.HOURS)},
-        });
+                Duration.of(1, ChronoUnit.HOURS)
+            )
+        );
     }
 
-
-    @Test
-    public void testCalculateDurationWithHoliday() {
+    @ParameterizedTest
+    @MethodSource("params")
+    public void testCalculateDurationWithHoliday(OffsetDateTime startDateTime, OffsetDateTime endDateTime,
+                                                 Duration expected) {
 
         CalendarModel calendarModel = calendarModelBuilder.withAllDayAllTime()
             .withZoneId(ZoneOffset.UTC.getId())
@@ -102,7 +91,7 @@ public class DurationCalculationTestWithHolidayUnitTest {
         long duration = calendarModel.getDurationMillis(startDateTime.toInstant(), endDateTime.toInstant());
 
         // Then
-        Assert.assertEquals(expected.toMillis(), duration);
+        assertEquals(expected.toMillis(), duration);
     }
 
 

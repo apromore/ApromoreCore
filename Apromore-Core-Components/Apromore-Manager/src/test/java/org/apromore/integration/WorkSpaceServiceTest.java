@@ -36,12 +36,12 @@ import org.apromore.dao.model.Group;
 import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
 import org.apromore.service.WorkspaceService;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@Ignore
+@Disabled
 public class WorkSpaceServiceTest extends BaseTest {
 
     @Autowired
@@ -63,7 +63,7 @@ public class WorkSpaceServiceTest extends BaseTest {
 
     UserManagementBuilder userbuilder;
 
-    @Before
+    @BeforeEach
     public void setUp() {
 	folderBuilder = new FolderBuilder();
 	userbuilder = new UserManagementBuilder();

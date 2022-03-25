@@ -33,23 +33,24 @@ import org.apromore.portal.helper.Version;
 import org.apromore.portal.model.ExportFormatResultType;
 import org.apromore.service.ProcessService;
 import org.apromore.util.StreamUtil;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.transaction.annotation.Transactional;
 
-@Ignore
+@Disabled
 @ContextConfiguration(locations = {
         "classpath:META-INF/spring/applicationContext-jpa-TEST.xml",
         "classpath:META-INF/spring/applicationContext-services-TEST.xml"})
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @Transactional
 @Rollback
 @TestExecutionListeners(value = DependencyInjectionTestExecutionListener.class)

@@ -24,8 +24,8 @@ package org.apromore.service.logimporter.services;
 
 import static org.apromore.service.logimporter.services.utilities.TestUtilities.convertParquetToCsv;
 import static org.apromore.service.logimporter.utilities.ParquetUtilities.getHeaderFromParquet;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.File;
 import java.util.Arrays;
@@ -36,9 +36,9 @@ import org.apromore.service.logimporter.io.ParquetLocalFileReader;
 import org.apromore.service.logimporter.model.LogMetaData;
 import org.apromore.service.logimporter.model.LogModel;
 import org.apromore.service.logimporter.services.utilities.TestUtilities;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,7 +60,7 @@ public class XLSXToParquetImporterUnitTest {
     private ParquetImporter parquetImporter;
     private MetaDataUtilities metaDataUtilities;
 
-    @Before
+    @BeforeEach
     public void init() {
         utilities = new TestUtilities();
         ParquetImporterFactory parquetImporterFactory = new ParquetFactoryProvider().getParquetFactory("xlsx");
@@ -540,7 +540,7 @@ public class XLSXToParquetImporterUnitTest {
     /**
      * Test {@link ParquetImporterXLSXImpl} against an invalid xlsx log <code>test11-encoding.xlsx</code>.
      */
-    @Ignore
+    @Disabled
     @Test
     public void testPrepareXesModel_test10_encoding() throws Exception {
 

@@ -30,8 +30,8 @@ import org.apromore.builder.FolderBuilder;
 import org.apromore.dao.FolderRepository;
 import org.apromore.dao.model.Folder;
 import org.apromore.service.FolderService;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,7 +46,7 @@ public class FolderChainUnitTest extends BaseTest {
     @Autowired
     FolderService folderService;
 
-    @Before
+    @BeforeEach
     public void setUp() {
 	folderBuilder = new FolderBuilder();
     }

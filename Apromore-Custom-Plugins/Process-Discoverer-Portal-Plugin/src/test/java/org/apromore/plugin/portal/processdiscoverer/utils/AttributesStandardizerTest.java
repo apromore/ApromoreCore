@@ -21,13 +21,15 @@
  */
 package org.apromore.plugin.portal.processdiscoverer.utils;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import org.apromore.logman.Constants;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class AttributesStandardizerTest {
     
@@ -48,36 +50,36 @@ public class AttributesStandardizerTest {
         Iterator<String> keyIterator = res.keySet().iterator();
         Iterator<String> valueIterator = res.values().iterator();
         
-        Assert.assertEquals("Activity", keyIterator.next());
-        Assert.assertEquals("Activity 1", valueIterator.next());
+        assertEquals("Activity", keyIterator.next());
+        assertEquals("Activity 1", valueIterator.next());
         
-        Assert.assertEquals("Resource", keyIterator.next());
-        Assert.assertEquals("Resource 1", valueIterator.next());
+        assertEquals("Resource", keyIterator.next());
+        assertEquals("Resource 1", valueIterator.next());
         
-        Assert.assertEquals("Role", keyIterator.next());
-        Assert.assertEquals("Role 1", valueIterator.next());
+        assertEquals("Role", keyIterator.next());
+        assertEquals("Role 1", valueIterator.next());
         
-        Assert.assertEquals("Group", keyIterator.next());
-        Assert.assertEquals("Group 1", valueIterator.next());
+        assertEquals("Group", keyIterator.next());
+        assertEquals("Group 1", valueIterator.next());
         
-        Assert.assertEquals("Start timestamp", keyIterator.next());
-        Assert.assertEquals("Start timestamp 1", valueIterator.next());
+        assertEquals("Start timestamp", keyIterator.next());
+        assertEquals("Start timestamp 1", valueIterator.next());
         
-        Assert.assertEquals("End timestamp", keyIterator.next());
-        Assert.assertEquals("End timestamp 1", valueIterator.next());
+        assertEquals("End timestamp", keyIterator.next());
+        assertEquals("End timestamp 1", valueIterator.next());
         
-        Assert.assertEquals("CustomKey1", keyIterator.next());
-        Assert.assertEquals("Custom Value1", valueIterator.next());
+        assertEquals("CustomKey1", keyIterator.next());
+        assertEquals("Custom Value1", valueIterator.next());
         
-        Assert.assertEquals("CustomKey2", keyIterator.next());
-        Assert.assertEquals("Custom Value2", valueIterator.next());
+        assertEquals("CustomKey2", keyIterator.next());
+        assertEquals("Custom Value2", valueIterator.next());
     }
 
     @Test
     public void testStandardizeAttributeMap_emptyMap() {
         AttributesStandardizer standardizer = AttributesStandardizer.SIMPLE;
         Map<String,String> res = standardizer.standardizedAttributeMap(new HashMap<>());
-        Assert.assertEquals(new HashMap<>(), res);
+        assertEquals(new HashMap<>(), res);
     }
     
     @Test
@@ -89,11 +91,11 @@ public class AttributesStandardizerTest {
                 ));
         Iterator<String> keyIterator = res.keySet().iterator();
         Iterator<String> valueIterator = res.values().iterator();
-        Assert.assertEquals(2, res.size());
-        Assert.assertEquals("CustomKey1", keyIterator.next());
-        Assert.assertEquals("Custom Value 1", valueIterator.next());
-        Assert.assertEquals("CustomKey2", keyIterator.next());
-        Assert.assertEquals("Custom Value 2", valueIterator.next());
+        assertEquals(2, res.size());
+        assertEquals("CustomKey1", keyIterator.next());
+        assertEquals("Custom Value 1", valueIterator.next());
+        assertEquals("CustomKey2", keyIterator.next());
+        assertEquals("Custom Value 2", valueIterator.next());
     }
     
     @Test
@@ -101,9 +103,9 @@ public class AttributesStandardizerTest {
         AttributesStandardizer standardizer = AttributesStandardizer.SIMPLE;
         Map<String,String> res = standardizer.standardizedAttributeMap(Map.ofEntries(
                 Map.entry(Constants.ATT_KEY_CONCEPT_NAME, "Activity 1")));
-        Assert.assertEquals(1, res.size());
-        Assert.assertEquals("Activity", res.keySet().iterator().next());
-        Assert.assertEquals("Activity 1", res.values().iterator().next());
+        assertEquals(1, res.size());
+        assertEquals("Activity", res.keySet().iterator().next());
+        assertEquals("Activity 1", res.values().iterator().next());
     }
     
     @Test
@@ -115,11 +117,11 @@ public class AttributesStandardizerTest {
         ));
         Iterator<String> keyIterator = res.keySet().iterator();
         Iterator<String> valueIterator = res.values().iterator();
-        Assert.assertEquals(2, res.size());
-        Assert.assertEquals("Activity", keyIterator.next());
-        Assert.assertEquals("Activity 1", valueIterator.next());
-        Assert.assertEquals("Resource", keyIterator.next());
-        Assert.assertEquals("Resource 1", valueIterator.next());
+        assertEquals(2, res.size());
+        assertEquals("Activity", keyIterator.next());
+        assertEquals("Activity 1", valueIterator.next());
+        assertEquals("Resource", keyIterator.next());
+        assertEquals("Resource 1", valueIterator.next());
     }
     
     @Test
@@ -131,11 +133,11 @@ public class AttributesStandardizerTest {
         ));
         Iterator<String> keyIterator = res.keySet().iterator();
         Iterator<String> valueIterator = res.values().iterator();
-        Assert.assertEquals(2, res.size());
-        Assert.assertEquals("Resource", keyIterator.next());
-        Assert.assertEquals("Resource 1", valueIterator.next());
-        Assert.assertEquals("Random Key", keyIterator.next());
-        Assert.assertEquals("Random Value", valueIterator.next());
+        assertEquals(2, res.size());
+        assertEquals("Resource", keyIterator.next());
+        assertEquals("Resource 1", valueIterator.next());
+        assertEquals("Random Key", keyIterator.next());
+        assertEquals("Random Value", valueIterator.next());
     }
     
     @Test
@@ -147,11 +149,11 @@ public class AttributesStandardizerTest {
         ));
         Iterator<String> keyIterator = res.keySet().iterator();
         Iterator<String> valueIterator = res.values().iterator();
-        Assert.assertEquals(2, res.size());
-        Assert.assertEquals("Resource", keyIterator.next());
-        Assert.assertEquals("Resource Value 1", valueIterator.next());
-        Assert.assertEquals("Resource(2)", keyIterator.next());
-        Assert.assertEquals("Resource Value 2", valueIterator.next());
+        assertEquals(2, res.size());
+        assertEquals("Resource", keyIterator.next());
+        assertEquals("Resource Value 1", valueIterator.next());
+        assertEquals("Resource(2)", keyIterator.next());
+        assertEquals("Resource Value 2", valueIterator.next());
     }
     
     @Test
@@ -163,11 +165,11 @@ public class AttributesStandardizerTest {
         ));
         Iterator<String> keyIterator = res.keySet().iterator();
         Iterator<String> valueIterator = res.values().iterator();
-        Assert.assertEquals(2, res.size());
-        Assert.assertEquals("Activity", keyIterator.next());
-        Assert.assertEquals("Activity Value 1", valueIterator.next());
-        Assert.assertEquals("Resource", keyIterator.next());
-        Assert.assertEquals("Resource Value 1", valueIterator.next());
+        assertEquals(2, res.size());
+        assertEquals("Activity", keyIterator.next());
+        assertEquals("Activity Value 1", valueIterator.next());
+        assertEquals("Resource", keyIterator.next());
+        assertEquals("Resource Value 1", valueIterator.next());
     }
     
     @Test
@@ -179,9 +181,9 @@ public class AttributesStandardizerTest {
         ));
         Iterator<String> keyIterator = res.keySet().iterator();
         Iterator<String> valueIterator = res.values().iterator();
-        Assert.assertEquals(1, res.size());
-        Assert.assertEquals("Resource", keyIterator.next());
-        Assert.assertEquals("Resource Value 1", valueIterator.next());
+        assertEquals(1, res.size());
+        assertEquals("Resource", keyIterator.next());
+        assertEquals("Resource Value 1", valueIterator.next());
     }
     
     @Test
@@ -190,7 +192,7 @@ public class AttributesStandardizerTest {
         Map<String,String> res = standardizer.standardizedAttributeMap(Map.ofEntries(
                 Map.entry(Constants.ATT_KEY_LIFECYCLE_TRANSITION, "complete")
         ));
-        Assert.assertEquals(new HashMap<>(), res);
+        assertEquals(new HashMap<>(), res);
     }
     
 }

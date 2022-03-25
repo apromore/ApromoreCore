@@ -36,15 +36,16 @@ import org.apromore.portal.model.UserType;
 import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.service.ProcessPublishService;
 import org.apromore.service.SecurityService;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.web.Attributes;
 import org.zkoss.zk.ui.Session;
@@ -56,12 +57,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
+
 public class ProcessPublisherPluginUnitTest {
 
     @InjectMocks
@@ -81,12 +84,12 @@ public class ProcessPublisherPluginUnitTest {
     MockedStatic<UserSessionManager> userSessionManagerMockedStatic = mockStatic(UserSessionManager.class);
     MockedStatic<PortalContexts> portalContextHolderMockedStatic = mockStatic(PortalContexts.class);
 
-    @Before
+    @BeforeEach
     public void setup() {
         MockitoAnnotations.openMocks(this);
     }
 
-    @After
+    @AfterEach
     public void reset_mocks() {
         labelsMockedStatic.close();
         sessionsMockedStatic.close();
@@ -121,17 +124,17 @@ public class ProcessPublisherPluginUnitTest {
         assertEquals("process_publisher", processPublisherPlugin.getBundleName());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testGetSelectedModelNothingSelected() {
         when(portalContext.getMainController()).thenReturn(mainController);
         when(mainController.getSelectedElementsAndVersions()).thenReturn(new HashMap<>());
         when(Sessions.getCurrent()).thenReturn(session);
         when(session.getAttribute(Attributes.PREFERRED_LOCALE)).thenReturn(Locale.ENGLISH);
 
-        processPublisherPlugin.getSelectedModel(portalContext);
+        assertThrows(IllegalArgumentException.class, () -> processPublisherPlugin.getSelectedModel(portalContext));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testGetSelectedModelProcessTypeNotSelected() {
         Map<SummaryType, List<VersionSummaryType>> selectedProcessVersions = new HashMap<>();
         selectedProcessVersions.put(new LogSummaryType(), new ArrayList<>());
@@ -141,7 +144,7 @@ public class ProcessPublisherPluginUnitTest {
         sessionsMockedStatic.when(() -> Sessions.getCurrent()).thenReturn(session);
         when(session.getAttribute(Attributes.PREFERRED_LOCALE)).thenReturn(Locale.ENGLISH);
 
-        processPublisherPlugin.getSelectedModel(portalContext);
+        assertThrows(IllegalArgumentException.class, () -> processPublisherPlugin.getSelectedModel(portalContext));
     }
 
     @Test
@@ -168,7 +171,7 @@ public class ProcessPublisherPluginUnitTest {
         assertTrue(processPublisherPlugin.getSimpleParams().isEmpty());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testGetSelectedModelParamsWrongTypeNothingSelected() {
         Map<String, Object> params = new HashMap<>();
         params.put("selectedModel", "processSummaryType");
@@ -179,7 +182,7 @@ public class ProcessPublisherPluginUnitTest {
         when(Sessions.getCurrent()).thenReturn(session);
         when(session.getAttribute(Attributes.PREFERRED_LOCALE)).thenReturn(Locale.ENGLISH);
 
-        processPublisherPlugin.getSelectedModel(portalContext);
+        assertThrows(IllegalArgumentException.class, () -> processPublisherPlugin.getSelectedModel(portalContext));
     }
 
     @Test

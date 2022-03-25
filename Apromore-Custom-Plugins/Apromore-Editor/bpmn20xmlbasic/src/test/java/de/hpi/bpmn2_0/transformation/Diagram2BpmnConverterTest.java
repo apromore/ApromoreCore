@@ -62,10 +62,10 @@ import javax.xml.bind.JAXBException;
 import org.xml.sax.SAXException;
 
 import org.json.JSONException;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import static com.processconfiguration.ConfigurationAlgorithmTest.testsDirectory;
 import static com.processconfiguration.DefinitionsIDResolverTest.assertValidBPMN;
@@ -92,7 +92,7 @@ public class Diagram2BpmnConverterTest {
     /**
      * Test the {@link Diagram2BpmnConverter#getDefinitionsFromDiagram} method.
      */
-    @Ignore
+    @Disabled
     @Test public void testGetDefinitionsFromDiagram1() throws BpmnConverterException, IOException, JAXBException, JSONException, SAXException {
 
         // Read the test JSON

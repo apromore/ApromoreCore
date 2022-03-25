@@ -32,8 +32,8 @@ import java.util.List;
 
 import org.apromore.dao.model.SearchHistory;
 import org.apromore.portal.model.SearchHistoriesType;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * SearchHistory Mapper Unit test.
@@ -45,7 +45,7 @@ public class SearchHistoryMapperUnitTest {
 
     SearchHistoryMapper mapper;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         mapper = new SearchHistoryMapper();
     }

@@ -34,16 +34,16 @@ import java.util.stream.IntStream;
 import org.apromore.calendar.builder.CalendarModelBuilder;
 import org.apromore.calendar.builder.Container;
 import org.apromore.calendar.model.CalendarModel;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-@Ignore("Ignored as this is a intensive test")
+@Disabled("Ignored as this is a intensive test")
 public class DurationCalculationUnixTsLoadUnitTest {
 
     CalendarModelBuilder calendarModelBuilder;
 
-    @Before
+    @BeforeEach
     public void setup() {
         calendarModelBuilder = new CalendarModelBuilder();
     }

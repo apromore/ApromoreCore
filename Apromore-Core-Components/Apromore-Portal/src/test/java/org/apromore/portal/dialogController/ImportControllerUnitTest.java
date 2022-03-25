@@ -24,8 +24,8 @@ package org.apromore.portal.dialogController;
 
 import org.apromore.commons.item.ItemNameUtils;
 import org.apromore.plugin.portal.FileImporterPlugin;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.zkoss.util.media.Media;
 
 import java.io.InputStream;
@@ -34,7 +34,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /** Test suite for {@link ImportController}. */
 public class ImportControllerUnitTest {
@@ -69,7 +69,7 @@ public class ImportControllerUnitTest {
 
     /** Test the {@link ImportController#importFile} method with a mock CSV importer and a zipped CSV log. */
     @Test
-    @Ignore("Need to inject the ZK Execution instance for this to be testable")
+    @Disabled("Need to inject the ZK Execution instance for this to be testable")
     public void testImportFile_CSVzip2() throws Exception {
         testImportFile(Collections.singletonList(fileImporterPlugin), "CallcenterExample.zip");
     }

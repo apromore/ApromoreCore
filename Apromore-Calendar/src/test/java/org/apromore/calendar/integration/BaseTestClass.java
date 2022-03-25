@@ -24,13 +24,13 @@ package org.apromore.calendar.integration;
 
 import org.apromore.calendar.config.CalendarConfig;
 import org.apromore.dao.config.DatabaseConfig;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @Configuration
 @ContextConfiguration(classes = {CalendarConfig.class, TestConfig.class, DatabaseConfig.class})
 @TestPropertySource(value = {"classpath:application.properties"})

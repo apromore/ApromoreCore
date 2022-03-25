@@ -31,11 +31,11 @@ import org.apromore.service.logimporter.services.ParquetFactoryProvider;
 import org.apromore.service.logimporter.services.legacy.LogImporter;
 import org.apromore.service.logimporter.services.legacy.LogImporterXLSXImpl;
 import org.apromore.service.logimporter.services.utilities.TestUtilities;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-@Ignore
+@Disabled
 public class DebugUnitTest {
     /**
      * Expected headers for <code>test1-valid.csv</code>.
@@ -45,7 +45,7 @@ public class DebugUnitTest {
     private MetaDataService metaDataService;
     private LogImporter logImporter;
 
-    @Before
+    @BeforeEach
     public void init() {
         utilities = new TestUtilities();
         parquetFactoryProvider = new ParquetFactoryProvider();
@@ -57,7 +57,7 @@ public class DebugUnitTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void test_debug() throws Exception {
 
         System.out.println("\n************************************\ntest");

@@ -21,10 +21,10 @@
  */
 package org.apromore.plugin.portal.processdiscoverer.vis;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class StringFormatterTest {
 

@@ -75,11 +75,11 @@ import org.xml.sax.SAXException;
 import com.google.common.io.Files;
 import com.sun.xml.bind.IDResolver;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Test;
 
 import de.hpi.bpmn2_0.model.Definitions;
 import de.hpi.bpmn2_0.model.Process;
@@ -214,10 +214,10 @@ public class DefinitionsIDResolverTest {
         try {
             marshaller.marshal(definitions, nullOutputStream);  // discard the result
         } catch (MarshalException e) {
-             assertTrue("XML serialization failed, but no diagnostic message available", vec.hasEvents());
+             assertTrue(vec.hasEvents(), "XML serialization failed, but no diagnostic message available");
         }
 
-        assertFalse(formatValidationEvents(vec), vec.hasEvents());
+        assertFalse(vec.hasEvents(), formatValidationEvents(vec));
     }
 
     /**

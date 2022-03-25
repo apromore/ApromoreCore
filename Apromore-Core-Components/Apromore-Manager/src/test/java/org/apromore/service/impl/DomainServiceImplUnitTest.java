@@ -26,8 +26,8 @@ package org.apromore.service.impl;
 
 import org.apromore.dao.ProcessRepository;
 import org.apromore.service.impl.DomainServiceImpl;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +50,7 @@ public class DomainServiceImplUnitTest {
     private ProcessRepository procDAOJpa;
 
 
-    @Before
+    @BeforeEach
     public final void setUp() throws Exception {
         procDAOJpa = createMock(ProcessRepository.class);
         domainServiceImpl = new DomainServiceImpl(procDAOJpa);

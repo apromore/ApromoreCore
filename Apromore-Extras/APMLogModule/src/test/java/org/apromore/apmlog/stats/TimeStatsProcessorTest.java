@@ -22,8 +22,8 @@ import org.apromore.apmlog.logobjects.ActivityInstance;
 import org.apromore.apmlog.logobjects.ImmutableLog;
 import org.apromore.apmlog.logobjects.ImmutableTrace;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
-import static org.junit.Assert.assertEquals;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;

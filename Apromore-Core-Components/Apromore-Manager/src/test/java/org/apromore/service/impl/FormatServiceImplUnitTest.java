@@ -39,8 +39,8 @@ import org.apromore.dao.NativeRepository;
 import org.apromore.dao.NativeTypeRepository;
 import org.apromore.dao.model.NativeType;
 import org.apromore.service.impl.FormatServiceImpl;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test the UserService Implementation.
@@ -53,7 +53,7 @@ public class FormatServiceImplUnitTest {
 
     private NativeTypeRepository nativeTypeRepository;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         NativeRepository nativeRepository = createMock(NativeRepository.class);
         nativeTypeRepository = createMock(NativeTypeRepository.class);

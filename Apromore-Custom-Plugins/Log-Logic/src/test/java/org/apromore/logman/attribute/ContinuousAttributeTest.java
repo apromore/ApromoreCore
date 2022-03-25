@@ -22,9 +22,11 @@
 
 package org.apromore.logman.attribute;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.deckfour.xes.model.XAttributeContinuous;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class ContinuousAttributeTest extends AttributeTest {
 	
@@ -63,14 +65,14 @@ public class ContinuousAttributeTest extends AttributeTest {
 	public void testRegisterXAttributeWithInvalidType() {
 		ContinuousAttribute att = new ContinuousAttribute("concept:name", AttributeLevel.EVENT);
 		int result = att.registerXAttribute(xAttFactory.createAttributeDiscrete("concept:name", 100, null));
-		Assert.assertEquals(-1, result);
+		assertEquals(-1, result);
 	}
 	
 	@Test
 	public void testRegisterXAttributeWithInvalidKey() {
 		ContinuousAttribute att = new ContinuousAttribute("concept:name", AttributeLevel.EVENT);
 		int result = att.registerXAttribute(xAttFactory.createAttributeContinuous("invalid_key", 100.1, null));
-		Assert.assertEquals(-1, result);
+		assertEquals(-1, result);
 	}
 	
 	@Test
@@ -78,31 +80,31 @@ public class ContinuousAttributeTest extends AttributeTest {
 		ContinuousAttribute att = new ContinuousAttribute("concept:name", AttributeLevel.EVENT);
 		XAttributeContinuous xatt = xAttFactory.createAttributeContinuous("concept:name", 100.1, null);
 		int result = att.registerXAttribute(xatt);
-		Assert.assertEquals(0,  result);
+		assertEquals(0,  result);
 	}
 
 	@Test 
 	public void testGetMin() {
 		ContinuousAttribute att0 = this.newEmptyAttribute("concept:name", AttributeLevel.EVENT);
-		Assert.assertEquals(null, att0.getMin());
+		assertEquals(null, att0.getMin());
 		
 		ContinuousAttribute att1 = this.newWithOneValue("concept:name", AttributeLevel.EVENT);
-		Assert.assertEquals(100.1, att1.getMin());
+		assertEquals(100.1, att1.getMin());
 		
 		ContinuousAttribute att2 = this.newWithTwoValues("concept:name", AttributeLevel.EVENT);
-		Assert.assertEquals(100.1, att2.getMin());
+		assertEquals(100.1, att2.getMin());
 	}
 	
 	@Test 
 	public void testGetMax() {
 		ContinuousAttribute att0 = this.newEmptyAttribute("concept:name", AttributeLevel.EVENT);
-		Assert.assertEquals(null, att0.getMax());
+		assertEquals(null, att0.getMax());
 		
 		ContinuousAttribute att1 = this.newWithOneValue("concept:name", AttributeLevel.EVENT);
-		Assert.assertEquals(100.1, att1.getMax());
+		assertEquals(100.1, att1.getMax());
 		
 		ContinuousAttribute att2 = this.newWithTwoValues("concept:name", AttributeLevel.EVENT);
-		Assert.assertEquals(200.1, att2.getMax());
+		assertEquals(200.1, att2.getMax());
 	}
 
 }

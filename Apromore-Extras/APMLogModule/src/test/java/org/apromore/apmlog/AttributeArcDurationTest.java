@@ -32,7 +32,7 @@ import static org.apromore.apmlog.filter.types.FilterType.EVENT_EVENT_ATTRIBUTE;
 import org.apromore.apmlog.filter.types.Inclusion;
 import org.apromore.apmlog.filter.types.OperationType;
 import org.apromore.apmlog.filter.types.Section;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;

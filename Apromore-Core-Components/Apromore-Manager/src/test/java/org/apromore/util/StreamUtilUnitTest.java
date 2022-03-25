@@ -40,7 +40,7 @@ import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.mail.util.ByteArrayDataSource;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test the Stream Util.

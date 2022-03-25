@@ -24,13 +24,12 @@ package org.apromore.dao.jpa.folder;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-
 import org.apromore.config.BaseTestClass;
 import org.apromore.dao.FolderInfoRepository;
 import org.apromore.dao.FolderRepository;
 import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.FolderInfo;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 

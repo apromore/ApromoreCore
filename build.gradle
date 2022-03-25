@@ -54,9 +54,9 @@ subprojects {
   }
 
   dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation "org.springframework.boot:spring-boot-starter:${springBootVersion}"
+    implementation "org.springframework.boot:spring-boot-starter-security:${springBootVersion}"
+    implementation "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
     implementation group: 'org.keycloak', name: 'keycloak-spring-boot-starter'
     implementation 'javax.activation:javax.activation-api'
     implementation 'javax.annotation:javax.annotation-api'
@@ -76,13 +76,7 @@ subprojects {
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.projectlombok:lombok'
 
-    testImplementation('org.springframework.boot:spring-boot-starter-test') {
-      exclude group: 'org.junit', module: 'junit'
-    }
-    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api'
-    testImplementation 'junit:junit:4.12'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
-    testRuntimeOnly 'org.junit.vintage:junit-vintage-engine'
+    testImplementation "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
   }
 
   test {

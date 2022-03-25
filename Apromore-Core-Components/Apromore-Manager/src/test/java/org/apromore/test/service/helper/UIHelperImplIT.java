@@ -28,7 +28,7 @@ package org.apromore.test.service.helper;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.InputStream;
 
@@ -41,13 +41,14 @@ import org.apromore.portal.model.SummariesType;
 import org.apromore.portal.model.SummaryType;
 import org.apromore.service.ProcessService;
 import org.apromore.service.helper.UserInterfaceHelper;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,11 +57,11 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
-@Ignore
+@Disabled
 @ContextConfiguration(locations = {
         "classpath:META-INF/spring/applicationContext-jpa-TEST.xml",
         "classpath:META-INF/spring/applicationContext-services-TEST.xml"})
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @Transactional
 @Rollback
 @TestExecutionListeners(value = DependencyInjectionTestExecutionListener.class)
@@ -71,7 +72,7 @@ public class UIHelperImplIT {
     @Inject
     private ProcessService pSrv;
 
-    @Before
+    @BeforeEach
     public void setUp() {
     }
 

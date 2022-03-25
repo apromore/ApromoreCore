@@ -30,7 +30,7 @@ import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 public class LogsDurationsTest {
 

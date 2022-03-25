@@ -21,12 +21,14 @@
  */
 package org.apromore.service.loganimation.recording;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.Arrays;
 
 import org.apromore.service.loganimation.AnimationResult;
 import org.apromore.service.loganimation.modelmapping.OldBpmnModelMapping;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class TokenClusteringTest extends TestDataSetup {
     protected Movie createAnimationMovie_OneTraceOneEvent_OneTaskGrap() throws Exception {
@@ -51,16 +53,16 @@ public class TokenClusteringTest extends TestDataSetup {
         Movie animationMovie = createAnimationMovie_OneTraceOneEvent_OneTaskGrap();
         
         Frame frame0 = animationMovie.get(0);
-        Assert.assertEquals(1, frame0.getClusters(0).length);
-        Assert.assertEquals(1, frame0.getClusterSize(0, frame0.getClusters(0)[0]), 0.0);
+        assertEquals(1, frame0.getClusters(0).length);
+        assertEquals(1, frame0.getClusterSize(0, frame0.getClusters(0)[0]), 0.0);
         
         Frame frame299 = animationMovie.get(299);
-        Assert.assertEquals(1, frame299.getClusters(0).length);
-        Assert.assertEquals(1, frame299.getClusterSize(0, frame299.getClusters(0)[0]), 0.0);
+        assertEquals(1, frame299.getClusters(0).length);
+        assertEquals(1, frame299.getClusterSize(0, frame299.getClusters(0)[0]), 0.0);
        
         Frame frame3598 = animationMovie.get(35998);
-        Assert.assertEquals(1, frame3598.getClusters(0).length);
-        Assert.assertEquals(1, frame3598.getClusterSize(0, frame3598.getClusters(0)[0]), 0.0);
+        assertEquals(1, frame3598.getClusters(0).length);
+        assertEquals(1, frame3598.getClusterSize(0, frame3598.getClusters(0)[0]), 0.0);
     }
     
     
@@ -71,15 +73,15 @@ public class TokenClusteringTest extends TestDataSetup {
         Movie animationMovie = createAnimationMovie_TwoTracesOneEvent_OneTaskGrap();
         
         Frame frame0 = animationMovie.get(0);
-        Assert.assertEquals(1, frame0.getClusters(0).length);
-        Assert.assertEquals(2, frame0.getClusterSize(0, frame0.getClusters(0)[0]), 0.0);
+        assertEquals(1, frame0.getClusters(0).length);
+        assertEquals(2, frame0.getClusterSize(0, frame0.getClusters(0)[0]), 0.0);
         
         Frame frame299 = animationMovie.get(299);
-        Assert.assertEquals(1, frame299.getClusters(0).length);
-        Assert.assertEquals(2, frame299.getClusterSize(0, frame299.getClusters(0)[0]), 0.0);
+        assertEquals(1, frame299.getClusters(0).length);
+        assertEquals(2, frame299.getClusterSize(0, frame299.getClusters(0)[0]), 0.0);
        
         Frame frame35999 = animationMovie.get(35999);
-        Assert.assertEquals(1, frame35999.getClusters(0).length);
-        Assert.assertEquals(2, frame35999.getClusterSize(0, frame35999.getClusters(0)[0]), 0.0);
+        assertEquals(1, frame35999.getClusters(0).length);
+        assertEquals(2, frame35999.getClusterSize(0, frame35999.getClusters(0)[0]), 0.0);
     }
 }

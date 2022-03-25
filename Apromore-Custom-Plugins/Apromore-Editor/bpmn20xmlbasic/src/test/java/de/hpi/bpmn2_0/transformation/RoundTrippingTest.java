@@ -62,10 +62,10 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 
 import com.sun.xml.bind.IDResolver;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import static com.processconfiguration.ConfigurationAlgorithmTest.testsDirectory;
 import static com.processconfiguration.DefinitionsIDResolverTest.assertValidBPMN;
@@ -82,7 +82,7 @@ import org.oryxeditor.server.diagram.basic.BasicDiagramBuilder;
  *
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  */
-@Ignore
+@Disabled
 public class RoundTrippingTest {
 
   /**

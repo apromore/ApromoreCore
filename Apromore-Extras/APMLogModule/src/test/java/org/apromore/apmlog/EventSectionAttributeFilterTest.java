@@ -35,7 +35,7 @@ import org.apromore.apmlog.stats.LogStatsAnalyzer;
 import org.apromore.apmlog.xes.XESAttributeCodes;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;

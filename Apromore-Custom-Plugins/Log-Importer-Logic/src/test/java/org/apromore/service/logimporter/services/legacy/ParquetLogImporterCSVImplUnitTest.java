@@ -22,8 +22,8 @@
 
 package org.apromore.service.logimporter.services.legacy;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.google.common.io.ByteStreams;
 import java.nio.charset.Charset;
@@ -38,8 +38,8 @@ import org.apromore.service.logimporter.services.ParquetFactoryProvider;
 import org.apromore.service.logimporter.services.ParquetImporterFactory;
 import org.apromore.service.logimporter.services.utilities.TestUtilities;
 import org.deckfour.xes.model.XLog;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,7 +58,7 @@ public class ParquetLogImporterCSVImplUnitTest {
     private LogImporterParquetImpl logImporter;
     private MetaDataUtilities metaDataUtilities;
 
-    @Before
+    @BeforeEach
     public void init() {
         utilities = new TestUtilities();
         ParquetImporterFactory parquetImporterFactory =

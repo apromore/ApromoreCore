@@ -26,7 +26,7 @@ import org.apromore.apmlog.logobjects.ImmutableTrace;
 
 import java.util.List;
 
-import static org.junit.Assert.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 public class ImmutableTraceTest {
 

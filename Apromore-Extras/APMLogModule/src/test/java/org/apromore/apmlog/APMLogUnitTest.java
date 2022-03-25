@@ -22,6 +22,20 @@
 
 package org.apromore.apmlog;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.apromore.apmlog.customcalendartests.CusCalArcDurFilterTestSupport;
 import org.apromore.apmlog.customcalendartests.CusCalTest;
 import org.apromore.apmlog.filter.APMLogFilter;
@@ -44,24 +58,9 @@ import org.deckfour.xes.in.XesXmlParser;
 import org.deckfour.xes.model.XLog;
 import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
-import java.util.Arrays;
-import java.util.DoubleSummaryStatistics;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test suite for {@link APMLog}.
@@ -70,13 +69,13 @@ public class APMLogUnitTest {
 
     private XLog bpi2013;
 
-    @Before
+    @BeforeEach
     public void before() throws Exception {
         bpi2013 = (new XesXmlGZIPParser()).parse(getClass().getResourceAsStream("/BPI Challenge 2013 closed problems.xes.gz")).get(0);
 
     }
 
-    @Ignore("This test demonstrates the defect AP-1037")
+    @Disabled("This test demonstrates the defect AP-1037")
     @Test
     public void testConstructor_BPIC13() {
 //        APMLog apmLog = new APMLog(bpi2013);

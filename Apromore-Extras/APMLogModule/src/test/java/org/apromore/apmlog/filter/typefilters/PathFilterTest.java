@@ -33,8 +33,8 @@ import org.apromore.apmlog.filter.types.Inclusion;
 import org.apromore.apmlog.filter.types.OperationType;
 import org.apromore.apmlog.filter.types.Section;
 import org.apromore.apmlog.logobjects.ImmutableLog;
-import static org.junit.Assert.*;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
 import java.util.List;

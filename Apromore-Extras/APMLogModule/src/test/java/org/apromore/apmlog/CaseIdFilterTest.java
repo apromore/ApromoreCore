@@ -33,7 +33,7 @@ import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 public class CaseIdFilterTest {
     public static void test1(APMLog originalLog) throws EmptyInputException {

@@ -43,12 +43,13 @@ import org.apromore.service.FormatService;
 import org.apromore.service.ProcessService;
 import org.apromore.service.SecurityService;
 import org.apromore.service.model.ProcessData;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
@@ -59,11 +60,11 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
-@Ignore
+@Disabled
 @ContextConfiguration(locations = {
         "classpath:META-INF/spring/applicationContext-jpa-TEST.xml",
         "classpath:META-INF/spring/applicationContext-services-TEST.xml"})
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @Transactional
 @Rollback
 @TestExecutionListeners(value = DependencyInjectionTestExecutionListener.class)
@@ -79,7 +80,7 @@ public class UpdateProcessServiceImplIT {
 
     @Test
     @Rollback(true)
-    @Ignore
+    @Disabled
     public void testImportUpdateThenDeleteModel() throws Exception {
         String natType = "EPML 2.0";
         String name = "AudioTest2";

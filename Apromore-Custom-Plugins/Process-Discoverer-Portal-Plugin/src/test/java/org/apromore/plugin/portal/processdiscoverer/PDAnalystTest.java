@@ -18,14 +18,15 @@
 
 package org.apromore.plugin.portal.processdiscoverer;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -64,12 +65,12 @@ import org.deckfour.xes.model.XAttributeTimestamp;
 import org.deckfour.xes.model.XLog;
 import org.eclipse.collections.api.list.ListIterable;
 import org.joda.time.DateTime;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class PDAnalystTest extends TestDataSetup {
 
     @Test
@@ -95,7 +96,7 @@ public class PDAnalystTest extends TestDataSetup {
         assertEquals(3, attLog.getTraces().get(0).getValueTrace().size());
     }
 
-    @Test(expected = InvalidDataException.class)
+    @Test
     public void test_AnalystConstructor_MissingActivityPerspective() throws Exception {
         XLog validLog = readLogWithOneTraceOneEvent();
         ContextData contextData = ContextData.valueOf("domain1", "username1", 0,
@@ -106,10 +107,11 @@ public class PDAnalystTest extends TestDataSetup {
         Mockito.when(eventLogService.getPerspectiveTagByLog(contextData.getLogId()))
             .thenReturn(Arrays.asList("org:resource"));
         ConfigData configData = ConfigData.DEFAULT;
-        PDAnalyst analyst = new PDAnalyst(contextData, configData, eventLogService);
+
+        assertThrows(InvalidDataException.class, () -> new PDAnalyst(contextData, configData, eventLogService));
     }
 
-    @Test(expected = InvalidDataException.class)
+    @Test
     public void test_AnalystConstructor_NoPerspectiveAttributes() throws Exception {
         XLog validLog = readLogWithOneTraceOneEvent();
         ContextData contextData = ContextData.valueOf("domain1", "username1", 0,
@@ -119,10 +121,11 @@ public class PDAnalystTest extends TestDataSetup {
             XLogToImmutableLog.convertXLog("ProcessLog", validLog));
         Mockito.when(eventLogService.getPerspectiveTagByLog(contextData.getLogId())).thenReturn(new ArrayList<>());
         ConfigData configData = ConfigData.DEFAULT;
-        PDAnalyst analyst = new PDAnalyst(contextData, configData, eventLogService);
+
+        assertThrows(InvalidDataException.class, () -> new PDAnalyst(contextData, configData, eventLogService));
     }
 
-    @Test(expected = InvalidDataException.class)
+    @Test
     public void test_AnalystConstructor_TooManyPerspectiveAttributeValues() throws Exception {
         XLog validLog = readLogWithTwoTraceEachTwoEvents();
         ContextData contextData = ContextData.valueOf("domain1", "username1", 0,
@@ -133,7 +136,8 @@ public class PDAnalystTest extends TestDataSetup {
         Mockito.when(eventLogService.getPerspectiveTagByLog(contextData.getLogId()))
             .thenReturn(Arrays.asList(new String[] {"concept:name"}));
         ConfigData configData = new ConfigData("concept:name", 1, Integer.MAX_VALUE);
-        PDAnalyst analyst = new PDAnalyst(contextData, configData, eventLogService);
+
+        assertThrows(InvalidDataException.class, () -> new PDAnalyst(contextData, configData, eventLogService));
     }
 
     @Test

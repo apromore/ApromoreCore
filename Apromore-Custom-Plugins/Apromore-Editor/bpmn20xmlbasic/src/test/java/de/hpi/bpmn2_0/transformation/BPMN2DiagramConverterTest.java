@@ -71,9 +71,9 @@ import javax.xml.transform.stream.StreamSource;
 
 import com.sun.xml.bind.IDResolver;
 import org.json.JSONException;
-import static org.junit.Assert.assertEquals;
-import org.junit.Ignore;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import com.processconfiguration.ConfigurationAlgorithmTest;
 import com.processconfiguration.DefinitionsIDResolver;
@@ -102,7 +102,7 @@ public class BPMN2DiagramConverterTest {
      * Test the {@link BPMN2DiagramConverter#getDiagramFromBpmn20} method on
      * {@link ConfigurationAlgorithmTest#test1File}.
      */
-    @Ignore("Need to write a more robust comparison for JSON objects that ignores property ordering")
+    @Disabled("Need to write a more robust comparison for JSON objects that ignores property ordering")
     @Test public void testGetDiagramFromBpmn20_1() throws IOException, JAXBException, JSONException {
 
         // Parse BPMN from XML to JAXB

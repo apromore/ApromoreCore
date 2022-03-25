@@ -21,13 +21,15 @@
  */
 package org.apromore.service.loganimation.recording;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.Arrays;
 
 import org.apromore.service.loganimation.AnimationResult;
 import org.apromore.service.loganimation.modelmapping.OldBpmnModelMapping;
 import org.json.JSONArray;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class MovieTest extends TestDataSetup {
     
@@ -39,15 +41,15 @@ public class MovieTest extends TestDataSetup {
         AnimationIndex animationIndex = new AnimationIndex(result.getAnimationLogs().get(0), modelMapping, animationContext);
         Movie movie = FrameRecorder.record(Arrays.asList(animationIndex), animationContext);
         
-        Assert.assertEquals(36000, movie.size());
+        assertEquals(36000, movie.size());
         
         JSONArray firstChunk = movie.getChunkJSON(0, 300); // first chunk
         JSONArray firstChunkExpect = this.readChunk_OneTraceAndCompleteEvents(0);
-        Assert.assertEquals(true, firstChunk.similar(firstChunkExpect));
+        assertEquals(true, firstChunk.similar(firstChunkExpect));
         
         JSONArray lastChunk = movie.getChunkJSON(35817, 300); // last chunk
         JSONArray lastChunkExpect = this.readChunk_OneTraceAndCompleteEvents(35817);
-        Assert.assertEquals(true, lastChunk.similar(lastChunkExpect));
+        assertEquals(true, lastChunk.similar(lastChunkExpect));
     }
     
     @Test
@@ -58,14 +60,14 @@ public class MovieTest extends TestDataSetup {
         Movie movie = FrameRecorder.record(createAnimationIndexes(result.getAnimationLogs(), modelMapping, animationContext),
                                         animationContext);
         
-        Assert.assertEquals(36000, movie.size());
+        assertEquals(36000, movie.size());
         
         JSONArray firstChunk = movie.getChunkJSON(0, 300);
         JSONArray firstChunkExpect = this.readChunk_TwoLogs(0);
-        Assert.assertEquals(true, firstChunk.similar(firstChunkExpect));
+        assertEquals(true, firstChunk.similar(firstChunkExpect));
         
         JSONArray lastChunk = movie.getChunkJSON(35744, 300);
         JSONArray lastChunkExpect = this.readChunk_TwoLogs(0);
-        Assert.assertEquals(true, firstChunk.similar(firstChunkExpect));
+        assertEquals(true, firstChunk.similar(firstChunkExpect));
     }
 }

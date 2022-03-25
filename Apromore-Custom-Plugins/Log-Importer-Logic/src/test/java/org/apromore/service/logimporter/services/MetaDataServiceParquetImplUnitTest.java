@@ -21,15 +21,15 @@
 
 package org.apromore.service.logimporter.services;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apromore.service.logimporter.model.LogMetaData;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +37,7 @@ public class MetaDataServiceParquetImplUnitTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(MetaDataServiceParquetImplUnitTest.class);
     private MetaDataService metaDataService;
 
-    @Before
+    @BeforeEach
     public void init() {
         metaDataService = new MetaDataServiceParquetImpl();
     }

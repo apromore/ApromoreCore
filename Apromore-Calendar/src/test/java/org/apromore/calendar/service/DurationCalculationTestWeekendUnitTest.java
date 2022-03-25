@@ -28,70 +28,58 @@ import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.stream.Stream;
 import org.apromore.calendar.builder.CalendarModelBuilder;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.calendar.model.DurationModel;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-@RunWith(Parameterized.class)
 public class DurationCalculationTestWeekendUnitTest {
 
     CalendarModelBuilder calendarModelBuilder;
-    OffsetDateTime startDateTime;
-    OffsetDateTime endDateTime;
-    Duration expected;
 
-
-    @Before
+    @BeforeEach
     public void setup() {
         calendarModelBuilder = new CalendarModelBuilder();
     }
 
-    public DurationCalculationTestWeekendUnitTest(OffsetDateTime startDateTime, OffsetDateTime endDateTime,
-                                                  Duration expected) {
-        this.startDateTime = startDateTime;
-        this.endDateTime = endDateTime;
-        this.expected = expected;
-    }
-
-
-    @Parameterized.Parameters
-    public static Collection params() {
-        return Arrays.asList(new Object[][] {
-            {OffsetDateTime.of(2020, 10, 03, 07, 00, 00, 0, ZoneOffset.UTC),
+    private static Stream<Arguments> params() {
+        return Stream.of(
+            Arguments.of(
+                OffsetDateTime.of(2020, 10, 03, 07, 00, 00, 0, ZoneOffset.UTC),
                 OffsetDateTime.of(2020, 10, 03, 15, 00, 00, 0, ZoneOffset.UTC),
                 Duration.of(0, ChronoUnit.HOURS)
-            },
-            {
+            ),
+            Arguments.of(
                 OffsetDateTime.of(2020, 10, 02, 07, 00, 00, 0, ZoneOffset.UTC),
                 OffsetDateTime.of(2020, 10, 06, 15, 00, 00, 0, ZoneOffset.UTC),
                 Duration.of(22, ChronoUnit.HOURS)
-            },
-            {
+            ),
+            Arguments.of(
                 OffsetDateTime.of(2020, 10, 02, 07, 00, 00, 0, ZoneOffset.UTC),
                 OffsetDateTime.of(2020, 10, 06, 18, 00, 00, 0, ZoneOffset.UTC),
                 Duration.of(24, ChronoUnit.HOURS)
-            },
-            {
+            ),
+            Arguments.of(
                 OffsetDateTime.of(2020, 10, 02, 12, 00, 00, 0, ZoneOffset.UTC),
                 OffsetDateTime.of(2020, 10, 06, 18, 00, 00, 0, ZoneOffset.UTC),
-                Duration.of(21, ChronoUnit.HOURS)},
-            {
+                Duration.of(21, ChronoUnit.HOURS)
+            ),
+            Arguments.of(
                 OffsetDateTime.of(2020, 10, 02, 17, 00, 00, 0, ZoneOffset.UTC),
                 OffsetDateTime.of(2020, 10, 06, 18, 00, 00, 0, ZoneOffset.UTC),
                 Duration.of(16, ChronoUnit.HOURS)
-            },
-        });
+            ));
     }
 
 
-    @Test
-    public void testCalculateDuration8HoursDifferentDay() {
+    @ParameterizedTest
+    @MethodSource("params")
+    public void testCalculateDuration8HoursDifferentDay(OffsetDateTime startDateTime, OffsetDateTime endDateTime,
+                                                        Duration expected) {
 
         CalendarModel calendarModel = calendarModelBuilder.with5DayWorking().withZoneId(ZoneOffset.UTC.getId()).build();
 

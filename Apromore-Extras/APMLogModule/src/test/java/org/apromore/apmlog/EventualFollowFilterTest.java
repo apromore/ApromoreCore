@@ -31,7 +31,7 @@ import org.apromore.apmlog.filter.types.FilterType;
 import org.apromore.apmlog.filter.types.Inclusion;
 import org.apromore.apmlog.filter.types.OperationType;
 import org.apromore.apmlog.filter.types.Section;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;

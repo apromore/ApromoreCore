@@ -21,18 +21,15 @@
  */
 package org.apromore.dao.jpa.log;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.apromore.config.BaseTestClass;
 import org.apromore.dao.LogRepository;
 import org.apromore.dao.StorageRepository;
 import org.apromore.dao.model.Log;
 import org.apromore.dao.model.Storage;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class LogManagementUnitTest extends BaseTestClass {
     

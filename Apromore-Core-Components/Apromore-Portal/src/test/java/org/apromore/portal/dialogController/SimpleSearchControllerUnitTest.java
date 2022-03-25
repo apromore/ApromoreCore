@@ -25,12 +25,13 @@ package org.apromore.portal.dialogController;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.model.SearchHistoriesType;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 /** Test suite for {@link SimpleSearchController}. */
 public class SimpleSearchControllerUnitTest {
@@ -77,7 +78,7 @@ public class SimpleSearchControllerUnitTest {
         result = SimpleSearchController.addSearchHistory(result, "two");
 
         // Confirm that the invalid duplicate "one" entries have been corrected
-        assertEquals(new String[] {"one", "two"}, result.stream().map(SearchHistoriesType::getSearch).toArray(String[]::new));
+        assertArrayEquals(new String[] {"one", "two"}, result.stream().map(SearchHistoriesType::getSearch).toArray(String[]::new));
     }
 
     // Internal methods
@@ -92,6 +93,6 @@ public class SimpleSearchControllerUnitTest {
             result = SimpleSearchController.addSearchHistory(result, search);
         }
 
-        assertEquals(expected, result.stream().map(SearchHistoriesType::getSearch).toArray(String[]::new));
+        assertArrayEquals(expected, result.stream().map(SearchHistoriesType::getSearch).toArray(String[]::new));
     }
 }

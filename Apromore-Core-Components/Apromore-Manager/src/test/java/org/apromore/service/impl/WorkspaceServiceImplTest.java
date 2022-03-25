@@ -23,6 +23,9 @@
 package org.apromore.service.impl;
 
 import static org.easymock.EasyMock.expect;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -45,11 +48,11 @@ import org.apromore.storage.StorageClient;
 import org.apromore.storage.factory.StorageManagementFactory;
 import org.apromore.util.AccessType;
 import org.easymock.EasyMock;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 
 /**
  * 
@@ -81,7 +84,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
 
     private ConfigBean config;
     
-    @Before
+    @BeforeEach
     public final void setUp() throws Exception {
         workspaceRepo = createMock(WorkspaceRepository.class);
         groupRepo = createMock(GroupRepository.class);
@@ -128,7 +131,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void testCopyLog() throws Exception {
         // Set up test data
         Group group = createGroup(123, Group.Type.GROUP);
@@ -160,10 +163,10 @@ public class WorkspaceServiceImplTest extends AbstractTest {
         
         // Verify Mock and result
         verifyAll();
-        Assert.assertEquals(newLog.getFolder(), copyLog.getFolder());
-        Assert.assertEquals(newLog.getUser(), copyLog.getUser());
-        Assert.assertEquals(newLog.getName(), copyLog.getName());
-        Assert.assertEquals(user.getGroup(), copyLog.getGroupLogs().iterator().next().getGroup());
+        assertEquals(newLog.getFolder(), copyLog.getFolder());
+        assertEquals(newLog.getUser(), copyLog.getUser());
+        assertEquals(newLog.getName(), copyLog.getName());
+        assertEquals(user.getGroup(), copyLog.getGroupLogs().iterator().next().getGroup());
     }
     
     @Test
@@ -191,8 +194,8 @@ public class WorkspaceServiceImplTest extends AbstractTest {
         Log movedLog = workspaceService.moveLog(logId, targetFolderId);
         verifyAll();
         
-        Assert.assertEquals(targetFolder, movedLog.getFolder());
-        Assert.assertEquals(log, movedLog);
+        assertEquals(targetFolder, movedLog.getFolder());
+        assertEquals(log, movedLog);
     }
     
     
@@ -238,24 +241,24 @@ public class WorkspaceServiceImplTest extends AbstractTest {
         
         // Verify Mock and result
         verifyAll();
-        Assert.assertEquals(targetFolder, copyProcess.getFolder());
-        Assert.assertEquals(user, copyProcess.getUser());
-        Assert.assertEquals(process.getName(), copyProcess.getName());
-        Assert.assertEquals(1, copyProcess.getProcessBranches().size());
-        Assert.assertEquals(process.getProcessBranches().get(0).getBranchName(), copyProcess.getProcessBranches().get(0).getBranchName());
-        Assert.assertEquals(copyProcess, copyProcess.getProcessBranches().get(0).getProcess());
+        assertEquals(targetFolder, copyProcess.getFolder());
+        assertEquals(user, copyProcess.getUser());
+        assertEquals(process.getName(), copyProcess.getName());
+        assertEquals(1, copyProcess.getProcessBranches().size());
+        assertEquals(process.getProcessBranches().get(0).getBranchName(), copyProcess.getProcessBranches().get(0).getBranchName());
+        assertEquals(copyProcess, copyProcess.getProcessBranches().get(0).getProcess());
 
-        Assert.assertEquals(2, copyProcess.getProcessBranches().get(0).getProcessModelVersions().size());
-        Assert.assertEquals("1.0", copyProcess.getProcessBranches().get(0).getProcessModelVersions().get(0).getVersionNumber());
-        Assert.assertEquals("1.1", copyProcess.getProcessBranches().get(0).getProcessModelVersions().get(1).getVersionNumber());
-        Assert.assertEquals("1.1", copyProcess.getProcessBranches().get(0).getCurrentProcessModelVersion().getVersionNumber());
+        assertEquals(2, copyProcess.getProcessBranches().get(0).getProcessModelVersions().size());
+        assertEquals("1.0", copyProcess.getProcessBranches().get(0).getProcessModelVersions().get(0).getVersionNumber());
+        assertEquals("1.1", copyProcess.getProcessBranches().get(0).getProcessModelVersions().get(1).getVersionNumber());
+        assertEquals("1.1", copyProcess.getProcessBranches().get(0).getCurrentProcessModelVersion().getVersionNumber());
         
-        Assert.assertEquals(pmv1.getNativeDocument().getContent(), copyProcess.getProcessBranches().get(0).getProcessModelVersions().get(0).getNativeDocument().getContent());
-        Assert.assertEquals(pmv2.getNativeDocument().getContent(), copyProcess.getProcessBranches().get(0).getProcessModelVersions().get(1).getNativeDocument().getContent());
-        Assert.assertEquals(copyProcess.getProcessBranches().get(0), copyProcess.getProcessBranches().get(0).getProcessModelVersions().get(0).getProcessBranch());
-        Assert.assertEquals(copyProcess.getProcessBranches().get(0), copyProcess.getProcessBranches().get(0).getProcessModelVersions().get(1).getProcessBranch());
+        assertEquals(pmv1.getNativeDocument().getContent(), copyProcess.getProcessBranches().get(0).getProcessModelVersions().get(0).getNativeDocument().getContent());
+        assertEquals(pmv2.getNativeDocument().getContent(), copyProcess.getProcessBranches().get(0).getProcessModelVersions().get(1).getNativeDocument().getContent());
+        assertEquals(copyProcess.getProcessBranches().get(0), copyProcess.getProcessBranches().get(0).getProcessModelVersions().get(0).getProcessBranch());
+        assertEquals(copyProcess.getProcessBranches().get(0), copyProcess.getProcessBranches().get(0).getProcessModelVersions().get(1).getProcessBranch());
         
-        Assert.assertEquals(user.getGroup(), copyProcess.getGroupProcesses().iterator().next().getGroup());
+        assertEquals(user.getGroup(), copyProcess.getGroupProcesses().iterator().next().getGroup());
     }
     
     @Test
@@ -299,20 +302,20 @@ public class WorkspaceServiceImplTest extends AbstractTest {
         
         // Verify Mock and result
         verifyAll();
-        Assert.assertEquals(targetFolder, copyProcess.getFolder());
-        Assert.assertEquals(user, copyProcess.getUser());
-        Assert.assertEquals(process.getName(), copyProcess.getName());
-        Assert.assertEquals(1, copyProcess.getProcessBranches().size());
-        Assert.assertEquals(process.getProcessBranches().get(0).getBranchName(), copyProcess.getProcessBranches().get(0).getBranchName());
-        Assert.assertEquals(3, copyProcess.getProcessBranches().get(0).getProcessModelVersions().size());
-        Assert.assertEquals("1.0", copyProcess.getProcessBranches().get(0).getProcessModelVersions().get(0).getVersionNumber());
-        Assert.assertEquals("1.1", copyProcess.getProcessBranches().get(0).getProcessModelVersions().get(1).getVersionNumber());
-        Assert.assertEquals("1.2", copyProcess.getProcessBranches().get(0).getProcessModelVersions().get(2).getVersionNumber());
-        Assert.assertEquals(pmv1.getNativeDocument().getContent(), copyProcess.getProcessBranches().get(0).getProcessModelVersions().get(0).getNativeDocument().getContent());
-        Assert.assertEquals(pmv2.getNativeDocument().getContent(), copyProcess.getProcessBranches().get(0).getProcessModelVersions().get(1).getNativeDocument().getContent());
-        Assert.assertEquals(pmv3.getNativeDocument().getContent(), copyProcess.getProcessBranches().get(0).getProcessModelVersions().get(2).getNativeDocument().getContent());
-        Assert.assertEquals("1.2", copyProcess.getProcessBranches().get(0).getCurrentProcessModelVersion().getVersionNumber());
-        Assert.assertEquals(user.getGroup(), copyProcess.getGroupProcesses().iterator().next().getGroup());
+        assertEquals(targetFolder, copyProcess.getFolder());
+        assertEquals(user, copyProcess.getUser());
+        assertEquals(process.getName(), copyProcess.getName());
+        assertEquals(1, copyProcess.getProcessBranches().size());
+        assertEquals(process.getProcessBranches().get(0).getBranchName(), copyProcess.getProcessBranches().get(0).getBranchName());
+        assertEquals(3, copyProcess.getProcessBranches().get(0).getProcessModelVersions().size());
+        assertEquals("1.0", copyProcess.getProcessBranches().get(0).getProcessModelVersions().get(0).getVersionNumber());
+        assertEquals("1.1", copyProcess.getProcessBranches().get(0).getProcessModelVersions().get(1).getVersionNumber());
+        assertEquals("1.2", copyProcess.getProcessBranches().get(0).getProcessModelVersions().get(2).getVersionNumber());
+        assertEquals(pmv1.getNativeDocument().getContent(), copyProcess.getProcessBranches().get(0).getProcessModelVersions().get(0).getNativeDocument().getContent());
+        assertEquals(pmv2.getNativeDocument().getContent(), copyProcess.getProcessBranches().get(0).getProcessModelVersions().get(1).getNativeDocument().getContent());
+        assertEquals(pmv3.getNativeDocument().getContent(), copyProcess.getProcessBranches().get(0).getProcessModelVersions().get(2).getNativeDocument().getContent());
+        assertEquals("1.2", copyProcess.getProcessBranches().get(0).getCurrentProcessModelVersion().getVersionNumber());
+        assertEquals(user.getGroup(), copyProcess.getGroupProcesses().iterator().next().getGroup());
     }
     
     @Test
@@ -341,12 +344,12 @@ public class WorkspaceServiceImplTest extends AbstractTest {
 
         // Verify mock and result
         verifyAll();
-        Assert.assertEquals(targetFolder, movedProcess.getFolder());
-        Assert.assertEquals(process, movedProcess);
+        assertEquals(targetFolder, movedProcess.getFolder());
+        assertEquals(process, movedProcess);
     }
     
     @Test
-    @Ignore
+    @Disabled
     public void testMoveFolder() throws Exception {
         Group group = createGroup(123, Group.Type.GROUP);
         Role role = createRole(createSet(createPermission()));
@@ -370,8 +373,8 @@ public class WorkspaceServiceImplTest extends AbstractTest {
 
         // Verify mock and result
         verifyAll();
-        Assert.assertEquals(folder.getName(), movedFolder.getName());
-        Assert.assertEquals(newParentFolder, movedFolder.getParentFolder());
+        assertEquals(folder.getName(), movedFolder.getName());
+        assertEquals(newParentFolder, movedFolder.getParentFolder());
     }
 
     @Test
@@ -404,7 +407,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
 
         // Verify mock and result
         verifyAll();
-        Assert.assertEquals(result, Arrays.asList(testFolder));
+        assertEquals(result, Arrays.asList(testFolder));
 
     }
 
@@ -438,7 +441,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
 
         // Verify mock and result
         verifyAll();
-        Assert.assertEquals(Arrays.asList(), result);
+        assertEquals(Arrays.asList(), result);
 
     }
 
@@ -471,7 +474,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
 
         // Verify mock and result
         verifyAll();
-        Assert.assertEquals(result, Arrays.asList(testLog));
+        assertEquals(result, Arrays.asList(testLog));
 
     }
 
@@ -505,7 +508,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
 
         // Verify mock and result
         verifyAll();
-        Assert.assertEquals(Arrays.asList(), result);
+        assertEquals(Arrays.asList(), result);
 
     }
 
@@ -541,7 +544,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
 
         // Verify mock and result
         verifyAll();
-        Assert.assertEquals(result, Arrays.asList(testProcess));
+        assertEquals(result, Arrays.asList(testProcess));
 
     }
 
@@ -578,7 +581,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
 
         // Verify mock and result
         verifyAll();
-        Assert.assertEquals(Arrays.asList(), result);
+        assertEquals(Arrays.asList(), result);
 
     }
 
@@ -601,7 +604,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
         GroupLog groupLog2 = new GroupLog(group2, testLog, true, true, true);
 
         boolean result = workspaceService.canDeleteOwnerlessFolder(user);
-        Assert.assertTrue(result);
+        assertTrue(result);
 
     }
 
@@ -647,7 +650,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
 
         boolean result = workspaceService.canDeleteOwnerlessFolder(user);
 
-        Assert.assertFalse(result);
+        assertFalse(result);
 
     }
 
@@ -694,7 +697,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
 
         boolean result = workspaceService.canDeleteOwnerlessFolder(user);
 
-        Assert.assertFalse(result);
+        assertFalse(result);
 
     }
 
@@ -751,7 +754,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
 
         boolean result = workspaceService.canDeleteOwnerlessFolder(user);
 
-        Assert.assertFalse(result);
+        assertFalse(result);
 
     }
 

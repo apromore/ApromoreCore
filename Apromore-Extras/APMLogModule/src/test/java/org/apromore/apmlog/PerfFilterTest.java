@@ -32,7 +32,7 @@ import org.apromore.apmlog.filter.types.Inclusion;
 import org.apromore.apmlog.filter.types.OperationType;
 import org.apromore.apmlog.filter.types.Section;
 import org.apromore.apmlog.stats.LogStatsAnalyzer;
-import static org.junit.Assert.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;

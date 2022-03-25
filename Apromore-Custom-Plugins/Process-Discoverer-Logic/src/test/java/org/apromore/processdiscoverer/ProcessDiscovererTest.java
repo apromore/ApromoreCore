@@ -39,15 +39,15 @@ import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNNode;
 import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Gateway;
 import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Gateway.GatewayType;
 import org.deckfour.xes.model.XLog;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class ProcessDiscovererTest extends LogicDataSetup {
     

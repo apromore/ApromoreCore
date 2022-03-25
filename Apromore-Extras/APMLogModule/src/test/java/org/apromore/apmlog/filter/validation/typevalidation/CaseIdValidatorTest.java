@@ -34,10 +34,10 @@ import org.apromore.apmlog.filter.validation.FilterRuleValidator;
 import org.apromore.apmlog.filter.validation.FilterRuleValidatorTest;
 import org.apromore.apmlog.filter.validation.ValidatedFilterRule;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Test;
 
 import java.util.BitSet;
 import java.util.List;

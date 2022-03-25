@@ -23,7 +23,7 @@
 package org.apromore.portal.common;
 
 import org.apromore.zk.notification.Notification;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /* Test suite for {@link Navigation}. */
 public class NotificationUnitTest {

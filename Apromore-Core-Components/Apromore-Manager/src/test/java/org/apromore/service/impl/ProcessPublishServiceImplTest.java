@@ -21,6 +21,15 @@
  */
 package org.apromore.service.impl;
 
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.anyString;
+import static org.easymock.EasyMock.expect;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.dao.ProcessPublishRepository;
 import org.apromore.dao.ProcessRepository;
@@ -31,16 +40,8 @@ import org.apromore.dao.model.ProcessPublish;
 import org.apromore.dao.model.User;
 import org.apromore.portal.model.ProcessSummaryType;
 import org.easymock.EasyMockSupport;
-import org.junit.Before;
-import org.junit.Test;
-
-import static org.easymock.EasyMock.anyObject;
-import static org.easymock.EasyMock.anyString;
-import static org.easymock.EasyMock.expect;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ProcessPublishServiceImplTest extends EasyMockSupport {
     private ProcessPublishRepository processPublishRepository;
@@ -49,7 +50,7 @@ public class ProcessPublishServiceImplTest extends EasyMockSupport {
 
     private ProcessPublishServiceImpl processPublishService;
 
-    @Before
+    @BeforeEach
     public void setup() {
         processPublishRepository = createMock(ProcessPublishRepository.class);
         processRepository = createMock(ProcessRepository.class);
@@ -59,12 +60,14 @@ public class ProcessPublishServiceImplTest extends EasyMockSupport {
                 pmvRepository);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testSavePublishDetailsNonExistentProcess() {
         int processId = 1;
         String publishId = "publishId";
 
-        processPublishService.savePublishDetails(processId, publishId, false);
+        assertThrows(IllegalArgumentException.class, () ->
+            processPublishService.savePublishDetails(processId, publishId, false));
+
     }
 
     @Test

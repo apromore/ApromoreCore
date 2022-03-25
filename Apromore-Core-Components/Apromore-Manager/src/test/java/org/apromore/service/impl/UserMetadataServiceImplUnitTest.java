@@ -35,7 +35,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import org.apromore.builder.UserManagementBuilder;
 import org.apromore.dao.GroupLogRepository;
 import org.apromore.dao.GroupRepository;
@@ -56,21 +55,19 @@ import org.apromore.dao.model.UsermetadataProcess;
 import org.apromore.dao.model.UsermetadataType;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.service.UserService;
-import org.apromore.service.impl.UserMetadataServiceImpl;
 import org.apromore.util.AccessType;
 import org.apromore.util.UserMetadataTypeEnum;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.annotation.Rollback;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class UserMetadataServiceImplUnitTest {
 
     // TODO: Rewrite unit test using UserMetadataBuilder and BaseTestClass
@@ -112,7 +109,7 @@ public class UserMetadataServiceImplUnitTest {
 
     UserManagementBuilder userBuilder;
 
-    @Before
+    @BeforeEach
     public final void setUp() {
 	userBuilder = new UserManagementBuilder();
     }

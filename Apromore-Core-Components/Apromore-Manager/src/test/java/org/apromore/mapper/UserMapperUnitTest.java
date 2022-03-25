@@ -30,8 +30,8 @@ import org.apromore.portal.model.SearchHistoriesType;
 import org.apromore.portal.model.UserType;
 import org.apromore.portal.model.UsernamesType;
 import org.apromore.service.SecurityService;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -53,7 +53,7 @@ public class UserMapperUnitTest {
     UserMapper mapper;
     SecurityService secSrv;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         mapper = new UserMapper();
     }

@@ -33,8 +33,8 @@ import org.apromore.dao.model.Group;
 import org.apromore.dao.model.GroupLog;
 import org.apromore.dao.model.Log;
 import org.apromore.dao.model.Process;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class GroupProcessUnitTest extends BaseTestClass {
@@ -51,7 +51,7 @@ public class GroupProcessUnitTest extends BaseTestClass {
     @Autowired
     private LogRepository logRepo;
 
-    @Before
+    @BeforeEach
     public void before() {
         userManagementBuilder = new UserManagementBuilder();
     }

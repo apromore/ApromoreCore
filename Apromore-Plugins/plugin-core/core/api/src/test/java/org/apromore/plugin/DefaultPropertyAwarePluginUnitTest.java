@@ -25,15 +25,15 @@
 
 package org.apromore.plugin;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.apromore.plugin.DefaultParameterAwarePlugin;
 import org.apromore.plugin.property.PluginParameterType;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test functionality offered by AbstractPropertyAwarePlugin
@@ -47,7 +47,7 @@ public class DefaultPropertyAwarePluginUnitTest {
     private PluginParameterType<String> mandatoryProperty;
     private PluginParameterType<String> nonMandatoryProperty;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         this.propertyAwarePlugin = new DefaultParameterAwarePlugin() {
         };

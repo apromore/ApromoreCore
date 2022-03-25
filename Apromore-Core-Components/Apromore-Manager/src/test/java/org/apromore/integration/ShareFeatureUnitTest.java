@@ -24,9 +24,9 @@ package org.apromore.integration;
 import org.apromore.builder.UserManagementBuilder;
 import org.apromore.dao.*;
 import org.apromore.dao.model.*;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -50,13 +50,13 @@ public class ShareFeatureUnitTest extends BaseTest {
     UsermetadataRepository usermetadataRepository;
 
 
-    @Before
+    @BeforeEach
     public final void setUp() {
         builder = new UserManagementBuilder();
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void testSaveUser() {
         // given
         Group group = groupRepository.saveAndFlush(builder.withGroup("testGroup1", "USER").buildGroup());
@@ -71,7 +71,7 @@ public class ShareFeatureUnitTest extends BaseTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void insertUsermetadataTest() {
 //	 		Given
         Usermetadata um = builder.withUserMetaDataType("test Type", 1).withUserMetaData("Test", "test")

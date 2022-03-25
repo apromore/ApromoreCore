@@ -24,7 +24,7 @@ package org.apromore.service.logimporter.services;
 
 import static org.apromore.service.logimporter.services.utilities.TestUtilities.convertParquetToCsv;
 import static org.apromore.service.logimporter.utilities.ParquetUtilities.getHeaderFromParquet;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
 import java.util.Arrays;
@@ -35,9 +35,9 @@ import org.apromore.service.logimporter.io.ParquetLocalFileReader;
 import org.apromore.service.logimporter.model.LogMetaData;
 import org.apromore.service.logimporter.model.LogModel;
 import org.apromore.service.logimporter.services.utilities.TestUtilities;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,7 +53,7 @@ public class ParquetImporterParquetImplUnitTest {
     private ParquetImporter parquetImporter;
     private MetaDataUtilities metaDataUtilities;
 
-    @Before
+    @BeforeEach
     public void init() {
         utilities = new TestUtilities();
         ParquetImporterFactory parquetImporterFactory = new ParquetFactoryProvider().getParquetFactory("parquet");
@@ -439,7 +439,7 @@ public class ParquetImporterParquetImplUnitTest {
     /**
      * Test {@link ParquetImporterParquetImpl} against an invalid parquet log <code>test11-encoding.parquet</code>.
      */
-    @Ignore
+    @Disabled
     @Test
     public void test10_encoding() throws Exception {
 

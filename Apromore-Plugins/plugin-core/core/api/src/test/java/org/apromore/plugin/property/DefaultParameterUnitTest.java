@@ -25,14 +25,14 @@
 
 package org.apromore.plugin.property;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.InputStream;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
@@ -44,7 +44,7 @@ public class DefaultParameterUnitTest {
     private PluginParameterType<Integer> defaultProperty2;
     private PluginParameterType<InputStream> defaultProperty3;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         defaultProperty = new PluginParameterType<String>("t1", "test",String.class, "description", true);
         defaultProperty2 = new PluginParameterType<Integer>("t2", "test2","description2", false, 2);

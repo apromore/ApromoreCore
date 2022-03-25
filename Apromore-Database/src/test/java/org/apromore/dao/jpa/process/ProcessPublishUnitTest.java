@@ -21,19 +21,20 @@
  */
 package org.apromore.dao.jpa.process;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.apromore.config.BaseTestClass;
 import org.apromore.dao.ProcessPublishRepository;
 import org.apromore.dao.ProcessRepository;
 import org.apromore.dao.model.Process;
 import org.apromore.dao.model.ProcessPublish;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 @Transactional
 public class ProcessPublishUnitTest extends BaseTestClass {
@@ -45,7 +46,7 @@ public class ProcessPublishUnitTest extends BaseTestClass {
     @Autowired
     ProcessRepository processRepository;
 
-    @Before
+    @BeforeEach
     public void setup() {
         process1 = new Process();
         processRepository.saveAndFlush(process1);

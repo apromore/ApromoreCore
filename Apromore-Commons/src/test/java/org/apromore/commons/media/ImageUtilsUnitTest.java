@@ -21,12 +21,11 @@
  */
 package org.apromore.commons.media;
 
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.awt.Dimension;
 import java.io.InputStream;
-import static org.junit.jupiter.api.Assertions.fail;
-import org.junit.Test;
-
-import org.apromore.commons.media.ImageUtils;
+import org.junit.jupiter.api.Test;
 
 /**
  * Various test utility for image

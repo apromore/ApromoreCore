@@ -24,7 +24,6 @@ package org.apromore.dao.jpa.usermanagement;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Date;
-
 import org.apromore.config.BaseTestClass;
 import org.apromore.dao.GroupRepository;
 import org.apromore.dao.LogRepository;
@@ -40,8 +39,8 @@ import org.apromore.dao.model.User;
 import org.apromore.dao.model.Usermetadata;
 import org.apromore.dao.model.UsermetadataLog;
 import org.apromore.dao.model.UsermetadataType;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class UserManagementUnitTest extends BaseTestClass {
@@ -69,7 +68,7 @@ public class UserManagementUnitTest extends BaseTestClass {
     @Autowired
     UsermetadataLogRepository usermetadataLogRepository;
 
-    @Before
+    @BeforeEach
     public void Setup() {
 	builder = new UserManagementBuilder();
 

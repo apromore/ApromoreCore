@@ -21,15 +21,15 @@
  */
 package org.apromore.commons.utils;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 
 public class DelimiterUnitTest {
 
@@ -38,7 +38,7 @@ public class DelimiterUnitTest {
     /**
      * Setup for tests.
      */
-    @Before
+    @BeforeEach
     public void setup() {
         rows = new ArrayList<>();
     }
@@ -152,7 +152,7 @@ public class DelimiterUnitTest {
      * This test driver tests the SpaceDelimiter.
      */
     @Test
-    @Ignore
+    @Disabled
     public void testSpaceDelimiter() {
         // Create a 1D list Strings [header, r1, r2, r3]
         rows.add("col1 col2 col3");

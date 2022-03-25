@@ -22,7 +22,7 @@
 
 package org.apromore.plugin.portal.processdiscoverer.vis.json;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.apromore.logman.ALog;
 import org.apromore.logman.attribute.graph.MeasureAggregation;
@@ -37,7 +37,7 @@ import org.deckfour.xes.model.XLog;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ProcessJSONVisualizerTest extends TestDataSetup {
     private String NODE_KEY = "shape";

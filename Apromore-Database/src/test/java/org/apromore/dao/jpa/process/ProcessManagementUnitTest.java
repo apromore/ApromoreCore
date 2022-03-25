@@ -25,15 +25,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 import java.util.List;
-
 import org.apromore.config.BaseTestClass;
 import org.apromore.dao.FolderRepository;
 import org.apromore.dao.ProcessRepository;
 import org.apromore.dao.jpa.folder.FolderBuilder;
 import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.Process;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,7 +48,7 @@ public class ProcessManagementUnitTest extends BaseTestClass {
     @Autowired
     ProcessRepository processRepository;
 
-    @Before
+    @BeforeEach
     public void setUp() {
 	folderBuilder = new FolderBuilder();
     }

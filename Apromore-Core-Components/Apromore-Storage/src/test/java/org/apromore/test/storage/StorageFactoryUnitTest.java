@@ -32,13 +32,13 @@ import org.apromore.storage.StorageClient;
 import org.apromore.storage.exception.ObjectNotFoundException;
 import org.apromore.storage.factory.StorageManagementFactory;
 import org.apromore.storage.factory.StorageManagementFactoryImpl;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class StorageFactoryUnitTest {
     
     StorageManagementFactory<StorageClient> storageManagementFactory;
-    @Before
+    @BeforeEach
     public void setup()
     {
 	 storageManagementFactory=new StorageManagementFactoryImpl<StorageClient>();

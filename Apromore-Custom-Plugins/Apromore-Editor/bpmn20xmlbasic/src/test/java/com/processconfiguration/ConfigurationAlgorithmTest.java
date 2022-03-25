@@ -68,14 +68,14 @@ import org.xml.sax.SAXException;
 
 import com.sun.xml.bind.IDResolver;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Test;
 
 import de.hpi.bpmn2_0.model.BaseElement;
 import de.hpi.bpmn2_0.model.Definitions;
@@ -503,16 +503,16 @@ public class ConfigurationAlgorithmTest {
         assertTrue(newGateway instanceof InclusiveGateway);
         assertNotSame(gateway, newGateway);
         assertEquals(gateway.getId(), newGateway.getId());
-        assertNull("Reconfigured gateway still has a <pc:configurable> extension element",
-                   newGateway.getExtensionElements().getFirstExtensionElementOfType(Configurable.class));
+        assertNull(newGateway.getExtensionElements().getFirstExtensionElementOfType(Configurable.class),
+            "Reconfigured gateway still has a <pc:configurable> extension element");
 
         // Test that the graph connectivity has been preserved
         for (Edge edge : oldIncoming) {
-            assertEquals(edge.getId() + " does not target configured gateway", newGateway, edge.getTargetRef());
+            assertEquals(newGateway, edge.getTargetRef(), edge.getId() + " does not target configured gateway");
         }
 
         for (Edge edge : oldOutgoing) {
-            assertEquals(edge.getId() + " is not sourced from configured gateway", newGateway, edge.getSourceRef());
+            assertEquals(newGateway, edge.getSourceRef(), edge.getId() + " is not sourced from configured gateway");
         }
 
         // Test that the diagram reference has also been updated

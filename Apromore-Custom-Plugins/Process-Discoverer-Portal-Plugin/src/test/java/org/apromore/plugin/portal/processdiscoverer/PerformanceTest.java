@@ -26,11 +26,11 @@ import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.processdiscoverer.data.ConfigData;
 import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
 import org.deckfour.xes.model.XLog;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 
-@Ignore //Not to use in build
+@Disabled //Not to use in build
 public class PerformanceTest extends TestDataSetup {
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(PerformanceTest.class);
     

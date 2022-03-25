@@ -25,18 +25,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 import java.util.List;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-
 import org.apromore.config.BaseTestClass;
 import org.apromore.dao.FolderInfoRepository;
 import org.apromore.dao.FolderRepository;
 import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.FolderInfo;
 import org.apromore.script.FolderParentChainPopulator;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,7 +55,7 @@ public class FolderManagementChainUnitTest extends BaseTestClass {
     @PersistenceContext
     EntityManager em;
 
-    @Before
+    @BeforeEach
     public void setUp() {
 	folderBuilder = new FolderBuilder();
     }

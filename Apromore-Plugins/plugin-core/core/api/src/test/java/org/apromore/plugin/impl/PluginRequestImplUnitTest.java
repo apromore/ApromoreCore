@@ -25,7 +25,7 @@
 
 package org.apromore.plugin.impl;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.HashSet;
 
@@ -33,8 +33,8 @@ import org.apromore.plugin.PluginRequestImpl;
 import org.apromore.plugin.exception.PluginPropertyNotFoundException;
 import org.apromore.plugin.property.PluginParameterType;
 import org.apromore.plugin.property.RequestParameterType;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class PluginRequestImplUnitTest {
 
@@ -42,7 +42,7 @@ public class PluginRequestImplUnitTest {
     private RequestParameterType<String> request1;
     private RequestParameterType<String> request2;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         pluginRequestImpl = new PluginRequestImpl();
         request1 = new RequestParameterType<String>("test1", "foobar");

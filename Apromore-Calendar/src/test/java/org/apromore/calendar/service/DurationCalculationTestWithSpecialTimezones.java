@@ -22,6 +22,8 @@
 
 package org.apromore.calendar.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -29,7 +31,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.stream.Stream;
 import org.apromore.calendar.builder.CalendarModelBuilder;
 import org.apromore.calendar.model.CalendarModel;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -99,6 +100,6 @@ public class DurationCalculationTestWithSpecialTimezones {
         long duration = calendarModel.getDurationMillis(startDateTime.toInstant(), endDateTime.toInstant());
 
         // Then
-        Assert.assertEquals(expected.toMillis(), duration);
+        assertEquals(expected.toMillis(), duration);
     }
 }

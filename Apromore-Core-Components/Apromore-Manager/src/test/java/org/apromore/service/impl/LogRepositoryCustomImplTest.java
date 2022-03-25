@@ -29,8 +29,8 @@ import org.deckfour.xes.factory.XFactoryRegistry;
 import org.deckfour.xes.info.XLogInfo;
 import org.deckfour.xes.info.XLogInfoFactory;
 import org.deckfour.xes.model.*;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -40,7 +40,7 @@ import java.lang.management.MemoryUsage;
 import java.text.NumberFormat;
 import java.util.Random;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class LogRepositoryCustomImplTest {
 
@@ -49,7 +49,7 @@ public class LogRepositoryCustomImplTest {
     TemporaryCacheService temporaryCacheService=new TemporaryCacheService();
 
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
 
     }

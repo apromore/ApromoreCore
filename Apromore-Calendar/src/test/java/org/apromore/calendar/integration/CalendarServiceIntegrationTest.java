@@ -39,7 +39,7 @@ import org.apromore.calendar.exception.CalendarNotExistsException;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.calendar.model.HolidayModel;
 import org.apromore.calendar.service.CustomCalendarService;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 

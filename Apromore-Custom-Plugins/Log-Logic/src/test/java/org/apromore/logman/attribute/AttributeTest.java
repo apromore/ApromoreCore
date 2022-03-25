@@ -22,10 +22,12 @@
 
 package org.apromore.logman.attribute;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public abstract class AttributeTest {
 	protected XFactory xAttFactory = new XFactoryNaiveImpl();
@@ -38,12 +40,12 @@ public abstract class AttributeTest {
 	@Test
 	public void testGetKeyWithLevel() {
 		AbstractAttribute att1 = this.newEmptyAttribute("concept:name", AttributeLevel.EVENT);
-		Assert.assertEquals("concept:name", att1.getKeyWithLevel());
+		assertEquals("concept:name", att1.getKeyWithLevel());
 		
 		AbstractAttribute att2 = this.newEmptyAttribute("concept:name", AttributeLevel.TRACE);
-		Assert.assertEquals("(case)concept:name", att2.getKeyWithLevel());
+		assertEquals("(case)concept:name", att2.getKeyWithLevel());
 		
 		AbstractAttribute att3 = this.newEmptyAttribute("concept:name", AttributeLevel.LOG);
-		Assert.assertEquals("(log)concept:name", att3.getKeyWithLevel());
+		assertEquals("(log)concept:name", att3.getKeyWithLevel());
 	}
 }
