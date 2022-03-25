@@ -2044,3 +2044,36 @@ databaseChangeLog:
               - column:
                   name: is_valid
                   value: "1"
+  - changeSet:
+      id:  20220325144900
+      author:  janeh
+      comment: "update permission names"
+      changes:
+        -  update:
+             columns:
+               -  column:
+                    name: permission_name
+                    value: "View users"
+             tableName: permission
+             where: id = 1
+        -  update:
+             columns:
+               -  column:
+                    name: permission_name
+                    value: "Edit users"
+             tableName: permission
+             where: id = 2
+        -  update:
+             columns:
+               -  column:
+                    name: permission_name
+                    value: "Edit groups"
+             tableName: permission
+             where: id = 3
+        -  update:
+             columns:
+               -  column:
+                    name: permission_name
+                    value: "Edit roles"
+             tableName: permission
+             where: id = 4
