@@ -7,29 +7,36 @@ module.exports = function(bpmnFactory, elementRegistry, translate) {
   var processSimulationInfo = ProcessSimulationHelper.getProcessSimulationInfo(bpmnFactory, elementRegistry);
 
   return dateTimeField({
-    id: 'startTime',
-    type: 'time',
-    label: translate('scenarioGroup.startTime.label'),
-    modelProperty: 'startTime',
+    id: 'startDate',
+    type: 'date',
+    label: translate('scenarioGroup.startDate.label'),
+    modelProperty: 'startDate',
 
     get: function(_element, _node) {
+      var dateArr = new Date(processSimulationInfo.startDateTime).toLocaleDateString('en-GB').split('/');
       return {
-        startTime: processSimulationInfo.startDateTime.split('T')[1].slice(0, 5)
+        startDate: dateArr[2] + '-' + dateArr[1] + '-' + dateArr[0]
       };
     },
 
     set: function(element, values) {
-      var startTime = new Date(processSimulationInfo.startDateTime);
+      // Get the data model's date time
+      var modelStartDateTime = new Date(processSimulationInfo.startDateTime);
 
-      if (values.startTime && values.startTime !== '') {
-        var time = values.startTime.split(':');
-        startTime.setUTCHours(time[0], time[1]);
+      if (values.startDate !== '') {
+        // Get the local time from the data model's date time
+        var localStartTime = modelStartDateTime.toLocaleTimeString('en-GB');
+
+        // Construct the utc date time based on the local date from the UI control,
+        // and the converted local time from the data model above
+        modelStartDateTime = new Date(values.startDate + 'T' + localStartTime);
+
       } else {
-        startTime.setUTCHours(9, 0, 0, 0);
+        modelStartDateTime = new Date();
       }
 
       return cmdHelper.updateBusinessObject(element, processSimulationInfo, {
-        startDateTime: startTime.toISOString()
+        startDateTime: modelStartDateTime.toISOString()
       });
     }
   });

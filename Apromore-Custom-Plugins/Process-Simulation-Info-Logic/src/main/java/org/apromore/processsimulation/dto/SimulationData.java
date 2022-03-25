@@ -36,12 +36,14 @@ import org.apromore.calendar.model.CalendarModel;
 public class SimulationData {
     public static final String DEFAULT_ROLE = "DEFAULT_ROLE";
     public static final String DEFAULT_RESOURCE = "DEFAULT_RESOURCE";
+    public static final String DEFAULT_CALENDAR_NAME = "Generic 24/7";
 
     private long caseCount;
     private long resourceCount;
     private long startTime;
     private long endTime;
 
+    @NonNull
     private CalendarModel calendarModel;
 
     @Getter(AccessLevel.NONE)

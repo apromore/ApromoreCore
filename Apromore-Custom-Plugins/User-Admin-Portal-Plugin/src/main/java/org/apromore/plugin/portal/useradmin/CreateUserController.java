@@ -74,6 +74,21 @@ public class CreateUserController extends SelectorComposer<Window> implements La
             return;
         }
 
+        if (!userNameTextbox.isValid()) {
+            Messagebox.show(getLabel("failedCreateUserInvalidUsername_message"));
+            return;
+        }
+
+        if (!emailTextbox.isValid()) {
+            Messagebox.show(getLabel("failedCreateUserInvalidEmail_message"));
+            return;
+        }
+
+        if (!passwordTextbox.isValid()) {
+            Messagebox.show(getLabel("failedCreateUserInvalidPassword_message"));
+            return;
+        }
+
         try {
             User user = new User();
             user.setUsername(userNameTextbox.getValue());

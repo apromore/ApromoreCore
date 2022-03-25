@@ -39,6 +39,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -46,7 +47,9 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
 import org.apromore.calendar.builder.CalendarModelBuilder;
 import org.apromore.calendar.model.CalendarModel;
+import org.apromore.calendar.service.CustomCalendarService;
 import org.apromore.processsimulation.config.SimulationInfoConfig;
+import org.apromore.processsimulation.dto.EdgeFrequency;
 import org.apromore.processsimulation.dto.SimulationData;
 import org.apromore.processsimulation.model.Currency;
 import org.apromore.processsimulation.model.DistributionType;
@@ -54,6 +57,7 @@ import org.apromore.processsimulation.model.Element;
 import org.apromore.processsimulation.model.ProcessSimulationInfo;
 import org.apromore.processsimulation.model.Resource;
 import org.apromore.processsimulation.model.TimeUnit;
+import org.apromore.processsimulation.model.Timetable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -70,59 +74,51 @@ class SimulationInfoServiceTest {
     @Mock
     private SimulationInfoConfig config;
 
+    @Mock
+    private CustomCalendarService calendarService;
+
     @BeforeEach
     void setup() {
         MockitoAnnotations.openMocks(this);
 
-        simulationInfoService = new SimulationInfoService(config);
+        simulationInfoService = new SimulationInfoService(config, calendarService);
 
         when(config.isEnable()).thenReturn(true);
         when(config.getDefaultCurrency()).thenReturn("EUR");
         when(config.getDefaultDistributionType()).thenReturn("EXPONENTIAL");
         when(config.getDefaultTimeUnit()).thenReturn("SECONDS");
 
-        Map<String, String> timeTableConfigMap = new HashMap<>();
-        timeTableConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_ID_KEY, "A_DEFAULT_TIMETABLE_ID");
-        timeTableConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_NAME_KEY, "Arrival Timetable");
-        timeTableConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_NAME_KEY, "Default Timeslot");
-        timeTableConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_FROM_TIME, "10:00:00.000+00:00");
-        timeTableConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_TO_TIME, "15:00:00.000+00:00");
-        timeTableConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_FROM_WEEKDAY_KEY, "SUNDAY");
-        timeTableConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_TO_WEEKDAY_KEY, "SATURDAY");
-        when(config.getDefaultTimetable()).thenReturn(timeTableConfigMap);
+        when(config.getDefaultTimetableId()).thenReturn("A_DEFAULT_TIMETABLE_ID");
+        when(config.getCustomTimetableId()).thenReturn("A_CUSTOM_TIMETABLE_ID");
+        when(config.getDefaultTimeslotName()).thenReturn("Default Timeslot");
 
-        Map<String, String> defaultResourceConfigMap = new HashMap<>();
-        defaultResourceConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_ID_KEY, "A_DEFAULT_RESOURCE_ID");
-        defaultResourceConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_NAME_KEY, "The default resource name");
-        defaultResourceConfigMap.put(SimulationInfoConfig.CONFIG_DEFAULT_ID_PREFIX_KEY, "QBP_");
-        when(config.getDefaultResource()).thenReturn(defaultResourceConfigMap);
+        when(config.getDefaultResourceId()).thenReturn("A_DEFAULT_RESOURCE_ID");
+        when(config.getDefaultResourceIdPrefix()).thenReturn("QBP_");
+        when(config.getDefaultResourceName()).thenReturn("The default resource name");
+
+        CalendarModel mockCalendarModel = new CalendarModelBuilder().withAllDayAllTime().build();
+        mockCalendarModel.setName(SimulationData.DEFAULT_CALENDAR_NAME);
+
+        when(calendarService.getGenericCalendar()).thenReturn(mockCalendarModel);
     }
 
     @Test
     void should_successfully_derive_general_simulation_info() {
         // given
-        SimulationData mockSimulationData = mock(SimulationData.class);
-
-        when(mockSimulationData.getCaseCount()).thenReturn(100L);
-        when(mockSimulationData.getStartTime()).thenReturn(1577797200000L);
-        when(mockSimulationData.getEndTime()).thenReturn(1580475600000L);
+        SimulationData mockSimulationData = mockBasicSimulationData();
 
         // when
         ProcessSimulationInfo processSimulationInfo =
             simulationInfoService.transformToSimulationInfo(mockSimulationData);
 
         // then
-        assertGeneralSimulationInfo(processSimulationInfo);
+        assertGeneralSimulationInfo("26784.00", processSimulationInfo);
     }
 
     @Test
     void should_successfully_derive_task_simulation_info_with_default_resource() {
         // given
-        SimulationData mockSimulationData = mock(SimulationData.class);
-
-        when(mockSimulationData.getCaseCount()).thenReturn(100L);
-        when(mockSimulationData.getStartTime()).thenReturn(1577797200000L);
-        when(mockSimulationData.getEndTime()).thenReturn(1580475600000L);
+        SimulationData mockSimulationData = mockBasicSimulationData();
 
         when(mockSimulationData.getDiagramNodeIDs()).thenReturn(Arrays.asList("a", "b", "c"));
         when(mockSimulationData.getDiagramNodeDuration("a")).thenReturn(10100.00);
@@ -137,7 +133,7 @@ class SimulationInfoServiceTest {
             simulationInfoService.transformToSimulationInfo(mockSimulationData);
 
         // then
-        assertGeneralSimulationInfo(processSimulationInfo);
+        assertGeneralSimulationInfo("26784.00", processSimulationInfo);
 
         assertTaskInfo(processSimulationInfo, true);
     }
@@ -145,11 +141,7 @@ class SimulationInfoServiceTest {
     @Test
     void should_successfully_derive_task_simulation_info_with_default_role() {
         // given
-        SimulationData mockSimulationData = mock(SimulationData.class);
-
-        when(mockSimulationData.getCaseCount()).thenReturn(100L);
-        when(mockSimulationData.getStartTime()).thenReturn(1577797200000L);
-        when(mockSimulationData.getEndTime()).thenReturn(1580475600000L);
+        SimulationData mockSimulationData = mockBasicSimulationData();
 
         when(mockSimulationData.getDiagramNodeIDs()).thenReturn(Arrays.asList("a", "b", "c"));
         when(mockSimulationData.getDiagramNodeDuration("a")).thenReturn(10100.00);
@@ -164,7 +156,7 @@ class SimulationInfoServiceTest {
             simulationInfoService.transformToSimulationInfo(mockSimulationData);
 
         // then
-        assertGeneralSimulationInfo(processSimulationInfo);
+        assertGeneralSimulationInfo("26784.00", processSimulationInfo);
 
         assertTaskInfo(processSimulationInfo, true);
     }
@@ -172,11 +164,7 @@ class SimulationInfoServiceTest {
     @Test
     void should_successfully_derive_task_simulation_info_with_associated_resource() {
         // given
-        SimulationData mockSimulationData = mock(SimulationData.class);
-
-        when(mockSimulationData.getCaseCount()).thenReturn(100L);
-        when(mockSimulationData.getStartTime()).thenReturn(1577797200000L);
-        when(mockSimulationData.getEndTime()).thenReturn(1580475600000L);
+        SimulationData mockSimulationData = mockBasicSimulationData();
 
         when(mockSimulationData.getDiagramNodeIDs()).thenReturn(Arrays.asList("a", "b", "c"));
         when(mockSimulationData.getDiagramNodeDuration("a")).thenReturn(10100.00);
@@ -193,7 +181,7 @@ class SimulationInfoServiceTest {
             simulationInfoService.transformToSimulationInfo(mockSimulationData);
 
         // then
-        assertGeneralSimulationInfo(processSimulationInfo);
+        assertGeneralSimulationInfo("26784.00", processSimulationInfo);
 
         assertTaskInfo(processSimulationInfo, false);
     }
@@ -237,46 +225,114 @@ class SimulationInfoServiceTest {
     }
 
     @Test
-    void should_successfully_derive_timetable_info() {
+    void should_successfully_derive_timetable_info_with_generic_24_7_calendar() {
         // given
-        SimulationData mockSimulationData = mock(SimulationData.class);
-
-        when(mockSimulationData.getCaseCount()).thenReturn(100L);
-        when(mockSimulationData.getStartTime()).thenReturn(1577797200000L);
-        when(mockSimulationData.getEndTime()).thenReturn(1580475600000L);
+        SimulationData mockSimulationData = mockBasicSimulationData();
 
         // when
         ProcessSimulationInfo processSimulationInfo =
             simulationInfoService.transformToSimulationInfo(mockSimulationData);
 
         // then
-        assertGeneralSimulationInfo(processSimulationInfo);
+        assertGeneralSimulationInfo("26784.00", processSimulationInfo);
 
         assertNotNull(processSimulationInfo.getTimetables());
         assertEquals(1, processSimulationInfo.getTimetables().size());
-        assertEquals("Arrival Timetable", processSimulationInfo.getTimetables().get(0).getName());
-        assertEquals("A_DEFAULT_TIMETABLE_ID", processSimulationInfo.getTimetables().get(0).getId());
+        assertEquals("Generic 24/7", processSimulationInfo.getTimetables().get(0).getName());
+        assertEquals("A_CUSTOM_TIMETABLE_ID", processSimulationInfo.getTimetables().get(0).getId());
         assertTrue(processSimulationInfo.getTimetables().get(0).isDefaultTimetable());
-
         assertNotNull(processSimulationInfo.getTimetables().get(0).getRules());
         assertEquals(1, processSimulationInfo.getTimetables().get(0).getRules().size());
         assertNotNull(processSimulationInfo.getTimetables().get(0).getRules().get(0).getId());
         assertEquals("Default Timeslot", processSimulationInfo.getTimetables().get(0).getRules().get(0).getName());
-        assertEquals("10:00:00.000+00:00",
+        assertEquals("00:00:00.000",
             processSimulationInfo.getTimetables().get(0).getRules().get(0).getFromTime());
-        assertEquals("15:00:00.000+00:00", processSimulationInfo.getTimetables().get(0).getRules().get(0).getToTime());
-        assertEquals(DayOfWeek.SUNDAY, processSimulationInfo.getTimetables().get(0).getRules().get(0).getFromWeekDay());
-        assertEquals(DayOfWeek.SATURDAY, processSimulationInfo.getTimetables().get(0).getRules().get(0).getToWeekDay());
+        assertEquals("23:59:59.999", processSimulationInfo.getTimetables().get(0).getRules().get(0).getToTime());
+        assertEquals(DayOfWeek.MONDAY, processSimulationInfo.getTimetables().get(0).getRules().get(0).getFromWeekDay());
+        assertEquals(DayOfWeek.SUNDAY, processSimulationInfo.getTimetables().get(0).getRules().get(0).getToWeekDay());
+    }
+
+    @Test
+    void should_successfully_derive_timetable_info_with_custom_calendar() {
+        // given
+        SimulationData mockSimulationData = mockBasicSimulationData();
+
+        CalendarModel mockCustomCalendarModel = new CalendarModelBuilder().with5DayWorking().build();
+        mockCustomCalendarModel.setName("Mock Business Calendar");
+        when(mockSimulationData.getCalendarModel()).thenReturn(mockCustomCalendarModel);
+
+        Map<String, Integer> mockRoleToResourceCounts = Map.of(
+            "Role_1", 5,
+            "Role_2", 10,
+            "Role_3", 15
+        );
+        when(mockSimulationData.getResourceCountsByRole()).thenReturn(mockRoleToResourceCounts);
+
+        // when
+        ProcessSimulationInfo processSimulationInfo =
+            simulationInfoService.transformToSimulationInfo(mockSimulationData);
+
+        // then
+        assertGeneralSimulationInfo("6624.00", processSimulationInfo);
+
+        assertNotNull(processSimulationInfo.getTimetables());
+        assertEquals(2, processSimulationInfo.getTimetables().size());
+
+        assertTimetableInfo(processSimulationInfo.getTimetables().get(0),
+            "Mock Business Calendar", "A_CUSTOM_TIMETABLE_ID", true,
+            "09:00:00.000", "17:00:00.000", DayOfWeek.MONDAY, DayOfWeek.FRIDAY);
+
+        assertTimetableInfo(processSimulationInfo.getTimetables().get(1),
+            "Generic 24/7", "A_DEFAULT_TIMETABLE_ID", false,
+            "00:00:00.000", "23:59:59.999", DayOfWeek.MONDAY, DayOfWeek.SUNDAY);
+
+        assertNotNull(processSimulationInfo.getResources());
+        assertEquals(3, processSimulationInfo.getResources().size());
+
+        Optional<Resource> role1 =
+            processSimulationInfo.getResources().stream().filter(resource -> resource.getName().equals("Role_1"))
+                .findFirst();
+        assertResource("Role_1", 5, "A_CUSTOM_TIMETABLE_ID", role1);
+
+        Optional<Resource> role2 =
+            processSimulationInfo.getResources().stream().filter(resource -> resource.getName().equals("Role_2"))
+                .findFirst();
+        assertResource("Role_2", 10, "A_CUSTOM_TIMETABLE_ID", role2);
+
+        Optional<Resource> role3 =
+            processSimulationInfo.getResources().stream().filter(resource -> resource.getName().equals("Role_3"))
+                .findFirst();
+        assertResource("Role_3", 15, "A_CUSTOM_TIMETABLE_ID", role3);
+    }
+
+    private void assertTimetableInfo(
+        final Timetable actualTimetable,
+        final String expectedName,
+        final String expectedId,
+        boolean isDefaultExpected,
+        final String expectedFromTime,
+        final String expectedToTime,
+        final DayOfWeek expectedFromDay,
+        final DayOfWeek expectedToDay) {
+
+        assertEquals(expectedName, actualTimetable.getName());
+        assertEquals(expectedId, actualTimetable.getId());
+        assertEquals(isDefaultExpected, actualTimetable.isDefaultTimetable());
+        assertNotNull(actualTimetable.getRules());
+        assertEquals(1, actualTimetable.getRules().size());
+        assertNotNull(actualTimetable.getRules().get(0).getId());
+        assertEquals("Default Timeslot", actualTimetable.getRules().get(0).getName());
+        assertEquals(expectedFromTime, actualTimetable.getRules().get(0).getFromTime());
+        assertEquals(expectedToTime, actualTimetable.getRules().get(0).getToTime());
+        assertEquals(expectedFromDay, actualTimetable.getRules().get(0).getFromWeekDay());
+        assertEquals(expectedToDay, actualTimetable.getRules().get(0).getToWeekDay());
+
     }
 
     @Test
     void should_successfully_derive_resource_info() {
         // given
-        SimulationData mockSimulationData = mock(SimulationData.class);
-
-        when(mockSimulationData.getCaseCount()).thenReturn(100L);
-        when(mockSimulationData.getStartTime()).thenReturn(1577797200000L);
-        when(mockSimulationData.getEndTime()).thenReturn(1580475600000L);
+        SimulationData mockSimulationData = mockBasicSimulationData();
         when(mockSimulationData.getResourceCount()).thenReturn(27L);
 
         Map<String, Integer> mockRoleToResourceCounts = Map.of(
@@ -291,7 +347,7 @@ class SimulationInfoServiceTest {
             simulationInfoService.transformToSimulationInfo(mockSimulationData);
 
         // then
-        assertGeneralSimulationInfo(processSimulationInfo);
+        assertGeneralSimulationInfo("26784.00", processSimulationInfo);
 
         assertNotNull(processSimulationInfo.getResources());
         assertEquals(3, processSimulationInfo.getResources().size());
@@ -299,17 +355,17 @@ class SimulationInfoServiceTest {
         Optional<Resource> role1 =
             processSimulationInfo.getResources().stream().filter(resource -> resource.getName().equals("Role_1"))
                 .findFirst();
-        assertResource("Role_1", 5, "A_DEFAULT_TIMETABLE_ID", role1);
+        assertResource("Role_1", 5, "A_CUSTOM_TIMETABLE_ID", role1);
 
         Optional<Resource> role2 =
             processSimulationInfo.getResources().stream().filter(resource -> resource.getName().equals("Role_2"))
                 .findFirst();
-        assertResource("Role_2", 10, "A_DEFAULT_TIMETABLE_ID", role2);
+        assertResource("Role_2", 10, "A_CUSTOM_TIMETABLE_ID", role2);
 
         Optional<Resource> role3 =
             processSimulationInfo.getResources().stream().filter(resource -> resource.getName().equals("Role_3"))
                 .findFirst();
-        assertResource("Role_3", 15, "A_DEFAULT_TIMETABLE_ID", role3);
+        assertResource("Role_3", 15, "A_CUSTOM_TIMETABLE_ID", role3);
     }
 
     private void assertResource(
@@ -326,11 +382,7 @@ class SimulationInfoServiceTest {
     @Test
     void should_contain_default_resource_if_no_roles() {
         // given
-        SimulationData mockSimulationData = mock(SimulationData.class);
-
-        when(mockSimulationData.getCaseCount()).thenReturn(100L);
-        when(mockSimulationData.getStartTime()).thenReturn(1577797200000L);
-        when(mockSimulationData.getEndTime()).thenReturn(1580475600000L);
+        SimulationData mockSimulationData = mockBasicSimulationData();
         when(mockSimulationData.getResourceCount()).thenReturn(19L);
         when(mockSimulationData.getResourceCountsByRole()).thenReturn(null);
 
@@ -339,27 +391,98 @@ class SimulationInfoServiceTest {
             simulationInfoService.transformToSimulationInfo(mockSimulationData);
 
         // then
-        assertGeneralSimulationInfo(processSimulationInfo);
+        assertGeneralSimulationInfo("26784.00", processSimulationInfo);
 
         assertEquals(1, processSimulationInfo.getResources().size());
         assertEquals("QBP_A_DEFAULT_RESOURCE_ID", processSimulationInfo.getResources().get(0).getId());
         assertEquals("The default resource name", processSimulationInfo.getResources().get(0).getName());
-        assertEquals("A_DEFAULT_TIMETABLE_ID", processSimulationInfo.getResources().get(0).getTimetableId());
+        assertEquals("A_CUSTOM_TIMETABLE_ID", processSimulationInfo.getResources().get(0).getTimetableId());
         assertEquals(19, processSimulationInfo.getResources().get(0).getTotalAmount());
     }
 
-    private void assertGeneralSimulationInfo(final ProcessSimulationInfo processSimulationInfo) {
-        assertNotNull(processSimulationInfo.getId());
-        assertNotNull(processSimulationInfo.getErrors());
-        assertEquals(100L, processSimulationInfo.getProcessInstances());
-        assertEquals("6624.00", processSimulationInfo.getArrivalRateDistribution().getArg1());
-        assertNull(processSimulationInfo.getArrivalRateDistribution().getArg2());
-        assertNull(processSimulationInfo.getArrivalRateDistribution().getMean());
-        assertEquals(TimeUnit.HOURS, processSimulationInfo.getArrivalRateDistribution().getTimeUnit());
-        assertEquals(DistributionType.EXPONENTIAL, processSimulationInfo.getArrivalRateDistribution().getType());
+    @Test
+    void should_successfully_derive_gateway_probabilities() {
+        // given
+        SimulationData mockSimulationData = mockBasicSimulationData();
+
+        Map<String, List<EdgeFrequency>> mockEdgeFrequencies = Map.of(
+            "g1", List.of(
+                EdgeFrequency.builder().edgeId("e1").frequency(125).build(),
+                EdgeFrequency.builder().edgeId("e2").frequency(12).build(),
+                EdgeFrequency.builder().edgeId("e3").frequency(34).build(),
+                EdgeFrequency.builder().edgeId("e4").frequency(456).build(),
+                EdgeFrequency.builder().edgeId("e5").frequency(6).build()),
+
+            "g2", List.of(
+                EdgeFrequency.builder().edgeId("e6").frequency(56).build(),
+                EdgeFrequency.builder().edgeId("e7").frequency(987).build(),
+                EdgeFrequency.builder().edgeId("e8").frequency(1).build()),
+
+            "g3", List.of(
+                EdgeFrequency.builder().edgeId("e9").frequency(56).build(),
+                EdgeFrequency.builder().edgeId("e10").frequency(987).build(),
+                EdgeFrequency.builder().edgeId("e11").frequency(65).build(),
+                EdgeFrequency.builder().edgeId("e12").frequency(654).build(),
+                EdgeFrequency.builder().edgeId("e13").frequency(258).build(),
+                EdgeFrequency.builder().edgeId("e14").frequency(54).build(),
+                EdgeFrequency.builder().edgeId("e15").frequency(78).build(),
+                EdgeFrequency.builder().edgeId("e16").frequency(3).build(),
+                EdgeFrequency.builder().edgeId("e17").frequency(81).build(),
+                EdgeFrequency.builder().edgeId("e18").frequency(1).build())
+        );
+        when(mockSimulationData.getEdgeFrequencies()).thenReturn(mockEdgeFrequencies);
+
+        // when
+        ProcessSimulationInfo processSimulationInfo =
+            simulationInfoService.transformToSimulationInfo(mockSimulationData);
+
+        // then
+        assertGeneralSimulationInfo("26784.00", processSimulationInfo);
+
+        assertGatewayProbabilitiesAddTo100Percent(processSimulationInfo, List.of("e1", "e2", "e3", "e4", "e5"));
+        assertGatewayProbabilitiesAddTo100Percent(processSimulationInfo, List.of("e6", "e7", "e8"));
+        assertGatewayProbabilitiesAddTo100Percent(processSimulationInfo, List.of("e9", "e10", "e11", "e12", "e13",
+            "e14", "e15", "e16", "e17", "e18"));
+    }
+
+    private void assertGatewayProbabilitiesAddTo100Percent(
+        final ProcessSimulationInfo processSimulationInfo,
+        final List<String> gatewayEdgeIds) {
+
+        assertEquals(1.0,
+            processSimulationInfo.getSequenceFlows().stream()
+                .filter(sequenceFlow -> gatewayEdgeIds.contains(sequenceFlow.getElementId()))
+                .map(sequenceFlow -> Double.valueOf(sequenceFlow.getExecutionProbability()))
+                .reduce(0.0D, Double::sum));
+    }
+
+    private void assertGeneralSimulationInfo(String expectedArrivalRate,
+                                             final ProcessSimulationInfo actualProcessSimulationInfo) {
+        assertNotNull(actualProcessSimulationInfo.getId());
+        assertNotNull(actualProcessSimulationInfo.getErrors());
+        assertEquals(100L, actualProcessSimulationInfo.getProcessInstances());
+        assertEquals(expectedArrivalRate, actualProcessSimulationInfo.getArrivalRateDistribution().getArg1());
+        assertNull(actualProcessSimulationInfo.getArrivalRateDistribution().getArg2());
+        assertNull(actualProcessSimulationInfo.getArrivalRateDistribution().getMean());
+        assertEquals(TimeUnit.HOURS, actualProcessSimulationInfo.getArrivalRateDistribution().getTimeUnit());
+        assertEquals(DistributionType.EXPONENTIAL, actualProcessSimulationInfo.getArrivalRateDistribution().getType());
         assertEquals(Instant.ofEpochMilli(1577797200000L).toString(),
-            processSimulationInfo.getStartDateTime());
-        assertEquals(Currency.EUR, processSimulationInfo.getCurrency());
+            actualProcessSimulationInfo.getStartDateTime());
+        assertEquals(Currency.EUR, actualProcessSimulationInfo.getCurrency());
+    }
+
+    private SimulationData mockBasicSimulationData() {
+        SimulationData mockSimulationData = mock(SimulationData.class);
+
+        when(mockSimulationData.getCaseCount()).thenReturn(100L);
+        when(mockSimulationData.getStartTime()).thenReturn(1577797200000L);
+        when(mockSimulationData.getEndTime()).thenReturn(1580475600000L);
+
+        CalendarModel mockCalendarModel = new CalendarModelBuilder().withAllDayAllTime().build();
+        mockCalendarModel.setName(SimulationData.DEFAULT_CALENDAR_NAME);
+        when(mockSimulationData.getCalendarModel()).thenReturn(mockCalendarModel);
+
+        return mockSimulationData;
     }
 
     @Test
@@ -695,7 +818,7 @@ class SimulationInfoServiceTest {
         Node arrivalDistributionXmlNode = TestHelper.getProcessSimulationInfo(bpmnXmlString,
             "/definitions/process/extensionElements/processSimulationInfo/arrivalRateDistribution");
         NamedNodeMap arrivalRateDistributionAttrMap = arrivalDistributionXmlNode.getAttributes();
-        assertEquals("6624.00", arrivalRateDistributionAttrMap.getNamedItem("arg1").getNodeValue());
+        assertEquals("26784.00", arrivalRateDistributionAttrMap.getNamedItem("arg1").getNodeValue());
         assertNull(arrivalRateDistributionAttrMap.getNamedItem("arg2"));
         assertNull(arrivalRateDistributionAttrMap.getNamedItem("mean"));
         assertEquals(DistributionType.EXPONENTIAL.toString(),
@@ -745,19 +868,19 @@ class SimulationInfoServiceTest {
 
         Node timeTableNode = TestHelper.getProcessSimulationInfo(bpmnXmlString,
             "/definitions/process/extensionElements/processSimulationInfo/timetables/timetable[1]");
-        assertEquals("A_DEFAULT_TIMETABLE_ID", timeTableNode.getAttributes().getNamedItem("id").getNodeValue());
-        assertEquals("Arrival Timetable", timeTableNode.getAttributes().getNamedItem("name").getNodeValue());
+        assertEquals("A_CUSTOM_TIMETABLE_ID", timeTableNode.getAttributes().getNamedItem("id").getNodeValue());
+        assertEquals("Generic 24/7", timeTableNode.getAttributes().getNamedItem("name").getNodeValue());
         assertEquals("true", timeTableNode.getAttributes().getNamedItem("default").getNodeValue());
 
         Node timeTableRuleNode = TestHelper.getProcessSimulationInfo(bpmnXmlString,
             "/definitions/process/extensionElements/processSimulationInfo/timetables/timetable[1]/rules/rule[1]");
         assertNotNull(timeTableRuleNode.getAttributes().getNamedItem("id").getNodeValue());
         assertEquals("Default Timeslot", timeTableRuleNode.getAttributes().getNamedItem("name").getNodeValue());
-        assertEquals("SUNDAY", timeTableRuleNode.getAttributes().getNamedItem("fromWeekDay").getNodeValue());
-        assertEquals("SATURDAY", timeTableRuleNode.getAttributes().getNamedItem("toWeekDay").getNodeValue());
-        assertEquals("10:00:00.000+00:00",
+        assertEquals("MONDAY", timeTableRuleNode.getAttributes().getNamedItem("fromWeekDay").getNodeValue());
+        assertEquals("SUNDAY", timeTableRuleNode.getAttributes().getNamedItem("toWeekDay").getNodeValue());
+        assertEquals("00:00:00.000",
             timeTableRuleNode.getAttributes().getNamedItem("fromTime").getNodeValue());
-        assertEquals("15:00:00.000+00:00", timeTableRuleNode.getAttributes().getNamedItem("toTime").getNodeValue());
+        assertEquals("23:59:59.999", timeTableRuleNode.getAttributes().getNamedItem("toTime").getNodeValue());
 
     }
 
@@ -773,9 +896,9 @@ class SimulationInfoServiceTest {
             resourceNodeMap.put(resource.getAttributes().getNamedItem("name").getNodeValue(), resource);
         }
 
-        assertResources("Role_1", 5, "A_DEFAULT_TIMETABLE_ID", resourceNodeMap);
-        assertResources("Role_2", 10, "A_DEFAULT_TIMETABLE_ID", resourceNodeMap);
-        assertResources("Role_3", 15, "A_DEFAULT_TIMETABLE_ID", resourceNodeMap);
+        assertResources("Role_1", 5, "A_CUSTOM_TIMETABLE_ID", resourceNodeMap);
+        assertResources("Role_2", 10, "A_CUSTOM_TIMETABLE_ID", resourceNodeMap);
+        assertResources("Role_3", 15, "A_CUSTOM_TIMETABLE_ID", resourceNodeMap);
     }
 
     private void assertResources(String resourceName, int totalAmount, String timetableId,
@@ -801,19 +924,19 @@ class SimulationInfoServiceTest {
             sequenceFlowMap.put(seqFlow.getAttributes().getNamedItem("elementId").getNodeValue(), seqFlow);
         }
 
-        assertSequenceFlow("edge2", .2025, sequenceFlowMap);
-        assertSequenceFlow("edge3", .3016, sequenceFlowMap);
-        assertSequenceFlow("edge4", .4959, sequenceFlowMap);
+        assertSequenceFlow("edge2", "0.2025", sequenceFlowMap);
+        assertSequenceFlow("edge3", "0.3016", sequenceFlowMap);
+        assertSequenceFlow("edge4", "0.4959", sequenceFlowMap);
 
     }
 
-    private void assertSequenceFlow(final String elementId, double executionProbability,
+    private void assertSequenceFlow(final String elementId, String executionProbability,
                                     Map<String, Node> sequenceFlowMap) {
 
         Node seqFlowNode = sequenceFlowMap.get(elementId);
 
         assertEquals(elementId, seqFlowNode.getAttributes().getNamedItem("elementId").getNodeValue());
-        assertEquals(Double.toString(executionProbability),
+        assertEquals(executionProbability,
             seqFlowNode.getAttributes().getNamedItem("executionProbability").getNodeValue());
 
     }

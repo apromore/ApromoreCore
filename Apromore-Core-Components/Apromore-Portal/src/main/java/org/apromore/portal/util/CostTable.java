@@ -24,14 +24,22 @@ package org.apromore.portal.util;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.extern.jackson.Jacksonized;
 
+@Jacksonized
 @Builder
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CostTable {
     private final Double DEFAULT_COST = 1.0D;
+
+    @Getter
+    private final String perspective;
 
     @Getter
     private final String currency;

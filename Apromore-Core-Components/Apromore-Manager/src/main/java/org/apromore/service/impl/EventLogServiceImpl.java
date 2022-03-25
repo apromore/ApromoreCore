@@ -318,7 +318,8 @@ public class EventLogServiceImpl implements EventLogService {
 				publicModel, perspective);
 		deepCopyArtifacts(findLogById(sourceLogId), filteredLog,
 				Arrays.asList(UserMetadataTypeEnum.CSV_IMPORTER.getUserMetadataTypeId(),
-						UserMetadataTypeEnum.PERSPECTIVE_TAG.getUserMetadataTypeId()), username);
+						UserMetadataTypeEnum.PERSPECTIVE_TAG.getUserMetadataTypeId(),
+						UserMetadataTypeEnum.COST_TABLE.getUserMetadataTypeId()), username);
 		return filteredLog;
 	}
 
@@ -661,6 +662,35 @@ public class EventLogServiceImpl implements EventLogService {
 		} catch (JsonProcessingException e) {
 			throw new UserMetadataException("Could not serialize given perspective list: " + perspectives.toString(), e);
 		}
+	}
+
+	@Override
+	public Usermetadata saveCostTablesByLog(String costTables, Integer logId, String username) throws UserNotFoundException {
+
+		Set<Usermetadata> usermetadataSet = userMetadataService.getUserMetadataByLog(logId,
+				UserMetadataTypeEnum.COST_TABLE);
+		if (usermetadataSet.isEmpty()) {
+			return userMetadataService.saveUserMetadata("Cost tables", costTables,
+					UserMetadataTypeEnum.COST_TABLE, username, logId);
+		}
+		return userMetadataService.updateUserMetadata(usermetadataSet.iterator().next(), username, costTables);
+	}
+
+	@Override
+	public String getCostTablesByLog(Integer logId) {
+
+		String jsonString = "";
+
+		Set<Usermetadata> usermetadataSet = userMetadataService.getUserMetadataByLog(logId,
+				UserMetadataTypeEnum.COST_TABLE);
+
+		if (usermetadataSet.isEmpty()) {
+			LOGGER.info("Log (ID: {}) doesn't have associated cost table stored in DB.", logId);
+			return jsonString;
+		}
+		LOGGER.debug("Get cost table for log (ID: {}): {}", logId, jsonString);
+		return usermetadataSet.iterator().next().getContent();
+
 	}
 
 	@Override

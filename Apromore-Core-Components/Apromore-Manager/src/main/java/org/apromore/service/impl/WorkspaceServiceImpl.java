@@ -520,15 +520,6 @@ public class WorkspaceServiceImpl implements WorkspaceService {
       }
     }
 
-    // Deep copy old_log's artifacts to new log
-    eventLogService.deepCopyArtifacts(currentLog, newLog,
-            Arrays.asList(UserMetadataTypeEnum.CSV_IMPORTER.getUserMetadataTypeId(),
-                    UserMetadataTypeEnum.PERSPECTIVE_TAG.getUserMetadataTypeId(),
-                    UserMetadataTypeEnum.DASHBOARD.getUserMetadataTypeId(),
-                    UserMetadataTypeEnum.DASH_TEMPLATE.getUserMetadataTypeId(),
-                    UserMetadataTypeEnum.FILTER.getUserMetadataTypeId(),
-                    UserMetadataTypeEnum.FILTER_TEMPLATE.getUserMetadataTypeId()), userName);
-
     // Persist
     try {
       logRepo.save(newLog);
@@ -537,6 +528,16 @@ public class WorkspaceServiceImpl implements WorkspaceService {
       storageFactory.getStorageClient(config.getStoragePath())
                     .delete(logPrefix, currentFileFullName);
     }
+
+    // Deep copy old_log's artifacts to new log
+    eventLogService.deepCopyArtifacts(currentLog, newLog,
+            Arrays.asList(UserMetadataTypeEnum.CSV_IMPORTER.getUserMetadataTypeId(),
+                    UserMetadataTypeEnum.PERSPECTIVE_TAG.getUserMetadataTypeId(),
+                    UserMetadataTypeEnum.DASHBOARD.getUserMetadataTypeId(),
+                    UserMetadataTypeEnum.DASH_TEMPLATE.getUserMetadataTypeId(),
+                    UserMetadataTypeEnum.FILTER.getUserMetadataTypeId(),
+                    UserMetadataTypeEnum.FILTER_TEMPLATE.getUserMetadataTypeId(),
+                    UserMetadataTypeEnum.COST_TABLE.getUserMetadataTypeId()), userName);
 
     return newLog;
   }
