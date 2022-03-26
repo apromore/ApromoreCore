@@ -38,7 +38,7 @@ import org.apromore.service.search.SearchExpressionBuilder;
  *
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
-public class SearchExpressionBuilderUnitTest {
+class SearchExpressionBuilderUnitTest {
 
     private static final String SEARCH_EXPRESSION_SINGLE = " p.id in (select k.processId FROM Keywords k WHERE k.value like '%invoicing%' AND k.type = 'process')";
     private static final String SEARCH_EXPRESSION_OR = " (  p.id in (select k.processId FROM Keywords k WHERE k.value like '%yawl%' AND k.type = 'process') or  p.id in (select k.processId FROM Keywords k WHERE k.value like '%protos%' AND k.type = 'process') ) ";
@@ -51,7 +51,7 @@ public class SearchExpressionBuilderUnitTest {
     private String expression;
 
     @Test
-    public void buildExpressionWithEmptyNullString() throws Exception {
+    void buildExpressionWithEmptyNullString() throws Exception {
         expression = SearchExpressionBuilder.buildSearchConditions("", "p", "processId", "process");
         assertThat(expression, equalTo(""));
 
@@ -64,7 +64,7 @@ public class SearchExpressionBuilderUnitTest {
 
 
     @Test
-    public void buildExpressionWithRealData() throws Exception {
+    void buildExpressionWithRealData() throws Exception {
         expression = SearchExpressionBuilder.buildSearchConditions("invoicing", "p", "processId", "process");
         assertThat(expression, containsString("k.value like '%invoicing%'"));
         assertThat(expression, equalTo(SEARCH_EXPRESSION_SINGLE));

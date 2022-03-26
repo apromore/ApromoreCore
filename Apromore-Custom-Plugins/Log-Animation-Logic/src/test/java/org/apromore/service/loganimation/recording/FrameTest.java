@@ -33,7 +33,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 
-public class FrameTest extends TestDataSetup {
+class FrameTest extends TestDataSetup {
     protected Movie createAnimationMovie_OneTraceAndCompleteEvents_Graph() throws Exception {
         AnimationResult result = this.animate_OneTraceAndCompleteEvents_Graph();
         AnimationContext animationContext = new AnimationContext(result.getAnimationLogs(), 60, 600);
@@ -51,7 +51,7 @@ public class FrameTest extends TestDataSetup {
     }
     
     @Test
-    public void test_FrameData_OneTraceLog() throws Exception {
+    void test_FrameData_OneTraceLog() throws Exception {
         Movie animationMovie = createAnimationMovie_OneTraceAndCompleteEvents_Graph();
         
         Frame frame0 = animationMovie.get(0);
@@ -80,7 +80,7 @@ public class FrameTest extends TestDataSetup {
     }
     
     @Test
-    public void test_FrameJSON_OneTraceLog() throws Exception {
+    void test_FrameJSON_OneTraceLog() throws Exception {
         Movie animationMovie = createAnimationMovie_OneTraceAndCompleteEvents_Graph();
         
         JSONObject frame0 = animationMovie.get(0).getJSON();
@@ -101,7 +101,7 @@ public class FrameTest extends TestDataSetup {
     }
     
     @Test
-    public void test_FrameData_TwoLogs() throws Exception {
+    void test_FrameData_TwoLogs() throws Exception {
         Movie animationMovie = createAnimationMovie_TwoLogs();
         
         // This frame only has one token for the 2nd log
@@ -124,7 +124,7 @@ public class FrameTest extends TestDataSetup {
     }
     
     @Test
-    public void test_FrameJSON_TwoLogs() throws Exception {
+    void test_FrameJSON_TwoLogs() throws Exception {
         Movie animationMovie = createAnimationMovie_TwoLogs();
         
         JSONObject testFrame = animationMovie.get(19036).getJSON();

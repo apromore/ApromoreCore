@@ -29,10 +29,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-public class StringUtilTest {
+class StringUtilTest {
 
   @Test
-  public void testGetFileName_URL() {
+  void testGetFileName_URL() {
 
     String result = StringUtil.getFileName(
         "https://www.dropbox.com/s/02ee18ybdm8xhog/APurchasingExample.zip?dl=0",
@@ -41,7 +41,7 @@ public class StringUtilTest {
   }
 
   @Test
-  public void testGetFileName_URL_INVALID_CHARS() {
+  void testGetFileName_URL_INVALID_CHARS() {
 
     String result = StringUtil.getFileName(
         "https://www.dropbox.com/s/02ee18ybdm8xhog/APurchasingExample.zip?dl=0",
@@ -50,7 +50,7 @@ public class StringUtilTest {
   }
 
   @Test
-  public void testGetFileName_pathTraversal1() {
+  void testGetFileName_pathTraversal1() {
 
     String result = StringUtil.getFileName(
         "https://www.dropbox.com/s/02ee18ybdm8xhog/APurchasingExample.zip?dl=0",
@@ -59,7 +59,7 @@ public class StringUtilTest {
   }
 
   @Test
-  public void testGetFileName_URL_pathTraversal2() {
+  void testGetFileName_URL_pathTraversal2() {
 
     String result = StringUtil.getFileName(
         "https://www.dropbox.com/s/02ee18ybdm8xhog/APurchasingExample.zip?dl=0",
@@ -68,7 +68,7 @@ public class StringUtilTest {
   }
 
   @Test
-  public void testGetFileName_URL_pathTraversal3() {
+  void testGetFileName_URL_pathTraversal3() {
 
     String result = StringUtil.getFileName(
         "https://www.dropbox.com/s/02ee18ybdm8xhog/APurchasingExample.zip?dl=0",
@@ -77,7 +77,7 @@ public class StringUtilTest {
   }
 
   @Test
-  public void testGetFileName_URL_pathTraversal4() {
+  void testGetFileName_URL_pathTraversal4() {
 
     String result = StringUtil.getFileName(
         "https://www.dropbox.com/s/02ee18ybdm8xhog/APurchasingExample.zip?dl=0",
@@ -86,7 +86,7 @@ public class StringUtilTest {
   }
 
   @Test
-  public void testIsValidDropBoxURL() {
+  void testIsValidDropBoxURL() {
 
     boolean testCase1 = StringUtil.isValidDropBoxURL(
         "https://www.dropbox.com/s/xadcmvtji1ojvwo/PurchasingExample" + ".csv?dl=0");
@@ -102,7 +102,7 @@ public class StringUtilTest {
   }
 
   @Test
-  public void testIsValidGoogleDriveURL() {
+  void testIsValidGoogleDriveURL() {
 
     boolean testCase1 = StringUtil.isValidGoogleDriveURL(
         "https://drive.google.com/file/d/1hQaySFOh06x6oBxTSNZYf1pqOQtm8gik/view?usp=sharing");
@@ -117,7 +117,7 @@ public class StringUtilTest {
   }
 
   @Test
-  public void testIsValidOneDriveURL() {
+  void testIsValidOneDriveURL() {
 
     boolean testCase1 = StringUtil.isValidOneDriveURL(
         "https://onedrive.live.com/embed?cid=9AA1F51B7D69569C&resid=9AA1F51B7D69569C%21379&authkey=AA5cjmnDDs2_yOo");
@@ -134,7 +134,7 @@ public class StringUtilTest {
   @Test
   @Disabled
   // Wrong test
-  public void testValidateFileUrl_dropBox() {
+  void testValidateFileUrl_dropBox() {
 
     String validFileUrl = StringUtil
         .parseFileURL("https://www.dropbox.com/s/xadcmvtji1ojvwo/PurchasingExample" + ".csv?dl=0");
@@ -152,7 +152,7 @@ public class StringUtilTest {
   @Test
   @Disabled
   // Wrong test
-  public void testValidateFileUrl_googleDrive() {
+  void testValidateFileUrl_googleDrive() {
 
     String validFileUrl = StringUtil.parseFileURL(
         "https://drive.google" + ".com/file/d/1hQaySFOh06x6oBxTSNZYf1pqOQtm8gik/view?usp=sharing");
@@ -171,7 +171,7 @@ public class StringUtilTest {
   @Test
   @Disabled
   // Wrong test
-  public void testValidateFileUrl_oneDrive() {
+  void testValidateFileUrl_oneDrive() {
 
     String validFileUrl =
         StringUtil.parseFileURL("https://onedrive.live.com/embed?cid=9AA1F51B7D69569C&resid"

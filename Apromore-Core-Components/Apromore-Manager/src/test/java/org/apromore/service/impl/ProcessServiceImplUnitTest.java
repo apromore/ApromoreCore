@@ -99,7 +99,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author Bruce Nguyen
  */
-public class ProcessServiceImplUnitTest extends EasyMockSupport {
+class ProcessServiceImplUnitTest extends EasyMockSupport {
 
     private ProcessServiceImpl processService;
     private UserService usrSrv;
@@ -146,7 +146,7 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
     }
 
     @Test
-    public void testImportProcess_MainPath() throws Exception {
+    void testImportProcess_MainPath() throws Exception {
         // Test data setup
         Folder folder = createFolder();
         Group group = createGroup(123, Group.Type.GROUP);
@@ -216,7 +216,7 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
     }
 
     @Test
-    public void testImportProcess_FolderWithoutWriteAccess() throws Exception {
+    void testImportProcess_FolderWithoutWriteAccess() throws Exception {
         // Test data setup
         Folder homeFolder = createFolder();
         Folder folder = new Folder();
@@ -288,7 +288,7 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
     }
 
     @Test
-    public void testImportProcess_EmptyNativeContent() throws Exception {
+    void testImportProcess_EmptyNativeContent() throws Exception {
         // Test data setup
         Folder folder = createFolder();
         Group group = createGroup(123, Group.Type.GROUP);
@@ -320,7 +320,7 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
     }
 
     @Test
-    public void testImportProcess_MakeModelPublic() throws Exception {
+    void testImportProcess_MakeModelPublic() throws Exception {
         // Test data setup
         Folder folder = createFolder();
         Group group = createGroup(1, Group.Type.GROUP);
@@ -381,7 +381,7 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
 
         // VERIFY MOCK AND RESULT
         verifyAll();
-        // Verify that the public group has been added to the created process
+        // Verify that the group has been added to the created process
         boolean publicGroupAdded = false;
         for (GroupProcess gp : pmvResult.getProcessBranch().getProcess().getGroupProcesses()) {
             if (gp.getGroup() == publicGroup) {
@@ -394,7 +394,7 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
     }
 
     @Test
-    public void testImportProcess_NotFoundUsername() throws Exception {
+    void testImportProcess_NotFoundUsername() throws Exception {
         // Test data setup
         Folder folder = createFolder();
         Group group = createGroup(1, Group.Type.GROUP);
@@ -442,7 +442,7 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
     }
 
     @Test
-    public void testCreateProcessModelVersion_MainPath() throws Exception {
+    void testCreateProcessModelVersion_MainPath() throws Exception {
         // Test Data setup
         Folder folder = createFolder();
         Group group = createGroup(123, Group.Type.GROUP);
@@ -494,7 +494,7 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
     }
 
     @Test
-    public void testCreateProcessModelVersion_NoWriteAccess() throws Exception {
+    void testCreateProcessModelVersion_NoWriteAccess() throws Exception {
         // Test Data setup
         Folder folder = createFolder();
         Group group = createGroup(123, Group.Type.GROUP);
@@ -533,7 +533,7 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
     }
 
     @Test
-    public void testCreateProcessModelVersion_VersionConflict() throws Exception {
+    void testCreateProcessModelVersion_VersionConflict() throws Exception {
         // Test Data setup
         Folder folder = createFolder();
         Group group = createGroup(123, Group.Type.GROUP);
@@ -577,7 +577,7 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
     }
 
     @Test
-    public void testCreateProcessModelVersion_NotFoundExistingVersion() throws Exception {
+    void testCreateProcessModelVersion_NotFoundExistingVersion() throws Exception {
         // Test Data setup
         Folder folder = createFolder();
         Group group = createGroup(123, Group.Type.GROUP);
@@ -619,7 +619,7 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
     }
 
     @Test
-    public void testUpdateProcessModelVersion_withStorage() throws Exception {
+    void testUpdateProcessModelVersion_withStorage() throws Exception {
         // Test Data setup
         Folder folder = createFolder();
         Group group = createGroup(123, Group.Type.GROUP);
@@ -680,7 +680,7 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
     }
 
     @Test
-    public void testUpdateProcessModelVersion_withNativeDocument() throws Exception {
+    void testUpdateProcessModelVersion_withNativeDocument() throws Exception {
         // Test Data setup
         Folder folder = createFolder();
         Group group = createGroup(123, Group.Type.GROUP);
@@ -725,7 +725,7 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
     }
 
     @Test
-    public void testUpdateProcessModelVersion_MissStorage() throws Exception {
+    void testUpdateProcessModelVersion_MissStorage() throws Exception {
         // Test Data setup
         Folder folder = createFolder();
         Group group = createGroup(123, Group.Type.GROUP);
@@ -772,7 +772,7 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
 
 
     @Test
-    public void testUpdateProcessMetadata_CurrentPublic_TobeMadePublic() throws Exception {
+    void testUpdateProcessMetadata_CurrentPublic_TobeMadePublic() throws Exception {
         // Test Data setup
         Folder folder = createFolder();
         Group group = createGroup(1, Group.Type.GROUP);
@@ -844,7 +844,7 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
 
 
     @Test
-    public void testUpdateProcessMetadata_CurrentNonPublic_TobeMadePublic() throws Exception {
+    void testUpdateProcessMetadata_CurrentNonPublic_TobeMadePublic() throws Exception {
         // Test Data setup
         Folder folder = createFolder();
         Group group = createGroup(1, Group.Type.GROUP);
@@ -919,7 +919,7 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
 
 
     @Test
-    public void testUpdateProcessMetadata_CurrentPublic_TobeMadeNonPublic() throws Exception {
+    void testUpdateProcessMetadata_CurrentPublic_TobeMadeNonPublic() throws Exception {
         // Test Data setup
         Folder folder = createFolder();
         Group group = createGroup(1, Group.Type.GROUP);
@@ -993,7 +993,7 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
     }
 
     @Test
-    public void testExportProcess() throws Exception {
+    void testExportProcess() throws Exception {
         // Test Data setup
         Folder folder = createFolder();
         Group group = createGroup(123, Group.Type.GROUP);
@@ -1046,7 +1046,7 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
     }
 
     @Test
-    public void testGetBPMNRepresentation() throws Exception {
+    void testGetBPMNRepresentation() throws Exception {
         // Test Data setup
         Folder folder = createFolder();
         Group group = createGroup(123, Group.Type.GROUP);
@@ -1096,7 +1096,7 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
 
 
     @Test
-    public void testDeleteProcessModel_BranchHasMoreThanOnePMV() throws Exception {
+    void testDeleteProcessModel_BranchHasMoreThanOnePMV() throws Exception {
         // Test Data setup
         Folder folder = createFolder();
         Group group = createGroup(123, Group.Type.GROUP);
@@ -1153,7 +1153,7 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
 
 
     @Test
-    public void testDeleteProcessModel_BranchHasOnlyOnePMV() throws Exception {
+    void testDeleteProcessModel_BranchHasOnlyOnePMV() throws Exception {
         // Test Data setup
         Folder folder = createFolder();
         Group group = createGroup(123, Group.Type.GROUP);
@@ -1203,12 +1203,11 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
         verifyAll();
     }
 
-
     /**
      * Test the {@link ProcessServiceImpl#sanitizeBPMN} method.
      */
     @Test
-    public void testSanitizeBPMN() throws Exception {
+    void testSanitizeBPMN() throws Exception {
         for (String[] s : new String[][]{
                 // unsanitized input file expected sanitized output issue description
                 {"Cyclic.bpmn", "Cyclic.bpmn", "Innocuous files should be unchanged"},

@@ -42,7 +42,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class XLSXLogImporterCSVImplUnitTest {
+class XLSXLogImporterCSVImplUnitTest {
 
     private static final Logger LOGGER =
         LoggerFactory.getLogger(XLSXLogImporterCSVImplUnitTest.class);
@@ -72,7 +72,7 @@ public class XLSXLogImporterCSVImplUnitTest {
      * <code>test1-valid.xlsx</code>.
      */
     @Test
-    public void testSampleCSV_undersample() throws Exception {
+    void testSampleCSV_undersample() throws Exception {
 
         LOGGER.info("\n************************************\ntest sample generator - undersample");
 
@@ -94,7 +94,7 @@ public class XLSXLogImporterCSVImplUnitTest {
      * <code>test1-valid.xlsx</code>.
      */
     @Test
-    public void testSampleCSV_oversample() throws Exception {
+    void testSampleCSV_oversample() throws Exception {
 
         LOGGER.info("\n************************************\ntest sample generator - oversample");
 
@@ -116,7 +116,7 @@ public class XLSXLogImporterCSVImplUnitTest {
      * Test {@link LogImporterXLSXImpl} against an valid xlsx log <code>test1-valid.xlsx</code>.
      */
     @Test
-    public void test1_valid() throws Exception {
+    void test1_valid() throws Exception {
 
         LOGGER.info("\n************************************\ntest1-valid.xlsx");
 
@@ -157,7 +157,7 @@ public class XLSXLogImporterCSVImplUnitTest {
      * upload limiting is in effect.
      */
     @Test
-    public void testImportLog_maxEventCount() throws Exception {
+    void testImportLog_maxEventCount() throws Exception {
 
         // Test file data
         String testFile = "/test1-valid.xlsx";
@@ -204,7 +204,7 @@ public class XLSXLogImporterCSVImplUnitTest {
      * <code>test2-missing-columns.xlsx</code>.
      */
     @Test
-    public void testPrepareXesModel_test2_missing_columns() throws Exception {
+    void testPrepareXesModel_test2_missing_columns() throws Exception {
 
         LOGGER.info("\n************************************\ntest2 - Missing columns test");
 
@@ -244,7 +244,7 @@ public class XLSXLogImporterCSVImplUnitTest {
      * <code>test3-invalid-end-timestamp.xlsx</code>.
      */
     @Test
-    public void testPrepareXesModel_test3_invalid_end_timestamp() throws Exception {
+    void testPrepareXesModel_test3_invalid_end_timestamp() throws Exception {
 
         LOGGER.info("\n************************************\ntest3 - Invalid end timestamp");
 
@@ -285,7 +285,7 @@ public class XLSXLogImporterCSVImplUnitTest {
      * <code>test4-invalid-start-timestamp.xlsx</code>.
      */
     @Test
-    public void testPrepareXesModel_test4_invalid_start_timestamp() throws Exception {
+    void testPrepareXesModel_test4_invalid_start_timestamp() throws Exception {
 
         LOGGER.info("\n************************************\ntest4 - Invalid start timestamp");
 
@@ -324,7 +324,7 @@ public class XLSXLogImporterCSVImplUnitTest {
      * Test {@link LogImporterXLSXImpl} against an invalid xlsx log <code>test5-expected.xlsx</code>.
      */
     @Test
-    public void testPrepareXesModel_test5_empty_caseID() throws Exception {
+    void testPrepareXesModel_test5_empty_caseID() throws Exception {
 
         LOGGER.info("\n************************************\ntest5 - Empty caseID");
 
@@ -365,7 +365,7 @@ public class XLSXLogImporterCSVImplUnitTest {
      * <code>test7-record-invalid.xlsx</code>.
      */
     @Test
-    public void testPrepareXesModel_test6_record_invalid() throws Exception {
+    void testPrepareXesModel_test6_record_invalid() throws Exception {
 
         LOGGER.info("\n************************************\ntest6 - Record invalid");
 
@@ -410,7 +410,7 @@ public class XLSXLogImporterCSVImplUnitTest {
      * <code>test8-all-invalid.xlsx</code>.
      */
     @Test
-    public void testPrepareXesModel_test7_all_invalid() throws Exception {
+    void testPrepareXesModel_test7_all_invalid() throws Exception {
 
         LOGGER.info("\n************************************\ntest7 - All invalid");
         String testFile = "/test8-all-invalid.xlsx";
@@ -437,7 +437,7 @@ public class XLSXLogImporterCSVImplUnitTest {
      * <code>test9-differentiate-dates.xlsx</code>.
      */
     @Test
-    public void testPrepareXesModel_test8_differentiate_dates() throws Exception {
+    void testPrepareXesModel_test8_differentiate_dates() throws Exception {
 
         LOGGER.info("\n************************************\ntest8 - Differentiate dates");
 
@@ -483,7 +483,7 @@ public class XLSXLogImporterCSVImplUnitTest {
      * <code>test10-eventAttribute.xlsx</code>.
      */
     @Test
-    public void testPrepareXesModel_test9_detect_name() throws Exception {
+    void testPrepareXesModel_test9_detect_name() throws Exception {
 
         LOGGER.info("\n************************************\ntest9 - Event Attribute");
 
@@ -521,7 +521,7 @@ public class XLSXLogImporterCSVImplUnitTest {
      * Test {@link LogImporterXLSXImpl} against an invalid xlsx log <code>test11-encoding.xlsx</code>.
      */
     @Test
-    public void testPrepareXesModel_test10_encoding() throws Exception {
+    void testPrepareXesModel_test10_encoding() throws Exception {
 
         LOGGER.info("\n************************************\ntest10 - Encoding");
 

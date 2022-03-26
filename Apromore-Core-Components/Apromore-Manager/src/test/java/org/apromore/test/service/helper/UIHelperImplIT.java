@@ -65,21 +65,16 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @Rollback
 @TestExecutionListeners(value = DependencyInjectionTestExecutionListener.class)
-public class UIHelperImplIT {
+class UIHelperImplIT {
 
     @Inject
     private UserInterfaceHelper uiSrv;
     @Inject
     private ProcessService pSrv;
 
-    @BeforeEach
-    public void setUp() {
-    }
-
-
     @Test
     @Rollback
-    public void TestUIHelper() throws Exception {
+    void TestUIHelper() throws Exception {
         createProcessModel("testUI");
 
         SummariesType summariesType = uiSrv.buildProcessSummaryList(0, "testUserRowGuid", "", "", "");

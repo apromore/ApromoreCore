@@ -44,7 +44,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 // This test is temporarily disabled to investigate the issue of timezone
 @Disabled
-class DurationCalculationTestWithSpecialTimezones {
+class DurationCalculationTestWithSpecialTimezonesUnitTest {
 
     CalendarModelBuilder calendarModelBuilder;
 

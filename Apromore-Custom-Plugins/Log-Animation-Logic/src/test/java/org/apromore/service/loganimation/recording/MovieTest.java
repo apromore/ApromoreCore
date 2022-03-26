@@ -31,10 +31,10 @@ import org.json.JSONArray;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class MovieTest extends TestDataSetup {
+class MovieTest extends TestDataSetup {
     
     @Test
-    public void test_getChunkJSON_OneLog() throws Exception {
+    void test_getChunkJSON_OneLog() throws Exception {
         AnimationResult result = this.animate_OneTraceAndCompleteEvents_BPMNDiagram();
         AnimationContext animationContext = new AnimationContext(result.getAnimationLogs(), 60, 600);
         ModelMapping modelMapping = new OldBpmnModelMapping(result.getModel());
@@ -53,7 +53,7 @@ public class MovieTest extends TestDataSetup {
     }
     
     @Test
-    public void test_getChunkJSON_TwoLogs() throws Exception {
+    void test_getChunkJSON_TwoLogs() throws Exception {
         AnimationResult result = this.animate_TwoLogs_With_BPMNDiagram();
         AnimationContext animationContext = new AnimationContext(result.getAnimationLogs(), 60, 600);
         ModelMapping modelMapping = new OldBpmnModelMapping(result.getModel());

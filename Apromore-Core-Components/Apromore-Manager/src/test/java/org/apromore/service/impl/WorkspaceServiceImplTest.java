@@ -59,7 +59,7 @@ import org.junit.jupiter.api.Assertions;
  * @author Bruce Nguyen
  *
  */
-public class WorkspaceServiceImplTest extends AbstractTest {
+class WorkspaceServiceImplTest extends AbstractTest {
     private WorkspaceService workspaceService;
     private WorkspaceRepository workspaceRepo;
     private FolderRepository folderRepo;
@@ -132,7 +132,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
 
     @Test
     @Disabled
-    public void testCopyLog() throws Exception {
+    void testCopyLog() throws Exception {
         // Set up test data
         Group group = createGroup(123, Group.Type.GROUP);
         Role role = createRole(createSet(createPermission()));
@@ -170,7 +170,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
     }
     
     @Test
-    public void testMoveLog() throws Exception {
+    void testMoveLog() throws Exception {
      // Set up test data
         Group group = createGroup(123, Group.Type.GROUP);
         Role role = createRole(createSet(createPermission()));
@@ -200,7 +200,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
     
     
     @Test
-    public void testCopyProcessVersions() throws Exception {
+    void testCopyProcessVersions() throws Exception {
         // Set up test data
         Group group = createGroup(123, Group.Type.GROUP);
         Role role = createRole(createSet(createPermission()));
@@ -262,7 +262,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
     }
     
     @Test
-    public void testCopyProcess() throws Exception {
+    void testCopyProcess() throws Exception {
         // Set up test data
         Group group = createGroup(123, Group.Type.GROUP);
         Role role = createRole(createSet(createPermission()));
@@ -319,7 +319,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
     }
     
     @Test
-    public void testMoveProcess() throws Exception {
+    void testMoveProcess() throws Exception {
         Group group = createGroup(123, Group.Type.GROUP);
         Role role = createRole(createSet(createPermission()));
         User user = createUser("userName1", group, createSet(group), createSet(role));
@@ -350,7 +350,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
     
     @Test
     @Disabled
-    public void testMoveFolder() throws Exception {
+    void testMoveFolder() throws Exception {
         Group group = createGroup(123, Group.Type.GROUP);
         Role role = createRole(createSet(createPermission()));
         User user = createUser("userName1", group, createSet(group), createSet(role));
@@ -378,7 +378,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
     }
 
     @Test
-    public void getSingleOwnerFolderByUser() {
+    void getSingleOwnerFolderByUser() {
         Group group = createGroup(1, Group.Type.USER);
         Role role = createRole(createSet(createPermission()));
         User user = createUser("userName1", group, createSet(group), createSet(role));
@@ -412,7 +412,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
     }
 
     @Test
-    public void getSingleOwnerFolderByUserReturnEmptyList() {
+    void getSingleOwnerFolderByUserReturnEmptyList() {
         Group group = createGroup(1, Group.Type.USER);
         Role role = createRole(createSet(createPermission()));
         User user = createUser("userName1", group, createSet(group), createSet(role));
@@ -446,7 +446,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
     }
 
     @Test
-    public void getSingleOwnerLogByUser() {
+    void getSingleOwnerLogByUser() {
 
         Group group = createGroup(1, Group.Type.USER);
         Role role = createRole(createSet(createPermission()));
@@ -479,7 +479,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
     }
 
     @Test
-    public void getSingleOwnerLogByUserReturnEmptyList() {
+    void getSingleOwnerLogByUserReturnEmptyList() {
 
         Group group = createGroup(1, Group.Type.USER);
         Role role = createRole(createSet(createPermission()));
@@ -513,7 +513,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
     }
 
     @Test
-    public void getSingleOwnerProcessByUser() {
+    void getSingleOwnerProcessByUser() {
 
         Group group = createGroup(1, Group.Type.USER);
         Role role = createRole(createSet(createPermission()));
@@ -549,7 +549,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
     }
 
     @Test
-    public void getSingleOwnerProcessByUserReturnEmptyList() {
+    void getSingleOwnerProcessByUserReturnEmptyList() {
 
         Group group = createGroup(1, Group.Type.USER);
         Role role = createRole(createSet(createPermission()));
@@ -586,7 +586,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
     }
 
     @Test
-    public void canDeleteOwnerlessFolderReturnTrue() {
+    void canDeleteOwnerlessFolderReturnTrue() {
 
         Group group = createGroup(1, Group.Type.USER);
         Role role = createRole(createSet(createPermission()));
@@ -609,7 +609,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
     }
 
     @Test
-    public void canDeleteOwnerlessFolderReturnFalseWithLog() {
+    void canDeleteOwnerlessFolderReturnFalseWithLog() {
 
         Group group = createGroup(1, Group.Type.USER);
         Role role = createRole(createSet(createPermission()));
@@ -655,7 +655,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
     }
 
     @Test
-    public void canDeleteOwnerlessFolderReturnFalseWithProcess() {
+    void canDeleteOwnerlessFolderReturnFalseWithProcess() {
 
         Group group = createGroup(1, Group.Type.USER);
         Role role = createRole(createSet(createPermission()));
@@ -702,7 +702,7 @@ public class WorkspaceServiceImplTest extends AbstractTest {
     }
 
     @Test
-    public void canDeleteOwnerlessFolderReturnFalseWithLogAndProcess() {
+    void canDeleteOwnerlessFolderReturnFalseWithLogAndProcess() {
 
         Group group = createGroup(1, Group.Type.USER);
         Role role = createRole(createSet(createPermission()));

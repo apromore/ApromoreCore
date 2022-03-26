@@ -53,30 +53,28 @@ package de.hpi.bpmn2_0.transformation;
  * DEALINGS IN THE SOFTWARE.
  **/
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.logging.Logger;
-import javax.xml.bind.JAXBException;
-import org.xml.sax.SAXException;
-
-import org.json.JSONException;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-
 import static com.processconfiguration.ConfigurationAlgorithmTest.testsDirectory;
 import static com.processconfiguration.DefinitionsIDResolverTest.assertValidBPMN;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.hpi.bpmn2_0.exceptions.BpmnConverterException;
 import de.hpi.bpmn2_0.factory.AbstractBpmnFactory;
 import de.hpi.bpmn2_0.model.Definitions;
 import de.hpi.bpmn2_0.model.FlowNode;
 import de.hpi.bpmn2_0.model.Process;
 import de.hpi.bpmn2_0.model.activity.Task;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.logging.Logger;
+import javax.xml.bind.JAXBException;
+import org.json.JSONException;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.oryxeditor.server.diagram.basic.BasicDiagram;
 import org.oryxeditor.server.diagram.basic.BasicDiagramBuilder;
+import org.xml.sax.SAXException;
 
 /**
  * Test suite for {@link Diagram2BpmnConverter}.
@@ -84,7 +82,7 @@ import org.oryxeditor.server.diagram.basic.BasicDiagramBuilder;
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  * @see de.hpi.bpmn2_0.BPMNSerializationTest
  */
-public class Diagram2BpmnConverterTest {
+class Diagram2BpmnConverterTest {
 
     /** Logger.  Named after the class. */
     final static private Logger logger = Logger.getLogger(Diagram2BpmnConverterTest.class.getCanonicalName());
@@ -93,7 +91,8 @@ public class Diagram2BpmnConverterTest {
      * Test the {@link Diagram2BpmnConverter#getDefinitionsFromDiagram} method.
      */
     @Disabled
-    @Test public void testGetDefinitionsFromDiagram1() throws BpmnConverterException, IOException, JAXBException, JSONException, SAXException {
+    @Test
+    void testGetDefinitionsFromDiagram1() throws BpmnConverterException, IOException, JAXBException, JSONException, SAXException {
 
         // Read the test JSON
         BufferedReader br = new BufferedReader(new FileReader(new File(new File(testsDirectory, "data"), "GetDiagramFromBpmn20_1-expected.json")));

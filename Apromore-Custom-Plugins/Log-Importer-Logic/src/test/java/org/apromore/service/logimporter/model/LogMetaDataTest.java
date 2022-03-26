@@ -33,13 +33,13 @@ import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.extension.std.XOrganizationalExtension;
 import org.junit.jupiter.api.Test;
 
-public class LogMetaDataTest {
+class LogMetaDataTest {
 
     private final String perspective1 = "Perspective_1";
     private final String perspective2 = "Perspective_2";
 
     @Test
-    public void testGetPerspectives() throws InvalidLogMetadataException {
+    void testGetPerspectives() throws InvalidLogMetadataException {
 
         // Given
         LogMetaData logMetaData = createTestLogMetaData();
@@ -61,7 +61,7 @@ public class LogMetaDataTest {
     }
 
     @Test
-    public void testGetPerspectives_NoPerspectivePos() throws InvalidLogMetadataException {
+    void testGetPerspectives_NoPerspectivePos() throws InvalidLogMetadataException {
 
         // Given
         LogMetaData logMetaData = createTestLogMetaData();
@@ -80,7 +80,7 @@ public class LogMetaDataTest {
     }
 
     @Test
-    public void testGetPerspectives_NoResourcePos() throws InvalidLogMetadataException {
+    void testGetPerspectives_NoResourcePos() throws InvalidLogMetadataException {
 
         // Given
         LogMetaData logMetaData = createTestLogMetaData();
@@ -100,7 +100,7 @@ public class LogMetaDataTest {
     }
 
     @Test
-    public void testGetPerspectives_eventAttributesPosNotMatchPerspectivePos() throws InvalidLogMetadataException {
+    void testGetPerspectives_eventAttributesPosNotMatchPerspectivePos() throws InvalidLogMetadataException {
 
         // Given
         LogMetaData logMetaData = createTestLogMetaData();
@@ -114,7 +114,7 @@ public class LogMetaDataTest {
     }
 
     @Test
-    public void testGetPerspectives_missingActivityPos() throws InvalidLogMetadataException {
+    void testGetPerspectives_missingActivityPos() throws InvalidLogMetadataException {
 
         // Given
         LogMetaData logMetaData = createTestLogMetaData();

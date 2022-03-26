@@ -68,7 +68,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @Rollback
 @TestExecutionListeners(value = DependencyInjectionTestExecutionListener.class)
-public class UpdateProcessServiceImplIT {
+class UpdateProcessServiceImplIT {
 
     @Inject
     private ProcessService pSrv;
@@ -81,7 +81,7 @@ public class UpdateProcessServiceImplIT {
     @Test
     @Rollback(true)
     @Disabled
-    public void testImportUpdateThenDeleteModel() throws Exception {
+    void testImportUpdateThenDeleteModel() throws Exception {
         String natType = "EPML 2.0";
         String name = "AudioTest2";
         String branch = "MAIN";

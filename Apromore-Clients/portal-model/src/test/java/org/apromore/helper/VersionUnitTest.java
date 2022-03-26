@@ -26,6 +26,7 @@ package org.apromore.helper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.apromore.portal.helper.Version;
@@ -83,27 +84,27 @@ class VersionUnitTest {
     void testVersionCompareToA() {
         Version versionA = new Version(1,0);
         Version versionB = new Version(1,0);
-        assertTrue(versionA.compareTo(versionB) == 0, "Numbers don't match");
+        assertEquals(versionA, versionB, "Numbers don't match");
     }
 
     @Test
     void testVersionCompareToB() {
         Version versionA = new Version(1,0,3,"2");
         Version versionB = new Version(1,0,3,"2");
-        assertTrue(versionA.compareTo(versionB) == 0, "Numbers don't match");
+        assertEquals(versionA, versionB, "Numbers don't match");
     }
 
     @Test
     void testVersionCompareToC() {
         Version versionA = new Version("23.2.1");
         Version versionB = new Version("23.2.1");
-        assertTrue(versionA.compareTo(versionB) == 0, "Numbers don't match");
+        assertEquals(versionA, versionB, "Numbers don't match");
     }
 
     @Test
     void testVersionCompareToD() {
         Version versionA = new Version(2,3,4);
         Version versionB = new Version(1,2,3);
-        assertFalse(versionA.compareTo(versionB) == 0, "Numbers don't match");
+        assertNotEquals(versionA, versionB, "Numbers don't match");
     }
 }

@@ -1,7 +1,7 @@
 /*-
  * #%L
  * This file is part of "Apromore Core".
- * 
+ *
  * Copyright (C) 2015 - 2017 Queensland University of Technology.
  * %%
  * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
@@ -10,12 +10,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -26,24 +26,24 @@ package com.processconfiguration;
 
 /**
  * Copyright (c) 2006
- *
+ * <p>
  * Philipp Berger, Martin Czuchra, Gero Decker, Ole Eckermann, Lutz Gericke,
  * Alexander Hold, Alexander Koglin, Oliver Kopp, Stefan Krumnow,
  * Matthias Kunze, Philipp Maschke, Falko Menge, Christoph Neijenhuis,
  * Hagen Overdick, Zhen Peng, Nicolas Peters, Kerstin Pfitzner, Daniel Polak,
  * Steffen Ryll, Kai Schlichting, Jan-Felix Schwarz, Daniel Taschik,
  * Willi Tscheschner, Björn Wagner, Sven Wagner-Boysen, Matthias Weidlich
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
  * the rights to use, copy, modify, merge, publish, distribute, sublicense,
  * and/or sell copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -59,10 +59,14 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.logging.Logger;
+
 import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
+
 import javax.xml.bind.MarshalException;
 import javax.xml.bind.Marshaller;
+
 import static javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT;
+
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -79,6 +83,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.Test;
 
 import de.hpi.bpmn2_0.model.Definitions;
@@ -126,8 +131,8 @@ public class DefinitionsIDResolverTest {
     public DefinitionsIDResolverTest() throws JAXBException {
 
         this.context = JAXBContext.newInstance(Definitions.class,
-                                               ConfigurationAnnotationAssociation.class,
-                                               ConfigurationAnnotationShape.class);
+            ConfigurationAnnotationAssociation.class,
+            ConfigurationAnnotationShape.class);
     }
 
     //
@@ -141,7 +146,8 @@ public class DefinitionsIDResolverTest {
      * @throws JAXBException if the test document can't be parsed
      * @throws SAXException if the schema can't be parsed
      */
-    @Test public final void test1() throws IOException, JAXBException, SAXException {
+    @Test
+    final void test1() throws IOException, JAXBException, SAXException {
 
         // Obtain the test document
         Unmarshaller unmarshaller = context.createUnmarshaller();
@@ -189,32 +195,35 @@ public class DefinitionsIDResolverTest {
         throws AssertionError, IOException, JAXBException, SAXException {
 
         JAXBContext jaxb = JAXBContext.newInstance(Definitions.class,
-                                                   ConfigurationAnnotationAssociation.class,
-                                                   ConfigurationAnnotationShape.class);
+            ConfigurationAnnotationAssociation.class,
+            ConfigurationAnnotationShape.class);
 
         // Marshal once without validation so that there's a complete (possibly invalid) file written out
         Marshaller marshaller = jaxb.createMarshaller();
         marshaller.setProperty(JAXB_FORMATTED_OUTPUT, true);
-        File f=new File("target");
+        File f = new File("target");
         f.mkdirs();
-        
-        marshaller.marshal(definitions, new FileWriter(new File(new File("target"), filename)));  // TODO: figure out why marshalling definitions twice fails
+
+        marshaller.marshal(definitions, new FileWriter(
+            new File(new File("target"), filename)));  // TODO: figure out why marshalling definitions twice fails
 
         // Marshal the second time to confirm schema-validity
         ValidationEventCollector vec = new ValidationEventCollector();
 
         OutputStream nullOutputStream = new OutputStream() {
-            @Override public void write(int b) throws IOException {}
+            @Override
+            public void write(int b) throws IOException {
+            }
         };
 
         marshaller.setEventHandler(vec);
         marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", new BPMNPrefixMapper());
         marshaller.setSchema(SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI)
-                                           .newSchema(new File("src/test/xsd/BPMN20.xsd")));
+            .newSchema(new File("src/test/xsd/BPMN20.xsd")));
         try {
             marshaller.marshal(definitions, nullOutputStream);  // discard the result
         } catch (MarshalException e) {
-             assertTrue(vec.hasEvents(), "XML serialization failed, but no diagnostic message available");
+            assertTrue(vec.hasEvents(), "XML serialization failed, but no diagnostic message available");
         }
 
         assertFalse(vec.hasEvents(), formatValidationEvents(vec));
@@ -232,11 +241,11 @@ public class DefinitionsIDResolverTest {
 
         for (ValidationEvent event : Arrays.asList(vec.getEvents())) {
             builder.append("\nLine ")
-                   .append(event.getLocator().getLineNumber())
-                   .append(", column ")
-                   .append(event.getLocator().getColumnNumber())
-                   .append(": ")
-                   .append(event.getMessage());
+                .append(event.getLocator().getLineNumber())
+                .append(", column ")
+                .append(event.getLocator().getColumnNumber())
+                .append(": ")
+                .append(event.getMessage());
         }
 
         return builder.toString();

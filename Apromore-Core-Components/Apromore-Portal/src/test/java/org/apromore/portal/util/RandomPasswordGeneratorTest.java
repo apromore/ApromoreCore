@@ -34,10 +34,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 /**
  * Tests the Random Password Generator.
  */
-public class RandomPasswordGeneratorTest {
+class RandomPasswordGeneratorTest {
 
     @Test
-    public void testMinGreaterThanMax() {
+    void testMinGreaterThanMax() {
         int min = 3;
         int max = 2;
 
@@ -46,7 +46,7 @@ public class RandomPasswordGeneratorTest {
     }
 
     @Test
-    public void testMaxLessThanTotal() {
+    void testMaxLessThanTotal() {
         int max = 2;
         int caps = 2;
         int digits = 2;
@@ -57,7 +57,7 @@ public class RandomPasswordGeneratorTest {
     }
 
     @Test
-    public void testPasswordBetweenMinAndMax() {
+    void testPasswordBetweenMinAndMax() {
         int min = 3;
         int max = 8;
         char[] testPassword = RandomPasswordGenerator.generatePassword(min, max, 0, 0, 0);

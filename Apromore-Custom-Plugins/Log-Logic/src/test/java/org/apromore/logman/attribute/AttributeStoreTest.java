@@ -45,8 +45,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class AttributeStoreTest {
-	public static long datetime1 = DateTime.now().getMillis();
+class AttributeStoreTest {
+	static long datetime1 = DateTime.now().getMillis();
 	
 	private AttributeStore createStoreFromEmptyLog() {
 		XFactory factory = new XFactoryNaiveImpl();
@@ -127,7 +127,7 @@ public class AttributeStoreTest {
 	}
 	
 	@Test
-	public void testGetAttribute() {
+	void testGetAttribute() {
 		AttributeStore store1 = this.createStoreFromEmptyLog();
 		assertEquals(null, store1.getAttribute(0));
 		
@@ -142,7 +142,7 @@ public class AttributeStoreTest {
 	}
 
 	@Test
-	public void testGetAttributeIndexes() {
+	void testGetAttributeIndexes() {
 		AttributeStore store1 = this.createStoreFromEmptyLog();
 		assertArrayEquals(new int[] {}, store1.getAttributeIndexes());
 		
@@ -157,7 +157,7 @@ public class AttributeStoreTest {
 	}
 
 	@Test
-	public void testGetAttributeWithKeyAndLevel() {
+	void testGetAttributeWithKeyAndLevel() {
 		AttributeStore store1 = this.createStoreFromEmptyLog();
 		assertEquals(null, store1.getAttribute("literal1", AttributeLevel.LOG));
 		
@@ -171,7 +171,7 @@ public class AttributeStoreTest {
 	}
 
 	@Test
-	public void testGetAttributeWithXAttribute() {
+	void testGetAttributeWithXAttribute() {
 		XFactory factory = new XFactoryNaiveImpl();
 		XEvent event = factory.createEvent();
 		event.getAttributes().put("literal1", factory.createAttributeLiteral("literal1", "literalvalue1", null));
@@ -182,7 +182,7 @@ public class AttributeStoreTest {
 	}
 
 	@Test
-	public void testGetAttributeIndex() {
+	void testGetAttributeIndex() {
 		AttributeStore store1 = this.createStoreFromLogOneTraceOneEventOneAttribute();
 		
 		AbstractAttribute att = store1.getAttribute("literal1", AttributeLevel.EVENT);
@@ -193,7 +193,7 @@ public class AttributeStoreTest {
 	}
 
 	@Test
-	public void testGetAttributeIndexWithKeyLevel() {
+	void testGetAttributeIndexWithKeyLevel() {
 		AttributeStore store1 = this.createStoreFromLogOneTraceOneEventOneAttribute();
 		
 		assertEquals(0, store1.getAttributeIndex("literal1", AttributeLevel.EVENT));
@@ -207,7 +207,7 @@ public class AttributeStoreTest {
 	}
 
 	@Test
-	public void testGetAttributeIndexWithXAttribute() {
+	void testGetAttributeIndexWithXAttribute() {
 		XFactory factory = new XFactoryNaiveImpl();
 		XEvent event = factory.createEvent();
 		event.getAttributes().put("literal1", factory.createAttributeLiteral("literal1", "literalvalue1", null));
@@ -217,7 +217,7 @@ public class AttributeStoreTest {
 	}
 
 	@Test
-	public void testGetAttributes() {
+	void testGetAttributes() {
 		AttributeStore store1 = this.createStoreFromEmptyLog();
 		assertEquals(Lists.immutable.empty(), store1.getLogAttributes());
 		assertEquals(Lists.immutable.empty(), store1.getTraceAttributes());
@@ -276,7 +276,7 @@ public class AttributeStoreTest {
 	}
 	
 	@Test
-	public void testGetAttributesWithValue() {
+	void testGetAttributesWithValue() {
 		AttributeStore store1 = this.createStoreFromLogWithTwoTracesTwoEventsFullSampleAttributes();
 		
 		ImmutableList<AbstractAttribute> literalAtts = store1.getLiteralAttributesWithValues(new String[]{"noexist"});
@@ -307,7 +307,7 @@ public class AttributeStoreTest {
 
 
 	@Test
-	public void testGetStandardAttributes() {
+	void testGetStandardAttributes() {
 		AttributeStore store1 = this.createStoreFromEmptyLog();
 		assertEquals(null, store1.getStandardEventConceptName());
 		assertEquals(null, store1.getStandardEventGroup());
@@ -370,7 +370,7 @@ public class AttributeStoreTest {
 	}
 
 	@Test
-	public void testGetPerspectiveEventAttributes() {
+	void testGetPerspectiveEventAttributes() {
 		// Empty log
 		AttributeStore store1 = this.createStoreFromEmptyLog();
 		assertEquals(0, store1.getPerspectiveEventAttributes(100, Arrays.asList(new String[] {"concept:name"})).size());

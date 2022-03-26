@@ -36,7 +36,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 @Disabled
-public class DebugUnitTest {
+class DebugUnitTest {
     /**
      * Expected headers for <code>test1-valid.csv</code>.
      */
@@ -58,7 +58,7 @@ public class DebugUnitTest {
 
     @Test
     @Disabled
-    public void test_debug() throws Exception {
+    void test_debug() throws Exception {
 
         System.out.println("\n************************************\ntest");
 

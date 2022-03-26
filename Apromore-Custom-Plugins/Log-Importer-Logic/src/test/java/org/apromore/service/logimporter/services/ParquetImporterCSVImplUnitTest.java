@@ -41,7 +41,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ParquetImporterCSVImplUnitTest {
+class ParquetImporterCSVImplUnitTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ParquetImporterCSVImplUnitTest.class);
     /**
@@ -67,7 +67,7 @@ public class ParquetImporterCSVImplUnitTest {
      * Test {@link ParquetImporterCSVImpl} against an valid csv log <code>test1-valid.csv</code>.
      */
     @Test
-    public void testPrepareXesModel_test1_valid() throws Exception {
+    void testPrepareXesModel_test1_valid() throws Exception {
 
         LOGGER.info("\n************************************\ntest1 - Valid csv test ");
 
@@ -115,7 +115,7 @@ public class ParquetImporterCSVImplUnitTest {
      * Test {@link ParquetImporterCSVImpl} against an invalid CSV log <code>test2-missing-columns.csv</code>.
      */
     @Test
-    public void test2_missing_columns() throws Exception {
+    void test2_missing_columns() throws Exception {
 
         LOGGER.info("\n************************************\ntest2 - Missing columns test");
         //CSV file input
@@ -162,7 +162,7 @@ public class ParquetImporterCSVImplUnitTest {
      * Test {@link ParquetImporterCSVImpl} against an invalid CSV log <code>test3-invalid-end-timestamp.csv</code>.
      */
     @Test
-    public void test3_invalid_end_timestamp() throws Exception {
+    void test3_invalid_end_timestamp() throws Exception {
 
         LOGGER.info("\n************************************\ntest3 - Invalid end timestamp");
 
@@ -210,7 +210,7 @@ public class ParquetImporterCSVImplUnitTest {
      * Test {@link ParquetImporterCSVImpl} against an invalid CSV log <code>test4-invalid-start-timestamp.csv</code>.
      */
     @Test
-    public void test4_invalid_start_timestamp() throws Exception {
+    void test4_invalid_start_timestamp() throws Exception {
 
         LOGGER.info("\n************************************\ntest4 - Invalid start timestamp");
 
@@ -259,7 +259,7 @@ public class ParquetImporterCSVImplUnitTest {
      * Test {@link ParquetImporterCSVImpl} against an invalid CSV log <code>test5-empty-caseID.csv</code>.
      */
     @Test
-    public void testPrepareXesModel_test5_empty_caseID() throws Exception {
+    void testPrepareXesModel_test5_empty_caseID() throws Exception {
 
         LOGGER.info("\n************************************\ntest5 - Empty caseID");
         //CSV file input
@@ -306,7 +306,7 @@ public class ParquetImporterCSVImplUnitTest {
      * Test {@link ParquetImporterCSVImpl} against an invalid CSV log <code>test6-different-delimiters.csv</code>.
      */
     @Test
-    public void testPrepareXesModel_test6_different_delimiters() throws Exception {
+    void testPrepareXesModel_test6_different_delimiters() throws Exception {
 
         LOGGER.info("\n************************************\ntest6 - different delimiters");
         //CSV file input
@@ -354,7 +354,7 @@ public class ParquetImporterCSVImplUnitTest {
      * Test {@link ParquetImporterCSVImpl} against an invalid CSV log <code>test7-record-invalid.csv</code>.
      */
     @Test
-    public void testPrepareXesModel_test7_record_invalid() throws Exception {
+    void testPrepareXesModel_test7_record_invalid() throws Exception {
 
         LOGGER.info("\n************************************\ntest7 - Record invalid");
         //CSV file input
@@ -406,7 +406,7 @@ public class ParquetImporterCSVImplUnitTest {
      * Test {@link ParquetImporterCSVImpl} against an invalid CSV log <code>test8-all-invalid.csv</code>.
      */
     @Test
-    public void testPrepareXesModel_test8_all_invalid() throws Exception {
+    void testPrepareXesModel_test8_all_invalid() throws Exception {
 
         LOGGER.info("\n************************************\ntest8 - All invalid");
         //CSV file input
@@ -444,7 +444,7 @@ public class ParquetImporterCSVImplUnitTest {
      * Test {@link ParquetImporterCSVImpl} against an invalid CSV log <code>test9-differentiate-dates.csv</code>.
      */
     @Test
-    public void testPrepareXesModel_test9_differentiate_dates() throws Exception {
+    void testPrepareXesModel_test9_differentiate_dates() throws Exception {
 
         LOGGER.info("\n************************************\ntest9 - Differentiate dates");
         //CSV file input
@@ -498,7 +498,7 @@ public class ParquetImporterCSVImplUnitTest {
      * Test {@link ParquetImporterCSVImpl} against an invalid CSV log <code>test10-eventAttribute.csv</code>.
      */
     @Test
-    public void testPrepareXesModel_test10_detect_name() throws Exception {
+    void testPrepareXesModel_test10_detect_name() throws Exception {
 
         LOGGER.info("\n************************************\ntest10 - Event Attribute");
         //CSV file input
@@ -547,7 +547,7 @@ public class ParquetImporterCSVImplUnitTest {
      */
     @Disabled
     @Test
-    public void testPrepareXesModel_test11_encoding() throws Exception {
+    void testPrepareXesModel_test11_encoding() throws Exception {
 
         LOGGER.info("\n************************************\ntest11 - Encoding");
         //CSV file input

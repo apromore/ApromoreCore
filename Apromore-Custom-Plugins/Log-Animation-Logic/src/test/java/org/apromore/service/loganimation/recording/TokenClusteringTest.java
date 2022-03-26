@@ -30,7 +30,7 @@ import org.apromore.service.loganimation.modelmapping.OldBpmnModelMapping;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class TokenClusteringTest extends TestDataSetup {
+class TokenClusteringTest extends TestDataSetup {
     protected Movie createAnimationMovie_OneTraceOneEvent_OneTaskGrap() throws Exception {
         AnimationResult result = this.animate_OneTraceOneEvent_OneTaskGraph();
         AnimationContext animationContext = new AnimationContext(result.getAnimationLogs(), 60, 600);
@@ -49,7 +49,7 @@ public class TokenClusteringTest extends TestDataSetup {
     
     @Test
     // No token clustering
-    public void test_TokenClustering_OneTraceLog() throws Exception {
+    void test_TokenClustering_OneTraceLog() throws Exception {
         Movie animationMovie = createAnimationMovie_OneTraceOneEvent_OneTaskGrap();
         
         Frame frame0 = animationMovie.get(0);
@@ -69,7 +69,7 @@ public class TokenClusteringTest extends TestDataSetup {
     @Test
     // This log has two identical traces.
     // As a result, only one token left on all modelling elements, but its count is 2.
-    public void test_TokenClustering_TwoTraceLog() throws Exception {
+    void test_TokenClustering_TwoTraceLog() throws Exception {
         Movie animationMovie = createAnimationMovie_TwoTracesOneEvent_OneTaskGrap();
         
         Frame frame0 = animationMovie.get(0);

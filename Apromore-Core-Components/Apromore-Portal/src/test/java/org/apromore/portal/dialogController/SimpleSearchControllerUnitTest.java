@@ -34,13 +34,13 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /** Test suite for {@link SimpleSearchController}. */
-public class SimpleSearchControllerUnitTest {
+class SimpleSearchControllerUnitTest {
 
     // Test cases.
 
     /** Test {@link SimpleSearchController#addSearchHistory} method. */
     @Test
-    public void testAddSearchHistory_duplicates_and_overflows() throws Exception {
+    void testAddSearchHistory_duplicates_and_overflows() throws Exception {
         assertEquals(Constants.maxSearches, 10);
 
         // When there are duplicates, only the most recent is retained
@@ -64,7 +64,7 @@ public class SimpleSearchControllerUnitTest {
 
     /** Test whether the {@link SimpleSearchController#addSearchHistory} method corrects invalid states. */
     @Test
-    public void testAddSearchHistory_error_correction() throws Exception {
+    void testAddSearchHistory_error_correction() throws Exception {
         SearchHistoriesType sh = new SearchHistoriesType();
         sh.setSearch("one");
         sh.setNum(1);

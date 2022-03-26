@@ -37,7 +37,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /** Test suite for {@link ImportController}. */
-public class ImportControllerUnitTest {
+class ImportControllerUnitTest {
 
     /** Mock CSV importer. */
     private FileImporterPlugin fileImporterPlugin = new FileImporterPlugin() {
@@ -57,20 +57,20 @@ public class ImportControllerUnitTest {
 
     /** Test the {@link ImportController#importFile} method with no file importers and a CSV log. */
     @Test
-    public void testImportFile_CSV() throws Exception {
+    void testImportFile_CSV() throws Exception {
         testImportFile(Collections.emptyList(), "CallcenterExample.csv");
     }
 
     /** Test the {@link ImportController#importFile} method with no file importers and a zipped CSV log. */
     @Test
-    public void testImportFile_CSVzip() throws Exception {
+    void testImportFile_CSVzip() throws Exception {
         testImportFile(Collections.emptyList(), "CallcenterExample.zip");
     }
 
     /** Test the {@link ImportController#importFile} method with a mock CSV importer and a zipped CSV log. */
     @Test
     @Disabled("Need to inject the ZK Execution instance for this to be testable")
-    public void testImportFile_CSVzip2() throws Exception {
+    void testImportFile_CSVzip2() throws Exception {
         testImportFile(Collections.singletonList(fileImporterPlugin), "CallcenterExample.zip");
     }
 

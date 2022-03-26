@@ -42,8 +42,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
-public class XLSXToParquetImporterUnitTest {
+class XLSXToParquetImporterUnitTest {
 
 
     private static final Logger LOGGER = LoggerFactory.getLogger(XLSXToParquetImporterUnitTest.class);
@@ -73,7 +72,7 @@ public class XLSXToParquetImporterUnitTest {
      * Test {@link MetaDataService} sampling fewer lines than contained in <code>test1-valid.xlsx</code>.
      */
     @Test
-    public void testSampleCSV_undersample() throws Exception {
+    void testSampleCSV_undersample() throws Exception {
 
         LOGGER.info(
             "\n************************************\ntest - sampling fewer lines than contained in test1-valid.xlsx");
@@ -96,7 +95,7 @@ public class XLSXToParquetImporterUnitTest {
      * Test {@link MetaDataService} sampling more lines than contained in <code>test1-valid.xlsx</code>.
      */
     @Test
-    public void testSampleCSV_oversample() throws Exception {
+    void testSampleCSV_oversample() throws Exception {
 
         LOGGER.info(
             "\n************************************\ntest - sampling more lines than contained in test1-valid.xlsx");
@@ -118,7 +117,7 @@ public class XLSXToParquetImporterUnitTest {
      * Test {@link ParquetImporterXLSXImpl} against an valid xlsx log <code>test1-valid.xlsx</code>.
      */
     @Test
-    public void test1_valid() throws Exception {
+    void test1_valid() throws Exception {
 
         LOGGER.info("\n************************************\ntest1 - Valid parquet test");
 
@@ -166,7 +165,7 @@ public class XLSXToParquetImporterUnitTest {
      * Test {@link ParquetImporterXLSXImpl} against an invalid xlsx log <code>test2-missing-columns.xlsx</code>.
      */
     @Test
-    public void testPrepareXesModel_test2_missing_columns() throws Exception {
+    void testPrepareXesModel_test2_missing_columns() throws Exception {
 
         System.out.println("\n************************************\ntest2 - Missing columns test");
 
@@ -213,7 +212,7 @@ public class XLSXToParquetImporterUnitTest {
      * Test {@link ParquetImporterXLSXImpl} against an invalid xlsx log <code>test3-invalid-end-timestamp.xlsx</code>.
      */
     @Test
-    public void testPrepareXesModel_test3_invalid_end_timestamp() throws Exception {
+    void testPrepareXesModel_test3_invalid_end_timestamp() throws Exception {
 
         System.out.println("\n************************************\ntest3 - Invalid end timestamp");
 
@@ -260,7 +259,7 @@ public class XLSXToParquetImporterUnitTest {
      * Test {@link ParquetImporterXLSXImpl} against an invalid xlsx log <code>test4-invalid-start-timestamp.xlsx</code>.
      */
     @Test
-    public void testPrepareXesModel_test4_invalid_start_timestamp() throws Exception {
+    void testPrepareXesModel_test4_invalid_start_timestamp() throws Exception {
 
         System.out.println("\n************************************\ntest4 - Invalid start timestamp");
 
@@ -307,7 +306,7 @@ public class XLSXToParquetImporterUnitTest {
      * Test {@link ParquetImporterXLSXImpl} against an invalid xlsx log <code>test5-expected.xlsx</code>.
      */
     @Test
-    public void testPrepareXesModel_test5_empty_caseID() throws Exception {
+    void testPrepareXesModel_test5_empty_caseID() throws Exception {
 
         System.out.println("\n************************************\ntest5 - Empty caseID");
 
@@ -354,7 +353,7 @@ public class XLSXToParquetImporterUnitTest {
      * Test {@link ParquetImporterXLSXImpl} against an invalid xlsx log <code>test7-record-invalid.xlsx</code>.
      */
     @Test
-    public void testPrepareXesModel_test6_record_invalid() throws Exception {
+    void testPrepareXesModel_test6_record_invalid() throws Exception {
 
         System.out.println("\n************************************\ntest6 - Record invalid");
 
@@ -405,7 +404,7 @@ public class XLSXToParquetImporterUnitTest {
      * Test {@link ParquetImporterXLSXImpl } against an invalid xlsx log <code>test8-all-invalid.xlsx</code>.
      */
     @Test
-    public void testPrepareXesModel_test7_all_invalid() throws Exception {
+    void testPrepareXesModel_test7_all_invalid() throws Exception {
 
         System.out.println("\n************************************\ntest7 - All invalid");
         String testFile = "/test8-all-invalid.xlsx";
@@ -442,7 +441,7 @@ public class XLSXToParquetImporterUnitTest {
      * Test {@link ParquetImporterXLSXImpl} against an invalid xlsx log <code>test9-differentiate-dates.xlsx</code>.
      */
     @Test
-    public void testPrepareXesModel_test8_differentiate_dates() throws Exception {
+    void testPrepareXesModel_test8_differentiate_dates() throws Exception {
 
         System.out.println("\n************************************\ntest8 - Differentiate dates");
 
@@ -494,7 +493,7 @@ public class XLSXToParquetImporterUnitTest {
      * Test {@link ParquetImporterXLSXImpl} against an invalid xlsx log <code>test10-eventAttribute.xlsx</code>.
      */
     @Test
-    public void testPrepareXesModel_test9_detect_name() throws Exception {
+    void testPrepareXesModel_test9_detect_name() throws Exception {
 
         System.out.println("\n************************************\ntest9 - Event Attribute");
 
@@ -542,7 +541,7 @@ public class XLSXToParquetImporterUnitTest {
      */
     @Disabled
     @Test
-    public void testPrepareXesModel_test10_encoding() throws Exception {
+    void testPrepareXesModel_test10_encoding() throws Exception {
 
         System.out.println("\n************************************\ntest10 - Encoding");
 

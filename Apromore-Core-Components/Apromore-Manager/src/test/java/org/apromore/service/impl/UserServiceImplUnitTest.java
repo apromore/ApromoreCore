@@ -50,7 +50,7 @@ import org.junit.jupiter.api.Test;
  *
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
-public class UserServiceImplUnitTest {
+class UserServiceImplUnitTest {
 
     private UserServiceImpl usrServiceImpl;
     private UserRepository usrRepo;
@@ -64,7 +64,7 @@ public class UserServiceImplUnitTest {
     }
 
     @Test
-    public void getAllUsers() {
+    void getAllUsers() {
         List<User> users = new ArrayList<>();
 
         expect(usrRepo.findAll()).andReturn(users);
@@ -76,7 +76,7 @@ public class UserServiceImplUnitTest {
     }
 
     @Test
-    public void getUser() throws Exception {
+    void getUser() throws Exception {
         String username = "jaybob";
         User usr = new User();
 
@@ -89,7 +89,7 @@ public class UserServiceImplUnitTest {
     }
 
     @Test
-    public void getUserNotFound() throws Exception {
+    void getUserNotFound() throws Exception {
         String username = "jaybob";
 
         expect(usrRepo.findByUsername(username)).andReturn(null);
@@ -105,7 +105,7 @@ public class UserServiceImplUnitTest {
 
 
     @Test
-    public void writeUser() {
+    void writeUser() {
         Integer id = 1;
         String username = "username";
         User usr = createUser();
@@ -121,7 +121,7 @@ public class UserServiceImplUnitTest {
     }
 
     @Test
-    public void testUpdateUserSearchHistory() {
+    void testUpdateUserSearchHistory() {
         String username = "username";
         User usr = createUser();
         List<SearchHistory> histories = new ArrayList<>();

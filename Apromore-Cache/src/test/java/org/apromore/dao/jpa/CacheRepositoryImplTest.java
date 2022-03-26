@@ -48,26 +48,6 @@ class CacheRepositoryImplTest {
 
     }
 
-    @AfterEach
-    public void tearDown() throws Exception {
-    }
-
-    @Test
-    public void getEhCacheCacheManager() {
-    }
-
-    @Test
-    void setEhCacheCacheManager() {
-    }
-
-    @Test
-    void getCacheName() {
-    }
-
-    @Test
-    void setCacheName() {
-    }
-
     @Test
     void get() {
 
@@ -115,18 +95,6 @@ class CacheRepositoryImplTest {
         assertEquals(size - 1, cacheRepository.getMemoryStoreSize(),
             "Non existing Key removal, size should be the same as last time");
         System.out.println("3 ->" + cacheRepository.getMemoryStoreSize());
-    }
-
-    @Test
-    void getNativeCache() {
-    }
-
-    @Test
-    void getMemoryUsage() {
-    }
-
-    @Test
-    void getMemoryStoreSize() {
     }
 
     @Test

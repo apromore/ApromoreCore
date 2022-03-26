@@ -34,8 +34,7 @@ import org.apromore.service.logimporter.services.utilities.TestUtilities;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-
-public class DateUtilUnitTest {
+class DateUtilUnitTest {
     /**
      * Expected headers for <code>test1-valid.csv</code>.
      */
@@ -55,7 +54,7 @@ public class DateUtilUnitTest {
     }
 
     @Test
-    public void test_timestamp_date() {
+    void test_timestamp_date() {
 
         System.out.println("\n*****************\ntest - Test timestamp format - date only");
 
@@ -88,7 +87,7 @@ public class DateUtilUnitTest {
     }
 
     @Test
-    public void test_timestamp_date_HH_MM() {
+    void test_timestamp_date_HH_MM() {
 
         System.out.println(
             "\n*****************\ntest - Test timestamp format - date, hours and minutes");
@@ -116,7 +115,7 @@ public class DateUtilUnitTest {
     }
 
     @Test
-    public void test_timestamp_date_HH_MM_AM_PM() {
+    void test_timestamp_date_HH_MM_AM_PM() {
 
         System.out.println(
             "\n*****************\ntest - Test timestamp format - date, hours and minutes AM/PM");
@@ -160,7 +159,7 @@ public class DateUtilUnitTest {
     }
 
     @Test
-    public void test_timestamp_date_HH_MM_ss() {
+    void test_timestamp_date_HH_MM_ss() {
 
         System.out.println(
             "\n*****************\ntest - Test timestamp format - date, hours, minutes and seconds");
@@ -188,7 +187,7 @@ public class DateUtilUnitTest {
     }
 
     @Test
-    public void test_timestamp_date_HH_MM_ss_am_pm() {
+    void test_timestamp_date_HH_MM_ss_am_pm() {
 
         System.out.println(
             "\n*****************\ntest - Test timestamp format - date, hours, minutes and seconds AM/PM");
@@ -232,7 +231,7 @@ public class DateUtilUnitTest {
     }
 
     @Test
-    public void test_timestamp_date_HH_MM_ss_millisecond() {
+    void test_timestamp_date_HH_MM_ss_millisecond() {
 
         System.out.println(
             "\n*****************\ntest - Test timestamp format - date, hours, minutes, seconds and millisecond");
@@ -260,7 +259,7 @@ public class DateUtilUnitTest {
     }
 
     @Test
-    public void test_timestamp_date_yy() {
+    void test_timestamp_date_yy() {
 
         System.out.println("\n*****************\ntest - Test timestamp format - date (yy) only");
 
@@ -286,7 +285,7 @@ public class DateUtilUnitTest {
     }
 
     @Test
-    public void test_timestamp_date_yy_HH_MM() {
+    void test_timestamp_date_yy_HH_MM() {
 
         System.out.println(
             "\n*****************\ntest - Test timestamp format - date (yy), hours and minutes");
@@ -313,7 +312,7 @@ public class DateUtilUnitTest {
     }
 
     @Test
-    public void test_timestamp_date_yy_HH_MM_AM_PM() {
+    void test_timestamp_date_yy_HH_MM_AM_PM() {
 
         System.out.println(
             "\n*****************\ntest - Test timestamp format - date (yy), hours and minutes - AM/PM");
@@ -357,7 +356,7 @@ public class DateUtilUnitTest {
     }
 
     @Test
-    public void test_timestamp_date_yy_HH_MM_ss() {
+    void test_timestamp_date_yy_HH_MM_ss() {
 
         System.out.println(
             "\n*****************\ntest - Test timestamp format - date (yy), hours, minutes and seconds");
@@ -384,7 +383,7 @@ public class DateUtilUnitTest {
     }
 
     @Test
-    public void test_timestamp_date_yy_HH_MM_ss_am_pm() {
+    void test_timestamp_date_yy_HH_MM_ss_am_pm() {
 
         System.out.println(
             "\n*****************\ntest - Test timestamp format - date (yy), hours, minutes and seconds - AM/PM");
@@ -428,7 +427,7 @@ public class DateUtilUnitTest {
     }
 
     @Test
-    public void test_timestamp_date_yy_HH_MM_ss_millisecond() {
+    void test_timestamp_date_yy_HH_MM_ss_millisecond() {
 
         System.out.println(
             "\n*****************\ntest - Test timestamp format - date (yy), hours, minutes, seconds and millisecond");
@@ -465,7 +464,7 @@ public class DateUtilUnitTest {
     }
 
     @Test
-    public void test_timestamp_date_yy_only() {
+    void test_timestamp_date_yy_only() {
 
         System.out.println(
             "\n*****************\ntest - Test timestamp format - year only (00, 2000 and 200012)");
@@ -475,7 +474,7 @@ public class DateUtilUnitTest {
     }
 
     @Test
-    public void test_timestamp_date_week_day_only() {
+    void test_timestamp_date_week_day_only() {
 
         System.out.println(
             "\n*****************\ntest - Test timestamp format - week day only (Sat, Saturday and Sa)");
@@ -485,7 +484,7 @@ public class DateUtilUnitTest {
     }
 
     @Test
-    public void test_timestamp_date_time_only() {
+    void test_timestamp_date_time_only() {
 
         System.out.println("\n*****************\ntest - Test timestamp format - time only "
                            + "(0208, 125959, 125959.879 or 12:08, 12:59:59, 12:59:59.879)");
@@ -508,7 +507,7 @@ public class DateUtilUnitTest {
     }
 
     @Test
-    public void test_timestamp_unsupported_separators() {
+    void test_timestamp_unsupported_separators() {
 
         System.out.println(
             "\n*****************\ntest - Test timestamp format with unsupported separators");
@@ -523,7 +522,7 @@ public class DateUtilUnitTest {
     }
 
     @Test
-    public void test_timestamp_date_HH_MM_ss_S() {
+    void test_timestamp_date_HH_MM_ss_S() {
 
         System.out.println("\n*****************\ntest - Test timestamp format - "
                            + "date, hours, minutes , seconds and single digit millisecond");

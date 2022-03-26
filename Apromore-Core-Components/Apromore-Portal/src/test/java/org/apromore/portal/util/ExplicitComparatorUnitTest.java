@@ -34,10 +34,10 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests for {@link ExplicitComparator}.
  */
-public class ExplicitComparatorUnitTest {
+class ExplicitComparatorUnitTest {
 
     @Test
-    public void testCompare() throws Exception {
+    void testCompare() throws Exception {
         ExplicitComparator c = new ExplicitComparator("Cherry,Apple,Banana");
 
         // Try explicitly ordered elements
