@@ -35,7 +35,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.cache.ehcache.EhCacheCacheManager;
 
-public class CacheRepositoryImplTest {
+class CacheRepositoryImplTest {
 
     private static EhCacheCacheManager ehCacheCacheManager = new EhCacheCacheManager();
     private String cacheName = "xlog";
@@ -57,19 +57,19 @@ public class CacheRepositoryImplTest {
     }
 
     @Test
-    public void setEhCacheCacheManager() {
+    void setEhCacheCacheManager() {
     }
 
     @Test
-    public void getCacheName() {
+    void getCacheName() {
     }
 
     @Test
-    public void setCacheName() {
+    void setCacheName() {
     }
 
     @Test
-    public void get() {
+    void get() {
 
         CacheRepository cacheRepository = new CacheRepositoryImpl();
         ((CacheRepositoryImpl) cacheRepository).setCacheName("xlog");
@@ -78,11 +78,11 @@ public class CacheRepositoryImplTest {
         String keyPut = "keyGet1";
         String valPut = "valGet1";
         cacheRepository.put(keyPut, valPut);
-        assertTrue(valPut.equals(cacheRepository.get(keyPut)), "Same value should be retrieved ");
+        assertEquals(valPut, cacheRepository.get(keyPut), "Same value should be retrieved ");
     }
 
     @Test
-    public void put() {
+    void put() {
 
         CacheRepository cacheRepository = new CacheRepositoryImpl();
         ((CacheRepositoryImpl) cacheRepository).setCacheName(cacheName);
@@ -91,11 +91,11 @@ public class CacheRepositoryImplTest {
         String keyPut = "keyPut1";
         String valPut = "valPut1";
         cacheRepository.put(keyPut, valPut);
-        assertTrue(valPut.equals(cacheRepository.get(keyPut)), "Same value should be retrieved ");
+        assertEquals(valPut, cacheRepository.get(keyPut), "Same value should be retrieved ");
     }
 
     @Test
-    public void evict() {
+    void evict() {
 
         CacheRepository cacheRepository = new CacheRepositoryImpl();
         ((CacheRepositoryImpl) cacheRepository).setCacheName(cacheName);
@@ -105,7 +105,7 @@ public class CacheRepositoryImplTest {
         String valRemove = "valRemove1";
         cacheRepository.put(keyRemove, valRemove);
         long size = cacheRepository.getMemoryStoreSize();
-        assertTrue(valRemove.equals(cacheRepository.get(keyRemove)), "Same value should be retrieved ");
+        assertEquals(valRemove, cacheRepository.get(keyRemove), "Same value should be retrieved ");
         System.out.println("1 ->" + cacheRepository.getMemoryStoreSize());
 
         cacheRepository.evict(keyRemove);
@@ -118,20 +118,20 @@ public class CacheRepositoryImplTest {
     }
 
     @Test
-    public void getNativeCache() {
+    void getNativeCache() {
     }
 
     @Test
-    public void getMemoryUsage() {
+    void getMemoryUsage() {
     }
 
     @Test
-    public void getMemoryStoreSize() {
+    void getMemoryStoreSize() {
     }
 
     @Test
     @Disabled("For pressure testing only")
-    public void testSizing() {
+    void testSizing() {
 
         CacheRepository cacheRepository = new CacheRepositoryImpl();
         ((CacheRepositoryImpl) cacheRepository).setCacheName(cacheName);

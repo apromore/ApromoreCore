@@ -32,7 +32,7 @@ import org.apromore.service.EventLogService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class EventLogServiceTest extends BaseTest {
+class EventLogServiceTest extends BaseTest {
 
   @Autowired
   CustomCalendarRepository calendarRepository;
@@ -44,7 +44,7 @@ public class EventLogServiceTest extends BaseTest {
   EventLogService eventLogService;
 
   @Test
-  public void testEventLogsForCalendar() {
+  void testEventLogsForCalendar() {
     // Given
     CustomCalendar calendar = new CustomCalendar("Test Calendar for log", ZoneId.of("UTC"));
     calendar = calendarRepository.saveAndFlush(calendar);

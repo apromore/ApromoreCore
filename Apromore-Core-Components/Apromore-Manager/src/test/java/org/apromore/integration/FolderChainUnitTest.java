@@ -36,7 +36,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-public class FolderChainUnitTest extends BaseTest {
+class FolderChainUnitTest extends BaseTest {
 
     @Autowired
     FolderRepository folderRepository;
@@ -56,7 +56,7 @@ public class FolderChainUnitTest extends BaseTest {
  * Parentfolder 1 is moved to a new folder named parentt2, and all the chain should be updated.
  */
     @Test
-    public void testUpdateFolderChain() {
+    void testUpdateFolderChain() {
 //	Given
 	Folder folder1 = folderBuilder.withFolder("parent1", "parent1").build();
 	folder1.setParentFolderChain("0");
@@ -89,7 +89,7 @@ public class FolderChainUnitTest extends BaseTest {
     }
 
     @Test
-    public void testGetParentFolders() {
+    void testGetParentFolders() {
 
 //	Given
 	Folder folder1 = folderBuilder.withFolder("parent1", "parent1").build();
@@ -110,7 +110,7 @@ public class FolderChainUnitTest extends BaseTest {
     }
 
     @Test
-    public void testGetSubFolder() {
+    void testGetSubFolder() {
 
 //	Given
 	Folder folder1 = folderBuilder.withFolder("parent1", "parent1").build();
@@ -132,7 +132,7 @@ public class FolderChainUnitTest extends BaseTest {
     }
 
     @Test
-    public void testGetSubFolder1() {
+    void testGetSubFolder1() {
 
 //	Given
 	Folder folder1 = folderBuilder.withFolder("parent1", "parent1").build();

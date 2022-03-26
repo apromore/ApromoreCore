@@ -53,10 +53,10 @@ import org.apromore.portal.model.PluginParameter;
 import org.apromore.portal.model.PluginParameters;
 import org.junit.jupiter.api.Test;
 
-public class PluginHelperUnitTest {
+class PluginHelperUnitTest {
 
     @Test
-    public void testConvertToRequestProperties() throws IOException {
+    void testConvertToRequestProperties() throws IOException {
         PluginParameters xmlProperties = new PluginParameters();
 
         PluginParameter prop1 = new PluginParameter();
@@ -97,7 +97,7 @@ public class PluginHelperUnitTest {
     }
 
     @Test
-    public void testConvertToRequestProperty() {
+    void testConvertToRequestProperty() {
         PluginParameter xmlProp = new PluginParameter();
         assertNull(PluginHelper.convertToRequestParameter(xmlProp));
         xmlProp.setClazz(String.class.getCanonicalName());
@@ -115,7 +115,7 @@ public class PluginHelperUnitTest {
     }
 
     @Test
-    public void testConvertFromPluginProperties() {
+    void testConvertFromPluginProperties() {
         HashSet<PluginParameterType<?>> hashSet = new HashSet<PluginParameterType<?>>();
         hashSet.add(new PluginParameterType<InputStream>("test", "testName", InputStream.class, "testDescr", true));
         hashSet.add(new PluginParameterType<String>("test2", "testName", String.class, "testDescr", false));
@@ -150,17 +150,17 @@ public class PluginHelperUnitTest {
     }
 
     @Test
-    public void testConvertFromPluginMessages() {
+    void testConvertFromPluginMessages() {
         assertNotNull(PluginHelper.convertFromPluginMessages(new ArrayList<PluginMessage>()));
     }
 
     @Test
-    public void testConvertToPluginMessages() {
+    void testConvertToPluginMessages() {
         assertNotNull(PluginHelper.convertToPluginMessages(new PluginMessages()));
     }
 
     @Test
-    public void testConvertPluginInfo() {
+    void testConvertPluginInfo() {
         assertNotNull(PluginHelper.convertPluginInfo(new Plugin() {
 
             @Override

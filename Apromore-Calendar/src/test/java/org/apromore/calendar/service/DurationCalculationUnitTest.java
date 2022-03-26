@@ -37,7 +37,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-public class DurationCalculationUnitTest {
+class DurationCalculationUnitTest {
     private CalendarModelBuilder calendarModelBuilder;
 
     @BeforeEach
@@ -82,7 +82,7 @@ public class DurationCalculationUnitTest {
 
     @ParameterizedTest
     @MethodSource("params")
-    public void testCalculateDuration8HoursDifferentDay(
+    void testCalculateDuration8HoursDifferentDay(
         OffsetDateTime startDateTime, OffsetDateTime endDateTime, Duration expected) {
 
         CalendarModel calendarModel = calendarModelBuilder.with7DayWorking().withZoneId(ZoneOffset.UTC.getId()).build();

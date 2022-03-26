@@ -41,7 +41,7 @@ import org.junit.jupiter.api.Test;
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  * @since 1.0
  */
-public class SearchHistoryMapperUnitTest {
+class SearchHistoryMapperUnitTest {
 
     SearchHistoryMapper mapper;
 
@@ -51,7 +51,7 @@ public class SearchHistoryMapperUnitTest {
     }
 
     @Test
-    public void testConvertFromSearchHistoriesType() throws Exception {
+    void testConvertFromSearchHistoriesType() throws Exception {
         List<SearchHistoriesType> srhTypes = new ArrayList<SearchHistoriesType>();
         SearchHistoriesType typ1 = new SearchHistoriesType();
         typ1.setNum(1);

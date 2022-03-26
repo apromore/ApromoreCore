@@ -38,7 +38,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-public class DurationCalculationTestWithHolidayUnitTest {
+class DurationCalculationTestWithHolidayUnitTest {
 
     CalendarModelBuilder calendarModelBuilder;
 
@@ -78,7 +78,7 @@ public class DurationCalculationTestWithHolidayUnitTest {
 
     @ParameterizedTest
     @MethodSource("params")
-    public void testCalculateDurationWithHoliday(OffsetDateTime startDateTime, OffsetDateTime endDateTime,
+    void testCalculateDurationWithHoliday(OffsetDateTime startDateTime, OffsetDateTime endDateTime,
                                                  Duration expected) {
 
         CalendarModel calendarModel = calendarModelBuilder.withAllDayAllTime()

@@ -31,7 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ShareFeatureUnitTest extends BaseTest {
+class ShareFeatureUnitTest extends BaseTest {
 
     UserManagementBuilder builder;
 
@@ -57,7 +57,7 @@ public class ShareFeatureUnitTest extends BaseTest {
 
     @Test
     @Disabled
-    public void testSaveUser() {
+    void testSaveUser() {
         // given
         Group group = groupRepository.saveAndFlush(builder.withGroup("testGroup1", "USER").buildGroup());
         Role role = roleRepository.saveAndFlush(builder.withRole("testRole").buildRole());
@@ -72,7 +72,7 @@ public class ShareFeatureUnitTest extends BaseTest {
 
     @Test
     @Disabled
-    public void insertUsermetadataTest() {
+    void insertUsermetadataTest() {
 //	 		Given
         Usermetadata um = builder.withUserMetaDataType("test Type", 1).withUserMetaData("Test", "test")
                 .buildUserMetaData();

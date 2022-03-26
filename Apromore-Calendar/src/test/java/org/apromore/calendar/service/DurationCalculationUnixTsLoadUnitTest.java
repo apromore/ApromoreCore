@@ -39,7 +39,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 @Disabled("Ignored as this is a intensive test")
-public class DurationCalculationUnixTsLoadUnitTest {
+class DurationCalculationUnixTsLoadUnitTest {
 
     CalendarModelBuilder calendarModelBuilder;
 
@@ -82,7 +82,7 @@ public class DurationCalculationUnixTsLoadUnitTest {
 
 
     @Test
-    public void testCalculateDuration8HoursDifferentDay() {
+    void testCalculateDuration8HoursDifferentDay() {
 
         CalendarModel calendarModel = calendarModelBuilder.with7DayWorking().withZoneId(ZoneOffset.UTC.getId()).build();
 

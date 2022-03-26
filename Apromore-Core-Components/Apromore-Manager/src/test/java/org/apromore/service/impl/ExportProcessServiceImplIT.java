@@ -54,7 +54,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @Rollback
 @TestExecutionListeners(value = DependencyInjectionTestExecutionListener.class)
-public class ExportProcessServiceImplIT {
+class ExportProcessServiceImplIT {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ExportProcessServiceImplIT.class);
 
@@ -70,7 +70,7 @@ public class ExportProcessServiceImplIT {
 
 
     @Test
-    public void testExportProcessWithSingleEdgeInEPML() throws Exception {
+    void testExportProcessWithSingleEdgeInEPML() throws Exception {
         String name = "Test EPML 1";
 
         DataHandler startStream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("EPML_models/test1.epml"), "text/xml"));

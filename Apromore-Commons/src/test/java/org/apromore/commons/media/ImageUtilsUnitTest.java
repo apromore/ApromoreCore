@@ -30,12 +30,12 @@ import org.junit.jupiter.api.Test;
 /**
  * Various test utility for image
  */
-public final class ImageUtilsUnitTest {
+final class ImageUtilsUnitTest {
     private static String TEST_IMAGE_1 = "/image-10x10.png";
     private static String TEST_IMAGE_2 = "/image-20x10.jpg";
 
     @Test
-    public void getImageDimension_ShouldReturnCorrectDimension() throws Exception {
+    void getImageDimension_ShouldReturnCorrectDimension() throws Exception {
         InputStream is = this.getClass().getResourceAsStream(TEST_IMAGE_1);
         Dimension dim = ImageUtils.getImageDimension(is);
         if (dim.getWidth() != 10 || dim.getHeight() != 10) {
@@ -44,7 +44,7 @@ public final class ImageUtilsUnitTest {
     }
 
     @Test
-    public void getImageRatio_ShouldReturnCorrectRatio() throws Exception {
+    void getImageRatio_ShouldReturnCorrectRatio() throws Exception {
         InputStream is = this.getClass().getResourceAsStream(TEST_IMAGE_2);
         if (ImageUtils.getImageRatio(is) != 2.0) {
             fail("Invalid ratio for " + TEST_IMAGE_2);

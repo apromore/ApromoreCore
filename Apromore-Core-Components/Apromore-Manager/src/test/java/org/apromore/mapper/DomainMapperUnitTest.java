@@ -40,7 +40,7 @@ import static org.hamcrest.Matchers.equalTo;
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  * @since 1.0
  */
-public class DomainMapperUnitTest {
+class DomainMapperUnitTest {
 
     DomainMapper mapper;
 
@@ -50,7 +50,7 @@ public class DomainMapperUnitTest {
     }
 
     @Test
-    public void testConvertFromDomains() throws Exception {
+    void testConvertFromDomains() throws Exception {
         List<String> domains = new ArrayList<String>();
         String typ1 = "jack";
         String typ2 = "john";

@@ -47,7 +47,7 @@ import org.junit.jupiter.api.Test;
  *
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
-public class FormatServiceImplUnitTest {
+class FormatServiceImplUnitTest {
 
     private FormatServiceImpl formatServiceImpl;
 
@@ -63,7 +63,7 @@ public class FormatServiceImplUnitTest {
 
 
     @Test
-    public void getAllFormats() {
+    void getAllFormats() {
         List<NativeType> natTypes = new ArrayList<>();
 
         expect(nativeTypeRepository.findAll()).andReturn(natTypes);
@@ -75,7 +75,7 @@ public class FormatServiceImplUnitTest {
     }
 
     @Test
-    public void getFormat() {
+    void getFormat() {
         String type = "bobType";
         NativeType natType = new NativeType();
         natType.setNatType(type);

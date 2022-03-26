@@ -44,7 +44,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 // This test is temporarily disabled to investigate the issue of timezone
 @Disabled
-public class DurationCalculationTestWithSpecialTimezones {
+class DurationCalculationTestWithSpecialTimezones {
 
     CalendarModelBuilder calendarModelBuilder;
 
@@ -89,7 +89,7 @@ public class DurationCalculationTestWithSpecialTimezones {
 
     @ParameterizedTest
     @MethodSource("datesWithDaylightSavings")
-    public void testCalculateDurationWithDaylightSaving(OffsetDateTime startDateTime, OffsetDateTime endDateTime,
+    void testCalculateDurationWithDaylightSaving(OffsetDateTime startDateTime, OffsetDateTime endDateTime,
                                                         Duration expected) {
 
         CalendarModel calendarModel = calendarModelBuilder.withAllDayAllTime()

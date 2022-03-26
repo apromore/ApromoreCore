@@ -23,14 +23,7 @@
 package org.apromore.service.impl;
 
 
-import org.apromore.service.impl.TemporaryCacheService;
-import org.deckfour.xes.factory.XFactory;
-import org.deckfour.xes.factory.XFactoryRegistry;
-import org.deckfour.xes.info.XLogInfo;
-import org.deckfour.xes.info.XLogInfoFactory;
-import org.deckfour.xes.model.*;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -39,23 +32,25 @@ import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
 import java.text.NumberFormat;
 import java.util.Random;
+import org.deckfour.xes.factory.XFactory;
+import org.deckfour.xes.factory.XFactoryRegistry;
+import org.deckfour.xes.info.XLogInfo;
+import org.deckfour.xes.info.XLogInfoFactory;
+import org.deckfour.xes.model.XAttribute;
+import org.deckfour.xes.model.XAttributeLiteral;
+import org.deckfour.xes.model.XAttributeTimestamp;
+import org.deckfour.xes.model.XEvent;
+import org.deckfour.xes.model.XLog;
+import org.deckfour.xes.model.XTrace;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+class LogRepositoryCustomImplTest {
 
-public class LogRepositoryCustomImplTest {
-
-    
-    
     TemporaryCacheService temporaryCacheService=new TemporaryCacheService();
 
-
-    @BeforeEach
-    public void setUp() throws Exception {
-
-    }
-
     @Test
-    public void testImportFromFile() {
+    void testImportFromFile() {
 
         System.out.println(ClassLoader.getSystemResource("XES_logs/SepsisCases.xes"));
 
@@ -65,27 +60,9 @@ public class LogRepositoryCustomImplTest {
             String name = ClassLoader.getSystemResource("XES_logs/SepsisCases.xes").getPath();
             System.out.println("name: " + name);
 
-//            FileInputStream fis = new FileInputStream(name);
-//            System.out.println("fis: " + fis);
-
-//            FilterInputStream filter = new BufferedInputStream(fis);// FilterInputStream is protected
-//            while (filter.available() > 0) {
-//                byte[] buf = new byte[1024];
-//                int len = filter.read(buf);
-//                String myStr = new String(buf, 0, len, "UTF-8");
-//                System.out.print(myStr);
-//            }
-//            fis.close();
-
-//            XFactoryExternalStore.InMemoryStoreImpl factory = new XFactoryExternalStore.InMemoryStoreImpl();
-
-//            XFactory factory = new XFactoryLiteImpl();
             XFactory factory = XFactoryRegistry.instance().currentDefault();
 
             XLog log = temporaryCacheService.importFromFile(factory,new FileInputStream(new File(name)), name);
-
-//            XFactory factory = new XFactoryNaiveImpl();
-//            XLog log = logRepo.importFromInputStream(fis, new XesXmlParser(factory));
 
             System.out.println("log: " + log);
 
@@ -93,31 +70,10 @@ public class LogRepositoryCustomImplTest {
             System.out.println("logInfo: " + logInfo);
 
             readSequentially(log);
-//            readRandom(log);
 
-//            XLog log = logRepo.importFromFile(new XFactoryNaiveImpl(), name);
-//            System.out.println("xlog: " + log);
         } catch (Exception e) {
             System.out.println("Error " + e.getMessage());
         }
-    }
-
-
-    @Test
-    public void exportToFile() {
-    }
-
-    @Test
-    public void importFromInputStream() {
-    }
-
-    @Test
-    public void exportToInputStream() {
-    }
-
-    @Test
-    public void getProcessLog() {
-
     }
 
     protected void readSequentially(XLog log) {

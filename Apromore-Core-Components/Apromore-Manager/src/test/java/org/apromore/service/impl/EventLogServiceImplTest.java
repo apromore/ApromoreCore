@@ -90,7 +90,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class EventLogServiceImplTest extends AbstractTest {
+class EventLogServiceImplTest extends AbstractTest {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(EventLogServiceImplTest.class);
   // inject EntityManager for simple test
@@ -144,13 +144,6 @@ public class EventLogServiceImplTest extends AbstractTest {
     }
   }
 
-  public EntityManagerFactory getEntityManagerFactory() {
-    if (emf == null) {
-      emf = Persistence.createEntityManagerFactory("TESTApromore");
-    }
-    return emf;
-  }
-
   @BeforeEach
   public final void setUp() {
     logRepository = createMock(LogRepository.class);
@@ -188,14 +181,14 @@ public class EventLogServiceImplTest extends AbstractTest {
   }
 
   @Test
-  public void testOpenXesVersion() {
+  void testOpenXesVersion() {
     XFactoryNaiveImpl xFactoryNaive = new XFactoryNaiveImpl();
     assertEquals("2.27", XRuntimeUtils.OPENXES_VERSION);
     assertTrue(xFactoryNaive.isUseInterner());
   }
 
   @Test
-  public void validateXLogImport() {
+  void validateXLogImport() {
 
     try (Stream<Path> paths =
         Files.walk(Paths.get(ClassLoader.getSystemResource("XES_logs/").getPath()))) {
@@ -223,7 +216,7 @@ public class EventLogServiceImplTest extends AbstractTest {
   }
 
   @Test
-  public void eventLogValidationTest() {
+  void eventLogValidationTest() {
     InputStream is = getClass().getClassLoader().getResourceAsStream("XES_logs/A1_overlap_no_waiting_time.xes");
     XLog xLog = fetchXlog(is);
 
@@ -257,7 +250,7 @@ public class EventLogServiceImplTest extends AbstractTest {
   }
 
   @Test
-  public void intersectionTest() {
+  void intersectionTest() {
     Set set1 = new HashSet(Arrays.asList(1, 3, 5));
     Set set2 = new HashSet(Arrays.asList(1, 6, 7, 9, 3));
     Set set3 = new HashSet(Arrays.asList(1, 3, 10, 11));
@@ -279,7 +272,7 @@ public class EventLogServiceImplTest extends AbstractTest {
   }
 
 
-  public <T> Set<T> intersection(List<T>... list) {
+  private <T> Set<T> intersection(List<T>... list) {
     Set<T> result = Sets.newHashSet(list[0]);
     for (List<T> numbers : list) {
       result = Sets.intersection(result, Sets.newHashSet(numbers));
@@ -293,7 +286,7 @@ public class EventLogServiceImplTest extends AbstractTest {
   }
 
   @Test
-  public void testGetPerspectiveTagByLog() throws UserMetadataException {
+  void testGetPerspectiveTagByLog() throws UserMetadataException {
 
     // Set up test data
     Integer logId = 1;
@@ -322,7 +315,7 @@ public class EventLogServiceImplTest extends AbstractTest {
   }
 
   @Test
-  public void testGetPerspectiveTagByLog_WithoutMetadata() throws UserMetadataException {
+  void testGetPerspectiveTagByLog_WithoutMetadata() throws UserMetadataException {
 
     // Set up test data
     Integer logId = 1;
@@ -347,7 +340,7 @@ public class EventLogServiceImplTest extends AbstractTest {
   }
 
   @Test
-  public void testGetPerspectiveTagByLog_InvalidJson() throws UserMetadataException {
+  void testGetPerspectiveTagByLog_InvalidJson() throws UserMetadataException {
 
     // Set up test data
     Integer logId = 1;
@@ -369,7 +362,7 @@ public class EventLogServiceImplTest extends AbstractTest {
   }
 
   @Test
-  public void testsavePerspectiveByLog() throws UserMetadataException, UserNotFoundException {
+  void testsavePerspectiveByLog() throws UserMetadataException, UserNotFoundException {
 
     // Set up test data
     List<String> perspectives = new ArrayList<>();
@@ -403,7 +396,7 @@ public class EventLogServiceImplTest extends AbstractTest {
   }
 
   @Test
-  public void testSavePerspectiveByLog_InvalidUsername() throws UserMetadataException, UserNotFoundException {
+  void testSavePerspectiveByLog_InvalidUsername() throws UserMetadataException, UserNotFoundException {
 
     // Set up test data
     List<String> perspectives = new ArrayList<>();
@@ -435,7 +428,7 @@ public class EventLogServiceImplTest extends AbstractTest {
   }
 
   @Test
-  public void testGetDefaultPerspectiveFromLog() throws EventLogException {
+  void testGetDefaultPerspectiveFromLog() throws EventLogException {
 
     // Set up test data
     Integer logId = 1;
@@ -460,7 +453,7 @@ public class EventLogServiceImplTest extends AbstractTest {
   }
 
   @Test
-  public void testGetDefaultPerspectiveFromLog_NoResource() throws EventLogException {
+  void testGetDefaultPerspectiveFromLog_NoResource() throws EventLogException {
 
     // Set up test data
     Integer logId = 1;
@@ -484,7 +477,7 @@ public class EventLogServiceImplTest extends AbstractTest {
   }
 
   @Test
-  public void testGetDefaultPerspectiveFromLog_AlreadyHasPerspective() throws EventLogException {
+  void testGetDefaultPerspectiveFromLog_AlreadyHasPerspective() throws EventLogException {
 
     // Set up test data
     Integer logId = 1;
@@ -515,7 +508,7 @@ public class EventLogServiceImplTest extends AbstractTest {
   }
 
   @Test
-  public void testGetDefaultPerspectiveFromLog_NullXLog() throws EventLogException {
+  void testGetDefaultPerspectiveFromLog_NullXLog() throws EventLogException {
 
     // Set up test data
     Integer logId = 1;
@@ -538,7 +531,7 @@ public class EventLogServiceImplTest extends AbstractTest {
   }
 
   @Test
-  public void testGetDefaultPerspectiveFromLog_EmptyXLog() throws EventLogException {
+  void testGetDefaultPerspectiveFromLog_EmptyXLog() throws EventLogException {
 
     // Set up test data
     Integer logId = 1;
@@ -562,7 +555,7 @@ public class EventLogServiceImplTest extends AbstractTest {
   }
 
   @Test
-  public void testGetLogListFromCalendarId() throws UserNotFoundException {
+  void testGetLogListFromCalendarId() throws UserNotFoundException {
     long calendarId = 157;
     int numLogs = 6;
 
@@ -587,7 +580,7 @@ public class EventLogServiceImplTest extends AbstractTest {
   }
 
   @Test
-  public void testDeepCopyArtifacts() throws UserNotFoundException {
+  void testDeepCopyArtifacts() throws UserNotFoundException {
 
     // Set up test data
     Integer oldLogId = 1;
@@ -626,7 +619,7 @@ public class EventLogServiceImplTest extends AbstractTest {
   }
 
   @Test
-  public void testDeepCopyArtifacts_withUnwantedType() throws UserNotFoundException {
+  void testDeepCopyArtifacts_withUnwantedType() throws UserNotFoundException {
 
     // Set up test data
     Integer oldLogId = 1;

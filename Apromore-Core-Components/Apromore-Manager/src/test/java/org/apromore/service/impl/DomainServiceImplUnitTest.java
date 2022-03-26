@@ -44,7 +44,7 @@ import static org.powermock.api.easymock.PowerMock.verify;
  *
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
-public class DomainServiceImplUnitTest {
+class DomainServiceImplUnitTest {
 
     private DomainServiceImpl domainServiceImpl;
     private ProcessRepository procDAOJpa;
@@ -57,7 +57,7 @@ public class DomainServiceImplUnitTest {
     }
 
     @Test
-    public void getAllDomains() {
+    void getAllDomains() {
         List<String> processes = new ArrayList<String>();
         processes.add("test1");
         processes.add("test2");

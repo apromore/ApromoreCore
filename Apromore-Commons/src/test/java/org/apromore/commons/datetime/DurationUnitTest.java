@@ -27,10 +27,10 @@ import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 
-public class DurationUnitTest {
+class DurationUnitTest {
 
     @Test
-    public void getDurationUnit() {
+    void getDurationUnit() {
         Optional<DurationUnit> output = DurationUnit.getDurationUnit(1000.0D * 60 * 60 * 24 * 365.25);
         assertEquals(ChronoUnit.YEARS, output.stream().iterator().next().getUnit());
 

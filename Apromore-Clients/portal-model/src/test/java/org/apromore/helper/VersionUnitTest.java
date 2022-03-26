@@ -35,73 +35,73 @@ import org.junit.jupiter.api.Test;
 /**
  * Test the Version Number Code for Apromore.
  */
-public class VersionUnitTest {
+class VersionUnitTest {
 
     @Test
-    public void testOneNumberVersionFromString() {
+    void testOneNumberVersionFromString() {
         Version version = new Version("1");
-        assertEquals(version.toString(), "1", "Numbers don't match");
+        assertEquals("1", version.toString(),  "Numbers don't match");
     }
 
     @Test
-    public void testTwoNumberVersionFromString() {
+    void testTwoNumberVersionFromString() {
         Version version = new Version("1.0");
-        assertEquals(version.toString(), "1.0", "Numbers don't match");
+        assertEquals("1.0", version.toString(),  "Numbers don't match");
     }
 
     @Test
-    public void testTwoNumberVersionFromNumber() {
+    void testTwoNumberVersionFromNumber() {
         Version version = new Version(1,0);
-        assertEquals(version.toString(), "1.0", "Numbers don't match");
+        assertEquals("1.0", version.toString(),  "Numbers don't match");
     }
 
     @Test
-    public void testThreeNumberVersionFromString() {
+    void testThreeNumberVersionFromString() {
         Version version = new Version("1.0.0");
-        assertEquals(version.toString(), "1.0.0", "Numbers don't match");
+        assertEquals("1.0.0", version.toString(),  "Numbers don't match");
     }
 
     @Test
-    public void testThreeNumberVersionFromNumber() {
+    void testThreeNumberVersionFromNumber() {
         Version version = new Version(1,0,3);
-        assertEquals(version.toString(), "1.0.3", "Numbers don't match");
+        assertEquals("1.0.3", version.toString(),  "Numbers don't match");
     }
 
     @Test
-    public void testVersionWithQualifierFromString() {
+    void testVersionWithQualifierFromString() {
         Version version = new Version("1.0.0.test");
-        assertEquals(version.toString(), "1.0.0.test", "Numbers don't match");
+        assertEquals("1.0.0.test", version.toString(),  "Numbers don't match");
     }
 
     @Test
-    public void testVersionWithQualifierFromConstruct() {
+    void testVersionWithQualifierFromConstruct() {
         Version version = new Version(1,0,3,"test");
-        assertEquals(version.toString(), "1.0.3.test", "Numbers don't match");
+        assertEquals("1.0.3.test", version.toString(),  "Numbers don't match");
     }
 
     @Test
-    public void testVersionCompareToA() {
+    void testVersionCompareToA() {
         Version versionA = new Version(1,0);
         Version versionB = new Version(1,0);
         assertTrue(versionA.compareTo(versionB) == 0, "Numbers don't match");
     }
 
     @Test
-    public void testVersionCompareToB() {
+    void testVersionCompareToB() {
         Version versionA = new Version(1,0,3,"2");
         Version versionB = new Version(1,0,3,"2");
         assertTrue(versionA.compareTo(versionB) == 0, "Numbers don't match");
     }
 
     @Test
-    public void testVersionCompareToC() {
+    void testVersionCompareToC() {
         Version versionA = new Version("23.2.1");
         Version versionB = new Version("23.2.1");
         assertTrue(versionA.compareTo(versionB) == 0, "Numbers don't match");
     }
 
     @Test
-    public void testVersionCompareToD() {
+    void testVersionCompareToD() {
         Version versionA = new Version(2,3,4);
         Version versionB = new Version(1,2,3);
         assertFalse(versionA.compareTo(versionB) == 0, "Numbers don't match");

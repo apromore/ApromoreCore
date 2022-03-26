@@ -52,7 +52,7 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class CalendarServiceUnitTest {
+class CalendarServiceUnitTest {
 
     @Mock
     CustomCalendarRepository calendarRepository;
@@ -77,7 +77,7 @@ public class CalendarServiceUnitTest {
     }
 
     @Test
-    public void testCreateCalendar() throws CalendarAlreadyExistsException {
+    void testCreateCalendar() throws CalendarAlreadyExistsException {
         // Given
 
         CustomCalendar calendar = new CustomCalendar("Test Desc", ZoneId.of("UTC"));
@@ -99,7 +99,7 @@ public class CalendarServiceUnitTest {
 
 
     @Test
-    public void testCreateCalendarWithException() throws CalendarAlreadyExistsException {
+    void testCreateCalendarWithException() throws CalendarAlreadyExistsException {
         // Given
         CustomCalendar calendar = new CustomCalendar("Test Desc");
         calendar.setId(1L);
@@ -113,7 +113,7 @@ public class CalendarServiceUnitTest {
     }
 
     @Test
-    public void testCreateCalendarDuplicateName() throws CalendarAlreadyExistsException {
+    void testCreateCalendarDuplicateName() throws CalendarAlreadyExistsException {
         // Given
         String originalDescription = "Test Desc";
         String duplicate1Name = "Test Desc (1)";
@@ -143,7 +143,7 @@ public class CalendarServiceUnitTest {
 
 
     @Test
-    public void testCreateCalendarWithHoliday() throws CalendarAlreadyExistsException {
+    void testCreateCalendarWithHoliday() throws CalendarAlreadyExistsException {
         // Given
         CustomCalendar calendar = new CustomCalendar("Test Desc", ZoneId.of("UTC"));
         calendar.setId(1L);
@@ -169,7 +169,7 @@ public class CalendarServiceUnitTest {
     }
 
     @Test
-    public void testCreateCalendarWithDuplicateHoliday() throws CalendarAlreadyExistsException {
+    void testCreateCalendarWithDuplicateHoliday() throws CalendarAlreadyExistsException {
         // Given
         CustomCalendar calendar = new CustomCalendar("Test Desc1", ZoneId.of("UTC"));
         calendar.setId(1L);
