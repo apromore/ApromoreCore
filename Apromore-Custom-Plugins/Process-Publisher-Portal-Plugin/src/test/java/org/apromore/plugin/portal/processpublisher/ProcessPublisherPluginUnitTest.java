@@ -64,8 +64,7 @@ import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-
-public class ProcessPublisherPluginUnitTest {
+class ProcessPublisherPluginUnitTest {
 
     @InjectMocks
     private ProcessPublisherPlugin processPublisherPlugin = new ProcessPublisherPlugin();
@@ -98,13 +97,13 @@ public class ProcessPublisherPluginUnitTest {
     }
 
     @Test
-    public void testAvailabilityNotEnabled() {
+    void testAvailabilityNotEnabled() {
         when(configBean.isEnableModelPublish()).thenReturn(false);
         assertEquals(PortalPlugin.Availability.UNAVAILABLE, processPublisherPlugin.getAvailability());
     }
 
     @Test
-    public void testAvailabilityEnabledNoPermission() {
+    void testAvailabilityEnabledNoPermission() {
         when(configBean.isEnableModelPublish()).thenReturn(true);
         userSessionManagerMockedStatic.when(() -> UserSessionManager.getCurrentUser()).thenReturn(user);
         when(user.hasAnyPermission(PermissionType.PUBLISH_MODELS)).thenReturn(false);
@@ -112,7 +111,7 @@ public class ProcessPublisherPluginUnitTest {
     }
 
     @Test
-    public void testAvailabilityEnabledWithPermission() {
+    void testAvailabilityEnabledWithPermission() {
         when(configBean.isEnableModelPublish()).thenReturn(true);
         userSessionManagerMockedStatic.when(() -> UserSessionManager.getCurrentUser()).thenReturn(user);
         when(user.hasAnyPermission(PermissionType.PUBLISH_MODELS)).thenReturn(true);
@@ -120,12 +119,12 @@ public class ProcessPublisherPluginUnitTest {
     }
 
     @Test
-    public void testGetBundleName() {
+    void testGetBundleName() {
         assertEquals("process_publisher", processPublisherPlugin.getBundleName());
     }
 
     @Test
-    public void testGetSelectedModelNothingSelected() {
+    void testGetSelectedModelNothingSelected() {
         when(portalContext.getMainController()).thenReturn(mainController);
         when(mainController.getSelectedElementsAndVersions()).thenReturn(new HashMap<>());
         when(Sessions.getCurrent()).thenReturn(session);
@@ -135,7 +134,7 @@ public class ProcessPublisherPluginUnitTest {
     }
 
     @Test
-    public void testGetSelectedModelProcessTypeNotSelected() {
+    void testGetSelectedModelProcessTypeNotSelected() {
         Map<SummaryType, List<VersionSummaryType>> selectedProcessVersions = new HashMap<>();
         selectedProcessVersions.put(new LogSummaryType(), new ArrayList<>());
 
@@ -148,7 +147,7 @@ public class ProcessPublisherPluginUnitTest {
     }
 
     @Test
-    public void testGetSelectedModelOneProcessTypeSelected() {
+    void testGetSelectedModelOneProcessTypeSelected() {
         ProcessSummaryType processSummaryType = new ProcessSummaryType();
         Map<SummaryType, List<VersionSummaryType>> selectedProcessVersions = new HashMap<>();
         selectedProcessVersions.put(processSummaryType, new ArrayList<>());
@@ -161,7 +160,7 @@ public class ProcessPublisherPluginUnitTest {
     }
 
     @Test
-    public void testGetSelectedModelFromParams() {
+    void testGetSelectedModelFromParams() {
         ProcessSummaryType processSummaryType = new ProcessSummaryType();
         Map<String, Object> params = new HashMap<>();
         params.put("selectedModel", processSummaryType);
@@ -172,7 +171,7 @@ public class ProcessPublisherPluginUnitTest {
     }
 
     @Test
-    public void testGetSelectedModelParamsWrongTypeNothingSelected() {
+    void testGetSelectedModelParamsWrongTypeNothingSelected() {
         Map<String, Object> params = new HashMap<>();
         params.put("selectedModel", "processSummaryType");
         processPublisherPlugin.setSimpleParams(params);
@@ -186,12 +185,12 @@ public class ProcessPublisherPluginUnitTest {
     }
 
     @Test
-    public void testGetIconIsPublishException() {
+    void testGetIconIsPublishException() {
         assertEquals("unlink.svg", processPublisherPlugin.getIconPath());
     }
 
     @Test
-    public void testGetIconPublishedUnrecordedProcessId() {
+    void testGetIconPublishedUnrecordedProcessId() {
         ProcessSummaryType processSummaryType = new ProcessSummaryType();
         processSummaryType.setId(1);
         Map<SummaryType, List<VersionSummaryType>> selectedProcessVersions = new HashMap<>();
@@ -207,7 +206,7 @@ public class ProcessPublisherPluginUnitTest {
     }
 
     @Test
-    public void testGetIconUnpublishedProcessId() {
+    void testGetIconUnpublishedProcessId() {
         ProcessSummaryType processSummaryType = new ProcessSummaryType();
         processSummaryType.setId(1);
         Map<SummaryType, List<VersionSummaryType>> selectedProcessVersions = new HashMap<>();
@@ -224,7 +223,7 @@ public class ProcessPublisherPluginUnitTest {
     }
 
     @Test
-    public void testGetIconPublishedProcessId() {
+    void testGetIconPublishedProcessId() {
         ProcessSummaryType processSummaryType = new ProcessSummaryType();
         processSummaryType.setId(1);
         Map<SummaryType, List<VersionSummaryType>> selectedProcessVersions = new HashMap<>();

@@ -32,10 +32,10 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import org.junit.jupiter.api.Test;
 
-public class ModelCheckerTest {
+class ModelCheckerTest {
 
     @Test
-    public void testValidModel() throws Exception {
+    void testValidModel() throws Exception {
         BPMNDiagram diagram = getDiagramFromFile("d1_valid.bpmn");
         ModelCheckResult modelCheckResult = ModelChecker.MODEL_CHECKER_RESTRICTED.checkModel(diagram);
         assertTrue(modelCheckResult.isValid());
@@ -43,7 +43,7 @@ public class ModelCheckerTest {
     }
 
     @Test
-    public void testEmptyModel() throws Exception {
+    void testEmptyModel() throws Exception {
         BPMNDiagram diagram = getDiagramFromFile("empty_model.bpmn");
         ModelCheckResult modelCheckResult = ModelChecker.MODEL_CHECKER_RESTRICTED.checkModel(diagram);
         assertFalse(modelCheckResult.isValid());
@@ -51,7 +51,7 @@ public class ModelCheckerTest {
     }
 
     @Test
-    public void testModelWithPool() throws Exception {
+    void testModelWithPool() throws Exception {
         BPMNDiagram diagram = getDiagramFromFile("model_with_pool.bpmn");
         ModelCheckResult modelCheckResult = ModelChecker.MODEL_CHECKER_RELAXED.checkModel(diagram);
         assertTrue(modelCheckResult.isValid());
@@ -64,7 +64,7 @@ public class ModelCheckerTest {
     }
 
     @Test
-    public void testModelWithSelfLoopAndMultipleEventArcs() throws Exception {
+    void testModelWithSelfLoopAndMultipleEventArcs() throws Exception {
         BPMNDiagram diagram = getDiagramFromFile("self_loop.bpmn");
 
         ModelCheckResult modelCheckResult = ModelChecker.MODEL_CHECKER_RESTRICTED.checkModel(diagram);
@@ -78,7 +78,7 @@ public class ModelCheckerTest {
     }
 
     @Test
-    public void testModelDisjointedNodes() throws Exception {
+    void testModelDisjointedNodes() throws Exception {
         BPMNDiagram diagram = getDiagramFromFile("disjointed.bpmn");
         ModelCheckResult modelCheckResult = ModelChecker.MODEL_CHECKER_RESTRICTED.checkModel(diagram);
 
@@ -90,7 +90,7 @@ public class ModelCheckerTest {
     }
 
     @Test
-    public void testModelReverseSequenceFlow() throws Exception {
+    void testModelReverseSequenceFlow() throws Exception {
         BPMNDiagram diagram = getDiagramFromFile("start_end_reversed.bpmn");
         ModelCheckResult modelCheckResult = ModelChecker.MODEL_CHECKER_RESTRICTED.checkModel(diagram);
 

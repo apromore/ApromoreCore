@@ -71,10 +71,10 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class PDAnalystTest extends TestDataSetup {
+class PDAnalystTest extends TestDataSetup {
 
     @Test
-    public void test_AnalystConstructor_ValidData() throws Exception {
+    void test_AnalystConstructor_ValidData() throws Exception {
         PDAnalyst analyst = createPDAnalyst(readLogWithOneTraceOneEvent());
 
         assertFalse(analyst.hasEmptyData());
@@ -97,7 +97,7 @@ public class PDAnalystTest extends TestDataSetup {
     }
 
     @Test
-    public void test_AnalystConstructor_MissingActivityPerspective() throws Exception {
+    void test_AnalystConstructor_MissingActivityPerspective() throws Exception {
         XLog validLog = readLogWithOneTraceOneEvent();
         ContextData contextData = ContextData.valueOf("domain1", "username1", 0,
             "logName", 0, "folderName", false, true);
@@ -112,7 +112,7 @@ public class PDAnalystTest extends TestDataSetup {
     }
 
     @Test
-    public void test_AnalystConstructor_NoPerspectiveAttributes() throws Exception {
+    void test_AnalystConstructor_NoPerspectiveAttributes() throws Exception {
         XLog validLog = readLogWithOneTraceOneEvent();
         ContextData contextData = ContextData.valueOf("domain1", "username1", 0,
             "logName", 0, "folderName", false, true);
@@ -126,7 +126,7 @@ public class PDAnalystTest extends TestDataSetup {
     }
 
     @Test
-    public void test_AnalystConstructor_TooManyPerspectiveAttributeValues() throws Exception {
+    void test_AnalystConstructor_TooManyPerspectiveAttributeValues() throws Exception {
         XLog validLog = readLogWithTwoTraceEachTwoEvents();
         ContextData contextData = ContextData.valueOf("domain1", "username1", 0,
             "logName", 0, "folderName", false, true);
@@ -141,7 +141,7 @@ public class PDAnalystTest extends TestDataSetup {
     }
 
     @Test
-    public void test_getCaseDetails() throws Exception {
+    void test_getCaseDetails() throws Exception {
         PDAnalyst analyst = createPDAnalyst(readLogWithOneTraceOneEvent());
         List<CaseDetails> caseDetails = analyst.getCaseDetails();
         assertEquals(1, caseDetails.size());
@@ -155,7 +155,7 @@ public class PDAnalystTest extends TestDataSetup {
     }
 
     @Test
-    public void test_getCaseVariantDetails() throws Exception {
+    void test_getCaseVariantDetails() throws Exception {
         PDAnalyst analyst = createPDAnalyst(readLogWithTwoTraceEachTwoEvents());
         List<CaseVariantDetails> caseVariantDetails = analyst.getCaseVariantDetails();
         assertEquals(2, caseVariantDetails.size());
@@ -168,7 +168,7 @@ public class PDAnalystTest extends TestDataSetup {
     }
 
     @Test
-    public void test_filtered_getCaseVariantDetails() throws Exception {
+    void test_filtered_getCaseVariantDetails() throws Exception {
         PDAnalyst analyst = createPDAnalyst(readLogWithTwoTraceEachTwoEvents());
         analyst.filter_RemoveEventsAnyValueOfEventAttribute("a", "concept:name");
         List<CaseVariantDetails> caseVariantDetails = analyst.getCaseVariantDetails();
@@ -182,7 +182,7 @@ public class PDAnalystTest extends TestDataSetup {
     }
 
     @Test
-    public void test_getActivityDetails() throws Exception {
+    void test_getActivityDetails() throws Exception {
         PDAnalyst analyst = createPDAnalyst(readLogWithOneTraceOneEvent());
         List<PerspectiveDetails> actDetails = analyst.getActivityDetails();
         assertEquals(1, actDetails.size());
@@ -193,7 +193,7 @@ public class PDAnalystTest extends TestDataSetup {
     }
 
     @Test
-    public void test_getAttributeInfoList() throws Exception {
+    void test_getAttributeInfoList() throws Exception {
         PDAnalyst analyst = createPDAnalyst(readLogWithOneTraceOneEvent());
         ListIterable<AttributeInfo> attInfoList = analyst.getAttributeInfoList();
         assertEquals(1, attInfoList.size());
@@ -203,7 +203,7 @@ public class PDAnalystTest extends TestDataSetup {
     }
 
     @Test
-    public void test_getStatistics() throws Exception {
+    void test_getStatistics() throws Exception {
         PDAnalyst analyst = createPDAnalyst(readLogWithOneTraceOneEvent());
         assertEquals(1, analyst.getFilteredActivityInstanceSize());
         assertEquals(1, analyst.getFilteredCaseVariantSize());
@@ -219,7 +219,7 @@ public class PDAnalystTest extends TestDataSetup {
     }
 
     @Test
-    public void test_getXLog() throws Exception {
+    void test_getXLog() throws Exception {
         PDAnalyst analyst = createPDAnalyst(readLogWithOneTraceOneEvent());
         XLog xlog = analyst.getXLog();
         assertEquals(1, xlog.size());
@@ -234,7 +234,7 @@ public class PDAnalystTest extends TestDataSetup {
     }
 
     @Test
-    public void test_Filters() throws Exception {
+    void test_Filters() throws Exception {
         PDAnalyst analyst = createPDAnalyst(readLogWithTwoTraceEachTwoEvents());
 
         AttributeLog attLog = analyst.getAttributeLog();
@@ -362,7 +362,7 @@ public class PDAnalystTest extends TestDataSetup {
     }
 
     @Test
-    public void test_getActivityAttributeAverageMap() throws Exception {
+    void test_getActivityAttributeAverageMap() throws Exception {
         PDAnalyst analyst = createPDAnalyst(readLogWithThreeTraceOneVariantMissingValues());
         Map<String, String> activityAverages = analyst.getActivityAttributeAverageMap(1, 1);
 
@@ -375,7 +375,7 @@ public class PDAnalystTest extends TestDataSetup {
     }
 
     @Test
-    public void test_filtered_getActivityAttributeAverageMap() throws Exception {
+    void test_filtered_getActivityAttributeAverageMap() throws Exception {
         PDAnalyst analyst = createPDAnalyst(readLogWithThreeTraceOneVariant());
         analyst.filter_RemoveTracesAnyValueOfEventAttribute("low", "riskLevelString");
         Map<String, String> activityAverages = analyst.getActivityAttributeAverageMap(1, 1);
@@ -389,7 +389,7 @@ public class PDAnalystTest extends TestDataSetup {
     }
 
     @Test
-    public void test_discoverTraceVariant_bad_variant_ID() throws Exception {
+    void test_discoverTraceVariant_bad_variant_ID() throws Exception {
         PDAnalyst analyst = createPDAnalyst(readLogWithOneTraceOneEvent());
         try {
             analyst.discoverTraceVariant(100, null);
@@ -401,7 +401,7 @@ public class PDAnalystTest extends TestDataSetup {
     }
 
     @Test
-    public void test_RetainingLayout() throws Exception {
+    void test_RetainingLayout() throws Exception {
         // Initial layout with standard options
         PDAnalyst analyst = createPDAnalyst(readLogWithStartCompleteEventsNonOverlapping());
         Layout layout1 = analyst.discoverProcess(
@@ -566,7 +566,7 @@ public class PDAnalystTest extends TestDataSetup {
     }
 
     @Test
-    public void test_SimulationData() throws Exception {
+    void test_SimulationData() throws Exception {
         // given
         CalendarModel businessCalendar = new CalendarModelBuilder().with5DayWorking().build();
         businessCalendar.setName("Business_Calendar");
@@ -644,7 +644,7 @@ public class PDAnalystTest extends TestDataSetup {
     }
 
     @Test
-    public void test_SimulationData_with_roles() throws Exception {
+    void test_SimulationData_with_roles() throws Exception {
         // given
         UserOptionsData userOptions = createUserOptions(100, 100, 40,
             MeasureType.FREQUENCY,
@@ -684,7 +684,7 @@ public class PDAnalystTest extends TestDataSetup {
     }
 
     @Test
-    public void test_SimulationData_role_precedence_for_activities() throws Exception {
+    void test_SimulationData_role_precedence_for_activities() throws Exception {
         // given
         UserOptionsData userOptions = createUserOptions(100, 100, 40,
             MeasureType.FREQUENCY,
@@ -724,7 +724,7 @@ public class PDAnalystTest extends TestDataSetup {
     }
 
     @Test
-    public void test_simulation_data_with_null_abstraction() throws Exception {
+    void test_simulation_data_with_null_abstraction() throws Exception {
         // given
         PDAnalyst analyst = createPDAnalyst(readLogWithOneTraceStartCompleteEventsNonOverlapping());
 
@@ -737,7 +737,7 @@ public class PDAnalystTest extends TestDataSetup {
     }
 
     @Test
-    public void test_only_xor_gateways_in_simulation_data() throws Exception {
+    void test_only_xor_gateways_in_simulation_data() throws Exception {
         // given
         UserOptionsData userOptions = createUserOptions(100, 100, 40,
             MeasureType.FREQUENCY,

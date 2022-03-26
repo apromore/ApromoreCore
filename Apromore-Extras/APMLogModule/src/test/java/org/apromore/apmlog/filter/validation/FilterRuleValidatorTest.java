@@ -40,7 +40,7 @@ import java.util.List;
 public class FilterRuleValidatorTest {
 
     @Test
-    public void validate() throws Exception {
+    void validate() throws Exception {
         LogFilterRule caseIdRule = CaseIdValidatorTest.getCaseIdValidatorTestRule();
         LogFilterRule orgGroupRule = AttributeValidatorTest.getSingleValueRule(FilterType.CASE_EVENT_ATTRIBUTE,
                 "org:group", "Product Management", "event");

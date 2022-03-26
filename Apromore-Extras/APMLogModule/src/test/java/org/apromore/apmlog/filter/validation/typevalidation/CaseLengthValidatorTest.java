@@ -40,10 +40,10 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.Set;
 
-public class CaseLengthValidatorTest extends FilterRuleValidatorTest {
+class CaseLengthValidatorTest extends FilterRuleValidatorTest {
 
     @Test
-    public void validateCaseLength() throws Exception {
+    void validateCaseLength() throws Exception {
         FilterType filterType = FilterType.CASE_LENGTH;
 
         RuleValue ruleValue1 = new RuleValue(filterType, OperationType.GREATER_EQUAL, "", 3);

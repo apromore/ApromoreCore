@@ -25,6 +25,7 @@ package org.apromore.logman.attribute.graph;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
+import java.util.Map;
 import org.apromore.logman.ALog;
 import org.apromore.logman.Constants;
 import org.apromore.logman.DataSetup;
@@ -32,16 +33,13 @@ import org.apromore.logman.attribute.graph.filtering.FilteredGraph;
 import org.apromore.logman.attribute.log.AttributeLog;
 import org.eclipse.collections.impl.factory.primitive.IntLists;
 import org.eclipse.collections.impl.factory.primitive.IntSets;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import java.util.Map;
-
-public class AttributeLogGraphTest extends DataSetup {
+class AttributeLogGraphTest extends DataSetup {
 
     @Test
-    public void test_OneTraceAndCompleteEvents_StructureWithCaseFrequency() throws Exception {
+    void test_OneTraceAndCompleteEvents_StructureWithCaseFrequency() throws Exception {
         ALog log = new ALog(readLogWithOneTraceAndCompleteEvents());
         AttributeLog attLog = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName(), getAllDayAllTimeCalendar());
         
@@ -277,7 +275,7 @@ public class AttributeLogGraphTest extends DataSetup {
     }
     
     @Test
-    public void testSubGraphs_OneTraceAndCompleteEvents_StructureWithCaseFrequency() throws Exception {
+    void testSubGraphs_OneTraceAndCompleteEvents_StructureWithCaseFrequency() throws Exception {
         ALog log = new ALog(readLogWithOneTraceAndCompleteEvents());
         AttributeLog attLog = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName(), getAllDayAllTimeCalendar());
         AttributeLogGraph graph = attLog.getGraphView();
@@ -317,7 +315,7 @@ public class AttributeLogGraphTest extends DataSetup {
         assertEquals(IntSets.mutable.of(2, 17, 24), nodeBasedGraph2.getSubGraphs().get(2).getArcs());
     }
     
-    public void testSubGraphs_OneTraceAndCompleteEvents_StructureWithMeanDuration() throws Exception {
+    void testSubGraphs_OneTraceAndCompleteEvents_StructureWithMeanDuration() throws Exception {
         ALog log = new ALog(readLogWithStartCompleteEventsOverlapping());
         AttributeLog attLog = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName(), getAllDayAllTimeCalendar());
         AttributeLogGraph graph = attLog.getGraphView();
@@ -359,7 +357,7 @@ public class AttributeLogGraphTest extends DataSetup {
     
     
     @Test
-    public void test_Exception() {
+    void test_Exception() {
         ALog log = new ALog(readLogWithOneTraceAndCompleteEvents());
         AttributeLog attLog = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName(), getAllDayAllTimeCalendar());
         AttributeLogGraph graph = attLog.getGraphView();
@@ -382,7 +380,7 @@ public class AttributeLogGraphTest extends DataSetup {
     }
     
     @Test
-    public void test_LogWithCompleteEventsOnly() {
+    void test_LogWithCompleteEventsOnly() {
         ALog log = new ALog(readLogWithCompleteEventsOnly());
         AttributeLog attLog = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName(), getAllDayAllTimeCalendar());
         
@@ -660,7 +658,7 @@ public class AttributeLogGraphTest extends DataSetup {
     }
     
     @Test
-    public void test_LogWithStartAndCompleteEvents() {
+    void test_LogWithStartAndCompleteEvents() {
         ALog log = new ALog(readLogWithStartCompleteEventsNonOverlappingRepeats());
         AttributeLog attLog = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName(), getAllDayAllTimeCalendar());
         AttributeLogGraph graph = attLog.getGraphView();
@@ -724,7 +722,7 @@ public class AttributeLogGraphTest extends DataSetup {
     @Test
     // Special graph: this graph has start node connecting to distinct activity connecting to the end node.
     // No arcs between activity nodes.
-    public void test_readLogWithTraceWithOneSingleUniqueEvent() {
+    void test_readLogWithTraceWithOneSingleUniqueEvent() {
         ALog log = new ALog(readLogWithTraceWithOneSingleUniqueEvent());
         AttributeLog attLog = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName(), getAllDayAllTimeCalendar());
         AttributeLogGraph graph = attLog.getGraphView();
@@ -762,7 +760,7 @@ public class AttributeLogGraphTest extends DataSetup {
     
     @Disabled
     @Test
-    public void testDurationWithSpecialCalendars() {
+    void testDurationWithSpecialCalendars() {
         ALog log = new ALog(readLogWithOneTrace_TwoActivities_StartCompleteEvents_Friday());
         
         AttributeLog attLog0 = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName(), getAllDayAllTimeCalendar());
@@ -795,7 +793,7 @@ public class AttributeLogGraphTest extends DataSetup {
     }
 
     @Test
-    public void testCostWeight() {
+    void testCostWeight() {
         ALog log = new ALog(readLogWithOneTrace_TwoActivities_StartCompleteEvents());
         AttributeLog attLog0 = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName(),
                 getAllDayAllTimeCalendar(),

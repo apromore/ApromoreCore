@@ -31,10 +31,10 @@ import org.apromore.logman.Constants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class AttributesStandardizerTest {
+class AttributesStandardizerTest {
     
     @Test
-    public void testStandardizeAttributeMap_standardAttributes() {
+    void testStandardizeAttributeMap_standardAttributes() {
         AttributesStandardizer standardizer = AttributesStandardizer.SIMPLE;
         Map<String,String> res = standardizer.standardizedAttributeMap(Map.ofEntries(
                 Map.entry(Constants.ATT_KEY_RESOURCE, "Resource 1"),
@@ -76,14 +76,14 @@ public class AttributesStandardizerTest {
     }
 
     @Test
-    public void testStandardizeAttributeMap_emptyMap() {
+    void testStandardizeAttributeMap_emptyMap() {
         AttributesStandardizer standardizer = AttributesStandardizer.SIMPLE;
         Map<String,String> res = standardizer.standardizedAttributeMap(new HashMap<>());
         assertEquals(new HashMap<>(), res);
     }
     
     @Test
-    public void testStandardizeAttributeMap_nonStandardAttributes() {
+    void testStandardizeAttributeMap_nonStandardAttributes() {
         AttributesStandardizer standardizer = AttributesStandardizer.SIMPLE;
         Map<String,String> res = standardizer.standardizedAttributeMap(Map.ofEntries(
                 Map.entry("CustomKey2", "Custom Value 2"),
@@ -99,7 +99,7 @@ public class AttributesStandardizerTest {
     }
     
     @Test
-    public void testStandardizeAttributeMap_singleStandardAttribute() {
+    void testStandardizeAttributeMap_singleStandardAttribute() {
         AttributesStandardizer standardizer = AttributesStandardizer.SIMPLE;
         Map<String,String> res = standardizer.standardizedAttributeMap(Map.ofEntries(
                 Map.entry(Constants.ATT_KEY_CONCEPT_NAME, "Activity 1")));
@@ -109,7 +109,7 @@ public class AttributesStandardizerTest {
     }
     
     @Test
-    public void testStandardizeAttributeMap_twoStandardAttributes() {
+    void testStandardizeAttributeMap_twoStandardAttributes() {
         AttributesStandardizer standardizer = AttributesStandardizer.SIMPLE;
         Map<String,String> res = standardizer.standardizedAttributeMap(Map.ofEntries(
                 Map.entry(Constants.ATT_KEY_RESOURCE, "Resource 1"),
@@ -125,7 +125,7 @@ public class AttributesStandardizerTest {
     }
     
     @Test
-    public void testStandardizeAttributeMap_oneStandardOneNonStandard() {
+    void testStandardizeAttributeMap_oneStandardOneNonStandard() {
         AttributesStandardizer standardizer = AttributesStandardizer.SIMPLE;
         Map<String,String> res = standardizer.standardizedAttributeMap(Map.ofEntries(
                 Map.entry("Random Key", "Random Value"),
@@ -141,7 +141,7 @@ public class AttributesStandardizerTest {
     }
     
     @Test
-    public void testStandardizeAttributeMap_duplicateAttributeKeys() {
+    void testStandardizeAttributeMap_duplicateAttributeKeys() {
         AttributesStandardizer standardizer = AttributesStandardizer.SIMPLE;
         Map<String,String> res = standardizer.standardizedAttributeMap(Map.ofEntries(
                 Map.entry("Resource", "Resource Value 2"),
@@ -157,7 +157,7 @@ public class AttributesStandardizerTest {
     }
     
     @Test
-    public void testStandardizeAttributeMap_sameKeywordButNonDuplicateAttributeKey() {
+    void testStandardizeAttributeMap_sameKeywordButNonDuplicateAttributeKey() {
         AttributesStandardizer standardizer = AttributesStandardizer.SIMPLE;
         Map<String,String> res = standardizer.standardizedAttributeMap(Map.ofEntries(
                 Map.entry("Activity", "Activity Value 1"), // use 'Activity' keyword
@@ -173,7 +173,7 @@ public class AttributesStandardizerTest {
     }
     
     @Test
-    public void testStandardizeAttributeMap_excludedAttributeKeys() {
+    void testStandardizeAttributeMap_excludedAttributeKeys() {
         AttributesStandardizer standardizer = AttributesStandardizer.SIMPLE;
         Map<String,String> res = standardizer.standardizedAttributeMap(Map.ofEntries(
                 Map.entry("Resource", "Resource Value 1"),
@@ -187,7 +187,7 @@ public class AttributesStandardizerTest {
     }
     
     @Test
-    public void testStandardizeAttributeMap_excludedAttributeKeysTobeEmpty() {
+    void testStandardizeAttributeMap_excludedAttributeKeysTobeEmpty() {
         AttributesStandardizer standardizer = AttributesStandardizer.SIMPLE;
         Map<String,String> res = standardizer.standardizedAttributeMap(Map.ofEntries(
                 Map.entry(Constants.ATT_KEY_LIFECYCLE_TRANSITION, "complete")

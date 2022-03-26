@@ -41,7 +41,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.Set;
 
-public class DurationValidatorTest extends FilterRuleValidatorTest {
+class DurationValidatorTest extends FilterRuleValidatorTest {
 
     private LogFilterRule getFromToRule(FilterType filterType, double from, double to) {
 
@@ -56,7 +56,7 @@ public class DurationValidatorTest extends FilterRuleValidatorTest {
     }
 
     @Test
-    public void validateDoubleValues() throws Exception {
+    void validateDoubleValues() throws Exception {
         // =====================================
         // test case utilization validation
         // =====================================
@@ -97,7 +97,7 @@ public class DurationValidatorTest extends FilterRuleValidatorTest {
     }
 
     @Test
-    public void validateNodeDuration() throws Exception {
+    void validateNodeDuration() throws Exception {
         FilterType filterType = FilterType.EVENT_ATTRIBUTE_DURATION;
         String attrVal = "Prepare package";
         RuleValue ruleValue1 = new RuleValue(filterType, OperationType.GREATER_EQUAL, attrVal, 3000000.0);
@@ -126,7 +126,7 @@ public class DurationValidatorTest extends FilterRuleValidatorTest {
     }
 
     @Test
-    public void validateArcDuration() throws Exception {
+    void validateArcDuration() throws Exception {
         FilterType filterType = FilterType.ATTRIBUTE_ARC_DURATION;
         String attrKey = XESAttributeCodes.CONCEPT_NAME;
         String attrVal1 = "Warehouse check for the order";

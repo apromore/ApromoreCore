@@ -40,10 +40,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class PathFilterTest {
+class PathFilterTest {
 
     @Test
-    public void toKeep() throws Exception{
+    void toKeep() throws Exception{
         ImmutableLog immutableLog = APMLogUnitTest.getImmutableLog("testlog", "files/EFollowTest01.xes");
         APMLogFilter apmLogFilter = new APMLogFilter(immutableLog);
         apmLogFilter.filter(List.of(getEFollowRule1()));

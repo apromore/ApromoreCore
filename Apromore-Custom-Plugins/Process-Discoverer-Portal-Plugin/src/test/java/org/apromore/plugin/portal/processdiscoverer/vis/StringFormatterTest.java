@@ -26,12 +26,12 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import org.junit.jupiter.api.Test;
 
-public class StringFormatterTest {
+class StringFormatterTest {
 
     private final StringFormatter stringFormatter = new StringFormatter();
 
     @Test
-    public void testShortenName() throws Exception {
+    void testShortenName() throws Exception {
         assertEquals("Great ... Shark", stringFormatter.shortenName("Great WhiteVeryLongStringWhiteVeryLongStringWhiteVeryLongStringWhiteVeryLongString Shark", 0));
         assertEquals("123456789012345...", stringFormatter.shortenName("123456789012345678901234567890123456789012345678901234567890", 0));
         assertEquals("12345678901234 ... 1234567890", stringFormatter.shortenName("12345678901234 1234567890 1234567890 1234567890 1234567890 1234567890", 0));
@@ -49,7 +49,7 @@ public class StringFormatterTest {
     }
 
     @Test
-    public void testWrapName() {
+    void testWrapName() {
         assertEquals("Great\\nWhiteVeryLongString\\nWhiteVeryLongStr...", stringFormatter.wrapName("Great WhiteVeryLongStringWhiteVeryLongStringWhiteVeryLongStringWhiteVeryLongString Shark", 0));
         assertEquals("1234567890123456789\\n0123456789012345678\\n9012345678901234...", stringFormatter.wrapName("123456789012345678901234567890123456789012345678901234567890", 0));
         assertEquals("12345678901234\\n1234567890\\n1234567890 12345...", stringFormatter.wrapName("12345678901234 1234567890 1234567890 1234567890 1234567890 1234567890", 0));

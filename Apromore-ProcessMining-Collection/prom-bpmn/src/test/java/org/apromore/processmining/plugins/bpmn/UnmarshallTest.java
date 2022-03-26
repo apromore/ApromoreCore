@@ -27,17 +27,17 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class UnmarshallTest {
+class UnmarshallTest {
     private LocalIDGenerator idGenerator = new LocalIDGenerator();
 
     @Test
-    public void test_Reading_Diagram_IDs_Retained() throws Exception {
+    void test_Reading_Diagram_IDs_Retained() throws Exception {
         BPMNDiagram d = TestHelper.readBPMNDiagram("src/test/data/all_elements.bpmn");
         assertElementIDsRetained_all_elements_diagram(d);
     }
 
     @Test
-    public void test_Reading_Diagram_IDs_Retained_After_Export() throws Exception {
+    void test_Reading_Diagram_IDs_Retained_After_Export() throws Exception {
         BPMNDiagram d = TestHelper.readBPMNDiagram("src/test/data/all_elements.bpmn");
         String exportedValue = TestHelper.exportFromDiagram(d);
 
@@ -132,7 +132,7 @@ public class UnmarshallTest {
     }
 
     @Test
-    public void test_Creating_Diagram_Random_IDs_Created() throws Exception {
+    void test_Creating_Diagram_Random_IDs_Created() throws Exception {
         BPMNDiagram d = BPMNDiagramFactory.newBPMNDiagram("");
 
         Event startEvent = d.addEvent("Start", Event.EventType.START, Event.EventTrigger.NONE, Event.EventUse.THROW, false, null);
@@ -168,7 +168,7 @@ public class UnmarshallTest {
     }
 
     @Test
-    public void test_Reading_InvalidDiagram() throws Exception {
+    void test_Reading_InvalidDiagram() throws Exception {
         try {
             BPMNDiagram d = TestHelper.readBPMNDiagram("src/test/data/d1_invalid.bpmn");
             fail("Expected exception but no exceptions were thrown from reading an invalid diagram");

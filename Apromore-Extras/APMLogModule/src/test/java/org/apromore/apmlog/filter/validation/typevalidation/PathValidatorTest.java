@@ -41,10 +41,10 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.Set;
 
-public class PathValidatorTest extends FilterRuleValidatorTest {
+class PathValidatorTest extends FilterRuleValidatorTest {
 
     @Test
-    public void validate() {
+    void validate() {
         FilterType filterType = FilterType.EVENTUAL_FOLLOW;
         String mainKey = XESAttributeCodes.CONCEPT_NAME;
         String secoKeyVal = XESAttributeCodes.ORG_RESOURCE;
@@ -80,7 +80,7 @@ public class PathValidatorTest extends FilterRuleValidatorTest {
     }
 
     @Test
-    public void validateDirectFollowToEnd() {
+    void validateDirectFollowToEnd() {
         FilterType filterType = FilterType.DIRECT_FOLLOW;
         String mainKey = XESAttributeCodes.CONCEPT_NAME;
 

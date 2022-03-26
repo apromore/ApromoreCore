@@ -39,12 +39,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 
-public class ProcessJSONVisualizerTest extends TestDataSetup {
+class ProcessJSONVisualizerTest extends TestDataSetup {
     private String NODE_KEY = "shape";
     private String[] nodeCompareKeys = new String[] {"name", "oriname"};
     private String[] edgeCompareKeys = new String[] {"style", "label"};
     
-    public boolean findSimilarNodeObject(JSONObject node, JSONArray array) throws JSONException {
+    private boolean findSimilarNodeObject(JSONObject node, JSONArray array) throws JSONException {
         for (int i=0; i<array.length(); i++) {
             JSONObject data = array.getJSONObject(i).getJSONObject("data");
             if (data.has(NODE_KEY)) {
@@ -147,7 +147,7 @@ public class ProcessJSONVisualizerTest extends TestDataSetup {
     }
     
     @Test
-    public void testGenerateJSON_DFG_Frequency() {
+    void testGenerateJSON_DFG_Frequency() {
         try {
             OutputData output = discoverProcess(readLogWithStartCompleteEventsNonOverlapping(),
                                                 100, 100, 40,
@@ -173,7 +173,7 @@ public class ProcessJSONVisualizerTest extends TestDataSetup {
     }
     
     @Test
-    public void testGenerateJSON_DFG_Duration() {
+    void testGenerateJSON_DFG_Duration() {
         try {
             OutputData output = discoverProcess(readLogWithStartCompleteEventsNonOverlapping(),
                                                 100, 100, 40,
@@ -199,7 +199,7 @@ public class ProcessJSONVisualizerTest extends TestDataSetup {
     }
     
     @Test
-    public void testGenerateJSON_DFG_Frequency_DoubleWeight() {
+    void testGenerateJSON_DFG_Frequency_DoubleWeight() {
         try {
             OutputData output = discoverProcess(readLogWithStartCompleteEventsNonOverlapping(),
                                                 100, 100, 40,
@@ -225,7 +225,7 @@ public class ProcessJSONVisualizerTest extends TestDataSetup {
     }
     
     @Test
-    public void testGenerateJSON_BPMN_Frequency() {
+    void testGenerateJSON_BPMN_Frequency() {
         try {
             OutputData output = discoverProcess(readLogWithStartCompleteEventsNonOverlapping(),
                                                 100, 100, 40,
@@ -251,7 +251,7 @@ public class ProcessJSONVisualizerTest extends TestDataSetup {
     }
     
     @Test
-    public void testGenerateJSON_BPMN_Duration() {
+    void testGenerateJSON_BPMN_Duration() {
         try {
             OutputData output = discoverProcess(readLogWithStartCompleteEventsNonOverlapping(),
                                                 100, 100, 40,
@@ -277,7 +277,7 @@ public class ProcessJSONVisualizerTest extends TestDataSetup {
     }
     
     @Test
-    public void testGenerateJSON_BPMN_Frequency_DoubleWeight() {
+    void testGenerateJSON_BPMN_Frequency_DoubleWeight() {
         try {
             OutputData output = discoverProcess(readLogWithStartCompleteEventsNonOverlapping(),
                                                 100, 100, 40,

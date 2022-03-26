@@ -68,7 +68,7 @@ public class CaseIdValidatorTest extends FilterRuleValidatorTest {
     }
 
     @Test
-    public void validateCaseId() throws Exception {
+    void validateCaseId() throws Exception {
         List<LogFilterRule> criteria = List.of(getCaseIdValidatorTestRule());
         APMLog log = getLog("5 cases EFollow MOD2.xes");
 

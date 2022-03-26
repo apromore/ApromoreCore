@@ -37,7 +37,7 @@ import org.apromore.plugin.exception.PluginNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class PluginProviderImplUnitTest {
+class PluginProviderImplUnitTest {
 
     private PluginProviderImpl mockProvider;
 
@@ -82,7 +82,7 @@ public class PluginProviderImplUnitTest {
     }
 
     @Test
-    public void testListAll() throws PluginNotFoundException {
+    void testListAll() throws PluginNotFoundException {
         assertNotNull(mockProvider.listAll());
         assertNotNull(mockProvider.findByName("test"));
         assertNotNull(mockProvider.findByNameAndVersion("test", "0.1"));

@@ -33,20 +33,17 @@ import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagramSup
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNNode;
 import org.apromore.similaritysearch.common.ModelParser;
 import org.apromore.similaritysearch.common.algos.GraphEditDistanceGreedy;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
  * @author Bruce Nguyen
  *
  */
-public class MergeProcessesTest extends TestDataSetup {
-//    public static void main(String[] args) {
-//        MergeProcessesTest test = new MergeProcessesTest();
-//        test.testMergeProcesses_xor_branches();
-//    }
-    
+class MergeProcessesTest extends TestDataSetup {
+
     @Test
-    public void testMergeProcesses_two_simple_models() {
+    void testMergeProcesses_two_simple_models() {
         try {
             List<BPMNDiagram> diagrams = Arrays.asList(new BPMNDiagram[] {read_one_task_A(), read_one_task_B()});
             BPMNDiagram merge = MergeProcesses.mergeProcesses(diagrams, false, "Greedy", 0.6, 0.6, 0.75, 1.0, 1.0, 1.0);
@@ -80,7 +77,7 @@ public class MergeProcessesTest extends TestDataSetup {
     }
     
     @Test
-    public void testMergeProcesses_three_simple_models() {
+    void testMergeProcesses_three_simple_models() {
         try {
             List<BPMNDiagram> diagrams = Arrays.asList(new BPMNDiagram[] {read_one_task_A(), read_one_task_B(), 
                                                                             read_one_task_C()});
@@ -114,7 +111,7 @@ public class MergeProcessesTest extends TestDataSetup {
     }
     
     @Test
-    public void testMergeProcesses_merge_in_middle() {
+    void testMergeProcesses_merge_in_middle() {
         try {
             List<BPMNDiagram> diagrams = Arrays.asList(new BPMNDiagram[] {read_one_task_B(), read_two_tasks_sequence_AB()});
             BPMNDiagram merge = MergeProcesses.mergeProcesses(diagrams, false, "Greedy", 0.6, 0.6, 0.75, 1.0, 1.0, 1.0);
@@ -154,8 +151,9 @@ public class MergeProcessesTest extends TestDataSetup {
     
     
     //Trying comparing models but it is not working
-    //@Test
-    public void testMergeProcesses_merge_two_task_sequences_crossing() {
+    @Test
+    @Disabled
+    void testMergeProcesses_merge_two_task_sequences_crossing() {
         try {
             List<BPMNDiagram> diagrams = Arrays.asList(new BPMNDiagram[] {read_two_tasks_sequence_AB(), 
                                                                         read_two_tasks_sequence_BA()});

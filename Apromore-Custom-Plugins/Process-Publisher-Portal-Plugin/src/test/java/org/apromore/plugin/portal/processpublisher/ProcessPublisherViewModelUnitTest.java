@@ -55,7 +55,7 @@ import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class ProcessPublisherViewModelUnitTest {
+class ProcessPublisherViewModelUnitTest {
     @InjectMocks
     private ProcessPublisherViewModel processPublisherViewModel = new ProcessPublisherViewModel();
 
@@ -83,12 +83,12 @@ public class ProcessPublisherViewModelUnitTest {
     }
 
     @Test
-    public void testGetBundleName() {
+    void testGetBundleName() {
         assertEquals("process_publisher", processPublisherViewModel.getBundleName());
     }
 
     @Test
-    public void testInitNoPublishDetails() {
+    void testInitNoPublishDetails() {
         int processId = 1;
 
         when(processPublishService.getPublishDetails(processId)).thenReturn(null);
@@ -101,7 +101,7 @@ public class ProcessPublisherViewModelUnitTest {
     }
 
     @Test
-    public void testInitExistingPublishDetails() {
+    void testInitExistingPublishDetails() {
         int processId = 1;
         String publishId = "publishId";
         ProcessPublish processPublish = createProcessPublish(processId, publishId, true);
@@ -116,7 +116,7 @@ public class ProcessPublisherViewModelUnitTest {
     }
 
     @Test
-    public void testUpdatePublishRecordNew() {
+    void testUpdatePublishRecordNew() {
         int processId = 50;
         String publishId = "test";
         ProcessPublish processPublish = createProcessPublish(processId, publishId, true);
@@ -141,7 +141,7 @@ public class ProcessPublisherViewModelUnitTest {
     }
 
     @Test
-    public void testUpdatePublishRecordExisting() {
+    void testUpdatePublishRecordExisting() {
         int processId = 50;
         String publishId = "test";
         ProcessPublish processPublish = createProcessPublish(processId, publishId, true);
@@ -166,7 +166,7 @@ public class ProcessPublisherViewModelUnitTest {
     }
 
     @Test
-    public void testGetPublishLinkLocalhost() {
+    void testGetPublishLinkLocalhost() {
         executionsMockedStatic.when(() -> Executions.getCurrent()).thenReturn(execution);
         when(execution.getScheme()).thenReturn("http");
         when(execution.getServerName()).thenReturn("localhost");
@@ -179,7 +179,7 @@ public class ProcessPublisherViewModelUnitTest {
     }
 
     @Test
-    public void testGetPublishLinkServer() {
+    void testGetPublishLinkServer() {
         executionsMockedStatic.when(() -> Executions.getCurrent()).thenReturn(execution);
         when(execution.getScheme()).thenReturn("https");
         when(execution.getServerName()).thenReturn("remoteServer");

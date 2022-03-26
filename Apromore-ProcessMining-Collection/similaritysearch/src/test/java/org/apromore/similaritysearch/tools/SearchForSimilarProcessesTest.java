@@ -32,10 +32,10 @@ import org.junit.jupiter.api.Test;
  * @author Bruce Nguyen
  *
  */
-public class SearchForSimilarProcessesTest extends TestDataSetup {
+class SearchForSimilarProcessesTest extends TestDataSetup {
 
     @Test
-    public void testFindProcessesSimilarity_one_task_A_same_process() {
+    void testFindProcessesSimilarity_one_task_A_same_process() {
         try {
             BPMNDiagram search = read_one_task_A();
             BPMNDiagram dbDiagram = read_one_task_A();
@@ -48,7 +48,7 @@ public class SearchForSimilarProcessesTest extends TestDataSetup {
     }
     
     @Test
-    public void testFindProcessesSimilarity_one_task_A_diff_process() {
+    void testFindProcessesSimilarity_one_task_A_diff_process() {
         try {
             BPMNDiagram search = read_one_task_A();
             BPMNDiagram dbDiagram = read_one_task_B();
@@ -61,7 +61,7 @@ public class SearchForSimilarProcessesTest extends TestDataSetup {
     }
     
     @Test
-    public void testFindProcessesSimilarity_different_processes() {
+    void testFindProcessesSimilarity_different_processes() {
         try {
             BPMNDiagram search = read_two_tasks_sequence_AB();
             BPMNDiagram dbDiagram = read_two_tasks_sequence_XY();
@@ -74,7 +74,7 @@ public class SearchForSimilarProcessesTest extends TestDataSetup {
     }
     
     @Test
-    public void testFindProcessesSimilarity_Hungarian_one_task_A_same_process() {
+    void testFindProcessesSimilarity_Hungarian_one_task_A_same_process() {
         try {
             BPMNDiagram search = read_one_task_A();
             BPMNDiagram dbDiagram = read_one_task_A();
@@ -87,7 +87,7 @@ public class SearchForSimilarProcessesTest extends TestDataSetup {
     }
     
     @Test
-    public void testFindProcessesSimilarity_Hungarian_different_processes() {
+    void testFindProcessesSimilarity_Hungarian_different_processes() {
         try {
             BPMNDiagram search = read_two_tasks_sequence_AB();
             BPMNDiagram dbDiagram = read_two_tasks_sequence_XY();
@@ -100,7 +100,7 @@ public class SearchForSimilarProcessesTest extends TestDataSetup {
     }
     
     @Test
-    public void testFindProcessesSimilarity_Hungarian_one_task_A_diff_process() {
+    void testFindProcessesSimilarity_Hungarian_one_task_A_diff_process() {
         try {
             BPMNDiagram search = read_one_task_A();
             BPMNDiagram dbDiagram = read_one_task_B();
