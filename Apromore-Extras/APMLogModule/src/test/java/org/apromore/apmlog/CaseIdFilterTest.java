@@ -26,14 +26,20 @@ import org.apromore.apmlog.filter.APMLogFilter;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.LogFilterRuleImpl;
 import org.apromore.apmlog.filter.rules.RuleValue;
-import org.apromore.apmlog.filter.types.*;
-import org.apromore.apmlog.util.Util;
+import org.apromore.apmlog.filter.types.Choice;
+import org.apromore.apmlog.filter.types.FilterType;
+import org.apromore.apmlog.filter.types.Inclusion;
+import org.apromore.apmlog.filter.types.OperationType;
+import org.apromore.apmlog.filter.types.Section;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
+import static org.junit.Assert.assertArrayEquals;
 
-import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.Arrays;
+import java.util.BitSet;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
-
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 public class CaseIdFilterTest {
     public static void test1(APMLog originalLog) throws EmptyInputException {
@@ -49,6 +55,13 @@ public class CaseIdFilterTest {
         Set<RuleValue> primaryValues = new HashSet<>();
 
         RuleValue rv = new RuleValue(FilterType.CASE_ID, OperationType.EQUAL,"case:id", bitSet);
+
+        List<String> traceIds = originalLog.getTraces().subList(0, 4).stream()
+                .map(ATrace::getCaseId).collect(Collectors.toList());
+        UnifiedMap<String, String> customAttr = new UnifiedMap<>(traceIds.stream()
+                .collect(Collectors.toMap(x -> x, x -> "null")));
+
+        rv.setCustomAttributes(customAttr);
         primaryValues.add(rv);
 
         LogFilterRule logFilterRule = new LogFilterRuleImpl(choice, Inclusion.ALL_VALUES, Section.CASE,

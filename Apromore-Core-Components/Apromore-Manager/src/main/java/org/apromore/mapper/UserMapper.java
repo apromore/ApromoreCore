@@ -99,8 +99,7 @@ public class UserMapper {
             userType.getRoles().add(newRole);
 
             for (Permission permission : role.getPermissions()) {
-                PermissionType permissionType = PermissionType.getPermissionType(
-                        permission.getRowGuid(), permission.getName());
+                PermissionType permissionType = PermissionType.getPermissionTypeById(permission.getRowGuid());
                 
                 if (!userType.getPermissions().contains(permissionType)){
                     userType.getPermissions().add(permissionType);
