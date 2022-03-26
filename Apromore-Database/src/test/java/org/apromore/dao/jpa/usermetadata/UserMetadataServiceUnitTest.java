@@ -45,7 +45,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class UserMetadataServiceUnitTest extends BaseTestClass {
+class UserMetadataServiceUnitTest extends BaseTestClass {
 
     @Autowired
     GroupRepository groupRepository;
@@ -79,7 +79,7 @@ public class UserMetadataServiceUnitTest extends BaseTestClass {
     }
 
     @Test
-    public void testSaveSingletonGroup() {
+    void testSaveSingletonGroup() {
         // given
         Group testUser = builder.withGroup("testUser2", "USER").buildGroup();
 
@@ -93,7 +93,7 @@ public class UserMetadataServiceUnitTest extends BaseTestClass {
     }
 
     @Test
-    public void testSaveGroup() {
+    void testSaveGroup() {
         // given
         Group userGroup = builder.withGroup("testGroup1", "GROUP").buildGroup();
 
@@ -107,19 +107,19 @@ public class UserMetadataServiceUnitTest extends BaseTestClass {
     }
 
     @Test
-    public void insertUsermetadataTest() {
-//	 		Given
+    void insertUsermetadataTest() {
+        // Given
         Usermetadata um = builder.withUserMetadataType("test Type", 1).withUserMetaData("Test", "test")
                 .buildUserMetaData();
 
         UsermetadataType type = usermetadataTypeRepository.save(um.getUsermetadataType());
         um.setUsermetadataType(type);
 
-//	        When
+        // When
         um = usermetadataRepository.saveAndFlush(um);
         Usermetadata umExpected = usermetadataRepository.findById(um.getId()).get();
 
-//	        Then
+        // Then
         assertThat(um.getId()).isNotNull();
         assertThat(umExpected.getId()).isNotNull();
         assertThat(umExpected.getCreatedTime()).isEqualTo(um.getCreatedTime());
@@ -127,9 +127,9 @@ public class UserMetadataServiceUnitTest extends BaseTestClass {
     }
 
     @Test
-    public void insertUsermetadataLogTest() {
+    void insertUsermetadataLogTest() {
 
-// 		Given
+        // Given
         Usermetadata um = builder.withUserMetadataType("test Type2", 1).withUserMetaData("Test2", "test2")
                 .buildUserMetaData();
 
@@ -145,7 +145,7 @@ public class UserMetadataServiceUnitTest extends BaseTestClass {
         logs.setCreateDate(new Date().toString());
         logs = logRepository.saveAndFlush(logs);
 
-//    when
+        // when
         UsermetadataLog ul = new UsermetadataLog();
         ul.setLog(logs);
         ul.setUsermetadata(um);
@@ -161,7 +161,7 @@ public class UserMetadataServiceUnitTest extends BaseTestClass {
 
         gu = groupUsermetadataRepository.saveAndFlush(gu);
 
-//        Then
+        // Then
         assertThat(ul.getId()).isNotNull();
         assertThat(gu.getId()).isNotNull();
 

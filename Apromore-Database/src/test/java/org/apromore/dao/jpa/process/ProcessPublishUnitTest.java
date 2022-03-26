@@ -37,7 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 @Transactional
-public class ProcessPublishUnitTest extends BaseTestClass {
+class ProcessPublishUnitTest extends BaseTestClass {
     private Process process1;
 
     @Autowired
@@ -59,7 +59,7 @@ public class ProcessPublishUnitTest extends BaseTestClass {
     }
 
     @Test
-    public void testFindByProcessId() {
+    void testFindByProcessId() {
         assertNull(processPublishRepository.findByProcessId(100));
 
         ProcessPublish processPublish = processPublishRepository.findByProcessId(process1.getId());
@@ -69,7 +69,7 @@ public class ProcessPublishUnitTest extends BaseTestClass {
     }
 
     @Test
-    public void testFindByPublishId() {
+    void testFindByPublishId() {
         assertNull(processPublishRepository.findByPublishId("Invalid id"));
 
         ProcessPublish processPublish = processPublishRepository.findByPublishId("b5f5ae43-58cd-4258-ac6d-b2bb684fb48e");
@@ -79,7 +79,7 @@ public class ProcessPublishUnitTest extends BaseTestClass {
     }
 
     @Test
-    public void testFindProcessByPublishId() {
+    void testFindProcessByPublishId() {
         assertNull(processPublishRepository.findProcessByPublishId("Invalid id"));
 
         assertEquals(process1, processPublishRepository.findProcessByPublishId("b5f5ae43-58cd-4258-ac6d-b2bb684fb48e"));

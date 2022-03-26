@@ -38,7 +38,7 @@ import org.junit.jupiter.api.Test;
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
  */
-public class DefaultParameterUnitTest {
+class DefaultParameterUnitTest {
 
     private PluginParameterType<String> defaultProperty;
     private PluginParameterType<Integer> defaultProperty2;
@@ -52,35 +52,35 @@ public class DefaultParameterUnitTest {
     }
 
     @Test
-    public void testGetName() {
+    void testGetName() {
         assertEquals("test", defaultProperty.getName());
         assertEquals("test2", defaultProperty2.getName());
         assertEquals("test3", defaultProperty3.getName());
     }
 
     @Test
-    public void testGetDescription() {
+    void testGetDescription() {
         assertEquals("description", defaultProperty.getDescription());
         assertEquals("description2", defaultProperty2.getDescription());
         assertEquals("description3", defaultProperty3.getDescription());
     }
 
     @Test
-    public void testIsMandatory() {
+    void testIsMandatory() {
         assertTrue(defaultProperty.isMandatory());
         assertFalse(defaultProperty2.isMandatory());
         assertFalse(defaultProperty3.isMandatory());
     }
 
     @Test
-    public void testGetValue() {
+    void testGetValue() {
         assertEquals(defaultProperty.getValue(), null);
         assertEquals(defaultProperty2.getValue(), new Integer(2));
         assertEquals(defaultProperty3.getValue(), null);
     }
 
     @Test
-    public void testGetValueType() {
+    void testGetValueType() {
         assertEquals(String.class, defaultProperty.getValueType());
         assertEquals(Integer.class, defaultProperty2.getValueType());
         assertEquals(InputStream.class, defaultProperty3.getValueType());
@@ -88,7 +88,7 @@ public class DefaultParameterUnitTest {
 
 
     @Test
-    public void testGetCategory() {
+    void testGetCategory() {
         assertEquals(ParameterType.DEFAULT_CATEGORY, defaultProperty.getCategory());
         assertEquals(ParameterType.DEFAULT_CATEGORY, defaultProperty2.getCategory());
         assertEquals(ParameterType.DEFAULT_CATEGORY, defaultProperty3.getCategory());

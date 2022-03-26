@@ -36,7 +36,7 @@ import org.apromore.plugin.property.RequestParameterType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class PluginRequestImplUnitTest {
+class PluginRequestImplUnitTest {
 
     private PluginRequestImpl pluginRequestImpl;
     private RequestParameterType<String> request1;
@@ -52,7 +52,7 @@ public class PluginRequestImplUnitTest {
     }
 
     @Test
-    public void testGetRequestProperty() throws PluginPropertyNotFoundException {
+    void testGetRequestProperty() throws PluginPropertyNotFoundException {
         PluginParameterType<String> pluginProp = new PluginParameterType<String>("test", "test", String.class, "test", false);
         assertEquals(pluginProp, pluginRequestImpl.getRequestParameter(pluginProp));
         assertEquals(request1, pluginRequestImpl.getRequestParameter(new PluginParameterType<String>("test1", "test", String.class, "test", false)));
@@ -60,12 +60,12 @@ public class PluginRequestImplUnitTest {
     }
 
     @Test
-    public void testAddRequestPropertyRequestPropertyTypeOfQ() {
+    void testAddRequestPropertyRequestPropertyTypeOfQ() {
         pluginRequestImpl.addRequestProperty(new RequestParameterType<Integer>("test3", new Integer(2)));
     }
 
     @Test
-    public void testAddRequestPropertySetOfRequestPropertyTypeOfQ() {
+    void testAddRequestPropertySetOfRequestPropertyTypeOfQ() {
         pluginRequestImpl.addRequestProperty(new HashSet<RequestParameterType<?>>());
     }
 

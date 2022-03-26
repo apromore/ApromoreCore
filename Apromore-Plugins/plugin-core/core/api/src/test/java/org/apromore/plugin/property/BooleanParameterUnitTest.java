@@ -31,10 +31,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-public class BooleanParameterUnitTest {
+class BooleanParameterUnitTest {
 
     @Test
-    public void test() {
+    void test() {
         PluginParameterType<Boolean> prop = new PluginParameterType<Boolean>("t1", "test", "test", false, false);
         assertFalse(prop.getValue());
         assertFalse(prop.getValue());

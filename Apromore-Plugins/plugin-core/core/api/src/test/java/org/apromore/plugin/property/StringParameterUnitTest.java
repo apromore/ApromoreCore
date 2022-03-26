@@ -29,10 +29,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-public class StringParameterUnitTest {
+class StringParameterUnitTest {
 
     @Test
-    public void test() {
+    void test() {
         PluginParameterType<String> prop = new PluginParameterType<String>("t1", "test", "test", false, "test");
         assertEquals("test", prop.getValue());
 

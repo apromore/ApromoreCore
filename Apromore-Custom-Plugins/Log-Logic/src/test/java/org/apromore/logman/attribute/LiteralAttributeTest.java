@@ -28,7 +28,7 @@ import org.deckfour.xes.model.XAttributeLiteral;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class LiteralAttributeTest extends AttributeTest {
+class LiteralAttributeTest extends AttributeTest {
 	
 	@Override
 	protected LiteralAttribute newEmptyAttribute(String key, AttributeLevel level) {
@@ -61,7 +61,7 @@ public class LiteralAttributeTest extends AttributeTest {
 	}
 
 	@Test
-	public void testGetValueIndex() {
+	void testGetValueIndex() {
 		LiteralAttribute att = this.newWithTwoValues("concept:name", AttributeLevel.EVENT);
 		assertEquals(att.getValueIndex("test1"), 0);
 		assertEquals(att.getValueIndex("test2"), 1);
@@ -76,7 +76,7 @@ public class LiteralAttributeTest extends AttributeTest {
 	}
 
 	@Test
-	public void testGetValueSize() {
+	void testGetValueSize() {
 		LiteralAttribute att = this.newWithTwoValues("concept:name", AttributeLevel.EVENT);
 		assertEquals(att.getValueSize(), 2);
 		
@@ -85,21 +85,21 @@ public class LiteralAttributeTest extends AttributeTest {
 	}
 
 	@Test
-	public void testRegisterXAttributeWithInvalidType() {
+	void testRegisterXAttributeWithInvalidType() {
 		LiteralAttribute att = new LiteralAttribute("concept:name", AttributeLevel.EVENT);
 		int result = att.registerXAttribute(xAttFactory.createAttributeDiscrete("concept:name", 100, null));
 		assertEquals(-1, result);
 	}
 	
 	@Test
-	public void testRegisterXAttributeWithInvalidKey() {
+	void testRegisterXAttributeWithInvalidKey() {
 		LiteralAttribute att = new LiteralAttribute("concept:name", AttributeLevel.EVENT);
 		int result = att.registerXAttribute(xAttFactory.createAttributeLiteral("invalid_key", "test", null));
 		assertEquals(-1, result);
 	}
 	
 	@Test
-	public void testRegisterValidXAttribute() {
+	void testRegisterValidXAttribute() {
 		LiteralAttribute att = new LiteralAttribute("concept:name", AttributeLevel.EVENT);
 		XAttributeLiteral xatt = xAttFactory.createAttributeLiteral("concept:name", "test", null);
 		int result = att.registerXAttribute(xatt);
@@ -107,7 +107,7 @@ public class LiteralAttributeTest extends AttributeTest {
 	}
 
 	@Test
-	public void testGetValues() {
+	void testGetValues() {
 		LiteralAttribute att = this.newWithOneValue("concept:name", AttributeLevel.EVENT);
 		assertEquals(att.getValue(0), "test");
 		
@@ -117,7 +117,7 @@ public class LiteralAttributeTest extends AttributeTest {
 	}
 
 	@Test
-	public void testGetValue() {
+	void testGetValue() {
 		LiteralAttribute att1 = this.newWithOneValue("concept:name", AttributeLevel.EVENT);
 		assertEquals(att1.getValue(0), "test");
 		assertEquals(att1.getValue(0), "test");
@@ -128,7 +128,7 @@ public class LiteralAttributeTest extends AttributeTest {
 	}
 	
 	@Test// (expected = IndexOutOfBoundsException.class)
-	public void testGetValueFromEmptyAttribute() {
+	void testGetValueFromEmptyAttribute() {
 		LiteralAttribute att0 = this.newEmptyAttribute("concept:name", AttributeLevel.EVENT);
 		assertEquals(att0.getValue(0),null);
 	}

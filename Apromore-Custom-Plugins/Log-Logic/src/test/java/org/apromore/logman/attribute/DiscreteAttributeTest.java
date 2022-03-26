@@ -28,7 +28,7 @@ import org.deckfour.xes.model.XAttributeDiscrete;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class DiscreteAttributeTest extends AttributeTest {
+class DiscreteAttributeTest extends AttributeTest {
 	
 	@Override
 	protected DiscreteAttribute newEmptyAttribute(String key, AttributeLevel level) {
@@ -61,7 +61,7 @@ public class DiscreteAttributeTest extends AttributeTest {
 	}
 
 	@Test
-	public void testGetValueIndex() {
+	void testGetValueIndex() {
 		DiscreteAttribute att = this.newWithTwoValues("concept:name", AttributeLevel.EVENT);
 		assertEquals(0, att.getValueIndex(100));
 		assertEquals(1, att.getValueIndex(200));
@@ -76,7 +76,7 @@ public class DiscreteAttributeTest extends AttributeTest {
 	}
 
 	@Test
-	public void testGetValueSize() {
+	void testGetValueSize() {
 		DiscreteAttribute att = this.newWithTwoValues("concept:name", AttributeLevel.EVENT);
 		assertEquals(att.getValueSize(), 2);
 		
@@ -85,21 +85,21 @@ public class DiscreteAttributeTest extends AttributeTest {
 	}
 
 	@Test
-	public void testRegisterXAttributeWithInvalidType() {
+	void testRegisterXAttributeWithInvalidType() {
 		DiscreteAttribute att = new DiscreteAttribute("concept:name", AttributeLevel.EVENT);
 		int result = att.registerXAttribute(xAttFactory.createAttributeContinuous("concept:name", 100, null));
 		assertEquals(-1, result);
 	}
 	
 	@Test
-	public void testRegisterXAttributeWithInvalidKey() {
+	void testRegisterXAttributeWithInvalidKey() {
 		DiscreteAttribute att = new DiscreteAttribute("concept:name", AttributeLevel.EVENT);
 		int result = att.registerXAttribute(xAttFactory.createAttributeDiscrete("invalid_key", 100, null));
 		assertEquals(-1, result);
 	}
 	
 	@Test
-	public void testRegisterValidXAttribute() {
+	void testRegisterValidXAttribute() {
 		DiscreteAttribute att = new DiscreteAttribute("concept:name", AttributeLevel.EVENT);
 		XAttributeDiscrete xatt = xAttFactory.createAttributeDiscrete("concept:name", 100, null);
 		int result = att.registerXAttribute(xatt);
@@ -107,7 +107,7 @@ public class DiscreteAttributeTest extends AttributeTest {
 	}
 
 	@Test
-	public void testGetValues() {
+	void testGetValues() {
 		DiscreteAttribute att = this.newWithOneValue("concept:name", AttributeLevel.EVENT);
 		assertEquals((long)100, att.getValue(0));
 		
@@ -117,7 +117,7 @@ public class DiscreteAttributeTest extends AttributeTest {
 	}
 
 	@Test
-	public void testGetValue() {
+	void testGetValue() {
 		DiscreteAttribute att1 = this.newWithOneValue("concept:name", AttributeLevel.EVENT);
 		assertEquals((long)100, att1.getValue(0));
 		
@@ -127,13 +127,13 @@ public class DiscreteAttributeTest extends AttributeTest {
 	}
 	
 	@Test //(expected = IndexOutOfBoundsException.class)
-	public void testGetValueFromEmptyAttribute() {
+	void testGetValueFromEmptyAttribute() {
 		DiscreteAttribute att0 = this.newEmptyAttribute("concept:name", AttributeLevel.EVENT);
 		assertEquals(att0.getValue(0),null);
 	}
 	
 	@Test 
-	public void testGetMin() {
+	void testGetMin() {
 		DiscreteAttribute att0 = this.newEmptyAttribute("concept:name", AttributeLevel.EVENT);
 		assertEquals(null, att0.getMin());
 		
@@ -145,7 +145,7 @@ public class DiscreteAttributeTest extends AttributeTest {
 	}
 	
 	@Test 
-	public void testGetMax() {
+	void testGetMax() {
 		DiscreteAttribute att0 = this.newEmptyAttribute("concept:name", AttributeLevel.EVENT);
 		assertEquals(null, att0.getMax());
 		

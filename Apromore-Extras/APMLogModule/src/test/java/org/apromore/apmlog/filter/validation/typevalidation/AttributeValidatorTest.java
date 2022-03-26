@@ -65,7 +65,7 @@ public class AttributeValidatorTest extends FilterRuleValidatorTest {
     }
 
     @Test
-    public void validateEventAttribute() throws Exception {
+    void validateEventAttribute() throws Exception {
         LogFilterRule rule = getSingleValueRule(FilterType.CASE_EVENT_ATTRIBUTE, "org:group",
                 "Product Management", "event");
         List<LogFilterRule> criteria = List.of(rule);
@@ -98,7 +98,7 @@ public class AttributeValidatorTest extends FilterRuleValidatorTest {
     }
 
     @Test
-    public void testMultiValueEventAttrValidator() throws Exception {
+    void testMultiValueEventAttrValidator() throws Exception {
         LogFilterRule rule = getMultiValueRule(
                 Set.of("Proceed order", "Prepare package",
                         "Tranfer items from warehouse 2 one 'two three four five' and six"));
@@ -115,7 +115,7 @@ public class AttributeValidatorTest extends FilterRuleValidatorTest {
     }
 
     @Test
-    public void validateCaseAttribute() throws Exception {
+    void validateCaseAttribute() throws Exception {
         FilterType filterType = FilterType.CASE_CASE_ATTRIBUTE;
         String key1 = "Customer ID";
 
@@ -161,7 +161,7 @@ public class AttributeValidatorTest extends FilterRuleValidatorTest {
     }
 
     @Test
-    public void validateAttributeCombination()  throws Exception{
+    void validateAttributeCombination()  throws Exception{
 
         LogFilterRule rule = getAttrCombFilterRule(
                 "event", "concept:name", "Proceed order",

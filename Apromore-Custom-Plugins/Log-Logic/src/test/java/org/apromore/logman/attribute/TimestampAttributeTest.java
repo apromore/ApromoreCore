@@ -29,9 +29,9 @@ import org.joda.time.DateTime;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class TimestampAttributeTest extends AttributeTest {
-	public static long datetime1 = DateTime.now().getMillis();
-	public static long datetime2 = DateTime.now().getMillis() + 1000;
+class TimestampAttributeTest extends AttributeTest {
+	private static long datetime1 = DateTime.now().getMillis();
+	private static long datetime2 = DateTime.now().getMillis() + 1000;
 	
 	@Override
 	protected TimestampAttribute newEmptyAttribute(String key, AttributeLevel level) {
@@ -64,21 +64,21 @@ public class TimestampAttributeTest extends AttributeTest {
 	}
 
 	@Test
-	public void testRegisterXAttributeWithInvalidType() {
+	void testRegisterXAttributeWithInvalidType() {
 		TimestampAttribute att = new TimestampAttribute("timestamp", AttributeLevel.EVENT);
 		int result = att.registerXAttribute(xAttFactory.createAttributeContinuous("timestamp", 100, null));
 		assertEquals(-1, result);
 	}
 	
 	@Test
-	public void testRegisterXAttributeWithInvalidKey() {
+	void testRegisterXAttributeWithInvalidKey() {
 		TimestampAttribute att = new TimestampAttribute("timestamp", AttributeLevel.EVENT);
 		int result = att.registerXAttribute(xAttFactory.createAttributeTimestamp("invalid_key", datetime1, null));
 		assertEquals(-1, result);
 	}
 	
 	@Test
-	public void testRegisterValidXAttribute() {
+	void testRegisterValidXAttribute() {
 		TimestampAttribute att = new TimestampAttribute("timestamp", AttributeLevel.EVENT);
 		XAttributeTimestamp xatt = xAttFactory.createAttributeTimestamp("timestamp", datetime1, null);
 		int result = att.registerXAttribute(xatt);
@@ -86,7 +86,7 @@ public class TimestampAttributeTest extends AttributeTest {
 	}
 
 	@Test
-	public void testGetMinMax() {
+	void testGetMinMax() {
 		TimestampAttribute att0 = this.newEmptyAttribute("timestamp", AttributeLevel.EVENT);
 		assertEquals(null, att0.getMin());
 		assertEquals(null, att0.getMax());

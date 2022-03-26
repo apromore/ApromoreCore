@@ -36,7 +36,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class GroupLogUnitTest extends BaseTestClass {
+class GroupLogUnitTest extends BaseTestClass {
 
 
     private UserManagementBuilder userManagementBuilder;
@@ -56,7 +56,7 @@ public class GroupLogUnitTest extends BaseTestClass {
     }
 
     @Test
-    public void testCreateGroupLog() {
+    void testCreateGroupLog() {
 
         // Given
         AccessRights accessRights = new AccessRights(true, false, true);

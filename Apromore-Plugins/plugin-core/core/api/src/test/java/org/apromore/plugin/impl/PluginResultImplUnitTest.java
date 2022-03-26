@@ -32,7 +32,7 @@ import org.apromore.plugin.PluginResultImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class PluginResultImplUnitTest {
+class PluginResultImplUnitTest {
 
     private PluginResultImpl pluginResultImpl;
 
@@ -43,20 +43,20 @@ public class PluginResultImplUnitTest {
     }
 
     @Test
-    public void testGetPluginMessage() {
+    void testGetPluginMessage() {
         assertNotNull(pluginResultImpl.getPluginMessage());
         assertEquals(1, pluginResultImpl.getPluginMessage().size());
     }
 
     @Test
-    public void testAddPluginMessageStringObjectArray() {
+    void testAddPluginMessageStringObjectArray() {
         pluginResultImpl.addPluginMessage("test {0}", new Integer(1));
         assertNotNull(pluginResultImpl.getPluginMessage());
         assertEquals(2, pluginResultImpl.getPluginMessage().size());
     }
 
     @Test
-    public void testAddPluginMessageString() {
+    void testAddPluginMessageString() {
         pluginResultImpl.addPluginMessage("test2");
         assertEquals(2, pluginResultImpl.getPluginMessage().size());
     }

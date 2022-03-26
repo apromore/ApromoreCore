@@ -38,7 +38,7 @@ public abstract class AttributeTest {
 	protected abstract AbstractAttribute newWithTwoValues(String key, AttributeLevel level);
 
 	@Test
-	public void testGetKeyWithLevel() {
+	void testGetKeyWithLevel() {
 		AbstractAttribute att1 = this.newEmptyAttribute("concept:name", AttributeLevel.EVENT);
 		assertEquals("concept:name", att1.getKeyWithLevel());
 		

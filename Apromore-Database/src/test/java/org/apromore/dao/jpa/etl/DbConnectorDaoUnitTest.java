@@ -33,14 +33,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-public class DbConnectorDaoUnitTest extends BaseTestClass {
-    public static final String CONNECTION_ID = "connection_id";
+class DbConnectorDaoUnitTest extends BaseTestClass {
+    private static final String CONNECTION_ID = "connection_id";
 
     @Autowired
     DbConnectorRepository dbConnectorRepository;
 
     @Test
-    public void createDbConnectorDao() {
+    void createDbConnectorDao() {
         // Given
         DbConnectorDao dbConnectorDao = new DbConnectorDao(true, CONNECTION_ID, "username", "password", "url", "database_schema", "port");
 
@@ -53,7 +53,7 @@ public class DbConnectorDaoUnitTest extends BaseTestClass {
     }
 
     @Test
-    public void getDbConnectorDao() {
+    void getDbConnectorDao() {
         // Given
         DbConnectorDao dbConnectorDaoToSave = new DbConnectorDao(true, CONNECTION_ID, "username", "password", "url", "database_schema", "port");
         dbConnectorDaoToSave = dbConnectorRepository.saveAndFlush(dbConnectorDaoToSave);
@@ -74,7 +74,7 @@ public class DbConnectorDaoUnitTest extends BaseTestClass {
     }
 
     @Test
-    public void updateDbConnectorDao() {
+    void updateDbConnectorDao() {
         // Given
         DbConnectorDao dbConnectorDaoToSave = new DbConnectorDao(true, CONNECTION_ID, "username", "password", "url", "database_schema", "port");
         dbConnectorDaoToSave = dbConnectorRepository.saveAndFlush(dbConnectorDaoToSave);
@@ -90,7 +90,7 @@ public class DbConnectorDaoUnitTest extends BaseTestClass {
     }
 
     @Test
-    public void deleteDbConnectorDao() {
+    void deleteDbConnectorDao() {
         // Given
         DbConnectorDao dbConnectorDaoToSave = new DbConnectorDao(true, CONNECTION_ID, "username", "password", "url", "database_schema", "port");
         dbConnectorDaoToSave = dbConnectorRepository.saveAndFlush(dbConnectorDaoToSave);

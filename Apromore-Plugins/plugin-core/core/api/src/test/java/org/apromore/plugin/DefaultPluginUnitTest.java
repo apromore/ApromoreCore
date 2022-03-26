@@ -33,7 +33,7 @@ import org.apromore.plugin.DefaultPlugin;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class DefaultPluginUnitTest {
+class DefaultPluginUnitTest {
 
     private final class DefaultPluginMock extends DefaultPlugin {
     }
@@ -46,52 +46,52 @@ public class DefaultPluginUnitTest {
     }
 
     @Test
-    public void testDefaultPlugin() {
+    void testDefaultPlugin() {
         assertNotNull(plugin);
     }
 
     @Test
-    public void testGetName() {
+    void testGetName() {
         assertEquals("Test", plugin.getName());
     }
 
     @Test
-    public void testGetVersion() {
+    void testGetVersion() {
         assertEquals("1.0", plugin.getVersion());
     }
 
     @Test
-    public void testGetType() {
+    void testGetType() {
         assertEquals("GenericPlugin", plugin.getType());
     }
 
     @Test
-    public void testGetDescription() {
+    void testGetDescription() {
         assertEquals("This is a nice Plugin", plugin.getDescription());
     }
 
     @Test
-    public void testGetConfigurationByNameString() {
+    void testGetConfigurationByNameString() {
         assertEquals("FooBar", plugin.getConfigurationByName("myown.option"));
     }
 
     @Test
-    public void testGetConfigurationByNameStringString() {
+    void testGetConfigurationByNameStringString() {
         assertEquals("test", plugin.getConfigurationByName("not.found", "test"));
     }
 
     @Test
-    public void testGetAuthor() {
+    void testGetAuthor() {
         assertEquals("Smith", plugin.getAuthor());
     }
 
     @Test
-    public void testGetEMail() {
+    void testGetEMail() {
         assertEquals("smith@mail.com", plugin.getEMail());
     }
 
     @Test
-    public void testEquals() {
+    void testEquals() {
         DefaultPluginMock plugin2 = new DefaultPluginMock();
         assertEquals(plugin, plugin2);
         assertEquals(plugin.hashCode(), plugin2.hashCode());

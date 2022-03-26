@@ -30,7 +30,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.apromore.plugin.DefaultParameterAwarePlugin;
 import org.apromore.plugin.property.PluginParameterType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,7 +40,7 @@ import org.junit.jupiter.api.Test;
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
  */
-public class DefaultPropertyAwarePluginUnitTest {
+class DefaultPropertyAwarePluginUnitTest {
 
     private DefaultParameterAwarePlugin propertyAwarePlugin;
     private PluginParameterType<String> mandatoryProperty;
@@ -58,19 +57,19 @@ public class DefaultPropertyAwarePluginUnitTest {
     }
 
     @Test
-    public void testAbstractPropertyAwarePlugin() {
+    void testAbstractPropertyAwarePlugin() {
         assertNotNull(this.propertyAwarePlugin);
     }
 
     @Test
-    public void testGetMandatoryProperties() {
+    void testGetMandatoryProperties() {
         assertEquals(1, this.propertyAwarePlugin.getMandatoryParameters().size());
         assertTrue(this.propertyAwarePlugin.getMandatoryParameters().contains(mandatoryProperty));
         assertFalse(this.propertyAwarePlugin.getMandatoryParameters().contains(nonMandatoryProperty));
     }
 
     @Test
-    public void testGetAvailableProperties() {
+    void testGetAvailableProperties() {
         assertEquals(2, this.propertyAwarePlugin.getAvailableParameters().size());
         assertTrue(this.propertyAwarePlugin.getAvailableParameters().contains(nonMandatoryProperty));
         assertTrue(this.propertyAwarePlugin.getAvailableParameters().contains(mandatoryProperty));
@@ -78,14 +77,14 @@ public class DefaultPropertyAwarePluginUnitTest {
 
 
     @Test
-    public void testGetOptionalProperties() {
+    void testGetOptionalProperties() {
         assertEquals(1, this.propertyAwarePlugin.getOptionalParameters().size());
         assertTrue(this.propertyAwarePlugin.getOptionalParameters().contains(nonMandatoryProperty));
         assertFalse(this.propertyAwarePlugin.getOptionalParameters().contains(mandatoryProperty));
     }
 
     @Test
-    public void testAddProperty() {
+    void testAddProperty() {
         assertFalse(this.propertyAwarePlugin.registerParameter(null));
         assertTrue(this.propertyAwarePlugin.registerParameter(new PluginParameterType<Boolean>("t3", "test", Boolean.class, "test", true)));
         assertFalse(this.propertyAwarePlugin.registerParameter(new PluginParameterType<Boolean>("t3", "test", Boolean.class, "test", true)));

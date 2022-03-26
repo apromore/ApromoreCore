@@ -30,7 +30,7 @@ import org.deckfour.xes.model.XAttributeDiscrete;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class BooleanAttributeTest extends AttributeTest {
+class BooleanAttributeTest extends AttributeTest {
 	
 	@Override
 	protected BooleanAttribute newEmptyAttribute(String key, AttributeLevel level) {
@@ -63,7 +63,7 @@ public class BooleanAttributeTest extends AttributeTest {
 	}
 
 	@Test
-	public void testGetValueIndex() {
+	void testGetValueIndex() {
 		BooleanAttribute att = this.newWithTwoValues("concept:name", AttributeLevel.EVENT);
 		assertEquals(att.getValueIndex(true), 0);
 		assertEquals(att.getValueIndex(false), 1);
@@ -78,7 +78,7 @@ public class BooleanAttributeTest extends AttributeTest {
 	}
 
 	@Test
-	public void testGetValueSize() {
+	void testGetValueSize() {
 		BooleanAttribute att = this.newWithTwoValues("concept:name", AttributeLevel.EVENT);
 		assertEquals(att.getValueSize(), 2);
 		
@@ -87,21 +87,21 @@ public class BooleanAttributeTest extends AttributeTest {
 	}
 
 	@Test
-	public void testRegisterXAttributeWithInvalidType() {
+	void testRegisterXAttributeWithInvalidType() {
 		BooleanAttribute att = new BooleanAttribute("concept:name", AttributeLevel.EVENT);
 		int result = att.registerXAttribute(xAttFactory.createAttributeContinuous("concept:name", 100, null));
 		assertEquals(-1, result);
 	}
 	
 	@Test
-	public void testRegisterXAttributeWithInvalidKey() {
+	void testRegisterXAttributeWithInvalidKey() {
 		BooleanAttribute att = new BooleanAttribute("concept:name", AttributeLevel.EVENT);
 		int result = att.registerXAttribute(xAttFactory.createAttributeBoolean("invalid_key", true, null));
 		assertEquals(-1, result);
 	}
 	
 	@Test
-	public void testRegisterValidXAttribute() {
+	void testRegisterValidXAttribute() {
 		BooleanAttribute att = new BooleanAttribute("concept:name", AttributeLevel.EVENT);
 		XAttributeBoolean xatt = xAttFactory.createAttributeBoolean("concept:name", true, null);
 		int result = att.registerXAttribute(xatt);
@@ -109,7 +109,7 @@ public class BooleanAttributeTest extends AttributeTest {
 	}
 
 	@Test
-	public void testGetValues() {
+	void testGetValues() {
 		BooleanAttribute att = this.newWithOneValue("concept:name", AttributeLevel.EVENT);
 		assertEquals(att.getValue(0), true);
 		
@@ -119,7 +119,7 @@ public class BooleanAttributeTest extends AttributeTest {
 	}
 
 	@Test
-	public void testGetValue() {
+	void testGetValue() {
 		BooleanAttribute att1 = this.newWithOneValue("concept:name", AttributeLevel.EVENT);
 		assertEquals(att1.getValue(0), true);
 		
@@ -129,7 +129,7 @@ public class BooleanAttributeTest extends AttributeTest {
 	}
 	
 	@Test
-	public void testGetValueFromEmptyAttribute() {
+	void testGetValueFromEmptyAttribute() {
 		BooleanAttribute att0 = this.newEmptyAttribute("concept:name", AttributeLevel.EVENT);
 		assertEquals(att0.getValue(0),null);
 	}
