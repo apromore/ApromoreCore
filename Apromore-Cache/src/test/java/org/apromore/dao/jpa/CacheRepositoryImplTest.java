@@ -42,7 +42,7 @@ class CacheRepositoryImplTest {
     private net.sf.ehcache.CacheManager cacheManager = CacheManager.getInstance();
 
     @BeforeEach
-    public void setUp() throws Exception {
+    void setUp() throws Exception {
     	cacheName = "xlog";
         ehCacheCacheManager.setCacheManager(cacheManager);
 

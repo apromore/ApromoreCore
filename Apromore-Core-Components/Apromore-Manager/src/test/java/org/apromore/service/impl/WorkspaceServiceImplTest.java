@@ -85,7 +85,7 @@ class WorkspaceServiceImplTest extends AbstractTest {
     private ConfigBean config;
     
     @BeforeEach
-    public final void setUp() throws Exception {
+    final void setUp() throws Exception {
         workspaceRepo = createMock(WorkspaceRepository.class);
         groupRepo = createMock(GroupRepository.class);
         groupFolderRepo = createMock(GroupFolderRepository.class);

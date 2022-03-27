@@ -90,7 +90,7 @@ class AuthorizationServiceImplTest extends AbstractTest {
     private NativeType nativeType;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
 
         groupUsermetadataRepository = createMock(GroupUsermetadataRepository.class);
         groupLogRepository = createMock(GroupLogRepository.class);

@@ -54,7 +54,7 @@ class FormatServiceImplUnitTest {
     private NativeTypeRepository nativeTypeRepository;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         NativeRepository nativeRepository = createMock(NativeRepository.class);
         nativeTypeRepository = createMock(NativeTypeRepository.class);
 

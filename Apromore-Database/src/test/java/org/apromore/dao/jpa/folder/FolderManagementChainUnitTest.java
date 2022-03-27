@@ -57,7 +57,7 @@ class FolderManagementChainUnitTest extends BaseTestClass {
     EntityManager em;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         folderBuilder = new FolderBuilder();
     }
 

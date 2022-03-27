@@ -38,7 +38,7 @@ class MetaDataServiceParquetImplUnitTest {
     private MetaDataService metaDataService;
 
     @BeforeEach
-    public void init() {
+    void init() {
         metaDataService = new MetaDataServiceParquetImpl();
     }
 

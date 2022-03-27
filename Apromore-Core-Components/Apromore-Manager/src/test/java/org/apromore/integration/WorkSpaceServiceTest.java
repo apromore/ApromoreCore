@@ -65,7 +65,7 @@ class WorkSpaceServiceTest extends BaseTest {
     UserManagementBuilder userbuilder;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         folderBuilder = new FolderBuilder();
         userbuilder = new UserManagementBuilder();
     }

@@ -51,7 +51,7 @@ class ProcessPublishServiceImplTest extends EasyMockSupport {
     private ProcessPublishServiceImpl processPublishService;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         processPublishRepository = createMock(ProcessPublishRepository.class);
         processRepository = createMock(ProcessRepository.class);
         pmvRepository = createMock(ProcessModelVersionRepository.class);

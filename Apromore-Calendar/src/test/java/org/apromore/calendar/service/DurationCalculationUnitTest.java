@@ -41,7 +41,7 @@ class DurationCalculationUnitTest {
     private CalendarModelBuilder calendarModelBuilder;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         calendarModelBuilder = new CalendarModelBuilder();
     }
 

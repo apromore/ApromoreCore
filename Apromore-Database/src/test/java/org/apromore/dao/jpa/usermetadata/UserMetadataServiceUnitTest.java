@@ -74,7 +74,7 @@ class UserMetadataServiceUnitTest extends BaseTestClass {
     GroupUsermetadataRepository groupUsermetadataRepository;
 
     @BeforeEach
-    public void Setup() {
+    void Setup() {
         builder = new UserManagementBuilder();
     }
 

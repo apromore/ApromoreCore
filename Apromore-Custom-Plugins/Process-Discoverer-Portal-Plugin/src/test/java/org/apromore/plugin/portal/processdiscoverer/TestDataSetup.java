@@ -73,7 +73,7 @@ public class TestDataSetup {
     }
 
     @BeforeEach
-    public void init() {
+    void init() {
         MockitoAnnotations.openMocks(this);
     }
 

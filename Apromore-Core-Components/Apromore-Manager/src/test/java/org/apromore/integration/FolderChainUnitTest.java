@@ -47,7 +47,7 @@ class FolderChainUnitTest extends BaseTest {
     FolderService folderService;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
 	folderBuilder = new FolderBuilder();
     }
 

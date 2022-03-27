@@ -70,7 +70,7 @@ class UserManagementUnitTest extends BaseTestClass {
     UsermetadataLogRepository usermetadataLogRepository;
 
     @BeforeEach
-    public void Setup() {
+    void Setup() {
         builder = new UserManagementBuilder();
 
     }

@@ -70,12 +70,12 @@ class ProcessPublisherViewModelUnitTest {
     MockedStatic<Clients> clientsMockedStatic = mockStatic(Clients.class);
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         MockitoAnnotations.openMocks(this);
     }
 
     @AfterEach
-    public void reset_mocks() {
+    void reset_mocks() {
         executionsMockedStatic.close();
         sessionsMockedStatic.close();
         notificationMockedStatic.close();

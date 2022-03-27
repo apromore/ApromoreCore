@@ -50,7 +50,7 @@ class ProcessManagementUnitTest extends BaseTestClass {
     ProcessRepository processRepository;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         folderBuilder = new FolderBuilder();
     }
 

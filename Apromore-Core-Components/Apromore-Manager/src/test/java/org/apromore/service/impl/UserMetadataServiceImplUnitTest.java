@@ -111,7 +111,7 @@ class UserMetadataServiceImplUnitTest {
     UserManagementBuilder userBuilder;
 
     @BeforeEach
-    public final void setUp() {
+    final void setUp() {
         userBuilder = new UserManagementBuilder();
     }
 

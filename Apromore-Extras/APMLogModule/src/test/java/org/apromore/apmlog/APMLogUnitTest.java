@@ -70,7 +70,7 @@ public class APMLogUnitTest {
     private XLog bpi2013;
 
     @BeforeEach
-    public void before() throws Exception {
+    void before() throws Exception {
         bpi2013 = (new XesXmlGZIPParser()).parse(getClass().getResourceAsStream("/BPI Challenge 2013 closed problems.xes.gz")).get(0);
 
     }

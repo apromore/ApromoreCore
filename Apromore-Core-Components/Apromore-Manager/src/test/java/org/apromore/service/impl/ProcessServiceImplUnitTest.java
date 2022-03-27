@@ -121,7 +121,7 @@ class ProcessServiceImplUnitTest extends EasyMockSupport {
     private StorageManagementFactory<StorageClient> storageFactory;
 
     @BeforeEach
-    public final void setUp() throws Exception {
+    final void setUp() throws Exception {
         // nativeRepo = createMock(NativeRepository.class);
         groupRepo = createMock(GroupRepository.class);
         groupProcessRepo = createMock(GroupProcessRepository.class);

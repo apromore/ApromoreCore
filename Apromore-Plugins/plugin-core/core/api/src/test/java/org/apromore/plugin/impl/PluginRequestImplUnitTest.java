@@ -43,7 +43,7 @@ class PluginRequestImplUnitTest {
     private RequestParameterType<String> request2;
 
     @BeforeEach
-    public void setUp() throws Exception {
+    void setUp() throws Exception {
         pluginRequestImpl = new PluginRequestImpl();
         request1 = new RequestParameterType<String>("test1", "foobar");
         pluginRequestImpl.addRequestProperty(request1);

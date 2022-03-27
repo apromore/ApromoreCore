@@ -41,7 +41,7 @@ class StorageFactoryUnitTest {
     StorageManagementFactory<StorageClient> storageManagementFactory;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         storageManagementFactory = new StorageManagementFactoryImpl<StorageClient>();
     }
 

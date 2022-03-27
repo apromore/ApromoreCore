@@ -67,7 +67,7 @@ class CalendarServiceUnitTest {
     CustomCalendarService calendarService;
 
     @BeforeEach
-    public void before() {
+    void before() {
         MockitoAnnotations.openMocks(this);
 
         List<String> mapperList = Arrays.asList("mappers/calendar.xml");

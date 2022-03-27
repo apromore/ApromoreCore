@@ -84,12 +84,12 @@ class ProcessPublisherPluginUnitTest {
     MockedStatic<PortalContexts> portalContextHolderMockedStatic = mockStatic(PortalContexts.class);
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         MockitoAnnotations.openMocks(this);
     }
 
     @AfterEach
-    public void reset_mocks() {
+    void reset_mocks() {
         labelsMockedStatic.close();
         sessionsMockedStatic.close();
         userSessionManagerMockedStatic.close();

@@ -47,7 +47,7 @@ class ProcessPublishUnitTest extends BaseTestClass {
     ProcessRepository processRepository;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         process1 = new Process();
         processRepository.saveAndFlush(process1);
 

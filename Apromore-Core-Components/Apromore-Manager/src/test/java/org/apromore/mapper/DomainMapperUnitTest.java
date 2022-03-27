@@ -45,7 +45,7 @@ class DomainMapperUnitTest {
     DomainMapper mapper;
 
     @BeforeEach
-    public void setUp() throws Exception {
+    void setUp() throws Exception {
         mapper = new DomainMapper();
     }
 

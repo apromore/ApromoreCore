@@ -51,7 +51,7 @@ class DomainServiceImplUnitTest {
 
 
     @BeforeEach
-    public final void setUp() throws Exception {
+    final void setUp() throws Exception {
         procDAOJpa = createMock(ProcessRepository.class);
         domainServiceImpl = new DomainServiceImpl(procDAOJpa);
     }

@@ -37,7 +37,7 @@ class PluginResultImplUnitTest {
     private PluginResultImpl pluginResultImpl;
 
     @BeforeEach
-    public void setUp() throws Exception {
+    void setUp() throws Exception {
         pluginResultImpl = new PluginResultImpl();
         pluginResultImpl.addPluginMessage("test");
     }

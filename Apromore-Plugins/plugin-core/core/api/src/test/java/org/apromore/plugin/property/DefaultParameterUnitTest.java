@@ -45,7 +45,7 @@ class DefaultParameterUnitTest {
     private PluginParameterType<InputStream> defaultProperty3;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         defaultProperty = new PluginParameterType<String>("t1", "test",String.class, "description", true);
         defaultProperty2 = new PluginParameterType<Integer>("t2", "test2","description2", false, 2);
         defaultProperty3 = new PluginParameterType<InputStream>("t3", "test3", InputStream.class, "description3", false);

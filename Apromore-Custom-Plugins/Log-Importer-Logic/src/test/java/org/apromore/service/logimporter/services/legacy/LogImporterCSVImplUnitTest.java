@@ -56,7 +56,7 @@ class LogImporterCSVImplUnitTest {
     private MetaDataUtilities metaDataUtilities;
 
     @BeforeEach
-    public void init() {
+    void init() {
         utilities = new TestUtilities();
         ParquetImporterFactory parquetImporterFactory =
             new ParquetFactoryProvider().getParquetFactory("csv");

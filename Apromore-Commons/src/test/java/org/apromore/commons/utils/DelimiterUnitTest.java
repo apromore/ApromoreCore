@@ -39,7 +39,7 @@ class DelimiterUnitTest {
      * Setup for tests.
      */
     @BeforeEach
-    public void setup() {
+    void setup() {
         rows = new ArrayList<>();
     }
 

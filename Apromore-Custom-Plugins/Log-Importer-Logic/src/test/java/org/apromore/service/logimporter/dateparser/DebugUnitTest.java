@@ -46,7 +46,7 @@ class DebugUnitTest {
     private LogImporter logImporter;
 
     @BeforeEach
-    public void init() {
+    void init() {
         utilities = new TestUtilities();
         parquetFactoryProvider = new ParquetFactoryProvider();
         metaDataService = parquetFactoryProvider

@@ -42,7 +42,7 @@ class PluginProviderImplUnitTest {
     private PluginProviderImpl mockProvider;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         mockProvider = new PluginProviderImpl();
         final Set<Plugin> pluginList = new HashSet<>();
         pluginList.add(new Plugin() {

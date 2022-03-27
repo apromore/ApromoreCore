@@ -47,7 +47,7 @@ class DefaultPropertyAwarePluginUnitTest {
     private PluginParameterType<String> nonMandatoryProperty;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         this.propertyAwarePlugin = new DefaultParameterAwarePlugin() {
         };
         mandatoryProperty = new PluginParameterType<String>("t1", "test1", String.class, "test", true);

@@ -51,7 +51,7 @@ class GroupLogUnitTest extends BaseTestClass {
     private LogRepository logRepo;
 
     @BeforeEach
-    public void before() {
+    void before() {
         userManagementBuilder = new UserManagementBuilder();
     }
 

@@ -51,7 +51,7 @@ class ShareFeatureUnitTest extends BaseTest {
 
 
     @BeforeEach
-    public final void setUp() {
+    final void setUp() {
         builder = new UserManagementBuilder();
     }
 

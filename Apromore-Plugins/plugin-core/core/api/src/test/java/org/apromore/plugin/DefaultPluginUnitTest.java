@@ -41,7 +41,7 @@ class DefaultPluginUnitTest {
     private DefaultPlugin plugin;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         plugin = new DefaultPluginMock();
     }
 

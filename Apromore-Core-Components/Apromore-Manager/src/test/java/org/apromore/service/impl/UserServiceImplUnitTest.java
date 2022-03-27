@@ -57,7 +57,7 @@ class UserServiceImplUnitTest {
     private SearchHistoryRepository searchHistoryRepo;
 
     @BeforeEach
-    public final void setUp() throws Exception {
+    final void setUp() throws Exception {
         usrRepo = createMock(UserRepository.class);
         searchHistoryRepo = createMock(SearchHistoryRepository.class);
         usrServiceImpl = new UserServiceImpl(usrRepo, searchHistoryRepo);
