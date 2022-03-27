@@ -53,6 +53,16 @@ package de.hpi.bpmn2_0.transformation;
  * DEALINGS IN THE SOFTWARE.
  **/
 
+import static com.processconfiguration.DefinitionsIDResolverTest.assertValidBPMN;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import com.processconfiguration.DefinitionsIDResolver;
+import com.processconfiguration.common.Constants;
+import com.sun.xml.bind.IDResolver;
+import de.hpi.bpmn2_0.factory.AbstractBpmnFactory;
+import de.hpi.bpmn2_0.model.Definitions;
+import de.hpi.bpmn2_0.model.extension.synergia.ConfigurationAnnotationAssociation;
+import de.hpi.bpmn2_0.model.extension.synergia.ConfigurationAnnotationShape;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -60,22 +70,8 @@ import java.io.FileWriter;
 import java.util.List;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
-
-import com.sun.xml.bind.IDResolver;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-
-import static com.processconfiguration.ConfigurationAlgorithmTest.testsDirectory;
-import static com.processconfiguration.DefinitionsIDResolverTest.assertValidBPMN;
-
-import com.processconfiguration.DefinitionsIDResolver;
-import de.hpi.bpmn2_0.factory.AbstractBpmnFactory;
-import de.hpi.bpmn2_0.model.Definitions;
-import de.hpi.bpmn2_0.model.extension.synergia.ConfigurationAnnotationAssociation;
-import de.hpi.bpmn2_0.model.extension.synergia.ConfigurationAnnotationShape;
 import org.oryxeditor.server.diagram.basic.BasicDiagram;
 import org.oryxeditor.server.diagram.basic.BasicDiagramBuilder;
 
@@ -127,7 +123,7 @@ class RoundTrippingTest {
             .createUnmarshaller();
         unmarshaller.setProperty(IDResolver.class.getName(), new DefinitionsIDResolver());
         Definitions definitions =
-            (Definitions) unmarshaller.unmarshal(new File(new File(testsDirectory, "data"), fileName));
+            (Definitions) unmarshaller.unmarshal(new File(new File(Constants.testsDirectory, "data"), fileName));
 
         // BPMN JAXB to JSON
         BPMN2DiagramConverter converter = new BPMN2DiagramConverter("/signaviocore/editor/");

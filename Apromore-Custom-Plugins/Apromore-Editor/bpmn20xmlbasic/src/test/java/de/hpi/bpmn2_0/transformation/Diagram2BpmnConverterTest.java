@@ -53,10 +53,10 @@ package de.hpi.bpmn2_0.transformation;
  * DEALINGS IN THE SOFTWARE.
  **/
 
-import static com.processconfiguration.ConfigurationAlgorithmTest.testsDirectory;
 import static com.processconfiguration.DefinitionsIDResolverTest.assertValidBPMN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import com.processconfiguration.common.Constants;
 import de.hpi.bpmn2_0.exceptions.BpmnConverterException;
 import de.hpi.bpmn2_0.factory.AbstractBpmnFactory;
 import de.hpi.bpmn2_0.model.Definitions;
@@ -95,7 +95,7 @@ class Diagram2BpmnConverterTest {
     void testGetDefinitionsFromDiagram1() throws BpmnConverterException, IOException, JAXBException, JSONException, SAXException {
 
         // Read the test JSON
-        BufferedReader br = new BufferedReader(new FileReader(new File(new File(testsDirectory, "data"), "GetDiagramFromBpmn20_1-expected.json")));
+        BufferedReader br = new BufferedReader(new FileReader(new File(new File(Constants.testsDirectory, "data"), "GetDiagramFromBpmn20_1-expected.json")));
         String bpmnJson = "";
         String line;
         while ((line = br.readLine()) != null) {

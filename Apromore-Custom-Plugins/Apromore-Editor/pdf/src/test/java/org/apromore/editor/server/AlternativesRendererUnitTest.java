@@ -53,6 +53,8 @@ package org.apromore.editor.server;
  * DEALINGS IN THE SOFTWARE.
  **/
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+
 import java.io.File;
 import org.junit.jupiter.api.Test;
 
@@ -65,9 +67,11 @@ class AlternativesRendererUnitTest extends AlternativesRenderer {
 
     /** Dummy test. */
     @Test
-    void testMakePDF() throws Exception {
-        File t = new File("target");
-        t.mkdir();
-        AlternativesRenderer.makePDF(new File("src/test/resources/makePDF.svg"), new File(t, "makePDF.pdf"));
+    void testMakePDF() {
+        assertDoesNotThrow(() -> {
+            File t = new File("target");
+            t.mkdir();
+            AlternativesRenderer.makePDF(new File("src/test/resources/makePDF.svg"), new File(t, "makePDF.pdf"));
+        });
     }
 }

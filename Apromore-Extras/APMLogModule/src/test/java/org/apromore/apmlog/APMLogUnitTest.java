@@ -22,6 +22,7 @@
 
 package org.apromore.apmlog;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -59,7 +60,6 @@ import org.deckfour.xes.model.XLog;
 import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -73,13 +73,6 @@ public class APMLogUnitTest {
     public void before() throws Exception {
         bpi2013 = (new XesXmlGZIPParser()).parse(getClass().getResourceAsStream("/BPI Challenge 2013 closed problems.xes.gz")).get(0);
 
-    }
-
-    @Disabled("This test demonstrates the defect AP-1037")
-    @Test
-    void testConstructor_BPIC13() {
-//        APMLog apmLog = new APMLog(bpi2013);
-//        APMLog apmLog = LogFactory.convertXLog(bpi2013);
     }
 
     @Test
@@ -184,179 +177,237 @@ public class APMLogUnitTest {
     }
 
     @Test
-    void testEventualFollowFilter1() throws Exception {
-        APMLog apmLog = getImmutableLog("EventualFollow", "files/EventualFollow.xes");
-        EventualFollowFilterTest.runTest1(apmLog, this);
+    void testEventualFollowFilter1() {
+        assertDoesNotThrow(() -> {
+            APMLog apmLog = getImmutableLog("EventualFollow", "files/EventualFollow.xes");
+            EventualFollowFilterTest.runTest1(apmLog, this);
+        });
     }
 
     @Test
-    void testDirectFollowFilter2() throws Exception {
-        APMLog apmLog = getImmutableLog("_sample5", "files/_sample5.xes.gz");
-        DirectFollowFilterTest.runTest1(apmLog, this);
-        DirectFollowFilterTest.runTest2(apmLog, this);
+    void testDirectFollowFilter2() {
+        assertDoesNotThrow(() -> {
+            APMLog apmLog = getImmutableLog("_sample5", "files/_sample5.xes.gz");
+            DirectFollowFilterTest.runTest1(apmLog, this);
+            DirectFollowFilterTest.runTest2(apmLog, this);
+        });
     }
 
 
     @Test
-    void testRework1() throws Exception {
-        APMLog apmLog = getImmutableLog("rework", "files/rework.xes");
-        ReworkRepetitionFilterTest.testGreaterOnly(apmLog, this);
+    void testRework1() {
+        assertDoesNotThrow(() -> {
+            APMLog apmLog = getImmutableLog("rework", "files/rework.xes");
+            ReworkRepetitionFilterTest.testGreaterOnly(apmLog, this);
+        });
     }
 
     @Test
-    void testRework2() throws Exception {
-        APMLog apmLog = getImmutableLog("rework", "files/rework.xes");
-        ReworkRepetitionFilterTest.testGreaterEqual(apmLog, this);
+    void testRework2() {
+        assertDoesNotThrow(() -> {
+            APMLog apmLog = getImmutableLog("rework", "files/rework.xes");
+            ReworkRepetitionFilterTest.testGreaterEqual(apmLog, this);
+        });
     }
 
     @Test
-    void testRework3() throws Exception {
-        APMLog apmLog = getImmutableLog("rework", "files/rework.xes");
-        ReworkRepetitionFilterTest.testLessOnly(apmLog, this);
+    void testRework3() {
+        assertDoesNotThrow(() -> {
+            APMLog apmLog = getImmutableLog("rework", "files/rework.xes");
+            ReworkRepetitionFilterTest.testLessOnly(apmLog, this);
+        });
     }
 
     @Test
-    void testRework4() throws Exception {
-        APMLog apmLog = getImmutableLog("rework", "files/rework.xes");
-        ReworkRepetitionFilterTest.testLessEqual(apmLog, this);
+    void testRework4() {
+        assertDoesNotThrow(() -> {
+            APMLog apmLog = getImmutableLog("rework", "files/rework.xes");
+            ReworkRepetitionFilterTest.testLessEqual(apmLog, this);
+        });
     }
 
     @Test
     void testRework5() throws Exception {
-        APMLog apmLog = getImmutableLog("rework", "files/rework.xes");
-        ReworkRepetitionFilterTest.testGreaterAndLessEqual(apmLog, this);
+        assertDoesNotThrow(() -> {
+            APMLog apmLog = getImmutableLog("rework", "files/rework.xes");
+            ReworkRepetitionFilterTest.testGreaterAndLessEqual(apmLog, this);
+        });
     }
 
     @Test
     void testRework6() throws Exception {
-        APMLog apmLog = getImmutableLog("rework", "files/rework.xes");
-        ReworkRepetitionFilterTest.testLessEqual0(apmLog, this);
+        assertDoesNotThrow(() -> {
+            APMLog apmLog = getImmutableLog("rework", "files/rework.xes");
+            ReworkRepetitionFilterTest.testLessEqual0(apmLog, this);
+        });
     }
 
     @Test
     void testRework7() throws Exception {
-        APMLog apmLog = getImmutableLog("_reworkTest2", "files/_reworkTest2.xes");
-        ReworkRepetitionFilterTest.testGreaterEqual0(apmLog, this);
+        assertDoesNotThrow(() -> {
+            APMLog apmLog = getImmutableLog("_reworkTest2", "files/_reworkTest2.xes");
+            ReworkRepetitionFilterTest.testGreaterEqual0(apmLog, this);
+        });
     }
 
     @Test
     void testEventSectionEventAttribute1() throws Exception {
-        APMLog apmLog = getImmutableLog("eventattr", "files/eventattr.xes");
-        EventSectionAttributeFilterTest.testResource(apmLog, this);
+        assertDoesNotThrow(() -> {
+            APMLog apmLog = getImmutableLog("eventattr", "files/eventattr.xes");
+            EventSectionAttributeFilterTest.testResource(apmLog, this);
+        });
     }
 
     @Test
     void testEventSectionEventAttribute2() throws Exception {
-        APMLog apmLog = getImmutableLog("eventattr", "files/eventattr.xes");
-        EventSectionAttributeFilterTest.testActivity(apmLog, this);
+        assertDoesNotThrow(() -> {
+            APMLog apmLog = getImmutableLog("eventattr", "files/eventattr.xes");
+            EventSectionAttributeFilterTest.testActivity(apmLog, this);
+        });
     }
 
     @Test
     void testCaseSectionEventAttribute1() throws Exception {
-        APMLog apmLog = getImmutableLog("eventattr", "files/eventattr.xes");
-        CaseSectionEventAttributeFilterTest.testActivity(apmLog, this);
+        assertDoesNotThrow(() -> {
+            APMLog apmLog = getImmutableLog("eventattr", "files/eventattr.xes");
+            CaseSectionEventAttributeFilterTest.testActivity(apmLog, this);
+        });
     }
 
     @Test
     void testCaseSectionEventTime1() throws Exception {
-        APMLog apmLog = getImmutableLog("eventattr", "files/eventattr.xes");
-        EventTimeFilterTest.testRetain(apmLog, this);
+        assertDoesNotThrow(() -> {
+            APMLog apmLog = getImmutableLog("eventattr", "files/eventattr.xes");
+            EventTimeFilterTest.testRetain(apmLog, this);
+        });
     }
 
     @Test
     void testAttrCombFilterEventEvent1() throws Exception {
-        APMLog apmLog = getImmutableLog("attrCombTest", "files/attrCombTest.xes");
-        AttributeCombinationTest.testRetainEventEvent1(apmLog, this);
+        assertDoesNotThrow(() -> {
+            APMLog apmLog = getImmutableLog("attrCombTest", "files/attrCombTest.xes");
+            AttributeCombinationTest.testRetainEventEvent1(apmLog, this);
+        });
     }
 
     @Test
     void testAttrCombFilterEventCase1() throws Exception {
-        APMLog apmLog = getImmutableLog("attrCombTest", "files/attrCombTest.xes");
-        AttributeCombinationTest.testRetainEventCase1(apmLog, this);
+        assertDoesNotThrow(() -> {
+            APMLog apmLog = getImmutableLog("attrCombTest", "files/attrCombTest.xes");
+            AttributeCombinationTest.testRetainEventCase1(apmLog, this);
+        });
     }
 
     @Test
     void testAttrArcDur1() throws Exception {
-        APMLog apmLog = getImmutableLog("attrArcDurTest", "files/attrArcDurTest.xes");
-        AttributeArcDurationTest.testRetain1(apmLog, this);
+        assertDoesNotThrow(() -> {
+            APMLog apmLog = getImmutableLog("attrArcDurTest", "files/attrArcDurTest.xes");
+            AttributeArcDurationTest.testRetain1(apmLog, this);
+        });
     }
 
     @Test
     void testAttrArcDur2() throws Exception {
-        APMLog apmLog = getImmutableLog("attrArcDurTest", "files/attrArcDurTest.xes");
-        AttributeArcDurationTest.testRetain2(apmLog, this);
+        assertDoesNotThrow(() -> {
+            APMLog apmLog = getImmutableLog("attrArcDurTest", "files/attrArcDurTest.xes");
+            AttributeArcDurationTest.testRetain2(apmLog, this);
+        });
     }
 
     @Test
     void testAttrArcDur3() throws Exception {
-        APMLog apmLog = getImmutableLog("attrArcDurTest", "files/attrArcDurTest.xes");
-        AttributeArcDurationTest.testRetain3(apmLog, this);
+        assertDoesNotThrow(() -> {
+            APMLog apmLog = getImmutableLog("attrArcDurTest", "files/attrArcDurTest.xes");
+            AttributeArcDurationTest.testRetain3(apmLog, this);
+        });
     }
 
     @Test
     void testAPMLogDurations() throws Exception {
-        APMLog apmLog = getImmutableLog("durationTest", "files/durationTest.xes");
-        LogsDurationsTest.testAPMLogDurations(apmLog);
+        assertDoesNotThrow(() -> {
+            APMLog apmLog = getImmutableLog("durationTest", "files/durationTest.xes");
+            LogsDurationsTest.testAPMLogDurations(apmLog);
+        });
     }
 
     @Test
     void testPLogDurations() throws Exception {
-        APMLog apmLog = getImmutableLog("durationTest", "files/durationTest.xes");
-        LogsDurationsTest.testPLogDurations(apmLog);
+        assertDoesNotThrow(() -> {
+            APMLog apmLog = getImmutableLog("durationTest", "files/durationTest.xes");
+            LogsDurationsTest.testPLogDurations(apmLog);
+        });
     }
 
     @Test
     void testImmutableLogDurations() throws Exception {
-        APMLog apmLog = getImmutableLog("durationTest", "files/durationTest.xes");
-        LogsDurationsTest.testImmutableLogDurations(apmLog);
+        assertDoesNotThrow(() -> {
+            APMLog apmLog = getImmutableLog("durationTest", "files/durationTest.xes");
+            LogsDurationsTest.testImmutableLogDurations(apmLog);
+        });
     }
 
     @Test
     void testClonedImmutableLogDurations() throws Exception {
-        APMLog apmLog = getImmutableLog("durationTest", "files/durationTest.xes");
-        LogsDurationsTest.testClonedImmutableLogDurations(apmLog);
+        assertDoesNotThrow(() -> {
+            APMLog apmLog = getImmutableLog("durationTest", "files/durationTest.xes");
+            LogsDurationsTest.testClonedImmutableLogDurations(apmLog);
+        });
     }
 
     @Test
     void testImmutableTraceTimestamp() throws Exception {
-        APMLog apmLog = getImmutableLog("durationTest", "files/durationTest.xes");
-        ImmutableTraceTest.testStartEndTimestamps(apmLog);
+        assertDoesNotThrow(() -> {
+            APMLog apmLog = getImmutableLog("durationTest", "files/durationTest.xes");
+            ImmutableTraceTest.testStartEndTimestamps(apmLog);
+        });
     }
 
     @Test
     void testEventAttrFreqAfterEventAttrFilter() throws Exception {
-        APMLog apmLog = getImmutableLog("Production2cases", "files/Production2cases.xes");
-        EventSectionAttributeFilterTest.testEventAttrFreqAfterEventAttrFilter(apmLog, this);
+        assertDoesNotThrow(() -> {
+            APMLog apmLog = getImmutableLog("Production2cases", "files/Production2cases.xes");
+            EventSectionAttributeFilterTest.testEventAttrFreqAfterEventAttrFilter(apmLog, this);
+        });
     }
 
     @Test
     void testTripleOverlap() throws Exception {
-        APMLog apmLog = getImmutableLog("TripleOverlap", "files/TripleOverlap.xes");
-        TripleOverlapTest.test1(apmLog);
+        assertDoesNotThrow(() -> {
+            APMLog apmLog = getImmutableLog("TripleOverlap", "files/TripleOverlap.xes");
+            TripleOverlapTest.test1(apmLog);
+        });
     }
 
     @Test
     void testCaseIdRemove() throws Exception {
-        APMLog originalLog = getImmutableLog("5cases", "files/5cases.xes");
-        CaseIdFilterTest.test1(originalLog);
+        assertDoesNotThrow(() -> {
+            APMLog originalLog = getImmutableLog("5cases", "files/5cases.xes");
+            CaseIdFilterTest.test1(originalLog);
+        });
     }
 
     @Test
     void testSequencialEventThenArc01() throws Exception {
-        APMLog originalLog = getImmutableLog("ArcFilterTest02", "files/ArcFilterTest02.xes");
-        AttributeArcDurationTest.testSequencialFiltering01(originalLog);
+        assertDoesNotThrow(() -> {
+            APMLog originalLog = getImmutableLog("ArcFilterTest02", "files/ArcFilterTest02.xes");
+            AttributeArcDurationTest.testSequencialFiltering01(originalLog);
+        });
     }
 
     @Test
     void testCaseDurationAfterEventAttrFilter() throws Exception {
-        APMLog apmLog = getImmutableLog("ArcSimple03", "files/ArcSimple03.xes");
-        CaseStatsTest.testCaseDurationAfterEventAttrFilter(apmLog);
+        assertDoesNotThrow(() -> {
+            APMLog apmLog = getImmutableLog("ArcSimple03", "files/ArcSimple03.xes");
+            CaseStatsTest.testCaseDurationAfterEventAttrFilter(apmLog);
+        });
     }
 
     @Test
     void testProcureToPayAdvFilter1() throws Exception {
-        APMLog apmLog = getImmutableLog("Procure-to-Pay", "files/Procure-to-Pay.xes.gz");
-        ProcureToPayAdvFilterTest.run(apmLog, this);
+        assertDoesNotThrow(() -> {
+            APMLog apmLog = getImmutableLog("Procure-to-Pay", "files/Procure-to-Pay.xes.gz");
+            ProcureToPayAdvFilterTest.run(apmLog, this);
+        });
     }
 
     @Test
@@ -431,9 +482,11 @@ public class APMLogUnitTest {
 
     @Test
     void testCustomCalendar01() throws Exception {
-        APMLog apmLog = getImmutableLog("2Traces", "files/2Traces-calendar-test01.xes");
-        CusCalTest.run(apmLog);
-        CusCalArcDurFilterTestSupport.run(apmLog);
+        assertDoesNotThrow(() -> {
+            APMLog apmLog = getImmutableLog("2Traces", "files/2Traces-calendar-test01.xes");
+            CusCalTest.run(apmLog);
+            CusCalArcDurFilterTestSupport.run(apmLog);
+        });
     }
 
     public static ImmutableLog getImmutableLog(String logName, String path) throws Exception {

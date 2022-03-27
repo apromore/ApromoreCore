@@ -53,6 +53,7 @@ package com.processconfiguration;
  * DEALINGS IN THE SOFTWARE.
  **/
 
+import com.processconfiguration.common.Constants;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
@@ -68,6 +69,8 @@ import org.xml.sax.SAXException;
 
 import com.sun.xml.bind.IDResolver;
 
+import static com.processconfiguration.common.Constants.test1File;
+import static com.processconfiguration.common.Constants.testsDirectory;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -106,24 +109,10 @@ import static com.processconfiguration.DefinitionsIDResolverTest.assertValidBPMN
  *
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  */
-public class ConfigurationAlgorithmTest {
+class ConfigurationAlgorithmTest {
 
     /** Logger.  Named after the class. */
     private static final Logger logger = Logger.getLogger(ConfigurationAlgorithmTest.class.getCanonicalName());
-
-    /**
-     * Test data directory.
-     *
-     * Initialized from the <code>tests.dir</code> system property.
-     */
-    public static final File testsDirectory = new File("src/test/resources");
-
-    /**
-     * A <a href="{@docRoot}/../tests/data/Test1.bpmn20.xml">test document</a> used in the test suite.
-     *
-     * <div align="center"><img src="{@docRoot}/svg/Test1.signavio.svg"/></div>
-     */
-    public static final File test1File = new File(new File(testsDirectory, "data"), "Test1.bpmn20.xml");
 
     /**
      * A <a href="{@docRoot}/../tests/data/TrivialGateway.bpmn20.xml">test document</a> used in the test suite.
@@ -151,7 +140,7 @@ public class ConfigurationAlgorithmTest {
     //
 
     /**
-     * Test the {@link ConfigurationAlgorithm#configure} method on the {@link #test1File}.
+     * Test the {@link ConfigurationAlgorithm#configure} method on the {@link Constants#test1File}.
      *
      * The expected behavior is for the gateway to be trivialized by the loss of its southbound sequence flow,
      * and the <q>Boeing</q> task to be removed, as follows:
@@ -264,7 +253,7 @@ public class ConfigurationAlgorithmTest {
     /**
      * Test the {@link ConfigurationAlgorithm#findOrphans} method.
      *
-     * On the unmodified {@link #test1File}, no orphans should be found.
+     * On the unmodified {@link Constants#test1File}, no orphans should be found.
      *
      * @throws JAXBException if the test document can't be parsed
      */

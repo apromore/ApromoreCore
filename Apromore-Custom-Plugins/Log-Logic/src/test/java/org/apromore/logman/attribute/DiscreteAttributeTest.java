@@ -23,6 +23,7 @@
 package org.apromore.logman.attribute;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.deckfour.xes.model.XAttributeDiscrete;
 import org.junit.jupiter.api.Assertions;
@@ -78,10 +79,10 @@ class DiscreteAttributeTest extends AttributeTest {
 	@Test
 	void testGetValueSize() {
 		DiscreteAttribute att = this.newWithTwoValues("concept:name", AttributeLevel.EVENT);
-		assertEquals(att.getValueSize(), 2);
+		assertEquals(2, att.getValueSize());
 		
 		DiscreteAttribute att2 = this.newEmptyAttribute("concept:name", AttributeLevel.EVENT);
-		assertEquals(att2.getValueSize(), 0);
+		assertEquals(0, att2.getValueSize());
 	}
 
 	@Test
@@ -129,7 +130,7 @@ class DiscreteAttributeTest extends AttributeTest {
 	@Test //(expected = IndexOutOfBoundsException.class)
 	void testGetValueFromEmptyAttribute() {
 		DiscreteAttribute att0 = this.newEmptyAttribute("concept:name", AttributeLevel.EVENT);
-		assertEquals(att0.getValue(0),null);
+		assertNull(att0.getValue(0));
 	}
 	
 	@Test 

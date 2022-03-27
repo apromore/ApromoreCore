@@ -21,6 +21,7 @@
  */
 package org.apromore.portal.util;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -44,7 +45,8 @@ class AssertUtilsTest {
 
     @Test
     void notNullAssert_nonNullParam_noIllegalArgumentExceptionThrown() {
-        AssertUtils.notNullAssert(new String(""), "testing");
+        assertDoesNotThrow(() -> AssertUtils.notNullAssert(new String(""), "testing"));
+
     }
 
     @Test
@@ -63,6 +65,6 @@ class AssertUtilsTest {
 
     @Test
     void hasTextAssert_nonNullParam_noIllegalArgumentExceptionThrown() {
-        AssertUtils.hasTextAssert(new String("yip"), "testing");
+        assertDoesNotThrow(() -> AssertUtils.hasTextAssert(new String("yip"), "testing"));
     }
 }
