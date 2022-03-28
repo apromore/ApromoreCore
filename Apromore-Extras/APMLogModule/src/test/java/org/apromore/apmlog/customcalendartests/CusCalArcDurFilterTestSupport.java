@@ -31,7 +31,7 @@ import org.apromore.apmlog.stats.CustomTriple;
 import org.apromore.apmlog.util.Util;
 import org.apromore.calendar.builder.CalendarModelBuilder;
 import org.apromore.calendar.model.CalendarModel;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Arrays;
 import java.util.HashSet;

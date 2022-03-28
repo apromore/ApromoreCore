@@ -21,54 +21,50 @@
  */
 package org.apromore.portal.util;
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class AssertUtilsTest {
+import org.junit.jupiter.api.Test;
 
-    @Rule
-    public ExpectedException exceptionRule = ExpectedException.none();
+class AssertUtilsTest {
 
     @Test
-    public void notNullAssert_nullParamNameParam_paramNameNotMentionedInAssertOutput() {
-        exceptionRule.expect(IllegalArgumentException.class);
-        exceptionRule.expectMessage("parameter must not be null");
-
-        AssertUtils.notNullAssert(null, null);
+    void notNullAssert_nullParamNameParam_paramNameNotMentionedInAssertOutput() {
+        Exception exception = assertThrows(IllegalArgumentException.class, () ->
+            AssertUtils.notNullAssert(null, null));
+        assertEquals("parameter must not be null", exception.getMessage());
     }
 
     @Test
-    public void notNullAssert_suppliedParamNameParam_suppliedParamNameMentionedInAssertOutput() {
-        exceptionRule.expect(IllegalArgumentException.class);
-        exceptionRule.expectMessage("'testing' parameter must not be null");
-
-        AssertUtils.notNullAssert(null, "testing");
+    void notNullAssert_suppliedParamNameParam_suppliedParamNameMentionedInAssertOutput() {
+        Exception exception = assertThrows(IllegalArgumentException.class, () ->
+            AssertUtils.notNullAssert(null, "testing"));
+        assertEquals("'testing' parameter must not be null", exception.getMessage());
     }
 
     @Test
-    public void notNullAssert_nonNullParam_noIllegalArgumentExceptionThrown() {
-        AssertUtils.notNullAssert(new String(""), "testing");
+    void notNullAssert_nonNullParam_noIllegalArgumentExceptionThrown() {
+        assertDoesNotThrow(() -> AssertUtils.notNullAssert(new String(""), "testing"));
+
     }
 
     @Test
-    public void hasTextAssert_nullParamNameParam_paramNameNotMentionedInAssertOutput() {
-        exceptionRule.expect(IllegalArgumentException.class);
-        exceptionRule.expectMessage("parameter must not be empty");
-
-        AssertUtils.hasTextAssert(null, null);
+    void hasTextAssert_nullParamNameParam_paramNameNotMentionedInAssertOutput() {
+        Exception exception = assertThrows(IllegalArgumentException.class, () ->
+            AssertUtils.hasTextAssert(null, null));
+        assertEquals("parameter must not be empty", exception.getMessage());
     }
 
     @Test
-    public void hasTextAssert_suppliedParamNameParam_suppliedParamNameMentionedInAssertOutput() {
-        exceptionRule.expect(IllegalArgumentException.class);
-        exceptionRule.expectMessage("'testing' parameter must not be empty");
-
-        AssertUtils.hasTextAssert(null, "testing");
+    void hasTextAssert_suppliedParamNameParam_suppliedParamNameMentionedInAssertOutput() {
+        Exception exception = assertThrows(IllegalArgumentException.class, () ->
+            AssertUtils.hasTextAssert(null, "testing"));
+        assertEquals("'testing' parameter must not be empty", exception.getMessage());
     }
 
     @Test
-    public void hasTextAssert_nonNullParam_noIllegalArgumentExceptionThrown() {
-        AssertUtils.hasTextAssert(new String("yip"), "testing");
+    void hasTextAssert_nonNullParam_noIllegalArgumentExceptionThrown() {
+        assertDoesNotThrow(() -> AssertUtils.hasTextAssert(new String("yip"), "testing"));
     }
 }

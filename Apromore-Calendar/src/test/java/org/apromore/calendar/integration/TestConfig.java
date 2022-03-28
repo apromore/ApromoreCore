@@ -23,15 +23,4 @@ public class TestConfig {
 
     @Autowired
     DataSource dataSource;
-
-    // @Bean
-    // public SpringLiquibase liquibase() throws ClassNotFoundException {
-    // SpringLiquibase liquibase = new SpringLiquibase();
-    // liquibase.setDataSource(dataSource);
-    // liquibase.setChangeLog("classpath:db/migration/changeLog.yaml");
-    // liquibase.setContexts("H2");
-    // // liquibase.setDropFirst(true);
-    // return liquibase;
-    // }
-
 }

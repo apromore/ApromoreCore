@@ -33,19 +33,19 @@ import org.apromore.apmlog.filter.types.Inclusion;
 import org.apromore.apmlog.filter.types.OperationType;
 import org.apromore.apmlog.filter.types.Section;
 import org.apromore.apmlog.xes.XESAttributeCodes;
-import static org.junit.Assert.assertEquals;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class NodeDurationFilterTest {
+class NodeDurationFilterTest {
 
     private static final String ATTR_VAL = "Prepare package";
 
     @Test
-    public void filter() throws Exception {
+    void filter() throws Exception {
         APMLog log5cases = APMLogUnitTest.getImmutableLog("5cases", "files/5cases.xes");
         List<LogFilterRule> criteria = getFilterCriteria(Choice.REMOVE);
         APMLogFilter apmLogFilter = new APMLogFilter(log5cases);

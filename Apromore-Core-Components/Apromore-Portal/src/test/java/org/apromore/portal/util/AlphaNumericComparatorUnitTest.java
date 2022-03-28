@@ -21,7 +21,10 @@
  */
 package org.apromore.portal.util;
 
-import org.junit.Assert;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -36,8 +39,8 @@ class AlphaNumericComparatorUnitTest {
         "1.10procure, 2procure"
     })
     void similarResultWithRegularComparison(String name1, String name2) {
-        Assert.assertTrue((name1.compareTo(name2)) < 0);
-        Assert.assertTrue((AlphaNumericComparator.compareTo(name1, name2)) < 0);
+        assertTrue((name1.compareTo(name2)) < 0);
+        assertTrue((AlphaNumericComparator.compareTo(name1, name2)) < 0);
     }
 
     @ParameterizedTest
@@ -47,9 +50,9 @@ class AlphaNumericComparatorUnitTest {
         "procure1.3payment, procure1.10payment"
     })
     void differentResultWithRegularComparison(String name1, String name2) {
-        Assert.assertFalse((name1.compareTo(name2)) < 0);
+        assertFalse((name1.compareTo(name2)) < 0);
 
-        Assert.assertTrue((AlphaNumericComparator.compareTo(name1, name2)) < 0);
+        assertTrue((AlphaNumericComparator.compareTo(name1, name2)) < 0);
     }
 
 

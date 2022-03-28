@@ -21,6 +21,8 @@
  */
 package org.apromore.apmlog;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
 import org.apromore.apmlog.exceptions.EmptyInputException;
 import org.apromore.apmlog.filter.APMLogFilter;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
@@ -32,7 +34,6 @@ import org.apromore.apmlog.filter.types.Inclusion;
 import org.apromore.apmlog.filter.types.OperationType;
 import org.apromore.apmlog.filter.types.Section;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
-import static org.junit.Assert.assertArrayEquals;
 
 import java.util.Arrays;
 import java.util.BitSet;

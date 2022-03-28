@@ -44,7 +44,7 @@ import org.deckfour.xes.model.XLog;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONTokener;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -72,8 +72,8 @@ public class TestDataSetup {
         return analyst;
     }
 
-    @Before
-    public void init() {
+    @BeforeEach
+    void init() {
         MockitoAnnotations.openMocks(this);
     }
 

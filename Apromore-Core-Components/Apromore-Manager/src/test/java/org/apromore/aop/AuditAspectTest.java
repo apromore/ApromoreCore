@@ -45,10 +45,10 @@
 //
 //package org.apromore.aop;
 //
-//import org.junit.After;
-//import org.junit.Before;
-//import org.junit.Test;
-//import org.junit.runner.RunWith;
+//import org.junit.jupiter.api.AfterEach;
+//import org.junit.jupiter.api.BeforeEach;
+//import org.junit.jupiter.api.Test;
+//import org.junit.jupiter.api.extension.ExtendWith;
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.mock.web.MockHttpServletRequest;
 //import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -60,19 +60,19 @@
 ///**
 // * @author David Galichet
 // */
-//@RunWith(SpringJUnit4ClassRunner.class)
+//@ExtendWith(SpringExtension.class)
 //@ContextConfiguration(locations = "classpath:*/**/applicationContext-*-TEST.xml")
 //public class AuditAspectTest {
 //
 //    @Autowired
 //    private SimpleAuditedService simpleAuditedService;
 //
-//    @After
+//    @AfterEach
 //    public void after() {
 //        SecurityContextHolder.clearContext();
 //    }
 //
-//    @Before
+//    @BeforeEach
 //    public void before() {
 //        MockHttpServletRequest request = new MockHttpServletRequest();
 //        request.setRemoteAddr("10.0.0.1");

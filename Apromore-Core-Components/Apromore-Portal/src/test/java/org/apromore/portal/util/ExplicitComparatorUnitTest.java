@@ -26,17 +26,18 @@ package org.apromore.portal.util;
 
 import java.util.Arrays;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link ExplicitComparator}.
  */
-public class ExplicitComparatorUnitTest {
+class ExplicitComparatorUnitTest {
 
     @Test
-    public void testCompare() throws Exception {
+    void testCompare() throws Exception {
         ExplicitComparator c = new ExplicitComparator("Cherry,Apple,Banana");
 
         // Try explicitly ordered elements
@@ -53,6 +54,6 @@ public class ExplicitComparatorUnitTest {
         String[] actual = {"Apple", "Banana", "Cherry", "Aardvark"};
         Arrays.sort(actual, c);
         String[] expected = {"Aardvark", "Cherry", "Apple", "Banana"};
-        assertEquals(expected, actual);
+        assertArrayEquals(expected, actual);
     }
 }

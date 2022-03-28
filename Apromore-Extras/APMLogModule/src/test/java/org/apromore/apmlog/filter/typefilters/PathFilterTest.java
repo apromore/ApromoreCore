@@ -33,17 +33,17 @@ import org.apromore.apmlog.filter.types.Inclusion;
 import org.apromore.apmlog.filter.types.OperationType;
 import org.apromore.apmlog.filter.types.Section;
 import org.apromore.apmlog.logobjects.ImmutableLog;
-import static org.junit.Assert.*;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class PathFilterTest {
+class PathFilterTest {
 
     @Test
-    public void toKeep() throws Exception{
+    void toKeep() throws Exception{
         ImmutableLog immutableLog = APMLogUnitTest.getImmutableLog("testlog", "files/EFollowTest01.xes");
         APMLogFilter apmLogFilter = new APMLogFilter(immutableLog);
         apmLogFilter.filter(List.of(getEFollowRule1()));

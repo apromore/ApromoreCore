@@ -27,17 +27,16 @@ import java.time.DayOfWeek;
 import java.time.OffsetTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
-
 import org.apromore.config.BaseTestClass;
 import org.apromore.dao.CustomCalendarInfoRepository;
 import org.apromore.dao.CustomCalendarRepository;
 import org.apromore.dao.model.CustomCalendar;
 import org.apromore.dao.model.WorkDay;
 import org.assertj.core.api.Condition;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class CalendarManagementUnitTest extends BaseTestClass {
+class CalendarManagementUnitTest extends BaseTestClass {
 
 	@Autowired
 	CustomCalendarRepository customCal;
@@ -47,7 +46,7 @@ public class CalendarManagementUnitTest extends BaseTestClass {
 
 
 	@Test
-	public void createCustomCalendar() {
+	void createCustomCalendar() {
 //		Given
 		CustomCalendar calendar = new CustomCalendar("Test Calendar",ZoneId.of("UTC"));
 
@@ -59,7 +58,7 @@ public class CalendarManagementUnitTest extends BaseTestClass {
 	}
 
 	@Test
-	public void testGetCusomCalendarByDesc() {
+	void testGetCusomCalendarByDesc() {
 
 //		Given
 		CustomCalendar calendarToSave = new CustomCalendar("Test Calendar Desc");
@@ -78,7 +77,7 @@ public class CalendarManagementUnitTest extends BaseTestClass {
 	}
 
 	@Test
-	public void testAddCustomCalendarWithWorkDayMonday() {
+	void testAddCustomCalendarWithWorkDayMonday() {
 //		Given
 		CustomCalendar calendarToSave = new CustomCalendar("Test Calendar Work Day");
 //		customCal.saveAndFlush(calenderToSave);
@@ -99,7 +98,7 @@ public class CalendarManagementUnitTest extends BaseTestClass {
 	}
 
 	@Test
-	public void testAddCustomCalendarWithNonWorkDaySaturday() {
+	void testAddCustomCalendarWithNonWorkDaySaturday() {
 //		Given
 		CustomCalendar calendarToSave = new CustomCalendar("Test Calender Non Work Day");
 //		customCal.saveAndFlush(calenderToSave);
@@ -121,7 +120,7 @@ public class CalendarManagementUnitTest extends BaseTestClass {
 	}
 
 	@Test
-	public void testAddCustomCalendarWithBusinessDays() {
+	void testAddCustomCalendarWithBusinessDays() {
 //		Given
 		CustomCalendar calendarToSave = new CustomCalendar("Test Calendar Business Calendar");
 //		customCal.saveAndFlush(calenderToSave);

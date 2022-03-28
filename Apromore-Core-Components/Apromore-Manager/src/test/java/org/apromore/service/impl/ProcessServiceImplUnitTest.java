@@ -24,7 +24,30 @@
 
 package org.apromore.service.impl;
 
+import static org.apromore.common.Constants.DRAFT_BRANCH_NAME;
+import static org.apromore.common.Constants.TRUNK_NAME;
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.anyString;
+import static org.easymock.EasyMock.expect;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import com.google.common.io.CharStreams;
+import java.io.File;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import javax.activation.DataHandler;
+import javax.mail.util.ByteArrayDataSource;
 import org.apromore.TestData;
 import org.apromore.common.Constants;
 import org.apromore.commons.config.ConfigBean;
@@ -69,40 +92,14 @@ import org.apromore.util.AccessType;
 import org.apromore.util.StreamUtil;
 import org.easymock.EasyMock;
 import org.easymock.EasyMockSupport;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-
-import javax.activation.DataHandler;
-import javax.mail.util.ByteArrayDataSource;
-import java.io.File;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
-import static org.apromore.common.Constants.DRAFT_BRANCH_NAME;
-import static org.apromore.common.Constants.TRUNK_NAME;
-import static org.easymock.EasyMock.anyObject;
-import static org.easymock.EasyMock.anyString;
-import static org.easymock.EasyMock.expect;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Bruce Nguyen
  */
-public class ProcessServiceImplUnitTest extends EasyMockSupport {
-
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
+class ProcessServiceImplUnitTest extends EasyMockSupport {
 
     private ProcessServiceImpl processService;
     private UserService usrSrv;
@@ -123,8 +120,8 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
     private StorageRepository storageRepo;
     private StorageManagementFactory<StorageClient> storageFactory;
 
-    @Before
-    public final void setUp() throws Exception {
+    @BeforeEach
+    final void setUp() throws Exception {
         // nativeRepo = createMock(NativeRepository.class);
         groupRepo = createMock(GroupRepository.class);
         groupProcessRepo = createMock(GroupProcessRepository.class);
@@ -149,7 +146,7 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
     }
 
     @Test
-    public void testImportProcess_MainPath() throws Exception {
+    void testImportProcess_MainPath() throws Exception {
         // Test data setup
         Folder folder = createFolder();
         Group group = createGroup(123, Group.Type.GROUP);
@@ -206,20 +203,20 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
 
         // VERIFY MOCK AND RESULT
         verifyAll();
-        Assert.assertEquals(pmvResult.getProcessBranch().getProcess().getName(),
+        assertEquals(pmvResult.getProcessBranch().getProcess().getName(),
                 pmv.getProcessBranch().getProcess().getName());
-        Assert.assertEquals(pmvResult.getProcessBranch().getBranchName(),
+        assertEquals(pmvResult.getProcessBranch().getBranchName(),
                 pmv.getProcessBranch().getBranchName());
-        Assert.assertEquals(pmvResult.getNativeType().getNatType(), pmv.getNativeType().getNatType());
-        Assert.assertEquals(pmvResult.getVersionNumber(), pmv.getVersionNumber());
-        Assert.assertEquals(pmvResult.getNativeDocument().getContent(),
+        assertEquals(pmvResult.getNativeType().getNatType(), pmv.getNativeType().getNatType());
+        assertEquals(pmvResult.getVersionNumber(), pmv.getVersionNumber());
+        assertEquals(pmvResult.getNativeDocument().getContent(),
                 pmv.getNativeDocument().getContent());
-        Assert.assertEquals(pmvResult.getCreateDate(), pmv.getCreateDate());
-        Assert.assertEquals(pmvResult.getLastUpdateDate(), pmv.getLastUpdateDate());
+        assertEquals(pmvResult.getCreateDate(), pmv.getCreateDate());
+        assertEquals(pmvResult.getLastUpdateDate(), pmv.getLastUpdateDate());
     }
 
     @Test
-    public void testImportProcess_FolderWithoutWriteAccess() throws Exception {
+    void testImportProcess_FolderWithoutWriteAccess() throws Exception {
         // Test data setup
         Folder homeFolder = createFolder();
         Folder folder = new Folder();
@@ -277,21 +274,21 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
 
         // VERIFY MOCK AND RESULT
         verifyAll();
-        Assert.assertEquals(homeFolder.getId(), process.getFolder().getId());
-        Assert.assertEquals(pmvResult.getProcessBranch().getProcess().getName(),
+        assertEquals(homeFolder.getId(), process.getFolder().getId());
+        assertEquals(pmvResult.getProcessBranch().getProcess().getName(),
                 pmv.getProcessBranch().getProcess().getName());
-        Assert.assertEquals(pmvResult.getProcessBranch().getBranchName(),
+        assertEquals(pmvResult.getProcessBranch().getBranchName(),
                 pmv.getProcessBranch().getBranchName());
-        Assert.assertEquals(pmvResult.getNativeType().getNatType(), pmv.getNativeType().getNatType());
-        Assert.assertEquals(pmvResult.getVersionNumber(), pmv.getVersionNumber());
-        Assert.assertEquals(pmvResult.getNativeDocument().getContent(),
+        assertEquals(pmvResult.getNativeType().getNatType(), pmv.getNativeType().getNatType());
+        assertEquals(pmvResult.getVersionNumber(), pmv.getVersionNumber());
+        assertEquals(pmvResult.getNativeDocument().getContent(),
                 pmv.getNativeDocument().getContent());
-        Assert.assertEquals(pmvResult.getCreateDate(), pmv.getCreateDate());
-        Assert.assertEquals(pmvResult.getLastUpdateDate(), pmv.getLastUpdateDate());
+        assertEquals(pmvResult.getCreateDate(), pmv.getCreateDate());
+        assertEquals(pmvResult.getLastUpdateDate(), pmv.getLastUpdateDate());
     }
 
-    @Test(expected = ImportException.class)
-    public void testImportProcess_EmptyNativeContent() throws Exception {
+    @Test
+    void testImportProcess_EmptyNativeContent() throws Exception {
         // Test data setup
         Folder folder = createFolder();
         Group group = createGroup(123, Group.Type.GROUP);
@@ -316,14 +313,14 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
         String nativeTypeS = nativeType.getNatType();
         Integer folderId = folder.getId();
 
-        ProcessModelVersion pmvResult = processService.importProcess(userName, folderId, processName,
-                version, nativeType.getNatType(), nativeStream, domainName, "", createDate, lastUpdateDate,
-                false);
+        assertThrows(ImportException.class, () -> processService.importProcess(userName, folderId, processName,
+            version, nativeType.getNatType(), nativeStream, domainName, "", createDate, lastUpdateDate,
+            false));
 
     }
 
     @Test
-    public void testImportProcess_MakeModelPublic() throws Exception {
+    void testImportProcess_MakeModelPublic() throws Exception {
         // Test data setup
         Folder folder = createFolder();
         Group group = createGroup(1, Group.Type.GROUP);
@@ -384,7 +381,7 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
 
         // VERIFY MOCK AND RESULT
         verifyAll();
-        // Verify that the public group has been added to the created process
+        // Verify that the group has been added to the created process
         boolean publicGroupAdded = false;
         for (GroupProcess gp : pmvResult.getProcessBranch().getProcess().getGroupProcesses()) {
             if (gp.getGroup() == publicGroup) {
@@ -393,11 +390,11 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
             }
         }
         ;
-        Assert.assertTrue(publicGroupAdded);
+        assertTrue(publicGroupAdded);
     }
 
-    @Test(expected = ImportException.class)
-    public void testImportProcess_NotFoundUsername() throws Exception {
+    @Test
+    void testImportProcess_NotFoundUsername() throws Exception {
         // Test data setup
         Folder folder = createFolder();
         Group group = createGroup(1, Group.Type.GROUP);
@@ -433,16 +430,19 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
         replayAll();
 
         // MOCK CALL AND VERIFY
-        ProcessModelVersion pmvResult = processService.importProcess(userName, folderId, processName,
+        assertThrows(ImportException.class, () -> {
+            ProcessModelVersion pmvResult = processService.importProcess(userName, folderId, processName,
                 version, nativeType.getNatType(), nativeStream, domainName, "", createDate, lastUpdateDate,
                 false);
 
-        // VERIFY MOCK AND RESULT
-        verifyAll();
+            // VERIFY MOCK AND RESULT
+            verifyAll();
+        });
+
     }
 
     @Test
-    public void testCreateProcessModelVersion_MainPath() throws Exception {
+    void testCreateProcessModelVersion_MainPath() throws Exception {
         // Test Data setup
         Folder folder = createFolder();
         Group group = createGroup(123, Group.Type.GROUP);
@@ -490,11 +490,11 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
 
         // Verify mock and result
         verifyAll();
-        Assert.assertEquals(resultPMV, newPMV);
+        assertEquals(resultPMV, newPMV);
     }
 
-    @Test(expected = ImportException.class)
-    public void testCreateProcessModelVersion_NoWriteAccess() throws Exception {
+    @Test
+    void testCreateProcessModelVersion_NoWriteAccess() throws Exception {
         // Test Data setup
         Folder folder = createFolder();
         Group group = createGroup(123, Group.Type.GROUP);
@@ -522,16 +522,18 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
                 .andReturn(Arrays.asList(new GroupProcess[]{groupProcess}));
         replayAll();
 
-        // Mock Call
-        ProcessModelVersion resultPMV = processService.createProcessModelVersion(processId, branchName,
+        assertThrows(ImportException.class, () -> {
+            // Mock Call
+            ProcessModelVersion resultPMV = processService.createProcessModelVersion(processId, branchName,
                 newVersion, existingVersion, user, "", nativeType, nativeStream);
 
-        // Verify mock and result
-        verifyAll();
+            // Verify mock and result
+            verifyAll();
+        });
     }
 
-    @Test(expected = RepositoryException.class)
-    public void testCreateProcessModelVersion_VersionConflict() throws Exception {
+    @Test
+    void testCreateProcessModelVersion_VersionConflict() throws Exception {
         // Test Data setup
         Folder folder = createFolder();
         Group group = createGroup(123, Group.Type.GROUP);
@@ -564,16 +566,18 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
                 existingVersionNumber)).andReturn(existingPMV);
         replayAll();
 
-        // Mock Call
-        ProcessModelVersion resultPMV = processService.createProcessModelVersion(processId, branchName,
+        assertThrows(RepositoryException.class, () -> {
+            // Mock Call
+            ProcessModelVersion resultPMV = processService.createProcessModelVersion(processId, branchName,
                 newVersion, existingVersion, user, "", nativeType, nativeStream);
 
-        // Verify mock and result
-        verifyAll();
+            // Verify mock and result
+            verifyAll();
+        });
     }
 
-    @Test(expected = RepositoryException.class)
-    public void testCreateProcessModelVersion_NotFoundExistingVersion() throws Exception {
+    @Test
+    void testCreateProcessModelVersion_NotFoundExistingVersion() throws Exception {
         // Test Data setup
         Folder folder = createFolder();
         Group group = createGroup(123, Group.Type.GROUP);
@@ -604,16 +608,18 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
                 existingVersionNumber)).andReturn(null);
         replayAll();
 
-        // Mock Call
-        ProcessModelVersion resultPMV = processService.createProcessModelVersion(processId, branchName,
+        assertThrows(RepositoryException.class, ()-> {
+            // Mock Call
+            ProcessModelVersion resultPMV = processService.createProcessModelVersion(processId, branchName,
                 newVersion, existingVersion, user, "", nativeType, nativeStream);
 
-        // Verify mock and result
-        verifyAll();
+            // Verify mock and result
+            verifyAll();
+        });
     }
 
     @Test
-    public void testUpdateProcessModelVersion_withStorage() throws Exception {
+    void testUpdateProcessModelVersion_withStorage() throws Exception {
         // Test Data setup
         Folder folder = createFolder();
         Group group = createGroup(123, Group.Type.GROUP);
@@ -669,12 +675,12 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
 
         // Verify mock and result
         verifyAll();
-        Assert.assertEquals(StreamUtil.convertStreamToString(client.getInputStream("model", filename)),
+        assertEquals(StreamUtil.convertStreamToString(client.getInputStream("model", filename)),
                 newNativeDoc.getContent());
     }
 
     @Test
-    public void testUpdateProcessModelVersion_withNativeDocument() throws Exception {
+    void testUpdateProcessModelVersion_withNativeDocument() throws Exception {
         // Test Data setup
         Folder folder = createFolder();
         Group group = createGroup(123, Group.Type.GROUP);
@@ -715,11 +721,11 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
 
         // Verify mock and result
         verifyAll();
-        Assert.assertEquals(resultPMV.getNativeDocument().getContent(), newNativeDoc.getContent());
+        assertEquals(resultPMV.getNativeDocument().getContent(), newNativeDoc.getContent());
     }
 
-    @Test(expected = UpdateProcessException.class)
-    public void testUpdateProcessModelVersion_MissStorage() throws Exception {
+    @Test
+    void testUpdateProcessModelVersion_MissStorage() throws Exception {
         // Test Data setup
         Folder folder = createFolder();
         Group group = createGroup(123, Group.Type.GROUP);
@@ -754,17 +760,19 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
                 .andReturn(newPMV);
         replayAll();
 
-        // Mock Call
-        ProcessModelVersion resultPMV = processService.updateProcessModelVersion(processId, branchName,
+        assertThrows(UpdateProcessException.class, ()-> {
+            // Mock Call
+            ProcessModelVersion resultPMV = processService.updateProcessModelVersion(processId, branchName,
                 existingVersion, user, "", nativeType, newNativeStream);
 
-        // Verify mock and result
-        verifyAll();
+            // Verify mock and result
+            verifyAll();
+        });
     }
 
 
     @Test
-    public void testUpdateProcessMetadata_CurrentPublic_TobeMadePublic() throws Exception {
+    void testUpdateProcessMetadata_CurrentPublic_TobeMadePublic() throws Exception {
         // Test Data setup
         Folder folder = createFolder();
         Group group = createGroup(1, Group.Type.GROUP);
@@ -818,12 +826,12 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
 
         // Verify mock and result
         verifyAll();
-        Assert.assertEquals(newProcessName, process.getName());
-        Assert.assertEquals(newProcessDomain, process.getDomain());
-        Assert.assertEquals(newProcessRanking, process.getRanking());
-        Assert.assertEquals(newUser, process.getUser());
-        Assert.assertEquals(newProcessVersion, pmv.getVersionNumber());
-        Assert.assertEquals(branch.getCurrentProcessModelVersion(), pmv);
+        assertEquals(newProcessName, process.getName());
+        assertEquals(newProcessDomain, process.getDomain());
+        assertEquals(newProcessRanking, process.getRanking());
+        assertEquals(newUser, process.getUser());
+        assertEquals(newProcessVersion, pmv.getVersionNumber());
+        assertEquals(branch.getCurrentProcessModelVersion(), pmv);
         boolean processHasPublicGroup = false;
         for (GroupProcess gp : process.getGroupProcesses()) {
             if (gp.getGroup().getType() == Group.Type.PUBLIC) {
@@ -831,12 +839,12 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
                 break;
             }
         }
-        Assert.assertEquals(true, processHasPublicGroup);
+        assertEquals(true, processHasPublicGroup);
     }
 
 
     @Test
-    public void testUpdateProcessMetadata_CurrentNonPublic_TobeMadePublic() throws Exception {
+    void testUpdateProcessMetadata_CurrentNonPublic_TobeMadePublic() throws Exception {
         // Test Data setup
         Folder folder = createFolder();
         Group group = createGroup(1, Group.Type.GROUP);
@@ -893,12 +901,12 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
 
         // Verify mock and result
         verifyAll();
-        Assert.assertEquals(newProcessName, process.getName());
-        Assert.assertEquals(newProcessDomain, process.getDomain());
-        Assert.assertEquals(newProcessRanking, process.getRanking());
-        Assert.assertEquals(newUser, process.getUser());
-        Assert.assertEquals(newProcessVersion, pmv.getVersionNumber());
-        Assert.assertEquals(branch.getCurrentProcessModelVersion(), pmv);
+        assertEquals(newProcessName, process.getName());
+        assertEquals(newProcessDomain, process.getDomain());
+        assertEquals(newProcessRanking, process.getRanking());
+        assertEquals(newUser, process.getUser());
+        assertEquals(newProcessVersion, pmv.getVersionNumber());
+        assertEquals(branch.getCurrentProcessModelVersion(), pmv);
         boolean processHasPublicGroup = false;
         for (GroupProcess gp : process.getGroupProcesses()) {
             if (gp.getGroup().getType() == Group.Type.PUBLIC) {
@@ -906,12 +914,12 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
                 break;
             }
         }
-        Assert.assertEquals(false, processHasPublicGroup);
+        assertEquals(false, processHasPublicGroup);
     }
 
 
     @Test
-    public void testUpdateProcessMetadata_CurrentPublic_TobeMadeNonPublic() throws Exception {
+    void testUpdateProcessMetadata_CurrentPublic_TobeMadeNonPublic() throws Exception {
         // Test Data setup
         Folder folder = createFolder();
         Group group = createGroup(1, Group.Type.GROUP);
@@ -968,12 +976,12 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
 
         // Verify mock and result
         verifyAll();
-        Assert.assertEquals(newProcessName, process.getName());
-        Assert.assertEquals(newProcessDomain, process.getDomain());
-        Assert.assertEquals(newProcessRanking, process.getRanking());
-        Assert.assertEquals(newUser, process.getUser());
-        Assert.assertEquals(newProcessVersion, pmv.getVersionNumber());
-        Assert.assertEquals(branch.getCurrentProcessModelVersion(), pmv);
+        assertEquals(newProcessName, process.getName());
+        assertEquals(newProcessDomain, process.getDomain());
+        assertEquals(newProcessRanking, process.getRanking());
+        assertEquals(newUser, process.getUser());
+        assertEquals(newProcessVersion, pmv.getVersionNumber());
+        assertEquals(branch.getCurrentProcessModelVersion(), pmv);
         boolean processHasPublicGroup = false;
         for (GroupProcess gp : process.getGroupProcesses()) {
             if (gp.getGroup().getType() == Group.Type.PUBLIC) {
@@ -981,11 +989,11 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
                 break;
             }
         }
-        Assert.assertTrue(processHasPublicGroup);
+        assertTrue(processHasPublicGroup);
     }
 
     @Test
-    public void testExportProcess() throws Exception {
+    void testExportProcess() throws Exception {
         // Test Data setup
         Folder folder = createFolder();
         Group group = createGroup(123, Group.Type.GROUP);
@@ -1033,12 +1041,12 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
         verifyAll();
         String exportResultText =
                 CharStreams.toString(new InputStreamReader(exportResult.getNative().getInputStream()));
-        Assert.assertEquals(StreamUtil.convertStreamToString(client.getInputStream("model", filename)),
+        assertEquals(StreamUtil.convertStreamToString(client.getInputStream("model", filename)),
                 exportResultText);
     }
 
     @Test
-    public void testGetBPMNRepresentation() throws Exception {
+    void testGetBPMNRepresentation() throws Exception {
         // Test Data setup
         Folder folder = createFolder();
         Group group = createGroup(123, Group.Type.GROUP);
@@ -1083,12 +1091,12 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
 
         // Verify mock and result
         verifyAll();
-        Assert.assertEquals(StreamUtil.convertStreamToString(client.getInputStream("model", filename)), bpmnResult);
+        assertEquals(StreamUtil.convertStreamToString(client.getInputStream("model", filename)), bpmnResult);
     }
 
 
     @Test
-    public void testDeleteProcessModel_BranchHasMoreThanOnePMV() throws Exception {
+    void testDeleteProcessModel_BranchHasMoreThanOnePMV() throws Exception {
         // Test Data setup
         Folder folder = createFolder();
         Group group = createGroup(123, Group.Type.GROUP);
@@ -1139,13 +1147,13 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
 
         // Verify mock and result
         verifyAll();
-        Assert.assertEquals(1, branch.getProcessModelVersions().size());
-        Assert.assertEquals(pmv11, branch.getProcessModelVersions().get(0));
+        assertEquals(1, branch.getProcessModelVersions().size());
+        assertEquals(pmv11, branch.getProcessModelVersions().get(0));
     }
 
 
     @Test
-    public void testDeleteProcessModel_BranchHasOnlyOnePMV() throws Exception {
+    void testDeleteProcessModel_BranchHasOnlyOnePMV() throws Exception {
         // Test Data setup
         Folder folder = createFolder();
         Group group = createGroup(123, Group.Type.GROUP);
@@ -1195,12 +1203,11 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
         verifyAll();
     }
 
-
     /**
      * Test the {@link ProcessServiceImpl#sanitizeBPMN} method.
      */
     @Test
-    public void testSanitizeBPMN() throws Exception {
+    void testSanitizeBPMN() throws Exception {
         for (String[] s : new String[][]{
                 // unsanitized input file expected sanitized output issue description
                 {"Cyclic.bpmn", "Cyclic.bpmn", "Innocuous files should be unchanged"},
@@ -1212,11 +1219,12 @@ public class ProcessServiceImplUnitTest extends EasyMockSupport {
                         "bpmn:scriptTask must have its script child commented out"},
                 {"unsanitized_text.bpmn", "sanitized_text.bpmn",
                         "bpmn:text should have complex content removed"}}) {
-            Assert.assertEquals(s[2],
+            assertEquals(
                     CharStreams.toString(new InputStreamReader(getResourceAsStream("BPMN_models/" + s[1])))
                             .trim(),
                     CharStreams.toString(new InputStreamReader(
-                            ProcessServiceImpl.sanitizeBPMN(getResourceAsStream("BPMN_models/" + s[0])))));
+                            ProcessServiceImpl.sanitizeBPMN(getResourceAsStream("BPMN_models/" + s[0])))),
+                    s[2]);
         }
     }
 

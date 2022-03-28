@@ -17,14 +17,14 @@
  */
 package org.apromore.util;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class StringUtilUnitTest {
+class StringUtilUnitTest {
 
     @Test
-    public void testNormalizeFilename() {
+    void testNormalizeFilename() {
 
         String fileName_1 = "abc*d?.=";
         String fileName_2 = "abc*abcdzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz_______________more_than_60_characters";

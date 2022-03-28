@@ -25,24 +25,24 @@
 
 package org.apromore.plugin.provider.impl;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import org.apromore.plugin.Plugin;
 import org.apromore.plugin.exception.PluginNotFoundException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class PluginProviderImplUnitTest {
+class PluginProviderImplUnitTest {
 
     private PluginProviderImpl mockProvider;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         mockProvider = new PluginProviderImpl();
         final Set<Plugin> pluginList = new HashSet<>();
         pluginList.add(new Plugin() {
@@ -82,7 +82,7 @@ public class PluginProviderImplUnitTest {
     }
 
     @Test
-    public void testListAll() throws PluginNotFoundException {
+    void testListAll() throws PluginNotFoundException {
         assertNotNull(mockProvider.listAll());
         assertNotNull(mockProvider.findByName("test"));
         assertNotNull(mockProvider.findByNameAndVersion("test", "0.1"));

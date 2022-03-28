@@ -50,7 +50,7 @@ class PortalPluginResourceServletUnitTest {
     private ServletOutputStream servletOutputStream;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         servlet = new PortalPluginResourceServlet();
         servlet.init();
 

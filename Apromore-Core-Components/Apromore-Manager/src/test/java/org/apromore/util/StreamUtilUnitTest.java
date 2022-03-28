@@ -40,15 +40,15 @@ import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.mail.util.ByteArrayDataSource;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test the Stream Util.
  */
-public class StreamUtilUnitTest {
+class StreamUtilUnitTest {
 
     @Test
-    public void testConvertStreamToString() {
+    void testConvertStreamToString() {
         String str = "InputStream Test String";
         InputStream stream = new ByteArrayInputStream(str.getBytes());
 
@@ -65,14 +65,14 @@ public class StreamUtilUnitTest {
     }
 
     @Test
-    public void testConvertStreamToStringExpectException() {
+    void testConvertStreamToStringExpectException() {
         InputStream stream = null;
         String result = StreamUtil.convertStreamToString(stream);
         assertThat(result, equalTo(""));
     }
 
     @Test
-    public void testConvertStreamToStringDataHandler() throws IOException {
+    void testConvertStreamToStringDataHandler() throws IOException {
         String str = "InputStream Test String";
         DataSource source_native = new ByteArrayDataSource(str, "text/xml");
 
@@ -82,7 +82,7 @@ public class StreamUtilUnitTest {
     }
 
     @Test
-    public void testConvertStreamToStringDataHandlerExceptionThrown() throws IOException {
+    void testConvertStreamToStringDataHandlerExceptionThrown() throws IOException {
         DataHandler source = createMock(DataHandler.class);
 
         expect(source.getInputStream()).andThrow(new IOException(""));
@@ -96,7 +96,7 @@ public class StreamUtilUnitTest {
     }
 
     @Test
-    public void testConvertStreamToStringDataSource() throws IOException {
+    void testConvertStreamToStringDataSource() throws IOException {
         String str = "InputStream Test String";
         DataSource source_native = new ByteArrayDataSource(str, "text/xml");
 
@@ -106,7 +106,7 @@ public class StreamUtilUnitTest {
     }
 
     @Test
-    public void testConvertStreamToStringDataSourceExceptionThrown() throws IOException {
+    void testConvertStreamToStringDataSourceExceptionThrown() throws IOException {
         DataSource source = createMock(DataSource.class);
 
         expect(source.getInputStream()).andThrow(new IOException(""));

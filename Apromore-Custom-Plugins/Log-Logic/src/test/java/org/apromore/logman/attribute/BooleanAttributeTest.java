@@ -23,12 +23,17 @@
 package org.apromore.logman.attribute;
 
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.deckfour.xes.model.XAttributeBoolean;
 import org.deckfour.xes.model.XAttributeDiscrete;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-public class BooleanAttributeTest extends AttributeTest {
+class BooleanAttributeTest extends AttributeTest {
 	
 	@Override
 	protected BooleanAttribute newEmptyAttribute(String key, AttributeLevel level) {
@@ -61,75 +66,75 @@ public class BooleanAttributeTest extends AttributeTest {
 	}
 
 	@Test
-	public void testGetValueIndex() {
+	void testGetValueIndex() {
 		BooleanAttribute att = this.newWithTwoValues("concept:name", AttributeLevel.EVENT);
-		Assert.assertEquals(att.getValueIndex(true), 0);
-		Assert.assertEquals(att.getValueIndex(false), 1);
+		assertEquals(0, att.getValueIndex(true));
+		assertEquals(1, att.getValueIndex(false));
 		
 		BooleanAttribute att2 = this.newWithInvalidKeyAttribute("concept:name", AttributeLevel.EVENT);
 		Object result2 = att2.getValueIndex(true);
-		Assert.assertEquals(-1, result2);
+		assertEquals(-1, result2);
 		
 		BooleanAttribute att3 = this.newEmptyAttribute("concept:name", AttributeLevel.EVENT);
 		Object result3 = att3.getValueIndex(true);
-		Assert.assertEquals(-1, result3);
+		assertEquals(-1, result3);
 	}
 
 	@Test
-	public void testGetValueSize() {
+	void testGetValueSize() {
 		BooleanAttribute att = this.newWithTwoValues("concept:name", AttributeLevel.EVENT);
-		Assert.assertEquals(att.getValueSize(), 2);
+		assertEquals(2, att.getValueSize());
 		
 		BooleanAttribute att2 = this.newEmptyAttribute("concept:name", AttributeLevel.EVENT);
-		Assert.assertEquals(att2.getValueSize(), 0);
+		assertEquals(0, att2.getValueSize());
 	}
 
 	@Test
-	public void testRegisterXAttributeWithInvalidType() {
+	void testRegisterXAttributeWithInvalidType() {
 		BooleanAttribute att = new BooleanAttribute("concept:name", AttributeLevel.EVENT);
 		int result = att.registerXAttribute(xAttFactory.createAttributeContinuous("concept:name", 100, null));
-		Assert.assertEquals(-1, result);
+		assertEquals(-1, result);
 	}
 	
 	@Test
-	public void testRegisterXAttributeWithInvalidKey() {
+	void testRegisterXAttributeWithInvalidKey() {
 		BooleanAttribute att = new BooleanAttribute("concept:name", AttributeLevel.EVENT);
 		int result = att.registerXAttribute(xAttFactory.createAttributeBoolean("invalid_key", true, null));
-		Assert.assertEquals(-1, result);
+		assertEquals(-1, result);
 	}
 	
 	@Test
-	public void testRegisterValidXAttribute() {
+	void testRegisterValidXAttribute() {
 		BooleanAttribute att = new BooleanAttribute("concept:name", AttributeLevel.EVENT);
 		XAttributeBoolean xatt = xAttFactory.createAttributeBoolean("concept:name", true, null);
 		int result = att.registerXAttribute(xatt);
-		Assert.assertEquals(0,  result);
+		assertEquals(0,  result);
 	}
 
 	@Test
-	public void testGetValues() {
+	void testGetValues() {
 		BooleanAttribute att = this.newWithOneValue("concept:name", AttributeLevel.EVENT);
-		Assert.assertEquals(att.getValue(0), true);
+		assertTrue((Boolean) att.getValue(0));
 		
 		BooleanAttribute att2 = this.newWithTwoValues("concept:name", AttributeLevel.EVENT);
-		Assert.assertEquals(att2.getValue(0), true);
-		Assert.assertEquals(att2.getValue(1), false);
+		assertTrue((Boolean) att2.getValue(0));
+		assertFalse((Boolean) att2.getValue(1));
 	}
 
 	@Test
-	public void testGetValue() {
+	void testGetValue() {
 		BooleanAttribute att1 = this.newWithOneValue("concept:name", AttributeLevel.EVENT);
-		Assert.assertEquals(att1.getValue(0), true);
+		assertTrue((Boolean) att1.getValue(0));
 		
 		BooleanAttribute att2 = this.newWithTwoValues("concept:name", AttributeLevel.EVENT);
-		Assert.assertEquals(att2.getValue(0), true);
-		Assert.assertEquals(att2.getValue(1), false);
+		assertTrue((Boolean) att2.getValue(0));
+		assertFalse((Boolean) att2.getValue(1));
 	}
 	
 	@Test
-	public void testGetValueFromEmptyAttribute() {
+	void testGetValueFromEmptyAttribute() {
 		BooleanAttribute att0 = this.newEmptyAttribute("concept:name", AttributeLevel.EVENT);
-		Assert.assertEquals(att0.getValue(0),null);
+		assertNull(att0.getValue(0));
 	}
 
 

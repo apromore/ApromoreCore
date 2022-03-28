@@ -25,12 +25,12 @@
 
 package org.apromore.manager.client.helper;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -51,12 +51,12 @@ import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.model.PluginMessages;
 import org.apromore.portal.model.PluginParameter;
 import org.apromore.portal.model.PluginParameters;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class PluginHelperUnitTest {
+class PluginHelperUnitTest {
 
     @Test
-    public void testConvertToRequestProperties() throws IOException {
+    void testConvertToRequestProperties() throws IOException {
         PluginParameters xmlProperties = new PluginParameters();
 
         PluginParameter prop1 = new PluginParameter();
@@ -97,7 +97,7 @@ public class PluginHelperUnitTest {
     }
 
     @Test
-    public void testConvertToRequestProperty() {
+    void testConvertToRequestProperty() {
         PluginParameter xmlProp = new PluginParameter();
         assertNull(PluginHelper.convertToRequestParameter(xmlProp));
         xmlProp.setClazz(String.class.getCanonicalName());
@@ -115,7 +115,7 @@ public class PluginHelperUnitTest {
     }
 
     @Test
-    public void testConvertFromPluginProperties() {
+    void testConvertFromPluginProperties() {
         HashSet<PluginParameterType<?>> hashSet = new HashSet<PluginParameterType<?>>();
         hashSet.add(new PluginParameterType<InputStream>("test", "testName", InputStream.class, "testDescr", true));
         hashSet.add(new PluginParameterType<String>("test2", "testName", String.class, "testDescr", false));
@@ -150,17 +150,17 @@ public class PluginHelperUnitTest {
     }
 
     @Test
-    public void testConvertFromPluginMessages() {
+    void testConvertFromPluginMessages() {
         assertNotNull(PluginHelper.convertFromPluginMessages(new ArrayList<PluginMessage>()));
     }
 
     @Test
-    public void testConvertToPluginMessages() {
+    void testConvertToPluginMessages() {
         assertNotNull(PluginHelper.convertToPluginMessages(new PluginMessages()));
     }
 
     @Test
-    public void testConvertPluginInfo() {
+    void testConvertPluginInfo() {
         assertNotNull(PluginHelper.convertPluginInfo(new Plugin() {
 
             @Override

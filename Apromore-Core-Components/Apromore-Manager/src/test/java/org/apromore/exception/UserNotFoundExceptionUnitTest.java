@@ -27,16 +27,16 @@ package org.apromore.exception;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test the User Not Found Exception POJO.
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
-public class UserNotFoundExceptionUnitTest {    
+class UserNotFoundExceptionUnitTest {
 
     @Test
-    public void testException() {
+    void testException() {
         UserNotFoundException exception = new UserNotFoundException();
         MatcherAssert.assertThat(exception, Matchers.notNullValue());
 

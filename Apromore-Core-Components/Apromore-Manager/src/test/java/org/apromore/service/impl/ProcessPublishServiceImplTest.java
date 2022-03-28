@@ -21,6 +21,15 @@
  */
 package org.apromore.service.impl;
 
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.anyString;
+import static org.easymock.EasyMock.expect;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.dao.ProcessPublishRepository;
 import org.apromore.dao.ProcessRepository;
@@ -31,26 +40,18 @@ import org.apromore.dao.model.ProcessPublish;
 import org.apromore.dao.model.User;
 import org.apromore.portal.model.ProcessSummaryType;
 import org.easymock.EasyMockSupport;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.easymock.EasyMock.anyObject;
-import static org.easymock.EasyMock.anyString;
-import static org.easymock.EasyMock.expect;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
-public class ProcessPublishServiceImplTest extends EasyMockSupport {
+class ProcessPublishServiceImplTest extends EasyMockSupport {
     private ProcessPublishRepository processPublishRepository;
     private ProcessRepository processRepository;
     private ProcessModelVersionRepository pmvRepository;
 
     private ProcessPublishServiceImpl processPublishService;
 
-    @Before
-    public void setup() {
+    @BeforeEach
+    void setup() {
         processPublishRepository = createMock(ProcessPublishRepository.class);
         processRepository = createMock(ProcessRepository.class);
         pmvRepository = createMock(ProcessModelVersionRepository.class);
@@ -59,16 +60,18 @@ public class ProcessPublishServiceImplTest extends EasyMockSupport {
                 pmvRepository);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testSavePublishDetailsNonExistentProcess() {
+    @Test
+    void testSavePublishDetailsNonExistentProcess() {
         int processId = 1;
         String publishId = "publishId";
 
-        processPublishService.savePublishDetails(processId, publishId, false);
+        assertThrows(IllegalArgumentException.class, () ->
+            processPublishService.savePublishDetails(processId, publishId, false));
+
     }
 
     @Test
-    public void testSavePublishDetailsExistingProcess() {
+    void testSavePublishDetailsExistingProcess() {
         int processId = 1;
         String publishId = "publishId";
         Process process = createProcess(processId);
@@ -86,7 +89,7 @@ public class ProcessPublishServiceImplTest extends EasyMockSupport {
     }
 
     @Test
-    public void testUpdatePublishDetails() {
+    void testUpdatePublishDetails() {
         String publishId = "publishId";
         ProcessPublish processPublish = createProcessPublish(createProcess(1), publishId, false);
 
@@ -102,7 +105,7 @@ public class ProcessPublishServiceImplTest extends EasyMockSupport {
     }
 
     @Test
-    public void testGetPublishDetails() {
+    void testGetPublishDetails() {
         int processId = 1;
         String publishId = "publishId";
         Process process = createProcess(processId);
@@ -120,7 +123,7 @@ public class ProcessPublishServiceImplTest extends EasyMockSupport {
     }
 
     @Test
-    public void testIsPublishedNullPublishRecord() {
+    void testIsPublishedNullPublishRecord() {
         expect(processPublishRepository.findByPublishId(anyString())).andReturn(null);
         replayAll();
 
@@ -129,7 +132,7 @@ public class ProcessPublishServiceImplTest extends EasyMockSupport {
     }
 
     @Test
-    public void testIsPublishedExistingPublishedRecord() {
+    void testIsPublishedExistingPublishedRecord() {
         ProcessPublish processPublish = new ProcessPublish();
         processPublish.setPublished(true);
 
@@ -141,7 +144,7 @@ public class ProcessPublishServiceImplTest extends EasyMockSupport {
     }
 
     @Test
-    public void testIsPublishedExistingUnpublishedRecord() {
+    void testIsPublishedExistingUnpublishedRecord() {
         ProcessPublish processPublish = new ProcessPublish();
         processPublish.setPublished(false);
 
@@ -153,7 +156,7 @@ public class ProcessPublishServiceImplTest extends EasyMockSupport {
     }
 
     @Test
-    public void getProcessSummaryNullProcess() {
+    void getProcessSummaryNullProcess() {
         expect(processPublishRepository.findProcessByPublishId(anyString())).andReturn(null);
         replayAll();
 
@@ -162,7 +165,7 @@ public class ProcessPublishServiceImplTest extends EasyMockSupport {
     }
 
     @Test
-    public void getProcessSummaryExistingProcess() {
+    void getProcessSummaryExistingProcess() {
         Process process = new Process();
         process.setId(1);
         process.setName("name");
@@ -197,7 +200,7 @@ public class ProcessPublishServiceImplTest extends EasyMockSupport {
     }
 
     @Test
-    public void getProcessSummaryExistingProcessNullValues() {
+    void getProcessSummaryExistingProcessNullValues() {
         Process process = new Process();
 
         expect(processPublishRepository.findProcessByPublishId(anyString())).andReturn(process);
