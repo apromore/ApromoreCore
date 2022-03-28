@@ -179,6 +179,8 @@ task jacocoGenerateRootReport(type: JacocoReport, group: 'Test Reporting') {
   reports {
     xml.enabled true
     xml.destination file("${rootProject.projectDir}/build/reports/jacoco/report.xml")
+    html.enabled true
+    html.destination file("${rootProject.projectDir}/build/reports/jacoco/htmlReport")
   }
 }
 
