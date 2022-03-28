@@ -22,7 +22,7 @@
 
 package org.apromore.service.logimporter.services.legacy;
 
-import static org.apromore.service.logimporter.utilities.CSVUtilities.getMaxOccurringChar;
+import static org.apromore.service.logimporter.utilities.ImporterStringUtils.getMaxOccurringChar;
 
 import com.google.common.base.Splitter;
 import com.opencsv.CSVReader;

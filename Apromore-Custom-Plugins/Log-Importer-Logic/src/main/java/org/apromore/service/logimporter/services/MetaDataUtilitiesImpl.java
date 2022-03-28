@@ -41,8 +41,10 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import org.apromore.service.logimporter.constants.ColumnType;
 import org.apromore.service.logimporter.model.CaseAttributesDiscovery;
 import org.apromore.service.logimporter.model.LogMetaData;
+import org.apromore.service.logimporter.utilities.ImporterStringUtils;
 import org.apromore.service.logimporter.utilities.NameComparator;
 
 public class MetaDataUtilitiesImpl implements MetaDataUtilities {
@@ -277,5 +279,53 @@ public class MetaDataUtilitiesImpl implements MetaDataUtilities {
                 && pos != logMetaData.getStartTimestampPos()
                 && pos != logMetaData.getResourcePos()
                 && pos != logMetaData.getRolePos());
+    }
+
+    private void setColumnTypePos() {
+
+        List<Integer> stringAttributesPos = logMetaData.getStringAttributesPos();
+        List<Integer> integerAttributesPos = logMetaData.getIntegerAttributesPos();
+        List<Integer> doubleAttributesPos = logMetaData.getDoubleAttributesPos();
+        List<Integer> timestampAttributesPos = logMetaData.getTimestampAttributesPos();
+        List<Integer> booleanAttributesPos = logMetaData.getBooleanAttributesPos();
+
+        List<String> headers = logMetaData.getHeader();
+
+        List<List<String>> columnContent = new ArrayList<>();
+        headers.forEach(header -> columnContent.add(new ArrayList<>()));
+
+        for (List<String> line : this.lines) {
+            for (int i = 0; i < columnContent.size(); i++) {
+                if (line.size() > i) {
+                    columnContent.get(i).add(line.get(i));
+                }
+            }
+        }
+
+        for (int i = 0; i < headers.size(); i++) {
+            ColumnType colType = ImporterStringUtils.getColumnType(columnContent.get(i));
+            switch (colType) {
+                case INT:
+                    integerAttributesPos.add(i);
+                    break;
+                case DOUBLE:
+                    doubleAttributesPos.add(i);
+                    break;
+                case BOOLEAN:
+                    booleanAttributesPos.add(i);
+                    break;
+                case STRING:
+                    stringAttributesPos.add(i);
+                    break;
+                case TIMESTAMP:
+                    timestampAttributesPos.add(i);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+
+
     }
 }

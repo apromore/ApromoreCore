@@ -63,6 +63,12 @@ public class LogMetaData {
     private List<Integer> maskPos;
     private List<Integer> perspectivePos;
 
+    private List<Integer> stringAttributesPos;
+    private List<Integer> integerAttributesPos;
+    private List<Integer> doubleAttributesPos;
+    private List<Integer> timestampAttributesPos;
+    private List<Integer> booleanAttributesPos;
+
     public LogMetaData(List<String> header) {
         this.header = header;
         caseAttributesPos = new ArrayList<>();
@@ -74,6 +80,10 @@ public class LogMetaData {
         encoding = null;
         maskPos = new ArrayList<>();
         perspectivePos = new ArrayList<>();
+        stringAttributesPos = new ArrayList<>();
+        integerAttributesPos = new ArrayList<>();
+        doubleAttributesPos = new ArrayList<>();
+        timestampAttributesPos = new ArrayList<>();
     }
 
     public void validateSample() throws Exception {

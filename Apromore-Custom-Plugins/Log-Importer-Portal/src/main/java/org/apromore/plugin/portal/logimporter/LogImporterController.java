@@ -536,6 +536,17 @@ public class LogImporterController extends SelectorComposer<Window> implements C
         }
         myGrid.appendChild(optionHead);
 
+        // Data type dropdown lists
+        Auxhead dataTypeOptionHead = new Auxhead();
+        Auxheader dataTypeIndex = new Auxheader();
+        dataTypeOptionHead.appendChild(dataTypeIndex);
+        for (int pos = 0; pos < logMetaData.getHeader().size(); pos++) {
+            Auxheader listHeader = new Auxheader();
+            listHeader.appendChild(new Label("test"));
+            dataTypeOptionHead.appendChild(listHeader);
+        }
+        myGrid.appendChild(dataTypeOptionHead);
+
 
         // index column
         Column indexCol = new Column();
