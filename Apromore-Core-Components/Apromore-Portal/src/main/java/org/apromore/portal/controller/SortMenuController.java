@@ -37,10 +37,11 @@ public class SortMenuController {
             Labels.getLabel("portal_sort_by_name"),
             createSortMenuEventListener(ArtifactOrderTypes.BY_NAME)
         ));
-        orderListItemPopup.appendChild(createSortMenuItem(
+       /* orderListItemPopup.appendChild(createSortMenuItem(
             ArtifactOrderTypes.BY_ID,
             Labels.getLabel("portal_sort_by_creation"),
             createSortMenuEventListener(ArtifactOrderTypes.BY_ID)));
+        */
         orderListItemPopup.appendChild(createSortMenuItem(
             ArtifactOrderTypes.BY_LAST_VERSION,
             Labels.getLabel("portal_sort_by_last_version"),

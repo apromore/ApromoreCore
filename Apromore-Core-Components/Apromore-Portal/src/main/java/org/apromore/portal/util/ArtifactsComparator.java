@@ -1,11 +1,14 @@
 package org.apromore.portal.util;
 
 import java.util.Comparator;
+import java.util.List;
 import org.apromore.commons.datetime.DateTimeUtils;
 import org.apromore.portal.common.ArtifactOrderTypes;
 import org.apromore.portal.model.FolderType;
+import org.apromore.portal.model.LogSummaryType;
 import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.SummaryType;
+import org.apromore.portal.model.VersionSummaryType;
 
 public class ArtifactsComparator implements Comparator<Object> {
     private final boolean asc;
@@ -109,9 +112,14 @@ public class ArtifactsComparator implements Comparator<Object> {
         if (object instanceof FolderType) {
             return ((FolderType) object).getLastUpdate();
         }
-        if (object instanceof SummaryType) {
+        else if (object instanceof LogSummaryType) {
             return ((SummaryType) object).getCreateDate();
         }
+        else if (object instanceof ProcessSummaryType) { // taken from renderer logic
+            List<VersionSummaryType> summaries = ((ProcessSummaryType)object).getVersionSummaries();
+            int lastIndex = summaries.size() - 1;
+            return (lastIndex < 0) ? null : summaries.get(lastIndex).getLastUpdate();
+       }
         return null;
     }
 
