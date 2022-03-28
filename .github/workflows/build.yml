@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - development
+      - dev/sonar-coverage
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
@@ -34,4 +35,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./gradlew build sonarqube --info -Dorg.gradle.jvmargs=-Xmx2g
+        run: ./gradlew build sonarqube --stacktrace
