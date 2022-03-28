@@ -43,7 +43,7 @@ import java.util.stream.Collectors;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
 import static org.apromore.apmlog.filter.types.FilterType.EVENT_EVENT_ATTRIBUTE;
-import static org.junit.Assert.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 public class CaseStatsTest {
 

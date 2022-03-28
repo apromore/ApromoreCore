@@ -26,8 +26,8 @@ package org.apromore.service.impl;
 
 import org.apromore.dao.ProcessRepository;
 import org.apromore.service.impl.DomainServiceImpl;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,20 +44,20 @@ import static org.powermock.api.easymock.PowerMock.verify;
  *
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
-public class DomainServiceImplUnitTest {
+class DomainServiceImplUnitTest {
 
     private DomainServiceImpl domainServiceImpl;
     private ProcessRepository procDAOJpa;
 
 
-    @Before
-    public final void setUp() throws Exception {
+    @BeforeEach
+    final void setUp() throws Exception {
         procDAOJpa = createMock(ProcessRepository.class);
         domainServiceImpl = new DomainServiceImpl(procDAOJpa);
     }
 
     @Test
-    public void getAllDomains() {
+    void getAllDomains() {
         List<String> processes = new ArrayList<String>();
         processes.add("test1");
         processes.add("test2");

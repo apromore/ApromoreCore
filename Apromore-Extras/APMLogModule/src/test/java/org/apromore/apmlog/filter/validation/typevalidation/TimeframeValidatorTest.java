@@ -33,17 +33,17 @@ import org.apromore.apmlog.filter.types.Section;
 import org.apromore.apmlog.filter.validation.FilterRuleValidator;
 import org.apromore.apmlog.filter.validation.FilterRuleValidatorTest;
 import org.apromore.apmlog.filter.validation.ValidatedFilterRule;
-import static org.junit.Assert.assertTrue;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class TimeframeValidatorTest extends FilterRuleValidatorTest {
+class TimeframeValidatorTest extends FilterRuleValidatorTest {
 
     @Test
-    public void validateTimeframe() throws Exception {
+    void validateTimeframe() throws Exception {
         FilterType filterType = FilterType.CASE_TIME;
         String attrKey = "case:timeframe";
         long from = 1306087161211L;

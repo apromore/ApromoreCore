@@ -25,16 +25,16 @@
 
 package org.apromore.plugin.property;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class CategoryParameterUnitTest {
+class CategoryParameterUnitTest {
 
 
     @Test
-    public void test() {
+    void test() {
         PluginParameterType<String> param = new PluginParameterType<String>("test", "test", String.class, "test", true, "categoryA");
         assertNotNull(param);
         assertEquals("categoryA", param.getCategory());

@@ -33,19 +33,19 @@ import org.apromore.apmlog.filter.types.Section;
 import org.apromore.apmlog.filter.validation.FilterRuleValidator;
 import org.apromore.apmlog.filter.validation.FilterRuleValidatorTest;
 import org.apromore.apmlog.filter.validation.ValidatedFilterRule;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class CaseVariantValidatorTest extends FilterRuleValidatorTest {
+class CaseVariantValidatorTest extends FilterRuleValidatorTest {
 
     @Test
-    public void validateCaseVariant() throws Exception {
+    void validateCaseVariant() throws Exception {
         Set<RuleValue> primaryValues = new HashSet<>();
         primaryValues.add(new RuleValue(FilterType.CASE_VARIANT, OperationType.EQUAL, "case:variant", 1));
         primaryValues.add(new RuleValue(FilterType.CASE_VARIANT, OperationType.EQUAL, "case:variant", 5));

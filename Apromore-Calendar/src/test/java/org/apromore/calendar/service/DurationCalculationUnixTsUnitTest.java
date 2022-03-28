@@ -25,52 +25,39 @@ package org.apromore.calendar.service;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.ZoneOffset;
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.stream.Stream;
 import org.apromore.calendar.builder.CalendarModelBuilder;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.calendar.model.DurationModel;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-@RunWith(Parameterized.class)
-public class DurationCalculationUnixTsUnitTest {
+class DurationCalculationUnixTsUnitTest {
 
     CalendarModelBuilder calendarModelBuilder;
-    long startDateTime;
-    long endDateTime;
-    long expected;
 
-
-    @Before
-    public void setup() {
+    @BeforeEach
+    void setup() {
         calendarModelBuilder = new CalendarModelBuilder();
     }
 
-    public DurationCalculationUnixTsUnitTest(long startDateTime, long endDateTime, long expected) {
-        this.startDateTime = startDateTime;
-        this.endDateTime = endDateTime;
-        this.expected = expected;
+    private static Stream<Arguments> params() {
+        return Stream.of(
+            Arguments.of(1549004400000L, 1549137600000L, 57600000L),
+            Arguments.of(1549004400000L, 1549044000000L, 28800000L),
+            Arguments.of(1549022400000L, 1549044000000L, 18000000L),
+            Arguments.of(1549040400000L, 1549044000000L, 0L),
+            Arguments.of(1549022400000L, 1549206000000L, 68400000L),
+            Arguments.of(1549022400000L, 1549220400000L, 75600000L)
+        );
     }
 
 
-    @Parameterized.Parameters
-    public static Collection params() {
-        return Arrays.asList(new Object[][] {
-            {1549004400000L, 1549137600000L, 57600000L},
-            {1549004400000L, 1549044000000L, 28800000L},
-            {1549022400000L, 1549044000000L, 18000000L},
-            {1549040400000L, 1549044000000L, 0L},
-            {1549022400000L, 1549206000000L, 68400000L},
-            {1549022400000L, 1549220400000L, 75600000L},
-        });
-    }
-
-
-    @Test
-    public void testCalculateDuration8HoursDifferentDay() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void testCalculateDuration8HoursDifferentDay(long startDateTime, long endDateTime, long expected) {
 
         CalendarModel calendarModel = calendarModelBuilder.with7DayWorking().withZoneId(ZoneOffset.UTC.getId()).build();
 

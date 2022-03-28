@@ -53,57 +53,53 @@ package de.hpi.bpmn2_0.transformation;
  * DEALINGS IN THE SOFTWARE.
  **/
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import com.processconfiguration.DefinitionsIDResolver;
+import com.processconfiguration.common.Constants;
+import com.sun.xml.bind.IDResolver;
+import de.hpi.bpmn2_0.model.Definitions;
+import de.hpi.bpmn2_0.model.extension.synergia.ConfigurationAnnotationAssociation;
+import de.hpi.bpmn2_0.model.extension.synergia.ConfigurationAnnotationShape;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.CharBuffer;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import javax.xml.transform.stream.StreamSource;
-
-import com.sun.xml.bind.IDResolver;
 import org.json.JSONException;
-import static org.junit.Assert.assertEquals;
-import org.junit.Ignore;
-import org.junit.Test;
-
-import com.processconfiguration.ConfigurationAlgorithmTest;
-import com.processconfiguration.DefinitionsIDResolver;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.oryxeditor.server.diagram.basic.BasicDiagram;
-import de.hpi.bpmn2_0.model.Definitions;
-import de.hpi.bpmn2_0.model.extension.synergia.ConfigurationAnnotationAssociation;
-import de.hpi.bpmn2_0.model.extension.synergia.ConfigurationAnnotationShape;
 
 /**
  * Test harness for {@link BPMN2DiagramConverter}.
  *
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  */
-public class BPMN2DiagramConverterTest {
+class BPMN2DiagramConverterTest {
 
     static final Logger logger = Logger.getLogger(BPMN2DiagramConverterTest.class.getCanonicalName());
 
     /**
      * The <a href="{@docRoot}/../tests/dataGetDiagramFromBpmn20_1-expected.json/">JSON document</a>
-     * expected from converting {@link ConfigurationAlgorithmTest#test1File}.
+     * expected from converting {@link Constants#test1File}.
      */
     public static final File expectedJSONFile =
-        new File(new File(ConfigurationAlgorithmTest.testsDirectory, "data"), "GetDiagramFromBpmn20_1-expected.json");
+        new File(new File(Constants.testsDirectory, "data"), "GetDiagramFromBpmn20_1-expected.json");
 
     /**
      * Test the {@link BPMN2DiagramConverter#getDiagramFromBpmn20} method on
-     * {@link ConfigurationAlgorithmTest#test1File}.
+     * {@link Constants#test1File}.
      */
-    @Ignore("Need to write a more robust comparison for JSON objects that ignores property ordering")
-    @Test public void testGetDiagramFromBpmn20_1() throws IOException, JAXBException, JSONException {
+    @Disabled("Need to write a more robust comparison for JSON objects that ignores property ordering")
+    @Test
+    void testGetDiagramFromBpmn20_1() throws IOException, JAXBException, JSONException {
 
         // Parse BPMN from XML to JAXB
         Unmarshaller unmarshaller = JAXBContext.newInstance(Definitions.class,
@@ -111,7 +107,7 @@ public class BPMN2DiagramConverterTest {
                                                             ConfigurationAnnotationShape.class)
                                                .createUnmarshaller();
         unmarshaller.setProperty(IDResolver.class.getName(), new DefinitionsIDResolver());
-        Definitions definitions = (Definitions) unmarshaller.unmarshal(ConfigurationAlgorithmTest.test1File);
+        Definitions definitions = (Definitions) unmarshaller.unmarshal(Constants.test1File);
 
         // Convert BPMN to JSON
         BPMN2DiagramConverter converter = new BPMN2DiagramConverter("/signaviocore/editor/");
@@ -135,8 +131,9 @@ public class BPMN2DiagramConverterTest {
     /**
      * Test the {@link #toString} method.
      */
-    @Test public void testToString1() throws IOException {
-        String string = toString(expectedJSONFile);
+    @Test
+    void testToString1() throws IOException {
+        assertDoesNotThrow(() -> toString(expectedJSONFile));
     }
 
     /**

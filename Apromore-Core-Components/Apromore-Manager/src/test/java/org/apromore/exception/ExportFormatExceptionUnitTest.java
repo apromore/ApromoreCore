@@ -27,17 +27,17 @@ package org.apromore.exception;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test the Export Format Exception POJO.
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
-public class ExportFormatExceptionUnitTest {
+class ExportFormatExceptionUnitTest {
     
 
     @Test
-    public void testException() {
+    void testException() {
         ExportFormatException exception = new ExportFormatException();
         MatcherAssert.assertThat(exception, Matchers.notNullValue());
 

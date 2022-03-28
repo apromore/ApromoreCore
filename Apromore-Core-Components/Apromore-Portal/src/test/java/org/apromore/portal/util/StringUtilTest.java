@@ -21,68 +21,72 @@
  */
 package org.apromore.portal.util;
 
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class StringUtilTest {
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
+class StringUtilTest {
 
   @Test
-  public void testGetFileName_URL() {
+  void testGetFileName_URL() {
 
     String result = StringUtil.getFileName(
         "https://www.dropbox.com/s/02ee18ybdm8xhog/APurchasingExample.zip?dl=0",
         "attachment; filename=\"APurchasingExample.zip\"; filename*=UTF-8''APurchasingExample.zip");
-    Assert.assertEquals("APurchasingExample.zip", result);
+    assertEquals("APurchasingExample.zip", result);
   }
 
   @Test
-  public void testGetFileName_URL_INVALID_CHARS() {
+  void testGetFileName_URL_INVALID_CHARS() {
 
     String result = StringUtil.getFileName(
         "https://www.dropbox.com/s/02ee18ybdm8xhog/APurchasingExample.zip?dl=0",
         "attachment; filename=\"APurchasing/Example:.zip\"; filename*=UTF-8''APurchasingExample.zip");
-    Assert.assertEquals("APurchasing_Example_.zip", result);
+    assertEquals("APurchasing_Example_.zip", result);
   }
 
   @Test
-  public void testGetFileName_pathTraversal1() {
+  void testGetFileName_pathTraversal1() {
 
     String result = StringUtil.getFileName(
         "https://www.dropbox.com/s/02ee18ybdm8xhog/APurchasingExample.zip?dl=0",
         "attachment; filename=\"./etc/passwd\"; filename*=UTF-8''APurchasingExample.zip");
-    Assert.assertEquals("._etc_passwd", result);
+    assertEquals("._etc_passwd", result);
   }
 
   @Test
-  public void testGetFileName_URL_pathTraversal2() {
+  void testGetFileName_URL_pathTraversal2() {
 
     String result = StringUtil.getFileName(
         "https://www.dropbox.com/s/02ee18ybdm8xhog/APurchasingExample.zip?dl=0",
         "attachment; filename=\"../../../etc/passwd\"; filename*=UTF-8''APurchasingExample.zip");
-    Assert.assertEquals(".._.._.._etc_passwd", result);
+    assertEquals(".._.._.._etc_passwd", result);
   }
 
   @Test
-  public void testGetFileName_URL_pathTraversal3() {
+  void testGetFileName_URL_pathTraversal3() {
 
     String result = StringUtil.getFileName(
         "https://www.dropbox.com/s/02ee18ybdm8xhog/APurchasingExample.zip?dl=0",
         "attachment; filename=\"../\"; filename*=UTF-8''APurchasingExample.zip");
-    Assert.assertEquals(".._", result);
+    assertEquals(".._", result);
   }
 
   @Test
-  public void testGetFileName_URL_pathTraversal4() {
+  void testGetFileName_URL_pathTraversal4() {
 
     String result = StringUtil.getFileName(
         "https://www.dropbox.com/s/02ee18ybdm8xhog/APurchasingExample.zip?dl=0",
         "attachment; filename=\"/\"; filename*=UTF-8''APurchasingExample.zip");
-    Assert.assertEquals("_", result);
+    assertEquals("_", result);
   }
 
   @Test
-  public void testIsValidDropBoxURL() {
+  void testIsValidDropBoxURL() {
 
     boolean testCase1 = StringUtil.isValidDropBoxURL(
         "https://www.dropbox.com/s/xadcmvtji1ojvwo/PurchasingExample" + ".csv?dl=0");
@@ -92,13 +96,13 @@ public class StringUtilTest {
         .isValidDropBoxURL("https://www.dropbox.com./s/xadcmvtji1ojvwo/PurchasingExample.csv?dl=0");
 
 
-    Assert.assertTrue(testCase1);
-    Assert.assertFalse(testCase2);
-    Assert.assertFalse(testCase3);
+    assertTrue(testCase1);
+    assertFalse(testCase2);
+    assertFalse(testCase3);
   }
 
   @Test
-  public void testIsValidGoogleDriveURL() {
+  void testIsValidGoogleDriveURL() {
 
     boolean testCase1 = StringUtil.isValidGoogleDriveURL(
         "https://drive.google.com/file/d/1hQaySFOh06x6oBxTSNZYf1pqOQtm8gik/view?usp=sharing");
@@ -107,13 +111,13 @@ public class StringUtilTest {
     boolean testCase3 = StringUtil.isValidGoogleDriveURL(
         "https://drive.google.com./file/d/1hQaySFOh06x6oBxTSNZYf1pqOQtm8gik/view?usp=sharing");
 
-    Assert.assertTrue(testCase1);
-    Assert.assertFalse(testCase2);
-    Assert.assertFalse(testCase3);
+    assertTrue(testCase1);
+    assertFalse(testCase2);
+    assertFalse(testCase3);
   }
 
   @Test
-  public void testIsValidOneDriveURL() {
+  void testIsValidOneDriveURL() {
 
     boolean testCase1 = StringUtil.isValidOneDriveURL(
         "https://onedrive.live.com/embed?cid=9AA1F51B7D69569C&resid=9AA1F51B7D69569C%21379&authkey=AA5cjmnDDs2_yOo");
@@ -122,15 +126,15 @@ public class StringUtilTest {
     boolean testCase3 = StringUtil.isValidOneDriveURL("https://onedrive.live.com"
         + "./embed?cid=9AA1F51B7D69569C&resid=9AA1F51B7D69569C%21379&authkey=AA5cjmnDDs2_yOo");
 
-    Assert.assertTrue(testCase1);
-    Assert.assertFalse(testCase2);
-    Assert.assertFalse(testCase3);
+    assertTrue(testCase1);
+    assertFalse(testCase2);
+    assertFalse(testCase3);
   }
 
   @Test
-  @Ignore
+  @Disabled
   // Wrong test
-  public void testValidateFileUrl_dropBox() {
+  void testValidateFileUrl_dropBox() {
 
     String validFileUrl = StringUtil
         .parseFileURL("https://www.dropbox.com/s/xadcmvtji1ojvwo/PurchasingExample" + ".csv?dl=0");
@@ -139,16 +143,16 @@ public class StringUtilTest {
     String maliciousFileUrl1 = StringUtil
         .parseFileURL("https://www.dropbox.com" + "./s/xadcmvtji1ojvwo/PurchasingExample.csv?dl=0");
 
-    Assert.assertEquals("https://www.dropbox.com/s/xadcmvtji1ojvwo/PurchasingExample.csv?dl=1",
+    assertEquals("https://www.dropbox.com/s/xadcmvtji1ojvwo/PurchasingExample.csv?dl=1",
         validFileUrl);
-    Assert.assertEquals("", maliciousFileUrl);
-    Assert.assertEquals("", maliciousFileUrl1);
+    assertEquals("", maliciousFileUrl);
+    assertEquals("", maliciousFileUrl1);
   }
 
   @Test
-  @Ignore
+  @Disabled
   // Wrong test
-  public void testValidateFileUrl_googleDrive() {
+  void testValidateFileUrl_googleDrive() {
 
     String validFileUrl = StringUtil.parseFileURL(
         "https://drive.google" + ".com/file/d/1hQaySFOh06x6oBxTSNZYf1pqOQtm8gik/view?usp=sharing");
@@ -157,17 +161,17 @@ public class StringUtilTest {
     String maliciousFileUrl1 = StringUtil.parseFileURL(
         "https://drive.google.com./file/d/1hQaySFOh06x6oBxTSNZYf1pqOQtm8gik/view?usp=sharing");
 
-    Assert.assertEquals(
+    assertEquals(
         "https://drive.google.com/uc?export=download&id=1hQaySFOh06x6oBxTSNZYf1pqOQtm8gik",
         validFileUrl);
-    Assert.assertEquals("", maliciousFileUrl);
-    Assert.assertEquals("", maliciousFileUrl1);
+    assertEquals("", maliciousFileUrl);
+    assertEquals("", maliciousFileUrl1);
   }
 
   @Test
-  @Ignore
+  @Disabled
   // Wrong test
-  public void testValidateFileUrl_oneDrive() {
+  void testValidateFileUrl_oneDrive() {
 
     String validFileUrl =
         StringUtil.parseFileURL("https://onedrive.live.com/embed?cid=9AA1F51B7D69569C&resid"
@@ -177,12 +181,12 @@ public class StringUtilTest {
     String maliciousFileUrl1 = StringUtil.parseFileURL(
         "https://onedrive.live.com./embed?cid=9AA1F51B7D69569C&resid=9AA1F51B7D69569C%21379&authkey=AA5cjmnDDs2_yOo");
 
-    Assert.assertEquals(
+    assertEquals(
         "https://onedrive.live.com/download?cid=9AA1F51B7D69569C&resid=9AA1F51B7D69569C%21379"
             + "&authkey=AA5cjmnDDs2_yOo",
         validFileUrl);
-    Assert.assertEquals("", maliciousFileUrl);
-    Assert.assertEquals("", maliciousFileUrl1);
+    assertEquals("", maliciousFileUrl);
+    assertEquals("", maliciousFileUrl1);
   }
 
 }

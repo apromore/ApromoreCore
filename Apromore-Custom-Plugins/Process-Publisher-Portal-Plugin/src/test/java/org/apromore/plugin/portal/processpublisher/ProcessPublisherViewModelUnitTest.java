@@ -25,15 +25,16 @@ import org.apromore.dao.model.Process;
 import org.apromore.dao.model.ProcessPublish;
 import org.apromore.service.ProcessPublishService;
 import org.apromore.zk.notification.Notification;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.zkoss.web.Attributes;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Execution;
@@ -44,17 +45,17 @@ import org.zkoss.zk.ui.util.Clients;
 
 import java.util.Locale;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class ProcessPublisherViewModelUnitTest {
+@ExtendWith(MockitoExtension.class)
+class ProcessPublisherViewModelUnitTest {
     @InjectMocks
     private ProcessPublisherViewModel processPublisherViewModel = new ProcessPublisherViewModel();
 
@@ -68,13 +69,13 @@ public class ProcessPublisherViewModelUnitTest {
     MockedStatic<Notification> notificationMockedStatic = mockStatic(Notification.class);
     MockedStatic<Clients> clientsMockedStatic = mockStatic(Clients.class);
 
-    @Before
-    public void setup() {
+    @BeforeEach
+    void setup() {
         MockitoAnnotations.openMocks(this);
     }
 
-    @After
-    public void reset_mocks() {
+    @AfterEach
+    void reset_mocks() {
         executionsMockedStatic.close();
         sessionsMockedStatic.close();
         notificationMockedStatic.close();
@@ -82,12 +83,12 @@ public class ProcessPublisherViewModelUnitTest {
     }
 
     @Test
-    public void testGetBundleName() {
+    void testGetBundleName() {
         assertEquals("process_publisher", processPublisherViewModel.getBundleName());
     }
 
     @Test
-    public void testInitNoPublishDetails() {
+    void testInitNoPublishDetails() {
         int processId = 1;
 
         when(processPublishService.getPublishDetails(processId)).thenReturn(null);
@@ -100,7 +101,7 @@ public class ProcessPublisherViewModelUnitTest {
     }
 
     @Test
-    public void testInitExistingPublishDetails() {
+    void testInitExistingPublishDetails() {
         int processId = 1;
         String publishId = "publishId";
         ProcessPublish processPublish = createProcessPublish(processId, publishId, true);
@@ -115,7 +116,7 @@ public class ProcessPublisherViewModelUnitTest {
     }
 
     @Test
-    public void testUpdatePublishRecordNew() {
+    void testUpdatePublishRecordNew() {
         int processId = 50;
         String publishId = "test";
         ProcessPublish processPublish = createProcessPublish(processId, publishId, true);
@@ -140,7 +141,7 @@ public class ProcessPublisherViewModelUnitTest {
     }
 
     @Test
-    public void testUpdatePublishRecordExisting() {
+    void testUpdatePublishRecordExisting() {
         int processId = 50;
         String publishId = "test";
         ProcessPublish processPublish = createProcessPublish(processId, publishId, true);
@@ -165,7 +166,7 @@ public class ProcessPublisherViewModelUnitTest {
     }
 
     @Test
-    public void testGetPublishLinkLocalhost() {
+    void testGetPublishLinkLocalhost() {
         executionsMockedStatic.when(() -> Executions.getCurrent()).thenReturn(execution);
         when(execution.getScheme()).thenReturn("http");
         when(execution.getServerName()).thenReturn("localhost");
@@ -178,7 +179,7 @@ public class ProcessPublisherViewModelUnitTest {
     }
 
     @Test
-    public void testGetPublishLinkServer() {
+    void testGetPublishLinkServer() {
         executionsMockedStatic.when(() -> Executions.getCurrent()).thenReturn(execution);
         when(execution.getScheme()).thenReturn("https");
         when(execution.getServerName()).thenReturn("remoteServer");

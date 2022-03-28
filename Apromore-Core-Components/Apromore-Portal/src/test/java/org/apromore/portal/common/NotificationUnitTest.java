@@ -23,10 +23,10 @@
 package org.apromore.portal.common;
 
 import org.apromore.zk.notification.Notification;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /* Test suite for {@link Navigation}. */
-public class NotificationUnitTest {
+class NotificationUnitTest {
 
   final String CASE1 = "A string with \"double quotes\" in it";
   final String CASE2 = "A string with 'single quotes' in it";
@@ -39,7 +39,7 @@ public class NotificationUnitTest {
    * Test {@link Notification#sanitize} method.
    */
   @Test
-  public void testSanitize() throws Exception {
+  void testSanitize() throws Exception {
     assertValidMessage(Notification.sanitize(CASE1));
     assertValidMessage(Notification.sanitize(CASE2));
     assertValidMessage(Notification.sanitize(CASE3));

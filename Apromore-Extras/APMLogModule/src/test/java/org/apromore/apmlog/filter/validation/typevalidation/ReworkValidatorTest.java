@@ -34,17 +34,17 @@ import org.apromore.apmlog.filter.validation.FilterRuleValidator;
 import org.apromore.apmlog.filter.validation.FilterRuleValidatorTest;
 import org.apromore.apmlog.filter.validation.ValidatedFilterRule;
 import org.apromore.apmlog.xes.XESAttributeCodes;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Set;
 
-public class ReworkValidatorTest extends FilterRuleValidatorTest {
+class ReworkValidatorTest extends FilterRuleValidatorTest {
 
     @Test
-    public void validate() {
+    void validate() {
         FilterType filterType = FilterType.REWORK_REPETITION;
 
         RuleValue rv1 = new RuleValue(filterType, OperationType.GREATER, "Order modification", 0);

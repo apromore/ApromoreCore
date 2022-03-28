@@ -34,17 +34,17 @@ import java.util.stream.IntStream;
 import org.apromore.calendar.builder.CalendarModelBuilder;
 import org.apromore.calendar.builder.Container;
 import org.apromore.calendar.model.CalendarModel;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-@Ignore("Ignored as this is a intensive test")
-public class DurationCalculationUnixTsLoadUnitTest {
+@Disabled("Ignored as this is a intensive test")
+class DurationCalculationUnixTsLoadUnitTest {
 
     CalendarModelBuilder calendarModelBuilder;
 
-    @Before
-    public void setup() {
+    @BeforeEach
+    void setup() {
         calendarModelBuilder = new CalendarModelBuilder();
     }
 
@@ -82,7 +82,7 @@ public class DurationCalculationUnixTsLoadUnitTest {
 
 
     @Test
-    public void testCalculateDuration8HoursDifferentDay() {
+    void testCalculateDuration8HoursDifferentDay() {
 
         CalendarModel calendarModel = calendarModelBuilder.with7DayWorking().withZoneId(ZoneOffset.UTC.getId()).build();
 

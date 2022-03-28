@@ -25,7 +25,7 @@
 
 package org.apromore.plugin.impl;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.HashSet;
 
@@ -33,17 +33,17 @@ import org.apromore.plugin.PluginRequestImpl;
 import org.apromore.plugin.exception.PluginPropertyNotFoundException;
 import org.apromore.plugin.property.PluginParameterType;
 import org.apromore.plugin.property.RequestParameterType;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class PluginRequestImplUnitTest {
+class PluginRequestImplUnitTest {
 
     private PluginRequestImpl pluginRequestImpl;
     private RequestParameterType<String> request1;
     private RequestParameterType<String> request2;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeEach
+    void setUp() throws Exception {
         pluginRequestImpl = new PluginRequestImpl();
         request1 = new RequestParameterType<String>("test1", "foobar");
         pluginRequestImpl.addRequestProperty(request1);
@@ -52,7 +52,7 @@ public class PluginRequestImplUnitTest {
     }
 
     @Test
-    public void testGetRequestProperty() throws PluginPropertyNotFoundException {
+    void testGetRequestProperty() throws PluginPropertyNotFoundException {
         PluginParameterType<String> pluginProp = new PluginParameterType<String>("test", "test", String.class, "test", false);
         assertEquals(pluginProp, pluginRequestImpl.getRequestParameter(pluginProp));
         assertEquals(request1, pluginRequestImpl.getRequestParameter(new PluginParameterType<String>("test1", "test", String.class, "test", false)));
@@ -60,12 +60,12 @@ public class PluginRequestImplUnitTest {
     }
 
     @Test
-    public void testAddRequestPropertyRequestPropertyTypeOfQ() {
+    void testAddRequestPropertyRequestPropertyTypeOfQ() {
         pluginRequestImpl.addRequestProperty(new RequestParameterType<Integer>("test3", new Integer(2)));
     }
 
     @Test
-    public void testAddRequestPropertySetOfRequestPropertyTypeOfQ() {
+    void testAddRequestPropertySetOfRequestPropertyTypeOfQ() {
         pluginRequestImpl.addRequestProperty(new HashSet<RequestParameterType<?>>());
     }
 

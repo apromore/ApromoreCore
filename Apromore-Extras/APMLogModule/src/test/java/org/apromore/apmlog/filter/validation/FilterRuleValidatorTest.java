@@ -30,17 +30,17 @@ import org.apromore.apmlog.filter.validation.typevalidation.CaseIdValidatorTest;
 import org.apromore.apmlog.logobjects.ImmutableLog;
 import org.apromore.apmlog.xes.XLogToImmutableLog;
 import org.deckfour.xes.model.XLog;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 public class FilterRuleValidatorTest {
 
     @Test
-    public void validate() throws Exception {
+    void validate() throws Exception {
         LogFilterRule caseIdRule = CaseIdValidatorTest.getCaseIdValidatorTestRule();
         LogFilterRule orgGroupRule = AttributeValidatorTest.getSingleValueRule(FilterType.CASE_EVENT_ATTRIBUTE,
                 "org:group", "Product Management", "event");

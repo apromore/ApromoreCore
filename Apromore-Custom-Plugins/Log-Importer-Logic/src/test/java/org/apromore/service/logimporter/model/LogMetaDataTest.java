@@ -24,25 +24,22 @@ package org.apromore.service.logimporter.model;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Arrays;
 import java.util.List;
 import org.apromore.service.logimporter.exception.InvalidLogMetadataException;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.extension.std.XOrganizationalExtension;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Test;
 
-public class LogMetaDataTest {
+class LogMetaDataTest {
 
     private final String perspective1 = "Perspective_1";
     private final String perspective2 = "Perspective_2";
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
 
     @Test
-    public void testGetPerspectives() throws InvalidLogMetadataException {
+    void testGetPerspectives() throws InvalidLogMetadataException {
 
         // Given
         LogMetaData logMetaData = createTestLogMetaData();
@@ -64,7 +61,7 @@ public class LogMetaDataTest {
     }
 
     @Test
-    public void testGetPerspectives_NoPerspectivePos() throws InvalidLogMetadataException {
+    void testGetPerspectives_NoPerspectivePos() throws InvalidLogMetadataException {
 
         // Given
         LogMetaData logMetaData = createTestLogMetaData();
@@ -83,7 +80,7 @@ public class LogMetaDataTest {
     }
 
     @Test
-    public void testGetPerspectives_NoResourcePos() throws InvalidLogMetadataException {
+    void testGetPerspectives_NoResourcePos() throws InvalidLogMetadataException {
 
         // Given
         LogMetaData logMetaData = createTestLogMetaData();
@@ -102,8 +99,8 @@ public class LogMetaDataTest {
         assertThat(actual, is(expected));
     }
 
-    @Test(expected = InvalidLogMetadataException.class)
-    public void testGetPerspectives_eventAttributesPosNotMatchPerspectivePos() throws InvalidLogMetadataException {
+    @Test
+    void testGetPerspectives_eventAttributesPosNotMatchPerspectivePos() throws InvalidLogMetadataException {
 
         // Given
         LogMetaData logMetaData = createTestLogMetaData();
@@ -111,15 +108,13 @@ public class LogMetaDataTest {
         logMetaData.setEndTimestampPos(3);
         logMetaData.setPerspectivePos(Arrays.asList(4, 5));
 
-        // When
-        List<String> actual = logMetaData.getPerspectives();
+        // When, Then
+        assertThrows(InvalidLogMetadataException.class, () -> logMetaData.getPerspectives());
 
-        // Then
-        // Throw InvalidLogMetadataException
     }
 
-    @Test(expected = InvalidLogMetadataException.class)
-    public void testGetPerspectives_missingActivityPos() throws InvalidLogMetadataException {
+    @Test
+    void testGetPerspectives_missingActivityPos() throws InvalidLogMetadataException {
 
         // Given
         LogMetaData logMetaData = createTestLogMetaData();
@@ -128,11 +123,8 @@ public class LogMetaDataTest {
         logMetaData.setPerspectivePos(Arrays.asList(4, 5));
         logMetaData.setEventAttributesPos(Arrays.asList(4, 5));
 
-        // When
-        List<String> actual = logMetaData.getPerspectives();
-
-        // Then
-        // Throw InvalidLogMetadataException
+        // When, Then
+        assertThrows(InvalidLogMetadataException.class, () -> logMetaData.getPerspectives());
     }
 
     private LogMetaData createTestLogMetaData() {

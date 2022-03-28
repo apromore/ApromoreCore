@@ -22,8 +22,8 @@
 
 package org.apromore.service.logimporter.services.legacy;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Arrays;
 import java.util.List;
@@ -36,13 +36,13 @@ import org.apromore.service.logimporter.services.ParquetFactoryProvider;
 import org.apromore.service.logimporter.services.ParquetImporterFactory;
 import org.apromore.service.logimporter.services.utilities.TestUtilities;
 import org.deckfour.xes.model.XLog;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class LogImporterCSVImplUnitTest {
+class LogImporterCSVImplUnitTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LogImporterCSVImplUnitTest.class);
     /**
@@ -55,8 +55,8 @@ public class LogImporterCSVImplUnitTest {
     private LogImporterCSVImpl logImporter;
     private MetaDataUtilities metaDataUtilities;
 
-    @Before
-    public void init() {
+    @BeforeEach
+    void init() {
         utilities = new TestUtilities();
         ParquetImporterFactory parquetImporterFactory =
             new ParquetFactoryProvider().getParquetFactory("csv");
@@ -71,7 +71,7 @@ public class LogImporterCSVImplUnitTest {
      * <code>test1-valid.csv</code>.
      */
     @Test
-    public void testSampleCSV_undersample() throws Exception {
+    void testSampleCSV_undersample() throws Exception {
 
         LOGGER.info("\n************************************\ntest sample generator - undersample");
 
@@ -93,7 +93,7 @@ public class LogImporterCSVImplUnitTest {
      * <code>test1-valid.csv</code>.
      */
     @Test
-    public void testSampleCSV_oversample() throws Exception {
+    void testSampleCSV_oversample() throws Exception {
 
         LOGGER.info("\n************************************\ntest sample generator - oversample");
 
@@ -115,7 +115,7 @@ public class LogImporterCSVImplUnitTest {
      * Test {@link LogImporterCSVImpl} against an valid CSV log <code>test1-valid.csv</code>.
      */
     @Test
-    public void testPrepareXesModel_test1_valid() throws Exception {
+    void testPrepareXesModel_test1_valid() throws Exception {
 
         LOGGER.info("\n************************************\ntest1 - Valid csv test ");
 
@@ -152,8 +152,8 @@ public class LogImporterCSVImplUnitTest {
      * upload limiting is in effect.
      */
     @Test
-    @Ignore
-    public void testImportLog_maxEventCount() throws Exception {
+    @Disabled
+    void testImportLog_maxEventCount() throws Exception {
 
         // Test file data
         String testFile = "/test1-valid.csv";
@@ -200,7 +200,7 @@ public class LogImporterCSVImplUnitTest {
      * <code>test2-missing-columns.csv</code>.
      */
     @Test
-    public void testPrepareXesModel_test2_missing_columns() throws Exception {
+    void testPrepareXesModel_test2_missing_columns() throws Exception {
 
         LOGGER.info("\n************************************\ntest2 - Missing columns test");
 
@@ -236,7 +236,7 @@ public class LogImporterCSVImplUnitTest {
      * <code>test3-invalid-end-timestamp.csv</code>.
      */
     @Test
-    public void testPrepareXesModel_test3_invalid_end_timestamp() throws Exception {
+    void testPrepareXesModel_test3_invalid_end_timestamp() throws Exception {
 
         LOGGER.info("\n************************************\ntest3 - Invalid end timestamp");
 
@@ -272,7 +272,7 @@ public class LogImporterCSVImplUnitTest {
      * <code>test4-invalid-start-timestamp.csv</code>.
      */
     @Test
-    public void testPrepareXesModel_test4_invalid_start_timestamp() throws Exception {
+    void testPrepareXesModel_test4_invalid_start_timestamp() throws Exception {
 
         LOGGER.info("\n************************************\ntest4 - Invalid start timestamp");
 
@@ -308,7 +308,7 @@ public class LogImporterCSVImplUnitTest {
      * Test {@link LogImporterCSVImpl} against an invalid CSV log <code>test5-empty-caseID.csv</code>.
      */
     @Test
-    public void testPrepareXesModel_test5_empty_caseID() throws Exception {
+    void testPrepareXesModel_test5_empty_caseID() throws Exception {
 
         LOGGER.info("\n************************************\ntest5 - Empty caseID");
 
@@ -345,7 +345,7 @@ public class LogImporterCSVImplUnitTest {
      * <code>test6-different-delimiters.csv</code>.
      */
     @Test
-    public void testPrepareXesModel_test6_different_delimiters() throws Exception {
+    void testPrepareXesModel_test6_different_delimiters() throws Exception {
 
         LOGGER.info("\n************************************\ntest6 - different delimiters");
 
@@ -382,7 +382,7 @@ public class LogImporterCSVImplUnitTest {
      * <code>test7-record-invalid.csv</code>.
      */
     @Test
-    public void testPrepareXesModel_test7_record_invalid() throws Exception {
+    void testPrepareXesModel_test7_record_invalid() throws Exception {
 
         LOGGER.info("\n************************************\ntest7 - Record invalid");
 
@@ -423,7 +423,7 @@ public class LogImporterCSVImplUnitTest {
      * Test {@link LogImporterCSVImpl} against an invalid CSV log <code>test8-all-invalid.csv</code>.
      */
     @Test
-    public void testPrepareXesModel_test8_all_invalid() throws Exception {
+    void testPrepareXesModel_test8_all_invalid() throws Exception {
 
         LOGGER.info("\n************************************\ntest8 - All invalid");
 
@@ -451,7 +451,7 @@ public class LogImporterCSVImplUnitTest {
      * <code>test9-differentiate-dates.csv</code>.
      */
     @Test
-    public void testPrepareXesModel_test9_differentiate_dates() throws Exception {
+    void testPrepareXesModel_test9_differentiate_dates() throws Exception {
 
         LOGGER.info("\n************************************\ntest9 - Differentiate dates");
 
@@ -495,7 +495,7 @@ public class LogImporterCSVImplUnitTest {
      * <code>test10-eventAttribute.csv</code>.
      */
     @Test
-    public void testPrepareXesModel_test10_detect_name() throws Exception {
+    void testPrepareXesModel_test10_detect_name() throws Exception {
 
         LOGGER.info("\n************************************\ntest10 - Event Attribute");
 
@@ -530,7 +530,7 @@ public class LogImporterCSVImplUnitTest {
      * Test {@link LogImporterCSVImpl} against an invalid CSV log <code>test11-encoding.csv</code>.
      */
     @Test
-    public void testPrepareXesModel_test11_encoding() throws Exception {
+    void testPrepareXesModel_test11_encoding() throws Exception {
 
         LOGGER.info("\n************************************\ntest11 - Encoding");
 

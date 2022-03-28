@@ -21,24 +21,24 @@
 
 package org.apromore.service.logimporter.services;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apromore.service.logimporter.model.LogMetaData;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MetaDataServiceParquetImplUnitTest {
+class MetaDataServiceParquetImplUnitTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(MetaDataServiceParquetImplUnitTest.class);
     private MetaDataService metaDataService;
 
-    @Before
-    public void init() {
+    @BeforeEach
+    void init() {
         metaDataService = new MetaDataServiceParquetImpl();
     }
 
@@ -46,7 +46,7 @@ public class MetaDataServiceParquetImplUnitTest {
      * Test {@link MetaDataService} with column header mapping in <code>test1-valid.parquet</code>.
      */
     @Test
-    public void testColumnHeaderMapping() throws Exception {
+    void testColumnHeaderMapping() throws Exception {
 
         LOGGER.info("\n************************************\ntest column header mapping");
 
@@ -69,7 +69,7 @@ public class MetaDataServiceParquetImplUnitTest {
     }
 
     @Test
-    public void testGenerateSampleLog() throws Exception {
+    void testGenerateSampleLog() throws Exception {
         List<String> row1 =
             Arrays.asList("case2", "activity1", "2019-09-23 15:13:05.071", "2019-09-23 15:13:05.132", "1");
         List<String> row2 =

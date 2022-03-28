@@ -21,8 +21,8 @@
  */
 package org.apromore.portal.util;
 
-import org.junit.Ignore;
-@Ignore
+import org.junit.jupiter.api.Disabled;
+@Disabled
 // Not sure if this test is of much value
 public class ApromoreEnvUtilsTest {
 

@@ -21,91 +21,92 @@
  */
 package org.apromore.similaritysearch.tools;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Bruce Nguyen
  *
  */
-public class SearchForSimilarProcessesTest extends TestDataSetup {
+class SearchForSimilarProcessesTest extends TestDataSetup {
 
     @Test
-    public void testFindProcessesSimilarity_one_task_A_same_process() {
+    void testFindProcessesSimilarity_one_task_A_same_process() {
         try {
             BPMNDiagram search = read_one_task_A();
             BPMNDiagram dbDiagram = read_one_task_A();
             double searchResult = SearchForSimilarProcesses.findProcessesSimilarity(search, dbDiagram, 
                                                                     "Greedy", 0.6, 0.75, 1.0, 1.0, 1.0);
-            Assert.assertEquals(1.0, searchResult, 0.0);
+            assertEquals(1.0, searchResult, 0.0);
         } catch (Exception e) {
             fail("Exception occurred: " + e.getMessage());
         }
     }
     
     @Test
-    public void testFindProcessesSimilarity_one_task_A_diff_process() {
+    void testFindProcessesSimilarity_one_task_A_diff_process() {
         try {
             BPMNDiagram search = read_one_task_A();
             BPMNDiagram dbDiagram = read_one_task_B();
             double searchResult = SearchForSimilarProcesses.findProcessesSimilarity(search, dbDiagram, 
                                                                      "Greedy", 0.6, 0.75, 1.0, 1.0, 1.0);
-            Assert.assertEquals(0.5, searchResult, 0.1);
+            assertEquals(0.5, searchResult, 0.1);
         } catch (Exception e) {
             fail("Exception occurred: " + e.getMessage());
         }
     }
     
     @Test
-    public void testFindProcessesSimilarity_different_processes() {
+    void testFindProcessesSimilarity_different_processes() {
         try {
             BPMNDiagram search = read_two_tasks_sequence_AB();
             BPMNDiagram dbDiagram = read_two_tasks_sequence_XY();
             double searchResult = SearchForSimilarProcesses.findProcessesSimilarity(search, dbDiagram, 
                                                                      "Greedy", 0.6, 0.75, 1.0, 1.0, 1.0);
-            Assert.assertEquals(0.5, searchResult, 0.0);
+            assertEquals(0.5, searchResult, 0.0);
         } catch (Exception e) {
             fail("Exception occurred: " + e.getMessage());
         }
     }
     
     @Test
-    public void testFindProcessesSimilarity_Hungarian_one_task_A_same_process() {
+    void testFindProcessesSimilarity_Hungarian_one_task_A_same_process() {
         try {
             BPMNDiagram search = read_one_task_A();
             BPMNDiagram dbDiagram = read_one_task_A();
             double searchResult = SearchForSimilarProcesses.findProcessesSimilarity(search, dbDiagram, 
                                                                     "Hungarian", 0.6, 0.75, 1.0, 1.0, 1.0);
-            Assert.assertEquals(1.0, searchResult, 0.0);
+            assertEquals(1.0, searchResult, 0.0);
         } catch (Exception e) {
             fail("Exception occurred: " + e.getMessage());
         }
     }
     
     @Test
-    public void testFindProcessesSimilarity_Hungarian_different_processes() {
+    void testFindProcessesSimilarity_Hungarian_different_processes() {
         try {
             BPMNDiagram search = read_two_tasks_sequence_AB();
             BPMNDiagram dbDiagram = read_two_tasks_sequence_XY();
             double searchResult = SearchForSimilarProcesses.findProcessesSimilarity(search, dbDiagram, 
                                                                      "Hungarian", 0.6, 0.75, 1.0, 1.0, 1.0);
-            Assert.assertEquals(0.5, searchResult, 0.0);
+            assertEquals(0.5, searchResult, 0.0);
         } catch (Exception e) {
             fail("Exception occurred: " + e.getMessage());
         }
     }
     
     @Test
-    public void testFindProcessesSimilarity_Hungarian_one_task_A_diff_process() {
+    void testFindProcessesSimilarity_Hungarian_one_task_A_diff_process() {
         try {
             BPMNDiagram search = read_one_task_A();
             BPMNDiagram dbDiagram = read_one_task_B();
             double searchResult = SearchForSimilarProcesses.findProcessesSimilarity(search, dbDiagram, 
                                                                      "Hungarian", 0.6, 0.75, 1.0, 1.0, 1.0);
-            Assert.assertEquals(0.66, searchResult, 0.1);
+            assertEquals(0.66, searchResult, 0.1);
         } catch (Exception e) {
             fail("Exception occurred: " + e.getMessage());
         }

@@ -1,8 +1,8 @@
-/*-
+/**
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,21 +20,24 @@
  * #L%
  */
 
-package org.apromore.calendar.integration;
+package com.processconfiguration.common;
 
-import org.apromore.calendar.config.CalendarConfig;
-import org.apromore.dao.config.DatabaseConfig;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import java.io.File;
 
-@ExtendWith(SpringExtension.class)
-@Configuration
-@ContextConfiguration(classes = {CalendarConfig.class, TestConfig.class, DatabaseConfig.class})
-@TestPropertySource(value = {"classpath:application.properties"})
-public abstract class BaseTestClass {
+public class Constants {
 
+    /**
+     * Test data directory.
+     *
+     * Initialized from the <code>tests.dir</code> system property.
+     */
+    public static final File testsDirectory = new File("src/test/resources");
+
+    /**
+     * A <a href="{@docRoot}/../tests/data/Test1.bpmn20.xml">test document</a> used in the test suite.
+     *
+     * <div align="center"><img src="{@docRoot}/svg/Test1.signavio.svg"/></div>
+     */
+    public static final File test1File = new File(new File(testsDirectory, "data"), "Test1.bpmn20.xml");
 
 }
