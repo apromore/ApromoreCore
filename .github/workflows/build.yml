@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - development
-      - feature/AP-5516-jacoco-test-coverage
+      - dev/sonar-coverage
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
