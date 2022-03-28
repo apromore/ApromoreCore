@@ -10,6 +10,7 @@ buildscript {
     classpath "io.spring.gradle:dependency-management-plugin:${dependencyMgmtVersion}"
     classpath "com.gorylenko.gradle-git-properties:gradle-git-properties:${gitPorpertiesVersion}"
     classpath "gradle.plugin.com.hierynomus.gradle.plugins:license-gradle-plugin:${gradleLicensePluginVersion}"
+    classpath "org.jacoco:org.jacoco.ant:${jacocoAntVersion}"
   }
 }
 
@@ -166,7 +167,7 @@ task jacocoGenerateRootReport(type: JacocoReport, group: 'Test Reporting') {
   description = 'Generates aggregate report from all subprojects.'
 
   def includeFilter = ['**/build/classes/java/**/*.class']
-  def excludeFilter = ['**/classes', '**/*.zul'] // classes which have duplicated names to overcome ` Can't add different class with same name issue` See https://github.com/jacoco/jacoco/issues/858
+  def excludeFilter = ['**/*.zul'] // classes which have duplicated names to overcome ` Can't add different class with same name issue` See https://github.com/jacoco/jacoco/issues/858
   def classTree = fileTree(dir: "${rootProject.projectDir}", includes: includeFilter, excludes: excludeFilter)
   def sourceTree = fileTree(dir: "${rootProject.projectDir}", includes: ['**/src/main/java/**/*.*'])
   def executionTree = fileTree(dir: "${rootProject.projectDir}", includes: ['**/build/jacoco/*.exec'])
