@@ -25,7 +25,6 @@
 package org.apromore.portal.dialogController;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,7 +54,6 @@ import org.apromore.portal.model.PermissionType;
 import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.SummariesType;
 import org.apromore.portal.model.SummaryType;
-import org.apromore.portal.model.UserType;
 import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
@@ -386,7 +384,9 @@ public abstract class BaseListboxController extends BaseController {
       }
     });
 
-    if (mainController.isCurrentUserAdmin()) {
+    this.btnSecurity.setVisible(portalContext.getCurrentUser().hasAnyPermission(PermissionType.ACCESS_RIGHTS_MANAGE));
+
+    if (portalContext.getCurrentUser().hasAnyPermission(PermissionType.USERS_EDIT)) {
       this.btnUserMgmt.addEventListener(ON_CLICK, new EventListener<Event>() {
         @Override
         public void onEvent(Event event) throws Exception {
@@ -394,10 +394,8 @@ public abstract class BaseListboxController extends BaseController {
         }
       });
       this.btnUserMgmt.setVisible(true);
-      this.btnSecurity.setVisible(true);
     } else {
       this.btnUserMgmt.setVisible(false);
-      this.btnSecurity.setVisible(false);
     }
 
     this.btnShare.addEventListener(ON_CLICK, new EventListener<Event>() {
@@ -712,14 +710,16 @@ public abstract class BaseListboxController extends BaseController {
     FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
 
     this.mainController.getCopyPasteController().paste(currentFolder);
-    refreshContent();
+    refreshWorkspace();
   }
 
   public void paste(FolderType currentFolder) throws Exception {
     this.mainController.getCopyPasteController().paste(currentFolder);
-    refreshContent();
+    refreshWorkspace();
   }
-
+  private void refreshWorkspace(){
+    mainController.reloadSummariesWithOpenTreeItems(mainController.getNavigationController().getAllOpenFolderItems());
+  }
   public void drop(FolderType dropToFolder,Set<Object> dropObjects) throws Exception {
     if (dropObjects.stream().anyMatch(dropObject -> {
       return (dropObject instanceof FolderType && dropToFolder.getId().equals(((FolderType) dropObject).getId()));
@@ -731,7 +731,7 @@ public abstract class BaseListboxController extends BaseController {
     this.mainController.getPortalSession().setCurrentFolder(dropToFolder);
     this.mainController.getCopyPasteController().drop(dropObjects, dropObjects.size(), dropToFolder);
     this.mainController.getPortalSession().setCurrentFolder(currentFolder);
-    refreshContent();
+    refreshWorkspace();
   }
 
   private ArrayList<FolderType> getSelectedFolders() {
@@ -791,8 +791,7 @@ public abstract class BaseListboxController extends BaseController {
             switch (((Integer) evt.getData())) {
               case Messagebox.YES:
                 deleteElements(mainController);
-                mainController.loadWorkspace();
-                refreshContent();
+                refreshWorkspace();
                 break;
               case Messagebox.NO:
                 break;
@@ -812,8 +811,7 @@ public abstract class BaseListboxController extends BaseController {
             switch (((Integer) evt.getData())) {
               case Messagebox.YES:
                 deleteElements(mainController);
-                mainController.loadWorkspace();
-                refreshContent();
+                refreshWorkspace();
                 break;
               case Messagebox.NO:
                 break;
@@ -833,8 +831,7 @@ public abstract class BaseListboxController extends BaseController {
             switch (((Integer) evt.getData())) {
               case Messagebox.YES:
                 deleteElements(mainController);
-                mainController.loadWorkspace();
-                refreshContent();
+                refreshWorkspace();
                 break;
               case Messagebox.NO:
                 break;
@@ -855,8 +852,7 @@ public abstract class BaseListboxController extends BaseController {
             switch (((Integer) evt.getData())) {
               case Messagebox.YES:
                 deleteFolders(folders, mainController);
-                mainController.loadWorkspace();
-                refreshContent();
+                refreshWorkspace();
                 break;
               case Messagebox.NO:
                 break;
@@ -878,8 +874,7 @@ public abstract class BaseListboxController extends BaseController {
               case Messagebox.YES:
                 deleteFolders(folders, mainController);
                 deleteElements(mainController);
-                mainController.loadWorkspace();
-                refreshContent();
+                refreshWorkspace();
                 break;
               case Messagebox.NO:
                 break;
@@ -938,18 +933,15 @@ public abstract class BaseListboxController extends BaseController {
     getMainController().eraseMessage();
     // Check for ownership is moved to plugin level
     try {
-
-      FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
       if (getSelectionCount() == 0) {
-        if (currentFolder == null) {
-          Notification.error(Labels.getLabel("portal_selectOneLogOrModel_message"));
-          return;
-        }
+        Notification.error(Labels.getLabel("portal_selectOneLogOrModel_message"));
+        return;
       } else if (getSelectionCount() > 1) {
         Notification.error(Labels.getLabel("portal_noMultipleShare_message"));
         return;
       }
 
+      FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
       accessControlPlugin = portalPluginMap.get(PluginCatalog.PLUGIN_ACCESS_CONTROL);
       Map arg = new HashMap<>();
       if (getSelectionCount() == 1) {
@@ -965,6 +957,7 @@ public abstract class BaseListboxController extends BaseController {
       arg.put("autoInherit", true);
       arg.put("showRelatedArtifacts", true);
       arg.put("enablePublish", getMainController().getConfig().isEnablePublish());
+      arg.put("enableUsersList", getMainController().getConfig().isEnableUsersList());
       accessControlPlugin.setSimpleParams(arg);
       accessControlPlugin.execute(portalContext);
     } catch (Exception e) {
@@ -1048,76 +1041,32 @@ public abstract class BaseListboxController extends BaseController {
     // @todo: ought to be externally configurable
     // Need refactoring, for now assume paging is not used and items < 10000 per view
     static final int pageSize = 10000;
-
-    private transient SummariesType summaries, logSummaries;
-    private int currentPageIndex = 0, currentLogPageIndex = 0;
-    private transient List<FolderType> subFolders;
+    private int totalProcessSummary=0;
+    private transient List<Object> objectList;
 
     /**
      * Constructor.
      *
-     * @param subFolders will be displayed before processes
+     * @param objectList will be displayed before processes
      */
-    SummaryListModel(List<FolderType> subFolders) {
-      this.subFolders = subFolders;
+
+    SummaryListModel(List<Object> objectList,int totalProcessSummary) {
+      this.objectList = objectList;
+      this.totalProcessSummary=totalProcessSummary;
       setMultiple(true);
+    }
+    public int getTotalCount() {
+      return totalProcessSummary;
     }
 
     @Override
     public Object getElementAt(int index) {
-
-      // Elements are always accessed in the following order: subfolders, then process
-      // models, then logs
-
-      if (index < subFolders.size()) {
-        return subFolders.get(index); // subfolder
-      } else {
-        int processIndex = index - subFolders.size();
-        SummariesType summaries = getSummaries(processIndex / pageSize);
-        if (processIndex % pageSize < summaries.getSummary().size()) {
-          return summaries.getSummary().get(processIndex % pageSize); // process model
-        } else {
-          int logIndex = processIndex - summaries.getCount().intValue();
-          return getLogSummaries(logIndex / pageSize).getSummary().get(logIndex % pageSize); // log
-        }
-      }
+      return objectList.get(index); //
     }
 
     @Override
     public int getSize() {
-      return subFolders.size() + getSummaries(currentPageIndex).getCount().intValue()
-          + getLogSummaries(currentLogPageIndex).getCount().intValue();
-    }
-
-    public int getTotalCount() {
-      return getSummaries(currentPageIndex).getTotalCount().intValue();
-    }
-
-    private SummariesType getSummaries(int pageIndex) {
-      if (summaries == null || currentPageIndex != pageIndex) {
-        UserType user = UserSessionManager.getCurrentUser();
-        // FolderType currentFolder = UserSessionManager.getCurrentFolder();
-        FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
-        summaries = mainController.getManagerService().getProcessSummaries(user.getId(),
-            currentFolder == null ? 0 : currentFolder.getId(), pageIndex, pageSize);
-        currentPageIndex = pageIndex;
-      }
-      return summaries;
-    }
-
-    private SummariesType getLogSummaries(int pageIndex) {
-      if (logSummaries == null || currentLogPageIndex != pageIndex) {
-        UserType user = UserSessionManager.getCurrentUser();
-        // FolderType currentFolder = UserSessionManager.getCurrentFolder();
-        FolderType currentFolder = getMainController().getPortalSession().getCurrentFolder();
-        logSummaries = mainController.getManagerService().getLogSummaries(user.getId(),
-            currentFolder == null ? 0 : currentFolder.getId(), pageIndex, pageSize);
-        currentLogPageIndex = pageIndex;
-      }
-      return logSummaries;
+      return objectList.size();
     }
   }
-
-
-
 }

@@ -7,4 +7,5 @@ dependencies {
    
 	api project(':Apromore-Extras:OpenXES')
 	implementation project(':Apromore-Calendar')
+	implementation project(':Apromore-Zk')
 }

@@ -31,6 +31,7 @@ import java.util.Set;
 
 import org.apromore.common.Constants;
 import org.apromore.dao.model.AccessRights;
+import org.apromore.dao.model.CustomCalendar;
 import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.Group;
 import org.apromore.dao.model.GroupProcess;
@@ -44,9 +45,13 @@ import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
 import org.apromore.dao.model.Usermetadata;
+import org.apromore.dao.model.UsermetadataType;
 import org.apromore.dao.model.Workspace;
 import org.apromore.portal.helper.Version;
+import org.apromore.util.UserMetadataTypeEnum;
 import org.easymock.EasyMockSupport;
+
+import static org.apromore.common.Constants.TRUNK_NAME;
 
 public class AbstractTest extends EasyMockSupport {
     public Process createProcess(User user, NativeType natType, Folder folder) {
@@ -64,7 +69,7 @@ public class AbstractTest extends EasyMockSupport {
     public ProcessBranch createBranch(Process process) {
         ProcessBranch branch = new ProcessBranch();
         branch.setId(1234);
-        branch.setBranchName("BranchName");
+        branch.setBranchName(TRUNK_NAME);
         branch.setProcess(process);
         branch.setCreateDate("1.1.2020");
         branch.setLastUpdateDate("1.1.2020");
@@ -246,5 +251,27 @@ public class AbstractTest extends EasyMockSupport {
         usermetadata.setLogs(logs);
 
         return usermetadata;
+    }
+
+    public Usermetadata createUserMetadataWithType(Integer id, String content, Set<Log> logs,
+                                                   UserMetadataTypeEnum typeEnum) {
+        Usermetadata usermetadata = createUserMetadata(id, content, logs);
+
+        UsermetadataType usermetadataType = new UsermetadataType();
+        usermetadataType.setType(typeEnum.name());
+        usermetadataType.setId(typeEnum.getUserMetadataTypeId());
+        usermetadata.setUsermetadataType(usermetadataType);
+
+        return usermetadata;
+    }
+
+    public CustomCalendar createCalendar(long id, String name, User user) {
+        CustomCalendar customCalendar = new CustomCalendar();
+        customCalendar.setId(id);
+        customCalendar.setName(name);
+        customCalendar.setUser(user);
+        customCalendar.setCreatedBy("test");
+
+        return customCalendar;
     }
 }

@@ -134,7 +134,7 @@ public class CopyAndPasteController extends BaseController {
     List<FolderType> sourceSubFolders = getSubFolders(folderId);
     Integer newTargetFolderId = createFolder(targetFolderId, folderName);
     if (newTargetFolderId < 0) {
-      LOGGER.error("Fail to clone folder");
+      LOGGER.error("Fail to deepClone folder");
       return;
     }
 

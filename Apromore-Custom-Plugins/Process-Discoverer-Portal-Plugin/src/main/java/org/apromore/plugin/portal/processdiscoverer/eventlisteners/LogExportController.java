@@ -60,7 +60,7 @@ public class LogExportController extends AbstractController {
 
         InputDialog.showInputDialog(
             // Labels.getLabel("e.pd.saveLogWin.text"), // "Save filtered log",
-            parent.getLabel("saveLogWin_text"), "Enter a log name (no more than 60 characters)",
+            parent.getLabel("saveLogWin_text"), "Enter a log name (no more than 100 characters)",
             contextData.getLogName() + "_filtered", null, null, returnEvent -> {
                 if (returnEvent.getName().equals("onOK")) {
                     String logName = (String) returnEvent.getData();
@@ -76,11 +76,11 @@ public class LogExportController extends AbstractController {
             final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             parent.getEventLogService().exportToStream(outputStream, filteredLog);
 
-            Log log = parent.getEventLogService().importLog(contextData.getUsername(),
+            Log log = parent.getEventLogService().importFilteredLog(contextData.getUsername(),
                 contextData.getFolderId(), logName, new ByteArrayInputStream(outputStream.toByteArray()),
                 "xes.gz", contextData.getDomain(),
                 DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(),
-                false, true);
+                false, false, contextData.getLogId());
             String folderName = log.getFolder() == null ? HOME_FOLDER_NAME : log.getFolder().getName();
             String notif = MessageFormat.format(parent.getLabel("successSaveLog_message"),
                 "<strong>" + logName + "</strong>", "<strong>" + folderName + "</strong>");

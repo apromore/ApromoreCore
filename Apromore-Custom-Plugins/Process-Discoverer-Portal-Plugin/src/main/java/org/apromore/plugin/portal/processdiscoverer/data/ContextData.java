@@ -44,9 +44,13 @@ public class ContextData {
 
     private ContextData (String domain,
                         String userName,
-                        int logId, String logName,
-                        int containingFolderId, String containingFolderName,
-                         boolean isCalendarEnabled, boolean isEditEnabled) {
+                        int logId,
+                         String logName,
+                        int containingFolderId,
+                         String containingFolderName,
+                         boolean isCalendarEnabled,
+                         boolean isEditEnabled
+    ) {
         this.username = userName;
         this.folderId = containingFolderId;
         this.folderName = containingFolderName;

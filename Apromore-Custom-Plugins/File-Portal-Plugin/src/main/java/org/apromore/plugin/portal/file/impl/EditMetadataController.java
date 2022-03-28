@@ -291,7 +291,7 @@ public class EditMetadataController extends BaseController implements LabelSuppl
   }
 
   protected void resetProcess() {
-    this.nameT.setValue(this.process.getName().length() > 60 ? this.process.getName().substring(0, 59) : this.process.getName());
+    this.nameT.setValue(this.process.getName().length() > 100 ? this.process.getName().substring(0, 99) : this.process.getName());
     this.nameT.setSelectionRange(0, this.nameT.getValue().length());
     this.versionNumberT.setValue(this.preVersion.getVersionNumber());
     this.domainCB.setValue(this.process.getDomain());
@@ -318,7 +318,7 @@ public class EditMetadataController extends BaseController implements LabelSuppl
   }
 
   private void resetLog() {
-    nameT.setValue(log.getName().length() > 60 ? log.getName().substring(0, 59) : log.getName());
+    nameT.setValue(log.getName().length() > 100 ? log.getName().substring(0, 99) : log.getName());
     nameT.setSelectionRange(0, nameT.getValue().length());
     EventLogService eventLogService = (EventLogService) SpringUtil.getBean("eventLogService");
     makePublicCb.setChecked(eventLogService.isPublicLog(log.getId()));

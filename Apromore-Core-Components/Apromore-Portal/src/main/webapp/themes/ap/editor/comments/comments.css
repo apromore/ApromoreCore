@@ -36,8 +36,8 @@
   font-style: normal;
 }
 
-[class^="icon-"]:before,
-[class*=" icon-"]:before {
+.comments-overlay [class^="comments-icon-"]:before,
+.comments-overlay [class*=" comments-icon-"]:before {
   font-family: "bpmn-js-comments";
   font-style: normal;
   font-weight: normal;
@@ -54,8 +54,8 @@
   line-height: 1em;
 }
 
-.icon-comment:before { content: '\e800'; }
-.icon-delete:before { content: '\e802'; }
+.comments-icon-comment:before { content: '\e800'; }
+.comments-icon-delete:before { content: '\e802'; }
 
 .comments-overlay {
   font-size: 10px;
@@ -159,5 +159,9 @@
 
 .access-type-viewer .comments-overlay .comment .delete,
 .access-type-viewer .comments-overlay .edit {
+  display: none !important;
+}
+
+.comment-disabled .djs-overlay-comments {
   display: none !important;
 }

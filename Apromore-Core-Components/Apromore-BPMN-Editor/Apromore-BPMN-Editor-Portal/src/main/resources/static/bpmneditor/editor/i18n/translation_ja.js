@@ -187,6 +187,10 @@ if(!Apromore.I18N.Share) Apromore.I18N.Share = {};
 Apromore.I18N.Share.group = "共有";
 Apromore.I18N.Share.share = "共有";
 Apromore.I18N.Share.shareDesc = "モデルの共有";
+Apromore.I18N.Share.publish = "公開";
+Apromore.I18N.Share.publishDesc = "モデルの公開";
+Apromore.I18N.Share.unpublish = "非公開";
+Apromore.I18N.Share.unpublishDesc = "モデルの非公開";
 
 if(!Apromore.I18N.SimulationPanel) Apromore.I18N.SimulationPanel = {};
 
@@ -406,5 +410,13 @@ Apromore.I18N.PropertyWindow.ListView.addEntryLabel = "新規エントリーの�
 Apromore.I18N.PropertyWindow.ListView.buttonAdd = "追加";
 Apromore.I18N.PropertyWindow.ListView.save = "保存";
 Apromore.I18N.PropertyWindow.ListView.cancel = "キャンセル";
+
+if(!Apromore.I18N.Attachment) Apromore.I18N.Attachment = {};
+Apromore.I18N.Attachment.attachment = "アタッチメント";
+Apromore.I18N.Attachment.showDesc = "アタッチメントの表示";
+Apromore.I18N.Attachment.hideDesc = "アタッチメントの非表示";
+Apromore.I18N.Attachment.comment = "Comments";
+Apromore.I18N.Attachment.showComments = "Show comments";
+Apromore.I18N.Attachment.hideComments = "Hide comments";
 
 

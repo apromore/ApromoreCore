@@ -55,12 +55,15 @@ public class EditSelectionPlugin extends DefaultPortalPlugin implements LabelSup
 
   @Override
   public String getLabel(Locale locale) {
-    return Labels.getLabel("plugin_discover_editModel_text", label);
+    String labelKey = UserSessionManager.getCurrentUser().hasAnyPermission(PermissionType.MODEL_EDIT)
+        ? "plugin_discover_editModel_text" : "plugin_discover_viewModel_text";
+    return Labels.getLabel(labelKey, label);
   }
 
   @Override
   public String getIconPath() {
-    return "model-edit.svg";
+    return UserSessionManager.getCurrentUser().hasAnyPermission(PermissionType.MODEL_EDIT)
+        ? "model-edit.svg" : "bpmn-model.svg";
   }
 
   @Override

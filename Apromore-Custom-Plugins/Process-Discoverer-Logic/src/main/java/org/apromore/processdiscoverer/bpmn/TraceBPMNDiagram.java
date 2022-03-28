@@ -22,9 +22,7 @@
 
 package org.apromore.processdiscoverer.bpmn;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import org.apromore.calendar.model.CalendarModel;
 import org.apromore.logman.attribute.log.AttributeLog;
 import org.apromore.logman.attribute.log.AttributeTrace;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNEdge;
@@ -32,6 +30,9 @@ import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNNode;
 import org.eclipse.collections.api.list.primitive.IntList;
 import org.eclipse.collections.api.map.primitive.MutableObjectLongMap;
 import org.eclipse.collections.impl.factory.primitive.ObjectLongMaps;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * TraceBPMNDiagram is a <b>SimpleBPMNDiagram</b> that is used to visualize an <b>AttributeTrace</b>
@@ -51,7 +52,7 @@ public class TraceBPMNDiagram extends SimpleBPMNDiagram {
     public TraceBPMNDiagram(AttributeTrace attTrace, AttributeLog log) {
         super(log);
         IntList valueTrace = attTrace.getValueTrace();
-        
+        CalendarModel cal = log.getCalendarModel();
         Map<Integer, BPMNNode> createdNodes = new HashMap<Integer, BPMNNode>();
         for(int i=1; i<valueTrace.size(); i++) {
             int node1Index = i-1;
@@ -61,7 +62,8 @@ public class TraceBPMNDiagram extends SimpleBPMNDiagram {
             BPMNNode node1=null, node2=null;
             if (!createdNodes.containsKey(node1Index)) {
                 node1 = this.addNode(node1Value);
-                nodeDurationMap.put(node1, attTrace.getDurationTrace().get(node1Index));
+                nodeDurationMap.put(node1, cal.getDurationMillis(attTrace.getStartTimeAtIndex(node1Index),
+                        attTrace.getEndTimeAtIndex(node1Index)));
                 createdNodes.put(node1Index, node1);
             }
             else {
@@ -70,7 +72,8 @@ public class TraceBPMNDiagram extends SimpleBPMNDiagram {
             
             if (!createdNodes.containsKey(node2Index)) {
                 node2 = this.addNode(node2Value);
-                nodeDurationMap.put(node2, attTrace.getDurationTrace().get(node2Index));
+                nodeDurationMap.put(node2, cal.getDurationMillis(attTrace.getStartTimeAtIndex(node2Index),
+                        attTrace.getEndTimeAtIndex(node2Index)));
                 createdNodes.put(node2Index, node2);
             }
             else {
@@ -82,6 +85,8 @@ public class TraceBPMNDiagram extends SimpleBPMNDiagram {
 
             BPMNEdge<BPMNNode, BPMNNode> edge = this.addFlow(node1, node2, "");
             arcDurationMap.put(edge, attTrace.getDurationAtPairIndexes(node1Index, node2Index));
+            arcDurationMap.put(edge, cal.getDurationMillis(attTrace.getEndTimeAtIndex(node1Index),
+                    attTrace.getStartTimeAtIndex(node2Index)));
         }
         
         BPMNDiagramHelper.updateStandardEventLabels(this);

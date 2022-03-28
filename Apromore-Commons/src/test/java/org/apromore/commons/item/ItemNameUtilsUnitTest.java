@@ -57,7 +57,7 @@ public class ItemNameUtilsUnitTest {
 
     private static Stream<Arguments> INVALID_FILENAMES() {
         return Stream.of(
-                Arguments.of("MoreThan60Chars012345678901234567890123456789012345678901234567890123456789"),
+                Arguments.of("MoreThan60Chars012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789"),
                 Arguments.of("\r\n\t"),
                 Arguments.of(""),
                 Arguments.of("\u0040") // @ sign
@@ -73,8 +73,8 @@ public class ItemNameUtilsUnitTest {
                 Arguments.of("something-fast", "something-slow", "something_merged"),
                 Arguments.of("something_fast", "something_slow", "something_merged"),
                 Arguments.of("something", "another", "something_another_merged"),
-                Arguments.of("012345678901234567890123456789", "012345678901234567890123456789",
-                        "012345678901234567890123456789_0123456789012345678901_merged")
+                Arguments.of("01234567890123456789012345678901234567890123456789", "01234567890123456789012345678901234567890123456789",
+                    "01234567890123456789012345678901234567890123456789_012345678901234567890123456789012345678901_merged")
         );
     }
 
@@ -88,8 +88,8 @@ public class ItemNameUtilsUnitTest {
                 Arguments.of(Arrays.asList("a-fast", "a-slow"), "a_merged"),
                 Arguments.of(Arrays.asList("a_fast", "a_slow"), "a_merged"),
                 Arguments.of(Arrays.asList("abc", "xyz", "123"), "abc_xyz_123_merged"),
-                Arguments.of(Arrays.asList("012345678901234567890123456789", "012345678901234567890123456789"),
-                        "012345678901234567890123456789_0123456789012345678901_merged")
+                Arguments.of(Arrays.asList("01234567890123456789012345678901234567890123456789", "01234567890123456789012345678901234567890123456789"),
+                    "01234567890123456789012345678901234567890123456789_012345678901234567890123456789012345678901_merged")
         );
     }
 

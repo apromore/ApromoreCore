@@ -27,6 +27,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.MessageFormat;
@@ -35,6 +36,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -45,10 +47,14 @@ import javax.inject.Inject;
 import org.apromore.apmlog.APMLog;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.PortalContexts;
 import org.apromore.plugin.portal.PortalLoggerFactory;
+import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.portal.common.UserSessionManager;
+import org.apromore.portal.context.PortalPluginResolver;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.exception.ExceptionFormats;
+import org.apromore.portal.menu.PluginCatalog;
 import org.apromore.portal.model.ExportFormatResultType;
 import org.apromore.portal.model.ExportLogResultType;
 import org.apromore.portal.model.LogSummaryType;
@@ -62,6 +68,7 @@ import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import org.zkoss.util.resource.Labels;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -69,6 +76,7 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Radio;
 import org.zkoss.zul.Radiogroup;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Window;
@@ -78,6 +86,7 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin implements Labe
 
   private static Logger LOGGER = PortalLoggerFactory.getLogger(DownloadSelectionPlugin.class);
 
+  private static final String PARQUET_DOWNLOAD="PARQUET";
   private String label = "Download";
   @Inject
   EventLogService eventLogService;
@@ -144,7 +153,7 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin implements Labe
    *
    * @throws InterruptedException
    * @throws SuspendNotAllowedException
-   * @throws org.apromore.portal.exception.ExceptionFormats
+   * @throws ExceptionFormats
    */
   protected void exportProcessModel(MainController mainC, PortalContext portalContext)
       throws SuspendNotAllowedException, InterruptedException, ExceptionFormats, ParseException {
@@ -204,8 +213,10 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin implements Labe
         public void onEvent(Event event) throws Exception {
           if (format.getSelectedItem().getLabel().equals("CSV")) {
             exportCSV(logSummary, selectedEncoding.getSelectedItem().getValue());
-          } else {
+          } else if (format.getSelectedItem().getLabel().equals("XES")){
             exportXES(logSummary, mainC);
+          }else if (format.getSelectedItem().getLabel().equals(PARQUET_DOWNLOAD)){
+              callParquetLogsToDownload(mainC,null); //encoding with selected later
           }
           LOGGER.info("User {} downloaded log \"{}\" (id {}) in format {}",
               UserSessionManager.getCurrentUser().getUsername(), logSummary.getName(),
@@ -218,6 +229,7 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin implements Labe
       Button cancelButton = (Button) window.getFellow("cancelButton");
       cancelButton.addEventListener("onClick", new EventListener<Event>() {
         @Override
+
         public void onEvent(Event event) throws Exception {
           window.invalidate();
           window.detach();
@@ -229,8 +241,23 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin implements Labe
       LOGGER.error("Failed to read");
     }
   }
-  
-  public void exportSelectedLogsAndProcessModel(MainController mainController, PortalContext portalContext) {
+
+    private void callParquetLogsToDownload(MainController mainController, String encoding) {
+        try {
+            List<Integer> selectedLogs =
+                mainController.getSelectedElements().stream().map(SummaryType::getId).collect(Collectors.toList());
+            Sessions.getCurrent().setAttribute("logParquetDownload", selectedLogs);
+            Sessions.getCurrent().setAttribute("encodingLogParquet", encoding);
+            PortalPlugin plugin = PortalPluginResolver.getPortalPluginMap().get(PluginCatalog.PLUGIN_PARQUET_DOWNLOAD);
+            if (plugin != null) {
+                plugin.execute(PortalContexts.getActivePortalContext());
+            }
+        } catch (Exception e) {
+            LOGGER.error(Labels.getLabel("Failed to open ParquetExporter window"), e);
+        }
+    }
+
+    public void exportSelectedLogsAndProcessModel(MainController mainController, PortalContext portalContext) {
         try {
           Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(),
               "zul/downloadLog.zul", null, null);
@@ -241,13 +268,17 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin implements Labe
 
           selectedEncoding = (Listbox) window.getFellow("selectEncoding");
           format = (Radiogroup) window.getFellow("format");
-
-          format.addEventListener("onCheck", new EventListener<Event>() {
+            if (mainController.getSelectedElements().stream()
+                .anyMatch( summaryType -> !(summaryType instanceof LogSummaryType))) {
+                Radio parquetRadio = (Radio) format.getFellowIfAny("parquetDownload");
+                if (parquetRadio != null) {
+                    parquetRadio.setVisible(false);
+                }
+            }
+            format.addEventListener("onCheck", new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
-              if (format.getSelectedItem().getLabel().equals("CSV")) {
-                rowEncoding.setVisible(true);
-              } else {
+              if (!(format.getSelectedItem().getLabel().equals("CSV")||format.getSelectedItem().getLabel().equals(PARQUET_DOWNLOAD))) {
                 rowEncoding.setVisible(false);
               }
             }
@@ -256,11 +287,14 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin implements Labe
           downloadButton.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
-              if (format.getSelectedItem().getLabel().equals("CSV")) {
-                  exportFiles(mainController,format.getSelectedItem().getLabel(), selectedEncoding.getSelectedItem().getValue());
-              } else {
-                  exportFiles(mainController,format.getSelectedItem().getLabel(),"");
-              }
+                if (format.getSelectedItem().getLabel().equals("CSV")) {
+                    exportFiles(mainController, format.getSelectedItem().getLabel(),
+                        selectedEncoding.getSelectedItem().getValue());
+                } else if (format.getSelectedItem().getLabel().equals(PARQUET_DOWNLOAD)) {
+                    callParquetLogsToDownload(mainController, selectedEncoding.getSelectedItem().getValue());
+                } else {
+                    exportFiles(mainController, format.getSelectedItem().getLabel(), "");
+                }
              
               LOGGER.info("User {} downloaded  in format {}",
                   UserSessionManager.getCurrentUser().getUsername(), format.getSelectedItem().getLabel());
@@ -288,7 +322,7 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin implements Labe
    *
    * @throws InterruptedException
    * @throws SuspendNotAllowedException
-   * @throws org.apromore.portal.exception.ExceptionFormats
+   * @throws ExceptionFormats
    */
   protected void exportXES(LogSummaryType logSummary, MainController mainController)
       throws Exception {
@@ -342,6 +376,17 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin implements Labe
        }
    }
 
+    private void writeToFileWithoutZip(Path tempPath, DataHandler data) throws IOException  {
+        try (OutputStream os = (new FileOutputStream(tempPath.toFile()));
+             InputStream inputStream = data.getInputStream()) {
+            byte[] buffer = new byte[1024];
+            int len;
+            while ((len = inputStream.read(buffer)) > 0) {
+                os.write(buffer, 0, len);
+            }
+        }
+    }
+
    private Path getProcessModelFile(ProcessSummaryType model, VersionSummaryType version, MainController mainController)
            throws Exception {
        ExportFormatResultType exportResult = mainController.getManagerService().exportFormat(model.getId(),
@@ -349,7 +394,7 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin implements Labe
                UserSessionManager.getCurrentUser().getUsername());
        Path tempPath = Files.createTempFile(null, ".bpmn");
        tempPath.toFile().deleteOnExit();
-       writeToFile(tempPath, exportResult.getNative());
+       writeToFileWithoutZip(tempPath, exportResult.getNative());
        return tempPath;
    }
   
@@ -364,7 +409,7 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin implements Labe
                    if ("CSV".equals(format)) {
                        path = getCSVFile(logSummaryType);
                        LOGGER.info("Export log {} as CSV using {} to {}", item.getName(), encoding, path);
-                   } else {
+                   }  else {
                        path = getXESFile(logSummaryType, mainController);
                        LOGGER.info("Export log {} as XES using {} to {}", item.getName(), encoding, path);
                    }

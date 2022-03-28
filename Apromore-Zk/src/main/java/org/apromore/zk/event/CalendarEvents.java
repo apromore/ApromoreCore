@@ -19,11 +19,13 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+
 package org.apromore.zk.event;
 
 public abstract class CalendarEvents {
 
-    private CalendarEvents () {}
+    private CalendarEvents() {
+    }
 
     public static final String TOPIC = "org/apromore/plugin/calendar";
 
@@ -32,4 +34,7 @@ public abstract class CalendarEvents {
     public static final String ON_CALENDAR_BEFORE_REMOVE = "onCalendarBeforeRemove";
     public static final String ON_CALENDAR_REMOVE = "onCalendarRemove";
     public static final String ON_CALENDAR_CHANGED = "onCalendarChanged";
+    public static final String ON_CALENDAR_REFRESH = "onCalendarRefresh";
+    public static final String ON_CALENDAR_LINK = "onCalendarLink";
+    public static final String ON_CALENDAR_UNLINK = "onCalendarUnlink";
 }

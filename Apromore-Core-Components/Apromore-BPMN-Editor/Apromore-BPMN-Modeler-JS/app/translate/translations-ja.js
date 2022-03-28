@@ -74,9 +74,9 @@ module.exports = {
   'saturday':	'土曜日',
   'sunday':	'日曜日',
 
-  'invalid.empty {element}':	'{element}は空であってはならない',
-  'invalid.notDigit {element}':	'{element}は有効な正の数でなければなりません。',
-  'invalid.notInteger {element}':	'{element}は正の整数でなければなりません。',
+  'invalid.empty {element}':	'必須項目',
+  'invalid.notDigit {element}':	'半角整数で入力してください。',
+  'invalid.notInteger {element}':	'半角整数で入力してください。',
   'invalid.exceed100% {element}':	'{element}は100%を超えてはいけません',
   'startExclude.invalid.message':	'統計から除外する割合は0～40でなければなりません。',
   'endExclude.invalid.message':	'統計から除外する割合は0～40でなければなりません。',

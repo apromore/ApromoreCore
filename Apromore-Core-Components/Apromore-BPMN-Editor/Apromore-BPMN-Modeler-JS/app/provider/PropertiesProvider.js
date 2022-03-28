@@ -46,7 +46,7 @@ function removeSequenceFlows(bpmnFactory, elementRegistry) {
   }
 }
 
-function PropertiesProvider(eventBus, canvas, bpmnFactory, elementRegistry, translate, bpmnjs) {
+function PropertiesProvider(eventBus, canvas, bpmnFactory, elementRegistry, translate, bpmnjs, config) {
 
   PropertiesActivator.call(this, eventBus);
 
@@ -58,8 +58,8 @@ function PropertiesProvider(eventBus, canvas, bpmnFactory, elementRegistry, tran
     var resourcesTab = createResourceTab(element, bpmnFactory, elementRegistry, translate);
     var gatewayTab = createGatewayTab(element, bpmnFactory, elementRegistry, translate);
     var intermediateAndBoundaryEventsTab = createIntermediateAndBoundaryEventsTab(element, bpmnFactory, elementRegistry, translate);
-    var auxTab = createAuxTab(element, bpmnFactory, elementRegistry, translate, bpmnjs);
-    var customTab = createCustomTab(element, bpmnFactory, elementRegistry, translate);
+    var auxTab = createAuxTab(element, bpmnFactory, elementRegistry, translate, bpmnjs, eventBus);
+    var customTab = createCustomTab(element, bpmnFactory, elementRegistry, translate, config);
 
     function getDefaultTabs() {
       return [customTab, auxTab, simulationParametersTab, taskTab, timetableTab, resourcesTab, gatewayTab, intermediateAndBoundaryEventsTab];
@@ -121,7 +121,8 @@ PropertiesProvider.$inject = [
   'bpmnFactory',
   'elementRegistry',
   'translate',
-  'bpmnjs'
+  'bpmnjs',
+  'config'
 ];
 
 inherits(PropertiesProvider, PropertiesActivator);

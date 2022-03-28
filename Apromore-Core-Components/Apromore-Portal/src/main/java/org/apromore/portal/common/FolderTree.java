@@ -24,6 +24,7 @@
 
 package org.apromore.portal.common;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import org.apromore.manager.client.ManagerService;
@@ -33,6 +34,7 @@ import org.apromore.portal.model.LogSummaryType;
 import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.SummariesType;
 import org.apromore.portal.model.SummaryType;
+import org.apromore.portal.util.FolderTypeComparator;
 
 /**
  * Created by IntelliJ IDEA. User: Igor Date: 2/07/12 Time: 6:56 PM To change this template use File
@@ -92,6 +94,8 @@ public class FolderTree {
   private FolderTreeNode buildTree(FolderTreeNode node, List<FolderType> folders, int folderId,
       HashSet<Integer> set) {
 
+    Collections.sort(folders, new FolderTypeComparator());
+
     for (FolderType folder : folders) {
 
       if (!set.contains(folder.getId())) {
@@ -130,7 +134,7 @@ public class FolderTree {
     if (loadAll) {
       final int PAGE_SIZE = 100;
 
-      ManagerService service = UserSessionManager.getMainController().getManagerService();
+      ManagerService service = this.mainController.getManagerService();
       String userId = UserSessionManager.getCurrentUser().getId();
 
       int page = 0;

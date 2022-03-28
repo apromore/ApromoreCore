@@ -85,7 +85,7 @@ public class JGraphLayouter implements Layouter {
 	
 	private int SEQUENCE_LENGTH = 3;
 	
-	private VisualSettings visSettings = VisualSettings.standard();
+	private VisualSettings visSettings = VisualSettings.standard("USD");
 	
     @Override
     public void setVisualSettings(VisualSettings visSettings) {
@@ -219,7 +219,6 @@ public class JGraphLayouter implements Layouter {
 	/**
 	 * Post processing for the layout, e.g. adjusting connection styles
 	 * @param layout
-	 * @param isBPMN: true if the diagram is a BPMN model.
 	 */
 	private void postLayout(Layout layout) {
 		// Fix the horizontal alignment for sequence to be a straight line
@@ -579,8 +578,6 @@ public class JGraphLayouter implements Layouter {
 	 * @param sY: source node Y
 	 * @param tX: target node X
 	 * @param tY: target node Y
-	 * @param PointX: point X
-	 * @param PointY: point Y
 	 * @return: Point2D (x=distance, y=weight)
 	 */
 	private Point2D getDistWeight(double sX, double sY, double tX, double tY, double pX, double pY) {

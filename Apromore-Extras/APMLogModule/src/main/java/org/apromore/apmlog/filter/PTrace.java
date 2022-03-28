@@ -59,7 +59,7 @@ public class PTrace extends AbstractTraceImpl implements Comparable<PTrace>, Ser
     }
 
     // ===================================
-    // For clone
+    // For deepClone
     // ===================================
     public PTrace(int mutableIndex,
                   ATrace immutableTrace,

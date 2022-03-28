@@ -36,7 +36,7 @@ import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Gatew
  *
  */
 public class VisualSettings {
-	private final DecimalFormat decimalFormatter = new DecimalFormat("##############0.##");
+	private final DecimalFormat decimalFormatter = new DecimalFormat("###,###,###,###,##0.##");
 	private final TimeConverter timeConverter = new TimeConverter();
 	private final StringFormatter stringFormatter = new StringFormatter();
 	private final StandardColorSettings colorSettings = new StandardColorSettings();
@@ -64,9 +64,15 @@ public class VisualSettings {
     
     private String start_name_name = Constants.START_NAME;
     private String end_event_name = Constants.END_NAME;
-    
-    public static VisualSettings standard() {
-        return new VisualSettings();
+
+    private String currency = "USD";
+
+    public VisualSettings(String currency) {
+        this.currency = currency;
+    }
+
+    public static VisualSettings standard(String currency) {
+        return new VisualSettings(currency);
     }
     
     public DecimalFormat getDecimalFormatter() {
@@ -96,8 +102,11 @@ public class VisualSettings {
     public int getParallelEdgeSpacing() {
         return parallel_edge_spacing;
     }
-    
-    
+
+    public String getCurrency() {
+        return currency;
+    }
+
     public int getBorderWidth() {
     	return border_width;
     }

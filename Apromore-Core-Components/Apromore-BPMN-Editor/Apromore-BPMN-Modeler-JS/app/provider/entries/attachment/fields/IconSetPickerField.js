@@ -59,6 +59,7 @@ var ICONS = [
     "ap-bpmn-icon-flag",
     "z-icon-book",
     "ap-bpmn-icon-process-performance",
+    "ap-bpmn-icon-ap-dashboard",
     "z-icon-ban"
   ]
 ];
@@ -82,7 +83,7 @@ function selectIcon(iconName) {
 
 const SET_PICKER_SEL = '#ap-bpmn-icon-set-picker';
 
-function updateObjects(element, icons, bpmnFactory, bpmnjs) {
+function updateObjects(element, icons, bpmnFactory, bpmnjs, eventBus) {
   icons.values = [];
   let setContainer = $('#ap-bpmn-icon-set');
   $('.icon-item', setContainer).each((index, itemEl) => {
@@ -109,6 +110,7 @@ function updateObjects(element, icons, bpmnFactory, bpmnjs) {
       icons.values.push(iconEl);
     }
   })
+  eventBus.fire("elements.changedAux", [element])
   // update overlays
   refreshOverlay(bpmnjs, element);
   return icons.values;
@@ -127,7 +129,7 @@ function updateIndices() {
 
 let currentIndex = -1;
 
-function renderIconSet(element, icons, bpmnFactory, bpmnjs, translate) {
+function renderIconSet(element, icons, bpmnFactory, bpmnjs, translate, eventBus) {
   let item;
   let setContainer = $('#ap-bpmn-icon-set');
   let addButton = $('<div class="add">Add new</div>');
@@ -161,10 +163,10 @@ function renderIconSet(element, icons, bpmnFactory, bpmnjs, translate) {
     let iconEl = $(`<div class="icon-name ${name}" title="Click to select icon" data-icon-index="${index}" data-icon-name="${name}" />`);
     let eraseEl = $(`<div class="remove" data-icon-index="${index}">Remove</div>`);
     urlEl.on('change', () => {
-      updateObjects(element, icons, bpmnFactory, bpmnjs);
+      updateObjects(element, icons, bpmnFactory, bpmnjs, eventBus);
     });
     textEl.on('change', () => {
-      updateObjects(element, icons, bpmnFactory, bpmnjs);
+      updateObjects(element, icons, bpmnFactory, bpmnjs, eventBus);
     });
     iconEl.on('click', () => {
       let index = $(event.target).data("icon-index");
@@ -182,7 +184,7 @@ function renderIconSet(element, icons, bpmnFactory, bpmnjs, translate) {
       let row = $(`#ap-bpmn-icon-set .icon-item[data-icon-index=${index}]`);
       row.remove();
       updateIndices();
-      updateObjects(element, icons, bpmnFactory, bpmnjs);
+      updateObjects(element, icons, bpmnFactory, bpmnjs, eventBus);
     });
     item.append(urlEl);
     item.append(textEl);
@@ -233,7 +235,7 @@ module.exports = function(options) {
         rowIcon.removeClass();
         rowIcon.addClass("icon-name " + newIconName);
         selectIcon(newIconName);
-        updateObjects(options.element, icons, options.bpmnFactory, options.bpmnjs);
+        updateObjects(options.element, icons, options.bpmnFactory, options.bpmnjs, options.eventBus);
       })
       lineEl.appendChild(icoEl);
     });
@@ -248,7 +250,7 @@ module.exports = function(options) {
   resource.cssClasses = ['bpp-iconset'];
   resource.get = function(_element, _node) {
     setTimeout(function() {
-      renderIconSet(options.element, icons, options.bpmnFactory, options.bpmnjs, options.translate);
+      renderIconSet(options.element, icons, options.bpmnFactory, options.bpmnjs, options.translate, options.eventBus);
     }, 100);
   }
   resource.set = function(element, values, _node) {

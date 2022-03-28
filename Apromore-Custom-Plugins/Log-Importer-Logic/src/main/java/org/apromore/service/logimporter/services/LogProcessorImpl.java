@@ -19,23 +19,27 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+
 package org.apromore.service.logimporter.services;
 
-import org.apromore.service.logimporter.model.LogErrorReport;
-import org.apromore.service.logimporter.model.LogErrorReportImpl;
-import org.apromore.service.logimporter.model.LogEventModelExt;
-import org.apromore.service.logimporter.model.LogMetaData;
-import org.apromore.service.logimporter.utilities.FileUtils;
+import static org.apromore.service.logimporter.dateparser.DateUtil.parseToTimestamp;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
-
-import static org.apromore.service.logimporter.dateparser.DateUtil.parseToTimestamp;
+import org.apromore.service.logimporter.exception.InvalidLogMetadataException;
+import org.apromore.service.logimporter.model.LogErrorReport;
+import org.apromore.service.logimporter.model.LogErrorReportImpl;
+import org.apromore.service.logimporter.model.LogEventModel;
+import org.apromore.service.logimporter.model.LogMetaData;
+import org.apromore.service.logimporter.utilities.FileUtils;
 
 /**
+ * Logic to process a single line of a log.
+ *
  * @author 2021-08-18 18:15:00 frankma
  */
 public class LogProcessorImpl implements LogProcessor {
@@ -43,124 +47,173 @@ public class LogProcessorImpl implements LogProcessor {
     private List<Integer> maskPos;
 
     @Override
-    public LogEventModelExt processLog(List<String> line, List<String> header, LogMetaData logMetaData, int lineIndex,
-                                       List<LogErrorReport> logErrorReport) {
+    public LogEventModel processLog(List<String> line, List<String> header, LogMetaData logMetaData, int lineIndex,
+                                    List<LogErrorReport> logErrorReport) throws InvalidLogMetadataException {
+
+        if (logErrorReport == null) {
+            logErrorReport = new ArrayList<>();
+        }
+        final int initialErrorLogSize = logErrorReport.size();
+
         // Construct an event
-        Timestamp startTimestamp = null;
-        String resource = null;
-        HashMap<String, String> caseAttributes = new HashMap<>(logMetaData.getCaseAttributesPos().size());
-        HashMap<String, String> eventAttributes = new HashMap<>(logMetaData.getEventAttributesPos().size());
-        HashMap<String, Timestamp> otherTimestamps = new HashMap<>(logMetaData.getOtherTimestamps().size());
-        boolean validRow = true;
+        final HashMap<String, String> caseAttributes = new HashMap<>(logMetaData.getCaseAttributesPos().size());
+        final HashMap<String, String> eventAttributes = new HashMap<>(logMetaData.getEventAttributesPos().size());
+        final HashMap<String, Timestamp> otherTimestamps = new HashMap<>(logMetaData.getOtherTimestamps().size());
         maskPos = logMetaData.getMaskPos();
 
-        // Case id:
-        assert logMetaData.getCaseIdPos() != -1;
-        String caseId = line.get(logMetaData.getCaseIdPos());
-        if (caseId == null || caseId.isEmpty()) {
-            logErrorReport.add(new LogErrorReportImpl(lineIndex, logMetaData.getCaseIdPos(),
-                    header.get(logMetaData.getCaseIdPos()), "Case id is empty or has a null value!"));
-            validRow = false;
-        } else if (applyMask(logMetaData.getCaseIdPos())) {
-            caseId = FileUtils.sha256Hashing(caseId);
+        // CaseId
+        if (logMetaData.getCaseIdPos() == LogMetaData.HEADER_ABSENT) {
+            throw new InvalidLogMetadataException("No Case Id in metadata");
         }
+
+        final String caseId = getStringAttribute(line, header, logMetaData.getCaseIdPos(), lineIndex, logErrorReport,
+            "Case id is empty or has a null value!");
 
         // Activity
-        String activity = line.get(logMetaData.getActivityPos());
-        if (activity == null || activity.isEmpty()) {
-            logErrorReport.add(new LogErrorReportImpl(lineIndex, logMetaData.getActivityPos(),
-                    header.get(logMetaData.getActivityPos()), "Activity is empty or has a null value!"));
-            validRow = false;
-        } else if (applyMask(logMetaData.getActivityPos())) {
-            activity = FileUtils.sha256Hashing(activity);
-        }
+        final String activity = getStringAttribute(line, header, logMetaData.getActivityPos(), lineIndex,
+            logErrorReport, "Activity is empty or has a null value!");
 
         // End Timestamp
-        Timestamp endTimestamp = parseTimestampValue(line.get(logMetaData.getEndTimestampPos()),
-                logMetaData.getEndTimestampFormat(), logMetaData.getTimeZone());
-        if (endTimestamp == null) {
-            logErrorReport.add(new LogErrorReportImpl(lineIndex, logMetaData.getEndTimestampPos(),
-                    header.get(logMetaData.getEndTimestampPos()), "Invalid end timestamp due to wrong format or daylight saving!"));
-            validRow = false;
-        }
+        final Timestamp endTimestamp = getTimestampAttribute(line, header, logMetaData.getEndTimestampPos(), lineIndex,
+            logMetaData.getEndTimestampFormat(), logMetaData.getTimeZone(), logErrorReport,
+            "Invalid end timestamp due to wrong format or daylight saving!");
+
         // Start Timestamp
-        if (logMetaData.getStartTimestampPos() != -1) {
-            startTimestamp = parseTimestampValue(line.get(logMetaData.getStartTimestampPos()),
-                    logMetaData.getStartTimestampFormat(), logMetaData.getTimeZone());
-            if (endTimestamp != null && startTimestamp == null) {
-                startTimestamp = endTimestamp;
-                validRow = true;
-            }
+        Timestamp startTimestamp = getTimestampAttribute(line, header, logMetaData.getStartTimestampPos(), lineIndex,
+            logMetaData.getStartTimestampFormat(), logMetaData.getTimeZone(), null, null);
+
+        if (endTimestamp != null && startTimestamp == null) {
+            startTimestamp = endTimestamp;
         }
 
         // Other timestamps
-        if (!logMetaData.getOtherTimestamps().isEmpty()) {
-            for (Map.Entry<Integer, String> otherTimestamp : logMetaData.getOtherTimestamps().entrySet()) {
+        getTimestampMap(line, header, logMetaData.getOtherTimestamps(), lineIndex, logMetaData.getTimeZone(),
+            logErrorReport, otherTimestamps);
+
+        // Resource
+        final String resource = getStringAttribute(line, header, logMetaData.getResourcePos(), lineIndex,
+            logErrorReport, "Resource is empty or has a null value!");
+
+        // Role
+        final String role = getStringAttribute(line, header, logMetaData.getRolePos(), lineIndex, logErrorReport,
+            "Role is empty or has a null value!");
+
+        // Case Attributes
+        getAttributesMap(line, header, logMetaData.getCaseAttributesPos(), caseAttributes);
+
+        // Event Attributes
+        getAttributesMap(line, header, logMetaData.getEventAttributesPos(), eventAttributes);
+
+        // Perspective
+        validatePerspectives(line, header, logMetaData.getPerspectivePos(), lineIndex, logErrorReport);
+
+
+        return LogEventModel.builder()
+            .caseID(caseId)
+            .activity(activity)
+            .endTimestamp(endTimestamp)
+            .startTimestamp(startTimestamp)
+            .otherTimestamps(otherTimestamps)
+            .resource(resource)
+            .role(role)
+            .eventAttributes(eventAttributes)
+            .caseAttributes(caseAttributes)
+            .valid(initialErrorLogSize == logErrorReport.size())
+            .build();
+    }
+
+    private void validatePerspectives(
+        final List<String> line, final List<String> header, List<Integer> perspectivePositions, int lineIndex,
+        final List<LogErrorReport> logErrorReport) {
+        if (perspectivePositions != null && !perspectivePositions.isEmpty()) {
+            for (int columnPos : perspectivePositions) {
+                String perspective = line.get(columnPos);
+                if (perspective == null || perspective.isEmpty()) {
+                    logErrorReport.add(new LogErrorReportImpl(lineIndex, columnPos,
+                        header.get(columnPos), "Perspective is empty or has a null value!"));
+                }
+            }
+        }
+    }
+
+    private void getTimestampMap(
+        final List<String> line, final List<String> header, HashMap<Integer, String> otherTimestamps,
+        int lineIndex, final String timeZone, final List<LogErrorReport> logErrorReport,
+        final HashMap<String, Timestamp> timestampAttributeMap) {
+        if (!otherTimestamps.isEmpty()) {
+            for (Map.Entry<Integer, String> otherTimestamp : otherTimestamps.entrySet()) {
                 Timestamp tempTimestamp = parseTimestampValue(line.get(otherTimestamp.getKey()),
-                        otherTimestamp.getValue(), logMetaData.getTimeZone());
+                    otherTimestamp.getValue(), timeZone);
                 if (tempTimestamp != null) {
-                    otherTimestamps.put(header.get(otherTimestamp.getKey()), tempTimestamp);
+                    timestampAttributeMap.put(header.get(otherTimestamp.getKey()), tempTimestamp);
                 } else {
                     logErrorReport.add(new LogErrorReportImpl(lineIndex, otherTimestamp.getKey(),
-                            header.get(otherTimestamp.getKey()), "Invalid other timestamp due to wrong format or daylight saving!"));
-                    validRow = false;
+                        header.get(otherTimestamp.getKey()),
+                        "Invalid other timestamp due to wrong format or daylight saving!"));
                     break;
                 }
             }
         }
+    }
 
-        // Resource
-        if (logMetaData.getResourcePos() != -1) {
-            resource = line.get(logMetaData.getResourcePos());
-            if (resource == null || resource.isEmpty()) {
-                logErrorReport.add(new LogErrorReportImpl(lineIndex, logMetaData.getResourcePos(),
-                        header.get(logMetaData.getResourcePos()), "Resource is empty or has a null value!"));
-                validRow = false;
-            } else if (applyMask(logMetaData.getResourcePos())) {
-                resource = FileUtils.sha256Hashing(resource);
-            }
-        }
+    private void getAttributesMap(
+        final List<String> line, final List<String> header, List<Integer> attributePositions,
+        final HashMap<String, String> attributeHeaderToValue) {
 
-        // Case Attributes
-        if (validRow && logMetaData.getCaseAttributesPos() != null && !logMetaData.getCaseAttributesPos().isEmpty()) {
-            for (int columnPos : logMetaData.getCaseAttributesPos()) {
-                caseAttributes.put(header.get(columnPos), applyMask(columnPos) ?
-						FileUtils.sha256Hashing(line.get(columnPos)) :
-                        line.get(columnPos));
-            }
-        }
-
-        // Event Attributes
-        if (validRow && logMetaData.getEventAttributesPos() != null && !logMetaData.getEventAttributesPos().isEmpty()) {
-            for (int columnPos : logMetaData.getEventAttributesPos()) {
-                eventAttributes.put(header.get(columnPos), applyMask(columnPos) ?
-						FileUtils.sha256Hashing(line.get(columnPos)) :
-                        line.get(columnPos));
-            }
-
-        }
-
-        // Perspective
-        if (validRow && logMetaData.getPerspectivePos() != null && !logMetaData.getPerspectivePos().isEmpty()) {
-            for (int columnPos : logMetaData.getPerspectivePos()) {
-                String perspective = line.get(columnPos);
-                if (perspective == null || perspective.isEmpty()) {
-                    logErrorReport.add(new LogErrorReportImpl(lineIndex, columnPos,
-                            header.get(columnPos), "Perspective is empty or has a null value!"));
-                    validRow = false;
+        if (attributePositions != null && !attributePositions.isEmpty()) {
+            for (int columnPos : attributePositions) {
+                if (line.size() > columnPos) {
+                    attributeHeaderToValue.put(header.get(columnPos), applyMask(columnPos)
+                        ? FileUtils.sha256Hashing(line.get(columnPos)) : line.get(columnPos));
                 }
             }
+        }
+    }
 
+    private String getStringAttribute(
+        final List<String> line, final List<String> header, int attributePosition, int lineIndex,
+        final List<LogErrorReport> logErrorReport, final String errorMsg) {
+
+        String attributeValue = null;
+        if (attributePosition != LogMetaData.HEADER_ABSENT && line.size() > attributePosition) {
+
+            attributeValue = line.get(attributePosition);
+            if (logErrorReport != null && (attributeValue == null || attributeValue.isEmpty())) {
+                logErrorReport.add(new LogErrorReportImpl(lineIndex, attributePosition,
+                    header.get(attributePosition), errorMsg));
+            } else if (applyMask(attributePosition)) {
+
+                attributeValue = FileUtils.sha256Hashing(attributeValue);
+            }
         }
 
-        return new LogEventModelExt(caseId, activity, endTimestamp, startTimestamp, otherTimestamps, resource,
-                eventAttributes, caseAttributes, validRow);
+        return attributeValue;
+    }
+
+    private Timestamp getTimestampAttribute(
+        final List<String> line, final List<String> header, int attributePosition, int lineIndex,
+        final String timestampFormat, final String timeZone,
+        final List<LogErrorReport> logErrorReport, final String errorMsg) {
+
+        Timestamp attributeValue = null;
+        if (attributePosition != LogMetaData.HEADER_ABSENT && line.size() > attributePosition) {
+
+            attributeValue = parseTimestampValue(line.get(attributePosition),
+                timestampFormat, timeZone);
+
+            if (logErrorReport != null && attributeValue == null) {
+                logErrorReport.add(new LogErrorReportImpl(lineIndex, attributePosition,
+                    header.get(attributePosition), errorMsg));
+            }
+        }
+
+        return attributeValue;
     }
 
     private Timestamp parseTimestampValue(String theValue, String format, String timeZone) {
         if (theValue != null && !theValue.isEmpty() && format != null && !format.isEmpty()) {
             return (timeZone == null || timeZone.isEmpty()) ? parseToTimestamp(theValue, format, null)
-                    : parseToTimestamp(theValue, format, TimeZone.getTimeZone(timeZone));
+                : parseToTimestamp(theValue, format, TimeZone.getTimeZone(timeZone));
         } else {
             return null;
         }
@@ -173,4 +226,5 @@ public class LogProcessorImpl implements LogProcessor {
             return maskPos.contains(pos);
         }
     }
+
 }

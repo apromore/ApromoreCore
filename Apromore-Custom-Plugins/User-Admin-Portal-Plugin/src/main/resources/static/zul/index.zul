@@ -22,6 +22,7 @@
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 <?component name="userTabComp" macroURI="~./user-admin/macros/user-tab.zul" inline="true" ?>
 <?component name="groupTabComp" macroURI="~./user-admin/macros/group-tab.zul" inline="true" ?>
+<?component name="roleTabComp" macroURI="~./user-admin/macros/role-tab.zul" inline="true" ?>
 <window xmlns:h="http://www.w3.org/1999/xhtml"
         xmlns:ca="client/attribute"
         xmlns:w="client"
@@ -41,6 +42,7 @@
       <tabs id="tabs" vflex="1" hflex="1">
         <tab label="${$composer.labels.users_text}" id="userTab" />
         <tab label="${$composer.labels.groups_text}" id="groupTab" />
+        <tab label="${$composer.labels.roles_text}" id="roleTab" />
       </tabs>
       <tabpanels vflex="1" hflex="1">
         <tabpanel vflex="1" hflex="1" style="padding: 0;">
@@ -48,6 +50,9 @@
         </tabpanel>
         <tabpanel vflex="1" hflex="1" style="padding: 0;" id="groupsTabPanel">
           <groupTabComp/>
+        </tabpanel>
+        <tabpanel vflex="1" hflex="1" style="padding: 0;" id="rolesTabPanel">
+          <roleTabComp/>
         </tabpanel>
       </tabpanels>
     </tabbox>

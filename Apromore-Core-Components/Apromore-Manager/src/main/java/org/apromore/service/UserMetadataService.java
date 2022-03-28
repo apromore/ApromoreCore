@@ -21,8 +21,12 @@
  */
 package org.apromore.service;
 
+import org.apromore.dao.model.Group;
+import org.apromore.dao.model.GroupUsermetadata;
+import org.apromore.dao.model.Log;
 import org.apromore.dao.model.Process;
-import org.apromore.dao.model.*;
+import org.apromore.dao.model.User;
+import org.apromore.dao.model.Usermetadata;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.util.AccessType;
 import org.apromore.util.UserMetadataTypeEnum;
@@ -76,6 +80,19 @@ public interface UserMetadataService {
      */
     void saveUserMetadataWithoutLog(String content, UserMetadataTypeEnum userMetadataTypeEnum, String username) throws UserNotFoundException;
 
+
+    /**
+     * Save a list of user metadata which is not linked to log.
+     *
+     * @param contentList          List of content
+     * @param userMetadataTypeEnum Type of UserMetadata, get from UserMetadataTypeEnum
+     * @param username             username
+     * @return
+     * @throws UserNotFoundException Can't find a user with specified username
+     */
+    List<Usermetadata> saveAllUserMetadataWithoutLog(List<String> contentList,
+                                                     UserMetadataTypeEnum userMetadataTypeEnum,
+                                                     String username) throws UserNotFoundException;
     /**
      * Assign specified group with permission to all the user metadata that linked to the specified log
      *
@@ -170,6 +187,16 @@ public interface UserMetadataService {
      * @throws UserNotFoundException Can't find a user with specified username
      */
     Set<Usermetadata> getUserMetadataByUser(String username, UserMetadataTypeEnum userMetadataTypeEnum) throws UserNotFoundException;
+
+    /**
+     * Find a list of user metadata by username and type
+     *
+     * @param username             username
+     * @param userMetadataTypeEnum Type of UserMetadata, get from UserMetadataTypeEnum
+     * @return A list of user metadata
+     * @throws UserNotFoundException Can't find a user with specified username
+     */
+    List<Usermetadata> getUserMetadataListByUser(String username, UserMetadataTypeEnum userMetadataTypeEnum) throws UserNotFoundException;
 
     /**
      * Find a set of user metadata that are linked to specified list of Logs and type

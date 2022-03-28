@@ -2,6 +2,7 @@ import savePlugin from './apromoreSave';
 import exportPlugin from './export';
 import pdfPlugin from './pdf';
 import publishModelPlugin from './publishModel';
+import attachmentPlugin from './attachment';
 import sharePlugin from './share';
 import simModelPlugin from './simulateModel';
 import toolbarPlugin from './toolbar';
@@ -10,6 +11,7 @@ import viewPlugin from './view';
 
 //Add plugins to list
 let Plugins = {
+    Attachment: attachmentPlugin,
     ApromoreSave: savePlugin,
     Export: exportPlugin,
     File: pdfPlugin,

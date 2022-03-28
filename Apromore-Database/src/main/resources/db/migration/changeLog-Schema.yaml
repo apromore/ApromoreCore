@@ -1276,3 +1276,83 @@ databaseChangeLog:
                    referencedColumnNames: id
                    foreignKeyName: fk_publish_process_idk
                    deleteCascade: true
+
+ - changeSet:
+     id: 20220131091400
+     author: frankm
+     changes:
+        - addColumn:
+            tableName: process_model_version
+            columns:
+               - column:
+                  name: creator
+                  type: INT
+
+ - changeSet:
+     id: 20220215092400
+     author: janeh
+     changes:
+       - addColumn:
+           tableName: custom_calendar
+           columns:
+             - column:
+                 name: owner
+                 type: INT
+                 constraints:
+                   nullable: true
+                 defaultValue: null
+       - addForeignKeyConstraint:
+           baseColumnNames: owner
+           baseTableName: custom_calendar
+           constraintName: fk_calendar_owner
+           onDelete:  CASCADE
+           onUpdate:  CASCADE
+           referencedColumnNames: id
+           referencedTableName: user
+
+ - changeSet:
+     id: 20220221101400
+     author: frankm
+     changes:
+        - addForeignKeyConstraint:
+           baseColumnNames: creator
+           baseTableName: process_model_version
+           constraintName: fk_pmv_creator
+           onDelete:  SET NULL
+           onUpdate:  CASCADE
+           referencedColumnNames: id
+           referencedTableName: user
+
+ - changeSet:
+     id: 20220316131800
+     author: mtomar
+     changes:
+       - createTable:
+           tableName: predictor
+           columns:
+             - column:
+                 name: id
+                 type: BIGINT
+                 autoIncrement: true
+                 constraints:
+                   nullable: false
+                   primaryKey: true
+                   primaryKeyName: pk_predictor_id
+             - column:
+                 constraints:
+                   nullable: false
+                 name: log_id
+                 type: INT
+                 remarks: 'Training Log id'
+             - column:
+                 name: name
+                 type: VARCHAR(200)
+             - column:
+                 name: prediction_type
+                 type: VARCHAR(25)
+             - column:
+                 name: target_attribute
+                 type: VARCHAR(200)
+             - column:
+                 name: ppm_status
+                 type: VARCHAR(15)

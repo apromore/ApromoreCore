@@ -64,7 +64,7 @@ public class AttributeValidator extends AbstractLogFilterRuleValidator {
         if (originalRule.getPrimaryValues() == null || originalRule.getPrimaryValues().isEmpty())
             return createInvalidFilterRuleResult(originalRule);
 
-        LogFilterRule validatedRule = originalRule.clone();
+        LogFilterRule validatedRule = originalRule.deepClone();
 
         Set<String> ruleVals = validatedRule.getPrimaryValues().iterator().next().getStringSetValue();
         Set<String> validValues = ruleVals.stream().filter(existValues::contains).collect(Collectors.toSet());
@@ -81,7 +81,7 @@ public class AttributeValidator extends AbstractLogFilterRuleValidator {
 
     public static ValidatedFilterRule validateAttributeCombination(LogFilterRule originalRule, APMLog apmLog) {
 
-        LogFilterRule validatedRule = originalRule.clone();
+        LogFilterRule validatedRule = originalRule.deepClone();
 
         RuleValue primRV = validatedRule.getPrimaryValues().iterator().next();
         String primSect = primRV.getCustomAttributes().get("section");

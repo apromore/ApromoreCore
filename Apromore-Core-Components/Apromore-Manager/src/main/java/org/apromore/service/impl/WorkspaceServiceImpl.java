@@ -24,25 +24,9 @@
 
 package org.apromore.service.impl;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.TreeMap;
-import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 import org.apromore.commons.config.ConfigBean;
+import org.apromore.dao.CustomCalendarRepository;
 import org.apromore.dao.FolderRepository;
 import org.apromore.dao.GroupFolderRepository;
 import org.apromore.dao.GroupLogRepository;
@@ -57,6 +41,7 @@ import org.apromore.dao.UserRepository;
 import org.apromore.dao.UsermetadataRepository;
 import org.apromore.dao.WorkspaceRepository;
 import org.apromore.dao.model.AccessRights;
+import org.apromore.dao.model.CustomCalendar;
 import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.Group;
 import org.apromore.dao.model.GroupFolder;
@@ -91,6 +76,27 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.inject.Inject;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.TreeMap;
+
+import static org.apromore.common.Constants.TRUNK_NAME;
+
 @Service("workspaceService")
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT,
     rollbackFor = Exception.class)
@@ -111,6 +117,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
   private GroupProcessRepository groupProcessRepo;
   private GroupLogRepository groupLogRepo;
   private GroupUsermetadataRepository groupUsermetadataRepo;
+  private CustomCalendarRepository customCalendarRepo;
   private EventLogFileService logFileService;
   private FolderService folderService;
   private StorageRepository storageRepository;
@@ -139,6 +146,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
       final GroupProcessRepository groupProcessRepository,
       final GroupLogRepository groupLogRepository,
       final GroupUsermetadataRepository groupUsermetadataRepository,
+      final CustomCalendarRepository customCalendarRepository,
       final EventLogFileService eventLogFileService, final FolderService folderService,
       final StorageManagementFactory storageFactory, final EventLogService eventLogService,
       final StorageRepository storageRepository, final ConfigBean configBean) {
@@ -155,6 +163,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     groupProcessRepo = groupProcessRepository;
     groupLogRepo = groupLogRepository;
     groupUsermetadataRepo = groupUsermetadataRepository;
+    customCalendarRepo = customCalendarRepository;
     logFileService = eventLogFileService;
     this.folderService = folderService;
     this.storageFactory = storageFactory;
@@ -451,7 +460,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     newLog.setDomain(currentLog.getDomain());
     newLog.setRanking(currentLog.getRanking());
     newLog.setFilePath(currentLog.getFilePath());
-    newLog.setUser(currentLog.getUser());
+    newLog.setUser(newUser);
     newLog.setFolder(newFolder);
     newLog.setCreateDate(now);
 
@@ -506,19 +515,10 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         }
 
         newLog.setStorage(storageRepository.saveAndFlush(storage));
+        LOGGER.info("User {} copy Log {} to folder {}", userName, currentLog.getName(), null == newFolder ?
+                "Home folder" : newFolder.getName());
       }
     }
-
-    // Link old_log's perspective and schema mapping metadata to new log, since they are immutable once created
-    Set<Usermetadata> usermetadataSet = currentLog.getUsermetadataSet();
-    for (Usermetadata u : usermetadataSet) {
-      Set<Usermetadata> us = newLog.getUsermetadataSet();
-      if (UserMetadataTypeEnum.CSV_IMPORTER.getUserMetadataTypeId().equals(u.getUsermetadataType().getId())
-      || UserMetadataTypeEnum.PERSPECTIVE_TAG.getUserMetadataTypeId().equals(u.getUsermetadataType().getId())) {
-        us.add(u);
-      }
-    }
-    usermetadataRepo.saveAll(usermetadataSet);
 
     // Persist
     try {
@@ -528,6 +528,16 @@ public class WorkspaceServiceImpl implements WorkspaceService {
       storageFactory.getStorageClient(config.getStoragePath())
                     .delete(logPrefix, currentFileFullName);
     }
+
+    // Deep copy old_log's artifacts to new log
+    eventLogService.deepCopyArtifacts(currentLog, newLog,
+            Arrays.asList(UserMetadataTypeEnum.CSV_IMPORTER.getUserMetadataTypeId(),
+                    UserMetadataTypeEnum.PERSPECTIVE_TAG.getUserMetadataTypeId(),
+                    UserMetadataTypeEnum.DASHBOARD.getUserMetadataTypeId(),
+                    UserMetadataTypeEnum.DASH_TEMPLATE.getUserMetadataTypeId(),
+                    UserMetadataTypeEnum.FILTER.getUserMetadataTypeId(),
+                    UserMetadataTypeEnum.FILTER_TEMPLATE.getUserMetadataTypeId(),
+                    UserMetadataTypeEnum.COST_TABLE.getUserMetadataTypeId()), userName);
 
     return newLog;
   }
@@ -622,10 +632,19 @@ public class WorkspaceServiceImpl implements WorkspaceService {
   public Process copyProcess(Integer processId, Integer newFolderId, String userName,
       boolean isPublic) throws Exception {
     Process process = processRepo.findUniqueByID(processId);
-    ProcessBranch branch = process.getProcessBranches().get(0);
+
+    // Only copy MAIN branch but not DRAFT branch
+    ProcessBranch branch = process.getProcessBranches().stream()
+            .filter(pb -> TRUNK_NAME.equals(pb.getBranchName()))
+            .findAny()
+            .orElse(null);
+
     List<String> pmvVersions = new ArrayList<>();
-    for (ProcessModelVersion pmv : branch.getProcessModelVersions()) {
-      pmvVersions.add(pmv.getVersionNumber());
+
+    if (branch != null) {
+      for (ProcessModelVersion pmv : branch.getProcessModelVersions()) {
+        pmvVersions.add(pmv.getVersionNumber());
+      }
     }
 
     return copyProcessVersions(processId, pmvVersions, newFolderId, userName, isPublic);
@@ -847,6 +866,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     List<Folder> folders = getSingleOwnerFolderByUser(sourceUser);
     List<Log> logs = getSingleOwnerLogByUser(sourceUser);
     List<Process> processes = getSingleOwnerProcessByUser(sourceUser);
+    Set<CustomCalendar> calendars = customCalendarRepo.findByUser(sourceUser);
 
     for (Folder f : folders) {
       GroupFolder targetUserGF = groupFolderRepo.findByGroupAndFolder(targetUser.getGroup(), f);
@@ -888,6 +908,30 @@ public class WorkspaceServiceImpl implements WorkspaceService {
       groupProcessRepo.save(gp);
       p.setUser(targetUser);
       processRepo.save(p);
+      transferProcessModelVersions(p, sourceUser, targetUser);
+    }
+
+    for (CustomCalendar c : calendars) {
+      c.setUser(targetUser);
+      customCalendarRepo.save(c);
+    }
+  }
+
+  private void transferProcessModelVersions(Process process, User sourceUser, User targetUser) {
+
+    // Only transfer PMVs in MAIN branch in order to avoid non-unique result when query PMV by user
+    ProcessBranch branch = process.getProcessBranches().stream()
+            .filter(pb -> TRUNK_NAME.equals(pb.getBranchName()))
+            .findAny()
+            .orElse(null);
+
+    if (branch != null) {
+      for (ProcessModelVersion pmv : branch.getProcessModelVersions()) {
+        if (pmv.getCreator().equals(sourceUser)) {
+          pmv.setCreator(targetUser);
+          pmvRepo.save(pmv);
+        }
+      }
     }
   }
 

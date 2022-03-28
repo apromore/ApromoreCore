@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -22,6 +22,8 @@
 
 package org.apromore.plugin.portal.processdiscoverer;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.logman.attribute.graph.MeasureType;
@@ -32,6 +34,7 @@ import org.apromore.plugin.portal.logfilter.generic.LogFilterPlugin;
 import org.apromore.plugin.portal.processdiscoverer.actions.ActionManager;
 import org.apromore.plugin.portal.processdiscoverer.components.CaseDetailsController;
 import org.apromore.plugin.portal.processdiscoverer.components.CaseVariantDetailsController;
+import org.apromore.plugin.portal.processdiscoverer.components.CostTableController;
 import org.apromore.plugin.portal.processdiscoverer.components.GraphSettingsController;
 import org.apromore.plugin.portal.processdiscoverer.components.GraphVisController;
 import org.apromore.plugin.portal.processdiscoverer.components.LogStatsController;
@@ -60,12 +63,14 @@ import org.apromore.portal.model.PermissionType;
 import org.apromore.portal.model.UserType;
 import org.apromore.portal.plugincontrol.PluginExecution;
 import org.apromore.portal.plugincontrol.PluginExecutionManager;
+import org.apromore.portal.util.CostTable;
 import org.apromore.service.ProcessService;
 import org.apromore.service.loganimation.LogAnimationService2;
 import org.apromore.zk.event.CalendarEvents;
 import org.apromore.zk.label.LabelSupplier;
 import org.json.JSONException;
 import org.slf4j.Logger;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.ComponentNotFoundException;
 import org.zkoss.zk.ui.Executions;
@@ -159,6 +164,7 @@ public class PDController extends BaseController implements Composer<Component>,
     private AnimationController animationController;
     private LogExportController logExportController;
     private BPMNExportController bpmnExportController;
+    private CostTableController costTableController;
     private ToolbarController toolbarController;
 
     //////////////////// DATA ///////////////////////////////////
@@ -179,7 +185,7 @@ public class PDController extends BaseController implements Composer<Component>,
     private int sourceLogId; // plugin maintain log ID for Filter; Filter remove value to avoid
                              // conflicts from multiple plugins
 
-    private InteractiveMode mode = InteractiveMode.MODEL_MODE; // initial mode
+    private InteractiveMode interactionMode = InteractiveMode.MODEL_MODE; // initial mode
 
     private Component pdComponent;
     private EventQueue<Event> sessionQueue;
@@ -261,14 +267,12 @@ public class PDController extends BaseController implements Composer<Component>,
 
     public void onCreate(Component comp) throws InterruptedException {
         try {
-
             init(comp);
 
             if (!preparePluginSessionId()) {
                 Messagebox.show(getLabel("sessionNotInitialized_message"));
                 return;
             }
-
             if (!prepareCriticalServices()) {
                 return;
             }
@@ -280,16 +284,31 @@ public class PDController extends BaseController implements Composer<Component>,
             PDFactory pdFactory = (PDFactory) session.get("pdFactory");
             UserType currentUser = portalContext.getCurrentUser();
             contextData = ContextData.valueOf(
-                    logSummary.getDomain(), currentUser.getUsername(),
-                    logSummary.getId(),
-                    logSummary.getName(),
-                    portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId(),
-                    portalContext.getCurrentFolder() == null ? "Home"
-                            : portalContext.getCurrentFolder().getFolderName(),
-                    ((MainController)portalContext.getMainController()).getConfig().isEnableCalendar()
-                            && currentUser.hasAnyPermission(PermissionType.CALENDAR),
-                    currentUser.hasAnyPermission(PermissionType.MODEL_DISCOVER_EDIT));
+                logSummary.getDomain(), currentUser.getUsername(),
+                logSummary.getId(),
+                logSummary.getName(),
+                portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId(),
+                portalContext.getCurrentFolder() == null ? "Home"
+                    : portalContext.getCurrentFolder().getFolderName(),
+                ((MainController)portalContext.getMainController()).getConfig().isEnableCalendar()
+                    && currentUser.hasAnyPermission(PermissionType.CALENDAR),
+                currentUser.hasAnyPermission(PermissionType.MODEL_DISCOVER_EDIT));
+
+            userOptions = UserOptionsData.DEFAULT(configData);
+            String jsonString = getEventLogService().getCostTablesByLog(contextData.getLogId());
+            ObjectMapper objectMapper = new ObjectMapper();
+            //TODO: Set CostTable based on perspective types
+            userOptions.setCostTable(!"".equals(jsonString) ? objectMapper.readValue(jsonString,
+                    new TypeReference<List<CostTable>>(){}).iterator().next() :
+                    CostTable.EMPTY);
+            userOptions.setCalendarModel(getEventLogService().getCalendarFromLog(contextData.getLogId()));
+
             processAnalyst = new PDAnalyst(contextData, configData, getEventLogService());
+            processAnalyst.loadAttributeData(configData.getDefaultAttribute(),
+                userOptions.getCalendarModel(),
+                userOptions.getCostTable());
+
+            // On-load filtering if any filters are provided
             if (session.containsKey("logFilters")) {
                 if (!processAnalyst.filter((List<LogFilterRule>)session.get("logFilters"))) {
                     Messagebox.show("The log is empty after applying log filter criteria. Stop opening Process Discoverer.");
@@ -299,7 +318,6 @@ public class PDController extends BaseController implements Composer<Component>,
                     LOGGER.info("Applied filter criteria to the log before opening Process Discoverer.");
                 }
             }
-            userOptions = UserOptionsData.DEFAULT(configData);
 
             // Set up UI components
             graphVisController = pdFactory.createGraphVisController(this);
@@ -314,6 +332,7 @@ public class PDController extends BaseController implements Composer<Component>,
             animationController = pdFactory.createAnimationController(this);
             logExportController = pdFactory.createLogExportController(this);
             bpmnExportController = pdFactory.createBPMNExportController(this);
+            costTableController = pdFactory.createCostTableController(this);
             toolbarController = pdFactory.createToolbarController(this);
 
             initialize();
@@ -326,14 +345,14 @@ public class PDController extends BaseController implements Composer<Component>,
         }
         catch (InvalidDataException ex) {
             String errorMsg = "Missing log data, " +
-                            getLabel("missingActivity_title") + ", or " +
-                            getLabel("tooManyActivities_title");
+                getLabel("missingActivity_title") + ", or " +
+                getLabel("tooManyActivities_title");
             Messagebox.show(getLabel("initError_message") + ".\n Possible cause: " + errorMsg);
             LOGGER.error("Error occurred while initializing. Error message: " + ex.getMessage(), ex);
         }
         catch (Exception ex) {
             Messagebox.show(getLabel("initError_message") + ".\n Error message: "
-                    + (ex.getMessage() == null ? "Internal errors occurred." : ex.getMessage()));
+                + (ex.getMessage() == null ? "Internal errors occurred." : ex.getMessage()));
             LOGGER.error("Error occurred while initializing: " + ex.getMessage(), ex);
         }
     }
@@ -355,22 +374,34 @@ public class PDController extends BaseController implements Composer<Component>,
 
     public void initializeCalendar() {
         sessionQueue = EventQueues.lookup(CalendarEvents.TOPIC, EventQueues.SESSION,true);
-        sessionQueue.subscribe(new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) {
-                if (CalendarEvents.ON_CALENDAR_CHANGED.equals(event.getName())) {
-                    int logId = (int) event.getData();
-                    if (logId == sourceLogId) {
-                        Messagebox.show("Custom calendar for this process log is updated. You need to reload the page. Continue?",
-                                new Messagebox.Button[] {Messagebox.Button.OK, Messagebox.Button.CANCEL},
-                                (ClickEvent e) -> {
-                                    if (Messagebox.ON_OK.equals(e.getName())) {
-                                        Clients.evalJavaScript("window.location.reload()");
-                                    }
-                                }
-                        );
-                    }
+        sessionQueue.subscribe(event -> {
+            String eventName = event.getName();
+            String message = null;
+            if (CalendarEvents.ON_CALENDAR_LINK.equals(eventName)) {
+                int logId = (int) event.getData();
+                if (logId == sourceLogId) {
+                    message = Labels.getLabel("common_calendarUpdated_message");
                 }
+            } else if (CalendarEvents.ON_CALENDAR_UNLINK.equals(eventName)) {
+                List<Integer> logIds = (List<Integer>) event.getData();
+                if (logIds.contains(sourceLogId)) {
+                    message = Labels.getLabel("common_calendarUnlinked_message");
+                }
+            } else if (CalendarEvents.ON_CALENDAR_REFRESH.equals(eventName)) {
+                List<Integer> logIds = (List<Integer>) event.getData();
+                if (logIds.contains(sourceLogId)) {
+                    message = Labels.getLabel("common_calendarUpdated_message");
+                }
+            }
+            if (message != null) {
+                Messagebox.show(message,
+                    new Messagebox.Button[] {Messagebox.Button.OK, Messagebox.Button.CANCEL},
+                    (ClickEvent e) -> {
+                        if (Messagebox.ON_OK.equals(e.getName())) {
+                            Clients.evalJavaScript("window.location.reload()");
+                        }
+                    }
+                );
             }
         });
     }
@@ -440,7 +471,7 @@ public class PDController extends BaseController implements Composer<Component>,
     }
 
     public void changeLayout() throws Exception {
-        if (this.mode != InteractiveMode.MODEL_MODE)
+        if (this.interactionMode != InteractiveMode.MODEL_MODE)
             return;
         graphVisController.changeLayout();
     }
@@ -472,6 +503,14 @@ public class PDController extends BaseController implements Composer<Component>,
 
     public void openCalendar() {
         ((MainController)portalContext.getMainController()).getBaseListboxController().launchCalendar(sourceLogName, sourceLogId);
+    }
+
+    public void openCost() {
+        try {
+            costTableController.onEvent(new Event("onCostTable"));
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+        }
     }
 
     public void openAnimation(Event e) {
@@ -516,7 +555,7 @@ public class PDController extends BaseController implements Composer<Component>,
      * @param reset: true to reset the graph zoom and panning
      */
     public void updateUI(boolean reset) {
-        if (this.mode != InteractiveMode.MODEL_MODE)
+        if (this.interactionMode != InteractiveMode.MODEL_MODE)
             return;
         try {
             logStatsController.updateUI(contextData);
@@ -540,7 +579,7 @@ public class PDController extends BaseController implements Composer<Component>,
     public void generateViz() {
         long timer1 = System.currentTimeMillis();
 
-        if (this.mode != InteractiveMode.MODEL_MODE)
+        if (this.interactionMode != InteractiveMode.MODEL_MODE)
             return;
 
         if (processAnalyst.hasEmptyData()) {
@@ -548,7 +587,6 @@ public class PDController extends BaseController implements Composer<Component>,
                     Messagebox.INFORMATION);
             return;
         }
-
         boolean isNormalOrdering = graphSettingsController.getNormalOrdering();
         MeasureType fixedType = userOptions.getFixedType();
         if (isNormalOrdering && fixedType == FREQUENCY || !isNormalOrdering && fixedType == DURATION) {
@@ -585,11 +623,12 @@ public class PDController extends BaseController implements Composer<Component>,
         return this.userOptions.getBPMNMode();
     }
 
-    public void setBPMNView(boolean mode) {
-        if (this.mode != InteractiveMode.MODEL_MODE)
+    public void setBPMNView(boolean isBPMNView) {
+        if (this.interactionMode != InteractiveMode.MODEL_MODE)
             return;
-        userOptions.setBPMNMode(mode);
-        graphSettingsController.updateParallelism(mode);
+        userOptions.setBPMNMode(isBPMNView);
+        graphSettingsController.updateParallelism(isBPMNView);
+        toolbarController.setDisabledModelExport(!isBPMNView);
         generateViz();
     }
 
@@ -636,7 +675,7 @@ public class PDController extends BaseController implements Composer<Component>,
      */
     private boolean setInteractiveMode(InteractiveMode newMode) {
         if (newMode == InteractiveMode.ANIMATION_MODE) {
-            if (this.mode == InteractiveMode.TRACE_MODE)
+            if (this.interactionMode == InteractiveMode.TRACE_MODE)
                 return false; // invalid move
             viewSettingsController.setDisabled(true);
             graphSettingsController.setDisabled(true);
@@ -659,7 +698,7 @@ public class PDController extends BaseController implements Composer<Component>,
             caseDetailsController.setDisabled(false);
             caseVariantDetailsController.setDisabled(false);
         } else if (newMode == InteractiveMode.TRACE_MODE) {
-            if (this.mode == InteractiveMode.ANIMATION_MODE)
+            if (this.interactionMode == InteractiveMode.ANIMATION_MODE)
                 return false; // invalid move
             viewSettingsController.setDisabled(true);
             graphSettingsController.setDisabled(true);
@@ -670,12 +709,12 @@ public class PDController extends BaseController implements Composer<Component>,
             toolbarController.setDisabledAnimation(true);
             toolbarController.toogleAnimateBtn(false);
         }
-        this.mode = newMode;
+        this.interactionMode = newMode;
         return true;
     }
 
     public InteractiveMode getInteractiveMode() {
-        return this.mode;
+        return this.interactionMode;
     }
 
     public String getPerspectiveName() {
@@ -683,14 +722,14 @@ public class PDController extends BaseController implements Composer<Component>,
     }
 
     public void setPerspective(String value, String label) throws Exception {
-        if (this.mode != InteractiveMode.MODEL_MODE)
+        if (this.interactionMode != InteractiveMode.MODEL_MODE)
             return;
         if (!value.equals(userOptions.getMainAttributeKey())) {
             boolean disableVariantInspector = !"concept:name".equals(value);
             toolbarController.setDisabledAnimation(!value.equals(configData.getDefaultAttribute()));
             caseVariantDetailsController.setDisabledInspector(disableVariantInspector);
             userOptions.setMainAttributeKey(value);
-            processAnalyst.setMainAttribute(value);
+            processAnalyst.loadAttributeData(value, userOptions.getCalendarModel(), userOptions.getCostTable());
             timeStatsController.updateUI(contextData);
             logStatsController.updateUI(contextData);
             logStatsController.updatePerspectiveHeading(label);
@@ -767,7 +806,7 @@ public class PDController extends BaseController implements Composer<Component>,
     private String escapeQuotedJavascript(String json) {
         return json.replace("\n", " ").replace("'", "\\u0027").trim();
     }
-    
+
     public ActionManager getActionManager() {
         return this.actionManager;
     }
@@ -776,7 +815,6 @@ public class PDController extends BaseController implements Composer<Component>,
     public void doAfterCompose(Component comp) throws Exception {
         this.pdComponent = comp;
         onCreate(comp);
-
     }
 
     @Override

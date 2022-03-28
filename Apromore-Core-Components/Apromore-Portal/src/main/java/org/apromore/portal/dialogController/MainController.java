@@ -25,28 +25,14 @@
 
 package org.apromore.portal.dialogController;
 
-import java.io.IOException;
-import java.text.MessageFormat;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-import java.util.regex.Pattern;
+import static org.apromore.common.Constants.TRUNK_NAME;
 
 import org.apromore.commons.config.ConfigBean;
 import org.apromore.commons.item.ItemNameUtils;
 import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.Log;
-import org.apromore.dao.model.Role;
-import org.apromore.dao.model.User;
+import org.apromore.dao.model.Process;
+import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.plugin.portal.MainControllerInterface;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
@@ -60,6 +46,7 @@ import org.apromore.portal.common.i18n.I18nConfig;
 import org.apromore.portal.common.i18n.I18nSession;
 import org.apromore.portal.context.PluginPortalContext;
 import org.apromore.portal.context.PortalPluginResolver;
+import org.apromore.portal.controller.SortMenuController;
 import org.apromore.portal.custom.gui.tab.PortalTab;
 import org.apromore.portal.dialogController.dto.ApromoreSession;
 import org.apromore.portal.dialogController.dto.VersionDetailType;
@@ -70,7 +57,9 @@ import org.apromore.portal.exception.ExceptionFormats;
 import org.apromore.portal.helper.Version;
 import org.apromore.portal.model.DomainsType;
 import org.apromore.portal.model.EditSessionType;
+import org.apromore.portal.model.ExportFormatResultType;
 import org.apromore.portal.model.FolderType;
+import org.apromore.portal.model.ImportProcessResultType;
 import org.apromore.portal.model.LogSummaryType;
 import org.apromore.portal.model.NativeTypesType;
 import org.apromore.portal.model.PluginMessage;
@@ -81,7 +70,14 @@ import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.UserType;
 import org.apromore.portal.model.UsernamesType;
 import org.apromore.portal.model.VersionSummaryType;
+import org.apromore.portal.util.CostTable;
+import org.apromore.portal.util.StreamUtil;
+import org.apromore.zk.ApromoreDesktopCleanup;
 import org.slf4j.Logger;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.zkoss.json.JSONObject;
+import org.zkoss.json.parser.JSONParser;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
@@ -101,12 +97,34 @@ import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Html;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Menupopup;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Tabbox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 import org.zkoss.zul.ext.Paginal;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.MessageFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
+import java.util.regex.Pattern;
 
 /**
  * Main Controller for the whole application, most of the UI state is managed
@@ -132,6 +150,8 @@ public class MainController extends BaseController implements MainControllerInte
     private static final int KEY_COPY = 67;
     private static final int KEY_PASTE = 86;
     private static final int KEY_CUT = 88;
+    private static final int KEY_CTRL_A_LO = 65;
+    private static final int KEY_CTRL_A_BG = 97;
 
     private PortalContext portalContext;
     private MenuController menu;
@@ -156,19 +176,18 @@ public class MainController extends BaseController implements MainControllerInte
     private Component mainComponent;
     private CopyAndPasteController copyAndPasteController;
 
-
     public static MainController getController() {
         return controller;
     }
 
     public MainController() {
+        setupLocale();
         portalSession = new PortalSession(this);
 
         qe = EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, true);
         portalSession = new PortalSession(this);
 
         portalPluginMap = PortalPluginResolver.getPortalPluginMap();
-        setupLocale();
     }
 
     private void setupLocale() {
@@ -225,6 +244,10 @@ public class MainController extends BaseController implements MainControllerInte
             this.tabCrumbs = (Tab) mainW.getFellow("tabCrumbs");
             this.tabBox = (Tabbox) mainW.getFellow("tabbox");
             this.pg = (Paginal) mainW.getFellow("pg");
+            Menupopup orderListItemPopup= (Menupopup) mainW.getFellow("orderListItemPopup");
+            Button orderListSortBtn= (Button) mainW.getFellow("orderListSortBtn");
+            SortMenuController sortMenuController=new SortMenuController(this, orderListItemPopup);
+            orderListSortBtn.addEventListener(Events.ON_CLICK, sortMenuController::showSortMenu);
 
             this.shortmessageC = new ShortMessageController(shortmessageW);
             this.simplesearch = new SimpleSearchController(this, comp);
@@ -246,7 +269,11 @@ public class MainController extends BaseController implements MainControllerInte
             controller = this;
             MainController self = this;
 
-            Sessions.getCurrent().setAttribute("portalContext", portalContext);
+            // portalContext_ will be set from one place
+            Sessions.getCurrent().setAttribute("portalContext_" + this.mainComponent.getDesktop().getId(), portalContext);
+            //We are keeping it's own ID to retrieve the portal context from anywhere of the portal
+            this.mainComponent.getDesktop().setAttribute("PORTAL_REF_ID",this.mainComponent.getDesktop().getId());
+            this.mainComponent.getDesktop().addListener(new ApromoreDesktopCleanup());
 
             this.breadCrumbs.addEventListener("onSelectFolder", new EventListener<Event>() {
                 @Override
@@ -288,7 +315,6 @@ public class MainController extends BaseController implements MainControllerInte
             // UserSessionManager data
             // UserSessionManager.initializeUser(getService(), config);
             switchToProcessSummaryView();
-            UserSessionManager.setMainController(this);
             pagingandbuttons.setVisible(true);
 
             mainW.addEventListener("onCtrlPress", new EventListener<Event>() {
@@ -306,11 +332,34 @@ public class MainController extends BaseController implements MainControllerInte
                             case KEY_CUT:
                                 baseListboxController.cut();
                                 break;
+                            case KEY_CTRL_A_LO:
+                            case KEY_CTRL_A_BG:
+                                baseListboxController.selectAll();
+                                break;
                         }
                     } catch (Exception e) {
                         LOGGER.error("Wrong Command Key", e);
                     }
                 }
+            });
+
+            final String COST_KEY = "costTable";
+            final String CURRENCY_KEY = "currency";
+            mainW.addEventListener("onCostTableInit", e -> {
+                String jsonString = (String)e.getData();
+                Map<String, Double> costRates = new HashMap<>();
+                String currency = "USD";
+                if (jsonString != null) {
+                    JSONParser parser = new JSONParser();
+                    JSONObject jsonObject = (JSONObject) parser.parse(jsonString);
+                    costRates = (Map<String, Double>) jsonObject.getOrDefault(COST_KEY, costRates);
+                    currency = (String) jsonObject.getOrDefault(CURRENCY_KEY, currency);
+                }
+
+                Sessions.getCurrent().setAttribute(COST_KEY, CostTable.builder()
+                    .currency(currency)
+                    .costRates(costRates)
+                    .build());
             });
 
         } catch (final Exception e) {
@@ -329,20 +378,6 @@ public class MainController extends BaseController implements MainControllerInte
                     Messagebox.ERROR);
         }
 
-    }
-
-    public boolean isCurrentUserAdmin() {
-        try {
-            Role adminRole = getSecurityService().findRoleByName("ROLE_ADMIN");
-            User currentUser = getSecurityService().getUserById(portalContext.getCurrentUser().getId());
-            Set<Role> userRoles = getSecurityService().findRolesByUser(currentUser);
-            if (!userRoles.contains(adminRole)) {
-                return false;
-            }
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
     }
 
     // Bruce: Do not use Executions.sendRedirect as it does not work
@@ -474,6 +509,14 @@ public class MainController extends BaseController implements MainControllerInte
         this.baseListboxController.getListBox().setFocus(true); //To handle event on empty list
     }
 
+    public void reloadSummariesWithOpenTreeItems(List<Integer> folderIds) {
+        this.reloadSummaries2(); //Reload without Tree
+        List<FolderType> folders = this.getManagerService()
+            .getWorkspaceFolderTree(UserSessionManager.getCurrentUser().getId());
+        this.portalSession.setTree(folders);
+        this.navigation.loadTreeSpace(folderIds); //Reload tree with Existing Open Items
+    }
+
     /**
      * Forward to the controller ProcessListBoxController the request to add the
      * process to the table
@@ -564,12 +607,60 @@ public class MainController extends BaseController implements MainControllerInte
         editProcess2(process, version, nativeType, new HashSet<RequestParameterType<?>>(), false);
     }
 
-    public void openNewProcess() throws InterruptedException {
-        ProcessSummaryType process = getManagerService()
-                .createNewEmptyProcess(UserSessionManager.getCurrentUser().getUsername());
+    public void openNewProcess() throws Exception {
+
+        String username = UserSessionManager.getCurrentUser().getUsername();
+        String userId = UserSessionManager.getCurrentUser().getId();
+
+        Integer folderId = 0;
+        FolderType currentFolder = getPortalSession().getCurrentFolder();
+        if (currentFolder != null) {
+            folderId = currentFolder.getId();
+        }
+
+        Pageable wholePage = Pageable.unpaged();
+        Page<Process> processes =  this.getWorkspaceService().getProcesses(userId, folderId, wholePage);
+        LOGGER.info("Find {} processes in current folder", processes.getSize());
+
+        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        String now = dateFormat.format(new Date());
+
+        String bpmnXML = "<?xml version='1.0' encoding='UTF-8'?>"
+                + "<bpmn:definitions xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' "
+                + "xmlns:bpmn='http://www.omg.org/spec/BPMN/20100524/MODEL' "
+                + "xmlns:bpmndi='http://www.omg.org/spec/BPMN/20100524/DI' "
+                + "xmlns:dc='http://www.omg.org/spec/DD/20100524/DC' "
+                + "targetNamespace='http://bpmn.io/schema/bpmn' " + "id='Definitions_1'>"
+                + "<bpmn:process id='Process_1' isExecutable='false'>"
+                + "<bpmn:startEvent id='StartEvent_1'/>" + "</bpmn:process>"
+                + "<bpmndi:BPMNDiagram id='BPMNDiagram_1'>"
+                + "<bpmndi:BPMNPlane id='BPMNPlane_1' bpmnElement='Process_1'>"
+                + "<bpmndi:BPMNShape id='_BPMNShape_StartEvent_2' bpmnElement='StartEvent_1'>"
+                + "<dc:Bounds height='36.0' width='36.0' x='173.0' y='102.0'/>"
+                + "</bpmndi:BPMNShape>" + "</bpmndi:BPMNPlane>" + "</bpmndi:BPMNDiagram>"
+                + "</bpmn:definitions>";
+
+        ImportProcessResultType importResult = getManagerService().importProcess(
+                username, folderId, BPMN_2_0, UNTITLED_PROCESS_NAME, VERSION_1_0, new ByteArrayInputStream(bpmnXML.getBytes()), "",
+                "", now, null, false);
+
+        Integer processId = importResult.getProcessSummary().getId();
+
+        ProcessSummaryType process = importResult.getProcessSummary();
         VersionSummaryType version = process.getVersionSummaries().get(0);
         LOGGER.info("Create process model {} version {}", process.getName(), version.getVersionNumber());
-        editProcess2(process, version, process.getOriginalNativeType(), new HashSet<RequestParameterType<?>>(), true);
+
+        // Create draft to associated with new model
+        ProcessModelVersion draft = getManagerService().createDraft(processId, process.getName(),
+                version.getVersionNumber(), process.getOriginalNativeType(),
+                new ByteArrayInputStream(bpmnXML.getBytes()), username);
+        LOGGER.info("Create draft version id: {} for model {} version {}", draft.getId(), process.getName(),
+                version.getVersionNumber());
+
+        qe.publish(new Event(Constants.EVENT_MESSAGE_SAVE, null, Boolean.TRUE));
+
+        editProcess2(process, version, process.getOriginalNativeType(), new HashSet<>(),
+                true);
     }
 
     /**
@@ -615,8 +706,8 @@ public class MainController extends BaseController implements MainControllerInte
     public void editProcess2(final ProcessSummaryType process, final VersionSummaryType version,
                              final String nativeType, Set<RequestParameterType<?>> requestParameterTypes, boolean newProcess)
             throws InterruptedException {
-        String instruction = "";
 
+        String instruction = "";
         EditSessionType editSession = createEditSession(process, version, nativeType);
 
         try {
@@ -626,12 +717,57 @@ public class MainController extends BaseController implements MainControllerInte
                     requestParameterTypes);
             UserSessionManager.setEditSession(id, session);
 
-            String url = "openModelInBPMNio.zul?id=" + id;
+            String url = "openModelInBPMNio.zul?id=" + id + "&REFER_ID="+ Executions.getCurrent().getDesktop().getId();
             if (newProcess)
                 url += "&newProcess=true";
             instruction += "window.open('" + url + "');";
 
-            Clients.evalJavaScript(instruction);
+
+            ExportFormatResultType exportResult = this.getManagerService().exportFormat(
+                    editSession.getProcessId(), editSession.getProcessName(),
+                    editSession.getOriginalBranchName(), editSession.getCurrentVersionNumber(),
+                    editSession.getNativeType(), editSession.getUsername());
+            String bpmnXML = StreamUtil.convertStreamToString(exportResult.getNative().getInputStream());
+
+            // If no draft associated with specified model, version and user
+            if (this.getProcessService().getProcessModelVersionByUser(process.getId(),
+                    org.apromore.common.Constants.DRAFT_BRANCH_NAME, version.getVersionNumber(),
+                    getSecurityService().getUserById(portalContext.getCurrentUser().getId()).getId()) == null) {
+                this.getManagerService().createDraft(process.getId(), process.getName(), version.getVersionNumber(),
+                        nativeType, new ByteArrayInputStream(bpmnXML.getBytes()),
+                        UserSessionManager.getCurrentUser().getUsername());
+            }
+            ExportFormatResultType exportResultDraft = this.getManagerService().exportFormat(
+                    editSession.getProcessId(), editSession.getProcessName(),
+                    org.apromore.common.Constants.DRAFT_BRANCH_NAME, editSession.getCurrentVersionNumber(),
+                    editSession.getNativeType(), editSession.getUsername());
+            String bpmnXmlDraft = StreamUtil.convertStreamToString(exportResultDraft.getNative().getInputStream());
+
+            if (!Objects.equals(bpmnXML, bpmnXmlDraft)) {
+                String finalInstruction = instruction;
+                Messagebox.show(
+                    MessageFormat.format(Labels.getLabel("portal_unsavedDraftExisted_message"), editSession.getCurrentVersionNumber()),
+                    Labels.getLabel("brand_name"),
+                    new Messagebox.Button[] {Messagebox.Button.YES, Messagebox.Button.NO},
+                    Messagebox.QUESTION, e -> {
+                        switch (e.getButton()) {
+                            case YES:
+                                Clients.evalJavaScript(finalInstruction);
+                                break;
+                            case NO: // Cancel is clicked
+                                this.getProcessService().updateDraft(editSession.getProcessId(),
+                                    editSession.getCurrentVersionNumber(), editSession.getNativeType(),
+                                    new ByteArrayInputStream(bpmnXML.getBytes()),
+                                    editSession.getUsername());
+                                Clients.evalJavaScript(finalInstruction);
+                                break;
+                            default: // if the Close button is clicked, e.getButton() returns null
+                        }
+                    });
+            } else {
+                Clients.evalJavaScript(instruction);
+            }
+
         } catch (Exception e) {
             LOGGER.warn("Unable to edit process model " + process.getName() + " version " + version.getVersionNumber(),
                     e);
@@ -797,8 +933,10 @@ public class MainController extends BaseController implements MainControllerInte
                     } else {
                         String versionNumber = processSummaryType.getLastVersion();
                         for (VersionSummaryType summaryType : processSummaryType.getVersionSummaries()) {
-                            if (summaryType.getVersionNumber().compareTo(versionNumber) == 0) {
+                            if (summaryType.getVersionNumber().compareTo(versionNumber) == 0 &&
+                                TRUNK_NAME.equals(summaryType.getName())) {
                                 versionList.add(summaryType);
+                                break;
                             }
                         }
                     }

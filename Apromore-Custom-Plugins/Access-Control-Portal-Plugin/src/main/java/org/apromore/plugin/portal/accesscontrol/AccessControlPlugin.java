@@ -28,6 +28,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import javax.inject.Inject;
+
+import org.apromore.commons.config.ConfigBean;
 import org.apromore.dao.model.User;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
@@ -39,6 +41,7 @@ import org.apromore.portal.dialogController.MainController;
 import org.apromore.service.SecurityService;
 import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.zkoss.web.Attributes;
 import org.zkoss.zk.ui.Execution;
@@ -54,6 +57,9 @@ public class AccessControlPlugin extends DefaultPortalPlugin {
   private static final Logger LOGGER = PortalLoggerFactory.getLogger(AccessControlPlugin.class);
 
   private String label = "Manage access control";
+
+  @Autowired
+  ConfigBean configBean;
 
   @Inject
   private SecurityService securityService;
@@ -90,7 +96,11 @@ public class AccessControlPlugin extends DefaultPortalPlugin {
     Map arg = getSimpleParams();
     Boolean enablePublish = (Boolean) arg.get("enablePublish");
     if (enablePublish == null) {
-      arg.put("enablePublish", false);
+      arg.put("enablePublish", configBean.isEnablePublish());
+    }
+    Boolean enableUsersList = (Boolean) arg.get("enableUsersList");
+    if (enableUsersList == null) {
+      arg.put("enableUsersList", configBean.isEnableUsersList());
     }
 
     try {

@@ -71,6 +71,7 @@ public class SimpleSearchController {
 
     private MainController mainController;
     private Combobox previousSearchesCB;
+    private Span clearSearchBtn;
 
     public SimpleSearchController(MainController mainController, Component mainControllerComponent)
             throws UnsupportedEncodingException, ExceptionDao, JAXBException {
@@ -81,7 +82,7 @@ public class SimpleSearchController {
         Hbox previousSearchesH = (Hbox) simpleSearchW.getFellow("previoussearcheshbox");
         Button simpleSearchesBu = (Button) previousSearchesH.getFellow("previoussearchesbutton");
         previousSearchesCB = (Combobox) previousSearchesH.getFellow("previoussearchescombobox");
-        Span clearSearchBtn = (Span) previousSearchesH.getFellow("clearSearch");
+        clearSearchBtn = (Span) previousSearchesH.getFellow("clearSearch");
         Span doSearchBtn = (Span) previousSearchesH.getFellow("doSearch");
 
         refreshSearch("");
@@ -166,6 +167,13 @@ public class SimpleSearchController {
     private void processSearch() {
         SecurityService securityService = (SecurityService) SpringUtil.getBean("securityService");
         UserService userService = (UserService) SpringUtil.getBean("userService");
+        String query = previousSearchesCB.getValue();
+        if (query == null || query.length() == 0) {
+            clearSearches();
+            mainController.reloadSummaries();
+            setVisibility(clearSearchBtn, false);
+            return;
+        }
         if (securityService == null || userService == null) {
             LOGGER.error("SecurityService and/or UserService are null");
             Messagebox.show(Labels.getLabel("portal_servicesUnavailable_message"), "Error", Messagebox.OK,
@@ -174,10 +182,6 @@ public class SimpleSearchController {
         }
         FolderType folder = mainController.getPortalSession().getCurrentFolder();
         int folderId = (folder == null) ? 0 : folder.getId();
-        String query = previousSearchesCB.getValue();
-        if (query == null || query.length() == 0) {
-            return;
-        }
         try {
             SummariesType summaries =
                     readProcessSummaries(folderId, UserSessionManager.getCurrentUser().getId(), query);

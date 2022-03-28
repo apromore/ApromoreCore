@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -26,19 +26,14 @@ import java.util.Locale;
 import org.apromore.commons.config.ConfigBean;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
-import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.service.SecurityService;
-import org.slf4j.Logger;
+import org.apromore.zk.label.LabelSupplier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 
 @Component
-public class ChangePasswordPlugin extends DefaultPortalPlugin {
-
-  private static Logger LOGGER = PortalLoggerFactory.getLogger(ChangePasswordPlugin.class);
-
-  private String label = "Change password";
+public class ChangePasswordPlugin extends DefaultPortalPlugin implements LabelSupplier {
 
   private SecurityService securityService;
 
@@ -61,8 +56,13 @@ public class ChangePasswordPlugin extends DefaultPortalPlugin {
   }
 
   @Override
+  public String getBundleName() {
+    return "account";
+  }
+
+  @Override
   public String getLabel(Locale locale) {
-    return label;
+    return getLabel("changePassword");
   }
 
   @Override

@@ -69,11 +69,16 @@ function selectIcon(iconName) {
 
 function showImgPreview(data) {
   if (!data || !data.length) {
-    data = "";
+    data = null;
   }
   const preview = document.querySelector('.aux-img-preview img');
   if (preview) {
-    preview.src = data;
+    if (data) {
+      preview.src = data;
+      $('.aux-img-preview').show();
+    } else {
+      $('.aux-img-preview').hide();
+    }
   }
 }
 
@@ -84,7 +89,7 @@ function refreshOverlay(bpmnjs, element) {
   }, 500);
 }
 
-module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmnjs) {
+module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmnjs, eventBus) {
 
   var bo = getBusinessObject(element);
   var img = getImg(bo, bpmnFactory);
@@ -176,7 +181,8 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmn
       bpmnFactory,
       elementRegistry,
       translate,
-      bpmnjs
+      bpmnjs,
+      eventBus
     })
   ];
 }

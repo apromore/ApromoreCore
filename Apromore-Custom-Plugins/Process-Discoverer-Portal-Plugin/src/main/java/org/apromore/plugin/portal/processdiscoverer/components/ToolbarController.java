@@ -53,6 +53,7 @@ public class ToolbarController extends AbstractController {
     private Button fitScreen;
     private Button share;
     private Button calendar;
+    private Button cost;
 
     private Button exportFilteredLog;
     private Button downloadPDF;
@@ -88,6 +89,7 @@ public class ToolbarController extends AbstractController {
         animate = (Button) toolbar.getFellow("animate");
         fitScreen = (Button) toolbar.getFellow("fitScreen");
         share = (Button) toolbar.getFellow("share");
+        cost = (Button) toolbar.getFellow("cost");
 
         Span calendarSep = (Span) toolbar.getFellow("calendarSep");
         calendar = (Button) toolbar.getFellow("calendar");
@@ -96,11 +98,14 @@ public class ToolbarController extends AbstractController {
 
         exportFilteredLog = (Button) toolbar.getFellow("exportUnfitted");
         exportFilteredLog.setVisible(!isReadOnly);
+
         downloadPDF = (Button) toolbar.getFellow("downloadPDF");
         downloadPNG = (Button) toolbar.getFellow("downloadPNG");
         downloadJSON = (Button) toolbar.getFellow("downloadJSON");
+
         exportBPMN = (Button) toolbar.getFellow("exportBPMN");
         exportBPMN.setVisible(!isReadOnly);
+        exportBPMN.setDisabled(true);
 
         layoutHierarchy = (Button) toolbar.getFellow(LAYOUT_HIERARCHY);
         layoutDagreTopBottom = (Button) toolbar.getFellow(LAYOUT_DAGRE_TB);
@@ -140,6 +145,7 @@ public class ToolbarController extends AbstractController {
         exportFilteredLog.addEventListener("onExport", e -> parent.openLogExport(e));
         exportBPMN.addEventListener(Events.ON_CLICK, e -> parent.openBPMNExport(e));
         calendar.addEventListener(Events.ON_CLICK, e -> parent.openCalendar());
+        cost.addEventListener(Events.ON_CLICK, e -> parent.openCost());
 
         downloadPDF.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
             @Override
@@ -194,6 +200,10 @@ public class ToolbarController extends AbstractController {
 
     public void setDisabledFilterClear(boolean disabled) {
         filterClear.setDisabled(disabled);
+    }
+
+    public void setDisabledModelExport(boolean disabled) {
+        exportBPMN.setDisabled(disabled);
     }
     
     @Override

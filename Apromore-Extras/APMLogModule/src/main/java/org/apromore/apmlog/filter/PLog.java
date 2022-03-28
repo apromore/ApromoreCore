@@ -104,6 +104,10 @@ public class PLog extends AbstractLogImpl implements Serializable {
     }
 
     public PTrace getPTraceByImmutableIndex(int index) {
+        if (immutableIndexPTraceMap == null || immutableIndexPTraceMap.isEmpty()) {
+            immutableIndexPTraceMap = pTraces.stream().collect(Collectors.toMap(PTrace::getImmutableIndex, x -> x));
+        }
+
         return immutableIndexPTraceMap.get(index);
     }
 

@@ -59,6 +59,9 @@
               "id": "org.apromore.plugin.portal.processdiscoverer.plugins.PDFrequencyPlugin"
             },
             {
+              "id": "org.apromore.plugin.portal.pd.plugins.PDFrequencyPlugin"
+            },
+            {
               "id": "org.apromore.plugin.portal.file.EditSelectionPlugin"
             },
             {

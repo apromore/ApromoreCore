@@ -8,34 +8,34 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+
 package org.apromore.plugin.portal.useradmin.listbox;
 
 import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.EventListener;
-
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Checkbox;
+import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
-import org.zkoss.zul.Listbox;
 import org.zkoss.zul.ListitemRenderer;
 
 public class TristateItemRenderer implements ListitemRenderer {
 
-    final static int UNCHECKED = TristateModel.UNCHECKED;
-    final static int CHECKED = TristateModel.CHECKED;
-    final static int INDETERMINATE = TristateModel.INDETERMINATE;
+    static final int UNCHECKED = TristateModel.UNCHECKED;
+    static final int CHECKED = TristateModel.CHECKED;
+    static final int INDETERMINATE = TristateModel.INDETERMINATE;
 
     public TristateListbox list;
     public boolean forceTwoState = false;
@@ -77,7 +77,7 @@ public class TristateItemRenderer implements ListitemRenderer {
         checkbox.addEventListener(Events.ON_CHECK, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
-                Checkbox checkbox = (Checkbox)event.getTarget();
+                Checkbox checkbox = (Checkbox) event.getTarget();
                 rotateState(checkbox);
             }
         });
@@ -86,8 +86,8 @@ public class TristateItemRenderer implements ListitemRenderer {
             listItem.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
                 @Override
                 public void onEvent(Event event) throws Exception {
-                    Listitem listitem = (Listitem)event.getTarget();
-                    Checkbox checkbox = (Checkbox)listitem.getChildren().get(0).getFirstChild();
+                    Listitem listitem = (Listitem) event.getTarget();
+                    Checkbox checkbox = (Checkbox) listitem.getChildren().get(0).getFirstChild();
                     rotateState(checkbox);
                 }
             });
@@ -162,13 +162,14 @@ public class TristateItemRenderer implements ListitemRenderer {
     /**
      * Update other list items if there is a limit to whether multiple items can be selected.
      * If the selected checkbox is not coSelectable, all other non-coSelectable checkboxes must be unchecked.
+     *
      * @param selectedCheckbox the checkbox of the selected list item.
      */
     public void updateExistingSelection(Checkbox selectedCheckbox) {
         TristateModel selectedModel = selectedCheckbox.getValue();
         if (!selectedModel.isCoSelectable()) {
             for (Listitem item : listbox.getItems()) {
-                Checkbox listItemCheckbox = (Checkbox)item.getChildren().get(0).getFirstChild();
+                Checkbox listItemCheckbox = (Checkbox) item.getChildren().get(0).getFirstChild();
                 TristateModel listItemModel = listItemCheckbox.getValue();
 
                 if (!listItemModel.isCoSelectable() && !selectedCheckbox.equals(listItemCheckbox)) {

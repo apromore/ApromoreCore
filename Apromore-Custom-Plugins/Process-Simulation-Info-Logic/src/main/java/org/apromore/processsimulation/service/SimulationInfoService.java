@@ -1,54 +1,52 @@
 /**
  * #%L
- * This file is part of "Apromore Enterprise Edition".
+ * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2019 - 2021 Apromore Pty Ltd. All Rights Reserved.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
- * NOTICE:  All information contained herein is, and remains the
- * property of Apromore Pty Ltd and its suppliers, if any.
- * The intellectual and technical concepts contained herein are
- * proprietary to Apromore Pty Ltd and its suppliers and may
- * be covered by U.S. and Foreign Patents, patents in process,
- * and are protected by trade secret or copyright law.
- * Dissemination of this information or reproduction of this
- * material is strictly forbidden unless prior written permission
- * is obtained from Apromore Pty Ltd.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * <p>This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ *
+ * <p>You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not @see <a href="http://www.gnu.org/licenses/lgpl-3.0.html"></a>
  * #L%
  */
 
 package org.apromore.processsimulation.service;
 
-import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_DEFAULT_ID_KEY;
-import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_DEFAULT_NAME_KEY;
-import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_FROM_TIME;
-import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_FROM_WEEKDAY_KEY;
-import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_NAME_KEY;
-import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_TO_TIME;
-import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_TO_WEEKDAY_KEY;
-
 import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.DayOfWeek;
+import java.text.DecimalFormat;
 import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import lombok.extern.slf4j.Slf4j;
-import org.apromore.logman.attribute.IndexableAttribute;
-import org.apromore.logman.attribute.graph.MeasureAggregation;
-import org.apromore.logman.attribute.graph.MeasureRelation;
-import org.apromore.logman.attribute.graph.MeasureType;
-import org.apromore.logman.attribute.log.AttributeLogSummary;
-import org.apromore.processdiscoverer.Abstraction;
-import org.apromore.processdiscoverer.abstraction.AbstractAbstraction;
-import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Activity;
+import org.apromore.calendar.model.CalendarModel;
+import org.apromore.calendar.model.WorkDayModel;
+import org.apromore.calendar.service.CalendarService;
 import org.apromore.processsimulation.config.SimulationInfoConfig;
+import org.apromore.processsimulation.dto.EdgeFrequency;
+import org.apromore.processsimulation.dto.SimulationData;
 import org.apromore.processsimulation.model.Currency;
 import org.apromore.processsimulation.model.Distribution;
 import org.apromore.processsimulation.model.DistributionType;
@@ -58,10 +56,12 @@ import org.apromore.processsimulation.model.ExtensionElements;
 import org.apromore.processsimulation.model.ProcessSimulationInfo;
 import org.apromore.processsimulation.model.Resource;
 import org.apromore.processsimulation.model.Rule;
+import org.apromore.processsimulation.model.SequenceFlow;
 import org.apromore.processsimulation.model.TimeUnit;
 import org.apromore.processsimulation.model.Timetable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 @Slf4j
 @Service
@@ -75,54 +75,62 @@ public class SimulationInfoService {
     private static final String XML_START_BPMN_DEFINITIONS_TAG = "<bpmn:definitions";
     private static final String XML_QBP_NAMESPACE = "\n xmlns:qbp=\"http://www.qbp-simulator.com/Schema201212\"\n";
     private static final Locale DOCUMENT_LOCALE = Locale.ENGLISH;
+    private static final DateTimeFormatter TIMETABLE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
+    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.0000");
+
 
     private JAXBContext jaxbContext;
 
-    private SimulationInfoConfig config;
+    private final SimulationInfoConfig config;
+    private final CalendarService calendarService;
 
     @Autowired
-    public SimulationInfoService(SimulationInfoConfig config) {
+    public SimulationInfoService(SimulationInfoConfig config, CalendarService calendarService) {
         this.config = config;
+        this.calendarService = calendarService;
+
         try {
             jaxbContext = JAXBContext.newInstance(ExtensionElements.class);
         } catch (JAXBException e) {
             log.warn("Unable to instantiate Jaxb context");
         }
+
+        DECIMAL_FORMAT.setRoundingMode(RoundingMode.UP);
     }
 
     public boolean isFeatureEnabled() {
-        return Boolean.valueOf(config.isEnable());
+        return config.isEnable();
     }
 
-    public ProcessSimulationInfo deriveSimulationInfo(
-        final Abstraction abstraction) {
+    /**
+     * Transform the raw simulation data obtained in PD and convert it to an xml serialisable @ProcessSimulationInfo
+     * object.
+     *
+     * @param simulationData the raw simulation data obtained from Process Discoverer
+     * @return simulation data converted into a @ProcessSimulationInfo object
+     */
+    public ProcessSimulationInfo transformToSimulationInfo(
+        final SimulationData simulationData) {
 
         ProcessSimulationInfo processSimulationInfo = null;
-        if (isFeatureEnabled()
-            && abstraction != null
-            && abstraction instanceof AbstractAbstraction
-            && ((AbstractAbstraction) abstraction).getLog() != null) {
+        if (isFeatureEnabled() && simulationData != null) {
 
-            final AbstractAbstraction abstractAbstraction = (AbstractAbstraction) abstraction;
+            ProcessSimulationInfo.ProcessSimulationInfoBuilder builder =
+                ProcessSimulationInfo.builder()
+                    .id("qbp_" + Locale.getDefault().getLanguage() + UUID.randomUUID())
+                    .errors(Errors.builder().build());
 
-            AttributeLogSummary logSummary = ((AbstractAbstraction) abstraction).getLog().getLogSummary();
+            deriveGeneralInfo(builder, simulationData);
 
-            if (logSummary != null) {
-                ProcessSimulationInfo.ProcessSimulationInfoBuilder builder =
-                    ProcessSimulationInfo.builder()
-                        .id("qbp_" + Locale.getDefault().getLanguage() + UUID.randomUUID())
-                        .errors(Errors.builder().build());
+            Map<String, String> resourceNameToId = deriveResourceInfo(builder, simulationData);
 
-                deriveGeneralInfo(builder, logSummary);
+            deriveTaskInfo(builder, simulationData, resourceNameToId);
 
-                deriveTaskInfo(builder, abstractAbstraction);
+            deriveTimetable(builder, simulationData);
 
-                deriveTimetable(builder);
+            deriveGatewayProbabilities(builder, simulationData);
 
-                deriveResourceInfo(builder, abstractAbstraction);
-
-                processSimulationInfo = builder.build();
-            }
+            processSimulationInfo = builder.build();
         }
 
         return processSimulationInfo;
@@ -130,101 +138,260 @@ public class SimulationInfoService {
 
     private void deriveGeneralInfo(
         final ProcessSimulationInfo.ProcessSimulationInfoBuilder builder,
-        final AttributeLogSummary logSummary) {
+        final SimulationData simulationData) {
 
-        long startTimeMillis = logSummary.getStartTime();
-        long endTimeMillis = logSummary.getEndTime();
-        long interArrivalTime = Math.round(
-             (endTimeMillis - startTimeMillis) / (double) (1000 * logSummary.getCaseCount()));
+        double interArrivalTimeMillis = getInterArrivalTime(simulationData);
+        TimeUnit timeUnit = getDisplayTimeUnit(interArrivalTimeMillis);
 
-        builder.processInstances(logSummary.getCaseCount())
+        builder.processInstances(simulationData.getCaseCount())
             .currency(Currency.valueOf(config.getDefaultCurrency().toUpperCase(DOCUMENT_LOCALE)))
-            .startDateTime(Instant.ofEpochMilli(logSummary.getStartTime()).toString())
+            .startDateTime(
+                Instant.ofEpochMilli(simulationData.getStartTime()).toString())
             .arrivalRateDistribution(
                 Distribution.builder()
-                    .timeUnit(TimeUnit.valueOf(config.getDefaultTimeUnit().toUpperCase(DOCUMENT_LOCALE)))
+                    .timeUnit(timeUnit)
                     .type(DistributionType.valueOf(config.getDefaultDistributionType().toUpperCase(DOCUMENT_LOCALE)))
-                    .arg1(Long.toString(interArrivalTime))
+                    .arg1(getDisplayTimeDuration(interArrivalTimeMillis).toString())
                     .build());
+    }
+
+    /**
+     * Returns the inter-arrival time of events in seconds, based on the calendar from PD.
+     *
+     * @param simulationData the raw simulation data from PD
+     * @return the inter-arrival time of events (in milliseconds)
+     */
+    protected double getInterArrivalTime(final SimulationData simulationData) {
+
+        return simulationData.getCalendarModel().getDurationMillis(
+            simulationData.getStartTime(), simulationData.getEndTime()) / (double) simulationData.getCaseCount();
     }
 
     private void deriveTaskInfo(
         final ProcessSimulationInfo.ProcessSimulationInfoBuilder builder,
-        final AbstractAbstraction abstraction) {
+        final SimulationData simulationData,
+        final Map<String, String> resourceNameToId) {
 
-        if (abstraction.getDiagram() != null && abstraction.getDiagram().getNodes() != null) {
-            List<Element> taskList = new ArrayList<>();
+        List<Element> taskList = simulationData.getDiagramNodeIDs().stream()
+            .map(nodeId -> {
+                double durationMillis = simulationData.getDiagramNodeDuration(nodeId);
+                TimeUnit timeUnit = getDisplayTimeUnit(durationMillis);
 
-            abstraction.getDiagram().getNodes()
-                .stream()
-                .filter(Activity.class::isInstance)
-                .forEach(bpmnNode -> {
-                    BigDecimal nodeAvgDuration =
-                        BigDecimal.valueOf(abstraction.getLog().getGraphView()
-                                .getNodeWeight(bpmnNode.getLabel(), MeasureType.DURATION,
-                                    MeasureAggregation.MEAN, MeasureRelation.ABSOLUTE) / 1000)
-                            .setScale(2, RoundingMode.HALF_UP);
+                String roleName = simulationData.getRoleNameByNodeId(nodeId);
+                if (roleName.equals(SimulationData.DEFAULT_ROLE)) {
+                    roleName = config.getDefaultResourceName();
+                }
 
-                    taskList.add(Element.builder()
-                        .elementId(bpmnNode.getId().toString())
-                        .distributionDuration(Distribution.builder()
-                            .type(DistributionType.valueOf(
-                                config.getDefaultDistributionType().toUpperCase(DOCUMENT_LOCALE)))
-                            .arg1(nodeAvgDuration.toString())
-                            .timeUnit(TimeUnit.valueOf(config.getDefaultTimeUnit().toUpperCase(DOCUMENT_LOCALE)))
-                            .build())
-                        .build());
-                });
+                return Element.builder()
+                    .elementId(nodeId)
+                    .distributionDuration(Distribution.builder()
+                        .type(DistributionType.valueOf(
+                            config.getDefaultDistributionType().toUpperCase(DOCUMENT_LOCALE)))
+                        .arg1(getDisplayTimeDuration(durationMillis).toString())
+                        .timeUnit(timeUnit)
+                        .build())
+                    .resourceIds(List.of(resourceNameToId.get(roleName)))
+                    .build();
+            })
+            .collect(Collectors.toUnmodifiableList());
 
-            builder.tasks(taskList);
-        }
+        builder.tasks(taskList);
     }
 
     private void deriveTimetable(
-        final ProcessSimulationInfo.ProcessSimulationInfoBuilder builder) {
-
-        builder.timetables(
-            Arrays.asList(Timetable.builder()
-                .defaultTimetable(true)
-                .id(config.getDefaultTimetable().get(CONFIG_DEFAULT_ID_KEY))
-                .name(config.getDefaultTimetable().get(CONFIG_DEFAULT_NAME_KEY))
-                .rules(Arrays.asList(Rule.builder()
-                    .id(UUID.randomUUID().toString())
-                    .name(config.getDefaultTimetable().get(CONFIG_DEFAULT_TIMESLOT_NAME_KEY))
-                    .fromWeekDay(DayOfWeek.valueOf(
-                        config.getDefaultTimetable().get(CONFIG_DEFAULT_TIMESLOT_FROM_WEEKDAY_KEY)
-                            .toUpperCase(DOCUMENT_LOCALE)))
-                    .toWeekDay(DayOfWeek.valueOf(
-                        config.getDefaultTimetable().get(CONFIG_DEFAULT_TIMESLOT_TO_WEEKDAY_KEY)
-                            .toUpperCase(DOCUMENT_LOCALE)))
-                    .fromTime(config.getDefaultTimetable().get(CONFIG_DEFAULT_TIMESLOT_FROM_TIME))
-                    .toTime(config.getDefaultTimetable().get(CONFIG_DEFAULT_TIMESLOT_TO_TIME))
-                    .build()))
-                .build()));
-    }
-
-    private void deriveResourceInfo(
         final ProcessSimulationInfo.ProcessSimulationInfoBuilder builder,
-        final AbstractAbstraction abstraction) {
-        if (abstraction.getLog() != null
-            && abstraction.getLog().getFullLog() != null
-            && abstraction.getLog().getFullLog().getAttributeStore() != null) {
+        final SimulationData simulationData) {
 
-            IndexableAttribute resourcesAttribute =
-                abstraction.getLog().getFullLog().getAttributeStore().getStandardEventResource();
+        CalendarModel calendarModel = simulationData.getCalendarModel();
 
-            if (resourcesAttribute != null) {
-                builder.resources(Arrays.asList(
-                    Resource.builder()
-                        .id(config.getDefaultResource().get(CONFIG_DEFAULT_ID_KEY))
-                        .name(config.getDefaultResource().get(CONFIG_DEFAULT_NAME_KEY))
-                        .totalAmount(resourcesAttribute.getValueSize())
-                        .timetableId(config.getDefaultTimetable().get(CONFIG_DEFAULT_ID_KEY))
-                        .build()));
-            }
+        if (calendarModel.getName().equals(SimulationData.DEFAULT_CALENDAR_NAME)) {
+            builder.timetables(List.of(createTimetable(
+                calendarModel, config.getCustomTimetableId(), true)));
+        } else {
+            builder.timetables(
+                List.of(
+                    createTimetable(calendarModel, config.getCustomTimetableId(), true),
+                    createTimetable(calendarService.getGenericCalendar(),
+                        config.getDefaultTimetableId(), false)
+                ));
         }
     }
 
+    private Timetable createTimetable(
+        final CalendarModel calendarModel,
+        final String timetableId,
+        boolean setAsDefault) {
+        List<WorkDayModel> workingDays = calendarModel.getOrderedWorkDay().stream()
+            .filter(WorkDayModel::isWorkingDay)
+            .collect(Collectors.toList());
+
+        // The timetable from PD
+        return Timetable.builder()
+            .defaultTimetable(setAsDefault)
+            .id(timetableId)
+            .name(calendarModel.getName())
+            .rules(Arrays.asList(Rule.builder()
+                .id(UUID.randomUUID().toString())
+                .name(config.getDefaultTimeslotName())
+                .fromWeekDay(workingDays.get(0).getDayOfWeek())
+                .toWeekDay(workingDays.get(workingDays.size() - 1).getDayOfWeek())
+                .fromTime(workingDays.get(0).getStartTime().format(TIMETABLE_TIME_FORMATTER))
+                .toTime(workingDays.get(workingDays.size() - 1).getEndTime().format(TIMETABLE_TIME_FORMATTER))
+                .build()))
+            .build();
+    }
+
+    private Map<String, String> deriveResourceInfo(
+        final ProcessSimulationInfo.ProcessSimulationInfoBuilder builder,
+        final SimulationData simulationData) {
+
+        Map<String, String> resouceNameToId = new HashMap<>();
+
+        if (ObjectUtils.isEmpty(simulationData.getResourceCountsByRole())) {
+            // No role to resource count mapping. Use the QBP_DEFAULT_RESOURCE tag and the total
+            // resource count agains it.
+            String defaultResourceId = config.getDefaultResourceIdPrefix() + config.getDefaultResourceId();
+
+            builder.resources(List.of(
+                Resource.builder()
+                    .id(defaultResourceId)
+                    .name(config.getDefaultResourceName())
+                    .totalAmount(simulationData.getResourceCount())
+                    .timetableId(config.getCustomTimetableId())
+                    .build()
+            ));
+
+            resouceNameToId.put(config.getDefaultResourceName(), defaultResourceId);
+
+        } else {
+
+            builder.resources(simulationData.getResourceCountsByRole().entrySet().stream()
+                .map(roleToResourceCount -> {
+                    String resourceId;
+                    String resourceName;
+
+                    /*
+                     * It gets a bit confusing here as in QBP, the DEFAULT_ROLE (from PD, when there is an activity
+                     * with an empty role) is treated as a QBP_DEFAULT_RESOURCE.
+                     *
+                     * In QBP, resource == role
+                     */
+                    if (roleToResourceCount.getKey().equals(SimulationData.DEFAULT_ROLE)) {
+                        // key -> QBP_DEFAULT_RESOURCE (i.e. no associated role)
+                        resourceId = config.getDefaultResourceIdPrefix() + config.getDefaultResourceId();
+                        resourceName = config.getDefaultResourceName();
+                    } else {
+                        resourceId = config.getDefaultResourceIdPrefix() + UUID.randomUUID();
+                        resourceName = roleToResourceCount.getKey();
+                    }
+
+                    resouceNameToId.put(resourceName, resourceId);
+
+                    return Resource.builder()
+                        .id(resourceId)
+                        .name(resourceName)
+                        .totalAmount(roleToResourceCount.getValue())
+                        .timetableId(config.getCustomTimetableId())
+                        .build();
+                }).collect(Collectors.toList()));
+        }
+
+        return resouceNameToId;
+    }
+
+    private void deriveGatewayProbabilities(
+        final ProcessSimulationInfo.ProcessSimulationInfoBuilder builder,
+        final SimulationData simulationData) {
+
+        List<SequenceFlow> sequenceFlowList = new ArrayList<>();
+        if (simulationData.getEdgeFrequencies() != null && !simulationData.getEdgeFrequencies().isEmpty()) {
+
+            simulationData.getEdgeFrequencies().entrySet().forEach(gatewayEntry -> {
+
+                // Calculate the total outbound edge frequencies for each gateway
+                double totalFrequency = gatewayEntry.getValue().stream()
+                    .mapToDouble(EdgeFrequency::getFrequency)
+                    .sum();
+
+                // Set the percentage for each edge's frequency
+                gatewayEntry.getValue().forEach(edgeFrequency ->
+                    edgeFrequency.setPercentage(BigDecimal.valueOf(edgeFrequency.getFrequency() / totalFrequency)
+                        .setScale(4, RoundingMode.HALF_UP).doubleValue()));
+
+                // Determine if the percentages add up to a 100%
+                double totalProbabilities = gatewayEntry.getValue().stream()
+                    .mapToDouble(EdgeFrequency::getPercentage)
+                    .sum();
+
+                // If the total percentage is less than 100%
+                // then add the difference to the gateway with the lowest percentage
+                if (totalProbabilities < 1.0) {
+                    EdgeFrequency minEdgeFrequency =
+                        Collections.min(gatewayEntry.getValue(), Comparator.comparing(EdgeFrequency::getPercentage));
+
+                    minEdgeFrequency.setPercentage(minEdgeFrequency.getPercentage() + (1.0 - totalProbabilities));
+                }
+
+                // If the total percentage are greater than 100%
+                // then remove the difference from the gateway with the highest percentage
+                if (totalProbabilities > 1.0) {
+                    EdgeFrequency maxEdgeFrequency =
+                        Collections.max(gatewayEntry.getValue(), Comparator.comparing(EdgeFrequency::getPercentage));
+
+                    maxEdgeFrequency.setPercentage(maxEdgeFrequency.getPercentage() - (totalProbabilities - 1.0));
+                }
+
+                gatewayEntry.getValue().forEach(edgeFrequency -> sequenceFlowList.add(SequenceFlow.builder()
+                    .elementId(edgeFrequency.getEdgeId())
+                    .executionProbability(DECIMAL_FORMAT.format(edgeFrequency.getPercentage()))
+                    .build()));
+            });
+
+            builder.sequenceFlows(sequenceFlowList);
+        }
+    }
+
+    private TimeUnit getDisplayTimeUnit(double timeDurationMillis) {
+        TimeUnit timeUnit;
+
+        if (timeDurationMillis <= 60000) {
+            timeUnit = TimeUnit.SECONDS;
+        } else if (timeDurationMillis > 60000 && timeDurationMillis <= 3600000) {
+            timeUnit = TimeUnit.MINUTES;
+        } else if (timeDurationMillis > 3600000) {
+            timeUnit = TimeUnit.HOURS;
+        } else {
+            timeUnit = TimeUnit.valueOf(config.getDefaultTimeUnit().toUpperCase(DOCUMENT_LOCALE));
+        }
+        return timeUnit;
+    }
+
+    /**
+     * Converts milliseconds into the time duration based on the desired TimeUnit.
+     * For now the Simulator and BPMN Editor only accept seconds as the value, and therefore
+     * we convert milliseconds to seconds.
+     *
+     * @param timeDuration the time duration in milliseconds
+     * @return the converted rounded time duration
+     */
+    private BigDecimal getDisplayTimeDuration(double timeDuration) {
+        return BigDecimal.valueOf(timeDuration / TimeUnit.SECONDS.getNumberOfMilliseconds())
+            .setScale(2, RoundingMode.HALF_UP);
+    }
+
+    /**
+     * Enrich the bpmn xml model with the additional extension elements
+     * including the process simulation information that was derived from the
+     * bpmn model.
+     *
+     * @param bpmnModelXml   the discovered bpmn model
+     * @param simulationData the process simulation data derived from the discovered model
+     * @return a bpmn model enriched with the additional process simulation information set in the extensionElements
+     */
+    public String enrichWithSimulationInfo(
+        final String bpmnModelXml, final SimulationData simulationData) {
+        return enrichWithSimulationInfo(bpmnModelXml, transformToSimulationInfo(simulationData));
+    }
 
     /**
      * Enrich the bpmn xml model with the additional extension elements

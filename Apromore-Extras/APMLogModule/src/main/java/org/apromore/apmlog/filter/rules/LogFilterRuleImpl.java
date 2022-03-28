@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -32,14 +32,14 @@ import java.util.Set;
 
 public class LogFilterRuleImpl implements LogFilterRule, Serializable {
 
-    private Choice choice;
-    private Inclusion inclusion;
-    private Section section;
-    private FilterType filterType;
-    private String key;
+    private final Choice choice;
+    private final Inclusion inclusion;
+    private final Section section;
+    private final FilterType filterType;
+    private final String key;
     private Set<RuleValue> primaryValues;
     private Set<RuleValue> secondaryValues;
-    private Set<String> primaryStringValues;
+    private final Set<String> primaryStringValues;
     private Set<String> secondaryStringValues;
 
     public LogFilterRuleImpl(Choice choice, Inclusion inclusion, Section section, FilterType filterType,
@@ -114,11 +114,14 @@ public class LogFilterRuleImpl implements LogFilterRule, Serializable {
         return secondaryValues;
     }
 
+    // ====================================================================================
+    // DO NOT USED!! TO BE REMOVED!!
+    // ====================================================================================
     public LogFilterRule clone() {
-        Choice choiceCopy = choice;
-        Inclusion inclusionCopy = inclusion;
-        Section sectionCopy = section;
-        FilterType filterTypeCopy = filterType;
+        return deepClone();
+    }
+
+    public LogFilterRule deepClone() {
 
         Set<RuleValue> priValCopy = new HashSet<>();
         for (RuleValue ruleValue : primaryValues) {
@@ -133,12 +136,8 @@ public class LogFilterRuleImpl implements LogFilterRule, Serializable {
             }
         }
 
-        String keyCopy = key;
-
-        LogFilterRule lfr = new LogFilterRuleImpl(
-                choiceCopy, inclusionCopy, sectionCopy, filterTypeCopy, keyCopy, priValCopy, secValCopy);
-
-        return lfr;
+        return new LogFilterRuleImpl(
+                choice, inclusion, section, filterType, key, priValCopy, secValCopy);
     }
 
     @Override

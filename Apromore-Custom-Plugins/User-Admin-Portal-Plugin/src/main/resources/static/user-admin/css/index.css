@@ -85,3 +85,110 @@
 .ap-usrmgt-tab-user .ap-form-sublist .z-checkbox-content {
     display: none;
 }
+
+.ap-auxhead .z-icon-filter {
+    line-height: 20px;
+}
+
+.ap-role-edit-box {
+    padding: 8px;
+}
+
+.ap-role-name-title {
+    text-align: right;
+}
+
+.ap-role-name-title .z-label{
+    font-size: 16px;
+    line-height: 23px;
+}
+
+.ap-permission-subtitle {
+    font-size: 14px;
+}
+
+.ap-permission-group-box {
+    border: 1px solid var(--ap-c-soft-blue-dark-2);
+    border-radius: 5px;
+    padding: 13px 10px 7px;
+}
+
+.ap-permission-group-title {
+    font-size: 14px;
+    position: relative;
+    left: 13px;
+    top: 8px;
+    background-color: var(--ap-c-grey-light-5);
+    z-index: 2;
+    padding: 0px 4px;
+}
+
+.ap-permission-switch {
+    display: inline-flex;
+    padding: 5px 15px;
+    flex-direction: row-reverse;
+}
+
+.ap-permission-switch .z-label {
+    line-height: 16px;
+    font-size: 13px;
+    width: 230px;
+    padding: 2px;
+}
+
+.ap-permission-switch .z-checkbox-switch {
+    height: 20px;
+}
+
+.z-button[disabled] {
+    color: var(--text-color-lighter);
+}
+
+.ap-assign-role-listbox-container {
+    position:relative;
+    display:flex;
+}
+
+.ap-role-listbox-toggle {
+    position: absolute;
+    top: 13px;
+    left: 15px;
+    z-index: 2;
+    color: white;
+    cursor: pointer;
+}
+
+.ap-role-listbox-toggle .z-checkbox {
+    padding: 0px;
+    border: 0px;
+    box-shadow: 0px 0px black;
+    width: 20px;
+}
+
+.ap-role-listbox-toggle input[type="checkbox"] {
+    display: none;
+}
+
+.ap-role-listbox-toggle i {
+    font-size: 10px;
+    padding-right: 3px;
+}
+
+.ap-assigned-user-listbox-checkbox {
+    position: absolute;
+    top: 14px;
+    left: 15px;
+    z-index: 2;
+}
+
+.ap-assigned-user-listbox-checkbox input[type="checkbox"]:indeterminate,
+.ap-assigned-user-listbox-checkbox input[type="checkbox"]:checked {
+    background-color: white;
+    color: var(--ap-c-widget);
+}
+
+.ap-role-transfer-win .z-listheader-checkable {
+    position: absolute;
+    top: 6px;
+    left: 7px;
+}

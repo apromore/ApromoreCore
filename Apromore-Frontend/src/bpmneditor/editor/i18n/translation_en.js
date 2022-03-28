@@ -142,3 +142,11 @@ Apromore.I18N.Share.publish = "Publish";
 Apromore.I18N.Share.publishDesc = "Publish model";
 Apromore.I18N.Share.unpublish = "Unpublish";
 Apromore.I18N.Share.unpublishDesc = "Unpublish model";
+
+if(!Apromore.I18N.Attachment) Apromore.I18N.Attachment = {};
+Apromore.I18N.Attachment.attachment = "Attachment";
+Apromore.I18N.Attachment.showDesc = "Show attachments";
+Apromore.I18N.Attachment.hideDesc = "Hide attachments";
+Apromore.I18N.Attachment.comment = "Comments";
+Apromore.I18N.Attachment.showComments = "Show comments";
+Apromore.I18N.Attachment.hideComments = "Hide comments";

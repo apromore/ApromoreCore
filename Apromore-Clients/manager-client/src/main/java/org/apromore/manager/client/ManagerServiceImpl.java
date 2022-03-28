@@ -25,6 +25,7 @@ package org.apromore.manager.client;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,6 +34,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 import javax.inject.Inject;
@@ -42,9 +44,12 @@ import org.apromore.common.Constants;
 import org.apromore.dao.model.Group;
 import org.apromore.dao.model.Log;
 import org.apromore.dao.model.NativeType;
+import org.apromore.dao.model.Permission;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.dao.model.User;
+import org.apromore.exception.ImportException;
 import org.apromore.exception.NotAuthorizedException;
+import org.apromore.exception.UpdateProcessException;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.mapper.DomainMapper;
 import org.apromore.mapper.GroupMapper;
@@ -65,6 +70,7 @@ import org.apromore.portal.model.ImportLogResultType;
 import org.apromore.portal.model.ImportProcessResultType;
 import org.apromore.portal.model.LogSummaryType;
 import org.apromore.portal.model.NativeTypesType;
+import org.apromore.portal.model.PermissionType;
 import org.apromore.portal.model.PluginInfo;
 import org.apromore.portal.model.PluginInfoResult;
 import org.apromore.portal.model.PluginMessages;
@@ -86,6 +92,7 @@ import org.apromore.service.WorkspaceService;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.service.model.ProcessData;
 import org.apromore.util.AccessType;
+import org.apromore.util.StreamUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -93,6 +100,9 @@ import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
+
+import static org.apromore.common.Constants.DRAFT_BRANCH_NAME;
+import static org.apromore.common.Constants.TRUNK_NAME;
 
 /**
  * Implements {@link ManagerService} by delegating to OSGi services.
@@ -310,6 +320,16 @@ public class ManagerServiceImpl implements ManagerService {
   @Override
   public List<GroupAccessType> getLogGroups(int logId) {
     return WorkspaceMapper.convertGroupLogsToGroupAccessTypes(authorizationSrv.getGroupLogs(logId));
+  }
+
+  @Override
+  public List<PermissionType> getRolePermissions(String roleName) {
+    List<PermissionType> permissionTypes = new ArrayList<>();
+    for (Permission permission : secSrv.getRolePermissions(roleName)) {
+      PermissionType permissionType = PermissionType.getPermissionTypeById(permission.getRowGuid());
+      permissionTypes.add(permissionType);
+    }
+    return permissionTypes;
   }
 
   @Override
@@ -535,10 +555,10 @@ public class ManagerServiceImpl implements ManagerService {
   @Override
   public ExportFormatResultType exportFormat(int processId, String processName, String branch,
       String versionNumber, String nativeType, String owner) throws Exception {
-    LOGGER.info("Export process model \"{}\" (id {}, branch {}, version {}, type {}, owner {})",
+    LOGGER.debug("Export process model \"{}\" (id {}, branch {}, version {}, type {}, owner {})",
         processName, processId, branch, versionNumber, nativeType, owner);
     return procSrv.exportProcess(processName, processId, branch, new Version(versionNumber),
-        nativeType);
+        nativeType, owner);
   }
 
   @Override
@@ -602,7 +622,7 @@ public class ManagerServiceImpl implements ManagerService {
     DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
     String now = dateFormat.format(new Date());
 
-    verType.setName(Constants.TRUNK_NAME);
+    verType.setName(TRUNK_NAME);
     verType.setCreationDate(now);
     verType.setLastUpdate(now);
     verType.setVersionNumber("1.0");
@@ -832,4 +852,36 @@ public class ManagerServiceImpl implements ManagerService {
 				&& procSrv.hasWritePermissionOnProcess(secSrv.getUserByName(username), processIds)
 				&& logSrv.hasWritePermissionOnLog(secSrv.getUserByName(username), logIds));
 	}
+
+  @Override
+  public ProcessModelVersion updateDraft(Integer processId, String versionNumber, String nativeType,
+                                    InputStream nativeStream, String userName) throws UpdateProcessException {
+    return procSrv.updateDraft(processId, versionNumber, nativeType, nativeStream, userName);
+
+  }
+
+  @Override
+  public ProcessModelVersion createDraft(Integer processId, String processName, String versionNumber, String nativeType,
+                                         InputStream nativeStream, String userName) throws ImportException {
+    return procSrv.createDraft(processId, processName, versionNumber, nativeType, nativeStream, userName);
+
+  }
+
+  @Override
+  public Boolean isProcessUpdatedWithUserDraft(Integer processId, String processName, String versionNumber,
+                                        String nativeType, String username) {
+
+    try {
+      ExportFormatResultType exportResult = exportFormat(processId, processName, TRUNK_NAME, versionNumber, nativeType, username);
+      String bpmnXML = StreamUtil.convertStreamToString(exportResult.getNative().getInputStream());
+
+      ExportFormatResultType exportResultDraft = exportFormat(processId, processName, DRAFT_BRANCH_NAME, versionNumber, nativeType, username);
+      String bpmnXmlDraft = StreamUtil.convertStreamToString(exportResultDraft.getNative().getInputStream());
+
+      return Objects.equals(bpmnXML, bpmnXmlDraft);
+    } catch (Exception e) {
+      return false;
+    }
+  }
+
 }

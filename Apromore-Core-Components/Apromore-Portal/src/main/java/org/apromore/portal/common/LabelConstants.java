@@ -29,4 +29,5 @@ public abstract class LabelConstants {
 
     public static final String TRUE = "true";
     public static final String IS_DISPLAYNAME_CAPITALIZED = "brand_usernameCaps";
+    public static final String MESSAGEBOX_DEFAULT_TITLE = "brand_name";
 }

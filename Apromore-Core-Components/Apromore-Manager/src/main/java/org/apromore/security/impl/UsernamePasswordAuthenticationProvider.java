@@ -25,6 +25,7 @@ package org.apromore.security.impl;
 
 import org.apromore.dao.UserRepository;
 import org.apromore.dao.model.Membership;
+import org.apromore.dao.model.Permission;
 import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
 import org.apromore.mapper.UserMapper;
@@ -51,10 +52,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Adapts {@link org.apromore.dao.UserRepository#login(String, String)} to the SpringSecurity AuthenticationProvider SPI.
@@ -109,6 +107,9 @@ public class UsernamePasswordAuthenticationProvider implements AuthenticationPro
 
         UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) authentication;
         User user = findUser(token.getName());
+        if(Optional.ofNullable(user).isEmpty()) {
+            throw new UsernameNotFoundException("User '" + token.getName() + "' not found");
+        }
         Membership membership = user.getMembership();
         String password = (String) token.getCredentials();
 
@@ -222,16 +223,18 @@ public class UsernamePasswordAuthenticationProvider implements AuthenticationPro
     }
 
     /**
-     * Retrieves the correct ROLE type depending on the access level, where access level is an Integer.
-     * Basically, this interprets the access value whether it's for a regular user or admin.
+     * Retrieves the roles and permissions of a user which are used to determine their access to different features.
      *
-     * @param access an integer value representing the access of the user
+     * @param access a set of roles representing the access of the user
      * @return collection of granted authorities
      */
     public List<GrantedAuthority> getAuthorities(Set<Role> access) {
         List<GrantedAuthority> authList = new ArrayList<>();
         for (Role role : access) {
             authList.add(new SimpleGrantedAuthority(role.getName()));
+            for(Permission permission : role.getPermissions()) {
+                authList.add(new SimpleGrantedAuthority(permission.getName()));
+            }
         }
         return authList;
     }

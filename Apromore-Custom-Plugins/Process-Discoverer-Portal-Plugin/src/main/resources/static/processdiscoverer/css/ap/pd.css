@@ -165,7 +165,7 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    padding: 10px;
+    margin: 10px;
 }
 
 [data-t='ap-pd-aux'] {
@@ -1336,4 +1336,9 @@ table.ap-pd-case-activity-attrs td:nth-child(2) {
 
 .ap-pd-caption-subtitle {
     font-size: 10px;
+}
+
+.ap-cost-table .z-listitem.z-listitem-selected > .z-listcell,
+.ap-cost-table .z-listitem:hover > .z-listcell {
+    background-color: transparent !important;
 }

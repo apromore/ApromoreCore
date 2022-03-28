@@ -122,6 +122,8 @@ export default class EditorApp {
         await this._loadData(config);
 
         await this._initUI();
+
+        return this.editor && this.editor.actualEditor
     }
 
     /**
@@ -148,7 +150,7 @@ export default class EditorApp {
     async _collapsePanels() {
         let me = this;
         return new Promise(async (resolve, reject) => {
-            await Utils.delay(200);
+            await Utils.delay(300);
             this.useSimulationPanel ? me.layout_regions.east.collapse() : me.layout_regions.east.hide();
             me.layout_regions.west.hide();
             resolve('PanelCollapsedCompleted');
@@ -267,7 +269,6 @@ export default class EditorApp {
 
         if (this.useSimulationPanel) {
             this.layout_regions.center.addListener('resize', function () {
-                console.log('Center Panel resize resize');
                 me.zoomFitToModel();
             });
         }
@@ -311,7 +312,10 @@ export default class EditorApp {
                             })
                             $('#ap-editor-props-simulation').on('click', () => {
                               selectTab('simulation');
-                              $('#ap-editor-props-container .bpp-properties-tabs-links > li:not(.bpp-hidden):not(:first-child):not(:nth-child(2)) a')[0].click();
+                              var tabLink = $('#ap-editor-props-container .bpp-properties-tabs-links > li:not(.bpp-hidden):not(:first-child):not(:nth-child(2)) a');
+                              if (tabLink && tabLink[0]) {
+                                tabLink[0].click();
+                              }
                             })
                         }, 1000);
                     }
@@ -533,10 +537,10 @@ export default class EditorApp {
      * @param buttonData: button data
      */
     offer(buttonData) {
-        if (this.disabledButtons && this.disabledButtons.includes(buttonData.name)) {
-            buttonData.isDisabled = function(){ return true};
+        //Do not add buttons in the disabledButtons list to the toolbar
+        if (!this.disabledButtons || !this.disabledButtons.includes(buttonData.name)) {
+            this.buttonsData.push(buttonData);
         }
-        this.buttonsData.push(buttonData);
     }
 
     getEditor() {
@@ -567,13 +571,16 @@ export default class EditorApp {
         let me = this;
         let options = {
           container: '#' + me.editor.rootNode.id,
-          langTag: config.langTag
+          langTag: config.langTag,
+          username: '',
+          processName: ''
         }
         if (!config.viewOnly) {
           options.keyboard = { bindTo: window };
           options.propertiesPanel = me.useSimulationPanel ? { parent: '#js-properties-panel' } : undefined
         }
         options.username = config.username || '';
+        options.processName = config.processName || 'untitled';
         await me.editor.attachEditor(new BpmnJS(options));
 
         if (config && config.xml) {

@@ -1,7 +1,7 @@
 /*-
  * #%L
  * This file is part of "Apromore Core".
- * 
+ *
  * Copyright (C) 2012 - 2017 Queensland University of Technology.
  * %%
  * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
@@ -10,12 +10,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -24,10 +24,16 @@
 
 package org.apromore.portal.dialogController;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.dao.model.ProcessPublish;
 import org.apromore.dao.model.User;
 import org.apromore.plugin.editor.EditorPlugin;
@@ -67,19 +73,23 @@ import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Messagebox;
 
+import static org.apromore.common.Constants.DRAFT_BRANCH_NAME;
+import static org.apromore.common.Constants.TRUNK_NAME;
+import static org.apromore.portal.common.LabelConstants.MESSAGEBOX_DEFAULT_TITLE;
+
 /**
  * ApromoreSession and ApromoreSession.EditSessionType represent data objects of the model being
  * opened in the editor However, they don't contain the XML native model data which can be retrieved
  * from the editor Remember to update these data objects after every action on the model to keep it
  * in a consistent state. For example, after save as a new model, these data objects must be updated
  * to the new model info.
- * 
+ *
  * @todo there is a duplication between ApromoreSession and EditSessionType, they need to be clean
  *       later.
  *
  * @todo avoid thread conflict issues when setting instance data for BIMPPortalPlugin, instead it
  *       should be passed as a method parameter.
- * 
+ *
  * @author Bruce Nguyen
  *
  */
@@ -92,7 +102,6 @@ public class BPMNEditorController extends BaseController implements Composer<Com
 
   private static final Logger LOGGER = PortalLoggerFactory.getLogger(BPMNEditorController.class);
   public static final String BPMN_XML = "bpmnXML";
-  public static final String BPMN_2_01 = "BPMN 2.0";
   private EventQueue<Event> qeBPMNEditor =
       EventQueues.lookup(Constants.EVENT_QUEUE_BPMN_EDITOR, EventQueues.DESKTOP, true);
 
@@ -169,46 +178,37 @@ public class BPMNEditorController extends BaseController implements Composer<Com
       String bpmnXML = (String) session.get(BPMN_XML);
 
       if (bpmnXML == null) {
-        if (isNewProcess) {
-          bpmnXML = "<?xml version='1.0' encoding='UTF-8'?>"
-              + "<bpmn:definitions xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' "
-              + "xmlns:bpmn='http://www.omg.org/spec/BPMN/20100524/MODEL' "
-              + "xmlns:bpmndi='http://www.omg.org/spec/BPMN/20100524/DI' "
-              + "xmlns:dc='http://www.omg.org/spec/DD/20100524/DC' "
-              + "targetNamespace='http://bpmn.io/schema/bpmn' " + "id='Definitions_1'>"
-              + "<bpmn:process id='Process_1' isExecutable='false'>"
-              + "<bpmn:startEvent id='StartEvent_1'/>" + "</bpmn:process>"
-              + "<bpmndi:BPMNDiagram id='BPMNDiagram_1'>"
-              + "<bpmndi:BPMNPlane id='BPMNPlane_1' bpmnElement='Process_1'>"
-              + "<bpmndi:BPMNShape id='_BPMNShape_StartEvent_2' bpmnElement='StartEvent_1'>"
-              + "<dc:Bounds height='36.0' width='36.0' x='173.0' y='102.0'/>"
-              + "</bpmndi:BPMNShape>" + "</bpmndi:BPMNPlane>" + "</bpmndi:BPMNDiagram>"
-              + "</bpmn:definitions>";
-        } 
-        else {
-          // Note: process models created by merging are not BPMN, cannot use
-          // processService.getBPMNRepresentation
-          ExportFormatResultType exportResult = mainC.getManagerService().exportFormat(
-              editSession.getProcessId(), editSession.getProcessName(),
-              editSession.getOriginalBranchName(), editSession.getCurrentVersionNumber(),
-              editSession.getNativeType(), editSession.getUsername());
-          bpmnXML = StreamUtil.convertStreamToString(exportResult.getNative().getInputStream());
-          param.put("doAutoLayout", "false");
-        }
 
-        param.put(BPMN_XML, escapeXML(bpmnXML));
+        // Note: process models created by merging are not BPMN, cannot use
+        // processService.getBPMNRepresentation
+        ExportFormatResultType exportResult = mainC.getManagerService().exportFormat(editSession.getProcessId(),
+                editSession.getProcessName(), TRUNK_NAME, editSession.getCurrentVersionNumber(),
+                editSession.getNativeType(), editSession.getUsername());
+        bpmnXML = StreamUtil.convertStreamToString(exportResult.getNative().getInputStream());
+
+        ExportFormatResultType exportResultDraft = mainC.getManagerService().exportFormat(editSession.getProcessId(),
+                editSession.getProcessName(), DRAFT_BRANCH_NAME, editSession.getCurrentVersionNumber(),
+                editSession.getNativeType(), editSession.getUsername());
+        String bpmnXmlDraft = StreamUtil.convertStreamToString(exportResultDraft.getNative().getInputStream());
+
+        param.put("doAutoLayout", "false");
+
+        param.put(BPMN_XML, AccessType.VIEWER.equals(currentUserAccessType) ? escapeXML(bpmnXML) :
+                escapeXML(bpmnXmlDraft));
         param.put("url", getURL(editSession.getNativeType()));
         param.put("importPath", mainC.getImportPath(editSession.getNativeType()));
         param.put("exportPath", mainC.getExportPath(editSession.getNativeType()));
         param.put("editor", "bpmneditor");
       } else {
-        param.put(BPMN_XML, bpmnXML);
-        param.put("url", getURL(BPMN_2_01));
-        param.put("importPath", getImportPath(BPMN_2_01));
-        param.put("exportPath", getExportPath(BPMN_2_01));
+        param.put(BPMN_XML, escapeXML(bpmnXML));
+        param.put("url", getURL(BPMN_2_0));
+        param.put("importPath", getImportPath(BPMN_2_0));
+        param.put("exportPath", getExportPath(BPMN_2_0));
         param.put("editor", "bpmneditor");
         param.put("doAutoLayout", "false");
       }
+
+      param.put("nativeType", process.getOriginalNativeType());
 
       this.setTitle(
           editSession.getProcessName() + " (" + "v" + editSession.getCurrentVersionNumber() + ")");
@@ -221,6 +221,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
       param.put("plugins", editorPlugins);
       param.put("langTag", langTag);
       param.put("username", currentUserType.getUsername());
+      param.put("processName", editSession.getProcessName());
       if (USE_BPMNIO_MODELER) {
         param.put("bpmnioLib", BPMNIO_MODELER_JS);
       } else {
@@ -230,6 +231,9 @@ public class BPMNEditorController extends BaseController implements Composer<Com
       PortalPlugin simulatePortalPlugin = mainC.getPortalPluginMap().get(PluginCatalog.PLUGIN_SIMULATE_MODEL);
       param.put("availableSimulateModelPlugin", simulatePortalPlugin != null &&
               simulatePortalPlugin.getAvailability() == PortalPlugin.Availability.AVAILABLE);
+      PortalPlugin processPublishPlugin = mainC.getPortalPluginMap().get(PluginCatalog.PLUGIN_PUBLISH_MODEL);
+      param.put("availablePublishModelPlugin", processPublishPlugin != null
+          && processPublishPlugin.getAvailability() == PortalPlugin.Availability.AVAILABLE);
       param.put("isPublished", isProcessPublished());
       Executions.getCurrent().pushArg(param);
 
@@ -246,7 +250,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
           return;
         }
         if (isNewProcess) {
-          new SaveAsDialogController(process, vst, session, false, eventToString(event), mainC);
+          new SaveAsDialogController(process, vst, session, null, eventToString(event), mainC);
         } else {
           new SaveAsDialogController(process, vst, session, true, eventToString(event), mainC);
         }
@@ -261,6 +265,67 @@ public class BPMNEditorController extends BaseController implements Composer<Com
           return;
         }
         new SaveAsDialogController(process, vst, session, false, eventToString(event), mainC);
+      }
+    });
+
+    this.addEventListener("onForceSave", new EventListener<Event>() {
+      @Override
+      public void onEvent(final Event event) throws InterruptedException {
+        Map<String, Object> arg = (Map<String, Object>) event.getData();
+        String xml = arg.get("xml").toString();
+        String flowOnEvent = arg.get("flowOnEvent").toString();
+        InputStream is = new ByteArrayInputStream(xml.getBytes());
+        saveCurrentModelVersion(
+          editSession.getProcessId(),
+          editSession.getProcessName(),
+          editSession.getCurrentVersionNumber(),
+          editSession.getNativeType(),
+          is,
+          editSession.getUsername()
+        );
+        Notification.info(
+          MessageFormat.format(
+            Labels.getLabel("bpmnEditor_afterSave_message"),
+            editSession.getProcessName(),
+            editSession.getCurrentVersionNumber()
+          )
+        );
+        callAfterCheckUnsaved(flowOnEvent);
+      }
+    });
+
+    this.addEventListener("onCheckUnsaved", (Event event) -> {
+      String flowOnEvent = (String) event.getData();
+      if (isNewProcess) {
+        Messagebox.show(
+          Labels.getLabel("bpmnEditor_mustSave_message"),
+          Labels.getLabel(MESSAGEBOX_DEFAULT_TITLE),
+          Messagebox.OK,
+          Messagebox.EXCLAMATION
+        );
+        return;
+      }
+      boolean isUpToDate = mainC.getManagerService().isProcessUpdatedWithUserDraft(
+          editSession.getProcessId(),
+          editSession.getProcessName(),
+          editSession.getCurrentVersionNumber(),
+          editSession.getNativeType(),
+          editSession.getUsername()
+      );
+      if (isUpToDate) {
+        callAfterCheckUnsaved(flowOnEvent);
+      } else {
+        Messagebox.show(
+          Labels.getLabel("bpmnEditor_unsavedChanges_message"),
+          Labels.getLabel(MESSAGEBOX_DEFAULT_TITLE),
+          Messagebox.OK | Messagebox.CANCEL,
+          Messagebox.QUESTION,
+          (Event e) -> {
+            if (Messagebox.ON_OK.equals(e.getName())) {
+              callAfterCheckUnsaved(flowOnEvent);
+            }
+          }
+        );
       }
     });
 
@@ -319,13 +384,18 @@ public class BPMNEditorController extends BaseController implements Composer<Com
             accessControlPlugin.setSimpleParams(arg);
             accessControlPlugin.execute(portalContext);
           } catch (Exception e) {
-            Messagebox.show(e.getMessage(), "Apromore", Messagebox.OK, Messagebox.ERROR);
+            Messagebox.show(e.getMessage(), Labels.getLabel(MESSAGEBOX_DEFAULT_TITLE), Messagebox.OK, Messagebox.ERROR);
           }
         }
       }
     });
 
     this.addEventListener("onPublishModel", event -> {
+      if (isNewProcess || process == null) {
+        Notification.error(Labels.getLabel("portal_saveModelFirst_message"));
+        return;
+      }
+
       PortalContext portalContext = mainC.getPortalContext();
       Map<String, PortalPlugin> portalPluginMap = portalContext.getPortalPluginMap();
       PortalPlugin publishModelPlugin = portalPluginMap.get(PluginCatalog.PLUGIN_PUBLISH_MODEL);
@@ -345,11 +415,41 @@ public class BPMNEditorController extends BaseController implements Composer<Com
           setTitle(data[0], data[1]);
           process = session.getProcess();
           editorController.isNewProcess = false;
+          Clients.evalJavaScript("Apromore.BPMNEditor.afterSave()");
         }
       }
     });
   }
 
+  private void saveCurrentModelVersion(Integer processId, String processName, String versionNumber,
+                                       String nativeType, InputStream nativeStream, String userName) {
+    try {
+      String bpmnXml = new String(nativeStream.readAllBytes(), StandardCharsets.UTF_8);
+
+      ProcessModelVersion newVersion = mainC.getManagerService().updateProcessModelVersion(
+          processId, editSession.getOriginalBranchName(), versionNumber, userName, "", nativeType,
+          new ByteArrayInputStream(bpmnXml.getBytes()));
+      mainC.getManagerService().updateDraft(processId,
+          editSession.getOriginalVersionNumber(), nativeType, new ByteArrayInputStream(bpmnXml.getBytes()),
+          userName);
+      editSession.setOriginalVersionNumber(versionNumber);
+      editSession.setCurrentVersionNumber(versionNumber);
+      editSession.setLastUpdate(newVersion.getLastUpdateDate());
+      session.getVersion().setLastUpdate(newVersion.getLastUpdateDate());
+      session.getVersion().setVersionNumber(versionNumber);
+
+      qeBPMNEditor.publish(new Event(BPMNEditorController.EVENT_MESSAGE_SAVE, null,
+          new String[] {processName, versionNumber}));
+    } catch (Exception e) {
+      Messagebox.show(Labels.getLabel("portal_unableSave_message"), null, Messagebox.OK,
+          Messagebox.ERROR);
+    }
+  }
+
+  private void callAfterCheckUnsaved(String flowOnEvent) {
+    Clients.evalJavaScript("Apromore.BPMNEditor.afterCheckUnsaved('" + flowOnEvent + "')");
+  }
+  
   private void setTitle(String processName, String versionNumber) {
     this.setTitle(processName + " (" + "v" + versionNumber + ")");
   }
@@ -361,7 +461,11 @@ public class BPMNEditorController extends BaseController implements Composer<Com
    *         trailing whitespace.
    */
   private String escapeXML(String xml) {
-    return xml.replaceAll("(\\r|\\n|\\r\\n)+", " ").replace("'", "\\'");
+    return xml
+            .replaceAll("(\\r|\\n|\\r\\n)+", " ")
+            // remove LSEP (line separator), that breaks XML code embedding in ZK's inline JS script
+            .replaceAll("\u2028", " ")
+            .replace("'", "\\'");
   }
 
   /**
@@ -398,9 +502,14 @@ public class BPMNEditorController extends BaseController implements Composer<Com
       ProcessPublishService processPublishService = (ProcessPublishService) SpringUtil.getBean("processPublishService");
       ProcessService processService = (ProcessService) SpringUtil.getBean("processService");
 
-      //Check if link is published. If not, throw an error.
+      //Check if link is published. If not, show an error.
       if (!processPublishService.isPublished(publishId)) {
-        throw new AssertionError("This link is inactive");
+        try {
+          Executions.forward("./macros/invalidLink.zul");
+          return;
+        } catch (IOException e) {
+          throw new AssertionError("This link is inactive");
+        }
       }
 
       //Get process from publish id
@@ -412,7 +521,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
       //get bpmnXML from process
       try {
         ExportFormatResultType exportResult = processService.exportProcess(
-                process.getName(), process.getId(), "MAIN", new Version(version), nativeType);
+                process.getName(), process.getId(), "MAIN", new Version(version), nativeType, currentUserType.getUsername());
         String bpmnXML = StreamUtil.convertStreamToString(exportResult.getNative().getInputStream());
         pushViewModeParameters(bpmnXML);
       } catch (Exception e) {
@@ -431,6 +540,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
     List<EditorPlugin> editorPlugins = EditorPluginResolver.resolve("bpmnEditorPlugins");
     param.put("plugins", editorPlugins);
     param.put("availableSimulateModelPlugin", false);
+    param.put("availablePublishModelPlugin", false);
     param.put("bpmnioLib", BPMNIO_MODELER_JS);
     param.put("isPublished", true);
     param.put("viewOnly", true);

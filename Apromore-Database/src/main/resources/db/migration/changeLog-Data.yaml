@@ -1716,3 +1716,364 @@ databaseChangeLog:
               FROM (SELECT * FROM user_role) AS user_role_copy
               WHERE roleid = 1
               ) AND roleid NOT IN (1, 9);
+  - changeSet:
+      id: 20220125105200
+      author: janeh
+      comment: "add login permission"
+      changes:
+        - insert:
+            tableName: permission
+            columns:
+              - column:
+                  name: id
+                  value: "23"
+              - column:
+                  name: row_guid
+                  value: "d7ff28d6-7cdc-11ec-90d6-0242ac120003"
+              - column:
+                  name: permission_name
+                  value: "Portal login"
+              - column:
+                  name: permission_description
+                  value: "Log in to Apromore Portal"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "1"
+              - column:
+                  name: permissionid
+                  value: "23"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "3"
+              - column:
+                  name: permissionid
+                  value: "23"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "4"
+              - column:
+                  name: permissionid
+                  value: "23"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "5"
+              - column:
+                  name: permissionid
+                  value: "23"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "6"
+              - column:
+                  name: permissionid
+                  value: "23"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "7"
+              - column:
+                  name: permissionid
+                  value: "23"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "8"
+              - column:
+                  name: permissionid
+                  value: "23"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "10"
+              - column:
+                  name: permissionid
+                  value: "23"
+  - changeSet:
+      id: 20220125160600
+      author: janeh
+      comment: "change admin to super admin"
+      changes:
+        - update:
+            tableName: role
+            columns:
+              - column:
+                  name: role_name
+                  value: "ROLE_SUPER_ADMIN"
+            where: id = 1
+  - changeSet:
+      id: 20220201104100
+      author: janeh
+      comment: "add new admin role"
+      changes:
+        - insert:
+            tableName: role
+            columns:
+              - column:
+                  name: id
+                  value: "11"
+              - column:
+                  name: row_guid
+                  value: "381bba7a-82ed-11ec-a8a3-0242ac120002"
+              - column:
+                  name: role_name
+                  value: "ROLE_ADMIN"
+              - column:
+                  name: description
+                  value: "Allowed access to manage users and access rights"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "11"
+              - column:
+                  name: permissionid
+                  value: "1"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "11"
+              - column:
+                  name: permissionid
+                  value: "2"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "11"
+              - column:
+                  name: permissionid
+                  value: "3"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "11"
+              - column:
+                  name: permissionid
+                  value: "4"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "11"
+              - column:
+                  name: permissionid
+                  value: "23"
+  - changeSet:
+      id: 20220201144000
+      author: janeh
+      comment: "add data engineer role"
+      changes:
+        - insert:
+            tableName: role
+            columns:
+              - column:
+                  name: id
+                  value: "12"
+              - column:
+                  name: row_guid
+                  value: "fd433676-830f-11ec-a8a3-0242ac120002"
+              - column:
+                  name: role_name
+                  value: "ROLE_DATA_ENGINEER"
+              - column:
+                  name: description
+                  value: "Allowed access to create and manage data pipelines"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "12"
+              - column:
+                  name: permissionid
+                  value: "5"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "12"
+              - column:
+                  name: permissionid
+                  value: "6"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "12"
+              - column:
+                  name: permissionid
+                  value: "23"
+  - changeSet:
+      id: 20220216164800
+      author: janeh
+      comment: "remove calendars not associated with a user"
+      changes:
+        - delete:
+            tableName: custom_calendar
+            where: created_by IS NULL OR owner IS NULL
+  - changeSet:
+      id: 20220224112500
+      author: janeh
+      comment: "add publish model permission"
+      changes:
+        - insert:
+            tableName: permission
+            columns:
+              - column:
+                  name: id
+                  value: "24"
+              - column:
+                  name: row_guid
+                  value: "607b5dfe-9508-11ec-b909-0242ac120002"
+              - column:
+                  name: permission_name
+                  value: "Publish models"
+              - column:
+                  name: permission_description
+                  value: "Create and revoke publish model links"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "1"
+              - column:
+                  name: permissionid
+                  value: "24"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "4"
+              - column:
+                  name: permissionid
+                  value: "24"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "6"
+              - column:
+                  name: permissionid
+                  value: "24"
+  - changeSet:
+      id: 20220301150700
+      author: janeh
+      comment: "add manage access rights permission"
+      changes:
+        - insert:
+            tableName: permission
+            columns:
+              - column:
+                  name: id
+                  value: "25"
+              - column:
+                  name: row_guid
+                  value: "165962fc-9913-11ec-b909-0242ac120002"
+              - column:
+                  name: permission_name
+                  value: "Manage access rights"
+              - column:
+                  name: permission_description
+                  value: "Manage access rights for artifacts"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "1"
+              - column:
+                  name: permissionid
+                  value: "25"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "11"
+              - column:
+                  name: permissionid
+                  value: "25"
+  - changeSet:
+      id:  20220321091000
+      author:  frankma
+      changes:
+        - insert:
+            tableName: usermetadata_type
+            columns:
+              - column:
+                  name: id
+                  value: "9"
+              - column:
+                  name: type
+                  value: "COST_TABLE"
+              - column:
+                  name: version
+                  value: "1"
+              - column:
+                  name: is_valid
+                  value: "1"
+  - changeSet:
+      id:  20220325144900
+      author:  janeh
+      comment: "update permission names"
+      changes:
+        -  update:
+             columns:
+               -  column:
+                    name: permission_name
+                    value: "View users"
+             tableName: permission
+             where: id = 1
+        -  update:
+             columns:
+               -  column:
+                    name: permission_name
+                    value: "Edit users"
+             tableName: permission
+             where: id = 2
+        -  update:
+             columns:
+               -  column:
+                    name: permission_name
+                    value: "Edit groups"
+             tableName: permission
+             where: id = 3
+        -  update:
+             columns:
+               -  column:
+                    name: permission_name
+                    value: "Edit roles"
+             tableName: permission
+             where: id = 4

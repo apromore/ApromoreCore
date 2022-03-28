@@ -75,7 +75,8 @@ public class ExportProcessServiceImplIT {
         DataHandler startStream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("EPML_models/test1.epml"), "text/xml"));
         ProcessModelVersion pst = pSrv.importProcess(username, 0, name, version, epmlNativeType, startStream.getInputStream(), domain, "", created, lastUpdate, true);
 
-        ExportFormatResultType result = pSrv.exportProcess(name, pst.getId(), pst.getProcessBranch().getBranchName(), version, epmlNativeType);
+        ExportFormatResultType result = pSrv.exportProcess(name, pst.getId(), pst.getProcessBranch().getBranchName(),
+                version, epmlNativeType, "");
         DataHandler endStream = result.getNative();
         LOGGER.debug(StreamUtil.convertStreamToString(endStream));
     }

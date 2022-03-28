@@ -141,7 +141,7 @@ private void submit() throws Exception {
       LOGGER.info("Rename folder " + folderName);
       this.mainController.getManagerService().updateFolder(this.folderId, folderName,
           UserSessionManager.getCurrentUser().getUsername());
-      this.mainController.reloadSummaries();
+      this.mainController.reloadSummariesWithOpenTreeItems(this.mainController.getNavigationController().getAllOpenFolderItems());
       this.folderEditWindow.detach();
 
     } catch (WrongValueException ex) {

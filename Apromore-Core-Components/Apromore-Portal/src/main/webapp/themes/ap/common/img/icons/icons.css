@@ -102,6 +102,16 @@
     width: 26px !important;
 }
 
+.ap-icon-attachment-off {
+  background-image: url('attachment-off.svg') !important;
+  width: 26px !important;
+}
+
+.ap-icon-attachment-on {
+  background-image: url('attachment-on.svg') !important;
+  width: 26px !important;
+}
+
 .ap-icon-attribute {
     background-image: url('attribute.svg') !important;
     width: 26px !important;
@@ -192,9 +202,24 @@
     width: 28.5px !important;
 }
 
+.ap-icon-comments-off {
+    background-image: url('comments-off.svg') !important;
+    width: 26px !important;
+}
+
+.ap-icon-comments-on {
+    background-image: url('comments-on.svg') !important;
+    width: 26px !important;
+}
+
 .ap-icon-copy {
     background-image: url('copy.svg') !important;
     width: 23.5px !important;
+}
+
+.ap-icon-cost {
+    background-image: url('cost.svg') !important;
+    width: 27.953125px !important;
 }
 
 .ap-icon-cut {
@@ -305,6 +330,11 @@
 .ap-icon-filter-delete {
     background-image: url('filter-delete.svg') !important;
     width: 27.5234375px !important;
+}
+
+.ap-icon-filter-edit {
+    background-image: url('filter-edit.svg') !important;
+    width: 28.5px !important;
 }
 
 .ap-icon-filter {
@@ -554,6 +584,31 @@
 
 .ap-icon-road {
     background-image: url('road.svg') !important;
+    width: 28.5px !important;
+}
+
+.ap-icon-role-add {
+    background-image: url('role-add.svg') !important;
+    width: 28.5px !important;
+}
+
+.ap-icon-role-copy {
+    background-image: url('role-copy.svg') !important;
+    width: 28.5px !important;
+}
+
+.ap-icon-role-edit {
+    background-image: url('role-edit.svg') !important;
+    width: 28.5px !important;
+}
+
+.ap-icon-role-remove {
+    background-image: url('role-remove.svg') !important;
+    width: 28.5px !important;
+}
+
+.ap-icon-role-view {
+    background-image: url('role-view.svg') !important;
     width: 28.5px !important;
 }
 

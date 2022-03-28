@@ -70,7 +70,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -160,7 +159,7 @@ public class APMLogFilter {
                         traces = filterByCaseSectEventAttribute(rule, traces);
                         break;
                     case CASE_SECTION_ATTRIBUTE_COMBINATION:
-                        traces = filterByCaseSectAttributeCombination(rule, traces);
+                        traces = CaseSectionAttributeCombinationFilter.of(rule).filter(traces);
                         break;
                     case CASE_TIME:
                     case STARTTIME:
@@ -220,32 +219,28 @@ public class APMLogFilter {
     }
 
     private List<PTrace> filterByCaseVariants(LogFilterRule rule, List<PTrace> traces) {
-        List<Map.Entry<String, List<PTrace>>> data = Lists.reverse(traces.stream()
-                .collect(Collectors.groupingBy(trace ->
-                        Arrays.toString(trace.getActivityInstancesIndicatorArray())))
-                .entrySet().stream()
-                .sorted(Comparator.comparing(x -> x.getValue().size()))
-                .collect(Collectors.toList()));
-
-        Map<Integer, Map.Entry<String, List<PTrace>>> withIndex = new HashMap<>();
-        int id = 0;
-        for (Map.Entry<String, List<PTrace>> entry : data) {
-            id += 1;
-            withIndex.put(id, entry);
-        }
-
         boolean retain = rule.getChoice() == Choice.RETAIN;
-        if (rule.getPrimaryValues() == null || rule.getPrimaryValues().isEmpty()) {
-            return new ArrayList<>();
-        }
 
         UnifiedSet<Integer> variants = rule.getPrimaryValuesInString().stream()
                 .map(Integer::parseInt).collect(Collectors.toCollection(UnifiedSet::new));
 
-        return withIndex.entrySet().stream()
-                .filter(entry -> (retain && variants.contains(entry.getKey()) ||
-                        (!retain && !variants.contains(entry.getKey())) ))
-                .flatMap(entry -> entry.getValue().getValue().stream()).distinct().collect(Collectors.toList());
+        List<List<PTrace>> variList = Lists.reverse(traces.stream()
+                .collect(Collectors.groupingBy(PTrace::getActivityInstancesIndicator)).values().stream()
+                .sorted(Comparator.comparing(List<PTrace>::size)
+                        .thenComparing(x -> x.get(0).getActivityInstances().size()))
+                .collect(Collectors.toList()));
+
+        Map<Integer, List<PTrace>> variAssignedId = new HashMap<>();
+        int count = 1;
+        for (List<PTrace> tList : variList) {
+            variAssignedId.put(count, tList);
+            count += 1;
+        }
+
+        return variAssignedId.entrySet().stream()
+                .filter(en -> retain == variants.contains(en.getKey()))
+                .flatMap(en -> en.getValue().stream())
+                .collect(Collectors.toList());
     }
 
 
@@ -259,13 +254,6 @@ public class APMLogFilter {
         // CaseSectionEventAttributeFilter handles Choice
         return traces.stream()
                 .filter(x -> CaseSectionEventAttributeFilter.toKeep(x, rule))
-                .collect(Collectors.toList());
-    }
-
-    private List<PTrace> filterByCaseSectAttributeCombination(LogFilterRule rule, List<PTrace> traces) {
-        // CaseSectionAttributeCombinationFilter handles Choice
-        return traces.stream()
-                .filter(x -> CaseSectionAttributeCombinationFilter.toKeep(x, rule))
                 .collect(Collectors.toList());
     }
 

@@ -24,13 +24,12 @@ package org.apromore.plugin.portal.logimporter.listener;
 import java.io.IOException;
 import java.util.Map;
 
-import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.PortalContexts;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.slf4j.Logger;
 import org.zkoss.json.JSONObject;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Window;
@@ -83,7 +82,7 @@ public class LogImportListener implements EventListener<Event> {
 	default:
 
 	    try {
-		Window window = (Window) ((PortalContext) Sessions.getCurrent().getAttribute("portalContext")).getUI()
+		Window window = (Window) PortalContexts.getActivePortalContext().getUI()
 			.createComponent(getClass().getClassLoader(), "import-csv/csvimporter.zul", null, args);
 		window.doModal();
 

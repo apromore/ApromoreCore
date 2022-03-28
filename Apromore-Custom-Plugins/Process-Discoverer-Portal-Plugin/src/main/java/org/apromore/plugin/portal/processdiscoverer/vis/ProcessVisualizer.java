@@ -22,6 +22,7 @@
 
 package org.apromore.plugin.portal.processdiscoverer.vis;
 
+import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
 import org.apromore.processdiscoverer.Abstraction;
 
 /**
@@ -32,7 +33,7 @@ import org.apromore.processdiscoverer.Abstraction;
  *
  */
 public interface ProcessVisualizer {
-    public String generateVisualizationText(Abstraction abs) throws Exception;
+    public String generateVisualizationText(Abstraction abs, UserOptionsData userOptions) throws Exception;
     // A door to clean up memory after memory-intensive operations, e.g. layouting.
-    public void cleanUp(); 
+    public void cleanUp();
 }

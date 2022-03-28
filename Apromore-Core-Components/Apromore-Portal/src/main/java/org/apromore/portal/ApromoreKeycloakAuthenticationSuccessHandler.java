@@ -22,6 +22,7 @@
 package org.apromore.portal;
 
 import org.apromore.plugin.portal.PortalLoggerFactory;
+import org.apromore.portal.model.PermissionType;
 import org.keycloak.adapters.springsecurity.authentication.KeycloakAuthenticationSuccessHandler;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
@@ -32,7 +33,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
 
 /**
  * Prevent users without login permissions from logging in.
@@ -55,12 +55,9 @@ public class ApromoreKeycloakAuthenticationSuccessHandler extends KeycloakAuthen
             HttpServletRequest request, HttpServletResponse response, Authentication authentication)
             throws IOException, ServletException {
 
-        String[] loginAuthorizedRoles = {"ROLE_ADMIN", "ROLE_MANAGER", "ROLE_ANALYST", "ROLE_VIEWER",
-                "ROLE_DESIGNER", "ROLE_DATA_SCIENTIST", "ROLE_OPERATIONS", "ROLE_VIEWER_MODELS"};
-
         //Logout if the user does not have a role with login permissions
-        if (authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).noneMatch(
-                a -> Arrays.asList(loginAuthorizedRoles).contains(a))) {
+        if (authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority)
+                .noneMatch(a -> PermissionType.PORTAL_LOGIN.getName().equals(a))) {
 
             LOGGER.info("User \"{}\" does not have login permissions", authentication.getName());
             response.sendRedirect("/logout");

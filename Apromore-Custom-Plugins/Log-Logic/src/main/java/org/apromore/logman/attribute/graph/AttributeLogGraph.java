@@ -22,9 +22,6 @@
 
 package org.apromore.logman.attribute.graph;
 
-import java.util.Arrays;
-import java.util.Comparator;
-
 import org.apache.commons.math3.stat.descriptive.rank.Median;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.logman.attribute.AttributeMatrixGraph;
@@ -34,6 +31,7 @@ import org.apromore.logman.attribute.log.AttributeLog;
 import org.apromore.logman.attribute.log.AttributeTrace;
 import org.eclipse.collections.api.list.ListIterable;
 import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.api.list.primitive.DoubleList;
 import org.eclipse.collections.api.list.primitive.IntList;
 import org.eclipse.collections.api.list.primitive.LongList;
 import org.eclipse.collections.api.list.primitive.MutableDoubleList;
@@ -54,6 +52,9 @@ import org.eclipse.collections.impl.factory.primitive.IntSets;
 import org.eclipse.collections.impl.factory.primitive.LongLists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Arrays;
+import java.util.Comparator;
 
 /**
  * AttributeLogGraph is a {@link WeightedAttributeGraph} for an {@link AttributeLog}.
@@ -79,6 +80,12 @@ public class AttributeLogGraph extends WeightedAttributeGraph {
     private MutableIntDoubleMap nodeMaxDurs = IntDoubleMaps.mutable.empty();
     private MutableIntDoubleMap nodeMedianDurs = IntDoubleMaps.mutable.empty();
     private MutableIntDoubleMap nodeMeanDurs = IntDoubleMaps.mutable.empty();
+
+    private MutableIntDoubleMap nodeTotalCosts = IntDoubleMaps.mutable.empty();
+    private MutableIntDoubleMap nodeMinCosts = IntDoubleMaps.mutable.empty();
+    private MutableIntDoubleMap nodeMaxCosts = IntDoubleMaps.mutable.empty();
+    private MutableIntDoubleMap nodeMedianCosts = IntDoubleMaps.mutable.empty();
+    private MutableIntDoubleMap nodeMeanCosts = IntDoubleMaps.mutable.empty();
     
     private MutableIntDoubleMap arcTotalFreqs = IntDoubleMaps.mutable.empty();
     private MutableIntDoubleMap arcCaseFreqs = IntDoubleMaps.mutable.empty();
@@ -92,11 +99,19 @@ public class AttributeLogGraph extends WeightedAttributeGraph {
     private MutableIntDoubleMap arcMaxDurs = IntDoubleMaps.mutable.empty();
     private MutableIntDoubleMap arcMedianDurs = IntDoubleMaps.mutable.empty();
     private MutableIntDoubleMap arcMeanDurs = IntDoubleMaps.mutable.empty();
-    
+
+    private MutableIntDoubleMap arcTotalCosts = IntDoubleMaps.mutable.empty();
+    private MutableIntDoubleMap arcMinCosts = IntDoubleMaps.mutable.empty();
+    private MutableIntDoubleMap arcMaxCosts = IntDoubleMaps.mutable.empty();
+    private MutableIntDoubleMap arcMedianCosts = IntDoubleMaps.mutable.empty();
+    private MutableIntDoubleMap arcMeanCosts = IntDoubleMaps.mutable.empty();
+
     // Used for calculating median
     private MutableIntObjectMap<MutableDoubleList> nodeFreqs = IntObjectMaps.mutable.empty();
     private MutableIntObjectMap<MutableDoubleList> arcFreqs = IntObjectMaps.mutable.empty();
-    
+    private MutableIntObjectMap<MutableDoubleList> nodeCosts = IntObjectMaps.mutable.empty();
+    private MutableIntObjectMap<MutableDoubleList> arcCosts = IntObjectMaps.mutable.empty();
+
     // Collection of node and arc intervals
     private MutableIntObjectMap<MutableList<LongLongPair>> nodeIntervals = IntObjectMaps.mutable.empty();
     private MutableIntObjectMap<MutableList<LongLongPair>> arcIntervals = IntObjectMaps.mutable.empty();
@@ -134,6 +149,12 @@ public class AttributeLogGraph extends WeightedAttributeGraph {
         nodeMaxDurs.clear();
         nodeMedianDurs.clear();
         nodeMeanDurs.clear();
+
+        nodeTotalCosts.clear();
+        nodeMinCosts.clear();
+        nodeMaxCosts.clear();
+        nodeMedianCosts.clear();
+        nodeMeanCosts.clear();        
                  
         arcTotalFreqs.clear();
         arcCaseFreqs.clear();
@@ -147,11 +168,19 @@ public class AttributeLogGraph extends WeightedAttributeGraph {
         arcMaxDurs.clear();
         arcMedianDurs.clear();
         arcMeanDurs.clear();
+
+        arcTotalCosts.clear();
+        arcMinCosts.clear();
+        arcMaxCosts.clear();
+        arcMedianCosts.clear();
+        arcMeanCosts.clear();
         
         nodeFreqs.clear();
         arcFreqs.clear();
         nodeIntervals.clear();
         arcIntervals.clear();
+        nodeCosts.clear();
+        arcCosts.clear();
         
         subGraphs.clear();
     }
@@ -171,6 +200,10 @@ public class AttributeLogGraph extends WeightedAttributeGraph {
     
     private double getMedian(LongList longList, Median medianCalculator) {
         return longList.size() == 0 ? 0 : medianCalculator.evaluate(Arrays.stream(longList.toArray()).asDoubleStream().toArray());
+    }
+
+    private double getMedian(DoubleList doubleList, Median medianCalculator) {
+        return doubleList.size() == 0 ? 0 : medianCalculator.evaluate(doubleList.toArray());
     }
     
     // Used to update other data after the log and graph has been fully updated.
@@ -198,6 +231,13 @@ public class AttributeLogGraph extends WeightedAttributeGraph {
             nodeMaxDurs.put(node, durations.maxIfEmpty(0));
             nodeMeanDurs.put(node, nodeTotalDurs.get(node)/nodeTotalFreqs.get(node));
             nodeMedianDurs.put(node, getMedian(durations, medianCalculator));
+
+            DoubleList costs = nodeCosts.get(node);
+            nodeTotalCosts.put(node, costs.sum());
+            nodeMinCosts.put(node, costs.minIfEmpty(0) );
+            nodeMaxCosts.put(node, costs.maxIfEmpty(0));
+            nodeMeanCosts.put(node, nodeTotalCosts.get(node)/nodeTotalFreqs.get(node));
+            nodeMedianCosts.put(node, getMedian(costs, medianCalculator));
         });
         
         graphArcs.forEach(arc -> {
@@ -219,8 +259,14 @@ public class AttributeLogGraph extends WeightedAttributeGraph {
             arcMaxDurs.put(arc, durations.maxIfEmpty(0));
             arcMeanDurs.put(arc, arcTotalDurs.get(arc)/arcTotalFreqs.get(arc));
             arcMedianDurs.put(arc, getMedian(durations, medianCalculator));
+
+            DoubleList costs = arcCosts.get(arc);
+            arcTotalCosts.put(arc, costs.sum());
+            arcMinCosts.put(arc, costs.minIfEmpty(0) );
+            arcMaxCosts.put(arc, costs.maxIfEmpty(0));
+            arcMeanCosts.put(arc, arcTotalCosts.get(arc)/arcTotalFreqs.get(arc));
+            arcMedianCosts.put(arc, getMedian(costs, medianCalculator));
         });
-        
         
         sortedNodes = graphNodes.toList();
         sortedArcs = graphArcs.toList();
@@ -239,6 +285,7 @@ public class AttributeLogGraph extends WeightedAttributeGraph {
         updateNodeMaxFrequency(node, traceGraph.getNodeWeight(node, MeasureType.FREQUENCY, MeasureAggregation.TOTAL, MeasureRelation.ABSOLUTE));
         collectNodeFrequency(node, traceGraph.getNodeWeight(node, MeasureType.FREQUENCY, MeasureAggregation.TOTAL, MeasureRelation.ABSOLUTE));
         collectNodeIntervals(node, traceGraph.getNodeIntervals(node));
+        collectNodeCosts(node, traceGraph.getNodeCosts(node));
     }
     
     private void updateArcWeights(int arc, AttributeTraceGraph traceGraph) {
@@ -248,6 +295,7 @@ public class AttributeLogGraph extends WeightedAttributeGraph {
         updateArcMaxFrequency(arc, traceGraph.getArcWeight(arc, MeasureType.FREQUENCY, MeasureAggregation.TOTAL, MeasureRelation.ABSOLUTE));
         collectArcFrequency(arc, traceGraph.getArcWeight(arc, MeasureType.FREQUENCY, MeasureAggregation.TOTAL, MeasureRelation.ABSOLUTE));
         collectArcIntervals(arc, traceGraph.getArcIntervals(arc));
+        collectArcCosts(arc, traceGraph.getArcCosts(arc));
     }
 
     ////////////////////////////  Node measure ///////////////////////////////////
@@ -274,6 +322,10 @@ public class AttributeLogGraph extends WeightedAttributeGraph {
 
     private void collectNodeIntervals(int node, ListIterable<LongLongPair> nodeIntervals) {
         this.nodeIntervals.getIfAbsentPut(node, Lists.mutable::empty).addAllIterable(nodeIntervals);
+    }
+
+    private void collectNodeCosts(int node, DoubleList nodeCosts) {
+        this.nodeCosts.getIfAbsentPut(node, DoubleLists.mutable::empty).addAll(nodeCosts);
     }
     
     //////////////////////////// Arc measure ///////////////////////////////////
@@ -302,8 +354,11 @@ public class AttributeLogGraph extends WeightedAttributeGraph {
     private void collectArcIntervals(int arc, ListIterable<LongLongPair> arcIntervals) {
         this.arcIntervals.getIfAbsentPut(arc, Lists.mutable::empty).addAllIterable(arcIntervals);
     }
-    
-    
+
+    private void collectArcCosts(int node, DoubleList arcCosts) {
+        this.arcCosts.getIfAbsentPut(node, DoubleLists.mutable::empty).addAll(arcCosts);
+    }
+
     ///////////////////////////// MEAUSURES ////////////////////////////////////////
     
     public double getNodeWeight(String nodeName, MeasureType type, MeasureAggregation aggregation, MeasureRelation measureRelation) {
@@ -355,36 +410,50 @@ public class AttributeLogGraph extends WeightedAttributeGraph {
     private IntDoubleMap getNodeWeightMap(MeasureType type, MeasureAggregation aggregation) {
         if (type == MeasureType.FREQUENCY) {
             switch (aggregation) {
-            case TOTAL:
-                return nodeTotalFreqs;
-            case CASES:
-                return nodeCaseFreqs;
-            case MEAN:
-                return nodeMeanFreqs;
-            case MIN:
-                return nodeMinFreqs;
-            case MAX:
-                return nodeMaxFreqs;
-            case MEDIAN:
-                return nodeMedianFreqs;
-            default:
-                return nodeTotalFreqs;
+                case TOTAL:
+                    return nodeTotalFreqs;
+                case CASES:
+                    return nodeCaseFreqs;
+                case MEAN:
+                    return nodeMeanFreqs;
+                case MIN:
+                    return nodeMinFreqs;
+                case MAX:
+                    return nodeMaxFreqs;
+                case MEDIAN:
+                    return nodeMedianFreqs;
+                default:
+                    return nodeTotalFreqs;
             }
-        }
-        else {
+        } else if (type == MeasureType.DURATION) {
             switch (aggregation) {
-            case TOTAL:
-                return nodeTotalDurs;
-            case MEAN:
-                return nodeMeanDurs;
-            case MIN:
-                return nodeMinDurs;
-            case MAX:
-                return nodeMaxDurs;
-            case MEDIAN:
-                return nodeMedianDurs;
-            default:
-                return nodeTotalDurs;
+                case TOTAL:
+                    return nodeTotalDurs;
+                case MEAN:
+                    return nodeMeanDurs;
+                case MIN:
+                    return nodeMinDurs;
+                case MAX:
+                    return nodeMaxDurs;
+                case MEDIAN:
+                    return nodeMedianDurs;
+                default:
+                    return nodeTotalDurs;
+            }
+        } else { // COST
+            switch (aggregation) {
+                case TOTAL:
+                    return nodeTotalCosts;
+                case MEAN:
+                    return nodeMeanCosts;
+                case MIN:
+                    return nodeMinCosts;
+                case MAX:
+                    return nodeMaxCosts;
+                case MEDIAN:
+                    return nodeMedianCosts;
+                default:
+                    return nodeTotalCosts;
             }
         }
     }
@@ -407,21 +476,36 @@ public class AttributeLogGraph extends WeightedAttributeGraph {
             default:
                 return arcTotalFreqs;
             }
+        } else if (type == MeasureType.DURATION) {
+            switch (aggregation) {
+                case TOTAL:
+                    return arcTotalDurs;
+                case MEAN:
+                    return arcMeanDurs;
+                case MIN:
+                    return arcMinDurs;
+                case MAX:
+                    return arcMaxDurs;
+                case MEDIAN:
+                    return arcMedianDurs;
+                default:
+                    return arcTotalDurs;
+            }
         }
         else {
             switch (aggregation) {
             case TOTAL:
-                return arcTotalDurs;
+                return arcTotalCosts;
             case MEAN:
-                return arcMeanDurs;
+                return arcMeanCosts;
             case MIN:
-                return arcMinDurs;
+                return arcMinCosts;
             case MAX:
-                return arcMaxDurs;
+                return arcMaxCosts;
             case MEDIAN:
-                return arcMedianDurs;
+                return arcMedianCosts;
             default:
-                return arcTotalDurs;
+                return arcTotalCosts;
             }
         }
     }
@@ -446,8 +530,22 @@ public class AttributeLogGraph extends WeightedAttributeGraph {
             default:
                 return 1;
             }
-        }
-        else {
+        } else if (type == MeasureType.DURATION) {
+            switch (aggregation) {
+                case TOTAL:
+                    return 1;
+                case MEAN:
+                    return 1;
+                case MIN:
+                    return 1;
+                case MAX:
+                    return 1;
+                case MEDIAN:
+                    return 1;
+                default:
+                    return 1;
+            }
+        } else {
             switch (aggregation) {
             case TOTAL:
                 return 1;

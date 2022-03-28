@@ -5,9 +5,9 @@ var absoluteBasePath = path.resolve(__dirname);
 /* global process */
 
 // configures browsers to run test against
-// any of [ 'ChromeHeadless', 'Chrome', 'Firefox', 'IE', 'PhantomJS' ]
+// any of [ 'ChromeHeadless', 'Chrome', 'Firefox', 'IE' ]
 var browsers =
-  (process.env.TEST_BROWSERS || 'PhantomJS')
+  (process.env.TEST_BROWSERS || 'ChromeHeadless')
     .replace(/^\s+|\s+$/, '')
     .split(/\s*,\s*/g)
     .map(function(browser) {
@@ -35,6 +35,7 @@ module.exports = function(karma) {
     files: [
       'node_modules/jquery/dist/jquery.js',
       'node_modules/promise-polyfill/dist/polyfill.js',
+      'node_modules/babel-polyfill/dist/polyfill.js',
       'test/suite.js'
     ],
 

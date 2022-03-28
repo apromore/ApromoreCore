@@ -5,6 +5,7 @@ description = 'Apromore Portal'
 dependencies {
 	
 	implementation project(':Apromore-Core-Components:Apromore-Manager')
+	implementation project(':Apromore-Core-Components:Apromore-Storage')
 	implementation project(':Apromore-Commons')
 	implementation project(':Apromore-Clients:manager-client')
 	implementation project(':Apromore-Plugins:plugin-core:editor:api')
@@ -12,6 +13,7 @@ dependencies {
 	implementation project(':Apromore-Extras:OpenXES')
 	implementation project(':Apromore-Plugins:plugin-templates:portal-custom-gui')
 	implementation project(':Apromore-Zk')
+	implementation project(':Apromore-Calendar')
 
 	
 	compileOnly 'javax.servlet:javax.servlet-api'

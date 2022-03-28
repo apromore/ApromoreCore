@@ -1,4 +1,4 @@
-/**
+/*-
  * #%L
  * This file is part of "Apromore Core".
  * %%
@@ -8,17 +8,18 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * <p>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * <p>
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+
 package org.apromore.calendar.model;
 
 import java.time.Duration;
@@ -36,7 +37,8 @@ import java.util.List;
  * @author Bruce Nguyen
  */
 public class AbsoluteCalendarModel extends CalendarModel {
-    protected AbsoluteCalendarModel() {};
+    protected AbsoluteCalendarModel() {
+    }
 
     public DurationModel getDuration(ZonedDateTime starDateTime, ZonedDateTime endDateTime) {
         return getDuration(starDateTime.toInstant().toEpochMilli(), endDateTime.toInstant().toEpochMilli());
@@ -48,8 +50,8 @@ public class AbsoluteCalendarModel extends CalendarModel {
 
     public DurationModel getDuration(Long starDateTimeUnixTs, Long endDateTimeunixTs) {
         DurationModel durationModel = new DurationModel();
-        durationModel.setDuration(Duration.ofMillis(endDateTimeunixTs > starDateTimeUnixTs ?
-                                        (endDateTimeunixTs - starDateTimeUnixTs) : 0 ));
+        durationModel.setDuration(Duration.ofMillis(endDateTimeunixTs > starDateTimeUnixTs
+            ? (endDateTimeunixTs - starDateTimeUnixTs) : 0));
         return durationModel;
     }
 

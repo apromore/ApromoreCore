@@ -58,7 +58,7 @@ ProcessSimulationHelper.getStatsOptions = function(bpmnFactory, elementRegistry)
 
 function createProcessSimulationInfo(root, bpmnFactory) {
   var todayDate = new Date();
-  todayDate.setUTCHours(9, 0, 0, 0);
+  todayDate.setHours(9, 0, 0, 0);
 
   var processSimulationInfo = elementHelper.createElement('qbp:ProcessSimulationInfo',
     {

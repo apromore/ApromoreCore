@@ -853,3 +853,15 @@ img[src="img/icon/bpmn-22x22.png"] {
      opacity: 0.4;
      filter: alpha(opacity=40);
 }
+.z-menu-image {
+    filter: var(--ap-filter-ico-normal-dark);
+}
+.inner-submenu .z-menuitem-image{
+    filter:none;
+}
+.ap-tree-leaf-node > .z-treecell > .z-treecell-content > .z-tree-icon > .z-icon-caret-right:before {
+    content: "" !important;
+}
+.ap-tree-leaf-node > .z-treecell > .z-treecell-content >  .z-tree-icon > .z-icon-caret-down:before {
+	content: "" !important;
+}

@@ -37,7 +37,6 @@ import org.apromore.dao.model.User;
 import org.apromore.manager.client.ManagerService;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.common.i18n.I18nSession;
-import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.dialogController.UserAuthenticationHelper;
 import org.apromore.portal.dialogController.dto.ApromoreSession;
 import org.apromore.portal.model.UserType;
@@ -53,12 +52,13 @@ import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventQueues;
+import org.zkoss.zkplus.spring.SpringUtil;
 
 /**
  * Static methods for typed access to user session attributes.
  *
  * These methods are a type-safe way to manipulate the ZK
- * {@link org.zkoss.zk.ui.Session).
+ * {@link Session).
  */
 public abstract class UserSessionManager {
 
@@ -108,6 +108,12 @@ public abstract class UserSessionManager {
 
     public static UserType getCurrentUser() {
 	Object attribute = getAttribute(USER);
+
+	if (attribute == null) {
+		ManagerService managerService = (ManagerService) SpringUtil.getBean("managerClient");
+		initializeUser(managerService, null, null, null);
+		attribute = getAttribute(USER);
+	}
 
 	return attribute instanceof UserType ? (UserType) attribute : null;
     }
@@ -266,18 +272,6 @@ public abstract class UserSessionManager {
      * 
      * return null; }
      */
-
-    public static void setMainController(MainController mainController) {
-	setAttribute(MAIN_CONTROLLER, mainController);
-    }
-
-    public static MainController getMainController() {
-	if (getAttribute(MAIN_CONTROLLER) != null) {
-	    return (MainController) getAttribute(MAIN_CONTROLLER);
-	}
-
-	return null;
-    }
 
     public static void setCurrentSecurityItem(Integer id) {
 	setAttribute(CURRENT_SECURITY_ITEM, id);

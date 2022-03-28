@@ -1,4 +1,5 @@
 import Color from 'color';
+import { is } from 'bpmn-js/lib/util/ModelUtil';
 
 const palette = [
   '#84c7e3',
@@ -10,6 +11,13 @@ const palette = [
   '#ff80ff'
 ];
 
+const darken = function (colorCode) {
+  const color = Color(colorCode);
+  const start = color.lightness();
+  const lightness = start * 0.8;
+  return color.lightness(lightness).hex();
+};
+
 const lighten = function (colorCode) {
   const color = Color(colorCode);
   const start = color.lightness();
@@ -19,10 +27,16 @@ const lighten = function (colorCode) {
 
 const colors = palette.map(
   (color) => (
-    { stroke: 'black', fill: lighten(color) }
+      {
+          stroke: 'black',
+          fill: lighten(color),
+          key: color.toLowerCase()
+      }
   )
 );
-const colorMap = colors.reduce((acc, color) => { acc[color.stroke.toLowerCase()] = color; return acc; }, {});
+const colorMap = colors.reduce((acc, color) => { acc[color.key.toLowerCase()] = color; return acc; }, {});
+
+let drawOverride = false;
 
 export default class ColorContextPad {
   constructor(config, modeling, contextPad, canvas, translate) {
@@ -36,6 +50,10 @@ export default class ColorContextPad {
 
   getContextPadEntries(element) {
     const { _canvas, _contextPad, _colorPalette, _modeling } = this;
+
+    if (is(element, 'bpmn:TextAnnotation')) {
+      return;
+    }
 
     function launchPalette(event, element) {
       let el = $j(`.ap-editor-set-color`)
@@ -53,12 +71,24 @@ export default class ColorContextPad {
           let colorCode = newColor.toHexString();
           let color;
           if (colorMap[colorCode]) {
-            color = colorMap[colorCode]
+            color = {
+              stroke: 'black',
+              fill: colorMap[colorCode].fill
+            }
           } else {
             color = {
               stroke: 'black',
               fill: lighten(colorCode)
             }
+          }
+          if (
+            is(element, 'bpmn:SequenceFlow') ||
+            is(element, 'bpmn:Association') ||
+            is(element, 'bpmn:DataInputAssociation') ||
+            is(element, 'bpmn:DataOutputAssociation') ||
+            is(element, 'bpmn:MessageFlow')
+          ) {
+            color.stroke = darken(colorCode);
           }
           _modeling.setColor(element, color);
           el.spectrum('hide');
@@ -66,7 +96,7 @@ export default class ColorContextPad {
       });
       setTimeout(function () {
         el.spectrum('show');
-      }, 300);
+      }, 500);
     }
 
     return {
