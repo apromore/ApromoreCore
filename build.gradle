@@ -15,13 +15,14 @@ buildscript {
 }
 
 plugins {
-  id "org.sonarqube" version "3.3"
+  id 'base'
+  id "org.sonarqube" version "${sonarQubeVersion}"
+  id "com.gorylenko.gradle-git-properties" version "${gitPorpertiesVersion}"
 }
 
 group = 'org.apromore'
 version = '0.0.1-SNAPSHOT'
 
-apply plugin: "com.gorylenko.gradle-git-properties"
 subprojects {
   apply plugin: "org.springframework.boot"
   apply plugin: "io.spring.dependency-management"
@@ -163,11 +164,24 @@ sonarqube {
   }
 }
 
+clean {
+  delete "${project.buildDir}"
+}
+
 task jacocoGenerateRootReport(type: JacocoReport, group: 'Test Reporting') {
   description = 'Generates aggregate report from all subprojects.'
 
-  def includeFilter = ['**/build/classes/java/**/*.class']
-  def excludeFilter = ['**/*.zul'] // classes which have duplicated names to overcome ` Can't add different class with same name issue` See https://github.com/jacoco/jacoco/issues/858
+  def excludeFilter = [
+          '**/similaritysearch/common/stemmer/ext/*',
+          '**/org/apromore/jgraph/*',
+          '**/org/deckfour/xes/*',
+          '**/com/processconfiguration/*',
+          '**/de/*',
+          '**/org/oryxeditor/*',
+          '**/servlet/*',
+          '**/config/*',
+          '**/*.zul']
+  def includeFilter = ['**/build/classes/java/main/**/*.class']
   def classTree = fileTree(dir: "${rootProject.projectDir}", includes: includeFilter, excludes: excludeFilter)
   def sourceTree = fileTree(dir: "${rootProject.projectDir}", includes: ['**/src/main/java/**/*.*'])
   def executionTree = fileTree(dir: "${rootProject.projectDir}", includes: ['**/build/jacoco/*.exec'])
