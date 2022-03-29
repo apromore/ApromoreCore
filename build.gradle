@@ -138,7 +138,7 @@ subprojects {
     skipExistingHeaders = true
     includes(["**/*.java", "**/*.xml", "**/*.zul", "**/*.css", "**/*.html"])
     excludes(["**/*.properties", "**/*.zul", "**/package-info.java"])
-    ext.year = '2018 - 2021'
+    ext.year = '2018 - 2022'
     ext.company = 'Apromore Pty Ltd'
     ext.module = 'Apromore Core'
   }
