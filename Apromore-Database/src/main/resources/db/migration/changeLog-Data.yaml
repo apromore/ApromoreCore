@@ -2077,3 +2077,41 @@ databaseChangeLog:
                     value: "Edit roles"
              tableName: permission
              where: id = 4
+  - changeSet:
+      id: 20220328105600
+      author: janeh
+      comment: "add rest api permission"
+      changes:
+        - insert:
+            tableName: permission
+            columns:
+              - column:
+                  name: id
+                  value: "26"
+              - column:
+                  name: row_guid
+                  value: "0decac8d-b9a2-4424-8174-aace22ba4f39"
+              - column:
+                  name: permission_name
+                  value: "Access rest apis"
+              - column:
+                  name: permission_description
+                  value: "Access to all rest apis"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "1"
+              - column:
+                  name: permissionid
+                  value: "26"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "9"
+              - column:
+                  name: permissionid
+                  value: "26"
