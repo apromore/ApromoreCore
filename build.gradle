@@ -141,6 +141,21 @@ subprojects {
     ext.year = '2018 - 2022'
     ext.company = 'Apromore Pty Ltd'
     ext.module = 'Apromore Core'
+    headerDefinitions {
+      custom_style {
+        firstLine = "/*-"
+        endLine   = " */EOL"
+        beforeEachLine = " * "
+        firstLineDetectionPattern = "(\\s|\\t)*/\\*.*\$"
+        lastLineDetectionPattern  = ".*\\*/(\\s|\\t)*\$"
+        allowBlankLines = false
+        skipLinePattern = "//"
+        isMultiline = true
+      }
+    }
+    mapping {
+      java='custom_style'
+    }
   }
   licenseMain.dependsOn licenseFormat
 }
