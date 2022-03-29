@@ -162,11 +162,7 @@ public abstract class BaseListboxController extends BaseController {
     attachEvents();
 
     appendChild(listBox);
-    if (LIST_VIEW.equals(getPersistedView())) {
-      setTileView(false);
-    } else {
-      setTileView(true);
-    }
+    setTileView(TILE_VIEW.equals(getPersistedView()));
 
     try {
       currentUser = mainController.getSecurityService()
@@ -283,15 +279,7 @@ public abstract class BaseListboxController extends BaseController {
     this.btnAddFolder.addEventListener(ON_CLICK, (Event event) -> addFolder());
     this.btnRenameFolder.addEventListener(ON_CLICK, (Event event) -> rename());
     this.btnRemoveFolder.addEventListener(ON_CLICK, (Event event) -> removeFolder());
-
-    this.btnView.addEventListener(ON_CLICK, (Event event) -> {
-      if (LIST_VIEW.equals(getPersistedView())) {
-        setTileView(true);
-      } else {
-        setTileView(false);
-      }
-    });
-
+    this.btnView.addEventListener(ON_CLICK, (Event event) -> setTileView(LIST_VIEW.equals(getPersistedView())));
     this.btnSecurity.addEventListener(ON_CLICK, (Event event) -> security());
     this.btnSecurity.setVisible(portalContext.getCurrentUser().hasAnyPermission(PermissionType.ACCESS_RIGHTS_MANAGE));
 
@@ -307,12 +295,7 @@ public abstract class BaseListboxController extends BaseController {
       this.btnUserMgmt.setVisible(false);
     }
 
-    this.btnShare.addEventListener(ON_CLICK, new EventListener<Event>() {
-      @Override
-      public void onEvent(Event event) throws Exception {
-        share();
-      }
-    });
+    this.btnShare.addEventListener(ON_CLICK, (Event event) -> share());
 
     boolean calendarPermission = portalContext.getCurrentUser()
             .hasAnyPermission(PermissionType.CALENDAR);
