@@ -1,4 +1,4 @@
-/**
+/*-
  * #%L
  * This file is part of "Apromore Core".
  * %%
