@@ -58,7 +58,7 @@ public class ArtifactsComparator implements Comparator<Object> {
                     factor;
             case "BY_UPDATE_DATE":
                 return compareDateString(getUpdateDateFromObject(object1), getUpdateDateFromObject(object2)) *
-                    -factor;
+                    factor;
             case "BY_TYPE": // same as name sorting but always ascending order. Its related logic is kept into another place
                 return AlphaNumericComparator.compareTo(getNameFromObject(object1), getNameFromObject(object2));
             case "BY_OWNER":
@@ -156,6 +156,8 @@ public class ArtifactsComparator implements Comparator<Object> {
         if (date1 == null || date2 == null) {
             return 0;
         } else {
+            int loc = DateTimeUtils.parse(date1).compareTo(DateTimeUtils.parse(date2));
+
             return DateTimeUtils.parse(date1).compareTo(DateTimeUtils.parse(date2));
         }
     }
