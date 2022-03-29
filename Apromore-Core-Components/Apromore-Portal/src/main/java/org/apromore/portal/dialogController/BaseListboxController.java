@@ -89,8 +89,6 @@ public abstract class BaseListboxController extends BaseController {
   public static final String APROMORE = "Apromore";
   public static final String ON_CLICK = "onClick";
   public static final String AP_TILES_VIEW = "ap-tiles-view";
-  public static final String AP_BTN_OFF = "ap-btn-off";
-  public static final String AP_BTN_ON = "ap-btn-on";
   public static final String PORTAL_WARNING_TEXT = "portal_warning_text";
 
   private final Listbox listBox;
@@ -111,8 +109,7 @@ public abstract class BaseListboxController extends BaseController {
   private final Button btnAddFolder;
   private final Button btnRenameFolder;
   private final Button btnRemoveFolder;
-  private final Button btnListView;
-  private final Button btnTileView;
+  private final Button btnView;
   private final Button btnSecurity;
   private final Button btnUserMgmt;
   private final Button btnShare;
@@ -154,8 +151,7 @@ public abstract class BaseListboxController extends BaseController {
     btnAddFolder = (Button) mainController.getFellow("btnAddFolder");
     btnRenameFolder = (Button) mainController.getFellow("btnRenameFolder");
     btnRemoveFolder = (Button) mainController.getFellow("btnRemoveFolder");
-    btnListView = (Button) mainController.getFellow("btnListView");
-    btnTileView = (Button) mainController.getFellow("btnTileView");
+    btnView = (Button) mainController.getFellow("btnView");
     btnSecurity = (Button) mainController.getFellow("btnSecurity");
     btnUserMgmt = (Button) mainController.getFellow("btnUserMgmt");
     btnShare = (Button) mainController.getFellow("btnShare");
@@ -260,26 +256,9 @@ public abstract class BaseListboxController extends BaseController {
       }
     });
 
-    this.refreshB.addEventListener(ON_CLICK, new EventListener<Event>() {
-      @Override
-      public void onEvent(Event event) throws Exception {
-        refreshContent();
-      }
-    });
-
-    this.btnUpload.addEventListener(ON_CLICK, new EventListener<Event>() {
-      @Override
-      public void onEvent(Event event) throws Exception {
-        importFile();
-      }
-    });
-
-    this.btnDownload.addEventListener(ON_CLICK, new EventListener<Event>() {
-      @Override
-      public void onEvent(Event event) throws Exception {
-        exportFile();
-      }
-    });
+    this.refreshB.addEventListener(ON_CLICK, (Event event) -> refreshContent());
+    this.btnUpload.addEventListener(ON_CLICK, (Event event) -> importFile());
+    this.btnDownload.addEventListener(ON_CLICK, (Event event) -> exportFile());
 
     if (portalPluginMap.containsKey(PluginCatalog.PLUGIN_ETL)) {
       boolean createPipelinePermission = portalContext.getCurrentUser()
@@ -292,98 +271,28 @@ public abstract class BaseListboxController extends BaseController {
       btnCreateDataPipeline.setVisible(mainController.getConfig().isEnableEtl() && createPipelinePermission);
       btnManageDataPipelines.setVisible(mainController.getConfig().isEnableEtl() && managePipelinesPermission);
 
-      this.btnCreateDataPipeline.addEventListener(ON_CLICK, new EventListener<Event>() {
-        @Override
-        public void onEvent(Event event) throws Exception {
-          openETL();
-        }
-      });
-
-      this.btnManageDataPipelines.addEventListener(ON_CLICK, new EventListener<Event>() {
-        @Override
-        public void onEvent(Event event) throws Exception {
-          openPipelineManager();
-        }
-      });
+      this.btnCreateDataPipeline.addEventListener(ON_CLICK, (Event event) -> openETL());
+      this.btnManageDataPipelines.addEventListener(ON_CLICK, (Event event) -> openPipelineManager());
     }
 
-    this.btnSelectAll.addEventListener(ON_CLICK, new EventListener<Event>() {
-      @Override
-      public void onEvent(Event event) throws Exception {
-        selectAll();
-      }
-    });
+    this.btnSelectAll.addEventListener(ON_CLICK, (Event event) -> selectAll());
+    this.btnSelectNone.addEventListener(ON_CLICK, (Event event) -> unselectAll());
+    this.btnCut.addEventListener(ON_CLICK, (Event event) -> cut());
+    this.btnCopy.addEventListener(ON_CLICK, (Event event) -> copy());
+    this.btnPaste.addEventListener(ON_CLICK, (Event event) -> paste());
+    this.btnAddFolder.addEventListener(ON_CLICK, (Event event) -> addFolder());
+    this.btnRenameFolder.addEventListener(ON_CLICK, (Event event) -> rename());
+    this.btnRemoveFolder.addEventListener(ON_CLICK, (Event event) -> removeFolder());
 
-    this.btnSelectNone.addEventListener(ON_CLICK, new EventListener<Event>() {
-      @Override
-      public void onEvent(Event event) throws Exception {
-        unselectAll();
-      }
-    });
-
-    this.btnCut.addEventListener(ON_CLICK, new EventListener<Event>() {
-      @Override
-      public void onEvent(Event event) throws Exception {
-        cut();
-      }
-    });
-
-    this.btnCopy.addEventListener(ON_CLICK, new EventListener<Event>() {
-      @Override
-      public void onEvent(Event event) throws Exception {
-        copy();
-      }
-    });
-
-    this.btnPaste.addEventListener(ON_CLICK, new EventListener<Event>() {
-      @Override
-      public void onEvent(Event event) throws Exception {
-        paste();
-      }
-    });
-
-    this.btnAddFolder.addEventListener(ON_CLICK, new EventListener<Event>() {
-      @Override
-      public void onEvent(Event event) throws Exception {
-        addFolder();
-      }
-    });
-
-    this.btnRenameFolder.addEventListener(ON_CLICK, new EventListener<Event>() {
-      @Override
-      public void onEvent(Event event) throws Exception {
-        rename();
-      }
-    });
-
-    this.btnRemoveFolder.addEventListener(ON_CLICK, new EventListener<Event>() {
-      @Override
-      public void onEvent(Event event) throws Exception {
-        removeFolder();
-      }
-    });
-
-    this.btnListView.addEventListener(ON_CLICK, new EventListener<Event>() {
-      @Override
-      public void onEvent(Event event) throws Exception {
+    this.btnView.addEventListener(ON_CLICK, (Event event) -> {
+      if (LIST_VIEW.equals(getPersistedView())) {
+        setTileView(true);
+      } else {
         setTileView(false);
       }
     });
 
-    this.btnTileView.addEventListener(ON_CLICK, new EventListener<Event>() {
-      @Override
-      public void onEvent(Event event) throws Exception {
-        setTileView(true);
-      }
-    });
-
-    this.btnSecurity.addEventListener(ON_CLICK, new EventListener<Event>() {
-      @Override
-      public void onEvent(Event event) throws Exception {
-        security();
-      }
-    });
-
+    this.btnSecurity.addEventListener(ON_CLICK, (Event event) -> security());
     this.btnSecurity.setVisible(portalContext.getCurrentUser().hasAnyPermission(PermissionType.ACCESS_RIGHTS_MANAGE));
 
     if (portalContext.getCurrentUser().hasAnyPermission(PermissionType.USERS_EDIT)) {
@@ -458,9 +367,9 @@ public abstract class BaseListboxController extends BaseController {
       if (listHead != null) {
         listHead.setVisible(false);
       }
-      toggleComponentSclass(btnTileView, true, AP_BTN_OFF, AP_BTN_ON);
-      toggleComponentSclass(btnListView, false, AP_BTN_OFF, AP_BTN_ON);
+      toggleComponentSclass(btnView, true, "ap-icon-tiles", "ap-icon-list");
       setPersistedView(TILE_VIEW);
+      btnView.setTooltiptext(Labels.getLabel("portal_viewList_hint"));
     } else {
       if (sclass.contains(AP_TILES_VIEW)) {
         this.listBox.setSclass(sclass.replace(AP_TILES_VIEW, ""));
@@ -468,9 +377,9 @@ public abstract class BaseListboxController extends BaseController {
       if (listHead != null) {
         listHead.setVisible(true);
       }
-      toggleComponentSclass(btnListView, true, AP_BTN_OFF, AP_BTN_ON);
-      toggleComponentSclass(btnTileView, false, AP_BTN_OFF, AP_BTN_ON);
+      toggleComponentSclass(btnView, false, "ap-icon-tiles", "ap-icon-list");
       setPersistedView(LIST_VIEW);
+      btnView.setTooltiptext(Labels.getLabel("portal_viewTile_hint"));
     }
   }
 

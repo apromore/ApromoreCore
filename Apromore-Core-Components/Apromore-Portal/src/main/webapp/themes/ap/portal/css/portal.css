@@ -222,7 +222,7 @@
 .ap-container-search .z-combobox {
   display: inline-block;
   margin: 0 !important;
-  height: 20px;
+  height: 21px;
   vertical-align: top;
   line-height: 18px;
 }
@@ -234,7 +234,7 @@
   justify-content: flex-end;
   flex-direction: row;
    */
-  background-color: white;
+  background-color: transparent;
   border-radius: 3px;
   margin-top: 1px;
 }
@@ -258,6 +258,10 @@
   border-radius: 3px 0 0 3px;
 }
 
+.ap-container-search .ap-search-combo table {
+  border-radius: 3px;
+}
+
 .ap-container-search .ap-search-combo .ap-search-part-clear {
   position: relative;
   top: 0;
@@ -269,16 +273,17 @@
 }
 
 .ap-container-search .z-combobox-input {
-  height: 20px;
+  height: 21px;
   color: grey !important;
   font-family: var(--ap-font-base);
   font-size: 14px !important;
   padding-right: 40px;
+  border-radius: 0 4px 4px 0!important;
 }
 
 .ap-container-search .z-combobox-button {
-  height: 20px;
-  min-height:20px;
+  height: 21px;
+  min-height:21px;
   padding: 0 2px !important;
 }
 
@@ -834,7 +839,7 @@ img[src="img/icon/bpmn-22x22.png"] {
 .ap-lang-chooser-icon {
     position: fixed;
     top: 36px;
-    right: 160px;
+    right: 267px;
 }
 
 .ap-portal .z-button.ap-icon {
