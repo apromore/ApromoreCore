@@ -156,8 +156,6 @@ public class ArtifactsComparator implements Comparator<Object> {
         if (date1 == null || date2 == null) {
             return 0;
         } else {
-            int loc = DateTimeUtils.parse(date1).compareTo(DateTimeUtils.parse(date2));
-
             return DateTimeUtils.parse(date1).compareTo(DateTimeUtils.parse(date2));
         }
     }
