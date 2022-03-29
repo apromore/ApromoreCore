@@ -657,6 +657,11 @@
     width: 26px !important;
 }
 
+.ap-icon-sort-down {
+    background-image: url('sort-down.svg') !important;
+    width: 27.953125px !important;
+}
+
 .ap-icon-speed {
     background-image: url('speed.svg') !important;
     width: 28.5px !important;
