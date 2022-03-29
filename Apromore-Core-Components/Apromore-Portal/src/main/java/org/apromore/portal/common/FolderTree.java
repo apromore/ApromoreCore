@@ -96,6 +96,9 @@ public class FolderTree {
 
     Collections.sort(folders, new FolderTypeComparator());
 
+    if(folderId == 0 && folders.isEmpty()){
+      node.setOpen(false);
+    }
     for (FolderType folder : folders) {
 
       if (!set.contains(folder.getId())) {
