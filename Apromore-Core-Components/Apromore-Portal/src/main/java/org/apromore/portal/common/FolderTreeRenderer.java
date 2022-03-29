@@ -89,7 +89,8 @@ public class FolderTreeRenderer implements TreeitemRenderer {
     // Open all super-folders of the current folder
     treeItem.setOpen(folder.getId() == 0
         || folderContainsSubfolder(folder, mainC.getPortalSession().getCurrentFolder()));
-    if (folder.getFolders().isEmpty()) {
+
+    if ((folder.getFolders().isEmpty() && folder.getId() != 0) || (folder.getId() == 0 && !ctn.isOpen())) {
       dataRow.addSclass("ap-tree-leaf-node");
     }
 
