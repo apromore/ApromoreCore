@@ -25,6 +25,7 @@ import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.types.FilterType;
 import org.apromore.apmlog.filter.validation.typevalidation.AttributeValidator;
+import org.apromore.apmlog.filter.validation.typevalidation.BetweenValidator;
 import org.apromore.apmlog.filter.validation.typevalidation.CaseIdValidator;
 import org.apromore.apmlog.filter.validation.typevalidation.CaseLengthValidator;
 import org.apromore.apmlog.filter.validation.typevalidation.CaseVariantValidator;
