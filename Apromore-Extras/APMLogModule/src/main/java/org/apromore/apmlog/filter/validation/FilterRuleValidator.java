@@ -96,7 +96,10 @@ public class FilterRuleValidator {
                     validatedFilterRuleList.add(ReworkValidator.validate(rule, apmLog));
                     break;
                 case BETWEEN:
-                    validatedFilterRuleList.add(BetweenValidator.validate(rule, apmLog));
+                    ValidatedFilterRule vfr = BetweenValidator.validate(rule, apmLog);
+                    if (vfr != null) {
+                        validatedFilterRuleList.add(vfr);
+                    }
                     break;
                 default:
                     validatedFilterRuleList.add(new ValidatedFilterRule(rule, rule, true, false));
