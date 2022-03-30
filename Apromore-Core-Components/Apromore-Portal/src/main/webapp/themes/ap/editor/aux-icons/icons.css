@@ -27,6 +27,47 @@
   font-display: block;
 }
 
+.icon-item .icon-name {
+    position: relative;
+}
+
+.icon-item [class^="ap-icon-"],
+.icon-item [class*=" ap-icon-"],
+.aux-icon-item [class^="ap-icon-"],
+.aux-icon-item [class*=" ap-icon-"],
+#ap-bpmn-icon-set-picker [class^="ap-icon-"],
+#ap-bpmn-icon-set-picker [class*=" ap-icon-"] {
+    box-sizing: border-box !important;
+    border: none !important;
+    background-size: auto 14px !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-origin: padding-box !important;
+    background: transparent;
+    padding: 0 !important;
+    margin: 0 0 0 0 !important;
+    filter: var(--ap-filter-ico-normal-dark);
+    height: 22px !important;
+    width: 22px !important;
+    display: inline-block;
+}
+
+.icon-item [class^="ap-icon-"],
+.icon-item [class*=" ap-icon-"],
+#ap-bpmn-icon-set-picker [class^="ap-icon-"],
+#ap-bpmn-icon-set-picker [class*=" ap-icon-"] {
+    position: absolute;
+    left: calc(50% - 11px);
+    top: calc(50% - 11px);
+}
+
+.aux-icon-item [class^="ap-icon-"],
+.aux-icon-item [class*=" ap-icon-"] {
+    background-size: auto 20px !important;
+    width: 22px !important;
+}
+
+
 [class^="ap-bpmn-icon-"], [class*=" ap-bpmn-icon-"] {
   /* use !important to prevent issues with browser extensions that change fonts */
   font-family: 'icomoon-bpmn-editor' !important;

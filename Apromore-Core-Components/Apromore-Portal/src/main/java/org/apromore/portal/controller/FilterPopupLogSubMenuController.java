@@ -78,7 +78,7 @@ public class FilterPopupLogSubMenuController extends PopupLogSubMenuController {
     private void addNewFilterMenuItem(Menupopup popup) {
         Menuitem item = new Menuitem();
         item.setLabel(Labels.getLabel("plugin_new_filter_text"));
-        item.setImage("~./themes/ap/common/img/icons/create_filter.svg");
+        item.setImage("~./themes/ap/common/img/icons/add-filter.svg");
         item.addEventListener(ON_CLICK, event -> {
             try {
                 Map<String, Object> attrMap = new HashMap<>();

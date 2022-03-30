@@ -114,7 +114,7 @@ export default function Aux(eventBus, bpmnFactory, elementRegistry, overlays, bp
           iconCount++;
           let $item = $('<div class="aux-icon-item"></div>');
           iconName = iconName || ''
-          $item.append($('<i class="aux-icon ' + iconName + '" />'));
+          $item.append($(`<i class="aux-icon"><span class="${iconName}" /></i>`));
           if (iconUrl) {
             $item.append($(`<div class="aux-icon-link"><a target="_blank" title="${iconText}" href="${iconUrl}">${iconText}</a></div>`));
           } else if (iconText) {
