@@ -18,13 +18,19 @@
 
 package org.apromore.dao.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -49,6 +55,12 @@ public class PredictorDao {
     @Column(name = "ppm_status")
     @Enumerated(EnumType.STRING)
     private PpmStatus ppmStatus;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "prediction_predictor",
+        joinColumns = @JoinColumn(name = "predictor_id", referencedColumnName = "id"),
+        inverseJoinColumns = @JoinColumn(name = "prediction_id", referencedColumnName = "id"))
+    private List<PredictionDao> predictions = new ArrayList<>();
 
     public PredictorDao(int logId, String name, PredictionType predictionType, String targetAttribute,
                         PpmStatus ppmStatus) {
