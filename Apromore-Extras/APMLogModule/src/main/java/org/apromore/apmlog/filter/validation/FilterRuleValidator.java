@@ -25,6 +25,7 @@ import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.types.FilterType;
 import org.apromore.apmlog.filter.validation.typevalidation.AttributeValidator;
+import org.apromore.apmlog.filter.validation.typevalidation.BetweenValidator;
 import org.apromore.apmlog.filter.validation.typevalidation.CaseIdValidator;
 import org.apromore.apmlog.filter.validation.typevalidation.CaseLengthValidator;
 import org.apromore.apmlog.filter.validation.typevalidation.CaseVariantValidator;
@@ -93,6 +94,9 @@ public class FilterRuleValidator {
                     break;
                 case REWORK_REPETITION:
                     validatedFilterRuleList.add(ReworkValidator.validate(rule, apmLog));
+                    break;
+                case BETWEEN:
+                    validatedFilterRuleList.add(BetweenValidator.validate(rule, apmLog));
                     break;
                 default:
                     validatedFilterRuleList.add(new ValidatedFilterRule(rule, rule, true, false));
