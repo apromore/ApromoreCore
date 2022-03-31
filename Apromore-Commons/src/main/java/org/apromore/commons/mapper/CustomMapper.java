@@ -21,15 +21,13 @@
  */
 package org.apromore.commons.mapper;
 
-import java.util.List;
-
-import org.apromore.commons.mapper.converter.DurationConvertor;
-import org.apromore.commons.mapper.converter.StringToLocalDate;
-import org.apromore.commons.mapper.converter.StringToOffsetDateTime;
-import org.apromore.commons.mapper.converter.StringToOffsetTime;
-
 import com.github.dozermapper.core.DozerBeanMapperBuilder;
 import com.github.dozermapper.core.Mapper;
+import java.util.List;
+import org.apromore.commons.mapper.converter.DurationConvertor;
+import org.apromore.commons.mapper.converter.StringToLocalDate;
+import org.apromore.commons.mapper.converter.StringToLocalTime;
+import org.apromore.commons.mapper.converter.StringToOffsetDateTime;
 
 public class CustomMapper {
 
@@ -49,7 +47,7 @@ public class CustomMapper {
                 .withMappingFiles(mappingFiles)
                 .withCustomConverterWithId("stringToOffsetDateTime", new StringToOffsetDateTime())
                 .withCustomConverterWithId("stringToLocalDate", new StringToLocalDate())
-                .withCustomConverterWithId("stringToOffsetTime", new StringToOffsetTime())
+                .withCustomConverterWithId("stringToLocalTime", new StringToLocalTime())
                 .withCustomConverterWithId("durationToduration", new DurationConvertor())
                 .build();
     }

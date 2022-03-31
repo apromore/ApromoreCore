@@ -56,11 +56,11 @@
    <mapping>
       <class-a>org.apromore.calendar.model.WorkDayModel</class-a>
       <class-b>org.apromore.dao.model.WorkDay</class-b>
-      <field custom-converter-id="stringToOffsetTime">
+      <field custom-converter-id="stringToLocalTime">
          <a>startTime</a>
          <b>startTime</b>
       </field>
-      <field custom-converter-id="stringToOffsetTime">
+      <field custom-converter-id="stringToLocalTime">
          <a>endTime</a>
          <b>endTime</b>
       </field>

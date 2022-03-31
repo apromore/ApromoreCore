@@ -41,6 +41,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apromore.calendar.exception.CalendarNotExistsException;
 import org.apromore.calendar.model.CalendarModel;
+import org.apromore.calendar.builder.Calendars;
 import org.apromore.calendar.model.HolidayModel;
 import org.apromore.calendar.model.WorkDayModel;
 import org.apromore.calendar.service.CalendarService;
@@ -105,8 +106,8 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
     };
 
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(Calendar.class);
-    private static final OffsetTime DEFAULT_START_TIME = OffsetTime.of(LocalTime.of(9, 0), ZoneOffset.UTC);
-    private static final OffsetTime DEFAULT_END_TIME = OffsetTime.of(LocalTime.of(17, 0), ZoneOffset.UTC);
+    private static final LocalTime DEFAULT_START_TIME = LocalTime.of(9, 0);
+    private static final LocalTime DEFAULT_END_TIME = LocalTime.of(17, 0);
 
     @Wire("#actionBridge")
     Div actionBridge;
@@ -184,7 +185,7 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
         isNew = (boolean) Executions.getCurrent().getArg().get("isNew");
         canEdit = (boolean) Executions.getCurrent().getArg().get("canEdit");
         calendarExists = calId != null;
-        calendarModel = !calendarExists ? new CalendarModel() : calendarService.getCalendar(calId);
+        calendarModel = !calendarExists ? Calendars.INSTANCE.empty() : calendarService.getCalendar(calId);
         calendarId = calendarModel.getId();
         localCalendarEventQueue = EventQueues.lookup(CalendarEvents.TOPIC + "LOCAL", EventQueues.DESKTOP, true);
 
@@ -258,11 +259,8 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
                     endMin = 59;
                 }
             }
-            OffsetTime previousStarTime = dowItem.getStartTime();
-            dowItem.setStartTime(
-                OffsetTime.from(OffsetTime.of(LocalTime.of(startHour, startMin), previousStarTime.getOffset())));
-            dowItem.setEndTime(
-                OffsetTime.from(OffsetTime.of(LocalTime.of(endHour, endMin), previousStarTime.getOffset())));
+            dowItem.setStartTime(LocalTime.of(startHour, startMin));
+            dowItem.setEndTime(LocalTime.of(endHour, endMin));
             refresh(dowItem);
             Clients.evalJavaScript("Ap.calendar.buildRow(" + dowIndex + ")");
         });
@@ -595,8 +593,8 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
             WorkDayModel dowItem = new WorkDayModel();
             dowItem.setWorkingDay(true);
             dowItem.setDayOfWeek(dow);
-            dowItem.setStartTime(OffsetTime.from(DEFAULT_START_TIME));
-            dowItem.setEndTime(OffsetTime.from(DEFAULT_END_TIME));
+            dowItem.setStartTime(DEFAULT_START_TIME);
+            dowItem.setEndTime(DEFAULT_END_TIME);
             dayOfWeekListModel.add(dowItem);
         }
     }

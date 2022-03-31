@@ -48,11 +48,14 @@ import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NonNull;
 
 /**
  * Represents one custom calendar.
- *
+ * TODO: zoneId is string while Java has ZoneId class for type safety
  * @author Nolan Tellis:
  *     - Created this module
  * @author Bruce Nguyen:
@@ -61,18 +64,18 @@ import lombok.Data;
 @Data
 public class CalendarModel {
 
-    private Long id = new Random().nextLong();
-    private String name = "CalendarModel";
-    private OffsetDateTime created = OffsetDateTime.now(ZoneOffset.UTC);
-    private OffsetDateTime updated = OffsetDateTime.now(ZoneOffset.UTC);
-    private String createdBy = "";
-    private String updatedBy = "";
-    private String zoneId = ZoneOffset.UTC.getId();
-    private List<WorkDayModel> workDays = new ArrayList<>();
-    private List<HolidayModel> holidays = new ArrayList<>();
-    private Set<LocalDate> holidayDates = new HashSet<>();
+    protected @NonNull Long id = new Random().nextLong();
+    protected @NonNull String name = "CalendarModel";
+    protected @NonNull OffsetDateTime created = OffsetDateTime.now(ZoneOffset.UTC);
+    protected @NonNull OffsetDateTime updated = OffsetDateTime.now(ZoneOffset.UTC);
+    protected String createdBy = "";
+    protected String updatedBy = "";
+    protected @NonNull String zoneId = ZoneOffset.UTC.getId();
+    protected @NonNull List<WorkDayModel> workDays = new ArrayList<>();
+    protected @NonNull List<HolidayModel> holidays = new ArrayList<>();
 
-    public static CalendarModel ABSOLUTE_CALENDAR = new AbsoluteCalendarModel();
+    @Getter(AccessLevel.NONE)
+    private Set<LocalDate> holidayDates = new HashSet<>();
 
     public DurationModel getDuration(OffsetDateTime starDateTime, OffsetDateTime endDateTime) {
         DurationModel durationModel = new DurationModel();
@@ -144,8 +147,12 @@ public class CalendarModel {
     }
 
     public List<WorkDayModel> getOrderedWorkDay() {
-        workDays.sort(Comparator.comparing(WorkDayModel::getDayOfWeek));
-        return workDays;
+        List<WorkDayModel> sortedList = new ArrayList<>(workDays);
+        sortedList.sort(Comparator.comparing(WorkDayModel::getDayOfWeek));
+        return sortedList;
     }
 
+    public ImmutableCalendarModel immutable() {
+        return new ImmutableCalendarModel(this);
+    }
 }

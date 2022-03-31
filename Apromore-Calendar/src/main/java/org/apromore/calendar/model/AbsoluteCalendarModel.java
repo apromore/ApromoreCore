@@ -22,11 +22,11 @@
 
 package org.apromore.calendar.model;
 
+import java.time.DayOfWeek;
 import java.time.Duration;
+import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * This class represents the absolute 24/7 calendar with every moment is included as working time, no holidays.
@@ -36,8 +36,16 @@ import java.util.List;
  *
  * @author Bruce Nguyen
  */
-public class AbsoluteCalendarModel extends CalendarModel {
-    protected AbsoluteCalendarModel() {
+public final class AbsoluteCalendarModel extends CalendarModel {
+    public AbsoluteCalendarModel() {
+        for (DayOfWeek dayOfWeek : DayOfWeek.values()) {
+            WorkDayModel workDayModel = new WorkDayModel();
+            workDayModel.setDayOfWeek(dayOfWeek);
+            workDayModel.setStartTime(LocalTime.MIN);
+            workDayModel.setEndTime(LocalTime.MAX);
+            workDayModel.setWorkingDay(true);
+            workDays.add(workDayModel);
+        }
     }
 
     public DurationModel getDuration(ZonedDateTime starDateTime, ZonedDateTime endDateTime) {
@@ -53,24 +61,5 @@ public class AbsoluteCalendarModel extends CalendarModel {
         durationModel.setDuration(Duration.ofMillis(endDateTimeunixTs > starDateTimeUnixTs
             ? (endDateTimeunixTs - starDateTimeUnixTs) : 0));
         return durationModel;
-    }
-
-    public void populateHolidayMap() {
-        //Do nothing
-    }
-
-    @Override
-    public List<HolidayModel> getHolidays() {
-        return Collections.unmodifiableList(Collections.EMPTY_LIST);
-    }
-
-    @Override
-    public List<WorkDayModel> getWorkDays() {
-        return Collections.unmodifiableList(Collections.EMPTY_LIST);
-    }
-
-    @Override
-    public List<WorkDayModel> getOrderedWorkDay() {
-        return Collections.unmodifiableList(Collections.EMPTY_LIST);
     }
 }

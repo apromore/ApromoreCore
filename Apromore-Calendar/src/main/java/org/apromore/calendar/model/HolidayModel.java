@@ -33,6 +33,7 @@ import java.time.LocalDate;
 import java.util.Date;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NonNull;
 import org.apromore.commons.datetime.TimeUtils;
 
 /**
@@ -41,23 +42,19 @@ import org.apromore.commons.datetime.TimeUtils;
 @Data
 @EqualsAndHashCode
 public class HolidayModel implements Serializable {
+    @EqualsAndHashCode.Exclude
+    protected @NonNull Long id;
+
+    protected @NonNull HolidayType holidayType = HolidayType.PUBLIC;
+    protected @NonNull String name;
+    protected @NonNull String description;
+    protected @NonNull LocalDate holidayDate;
 
     @EqualsAndHashCode.Exclude
-    private Long id;
-    @EqualsAndHashCode.Exclude
-    private Long referenceId;
-
-    private HolidayType holidayType = HolidayType.PUBLIC;
-
-    private String name;
-    private String description;
-    private LocalDate holidayDate;
+    protected String createdBy;
 
     @EqualsAndHashCode.Exclude
-    private String createdBy;
-
-    @EqualsAndHashCode.Exclude
-    private String updatedBy;
+    protected String updatedBy;
 
     public HolidayModel(String holidayTypeLabel, String name, String description, LocalDate holidayDate) {
         super();
@@ -86,6 +83,10 @@ public class HolidayModel implements Serializable {
     public Date getDate() {
         return TimeUtils.localDateToDate(holidayDate);
 
+    }
+
+    public ImmutableHolidayModel immutable() {
+        return new ImmutableHolidayModel(this);
     }
 
 }

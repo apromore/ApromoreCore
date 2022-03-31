@@ -23,40 +23,34 @@
 package org.apromore.calendar.builder;
 
 import java.time.DayOfWeek;
-import java.time.Duration;
 import java.time.LocalDate;
-import java.time.OffsetTime;
-import java.time.ZoneOffset;
+import java.time.LocalTime;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.calendar.model.HolidayModel;
 import org.apromore.calendar.model.HolidayType;
 import org.apromore.calendar.model.WorkDayModel;
 
 /**
- * TODO: use of ZoneOffset.of(zoneId) in this class only works if zoneId = zoneoffset. This is because
- * of the irrelevant use of OffsetTime in {@link WorkDayModel}. See TODO in WorkDayModel.
- *
+ * This class is a Builder for CalendarModel with a fluent-style API.
  * @author Nolan Tellis
- * @author Bruce Nguyen - add TODO comments
+ * @author Bruce Nguyen
  */
 public class CalendarModelBuilder {
 
-    CalendarModel model = new CalendarModel();
+    CalendarModel model = Calendars.INSTANCE.empty();
 
     public CalendarModel build() {
 
         return model;
     }
 
-    public CalendarModelBuilder withWorkDay(DayOfWeek dayOfWeek, OffsetTime starOffsetTime,
-                                            OffsetTime endOffsetTime, boolean isWorkingDay) {
-
+    public CalendarModelBuilder withWorkDay(DayOfWeek dayOfWeek, LocalTime startTime,
+                                            LocalTime endTime, boolean isWorkingDay) {
         WorkDayModel workDayModel = new WorkDayModel();
         workDayModel.setDayOfWeek(dayOfWeek);
-        workDayModel.setStartTime(starOffsetTime);
-        workDayModel.setEndTime(endOffsetTime);
+        workDayModel.setStartTime(startTime);
+        workDayModel.setEndTime(endTime);
         workDayModel.setWorkingDay(isWorkingDay);
-        workDayModel.setDuration(Duration.between(starOffsetTime, endOffsetTime));
         model.getWorkDays().add(workDayModel);
         return this;
     }
@@ -70,49 +64,35 @@ public class CalendarModelBuilder {
      */
     public CalendarModelBuilder withAllDayAllTime() {
         for (DayOfWeek dayOfWeek : DayOfWeek.values()) {
-            withWorkDay(dayOfWeek, OffsetTime.of(0, 0, 0, 0, ZoneOffset.of(model.getZoneId())),
-                OffsetTime.of(23, 59, 59, 999999999, ZoneOffset.of(model.getZoneId())), true);
+            withWorkDay(dayOfWeek, LocalTime.MIN, LocalTime.MAX, true);
         }
         return this;
     }
 
     public CalendarModelBuilder withWork9to5Day(DayOfWeek dayOfWeek) {
 
-        return withWorkDay(dayOfWeek, OffsetTime.of(9, 0, 0, 0, ZoneOffset.of(model.getZoneId())),
-            OffsetTime.of(5, 0, 0, 0, ZoneOffset.of(model.getZoneId())), true);
+        return withWorkDay(dayOfWeek, LocalTime.of(9, 0, 0, 0),
+            LocalTime.of(5, 0, 0, 0), true);
 
     }
 
     public CalendarModelBuilder withNotWorkDay(DayOfWeek dayOfWeek) {
 
-        return withWorkDay(dayOfWeek, OffsetTime.of(9, 0, 0, 0, ZoneOffset.of(model.getZoneId())),
-            OffsetTime.of(5, 0, 0, 0, ZoneOffset.of(model.getZoneId())), false);
+        return withWorkDay(dayOfWeek, LocalTime.of(9, 0, 0, 0),
+            LocalTime.of(5, 0, 0, 0), false);
 
     }
 
-    /**
-     * Bruce
-     * TODO: changing the zoneid requires changing the offset in WorkDayModel. Making WorkDayModel has offset
-     * is not an appropriate design because WorkDayModel is only a template, not a specific datetime: there's no way
-     * to know a WorkDayModel's offset until it has an actual working day at a specific datetime (an instant).
-     *
-     * @param zoneId the timezone id.
-     * @return a CalendarModelBuilder with the timezone id set to zoneId.
-     */
     public CalendarModelBuilder withZoneId(String zoneId) {
         model.setZoneId(zoneId);
-        for (WorkDayModel workDay : model.getWorkDays()) {
-            workDay.setStartTime(workDay.getStartTime().withOffsetSameInstant(ZoneOffset.of(zoneId)));
-            workDay.setEndTime(workDay.getEndTime().withOffsetSameInstant(ZoneOffset.of(zoneId)));
-        }
         return this;
     }
 
     public CalendarModelBuilder with7DayWorking() {
 
         for (DayOfWeek dayOfWeek : DayOfWeek.values()) {
-            withWorkDay(dayOfWeek, OffsetTime.of(9, 0, 0, 0, ZoneOffset.of(model.getZoneId())),
-                OffsetTime.of(17, 0, 0, 0, ZoneOffset.of(model.getZoneId())), true);
+            withWorkDay(dayOfWeek, LocalTime.of(9, 0, 0, 0),
+                LocalTime.of(17, 0, 0, 0), true);
 
         }
         return this;
@@ -121,13 +101,9 @@ public class CalendarModelBuilder {
     public CalendarModelBuilder with5DayWorking() {
 
         for (DayOfWeek dayOfWeek : DayOfWeek.values()) {
-            boolean isWorking = true;
-            if (dayOfWeek.equals(DayOfWeek.SATURDAY) || dayOfWeek.equals(DayOfWeek.SUNDAY)) {
-                isWorking = false;
-            }
-
-            withWorkDay(dayOfWeek, OffsetTime.of(9, 0, 0, 0, ZoneOffset.of(model.getZoneId())),
-                OffsetTime.of(17, 0, 0, 0, ZoneOffset.of(model.getZoneId())), isWorking);
+            boolean isWorking = !dayOfWeek.equals(DayOfWeek.SATURDAY) && !dayOfWeek.equals(DayOfWeek.SUNDAY);
+            withWorkDay(dayOfWeek, LocalTime.of(9, 0, 0, 0),
+                LocalTime.of(17, 0, 0, 0), isWorking);
 
         }
         return this;

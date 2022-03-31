@@ -82,7 +82,6 @@ class CalendarServiceIntegrationTest extends BaseTestClass {
         assertThat(model.getCreatedBy()).isEqualTo("username");
         assertThat(modelExpected.getName()).isEqualTo(model.getName());
         assertThat(modelExpected.getWorkDays()).hasSize(7);
-
     }
 
 
