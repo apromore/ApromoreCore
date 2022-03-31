@@ -132,9 +132,9 @@ public class SaveAsDialogController extends BaseController {
     Button saveB = (Button) buttonGroupR.getFirstChild().getFirstChild();
     Button cancelB = (Button) saveB.getNextSibling();
     if (Boolean.TRUE.equals(isUpdate)) {
-      saveAsW.setTitle("Save BPMN model");
+      saveAsW.setTitle(Labels.getLabel("bpmnEditor_saveBPMN_text", "Save BPMN model"));
     } else {
-      saveAsW.setTitle("Save BPMN model as");
+      saveAsW.setTitle(Labels.getLabel("bpmnEditor_saveBPMNAs_text", "Save BPMN model as"));
     }
     saveAsW.addEventListener("onOK", new EventListener<Event>() {
       @Override
@@ -323,27 +323,28 @@ public class SaveAsDialogController extends BaseController {
   private boolean validateFields() {
     boolean valid = true;
     String message = "";
-    String title = "Missing Fields";
+    String title = Labels.getLabel("missing_fields", "Missing Fields");
 
     try {
       if (Boolean.FALSE.equals(this.isSaveCurrent)) {
         if (this.modelName.getText() == null || "".equals(this.modelName.getText().trim())) {
           valid = false;
-          message = message + "Model Name cannot be empty";
-          title = "Model Name Empty";
+          message += Labels.getLabel("common_noEmptyModelName_message", "Model name cannot be empty");
+          title = Labels.getLabel("common_noEmptyModelName_title", "Model Name Empty");
         }
         if (Objects.equals(this.modelName.getText(), this.editSession.getProcessName())) {
           valid = false;
-          message =
-              message + "Model Name has to be different from " + this.editSession.getProcessName();
-          title = "Same Model Name";
+          message += MessageFormat.format(
+              Labels.getLabel("bpmnEditor_sameModelName_message", "Model Name has to be different from {0}"),
+              this.editSession.getProcessName());
+          title = Labels.getLabel("bpmnEditor_sameModelName_title", "Same Model Name");
         }
       }
 
       if ("".equals(this.versionNumber.getText()) || this.versionNumber.getText() == null) {
         valid = false;
-        message = message + "Version Number cannot be empty";
-        title = "Version Number Empty";
+        message += Labels.getLabel("common_noEmptyVersionNumber_message", "Version number cannot be empty");
+        title = Labels.getLabel("common_noEmptyVersionNumber_title", "Version Number Empty");
       }
 
       if (!"".equals(message)) {
