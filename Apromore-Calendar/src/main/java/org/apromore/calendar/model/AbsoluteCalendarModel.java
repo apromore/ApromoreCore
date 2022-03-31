@@ -24,19 +24,18 @@ package org.apromore.calendar.model;
 
 import java.time.DayOfWeek;
 import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
-import java.time.ZonedDateTime;
 
 /**
  * This class represents the absolute 24/7 calendar with every moment is included as working time, no holidays.
  * All duration of [start, end] is simply the number of milliseconds between start and end.
  * It can be used as a default calendar.
- * It is not accessible outside this package, only via CalendarModel.ABSOLUTE_CALENDAR.
  *
  * @author Bruce Nguyen
  */
-public final class AbsoluteCalendarModel extends CalendarModel {
+public class AbsoluteCalendarModel extends CalendarModel {
     public AbsoluteCalendarModel() {
         for (DayOfWeek dayOfWeek : DayOfWeek.values()) {
             WorkDayModel workDayModel = new WorkDayModel();
@@ -48,18 +47,29 @@ public final class AbsoluteCalendarModel extends CalendarModel {
         }
     }
 
-    public DurationModel getDuration(ZonedDateTime starDateTime, ZonedDateTime endDateTime) {
-        return getDuration(starDateTime.toInstant().toEpochMilli(), endDateTime.toInstant().toEpochMilli());
+    @Override
+    public Duration getDuration(OffsetDateTime starDateTime, OffsetDateTime endDateTime) {
+        return getDuration(starDateTime.toInstant(), endDateTime.toInstant());
     }
 
-    public DurationModel getDuration(OffsetDateTime starDateTime, OffsetDateTime endDateTime) {
-        return getDuration(starDateTime, endDateTime);
+    @Override
+    public Duration getDuration(Instant start, Instant end) {
+        return getDuration(start.toEpochMilli(), end.toEpochMilli());
     }
 
-    public DurationModel getDuration(Long starDateTimeUnixTs, Long endDateTimeunixTs) {
-        DurationModel durationModel = new DurationModel();
-        durationModel.setDuration(Duration.ofMillis(endDateTimeunixTs > starDateTimeUnixTs
-            ? (endDateTimeunixTs - starDateTimeUnixTs) : 0));
-        return durationModel;
+    @Override
+    public Duration getDuration(Long starDateTimeUnixTs, Long endDateTimeunixTs) {
+        return Duration.ofMillis(endDateTimeunixTs > starDateTimeUnixTs
+            ? (endDateTimeunixTs - starDateTimeUnixTs) : 0);
+    }
+
+    @Override
+    public boolean is247() {
+        return true;
+    }
+
+    @Override
+    public CalendarModel immutable() {
+        return new ImmutableCalendarModel(this);
     }
 }

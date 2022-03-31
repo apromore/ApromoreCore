@@ -118,7 +118,7 @@ public class WorkDayModel {
             + endTime.getNano() / 1000L;
     }
 
-    public ImmutableWorkDayModel immutable() {
+    public WorkDayModel immutable() {
         return new ImmutableWorkDayModel(this);
     }
 

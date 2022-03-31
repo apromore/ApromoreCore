@@ -85,7 +85,7 @@ public class HolidayModel implements Serializable {
 
     }
 
-    public ImmutableHolidayModel immutable() {
+    public HolidayModel immutable() {
         return new ImmutableHolidayModel(this);
     }
 

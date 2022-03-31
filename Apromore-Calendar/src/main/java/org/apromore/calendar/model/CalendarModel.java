@@ -77,17 +77,12 @@ public class CalendarModel {
     @Getter(AccessLevel.NONE)
     private Set<LocalDate> holidayDates = new HashSet<>();
 
-    public DurationModel getDuration(OffsetDateTime starDateTime, OffsetDateTime endDateTime) {
-        DurationModel durationModel = new DurationModel();
-        durationModel.setAll(getDuration(starDateTime.toInstant(), endDateTime.toInstant()));
-        return durationModel;
+    public Duration getDuration(OffsetDateTime starDateTime, OffsetDateTime endDateTime) {
+        return getDuration(starDateTime.toInstant(), endDateTime.toInstant());
     }
 
-    public DurationModel getDuration(Long starDateTimeUnixTs, Long endDateTimeunixTs) {
-        DurationModel durationModel = new DurationModel();
-        durationModel
-            .setAll(getDuration(Instant.ofEpochMilli(starDateTimeUnixTs), Instant.ofEpochMilli(endDateTimeunixTs)));
-        return durationModel;
+    public Duration getDuration(Long starDateTimeUnixTs, Long endDateTimeUnixTs) {
+        return getDuration(Instant.ofEpochMilli(starDateTimeUnixTs), Instant.ofEpochMilli(endDateTimeUnixTs));
     }
 
     public Duration getDuration(Instant start, Instant end) {
@@ -106,24 +101,24 @@ public class CalendarModel {
         return totalDuration;
     }
 
-    public Long[] getDuration(Long[] starDateTimeUnixTs, Long[] endDateTimeunixTs) {
+    public Long[] getDuration(Long[] starDateTimeUnixTs, Long[] endDateTimeUnixTs) {
         Long[] resultList = new Long[starDateTimeUnixTs.length];
         IntStream.range(0, starDateTimeUnixTs.length).parallel().forEach(i ->
             resultList[i] = getDurationMillis(Instant.ofEpochMilli(starDateTimeUnixTs[i]),
-                Instant.ofEpochMilli(endDateTimeunixTs[i])));
+                Instant.ofEpochMilli(endDateTimeUnixTs[i])));
 
         return resultList;
     }
 
-    public long[] getDuration(long[] starDateTimeUnixTs, long[] endDateTimeunixTs) {
-        if (starDateTimeUnixTs == null || starDateTimeUnixTs.length == 0 || endDateTimeunixTs == null
-            || endDateTimeunixTs.length == 0) {
+    public long[] getDuration(long[] starDateTimeUnixTs, long[] endDateTimeUnixTs) {
+        if (starDateTimeUnixTs == null || starDateTimeUnixTs.length == 0 || endDateTimeUnixTs == null
+            || endDateTimeUnixTs.length == 0) {
             return new long[] {};
         }
         long[] resultList = new long[starDateTimeUnixTs.length];
         IntStream.range(0, starDateTimeUnixTs.length).parallel().forEach(i ->
             resultList[i] = getDurationMillis(Instant.ofEpochMilli(starDateTimeUnixTs[i]),
-                Instant.ofEpochMilli(endDateTimeunixTs[i])));
+                Instant.ofEpochMilli(endDateTimeUnixTs[i])));
 
         return resultList;
     }
@@ -152,7 +147,11 @@ public class CalendarModel {
         return sortedList;
     }
 
-    public ImmutableCalendarModel immutable() {
+    public boolean is247() {
+        return false;
+    }
+
+    public CalendarModel immutable() {
         return new ImmutableCalendarModel(this);
     }
 }
