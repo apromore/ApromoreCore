@@ -42,7 +42,7 @@ import lombok.NoArgsConstructor;
 public class PredictorDao {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
     @Column(name = "log_id")
     private int logId;
     @Column(name = "name")
@@ -55,7 +55,6 @@ public class PredictorDao {
     @Column(name = "ppm_status")
     @Enumerated(EnumType.STRING)
     private PpmStatus ppmStatus;
-
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "prediction_predictor",
         joinColumns = @JoinColumn(name = "predictor_id", referencedColumnName = "id"),

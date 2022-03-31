@@ -1361,23 +1361,25 @@ databaseChangeLog:
      id: 20220330104900
      author: mtomar
      changes:
+       - modifyDataType:
+           tableName: predictor
+           columnName: id
+           newDataType: INT
+       - addAutoIncrement:
+           tableName: predictor
+           columnName: id
+           columnDataType: INT
+
        - createTable:
            tableName: prediction
            columns:
              - column:
                  name: id
-                 type: BIGINT
-                 autoIncrement: true
+                 type: INT
                  constraints:
                    nullable: false
                    primaryKey: true
                    primaryKeyName: pk_prediction_id
-             - column:
-                 constraints:
-                   nullable: false
-                 name: log_id
-                 type: INT
-                 remarks: 'Training Log id'
              - column:
                  name: table_name
                  type: VARCHAR(200)
@@ -1390,13 +1392,13 @@ databaseChangeLog:
            columns:
              - column:
                  name: prediction_id
-                 type: BIGINT
+                 type: INT
                  constraints:
                    nullable: false
                    primaryKey: true
              - column:
                  name: predictor_id
-                 type: BIGINT
+                 type: INT
                  constraints:
                    nullable: false
                    primaryKey: true

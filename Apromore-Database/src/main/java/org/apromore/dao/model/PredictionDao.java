@@ -23,10 +23,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PredictionDao {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @Column(name = "log_id")
-    private int logId;
+    private Integer id;
     @Column(name = "table_name")
     private String tableName;
     @Column(name = "status")
@@ -38,8 +35,7 @@ public class PredictionDao {
         inverseJoinColumns = @JoinColumn(name = "predictor_id", referencedColumnName = "id"))
     private List<PredictorDao> predictors = new ArrayList<>();
 
-    public PredictionDao(int logId, String tableName, PpmStatus status) {
-        this.logId = logId;
+    public PredictionDao(String tableName, PpmStatus status) {
         this.tableName = tableName;
         this.status = status;
     }

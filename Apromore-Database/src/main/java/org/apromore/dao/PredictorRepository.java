@@ -24,6 +24,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface PredictorRepository extends JpaRepository<PredictorDao, Long> {
+public interface PredictorRepository extends JpaRepository<PredictorDao, Integer> {
     List<PredictorDao> findAllByLogId(int logId);
 }
