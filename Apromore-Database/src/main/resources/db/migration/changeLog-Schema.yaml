@@ -1382,7 +1382,7 @@ databaseChangeLog:
                    primaryKeyName: pk_prediction_id
              - column:
                  name: table_name
-                 type: VARCHAR(200)
+                 type: VARCHAR(100)
              - column:
                  name: status
                  type: VARCHAR(15)
