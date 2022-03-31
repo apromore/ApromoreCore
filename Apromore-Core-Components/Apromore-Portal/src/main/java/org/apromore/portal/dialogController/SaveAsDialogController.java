@@ -77,6 +77,8 @@ public class SaveAsDialogController extends BaseController {
 
   static final Logger LOGGER = PortalLoggerFactory.getLogger(SaveAsDialogController.class);
 
+  private static final int MAX_NAME_LENGTH = 100;
+
   private EventQueue<Event> qePortal =
       EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, true);
   private EventQueue<Event> qeBPMNEditor =
@@ -118,9 +120,13 @@ public class SaveAsDialogController extends BaseController {
     Row versionNumberR = (Row) rows.getChildren().get(1);
     Row buttonGroupR = (Row) rows.getChildren().get(2);
     this.modelName = (Textbox) modelNameR.getFirstChild().getNextSibling();
-    this.modelName.setText(!Boolean.FALSE.equals(this.isSaveCurrent) ? this.editSession.getProcessName()
-        : this.editSession.getProcessName() + "_new");
-    this.modelName.setReadonly(Boolean.TRUE.equals(this.isSaveCurrent) && !UNTITLED_PROCESS_NAME.equals(this.editSession.getProcessName()));
+    String processName = this.editSession.getProcessName();
+    String newProcessNameSuffix = "_new";
+    this.modelName.setText(!Boolean.FALSE.equals(this.isSaveCurrent)
+        || processName.length() > MAX_NAME_LENGTH - newProcessNameSuffix.length()
+        ? processName
+        : processName + newProcessNameSuffix);
+    this.modelName.setReadonly(Boolean.TRUE.equals(this.isSaveCurrent) && !UNTITLED_PROCESS_NAME.equals(processName));
     this.versionNumber = (Textbox) versionNumberR.getFirstChild().getNextSibling();
     this.versionNumber.setText(this.editSession.getCurrentVersionNumber());
     Button saveB = (Button) buttonGroupR.getFirstChild().getFirstChild();
