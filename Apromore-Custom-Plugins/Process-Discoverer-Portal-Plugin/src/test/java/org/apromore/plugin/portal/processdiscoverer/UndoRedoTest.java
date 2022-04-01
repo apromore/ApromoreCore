@@ -1,8 +1,8 @@
-/**
+/*-
  * #%L
  * This file is part of "Apromore Enterprise Edition".
  * %%
- * Copyright (C) 2019 - 2021 Apromore Pty Ltd. All Rights Reserved.
+ * Copyright (C) 2019 - 2022 Apromore Pty Ltd. All Rights Reserved.
  * %%
  * NOTICE:  All information contained herein is, and remains the
  * property of Apromore Pty Ltd and its suppliers, if any.
@@ -17,7 +17,7 @@
  */
 package org.apromore.plugin.portal.processdiscoverer;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,14 +45,15 @@ import org.apromore.plugin.portal.processdiscoverer.actions.FilterActionOnNodeRe
 import org.apromore.plugin.portal.processdiscoverer.actions.FilterActionOnNodeRetainEvent;
 import org.apromore.plugin.portal.processdiscoverer.actions.FilterActionOnNodeRetainTrace;
 import org.apromore.service.EventLogService;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
-public class UndoRedoTest extends TestDataSetup {
+@ExtendWith(MockitoExtension.class)
+class UndoRedoTest extends TestDataSetup {
     @Mock
     private PDController pdController;
     
@@ -63,7 +64,7 @@ public class UndoRedoTest extends TestDataSetup {
     private ActionManager actionManager;
     
     @Test
-    public void test_Do_Then_ClearFilter() throws Exception {
+    void test_Do_Then_ClearFilter() throws Exception {
         PDAnalyst analyst = createPDAnalyst(readLogWithTwoTraceEachTwoEvents());
         AttributeLog attLog = analyst.getAttributeLog();
         assertEquals(2, attLog.getTraces().size());
@@ -85,7 +86,7 @@ public class UndoRedoTest extends TestDataSetup {
     }
     
     @Test
-    public void test_Do_Undo_Then_Redo_FilterActionOnNodeRemoveEvent() throws Exception {
+    void test_Do_Undo_Then_Redo_FilterActionOnNodeRemoveEvent() throws Exception {
         PDAnalyst analyst = createPDAnalyst(readLogWithTwoTraceEachTwoEvents());
         AttributeLog attLog = analyst.getAttributeLog();
         assertEquals(2, attLog.getTraces().size());
@@ -113,7 +114,7 @@ public class UndoRedoTest extends TestDataSetup {
     
     
     @Test
-    public void test_Do_Undo_Then_Redo_FilterActionOnNodeRemoveTrace() throws Exception {
+    void test_Do_Undo_Then_Redo_FilterActionOnNodeRemoveTrace() throws Exception {
         PDAnalyst analyst = createPDAnalyst(readLogWithTwoTraceEachTwoEvents());
         AttributeLog attLog = analyst.getAttributeLog();
         assertEquals(2, attLog.getTraces().size());
@@ -139,7 +140,7 @@ public class UndoRedoTest extends TestDataSetup {
     }
     
     @Test
-    public void test_Do_Undo_Then_Redo_FilterActionOnNodeRetainEvent() throws Exception {
+    void test_Do_Undo_Then_Redo_FilterActionOnNodeRetainEvent() throws Exception {
         PDAnalyst analyst = createPDAnalyst(readLogWithTwoTraceEachTwoEvents());
         AttributeLog attLog = analyst.getAttributeLog();
         assertEquals(2, attLog.getTraces().size());
@@ -165,7 +166,7 @@ public class UndoRedoTest extends TestDataSetup {
     }
     
     @Test
-    public void test_Do_Undo_Then_Redo_FilterActionOnNodeRetainTrace() throws Exception {
+    void test_Do_Undo_Then_Redo_FilterActionOnNodeRetainTrace() throws Exception {
         PDAnalyst analyst = createPDAnalyst(readLogWithTwoTraceEachTwoEvents());
         AttributeLog attLog = analyst.getAttributeLog();
         assertEquals(2, attLog.getTraces().size());
@@ -191,7 +192,7 @@ public class UndoRedoTest extends TestDataSetup {
     }
     
     @Test
-    public void test_Do_Undo_Then_Redo_FilterActionOnEdgeRemoveTrace() throws Exception {
+    void test_Do_Undo_Then_Redo_FilterActionOnEdgeRemoveTrace() throws Exception {
         PDAnalyst analyst = createPDAnalyst(readLogWithTwoTraceEachTwoEvents());
         AttributeLog attLog = analyst.getAttributeLog();
         assertEquals(2, attLog.getTraces().size());
@@ -217,7 +218,7 @@ public class UndoRedoTest extends TestDataSetup {
     }
     
     @Test
-    public void test_Do_Undo_Then_Redo_FilterActionOnEdgeRetainTrace() throws Exception {
+    void test_Do_Undo_Then_Redo_FilterActionOnEdgeRetainTrace() throws Exception {
         PDAnalyst analyst = createPDAnalyst(readLogWithTwoTraceEachTwoEvents());
         AttributeLog attLog = analyst.getAttributeLog();
         assertEquals(2, attLog.getTraces().size());
@@ -243,7 +244,7 @@ public class UndoRedoTest extends TestDataSetup {
     }
     
     @Test
-    public void test_Do_Undo_Then_Redo_FilterActionOnCompositeFilterCriteria() throws Exception {
+    void test_Do_Undo_Then_Redo_FilterActionOnCompositeFilterCriteria() throws Exception {
         PDAnalyst analyst = createPDAnalyst(readLogWithTwoTraceEachTwoEvents());
         AttributeLog attLog = analyst.getAttributeLog();
         assertEquals(2, attLog.getTraces().size());
@@ -281,7 +282,7 @@ public class UndoRedoTest extends TestDataSetup {
     }
     
     @Test
-    public void test_Do_Undo_NewAction_Then_Redo() throws Exception {
+    void test_Do_Undo_NewAction_Then_Redo() throws Exception {
         PDAnalyst analyst = createPDAnalyst(readLogWithTwoTraceEachTwoEvents());
         AttributeLog attLog = analyst.getAttributeLog();
         assertEquals(2, attLog.getTraces().size());
@@ -337,7 +338,7 @@ public class UndoRedoTest extends TestDataSetup {
     }
     
     @Test
-    public void test_Do_Do_Undo_Undo_Then_Redo() throws Exception {
+    void test_Do_Do_Undo_Undo_Then_Redo() throws Exception {
         PDAnalyst analyst = createPDAnalyst(readLogWithTwoTraceEachTwoEvents());
         AttributeLog attLog = analyst.getAttributeLog();
         assertEquals(2, attLog.getTraces().size());

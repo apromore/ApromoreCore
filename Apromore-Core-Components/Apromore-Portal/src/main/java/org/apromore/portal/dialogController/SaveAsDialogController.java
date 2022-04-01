@@ -4,7 +4,7 @@
  * 
  * Copyright (C) 2013 - 2017 Queensland University of Technology.
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -77,6 +77,8 @@ public class SaveAsDialogController extends BaseController {
 
   static final Logger LOGGER = PortalLoggerFactory.getLogger(SaveAsDialogController.class);
 
+  private static final int MAX_NAME_LENGTH = 100;
+
   private EventQueue<Event> qePortal =
       EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, true);
   private EventQueue<Event> qeBPMNEditor =
@@ -118,17 +120,21 @@ public class SaveAsDialogController extends BaseController {
     Row versionNumberR = (Row) rows.getChildren().get(1);
     Row buttonGroupR = (Row) rows.getChildren().get(2);
     this.modelName = (Textbox) modelNameR.getFirstChild().getNextSibling();
-    this.modelName.setText(!Boolean.FALSE.equals(this.isSaveCurrent) ? this.editSession.getProcessName()
-        : this.editSession.getProcessName() + "_new");
-    this.modelName.setReadonly(Boolean.TRUE.equals(this.isSaveCurrent) && !UNTITLED_PROCESS_NAME.equals(this.editSession.getProcessName()));
+    String processName = this.editSession.getProcessName();
+    String newProcessNameSuffix = "_new";
+    this.modelName.setText(!Boolean.FALSE.equals(this.isSaveCurrent)
+        || processName.length() > MAX_NAME_LENGTH - newProcessNameSuffix.length()
+        ? processName
+        : processName + newProcessNameSuffix);
+    this.modelName.setReadonly(Boolean.TRUE.equals(this.isSaveCurrent) && !UNTITLED_PROCESS_NAME.equals(processName));
     this.versionNumber = (Textbox) versionNumberR.getFirstChild().getNextSibling();
     this.versionNumber.setText(this.editSession.getCurrentVersionNumber());
     Button saveB = (Button) buttonGroupR.getFirstChild().getFirstChild();
     Button cancelB = (Button) saveB.getNextSibling();
     if (Boolean.TRUE.equals(isUpdate)) {
-      saveAsW.setTitle("Save BPMN model");
+      saveAsW.setTitle(Labels.getLabel("bpmnEditor_saveBPMN_text", "Save BPMN model"));
     } else {
-      saveAsW.setTitle("Save BPMN model as");
+      saveAsW.setTitle(Labels.getLabel("bpmnEditor_saveBPMNAs_text", "Save BPMN model as"));
     }
     saveAsW.addEventListener("onOK", new EventListener<Event>() {
       @Override
@@ -317,27 +323,28 @@ public class SaveAsDialogController extends BaseController {
   private boolean validateFields() {
     boolean valid = true;
     String message = "";
-    String title = "Missing Fields";
+    String title = Labels.getLabel("missing_fields", "Missing Fields");
 
     try {
       if (Boolean.FALSE.equals(this.isSaveCurrent)) {
         if (this.modelName.getText() == null || "".equals(this.modelName.getText().trim())) {
           valid = false;
-          message = message + "Model Name cannot be empty";
-          title = "Model Name Empty";
+          message += Labels.getLabel("common_noEmptyModelName_message", "Model name cannot be empty");
+          title = Labels.getLabel("common_noEmptyModelName_title", "Model Name Empty");
         }
         if (Objects.equals(this.modelName.getText(), this.editSession.getProcessName())) {
           valid = false;
-          message =
-              message + "Model Name has to be different from " + this.editSession.getProcessName();
-          title = "Same Model Name";
+          message += MessageFormat.format(
+              Labels.getLabel("bpmnEditor_sameModelName_message", "Model Name has to be different from {0}"),
+              this.editSession.getProcessName());
+          title = Labels.getLabel("bpmnEditor_sameModelName_title", "Same Model Name");
         }
       }
 
       if ("".equals(this.versionNumber.getText()) || this.versionNumber.getText() == null) {
         valid = false;
-        message = message + "Version Number cannot be empty";
-        title = "Version Number Empty";
+        message += Labels.getLabel("common_noEmptyVersionNumber_message", "Version number cannot be empty");
+        title = Labels.getLabel("common_noEmptyVersionNumber_title", "Version Number Empty");
       }
 
       if (!"".equals(message)) {

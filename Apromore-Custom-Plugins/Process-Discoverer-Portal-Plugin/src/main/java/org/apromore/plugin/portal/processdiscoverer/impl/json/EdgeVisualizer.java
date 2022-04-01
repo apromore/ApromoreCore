@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,7 +24,7 @@ package org.apromore.plugin.portal.processdiscoverer.impl.json;
 
 import java.awt.geom.Point2D;
 import java.text.DecimalFormat;
-
+import java.util.List;
 import org.apromore.logman.attribute.graph.MeasureRelation;
 import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.plugin.portal.processdiscoverer.utils.BPMNHelper;
@@ -38,6 +38,7 @@ import org.apromore.processdiscoverer.layout.LayoutElement;
 import org.apromore.processmining.models.graphbased.directed.ContainableDirectedGraphElement;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNEdge;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNNode;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -95,32 +96,36 @@ public class EdgeVisualizer extends AbstractElementVisualizer {
             throw new InvalidOutputException("Missing layout info for the edge with id=" + edge.getEdgeID().toString());
         }
         else {
+            String point_distances = "";
+            String point_weights = "";
             if (edge.getSource() != edge.getTarget()) {
                 if (!edgeLayout.getDWPoints().isEmpty()) {
                 	DecimalFormat df = new DecimalFormat("0.00");
-    	            String point_distances = "";
-    	            String point_weights = "";
     	            for (Point2D dw : edgeLayout.getDWPoints()) {
     	            	point_distances += (df.format(dw.getX()) + " ");
     	            	point_weights += (df.format(dw.getY()) + " ");
     	            }
-    	            jsonData.put("edge-style", "unbundled-bezier");
-    	            jsonData.put("point-distances", point_distances.trim());
-    	            jsonData.put("point-weights", point_weights.trim());
                 }
                 else {
-                	jsonData.put("edge-style", "unbundled-bezier");
-                	jsonData.put("point-distances", "0");
-    	            jsonData.put("point-weights", "0.5");
+                    point_distances = "0";
+                    point_weights = "0.5";
                 }
             }
             else {
-            	jsonData.put("edge-style", "bezier");
+                point_distances = "0";
+                point_weights = "0";
             }
+
+            jsonData
+                .put("cyedgecontroleditingDistances", new JSONArray().putAll(
+                    List.of(point_distances.trim().split(" "))))
+                .put("cyedgecontroleditingWeights", new JSONArray().putAll(
+                    List.of(point_weights.trim().split(" "))));
         }
 
         JSONObject jsonEdge = new JSONObject();
         jsonEdge.put("data", jsonData);
+        jsonEdge.put("classes", "edgecontrolediting-hascontrolpoints");
         
         return jsonEdge;
 	}

@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,8 +24,8 @@ package org.apromore.portal.dialogController;
 
 import org.apromore.commons.item.ItemNameUtils;
 import org.apromore.plugin.portal.FileImporterPlugin;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.zkoss.util.media.Media;
 
 import java.io.InputStream;
@@ -34,10 +34,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /** Test suite for {@link ImportController}. */
-public class ImportControllerUnitTest {
+class ImportControllerUnitTest {
 
     /** Mock CSV importer. */
     private FileImporterPlugin fileImporterPlugin = new FileImporterPlugin() {
@@ -57,20 +57,20 @@ public class ImportControllerUnitTest {
 
     /** Test the {@link ImportController#importFile} method with no file importers and a CSV log. */
     @Test
-    public void testImportFile_CSV() throws Exception {
+    void testImportFile_CSV() throws Exception {
         testImportFile(Collections.emptyList(), "CallcenterExample.csv");
     }
 
     /** Test the {@link ImportController#importFile} method with no file importers and a zipped CSV log. */
     @Test
-    public void testImportFile_CSVzip() throws Exception {
+    void testImportFile_CSVzip() throws Exception {
         testImportFile(Collections.emptyList(), "CallcenterExample.zip");
     }
 
     /** Test the {@link ImportController#importFile} method with a mock CSV importer and a zipped CSV log. */
     @Test
-    @Ignore("Need to inject the ZK Execution instance for this to be testable")
-    public void testImportFile_CSVzip2() throws Exception {
+    @Disabled("Need to inject the ZK Execution instance for this to be testable")
+    void testImportFile_CSVzip2() throws Exception {
         testImportFile(Collections.singletonList(fileImporterPlugin), "CallcenterExample.zip");
     }
 

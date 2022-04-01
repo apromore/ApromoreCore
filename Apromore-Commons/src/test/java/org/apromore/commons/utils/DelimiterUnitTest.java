@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,25 +21,25 @@
  */
 package org.apromore.commons.utils;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 
-public class DelimiterUnitTest {
+class DelimiterUnitTest {
 
     private List<String> rows;
 
     /**
      * Setup for tests.
      */
-    @Before
-    public void setup() {
+    @BeforeEach
+    void setup() {
         rows = new ArrayList<>();
     }
 
@@ -47,7 +47,7 @@ public class DelimiterUnitTest {
      * This test driver tests the CleanDelimiter.
      */
     @Test
-    public void testCleanDelimiter() {
+    void testCleanDelimiter() {
         // Create a 1D list Strings [header, r1, r2, r3]
         rows.add("col1,col2,col3");
         rows.add("3,fgdfd,asdasdasasd");
@@ -68,7 +68,7 @@ public class DelimiterUnitTest {
      * This test driver tests the CommaDelimiter.
      */
     @Test
-    public void testCommaDelimiter() {
+    void testCommaDelimiter() {
         // Create a 1D list Strings [header, r1, r2, r3]
         rows.add("col1,col2,col3");
         rows.add("3,fgdfd,asdasda;sasd");
@@ -89,7 +89,7 @@ public class DelimiterUnitTest {
      * This test driver tests the SemiColonDelimiter.
      */
     @Test
-    public void testSemiColonDelimiter() {
+    void testSemiColonDelimiter() {
         // Create a 1D list Strings [header, r1, r2, r3]
         rows.add("col1;col2;col3");
         rows.add("3;fgdfd,asdasda;sasd");
@@ -110,7 +110,7 @@ public class DelimiterUnitTest {
      * This test driver tests the ColonDelimiter.
      */
     @Test
-    public void testColonDelimiter() {
+    void testColonDelimiter() {
         // Create a 1D list Strings [header, r1, r2, r3]
         rows.add("col1:col2:col3");
         rows.add("3:fgdfd,asdasda:sasd");
@@ -131,7 +131,7 @@ public class DelimiterUnitTest {
      * This test driver tests the TabDelimiter.
      */
     @Test
-    public void testTabDelimiter() {
+    void testTabDelimiter() {
         // Create a 1D list Strings [header, r1, r2, r3]
         rows.add("col1\tcol2\tcol3");
         rows.add("3\tfgdfd,asdasda\tsasd");
@@ -152,8 +152,8 @@ public class DelimiterUnitTest {
      * This test driver tests the SpaceDelimiter.
      */
     @Test
-    @Ignore
-    public void testSpaceDelimiter() {
+    @Disabled
+    void testSpaceDelimiter() {
         // Create a 1D list Strings [header, r1, r2, r3]
         rows.add("col1 col2 col3");
         rows.add("3 fgdfd,asdasda sasd");
@@ -174,7 +174,7 @@ public class DelimiterUnitTest {
      * This test driver tests the PipeDelimiter.
      */
     @Test
-    public void testPipeDelimiter() {
+    void testPipeDelimiter() {
         // Create a 1D list Strings [header, r1, r2, r3]
         rows.add("col1|col2|col3");
         rows.add("3|fgdfd,asdasda|sasd");
@@ -195,7 +195,7 @@ public class DelimiterUnitTest {
      * This test driver tests the InvalidInputs.
      */
     @Test
-    public void testInvalidInputs() {
+    void testInvalidInputs() {
         List<String> rows = new ArrayList<>();
         assertEquals("!", Delimiter.findDelimiter(rows));
         assertEquals("!", Delimiter.findDelimiter(null));
@@ -207,7 +207,7 @@ public class DelimiterUnitTest {
      * This test driver tests the RealInput.
      */
     @Test
-    public void testRealInput() {
+    void testRealInput() {
         rows.add("OID|PID|userID|time_stamp|quantity|payment_type|delivery_mode");
         rows.add("1|316717|5276|07/08/2010 10:33|10|paypal|normal");
         rows.add("2|359728|2144|07/08/2010 10:33|74|cash|pickup");
@@ -225,7 +225,7 @@ public class DelimiterUnitTest {
      * This test driver duplicate testPrepareXesModel_test7_record_invalid() in LogImporterCSVImplUnitTest.
      */
     @Test
-    public void testInvalidCSV() {
+    void testInvalidCSV() {
         rows.add("case id,activity,start date,completion time, process type");
         rows.add("case2,activity1,2019-09-23T15:13:05.071,2019-09-23T15:13:05.132,1,hi,extra");
         rows.add("case1,activity1,2019-09-23T15:13:05.114,2019-09-23T15:13:05.132,1");

@@ -4,7 +4,7 @@
  * 
  * Copyright (C) 2012 - 2017 Queensland University of Technology.
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -89,6 +89,10 @@ public class FolderTreeRenderer implements TreeitemRenderer {
     // Open all super-folders of the current folder
     treeItem.setOpen(folder.getId() == 0
         || folderContainsSubfolder(folder, mainC.getPortalSession().getCurrentFolder()));
+
+    if ((folder.getFolders().isEmpty() && folder.getId() != 0) || (folder.getId() == 0 && !ctn.isOpen())) {
+      dataRow.addSclass("ap-tree-leaf-node");
+    }
 
     if(openedFolderIds!=null && openedFolderIds.contains(folder.getId())){
       treeItem.setOpen(true);

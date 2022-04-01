@@ -6,7 +6,7 @@
  * Copyright (C) 2012 Felix Mannhardt.
  * Copyright (C) 2015 Adriano Augusto.
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -49,7 +49,6 @@ import org.zkoss.zul.Menupopup;
 
 public class FilterPopupLogSubMenuController extends PopupLogSubMenuController {
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(FilterPopupLogSubMenuController.class);
-    private static final String ICON_PLUS = "z-icon-plus-circle";
     private static final String USER_METADATA_SUM = "USER_METADATA_SUM";
 
     public FilterPopupLogSubMenuController(PopupMenuController popupMenuController,
@@ -79,7 +78,7 @@ public class FilterPopupLogSubMenuController extends PopupLogSubMenuController {
     private void addNewFilterMenuItem(Menupopup popup) {
         Menuitem item = new Menuitem();
         item.setLabel(Labels.getLabel("plugin_new_filter_text"));
-        item.setIconSclass(ICON_PLUS);
+        item.setImage("~./themes/ap/common/img/icons/add-filter.svg");
         item.addEventListener(ON_CLICK, event -> {
             try {
                 Map<String, Object> attrMap = new HashMap<>();

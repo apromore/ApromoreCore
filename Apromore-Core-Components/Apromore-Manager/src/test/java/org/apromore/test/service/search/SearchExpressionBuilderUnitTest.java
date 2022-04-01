@@ -4,7 +4,7 @@
  * 
  * Copyright (C) 2011 - 2013, 2015 - 2017 Queensland University of Technology.
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,8 +24,8 @@
 
 package org.apromore.test.service.search;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
@@ -38,7 +38,7 @@ import org.apromore.service.search.SearchExpressionBuilder;
  *
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
-public class SearchExpressionBuilderUnitTest {
+class SearchExpressionBuilderUnitTest {
 
     private static final String SEARCH_EXPRESSION_SINGLE = " p.id in (select k.processId FROM Keywords k WHERE k.value like '%invoicing%' AND k.type = 'process')";
     private static final String SEARCH_EXPRESSION_OR = " (  p.id in (select k.processId FROM Keywords k WHERE k.value like '%yawl%' AND k.type = 'process') or  p.id in (select k.processId FROM Keywords k WHERE k.value like '%protos%' AND k.type = 'process') ) ";
@@ -51,7 +51,7 @@ public class SearchExpressionBuilderUnitTest {
     private String expression;
 
     @Test
-    public void buildExpressionWithEmptyNullString() throws Exception {
+    void buildExpressionWithEmptyNullString() throws Exception {
         expression = SearchExpressionBuilder.buildSearchConditions("", "p", "processId", "process");
         assertThat(expression, equalTo(""));
 
@@ -64,7 +64,7 @@ public class SearchExpressionBuilderUnitTest {
 
 
     @Test
-    public void buildExpressionWithRealData() throws Exception {
+    void buildExpressionWithRealData() throws Exception {
         expression = SearchExpressionBuilder.buildSearchConditions("invoicing", "p", "processId", "process");
         assertThat(expression, containsString("k.value like '%invoicing%'"));
         assertThat(expression, equalTo(SEARCH_EXPRESSION_SINGLE));

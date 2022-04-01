@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,18 +22,19 @@
 
 package org.apromore.calendar.model;
 
-import static org.junit.Assert.assertEquals;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.joda.time.DateTime;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test calculations for an AbsoluteCalendarModel.
  * @author Bruce Nguyen
  */
-public class AbsoluteCalendarModelTest {
+class AbsoluteCalendarModelTest {
     @Test
-    public void test_Duration_Zero() {
+    void test_Duration_Zero() {
         long duration = CalendarModel.ABSOLUTE_CALENDAR.getDuration(
             DateTime.parse("2021-01-01T22:31:19.495+10:00").getMillis(),
             DateTime.parse("2021-01-01T22:31:19.495+10:00").getMillis()
@@ -42,7 +43,7 @@ public class AbsoluteCalendarModelTest {
     }
 
     @Test
-    public void test_Duration_Days() {
+    void test_Duration_Days() {
         long duration = CalendarModel.ABSOLUTE_CALENDAR.getDuration(
             DateTime.parse("2021-01-01T09:00:00.000+10:00").getMillis(),
             DateTime.parse("2021-01-02T09:00:00.000+10:00").getMillis()
@@ -51,7 +52,7 @@ public class AbsoluteCalendarModelTest {
     }
 
     @Test
-    public void test_Duration_Hours() {
+    void test_Duration_Hours() {
         long duration = CalendarModel.ABSOLUTE_CALENDAR.getDuration(
             DateTime.parse("2021-01-01T09:00:00.000+10:00").getMillis(),
             DateTime.parse("2021-01-01T10:00:00.000+10:00").getMillis()
@@ -60,7 +61,7 @@ public class AbsoluteCalendarModelTest {
     }
 
     @Test
-    public void test_Duration_Minutes() {
+    void test_Duration_Minutes() {
         long duration = CalendarModel.ABSOLUTE_CALENDAR.getDuration(
             DateTime.parse("2021-01-01T09:00:00.000+10:00").getMillis(),
             DateTime.parse("2021-01-01T09:01:00.000+10:00").getMillis()
@@ -69,7 +70,7 @@ public class AbsoluteCalendarModelTest {
     }
 
     @Test
-    public void test_Duration_Seconds() {
+    void test_Duration_Seconds() {
         long duration = CalendarModel.ABSOLUTE_CALENDAR.getDuration(
             DateTime.parse("2021-01-01T09:00:00.000+10:00").getMillis(),
             DateTime.parse("2021-01-01T09:00:01.000+10:00").getMillis()
@@ -78,7 +79,7 @@ public class AbsoluteCalendarModelTest {
     }
 
     @Test
-    public void test_Duration_Milliseconds() {
+    void test_Duration_Milliseconds() {
         long duration = CalendarModel.ABSOLUTE_CALENDAR.getDuration(
             DateTime.parse("2021-01-01T09:00:00.000+10:00").getMillis(),
             DateTime.parse("2021-01-01T09:00:00.001+10:00").getMillis()
@@ -88,7 +89,7 @@ public class AbsoluteCalendarModelTest {
     }
 
     @Test
-    public void test_Duration_Years() {
+    void test_Duration_Years() {
         long duration = CalendarModel.ABSOLUTE_CALENDAR.getDuration(
             DateTime.parse("2020-01-01T09:00:00.000+10:00").getMillis(),
             DateTime.parse("2021-01-01T09:00:00.000+10:00").getMillis()

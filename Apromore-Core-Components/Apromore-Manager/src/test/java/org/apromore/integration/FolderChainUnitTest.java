@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -30,13 +30,13 @@ import org.apromore.builder.FolderBuilder;
 import org.apromore.dao.FolderRepository;
 import org.apromore.dao.model.Folder;
 import org.apromore.service.FolderService;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-public class FolderChainUnitTest extends BaseTest {
+class FolderChainUnitTest extends BaseTest {
 
     @Autowired
     FolderRepository folderRepository;
@@ -46,8 +46,8 @@ public class FolderChainUnitTest extends BaseTest {
     @Autowired
     FolderService folderService;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
 	folderBuilder = new FolderBuilder();
     }
 
@@ -56,7 +56,7 @@ public class FolderChainUnitTest extends BaseTest {
  * Parentfolder 1 is moved to a new folder named parentt2, and all the chain should be updated.
  */
     @Test
-    public void testUpdateFolderChain() {
+    void testUpdateFolderChain() {
 //	Given
 	Folder folder1 = folderBuilder.withFolder("parent1", "parent1").build();
 	folder1.setParentFolderChain("0");
@@ -89,7 +89,7 @@ public class FolderChainUnitTest extends BaseTest {
     }
 
     @Test
-    public void testGetParentFolders() {
+    void testGetParentFolders() {
 
 //	Given
 	Folder folder1 = folderBuilder.withFolder("parent1", "parent1").build();
@@ -110,7 +110,7 @@ public class FolderChainUnitTest extends BaseTest {
     }
 
     @Test
-    public void testGetSubFolder() {
+    void testGetSubFolder() {
 
 //	Given
 	Folder folder1 = folderBuilder.withFolder("parent1", "parent1").build();
@@ -132,7 +132,7 @@ public class FolderChainUnitTest extends BaseTest {
     }
 
     @Test
-    public void testGetSubFolder1() {
+    void testGetSubFolder1() {
 
 //	Given
 	Folder folder1 = folderBuilder.withFolder("parent1", "parent1").build();

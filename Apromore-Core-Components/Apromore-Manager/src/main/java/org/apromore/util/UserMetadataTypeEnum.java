@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -43,7 +43,8 @@ public enum UserMetadataTypeEnum {
     DASH_TEMPLATE(5),
     SIMULATOR(6),
     FILTER_TEMPLATE(7),
-    PERSPECTIVE_TAG(8);
+    PERSPECTIVE_TAG(8),
+    COST_TABLE(9);
 
     private final Integer userMetadataTypeId;
 

@@ -1,5 +1,5 @@
 /*-
- * #%L This file is part of "Apromore Core". %% Copyright (C) 2018 - 2021 Apromore Pty Ltd. %% This
+ * #%L This file is part of "Apromore Core". %% Copyright (C) 2018 - 2022 Apromore Pty Ltd. %% This
  * program is free software: you can redistribute it and/or modify it under the terms of the GNU
  * Lesser General Public License as published by the Free Software Foundation, either version 3 of
  * the License, or (at your option) any later version.
@@ -23,15 +23,4 @@ public class TestConfig {
 
     @Autowired
     DataSource dataSource;
-
-    // @Bean
-    // public SpringLiquibase liquibase() throws ClassNotFoundException {
-    // SpringLiquibase liquibase = new SpringLiquibase();
-    // liquibase.setDataSource(dataSource);
-    // liquibase.setChangeLog("classpath:db/migration/changeLog.yaml");
-    // liquibase.setContexts("H2");
-    // // liquibase.setDropFirst(true);
-    // return liquibase;
-    // }
-
 }

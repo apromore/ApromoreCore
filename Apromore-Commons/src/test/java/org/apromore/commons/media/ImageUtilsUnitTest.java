@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,22 +21,21 @@
  */
 package org.apromore.commons.media;
 
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.awt.Dimension;
 import java.io.InputStream;
-import static org.junit.jupiter.api.Assertions.fail;
-import org.junit.Test;
-
-import org.apromore.commons.media.ImageUtils;
+import org.junit.jupiter.api.Test;
 
 /**
  * Various test utility for image
  */
-public final class ImageUtilsUnitTest {
+final class ImageUtilsUnitTest {
     private static String TEST_IMAGE_1 = "/image-10x10.png";
     private static String TEST_IMAGE_2 = "/image-20x10.jpg";
 
     @Test
-    public void getImageDimension_ShouldReturnCorrectDimension() throws Exception {
+    void getImageDimension_ShouldReturnCorrectDimension() throws Exception {
         InputStream is = this.getClass().getResourceAsStream(TEST_IMAGE_1);
         Dimension dim = ImageUtils.getImageDimension(is);
         if (dim.getWidth() != 10 || dim.getHeight() != 10) {
@@ -45,7 +44,7 @@ public final class ImageUtilsUnitTest {
     }
 
     @Test
-    public void getImageRatio_ShouldReturnCorrectRatio() throws Exception {
+    void getImageRatio_ShouldReturnCorrectRatio() throws Exception {
         InputStream is = this.getClass().getResourceAsStream(TEST_IMAGE_2);
         if (ImageUtils.getImageRatio(is) != 2.0) {
             fail("Invalid ratio for " + TEST_IMAGE_2);

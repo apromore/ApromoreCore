@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -33,11 +33,11 @@ import org.apromore.dao.model.Group;
 import org.apromore.dao.model.GroupLog;
 import org.apromore.dao.model.Log;
 import org.apromore.dao.model.Process;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class GroupProcessUnitTest extends BaseTestClass {
+class GroupProcessUnitTest extends BaseTestClass {
 
 
     private UserManagementBuilder userManagementBuilder;
@@ -51,13 +51,13 @@ public class GroupProcessUnitTest extends BaseTestClass {
     @Autowired
     private LogRepository logRepo;
 
-    @Before
-    public void before() {
+    @BeforeEach
+    void before() {
         userManagementBuilder = new UserManagementBuilder();
     }
 
     @Test
-    public void testCreateGroupLog() {
+    void testCreateGroupLog() {
 
         // Given
         AccessRights accessRights = new AccessRights(true, false, true);

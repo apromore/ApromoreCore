@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,27 +22,49 @@
 
 package org.apromore.service.impl;
 
-import junit.framework.Assert;
+import static org.easymock.EasyMock.expect;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.apromore.AbstractTest;
 import org.apromore.builder.UserManagementBuilder;
-import org.apromore.dao.*;
+import org.apromore.dao.FolderRepository;
+import org.apromore.dao.GroupFolderRepository;
+import org.apromore.dao.GroupLogRepository;
+import org.apromore.dao.GroupProcessRepository;
+import org.apromore.dao.GroupRepository;
+import org.apromore.dao.GroupUsermetadataRepository;
+import org.apromore.dao.LogRepository;
+import org.apromore.dao.ProcessRepository;
+import org.apromore.dao.UsermetadataRepository;
+import org.apromore.dao.model.AccessRights;
+import org.apromore.dao.model.Folder;
+import org.apromore.dao.model.Group;
+import org.apromore.dao.model.GroupFolder;
+import org.apromore.dao.model.GroupLog;
+import org.apromore.dao.model.GroupProcess;
+import org.apromore.dao.model.Log;
+import org.apromore.dao.model.NativeType;
 import org.apromore.dao.model.Process;
-import org.apromore.dao.model.*;
+import org.apromore.dao.model.Role;
+import org.apromore.dao.model.User;
+import org.apromore.dao.model.Workspace;
 import org.apromore.service.FolderService;
 import org.apromore.service.UserService;
 import org.apromore.service.WorkspaceService;
-import org.apromore.service.impl.AuthorizationServiceImpl;
 import org.apromore.util.AccessType;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.springframework.test.annotation.Rollback;
 
-import java.util.*;
-
-import static org.easymock.EasyMock.expect;
-
-public class AuthorizationServiceImplTest extends AbstractTest {
+class AuthorizationServiceImplTest extends AbstractTest {
 
     private AuthorizationServiceImpl authorizationService;
     private WorkspaceService workspaceService;
@@ -67,8 +89,8 @@ public class AuthorizationServiceImplTest extends AbstractTest {
     private Workspace wp;
     private NativeType nativeType;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
 
         groupUsermetadataRepository = createMock(GroupUsermetadataRepository.class);
         groupLogRepository = createMock(GroupLogRepository.class);
@@ -103,7 +125,7 @@ public class AuthorizationServiceImplTest extends AbstractTest {
 
     @Test
     @Rollback
-    public void testGetLogAccessType() {
+    void testGetLogAccessType() {
 
         // Set up test data
         Log log = createLog(user, createFolder("testFolder", null, wp));
@@ -128,13 +150,13 @@ public class AuthorizationServiceImplTest extends AbstractTest {
         result.put(group2, AccessType.EDITOR);
         result.put(group3, AccessType.VIEWER);
         result.put(group4, AccessType.RESTRICTED);
-        Assert.assertEquals(groupAccessTypeMap, result);
+        assertEquals(groupAccessTypeMap, result);
 
     }
 
     @Test
     @Rollback
-    public void testGetProcessAccessType() {
+    void testGetProcessAccessType() {
 
         // Set up test data
         Folder folder = createFolder("sourceFolder", null, wp);
@@ -160,12 +182,12 @@ public class AuthorizationServiceImplTest extends AbstractTest {
         result.put(group2, AccessType.EDITOR);
         result.put(group3, AccessType.VIEWER);
         result.put(group4, AccessType.RESTRICTED);
-        Assert.assertEquals(groupAccessTypeMap, result);
+        assertEquals(groupAccessTypeMap, result);
     }
 
     @Test
     @Rollback
-    public void testGetFolderAccessType() {
+    void testGetFolderAccessType() {
 
         // Set up test data
         Folder folder = createFolder("movedFolder", null, wp);
@@ -190,24 +212,24 @@ public class AuthorizationServiceImplTest extends AbstractTest {
         result.put(group2, AccessType.EDITOR);
         result.put(group3, AccessType.VIEWER);
         result.put(group4, AccessType.RESTRICTED);
-        Assert.assertEquals(groupAccessTypeMap, result);
+        assertEquals(groupAccessTypeMap, result);
     }
 
     @Test
     @Rollback
-    public void testGetLeastRestrictiveAccessType() {
+    void testGetLeastRestrictiveAccessType() {
         List<AccessType> accessTypes = new ArrayList<>();
         accessTypes.add(AccessType.RESTRICTED);
         accessTypes.add(AccessType.VIEWER);
         accessTypes.add(AccessType.EDITOR);
         accessTypes.add(AccessType.OWNER);
 
-        Assert.assertEquals(authorizationService.getLeastRestrictiveAccessType(accessTypes), AccessType.OWNER);
+        assertEquals(AccessType.OWNER, authorizationService.getLeastRestrictiveAccessType(accessTypes));
     }
 
     @Test
     @Rollback
-    public void testGetLeastRestrictiveAccessTypeAndGroup() {
+    void testGetLeastRestrictiveAccessTypeAndGroup() {
         Map<Group, AccessType> accessTypes = new HashMap<>();
         Map<Group, AccessType> result = new HashMap<>();
 
@@ -218,12 +240,12 @@ public class AuthorizationServiceImplTest extends AbstractTest {
 
         result.put(group4, AccessType.OWNER);
 
-        Assert.assertEquals(authorizationService.getLeastRestrictiveAccessTypeAndGroup(accessTypes), result);
+        assertEquals(authorizationService.getLeastRestrictiveAccessTypeAndGroup(accessTypes), result);
     }
 
     @Test
     @Rollback
-    public void testGetLeastRestrictiveAccessTypeAndGroupReturnMultiResult() {
+    void testGetLeastRestrictiveAccessTypeAndGroupReturnMultiResult() {
         Map<Group, AccessType> accessTypes = new HashMap<>();
         Map<Group, AccessType> result = new HashMap<>();
 
@@ -233,46 +255,46 @@ public class AuthorizationServiceImplTest extends AbstractTest {
         result.put(group1, AccessType.RESTRICTED);
         result.put(group2, AccessType.RESTRICTED);
 
-        Assert.assertEquals(authorizationService.getLeastRestrictiveAccessTypeAndGroup(accessTypes), result);
+        assertEquals(authorizationService.getLeastRestrictiveAccessTypeAndGroup(accessTypes), result);
     }
 
     @Test
     @Rollback
-    public void testGetLeastRestrictiveAccessType_False() {
+    void testGetLeastRestrictiveAccessType_False() {
         List<AccessType> accessTypes = new ArrayList<>();
         accessTypes.add(AccessType.VIEWER);
         accessTypes.add(AccessType.EDITOR);
         accessTypes.add(AccessType.OWNER);
 
-        Assert.assertNotSame(authorizationService.getLeastRestrictiveAccessType(accessTypes), AccessType.RESTRICTED);
+        assertNotSame(AccessType.RESTRICTED, authorizationService.getLeastRestrictiveAccessType(accessTypes));
     }
 
     @Test
     @Rollback
-    public void testGetMostRestrictiveAccessType() {
+    void testGetMostRestrictiveAccessType() {
         List<AccessType> accessTypes = new ArrayList<>();
         accessTypes.add(AccessType.VIEWER);
         accessTypes.add(AccessType.EDITOR);
         accessTypes.add(AccessType.OWNER);
 
-        Assert.assertEquals(authorizationService.getMostRestrictiveAccessType(accessTypes), AccessType.VIEWER);
+        assertEquals(AccessType.VIEWER, authorizationService.getMostRestrictiveAccessType(accessTypes));
     }
 
     @Test
     @Rollback
-    public void testGetMostRestrictiveAccessTypeReturnRestrictedViewer() {
+    void testGetMostRestrictiveAccessTypeReturnRestrictedViewer() {
         List<AccessType> accessTypes = new ArrayList<>();
         accessTypes.add(AccessType.RESTRICTED);
         accessTypes.add(AccessType.VIEWER);
         accessTypes.add(AccessType.EDITOR);
         accessTypes.add(AccessType.OWNER);
 
-        Assert.assertEquals(authorizationService.getMostRestrictiveAccessType(accessTypes), AccessType.RESTRICTED);
+        assertEquals(AccessType.RESTRICTED, authorizationService.getMostRestrictiveAccessType(accessTypes));
     }
 
     @Test
     @Rollback
-    public void testGetMostRestrictiveAccessTypeAndGroup() {
+    void testGetMostRestrictiveAccessTypeAndGroup() {
         Map<Group, AccessType> accessTypes = new HashMap<>();
         Map<Group, AccessType> result = new HashMap<>();
 
@@ -283,12 +305,12 @@ public class AuthorizationServiceImplTest extends AbstractTest {
 
         result.put(group1, AccessType.RESTRICTED);
 
-        Assert.assertEquals(authorizationService.getMostRestrictiveAccessTypeAndGroup(accessTypes), result);
+        assertEquals(authorizationService.getMostRestrictiveAccessTypeAndGroup(accessTypes), result);
     }
 
     @Test
     @Rollback
-    public void testGetMostRestrictiveAccessTypeAndGroupReturnMultiResult() {
+    void testGetMostRestrictiveAccessTypeAndGroupReturnMultiResult() {
         Map<Group, AccessType> accessTypes = new HashMap<>();
         Map<Group, AccessType> result = new HashMap<>();
 
@@ -298,12 +320,12 @@ public class AuthorizationServiceImplTest extends AbstractTest {
         result.put(group1, AccessType.OWNER);
         result.put(group2, AccessType.OWNER);
 
-        Assert.assertEquals(authorizationService.getMostRestrictiveAccessTypeAndGroup(accessTypes), result);
+        assertEquals(authorizationService.getMostRestrictiveAccessTypeAndGroup(accessTypes), result);
     }
 
     @Test
     @Rollback
-    public void testGetLogAccessTypeByUser() {
+    void testGetLogAccessTypeByUser() {
 
         UserManagementBuilder builder = new UserManagementBuilder();
 
@@ -335,12 +357,12 @@ public class AuthorizationServiceImplTest extends AbstractTest {
 
         // Verify Mock and result
         verifyAll();
-        Assert.assertEquals(accessType, AccessType.OWNER);
+        assertEquals(AccessType.OWNER, accessType);
     }
 
     @Test
     @Rollback
-    public void testGetLogsAccessTypeByUser() {
+    void testGetLogsAccessTypeByUser() {
 
         // Set up test data
         Log log1 = createLogWithId(1, user, createFolder("testFolder", null, wp));
@@ -378,13 +400,13 @@ public class AuthorizationServiceImplTest extends AbstractTest {
 
         // Verify Mock and result
         verifyAll();
-        Assert.assertEquals(accessType, AccessType.OWNER);
+        assertEquals(AccessType.OWNER, accessType);
     }
 
     @Test
     @Rollback
-    @Ignore
-    public void testGetLogsAccessTypeByUser_ReturnRESTRICTED() {
+    @Disabled
+    void testGetLogsAccessTypeByUser_ReturnRESTRICTED() {
 
         // Set up test data
         Log log1 = createLogWithId(1, user, createFolder("testFolder", null, wp));
@@ -418,12 +440,12 @@ public class AuthorizationServiceImplTest extends AbstractTest {
 
         // Verify Mock and result
         verifyAll();
-        Assert.assertEquals(accessType, AccessType.RESTRICTED);
+        assertEquals(AccessType.RESTRICTED, accessType);
     }
 
     @Test
     @Rollback
-    public void testGetLogsAccessTypeByUser_ReturnViewer() {
+    void testGetLogsAccessTypeByUser_ReturnViewer() {
 
         // Set up test data
         Log log1 = createLogWithId(1, user, createFolder("testFolder", null, wp));
@@ -460,13 +482,13 @@ public class AuthorizationServiceImplTest extends AbstractTest {
 
         // Verify Mock and result
         verifyAll();
-        Assert.assertEquals(accessType, AccessType.VIEWER);
+        assertEquals(AccessType.VIEWER, accessType);
     }
 
     @Test
-    @Ignore
+    @Disabled
     @Rollback
-    public void testGetLogsAccessTypeByUser_ReturnEditor() {
+    void testGetLogsAccessTypeByUser_ReturnEditor() {
 
         // Set up test data
         Log log1 = createLogWithId(1, user, createFolder("testFolder", null, wp));
@@ -501,12 +523,12 @@ public class AuthorizationServiceImplTest extends AbstractTest {
 
         // Verify Mock and result
         verifyAll();
-        Assert.assertEquals(accessType, null);
+        assertEquals(null, accessType);
     }
 
     @Test
     @Rollback
-    public void testGetLogsAccessTypeByUser_LogIds() {
+    void testGetLogsAccessTypeByUser_LogIds() {
 
         // Set up test data
         Log log1 = createLogWithId(1, user, createFolder("testFolder", null, wp));
@@ -547,13 +569,13 @@ public class AuthorizationServiceImplTest extends AbstractTest {
 
         // Verify Mock and result
         verifyAll();
-        Assert.assertEquals(accessType, AccessType.OWNER);
+        assertEquals(AccessType.OWNER, accessType);
     }
 
     @Test
     @Rollback
-    @Ignore
-    public void testGetLogsAccessTypeByUser_LogIds_ReturnNone() {
+    @Disabled
+    void testGetLogsAccessTypeByUser_LogIds_ReturnNone() {
 
         // Set up test data
         Log log1 = createLogWithId(1, user, createFolder("testFolder", null, wp));
@@ -591,12 +613,12 @@ public class AuthorizationServiceImplTest extends AbstractTest {
 
         // Verify Mock and result
         verifyAll();
-        Assert.assertEquals(accessType, AccessType.RESTRICTED);
+        assertEquals(AccessType.RESTRICTED, accessType);
     }
 
     @Test
     @Rollback
-    public void testGetLogAccessTypeByUser_ReturnNull() {
+    void testGetLogAccessTypeByUser_ReturnNull() {
 
         // Set up test data
         Log log = createLog(user, createFolder("testFolder", null, wp));
@@ -614,12 +636,12 @@ public class AuthorizationServiceImplTest extends AbstractTest {
 
         // Verify Mock and result
         verifyAll();
-        Assert.assertEquals(accessType, null);
+        assertEquals(null, accessType);
     }
 
     @Test
     @Rollback
-    public void testGetProcessAccessTypeByUser() {
+    void testGetProcessAccessTypeByUser() {
 
         // Set up test data
         Log log = createLog(user, createFolder("testFolder", null, wp));
@@ -648,12 +670,12 @@ public class AuthorizationServiceImplTest extends AbstractTest {
 
         // Verify Mock and result
         verifyAll();
-        Assert.assertEquals(accessType, AccessType.OWNER);
+        assertEquals(AccessType.OWNER, accessType);
     }
 
     @Test
     @Rollback
-    public void testGetFolderAccessTypeByUser() {
+    void testGetFolderAccessTypeByUser() {
 
         // Set up test data
         Folder folder = createFolder("testFolder", null, wp);
@@ -680,6 +702,6 @@ public class AuthorizationServiceImplTest extends AbstractTest {
 
         // Verify Mock and result
         verifyAll();
-        Assert.assertEquals(accessType, AccessType.OWNER);
+        assertEquals(AccessType.OWNER, accessType);
     }
 }

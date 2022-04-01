@@ -1,8 +1,8 @@
-/**
+/*-
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,20 +22,20 @@
 
 package org.apromore.processmining.models.graphbased.directed.bpmn;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class ModelCheckerTest {
+class ModelCheckerTest {
 
     @Test
-    public void testValidModel() throws Exception {
+    void testValidModel() throws Exception {
         BPMNDiagram diagram = getDiagramFromFile("d1_valid.bpmn");
         ModelCheckResult modelCheckResult = ModelChecker.MODEL_CHECKER_RESTRICTED.checkModel(diagram);
         assertTrue(modelCheckResult.isValid());
@@ -43,7 +43,7 @@ public class ModelCheckerTest {
     }
 
     @Test
-    public void testEmptyModel() throws Exception {
+    void testEmptyModel() throws Exception {
         BPMNDiagram diagram = getDiagramFromFile("empty_model.bpmn");
         ModelCheckResult modelCheckResult = ModelChecker.MODEL_CHECKER_RESTRICTED.checkModel(diagram);
         assertFalse(modelCheckResult.isValid());
@@ -51,7 +51,7 @@ public class ModelCheckerTest {
     }
 
     @Test
-    public void testModelWithPool() throws Exception {
+    void testModelWithPool() throws Exception {
         BPMNDiagram diagram = getDiagramFromFile("model_with_pool.bpmn");
         ModelCheckResult modelCheckResult = ModelChecker.MODEL_CHECKER_RELAXED.checkModel(diagram);
         assertTrue(modelCheckResult.isValid());
@@ -64,7 +64,7 @@ public class ModelCheckerTest {
     }
 
     @Test
-    public void testModelWithSelfLoopAndMultipleEventArcs() throws Exception {
+    void testModelWithSelfLoopAndMultipleEventArcs() throws Exception {
         BPMNDiagram diagram = getDiagramFromFile("self_loop.bpmn");
 
         ModelCheckResult modelCheckResult = ModelChecker.MODEL_CHECKER_RESTRICTED.checkModel(diagram);
@@ -78,7 +78,7 @@ public class ModelCheckerTest {
     }
 
     @Test
-    public void testModelDisjointedNodes() throws Exception {
+    void testModelDisjointedNodes() throws Exception {
         BPMNDiagram diagram = getDiagramFromFile("disjointed.bpmn");
         ModelCheckResult modelCheckResult = ModelChecker.MODEL_CHECKER_RESTRICTED.checkModel(diagram);
 
@@ -90,7 +90,7 @@ public class ModelCheckerTest {
     }
 
     @Test
-    public void testModelReverseSequenceFlow() throws Exception {
+    void testModelReverseSequenceFlow() throws Exception {
         BPMNDiagram diagram = getDiagramFromFile("start_end_reversed.bpmn");
         ModelCheckResult modelCheckResult = ModelChecker.MODEL_CHECKER_RESTRICTED.checkModel(diagram);
 

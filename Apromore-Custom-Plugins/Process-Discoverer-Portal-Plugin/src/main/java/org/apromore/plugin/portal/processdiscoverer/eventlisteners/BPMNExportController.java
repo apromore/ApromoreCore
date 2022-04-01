@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -25,8 +25,8 @@ package org.apromore.plugin.portal.processdiscoverer.eventlisteners;
 import static org.apromore.commons.item.Constants.HOME_FOLDER_NAME;
 
 import java.io.ByteArrayInputStream;
-import java.text.DateFormat;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -36,7 +36,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.logman.Constants;
-import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
 import org.apromore.plugin.portal.processdiscoverer.components.AbstractController;
 import org.apromore.plugin.portal.processdiscoverer.utils.InputDialog;
@@ -51,7 +50,6 @@ import org.apromore.processmining.plugins.bpmn.BpmnDefinitions;
 import org.apromore.processsimulation.dto.SimulationData;
 import org.apromore.processsimulation.service.SimulationInfoService;
 import org.apromore.zk.notification.Notification;
-import org.slf4j.Logger;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -79,7 +77,7 @@ import org.zkoss.zul.Window;
  */
 @Slf4j
 public class BPMNExportController extends AbstractController {
-    private static final Logger LOGGER = PortalLoggerFactory.getLogger(PDController.class);
+
     private static final String EVENT_QUEUE = BPMNExportController.class.getCanonicalName();
     private static final String CHANGE_DESCRIPTION = "CHANGE_DESCRIPTION";
     private static final String CHANGE_FRACTION_COMPLETE = "CHANGE_FRACTION_COMPLETE";
@@ -235,15 +233,15 @@ public class BPMNExportController extends AbstractController {
         BpmnDefinitions definitions = new BpmnDefinitions("definitions", definitionsBuilder);
 
         minedModel = ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            + "<definitions xmlns=\"http://www.omg.org/spec/BPMN/20100524/MODEL\"\n "
-            + "xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\"\n "
-            + "xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\"\n "
-            + "xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\"\n "
-            + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n "
-            + "targetNamespace=\"http://www.omg.org/bpmn20\"\n "
-            + "xsi:schemaLocation=\"http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd\">")
-            + definitions.exportElements()
-            + "</definitions>";
+                      + "<definitions xmlns=\"http://www.omg.org/spec/BPMN/20100524/MODEL\"\n "
+                      + "xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\"\n "
+                      + "xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\"\n "
+                      + "xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\"\n "
+                      + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n "
+                      + "targetNamespace=\"http://www.omg.org/bpmn20\"\n "
+                      + "xsi:schemaLocation=\"http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd\">")
+                     + definitions.exportElements()
+                     + "</definitions>";
 
         restoreDiagramAfterExport(diagram, labelMapping);
     }
@@ -318,15 +316,6 @@ public class BPMNExportController extends AbstractController {
             footnoteMessage,
             event -> {
                 if (event.getName().equals("onOK") || event.getName().equals("onOKChecked")) {
-                    if (event.getName().equals("onOKChecked")) {
-
-                        // Derive process simulation data
-                        SimulationData simulationData =
-                            controller.getProcessAnalyst().getSimulationData(bpmnAbstraction, controller.getUserOptions());
-
-                        // Enrich the exported bpmn with process simulation info
-                        minedModel = simulationInfoService.enrichWithSimulationInfo(minedModel, simulationData);
-                    }
 
                     String modelName = (String) event.getData();
                     String user = controller.getContextData().getUsername();
@@ -337,6 +326,18 @@ public class BPMNExportController extends AbstractController {
                     boolean publicModel = false;
 
                     try {
+
+                        if (event.getName().equals("onOKChecked")) {
+
+                            // Derive process simulation data
+                            SimulationData simulationData =
+                                controller.getProcessAnalyst().getSimulationData(
+                                    bpmnAbstraction, controller.getUserOptions());
+
+                            // Enrich the exported bpmn with process simulation info
+                            minedModel = simulationInfoService.enrichWithSimulationInfo(minedModel, simulationData);
+                        }
+
                         ProcessModelVersion pmv = controller.getProcessService().importProcess(user,
                             controller.getContextData().getFolderId(),
                             modelName,
@@ -358,10 +359,20 @@ public class BPMNExportController extends AbstractController {
                         Notification.info(notif);
                         controller.refreshPortal();
                     } catch (Exception ex) {
+
+                        String messageKey = "failedSaveModel_message";
+
+                        // TODO: Not an ideal way to handle validation errors.
+                        // Revisit this to throw a checked exception on constraint validation
+                        if (ex instanceof NullPointerException && ex.getMessage()
+                            .equals("calendarModel is marked non-null but is null")) {
+                            messageKey = "failedSaveModel_missingCalendar_message";
+                        }
+
                         Messagebox.show(
-                            parent.getLabel("failedSaveModel_message")
+                            parent.getLabel(messageKey)
                         );
-                        LOGGER.error("Error in saving model: ", ex);
+                        log.error("Error in saving model: ", ex);
                     }
                 }
             });

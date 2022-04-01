@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -292,12 +292,15 @@
 #ap-bpmn-icon-picker i {
   font-size: 14px;
   width: 22px;
+  height: 22px;
   box-sizing: border-box;
   display: inline-block;
   padding: 3px;
   background-color: #f0f0f0;
   border: 1px solid transparent;
   margin-right: 5px;
+  vertical-align: bottom;
+  position: relative;
 }
 
 #ap-bpmn-icon-set-picker i.selected,

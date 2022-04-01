@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,6 +22,10 @@
 
 package org.apromore.logman.attribute;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.apromore.logman.ALog;
 import org.apromore.logman.Constants;
 import org.deckfour.xes.factory.XFactory;
@@ -33,17 +37,16 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.ListIterable;
 import org.eclipse.collections.impl.factory.Lists;
 import org.joda.time.DateTime;
-import org.junit.Assert;
-import static org.junit.Assert.*;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class AttributeStoreTest {
-	public static long datetime1 = DateTime.now().getMillis();
+class AttributeStoreTest {
+	static long datetime1 = DateTime.now().getMillis();
 	
 	private AttributeStore createStoreFromEmptyLog() {
 		XFactory factory = new XFactoryNaiveImpl();
@@ -124,250 +127,250 @@ public class AttributeStoreTest {
 	}
 	
 	@Test
-	public void testGetAttribute() {
+	void testGetAttribute() {
 		AttributeStore store1 = this.createStoreFromEmptyLog();
-		Assert.assertEquals(null, store1.getAttribute(0));
+		assertEquals(null, store1.getAttribute(0));
 		
 		AttributeStore store2 = this.createStoreFromLogWithEmptyAttributes();
-		Assert.assertEquals(null, store2.getAttribute(0));
+		assertEquals(null, store2.getAttribute(0));
 		
 		AttributeStore store3 = this.createStoreFromLogOneTraceOneEventOneAttribute();
-		Assert.assertEquals(null, store3.getAttribute(100));
-		Assert.assertEquals("literal1", store3.getAttribute(0).getKey());
-		Assert.assertEquals(AttributeLevel.EVENT, store3.getAttribute(0).getLevel());
-		Assert.assertEquals(AttributeType.LITERAL, store3.getAttribute(0).getType());
+		assertEquals(null, store3.getAttribute(100));
+		assertEquals("literal1", store3.getAttribute(0).getKey());
+		assertEquals(AttributeLevel.EVENT, store3.getAttribute(0).getLevel());
+		assertEquals(AttributeType.LITERAL, store3.getAttribute(0).getType());
 	}
 
 	@Test
-	public void testGetAttributeIndexes() {
+	void testGetAttributeIndexes() {
 		AttributeStore store1 = this.createStoreFromEmptyLog();
-		Assert.assertArrayEquals(new int[] {}, store1.getAttributeIndexes());
+		assertArrayEquals(new int[] {}, store1.getAttributeIndexes());
 		
 		AttributeStore store2 = this.createStoreFromLogWithEmptyAttributes();
-		Assert.assertArrayEquals(new int[] {}, store2.getAttributeIndexes());
+		assertArrayEquals(new int[] {}, store2.getAttributeIndexes());
 		
 		AttributeStore store3 = this.createStoreFromLogOneTraceOneEventOneAttribute();
-		Assert.assertArrayEquals(new int[] {0}, store3.getAttributeIndexes());
+		assertArrayEquals(new int[] {0}, store3.getAttributeIndexes());
 		
 		AttributeStore store4 = this.createStoreFromLogWithTwoTracesTwoEventsFullSampleAttributes();
-		Assert.assertArrayEquals(new int[] {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14}, store4.getAttributeIndexes());
+		assertArrayEquals(new int[] {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14}, store4.getAttributeIndexes());
 	}
 
 	@Test
-	public void testGetAttributeWithKeyAndLevel() {
+	void testGetAttributeWithKeyAndLevel() {
 		AttributeStore store1 = this.createStoreFromEmptyLog();
-		Assert.assertEquals(null, store1.getAttribute("literal1", AttributeLevel.LOG));
+		assertEquals(null, store1.getAttribute("literal1", AttributeLevel.LOG));
 		
 		AttributeStore store2 = this.createStoreFromLogWithEmptyAttributes();
-		Assert.assertEquals(null, store2.getAttribute("literal1", AttributeLevel.LOG));
+		assertEquals(null, store2.getAttribute("literal1", AttributeLevel.LOG));
 		
 		AttributeStore store3 = this.createStoreFromLogOneTraceOneEventOneAttribute();
-		Assert.assertEquals(null, store3.getAttribute("literal1", AttributeLevel.LOG));
-		Assert.assertEquals("literal1", store3.getAttribute("literal1", AttributeLevel.EVENT).getKey());
-		Assert.assertEquals(AttributeLevel.EVENT, store3.getAttribute("literal1", AttributeLevel.EVENT).getLevel());
+		assertEquals(null, store3.getAttribute("literal1", AttributeLevel.LOG));
+		assertEquals("literal1", store3.getAttribute("literal1", AttributeLevel.EVENT).getKey());
+		assertEquals(AttributeLevel.EVENT, store3.getAttribute("literal1", AttributeLevel.EVENT).getLevel());
 	}
 
 	@Test
-	public void testGetAttributeWithXAttribute() {
+	void testGetAttributeWithXAttribute() {
 		XFactory factory = new XFactoryNaiveImpl();
 		XEvent event = factory.createEvent();
 		event.getAttributes().put("literal1", factory.createAttributeLiteral("literal1", "literalvalue1", null));
 		
 		AttributeStore store3 = this.createStoreFromLogOneTraceOneEventOneAttribute();
-		Assert.assertEquals("literal1", store3.getAttribute("literal1", AttributeLevel.EVENT).getKey());
-		Assert.assertEquals(AttributeLevel.EVENT, store3.getAttribute("literal1", AttributeLevel.EVENT).getLevel());
+		assertEquals("literal1", store3.getAttribute("literal1", AttributeLevel.EVENT).getKey());
+		assertEquals(AttributeLevel.EVENT, store3.getAttribute("literal1", AttributeLevel.EVENT).getLevel());
 	}
 
 	@Test
-	public void testGetAttributeIndex() {
+	void testGetAttributeIndex() {
 		AttributeStore store1 = this.createStoreFromLogOneTraceOneEventOneAttribute();
 		
 		AbstractAttribute att = store1.getAttribute("literal1", AttributeLevel.EVENT);
-		Assert.assertEquals(0, store1.getAttributeIndex(att));
+		assertEquals(0, store1.getAttributeIndex(att));
 		
 		AttributeStore store2 = this.createStoreFromLogWithEmptyAttributes();
-		Assert.assertEquals(-1, store2.getAttributeIndex(att));
+		assertEquals(-1, store2.getAttributeIndex(att));
 	}
 
 	@Test
-	public void testGetAttributeIndexWithKeyLevel() {
+	void testGetAttributeIndexWithKeyLevel() {
 		AttributeStore store1 = this.createStoreFromLogOneTraceOneEventOneAttribute();
 		
-		Assert.assertEquals(0, store1.getAttributeIndex("literal1", AttributeLevel.EVENT));
+		assertEquals(0, store1.getAttributeIndex("literal1", AttributeLevel.EVENT));
 		
-		Assert.assertEquals(-1, store1.getAttributeIndex("literal2", AttributeLevel.EVENT));
+		assertEquals(-1, store1.getAttributeIndex("literal2", AttributeLevel.EVENT));
 		
-		Assert.assertEquals(-1, store1.getAttributeIndex("literal1", AttributeLevel.TRACE));
+		assertEquals(-1, store1.getAttributeIndex("literal1", AttributeLevel.TRACE));
 		
 		AttributeStore store2 = this.createStoreFromLogWithEmptyAttributes();
-		Assert.assertEquals(-1, store2.getAttributeIndex("literal1", AttributeLevel.EVENT));	
+		assertEquals(-1, store2.getAttributeIndex("literal1", AttributeLevel.EVENT));	
 	}
 
 	@Test
-	public void testGetAttributeIndexWithXAttribute() {
+	void testGetAttributeIndexWithXAttribute() {
 		XFactory factory = new XFactoryNaiveImpl();
 		XEvent event = factory.createEvent();
 		event.getAttributes().put("literal1", factory.createAttributeLiteral("literal1", "literalvalue1", null));
 		
 		AttributeStore store1 = this.createStoreFromLogOneTraceOneEventOneAttribute();
-		Assert.assertEquals(0, store1.getAttributeIndex(event.getAttributes().get("literal1"), event));
+		assertEquals(0, store1.getAttributeIndex(event.getAttributes().get("literal1"), event));
 	}
 
 	@Test
-	public void testGetAttributes() {
+	void testGetAttributes() {
 		AttributeStore store1 = this.createStoreFromEmptyLog();
-		Assert.assertEquals(Lists.immutable.empty(), store1.getLogAttributes());
-		Assert.assertEquals(Lists.immutable.empty(), store1.getTraceAttributes());
-		Assert.assertEquals(Lists.immutable.empty(), store1.getEventAttributes());
+		assertEquals(Lists.immutable.empty(), store1.getLogAttributes());
+		assertEquals(Lists.immutable.empty(), store1.getTraceAttributes());
+		assertEquals(Lists.immutable.empty(), store1.getEventAttributes());
 		
-		Assert.assertEquals(Lists.immutable.empty(), store1.getLiteralAttributes());
-		Assert.assertEquals(Lists.immutable.empty(), store1.getBooleanAttributes());
-		Assert.assertEquals(Lists.immutable.empty(), store1.getDiscreteAttributes());
-		Assert.assertEquals(Lists.immutable.empty(), store1.getContinuousAttributes());
-		Assert.assertEquals(Lists.immutable.empty(), store1.getTimestampAttributes());
+		assertEquals(Lists.immutable.empty(), store1.getLiteralAttributes());
+		assertEquals(Lists.immutable.empty(), store1.getBooleanAttributes());
+		assertEquals(Lists.immutable.empty(), store1.getDiscreteAttributes());
+		assertEquals(Lists.immutable.empty(), store1.getContinuousAttributes());
+		assertEquals(Lists.immutable.empty(), store1.getTimestampAttributes());
 		
 		AttributeStore store2 = this.createStoreFromLogWithEmptyAttributes();
-		Assert.assertEquals(Lists.immutable.empty(), store2.getLogAttributes());
-		Assert.assertEquals(Lists.immutable.empty(), store2.getTraceAttributes());
-		Assert.assertEquals(Lists.immutable.empty(), store2.getEventAttributes());
+		assertEquals(Lists.immutable.empty(), store2.getLogAttributes());
+		assertEquals(Lists.immutable.empty(), store2.getTraceAttributes());
+		assertEquals(Lists.immutable.empty(), store2.getEventAttributes());
 		
-		Assert.assertEquals(Lists.immutable.empty(), store2.getLiteralAttributes());
-		Assert.assertEquals(Lists.immutable.empty(), store2.getBooleanAttributes());
-		Assert.assertEquals(Lists.immutable.empty(), store2.getDiscreteAttributes());
-		Assert.assertEquals(Lists.immutable.empty(), store2.getContinuousAttributes());
-		Assert.assertEquals(Lists.immutable.empty(), store2.getTimestampAttributes());		
+		assertEquals(Lists.immutable.empty(), store2.getLiteralAttributes());
+		assertEquals(Lists.immutable.empty(), store2.getBooleanAttributes());
+		assertEquals(Lists.immutable.empty(), store2.getDiscreteAttributes());
+		assertEquals(Lists.immutable.empty(), store2.getContinuousAttributes());
+		assertEquals(Lists.immutable.empty(), store2.getTimestampAttributes());		
 		
 		AttributeStore store3 = this.createStoreFromLogOneTraceOneEventOneAttribute();
-		Assert.assertEquals(Lists.immutable.empty(), store3.getLogAttributes());
-		Assert.assertEquals(Lists.immutable.empty(), store3.getTraceAttributes());
+		assertEquals(Lists.immutable.empty(), store3.getLogAttributes());
+		assertEquals(Lists.immutable.empty(), store3.getTraceAttributes());
 		ImmutableList<AbstractAttribute> atts = store3.getEventAttributes();
-		Assert.assertEquals(1, atts.size());
-		Assert.assertEquals("literal1", atts.get(0).getKey());
-		Assert.assertEquals(AttributeLevel.EVENT, atts.get(0).getLevel());
-		Assert.assertEquals(AttributeType.LITERAL, atts.get(0).getType());
+		assertEquals(1, atts.size());
+		assertEquals("literal1", atts.get(0).getKey());
+		assertEquals(AttributeLevel.EVENT, atts.get(0).getLevel());
+		assertEquals(AttributeType.LITERAL, atts.get(0).getType());
 		
-		Assert.assertEquals(1, store3.getLiteralAttributes().size());
-		Assert.assertEquals(Lists.immutable.empty(), store3.getBooleanAttributes());
-		Assert.assertEquals(Lists.immutable.empty(), store3.getDiscreteAttributes());
-		Assert.assertEquals(Lists.immutable.empty(), store3.getContinuousAttributes());
-		Assert.assertEquals(Lists.immutable.empty(), store3.getTimestampAttributes());		
+		assertEquals(1, store3.getLiteralAttributes().size());
+		assertEquals(Lists.immutable.empty(), store3.getBooleanAttributes());
+		assertEquals(Lists.immutable.empty(), store3.getDiscreteAttributes());
+		assertEquals(Lists.immutable.empty(), store3.getContinuousAttributes());
+		assertEquals(Lists.immutable.empty(), store3.getTimestampAttributes());		
 		
 		AttributeStore store4 = this.createStoreFromLogWithTwoTracesTwoEventsFullSampleAttributes();
 		ImmutableList<AbstractAttribute> store4logatts = store4.getLogAttributes();
-		Assert.assertEquals(5, store4logatts.size());
-		Assert.assertEquals(AttributeLevel.LOG, store4logatts.get(0).getLevel());
+		assertEquals(5, store4logatts.size());
+		assertEquals(AttributeLevel.LOG, store4logatts.get(0).getLevel());
 		
 		ImmutableList<AbstractAttribute> store4traceatts = store4.getTraceAttributes();
-		Assert.assertEquals(5, store4traceatts.size());
-		Assert.assertEquals(AttributeLevel.TRACE, store4traceatts.get(0).getLevel());
+		assertEquals(5, store4traceatts.size());
+		assertEquals(AttributeLevel.TRACE, store4traceatts.get(0).getLevel());
 		
 		ImmutableList<AbstractAttribute> store4eventatts = store4.getEventAttributes();
-		Assert.assertEquals(5, store4eventatts.size());
-		Assert.assertEquals(AttributeLevel.EVENT, store4eventatts.get(0).getLevel());
+		assertEquals(5, store4eventatts.size());
+		assertEquals(AttributeLevel.EVENT, store4eventatts.get(0).getLevel());
 		
-		Assert.assertEquals(3, store4.getLiteralAttributes().size());
-		Assert.assertEquals(3, store4.getBooleanAttributes().size());
-		Assert.assertEquals(3, store4.getDiscreteAttributes().size());
-		Assert.assertEquals(3, store4.getContinuousAttributes().size());
-		Assert.assertEquals(3, store4.getTimestampAttributes().size());	
+		assertEquals(3, store4.getLiteralAttributes().size());
+		assertEquals(3, store4.getBooleanAttributes().size());
+		assertEquals(3, store4.getDiscreteAttributes().size());
+		assertEquals(3, store4.getContinuousAttributes().size());
+		assertEquals(3, store4.getTimestampAttributes().size());	
 	}
 	
 	@Test
-	public void testGetAttributesWithValue() {
+	void testGetAttributesWithValue() {
 		AttributeStore store1 = this.createStoreFromLogWithTwoTracesTwoEventsFullSampleAttributes();
 		
 		ImmutableList<AbstractAttribute> literalAtts = store1.getLiteralAttributesWithValues(new String[]{"noexist"});
-		Assert.assertEquals(0, literalAtts.size());
+		assertEquals(0, literalAtts.size());
 		literalAtts = store1.getLiteralAttributesWithValues(new String[]{"literalvalue1"});
-		Assert.assertEquals(3, literalAtts.size());
+		assertEquals(3, literalAtts.size());
 		
 		ImmutableList<AbstractAttribute> booleanAtts = store1.getBooleanAttributesWithValues(new Boolean[]{false});
-		Assert.assertEquals(0, booleanAtts.size());
+		assertEquals(0, booleanAtts.size());
 		booleanAtts = store1.getBooleanAttributesWithValues(new Boolean[]{true});
-		Assert.assertEquals(3, booleanAtts.size());
+		assertEquals(3, booleanAtts.size());
 		
 		ImmutableList<AbstractAttribute> longAtts = store1.getDiscreteAttributesWithValues(new Long[]{200L});
-		Assert.assertEquals(0, longAtts.size());
+		assertEquals(0, longAtts.size());
 		longAtts = store1.getDiscreteAttributesWithValues(new Long[]{100L});
-		Assert.assertEquals(3, longAtts.size());
+		assertEquals(3, longAtts.size());
 		
 		ImmutableList<AbstractAttribute> doubleAtts = store1.getContinuousAttributesWithValue(1000d);
-		Assert.assertEquals(0, doubleAtts.size());
+		assertEquals(0, doubleAtts.size());
 		doubleAtts = store1.getContinuousAttributesWithValue(100.1d);
-		Assert.assertEquals(3, doubleAtts.size());
+		assertEquals(3, doubleAtts.size());
 		
 		ImmutableList<AbstractAttribute> tmpAtts = store1.getTimestampAttributesWithValue(DateTime.now().getMillis());
-		Assert.assertEquals(0, tmpAtts.size());
+		assertEquals(0, tmpAtts.size());
 		tmpAtts = store1.getTimestampAttributesWithValue(datetime1);
-		Assert.assertEquals(3, tmpAtts.size());
+		assertEquals(3, tmpAtts.size());
 	}
 
 
 	@Test
-	public void testGetStandardAttributes() {
+	void testGetStandardAttributes() {
 		AttributeStore store1 = this.createStoreFromEmptyLog();
-		Assert.assertEquals(null, store1.getStandardEventConceptName());
-		Assert.assertEquals(null, store1.getStandardEventGroup());
-		Assert.assertEquals(null, store1.getStandardEventLifecycleTransition());
-		Assert.assertEquals(null, store1.getStandardEventResource());
-		Assert.assertEquals(null, store1.getStandardEventRole());
-		Assert.assertEquals(null, store1.getStandardEventTimestamp());
-		Assert.assertEquals(null, store1.getStandardLogConceptName());
-		Assert.assertEquals(null, store1.getStandardTraceConceptName());
+		assertEquals(null, store1.getStandardEventConceptName());
+		assertEquals(null, store1.getStandardEventGroup());
+		assertEquals(null, store1.getStandardEventLifecycleTransition());
+		assertEquals(null, store1.getStandardEventResource());
+		assertEquals(null, store1.getStandardEventRole());
+		assertEquals(null, store1.getStandardEventTimestamp());
+		assertEquals(null, store1.getStandardLogConceptName());
+		assertEquals(null, store1.getStandardTraceConceptName());
 		
 		AttributeStore store2 = this.createStoreFromLogWithEmptyAttributes();
-		Assert.assertEquals(null, store2.getStandardEventConceptName());
-		Assert.assertEquals(null, store2.getStandardEventGroup());
-		Assert.assertEquals(null, store2.getStandardEventLifecycleTransition());
-		Assert.assertEquals(null, store2.getStandardEventResource());
-		Assert.assertEquals(null, store2.getStandardEventRole());
-		Assert.assertEquals(null, store2.getStandardEventTimestamp());
-		Assert.assertEquals(null, store2.getStandardLogConceptName());
-		Assert.assertEquals(null, store2.getStandardTraceConceptName());
+		assertEquals(null, store2.getStandardEventConceptName());
+		assertEquals(null, store2.getStandardEventGroup());
+		assertEquals(null, store2.getStandardEventLifecycleTransition());
+		assertEquals(null, store2.getStandardEventResource());
+		assertEquals(null, store2.getStandardEventRole());
+		assertEquals(null, store2.getStandardEventTimestamp());
+		assertEquals(null, store2.getStandardLogConceptName());
+		assertEquals(null, store2.getStandardTraceConceptName());
 		
 		AttributeStore store3 = this.createStoreFromLogWithOneTracesTwoEventsStandardAttributes();
 		
-		Assert.assertEquals(Constants.ATT_KEY_CONCEPT_NAME, store3.getStandardEventConceptName().getKey());
-		Assert.assertEquals(AttributeLevel.EVENT, store3.getStandardEventConceptName().getLevel());
-		Assert.assertEquals(AttributeType.LITERAL, store3.getStandardEventConceptName().getType());
+		assertEquals(Constants.ATT_KEY_CONCEPT_NAME, store3.getStandardEventConceptName().getKey());
+		assertEquals(AttributeLevel.EVENT, store3.getStandardEventConceptName().getLevel());
+		assertEquals(AttributeType.LITERAL, store3.getStandardEventConceptName().getType());
 		
-		Assert.assertEquals(Constants.ATT_KEY_GROUP, store3.getStandardEventGroup().getKey());
-		Assert.assertEquals(AttributeLevel.EVENT, store3.getStandardEventGroup().getLevel());
-		Assert.assertEquals(AttributeType.LITERAL, store3.getStandardEventGroup().getType());
+		assertEquals(Constants.ATT_KEY_GROUP, store3.getStandardEventGroup().getKey());
+		assertEquals(AttributeLevel.EVENT, store3.getStandardEventGroup().getLevel());
+		assertEquals(AttributeType.LITERAL, store3.getStandardEventGroup().getType());
 		
-		Assert.assertEquals(Constants.ATT_KEY_RESOURCE, store3.getStandardEventResource().getKey());
-		Assert.assertEquals(AttributeLevel.EVENT, store3.getStandardEventResource().getLevel());
-		Assert.assertEquals(AttributeType.LITERAL, store3.getStandardEventResource().getType());
+		assertEquals(Constants.ATT_KEY_RESOURCE, store3.getStandardEventResource().getKey());
+		assertEquals(AttributeLevel.EVENT, store3.getStandardEventResource().getLevel());
+		assertEquals(AttributeType.LITERAL, store3.getStandardEventResource().getType());
 		
-		Assert.assertEquals(Constants.ATT_KEY_ROLE, store3.getStandardEventRole().getKey());
-		Assert.assertEquals(AttributeLevel.EVENT, store3.getStandardEventRole().getLevel());
-		Assert.assertEquals(AttributeType.LITERAL, store3.getStandardEventRole().getType());
+		assertEquals(Constants.ATT_KEY_ROLE, store3.getStandardEventRole().getKey());
+		assertEquals(AttributeLevel.EVENT, store3.getStandardEventRole().getLevel());
+		assertEquals(AttributeType.LITERAL, store3.getStandardEventRole().getType());
 		
-		Assert.assertEquals(Constants.ATT_KEY_LIFECYCLE_TRANSITION, store3.getStandardEventLifecycleTransition().getKey());
-		Assert.assertEquals(AttributeLevel.EVENT, store3.getStandardEventLifecycleTransition().getLevel());
-		Assert.assertEquals(AttributeType.LITERAL, store3.getStandardEventLifecycleTransition().getType());
+		assertEquals(Constants.ATT_KEY_LIFECYCLE_TRANSITION, store3.getStandardEventLifecycleTransition().getKey());
+		assertEquals(AttributeLevel.EVENT, store3.getStandardEventLifecycleTransition().getLevel());
+		assertEquals(AttributeType.LITERAL, store3.getStandardEventLifecycleTransition().getType());
 		
-		Assert.assertEquals(Constants.ATT_KEY_TIMESTAMP, store3.getStandardEventTimestamp().getKey());
-		Assert.assertEquals(AttributeLevel.EVENT, store3.getStandardEventTimestamp().getLevel());
-		Assert.assertEquals(AttributeType.TIMESTAMP, store3.getStandardEventTimestamp().getType());
+		assertEquals(Constants.ATT_KEY_TIMESTAMP, store3.getStandardEventTimestamp().getKey());
+		assertEquals(AttributeLevel.EVENT, store3.getStandardEventTimestamp().getLevel());
+		assertEquals(AttributeType.TIMESTAMP, store3.getStandardEventTimestamp().getType());
 		
-		Assert.assertEquals(Constants.ATT_KEY_CONCEPT_NAME, store3.getStandardLogConceptName().getKey());
-		Assert.assertEquals(AttributeLevel.LOG, store3.getStandardLogConceptName().getLevel());
-		Assert.assertEquals(AttributeType.LITERAL, store3.getStandardLogConceptName().getType());
+		assertEquals(Constants.ATT_KEY_CONCEPT_NAME, store3.getStandardLogConceptName().getKey());
+		assertEquals(AttributeLevel.LOG, store3.getStandardLogConceptName().getLevel());
+		assertEquals(AttributeType.LITERAL, store3.getStandardLogConceptName().getType());
 		
-		Assert.assertEquals(Constants.ATT_KEY_CONCEPT_NAME, store3.getStandardTraceConceptName().getKey());
-		Assert.assertEquals(AttributeLevel.TRACE, store3.getStandardTraceConceptName().getLevel());
-		Assert.assertEquals(AttributeType.LITERAL, store3.getStandardTraceConceptName().getType());
+		assertEquals(Constants.ATT_KEY_CONCEPT_NAME, store3.getStandardTraceConceptName().getKey());
+		assertEquals(AttributeLevel.TRACE, store3.getStandardTraceConceptName().getLevel());
+		assertEquals(AttributeType.LITERAL, store3.getStandardTraceConceptName().getType());
 		
-		Assert.assertEquals(7, store3.getLiteralAttributes().size());
-		Assert.assertEquals(0, store3.getBooleanAttributes().size());
-		Assert.assertEquals(0, store3.getDiscreteAttributes().size());
-		Assert.assertEquals(0, store3.getContinuousAttributes().size());
-		Assert.assertEquals(1, store3.getTimestampAttributes().size());	
+		assertEquals(7, store3.getLiteralAttributes().size());
+		assertEquals(0, store3.getBooleanAttributes().size());
+		assertEquals(0, store3.getDiscreteAttributes().size());
+		assertEquals(0, store3.getContinuousAttributes().size());
+		assertEquals(1, store3.getTimestampAttributes().size());	
 	}
 
 	@Test
-	public void testGetPerspectiveEventAttributes() {
+	void testGetPerspectiveEventAttributes() {
 		// Empty log
 		AttributeStore store1 = this.createStoreFromEmptyLog();
 		assertEquals(0, store1.getPerspectiveEventAttributes(100, Arrays.asList(new String[] {"concept:name"})).size());

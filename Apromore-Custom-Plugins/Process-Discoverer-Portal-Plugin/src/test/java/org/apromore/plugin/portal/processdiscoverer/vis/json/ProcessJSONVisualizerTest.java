@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,7 +22,7 @@
 
 package org.apromore.plugin.portal.processdiscoverer.vis.json;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.apromore.logman.ALog;
 import org.apromore.logman.attribute.graph.MeasureAggregation;
@@ -37,14 +37,14 @@ import org.deckfour.xes.model.XLog;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class ProcessJSONVisualizerTest extends TestDataSetup {
+class ProcessJSONVisualizerTest extends TestDataSetup {
     private String NODE_KEY = "shape";
     private String[] nodeCompareKeys = new String[] {"name", "oriname"};
     private String[] edgeCompareKeys = new String[] {"style", "label"};
     
-    public boolean findSimilarNodeObject(JSONObject node, JSONArray array) throws JSONException {
+    private boolean findSimilarNodeObject(JSONObject node, JSONArray array) throws JSONException {
         for (int i=0; i<array.length(); i++) {
             JSONObject data = array.getJSONObject(i).getJSONObject("data");
             if (data.has(NODE_KEY)) {
@@ -147,7 +147,7 @@ public class ProcessJSONVisualizerTest extends TestDataSetup {
     }
     
     @Test
-    public void testGenerateJSON_DFG_Frequency() {
+    void testGenerateJSON_DFG_Frequency() {
         try {
             OutputData output = discoverProcess(readLogWithStartCompleteEventsNonOverlapping(),
                                                 100, 100, 40,
@@ -173,7 +173,7 @@ public class ProcessJSONVisualizerTest extends TestDataSetup {
     }
     
     @Test
-    public void testGenerateJSON_DFG_Duration() {
+    void testGenerateJSON_DFG_Duration() {
         try {
             OutputData output = discoverProcess(readLogWithStartCompleteEventsNonOverlapping(),
                                                 100, 100, 40,
@@ -199,7 +199,7 @@ public class ProcessJSONVisualizerTest extends TestDataSetup {
     }
     
     @Test
-    public void testGenerateJSON_DFG_Frequency_DoubleWeight() {
+    void testGenerateJSON_DFG_Frequency_DoubleWeight() {
         try {
             OutputData output = discoverProcess(readLogWithStartCompleteEventsNonOverlapping(),
                                                 100, 100, 40,
@@ -225,7 +225,7 @@ public class ProcessJSONVisualizerTest extends TestDataSetup {
     }
     
     @Test
-    public void testGenerateJSON_BPMN_Frequency() {
+    void testGenerateJSON_BPMN_Frequency() {
         try {
             OutputData output = discoverProcess(readLogWithStartCompleteEventsNonOverlapping(),
                                                 100, 100, 40,
@@ -251,7 +251,7 @@ public class ProcessJSONVisualizerTest extends TestDataSetup {
     }
     
     @Test
-    public void testGenerateJSON_BPMN_Duration() {
+    void testGenerateJSON_BPMN_Duration() {
         try {
             OutputData output = discoverProcess(readLogWithStartCompleteEventsNonOverlapping(),
                                                 100, 100, 40,
@@ -277,7 +277,7 @@ public class ProcessJSONVisualizerTest extends TestDataSetup {
     }
     
     @Test
-    public void testGenerateJSON_BPMN_Frequency_DoubleWeight() {
+    void testGenerateJSON_BPMN_Frequency_DoubleWeight() {
         try {
             OutputData output = discoverProcess(readLogWithStartCompleteEventsNonOverlapping(),
                                                 100, 100, 40,

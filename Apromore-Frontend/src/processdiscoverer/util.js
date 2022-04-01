@@ -73,6 +73,7 @@ PDp.toggleOptions = function() {
         options.slideUp(300, function () {
             cy.css({top: '0px'});
             r.resize();
+            $(window).trigger('resize'); // to make sure other components will redraw as well
         });
     } else {
         up.show();
@@ -80,6 +81,7 @@ PDp.toggleOptions = function() {
         options.slideDown(300, function () {
             cy.css({top: height + 'px'});
             r.resize();
+            $(window).trigger('resize'); // to make sure other components will redraw as well
         });
     }
 }

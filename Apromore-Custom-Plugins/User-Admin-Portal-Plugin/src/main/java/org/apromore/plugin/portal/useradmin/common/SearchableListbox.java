@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -194,17 +194,21 @@ public class SearchableListbox {
     }
 
     public void selectAll() {
-        listbox.selectAll();
-        listbox.getItemAtIndex(0).setFocus(true);
-        listModel.clearSelection();
-        getListModel().getInnerList().forEach(li -> listModel.addToSelection(li));
-        updateCounts();
+        if (listbox != null && listModel != null && !listbox.getItems().isEmpty()) {
+            listbox.selectAll();
+            listbox.getItemAtIndex(0).setFocus(true);
+            listModel.clearSelection();
+            getListModel().getInnerList().forEach(li -> listModel.addToSelection(li));
+            updateCounts();
+        }
     }
 
     public void unselectAll() {
-        listbox.clearSelection();
-        listModel.clearSelection();
-        updateCounts();
+        if (listbox != null && listModel != null) {
+            listbox.clearSelection();
+            listModel.clearSelection();
+            updateCounts();
+        }
     }
 
     public Set<Listitem> getSelectedItems() {

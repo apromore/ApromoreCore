@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -167,6 +167,7 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
     private ListModelList<HolidayModel> holidayListModel;
     private ListModelList<HolidayModel> holidayCustomListModel;
     private ListModelList<Zone> zoneModel;
+    Zone selectedZone = null;
 
     EventQueue<Event> localCalendarEventQueue;
 
@@ -284,7 +285,7 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
         Set<String> zoneIds = ZoneId.getAvailableZoneIds();
         zoneModel = new ListModelList<>();
 
-        Zone selectedZone = null;
+        selectedZone = null;
         for (String id : zoneIds) {
             ZoneId zoneId = ZoneId.of(id);
             Zone currentZone = new Zone(zoneId.getId(), getZoneDisplayDescription(zoneId));
@@ -303,9 +304,11 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
         ListModel listSubModel = ListModels.toListSubModel(zoneModel, zoneComparator, zoneIds.size());
         zoneCombobox.setModel(listSubModel);
         zoneCombobox.addEventListener("onClientTimeZone", (Event event) -> {
-            if (zoneModel.getSelection().isEmpty()) {
+            if (zoneModel.getSelection().isEmpty()
+                || (selectedZone != null && !ZoneOffset.UTC.getId().equals(selectedZone.getId()))) {
                 return;
             }
+
             String zoneId = (String) event.getData();
             int zoneIdx = zoneModel.indexOf(new Zone(zoneId, getZoneDisplayDescription(ZoneId.of(zoneId))));
             if (zoneIdx != -1) {
@@ -575,8 +578,7 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
             try {
                 List<HolidayModel> allHolidays = new ArrayList<>((List<HolidayModel>) holidayListbox.getModel());
                 allHolidays.addAll((List<HolidayModel>) holidayCustomListbox.getModel());
-                calendarService.updateZoneInfo(calendarId,
-                    ((Zone) zoneCombobox.getModel().getElementAt(zoneCombobox.getSelectedIndex())).getId());
+                calendarService.updateZoneInfo(calendarId, zoneModel.getSelection().iterator().next().getId());
                 calendarService.updateWorkDays(calendarId, (List<WorkDayModel>) dayOfWeekListbox.getModel());
                 calendarService.updateHoliday(calendarId, allHolidays);
             } catch (CalendarNotExistsException e) {

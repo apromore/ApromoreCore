@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -44,7 +44,7 @@ import org.deckfour.xes.model.XLog;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONTokener;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -72,8 +72,8 @@ public class TestDataSetup {
         return analyst;
     }
 
-    @Before
-    public void init() {
+    @BeforeEach
+    void init() {
         MockitoAnnotations.openMocks(this);
     }
 

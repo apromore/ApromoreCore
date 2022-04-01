@@ -1,8 +1,8 @@
-/**
+/*-
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,7 +23,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -118,6 +118,16 @@ public class WorkDayModel {
         return totalDuration;
     }
 
+    public long getStartTimeInMillis() {
+        return startTime.getHour() * 3600000L + startTime.getMinute() * 60000L + startTime.getSecond() * 1000L
+            + startTime.getNano() / 1000L;
+    }
+
+    public long getEndTimeInMillis() {
+        return endTime.getHour() * 3600000L + endTime.getMinute() * 60000L + endTime.getSecond() * 1000L
+            + endTime.getNano() / 1000L;
+    }
+
     /**
      * Get workday instances with its duration between two dates.
      *
@@ -183,5 +193,4 @@ public class WorkDayModel {
         return Duration.between(startTime.toLocalTime().isAfter(periodEnd) ? periodEnd : startTime.toLocalTime(),
             endTime.toLocalTime().isAfter(periodEnd) ? periodEnd : endTime.toLocalTime());
     }
-
 }

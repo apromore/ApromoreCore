@@ -2,7 +2,7 @@
   #%L
   This file is part of "Apromore Core".
   %%
-  Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+  Copyright (C) 2018 - 2022 Apromore Pty Ltd.
   %%
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Lesser General Public License as
@@ -56,12 +56,21 @@
         <div sclass="ap-portal-menu-actions" hflex="1" height="40px"
              style="box-sizing: border-box; padding: 8px;">
             <div id="assigneeAddView">
-                <combobox id="candidateAssigneeCombobox" placeholder="${$composer.labels.selectUserOrGroup_text}">
+                <combobox id="candidateAssigneeCombobox"
+                          placeholder="${$composer.labels.selectUserOrGroup_text}"
+                          forward="onOK=candidateAssigneeAdd.onClick"
+                >
                     <template name="model">
                         <comboitem sclass="type-${each.type}" label="${each.name}"/>
                     </template>
                 </combobox>
-                <textbox id="candidateAssigneeTextbox" width="240px" style="margin-right: 7px" placeholder="${$composer.labels.typeUserOrGroup_text}" />
+                <textbox id="candidateAssigneeTextbox"
+                         width="240px"
+                         style="margin-right: 7px"
+                         placeholder="${$composer.labels.typeUserOrGroup_text}"
+                         submitByEnter="true"
+                         forward="onOK=candidateAssigneeAdd.onClick"
+                />
                 <button id="candidateAssigneeAdd" label="${$composer.labels.share_text}"/>
             </div>
         </div>

@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,26 +21,11 @@
  */
 package org.apromore.config;
 
-import java.sql.Driver;
-
-import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
-
+import liquibase.integration.spring.SpringLiquibase;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
-import org.springframework.jdbc.datasource.SimpleDriverDataSource;
-import org.springframework.orm.jpa.JpaTransactionManager;
-import org.springframework.transaction.PlatformTransactionManager;
-
-import com.zaxxer.hikari.HikariDataSource;
-
-import liquibase.integration.spring.SpringLiquibase;
 
 @Configuration
 public class TestConfig {
@@ -49,7 +34,7 @@ public class TestConfig {
     DataSource dataSource;
 
     @Bean
-    public SpringLiquibase liquibase() throws ClassNotFoundException {
+    public SpringLiquibase liquibase() {
 	SpringLiquibase liquibase = new SpringLiquibase();
 	liquibase.setDataSource(dataSource);
 	liquibase.setChangeLog("classpath:db/migration/changeLog.yaml");

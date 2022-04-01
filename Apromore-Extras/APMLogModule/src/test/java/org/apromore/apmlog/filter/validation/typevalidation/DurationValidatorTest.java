@@ -1,8 +1,8 @@
-/**
+/*-
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -34,14 +34,14 @@ import org.apromore.apmlog.filter.validation.FilterRuleValidator;
 import org.apromore.apmlog.filter.validation.FilterRuleValidatorTest;
 import org.apromore.apmlog.filter.validation.ValidatedFilterRule;
 import org.apromore.apmlog.xes.XESAttributeCodes;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Set;
 
-public class DurationValidatorTest extends FilterRuleValidatorTest {
+class DurationValidatorTest extends FilterRuleValidatorTest {
 
     private LogFilterRule getFromToRule(FilterType filterType, double from, double to) {
 
@@ -56,7 +56,7 @@ public class DurationValidatorTest extends FilterRuleValidatorTest {
     }
 
     @Test
-    public void validateDoubleValues() throws Exception {
+    void validateDoubleValues() throws Exception {
         // =====================================
         // test case utilization validation
         // =====================================
@@ -97,7 +97,7 @@ public class DurationValidatorTest extends FilterRuleValidatorTest {
     }
 
     @Test
-    public void validateNodeDuration() throws Exception {
+    void validateNodeDuration() throws Exception {
         FilterType filterType = FilterType.EVENT_ATTRIBUTE_DURATION;
         String attrVal = "Prepare package";
         RuleValue ruleValue1 = new RuleValue(filterType, OperationType.GREATER_EQUAL, attrVal, 3000000.0);
@@ -126,7 +126,7 @@ public class DurationValidatorTest extends FilterRuleValidatorTest {
     }
 
     @Test
-    public void validateArcDuration() throws Exception {
+    void validateArcDuration() throws Exception {
         FilterType filterType = FilterType.ATTRIBUTE_ARC_DURATION;
         String attrKey = XESAttributeCodes.CONCEPT_NAME;
         String attrVal1 = "Warehouse check for the order";

@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -29,10 +29,10 @@ import org.apromore.dao.LogRepository;
 import org.apromore.dao.model.CustomCalendar;
 import org.apromore.dao.model.Log;
 import org.apromore.service.EventLogService;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class EventLogServiceTest extends BaseTest {
+class EventLogServiceTest extends BaseTest {
 
   @Autowired
   CustomCalendarRepository calendarRepository;
@@ -44,7 +44,7 @@ public class EventLogServiceTest extends BaseTest {
   EventLogService eventLogService;
 
   @Test
-  public void testEventLogsForCalendar() {
+  void testEventLogsForCalendar() {
     // Given
     CustomCalendar calendar = new CustomCalendar("Test Calendar for log", ZoneId.of("UTC"));
     calendar = calendarRepository.saveAndFlush(calendar);

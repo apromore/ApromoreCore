@@ -1,0 +1,75 @@
+<!--
+  #%L
+  This file is part of "Apromore Core".
+  Copyright (C) 2012 - 2017 Queensland University of Technology.
+  %%
+  Copyright (C) 2018 - 2022 Apromore Pty Ltd.
+  %%
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Lesser General Public License as
+  published by the Free Software Foundation, either version 3 of the
+  License, or (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Lesser Public License for more details.
+
+  You should have received a copy of the GNU General Lesser Public
+  License along with this program.  If not, see
+  <http://www.gnu.org/licenses/lgpl-3.0.html>.
+  #L%
+  -->
+<window sclass="ap-role-transfer-win"
+        width="950px" height="700px" position="center"
+        closable="true"
+        title="${$composer.labels.removeRole_text}"
+        apply="org.apromore.plugin.portal.useradmin.DeleteRoleController">
+    <caption>
+        <toolbarbutton visible="false" iconSclass="ap-icon ap-icon-help" href="${labels.help_userManagement}" target="_blank" />
+    </caption>
+    <vbox hflex="1" vflex="1" spacing="0">
+        <vlayout hflex="1" style="box-sizing: border-box; padding: 8px;">
+            <label id="deleteRoleWithUserInfo" value=""/>
+            <label value="${$composer.labels.deleteRoleWithUserWarning_text}" style="font-size: 12px; font-weight: bold;"/>
+        </vlayout>
+        <borderlayout hflex="1" vflex="1">
+            <west autoscroll="true" sclass="ap-owned-assets" splittable="true" size="50%" vflex="1" border="none">
+                <listbox id="assignedUsersListbox"
+                         multiple="true"
+                         checkmark="true"
+                         vflex="1"
+                         hflex="1">
+                    <listhead>
+                        <listheader align="left" hflex="1" label="${$composer.labels.usersInRole_text}" sort="auto(username)"/>
+                    </listhead>
+                    <template name="model">
+                        <listitem>
+                            <listcell label="${each.username}"/>
+                        </listitem>
+                    </template>
+                </listbox>
+            </west>
+            <center autoscroll="true" vflex="1" border="none">
+                <listbox id="selectNewRoleListbox"
+                         multiple="false"
+                         checkmark="false"
+                         vflex="1"
+                         hflex="1">
+                    <listhead>
+                        <listheader align="left" hflex="1" label="${$composer.labels.roleName_text}" sort="auto(label)"/>
+                    </listhead>
+                    <template name="model">
+                        <listitem>
+                            <listcell label="${each.label}"/>
+                        </listitem>
+                    </template>
+                </listbox>
+            </center>
+        </borderlayout>
+        <div sclass="ap-window-footer-actions" height="42px">
+            <button id="btnApply" style="background-color: red;" label="${$composer.labels.removeRole_text}" iconSclass="z-icon-check-circle"/>
+            <button id="btnCancel" label="${labels.common_cancel_text}" iconSclass="z-icon-times-circle"/>
+        </div>
+    </vbox>
+</window>

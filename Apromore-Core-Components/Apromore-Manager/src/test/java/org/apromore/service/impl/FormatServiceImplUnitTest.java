@@ -5,7 +5,7 @@
  * Copyright (C) 2012 - 2017 Queensland University of Technology.
  * Copyright (C) 2012 Felix Mannhardt.
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -39,22 +39,22 @@ import org.apromore.dao.NativeRepository;
 import org.apromore.dao.NativeTypeRepository;
 import org.apromore.dao.model.NativeType;
 import org.apromore.service.impl.FormatServiceImpl;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test the UserService Implementation.
  *
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
-public class FormatServiceImplUnitTest {
+class FormatServiceImplUnitTest {
 
     private FormatServiceImpl formatServiceImpl;
 
     private NativeTypeRepository nativeTypeRepository;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         NativeRepository nativeRepository = createMock(NativeRepository.class);
         nativeTypeRepository = createMock(NativeTypeRepository.class);
 
@@ -63,7 +63,7 @@ public class FormatServiceImplUnitTest {
 
 
     @Test
-    public void getAllFormats() {
+    void getAllFormats() {
         List<NativeType> natTypes = new ArrayList<>();
 
         expect(nativeTypeRepository.findAll()).andReturn(natTypes);
@@ -75,7 +75,7 @@ public class FormatServiceImplUnitTest {
     }
 
     @Test
-    public void getFormat() {
+    void getFormat() {
         String type = "bobType";
         NativeType natType = new NativeType();
         natType.setNatType(type);

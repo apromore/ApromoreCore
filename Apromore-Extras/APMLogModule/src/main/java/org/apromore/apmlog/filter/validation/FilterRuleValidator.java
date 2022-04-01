@@ -1,8 +1,8 @@
-/**
+/*-
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -25,6 +25,7 @@ import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.types.FilterType;
 import org.apromore.apmlog.filter.validation.typevalidation.AttributeValidator;
+import org.apromore.apmlog.filter.validation.typevalidation.BetweenValidator;
 import org.apromore.apmlog.filter.validation.typevalidation.CaseIdValidator;
 import org.apromore.apmlog.filter.validation.typevalidation.CaseLengthValidator;
 import org.apromore.apmlog.filter.validation.typevalidation.CaseVariantValidator;
@@ -93,6 +94,12 @@ public class FilterRuleValidator {
                     break;
                 case REWORK_REPETITION:
                     validatedFilterRuleList.add(ReworkValidator.validate(rule, apmLog));
+                    break;
+                case BETWEEN:
+                    ValidatedFilterRule vfr = BetweenValidator.validate(rule, apmLog);
+                    if (vfr != null) {
+                        validatedFilterRuleList.add(vfr);
+                    }
                     break;
                 default:
                     validatedFilterRuleList.add(new ValidatedFilterRule(rule, rule, true, false));

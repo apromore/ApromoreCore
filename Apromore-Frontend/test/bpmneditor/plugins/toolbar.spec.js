@@ -30,21 +30,23 @@ describe('After the EditorApp has been initialized with a BPMN model with Toolba
         let editorApp = await testFactory.createEditorAppWithModelAndPlugins();
         let toolbarPlugin = editorApp.getActivatedPlugins()[0];
         expect(editorApp.getActivatedPlugins().length).toEqual(10);
-        expect(toolbarPlugin.getNumberOfButtons()).toEqual(14);
+        expect(toolbarPlugin.getNumberOfButtons()).toEqual(15);
 
         expect(toolbarPlugin.getButtonByIndex(0).btnId).toEqual('ap-id-editor-save-btn');
         expect(toolbarPlugin.getButtonByIndex(0).buttonInstance).toBeInstanceOf(Ext.Button);
-        expect(toolbarPlugin.getButtonByIndex(11).btnId).toEqual('ap-id-editor-share-btn');
+        expect(toolbarPlugin.getButtonByIndex(11).btnId).toEqual('ap-id-editor-comment-btn');
         expect(toolbarPlugin.getButtonByIndex(11).buttonInstance).toBeInstanceOf(Ext.Button);
-        expect(toolbarPlugin.getButtonByIndex(12).btnId).toEqual('ap-id-editor-publish-model-btn');
-        expect(toolbarPlugin.getButtonByIndex(12).buttonInstance).toBeInstanceOf(Ext.Button);
+        expect(toolbarPlugin.getButtonByIndex(13).btnId).toEqual('ap-id-editor-share-btn');
+        expect(toolbarPlugin.getButtonByIndex(13).buttonInstance).toBeInstanceOf(Ext.Button);
+        expect(toolbarPlugin.getButtonByIndex(14).btnId).toEqual('ap-id-editor-publish-model-btn');
+        expect(toolbarPlugin.getButtonByIndex(14).buttonInstance).toBeInstanceOf(Ext.Button);
         expect(toolbarPlugin.getButtonById('ap-id-editor-undo-btn').buttonInstance).toBeInstanceOf(Ext.Button);
     });
 
     it('The Toolbar plugin has correct button status from a custom configuration', async function() {
         let editorApp = await testFactory.createEditorAppWithDataAndCustomButtons();
         let toolbarPlugin = editorApp.getActivatedPlugins()[0];
-        expect(toolbarPlugin.getNumberOfButtons()).toEqual(4);
+        expect(toolbarPlugin.getNumberOfButtons()).toEqual(5);
 
         expect(toolbarPlugin.getButtonById('ap-id-editor-zoomIn-btn').buttonInstance.disabled).toBeFalsy();
         expect(toolbarPlugin.getButtonById('ap-id-editor-zoomOut-btn').buttonInstance.disabled).toBeFalsy();

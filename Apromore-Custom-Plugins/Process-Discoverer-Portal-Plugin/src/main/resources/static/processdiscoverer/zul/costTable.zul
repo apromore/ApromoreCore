@@ -2,7 +2,7 @@
   #%L
   This file is part of "Apromore Core".
   %%
-  Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+  Copyright (C) 2018 - 2022 Apromore Pty Ltd.
   %%
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Lesser General Public License as
@@ -42,7 +42,7 @@
       </template>
     </listbox>
     <div hflex="1" style="padding:4px; padding-left: 10px;">
-      <label style="margin-right: 6px">
+      <label style="vertical-align: middle;margin-right: 6px">
         ${arg.pdLabels.currency_text}
       </label>
       <combobox id="costTableCurrency" forward="onChanging=costTableWindow.onChangeCurrency, onChange=costTableWindow.onChangeCurrency">
@@ -52,7 +52,7 @@
         <comboitem label="GBP" value="GBP" />
         <comboitem label="JPY" value="JPY" />
       </combobox>
-      <label style="margin-left: 6px; color: var(--ap-c-text-heading) !important;">
+      <label style="vertical-align: middle;margin-left: 4px; color: var(--ap-c-text-heading) !important;">
         ${arg.pdLabels.currency_hint}
       </label>
     </div>

@@ -5,7 +5,7 @@
  * Copyright (C) 2012 - 2013 Felix Mannhardt.
  * Copyright (C) 2013 - 2017 Queensland University of Technology.
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -25,73 +25,73 @@
 
 package org.apromore.plugin;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.apromore.plugin.DefaultPlugin;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class DefaultPluginUnitTest {
+class DefaultPluginUnitTest {
 
     private final class DefaultPluginMock extends DefaultPlugin {
     }
 
     private DefaultPlugin plugin;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         plugin = new DefaultPluginMock();
     }
 
     @Test
-    public void testDefaultPlugin() {
+    void testDefaultPlugin() {
         assertNotNull(plugin);
     }
 
     @Test
-    public void testGetName() {
+    void testGetName() {
         assertEquals("Test", plugin.getName());
     }
 
     @Test
-    public void testGetVersion() {
+    void testGetVersion() {
         assertEquals("1.0", plugin.getVersion());
     }
 
     @Test
-    public void testGetType() {
+    void testGetType() {
         assertEquals("GenericPlugin", plugin.getType());
     }
 
     @Test
-    public void testGetDescription() {
+    void testGetDescription() {
         assertEquals("This is a nice Plugin", plugin.getDescription());
     }
 
     @Test
-    public void testGetConfigurationByNameString() {
+    void testGetConfigurationByNameString() {
         assertEquals("FooBar", plugin.getConfigurationByName("myown.option"));
     }
 
     @Test
-    public void testGetConfigurationByNameStringString() {
+    void testGetConfigurationByNameStringString() {
         assertEquals("test", plugin.getConfigurationByName("not.found", "test"));
     }
 
     @Test
-    public void testGetAuthor() {
+    void testGetAuthor() {
         assertEquals("Smith", plugin.getAuthor());
     }
 
     @Test
-    public void testGetEMail() {
+    void testGetEMail() {
         assertEquals("smith@mail.com", plugin.getEMail());
     }
 
     @Test
-    public void testEquals() {
+    void testEquals() {
         DefaultPluginMock plugin2 = new DefaultPluginMock();
         assertEquals(plugin, plugin2);
         assertEquals(plugin.hashCode(), plugin2.hashCode());

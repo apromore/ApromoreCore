@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -71,6 +71,21 @@ public class CreateUserController extends SelectorComposer<Window> implements La
             Permissions.EDIT_USERS.getRowGuid());
         if (!canEditUsers) {
             Messagebox.show(getLabel("noPermissionCreateUser_message"));
+            return;
+        }
+
+        if (!userNameTextbox.isValid()) {
+            Messagebox.show(getLabel("failedCreateUserInvalidUsername_message"));
+            return;
+        }
+
+        if (!emailTextbox.isValid()) {
+            Messagebox.show(getLabel("failedCreateUserInvalidEmail_message"));
+            return;
+        }
+
+        if (!passwordTextbox.isValid()) {
+            Messagebox.show(getLabel("failedCreateUserInvalidPassword_message"));
             return;
         }
 

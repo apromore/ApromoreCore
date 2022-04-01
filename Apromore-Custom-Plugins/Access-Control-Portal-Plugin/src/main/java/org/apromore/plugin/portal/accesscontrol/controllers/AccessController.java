@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -180,7 +180,7 @@ public class AccessController extends SelectorComposer<Div> {
   @Wire("#umWarning")
   Div umWarning;
 
-  private Div container;
+  private Boolean dirty = false;
 
   public AccessController() throws Exception {
 
@@ -227,7 +227,6 @@ public class AccessController extends SelectorComposer<Div> {
   @Override
   public void doAfterCompose(Div div) throws Exception {
     super.doAfterCompose(div);
-    container = div;
 
     candidateAssigneeTextbox.setVisible(Boolean.FALSE.equals(enableUsersList));
     candidateAssigneeCombobox.setVisible(enableUsersList);
@@ -244,6 +243,7 @@ public class AccessController extends SelectorComposer<Div> {
           String access = combobox.getValue();
           String rowGuid = combobox.getClientDataAttribute("id");
           updateAssignment(rowGuid, access);
+          updateDirty(true);
         } catch (Exception e) {
           LOGGER.error("Something is wrong in updating access");
           Messagebox.show(getLabel("failedUpdatePermission_message"), "Apromore", Messagebox.OK,
@@ -265,6 +265,7 @@ public class AccessController extends SelectorComposer<Div> {
           return;
         }
         if (assignment != null) {
+          updateDirty(true);
           assignmentModel.remove(assignment);
           assignmentMap.remove(rowGuid);
           if (Objects.equals(assignment.getAccess(), AccessType.OWNER.getLabel())) {
@@ -282,6 +283,7 @@ public class AccessController extends SelectorComposer<Div> {
         String name = (String) param.get("name");
         Assignment assignment = assignmentMap.get(rowGuid);
         if (assignment != null) {
+          updateDirty(true);
           assignment.setShareUserMetadata(!assignment.isShareUserMetadata());
           int index = assignmentModel.indexOf(assignment);
           assignmentModel.set(index, assignment); // trigger change
@@ -298,6 +300,11 @@ public class AccessController extends SelectorComposer<Div> {
         }
       }
     });
+  }
+
+  private void updateDirty(Boolean dirty) {
+    this.dirty = dirty;
+    btnApply.setDisabled(!dirty);
   }
 
   private void destroy() {
@@ -425,6 +432,7 @@ public class AccessController extends SelectorComposer<Div> {
   }
 
   private void updateArtifacts(String rowGuid) {
+    updateDirty(true);
     if (!isLogSelected()) {
       return;
     }
@@ -491,11 +499,9 @@ public class AccessController extends SelectorComposer<Div> {
    * control list
    */
   private void applyChanges() {
-    Map<Group, AccessType> groupAccessTypeChanges =
-        new HashMap<Group, AccessType>(groupAccessTypeMap);
+    Map<Group, AccessType> groupAccessTypeChanges = new HashMap<>(groupAccessTypeMap);
 
     for (Assignment assignment : assignmentModel) {
-      String name = assignment.getName();
       String rowGuid = assignment.getRowGuid();
       boolean shareUserMetadata;
       shareUserMetadata = false;
@@ -538,8 +544,8 @@ public class AccessController extends SelectorComposer<Div> {
               } else {
                 authorizationService.deleteUserMetadataAccess(artifact.getId(), rowGuid);
               }
-            } // Only save usermetadata access type if RESTRICTED is selected
-            // else {
+            }
+            // else { // Only save usermetadata access type if RESTRICTED is selected
             // authorizationService.saveUserMetadataAccessType(artifact.getId(), rowGuid,
             // accessType);
             // }
@@ -593,15 +599,14 @@ public class AccessController extends SelectorComposer<Div> {
 
     checkShowRelatedArtifacts();
     clearArtifacts();
+    updateDirty(false);
     if (selectedItem == null) {
       clearAssignments();
-      btnApply.setDisabled(true);
       candidateAssigneeAdd.setDisabled(true);
       candidateAssigneeTextbox.setDisabled(true);
       selectedName.setValue("");
       return;
     }
-    btnApply.setDisabled(false);
     candidateAssigneeAdd.setDisabled(false);
     candidateAssigneeTextbox.setDisabled(false);
 
@@ -653,6 +658,7 @@ public class AccessController extends SelectorComposer<Div> {
         AccessType.VIEWER.getLabel());
     assignment.setShowWarning(showWarning);
     if (assignmentMap.get(rowGuid) == null) {
+      updateDirty(true);
       assignmentModel.add(assignment);
       assignmentMap.put(rowGuid, assignment);
     } else {

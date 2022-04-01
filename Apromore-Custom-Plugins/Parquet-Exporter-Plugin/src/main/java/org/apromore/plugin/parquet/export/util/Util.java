@@ -1,8 +1,8 @@
-/**
+/*-
  * #%L
  * This file is part of "Apromore Enterprise Edition".
  * %%
- * Copyright (C) 2019 - 2021 Apromore Pty Ltd. All Rights Reserved.
+ * Copyright (C) 2019 - 2022 Apromore Pty Ltd. All Rights Reserved.
  * %%
  * NOTICE:  All information contained herein is, and remains the
  * property of Apromore Pty Ltd and its suppliers, if any.

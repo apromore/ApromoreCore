@@ -5,7 +5,7 @@
  * Copyright (C) 2012 - 2013 Felix Mannhardt.
  * Copyright (C) 2015 - 2017 Queensland University of Technology.
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -25,14 +25,14 @@
 
 package org.apromore.plugin.property;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class StringParameterUnitTest {
+class StringParameterUnitTest {
 
     @Test
-    public void test() {
+    void test() {
         PluginParameterType<String> prop = new PluginParameterType<String>("t1", "test", "test", false, "test");
         assertEquals("test", prop.getValue());
 

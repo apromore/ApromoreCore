@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -41,17 +41,18 @@ import org.apromore.dao.CustomCalendarRepository;
 import org.apromore.dao.UserRepository;
 import org.apromore.dao.model.CustomCalendar;
 import org.apromore.dao.model.Holiday;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-
-@RunWith(MockitoJUnitRunner.class)
-public class CalendarServiceUnitTest {
+@ExtendWith(MockitoExtension.class)
+class CalendarServiceUnitTest {
 
     @Mock
     CustomCalendarRepository calendarRepository;
@@ -59,15 +60,16 @@ public class CalendarServiceUnitTest {
     @Mock
     UserRepository userRepository;
 
-
     @Spy
     CustomMapper mapper;
 
     @InjectMocks
     CustomCalendarService calendarService;
 
-    @Before
-    public void before() {
+    @BeforeEach
+    void before() {
+        MockitoAnnotations.openMocks(this);
+
         List<String> mapperList = Arrays.asList("mappers/calendar.xml");
         mapper = new CustomMapper(mapperList);
         mapper.init();
@@ -75,7 +77,7 @@ public class CalendarServiceUnitTest {
     }
 
     @Test
-    public void testCreateCalendar() throws CalendarAlreadyExistsException {
+    void testCreateCalendar() throws CalendarAlreadyExistsException {
         // Given
 
         CustomCalendar calendar = new CustomCalendar("Test Desc", ZoneId.of("UTC"));
@@ -96,25 +98,22 @@ public class CalendarServiceUnitTest {
     }
 
 
-    @Test(expected = CalendarAlreadyExistsException.class)
-    public void testCreateCalendarWithException() throws CalendarAlreadyExistsException {
+    @Test
+    void testCreateCalendarWithException() throws CalendarAlreadyExistsException {
         // Given
         CustomCalendar calendar = new CustomCalendar("Test Desc");
         calendar.setId(1L);
         when(calendarRepository.findByName(anyString())).thenReturn(calendar);
 
-
-        // When
-        calendarService.createGenericCalendar(calendar.getName(), "username", true,
-            ZoneId.systemDefault().toString());
-
-        // Then
-        // exception thrown
+        // When, Then
+        Assertions.assertThrows(CalendarAlreadyExistsException.class, () ->
+            calendarService.createGenericCalendar(calendar.getName(), "username", true,
+                ZoneId.systemDefault().toString()));
 
     }
 
     @Test
-    public void testCreateCalendarDuplicateName() throws CalendarAlreadyExistsException {
+    void testCreateCalendarDuplicateName() throws CalendarAlreadyExistsException {
         // Given
         String originalDescription = "Test Desc";
         String duplicate1Name = "Test Desc (1)";
@@ -144,7 +143,7 @@ public class CalendarServiceUnitTest {
 
 
     @Test
-    public void testCreateCalendarWithHoliday() throws CalendarAlreadyExistsException {
+    void testCreateCalendarWithHoliday() throws CalendarAlreadyExistsException {
         // Given
         CustomCalendar calendar = new CustomCalendar("Test Desc", ZoneId.of("UTC"));
         calendar.setId(1L);
@@ -170,7 +169,7 @@ public class CalendarServiceUnitTest {
     }
 
     @Test
-    public void testCreateCalendarWithDuplicateHoliday() throws CalendarAlreadyExistsException {
+    void testCreateCalendarWithDuplicateHoliday() throws CalendarAlreadyExistsException {
         // Given
         CustomCalendar calendar = new CustomCalendar("Test Desc1", ZoneId.of("UTC"));
         calendar.setId(1L);

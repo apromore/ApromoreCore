@@ -1,0 +1,102 @@
+def props = new Properties()
+file("${project.projectDir}/config/jacoco/gradle.properties").withInputStream {
+    stream -> props.load(stream)
+}
+props.each { prop ->
+    project.ext.set(prop.key, prop.value)
+}
+
+
+def getThreshold(String name) {
+
+    String key = "coverage.threshold.${name}"
+    String value = project.properties.get(key)
+    if (value == null) {
+        value = rootProject.properties.get(key)
+    }
+    if (value == null) {
+        value = "75"
+    }
+    return new BigDecimal(value)
+}
+
+def percentage = {
+    if (it == null) {
+        return 100
+    } else {
+        def covered = it.'@covered' as Double
+        def missed = it.'@missed' as Double
+        ((covered / (covered + missed)) * 100).round(2)
+    }
+}
+
+jacocoTestReport {
+
+    reports {
+        xml.enabled true
+        html.enabled true
+    }
+
+    afterEvaluate {
+        def final includes = (project.properties.get('coverage.includes', '') as String).split(',').findAll {
+            it.trim().size() > 0} as List<String>
+        def final excludes = (project.properties.get('coverage.excludes', '') as String).split(',').findAll {
+            it.trim().size() > 0} as List<String>
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, include: includes, exclude: excludes)
+        }))
+    }
+
+    doLast {
+        def report = file("${jacoco.reportsDir}/test/jacocoTestReport.xml")
+        logger.lifecycle("Checking coverage results: ${report}")
+
+        def parser = new XmlParser()
+        parser.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+        parser.setFeature("http://apache.org/xml/features/disallow-doctype-decl", false)
+        def results = parser.parse(report)
+
+        def counters = results.counter
+        def metrics = [:]
+        metrics << [
+                'instruction': percentage(counters.find { it.'@type'.equals('INSTRUCTION') }),
+                'branch'     : percentage(counters.find { it.'@type'.equals('BRANCH') }),
+                'line'       : percentage(counters.find { it.'@type'.equals('LINE') }),
+                'complexity' : percentage(counters.find { it.'@type'.equals('COMPLEXITY') }),
+                'method'     : percentage(counters.find { it.'@type'.equals('METHOD') }),
+                'class'      : percentage(counters.find { it.'@type'.equals('CLASS') })
+        ]
+
+        def limits = [
+                'instruction',
+                'branch',
+                'line',
+                'complexity',
+                'method',
+                'class',
+        ].collectEntries {
+            [(it): getThreshold(it)]
+        } as Map<String, Number>
+
+        limits.each {key, value -> logger.debug("Coverage threshold for ${project.name} - ${key} is: ${value}")}
+
+        def failures = []
+        metrics.each {
+            def limit = limits[it.key]
+            if (it.value < limit) {
+                failures.add(" * ${it.key} : ${it.value} / ${limit} %")
+                logger.error(" ${it.key} : Required >= ${limit} . Result: ${it.value}")
+            }
+        }
+
+        if (failures) {
+            if ('true'.equalsIgnoreCase(project.properties.get('coverage.fail.build', 'true') as String)) {
+                throw new GradleException("Code coverage for ${project.name} failed")
+            }
+        } else{
+            logger.quiet("Code Coverage Success")
+        }
+    }
+}
+
+test.finalizedBy jacocoTestReport

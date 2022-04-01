@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,14 +22,16 @@
 
 package org.apromore.logman.attribute;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.deckfour.xes.model.XAttributeTimestamp;
 import org.joda.time.DateTime;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-public class TimestampAttributeTest extends AttributeTest {
-	public static long datetime1 = DateTime.now().getMillis();
-	public static long datetime2 = DateTime.now().getMillis() + 1000;
+class TimestampAttributeTest extends AttributeTest {
+	private static long datetime1 = DateTime.now().getMillis();
+	private static long datetime2 = DateTime.now().getMillis() + 1000;
 	
 	@Override
 	protected TimestampAttribute newEmptyAttribute(String key, AttributeLevel level) {
@@ -62,40 +64,40 @@ public class TimestampAttributeTest extends AttributeTest {
 	}
 
 	@Test
-	public void testRegisterXAttributeWithInvalidType() {
+	void testRegisterXAttributeWithInvalidType() {
 		TimestampAttribute att = new TimestampAttribute("timestamp", AttributeLevel.EVENT);
 		int result = att.registerXAttribute(xAttFactory.createAttributeContinuous("timestamp", 100, null));
-		Assert.assertEquals(-1, result);
+		assertEquals(-1, result);
 	}
 	
 	@Test
-	public void testRegisterXAttributeWithInvalidKey() {
+	void testRegisterXAttributeWithInvalidKey() {
 		TimestampAttribute att = new TimestampAttribute("timestamp", AttributeLevel.EVENT);
 		int result = att.registerXAttribute(xAttFactory.createAttributeTimestamp("invalid_key", datetime1, null));
-		Assert.assertEquals(-1, result);
+		assertEquals(-1, result);
 	}
 	
 	@Test
-	public void testRegisterValidXAttribute() {
+	void testRegisterValidXAttribute() {
 		TimestampAttribute att = new TimestampAttribute("timestamp", AttributeLevel.EVENT);
 		XAttributeTimestamp xatt = xAttFactory.createAttributeTimestamp("timestamp", datetime1, null);
 		int result = att.registerXAttribute(xatt);
-		Assert.assertEquals(0,  result);
+		assertEquals(0,  result);
 	}
 
 	@Test
-	public void testGetMinMax() {
+	void testGetMinMax() {
 		TimestampAttribute att0 = this.newEmptyAttribute("timestamp", AttributeLevel.EVENT);
-		Assert.assertEquals(null, att0.getMin());
-		Assert.assertEquals(null, att0.getMax());
+		assertEquals(null, att0.getMin());
+		assertEquals(null, att0.getMax());
 		
 		TimestampAttribute att1 = this.newWithOneValue("timestamp", AttributeLevel.EVENT);
-		Assert.assertEquals(datetime1, att1.getMin());
-		Assert.assertEquals(datetime1, att1.getMax());
+		assertEquals(datetime1, att1.getMin());
+		assertEquals(datetime1, att1.getMax());
 		
 		TimestampAttribute att2 = this.newWithTwoValues("timestamp", AttributeLevel.EVENT);
-		Assert.assertEquals(datetime1, att2.getMin());
-		Assert.assertEquals(datetime2, att2.getMax());
+		assertEquals(datetime1, att2.getMin());
+		assertEquals(datetime2, att2.getMax());
 	}
 
 }

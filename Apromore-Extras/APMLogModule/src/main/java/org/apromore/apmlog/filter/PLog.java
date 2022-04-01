@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -104,6 +104,10 @@ public class PLog extends AbstractLogImpl implements Serializable {
     }
 
     public PTrace getPTraceByImmutableIndex(int index) {
+        if (immutableIndexPTraceMap == null || immutableIndexPTraceMap.isEmpty()) {
+            immutableIndexPTraceMap = pTraces.stream().collect(Collectors.toMap(PTrace::getImmutableIndex, x -> x));
+        }
+
         return immutableIndexPTraceMap.get(index);
     }
 

@@ -6,7 +6,7 @@
  * Copyright (C) 2012 Felix Mannhardt.
  * Copyright (C) 2015 Adriano Augusto.
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -288,7 +288,7 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
     private void addNewLogFilterMenuItem(Menupopup popup) {
         Menuitem item = new Menuitem();
         item.setLabel(Labels.getLabel("plugin_new_log_filter_text"));
-        item.setIconSclass(ICON_PLUS);
+        item.setImage("~./themes/ap/common/img/icons/add-filtered-log.svg");
         item.addEventListener(ON_CLICK, event -> {
             try {
                 PortalPlugin plugin = portalPluginMap.get(PluginCatalog.PLUGIN_FILTER_LOG);
@@ -319,7 +319,7 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
     private void addFullLogDiscoverModelMenuItem(Menupopup popup) {
         Menuitem item = new Menuitem();
         item.setLabel(Labels.getLabel("portal_full_log_discover_model"));
-        item.setImage("~./img/icon/svg/log_icon.svg");
+        item.setImage("~./themes/ap/common/img/icons/log.svg");
         item.addEventListener(ON_CLICK, event -> {
             try {
                 PortalPlugin plugin = portalPluginMap.get(PluginCatalog.PLUGIN_DISCOVER_MODEL);
@@ -351,7 +351,7 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
     private void addNewCalendarMenuItem(Menupopup popup) {
         Menuitem item = new Menuitem();
         item.setLabel(Labels.getLabel("portal_create_new_calendar"));
-        item.setIconSclass(ICON_PLUS);
+        item.setImage("~./themes/ap/common/img/icons/add-calendar.svg");
         item.addEventListener(ON_CLICK, event -> createNewCalendar());
         popup.appendChild(item);
     }
@@ -359,7 +359,7 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
     private void addNewDashboardMenuItem(Menupopup popup) {
         Menuitem item = new Menuitem();
         item.setLabel(Labels.getLabel("portal_create_new_dashboard"));
-        item.setIconSclass(ICON_PLUS);
+        item.setImage("~./themes/ap/common/img/icons/add-dashboard.svg");
         item.addEventListener(ON_CLICK, event -> createNewDashboard());
         popup.appendChild(item);
     }

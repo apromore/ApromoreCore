@@ -1,8 +1,8 @@
-/**
+/*-
  * #%L
  * This file is part of "Apromore Enterprise Edition".
  * %%
- * Copyright (C) 2019 - 2021 Apromore Pty Ltd. All Rights Reserved.
+ * Copyright (C) 2019 - 2022 Apromore Pty Ltd. All Rights Reserved.
  * %%
  * NOTICE:  All information contained herein is, and remains the
  * property of Apromore Pty Ltd and its suppliers, if any.
@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Test;
 
 class BpmnExportTest {
     @Test
-    public void testStartEvent() throws Exception {
+    void testStartEvent() throws Exception {
         BPMNDiagram d = TestHelper.readBPMNDiagram("src/test/data/Diagram_Basic_Elements_Connected.bpmn");
         String bpmnExport = TestHelper.exportFromDiagram(d).replaceAll("\n", "");
 
@@ -39,7 +39,7 @@ class BpmnExportTest {
     }
 
     @Test
-    public void testEndEvent() throws Exception {
+    void testEndEvent() throws Exception {
         BPMNDiagram d = TestHelper.readBPMNDiagram("src/test/data/Diagram_Basic_Elements_Connected.bpmn");
         String bpmnExport = TestHelper.exportFromDiagram(d).replaceAll("\n", "");
 
@@ -51,7 +51,7 @@ class BpmnExportTest {
     }
 
     @Test
-    public void testActivity() throws Exception {
+    void testActivity() throws Exception {
         BPMNDiagram d = TestHelper.readBPMNDiagram("src/test/data/Diagram_Basic_Elements_Connected.bpmn");
         String bpmnExport = TestHelper.exportFromDiagram(d).replaceAll("\n", "");
 
@@ -64,7 +64,7 @@ class BpmnExportTest {
     }
 
     @Test
-    public void testXOR() throws Exception {
+    void testXOR() throws Exception {
         BPMNDiagram d = TestHelper.readBPMNDiagram("src/test/data/Diagram_Basic_Elements_Connected.bpmn");
         String bpmnExport = TestHelper.exportFromDiagram(d).replaceAll("\n", "");
 
@@ -89,7 +89,7 @@ class BpmnExportTest {
     }
 
     @Test
-    public void testAND() throws Exception {
+    void testAND() throws Exception {
         BPMNDiagram d = TestHelper.readBPMNDiagram("src/test/data/Diagram_Basic_Elements_Connected.bpmn");
         String bpmnExport = TestHelper.exportFromDiagram(d).replaceAll("\n", "");
 
@@ -111,7 +111,7 @@ class BpmnExportTest {
     }
 
     @Test
-    public void testOR() throws Exception {
+    void testOR() throws Exception {
         BPMNDiagram d = TestHelper.readBPMNDiagram("src/test/data/Diagram_Basic_Elements_Connected.bpmn");
         String bpmnExport = TestHelper.exportFromDiagram(d).replaceAll("\n", "");
 
@@ -133,7 +133,7 @@ class BpmnExportTest {
     }
 
     @Test
-    public void testEventBasedGateway() throws Exception {
+    void testEventBasedGateway() throws Exception {
         BPMNDiagram d = TestHelper.readBPMNDiagram("src/test/data/Diagram_Basic_Elements_Connected.bpmn");
         String bpmnExport = TestHelper.exportFromDiagram(d).replaceAll("\n", "");
 

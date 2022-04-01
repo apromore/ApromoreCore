@@ -4,7 +4,7 @@
  * 
  * Copyright (C) 2012 - 2017 Queensland University of Technology.
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,6 +24,7 @@
 
 package org.apromore.portal.common;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import org.apromore.manager.client.ManagerService;
@@ -33,6 +34,7 @@ import org.apromore.portal.model.LogSummaryType;
 import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.SummariesType;
 import org.apromore.portal.model.SummaryType;
+import org.apromore.portal.util.FolderTypeComparator;
 
 /**
  * Created by IntelliJ IDEA. User: Igor Date: 2/07/12 Time: 6:56 PM To change this template use File
@@ -92,6 +94,11 @@ public class FolderTree {
   private FolderTreeNode buildTree(FolderTreeNode node, List<FolderType> folders, int folderId,
       HashSet<Integer> set) {
 
+    Collections.sort(folders, new FolderTypeComparator());
+
+    if(folderId == 0 && folders.isEmpty()){
+      node.setOpen(false);
+    }
     for (FolderType folder : folders) {
 
       if (!set.contains(folder.getId())) {

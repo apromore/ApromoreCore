@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -58,8 +58,6 @@ public class EditRolePermissionController extends SelectorComposer<Window> imple
     private static final PermissionType[] MANAGE_USERS_PERMISSIONS = {
         PermissionType.USERS_VIEW, PermissionType.USERS_EDIT,
         PermissionType.GROUPS_EDIT, PermissionType.ROLES_EDIT};
-    private static final PermissionType[] UNCHECKED_CREATE_ROLE_PERMISSIONS = {
-        PermissionType.MODEL_DISCOVER_VIEW, PermissionType.FILTER_VIEW, PermissionType.DASH_VIEW};
     private static final String CREATE_MODE = "CREATE";
     private static final String EDIT_MODE = "EDIT";
     private static final String VIEW_MODE = "VIEW";
@@ -370,10 +368,6 @@ public class EditRolePermissionController extends SelectorComposer<Window> imple
             //Only set manage users as checked if the user has all relevant permissions
             boolean manageUsersPermission = permissionTypes.containsAll(Arrays.asList(MANAGE_USERS_PERMISSIONS));
             rolePermissionManageUsers.setChecked(manageUsersPermission);
-        } else if (CREATE_MODE.equals(mode)) {
-            permissionToggles.forEach((permissionType, checkbox) ->
-                checkbox.setChecked(!Arrays.asList(UNCHECKED_CREATE_ROLE_PERMISSIONS).contains(permissionType))
-            );
         }
     }
 

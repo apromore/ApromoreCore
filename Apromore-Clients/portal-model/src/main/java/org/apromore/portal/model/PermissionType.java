@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -57,6 +57,7 @@ public enum PermissionType {
     MERGE_MODELS("7e1f8cc2-7532-406c-b106-3bf7095047dc", "Merge models"),
     SEARCH_MODELS("7c0f5dc2-7d39-456e-b1cb-139bb030ee98", "Search similar models"),
     PUBLISH_MODELS("607b5dfe-9508-11ec-b909-0242ac120002", "Publish models"),
+    REST_APIS("0decac8d-b9a2-4424-8174-aace22ba4f39", "Access rest apis"),
     UNREGISTERED("", "");
 
     protected String id;

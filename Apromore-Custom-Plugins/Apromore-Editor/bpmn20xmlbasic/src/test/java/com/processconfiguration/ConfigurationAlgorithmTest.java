@@ -1,21 +1,21 @@
 /*-
  * #%L
  * This file is part of "Apromore Core".
- * 
+ *
  * Copyright (C) 2015 - 2017 Queensland University of Technology.
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -26,24 +26,24 @@ package com.processconfiguration;
 
 /**
  * Copyright (c) 2006
- *
+ * <p>
  * Philipp Berger, Martin Czuchra, Gero Decker, Ole Eckermann, Lutz Gericke,
  * Alexander Hold, Alexander Koglin, Oliver Kopp, Stefan Krumnow,
  * Matthias Kunze, Philipp Maschke, Falko Menge, Christoph Neijenhuis,
  * Hagen Overdick, Zhen Peng, Nicolas Peters, Kerstin Pfitzner, Daniel Polak,
  * Steffen Ryll, Kai Schlichting, Jan-Felix Schwarz, Daniel Taschik,
  * Willi Tscheschner, Björn Wagner, Sven Wagner-Boysen, Matthias Weidlich
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
  * the rights to use, copy, modify, merge, publish, distribute, sublicense,
  * and/or sell copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -53,6 +53,7 @@ package com.processconfiguration;
  * DEALINGS IN THE SOFTWARE.
  **/
 
+import com.processconfiguration.common.Constants;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
@@ -68,14 +69,17 @@ import org.xml.sax.SAXException;
 
 import com.sun.xml.bind.IDResolver;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import org.junit.Test;
+import static com.processconfiguration.common.Constants.test1File;
+import static com.processconfiguration.common.Constants.testsDirectory;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 import de.hpi.bpmn2_0.model.BaseElement;
 import de.hpi.bpmn2_0.model.Definitions;
@@ -105,31 +109,18 @@ import static com.processconfiguration.DefinitionsIDResolverTest.assertValidBPMN
  *
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  */
-public class ConfigurationAlgorithmTest {
+class ConfigurationAlgorithmTest {
 
     /** Logger.  Named after the class. */
     private static final Logger logger = Logger.getLogger(ConfigurationAlgorithmTest.class.getCanonicalName());
-
-    /**
-     * Test data directory.
-     *
-     * Initialized from the <code>tests.dir</code> system property.
-     */
-    public static final File testsDirectory = new File("src/test/resources");
-
-    /**
-     * A <a href="{@docRoot}/../tests/data/Test1.bpmn20.xml">test document</a> used in the test suite.
-     *
-     * <div align="center"><img src="{@docRoot}/svg/Test1.signavio.svg"/></div>
-     */
-    public static final File test1File = new File(new File(testsDirectory, "data"), "Test1.bpmn20.xml");
 
     /**
      * A <a href="{@docRoot}/../tests/data/TrivialGateway.bpmn20.xml">test document</a> used in the test suite.
      *
      * <div align="center"><img src="{@docRoot}/svg/TrivialGateway.signavio.svg"/></div>
      */
-    public static final File trivialGatewayFile = new File(new File(testsDirectory, "data"), "TrivialGateway.bpmn20.xml");
+    public static final File trivialGatewayFile =
+        new File(new File(testsDirectory, "data"), "TrivialGateway.bpmn20.xml");
 
     /** Factory for JAXB marshallers and unmarshallers. */
     private final JAXBContext context;
@@ -140,8 +131,8 @@ public class ConfigurationAlgorithmTest {
     public ConfigurationAlgorithmTest() throws JAXBException {
 
         this.context = JAXBContext.newInstance(Definitions.class,
-                                               ConfigurationAnnotationAssociation.class,
-                                               ConfigurationAnnotationShape.class);
+            ConfigurationAnnotationAssociation.class,
+            ConfigurationAnnotationShape.class);
     }
 
     //
@@ -149,7 +140,7 @@ public class ConfigurationAlgorithmTest {
     //
 
     /**
-     * Test the {@link ConfigurationAlgorithm#configure} method on the {@link #test1File}.
+     * Test the {@link ConfigurationAlgorithm#configure} method on the {@link Constants#test1File}.
      *
      * The expected behavior is for the gateway to be trivialized by the loss of its southbound sequence flow,
      * and the <q>Boeing</q> task to be removed, as follows:
@@ -160,7 +151,8 @@ public class ConfigurationAlgorithmTest {
      * @throws JAXBException if the test document can't be parsed
      * @throws SAXException if the schema can't be parsed
      */
-    @Test public final void testConfigure1() throws IOException, JAXBException, SAXException {
+    @Test
+    final void testConfigure1() throws IOException, JAXBException, SAXException {
 
         // Obtain the test document
         Unmarshaller unmarshaller = context.createUnmarshaller();
@@ -186,7 +178,8 @@ public class ConfigurationAlgorithmTest {
      * @throws JAXBException if the test document can't be parsed
      * @throws SAXException if the schema can't be parsed
      */
-    @Test public final void testConfigure2() throws IOException, JAXBException, SAXException {
+    @Test
+    final void testConfigure2() throws IOException, JAXBException, SAXException {
 
         // Obtain the test document
         Unmarshaller unmarshaller = context.createUnmarshaller();
@@ -205,7 +198,8 @@ public class ConfigurationAlgorithmTest {
      *
      * @throws JAXBException if the test document can't be parsed
      */
-    @Test public final void testFindAbsentSequenceFlows1() throws JAXBException {
+    @Test
+    final void testFindAbsentSequenceFlows1() throws JAXBException {
 
         // Obtain the test set
         Unmarshaller unmarshaller = context.createUnmarshaller();
@@ -234,7 +228,8 @@ public class ConfigurationAlgorithmTest {
      *
      * @throws JAXBException if the test document can't be parsed
      */
-    @Test public final void testFindConfiguredGateways1() throws JAXBException {
+    @Test
+    final void testFindConfiguredGateways1() throws JAXBException {
 
         // Obtain the test document
         Unmarshaller unmarshaller = context.createUnmarshaller();
@@ -258,11 +253,12 @@ public class ConfigurationAlgorithmTest {
     /**
      * Test the {@link ConfigurationAlgorithm#findOrphans} method.
      *
-     * On the unmodified {@link #test1File}, no orphans should be found.
+     * On the unmodified {@link Constants#test1File}, no orphans should be found.
      *
      * @throws JAXBException if the test document can't be parsed
      */
-    @Test public final void testFindOrphans1() throws JAXBException {
+    @Test
+    final void testFindOrphans1() throws JAXBException {
 
         // Obtain the test document
         Unmarshaller unmarshaller = context.createUnmarshaller();
@@ -280,7 +276,8 @@ public class ConfigurationAlgorithmTest {
      *
      * @throws JAXBException if the test document can't be parsed
      */
-    @Test public final void testFindOrphans2() throws JAXBException {
+    @Test
+    final void testFindOrphans2() throws JAXBException {
 
         // Obtain the test document
         Unmarshaller unmarshaller = context.createUnmarshaller();
@@ -298,7 +295,8 @@ public class ConfigurationAlgorithmTest {
      *
      * @throws JAXBException if the test document can't be parsed
      */
-    @Test public final void testFindOrphans3() throws JAXBException {
+    @Test
+    final void testFindOrphans3() throws JAXBException {
 
         // Sequence position of the sequence flow that is deleted by this test
         final int deletedFlowIndex = 7;
@@ -309,7 +307,8 @@ public class ConfigurationAlgorithmTest {
         Definitions definitions = (Definitions) unmarshaller.unmarshal(test1File);
 
         // Pluck one of the sequence flows out of the test document
-        SequenceFlow removedFlow = (SequenceFlow) ((Process) definitions.getRootElement().get(0)).getFlowElement().get(deletedFlowIndex);
+        SequenceFlow removedFlow =
+            (SequenceFlow) ((Process) definitions.getRootElement().get(0)).getFlowElement().get(deletedFlowIndex);
         assertEquals("sid-B6C60809-2232-4F2B-B290-A4639AD05BCD", removedFlow.getId());
         ConfigurationAlgorithm.prune(definitions, Collections.singleton((BaseElement) removedFlow));
 
@@ -328,7 +327,8 @@ public class ConfigurationAlgorithmTest {
      * @throws JAXBException if the test document can't be parsed
      * @throws SAXException if the schema can't be parsed
      */
-    @Test public final void testPrune1() throws IOException, JAXBException, SAXException {
+    @Test
+    final void testPrune1() throws IOException, JAXBException, SAXException {
 
         // Obtain the test document
         Unmarshaller unmarshaller = context.createUnmarshaller();
@@ -346,7 +346,8 @@ public class ConfigurationAlgorithmTest {
      * @throws JAXBException if the test document can't be parsed
      * @throws SAXException if the schema can't be parsed
      */
-    @Test public final void testPrune2() throws IOException, JAXBException, SAXException {
+    @Test
+    final void testPrune2() throws IOException, JAXBException, SAXException {
 
         // Obtain the test document
         Unmarshaller unmarshaller = context.createUnmarshaller();
@@ -374,7 +375,8 @@ public class ConfigurationAlgorithmTest {
      * @throws JAXBException if the test document can't be parsed
      * @throws SAXException if the schema can't be parsed
      */
-    @Test public final void testTrivialGatewayFile1() throws IOException, JAXBException, SAXException {
+    @Test
+    final void testTrivialGatewayFile1() throws IOException, JAXBException, SAXException {
 
         // Obtain the test document
         Unmarshaller unmarshaller = context.createUnmarshaller();
@@ -413,7 +415,8 @@ public class ConfigurationAlgorithmTest {
      * @throws JAXBException if the test document can't be parsed
      * @throws SAXException if the schema can't be parsed
      */
-    @Test public final void testRemoveTrivialGateway1() throws IOException, JAXBException, SAXException {
+    @Test
+    final void testRemoveTrivialGateway1() throws IOException, JAXBException, SAXException {
 
         // Obtain the test document
         Unmarshaller unmarshaller = context.createUnmarshaller();
@@ -478,7 +481,8 @@ public class ConfigurationAlgorithmTest {
      * @throws JAXBException if the test document can't be parsed
      * @throws SAXException if the schema can't be parsed
      */
-    @Test public final void testReplaceConfiguredGateway1() throws IOException, JAXBException, SAXException {
+    @Test
+    final void testReplaceConfiguredGateway1() throws IOException, JAXBException, SAXException {
 
         // Obtain the test document
         Unmarshaller unmarshaller = context.createUnmarshaller();
@@ -489,7 +493,7 @@ public class ConfigurationAlgorithmTest {
         Gateway gateway = (Gateway) ((Process) definitions.getRootElement().get(0)).getFlowElement().get(1);
         assertEquals("sid-B044A443-736E-495B-9DD8-90EB4860F9AC", gateway.getId());
         List<Edge> oldIncoming = gateway.getIncoming(),
-                   oldOutgoing = gateway.getOutgoing();
+            oldOutgoing = gateway.getOutgoing();
 
         BPMNShape gatewayGui = (BPMNShape) definitions.getDiagram().get(0).getBPMNPlane().getDiagramElement().get(1);
         assertEquals("sid-B044A443-736E-495B-9DD8-90EB4860F9AC_gui", gatewayGui.getId());
@@ -503,16 +507,16 @@ public class ConfigurationAlgorithmTest {
         assertTrue(newGateway instanceof InclusiveGateway);
         assertNotSame(gateway, newGateway);
         assertEquals(gateway.getId(), newGateway.getId());
-        assertNull("Reconfigured gateway still has a <pc:configurable> extension element",
-                   newGateway.getExtensionElements().getFirstExtensionElementOfType(Configurable.class));
+        assertNull(newGateway.getExtensionElements().getFirstExtensionElementOfType(Configurable.class),
+            "Reconfigured gateway still has a <pc:configurable> extension element");
 
         // Test that the graph connectivity has been preserved
         for (Edge edge : oldIncoming) {
-            assertEquals(edge.getId() + " does not target configured gateway", newGateway, edge.getTargetRef());
+            assertEquals(newGateway, edge.getTargetRef(), edge.getId() + " does not target configured gateway");
         }
 
         for (Edge edge : oldOutgoing) {
-            assertEquals(edge.getId() + " is not sourced from configured gateway", newGateway, edge.getSourceRef());
+            assertEquals(newGateway, edge.getSourceRef(), edge.getId() + " is not sourced from configured gateway");
         }
 
         // Test that the diagram reference has also been updated

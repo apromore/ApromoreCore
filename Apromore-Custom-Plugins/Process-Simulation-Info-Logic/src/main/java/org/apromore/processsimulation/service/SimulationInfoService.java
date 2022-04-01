@@ -1,4 +1,4 @@
-/**
+/*-
  * #%L
  * This file is part of "Apromore Core".
  * %%
@@ -21,22 +21,16 @@
 
 package org.apromore.processsimulation.service;
 
-import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_DEFAULT_ID_KEY;
-import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_DEFAULT_ID_PREFIX_KEY;
-import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_DEFAULT_NAME_KEY;
-import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_FROM_TIME;
-import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_FROM_WEEKDAY_KEY;
-import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_NAME_KEY;
-import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_TO_TIME;
-import static org.apromore.processsimulation.config.SimulationInfoConfig.CONFIG_DEFAULT_TIMESLOT_TO_WEEKDAY_KEY;
-
 import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.DayOfWeek;
+import java.text.DecimalFormat;
 import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -47,8 +41,9 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import lombok.extern.slf4j.Slf4j;
-import org.apromore.calendar.builder.CalendarModelBuilder;
 import org.apromore.calendar.model.CalendarModel;
+import org.apromore.calendar.model.WorkDayModel;
+import org.apromore.calendar.service.CalendarService;
 import org.apromore.processsimulation.config.SimulationInfoConfig;
 import org.apromore.processsimulation.dto.EdgeFrequency;
 import org.apromore.processsimulation.dto.SimulationData;
@@ -80,20 +75,27 @@ public class SimulationInfoService {
     private static final String XML_START_BPMN_DEFINITIONS_TAG = "<bpmn:definitions";
     private static final String XML_QBP_NAMESPACE = "\n xmlns:qbp=\"http://www.qbp-simulator.com/Schema201212\"\n";
     private static final Locale DOCUMENT_LOCALE = Locale.ENGLISH;
+    private static final DateTimeFormatter TIMETABLE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
+    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.0000");
+
 
     private JAXBContext jaxbContext;
 
     private final SimulationInfoConfig config;
+    private final CalendarService calendarService;
 
     @Autowired
-    public SimulationInfoService(SimulationInfoConfig config) {
+    public SimulationInfoService(SimulationInfoConfig config, CalendarService calendarService) {
         this.config = config;
+        this.calendarService = calendarService;
 
         try {
             jaxbContext = JAXBContext.newInstance(ExtensionElements.class);
         } catch (JAXBException e) {
             log.warn("Unable to instantiate Jaxb context");
         }
+
+        DECIMAL_FORMAT.setRoundingMode(RoundingMode.UP);
     }
 
     public boolean isFeatureEnabled() {
@@ -124,7 +126,7 @@ public class SimulationInfoService {
 
             deriveTaskInfo(builder, simulationData, resourceNameToId);
 
-            deriveTimetable(builder);
+            deriveTimetable(builder, simulationData);
 
             deriveGatewayProbabilities(builder, simulationData);
 
@@ -154,21 +156,15 @@ public class SimulationInfoService {
     }
 
     /**
-     * Returns the inter-arrival time of events in seconds, based on a default 9 - 5 business calendar.
+     * Returns the inter-arrival time of events in seconds, based on the calendar from PD.
      *
      * @param simulationData the raw simulation data from PD
      * @return the inter-arrival time of events (in milliseconds)
      */
     protected double getInterArrivalTime(final SimulationData simulationData) {
-        CalendarModel arrivalCalendar = null;
-        if (simulationData.getCalendarModel() == null) {
-            arrivalCalendar = new CalendarModelBuilder().with5DayWorking().build();
-        } else {
-            arrivalCalendar = simulationData.getCalendarModel();
-        }
 
-        return arrivalCalendar.getDurationMillis(simulationData.getStartTime(), simulationData.getEndTime())
-               / (double) simulationData.getCaseCount();
+        return simulationData.getCalendarModel().getDurationMillis(
+            simulationData.getStartTime(), simulationData.getEndTime()) / (double) simulationData.getCaseCount();
     }
 
     private void deriveTaskInfo(
@@ -183,7 +179,7 @@ public class SimulationInfoService {
 
                 String roleName = simulationData.getRoleNameByNodeId(nodeId);
                 if (roleName.equals(SimulationData.DEFAULT_ROLE)) {
-                    roleName = config.getDefaultResource().get(CONFIG_DEFAULT_NAME_KEY);
+                    roleName = config.getDefaultResourceName();
                 }
 
                 return Element.builder()
@@ -203,26 +199,46 @@ public class SimulationInfoService {
     }
 
     private void deriveTimetable(
-        final ProcessSimulationInfo.ProcessSimulationInfoBuilder builder) {
+        final ProcessSimulationInfo.ProcessSimulationInfoBuilder builder,
+        final SimulationData simulationData) {
 
-        builder.timetables(
-            Arrays.asList(Timetable.builder()
-                .defaultTimetable(true)
-                .id(config.getDefaultTimetable().get(CONFIG_DEFAULT_ID_KEY))
-                .name(config.getDefaultTimetable().get(CONFIG_DEFAULT_NAME_KEY))
-                .rules(Arrays.asList(Rule.builder()
-                    .id(UUID.randomUUID().toString())
-                    .name(config.getDefaultTimetable().get(CONFIG_DEFAULT_TIMESLOT_NAME_KEY))
-                    .fromWeekDay(DayOfWeek.valueOf(
-                        config.getDefaultTimetable().get(CONFIG_DEFAULT_TIMESLOT_FROM_WEEKDAY_KEY)
-                            .toUpperCase(DOCUMENT_LOCALE)))
-                    .toWeekDay(DayOfWeek.valueOf(
-                        config.getDefaultTimetable().get(CONFIG_DEFAULT_TIMESLOT_TO_WEEKDAY_KEY)
-                            .toUpperCase(DOCUMENT_LOCALE)))
-                    .fromTime(config.getDefaultTimetable().get(CONFIG_DEFAULT_TIMESLOT_FROM_TIME))
-                    .toTime(config.getDefaultTimetable().get(CONFIG_DEFAULT_TIMESLOT_TO_TIME))
-                    .build()))
-                .build()));
+        CalendarModel calendarModel = simulationData.getCalendarModel();
+
+        if (calendarModel.getName().equals(SimulationData.DEFAULT_CALENDAR_NAME)) {
+            builder.timetables(List.of(createTimetable(
+                calendarModel, config.getCustomTimetableId(), true)));
+        } else {
+            builder.timetables(
+                List.of(
+                    createTimetable(calendarModel, config.getCustomTimetableId(), true),
+                    createTimetable(calendarService.getGenericCalendar(),
+                        config.getDefaultTimetableId(), false)
+                ));
+        }
+    }
+
+    private Timetable createTimetable(
+        final CalendarModel calendarModel,
+        final String timetableId,
+        boolean setAsDefault) {
+        List<WorkDayModel> workingDays = calendarModel.getOrderedWorkDay().stream()
+            .filter(WorkDayModel::isWorkingDay)
+            .collect(Collectors.toList());
+
+        // The timetable from PD
+        return Timetable.builder()
+            .defaultTimetable(setAsDefault)
+            .id(timetableId)
+            .name(calendarModel.getName())
+            .rules(Arrays.asList(Rule.builder()
+                .id(UUID.randomUUID().toString())
+                .name(config.getDefaultTimeslotName())
+                .fromWeekDay(workingDays.get(0).getDayOfWeek())
+                .toWeekDay(workingDays.get(workingDays.size() - 1).getDayOfWeek())
+                .fromTime(workingDays.get(0).getStartTime().format(TIMETABLE_TIME_FORMATTER))
+                .toTime(workingDays.get(workingDays.size() - 1).getEndTime().format(TIMETABLE_TIME_FORMATTER))
+                .build()))
+            .build();
     }
 
     private Map<String, String> deriveResourceInfo(
@@ -234,19 +250,18 @@ public class SimulationInfoService {
         if (ObjectUtils.isEmpty(simulationData.getResourceCountsByRole())) {
             // No role to resource count mapping. Use the QBP_DEFAULT_RESOURCE tag and the total
             // resource count agains it.
-            String defaultResourceId = config.getDefaultResource().get(CONFIG_DEFAULT_ID_PREFIX_KEY)
-                                       + config.getDefaultResource().get(CONFIG_DEFAULT_ID_KEY);
+            String defaultResourceId = config.getDefaultResourceIdPrefix() + config.getDefaultResourceId();
 
             builder.resources(List.of(
                 Resource.builder()
                     .id(defaultResourceId)
-                    .name(config.getDefaultResource().get(CONFIG_DEFAULT_NAME_KEY))
+                    .name(config.getDefaultResourceName())
                     .totalAmount(simulationData.getResourceCount())
-                    .timetableId(config.getDefaultTimetable().get(CONFIG_DEFAULT_ID_KEY))
+                    .timetableId(config.getCustomTimetableId())
                     .build()
             ));
 
-            resouceNameToId.put(config.getDefaultResource().get(CONFIG_DEFAULT_NAME_KEY), defaultResourceId);
+            resouceNameToId.put(config.getDefaultResourceName(), defaultResourceId);
 
         } else {
 
@@ -263,11 +278,10 @@ public class SimulationInfoService {
                      */
                     if (roleToResourceCount.getKey().equals(SimulationData.DEFAULT_ROLE)) {
                         // key -> QBP_DEFAULT_RESOURCE (i.e. no associated role)
-                        resourceId = config.getDefaultResource().get(CONFIG_DEFAULT_ID_PREFIX_KEY)
-                                     + config.getDefaultResource().get(CONFIG_DEFAULT_ID_KEY);
-                        resourceName = config.getDefaultResource().get(CONFIG_DEFAULT_NAME_KEY);
+                        resourceId = config.getDefaultResourceIdPrefix() + config.getDefaultResourceId();
+                        resourceName = config.getDefaultResourceName();
                     } else {
-                        resourceId = config.getDefaultResource().get(CONFIG_DEFAULT_ID_PREFIX_KEY) + UUID.randomUUID();
+                        resourceId = config.getDefaultResourceIdPrefix() + UUID.randomUUID();
                         resourceName = roleToResourceCount.getKey();
                     }
 
@@ -277,7 +291,7 @@ public class SimulationInfoService {
                         .id(resourceId)
                         .name(resourceName)
                         .totalAmount(roleToResourceCount.getValue())
-                        .timetableId(config.getDefaultTimetable().get(CONFIG_DEFAULT_ID_KEY))
+                        .timetableId(config.getCustomTimetableId())
                         .build();
                 }).collect(Collectors.toList()));
         }
@@ -296,14 +310,40 @@ public class SimulationInfoService {
 
                 // Calculate the total outbound edge frequencies for each gateway
                 double totalFrequency = gatewayEntry.getValue().stream()
-                    .map(EdgeFrequency::getFrequency)
-                    .reduce(0.0D, Double::sum);
+                    .mapToDouble(EdgeFrequency::getFrequency)
+                    .sum();
+
+                // Set the percentage for each edge's frequency
+                gatewayEntry.getValue().forEach(edgeFrequency ->
+                    edgeFrequency.setPercentage(BigDecimal.valueOf(edgeFrequency.getFrequency() / totalFrequency)
+                        .setScale(4, RoundingMode.HALF_UP).doubleValue()));
+
+                // Determine if the percentages add up to a 100%
+                double totalProbabilities = gatewayEntry.getValue().stream()
+                    .mapToDouble(EdgeFrequency::getPercentage)
+                    .sum();
+
+                // If the total percentage is less than 100%
+                // then add the difference to the gateway with the lowest percentage
+                if (totalProbabilities < 1.0) {
+                    EdgeFrequency minEdgeFrequency =
+                        Collections.min(gatewayEntry.getValue(), Comparator.comparing(EdgeFrequency::getPercentage));
+
+                    minEdgeFrequency.setPercentage(minEdgeFrequency.getPercentage() + (1.0 - totalProbabilities));
+                }
+
+                // If the total percentage are greater than 100%
+                // then remove the difference from the gateway with the highest percentage
+                if (totalProbabilities > 1.0) {
+                    EdgeFrequency maxEdgeFrequency =
+                        Collections.max(gatewayEntry.getValue(), Comparator.comparing(EdgeFrequency::getPercentage));
+
+                    maxEdgeFrequency.setPercentage(maxEdgeFrequency.getPercentage() - (totalProbabilities - 1.0));
+                }
 
                 gatewayEntry.getValue().forEach(edgeFrequency -> sequenceFlowList.add(SequenceFlow.builder()
                     .elementId(edgeFrequency.getEdgeId())
-                    .executionProbability(
-                        BigDecimal.valueOf(edgeFrequency.getFrequency() / totalFrequency)
-                            .setScale(4, RoundingMode.HALF_UP).doubleValue())
+                    .executionProbability(DECIMAL_FORMAT.format(edgeFrequency.getPercentage()))
                     .build()));
             });
 

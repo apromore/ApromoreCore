@@ -5,7 +5,7 @@
  * Copyright (C) 2012 Felix Mannhardt.
  * Copyright (C) 2012 - 2017 Queensland University of Technology.
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -28,7 +28,7 @@ package org.apromore.test.service.helper;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.InputStream;
 
@@ -41,13 +41,14 @@ import org.apromore.portal.model.SummariesType;
 import org.apromore.portal.model.SummaryType;
 import org.apromore.service.ProcessService;
 import org.apromore.service.helper.UserInterfaceHelper;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,29 +57,24 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
-@Ignore
+@Disabled
 @ContextConfiguration(locations = {
         "classpath:META-INF/spring/applicationContext-jpa-TEST.xml",
         "classpath:META-INF/spring/applicationContext-services-TEST.xml"})
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @Transactional
 @Rollback
 @TestExecutionListeners(value = DependencyInjectionTestExecutionListener.class)
-public class UIHelperImplIT {
+class UIHelperImplIT {
 
     @Inject
     private UserInterfaceHelper uiSrv;
     @Inject
     private ProcessService pSrv;
 
-    @Before
-    public void setUp() {
-    }
-
-
     @Test
     @Rollback
-    public void TestUIHelper() throws Exception {
+    void TestUIHelper() throws Exception {
         createProcessModel("testUI");
 
         SummariesType summariesType = uiSrv.buildProcessSummaryList(0, "testUserRowGuid", "", "", "");

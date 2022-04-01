@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -31,7 +31,7 @@ import org.apromore.apmlog.filter.types.FilterType;
 import org.apromore.apmlog.filter.types.Inclusion;
 import org.apromore.apmlog.filter.types.OperationType;
 import org.apromore.apmlog.filter.types.Section;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;

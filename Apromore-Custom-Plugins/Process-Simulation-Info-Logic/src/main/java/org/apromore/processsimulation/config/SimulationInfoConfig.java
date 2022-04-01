@@ -1,4 +1,4 @@
-/**
+/*-
  * #%L
  * This file is part of "Apromore Core".
  * %%
@@ -21,9 +21,7 @@
 
 package org.apromore.processsimulation.config;
 
-import java.util.Map;
 import lombok.Data;
-import lombok.ToString;
 import org.apromore.processsimulation.model.Currency;
 import org.apromore.processsimulation.model.DistributionType;
 import org.apromore.processsimulation.model.TimeUnit;
@@ -31,23 +29,18 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Data
-@ToString
 @Configuration
 @ConfigurationProperties(prefix = "process-simulation-info-export")
 public class SimulationInfoConfig {
-    public static final String CONFIG_DEFAULT_ID_KEY = "id";
-    public static final String CONFIG_DEFAULT_ID_PREFIX_KEY = "id-prefix";
-    public static final String CONFIG_DEFAULT_NAME_KEY = "name";
-    public static final String CONFIG_DEFAULT_TIMESLOT_NAME_KEY = "timeslot-name";
-    public static final String CONFIG_DEFAULT_TIMESLOT_FROM_WEEKDAY_KEY = "timeslot-from-weekday";
-    public static final String CONFIG_DEFAULT_TIMESLOT_TO_WEEKDAY_KEY = "timeslot-to-weekday";
-    public static final String CONFIG_DEFAULT_TIMESLOT_FROM_TIME = "timeslot-from-time";
-    public static final String CONFIG_DEFAULT_TIMESLOT_TO_TIME = "timeslot-to-time";
 
     private boolean enable;
     private String defaultTimeUnit = TimeUnit.SECONDS.toString();
     private String defaultDistributionType = DistributionType.EXPONENTIAL.toString();
     private String defaultCurrency = Currency.EUR.toString();
-    private Map<String, String> defaultTimetable;
-    private Map<String, String> defaultResource;
+    private String defaultTimetableId = "DEFAULT_TIMETABLE";
+    private String customTimetableId = "CUSTOM_TIMETABLE";
+    private String defaultTimeslotName = "Default Timeslot";
+    private String defaultResourceId = "DEFAULT_RESOURCE";
+    private String defaultResourceIdPrefix = "QBP_";
+    private String defaultResourceName = "Default";
 }

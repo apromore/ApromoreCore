@@ -1,8 +1,8 @@
-/**
+/*-
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -26,20 +26,20 @@ import org.apromore.apmlog.filter.PLog;
 import org.apromore.apmlog.filter.PTrace;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.types.Choice;
-import static org.junit.Assert.assertEquals;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class BetweenFilterTest {
+class BetweenFilterTest {
 
     private PLog get5casesEF2Log() throws Exception {
         return new PLog(APMLogUnitTest.getImmutableLog("FiveCases", "files/5 cases EFollow (2).xes"));
     }
 
     @Test
-    public void testNoMatchKeep() throws Exception {
+    void testNoMatchKeep() throws Exception {
         PLog log = get5casesEF2Log();
         LogFilterRule rule = BetweenFilterSupport.createRule(Choice.RETAIN, "concept:name",
                 "Order modification", "Prepare package",
@@ -63,7 +63,7 @@ public class BetweenFilterTest {
     }
 
     @Test
-    public void testSourceFirstOccurIncludedToTargetExcluded() throws Exception {
+    void testSourceFirstOccurIncludedToTargetExcluded() throws Exception {
         PLog log = get5casesEF2Log();
         LogFilterRule rule = BetweenFilterSupport.createRule(Choice.RETAIN, "concept:name",
                 "Order modification", "Prepare package",
@@ -77,7 +77,7 @@ public class BetweenFilterTest {
     }
 
     @Test
-    public void testStartToTargetExcluded() throws Exception {
+    void testStartToTargetExcluded() throws Exception {
         PLog log = get5casesEF2Log();
         LogFilterRule rule = BetweenFilterSupport.createRule(Choice.RETAIN, "concept:name",
                 BetweenFilterSupport.START, "Warehouse check for the order",
@@ -88,7 +88,7 @@ public class BetweenFilterTest {
     }
 
     @Test
-    public void testStartToTargetIncluded() throws Exception {
+    void testStartToTargetIncluded() throws Exception {
         PLog log = get5casesEF2Log();
         LogFilterRule rule = BetweenFilterSupport.createRule(Choice.RETAIN, "concept:name",
                 BetweenFilterSupport.START, "Warehouse check for the order",
@@ -100,7 +100,7 @@ public class BetweenFilterTest {
     }
 
     @Test
-    public void testSourceExcludedToEnd() throws Exception {
+    void testSourceExcludedToEnd() throws Exception {
         PLog log = get5casesEF2Log();
         LogFilterRule rule = BetweenFilterSupport.createRule(Choice.RETAIN, "concept:name",
                 "Warehouse check for the order", BetweenFilterSupport.END,
@@ -110,7 +110,7 @@ public class BetweenFilterTest {
     }
 
     @Test
-    public void testSourceIncludedToEnd() throws Exception {
+    void testSourceIncludedToEnd() throws Exception {
         PLog log = get5casesEF2Log();
         LogFilterRule rule = BetweenFilterSupport.createRule(Choice.RETAIN, "concept:name",
                 "Warehouse check for the order", BetweenFilterSupport.END,
@@ -120,7 +120,7 @@ public class BetweenFilterTest {
     }
 
     @Test
-    public void testSourceFirstOccurrence() throws Exception {
+    void testSourceFirstOccurrence() throws Exception {
         PLog log = get5casesEF2Log();
         LogFilterRule rule = BetweenFilterSupport.createRule(Choice.RETAIN, "concept:name",
                 "Prepare package", BetweenFilterSupport.END,
@@ -132,7 +132,7 @@ public class BetweenFilterTest {
     }
 
     @Test
-    public void testSourceLastOccurrence() throws Exception {
+    void testSourceLastOccurrence() throws Exception {
         PLog log = get5casesEF2Log();
         LogFilterRule rule = BetweenFilterSupport.createRule(Choice.RETAIN, "concept:name",
                 "Warehouse check for the order", "Warehouse check for the order",
@@ -143,7 +143,7 @@ public class BetweenFilterTest {
     }
 
     @Test
-    public void testTargetFirstOccurrence() throws Exception {
+    void testTargetFirstOccurrence() throws Exception {
         PLog log = get5casesEF2Log();
         LogFilterRule rule = BetweenFilterSupport.createRule(Choice.RETAIN, "concept:name",
                 BetweenFilterSupport.START, "Warehouse check for the order",
@@ -154,7 +154,7 @@ public class BetweenFilterTest {
     }
 
     @Test
-    public void testTargetLastOccurrence() throws Exception {
+    void testTargetLastOccurrence() throws Exception {
         PLog log = get5casesEF2Log();
         LogFilterRule rule = BetweenFilterSupport.createRule(Choice.RETAIN, "concept:name",
                 BetweenFilterSupport.START, "Warehouse check for the order",

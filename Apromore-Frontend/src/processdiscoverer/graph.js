@@ -1,18 +1,15 @@
 import cytoscape from "cytoscape/dist/cytoscape.esm";
 import popper from 'cytoscape-popper';
 import dagre from 'cytoscape-dagre';
-const edgeBendEditing = require('cytoscape-edge-bend-editing');
+const jquery = require('jquery');
+const konva = require('konva');
+const edgeEditing = require('cytoscape-edge-editing');
 // Disable this to avoid interference with server side undo/redo
 // const undoRedo = require('cytoscape-undo-redo');
 
 cytoscape.use(popper);
 cytoscape.use( dagre );
-edgeBendEditing(cytoscape, {
-    bendShapeSizeFactor: 6,
-    enabled: true,
-    initBendPointsAutomatically: false,
-    undoable: true,
-});
+edgeEditing( cytoscape, jquery, konva );
 // undoRedo(cytoscape);
 
 import GraphModelWrapper from "../processmap/graphModelWrapper";
@@ -34,27 +31,6 @@ let SIGNATURE = '/zkau/web/themes/ap/common/img/brand/logo-colour.svg';
 
 const layouters = {
     [LAYOUT_MANUAL_BEZIER]: function (cy) {
-        cy.style().selector('edge').style({
-            'curve-style': function (ele) {
-                return ele.data('edge-style');
-            },
-            'edge-distances': 'intersection',
-            'control-point-distances': function (ele) {
-                if (ele.data('edge-style') == 'unbundled-bezier') {
-                    return ele.data('point-distances');
-                } else {
-                    return '0';
-                }
-            },
-            'control-point-weights': function (ele) {
-                if (ele.data('edge-style') == 'unbundled-bezier') {
-                    return ele.data('point-weights');
-                } else {
-                    return '0.5';
-                }
-            },
-        }).update();
-
         cy.elements().layout({
             name: 'preset',
         }).run();
@@ -169,9 +145,9 @@ let style = [
     {
         selector: 'edge',
         style: {
+            'curve-style': 'unbundled-bezier',
+            'edge-distances': 'intersection',
             'color': 'data(color)',
-            'control-point-step-size': 60,
-            'curve-style': 'bezier',
             'edge-text-rotation': 0,
             'font-size': 16,
             'label': 'data(label)',
@@ -378,6 +354,15 @@ PDp.loadLog = function(json, layoutType, retain) {
         this.fit(layoutType);
     }
 
+    cy.edgeEditing({
+        anchorShapeSizeFactor: 6,
+        initAnchorsAutomatically: false,
+        undoable: false,
+        enableCreateAnchorOnDrag: false,
+        zIndex: 0
+    });
+
+    cy.style().update(); // to inform cytoscape as the edge editing plugin made changes to its style.
 }
 
 PDp.loadTrace = function(json) {

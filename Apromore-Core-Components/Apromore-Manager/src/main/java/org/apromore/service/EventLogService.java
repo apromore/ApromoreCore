@@ -4,7 +4,7 @@
  *
  * Copyright (C) 2016 - 2017 Queensland University of Technology.
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -207,6 +207,23 @@ public interface EventLogService {
    */
   Usermetadata savePerspectiveByLog(List<String> perspectives, Integer logId, String username) throws UserMetadataException,
           UserNotFoundException;
+
+  /**
+   * @param costTables Cost tables info that associated with specified log
+   * @param logId      log id
+   * @param username   username
+   * @return Cost tables user metadata
+   * @throws UserNotFoundException If could not find specified username
+   */
+  Usermetadata saveCostTablesByLog(String costTables, Integer logId, String username) throws UserNotFoundException;
+
+  /**
+   * Find cost tables that are linked to the specified Log
+   *
+   * @param logId Log id
+   * @return Json string of associated cost tables
+   */
+  String getCostTablesByLog(Integer logId);
 
   /**
    * Get perspective tag from specified event log.

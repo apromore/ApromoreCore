@@ -4,7 +4,7 @@
  * 
  * Copyright (C) 2013 - 2017 Queensland University of Technology.
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -112,7 +112,7 @@ public class ApromoreTokenBasedRememberMeServices extends TokenBasedRememberMeSe
 
         PermissionType permissionType;
         for (ApromorePermissionDetails permission : user.getPermissions()) {
-            permissionType = PermissionType.getPermissionType(permission.getId(), permission.getName());
+            permissionType = PermissionType.getPermissionTypeById(permission.getId());
 
             if (!userType.getPermissions().contains(permissionType)){
                 userType.getPermissions().add(permissionType);

@@ -5,7 +5,7 @@
  * Copyright (C) 2012 - 2013 Felix Mannhardt.
  * Copyright (C) 2014 - 2017 Queensland University of Technology.
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -25,38 +25,38 @@
 
 package org.apromore.plugin.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.apromore.plugin.PluginResultImpl;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class PluginResultImplUnitTest {
+class PluginResultImplUnitTest {
 
     private PluginResultImpl pluginResultImpl;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeEach
+    void setUp() throws Exception {
         pluginResultImpl = new PluginResultImpl();
         pluginResultImpl.addPluginMessage("test");
     }
 
     @Test
-    public void testGetPluginMessage() {
+    void testGetPluginMessage() {
         assertNotNull(pluginResultImpl.getPluginMessage());
         assertEquals(1, pluginResultImpl.getPluginMessage().size());
     }
 
     @Test
-    public void testAddPluginMessageStringObjectArray() {
+    void testAddPluginMessageStringObjectArray() {
         pluginResultImpl.addPluginMessage("test {0}", new Integer(1));
         assertNotNull(pluginResultImpl.getPluginMessage());
         assertEquals(2, pluginResultImpl.getPluginMessage().size());
     }
 
     @Test
-    public void testAddPluginMessageString() {
+    void testAddPluginMessageString() {
         pluginResultImpl.addPluginMessage("test2");
         assertEquals(2, pluginResultImpl.getPluginMessage().size());
     }

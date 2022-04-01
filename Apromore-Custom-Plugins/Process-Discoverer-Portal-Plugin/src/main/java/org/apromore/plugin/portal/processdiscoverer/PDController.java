@@ -2,18 +2,18 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -22,17 +22,8 @@
 
 package org.apromore.plugin.portal.processdiscoverer;
 
-import static org.apromore.logman.attribute.graph.MeasureType.DURATION;
-import static org.apromore.logman.attribute.graph.MeasureType.FREQUENCY;
-
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import javax.servlet.http.HttpSession;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.logman.attribute.graph.MeasureType;
@@ -94,6 +85,18 @@ import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Messagebox.ClickEvent;
 import org.zkoss.zul.Window;
+
+import javax.servlet.http.HttpSession;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import static org.apromore.logman.attribute.graph.MeasureType.DURATION;
+import static org.apromore.logman.attribute.graph.MeasureType.FREQUENCY;
 
 /**
  * PDController is the top-level application object to manage PD plugin as a
@@ -292,7 +295,12 @@ public class PDController extends BaseController implements Composer<Component>,
                 currentUser.hasAnyPermission(PermissionType.MODEL_DISCOVER_EDIT));
 
             userOptions = UserOptionsData.DEFAULT(configData);
-            userOptions.setCostTable((CostTable) Sessions.getCurrent().getAttribute("costTable"));
+            String jsonString = getEventLogService().getCostTablesByLog(contextData.getLogId());
+            ObjectMapper objectMapper = new ObjectMapper();
+            //TODO: Set CostTable based on perspective types
+            userOptions.setCostTable(!"".equals(jsonString) ? objectMapper.readValue(jsonString,
+                    new TypeReference<List<CostTable>>(){}).iterator().next() :
+                    CostTable.EMPTY);
             userOptions.setCalendarModel(getEventLogService().getCalendarFromLog(contextData.getLogId()));
 
             processAnalyst = new PDAnalyst(contextData, configData, getEventLogService());
@@ -798,7 +806,7 @@ public class PDController extends BaseController implements Composer<Component>,
     private String escapeQuotedJavascript(String json) {
         return json.replace("\n", " ").replace("'", "\\u0027").trim();
     }
-    
+
     public ActionManager getActionManager() {
         return this.actionManager;
     }

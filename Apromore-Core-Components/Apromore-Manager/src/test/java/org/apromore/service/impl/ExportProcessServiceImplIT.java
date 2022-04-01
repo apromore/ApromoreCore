@@ -4,7 +4,7 @@
  * 
  * Copyright (C) 2012 - 2017 Queensland University of Technology.
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -33,27 +33,28 @@ import org.apromore.portal.helper.Version;
 import org.apromore.portal.model.ExportFormatResultType;
 import org.apromore.service.ProcessService;
 import org.apromore.util.StreamUtil;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.transaction.annotation.Transactional;
 
-@Ignore
+@Disabled
 @ContextConfiguration(locations = {
         "classpath:META-INF/spring/applicationContext-jpa-TEST.xml",
         "classpath:META-INF/spring/applicationContext-services-TEST.xml"})
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @Transactional
 @Rollback
 @TestExecutionListeners(value = DependencyInjectionTestExecutionListener.class)
-public class ExportProcessServiceImplIT {
+class ExportProcessServiceImplIT {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ExportProcessServiceImplIT.class);
 
@@ -69,7 +70,7 @@ public class ExportProcessServiceImplIT {
 
 
     @Test
-    public void testExportProcessWithSingleEdgeInEPML() throws Exception {
+    void testExportProcessWithSingleEdgeInEPML() throws Exception {
         String name = "Test EPML 1";
 
         DataHandler startStream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("EPML_models/test1.epml"), "text/xml"));

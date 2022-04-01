@@ -1,8 +1,8 @@
-/**
+/*-
  * #%L
  * This file is part of "Apromore Enterprise Edition".
  * %%
- * Copyright (C) 2019 - 2021 Apromore Pty Ltd. All Rights Reserved.
+ * Copyright (C) 2019 - 2022 Apromore Pty Ltd. All Rights Reserved.
  * %%
  * NOTICE:  All information contained herein is, and remains the
  * property of Apromore Pty Ltd and its suppliers, if any.
@@ -29,9 +29,9 @@ import org.apromore.apmlog.filter.types.OperationType;
 import org.apromore.apmlog.filter.types.Section;
 import org.apromore.calendar.builder.CalendarModelBuilder;
 import org.apromore.calendar.model.CalendarModel;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.HashSet;

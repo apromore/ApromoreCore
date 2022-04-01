@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -56,14 +56,6 @@ public class LangChooserController {
         combobox.addEventListener("onSelect", new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
-                String langTag = combobox.getSelectedItem().getValue();
-                if (langTag.equals("auto")) {
-                    i18nSession.resetClientPreferredLocale();
-                    i18nSession.applyLocaleFromClient();
-                } else {
-                    i18nSession.applyLocale(langTag);
-                    i18nSession.pushClientPreferredLocale();
-                }
                 Messagebox.show(Labels.getLabel("portal_langChanged_message"),
                     Labels.getLabel("portal_langChanged_title"),
                     new Messagebox.Button[] {Messagebox.Button.OK, Messagebox.Button.CANCEL},
@@ -74,6 +66,14 @@ public class LangChooserController {
                             if (Messagebox.ON_CANCEL.equals(buttonName)) {
                                 return;
                             } else if (Messagebox.ON_OK.equals(buttonName)) {
+                                String langTag = combobox.getSelectedItem().getValue();
+                                if (langTag.equals("auto")) {
+                                    i18nSession.resetClientPreferredLocale();
+                                    i18nSession.applyLocaleFromClient();
+                                } else {
+                                    i18nSession.applyLocale(langTag);
+                                    i18nSession.pushClientPreferredLocale();
+                                }
                                 Clients.evalJavaScript("window.location.reload()");
                             }
                         }

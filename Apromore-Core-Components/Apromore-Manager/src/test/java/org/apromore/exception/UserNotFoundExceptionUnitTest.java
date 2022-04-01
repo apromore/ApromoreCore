@@ -4,7 +4,7 @@
  * 
  * Copyright (C) 2011, 2012, 2015 - 2017 Queensland University of Technology.
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -27,16 +27,16 @@ package org.apromore.exception;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test the User Not Found Exception POJO.
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
-public class UserNotFoundExceptionUnitTest {    
+class UserNotFoundExceptionUnitTest {
 
     @Test
-    public void testException() {
+    void testException() {
         UserNotFoundException exception = new UserNotFoundException();
         MatcherAssert.assertThat(exception, Matchers.notNullValue());
 

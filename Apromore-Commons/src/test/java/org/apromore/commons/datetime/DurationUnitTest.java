@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,16 +21,16 @@
  */
 package org.apromore.commons.datetime;
 
-import static org.junit.Assert.assertEquals;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
+import org.junit.jupiter.api.Test;
 
-public class DurationUnitTest {
+class DurationUnitTest {
 
     @Test
-    public void getDurationUnit() {
+    void getDurationUnit() {
         Optional<DurationUnit> output = DurationUnit.getDurationUnit(1000.0D * 60 * 60 * 24 * 365.25);
         assertEquals(ChronoUnit.YEARS, output.stream().iterator().next().getUnit());
 

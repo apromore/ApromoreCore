@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -74,6 +74,26 @@
 
 .ap-icon-activity {
     background-image: url('activity.svg') !important;
+    width: 26px !important;
+}
+
+.ap-icon-add-calendar {
+    background-image: url('add-calendar.svg') !important;
+    width: 26px !important;
+}
+
+.ap-icon-add-dashboard {
+    background-image: url('add-dashboard.svg') !important;
+    width: 28.5px !important;
+}
+
+.ap-icon-add-filter {
+    background-image: url('add-filter.svg') !important;
+    width: 26px !important;
+}
+
+.ap-icon-add-filtered-log {
+    background-image: url('add-filtered-log.svg') !important;
     width: 26px !important;
 }
 
@@ -209,6 +229,11 @@
 
 .ap-icon-comments-on {
     background-image: url('comments-on.svg') !important;
+    width: 26px !important;
+}
+
+.ap-icon-computer {
+    background-image: url('computer.svg') !important;
     width: 26px !important;
 }
 
@@ -655,6 +680,11 @@
 .ap-icon-simulate-model {
     background-image: url('simulate-model.svg') !important;
     width: 26px !important;
+}
+
+.ap-icon-sort-down {
+    background-image: url('sort-down.svg') !important;
+    width: 27.953125px !important;
 }
 
 .ap-icon-speed {

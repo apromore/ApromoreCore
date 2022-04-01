@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,14 +24,14 @@ package org.apromore.integration;
 import org.apromore.builder.UserManagementBuilder;
 import org.apromore.dao.*;
 import org.apromore.dao.model.*;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ShareFeatureUnitTest extends BaseTest {
+class ShareFeatureUnitTest extends BaseTest {
 
     UserManagementBuilder builder;
 
@@ -50,14 +50,14 @@ public class ShareFeatureUnitTest extends BaseTest {
     UsermetadataRepository usermetadataRepository;
 
 
-    @Before
-    public final void setUp() {
+    @BeforeEach
+    final void setUp() {
         builder = new UserManagementBuilder();
     }
 
     @Test
-    @Ignore
-    public void testSaveUser() {
+    @Disabled
+    void testSaveUser() {
         // given
         Group group = groupRepository.saveAndFlush(builder.withGroup("testGroup1", "USER").buildGroup());
         Role role = roleRepository.saveAndFlush(builder.withRole("testRole").buildRole());
@@ -71,8 +71,8 @@ public class ShareFeatureUnitTest extends BaseTest {
     }
 
     @Test
-    @Ignore
-    public void insertUsermetadataTest() {
+    @Disabled
+    void insertUsermetadataTest() {
 //	 		Given
         Usermetadata um = builder.withUserMetaDataType("test Type", 1).withUserMetaData("Test", "test")
                 .buildUserMetaData();

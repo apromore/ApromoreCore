@@ -4,7 +4,7 @@
  * 
  * Copyright (C) 2011, 2012, 2015 - 2017 Queensland University of Technology.
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -25,8 +25,8 @@
 package org.apromore.mapper;
 
 import org.apromore.portal.model.DomainsType;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,17 +40,17 @@ import static org.hamcrest.Matchers.equalTo;
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  * @since 1.0
  */
-public class DomainMapperUnitTest {
+class DomainMapperUnitTest {
 
     DomainMapper mapper;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeEach
+    void setUp() throws Exception {
         mapper = new DomainMapper();
     }
 
     @Test
-    public void testConvertFromDomains() throws Exception {
+    void testConvertFromDomains() throws Exception {
         List<String> domains = new ArrayList<String>();
         String typ1 = "jack";
         String typ2 = "john";

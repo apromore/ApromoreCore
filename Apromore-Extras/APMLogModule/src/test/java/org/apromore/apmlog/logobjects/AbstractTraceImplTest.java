@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,13 +23,13 @@ package org.apromore.apmlog.logobjects;
 
 import org.apromore.apmlog.APMLog;
 import org.apromore.apmlog.APMLogUnitTest;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
-public class AbstractTraceImplTest {
+class AbstractTraceImplTest {
 
     private int[] getActIndicatorArray(APMLog apmLog) {
         int[] array = new int[5];
@@ -43,14 +43,14 @@ public class AbstractTraceImplTest {
     }
 
     @Test
-    public void getActivityInstancesIndicator() throws Exception {
+    void getActivityInstancesIndicator() throws Exception {
         APMLog apmLog = APMLogUnitTest.getImmutableLog("5casesMode", "files/5casesMOD.xes");
         String expected = Arrays.toString(getActIndicatorArray(apmLog));
         assertEquals(expected, apmLog.get(0).getActivityInstancesIndicator());
     }
 
     @Test
-    public void getActivityInstancesIndicatorArray() throws Exception {
+    void getActivityInstancesIndicatorArray() throws Exception {
         APMLog apmLog = APMLogUnitTest.getImmutableLog("5casesMode", "files/5casesMOD.xes");
         int[] trace1acts = getActIndicatorArray(apmLog);
         assertArrayEquals(trace1acts, apmLog.get(0).getActivityInstancesIndicatorArray());

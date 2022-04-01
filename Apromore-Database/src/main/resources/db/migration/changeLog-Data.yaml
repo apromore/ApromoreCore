@@ -2025,3 +2025,93 @@ databaseChangeLog:
               - column:
                   name: permissionid
                   value: "25"
+  - changeSet:
+      id:  20220321091000
+      author:  frankma
+      changes:
+        - insert:
+            tableName: usermetadata_type
+            columns:
+              - column:
+                  name: id
+                  value: "9"
+              - column:
+                  name: type
+                  value: "COST_TABLE"
+              - column:
+                  name: version
+                  value: "1"
+              - column:
+                  name: is_valid
+                  value: "1"
+  - changeSet:
+      id:  20220325144900
+      author:  janeh
+      comment: "update permission names"
+      changes:
+        -  update:
+             columns:
+               -  column:
+                    name: permission_name
+                    value: "View users"
+             tableName: permission
+             where: id = 1
+        -  update:
+             columns:
+               -  column:
+                    name: permission_name
+                    value: "Edit users"
+             tableName: permission
+             where: id = 2
+        -  update:
+             columns:
+               -  column:
+                    name: permission_name
+                    value: "Edit groups"
+             tableName: permission
+             where: id = 3
+        -  update:
+             columns:
+               -  column:
+                    name: permission_name
+                    value: "Edit roles"
+             tableName: permission
+             where: id = 4
+  - changeSet:
+      id: 20220328105600
+      author: janeh
+      comment: "add rest api permission"
+      changes:
+        - insert:
+            tableName: permission
+            columns:
+              - column:
+                  name: id
+                  value: "26"
+              - column:
+                  name: row_guid
+                  value: "0decac8d-b9a2-4424-8174-aace22ba4f39"
+              - column:
+                  name: permission_name
+                  value: "Access rest apis"
+              - column:
+                  name: permission_description
+                  value: "Access to all rest apis"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "1"
+              - column:
+                  name: permissionid
+                  value: "26"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "9"
+              - column:
+                  name: permissionid
+                  value: "26"

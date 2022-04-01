@@ -1,8 +1,8 @@
-/**
+/*-
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -30,17 +30,17 @@ import org.apromore.apmlog.filter.validation.typevalidation.CaseIdValidatorTest;
 import org.apromore.apmlog.logobjects.ImmutableLog;
 import org.apromore.apmlog.xes.XLogToImmutableLog;
 import org.deckfour.xes.model.XLog;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 public class FilterRuleValidatorTest {
 
     @Test
-    public void validate() throws Exception {
+    void validate() throws Exception {
         LogFilterRule caseIdRule = CaseIdValidatorTest.getCaseIdValidatorTestRule();
         LogFilterRule orgGroupRule = AttributeValidatorTest.getSingleValueRule(FilterType.CASE_EVENT_ATTRIBUTE,
                 "org:group", "Product Management", "event");

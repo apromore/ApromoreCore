@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -326,7 +326,7 @@ public class ManagerServiceImpl implements ManagerService {
   public List<PermissionType> getRolePermissions(String roleName) {
     List<PermissionType> permissionTypes = new ArrayList<>();
     for (Permission permission : secSrv.getRolePermissions(roleName)) {
-      PermissionType permissionType = PermissionType.getPermissionType(permission.getRowGuid(), permission.getName());
+      PermissionType permissionType = PermissionType.getPermissionTypeById(permission.getRowGuid());
       permissionTypes.add(permissionType);
     }
     return permissionTypes;

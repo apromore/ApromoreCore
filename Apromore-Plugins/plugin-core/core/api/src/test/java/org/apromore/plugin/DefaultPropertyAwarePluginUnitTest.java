@@ -5,7 +5,7 @@
  * Copyright (C) 2012 - 2013 Felix Mannhardt.
  * Copyright (C) 2013 - 2017 Queensland University of Technology.
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -25,15 +25,14 @@
 
 package org.apromore.plugin;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.apromore.plugin.DefaultParameterAwarePlugin;
 import org.apromore.plugin.property.PluginParameterType;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test functionality offered by AbstractPropertyAwarePlugin
@@ -41,14 +40,14 @@ import org.junit.Test;
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
  */
-public class DefaultPropertyAwarePluginUnitTest {
+class DefaultPropertyAwarePluginUnitTest {
 
     private DefaultParameterAwarePlugin propertyAwarePlugin;
     private PluginParameterType<String> mandatoryProperty;
     private PluginParameterType<String> nonMandatoryProperty;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         this.propertyAwarePlugin = new DefaultParameterAwarePlugin() {
         };
         mandatoryProperty = new PluginParameterType<String>("t1", "test1", String.class, "test", true);
@@ -58,19 +57,19 @@ public class DefaultPropertyAwarePluginUnitTest {
     }
 
     @Test
-    public void testAbstractPropertyAwarePlugin() {
+    void testAbstractPropertyAwarePlugin() {
         assertNotNull(this.propertyAwarePlugin);
     }
 
     @Test
-    public void testGetMandatoryProperties() {
+    void testGetMandatoryProperties() {
         assertEquals(1, this.propertyAwarePlugin.getMandatoryParameters().size());
         assertTrue(this.propertyAwarePlugin.getMandatoryParameters().contains(mandatoryProperty));
         assertFalse(this.propertyAwarePlugin.getMandatoryParameters().contains(nonMandatoryProperty));
     }
 
     @Test
-    public void testGetAvailableProperties() {
+    void testGetAvailableProperties() {
         assertEquals(2, this.propertyAwarePlugin.getAvailableParameters().size());
         assertTrue(this.propertyAwarePlugin.getAvailableParameters().contains(nonMandatoryProperty));
         assertTrue(this.propertyAwarePlugin.getAvailableParameters().contains(mandatoryProperty));
@@ -78,14 +77,14 @@ public class DefaultPropertyAwarePluginUnitTest {
 
 
     @Test
-    public void testGetOptionalProperties() {
+    void testGetOptionalProperties() {
         assertEquals(1, this.propertyAwarePlugin.getOptionalParameters().size());
         assertTrue(this.propertyAwarePlugin.getOptionalParameters().contains(nonMandatoryProperty));
         assertFalse(this.propertyAwarePlugin.getOptionalParameters().contains(mandatoryProperty));
     }
 
     @Test
-    public void testAddProperty() {
+    void testAddProperty() {
         assertFalse(this.propertyAwarePlugin.registerParameter(null));
         assertTrue(this.propertyAwarePlugin.registerParameter(new PluginParameterType<Boolean>("t3", "test", Boolean.class, "test", true)));
         assertFalse(this.propertyAwarePlugin.registerParameter(new PluginParameterType<Boolean>("t3", "test", Boolean.class, "test", true)));

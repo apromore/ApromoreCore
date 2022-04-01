@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -43,7 +43,7 @@ import java.util.stream.Collectors;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
 import static org.apromore.apmlog.filter.types.FilterType.EVENT_EVENT_ATTRIBUTE;
-import static org.junit.Assert.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 public class CaseStatsTest {
 

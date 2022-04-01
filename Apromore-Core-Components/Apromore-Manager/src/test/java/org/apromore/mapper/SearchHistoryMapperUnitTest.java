@@ -4,7 +4,7 @@
  * 
  * Copyright (C) 2011, 2012, 2015 - 2017 Queensland University of Technology.
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -32,8 +32,8 @@ import java.util.List;
 
 import org.apromore.dao.model.SearchHistory;
 import org.apromore.portal.model.SearchHistoriesType;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * SearchHistory Mapper Unit test.
@@ -41,17 +41,17 @@ import org.junit.Test;
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  * @since 1.0
  */
-public class SearchHistoryMapperUnitTest {
+class SearchHistoryMapperUnitTest {
 
     SearchHistoryMapper mapper;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeEach
+    void setUp() throws Exception {
         mapper = new SearchHistoryMapper();
     }
 
     @Test
-    public void testConvertFromSearchHistoriesType() throws Exception {
+    void testConvertFromSearchHistoriesType() throws Exception {
         List<SearchHistoriesType> srhTypes = new ArrayList<SearchHistoriesType>();
         SearchHistoriesType typ1 = new SearchHistoriesType();
         typ1.setNum(1);

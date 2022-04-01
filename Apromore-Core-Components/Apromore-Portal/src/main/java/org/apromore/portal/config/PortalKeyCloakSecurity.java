@@ -1,4 +1,4 @@
-/**
+/*-
  * #%L This file is part of "Apromore Enterprise Edition". %% Copyright (C) 2019 - 2022 Apromore Pty
  * Ltd. All Rights Reserved. %% NOTICE: All information contained herein is, and remains the
  * property of Apromore Pty Ltd and its suppliers, if any. The intellectual and technical concepts
@@ -24,8 +24,10 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
@@ -34,6 +36,8 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 @KeycloakConfiguration
+@EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 @ConditionalOnProperty(prefix = "keycloak", name = "enabled", havingValue = "true")
 public class PortalKeyCloakSecurity extends KeycloakWebSecurityConfigurerAdapter {
 
@@ -101,7 +105,6 @@ public class PortalKeyCloakSecurity extends KeycloakWebSecurityConfigurerAdapter
         .antMatchers("/rest").permitAll()
         .antMatchers("/rest/**/*").permitAll()
         .antMatchers("/rest/*").permitAll()
-        .antMatchers(Constants.API_WHITELIST).permitAll()
         .antMatchers("/zkau/web/bpmneditor/*").permitAll()
         .antMatchers(Constants.SWAGGER2_AUTH_WHITELIST).permitAll()
         .anyRequest().authenticated();

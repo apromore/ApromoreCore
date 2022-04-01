@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,9 +22,29 @@
 
 package org.apromore.service.impl;
 
+import static org.easymock.EasyMock.expect;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Set;
+import java.util.stream.Stream;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import org.apromore.AbstractTest;
 import org.apromore.calendar.service.CustomCalendarService;
 import org.apromore.commons.config.ConfigBean;
@@ -40,7 +60,6 @@ import org.apromore.dao.model.NativeType;
 import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
 import org.apromore.dao.model.Usermetadata;
-import org.apromore.dao.model.UsermetadataType;
 import org.apromore.dao.model.Workspace;
 import org.apromore.exception.EventLogException;
 import org.apromore.exception.UserMetadataException;
@@ -49,8 +68,6 @@ import org.apromore.service.AuthorizationService;
 import org.apromore.service.EventLogFileService;
 import org.apromore.service.UserMetadataService;
 import org.apromore.service.UserService;
-import org.apromore.service.impl.EventLogServiceImpl;
-import org.apromore.service.impl.TemporaryCacheService;
 import org.apromore.storage.StorageClient;
 import org.apromore.storage.factory.StorageManagementFactory;
 import org.apromore.util.AccessType;
@@ -68,40 +85,16 @@ import org.deckfour.xes.model.XTrace;
 import org.deckfour.xes.model.impl.XLogImpl;
 import org.deckfour.xes.util.XRuntimeUtils;
 import org.deckfour.xes.util.XTimer;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Set;
-import java.util.stream.Stream;
-
-import static org.easymock.EasyMock.expect;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-public class EventLogServiceImplTest extends AbstractTest {
+class EventLogServiceImplTest extends AbstractTest {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(EventLogServiceImplTest.class);
   // inject EntityManager for simple test
   private static EntityManagerFactory emf;
-  @Rule
-  public ExpectedException exception = ExpectedException.none();
   private LogRepository logRepository;
   private GroupRepository groupRepository;
   private GroupLogRepository groupLogRepository;
@@ -151,14 +144,7 @@ public class EventLogServiceImplTest extends AbstractTest {
     }
   }
 
-  public EntityManagerFactory getEntityManagerFactory() {
-    if (emf == null) {
-      emf = Persistence.createEntityManagerFactory("TESTApromore");
-    }
-    return emf;
-  }
-
-  @Before
+  @BeforeEach
   public final void setUp() {
     logRepository = createMock(LogRepository.class);
     groupRepository = createMock(GroupRepository.class);
@@ -195,14 +181,14 @@ public class EventLogServiceImplTest extends AbstractTest {
   }
 
   @Test
-  public void testOpenXesVersion() {
+  void testOpenXesVersion() {
     XFactoryNaiveImpl xFactoryNaive = new XFactoryNaiveImpl();
     assertEquals("2.27", XRuntimeUtils.OPENXES_VERSION);
     assertTrue(xFactoryNaive.isUseInterner());
   }
 
   @Test
-  public void validateXLogImport() {
+  void validateXLogImport() {
 
     try (Stream<Path> paths =
         Files.walk(Paths.get(ClassLoader.getSystemResource("XES_logs/").getPath()))) {
@@ -230,7 +216,7 @@ public class EventLogServiceImplTest extends AbstractTest {
   }
 
   @Test
-  public void eventLogValidationTest() {
+  void eventLogValidationTest() {
     InputStream is = getClass().getClassLoader().getResourceAsStream("XES_logs/A1_overlap_no_waiting_time.xes");
     XLog xLog = fetchXlog(is);
 
@@ -264,7 +250,7 @@ public class EventLogServiceImplTest extends AbstractTest {
   }
 
   @Test
-  public void intersectionTest() {
+  void intersectionTest() {
     Set set1 = new HashSet(Arrays.asList(1, 3, 5));
     Set set2 = new HashSet(Arrays.asList(1, 6, 7, 9, 3));
     Set set3 = new HashSet(Arrays.asList(1, 3, 10, 11));
@@ -286,7 +272,7 @@ public class EventLogServiceImplTest extends AbstractTest {
   }
 
 
-  public <T> Set<T> intersection(List<T>... list) {
+  private <T> Set<T> intersection(List<T>... list) {
     Set<T> result = Sets.newHashSet(list[0]);
     for (List<T> numbers : list) {
       result = Sets.intersection(result, Sets.newHashSet(numbers));
@@ -300,7 +286,7 @@ public class EventLogServiceImplTest extends AbstractTest {
   }
 
   @Test
-  public void testGetPerspectiveTagByLog() throws UserMetadataException {
+  void testGetPerspectiveTagByLog() throws UserMetadataException {
 
     // Set up test data
     Integer logId = 1;
@@ -329,7 +315,7 @@ public class EventLogServiceImplTest extends AbstractTest {
   }
 
   @Test
-  public void testGetPerspectiveTagByLog_WithoutMetadata() throws UserMetadataException {
+  void testGetPerspectiveTagByLog_WithoutMetadata() throws UserMetadataException {
 
     // Set up test data
     Integer logId = 1;
@@ -353,8 +339,8 @@ public class EventLogServiceImplTest extends AbstractTest {
     assertEquals(perspectives, result);
   }
 
-  @Test(expected = UserMetadataException.class)
-  public void testGetPerspectiveTagByLog_InvalidJson() throws UserMetadataException {
+  @Test
+  void testGetPerspectiveTagByLog_InvalidJson() throws UserMetadataException {
 
     // Set up test data
     Integer logId = 1;
@@ -372,13 +358,11 @@ public class EventLogServiceImplTest extends AbstractTest {
     replayAll();
 
     // Mock call
-    List<String> perspectives = eventLogService.getPerspectiveTagByLog(logId);
-
-    // Then throw UserMetadataException
+    assertThrows(UserMetadataException.class, ()-> eventLogService.getPerspectiveTagByLog(logId));
   }
 
   @Test
-  public void testsavePerspectiveByLog() throws UserMetadataException, UserNotFoundException {
+  void testsavePerspectiveByLog() throws UserMetadataException, UserNotFoundException {
 
     // Set up test data
     List<String> perspectives = new ArrayList<>();
@@ -411,8 +395,8 @@ public class EventLogServiceImplTest extends AbstractTest {
     assertEquals(usermetadata, result);
   }
 
-  @Test(expected = UserNotFoundException.class)
-  public void testSavePerspectiveByLog_InvalidUsername() throws UserMetadataException, UserNotFoundException {
+  @Test
+  void testSavePerspectiveByLog_InvalidUsername() throws UserMetadataException, UserNotFoundException {
 
     // Set up test data
     List<String> perspectives = new ArrayList<>();
@@ -440,11 +424,11 @@ public class EventLogServiceImplTest extends AbstractTest {
     replayAll();
 
     // Mock call
-    Usermetadata result = eventLogService.savePerspectiveByLog(perspectives, logId, "admin");
+    assertThrows(UserNotFoundException.class, ()-> eventLogService.savePerspectiveByLog(perspectives, logId, "admin"));
   }
 
   @Test
-  public void testGetDefaultPerspectiveFromLog() throws EventLogException {
+  void testGetDefaultPerspectiveFromLog() throws EventLogException {
 
     // Set up test data
     Integer logId = 1;
@@ -469,7 +453,7 @@ public class EventLogServiceImplTest extends AbstractTest {
   }
 
   @Test
-  public void testGetDefaultPerspectiveFromLog_NoResource() throws EventLogException {
+  void testGetDefaultPerspectiveFromLog_NoResource() throws EventLogException {
 
     // Set up test data
     Integer logId = 1;
@@ -493,7 +477,7 @@ public class EventLogServiceImplTest extends AbstractTest {
   }
 
   @Test
-  public void testGetDefaultPerspectiveFromLog_AlreadyHasPerspective() throws EventLogException {
+  void testGetDefaultPerspectiveFromLog_AlreadyHasPerspective() throws EventLogException {
 
     // Set up test data
     Integer logId = 1;
@@ -504,8 +488,7 @@ public class EventLogServiceImplTest extends AbstractTest {
     Set<Usermetadata> usermetadataSet = new HashSet<>();
     usermetadataSet.add(new Usermetadata());
 
-    exception.expect(EventLogException.class);
-    exception.expectMessage("Found existing perspective list for event log with Id: " + logId);
+
 
     // Mock recording
     expect(logRepository.findUniqueByID(1)).andReturn(log);
@@ -513,21 +496,25 @@ public class EventLogServiceImplTest extends AbstractTest {
     expect(userMetadataService.getUserMetadataByLog(logId, UserMetadataTypeEnum.PERSPECTIVE_TAG)).andReturn(usermetadataSet);
     replayAll();
 
-    // Mock call
-    List<String> perspectives = eventLogService.getDefaultPerspectiveFromLog(logId);
+
+    Exception exception = assertThrows(EventLogException.class, ()-> {
+      // Mock call
+      List<String> perspectives = eventLogService.getDefaultPerspectiveFromLog(logId);
+
+      eventLogService.savePerspectiveByLog(perspectives, logId, "admin");
+    });
+    assertEquals(exception.getMessage(), "Found existing perspective list for event log with Id: " + logId);
 
   }
 
   @Test
-  public void testGetDefaultPerspectiveFromLog_NullXLog() throws EventLogException {
+  void testGetDefaultPerspectiveFromLog_NullXLog() throws EventLogException {
 
     // Set up test data
     Integer logId = 1;
     Log log = createLogWithId(logId, user, createFolder("testFolder", null, wp));
 
     XLog xLog = null;
-    exception.expect(EventLogException.class);
-    exception.expectMessage("Failed to get event log with Id: " + logId);
 
     // Mock recording
     expect(logRepository.findUniqueByID(1)).andReturn(log);
@@ -535,21 +522,22 @@ public class EventLogServiceImplTest extends AbstractTest {
     expect(userMetadataService.getUserMetadataByLog(logId, UserMetadataTypeEnum.PERSPECTIVE_TAG)).andReturn(new HashSet<>());
     replayAll();
 
-    // Mock call
-    List<String> perspectives = eventLogService.getDefaultPerspectiveFromLog(logId);
+    Exception exception = assertThrows(EventLogException.class, ()-> {
+      // Mock call
+      List<String> perspectives = eventLogService.getDefaultPerspectiveFromLog(logId);
 
+    });
+    assertEquals(exception.getMessage(), "Failed to get event log with Id: " + logId);
   }
 
   @Test
-  public void testGetDefaultPerspectiveFromLog_EmptyXLog() throws EventLogException {
+  void testGetDefaultPerspectiveFromLog_EmptyXLog() throws EventLogException {
 
     // Set up test data
     Integer logId = 1;
     Log log = createLogWithId(logId, user, createFolder("testFolder", null, wp));
 
     XLog xLog = new XLogImpl();
-    exception.expect(EventLogException.class);
-    exception.expectMessage("Found empty event log with Id: " + logId);
 
     // Mock recording
     expect(logRepository.findUniqueByID(1)).andReturn(log);
@@ -557,13 +545,17 @@ public class EventLogServiceImplTest extends AbstractTest {
     expect(userMetadataService.getUserMetadataByLog(logId, UserMetadataTypeEnum.PERSPECTIVE_TAG)).andReturn(new HashSet<>());
     replayAll();
 
-    // Mock call
-    List<String> perspectives = eventLogService.getDefaultPerspectiveFromLog(logId);
+    Exception exception = assertThrows(EventLogException.class, ()-> {
+      // Mock call
+      List<String> perspectives = eventLogService.getDefaultPerspectiveFromLog(logId);
+
+    });
+    assertEquals(exception.getMessage(), "Found empty event log with Id: " + logId);
 
   }
 
   @Test
-  public void testGetLogListFromCalendarId() throws UserNotFoundException {
+  void testGetLogListFromCalendarId() throws UserNotFoundException {
     long calendarId = 157;
     int numLogs = 6;
 
@@ -588,7 +580,7 @@ public class EventLogServiceImplTest extends AbstractTest {
   }
 
   @Test
-  public void testDeepCopyArtifacts() throws UserNotFoundException {
+  void testDeepCopyArtifacts() throws UserNotFoundException {
 
     // Set up test data
     Integer oldLogId = 1;
@@ -627,7 +619,7 @@ public class EventLogServiceImplTest extends AbstractTest {
   }
 
   @Test
-  public void testDeepCopyArtifacts_withUnwantedType() throws UserNotFoundException {
+  void testDeepCopyArtifacts_withUnwantedType() throws UserNotFoundException {
 
     // Set up test data
     Integer oldLogId = 1;

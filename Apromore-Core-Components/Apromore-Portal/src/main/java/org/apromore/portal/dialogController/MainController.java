@@ -5,7 +5,7 @@
  * Copyright (C) 2011 - 2017 Queensland University of Technology.
  * Copyright (C) 2012 Felix Mannhardt.
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -46,6 +46,7 @@ import org.apromore.portal.common.i18n.I18nConfig;
 import org.apromore.portal.common.i18n.I18nSession;
 import org.apromore.portal.context.PluginPortalContext;
 import org.apromore.portal.context.PortalPluginResolver;
+import org.apromore.portal.controller.SortMenuController;
 import org.apromore.portal.custom.gui.tab.PortalTab;
 import org.apromore.portal.dialogController.dto.ApromoreSession;
 import org.apromore.portal.dialogController.dto.VersionDetailType;
@@ -96,6 +97,7 @@ import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Html;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Menupopup;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Tabbox;
@@ -242,6 +244,10 @@ public class MainController extends BaseController implements MainControllerInte
             this.tabCrumbs = (Tab) mainW.getFellow("tabCrumbs");
             this.tabBox = (Tabbox) mainW.getFellow("tabbox");
             this.pg = (Paginal) mainW.getFellow("pg");
+            Menupopup orderListItemPopup= (Menupopup) mainW.getFellow("orderListItemPopup");
+            Button orderListSortBtn= (Button) mainW.getFellow("orderListSortBtn");
+            SortMenuController sortMenuController=new SortMenuController(this, orderListItemPopup);
+            orderListSortBtn.addEventListener(Events.ON_CLICK, sortMenuController::showSortMenu);
 
             this.shortmessageC = new ShortMessageController(shortmessageW);
             this.simplesearch = new SimpleSearchController(this, comp);
@@ -355,8 +361,6 @@ public class MainController extends BaseController implements MainControllerInte
                     .costRates(costRates)
                     .build());
             });
-
-            Clients.evalJavaScript("Ap.common.getLocalStorageItem('ap.cost.table', 'mainW', 'onCostTableInit')");
 
         } catch (final Exception e) {
             LOGGER.error("Repository NOT available", e);

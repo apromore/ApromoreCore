@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,20 +21,22 @@
  */
 package org.apromore.dao.jpa.grouplog;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.apromore.config.BaseTestClass;
 import org.apromore.dao.GroupLogRepository;
 import org.apromore.dao.GroupRepository;
 import org.apromore.dao.LogRepository;
 import org.apromore.dao.jpa.usermanagement.UserManagementBuilder;
-import org.apromore.dao.model.*;
-import org.junit.Before;
-import org.junit.Test;
+import org.apromore.dao.model.AccessRights;
+import org.apromore.dao.model.Group;
+import org.apromore.dao.model.GroupLog;
+import org.apromore.dao.model.Log;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-public class GroupLogUnitTest extends BaseTestClass {
+class GroupLogUnitTest extends BaseTestClass {
 
 
     private UserManagementBuilder userManagementBuilder;
@@ -48,13 +50,13 @@ public class GroupLogUnitTest extends BaseTestClass {
     @Autowired
     private LogRepository logRepo;
 
-    @Before
-    public void before() {
+    @BeforeEach
+    void before() {
         userManagementBuilder = new UserManagementBuilder();
     }
 
     @Test
-    public void testCreateGroupLog() {
+    void testCreateGroupLog() {
 
         // Given
         AccessRights accessRights = new AccessRights(true, false, true);

@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -31,12 +31,12 @@ import org.apromore.service.logimporter.services.ParquetFactoryProvider;
 import org.apromore.service.logimporter.services.legacy.LogImporter;
 import org.apromore.service.logimporter.services.legacy.LogImporterXLSXImpl;
 import org.apromore.service.logimporter.services.utilities.TestUtilities;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-@Ignore
-public class DebugUnitTest {
+@Disabled
+class DebugUnitTest {
     /**
      * Expected headers for <code>test1-valid.csv</code>.
      */
@@ -45,8 +45,8 @@ public class DebugUnitTest {
     private MetaDataService metaDataService;
     private LogImporter logImporter;
 
-    @Before
-    public void init() {
+    @BeforeEach
+    void init() {
         utilities = new TestUtilities();
         parquetFactoryProvider = new ParquetFactoryProvider();
         metaDataService = parquetFactoryProvider
@@ -57,8 +57,8 @@ public class DebugUnitTest {
     }
 
     @Test
-    @Ignore
-    public void test_debug() throws Exception {
+    @Disabled
+    void test_debug() throws Exception {
 
         System.out.println("\n************************************\ntest");
 

@@ -1,8 +1,8 @@
-/**
+/*-
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -36,12 +36,14 @@ import org.apromore.calendar.model.CalendarModel;
 public class SimulationData {
     public static final String DEFAULT_ROLE = "DEFAULT_ROLE";
     public static final String DEFAULT_RESOURCE = "DEFAULT_RESOURCE";
+    public static final String DEFAULT_CALENDAR_NAME = "Generic 24/7";
 
     private long caseCount;
     private long resourceCount;
     private long startTime;
     private long endTime;
 
+    @NonNull
     private CalendarModel calendarModel;
 
     @Getter(AccessLevel.NONE)

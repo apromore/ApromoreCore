@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -26,12 +26,12 @@ import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.processdiscoverer.data.ConfigData;
 import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
 import org.deckfour.xes.model.XLog;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 
-@Ignore //Not to use in build
-public class PerformanceTest extends TestDataSetup {
+@Disabled //Not to use in build
+class PerformanceTest extends TestDataSetup {
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(PerformanceTest.class);
     
     private void discoverProcessFromXLog(XLog xlog) {
@@ -49,7 +49,7 @@ public class PerformanceTest extends TestDataSetup {
     }
     
     @Test
-    public void test_Performance_Once() {
+    void test_Performance_Once() {
         System.out.println();
         System.out.println("==========  PERFORMANCE TEST: BPIC12 ==========");
         discoverProcessFromXLog(readRealLog_BPI12());
@@ -88,7 +88,7 @@ public class PerformanceTest extends TestDataSetup {
     }
 
     @Test
-    public void test_Performance_Iterations() {
+    void test_Performance_Iterations() {
         System.out.println("Read all XLog data objects used in this test into memory");
         XLog[] logs = new XLog[7];
         String[] logNames = new String[7];

@@ -4,7 +4,7 @@
  * 
  * Copyright (C) 2013, 2015 - 2017 Queensland University of Technology.
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,35 +24,40 @@
 
 package org.apromore.portal.util;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Tests the Random Password Generator.
  */
-public class RandomPasswordGeneratorTest {
+class RandomPasswordGeneratorTest {
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testMinGreaterThanMax() throws Exception {
+    @Test
+    void testMinGreaterThanMax() {
         int min = 3;
         int max = 2;
-        RandomPasswordGenerator.generatePassword(min, max, 0, 0, 0);
+
+        assertThrows(IllegalArgumentException.class, () ->
+            RandomPasswordGenerator.generatePassword(min, max, 0, 0, 0));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testMaxLessThanTotal() throws Exception {
+    @Test
+    void testMaxLessThanTotal() {
         int max = 2;
         int caps = 2;
         int digits = 2;
         int special = 2;
-        RandomPasswordGenerator.generatePassword(0, max, caps, digits, special);
+
+        assertThrows(IllegalArgumentException.class, () ->
+            RandomPasswordGenerator.generatePassword(0, max, caps, digits, special));
     }
 
     @Test
-    public void testPasswordBetweenMinAndMax() {
+    void testPasswordBetweenMinAndMax() {
         int min = 3;
         int max = 8;
         char[] testPassword = RandomPasswordGenerator.generatePassword(min, max, 0, 0, 0);

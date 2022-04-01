@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -65,4 +65,19 @@
 }
 .icon-rename:before {
   content: "\e905";
+}
+.icon-create_filter:before {
+  content: "\a0003";
+}
+.icon-create_dashboard:before {
+  content: "\e900";
+}
+.icon-create_filtered_log:before {
+  content: "\a0002";
+}
+.icon-log:before {
+  content: "\a0001";
+}
+.icon-create_calendar:before {
+  content: "\a0005";
 }

@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,8 +22,8 @@
 
 package org.apromore.service.logimporter.services.legacy;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.google.common.io.ByteStreams;
 import java.nio.charset.Charset;
@@ -38,13 +38,12 @@ import org.apromore.service.logimporter.services.ParquetFactoryProvider;
 import org.apromore.service.logimporter.services.ParquetImporterFactory;
 import org.apromore.service.logimporter.services.utilities.TestUtilities;
 import org.deckfour.xes.model.XLog;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
-public class ParquetLogImporterCSVImplUnitTest {
+class ParquetLogImporterCSVImplUnitTest {
 
     private static final Logger LOGGER =
         LoggerFactory.getLogger(ParquetLogImporterCSVImplUnitTest.class);
@@ -58,8 +57,8 @@ public class ParquetLogImporterCSVImplUnitTest {
     private LogImporterParquetImpl logImporter;
     private MetaDataUtilities metaDataUtilities;
 
-    @Before
-    public void init() {
+    @BeforeEach
+    void init() {
         utilities = new TestUtilities();
         ParquetImporterFactory parquetImporterFactory =
             new ParquetFactoryProvider().getParquetFactory("parquet");
@@ -74,7 +73,7 @@ public class ParquetLogImporterCSVImplUnitTest {
      * <code>test1-valid.parquet</code>.
      */
     @Test
-    public void testSampleParquet_undersample() throws Exception {
+    void testSampleParquet_undersample() throws Exception {
 
         LOGGER.info("\n************************************\ntest sample generator - undersample");
 
@@ -95,7 +94,7 @@ public class ParquetLogImporterCSVImplUnitTest {
      * <code>test1-valid.parquet</code>.
      */
     @Test
-    public void testSampleCSV_oversample() throws Exception {
+    void testSampleCSV_oversample() throws Exception {
 
         LOGGER.info("\n************************************\ntest sample generator - oversample");
         String testFile = "/test1-valid.parquet";
@@ -116,7 +115,7 @@ public class ParquetLogImporterCSVImplUnitTest {
      * <code>test1-valid.parquet</code>.
      */
     @Test
-    public void test1_valid() throws Exception {
+    void test1_valid() throws Exception {
 
         LOGGER.info("\n************************************\ntest1 - Valid parquet test");
 
@@ -157,7 +156,7 @@ public class ParquetLogImporterCSVImplUnitTest {
      * <code>test1-valid.parquet</code> when upload limiting is in effect.
      */
     @Test
-    public void testImportLog_maxEventCount() throws Exception {
+    void testImportLog_maxEventCount() throws Exception {
 
         // Test file data
         String testFile = "/test1-valid.parquet";
@@ -204,7 +203,7 @@ public class ParquetLogImporterCSVImplUnitTest {
      * <code>test3-invalid-end-timestamp.parquetv</code>.
      */
     @Test
-    public void test3_invalid_end_timestamp() throws Exception {
+    void test3_invalid_end_timestamp() throws Exception {
 
         LOGGER.info("\n************************************\ntest3 - Invalid end timestamp");
         // Parquet file input
@@ -243,7 +242,7 @@ public class ParquetLogImporterCSVImplUnitTest {
      * <code>test4-invalid-start-timestamp.parquet</code>.
      */
     @Test
-    public void test4_invalid_start_timestamp() throws Exception {
+    void test4_invalid_start_timestamp() throws Exception {
 
         LOGGER.info("\n************************************\ntest4 - Invalid start timestamp");
         // Parquet file input
@@ -282,7 +281,7 @@ public class ParquetLogImporterCSVImplUnitTest {
      * <code>test5-empty-caseID.parquet</code>.
      */
     @Test
-    public void test5_empty_caseID() throws Exception {
+    void test5_empty_caseID() throws Exception {
 
         LOGGER.info("\n************************************\ntest5 - Empty caseID");
         // Parquet file input
@@ -321,7 +320,7 @@ public class ParquetLogImporterCSVImplUnitTest {
      * <code>test8-all-invalid.parquet</code>.
      */
     @Test
-    public void test7_all_invalid() throws Exception {
+    void test7_all_invalid() throws Exception {
 
         LOGGER.info("\n************************************\ntest7 - All invalid");
         // Parquet file input
@@ -349,7 +348,7 @@ public class ParquetLogImporterCSVImplUnitTest {
      * <code>test9-differentiate-dates.parquet</code>.
      */
     @Test
-    public void test8_differentiate_dates() throws Exception {
+    void test8_differentiate_dates() throws Exception {
 
         LOGGER.info("\n************************************\ntest8 - Differentiate dates");
         // Parquet file input
@@ -395,7 +394,7 @@ public class ParquetLogImporterCSVImplUnitTest {
      * <code>test10-eventAttribute.parquet</code>.
      */
     @Test
-    public void test9_detect_name() throws Exception {
+    void test9_detect_name() throws Exception {
 
         LOGGER.info("\n************************************\ntest9 - Event Attribute");
         // Parquet file input
@@ -434,7 +433,7 @@ public class ParquetLogImporterCSVImplUnitTest {
      * <code>test11-encoding.parquet</code>.
      */
     @Test
-    public void test10_encoding() throws Exception {
+    void test10_encoding() throws Exception {
 
         LOGGER.info("\n************************************\ntest10 - Encoding");
         // Parquet file input

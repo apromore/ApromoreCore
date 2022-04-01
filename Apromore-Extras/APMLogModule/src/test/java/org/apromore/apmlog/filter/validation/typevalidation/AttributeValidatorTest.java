@@ -1,8 +1,8 @@
-/**
+/*-
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -34,10 +34,10 @@ import org.apromore.apmlog.filter.validation.FilterRuleValidator;
 import org.apromore.apmlog.filter.validation.FilterRuleValidatorTest;
 import org.apromore.apmlog.filter.validation.ValidatedFilterRule;
 import org.apromore.apmlog.xes.XESAttributeCodes;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Set;
@@ -65,7 +65,7 @@ public class AttributeValidatorTest extends FilterRuleValidatorTest {
     }
 
     @Test
-    public void validateEventAttribute() throws Exception {
+    void validateEventAttribute() throws Exception {
         LogFilterRule rule = getSingleValueRule(FilterType.CASE_EVENT_ATTRIBUTE, "org:group",
                 "Product Management", "event");
         List<LogFilterRule> criteria = List.of(rule);
@@ -98,7 +98,7 @@ public class AttributeValidatorTest extends FilterRuleValidatorTest {
     }
 
     @Test
-    public void testMultiValueEventAttrValidator() throws Exception {
+    void testMultiValueEventAttrValidator() throws Exception {
         LogFilterRule rule = getMultiValueRule(
                 Set.of("Proceed order", "Prepare package",
                         "Tranfer items from warehouse 2 one 'two three four five' and six"));
@@ -115,7 +115,7 @@ public class AttributeValidatorTest extends FilterRuleValidatorTest {
     }
 
     @Test
-    public void validateCaseAttribute() throws Exception {
+    void validateCaseAttribute() throws Exception {
         FilterType filterType = FilterType.CASE_CASE_ATTRIBUTE;
         String key1 = "Customer ID";
 
@@ -161,7 +161,7 @@ public class AttributeValidatorTest extends FilterRuleValidatorTest {
     }
 
     @Test
-    public void validateAttributeCombination()  throws Exception{
+    void validateAttributeCombination()  throws Exception{
 
         LogFilterRule rule = getAttrCombFilterRule(
                 "event", "concept:name", "Proceed order",

@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,22 +21,22 @@
  */
 package org.apromore.apmlog;
 
-import org.apromore.apmlog.APMLog;
-import org.apromore.apmlog.APMLogUnitTest;
-import org.apromore.apmlog.ATrace;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import org.apromore.apmlog.filter.APMLogFilter;
 import org.apromore.apmlog.filter.PLog;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.LogFilterRuleImpl;
 import org.apromore.apmlog.filter.rules.RuleValue;
-import org.apromore.apmlog.filter.types.*;
+import org.apromore.apmlog.filter.types.Choice;
+import org.apromore.apmlog.filter.types.FilterType;
+import org.apromore.apmlog.filter.types.Inclusion;
+import org.apromore.apmlog.filter.types.OperationType;
+import org.apromore.apmlog.filter.types.Section;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 public class ReworkRepetitionFilterTest {
 

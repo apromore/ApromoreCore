@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -39,17 +39,17 @@ import org.apromore.calendar.exception.CalendarNotExistsException;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.calendar.model.HolidayModel;
 import org.apromore.calendar.service.CustomCalendarService;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
-public class CalendarServiceIntegrationTest extends BaseTestClass {
+class CalendarServiceIntegrationTest extends BaseTestClass {
 
     @Autowired
     CustomCalendarService calendarService;
 
     @Test
-    public void testCreateCalendar() throws CalendarAlreadyExistsException {
+    void testCreateCalendar() throws CalendarAlreadyExistsException {
 
         // when
         CalendarModel model =
@@ -70,7 +70,7 @@ public class CalendarServiceIntegrationTest extends BaseTestClass {
 
 
     @Test
-    public void testGetCalendar() throws CalendarAlreadyExistsException {
+    void testGetCalendar() throws CalendarAlreadyExistsException {
         // Given
         CalendarModel model = calendarService
             .createGenericCalendar(UUID.randomUUID().toString(), "username", true, ZoneId.systemDefault().toString());
@@ -87,7 +87,7 @@ public class CalendarServiceIntegrationTest extends BaseTestClass {
 
 
     @Test
-    public void testGetCalendarWithCustomHoliday() throws CalendarAlreadyExistsException, CalendarNotExistsException {
+    void testGetCalendarWithCustomHoliday() throws CalendarAlreadyExistsException, CalendarNotExistsException {
         // Given
         CalendarModel model = calendarService
             .createGenericCalendar(UUID.randomUUID().toString(), "username", true, ZoneId.systemDefault().toString());
@@ -110,7 +110,7 @@ public class CalendarServiceIntegrationTest extends BaseTestClass {
     }
 
     @Test
-    public void testGetCalendarWithCustomHolidayRemoved()
+    void testGetCalendarWithCustomHolidayRemoved()
         throws CalendarAlreadyExistsException, CalendarNotExistsException {
         // Given
         CalendarModel model = calendarService
@@ -152,7 +152,7 @@ public class CalendarServiceIntegrationTest extends BaseTestClass {
 
 
     @Test
-    public void testGetCalendarWithCustomHolidays() throws CalendarAlreadyExistsException, CalendarNotExistsException {
+    void testGetCalendarWithCustomHolidays() throws CalendarAlreadyExistsException, CalendarNotExistsException {
         // Given
         CalendarModel model = calendarService.createGenericCalendar(UUID.randomUUID().toString(), "username", true,
             ZoneId.systemDefault().toString());

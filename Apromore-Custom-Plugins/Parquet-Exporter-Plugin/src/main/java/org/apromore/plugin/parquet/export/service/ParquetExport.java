@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Enterprise Edition".
  * %%
- * Copyright (C) 2019 - 2021 Apromore Pty Ltd. All Rights Reserved.
+ * Copyright (C) 2019 - 2022 Apromore Pty Ltd. All Rights Reserved.
  * %%
  * NOTICE:  All information contained herein is, and remains the
  * property of Apromore Pty Ltd and its suppliers, if any.
@@ -191,7 +191,7 @@ public class ParquetExport extends AbstractParquetProducer {
         try {
             Files.delete(java.nio.file.Paths.get(filename));
         } catch (Exception ignored) {
-            LoggerUtil.getLogger(ParquetExport.class).error("File not found", ignored);
+            LoggerUtil.getLogger(ParquetExport.class).info("File not found", ignored);
         }
 
         try {

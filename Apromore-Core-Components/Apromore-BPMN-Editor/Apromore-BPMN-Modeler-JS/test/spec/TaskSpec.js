@@ -13,7 +13,7 @@ var propertiesPanelModule = require('bpmn-js-properties-panel/lib'),
     selectionModule = require('diagram-js/lib/features/selection').default,
     modelingModule = require('bpmn-js/lib/features/modeling').default;
 
-describe('resource-tab', function() {
+describe('tasks-tab', function() {
   var diagramXML = require('./Task.bpmn');
 
   var customTranslateModule = {
@@ -133,4 +133,31 @@ describe('resource-tab', function() {
       expect(task.durationDistribution.timeUnit).to.be.equal('hours');
     });
   });
+
+  describe('existing task with a mean value with decimals', function() {
+    var task;
+
+    it('should round down mean of 456.981666666666667 to 2 decimals ', inject(function(bpmnFactory, elementRegistry) {
+
+      task = getFirstTaskById(bpmnFactory, elementRegistry, 'Activity_0njczgn');
+
+      // then
+      expect(getSelectBoxByTaskId('task-' + task.elementId, '-resource').value).to.be.equal('qbp_180d89ca-9007-44ca-8058-e0aa5e99acc8');
+      expect(getSelectBoxByTaskId('task-' + task.elementId, '-resource')[0].textContent).to.be.equal('R1');
+      expect(getInputFieldByTaskId(task.elementId, 'EXPONENTIAL-arg1').value).to.be.equal('456.98');
+      expect(getSelectBoxByTaskId(task.elementId, 'time-unit').value).to.be.equal('minutes');
+    }));
+
+    it('should round up mean of 8.546944444444444 to 2 decimals', inject(function(bpmnFactory, elementRegistry) {
+
+      task = getFirstTaskById(bpmnFactory, elementRegistry, 'Activity_0w40016');
+
+      // then
+      expect(getSelectBoxByTaskId('task-' + task.elementId, '-resource').value).to.be.equal('qbp_180d89ca-9007-44ca-8058-e0aa5e99acc8');
+      expect(getSelectBoxByTaskId('task-' + task.elementId, '-resource')[0].textContent).to.be.equal('R1');
+      expect(getInputFieldByTaskId(task.elementId, 'EXPONENTIAL-arg1').value).to.be.equal('8.55');
+      expect(getSelectBoxByTaskId(task.elementId, 'time-unit').value).to.be.equal('hours');
+    }));
+  });
+
 });

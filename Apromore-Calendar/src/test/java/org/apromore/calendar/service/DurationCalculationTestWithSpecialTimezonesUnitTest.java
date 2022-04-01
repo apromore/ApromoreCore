@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,6 +22,8 @@
 
 package org.apromore.calendar.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -29,7 +31,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.stream.Stream;
 import org.apromore.calendar.builder.CalendarModelBuilder;
 import org.apromore.calendar.model.CalendarModel;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -43,12 +44,12 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 // This test is temporarily disabled to investigate the issue of timezone
 @Disabled
-public class DurationCalculationTestWithSpecialTimezones {
+class DurationCalculationTestWithSpecialTimezonesUnitTest {
 
     CalendarModelBuilder calendarModelBuilder;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         calendarModelBuilder = new CalendarModelBuilder();
     }
 
@@ -88,7 +89,7 @@ public class DurationCalculationTestWithSpecialTimezones {
 
     @ParameterizedTest
     @MethodSource("datesWithDaylightSavings")
-    public void testCalculateDurationWithDaylightSaving(OffsetDateTime startDateTime, OffsetDateTime endDateTime,
+    void testCalculateDurationWithDaylightSaving(OffsetDateTime startDateTime, OffsetDateTime endDateTime,
                                                         Duration expected) {
 
         CalendarModel calendarModel = calendarModelBuilder.withAllDayAllTime()
@@ -99,6 +100,6 @@ public class DurationCalculationTestWithSpecialTimezones {
         long duration = calendarModel.getDurationMillis(startDateTime.toInstant(), endDateTime.toInstant());
 
         // Then
-        Assert.assertEquals(expected.toMillis(), duration);
+        assertEquals(expected.toMillis(), duration);
     }
 }

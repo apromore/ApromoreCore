@@ -1,8 +1,8 @@
-/**
+/*-
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,14 +24,22 @@ package org.apromore.portal.util;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.extern.jackson.Jacksonized;
 
+@Jacksonized
 @Builder
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CostTable {
     private final Double DEFAULT_COST = 1.0D;
+
+    @Getter
+    private final String perspective;
 
     @Getter
     private final String currency;

@@ -5,7 +5,7 @@
  * Copyright (C) 2012 - 2013 Felix Mannhardt.
  * Copyright (C) 2015 - 2017 Queensland University of Technology.
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -25,16 +25,16 @@
 
 package org.apromore.plugin.property;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class BooleanParameterUnitTest {
+class BooleanParameterUnitTest {
 
     @Test
-    public void test() {
+    void test() {
         PluginParameterType<Boolean> prop = new PluginParameterType<Boolean>("t1", "test", "test", false, false);
         assertFalse(prop.getValue());
         assertFalse(prop.getValue());

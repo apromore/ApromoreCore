@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,8 +21,8 @@
  */
 package org.apromore.portal.util;
 
-import org.junit.Ignore;
-@Ignore
+import org.junit.jupiter.api.Disabled;
+@Disabled
 // Not sure if this test is of much value
 public class ApromoreEnvUtilsTest {
 

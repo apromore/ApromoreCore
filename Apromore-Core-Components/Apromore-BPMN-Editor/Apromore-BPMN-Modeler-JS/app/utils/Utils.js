@@ -28,9 +28,18 @@ var fixNumber = function(value) {
   );
 };
 
+/**
+ * @param {double} value Value to be rounded up
+ * @returns {String} rounded up value
+ */
+var roundUp = function(value) {
+  return (+(Math.round(value + 'e+2') + 'e-2')).toString();
+};
+
 module.exports = {
   createUUID: createUUID,
   fixNumber: fixNumber,
   isDigit: isDigit,
-  getRoot: getRoot
+  getRoot: getRoot,
+  roundUp: roundUp
 };

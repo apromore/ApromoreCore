@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -32,35 +32,29 @@ import org.apromore.apmlog.filter.types.FilterType;
 import org.apromore.apmlog.filter.types.Inclusion;
 import org.apromore.apmlog.filter.types.OperationType;
 import org.apromore.apmlog.filter.types.Section;
-import org.apromore.apmlog.logobjects.ActivityInstance;
 import org.apromore.apmlog.xes.XESAttributeCodes;
-import static org.junit.Assert.assertTrue;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
-public class NodeDurationFilterTest {
+class NodeDurationFilterTest {
 
     private static final String ATTR_VAL = "Prepare package";
 
     @Test
-    public void filter() throws Exception {
+    void filter() throws Exception {
         APMLog log5cases = APMLogUnitTest.getImmutableLog("5cases", "files/5cases.xes");
         List<LogFilterRule> criteria = getFilterCriteria(Choice.REMOVE);
         APMLogFilter apmLogFilter = new APMLogFilter(log5cases);
         apmLogFilter.filter(criteria);
-        assertTrue(apmLogFilter.getAPMLog().getActivityInstances().stream()
-                .filter(x -> x.getAttributeValue(XESAttributeCodes.CONCEPT_NAME).equals(ATTR_VAL))
-                .collect(Collectors.summarizingDouble(ActivityInstance::getDuration)).getMin() >= 40 * (1000 * 60));
+        assertEquals(2, apmLogFilter.getAPMLog().size());
 
         criteria = getFilterCriteria(Choice.RETAIN);
         apmLogFilter.filter(criteria);
-        assertTrue(apmLogFilter.getAPMLog().getActivityInstances().stream()
-                .filter(x -> x.getAttributeValue(XESAttributeCodes.CONCEPT_NAME).equals("Prepare package"))
-                .collect(Collectors.summarizingDouble(ActivityInstance::getDuration)).getMax() <= 40 * (1000 * 60));
+        assertEquals(3, apmLogFilter.getAPMLog().size());
     }
 
     private List<LogFilterRule> getFilterCriteria(Choice choice) {

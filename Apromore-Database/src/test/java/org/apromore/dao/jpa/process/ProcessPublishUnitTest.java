@@ -1,8 +1,8 @@
-/**
+/*-
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,22 +21,23 @@
  */
 package org.apromore.dao.jpa.process;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.apromore.config.BaseTestClass;
 import org.apromore.dao.ProcessPublishRepository;
 import org.apromore.dao.ProcessRepository;
 import org.apromore.dao.model.Process;
 import org.apromore.dao.model.ProcessPublish;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 @Transactional
-public class ProcessPublishUnitTest extends BaseTestClass {
+class ProcessPublishUnitTest extends BaseTestClass {
     private Process process1;
 
     @Autowired
@@ -45,8 +46,8 @@ public class ProcessPublishUnitTest extends BaseTestClass {
     @Autowired
     ProcessRepository processRepository;
 
-    @Before
-    public void setup() {
+    @BeforeEach
+    void setup() {
         process1 = new Process();
         processRepository.saveAndFlush(process1);
 
@@ -58,7 +59,7 @@ public class ProcessPublishUnitTest extends BaseTestClass {
     }
 
     @Test
-    public void testFindByProcessId() {
+    void testFindByProcessId() {
         assertNull(processPublishRepository.findByProcessId(100));
 
         ProcessPublish processPublish = processPublishRepository.findByProcessId(process1.getId());
@@ -68,7 +69,7 @@ public class ProcessPublishUnitTest extends BaseTestClass {
     }
 
     @Test
-    public void testFindByPublishId() {
+    void testFindByPublishId() {
         assertNull(processPublishRepository.findByPublishId("Invalid id"));
 
         ProcessPublish processPublish = processPublishRepository.findByPublishId("b5f5ae43-58cd-4258-ac6d-b2bb684fb48e");
@@ -78,7 +79,7 @@ public class ProcessPublishUnitTest extends BaseTestClass {
     }
 
     @Test
-    public void testFindProcessByPublishId() {
+    void testFindProcessByPublishId() {
         assertNull(processPublishRepository.findProcessByPublishId("Invalid id"));
 
         assertEquals(process1, processPublishRepository.findProcessByPublishId("b5f5ae43-58cd-4258-ac6d-b2bb684fb48e"));

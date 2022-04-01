@@ -2,7 +2,7 @@
   #%L
   This file is part of "Apromore Core".
   %%
-  Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+  Copyright (C) 2018 - 2022 Apromore Pty Ltd.
   %%
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Lesser General Public License as
@@ -54,7 +54,8 @@
                 <row>
                     <label value="${$composer.labels.roleName_text}"/>
                     <hbox>
-                        <textbox id="roleNameTextbox" placeholder="${$composer.labels.roleName_hint}"/>
+                        <textbox id="roleNameTextbox" placeholder="${$composer.labels.roleName_hint}"
+                                 constraint="${labels.common_nameConstraint_text}"/>
                     </hbox>
                 </row>
             </rows>
@@ -69,7 +70,7 @@
 
             <!-- Assign by user -->
             <hbox vflex="1" hflex="1" spacing="0">
-                <assignedGroupListboxComp id="roleTabGroupListbox" vflex="1" hflex="1"/>
+                <assignedGroupListboxComp id="roleTabGroupListbox" multiple="false" vflex="1" hflex="1"/>
                 <box id="applyRoleUserSelection" orient="horizontal" vflex="1" hflex="1" spacing="0"
                      sclass="ap-usrmgt-detail-container">
                     <div sclass="ap-assign-role-listbox-container" vflex="1" hflex="1">

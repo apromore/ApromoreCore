@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -150,7 +150,7 @@ public class CaseVariantDetailsController extends DataListController {
             parent.disableGraphEditButtons();
             caseVariantDetailsWindow = (Window) Executions
                     .createComponents(getPageDefinition("processdiscoverer/zul/caseVariantDetails.zul"), null, arg);
-            caseVariantDetailsWindow.setTitle("Case variant Inspector");
+            caseVariantDetailsWindow.setTitle(getLabel("caseVariantInspector_text", "Case variant Inspector"));
             caseVariantDetailsWindow.getFellow("lblClickACase").setVisible(!this.disabled);
             caseVariantDetailsWindow.addEventListener("onClose", new EventListener<Event>() {
                 @Override

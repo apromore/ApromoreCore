@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -135,7 +135,7 @@ public class CaseDetailsController extends DataListController {
       arg.put("pdLabels", parent.getLabels());
       caseDetailsWindow = (Window) Executions
           .createComponents(getPageDefinition("processdiscoverer/zul/caseDetails.zul"), null, arg);
-      caseDetailsWindow.setTitle("Case Inspector");
+      caseDetailsWindow.setTitle(getLabel("caseInspector_text", "Case Inspector"));
       caseDetailsWindow.getFellow("lblClickACase").setVisible(!this.disabled);
 
       caseDetailsWindow.addEventListener("onClose", new EventListener<Event>() {

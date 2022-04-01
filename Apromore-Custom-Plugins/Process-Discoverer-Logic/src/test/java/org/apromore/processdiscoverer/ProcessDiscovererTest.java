@@ -2,7 +2,7 @@
  * #%L
  * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2018 - 2021 Apromore Pty Ltd.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -39,17 +39,17 @@ import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNNode;
 import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Gateway;
 import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Gateway.GatewayType;
 import org.deckfour.xes.model.XLog;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
-public class ProcessDiscovererTest extends LogicDataSetup {
+class ProcessDiscovererTest extends LogicDataSetup {
     
     private AbstractionParams createAbstrationParams(IndexableAttribute mainAttribute,
             double nodeSlider, double arcSlider, double paraSlider,
@@ -218,7 +218,7 @@ public class ProcessDiscovererTest extends LogicDataSetup {
     
     
     @Test
-    public void testDFG_LogWithOneTraceOneEvent_Frequency() {
+    void testDFG_LogWithOneTraceOneEvent_Frequency() {
         try {
             Abstraction abs = discoverProcess(readLogWithOneTraceOneEvent(),
                                                 1.0, 1.0, 0.4,
@@ -279,7 +279,7 @@ public class ProcessDiscovererTest extends LogicDataSetup {
     }
 
     @Test
-    public void testDFG_LogWithOneTrace_StartCompleteEvents_Cost() {
+    void testDFG_LogWithOneTrace_StartCompleteEvents_Cost() {
         try {
             Abstraction abs = discoverProcess(readLogWithOneTrace_StartCompleteEvents(),
                     1.0, 1.0, 0.4,
@@ -357,7 +357,7 @@ public class ProcessDiscovererTest extends LogicDataSetup {
     }
     
     @Test
-    public void testDFG_LogWithCompleteEventsOnly_Frequency() {
+    void testDFG_LogWithCompleteEventsOnly_Frequency() {
         try {
             Abstraction abs = discoverProcess(readLogWithCompleteEventsOnly(),
                                                 1.0, 1.0, 0.4,
@@ -476,7 +476,7 @@ public class ProcessDiscovererTest extends LogicDataSetup {
     }
     
     @Test
-    public void testBPMN_LogWithCompleteEventsOnly_Frequency() {
+    void testBPMN_LogWithCompleteEventsOnly_Frequency() {
         try {
             Abstraction abs = discoverProcess(readLogWithCompleteEventsOnly(),
                                                 1.0, 1.0, 0.4,
@@ -610,7 +610,7 @@ public class ProcessDiscovererTest extends LogicDataSetup {
     
     // Test consistency of BPMN Diagram for different types of measures
     @Test
-    public void testBPMNMining_SameAbstractionLeveDifferentWeightMeasures() {
+    void testBPMNMining_SameAbstractionLeveDifferentWeightMeasures() {
     	 try {
     		 BPMNDiagram sourceDiagram = this.readBPMN_LogWithCompleteEventsOnly();
     		 
@@ -790,7 +790,7 @@ public class ProcessDiscovererTest extends LogicDataSetup {
     
     
     @Test
-    public void testDFG_LogWithStartCompleteEventsOverlapping_Duration() {
+    void testDFG_LogWithStartCompleteEventsOverlapping_Duration() {
         try {
             Abstraction abs = discoverProcess(readLogWithStartCompleteEventsOverlapping(),
                                                 1.0, 1.0, 0.4,
@@ -909,7 +909,7 @@ public class ProcessDiscovererTest extends LogicDataSetup {
     }
     
     @Test
-    public void testBPMN_LogWithStartCompleteEventsOverlaping_Duration() {
+    void testBPMN_LogWithStartCompleteEventsOverlaping_Duration() {
         try {
             Abstraction abs = discoverProcess(readLogWithStartCompleteEventsOverlapping(),
                                                 1.0, 1.0, 0.4,
@@ -1042,7 +1042,7 @@ public class ProcessDiscovererTest extends LogicDataSetup {
     }
     
     @Test
-    public void testDFG_Sepsis_100_10_GraphStructure() {
+    void testDFG_Sepsis_100_10_GraphStructure() {
         try {
             Abstraction abs = discoverProcess(read_Sepsis(),
                                                 1.0, 0.1, 0.4,
@@ -1066,7 +1066,7 @@ public class ProcessDiscovererTest extends LogicDataSetup {
     }
     
     @Test
-    public void testBPMN_Sepsis_100_30_DiagramStructure() {
+    void testBPMN_Sepsis_100_30_DiagramStructure() {
         try {
             Abstraction abs = discoverProcess(read_Sepsis(),
                                                 1.0, 0.3, 0.4,
@@ -1091,7 +1091,7 @@ public class ProcessDiscovererTest extends LogicDataSetup {
     
     
     @Test
-    public void testTraceAbstraction_Sepsis() {
+    void testTraceAbstraction_Sepsis() {
         try {
             Abstraction abs = discoverTraceAbstraction(read_Sepsis(), "B");
             BPMNDiagram d = abs.getDiagram();
@@ -1112,7 +1112,7 @@ public class ProcessDiscovererTest extends LogicDataSetup {
     }
 
     @Test
-    public void testTraceAbstraction_NodeDuration() {
+    void testTraceAbstraction_NodeDuration() {
         try {
             Abstraction abs = discoverTraceAbstraction(readLogWithStartCompleteEventsOverlapping(), "Case3.0");
             BPMNDiagram d = abs.getDiagram();
@@ -1134,7 +1134,7 @@ public class ProcessDiscovererTest extends LogicDataSetup {
     }
 
     @Test
-    public void testTraceVariantAbstraction_Sepsis() {
+    void testTraceVariantAbstraction_Sepsis() {
         try {
             String traceIDs[] = {"B"};
             Abstraction abs = discoverTraceVariantAbstraction(read_Sepsis(), new ArrayList<>(Arrays.asList(traceIDs)));
@@ -1155,7 +1155,7 @@ public class ProcessDiscovererTest extends LogicDataSetup {
     }
 
     @Test
-    public void testTraceVariantAbstraction_NodeDuration() {
+    void testTraceVariantAbstraction_NodeDuration() {
         try {
             String traceIDs[] = {"Case3.0"};
             Abstraction abs = discoverTraceVariantAbstraction(readLogWithStartCompleteEventsOverlapping(),
@@ -1178,7 +1178,7 @@ public class ProcessDiscovererTest extends LogicDataSetup {
     }
 
     @Test
-    public void testTraceVariantAbstraction_NodeDuration_no_IDs() {
+    void testTraceVariantAbstraction_NodeDuration_no_IDs() {
         try {
             String traceIDs[] = {};
             Abstraction abs = discoverTraceVariantAbstraction(readLogWithStartCompleteEventsOverlapping(),
@@ -1191,7 +1191,7 @@ public class ProcessDiscovererTest extends LogicDataSetup {
     }
 
     @Test
-    public void testTraceVariantAbstraction_NodeDuration_empty_ID() {
+    void testTraceVariantAbstraction_NodeDuration_empty_ID() {
         try {
             String traceIDs[] = {"Case3.0", ""};
             Abstraction abs = discoverTraceVariantAbstraction(readLogWithStartCompleteEventsOverlapping(),
@@ -1204,7 +1204,7 @@ public class ProcessDiscovererTest extends LogicDataSetup {
     }
 
     @Test
-    public void testTraceVariantAbstraction_NodeDuration_null_ID() {
+    void testTraceVariantAbstraction_NodeDuration_null_ID() {
         try {
             String traceIDs[] = {"Case3.0", null};
             Abstraction abs = discoverTraceVariantAbstraction(readLogWithStartCompleteEventsOverlapping(),
@@ -1217,7 +1217,7 @@ public class ProcessDiscovererTest extends LogicDataSetup {
     }
 
     @Test
-    public void testTraceVariantAbstraction_NodeDuration_ID_not_in_log() {
+    void testTraceVariantAbstraction_NodeDuration_ID_not_in_log() {
         try {
             String traceIDs[] = {"not a trace in log"};
             Abstraction abs = discoverTraceVariantAbstraction(readLogWithStartCompleteEventsOverlapping(),
@@ -1230,7 +1230,7 @@ public class ProcessDiscovererTest extends LogicDataSetup {
     }
 
     @Test
-    public void testTraceVariantAbstraction_NodeDuration_IDs_diff_variant() {
+    void testTraceVariantAbstraction_NodeDuration_IDs_diff_variant() {
         try {
             String traceIDs[] = {"Case2.0", "Case3.0"};
             Abstraction abs = discoverTraceVariantAbstraction(readLogWithStartCompleteEventsOverlapping(),
@@ -1243,7 +1243,7 @@ public class ProcessDiscovererTest extends LogicDataSetup {
     }
 
     @Test
-    public void testTraceVariantAbstraction_NodeDuration_Multiple_Cases() {
+    void testTraceVariantAbstraction_NodeDuration_Multiple_Cases() {
         try {
             String traceIDs[] = {"Case2.0", "Case2.1"};
             Abstraction abs = discoverTraceVariantAbstraction(readLogWithStartCompleteEventsOverlapping(),
@@ -1266,7 +1266,7 @@ public class ProcessDiscovererTest extends LogicDataSetup {
     }
     
     @Test
-    public void testDFG_ApplyThenClearFilterCriteria() {
+    void testDFG_ApplyThenClearFilterCriteria() {
         try {
             AttributeLog attLog = createAttributeLog(readLogWithCompleteEventsOnly());
             ProcessDiscoverer pd = new ProcessDiscoverer();
@@ -1331,7 +1331,7 @@ public class ProcessDiscovererTest extends LogicDataSetup {
     }
     
     @Test
-    public void testBPMN_Before_And_After_FilterCriteria() {
+    void testBPMN_Before_And_After_FilterCriteria() {
         try {
             AttributeLog attLog = createAttributeLog(readLogWithCompleteEventsOnly());
             ProcessDiscoverer pd = new ProcessDiscoverer();
