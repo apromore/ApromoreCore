@@ -24,17 +24,14 @@
 
 package org.apromore.portal.dialogController;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.HashSet;
+import java.util.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apromore.dao.model.Folder;
+import org.apromore.dao.model.Log;
+import org.apromore.dao.model.Process;
 import org.apromore.dao.model.User;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
@@ -47,6 +44,7 @@ import org.apromore.portal.context.PortalPluginResolver;
 import org.apromore.portal.dialogController.workspaceOptions.AddFolderController;
 import org.apromore.portal.dialogController.workspaceOptions.RenameFolderController;
 import org.apromore.portal.exception.DialogException;
+import org.apromore.portal.helper.Version;
 import org.apromore.portal.menu.PluginCatalog;
 import org.apromore.portal.model.FolderType;
 import org.apromore.portal.model.LogSummaryType;
@@ -55,6 +53,7 @@ import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.SummariesType;
 import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.VersionSummaryType;
+import org.apromore.service.model.ProcessData;
 import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
 import org.zkoss.util.resource.Labels;
@@ -548,16 +547,20 @@ public abstract class BaseListboxController extends BaseController {
   }
 
   protected void removeFolder() throws Exception {
-    // See if the user has mixed folders and process models. we handle everything
-    // differently.
-   if( !(getMainController().getManagerService().hasWritePermission(UserSessionManager.getCurrentUser().getUsername(),new ArrayList<>(getSelection())))) {
-        Notification.error(Labels.getLabel("portal_deleteItemRestricted_message"));
-        return;
-    }
-
     ArrayList<FolderType> folders = getSelectedFolders();
     Map<SummaryType, List<VersionSummaryType>> elements =
         getMainController().getSelectedElementsAndVersions();
+
+    if (!doesSelectionExist(folders, elements)) {
+      Notification.error(Labels.getLabel("portal_resourceAlreadyDeleted_message"));
+      return;
+    }
+    // See if the user has mixed folders and process models. we handle everything
+    // differently.
+    if( !(getMainController().getManagerService().hasWritePermission(UserSessionManager.getCurrentUser().getUsername(),new ArrayList<>(getSelection())))) {
+        Notification.error(Labels.getLabel("portal_deleteItemRestricted_message"));
+        return;
+    }
 
     if (doesSelectionContainFoldersAndElements(folders, elements)) { // mixed
       showMessageFoldersAndElementsDelete(getMainController(), folders);
@@ -923,6 +926,37 @@ public abstract class BaseListboxController extends BaseController {
   private boolean doesSelectionContainFoldersAndElements(ArrayList<FolderType> folders,
       Map<SummaryType, List<VersionSummaryType>> elements) throws Exception {
     return (folders != null && !folders.isEmpty()) && (elements != null && !elements.isEmpty());
+  }
+
+  /* Does the selection in the main detail list exist. */
+  private boolean doesSelectionExist(
+      ArrayList<FolderType> folders,
+      Map<SummaryType, List<VersionSummaryType>> elements
+  ) throws Exception {
+
+    for (FolderType folder: folders) {
+      Folder f = getMainController().getWorkspaceService().getFolder(folder.getId());
+      if (f == null) {
+        return false;
+      }
+    }
+    for (Map.Entry<SummaryType, List<VersionSummaryType>> entry : elements.entrySet()) {
+      Integer id = entry.getKey().getId();
+      if (entry.getKey() instanceof ProcessSummaryType) {
+        Process process = getMainController().getProcessService().getProcessById(id);
+        if (process == null) {
+          return false;
+        }
+      } else if (entry.getKey() instanceof LogSummaryType) {
+        Log log = getMainController().getEventLogService().findLogById(id);
+        if (log == null) {
+          return false;
+        }
+      } else {
+        throw new Exception("Deletion not supported for " + entry.getKey());
+      }
+    }
+    return true;
   }
 
   public MainController getMainController() {
