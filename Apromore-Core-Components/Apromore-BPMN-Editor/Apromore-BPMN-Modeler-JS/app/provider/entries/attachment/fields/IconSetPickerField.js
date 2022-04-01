@@ -59,7 +59,7 @@ var ICONS = [
     "ap-bpmn-icon-flag",
     "z-icon-book",
     "ap-bpmn-icon-process-performance",
-    "ap-bpmn-icon-ap-dashboard",
+    "ap-icon-computer",
     "z-icon-ban"
   ]
 ];
@@ -160,7 +160,7 @@ function renderIconSet(element, icons, bpmnFactory, bpmnjs, translate, eventBus)
     let item = $(`<div class="icon-item" data-icon-index="${index}"></div>`);
     let urlEl = $(`<input class="icon-url" placeholder="URL" data-icon-index="${index}" value="${url}" />`);
     let textEl = $(`<input class="icon-text" placeholder="Text" data-icon-index="${index}" value="${text}" />`);
-    let iconEl = $(`<div class="icon-name ${name}" title="Click to select icon" data-icon-index="${index}" data-icon-name="${name}" />`);
+    let iconEl = $(`<div class="icon-name" title="Click to select icon" data-icon-index="${index}" data-icon-name="${name}"><span class="${name}" /></div>`);
     let eraseEl = $(`<div class="remove" data-icon-index="${index}">Remove</div>`);
     urlEl.on('change', () => {
       updateObjects(element, icons, bpmnFactory, bpmnjs, eventBus);
@@ -169,7 +169,7 @@ function renderIconSet(element, icons, bpmnFactory, bpmnjs, translate, eventBus)
       updateObjects(element, icons, bpmnFactory, bpmnjs, eventBus);
     });
     iconEl.on('click', () => {
-      let index = $(event.target).data("icon-index");
+      let index = $(event.currentTarget).data("icon-index");
       if (currentIndex === index) {
         $(SET_PICKER_SEL).hide();
         currentIndex = -1;
@@ -221,7 +221,9 @@ module.exports = function(options) {
   ICONS.forEach((line) => {
     var lineEl = domify('<div></div>');
     line.forEach((iconName) => {
-      var icoEl = domify(`<i id="${iconName}" class="${iconName}"></i>`);
+      var icoEl = (iconName.startsWith('ap-icon')) ?
+        domify(`<i id="${iconName}"><span class="${iconName}" /></i>`) :
+        domify(`<i id="${iconName}" class="${iconName}"></i>`);
       domEvent.bind(icoEl, 'click', function () {
         let newIconName;
         if (this.id === ICON_NOT_SET) {
@@ -232,8 +234,9 @@ module.exports = function(options) {
         let index = $(SET_PICKER_SEL).data("icon-index");
         let rowIcon = $(`#ap-bpmn-icon-set .icon-name[data-icon-index=${index}]`);
         rowIcon.data('icon-name', newIconName);
-        rowIcon.removeClass();
-        rowIcon.addClass("icon-name " + newIconName);
+        let iconNameEl = $('span', rowIcon);
+        iconNameEl.removeClass();
+        iconNameEl.addClass(newIconName);
         selectIcon(newIconName);
         updateObjects(options.element, icons, options.bpmnFactory, options.bpmnjs, options.eventBus);
       })
