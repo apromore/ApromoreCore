@@ -1,7 +1,7 @@
 /*-
  * #%L
  * This file is part of "Apromore Core".
- * 
+ *
  * Copyright (C) 2012 - 2017 Queensland University of Technology.
  * Copyright (C) 2015, 2016 Adriano Augusto.
  * %%
@@ -11,12 +11,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -105,7 +105,7 @@ import static org.apromore.common.Constants.TRUNK_NAME;
 
 /**
  * Implementation of the ProcessService Contract.
- * 
+ *
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 @Service("processService")
@@ -638,10 +638,11 @@ public class ProcessServiceImpl implements ProcessService {
             // Delete corresponding draft version of current user
             ProcessModelVersion draft = getProcessModelVersionByUser(pvid.getProcessBranch().getProcess().getId(),
                     DRAFT_BRANCH_NAME, pvid.getVersionNumber(), user.getId());
-            ProcessBranch draftBranch = draft.getProcessBranch();
-            List<ProcessModelVersion> draft_pmvs = draftBranch.getProcessModelVersions();
-            deleteProcessModelVersion(draft_pmvs, draft, draftBranch);
-
+            if (draft != null) {
+              ProcessBranch draftBranch = draft.getProcessBranch();
+              List<ProcessModelVersion> draft_pmvs = draftBranch.getProcessModelVersions();
+              deleteProcessModelVersion(draft_pmvs, draft, draftBranch);
+            }
             LOGGER.debug("Main branch has {} versions", pvid.getProcessBranch().getProcessModelVersions().size());
             // Delete the process only when main branch is empty
             if (pvid.getProcessBranch().getProcessModelVersions().isEmpty()) {
