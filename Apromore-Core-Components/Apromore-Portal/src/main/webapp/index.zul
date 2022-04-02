@@ -189,8 +189,17 @@
         
     </script>
 
-    <window id="mainW" border="none" height="100%" width="100%" apply="org.apromore.portal.dialogController.MainController" sclass="custom-window ap-portal ap-font-base">
-
+    <window id="mainW" border="none" height="100%" width="100%"
+            onClientInfo="onClientInfo(event)"
+            apply="org.apromore.portal.dialogController.MainController"
+            sclass="custom-window ap-portal ap-font-base">
+      <zscript>
+        void onClientInfo(ClientInfoEvent evt) {
+          int height = evt.getDesktopHeight();
+          int width = evt.getDesktopWidth();
+          leftPanel.setMaxsize(width - 840);
+        }
+      </zscript>
         <!--<div class="z-listheader">-->
         <!--
         <style>
