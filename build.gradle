@@ -136,8 +136,8 @@ subprojects {
   license {
     header = rootProject.file('LICENSE.txt')
     skipExistingHeaders = true
-    includes(["**/*.java", "**/*.xml", "**/*.js", "**/*.css", "**/*.html", "**/*.sql", "**/*.yaml"])
-    excludes(["**/*.properties", "**/*.zul", "**/package-info.java"])
+    includes(["**/*.java", "**/*.xml", "**/*.zul", "**/*.js", "**/*.css", "**/*.html", "**/*.sql", "**/*.yaml"])
+    excludes(["**/*.properties", "**/package-info.java"])
     ext.year = '2018 - 2022'
     ext.company = 'Apromore Pty Ltd'
     ext.module = 'Apromore Core'
@@ -157,6 +157,7 @@ subprojects {
       javascript='JAVADOC_STYLE'
       sql='DOUBLEDASHES_STYLE'
       yaml='SCRIPT_STYLE'
+      zul='XML_STYLE'
     }
   }
   licenseMain.dependsOn licenseFormat
