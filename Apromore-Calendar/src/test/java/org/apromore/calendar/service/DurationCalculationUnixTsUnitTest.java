@@ -24,11 +24,11 @@ package org.apromore.calendar.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.Duration;
 import java.time.ZoneOffset;
 import java.util.stream.Stream;
 import org.apromore.calendar.builder.CalendarModelBuilder;
 import org.apromore.calendar.model.CalendarModel;
-import org.apromore.calendar.model.DurationModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -62,10 +62,10 @@ class DurationCalculationUnixTsUnitTest {
         CalendarModel calendarModel = calendarModelBuilder.with7DayWorking().withZoneId(ZoneOffset.UTC.getId()).build();
 
         // When
-        DurationModel durationModel = calendarModel.getDuration(startDateTime, endDateTime);
+        Duration durationModel = calendarModel.getDuration(startDateTime, endDateTime);
 
         // Then
-        assertThat(durationModel.getDuration().toMillis()).isEqualTo(expected);
+        assertThat(durationModel.equals(expected));
     }
 
 

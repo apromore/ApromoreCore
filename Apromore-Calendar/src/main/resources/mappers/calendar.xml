@@ -64,9 +64,5 @@
          <a>endTime</a>
          <b>endTime</b>
       </field>
-      <field custom-converter-id="durationToduration">
-         <a>duration</a>
-         <b>duration</b>
-      </field>
    </mapping>
 </mappings>

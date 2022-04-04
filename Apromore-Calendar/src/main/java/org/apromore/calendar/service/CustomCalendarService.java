@@ -30,6 +30,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import javax.transaction.Transactional;
 import lombok.Setter;
+import org.apromore.calendar.builder.Calendars;
 import org.apromore.calendar.exception.CalendarAlreadyExistsException;
 import org.apromore.calendar.exception.CalendarNotExistsException;
 import org.apromore.calendar.model.CalendarModel;
@@ -74,24 +75,19 @@ public class CustomCalendarService implements CalendarService {
     @Override
     public CalendarModel createGenericCalendar(String desc, String username, boolean weekendsOff, String zoneId)
         throws CalendarAlreadyExistsException {
-        CustomCalendar customCalendar = createCalendar(desc, username, weekendsOff, LocalTime.MIN, LocalTime.MAX);
-        CalendarModel calendarModel = modelMapper.getMapper().map(customCalendar, CalendarModel.class);
-        return calendarModel;
-    }
-
-    private CustomCalendar createGenericCalendar() {
-
-        final CustomCalendar calendar = new CustomCalendar("Generic 24/7");
-        for (WorkDay workDay : getWorkDays(LocalTime.MIN, LocalTime.MAX, false)) {
-            calendar.addWorkDay(workDay);
+        if (!weekendsOff) {
+            return getGenericCalendar();
+        } else {
+            CustomCalendar customCalendar = createCalendar(desc, username, weekendsOff, LocalTime.MIN, LocalTime.MAX);
+            CalendarModel calendarModel = modelMapper.getMapper().map(customCalendar, CalendarModel.class);
+            return calendarModel;
         }
-        return calendar;
-
     }
 
     @Override
     public CalendarModel getGenericCalendar() {
-        return modelMapper.getMapper().map(createGenericCalendar(), CalendarModel.class);
+        //return modelMapper.getMapper().map(createGenericCalendar(), CalendarModel.class);
+        return Calendars.INSTANCE.absolute();
     }
 
     @Override

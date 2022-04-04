@@ -20,34 +20,24 @@
  * #L%
  */
 
-/*
+package org.apromore.calendar.builder;
+
+import org.apromore.calendar.model.AbsoluteCalendarModel;
+import org.apromore.calendar.model.CalendarModel;
+
+/**
+ * This class provides a Singleton for creating special calendars.
  *
- * This is the DurationModel model, used as a container to retain the final result of the duration calculated from
- * {@link CalendarModel}.
+ * @author Bruce Nguyen
  */
+public enum Calendars {
+    INSTANCE;
 
-package org.apromore.calendar.model;
-
-import java.time.Duration;
-import lombok.Data;
-import lombok.ToString;
-
-@Data
-@ToString
-public class DurationModel {
-
-    Duration duration = Duration.ZERO;
-    Duration durationMin = Duration.ZERO;
-    Duration durationMax = Duration.ZERO;
-    Duration durationMean = Duration.ZERO;
-    Duration durationMedian = Duration.ZERO;
-    Duration durationSum = Duration.ZERO;
-
-    public void setAll(Duration totalDuration) {
-        duration =
-            durationMin = durationMax = durationMean = durationMedian = durationSum = totalDuration;
-
+    public CalendarModel empty() {
+        return new CalendarModel();
     }
 
-
+    public CalendarModel absolute() {
+        return new AbsoluteCalendarModel();
+    }
 }

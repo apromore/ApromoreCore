@@ -25,6 +25,7 @@ package org.apromore.calendar.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import org.apromore.calendar.builder.Calendars;
 import org.joda.time.DateTime;
 import org.junit.jupiter.api.Test;
 
@@ -35,65 +36,65 @@ import org.junit.jupiter.api.Test;
 class AbsoluteCalendarModelTest {
     @Test
     void test_Duration_Zero() {
-        long duration = CalendarModel.ABSOLUTE_CALENDAR.getDuration(
+        long duration = Calendars.INSTANCE.absolute().getDuration(
             DateTime.parse("2021-01-01T22:31:19.495+10:00").getMillis(),
             DateTime.parse("2021-01-01T22:31:19.495+10:00").getMillis()
-        ).getDuration().toMillis();
+        ).toMillis();
         assertEquals(0, duration);
     }
 
     @Test
     void test_Duration_Days() {
-        long duration = CalendarModel.ABSOLUTE_CALENDAR.getDuration(
+        long duration = Calendars.INSTANCE.absolute().getDuration(
             DateTime.parse("2021-01-01T09:00:00.000+10:00").getMillis(),
             DateTime.parse("2021-01-02T09:00:00.000+10:00").getMillis()
-        ).getDuration().toMillis();
+        ).toMillis();
         assertEquals(24 * 3600 * 1000, duration);
     }
 
     @Test
     void test_Duration_Hours() {
-        long duration = CalendarModel.ABSOLUTE_CALENDAR.getDuration(
+        long duration = Calendars.INSTANCE.absolute().getDuration(
             DateTime.parse("2021-01-01T09:00:00.000+10:00").getMillis(),
             DateTime.parse("2021-01-01T10:00:00.000+10:00").getMillis()
-        ).getDuration().toMillis();
+        ).toMillis();
         assertEquals(1 * 3600 * 1000, duration);
     }
 
     @Test
     void test_Duration_Minutes() {
-        long duration = CalendarModel.ABSOLUTE_CALENDAR.getDuration(
+        long duration = Calendars.INSTANCE.absolute().getDuration(
             DateTime.parse("2021-01-01T09:00:00.000+10:00").getMillis(),
             DateTime.parse("2021-01-01T09:01:00.000+10:00").getMillis()
-        ).getDuration().toMillis();
+        ).toMillis();
         assertEquals(60 * 1000, duration);
     }
 
     @Test
     void test_Duration_Seconds() {
-        long duration = CalendarModel.ABSOLUTE_CALENDAR.getDuration(
+        long duration = Calendars.INSTANCE.absolute().getDuration(
             DateTime.parse("2021-01-01T09:00:00.000+10:00").getMillis(),
             DateTime.parse("2021-01-01T09:00:01.000+10:00").getMillis()
-        ).getDuration().toMillis();
+        ).toMillis();
         assertEquals(1000, duration);
     }
 
     @Test
     void test_Duration_Milliseconds() {
-        long duration = CalendarModel.ABSOLUTE_CALENDAR.getDuration(
+        long duration = Calendars.INSTANCE.absolute().getDuration(
             DateTime.parse("2021-01-01T09:00:00.000+10:00").getMillis(),
             DateTime.parse("2021-01-01T09:00:00.001+10:00").getMillis()
-        ).getDuration().toMillis();
+        ).toMillis();
         assertEquals(1, duration);
 
     }
 
     @Test
     void test_Duration_Years() {
-        long duration = CalendarModel.ABSOLUTE_CALENDAR.getDuration(
+        long duration = Calendars.INSTANCE.absolute().getDuration(
             DateTime.parse("2020-01-01T09:00:00.000+10:00").getMillis(),
             DateTime.parse("2021-01-01T09:00:00.000+10:00").getMillis()
-        ).getDuration().toMillis();
+        ).toMillis();
         assertEquals(366 * 24 * 3600 * 1000L, duration);
     }
 }

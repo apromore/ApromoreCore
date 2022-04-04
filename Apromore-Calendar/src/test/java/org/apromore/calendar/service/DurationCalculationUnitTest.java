@@ -31,7 +31,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.stream.Stream;
 import org.apromore.calendar.builder.CalendarModelBuilder;
 import org.apromore.calendar.model.CalendarModel;
-import org.apromore.calendar.model.DurationModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -88,10 +87,10 @@ class DurationCalculationUnitTest {
         CalendarModel calendarModel = calendarModelBuilder.with7DayWorking().withZoneId(ZoneOffset.UTC.getId()).build();
 
         // When
-        DurationModel durationModel = calendarModel.getDuration(startDateTime, endDateTime);
+        Duration durationModel = calendarModel.getDuration(startDateTime, endDateTime);
 
         // Then
-        assertThat(durationModel.getDuration()).isEqualTo(expected);
+        assertThat(durationModel.equals(expected));
     }
 
 
