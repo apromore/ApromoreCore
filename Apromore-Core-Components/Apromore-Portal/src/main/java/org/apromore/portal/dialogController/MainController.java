@@ -78,7 +78,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.zkoss.json.JSONObject;
 import org.zkoss.json.parser.JSONParser;
-import org.zkoss.spring.SpringUtil;
+import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;

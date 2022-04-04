@@ -32,7 +32,7 @@ import org.apromore.portal.model.SummaryType;
 import org.apromore.service.AuthorizationService;
 import org.apromore.service.WorkspaceService;
 import org.apromore.util.AccessType;
-import org.zkoss.spring.SpringUtil;
+import org.zkoss.zkplus.spring.SpringUtil;
 
 import java.util.Map;
 

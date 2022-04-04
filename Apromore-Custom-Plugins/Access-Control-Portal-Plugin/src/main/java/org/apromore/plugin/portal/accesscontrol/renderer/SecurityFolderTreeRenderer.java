@@ -41,7 +41,7 @@ import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.SummaryType;
 import org.apromore.service.UserService;
 import org.slf4j.Logger;
-import org.zkoss.spring.SpringUtil;
+import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueues;
