@@ -19,12 +19,10 @@ package org.apromore.apmlog.util;
 
 import org.apromore.calendar.model.CalendarModel;
 
-import java.time.temporal.ChronoUnit;
-
 public class CalendarDuration {
     public static long getDuration(CalendarModel calendarModel, long start, long end) {
         return calendarModel != null ?
-                calendarModel.getDuration(start, end).getDuration().toMillis():
+                calendarModel.getDuration(start, end).toMillis():
                 start > 0 && end > start ? (end - start) : 0;
     }
 }
