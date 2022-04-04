@@ -33,6 +33,7 @@ import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.Log;
 import org.apromore.dao.model.Process;
 import org.apromore.dao.model.User;
+import org.apromore.exception.ResourceNotFoundException;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.PortalPlugin;
@@ -565,9 +566,9 @@ public abstract class BaseListboxController extends BaseController {
     if (doesSelectionContainFoldersAndElements(folders, elements)) { // mixed
       showMessageFoldersAndElementsDelete(getMainController(), folders);
     } else {
-      if (folders != null && !folders.isEmpty()) { // folder only
+      if (!folders.isEmpty()) { // folder only
         showMessageFolderDelete(getMainController(), folders);
-      } else if (elements != null && !elements.isEmpty()) { // processes and logs
+      } else if (!elements.isEmpty()) { // processes and logs
         if (getSelectedProcesses().size() == 0) { // log only
           showMessageLogsDelete(getMainController());
         } else if (getSelectedLogs().size() == 0) { // process only
@@ -953,7 +954,7 @@ public abstract class BaseListboxController extends BaseController {
           return false;
         }
       } else {
-        throw new Exception("Deletion not supported for " + entry.getKey());
+        throw new ResourceNotFoundException("Resource not found: " + entry.getKey());
       }
     }
     return true;
