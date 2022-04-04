@@ -292,12 +292,15 @@
 #ap-bpmn-icon-picker i {
   font-size: 14px;
   width: 22px;
+  height: 22px;
   box-sizing: border-box;
   display: inline-block;
   padding: 3px;
   background-color: #f0f0f0;
   border: 1px solid transparent;
   margin-right: 5px;
+  vertical-align: bottom;
+  position: relative;
 }
 
 #ap-bpmn-icon-set-picker i.selected,
