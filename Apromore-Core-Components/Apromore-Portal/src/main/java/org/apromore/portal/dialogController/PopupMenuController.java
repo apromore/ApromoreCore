@@ -60,7 +60,7 @@ import org.apromore.portal.model.UserType;
 import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
-import org.zkoss.spring.SpringUtil;
+import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.select.SelectorComposer;

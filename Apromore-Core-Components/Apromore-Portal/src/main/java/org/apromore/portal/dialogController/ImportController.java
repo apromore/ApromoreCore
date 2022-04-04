@@ -59,7 +59,7 @@ import org.apromore.portal.util.StringUtil;
 import org.apromore.zk.dialog.InputDialog;
 import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
-import org.zkoss.spring.SpringUtil;
+import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.util.media.Media;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Executions;
