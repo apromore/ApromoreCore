@@ -40,16 +40,15 @@ import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import org.apromore.calendar.exception.CalendarNotExistsException;
-import org.apromore.calendar.model.CalendarModel;
-import org.apromore.calendar.builder.Calendars;
-import org.apromore.calendar.model.HolidayModel;
-import org.apromore.calendar.model.WorkDayModel;
 import org.apromore.calendar.service.CalendarService;
 import org.apromore.commons.datetime.TimeUtils;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.calendar.Constants;
-import org.apromore.plugin.portal.calendar.TimeRange;
-import org.apromore.plugin.portal.calendar.Zone;
+import org.apromore.plugin.portal.calendar.model.Calendar;
+import org.apromore.plugin.portal.calendar.model.CalendarFactory;
+import org.apromore.plugin.portal.calendar.model.Zone;
+import org.apromore.plugin.portal.calendar.model.Holiday;
+import org.apromore.plugin.portal.calendar.model.WorkDay;
 import org.apromore.plugin.portal.calendar.pageutil.PageUtils;
 import org.apromore.zk.event.CalendarEvents;
 import org.apromore.zk.label.LabelSupplier;
@@ -85,12 +84,12 @@ import org.zkoss.zul.Window;
  * Controller for handling calendar interface Corresponds to calendar.zul
  */
 @VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
-public class Calendar extends SelectorComposer<Window> implements LabelSupplier {
+public class CalendarController extends SelectorComposer<Window> implements LabelSupplier {
 
     @WireVariable("calendarService")
     CalendarService calendarService;
 
-    private CalendarModel calendarModel;
+    private Calendar calendarModel;
     private Long calendarId;
     private boolean isNew;
     private boolean canEdit;
@@ -105,9 +104,7 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
         return zone.getZoneDisplayName().toLowerCase().contains(input.toLowerCase()) ? 0 : 1;
     };
 
-    private static final Logger LOGGER = PortalLoggerFactory.getLogger(Calendar.class);
-    private static final LocalTime DEFAULT_START_TIME = LocalTime.of(9, 0);
-    private static final LocalTime DEFAULT_END_TIME = LocalTime.of(17, 0);
+    private static final Logger LOGGER = PortalLoggerFactory.getLogger(CalendarController.class);
 
     @Wire("#actionBridge")
     Div actionBridge;
@@ -164,9 +161,9 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
     @Setter
     private List<String> holidayTypes;
 
-    private ListModelList<WorkDayModel> dayOfWeekListModel;
-    private ListModelList<HolidayModel> holidayListModel;
-    private ListModelList<HolidayModel> holidayCustomListModel;
+    private ListModelList<WorkDay> dayOfWeekListModel;
+    private ListModelList<Holiday> holidayListModel;
+    private ListModelList<Holiday> holidayCustomListModel;
     private ListModelList<Zone> zoneModel;
     Zone selectedZone = null;
 
@@ -185,7 +182,7 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
         isNew = (boolean) Executions.getCurrent().getArg().get("isNew");
         canEdit = (boolean) Executions.getCurrent().getArg().get("canEdit");
         calendarExists = calId != null;
-        calendarModel = !calendarExists ? Calendars.INSTANCE.empty() : calendarService.getCalendar(calId);
+        calendarModel = !calendarExists ? new Calendar() : CalendarFactory.INSTANCE.fromCalendar(calendarService.getCalendar(calId));
         calendarId = calendarModel.getId();
         localCalendarEventQueue = EventQueues.lookup(CalendarEvents.TOPIC + "LOCAL", EventQueues.DESKTOP, true);
 
@@ -226,7 +223,7 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
             JSONObject params = (JSONObject) event.getData();
             int dowIndex = (Integer) params.get("dow");
             Boolean workday = (Boolean) params.get("workday");
-            WorkDayModel dowItem = getDayOfWeekItem(dowIndex);
+            WorkDay dowItem = getDayOfWeekItem(dowIndex);
             dowItem.setWorkingDay(workday);
             refresh(dowItem);
             Clients.evalJavaScript("Ap.calendar.buildRow(" + dowIndex + ")");
@@ -240,13 +237,13 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
             int dowIndex = (Integer) params.get("dow");
             JSONArray rangeArray = (JSONArray) params.get("ranges");
             boolean workday = (boolean) params.get("workday");
-            WorkDayModel dowItem = getDayOfWeekItem(dowIndex);
+            WorkDay dowItem = getDayOfWeekItem(dowIndex);
             dowItem.setWorkingDay(workday);
             int startHour = 0;
             int startMin = 0;
             int endHour = 0;
             int endMin = 0;
-            // TO DO: WorkDayModel currently only support a single range
+            // TO DO: WorkDay currently only support a single range
             if (rangeArray.size() > 0) {
                 Object range = rangeArray.get(0);
                 JSONObject item = (JSONObject) range;
@@ -326,11 +323,11 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
         return buffer.toString();
     }
 
-    public WorkDayModel getDayOfWeekItem(int dowIndex) {
-        return (WorkDayModel) dayOfWeekListbox.getModel().getElementAt(dowIndex - 1);
+    public WorkDay getDayOfWeekItem(int dowIndex) {
+        return (WorkDay) dayOfWeekListbox.getModel().getElementAt(dowIndex - 1);
     }
 
-    public void refresh(WorkDayModel dowItem) {
+    public void refresh(WorkDay dowItem) {
         int index = dayOfWeekListModel.indexOf(dowItem);
         dayOfWeekListModel.set(index, dowItem); // trigger change
     }
@@ -364,7 +361,7 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
         Textbox textbox = (Textbox) inputEvent.getTarget();
         String description = inputEvent.getValue();
         Listitem listItem = (Listitem) textbox.getParent().getParent();
-        HolidayModel holiday = listItem.getValue();
+        Holiday holiday = listItem.getValue();
         holiday.setDescription(description);
     }
 
@@ -378,7 +375,7 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
         Date date = new SimpleDateFormat("yyyy MMM dd").parse(inputEvent.getValue());
         LocalDate holidayDate = TimeUtils.dateToLocalDate(date);
         Listitem listItem = (Listitem) datebox.getParent().getParent();
-        HolidayModel holiday = listItem.getValue();
+        Holiday holiday = listItem.getValue();
         holiday.setHolidayDate(holidayDate);
     }
 
@@ -388,7 +385,7 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
             return;
         }
         try {
-            HolidayModel holiday = (HolidayModel) event.getData();
+            Holiday holiday = (Holiday) event.getData();
             removeHoliday(holiday);
         } catch (Exception e) {
             LOGGER.error("Unable to create remove a holiday", e);
@@ -472,7 +469,7 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
         Clients.evalJavaScript(cmd);
     }
 
-    public void addHoliday(HolidayModel holiday) {
+    public void addHoliday(Holiday holiday) {
         if (holiday.isPublic()) {
             holidayListModel.add(holiday);
         } else {
@@ -480,7 +477,7 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
         }
     }
 
-    public void removeHoliday(HolidayModel holiday) {
+    public void removeHoliday(Holiday holiday) {
         if (holiday.isPublic()) {
             holidayListModel.remove(holiday);
         } else {
@@ -488,7 +485,7 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
         }
     }
 
-    public void addHolidays(List<HolidayModel> holidays) {
+    public void addHolidays(List<Holiday> holidays) {
         holidayListModel.addAll(holidays);
     }
 
@@ -535,10 +532,10 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
     }
 
     private void fromModels() {
-        List<HolidayModel> holidays = calendarModel.getHolidays();
+        List<Holiday> holidays = calendarModel.getHolidays();
         dayOfWeekStartTimes = new ArrayList<>();
         dayOfWeekEndTimes = new ArrayList<>();
-        for (HolidayModel holiday : holidays) {
+        for (Holiday holiday : holidays) {
             if (holiday.isPublic()) {
                 holidayListModel.add(holiday);
             } else {
@@ -546,13 +543,13 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
             }
         }
 
-        List<WorkDayModel> workDays = calendarModel.getOrderedWorkDay();
+        List<WorkDay> workDays = calendarModel.getOrderedWorkDay();
         dayOfWeekListModel.addAll(workDays);
     }
 
     private String toJson(int dowIndex) {
         String json = "[";
-        WorkDayModel dowItem = (WorkDayModel) dayOfWeekListbox.getModel().getElementAt(dowIndex - 1);
+        WorkDay dowItem = (WorkDay) dayOfWeekListbox.getModel().getElementAt(dowIndex - 1);
 
         json += "{";
         json += "startHour: " + dowItem.getStartTime().getHour() + ",";
@@ -574,11 +571,12 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
     private void toModels() {
         if (calendarExists) {
             try {
-                List<HolidayModel> allHolidays = new ArrayList<>((List<HolidayModel>) holidayListbox.getModel());
-                allHolidays.addAll((List<HolidayModel>) holidayCustomListbox.getModel());
+                List<Holiday> allHolidays = new ArrayList<>((List<Holiday>) holidayListbox.getModel());
+                allHolidays.addAll((List<Holiday>) holidayCustomListbox.getModel());
                 calendarService.updateZoneInfo(calendarId, zoneModel.getSelection().iterator().next().getId());
-                calendarService.updateWorkDays(calendarId, (List<WorkDayModel>) dayOfWeekListbox.getModel());
-                calendarService.updateHoliday(calendarId, allHolidays);
+                calendarService.updateWorkDays(calendarId,
+                    CalendarFactory.INSTANCE.toWorkDays((List<WorkDay>) dayOfWeekListbox.getModel()));
+                calendarService.updateHoliday(calendarId, CalendarFactory.INSTANCE.toHolidays(allHolidays));
             } catch (CalendarNotExistsException e) {
                 // Post event to notificaton
             }
@@ -586,16 +584,8 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
     }
 
     private void mock() {
-        for (int i = 1; i < 8; i++) {
-            List<TimeRange> ranges = new ArrayList<>();
-            ranges.add(new TimeRange(OffsetTime.from(DEFAULT_START_TIME), OffsetTime.from(DEFAULT_END_TIME)));
-            DayOfWeek dow = DayOfWeek.of(i);
-            WorkDayModel dowItem = new WorkDayModel();
-            dowItem.setWorkingDay(true);
-            dowItem.setDayOfWeek(dow);
-            dowItem.setStartTime(DEFAULT_START_TIME);
-            dowItem.setEndTime(DEFAULT_END_TIME);
-            dayOfWeekListModel.add(dowItem);
+        for (DayOfWeek d : DayOfWeek.values()) {
+            dayOfWeekListModel.add(CalendarFactory.INSTANCE.createDefaultWorkDay(d));
         }
     }
 

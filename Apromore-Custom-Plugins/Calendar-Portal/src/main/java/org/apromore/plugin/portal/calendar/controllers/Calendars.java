@@ -31,13 +31,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.apromore.calendar.exception.CalendarAlreadyExistsException;
-import org.apromore.calendar.model.CalendarModel;
 import org.apromore.calendar.service.CalendarService;
 import org.apromore.commons.datetime.DateTimeUtils;
 import org.apromore.dao.model.Log;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.calendar.CalendarItemRenderer;
 import org.apromore.plugin.portal.calendar.Constants;
+import org.apromore.plugin.portal.calendar.model.Calendar;
+import org.apromore.plugin.portal.calendar.model.CalendarFactory;
 import org.apromore.plugin.portal.calendar.pageutil.PageUtils;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.service.EventLogService;
@@ -94,7 +95,7 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
     private EventQueue<Event> sessionCalendarEventQueue;
     private EventQueue<Event> localCalendarEventQueue;
     public static final String LOCAL_TOPIC = CalendarEvents.TOPIC + "LOCAL";
-    private ListModelList<CalendarModel> calendarListModel;
+    private ListModelList<Calendar> calendarListModel;
 
     private Long appliedCalendarId;
     private boolean canEdit;
@@ -172,11 +173,11 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
                 }
                 populateCalendarList();
             } else if (CalendarEvents.ON_CALENDAR_BEFORE_REMOVE.equals(event.getName())) {
-                CalendarModel calendarItem = (CalendarModel) event.getData();
+                Calendar calendarItem = (Calendar) event.getData();
                 beforeRemoveCalendar(calendarItem);
             } else if (CalendarEvents.ON_CALENDAR_CHANGED.equals(event.getName())) {
                 // propagate to session queue (other tabs/plugins)
-                CalendarModel calendarItem = (CalendarModel) event.getData();
+                Calendar calendarItem = (Calendar) event.getData();
                 Long calendarId = calendarItem.getId();
                 appliedCalendarId = calendarId;
                 List<Integer> logIds = getAssociatedLogIds(calendarId);
@@ -184,7 +185,7 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
                 sessionCalendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_REFRESH, null, logIds));
             } else if (CalendarEvents.ON_CALENDAR_REMOVE.equals(event.getName())) {
                 // propagate to session queue (other tabs/plugins)
-                CalendarModel calendarItem = (CalendarModel) event.getData();
+                Calendar calendarItem = (Calendar) event.getData();
                 Long calendarId = calendarItem.getId();
                 List<Integer> logIds = getAssociatedLogIds(calendarId);
                 if (logId != null && logIds.contains(logId)) {
@@ -204,13 +205,13 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
     }
 
     public void populateCalendarList() {
-        List<CalendarModel> models = calendarService.getCalendars(username);
+        List<Calendar> models = CalendarFactory.INSTANCE.fromCalendars(calendarService.getCalendars(username));
         if (appliedCalendarId != null && appliedCalendarId > 0
             && models.stream().noneMatch(c -> c.getId().equals(appliedCalendarId))) {
-            models.add(calendarService.getCalendar(appliedCalendarId));
+            models.add(CalendarFactory.INSTANCE.fromCalendar(calendarService.getCalendar(appliedCalendarId)));
         }
         calendarListModel.clear();
-        for (CalendarModel model : models) {
+        for (Calendar model : models) {
             calendarListModel.add(model);
             if (model.getId().equals(appliedCalendarId)) {
                 calendarListModel.addToSelection(model);
@@ -230,7 +231,7 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
         }
     }
 
-    private void beforeRemoveCalendar(CalendarModel calendarItem) {
+    private void beforeRemoveCalendar(Calendar calendarItem) {
         List<Log> relatedLogList = eventLogService.getLogListFromCalendarId(calendarItem.getId());
         if (relatedLogList == null || relatedLogList.isEmpty()) {
             localCalendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_REMOVE, null, calendarItem));
@@ -249,7 +250,7 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
         }
     }
 
-    public void removeCalendar(CalendarModel calendarItem) {
+    public void removeCalendar(Calendar calendarItem) {
         try {
             // Reset the calendar of all owned logs associated with the calendar to remove
             List<Log> relatedLogs = eventLogService.getLogListFromCalendarId(calendarItem.getId(), username);
@@ -293,12 +294,12 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
 
     @Listen("onClick = #addNewCalendarBtn")
     public void onClickAddNewCalendar() {
-        CalendarModel model;
+        Calendar model;
         try {
             String calendarName = MessageFormat.format(getLabels().getString("created_default_cal_message"),
                 DateTimeUtils.humanize(LocalDateTime.now()), username);
-            model = calendarService.createBusinessCalendar(calendarName, username, true,
-                ZoneId.systemDefault().toString());
+            model = CalendarFactory.INSTANCE.fromCalendar(calendarService.createBusinessCalendar(calendarName, username, true,
+                ZoneId.systemDefault().toString()));
             populateCalendarList();
             Long calendarId = model.getId();
             try {
@@ -331,9 +332,9 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
                 }
                 String calendarName = MessageFormat.format(getLabels().getString("created_default_cal_message"),
                     DateTimeUtils.humanize(LocalDateTime.now()), username);
-                CalendarModel model =
-                    calendarService.createBusinessCalendar(calendarName, username, true,
-                        ZoneId.systemDefault().toString());
+                Calendar model =
+                    CalendarFactory.INSTANCE.fromCalendar(calendarService.createBusinessCalendar(calendarName, username, true,
+                        ZoneId.systemDefault().toString()));
                 populateCalendarList();
                 arg.put(CALENDAR_ID_CONST, model.getId());
                 arg.put(IS_NEW_CONST, true);

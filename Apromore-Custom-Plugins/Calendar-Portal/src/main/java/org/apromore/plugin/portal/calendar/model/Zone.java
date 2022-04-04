@@ -20,7 +20,7 @@
  * #L%
  */
 
-package org.apromore.plugin.portal.calendar;
+package org.apromore.plugin.portal.calendar.model;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
