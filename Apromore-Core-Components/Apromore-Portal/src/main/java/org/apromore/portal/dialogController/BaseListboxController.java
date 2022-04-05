@@ -620,7 +620,7 @@ public abstract class BaseListboxController extends BaseController {
       return;
     }
     FolderType currentFolder = this.mainController.getPortalSession().getCurrentFolder();
-    if(currentFolder.getId()==dropToFolder.getId() && !droppedToTree){
+    if(currentFolder.getId().equals(dropToFolder.getId()) && !droppedToTree){
       return;
     }
     this.mainController.getPortalSession().setCurrentFolder(dropToFolder);
