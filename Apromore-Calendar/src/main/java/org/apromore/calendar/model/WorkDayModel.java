@@ -110,12 +110,12 @@ public class WorkDayModel implements Comparable<WorkDayModel> {
 
     public long getStartTimeInMillis() {
         return startTime.getHour() * 3600000L + startTime.getMinute() * 60000L + startTime.getSecond() * 1000L
-            + startTime.getNano() / 1000L;
+            + startTime.getNano() / 1000000L;
     }
 
     public long getEndTimeInMillis() {
         return endTime.getHour() * 3600000L + endTime.getMinute() * 60000L + endTime.getSecond() * 1000L
-            + endTime.getNano() / 1000L;
+            + endTime.getNano() / 1000000L;
     }
 
     public WorkDayModel immutable() {
