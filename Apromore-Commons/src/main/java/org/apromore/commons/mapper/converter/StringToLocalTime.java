@@ -29,8 +29,12 @@ public class StringToLocalTime extends DozerConverter<String, LocalTime> {
 
     @Override
     public LocalTime convertTo(String source, LocalTime destination) {
-        LocalTime localDate = LocalTime.parse(source.substring(0, 5));
-        return localDate;
+        if (source.contains("+")) {
+            return LocalTime.parse(source.substring(0, source.indexOf("+")));
+        }
+        else {
+            return LocalTime.parse(source);
+        }
     }
 
     @Override
