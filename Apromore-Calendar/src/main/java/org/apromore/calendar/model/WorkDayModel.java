@@ -72,7 +72,7 @@ import lombok.NonNull;
  */
 @Data
 @EqualsAndHashCode
-public class WorkDayModel implements Comparable {
+public class WorkDayModel implements Comparable<WorkDayModel> {
 
     @EqualsAndHashCode.Exclude
     protected @NonNull Long id = new Random().nextLong();
@@ -189,9 +189,7 @@ public class WorkDayModel implements Comparable {
     }
 
     @Override
-    public int compareTo(Object o) {
-        if (!(o instanceof WorkDayModel)) return -1;
-        WorkDayModel d2 = (WorkDayModel)o;
+    public int compareTo(@NonNull WorkDayModel d2) {
         int startCompare = this.getStartTime().compareTo(d2.getStartTime());
         return (startCompare != 0) ? startCompare : this.getEndTime().compareTo(d2.getEndTime());
     }

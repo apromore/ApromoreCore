@@ -152,9 +152,13 @@ public class CalendarModel {
     }
 
     public boolean is247() {
-        if (!holidays.isEmpty()) return false;
+        if (!holidays.isEmpty()) {
+            return false;
+        }
         if (workDays.stream().filter(WorkDayModel::isWorkingDay)
-            .map(WorkDayModel::getDayOfWeek).distinct().count() < 7) return false;
+            .map(WorkDayModel::getDayOfWeek).distinct().count() < 7) {
+            return false;
+        }
         for (DayOfWeek dow : DayOfWeek.values()) {
             List<WorkDayModel> sortedDays = workDays.stream()
                 .filter(d -> d.isWorkingDay() && d.getDayOfWeek().equals(dow))
@@ -177,8 +181,7 @@ public class CalendarModel {
         for (WorkDayModel d : sortedDays) {
             if (d.getStartTime().isAfter(largestEnd)) {
                 return true;
-            }
-            else if (d.getEndTime().isAfter(largestEnd)) {
+            } else if (d.getEndTime().isAfter(largestEnd)) {
                 largestEnd = d.getEndTime();
                 if (largestEnd.equals(LocalTime.MAX)) {
                     return false;
