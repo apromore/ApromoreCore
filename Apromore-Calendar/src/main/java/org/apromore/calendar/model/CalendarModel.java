@@ -32,9 +32,11 @@
 
 package org.apromore.calendar.model;
 
+import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
@@ -52,6 +54,7 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 
 /**
  * Represents one custom calendar.
@@ -75,6 +78,7 @@ public class CalendarModel {
     protected @NonNull List<HolidayModel> holidays = new ArrayList<>();
 
     @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
     private Set<LocalDate> holidayDates = new HashSet<>();
 
     public Duration getDuration(OffsetDateTime starDateTime, OffsetDateTime endDateTime) {
@@ -148,7 +152,40 @@ public class CalendarModel {
     }
 
     public boolean is247() {
-        return false;
+        if (!holidays.isEmpty()) return false;
+        if (workDays.stream().filter(WorkDayModel::isWorkingDay)
+            .map(WorkDayModel::getDayOfWeek).distinct().count() < 7) return false;
+        for (DayOfWeek dow : DayOfWeek.values()) {
+            List<WorkDayModel> sortedDays = workDays.stream()
+                .filter(d -> d.isWorkingDay() && d.getDayOfWeek().equals(dow))
+                .sorted((d1, d2) -> d1.compareTo(d2))
+                .collect(Collectors.toList());
+            if (betweenGapExists(sortedDays)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Check if between gap exists between these days in one day, from LocalTime.MIN to LocalTime.MAX
+     * @param sortedDays list of WorkDayModel of the same day of week
+     * @return true if any gap exists between these days
+     */
+    private boolean betweenGapExists(List<WorkDayModel> sortedDays) {
+        LocalTime largestEnd = LocalTime.MIN;
+        for (WorkDayModel d : sortedDays) {
+            if (d.getStartTime().isAfter(largestEnd)) {
+                return true;
+            }
+            else if (d.getEndTime().isAfter(largestEnd)) {
+                largestEnd = d.getEndTime();
+                if (largestEnd.equals(LocalTime.MAX)) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     public CalendarModel immutable() {

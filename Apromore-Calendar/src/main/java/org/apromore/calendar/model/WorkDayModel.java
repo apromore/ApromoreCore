@@ -72,7 +72,7 @@ import lombok.NonNull;
  */
 @Data
 @EqualsAndHashCode
-public class WorkDayModel {
+public class WorkDayModel implements Comparable {
 
     @EqualsAndHashCode.Exclude
     protected @NonNull Long id = new Random().nextLong();
@@ -186,5 +186,13 @@ public class WorkDayModel {
     private Duration getDurationSameDayAtEndOfMultiDayPeriod(LocalTime periodEnd) {
         return Duration.between(startTime.isAfter(periodEnd) ? periodEnd : startTime,
             endTime.isAfter(periodEnd) ? periodEnd : endTime);
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        if (!(o instanceof WorkDayModel)) return -1;
+        WorkDayModel d2 = (WorkDayModel)o;
+        int startCompare = this.getStartTime().compareTo(d2.getStartTime());
+        return (startCompare != 0) ? startCompare : this.getEndTime().compareTo(d2.getEndTime());
     }
 }
