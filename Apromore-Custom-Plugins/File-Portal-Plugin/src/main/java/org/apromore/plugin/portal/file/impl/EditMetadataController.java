@@ -40,7 +40,7 @@ import org.apromore.service.EventLogService;
 import org.apromore.service.ProcessService;
 import org.apromore.zk.label.LabelSupplier;
 import org.apromore.zk.notification.Notification;
-import org.zkoss.spring.SpringUtil;
+import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;

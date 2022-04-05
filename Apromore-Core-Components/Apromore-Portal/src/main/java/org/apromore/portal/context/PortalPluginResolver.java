@@ -25,7 +25,7 @@
 package org.apromore.portal.context;
 
 import org.apromore.plugin.portal.PortalPlugin;
-import org.zkoss.spring.SpringUtil;
+import org.zkoss.zkplus.spring.SpringUtil;
 import java.util.Locale;
 import java.util.List;
 import java.util.Map;

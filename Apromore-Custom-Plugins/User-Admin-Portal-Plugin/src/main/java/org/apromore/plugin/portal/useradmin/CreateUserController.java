@@ -89,6 +89,12 @@ public class CreateUserController extends SelectorComposer<Window> implements La
             return;
         }
 
+        //Check for groups with the same name as the user
+        if (securityService.getGroupByName(userNameTextbox.getValue()) != null) {
+            Messagebox.show(getLabel("failedCreateUser_message"));
+            return;
+        }
+
         try {
             User user = new User();
             user.setUsername(userNameTextbox.getValue());
