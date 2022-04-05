@@ -26,6 +26,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
+import org.apromore.dao.model.User;
 import org.apromore.logman.attribute.graph.MeasureType;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
@@ -64,8 +65,11 @@ import org.apromore.portal.model.UserType;
 import org.apromore.portal.plugincontrol.PluginExecution;
 import org.apromore.portal.plugincontrol.PluginExecutionManager;
 import org.apromore.portal.util.CostTable;
+import org.apromore.service.AuthorizationService;
 import org.apromore.service.ProcessService;
+import org.apromore.service.SecurityService;
 import org.apromore.service.loganimation.LogAnimationService2;
+import org.apromore.util.AccessType;
 import org.apromore.zk.event.CalendarEvents;
 import org.apromore.zk.label.LabelSupplier;
 import org.json.JSONException;
@@ -133,6 +137,12 @@ public class PDController extends BaseController implements Composer<Component>,
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(PDController.class);
 
     //////////////////// SUPPORT SERVICES ///////////////////////////////////
+
+    @WireVariable("securityService")
+    private SecurityService securityService;
+
+    @WireVariable("authorizationService")
+    private AuthorizationService authorizationService;
 
     @WireVariable
     private ProcessService processService;
@@ -283,6 +293,10 @@ public class PDController extends BaseController implements Composer<Component>,
             LogSummaryType logSummary = (LogSummaryType) session.get("selection");
             PDFactory pdFactory = (PDFactory) session.get("pdFactory");
             UserType currentUser = portalContext.getCurrentUser();
+
+            User user = securityService.getUserById(currentUser.getId());
+            AccessType currentUserAccessType = authorizationService.getLogAccessTypeByUser(logSummary.getId(), user);
+
             contextData = ContextData.valueOf(
                 logSummary.getDomain(), currentUser.getUsername(),
                 logSummary.getId(),
@@ -334,6 +348,7 @@ public class PDController extends BaseController implements Composer<Component>,
             bpmnExportController = pdFactory.createBPMNExportController(this);
             costTableController = pdFactory.createCostTableController(this);
             toolbarController = pdFactory.createToolbarController(this);
+            costTableController.setViewOnly(AccessType.VIEWER.equals(currentUserAccessType) || AccessType.RESTRICTED.equals(currentUserAccessType));
 
             initialize();
             LOGGER.debug("Session ID = " + ((HttpSession) Sessions.getCurrent().getNativeSession()).getId());
