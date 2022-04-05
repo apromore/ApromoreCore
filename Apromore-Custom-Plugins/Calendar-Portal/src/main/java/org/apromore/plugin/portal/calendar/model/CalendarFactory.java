@@ -1,3 +1,21 @@
+/*-
+ * #%L
+ * This file is part of "Apromore Enterprise Edition".
+ * %%
+ * Copyright (C) 2019 - 2022 Apromore Pty Ltd. All Rights Reserved.
+ * %%
+ * NOTICE:  All information contained herein is, and remains the
+ * property of Apromore Pty Ltd and its suppliers, if any.
+ * The intellectual and technical concepts contained herein are
+ * proprietary to Apromore Pty Ltd and its suppliers and may
+ * be covered by U.S. and Foreign Patents, patents in process,
+ * and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this
+ * material is strictly forbidden unless prior written permission
+ * is obtained from Apromore Pty Ltd.
+ * #L%
+ */
+
 package org.apromore.plugin.portal.calendar.model;
 
 import java.time.DayOfWeek;
@@ -16,15 +34,21 @@ import org.modelmapper.convention.MatchingStrategies;
 public enum CalendarFactory {
     INSTANCE;
 
-    private final ModelMapper modelMapper = new ModelMapper();
-
-    public List<Calendar> fromCalendars(@NonNull List<CalendarModel> models) {
-        return models.stream().map(this::fromCalendar).collect(Collectors.toList());
+    private static final ModelMapper modelMapper = new ModelMapper();
+    static {
+        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
     }
 
-    public Calendar fromCalendar(@NonNull  CalendarModel model) {
-        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STANDARD);
+    public Calendar emptyCalendar() {
+        return new Calendar();
+    }
+
+    public Calendar fromCalendarModel(@NonNull  CalendarModel model) {
         return modelMapper.map(model, Calendar.class);
+    }
+
+    public List<Calendar> fromCalendarModels(@NonNull List<CalendarModel> models) {
+        return models.stream().map(this::fromCalendarModel).collect(Collectors.toList());
     }
 
     public WorkDay createDefaultWorkDay(@NonNull DayOfWeek doW) {
@@ -36,23 +60,19 @@ public enum CalendarFactory {
         return new Holiday(type, name, description, holidayDate);
     }
 
-    public WorkDay fromWorkDay(WorkDayModel workDay) {
-        return modelMapper.map(workDay, WorkDay.class);
-    }
-
-    public WorkDayModel toWorkDay(WorkDay workDay) {
+    public WorkDayModel toWorkDayModel(WorkDay workDay) {
         return modelMapper.map(workDay, WorkDayModel.class);
     }
 
-    public List<WorkDay> fromWorkDays(List<WorkDayModel> workDays) {
-        return workDays.stream().map(this::fromWorkDay).collect(Collectors.toList());
+    public List<WorkDayModel> toWorkDayModels(List<WorkDay> workDays) {
+        return workDays.stream().map(this::toWorkDayModel).collect(Collectors.toList());
     }
 
-    public List<WorkDayModel> toWorkDays(List<WorkDay> workDays) {
-        return workDays.stream().map(this::toWorkDay).collect(Collectors.toList());
+    public HolidayModel toHolidayModel(Holiday holiday) {
+        return modelMapper.map(holiday, HolidayModel.class);
     }
 
-    public List<HolidayModel> toHolidays(List<Holiday> holidays) {
-        return null;
+    public List<HolidayModel> toHolidayModels(List<Holiday> holidays) {
+        return holidays.stream().map(this::toHolidayModel).collect(Collectors.toList());
     }
 }
