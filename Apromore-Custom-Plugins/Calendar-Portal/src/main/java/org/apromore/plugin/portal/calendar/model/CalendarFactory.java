@@ -29,6 +29,7 @@ import org.apromore.calendar.model.HolidayModel;
 import org.apromore.calendar.model.HolidayType;
 import org.apromore.calendar.model.WorkDayModel;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.config.Configuration;
 import org.modelmapper.convention.MatchingStrategies;
 
 public enum CalendarFactory {
@@ -36,7 +37,10 @@ public enum CalendarFactory {
 
     private static final ModelMapper modelMapper = new ModelMapper();
     static {
-        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+        modelMapper.getConfiguration()
+                .setFieldMatchingEnabled(true)
+                .setFieldAccessLevel(Configuration.AccessLevel.PRIVATE)
+                .setMatchingStrategy(MatchingStrategies.STRICT);
     }
 
     public Calendar emptyCalendar() {

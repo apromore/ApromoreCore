@@ -30,11 +30,9 @@ package org.apromore.calendar.model;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.Date;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
-import org.apromore.commons.datetime.TimeUtils;
 
 /**
  * Represent a holiday.
@@ -78,11 +76,6 @@ public class HolidayModel implements Serializable {
 
     public HolidayModel() {
         super();
-    }
-
-    public Date getDate() {
-        return TimeUtils.localDateToDate(holidayDate);
-
     }
 
     public HolidayModel immutable() {

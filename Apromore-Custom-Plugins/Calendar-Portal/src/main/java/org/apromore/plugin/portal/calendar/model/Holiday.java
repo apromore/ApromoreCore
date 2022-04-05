@@ -29,6 +29,7 @@
 package org.apromore.plugin.portal.calendar.model;
 
 import java.time.LocalDate;
+import java.util.Date;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -36,6 +37,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
 import org.apromore.calendar.model.HolidayType;
+import org.apromore.commons.datetime.TimeUtils;
 
 @Getter
 @Setter
@@ -49,5 +51,9 @@ public class Holiday {
 
     public boolean isPublic() {
         return HolidayType.PUBLIC.equals(holidayType);
+    }
+
+    public Date getDate() {
+        return TimeUtils.localDateToDate(holidayDate);
     }
 }

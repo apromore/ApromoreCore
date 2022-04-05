@@ -12,6 +12,7 @@ import org.apromore.calendar.model.WorkDayModel;
 import org.junit.jupiter.api.Test;
 
 public class ConversionTest {
+
     @Test
     void toHolidayModelTest() {
         Holiday holiday = CalendarFactory.INSTANCE.createHoliday(
@@ -48,6 +49,7 @@ public class ConversionTest {
             .build();
         Calendar cal = CalendarFactory.INSTANCE.fromCalendarModel(model);
 
+        assertEquals(model.getId(), cal.getId());
         assertEquals(model.getName(), cal.getName());
         assertEquals(model.getZoneId(), cal.getZoneId());
         assertEquals(model.getWorkDays().size(), cal.getWorkDays().size());
