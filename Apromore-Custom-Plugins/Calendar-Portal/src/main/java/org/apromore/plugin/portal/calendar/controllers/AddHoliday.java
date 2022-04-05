@@ -48,7 +48,8 @@ public class AddHoliday extends SelectorComposer<Window> implements LabelSupplie
 
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(AddHoliday.class);
 
-    private CalendarController parentController = (CalendarController) Executions.getCurrent().getArg().get("parentController");
+    private CalendarController parentController = (CalendarController) Executions.getCurrent().getArg()
+        .get("parentController");
 
     @Wire("#holidayDate")
     Datebox holidayDate;

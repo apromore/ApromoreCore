@@ -181,7 +181,8 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
                 Long calendarId = calendarItem.getId();
                 appliedCalendarId = calendarId;
                 List<Integer> logIds = getAssociatedLogIds(calendarId);
-                sessionCalendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_CHANGED, null, calendarId));
+                sessionCalendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_CHANGED, null,
+                    calendarId));
                 sessionCalendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_REFRESH, null, logIds));
             } else if (CalendarEvents.ON_CALENDAR_REMOVE.equals(event.getName())) {
                 // propagate to session queue (other tabs/plugins)
@@ -205,10 +206,10 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
     }
 
     public void populateCalendarList() {
-        List<Calendar> models = CalendarFactory.INSTANCE.fromCalendars(calendarService.getCalendars(username));
+        List<Calendar> models = CalendarFactory.INSTANCE.fromCalendarModels(calendarService.getCalendars(username));
         if (appliedCalendarId != null && appliedCalendarId > 0
             && models.stream().noneMatch(c -> c.getId().equals(appliedCalendarId))) {
-            models.add(CalendarFactory.INSTANCE.fromCalendar(calendarService.getCalendar(appliedCalendarId)));
+            models.add(CalendarFactory.INSTANCE.fromCalendarModel(calendarService.getCalendar(appliedCalendarId)));
         }
         calendarListModel.clear();
         for (Calendar model : models) {
@@ -240,7 +241,8 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
                 Map<String, Object> arg = new HashMap<>();
                 arg.put("calendarItem", calendarItem);
                 Window window = (Window) Executions.getCurrent()
-                    .createComponents(PageUtils.getPageDefinition("calendar/zul/delete-confirm.zul"), null, arg);
+                    .createComponents(PageUtils.getPageDefinition("calendar/zul/delete-confirm.zul"),
+                        null, arg);
                 window.doModal();
             } catch (Exception e) {
                 String msg = getLabels().getString("failed_remove_cal_message");
@@ -298,7 +300,8 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
         try {
             String calendarName = MessageFormat.format(getLabels().getString("created_default_cal_message"),
                 DateTimeUtils.humanize(LocalDateTime.now()), username);
-            model = CalendarFactory.INSTANCE.fromCalendar(calendarService.createBusinessCalendar(calendarName, username, true,
+            model = CalendarFactory.INSTANCE.fromCalendarModel(calendarService.createBusinessCalendar(
+                calendarName, username, true,
                 ZoneId.systemDefault().toString()));
             populateCalendarList();
             Long calendarId = model.getId();
@@ -333,7 +336,9 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
                 String calendarName = MessageFormat.format(getLabels().getString("created_default_cal_message"),
                     DateTimeUtils.humanize(LocalDateTime.now()), username);
                 Calendar model =
-                    CalendarFactory.INSTANCE.fromCalendar(calendarService.createBusinessCalendar(calendarName, username, true,
+                    CalendarFactory.INSTANCE.fromCalendarModel(calendarService.createBusinessCalendar(
+                        calendarName,
+                        username, true,
                         ZoneId.systemDefault().toString()));
                 populateCalendarList();
                 arg.put(CALENDAR_ID_CONST, model.getId());

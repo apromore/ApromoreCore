@@ -46,9 +46,9 @@ import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.calendar.Constants;
 import org.apromore.plugin.portal.calendar.model.Calendar;
 import org.apromore.plugin.portal.calendar.model.CalendarFactory;
-import org.apromore.plugin.portal.calendar.model.Zone;
 import org.apromore.plugin.portal.calendar.model.Holiday;
 import org.apromore.plugin.portal.calendar.model.WorkDay;
+import org.apromore.plugin.portal.calendar.model.Zone;
 import org.apromore.plugin.portal.calendar.pageutil.PageUtils;
 import org.apromore.zk.event.CalendarEvents;
 import org.apromore.zk.label.LabelSupplier;
@@ -182,9 +182,11 @@ public class CalendarController extends SelectorComposer<Window> implements Labe
         isNew = (boolean) Executions.getCurrent().getArg().get("isNew");
         canEdit = (boolean) Executions.getCurrent().getArg().get("canEdit");
         calendarExists = calId != null;
-        calendarModel = !calendarExists ? new Calendar() : CalendarFactory.INSTANCE.fromCalendar(calendarService.getCalendar(calId));
+        calendarModel = !calendarExists ? CalendarFactory.INSTANCE.emptyCalendar()
+            : CalendarFactory.INSTANCE.fromCalendarModel(calendarService.getCalendar(calId));
         calendarId = calendarModel.getId();
-        localCalendarEventQueue = EventQueues.lookup(CalendarEvents.TOPIC + "LOCAL", EventQueues.DESKTOP, true);
+        localCalendarEventQueue = EventQueues.lookup(CalendarEvents.TOPIC + "LOCAL", EventQueues.DESKTOP,
+            true);
 
         populateTimeZone();
         initialize();
@@ -499,7 +501,8 @@ public class CalendarController extends SelectorComposer<Window> implements Labe
     }
 
     public void rebuildRow(int dowIndex, String json, boolean workday) {
-        Clients.evalJavaScript("(function () { if (Ap.calendar && Ap.calendar.updateRanges) { Ap.calendar.updateRanges("
+        Clients.evalJavaScript(
+            "(function () { if (Ap.calendar && Ap.calendar.updateRanges) { Ap.calendar.updateRanges("
             + dowIndex + "," + json + "," + (workday ? "true" : "false") + "); } })()");
     }
 
@@ -575,8 +578,8 @@ public class CalendarController extends SelectorComposer<Window> implements Labe
                 allHolidays.addAll((List<Holiday>) holidayCustomListbox.getModel());
                 calendarService.updateZoneInfo(calendarId, zoneModel.getSelection().iterator().next().getId());
                 calendarService.updateWorkDays(calendarId,
-                    CalendarFactory.INSTANCE.toWorkDays((List<WorkDay>) dayOfWeekListbox.getModel()));
-                calendarService.updateHoliday(calendarId, CalendarFactory.INSTANCE.toHolidays(allHolidays));
+                    CalendarFactory.INSTANCE.toWorkDayModels((List<WorkDay>) dayOfWeekListbox.getModel()));
+                calendarService.updateHoliday(calendarId, CalendarFactory.INSTANCE.toHolidayModels(allHolidays));
             } catch (CalendarNotExistsException e) {
                 // Post event to notificaton
             }

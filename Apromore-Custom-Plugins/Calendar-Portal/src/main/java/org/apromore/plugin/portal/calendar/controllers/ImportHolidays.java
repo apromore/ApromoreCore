@@ -47,7 +47,8 @@ public class ImportHolidays extends SelectorComposer<Window> implements LabelSup
 
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(ImportHolidays.class);
 
-    private CalendarController parentController = (CalendarController) Executions.getCurrent().getArg().get("parentController");
+    private CalendarController parentController = (CalendarController) Executions.getCurrent().getArg()
+        .get("parentController");
 
     @Wire("#saveBtn")
     Button saveBtn;
@@ -73,7 +74,8 @@ public class ImportHolidays extends SelectorComposer<Window> implements LabelSup
                     JSONObject item = (JSONObject) param;
                     String name = (String) item.get("name");
                     String date = (String) item.get("date");
-                    holidays.add(CalendarFactory.INSTANCE.createHoliday(HolidayType.PUBLIC, name, name, LocalDate.parse(date)));
+                    holidays.add(CalendarFactory.INSTANCE.createHoliday(HolidayType.PUBLIC, name, name,
+                        LocalDate.parse(date)));
                 }
                 if (holidays.size() == 0) {
                     return;
