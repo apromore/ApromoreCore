@@ -353,7 +353,7 @@ public class SummaryItemRenderer implements ListitemRenderer {
 
                     if (droppedToItem.getValue() != null && droppedToItem.getValue() instanceof FolderType
                             && droppedObjects.size() > 0) {
-                        mainController.getBaseListboxController().drop(droppedToItem.getValue(), droppedObjects);
+                        mainController.getBaseListboxController().drop(droppedToItem.getValue(), droppedObjects,false);
                     }
                 } catch (Exception e) {
                     LOGGER.error("Error Occured in Drag and Drop", e);
