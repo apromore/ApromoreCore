@@ -47,18 +47,17 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
+@AllArgsConstructor (access = AccessLevel.PROTECTED)
+@NoArgsConstructor (access = AccessLevel.PROTECTED)
 public class Calendar {
     @Setter(AccessLevel.NONE)
-    protected @NonNull Long id = new Random().nextLong();
+    private @NonNull Long id = new Random().nextLong();
 
-    protected @NonNull String name = "CalendarModel";
-    protected @NonNull String zoneId = ZoneOffset.UTC.getId();
-    protected @NonNull List<WorkDay> workDays = new ArrayList<>();
-    protected @NonNull List<Holiday> holidays = new ArrayList<>();
-    protected @NonNull OffsetDateTime created = OffsetDateTime.now(ZoneOffset.UTC);
-    protected @NonNull OffsetDateTime updated = OffsetDateTime.now(ZoneOffset.UTC);
+    private @NonNull String name = "CalendarModel";
+    private @NonNull String zoneId = ZoneOffset.UTC.getId();
+    private @NonNull List<WorkDay> workDays = new ArrayList<>();
+    private @NonNull List<Holiday> holidays = new ArrayList<>();
+    private @NonNull OffsetDateTime created = OffsetDateTime.now(ZoneOffset.UTC);
 
     public List<WorkDay> getOrderedWorkDay() {
         List<WorkDay> sortedList = new ArrayList<>(workDays);

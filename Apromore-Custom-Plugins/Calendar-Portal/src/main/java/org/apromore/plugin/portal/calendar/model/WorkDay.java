@@ -45,22 +45,21 @@ package org.apromore.plugin.portal.calendar.model;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
 
 @Getter
 @Setter
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class WorkDay {
-    protected @NonNull DayOfWeek dayOfWeek = DayOfWeek.MONDAY;
-    protected @NonNull LocalTime startTime = LocalTime.MIN;
-    protected @NonNull LocalTime endTime = LocalTime.MAX;
-    protected boolean workingDay = true;
+    private @NonNull DayOfWeek dayOfWeek = DayOfWeek.MONDAY;
+    private @NonNull LocalTime startTime = LocalTime.MIN;
+    private @NonNull LocalTime endTime = LocalTime.MAX;
+    private boolean workingDay = true;
 
-    protected WorkDay(DayOfWeek dayOfWeek, LocalTime startTime, LocalTime endTime, boolean workingDay) {
-        this.dayOfWeek = dayOfWeek;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.workingDay = workingDay;
-    }
 }
