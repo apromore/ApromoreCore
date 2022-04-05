@@ -1369,6 +1369,19 @@ databaseChangeLog:
            tableName: predictor
            columnName: id
            columnDataType: INT
+       - addColumn:
+           tableName: predictor
+           columns:
+             - column:
+                 name: ppm_schema
+                 type: JSON
+                 constraints:
+                   nullable: false
+       - dropColumn:
+           tableName: predictor
+           columns:
+             - column:
+                 name: log_id
 
        - createTable:
            tableName: prediction
