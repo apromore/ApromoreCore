@@ -33,6 +33,7 @@ import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.Log;
 import org.apromore.dao.model.Process;
 import org.apromore.dao.model.User;
+import org.apromore.exception.RepositoryException;
 import org.apromore.exception.ResourceNotFoundException;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
@@ -942,8 +943,9 @@ public abstract class BaseListboxController extends BaseController {
     for (Map.Entry<SummaryType, List<VersionSummaryType>> entry : elements.entrySet()) {
       Integer id = entry.getKey().getId();
       if (entry.getKey() instanceof ProcessSummaryType) {
-        Process process = getMainController().getProcessService().getProcessById(id);
-        if (process == null) {
+        try {
+          getMainController().getProcessService().getProcessById(id);
+        } catch (RepositoryException e) {
           return false;
         }
       } else if (entry.getKey() instanceof LogSummaryType) {
