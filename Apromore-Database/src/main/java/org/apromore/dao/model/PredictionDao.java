@@ -49,9 +49,4 @@ public class PredictionDao {
         joinColumns = @JoinColumn(name = "prediction_id", referencedColumnName = "id"),
         inverseJoinColumns = @JoinColumn(name = "predictor_id", referencedColumnName = "id"))
     private List<PredictorDao> predictors = new ArrayList<>();
-
-    public PredictionDao(String tableName, PpmStatus status) {
-        this.tableName = tableName;
-        this.status = status;
-    }
 }
