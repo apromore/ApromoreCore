@@ -64,6 +64,7 @@ public class LangChooserController {
                         public void onEvent(Event e) {
                             String buttonName = e.getName();
                             if (Messagebox.ON_CANCEL.equals(buttonName)) {
+                                setCurrentLanguageSelected();
                                 return;
                             } else if (Messagebox.ON_OK.equals(buttonName)) {
                                 String langTag = combobox.getSelectedItem().getValue();
@@ -103,5 +104,15 @@ public class LangChooserController {
             i++;
         }
         combobox.setSelectedIndex(selIndex);
+    }
+
+    private void setCurrentLanguageSelected() {
+        String persistedLangTag = i18nSession.getPersistedLangTag();
+        Comboitem currentLanguageItem = combobox.getItems().stream()
+            .filter(item -> item.getValue().equals(persistedLangTag))
+            .findFirst().orElse(null);
+        if (currentLanguageItem != null) {
+            combobox.setSelectedItem(currentLanguageItem);
+        }
     }
 }
