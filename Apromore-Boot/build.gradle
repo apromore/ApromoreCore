@@ -35,24 +35,17 @@ processResources {
 		into 'web'
 	}
 
-
 	from ('../Apromore-Core-Components/Apromore-Portal/src/main/webapp') {
 		exclude '*.zul'
 		exclude 'WEB-INF/*'
 		into 'web'
 	}
 
-
-	
-	
-
 	from '../Apromore-Database/src/main/resources'
-
 
 	from ('../Apromore-Core-Components/Apromore-BPMN-Editor/Apromore-BPMN-Editor-Portal/src/main/resources/static') {
 		into 'web'
 	}
-
 
 	//	static files for each plugins
 
@@ -71,6 +64,4 @@ processResources {
 	from ('../Apromore-Custom-Plugins/Calendar-Portal/src/main/resources/static') {
 		into 'web'
 	}
-
-
 }
