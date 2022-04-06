@@ -231,7 +231,7 @@ public abstract class BaseListboxController extends BaseController {
           }
 
           if (currentFolder != null && droppedObjects.size() > 0) {
-            mainController.getBaseListboxController().drop(currentFolder, droppedObjects);
+            mainController.getBaseListboxController().drop(currentFolder, droppedObjects,false);
           }
         } catch (Exception e) {
           LOGGER.error("Error Occured in Drag and Drop", e);
@@ -612,7 +612,7 @@ public abstract class BaseListboxController extends BaseController {
   private void refreshWorkspace(){
     mainController.reloadSummariesWithOpenTreeItems(mainController.getNavigationController().getAllOpenFolderItems());
   }
-  public void drop(FolderType dropToFolder,Set<Object> dropObjects) throws Exception {
+  public void drop(FolderType dropToFolder,Set<Object> dropObjects,boolean droppedToTree) throws Exception {
     if (dropObjects.stream().anyMatch(dropObject -> {
       return (dropObject instanceof FolderType && dropToFolder.getId().equals(((FolderType) dropObject).getId()));
     })) {
@@ -620,6 +620,9 @@ public abstract class BaseListboxController extends BaseController {
       return;
     }
     FolderType currentFolder = this.mainController.getPortalSession().getCurrentFolder();
+    if(currentFolder.getId().equals(dropToFolder.getId()) && !droppedToTree){
+      return;
+    }
     this.mainController.getPortalSession().setCurrentFolder(dropToFolder);
     this.mainController.getCopyPasteController().drop(dropObjects, dropObjects.size(), dropToFolder);
     this.mainController.getPortalSession().setCurrentFolder(currentFolder);

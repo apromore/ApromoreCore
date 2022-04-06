@@ -168,7 +168,7 @@ public class FolderTreeRenderer implements TreeitemRenderer {
           }
 
           if (selectedFolder != null && droppedObjects.size() > 0) {
-            mainC.getBaseListboxController().drop(selectedFolder, droppedObjects);
+            mainC.getBaseListboxController().drop(selectedFolder, droppedObjects,true);
           }
         } catch (Exception e) {
           LOGGER.error("Error occurred in Drag and Drop on Tree", e);
