@@ -428,7 +428,12 @@ class SimulationInfoServiceTest {
                 EdgeFrequency.builder().edgeId("e15").frequency(78).build(),
                 EdgeFrequency.builder().edgeId("e16").frequency(3).build(),
                 EdgeFrequency.builder().edgeId("e17").frequency(81).build(),
-                EdgeFrequency.builder().edgeId("e18").frequency(1).build())
+                EdgeFrequency.builder().edgeId("e18").frequency(1).build()),
+
+            "g4", List.of(
+                EdgeFrequency.builder().edgeId("e20").frequency(514).build(),
+                EdgeFrequency.builder().edgeId("e21").frequency(411).build(),
+                EdgeFrequency.builder().edgeId("e22").frequency(49).build())
         );
         when(mockSimulationData.getEdgeFrequencies()).thenReturn(mockEdgeFrequencies);
 
@@ -443,6 +448,7 @@ class SimulationInfoServiceTest {
         assertGatewayProbabilitiesAddTo100Percent(processSimulationInfo, List.of("e6", "e7", "e8"));
         assertGatewayProbabilitiesAddTo100Percent(processSimulationInfo, List.of("e9", "e10", "e11", "e12", "e13",
             "e14", "e15", "e16", "e17", "e18"));
+        assertGatewayProbabilitiesAddTo100Percent(processSimulationInfo, List.of("e20", "e21", "e22"));
     }
 
     private void assertGatewayProbabilitiesAddTo100Percent(
