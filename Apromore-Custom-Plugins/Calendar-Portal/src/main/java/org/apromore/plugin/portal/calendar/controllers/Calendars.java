@@ -357,7 +357,6 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
         } catch (Exception e) {
             LOGGER.error("Error in forward to edit/create calendar", e);
         }
-
     }
 
     private void reCheckOnExistingCalendar() {
@@ -375,8 +374,8 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
     }
 
     private Long getSelectedCalendarId() {
-        Set selection = calendarListModel.getSelection();
-        if (selection.size() == 0) {
+        Set<CalendarModel> selection = calendarListModel.getSelection();
+        if (selection.isEmpty()) {
             return null;
         }
         return (calendarListModel.getSelection().iterator().next()).getId();
@@ -403,7 +402,9 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
         applyCalendarBtn.setDisabled(
             calendarListbox.getSelectedCount() <= 0
                 || !canEdit
-                || (appliedCalendarId != null && selectedCalendarId != null && selectedCalendarId == appliedCalendarId)
+                || (appliedCalendarId != null
+                && selectedCalendarId != null
+                && selectedCalendarId.equals(appliedCalendarId))
         );
         restoreBtn.setDisabled(
             !canEdit
