@@ -1488,6 +1488,13 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
             Notification.error(getLabel(NO_PERMISSION_EDIT_GROUP));
             return;
         }
+        //Check for groups with the same name if the name field has been updated
+        if (!groupNameTextbox.getValue().equals(selectedGroup.getName())
+            && securityService.getGroupByName(groupNameTextbox.getValue()) != null) {
+            Messagebox.show(getLabel("failedUpdateGroup_message"));
+            return;
+        }
+
         ListModelList listModel = assignedUserList.getListModel();
         Set<User> users = new HashSet<User>(listModel);
         selectedGroup.setName(groupNameTextbox.getValue());
