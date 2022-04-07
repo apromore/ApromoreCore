@@ -29,6 +29,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.apromore.calendar.exception.CalendarAlreadyExistsException;
 import org.apromore.calendar.model.CalendarModel;
@@ -285,7 +286,7 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
         String infoText = String.format(msg, logName);
         Notification.info(infoText);
         if (!calendarListModel.getSelection().isEmpty()) {
-            applyCalendarForLog(logId, (calendarListModel.getSelection().iterator().next()).getId());
+            applyCalendarForLog(logId, getSelectedCalendarId());
         }
         cleanup();
         getSelf().detach();
@@ -373,6 +374,13 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
         }
     }
 
+    private Long getSelectedCalendarId() {
+        Set<CalendarModel> selection = calendarListModel.getSelection();
+        if (selection.isEmpty()) {
+            return null;
+        }
+        return (calendarListModel.getSelection().iterator().next()).getId();
+    }
 
     @Listen("onSelect = #calendarListbox")
     public void onSelectCalendarItem() {
@@ -391,11 +399,18 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
     }
 
     private void updateButtons() {
-        applyCalendarBtn.setDisabled(calendarListbox.getSelectedCount() <= 0 || !canEdit);
+        Long selectedCalendarId = getSelectedCalendarId();
+        applyCalendarBtn.setDisabled(
+            calendarListbox.getSelectedCount() <= 0
+                || !canEdit
+                || (appliedCalendarId != null
+                && selectedCalendarId != null
+                && selectedCalendarId.equals(appliedCalendarId))
+        );
         restoreBtn.setDisabled(
             !canEdit
-            || appliedCalendarId == null
-            || calendarService.getCalendars().stream().noneMatch(c -> c.getId().equals(appliedCalendarId))
+                || appliedCalendarId == null
+                || calendarService.getCalendars().stream().noneMatch(c -> c.getId().equals(appliedCalendarId))
         );
     }
 
