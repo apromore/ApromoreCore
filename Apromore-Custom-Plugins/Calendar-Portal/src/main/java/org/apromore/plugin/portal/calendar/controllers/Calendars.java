@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import org.apromore.calendar.exception.CalendarAlreadyExistsException;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.calendar.service.CalendarService;
@@ -402,14 +401,14 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
     private void updateButtons() {
         Long selectedCalendarId = getSelectedCalendarId();
         applyCalendarBtn.setDisabled(
-            calendarListbox.getSelectedCount() <= 0 ||
-                !canEdit ||
-                (appliedCalendarId != null && selectedCalendarId != null && selectedCalendarId == appliedCalendarId)
+            calendarListbox.getSelectedCount() <= 0
+                || !canEdit
+                || (appliedCalendarId != null && selectedCalendarId != null && selectedCalendarId == appliedCalendarId)
         );
         restoreBtn.setDisabled(
-            !canEdit ||
-                appliedCalendarId == null ||
-                calendarService.getCalendars().stream().noneMatch(c -> c.getId().equals(appliedCalendarId))
+            !canEdit
+                || appliedCalendarId == null
+                || calendarService.getCalendars().stream().noneMatch(c -> c.getId().equals(appliedCalendarId))
         );
     }
 
