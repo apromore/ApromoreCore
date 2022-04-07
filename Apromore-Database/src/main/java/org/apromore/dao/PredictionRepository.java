@@ -1,4 +1,4 @@
-/*-
+/**
  * #%L
  * This file is part of "Apromore Enterprise Edition".
  * %%
@@ -18,10 +18,10 @@
 
 package org.apromore.dao;
 
-import org.apromore.dao.model.PredictorDao;
+import org.apromore.dao.model.PredictionDao;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface PredictorRepository extends JpaRepository<PredictorDao, Integer> {
+public interface PredictionRepository extends JpaRepository<PredictionDao, Integer> {
 }
