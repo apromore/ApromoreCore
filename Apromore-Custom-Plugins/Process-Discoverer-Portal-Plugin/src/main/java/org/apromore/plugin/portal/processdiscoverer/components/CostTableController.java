@@ -52,10 +52,15 @@ public class CostTableController extends DataListController {
     private Combobox currencyCombobox;
     private boolean disabled;
     private UserOptionsData userOptions;
+    private Boolean viewOnly;
 
     public CostTableController(PDController controller) {
         super(controller);
         this.userOptions = controller.getUserOptions();
+    }
+
+    public void setViewOnly(Boolean viewOnly) {
+        this.viewOnly = viewOnly;
     }
 
     private void generateData() {
@@ -114,6 +119,7 @@ public class CostTableController extends DataListController {
         if (costTableWindow == null) {
             Map<String, Object> arg = new HashMap<>();
             arg.put("pdLabels", parent.getLabels());
+            arg.put("viewOnly", viewOnly);
             costTableWindow = (Window) Executions
                     .createComponents(getPageDefinition("processdiscoverer/zul/costTable.zul"), null, arg);
 

@@ -49,7 +49,7 @@ import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
-import org.zkoss.spring.SpringUtil;
+import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -353,7 +353,7 @@ public class SummaryItemRenderer implements ListitemRenderer {
 
                     if (droppedToItem.getValue() != null && droppedToItem.getValue() instanceof FolderType
                             && droppedObjects.size() > 0) {
-                        mainController.getBaseListboxController().drop(droppedToItem.getValue(), droppedObjects);
+                        mainController.getBaseListboxController().drop(droppedToItem.getValue(), droppedObjects,false);
                     }
                 } catch (Exception e) {
                     LOGGER.error("Error Occured in Drag and Drop", e);

@@ -60,7 +60,7 @@ import org.apromore.portal.model.UserType;
 import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
-import org.zkoss.spring.SpringUtil;
+import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.select.SelectorComposer;
@@ -288,7 +288,7 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
     private void addNewLogFilterMenuItem(Menupopup popup) {
         Menuitem item = new Menuitem();
         item.setLabel(Labels.getLabel("plugin_new_log_filter_text"));
-        item.setImage("~./themes/ap/common/img/icons/create_filtered_log.svg");
+        item.setImage("~./themes/ap/common/img/icons/add-filtered-log.svg");
         item.addEventListener(ON_CLICK, event -> {
             try {
                 PortalPlugin plugin = portalPluginMap.get(PluginCatalog.PLUGIN_FILTER_LOG);
@@ -351,7 +351,7 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
     private void addNewCalendarMenuItem(Menupopup popup) {
         Menuitem item = new Menuitem();
         item.setLabel(Labels.getLabel("portal_create_new_calendar"));
-        item.setImage("~./themes/ap/common/img/icons/create_calendar.svg");
+        item.setImage("~./themes/ap/common/img/icons/add-calendar.svg");
         item.addEventListener(ON_CLICK, event -> createNewCalendar());
         popup.appendChild(item);
     }
@@ -359,7 +359,7 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
     private void addNewDashboardMenuItem(Menupopup popup) {
         Menuitem item = new Menuitem();
         item.setLabel(Labels.getLabel("portal_create_new_dashboard"));
-        item.setImage("~./themes/ap/common/img/icons/create_dashboard_menu.svg");
+        item.setImage("~./themes/ap/common/img/icons/add-dashboard.svg");
         item.addEventListener(ON_CLICK, event -> createNewDashboard());
         popup.appendChild(item);
     }

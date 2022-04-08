@@ -57,9 +57,17 @@ subprojects {
   }
 
   dependencies {
-    implementation "org.springframework.boot:spring-boot-starter:${springBootVersion}"
-    implementation "org.springframework.boot:spring-boot-starter-security:${springBootVersion}"
-    implementation "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
+    /*
+     * TODO: workaround for CVE-2022-22965 mitigation
+     * Temporarily downgrading and fixing the version of hibernate-core, which is bundled with spring-boot-starter-data-jpa
+     * until https://hibernate.atlassian.net/browse/HHH-15142 is resolved,
+     * at which point we will need to upgrade to the next available version of spring boot (2.6.7?)
+     */
+    implementation "org.hibernate:hibernate-core:${hibernateCoreVersion}"
+
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation group: 'org.keycloak', name: 'keycloak-spring-boot-starter'
     implementation 'javax.activation:javax.activation-api'
     implementation 'javax.annotation:javax.annotation-api'
@@ -79,7 +87,7 @@ subprojects {
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.projectlombok:lombok'
 
-    testImplementation "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
   }
 
   test {
@@ -136,8 +144,8 @@ subprojects {
   license {
     header = rootProject.file('LICENSE.txt')
     skipExistingHeaders = true
-    includes(["**/*.java", "**/*.xml", "**/*.zul", "**/*.css", "**/*.html"])
-    excludes(["**/*.properties", "**/*.zul", "**/package-info.java"])
+    includes(["**/*.java", "**/*.xml", "**/*.zul", "**/*.js", "**/*.css", "**/*.html", "**/*.yaml"])
+    excludes(["**/*.properties", "**/package-info.java"])
     ext.year = '2018 - 2022'
     ext.company = 'Apromore Pty Ltd'
     ext.module = 'Apromore Core'
@@ -149,12 +157,14 @@ subprojects {
         firstLineDetectionPattern = "(\\s|\\t)*/\\*.*\$"
         lastLineDetectionPattern  = ".*\\*/(\\s|\\t)*\$"
         allowBlankLines = false
-        skipLinePattern = "//"
         isMultiline = true
       }
     }
     mapping {
       java='custom_style'
+      javascript='JAVADOC_STYLE'
+      yaml='SCRIPT_STYLE'
+      zul='XML_STYLE'
     }
   }
   licenseMain.dependsOn licenseFormat

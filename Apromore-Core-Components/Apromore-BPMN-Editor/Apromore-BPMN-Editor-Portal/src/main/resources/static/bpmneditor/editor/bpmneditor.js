@@ -1,3 +1,24 @@
+/*
+ * #%L
+ * This file is part of "Apromore Core".
+ * %%
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ *
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * #L%
+ */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
@@ -68088,7 +68109,7 @@ var ICONS = [
     "ap-bpmn-icon-flag",
     "z-icon-book",
     "ap-bpmn-icon-process-performance",
-    "ap-bpmn-icon-ap-dashboard",
+    "ap-icon-computer",
     "z-icon-ban"
   ]
 ];
@@ -68189,7 +68210,7 @@ function renderIconSet(element, icons, bpmnFactory, bpmnjs, translate, eventBus)
     let item = $(`<div class="icon-item" data-icon-index="${index}"></div>`);
     let urlEl = $(`<input class="icon-url" placeholder="URL" data-icon-index="${index}" value="${url}" />`);
     let textEl = $(`<input class="icon-text" placeholder="Text" data-icon-index="${index}" value="${text}" />`);
-    let iconEl = $(`<div class="icon-name ${name}" title="Click to select icon" data-icon-index="${index}" data-icon-name="${name}" />`);
+    let iconEl = $(`<div class="icon-name" title="Click to select icon" data-icon-index="${index}" data-icon-name="${name}"><span class="${name}" /></div>`);
     let eraseEl = $(`<div class="remove" data-icon-index="${index}">Remove</div>`);
     urlEl.on('change', () => {
       updateObjects(element, icons, bpmnFactory, bpmnjs, eventBus);
@@ -68198,7 +68219,7 @@ function renderIconSet(element, icons, bpmnFactory, bpmnjs, translate, eventBus)
       updateObjects(element, icons, bpmnFactory, bpmnjs, eventBus);
     });
     iconEl.on('click', () => {
-      let index = $(event.target).data("icon-index");
+      let index = $(event.currentTarget).data("icon-index");
       if (currentIndex === index) {
         $(SET_PICKER_SEL).hide();
         currentIndex = -1;
@@ -68250,7 +68271,9 @@ module.exports = function(options) {
   ICONS.forEach((line) => {
     var lineEl = domify('<div></div>');
     line.forEach((iconName) => {
-      var icoEl = domify(`<i id="${iconName}" class="${iconName}"></i>`);
+      var icoEl = (iconName.startsWith('ap-icon')) ?
+        domify(`<i id="${iconName}"><span class="${iconName}" /></i>`) :
+        domify(`<i id="${iconName}" class="${iconName}"></i>`);
       domEvent.bind(icoEl, 'click', function () {
         let newIconName;
         if (this.id === ICON_NOT_SET) {
@@ -68261,8 +68284,9 @@ module.exports = function(options) {
         let index = $(SET_PICKER_SEL).data("icon-index");
         let rowIcon = $(`#ap-bpmn-icon-set .icon-name[data-icon-index=${index}]`);
         rowIcon.data('icon-name', newIconName);
-        rowIcon.removeClass();
-        rowIcon.addClass("icon-name " + newIconName);
+        let iconNameEl = $('span', rowIcon);
+        iconNameEl.removeClass();
+        iconNameEl.addClass(newIconName);
         selectIcon(newIconName);
         updateObjects(options.element, icons, options.bpmnFactory, options.bpmnjs, options.eventBus);
       })
@@ -124892,7 +124916,7 @@ function Aux(eventBus, bpmnFactory, elementRegistry, overlays, bpmnjs) {
           iconCount++;
           let $item = jquery_default()('<div class="aux-icon-item"></div>');
           iconName = iconName || ''
-          $item.append(jquery_default()('<i class="aux-icon ' + iconName + '" />'));
+          $item.append(jquery_default()(`<i class="aux-icon"><span class="${iconName}" /></i>`));
           if (iconUrl) {
             $item.append(jquery_default()(`<div class="aux-icon-link"><a target="_blank" title="${iconText}" href="${iconUrl}">${iconText}</a></div>`));
           } else if (iconText) {

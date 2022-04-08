@@ -18,27 +18,35 @@
 
 package org.apromore.dao.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apromore.dao.jpa.PpmSchemaToJsonConverter;
 
 @Entity
 @Table(name = "predictor")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class PredictorDao {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @Column(name = "log_id")
-    private int logId;
+    private Integer id;
     @Column(name = "name")
     private String name;
     @Column(name = "prediction_type")
@@ -49,13 +57,12 @@ public class PredictorDao {
     @Column(name = "ppm_status")
     @Enumerated(EnumType.STRING)
     private PpmStatus ppmStatus;
-
-    public PredictorDao(int logId, String name, PredictionType predictionType, String targetAttribute,
-                        PpmStatus ppmStatus) {
-        this.logId = logId;
-        this.name = name;
-        this.predictionType = predictionType;
-        this.targetAttribute = targetAttribute;
-        this.ppmStatus = ppmStatus;
-    }
+    @Column(name = "ppm_schema")
+    @Convert(converter = PpmSchemaToJsonConverter.class)
+    private PpmSchema ppmSchema;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "prediction_predictor",
+        joinColumns = @JoinColumn(name = "predictor_id", referencedColumnName = "id"),
+        inverseJoinColumns = @JoinColumn(name = "prediction_id", referencedColumnName = "id"))
+    private List<PredictionDao> predictions = new ArrayList<>();
 }
