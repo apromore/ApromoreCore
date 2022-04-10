@@ -2149,3 +2149,19 @@ databaseChangeLog:
                   name: role_name
                   value: "ROLE_SUPERUSER"
             where: id = 1
+  - changeSet:
+      id: 20220408161500
+      author: janeh
+      comment: "add analyst role to all users with only integrator role"
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: INSERT INTO user_role SELECT DISTINCT 4 AS roleid, userid
+              FROM user_role WHERE userid IN (
+              SELECT DISTINCT userid
+              FROM user_role WHERE roleid = 9
+              AND userid NOT IN (
+              SELECT userid
+              FROM user_role
+              WHERE roleid != 9
+              ));
