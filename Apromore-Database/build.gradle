@@ -3,8 +3,19 @@ group = 'org.apromore'
 version = '1.0'
 description = 'Apromore Database'
 
-dependencies {	
-    api 'org.springframework.boot:spring-boot-starter-data-jpa'    
+
+dependencies {
+    /*
+     * TODO: workaround for CVE-2022-22965 mitigation
+     * Temporarily excluding hibernate core in order to downgrade and fix the version,
+     * instead of that which is bundled with spring-boot-starter-data-jpa
+     * until https://hibernate.atlassian.net/browse/HHH-15142 is resolved,
+     * at which point we will need to upgrade to the next available version of spring boot (2.6.7?)
+     */
+    api ('org.springframework.boot:spring-boot-starter-data-jpa'){
+        exclude group: 'org.hibernate', module: 'hibernate-core'
+    }
+
 	api  group: 'org.liquibase', name: 'liquibase-core'
     implementation 'com.h2database:h2'
     implementation 'mysql:mysql-connector-java'

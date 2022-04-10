@@ -1378,3 +1378,62 @@ databaseChangeLog:
              - column:
                  name: ppm_status
                  type: VARCHAR(15)
+
+ - changeSet:
+     id: 20220330104900
+     author: mtomar
+     changes:
+       - modifyDataType:
+           tableName: predictor
+           columnName: id
+           newDataType: INT
+       - addAutoIncrement:
+           tableName: predictor
+           columnName: id
+           columnDataType: INT
+       - addColumn:
+           tableName: predictor
+           columns:
+             - column:
+                 name: ppm_schema
+                 type: JSON
+                 constraints:
+                   nullable: false
+       - dropColumn:
+           tableName: predictor
+           columns:
+             - column:
+                 name: log_id
+
+       - createTable:
+           tableName: prediction
+           columns:
+             - column:
+                 name: id
+                 type: INT
+                 constraints:
+                   nullable: false
+                   primaryKey: true
+                   primaryKeyName: pk_prediction_id
+             - column:
+                 name: table_name
+                 type: VARCHAR(100)
+             - column:
+                 name: status
+                 type: VARCHAR(15)
+
+       - createTable:
+           tableName: prediction_predictor
+           columns:
+             - column:
+                 name: prediction_id
+                 type: INT
+                 constraints:
+                   nullable: false
+                   primaryKey: true
+             - column:
+                 name: predictor_id
+                 type: INT
+                 constraints:
+                   nullable: false
+                   primaryKey: true

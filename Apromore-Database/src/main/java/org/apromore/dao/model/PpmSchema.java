@@ -16,12 +16,19 @@
  * #L%
  */
 
-package org.apromore.dao;
+package org.apromore.dao.model;
 
-import org.apromore.dao.model.PredictorDao;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import java.util.List;
+import lombok.Data;
 
-@Repository
-public interface PredictorRepository extends JpaRepository<PredictorDao, Integer> {
+@Data
+public class PpmSchema {
+    private String caseIdCol;
+    private String timestampCol;
+    private String activityCol;
+    private List<String> staticCategoricalCols;
+    private List<String> staticNumericalCols;
+    private List<String> dynamicCategoricalCols;
+    private List<String> dynamicNumericalCols;
+    private List<String> ignore;
 }

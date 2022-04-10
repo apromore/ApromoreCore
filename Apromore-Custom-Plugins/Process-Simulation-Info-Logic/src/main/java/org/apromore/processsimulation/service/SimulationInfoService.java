@@ -95,7 +95,7 @@ public class SimulationInfoService {
             log.warn("Unable to instantiate Jaxb context");
         }
 
-        DECIMAL_FORMAT.setRoundingMode(RoundingMode.UP);
+        DECIMAL_FORMAT.setRoundingMode(RoundingMode.HALF_UP);
     }
 
     public boolean isFeatureEnabled() {
