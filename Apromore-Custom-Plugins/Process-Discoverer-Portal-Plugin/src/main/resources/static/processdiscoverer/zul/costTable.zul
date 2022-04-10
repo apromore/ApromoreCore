@@ -19,14 +19,20 @@
   <http://www.gnu.org/licenses/lgpl-3.0.html>.
   #L%
   -->
-
-
-<window id="costTableWindow" width="700px" height="427px" mode="overlapped" sizable="true" maximizable="false" closable="true" position="center"
+<window id="costTableWindow" width="700px" height="427px"
+        mode="overlapped" sizable="true" maximizable="false" closable="true" position="center"
         title="${arg.pdLabels.costTable_text}"
         sclass="ap-cost-table"
         contentStyle="overflow:auto">
+  <style>
+    .ap-cost-table .disabled .z-doublebox {
+      color: #AAAAAA !important;
+      background: #F0F0F0 !important;
+      cursor: default !important;
+    }
+  </style>
   <vbox hflex="1" vflex="1" spacing="0">
-    <listbox id="costTableListbox" vflex="1" hflex="1" mold="paging" pageSize="100">
+    <listbox id="costTableListbox" sclass="${arg.viewOnly ? 'disabled' : ''}" vflex="1" hflex="1" mold="paging" pageSize="100">
       <listhead sizable="true">
         <listheader label="${arg.pdLabels.costAttributeID_text}" sort="auto(attributeId)" onCreate="self.sort(true);"/>
         <listheader label="${arg.pdLabels.costValue_text}" />
@@ -35,7 +41,14 @@
         <listitem>
           <listcell label="${each.attributeId}" />
           <listcell>
-            <doublebox constraint="no negative,no empty" hflex="1" value="${each.costValue}" forward="onChanging=costTableListbox.onUpdateCostValue, onChange=costTableListbox.onUpdateCostValue"
+            <doublebox
+                readonly="${arg.viewOnly}"
+                disabled="${arg.viewOnly}"
+                sclass="${arg.viewOnly ? 'z-doublebox-disabled' : ''}"
+                constraint="no negative,no empty"
+                hflex="1"
+                value="${each.costValue}"
+                forward="onChanging=costTableListbox.onUpdateCostValue, onChange=costTableListbox.onUpdateCostValue"
             />
           </listcell>
         </listitem>
@@ -45,7 +58,10 @@
       <label style="vertical-align: middle;margin-right: 6px">
         ${arg.pdLabels.currency_text}
       </label>
-      <combobox id="costTableCurrency" forward="onChanging=costTableWindow.onChangeCurrency, onChange=costTableWindow.onChangeCurrency">
+      <combobox
+          disabled="${arg.viewOnly}"
+          id="costTableCurrency"
+          forward="onChanging=costTableWindow.onChangeCurrency, onChange=costTableWindow.onChangeCurrency">
         <comboitem label="AUD" value="AUD" />
         <comboitem label="USD" value="USD" />
         <comboitem label="EUR" value="EUR" />
@@ -57,7 +73,8 @@
       </label>
     </div>
     <div height="42px" hflex="1" sclass="ap-window-footer-actions">
-      <button id="applyCost" label="Apply Cost" forward="onClick=costTableWindow.onApplyCost" />
+      <button label="${arg.viewOnly ? 'Close': 'Cancel'}" forward="onClick=costTableWindow.onClose" />
+      <button visible="${!arg.viewOnly}" id="applyCost" label="Apply Cost" forward="onClick=costTableWindow.onApplyCost" />
     </div>
   </vbox>
 </window>
