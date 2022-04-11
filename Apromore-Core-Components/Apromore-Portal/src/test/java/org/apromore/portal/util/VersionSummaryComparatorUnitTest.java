@@ -30,7 +30,7 @@ import org.junit.jupiter.api.Test;
 class VersionSummaryComparatorUnitTest {
 
     @Test
-    public void versionNumberTestCase() {
+    void versionNumberTestCase() {
         List<VersionSummaryType> list = Arrays.asList(
             createVersionSummaryWithVersionNo("3"),
             createVersionSummaryWithVersionNo("2.0"),
@@ -42,7 +42,7 @@ class VersionSummaryComparatorUnitTest {
 
         VersionSummaryComparator comparator = new VersionSummaryComparator(true, VersionSummaryTypes.BY_VERSION);
         list.sort(comparator);
-        assertEquals(list.size(), 6);
+        assertEquals(6, list.size());
         String[] expected = {"1","2","2.0","3","5","10"};
 
         List<String> actual=new ArrayList<>();
@@ -53,9 +53,36 @@ class VersionSummaryComparatorUnitTest {
 
     }
 
+    @Test
+    void lastUpdateTestCase() {
+        List<VersionSummaryType> list = Arrays.asList(
+            createVersionSummaryWithUpdateDate("10-03-2022 10:07:09"),
+            createVersionSummaryWithUpdateDate("11-02-2022 11:12:01"),
+            createVersionSummaryWithUpdateDate("09-01-2022 12:10:08")
+        );
+
+        VersionSummaryComparator comparator = new VersionSummaryComparator(true, VersionSummaryTypes.BY_UPDATE_DATE);
+        list.sort(comparator);
+        assertEquals(list.size(), 3);
+        String[] expected = {"09-01-2022 12:10:08", "11-02-2022 11:12:01", "10-03-2022 10:07:09"};
+
+        List<String> actual = new ArrayList<>();
+        for (VersionSummaryType var : list) {
+            actual.add(var.getLastUpdate());
+        }
+        assertArrayEquals(expected, actual.toArray());
+
+    }
+
     private VersionSummaryType createVersionSummaryWithVersionNo(String versionNo) {
         VersionSummaryType var= new VersionSummaryType();
         var.setVersionNumber(versionNo);
+        return var;
+    }
+
+    private VersionSummaryType createVersionSummaryWithUpdateDate(String dateString) {
+        VersionSummaryType var= new VersionSummaryType();
+        var.setLastUpdate(dateString);
         return var;
     }
 
