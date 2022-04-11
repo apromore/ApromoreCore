@@ -381,7 +381,7 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
     }
 
     private Long getSelectedCalendarId() {
-        Set<CalendarModel> selection = calendarListModel.getSelection();
+        Set<Calendar> selection = calendarListModel.getSelection();
         if (selection.isEmpty()) {
             return null;
         }

@@ -61,8 +61,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 /**
@@ -72,6 +74,7 @@ import lombok.NonNull;
  */
 @Data
 @EqualsAndHashCode
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class WorkDayModel implements Comparable<WorkDayModel> {
 
     @EqualsAndHashCode.Exclude
@@ -90,6 +93,13 @@ public class WorkDayModel implements Comparable<WorkDayModel> {
 
     @EqualsAndHashCode.Exclude
     protected String updatedBy = "";
+
+    public WorkDayModel(DayOfWeek dayOfWeek, LocalTime startTime, LocalTime endTime, boolean workingDay) {
+        this.dayOfWeek = dayOfWeek;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.workingDay = workingDay;
+    }
 
     public Duration getDuration() {
         return Duration.between(startTime, endTime);

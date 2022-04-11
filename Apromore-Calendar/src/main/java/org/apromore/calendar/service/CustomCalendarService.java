@@ -30,10 +30,10 @@ import java.util.Set;
 import java.util.function.Predicate;
 import javax.transaction.Transactional;
 import lombok.Setter;
-import org.apromore.calendar.builder.Calendars;
 import org.apromore.calendar.exception.CalendarAlreadyExistsException;
 import org.apromore.calendar.exception.CalendarNotExistsException;
 import org.apromore.calendar.model.CalendarModel;
+import org.apromore.calendar.model.Calendars;
 import org.apromore.calendar.model.HolidayModel;
 import org.apromore.calendar.model.WorkDayModel;
 import org.apromore.calendar.util.CalendarUtil;
@@ -75,19 +75,16 @@ public class CustomCalendarService implements CalendarService {
     @Override
     public CalendarModel createGenericCalendar(String desc, String username, boolean weekendsOff, String zoneId)
         throws CalendarAlreadyExistsException {
-        if (!weekendsOff) {
-            return getGenericCalendar();
-        } else {
-            CustomCalendar customCalendar = createCalendar(desc, username, weekendsOff, LocalTime.MIN, LocalTime.MAX);
-            CalendarModel calendarModel = modelMapper.getMapper().map(customCalendar, CalendarModel.class);
-            return calendarModel;
-        }
+        CustomCalendar customCalendar = createCalendar(desc, username, weekendsOff, LocalTime.MIN, LocalTime.MAX);
+        CalendarModel calendarModel = modelMapper.getMapper().map(customCalendar, CalendarModel.class);
+        return calendarModel;
     }
 
+    // Return an absolute calendar object to calculate duration by the diff between start/end
+    // for performance efficiency.
     @Override
     public CalendarModel getGenericCalendar() {
-        //return modelMapper.getMapper().map(createGenericCalendar(), CalendarModel.class);
-        return Calendars.INSTANCE.absolute();
+        return Calendars.INSTANCE.absoluteCalendar();
     }
 
     @Override
@@ -107,10 +104,6 @@ public class CustomCalendarService implements CalendarService {
 
         return modelMapper.getMapper().map(calendarRepo.findById(id).orElse(null), CalendarModel.class);
 
-    }
-
-    public CalendarModel getImmutableCalendar(Long id) {
-        return getCalendar(id).immutable();
     }
 
     @Override
@@ -165,14 +158,6 @@ public class CustomCalendarService implements CalendarService {
             workDaysList.add(new WorkDay(dayOfWeek, start, end, !isWeekendOff.test(dayOfWeek)));
         }
         return workDaysList;
-
-    }
-
-    private void validateCalendarExists(CustomCalendar calendar) throws CalendarAlreadyExistsException {
-
-        if (calendar != null) {
-            throw new CalendarAlreadyExistsException("Calendar already exists");
-        }
 
     }
 

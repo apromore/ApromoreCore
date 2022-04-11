@@ -20,24 +20,21 @@
  * #L%
  */
 
-package org.apromore.calendar.builder;
-
-import org.apromore.calendar.model.AbsoluteCalendarModel;
-import org.apromore.calendar.model.CalendarModel;
+package org.apromore.calendar.model;
 
 /**
- * This class provides a Singleton for creating special calendars.
+ * This class provides a Singleton for creating special calendar objects.
  *
  * @author Bruce Nguyen
  */
 public enum Calendars {
     INSTANCE;
 
-    public CalendarModel empty() {
+    public CalendarModel emptyCalendar() {
         return new CalendarModel();
     }
 
-    public CalendarModel absolute() {
+    public CalendarModel absoluteCalendar() {
         return new AbsoluteCalendarModel();
     }
 }

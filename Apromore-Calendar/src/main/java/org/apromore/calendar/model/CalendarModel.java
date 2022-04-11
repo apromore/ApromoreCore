@@ -53,6 +53,7 @@ import java.util.stream.IntStream;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
 
@@ -65,6 +66,7 @@ import lombok.Setter;
  *     - Add new duration calculation based on intervals
  */
 @Data
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CalendarModel {
 
     protected @NonNull Long id = new Random().nextLong();
@@ -73,13 +75,24 @@ public class CalendarModel {
     protected @NonNull OffsetDateTime updated = OffsetDateTime.now(ZoneOffset.UTC);
     protected String createdBy = "";
     protected String updatedBy = "";
+
+    @Setter(AccessLevel.NONE)
     protected @NonNull String zoneId = ZoneOffset.UTC.getId();
+
     protected @NonNull List<WorkDayModel> workDays = new ArrayList<>();
     protected @NonNull List<HolidayModel> holidays = new ArrayList<>();
 
     @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
     private Set<LocalDate> holidayDates = new HashSet<>();
+
+    /**
+     * @param zoneId, throws DateTimeException or ZoneRulesException if zoneId is not valid
+     */
+    public void setZoneId(String zoneId) {
+        ZoneId.of(zoneId);
+        this.zoneId = zoneId;
+    }
 
     public Duration getDuration(OffsetDateTime starDateTime, OffsetDateTime endDateTime) {
         return getDuration(starDateTime.toInstant(), endDateTime.toInstant());

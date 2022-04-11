@@ -37,13 +37,9 @@ import java.time.OffsetDateTime;
  */
 public class AbsoluteCalendarModel extends CalendarModel {
     public AbsoluteCalendarModel() {
+        super();
         for (DayOfWeek dayOfWeek : DayOfWeek.values()) {
-            WorkDayModel workDayModel = new WorkDayModel();
-            workDayModel.setDayOfWeek(dayOfWeek);
-            workDayModel.setStartTime(LocalTime.MIN);
-            workDayModel.setEndTime(LocalTime.MAX);
-            workDayModel.setWorkingDay(true);
-            workDays.add(workDayModel);
+            workDays.add(new WorkDayModel(dayOfWeek, LocalTime.MIN, LocalTime.MAX, true));
         }
     }
 

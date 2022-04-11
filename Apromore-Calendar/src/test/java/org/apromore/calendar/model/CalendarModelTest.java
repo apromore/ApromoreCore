@@ -22,23 +22,58 @@
 
 package org.apromore.calendar.model;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.time.DateTimeException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import org.apromore.calendar.builder.CalendarModelBuilder;
-import org.apromore.calendar.builder.Calendars;
 import org.junit.jupiter.api.Test;
 
 public class CalendarModelTest {
+
+    @Test
+    void emptyCalendarTest() {
+        CalendarModel empty = Calendars.INSTANCE.emptyCalendar();
+        assertTrue(empty.getWorkDays().isEmpty());
+        assertTrue(empty.getHolidays().isEmpty());
+        assertTrue(empty.getZoneId().equals(ZoneOffset.UTC.getId()));
+    }
+
+    @Test
+    void absoluteCalendarTest() {
+        CalendarModel abs = Calendars.INSTANCE.absoluteCalendar();
+        assertTrue(abs.getZoneId().equals(ZoneOffset.UTC.getId()));
+        assertEquals(7, abs.getWorkDays().size());
+        assertEquals(0, abs.getHolidays().size());
+        for (DayOfWeek d : DayOfWeek.values()) {
+            assertEquals(d, abs.getWorkDays().get(d.getValue()-1).getDayOfWeek());
+            assertEquals(LocalTime.MIN, abs.getWorkDays().get(d.getValue()-1).getStartTime());
+            assertEquals(LocalTime.MAX, abs.getWorkDays().get(d.getValue()-1).getEndTime());
+            assertEquals(true, abs.getWorkDays().get(d.getValue()-1).isWorkingDay());
+        }
+    }
+
+    @Test
+    void invalidZoneIdTest() {
+        assertThrows(DateTimeException.class, () -> new CalendarModelBuilder()
+            .withZoneId("InvalidZoneId"));
+
+        assertThrows(DateTimeException.class, () -> Calendars.INSTANCE
+            .emptyCalendar()
+            .setZoneId("InvalidZoneId"));
+    }
+
     @Test
     void is247Test() {
-        assertFalse(Calendars.INSTANCE.empty().is247());
-        assertTrue(Calendars.INSTANCE.absolute().is247());
+        assertFalse(Calendars.INSTANCE.emptyCalendar().is247());
+        assertTrue(Calendars.INSTANCE.absoluteCalendar().is247());
         assertFalse(new CalendarModelBuilder()
             .with7DayWorking()
             .build().is247());

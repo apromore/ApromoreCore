@@ -33,6 +33,7 @@ public class ImmutableCalendarModel extends CalendarModel {
     private CalendarModel mutableModel;
 
     protected ImmutableCalendarModel(CalendarModel model) {
+        super();
         this.mutableModel = model;
         this.id = model.getId();
         this.name = model.getName();

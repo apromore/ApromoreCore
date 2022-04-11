@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.validation.constraints.NotNull;
 import org.apromore.apmlog.stats.TimeStatsProcessor;
-import org.apromore.calendar.builder.Calendars;
+import org.apromore.calendar.model.Calendars;
 import org.apromore.calendar.model.CalendarModel;
 import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
 
@@ -42,7 +42,7 @@ public abstract class AbstractLogImpl implements Serializable {
     protected String timeZone;
     protected long startTime;
     protected long endTime;
-    protected CalendarModel calendarModel = Calendars.INSTANCE.absolute().immutable();
+    protected CalendarModel calendarModel = Calendars.INSTANCE.absoluteCalendar().immutable();
     protected boolean assignedCustomCalendar = false;
 
     // ===============================================================================================================

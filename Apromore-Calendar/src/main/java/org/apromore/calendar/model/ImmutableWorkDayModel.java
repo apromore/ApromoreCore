@@ -28,6 +28,7 @@ import java.time.LocalTime;
 public class ImmutableWorkDayModel extends WorkDayModel {
 
     protected ImmutableWorkDayModel(WorkDayModel model) {
+        super();
         this.id = model.getId();
         this.dayOfWeek = model.getDayOfWeek();
         this.startTime = LocalTime.from(model.getStartTime());

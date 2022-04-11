@@ -27,6 +27,7 @@ import java.time.LocalDate;
 public class ImmutableHolidayModel extends HolidayModel {
 
     protected ImmutableHolidayModel(HolidayModel model) {
+        super();
         this.id = model.getId();
         this.holidayType = model.getHolidayType();
         this.name = model.getName();

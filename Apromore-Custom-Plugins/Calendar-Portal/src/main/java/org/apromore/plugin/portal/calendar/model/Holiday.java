@@ -30,8 +30,8 @@ package org.apromore.plugin.portal.calendar.model;
 
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.Random;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -41,13 +41,20 @@ import org.apromore.commons.datetime.TimeUtils;
 
 @Getter
 @Setter
-@AllArgsConstructor (access = AccessLevel.PROTECTED)
 @NoArgsConstructor (access = AccessLevel.PROTECTED)
 public class Holiday {
+    private @NonNull Long id = new Random().nextLong();
     private @NonNull HolidayType holidayType = HolidayType.PUBLIC;
     private @NonNull String name;
     private @NonNull String description;
     private @NonNull LocalDate holidayDate;
+
+    protected Holiday(HolidayType type, String name, String desc, LocalDate date) {
+        this.holidayType = type;
+        this.name = name;
+        this.description = desc;
+        this.holidayDate = date;
+    }
 
     public boolean isPublic() {
         return HolidayType.PUBLIC.equals(holidayType);

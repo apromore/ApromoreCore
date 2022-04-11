@@ -26,6 +26,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import org.apromore.calendar.model.CalendarModel;
+import org.apromore.calendar.model.Calendars;
 import org.apromore.calendar.model.HolidayModel;
 import org.apromore.calendar.model.HolidayType;
 import org.apromore.calendar.model.WorkDayModel;
@@ -37,7 +38,7 @@ import org.apromore.calendar.model.WorkDayModel;
  */
 public class CalendarModelBuilder {
 
-    CalendarModel model = Calendars.INSTANCE.empty();
+    CalendarModel model = Calendars.INSTANCE.emptyCalendar();
 
     public CalendarModel build() {
 
@@ -46,12 +47,7 @@ public class CalendarModelBuilder {
 
     public CalendarModelBuilder withWorkDay(DayOfWeek dayOfWeek, LocalTime startTime,
                                             LocalTime endTime, boolean isWorkingDay) {
-        WorkDayModel workDayModel = new WorkDayModel();
-        workDayModel.setDayOfWeek(dayOfWeek);
-        workDayModel.setStartTime(startTime);
-        workDayModel.setEndTime(endTime);
-        workDayModel.setWorkingDay(isWorkingDay);
-        model.getWorkDays().add(workDayModel);
+        model.getWorkDays().add(new WorkDayModel(dayOfWeek, startTime, endTime, isWorkingDay));
         return this;
     }
 

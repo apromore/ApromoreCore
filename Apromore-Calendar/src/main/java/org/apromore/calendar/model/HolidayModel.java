@@ -28,10 +28,12 @@
 
 package org.apromore.calendar.model;
 
-import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Random;
+import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 /**
@@ -39,9 +41,10 @@ import lombok.NonNull;
  */
 @Data
 @EqualsAndHashCode
-public class HolidayModel implements Serializable {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class HolidayModel {
     @EqualsAndHashCode.Exclude
-    protected @NonNull Long id;
+    protected @NonNull Long id = new Random().nextLong();
 
     protected @NonNull HolidayType holidayType = HolidayType.PUBLIC;
     protected @NonNull String name;
@@ -49,13 +52,12 @@ public class HolidayModel implements Serializable {
     protected @NonNull LocalDate holidayDate;
 
     @EqualsAndHashCode.Exclude
-    protected String createdBy;
+    protected String createdBy = "";
 
     @EqualsAndHashCode.Exclude
-    protected String updatedBy;
+    protected String updatedBy = "";
 
     public HolidayModel(String holidayTypeLabel, String name, String description, LocalDate holidayDate) {
-        super();
         this.holidayType = HolidayType.valueOf(holidayTypeLabel);
         this.name = name;
         this.description = description;
@@ -63,7 +65,6 @@ public class HolidayModel implements Serializable {
     }
 
     public HolidayModel(HolidayType holidayType, String name, String description, LocalDate holidayDate) {
-        super();
         this.holidayType = holidayType;
         this.name = name;
         this.description = description;
@@ -72,10 +73,6 @@ public class HolidayModel implements Serializable {
 
     public boolean isPublic() {
         return HolidayType.PUBLIC.equals(holidayType);
-    }
-
-    public HolidayModel() {
-        super();
     }
 
     public HolidayModel immutable() {
