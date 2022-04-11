@@ -63,7 +63,7 @@ class VersionSummaryComparatorUnitTest {
 
         VersionSummaryComparator comparator = new VersionSummaryComparator(true, VersionSummaryTypes.BY_UPDATE_DATE);
         list.sort(comparator);
-        assertEquals(list.size(), 3);
+        assertEquals(3, list.size());
         String[] expected = {"09-01-2022 12:10:08", "11-02-2022 11:12:01", "10-03-2022 10:07:09"};
 
         List<String> actual = new ArrayList<>();
