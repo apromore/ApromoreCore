@@ -102,7 +102,7 @@ public class ProcessVersionDetailController extends BaseDetailController {
     }
 
     private void redrawList(VersionSummaryComparator comparator, boolean defaultSelected) {
-        if(data==null) {
+        if (data == null) {
             return;
         }
         getListModel().clear();
@@ -127,39 +127,39 @@ public class ProcessVersionDetailController extends BaseDetailController {
     }
 
     public void displayLogVersions(LogSummaryType data) {
-		try {
-			getListModel().clearSelection();
-			getListModel().clear();
-			VersionSummaryType versionSummary = new VersionSummaryType();
-			String createdDate = data.getCreateDate();
+        try {
+            getListModel().clearSelection();
+            getListModel().clear();
+            VersionSummaryType versionSummary = new VersionSummaryType();
+            String createdDate = data.getCreateDate();
             if (createdDate != null) {
                 createdDate = DateTimeUtils.normalize(createdDate);
             }
-			versionSummary.setCreationDate(createdDate);
-			getListModel().add(new VersionDetailType(null, versionSummary));
-            this.data=null;
-		} catch (Exception ex) {
-			LOGGER.error("Error occured in assigning Log version", ex);
-		}
+            versionSummary.setCreationDate(createdDate);
+            getListModel().add(new VersionDetailType(null, versionSummary));
+            this.data = null;
+        } catch (Exception ex) {
+            LOGGER.error("Error occured in assigning Log version", ex);
+        }
     }
-    
-	public void displayFolderVersions(Folder data) {
-		try {
-			getListModel().clearSelection();
-			getListModel().clear();
-			VersionSummaryType versionSummary = new VersionSummaryType();
-			DateFormat dateFormat = new SimpleDateFormat(Constants.DATE_TIME_FORMAT_HUMANIZED);
-			if (data.getDateModified() != null) {
-				versionSummary.setCreationDate(dateFormat.format(data.getDateModified()));
-			} else {
-				versionSummary.setCreationDate(dateFormat.format(data.getDateCreated()));
-			}
-			getListModel().add(new VersionDetailType(null, versionSummary));
-            this.data=null;
-		} catch (Exception ex) {
-			LOGGER.error("Error occured in assigning Folder version", ex);
-		}
-	}
+
+    public void displayFolderVersions(Folder data) {
+        try {
+            getListModel().clearSelection();
+            getListModel().clear();
+            VersionSummaryType versionSummary = new VersionSummaryType();
+            DateFormat dateFormat = new SimpleDateFormat(Constants.DATE_TIME_FORMAT_HUMANIZED);
+            if (data.getDateModified() != null) {
+                versionSummary.setCreationDate(dateFormat.format(data.getDateModified()));
+            } else {
+                versionSummary.setCreationDate(dateFormat.format(data.getDateCreated()));
+            }
+            getListModel().add(new VersionDetailType(null, versionSummary));
+            this.data = null;
+        } catch (Exception ex) {
+            LOGGER.error("Error occured in assigning Folder version", ex);
+        }
+    }
 
     protected ListModelList<VersionDetailType> getListModel() {
         return (ListModelList<VersionDetailType>)(Object) listBox.getListModel();
