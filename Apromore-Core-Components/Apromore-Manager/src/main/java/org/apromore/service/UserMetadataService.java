@@ -21,6 +21,7 @@
  */
 package org.apromore.service;
 
+import java.util.Optional;
 import org.apromore.dao.model.Group;
 import org.apromore.dao.model.GroupUsermetadata;
 import org.apromore.dao.model.Log;
@@ -366,4 +367,5 @@ public interface UserMetadataService {
      */
     boolean canAccessAssociatedLog(Integer userMetadataId, String groupRowGuid);
 
+    Optional<Usermetadata> getUserMetadataById(Integer id);
 }
