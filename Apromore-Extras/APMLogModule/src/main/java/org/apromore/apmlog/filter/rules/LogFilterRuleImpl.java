@@ -24,6 +24,7 @@ package org.apromore.apmlog.filter.rules;
 import org.apromore.apmlog.filter.types.Choice;
 import org.apromore.apmlog.filter.types.FilterType;
 import org.apromore.apmlog.filter.types.Inclusion;
+import org.apromore.apmlog.filter.types.RuleLevel;
 import org.apromore.apmlog.filter.types.Section;
 
 import java.io.Serializable;
@@ -41,6 +42,7 @@ public class LogFilterRuleImpl implements LogFilterRule, Serializable {
     private Set<RuleValue> secondaryValues;
     private final Set<String> primaryStringValues;
     private Set<String> secondaryStringValues;
+    protected RuleLevel ruleLevel = RuleLevel.CONTENT;
 
     public LogFilterRuleImpl(Choice choice, Inclusion inclusion, Section section, FilterType filterType,
                              String key,
@@ -114,6 +116,14 @@ public class LogFilterRuleImpl implements LogFilterRule, Serializable {
         return secondaryValues;
     }
 
+    public void setRuleLevel(RuleLevel ruleLevel) {
+        this.ruleLevel = ruleLevel;
+    }
+
+    public RuleLevel getRuleLevel() {
+        return ruleLevel;
+    }
+
     // ====================================================================================
     // DO NOT USED!! TO BE REMOVED!!
     // ====================================================================================
@@ -136,8 +146,10 @@ public class LogFilterRuleImpl implements LogFilterRule, Serializable {
             }
         }
 
-        return new LogFilterRuleImpl(
+        LogFilterRule lfr = new LogFilterRuleImpl(
                 choice, inclusion, section, filterType, key, priValCopy, secValCopy);
+        lfr.setRuleLevel(ruleLevel);
+        return lfr;
     }
 
     @Override

@@ -879,5 +879,10 @@ public class UserMetadataServiceImpl implements UserMetadataService {
         return processes;
     }
 
+    @Override
+    public Optional<Usermetadata> getUserMetadataById(Integer id) {
+        return userMetadataRepo.findById(id);
+    }
+
 
 }
