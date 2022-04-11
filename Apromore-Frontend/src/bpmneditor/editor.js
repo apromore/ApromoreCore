@@ -155,6 +155,14 @@ export default class Editor {
         }
     }
 
+    async refreshAll() {
+        if (!this.actualEditor) return ;
+        var eventBus = this.actualEditor.get('eventBus');
+        var elementRegistry = editor.get('elementRegistry');
+        var elements = elementRegistry.getAll();
+        eventBus.fire('elements.changed', { elements });
+    }
+
     async getXML() {
         if (!this.actualEditor) return '';
         const result = await this.actualEditor.saveXML({ format: true }).catch(err => {throw err;});

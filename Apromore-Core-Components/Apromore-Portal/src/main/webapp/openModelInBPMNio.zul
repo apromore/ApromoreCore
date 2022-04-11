@@ -148,6 +148,13 @@
       </n:a>
     </n:div>
   </n:div>
+  <z:combobox sclass="ap-bpmneditor-font-selector" readonly="true">
+    <z:comboitem label="8px"/>
+    <z:comboitem label="10px"/>
+    <z:comboitem label="12px"/>
+    <z:comboitem label="14px"/>
+    <z:comboitem label="16px"/>
+  </z:combobox>
 
   <!-- User menu -->
   <n:link rel="stylesheet" href="themes/${theme}/portal/css/portal.css" type="text/css"/>
