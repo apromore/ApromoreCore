@@ -2077,3 +2077,33 @@ databaseChangeLog:
                     value: "Edit roles"
              tableName: permission
              where: id = 4
+
+  - changeSet:
+      id: 20220408161500
+      author: janeh
+      comment: "add analyst role to all users with only integrator role"
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: INSERT INTO user_role SELECT DISTINCT 4 AS roleid, userid
+              FROM user_role WHERE userid IN (
+              SELECT DISTINCT userid
+              FROM user_role WHERE roleid = 9
+              AND userid NOT IN (
+              SELECT userid
+              FROM user_role
+              WHERE roleid != 9
+              ));
+
+  - changeSet:
+      id: 20220411095800
+      author: janeh
+      comment: "remove integrator role from all users with superuser role"
+      changes:
+        - delete:
+            tableName: user_role
+            where: roleid = 9 AND userid IN (
+              SELECT userid
+              FROM (SELECT * FROM user_role) AS user_role_copy
+              WHERE roleid = 1
+              );
