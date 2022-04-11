@@ -187,7 +187,7 @@ public class PDAnalyst {
             caseVariantPerspective);
 
         // ProcessDiscoverer logic with default attribute
-        CalendarModel calendarModel = eventLogService.getCalendarFromLog(contextData.getLogId());
+        CalendarModel calendarModel = eventLogService.getCalendarFromLog(contextData.getLogId()).immutable();
         if (calendarModel == null) {
             throw new CalendarNotExistsException("The open log doesn't have an associated calendar.");
         }
