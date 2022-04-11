@@ -53,10 +53,10 @@ public class CalendarModelTest {
         assertEquals(7, abs.getWorkDays().size());
         assertEquals(0, abs.getHolidays().size());
         for (DayOfWeek d : DayOfWeek.values()) {
-            assertEquals(d, abs.getWorkDays().get(d.getValue()-1).getDayOfWeek());
-            assertEquals(LocalTime.MIN, abs.getWorkDays().get(d.getValue()-1).getStartTime());
-            assertEquals(LocalTime.MAX, abs.getWorkDays().get(d.getValue()-1).getEndTime());
-            assertEquals(true, abs.getWorkDays().get(d.getValue()-1).isWorkingDay());
+            assertEquals(d, abs.getWorkDays().get(d.getValue() - 1).getDayOfWeek());
+            assertEquals(LocalTime.MIN, abs.getWorkDays().get(d.getValue() - 1).getStartTime());
+            assertEquals(LocalTime.MAX, abs.getWorkDays().get(d.getValue() - 1).getEndTime());
+            assertEquals(true, abs.getWorkDays().get(d.getValue() - 1).isWorkingDay());
         }
     }
 

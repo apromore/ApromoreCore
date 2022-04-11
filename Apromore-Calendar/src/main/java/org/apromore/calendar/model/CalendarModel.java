@@ -87,7 +87,9 @@ public class CalendarModel {
     private Set<LocalDate> holidayDates = new HashSet<>();
 
     /**
-     * @param zoneId, throws DateTimeException or ZoneRulesException if zoneId is not valid
+     * Set zone id.
+     * @param zoneId zone id name
+     * @throws DateTimeException or ZoneRulesException if zoneId is not valid
      */
     public void setZoneId(String zoneId) {
         ZoneId.of(zoneId);
