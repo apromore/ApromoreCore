@@ -2149,6 +2149,7 @@ databaseChangeLog:
                   name: role_name
                   value: "ROLE_SUPERUSER"
             where: id = 1
+
   - changeSet:
       id: 20220408161500
       author: janeh
@@ -2165,3 +2166,16 @@ databaseChangeLog:
               FROM user_role
               WHERE roleid != 9
               ));
+
+  - changeSet:
+      id: 20220411095800
+      author: janeh
+      comment: "remove integrator role from all users with superuser role"
+      changes:
+        - delete:
+            tableName: user_role
+            where: roleid = 9 AND userid IN (
+              SELECT userid
+              FROM (SELECT * FROM user_role) AS user_role_copy
+              WHERE roleid = 1
+              );
