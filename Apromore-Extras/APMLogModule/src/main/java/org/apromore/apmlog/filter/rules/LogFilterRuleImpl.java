@@ -37,7 +37,7 @@ public class LogFilterRuleImpl implements LogFilterRule, Serializable {
     private final Inclusion inclusion;
     private final Section section;
     private final FilterType filterType;
-    private final String key;
+    private String key;
     private Set<RuleValue> primaryValues;
     private Set<RuleValue> secondaryValues;
     private final Set<String> primaryStringValues;
@@ -98,6 +98,11 @@ public class LogFilterRuleImpl implements LogFilterRule, Serializable {
 
     public String getKey() {
         return key;
+    }
+
+    @Override
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public Set<RuleValue> getPrimaryValues() {
