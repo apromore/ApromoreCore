@@ -43,6 +43,7 @@ public interface LogFilterRule {
     LogFilterRule deepClone();
     void setRuleLevel(RuleLevel ruleLevel);
     RuleLevel getRuleLevel();
+    void setKey(String key);
 
     // ====================================================================================
     // DO NOT USED!! TO BE REMOVED!!
