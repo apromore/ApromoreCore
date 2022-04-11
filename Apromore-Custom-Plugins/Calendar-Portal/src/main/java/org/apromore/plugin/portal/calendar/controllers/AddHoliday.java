@@ -24,10 +24,12 @@ package org.apromore.plugin.portal.calendar.controllers;
 
 import java.time.LocalDate;
 import java.util.Date;
-import org.apromore.calendar.model.HolidayModel;
+import org.apromore.calendar.model.HolidayType;
 import org.apromore.commons.datetime.TimeUtils;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.calendar.Constants;
+import org.apromore.plugin.portal.calendar.model.CalendarFactory;
+import org.apromore.plugin.portal.calendar.model.Holiday;
 import org.apromore.zk.label.LabelSupplier;
 import org.slf4j.Logger;
 import org.zkoss.zk.ui.Executions;
@@ -46,7 +48,8 @@ public class AddHoliday extends SelectorComposer<Window> implements LabelSupplie
 
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(AddHoliday.class);
 
-    private Calendar parentController = (Calendar) Executions.getCurrent().getArg().get("parentController");
+    private CalendarController parentController = (CalendarController) Executions.getCurrent().getArg()
+        .get("parentController");
 
     @Wire("#holidayDate")
     Datebox holidayDate;
@@ -76,7 +79,8 @@ public class AddHoliday extends SelectorComposer<Window> implements LabelSupplie
                 LocalDate localDate = TimeUtils.dateToLocalDate(date);
                 String description = holidayDescription.getValue();
                 String type = holidayType.getSelectedItem().getValue();
-                HolidayModel holiday = new HolidayModel(type, description, description, localDate);
+                Holiday holiday = CalendarFactory.INSTANCE.createHoliday(HolidayType.valueOf(type),
+                                            description, description, localDate);
                 try {
                     parentController.addHoliday(holiday);
                     getSelf().detach();
