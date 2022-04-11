@@ -47,9 +47,9 @@ public class HolidayModel {
     protected @NonNull Long id = new Random().nextLong();
 
     protected @NonNull HolidayType holidayType = HolidayType.PUBLIC;
-    protected @NonNull String name;
-    protected @NonNull String description;
-    protected @NonNull LocalDate holidayDate;
+    protected @NonNull String name = "";
+    protected @NonNull String description = "";
+    protected @NonNull LocalDate holidayDate = LocalDate.now();
 
     @EqualsAndHashCode.Exclude
     protected String createdBy = "";
