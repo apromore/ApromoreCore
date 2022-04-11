@@ -28,39 +28,36 @@
 
 package org.apromore.calendar.model;
 
-import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.Date;
+import java.util.Random;
+import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.apromore.commons.datetime.TimeUtils;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 /**
  * Represent a holiday.
  */
 @Data
 @EqualsAndHashCode
-public class HolidayModel implements Serializable {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class HolidayModel {
+    @EqualsAndHashCode.Exclude
+    protected @NonNull Long id = new Random().nextLong();
+
+    protected @NonNull HolidayType holidayType = HolidayType.PUBLIC;
+    protected @NonNull String name;
+    protected @NonNull String description;
+    protected @NonNull LocalDate holidayDate;
 
     @EqualsAndHashCode.Exclude
-    private Long id;
-    @EqualsAndHashCode.Exclude
-    private Long referenceId;
-
-    private HolidayType holidayType = HolidayType.PUBLIC;
-
-    private String name;
-    private String description;
-    private LocalDate holidayDate;
+    protected String createdBy = "";
 
     @EqualsAndHashCode.Exclude
-    private String createdBy;
-
-    @EqualsAndHashCode.Exclude
-    private String updatedBy;
+    protected String updatedBy = "";
 
     public HolidayModel(String holidayTypeLabel, String name, String description, LocalDate holidayDate) {
-        super();
         this.holidayType = HolidayType.valueOf(holidayTypeLabel);
         this.name = name;
         this.description = description;
@@ -68,7 +65,6 @@ public class HolidayModel implements Serializable {
     }
 
     public HolidayModel(HolidayType holidayType, String name, String description, LocalDate holidayDate) {
-        super();
         this.holidayType = holidayType;
         this.name = name;
         this.description = description;
@@ -79,13 +75,8 @@ public class HolidayModel implements Serializable {
         return HolidayType.PUBLIC.equals(holidayType);
     }
 
-    public HolidayModel() {
-        super();
-    }
-
-    public Date getDate() {
-        return TimeUtils.localDateToDate(holidayDate);
-
+    public HolidayModel immutable() {
+        return new ImmutableHolidayModel(this);
     }
 
 }

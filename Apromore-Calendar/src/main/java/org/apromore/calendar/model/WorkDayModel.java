@@ -53,61 +53,61 @@ package org.apromore.calendar.model;
 
 import java.time.DayOfWeek;
 import java.time.Duration;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.OffsetTime;
-import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
+import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 /**
  * WorkDayModel is a template for actual working days.
- *
- * <p>TODO: Using OffsetTime is not a relevant design because WorkDayModel is only a template,
- * not a specific workday in time.
- * It duplicates the offset information in CalendarModel's zoneID.
- * TODO: field Duration is not timezone-aware, e.g. daylight savings, because it's not attached to any actual date yet
- * However, duration with timezone consideration takes longer to compute.
- *
  * @author Nolan Tellis - created
  * @author Bruce Nguyen: add documentation, todo, revised
  */
 @Data
 @EqualsAndHashCode
-public class WorkDayModel {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class WorkDayModel implements Comparable<WorkDayModel> {
 
     @EqualsAndHashCode.Exclude
-    private Long id;
+    protected @NonNull Long id = new Random().nextLong();
 
-    private DayOfWeek dayOfWeek;
+    protected @NonNull DayOfWeek dayOfWeek = DayOfWeek.MONDAY;
 
-    private OffsetTime startTime;
+    protected @NonNull LocalTime startTime = LocalTime.MIN;
 
-    private OffsetTime endTime;
+    protected @NonNull LocalTime endTime = LocalTime.MAX;
 
-    private boolean workingDay = true;
-
-    @EqualsAndHashCode.Exclude
-    private String createdBy;
+    protected boolean workingDay = true;
 
     @EqualsAndHashCode.Exclude
-    private String updatedBy;
+    protected String createdBy = "";
 
     @EqualsAndHashCode.Exclude
-    private Duration duration;
+    protected String updatedBy = "";
 
-    static LocalDate refDate = Instant
-        .ofEpochMilli(0L)
-        .atOffset(ZoneOffset.UTC)
-        .toLocalDate();
+    public WorkDayModel(DayOfWeek dayOfWeek, LocalTime startTime, LocalTime endTime, boolean workingDay) {
+        this.dayOfWeek = dayOfWeek;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.workingDay = workingDay;
+    }
 
-    public Duration getWorkDuration(ZonedDateTime start, ZonedDateTime end, Set<LocalDate> holidays) {
+    public Duration getDuration() {
+        return Duration.between(startTime, endTime);
+    }
+
+    public Duration getWorkDuration(@NonNull ZonedDateTime start,
+                                    @NonNull ZonedDateTime end,
+                                    @NonNull Set<LocalDate> holidays) {
         Map<LocalDateTime, Duration> instances = getWorkdayInstances(start.toLocalDateTime(), end.toLocalDateTime());
         Duration totalDuration = Duration.ZERO;
         for (LocalDateTime instance : instances.keySet()) {
@@ -126,6 +126,10 @@ public class WorkDayModel {
     public long getEndTimeInMillis() {
         return endTime.getHour() * 3600000L + endTime.getMinute() * 60000L + endTime.getSecond() * 1000L
             + endTime.getNano() / 1000000L;
+    }
+
+    public WorkDayModel immutable() {
+        return new ImmutableWorkDayModel(this);
     }
 
     /**
@@ -169,11 +173,11 @@ public class WorkDayModel {
     // startTime --- periodStart ---> periodEnd ---> endTime  : periodEnd - periodStart
     // periodStart --- startTime ---> endTime ---> periodEnd  : endTime - startTime
     private Duration getDurationSameDayForOneDayPeriod(LocalTime periodStart, LocalTime periodEnd) {
-        if (startTime.toLocalTime().isAfter(periodEnd) || endTime.toLocalTime().isBefore(periodStart)) {
+        if (startTime.isAfter(periodEnd) || endTime.isBefore(periodStart)) {
             return Duration.ZERO;
         }
-        return Duration.between(startTime.toLocalTime().isBefore(periodStart) ? periodStart : startTime.toLocalTime(),
-            endTime.toLocalTime().isAfter(periodEnd) ? periodEnd : endTime.toLocalTime());
+        return Duration.between(startTime.isBefore(periodStart) ? periodStart : startTime,
+            endTime.isAfter(periodEnd) ? periodEnd : endTime);
     }
 
     // periodStart and periodEnd are on different days
@@ -181,8 +185,8 @@ public class WorkDayModel {
     // startTime ---> periodStart ---> endTime ---> periodEnd(next day) : endTime - periodStart
     // periodStart ---> startTime ---> endTime ---> periodEnd(next day) : endTime - startTime
     private Duration getDurationSameDayAtStartOfMultiDayPeriod(LocalTime periodStart) {
-        return Duration.between(startTime.toLocalTime().isBefore(periodStart) ? periodStart : startTime.toLocalTime(),
-            endTime.toLocalTime().isBefore(periodStart) ? periodStart : endTime.toLocalTime());
+        return Duration.between(startTime.isBefore(periodStart) ? periodStart : startTime,
+            endTime.isBefore(periodStart) ? periodStart : endTime);
     }
 
     // periodStart and periodEnd are on different days
@@ -190,7 +194,13 @@ public class WorkDayModel {
     // periodStart(previous day) ---> startTime ---> periodEnd ---> endTime : periodEnd - startTime
     // periodStart(previous day) ---> periodEnd ---> startTime ---> endTime : periodEnd - periodEnd = 0
     private Duration getDurationSameDayAtEndOfMultiDayPeriod(LocalTime periodEnd) {
-        return Duration.between(startTime.toLocalTime().isAfter(periodEnd) ? periodEnd : startTime.toLocalTime(),
-            endTime.toLocalTime().isAfter(periodEnd) ? periodEnd : endTime.toLocalTime());
+        return Duration.between(startTime.isAfter(periodEnd) ? periodEnd : startTime,
+            endTime.isAfter(periodEnd) ? periodEnd : endTime);
+    }
+
+    @Override
+    public int compareTo(@NonNull WorkDayModel d2) {
+        int startCompare = this.getStartTime().compareTo(d2.getStartTime());
+        return (startCompare != 0) ? startCompare : this.getEndTime().compareTo(d2.getEndTime());
     }
 }
