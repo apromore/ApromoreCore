@@ -25,14 +25,14 @@ public enum RuleLevel {
     LOG("LOG"),
     CONTENT("CONTENT");
 
-    private final String ruleLevel;
+    private final String value;
 
-    RuleLevel(String ruleLevel) {
-        this.ruleLevel = ruleLevel;
+    RuleLevel(String value) {
+        this.value = value;
     }
 
     @Override
     public String toString() {
-        return this.ruleLevel;
+        return this.value;
     }
 }
