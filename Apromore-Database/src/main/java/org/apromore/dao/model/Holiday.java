@@ -140,11 +140,6 @@ public class Holiday implements Serializable {
 		this.updatedBy = updatedBy;
 	}
 
-	public Holiday(String name, String description, LocalDate localDateHolidayDate) {
-		this(null, name, description, localDateHolidayDate, HOLIDAYTYPE.PUBLIC);
-
-	}
-
 	public Holiday(Long id, String name, String description, LocalDate localDateHolidayDate, HOLIDAYTYPE holidaytype) {
 		this.id = id;
 		this.name = name;
