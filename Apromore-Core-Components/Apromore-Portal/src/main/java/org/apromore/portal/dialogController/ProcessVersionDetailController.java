@@ -86,7 +86,7 @@ public class ProcessVersionDetailController extends BaseDetailController {
         columnId.setSortAscending(new VersionSummaryComparator(true, VersionSummaryTypes.BY_UPDATE_DATE));
         columnId.setSortDescending(new VersionSummaryComparator(false, VersionSummaryTypes.BY_UPDATE_DATE));
         columnId.addEventListener(Events.ON_SORT, this::forwardSortEvent);
-        redrawList(new VersionSummaryComparator(true, VersionSummaryTypes.BY_UPDATE_DATE),true);
+        redrawList(new VersionSummaryComparator(true, VersionSummaryTypes.BY_VERSION),true);
     }
 
     private void forwardSortEvent(Event evt) {
