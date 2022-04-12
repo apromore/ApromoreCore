@@ -39,6 +39,7 @@ import org.apromore.plugin.portal.PortalProcessAttributePlugin;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.FolderTreeNode;
+import org.apromore.portal.common.VersionSummaryTypes;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.model.FolderSummaryType;
 import org.apromore.portal.model.FolderType;
@@ -47,6 +48,7 @@ import org.apromore.portal.model.PermissionType;
 import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.VersionSummaryType;
+import org.apromore.portal.util.VersionSummaryComparator;
 import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
 import org.zkoss.zkplus.spring.SpringUtil;
@@ -589,13 +591,8 @@ public class SummaryItemRenderer implements ListitemRenderer {
     }
 
     private VersionSummaryType getLatestVersion(List<VersionSummaryType> versionSummaries) {
-        VersionSummaryType result = null;
-        for (VersionSummaryType version : versionSummaries) {
-            if (result == null || (version.getVersionNumber().compareTo(result.getVersionNumber()) > 0)) {
-                result = version;
-            }
-        }
-        return result;
+        versionSummaries.sort(new VersionSummaryComparator(true, VersionSummaryTypes.BY_VERSION));
+        return versionSummaries.get(versionSummaries.size()-1);
     }
 
     private String getPersistedView() {
