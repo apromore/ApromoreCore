@@ -22,20 +22,14 @@
 
 package org.apromore.plugin.portal.calendar.model;
 
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
 
-@EqualsAndHashCode
-@ToString
+@Data
 public class Zone {
-    @Getter
-    @Setter
     private String id;
+
     @EqualsAndHashCode.Exclude
-    @Getter
-    @Setter
     private String zoneDisplayName;
 
     public Zone(String id, String displayName) {
