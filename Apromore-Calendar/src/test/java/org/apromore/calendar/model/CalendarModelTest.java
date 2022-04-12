@@ -32,6 +32,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
+import java.util.Collections;
 import java.util.List;
 import org.apromore.calendar.builder.CalendarModelBuilder;
 import org.junit.jupiter.api.Test;
@@ -62,8 +63,8 @@ public class CalendarModelTest {
 
     @Test
     void invalidZoneIdTest() {
-        assertThrows(DateTimeException.class, () -> new CalendarModelBuilder()
-            .withZoneId("InvalidZoneId"));
+        CalendarModelBuilder builder = new CalendarModelBuilder();
+        assertThrows(DateTimeException.class, () -> builder.withZoneId("InvalidZoneId"));
 
         CalendarModel cal2 = Calendars.INSTANCE.emptyCalendar();
         assertThrows(DateTimeException.class, () -> cal2.setZoneId("InvalidZoneId"));
@@ -161,8 +162,8 @@ public class CalendarModelTest {
 
         assertThrows(UnsupportedOperationException.class, () -> immutableCalendar.setName("new name"));
         assertThrows(UnsupportedOperationException.class, () -> immutableCalendar.setZoneId("zoneId"));
-        assertThrows(UnsupportedOperationException.class, () -> immutableCalendar.setWorkDays(List.of()));
-        assertThrows(UnsupportedOperationException.class, () -> immutableCalendar.setHolidays(List.of()));
+        assertThrows(UnsupportedOperationException.class, () -> immutableCalendar.setWorkDays(Collections.EMPTY_LIST));
+        assertThrows(UnsupportedOperationException.class, () -> immutableCalendar.setHolidays(Collections.EMPTY_LIST));
 
         WorkDayModel immutableWorkDay = immutableCalendar.getWorkDays().get(0);
         assertThrows(UnsupportedOperationException.class, () -> immutableWorkDay.setWorkingDay(false));

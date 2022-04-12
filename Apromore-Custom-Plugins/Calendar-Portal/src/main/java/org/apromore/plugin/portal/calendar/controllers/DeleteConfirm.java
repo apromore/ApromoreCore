@@ -48,7 +48,7 @@ import org.zkoss.zul.Window;
 @VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
 public class DeleteConfirm extends SelectorComposer<Window> implements LabelSupplier {
 
-    private org.apromore.plugin.portal.calendar.model.Calendar calendarItem;
+    private Calendar calendarItem;
     private Long calendarId;
 
     @WireVariable("calendarService")
