@@ -24,6 +24,7 @@ package org.apromore.apmlog.filter.rules;
 import org.apromore.apmlog.filter.types.Choice;
 import org.apromore.apmlog.filter.types.FilterType;
 import org.apromore.apmlog.filter.types.Inclusion;
+import org.apromore.apmlog.filter.types.RuleLevel;
 import org.apromore.apmlog.filter.types.Section;
 
 import java.util.Set;
@@ -40,6 +41,9 @@ public interface LogFilterRule {
     Set<String> getPrimaryValuesInString();
     Set<String> getSecondaryValuesInString();
     LogFilterRule deepClone();
+    void setRuleLevel(RuleLevel ruleLevel);
+    RuleLevel getRuleLevel();
+    void setKey(String key);
 
     // ====================================================================================
     // DO NOT USED!! TO BE REMOVED!!
