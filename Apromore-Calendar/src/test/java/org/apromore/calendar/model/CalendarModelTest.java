@@ -33,7 +33,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.util.Collections;
-import java.util.List;
 import org.apromore.calendar.builder.CalendarModelBuilder;
 import org.junit.jupiter.api.Test;
 
