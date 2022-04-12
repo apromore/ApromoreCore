@@ -43,13 +43,13 @@ public class CalendarModelTest {
         CalendarModel empty = Calendars.INSTANCE.emptyCalendar();
         assertTrue(empty.getWorkDays().isEmpty());
         assertTrue(empty.getHolidays().isEmpty());
-        assertTrue(empty.getZoneId().equals(ZoneOffset.UTC.getId()));
+        assertEquals(ZoneOffset.UTC.getId(), empty.getZoneId());
     }
 
     @Test
     void absoluteCalendarTest() {
         CalendarModel abs = Calendars.INSTANCE.absoluteCalendar();
-        assertTrue(abs.getZoneId().equals(ZoneOffset.UTC.getId()));
+        assertEquals(ZoneOffset.UTC.getId(), abs.getZoneId());
         assertEquals(7, abs.getWorkDays().size());
         assertEquals(0, abs.getHolidays().size());
         for (DayOfWeek d : DayOfWeek.values()) {

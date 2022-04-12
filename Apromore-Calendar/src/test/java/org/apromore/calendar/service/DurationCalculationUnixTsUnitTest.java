@@ -22,13 +22,12 @@
 
 package org.apromore.calendar.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.time.Duration;
 import java.time.ZoneOffset;
 import java.util.stream.Stream;
 import org.apromore.calendar.builder.CalendarModelBuilder;
 import org.apromore.calendar.model.CalendarModel;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -65,7 +64,7 @@ class DurationCalculationUnixTsUnitTest {
         Duration durationModel = calendarModel.getDuration(startDateTime, endDateTime);
 
         // Then
-        assertThat(durationModel.equals(expected)).isTrue();
+        Assertions.assertEquals(expected, durationModel.toMillis());
     }
 
 
