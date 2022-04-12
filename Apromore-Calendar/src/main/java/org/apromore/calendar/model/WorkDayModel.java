@@ -59,7 +59,6 @@ import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -78,7 +77,7 @@ import lombok.NonNull;
 public class WorkDayModel implements Comparable<WorkDayModel> {
 
     @EqualsAndHashCode.Exclude
-    protected @NonNull Long id = new Random().nextLong();
+    protected @NonNull Long id = 0L; // only used for mapping from database object
 
     protected @NonNull DayOfWeek dayOfWeek = DayOfWeek.MONDAY;
 

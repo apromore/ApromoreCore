@@ -30,7 +30,6 @@ package org.apromore.plugin.portal.calendar.model;
 
 import java.time.LocalDate;
 import java.util.Date;
-import java.util.Random;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -43,7 +42,7 @@ import org.apromore.commons.datetime.TimeUtils;
 @Setter
 @NoArgsConstructor (access = AccessLevel.PROTECTED)
 public class Holiday {
-    private @NonNull Long id = new Random().nextLong();
+    private @NonNull Long id = 0L; // only used for mapping from database object
     private @NonNull HolidayType holidayType = HolidayType.PUBLIC;
     private @NonNull String name;
     private @NonNull String description;

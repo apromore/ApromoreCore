@@ -65,7 +65,7 @@ class DurationCalculationUnixTsUnitTest {
         Duration durationModel = calendarModel.getDuration(startDateTime, endDateTime);
 
         // Then
-        assertThat(durationModel.equals(expected));
+        assertThat(durationModel.equals(expected)).isTrue();
     }
 
 

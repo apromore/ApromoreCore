@@ -46,7 +46,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -68,7 +67,7 @@ import lombok.Setter;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CalendarModel {
 
-    protected @NonNull Long id = new Random().nextLong();
+    protected @NonNull Long id = 0L; // only used for mapping from database object
     protected @NonNull String name = "CalendarModel";
     protected @NonNull OffsetDateTime created = OffsetDateTime.now(ZoneOffset.UTC);
     protected @NonNull OffsetDateTime updated = OffsetDateTime.now(ZoneOffset.UTC);

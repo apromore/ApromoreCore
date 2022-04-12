@@ -58,22 +58,27 @@ public class ImmutableCalendarModel extends CalendarModel {
         return Collections.unmodifiableList(holidays);
     }
 
+    @Override
     public Duration getDuration(OffsetDateTime starDateTime, OffsetDateTime endDateTime) {
         return mutableModel.getDuration(starDateTime, endDateTime);
     }
 
+    @Override
     public Duration getDuration(Long starDateTimeUnixTs, Long endDateTimeunixTs) {
         return mutableModel.getDuration(starDateTimeUnixTs, endDateTimeunixTs);
     }
 
+    @Override
     public Duration getDuration(Instant start, Instant end) {
         return mutableModel.getDuration(start, end);
     }
 
+    @Override
     public long getDurationMillis(long start, long end) {
         return mutableModel.getDurationMillis(start, end);
     }
 
+    @Override
     public long getDurationMillis(Instant start, Instant end) {
         return mutableModel.getDurationMillis(start, end);
     }

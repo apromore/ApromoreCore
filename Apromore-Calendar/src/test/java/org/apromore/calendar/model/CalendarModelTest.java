@@ -65,9 +65,8 @@ public class CalendarModelTest {
         assertThrows(DateTimeException.class, () -> new CalendarModelBuilder()
             .withZoneId("InvalidZoneId"));
 
-        assertThrows(DateTimeException.class, () -> Calendars.INSTANCE
-            .emptyCalendar()
-            .setZoneId("InvalidZoneId"));
+        CalendarModel cal2 = Calendars.INSTANCE.emptyCalendar();
+        assertThrows(DateTimeException.class, () -> cal2.setZoneId("InvalidZoneId"));
     }
 
     @Test
@@ -153,34 +152,28 @@ public class CalendarModelTest {
 
     @Test
     void immutableTest() {
-        CalendarModel model = new CalendarModelBuilder()
+        CalendarModel immutableCalendar = new CalendarModelBuilder()
             .with7DayWorking()
             .withHoliday(HolidayType.PUBLIC, "test", "test",
                 LocalDate.of(2022, 4, 1))
             .build()
             .immutable();
 
-        assertThrows(UnsupportedOperationException.class, () -> model.setName("new name"));
-        assertThrows(UnsupportedOperationException.class, () -> model.setZoneId("zoneId"));
-        assertThrows(UnsupportedOperationException.class, () -> model.setWorkDays(List.of()));
-        assertThrows(UnsupportedOperationException.class, () -> model.setHolidays(List.of()));
+        assertThrows(UnsupportedOperationException.class, () -> immutableCalendar.setName("new name"));
+        assertThrows(UnsupportedOperationException.class, () -> immutableCalendar.setZoneId("zoneId"));
+        assertThrows(UnsupportedOperationException.class, () -> immutableCalendar.setWorkDays(List.of()));
+        assertThrows(UnsupportedOperationException.class, () -> immutableCalendar.setHolidays(List.of()));
 
-        assertThrows(UnsupportedOperationException.class,
-            () -> model.getWorkDays().get(0).setWorkingDay(false));
-        assertThrows(UnsupportedOperationException.class,
-            () -> model.getWorkDays().get(0).setDayOfWeek(DayOfWeek.MONDAY));
-        assertThrows(UnsupportedOperationException.class,
-            () -> model.getWorkDays().get(0).setStartTime(LocalTime.MIN));
-        assertThrows(UnsupportedOperationException.class,
-            () -> model.getWorkDays().get(0).setStartTime(LocalTime.MAX));
+        WorkDayModel immutableWorkDay = immutableCalendar.getWorkDays().get(0);
+        assertThrows(UnsupportedOperationException.class, () -> immutableWorkDay.setWorkingDay(false));
+        assertThrows(UnsupportedOperationException.class, () -> immutableWorkDay.setDayOfWeek(DayOfWeek.MONDAY));
+        assertThrows(UnsupportedOperationException.class, () -> immutableWorkDay.setStartTime(LocalTime.MIN));
+        assertThrows(UnsupportedOperationException.class, () -> immutableWorkDay.setStartTime(LocalTime.MAX));
 
-        assertThrows(UnsupportedOperationException.class,
-            () -> model.getHolidays().get(0).setName("newName"));
-        assertThrows(UnsupportedOperationException.class,
-            () -> model.getHolidays().get(0).setHolidayType(HolidayType.CUSTOM));
-        assertThrows(UnsupportedOperationException.class,
-            () -> model.getHolidays().get(0).setId(100L));
-        assertThrows(UnsupportedOperationException.class,
-            () -> model.getHolidays().get(0).setDescription("new Description"));
+        HolidayModel immutableHoliday = immutableCalendar.getHolidays().get(0);
+        assertThrows(UnsupportedOperationException.class, () -> immutableHoliday.setName("newName"));
+        assertThrows(UnsupportedOperationException.class, () -> immutableHoliday.setHolidayType(HolidayType.CUSTOM));
+        assertThrows(UnsupportedOperationException.class, () -> immutableHoliday.setId(100L));
+        assertThrows(UnsupportedOperationException.class, () -> immutableHoliday.setDescription("new Description"));
     }
 }

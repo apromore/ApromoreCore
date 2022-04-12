@@ -29,7 +29,6 @@
 package org.apromore.calendar.model;
 
 import java.time.LocalDate;
-import java.util.Random;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -44,7 +43,7 @@ import lombok.NonNull;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class HolidayModel {
     @EqualsAndHashCode.Exclude
-    protected @NonNull Long id = new Random().nextLong();
+    protected @NonNull Long id = 0L; // only used for mapping from database object
 
     protected @NonNull HolidayType holidayType = HolidayType.PUBLIC;
     protected @NonNull String name = "";

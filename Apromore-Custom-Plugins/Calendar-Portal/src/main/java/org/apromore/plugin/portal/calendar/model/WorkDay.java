@@ -45,7 +45,6 @@ package org.apromore.plugin.portal.calendar.model;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
-import java.util.Random;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -56,7 +55,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class WorkDay {
-    private @NonNull Long id = new Random().nextLong();
+    private @NonNull Long id = 0L; // only used for mapping from database object
     private @NonNull DayOfWeek dayOfWeek = DayOfWeek.MONDAY;
     private @NonNull LocalTime startTime = LocalTime.MIN;
     private @NonNull LocalTime endTime = LocalTime.MAX;

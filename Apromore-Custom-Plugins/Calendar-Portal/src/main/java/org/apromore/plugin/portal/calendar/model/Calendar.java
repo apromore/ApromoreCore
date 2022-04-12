@@ -37,7 +37,6 @@ import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Random;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -51,7 +50,7 @@ import lombok.Setter;
 @NoArgsConstructor (access = AccessLevel.PROTECTED)
 public class Calendar {
     @Setter(AccessLevel.NONE)
-    private @NonNull Long id = new Random().nextLong();
+    private @NonNull Long id = 0L; // only used for mapping from database object
 
     private @NonNull String name = "CalendarModel";
     private @NonNull String zoneId = ZoneOffset.UTC.getId();
