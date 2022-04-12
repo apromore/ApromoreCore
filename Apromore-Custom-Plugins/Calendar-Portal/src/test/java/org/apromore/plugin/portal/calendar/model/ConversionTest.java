@@ -33,7 +33,7 @@ import org.apromore.calendar.model.HolidayType;
 import org.apromore.calendar.model.WorkDayModel;
 import org.junit.jupiter.api.Test;
 
-public class ConversionTest {
+class ConversionTest {
 
     @Test
     void toHolidayModelTest() {

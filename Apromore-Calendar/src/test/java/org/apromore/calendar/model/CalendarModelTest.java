@@ -36,7 +36,7 @@ import java.util.Collections;
 import org.apromore.calendar.builder.CalendarModelBuilder;
 import org.junit.jupiter.api.Test;
 
-public class CalendarModelTest {
+class CalendarModelTest {
 
     @Test
     void emptyCalendarTest() {
