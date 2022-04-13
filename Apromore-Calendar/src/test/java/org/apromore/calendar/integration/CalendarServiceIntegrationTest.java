@@ -26,10 +26,8 @@ package org.apromore.calendar.integration;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.DayOfWeek;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.OffsetTime;
 import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.List;
@@ -61,10 +59,8 @@ class CalendarServiceIntegrationTest extends BaseTestClass {
         assertThat(model.getWorkDays()).hasSize(7);
         assertThat(model.getWorkDays().get(5).getDayOfWeek()).isEqualTo(DayOfWeek.SATURDAY);
         assertThat(model.getWorkDays().get(6).getDayOfWeek()).isEqualTo(DayOfWeek.SUNDAY);
-        assertThat(model.getWorkDays().get(5).getStartTime())
-            .isEqualTo(OffsetTime.of(LocalTime.MIN, ZoneId.systemDefault().getRules().getOffset(Instant.now())));
-        assertThat(model.getWorkDays().get(6).getEndTime())
-            .isEqualTo(OffsetTime.of(LocalTime.MAX, ZoneId.systemDefault().getRules().getOffset(Instant.now())));
+        assertThat(model.getWorkDays().get(5).getStartTime()).isEqualTo(LocalTime.MIN);
+        assertThat(model.getWorkDays().get(6).getEndTime()).isEqualTo(LocalTime.MAX);
 
     }
 
@@ -82,7 +78,6 @@ class CalendarServiceIntegrationTest extends BaseTestClass {
         assertThat(model.getCreatedBy()).isEqualTo("username");
         assertThat(modelExpected.getName()).isEqualTo(model.getName());
         assertThat(modelExpected.getWorkDays()).hasSize(7);
-
     }
 
 

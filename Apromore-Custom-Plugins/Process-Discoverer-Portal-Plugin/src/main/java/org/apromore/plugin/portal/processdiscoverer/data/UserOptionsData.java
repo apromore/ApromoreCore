@@ -27,6 +27,7 @@ import static org.apromore.logman.attribute.graph.MeasureType.FREQUENCY;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.apromore.calendar.model.Calendars;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.logman.attribute.graph.MeasureAggregation;
 import org.apromore.logman.attribute.graph.MeasureRelation;
@@ -91,7 +92,7 @@ public class UserOptionsData {
     protected RelationReader relationReader = new DirectFollowReader();
 
     @Getter @Setter
-    private CalendarModel calendarModel = CalendarModel.ABSOLUTE_CALENDAR;
+    private CalendarModel calendarModel = Calendars.INSTANCE.absoluteCalendar().immutable();
 
     @Getter @Setter
     private CostTable costTable = CostTable.EMPTY;
