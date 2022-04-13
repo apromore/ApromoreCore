@@ -10,7 +10,13 @@ const edgeEditing = require('cytoscape-edge-editing');
 cytoscape.use(popper);
 cytoscape.use( dagre );
 edgeEditing( cytoscape, jquery, konva );
-// undoRedo(cytoscape);
+let edgeEditingOptions = {
+    anchorShapeSizeFactor: 6,
+    initAnchorsAutomatically: false,
+    undoable: false,
+    enableCreateAnchorOnDrag: false,
+    zIndex: 0
+}
 
 import GraphModelWrapper from "../processmap/graphModelWrapper";
 import LogAnimation from "../loganimation/logAnimation";
@@ -354,14 +360,7 @@ PDp.loadLog = function(json, layoutType, retain) {
         this.fit(layoutType);
     }
 
-    cy.edgeEditing({
-        anchorShapeSizeFactor: 6,
-        initAnchorsAutomatically: false,
-        undoable: false,
-        enableCreateAnchorOnDrag: false,
-        zIndex: 0
-    });
-
+    cy.edgeEditing(edgeEditingOptions);
     cy.style().update(); // to inform cytoscape as the edge editing plugin made changes to its style.
 }
 
@@ -377,6 +376,9 @@ PDp.loadTrace = function(json) {
     this.layout(LAYOUT_MANUAL_BEZIER);
     this.setupSearch(source);
     this.fit(1);
+
+    cy.edgeEditing(edgeEditingOptions);
+    cy.style().update(); // to inform cytoscape as the edge editing plugin made changes to its style.
 }
 
 const getViewportCenter = (extent) => {
