@@ -60,6 +60,11 @@ interface Constants {
     String IGNORE_LABEL = "ignoreAttribute";
     String PERSPECTIVE_LABEL = "perspective";
 
+    String INTEGER_TYPE_LABEL = "integer";
+    String REAL_TYPE_LABEL = "real";
+    String STRING_TYPE_LABEL = "string";
+    String TIMESTAMP_TYPE_LABEL = "timestamp";
+
     String RED_LABEL_CSS = "redLabel";
     String GREEN_LABEL_CSS = "greenLabel";
 

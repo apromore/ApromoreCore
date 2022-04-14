@@ -27,6 +27,27 @@ package org.apromore.plugin.portal.logimporter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.opencsv.CSVWriter;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Properties;
+import java.util.ResourceBundle;
+import java.util.Set;
+import java.util.TimeZone;
 import org.apache.commons.lang3.StringUtils;
 import org.apromore.dao.model.Log;
 import org.apromore.exception.UserNotFoundException;
@@ -66,29 +87,28 @@ import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.*;
-
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.text.MessageFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
-import java.util.ResourceBundle;
-import java.util.Set;
-import java.util.TimeZone;
+import org.zkoss.zul.A;
+import org.zkoss.zul.Auxhead;
+import org.zkoss.zul.Auxheader;
+import org.zkoss.zul.Button;
+import org.zkoss.zul.Checkbox;
+import org.zkoss.zul.Column;
+import org.zkoss.zul.Columns;
+import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Div;
+import org.zkoss.zul.Filedownload;
+import org.zkoss.zul.Grid;
+import org.zkoss.zul.Label;
+import org.zkoss.zul.ListModelList;
+import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listitem;
+import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Popup;
+import org.zkoss.zul.Row;
+import org.zkoss.zul.Rows;
+import org.zkoss.zul.Span;
+import org.zkoss.zul.Textbox;
+import org.zkoss.zul.Window;
 
 /**
  * Controller for <code>csvimporter.zul</code>.
@@ -100,10 +120,12 @@ public class LogImporterController extends SelectorComposer<Window> implements C
      * Attribute of the ZK session containing this controller's arguments.
      */
     public static final String SESSION_ATTRIBUTE_KEY = "csvimport";
+    public static final String NAME_SANITIZER = "[.][^.]+$";
+    public static final String DATA_TYPE_ID_PREFIX = "DataType_";
+    public static final String ON_SELECT = "onSelect";
+
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(LogImporterController.class);
     private static final int ROW_INDEX_START_FROM = 1;
-    public static final String NAME_SANITIZER = "[.][^.]+$";
-
     // Get Data layer config
     private final String propertyFile = "datalayer.config";
     protected boolean isModal = true;
@@ -114,11 +136,11 @@ public class LogImporterController extends SelectorComposer<Window> implements C
     private UserMetadataService userMetadataService;
     // Fields injected from the ZK session
     private Media media =
-            (Media) ((Map) Sessions.getCurrent().getAttribute(SESSION_ATTRIBUTE_KEY)).get("media");
+        (Media) ((Map) Sessions.getCurrent().getAttribute(SESSION_ATTRIBUTE_KEY)).get("media");
     private PortalContext portalContext = PortalContexts.getActivePortalContext();
     private JSONObject mappingJSON =
-            (JSONObject) ((Map) Sessions.getCurrent().getAttribute(SESSION_ATTRIBUTE_KEY))
-                    .get("mappingJSON");
+        (JSONObject) ((Map) Sessions.getCurrent().getAttribute(SESSION_ATTRIBUTE_KEY))
+            .get("mappingJSON");
     @WireVariable
     private ParquetFactoryProvider parquetFactoryProvider;
     @WireVariable
@@ -146,6 +168,7 @@ public class LogImporterController extends SelectorComposer<Window> implements C
     private Span[] parsedIcons;
     private Set<Checkbox> maskBtns;
     private List<Listbox> dropDownLists;
+    private List<Listbox> dataTypeDropDownLists;
 
     private ParquetImporterFactory parquetImporterFactory;
     private MetaDataService metaDataService;
@@ -185,25 +208,25 @@ public class LogImporterController extends SelectorComposer<Window> implements C
             // Add timestamp to file name
             String fileSuffix = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
             parquetFile = new File(parquetDir.getPath() + File.separator
-                    + media.getName().replace("." + getMediaFormat(media), fileSuffix + ".parquet"));
+                + media.getName().replace("." + getMediaFormat(media), fileSuffix + ".parquet"));
 
             Combobox setEncoding = (Combobox) window.getFellow(SET_ENCODING_ID);
             setEncoding.setModel(new ListModelList<>(FILE_ENCODING));
 
-            setEncoding.addEventListener("onSelect", event -> {
+            setEncoding.addEventListener(ON_SELECT, event -> {
                 try {
                     encoding = getFileEncoding();
                     metaDataService.validateLog(getInputSream(media), encoding);
                     this.logMetaData =
-                            metaDataService.extractMetadata(getInputSream(media), encoding, customHeaderMap);
+                        metaDataService.extractMetadata(getInputSream(media), encoding, customHeaderMap);
                     this.sampleLog = metaDataService.generateSampleLog(getInputSream(media), LOG_SAMPLE_SIZE,
-                            encoding);
+                        encoding);
                     this.logMetaData = metaDataUtilities.processMetaData(this.logMetaData, this.sampleLog);
                     this.logMetaData.setEncoding(encoding);
 
                 } catch (Exception e) {
                     Messagebox.show(getLabel("failedImportEncoding"), getLabel("error"), Messagebox.OK,
-                            Messagebox.ERROR);
+                        Messagebox.ERROR);
                 } finally {
                     if (logMetaData != null && !sampleLog.isEmpty()) {
                         setUpUI();
@@ -243,9 +266,9 @@ public class LogImporterController extends SelectorComposer<Window> implements C
 
             metaDataService.validateLog(getInputSream(media), getFileEncoding());
             LogMetaData tempLogMetaData =
-                    metaDataService.extractMetadata(getInputSream(media), getFileEncoding(), customHeaderMap);
+                metaDataService.extractMetadata(getInputSream(media), getFileEncoding(), customHeaderMap);
             this.sampleLog =
-                    metaDataService.generateSampleLog(getInputSream(media), LOG_SAMPLE_SIZE, getFileEncoding());
+                metaDataService.generateSampleLog(getInputSream(media), LOG_SAMPLE_SIZE, getFileEncoding());
             tempLogMetaData = metaDataUtilities.processMetaData(tempLogMetaData, this.sampleLog);
 
             if (mappingJSON != null) {
@@ -267,19 +290,20 @@ public class LogImporterController extends SelectorComposer<Window> implements C
         } catch (Exception e) {
             LOGGER.error("Failure while creating controller", e);
             Messagebox.show(getLabel("failed_to_read_log"), getLabel("error"), Messagebox.OK,
-                    Messagebox.ERROR, event -> close());
+                Messagebox.ERROR, event -> close());
         }
         // Clients.evalJavaScript("Ap.common.pullClientTimeZone()");
     }
 
-    private void getSchemaMappingFromJson (LogMetaData tempLogMetaData, JSONObject mappingJSON) {
+    private void getSchemaMappingFromJson(LogMetaData tempLogMetaData, JSONObject mappingJSON) {
 
         ObjectMapper objectMapper = new ObjectMapper();
         LogMetaData storedSchemaMapping = null;
         try {
             storedSchemaMapping = objectMapper.readValue(mappingJSON.toJSONString(), LogMetaData.class);
         } catch (JsonProcessingException e) {
-            LOGGER.error("Could not deserialize JSON content from given JSON content String: " + mappingJSON.toJSONString(), e);
+            LOGGER.error(
+                "Could not deserialize JSON content from given JSON content String: " + mappingJSON.toJSONString(), e);
         }
 
         if (storedSchemaMapping != null) {
@@ -311,8 +335,8 @@ public class LogImporterController extends SelectorComposer<Window> implements C
         Map<String, Object> arg = new HashMap<>();
         arg.put("labels", getLabels());
         Window matchedMappingPopUp =
-                (Window) portalContext.getUI().createComponent(LogImporterController.class.getClassLoader(),
-                        "zul/matchedMapping.zul", null, arg);
+            (Window) portalContext.getUI().createComponent(LogImporterController.class.getClassLoader(),
+                "zul/matchedMapping.zul", null, arg);
         matchedMappingPopUp.doModal();
     }
 
@@ -361,17 +385,17 @@ public class LogImporterController extends SelectorComposer<Window> implements C
         if (!useParquet) {
             name = media.getName().replaceFirst(NAME_SANITIZER, "");
             InputDialog.showInputDialog(
-                    Labels.getLabel("common_saveLog_text"),
-                    Labels.getLabel("common_saveLog_hint"),
-                    name,
-                    Labels.getLabel("common_validNameRegex_text"),
-                    Labels.getLabel("common_validNameRegex_hint"),
-                    (Event e) -> {
-                        if (e.getName().equals("onOK")) {
-                            String newName = (String)e.getData();
-                            toXES(newName, isLogPublic);
-                        }
+                Labels.getLabel("common_saveLog_text"),
+                Labels.getLabel("common_saveLog_hint"),
+                name,
+                Labels.getLabel("common_validNameRegex_text"),
+                Labels.getLabel("common_validNameRegex_hint"),
+                (Event e) -> {
+                    if (e.getName().equals("onOK")) {
+                        String newName = (String) e.getData();
+                        toXES(newName, isLogPublic);
                     }
+                }
             );
         } else {
             toXES(name, isLogPublic);
@@ -392,12 +416,12 @@ public class LogImporterController extends SelectorComposer<Window> implements C
             }
         } catch (MissingHeaderFieldsException e) {
             Messagebox.show(getLabel("missing_fields") + System.lineSeparator() + System.lineSeparator()
-                            + e.getMessage(), getLabel("error"),
-                    Messagebox.OK,
-                    Messagebox.ERROR);
+                    + e.getMessage(), getLabel("error"),
+                Messagebox.OK,
+                Messagebox.ERROR);
         } catch (Exception e) {
             Messagebox.show(getLabel("failedExportXES"), getLabel("error"), Messagebox.OK,
-                    Messagebox.ERROR);
+                Messagebox.ERROR);
             LOGGER.error("Conversion to XES button handler failed", e);
         }
     }
@@ -423,19 +447,19 @@ public class LogImporterController extends SelectorComposer<Window> implements C
         LogModel logModel;
         if (useParquet) {
             logModel = parquetImporter.importParquetFile(getInputSream(media), logMetaData,
-                    getFileEncoding(), parquetFile, false);
+                getFileEncoding(), parquetFile, false);
         } else {
             logModel = logImporter.importLog(getInputSream(media), logMetaData, getFileEncoding(), false,
-                    portalContext.getCurrentUser().getUsername(),
-                    portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId(),
-                    name);
+                portalContext.getCurrentUser().getUsername(),
+                portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId(),
+                name);
         }
 
         return logModel;
     }
 
     public void storeMetadataAsJSON(LogMetaData logMetaData, Log log)
-            throws UserNotFoundException {
+        throws UserNotFoundException {
 
         String username = portalContext.getCurrentUser().getUsername();
         String logMetadataJsonStr;
@@ -448,12 +472,12 @@ public class LogImporterController extends SelectorComposer<Window> implements C
             perspectiveJsonStr = objectMapper.writeValueAsString(logMetaData.getPerspectives());
 
             userMetadataService.saveUserMetadata("Default CSV schema mapping name", logMetadataJsonStr,
-                    UserMetadataTypeEnum.CSV_IMPORTER, username, log.getId());
+                UserMetadataTypeEnum.CSV_IMPORTER, username, log.getId());
             userMetadataService.saveUserMetadata(UserMetadataTypeEnum.PERSPECTIVE_TAG.toString(), perspectiveJsonStr,
-                    UserMetadataTypeEnum.PERSPECTIVE_TAG, username, log.getId());
+                UserMetadataTypeEnum.PERSPECTIVE_TAG, username, log.getId());
         } catch (JsonProcessingException | InvalidLogMetadataException e) {
             LOGGER.error("Unable to convert Log Metadata into JSON or Invalid Log Metadata, give up storing them into" +
-                    " DB for Log ({}). ", log.getName(), e);
+                " DB for Log ({}). ", log.getName(), e);
         }
     }
 
@@ -464,7 +488,7 @@ public class LogImporterController extends SelectorComposer<Window> implements C
             return objectMapper.writeValueAsString(logMetaData);
         } catch (IOException e) {
             LOGGER.error("Unable to convert log metadata into JSON; will store an empty string instead",
-                    e);
+                e);
         }
         return null;
     }
@@ -477,7 +501,7 @@ public class LogImporterController extends SelectorComposer<Window> implements C
 
         Locale locale = (Locale) Sessions.getCurrent().getAttribute(Attributes.PREFERRED_LOCALE);
         return ResourceBundle.getBundle(PluginMeta.PLUGIN_ID, locale,
-                LogImporterController.class.getClassLoader());
+            LogImporterController.class.getClassLoader());
     }
 
     public String getLabel(String key) {
@@ -488,8 +512,8 @@ public class LogImporterController extends SelectorComposer<Window> implements C
     private String getFileEncoding() {
         Combobox setEncoding = (Combobox) window.getFellow(SET_ENCODING_ID);
         return setEncoding.getValue().contains(" ")
-                ? setEncoding.getValue().substring(0, setEncoding.getValue().indexOf(' '))
-                : setEncoding.getValue();
+            ? setEncoding.getValue().substring(0, setEncoding.getValue().indexOf(' '))
+            : setEncoding.getValue();
     }
 
     private String getTimeZone() {
@@ -508,10 +532,11 @@ public class LogImporterController extends SelectorComposer<Window> implements C
             window.setWidth(size + "px");
         }
         String title =
-                Labels.getLabel("csvImporter_title_text", "Log Importer") + " - " + media.getName();
+            Labels.getLabel("csvImporter_title_text", "Log Importer") + " - " + media.getName();
         window.setTitle(title);
 
         setDropDownLists();
+        setDataTypeDropDownLists();
         setCSVGrid();
         renderGridContent();
         setPopUpFormatBox();
@@ -535,6 +560,17 @@ public class LogImporterController extends SelectorComposer<Window> implements C
             optionHead.appendChild(listHeader);
         }
         myGrid.appendChild(optionHead);
+
+        // Data type dropdown lists
+        Auxhead dataTypeOptionHead = new Auxhead();
+        Auxheader dataTypeIndex = new Auxheader();
+        dataTypeOptionHead.appendChild(dataTypeIndex);
+        for (Listbox list : dataTypeDropDownLists) {
+            Auxheader listHeader = new Auxheader();
+            listHeader.appendChild(list);
+            dataTypeOptionHead.appendChild(listHeader);
+        }
+        myGrid.appendChild(dataTypeOptionHead);
 
 
         // index column
@@ -574,7 +610,7 @@ public class LogImporterController extends SelectorComposer<Window> implements C
             Span parsedIcon = new Span();
 
             if (pos == logMetaData.getEndTimestampPos() || pos == logMetaData.getStartTimestampPos()
-                    || logMetaData.getOtherTimestamps().containsKey(pos)) {
+                || logMetaData.getOtherTimestamps().containsKey(pos)) {
                 showFormatBtn(formatBtn);
                 showAutoParsedGreenIcon(parsedIcon);
                 // No anonymization for timestamps
@@ -654,18 +690,18 @@ public class LogImporterController extends SelectorComposer<Window> implements C
 
             Button sp = new Button();
             sp.setStyle(
-                    "margin-right:1px; float: right; line-height: 10px; min-height: 5px; padding:3px;");
+                "margin-right:1px; float: right; line-height: 10px; min-height: 5px; padding:3px;");
             sp.setIconSclass("z-icon-times");
 
             A hidelink = new A();
             hidelink.appendChild(sp);
             sp.addEventListener(Events.ON_CLICK,
-                    (Event event) -> item.setStyle(item.getStyle().replace("visible", "hidden")));
+                (Event event) -> item.setStyle(item.getStyle().replace("visible", "hidden")));
 
             Label popUpLabel = new Label();
             popUpLabel.setId(POP_UP_LABEL_ID + pos);
             if (pos == logMetaData.getEndTimestampPos() || pos == logMetaData.getStartTimestampPos()
-                    || logMetaData.getOtherTimestamps().containsKey(pos)) {
+                || logMetaData.getOtherTimestamps().containsKey(pos)) {
                 setPopUpLabel(pos, Parsed.AUTO, popUpLabel);
             }
 
@@ -729,6 +765,102 @@ public class LogImporterController extends SelectorComposer<Window> implements C
         this.popUpBox = popUPBox;
     }
 
+    private void setDataTypeDropDownLists() {
+
+        List<Listbox> menuDropDownLists = new ArrayList<>();
+        LinkedHashMap<String, String> menuItems = new LinkedHashMap<>();
+
+        menuItems.put(INTEGER_TYPE_LABEL, getLabel("integer"));
+        menuItems.put(REAL_TYPE_LABEL, getLabel("real"));
+        menuItems.put(STRING_TYPE_LABEL, getLabel("string"));
+        menuItems.put(TIMESTAMP_TYPE_LABEL, getLabel("timestamp"));
+
+        for (int pos = 0; pos < logMetaData.getHeader().size(); pos++) {
+            Listbox box = new Listbox();
+            box.setMold("select");
+            box.setId(DATA_TYPE_ID_PREFIX + pos);
+            box.setWidth(COLUMN_WIDTH - 12 + "px");
+
+            reassignDataTypeBasedOnAttributeType(pos, box);
+
+            for (Map.Entry<String, String> myItem : menuItems.entrySet()) {
+                Listitem item = new Listitem();
+                item.setValue(myItem.getKey());
+                item.setLabel(myItem.getValue());
+                item.setId(myItem.getKey());
+
+                if ((box.getSelectedItem() == null)
+                    &&
+                    ((myItem.getKey().equals(INTEGER_TYPE_LABEL)
+                        && logMetaData.getIntegerAttributesPos().contains(pos))
+                        || (myItem.getKey().equals(REAL_TYPE_LABEL)
+                        && logMetaData.getDoubleAttributesPos().contains(pos))
+                        || (myItem.getKey().equals(STRING_TYPE_LABEL)
+                        && logMetaData.getStringAttributesPos().contains(pos))
+                        || (myItem.getKey().equals(TIMESTAMP_TYPE_LABEL)
+                        && logMetaData.getTimestampAttributesPos().contains(pos)))) {
+
+                    item.setSelected(true);
+                }
+                box.appendChild(item);
+            }
+
+            box.addEventListener(ON_SELECT, (Event event) -> {
+                String selected = box.getSelectedItem().getValue();
+                int colPos = Integer.parseInt(box.getId().substring(9));
+
+                resetDataTypeSelect(colPos);
+                setDataTypeMetaData(selected, colPos);
+            });
+
+            menuDropDownLists.add(box);
+        }
+        this.dataTypeDropDownLists = menuDropDownLists;
+
+    }
+
+    /**
+     * The data-type is not relevant for attributes with tags CaseID, Activity, Start/End timestamps,
+     * Resource and Role. Because the type of these attributes is pre-determined, as follows:
+     * 1. CaseID, Activity, Resource and Role are always of type String
+     * 2. Start Timestamp and End Timestamps are always attributes of type Timestamp
+     * Reassign data type on the fly since LogMetaData may come from persisted schema mapping
+     *
+     * @param pos Position of current column
+     * @param box ListBox
+     */
+    private void reassignDataTypeBasedOnAttributeType(int pos, Listbox box) {
+
+        if (logMetaData.getCaseIdPos() == pos || logMetaData.getActivityPos() == pos
+            || logMetaData.getResourcePos() == pos || logMetaData.getRolePos() == pos) {
+            box.setDisabled(true);
+            resetDataTypeSelect(pos);
+            logMetaData.getStringAttributesPos().add(pos);
+        } else if (logMetaData.getStartTimestampPos() == pos || logMetaData.getEndTimestampPos() == pos) {
+            box.setDisabled(true);
+            resetDataTypeSelect(pos);
+            logMetaData.getTimestampAttributesPos().add(pos);
+        }
+    }
+
+    private void setDataTypeMetaData(String selected, int colPos) {
+        switch (selected) {
+            case INTEGER_TYPE_LABEL:
+                logMetaData.getIntegerAttributesPos().add(colPos);
+                break;
+            case REAL_TYPE_LABEL:
+                logMetaData.getDoubleAttributesPos().add(colPos);
+                break;
+            case STRING_TYPE_LABEL:
+                logMetaData.getStringAttributesPos().add(colPos);
+                break;
+            case TIMESTAMP_TYPE_LABEL:
+                logMetaData.getTimestampAttributesPos().add(colPos);
+                break;
+            default:
+        }
+    }
+
     private void setDropDownLists() {
 
         List<Listbox> menuDropDownLists = new ArrayList<>();
@@ -747,7 +879,7 @@ public class LogImporterController extends SelectorComposer<Window> implements C
         menuItems.put(IGNORE_LABEL, getLabel("ignore_attribute"));
 
         for (int pos = 0; pos < logMetaData.getHeader().size(); pos++) {
-            String head = logMetaData.getHeader().get(pos);
+            final String head = logMetaData.getHeader().get(pos);
             Listbox box = new Listbox();
             // set listBox to select mode
             box.setMold("select");
@@ -768,18 +900,21 @@ public class LogImporterController extends SelectorComposer<Window> implements C
 
                     || (myItem.getKey().equals(START_TIMESTAMP_LABEL) && logMetaData.getStartTimestampPos() == pos)
 
-                    || (myItem.getKey().equals(OTHER_TIMESTAMP_LABEL) && ((Map<Integer, String>) logMetaData.getOtherTimestamps()).containsKey(pos))
+                    || (myItem.getKey().equals(OTHER_TIMESTAMP_LABEL) &&
+                    ((Map<Integer, String>) logMetaData.getOtherTimestamps()).containsKey(pos))
 
                     || (myItem.getKey().equals(RESOURCE_LABEL) && logMetaData.getResourcePos() == pos)
 
                     || (myItem.getKey().equals(ROLE_LABEL) && logMetaData.getRolePos() == pos)
 
-                    || (myItem.getKey().equals(CASE_ATTRIBUTE_LABEL) && logMetaData.getCaseAttributesPos().contains(pos))
+                    ||
+                    (myItem.getKey().equals(CASE_ATTRIBUTE_LABEL) && logMetaData.getCaseAttributesPos().contains(pos))
 
                     // When this head is in Perspective tag list, select PERSPECTIVE_LABEL instead of
                     // EVENT_ATTRIBUTE_LABEL
-                    || (myItem.getKey().equals(EVENT_ATTRIBUTE_LABEL) && logMetaData.getEventAttributesPos().contains(pos)
-                    && !logMetaData.getPerspectivePos().contains(pos))
+                    ||
+                    (myItem.getKey().equals(EVENT_ATTRIBUTE_LABEL) && logMetaData.getEventAttributesPos().contains(pos)
+                        && !logMetaData.getPerspectivePos().contains(pos))
 
                     || (myItem.getKey().equals(IGNORE_LABEL) && logMetaData.getIgnoredPos().contains(pos))
 
@@ -790,7 +925,7 @@ public class LogImporterController extends SelectorComposer<Window> implements C
                 box.appendChild(item);
             }
 
-            box.addEventListener("onSelect", (Event event) -> {
+            box.addEventListener(ON_SELECT, (Event event) -> {
                 String selected = box.getSelectedItem().getValue();
                 int colPos = Integer.parseInt(box.getId());
 
@@ -801,13 +936,13 @@ public class LogImporterController extends SelectorComposer<Window> implements C
 
                 switch (selected) {
                     case CASE_ID_LABEL:
-                        resetUniqueAttribute(logMetaData.getCaseIdPos());
+                        resetUniqueAttribute(logMetaData.getCaseIdPos(), colPos, CASE_ID_LABEL);
                         logMetaData.setCaseIdPos(colPos);
                         logMetaData = metaDataUtilities.resetCaseAndEventAttributes(logMetaData, sampleLog);
 
                         Listbox lb = (Listbox) window.getFellow(String.valueOf(0));
                         int eventAttributeIndex =
-                                lb.getIndexOfItem((Listitem) lb.getFellow(EVENT_ATTRIBUTE_LABEL));
+                            lb.getIndexOfItem((Listitem) lb.getFellow(EVENT_ATTRIBUTE_LABEL));
                         int caseAttributeIndex = lb.getIndexOfItem((Listitem) lb.getFellow(CASE_ATTRIBUTE_LABEL));
 
                         for (int caseAttriPos : logMetaData.getCaseAttributesPos()) {
@@ -823,29 +958,29 @@ public class LogImporterController extends SelectorComposer<Window> implements C
                         }
 
                         String message =
-                                MessageFormat.format(getLabels().getString("reset_event_case_attributes"), head);
+                            MessageFormat.format(getLabels().getString("reset_event_case_attributes"), head);
 
                         Notification.info(message);
 
                         break;
                     case ACTIVITY_LABEL:
-                        resetUniqueAttribute(logMetaData.getActivityPos());
+                        resetUniqueAttribute(logMetaData.getActivityPos(), colPos, ACTIVITY_LABEL);
                         logMetaData.setActivityPos(colPos);
                         break;
                     case END_TIMESTAMP_LABEL:
-                        resetUniqueAttribute(logMetaData.getEndTimestampPos());
+                        resetUniqueAttribute(logMetaData.getEndTimestampPos(), colPos, END_TIMESTAMP_LABEL);
                         timestampSelected(colPos, selected);
                         break;
                     case START_TIMESTAMP_LABEL:
-                        resetUniqueAttribute(logMetaData.getStartTimestampPos());
+                        resetUniqueAttribute(logMetaData.getStartTimestampPos(), colPos, START_TIMESTAMP_LABEL);
                         timestampSelected(colPos, selected);
                         break;
                     case RESOURCE_LABEL:
-                        resetUniqueAttribute(logMetaData.getResourcePos());
+                        resetUniqueAttribute(logMetaData.getResourcePos(), colPos, RESOURCE_LABEL);
                         logMetaData.setResourcePos(colPos);
                         break;
                     case ROLE_LABEL:
-                        resetUniqueAttribute(logMetaData.getRolePos());
+                        resetUniqueAttribute(logMetaData.getRolePos(), colPos, ROLE_LABEL);
                         logMetaData.setRolePos(colPos);
                         break;
                     case OTHER_TIMESTAMP_LABEL:
@@ -853,16 +988,20 @@ public class LogImporterController extends SelectorComposer<Window> implements C
                         break;
                     case CASE_ATTRIBUTE_LABEL:
                         logMetaData.getCaseAttributesPos().add(colPos);
+                        resetDatatypeDropDownList(colPos);
                         break;
                     case EVENT_ATTRIBUTE_LABEL:
                         logMetaData.getEventAttributesPos().add(colPos);
+                        resetDatatypeDropDownList(colPos);
                         break;
                     case IGNORE_LABEL:
                         logMetaData.getIgnoredPos().add(colPos);
+                        resetDatatypeDropDownList(colPos);
                         break;
                     case PERSPECTIVE_LABEL:
                         logMetaData.getEventAttributesPos().add(colPos);
                         logMetaData.getPerspectivePos().add(colPos);
+                        resetDatatypeDropDownList(colPos);
                         break;
                     default:
                 }
@@ -874,7 +1013,30 @@ public class LogImporterController extends SelectorComposer<Window> implements C
         this.dropDownLists = menuDropDownLists;
     }
 
-    private void resetUniqueAttribute(int oldColPos) {
+    private void resetUniqueAttribute(int oldColPos, int newColPos, String attributeType) {
+
+        Listbox newDataTypeListBox = (Listbox) window.getFellow(DATA_TYPE_ID_PREFIX + newColPos);
+        int stringTypeIndex =
+            newDataTypeListBox.getIndexOfItem((Listitem) newDataTypeListBox.getFellow(STRING_TYPE_LABEL));
+        int timestampTypeIndex =
+            newDataTypeListBox.getIndexOfItem((Listitem) newDataTypeListBox.getFellow(TIMESTAMP_TYPE_LABEL));
+        int dataTypeIndex = -1;
+
+        switch (attributeType) {
+            case CASE_ID_LABEL:
+            case ACTIVITY_LABEL:
+            case RESOURCE_LABEL:
+            case ROLE_LABEL:
+                dataTypeIndex = stringTypeIndex;
+                break;
+            case END_TIMESTAMP_LABEL:
+            case START_TIMESTAMP_LABEL:
+                dataTypeIndex = timestampTypeIndex;
+                break;
+            default:
+                break;
+        }
+
         if (oldColPos != -1) {
             // reset value of the unique attribute
             resetSelect(oldColPos);
@@ -888,7 +1050,24 @@ public class LogImporterController extends SelectorComposer<Window> implements C
             Listbox oldBox = dropDownLists.get(oldColPos);
             oldBox.setSelectedIndex(eventAttributeIndex);
             logMetaData.getEventAttributesPos().add(oldColPos);
+
+            // Enable data type dropdown list for old unique attribute column
+            Listbox oldDataTypeListBox = (Listbox) window.getFellow(DATA_TYPE_ID_PREFIX + oldColPos);
+            oldDataTypeListBox.setDisabled(false);
         }
+
+        // Set data type accordingly after reset of unique attribute
+        if (dataTypeIndex != -1) {
+            resetDataTypeSelect(newColPos);
+            setDataTypeMetaData(newDataTypeListBox.getItemAtIndex(dataTypeIndex).getValue(), newColPos);
+            newDataTypeListBox.setSelectedIndex(dataTypeIndex);
+        }
+        newDataTypeListBox.setDisabled(true);
+    }
+
+    private void resetDatatypeDropDownList(int colPos) {
+        Listbox oldDataTypeListBox = (Listbox) window.getFellow(DATA_TYPE_ID_PREFIX + colPos);
+        oldDataTypeListBox.setDisabled(false);
     }
 
     private void resetSelect(int pos) {
@@ -912,7 +1091,7 @@ public class LogImporterController extends SelectorComposer<Window> implements C
         } else if (logMetaData.getCaseAttributesPos().contains(pos)) {
             logMetaData.getCaseAttributesPos().remove(Integer.valueOf(pos));
         } else if (logMetaData.getEventAttributesPos().contains(pos)
-                && !logMetaData.getPerspectivePos().contains(pos)) {
+            && !logMetaData.getPerspectivePos().contains(pos)) {
             logMetaData.getEventAttributesPos().remove(Integer.valueOf(pos));
         } else if (logMetaData.getPerspectivePos().contains(pos)) {
             logMetaData.getEventAttributesPos().remove(Integer.valueOf(pos));
@@ -920,11 +1099,24 @@ public class LogImporterController extends SelectorComposer<Window> implements C
         }
     }
 
+    private void resetDataTypeSelect(int pos) {
+        // reset value for old select
+        if (logMetaData.getIntegerAttributesPos().contains(pos)) {
+            logMetaData.getIntegerAttributesPos().remove(Integer.valueOf(pos));
+        } else if (logMetaData.getDoubleAttributesPos().contains(pos)) {
+            logMetaData.getDoubleAttributesPos().remove(Integer.valueOf(pos));
+        } else if (logMetaData.getStringAttributesPos().contains(pos)) {
+            logMetaData.getStringAttributesPos().remove(Integer.valueOf(pos));
+        } else if (logMetaData.getTimestampAttributesPos().contains(pos)) {
+            logMetaData.getTimestampAttributesPos().remove(Integer.valueOf(pos));
+        }
+    }
+
     private void timestampSelected(int colPos, String selected) {
         showFormatBtn(formatBtns[colPos]);
         String possibleFormat = getPopUpFormatText(colPos);
         if (possibleFormat != null && !possibleFormat.isEmpty()
-                && metaDataUtilities.isTimestamp(colPos, possibleFormat, sampleLog)) {
+            && metaDataUtilities.isTimestamp(colPos, possibleFormat, sampleLog)) {
             parsedManual(colPos, selected, possibleFormat);
         } else if (metaDataUtilities.isTimestamp(colPos, sampleLog)) {
             parsedAuto(colPos, selected);
@@ -1082,14 +1274,16 @@ public class LogImporterController extends SelectorComposer<Window> implements C
             if (importMessage.length() == 0) {
                 importMessage.append(String.format(unselectedAttributeFormat, getLabel("activity")));
             } else {
-                importMessage.append(System.lineSeparator()).append(System.lineSeparator()).append(String.format(unselectedAttributeFormat, getLabel("activity")));
+                importMessage.append(System.lineSeparator()).append(System.lineSeparator())
+                    .append(String.format(unselectedAttributeFormat, getLabel("activity")));
             }
         }
         if (logMetaData.getEndTimestampPos() == -1) {
             if (importMessage.length() == 0) {
                 importMessage.append(String.format(unselectedAttributeFormat, getLabel("end_timestamp")));
             } else {
-                importMessage.append(System.lineSeparator()).append(System.lineSeparator()).append(String.format(unselectedAttributeFormat, getLabel("end_timestamp")));
+                importMessage.append(System.lineSeparator()).append(System.lineSeparator())
+                    .append(String.format(unselectedAttributeFormat, getLabel("end_timestamp")));
             }
         }
 
@@ -1099,8 +1293,8 @@ public class LogImporterController extends SelectorComposer<Window> implements C
     private void handleInvalidData(LogModel logModel, boolean isPublic, String name) throws IOException {
 
         Window errorPopUp =
-                (Window) portalContext.getUI().createComponent(LogImporterController.class.getClassLoader(),
-                        "zul/invalidData.zul", null, null);
+            (Window) portalContext.getUI().createComponent(LogImporterController.class.getClassLoader(),
+                "zul/invalidData.zul", null, null);
         errorPopUp.doModal();
 
         List<LogErrorReport> errorReport = logModel.getLogErrorReport();
@@ -1132,7 +1326,7 @@ public class LogImporterController extends SelectorComposer<Window> implements C
         }
         if (!invColList.isEmpty()) {
             columnList
-                    .setValue(getLabel("the_following_columns_include_errors") + columnList(invColList));
+                .setValue(getLabel("the_following_columns_include_errors") + columnList(invColList));
         }
 
         if (!igColList.isEmpty()) {
@@ -1155,12 +1349,12 @@ public class LogImporterController extends SelectorComposer<Window> implements C
                 LogModel logModelSkippedCol;
                 if (useParquet) {
                     logModelSkippedCol = parquetImporter.importParquetFile(getInputSream(media), logMetaData,
-                            getFileEncoding(), parquetFile, false);
+                        getFileEncoding(), parquetFile, false);
                 } else {
                     logModelSkippedCol = logImporter.importLog(getInputSream(media), logMetaData,
-                            getFileEncoding(), true, portalContext.getCurrentUser().getUsername(),
-                            portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId(),
-                            name);
+                        getFileEncoding(), true, portalContext.getCurrentUser().getUsername(),
+                        portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId(),
+                        name);
                 }
 
                 if (logModelSkippedCol != null) {
@@ -1195,13 +1389,13 @@ public class LogImporterController extends SelectorComposer<Window> implements C
 
             if (useParquet) {
                 logModelSkippedRow = parquetImporter.importParquetFile(getInputSream(media), logMetaData,
-                        getFileEncoding(), parquetFile, true);
+                    getFileEncoding(), parquetFile, true);
 
             } else {
                 logModelSkippedRow = logImporter.importLog(getInputSream(media), logMetaData,
-                        getFileEncoding(), true, portalContext.getCurrentUser().getUsername(),
-                        portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId(),
-                        name);
+                    getFileEncoding(), true, portalContext.getCurrentUser().getUsername(),
+                    portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId(),
+                    name);
             }
 
             if (logModelSkippedRow != null) {
@@ -1232,16 +1426,16 @@ public class LogImporterController extends SelectorComposer<Window> implements C
         try (FileWriter writer = new FileWriter(tempFile);
 
              CSVWriter csvWriter =
-                     new CSVWriter(writer, CSVWriter.DEFAULT_SEPARATOR, CSVWriter.NO_QUOTE_CHARACTER,
-                             CSVWriter.DEFAULT_ESCAPE_CHARACTER, CSVWriter.DEFAULT_LINE_END);) {
+                 new CSVWriter(writer, CSVWriter.DEFAULT_SEPARATOR, CSVWriter.NO_QUOTE_CHARACTER,
+                     CSVWriter.DEFAULT_ESCAPE_CHARACTER, CSVWriter.DEFAULT_LINE_END);) {
 
             String[] headerRecord = {"#", "Row Index", "Column", "Error message"};
             csvWriter.writeNext(headerRecord);
 
             int counter = 1;
             for (LogErrorReport error : errorReport) {
-                csvWriter.writeNext(new String[]{String.valueOf(counter++),
-                        String.valueOf(error.getRowIndex()), error.getHeader(), error.getError()});
+                csvWriter.writeNext(new String[] {String.valueOf(counter++),
+                    String.valueOf(error.getRowIndex()), error.getHeader(), error.getError()});
             }
 
             InputStream csvLogStream = new FileInputStream(tempFile);
@@ -1249,7 +1443,7 @@ public class LogImporterController extends SelectorComposer<Window> implements C
         } catch (Exception e) {
             LOGGER.error("Failed to download error report", e);
             Messagebox.show(getLabel("failed_to_download_error_log") + e.getMessage(), "Error",
-                    Messagebox.OK, Messagebox.ERROR);
+                Messagebox.OK, Messagebox.ERROR);
         } finally {
             FileUtils.deleteFile(tempFile);
 
@@ -1265,16 +1459,16 @@ public class LogImporterController extends SelectorComposer<Window> implements C
                 successMessage = MessageFormat.format(getLabel("limit_reached"), logModel.getRowsCount());
             } else {
                 successMessage =
-                        MessageFormat.format(getLabel("successful_upload"), logModel.getRowsCount());
+                    MessageFormat.format(getLabel("successful_upload"), logModel.getRowsCount());
             }
-            Messagebox.show(successMessage, new Messagebox.Button[]{Messagebox.Button.OK},
-                    isModal ? event -> close() : null);
+            Messagebox.show(successMessage, new Messagebox.Button[] {Messagebox.Button.OK},
+                isModal ? event -> close() : null);
             portalContext.refreshContent();
 
         } catch (Exception e) {
             LOGGER.error("Failed to save log", e);
             Messagebox.show(getLabel("failed_to_write_log") + e.getMessage(), "Error", Messagebox.OK,
-                    Messagebox.ERROR);
+                Messagebox.ERROR);
         }
     }
 

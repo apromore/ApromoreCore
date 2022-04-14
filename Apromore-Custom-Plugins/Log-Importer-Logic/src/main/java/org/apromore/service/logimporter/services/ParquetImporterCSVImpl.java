@@ -24,7 +24,7 @@
 
 package org.apromore.service.logimporter.services;
 
-import static org.apromore.service.logimporter.utilities.CSVUtilities.getMaxOccurringChar;
+import static org.apromore.service.logimporter.utilities.ImporterStringUtils.getMaxOccurringChar;
 import static org.apromore.service.logimporter.utilities.ParquetUtilities.createParquetSchema;
 
 import com.opencsv.CSVReader;
