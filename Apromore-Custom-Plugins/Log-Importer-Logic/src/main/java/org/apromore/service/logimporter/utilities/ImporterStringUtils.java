@@ -22,6 +22,7 @@
 
 package org.apromore.service.logimporter.utilities;
 
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +31,10 @@ import org.apromore.service.logimporter.constants.Constants;
 import org.apromore.service.logimporter.dateparser.DateUtil;
 
 public class ImporterStringUtils {
+
+    private ImporterStringUtils() {
+        throw new IllegalStateException("Utility class");
+    }
 
     public static char getMaxOccurringChar(String str) {
         char maxchar = ' ';
@@ -83,25 +88,24 @@ public class ImporterStringUtils {
      * @return type of the string
      */
     public static ColumnType getColumnType(final List<String> stringList) {
-        Map<ColumnType, Integer> temp = new HashMap<>() {{
-                put(ColumnType.BOOLEAN, 0);
-                put(ColumnType.INT, 0);
-                put(ColumnType.STRING, 0);
-                put(ColumnType.DOUBLE, 0);
-                put(ColumnType.TIMESTAMP, 0);
-            }};
+        EnumMap<ColumnType, Integer> temp = new EnumMap<>(ColumnType.class);
+        temp.put(ColumnType.BOOLEAN, 0);
+        temp.put(ColumnType.INT, 0);
+        temp.put(ColumnType.STRING, 0);
+        temp.put(ColumnType.DOUBLE, 0);
+        temp.put(ColumnType.TIMESTAMP, 0);
 
-        stringList.stream().forEach(st -> {
+        stringList.forEach(st -> {
             ColumnType columnType = getColumnType(st);
             temp.put(columnType, temp.get(columnType) + 1);
         });
 
         int max = 0;
         ColumnType maxType = ColumnType.STRING;
-        for (ColumnType key : temp.keySet()) {
-            if (max < temp.get(key)) {
-                max = temp.get(key);
-                maxType = key;
+        for (Map.Entry<ColumnType, Integer> entry : temp.entrySet()) {
+            if (max < entry.getValue()) {
+                max = entry.getValue();
+                maxType = entry.getKey();
             }
         }
 

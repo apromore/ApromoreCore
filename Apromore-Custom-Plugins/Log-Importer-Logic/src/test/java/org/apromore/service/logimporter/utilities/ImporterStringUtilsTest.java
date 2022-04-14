@@ -33,7 +33,7 @@ class ImporterStringUtilsTest {
      * Test that strings are given the correct type.
      */
     @Test
-    public void stringTest() {
+    void stringTest() {
         assertEquals(ColumnType.STRING, ImporterStringUtils.getColumnType("abc"));
         assertEquals(ColumnType.STRING, ImporterStringUtils.getColumnType(""));
     }
@@ -42,7 +42,7 @@ class ImporterStringUtilsTest {
      * Test that ints are given the correct type.
      */
     @Test
-    public void intTest() {
+    void intTest() {
         assertEquals(ColumnType.INT, ImporterStringUtils.getColumnType("123"));
     }
 
@@ -50,7 +50,7 @@ class ImporterStringUtilsTest {
      * Test that doubles are given the correct type.
      */
     @Test
-    public void doubleTest() {
+    void doubleTest() {
         assertEquals(ColumnType.DOUBLE, ImporterStringUtils.getColumnType("123.456"));
     }
 
@@ -58,7 +58,7 @@ class ImporterStringUtilsTest {
      * Test that booleans are given the correct type.
      */
     @Test
-    public void booleanTest() {
+    void booleanTest() {
         assertEquals(ColumnType.BOOLEAN, ImporterStringUtils.getColumnType("true"));
         assertEquals(ColumnType.BOOLEAN, ImporterStringUtils.getColumnType("True"));
         assertEquals(ColumnType.BOOLEAN, ImporterStringUtils.getColumnType("TRUE"));
@@ -71,7 +71,7 @@ class ImporterStringUtilsTest {
      * Test that timestamps are given the correct type.
      */
     @Test
-    public void timestampTest() {
+    void timestampTest() {
         assertEquals(ColumnType.TIMESTAMP, ImporterStringUtils.getColumnType("2020-10-10 23:00:00"));
         assertEquals(ColumnType.TIMESTAMP, ImporterStringUtils.getColumnType("2020-10-10"));
         assertEquals(ColumnType.TIMESTAMP, ImporterStringUtils.getColumnType("2020/10/10  23:00:00"));
