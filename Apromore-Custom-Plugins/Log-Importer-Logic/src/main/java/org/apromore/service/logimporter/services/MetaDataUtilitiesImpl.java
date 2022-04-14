@@ -61,6 +61,7 @@ public class MetaDataUtilitiesImpl implements MetaDataUtilities {
         onlyOnetimestampFound();
         setEventAttributesPos();
         setCaseAttributesPos();
+        setColumnTypePos();
 
         return this.logMetaData;
     }
@@ -287,7 +288,6 @@ public class MetaDataUtilitiesImpl implements MetaDataUtilities {
         List<Integer> integerAttributesPos = logMetaData.getIntegerAttributesPos();
         List<Integer> doubleAttributesPos = logMetaData.getDoubleAttributesPos();
         List<Integer> timestampAttributesPos = logMetaData.getTimestampAttributesPos();
-        List<Integer> booleanAttributesPos = logMetaData.getBooleanAttributesPos();
 
         List<String> headers = logMetaData.getHeader();
 
@@ -310,9 +310,6 @@ public class MetaDataUtilitiesImpl implements MetaDataUtilities {
                     break;
                 case DOUBLE:
                     doubleAttributesPos.add(i);
-                    break;
-                case BOOLEAN:
-                    booleanAttributesPos.add(i);
                     break;
                 case STRING:
                     stringAttributesPos.add(i);

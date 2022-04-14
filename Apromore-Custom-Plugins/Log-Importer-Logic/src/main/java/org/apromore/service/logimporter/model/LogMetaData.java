@@ -67,7 +67,6 @@ public class LogMetaData {
     private List<Integer> integerAttributesPos;
     private List<Integer> doubleAttributesPos;
     private List<Integer> timestampAttributesPos;
-    private List<Integer> booleanAttributesPos;
 
     public LogMetaData(List<String> header) {
         this.header = header;
@@ -114,8 +113,16 @@ public class LogMetaData {
 
         if (header.size() != count) {
             throw new InvalidLogMetadataException(
-                "Failed to construct valid log sample!  Only specified " + count + " of "
+                "Failed to construct valid log sample!  Only specified attribute type for " + count + " of "
                 + header.size() + " headers: " + header);
+        }
+
+        int dateTypeCount = stringAttributesPos.size() + integerAttributesPos.size() + doubleAttributesPos.size()
+            + timestampAttributesPos.size();
+        if (dateTypeCount != count) {
+            throw new InvalidLogMetadataException(
+                "Failed to construct valid log sample!  Only specified data type for " + count + " of "
+                    + dateTypeCount + " headers: " + header);
         }
     }
 
