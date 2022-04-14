@@ -781,25 +781,7 @@ public class LogImporterController extends SelectorComposer<Window> implements C
             box.setId(DATA_TYPE_ID_PREFIX + pos);
             box.setWidth(COLUMN_WIDTH - 12 + "px");
 
-            /*
-             * The data-type is not relevant for attributes with tags CaseID, Activity, Start/End timestamps,
-             * Resource and Role. Because the type of these attributes is pre-determined, as follows:
-             *
-             * 1. CaseID, Activity, Resource and Role are always of type String
-             * 2. Start Timestamp and End Timestamps are always attributes of type Timestamp
-             *
-             * Reassign data type on the fly since LogMetaData may come from persisted schema mapping
-             */
-            if (logMetaData.getCaseIdPos() == pos || logMetaData.getActivityPos() == pos
-                || logMetaData.getResourcePos() == pos || logMetaData.getRolePos() == pos) {
-                box.setDisabled(true);
-                resetDataTypeSelect(pos);
-                logMetaData.getStringAttributesPos().add(pos);
-            } else if (logMetaData.getStartTimestampPos() == pos || logMetaData.getEndTimestampPos() == pos) {
-                box.setDisabled(true);
-                resetDataTypeSelect(pos);
-                logMetaData.getTimestampAttributesPos().add(pos);
-            }
+            reassignDataTypeBasedOnAttributeType(pos, box);
 
             for (Map.Entry<String, String> myItem : menuItems.entrySet()) {
                 Listitem item = new Listitem();
@@ -835,6 +817,30 @@ public class LogImporterController extends SelectorComposer<Window> implements C
         }
         this.dataTypeDropDownLists = menuDropDownLists;
 
+    }
+
+    /**
+     * The data-type is not relevant for attributes with tags CaseID, Activity, Start/End timestamps,
+     * Resource and Role. Because the type of these attributes is pre-determined, as follows:
+     * 1. CaseID, Activity, Resource and Role are always of type String
+     * 2. Start Timestamp and End Timestamps are always attributes of type Timestamp
+     * Reassign data type on the fly since LogMetaData may come from persisted schema mapping
+     *
+     * @param pos Position of current column
+     * @param box ListBox
+     */
+    private void reassignDataTypeBasedOnAttributeType(int pos, Listbox box) {
+
+        if (logMetaData.getCaseIdPos() == pos || logMetaData.getActivityPos() == pos
+            || logMetaData.getResourcePos() == pos || logMetaData.getRolePos() == pos) {
+            box.setDisabled(true);
+            resetDataTypeSelect(pos);
+            logMetaData.getStringAttributesPos().add(pos);
+        } else if (logMetaData.getStartTimestampPos() == pos || logMetaData.getEndTimestampPos() == pos) {
+            box.setDisabled(true);
+            resetDataTypeSelect(pos);
+            logMetaData.getTimestampAttributesPos().add(pos);
+        }
     }
 
     private void setDataTypeMetaData(String selected, int colPos) {
