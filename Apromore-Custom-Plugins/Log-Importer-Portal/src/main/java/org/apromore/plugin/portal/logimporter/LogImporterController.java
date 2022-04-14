@@ -122,6 +122,8 @@ public class LogImporterController extends SelectorComposer<Window> implements C
     public static final String SESSION_ATTRIBUTE_KEY = "csvimport";
     public static final String NAME_SANITIZER = "[.][^.]+$";
     public static final String DATA_TYPE_ID_PREFIX = "DataType_";
+    public static final String ON_SELECT = "onSelect";
+
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(LogImporterController.class);
     private static final int ROW_INDEX_START_FROM = 1;
     // Get Data layer config
@@ -211,7 +213,7 @@ public class LogImporterController extends SelectorComposer<Window> implements C
             Combobox setEncoding = (Combobox) window.getFellow(SET_ENCODING_ID);
             setEncoding.setModel(new ListModelList<>(FILE_ENCODING));
 
-            setEncoding.addEventListener("onSelect", event -> {
+            setEncoding.addEventListener(ON_SELECT, event -> {
                 try {
                     encoding = getFileEncoding();
                     metaDataService.validateLog(getInputSream(media), encoding);
@@ -821,7 +823,7 @@ public class LogImporterController extends SelectorComposer<Window> implements C
                 box.appendChild(item);
             }
 
-            box.addEventListener("onSelect", (Event event) -> {
+            box.addEventListener(ON_SELECT, (Event event) -> {
                 String selected = box.getSelectedItem().getValue();
                 int colPos = Integer.parseInt(box.getId().substring(9));
 
@@ -917,7 +919,7 @@ public class LogImporterController extends SelectorComposer<Window> implements C
                 box.appendChild(item);
             }
 
-            box.addEventListener("onSelect", (Event event) -> {
+            box.addEventListener(ON_SELECT, (Event event) -> {
                 String selected = box.getSelectedItem().getValue();
                 int colPos = Integer.parseInt(box.getId());
 
