@@ -100,6 +100,7 @@ public class WorkspaceMapper {
 			} else {
 				folder.setLastUpdate(dateFormat.format(node.getFolder().getDateCreated()));
 			}
+            folder.setCreatedDate(dateFormat.format(node.getFolder().getDateCreated()));
 			
             folderTypes.add(folder);
         }

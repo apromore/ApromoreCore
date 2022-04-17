@@ -307,6 +307,7 @@ public class UIHelper implements UserInterfaceHelper {
         processSummary.setName(process.getName());
         processSummary.setDomain(process.getDomain());
         processSummary.setRanking(process.getRanking());
+        processSummary.setCreateDate(process.getCreateDate());
 
         ProcessModelVersion latestVersion = pmvRepository.getLatestProcessModelVersion(process.getId(), "MAIN");
         if (latestVersion != null) {

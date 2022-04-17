@@ -68,6 +68,9 @@ public class ArtifactsComparator implements Comparator<Object> {
                 return (AlphaNumericComparator.compareTo(getLastVersionFromObject(object1),
                     getLastVersionFromObject(object2))) *
                     factor;
+            case "BY_CREATED_DATE":
+                return compareDateString(getCreatedDateFromObject(object1), getCreatedDateFromObject(object2)) *
+                    factor;
             default:
                 return 0;
         }
@@ -141,6 +144,22 @@ public class ArtifactsComparator implements Comparator<Object> {
             int lastIndex = summaries.size() - 1;
             return (lastIndex < 0) ? null : summaries.get(lastIndex).getLastUpdate();
        }
+        return null;
+    }
+
+    private String getCreatedDateFromObject(Object object) {
+        if (object == null) {
+            return null;
+        }
+        if (object instanceof FolderType) {
+            return ((FolderType) object).getCreatedDate();
+        }
+        else if (object instanceof LogSummaryType) {
+            return ((SummaryType) object).getCreateDate();
+        }
+        else if (object instanceof ProcessSummaryType) { // taken from renderer logic
+            return ((SummaryType) object).getCreateDate();
+        }
         return null;
     }
 
