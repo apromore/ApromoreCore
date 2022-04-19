@@ -870,7 +870,6 @@ public class LogImporterController extends SelectorComposer<Window> implements C
         menuItems.put(ACTIVITY_LABEL, getLabel("activity"));
         menuItems.put(END_TIMESTAMP_LABEL, getLabel("end_timestamp"));
         menuItems.put(START_TIMESTAMP_LABEL, getLabel("start_timestamp"));
-        menuItems.put(OTHER_TIMESTAMP_LABEL, getLabel("other_timestamp"));
         menuItems.put(RESOURCE_LABEL, getLabel("resource"));
         menuItems.put(ROLE_LABEL, getLabel("role"));
         menuItems.put(CASE_ATTRIBUTE_LABEL, getLabel("case_attribute"));
