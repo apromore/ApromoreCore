@@ -146,6 +146,12 @@ public class ProcessListboxController extends BaseListboxController {
     columnOwner.setSortDescending(new ArtifactsComparator(false, ArtifactOrderTypes.BY_OWNER));
     columnOwner.addEventListener(Events.ON_SORT, this::forwardSortEvent);
 
+    Listheader columnCreated = (Listheader) this.getListBox().getFellow("columnCreated");
+    columnCreated.setSortAscending(new ArtifactsComparator(true, ArtifactOrderTypes.BY_CREATED_DATE));
+    columnCreated.setSortDescending(new ArtifactsComparator(false, ArtifactOrderTypes.BY_CREATED_DATE));
+    columnCreated.addEventListener(Events.ON_SORT, this::forwardSortEvent);
+
+
   }
 
   private void forwardSortEvent(Event evt) {
