@@ -31,6 +31,8 @@ import java.util.TimeZone;
 
 public class DateUtil extends DatePatterns {
 
+    private static final int DATE_STRING_MIN_LENGTH = 4;
+
     private DateUtil() {
     }
 
@@ -98,7 +100,8 @@ public class DateUtil extends DatePatterns {
     }
 
     public static Timestamp parseToTimestamp(String dateString, String dateFormat, TimeZone timeZone) {
-        if (dateString == null || dateString.isEmpty() || dateFormat == null || dateFormat.isEmpty()) {
+        if (dateString == null || dateString.isEmpty() || dateFormat == null || dateFormat.isEmpty()
+            || dateString.length() <= DATE_STRING_MIN_LENGTH) {
             return null;
         }
 
