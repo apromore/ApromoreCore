@@ -817,4 +817,15 @@ class AttributeLogGraphTest extends DataSetup {
         assertEquals(0, graph0.getArcWeight("a", "a", MeasureType.COST, MeasureAggregation.MEAN, MeasureRelation.ABSOLUTE),0);
 
     }
+
+    @Test
+    void testCostWeight_Missing_Role() {
+        ALog log = new ALog(readLogWithOneTrace_TwoActivities_StartCompleteEvents());
+        AttributeLog attLog0 = new AttributeLog(log, log.getAttributeStore().getStandardEventConceptName(),
+            getAllDayAllTimeCalendar(),
+            Map.ofEntries(Map.entry("O2", 1D))); // Missing role O1's cost
+        AttributeLogGraph graph0 = attLog0.getGraphView();
+        assertEquals(0,
+            graph0.getNodeWeight("a", MeasureType.COST, MeasureAggregation.MEAN, MeasureRelation.ABSOLUTE), 0);
+    }
 }
