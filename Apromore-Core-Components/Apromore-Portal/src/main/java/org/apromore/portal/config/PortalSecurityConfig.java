@@ -90,7 +90,7 @@ public class PortalSecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/zkau/*").permitAll()
             .antMatchers("/login").permitAll()
             .antMatchers("/logout").permitAll()
-            .antMatchers(Constants.SWAGGER2_AUTH_WHITELIST).permitAll()
+            .antMatchers(Constants.SWAGGER_AUTH_WHITELIST).permitAll()
             .anyRequest().authenticated()
         .and()
         .formLogin()
