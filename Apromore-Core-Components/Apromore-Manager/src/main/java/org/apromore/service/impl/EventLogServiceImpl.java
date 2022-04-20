@@ -688,7 +688,7 @@ public class EventLogServiceImpl implements EventLogService {
 			LOGGER.info("Log (ID: {}) doesn't have associated cost table stored in DB.", logId);
 			return jsonString;
 		}
-		LOGGER.debug("Get cost table for log (ID: {}): {}", logId, jsonString);
+		LOGGER.info("Get cost table for log (ID: {}): {}", logId, jsonString);
 		return usermetadataSet.iterator().next().getContent();
 
 	}
