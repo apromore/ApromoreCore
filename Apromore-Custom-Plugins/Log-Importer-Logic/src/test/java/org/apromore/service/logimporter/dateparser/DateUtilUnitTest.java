@@ -554,6 +554,10 @@ class DateUtilUnitTest {
     @Test
     void parseToTimestampTest() {
         assertNull(parseToTimestamp("1", "y", null));
+        assertNull(parseToTimestamp("19-12-2019 15:13:05.9", null, null));
+        assertNull(parseToTimestamp("19-12-2019 15:13:05.9", "", null));
+        assertNull(parseToTimestamp(null, "dd-MM-yyyy HH:mm:ss.S", null));
+        assertNull(parseToTimestamp("", "dd-MM-yyyy HH:mm:ss.S", null));
         assertEquals("1970-01-01 00:00:04.0", parseToTimestamp("04/01/2011 02:13:05", "ss", null).toString());
     }
 }
