@@ -27,5 +27,6 @@ public enum ArtifactOrderTypes {
     BY_UPDATE_DATE,
     BY_TYPE,
     BY_OWNER,
-    BY_LAST_VERSION
+    BY_LAST_VERSION,
+    BY_CREATED_DATE,
 }

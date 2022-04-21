@@ -33,15 +33,21 @@ import org.apromore.commons.datetime.Constants;
 import org.apromore.commons.datetime.DateTimeUtils;
 import org.apromore.dao.model.Folder;
 import org.apromore.plugin.portal.PortalLoggerFactory;
+import org.apromore.portal.common.VersionSummaryTypes;
 import org.apromore.portal.dialogController.dto.VersionDetailType;
 import org.apromore.portal.dialogController.renderer.VersionSummaryItemRenderer;
 import org.apromore.portal.model.LogSummaryType;
 import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.VersionSummaryType;
+import org.apromore.portal.util.VersionSummaryComparator;
 import org.slf4j.Logger;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.SortEvent;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listheader;
 
 import static org.apromore.common.Constants.TRUNK_NAME;
 
@@ -53,6 +59,7 @@ public class ProcessVersionDetailController extends BaseDetailController {
 
 
     private final Listbox listBox;
+    private ProcessSummaryType data;
 
     public ProcessVersionDetailController(MainController mainController) {
         super(mainController);
@@ -69,9 +76,40 @@ public class ProcessVersionDetailController extends BaseDetailController {
     public void displayProcessVersions(ProcessSummaryType data) {
         getListModel().clearSelection();
         getListModel().clear();
+        this.data=data;
+        Listheader columnName = (Listheader) this.listBox.getFellow("version");
+        columnName.setSortAscending(new VersionSummaryComparator(true, VersionSummaryTypes.BY_VERSION));
+        columnName.setSortDescending(new VersionSummaryComparator(false, VersionSummaryTypes.BY_VERSION));
+        columnName.addEventListener(Events.ON_SORT, this::forwardSortEvent);
+
+        Listheader columnId = (Listheader) this.listBox.getFellow("lastUpdate");
+        columnId.setSortAscending(new VersionSummaryComparator(true, VersionSummaryTypes.BY_UPDATE_DATE));
+        columnId.setSortDescending(new VersionSummaryComparator(false, VersionSummaryTypes.BY_UPDATE_DATE));
+        columnId.addEventListener(Events.ON_SORT, this::forwardSortEvent);
+        redrawList(new VersionSummaryComparator(true, VersionSummaryTypes.BY_VERSION),true);
+    }
+
+    private void forwardSortEvent(Event evt) {
+        try {
+            SortEvent event=(SortEvent)evt;
+            Listheader header = (Listheader) event.getTarget();
+            VersionSummaryComparator comparator = event.isAscending() ? (VersionSummaryComparator) header.getSortAscending() :
+                (VersionSummaryComparator) header.getSortDescending();
+            redrawList(comparator,false);
+        } catch (Exception ex) {
+            LOGGER.error("Error in sorting", ex);
+        }
+    }
+
+    private void redrawList(VersionSummaryComparator comparator, boolean defaultSelected) {
+        if (data == null) {
+            return;
+        }
+        getListModel().clear();
         List<VersionDetailType> details = new ArrayList<>();
-        for (VersionSummaryType version : data.getVersionSummaries()) {
-            // Only show MAIN branch versions
+        List<VersionSummaryType> versionSummaries = data.getVersionSummaries();
+        versionSummaries.sort(comparator);
+        for (VersionSummaryType version : versionSummaries) {
             if (version.getName().equals(TRUNK_NAME)) {
                 String lastUpdate = version.getLastUpdate();
 
@@ -83,43 +121,45 @@ public class ProcessVersionDetailController extends BaseDetailController {
             }
         }
         getListModel().addAll(details);
-        if (!details.isEmpty()) {
+        if (!details.isEmpty() && defaultSelected) {
             getListModel().addToSelection(details.get(details.size() - 1));
         }
     }
-    
+
     public void displayLogVersions(LogSummaryType data) {
-		try {
-			getListModel().clearSelection();
-			getListModel().clear();
-			VersionSummaryType versionSummary = new VersionSummaryType();
-			String createdDate = data.getCreateDate();
+        try {
+            getListModel().clearSelection();
+            getListModel().clear();
+            VersionSummaryType versionSummary = new VersionSummaryType();
+            String createdDate = data.getCreateDate();
             if (createdDate != null) {
                 createdDate = DateTimeUtils.normalize(createdDate);
             }
-			versionSummary.setCreationDate(createdDate);
-			getListModel().add(new VersionDetailType(null, versionSummary));
-		} catch (Exception ex) {
-			LOGGER.error("Error occured in assigning Log version", ex);
-		}
+            versionSummary.setCreationDate(createdDate);
+            getListModel().add(new VersionDetailType(null, versionSummary));
+            this.data = null;
+        } catch (Exception ex) {
+            LOGGER.error("Error occured in assigning Log version", ex);
+        }
     }
-    
-	public void displayFolderVersions(Folder data) {
-		try {
-			getListModel().clearSelection();
-			getListModel().clear();
-			VersionSummaryType versionSummary = new VersionSummaryType();
-			DateFormat dateFormat = new SimpleDateFormat(Constants.DATE_TIME_FORMAT_HUMANIZED);
-			if (data.getDateModified() != null) {
-				versionSummary.setCreationDate(dateFormat.format(data.getDateModified()));
-			} else {
-				versionSummary.setCreationDate(dateFormat.format(data.getDateCreated()));
-			}
-			getListModel().add(new VersionDetailType(null, versionSummary));
-		} catch (Exception ex) {
-			LOGGER.error("Error occured in assigning Folder version", ex);
-		}
-	}
+
+    public void displayFolderVersions(Folder data) {
+        try {
+            getListModel().clearSelection();
+            getListModel().clear();
+            VersionSummaryType versionSummary = new VersionSummaryType();
+            DateFormat dateFormat = new SimpleDateFormat(Constants.DATE_TIME_FORMAT_HUMANIZED);
+            if (data.getDateModified() != null) {
+                versionSummary.setCreationDate(dateFormat.format(data.getDateModified()));
+            } else {
+                versionSummary.setCreationDate(dateFormat.format(data.getDateCreated()));
+            }
+            getListModel().add(new VersionDetailType(null, versionSummary));
+            this.data = null;
+        } catch (Exception ex) {
+            LOGGER.error("Error occured in assigning Folder version", ex);
+        }
+    }
 
     protected ListModelList<VersionDetailType> getListModel() {
         return (ListModelList<VersionDetailType>)(Object) listBox.getListModel();

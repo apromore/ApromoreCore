@@ -24,9 +24,8 @@ package org.apromore.dao.jpa.calendar;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.DayOfWeek;
-import java.time.OffsetTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import org.apromore.config.BaseTestClass;
 import org.apromore.dao.CustomCalendarInfoRepository;
 import org.apromore.dao.CustomCalendarRepository;
@@ -82,8 +81,8 @@ class CalendarManagementUnitTest extends BaseTestClass {
 		CustomCalendar calendarToSave = new CustomCalendar("Test Calendar Work Day");
 //		customCal.saveAndFlush(calenderToSave);
 
-		OffsetTime startTime = OffsetTime.of(9, 0, 0, 0, ZoneOffset.UTC);
-		OffsetTime endTime = OffsetTime.of(5, 0, 0, 0, ZoneOffset.UTC);
+		LocalTime startTime = LocalTime.of(9, 0, 0, 0);
+		LocalTime endTime = LocalTime.of(5, 0, 0, 0);
 		WorkDay workDayMonDay = new WorkDay(DayOfWeek.MONDAY, startTime, endTime, true);
 		calendarToSave.addWorkDay(workDayMonDay);
 
@@ -103,8 +102,8 @@ class CalendarManagementUnitTest extends BaseTestClass {
 		CustomCalendar calendarToSave = new CustomCalendar("Test Calender Non Work Day");
 //		customCal.saveAndFlush(calenderToSave);
 
-		OffsetTime startTime = OffsetTime.of(9, 0, 0, 0, ZoneOffset.UTC);
-		OffsetTime endTime = OffsetTime.of(5, 0, 0, 0, ZoneOffset.UTC);
+		LocalTime startTime = LocalTime.of(9, 0, 0, 0);
+		LocalTime endTime = LocalTime.of(5, 0, 0, 0);
 		WorkDay workDayMonDay = new WorkDay(DayOfWeek.SATURDAY, startTime, endTime, false);
 		calendarToSave.addWorkDay(workDayMonDay);
 
@@ -125,8 +124,8 @@ class CalendarManagementUnitTest extends BaseTestClass {
 		CustomCalendar calendarToSave = new CustomCalendar("Test Calendar Business Calendar");
 //		customCal.saveAndFlush(calenderToSave);
 
-		OffsetTime startTime = OffsetTime.of(9, 0, 0, 0, ZoneOffset.UTC);
-		OffsetTime endTime = OffsetTime.of(5, 0, 0, 0, ZoneOffset.UTC);
+		LocalTime startTime = LocalTime.of(9, 0, 0, 0);
+		LocalTime endTime = LocalTime.of(5, 0, 0, 0);
 		for (DayOfWeek dayOfWeek : DayOfWeek.values()) {
 			boolean isWorkDay = true;
 			if (dayOfWeek.equals(DayOfWeek.SATURDAY) || dayOfWeek.equals(DayOfWeek.SUNDAY)) {

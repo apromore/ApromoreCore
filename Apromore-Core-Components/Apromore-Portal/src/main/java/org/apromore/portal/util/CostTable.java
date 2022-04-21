@@ -36,7 +36,7 @@ import lombok.extern.jackson.Jacksonized;
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CostTable {
-    private final Double DEFAULT_COST = 1.0D;
+    private final Double DEFAULT_COST = 0.0D;
 
     @Getter
     private final String perspective;

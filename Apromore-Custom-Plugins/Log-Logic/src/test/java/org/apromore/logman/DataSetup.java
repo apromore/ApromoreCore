@@ -22,16 +22,15 @@
 
 package org.apromore.logman;
 
+import java.io.File;
+import java.time.DayOfWeek;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
 import org.apromore.calendar.builder.CalendarModelBuilder;
 import org.apromore.calendar.model.CalendarModel;
 import org.deckfour.xes.in.XesXmlGZIPParser;
 import org.deckfour.xes.in.XesXmlParser;
 import org.deckfour.xes.model.XLog;
-
-import java.io.File;
-import java.time.DayOfWeek;
-import java.time.OffsetTime;
-import java.time.ZoneOffset;
 
 public class DataSetup {
     private XLog readXESFile(String fullFilePath) {
@@ -62,49 +61,91 @@ public class DataSetup {
         ZoneOffset offset = ZoneOffset.UTC;
         CalendarModelBuilder builder = new CalendarModelBuilder().withZoneId(offset.getId());
         
-        builder.withWorkDay(DayOfWeek.MONDAY, OffsetTime.of(0, 0, 0, 0, offset), OffsetTime.of(23, 59, 59, 0, offset), false);
-        builder.withWorkDay(DayOfWeek.TUESDAY, OffsetTime.of(0, 0, 0, 0, offset), OffsetTime.of(23, 59, 59, 0, offset), false);
-        builder.withWorkDay(DayOfWeek.WEDNESDAY, OffsetTime.of(0, 0, 0, 0, offset), OffsetTime.of(23, 59, 59, 0, offset), false);
-        builder.withWorkDay(DayOfWeek.THURSDAY, OffsetTime.of(0, 0, 0, 0, offset), OffsetTime.of(23, 59, 59, 0, offset), false);
-        
-        builder.withWorkDay(DayOfWeek.FRIDAY, OffsetTime.of(9, 0, 0, 0, offset), OffsetTime.of(10, 0, 0, 0, offset), true);
-        
-        builder.withWorkDay(DayOfWeek.SATURDAY, OffsetTime.of(0, 0, 0, 0, offset), OffsetTime.of(23, 59, 59, 0, offset), false);
-        builder.withWorkDay(DayOfWeek.SUNDAY, OffsetTime.of(0, 0, 0, 0, offset), OffsetTime.of(23, 59, 59, 0, offset), false);
-        
+        builder.withWorkDay(DayOfWeek.MONDAY,
+            LocalTime.of(0, 0, 0, 0),
+            LocalTime.of(23, 59, 59, 0), false);
+        builder.withWorkDay(DayOfWeek.TUESDAY,
+            LocalTime.of(0, 0, 0, 0),
+            LocalTime.of(23, 59, 59, 0), false);
+        builder.withWorkDay(DayOfWeek.WEDNESDAY,
+            LocalTime.of(0, 0, 0, 0),
+            LocalTime.of(23, 59, 59, 0), false);
+        builder.withWorkDay(DayOfWeek.THURSDAY,
+            LocalTime.of(0, 0, 0, 0),
+            LocalTime.of(23, 59, 59, 0), false);
+
+        builder.withWorkDay(DayOfWeek.FRIDAY,
+            LocalTime.of(9, 0, 0, 0),
+            LocalTime.of(10, 0, 0, 0), true);
+
+        builder.withWorkDay(DayOfWeek.SATURDAY,
+            LocalTime.of(0, 0, 0, 0),
+            LocalTime.of(23, 59, 59, 0), false);
+        builder.withWorkDay(DayOfWeek.SUNDAY,
+            LocalTime.of(0, 0, 0, 0),
+            LocalTime.of(23, 59, 59, 0), false);
+
         return builder.build();
     }
-    
+
     public CalendarModel getFriday_10To11AM_Calendar() {
         ZoneOffset offset = ZoneOffset.UTC;
         CalendarModelBuilder builder = new CalendarModelBuilder().withZoneId(offset.getId());
-        
-        builder.withWorkDay(DayOfWeek.MONDAY, OffsetTime.of(0, 0, 0, 0, offset), OffsetTime.of(23, 59, 59, 0, offset), false);
-        builder.withWorkDay(DayOfWeek.TUESDAY, OffsetTime.of(0, 0, 0, 0, offset), OffsetTime.of(23, 59, 59, 0, offset), false);
-        builder.withWorkDay(DayOfWeek.WEDNESDAY, OffsetTime.of(0, 0, 0, 0, offset), OffsetTime.of(23, 59, 59, 0, offset), false);
-        builder.withWorkDay(DayOfWeek.THURSDAY, OffsetTime.of(0, 0, 0, 0, offset), OffsetTime.of(23, 59, 59, 0, offset), false);
-        
-        builder.withWorkDay(DayOfWeek.FRIDAY, OffsetTime.of(10, 0, 0, 0, offset), OffsetTime.of(11, 0, 0, 0, offset), true);
-        
-        builder.withWorkDay(DayOfWeek.SATURDAY, OffsetTime.of(0, 0, 0, 0, offset), OffsetTime.of(23, 59, 59, 0, offset), false);
-        builder.withWorkDay(DayOfWeek.SUNDAY, OffsetTime.of(0, 0, 0, 0, offset), OffsetTime.of(23, 59, 59, 0, offset), false);
-        
+
+        builder.withWorkDay(DayOfWeek.MONDAY,
+            LocalTime.of(0, 0, 0, 0),
+            LocalTime.of(23, 59, 59, 0), false);
+        builder.withWorkDay(DayOfWeek.TUESDAY,
+            LocalTime.of(0, 0, 0, 0),
+            LocalTime.of(23, 59, 59, 0), false);
+        builder.withWorkDay(DayOfWeek.WEDNESDAY,
+            LocalTime.of(0, 0, 0, 0),
+            LocalTime.of(23, 59, 59, 0), false);
+        builder.withWorkDay(DayOfWeek.THURSDAY,
+            LocalTime.of(0, 0, 0, 0),
+            LocalTime.of(23, 59, 59, 0), false);
+
+        builder.withWorkDay(DayOfWeek.FRIDAY,
+            LocalTime.of(10, 0, 0, 0),
+            LocalTime.of(11, 0, 0, 0), true);
+
+        builder.withWorkDay(DayOfWeek.SATURDAY,
+            LocalTime.of(0, 0, 0, 0),
+            LocalTime.of(23, 59, 59, 0), false);
+        builder.withWorkDay(DayOfWeek.SUNDAY,
+            LocalTime.of(0, 0, 0, 0),
+            LocalTime.of(23, 59, 59, 0), false);
+
         return builder.build();
     }
-    
+
     public CalendarModel getFriday_11To12AM_Calendar() {
         ZoneOffset offset = ZoneOffset.UTC;
         CalendarModelBuilder builder = new CalendarModelBuilder().withZoneId(offset.getId());
-        
-        builder.withWorkDay(DayOfWeek.MONDAY, OffsetTime.of(0, 0, 0, 0, offset), OffsetTime.of(23, 59, 59, 0, offset), false);
-        builder.withWorkDay(DayOfWeek.TUESDAY, OffsetTime.of(0, 0, 0, 0, offset), OffsetTime.of(23, 59, 59, 0, offset), false);
-        builder.withWorkDay(DayOfWeek.WEDNESDAY, OffsetTime.of(0, 0, 0, 0, offset), OffsetTime.of(23, 59, 59, 0, offset), false);
-        builder.withWorkDay(DayOfWeek.THURSDAY, OffsetTime.of(0, 0, 0, 0, offset), OffsetTime.of(23, 59, 59, 0, offset), false);
-        
-        builder.withWorkDay(DayOfWeek.FRIDAY, OffsetTime.of(11, 0, 0, 0, offset), OffsetTime.of(12, 0, 0, 0, offset), true);
-        
-        builder.withWorkDay(DayOfWeek.SATURDAY, OffsetTime.of(0, 0, 0, 0, offset), OffsetTime.of(23, 59, 59, 0, offset), false);
-        builder.withWorkDay(DayOfWeek.SUNDAY, OffsetTime.of(0, 0, 0, 0, offset), OffsetTime.of(23, 59, 59, 0, offset), false);
+
+        builder.withWorkDay(DayOfWeek.MONDAY,
+            LocalTime.of(0, 0, 0, 0),
+            LocalTime.of(23, 59, 59, 0), false);
+        builder.withWorkDay(DayOfWeek.TUESDAY,
+            LocalTime.of(0, 0, 0, 0),
+            LocalTime.of(23, 59, 59, 0), false);
+        builder.withWorkDay(DayOfWeek.WEDNESDAY,
+            LocalTime.of(0, 0, 0, 0),
+            LocalTime.of(23, 59, 59, 0), false);
+        builder.withWorkDay(DayOfWeek.THURSDAY,
+            LocalTime.of(0, 0, 0, 0),
+            LocalTime.of(23, 59, 59, 0), false);
+
+        builder.withWorkDay(DayOfWeek.FRIDAY,
+            LocalTime.of(11, 0, 0, 0),
+            LocalTime.of(12, 0, 0, 0), true);
+
+        builder.withWorkDay(DayOfWeek.SATURDAY,
+            LocalTime.of(0, 0, 0, 0),
+            LocalTime.of(23, 59, 59, 0), false);
+        builder.withWorkDay(DayOfWeek.SUNDAY,
+            LocalTime.of(0, 0, 0, 0),
+            LocalTime.of(23, 59, 59, 0), false);
         
         return builder.build();
     }

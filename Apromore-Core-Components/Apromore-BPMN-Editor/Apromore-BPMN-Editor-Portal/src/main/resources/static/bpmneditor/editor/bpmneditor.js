@@ -68169,11 +68169,12 @@ function updateObjects(element, icons, bpmnFactory, bpmnjs, eventBus) {
 function updateIndices() {
   let setContainer = $('#ap-bpmn-icon-set');
   $('.icon-item', setContainer).each((index, itemEl) => {
-    $(itemEl).data('icon-index', index);
-    $('.icon-url', itemEl).data('icon-index', index);
-    $('.icon-text', itemEl).data('icon-index', index);
-    $('.icon-name', itemEl).data('icon-index', index);
-    $('.remove', itemEl).data('icon-index', index);
+    //Update DOM so the updated data-icon-index can be used as a selector
+    $(itemEl).attr('data-icon-index', index);
+    $('.icon-url', itemEl).attr('data-icon-index', index);
+    $('.icon-text', itemEl).attr('data-icon-index', index);
+    $('.icon-name', itemEl).attr('data-icon-index', index);
+    $('.remove', itemEl).attr('data-icon-index', index);
   })
 }
 
@@ -68196,7 +68197,7 @@ function renderIconSet(element, icons, bpmnFactory, bpmnjs, translate, eventBus)
   function showPickerSetFor(item, index) {
     $(SET_PICKER_SEL).detach().insertAfter(item);
     $(SET_PICKER_SEL).show();
-    $(SET_PICKER_SEL).data("icon-index", index);
+    $(SET_PICKER_SEL).attr('data-icon-index', index);
     let currentIcon = $(`#ap-bpmn-icon-set .icon-name[data-icon-index=${index}]`);
     let currentIconName = currentIcon.data('icon-name')
     selectIcon(currentIconName);
@@ -68219,7 +68220,7 @@ function renderIconSet(element, icons, bpmnFactory, bpmnjs, translate, eventBus)
       updateObjects(element, icons, bpmnFactory, bpmnjs, eventBus);
     });
     iconEl.on('click', () => {
-      let index = $(event.currentTarget).data("icon-index");
+      let index = $(event.currentTarget).attr('data-icon-index');
       if (currentIndex === index) {
         $(SET_PICKER_SEL).hide();
         currentIndex = -1;
@@ -68230,7 +68231,7 @@ function renderIconSet(element, icons, bpmnFactory, bpmnjs, translate, eventBus)
     });
     eraseEl.on('click', () => {
       $(SET_PICKER_SEL).hide();
-      let index = $(event.target).data("icon-index");
+      let index = $(event.target).attr('data-icon-index');
       let row = $(`#ap-bpmn-icon-set .icon-item[data-icon-index=${index}]`);
       row.remove();
       updateIndices();
@@ -68281,7 +68282,7 @@ module.exports = function(options) {
         } else {
           newIconName = this.id;
         }
-        let index = $(SET_PICKER_SEL).data("icon-index");
+        let index = $(SET_PICKER_SEL).attr('data-icon-index');
         let rowIcon = $(`#ap-bpmn-icon-set .icon-name[data-icon-index=${index}]`);
         rowIcon.data('icon-name', newIconName);
         let iconNameEl = $('span', rowIcon);

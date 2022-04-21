@@ -23,10 +23,7 @@
 package org.apromore.calendar.service;
 
 import java.time.DayOfWeek;
-import java.time.Instant;
 import java.time.LocalTime;
-import java.time.OffsetTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -36,6 +33,7 @@ import lombok.Setter;
 import org.apromore.calendar.exception.CalendarAlreadyExistsException;
 import org.apromore.calendar.exception.CalendarNotExistsException;
 import org.apromore.calendar.model.CalendarModel;
+import org.apromore.calendar.model.Calendars;
 import org.apromore.calendar.model.HolidayModel;
 import org.apromore.calendar.model.WorkDayModel;
 import org.apromore.calendar.util.CalendarUtil;
@@ -75,48 +73,26 @@ public class CustomCalendarService implements CalendarService {
     private CustomMapper modelMapper;
 
     @Override
-    public CalendarModel createGenericCalendar(String description, String username, boolean weekendsOff, String zoneId)
+    public CalendarModel createGenericCalendar(String desc, String username, boolean weekendsOff, String zoneId)
         throws CalendarAlreadyExistsException {
-
-        OffsetTime startTime = OffsetTime.of(LocalTime.MIN, ZoneId.of(zoneId).getRules().getOffset(Instant.now()));
-
-        OffsetTime endTime = OffsetTime.of(LocalTime.MAX, ZoneId.of(zoneId).getRules().getOffset(Instant.now()));
-
-        CustomCalendar customCalendar = createCalendar(description, username, weekendsOff, startTime, endTime);
+        CustomCalendar customCalendar = createCalendar(desc, username, weekendsOff, LocalTime.MIN, LocalTime.MAX);
         CalendarModel calendarModel = modelMapper.getMapper().map(customCalendar, CalendarModel.class);
         return calendarModel;
     }
 
-    private CustomCalendar createGenericCalendar(OffsetTime start, OffsetTime end) {
-
-        final CustomCalendar calendar = new CustomCalendar("Generic 24/7");
-        for (WorkDay workDay : getWorkDays(start, end, false)) {
-            calendar.addWorkDay(workDay);
-        }
-        return calendar;
-
-    }
-
+    // Return an absolute calendar object to calculate duration by the diff between start/end
+    // for performance efficiency.
     @Override
     public CalendarModel getGenericCalendar() {
-
-        OffsetTime startTime = OffsetTime.of(LocalTime.MIN, ZoneId.of("UTC").getRules().getOffset(Instant.now()));
-
-        OffsetTime endTime = OffsetTime.of(LocalTime.MAX, ZoneId.of("UTC").getRules().getOffset(Instant.now()));
-
-        CustomCalendar customCalendar = createGenericCalendar(startTime, endTime);
-
-        return modelMapper.getMapper().map(customCalendar, CalendarModel.class);
+        return Calendars.INSTANCE.absoluteCalendar();
     }
 
     @Override
     public CalendarModel createBusinessCalendar(String description, String username, boolean weekendsOff, String zoneId)
         throws CalendarAlreadyExistsException {
 
-        OffsetTime startTime = OffsetTime.of(LocalTime.of(9, 0), ZoneId.of(zoneId).getRules().getOffset(Instant.now()));
-        OffsetTime endTime = OffsetTime.of(LocalTime.of(17, 0), ZoneId.of(zoneId).getRules().getOffset(Instant.now()));
-
-        CustomCalendar customCalendar = createCalendar(description, username, weekendsOff, startTime, endTime);
+        CustomCalendar customCalendar = createCalendar(description, username, weekendsOff,
+            LocalTime.of(9, 0), LocalTime.of(17, 0));
         CalendarModel calendarModel = modelMapper.getMapper().map(customCalendar, CalendarModel.class);
 
         return calendarModel;
@@ -156,8 +132,8 @@ public class CustomCalendarService implements CalendarService {
         return calendarModels;
     }
 
-    private CustomCalendar createCalendar(String description, String username, boolean weekendsOff, OffsetTime start,
-                                          OffsetTime end)
+    private CustomCalendar createCalendar(String description, String username, boolean weekendsOff, LocalTime start,
+                                          LocalTime end)
         throws CalendarAlreadyExistsException {
 
         String name = getUniqueCalendarName(description);
@@ -173,7 +149,7 @@ public class CustomCalendarService implements CalendarService {
 
     }
 
-    private List<WorkDay> getWorkDays(OffsetTime start, OffsetTime end, boolean weekendOff) {
+    private List<WorkDay> getWorkDays(LocalTime start, LocalTime end, boolean weekendOff) {
 
         Predicate<DayOfWeek> isWeekendOff = CalendarUtil.getWeekendOffPRedicate(weekendOff);
         List<WorkDay> workDaysList = new ArrayList<WorkDay>();
@@ -182,14 +158,6 @@ public class CustomCalendarService implements CalendarService {
             workDaysList.add(new WorkDay(dayOfWeek, start, end, !isWeekendOff.test(dayOfWeek)));
         }
         return workDaysList;
-
-    }
-
-    private void validateCalendarExists(CustomCalendar calendar) throws CalendarAlreadyExistsException {
-
-        if (calendar != null) {
-            throw new CalendarAlreadyExistsException("Calendar already exists");
-        }
 
     }
 

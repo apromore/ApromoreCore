@@ -23,11 +23,11 @@
 package org.apromore.plugin.portal.calendar.controllers;
 
 import java.util.List;
-import org.apromore.calendar.model.CalendarModel;
 import org.apromore.calendar.service.CalendarService;
 import org.apromore.commons.datetime.DateTimeUtils;
 import org.apromore.dao.model.Log;
 import org.apromore.plugin.portal.calendar.Constants;
+import org.apromore.plugin.portal.calendar.model.Calendar;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.service.EventLogService;
 import org.apromore.zk.event.CalendarEvents;
@@ -48,7 +48,7 @@ import org.zkoss.zul.Window;
 @VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
 public class DeleteConfirm extends SelectorComposer<Window> implements LabelSupplier {
 
-    private CalendarModel calendarItem;
+    private Calendar calendarItem;
     private Long calendarId;
 
     @WireVariable("calendarService")
@@ -106,7 +106,7 @@ public class DeleteConfirm extends SelectorComposer<Window> implements LabelSupp
     public void doAfterCompose(Window win) throws Exception {
         super.doAfterCompose(win);
 
-        calendarItem = (CalendarModel) Executions.getCurrent().getArg().get("calendarItem");
+        calendarItem = (Calendar) Executions.getCurrent().getArg().get("calendarItem");
         calendarId = calendarItem.getId();
         populateRelatedLogs();
     }

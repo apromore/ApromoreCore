@@ -39,6 +39,7 @@ import org.apromore.plugin.portal.PortalProcessAttributePlugin;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.FolderTreeNode;
+import org.apromore.portal.common.VersionSummaryTypes;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.model.FolderSummaryType;
 import org.apromore.portal.model.FolderType;
@@ -47,6 +48,7 @@ import org.apromore.portal.model.PermissionType;
 import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.VersionSummaryType;
+import org.apromore.portal.util.VersionSummaryComparator;
 import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
 import org.zkoss.zkplus.spring.SpringUtil;
@@ -127,6 +129,7 @@ public class SummaryItemRenderer implements ListitemRenderer {
         listItem.appendChild(renderDomain(process));
         listItem.appendChild(renderVersionRanking(process));
         listItem.appendChild(renderProcessLastVersion(process));
+        listItem.appendChild(renderProcessCreatedDate(process));
         listItem.appendChild(renderProcessLastUpdate(process));
         listItem.appendChild(renderOwner(process));
 
@@ -183,6 +186,7 @@ public class SummaryItemRenderer implements ListitemRenderer {
         listItem.appendChild(renderDomain(log));
         listItem.appendChild(renderNA());
         listItem.appendChild(renderNA());
+        listItem.appendChild(renderLogLastUpdate(log));
         listItem.appendChild(renderLogLastUpdate(log));
         listItem.appendChild(renderOwner(log));
 
@@ -251,7 +255,7 @@ public class SummaryItemRenderer implements ListitemRenderer {
 
         // Skip 5 columns that don't apply to folders
         Listcell spacer = new Listcell();
-        spacer.setSpan(6);
+        spacer.setSpan(7);
         listitem.appendChild(spacer);
 
         /*
@@ -298,6 +302,7 @@ public class SummaryItemRenderer implements ListitemRenderer {
         listitem.appendChild(new Listcell(""));
         listitem.appendChild(new Listcell(""));
         listitem.appendChild(new Listcell(""));
+        listitem.appendChild(renderFolderDate(folder.getCreatedDate()));
         listitem.appendChild(renderFolderDate(folder.getLastUpdate()));
         listitem.appendChild(renderFolderOwner(folder.getOwnerName()));
         // Append columns for any folder attributes supplied via plugins
@@ -428,6 +433,19 @@ public class SummaryItemRenderer implements ListitemRenderer {
     protected Listcell renderProcessLastVersion(final ProcessSummaryType process) {
         return wrapIntoListCell(new Label(process.getLastVersion()));
     }
+
+    protected Listcell renderProcessCreatedDate(final ProcessSummaryType process) {
+        String createDate = process.getCreateDate();
+       if (createDate != null) {
+            if (dateTimeFormatter != null) {
+                createDate = DateTimeUtils.normalize(createDate, dateTimeFormatter);
+            } else {
+                createDate = DateTimeUtils.normalize(createDate);
+            }
+        }
+        return wrapIntoListCell(new Label(createDate));
+    }
+
 
     protected Listcell renderProcessLastUpdate(final ProcessSummaryType process) {
         List<VersionSummaryType> summaries = process.getVersionSummaries();
@@ -589,13 +607,8 @@ public class SummaryItemRenderer implements ListitemRenderer {
     }
 
     private VersionSummaryType getLatestVersion(List<VersionSummaryType> versionSummaries) {
-        VersionSummaryType result = null;
-        for (VersionSummaryType version : versionSummaries) {
-            if (result == null || (version.getVersionNumber().compareTo(result.getVersionNumber()) > 0)) {
-                result = version;
-            }
-        }
-        return result;
+        versionSummaries.sort(new VersionSummaryComparator(true, VersionSummaryTypes.BY_VERSION));
+        return versionSummaries.get(versionSummaries.size()-1);
     }
 
     private String getPersistedView() {

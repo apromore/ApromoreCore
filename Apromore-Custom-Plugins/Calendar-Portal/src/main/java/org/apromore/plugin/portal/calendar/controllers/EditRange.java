@@ -44,7 +44,7 @@ public class EditRange extends SelectorComposer<Window> implements LabelSupplier
 
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(EditRange.class);
     private Map argMap = Executions.getCurrent().getArg();
-    private Calendar parentController = (Calendar) argMap.get("parentController");
+    private CalendarController parentController = (CalendarController) argMap.get("parentController");
     private int dowIndex = (Integer) argMap.get("dowIndex");
     private int index = (Integer) argMap.get("index");
     private Date start = (Date) argMap.get("start");

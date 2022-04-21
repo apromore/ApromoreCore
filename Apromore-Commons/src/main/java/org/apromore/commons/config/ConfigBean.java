@@ -112,6 +112,9 @@ public class ConfigBean {
     // Switch for PD on new data layer
     private boolean enableNewPD;
 
+    // Switch to Conformance Checker on new data layer
+    private boolean enableNewConformanceCheck;
+
     // Maximum upload size
     private long maxUploadSize;
 

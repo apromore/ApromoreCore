@@ -20,5 +20,6 @@ dependencies {
 	implementation project(':Apromore-Core-Components:Apromore-Portal')
     implementation project(':Apromore-Calendar')
 	implementation project(':Apromore-Clients:manager-client')
+	implementation ('org.modelmapper:modelmapper:3.0.0')
     
 }
