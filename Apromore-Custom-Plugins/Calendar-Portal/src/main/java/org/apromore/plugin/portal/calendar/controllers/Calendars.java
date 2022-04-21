@@ -179,7 +179,6 @@ public class Calendars extends SelectorComposer<Window> implements LabelSupplier
                 // propagate to session queue (other tabs/plugins)
                 CalendarModel calendarItem = (CalendarModel) event.getData();
                 Long calendarId = calendarItem.getId();
-                appliedCalendarId = calendarId;
                 List<Integer> logIds = getAssociatedLogIds(calendarId);
                 sessionCalendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_CHANGED, null, calendarId));
                 sessionCalendarEventQueue.publish(new Event(CalendarEvents.ON_CALENDAR_REFRESH, null, logIds));
