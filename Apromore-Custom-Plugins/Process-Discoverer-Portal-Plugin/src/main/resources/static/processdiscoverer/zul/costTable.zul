@@ -74,7 +74,8 @@
     </div>
     <div height="42px" hflex="1" sclass="ap-window-footer-actions">
       <button label="${arg.viewOnly ? 'Close': 'Cancel'}" forward="onClick=costTableWindow.onClose" />
-      <button visible="${!arg.viewOnly}" id="applyCost" label="Apply Cost" forward="onClick=costTableWindow.onApplyCost" />
+      <button visible="${!arg.viewOnly}" id="applyCost" label="Apply costs"
+              forward="onClick=costTableWindow.onApplyCost" />
     </div>
   </vbox>
 </window>
