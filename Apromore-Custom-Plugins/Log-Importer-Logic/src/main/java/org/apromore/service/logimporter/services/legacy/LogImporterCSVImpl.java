@@ -54,8 +54,13 @@ import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
+@ConditionalOnProperty(
+    value = "new-data-layer.enabled",
+    havingValue = "false",
+    matchIfMissing = true)
 @Service("csvLogImporter")
 public class LogImporterCSVImpl extends AbstractLogImporter implements Constants {
 
