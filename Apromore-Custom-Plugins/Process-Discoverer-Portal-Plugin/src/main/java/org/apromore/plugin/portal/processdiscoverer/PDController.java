@@ -24,6 +24,14 @@ package org.apromore.plugin.portal.processdiscoverer;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import javax.servlet.http.HttpSession;
 import lombok.Getter;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.dao.model.User;
@@ -89,18 +97,9 @@ import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Messagebox.ClickEvent;
 import org.zkoss.zul.Window;
-
-import javax.servlet.http.HttpSession;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 import static org.apromore.logman.attribute.graph.MeasureType.DURATION;
 import static org.apromore.logman.attribute.graph.MeasureType.FREQUENCY;
+
 
 /**
  * PDController is the top-level application object to manage PD plugin as a
@@ -192,8 +191,9 @@ public class PDController extends BaseController implements Composer<Component>,
 
     @Getter
     private String sourceLogName;
-    private int sourceLogId; // plugin maintain log ID for Filter; Filter remove value to avoid
-                             // conflicts from multiple plugins
+    // plugin maintain log ID for Filter; Filter remove value to avoid
+    // conflicts from multiple plugins
+    private int sourceLogId;
 
     private InteractiveMode interactionMode = InteractiveMode.MODEL_MODE; // initial mode
 
@@ -223,10 +223,12 @@ public class PDController extends BaseController implements Composer<Component>,
     // Execution
     private boolean preparePluginSessionId() {
         pluginSessionId = Executions.getCurrent().getParameter("id");
-        if (pluginSessionId == null)
+        if (pluginSessionId == null) {
             return false;
-        if (UserSessionManager.getEditSession(pluginSessionId) == null)
+        }
+        if (UserSessionManager.getEditSession(pluginSessionId) == null) {
             return false;
+        }
         return true;
     }
 
@@ -236,16 +238,18 @@ public class PDController extends BaseController implements Composer<Component>,
     // or something has made it crashed
     private boolean preparePortalSession(String pluginSessionId) {
         ApromoreSession portalSession = UserSessionManager.getEditSession(pluginSessionId);
-        if (portalSession == null)
+        if (portalSession == null) {
             return false;
+        }
         portalContext = (PortalContext) portalSession.get("context");
         logSummary = (LogSummaryType) portalSession.get("selection");
 
         sourceLogId = logSummary.getId();
         sourceLogName = logSummary.getName();
 
-        if (portalContext == null || logSummary == null)
+        if (portalContext == null || logSummary == null) {
             return false;
+        }
         try {
             FolderType currentFolder = portalContext.getCurrentFolder();
             if (currentFolder == null) {
@@ -327,8 +331,7 @@ public class PDController extends BaseController implements Composer<Component>,
                 if (!processAnalyst.filter((List<LogFilterRule>)session.get("logFilters"))) {
                     Messagebox.show("The log is empty after applying log filter criteria. Stop opening Process Discoverer.");
                     return;
-                }
-                else {
+                } else {
                     LOGGER.info("Applied filter criteria to the log before opening Process Discoverer.");
                 }
             }
@@ -348,7 +351,9 @@ public class PDController extends BaseController implements Composer<Component>,
             bpmnExportController = pdFactory.createBPMNExportController(this);
             costTableController = pdFactory.createCostTableController(this);
             toolbarController = pdFactory.createToolbarController(this);
-            costTableController.setViewOnly(AccessType.VIEWER.equals(currentUserAccessType) || AccessType.RESTRICTED.equals(currentUserAccessType));
+            costTableController.setViewOnly(
+                AccessType.VIEWER.equals(currentUserAccessType) || AccessType.RESTRICTED.equals(currentUserAccessType)
+            );
 
             initialize();
             LOGGER.debug("Session ID = " + ((HttpSession) Sessions.getCurrent().getNativeSession()).getId());
@@ -357,15 +362,13 @@ public class PDController extends BaseController implements Composer<Component>,
             // Finally, store objects to be cleaned up when the session timeouts
             comp.getDesktop().setAttribute("processAnalyst", processAnalyst);
             comp.getDesktop().setAttribute("pluginSessionId", pluginSessionId);
-        }
-        catch (InvalidDataException ex) {
-            String errorMsg = "Missing log data, " +
-                getLabel("missingActivity_title") + ", or " +
-                getLabel("tooManyActivities_title");
+        } catch (InvalidDataException ex) {
+            String errorMsg = "Missing log data, "
+                + getLabel("missingActivity_title") + ", or "
+                + getLabel("tooManyActivities_title");
             Messagebox.show(getLabel("initError_message") + ".\n Possible cause: " + errorMsg);
             LOGGER.error("Error occurred while initializing. Error message: " + ex.getMessage(), ex);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             Messagebox.show(getLabel("initError_message") + ".\n Error message: "
                 + (ex.getMessage() == null ? "Internal errors occurred." : ex.getMessage()));
             LOGGER.error("Error occurred while initializing: " + ex.getMessage(), ex);
@@ -486,8 +489,9 @@ public class PDController extends BaseController implements Composer<Component>,
     }
 
     public void changeLayout() throws Exception {
-        if (this.interactionMode != InteractiveMode.MODEL_MODE)
+        if (this.interactionMode != InteractiveMode.MODEL_MODE) {
             return;
+        }
         graphVisController.changeLayout();
     }
 
@@ -570,16 +574,18 @@ public class PDController extends BaseController implements Composer<Component>,
      * @param reset: true to reset the graph zoom and panning
      */
     public void updateUI(boolean reset) {
-        if (this.interactionMode != InteractiveMode.MODEL_MODE)
+        if (this.interactionMode != InteractiveMode.MODEL_MODE) {
             return;
+        }
         try {
             logStatsController.updateUI(contextData);
             timeStatsController.updateUI(contextData);
             viewSettingsController.updateUI(contextData);
             userOptions.setRetainZoomPan(!reset);
             generateViz();
-            if (!reset)
+            if (!reset) {
                 graphVisController.centerToWindow();
+            }
             toolbarController.setDisabledFilterClear(this.getProcessAnalyst().isCurrentFilterCriteriaEmpty());
             toolbarController.updateUndoRedoButtons(actionManager.canUndo(), actionManager.canRedo());
         } catch (Exception ex) {
@@ -594,8 +600,9 @@ public class PDController extends BaseController implements Composer<Component>,
     public void generateViz() {
         long timer1 = System.currentTimeMillis();
 
-        if (this.interactionMode != InteractiveMode.MODEL_MODE)
+        if (this.interactionMode != InteractiveMode.MODEL_MODE) {
             return;
+        }
 
         if (processAnalyst.hasEmptyData()) {
             Messagebox.show(getLabel("failedViz_message"), getLabel("title_text"), Messagebox.OK,
@@ -639,8 +646,9 @@ public class PDController extends BaseController implements Composer<Component>,
     }
 
     public void setBPMNView(boolean isBPMNView) {
-        if (this.interactionMode != InteractiveMode.MODEL_MODE)
+        if (this.interactionMode != InteractiveMode.MODEL_MODE) {
             return;
+        }
         userOptions.setBPMNMode(isBPMNView);
         graphSettingsController.updateParallelism(isBPMNView);
         toolbarController.setDisabledModelExport(!isBPMNView);
@@ -690,8 +698,9 @@ public class PDController extends BaseController implements Composer<Component>,
      */
     private boolean setInteractiveMode(InteractiveMode newMode) {
         if (newMode == InteractiveMode.ANIMATION_MODE) {
-            if (this.interactionMode == InteractiveMode.TRACE_MODE)
+            if (this.interactionMode == InteractiveMode.TRACE_MODE) {
                 return false; // invalid move
+            }
             viewSettingsController.setDisabled(true);
             graphSettingsController.setDisabled(true);
             logStatsController.setDisabled(true);
@@ -713,8 +722,9 @@ public class PDController extends BaseController implements Composer<Component>,
             caseDetailsController.setDisabled(false);
             caseVariantDetailsController.setDisabled(false);
         } else if (newMode == InteractiveMode.TRACE_MODE) {
-            if (this.interactionMode == InteractiveMode.ANIMATION_MODE)
+            if (this.interactionMode == InteractiveMode.ANIMATION_MODE) {
                 return false; // invalid move
+            }
             viewSettingsController.setDisabled(true);
             graphSettingsController.setDisabled(true);
             logStatsController.setDisabled(true);
@@ -737,8 +747,9 @@ public class PDController extends BaseController implements Composer<Component>,
     }
 
     public void setPerspective(String value, String label) throws Exception {
-        if (this.interactionMode != InteractiveMode.MODEL_MODE)
+        if (this.interactionMode != InteractiveMode.MODEL_MODE) {
             return;
+        }
         if (!value.equals(userOptions.getMainAttributeKey())) {
             boolean disableVariantInspector = !"concept:name".equals(value);
             toolbarController.setDisabledAnimation(!value.equals(configData.getDefaultAttribute()));
