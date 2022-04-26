@@ -20,19 +20,15 @@
  * #L%
  */
 
-package org.apromore.test.storage;
+package org.apromore.storage.factory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
-import java.io.InputStream;
 import java.net.URISyntaxException;
-
 import org.apromore.storage.FileStorageClient;
 import org.apromore.storage.StorageClient;
 import org.apromore.storage.exception.ObjectNotFoundException;
-import org.apromore.storage.factory.StorageManagementFactory;
-import org.apromore.storage.factory.StorageManagementFactoryImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -41,21 +37,21 @@ class StorageFactoryUnitTest {
     StorageManagementFactory<StorageClient> storageManagementFactory;
 
     @BeforeEach
-    void setup() {
+    void setUp() {
         storageManagementFactory = new StorageManagementFactoryImpl<StorageClient>();
     }
 
     @Test
     void testFileStorageFactory() throws ObjectNotFoundException, URISyntaxException {
-        //	Given
+        // Given
         ClassLoader classLoader = StorageFactoryUnitTest.class.getClassLoader();
         File file = new File(classLoader.getResource("baseFolder/test.csv").getFile());
 
-        //	When
+        // When
         StorageClient client = storageManagementFactory.getStorageClient("FILE::" + file.getParent());
-        InputStream stream = client.getInputStream("", "test.csv");
+        client.getInputStream("", "test.csv");
 
-        //	Then
+        // Then
         assertThat(client).isInstanceOf(FileStorageClient.class);
 
     }

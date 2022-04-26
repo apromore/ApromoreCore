@@ -19,9 +19,11 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+
 package org.apromore.storage.exception;
 
 /**
+ * Exception denoting an error when creating ab object.
  * @author frank
  */
 public class ObjectCreationException extends Exception {
@@ -32,7 +34,6 @@ public class ObjectCreationException extends Exception {
         super(message);
         this.message = message;
     }
-
 
 
 }
