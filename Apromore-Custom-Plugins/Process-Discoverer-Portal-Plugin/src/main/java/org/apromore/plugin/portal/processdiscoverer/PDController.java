@@ -223,13 +223,7 @@ public class PDController extends BaseController implements Composer<Component>,
     // Execution
     private boolean preparePluginSessionId() {
         pluginSessionId = Executions.getCurrent().getParameter("id");
-        if (pluginSessionId == null) {
-            return false;
-        }
-        if (UserSessionManager.getEditSession(pluginSessionId) == null) {
-            return false;
-        }
-        return true;
+        return !(pluginSessionId == null || UserSessionManager.getEditSession(pluginSessionId) == null);
     }
 
     // True means the current portal session is not valid to go ahead any more
@@ -244,12 +238,13 @@ public class PDController extends BaseController implements Composer<Component>,
         portalContext = (PortalContext) portalSession.get("context");
         logSummary = (LogSummaryType) portalSession.get("selection");
 
-        sourceLogId = logSummary.getId();
-        sourceLogName = logSummary.getName();
-
         if (portalContext == null || logSummary == null) {
             return false;
         }
+
+        sourceLogId = logSummary.getId();
+        sourceLogName = logSummary.getName();
+
         try {
             FolderType currentFolder = portalContext.getCurrentFolder();
             if (currentFolder == null) {
