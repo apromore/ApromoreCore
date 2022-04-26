@@ -135,9 +135,8 @@ public class LogMetaData {
 
         if (dateTypeCount != count) {
             List<Integer> missingIndexList = findMissingIndex(indexList, dateTypeCount);
-            LOGGER.info(
-                "Only specified data type for " + dateTypeCount + " of " + header.size() + " headers: " + header
-                    + ". Add them to String data type");
+            LOGGER.info("Only specified data type for {} of {} headers: {}. Add missing index to String data type",
+                dateTypeCount, header.size(), header);
             stringAttributesPos.addAll(missingIndexList);
         }
     }
