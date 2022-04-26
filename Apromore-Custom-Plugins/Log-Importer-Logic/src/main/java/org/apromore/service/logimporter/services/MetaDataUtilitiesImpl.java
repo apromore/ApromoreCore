@@ -312,6 +312,7 @@ public class MetaDataUtilitiesImpl implements MetaDataUtilities {
                     doubleAttributesPos.add(i);
                     break;
                 case STRING:
+                case BOOLEAN:
                     stringAttributesPos.add(i);
                     break;
                 case TIMESTAMP:
