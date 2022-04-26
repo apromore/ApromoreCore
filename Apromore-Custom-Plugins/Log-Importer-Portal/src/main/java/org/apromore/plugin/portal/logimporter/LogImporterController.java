@@ -458,10 +458,8 @@ public class LogImporterController extends SelectorComposer<Window> implements C
         return logModel;
     }
 
-    public void storeMetadataAsJSON(LogMetaData logMetaData, Log log)
+    public void storeMetadataAsJSON(LogMetaData logMetaData, Log log, String username)
         throws UserNotFoundException {
-
-        String username = portalContext.getCurrentUser().getUsername();
         String logMetadataJsonStr;
         String perspectiveJsonStr;
 
@@ -1452,7 +1450,7 @@ public class LogImporterController extends SelectorComposer<Window> implements C
     private void saveXLog(LogModel logModel, boolean isPublic) {
 
         try {
-            storeMetadataAsJSON(logMetaData, logModel.getImportLog());
+            storeMetadataAsJSON(logMetaData, logModel.getImportLog(), portalContext.getCurrentUser().getUsername());
             String successMessage;
             if (logModel.isRowLimitExceeded()) {
                 successMessage = MessageFormat.format(getLabel("limit_reached"), logModel.getRowsCount());
