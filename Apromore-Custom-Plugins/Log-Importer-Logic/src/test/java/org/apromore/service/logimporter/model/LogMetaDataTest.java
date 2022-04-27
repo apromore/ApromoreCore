@@ -24,6 +24,7 @@ package org.apromore.service.logimporter.model;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Arrays;
@@ -125,6 +126,13 @@ class LogMetaDataTest {
 
         // When, Then
         assertThrows(InvalidLogMetadataException.class, () -> logMetaData.getPerspectives());
+    }
+
+    @Test
+    void testFindMissingIndex() {
+        LogMetaData logMetaData = createTestLogMetaData();
+        List<Integer> indexList = Arrays.asList(1, 2);
+        assertEquals(Arrays.asList(0, 3), logMetaData.findMissingIndex(indexList, 3));
     }
 
     private LogMetaData createTestLogMetaData() {
