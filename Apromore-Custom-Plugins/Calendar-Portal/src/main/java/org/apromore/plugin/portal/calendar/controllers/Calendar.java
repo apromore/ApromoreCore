@@ -193,7 +193,7 @@ public class Calendar extends SelectorComposer<Window> implements LabelSupplier 
         updateWidgets();
 
         win.setClientDataAttribute("readonly", String.valueOf(!canEdit));
-        win.setTitle("Custom Calendar - " + calendarModel.getName());
+        win.setTitle(getLabel("custom_calendar_text", "Custom Calendar") + " - " + calendarModel.getName());
         win.addEventListener("onClose", (Event event) -> onClickCancelBtn());
 
         actionBridge.addEventListener("onLoaded", (Event event) -> rebuild());
