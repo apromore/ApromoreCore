@@ -30,19 +30,16 @@ import java.util.HashMap;
 import java.util.List;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apromore.service.logimporter.exception.InvalidLogMetadataException;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.extension.std.XOrganizationalExtension;
 import org.eclipse.collections.impl.list.Interval;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 
 @Data
 @NoArgsConstructor
+@Slf4j
 public class LogMetaData {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(LogMetaData.class);
 
     /**
      * Magic value for header index to indicate the header is absent.
@@ -135,7 +132,7 @@ public class LogMetaData {
 
         if (dateTypeCount != count) {
             List<Integer> missingIndexList = findMissingIndex(indexList, dateTypeCount);
-            LOGGER.info("Only specified data type for {} of {} headers: {}. Add missing index to String data type",
+            log.info("Only specified data type for {} of {} headers: {}. Add missing index to String data type",
                 dateTypeCount, header.size(), header);
             stringAttributesPos.addAll(missingIndexList);
         }
