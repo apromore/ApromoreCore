@@ -37,7 +37,7 @@ import org.zkoss.zk.ui.event.EventQueues;
 @Slf4j
 @UtilityClass
 public class EventUtils {
-    public void broadcastMessage(Map args, Desktop desktop, String queueId, String command) {
+    public void broadcastMessage(Map<String, Object> args, Desktop desktop, String queueId, String command) {
         try {
             Executions.activate(desktop);
             EventQueues.lookup(queueId, EventQueues.APPLICATION, true)
