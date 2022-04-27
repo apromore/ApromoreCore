@@ -127381,7 +127381,7 @@ class File {
 
         // Send the svg to the server.
         var xhr = new XMLHttpRequest();
-        var params = "resource=" + resource + "&data=" + svgClone + "&format=pdf";
+        var params = "resource=" + resource + "&data=" + encodeURIComponent(svgClone) + "&format=pdf";
         xhr.open("POST", _config__WEBPACK_IMPORTED_MODULE_0__["default"].PDF_EXPORT_URL);
         xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         xhr.responseType = 'blob';
