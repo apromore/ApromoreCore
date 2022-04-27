@@ -22,55 +22,45 @@
 
 package org.apromore.calendar.model;
 
+import java.time.DayOfWeek;
 import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalTime;
 import java.time.OffsetDateTime;
-import java.time.ZonedDateTime;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * This class represents the absolute 24/7 calendar with every moment is included as working time, no holidays.
  * All duration of [start, end] is simply the number of milliseconds between start and end.
  * It can be used as a default calendar.
- * It is not accessible outside this package, only via CalendarModel.ABSOLUTE_CALENDAR.
  *
  * @author Bruce Nguyen
  */
 public class AbsoluteCalendarModel extends CalendarModel {
     protected AbsoluteCalendarModel() {
-    }
-
-    public DurationModel getDuration(ZonedDateTime starDateTime, ZonedDateTime endDateTime) {
-        return getDuration(starDateTime.toInstant().toEpochMilli(), endDateTime.toInstant().toEpochMilli());
-    }
-
-    public DurationModel getDuration(OffsetDateTime starDateTime, OffsetDateTime endDateTime) {
-        return getDuration(starDateTime, endDateTime);
-    }
-
-    public DurationModel getDuration(Long starDateTimeUnixTs, Long endDateTimeunixTs) {
-        DurationModel durationModel = new DurationModel();
-        durationModel.setDuration(Duration.ofMillis(endDateTimeunixTs > starDateTimeUnixTs
-            ? (endDateTimeunixTs - starDateTimeUnixTs) : 0));
-        return durationModel;
-    }
-
-    public void populateHolidayMap() {
-        //Do nothing
+        super();
+        for (DayOfWeek dayOfWeek : DayOfWeek.values()) {
+            workDays.add(new WorkDayModel(dayOfWeek, LocalTime.MIN, LocalTime.MAX, true));
+        }
     }
 
     @Override
-    public List<HolidayModel> getHolidays() {
-        return Collections.unmodifiableList(Collections.EMPTY_LIST);
+    public Duration getDuration(OffsetDateTime starDateTime, OffsetDateTime endDateTime) {
+        return getDuration(starDateTime.toInstant(), endDateTime.toInstant());
     }
 
     @Override
-    public List<WorkDayModel> getWorkDays() {
-        return Collections.unmodifiableList(Collections.EMPTY_LIST);
+    public Duration getDuration(Instant start, Instant end) {
+        return getDuration(start.toEpochMilli(), end.toEpochMilli());
     }
 
     @Override
-    public List<WorkDayModel> getOrderedWorkDay() {
-        return Collections.unmodifiableList(Collections.EMPTY_LIST);
+    public Duration getDuration(Long starDateTimeUnixTs, Long endDateTimeunixTs) {
+        return Duration.ofMillis(endDateTimeunixTs > starDateTimeUnixTs
+            ? (endDateTimeunixTs - starDateTimeUnixTs) : 0);
+    }
+
+    @Override
+    public CalendarModel immutable() {
+        return new ImmutableCalendarModel(this);
     }
 }

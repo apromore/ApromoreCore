@@ -25,10 +25,11 @@ package org.apromore.plugin.portal.calendar.controllers;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import org.apromore.calendar.model.HolidayModel;
 import org.apromore.calendar.model.HolidayType;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.calendar.Constants;
+import org.apromore.plugin.portal.calendar.model.CalendarFactory;
+import org.apromore.plugin.portal.calendar.model.Holiday;
 import org.apromore.zk.label.LabelSupplier;
 import org.slf4j.Logger;
 import org.zkoss.json.JSONObject;
@@ -46,7 +47,8 @@ public class ImportHolidays extends SelectorComposer<Window> implements LabelSup
 
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(ImportHolidays.class);
 
-    private Calendar parentController = (Calendar) Executions.getCurrent().getArg().get("parentController");
+    private CalendarController parentController = (CalendarController) Executions.getCurrent().getArg()
+        .get("parentController");
 
     @Wire("#saveBtn")
     Button saveBtn;
@@ -66,13 +68,14 @@ public class ImportHolidays extends SelectorComposer<Window> implements LabelSup
         saveBtn.addEventListener("onSubmit", new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
-                List<HolidayModel> holidays = new ArrayList<HolidayModel>();
+                List<Holiday> holidays = new ArrayList<Holiday>();
                 Object[] params = (Object[]) event.getData();
                 for (Object param : params) {
                     JSONObject item = (JSONObject) param;
                     String name = (String) item.get("name");
                     String date = (String) item.get("date");
-                    holidays.add(new HolidayModel(HolidayType.PUBLIC, name, name, LocalDate.parse(date)));
+                    holidays.add(CalendarFactory.INSTANCE.createHoliday(HolidayType.PUBLIC, name, name,
+                        LocalDate.parse(date)));
                 }
                 if (holidays.size() == 0) {
                     return;

@@ -32,6 +32,7 @@
     <listheader label="Domain"  visible="false"/>                   <!-- domain -->
     <listheader label="Rating" width="90px" align="center" visible="false"/> <!-- ranking -->
     <listheader label="Last version" id="columnLastVersion" width="120px" align="center"/> <!-- lastVersion -->
+    <listheader label="Creation"  width="170px" align="center" id="columnCreated"   />
     <listheader label="Last update" width="170px" align="center" id="columnLastUpdate"   /> <!-- lastVersion -->
     <listheader label="Owner"  id="columnOwner"  sclass="ap-head-left-align"   />                   <!-- owner -->
   </listhead>

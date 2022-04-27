@@ -63,6 +63,11 @@ public class LogMetaData {
     private List<Integer> maskPos;
     private List<Integer> perspectivePos;
 
+    private List<Integer> stringAttributesPos;
+    private List<Integer> integerAttributesPos;
+    private List<Integer> doubleAttributesPos;
+    private List<Integer> timestampAttributesPos;
+
     public LogMetaData(List<String> header) {
         this.header = header;
         caseAttributesPos = new ArrayList<>();
@@ -74,6 +79,10 @@ public class LogMetaData {
         encoding = null;
         maskPos = new ArrayList<>();
         perspectivePos = new ArrayList<>();
+        stringAttributesPos = new ArrayList<>();
+        integerAttributesPos = new ArrayList<>();
+        doubleAttributesPos = new ArrayList<>();
+        timestampAttributesPos = new ArrayList<>();
     }
 
     public void validateSample() throws Exception {
@@ -104,8 +113,16 @@ public class LogMetaData {
 
         if (header.size() != count) {
             throw new InvalidLogMetadataException(
-                "Failed to construct valid log sample!  Only specified " + count + " of "
+                "Failed to construct valid log sample!  Only specified attribute type for " + count + " of "
                 + header.size() + " headers: " + header);
+        }
+
+        int dateTypeCount = stringAttributesPos.size() + integerAttributesPos.size() + doubleAttributesPos.size()
+            + timestampAttributesPos.size();
+        if (dateTypeCount != count) {
+            throw new InvalidLogMetadataException(
+                "Failed to construct valid log sample!  Only specified data type for " + count + " of "
+                    + dateTypeCount + " headers: " + header);
         }
     }
 

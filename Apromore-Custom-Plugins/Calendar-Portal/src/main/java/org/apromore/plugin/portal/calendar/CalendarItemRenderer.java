@@ -28,10 +28,10 @@ import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import org.apromore.calendar.exception.CalendarNotExistsException;
-import org.apromore.calendar.model.CalendarModel;
 import org.apromore.calendar.service.CalendarService;
 import org.apromore.commons.datetime.DateTimeUtils;
 import org.apromore.plugin.portal.PortalLoggerFactory;
+import org.apromore.plugin.portal.calendar.model.Calendar;
 import org.apromore.plugin.portal.calendar.pageutil.PageUtils;
 import org.apromore.zk.event.CalendarEvents;
 import org.apromore.zk.label.LabelSupplier;
@@ -54,7 +54,7 @@ import org.zkoss.zul.Span;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
-public class CalendarItemRenderer implements ListitemRenderer<CalendarModel>, LabelSupplier {
+public class CalendarItemRenderer implements ListitemRenderer<Calendar>, LabelSupplier {
 
     private static Logger LOGGER = PortalLoggerFactory.getLogger(CalendarItemRenderer.class);
 
@@ -140,7 +140,7 @@ public class CalendarItemRenderer implements ListitemRenderer<CalendarModel>, La
     }
 
     @Override
-    public void render(Listitem listItem, CalendarModel calendarItem, int index) {
+    public void render(Listitem listItem, Calendar calendarItem, int index) {
         if (calendarItem.getId().equals(appliedCalendarId)) {
             renderIconCell(listItem, "ap-icon ap-icon-static ap-icon-check-circle", "Applied calendar");
         } else {

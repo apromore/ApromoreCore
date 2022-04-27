@@ -22,9 +22,7 @@
 package org.apromore.dao.model;
 
 import java.time.DayOfWeek;
-import java.time.Duration;
-import java.time.OffsetTime;
-
+import java.time.LocalTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -34,16 +32,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.PostLoad;
-import javax.persistence.PostPersist;
-import javax.persistence.PostUpdate;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
-
-import org.springframework.beans.factory.annotation.Configurable;
-
 import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Configurable;
 
 @Entity
 @Table(name = "work_day", uniqueConstraints = {
@@ -67,19 +59,15 @@ public class WorkDay {
 
   private CustomCalendar customCalendar;
 
-  
-  private Duration duration;
-
-  public WorkDay(DayOfWeek dayOfWeek, OffsetTime startTime, OffsetTime endTime,
+  public WorkDay(DayOfWeek dayOfWeek, LocalTime startTime, LocalTime endTime,
       boolean isWorkingDay) {
     this.dayOfWeek = dayOfWeek;
     this.startTime = startTime.toString();
     this.endTime = endTime.toString();
     this.isWorkingDay = isWorkingDay;
-    this.duration = Duration.between(getOffsetStartTime(), getOffsetEndTime());
   }
   
-  public WorkDay(Long id,DayOfWeek dayOfWeek, OffsetTime startTime, OffsetTime endTime,
+  public WorkDay(Long id,DayOfWeek dayOfWeek, LocalTime startTime, LocalTime endTime,
 	      boolean isWorkingDay) {
 	  	this.id=id;
 	    this.dayOfWeek = dayOfWeek;
@@ -87,14 +75,6 @@ public class WorkDay {
 	    this.endTime = endTime.toString();
 	    this.isWorkingDay = isWorkingDay;
 	  }
-
-  @PostLoad
-  @PostPersist
-  @PostUpdate
-  public void calculateDuration() {
-    duration = Duration.between(getOffsetStartTime(), getOffsetEndTime());
-
-  }
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -136,19 +116,9 @@ public class WorkDay {
     return createdBy;
   }
 
-  @Transient
-  public OffsetTime getOffsetStartTime() {
-    return OffsetTime.parse(startTime);
-  }
-
   @Column(name = "updated_by")
   public String getUpdatedBy() {
     return updatedBy;
-  }
-
-  @Transient
-  public OffsetTime getOffsetEndTime() {
-    return OffsetTime.parse(endTime);
   }
 
   public void setCustomCalendar(CustomCalendar customCalendar) {
@@ -184,16 +154,4 @@ public class WorkDay {
     this.isWorkingDay = isWorkingDay;
   }
 
-  @Transient
-  public Duration getDuration() {
-    return duration;
-  }
-
-  public void setDuration(Duration duration) {
-    this.duration = duration;
-  }
-  
-  
-
-  
 }

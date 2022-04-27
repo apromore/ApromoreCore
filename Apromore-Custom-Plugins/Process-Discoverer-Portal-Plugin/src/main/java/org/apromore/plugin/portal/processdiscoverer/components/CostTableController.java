@@ -64,12 +64,11 @@ public class CostTableController extends DataListController {
     }
 
     private void generateData() {
-        Map<String, Double> currentMapper = userOptions.getCostTable().getCostRates();
         records = new ListModelList<AttributeCost>();
         rows = new ArrayList<>();
         for (Object role : parent.getProcessAnalyst().getRoleValues()) {
             String attrVal = (String) role;
-            Double costValue = currentMapper.containsKey(attrVal) ? currentMapper.get(attrVal) : 1.0;
+            Double costValue = userOptions.getCostTable().getCost(attrVal);
             AttributeCost ac = AttributeCost.valueOf(attrVal, costValue);
             records.add(ac);
             rows.add(new String[]{ac.getAttributeId(), String.format("%6.2f", ac.getCostValue())});

@@ -40,6 +40,7 @@ import org.apromore.commons.mapper.CustomMapper;
 import org.apromore.dao.CustomCalendarRepository;
 import org.apromore.dao.UserRepository;
 import org.apromore.dao.model.CustomCalendar;
+import org.apromore.dao.model.HOLIDAYTYPE;
 import org.apromore.dao.model.Holiday;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -147,7 +148,8 @@ class CalendarServiceUnitTest {
         // Given
         CustomCalendar calendar = new CustomCalendar("Test Desc", ZoneId.of("UTC"));
         calendar.setId(1L);
-        Holiday holiday = new Holiday("test", "test holiday", LocalDate.of(2020, 02, 02));
+        Holiday holiday = new Holiday(1L, "test", "test holiday", LocalDate.of(2020, 02, 02),
+            HOLIDAYTYPE.PUBLIC);
         calendar.setHolidays(Arrays.asList(holiday));
 
         when(calendarRepository.findByName(calendar.getName())).thenReturn(null);
@@ -173,9 +175,11 @@ class CalendarServiceUnitTest {
         // Given
         CustomCalendar calendar = new CustomCalendar("Test Desc1", ZoneId.of("UTC"));
         calendar.setId(1L);
-        Holiday holiday = new Holiday("test", "test holiday", LocalDate.of(2020, 02, 02));
-        Holiday holiday1 = new Holiday("test1", "test holiday1", LocalDate.of(2020, 02, 02));
-        calendar.setHolidays(Arrays.asList(holiday, holiday));
+        Holiday holiday = new Holiday(1L, "test", "test holiday", LocalDate.of(2020, 02, 02),
+            HOLIDAYTYPE.PUBLIC);
+        Holiday holiday1 = new Holiday(2L, "test1", "test holiday1", LocalDate.of(2020, 02, 02),
+            HOLIDAYTYPE.PUBLIC);
+        calendar.setHolidays(Arrays.asList(holiday, holiday1));
 
         when(calendarRepository.findByName(calendar.getName())).thenReturn(null);
         when(userRepository.findByUsername(anyString())).thenReturn(null);

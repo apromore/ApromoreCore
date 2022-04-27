@@ -32,9 +32,11 @@
 
 package org.apromore.calendar.model;
 
+import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
@@ -44,47 +46,60 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.Setter;
 
 /**
  * Represents one custom calendar.
- *
  * @author Nolan Tellis:
  *     - Created this module
  * @author Bruce Nguyen:
  *     - Add new duration calculation based on intervals
  */
 @Data
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CalendarModel {
 
-    private Long id = new Random().nextLong();
-    private String name = "CalendarModel";
-    private OffsetDateTime created = OffsetDateTime.now(ZoneOffset.UTC);
-    private OffsetDateTime updated = OffsetDateTime.now(ZoneOffset.UTC);
-    private String createdBy = "";
-    private String updatedBy = "";
-    private String zoneId = ZoneOffset.UTC.getId();
-    private List<WorkDayModel> workDays = new ArrayList<>();
-    private List<HolidayModel> holidays = new ArrayList<>();
+    protected @NonNull Long id = 0L; // only used for mapping from database object
+    protected @NonNull String name = "CalendarModel";
+    protected @NonNull OffsetDateTime created = OffsetDateTime.now(ZoneOffset.UTC);
+    protected @NonNull OffsetDateTime updated = OffsetDateTime.now(ZoneOffset.UTC);
+    protected String createdBy = "";
+    protected String updatedBy = "";
+
+    @Setter(AccessLevel.NONE)
+    protected @NonNull String zoneId = ZoneOffset.UTC.getId();
+
+    protected @NonNull List<WorkDayModel> workDays = new ArrayList<>();
+    protected @NonNull List<HolidayModel> holidays = new ArrayList<>();
+
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
     private Set<LocalDate> holidayDates = new HashSet<>();
 
-    public static CalendarModel ABSOLUTE_CALENDAR = new AbsoluteCalendarModel();
-
-    public DurationModel getDuration(OffsetDateTime starDateTime, OffsetDateTime endDateTime) {
-        DurationModel durationModel = new DurationModel();
-        durationModel.setAll(getDuration(starDateTime.toInstant(), endDateTime.toInstant()));
-        return durationModel;
+    /**
+     * Set zone id.
+     * @param zoneId zone id name
+     * @throws DateTimeException or ZoneRulesException if zoneId is not valid
+     */
+    public void setZoneId(String zoneId) {
+        ZoneId.of(zoneId);
+        this.zoneId = zoneId;
     }
 
-    public DurationModel getDuration(Long starDateTimeUnixTs, Long endDateTimeunixTs) {
-        DurationModel durationModel = new DurationModel();
-        durationModel
-            .setAll(getDuration(Instant.ofEpochMilli(starDateTimeUnixTs), Instant.ofEpochMilli(endDateTimeunixTs)));
-        return durationModel;
+    public Duration getDuration(OffsetDateTime starDateTime, OffsetDateTime endDateTime) {
+        return getDuration(starDateTime.toInstant(), endDateTime.toInstant());
+    }
+
+    public Duration getDuration(Long starDateTimeUnixTs, Long endDateTimeUnixTs) {
+        return getDuration(Instant.ofEpochMilli(starDateTimeUnixTs), Instant.ofEpochMilli(endDateTimeUnixTs));
     }
 
     public Duration getDuration(Instant start, Instant end) {
@@ -103,24 +118,24 @@ public class CalendarModel {
         return totalDuration;
     }
 
-    public Long[] getDuration(Long[] starDateTimeUnixTs, Long[] endDateTimeunixTs) {
+    public Long[] getDuration(Long[] starDateTimeUnixTs, Long[] endDateTimeUnixTs) {
         Long[] resultList = new Long[starDateTimeUnixTs.length];
         IntStream.range(0, starDateTimeUnixTs.length).parallel().forEach(i ->
             resultList[i] = getDurationMillis(Instant.ofEpochMilli(starDateTimeUnixTs[i]),
-                Instant.ofEpochMilli(endDateTimeunixTs[i])));
+                Instant.ofEpochMilli(endDateTimeUnixTs[i])));
 
         return resultList;
     }
 
-    public long[] getDuration(long[] starDateTimeUnixTs, long[] endDateTimeunixTs) {
-        if (starDateTimeUnixTs == null || starDateTimeUnixTs.length == 0 || endDateTimeunixTs == null
-            || endDateTimeunixTs.length == 0) {
+    public long[] getDuration(long[] starDateTimeUnixTs, long[] endDateTimeUnixTs) {
+        if (starDateTimeUnixTs == null || starDateTimeUnixTs.length == 0 || endDateTimeUnixTs == null
+            || endDateTimeUnixTs.length == 0) {
             return new long[] {};
         }
         long[] resultList = new long[starDateTimeUnixTs.length];
         IntStream.range(0, starDateTimeUnixTs.length).parallel().forEach(i ->
             resultList[i] = getDurationMillis(Instant.ofEpochMilli(starDateTimeUnixTs[i]),
-                Instant.ofEpochMilli(endDateTimeunixTs[i])));
+                Instant.ofEpochMilli(endDateTimeUnixTs[i])));
 
         return resultList;
     }
@@ -144,8 +159,52 @@ public class CalendarModel {
     }
 
     public List<WorkDayModel> getOrderedWorkDay() {
-        workDays.sort(Comparator.comparing(WorkDayModel::getDayOfWeek));
-        return workDays;
+        List<WorkDayModel> sortedList = new ArrayList<>(workDays);
+        sortedList.sort(Comparator.comparing(WorkDayModel::getDayOfWeek));
+        return sortedList;
     }
 
+    public boolean is247() {
+        if (!holidays.isEmpty()) {
+            return false;
+        }
+        if (workDays.stream().filter(WorkDayModel::isWorkingDay)
+            .map(WorkDayModel::getDayOfWeek).distinct().count() < 7) {
+            return false;
+        }
+        for (DayOfWeek dow : DayOfWeek.values()) {
+            List<WorkDayModel> sortedDays = workDays.stream()
+                .filter(d -> d.isWorkingDay() && d.getDayOfWeek().equals(dow))
+                .sorted((d1, d2) -> d1.compareTo(d2))
+                .collect(Collectors.toList());
+            if (betweenGapExists(sortedDays)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Check if between gap exists between these days in one day, from LocalTime.MIN to LocalTime.MAX
+     * @param sortedDays list of WorkDayModel of the same day of week
+     * @return true if any gap exists between these days
+     */
+    private boolean betweenGapExists(List<WorkDayModel> sortedDays) {
+        LocalTime largestEnd = LocalTime.MIN;
+        for (WorkDayModel d : sortedDays) {
+            if (d.getStartTime().isAfter(largestEnd)) {
+                return true;
+            } else if (d.getEndTime().isAfter(largestEnd)) {
+                largestEnd = d.getEndTime();
+                if (largestEnd.equals(LocalTime.MAX)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public CalendarModel immutable() {
+        return new ImmutableCalendarModel(this);
+    }
 }
