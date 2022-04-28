@@ -202,9 +202,21 @@ public class WorkspaceServiceImpl implements WorkspaceService {
   }
 
   @Override
+  public Page<Process> getAllProcesses(Integer folderId, Pageable pageable) {
+    return (folderId == 0) ? processRepo.findRootProcesses(pageable)
+        : processRepo.findAllProcessesInFolder(folderId,  pageable);
+  }
+
+  @Override
   public Page<Log> getLogs(String userId, Integer folderId, Pageable pageable) {
     return (folderId == 0) ? logRepo.findRootLogsByUser(userId, pageable)
         : logRepo.findAllLogsInFolderForUser(folderId, userId, pageable);
+  }
+
+  @Override
+  public Page<Log> getAllLogs(Integer folderId, Pageable pageable) {
+    return (folderId == 0) ? logRepo.findAllRootLogs(pageable)
+        : logRepo.findAllLogsInFolder(folderId, pageable);
   }
 
   @Override

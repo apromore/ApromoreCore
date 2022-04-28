@@ -55,7 +55,15 @@ public class FolderServiceImpl implements FolderService {
 
     @Override
     public List<FolderTreeNode> getFolderTreeByUser(int parentFolderId, String userId) {
-        List<GroupFolder> folders = groupFolderRepository.findByParentFolderAndUser(parentFolderId, userId);
+        List<GroupFolder> folders;
+        if(userId!=null) {
+            folders = groupFolderRepository.findByParentFolderAndUser(parentFolderId, userId);
+        }else{
+            folders = groupFolderRepository.findByParentFolder(parentFolderId);
+        }
+        if(folders==null){
+            return new ArrayList<>();
+        }
         Map<Integer, FolderTreeNode> map = new HashMap<>();
 
         List<FolderTreeNode> treeNodes = new ArrayList<>();

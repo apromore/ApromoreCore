@@ -77,6 +77,16 @@ public interface GroupFolderRepository extends JpaRepository<GroupFolder, Intege
     List<GroupFolder> findByParentFolderAndUser(final Integer parentFolderId, final String userGuid);
 
     /**
+     * Returns a list of Folders
+     *
+     * @param parentFolderId the parent folder Id
+     * @return the list of found records
+     */
+    @Query("SELECT gf FROM GroupFolder gf JOIN gf.folder f JOIN gf.group g1 LEFT JOIN f.parentFolder f1 " +
+        "WHERE ((?1 = 0 AND f1 IS NULL) OR (f1.id = ?1))  order by f.name asc")
+    List<GroupFolder> findByParentFolder(final Integer parentFolderId);
+
+    /**
      * Find the permissions a user has for a process.
      */
     @Query("SELECT gf FROM GroupFolder gf JOIN gf.group g1, " +

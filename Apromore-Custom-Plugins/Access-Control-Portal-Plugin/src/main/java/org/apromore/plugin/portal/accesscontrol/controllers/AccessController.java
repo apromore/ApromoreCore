@@ -37,6 +37,7 @@ import java.util.stream.Stream;
 import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.Group;
 import org.apromore.dao.model.Group.Type;
+import org.apromore.dao.model.User;
 import org.apromore.dao.model.Usermetadata;
 import org.apromore.dao.model.UsermetadataType;
 import org.apromore.plugin.portal.PortalContext;
@@ -48,6 +49,7 @@ import org.apromore.plugin.portal.accesscontrol.model.Assignment;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.model.FolderType;
 import org.apromore.portal.model.LogSummaryType;
+import org.apromore.portal.model.PermissionType;
 import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.UserMetadataSummaryType;
 import org.apromore.portal.model.UserType;
@@ -132,6 +134,7 @@ public class AccessController extends SelectorComposer<Div> {
   private Map<Group, AccessType> groupAccessTypeMap;
   private Map<String, Assignment> assignmentMap;
   private Map<String, Assignment> ownerMap;
+  private final Map<String, Assignment> existingOwnerMap=new HashMap<>();
   private Map<Integer, Artifact> artifactMap;
   private Map<String, ListModelList<Artifact>> groupArtifactsMap;
 
@@ -391,6 +394,7 @@ public class AccessController extends SelectorComposer<Div> {
     List<Assignment> assignments = new ArrayList<Assignment>();
     assignmentMap = new HashMap<String, Assignment>();
     ownerMap = new HashMap<String, Assignment>();
+    existingOwnerMap.clear();
 
     for (Map.Entry<Group, AccessType> entry : groupAccessTypeMap.entrySet()) {
       Group group = entry.getKey();
@@ -402,6 +406,7 @@ public class AccessController extends SelectorComposer<Div> {
       assignmentMap.put(rowGuid, assignment);
       if (accessType == AccessType.OWNER) {
         ownerMap.put(rowGuid, assignment);
+        existingOwnerMap.put(rowGuid, assignment);
       }
     }
     assignmentModel = new ListModelList<>(assignments, false);
@@ -498,7 +503,7 @@ public class AccessController extends SelectorComposer<Div> {
    * Apply the changes in the access control by comparing assignment listbox with previous access
    * control list
    */
-  private void applyChanges() {
+  private boolean applyChanges() {
     Map<Group, AccessType> groupAccessTypeChanges = new HashMap<>(groupAccessTypeMap);
 
     for (Assignment assignment : assignmentModel) {
@@ -506,7 +511,12 @@ public class AccessController extends SelectorComposer<Div> {
       boolean shareUserMetadata;
       shareUserMetadata = false;
       AccessType accessType = AccessType.getAccessType(assignment.getAccess());
+
       Group group = securityService.findGroupByRowGuid(rowGuid);
+      if (!isValidOwnerAssignment(assignment,group)){
+        Notification.error(getLabel("admin_owner_error_message"));
+        return false;
+      }
       if (groupAccessTypeChanges.containsKey(group)) {
         AccessType orgAccessType = groupAccessTypeChanges.get(group);
         groupAccessTypeChanges.remove(group);
@@ -562,6 +572,7 @@ public class AccessController extends SelectorComposer<Div> {
       } else {
         LOGGER.error("Unknown item type {}", selectedItem);
       }
+
     }
 
     // Delete the remaining
@@ -580,6 +591,31 @@ public class AccessController extends SelectorComposer<Div> {
         authorizationService.deleteUserMetadataAccess(selectedItemId, rowGuid);
       }
     }
+    return true;
+  }
+
+  private boolean isValidOwnerAssignment(Assignment assignment, Group group) {
+    if (Objects.equals(assignment.getAccess(), AccessType.OWNER.getLabel())) {
+      Assignment existingAssignment = existingOwnerMap.get(assignment.rowGuid);
+      if (existingAssignment == null || !Objects.equals(existingAssignment.getAccess(), AccessType.OWNER.getLabel())) {
+        if (group.getType().equals(Type.USER)) {
+          return !securityService.getUserPermissions(group.getUser().getRowGuid()).stream()
+              .anyMatch(permission -> permission.getRowGuid().equals(PermissionType.ACCESS_RIGHTS_MANAGE.getId()));
+        } else {
+          Group groupData = securityService.getGroupByName(group.getName());
+          if (groupData != null && groupData.getUsers() != null && groupData.getUsers().size() > 0) {
+            for (User user : groupData.getUsers()) {
+              boolean exist=securityService.getUserPermissions(user.getRowGuid()).stream()
+                  .anyMatch(permission -> permission.getRowGuid().equals(PermissionType.ACCESS_RIGHTS_MANAGE.getId()));
+              if(exist){
+                return false;
+              }
+            }
+          }
+        }
+      }
+    }
+    return true;
   }
 
   private void loadRelatedDependencies() {
@@ -709,7 +745,9 @@ public class AccessController extends SelectorComposer<Div> {
 
   @Listen("onClick = #btnApply")
   public void onClickBtnApply() {
-    applyChanges();
+    if(!applyChanges()){
+      return;
+    }
     destroy();
     Notification.info(getLabel("shareSuccess_message"));
 
