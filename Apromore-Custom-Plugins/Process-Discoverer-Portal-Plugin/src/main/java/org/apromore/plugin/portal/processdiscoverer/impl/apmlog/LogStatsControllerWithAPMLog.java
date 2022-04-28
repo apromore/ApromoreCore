@@ -22,6 +22,7 @@
 
 package org.apromore.plugin.portal.processdiscoverer.impl.apmlog;
 
+import java.text.DecimalFormat;
 import org.apromore.apmlog.filter.PLog;
 import org.apromore.apmlog.stats.LogStatsAnalyzer;
 import org.apromore.apmlog.xes.XESAttributeCodes;
@@ -37,8 +38,6 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Label;
-
-import java.text.DecimalFormat;
 
 /**
  * LogStatsControllerWithAPMLog is a {@link LogStatsController} with some data
@@ -88,7 +87,9 @@ public class LogStatsControllerWithAPMLog extends LogStatsController {
 
     @Override
     public void initializeControls(Object data) {
-        if (this.parent == null) return;
+        if (this.parent == null) {
+            return;
+        }
 
         wdLogStats = parent.query(".ap-pd-logstats");
         
@@ -130,7 +131,9 @@ public class LogStatsControllerWithAPMLog extends LogStatsController {
         btnCaseHeading.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
-                if (disabled) return;
+                if (disabled) {
+                    return;
+                }
                 parent.openLogFilter(new Event("", null, "CaseTabID"));
             }
         });
@@ -138,7 +141,9 @@ public class LogStatsControllerWithAPMLog extends LogStatsController {
         lblCaseHeading.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
-                if (disabled) return;
+                if (disabled) {
+                    return;
+                }
                 parent.openLogFilter(new Event("", null, "CaseTabID"));
             }
         });
@@ -146,7 +151,9 @@ public class LogStatsControllerWithAPMLog extends LogStatsController {
         btnCaseVariantHeading.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
-                if (disabled) return;
+                if (disabled) {
+                    return;
+                }
                 parent.openLogFilter(new Event("", null, "CaseTabVariant"));
             }
         });
@@ -154,7 +161,9 @@ public class LogStatsControllerWithAPMLog extends LogStatsController {
         lblCaseVariantHeading.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
-                if (disabled) return;
+                if (disabled) {
+                    return;
+                }
                 parent.openLogFilter(new Event("", null, "CaseTabVariant"));
             }
         });
@@ -162,7 +171,9 @@ public class LogStatsControllerWithAPMLog extends LogStatsController {
         btnEventHeading.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
-                if (disabled) return;
+                if (disabled) {
+                    return;
+                }
                 parent.openLogFilter(new Event("", null, "EventTabAttribute"));
             }
         });
@@ -170,7 +181,9 @@ public class LogStatsControllerWithAPMLog extends LogStatsController {
         lblEventHeading.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
-                if (disabled) return;
+                if (disabled) {
+                    return;
+                }
                 parent.openLogFilter(new Event("", null, "EventTabAttribute"));
             }
         });
@@ -178,7 +191,9 @@ public class LogStatsControllerWithAPMLog extends LogStatsController {
         btnActivityHeading.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
-                if (disabled) return;
+                if (disabled) {
+                    return;
+                }
                 parent.openLogFilter(new Event("", null, "CaseTabAttribute"));
             }
         });
@@ -186,7 +201,9 @@ public class LogStatsControllerWithAPMLog extends LogStatsController {
         lblActivityHeading.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
-                if (disabled) return;
+                if (disabled) {
+                    return;
+                }
                 parent.openLogFilter(new Event("", null, "CaseTabAttribute"));
             }
         });
@@ -228,7 +245,7 @@ public class LogStatsControllerWithAPMLog extends LogStatsController {
     private void setNumber(Label label, long number) {
         String strNumber = Long.toString(number);
         label.setValue(toShortString(number));
-        label.setClientAttribute("title", strNumber);
+        label.setTooltiptext(toLongString(number));
         label.setClientDataAttribute("raw", strNumber);
     }
 
@@ -238,7 +255,7 @@ public class LogStatsControllerWithAPMLog extends LogStatsController {
 
         if (total == 0 || filtered == 0) {
             retained = 0;
-        } else if(filtered != total) {
+        } else if (filtered != total) {
             retained = 100 * (double)filtered / total;
         }
         String retainedPercent = decimalFormat.format(retained) + "%";
@@ -273,9 +290,13 @@ public class LogStatsControllerWithAPMLog extends LogStatsController {
     private String toShortString(long longNumber) {
         DecimalFormat df1 = new DecimalFormat("###############.#");
         String numberString = "";
-        if(longNumber > 1000000) numberString = "" + df1.format((double) longNumber / 1000000) + "M";
-        else if (longNumber > 1000) numberString = "" + df1.format((double)longNumber / 1000) + "K";
-        else numberString = longNumber + "";
+        if (longNumber > 1000000) {
+            numberString = "" + df1.format((double) longNumber / 1000000) + "M";
+        } else if (longNumber > 1000) {
+            numberString = "" + df1.format((double)longNumber / 1000) + "K";
+        } else {
+            numberString = longNumber + "";
+        }
 
         return numberString;
     }

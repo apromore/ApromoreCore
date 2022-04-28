@@ -23,7 +23,6 @@
 package org.apromore.plugin.portal.processdiscoverer.components;
 
 import java.text.DecimalFormat;
-
 import org.apromore.logman.attribute.log.AttributeLog;
 import org.apromore.logman.attribute.log.AttributeLogSummary;
 import org.apromore.plugin.portal.PortalLoggerFactory;
@@ -66,7 +65,9 @@ public class LogStatsController extends AbstractController {
 
     @Override
     public void initializeControls(Object data) {
-        if (this.parent == null) return;
+        if (this.parent == null) {
+            return;
+        }
 
         wdLogStats = parent.query(".ap-pd-logstats");
 
@@ -136,7 +137,7 @@ public class LogStatsController extends AbstractController {
     private void setNumber(Label label, long number) {
         String strNumber = Long.toString(number);
         label.setValue(toShortString(number));
-        label.setClientAttribute("title", strNumber);
+        label.setTooltiptext(toLongString(number));
         label.setClientDataAttribute("raw", strNumber);
     }
 
@@ -146,7 +147,7 @@ public class LogStatsController extends AbstractController {
 
         if (total == 0 || filtered == 0) {
             retained = 0;
-        } else if(filtered != total) {
+        } else if (filtered != total) {
             retained = 100 * (double)filtered / total;
         }
         String retainedPercent = decimalFormat.format(retained) + "%";
@@ -157,12 +158,21 @@ public class LogStatsController extends AbstractController {
         Clients.evalJavaScript("Ap.pd.genChart('" + chartType + "', " + retained + ")");
     }
 
+    protected String toLongString(long longNumber) {
+        DecimalFormat df = new DecimalFormat("#,###,###,###,###");
+        return df.format((double) longNumber);
+    }
+
     private String toShortString(long longNumber) {
         DecimalFormat df1 = new DecimalFormat("###############.#");
         String numberString = "";
-        if(longNumber > 1000000) numberString = "" + df1.format((double) longNumber / 1000000) + "M";
-        else if (longNumber > 1000) numberString = "" + df1.format((double)longNumber / 1000) + "K";
-        else numberString = longNumber + "";
+        if (longNumber > 1000000) {
+            numberString = "" + df1.format((double) longNumber / 1000000) + "M";
+        } else if (longNumber > 1000) {
+            numberString = "" + df1.format((double)longNumber / 1000) + "K";
+        } else {
+            numberString = longNumber + "";
+        }
 
         return numberString;
     }
