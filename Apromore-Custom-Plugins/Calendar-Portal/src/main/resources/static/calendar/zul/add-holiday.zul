@@ -41,8 +41,8 @@
             <row>
                 <label value="${$composer.labels.type_text}"/>
                 <radiogroup id="holidayType" style="line-height: 24px">
-                    <radio value="CUSTOM" label="Custom" selected="true" radiogroup="holidayType"/>
-                    <radio value="PUBLIC" label="Public" radiogroup="holidayType"/>
+                    <radio value="CUSTOM" label="${$composer.labels.custom_holidays_short_text}" selected="true" radiogroup="holidayType"/>
+                    <radio value="PUBLIC" label="${$composer.labels.public_holidays_short_text}" radiogroup="holidayType"/>
                 </radiogroup>
             </row>
         </rows>

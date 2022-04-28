@@ -32,6 +32,7 @@ import org.apromore.portal.custom.gui.tab.PortalTab;
 import org.apromore.portal.custom.gui.tab.TabItemExecutor;
 import org.apromore.portal.custom.gui.tab.impl.*;
 import org.apromore.portal.model.*;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zul.Listheader;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Tabpanel;
@@ -75,11 +76,11 @@ public abstract class PluginCustomGui extends DefaultPortalPlugin {
         }
 
         List<Listheader> listheaders = new ArrayList<>();
-        addListheader(listheaders, "Name",              true, null, null, "4");
-        addListheader(listheaders, "ID",                true, "center", "80px", null);
-        addListheader(listheaders, "Last version",    true, "center", "140px", null);
-        addListheader(listheaders, "Last update",    true, "center", "140px", null);
-        addListheader(listheaders, "Owner",             true, "center", null, "1");
+        addListheader(listheaders, Labels.getLabel("common_name_text", "Name"), true, null, null, "4");
+        addListheader(listheaders, Labels.getLabel("common_id_text", "ID"), true, "center", "80px", null);
+        addListheader(listheaders, Labels.getLabel("common_last_version_text", "Last version"), true, "center", "140px", null);
+        addListheader(listheaders, Labels.getLabel("common_last_update_text", "Last update"), true, "center", "140px", null);
+        addListheader(listheaders, Labels.getLabel("common_owner_text", "Owner"), true, "center", null, "1");
 
         addTab(tabName, "~./themes/ap/common/img/icons/bpmn-model.svg", rows, listheaders, new ProcessTabItemExecutor(portalContext.getMainController()), portalContext);
     }
