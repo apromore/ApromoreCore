@@ -276,30 +276,27 @@ public class ProcessListboxController extends BaseListboxController {
     Clients.evalJavaScript("Ap.common.setCookie('PORTAL_SORTING_ORDER','" + (comparator.isAsc()?SORT_ASCENDING:"DESCENDING") + "')");
   }
 
+  private String getCookieValue(String cookieName, Cookie[] cookiesData) {
+    if (cookiesData != null && cookieName != null) {
+      for (Cookie cookie : cookiesData) {
+        if (cookieName.equals(cookie.getName())) {
+          return cookie.getValue();
+        }
+      }
+    }
+    return "";
+  }
+
   private ArtifactsComparator getSortedInformationFromCookie() {
     try {
       Cookie[] cookiesData =
           ((HttpServletRequest) Executions.getCurrent().getNativeRequest()).getCookies();
-      String sortingType = null;
-      String sortingOrder = SORT_ASCENDING;
-      if (cookiesData != null) {
-        for (Cookie cookie : cookiesData) {
-          if ("PORTAL_SORTING_TYPE".equals(cookie.getName())) {
-            sortingType = cookie.getValue();
-            break;
-          }
-        }
-        for (Cookie cookie : cookiesData) {
-          if ("PORTAL_SORTING_ORDER".equals(cookie.getName())) {
-            sortingOrder = cookie.getValue();
-            break;
-          }
-        }
-        if (sortingType != null) {
-          return new ArtifactsComparator(SORT_ASCENDING.equals(sortingOrder) ? true : false,
-              ArtifactOrderTypes.valueOf(sortingType) != null ? ArtifactOrderTypes.valueOf(sortingType) :
-                  ArtifactOrderTypes.BY_TYPE);
-        }
+      String sortingType = getCookieValue("PORTAL_SORTING_TYPE", cookiesData);
+      String sortingOrder = getCookieValue("PORTAL_SORTING_ORDER", cookiesData);
+      if (!sortingType.isEmpty()) {
+        return new ArtifactsComparator(SORT_ASCENDING.equals(sortingOrder),
+            ArtifactOrderTypes.valueOf(sortingType) != null ? ArtifactOrderTypes.valueOf(sortingType) :
+                ArtifactOrderTypes.BY_TYPE);
       }
     } catch (Exception ex) {
       LOGGER.error("Error in retrieving sort information", ex);
