@@ -88,7 +88,7 @@ public class FolderTree {
     root.add(homeNode);
 
     buildTree(homeNode, this.mainController.getManagerService()
-        .getWorkspaceFolderTree(null), 0, new HashSet<Integer>());
+        .getWorkspaceFolderTree(null), 0, new HashSet<>());
   }
 
   public FolderTreeNode getCurrentFolder() {

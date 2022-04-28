@@ -599,19 +599,24 @@ public class AccessController extends SelectorComposer<Div> {
       Assignment existingAssignment = existingOwnerMap.get(assignment.rowGuid);
       if (existingAssignment == null || !Objects.equals(existingAssignment.getAccess(), AccessType.OWNER.getLabel())) {
         if (group.getType().equals(Type.USER)) {
-          return !securityService.getUserPermissions(group.getUser().getRowGuid()).stream()
-              .anyMatch(permission -> permission.getRowGuid().equals(PermissionType.ACCESS_RIGHTS_MANAGE.getId()));
+          return securityService.getUserPermissions(group.getUser().getRowGuid()).stream()
+              .noneMatch(permission -> permission.getRowGuid().equals(PermissionType.ACCESS_RIGHTS_MANAGE.getId()));
         } else {
-          Group groupData = securityService.getGroupByName(group.getName());
-          if (groupData != null && groupData.getUsers() != null && groupData.getUsers().size() > 0) {
-            for (User user : groupData.getUsers()) {
-              boolean exist=securityService.getUserPermissions(user.getRowGuid()).stream()
-                  .anyMatch(permission -> permission.getRowGuid().equals(PermissionType.ACCESS_RIGHTS_MANAGE.getId()));
-              if(exist){
-                return false;
-              }
-            }
-          }
+         return isValidOwnerAssignmentWithGroup(group.getName());
+        }
+      }
+    }
+    return true;
+  }
+
+  private boolean isValidOwnerAssignmentWithGroup(String groupName) {
+    Group groupData = securityService.getGroupByName(groupName);
+    if (groupData != null && groupData.getUsers() != null && !groupData.getUsers().isEmpty()) {
+      for (User user : groupData.getUsers()) {
+        boolean exist=securityService.getUserPermissions(user.getRowGuid()).stream()
+            .anyMatch(permission -> permission.getRowGuid().equals(PermissionType.ACCESS_RIGHTS_MANAGE.getId()));
+        if(exist){
+          return false;
         }
       }
     }
