@@ -12,6 +12,8 @@
     "preinstall": "npx npm-force-resolutions"
   },
   "resolutions": {
+    "async": "^2.6.4",
+    "minimist": "^1.2.6",
     "path-parse": "^1.0.7",
     "url-parse": "^1.5.9",
     "lodash.template": "^4.5.0",
@@ -20,7 +22,7 @@
   "author": "brucenguyen",
   "license": "ApromoreCore",
   "dependencies": {
-    "moment": "^2.29.1",
+    "moment": "^2.29.2",
     "moment-timezone": "^0.5.33",
     "@svgdotjs/svg.js": "^3.0.16",
     "jquery": "^1.11.0",
