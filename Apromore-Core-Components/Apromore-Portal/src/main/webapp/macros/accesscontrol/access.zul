@@ -126,8 +126,8 @@
                      visible="false">
                 <listhead>
                     <listheader align="center" label="" width="80px"/><!-- type icon -->
-                    <listheader align="left" hflex="1" label="Associated artifacts" sort="auto(name)"/>
-                    <listheader align="left" width="160px" label="Last update" sort="auto(updatedTime)"/>
+                    <listheader align="left" hflex="1" label="${$composer.labels.associatedArtifacts_text}" sort="auto(name)"/>
+                    <listheader align="left" width="160px" label="${labels.common_lastUpdated_text}" sort="auto(updatedTime)"/>
                 </listhead>
                 <template name="model">
                     <listitem>
