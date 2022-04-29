@@ -132,7 +132,6 @@ public class AccessController extends SelectorComposer<Div> {
   private Map<Group, AccessType> groupAccessTypeMap;
   private Map<String, Assignment> assignmentMap;
   private Map<String, Assignment> ownerMap;
-  private final Map<String, Assignment> existingOwnerMap=new HashMap<>();
   private Map<Integer, Artifact> artifactMap;
   private Map<String, ListModelList<Artifact>> groupArtifactsMap;
 
@@ -392,7 +391,6 @@ public class AccessController extends SelectorComposer<Div> {
     List<Assignment> assignments = new ArrayList<Assignment>();
     assignmentMap = new HashMap<String, Assignment>();
     ownerMap = new HashMap<String, Assignment>();
-    existingOwnerMap.clear();
 
     for (Map.Entry<Group, AccessType> entry : groupAccessTypeMap.entrySet()) {
       Group group = entry.getKey();
@@ -404,7 +402,6 @@ public class AccessController extends SelectorComposer<Div> {
       assignmentMap.put(rowGuid, assignment);
       if (accessType == AccessType.OWNER) {
         ownerMap.put(rowGuid, assignment);
-        existingOwnerMap.put(rowGuid, assignment);
       }
     }
     assignmentModel = new ListModelList<>(assignments, false);
