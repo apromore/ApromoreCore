@@ -85,13 +85,6 @@ public abstract class VisualController extends AbstractController {
         int value = Objects.requireNonNullElse(input.getValue(), 0);
         ensureSlider(slider, input, value);
     }
-
-    public void ensureSlider(Slider slider, Intbox input, String val) throws Exception {
-        if (!val.isEmpty()) {
-            int value = Integer.parseInt(val);
-            ensureSlider(slider, input, value);
-        }
-    }
     
     public void ensureSliders() throws Exception {
         //
