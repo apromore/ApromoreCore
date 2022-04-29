@@ -32,11 +32,9 @@ import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
 import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
 import org.slf4j.Logger;
-import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Combobox;
@@ -122,121 +120,85 @@ public class GraphSettingsController extends VisualController {
 
     @Override
     public void initializeEventListeners(Object data) {
-        EventListener<Event> metricListener = new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                String compId = ((Checkbox) event.getTarget()).getId();
-                setMetric(compId);
-            }
+        EventListener<Event> metricListener = event -> {
+            String compId = ((Checkbox) event.getTarget()).getId();
+            setMetric(compId);
         };
         this.metricCaseFreq.addEventListener("onCheck", metricListener);
         this.metricAvgDuration.addEventListener("onCheck", metricListener);
         this.metricCaseVariant.addEventListener("onCheck", metricListener);
 
-        metricSelector.addEventListener("onSelect", new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                String metric = metricSelector.getSelectedItem().getValue();
-                setMetric(metric);
-            }
+        metricSelector.addEventListener("onSelect", event -> {
+            String metric = metricSelector.getSelectedItem().getValue();
+            setMetric(metric);
         });
 
-        EventListener<Event> swapOrderingListener = new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                isNormalOrdering = !isNormalOrdering;
-                updateOrderingLabels();
-                parent.generateViz();
-            }
+        EventListener<Event> swapOrderingListener = event -> {
+            isNormalOrdering = !isNormalOrdering;
+            updateOrderingLabels();
+            parent.generateViz();
         };
         this.swapOrdering.addEventListener("onClick", swapOrderingListener);
 
-        this.nodeSlider.addEventListener("onScroll", new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                if (disabled) {
-                    nodeSlider.setCurpos(userOptions.getNodeFilterValue());
-                    return;
-                }
-                nodeInput.setValue(nodeSlider.getCurpos());
-                userOptions.setNodeFilterValue(nodeSlider.getCurpos());
-                parent.generateViz();
+        this.nodeSlider.addEventListener("onScroll", event -> {
+            if (disabled) {
+                nodeSlider.setCurpos(userOptions.getNodeFilterValue());
+                return;
+            }
+            nodeInput.setValue(nodeSlider.getCurpos());
+            userOptions.setNodeFilterValue(nodeSlider.getCurpos());
+            parent.generateViz();
+        });
+
+        this.arcSlider.addEventListener("onScroll", event -> {
+            if (disabled) {
+                arcSlider.setCurpos(userOptions.getArcFilterValue());
+                return;
+            }
+            arcInput.setValue(arcSlider.getCurpos());
+            userOptions.setArcFilterValue(arcSlider.getCurpos());
+            parent.generateViz();
+        });
+
+        this.parallelismSlider.addEventListener("onScrolling", event -> {
+            if (!userOptions.getBPMNMode() || disabled) {
+                parallelismSlider.setCurpos(userOptions.getParallelismFilterValue());
             }
         });
 
-        this.arcSlider.addEventListener("onScroll", new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                if (disabled) {
-                    arcSlider.setCurpos(userOptions.getArcFilterValue());
-                    return;
-                }
-                arcInput.setValue(arcSlider.getCurpos());
-                userOptions.setArcFilterValue(arcSlider.getCurpos());
-                parent.generateViz();
-            }
-        });
-
-        this.parallelismSlider.addEventListener("onScrolling", new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                if (!userOptions.getBPMNMode() || disabled) {
-                    parallelismSlider.setCurpos(userOptions.getParallelismFilterValue());
-                }
-            }
-        });
-
-        this.parallelismSlider.addEventListener("onScroll", new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                if (parent.getUserOptions().getBPMNMode() && !disabled) { // if BPMN mode
-                    parallelismInput.setValue(parallelismSlider.getCurpos());
-                    userOptions.setParallelismFilterValue(parallelismSlider.getCurpos());
-                    parent.generateViz();
-                } else {
-                    parallelismSlider.setCurpos(userOptions.getParallelismFilterValue());
-                }
-            }
-        });
-
-        EventListener<Event> nodeChangeListener = new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                ensureSlider(nodeSlider, nodeInput);
-                userOptions.setNodeFilterValue(nodeSlider.getCurpos());
-                parent.generateViz();
-            }
-        };
-        this.nodeInput.addEventListener("onChange", nodeChangeListener);
-
-        EventListener<Event> arcChangeListener = new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                ensureSlider(arcSlider, arcInput);
-                userOptions.setArcFilterValue(arcSlider.getCurpos());
-                parent.generateViz();
-            }
-        };
-        this.arcInput.addEventListener("onChange", arcChangeListener);
-
-        EventListener<Event> parallelismChangeListener = new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                ensureSlider(parallelismSlider, parallelismInput);
+        this.parallelismSlider.addEventListener("onScroll", event -> {
+            if (parent.getUserOptions().getBPMNMode() && !disabled) { // if BPMN mode
+                parallelismInput.setValue(parallelismSlider.getCurpos());
                 userOptions.setParallelismFilterValue(parallelismSlider.getCurpos());
                 parent.generateViz();
+            } else {
+                parallelismSlider.setCurpos(userOptions.getParallelismFilterValue());
             }
+        });
+
+        EventListener<Event> nodeChangeListener = event -> {
+            ensureSlider(nodeSlider, nodeInput);
+            userOptions.setNodeFilterValue(nodeSlider.getCurpos());
+            parent.generateViz();
         };
-        EventListener<Event> parallelismChangingListener = new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                String val = ((InputEvent) event).getValue();
-                ensureSlider(parallelismSlider, parallelismInput, val);
-                parent.generateViz();
-            }
+        this.nodeInput.addEventListener("onChange", nodeChangeListener);
+        this.nodeInput.addEventListener("onOK", nodeChangeListener);
+
+        EventListener<Event> arcChangeListener = event -> {
+            ensureSlider(arcSlider, arcInput);
+            userOptions.setArcFilterValue(arcSlider.getCurpos());
+            parent.generateViz();
+        };
+        this.arcInput.addEventListener("onChange", arcChangeListener);
+        this.arcInput.addEventListener("onOK", arcChangeListener);
+
+        EventListener<Event> parallelismChangeListener = event -> {
+            ensureSlider(parallelismSlider, parallelismInput);
+            userOptions.setParallelismFilterValue(parallelismSlider.getCurpos());
+            parent.generateViz();
         };
         this.parallelismInput.addEventListener("onChange", parallelismChangeListener);
-        this.parallelismInput.addEventListener("onChanging", parallelismChangingListener);
+        this.parallelismInput.addEventListener("onOK", parallelismChangeListener);
 
     }
     
