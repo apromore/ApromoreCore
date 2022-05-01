@@ -50,6 +50,7 @@ public class FolderTree {
   private int autoSelectFolder;
   private FolderTreeNode currentFolder;
   MainController mainController;
+  private boolean requireToShowAllData =false;
 
   public FolderTree(boolean loadAll, MainController mainController) {
     this.mainController = mainController;
@@ -67,12 +68,13 @@ public class FolderTree {
   }
 
   public FolderTree(boolean loadAll, int currentFolderId, MainController mainController,
-      boolean collapseAll) {
+      boolean collapseAll,boolean requireToShowAllData) {
     this.mainController = mainController;
     this.loadAll = loadAll;
     this.currentFolderId = currentFolderId;
     this.collapseAll = collapseAll;
     this.autoSelectFolder = 1;
+    this.requireToShowAllData =requireToShowAllData;
     root = new FolderTreeNode((FolderType) null, null, true, FolderTreeNodeTypes.Folder);
 
     if (currentFolderId == 0) {
@@ -84,7 +86,9 @@ public class FolderTree {
     FolderTreeNode homeNode = new FolderTreeNode(folder, null, true, FolderTreeNodeTypes.Folder);
 
     root.add(homeNode);
-    buildTree(homeNode, mainController.getPortalSession().getTree(), 0, new HashSet<Integer>());
+
+    buildTree(homeNode, this.mainController.getManagerService()
+        .getWorkspaceFolderTree(null), 0, new HashSet<>());
   }
 
   public FolderTreeNode getCurrentFolder() {
@@ -138,7 +142,10 @@ public class FolderTree {
       final int PAGE_SIZE = 100;
 
       ManagerService service = this.mainController.getManagerService();
-      String userId = UserSessionManager.getCurrentUser().getId();
+      String userId=null;
+      if(!requireToShowAllData) {
+         userId = UserSessionManager.getCurrentUser().getId();
+      }
 
       int page = 0;
       SummariesType processes;

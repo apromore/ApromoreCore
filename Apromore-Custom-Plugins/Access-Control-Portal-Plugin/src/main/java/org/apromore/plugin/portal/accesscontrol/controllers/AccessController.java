@@ -506,6 +506,7 @@ public class AccessController extends SelectorComposer<Div> {
       boolean shareUserMetadata;
       shareUserMetadata = false;
       AccessType accessType = AccessType.getAccessType(assignment.getAccess());
+
       Group group = securityService.findGroupByRowGuid(rowGuid);
       if (groupAccessTypeChanges.containsKey(group)) {
         AccessType orgAccessType = groupAccessTypeChanges.get(group);
@@ -562,6 +563,7 @@ public class AccessController extends SelectorComposer<Div> {
       } else {
         LOGGER.error("Unknown item type {}", selectedItem);
       }
+
     }
 
     // Delete the remaining
@@ -580,6 +582,7 @@ public class AccessController extends SelectorComposer<Div> {
         authorizationService.deleteUserMetadataAccess(selectedItemId, rowGuid);
       }
     }
+
   }
 
   private void loadRelatedDependencies() {
