@@ -23,9 +23,6 @@ package org.apromore.service.logimporter.config;
 
 import java.util.Map;
 import org.apromore.service.logimporter.services.legacy.LogImporter;
-import org.apromore.service.logimporter.services.legacy.LogImporterCSVImpl;
-import org.apromore.service.logimporter.services.legacy.LogImporterParquetImpl;
-import org.apromore.service.logimporter.services.legacy.LogImporterXLSXImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -35,19 +32,19 @@ import org.springframework.context.annotation.Configuration;
 public class CsvConfig {
 
     @Autowired
-    LogImporterCSVImpl logImporterCsvImpl;
+    LogImporter csvLogImporter;
 
     @Autowired
-    LogImporterParquetImpl logImporterParquetImpl;
+    LogImporter parquetLogImporter;
 
     @Autowired
-    LogImporterXLSXImpl logImporterXlsxImpl;
+    LogImporter xlsxLogImporter;
 
     @Bean
     @Qualifier("logImporterMap")
     public Map<String, LogImporter> logImporterMap() {
-        return Map.of("csv", logImporterCsvImpl, "parquet", logImporterParquetImpl, "parq", logImporterParquetImpl,
-            "xlsx", logImporterXlsxImpl);
+        return Map.of("csv", csvLogImporter, "parquet", parquetLogImporter, "parq", parquetLogImporter,
+            "xlsx", xlsxLogImporter);
 
     }
 

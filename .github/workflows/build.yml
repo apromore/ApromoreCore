@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - development
-      - dev/sonar-coverage
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:

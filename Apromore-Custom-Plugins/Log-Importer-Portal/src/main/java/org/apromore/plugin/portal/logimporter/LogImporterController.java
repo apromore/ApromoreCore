@@ -458,10 +458,8 @@ public class LogImporterController extends SelectorComposer<Window> implements C
         return logModel;
     }
 
-    public void storeMetadataAsJSON(LogMetaData logMetaData, Log log)
+    public void storeMetadataAsJSON(LogMetaData logMetaData, Log log, String username)
         throws UserNotFoundException {
-
-        String username = portalContext.getCurrentUser().getUsername();
         String logMetadataJsonStr;
         String perspectiveJsonStr;
 
@@ -899,9 +897,6 @@ public class LogImporterController extends SelectorComposer<Window> implements C
 
                     || (myItem.getKey().equals(START_TIMESTAMP_LABEL) && logMetaData.getStartTimestampPos() == pos)
 
-                    || (myItem.getKey().equals(OTHER_TIMESTAMP_LABEL) &&
-                    ((Map<Integer, String>) logMetaData.getOtherTimestamps()).containsKey(pos))
-
                     || (myItem.getKey().equals(RESOURCE_LABEL) && logMetaData.getResourcePos() == pos)
 
                     || (myItem.getKey().equals(ROLE_LABEL) && logMetaData.getRolePos() == pos)
@@ -912,7 +907,8 @@ public class LogImporterController extends SelectorComposer<Window> implements C
                     // When this head is in Perspective tag list, select PERSPECTIVE_LABEL instead of
                     // EVENT_ATTRIBUTE_LABEL
                     ||
-                    (myItem.getKey().equals(EVENT_ATTRIBUTE_LABEL) && logMetaData.getEventAttributesPos().contains(pos)
+                    (myItem.getKey().equals(EVENT_ATTRIBUTE_LABEL) && (logMetaData.getEventAttributesPos().contains(pos)
+                        || ((Map<Integer, String>) logMetaData.getOtherTimestamps()).containsKey(pos))
                         && !logMetaData.getPerspectivePos().contains(pos))
 
                     || (myItem.getKey().equals(IGNORE_LABEL) && logMetaData.getIgnoredPos().contains(pos))
@@ -1452,7 +1448,7 @@ public class LogImporterController extends SelectorComposer<Window> implements C
     private void saveXLog(LogModel logModel, boolean isPublic) {
 
         try {
-            storeMetadataAsJSON(logMetaData, logModel.getImportLog());
+            storeMetadataAsJSON(logMetaData, logModel.getImportLog(), portalContext.getCurrentUser().getUsername());
             String successMessage;
             if (logModel.isRowLimitExceeded()) {
                 successMessage = MessageFormat.format(getLabel("limit_reached"), logModel.getRowsCount());

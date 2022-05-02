@@ -90,7 +90,7 @@ public class AActivity extends XEventImpl {// implements Map.Entry<XEvent,XEvent
         if (costTable == null || costTable.isEmpty()) return 0;
         String role = getAttributeMap().get(Constants.ATT_KEY_ROLE);
         if (role == null) return 0;
-        double multiplier = costTable.getOrDefault(role, 1.0);
+        double multiplier = costTable.getOrDefault(role, 0.0);
         double cost = (double)calendarModel.getDurationMillis(
             getOriginalStartTimestamp(), getOriginalEndTimestamp()
         );
