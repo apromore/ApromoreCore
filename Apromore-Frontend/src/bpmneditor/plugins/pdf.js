@@ -98,6 +98,7 @@ export default class File {
                     logo.replace('${xx yy}', (xy[0]) + " " + (xy[1] - 20)) + '</svg>'
                 );
             }
+            svgClone = svgClone.replaceAll('<image href=', '<image xlink:href=');
         }
         catch (e) {
             throw new Error ('SVG to PDF error. Error message: ' + e.message);
