@@ -104,6 +104,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
 
   private static final Logger LOGGER = PortalLoggerFactory.getLogger(BPMNEditorController.class);
   public static final String BPMN_XML = "bpmnXML";
+  public static final String PORTAL_SAVE_MODEL_FIRST_MESSAGE_KEY = "portal_saveModelFirst_message";
   private EventQueue<Event> qeBPMNEditor =
       EventQueues.lookup(Constants.EVENT_QUEUE_BPMN_EDITOR, EventQueues.DESKTOP, true);
 
@@ -369,7 +370,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
         }
 
         if (isNewProcess || process == null) {
-          Notification.error(Labels.getLabel("portal_saveModelFirst_message"));
+          Notification.error(Labels.getLabel(PORTAL_SAVE_MODEL_FIRST_MESSAGE_KEY));
         } else {
           PortalContext portalContext = mainC.getPortalContext();
           try {
@@ -394,7 +395,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
 
     this.addEventListener("onPublishModel", event -> {
       if (isNewProcess || process == null) {
-        Notification.error(Labels.getLabel("portal_saveModelFirst_message"));
+        Notification.error(Labels.getLabel(PORTAL_SAVE_MODEL_FIRST_MESSAGE_KEY));
         return;
       }
 
@@ -410,7 +411,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
 
     this.addEventListener("onLinkSubprocess", event -> {
       if (isNewProcess || process == null) {
-        Notification.error(Labels.getLabel("portal_saveModelFirst_message"));
+        Notification.error(Labels.getLabel(PORTAL_SAVE_MODEL_FIRST_MESSAGE_KEY));
         return;
       }
 
