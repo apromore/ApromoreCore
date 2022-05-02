@@ -22,8 +22,11 @@
 
 package org.apromore.dao.model;
 
+import static javax.persistence.GenerationType.IDENTITY;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
@@ -45,7 +48,9 @@ import org.springframework.beans.factory.annotation.Configurable;
 @AllArgsConstructor
 public class SubprocessProcess {
     @Id
-    private Integer id;
+    @GeneratedValue(strategy = IDENTITY)
+    @Column(name = "id", unique = true, nullable = false)
+    private Long id;
     @Column(name = "subprocess_id", nullable = false)
     private String subprocessId;
     @OneToOne

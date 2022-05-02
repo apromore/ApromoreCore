@@ -1438,7 +1438,7 @@ databaseChangeLog:
                    nullable: false
                    primaryKey: true
  - changeSet:
-     id: 20220429134200
+     id: 20220502115800
      author: janeh
      comment: "add subprocess process link table"
      changes:
@@ -1447,7 +1447,8 @@ databaseChangeLog:
            columns:
              - column:
                  name: id
-                 type: INT
+                 type: BIGINT
+                 autoIncrement: true
                  constraints:
                    nullable: false
                    primaryKey: true
