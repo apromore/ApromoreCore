@@ -96,4 +96,15 @@ class SubprocessProcessUnitTest extends BaseTestClass {
         assertNull(subprocessProcessRepository.getLinkedProcess(-1, subprocessId, -1));
     }
 
+    @Test
+    void testGetExistingLink() {
+        SubprocessProcess existingSubprocessProcessLink = subprocessProcessRepository.getLinkedProcess(process1.getId(), subprocessId, user.getId();
+        assertEquals(process1, existingSubprocessProcessLink.getSubprocessParent());
+        assertEquals(subprocessId, existingSubprocessProcessLink.getSubprocessId());
+        assertEquals(process2, existingSubprocessProcessLink.getLinkedProcess());
+        assertEquals(user, existingSubprocessProcessLink.getUser());
+
+        assertNull(subprocessProcessRepository.getExistingLink(-1, subprocessId, -1));
+    }
+
 }
