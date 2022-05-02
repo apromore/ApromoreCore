@@ -89,4 +89,6 @@ public abstract class PluginCatalog {
     public static final String PLUGIN_CREATE_NEW_LOG_FILTER = "CREATE_NEW_LOG_FILTER";
     public static final String PLUGIN_VIEW_FILTER_LOG_DISCOVER_MODEL = "VIEW_FILTER_LOG_DISCOVER_MODEL";
     public static final String PLUGIN_VIEW_EXISTING_LOG_FILTER = "EXISTING_LOG_FILTER";
+    public static final String PLUGIN_PREDICTOR_MANAGER_SUB_MENU = "PREDICTOR_MANAGER_SUB_MENU";
+    public static final String PLUGIN_CREATE_NEW_PREDICTOR = "CREATE_NEW_PREDICTOR";
 }

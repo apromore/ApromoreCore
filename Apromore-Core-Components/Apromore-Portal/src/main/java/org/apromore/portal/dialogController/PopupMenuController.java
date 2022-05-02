@@ -26,6 +26,8 @@
 
 package org.apromore.portal.dialogController;
 
+import static org.apromore.portal.menu.PluginCatalog.PLUGIN_PREDICTOR_MANAGER_SUB_MENU;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -192,15 +194,36 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
             case PluginCatalog.PLUGIN_VIEW_EXISTING_LOG_FILTER:
                 addExistingLogFilterViewMenuItem(popup);
                 return;
+            case PluginCatalog.PLUGIN_CREATE_NEW_PREDICTOR:
+                addNewPredictorMenuItem(popup);
+                return;
             case PluginCatalog.PLUGIN_DISCOVER_MODEL_SUB_MENU:
             case PluginCatalog.PLUGIN_DASHBOARD_SUB_MENU:
             case PluginCatalog.PLUGIN_LOG_FILTER_SUB_MENU:
             case PluginCatalog.PLUGIN_FILTER_SUB_MENU:
             case PluginCatalog.PLUGIN_APPLY_CALENDAR_SUB_MENU:
+            case PLUGIN_PREDICTOR_MANAGER_SUB_MENU:
                 addSubMenuItem(popup,menuItem.getId());
                 return;
         }
         addPluginMenuitem(popup, menuItem);  // handle null or unknown menuitem id
+    }
+
+    private void addNewPredictorMenuItem(Menupopup popup) {
+        Menuitem item = new Menuitem();
+        item.setLabel("Create new predictor");
+        item.setImage("~./icons/predictor-trainer-icon.svg");
+        item.addEventListener(ON_CLICK, event -> createNewPredictorTrainer());
+        popup.appendChild(item);
+    }
+
+    private void createNewPredictorTrainer() {
+        try {
+            PortalPlugin plugin = portalPluginMap.get(PluginCatalog.PLUGIN_PREDICTOR_TRAINER);
+            plugin.execute(getPortalContext());
+        } catch (Exception e) {
+            LOGGER.error("Error in showing New Predictor trainer", e);
+        }
     }
 
     private void addExistingLogFilterViewMenuItem(Menupopup popup) {
@@ -467,6 +490,10 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
                             (LogSummaryType) selections.iterator().next());
                     }
                     return;
+                case PLUGIN_PREDICTOR_MANAGER_SUB_MENU:
+                    if (pluginAvailable(PluginCatalog.PLUGIN_PREDICTOR_TRAINER)) {
+                        // New log sub menu controller
+                    }
                 default: return;
             }
 
