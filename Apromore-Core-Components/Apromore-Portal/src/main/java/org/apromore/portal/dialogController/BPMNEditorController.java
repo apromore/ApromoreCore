@@ -72,9 +72,11 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Window;
 
 import static org.apromore.common.Constants.DRAFT_BRANCH_NAME;
 import static org.apromore.common.Constants.TRUNK_NAME;
+import static org.apromore.plugin.portal.PortalContexts.getPageDefinition;
 import static org.apromore.portal.common.LabelConstants.MESSAGEBOX_DEFAULT_TITLE;
 
 /**
@@ -404,6 +406,32 @@ public class BPMNEditorController extends BaseController implements Composer<Com
       arg.put("selectedModel", process);
       publishModelPlugin.setSimpleParams(arg);
       publishModelPlugin.execute(portalContext);
+    });
+
+    this.addEventListener("onLinkSubprocess", event -> {
+      if (isNewProcess || process == null) {
+        Notification.error(Labels.getLabel("portal_saveModelFirst_message"));
+        return;
+      }
+
+      String elementId =  (String) event.getData();
+      Map<String, Object> args = new HashMap<>();
+      args.put("mainController", mainC);
+      args.put("parentProcessId", process.getId());
+      args.put("elementId", elementId);
+      Window linkSubProcessModal = (Window) Executions.createComponents(getPageDefinition("static/bpmneditor/linkSubProcess.zul"), null, args);
+      linkSubProcessModal.doModal();
+    });
+
+    this.addEventListener("onDeleteSubprocess", event -> {
+      if (isNewProcess || process == null) {
+        //If the process isn't saved, there are no link details.
+        return;
+      }
+
+      ProcessService processService = (ProcessService) SpringUtil.getBean("processService");
+      String elementId =  (String) event.getData();
+      processService.unlinkSubprocess(process.getId(), elementId, currentUserType.getUsername());
     });
 
     BPMNEditorController editorController = this;

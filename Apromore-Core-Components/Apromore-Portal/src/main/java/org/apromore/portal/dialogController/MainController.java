@@ -607,7 +607,7 @@ public class MainController extends BaseController implements MainControllerInte
         editProcess2(process, version, nativeType, new HashSet<RequestParameterType<?>>(), false);
     }
 
-    public void openNewProcess() throws Exception {
+    public ProcessSummaryType openNewProcess() throws Exception {
 
         String username = UserSessionManager.getCurrentUser().getUsername();
         String userId = UserSessionManager.getCurrentUser().getId();
@@ -661,6 +661,8 @@ public class MainController extends BaseController implements MainControllerInte
 
         editProcess2(process, version, process.getOriginalNativeType(), new HashSet<>(),
                 true);
+
+        return process;
     }
 
     /**
