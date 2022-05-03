@@ -393,8 +393,12 @@ class DatePatterns {
             "MM-dd-yyyy HH:mm:ss");
         DATE_FORMAT_REGEXPS.put("^" + DATE_DASH_YEAR_MONTH_DAY + "\\s+" + TIME_COLON_SECOND + "$",
             "yyyy-MM-dd HH:mm:ss");
+        DATE_FORMAT_REGEXPS.put("^" + DATE_DASH_YEAR_MONTH_DAY + "\\/+" + TIME_COLON_SECOND + "$",
+            "yyyy-MM-dd/HH:mm:ss");
         DATE_FORMAT_REGEXPS.put("^" + DATE_DASH_YEAR_DAY_MONTH + "\\s+" + TIME_COLON_SECOND + "$",
             "yyyy-dd-MM HH:mm:ss");
+        DATE_FORMAT_REGEXPS.put("^" + DATE_DASH_YEAR_DAY_MONTH + "\\/+" + TIME_COLON_SECOND + "$",
+            "yyyy-dd-MM/HH:mm:ss");
         DATE_FORMAT_REGEXPS.put("^" + DATE_DASH_DAY_MONTH_YEAR + "t" + "{1}" + TIME_COLON_SECOND + "$",
             "dd-MM-yyyy'T'HH:mm:ss");
         DATE_FORMAT_REGEXPS.put("^" + DATE_DASH_MONTH_DAY_YEAR + "t" + "{1}" + TIME_COLON_SECOND + "$",
