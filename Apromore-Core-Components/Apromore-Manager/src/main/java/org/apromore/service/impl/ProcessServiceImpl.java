@@ -36,6 +36,7 @@ import org.apromore.dao.ProcessBranchRepository;
 import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.dao.ProcessRepository;
 import org.apromore.dao.StorageRepository;
+import org.apromore.dao.SubprocessProcessRepository;
 import org.apromore.dao.model.AccessRights;
 import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.Group;
@@ -46,11 +47,13 @@ import org.apromore.dao.model.Process;
 import org.apromore.dao.model.ProcessBranch;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.dao.model.Storage;
+import org.apromore.dao.model.SubprocessProcess;
 import org.apromore.dao.model.User;
 import org.apromore.exception.ExceptionDao;
 import org.apromore.exception.ExportFormatException;
 import org.apromore.exception.ImportException;
 import org.apromore.exception.RepositoryException;
+import org.apromore.exception.ResourceNotFoundException;
 import org.apromore.exception.UpdateProcessException;
 import org.apromore.portal.helper.Version;
 import org.apromore.portal.model.ExportFormatResultType;
@@ -138,6 +141,7 @@ public class ProcessServiceImpl implements ProcessService {
   private StorageRepository storageRepository;
   private String storagePath;
   private StorageManagementFactory<StorageClient> storageFactory;
+  private SubprocessProcessRepository subprocessProcessRepository;
 
   private boolean sanitizationEnabled;
 
@@ -167,7 +171,8 @@ public class ProcessServiceImpl implements ProcessService {
       final UserService userSrv, final FormatService formatSrv, final UserInterfaceHelper ui,
       final WorkspaceService workspaceService, final AuthorizationService authorizationService,
       final FolderRepository folderRepository, final ConfigBean config,
-      final StorageRepository storageRepo, final StorageManagementFactory storageFactory) {
+      final StorageRepository storageRepo, final StorageManagementFactory storageFactory,
+      final SubprocessProcessRepository subprocessProcessRepo) {
     this.groupRepo = groupRepo;
     this.nativeRepo = nativeRepo;
     this.processBranchRepo = processBranchRepo;
@@ -181,6 +186,7 @@ public class ProcessServiceImpl implements ProcessService {
     this.authorizationService = authorizationService;
     this.folderRepository = folderRepository;
     this.storageRepository = storageRepo;
+    this.subprocessProcessRepository = subprocessProcessRepo;
 
     this.sanitizationEnabled = config.isSanitizationEnabled();
     this.storagePath = config.getStoragePath();
@@ -959,4 +965,41 @@ public class ProcessServiceImpl implements ProcessService {
     }
   }
 
+  @Override
+  public void linkSubprocess(Integer subprocessParentId, String subprocessId, Integer processId, String userName)
+      throws ResourceNotFoundException {
+    try {
+      User user = userSrv.findUserByLogin(userName);
+
+      SubprocessProcess subprocessProcessLink = subprocessProcessRepository
+          .getExistingLink(subprocessParentId, subprocessId, user.getId());
+      if (subprocessProcessLink == null) {
+        subprocessProcessLink = new SubprocessProcess();
+      }
+      subprocessProcessLink.setSubprocessParent(processRepo.getById(subprocessParentId));
+      subprocessProcessLink.setSubprocessId(subprocessId);
+      subprocessProcessLink.setLinkedProcess(processRepo.getById(processId));
+      subprocessProcessLink.setUser(userSrv.findUserByLogin(userName));
+      subprocessProcessRepository.saveAndFlush(subprocessProcessLink);
+    } catch (Exception e) {
+      throw new ResourceNotFoundException("Link subprocess failed caused by {}", e);
+    }
+  }
+
+  @Override
+  public void unlinkSubprocess(Integer subprocessParentId, String subprocessId, String userName)
+      throws ResourceNotFoundException {
+    try {
+      User user = userSrv.findUserByLogin(userName);
+
+      SubprocessProcess subprocessProcessLink = subprocessProcessRepository
+          .getExistingLink(subprocessParentId, subprocessId, user.getId());
+      if (subprocessProcessLink == null) {
+        return;
+      }
+      subprocessProcessRepository.delete(subprocessProcessLink);
+    } catch (Exception e) {
+      throw new ResourceNotFoundException("Link subprocess failed caused by {}", e);
+    }
+  }
 }

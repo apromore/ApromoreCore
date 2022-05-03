@@ -321,8 +321,17 @@
               jq(".djs-overlay-container").toggleClass('aux-disabled');
             };
 
-           Apromore.BPMNEditor.Plugins.Attachment.toggleComment = function() {
+            Apromore.BPMNEditor.Plugins.Attachment.toggleComment = function() {
               jq(".djs-overlay-container").toggleClass('comment-disabled');
+            };
+
+            Apromore.BPMNEditor.linkSubprocess = function(elementId) {
+              Apromore.BPMNEditor.beforeCheckUnsaved('onLinkSubprocess');
+              zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onLinkSubprocess', elementId));
+            };
+
+            Apromore.BPMNEditor.deleteSubprocess = function(elementId) {
+              zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onDeleteSubprocess', elementId));
             };
 
             // window.setTimeout(function() {
