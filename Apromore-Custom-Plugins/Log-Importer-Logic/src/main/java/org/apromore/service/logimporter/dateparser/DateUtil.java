@@ -32,6 +32,7 @@ import java.util.TimeZone;
 public class DateUtil extends DatePatterns {
 
     private static final int DATE_STRING_MIN_LENGTH = 4;
+    private static final String DATE_FORMAT_MILLISECOND = ".SSS";
 
     private DateUtil() {
     }
@@ -120,6 +121,10 @@ public class DateUtil extends DatePatterns {
 
         } catch (ParseException e) {
             try {
+                if (dateFormat.contains(DATE_FORMAT_MILLISECOND)) {
+                    dateString = dateString + ".0";
+                    return new Timestamp(toCalendar(simpleDateFormat.parse(dateString)).getTimeInMillis());
+                }
                 date = simpleDateFormat.parse(dateString.replaceAll("\\W", " "));
                 Calendar calendar = toCalendar(date);
                 return new Timestamp(calendar.getTimeInMillis());
