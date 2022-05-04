@@ -421,10 +421,10 @@ public class BPMNEditorController extends BaseController implements Composer<Com
       args.put("parentProcessId", process.getId());
       args.put("elementId", elementId);
 
-      ProcessSummaryType linkedProcess = mainC.getManagerService().getLinkedProcess(process.getId(), elementId, currentUserType.getUsername());
+      ProcessService processService = (ProcessService) SpringUtil.getBean("processService");
+      ProcessSummaryType linkedProcess = processService.getLinkedProcess(process.getId(), elementId, currentUserType.getUsername());
       String linkProcessWindowPath = "static/bpmneditor/linkSubProcess.zul";
       if (linkedProcess != null) {
-        args.put("linkedProcess", linkedProcess);
         linkProcessWindowPath = "static/bpmneditor/viewSubProcessLink.zul";
       }
 
