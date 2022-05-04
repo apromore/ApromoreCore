@@ -39,7 +39,7 @@
             <listbox mold="paging" pageSize="10"
                      model="@load(vm_linkSubProcess.processList)"
                      selectedItem="@bind(vm_linkSubProcess.selectedProcess)"
-                     sclass="@load(vm_linkSubProcess.processListVisible ? 'ap-listbox-enabled' : 'ap-listbox-disabled')">
+                     sclass="@load(vm_linkSubProcess.processListEnabled ? 'ap-listbox-enabled' : 'ap-listbox-disabled')">
                 <listhead>
                     <listheader label="Existing processes"/>
                 </listhead>

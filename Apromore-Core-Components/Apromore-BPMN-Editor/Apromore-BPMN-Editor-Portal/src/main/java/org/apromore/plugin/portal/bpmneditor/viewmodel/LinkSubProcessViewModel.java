@@ -75,7 +75,7 @@ public class LinkSubProcessViewModel {
     @Getter @Setter
     private ProcessSummaryType selectedProcess;
     @Getter
-    private boolean processListVisible;
+    private boolean processListEnabled;
 
     @Init
     public void init(@ExecutionArgParam("mainController") final MainController mainC,
@@ -127,8 +127,8 @@ public class LinkSubProcessViewModel {
     }
 
     @Command
-    @NotifyChange("processListVisible")
+    @NotifyChange("processListEnabled")
     public void onCheckLinkType() {
-        processListVisible = LINK_TYPE_EXISTING.equals(linkType);
+        processListEnabled = LINK_TYPE_EXISTING.equals(linkType);
     }
 }
