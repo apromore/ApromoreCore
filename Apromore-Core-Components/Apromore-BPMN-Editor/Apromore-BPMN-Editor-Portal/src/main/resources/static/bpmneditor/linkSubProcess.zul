@@ -26,13 +26,30 @@
         position="center"
         title="Link Process"
         mode="modal">
+    <style src="~./bpmneditor/editor/css/link-subprocess.css"/>
     <vlayout spacing="0">
-        <radiogroup selectedItem="@bind(vm_linkSubProcess.linkType)">
+        <radiogroup selectedItem="@bind(vm_linkSubProcess.linkType)"
+                    onCheck="@command('onCheckLinkType')">
             <vlayout style="padding:5px;">
                 <radio label="Create new process" value="NEW"/>
-                <radio label="Use an existing process" value="EXISTING" disabled="true" />
+                <radio label="Use an existing process" value="EXISTING"/>
             </vlayout>
         </radiogroup>
+        <div style="padding:5px;">
+            <listbox mold="paging" pageSize="10"
+                     model="@load(vm_linkSubProcess.processList)"
+                     selectedItem="@bind(vm_linkSubProcess.selectedProcess)"
+                     sclass="@load(vm_linkSubProcess.processListEnabled ? 'ap-listbox-enabled' : 'ap-listbox-disabled')">
+                <listhead>
+                    <listheader label="Existing processes"/>
+                </listhead>
+                <template name="model">
+                    <listitem value="${each}">
+                        <listcell label="${each.name}"/>
+                    </listitem>
+                </template>
+            </listbox>
+        </div>
         <div sclass="ap-window-footer-actions" height="42px">
             <button label="Link" iconSclass="z-icon-check-circle"
                     onClick="@command('linkSubProcess', window=winLinkSubprocess)"/>
