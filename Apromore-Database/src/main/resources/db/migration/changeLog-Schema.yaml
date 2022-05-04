@@ -1437,3 +1437,17 @@ databaseChangeLog:
                  constraints:
                    nullable: false
                    primaryKey: true
+ - changeSet:
+     id: 2022050362100
+     author: mtomar
+     changes:
+       - addColumn:
+           tableName: predictor
+           columns:
+             - column:
+                 name: log_id
+                 type: INT
+                 constraints:
+                   nullable: false
+
+

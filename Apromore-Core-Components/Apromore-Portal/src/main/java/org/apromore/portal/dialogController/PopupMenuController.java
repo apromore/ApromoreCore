@@ -50,6 +50,7 @@ import org.apromore.portal.controller.DashboardPopupLogSubMenuController;
 import org.apromore.portal.controller.DiscoverPopupLogSubMenuController;
 import org.apromore.portal.controller.FilterPopupLogSubMenuController;
 import org.apromore.portal.controller.LogFilterPopupLogSubMenuController;
+import org.apromore.portal.controller.PredictorTrainerSubMenuController;
 import org.apromore.portal.menu.MenuConfig;
 import org.apromore.portal.menu.MenuConfigLoader;
 import org.apromore.portal.menu.MenuGroup;
@@ -493,6 +494,8 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
                 case PLUGIN_PREDICTOR_MANAGER_SUB_MENU:
                     if (pluginAvailable(PluginCatalog.PLUGIN_PREDICTOR_TRAINER)) {
                         // New log sub menu controller
+                        new PredictorTrainerSubMenuController(this, mainController, popup,
+                            (LogSummaryType) selections.iterator().next());
                     }
                 default: return;
             }
