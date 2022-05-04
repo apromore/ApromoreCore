@@ -170,7 +170,9 @@ class DateUtilUnitTest {
         assertEquals("dd-MM-yyyy HH:mm:ss", determineDateFormat("19-12-2019 15:13:05"));
         assertEquals("MM-dd-yyyy HH:mm:ss", determineDateFormat("12-19-2019 15:13:05"));
         assertEquals("yyyy-MM-dd HH:mm:ss", determineDateFormat("2019-12-19 15:13:05"));
+        assertEquals("yyyy-MM-dd/HH:mm:ss", determineDateFormat("2019-12-19/15:13:05"));
         assertEquals("yyyy-dd-MM HH:mm:ss", determineDateFormat("2019-19-12 15:13:05"));
+        assertEquals("yyyy-dd-MM/HH:mm:ss", determineDateFormat("2019-19-12/15:13:05"));
         assertEquals("dd-MM-yyyy'T'HH:mm:ss", determineDateFormat("19-12-2019T15:13:05"));
         assertEquals("MM-dd-yyyy'T'HH:mm:ss", determineDateFormat("12-19-2019T15:13:05"));
         assertEquals("yyyy-MM-dd'T'HH:mm:ss", determineDateFormat("2019-12-19T15:13:05"));
