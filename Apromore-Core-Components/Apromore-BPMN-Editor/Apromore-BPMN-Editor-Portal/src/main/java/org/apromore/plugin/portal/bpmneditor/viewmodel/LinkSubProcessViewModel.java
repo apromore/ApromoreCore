@@ -22,17 +22,28 @@
 
 package org.apromore.plugin.portal.bpmneditor.viewmodel;
 
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
+import org.apromore.dao.model.User;
+import org.apromore.exception.UserNotFoundException;
+import org.apromore.portal.common.ItemHelpers;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.model.ProcessSummaryType;
+import org.apromore.portal.model.SummariesType;
+import org.apromore.portal.model.SummaryType;
+import org.apromore.portal.model.UserType;
 import org.apromore.service.ProcessService;
+import org.apromore.service.SecurityService;
+import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.zk.notification.Notification;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
+import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
@@ -42,16 +53,29 @@ public class LinkSubProcessViewModel {
     private static final String WINDOW_PARAM = "window";
     private static final String LINK_TYPE_NEW = "NEW";
     private static final String LINK_TYPE_EXISTING = "EXISTING";
+    private static final int ROOT_FOLDER_ID = 0;
+    public static final int PAGE_SIZE = 10000;
 
     private MainController mainController;
     private String elementId;
     private int parentProcessId;
+    private UserType currentUser;
 
     @WireVariable
     private ProcessService processService;
 
+    @WireVariable
+    private SecurityService securityService;
+
+    @WireVariable
+    private UserInterfaceHelper uiHelper;
+
     @Getter @Setter
     private String linkType = LINK_TYPE_NEW;
+    @Getter @Setter
+    private ProcessSummaryType selectedProcess;
+    @Getter
+    private boolean processListVisible;
 
     @Init
     public void init(@ExecutionArgParam("mainController") final MainController mainC,
@@ -60,6 +84,7 @@ public class LinkSubProcessViewModel {
         mainController = mainC;
         elementId = elId;
         parentProcessId = parentId;
+        currentUser = UserSessionManager.getCurrentUser();
     }
 
     @Command
@@ -67,15 +92,43 @@ public class LinkSubProcessViewModel {
         switch (linkType) {
             case LINK_TYPE_NEW:
                 ProcessSummaryType newProcess = mainController.openNewProcess();
-                processService.linkSubprocess(parentProcessId, elementId, newProcess.getId(), UserSessionManager.getCurrentUser().getUsername());
+                processService.linkSubprocess(parentProcessId, elementId, newProcess.getId(),
+                    currentUser.getUsername());
+                window.detach();
                 break;
             case LINK_TYPE_EXISTING:
-                Notification.info("Subprocess linking to an existing process coming soon...");
-                //TODO: Add list of processes with editor or owner access to choose from and add relation to db
+                if (selectedProcess == null ) {
+                    Notification.error("Please select an existing process to link");
+                } else {
+                    Notification.info("Subprocess linked to " + selectedProcess.getName());
+                    processService.linkSubprocess(parentProcessId, elementId, selectedProcess.getId(),
+                        currentUser.getUsername());
+                    window.detach();
+                }
                 break;
             default:
                 Notification.error("Please select a link type");
         }
-        window.detach();
+    }
+
+    public List<SummaryType> getProcessList() throws UserNotFoundException {
+        User user = securityService.getUserById(currentUser.getId());
+        SummariesType processSummaries = uiHelper.buildProcessSummaryList(currentUser.getId(), ROOT_FOLDER_ID, 0,
+            PAGE_SIZE);
+        List<SummaryType> processList = new ArrayList<>(processSummaries.getSummary());
+        processList.removeIf(p -> {
+            try {
+                return !ItemHelpers.canModify(user, p);
+            } catch (Exception e) {
+                return true;
+            }
+        });
+        return processList;
+    }
+
+    @Command
+    @NotifyChange("processListVisible")
+    public void onCheckLinkType() {
+        processListVisible = LINK_TYPE_EXISTING.equals(linkType);
     }
 }
