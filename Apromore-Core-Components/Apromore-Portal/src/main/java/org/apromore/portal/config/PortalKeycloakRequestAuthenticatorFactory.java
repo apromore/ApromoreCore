@@ -97,13 +97,13 @@ class PortalKeycloakRequestAuthenticatorFactory implements RequestAuthenticatorF
                         String uiLocales = getQueryParamValue(OAuth2Constants.UI_LOCALES_PARAM);
                         url = UriUtils.stripQueryParam(url, OAuth2Constants.UI_LOCALES_PARAM);
                         log.infof("stripped uri: %s", url);
-                        log.infof("rewritten uri: %s", rewrittenRedirectUri(url));
+                        log.infof("rewritten uri: %s", rewrittenRedirectUriCopy(url));
 
                         KeycloakUriBuilder redirectUriBuilder = deployment.getAuthUrl().clone()
                             .queryParam(OAuth2Constants.RESPONSE_TYPE, OAuth2Constants.CODE)
                             .queryParam("response_mode", "fragment")
                             .queryParam(OAuth2Constants.CLIENT_ID, deployment.getResourceName())
-                            .queryParam(OAuth2Constants.REDIRECT_URI, rewrittenRedirectUri(url))
+                            .queryParam(OAuth2Constants.REDIRECT_URI, rewrittenRedirectUriCopy(url))
                             //.queryParam(OAuth2Constants.STATE, state)
                             .queryParam("login", "true");
                         if(loginHint != null && loginHint.length() > 0){
@@ -133,7 +133,7 @@ class PortalKeycloakRequestAuthenticatorFactory implements RequestAuthenticatorF
                      *
                      * When bumping Keycloak to a version beyond 14, this may need to be resychronized.
                      */
-                    private String rewrittenRedirectUri(String originalUri) {
+                    private String rewrittenRedirectUriCopy(String originalUri) {
                         Map<String, String> rewriteRules = deployment.getRedirectRewriteRules();
                         if(rewriteRules != null && !rewriteRules.isEmpty()) {
                             try {
