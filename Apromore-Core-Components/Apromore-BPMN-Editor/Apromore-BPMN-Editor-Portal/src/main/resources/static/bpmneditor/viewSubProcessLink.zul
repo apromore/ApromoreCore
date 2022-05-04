@@ -25,6 +25,7 @@
         width="500px"
         position="center"
         title="Preview process"
+        closable="true"
         mode="modal">
     <style src="~./bpmneditor/editor/css/link-subprocess.css"/>
     <vlayout spacing="0">
@@ -38,8 +39,6 @@
                     onClick="@command('editLinkedProcess')"/>
             <button label="Unlink" iconSclass="z-icon-check-circle"
                     onClick="@command('unlinkSubProcess', window=winViewSubprocessLink)"/>
-            <button label="${labels.common_cancel_text}" iconSclass="z-icon-times-circle"
-                    onClick="winViewSubprocessLink.detach()"/>
         </div>
     </vlayout>
 </window>

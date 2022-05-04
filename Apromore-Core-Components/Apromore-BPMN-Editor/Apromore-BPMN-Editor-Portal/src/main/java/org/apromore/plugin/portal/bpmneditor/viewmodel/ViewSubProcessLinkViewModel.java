@@ -29,8 +29,8 @@ import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 import org.apromore.exception.ResourceNotFoundException;
-import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.model.ProcessSummaryType;
@@ -50,6 +50,7 @@ import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zul.Window;
 
+@Slf4j
 @VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
 public class ViewSubProcessLinkViewModel {
     private static final String WINDOW_PARAM = "window";
@@ -80,10 +81,12 @@ public class ViewSubProcessLinkViewModel {
             .filter(v -> v.getVersionNumber().equals(process.getLastVersion()))
             .findFirst().orElse(null);
         try {
-            mainController.editProcess2(process, version, process.getOriginalNativeType(), new HashSet<RequestParameterType<?>>(), false);
+            mainController.editProcess2(process, version, process.getOriginalNativeType(), new HashSet<>(), false);
         } catch (InterruptedException e) {
             Notification.error("Unable to view linked process");
-            e.printStackTrace();
+            log.error("Unable to view linked process", e);
+            // Restore interrupted state...
+            Thread.currentThread().interrupt();
         }
 
     }
@@ -107,10 +110,15 @@ public class ViewSubProcessLinkViewModel {
     }
 
     @Command
-    public void unlinkSubProcess(@BindingParam(WINDOW_PARAM) final Component window) throws Exception {
-        processService.unlinkSubprocess(parentProcessId, elementId, currentUser.getUsername());
-        Notification.info("Process successfully unlinked");
-        window.detach();
+    public void unlinkSubProcess(@BindingParam(WINDOW_PARAM) final Component window) {
+        try {
+            processService.unlinkSubprocess(parentProcessId, elementId, currentUser.getUsername());
+            Notification.info("Process successfully unlinked");
+            window.detach();
+        } catch (ResourceNotFoundException e) {
+            Notification.error("Unable to unlink process");
+            log.error("Unable to view linked process", e);
+        }
     }
 
     @GlobalCommand
@@ -130,7 +138,7 @@ public class ViewSubProcessLinkViewModel {
     }
 
     public String getLinkedProcessMessage() {
-        String linkedProcessMessageFormat = "The subtask is already linked to an existing process \"{0}\"";
+        String linkedProcessMessageFormat = "This activity is already linked to an existing subprocess model {0}";
         return MessageFormat.format(linkedProcessMessageFormat, getLinkedProcess().getName());
     }
 }
