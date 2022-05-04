@@ -24,9 +24,6 @@ public class PredictorTrainerSubMenuController extends PopupLogSubMenuController
                                          LogSummaryType logSummaryType) {
         super(popupMenuController, mainController, popupMenu, logSummaryType);
         this.predictorRepository = (PredictorRepository) SpringUtil.getBean("predictorRepository", PredictorRepository.class);
-
-        System.out.println("===> predictorRepository All: " + predictorRepository.findByLogId(logSummaryType.getId()));
-
         constructMenu();
     }
 
@@ -67,7 +64,6 @@ public class PredictorTrainerSubMenuController extends PopupLogSubMenuController
         item.setLabel(predictor.getName());
         item.addEventListener(ON_CLICK, event -> {
             try {
-                System.out.println("====> clicking for: " + predictor);
                 Map<String, Object> attrMap = new HashMap<>();
                 attrMap.put("predictorId", predictor.getId());
                 PortalPlugin plugin = portalPluginMap.get(PluginCatalog.PLUGIN_PREDICTOR_TRAINER);
