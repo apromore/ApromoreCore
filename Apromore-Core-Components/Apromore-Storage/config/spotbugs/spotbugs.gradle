@@ -1,0 +1,40 @@
+sourceSets {
+    // we define `main` sourceSet here, so SpotBugs Gradle Plugin generates `spotbugsMain` task
+    main {
+        java.srcDirs = ['src/main/java']
+    }
+}
+
+spotbugs {
+    ignoreFailures = false
+    effort = "max"
+    reportLevel = "low"
+    excludeFilter = file("${project.projectDir}/config/spotbugs/spotbugs-exclude.xml")
+    reportsDir = file("$buildDir/reports/spotbugs")
+}
+
+
+spotbugsMain {
+    reports {
+        xml {
+            enabled = false
+        }
+        html {
+            enabled = true
+            destination = file("$buildDir/reports/spotbugs/main/spotbugs.html")
+            stylesheet = 'fancy-hist.xsl'
+        }
+    }
+}
+spotbugsTest {
+    reports {
+        xml {
+            enabled = false
+        }
+        html {
+            enabled = true
+            destination = file("$buildDir/reports/spotbugs/main/spotbugs.html")
+            stylesheet = 'fancy-hist.xsl'
+        }
+    }
+}
