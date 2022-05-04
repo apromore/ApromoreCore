@@ -420,7 +420,15 @@ public class BPMNEditorController extends BaseController implements Composer<Com
       args.put("mainController", mainC);
       args.put("parentProcessId", process.getId());
       args.put("elementId", elementId);
-      Window linkSubProcessModal = (Window) Executions.createComponents(getPageDefinition("static/bpmneditor/linkSubProcess.zul"), null, args);
+
+      ProcessSummaryType linkedProcess = mainC.getManagerService().getLinkedProcess(process.getId(), elementId, currentUserType.getUsername());
+      String linkProcessWindowPath = "static/bpmneditor/linkSubProcess.zul";
+      if (linkedProcess != null) {
+        args.put("linkedProcess", linkedProcess);
+        linkProcessWindowPath = "static/bpmneditor/viewSubProcessLink.zul";
+      }
+
+      Window linkSubProcessModal = (Window) Executions.createComponents(getPageDefinition(linkProcessWindowPath), null, args);
       linkSubProcessModal.doModal();
     });
 
