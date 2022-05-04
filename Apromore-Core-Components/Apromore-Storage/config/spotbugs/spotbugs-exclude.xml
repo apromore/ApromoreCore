@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+
+  <Match>
+    <Bug pattern="RV_RETURN_VALUE_IGNORED_BAD_PRACTICE"/>
+    <Class name="org.apromore.storage.FileStorageClient"/>
+  </Match>
+
+  <!-- Exclude patterns that aren't important in tests -->
+  <Match>
+    <Bug pattern="UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR"/>
+    <Class name="org.apromore.storage.FileStorageClientTest"/>
+  </Match>
+</FindBugsFilter>

@@ -22,15 +22,30 @@
 
 package org.apromore.storage;
 
-public enum StorageType {
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-    FILE;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-    public static final String STORAGE_PATH_SEPARATOR = "::";
-    private static final int BASE_FOLDER = 1;
+class FileStorageClientTest {
 
-    public String getBaseStorage(String storagePath) {
-        return storagePath.split(STORAGE_PATH_SEPARATOR)[BASE_FOLDER];
+    private static final String BASE_PATH = "src/test/resources";
+
+    private FileStorageClient fileStorageClient;
+
+    @BeforeEach
+    void setUp() {
+        fileStorageClient = new FileStorageClient(BASE_PATH);
     }
 
+    @Test
+    void should_return_true_if_file_exists() {
+        assertTrue(fileStorageClient.isFileExists("baseFolder", "test.csv"));
+    }
+
+    @Test
+    void should_return_false_if_file_does_not_exist() {
+        assertFalse(fileStorageClient.isFileExists("baseFolder", "not_exists.csv"));
+    }
 }

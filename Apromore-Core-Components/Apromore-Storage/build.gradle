@@ -1,3 +1,11 @@
+plugins {
+    id "checkstyle"
+    id "com.github.spotbugs" version "${spotbugsPluginVersion}"
+}
+
+apply from: 'config/checkstyle/checkstyle.gradle'
+apply from: 'config/spotbugs/spotbugs.gradle'
+
 group = 'org.apromore'
 version = '1.0'
 description = 'Apromore Storage'

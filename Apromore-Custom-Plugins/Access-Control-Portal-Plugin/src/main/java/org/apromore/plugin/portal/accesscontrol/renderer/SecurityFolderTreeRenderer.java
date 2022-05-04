@@ -215,12 +215,7 @@ public class SecurityFolderTreeRenderer implements TreeitemRenderer {
           UserSessionManager.setCurrentSecurityItem(selectedId);
           UserSessionManager.setCurrentSecurityType(clickedNodeValue.getType());
           EventQueues.lookup("accessControl", EventQueues.DESKTOP, true)
-              .publish(new Event("onSelect", null, hasOwnership ? selectedItem : null));
-          // if (securitySetupController != null) {
-          // securitySetupController.getPermissionsController().loadUsers(selectedId,
-          // clickedNodeValue.getType());
-          // securitySetupController.getFindGroupsController().updateSelection();
-          // }
+              .publish(new Event("onSelect", null, selectedItem));
         } catch (Exception ex) {
           LOGGER.error("SecurityFolderTree Renderer failed to render an item", ex);
         }

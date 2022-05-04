@@ -76,6 +76,15 @@ public interface LogRepository extends JpaRepository<Log, Integer>, LogRepositor
     Page<Log> findRootLogsByUser(String userRowGuid, Pageable pageable);
 
     /**
+     * Finds processes within a folder.
+     * @param pageable which page of results to produce
+     * @return a page of processes
+     */
+    @Query("SELECT DISTINCT l FROM Log l " +
+           "WHERE (l.folder is NULL) ORDER BY l.id")
+    Page<Log> findAllRootLogs(Pageable pageable);
+
+    /**
      * Finds processes within a folder which are in a group the user belongs to.
      * @param folderId the folder id
      * @param userRowGuid user id
@@ -86,6 +95,16 @@ public interface LogRepository extends JpaRepository<Log, Integer>, LogRepositor
             "User u JOIN u.groups g2 " +
             "WHERE (f.id = ?1) AND (u.rowGuid = ?2) AND (g1 = g2) ORDER BY l.id")
     Page<Log> findAllLogsInFolderForUser(Integer folderId, String userRowGuid, Pageable pageable);
+
+    /**
+     * Finds processes within a folder.
+     * @param folderId the folder id
+     * @param pageable which page of results to produce
+     * @return a page of processes
+     */
+    @Query("SELECT DISTINCT l FROM Log l JOIN l.folder f " +
+           "WHERE (f.id = ?1) ORDER BY l.id")
+    Page<Log> findAllLogsInFolder(Integer folderId, Pageable pageable);
 
     /**
      * Returns a Log

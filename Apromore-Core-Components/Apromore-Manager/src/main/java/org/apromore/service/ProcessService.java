@@ -32,6 +32,7 @@ import org.apromore.dao.model.User;
 import org.apromore.exception.ExportFormatException;
 import org.apromore.exception.ImportException;
 import org.apromore.exception.RepositoryException;
+import org.apromore.exception.ResourceNotFoundException;
 import org.apromore.exception.UpdateProcessException;
 import org.apromore.portal.helper.Version;
 import org.apromore.portal.model.ExportFormatResultType;
@@ -224,4 +225,25 @@ public interface ProcessService {
      */
     ProcessModelVersion updateDraft(Integer processId, String versionNumber,
                                     String nativeType, InputStream nativeStream, String userName) throws UpdateProcessException;
+
+    /**
+     * Link a subprocess to an existing process.
+     *
+     * @param subprocessParentId the id of the process which contains the subprocess
+     * @param subprocessId the element id of the subprocess
+     * @param processId the id of an existing process to link the subprocess to
+     * @param userName userName of the user associated with the link
+     */
+    void linkSubprocess(Integer subprocessParentId, String subprocessId, Integer processId, String userName)
+        throws ResourceNotFoundException;
+
+    /**
+     * Unlink a subprocess from an existing process.
+     *
+     * @param subprocessParentId the id of the process which contains the subprocess
+     * @param subprocessId the element id of the subprocess
+     * @param userName userName of the user associated with the link
+     */
+    void unlinkSubprocess(Integer subprocessParentId, String subprocessId, String userName)
+        throws ResourceNotFoundException;
 }

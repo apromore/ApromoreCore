@@ -19,6 +19,7 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+
 package org.apromore.storage.config;
 
 import org.apromore.storage.StorageClient;
@@ -29,13 +30,12 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class StorageConfig {
-	
-	
-	@Bean
-	public StorageManagementFactory<StorageClient> storageManagementFactory()
-	{
-		return new StorageManagementFactoryImpl<StorageClient>();
-		
-	}
+
+
+    @Bean
+    public StorageManagementFactory<StorageClient> storageManagementFactory() {
+        return new StorageManagementFactoryImpl<StorageClient>();
+
+    }
 
 }
