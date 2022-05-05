@@ -39,6 +39,7 @@ import org.apromore.service.ProcessService;
 import org.apromore.service.SecurityService;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.zk.notification.Notification;
+import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ExecutionArgParam;
@@ -94,6 +95,7 @@ public class LinkSubProcessViewModel {
                 ProcessSummaryType newProcess = mainController.openNewProcess();
                 processService.linkSubprocess(parentProcessId, elementId, newProcess.getId(),
                     currentUser.getUsername());
+                BindUtils.postGlobalCommand(null, null, "onLinkedProcessUpdated", null);
                 window.detach();
                 break;
             case LINK_TYPE_EXISTING:
@@ -103,6 +105,7 @@ public class LinkSubProcessViewModel {
                     Notification.info("Subprocess linked to " + selectedProcess.getName());
                     processService.linkSubprocess(parentProcessId, elementId, selectedProcess.getId(),
                         currentUser.getUsername());
+                    BindUtils.postGlobalCommand(null, null, "onLinkedProcessUpdated", null);
                     window.detach();
                 }
                 break;
