@@ -1438,6 +1438,76 @@ databaseChangeLog:
                    nullable: false
                    primaryKey: true
  - changeSet:
+     id: 20220502115800
+     author: janeh
+     comment: "add subprocess process link table"
+     changes:
+       - createTable:
+           tableName: subprocess_process
+           columns:
+             - column:
+                 name: id
+                 type: BIGINT
+                 autoIncrement: true
+                 constraints:
+                   nullable: false
+                   primaryKey: true
+                   primaryKeyName: pk_subprocess_process_id
+             - column:
+                 name: subprocess_parent_id
+                 type: INT
+                 constraints:
+                   nullable: false
+             - column:
+                 name: subprocess_id
+                 type: VARCHAR(64)
+                 constraints:
+                   nullable: false
+             - column:
+                 name: linked_process_id
+                 type: INT
+                 constraints:
+                   nullable: false
+             - column:
+                 name: user_id
+                 type: INT
+                 constraints:
+                   nullable: false
+
+       - addForeignKeyConstraint:
+           baseColumnNames: subprocess_parent_id
+           baseTableName: subprocess_process
+           constraintName: fk_subprocess_parent_id
+           deferrable: false
+           initiallyDeferred: false
+           onDelete: CASCADE
+           referencedColumnNames: id
+           referencedTableName: process
+           validate: true
+
+       - addForeignKeyConstraint:
+           baseColumnNames: linked_process_id
+           baseTableName: subprocess_process
+           constraintName: fk_subprocess_process_id
+           deferrable: false
+           initiallyDeferred: false
+           onDelete: CASCADE
+           onUpdate: CASCADE
+           referencedColumnNames: id
+           referencedTableName: process
+           validate: true
+
+       - addForeignKeyConstraint:
+           baseColumnNames: user_id
+           baseTableName: subprocess_process
+           constraintName: fk_subprocess_user_id
+           deferrable: false
+           initiallyDeferred: false
+           onDelete: CASCADE
+           referencedColumnNames: id
+           referencedTableName: user
+           validate: true
+ - changeSet:
      id: 2022050362100
      author: mtomar
      changes:
