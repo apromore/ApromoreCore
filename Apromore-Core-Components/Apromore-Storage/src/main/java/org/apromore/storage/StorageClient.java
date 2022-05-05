@@ -40,6 +40,8 @@ public interface StorageClient {
 
     String getStorageType();
 
+    boolean isFileExists(String prefix, String key);
+
     InputStream getInputStream(String prefix, String key) throws ObjectNotFoundException;
 
     OutputStream getOutputStream(String prefix, String key) throws ObjectCreationException;

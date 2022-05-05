@@ -59,6 +59,7 @@ import org.apromore.dao.ProcessBranchRepository;
 import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.dao.ProcessRepository;
 import org.apromore.dao.StorageRepository;
+import org.apromore.dao.SubprocessProcessRepository;
 import org.apromore.dao.model.AccessRights;
 import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.Group;
@@ -119,6 +120,7 @@ class ProcessServiceImplUnitTest extends EasyMockSupport {
     private FolderRepository folderRepository;
     private StorageRepository storageRepo;
     private StorageManagementFactory<StorageClient> storageFactory;
+    private SubprocessProcessRepository subprocessProcessRepository;
 
     @BeforeEach
     final void setUp() throws Exception {
@@ -139,10 +141,12 @@ class ProcessServiceImplUnitTest extends EasyMockSupport {
         config = new ConfigBean();
         storageRepo = createMock(StorageRepository.class);
         storageFactory = createMock(StorageManagementFactory.class);
+        subprocessProcessRepository = createMock(SubprocessProcessRepository.class);
 
         processService = new ProcessServiceImpl(nativeRepo, groupRepo, processBranchRepo, processRepo,
                 processModelVersionRepo, groupProcessRepo, lockSrv, usrSrv, fmtSrv, ui, workspaceSrv,
-                authorizationService, folderRepository, config, storageRepo, storageFactory);
+                authorizationService, folderRepository, config, storageRepo, storageFactory,
+                subprocessProcessRepository);
     }
 
     @Test
