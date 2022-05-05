@@ -980,22 +980,22 @@ public class ProcessServiceImpl implements ProcessService {
 
   @Override
   public void unlinkSubprocess(Integer subprocessParentId, String subprocessId) {
-      SubprocessProcess subprocessProcessLink = subprocessProcessRepository
-          .getExistingLink(subprocessParentId, subprocessId);
-      if (subprocessProcessLink == null) {
-        return;
-      }
-      subprocessProcessRepository.delete(subprocessProcessLink);
+    SubprocessProcess subprocessProcessLink = subprocessProcessRepository
+        .getExistingLink(subprocessParentId, subprocessId);
+    if (subprocessProcessLink == null) {
+      return;
+    }
+    subprocessProcessRepository.delete(subprocessProcessLink);
   }
 
   @Override
   public ProcessSummaryType getLinkedProcess(int subprocessParentId, String subprocessId) {
-      Process process = subprocessProcessRepository.getLinkedProcess(subprocessParentId, subprocessId);
+    Process process = subprocessProcessRepository.getLinkedProcess(subprocessParentId, subprocessId);
 
-      if (process == null) {
-        return null;
-      }
+    if (process == null) {
+      return null;
+    }
 
-      return ui.buildProcessSummary(process);
+    return ui.buildProcessSummary(process);
   }
 }
