@@ -117,7 +117,7 @@ public class ViewSubProcessLinkViewModel {
             window.detach();
         } catch (ResourceNotFoundException e) {
             Notification.error("Unable to unlink process");
-            log.error("Unable to view linked process", e);
+            log.error("Unable to unlink process", e);
         }
     }
 
