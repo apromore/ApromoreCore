@@ -74,7 +74,7 @@ class SubprocessLinkUnitTest extends BaseTest {
 
         processService.linkSubprocess(process1.getId(), subprocessId, process2.getId());
         assertEquals(process2.getId(),
-            subprocessProcessRepository.getLinkedProcess(process1.getId(), subprocessId));
+            subprocessProcessRepository.getLinkedProcess(process1.getId(), subprocessId).getId());
 
         processService.unlinkSubprocess(process1.getId(), subprocessId);
         assertNull(subprocessProcessRepository.getLinkedProcess(process1.getId(), subprocessId));
