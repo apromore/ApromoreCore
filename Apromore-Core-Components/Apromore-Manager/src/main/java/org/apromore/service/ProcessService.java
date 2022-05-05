@@ -36,6 +36,7 @@ import org.apromore.exception.ResourceNotFoundException;
 import org.apromore.exception.UpdateProcessException;
 import org.apromore.portal.helper.Version;
 import org.apromore.portal.model.ExportFormatResultType;
+import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.service.model.ProcessData;
 
 import java.io.InputStream;
@@ -245,5 +246,16 @@ public interface ProcessService {
      * @param userName userName of the user associated with the link
      */
     void unlinkSubprocess(Integer subprocessParentId, String subprocessId, String userName)
+        throws ResourceNotFoundException;
+
+    /**
+     * Get the process linked to a subprocess.
+     *
+     * @param subprocessParentId the id of the process which contains the subprocess
+     * @param subprocessId the element id of the subprocess
+     * @param userName userName of the user associated with the link
+     * @return
+     */
+    ProcessSummaryType getLinkedProcess(int subprocessParentId, String subprocessId, String userName)
         throws ResourceNotFoundException;
 }
