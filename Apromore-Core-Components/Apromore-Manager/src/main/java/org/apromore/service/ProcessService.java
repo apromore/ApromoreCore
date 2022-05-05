@@ -233,29 +233,23 @@ public interface ProcessService {
      * @param subprocessParentId the id of the process which contains the subprocess
      * @param subprocessId the element id of the subprocess
      * @param processId the id of an existing process to link the subprocess to
-     * @param userName userName of the user associated with the link
      */
-    void linkSubprocess(Integer subprocessParentId, String subprocessId, Integer processId, String userName)
-        throws ResourceNotFoundException;
+    void linkSubprocess(Integer subprocessParentId, String subprocessId, Integer processId);
 
     /**
      * Unlink a subprocess from an existing process.
      *
      * @param subprocessParentId the id of the process which contains the subprocess
      * @param subprocessId the element id of the subprocess
-     * @param userName userName of the user associated with the link
      */
-    void unlinkSubprocess(Integer subprocessParentId, String subprocessId, String userName)
-        throws ResourceNotFoundException;
+    void unlinkSubprocess(Integer subprocessParentId, String subprocessId);
 
     /**
      * Get the process linked to a subprocess.
      *
      * @param subprocessParentId the id of the process which contains the subprocess
      * @param subprocessId the element id of the subprocess
-     * @param userName userName of the user associated with the link
      * @return
      */
-    ProcessSummaryType getLinkedProcess(int subprocessParentId, String subprocessId, String userName)
-        throws ResourceNotFoundException;
+    ProcessSummaryType getLinkedProcess(int subprocessParentId, String subprocessId);
 }
