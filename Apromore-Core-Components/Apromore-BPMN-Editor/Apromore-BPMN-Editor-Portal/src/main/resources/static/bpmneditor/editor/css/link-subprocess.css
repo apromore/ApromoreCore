@@ -22,6 +22,15 @@
 
 /* LINK SUBPROCESS WINDOWS */
 
+/* Fix window close button */
+.z-window-close {
+    pointer-events: initial;
+}
+
+.z-window-close i {
+    pointer-events: none;
+}
+
 /* tables */
 .ap-listbox-enabled {
     opacity: 1;

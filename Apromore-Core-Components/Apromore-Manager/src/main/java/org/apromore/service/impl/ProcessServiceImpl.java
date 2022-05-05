@@ -57,6 +57,7 @@ import org.apromore.exception.ResourceNotFoundException;
 import org.apromore.exception.UpdateProcessException;
 import org.apromore.portal.helper.Version;
 import org.apromore.portal.model.ExportFormatResultType;
+import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.service.AuthorizationService;
 import org.apromore.service.FormatService;
 import org.apromore.service.LockService;
@@ -1000,6 +1001,25 @@ public class ProcessServiceImpl implements ProcessService {
       subprocessProcessRepository.delete(subprocessProcessLink);
     } catch (Exception e) {
       throw new ResourceNotFoundException("Link subprocess failed caused by {}", e);
+    }
+  }
+
+  @Override
+  public ProcessSummaryType getLinkedProcess(int subprocessParentId, String subprocessId, String userName)
+      throws ResourceNotFoundException {
+    try {
+
+      User user = userSrv.findUserByLogin(userName);
+      Process process = subprocessProcessRepository.getLinkedProcess(subprocessParentId, subprocessId, user.getId());
+
+      if (process == null) {
+        return null;
+      }
+
+      return ui.buildProcessSummary(process);
+
+    } catch (Exception e) {
+      throw new ResourceNotFoundException("Get linked process failed caused by {}", e);
     }
   }
 }
