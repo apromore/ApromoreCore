@@ -310,4 +310,14 @@ export default class Editor {
             y: shape.y + (shape.height || 0) / 2
         }
     }
+
+    getDimensions(shapeId) {
+        var shape = this.actualEditor.get('elementRegistry').get(shapeId);
+        return {
+            x: shape.x,
+            y: shape.y,
+            width: shape.width,
+            height: shape.height
+        }
+    }
 };
