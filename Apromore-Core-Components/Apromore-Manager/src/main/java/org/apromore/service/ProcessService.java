@@ -32,7 +32,6 @@ import org.apromore.dao.model.User;
 import org.apromore.exception.ExportFormatException;
 import org.apromore.exception.ImportException;
 import org.apromore.exception.RepositoryException;
-import org.apromore.exception.ResourceNotFoundException;
 import org.apromore.exception.UpdateProcessException;
 import org.apromore.portal.helper.Version;
 import org.apromore.portal.model.ExportFormatResultType;
