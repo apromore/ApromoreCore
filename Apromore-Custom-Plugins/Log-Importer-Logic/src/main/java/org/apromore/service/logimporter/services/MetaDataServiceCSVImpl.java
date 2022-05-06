@@ -119,6 +119,8 @@ class MetaDataServiceCSVImpl implements MetaDataService {
             List<String> header = !headers.isEmpty() ? headers
                 : Splitter.on(separator).splitToList(firstLine);
 
+            // Reposition the stream to the beginning of 2nd row.
+            brReader.reset();
             in2 = new ReaderInputStream(brReader, charset);
             csvReader = new CSVFileReader().newCSVReader(in2, charset, !Objects.equals(separator, "")
                 ? separator.charAt(0) : '\u0000');
@@ -129,11 +131,6 @@ class MetaDataServiceCSVImpl implements MetaDataService {
 
             List<List<String>> lines = new ArrayList<>();
             String[] myLine;
-
-            // Add content lines to sample log to avoid resetting of stream
-            for (int i = 1; i < SAMPLE_ROW_COUNT; i++) {
-                lines.add(Splitter.on(separator).splitToList(sampleRows.get(i).replaceAll("\"", "")));
-            }
 
             while ((myLine = csvReader.readNext()) != null && lines.size() < sampleSize) {
                 if (myLine.length != header.size()) {
@@ -157,6 +154,11 @@ class MetaDataServiceCSVImpl implements MetaDataService {
             String rowLine = brReader.readLine();
             if (!"".equals(rowLine)) {
                 rows.add(rowLine.replaceAll("\"", ""));
+            }
+            if (i == 0) {
+                // Marks the beginning of 2nd row in the BufferedReader. Subsequent calls to reset() will reposition the
+                // stream to this point.
+                brReader.mark(0);
             }
         }
 
