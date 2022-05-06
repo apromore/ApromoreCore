@@ -497,7 +497,9 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
                         new PredictorTrainerSubMenuController(this, mainController, popup,
                             (LogSummaryType) selections.iterator().next());
                     }
-                default: return;
+                    return;
+                default:
+                    return;
             }
 
         } catch (Exception e) {

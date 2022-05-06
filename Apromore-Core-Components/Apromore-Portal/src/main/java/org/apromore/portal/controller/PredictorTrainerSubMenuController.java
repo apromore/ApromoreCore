@@ -29,6 +29,7 @@ package org.apromore.portal.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 import org.apromore.dao.PredictorRepository;
 import org.apromore.dao.model.PredictorDao;
 import org.apromore.plugin.portal.PortalPlugin;
@@ -37,12 +38,12 @@ import org.apromore.portal.dialogController.PopupMenuController;
 import org.apromore.portal.menu.MenuItem;
 import org.apromore.portal.menu.PluginCatalog;
 import org.apromore.portal.model.LogSummaryType;
-//import org.apromore.ppm.logic.services.PredictorStorage;
 import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Menu;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Menupopup;
 
+@Slf4j
 public class PredictorTrainerSubMenuController extends PopupLogSubMenuController {
     private PredictorRepository predictorRepository;
     public PredictorTrainerSubMenuController(PopupMenuController popupMenuController,
@@ -55,16 +56,14 @@ public class PredictorTrainerSubMenuController extends PopupLogSubMenuController
 
     private void constructMenu() {
         String subMenuImage = "~./icons/predictor-trainer-icon.svg";
-        if (subMenuImage != null) {
-            Menu subMenu = new Menu();
-            subMenu.setLabel("Manage predictor");
-            subMenu.setImage(subMenuImage);
-            Menupopup menuPopup = new Menupopup();
-            popupMenuController.addMenuitem(menuPopup, new MenuItem(PluginCatalog.PLUGIN_PREDICTOR_TRAINER));
-            fetchAndConstructMenuForDb(menuPopup, predictorRepository.findByLogId(logSummaryType.getId()), true);
-            subMenu.appendChild(menuPopup);
-            popupMenu.appendChild(subMenu);
-        }
+        Menu subMenu = new Menu();
+        subMenu.setLabel("Manage predictor");
+        subMenu.setImage(subMenuImage);
+        Menupopup menuPopup = new Menupopup();
+        popupMenuController.addMenuitem(menuPopup, new MenuItem(PluginCatalog.PLUGIN_PREDICTOR_TRAINER));
+        fetchAndConstructMenuForDb(menuPopup, predictorRepository.findByLogId(logSummaryType.getId()), true);
+        subMenu.appendChild(menuPopup);
+        popupMenu.appendChild(subMenu);
     }
 
     private void fetchAndConstructMenuForDb(Menupopup menuPopup, List<PredictorDao> predictors, boolean separatorRequired) {
@@ -96,7 +95,7 @@ public class PredictorTrainerSubMenuController extends PopupLogSubMenuController
                 plugin.setSimpleParams(attrMap);
                 plugin.execute(getPortalContext());
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error(e.getMessage(), e);
             }
         });
         item.setVisible(visibleOnLoad);
@@ -112,7 +111,7 @@ public class PredictorTrainerSubMenuController extends PopupLogSubMenuController
                 PortalPlugin plugin = portalPluginMap.get(PluginCatalog.PLUGIN_PREDICTOR_MANAGER);
                 plugin.execute(getPortalContext());
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error(e.getMessage(), e);
             }
         });
         menuPopup.appendChild(item);
